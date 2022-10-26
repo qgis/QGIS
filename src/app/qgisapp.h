@@ -905,14 +905,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      *
      * Returns a list of layers loaded as a result of opening the URIs.
      */
-    QList< QgsMapLayer * > handleDropUriList( const QgsMimeDataUtils::UriList &lst, bool suppressBulkLayerPostProcessing = false );
+    QList< QgsMapLayer * > handleDropUriList( const QgsMimeDataUtils::UriList &lst, bool suppressBulkLayerPostProcessing = false, bool addToLegend = true );
 
     /**
      * Convenience function to open either a project or a layer file.
      *
      * Returns a list of layers loaded as a result of opening the file.
      */
-    QList< QgsMapLayer * > openFile( const QString &fileName, const QString &fileTypeHint = QString(), bool suppressBulkLayerPostProcessing = false );
+    QList< QgsMapLayer * > openFile( const QString &fileName, const QString &fileTypeHint = QString(), bool suppressBulkLayerPostProcessing = false, bool addToLegend = true );
     void layerTreeViewDoubleClicked( const QModelIndex &index );
     //! Make sure the insertion point for new layers is up-to-date with the current item in layer tree view
     void updateNewLayerInsertionPoint();
@@ -2457,6 +2457,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsMapOverviewCanvas *mOverviewCanvas = nullptr;
     //! Table of contents (legend) for the map
     QgsLayerTreeView *mLayerTreeView = nullptr;
+    //! Keep track of whether ongoing dataset(s) is/are being dropped through the table of contens
+    bool mLayerTreeDrop = false;
+
     //! Helper class that connects layer tree with map canvas
     QgsLayerTreeMapCanvasBridge *mLayerTreeCanvasBridge = nullptr;
     //! Table of contents (legend) to order layers of the map

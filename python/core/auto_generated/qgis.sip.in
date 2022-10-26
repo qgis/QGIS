@@ -1340,6 +1340,13 @@ The development version
       Unknown,
     };
 
+    enum class LayerTreeInsertionMethod
+    {
+      AboveInsertionPoint,
+      TopOfTree,
+      OptimalInInsertionGroup,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;

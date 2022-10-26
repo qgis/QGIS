@@ -2552,225 +2552,159 @@
                  <property name="title">
                   <string>Layer Legend</string>
                  </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_21">
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_8">
-                    <item>
-                     <widget class="QLabel" name="label_15">
-                      <property name="text">
-                       <string>Double-click action in legend</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <spacer name="horizontalSpacer_6">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                    <item>
-                     <widget class="QComboBox" name="cmbLegendDoubleClickAction">
-                      <item>
-                       <property name="text">
-                        <string>Open layer properties</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>Open attribute table</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>Open layer styling dock</string>
-                       </property>
-                      </item>
-                     </widget>
-                    </item>
-                   </layout>
+                 <layout class="QGridLayout" name="gridLayout_35">
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_15">
+                   <property name="text">
+                     <string>Double-click action in legend</string>
+                   </property>
+                   </widget>
                   </item>
-                  <item>
+                  <item row="0" column="1">
+                   <widget class="QComboBox" name="cmbLegendDoubleClickAction">
+                    <item>
+                      <property name="text">
+                      <string>Open layer properties</string>
+                      </property>
+                    </item>
+                    <item>
+                      <property name="text">
+                      <string>Open attribute table</string>
+                      </property>
+                    </item>
+                    <item>
+                      <property name="text">
+                      <string>Open layer styling dock</string>
+                      </property>
+                    </item>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                    <widget class="QLabel" name="mLayerTreeInsertionMethodLabel">
+                    <property name="text">
+                      <string>Behavior used when adding new layers</string>
+                    </property>
+                    </widget>
+                  </item>
+                  <item row="1" column="1">
+                    <widget class="QComboBox" name="mLayerTreeInsertionMethod">
+                    </widget>
+                  </item>
+                  <item row="2" column="0" colspan="2">
                    <widget class="QCheckBox" name="mShowFeatureCountByDefaultCheckBox">
                     <property name="text">
                      <string>Show feature count for newly added layers</string>
                     </property>
                    </widget>
                   </item>
-                  <item>
+                  <item row="3" column="0" colspan="2">
                    <widget class="QCheckBox" name="cbxLegendClassifiers">
                     <property name="text">
                      <string>Display classification attribute in layer titles</string>
                     </property>
                    </widget>
                   </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_34">
-                    <item>
-                     <widget class="QLabel" name="label_58">
-                      <property name="text">
-                       <string>WMS getLegendGraphic resolution</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <spacer name="horizontalSpacer_48">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeType">
-                       <enum>QSizePolicy::Preferred</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>30</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                    <item>
-                     <widget class="QgsSpinBox" name="mLegendGraphicResolutionSpinBox">
-                      <property name="toolTip">
+                  <item row="4" column="0">
+                   <widget class="QLabel" name="label_58">
+                    <property name="text">
+                      <string>WMS getLegendGraphic resolution</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="1">
+                    <widget class="QgsSpinBox" name="mLegendGraphicResolutionSpinBox">
+                     <property name="toolTip">
                        <string extracomment="MAP_RESOLUTION or DPI value overloading getMap default value (set 0 to use default)"/>
-                      </property>
-                      <property name="whatsThis">
+                     </property>
+                     <property name="whatsThis">
                        <string extracomment="MAP_RESOLUTION or DPI value overloading getMap default value (set 0 to use default)"/>
-                      </property>
-                      <property name="suffix">
+                     </property>
+                     <property name="suffix">
                        <string> dpi</string>
-                      </property>
-                      <property name="minimum">
+                     </property>
+                     <property name="minimum">
                        <number>0</number>
-                      </property>
-                      <property name="maximum">
+                     </property>
+                     <property name="maximum">
                        <number>1000000</number>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
+                     </property>
+                    </widget>
                   </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_41">
-                    <item>
-                     <widget class="QLabel" name="labelLegendSymbolMinimumSize">
-                      <property name="text">
-                       <string>Minimum legend symbol size</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <spacer name="horizontalSpacer_49">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeType">
-                       <enum>QSizePolicy::Preferred</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>30</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                    <item>
-                     <widget class="QgsDoubleSpinBox" name="mLegendSymbolMinimumSizeSpinBox">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="toolTip">
-                       <string extracomment="(set value to 0 to skip minimum size)"/>
-                      </property>
-                      <property name="suffix">
-                       <string> mm</string>
-                      </property>
-                      <property name="decimals">
-                       <number>2</number>
-                      </property>
-                      <property name="maximum">
-                       <double>999.000000000000000</double>
-                      </property>
-                      <property name="singleStep">
-                       <double>0.200000000000000</double>
-                      </property>
-                      <property name="value">
-                       <double>0.100000000000000</double>
-                      </property>
-                      <property name="showClearButton" stdset="0">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
+                  <item row="5" column="0">
+                    <widget class="QLabel" name="labelLegendSymbolMinimumSize">
+                    <property name="text">
+                      <string>Minimum legend symbol size</string>
+                    </property>
+                    </widget>
                   </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_43">
-                    <item>
-                     <widget class="QLabel" name="labelLegendSymbolMaximumSize">
-                      <property name="text">
-                       <string>Maximum legend symbol size</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <spacer name="horizontalSpacer_50">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeType">
-                       <enum>QSizePolicy::Preferred</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>30</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                    <item>
-                     <widget class="QgsDoubleSpinBox" name="mLegendSymbolMaximumSizeSpinBox">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="toolTip">
-                       <string extracomment="(set value to 0 to skip maximum size)"/>
-                      </property>
-                      <property name="suffix">
-                       <string> mm</string>
-                      </property>
-                      <property name="decimals">
-                       <number>2</number>
-                      </property>
-                      <property name="maximum">
-                       <double>999.000000000000000</double>
-                      </property>
-                      <property name="singleStep">
-                       <double>0.200000000000000</double>
-                      </property>
-                      <property name="value">
-                       <double>20.000000000000000</double>
-                      </property>
-                      <property name="showClearButton" stdset="0">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
+                  <item row="5" column="1">
+                   <widget class="QgsDoubleSpinBox" name="mLegendSymbolMinimumSizeSpinBox">
+                    <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                      </sizepolicy>
+                    </property>
+                    <property name="toolTip">
+                      <string extracomment="(set value to 0 to skip minimum size)"/>
+                    </property>
+                    <property name="suffix">
+                      <string> mm</string>
+                    </property>
+                    <property name="decimals">
+                      <number>2</number>
+                    </property>
+                    <property name="maximum">
+                      <double>999.000000000000000</double>
+                    </property>
+                    <property name="singleStep">
+                      <double>0.200000000000000</double>
+                    </property>
+                    <property name="value">
+                      <double>0.100000000000000</double>
+                    </property>
+                    <property name="showClearButton" stdset="0">
+                      <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="6" column="0">
+                    <widget class="QLabel" name="labelLegendSymbolMaximumSize">
+                    <property name="text">
+                      <string>Maximum legend symbol size</string>
+                    </property>
+                    </widget>
+                  </item>
+                  <item row="6" column="1">
+                   <widget class="QgsDoubleSpinBox" name="mLegendSymbolMaximumSizeSpinBox">
+                   <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                     </sizepolicy>
+                   </property>
+                   <property name="toolTip">
+                     <string extracomment="(set value to 0 to skip maximum size)"/>
+                   </property>
+                   <property name="suffix">
+                     <string> mm</string>
+                   </property>
+                   <property name="decimals">
+                     <number>2</number>
+                   </property>
+                   <property name="maximum">
+                     <double>999.000000000000000</double>
+                   </property>
+                   <property name="singleStep">
+                     <double>0.200000000000000</double>
+                   </property>
+                   <property name="value">
+                     <double>20.000000000000000</double>
+                   </property>
+                   <property name="showClearButton" stdset="0">
+                     <bool>true</bool>
+                   </property>
+                   </widget>
                   </item>
                  </layout>
                 </widget>
@@ -2780,37 +2714,15 @@
                  <property name="title">
                   <string>Map Tips</string>
                  </property>
-                 <layout class="QHBoxLayout" name="horizontalLayout_42">
-                  <item>
+                 <layout class="QGridLayout" name="gridLayout_40">
+                  <item row="0" column="0">
                    <widget class="QLabel" name="textLabel1_16">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
                     <property name="text">
                      <string>Delay (in milliseconds)</string>
                     </property>
                    </widget>
                   </item>
-                  <item>
-                   <spacer name="horizontalSpacer_39">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                     <enum>QSizePolicy::Preferred</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>30</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item>
+                  <item row="0" column="1">
                    <widget class="QgsSpinBox" name="mMapTipsDelaySpinBox">
                     <property name="toolTip">
                      <string extracomment="MAP_RESOLUTION or DPI value overloading getMap default value (set 0 to use default)"/>
