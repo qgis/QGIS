@@ -298,7 +298,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox">
+        <widget class="QgsCollapsibleGroupBox" name="groupBox">
          <property name="title">
           <string>GPS Bearing</string>
          </property>
