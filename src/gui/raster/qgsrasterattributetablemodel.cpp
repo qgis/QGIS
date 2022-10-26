@@ -385,7 +385,7 @@ QVariant QgsRasterAttributeTableModel::data( const QModelIndex &index, int role 
     }
     else if ( ! isColorOrRamp && role == Qt::ItemDataRole::TextAlignmentRole && field.type != QVariant::String )
     {
-      return Qt::AlignmentFlag::AlignRight + Qt::AlignmentFlag::AlignVCenter;
+      return QVariant( Qt::AlignmentFlag::AlignRight | Qt::AlignmentFlag::AlignVCenter );
     }
     else if ( role == Qt::ItemDataRole::ToolTipRole && ( field.isColor() || field.isRamp() ) )
     {
