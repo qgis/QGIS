@@ -3,7 +3,7 @@ QWidget
     background: transparent;
 }
 
-QLabel, QCheckBox, QRadioButton
+QLabel, QCheckBox, QRadioButton, QMenu::item
 {
     color: @text;
 }
