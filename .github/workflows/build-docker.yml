@@ -34,7 +34,7 @@ jobs:
           if [[ "${GITHUB_REF}" =~ ^refs/tags ]]; then
             echo "::set-output name=matrix::{\"branch\":[\"${GITHUB_REF##*/}\"]}"
           else
-            echo "::set-output name=matrix::{\"branch\":[\"master\", \"release-3_22\", \"release-3_26\"]}"
+            echo "::set-output name=matrix::{\"branch\":[\"master\", \"release-3_22\", \"release-3_28\"]}"
           fi
 
   build-docker:
@@ -135,7 +135,8 @@ jobs:
           echo "Copy build cache from Docker container to Travis cache directory"
           rm -rf ~/.ccache/*
           mkdir -p ~/.ccache
-          docker cp qgis_container:/QGIS/.ccache_image_build/. ~/.ccache
+          dock
+          er cp qgis_container:/QGIS/.ccache_image_build/. ~/.ccache
           echo "Cache size: "$(du -sh ~/.ccache)
 
       - name: Finalize image
