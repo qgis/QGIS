@@ -850,6 +850,23 @@ Qgis.GpsConnectionType.Gpsd.__doc__ = "GPSD device"
 Qgis.GpsConnectionType.__doc__ = 'GPS connection types.\n\n.. versionadded:: 3.30\n\n' + '* ``Automatic``: ' + Qgis.GpsConnectionType.Automatic.__doc__ + '\n' + '* ``Internal``: ' + Qgis.GpsConnectionType.Internal.__doc__ + '\n' + '* ``Serial``: ' + Qgis.GpsConnectionType.Serial.__doc__ + '\n' + '* ``Gpsd``: ' + Qgis.GpsConnectionType.Gpsd.__doc__
 # --
 Qgis.GpsConnectionType.baseClass = Qgis
+QgsGpsInformation.FixStatus = Qgis.GpsFixStatus
+# monkey patching scoped based enum
+QgsGpsInformation.NoData = Qgis.GpsFixStatus.NoData
+QgsGpsInformation.NoData.is_monkey_patched = True
+QgsGpsInformation.NoData.__doc__ = "No fix data available"
+QgsGpsInformation.NoFix = Qgis.GpsFixStatus.NoFix
+QgsGpsInformation.NoFix.is_monkey_patched = True
+QgsGpsInformation.NoFix.__doc__ = "GPS is not fixed"
+QgsGpsInformation.Fix2D = Qgis.GpsFixStatus.Fix2D
+QgsGpsInformation.Fix2D.is_monkey_patched = True
+QgsGpsInformation.Fix2D.__doc__ = "2D fix"
+QgsGpsInformation.Fix3D = Qgis.GpsFixStatus.Fix3D
+QgsGpsInformation.Fix3D.is_monkey_patched = True
+QgsGpsInformation.Fix3D.__doc__ = "3D fix"
+Qgis.GpsFixStatus.__doc__ = 'GPS fix status.\n\n.. note::\n\n   Prior to QGIS 3.30 this was available as :py:class:`QgsGpsInformation`.FixStatus\n\n.. versionadded:: 3.30\n\n' + '* ``NoData``: ' + Qgis.GpsFixStatus.NoData.__doc__ + '\n' + '* ``NoFix``: ' + Qgis.GpsFixStatus.NoFix.__doc__ + '\n' + '* ``Fix2D``: ' + Qgis.GpsFixStatus.Fix2D.__doc__ + '\n' + '* ``Fix3D``: ' + Qgis.GpsFixStatus.Fix3D.__doc__
+# --
+Qgis.GpsFixStatus.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.GpsQualityIndicator.Unknown.__doc__ = "Unknown"
 Qgis.GpsQualityIndicator.Invalid.__doc__ = "Invalid"

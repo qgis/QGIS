@@ -572,6 +572,14 @@ The development version
       Gpsd,
     };
 
+    enum class GpsFixStatus
+      {
+      NoData,
+      NoFix,
+      Fix2D,
+      Fix3D
+    };
+
     enum class GpsQualityIndicator
     {
       Unknown,
