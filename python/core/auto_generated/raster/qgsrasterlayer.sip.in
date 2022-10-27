@@ -448,6 +448,24 @@ to be drawn outside the data extent.
     virtual QgsMapLayerElevationProperties *elevationProperties();
 
 
+    QString mapTipTemplate() const;
+%Docstring
+The mapTip is a pretty, html representation for feature information.
+
+It may also contain embedded expressions.
+
+.. versionadded:: 3.30
+%End
+
+    void setMapTipTemplate( const QString &mapTip );
+%Docstring
+The mapTip is a pretty, html representation for feature information.
+
+It may also contain embedded expressions.
+
+.. versionadded:: 3.30
+%End
+
   public slots:
     void showStatusMessage( const QString &message );
 
@@ -466,6 +484,14 @@ Emitted when the layer's subset string has changed.
 
 .. versionadded:: 3.12
 %End
+
+    void mapTipTemplateChanged();
+%Docstring
+Emitted when the map tip changes
+
+.. versionadded:: 3.30
+%End
+
 
 
   protected:

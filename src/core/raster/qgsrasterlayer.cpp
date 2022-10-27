@@ -1213,6 +1213,21 @@ QgsMapLayerElevationProperties *QgsRasterLayer::elevationProperties()
   return mElevationProperties;
 }
 
+QString QgsRasterLayer::mapTipTemplate() const
+{
+  return mMapTipTemplate;
+}
+
+void QgsRasterLayer::setMapTipTemplate( const QString &mapTip )
+{
+  if ( mMapTipTemplate == mapTip )
+    return;
+
+  mMapTipTemplate = mapTip;
+  emit mapTipTemplateChanged();
+
+}
+
 void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm, QgsRasterMinMaxOrigin::Limits limits, const QgsRectangle &extent, int sampleSize, bool generateLookupTableFlag )
 {
   setContrastEnhancement( algorithm,

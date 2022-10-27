@@ -76,6 +76,9 @@ typedef QList < QPair< QString, QColor > > QgsLegendColorList;
 class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfileSource
 {
     Q_OBJECT
+
+    Q_PROPERTY( QString mapTipTemplate READ mapTipTemplate WRITE setMapTipTemplate NOTIFY mapTipTemplateChanged )
+
   public:
 
     //! \brief Default sample size (number of pixels) for estimated statistics/histogram calculation
@@ -491,6 +494,24 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
     QgsMapLayerTemporalProperties *temporalProperties() override;
     QgsMapLayerElevationProperties *elevationProperties() override;
 
+    /**
+     * The mapTip is a pretty, html representation for feature information.
+     *
+     * It may also contain embedded expressions.
+     *
+     * \since QGIS 3.30
+     */
+    QString mapTipTemplate() const;
+
+    /**
+     * The mapTip is a pretty, html representation for feature information.
+     *
+     * It may also contain embedded expressions.
+     *
+     * \since QGIS 3.30
+     */
+    void setMapTipTemplate( const QString &mapTip );
+
   public slots:
     void showStatusMessage( const QString &message );
 
@@ -508,6 +529,14 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      * \since QGIS 3.12
      */
     void subsetStringChanged();
+
+    /**
+     * Emitted when the map tip changes
+     *
+     * \since QGIS 3.30
+     */
+    void mapTipTemplateChanged();
+
 
 
   protected:
@@ -608,6 +637,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
 
     QDomDocument mOriginalStyleDocument;
     QDomElement mOriginalStyleElement;
+
+    QString mMapTipTemplate;
 };
 
 // clazy:excludeall=qstring-allocations
