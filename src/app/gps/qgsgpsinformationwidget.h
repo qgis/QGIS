@@ -142,7 +142,6 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
     QgsPointXY mSecondLastGpsPosition;
     QVector<QgsPoint> mCaptureList;
     double mLastElevation = 0.0;
-    Qgis::GpsFixStatus mLastFixStatus = Qgis::GpsFixStatus::NoData;
     QString mDateTimeFormat; // user specified format string in registry (no UI presented)
     QPointer< QgsVectorLayer > mLastLayer;
     QFile *mLogFile = nullptr;

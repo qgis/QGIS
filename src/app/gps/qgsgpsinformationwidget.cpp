@@ -358,6 +358,7 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsAppGpsConnection *connectio
   connect( mConnection, &QgsAppGpsConnection::connected, this, &QgsGpsInformationWidget::gpsConnected );
   connect( mConnection, &QgsAppGpsConnection::disconnected, this, &QgsGpsInformationWidget::gpsDisconnected );
   connect( mConnection, &QgsAppGpsConnection::stateChanged, this, &QgsGpsInformationWidget::displayGPSInformation );
+  connect( mConnection, &QgsAppGpsConnection::fixStatusChanged, this, &QgsGpsInformationWidget::setStatusIndicator );
 
   connect( mConnection, &QgsAppGpsConnection::statusChanged, this, [ = ]( Qgis::GpsConnectionStatus status )
   {
@@ -664,8 +665,6 @@ void QgsGpsInformationWidget::gpsDisconnected()
     mMapBearingItem = nullptr;
   }
   mGPSPlainTextEdit->appendPlainText( tr( "Disconnected…" ) );
-
-  setStatusIndicator( Qgis::GpsFixStatus::NoData );
 }
 
 void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &info )
@@ -674,14 +673,6 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     return;
 
   QVector<QPointF> data;
-
-  // set visual status indicator -- do only on change of state
-  Qgis::GnssConstellation constellation = Qgis::GnssConstellation::Unknown;
-  const Qgis::GpsFixStatus fixStatus = info.bestFixStatus( constellation );
-  if ( fixStatus != mLastFixStatus )
-  {
-    setStatusIndicator( fixStatus );
-  }
 
   if ( mStackedWidget->currentIndex() == 1 && info.satInfoComplete ) //signal
   {
@@ -1369,7 +1360,6 @@ void QgsGpsInformationWidget::layerEditStateChanged()
 
 void QgsGpsInformationWidget::setStatusIndicator( Qgis::GpsFixStatus statusValue )
 {
-  mLastFixStatus = statusValue;
   // the pixmap will be expanded to the size of the label
   QPixmap status( 4, 4 );
   switch ( statusValue )
