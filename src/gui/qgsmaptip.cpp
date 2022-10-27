@@ -17,6 +17,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaptool.h"
 #include "qgsvectorlayer.h"
+#include "qgsrasterlayer.h"
 #include "qgsexpression.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
@@ -311,6 +312,31 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
     renderer->stopRender( renderCtx );
 
   return tipString;
+}
+
+QString QgsMapTip::fetchRaster( QgsMapLayer *layer, QgsPointXY &mapPosition, QgsMapCanvas *mapCanvas )
+{
+  QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
+  if ( !rlayer )
+    return QString();
+
+  if ( !layer->isInScaleRange( mapCanvas->mapSettings().scale() ) )
+  {
+    return QString();
+  }
+
+  const QgsPointXY mappedPosition { mapCanvas->mapSettings().mapToLayerCoordinates( layer, mapPosition ) };
+
+  if ( ! layer->extent().contains( mappedPosition ) )
+  {
+    return QString( );
+  }
+
+  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
+  context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mapCanvas->mapSettings() ) );
+
+  const QString mapTip = rlayer->mapTipTemplate();
+
 }
 
 void QgsMapTip::applyFontSettings()

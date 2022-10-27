@@ -1697,6 +1697,56 @@ static QVariant fcnRasterValue( const QVariantList &values, const QgsExpressionC
   return std::isnan( value ) ? QVariant() : value;
 }
 
+static QVariant fcnRasterAttributes( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsRasterLayer *layer = QgsExpressionUtils::getRasterLayer( values.at( 0 ), parent );
+  if ( !layer || !layer->dataProvider() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `raster_attributes` requires a valid raster layer." ) );
+    return QVariant();
+  }
+
+  int bandNb = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
+  if ( bandNb < 1 || bandNb > layer->bandCount() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `raster_attributes` requires a valid raster band number." ) );
+    return QVariant();
+  }
+
+  const double value = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
+  if ( std::isnan( value ) )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `raster_attributes` requires a valid raster value." ) );
+    return QVariant();
+  }
+
+  if ( ! layer->dataProvider()->attributeTable( bandNb ) )
+  {
+    return QVariant();
+  }
+
+  const QVariantList data { layer->dataProvider()->attributeTable( bandNb )->row( value ) };
+  if ( data.isEmpty() )
+  {
+    return QVariant();
+  }
+
+  QVariantMap result;
+  const QList<QgsRasterAttributeTable::Field> fields { layer->dataProvider()->attributeTable( bandNb )->fields() };
+  for ( int idx = 0; idx < static_cast<int>( fields.count( ) ) && idx < static_cast<int>( data.count() ); ++idx )
+  {
+    const QgsRasterAttributeTable::Field field { fields.at( idx ) };
+    if ( field.isColor() || field.isRamp() )
+    {
+      continue;
+    }
+    result.insert( fields.at( idx ).name, data.at( idx ) );
+  }
+
+  return result;
+}
+
+
 static QVariant fcnFeature( const QVariantList &, const QgsExpressionContext *context, QgsExpression *, const QgsExpressionNodeFunction * )
 {
   if ( !context )
@@ -8470,6 +8520,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "env" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "name" ) ), fcnEnvVar, QStringLiteral( "General" ), QString() )
         << new QgsWithVariableExpressionFunction()
         << new QgsStaticExpressionFunction( QStringLiteral( "raster_value" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "band" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "point" ) ), fcnRasterValue, QStringLiteral( "Rasters" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "raster_attributes" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "band" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "point" ) ), fcnRasterAttributes, QStringLiteral( "Rasters" ) )
 
         // functions for arrays
         << new QgsArrayForeachExpressionFunction()
