@@ -267,6 +267,7 @@ set(QGIS_APP_SRCS
   gps/qgsgpsbearingitem.cpp
   gps/qgsgpsinformationwidget.cpp
   gps/qgsgpsmarker.cpp
+  gps/qgsgpstoolbar.cpp
 
   project/qgsprojectelevationsettingswidget.cpp
 

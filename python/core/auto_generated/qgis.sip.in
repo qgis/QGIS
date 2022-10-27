@@ -572,6 +572,13 @@ The development version
       Gpsd,
     };
 
+    enum class GpsConnectionStatus
+    {
+      Disconnected,
+      Connecting,
+      Connected,
+    };
+
     enum class GpsFixStatus
       {
       NoData,

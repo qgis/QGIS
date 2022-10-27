@@ -96,6 +96,11 @@ class APP_EXPORT QgsAppGpsConnection : public QObject
     void connected();
 
     /**
+     * Emitted when the connection status changes.
+     */
+    void statusChanged( Qgis::GpsConnectionStatus status );
+
+    /**
      * Emitted when the GPS device has been disconnected.
      */
     void disconnected();

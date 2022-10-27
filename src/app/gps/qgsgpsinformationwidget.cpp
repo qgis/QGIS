@@ -81,7 +81,6 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsAppGpsConnection *connectio
   setupUi( this );
   connect( mConnectButton, &QPushButton::toggled, this, &QgsGpsInformationWidget::mConnectButton_toggled );
   connect( mRecenterButton, &QPushButton::clicked, this, &QgsGpsInformationWidget::recenter );
-  connect( mConnectButton, &QAbstractButton::toggled, mRecenterButton, &QWidget::setEnabled );
   connect( mBtnPosition, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnPosition_clicked );
   connect( mBtnSignal, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnSignal_clicked );
   connect( mBtnSatellites, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnSatellites_clicked );
@@ -355,11 +354,35 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsAppGpsConnection *connectio
   mMapCanvas->installInteractionBlocker( this );
 
   connect( mConnection, &QgsAppGpsConnection::connecting, this, &QgsGpsInformationWidget::gpsConnecting );
-  connect( mConnection, &QgsAppGpsConnection::connectionError, this, &QgsGpsInformationWidget::gpsConnectionError );
   connect( mConnection, &QgsAppGpsConnection::connectionTimedOut, this, &QgsGpsInformationWidget::timedout );
   connect( mConnection, &QgsAppGpsConnection::connected, this, &QgsGpsInformationWidget::gpsConnected );
   connect( mConnection, &QgsAppGpsConnection::disconnected, this, &QgsGpsInformationWidget::gpsDisconnected );
   connect( mConnection, &QgsAppGpsConnection::stateChanged, this, &QgsGpsInformationWidget::displayGPSInformation );
+
+  connect( mConnection, &QgsAppGpsConnection::statusChanged, this, [ = ]( Qgis::GpsConnectionStatus status )
+  {
+    switch ( status )
+    {
+      case Qgis::GpsConnectionStatus::Disconnected:
+        whileBlocking( mConnectButton )->setChecked( false );
+        mConnectButton->setText( tr( "Connect" ) );
+        mConnectButton->setEnabled( true );
+        mRecenterButton->setEnabled( false );
+        break;
+      case Qgis::GpsConnectionStatus::Connecting:
+        whileBlocking( mConnectButton )->setChecked( true );
+        mConnectButton->setText( tr( "Connecting" ) );
+        mConnectButton->setEnabled( false );
+        mRecenterButton->setEnabled( false );
+        break;
+      case Qgis::GpsConnectionStatus::Connected:
+        whileBlocking( mConnectButton )->setChecked( true );
+        mConnectButton->setText( tr( "Disconnect" ) );
+        mConnectButton->setEnabled( true );
+        mRecenterButton->setEnabled( true );
+        break;
+    }
+  } );
 }
 
 QgsGpsInformationWidget::~QgsGpsInformationWidget()
@@ -584,22 +607,14 @@ void QgsGpsInformationWidget::gpsConnecting()
   mGPSPlainTextEdit->appendPlainText( tr( "Connecting…" ) );
 }
 
-void QgsGpsInformationWidget::gpsConnectionError( const QString & )
-{
-  //toggle the button back off
-  mConnectButton->setChecked( false );
-}
-
 void QgsGpsInformationWidget::timedout()
 {
-  mConnectButton->setChecked( false );
   mGPSPlainTextEdit->appendPlainText( tr( "Timed out!" ) );
 }
 
 void QgsGpsInformationWidget::gpsConnected()
 {
   mGPSPlainTextEdit->appendPlainText( tr( "Connected!" ) );
-  mConnectButton->setText( tr( "Dis&connect" ) );
 
   if ( mLogFileGroupBox->isChecked() && !mLogFilename->filePath().isEmpty() )
   {
@@ -649,8 +664,6 @@ void QgsGpsInformationWidget::gpsDisconnected()
     mMapBearingItem = nullptr;
   }
   mGPSPlainTextEdit->appendPlainText( tr( "Disconnected…" ) );
-  mConnectButton->setChecked( false );
-  mConnectButton->setText( tr( "&Connect" ) );
 
   setStatusIndicator( Qgis::GpsFixStatus::NoData );
 }

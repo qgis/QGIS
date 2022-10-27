@@ -154,6 +154,7 @@ class QgsMapToolCapture;
 class QgsElevationProfileWidget;
 class QgsScreenHelper;
 class QgsAppGpsConnection;
+class QgsGpsToolBar;
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -2558,6 +2559,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Persistent GPS toolbox
     QgsAppGpsConnection *mGpsConnection = nullptr;
     QgsGpsInformationWidget *mpGpsWidget = nullptr;
+    QgsGpsToolBar *mGpsToolBar = nullptr;
 
     QgsMessageBarItem *mLastMapToolMessage = nullptr;
 
