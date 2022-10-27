@@ -968,22 +968,6 @@ gray = no data
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="mRecenterButton">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Recenter</string>
-       </property>
-       <property name="checkable">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QPushButton" name="mConnectButton">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -1053,7 +1037,6 @@ gray = no data
   <tabstop>mBtnSatellites</tabstop>
   <tabstop>mBtnOptions</tabstop>
   <tabstop>mBtnDebug</tabstop>
-  <tabstop>mRecenterButton</tabstop>
   <tabstop>mConnectButton</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>mCbxAutoCommit</tabstop>

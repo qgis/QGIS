@@ -76,7 +76,6 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
 
   private slots:
     void mConnectButton_toggled( bool flag );
-    void recenter();
     void displayGPSInformation( const QgsGpsInformation &info );
     void logNmeaSentence( const QString &nmeaString ); // added to handle 'raw' data
     void updateCloseFeatureButton( QgsMapLayer *lyr );

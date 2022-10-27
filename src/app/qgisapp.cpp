@@ -1395,7 +1395,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   // create the GPS tool on starting QGIS - this is like the browser
   mGpsConnection = new QgsAppGpsConnection( this );
 
-  mGpsToolBar = new QgsGpsToolBar( mGpsConnection, this );
+  mGpsToolBar = new QgsGpsToolBar( mGpsConnection, mMapCanvas, this );
   addToolBar( mGpsToolBar );
 
   mpGpsWidget = new QgsGpsInformationWidget( mGpsConnection, mMapCanvas );
