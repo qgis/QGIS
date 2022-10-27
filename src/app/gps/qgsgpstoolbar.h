@@ -18,7 +18,10 @@
 
 #include <QToolBar>
 
+#include "qgscoordinatereferencesystem.h"
+
 class QgsAppGpsConnection;
+class QgsMapCanvas;
 
 class QgsGpsToolBar : public QToolBar
 {
@@ -26,13 +29,15 @@ class QgsGpsToolBar : public QToolBar
 
   public:
 
-    QgsGpsToolBar( QgsAppGpsConnection *connection, QWidget *parent = nullptr );
+    QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
   private:
 
     QgsAppGpsConnection *mConnection = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
     QAction *mConnectAction = nullptr;
-
+    QAction *mRecenterAction = nullptr;
+    QgsCoordinateReferenceSystem mWgs84CRS;
 };
 
 #endif // QGSGPSTOOLBAR_H

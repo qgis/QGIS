@@ -80,7 +80,6 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsAppGpsConnection *connectio
   Q_ASSERT( mMapCanvas ); // precondition
   setupUi( this );
   connect( mConnectButton, &QPushButton::toggled, this, &QgsGpsInformationWidget::mConnectButton_toggled );
-  connect( mRecenterButton, &QPushButton::clicked, this, &QgsGpsInformationWidget::recenter );
   connect( mBtnPosition, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnPosition_clicked );
   connect( mBtnSignal, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnSignal_clicked );
   connect( mBtnSatellites, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnSatellites_clicked );
@@ -102,9 +101,6 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsAppGpsConnection *connectio
   {
     settingLastLogFolder.setValue( QFileInfo( mLogFilename->filePath() ).absolutePath() );
   } );
-
-
-  mRecenterButton->setEnabled( false );
 
   mWgs84CRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
 
@@ -368,19 +364,16 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsAppGpsConnection *connectio
         whileBlocking( mConnectButton )->setChecked( false );
         mConnectButton->setText( tr( "Connect" ) );
         mConnectButton->setEnabled( true );
-        mRecenterButton->setEnabled( false );
         break;
       case Qgis::GpsConnectionStatus::Connecting:
         whileBlocking( mConnectButton )->setChecked( true );
         mConnectButton->setText( tr( "Connecting" ) );
         mConnectButton->setEnabled( false );
-        mRecenterButton->setEnabled( false );
         break;
       case Qgis::GpsConnectionStatus::Connected:
         whileBlocking( mConnectButton )->setChecked( true );
         mConnectButton->setText( tr( "Disconnect" ) );
         mConnectButton->setEnabled( true );
-        mRecenterButton->setEnabled( true );
         break;
     }
   } );
@@ -570,20 +563,6 @@ void QgsGpsInformationWidget::mConnectButton_toggled( bool flag )
   }
 }
 
-void QgsGpsInformationWidget::recenter()
-{
-  try
-  {
-    const QgsPointXY center = mCanvasToWgs84Transform.transform( mLastGpsPosition, Qgis::TransformDirection::Reverse );
-    mMapCanvas->setCenter( center );
-    mMapCanvas->refresh();
-  }
-  catch ( QgsCsException & )
-  {
-
-  }
-}
-
 void QgsGpsInformationWidget::gpsConnecting()
 {
   // clear position page fields to give better indication that something happened (or didn't happen)
@@ -602,7 +581,6 @@ void QgsGpsInformationWidget::gpsConnecting()
   mTxtSatellitesUsed->clear();
   mTxtStatus->clear();
 
-  mLastGpsPosition = QgsPointXY();
   mSecondLastGpsPosition = QgsPointXY();
 
   mGPSPlainTextEdit->appendPlainText( tr( "Connecting…" ) );
