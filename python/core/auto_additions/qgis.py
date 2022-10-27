@@ -850,6 +850,13 @@ Qgis.GpsConnectionType.Gpsd.__doc__ = "GPSD device"
 Qgis.GpsConnectionType.__doc__ = 'GPS connection types.\n\n.. versionadded:: 3.30\n\n' + '* ``Automatic``: ' + Qgis.GpsConnectionType.Automatic.__doc__ + '\n' + '* ``Internal``: ' + Qgis.GpsConnectionType.Internal.__doc__ + '\n' + '* ``Serial``: ' + Qgis.GpsConnectionType.Serial.__doc__ + '\n' + '* ``Gpsd``: ' + Qgis.GpsConnectionType.Gpsd.__doc__
 # --
 Qgis.GpsConnectionType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.GpsConnectionStatus.Disconnected.__doc__ = "Device is disconnected"
+Qgis.GpsConnectionStatus.Connecting.__doc__ = "Device is connecting"
+Qgis.GpsConnectionStatus.Connected.__doc__ = "Device is successfully connected"
+Qgis.GpsConnectionStatus.__doc__ = 'GPS connection status.\n\n.. versionadded:: 3.30\n\n' + '* ``Disconnected``: ' + Qgis.GpsConnectionStatus.Disconnected.__doc__ + '\n' + '* ``Connecting``: ' + Qgis.GpsConnectionStatus.Connecting.__doc__ + '\n' + '* ``Connected``: ' + Qgis.GpsConnectionStatus.Connected.__doc__
+# --
+Qgis.GpsConnectionStatus.baseClass = Qgis
 QgsGpsInformation.FixStatus = Qgis.GpsFixStatus
 # monkey patching scoped based enum
 QgsGpsInformation.NoData = Qgis.GpsFixStatus.NoData

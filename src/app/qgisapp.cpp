@@ -250,6 +250,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsprojectionselectiondialog.h"
 #include "qgsgpsinformationwidget.h"
 #include "qgsappgpsconnection.h"
+#include "qgsgpstoolbar.h"
 #include "qgsguivectorlayertools.h"
 #include "qgsdiagramproperties.h"
 #include "qgslayerdefinition.h"
@@ -1394,6 +1395,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   // create the GPS tool on starting QGIS - this is like the browser
   mGpsConnection = new QgsAppGpsConnection( this );
 
+  mGpsToolBar = new QgsGpsToolBar( mGpsConnection, this );
+  addToolBar( mGpsToolBar );
+
   mpGpsWidget = new QgsGpsInformationWidget( mGpsConnection, mMapCanvas );
   QgsPanelWidgetStack *gpsStack = new QgsPanelWidgetStack();
   gpsStack->setMainPanel( mpGpsWidget );
@@ -1969,6 +1973,10 @@ QgisApp::~QgisApp()
 
   delete mpGpsWidget;
   mpGpsWidget = nullptr;
+
+  delete mGpsToolBar;
+  mGpsToolBar = nullptr;
+
   delete mGpsConnection;
   mGpsConnection = nullptr;
 

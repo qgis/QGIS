@@ -933,6 +933,19 @@ class CORE_EXPORT Qgis
     Q_ENUM( GpsConnectionType )
 
     /**
+     * GPS connection status.
+     *
+     * \since QGIS 3.30
+     */
+    enum class GpsConnectionStatus : int
+    {
+      Disconnected, //!< Device is disconnected
+      Connecting, //!< Device is connecting
+      Connected, //!< Device is successfully connected
+    };
+    Q_ENUM( GpsConnectionStatus )
+
+    /**
      * GPS fix status.
      *
      * \note Prior to QGIS 3.30 this was available as QgsGpsInformation::FixStatus

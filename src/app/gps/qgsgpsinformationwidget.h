@@ -105,7 +105,6 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
     void updateTimestampDestinationFields( QgsMapLayer *mapLayer );
 
     void gpsConnecting();
-    void gpsConnectionError( const QString &error );
     void gpsDisconnected();
     void gpsConnected();
 
