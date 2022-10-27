@@ -123,18 +123,6 @@ class CORE_EXPORT QgsGpsInformation
   public:
 
     /**
-     * GPS fix status
-     * \since QGIS 3.10
-     */
-    enum FixStatus
-    {
-      NoData,
-      NoFix,
-      Fix2D,
-      Fix3D
-    };
-
-    /**
      * Latitude in decimal degrees, using the WGS84 datum. A positive value indicates the Northern Hemisphere, and
      * a negative value indicates the Southern Hemisphere.
      */
@@ -279,7 +267,7 @@ class CORE_EXPORT QgsGpsInformation
      * Returns the fix status
      * \since QGIS 3.10
      */
-    FixStatus fixStatus() const;
+    Qgis::GpsFixStatus fixStatus() const;
 
     /**
      * Returns a descriptive string for the signal quality.
@@ -388,5 +376,7 @@ class CORE_EXPORT QgsGpsConnection : public QObject
     //! Parse available data source content
     virtual void parseData() = 0;
 };
+
+Q_DECLARE_METATYPE( QgsGpsInformation )
 
 #endif // QGSGPSCONNECTION_H

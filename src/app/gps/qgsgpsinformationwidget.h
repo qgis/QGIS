@@ -19,7 +19,6 @@
 
 #include "ui_qgsgpsinformationwidgetbase.h"
 #include "qgis_app.h"
-#include "gmath.h"
 #include "info.h"
 #include "nmeatime.h"
 #include "qgsgpsmarker.h"
@@ -111,12 +110,9 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
     void gpsConnected();
 
   private:
-    enum FixStatus  //GPS status
-    {
-      NoData, NoFix, Fix2D, Fix3D
-    };
+
     void addVertex();
-    void setStatusIndicator( FixStatus statusValue );
+    void setStatusIndicator( Qgis::GpsFixStatus statusValue );
     void showStatusBarMessage( const QString &msg );
     void updateTimeZones();
     QVariant timestamp( QgsVectorLayer *vlayer, int idx );
@@ -147,7 +143,7 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
     QgsPointXY mSecondLastGpsPosition;
     QVector<QgsPoint> mCaptureList;
     double mLastElevation = 0.0;
-    FixStatus mLastFixStatus;
+    Qgis::GpsFixStatus mLastFixStatus = Qgis::GpsFixStatus::NoData;
     QString mDateTimeFormat; // user specified format string in registry (no UI presented)
     QPointer< QgsVectorLayer > mLastLayer;
     QFile *mLogFile = nullptr;

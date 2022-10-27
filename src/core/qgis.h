@@ -933,6 +933,22 @@ class CORE_EXPORT Qgis
     Q_ENUM( GpsConnectionType )
 
     /**
+     * GPS fix status.
+     *
+     * \note Prior to QGIS 3.30 this was available as QgsGpsInformation::FixStatus
+     *
+     * \since QGIS 3.30
+     */
+    enum class GpsFixStatus SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsGpsInformation, FixStatus ) : int
+      {
+      NoData, //!< No fix data available
+      NoFix, //!< GPS is not fixed
+      Fix2D, //!< 2D fix
+      Fix3D //!< 3D fix
+    };
+    Q_ENUM( GpsFixStatus );
+
+    /**
      * GPS signal quality indicator
      *
      * \since QGIS 3.22.6

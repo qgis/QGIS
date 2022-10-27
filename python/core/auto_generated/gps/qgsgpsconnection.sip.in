@@ -56,14 +56,6 @@ Encapsulates information relating to a GPS position fix.
 %End
   public:
 
-    enum FixStatus
-    {
-      NoData,
-      NoFix,
-      Fix2D,
-      Fix3D
-    };
-
     double latitude;
 
     double longitude;
@@ -117,7 +109,7 @@ Returns whether the connection information is valid
 .. versionadded:: 3.10
 %End
 
-    FixStatus fixStatus() const;
+    Qgis::GpsFixStatus fixStatus() const;
 %Docstring
 Returns the fix status
 
@@ -212,6 +204,7 @@ Returns the current gps information (lat, lon, etc.)
 Parse available data source content
 %End
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

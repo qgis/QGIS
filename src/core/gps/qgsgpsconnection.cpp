@@ -44,22 +44,22 @@ bool QgsGpsInformation::isValid() const
   return valid;
 }
 
-QgsGpsInformation::FixStatus QgsGpsInformation::fixStatus() const
+Qgis::GpsFixStatus QgsGpsInformation::fixStatus() const
 {
-  FixStatus fixStatus = NoData;
+  Qgis::GpsFixStatus fixStatus = Qgis::GpsFixStatus::NoData;
 
   // no fix if any of the three report bad; default values are invalid values and won't be changed if the corresponding NMEA msg is not received
   if ( status == 'V' || fixType == NMEA_FIX_BAD || qualityIndicator == Qgis::GpsQualityIndicator::Invalid ) // some sources say that 'V' indicates position fix, but is below acceptable quality
   {
-    fixStatus = NoFix;
+    fixStatus = Qgis::GpsFixStatus::NoFix;
   }
   else if ( fixType == NMEA_FIX_2D ) // 2D indication (from GGA)
   {
-    fixStatus = Fix2D;
+    fixStatus = Qgis::GpsFixStatus::Fix2D;
   }
   else if ( status == 'A' || fixType == NMEA_FIX_3D || qualityIndicator != Qgis::GpsQualityIndicator::Invalid ) // good
   {
-    fixStatus = Fix3D;
+    fixStatus = Qgis::GpsFixStatus::Fix3D;
   }
   return fixStatus;
 }
@@ -105,8 +105,8 @@ QgsGpsConnection::QgsGpsConnection( QIODevice *dev )
   : QObject( nullptr )
   , mSource( dev )
 {
-  clearLastGPSInformation();
-  QObject::connect( dev, &QIODevice::readyRead, this, &QgsGpsConnection::parseData );
+  if ( mSource )
+    QObject::connect( mSource.get(), &QIODevice::readyRead, this, &QgsGpsConnection::parseData );
 }
 
 QgsGpsConnection::~QgsGpsConnection()
@@ -153,6 +153,8 @@ void QgsGpsConnection::setSource( QIODevice *source )
 {
   cleanupSource();
   mSource.reset( source );
+  QObject::connect( mSource.get(), &QIODevice::readyRead, this, &QgsGpsConnection::parseData );
+
   clearLastGPSInformation();
 }
 
