@@ -135,8 +135,7 @@ jobs:
           echo "Copy build cache from Docker container to Travis cache directory"
           rm -rf ~/.ccache/*
           mkdir -p ~/.ccache
-          dock
-          er cp qgis_container:/QGIS/.ccache_image_build/. ~/.ccache
+          docker cp qgis_container:/QGIS/.ccache_image_build/. ~/.ccache
           echo "Cache size: "$(du -sh ~/.ccache)
 
       - name: Finalize image
