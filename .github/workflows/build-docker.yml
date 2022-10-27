@@ -34,7 +34,7 @@ jobs:
           if [[ "${GITHUB_REF}" =~ ^refs/tags ]]; then
             echo "::set-output name=matrix::{\"branch\":[\"${GITHUB_REF##*/}\"]}"
           else
-            echo "::set-output name=matrix::{\"branch\":[\"master\", \"release-3_22\", \"release-3_26\"]}"
+            echo "::set-output name=matrix::{\"branch\":[\"master\", \"release-3_22\", \"release-3_28\"]}"
           fi
 
   build-docker:
