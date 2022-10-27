@@ -119,7 +119,8 @@ namespace QgsWms
     QgsRenderer renderer( context );
 
     // retrieve legend settings and model
-    std::unique_ptr<QgsLayerTree> tree( QgsServerProjectUtils::wmsAddLegendGroupsLegendGraphic( *project ) ? layerTreeWithGroups( context, QgsProject::instance()->layerTreeRoot() ) : layerTree( context ) );
+    bool addLegendGroups = QgsServerProjectUtils::wmsAddLegendGroupsLegendGraphic( *project ) || parameters.addLayerGroups();
+    std::unique_ptr<QgsLayerTree> tree( addLegendGroups ? layerTreeWithGroups( context, QgsProject::instance()->layerTreeRoot() ) : layerTree( context ) );
     const std::unique_ptr<QgsLayerTreeModel> model( legendModel( context, *tree.get() ) );
 
     // rendering
