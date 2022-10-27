@@ -534,6 +534,14 @@ void QgsChunkedEntity::onActiveJobFinished()
 
     if ( entity )
     {
+      // The returned QEntity is initially enabled, so let's add it to active nodes too.
+      // Soon afterwards updateScene() will be called, which would remove it from the scene
+      // if the node should not be shown anymore. Ideally entities should be initially disabled,
+      // but there seems to be a bug in Qt3D - if entity is disabled initially, showing it
+      // by setting setEnabled(true) is not reliable (entity eventually gets shown, but only after
+      // some more changes in the scene) - see #48334
+      mActiveNodes << node;
+
       // load into node (should be in main thread again)
       node->setLoaded( entity );
 
