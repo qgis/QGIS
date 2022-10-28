@@ -208,7 +208,7 @@ void QgsOracleNewConnection::testConnection()
   {
     // Database successfully opened; we can now issue SQL commands.
     bar->pushMessage( tr( "Connection to %1 was successful." ).arg( txtName->text() ),
-                      Qgis::MessageLevel::Info );
+                      Qgis::MessageLevel::Success );
     // free connection resources
     QgsOracleConnPool::instance()->releaseConnection( conn );
   }
