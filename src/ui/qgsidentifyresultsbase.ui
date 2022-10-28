@@ -325,16 +325,16 @@
     <string>Identify Features by area or single click</string>
    </property>
   </action>
-  <action name="mActionSelectFeaturesOnMouseMove">
+  <action name="mActionSelectFeaturesOnMouseOver">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionIdentifyByMouseMove.svg</normaloff>:/images/themes/default/mActionIdentifyByMouseMove.svg</iconset>
+     <normaloff>:/images/themes/default/mActionIdentifyByMouseOver.svg</normaloff>:/images/themes/default/mActionIdentifyByMouseOver.svg</iconset>
    </property>
    <property name="text">
-    <string>Identify Feature(s) on mouse move</string>
+    <string>Identify Feature(s) on mouse over</string>
    </property>
    <property name="toolTip">
-    <string>Identify Features by mouse over</string>
+    <string>Identify Features by hovering on a feature with the mouse</string>
    </property>
   </action>
   <action name="mActionSelectPolygon">
