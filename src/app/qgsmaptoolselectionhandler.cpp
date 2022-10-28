@@ -117,7 +117,7 @@ void QgsMapToolSelectionHandler::canvasReleaseEvent( QgsMapMouseEvent *e )
   switch ( mSelectionMode )
   {
     case QgsMapToolSelectionHandler::SelectSimple:
-    case QgsMapToolSelectionHandler::SelectOnMouseMove:
+    case QgsMapToolSelectionHandler::SelectOnMouseOver:
       selectFeaturesReleaseEvent( e );
       break;
     case QgsMapToolSelectionHandler::SelectPolygon:
@@ -136,7 +136,7 @@ void QgsMapToolSelectionHandler::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   switch ( mSelectionMode )
   {
-    case QgsMapToolSelectionHandler::SelectOnMouseMove:
+    case QgsMapToolSelectionHandler::SelectOnMouseOver:
     case QgsMapToolSelectionHandler::SelectSimple:
       selectFeaturesMoveEvent( e );
       break;
@@ -156,7 +156,7 @@ void QgsMapToolSelectionHandler::canvasPressEvent( QgsMapMouseEvent *e )
 {
   switch ( mSelectionMode )
   {
-    case QgsMapToolSelectionHandler::SelectOnMouseMove:
+    case QgsMapToolSelectionHandler::SelectOnMouseOver:
     case QgsMapToolSelectionHandler::SelectSimple:
       selectFeaturesPressEvent( e );
       break;
@@ -196,14 +196,21 @@ void QgsMapToolSelectionHandler::selectFeaturesPressEvent( QgsMapMouseEvent *e )
 void QgsMapToolSelectionHandler::selectFeaturesMoveEvent( QgsMapMouseEvent *e )
 {
 
-  if ( mSelectionMode == QgsMapToolSelectionHandler::SelectOnMouseMove )
+  if ( mSelectionMode == QgsMapToolSelectionHandler::SelectOnMouseOver )
   {
-    mOnMouseMoveDelayTimer.reset( new QTimer( ) );
+    // This is a (well known, according to google) false positive,
+    // I tried all possible NOLINT placements without success, this
+    // ugly ifdef seems to do the trick with silencing the warning.
+#ifndef __clang_analyzer__
+    mOnMouseMoveDelayTimer = std::make_unique<QTimer>( );
     mOnMouseMoveDelayTimer->singleShot( 300, mOnMouseMoveDelayTimer.get(), [ = ]
     {
-      setSelectedGeometry( QgsGeometry::fromPointXY( toMapCoordinates( e->pos() ) ), e->modifiers() );
+      if ( mCanvas->underMouse() )
+      {
+        setSelectedGeometry( QgsGeometry::fromPointXY( toMapCoordinates( e->pos() ) ), e->modifiers() );
+      }
     } );
-
+#endif
     return;
   }
 

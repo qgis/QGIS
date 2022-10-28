@@ -98,10 +98,10 @@ class QgsMapToolSelectionHandler : public QObject
       SelectRadius,
 
       /**
-       * SelectOnMouseMove - selection on mouse move
+       * SelectOnMouseMove - selection on mouse over
        * \since QGIS 3.30
        */
-      SelectOnMouseMove
+      SelectOnMouseOver
     };
     Q_ENUM( SelectionMode )
 
