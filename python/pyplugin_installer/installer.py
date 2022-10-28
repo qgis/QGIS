@@ -458,7 +458,7 @@ class QgsPluginInstaller(QObject):
             plugins.rebuild()
             self.exportPluginsToManager()
             QApplication.restoreOverrideCursor()
-            iface.pluginManagerInterface().pushMessage(self.tr("Plugin uninstalled successfully"), Qgis.Info)
+            iface.pluginManagerInterface().pushMessage(self.tr("Plugin uninstalled successfully"), Qgis.Success)
 
             settings = QgsSettings()
             settings.remove("/PythonPlugins/" + key)
@@ -677,7 +677,7 @@ class QgsPluginInstaller(QObject):
         else:
             msg = "<b>%s:</b> %s" % (self.tr("Plugin installation failed"), infoString)
 
-        level = Qgis.Info if success else Qgis.Critical
+        level = Qgis.Success if success else Qgis.Critical
         iface.pluginManagerInterface().pushMessage(msg, level)
 
     def processDependencies(self, plugin_id):
@@ -697,10 +697,10 @@ class QgsPluginInstaller(QObject):
                         self.installPlugin(dependency_plugin_id, stable=action_data['use_stable_version'])
                         if action_data['action'] == 'install':
                             iface.pluginManagerInterface().pushMessage(self.tr("Plugin dependency <b>%s</b> successfully installed") %
-                                                                       dependency_plugin_id, Qgis.Info)
+                                                                       dependency_plugin_id, Qgis.Success)
                         else:
                             iface.pluginManagerInterface().pushMessage(self.tr("Plugin dependency <b>%s</b> successfully upgraded") %
-                                                                       dependency_plugin_id, Qgis.Info)
+                                                                       dependency_plugin_id, Qgis.Success)
                     except Exception as ex:
                         if action_data['action'] == 'install':
                             iface.pluginManagerInterface().pushMessage(self.tr("Error installing plugin dependency <b>%s</b>: %s") %
