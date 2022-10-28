@@ -37,13 +37,13 @@ Content-Type: application/geo+json
   ],
   "links": [
     {
-      "href": "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.geojson?bbox=913191,5606014,913234,5606029&bbox-crs=http%3A%2F%2Fwww.opengis.net%2Fdef%2Fcrs%2FEPSG%2F9.6.2%2F3857",
+      "href": "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.geojson?bbox=913191,5606014,913234,5606029&bbox-crs=http%3A%2F%2Fwww.opengis.net%2Fdef%2Fcrs%2FEPSG%2F0%2F3857",
       "rel": "self",
       "title": "Retrieve the features of the collection as GEOJSON",
       "type": "application/geo+json"
     },
     {
-      "href": "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.html?bbox=913191,5606014,913234,5606029&bbox-crs=http%3A%2F%2Fwww.opengis.net%2Fdef%2Fcrs%2FEPSG%2F9.6.2%2F3857",
+      "href": "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.html?bbox=913191,5606014,913234,5606029&bbox-crs=http%3A%2F%2Fwww.opengis.net%2Fdef%2Fcrs%2FEPSG%2F0%2F3857",
       "rel": "alternate",
       "title": "Retrieve the features of the collection as HTML",
       "type": "text/html"
