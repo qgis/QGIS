@@ -108,6 +108,13 @@ void QgsNmeaConnection::processStringBuffer()
           mStatus = GPSDataReceived;
           QgsDebugMsgLevel( QStringLiteral( "*******************GPS data received****************" ), 2 );
         }
+        else if ( substring.startsWith( QLatin1String( "$GPZDA" ) ) || substring.startsWith( QLatin1String( "$GNZDA" ) ) )
+        {
+          QgsDebugMsgLevel( substring, 2 );
+          processZdaSentence( ba.data(), ba.length() );
+          mStatus = GPSDataReceived;
+          QgsDebugMsgLevel( QStringLiteral( "*******************GPS data received****************" ), 2 );
+        }
         // GPS+SBAS GLONASS GALILEO BEIDOU QZSS;
         else if ( substring.startsWith( QLatin1String( "$GPGSV" ) ) || substring.startsWith( QLatin1String( "$GNGSV" ) ) || substring.startsWith( QLatin1String( "$GLGSV" ) ) || substring.startsWith( QLatin1String( "$GAGSV" ) ) || substring.startsWith( QLatin1String( "$GBGSV" ) ) || substring.startsWith( QLatin1String( "$GQGSV" ) ) )
         {
@@ -171,6 +178,7 @@ void QgsNmeaConnection::processStringBuffer()
 
 void QgsNmeaConnection::processGgaSentence( const char *data, int len )
 {
+  mLastGPSInformation.satInfoComplete = false;
   //GSA
   mLastGPSInformation.satPrn.clear();
   //GSV
@@ -354,6 +362,12 @@ void QgsNmeaConnection::processRmcSentence( const char *data, int len )
   }
 }
 
+void QgsNmeaConnection::processZdaSentence( const char *data, int len )
+{
+  mLastGPSInformation.satInfoComplete = true;
+}
+
+
 void QgsNmeaConnection::processGsvSentence( const char *data, int len )
 {
   nmeaGPGSV result;
@@ -363,7 +377,7 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
     // clear() on GGA
 
     // for determining when to graph sat info
-    mLastGPSInformation.satInfoComplete = ( result.pack_index == result.pack_count );
+    // mLastGPSInformation.satInfoComplete = ( result.pack_index == result.pack_count );
 
     for ( int i = 0; i < NMEA_SATINPACK; ++i )
     {
