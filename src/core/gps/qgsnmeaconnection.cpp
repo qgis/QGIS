@@ -111,7 +111,7 @@ void QgsNmeaConnection::processStringBuffer()
         else if ( substring.startsWith( QLatin1String( "$GPZDA" ) ) || substring.startsWith( QLatin1String( "$GNZDA" ) ) )
         {
           QgsDebugMsgLevel( substring, 2 );
-          processZdaSentence( ba.data(), ba.length() );
+          mLastGPSInformation.satInfoComplete = true;
           mStatus = GPSDataReceived;
           QgsDebugMsgLevel( QStringLiteral( "*******************GPS data received****************" ), 2 );
         }
@@ -361,12 +361,6 @@ void QgsNmeaConnection::processRmcSentence( const char *data, int len )
     }
   }
 }
-
-void QgsNmeaConnection::processZdaSentence( const char *data, int len )
-{
-  mLastGPSInformation.satInfoComplete = true;
-}
-
 
 void QgsNmeaConnection::processGsvSentence( const char *data, int len )
 {
