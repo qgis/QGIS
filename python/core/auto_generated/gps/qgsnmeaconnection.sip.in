@@ -49,6 +49,10 @@ process GGA sentence
 %Docstring
 process RMC sentence
 %End
+    void processZdaSentence( const char *data, int len );
+%Docstring
+process ZDA sentence
+%End
     void processGsvSentence( const char *data, int len );
 %Docstring
 process GSV sentence
