@@ -52,8 +52,6 @@ class CORE_EXPORT QgsNmeaConnection: public QgsGpsConnection
     void processGgaSentence( const char *data, int len );
     //! process RMC sentence
     void processRmcSentence( const char *data, int len );
-    //! process ZDA sentence
-    void processZdaSentence( const char *data, int len );
     //! process GSV sentence
     void processGsvSentence( const char *data, int len );
     //! process VTG sentence
