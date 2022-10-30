@@ -44,7 +44,8 @@ void QgsHtmlWidgetWrapper::initWidget( QWidget *editor )
   if ( !mWidget )
     return;
 
-  mWidget->setHtml( mHtmlCode.replace( "\n", "\\n" ) );
+  mWidget->setHtml( mHtmlCode.replace( "\n", " " ) );
+
 #ifdef WITH_QTWEBKIT
 
   const int horizontalDpi = mWidget->logicalDpiX();
@@ -156,14 +157,14 @@ void HtmlExpression::setExpressionContext( const QgsExpressionContext &context )
 
 QString HtmlExpression::evaluate( const QString &expression ) const
 {
-  QgsExpression exp = QgsExpression( expression );
+  QgsExpression exp { expression };
   exp.prepare( &mExpressionContext );
   return exp.evaluate( &mExpressionContext ).toString();
 }
 
 void NeedsGeometryEvaluator::evaluate( const QString &expression )
 {
-  QgsExpression exp = QgsExpression( expression );
+  QgsExpression exp { expression };
   exp.prepare( &mExpressionContext );
   mNeedsGeometry |= exp.needsGeometry();
 }
