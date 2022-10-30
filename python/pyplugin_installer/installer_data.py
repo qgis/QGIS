@@ -445,7 +445,7 @@ class Repositories(QObject):
                 # no plugin metadata found
                 self.mRepositories[reposName]["state"] = Repositories.STATE_UNAVAILABLE
                 if reply.attribute(QNetworkRequest.HttpStatusCodeAttribute) == 200:
-                    self.mRepositories[reposName]["error"] = QCoreApplication.translate("QgsPluginInstaller", "Server response is 200 OK, but doesn't contain plugin metatada. This is most likely caused by a proxy or a wrong repository URL. You can configure proxy settings in QGIS options.")
+                    self.mRepositories[reposName]["error"] = QCoreApplication.translate("QgsPluginInstaller", "Server response is 200 OK, but doesn't contain plugin metadata. This is most likely caused by a proxy or a wrong repository URL. You can configure proxy settings in QGIS options.")
                 else:
                     self.mRepositories[reposName]["error"] = QCoreApplication.translate("QgsPluginInstaller", "Status code:") + " {} {}".format(
                         reply.attribute(QNetworkRequest.HttpStatusCodeAttribute),

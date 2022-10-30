@@ -66,8 +66,7 @@ class ORDatabaseInfo(DatabaseInfo):
             return
 
         tbl = [
-            (QApplication.translate("DBManagerPlugin", "Oracle\
-            Spatial:"),
+            (QApplication.translate("DBManagerPlugin", "Oracle Spatial:"),
              info[0])
         ]
         ret.append(HtmlTable(tbl))
@@ -512,8 +511,7 @@ class ORTableInfo(TableInfo):
                     values[9]))
         tbl.append((QApplication.translate(
             "DBManagerPlugin",
-            (u'<a href="action:mview/refresh">Refresh the materializ'
-             u'ed view</a>')),
+            (u'<a href="action:mview/refresh">Refresh the materialized view</a>')),
             u""))
         ret.append(HtmlTable(tbl))
 
