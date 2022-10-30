@@ -975,6 +975,7 @@ class TestQgsExpression: public QObject
       // cast functions
       QTest::newRow( "double to int" ) << "toint(3.2)" << false << QVariant( 3 );
       QTest::newRow( "text to int" ) << "toint('53')" << false << QVariant( 53 );
+      QTest::newRow( "string double to int" ) << "toint('3.2')" << false << QVariant( 3 );
       QTest::newRow( "null to int" ) << "toint(null)" << false << QVariant();
       QTest::newRow( "int to double" ) << "toreal(3)" << false << QVariant( 3. );
       QTest::newRow( "text to double" ) << "toreal('53.1')" << false << QVariant( 53.1 );
