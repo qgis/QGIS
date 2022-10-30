@@ -371,7 +371,6 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
     // clear() on GGA
 
     // for determining when to graph sat info
-
     for ( int i = 0; i < NMEA_SATINPACK; ++i )
     {
       const nmeaSATELLITE currentSatellite = result.sat_data[i];
