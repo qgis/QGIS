@@ -371,7 +371,6 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
     // clear() on GGA
 
     // for determining when to graph sat info
-    // mLastGPSInformation.satInfoComplete = ( result.pack_index == result.pack_count );
 
     for ( int i = 0; i < NMEA_SATINPACK; ++i )
     {
