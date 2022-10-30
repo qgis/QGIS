@@ -234,7 +234,7 @@ class CORE_EXPORT QgsExpressionUtils
       const double converted = value.toDouble( validation );
       if ( *validation == false )
       {
-        const double localeDouble = QLocale().toDouble( value, validation );
+        const double localeDouble = QLocale().toDouble( value.toString(), validation );
         return localeDouble;
       }
       return converted;
@@ -245,7 +245,7 @@ class CORE_EXPORT QgsExpressionUtils
       bool ok;
       if ( value.userType() == QVariant::String )
       {
-        const double doubleValue = getDoubleInternal( value, &ok )
+        const double doubleValue = getDoubleInternal( value, &ok );
         if ( ok )
         {
           return qRound64( doubleValue );
