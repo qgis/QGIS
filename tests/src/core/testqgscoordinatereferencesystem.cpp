@@ -104,6 +104,7 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void createFromWktWithIdentify();
     void fromProj4EPSG20936();
     void projFactors();
+    void toOgcUri();
 
   private:
     void debugPrint( QgsCoordinateReferenceSystem &crs );
@@ -1887,6 +1888,21 @@ void TestQgsCoordinateReferenceSystem::displayIdentifier()
 
   crs.saveAsUserCrs( QStringLiteral( "my test" ) );
   QCOMPARE( crs.userFriendlyIdentifier(), QStringLiteral( "USER:%1 - my test" ).arg( crs.srsid() ) );
+}
+
+void TestQgsCoordinateReferenceSystem::toOgcUri()
+{
+  QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:3717" ) );
+  QVERIFY( crs.isValid() );
+  QCOMPARE( crs.toOgcUri(), "http://www.opengis.net/def/crs/EPSG/0/3717" );
+
+  crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+  QVERIFY( crs.isValid() );
+  QCOMPARE( crs.toOgcUri(), "http://www.opengis.net/def/crs/EPSG/0/4326" );
+
+  crs = QgsCoordinateReferenceSystem( QStringLiteral( "OGC:CRS84" ) );
+  QVERIFY( crs.isValid() );
+  QCOMPARE( crs.toOgcUri(), "http://www.opengis.net/def/crs/OGC/1.3/CRS84" );
 }
 
 QGSTEST_MAIN( TestQgsCoordinateReferenceSystem )

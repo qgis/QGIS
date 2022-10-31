@@ -69,7 +69,10 @@ ACCEPT_COLLECTION = 'Accept=application/json'
 ACCEPT_ITEMS = 'Accept=application/geo+json, application/json'
 
 
-def create_landing_page_api_collection(endpoint, extraparam=''):
+def create_landing_page_api_collection(endpoint,
+                                       extraparam='',
+                                       crs_url="http://www.opengis.net/def/crs/EPSG/0/4326",
+                                       bbox=[-71.123, 66.33, -65.32, 78.3]):
 
     questionmark_extraparam = '?' + extraparam if extraparam else ''
 
@@ -102,19 +105,24 @@ def create_landing_page_api_collection(endpoint, extraparam=''):
         }).encode('UTF-8'))
 
     # collection
-    with open(sanitize(endpoint, '/collections/mycollection?' + add_params(extraparam, ACCEPT_COLLECTION)), 'wb') as f:
-        f.write(json.dumps({
-            "id": "mycollection",
-            "title": "my title",
-            "description": "my description",
-            "extent": {
-                "spatial": {
-                    "bbox": [
-                        [-71.123, 66.33, -65.32, 78.3]
-                    ]
-                }
+    collection = {
+        "id": "mycollection",
+        "title": "my title",
+        "description": "my description",
+        "extent": {
+            "spatial": {
+                "bbox": [
+                    bbox
+                ]
             }
-        }).encode('UTF-8'))
+        }
+    }
+    if crs_url:
+        collection["crs"] = [crs_url]
+        collection["extent"]["spatial"]["crs"] = crs_url
+
+    with open(sanitize(endpoint, '/collections/mycollection?' + add_params(extraparam, ACCEPT_COLLECTION)), 'wb') as f:
+        f.write(json.dumps(collection).encode('UTF-8'))
 
 
 class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
@@ -281,7 +289,7 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
                  "geometry": {"type": "Point", "coordinates": [-68.2, 70.8]}}
             ]
         }
-        with open(sanitize(endpoint, '/collections/mycollection/items?limit=1000&bbox=-71,65.5,-65,78&' + ACCEPT_ITEMS),
+        with open(sanitize(endpoint, '/collections/mycollection/items?limit=1000&bbox=65.5,-71,78,-65&bbox-crs=http://www.opengis.net/def/crs/EPSG/0/4326&' + ACCEPT_ITEMS),
                   'wb') as f:
             f.write(json.dumps(items).encode('UTF-8'))
 
@@ -299,7 +307,7 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
 
         # Test clamping of bbox
         with open(
-                sanitize(endpoint, '/collections/mycollection/items?limit=1000&bbox=-180,64.5,-65,78&' + ACCEPT_ITEMS),
+                sanitize(endpoint, '/collections/mycollection/items?limit=1000&bbox=64.5,-180,78,-65&bbox-crs=http://www.opengis.net/def/crs/EPSG/0/4326&' + ACCEPT_ITEMS),
                 'wb') as f:
             f.write(json.dumps(items).encode('UTF-8'))
 
@@ -326,7 +334,7 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
                  "geometry": {"type": "Point", "coordinates": [-65.32, 78.3]}}
             ]
         }
-        with open(sanitize(endpoint, '/collections/mycollection/items?limit=1000&' + ACCEPT_ITEMS), 'wb') as f:
+        with open(sanitize(endpoint, '/collections/mycollection/items?limit=1000&bbox=-90,-180,90,180&bbox-crs=http://www.opengis.net/def/crs/EPSG/0/4326&' + ACCEPT_ITEMS), 'wb') as f:
             f.write(json.dumps(items).encode('UTF-8'))
 
         extent = QgsRectangle(-181, -91, 181, 91)
@@ -399,7 +407,8 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
                             ["1980-01-01T12:34:56.789Z", None],
                             [None, "2020-01-01T00:00:00Z"]
                         ]
-                }
+                },
+                "crs": ["http://www.opengis.net/def/crs/EPSG/0/4326"]
             },
             "links": [
                 {"href": "href_self", "rel": "self", "type": "application/json", "title": "my self link"},
@@ -714,6 +723,100 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         values = [f['id'] for f in vl.getFeatures()]
         self.assertEqual(values, ['feat.1'])
         self.assertEqual(len(app_spy), 0, list(app_spy))
+
+    def testDefaultCRS(self):
+
+        # On Windows we must make sure that any backslash in the path is
+        # replaced by a forward slash so that QUrl can process it
+        basetestpath = tempfile.mkdtemp().replace('\\', '/')
+        endpoint = basetestpath + '/fake_qgis_http_endpoint_ogc84'
+
+        create_landing_page_api_collection(endpoint,
+                                           crs_url="",  # OGC norm says that if crs is not explicitly defined it is OGC:CRS84
+                                           bbox=[66.33, -71.123, 78.3, -65.32])
+
+        items = {
+            "type": "FeatureCollection",
+            "features": [
+                {"type": "Feature", "id": "feat.1",
+                 "properties": {"pk": 1, "cnt": 100, "name": "Orange", "name2": "oranGe", "num_char": "1", "dt": "2020-05-03 12:13:14", "date": "2020-05-03", "time": "12:13:14"},
+                 "geometry": {"type": "Point", "coordinates": [66.33, -70.332]}},
+                {"type": "Feature", "id": "feat.2",
+                 "properties": {"pk": 2, "cnt": 200, "name": "Apple", "name2": "Apple", "num_char": "2", "dt": "2020-05-04 12:14:14", "date": "2020-05-04", "time": "12:14:14"},
+                 "geometry": {"type": "Point", "coordinates": [70.8, -68.2]}},
+                {"type": "Feature", "id": "feat.3",
+                 "properties": {"pk": 4, "cnt": 400, "name": "Honey", "name2": "Honey", "num_char": "4", "dt": "2021-05-04 13:13:14", "date": "2021-05-04", "time": "13:13:14"},
+                 "geometry": {"type": "Point", "coordinates": [78.3, -65.32]}},
+                {"type": "Feature", "id": "feat.4",
+                 "properties": {"pk": 3, "cnt": 300, "name": "Pear", "name2": "PEaR", "num_char": "3"},
+                 "geometry": None},
+                {"type": "Feature", "id": "feat.5",
+                 "properties": {"pk": 5, "cnt": -200, "name": None, "name2": "NuLl", "num_char": "5", "dt": "2020-05-04 12:13:14", "date": "2020-05-02", "time": "12:13:01"},
+                 "geometry": {"type": "Point", "coordinates": [78.23, -71.123]}}
+            ]
+        }
+
+        # first items
+        with open(sanitize(endpoint, '/collections/mycollection/items?limit=10&' + ACCEPT_ITEMS), 'wb') as f:
+            f.write(json.dumps(items).encode('UTF-8'))
+
+        # real page
+        with open(sanitize(endpoint, '/collections/mycollection/items?limit=1000&' + ACCEPT_ITEMS), 'wb') as f:
+            f.write(json.dumps(items).encode('UTF-8'))
+
+        # Create test layer
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='mycollection'", 'test', 'OAPIF')
+        assert vl.isValid()
+        source = vl.dataProvider()
+
+        self.assertEqual(source.sourceCrs().authid(), 'OGC:CRS84')
+
+    def testCRS2056(self):
+
+        # On Windows we must make sure that any backslash in the path is
+        # replaced by a forward slash so that QUrl can process it
+        basetestpath = tempfile.mkdtemp().replace('\\', '/')
+        endpoint = basetestpath + '/fake_qgis_http_endpoint_epsg_2056'
+
+        create_landing_page_api_collection(endpoint,
+                                           crs_url="http://www.opengis.net/def/crs/EPSG/0/2056",
+                                           bbox=[2508500, 1152000, 2513450, 1156950])
+
+        items = {
+            "type": "FeatureCollection",
+            "features": [
+                {"type": "Feature", "id": "feat.1",
+                 "properties": {"pk": 1, "cnt": 100, "name": "Orange", "name2": "oranGe", "num_char": "1", "dt": "2020-05-03 12:13:14", "date": "2020-05-03", "time": "12:13:14"},
+                 "geometry": {"type": "Point", "coordinates": [2510100, 1155050]}},
+                {"type": "Feature", "id": "feat.2",
+                 "properties": {"pk": 2, "cnt": 200, "name": "Apple", "name2": "Apple", "num_char": "2", "dt": "2020-05-04 12:14:14", "date": "2020-05-04", "time": "12:14:14"},
+                 "geometry": {"type": "Point", "coordinates": [2511250, 1154600]}},
+                {"type": "Feature", "id": "feat.3",
+                 "properties": {"pk": 4, "cnt": 400, "name": "Honey", "name2": "Honey", "num_char": "4", "dt": "2021-05-04 13:13:14", "date": "2021-05-04", "time": "13:13:14"},
+                 "geometry": {"type": "Point", "coordinates": [2511260, 1154610]}},
+                {"type": "Feature", "id": "feat.4",
+                 "properties": {"pk": 3, "cnt": 300, "name": "Pear", "name2": "PEaR", "num_char": "3"},
+                 "geometry": None},
+                {"type": "Feature", "id": "feat.5",
+                 "properties": {"pk": 5, "cnt": -200, "name": None, "name2": "NuLl", "num_char": "5", "dt": "2020-05-04 12:13:14", "date": "2020-05-02", "time": "12:13:01"},
+                 "geometry": {"type": "Point", "coordinates": [2511270, 1154620]}}
+            ]
+        }
+
+        # first items
+        with open(sanitize(endpoint, '/collections/mycollection/items?limit=10&' + ACCEPT_ITEMS), 'wb') as f:
+            f.write(json.dumps(items).encode('UTF-8'))
+
+        # real page
+        with open(sanitize(endpoint, '/collections/mycollection/items?limit=1000&' + ACCEPT_ITEMS), 'wb') as f:
+            f.write(json.dumps(items).encode('UTF-8'))
+
+        # Create test layer
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='mycollection'", 'test', 'OAPIF')
+        assert vl.isValid()
+        source = vl.dataProvider()
+
+        self.assertEqual(source.sourceCrs().authid(), 'EPSG:2056')
 
 
 if __name__ == '__main__':

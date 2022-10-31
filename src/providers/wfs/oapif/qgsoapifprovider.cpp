@@ -30,6 +30,7 @@
 const QString QgsOapifProvider::OAPIF_PROVIDER_KEY = QStringLiteral( "OAPIF" );
 const QString QgsOapifProvider::OAPIF_PROVIDER_DESCRIPTION = QStringLiteral( "OGC API - Features data provider" );
 
+const QString QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS = QStringLiteral( "http://www.opengis.net/def/crs/OGC/1.3/CRS84" );
 
 QgsOapifProvider::QgsOapifProvider( const QString &uri, const ProviderOptions &options, QgsDataProvider::ReadFlags flags )
   : QgsVectorDataProvider( uri, options, flags ),
@@ -44,8 +45,6 @@ QgsOapifProvider::QgsOapifProvider( const QString &uri, const ProviderOptions &o
     mValid = false;
     return;
   }
-
-  mShared->mSourceCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
 
   mSubsetString = mShared->mURI.filter();
 
@@ -145,6 +144,19 @@ bool QgsOapifProvider::init()
   mShared->mCapabilityExtent = collectionRequest.collection().mBbox;
 
   mLayerMetadata = collectionRequest.collection().mLayerMetadata;
+
+  if ( mLayerMetadata.crs().isValid() )
+  {
+    // WORKAROUND: Recreate a CRS object with fromOgcWmsCrs because when copying the
+    // CRS his mPj pointer gets deleted and it is impossible to create a transform
+    mShared->mSourceCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mLayerMetadata.crs().authid() );
+  }
+  else
+  {
+    mShared->mSourceCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs(
+                            QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS );
+  }
+
   // Merge contact info from /api
   mLayerMetadata.setContacts( apiRequest.metadata().contacts() );
 
@@ -702,27 +714,39 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
     hasQueryParam = true;
   }
 
-  const QgsRectangle &rect = mShared->currentRect();
+  QgsRectangle rect = mShared->currentRect();
   if ( !rect.isNull() )
   {
-    // Clamp to avoid server errors.
-    const double minx = std::max( -180.0, rect.xMinimum() );
-    const double miny = std::max( -90.0, rect.yMinimum() );
-    const double maxx = std::min( 180.0, rect.xMaximum() );
-    const double maxy = std::min( 90.0, rect.yMaximum() );
-    if ( minx > 180.0 || miny > 90.0 || maxx  < -180.0 || maxy < -90.0 )
+    if ( mShared->mSourceCrs.isGeographic() )
     {
-      // completely out of range. Servers could error out
-      url.clear();
+      // Clamp to avoid server errors.
+      rect.setXMinimum( std::max( -180.0, rect.xMinimum() ) );
+      rect.setYMinimum( std::max( -90.0, rect.yMinimum() ) );
+      rect.setXMaximum( std::min( 180.0, rect.xMaximum() ) );
+      rect.setYMaximum( std::min( 90.0, rect.yMaximum() ) );
+      if ( rect.xMinimum() > 180.0 || rect.yMinimum() > 90.0 || rect.xMaximum()  < -180.0 || rect.yMaximum() < -90.0 )
+      {
+        // completely out of range. Servers could error out
+        url.clear();
+        rect = QgsRectangle();
+      }
     }
-    else if ( minx > -180.0 || miny > -90.0 || maxx < 180.0 || maxy < 90.0 )
+
+    if ( mShared->mSourceCrs.hasAxisInverted() )
+      rect.invert();
+
+    if ( ! rect.isNull() )
     {
       url += ( hasQueryParam ? QStringLiteral( "&" ) : QStringLiteral( "?" ) );
       url += QStringLiteral( "bbox=%1,%2,%3,%4" )
-             .arg( qgsDoubleToString( minx ),
-                   qgsDoubleToString( miny ),
-                   qgsDoubleToString( maxx ),
-                   qgsDoubleToString( maxy ) );
+             .arg( qgsDoubleToString( rect.xMinimum() ),
+                   qgsDoubleToString( rect.yMinimum() ),
+                   qgsDoubleToString( rect.xMaximum() ),
+                   qgsDoubleToString( rect.yMaximum() ) );
+
+      if ( mShared->mSourceCrs
+           != QgsCoordinateReferenceSystem::fromOgcWmsCrs( QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS ) )
+        url += QStringLiteral( "&bbox-crs=%1" ).arg( mShared->mSourceCrs.toOgcUri() );
     }
   }
 
