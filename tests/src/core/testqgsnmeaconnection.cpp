@@ -71,6 +71,7 @@ class TestQgsNmeaConnection : public QgsTest
     void testFixStatus();
     void testFixStatusAcrossConstellations();
     void testConstellation();
+    void testPosition();
 
 };
 
@@ -379,6 +380,34 @@ void TestQgsNmeaConnection::testConstellation()
   QCOMPARE( info.satellitesInView.at( 5 ).constellation(), Qgis::GnssConstellation::Galileo );
   QCOMPARE( info.satellitesInView.at( 6 ).constellation(), Qgis::GnssConstellation::Qzss );
   QCOMPARE( info.satellitesInView.at( 7 ).constellation(), Qgis::GnssConstellation::BeiDou );
+}
+
+void TestQgsNmeaConnection::testPosition()
+{
+  ReplayNmeaConnection connection;
+
+  QSignalSpy spy( &connection, &QgsGpsConnection::positionChanged );
+
+  connection.push( QStringLiteral( "$GPGGA,084112.185,6900.0,N,01800.0,E,1,04,1.4,35.0,M,29.4,M,,0000*63" ) );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spy.constLast().at( 0 ).value< QgsPoint>(), QgsPoint( 18, 69, 35 ) );
+  QCOMPARE( connection.lastValidLocation(), QgsPoint( 18, 69, 35 ) );
+  // push same location, should be no new signal
+  connection.push( QStringLiteral( "$GPGGA,084112.185,6900.0,N,01800.0,E,1,04,1.4,35.0,M,29.6,M,,0000*63" ) );
+  QCOMPARE( spy.count(), 1 );
+
+  // new location
+  connection.push( QStringLiteral( "$GPGGA,084112.185,6900.0,N,01900.0,E,1,04,1.4,35.0,M,29.4,M,,0000*63" ) );
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( spy.constLast().at( 0 ).value< QgsPoint>(), QgsPoint( 19, 69, 35 ) );
+  QCOMPARE( connection.lastValidLocation(), QgsPoint( 19, 69, 35 ) );
+
+  // invalid location (latitude > 90 degrees)
+  connection.push( QStringLiteral( "$GPGGA,084112.185,9900.0,N,01900.0,E,1,04,1.4,35.0,M,29.4,M,,0000*63" ) );
+  // signal will NOT be emitted
+  QCOMPARE( spy.count(), 2 );
+  // last valid location remains unchanged
+  QCOMPARE( connection.lastValidLocation(), QgsPoint( 19, 69, 35 ) );
 }
 
 QGSTEST_MAIN( TestQgsNmeaConnection )

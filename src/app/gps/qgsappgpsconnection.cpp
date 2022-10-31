@@ -56,6 +56,11 @@ void QgsAppGpsConnection::setConnection( QgsGpsConnection *connection )
   onConnected( connection );
 }
 
+QgsPoint QgsAppGpsConnection::lastValidLocation() const
+{
+  return mConnection->lastValidLocation();
+}
+
 void QgsAppGpsConnection::connectGps()
 {
   QString port;
@@ -168,6 +173,7 @@ void QgsAppGpsConnection::onConnected( QgsGpsConnection *conn )
   connect( mConnection, &QgsGpsConnection::stateChanged, this, &QgsAppGpsConnection::stateChanged );
   connect( mConnection, &QgsGpsConnection::nmeaSentenceReceived, this, &QgsAppGpsConnection::nmeaSentenceReceived );
   connect( mConnection, &QgsGpsConnection::fixStatusChanged, this, &QgsAppGpsConnection::fixStatusChanged );
+  connect( mConnection, &QgsGpsConnection::positionChanged, this, &QgsAppGpsConnection::positionChanged );
 
   Qgis::GnssConstellation constellation = Qgis::GnssConstellation::Unknown;
   // emit signals so initial fix status is correctly advertised

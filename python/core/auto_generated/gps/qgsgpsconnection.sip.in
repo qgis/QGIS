@@ -220,6 +220,13 @@ Returns the status. Possible state are not connected, connected, data received
 Returns the current gps information (lat, lon, etc.)
 %End
 
+    QgsPoint lastValidLocation() const;
+%Docstring
+Returns the last valid location obtained by the device.
+
+.. versionadded:: 3.30
+%End
+
   signals:
 
     void stateChanged( const QgsGpsInformation &info );
@@ -236,6 +243,15 @@ Emitted whenever the GPS device receives a raw NMEA sentence.
     void fixStatusChanged( Qgis::GpsFixStatus status );
 %Docstring
 Emitted when the GPS device fix status is changed.
+
+.. versionadded:: 3.30
+%End
+
+    void positionChanged( const QgsPoint &point );
+%Docstring
+Emitted when the GPS position changes.
+
+This signal is only emitted when the new GPS location is considered valid (see :py:func:`QgsGpsInformation.isValid()`).
 
 .. versionadded:: 3.30
 %End

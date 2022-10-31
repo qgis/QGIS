@@ -200,7 +200,12 @@ void QgsGpsConnection::onStateChanged( const QgsGpsInformation &info )
 {
   if ( info.isValid() )
   {
+    const QgsPoint oldPosition = mLastLocation;
     mLastLocation = QgsPoint( info.longitude, info.latitude, info.elevation );
+    if ( mLastLocation != oldPosition )
+    {
+      emit positionChanged( mLastLocation );
+    }
   }
 
   Qgis::GnssConstellation bestFixConstellation = Qgis::GnssConstellation::Unknown;
