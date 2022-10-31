@@ -280,6 +280,7 @@ void QgsApplication::init( QString profileFolder )
     qRegisterMetaType<QgsFeatureStoreList>( "QgsFeatureStoreList" );
     qRegisterMetaType<Qgis::MessageLevel>( "Qgis::MessageLevel" );
     qRegisterMetaType<Qgis::BrowserItemState>( "Qgis::BrowserItemState" );
+    qRegisterMetaType<Qgis::GpsFixStatus>( "Qgis::GpsFixStatus" );
     qRegisterMetaType<QgsReferencedRectangle>( "QgsReferencedRectangle" );
     qRegisterMetaType<QgsReferencedPointXY>( "QgsReferencedPointXY" );
     qRegisterMetaType<QgsReferencedGeometry>( "QgsReferencedGeometry" );

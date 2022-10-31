@@ -356,8 +356,25 @@ class CORE_EXPORT QgsGpsConnection : public QObject
     QgsGpsInformation currentGPSInformation() const { return mLastGPSInformation; }
 
   signals:
+
+    /**
+     * Emitted whenever the GPS state is changed.
+     */
     void stateChanged( const QgsGpsInformation &info );
-    void nmeaSentenceReceived( const QString &substring ); // added to capture 'raw' data
+
+    // TODO QGIS 4.0 -- move to QgsNmeaConnection, it makes no sense in the base class
+
+    /**
+     * Emitted whenever the GPS device receives a raw NMEA sentence.
+     */
+    void nmeaSentenceReceived( const QString &substring );
+
+    /**
+     * Emitted when the GPS device fix status is changed.
+     *
+     * \since QGIS 3.30
+     */
+    void fixStatusChanged( Qgis::GpsFixStatus status );
 
   protected:
     //! Data source (e.g. serial device, socket, file,...)
@@ -367,6 +384,10 @@ class CORE_EXPORT QgsGpsConnection : public QObject
     //! Connection status
     Status mStatus = NotConnected;
 
+  private slots:
+
+    void onStateChanged( const QgsGpsInformation &info );
+
   private:
     //! Closes and deletes mSource
     void cleanupSource();
@@ -375,6 +396,12 @@ class CORE_EXPORT QgsGpsConnection : public QObject
   protected slots:
     //! Parse available data source content
     virtual void parseData() = 0;
+
+  private:
+
+    //! Last fix status
+    Qgis::GpsFixStatus mLastFixStatus = Qgis::GpsFixStatus::NoData;
+
 };
 
 Q_DECLARE_METATYPE( QgsGpsInformation )

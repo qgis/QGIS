@@ -193,8 +193,24 @@ Returns the current gps information (lat, lon, etc.)
 %End
 
   signals:
+
     void stateChanged( const QgsGpsInformation &info );
-    void nmeaSentenceReceived( const QString &substring ); // added to capture 'raw' data
+%Docstring
+Emitted whenever the GPS state is changed.
+%End
+
+
+    void nmeaSentenceReceived( const QString &substring );
+%Docstring
+Emitted whenever the GPS device receives a raw NMEA sentence.
+%End
+
+    void fixStatusChanged( Qgis::GpsFixStatus status );
+%Docstring
+Emitted when the GPS device fix status is changed.
+
+.. versionadded:: 3.30
+%End
 
   protected:
 
@@ -203,6 +219,7 @@ Returns the current gps information (lat, lon, etc.)
 %Docstring
 Parse available data source content
 %End
+
 };
 
 
