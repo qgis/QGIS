@@ -663,7 +663,8 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
   QVector<QPointF> data;
 
   // set visual status indicator -- do only on change of state
-  const Qgis::GpsFixStatus fixStatus = info.fixStatus();
+  Qgis::GnssConstellation constellation = Qgis::GnssConstellation::Unknown;
+  const Qgis::GpsFixStatus fixStatus = info.bestFixStatus( constellation );
   if ( fixStatus != mLastFixStatus )
   {
     setStatusIndicator( fixStatus );
