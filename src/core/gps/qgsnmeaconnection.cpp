@@ -97,7 +97,7 @@ void QgsNmeaConnection::processStringBuffer()
         if ( substring.startsWith( QLatin1String( "$GPGGA" ) ) || substring.startsWith( QLatin1String( "$GNGGA" ) ) )
         {
           QgsDebugMsgLevel( substring, 2 );
-          mLastGPSInformation.satInfoComplete = true;
+          mLastGPSInformation.satInfoComplete = false;
           processGgaSentence( ba.data(), ba.length() );
           mStatus = GPSDataReceived;
           QgsDebugMsgLevel( QStringLiteral( "*******************GPS data received****************" ), 2 );
