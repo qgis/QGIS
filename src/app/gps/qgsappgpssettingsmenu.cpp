@@ -18,6 +18,34 @@
 
 #include <QRadioButton>
 #include <QButtonGroup>
+#include <QGridLayout>
+
+QgsGpsMapRotationAction::QgsGpsMapRotationAction( QWidget *parent )
+  : QWidgetAction( parent )
+{
+  QGridLayout *gLayout = new QGridLayout();
+  gLayout->setContentsMargins( 8, 2, 3, 2 );
+
+  mRadioAlwaysRecenter = new QRadioButton( "Always Recenter Map", parent );
+  mRadioRecenterWhenOutside = new QRadioButton( "Recenter Map When Leaving Extent", parent );
+  mRadioNeverRecenter = new QRadioButton( "Never Recenter", parent );
+  QButtonGroup *recenterGroup = new QButtonGroup( this );
+  recenterGroup->addButton( mRadioAlwaysRecenter );
+  recenterGroup->addButton( mRadioRecenterWhenOutside );
+  recenterGroup->addButton( mRadioNeverRecenter );
+
+  gLayout->addWidget( mRadioAlwaysRecenter, 0, 0, 1, 2 );
+  gLayout->addWidget( mRadioRecenterWhenOutside, 1, 0, 1, 2 );
+  gLayout->addWidget( mRadioNeverRecenter, 2, 0, 1, 2 );
+
+  QWidget *w = new QWidget();
+  w->setLayout( gLayout );
+  setDefaultWidget( w );
+}
+
+//
+// QgsAppGpsSettingsMenu
+//
 
 QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
   : QMenu( parent )
@@ -61,13 +89,10 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
 
   addAction( mRotateMapAction );
 
-  mRadioAlwaysRecenter = new QRadioButton( "Always Recenter Map", this );
-  mRadioRecenterWhenOutside = new QRadioButton( "Recenter Map When Leaving Extent", this );
-  mRadioNeverRecenter = new QRadioButton( "Never Recenter", this );
-  QButtonGroup *recenterGroup = new QButtonGroup( this );
-  recenterGroup->addButton( mRadioAlwaysRecenter );
-  recenterGroup->addButton( mRadioRecenterWhenOutside );
-  recenterGroup->addButton( mRadioNeverRecenter );
+  QgsGpsMapRotationAction *rotateAction = new QgsGpsMapRotationAction( this );
+  mRadioAlwaysRecenter = rotateAction->radioAlwaysRecenter();
+  mRadioRecenterWhenOutside = rotateAction->radioRecenterWhenOutside();
+  mRadioNeverRecenter = rotateAction->radioNeverRecenter();
 
   //pan mode
   const QString panMode = settings.value( QStringLiteral( "panMode" ), "recenterWhenNeeded", QgsSettings::Gps ).toString();
@@ -113,6 +138,9 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
       emit mapCenteringModeChanged( QgsAppGpsSettingsMenu::MapCenteringMode::Never );
     }
   } );
+
+  addSeparator();
+  addAction( rotateAction );
 }
 
 bool QgsAppGpsSettingsMenu::locationMarkerVisible() const
@@ -146,3 +174,4 @@ QgsAppGpsSettingsMenu::MapCenteringMode QgsAppGpsSettingsMenu::mapCenteringMode(
     return QgsAppGpsSettingsMenu::MapCenteringMode::Never;
   }
 }
+

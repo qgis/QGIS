@@ -156,6 +156,7 @@ class QgsElevationProfileWidget;
 class QgsScreenHelper;
 class QgsAppGpsConnection;
 class QgsGpsToolBar;
+class QgsAppGpsSettingsMenu;
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -882,6 +883,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * is automatically registered within the QgsApplication::gpsConnectionRegistry().
      */
     void setGpsPanelConnection( QgsGpsConnection *connection );
+
+    /**
+     * Returns the GPS settings menu;
+     */
+    QgsAppGpsSettingsMenu *gpsSettingsMenu();
 
     //! Returns the application vertex editor
     QgsVertexEditor *vertexEditor() { return mVertexEditorDock; }
@@ -2559,9 +2565,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Persistent GPS toolbox
     QgsAppGpsConnection *mGpsConnection = nullptr;
+    QgsAppGpsSettingsMenu *mGpsSettingsMenu = nullptr;
     QgsGpsInformationWidget *mpGpsWidget = nullptr;
     QgsGpsToolBar *mGpsToolBar = nullptr;
-    QgsGpsCanvasBridge* mGpsCanvasBridge = nullptr;
+    QgsGpsCanvasBridge *mGpsCanvasBridge = nullptr;
 
     QgsMessageBarItem *mLastMapToolMessage = nullptr;
 
