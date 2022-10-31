@@ -23,7 +23,7 @@
 #include "nmeatime.h"
 #include "qgsmaptoolcapture.h"
 #include "qgspanelwidget.h"
-#include "qgsmapcanvasinteractionblocker.h"
+
 #include "qgsdistancearea.h"
 #include "qgssettingsentryimpl.h"
 
@@ -53,7 +53,7 @@ class QColor;
  * allows the user to capture features using gps readings to
  * specify the geometry.
 */
-class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCanvasInteractionBlocker, private Ui::QgsGpsInformationWidgetBase
+class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, private Ui::QgsGpsInformationWidgetBase
 {
     Q_OBJECT
   public:
@@ -64,14 +64,8 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
     static const inline QgsSettingsEntryInteger settingMapExtentRecenteringThreshold = QgsSettingsEntryInteger( QStringLiteral( "map-recentering-threshold" ), QgsSettings::Prefix::GPS, 50, QStringLiteral( "Threshold for GPS automatic map centering" ) );
     static const inline QgsSettingsEntryInteger settingMapRotateInterval = QgsSettingsEntryInteger( QStringLiteral( "map-rotate-interval" ), QgsSettings::Prefix::GPS, 0, QStringLiteral( "Interval for GPS automatic map rotation" ) );
 
-    QgsGpsInformationWidget( QgsAppGpsConnection *connection, QgsMapCanvas *mapCanvas, QgsGpsCanvasBridge* bridge, QWidget *parent = nullptr );
+    QgsGpsInformationWidget( QgsAppGpsConnection *connection, QgsMapCanvas *mapCanvas, QWidget *parent = nullptr );
     ~QgsGpsInformationWidget() override;
-
-    bool blockCanvasInteraction( Interaction interaction ) const override;
-
-  public slots:
-    void tapAndHold( const QgsPointXY &mapPoint, QTapAndHoldGesture *gesture );
-
 
   private slots:
     void mConnectButton_toggled( bool flag );
@@ -94,7 +88,6 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
     void timedout();
     void switchAcquisition();
     void timestampFormatChanged( int index );
-    void cursorCoordinateChanged( const QgsPointXY &point );
 
     /**
      * Updates compatible fields for timestamp recording
@@ -115,7 +108,6 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
 
     QgsAppGpsConnection *mConnection = nullptr;
     QPointer< QgsMapCanvas > mMapCanvas;
-    QgsGpsCanvasBridge* mBridge = nullptr;
 
     QwtPlot *mPlot = nullptr;
     QwtPlotCurve *mCurve = nullptr;
@@ -125,8 +117,6 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
     QList< QwtPolarMarker * > mMarkerList;
 #endif
     void createRubberBand();
-
-    void updateGpsDistanceStatusMessage( bool forceDisplay );
 
     QgsCoordinateReferenceSystem mWgs84CRS;
     QgsCoordinateTransform mCanvasToWgs84Transform;
@@ -152,11 +142,6 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
     QMap<QString, QString> mPreferredTimestampFields;
     //! Flag when updating fields
     bool mPopulatingFields = false;
-
-    QgsPointXY mLastCursorPosWgs84;
-    std::unique_ptr< QgsBearingNumericFormat > mBearingNumericFormat;
-
-    QElapsedTimer mLastForcedStatusUpdate;
 
     int mBlockGpsStateChanged = 0;
 

@@ -35,17 +35,12 @@
 #include "gmath.h"
 #include "qgsmapcanvas.h"
 #include "qgsmessagebar.h"
-#include "qgsbearingutils.h"
-#include "qgslocaldefaultsettings.h"
-#include "qgsprojectdisplaysettings.h"
-#include "qgsbearingnumericformat.h"
 #include "qgspolygon.h"
 #include "qgsgpsconnection.h"
 #include "qgscoordinateutils.h"
 #include "qgsgui.h"
 #include "qgslinesymbol.h"
 #include "qgssymbollayerutils.h"
-#include "qgsgpscanvasbridge.h"
 
 // QWT Charting widget
 
@@ -72,11 +67,10 @@
 
 
 QgsGpsInformationWidget::QgsGpsInformationWidget( QgsAppGpsConnection *connection,
-    QgsMapCanvas *mapCanvas, QgsGpsCanvasBridge *bridge, QWidget *parent )
+    QgsMapCanvas *mapCanvas, QWidget *parent )
   : QgsPanelWidget( parent )
   , mConnection( connection )
   , mMapCanvas( mapCanvas )
-  , mBridge( bridge )
 {
   Q_ASSERT( mMapCanvas ); // precondition
   setupUi( this );
@@ -89,8 +83,6 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsAppGpsConnection *connectio
   connect( mBtnAddVertex, &QPushButton::clicked, this, &QgsGpsInformationWidget::mBtnAddVertex_clicked );
   connect( mBtnCloseFeature, &QPushButton::clicked, this, &QgsGpsInformationWidget::mBtnCloseFeature_clicked );
   connect( mBtnResetFeature, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnResetFeature_clicked );
-  connect( mMapCanvas, &QgsMapCanvas::xyCoordinates, this, &QgsGpsInformationWidget::cursorCoordinateChanged );
-  connect( mMapCanvas, &QgsMapCanvas::tapAndHoldGestureOccurred, this, &QgsGpsInformationWidget::tapAndHold );
 
   mLogFilename->setDialogTitle( tr( "GPS Log File" ) );
   mLogFilename->setStorageMode( QgsFileWidget::SaveFile );
@@ -104,13 +96,6 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsAppGpsConnection *connectio
   } );
 
   mWgs84CRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
-
-  mBearingNumericFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
-  connect( QgsProject::instance()->displaySettings(), &QgsProjectDisplaySettings::bearingFormatChanged, this, [ = ]
-  {
-    mBearingNumericFormat.reset( QgsProject::instance()->displaySettings()->bearingFormat()->clone() );
-    updateGpsDistanceStatusMessage( false );
-  } );
 
   mCanvasToWgs84Transform = QgsCoordinateTransform( mMapCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
   connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, [ = ]
@@ -227,9 +212,6 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsAppGpsConnection *connectio
   const QgsSettings mySettings;
 
   // Restore state
-
-  mCheckShowMarker->setChecked( mySettings.value( QStringLiteral( "showMarker" ), "true", QgsSettings::Gps ).toBool() );
-
   mDateTimeFormat = mySettings.value( QStringLiteral( "dateTimeFormat" ), "", QgsSettings::Gps ).toString(); // zero-length string signifies default format
 
   //auto digitizing behavior
@@ -238,29 +220,6 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsAppGpsConnection *connectio
   mBtnAddVertex->setEnabled( !mCbxAutoAddVertices->isChecked() );
 
   mCbxAutoCommit->setChecked( mySettings.value( QStringLiteral( "autoCommit" ), "false", QgsSettings::Gps ).toBool() );
-
-  //pan mode
-  const QString myPanMode = mySettings.value( QStringLiteral( "panMode" ), "recenterWhenNeeded", QgsSettings::Gps ).toString();
-  if ( myPanMode == QLatin1String( "none" ) )
-  {
-    radNeverRecenter->setChecked( true );
-  }
-  else if ( myPanMode == QLatin1String( "recenterAlways" ) )
-  {
-    radRecenterMap->setChecked( true );
-  }
-  else
-  {
-    radRecenterWhenNeeded->setChecked( true );
-  }
-
-
-  mRotateMapCheckBox->setChecked( mySettings.value( QStringLiteral( "rotateMap" ), false, QgsSettings::Gps ).toBool() );
-  mShowBearingLineCheck->setChecked( mySettings.value( QStringLiteral( "showBearingLine" ), false, QgsSettings::Gps ).toBool() );
-  connect( mShowBearingLineCheck, &QCheckBox::toggled, this, [ = ]( bool checked )
-  {
-    mBridge->showBearingLine( checked );
-  } );
 
   mBtnDebug->setVisible( mySettings.value( QStringLiteral( "showDebug" ), "false", QgsSettings::Gps ).toBool() );  // use a registry setting to control - power users/devs could set it
 
@@ -341,8 +300,6 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsAppGpsConnection *connectio
   connect( QgsGui::instance(), &QgsGui::optionsChanged, this, &QgsGpsInformationWidget::gpsSettingsChanged );
   gpsSettingsChanged();
 
-  mMapCanvas->installInteractionBlocker( this );
-
   connect( mConnection, &QgsAppGpsConnection::connecting, this, &QgsGpsInformationWidget::gpsConnecting );
   connect( mConnection, &QgsAppGpsConnection::connectionTimedOut, this, &QgsGpsInformationWidget::timedout );
   connect( mConnection, &QgsAppGpsConnection::connected, this, &QgsGpsInformationWidget::gpsConnected );
@@ -387,48 +344,11 @@ QgsGpsInformationWidget::~QgsGpsInformationWidget()
 #endif
 
   QgsSettings mySettings;
-  mySettings.setValue( QStringLiteral( "showMarker" ), mCheckShowMarker->isChecked(), QgsSettings::Gps );
   mySettings.setValue( QStringLiteral( "autoAddVertices" ), mCbxAutoAddVertices->isChecked(), QgsSettings::Gps );
   mySettings.setValue( QStringLiteral( "autoCommit" ), mCbxAutoCommit->isChecked(), QgsSettings::Gps );
   mySettings.setValue( QStringLiteral( "timestampTimeZone" ), mCboTimeZones->currentText(), QgsSettings::Gps );
   mySettings.setValue( QStringLiteral( "applyLeapSeconds" ), mCbxLeapSeconds->isChecked(), QgsSettings::Gps );
   mySettings.setValue( QStringLiteral( "leapSecondsCorrection" ), mLeapSeconds->value(), QgsSettings::Gps );
-
-  // pan mode
-  if ( radRecenterMap->isChecked() )
-  {
-    mySettings.setValue( QStringLiteral( "panMode" ), "recenterAlways", QgsSettings::Gps );
-  }
-  else if ( radRecenterWhenNeeded->isChecked() )
-  {
-    mySettings.setValue( QStringLiteral( "panMode" ), "recenterWhenNeeded", QgsSettings::Gps );
-  }
-  else
-  {
-    mySettings.setValue( QStringLiteral( "panMode" ), "none", QgsSettings::Gps );
-  }
-  mySettings.setValue( QStringLiteral( "rotateMap" ), mRotateMapCheckBox->isChecked(), QgsSettings::Gps );
-  mySettings.setValue( QStringLiteral( "showBearingLine" ), mShowBearingLineCheck->isChecked(), QgsSettings::Gps );
-
-  if ( mMapCanvas )
-    mMapCanvas->removeInteractionBlocker( this );
-}
-
-bool QgsGpsInformationWidget::blockCanvasInteraction( QgsMapCanvasInteractionBlocker::Interaction interaction ) const
-{
-  switch ( interaction )
-  {
-    case QgsMapCanvasInteractionBlocker::Interaction::MapPanOnSingleClick:
-      // if we're connected and set to follow the GPS location, block the single click navigation mode
-      // to avoid accidental map canvas pans away from the GPS location.
-      // (for now, we don't block click-and-drag pans, as they are less likely to be accidentally triggered)
-      if ( mConnection->isConnected() && ( radRecenterMap->isChecked() || radRecenterWhenNeeded->isChecked() ) )
-        return true;
-
-      break;
-  }
-
-  return false;
 }
 
 void QgsGpsInformationWidget::gpsSettingsChanged()
@@ -815,8 +735,6 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     {
       addVertex();
     }
-
-    updateGpsDistanceStatusMessage( false );
   }
 }
 
@@ -1234,60 +1152,6 @@ void QgsGpsInformationWidget::timestampFormatChanged( int )
   mLblTimeZone->setEnabled( enabled );
 }
 
-void QgsGpsInformationWidget::cursorCoordinateChanged( const QgsPointXY &point )
-{
-  if ( !mConnection->isConnected() )
-    return;
-
-  try
-  {
-    mLastCursorPosWgs84 = mCanvasToWgs84Transform.transform( point );
-    updateGpsDistanceStatusMessage( true );
-  }
-  catch ( QgsCsException & )
-  {
-
-  }
-}
-
-void QgsGpsInformationWidget::updateGpsDistanceStatusMessage( bool forceDisplay )
-{
-  if ( !mConnection->isConnected() )
-    return;
-
-  static constexpr int GPS_DISTANCE_MESSAGE_TIMEOUT_MS = 2000;
-
-  if ( !forceDisplay )
-  {
-    // if we aren't forcing the display of the message (i.e. in direct response to a mouse cursor movement),
-    // then only show an updated message when the GPS position changes if the previous forced message occurred < 2 seconds ago.
-    // otherwise we end up showing infinite messages as the GPS position constantly changes...
-    if ( mLastForcedStatusUpdate.hasExpired( GPS_DISTANCE_MESSAGE_TIMEOUT_MS ) )
-      return;
-  }
-  else
-  {
-    mLastForcedStatusUpdate.restart();
-  }
-
-  const double distance = mDistanceCalculator.convertLengthMeasurement( mDistanceCalculator.measureLine( QVector< QgsPointXY >() << mLastCursorPosWgs84 << mLastGpsPosition ),
-                          QgsProject::instance()->distanceUnits() );
-  try
-  {
-    const double bearing = 180 * mDistanceCalculator.bearing( mLastGpsPosition, mLastCursorPosWgs84 ) / M_PI;
-    const int distanceDecimalPlaces = QgsSettings().value( QStringLiteral( "qgis/measure/decimalplaces" ), "3" ).toInt();
-    const QString distanceString = QgsDistanceArea::formatDistance( distance, distanceDecimalPlaces, QgsProject::instance()->distanceUnits() );
-    const QString bearingString = mBearingNumericFormat->formatDouble( bearing, QgsNumericFormatContext() );
-
-    QgisApp::instance()->statusBarIface()->showMessage( tr( "%1 (%2) from GPS location" ).arg( distanceString, bearingString ), forceDisplay ? GPS_DISTANCE_MESSAGE_TIMEOUT_MS
-        : GPS_DISTANCE_MESSAGE_TIMEOUT_MS - mLastForcedStatusUpdate.elapsed() );
-  }
-  catch ( QgsCsException & )
-  {
-
-  }
-}
-
 void QgsGpsInformationWidget::updateTimestampDestinationFields( QgsMapLayer *mapLayer )
 {
   mPopulatingFields = true;
@@ -1320,22 +1184,6 @@ void QgsGpsInformationWidget::updateTimestampDestinationFields( QgsMapLayer *map
     }
   }
   mPopulatingFields = false;
-}
-
-void QgsGpsInformationWidget::tapAndHold( const QgsPointXY &mapPoint, QTapAndHoldGesture * )
-{
-  if ( !mConnection->isConnected() )
-    return;
-
-  try
-  {
-    mLastCursorPosWgs84 = mCanvasToWgs84Transform.transform( mapPoint );
-    updateGpsDistanceStatusMessage( true );
-  }
-  catch ( QgsCsException & )
-  {
-
-  }
 }
 
 void QgsGpsInformationWidget::switchAcquisition()

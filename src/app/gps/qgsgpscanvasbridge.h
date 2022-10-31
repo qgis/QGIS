@@ -20,14 +20,20 @@
 #include <QElapsedTimer>
 #include "qgspointxy.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsdistancearea.h"
+#include "qgsappgpssettingsmenu.h"
+#include "qgsmapcanvasinteractionblocker.h"
 
 class QgsAppGpsConnection;
 class QgsMapCanvas;
 class QgsGpsMarker;
 class QgsGpsBearingItem;
 class QgsGpsInformation;
+class QgsBearingNumericFormat;
 
-class QgsGpsCanvasBridge : public QObject
+class QTapAndHoldGesture;
+
+class QgsGpsCanvasBridge : public QObject, public QgsMapCanvasInteractionBlocker
 {
     Q_OBJECT
 
@@ -36,35 +42,58 @@ class QgsGpsCanvasBridge : public QObject
     QgsGpsCanvasBridge( QgsAppGpsConnection *connection, QgsMapCanvas *canvas, QObject *parent = nullptr );
     ~QgsGpsCanvasBridge() override;
 
-public slots:
+    bool blockCanvasInteraction( Interaction interaction ) const override;
 
-    void showBearingLine( bool show );
+  public slots:
 
-private slots:
-        void updateBearingAppearance();
+    void setLocationMarkerVisible( bool show );
+    void setBearingLineVisible( bool show );
+    void setRotateMap( bool enabled );
+    void setMapCenteringMode( QgsAppGpsSettingsMenu::MapCenteringMode mode );
+    void tapAndHold( const QgsPointXY &mapPoint, QTapAndHoldGesture *gesture );
+
+  private slots:
+    void updateBearingAppearance();
     void gpsSettingsChanged();
     void gpsDisconnected();
 
-        void gpsStateChanged( const QgsGpsInformation &info );
+    void gpsStateChanged( const QgsGpsInformation &info );
+
+    void cursorCoordinateChanged( const QgsPointXY &point );
+    void updateGpsDistanceStatusMessage( bool forceDisplay );
 
   private:
 
     QgsAppGpsConnection *mConnection = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
 
+    bool mShowMarker = false;
     QgsGpsMarker *mMapMarker = nullptr;
+
+    bool mShowBearingLine = false;
     QgsGpsBearingItem *mMapBearingItem = nullptr;
 
     QgsPointXY mLastGpsPosition;
     QgsPointXY mSecondLastGpsPosition;
 
-        QElapsedTimer mLastRotateTimer;
+    bool mRotateMap = false;
+
+    QgsAppGpsSettingsMenu::MapCenteringMode mCenteringMode = QgsAppGpsSettingsMenu::MapCenteringMode::Always;
+
+    QgsDistanceArea mDistanceCalculator;
+    QgsCoordinateTransform mCanvasToWgs84Transform;
+    QElapsedTimer mLastRotateTimer;
 
     bool mBearingFromTravelDirection = false;
     int mMapExtentMultiplier = 50;
     int mMapRotateInterval = 0;
 
-        QgsCoordinateReferenceSystem mWgs84CRS;
+    QgsCoordinateReferenceSystem mWgs84CRS;
+    QgsPointXY mLastCursorPosWgs84;
+
+    QElapsedTimer mLastForcedStatusUpdate;
+
+    std::unique_ptr< QgsBearingNumericFormat > mBearingNumericFormat;
 };
 
 #endif // QGSGPSCANVASBRIDGE_H
