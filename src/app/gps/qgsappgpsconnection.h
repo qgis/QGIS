@@ -143,7 +143,6 @@ class APP_EXPORT QgsAppGpsConnection : public QObject
     void showStatusBarMessage( const QString &msg );
 
     QgsGpsConnection *mConnection = nullptr;
-    Qgis::GpsFixStatus mLastFixStatus = Qgis::GpsFixStatus::NoData;
 };
 
 
