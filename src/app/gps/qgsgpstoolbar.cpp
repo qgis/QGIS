@@ -19,6 +19,9 @@
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgis.h"
+#include "qgscoordinateutils.h"
+
+#include <QLabel>
 
 QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *canvas, QWidget *parent )
   : QToolBar( parent )
@@ -90,4 +93,28 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
     }
   } );
   addAction( mRecenterAction );
+
+  mShowInfoAction = new QAction( tr( "Information" ) );
+  mShowInfoAction->setToolTip( tr( "Show GPS Information Panel" ) );
+  mShowInfoAction->setCheckable( true );
+  addAction( mShowInfoAction );
+
+  mLocationLabel = new QLabel();
+  addWidget( mLocationLabel );
+
+  connect( mConnection, &QgsAppGpsConnection::positionChanged, this, &QgsGpsToolBar::updateLocationLabel );
+  updateLocationLabel( mConnection->lastValidLocation() );
+}
+
+void QgsGpsToolBar::updateLocationLabel( const QgsPoint &point )
+{
+  if ( point.isEmpty() )
+  {
+    mLocationLabel->clear();
+  }
+  else
+  {
+    const QString pos = QgsCoordinateUtils::formatCoordinateForProject( QgsProject::instance(), point, QgsCoordinateReferenceSystem(), 8 );
+    mLocationLabel->setText( pos );
+  }
 }

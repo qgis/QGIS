@@ -58,7 +58,10 @@ void QgsAppGpsConnection::setConnection( QgsGpsConnection *connection )
 
 QgsPoint QgsAppGpsConnection::lastValidLocation() const
 {
-  return mConnection->lastValidLocation();
+  if ( mConnection )
+    return mConnection->lastValidLocation();
+  else
+    return QgsPoint();
 }
 
 void QgsAppGpsConnection::connectGps()
@@ -180,7 +183,9 @@ void QgsAppGpsConnection::onConnected( QgsGpsConnection *conn )
 
   Qgis::GnssConstellation constellation = Qgis::GnssConstellation::Unknown;
   // emit signals so initial fix status is correctly advertised
+  emit stateChanged( mConnection->currentGPSInformation() );
   emit fixStatusChanged( mConnection->currentGPSInformation().bestFixStatus( constellation ) );
+  emit positionChanged( mConnection->lastValidLocation() );
 
   //insert connection into registry such that it can also be used by other dialogs or plugins
   QgsApplication::gpsConnectionRegistry()->registerConnection( mConnection );

@@ -22,6 +22,7 @@
 
 class QgsAppGpsConnection;
 class QgsMapCanvas;
+class QLabel;
 
 class QgsGpsToolBar : public QToolBar
 {
@@ -31,12 +32,22 @@ class QgsGpsToolBar : public QToolBar
 
     QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
+    QAction *showInfoAction() { return mShowInfoAction; }
+
+  private slots:
+
+    void updateLocationLabel( const QgsPoint &point );
+
   private:
 
     QgsAppGpsConnection *mConnection = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
     QAction *mConnectAction = nullptr;
     QAction *mRecenterAction = nullptr;
+    QAction *mShowInfoAction = nullptr;
+
+    QLabel *mLocationLabel = nullptr;
+
     QgsCoordinateReferenceSystem mWgs84CRS;
 };
 
