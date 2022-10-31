@@ -19,8 +19,10 @@
 #include "qgis.h"
 
 #include <QObject>
+
 class QgsGpsConnection;
 class QgsGpsInformation;
+class QgsPoint;
 
 /**
  * Manages a single "canonical" GPS connection for use in the QGIS app, eg for displaying GPS
