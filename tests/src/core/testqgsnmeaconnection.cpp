@@ -33,7 +33,8 @@ class ReplayNmeaConnection : public QgsNmeaConnection
     {
       mBuffer = new QBuffer();
       setSource( mBuffer );
-      Q_ASSERT( connect() );
+      bool ok = connect();
+      Q_ASSERT( ok );
     }
 
     QgsGpsInformation push( const QString &message )
