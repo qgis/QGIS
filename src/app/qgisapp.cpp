@@ -251,6 +251,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsgpsinformationwidget.h"
 #include "qgsappgpsconnection.h"
 #include "qgsgpstoolbar.h"
+#include "qgsgpscanvasbridge.h"
 #include "qgsguivectorlayertools.h"
 #include "qgsdiagramproperties.h"
 #include "qgslayerdefinition.h"
@@ -1419,6 +1420,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   mpGpsDock->setToggleVisibilityAction( mGpsToolBar->showInfoAction() );
   mpGpsDock->hide();
 
+  mGpsCanvasBridge = new QgsGpsCanvasBridge( mGpsConnection, mMapCanvas );
+
   mLastMapToolMessage = nullptr;
 
   mLogViewer = new QgsMessageLogViewer( this );
@@ -1977,6 +1980,9 @@ QgisApp::~QgisApp()
 
   delete mGpsToolBar;
   mGpsToolBar = nullptr;
+
+  delete mGpsCanvasBridge;
+  mGpsCanvasBridge = nullptr;
 
   delete mGpsConnection;
   mGpsConnection = nullptr;

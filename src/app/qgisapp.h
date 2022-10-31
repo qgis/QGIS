@@ -121,6 +121,7 @@ class QAuthenticator;
 class QgsBrowserDockWidget;
 class QgsAdvancedDigitizingDockWidget;
 class QgsGpsInformationWidget;
+class QgsGpsCanvasBridge;
 class QgsStatisticalSummaryDockWidget;
 class QgsMapCanvasTracer;
 class QgsTemporalControllerDockWidget;
@@ -2560,6 +2561,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsAppGpsConnection *mGpsConnection = nullptr;
     QgsGpsInformationWidget *mpGpsWidget = nullptr;
     QgsGpsToolBar *mGpsToolBar = nullptr;
+    QgsGpsCanvasBridge* mGpsCanvasBridge = nullptr;
 
     QgsMessageBarItem *mLastMapToolMessage = nullptr;
 
