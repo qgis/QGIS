@@ -539,7 +539,7 @@ void QgsChunkedEntity::onActiveJobFinished()
       // if the node should not be shown anymore. Ideally entities should be initially disabled,
       // but there seems to be a bug in Qt3D - if entity is disabled initially, showing it
       // by setting setEnabled(true) is not reliable (entity eventually gets shown, but only after
-      // some more changes in the scene) - see #48334
+      // some more changes in the scene) - see https://github.com/qgis/QGIS/issues/48334
       mActiveNodes << node;
 
       // load into node (should be in main thread again)
