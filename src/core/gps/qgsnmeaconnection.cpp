@@ -168,7 +168,7 @@ void QgsNmeaConnection::processStringBuffer()
         }
         else
         {
-          mLastGPSInformation.satInfoComplete = false;
+          mLastGPSInformation.satInfoComplete = true;
           QgsDebugMsgLevel( QStringLiteral( "unknown nmea sentence: %1" ).arg( substring ), 2 );
         }
         emit nmeaSentenceReceived( substring );  // added to be able to save raw data
