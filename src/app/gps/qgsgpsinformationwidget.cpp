@@ -36,7 +36,6 @@
 #include "qgsmapcanvas.h"
 #include "qgsmessagebar.h"
 #include "qgsbearingutils.h"
-#include "qgsgpsbearingitem.h"
 #include "qgslocaldefaultsettings.h"
 #include "qgsprojectdisplaysettings.h"
 #include "qgsbearingnumericformat.h"
@@ -46,6 +45,7 @@
 #include "qgsgui.h"
 #include "qgslinesymbol.h"
 #include "qgssymbollayerutils.h"
+#include "qgsgpscanvasbridge.h"
 
 // QWT Charting widget
 
@@ -72,10 +72,11 @@
 
 
 QgsGpsInformationWidget::QgsGpsInformationWidget( QgsAppGpsConnection *connection,
-    QgsMapCanvas *mapCanvas, QWidget *parent )
+    QgsMapCanvas *mapCanvas, QgsGpsCanvasBridge *bridge, QWidget *parent )
   : QgsPanelWidget( parent )
   , mConnection( connection )
   , mMapCanvas( mapCanvas )
+  , mBridge( bridge )
 {
   Q_ASSERT( mMapCanvas ); // precondition
   setupUi( this );
@@ -258,14 +259,7 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsAppGpsConnection *connectio
   mShowBearingLineCheck->setChecked( mySettings.value( QStringLiteral( "showBearingLine" ), false, QgsSettings::Gps ).toBool() );
   connect( mShowBearingLineCheck, &QCheckBox::toggled, this, [ = ]( bool checked )
   {
-    if ( !checked )
-    {
-      if ( mMapBearingItem )
-      {
-        delete mMapBearingItem;
-        mMapBearingItem = nullptr;
-      }
-    }
+    mBridge->showBearingLine( checked );
   } );
 
   mBtnDebug->setVisible( mySettings.value( QStringLiteral( "showDebug" ), "false", QgsSettings::Gps ).toBool() );  // use a registry setting to control - power users/devs could set it
@@ -386,8 +380,6 @@ QgsGpsInformationWidget::~QgsGpsInformationWidget()
     gpsDisconnected();
   }
 
-  delete mMapMarker;
-  delete mMapBearingItem;
   delete mRubberBand;
 
 #ifdef WITH_QWTPOLAR
@@ -442,7 +434,6 @@ bool QgsGpsInformationWidget::blockCanvasInteraction( QgsMapCanvasInteractionBlo
 void QgsGpsInformationWidget::gpsSettingsChanged()
 {
   updateTrackAppearance();
-  updateBearingAppearance();
 
   QgsSettings settings;
   int acquisitionInterval = 0;
@@ -450,19 +441,12 @@ void QgsGpsInformationWidget::gpsSettingsChanged()
   {
     acquisitionInterval = static_cast< int >( QgsGpsConnection::settingGpsAcquisitionInterval.value() );
     mDistanceThreshold = QgsGpsConnection::settingGpsDistanceThreshold.value();
-    mBearingFromTravelDirection = QgsGpsConnection::settingGpsBearingFromTravelDirection.value();
-    mMapExtentMultiplier = static_cast< int >( QgsGpsInformationWidget::settingMapExtentRecenteringThreshold.value() );
-    mMapRotateInterval = static_cast< int >( QgsGpsInformationWidget::settingMapRotateInterval.value() );
   }
   else
   {
     // legacy settings
     acquisitionInterval = settings.value( QStringLiteral( "acquisitionInterval" ), 0, QgsSettings::Gps ).toInt();
     mDistanceThreshold = settings.value( QStringLiteral( "distanceThreshold" ), 0, QgsSettings::Gps ).toDouble();
-    mBearingFromTravelDirection = settings.value( QStringLiteral( "calculateBearingFromTravel" ), "false", QgsSettings::Gps ).toBool();
-
-    mMapExtentMultiplier = settings.value( QStringLiteral( "mapExtentMultiplier" ), "50", QgsSettings::Gps ).toInt();
-    mMapRotateInterval = settings.value( QStringLiteral( "rotateMapInterval" ), 0, QgsSettings::Gps ).toInt();
   }
 
   mAcquisitionInterval = acquisitionInterval * 1000;
@@ -491,32 +475,6 @@ void QgsGpsInformationWidget::updateTrackAppearance()
       mRubberBand->setSymbol( trackLineSymbol.release() );
     }
     mRubberBand->update();
-  }
-}
-
-void QgsGpsInformationWidget::updateBearingAppearance()
-{
-  if ( !mMapBearingItem )
-    return;
-
-  QDomDocument doc;
-  QDomElement elem;
-  QString bearingLineSymbolXml = QgsGpsInformationWidget::settingBearingLineSymbol.value();
-  if ( bearingLineSymbolXml.isEmpty() )
-  {
-    QgsSettings settings;
-    bearingLineSymbolXml = settings.value( QStringLiteral( "bearingLineSymbol" ), QVariant(), QgsSettings::Gps ).toString();
-  }
-
-  if ( !bearingLineSymbolXml.isEmpty() )
-  {
-    doc.setContent( bearingLineSymbolXml );
-    elem = doc.documentElement();
-    std::unique_ptr< QgsLineSymbol > bearingSymbol( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( elem, QgsReadWriteContext() ) );
-    if ( bearingSymbol )
-    {
-      mMapBearingItem->setSymbol( std::move( bearingSymbol ) );
-    }
   }
 }
 
@@ -632,16 +590,6 @@ void QgsGpsInformationWidget::gpsDisconnected()
     mLogFile = nullptr;
   }
 
-  if ( mMapMarker )  // marker should not be shown on GPS disconnected - not current position
-  {
-    delete mMapMarker;
-    mMapMarker = nullptr;
-  }
-  if ( mMapBearingItem )
-  {
-    delete mMapBearingItem;
-    mMapBearingItem = nullptr;
-  }
   mGPSPlainTextEdit->appendPlainText( tr( "Disconnected…" ) );
 }
 
@@ -862,33 +810,6 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     mLastNmeaPosition = newNmeaPosition;
     mLastNmeaTime = newNmeaTime;
     mLastElevation = newAlt;
-    // Pan based on user specified behavior
-    if ( radRecenterMap->isChecked() || radRecenterWhenNeeded->isChecked() )
-    {
-      try
-      {
-        const QgsPointXY myPoint = mCanvasToWgs84Transform.transform( myNewCenter, Qgis::TransformDirection::Reverse );
-        //keep the extent the same just center the map canvas in the display so our feature is in the middle
-        const QgsRectangle myRect( myPoint, myPoint );  // empty rect can be used to set new extent that is centered on the point used to construct the rect
-
-        // testing if position is outside some proportion of the map extent
-        // this is a user setting - useful range: 5% to 100% (0.05 to 1.0)
-        QgsRectangle myExtentLimit( mMapCanvas->extent() );
-        myExtentLimit.scale( mMapExtentMultiplier * 0.01 );
-
-        // only change the extents if the point is beyond the current extents to minimize repaints
-        if ( radRecenterMap->isChecked() ||
-             ( radRecenterWhenNeeded->isChecked() && !myExtentLimit.contains( myPoint ) ) )
-        {
-          mMapCanvas->setExtent( myRect, true );
-          mMapCanvas->refresh();
-        }
-      }
-      catch ( QgsCsException & )
-      {
-
-      }
-    } //otherwise never recenter automatically
 
     if ( mCbxAutoAddVertices->isChecked() )
     {
@@ -896,122 +817,6 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     }
 
     updateGpsDistanceStatusMessage( false );
-  }
-
-  double bearing = 0;
-  double trueNorth = 0;
-  const QgsSettings settings;
-  const double adjustment = settings.value( QStringLiteral( "gps/bearingAdjustment" ), 0.0, QgsSettings::App ).toDouble();
-
-  if ( !std::isnan( info.direction ) || ( mBearingFromTravelDirection && !mSecondLastGpsPosition.isEmpty() ) )
-  {
-    if ( !mBearingFromTravelDirection )
-    {
-      bearing = info.direction;
-      if ( settings.value( QStringLiteral( "gps/correctForTrueNorth" ), false, QgsSettings::App ).toBool() )
-      {
-        try
-        {
-          trueNorth = QgsBearingUtils::bearingTrueNorth( mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext(), mMapCanvas->mapSettings().visibleExtent().center() );
-        }
-        catch ( QgsException & )
-        {
-
-        }
-      }
-    }
-    else
-    {
-      try
-      {
-        bearing = 180 * mDistanceCalculator.bearing( mSecondLastGpsPosition, mLastGpsPosition ) / M_PI;
-      }
-      catch ( QgsCsException & )
-      {
-
-      }
-
-    }
-
-    if ( mRotateMapCheckBox->isChecked() && ( !mLastRotateTimer.isValid() || mLastRotateTimer.hasExpired( static_cast< long long >( mMapRotateInterval ) * 1000 ) ) )
-    {
-      const QgsCoordinateTransform wgs84ToCanvas( mWgs84CRS, mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
-
-      try
-      {
-        QLineF bearingLine;
-        bearingLine.setP1( wgs84ToCanvas.transform( myNewCenter ).toQPointF() );
-
-        // project out the bearing line by roughly the size of the canvas
-        QgsDistanceArea da1;
-        da1.setSourceCrs( mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
-        da1.setEllipsoid( QgsProject::instance()->ellipsoid() );
-        const double totalLength = da1.measureLine( mMapCanvas->mapSettings().extent().center(), QgsPointXY( mMapCanvas->mapSettings().extent().xMaximum(),
-                                   mMapCanvas->mapSettings().extent().yMaximum() ) );
-
-        QgsDistanceArea da;
-        da.setSourceCrs( mWgs84CRS, QgsProject::instance()->transformContext() );
-        da.setEllipsoid( QgsProject::instance()->ellipsoid() );
-        const QgsPointXY res = da.computeSpheroidProject( myNewCenter, totalLength, ( bearing - trueNorth + adjustment ) * M_PI / 180.0 );
-        bearingLine.setP2( wgs84ToCanvas.transform( res ).toQPointF() );
-
-        mMapCanvas->setRotation( 270 - bearingLine.angle() );
-        mMapCanvas->refresh();
-      }
-      catch ( QgsCsException & )
-      {
-        QgsDebugMsg( QStringLiteral( "Coordinate exception encountered while calculating GPS bearing rotation" ) );
-        mMapCanvas->setRotation( trueNorth - bearing - adjustment );
-        mMapCanvas->refresh();
-      }
-      mLastRotateTimer.restart();
-    }
-
-    if ( mShowBearingLineCheck->isChecked() )
-    {
-      if ( ! mMapBearingItem )
-      {
-        mMapBearingItem = new QgsGpsBearingItem( mMapCanvas );
-        updateBearingAppearance();
-      }
-
-      mMapBearingItem->setGpsPosition( myNewCenter );
-      mMapBearingItem->setGpsBearing( bearing - trueNorth + adjustment );
-    }
-    else if ( mMapBearingItem )
-    {
-      delete mMapBearingItem;
-      mMapBearingItem = nullptr;
-    }
-  }
-  else if ( mMapBearingItem )
-  {
-    delete mMapBearingItem;
-    mMapBearingItem = nullptr;
-  }
-
-  // new marker position after recentering
-  if ( mCheckShowMarker->isChecked() ) // show marker
-  {
-    if ( validFlag ) // update cursor position if valid position
-    {
-      // initially, cursor isn't drawn until first valid fix; remains visible until GPS disconnect
-      if ( ! mMapMarker )
-      {
-        mMapMarker = new QgsGpsMarker( mMapCanvas );
-      }
-      mMapMarker->setGpsPosition( myNewCenter );
-
-      mMapMarker->setMarkerRotation( bearing - trueNorth + adjustment );
-    }
-  }
-  else
-  {
-    if ( mMapMarker )
-    {
-      delete mMapMarker;
-      mMapMarker = nullptr;
-    }
   }
 }
 

@@ -21,7 +21,6 @@
 #include "qgis_app.h"
 #include "info.h"
 #include "nmeatime.h"
-#include "qgsgpsmarker.h"
 #include "qgsmaptoolcapture.h"
 #include "qgspanelwidget.h"
 #include "qgsmapcanvasinteractionblocker.h"
@@ -43,8 +42,8 @@ class QgsGpsTrackerThread;
 class QgsGpsInformation;
 class QgsMapCanvas;
 class QgsFeature;
-class QgsGpsBearingItem;
 class QgsBearingNumericFormat;
+class QgsGpsCanvasBridge;
 
 class QFile;
 class QColor;
@@ -65,7 +64,7 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
     static const inline QgsSettingsEntryInteger settingMapExtentRecenteringThreshold = QgsSettingsEntryInteger( QStringLiteral( "map-recentering-threshold" ), QgsSettings::Prefix::GPS, 50, QStringLiteral( "Threshold for GPS automatic map centering" ) );
     static const inline QgsSettingsEntryInteger settingMapRotateInterval = QgsSettingsEntryInteger( QStringLiteral( "map-rotate-interval" ), QgsSettings::Prefix::GPS, 0, QStringLiteral( "Interval for GPS automatic map rotation" ) );
 
-    QgsGpsInformationWidget( QgsAppGpsConnection *connection, QgsMapCanvas *mapCanvas, QWidget *parent = nullptr );
+    QgsGpsInformationWidget( QgsAppGpsConnection *connection, QgsMapCanvas *mapCanvas, QgsGpsCanvasBridge* bridge, QWidget *parent = nullptr );
     ~QgsGpsInformationWidget() override;
 
     bool blockCanvasInteraction( Interaction interaction ) const override;
@@ -82,7 +81,6 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
     void layerEditStateChanged();
     void gpsSettingsChanged();
     void updateTrackAppearance();
-    void updateBearingAppearance();
     void mBtnPosition_clicked();
     void mBtnSignal_clicked();
     void mBtnSatellites_clicked();
@@ -117,8 +115,7 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
 
     QgsAppGpsConnection *mConnection = nullptr;
     QPointer< QgsMapCanvas > mMapCanvas;
-    QgsGpsMarker *mMapMarker = nullptr;
-    QgsGpsBearingItem *mMapBearingItem = nullptr;
+    QgsGpsCanvasBridge* mBridge = nullptr;
 
     QwtPlot *mPlot = nullptr;
     QwtPlotCurve *mCurve = nullptr;
@@ -135,7 +132,6 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
     QgsCoordinateTransform mCanvasToWgs84Transform;
     QgsDistanceArea mDistanceCalculator;
 
-// not used    QPointF gpsToPixelPosition( const QgsPoint& point );
     QgsRubberBand *mRubberBand = nullptr;
     QgsPointXY mLastGpsPosition;
     QgsPointXY mSecondLastGpsPosition;
@@ -151,9 +147,7 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
     bool mAcquisitionEnabled = true;
     int mAcquisitionInterval = 0;
     double mDistanceThreshold = 0;
-    bool mBearingFromTravelDirection = false;
-    int mMapExtentMultiplier = 50;
-    int mMapRotateInterval = 0;
+
     //! Temporary storage of preferred fields
     QMap<QString, QString> mPreferredTimestampFields;
     //! Flag when updating fields
@@ -162,7 +156,6 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
     QgsPointXY mLastCursorPosWgs84;
     std::unique_ptr< QgsBearingNumericFormat > mBearingNumericFormat;
 
-    QElapsedTimer mLastRotateTimer;
     QElapsedTimer mLastForcedStatusUpdate;
 
     int mBlockGpsStateChanged = 0;
