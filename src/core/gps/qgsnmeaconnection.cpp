@@ -363,9 +363,6 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
   nmeaGPGSV result;
   if ( nmea_parse_GPGSV( data, len, &result ) )
   {
-    //clear satellite information when a new series of packs arrives
-    // clear() on GGA
-
     // for determining when to graph sat info
     for ( int i = 0; i < NMEA_SATINPACK; ++i )
     {
@@ -429,6 +426,7 @@ void QgsNmeaConnection::processGsaSentence( const char *data, int len )
 {
   if ( mLastGPSInformation.satInfoComplete = true )
   {
+    //clear satellite information when a new series of packs arrives
     mLastGPSInformation.satPrn.clear();
     mLastGPSInformation.satellitesInView.clear();
     mLastGPSInformation.satellitesUsed = 0;
