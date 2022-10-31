@@ -41,6 +41,8 @@ bool QgsGpsInformation::isValid() const
     valid = true;
   }
 
+  valid &= longitude >= -180.0 && longitude <= 180.0 && latitude >= -90.0 && latitude <= 90.0;
+
   return valid;
 }
 
