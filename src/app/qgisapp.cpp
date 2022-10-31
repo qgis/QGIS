@@ -1416,6 +1416,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   // add to the Panel submenu
   // now add our widget to the dock - ownership of the widget is passed to the dock
   mpGpsDock->setWidget( gpsStack );
+  mpGpsDock->setToggleVisibilityAction( mGpsToolBar->showInfoAction() );
   mpGpsDock->hide();
 
   mLastMapToolMessage = nullptr;
