@@ -626,6 +626,8 @@ class CORE_EXPORT QgsSymbolLayer
     /**
      * Prepares all mask internal objects according to what is defined in \a context
      * This should be called prior to calling startRender() method.
+     * \see addSymbolLayerClipPath()
+     * \see symbolLayerClipPaths()
      * \since QGIS 3.26
      */
     virtual void prepareMasks( const QgsSymbolRenderContext &context );
@@ -696,6 +698,24 @@ class CORE_EXPORT QgsSymbolLayer
      * \since QGIS 2.9
      */
     void copyPaintEffect( QgsSymbolLayer *destLayer ) const;
+
+    /**
+     * When renderering, install masks on \a context painter
+     * \param recursive if TRUE masks are installed recursively for all children symbol layers
+     * \see prepareMasks()
+     * \see removeMasks()
+     * \since QGIS 3.30
+     */
+    void installMasks( QgsRenderContext &context, bool recursive );
+
+    /**
+     * When renderering, remove previously installed masks from \a context painter
+     * \param recursive if TRUE masks are removed recursively for all children symbol layers
+     * \see prepareMasks()
+     * \see installMasks()
+     * \since QGIS 3.30
+     */
+    void removeMasks( QgsRenderContext &context, bool recursive );
 
   private:
     static void initPropertyDefinitions();

@@ -135,10 +135,9 @@ class TestSelectiveMasking(unittest.TestCase):
 
     def get_symbollayer_ref(self, layer, ruleId, symbollayer_ids):
         """
-        Returns the symbol layer according to given path to
-
+        Returns the symbol layer according to given layer, ruleId (None if no rule) and the path
+        to symbol layer id (for instance [0, 1])
         """
-
         renderer = layer.renderer()
         symbol = None
         if renderer.type() == "categorizedSymbol":
@@ -171,8 +170,8 @@ class TestSelectiveMasking(unittest.TestCase):
                 if use_cache:
                     cache = QgsMapRendererCache()
                     # render a first time to fill the cache
-                    renderMapToImageWithTime(self.map_settings, parallel=do_parallel, cache=cache)
-                img, t = renderMapToImageWithTime(self.map_settings, parallel=do_parallel, cache=cache)
+                    renderMapToImageWithTime(map_settings, parallel=do_parallel, cache=cache)
+                img, t = renderMapToImageWithTime(map_settings, parallel=do_parallel, cache=cache)
                 img.save(tmp)
                 print(f"Image rendered in {tmp}")
 
@@ -181,15 +180,17 @@ class TestSelectiveMasking(unittest.TestCase):
                 suffix = ("_parallel" if do_parallel else "_sequential") + ("_cache" if use_cache else "_nocache")
                 res = self.checker.compareImages(control_name + suffix)
                 self.report += self.checker.report()
-                f = open("/tmp/merdier.html", "w")
-                f.write(self.report)
-                f.close()
+
+                # f = open("/tmp/report.html", "w")
+                # f.write(self.report)
+                # f.close()
 
                 self.assertTrue(res)
 
                 print(f"=== Rendering took {float(t) / 1000.0}s")
 
-    def check_layout_export(self, control_name, expected_nb_raster, layers=None, dpiTarget=None):
+    def check_layout_export(self, control_name, expected_nb_raster, layers=None, dpiTarget=None,
+                            extent=None):
         """
         Generate a PDF layout export and control the output matches expected_filename
         """
@@ -204,7 +205,7 @@ class TestSelectiveMasking(unittest.TestCase):
         map.attemptSetSceneRect(QRectF(1, 1, 48, 32))
         map.setFrameEnabled(True)
         layout.addLayoutItem(map)
-        map.setExtent(self.lines_layer.extent())
+        map.setExtent(extent if extent is not None else self.lines_layer.extent())
         map.setLayers(layers if layers is not None else [self.points_layer, self.lines_layer, self.polys_layer])
 
         settings = QgsLayoutExporter.PdfExportSettings()
@@ -231,6 +232,8 @@ class TestSelectiveMasking(unittest.TestCase):
         nb_raster = len([l for l in result_lines if "/Subtype /Image" in l])
         self.assertEqual(nb_raster, expected_nb_raster)
 
+        print("pdf_file={}".format(result_filename))
+
         # Generate an image from pdf to compare with expected control image
         # keep PDF DPI resolution (300)
         image_result_filename = getTempfilePath("png")
@@ -243,7 +246,7 @@ class TestSelectiveMasking(unittest.TestCase):
         res = self.checker.compareImages(control_name)
         self.report += self.checker.report()
 
-        f = open("/tmp/merdier.html", "w")
+        f = open("/tmp/report.html", "w")
         f.write(self.report)
         f.close()
 
@@ -1107,6 +1110,103 @@ class TestSelectiveMasking(unittest.TestCase):
         self.polys_layer.labeling().setSettings(label_settings)
 
         self.check_layout_export("layout_export_2_sources_masking", 0)
+
+    def test_raster_line_pattern_fill(self):
+        """
+        Test raster rendering and masking when a line pattern fill symbol layer is involved
+        """
+        self.assertTrue(QgsProject.instance().read(os.path.join(unitTestDataPath(), "selective_masking_linepattern.qgz")))
+
+        layer = QgsProject.instance().mapLayersByName('line_pattern_fill')[0]
+        self.assertTrue(layer)
+
+        map_settings = QgsMapSettings()
+        crs = QgsCoordinateReferenceSystem('epsg:4326')
+        extent = QgsRectangle(-0.972, -1.966, 1.58, 1.806)
+        map_settings.setBackgroundColor(QColor(152, 219, 249))
+        map_settings.setOutputSize(QSize(420, 280))
+        map_settings.setOutputDpi(72)
+        map_settings.setFlag(QgsMapSettings.Antialiasing, True)
+        map_settings.setFlag(QgsMapSettings.UseAdvancedEffects, False)
+        map_settings.setDestinationCrs(crs)
+        map_settings.setExtent(extent)
+
+        map_settings.setLayers([layer])
+
+        self.check_renderings(map_settings, "line_pattern_fill")
+
+    def test_vector_line_pattern_fill(self):
+        """
+        Test vector rendering and masking when a line pattern fill symbol layer is involved
+        """
+        self.assertTrue(QgsProject.instance().read(os.path.join(unitTestDataPath(), "selective_masking_linepattern.qgz")))
+
+        layer = QgsProject.instance().mapLayersByName('line_pattern_fill')[0]
+        self.assertTrue(layer)
+
+        map_settings = QgsMapSettings()
+        crs = QgsCoordinateReferenceSystem('epsg:4326')
+        extent = QgsRectangle(-0.972, -1.966, 1.58, 1.806)
+        map_settings.setBackgroundColor(QColor(152, 219, 249))
+        map_settings.setOutputSize(QSize(420, 280))
+        map_settings.setOutputDpi(72)
+        map_settings.setFlag(QgsMapSettings.Antialiasing, True)
+        map_settings.setFlag(QgsMapSettings.UseAdvancedEffects, False)
+        map_settings.setDestinationCrs(crs)
+        map_settings.setExtent(extent)
+
+        map_settings.setLayers([layer])
+
+        self.check_layout_export("layout_export_line_pattern_fill", 0, [layer], extent=QgsRectangle(-1.0073971192118132, -0.7875782447946843, 0.87882587741257345, 0.51640826470600099))
+
+    def test_vector_point_pattern_fill(self):
+        """
+        Test vector rendering and masking when a point pattern fill symbol layer is involved
+        """
+        self.assertTrue(QgsProject.instance().read(os.path.join(unitTestDataPath(), "selective_masking_linepattern.qgz")))
+
+        layer = QgsProject.instance().mapLayersByName('point_pattern_fill')[0]
+        self.assertTrue(layer)
+
+        map_settings = QgsMapSettings()
+        crs = QgsCoordinateReferenceSystem('epsg:4326')
+        extent = QgsRectangle(-0.972, -1.966, 1.58, 1.806)
+        map_settings.setBackgroundColor(QColor(152, 219, 249))
+        map_settings.setOutputSize(QSize(420, 280))
+        map_settings.setOutputDpi(72)
+        map_settings.setFlag(QgsMapSettings.Antialiasing, True)
+        map_settings.setFlag(QgsMapSettings.UseAdvancedEffects, False)
+        map_settings.setDestinationCrs(crs)
+        map_settings.setExtent(extent)
+
+        map_settings.setLayers([layer])
+
+        self.check_layout_export("layout_export_point_pattern_fill", 0, [layer], extent=QgsRectangle(-1.0073971192118132, -0.7875782447946843, 0.87882587741257345, 0.51640826470600099))
+
+    def test_vector_centroid_fill(self):
+        """
+        Test masking when a centroid fill symbol layer is involved
+        """
+        self.assertTrue(QgsProject.instance().read(os.path.join(unitTestDataPath(), "selective_masking_linepattern.qgz")))
+
+        layer = QgsProject.instance().mapLayersByName('centroid_fill')[0]
+        self.assertTrue(layer)
+
+        map_settings = QgsMapSettings()
+        crs = QgsCoordinateReferenceSystem('epsg:4326')
+        extent = QgsRectangle(-1.0073971192118132, -0.7875782447946843, 0.87882587741257345, 0.51640826470600099)
+        # extent = QgsRectangle(-0.972, -1.966, 1.58, 1.806)
+        map_settings.setBackgroundColor(QColor(152, 219, 249))
+        map_settings.setOutputSize(QSize(420, 280))
+        map_settings.setOutputDpi(72)
+        map_settings.setFlag(QgsMapSettings.Antialiasing, True)
+        map_settings.setFlag(QgsMapSettings.UseAdvancedEffects, False)
+        map_settings.setDestinationCrs(crs)
+        map_settings.setExtent(extent)
+
+        map_settings.setLayers([layer])
+
+        self.check_layout_export("layout_export_centroid_fill", 0, [layer], extent=QgsRectangle(-1.0073971192118132, -0.7875782447946843, 0.87882587741257345, 0.51640826470600099))
 
 
 if __name__ == '__main__':
