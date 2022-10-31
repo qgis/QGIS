@@ -580,6 +580,19 @@ The development version
       Fix3D
     };
 
+
+    enum class GnssConstellation
+    {
+      Unknown,
+      Gps,
+      Glonass,
+      Galileo,
+      BeiDou,
+      Qzss,
+      Navic,
+      Sbas,
+    };
+
     enum class GpsQualityIndicator
     {
       Unknown,

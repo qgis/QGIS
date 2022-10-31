@@ -127,6 +127,9 @@ void QgsAppGpsConnection::connectGps()
   }
 
   emit connecting();
+
+  emit fixStatusChanged( Qgis::GpsFixStatus::NoData );
+
   showStatusBarMessage( tr( "Connecting to GPS device %1…" ).arg( port ) );
 
   QgsGpsDetector *detector = new QgsGpsDetector( port );
@@ -144,6 +147,7 @@ void QgsAppGpsConnection::disconnectGps()
     mConnection = nullptr;
 
     emit disconnected();
+    emit fixStatusChanged( Qgis::GpsFixStatus::NoData );
 
     showStatusBarMessage( tr( "Disconnected from GPS device." ) );
   }
@@ -163,6 +167,11 @@ void QgsAppGpsConnection::onConnected( QgsGpsConnection *conn )
   mConnection = conn;
   connect( mConnection, &QgsGpsConnection::stateChanged, this, &QgsAppGpsConnection::stateChanged );
   connect( mConnection, &QgsGpsConnection::nmeaSentenceReceived, this, &QgsAppGpsConnection::nmeaSentenceReceived );
+  connect( mConnection, &QgsGpsConnection::fixStatusChanged, this, &QgsAppGpsConnection::fixStatusChanged );
+
+  Qgis::GnssConstellation constellation = Qgis::GnssConstellation::Unknown;
+  // emit signals so initial fix status is correctly advertised
+  emit fixStatusChanged( mConnection->currentGPSInformation().bestFixStatus( constellation ) );
 
   //insert connection into registry such that it can also be used by other dialogs or plugins
   QgsApplication::gpsConnectionRegistry()->registerConnection( mConnection );

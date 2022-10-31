@@ -26,6 +26,7 @@
 #include "qgis_core.h"
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
+#include "qgspoint.h"
 
 class QIODevice;
 
@@ -97,6 +98,13 @@ class CORE_EXPORT QgsSatelliteInfo
      */
     QChar satType;
 
+    /**
+     * Returns the GNSS constellation associated with the information.
+     *
+     * \since QGIS 3.30
+     */
+    Qgis::GnssConstellation constellation() const { return mConstellation; }
+
     bool operator==( const QgsSatelliteInfo &other ) const
     {
       return id == other.id &&
@@ -104,13 +112,20 @@ class CORE_EXPORT QgsSatelliteInfo
              elevation == other.elevation &&
              azimuth == other.azimuth &&
              signal == other.signal &&
-             satType == other.satType;
+             satType == other.satType &&
+             mConstellation == other.mConstellation;
     }
 
     bool operator!=( const QgsSatelliteInfo &other ) const
     {
       return !operator==( other );
     }
+
+  private:
+
+    Qgis::GnssConstellation mConstellation = Qgis::GnssConstellation::Unknown;
+
+    friend class QgsNmeaConnection;
 };
 
 /**
@@ -222,8 +237,27 @@ class CORE_EXPORT QgsGpsInformation
 
     /**
      * Contains the fix type, where 1 = no fix, 2 = 2d fix, 3 = 3d fix
+     *
+     * \deprecated, use constellationFixStatus() or bestFixStatus() instead.
      */
     int fixType = 0;
+
+    /**
+     * Returns a map of GNSS constellation to fix status.
+     *
+     * \since QGIS 3.30
+     */
+    QMap< Qgis::GnssConstellation, Qgis::GpsFixStatus > constellationFixStatus() const { return mConstellationFixStatus; }
+
+    /**
+     * Returns the best fix status and corresponding constellation.
+     *
+     * \param constellation will be set to the constellation with best fix status
+     * \returns best current fix status
+     *
+     * \since QGIS 3.30
+     */
+    Qgis::GpsFixStatus bestFixStatus( Qgis::GnssConstellation &constellation SIP_OUT ) const;
 
     /**
      * GPS quality indicator (0 = Invalid; 1 = Fix; 2 = Differential, 3 = Sensitive, etc.)
@@ -265,9 +299,9 @@ class CORE_EXPORT QgsGpsInformation
 
     /**
      * Returns the fix status
-     * \since QGIS 3.10
+     * \deprecated, use constellationFixStatus() or bestFixStatus() instead.
      */
-    Qgis::GpsFixStatus fixStatus() const;
+    Q_DECL_DEPRECATED Qgis::GpsFixStatus fixStatus() const SIP_DEPRECATED;
 
     /**
      * Returns a descriptive string for the signal quality.
@@ -275,6 +309,14 @@ class CORE_EXPORT QgsGpsInformation
      * \since QGIS 3.16
      */
     QString qualityDescription() const;
+
+  private:
+
+    QMap< Qgis::GnssConstellation, Qgis::GpsFixStatus > mConstellationFixStatus;
+
+    friend class QgsNmeaConnection;
+    friend class QgsQtLocationConnection;
+
 };
 
 /**
@@ -402,6 +444,8 @@ class CORE_EXPORT QgsGpsConnection : public QObject
     //! Last fix status
     Qgis::GpsFixStatus mLastFixStatus = Qgis::GpsFixStatus::NoData;
 
+    //! Last recorded location
+    QgsPoint mLastLocation;
 };
 
 Q_DECLARE_METATYPE( QgsGpsInformation )

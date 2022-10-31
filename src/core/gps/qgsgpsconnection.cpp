@@ -25,18 +25,39 @@
 
 #include "info.h"
 
+Qgis::GpsFixStatus QgsGpsInformation::bestFixStatus( Qgis::GnssConstellation &constellation ) const
+{
+  constellation = Qgis::GnssConstellation::Unknown;
+  Qgis::GpsFixStatus bestStatus = Qgis::GpsFixStatus::NoData;
+  for ( auto it = mConstellationFixStatus.begin(); it != mConstellationFixStatus.end(); ++it )
+  {
+    if ( it.value() == Qgis::GpsFixStatus::Fix3D
+         || ( it.value() == Qgis::GpsFixStatus::Fix2D && bestStatus != Qgis::GpsFixStatus::Fix3D )
+         || ( it.value() == Qgis::GpsFixStatus::NoFix && bestStatus == Qgis::GpsFixStatus::NoData )
+       )
+    {
+      bestStatus = it.value();
+      constellation = it.key();
+    }
+  }
+  return bestStatus;
+}
+
 bool QgsGpsInformation::isValid() const
 {
   bool valid = false;
-  if ( status == 'V' || fixType == NMEA_FIX_BAD || qualityIndicator == Qgis::GpsQualityIndicator::Invalid ) // some sources say that 'V' indicates position fix, but is below acceptable quality
+  Qgis::GnssConstellation constellation = Qgis::GnssConstellation::Unknown;
+  const Qgis::GpsFixStatus bestFix = bestFixStatus( constellation );
+  if ( status == 'V'
+       || bestFix == Qgis::GpsFixStatus::NoFix
+       || qualityIndicator == Qgis::GpsQualityIndicator::Invalid ) // some sources say that 'V' indicates position fix, but is below acceptable quality
   {
     valid = false;
   }
-  else if ( fixType == NMEA_FIX_2D )
-  {
-    valid = true;
-  }
-  else if ( status == 'A' || fixType == NMEA_FIX_3D || ( qualityIndicator != Qgis::GpsQualityIndicator::Invalid ) ) // good
+  else if ( status == 'A'
+            || bestFix == Qgis::GpsFixStatus::Fix2D
+            || bestFix == Qgis::GpsFixStatus::Fix3D
+            || ( qualityIndicator != Qgis::GpsQualityIndicator::Invalid ) ) // good
   {
     valid = true;
   }
@@ -177,9 +198,16 @@ void QgsGpsConnection::setSource( QIODevice *source )
 
 void QgsGpsConnection::onStateChanged( const QgsGpsInformation &info )
 {
-  if ( info.fixStatus() != mLastFixStatus )
+  if ( info.isValid() )
   {
-    mLastFixStatus = info.fixStatus();
+    mLastLocation = QgsPoint( info.longitude, info.latitude, info.elevation );
+  }
+
+  Qgis::GnssConstellation bestFixConstellation = Qgis::GnssConstellation::Unknown;
+  Qgis::GpsFixStatus bestFix = info.bestFixStatus( bestFixConstellation );
+  if ( bestFix != mLastFixStatus )
+  {
+    mLastFixStatus = bestFix;
     emit fixStatusChanged( mLastFixStatus );
   }
 }

@@ -69,6 +69,8 @@ class TestQgsNmeaConnection : public QgsTest
     void cleanupTestCase();
     void testBasic();
     void testFixStatus();
+    void testFixStatusAcrossConstellations();
+    void testConstellation();
 
 };
 
@@ -91,7 +93,9 @@ void TestQgsNmeaConnection::testBasic()
   QgsGpsInformation info = connection.push( QStringLiteral( "$GPGSV,3,1,12,07,41,181,26,05,34,292,30,16,34,060,36,26,24,031,24*7B" ) );
   QVERIFY( info.isValid() );
   QVERIFY( !info.satInfoComplete );
-  QCOMPARE( info.fixStatus(), Qgis::GpsFixStatus::Fix3D );
+  Qgis::GnssConstellation constellation = Qgis::GnssConstellation::Unknown;
+  QCOMPARE( info.bestFixStatus( constellation ), Qgis::GpsFixStatus::NoData );
+  QCOMPARE( constellation, Qgis::GnssConstellation::Unknown );
   QCOMPARE( info.qualityDescription(), QStringLiteral( "Unknown (-1)" ) );
   QCOMPARE( info.latitude, 0 );
   QCOMPARE( info.longitude, 0 );
@@ -101,7 +105,7 @@ void TestQgsNmeaConnection::testBasic()
   info = connection.push( QStringLiteral( "$GPGSV,3,2,12,02,61,115,,21,53,099,,03,51,111,,19,32,276,*72" ) );
   QVERIFY( info.isValid() );
   QVERIFY( !info.satInfoComplete );
-  QCOMPARE( info.fixStatus(), Qgis::GpsFixStatus::Fix3D );
+  QCOMPARE( info.bestFixStatus( constellation ), Qgis::GpsFixStatus::NoData );
   QCOMPARE( info.qualityDescription(), QStringLiteral( "Unknown (-1)" ) );
   QCOMPARE( info.latitude, 0 );
   QCOMPARE( info.longitude, 0 );
@@ -111,7 +115,7 @@ void TestQgsNmeaConnection::testBasic()
   info =  connection.push( QStringLiteral( "$GPGSV,3,3,12,17,31,279,,28,27,320,,23,23,026,,14,22,060,*7B" ) );
   QVERIFY( info.isValid() );
   QVERIFY( info.satInfoComplete );
-  QCOMPARE( info.fixStatus(), Qgis::GpsFixStatus::Fix3D );
+  QCOMPARE( info.bestFixStatus( constellation ), Qgis::GpsFixStatus::NoData );
   QCOMPARE( info.qualityDescription(), QStringLiteral( "Unknown (-1)" ) );
   QCOMPARE( info.latitude, 0 );
   QCOMPARE( info.longitude, 0 );
@@ -121,7 +125,7 @@ void TestQgsNmeaConnection::testBasic()
   info = connection.push( QStringLiteral( "$GPRMC,084111.185,A,6938.6531,N,01856.8527,E,0.16,2.00,220120,,,A*6E" ) );
   QVERIFY( info.isValid() );
   QVERIFY( info.satInfoComplete );
-  QCOMPARE( info.fixStatus(), Qgis::GpsFixStatus::Fix3D );
+  QCOMPARE( info.bestFixStatus( constellation ), Qgis::GpsFixStatus::NoData );
   QCOMPARE( info.qualityDescription(), QStringLiteral( "Autonomous" ) );
   QGSCOMPARENEAR( info.latitude, 69.6442183333, 0.00001 );
   QGSCOMPARENEAR( info.longitude, 18.947545, 0.00001 );
@@ -131,7 +135,7 @@ void TestQgsNmeaConnection::testBasic()
   info = connection.push( QStringLiteral( "$GPGGA,084112.185,6938.6532,N,01856.8526,E,1,04,1.4,35.0,M,29.4,M,,0000*63" ) );
   QVERIFY( info.isValid() );
   QVERIFY( info.satInfoComplete );
-  QCOMPARE( info.fixStatus(), Qgis::GpsFixStatus::Fix3D );
+  QCOMPARE( info.bestFixStatus( constellation ), Qgis::GpsFixStatus::NoData );
   QCOMPARE( info.qualityDescription(), QStringLiteral( "Autonomous" ) );
   QGSCOMPARENEAR( info.latitude, 69.6442183333, 0.00001 );
   QGSCOMPARENEAR( info.longitude, 18.947545, 0.00001 );
@@ -141,7 +145,8 @@ void TestQgsNmeaConnection::testBasic()
   info = connection.push( QStringLiteral( "$GPGSA,A,3,07,05,16,26,,,,,,,,,3.4,1.4,3.1*33" ) );
   QVERIFY( info.isValid() );
   QVERIFY( info.satInfoComplete );
-  QCOMPARE( info.fixStatus(), Qgis::GpsFixStatus::Fix3D );
+  QCOMPARE( info.bestFixStatus( constellation ), Qgis::GpsFixStatus::Fix3D );
+  QCOMPARE( constellation, Qgis::GnssConstellation::Gps );
   QCOMPARE( info.qualityDescription(), QStringLiteral( "Autonomous" ) );
   QGSCOMPARENEAR( info.latitude, 69.6442183333, 0.00001 );
   QGSCOMPARENEAR( info.longitude, 18.947545, 0.00001 );
@@ -151,7 +156,7 @@ void TestQgsNmeaConnection::testBasic()
   info = connection.push( QStringLiteral( "$GPRMC,084112.185,A,6938.6532,N,01856.8526,E,0.08,2.00,220120,,,A*60" ) );
   QVERIFY( info.isValid() );
   QVERIFY( info.satInfoComplete );
-  QCOMPARE( info.fixStatus(), Qgis::GpsFixStatus::Fix3D );
+  QCOMPARE( info.bestFixStatus( constellation ), Qgis::GpsFixStatus::Fix3D );
   QCOMPARE( info.qualityDescription(), QStringLiteral( "Autonomous" ) );
   QGSCOMPARENEAR( info.latitude, 69.6442183333, 0.00001 );
   QGSCOMPARENEAR( info.longitude, 18.947545, 0.00001 );
@@ -161,7 +166,7 @@ void TestQgsNmeaConnection::testBasic()
   info = connection.push( QStringLiteral( "$GPGGA,084113.185,6938.6532,N,01856.8526,E,1,04,1.4,34.0,M,29.4,M,,0000*63" ) );
   QVERIFY( info.isValid() );
   QVERIFY( info.satInfoComplete );
-  QCOMPARE( info.fixStatus(), Qgis::GpsFixStatus::Fix3D );
+  QCOMPARE( info.bestFixStatus( constellation ), Qgis::GpsFixStatus::Fix3D );
   QCOMPARE( info.qualityDescription(), QStringLiteral( "Autonomous" ) );
   QGSCOMPARENEAR( info.latitude, 69.6442183333, 0.00001 );
   QGSCOMPARENEAR( info.longitude, 18.947545, 0.00001 );
@@ -171,7 +176,7 @@ void TestQgsNmeaConnection::testBasic()
   info = connection.push( QStringLiteral( "$GPGSA,A,3,07,05,16,26,,,,,,,,,3.4,1.4,3.1*33" ) );
   QVERIFY( info.isValid() );
   QVERIFY( info.satInfoComplete );
-  QCOMPARE( info.fixStatus(), Qgis::GpsFixStatus::Fix3D );
+  QCOMPARE( info.bestFixStatus( constellation ), Qgis::GpsFixStatus::Fix3D );
   QCOMPARE( info.qualityDescription(), QStringLiteral( "Autonomous" ) );
   QGSCOMPARENEAR( info.latitude, 69.6442183333, 0.00001 );
   QGSCOMPARENEAR( info.longitude, 18.947545, 0.00001 );
@@ -181,7 +186,7 @@ void TestQgsNmeaConnection::testBasic()
   info = connection.push( QStringLiteral( "$GPRMC,084113.185,A,6938.6532,N,01856.8526,E,0.05,2.00,220120,,,A*6C" ) );
   QVERIFY( info.isValid() );
   QVERIFY( info.satInfoComplete );
-  QCOMPARE( info.fixStatus(), Qgis::GpsFixStatus::Fix3D );
+  QCOMPARE( info.bestFixStatus( constellation ), Qgis::GpsFixStatus::Fix3D );
   QCOMPARE( info.qualityDescription(), QStringLiteral( "Autonomous" ) );
   QGSCOMPARENEAR( info.latitude, 69.6442183333, 0.00001 );
   QGSCOMPARENEAR( info.longitude, 18.947545, 0.00001 );
@@ -197,49 +202,50 @@ void TestQgsNmeaConnection::testFixStatus()
 
   QgsGpsInformation info = connection.push( QStringLiteral( "$GPRMC,220516,V,5133.82,N,00042.24,W,173.8,231.8,130694,004.2,W*70" ) );
   QVERIFY( !info.isValid() );
-  QCOMPARE( info.fixStatus(), Qgis::GpsFixStatus::NoFix );
-  QCOMPARE( statusSpy.count(), 1 );
-  QCOMPARE( statusSpy.constLast().at( 0 ).value< Qgis::GpsFixStatus >(), Qgis::GpsFixStatus::NoFix );
+  Qgis::GnssConstellation constellation = Qgis::GnssConstellation::Unknown;
+  QCOMPARE( info.bestFixStatus( constellation ), Qgis::GpsFixStatus::NoData );
+  QCOMPARE( constellation, Qgis::GnssConstellation::Unknown );
+  QCOMPARE( statusSpy.count(), 0 );
 
   // no fix status change
   connection.push( QStringLiteral( "$GPRMC,220516,V,5133.82,N,00042.24,W,173.8,231.8,130694,004.2,W*70" ) );
-  QCOMPARE( statusSpy.count(), 1 );
+  QCOMPARE( statusSpy.count(), 0 );
 
   // simulate 3d fix
   connection.push( QStringLiteral( "$GPGSA,A,3,,,,,,16,18,,22,24,,,3.6,2.1,2.2*3C" ) );
   info = connection.push( QStringLiteral( "$GPRMC,220516,A,5133.82,N,00042.24,W,173.8,231.8,130694,004.2,W*70" ) );
   QVERIFY( info.isValid() );
-  QCOMPARE( info.fixStatus(), Qgis::GpsFixStatus::Fix3D );
-  QCOMPARE( statusSpy.count(), 2 );
+  QCOMPARE( info.bestFixStatus( constellation ), Qgis::GpsFixStatus::Fix3D );
+  QCOMPARE( statusSpy.count(), 1 );
   QCOMPARE( statusSpy.constLast().at( 0 ).value< Qgis::GpsFixStatus >(), Qgis::GpsFixStatus::Fix3D );
 
   // no fix status change
   connection.push( QStringLiteral( "$GPGSA,A,3,,,,,,16,18,,22,24,,,3.6,2.1,2.2*3C" ) );
-  QCOMPARE( statusSpy.count(), 2 );
+  QCOMPARE( statusSpy.count(), 1 );
 
   // simulate 2d fix
   connection.push( QStringLiteral( "$GPGSA,A,2,,,,,,16,18,,22,24,,,3.6,2.1,2.2*3C" ) );
   info = connection.push( QStringLiteral( "$GPRMC,220516,A,5133.82,N,00042.24,W,173.8,231.8,130694,004.2,W*70" ) );
   QVERIFY( info.isValid() );
-  QCOMPARE( info.fixStatus(), Qgis::GpsFixStatus::Fix2D );
-  QCOMPARE( statusSpy.count(), 3 );
+  QCOMPARE( info.bestFixStatus( constellation ), Qgis::GpsFixStatus::Fix2D );
+  QCOMPARE( statusSpy.count(), 2 );
   QCOMPARE( statusSpy.constLast().at( 0 ).value< Qgis::GpsFixStatus >(), Qgis::GpsFixStatus::Fix2D );
 
   // no fix status change
   connection.push( QStringLiteral( "$GPGSA,A,2,,,,,,16,18,,22,24,,,3.6,2.1,2.2*3C" ) );
-  QCOMPARE( statusSpy.count(), 3 );
+  QCOMPARE( statusSpy.count(), 2 );
 
   // simulate fix not available
   connection.push( QStringLiteral( "$GPGSA,A,1,,,,,,16,18,,22,24,,,3.6,2.1,2.2*3C" ) );
   info = connection.push( QStringLiteral( "$GPRMC,220516,A,5133.82,N,00042.24,W,173.8,231.8,130694,004.2,W*70" ) );
   QVERIFY( !info.isValid() );
-  QCOMPARE( info.fixStatus(), Qgis::GpsFixStatus::NoFix );
-  QCOMPARE( statusSpy.count(), 4 );
+  QCOMPARE( info.bestFixStatus( constellation ), Qgis::GpsFixStatus::NoFix );
+  QCOMPARE( statusSpy.count(), 3 );
   QCOMPARE( statusSpy.constLast().at( 0 ).value< Qgis::GpsFixStatus >(), Qgis::GpsFixStatus::NoFix );
 
   // no fix status change
   connection.push( QStringLiteral( "$GPGSA,A,1,,,,,,16,18,,22,24,,,3.6,2.1,2.2*3C" ) );
-  QCOMPARE( statusSpy.count(), 4 );
+  QCOMPARE( statusSpy.count(), 3 );
 
   // invalid fix due to bad lat / long values
   connection.push( QStringLiteral( "$GPGSA,A,2,,,,,,16,18,,22,24,,,3.6,2.1,2.2*3C" ) );
@@ -249,7 +255,7 @@ void TestQgsNmeaConnection::testFixStatus()
   QGSCOMPARENEAR( info.longitude, -0.70400000, 0.00001 );
   QVERIFY( !info.isValid() );
 
-  QCOMPARE( statusSpy.count(), 5 );
+  QCOMPARE( statusSpy.count(), 4 );
   QCOMPARE( statusSpy.constLast().at( 0 ).value< Qgis::GpsFixStatus >(), Qgis::GpsFixStatus::Fix2D );
 
   info = connection.push( QStringLiteral( "$GPRMC,220516,A,9933.82,S,00042.24,W,173.8,231.8,130694,004.2,W*70" ) );
@@ -268,12 +274,111 @@ void TestQgsNmeaConnection::testFixStatus()
   QGSCOMPARENEAR( info.longitude, 192.5373333333, 0.00001 );
   QVERIFY( !info.isValid() );
 
-  QCOMPARE( statusSpy.count(), 5 );
+  QCOMPARE( statusSpy.count(), 4 );
 
   connection.close();
-  QCOMPARE( statusSpy.count(), 6 );
+  QCOMPARE( statusSpy.count(), 5 );
   QCOMPARE( statusSpy.constLast().at( 0 ).value< Qgis::GpsFixStatus >(), Qgis::GpsFixStatus::NoData );
 
+}
+
+void TestQgsNmeaConnection::testFixStatusAcrossConstellations()
+{
+  ReplayNmeaConnection connection;
+
+  Qgis::GnssConstellation bestConstellation = Qgis::GnssConstellation::Unknown;
+
+  QSignalSpy statusSpy( &connection, &QgsGpsConnection::fixStatusChanged );
+
+  QgsGpsInformation info = connection.push( QStringLiteral( "$GPGSA,A,1,7,9,16,27,30,9,7,1,6,5,,,4.2,3.4,2.4*07" ) );
+  QCOMPARE( info.bestFixStatus( bestConstellation ), Qgis::GpsFixStatus::NoFix );
+  QCOMPARE( statusSpy.count(), 1 );
+  QCOMPARE( statusSpy.constLast().at( 0 ).value< Qgis::GpsFixStatus >(), Qgis::GpsFixStatus::NoFix );
+  QCOMPARE( bestConstellation, Qgis::GnssConstellation::Gps );
+
+  info = connection.push( QStringLiteral( "$GLGSA,A,1,7,9,16,27,30,9,7,1,6,5,,,4.2,3.4,2.4*07" ) );
+  QCOMPARE( info.bestFixStatus( bestConstellation ), Qgis::GpsFixStatus::NoFix );
+  QCOMPARE( statusSpy.count(), 1 );
+  QCOMPARE( statusSpy.constLast().at( 0 ).value< Qgis::GpsFixStatus >(), Qgis::GpsFixStatus::NoFix );
+  QCOMPARE( bestConstellation, Qgis::GnssConstellation::Gps );
+
+  info = connection.push( QStringLiteral( "$GLGSA,A,2,7,9,16,27,30,9,7,1,6,5,,,4.2,3.4,2.4*07\r\n$GPGSA,A,1,7,9,16,27,30,9,7,1,6,5,,,4.2,3.4,2.4*07" ) );
+  QCOMPARE( info.bestFixStatus( bestConstellation ), Qgis::GpsFixStatus::Fix2D );
+  QCOMPARE( statusSpy.count(), 2 );
+  QCOMPARE( statusSpy.constLast().at( 0 ).value< Qgis::GpsFixStatus >(), Qgis::GpsFixStatus::Fix2D );
+  QCOMPARE( bestConstellation, Qgis::GnssConstellation::Glonass );
+
+  info = connection.push( QStringLiteral( "$GNGSA,A,3,7,9,16,27,30,9,7,1,6,5,,,4.2,3.4,2.4*07" ) );
+  QCOMPARE( info.bestFixStatus( bestConstellation ), Qgis::GpsFixStatus::Fix3D );
+  QCOMPARE( statusSpy.count(), 3 );
+  QCOMPARE( statusSpy.constLast().at( 0 ).value< Qgis::GpsFixStatus >(), Qgis::GpsFixStatus::Fix3D );
+  QCOMPARE( bestConstellation, Qgis::GnssConstellation::Gps );
+
+  // GPS fix lost, best fix is 2D glonass one
+  info = connection.push( QStringLiteral( "$GNGSA,A,1,7,9,16,27,30,9,7,1,6,5,,,4.2,3.4,2.4*07" ) );
+  QCOMPARE( info.bestFixStatus( bestConstellation ), Qgis::GpsFixStatus::Fix2D );
+  QCOMPARE( statusSpy.count(), 4 );
+  QCOMPARE( statusSpy.constLast().at( 0 ).value< Qgis::GpsFixStatus >(), Qgis::GpsFixStatus::Fix2D );
+  QCOMPARE( bestConstellation, Qgis::GnssConstellation::Glonass );
+
+  // another test where a number of GNGSA sentences are received at once
+  info = connection.push( QStringLiteral( "$GNGSA,A,3,6,11,12,19,20,25,29,10,20,19,7,10,7.5,5.5,5.1*24\r\n$GNGSA,A,3,11,12,24,25,31,,,,,,,,7.5,5.5,5.1*2A\r\n$GNGSA,A,1,194,195,,,,,,,,,,,7.5,5.5,5.1*29" ) );
+  QCOMPARE( info.bestFixStatus( bestConstellation ), Qgis::GpsFixStatus::Fix3D );
+  QVERIFY( info.isValid() ) ;
+  QCOMPARE( statusSpy.count(), 5 );
+  QCOMPARE( statusSpy.constLast().at( 0 ).value< Qgis::GpsFixStatus >(), Qgis::GpsFixStatus::Fix3D );
+  QCOMPARE( bestConstellation, Qgis::GnssConstellation::Gps );
+}
+
+void TestQgsNmeaConnection::testConstellation()
+{
+  ReplayNmeaConnection connection;
+  // GSV sentences
+
+  QgsGpsInformation info = connection.push( QStringLiteral( "$GPGSV,8,5,30,06,33,224,00,08,19,298,00,09,21,234,00,13,18,286,00*7E" ) );
+  QCOMPARE( info.satellitesInView.count(), 4 );
+  QCOMPARE( info.satellitesInView.at( 0 ).constellation(), Qgis::GnssConstellation::Gps );
+  QCOMPARE( info.satellitesInView.at( 1 ).constellation(), Qgis::GnssConstellation::Gps );
+  QCOMPARE( info.satellitesInView.at( 2 ).constellation(), Qgis::GnssConstellation::Gps );
+  QCOMPARE( info.satellitesInView.at( 3 ).constellation(), Qgis::GnssConstellation::Gps );
+
+  info = connection.push( QStringLiteral( "$GLGSV,8,5,30,06,33,224,00,08,19,298,00,09,21,234,00,13,18,286,00*7E" ) );
+  QCOMPARE( info.satellitesInView.count(), 5 );
+  QCOMPARE( info.satellitesInView.at( 0 ).constellation(), Qgis::GnssConstellation::Gps );
+  QCOMPARE( info.satellitesInView.at( 1 ).constellation(), Qgis::GnssConstellation::Gps );
+  QCOMPARE( info.satellitesInView.at( 2 ).constellation(), Qgis::GnssConstellation::Gps );
+  QCOMPARE( info.satellitesInView.at( 3 ).constellation(), Qgis::GnssConstellation::Gps );
+  QCOMPARE( info.satellitesInView.at( 4 ).constellation(), Qgis::GnssConstellation::Glonass );
+
+  info = connection.push( QStringLiteral( "$GAGSV,8,5,30,31,33,224,00,08,19,298,00,09,21,234,00,13,18,286,00*7E" ) );
+  QCOMPARE( info.satellitesInView.count(), 6 );
+  QCOMPARE( info.satellitesInView.at( 0 ).constellation(), Qgis::GnssConstellation::Gps );
+  QCOMPARE( info.satellitesInView.at( 1 ).constellation(), Qgis::GnssConstellation::Gps );
+  QCOMPARE( info.satellitesInView.at( 2 ).constellation(), Qgis::GnssConstellation::Gps );
+  QCOMPARE( info.satellitesInView.at( 3 ).constellation(), Qgis::GnssConstellation::Gps );
+  QCOMPARE( info.satellitesInView.at( 4 ).constellation(), Qgis::GnssConstellation::Glonass );
+  QCOMPARE( info.satellitesInView.at( 5 ).constellation(), Qgis::GnssConstellation::Galileo );
+
+  info = connection.push( QStringLiteral( "$GQGSV,8,5,30,7,33,224,00,08,19,298,00,09,21,234,00,13,18,286,00*7E" ) );
+  QCOMPARE( info.satellitesInView.count(), 7 );
+  QCOMPARE( info.satellitesInView.at( 0 ).constellation(), Qgis::GnssConstellation::Gps );
+  QCOMPARE( info.satellitesInView.at( 1 ).constellation(), Qgis::GnssConstellation::Gps );
+  QCOMPARE( info.satellitesInView.at( 2 ).constellation(), Qgis::GnssConstellation::Gps );
+  QCOMPARE( info.satellitesInView.at( 3 ).constellation(), Qgis::GnssConstellation::Gps );
+  QCOMPARE( info.satellitesInView.at( 4 ).constellation(), Qgis::GnssConstellation::Glonass );
+  QCOMPARE( info.satellitesInView.at( 5 ).constellation(), Qgis::GnssConstellation::Galileo );
+  QCOMPARE( info.satellitesInView.at( 6 ).constellation(), Qgis::GnssConstellation::Qzss );
+
+  info = connection.push( QStringLiteral( "$GBGSV,8,5,30,64,33,224,00,08,19,298,00,09,21,234,00,13,18,286,00*7E" ) );
+  QCOMPARE( info.satellitesInView.count(), 8 );
+  QCOMPARE( info.satellitesInView.at( 0 ).constellation(), Qgis::GnssConstellation::Gps );
+  QCOMPARE( info.satellitesInView.at( 1 ).constellation(), Qgis::GnssConstellation::Gps );
+  QCOMPARE( info.satellitesInView.at( 2 ).constellation(), Qgis::GnssConstellation::Gps );
+  QCOMPARE( info.satellitesInView.at( 3 ).constellation(), Qgis::GnssConstellation::Gps );
+  QCOMPARE( info.satellitesInView.at( 4 ).constellation(), Qgis::GnssConstellation::Glonass );
+  QCOMPARE( info.satellitesInView.at( 5 ).constellation(), Qgis::GnssConstellation::Galileo );
+  QCOMPARE( info.satellitesInView.at( 6 ).constellation(), Qgis::GnssConstellation::Qzss );
+  QCOMPARE( info.satellitesInView.at( 7 ).constellation(), Qgis::GnssConstellation::BeiDou );
 }
 
 QGSTEST_MAIN( TestQgsNmeaConnection )
