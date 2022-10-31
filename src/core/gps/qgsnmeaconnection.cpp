@@ -424,7 +424,7 @@ void QgsNmeaConnection::processVtgSentence( const char *data, int len )
 
 void QgsNmeaConnection::processGsaSentence( const char *data, int len )
 {
-  if ( mLastGPSInformation.satInfoComplete == true )
+  if ( mLastGPSInformation.satInfoComplete )
   {
     //clear satellite information when a new series of packs arrives
     mLastGPSInformation.satPrn.clear();
