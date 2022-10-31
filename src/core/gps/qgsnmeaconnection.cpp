@@ -130,7 +130,6 @@ void QgsNmeaConnection::processStringBuffer()
         else if ( substring.startsWith( QLatin1String( "$GPGSA" ) ) || substring.startsWith( QLatin1String( "$GNGSA" ) ) )
         {
           QgsDebugMsgLevel( substring, 2 );
-          mLastGPSInformation.satInfoComplete = false;
           processGsaSentence( ba.data(), ba.length() );
           mStatus = GPSDataReceived;
           QgsDebugMsgLevel( QStringLiteral( "*******************GPS data received****************" ), 2 );
@@ -428,7 +427,7 @@ void QgsNmeaConnection::processVtgSentence( const char *data, int len )
 
 void QgsNmeaConnection::processGsaSentence( const char *data, int len )
 {
-  if (  mLastGPSInformation.satInfoComplete = true )
+  if ( mLastGPSInformation.satInfoComplete = true )
   {
     mLastGPSInformation.satPrn.clear();
     mLastGPSInformation.satellitesInView.clear();
