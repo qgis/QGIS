@@ -213,6 +213,30 @@ void TestQgsNmeaConnection::testFixStatus()
   info = connection.push( QStringLiteral( "$GPRMC,220516,A,5133.82,N,00042.24,W,173.8,231.8,130694,004.2,W*70" ) );
   QVERIFY( !info.isValid() );
   QCOMPARE( info.fixStatus(), Qgis::GpsFixStatus::NoFix );
+
+  // invalid fix due to bad lat / long values
+  connection.push( QStringLiteral( "$GPGSA,A,2,,,,,,16,18,,22,24,,,3.6,2.1,2.2*3C" ) );
+  // latitude 99 degrees => out of range
+  info = connection.push( QStringLiteral( "$GPRMC,220516,A,9933.82,N,00042.24,W,173.8,231.8,130694,004.2,W*70" ) );
+  QGSCOMPARENEAR( info.latitude, 99.563666, 0.00001 );
+  QGSCOMPARENEAR( info.longitude, -0.70400000, 0.00001 );
+  QVERIFY( !info.isValid() );
+
+  info = connection.push( QStringLiteral( "$GPRMC,220516,A,9933.82,S,00042.24,W,173.8,231.8,130694,004.2,W*70" ) );
+  QGSCOMPARENEAR( info.latitude, -99.563666, 0.00001 );
+  QGSCOMPARENEAR( info.longitude, -0.70400000, 0.00001 );
+  QVERIFY( !info.isValid() );
+
+  // longitude 192 degrees => out of range
+  info = connection.push( QStringLiteral( "$GPRMC,220516,A,1933.82,N,19192.24,W,173.8,231.8,130694,004.2,W*70" ) );
+  QGSCOMPARENEAR( info.latitude, 19.5636666667, 0.00001 );
+  QGSCOMPARENEAR( info.longitude, -192.5373333333, 0.00001 );
+  QVERIFY( !info.isValid() );
+
+  info = connection.push( QStringLiteral( "$GPRMC,220516,A,1933.82,N,19192.24,E,173.8,231.8,130694,004.2,W*70" ) );
+  QGSCOMPARENEAR( info.latitude, 19.5636666667, 0.00001 );
+  QGSCOMPARENEAR( info.longitude, 192.5373333333, 0.00001 );
+  QVERIFY( !info.isValid() );
 }
 
 QGSTEST_MAIN( TestQgsNmeaConnection )

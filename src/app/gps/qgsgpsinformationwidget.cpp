@@ -760,12 +760,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
   } //satellites
 #endif
 
-  bool validFlag = info.isValid();
-  if ( validFlag )
-  {
-    validFlag = info.longitude >= -180.0 && info.longitude <= 180.0 && info.latitude >= -90.0 && info.latitude <= 90.0;
-  }
-
+  const bool validFlag = info.isValid();
   QgsPointXY myNewCenter;
   nmeaPOS newNmeaPosition;
   nmeaTIME newNmeaTime;
