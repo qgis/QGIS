@@ -109,6 +109,8 @@ QgsGpsConnection::QgsGpsConnection( QIODevice *dev )
 {
   if ( mSource )
     QObject::connect( mSource.get(), &QIODevice::readyRead, this, &QgsGpsConnection::parseData );
+
+  QObject::connect( this, &QgsGpsConnection::stateChanged, this, &QgsGpsConnection::onStateChanged );
 }
 
 QgsGpsConnection::~QgsGpsConnection()
@@ -139,6 +141,13 @@ bool QgsGpsConnection::close()
   }
 
   mSource->close();
+
+  if ( mLastFixStatus != Qgis::GpsFixStatus::NoData )
+  {
+    mLastFixStatus = Qgis::GpsFixStatus::NoData;
+    emit fixStatusChanged( mLastFixStatus );
+  }
+
   return true;
 }
 
@@ -149,6 +158,12 @@ void QgsGpsConnection::cleanupSource()
     mSource->close();
   }
   mSource.reset();
+
+  if ( mLastFixStatus != Qgis::GpsFixStatus::NoData )
+  {
+    mLastFixStatus = Qgis::GpsFixStatus::NoData;
+    emit fixStatusChanged( mLastFixStatus );
+  }
 }
 
 void QgsGpsConnection::setSource( QIODevice *source )
@@ -158,6 +173,15 @@ void QgsGpsConnection::setSource( QIODevice *source )
   QObject::connect( mSource.get(), &QIODevice::readyRead, this, &QgsGpsConnection::parseData );
 
   clearLastGPSInformation();
+}
+
+void QgsGpsConnection::onStateChanged( const QgsGpsInformation &info )
+{
+  if ( info.fixStatus() != mLastFixStatus )
+  {
+    mLastFixStatus = info.fixStatus();
+    emit fixStatusChanged( mLastFixStatus );
+  }
 }
 
 void QgsGpsConnection::clearLastGPSInformation()

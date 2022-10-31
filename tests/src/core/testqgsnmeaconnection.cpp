@@ -192,27 +192,53 @@ void TestQgsNmeaConnection::testFixStatus()
 {
   ReplayNmeaConnection connection;
 
+  QSignalSpy statusSpy( &connection, &QgsGpsConnection::fixStatusChanged );
+
   QgsGpsInformation info = connection.push( QStringLiteral( "$GPRMC,220516,V,5133.82,N,00042.24,W,173.8,231.8,130694,004.2,W*70" ) );
   QVERIFY( !info.isValid() );
   QCOMPARE( info.fixStatus(), Qgis::GpsFixStatus::NoFix );
+  QCOMPARE( statusSpy.count(), 1 );
+  QCOMPARE( statusSpy.constLast().at( 0 ).value< Qgis::GpsFixStatus >(), Qgis::GpsFixStatus::NoFix );
+
+  // no fix status change
+  connection.push( QStringLiteral( "$GPRMC,220516,V,5133.82,N,00042.24,W,173.8,231.8,130694,004.2,W*70" ) );
+  QCOMPARE( statusSpy.count(), 1 );
 
   // simulate 3d fix
   connection.push( QStringLiteral( "$GPGSA,A,3,,,,,,16,18,,22,24,,,3.6,2.1,2.2*3C" ) );
   info = connection.push( QStringLiteral( "$GPRMC,220516,A,5133.82,N,00042.24,W,173.8,231.8,130694,004.2,W*70" ) );
   QVERIFY( info.isValid() );
   QCOMPARE( info.fixStatus(), Qgis::GpsFixStatus::Fix3D );
+  QCOMPARE( statusSpy.count(), 2 );
+  QCOMPARE( statusSpy.constLast().at( 0 ).value< Qgis::GpsFixStatus >(), Qgis::GpsFixStatus::Fix3D );
+
+  // no fix status change
+  connection.push( QStringLiteral( "$GPGSA,A,3,,,,,,16,18,,22,24,,,3.6,2.1,2.2*3C" ) );
+  QCOMPARE( statusSpy.count(), 2 );
 
   // simulate 2d fix
   connection.push( QStringLiteral( "$GPGSA,A,2,,,,,,16,18,,22,24,,,3.6,2.1,2.2*3C" ) );
   info = connection.push( QStringLiteral( "$GPRMC,220516,A,5133.82,N,00042.24,W,173.8,231.8,130694,004.2,W*70" ) );
   QVERIFY( info.isValid() );
   QCOMPARE( info.fixStatus(), Qgis::GpsFixStatus::Fix2D );
+  QCOMPARE( statusSpy.count(), 3 );
+  QCOMPARE( statusSpy.constLast().at( 0 ).value< Qgis::GpsFixStatus >(), Qgis::GpsFixStatus::Fix2D );
+
+  // no fix status change
+  connection.push( QStringLiteral( "$GPGSA,A,2,,,,,,16,18,,22,24,,,3.6,2.1,2.2*3C" ) );
+  QCOMPARE( statusSpy.count(), 3 );
 
   // simulate fix not available
   connection.push( QStringLiteral( "$GPGSA,A,1,,,,,,16,18,,22,24,,,3.6,2.1,2.2*3C" ) );
   info = connection.push( QStringLiteral( "$GPRMC,220516,A,5133.82,N,00042.24,W,173.8,231.8,130694,004.2,W*70" ) );
   QVERIFY( !info.isValid() );
   QCOMPARE( info.fixStatus(), Qgis::GpsFixStatus::NoFix );
+  QCOMPARE( statusSpy.count(), 4 );
+  QCOMPARE( statusSpy.constLast().at( 0 ).value< Qgis::GpsFixStatus >(), Qgis::GpsFixStatus::NoFix );
+
+  // no fix status change
+  connection.push( QStringLiteral( "$GPGSA,A,1,,,,,,16,18,,22,24,,,3.6,2.1,2.2*3C" ) );
+  QCOMPARE( statusSpy.count(), 4 );
 
   // invalid fix due to bad lat / long values
   connection.push( QStringLiteral( "$GPGSA,A,2,,,,,,16,18,,22,24,,,3.6,2.1,2.2*3C" ) );
@@ -221,6 +247,9 @@ void TestQgsNmeaConnection::testFixStatus()
   QGSCOMPARENEAR( info.latitude, 99.563666, 0.00001 );
   QGSCOMPARENEAR( info.longitude, -0.70400000, 0.00001 );
   QVERIFY( !info.isValid() );
+
+  QCOMPARE( statusSpy.count(), 5 );
+  QCOMPARE( statusSpy.constLast().at( 0 ).value< Qgis::GpsFixStatus >(), Qgis::GpsFixStatus::Fix2D );
 
   info = connection.push( QStringLiteral( "$GPRMC,220516,A,9933.82,S,00042.24,W,173.8,231.8,130694,004.2,W*70" ) );
   QGSCOMPARENEAR( info.latitude, -99.563666, 0.00001 );
@@ -237,6 +266,13 @@ void TestQgsNmeaConnection::testFixStatus()
   QGSCOMPARENEAR( info.latitude, 19.5636666667, 0.00001 );
   QGSCOMPARENEAR( info.longitude, 192.5373333333, 0.00001 );
   QVERIFY( !info.isValid() );
+
+  QCOMPARE( statusSpy.count(), 5 );
+
+  connection.close();
+  QCOMPARE( statusSpy.count(), 6 );
+  QCOMPARE( statusSpy.constLast().at( 0 ).value< Qgis::GpsFixStatus >(), Qgis::GpsFixStatus::NoData );
+
 }
 
 QGSTEST_MAIN( TestQgsNmeaConnection )
