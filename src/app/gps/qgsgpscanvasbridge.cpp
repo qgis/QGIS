@@ -24,6 +24,11 @@
 #include "qgsgpsconnection.h"
 #include "qgsbearingutils.h"
 #include "qgsmapcanvas.h"
+#include "qgisapp.h"
+#include "qgsstatusbar.h"
+#include "qgslocaldefaultsettings.h"
+#include "qgsprojectdisplaysettings.h"
+#include "qgsbearingnumericformat.h"
 
 QgsGpsCanvasBridge::QgsGpsCanvasBridge( QgsAppGpsConnection *connection, QgsMapCanvas *canvas, QObject *parent )
   : QObject( parent )
@@ -36,7 +41,37 @@ QgsGpsCanvasBridge::QgsGpsCanvasBridge( QgsAppGpsConnection *connection, QgsMapC
   connect( mConnection, &QgsAppGpsConnection::stateChanged, this, &QgsGpsCanvasBridge::gpsStateChanged );
 
   connect( QgsGui::instance(), &QgsGui::optionsChanged, this, &QgsGpsCanvasBridge::gpsSettingsChanged );
+
+  mCanvasToWgs84Transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
+  connect( mCanvas, &QgsMapCanvas::destinationCrsChanged, this, [ = ]
+  {
+    mCanvasToWgs84Transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
+  } );
+  connect( QgsProject::instance(), &QgsProject::transformContextChanged, this, [ = ]
+  {
+    mCanvasToWgs84Transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
+  } );
+
+  mDistanceCalculator.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  mDistanceCalculator.setSourceCrs( mWgs84CRS, QgsProject::instance()->transformContext() );
+  connect( QgsProject::instance(), &QgsProject::ellipsoidChanged, this, [ = ]
+  {
+    mDistanceCalculator.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  } );
+
+  connect( mCanvas, &QgsMapCanvas::xyCoordinates, this, &QgsGpsCanvasBridge::cursorCoordinateChanged );
+  connect( mCanvas, &QgsMapCanvas::tapAndHoldGestureOccurred, this, &QgsGpsCanvasBridge::tapAndHold );
+
+  mBearingNumericFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
+  connect( QgsProject::instance()->displaySettings(), &QgsProjectDisplaySettings::bearingFormatChanged, this, [ = ]
+  {
+    mBearingNumericFormat.reset( QgsProject::instance()->displaySettings()->bearingFormat()->clone() );
+    updateGpsDistanceStatusMessage( false );
+  } );
+
   gpsSettingsChanged();
+
+  mCanvas->installInteractionBlocker( this );
 }
 
 QgsGpsCanvasBridge::~QgsGpsCanvasBridge()
@@ -45,9 +80,34 @@ QgsGpsCanvasBridge::~QgsGpsCanvasBridge()
   mMapMarker = nullptr;
   delete mMapBearingItem;
   mMapBearingItem = nullptr;
+
+  if ( mCanvas )
+    mCanvas->removeInteractionBlocker( this );
 }
 
-void QgsGpsCanvasBridge::showBearingLine( bool show )
+bool QgsGpsCanvasBridge::blockCanvasInteraction( Interaction interaction ) const
+{
+  switch ( interaction )
+  {
+    case QgsMapCanvasInteractionBlocker::Interaction::MapPanOnSingleClick:
+      // if we're connected and set to follow the GPS location, block the single click navigation mode
+      // to avoid accidental map canvas pans away from the GPS location.
+      // (for now, we don't block click-and-drag pans, as they are less likely to be accidentally triggered)
+      if ( mConnection->isConnected() && ( mCenteringMode != QgsAppGpsSettingsMenu::MapCenteringMode::Never ) )
+        return true;
+
+      break;
+  }
+
+  return false;
+}
+
+void QgsGpsCanvasBridge::setLocationMarkerVisible( bool show )
+{
+  mShowMarker = show;
+}
+
+void QgsGpsCanvasBridge::setBearingLineVisible( bool show )
 {
   if ( !show )
   {
@@ -56,6 +116,33 @@ void QgsGpsCanvasBridge::showBearingLine( bool show )
       delete mMapBearingItem;
       mMapBearingItem = nullptr;
     }
+  }
+  mShowBearingLine = show;
+}
+
+void QgsGpsCanvasBridge::setRotateMap( bool enabled )
+{
+  mRotateMap = enabled;
+}
+
+void QgsGpsCanvasBridge::setMapCenteringMode( QgsAppGpsSettingsMenu::MapCenteringMode mode )
+{
+  mCenteringMode = mode;
+}
+
+void QgsGpsCanvasBridge::tapAndHold( const QgsPointXY &mapPoint, QTapAndHoldGesture * )
+{
+  if ( !mConnection->isConnected() )
+    return;
+
+  try
+  {
+    mLastCursorPosWgs84 = mCanvasToWgs84Transform.transform( mapPoint );
+    updateGpsDistanceStatusMessage( true );
+  }
+  catch ( QgsCsException & )
+  {
+
   }
 }
 
@@ -139,32 +226,40 @@ void QgsGpsCanvasBridge::gpsStateChanged( const QgsGpsInformation &info )
     mSecondLastGpsPosition = mLastGpsPosition;
     mLastGpsPosition = myNewCenter;
     // Pan based on user specified behavior
-    if ( radRecenterMap->isChecked() || radRecenterWhenNeeded->isChecked() )
+    switch ( mCenteringMode )
     {
-      try
-      {
-        const QgsPointXY myPoint = mCanvasToWgs84Transform.transform( myNewCenter, Qgis::TransformDirection::Reverse );
-        //keep the extent the same just center the map canvas in the display so our feature is in the middle
-        const QgsRectangle myRect( myPoint, myPoint );  // empty rect can be used to set new extent that is centered on the point used to construct the rect
-
-        // testing if position is outside some proportion of the map extent
-        // this is a user setting - useful range: 5% to 100% (0.05 to 1.0)
-        QgsRectangle myExtentLimit( mCanvas->extent() );
-        myExtentLimit.scale( mMapExtentMultiplier * 0.01 );
-
-        // only change the extents if the point is beyond the current extents to minimize repaints
-        if ( radRecenterMap->isChecked() ||
-             ( radRecenterWhenNeeded->isChecked() && !myExtentLimit.contains( myPoint ) ) )
+      case QgsAppGpsSettingsMenu::MapCenteringMode::Always:
+      case QgsAppGpsSettingsMenu::MapCenteringMode::WhenLeavingExtent:
+        try
         {
-          mCanvas->setExtent( myRect, true );
-          mCanvas->refresh();
-        }
-      }
-      catch ( QgsCsException & )
-      {
+          const QgsPointXY point = mCanvasToWgs84Transform.transform( myNewCenter, Qgis::TransformDirection::Reverse );
+          //keep the extent the same just center the map canvas in the display so our feature is in the middle
+          const QgsRectangle rect( point, point );  // empty rect can be used to set new extent that is centered on the point used to construct the rect
 
-      }
-    } //otherwise never recenter automatically
+          // testing if position is outside some proportion of the map extent
+          // this is a user setting - useful range: 5% to 100% (0.05 to 1.0)
+          QgsRectangle extentLimit( mCanvas->extent() );
+          extentLimit.scale( mMapExtentMultiplier * 0.01 );
+
+          // only change the extents if the point is beyond the current extents to minimize repaints
+          if ( mCenteringMode == QgsAppGpsSettingsMenu::MapCenteringMode::Always ||
+               ( mCenteringMode == QgsAppGpsSettingsMenu::MapCenteringMode::WhenLeavingExtent && !extentLimit.contains( point ) ) )
+          {
+            mCanvas->setExtent( rect, true );
+            mCanvas->refresh();
+          }
+        }
+        catch ( QgsCsException & )
+        {
+
+        }
+        break;
+
+      case QgsAppGpsSettingsMenu::MapCenteringMode::Never:
+        break;
+    }
+
+    updateGpsDistanceStatusMessage( false );
   }
 
   double bearing = 0;
@@ -202,7 +297,7 @@ void QgsGpsCanvasBridge::gpsStateChanged( const QgsGpsInformation &info )
 
     }
 
-    if ( mRotateMapCheckBox->isChecked() && ( !mLastRotateTimer.isValid() || mLastRotateTimer.hasExpired( static_cast< long long >( mMapRotateInterval ) * 1000 ) ) )
+    if ( mRotateMap && ( !mLastRotateTimer.isValid() || mLastRotateTimer.hasExpired( static_cast< long long >( mMapRotateInterval ) * 1000 ) ) )
     {
       const QgsCoordinateTransform wgs84ToCanvas( mWgs84CRS, mCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
 
@@ -236,7 +331,7 @@ void QgsGpsCanvasBridge::gpsStateChanged( const QgsGpsInformation &info )
       mLastRotateTimer.restart();
     }
 
-    if ( mShowBearingLineCheck->isChecked() )
+    if ( mShowBearingLine )
     {
       if ( ! mMapBearingItem )
       {
@@ -260,7 +355,7 @@ void QgsGpsCanvasBridge::gpsStateChanged( const QgsGpsInformation &info )
   }
 
   // new marker position after recentering
-  if ( mCheckShowMarker->isChecked() ) // show marker
+  if ( mShowMarker ) // show marker
   {
     if ( validFlag ) // update cursor position if valid position
     {
@@ -281,6 +376,62 @@ void QgsGpsCanvasBridge::gpsStateChanged( const QgsGpsInformation &info )
       delete mMapMarker;
       mMapMarker = nullptr;
     }
+  }
+
+
+}
+
+void QgsGpsCanvasBridge::cursorCoordinateChanged( const QgsPointXY &point )
+{
+  if ( !mConnection->isConnected() )
+    return;
+
+  try
+  {
+    mLastCursorPosWgs84 = mCanvasToWgs84Transform.transform( point );
+    updateGpsDistanceStatusMessage( true );
+  }
+  catch ( QgsCsException & )
+  {
+
+  }
+}
+
+void QgsGpsCanvasBridge::updateGpsDistanceStatusMessage( bool forceDisplay )
+{
+  if ( !mConnection->isConnected() )
+    return;
+
+  static constexpr int GPS_DISTANCE_MESSAGE_TIMEOUT_MS = 2000;
+
+  if ( !forceDisplay )
+  {
+    // if we aren't forcing the display of the message (i.e. in direct response to a mouse cursor movement),
+    // then only show an updated message when the GPS position changes if the previous forced message occurred < 2 seconds ago.
+    // otherwise we end up showing infinite messages as the GPS position constantly changes...
+    if ( mLastForcedStatusUpdate.hasExpired( GPS_DISTANCE_MESSAGE_TIMEOUT_MS ) )
+      return;
+  }
+  else
+  {
+    mLastForcedStatusUpdate.restart();
+  }
+
+  const double distance = mDistanceCalculator.convertLengthMeasurement( mDistanceCalculator.measureLine( QVector< QgsPointXY >() << mLastCursorPosWgs84 << mLastGpsPosition ),
+                          QgsProject::instance()->distanceUnits() );
+  try
+  {
+    const double bearing = 180 * mDistanceCalculator.bearing( mLastGpsPosition, mLastCursorPosWgs84 ) / M_PI;
+    const int distanceDecimalPlaces = QgsSettings().value( QStringLiteral( "qgis/measure/decimalplaces" ), "3" ).toInt();
+    const QString distanceString = QgsDistanceArea::formatDistance( distance, distanceDecimalPlaces, QgsProject::instance()->distanceUnits() );
+    const QString bearingString = mBearingNumericFormat->formatDouble( bearing, QgsNumericFormatContext() );
+
+    QgisApp::instance()->statusBarIface()->showMessage( tr( "%1 (%2) from GPS location" ).arg( distanceString, bearingString ), forceDisplay ? GPS_DISTANCE_MESSAGE_TIMEOUT_MS
+        : GPS_DISTANCE_MESSAGE_TIMEOUT_MS - mLastForcedStatusUpdate.elapsed() );
+  }
+  catch ( QgsCsException & )
+  {
+
   }
 }
 

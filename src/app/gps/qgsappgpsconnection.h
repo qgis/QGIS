@@ -136,8 +136,6 @@ class APP_EXPORT QgsAppGpsConnection : public QObject
 
     void onConnected( QgsGpsConnection *conn );
 
-    void onDeviceStateChanged( const QgsGpsInformation &info );
-
   private:
 
     void showStatusBarMessage( const QString &msg );
