@@ -74,13 +74,13 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
 
   connect( mRecenterAction, &QAction::triggered, this, [ = ]
   {
-    if ( mConnection->lastPosition().isEmpty() )
+    if ( mConnection->lastValidLocation().isEmpty() )
       return;
 
     const QgsCoordinateTransform canvasToWgs84Transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
     try
     {
-      const QgsPointXY center = canvasToWgs84Transform.transform( mConnection->lastPosition(), Qgis::TransformDirection::Reverse );
+      const QgsPointXY center = canvasToWgs84Transform.transform( mConnection->lastValidLocation(), Qgis::TransformDirection::Reverse );
       mCanvas->setCenter( center );
       mCanvas->refresh();
     }
