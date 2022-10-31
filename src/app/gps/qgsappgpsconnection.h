@@ -59,6 +59,11 @@ class APP_EXPORT QgsAppGpsConnection : public QObject
      */
     void setConnection( QgsGpsConnection *connection );
 
+    /**
+     * Returns the last recorded GPS position.
+     */
+    QgsPoint lastValidLocation() const;
+
   public slots:
 
     /**
@@ -112,6 +117,11 @@ class APP_EXPORT QgsAppGpsConnection : public QObject
      * Emitted when the associated GPS device receives an NMEA sentence.
      */
     void nmeaSentenceReceived( const QString &substring );
+
+    /**
+     * Emitted when the GPS position changes.
+     */
+    void positionChanged( const QgsPoint &point );
 
   private slots:
 

@@ -397,6 +397,13 @@ class CORE_EXPORT QgsGpsConnection : public QObject
     //! Returns the current gps information (lat, lon, etc.)
     QgsGpsInformation currentGPSInformation() const { return mLastGPSInformation; }
 
+    /**
+     * Returns the last valid location obtained by the device.
+     *
+     * \since QGIS 3.30
+     */
+    QgsPoint lastValidLocation() const { return mLastLocation; }
+
   signals:
 
     /**
@@ -417,6 +424,15 @@ class CORE_EXPORT QgsGpsConnection : public QObject
      * \since QGIS 3.30
      */
     void fixStatusChanged( Qgis::GpsFixStatus status );
+
+    /**
+     * Emitted when the GPS position changes.
+     *
+     * This signal is only emitted when the new GPS location is considered valid (see QgsGpsInformation::isValid()).
+     *
+     * \since QGIS 3.30
+     */
+    void positionChanged( const QgsPoint &point );
 
   protected:
     //! Data source (e.g. serial device, socket, file,...)
@@ -444,7 +460,7 @@ class CORE_EXPORT QgsGpsConnection : public QObject
     //! Last fix status
     Qgis::GpsFixStatus mLastFixStatus = Qgis::GpsFixStatus::NoData;
 
-    //! Last recorded location
+    //! Last recorded valid location
     QgsPoint mLastLocation;
 };
 
