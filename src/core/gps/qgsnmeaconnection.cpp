@@ -87,7 +87,6 @@ void QgsNmeaConnection::processStringBuffer()
       break;
     }
 
-
     if ( endSentenceIndex >= dollarIndex )
     {
       if ( dollarIndex != -1 )
@@ -123,7 +122,7 @@ void QgsNmeaConnection::processStringBuffer()
           mStatus = GPSDataReceived;
           QgsDebugMsgLevel( QStringLiteral( "*******************GPS data received****************" ), 2 );
         }
-        else if ( substring.startsWith( QLatin1String( "$GPGSA" ) ) || substring.startsWith( QLatin1String( "$GNGSA" ) ) )
+        else if ( substring.startsWith( QLatin1String( "$GPGSA" ) ) || substring.startsWith( QLatin1String( "$GNGSA" ) ) || substring.startsWith( QLatin1String( "$GLGSA" ) ) )
         {
           QgsDebugMsgLevel( substring, 2 );
           processGsaSentence( ba.data(), ba.length() );
@@ -382,6 +381,28 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
       }
       satelliteInfo.signal = currentSatellite.sig;
       satelliteInfo.satType = result.pack_type;
+
+      if ( result.pack_type == 'P' )
+      {
+        satelliteInfo.mConstellation = Qgis::GnssConstellation::Gps;
+      }
+      else if ( result.pack_type == 'L' )
+      {
+        satelliteInfo.mConstellation = Qgis::GnssConstellation::Glonass;
+      }
+      else if ( result.pack_type == 'A' )
+      {
+        satelliteInfo.mConstellation = Qgis::GnssConstellation::Galileo;
+      }
+      else if ( result.pack_type == 'B' )
+      {
+        satelliteInfo.mConstellation = Qgis::GnssConstellation::BeiDou;
+      }
+      else if ( result.pack_type == 'Q' )
+      {
+        satelliteInfo.mConstellation = Qgis::GnssConstellation::Qzss;
+      }
+
       if ( satelliteInfo.satType == 'P' && satelliteInfo.id > 32 )
       {
         satelliteInfo.satType = 'S';
@@ -434,13 +455,57 @@ void QgsNmeaConnection::processGsaSentence( const char *data, int len )
     mLastGPSInformation.vdop = result.VDOP;
     mLastGPSInformation.fixMode = result.fix_mode;
     mLastGPSInformation.fixType = result.fix_type;
+
+    Qgis::GnssConstellation commonConstellation = Qgis::GnssConstellation::Unknown;
+    bool mixedConstellation = false;
     for ( int i = 0; i < NMEA_MAXSAT; i++ )
     {
       if ( result.sat_prn[ i ] > 0 )
       {
         mLastGPSInformation.satPrn.append( result.sat_prn[ i ] );
         mLastGPSInformation.satellitesUsed += 1;
+
+        Qgis::GnssConstellation constellation = Qgis::GnssConstellation::Unknown;
+        if ( result.pack_type == 'L' )
+          constellation = Qgis::GnssConstellation::Glonass;
+        else if ( result.sat_prn[i] >= 1 && result.sat_prn[i] <= 32 )
+          constellation = Qgis::GnssConstellation::Gps;
+        else if ( result.sat_prn[i] > 32 && result.sat_prn[i] <= 64 )
+          constellation = Qgis::GnssConstellation::Sbas;
+        else if ( result.sat_prn[i] > 64 )
+          constellation = Qgis::GnssConstellation::Glonass;
+
+        if ( result.sat_prn[i] > 0 )
+        {
+          if ( mixedConstellation
+               || ( commonConstellation != Qgis::GnssConstellation::Unknown
+                    && commonConstellation != constellation ) )
+          {
+            mixedConstellation = true;
+          }
+          else
+          {
+            commonConstellation = constellation;
+          }
+        }
       }
+    }
+    if ( mixedConstellation )
+      commonConstellation = Qgis::GnssConstellation::Unknown;
+
+    switch ( result.fix_type )
+    {
+      case 1:
+        mLastGPSInformation.mConstellationFixStatus[ commonConstellation ] = Qgis::GpsFixStatus::NoFix;
+        break;
+
+      case 2:
+        mLastGPSInformation.mConstellationFixStatus[ commonConstellation ] = Qgis::GpsFixStatus::Fix2D;
+        break;
+
+      case 3:
+        mLastGPSInformation.mConstellationFixStatus[ commonConstellation ] = Qgis::GpsFixStatus::Fix3D;
+        break;
     }
   }
 }

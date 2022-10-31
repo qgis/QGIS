@@ -948,6 +948,25 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( GpsFixStatus );
 
+
+    /**
+     * GNSS constellation
+     *
+     * \since QGIS 3.30
+     */
+    enum class GnssConstellation
+    {
+      Unknown, //!< Unknown/other system
+      Gps, //!< Global Positioning System (GPS)
+      Glonass, //!< Global Navigation Satellite System (GLONASS)
+      Galileo, //!< Galileo
+      BeiDou, //!< BeiDou
+      Qzss, //!< Quasi Zenith Satellite System (QZSS)
+      Navic, //!< Indian Regional Navigation Satellite System (IRNSS) / NAVIC
+      Sbas, //!< SBAS
+    };
+    Q_ENUM( GnssConstellation );
+
     /**
      * GPS signal quality indicator
      *

@@ -868,6 +868,18 @@ Qgis.GpsFixStatus.__doc__ = 'GPS fix status.\n\n.. note::\n\n   Prior to QGIS 3.
 # --
 Qgis.GpsFixStatus.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.GnssConstellation.Unknown.__doc__ = "Unknown/other system"
+Qgis.GnssConstellation.Gps.__doc__ = "Global Positioning System (GPS)"
+Qgis.GnssConstellation.Glonass.__doc__ = "Global Navigation Satellite System (GLONASS)"
+Qgis.GnssConstellation.Galileo.__doc__ = "Galileo"
+Qgis.GnssConstellation.BeiDou.__doc__ = "BeiDou"
+Qgis.GnssConstellation.Qzss.__doc__ = "Quasi Zenith Satellite System (QZSS)"
+Qgis.GnssConstellation.Navic.__doc__ = "Indian Regional Navigation Satellite System (IRNSS) / NAVIC"
+Qgis.GnssConstellation.Sbas.__doc__ = "SBAS"
+Qgis.GnssConstellation.__doc__ = 'GNSS constellation\n\n.. versionadded:: 3.30\n\n' + '* ``Unknown``: ' + Qgis.GnssConstellation.Unknown.__doc__ + '\n' + '* ``Gps``: ' + Qgis.GnssConstellation.Gps.__doc__ + '\n' + '* ``Glonass``: ' + Qgis.GnssConstellation.Glonass.__doc__ + '\n' + '* ``Galileo``: ' + Qgis.GnssConstellation.Galileo.__doc__ + '\n' + '* ``BeiDou``: ' + Qgis.GnssConstellation.BeiDou.__doc__ + '\n' + '* ``Qzss``: ' + Qgis.GnssConstellation.Qzss.__doc__ + '\n' + '* ``Navic``: ' + Qgis.GnssConstellation.Navic.__doc__ + '\n' + '* ``Sbas``: ' + Qgis.GnssConstellation.Sbas.__doc__
+# --
+Qgis.GnssConstellation.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.GpsQualityIndicator.Unknown.__doc__ = "Unknown"
 Qgis.GpsQualityIndicator.Invalid.__doc__ = "Invalid"
 Qgis.GpsQualityIndicator.GPS.__doc__ = "Standalone"

@@ -16,6 +16,7 @@
 #define QGSAPPGPSCONNECTION_H
 
 #include "qgis_app.h"
+#include "qgis.h"
 
 #include <QObject>
 class QgsGpsConnection;
@@ -96,6 +97,11 @@ class APP_EXPORT QgsAppGpsConnection : public QObject
      * Emitted when a connection timeout occurs.
      */
     void connectionTimedOut();
+
+    /**
+     * Emitted when the GPS fix status is changed
+     */
+    void fixStatusChanged( Qgis::GpsFixStatus status );
 
     /**
      * Emitted when the state of the associated GPS device changes.

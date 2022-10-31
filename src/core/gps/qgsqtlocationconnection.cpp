@@ -70,6 +70,19 @@ void QgsQtLocationConnection::parseData()
       mLastGPSInformation.direction = mInfo.attribute( QGeoPositionInfo::Direction );
       mLastGPSInformation.utcDateTime = mInfo.timestamp();
       mLastGPSInformation.fixType = mInfo.coordinate().type() + 1;
+      switch ( mInfo.coordinate().type() )
+      {
+        case QGeoCoordinate::InvalidCoordinate:
+          mLastGPSInformation.mConstellationFixStatus[ Qgis::GnssConstellation::Unknown ] = Qgis::GpsFixStatus::NoFix;
+          break;
+        case QGeoCoordinate::Coordinate2D:
+          mLastGPSInformation.mConstellationFixStatus[ Qgis::GnssConstellation::Unknown ] = Qgis::GpsFixStatus::Fix2D;
+          break;
+        case QGeoCoordinate::Coordinate3D:
+          mLastGPSInformation.mConstellationFixStatus[ Qgis::GnssConstellation::Unknown ] = Qgis::GpsFixStatus::Fix3D;
+          break;
+      }
+
       //< fixType, used for navigation (1 = Fix not available; 2 = 2D; 3 = 3D)
       //< coordinate().type(), returns 0 = Fix not available; 1 = 2D; 2 = 3D)
       mLastGPSInformation.hacc = mInfo.attribute( QGeoPositionInfo::HorizontalAccuracy );   //< Horizontal dilution of precision
