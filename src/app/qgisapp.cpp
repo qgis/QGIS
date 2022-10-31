@@ -250,6 +250,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsprojectionselectiondialog.h"
 #include "qgsgpsinformationwidget.h"
 #include "qgsappgpsconnection.h"
+#include "qgsappgpssettingsmenu.h"
 #include "qgsgpstoolbar.h"
 #include "qgsgpscanvasbridge.h"
 #include "qgsguivectorlayertools.h"
@@ -1395,9 +1396,20 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
 
   // create the GPS tool on starting QGIS - this is like the browser
   mGpsConnection = new QgsAppGpsConnection( this );
+  mGpsSettingsMenu = new QgsAppGpsSettingsMenu( this );
 
   mGpsToolBar = new QgsGpsToolBar( mGpsConnection, mMapCanvas, this );
   addToolBar( mGpsToolBar );
+
+  mGpsCanvasBridge = new QgsGpsCanvasBridge( mGpsConnection, mMapCanvas );
+  mGpsCanvasBridge->setLocationMarkerVisible( mGpsSettingsMenu->locationMarkerVisible() );
+  mGpsCanvasBridge->setBearingLineVisible( mGpsSettingsMenu->bearingLineVisible() );
+  mGpsCanvasBridge->setRotateMap( mGpsSettingsMenu->rotateMap() );
+  mGpsCanvasBridge->setMapCenteringMode( mGpsSettingsMenu->mapCenteringMode() );
+  connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::locationMarkerToggled, mGpsCanvasBridge, &QgsGpsCanvasBridge::setLocationMarkerVisible );
+  connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::bearingLineToggled, mGpsCanvasBridge, &QgsGpsCanvasBridge::setBearingLineVisible );
+  connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::rotateMapToggled, mGpsCanvasBridge, &QgsGpsCanvasBridge::setRotateMap );
+  connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::mapCenteringModeChanged, mGpsCanvasBridge, &QgsGpsCanvasBridge::setMapCenteringMode );
 
   mpGpsWidget = new QgsGpsInformationWidget( mGpsConnection, mMapCanvas );
   QgsPanelWidgetStack *gpsStack = new QgsPanelWidgetStack();
@@ -1420,7 +1432,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   mpGpsDock->setToggleVisibilityAction( mGpsToolBar->showInfoAction() );
   mpGpsDock->hide();
 
-  mGpsCanvasBridge = new QgsGpsCanvasBridge( mGpsConnection, mMapCanvas );
 
   mLastMapToolMessage = nullptr;
 
@@ -1983,6 +1994,9 @@ QgisApp::~QgisApp()
 
   delete mGpsCanvasBridge;
   mGpsCanvasBridge = nullptr;
+
+  delete mGpsSettingsMenu;
+  mGpsSettingsMenu = nullptr;
 
   delete mGpsConnection;
   mGpsConnection = nullptr;
@@ -4898,6 +4912,11 @@ QgsLayerTreeRegistryBridge::InsertionPoint QgisApp::layerTreeInsertionPoint() co
 void QgisApp::setGpsPanelConnection( QgsGpsConnection *connection )
 {
   mGpsConnection->setConnection( connection );
+}
+
+QgsAppGpsSettingsMenu *QgisApp::gpsSettingsMenu()
+{
+  return mGpsSettingsMenu;
 }
 
 void QgisApp::autoSelectAddedLayer( QList<QgsMapLayer *> layers )

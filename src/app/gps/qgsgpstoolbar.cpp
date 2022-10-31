@@ -20,8 +20,12 @@
 #include "qgsproject.h"
 #include "qgis.h"
 #include "qgscoordinateutils.h"
+#include "qgisapp.h"
+#include "qgsappgpssettingsmenu.h"
+#include "qgsapplication.h"
 
 #include <QLabel>
+#include <QToolButton>
 
 QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *canvas, QWidget *parent )
   : QToolBar( parent )
@@ -104,6 +108,14 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
 
   connect( mConnection, &QgsAppGpsConnection::positionChanged, this, &QgsGpsToolBar::updateLocationLabel );
   updateLocationLabel( mConnection->lastValidLocation() );
+
+  QToolButton *settingsButton = new QToolButton();
+  settingsButton->setAutoRaise( true );
+  settingsButton->setToolTip( tr( "Settings" ) );
+  settingsButton->setMenu( QgisApp::instance()->gpsSettingsMenu() );
+  settingsButton->setPopupMode( QToolButton::InstantPopup );
+  settingsButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) ) );
+  addWidget( settingsButton );
 }
 
 void QgsGpsToolBar::updateLocationLabel( const QgsPoint &point )

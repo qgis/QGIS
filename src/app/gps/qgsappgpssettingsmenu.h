@@ -17,8 +17,28 @@
 #define QGSAPPGPSSETTINGSMENU_H
 
 #include <QMenu>
+#include <QWidgetAction>
 
 class QRadioButton;
+
+class QgsGpsMapRotationAction: public QWidgetAction
+{
+    Q_OBJECT
+
+  public:
+
+    QgsGpsMapRotationAction( QWidget *parent = nullptr );
+
+    QRadioButton *radioAlwaysRecenter() { return mRadioAlwaysRecenter; }
+    QRadioButton *radioRecenterWhenOutside() { return mRadioRecenterWhenOutside; }
+    QRadioButton *radioNeverRecenter() { return mRadioNeverRecenter; }
+
+  private:
+    QRadioButton *mRadioAlwaysRecenter = nullptr;
+    QRadioButton *mRadioRecenterWhenOutside = nullptr;
+    QRadioButton *mRadioNeverRecenter = nullptr;
+
+};
 
 class QgsAppGpsSettingsMenu : public QMenu
 {
@@ -57,8 +77,6 @@ class QgsAppGpsSettingsMenu : public QMenu
     QRadioButton *mRadioAlwaysRecenter = nullptr;
     QRadioButton *mRadioRecenterWhenOutside = nullptr;
     QRadioButton *mRadioNeverRecenter = nullptr;
-
-
 
 };
 
