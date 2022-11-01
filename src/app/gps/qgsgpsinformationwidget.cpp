@@ -41,6 +41,7 @@
 #include "qgsgui.h"
 #include "qgslinesymbol.h"
 #include "qgssymbollayerutils.h"
+#include "qgsappgpssettingsmenu.h"
 
 // QWT Charting widget
 
@@ -83,6 +84,11 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsAppGpsConnection *connectio
   connect( mBtnAddVertex, &QPushButton::clicked, this, &QgsGpsInformationWidget::mBtnAddVertex_clicked );
   connect( mBtnCloseFeature, &QPushButton::clicked, this, &QgsGpsInformationWidget::mBtnCloseFeature_clicked );
   connect( mBtnResetFeature, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnResetFeature_clicked );
+
+  mBtnPopupOptions->setAutoRaise( true );
+  mBtnPopupOptions->setToolTip( tr( "Settings" ) );
+  mBtnPopupOptions->setMenu( QgisApp::instance()->gpsSettingsMenu() );
+  mBtnPopupOptions->setPopupMode( QToolButton::InstantPopup );
 
   mLogFilename->setDialogTitle( tr( "GPS Log File" ) );
   mLogFilename->setStorageMode( QgsFileWidget::SaveFile );

@@ -15,6 +15,8 @@
 
 #include "qgsappgpssettingsmenu.h"
 #include "qgssettings.h"
+#include "qgisapp.h"
+#include "qgsapplication.h"
 
 #include <QRadioButton>
 #include <QButtonGroup>
@@ -141,6 +143,16 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
 
   addSeparator();
   addAction( rotateAction );
+
+  addSeparator();
+  QAction *settingsAction = new QAction( tr( "GPS Settings…" ), this );
+  settingsAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) ) );
+  connect( settingsAction, &QAction::triggered, this, [ = ]
+  {
+    QgisApp::instance()->showOptionsDialog( QgisApp::instance(), QStringLiteral( "mGpsOptions" ) );
+  } );
+
+  addAction( settingsAction );
 }
 
 bool QgsAppGpsSettingsMenu::locationMarkerVisible() const

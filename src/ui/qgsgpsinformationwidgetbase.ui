@@ -889,6 +889,23 @@ gray = no data
       </widget>
      </item>
      <item>
+      <widget class="QToolButton" name="mBtnPopupOptions">
+       <property name="toolTip">
+        <string>Options</string>
+       </property>
+       <property name="text">
+        <string>…</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionOptions.svg</normaloff>:/images/themes/default/mActionOptions.svg</iconset>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
