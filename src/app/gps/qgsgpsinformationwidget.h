@@ -19,13 +19,10 @@
 
 #include "ui_qgsgpsinformationwidgetbase.h"
 #include "qgis_app.h"
-#include "info.h"
-#include "nmeatime.h"
-#include "qgsmaptoolcapture.h"
-#include "qgspanelwidget.h"
 
-#include "qgsdistancearea.h"
+#include "qgspanelwidget.h"
 #include "qgssettingsentryimpl.h"
+#include "qgspointxy.h"
 
 #include <qwt_plot_curve.h>
 #ifdef WITH_QWTPOLAR
@@ -37,16 +34,8 @@
 
 class QextSerialPort;
 class QgsAppGpsConnection;
-class QgsGpsConnection;
-class QgsGpsTrackerThread;
 class QgsGpsInformation;
 class QgsMapCanvas;
-class QgsFeature;
-class QgsBearingNumericFormat;
-class QgsGpsCanvasBridge;
-
-class QFile;
-class QColor;
 
 /**
  * A dock widget that displays information from a GPS device and
@@ -73,20 +62,16 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, private Ui::Qgs
     void logNmeaSentence( const QString &nmeaString ); // added to handle 'raw' data
     void updateCloseFeatureButton( QgsMapLayer *lyr );
     void layerEditStateChanged();
-    void gpsSettingsChanged();
-    void updateTrackAppearance();
+
     void mBtnPosition_clicked();
     void mBtnSignal_clicked();
     void mBtnSatellites_clicked();
     void mBtnOptions_clicked();
     void mBtnDebug_clicked();
-    void mBtnAddVertex_clicked();
     void mBtnCloseFeature_clicked();
     void mBtnResetFeature_clicked();
-// not needed    void on_mCbxAutoAddVertices_toggled( bool flag );
 
     void timedout();
-    void switchAcquisition();
     void timestampFormatChanged( int index );
 
     /**
@@ -116,34 +101,18 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, private Ui::Qgs
     QwtPolarGrid *mpSatellitesGrid = nullptr;
     QList< QwtPolarMarker * > mMarkerList;
 #endif
-    void createRubberBand();
 
-    QgsCoordinateReferenceSystem mWgs84CRS;
-    QgsCoordinateTransform mCanvasToWgs84Transform;
-    QgsDistanceArea mDistanceCalculator;
-
-    QgsRubberBand *mRubberBand = nullptr;
     QgsPointXY mLastGpsPosition;
-    QgsPointXY mSecondLastGpsPosition;
-    QVector<QgsPoint> mCaptureList;
-    double mLastElevation = 0.0;
+
     QString mDateTimeFormat; // user specified format string in registry (no UI presented)
     QPointer< QgsVectorLayer > mLastLayer;
     QFile *mLogFile = nullptr;
     QTextStream mLogFileTextStream;
-    nmeaPOS mLastNmeaPosition;
-    nmeaTIME mLastNmeaTime;
-    std::unique_ptr<QTimer> mAcquisitionTimer;
-    bool mAcquisitionEnabled = true;
-    int mAcquisitionInterval = 0;
-    double mDistanceThreshold = 0;
 
     //! Temporary storage of preferred fields
     QMap<QString, QString> mPreferredTimestampFields;
     //! Flag when updating fields
     bool mPopulatingFields = false;
-
-    int mBlockGpsStateChanged = 0;
 
     friend class TestQgsGpsInformationWidget;
 };
