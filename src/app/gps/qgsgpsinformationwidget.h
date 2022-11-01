@@ -60,8 +60,6 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, private Ui::Qgs
     void mConnectButton_toggled( bool flag );
     void displayGPSInformation( const QgsGpsInformation &info );
     void logNmeaSentence( const QString &nmeaString ); // added to handle 'raw' data
-    void updateCloseFeatureButton( QgsMapLayer *lyr );
-    void layerEditStateChanged();
 
     void mBtnPosition_clicked();
     void mBtnSignal_clicked();
@@ -105,7 +103,7 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, private Ui::Qgs
     QgsPointXY mLastGpsPosition;
 
     QString mDateTimeFormat; // user specified format string in registry (no UI presented)
-    QPointer< QgsVectorLayer > mLastLayer;
+
     QFile *mLogFile = nullptr;
     QTextStream mLogFileTextStream;
 

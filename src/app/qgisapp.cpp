@@ -250,6 +250,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsprojectionselectiondialog.h"
 #include "qgsgpsinformationwidget.h"
 #include "qgsappgpsconnection.h"
+#include "qgsappgpsdigitizing.h"
 #include "qgsappgpssettingsmenu.h"
 #include "qgsgpstoolbar.h"
 #include "qgsgpscanvasbridge.h"
@@ -1401,6 +1402,13 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   mGpsToolBar = new QgsGpsToolBar( mGpsConnection, mMapCanvas, this );
   addToolBar( mGpsToolBar );
 
+  mGpsDigitizing = new QgsAppGpsDigitizing( mGpsConnection, mMapCanvas, this );
+  mGpsDigitizing->setAutoAddVertices( mGpsSettingsMenu->autoAddTrackPoints() );
+  mGpsDigitizing->setAutoSaveFeature( mGpsSettingsMenu->autoAddFeature() );
+  mGpsToolBar->setAddVertexButtonEnabled( !mGpsSettingsMenu->autoAddTrackPoints() );
+  connect( mGpsToolBar, &QgsGpsToolBar::addFeatureClicked, mGpsDigitizing, &QgsAppGpsDigitizing::addFeature );
+  connect( mGpsToolBar, &QgsGpsToolBar::addVertexClicked, mGpsDigitizing, &QgsAppGpsDigitizing::addVertex );
+
   mGpsCanvasBridge = new QgsGpsCanvasBridge( mGpsConnection, mMapCanvas );
   mGpsCanvasBridge->setLocationMarkerVisible( mGpsSettingsMenu->locationMarkerVisible() );
   mGpsCanvasBridge->setBearingLineVisible( mGpsSettingsMenu->bearingLineVisible() );
@@ -1410,6 +1418,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::bearingLineToggled, mGpsCanvasBridge, &QgsGpsCanvasBridge::setBearingLineVisible );
   connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::rotateMapToggled, mGpsCanvasBridge, &QgsGpsCanvasBridge::setRotateMap );
   connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::mapCenteringModeChanged, mGpsCanvasBridge, &QgsGpsCanvasBridge::setMapCenteringMode );
+  connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::autoAddTrackPointsChanged, mGpsDigitizing, &QgsAppGpsDigitizing::setAutoAddVertices );
+  connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::autoAddTrackPointsChanged, this, [ = ]( bool enabled ) { mGpsToolBar->setAddVertexButtonEnabled( !enabled ); } );
+  connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::autoAddFeatureChanged, mGpsDigitizing, &QgsAppGpsDigitizing::setAutoSaveFeature );
 
   mpGpsWidget = new QgsGpsInformationWidget( mGpsConnection, mMapCanvas );
   QgsPanelWidgetStack *gpsStack = new QgsPanelWidgetStack();

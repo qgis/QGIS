@@ -110,7 +110,7 @@ void QgsAppGpsDigitizing::resetFeature()
   mBlockGpsStateChanged--;
 }
 
-void QgsAppGpsDigitizing::closeFeature()
+void QgsAppGpsDigitizing::addFeature()
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
   if ( !vlayer )
@@ -172,7 +172,7 @@ void QgsAppGpsDigitizing::closeFeature()
       QgsFeatureAction action( tr( "Feature Added" ), f, vlayer, QUuid(), -1, this );
       if ( action.addFeature( attrMap ) )
       {
-        if ( mCbxAutoCommit->isChecked() )
+        if ( mAutoSave )
         {
           // should canvas->isDrawing() be checked?
           if ( !vlayer->commitChanges() ) //assumed to be vector layer and is editable and is in editing mode (preconditions have been tested)
@@ -266,7 +266,7 @@ void QgsAppGpsDigitizing::closeFeature()
       QgsFeatureAction action( tr( "Feature added" ), f, vlayer, QUuid(), -1, this );
       if ( action.addFeature( attrMap ) )
       {
-        if ( mCbxAutoCommit->isChecked() )
+        if ( mAutoSave )
         {
           if ( !vlayer->commitChanges() )
           {
@@ -295,9 +295,17 @@ void QgsAppGpsDigitizing::closeFeature()
   }
   vlayer->triggerRepaint();
 
-  // force focus back to GPS window/ Add Feature button for ease of use by keyboard
   QgisApp::instance()->activateWindow();
-  mBtnCloseFeature->setFocus( Qt::OtherFocusReason );
+}
+
+void QgsAppGpsDigitizing::setAutoAddVertices( bool enabled )
+{
+  mAutoAddVertices = enabled;
+}
+
+void QgsAppGpsDigitizing::setAutoSaveFeature( bool enabled )
+{
+  mAutoSave = enabled;
 }
 
 void QgsAppGpsDigitizing::gpsSettingsChanged()
@@ -407,7 +415,7 @@ void QgsAppGpsDigitizing::gpsStateChanged( const QgsGpsInformation &info )
     mLastNmeaTime = newNmeaTime;
     mLastElevation = newAlt;
 
-    if ( mCbxAutoAddVertices->isChecked() )
+    if ( mAutoAddVertices )
     {
       addVertex();
     }

@@ -68,7 +68,6 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsAppGpsConnection *connectio
   connect( mBtnSatellites, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnSatellites_clicked );
   connect( mBtnOptions, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnOptions_clicked );
   connect( mBtnDebug, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnDebug_clicked );
-  connect( mBtnCloseFeature, &QPushButton::clicked, this, &QgsGpsInformationWidget::mBtnCloseFeature_clicked );
   connect( mBtnResetFeature, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnResetFeature_clicked );
 
   mBtnPopupOptions->setAutoRaise( true );
@@ -186,13 +185,6 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsAppGpsConnection *connectio
   // Restore state
   mDateTimeFormat = mySettings.value( QStringLiteral( "dateTimeFormat" ), "", QgsSettings::Gps ).toString(); // zero-length string signifies default format
 
-  //auto digitizing behavior
-  mCbxAutoAddVertices->setChecked( mySettings.value( QStringLiteral( "autoAddVertices" ), "false", QgsSettings::Gps ).toBool() );
-
-  mBtnAddVertex->setEnabled( !mCbxAutoAddVertices->isChecked() );
-
-  mCbxAutoCommit->setChecked( mySettings.value( QStringLiteral( "autoCommit" ), "false", QgsSettings::Gps ).toBool() );
-
   mBtnDebug->setVisible( mySettings.value( QStringLiteral( "showDebug" ), "false", QgsSettings::Gps ).toBool() );  // use a registry setting to control - power users/devs could set it
 
   // status = unknown
@@ -200,9 +192,6 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsAppGpsConnection *connectio
 
   //SLM - added functionality
   mLogFile = nullptr;
-
-  connect( QgisApp::instance(), &QgisApp::activeLayerChanged,
-           this, &QgsGpsInformationWidget::updateCloseFeatureButton );
 
   mStackedWidget->setCurrentIndex( 3 ); // force to Options
   mBtnPosition->setFocus( Qt::TabFocusReason );
@@ -305,8 +294,6 @@ QgsGpsInformationWidget::~QgsGpsInformationWidget()
 #endif
 
   QgsSettings mySettings;
-  mySettings.setValue( QStringLiteral( "autoAddVertices" ), mCbxAutoAddVertices->isChecked(), QgsSettings::Gps );
-  mySettings.setValue( QStringLiteral( "autoCommit" ), mCbxAutoCommit->isChecked(), QgsSettings::Gps );
   mySettings.setValue( QStringLiteral( "timestampTimeZone" ), mCboTimeZones->currentText(), QgsSettings::Gps );
   mySettings.setValue( QStringLiteral( "applyLeapSeconds" ), mCbxLeapSeconds->isChecked(), QgsSettings::Gps );
   mySettings.setValue( QStringLiteral( "leapSecondsCorrection" ), mLeapSeconds->value(), QgsSettings::Gps );
@@ -624,76 +611,6 @@ void QgsGpsInformationWidget::logNmeaSentence( const QString &nmeaString )
   {
     mLogFileTextStream << nmeaString << "\r\n"; // specifically output CR + LF (NMEA requirement)
   }
-}
-
-void QgsGpsInformationWidget::updateCloseFeatureButton( QgsMapLayer *lyr )
-{
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( lyr );
-
-  if ( !( vlayer && vlayer->isValid() ) )
-    return;
-
-  // Add feature button tracks edit state of layer
-  if ( vlayer != mLastLayer )
-  {
-    if ( mLastLayer )  // disconnect previous layer
-    {
-      disconnect( mLastLayer, &QgsVectorLayer::editingStarted,
-                  this, &QgsGpsInformationWidget::layerEditStateChanged );
-      disconnect( mLastLayer, &QgsVectorLayer::editingStopped,
-                  this, &QgsGpsInformationWidget::layerEditStateChanged );
-    }
-    if ( vlayer ) // connect new layer
-    {
-      connect( vlayer, &QgsVectorLayer::editingStarted,
-               this, &QgsGpsInformationWidget::layerEditStateChanged );
-      connect( vlayer, &QgsVectorLayer::editingStopped,
-               this, &QgsGpsInformationWidget::layerEditStateChanged );
-    }
-    mLastLayer = vlayer;
-  }
-
-  QString buttonLabel = tr( "&Add Feature" );
-  if ( vlayer )
-  {
-    QgsVectorDataProvider *provider = vlayer->dataProvider();
-    const QgsWkbTypes::GeometryType layerGeometryType = vlayer->geometryType();
-
-    bool enable = provider->capabilities() & QgsVectorDataProvider::AddFeatures &&  // layer can add features
-                  vlayer->isEditable() && vlayer->isSpatial();
-
-    switch ( layerGeometryType )
-    {
-      case QgsWkbTypes::PointGeometry:
-        buttonLabel = tr( "&Add Point" );
-        break;
-
-      case QgsWkbTypes::LineGeometry:
-        buttonLabel = tr( "&Add Line" );
-        break;
-
-      case QgsWkbTypes::PolygonGeometry:
-        buttonLabel = tr( "&Add Polygon" );
-        break;
-
-      case QgsWkbTypes::UnknownGeometry:
-      case QgsWkbTypes::NullGeometry:
-        enable = false;
-        break;
-    }
-
-    mBtnCloseFeature->setEnabled( enable );
-  }
-  else
-  {
-    mBtnCloseFeature->setEnabled( false );
-  }
-  mBtnCloseFeature->setText( buttonLabel );
-}
-
-void QgsGpsInformationWidget::layerEditStateChanged()
-{
-  updateCloseFeatureButton( mLastLayer );
 }
 
 void QgsGpsInformationWidget::setStatusIndicator( Qgis::GpsFixStatus statusValue )

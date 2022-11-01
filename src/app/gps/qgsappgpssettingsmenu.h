@@ -60,6 +60,8 @@ class QgsAppGpsSettingsMenu : public QMenu
     bool bearingLineVisible() const;
     bool rotateMap() const;
     MapCenteringMode mapCenteringMode() const;
+    bool autoAddTrackPoints() const;
+    bool autoAddFeature() const;
 
   signals:
 
@@ -67,12 +69,16 @@ class QgsAppGpsSettingsMenu : public QMenu
     void bearingLineToggled( bool visible );
     void rotateMapToggled( bool enabled );
     void mapCenteringModeChanged( MapCenteringMode mode );
+    void autoAddTrackPointsChanged( bool enabled );
+    void autoAddFeatureChanged( bool enabled );
 
   private:
 
     QAction *mShowLocationMarkerAction = nullptr;
     QAction *mShowBearingLineAction = nullptr;
     QAction *mRotateMapAction = nullptr;
+    QAction *mAutoAddTrackPointAction = nullptr;
+    QAction *mAutoSaveAddedFeatureAction = nullptr;
 
     QRadioButton *mRadioAlwaysRecenter = nullptr;
     QRadioButton *mRadioRecenterWhenOutside = nullptr;

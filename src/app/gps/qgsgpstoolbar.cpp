@@ -98,6 +98,19 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
   } );
   addAction( mRecenterAction );
 
+  addSeparator();
+
+  mAddTrackPointAction = new QAction( tr( "Add Track Point" ), this );
+  mAddTrackPointAction->setEnabled( false );
+  connect( mAddTrackPointAction, &QAction::triggered, this, &QgsGpsToolBar::addVertexClicked );
+  addAction( mAddTrackPointAction );
+
+  mAddFeatureAction = new QAction( tr( "Add Feature" ), this );
+  connect( mAddFeatureAction, &QAction::triggered, this, &QgsGpsToolBar::addFeatureClicked );
+  addAction( mAddFeatureAction );
+
+  addSeparator();
+
   mShowInfoAction = new QAction( tr( "Information" ) );
   mShowInfoAction->setToolTip( tr( "Show GPS Information Panel" ) );
   mShowInfoAction->setCheckable( true );
@@ -116,6 +129,14 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
   settingsButton->setPopupMode( QToolButton::InstantPopup );
   settingsButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) ) );
   addWidget( settingsButton );
+
+  connect( QgisApp::instance(), &QgisApp::activeLayerChanged,
+           this, &QgsGpsToolBar::updateCloseFeatureButton );
+}
+
+void QgsGpsToolBar::setAddVertexButtonEnabled( bool enabled )
+{
+  mAddTrackPointAction->setEnabled( enabled );
 }
 
 void QgsGpsToolBar::updateLocationLabel( const QgsPoint &point )
@@ -129,4 +150,74 @@ void QgsGpsToolBar::updateLocationLabel( const QgsPoint &point )
     const QString pos = QgsCoordinateUtils::formatCoordinateForProject( QgsProject::instance(), point, QgsCoordinateReferenceSystem(), 8 );
     mLocationLabel->setText( pos );
   }
+}
+
+void QgsGpsToolBar::updateCloseFeatureButton( QgsMapLayer *lyr )
+{
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( lyr );
+
+  if ( !( vlayer && vlayer->isValid() ) )
+    return;
+
+  // Add feature button tracks edit state of layer
+  if ( vlayer != mLastLayer )
+  {
+    if ( mLastLayer )  // disconnect previous layer
+    {
+      disconnect( mLastLayer, &QgsVectorLayer::editingStarted,
+                  this, &QgsGpsToolBar::layerEditStateChanged );
+      disconnect( mLastLayer, &QgsVectorLayer::editingStopped,
+                  this, &QgsGpsToolBar::layerEditStateChanged );
+    }
+    if ( vlayer ) // connect new layer
+    {
+      connect( vlayer, &QgsVectorLayer::editingStarted,
+               this, &QgsGpsToolBar::layerEditStateChanged );
+      connect( vlayer, &QgsVectorLayer::editingStopped,
+               this, &QgsGpsToolBar::layerEditStateChanged );
+    }
+    mLastLayer = vlayer;
+  }
+
+  QString buttonLabel = tr( "&Add Feature" );
+  if ( vlayer )
+  {
+    QgsVectorDataProvider *provider = vlayer->dataProvider();
+    const QgsWkbTypes::GeometryType layerGeometryType = vlayer->geometryType();
+
+    bool enable = provider->capabilities() & QgsVectorDataProvider::AddFeatures &&  // layer can add features
+                  vlayer->isEditable() && vlayer->isSpatial();
+
+    switch ( layerGeometryType )
+    {
+      case QgsWkbTypes::PointGeometry:
+        buttonLabel = tr( "&Add Point" );
+        break;
+
+      case QgsWkbTypes::LineGeometry:
+        buttonLabel = tr( "&Add Line" );
+        break;
+
+      case QgsWkbTypes::PolygonGeometry:
+        buttonLabel = tr( "&Add Polygon" );
+        break;
+
+      case QgsWkbTypes::UnknownGeometry:
+      case QgsWkbTypes::NullGeometry:
+        enable = false;
+        break;
+    }
+
+    mAddFeatureAction->setEnabled( enable );
+  }
+  else
+  {
+    mAddFeatureAction->setEnabled( false );
+  }
+  mAddFeatureAction->setText( buttonLabel );
+}
+
+void QgsGpsToolBar::layerEditStateChanged()
+{
+  updateCloseFeatureButton( mLastLayer );
 }
