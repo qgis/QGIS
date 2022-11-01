@@ -466,14 +466,12 @@ void QgsNmeaConnection::processGsaSentence( const char *data, int len )
         mLastGPSInformation.satellitesUsed += 1;
 
         Qgis::GnssConstellation constellation = Qgis::GnssConstellation::Unknown;
-        if ( result.pack_type == 'L' )
+        if ( result.pack_type == 'L' || result.sat_prn[i] > 64 )
           constellation = Qgis::GnssConstellation::Glonass;
         else if ( result.sat_prn[i] >= 1 && result.sat_prn[i] <= 32 )
           constellation = Qgis::GnssConstellation::Gps;
         else if ( result.sat_prn[i] > 32 && result.sat_prn[i] <= 64 )
           constellation = Qgis::GnssConstellation::Sbas;
-        else if ( result.sat_prn[i] > 64 )
-          constellation = Qgis::GnssConstellation::Glonass;
 
         if ( result.sat_prn[i] > 0 )
         {
