@@ -17,6 +17,7 @@
 
 #include "ui_qgsgpsoptionswidgetbase.h"
 #include "qgsoptionswidgetfactory.h"
+#include "qgis_app.h"
 
 /**
  * \ingroup app
@@ -25,7 +26,7 @@
  *
  * \since QGIS 3.28
  */
-class QgsGpsOptionsWidget : public QgsOptionsPageWidget, private Ui::QgsGpsOptionsWidgetBase
+class APP_EXPORT QgsGpsOptionsWidget : public QgsOptionsPageWidget, private Ui::QgsGpsOptionsWidgetBase
 {
     Q_OBJECT
 
@@ -50,6 +51,8 @@ class QgsGpsOptionsWidget : public QgsOptionsPageWidget, private Ui::QgsGpsOptio
     bool mBlockStoringChanges = false;
     QIntValidator *mAcquisitionIntValidator = nullptr;
     QIntValidator *mDistanceThresholdValidator = nullptr;
+
+    friend class TestQgsGpsIntegration;
 };
 
 

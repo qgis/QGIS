@@ -244,6 +244,7 @@ void QgsAppGpsSettingsMenu::timeStampMenuAboutToShow()
   mFieldProxyModel->sourceFieldModel()->setLayer( vlayer );
 
   mTimeStampFieldMenu->clear();
+  bool foundPreviousField = false;
   for ( int row = 0; row < mFieldProxyModel->rowCount(); ++row )
   {
     QAction *fieldAction = new QAction( mFieldProxyModel->data( mFieldProxyModel->index( row, 0 ) ).toString(), this );
@@ -251,13 +252,23 @@ void QgsAppGpsSettingsMenu::timeStampMenuAboutToShow()
     const QString fieldName = mFieldProxyModel->data( mFieldProxyModel->index( row, 0 ), QgsFieldModel::FieldNameRole ).toString();
     fieldAction->setData( fieldName );
     fieldAction->setCheckable( true );
-    fieldAction->setChecked( mCurrentTimeStampField == fieldName );
+    if ( mCurrentTimeStampField == fieldName )
+    {
+      foundPreviousField = true;
+      fieldAction->setChecked( mCurrentTimeStampField == fieldName );
+    }
     connect( fieldAction, &QAction::triggered, this, [ = ]()
     {
       mCurrentTimeStampField = fieldName;
       emit timeStampDestinationChanged( fieldName );
     } );
     mTimeStampFieldMenu->addAction( fieldAction );
+  }
+
+  if ( !foundPreviousField )
+  {
+    mTimeStampFieldMenu->actions().at( 0 )->setChecked( true );
+    mCurrentTimeStampField.clear();
   }
 }
 
