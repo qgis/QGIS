@@ -27,6 +27,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsfeatureaction.h"
 #include "qgsgpsconnection.h"
+#include "qgsappgpsconnection.h"
 
 #include <QTimeZone>
 
@@ -35,9 +36,6 @@ QgsAppGpsDigitizing::QgsAppGpsDigitizing( QgsAppGpsConnection *connection, QgsMa
   , mConnection( connection )
   , mCanvas( canvas )
 {
-  connect( QgsGui::instance(), &QgsGui::optionsChanged, this, &QgsAppGpsDigitizing::gpsSettingsChanged );
-  gpsSettingsChanged();
-
   mWgs84CRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
 
   mCanvasToWgs84Transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
@@ -65,6 +63,16 @@ QgsAppGpsDigitizing::QgsAppGpsDigitizing( QgsAppGpsConnection *connection, QgsMa
 
   connect( mAcquisitionTimer.get(), &QTimer::timeout,
            this, &QgsAppGpsDigitizing::switchAcquisition );
+
+  connect( mCanvas, &QgsMapCanvas::currentLayerChanged,
+           this, &QgsAppGpsDigitizing::updateTimestampDestinationFields );
+
+  updateTimestampDestinationFields( mCanvas->currentLayer() );
+
+  connect( mConnection, &QgsAppGpsConnection::stateChanged, this, &QgsAppGpsDigitizing::gpsStateChanged );
+
+  connect( QgsGui::instance(), &QgsGui::optionsChanged, this, &QgsAppGpsDigitizing::gpsSettingsChanged );
+  gpsSettingsChanged();
 }
 
 QgsAppGpsDigitizing::~QgsAppGpsDigitizing()
@@ -130,7 +138,7 @@ void QgsAppGpsDigitizing::addFeature()
 
   // Handle timestamp
   QgsAttributeMap attrMap;
-  const int idx { vlayer->fields().indexOf( mCboTimestampField->currentText() ) };
+  const int idx { vlayer->fields().indexOf( mTimestampField ) };
   if ( idx != -1 )
   {
     const QVariant ts = timestamp( vlayer, idx );
@@ -308,6 +316,15 @@ void QgsAppGpsDigitizing::setAutoSaveFeature( bool enabled )
   mAutoSave = enabled;
 }
 
+void QgsAppGpsDigitizing::setTimeStampDestination( const QString &fieldName )
+{
+  if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() ) )
+  {
+    mPreferredTimestampFields[ vlayer->id() ] = fieldName;
+  }
+  mTimestampField = fieldName;
+}
+
 void QgsAppGpsDigitizing::gpsSettingsChanged()
 {
   updateTrackAppearance();
@@ -330,6 +347,25 @@ void QgsAppGpsDigitizing::gpsSettingsChanged()
   if ( mAcquisitionTimer->isActive() )
     mAcquisitionTimer->stop();
   mAcquisitionEnabled = true;
+
+  mApplyLeapSettings = settings.value( QStringLiteral( "applyLeapSeconds" ), true, QgsSettings::Gps ).toBool();
+  mLeapSeconds = settings.value( QStringLiteral( "leapSecondsCorrection" ), 18, QgsSettings::Gps ).toInt();
+
+  switch ( settings.value( QStringLiteral( "timeStampFormat" ), Qt::LocalTime, QgsSettings::Gps ).toInt() )
+  {
+    case 0:
+      mTimeStampSpec = Qt::TimeSpec::LocalTime;
+      break;
+
+    case 1:
+      mTimeStampSpec = Qt::TimeSpec::UTC;
+      break;
+
+    case 2:
+      mTimeStampSpec = Qt::TimeSpec::TimeZone;
+      break;
+  }
+  mTimeZone = settings.value( QStringLiteral( "timestampTimeZone" ), QVariant(), QgsSettings::Gps ).toString();
 
   switchAcquisition();
 }
@@ -388,6 +424,7 @@ void QgsAppGpsDigitizing::gpsStateChanged( const QgsGpsInformation &info )
     newNmeaPosition.lon = nmea_degree2radian( info.longitude );
     newAlt = info.elevation;
     nmea_time_now( &newNmeaTime );
+    mLastNmeaTime = newNmeaTime;
   }
   else
   {
@@ -412,7 +449,6 @@ void QgsAppGpsDigitizing::gpsStateChanged( const QgsGpsInformation &info )
   {
     mLastGpsPosition = myNewCenter;
     mLastNmeaPosition = newNmeaPosition;
-    mLastNmeaTime = newNmeaTime;
     mLastElevation = newAlt;
 
     if ( mAutoAddVertices )
@@ -420,6 +456,33 @@ void QgsAppGpsDigitizing::gpsStateChanged( const QgsGpsInformation &info )
       addVertex();
     }
   }
+}
+
+void QgsAppGpsDigitizing::updateTimestampDestinationFields( QgsMapLayer *mapLayer )
+{
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mapLayer );
+  if ( vlayer )
+  {
+    // Restore preferred if stored
+    if ( mPreferredTimestampFields.contains( vlayer->id( ) ) )
+    {
+      const QString previousTimeStampField = mPreferredTimestampFields[ vlayer->id( ) ];
+      const int idx = vlayer->fields().indexOf( previousTimeStampField );
+      if ( idx >= 0 )
+        mTimestampField = previousTimeStampField;
+    }
+    // Cleanup preferred fields
+    const QStringList layerIds { mPreferredTimestampFields.keys( ) };
+    for ( const QString &layerId : layerIds )
+    {
+      if ( ! QgsProject::instance()->mapLayer( layerId ) )
+      {
+        mPreferredTimestampFields.remove( layerId );
+      }
+    }
+  }
+
+  emit timeStampDestinationChanged( mTimestampField );
 }
 
 void QgsAppGpsDigitizing::createRubberBand()
@@ -441,27 +504,26 @@ QVariant QgsAppGpsDigitizing::timestamp( QgsVectorLayer *vlayer, int idx )
     // Time from GPS is UTC time
     time.setTimeSpec( Qt::UTC );
     // Apply leap seconds correction
-    if ( mCbxLeapSeconds->isChecked() && mLeapSeconds->value() != 0 )
+    if ( mApplyLeapSettings && mLeapSeconds != 0 )
     {
-      time = time.addSecs( mLeapSeconds->value() );
+      time = time.addSecs( mLeapSeconds );
     }
     // Desired format
-    const Qt::TimeSpec timeSpec { static_cast<Qt::TimeSpec>( mCboTimestampFormat->currentData( ).toInt() ) };
-    time = time.toTimeSpec( timeSpec );
-    if ( timeSpec == Qt::TimeSpec::TimeZone )
+    time = time.toTimeSpec( mTimeStampSpec );
+    if ( mTimeStampSpec == Qt::TimeSpec::TimeZone )
     {
       // Get timezone from the combo
-      const QTimeZone destTz( mCboTimeZones->currentText().toUtf8() );
+      const QTimeZone destTz( mTimeZone.toUtf8() );
       if ( destTz.isValid() )
       {
         time = time.toTimeZone( destTz );
       }
     }
-    else if ( timeSpec == Qt::TimeSpec::LocalTime )
+    else if ( mTimeStampSpec == Qt::TimeSpec::LocalTime )
     {
       time = time.toLocalTime();
     }
-    else if ( timeSpec == Qt::TimeSpec::UTC )
+    else if ( mTimeStampSpec == Qt::TimeSpec::UTC )
     {
       // Do nothing: we are already in UTC
     }

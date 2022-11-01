@@ -17,6 +17,8 @@
 #include "qgssettings.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
+#include "qgsfieldproxymodel.h"
+#include "qgsfieldmodel.h"
 
 #include <QRadioButton>
 #include <QButtonGroup>
@@ -170,6 +172,14 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
 
   addAction( mAutoSaveAddedFeatureAction );
 
+  mFieldProxyModel = new QgsFieldProxyModel( this );
+  mFieldProxyModel->sourceFieldModel()->setAllowEmptyFieldName( true );
+  mFieldProxyModel->setFilters( QgsFieldProxyModel::Filter::String | QgsFieldProxyModel::Filter::DateTime );
+
+  mTimeStampFieldMenu = new QMenu( tr( "Time Stamp Destination" ), this );
+  connect( mTimeStampFieldMenu, &QMenu::aboutToShow, this, &QgsAppGpsSettingsMenu::timeStampMenuAboutToShow );
+  addMenu( mTimeStampFieldMenu );
+
   addSeparator();
   QAction *settingsAction = new QAction( tr( "GPS Settings…" ), this );
   settingsAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) ) );
@@ -221,5 +231,33 @@ bool QgsAppGpsSettingsMenu::autoAddTrackPoints() const
 bool QgsAppGpsSettingsMenu::autoAddFeature() const
 {
   return mAutoSaveAddedFeatureAction->isChecked();
+}
+
+void QgsAppGpsSettingsMenu::setCurrentTimeStampField( const QString &fieldName )
+{
+  mCurrentTimeStampField = fieldName;
+}
+
+void QgsAppGpsSettingsMenu::timeStampMenuAboutToShow()
+{
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( QgisApp::instance()->activeLayer() );
+  mFieldProxyModel->sourceFieldModel()->setLayer( vlayer );
+
+  mTimeStampFieldMenu->clear();
+  for ( int row = 0; row < mFieldProxyModel->rowCount(); ++row )
+  {
+    QAction *fieldAction = new QAction( mFieldProxyModel->data( mFieldProxyModel->index( row, 0 ) ).toString(), this );
+    fieldAction->setIcon( mFieldProxyModel->data( mFieldProxyModel->index( row, 0 ), Qt::DecorationRole ).value< QIcon >() );
+    const QString fieldName = mFieldProxyModel->data( mFieldProxyModel->index( row, 0 ), QgsFieldModel::FieldNameRole ).toString();
+    fieldAction->setData( fieldName );
+    fieldAction->setCheckable( true );
+    fieldAction->setChecked( mCurrentTimeStampField == fieldName );
+    connect( fieldAction, &QAction::triggered, this, [ = ]()
+    {
+      mCurrentTimeStampField = fieldName;
+      emit timeStampDestinationChanged( fieldName );
+    } );
+    mTimeStampFieldMenu->addAction( fieldAction );
+  }
 }
 

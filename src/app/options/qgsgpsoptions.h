@@ -41,8 +41,12 @@ class QgsGpsOptionsWidget : public QgsOptionsPageWidget, private Ui::QgsGpsOptio
   private slots:
 
     void refreshDevices();
+    void timestampFormatChanged( int index );
 
   private:
+
+    void updateTimeZones();
+
     bool mBlockStoringChanges = false;
     QIntValidator *mAcquisitionIntValidator = nullptr;
     QIntValidator *mDistanceThresholdValidator = nullptr;

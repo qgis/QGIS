@@ -21,8 +21,6 @@
 #include "qgsmaptooladdfeature.h"
 #include "qgspointxy.h"
 #include "qgsproject.h"
-#include "qgsvectordataprovider.h"
-#include "qgsvectorlayer.h"
 #include "qgssettings.h"
 #include "qgsstatusbar.h"
 #include "qgsmapcanvas.h"
@@ -68,7 +66,6 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsAppGpsConnection *connectio
   connect( mBtnSatellites, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnSatellites_clicked );
   connect( mBtnOptions, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnOptions_clicked );
   connect( mBtnDebug, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnDebug_clicked );
-  connect( mBtnResetFeature, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnResetFeature_clicked );
 
   mBtnPopupOptions->setAutoRaise( true );
   mBtnPopupOptions->setToolTip( tr( "Settings" ) );
@@ -196,61 +193,6 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsAppGpsConnection *connectio
   mStackedWidget->setCurrentIndex( 3 ); // force to Options
   mBtnPosition->setFocus( Qt::TabFocusReason );
 
-  // Timestamp
-  mCboTimestampField->setAllowEmptyFieldName( true );
-  mCboTimestampField->setFilters( QgsFieldProxyModel::Filter::String | QgsFieldProxyModel::Filter::DateTime );
-  // Qt::LocalTime  0 Locale dependent time (Timezones and Daylight Savings Time).
-  // Qt::UTC  1 Coordinated Universal Time, replaces Greenwich Mean Time.
-  // SKIP this one: Qt::OffsetFromUTC  2 An offset in seconds from Coordinated Universal Time.
-  // Qt::TimeZone 3 A named time zone using a specific set of Daylight Savings rules.
-  mCboTimestampFormat->addItem( tr( "Local Time" ), Qt::TimeSpec::LocalTime );
-  mCboTimestampFormat->addItem( tr( "UTC" ), Qt::TimeSpec::UTC );
-  mCboTimestampFormat->addItem( tr( "Time Zone" ), Qt::TimeSpec::TimeZone );
-  mCboTimestampFormat->setCurrentIndex( mySettings.value( QStringLiteral( "timeStampFormat" ), Qt::LocalTime, QgsSettings::Gps ).toInt() );
-  connect( mCboTimestampFormat, qOverload< int >( &QComboBox::currentIndexChanged ),
-           this, &QgsGpsInformationWidget::timestampFormatChanged );
-  connect( mCboTimestampField, qOverload< int >( &QComboBox::currentIndexChanged ),
-           this, [ = ]( int index )
-  {
-    const bool enabled { index > 0 };
-    mCboTimestampFormat->setEnabled( enabled );
-    mLblTimestampFormat->setEnabled( enabled );
-    mCbxLeapSeconds->setEnabled( enabled );
-    mLeapSeconds->setEnabled( enabled );
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
-    if ( vlayer && ! mPopulatingFields )
-    {
-      mPreferredTimestampFields[ vlayer->id() ] = mCboTimestampField->currentText();
-    }
-    updateTimeZones();
-  } );
-  updateTimeZones();
-
-  connect( mMapCanvas, &QgsMapCanvas::currentLayerChanged,
-           this, &QgsGpsInformationWidget::updateTimestampDestinationFields );
-
-  updateTimestampDestinationFields( mMapCanvas->currentLayer() );
-
-  const auto constTzs { QTimeZone::availableTimeZoneIds() };
-  for ( const auto &tzId : constTzs )
-  {
-    mCboTimeZones->addItem( tzId );
-  }
-
-  const QString lastTz { mySettings.value( QStringLiteral( "timestampTimeZone" ), QVariant(), QgsSettings::Gps ).toString() };
-  int tzIdx { mCboTimeZones->findText( lastTz ) };
-  if ( tzIdx == -1 )
-  {
-    const QString currentTz { QTimeZone::systemTimeZoneId() };
-    tzIdx = mCboTimeZones->findText( currentTz );
-  }
-  mCboTimeZones->setCurrentIndex( tzIdx );
-
-  mCbxLeapSeconds->setChecked( mySettings.value( QStringLiteral( "applyLeapSeconds" ), true, QgsSettings::Gps ).toBool() );
-  // Leap seconds as of 2019-06-20, if the default changes, it can be updated in qgis_global_settings.ini
-  mLeapSeconds->setValue( mySettings.value( QStringLiteral( "leapSecondsCorrection" ), 18, QgsSettings::Gps ).toInt() );
-  mLeapSeconds->setClearValue( 18 );
-
   connect( mConnection, &QgsAppGpsConnection::connecting, this, &QgsGpsInformationWidget::gpsConnecting );
   connect( mConnection, &QgsAppGpsConnection::connectionTimedOut, this, &QgsGpsInformationWidget::timedout );
   connect( mConnection, &QgsAppGpsConnection::connected, this, &QgsGpsInformationWidget::gpsConnected );
@@ -288,15 +230,9 @@ QgsGpsInformationWidget::~QgsGpsInformationWidget()
     gpsDisconnected();
   }
 
-
 #ifdef WITH_QWTPOLAR
   delete mpSatellitesGrid;
 #endif
-
-  QgsSettings mySettings;
-  mySettings.setValue( QStringLiteral( "timestampTimeZone" ), mCboTimeZones->currentText(), QgsSettings::Gps );
-  mySettings.setValue( QStringLiteral( "applyLeapSeconds" ), mCbxLeapSeconds->isChecked(), QgsSettings::Gps );
-  mySettings.setValue( QStringLiteral( "leapSecondsCorrection" ), mLeapSeconds->value(), QgsSettings::Gps );
 }
 
 void QgsGpsInformationWidget::mBtnPosition_clicked()
@@ -639,52 +575,3 @@ void QgsGpsInformationWidget::showStatusBarMessage( const QString &msg )
   QgisApp::instance()->statusBarIface()->showMessage( msg );
 }
 
-void QgsGpsInformationWidget::updateTimeZones()
-{
-  QgsSettings().setValue( QStringLiteral( "timestampFormat" ), mCboTimestampFormat->currentData( ), QgsSettings::Gps );
-  const bool enabled { static_cast<Qt::TimeSpec>( mCboTimestampFormat->currentData( ).toInt() ) == Qt::TimeSpec::TimeZone };
-  mCboTimeZones->setEnabled( enabled );
-  mLblTimeZone->setEnabled( enabled );
-}
-
-void QgsGpsInformationWidget::timestampFormatChanged( int )
-{
-  QgsSettings().setValue( QStringLiteral( "timestampFormat" ), mCboTimestampFormat->currentData( ).toInt(), QgsSettings::Gps );
-  const bool enabled { static_cast<Qt::TimeSpec>( mCboTimestampFormat->currentData( ).toInt() ) == Qt::TimeSpec::TimeZone };
-  mCboTimeZones->setEnabled( enabled );
-  mLblTimeZone->setEnabled( enabled );
-}
-
-void QgsGpsInformationWidget::updateTimestampDestinationFields( QgsMapLayer *mapLayer )
-{
-  mPopulatingFields = true;
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mapLayer );
-  mGboxTimestamp->setEnabled( false );
-  if ( vlayer )
-  {
-    mCboTimestampField->setLayer( mapLayer );
-    if ( mCboTimestampField->count() > 1 )
-    {
-      mGboxTimestamp->setEnabled( true );
-      // Set preferred if stored
-      if ( mPreferredTimestampFields.contains( vlayer->id( ) ) )
-      {
-        const int idx { mCboTimestampField->findText( mPreferredTimestampFields[ vlayer->id( ) ] ) };
-        if ( idx > 0 )
-        {
-          mCboTimestampField->setCurrentIndex( idx );
-        }
-      }
-      // Cleanup preferred fields
-      const auto constKeys { mPreferredTimestampFields.keys( ) };
-      for ( const auto &layerId : constKeys )
-      {
-        if ( ! QgsProject::instance()->mapLayer( layerId ) )
-        {
-          mPreferredTimestampFields.remove( layerId );
-        }
-      }
-    }
-  }
-  mPopulatingFields = false;
-}

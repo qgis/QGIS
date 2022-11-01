@@ -29,31 +29,7 @@
    <property name="verticalSpacing">
     <number>2</number>
    </property>
-   <item row="0" column="0">
-    <layout class="QGridLayout" name="gridLayout_15">
-     <item row="1" column="0">
-      <widget class="QToolButton" name="mBtnResetFeature">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="toolTip">
-        <string>Reset track</string>
-       </property>
-       <property name="text">
-        <string>…</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/mActionDeleteSelected.svg</normaloff>:/images/themes/default/mActionDeleteSelected.svg</iconset>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="2" column="0">
+   <item row="1" column="0">
     <widget class="QStackedWidget" name="mStackedWidget">
      <property name="currentIndex">
       <number>3</number>
@@ -530,7 +506,7 @@
             <x>0</x>
             <y>0</y>
             <width>579</width>
-            <height>776</height>
+            <height>803</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_7">
@@ -550,79 +526,6 @@
             <number>4</number>
            </property>
            <item row="1" column="0">
-            <widget class="QgsCollapsibleGroupBox" name="groupBox_2">
-             <property name="title">
-              <string>Digitizing</string>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_9">
-              <property name="topMargin">
-               <number>2</number>
-              </property>
-              <property name="bottomMargin">
-               <number>4</number>
-              </property>
-              <property name="verticalSpacing">
-               <number>2</number>
-              </property>
-              <item row="0" column="0">
-               <widget class="QGroupBox" name="mGboxTimestamp">
-                <property name="title">
-                 <string>Timestamp Properties</string>
-                </property>
-                <layout class="QFormLayout" name="formLayout">
-                 <item row="0" column="0">
-                  <widget class="QLabel" name="label_10">
-                   <property name="toolTip">
-                    <string>Specify the field where the GPS timestamp will be saved, only string or datetime fields are supported</string>
-                   </property>
-                   <property name="text">
-                    <string>Destination</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="1">
-                  <widget class="QgsFieldComboBox" name="mCboTimestampField"/>
-                 </item>
-                 <item row="2" column="0">
-                  <widget class="QLabel" name="mLblTimestampFormat">
-                   <property name="text">
-                    <string>Format</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="2" column="1">
-                  <widget class="QComboBox" name="mCboTimestampFormat"/>
-                 </item>
-                 <item row="3" column="0">
-                  <widget class="QLabel" name="mLblTimeZone">
-                   <property name="text">
-                    <string>Timezone</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="3" column="1">
-                  <widget class="QComboBox" name="mCboTimeZones"/>
-                 </item>
-                 <item row="4" column="1">
-                  <widget class="QgsSpinBox" name="mLeapSeconds"/>
-                 </item>
-                 <item row="4" column="0">
-                  <widget class="QCheckBox" name="mCbxLeapSeconds">
-                   <property name="toolTip">
-                    <string>Apply leap seconds correction by adding the seconds to GPS timestamp</string>
-                   </property>
-                   <property name="text">
-                    <string>Leap seconds</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item row="2" column="0">
             <widget class="QgsCollapsibleGroupBox" name="mLogFileGroupBox">
              <property name="enabled">
               <bool>true</bool>
@@ -662,7 +565,7 @@
              </layout>
             </widget>
            </item>
-           <item row="3" column="0">
+           <item row="2" column="0">
             <spacer name="verticalSpacer_6">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -709,7 +612,7 @@
      </widget>
     </widget>
    </item>
-   <item row="1" column="0">
+   <item row="0" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <property name="spacing">
       <number>2</number>
@@ -909,16 +812,6 @@ gray = no data
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsFieldComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsfieldcombobox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsPanelWidget</class>
    <extends>QWidget</extends>
    <header>qgspanelwidget.h</header>
@@ -926,7 +819,6 @@ gray = no data
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>mBtnResetFeature</tabstop>
   <tabstop>mBtnPosition</tabstop>
   <tabstop>mBtnSignal</tabstop>
   <tabstop>mBtnSatellites</tabstop>
@@ -934,11 +826,6 @@ gray = no data
   <tabstop>mBtnDebug</tabstop>
   <tabstop>mConnectButton</tabstop>
   <tabstop>scrollArea</tabstop>
-  <tabstop>mCboTimestampField</tabstop>
-  <tabstop>mCboTimestampFormat</tabstop>
-  <tabstop>mCboTimeZones</tabstop>
-  <tabstop>mCbxLeapSeconds</tabstop>
-  <tabstop>mLeapSeconds</tabstop>
   <tabstop>mLogFileGroupBox</tabstop>
   <tabstop>mLogFilename</tabstop>
   <tabstop>mGPSPlainTextEdit</tabstop>

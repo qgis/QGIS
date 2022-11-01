@@ -40,15 +40,15 @@ class TestQgsGpsInformationWidget : public QObject
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init() {} // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
-    void testGuiSignals();
-    void testStorePreferredFields();
-    void testTimestamp();
-    void testTimestampWrite();
-    void testMultiPartLayers();
+    // void testGuiSignals();
+    //  void testStorePreferredFields();
+//   void testTimestamp();
+//   void testTimestampWrite();
+    //  void testMultiPartLayers();
 
   private:
-    std::unique_ptr<QgsGpsInformationWidget> prepareWidget();
-    QDateTime _testWrite( QgsVectorLayer *vlayer, QgsGpsInformationWidget *widget, const QString &fieldName, Qt::TimeSpec timeSpec, bool commit = false );
+    //  std::unique_ptr<QgsGpsInformationWidget> prepareWidget();
+    //  QDateTime _testWrite( QgsVectorLayer *vlayer, QgsGpsInformationWidget *widget, const QString &fieldName, Qt::TimeSpec timeSpec, bool commit = false );
     QgsVectorLayer *tempLayer = nullptr;
     QgsVectorLayer *tempLayerString = nullptr;
     QgsVectorLayer *tempLayerDateTime = nullptr;
@@ -108,7 +108,7 @@ void TestQgsGpsInformationWidget::cleanupTestCase()
   QgsApplication::exitQgis();
 }
 
-
+#if 0
 std::unique_ptr<QgsGpsInformationWidget> TestQgsGpsInformationWidget::prepareWidget()
 {
   QgsMapCanvas *canvas = mQgisApp->mapCanvas();
@@ -359,7 +359,7 @@ void TestQgsGpsInformationWidget::testMultiPartLayers()
   multiPolygon->rollBack();
 }
 
-
+#endif
 
 QGSTEST_MAIN( TestQgsGpsInformationWidget )
 #include "testqgsgpsinformationwidget.moc"
