@@ -381,7 +381,6 @@ Depends:
  python3-pyqt5.qtwebkit,
  python3-requests,
  python3-sip,
- python3-six,
  python3-tz,
  python3-yaml,
  ${python3:Depends},
