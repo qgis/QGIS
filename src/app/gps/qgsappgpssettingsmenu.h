@@ -74,7 +74,7 @@ class APP_EXPORT QgsAppGpsSettingsMenu : public QMenu
     void locationMarkerToggled( bool visible );
     void bearingLineToggled( bool visible );
     void rotateMapToggled( bool enabled );
-    void mapCenteringModeChanged( MapCenteringMode mode );
+    void mapCenteringModeChanged( QgsAppGpsSettingsMenu::MapCenteringMode mode );
     void autoAddTrackPointsChanged( bool enabled );
     void autoAddFeatureChanged( bool enabled );
     void timeStampDestinationChanged( const QString &fieldName );
