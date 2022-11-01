@@ -84,7 +84,7 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
   addAction( mShowBearingLineAction );
 
 
-  mRotateMapAction = new QAction( tr( "Rotate map to match GPS direction" ), this );
+  mRotateMapAction = new QAction( tr( "Rotate Map to Match GPS Direction" ), this );
   mRotateMapAction->setCheckable( true );
   mRotateMapAction->setChecked( settings.value( QStringLiteral( "rotateMap" ), false, QgsSettings::Gps ).toBool() );
   connect( mRotateMapAction, &QAction::toggled, this, [ = ]( bool checked )
