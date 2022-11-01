@@ -41,9 +41,13 @@ class QgsAppGpsDigitizing: public QObject
     QgsAppGpsDigitizing( QgsAppGpsConnection *connection, QgsMapCanvas *canvas, QObject *parent = nullptr );
     ~QgsAppGpsDigitizing() override;
 
+  public slots:
     void addVertex();
     void resetFeature();
-    void closeFeature();
+    void addFeature();
+
+    void setAutoAddVertices( bool enabled );
+    void setAutoSaveFeature( bool enabled );
 
   private slots:
     void gpsSettingsChanged();
@@ -59,6 +63,8 @@ class QgsAppGpsDigitizing: public QObject
     QgsAppGpsConnection *mConnection = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
 
+    bool mAutoAddVertices = false;
+    bool mAutoSave = false;
 
     QgsPointXY mLastGpsPosition;
 

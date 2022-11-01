@@ -17,12 +17,14 @@
 #define QGSGPSTOOLBAR_H
 
 #include <QToolBar>
+#include <QPointer>
 
 #include "qgscoordinatereferencesystem.h"
 
 class QgsAppGpsConnection;
 class QgsMapCanvas;
 class QLabel;
+class QgsVectorLayer;
 
 class QgsGpsToolBar : public QToolBar
 {
@@ -34,9 +36,20 @@ class QgsGpsToolBar : public QToolBar
 
     QAction *showInfoAction() { return mShowInfoAction; }
 
+  signals:
+
+    void addVertexClicked();
+    void addFeatureClicked();
+
+  public slots:
+
+    void setAddVertexButtonEnabled( bool enabled );
+
   private slots:
 
     void updateLocationLabel( const QgsPoint &point );
+    void updateCloseFeatureButton( QgsMapLayer *lyr );
+    void layerEditStateChanged();
 
   private:
 
@@ -45,10 +58,14 @@ class QgsGpsToolBar : public QToolBar
     QAction *mConnectAction = nullptr;
     QAction *mRecenterAction = nullptr;
     QAction *mShowInfoAction = nullptr;
+    QAction *mAddTrackPointAction = nullptr;
+    QAction *mAddFeatureAction = nullptr;
 
     QLabel *mLocationLabel = nullptr;
 
     QgsCoordinateReferenceSystem mWgs84CRS;
+
+    QPointer< QgsVectorLayer > mLastLayer;
 };
 
 #endif // QGSGPSTOOLBAR_H

@@ -145,6 +145,32 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
   addAction( rotateAction );
 
   addSeparator();
+
+  mAutoAddTrackPointAction = new QAction( tr( "Automatically Add Track Points" ), this );
+  mAutoAddTrackPointAction->setCheckable( true );
+  mAutoAddTrackPointAction->setChecked( settings.value( QStringLiteral( "autoAddVertices" ), "false", QgsSettings::Gps ).toBool() );
+  connect( mAutoAddTrackPointAction, &QAction::toggled, this, [ = ]( bool checked )
+  {
+    emit autoAddTrackPointsChanged( checked );
+    QgsSettings settings;
+    settings.setValue( QStringLiteral( "autoAddVertices" ), checked, QgsSettings::Gps );
+  } );
+
+  addAction( mAutoAddTrackPointAction );
+
+  mAutoSaveAddedFeatureAction = new QAction( tr( "Automatically Save Added Feature" ), this );
+  mAutoSaveAddedFeatureAction->setCheckable( true );
+  mAutoSaveAddedFeatureAction->setChecked( settings.value( QStringLiteral( "autoCommit" ), "false", QgsSettings::Gps ).toBool() );
+  connect( mAutoAddTrackPointAction, &QAction::toggled, this, [ = ]( bool checked )
+  {
+    emit autoAddFeatureChanged( checked );
+    QgsSettings settings;
+    settings.setValue( QStringLiteral( "autoCommit" ), checked, QgsSettings::Gps );
+  } );
+
+  addAction( mAutoSaveAddedFeatureAction );
+
+  addSeparator();
   QAction *settingsAction = new QAction( tr( "GPS Settings…" ), this );
   settingsAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) ) );
   connect( settingsAction, &QAction::triggered, this, [ = ]
@@ -185,5 +211,15 @@ QgsAppGpsSettingsMenu::MapCenteringMode QgsAppGpsSettingsMenu::mapCenteringMode(
   {
     return QgsAppGpsSettingsMenu::MapCenteringMode::Never;
   }
+}
+
+bool QgsAppGpsSettingsMenu::autoAddTrackPoints() const
+{
+  return mAutoAddTrackPointAction->isChecked();
+}
+
+bool QgsAppGpsSettingsMenu::autoAddFeature() const
+{
+  return mAutoSaveAddedFeatureAction->isChecked();
 }
 

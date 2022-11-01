@@ -31,79 +31,7 @@
    </property>
    <item row="0" column="0">
     <layout class="QGridLayout" name="gridLayout_15">
-     <item row="0" column="1">
-      <widget class="QLabel" name="mLblStatusIndicator">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>42</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>42</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string>Quick status indicator:
-green = good or 3D fix
-yellow = good 2D fix
-red = no fix or bad fix
-gray = no data
-
-2D/3D depends on this information being available</string>
-       </property>
-       <property name="frameShape">
-        <enum>QFrame::Box</enum>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="scaledContents">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="QPushButton" name="mBtnCloseFeature">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>&amp;Add Feature</string>
-       </property>
-      </widget>
-     </item>
      <item row="1" column="0">
-      <widget class="QPushButton" name="mBtnAddVertex">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Add Track Point</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
       <widget class="QToolButton" name="mBtnResetFeature">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -602,7 +530,7 @@ gray = no data
             <x>0</x>
             <y>0</y>
             <width>579</width>
-            <height>741</height>
+            <height>776</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_7">
@@ -636,7 +564,7 @@ gray = no data
               <property name="verticalSpacing">
                <number>2</number>
               </property>
-              <item row="1" column="0">
+              <item row="0" column="0">
                <widget class="QGroupBox" name="mGboxTimestamp">
                 <property name="title">
                  <string>Timestamp Properties</string>
@@ -689,23 +617,6 @@ gray = no data
                   </widget>
                  </item>
                 </layout>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <widget class="QCheckBox" name="mCbxAutoAddVertices">
-                <property name="text">
-                 <string>Automatically add track points</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QCheckBox" name="mCbxAutoCommit">
-                <property name="toolTip">
-                 <string>save layer after every feature added</string>
-                </property>
-                <property name="text">
-                 <string>Automatically save added feature</string>
-                </property>
                </widget>
               </item>
              </layout>
@@ -919,6 +830,46 @@ gray = no data
       </spacer>
      </item>
      <item>
+      <widget class="QLabel" name="mLblStatusIndicator">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>42</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>42</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string>Quick status indicator:
+green = good or 3D fix
+yellow = good 2D fix
+red = no fix or bad fix
+gray = no data
+
+2D/3D depends on this information being available</string>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::Box</enum>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="mConnectButton">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -975,7 +926,6 @@ gray = no data
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>mBtnAddVertex</tabstop>
   <tabstop>mBtnResetFeature</tabstop>
   <tabstop>mBtnPosition</tabstop>
   <tabstop>mBtnSignal</tabstop>
@@ -984,7 +934,6 @@ gray = no data
   <tabstop>mBtnDebug</tabstop>
   <tabstop>mConnectButton</tabstop>
   <tabstop>scrollArea</tabstop>
-  <tabstop>mCbxAutoCommit</tabstop>
   <tabstop>mCboTimestampField</tabstop>
   <tabstop>mCboTimestampFormat</tabstop>
   <tabstop>mCboTimeZones</tabstop>
@@ -1012,29 +961,12 @@ gray = no data
   <tabstop>mTxtQuality</tabstop>
   <tabstop>mTxtStatus</tabstop>
   <tabstop>mTxtSatellitesUsed</tabstop>
-  <tabstop>mBtnCloseFeature</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>
-  <connection>
-   <sender>mCbxAutoAddVertices</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mBtnAddVertex</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>130</x>
-     <y>424</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>122</x>
-     <y>41</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>mConnectButton</sender>
    <signal>toggled(bool)</signal>

@@ -122,6 +122,7 @@ class QgsBrowserDockWidget;
 class QgsAdvancedDigitizingDockWidget;
 class QgsGpsInformationWidget;
 class QgsGpsCanvasBridge;
+class QgsAppGpsDigitizing;
 class QgsStatisticalSummaryDockWidget;
 class QgsMapCanvasTracer;
 class QgsTemporalControllerDockWidget;
@@ -2569,6 +2570,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsGpsInformationWidget *mpGpsWidget = nullptr;
     QgsGpsToolBar *mGpsToolBar = nullptr;
     QgsGpsCanvasBridge *mGpsCanvasBridge = nullptr;
+    QgsAppGpsDigitizing *mGpsDigitizing = nullptr;
 
     QgsMessageBarItem *mLastMapToolMessage = nullptr;
 
