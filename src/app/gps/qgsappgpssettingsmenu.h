@@ -78,6 +78,8 @@ class APP_EXPORT QgsAppGpsSettingsMenu : public QMenu
     void autoAddTrackPointsChanged( bool enabled );
     void autoAddFeatureChanged( bool enabled );
     void timeStampDestinationChanged( const QString &fieldName );
+    void enableNmeaLog( bool enabled );
+    void nmeaLogFileChanged( const QString &filename );
 
   private slots:
 
@@ -90,6 +92,7 @@ class APP_EXPORT QgsAppGpsSettingsMenu : public QMenu
     QAction *mRotateMapAction = nullptr;
     QAction *mAutoAddTrackPointAction = nullptr;
     QAction *mAutoSaveAddedFeatureAction = nullptr;
+    QAction *mActionNmeaLog = nullptr;
 
     QRadioButton *mRadioAlwaysRecenter = nullptr;
     QRadioButton *mRadioRecenterWhenOutside = nullptr;

@@ -24,6 +24,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsdistancearea.h"
 #include "qgis_app.h"
+#include <QTextStream>
 
 class QgsAppGpsConnection;
 class QgsMapCanvas;
@@ -32,6 +33,7 @@ class QgsPoint;
 class QgsGpsInformation;
 class QgsVectorLayer;
 class QTimer;
+class QFile;
 
 class APP_EXPORT QgsAppGpsDigitizing: public QObject
 {
@@ -52,6 +54,9 @@ class APP_EXPORT QgsAppGpsDigitizing: public QObject
 
     void setTimeStampDestination( const QString &fieldName );
 
+    void setNmeaLogFile( const QString &filename );
+    void setNmeaLoggingEnabled( bool enabled );
+
   signals:
 
     void timeStampDestinationChanged( const QString &fieldName );
@@ -61,12 +66,19 @@ class APP_EXPORT QgsAppGpsDigitizing: public QObject
     void updateTrackAppearance();
     void switchAcquisition();
 
+    void gpsConnected();
+    void gpsDisconnected();
+
     void gpsStateChanged( const QgsGpsInformation &info );
 
     /**
      * Updates compatible fields for timestamp recording
      */
     void updateTimestampDestinationFields( QgsMapLayer *mapLayer );
+    void logNmeaSentence( const QString &nmeaString ); // added to handle 'raw' data
+
+    void startLogging();
+    void stopLogging();
 
   private:
     void createRubberBand();
@@ -107,6 +119,12 @@ class APP_EXPORT QgsAppGpsDigitizing: public QObject
     //! Temporary storage of preferred fields
     QMap<QString, QString> mPreferredTimestampFields;
     QString mTimestampField;
+
+    QString mNmeaLogFile;
+    bool mEnableNmeaLogging = false;
+
+    std::unique_ptr< QFile > mLogFile;
+    QTextStream mLogFileTextStream;
 
     friend class TestQgsGpsIntegration;
 };

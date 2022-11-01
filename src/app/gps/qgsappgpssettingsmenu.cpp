@@ -16,13 +16,16 @@
 #include "qgsappgpssettingsmenu.h"
 #include "qgssettings.h"
 #include "qgisapp.h"
-#include "qgsapplication.h"
 #include "qgsfieldproxymodel.h"
 #include "qgsfieldmodel.h"
+#include "qgsgpsinformationwidget.h"
+#include "qgsfileutils.h"
+#include "qgsapplication.h"
 
 #include <QRadioButton>
 #include <QButtonGroup>
 #include <QGridLayout>
+#include <QFileDialog>
 
 QgsGpsMapRotationAction::QgsGpsMapRotationAction( QWidget *parent )
   : QWidgetAction( parent )
@@ -181,6 +184,37 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
   addMenu( mTimeStampFieldMenu );
 
   addSeparator();
+
+  mActionNmeaLog = new QAction( "Log NMEA Sentences…" );
+  mActionNmeaLog->setCheckable( true );
+  connect( mActionNmeaLog, &QAction::toggled, this, [ = ]( bool checked )
+  {
+    if ( checked )
+    {
+      const QString lastLogFolder = QgsGpsInformationWidget::settingLastLogFolder.value();
+      const QString initialFolder = lastLogFolder.isEmpty() ? QDir::homePath() : lastLogFolder;
+
+      QString fileName = QFileDialog::getSaveFileName( this, tr( "GPS Log File" ), initialFolder, tr( "NMEA files" ) + " (*.nmea)" );
+      if ( fileName.isEmpty() )
+      {
+        mActionNmeaLog->setChecked( false );
+        emit enableNmeaLog( false );
+        return;
+      }
+
+      fileName = QgsFileUtils::ensureFileNameHasExtension( fileName, { QStringLiteral( "nmea" ) } );
+      QgsGpsInformationWidget::settingLastLogFolder.setValue( QFileInfo( fileName ).absolutePath() );
+
+      emit nmeaLogFileChanged( fileName );
+      emit enableNmeaLog( true );
+    }
+    else
+    {
+      emit enableNmeaLog( false );
+    }
+  } );
+  addAction( mActionNmeaLog );
+
   QAction *settingsAction = new QAction( tr( "GPS Settings…" ), this );
   settingsAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) ) );
   connect( settingsAction, &QAction::triggered, this, [ = ]

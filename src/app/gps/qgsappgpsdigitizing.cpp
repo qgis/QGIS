@@ -70,6 +70,8 @@ QgsAppGpsDigitizing::QgsAppGpsDigitizing( QgsAppGpsConnection *connection, QgsMa
   updateTimestampDestinationFields( mCanvas->currentLayer() );
 
   connect( mConnection, &QgsAppGpsConnection::stateChanged, this, &QgsAppGpsDigitizing::gpsStateChanged );
+  connect( mConnection, &QgsAppGpsConnection::connected, this, &QgsAppGpsDigitizing::gpsConnected );
+  connect( mConnection, &QgsAppGpsConnection::disconnected, this, &QgsAppGpsDigitizing::gpsDisconnected );
 
   connect( QgsGui::instance(), &QgsGui::optionsChanged, this, &QgsAppGpsDigitizing::gpsSettingsChanged );
   gpsSettingsChanged();
@@ -325,6 +327,39 @@ void QgsAppGpsDigitizing::setTimeStampDestination( const QString &fieldName )
   mTimestampField = fieldName;
 }
 
+void QgsAppGpsDigitizing::setNmeaLogFile( const QString &filename )
+{
+  if ( mLogFile )
+  {
+    stopLogging();
+  }
+
+  mNmeaLogFile = filename;
+
+  if ( mEnableNmeaLogging && !mNmeaLogFile.isEmpty() )
+  {
+    startLogging();
+  }
+}
+
+void QgsAppGpsDigitizing::setNmeaLoggingEnabled( bool enabled )
+{
+  if ( enabled == static_cast< bool >( mLogFile ) )
+    return;
+
+  if ( mLogFile && !enabled )
+  {
+    stopLogging();
+  }
+
+  mEnableNmeaLogging = enabled;
+
+  if ( mEnableNmeaLogging && !mNmeaLogFile.isEmpty() )
+  {
+    startLogging();
+  }
+}
+
 void QgsAppGpsDigitizing::gpsSettingsChanged()
 {
   updateTrackAppearance();
@@ -405,12 +440,23 @@ void QgsAppGpsDigitizing::switchAcquisition()
   }
 }
 
+void QgsAppGpsDigitizing::gpsConnected()
+{
+  if ( !mLogFile && mEnableNmeaLogging && !mNmeaLogFile.isEmpty() )
+  {
+    startLogging();
+  }
+}
+
+void QgsAppGpsDigitizing::gpsDisconnected()
+{
+  stopLogging();
+}
+
 void QgsAppGpsDigitizing::gpsStateChanged( const QgsGpsInformation &info )
 {
   if ( mBlockGpsStateChanged )
     return;
-
-  QVector<QPointF> data;
 
   const bool validFlag = info.isValid();
   QgsPointXY myNewCenter;
@@ -483,6 +529,49 @@ void QgsAppGpsDigitizing::updateTimestampDestinationFields( QgsMapLayer *mapLaye
   }
 
   emit timeStampDestinationChanged( mTimestampField );
+}
+
+void QgsAppGpsDigitizing::logNmeaSentence( const QString &nmeaString )
+{
+  if ( mEnableNmeaLogging && mLogFile && mLogFile->isOpen() )
+  {
+    mLogFileTextStream << nmeaString << "\r\n"; // specifically output CR + LF (NMEA requirement)
+  }
+}
+
+void QgsAppGpsDigitizing::startLogging()
+{
+  if ( !mLogFile )
+  {
+    mLogFile = std::make_unique< QFile >( mNmeaLogFile );
+  }
+
+  if ( mLogFile->open( QIODevice::Append ) )  // open in binary and explicitly output CR + LF per NMEA
+  {
+    mLogFileTextStream.setDevice( mLogFile.get() );
+
+    // crude way to separate chunks - use when manually editing file - NMEA parsers should discard
+    mLogFileTextStream << "====" << "\r\n";
+
+    connect( mConnection, &QgsAppGpsConnection::nmeaSentenceReceived, this, &QgsAppGpsDigitizing::logNmeaSentence ); // added to handle raw data
+  }
+  else  // error opening file
+  {
+    mLogFile.reset();
+
+    // need to indicate why - this just reports that an error occurred
+    QgisApp::instance()->messageBar()->pushCritical( QString(), tr( "Error opening log file." ) );
+  }
+}
+
+void QgsAppGpsDigitizing::stopLogging()
+{
+  if ( mLogFile && mLogFile->isOpen() )
+  {
+    disconnect( mConnection, &QgsAppGpsConnection::nmeaSentenceReceived, this, &QgsAppGpsDigitizing::logNmeaSentence );
+    mLogFile->close();
+    mLogFile.reset();
+  }
 }
 
 void QgsAppGpsDigitizing::createRubberBand()

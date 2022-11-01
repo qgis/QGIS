@@ -31,6 +31,7 @@
 #include <qwt_polar_marker.h>
 #endif
 #include <QTextStream>
+#include <QPointer>
 
 class QextSerialPort;
 class QgsAppGpsConnection;
@@ -59,12 +60,10 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, private Ui::Qgs
   private slots:
     void mConnectButton_toggled( bool flag );
     void displayGPSInformation( const QgsGpsInformation &info );
-    void logNmeaSentence( const QString &nmeaString ); // added to handle 'raw' data
 
     void mBtnPosition_clicked();
     void mBtnSignal_clicked();
     void mBtnSatellites_clicked();
-    void mBtnOptions_clicked();
     void mBtnDebug_clicked();
 
     void timedout();
@@ -92,9 +91,6 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, private Ui::Qgs
     QgsPointXY mLastGpsPosition;
 
     QString mDateTimeFormat; // user specified format string in registry (no UI presented)
-
-    QFile *mLogFile = nullptr;
-    QTextStream mLogFileTextStream;
 
     friend class TestQgsGpsInformationWidget;
 };

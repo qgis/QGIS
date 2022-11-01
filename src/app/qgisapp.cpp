@@ -1422,6 +1422,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::autoAddTrackPointsChanged, mGpsDigitizing, &QgsAppGpsDigitizing::setAutoAddVertices );
   connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::autoAddTrackPointsChanged, this, [ = ]( bool enabled ) { mGpsToolBar->setAddVertexButtonEnabled( !enabled ); } );
   connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::autoAddFeatureChanged, mGpsDigitizing, &QgsAppGpsDigitizing::setAutoSaveFeature );
+  connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::enableNmeaLog, mGpsDigitizing, &QgsAppGpsDigitizing::setNmeaLoggingEnabled );
+  connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::nmeaLogFileChanged, mGpsDigitizing, &QgsAppGpsDigitizing::setNmeaLogFile );
   connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::timeStampDestinationChanged, mGpsDigitizing, &QgsAppGpsDigitizing::setTimeStampDestination );
   connect( mGpsDigitizing, &QgsAppGpsDigitizing::timeStampDestinationChanged, mGpsSettingsMenu, &QgsAppGpsSettingsMenu::setCurrentTimeStampField );
 

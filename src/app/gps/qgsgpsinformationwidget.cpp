@@ -64,25 +64,12 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsAppGpsConnection *connectio
   connect( mBtnPosition, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnPosition_clicked );
   connect( mBtnSignal, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnSignal_clicked );
   connect( mBtnSatellites, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnSatellites_clicked );
-  connect( mBtnOptions, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnOptions_clicked );
   connect( mBtnDebug, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnDebug_clicked );
 
   mBtnPopupOptions->setAutoRaise( true );
   mBtnPopupOptions->setToolTip( tr( "Settings" ) );
   mBtnPopupOptions->setMenu( QgisApp::instance()->gpsSettingsMenu() );
   mBtnPopupOptions->setPopupMode( QToolButton::InstantPopup );
-
-  mLogFilename->setDialogTitle( tr( "GPS Log File" ) );
-  mLogFilename->setStorageMode( QgsFileWidget::SaveFile );
-  mLogFilename->setFilter( tr( "NMEA files" ) + " (*.nmea)" );
-  mLogFilename->lineEdit()->setShowClearButton( false );
-  const QString lastLogFolder = settingLastLogFolder.value();
-  mLogFilename->setDefaultRoot( lastLogFolder.isEmpty() ? QDir::homePath() : lastLogFolder );
-  connect( mLogFilename, &QgsFileWidget::fileChanged, this, [ = ]
-  {
-    settingLastLogFolder.setValue( QFileInfo( mLogFilename->filePath() ).absolutePath() );
-  } );
-
 
   QWidget *mpHistogramWidget = mStackedWidget->widget( 1 );
 #ifndef WITH_QWTPOLAR
@@ -187,10 +174,7 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsAppGpsConnection *connectio
   // status = unknown
   setStatusIndicator( Qgis::GpsFixStatus::NoData );
 
-  //SLM - added functionality
-  mLogFile = nullptr;
-
-  mStackedWidget->setCurrentIndex( 3 ); // force to Options
+  mStackedWidget->setCurrentIndex( 0 );
   mBtnPosition->setFocus( Qt::TabFocusReason );
 
   connect( mConnection, &QgsAppGpsConnection::connecting, this, &QgsGpsInformationWidget::gpsConnecting );
@@ -256,14 +240,9 @@ void QgsGpsInformationWidget::mBtnSatellites_clicked()
     displayGPSInformation( connection->currentGPSInformation() );
 }
 
-void QgsGpsInformationWidget::mBtnOptions_clicked()
-{
-  mStackedWidget->setCurrentIndex( 3 );
-}
-
 void QgsGpsInformationWidget::mBtnDebug_clicked()
 {
-  mStackedWidget->setCurrentIndex( 4 );
+  mStackedWidget->setCurrentIndex( 3 );
 }
 
 void QgsGpsInformationWidget::mConnectButton_toggled( bool flag )
@@ -307,44 +286,10 @@ void QgsGpsInformationWidget::timedout()
 void QgsGpsInformationWidget::gpsConnected()
 {
   mGPSPlainTextEdit->appendPlainText( tr( "Connected!" ) );
-
-  if ( mLogFileGroupBox->isChecked() && !mLogFilename->filePath().isEmpty() )
-  {
-    if ( !mLogFile )
-    {
-      mLogFile = new QFile( mLogFilename->filePath() );
-    }
-
-    if ( mLogFile->open( QIODevice::Append ) )  // open in binary and explicitly output CR + LF per NMEA
-    {
-      mLogFileTextStream.setDevice( mLogFile );
-
-      // crude way to separate chunks - use when manually editing file - NMEA parsers should discard
-      mLogFileTextStream << "====" << "\r\n";
-
-      connect( mConnection, &QgsAppGpsConnection::nmeaSentenceReceived, this, &QgsGpsInformationWidget::logNmeaSentence ); // added to handle raw data
-    }
-    else  // error opening file
-    {
-      delete mLogFile;
-      mLogFile = nullptr;
-
-      // need to indicate why - this just reports that an error occurred
-      showStatusBarMessage( tr( "Error opening log file." ) );
-    }
-  }
 }
 
 void QgsGpsInformationWidget::gpsDisconnected()
 {
-  if ( mLogFile && mLogFile->isOpen() )
-  {
-    disconnect( mConnection, &QgsAppGpsConnection::nmeaSentenceReceived, this, &QgsGpsInformationWidget::logNmeaSentence );
-    mLogFile->close();
-    delete mLogFile;
-    mLogFile = nullptr;
-  }
-
   mGPSPlainTextEdit->appendPlainText( tr( "Disconnected…" ) );
 }
 
@@ -365,7 +310,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     }
   } //satellites
 #endif
-  if ( mStackedWidget->currentIndex() == 4 ) //debug
+  if ( mStackedWidget->currentIndex() == 3 ) //debug
   {
     mGPSPlainTextEdit->clear();
   } //debug
@@ -538,14 +483,6 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
   if ( mLastGpsPosition != myNewCenter )
   {
     mLastGpsPosition = myNewCenter;
-  }
-}
-
-void QgsGpsInformationWidget::logNmeaSentence( const QString &nmeaString )
-{
-  if ( mLogFileGroupBox->isChecked() && mLogFile && mLogFile->isOpen() )
-  {
-    mLogFileTextStream << nmeaString << "\r\n"; // specifically output CR + LF (NMEA requirement)
   }
 }
 
