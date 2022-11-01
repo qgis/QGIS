@@ -1,0 +1,85 @@
+/***************************************************************************
+    qgsappgpsdigitizing.h
+    -------------------
+    begin                : October 2022
+    copyright            : (C) 2022 Nyall Dawson
+    email                : nyall dot dawson at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#ifndef QGSAPPGPSDIGITIZING_H
+#define QGSAPPGPSDIGITIZING_H
+
+#include <QObject>
+
+#include "info.h"
+#include "nmeatime.h"
+#include "qgspointxy.h"
+#include "qgscoordinatetransform.h"
+#include "qgsdistancearea.h"
+
+class QgsAppGpsConnection;
+class QgsMapCanvas;
+class QgsRubberBand;
+class QgsPoint;
+class QgsGpsInformation;
+class QgsVectorLayer;
+class QTimer;
+
+class QgsAppGpsDigitizing: public QObject
+{
+    Q_OBJECT
+
+  public:
+
+    QgsAppGpsDigitizing( QgsAppGpsConnection *connection, QgsMapCanvas *canvas, QObject *parent = nullptr );
+    ~QgsAppGpsDigitizing() override;
+
+    void addVertex();
+    void resetFeature();
+    void closeFeature();
+
+  private slots:
+    void gpsSettingsChanged();
+    void updateTrackAppearance();
+    void switchAcquisition();
+
+    void gpsStateChanged( const QgsGpsInformation &info );
+
+  private:
+    void createRubberBand();
+    QVariant timestamp( QgsVectorLayer *vlayer, int idx );
+
+    QgsAppGpsConnection *mConnection = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
+
+
+    QgsPointXY mLastGpsPosition;
+
+    QgsRubberBand *mRubberBand = nullptr;
+
+    QVector<QgsPoint> mCaptureList;
+    double mLastElevation = 0.0;
+
+    nmeaPOS mLastNmeaPosition;
+    nmeaTIME mLastNmeaTime;
+
+    QgsCoordinateReferenceSystem mWgs84CRS;
+    QgsDistanceArea mDistanceCalculator;
+    QgsCoordinateTransform mCanvasToWgs84Transform;
+
+    int mBlockGpsStateChanged = 0;
+
+    std::unique_ptr<QTimer> mAcquisitionTimer;
+    bool mAcquisitionEnabled = true;
+    int mAcquisitionInterval = 0;
+    double mDistanceThreshold = 0;
+};
+
+#endif // QGSAPPGPSDIGITIZING
