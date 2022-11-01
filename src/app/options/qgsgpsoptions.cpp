@@ -35,6 +35,7 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
   : QgsOptionsPageWidget( parent )
 {
   setupUi( this );
+  setObjectName( "mGpsOptions" );
 
   connect( mRadAutodetect, &QRadioButton::toggled, mCboDevices, &QWidget::setDisabled );
   connect( mRadAutodetect, &QRadioButton::toggled, mGpsdHost, &QWidget::setDisabled );
