@@ -1408,6 +1408,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   mGpsToolBar->setAddVertexButtonEnabled( !mGpsSettingsMenu->autoAddTrackPoints() );
   connect( mGpsToolBar, &QgsGpsToolBar::addFeatureClicked, mGpsDigitizing, &QgsAppGpsDigitizing::addFeature );
   connect( mGpsToolBar, &QgsGpsToolBar::addVertexClicked, mGpsDigitizing, &QgsAppGpsDigitizing::addVertex );
+  connect( mGpsToolBar, &QgsGpsToolBar::resetFeatureClicked, mGpsDigitizing, &QgsAppGpsDigitizing::resetFeature );
 
   mGpsCanvasBridge = new QgsGpsCanvasBridge( mGpsConnection, mMapCanvas );
   mGpsCanvasBridge->setLocationMarkerVisible( mGpsSettingsMenu->locationMarkerVisible() );
@@ -1421,6 +1422,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::autoAddTrackPointsChanged, mGpsDigitizing, &QgsAppGpsDigitizing::setAutoAddVertices );
   connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::autoAddTrackPointsChanged, this, [ = ]( bool enabled ) { mGpsToolBar->setAddVertexButtonEnabled( !enabled ); } );
   connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::autoAddFeatureChanged, mGpsDigitizing, &QgsAppGpsDigitizing::setAutoSaveFeature );
+  connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::timeStampDestinationChanged, mGpsDigitizing, &QgsAppGpsDigitizing::setTimeStampDestination );
+  connect( mGpsDigitizing, &QgsAppGpsDigitizing::timeStampDestinationChanged, mGpsSettingsMenu, &QgsAppGpsSettingsMenu::setCurrentTimeStampField );
 
   mpGpsWidget = new QgsGpsInformationWidget( mGpsConnection, mMapCanvas );
   QgsPanelWidgetStack *gpsStack = new QgsPanelWidgetStack();

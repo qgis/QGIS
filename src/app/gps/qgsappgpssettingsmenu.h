@@ -20,6 +20,7 @@
 #include <QWidgetAction>
 
 class QRadioButton;
+class QgsFieldProxyModel;
 
 class QgsGpsMapRotationAction: public QWidgetAction
 {
@@ -63,6 +64,10 @@ class QgsAppGpsSettingsMenu : public QMenu
     bool autoAddTrackPoints() const;
     bool autoAddFeature() const;
 
+  public slots:
+
+    void setCurrentTimeStampField( const QString &fieldName );
+
   signals:
 
     void locationMarkerToggled( bool visible );
@@ -71,6 +76,11 @@ class QgsAppGpsSettingsMenu : public QMenu
     void mapCenteringModeChanged( MapCenteringMode mode );
     void autoAddTrackPointsChanged( bool enabled );
     void autoAddFeatureChanged( bool enabled );
+    void timeStampDestinationChanged( const QString &fieldName );
+
+  private slots:
+
+    void timeStampMenuAboutToShow();
 
   private:
 
@@ -83,6 +93,10 @@ class QgsAppGpsSettingsMenu : public QMenu
     QRadioButton *mRadioAlwaysRecenter = nullptr;
     QRadioButton *mRadioRecenterWhenOutside = nullptr;
     QRadioButton *mRadioNeverRecenter = nullptr;
+
+    QgsFieldProxyModel *mFieldProxyModel = nullptr;
+    QMenu *mTimeStampFieldMenu = nullptr;
+    QString mCurrentTimeStampField;
 
 };
 

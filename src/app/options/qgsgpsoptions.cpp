@@ -24,6 +24,8 @@
 #include "qgsgpsinformationwidget.h"
 #include "qgslinesymbol.h"
 
+#include <QTimeZone>
+
 const int MAXACQUISITIONINTERVAL = 3000; // max gps information acquisition suspension interval (in seconds)
 const int MAXDISTANCETHRESHOLD = 200; // max gps distance threshold (in meters)
 
@@ -218,6 +220,38 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
   mSpinMapExtentMultiplier->setValue( recenteringThreshold );
   mSpinMapRotateInterval->setValue( rotateInterval );
 
+  // Qt::LocalTime  0 Locale dependent time (Timezones and Daylight Savings Time).
+  // Qt::UTC  1 Coordinated Universal Time, replaces Greenwich Mean Time.
+  // SKIP this one: Qt::OffsetFromUTC  2 An offset in seconds from Coordinated Universal Time.
+  // Qt::TimeZone 3 A named time zone using a specific set of Daylight Savings rules.
+  mCboTimestampFormat->addItem( tr( "Local Time" ), Qt::TimeSpec::LocalTime );
+  mCboTimestampFormat->addItem( tr( "UTC" ), Qt::TimeSpec::UTC );
+  mCboTimestampFormat->addItem( tr( "Time Zone" ), Qt::TimeSpec::TimeZone );
+  mCboTimestampFormat->setCurrentIndex( settings.value( QStringLiteral( "timeStampFormat" ), Qt::LocalTime, QgsSettings::Gps ).toInt() );
+  connect( mCboTimestampFormat, qOverload< int >( &QComboBox::currentIndexChanged ),
+           this, &QgsGpsOptionsWidget::timestampFormatChanged );
+  updateTimeZones();
+
+
+  const QList<QByteArray> constTzs = QTimeZone::availableTimeZoneIds();
+  for ( const QByteArray &tzId : constTzs )
+  {
+    mCboTimeZones->addItem( tzId );
+  }
+  const QString lastTz = settings.value( QStringLiteral( "timestampTimeZone" ), QVariant(), QgsSettings::Gps ).toString();
+  int tzIdx = mCboTimeZones->findText( lastTz );
+  if ( tzIdx == -1 )
+  {
+    const QString currentTz { QTimeZone::systemTimeZoneId() };
+    tzIdx = mCboTimeZones->findText( currentTz );
+  }
+  mCboTimeZones->setCurrentIndex( tzIdx );
+
+  mCbxLeapSeconds->setChecked( settings.value( QStringLiteral( "applyLeapSeconds" ), true, QgsSettings::Gps ).toBool() );
+  // Leap seconds as of 2019-06-20, if the default changes, it can be updated in qgis_global_settings.ini
+  mLeapSeconds->setValue( settings.value( QStringLiteral( "leapSecondsCorrection" ), 18, QgsSettings::Gps ).toInt() );
+  mLeapSeconds->setClearValue( 18 );
+
   refreshDevices();
 }
 
@@ -277,6 +311,13 @@ void QgsGpsOptionsWidget::apply()
 
   QgsGpsInformationWidget::settingMapExtentRecenteringThreshold.setValue( mSpinMapExtentMultiplier->value() );
   QgsGpsInformationWidget::settingMapRotateInterval.setValue( mSpinMapRotateInterval->value() );
+
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "timestampFormat" ), mCboTimestampFormat->currentData( ).toInt(), QgsSettings::Gps );
+
+  settings.setValue( QStringLiteral( "timestampTimeZone" ), mCboTimeZones->currentText(), QgsSettings::Gps );
+  settings.setValue( QStringLiteral( "applyLeapSeconds" ), mCbxLeapSeconds->isChecked(), QgsSettings::Gps );
+  settings.setValue( QStringLiteral( "leapSecondsCorrection" ), mLeapSeconds->value(), QgsSettings::Gps );
 }
 
 void QgsGpsOptionsWidget::refreshDevices()
@@ -308,6 +349,19 @@ void QgsGpsOptionsWidget::refreshDevices()
   mCboDevices->setCurrentIndex( idx < 0 ? 0 : idx );
 }
 
+void QgsGpsOptionsWidget::timestampFormatChanged( int )
+{
+  const bool enabled { static_cast<Qt::TimeSpec>( mCboTimestampFormat->currentData( ).toInt() ) == Qt::TimeSpec::TimeZone };
+  mCboTimeZones->setEnabled( enabled );
+  mLblTimeZone->setEnabled( enabled );
+}
+
+void QgsGpsOptionsWidget::updateTimeZones()
+{
+  const bool enabled = static_cast<Qt::TimeSpec>( mCboTimestampFormat->currentData( ).toInt() ) == Qt::TimeSpec::TimeZone;
+  mCboTimeZones->setEnabled( enabled );
+  mLblTimeZone->setEnabled( enabled );
+}
 
 //
 // QgsGpsOptionsFactory

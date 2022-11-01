@@ -40,6 +40,7 @@ class QgsGpsToolBar : public QToolBar
 
     void addVertexClicked();
     void addFeatureClicked();
+    void resetFeatureClicked();
 
   public slots:
 
@@ -60,6 +61,7 @@ class QgsGpsToolBar : public QToolBar
     QAction *mShowInfoAction = nullptr;
     QAction *mAddTrackPointAction = nullptr;
     QAction *mAddFeatureAction = nullptr;
+    QAction *mResetFeatureAction = nullptr;
 
     QLabel *mLocationLabel = nullptr;
 

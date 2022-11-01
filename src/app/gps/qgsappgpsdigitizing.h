@@ -49,12 +49,23 @@ class QgsAppGpsDigitizing: public QObject
     void setAutoAddVertices( bool enabled );
     void setAutoSaveFeature( bool enabled );
 
+    void setTimeStampDestination( const QString &fieldName );
+
+  signals:
+
+    void timeStampDestinationChanged( const QString &fieldName );
+
   private slots:
     void gpsSettingsChanged();
     void updateTrackAppearance();
     void switchAcquisition();
 
     void gpsStateChanged( const QgsGpsInformation &info );
+
+    /**
+     * Updates compatible fields for timestamp recording
+     */
+    void updateTimestampDestinationFields( QgsMapLayer *mapLayer );
 
   private:
     void createRubberBand();
@@ -86,6 +97,15 @@ class QgsAppGpsDigitizing: public QObject
     bool mAcquisitionEnabled = true;
     int mAcquisitionInterval = 0;
     double mDistanceThreshold = 0;
+
+    bool mApplyLeapSettings = false;
+    int mLeapSeconds = 0;
+    Qt::TimeSpec mTimeStampSpec = Qt::TimeSpec::LocalTime;
+    QString mTimeZone;
+
+    //! Temporary storage of preferred fields
+    QMap<QString, QString> mPreferredTimestampFields;
+    QString mTimestampField;
 };
 
 #endif // QGSAPPGPSDIGITIZING

@@ -109,6 +109,10 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
   connect( mAddFeatureAction, &QAction::triggered, this, &QgsGpsToolBar::addFeatureClicked );
   addAction( mAddFeatureAction );
 
+  mResetFeatureAction = new QAction( tr( "Reset Feature" ), this );
+  connect( mResetFeatureAction, &QAction::triggered, this, &QgsGpsToolBar::resetFeatureClicked );
+  addAction( mResetFeatureAction );
+
   addSeparator();
 
   mShowInfoAction = new QAction( tr( "Information" ) );

@@ -66,16 +66,8 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, private Ui::Qgs
     void mBtnSatellites_clicked();
     void mBtnOptions_clicked();
     void mBtnDebug_clicked();
-    void mBtnCloseFeature_clicked();
-    void mBtnResetFeature_clicked();
 
     void timedout();
-    void timestampFormatChanged( int index );
-
-    /**
-     * Updates compatible fields for timestamp recording
-     */
-    void updateTimestampDestinationFields( QgsMapLayer *mapLayer );
 
     void gpsConnecting();
     void gpsDisconnected();
@@ -83,11 +75,8 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, private Ui::Qgs
 
   private:
 
-    void addVertex();
     void setStatusIndicator( Qgis::GpsFixStatus statusValue );
     void showStatusBarMessage( const QString &msg );
-    void updateTimeZones();
-    QVariant timestamp( QgsVectorLayer *vlayer, int idx );
 
     QgsAppGpsConnection *mConnection = nullptr;
     QPointer< QgsMapCanvas > mMapCanvas;
@@ -106,11 +95,6 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, private Ui::Qgs
 
     QFile *mLogFile = nullptr;
     QTextStream mLogFileTextStream;
-
-    //! Temporary storage of preferred fields
-    QMap<QString, QString> mPreferredTimestampFields;
-    //! Flag when updating fields
-    bool mPopulatingFields = false;
 
     friend class TestQgsGpsInformationWidget;
 };
