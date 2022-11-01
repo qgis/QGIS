@@ -18,6 +18,7 @@
 
 #include <QMenu>
 #include <QWidgetAction>
+#include "qgis_app.h"
 
 class QRadioButton;
 class QgsFieldProxyModel;
@@ -41,7 +42,7 @@ class QgsGpsMapRotationAction: public QWidgetAction
 
 };
 
-class QgsAppGpsSettingsMenu : public QMenu
+class APP_EXPORT QgsAppGpsSettingsMenu : public QMenu
 {
     Q_OBJECT
 
@@ -97,6 +98,8 @@ class QgsAppGpsSettingsMenu : public QMenu
     QgsFieldProxyModel *mFieldProxyModel = nullptr;
     QMenu *mTimeStampFieldMenu = nullptr;
     QString mCurrentTimeStampField;
+
+    friend class TestQgsGpsIntegration;
 
 };
 

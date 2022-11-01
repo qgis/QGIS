@@ -23,6 +23,7 @@
 #include "qgspointxy.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdistancearea.h"
+#include "qgis_app.h"
 
 class QgsAppGpsConnection;
 class QgsMapCanvas;
@@ -32,7 +33,7 @@ class QgsGpsInformation;
 class QgsVectorLayer;
 class QTimer;
 
-class QgsAppGpsDigitizing: public QObject
+class APP_EXPORT QgsAppGpsDigitizing: public QObject
 {
     Q_OBJECT
 
@@ -106,6 +107,8 @@ class QgsAppGpsDigitizing: public QObject
     //! Temporary storage of preferred fields
     QMap<QString, QString> mPreferredTimestampFields;
     QString mTimestampField;
+
+    friend class TestQgsGpsIntegration;
 };
 
 #endif // QGSAPPGPSDIGITIZING
