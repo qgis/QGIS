@@ -108,6 +108,7 @@ int main( int argc, char *argv[] )
   QTimer::singleShot( 0, &app, [&exec, args, &res]
   {
     res = exec.run( args );
+    QgsApplication::exitQgis();
     QCoreApplication::exit( res );
   } );
   return QgsApplication::exec();
