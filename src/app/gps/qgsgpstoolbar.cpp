@@ -84,12 +84,12 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
   connect( mAddTrackPointAction, &QAction::triggered, this, &QgsGpsToolBar::addVertexClicked );
   addAction( mAddTrackPointAction );
 
-  mAddFeatureAction = new QAction( tr( "Create Feature" ), this );
+  mAddFeatureAction = new QAction( tr( "Create Feature from Track" ), this );
   mAddFeatureAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionCaptureLine.svg" ) ) );
   connect( mAddFeatureAction, &QAction::triggered, this, &QgsGpsToolBar::addFeatureClicked );
   addAction( mAddFeatureAction );
 
-  mResetFeatureAction = new QAction( tr( "Reset Feature" ), this );
+  mResetFeatureAction = new QAction( tr( "Reset Track" ), this );
   mResetFeatureAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/gpsicons/mActionReset.svg" ) ) );
   connect( mResetFeatureAction, &QAction::triggered, this, &QgsGpsToolBar::resetFeatureClicked );
   addAction( mResetFeatureAction );
@@ -218,17 +218,17 @@ void QgsGpsToolBar::updateCloseFeatureButton( QgsMapLayer *lyr )
     switch ( layerGeometryType )
     {
       case QgsWkbTypes::PointGeometry:
-        buttonLabel = tr( "Create Point Feature" );
+        buttonLabel = tr( "Create Point Feature at Location" );
         icon = QStringLiteral( "mActionCapturePoint.svg" );
         break;
 
       case QgsWkbTypes::LineGeometry:
-        buttonLabel = tr( "Create Line Feature" );
+        buttonLabel = tr( "Create Line Feature from Track" );
         icon = QStringLiteral( "mActionCaptureLine.svg" );
         break;
 
       case QgsWkbTypes::PolygonGeometry:
-        buttonLabel = tr( "Create Polygon Feature" );
+        buttonLabel = tr( "Create Polygon Feature from Track" );
         icon = QStringLiteral( "mActionCapturePolygon.svg" );
         break;
 
