@@ -18,9 +18,10 @@
 #include "qgisapp.h"
 #include "qgsfieldproxymodel.h"
 #include "qgsfieldmodel.h"
-#include "qgsgpsinformationwidget.h"
 #include "qgsfileutils.h"
 #include "qgsapplication.h"
+#include "qgsgpsmarker.h"
+#include "qgsappgpsdigitizing.h"
 
 #include <QRadioButton>
 #include <QButtonGroup>
@@ -57,28 +58,65 @@ QgsGpsMapRotationAction::QgsGpsMapRotationAction( QWidget *parent )
 QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
   : QMenu( parent )
 {
-  QgsSettings settings;
+  bool showLocationMarker = true;
+  bool showBearingLine = false;
+  bool autoAddVertices = false;
+  bool autoCreateFeature = false;
+  QgsGpsCanvasBridge::MapCenteringMode mapCenteringMode = QgsGpsCanvasBridge::MapCenteringMode::WhenLeavingExtent;
+  bool rotateMap = false;
+
+  if ( QgsGpsCanvasBridge::settingShowBearingLine.exists( ) )
+  {
+    showLocationMarker = QgsGpsMarker::settingShowLocationMarker.value();
+    showBearingLine = QgsGpsCanvasBridge::settingShowBearingLine.value();
+    mapCenteringMode = QgsGpsCanvasBridge::settingMapCenteringMode.value();
+    autoAddVertices = QgsAppGpsDigitizing::settingAutoAddVertices.value();
+    autoCreateFeature = QgsAppGpsDigitizing::settingAutoCreateFeatures.value();
+    rotateMap = QgsGpsCanvasBridge::settingRotateMap.value();
+  }
+  else
+  {
+    // migrate old settings
+    QgsSettings settings;
+    showLocationMarker = settings.value( QStringLiteral( "showMarker" ), "true", QgsSettings::Gps ).toBool();
+    showBearingLine = settings.value( QStringLiteral( "showBearingLine" ), false, QgsSettings::Gps ).toBool();
+    autoAddVertices = settings.value( QStringLiteral( "autoAddVertices" ), "false", QgsSettings::Gps ).toBool();
+    autoCreateFeature = settings.value( QStringLiteral( "autoCommit" ), "false", QgsSettings::Gps ).toBool();
+    rotateMap = settings.value( QStringLiteral( "rotateMap" ), false, QgsSettings::Gps ).toBool();
+
+    const QString panMode = settings.value( QStringLiteral( "panMode" ), "recenterWhenNeeded", QgsSettings::Gps ).toString();
+    if ( panMode == QLatin1String( "none" ) )
+    {
+      mapCenteringMode = QgsGpsCanvasBridge::MapCenteringMode::Never;
+    }
+    else if ( panMode == QLatin1String( "recenterAlways" ) )
+    {
+      mapCenteringMode = QgsGpsCanvasBridge::MapCenteringMode::Always;
+    }
+    else
+    {
+      mapCenteringMode = QgsGpsCanvasBridge::MapCenteringMode::WhenLeavingExtent;
+    }
+  }
 
   mShowLocationMarkerAction = new QAction( tr( "Show Location Marker" ), this );
   mShowLocationMarkerAction->setCheckable( true );
-  mShowLocationMarkerAction->setChecked( settings.value( QStringLiteral( "showMarker" ), "true", QgsSettings::Gps ).toBool() );
+  mShowLocationMarkerAction->setChecked( showLocationMarker );
   connect( mShowLocationMarkerAction, &QAction::toggled, this, [ = ]( bool checked )
   {
     emit locationMarkerToggled( checked );
-    QgsSettings settings;
-    settings.setValue( QStringLiteral( "showMarker" ), checked, QgsSettings::Gps );
+    QgsGpsMarker::settingShowLocationMarker.setValue( checked );
   } );
   addAction( mShowLocationMarkerAction );
 
 
   mShowBearingLineAction = new QAction( tr( "Show Bearing Line" ), this );
   mShowBearingLineAction->setCheckable( true );
-  mShowBearingLineAction->setChecked( settings.value( QStringLiteral( "showBearingLine" ), false, QgsSettings::Gps ).toBool() );
+  mShowBearingLineAction->setChecked( showBearingLine );
   connect( mShowBearingLineAction, &QAction::toggled, this, [ = ]( bool checked )
   {
     emit bearingLineToggled( checked );
-    QgsSettings settings;
-    settings.setValue( QStringLiteral( "showBearingLine" ), checked, QgsSettings::Gps );
+    QgsGpsCanvasBridge::settingShowBearingLine.setValue( checked );
   } );
 
   addAction( mShowBearingLineAction );
@@ -86,12 +124,11 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
 
   mRotateMapAction = new QAction( tr( "Rotate Map to Match GPS Direction" ), this );
   mRotateMapAction->setCheckable( true );
-  mRotateMapAction->setChecked( settings.value( QStringLiteral( "rotateMap" ), false, QgsSettings::Gps ).toBool() );
+  mRotateMapAction->setChecked( rotateMap );
   connect( mRotateMapAction, &QAction::toggled, this, [ = ]( bool checked )
   {
+    QgsGpsCanvasBridge::settingRotateMap.setValue( checked );
     emit rotateMapToggled( checked );
-    QgsSettings settings;
-    settings.setValue( QStringLiteral( "rotateMap" ), checked, QgsSettings::Gps );
   } );
 
   addAction( mRotateMapAction );
@@ -102,27 +139,25 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
   mRadioNeverRecenter = rotateAction->radioNeverRecenter();
 
   //pan mode
-  const QString panMode = settings.value( QStringLiteral( "panMode" ), "recenterWhenNeeded", QgsSettings::Gps ).toString();
-  if ( panMode == QLatin1String( "none" ) )
+  switch ( mapCenteringMode )
   {
-    mRadioNeverRecenter->setChecked( true );
-  }
-  else if ( panMode == QLatin1String( "recenterAlways" ) )
-  {
-    mRadioAlwaysRecenter->setChecked( true );
-  }
-  else
-  {
-    mRadioRecenterWhenOutside->setChecked( true );
+    case QgsGpsCanvasBridge::MapCenteringMode::Always:
+      mRadioAlwaysRecenter->setChecked( true );
+      break;
+    case QgsGpsCanvasBridge::MapCenteringMode::WhenLeavingExtent:
+      mRadioRecenterWhenOutside->setChecked( true );
+      break;
+    case QgsGpsCanvasBridge::MapCenteringMode::Never:
+      mRadioNeverRecenter->setChecked( true );
+      break;
   }
 
   connect( mRadioAlwaysRecenter, &QRadioButton::toggled, this, [ = ]( bool checked )
   {
     if ( checked )
     {
-      QgsSettings settings;
-      settings.setValue( QStringLiteral( "panMode" ), "recenterAlways", QgsSettings::Gps );
-      emit mapCenteringModeChanged( QgsAppGpsSettingsMenu::MapCenteringMode::Always );
+      QgsGpsCanvasBridge::settingMapCenteringMode.setValue( QgsGpsCanvasBridge::MapCenteringMode::Always );
+      emit mapCenteringModeChanged( QgsGpsCanvasBridge::MapCenteringMode::Always );
     }
   } );
 
@@ -130,9 +165,8 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
   {
     if ( checked )
     {
-      QgsSettings settings;
-      settings.setValue( QStringLiteral( "panMode" ), "recenterWhenNeeded", QgsSettings::Gps );
-      emit mapCenteringModeChanged( QgsAppGpsSettingsMenu::MapCenteringMode::WhenLeavingExtent );
+      QgsGpsCanvasBridge::settingMapCenteringMode.setValue( QgsGpsCanvasBridge::MapCenteringMode::WhenLeavingExtent );
+      emit mapCenteringModeChanged( QgsGpsCanvasBridge::MapCenteringMode::WhenLeavingExtent );
     }
   } );
 
@@ -140,9 +174,8 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
   {
     if ( checked )
     {
-      QgsSettings settings;
-      settings.setValue( QStringLiteral( "panMode" ), "none", QgsSettings::Gps );
-      emit mapCenteringModeChanged( QgsAppGpsSettingsMenu::MapCenteringMode::Never );
+      QgsGpsCanvasBridge::settingMapCenteringMode.setValue( QgsGpsCanvasBridge::MapCenteringMode::Never );
+      emit mapCenteringModeChanged( QgsGpsCanvasBridge::MapCenteringMode::Never );
     }
   } );
 
@@ -153,24 +186,22 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
 
   mAutoAddTrackPointAction = new QAction( tr( "Automatically Add Track Points" ), this );
   mAutoAddTrackPointAction->setCheckable( true );
-  mAutoAddTrackPointAction->setChecked( settings.value( QStringLiteral( "autoAddVertices" ), "false", QgsSettings::Gps ).toBool() );
+  mAutoAddTrackPointAction->setChecked( autoAddVertices );
   connect( mAutoAddTrackPointAction, &QAction::toggled, this, [ = ]( bool checked )
   {
     emit autoAddTrackPointsChanged( checked );
-    QgsSettings settings;
-    settings.setValue( QStringLiteral( "autoAddVertices" ), checked, QgsSettings::Gps );
+    QgsAppGpsDigitizing::settingAutoAddVertices.setValue( checked );
   } );
 
   addAction( mAutoAddTrackPointAction );
 
   mAutoSaveAddedFeatureAction = new QAction( tr( "Automatically Save Added Feature" ), this );
   mAutoSaveAddedFeatureAction->setCheckable( true );
-  mAutoSaveAddedFeatureAction->setChecked( settings.value( QStringLiteral( "autoCommit" ), "false", QgsSettings::Gps ).toBool() );
+  mAutoSaveAddedFeatureAction->setChecked( autoCreateFeature );
   connect( mAutoAddTrackPointAction, &QAction::toggled, this, [ = ]( bool checked )
   {
     emit autoAddFeatureChanged( checked );
-    QgsSettings settings;
-    settings.setValue( QStringLiteral( "autoCommit" ), checked, QgsSettings::Gps );
+    QgsAppGpsDigitizing::settingAutoCreateFeatures.setValue( checked );
   } );
 
   addAction( mAutoSaveAddedFeatureAction );
@@ -191,7 +222,7 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
   {
     if ( checked )
     {
-      const QString lastLogFolder = QgsGpsInformationWidget::settingLastLogFolder.value();
+      const QString lastLogFolder = QgsAppGpsDigitizing::settingLastLogFolder.value();
       const QString initialFolder = lastLogFolder.isEmpty() ? QDir::homePath() : lastLogFolder;
 
       QString fileName = QFileDialog::getSaveFileName( this, tr( "GPS Log File" ), initialFolder, tr( "NMEA files" ) + " (*.nmea)" );
@@ -203,7 +234,7 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
       }
 
       fileName = QgsFileUtils::ensureFileNameHasExtension( fileName, { QStringLiteral( "nmea" ) } );
-      QgsGpsInformationWidget::settingLastLogFolder.setValue( QFileInfo( fileName ).absolutePath() );
+      QgsAppGpsDigitizing::settingLastLogFolder.setValue( QFileInfo( fileName ).absolutePath() );
 
       emit nmeaLogFileChanged( fileName );
       emit enableNmeaLog( true );
@@ -240,20 +271,20 @@ bool QgsAppGpsSettingsMenu::rotateMap() const
   return mRotateMapAction->isChecked();
 }
 
-QgsAppGpsSettingsMenu::MapCenteringMode QgsAppGpsSettingsMenu::mapCenteringMode() const
+QgsGpsCanvasBridge::MapCenteringMode QgsAppGpsSettingsMenu::mapCenteringMode() const
 {
   // pan mode
   if ( mRadioAlwaysRecenter->isChecked() )
   {
-    return QgsAppGpsSettingsMenu::MapCenteringMode::Always;
+    return QgsGpsCanvasBridge::MapCenteringMode::Always;
   }
   else if ( mRadioRecenterWhenOutside->isChecked() )
   {
-    return QgsAppGpsSettingsMenu::MapCenteringMode::WhenLeavingExtent;
+    return QgsGpsCanvasBridge::MapCenteringMode::WhenLeavingExtent;
   }
   else
   {
-    return QgsAppGpsSettingsMenu::MapCenteringMode::Never;
+    return QgsGpsCanvasBridge::MapCenteringMode::Never;
   }
 }
 

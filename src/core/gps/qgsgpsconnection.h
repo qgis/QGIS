@@ -377,6 +377,18 @@ class CORE_EXPORT QgsGpsConnection : public QObject
     //! Settings entry GPS calculate bearing from travel direction
     static const inline QgsSettingsEntryBool settingGpsBearingFromTravelDirection = QgsSettingsEntryBool( QStringLiteral( "calculate-bearing-from-travel" ), QgsSettings::Prefix::GPS, false, QStringLiteral( "Calculate GPS bearing from travel direction" ) ) SIP_SKIP;
 
+    //! Settings entry GPS apply leap seconds correction
+    static const inline QgsSettingsEntryBool settingGpsApplyLeapSecondsCorrection = QgsSettingsEntryBool( QStringLiteral( "apply-leap-seconds-correction" ), QgsSettings::Prefix::GPS, true, QStringLiteral( "Whether leap seconds corrections should be applied to GPS timestamps" ) ) SIP_SKIP;
+
+    //! Settings entry GPS leap seconds correction amount (in seconds)
+    static const inline QgsSettingsEntryInteger settingGpsLeapSeconds = QgsSettingsEntryInteger( QStringLiteral( "leap-seconds" ), QgsSettings::Prefix::GPS, 18, QStringLiteral( "Leap seconds correction amount (in seconds)" ) ) SIP_SKIP;
+
+    //! Settings entry time specification for GPS time stamps
+    static const inline QgsSettingsEntryEnumFlag<Qt::TimeSpec> settingsGpsTimeStampSpecification = QgsSettingsEntryEnumFlag<Qt::TimeSpec>( QStringLiteral( "timestamp-time-spec" ), QgsSettings::Prefix::GPS, Qt::TimeSpec::LocalTime, QStringLiteral( "GPS time stamp specification" ) ) SIP_SKIP;
+
+    //! Settings entry GPS time stamp time zone
+    static const inline QgsSettingsEntryString settingsGpsTimeStampTimeZone = QgsSettingsEntryString( QStringLiteral( "timestamp-time-zone" ), QgsSettings::Prefix::GPS, QString(), QStringLiteral( "GPS time stamp time zone" ) ) SIP_SKIP;
+
     /**
      * Constructor
      * \param dev input device for the connection (e.g. serial device). The class takes ownership of the object

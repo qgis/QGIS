@@ -19,6 +19,8 @@
 #include <QMenu>
 #include <QWidgetAction>
 #include "qgis_app.h"
+#include "qgssettingsentryimpl.h"
+#include "qgsgpscanvasbridge.h"
 
 class QRadioButton;
 class QgsFieldProxyModel;
@@ -48,20 +50,12 @@ class APP_EXPORT QgsAppGpsSettingsMenu : public QMenu
 
   public:
 
-    enum class MapCenteringMode
-    {
-      Always,
-      WhenLeavingExtent,
-      Never
-    };
-    Q_ENUM( MapCenteringMode )
-
     QgsAppGpsSettingsMenu( QWidget *parent );
 
     bool locationMarkerVisible() const;
     bool bearingLineVisible() const;
     bool rotateMap() const;
-    MapCenteringMode mapCenteringMode() const;
+    QgsGpsCanvasBridge::MapCenteringMode mapCenteringMode() const;
     bool autoAddTrackPoints() const;
     bool autoAddFeature() const;
 
@@ -74,7 +68,7 @@ class APP_EXPORT QgsAppGpsSettingsMenu : public QMenu
     void locationMarkerToggled( bool visible );
     void bearingLineToggled( bool visible );
     void rotateMapToggled( bool enabled );
-    void mapCenteringModeChanged( QgsAppGpsSettingsMenu::MapCenteringMode mode );
+    void mapCenteringModeChanged( QgsGpsCanvasBridge::MapCenteringMode mode );
     void autoAddTrackPointsChanged( bool enabled );
     void autoAddFeatureChanged( bool enabled );
     void timeStampDestinationChanged( const QString &fieldName );
