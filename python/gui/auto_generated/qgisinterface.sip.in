@@ -1640,7 +1640,7 @@ creating a new browser model for every use.
 .. versionadded:: 3.4
 %End
 
-    virtual void setGpsPanelConnection( QgsGpsConnection *connection ) = 0;
+    virtual void setGpsPanelConnection( QgsGpsConnection *connection /Transfer/ ) = 0;
 %Docstring
 Sets a GPS ``connection`` to use within the GPS Panel widget.
 
