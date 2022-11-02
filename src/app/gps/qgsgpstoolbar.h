@@ -66,6 +66,7 @@ class QgsGpsToolBar : public QToolBar
     QLabel *mLocationLabel = nullptr;
 
     QgsCoordinateReferenceSystem mWgs84CRS;
+    bool mEnableAddVertexButton = true;
 
     QPointer< QgsVectorLayer > mLastLayer;
 };
