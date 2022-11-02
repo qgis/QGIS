@@ -248,8 +248,6 @@ class TestSelectiveMasking(unittest.TestCase):
                         os.path.splitext(image_result_filename)[0],
                         "-png", "-r", "300", "-singlefile"])
 
-        print("image_result_filename={}".format(image_result_filename))
-
         self.checker.setControlName(control_name)
         self.checker.setRenderedImage(image_result_filename)
         res = self.checker.compareImages(control_name)
@@ -1131,7 +1129,7 @@ class TestSelectiveMasking(unittest.TestCase):
         """
         Test raster rendering and masking when a line pattern fill symbol layer is involved
         """
-        self.assertTrue(QgsProject.instance().read(os.path.join(unitTestDataPath(), "selective_masking_linepattern.qgz")))
+        self.assertTrue(QgsProject.instance().read(os.path.join(unitTestDataPath(), "selective_masking_fill_symbollayer.qgz")))
 
         layer = QgsProject.instance().mapLayersByName('line_pattern_fill')[0]
         self.assertTrue(layer)
@@ -1155,7 +1153,7 @@ class TestSelectiveMasking(unittest.TestCase):
         """
         Test vector rendering and masking when a line pattern fill symbol layer is involved
         """
-        self.assertTrue(QgsProject.instance().read(os.path.join(unitTestDataPath(), "selective_masking_linepattern.qgz")))
+        self.assertTrue(QgsProject.instance().read(os.path.join(unitTestDataPath(), "selective_masking_fill_symbollayer.qgz")))
 
         layer = QgsProject.instance().mapLayersByName('line_pattern_fill')[0]
         self.assertTrue(layer)
@@ -1178,7 +1176,7 @@ class TestSelectiveMasking(unittest.TestCase):
         """
         Test vector rendering and masking when a point pattern fill symbol layer is involved
         """
-        self.assertTrue(QgsProject.instance().read(os.path.join(unitTestDataPath(), "selective_masking_linepattern.qgz")))
+        self.assertTrue(QgsProject.instance().read(os.path.join(unitTestDataPath(), "selective_masking_fill_symbollayer.qgz")))
 
         layer = QgsProject.instance().mapLayersByName('point_pattern_fill')[0]
         self.assertTrue(layer)
@@ -1202,7 +1200,7 @@ class TestSelectiveMasking(unittest.TestCase):
         """
         Test masking when a centroid fill symbol layer is involved
         """
-        self.assertTrue(QgsProject.instance().read(os.path.join(unitTestDataPath(), "selective_masking_linepattern.qgz")))
+        self.assertTrue(QgsProject.instance().read(os.path.join(unitTestDataPath(), "selective_masking_fill_symbollayer.qgz")))
 
         layer = QgsProject.instance().mapLayersByName('centroid_fill')[0]
         self.assertTrue(layer)
@@ -1225,7 +1223,7 @@ class TestSelectiveMasking(unittest.TestCase):
         """
         Test masking when a random generator fill symbol layer is involved
         """
-        self.assertTrue(QgsProject.instance().read(os.path.join(unitTestDataPath(), "selective_masking_linepattern.qgz")))
+        self.assertTrue(QgsProject.instance().read(os.path.join(unitTestDataPath(), "selective_masking_fill_symbollayer.qgz")))
 
         layer = QgsProject.instance().mapLayersByName('random_generator_fill')[0]
         self.assertTrue(layer)
