@@ -296,9 +296,25 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   mContext << QgsExpressionContextUtils::globalScope()
            << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
            << QgsExpressionContextUtils::atlasScope( nullptr );
+
   if ( mMapCanvas )
+  {
     mContext << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() );
+    // Initialize with layer center
+    mContext << QgsExpressionContextUtils::mapLayerPositionScope( mRasterLayer->extent().center() );
+  }
+
   mContext << QgsExpressionContextUtils::layerScope( mRasterLayer );
+
+  mMapTipExpressionWidget->registerExpressionContextGenerator( this );
+
+  connect( mInsertExpressionButton, &QAbstractButton::clicked, this, [ = ]
+  {
+    QString expression = QStringLiteral( "[% " );
+    expression += mMapTipExpressionWidget->expression();
+    expression += QLatin1String( " %]" );
+    mMapTipWidget->insertText( expression );
+  } );
 
   QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
 
@@ -561,6 +577,9 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
 
   if ( mOptsPage_Pyramids )
     mOptsPage_Pyramids->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#pyramids-properties" ) );
+
+  if ( mOptsPage_Display )
+    mOptsPage_Display->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#display-properties" ) );
 
   mOptsPage_Metadata->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#metadata-properties" ) );
   mOptsPage_Legend->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#legend-properties" ) );
@@ -851,6 +870,8 @@ void QgsRasterLayerProperties::sync()
   mLayerLegendUrlLineEdit->setText( mRasterLayer->legendUrl() );
   mLayerLegendUrlFormatComboBox->setCurrentIndex( mLayerLegendUrlFormatComboBox->findText( mRasterLayer->legendUrlFormat() ) );
 
+  mMapTipWidget->setText( mRasterLayer->mapTipTemplate() );
+
   //WMS print layer
   QVariant wmsPrintLayer = mRasterLayer->customProperty( QStringLiteral( "WMSPrintLayer" ) );
   if ( wmsPrintLayer.isValid() )
@@ -1107,6 +1128,8 @@ void QgsRasterLayerProperties::apply()
   mRasterLayer->setCustomProperty( "WMSBackgroundLayer", mBackgroundLayerCheckBox->isChecked() );
 
   mRasterLayer->pipe()->setDataDefinedProperties( mPropertyCollection );
+
+  mRasterLayer->setMapTipTemplate( mMapTipWidget->text() );
 
   // Force a redraw of the legend
   mRasterLayer->setLegend( QgsMapLayerLegend::defaultRasterLegend( mRasterLayer ) );

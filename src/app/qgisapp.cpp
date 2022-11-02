@@ -14420,8 +14420,8 @@ void QgisApp::showMapTip()
     QgsMapLayer *mypLayer = mMapCanvas->currentLayer();
     if ( mypLayer )
     {
-      // only process vector layers
-      if ( mypLayer->type() == QgsMapLayerType::VectorLayer )
+      // only process vector and raster layers
+      if ( mypLayer->type() == QgsMapLayerType::VectorLayer || mypLayer->type() == QgsMapLayerType::RasterLayer )
       {
         // Show the maptip if the maptips button is depressed
         if ( mMapTipsVisible )

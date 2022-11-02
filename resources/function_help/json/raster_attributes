@@ -8,7 +8,7 @@
     "description": "the name or id of a raster layer"
   }, {
     "arg": "band",
-    "description": "the band number to sample the value from and for the associated attribute table lookup."
+    "description": "the band number to sample the value from and for the associated attribute table lookup. "
   }, {
     "arg": "value",
     "description": "raster value"

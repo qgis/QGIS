@@ -494,24 +494,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
     QgsMapLayerTemporalProperties *temporalProperties() override;
     QgsMapLayerElevationProperties *elevationProperties() override;
 
-    /**
-     * The mapTip is a pretty, html representation for feature information.
-     *
-     * It may also contain embedded expressions.
-     *
-     * \since QGIS 3.30
-     */
-    QString mapTipTemplate() const;
-
-    /**
-     * The mapTip is a pretty, html representation for feature information.
-     *
-     * It may also contain embedded expressions.
-     *
-     * \since QGIS 3.30
-     */
-    void setMapTipTemplate( const QString &mapTip );
-
   public slots:
     void showStatusMessage( const QString &message );
 
@@ -529,15 +511,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      * \since QGIS 3.12
      */
     void subsetStringChanged();
-
-    /**
-     * Emitted when the map tip changes
-     *
-     * \since QGIS 3.30
-     */
-    void mapTipTemplateChanged();
-
-
 
   protected:
     bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) override;
@@ -638,7 +611,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
     QDomDocument mOriginalStyleDocument;
     QDomElement mOriginalStyleElement;
 
-    QString mMapTipTemplate;
 };
 
 // clazy:excludeall=qstring-allocations

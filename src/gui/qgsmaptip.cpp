@@ -128,7 +128,18 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
                             "background-color: %2;}" ).arg(
                             strokeColor, backgroundColor ) );
 
-  tipText = fetchFeature( pLayer, mapPosition, pMapCanvas );
+  // Only supported layer types here:
+  switch ( pLayer->type() )
+  {
+    case QgsMapLayerType::VectorLayer:
+      tipText = fetchFeature( pLayer, mapPosition, pMapCanvas );
+      break;
+    case QgsMapLayerType::RasterLayer:
+      tipText = fetchRaster( pLayer, mapPosition, pMapCanvas );
+      break;
+    default:
+      break;
+  }
 
   mMapTipVisible = !tipText.isEmpty();
   if ( !mMapTipVisible )
@@ -334,9 +345,10 @@ QString QgsMapTip::fetchRaster( QgsMapLayer *layer, QgsPointXY &mapPosition, Qgs
 
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
   context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mapCanvas->mapSettings() ) );
+  context.appendScope( QgsExpressionContextUtils::mapLayerPositionScope( mappedPosition ) );
 
   const QString mapTip = rlayer->mapTipTemplate();
-
+  return mapTip;
 }
 
 void QgsMapTip::applyFontSettings()
