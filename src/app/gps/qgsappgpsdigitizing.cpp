@@ -15,7 +15,7 @@
 
 #include "qgsappgpsdigitizing.h"
 #include "qgsrubberband.h"
-#include "qgsgpsinformationwidget.h"
+#include "qgsappgpssettingsmenu.h"
 #include "qgslinesymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgsgui.h"
@@ -364,43 +364,47 @@ void QgsAppGpsDigitizing::gpsSettingsChanged()
 {
   updateTrackAppearance();
 
-  QgsSettings settings;
   int acquisitionInterval = 0;
   if ( QgsGpsConnection::settingsGpsConnectionType.exists() )
   {
     acquisitionInterval = static_cast< int >( QgsGpsConnection::settingGpsAcquisitionInterval.value() );
     mDistanceThreshold = QgsGpsConnection::settingGpsDistanceThreshold.value();
+    mApplyLeapSettings = QgsGpsConnection::settingGpsApplyLeapSecondsCorrection.value();
+    mLeapSeconds = static_cast< int >( QgsGpsConnection::settingGpsLeapSeconds.value() );
+    mTimeStampSpec = QgsGpsConnection::settingsGpsTimeStampSpecification.value();
+    mTimeZone = QgsGpsConnection::settingsGpsTimeStampTimeZone.value();
   }
   else
   {
     // legacy settings
+    QgsSettings settings;
+
     acquisitionInterval = settings.value( QStringLiteral( "acquisitionInterval" ), 0, QgsSettings::Gps ).toInt();
     mDistanceThreshold = settings.value( QStringLiteral( "distanceThreshold" ), 0, QgsSettings::Gps ).toDouble();
+    mApplyLeapSettings = settings.value( QStringLiteral( "applyLeapSeconds" ), true, QgsSettings::Gps ).toBool();
+    mLeapSeconds = settings.value( QStringLiteral( "leapSecondsCorrection" ), 18, QgsSettings::Gps ).toInt();
+
+    switch ( settings.value( QStringLiteral( "timeStampFormat" ), Qt::LocalTime, QgsSettings::Gps ).toInt() )
+    {
+      case 0:
+        mTimeStampSpec = Qt::TimeSpec::LocalTime;
+        break;
+
+      case 1:
+        mTimeStampSpec = Qt::TimeSpec::UTC;
+        break;
+
+      case 2:
+        mTimeStampSpec = Qt::TimeSpec::TimeZone;
+        break;
+    }
+    mTimeZone = settings.value( QStringLiteral( "timestampTimeZone" ), QVariant(), QgsSettings::Gps ).toString();
   }
 
   mAcquisitionInterval = acquisitionInterval * 1000;
   if ( mAcquisitionTimer->isActive() )
     mAcquisitionTimer->stop();
   mAcquisitionEnabled = true;
-
-  mApplyLeapSettings = settings.value( QStringLiteral( "applyLeapSeconds" ), true, QgsSettings::Gps ).toBool();
-  mLeapSeconds = settings.value( QStringLiteral( "leapSecondsCorrection" ), 18, QgsSettings::Gps ).toInt();
-
-  switch ( settings.value( QStringLiteral( "timeStampFormat" ), Qt::LocalTime, QgsSettings::Gps ).toInt() )
-  {
-    case 0:
-      mTimeStampSpec = Qt::TimeSpec::LocalTime;
-      break;
-
-    case 1:
-      mTimeStampSpec = Qt::TimeSpec::UTC;
-      break;
-
-    case 2:
-      mTimeStampSpec = Qt::TimeSpec::TimeZone;
-      break;
-  }
-  mTimeZone = settings.value( QStringLiteral( "timestampTimeZone" ), QVariant(), QgsSettings::Gps ).toString();
 
   switchAcquisition();
 }
@@ -412,7 +416,7 @@ void QgsAppGpsDigitizing::updateTrackAppearance()
 
   QDomDocument doc;
   QDomElement elem;
-  const QString trackLineSymbolXml = QgsGpsInformationWidget::settingTrackLineSymbol.value();
+  const QString trackLineSymbolXml = QgsAppGpsDigitizing::settingTrackLineSymbol.value();
   if ( !trackLineSymbolXml.isEmpty() )
   {
     doc.setContent( trackLineSymbolXml );

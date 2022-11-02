@@ -21,7 +21,6 @@
 #include "qgis_app.h"
 
 #include "qgspanelwidget.h"
-#include "qgssettingsentryimpl.h"
 #include "qgspointxy.h"
 
 #include <qwt_plot_curve.h>
@@ -47,12 +46,6 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, private Ui::Qgs
 {
     Q_OBJECT
   public:
-
-    static const inline QgsSettingsEntryString settingLastLogFolder = QgsSettingsEntryString( QStringLiteral( "last-log-folder" ), QgsSettings::Prefix::GPS, QString(), QStringLiteral( "Last used folder for GPS log files" ) );
-    static const inline QgsSettingsEntryString settingTrackLineSymbol = QgsSettingsEntryString( QStringLiteral( "track-line-symbol" ), QgsSettings::Prefix::GPS, QStringLiteral( "<symbol alpha=\"1\" name=\"gps-track-symbol\" force_rhr=\"0\" clip_to_extent=\"1\" type=\"line\"><layer enabled=\"1\" pass=\"0\" locked=\"0\" class=\"SimpleLine\"><Option type=\"Map\"><Option name=\"line_color\" type=\"QString\" value=\"219,30,42,255\"/><Option name=\"line_style\" type=\"QString\" value=\"solid\"/><Option name=\"line_width\" type=\"QString\" value=\"0.4\"/></Option></layer></symbol>" ), QStringLiteral( "Line symbol to use for GPS track line" ), Qgis::SettingsOptions(), 0 );
-    static const inline QgsSettingsEntryString settingBearingLineSymbol = QgsSettingsEntryString( QStringLiteral( "bearing-line-symbol" ), QgsSettings::Prefix::GPS, QString(), QStringLiteral( "Line symbol to use for GPS bearing line" ), Qgis::SettingsOptions(), 0 );
-    static const inline QgsSettingsEntryInteger settingMapExtentRecenteringThreshold = QgsSettingsEntryInteger( QStringLiteral( "map-recentering-threshold" ), QgsSettings::Prefix::GPS, 50, QStringLiteral( "Threshold for GPS automatic map centering" ) );
-    static const inline QgsSettingsEntryInteger settingMapRotateInterval = QgsSettingsEntryInteger( QStringLiteral( "map-rotate-interval" ), QgsSettings::Prefix::GPS, 0, QStringLiteral( "Interval for GPS automatic map rotation" ) );
 
     QgsGpsInformationWidget( QgsAppGpsConnection *connection, QgsMapCanvas *mapCanvas, QWidget *parent = nullptr );
     ~QgsGpsInformationWidget() override;

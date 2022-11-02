@@ -29,7 +29,8 @@
 
 #include "vertextool/qgsvertexeditor.h"
 #include "elevation/qgselevationprofilewidget.h"
-#include "qgsgpsinformationwidget.h"
+#include "qgsappgpsdigitizing.h"
+#include "qgsgpscanvasbridge.h"
 #include "qgsgpsmarker.h"
 
 QgsSettingsRegistryApp::QgsSettingsRegistryApp()
@@ -60,13 +61,21 @@ QgsSettingsRegistryApp::QgsSettingsRegistryApp()
 
   addSettingsEntry( &QgsIdentifyResultsDialog::settingHideNullValues );
 
-  addSettingsEntry( &QgsGpsInformationWidget::settingLastLogFolder );
-  addSettingsEntry( &QgsGpsInformationWidget::settingTrackLineSymbol );
-  addSettingsEntry( &QgsGpsInformationWidget::settingBearingLineSymbol );
-  addSettingsEntry( &QgsGpsInformationWidget::settingMapExtentRecenteringThreshold );
-  addSettingsEntry( &QgsGpsInformationWidget::settingMapRotateInterval );
+  addSettingsEntry( &QgsAppGpsDigitizing::settingLastLogFolder );
+
+  addSettingsEntry( &QgsGpsCanvasBridge::settingShowBearingLine );
+  addSettingsEntry( &QgsGpsCanvasBridge::settingBearingLineSymbol );
+  addSettingsEntry( &QgsGpsCanvasBridge::settingMapCenteringMode );
+  addSettingsEntry( &QgsGpsCanvasBridge::settingMapExtentRecenteringThreshold );
+  addSettingsEntry( &QgsGpsCanvasBridge::settingMapRotateInterval );
+  addSettingsEntry( &QgsGpsCanvasBridge::settingRotateMap );
+
+  addSettingsEntry( &QgsAppGpsDigitizing::settingTrackLineSymbol );
+  addSettingsEntry( &QgsAppGpsDigitizing::settingAutoAddVertices );
+  addSettingsEntry( &QgsAppGpsDigitizing::settingAutoCreateFeatures );
 
   addSettingsEntry( &QgsGpsMarker::settingLocationMarkerSymbol );
+  addSettingsEntry( &QgsGpsMarker::settingShowLocationMarker );
   addSettingsEntry( &QgsGpsMarker::settingRotateLocationMarker );
 
   QgsApplication::settingsRegistryCore()->addSubRegistry( this );

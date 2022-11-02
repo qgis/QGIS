@@ -16,7 +16,6 @@
 #include "qgsgpscanvasbridge.h"
 #include "qgsgpsbearingitem.h"
 #include "qgsgpsmarker.h"
-#include "qgsgpsinformationwidget.h"
 #include "qgssymbollayerutils.h"
 #include "qgslinesymbol.h"
 #include "qgsgui.h"
@@ -93,7 +92,7 @@ bool QgsGpsCanvasBridge::blockCanvasInteraction( Interaction interaction ) const
       // if we're connected and set to follow the GPS location, block the single click navigation mode
       // to avoid accidental map canvas pans away from the GPS location.
       // (for now, we don't block click-and-drag pans, as they are less likely to be accidentally triggered)
-      if ( mConnection->isConnected() && ( mCenteringMode != QgsAppGpsSettingsMenu::MapCenteringMode::Never ) )
+      if ( mConnection->isConnected() && ( mCenteringMode != QgsGpsCanvasBridge::MapCenteringMode::Never ) )
         return true;
 
       break;
@@ -125,7 +124,7 @@ void QgsGpsCanvasBridge::setRotateMap( bool enabled )
   mRotateMap = enabled;
 }
 
-void QgsGpsCanvasBridge::setMapCenteringMode( QgsAppGpsSettingsMenu::MapCenteringMode mode )
+void QgsGpsCanvasBridge::setMapCenteringMode( QgsGpsCanvasBridge::MapCenteringMode mode )
 {
   mCenteringMode = mode;
 }
@@ -153,7 +152,7 @@ void QgsGpsCanvasBridge::updateBearingAppearance()
 
   QDomDocument doc;
   QDomElement elem;
-  QString bearingLineSymbolXml = QgsGpsInformationWidget::settingBearingLineSymbol.value();
+  QString bearingLineSymbolXml = QgsGpsCanvasBridge::settingBearingLineSymbol.value();
   if ( bearingLineSymbolXml.isEmpty() )
   {
     QgsSettings settings;
@@ -180,8 +179,8 @@ void QgsGpsCanvasBridge::gpsSettingsChanged()
   if ( QgsGpsConnection::settingsGpsConnectionType.exists() )
   {
     mBearingFromTravelDirection = QgsGpsConnection::settingGpsBearingFromTravelDirection.value();
-    mMapExtentMultiplier = static_cast< int >( QgsGpsInformationWidget::settingMapExtentRecenteringThreshold.value() );
-    mMapRotateInterval = static_cast< int >( QgsGpsInformationWidget::settingMapRotateInterval.value() );
+    mMapExtentMultiplier = static_cast< int >( QgsGpsCanvasBridge::settingMapExtentRecenteringThreshold.value() );
+    mMapRotateInterval = static_cast< int >( QgsGpsCanvasBridge::settingMapRotateInterval.value() );
   }
   else
   {
@@ -228,8 +227,8 @@ void QgsGpsCanvasBridge::gpsStateChanged( const QgsGpsInformation &info )
     // Pan based on user specified behavior
     switch ( mCenteringMode )
     {
-      case QgsAppGpsSettingsMenu::MapCenteringMode::Always:
-      case QgsAppGpsSettingsMenu::MapCenteringMode::WhenLeavingExtent:
+      case QgsGpsCanvasBridge::MapCenteringMode::Always:
+      case QgsGpsCanvasBridge::MapCenteringMode::WhenLeavingExtent:
         try
         {
           const QgsPointXY point = mCanvasToWgs84Transform.transform( myNewCenter, Qgis::TransformDirection::Reverse );
@@ -242,8 +241,8 @@ void QgsGpsCanvasBridge::gpsStateChanged( const QgsGpsInformation &info )
           extentLimit.scale( mMapExtentMultiplier * 0.01 );
 
           // only change the extents if the point is beyond the current extents to minimize repaints
-          if ( mCenteringMode == QgsAppGpsSettingsMenu::MapCenteringMode::Always ||
-               ( mCenteringMode == QgsAppGpsSettingsMenu::MapCenteringMode::WhenLeavingExtent && !extentLimit.contains( point ) ) )
+          if ( mCenteringMode == QgsGpsCanvasBridge::MapCenteringMode::Always ||
+               ( mCenteringMode == QgsGpsCanvasBridge::MapCenteringMode::WhenLeavingExtent && !extentLimit.contains( point ) ) )
           {
             mCanvas->setExtent( rect, true );
             mCanvas->refresh();
@@ -255,7 +254,7 @@ void QgsGpsCanvasBridge::gpsStateChanged( const QgsGpsInformation &info )
         }
         break;
 
-      case QgsAppGpsSettingsMenu::MapCenteringMode::Never:
+      case QgsGpsCanvasBridge::MapCenteringMode::Never:
         break;
     }
 
