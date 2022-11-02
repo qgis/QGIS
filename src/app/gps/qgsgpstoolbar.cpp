@@ -38,7 +38,9 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
 
   mWgs84CRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
 
-  mConnectAction = new QAction( tr( "Connect" ), this );
+  mConnectAction = new QAction( tr( "Connect GPS" ), this );
+  mConnectAction->setToolTip( tr( "Connect to GPS" ) );
+  mConnectAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/gpsicons/mIconGpsConnect.svg" ) ) );
   mConnectAction->setCheckable( true );
   addAction( mConnectAction );
 
@@ -52,6 +54,7 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
 
   mRecenterAction = new QAction( tr( "Recenter" ) );
   mRecenterAction->setToolTip( tr( "Recenter map on GPS location" ) );
+  mRecenterAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/gpsicons/mActionRecenter.svg" ) ) );
   mRecenterAction->setEnabled( false );
 
   connect( mRecenterAction, &QAction::triggered, this, [ = ]
@@ -77,20 +80,24 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
 
   mAddTrackPointAction = new QAction( tr( "Add Track Point" ), this );
   mAddTrackPointAction->setEnabled( false );
+  mAddTrackPointAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/gpsicons/mActionAddTrackPoint.svg" ) ) );
   connect( mAddTrackPointAction, &QAction::triggered, this, &QgsGpsToolBar::addVertexClicked );
   addAction( mAddTrackPointAction );
 
-  mAddFeatureAction = new QAction( tr( "Add Feature" ), this );
+  mAddFeatureAction = new QAction( tr( "Create Feature" ), this );
+  mAddFeatureAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionCaptureLine.svg" ) ) );
   connect( mAddFeatureAction, &QAction::triggered, this, &QgsGpsToolBar::addFeatureClicked );
   addAction( mAddFeatureAction );
 
   mResetFeatureAction = new QAction( tr( "Reset Feature" ), this );
+  mResetFeatureAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/gpsicons/mActionReset.svg" ) ) );
   connect( mResetFeatureAction, &QAction::triggered, this, &QgsGpsToolBar::resetFeatureClicked );
   addAction( mResetFeatureAction );
 
   addSeparator();
 
   mShowInfoAction = new QAction( tr( "Information" ) );
+  mShowInfoAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionPropertiesWidget.svg" ) ) );
   mShowInfoAction->setToolTip( tr( "Show GPS Information Panel" ) );
   mShowInfoAction->setCheckable( true );
   addAction( mShowInfoAction );
@@ -198,7 +205,8 @@ void QgsGpsToolBar::updateCloseFeatureButton( QgsMapLayer *lyr )
     mLastLayer = vlayer;
   }
 
-  QString buttonLabel = tr( "&Add Feature" );
+  QString buttonLabel = tr( "Create Feature" );
+  QString icon = QStringLiteral( "mActionCaptureLine.svg" );;
   if ( vlayer )
   {
     QgsVectorDataProvider *provider = vlayer->dataProvider();
@@ -210,15 +218,18 @@ void QgsGpsToolBar::updateCloseFeatureButton( QgsMapLayer *lyr )
     switch ( layerGeometryType )
     {
       case QgsWkbTypes::PointGeometry:
-        buttonLabel = tr( "&Add Point" );
+        buttonLabel = tr( "Create Point Feature" );
+        icon = QStringLiteral( "mActionCapturePoint.svg" );
         break;
 
       case QgsWkbTypes::LineGeometry:
-        buttonLabel = tr( "&Add Line" );
+        buttonLabel = tr( "Create Line Feature" );
+        icon = QStringLiteral( "mActionCaptureLine.svg" );
         break;
 
       case QgsWkbTypes::PolygonGeometry:
-        buttonLabel = tr( "&Add Polygon" );
+        buttonLabel = tr( "Create Polygon Feature" );
+        icon = QStringLiteral( "mActionCapturePolygon.svg" );
         break;
 
       case QgsWkbTypes::UnknownGeometry:
@@ -234,6 +245,8 @@ void QgsGpsToolBar::updateCloseFeatureButton( QgsMapLayer *lyr )
     mAddFeatureAction->setEnabled( false );
   }
   mAddFeatureAction->setText( buttonLabel );
+  mAddFeatureAction->setIcon( QgsApplication::getThemeIcon( icon ) );
+  mAddFeatureAction->setToolTip( buttonLabel );
 }
 
 void QgsGpsToolBar::layerEditStateChanged()
