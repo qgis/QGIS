@@ -426,7 +426,7 @@ void QgsGpsCanvasBridge::updateGpsDistanceStatusMessage( bool forceDisplay )
     const QString bearingString = mBearingNumericFormat->formatDouble( bearing, QgsNumericFormatContext() );
 
     QgisApp::instance()->statusBarIface()->showMessage( tr( "%1 (%2) from GPS location" ).arg( distanceString, bearingString ), forceDisplay ? GPS_DISTANCE_MESSAGE_TIMEOUT_MS
-        : GPS_DISTANCE_MESSAGE_TIMEOUT_MS - mLastForcedStatusUpdate.elapsed() );
+        : GPS_DISTANCE_MESSAGE_TIMEOUT_MS - static_cast< int >( mLastForcedStatusUpdate.elapsed() ) );
   }
   catch ( QgsCsException & )
   {
