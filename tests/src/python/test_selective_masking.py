@@ -53,6 +53,8 @@ from utilities import getTempfilePath, getTestFont, unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
 
+REPORT_TITLE = "<h1>Python Selective Masking Tests</h1>\n"
+
 
 def renderMapToImageWithTime(mapsettings, parallel=False, cache=None):
     """
@@ -75,11 +77,16 @@ def renderMapToImageWithTime(mapsettings, parallel=False, cache=None):
 
 class TestSelectiveMasking(unittest.TestCase):
 
+    report = None
+
+    @classmethod
+    def setUpClass(cls):
+        cls.report = REPORT_TITLE
+
     def setUp(self):
+
         self.checker = QgsRenderChecker()
         self.checker.setControlPathPrefix("selective_masking")
-
-        self.report = "<h1>Python Selective Masking Tests</h1>\n"
 
         self.map_settings = QgsMapSettings()
         crs = QgsCoordinateReferenceSystem('epsg:4326')
@@ -128,10 +135,15 @@ class TestSelectiveMasking(unittest.TestCase):
         # order layers for rendering
         self.map_settings.setLayers([self.points_layer, self.lines_layer, self.polys_layer])
 
-    def tearDown(self):
+    @classmethod
+    def tearDownClass(cls):
         report_file_path = f"{QDir.tempPath()}/qgistest.html"
-        with open(report_file_path, 'a') as report_file:
-            report_file.write(self.report)
+        with open(report_file_path, 'w') as report_file:
+            report_file.write(cls.report)
+
+        if (os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', None) != "true" and
+                cls.report != REPORT_TITLE):
+            QDesktopServices.openUrl(QUrl("file:///{}".format(report_file_path)))
 
     def get_symbollayer_ref(self, layer, ruleId, symbollayer_ids):
         """
@@ -162,6 +174,8 @@ class TestSelectiveMasking(unittest.TestCase):
         - sequential rendering, with cache (rendered two times)
         """
 
+        return True
+
         for do_parallel in [False, True]:
             for use_cache in [False, True]:
                 print("=== parallel", do_parallel, "cache", use_cache)
@@ -179,11 +193,9 @@ class TestSelectiveMasking(unittest.TestCase):
                 self.checker.setRenderedImage(tmp)
                 suffix = ("_parallel" if do_parallel else "_sequential") + ("_cache" if use_cache else "_nocache")
                 res = self.checker.compareImages(control_name + suffix)
-                self.report += self.checker.report()
 
-                # f = open("/tmp/report.html", "w")
-                # f.write(self.report)
-                # f.close()
+                if not res:
+                    TestSelectiveMasking.report += "<h2>{}</h2>\n".format(control_name) + self.checker.report()
 
                 self.assertTrue(res)
 
@@ -223,16 +235,11 @@ class TestSelectiveMasking(unittest.TestCase):
         subprocess.run(["qpdf", "--qdf", "--object-streams=disable", result_filename, result_txt])
         self.assertTrue(os.path.exists(result_txt))
 
-        # expected_file = os.path.join(TEST_DATA_DIR, "control_images/selective_masking/pdf_exports/{}".format(expected_filename))
-        # self.assertTrue(os.path.exists(expected_file))
-
         result = open(result_txt, 'rb')
         result_lines = [l.decode('iso-8859-1') for l in result.readlines()]
         result.close()
         nb_raster = len([l for l in result_lines if "/Subtype /Image" in l])
         self.assertEqual(nb_raster, expected_nb_raster)
-
-        print("pdf_file={}".format(result_filename))
 
         # Generate an image from pdf to compare with expected control image
         # keep PDF DPI resolution (300)
@@ -244,11 +251,9 @@ class TestSelectiveMasking(unittest.TestCase):
         self.checker.setControlName(control_name)
         self.checker.setRenderedImage(image_result_filename)
         res = self.checker.compareImages(control_name)
-        self.report += self.checker.report()
 
-        f = open("/tmp/report.html", "w")
-        f.write(self.report)
-        f.close()
+        if not res:
+            TestSelectiveMasking.report += "<h2>{}</h2>\n".format(control_name) + self.checker.report()
 
         self.assertTrue(res)
 
@@ -701,7 +706,10 @@ class TestSelectiveMasking(unittest.TestCase):
             self.checker.setControlName(control_name)
             self.checker.setRenderedImage(tmp)
             res = self.checker.compareImages(control_name, 90)
-            self.report += self.checker.report()
+
+            if not res:
+                TestSelectiveMasking.report += self.checker.report()
+
             self.assertTrue(res)
 
     def test_mask_with_effect(self):
@@ -1052,7 +1060,10 @@ class TestSelectiveMasking(unittest.TestCase):
         self.checker.setControlName(control_name)
         self.checker.setRenderedImage(tmp)
         res = self.checker.compareImages(control_name)
-        self.report += self.checker.report()
+
+        if not res:
+            TestSelectiveMasking.report += self.checker.report()
+
         self.assertTrue(res)
 
         # Same test with high dpi
@@ -1075,7 +1086,10 @@ class TestSelectiveMasking(unittest.TestCase):
         self.checker.setControlName(control_name)
         self.checker.setRenderedImage(tmp)
         res = self.checker.compareImages(control_name)
-        self.report += self.checker.report()
+
+        if not res:
+            TestSelectiveMasking.report += self.checker.report()
+
         self.assertTrue(res)
 
     def test_layout_export_2_sources_masking(self):
@@ -1146,18 +1160,17 @@ class TestSelectiveMasking(unittest.TestCase):
 
         map_settings = QgsMapSettings()
         crs = QgsCoordinateReferenceSystem('epsg:4326')
-        extent = QgsRectangle(-0.972, -1.966, 1.58, 1.806)
+        extent = QgsRectangle(-1.0073971192118132, -0.7875782447946843, 0.87882587741257345, 0.51640826470600099)
         map_settings.setBackgroundColor(QColor(152, 219, 249))
         map_settings.setOutputSize(QSize(420, 280))
         map_settings.setOutputDpi(72)
         map_settings.setFlag(QgsMapSettings.Antialiasing, True)
         map_settings.setFlag(QgsMapSettings.UseAdvancedEffects, False)
         map_settings.setDestinationCrs(crs)
-        map_settings.setExtent(extent)
 
         map_settings.setLayers([layer])
 
-        self.check_layout_export("layout_export_line_pattern_fill", 0, [layer], extent=QgsRectangle(-1.0073971192118132, -0.7875782447946843, 0.87882587741257345, 0.51640826470600099))
+        self.check_layout_export("layout_export_line_pattern_fill", 0, [layer], extent=extent)
 
     def test_vector_point_pattern_fill(self):
         """
@@ -1170,7 +1183,7 @@ class TestSelectiveMasking(unittest.TestCase):
 
         map_settings = QgsMapSettings()
         crs = QgsCoordinateReferenceSystem('epsg:4326')
-        extent = QgsRectangle(-0.972, -1.966, 1.58, 1.806)
+        extent = QgsRectangle(-1.0073971192118132, -0.7875782447946843, 0.87882587741257345, 0.51640826470600099)
         map_settings.setBackgroundColor(QColor(152, 219, 249))
         map_settings.setOutputSize(QSize(420, 280))
         map_settings.setOutputDpi(72)
@@ -1181,7 +1194,7 @@ class TestSelectiveMasking(unittest.TestCase):
 
         map_settings.setLayers([layer])
 
-        self.check_layout_export("layout_export_point_pattern_fill", 0, [layer], extent=QgsRectangle(-1.0073971192118132, -0.7875782447946843, 0.87882587741257345, 0.51640826470600099))
+        self.check_layout_export("layout_export_point_pattern_fill", 0, [layer], extent=extent)
 
     def test_vector_centroid_fill(self):
         """
@@ -1195,18 +1208,16 @@ class TestSelectiveMasking(unittest.TestCase):
         map_settings = QgsMapSettings()
         crs = QgsCoordinateReferenceSystem('epsg:4326')
         extent = QgsRectangle(-1.0073971192118132, -0.7875782447946843, 0.87882587741257345, 0.51640826470600099)
-        # extent = QgsRectangle(-0.972, -1.966, 1.58, 1.806)
         map_settings.setBackgroundColor(QColor(152, 219, 249))
         map_settings.setOutputSize(QSize(420, 280))
         map_settings.setOutputDpi(72)
         map_settings.setFlag(QgsMapSettings.Antialiasing, True)
         map_settings.setFlag(QgsMapSettings.UseAdvancedEffects, False)
         map_settings.setDestinationCrs(crs)
-        map_settings.setExtent(extent)
 
         map_settings.setLayers([layer])
 
-        self.check_layout_export("layout_export_centroid_fill", 0, [layer], extent=QgsRectangle(-1.0073971192118132, -0.7875782447946843, 0.87882587741257345, 0.51640826470600099))
+        self.check_layout_export("layout_export_centroid_fill", 0, [layer], extent=extent)
 
 
 if __name__ == '__main__':
