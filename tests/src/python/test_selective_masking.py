@@ -248,6 +248,8 @@ class TestSelectiveMasking(unittest.TestCase):
                         os.path.splitext(image_result_filename)[0],
                         "-png", "-r", "300", "-singlefile"])
 
+        print("image_result_filename={}".format(image_result_filename))
+
         self.checker.setControlName(control_name)
         self.checker.setRenderedImage(image_result_filename)
         res = self.checker.compareImages(control_name)
@@ -1218,6 +1220,29 @@ class TestSelectiveMasking(unittest.TestCase):
         map_settings.setLayers([layer])
 
         self.check_layout_export("layout_export_centroid_fill", 0, [layer], extent=extent)
+
+    def test_vector_random_generator_fill(self):
+        """
+        Test masking when a random generator fill symbol layer is involved
+        """
+        self.assertTrue(QgsProject.instance().read(os.path.join(unitTestDataPath(), "selective_masking_linepattern.qgz")))
+
+        layer = QgsProject.instance().mapLayersByName('random_generator_fill')[0]
+        self.assertTrue(layer)
+
+        map_settings = QgsMapSettings()
+        crs = QgsCoordinateReferenceSystem('epsg:4326')
+        extent = QgsRectangle(-1.0073971192118132, -0.7875782447946843, 0.87882587741257345, 0.51640826470600099)
+        map_settings.setBackgroundColor(QColor(152, 219, 249))
+        map_settings.setOutputSize(QSize(420, 280))
+        map_settings.setOutputDpi(72)
+        map_settings.setFlag(QgsMapSettings.Antialiasing, True)
+        map_settings.setFlag(QgsMapSettings.UseAdvancedEffects, False)
+        map_settings.setDestinationCrs(crs)
+
+        map_settings.setLayers([layer])
+
+        self.check_layout_export("layout_export_random_generator_fill", 0, [layer], extent=extent)
 
 
 if __name__ == '__main__':
