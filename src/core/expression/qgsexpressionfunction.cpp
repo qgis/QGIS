@@ -1725,7 +1725,7 @@ static QVariant fcnRasterAttributes( const QVariantList &values, const QgsExpres
     return QVariant();
   }
 
-  const QVariantList data { layer->dataProvider()->attributeTable( bandNb )->row( value ) };
+  const QVariantList data = layer->dataProvider()->attributeTable( bandNb )->row( value );
   if ( data.isEmpty() )
   {
     return QVariant();
@@ -1777,6 +1777,78 @@ static QVariant fcnAttribute( const QVariantList &values, const QgsExpressionCon
 
   return feature.attribute( attr );
 }
+
+static QVariant fcnMapToHtmlTable( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QString table { R"html(
+  <table>
+    <thead>
+      <th>%1</th>
+    </thead>
+    <tbody>
+      <tr><td>%2</td></tr>
+    </tbody>
+  </table>)html" };
+  QVariantMap dict;
+  if ( values.size() == 1 )
+  {
+    dict = QgsExpressionUtils::getMapValue( values.at( 0 ), parent );
+  }
+  else
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `map_to_html_table` requires one parameter. %n given.", nullptr, values.length() ) );
+    return QVariant();
+  }
+
+  if ( dict.isEmpty() )
+  {
+    return QVariant();
+  }
+
+  QStringList headers;
+  QStringList cells;
+
+  for ( auto it = dict.cbegin(); it != dict.cend(); ++it )
+  {
+    headers.push_back( it.key() );
+    cells.push_back( it.value().toString( ) );
+  }
+
+  return table.arg( headers.join( QStringLiteral( "</th><th>" ) ), cells.join( QStringLiteral( "</td><td>" ) ) );
+}
+
+static QVariant fcnMapToHtmlDefinitionList( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QString table { R"html(
+  <dl>
+    %1
+  </dl>)html" };
+  QVariantMap dict;
+  if ( values.size() == 1 )
+  {
+    dict = QgsExpressionUtils::getMapValue( values.at( 0 ), parent );
+  }
+  else
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `map_to_html_dl` requires one parameter. %n given.", nullptr, values.length() ) );
+    return QVariant();
+  }
+
+  if ( dict.isEmpty() )
+  {
+    return QVariant();
+  }
+
+  QString rows;
+
+  for ( auto it = dict.cbegin(); it != dict.cend(); ++it )
+  {
+    rows.append( QStringLiteral( "<dt>%1</dt><dd>%2</dd>" ).arg( it.key(), it.value().toString() ) );
+  }
+
+  return table.arg( rows );
+}
+
 
 static QVariant fcnAttributes( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
@@ -8575,6 +8647,10 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "map_prefix_keys" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "map" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "prefix" ) ),
                                             fcnMapPrefixKeys, QStringLiteral( "Maps" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "map_to_html_table" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "map" ) ),
+                                            fcnMapToHtmlTable, QStringLiteral( "Maps" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "map_to_html_dl" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "map" ) ),
+                                            fcnMapToHtmlDefinitionList, QStringLiteral( "Maps" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "url_encode" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "map" ) ),
                                             fcnToFormUrlEncode, QStringLiteral( "Maps" ) )
 
