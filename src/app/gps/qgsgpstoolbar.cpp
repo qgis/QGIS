@@ -42,31 +42,6 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
   mConnectAction->setCheckable( true );
   addAction( mConnectAction );
 
-  connect( mConnection, &QgsAppGpsConnection::statusChanged, this, [ = ]( Qgis::GpsConnectionStatus status )
-  {
-    switch ( status )
-    {
-      case Qgis::GpsConnectionStatus::Disconnected:
-        whileBlocking( mConnectAction )->setChecked( false );
-        mConnectAction->setText( tr( "Connect" ) );
-        mConnectAction->setEnabled( true );
-        mRecenterAction->setEnabled( false );
-        break;
-      case Qgis::GpsConnectionStatus::Connecting:
-        whileBlocking( mConnectAction )->setChecked( true );
-        mConnectAction->setText( tr( "Connecting" ) );
-        mConnectAction->setEnabled( false );
-        mRecenterAction->setEnabled( false );
-        break;
-      case Qgis::GpsConnectionStatus::Connected:
-        whileBlocking( mConnectAction )->setChecked( true );
-        mConnectAction->setText( tr( "Disconnect" ) );
-        mConnectAction->setEnabled( true );
-        mRecenterAction->setEnabled( true );
-        break;
-    }
-  } );
-
   connect( mConnectAction, &QAction::toggled, this, [ = ]( bool connect )
   {
     if ( connect )
@@ -134,13 +109,53 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
   settingsButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) ) );
   addWidget( settingsButton );
 
+  mRecenterAction->setEnabled( false );
+  mAddFeatureAction->setEnabled( false );
+  mAddTrackPointAction->setEnabled( false );
+  connect( mConnection, &QgsAppGpsConnection::statusChanged, this, [ = ]( Qgis::GpsConnectionStatus status )
+  {
+    switch ( status )
+    {
+      case Qgis::GpsConnectionStatus::Disconnected:
+        whileBlocking( mConnectAction )->setChecked( false );
+        mConnectAction->setText( tr( "Connect GPS" ) );
+        mConnectAction->setToolTip( tr( "Connect to GPS" ) );
+        mConnectAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/gpsicons/mIconGpsConnect.svg" ) ) );
+        mConnectAction->setEnabled( true );
+        mRecenterAction->setEnabled( false );
+        mAddFeatureAction->setEnabled( false );
+        mAddTrackPointAction->setEnabled( false );
+        break;
+      case Qgis::GpsConnectionStatus::Connecting:
+        whileBlocking( mConnectAction )->setChecked( true );
+        mConnectAction->setToolTip( tr( "Connecting to GPS" ) );
+        mConnectAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/gpsicons/mIconGpsConnect.svg" ) ) );
+        mConnectAction->setEnabled( false );
+        mRecenterAction->setEnabled( false );
+        mAddFeatureAction->setEnabled( false );
+        mAddTrackPointAction->setEnabled( false );
+        break;
+      case Qgis::GpsConnectionStatus::Connected:
+        whileBlocking( mConnectAction )->setChecked( true );
+        mConnectAction->setText( tr( "Disconnect GPS" ) );
+        mConnectAction->setToolTip( tr( "Disconnect from GPS" ) );
+        mConnectAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/gpsicons/mIconGpsDisconnect.svg" ) ) );
+        mConnectAction->setEnabled( true );
+        mRecenterAction->setEnabled( true );
+        mAddFeatureAction->setEnabled( true );
+        mAddTrackPointAction->setEnabled( mEnableAddVertexButton );
+        break;
+    }
+  } );
+
   connect( QgisApp::instance(), &QgisApp::activeLayerChanged,
            this, &QgsGpsToolBar::updateCloseFeatureButton );
 }
 
 void QgsGpsToolBar::setAddVertexButtonEnabled( bool enabled )
 {
-  mAddTrackPointAction->setEnabled( enabled );
+  mEnableAddVertexButton = enabled;
+  mAddTrackPointAction->setEnabled( mEnableAddVertexButton && mConnection->isConnected() );
 }
 
 void QgsGpsToolBar::updateLocationLabel( const QgsPoint &point )
