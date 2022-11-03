@@ -120,7 +120,7 @@ void QgsColorRampShaderWidget::initializeForUseWithRasterLayer()
 void QgsColorRampShaderWidget::setRasterDataProvider( QgsRasterDataProvider *dp )
 {
   mRasterDataProvider = dp;
-  mLoadFromBandButton->setVisible( bool( mRasterDataProvider ) ); // only for raster version
+  mLoadFromBandButton->setVisible( static_cast< bool>( mRasterDataProvider ) ); // only for raster version
 }
 
 void QgsColorRampShaderWidget::setRasterBand( int band )
