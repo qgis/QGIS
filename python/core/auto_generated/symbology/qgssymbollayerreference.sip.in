@@ -9,8 +9,10 @@
 
 
 
+
 class QgsSymbolLayerId
-%Docstring
+{
+%Docstring(signature="appended")
 We may need stable references to symbol layers, when pointers to symbol layers is not usable
 (when a symbol or a feature renderer is cloned for example).
 
@@ -38,18 +40,21 @@ path to symbol layers of the sub symbol are given by a list of indexes:
 .. deprecated:: QGIS 3.30
    Replaced by QUuid to identify symbol layers
 %End
-{
+
+%TypeHeaderCode
+#include "qgssymbollayerreference.h"
+%End
   public:
     QgsSymbolLayerId();
 
     QgsSymbolLayerId( const QString &key, int index );
 %Docstring
-:py:class:`QgsSymbolLayerId` constructor with a symbol key and a unique symbol layer index
+QgsSymbolLayerId constructor with a symbol key and a unique symbol layer index
 %End
 
     QgsSymbolLayerId( const QString &key, const QVector<int> &indexPath );
 %Docstring
-:py:class:`QgsSymbolLayerId` constructor with a symbol key and an index path
+QgsSymbolLayerId constructor with a symbol key and an index path
 %End
 
     QgsSymbolLayerId( const QgsSymbolLayerId &other );
@@ -111,9 +116,6 @@ Constructor
 %End
 
     QgsSymbolLayerReference( const QString &layerId, const QString &symbolLayerId );
-
- QgsSymbolLayerReference( const QgsSymbolLayerReference &other );
-
 
     QString layerId() const;
 %Docstring

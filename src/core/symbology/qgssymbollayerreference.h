@@ -25,6 +25,8 @@
 
 class QgsVectorLayer;
 
+// TODO QGIS 4 : Remove class QgsSymbolLayerId
+
 /**
  * We may need stable references to symbol layers, when pointers to symbol layers is not usable
  * (when a symbol or a feature renderer is cloned for example).
@@ -52,7 +54,7 @@ class QgsVectorLayer;
  * \since QGIS 3.12
  * \deprecated since QGIS 3.30 Replaced by QUuid to identify symbol layers
  */
-class Q_DECL_DEPRECATED CORE_EXPORT QgsSymbolLayerId
+class CORE_EXPORT QgsSymbolLayerId
 {
   public:
     QgsSymbolLayerId() {}
@@ -147,30 +149,6 @@ class CORE_EXPORT QgsSymbolLayerReference
       : mLayerId( layerId ), mSymbolLayerId( symbolLayerId )
     {}
 
-    // TODO QGIS 4 : remove this method, default copy constructor is just fine
-    Q_DECL_DEPRECATED QgsSymbolLayerReference( const QgsSymbolLayerReference &other )
-      : mLayerId( other.mLayerId ), mSymbolLayerId( other.mSymbolLayerId )
-    {
-      Q_NOWARN_DEPRECATED_PUSH
-      mDeprecatedSymbolLayerId = other.mDeprecatedSymbolLayerId;
-      Q_NOWARN_DEPRECATED_POP
-    }
-
-    Q_DECL_DEPRECATED QgsSymbolLayerReference &operator=( const QgsSymbolLayerReference &other )
-    {
-      if ( this == &other )
-        return *this;
-
-      mLayerId = other.mLayerId;
-      mSymbolLayerId = other.mSymbolLayerId;
-
-      Q_NOWARN_DEPRECATED_PUSH
-      mDeprecatedSymbolLayerId = other.mDeprecatedSymbolLayerId;
-      Q_NOWARN_DEPRECATED_POP
-
-      return *this;
-    }
-
     /**
      * The referenced vector layer / feature renderer
      */
@@ -191,14 +169,9 @@ class CORE_EXPORT QgsSymbolLayerReference
     //! Comparison operator
     bool operator==( const QgsSymbolLayerReference &other ) const
     {
-      bool res = ( mLayerId == other.mLayerId
-                   && mSymbolLayerId == other.mSymbolLayerId );
-
-      Q_NOWARN_DEPRECATED_PUSH
-      res = res && mDeprecatedSymbolLayerId == other.mDeprecatedSymbolLayerId;
-      Q_NOWARN_DEPRECATED_POP
-
-      return res;
+      return mLayerId == other.mLayerId
+             && mSymbolLayerId == other.mSymbolLayerId
+             && mDeprecatedSymbolLayerId == other.mDeprecatedSymbolLayerId;
     }
 
 #ifdef SIP_RUN
@@ -217,7 +190,9 @@ class CORE_EXPORT QgsSymbolLayerReference
 
   private:
     QString mLayerId;
-    Q_DECL_DEPRECATED QgsSymbolLayerId mDeprecatedSymbolLayerId;
+
+    // TODO QGIS 4 : remove mDeprecatedSymbolLayerId
+    QgsSymbolLayerId mDeprecatedSymbolLayerId;
 
     QString mSymbolLayerId;
 };
