@@ -28,6 +28,8 @@
 #include "qgsrasterrendererwidget.h"
 #include "qgscolorramplegendnodesettings.h"
 
+#include <QPointer>
+
 class QgsRasterDataProvider;
 class QgsLocaleAwareNumericLineEditDelegate;
 
