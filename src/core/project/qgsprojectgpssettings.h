@@ -76,7 +76,7 @@ class CORE_EXPORT QgsProjectGpsSettings : public QObject
 
     /**
      * Returns TRUE if features created from GPS locations should be
-     * immediately commited to their target layers (skipping the usual
+     * immediately committed to their target layers (skipping the usual
      * layer edit buffer).
      *
      * \see setAutomaticallyCommitFeatures()
@@ -97,7 +97,7 @@ class CORE_EXPORT QgsProjectGpsSettings : public QObject
 
     /**
      * Sets whether features created from GPS locations should be
-     * immediately commited to their target layers (skipping the usual
+     * immediately committed to their target layers (skipping the usual
      * layer edit buffer).
      *
      * \see automaticallyCommitFeatures()

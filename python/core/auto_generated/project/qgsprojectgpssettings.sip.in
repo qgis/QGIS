@@ -63,7 +63,7 @@ new locations are received from the GPS device.
     bool automaticallyCommitFeatures() const;
 %Docstring
 Returns ``True`` if features created from GPS locations should be
-immediately commited to their target layers (skipping the usual
+immediately committed to their target layers (skipping the usual
 layer edit buffer).
 
 .. seealso:: :py:func:`setAutomaticallyCommitFeatures`
@@ -86,7 +86,7 @@ new locations are received from the GPS device.
     void setAutomaticallyCommitFeatures( bool enabled );
 %Docstring
 Sets whether features created from GPS locations should be
-immediately commited to their target layers (skipping the usual
+immediately committed to their target layers (skipping the usual
 layer edit buffer).
 
 .. seealso:: :py:func:`automaticallyCommitFeatures`
