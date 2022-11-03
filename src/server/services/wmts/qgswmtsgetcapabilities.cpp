@@ -499,16 +499,17 @@ namespace QgsWmts
 
           //wmts:TileMatrixSetLimits
           QDomElement tmsLimitsElement = doc.createElement( QStringLiteral( "TileMatrixSetLimits" )/*wmts:TileMatrixSetLimits*/ );
-          for ( const int tmIdx : tmsl.tileMatrixLimits.keys() )
+
+          for ( auto it = tmsl.tileMatrixLimits.constBegin(); it != tmsl.tileMatrixLimits.constEnd(); it++ )
           {
             QDomElement tmLimitsElement = doc.createElement( QStringLiteral( "TileMatrixLimits" )/*wmts:TileMatrixLimits*/ );
 
             QDomElement tmIdentifierElem = doc.createElement( QStringLiteral( "TileMatrix" ) );
-            const QDomText tmIdentifierText = doc.createTextNode( QString::number( tmIdx ) );
+            const QDomText tmIdentifierText = doc.createTextNode( QString::number( it.key() ) );
             tmIdentifierElem.appendChild( tmIdentifierText );
             tmLimitsElement.appendChild( tmIdentifierElem );
 
-            const tileMatrixLimitDef tml = tmsl.tileMatrixLimits[tmIdx];
+            const tileMatrixLimitDef tml = it.value();
 
             QDomElement minTileColElem = doc.createElement( QStringLiteral( "MinTileCol" ) );
             const QDomText minTileColText = doc.createTextNode( QString::number( tml.minCol ) );
@@ -626,6 +627,3 @@ namespace QgsWmts
   } // namespace
 
 } // namespace QgsWmts
-
-
-

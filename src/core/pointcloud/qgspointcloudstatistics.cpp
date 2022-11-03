@@ -42,11 +42,11 @@ void QgsPointCloudAttributeStatistics::cumulateStatistics( const QgsPointCloudAt
   mean = newMean;
   count += stats.count;
 
-  for ( int key : stats.classCount.keys() )
+  for ( auto it = stats.classCount.constBegin(); it != stats.classCount.constEnd(); it++ )
   {
-    int c = classCount.value( key, 0 );
-    c += stats.classCount[ key ];
-    classCount[ key ] = c;
+    int c = classCount.value( it.key(), 0 );
+    c += it.value();
+    classCount[ it.key() ] = c;
   }
 }
 
@@ -131,9 +131,10 @@ double QgsPointCloudStatistics::stDev( const QString &attribute ) const
 
 void QgsPointCloudStatistics::combineWith( const QgsPointCloudStatistics &stats )
 {
-  for ( const QString &attribute : stats.mStatisticsMap.keys() )
+  for ( auto it = stats.mStatisticsMap.constBegin(); it != stats.mStatisticsMap.constEnd(); it++ )
   {
-    QgsPointCloudAttributeStatistics s = stats.mStatisticsMap[ attribute ];
+    const QString attribute = it.key();
+    QgsPointCloudAttributeStatistics s = it.value();
     if ( mStatisticsMap.contains( attribute ) )
     {
       s.cumulateStatistics( mStatisticsMap[ attribute ] );
@@ -148,10 +149,10 @@ QByteArray QgsPointCloudStatistics::toStatisticsJson() const
   QJsonObject obj;
   obj.insert( QStringLiteral( "sampled-points" ), QJsonValue::fromVariant( sampledPointsCount() ) );
   QJsonObject stats;
-  for ( const QString &attr : mStatisticsMap.keys() )
+  for ( auto it = mStatisticsMap.constBegin(); it != mStatisticsMap.constEnd(); it++ )
   {
-    QgsPointCloudAttributeStatistics stat = mStatisticsMap.value( attr );
-    stats.insert( attr, attributeStatisticsToJson( stat ) );
+    const QgsPointCloudAttributeStatistics stat = it.value();
+    stats.insert( it.key(), attributeStatisticsToJson( stat ) );
   }
   obj.insert( QStringLiteral( "stats" ), stats );
 
@@ -198,9 +199,9 @@ QJsonObject QgsPointCloudStatistics::attributeStatisticsToJson( const QgsPointCl
     obj.insert( QStringLiteral( "standard-deviation" ), stats.stDev );
   }
   QJsonObject classCount;
-  for ( const int &c : stats.classCount.keys() )
+  for ( auto it = stats.classCount.constBegin(); it != stats.classCount.constEnd(); it++ )
   {
-    classCount.insert( QString::number( c ), stats.classCount[c] );
+    classCount.insert( QString::number( it.key() ), it.value() );
   }
   obj.insert( QStringLiteral( "class-count" ), classCount );
   return obj;

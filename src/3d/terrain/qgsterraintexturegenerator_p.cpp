@@ -86,13 +86,14 @@ void QgsTerrainTextureGenerator::cancelJob( int jobId )
 
 void QgsTerrainTextureGenerator::waitForFinished()
 {
-  for ( QgsMapRendererSequentialJob *job : mJobs.keys() )
-    disconnect( job, &QgsMapRendererJob::finished, this, &QgsTerrainTextureGenerator::onRenderingFinished );
+  for ( auto it = mJobs.keyBegin(); it != mJobs.keyEnd(); it++ )
+    disconnect( *it, &QgsMapRendererJob::finished, this, &QgsTerrainTextureGenerator::onRenderingFinished );
   QVector<QgsMapRendererSequentialJob *> toBeDeleted;
-  for ( QgsMapRendererSequentialJob *mapJob : mJobs.keys() )
+  for ( auto it = mJobs.constBegin(); it != mJobs.constEnd(); it++ )
   {
+    QgsMapRendererSequentialJob *mapJob = it.key();
     mapJob->waitForFinished();
-    JobData jobData = mJobs.value( mapJob );
+    JobData jobData = it.value();
     toBeDeleted.push_back( mapJob );
 
     QImage img = mapJob->renderedImage();

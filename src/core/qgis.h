@@ -2706,8 +2706,58 @@ inline double qgsRound( double number, int places )
   return ( std::round( number * m * scaleFactor ) / scaleFactor ) * m;
 }
 
-
 #ifndef SIP_RUN
+
+/**
+ * Joins all the \a map keys into a single string with each element separated by the given
+ * \a separator.
+ * This method avoid calling keys() before joining because it creates an unneeded temporary list
+ * see clazy container-anti-pattern
+ */
+template<class Key, class Value>
+QString qgsMapJoinKeys( const QMap<Key, Value> &map, const QString &separator )
+{
+  QString result;
+  for ( auto it = map.constBegin(); it != map.constEnd(); it++ )
+    result += QString( "%1%2" ).arg( it.key() ).arg( separator );
+
+  result.chop( separator.size() );
+  return result;
+}
+
+/**
+ * Joins all the \a map values into a single string with each element separated by the given
+ * \a separator.
+ * This method avoid calling values() before joining because it creates an unneeded temporary list
+ * see clazy container-anti-pattern
+ */
+template<class Key, class Value>
+QString qgsMapJoinValues( const QMap<Key, Value> &map, const QString &separator )
+{
+  QString result;
+  for ( auto it = map.constBegin(); it != map.constEnd(); it++ )
+    result += QString( "%1%2" ).arg( it.value() ).arg( separator );
+
+  result.chop( separator.size() );
+  return result;
+}
+
+/**
+ * Joins all the \a set values into a single string with each element separated by the given
+ * \a separator.
+ * This method avoid calling values() before joining because it creates an unneeded temporary list
+ * see clazy container-anti-pattern
+ */
+template<class T>
+QString qgsSetJoin( const QSet<T> &set, const QString &separator )
+{
+  QString result;
+  for ( auto it = set.constBegin(); it != set.constEnd(); it++ )
+    result += QString( "%1%2" ).arg( *it ).arg( separator );
+
+  result.chop( separator.size() );
+  return result;
+}
 
 ///@cond PRIVATE
 

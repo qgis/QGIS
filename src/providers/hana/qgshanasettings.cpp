@@ -307,10 +307,9 @@ void QgsHanaSettings::save()
       const auto &schemaKeys = mKeyColumns[schemaName];
       if ( schemaKeys.empty() )
         continue;
-      const QStringList objectNames = schemaKeys.keys();
       settings.beginGroup( schemaName );
-      for ( const QString &objectName : objectNames )
-        settings.setValue( objectName, schemaKeys[objectName] );
+      for ( auto it = schemaKeys.constBegin(); it != schemaKeys.constEnd(); it++ )
+        settings.setValue( it.key(), it.value() );
       settings.endGroup();
     }
     settings.endGroup();

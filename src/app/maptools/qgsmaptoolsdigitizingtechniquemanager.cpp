@@ -274,10 +274,10 @@ void QgsMapToolsDigitizingTechniqueManager::enableDigitizingTechniqueActions( bo
     {
       if ( triggeredFromToolAction == tool->action() || ( !triggeredFromToolAction && QgisApp::instance()->mapCanvas()->mapTool() == tool ) )
       {
-        for ( Qgis::CaptureTechnique technique : mTechniqueActions.keys() )
+        for ( auto technique = mTechniqueActions.keyBegin(); technique != mTechniqueActions.keyEnd(); technique++ )
         {
-          if ( tool->supportsTechnique( technique ) )
-            supportedTechniques.insert( technique );
+          if ( tool->supportsTechnique( *technique ) )
+            supportedTechniques.insert( *technique );
         }
         break;
       }

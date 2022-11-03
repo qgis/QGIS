@@ -6218,7 +6218,7 @@ static QVariant fcnArrayMajority( const QVariantList &values, const QgsExpressio
     if ( hash.isEmpty() )
       return QVariant();
 
-    return QVariant( hash.keys( maxValue ).first() );
+    return QVariant( hash.key( maxValue ) );
   }
   else if ( option.compare( QLatin1String( "median" ), Qt::CaseInsensitive ) == 0 )
   {
@@ -6229,7 +6229,7 @@ static QVariant fcnArrayMajority( const QVariantList &values, const QgsExpressio
     if ( maxValue * 2 <= list.size() )
       return QVariant();
 
-    return QVariant( hash.keys( maxValue ).first() );
+    return QVariant( hash.key( maxValue ) );
   }
   else
   {
@@ -6262,7 +6262,7 @@ static QVariant fcnArrayMinority( const QVariantList &values, const QgsExpressio
     if ( hash.isEmpty() )
       return QVariant();
 
-    return QVariant( hash.keys( minValue ).first() );
+    return QVariant( hash.key( minValue ) );
   }
   else if ( option.compare( QLatin1String( "median" ), Qt::CaseInsensitive ) == 0 )
   {
@@ -6270,7 +6270,7 @@ static QVariant fcnArrayMinority( const QVariantList &values, const QgsExpressio
   }
   else if ( option.compare( QLatin1String( "real_minority" ), Qt::CaseInsensitive ) == 0 )
   {
-    if ( hash.keys().isEmpty() )
+    if ( hash.isEmpty() )
       return QVariant();
 
     // Remove the majority, all others are minority

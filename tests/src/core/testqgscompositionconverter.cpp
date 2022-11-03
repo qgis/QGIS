@@ -385,7 +385,7 @@ void TestQgsCompositionConverter::importComposerTemplateMap()
 
   item->setLayers( project.mapLayers().values() );
 
-  for ( auto const &l : project.mapLayers().values() )
+  for ( auto const &l : project.mapLayers() )
   {
     QVERIFY( l->isValid() );
   }

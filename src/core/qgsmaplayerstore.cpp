@@ -240,10 +240,10 @@ QMap<QString, QgsMapLayer *> QgsMapLayerStore::mapLayers() const
 QMap<QString, QgsMapLayer *> QgsMapLayerStore::validMapLayers() const
 {
   QMap<QString, QgsMapLayer *> validLayers;
-  for ( const auto &id : mMapLayers.keys() )
+  for ( auto it = mMapLayers.constBegin(); it != mMapLayers.constEnd(); it++ )
   {
-    if ( mMapLayers[id]->isValid() )
-      validLayers[id] = mMapLayers[id];
+    if ( it.value()->isValid() )
+      validLayers[it.key()] = it.value();
   }
   return validLayers;
 }

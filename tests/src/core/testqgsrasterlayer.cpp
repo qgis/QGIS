@@ -475,10 +475,12 @@ void TestQgsRasterLayer::checkScaleOffset()
   if ( identifyResult.isValid() )
   {
     const QMap<int, QVariant> values = identifyResult.results();
-    for ( const int bandNo : values.keys() )
+    for ( auto it = values.constBegin(); it != values.constEnd(); it++ )
     {
+      const int bandNo = it.key();
+
       QString valueString;
-      if ( values.value( bandNo ).isNull() )
+      if ( it.value().isNull() )
       {
         valueString = tr( "no data" );
         mReport += QStringLiteral( " %1 = %2 <br>\n" ).arg( myProvider->generateBandName( bandNo ), valueString );
@@ -488,7 +490,7 @@ void TestQgsRasterLayer::checkScaleOffset()
       else
       {
         const double expected = 0.99995432;
-        const double value = values.value( bandNo ).toDouble();
+        const double value = it.value().toDouble();
         valueString = QgsRasterBlock::printValue( value );
         mReport += QStringLiteral( " %1 = %2 <br>\n" ).arg( myProvider->generateBandName( bandNo ), valueString );
         mReport += QStringLiteral( " value = %1 expected = %2 diff = %3 <br>\n" ).arg( value ).arg( expected ).arg( std::fabs( value - expected ) );

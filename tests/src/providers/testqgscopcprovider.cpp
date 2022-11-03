@@ -382,9 +382,9 @@ void TestQgsCopcProvider::testIdentify()
     expected[ QStringLiteral( "Z" ) ] = 75.0;
     // compare values using toDouble() so that fuzzy comparison is used in case of
     // tiny rounding errors (e.g. 74.6 vs 74.60000000000001)
-    for ( const QString &k : expected.keys() )
+    for ( auto it = expected.constBegin(); it != expected.constEnd(); it++ )
     {
-      QCOMPARE( identifiedPoint[k].toDouble(), expected[k].toDouble() );
+      QCOMPARE( identifiedPoint[it.key()].toDouble(), it.value().toDouble() );
     }
   }
 
