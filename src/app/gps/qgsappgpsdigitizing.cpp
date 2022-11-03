@@ -15,7 +15,6 @@
 
 #include "qgsappgpsdigitizing.h"
 #include "qgsrubberband.h"
-#include "qgsappgpssettingsmenu.h"
 #include "qgslinesymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgsgui.h"
@@ -92,31 +91,39 @@ void QgsAppGpsDigitizing::addVertex()
 
   // we store the capture list in wgs84 and then transform to layer crs when
   // calling close feature
-  const QgsPoint point = QgsPoint( mLastGpsPosition.x(), mLastGpsPosition.y(), mLastElevation );
-  mCaptureList.push_back( point );
+  const QgsPoint pointWgs84 = QgsPoint( mLastGpsPositionWgs84.x(), mLastGpsPositionWgs84.y(), mLastElevation );
+  mCaptureListWgs84.push_back( pointWgs84 );
 
 
   // we store the rubber band points in map canvas CRS so transform to map crs
   // potential problem with transform errors and wrong coordinates if map CRS is changed after points are stored - SLM
   // should catch map CRS change and transform the points
-  QgsPointXY myPoint;
+  QgsPointXY mapPoint;
   if ( mCanvas )
   {
-    myPoint = mCanvasToWgs84Transform.transform( mLastGpsPosition, Qgis::TransformDirection::Reverse );
+    try
+    {
+      mapPoint = mCanvasToWgs84Transform.transform( mLastGpsPositionWgs84, Qgis::TransformDirection::Reverse );
+    }
+    catch ( QgsCsException & )
+    {
+      QgsDebugMsg( QStringLiteral( "Could not transform GPS location (%1, %2) to map CRS" ).arg( mLastGpsPositionWgs84.x() ).arg( mLastGpsPositionWgs84.y() ) );
+      return;
+    }
   }
   else
   {
-    myPoint = mLastGpsPosition;
+    mapPoint = mLastGpsPositionWgs84;
   }
 
-  mRubberBand->addPoint( myPoint );
+  mRubberBand->addPoint( mapPoint );
 }
 
 void QgsAppGpsDigitizing::resetFeature()
 {
   mBlockGpsStateChanged++;
   createRubberBand(); //deletes existing rubberband
-  mCaptureList.clear();
+  mCaptureListWgs84.clear();
   mBlockGpsStateChanged--;
 }
 
@@ -126,12 +133,12 @@ void QgsAppGpsDigitizing::addFeature()
   if ( !vlayer )
     return;
 
-  if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry && mCaptureList.size() < 2 )
+  if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry && mCaptureListWgs84.size() < 2 )
   {
     QgisApp::instance()->messageBar()->pushWarning( tr( "Add Feature" ), tr( "Cannot close a line feature until it has at least two vertices." ) );
     return;
   }
-  else if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry && mCaptureList.size() < 3 )
+  else if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry && mCaptureListWgs84.size() < 3 )
   {
     QgisApp::instance()->messageBar()->pushWarning( tr( "Add Feature" ),
         tr( "Cannot close a polygon feature until it has at least three vertices." ) );
@@ -150,7 +157,7 @@ void QgsAppGpsDigitizing::addFeature()
     }
   }
 
-  const QgsCoordinateTransform t( mWgs84CRS, vlayer->crs(), QgsProject::instance() );
+  const QgsCoordinateTransform wgs84ToLayerTransform( mWgs84CRS, vlayer->crs(), QgsProject::instance() );
   const bool is3D = QgsWkbTypes::hasZ( vlayer->wkbType() );
   switch ( vlayer->geometryType() )
   {
@@ -159,13 +166,13 @@ void QgsAppGpsDigitizing::addFeature()
       QgsFeature f;
       try
       {
-        const QgsPointXY pointXY = t.transform( mLastGpsPosition );
+        const QgsPointXY pointXYLayerCrs = wgs84ToLayerTransform.transform( mLastGpsPositionWgs84 );
 
         QgsGeometry g;
         if ( is3D )
-          g = QgsGeometry( new QgsPoint( pointXY.x(), pointXY.y(), mLastElevation ) );
+          g = QgsGeometry( new QgsPoint( pointXYLayerCrs.x(), pointXYLayerCrs.y(), mLastElevation ) );
         else
-          g = QgsGeometry::fromPointXY( pointXY );
+          g = QgsGeometry::fromPointXY( pointXYLayerCrs );
 
         if ( QgsWkbTypes::isMultiType( vlayer->wkbType() ) )
           g.convertToMultiType();
@@ -209,17 +216,17 @@ void QgsAppGpsDigitizing::addFeature()
       QgsFeature f;
       QgsGeometry g;
 
-      std::unique_ptr<QgsLineString> ring( new QgsLineString( mCaptureList ) );
+      std::unique_ptr<QgsLineString> ringWgs84( new QgsLineString( mCaptureListWgs84 ) );
       if ( ! is3D )
-        ring->dropZValue();
+        ringWgs84->dropZValue();
 
       if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry )
       {
 
-        g = QgsGeometry( ring.release() );
+        g = QgsGeometry( ringWgs84.release() );
         try
         {
-          g.transform( t );
+          g.transform( wgs84ToLayerTransform );
         }
         catch ( QgsCsException & )
         {
@@ -232,14 +239,14 @@ void QgsAppGpsDigitizing::addFeature()
       }
       else if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry )
       {
-        ring->close();
+        ringWgs84->close();
         std::unique_ptr<QgsPolygon> polygon( new QgsPolygon() );
-        polygon->setExteriorRing( ring.release() );
+        polygon->setExteriorRing( ringWgs84.release() );
 
         g = QgsGeometry( polygon.release() );
         try
         {
-          g.transform( t );
+          g.transform( wgs84ToLayerTransform );
         }
         catch ( QgsCsException & )
         {
@@ -292,7 +299,7 @@ void QgsAppGpsDigitizing::addFeature()
         mRubberBand = nullptr;
 
         // delete the elements of mCaptureList
-        mCaptureList.clear();
+        mCaptureListWgs84.clear();
       } // action.addFeature()
 
       mBlockGpsStateChanged--;
@@ -463,13 +470,13 @@ void QgsAppGpsDigitizing::gpsStateChanged( const QgsGpsInformation &info )
     return;
 
   const bool validFlag = info.isValid();
-  QgsPointXY myNewCenter;
+  QgsPointXY newLocationWgs84;
   nmeaPOS newNmeaPosition;
   nmeaTIME newNmeaTime;
   double newAlt = 0.0;
   if ( validFlag )
   {
-    myNewCenter = QgsPointXY( info.longitude, info.latitude );
+    newLocationWgs84 = QgsPointXY( info.longitude, info.latitude );
     newNmeaPosition.lat = nmea_degree2radian( info.latitude );
     newNmeaPosition.lon = nmea_degree2radian( info.longitude );
     newAlt = info.elevation;
@@ -478,14 +485,14 @@ void QgsAppGpsDigitizing::gpsStateChanged( const QgsGpsInformation &info )
   }
   else
   {
-    myNewCenter = mLastGpsPosition;
+    newLocationWgs84 = mLastGpsPositionWgs84;
     newNmeaPosition = mLastNmeaPosition;
     newAlt = mLastElevation;
   }
   if ( !mAcquisitionEnabled || ( nmea_distance( &newNmeaPosition, &mLastNmeaPosition ) < mDistanceThreshold ) )
   {
     // do not update position if update is disabled by timer or distance is under threshold
-    myNewCenter = mLastGpsPosition;
+    newLocationWgs84 = mLastGpsPositionWgs84;
 
   }
   if ( validFlag && mAcquisitionEnabled )
@@ -495,9 +502,9 @@ void QgsAppGpsDigitizing::gpsStateChanged( const QgsGpsInformation &info )
   }
 
   // Avoid refreshing / panning if we haven't moved
-  if ( mLastGpsPosition != myNewCenter )
+  if ( mLastGpsPositionWgs84 != newLocationWgs84 )
   {
-    mLastGpsPosition = myNewCenter;
+    mLastGpsPositionWgs84 = newLocationWgs84;
     mLastNmeaPosition = newNmeaPosition;
     mLastElevation = newAlt;
 

@@ -98,11 +98,11 @@ class APP_EXPORT QgsAppGpsDigitizing: public QObject
     bool mAutoAddVertices = false;
     bool mAutoSave = false;
 
-    QgsPointXY mLastGpsPosition;
+    QgsPointXY mLastGpsPositionWgs84;
 
     QgsRubberBand *mRubberBand = nullptr;
 
-    QVector<QgsPoint> mCaptureList;
+    QVector<QgsPoint> mCaptureListWgs84;
     double mLastElevation = 0.0;
 
     nmeaPOS mLastNmeaPosition;
