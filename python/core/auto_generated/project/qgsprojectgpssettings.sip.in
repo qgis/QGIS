@@ -1,0 +1,128 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/project/qgsprojectgpssettings.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsProjectGpsSettings : QObject
+{
+%Docstring(signature="appended")
+Contains settings and properties relating to how a :py:class:`QgsProject` should interact
+with a GPS device.
+
+.. versionadded:: 3.30
+%End
+
+%TypeHeaderCode
+#include "qgsprojectgpssettings.h"
+%End
+  public:
+
+
+
+    QgsProjectGpsSettings( QObject *parent = 0 );
+%Docstring
+Constructor for QgsProjectGpsSettings with the specified ``parent`` object.
+%End
+
+    ~QgsProjectGpsSettings();
+
+    void reset();
+%Docstring
+Resets the settings to a default state.
+%End
+
+    bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
+%Docstring
+Reads the settings's state from a DOM element.
+
+.. seealso:: :py:func:`writeXml`
+%End
+
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
+%Docstring
+Returns a DOM element representing the settings.
+
+.. seealso:: :py:func:`readXml`
+%End
+
+    bool automaticallyAddTrackPoints() const;
+%Docstring
+Returns ``True`` if track points should be automatically created whenever
+new locations are received from the GPS device.
+
+.. seealso:: :py:func:`setAutomaticallyAddTrackPoints`
+
+.. seealso:: :py:func:`automaticallyAddTrackPointsChanged`
+%End
+
+    bool automaticallyCommitFeatures() const;
+%Docstring
+Returns ``True`` if features created from GPS locations should be
+immediately commited to their target layers (skipping the usual
+layer edit buffer).
+
+.. seealso:: :py:func:`setAutomaticallyCommitFeatures`
+
+.. seealso:: :py:func:`automaticallyCommitFeaturesChanged`
+%End
+
+  public slots:
+
+    void setAutomaticallyAddTrackPoints( bool enabled );
+%Docstring
+Sets whether track points should be automatically created whenever
+new locations are received from the GPS device.
+
+.. seealso:: :py:func:`automaticallyAddTrackPoints`
+
+.. seealso:: :py:func:`automaticallyAddTrackPointsChanged`
+%End
+
+    void setAutomaticallyCommitFeatures( bool enabled );
+%Docstring
+Sets whether features created from GPS locations should be
+immediately commited to their target layers (skipping the usual
+layer edit buffer).
+
+.. seealso:: :py:func:`automaticallyCommitFeatures`
+
+.. seealso:: :py:func:`automaticallyCommitFeaturesChanged`
+%End
+
+  signals:
+
+    void automaticallyAddTrackPointsChanged( bool enabled );
+%Docstring
+Emitted whenever the :py:func:`~QgsProjectGpsSettings.automaticallyAddTrackPoints` setting
+is changed.
+
+.. seealso:: :py:func:`automaticallyAddTrackPoints`
+
+.. seealso:: :py:func:`setAutomaticallyAddTrackPoints`
+%End
+
+    void automaticallyCommitFeaturesChanged( bool enabled );
+%Docstring
+Emitted whenever the :py:func:`~QgsProjectGpsSettings.automaticallyCommitFeatures` setting
+is changed.
+
+.. seealso:: :py:func:`automaticallyCommitFeatures`
+
+.. seealso:: :py:func:`setAutomaticallyCommitFeatures`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/project/qgsprojectgpssettings.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
