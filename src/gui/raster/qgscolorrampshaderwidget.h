@@ -165,7 +165,7 @@ class GUI_EXPORT QgsColorRampShaderWidget: public QWidget, protected Ui::QgsColo
     double mMax = std::numeric_limits<double>::quiet_NaN();
 
     // For mode with raster layer
-    QgsRasterDataProvider *mRasterDataProvider = nullptr;
+    QPointer< QgsRasterDataProvider > mRasterDataProvider;
     int mBand = -1;
     QgsRectangle mExtent;
     QgsLocaleAwareNumericLineEditDelegate *mValueDelegate = nullptr;
