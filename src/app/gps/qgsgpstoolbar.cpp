@@ -78,11 +78,12 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
 
   addSeparator();
 
-  mAddTrackPointAction = new QAction( tr( "Add Track Point" ), this );
-  mAddTrackPointAction->setEnabled( false );
-  mAddTrackPointAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/gpsicons/mActionAddTrackPoint.svg" ) ) );
-  connect( mAddTrackPointAction, &QAction::triggered, this, &QgsGpsToolBar::addVertexClicked );
-  addAction( mAddTrackPointAction );
+  mAddTrackVertexAction = new QAction( tr( "Add Track Vertex" ), this );
+  mAddTrackVertexAction->setToolTip( tr( "Add vertex to GPS track using current GPS location" ) );
+  mAddTrackVertexAction->setEnabled( false );
+  mAddTrackVertexAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/gpsicons/mActionAddTrackPoint.svg" ) ) );
+  connect( mAddTrackVertexAction, &QAction::triggered, this, &QgsGpsToolBar::addVertexClicked );
+  addAction( mAddTrackVertexAction );
 
   mAddFeatureAction = new QAction( tr( "Create Feature from Track" ), this );
   mAddFeatureAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionCaptureLine.svg" ) ) );
@@ -118,7 +119,7 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
 
   mRecenterAction->setEnabled( false );
   mAddFeatureAction->setEnabled( false );
-  mAddTrackPointAction->setEnabled( false );
+  mAddTrackVertexAction->setEnabled( false );
   connect( mConnection, &QgsAppGpsConnection::statusChanged, this, [ = ]( Qgis::GpsConnectionStatus status )
   {
     switch ( status )
@@ -131,7 +132,7 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
         mConnectAction->setEnabled( true );
         mRecenterAction->setEnabled( false );
         mAddFeatureAction->setEnabled( false );
-        mAddTrackPointAction->setEnabled( false );
+        mAddTrackVertexAction->setEnabled( false );
         break;
       case Qgis::GpsConnectionStatus::Connecting:
         whileBlocking( mConnectAction )->setChecked( true );
@@ -140,7 +141,7 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
         mConnectAction->setEnabled( false );
         mRecenterAction->setEnabled( false );
         mAddFeatureAction->setEnabled( false );
-        mAddTrackPointAction->setEnabled( false );
+        mAddTrackVertexAction->setEnabled( false );
         break;
       case Qgis::GpsConnectionStatus::Connected:
         whileBlocking( mConnectAction )->setChecked( true );
@@ -150,7 +151,7 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
         mConnectAction->setEnabled( true );
         mRecenterAction->setEnabled( true );
         mAddFeatureAction->setEnabled( true );
-        mAddTrackPointAction->setEnabled( mEnableAddVertexButton );
+        mAddTrackVertexAction->setEnabled( mEnableAddVertexButton );
         break;
     }
   } );
@@ -162,7 +163,7 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
 void QgsGpsToolBar::setAddVertexButtonEnabled( bool enabled )
 {
   mEnableAddVertexButton = enabled;
-  mAddTrackPointAction->setEnabled( mEnableAddVertexButton && mConnection->isConnected() );
+  mAddTrackVertexAction->setEnabled( mEnableAddVertexButton && mConnection->isConnected() );
 }
 
 void QgsGpsToolBar::updateLocationLabel( const QgsPoint &point )
@@ -206,6 +207,7 @@ void QgsGpsToolBar::updateCloseFeatureButton( QgsMapLayer *lyr )
   }
 
   QString buttonLabel = tr( "Create Feature" );
+  QString buttonToolTip = tr( "Create Feature" );
   QString icon = QStringLiteral( "mActionCaptureLine.svg" );;
   if ( vlayer )
   {
@@ -219,16 +221,19 @@ void QgsGpsToolBar::updateCloseFeatureButton( QgsMapLayer *lyr )
     {
       case QgsWkbTypes::PointGeometry:
         buttonLabel = tr( "Create Point Feature at Location" );
+        buttonToolTip = tr( "Create a new point feature at the current GPS location" );
         icon = QStringLiteral( "mActionCapturePoint.svg" );
         break;
 
       case QgsWkbTypes::LineGeometry:
         buttonLabel = tr( "Create Line Feature from Track" );
+        buttonToolTip = tr( "Create a new line feature using the current GPS track" );
         icon = QStringLiteral( "mActionCaptureLine.svg" );
         break;
 
       case QgsWkbTypes::PolygonGeometry:
         buttonLabel = tr( "Create Polygon Feature from Track" );
+        buttonToolTip = tr( "Create a new polygon feature using the current GPS track" );
         icon = QStringLiteral( "mActionCapturePolygon.svg" );
         break;
 
@@ -246,7 +251,7 @@ void QgsGpsToolBar::updateCloseFeatureButton( QgsMapLayer *lyr )
   }
   mAddFeatureAction->setText( buttonLabel );
   mAddFeatureAction->setIcon( QgsApplication::getThemeIcon( icon ) );
-  mAddFeatureAction->setToolTip( buttonLabel );
+  mAddFeatureAction->setToolTip( buttonToolTip );
 }
 
 void QgsGpsToolBar::layerEditStateChanged()
