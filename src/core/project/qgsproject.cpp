@@ -2020,6 +2020,7 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
     const QDomElement gpsSettingsElement = doc->documentElement().firstChildElement( QStringLiteral( "ProjectGpsSettings" ) );
     if ( !gpsSettingsElement.isNull() )
       mGpsSettings->readXml( gpsSettingsElement, context );
+    mGpsSettings->resolveReferences( this );
   }
 
   profile.switchTask( tr( "Updating variables" ) );
