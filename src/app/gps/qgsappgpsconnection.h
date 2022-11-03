@@ -140,6 +140,8 @@ class APP_EXPORT QgsAppGpsConnection : public QObject
 
     void showStatusBarMessage( const QString &msg );
 
+    void showGpsConnectFailureWarning( const QString &message );
+
     QgsGpsConnection *mConnection = nullptr;
 };
 
