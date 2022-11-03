@@ -16,6 +16,7 @@
 #ifndef QGSSYMBOLLAYERREFERENCE_H
 #define QGSSYMBOLLAYERREFERENCE_H
 
+#include "qgis.h"
 #include "qgis_sip.h"
 #include "qgis_core.h"
 #include <QList>
@@ -49,8 +50,9 @@ class QgsVectorLayer;
  *
  * \ingroup core
  * \since QGIS 3.12
+ * \deprecated since QGIS 3.30 Replaced by QUuid to identify symbol layers
  */
-class CORE_EXPORT QgsSymbolLayerId
+class Q_DECL_DEPRECATED CORE_EXPORT QgsSymbolLayerId
 {
   public:
     QgsSymbolLayerId() {}
@@ -145,6 +147,30 @@ class CORE_EXPORT QgsSymbolLayerReference
       : mLayerId( layerId ), mSymbolLayerId( symbolLayerId )
     {}
 
+    // TODO QGIS 4 : remove this method, default copy constructor is just fine
+    Q_DECL_DEPRECATED QgsSymbolLayerReference( const QgsSymbolLayerReference &other )
+      : mLayerId( other.mLayerId ), mSymbolLayerId( other.mSymbolLayerId )
+    {
+      Q_NOWARN_DEPRECATED_PUSH
+      mDeprecatedSymbolLayerId = other.mDeprecatedSymbolLayerId;
+      Q_NOWARN_DEPRECATED_POP
+    }
+
+    Q_DECL_DEPRECATED QgsSymbolLayerReference &operator=( const QgsSymbolLayerReference &other )
+    {
+      if ( this == &other )
+        return *this;
+
+      mLayerId = other.mLayerId;
+      mSymbolLayerId = other.mSymbolLayerId;
+
+      Q_NOWARN_DEPRECATED_PUSH
+      mDeprecatedSymbolLayerId = other.mDeprecatedSymbolLayerId;
+      Q_NOWARN_DEPRECATED_POP
+
+      return *this;
+    }
+
     /**
      * The referenced vector layer / feature renderer
      */
@@ -152,22 +178,27 @@ class CORE_EXPORT QgsSymbolLayerReference
 
     /**
      * The symbol layer's id
-     * \deprecated since QGIS 3.28, use symbolLayerIdV2 instead
+     * \deprecated since QGIS 3.30, use symbolLayerIdV2 instead
      */
     Q_DECL_DEPRECATED QgsSymbolLayerId symbolLayerId() const { return mDeprecatedSymbolLayerId; }
 
     /**
      * The symbol layer's id
-     * \since QGIS 3.28
+     * \since QGIS 3.30
      */
     QString symbolLayerIdV2() const { return mSymbolLayerId; }
 
     //! Comparison operator
     bool operator==( const QgsSymbolLayerReference &other ) const
     {
-      return mLayerId == other.mLayerId
-             && mSymbolLayerId == other.mSymbolLayerId
-             && mDeprecatedSymbolLayerId == other.mDeprecatedSymbolLayerId;
+      bool res = ( mLayerId == other.mLayerId
+                   && mSymbolLayerId == other.mSymbolLayerId );
+
+      Q_NOWARN_DEPRECATED_PUSH
+      res = res && mDeprecatedSymbolLayerId == other.mDeprecatedSymbolLayerId;
+      Q_NOWARN_DEPRECATED_POP
+
+      return res;
     }
 
 #ifdef SIP_RUN
@@ -186,8 +217,8 @@ class CORE_EXPORT QgsSymbolLayerReference
 
   private:
     QString mLayerId;
-    // TODO QGIS 4 : remove mDeprecatedSymbolLayerId
-    QgsSymbolLayerId mDeprecatedSymbolLayerId;
+    Q_DECL_DEPRECATED QgsSymbolLayerId mDeprecatedSymbolLayerId;
+
     QString mSymbolLayerId;
 };
 

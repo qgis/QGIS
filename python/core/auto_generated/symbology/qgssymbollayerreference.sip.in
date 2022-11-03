@@ -10,8 +10,7 @@
 
 
 class QgsSymbolLayerId
-{
-%Docstring(signature="appended")
+%Docstring
 We may need stable references to symbol layers, when pointers to symbol layers is not usable
 (when a symbol or a feature renderer is cloned for example).
 
@@ -35,22 +34,22 @@ path to symbol layers of the sub symbol are given by a list of indexes:
 - [2, 0] : first symbol layer of the sub symbol of the third symbol layer, etc.
 
 .. versionadded:: 3.12
-%End
 
-%TypeHeaderCode
-#include "qgssymbollayerreference.h"
+.. deprecated:: QGIS 3.30
+   Replaced by QUuid to identify symbol layers
 %End
+{
   public:
     QgsSymbolLayerId();
 
     QgsSymbolLayerId( const QString &key, int index );
 %Docstring
-QgsSymbolLayerId constructor with a symbol key and a unique symbol layer index
+:py:class:`QgsSymbolLayerId` constructor with a symbol key and a unique symbol layer index
 %End
 
     QgsSymbolLayerId( const QString &key, const QVector<int> &indexPath );
 %Docstring
-QgsSymbolLayerId constructor with a symbol key and an index path
+:py:class:`QgsSymbolLayerId` constructor with a symbol key and an index path
 %End
 
     QgsSymbolLayerId( const QgsSymbolLayerId &other );
@@ -113,6 +112,9 @@ Constructor
 
     QgsSymbolLayerReference( const QString &layerId, const QString &symbolLayerId );
 
+ QgsSymbolLayerReference( const QgsSymbolLayerReference &other );
+
+
     QString layerId() const;
 %Docstring
 The referenced vector layer / feature renderer
@@ -122,7 +124,7 @@ The referenced vector layer / feature renderer
 %Docstring
 The symbol layer's id
 
-.. deprecated:: QGIS 3.28
+.. deprecated:: QGIS 3.30
   use symbolLayerIdV2 instead
 %End
 
@@ -130,7 +132,7 @@ The symbol layer's id
 %Docstring
 The symbol layer's id
 
-.. versionadded:: 3.28
+.. versionadded:: 3.30
 %End
 
     bool operator==( const QgsSymbolLayerReference &other ) const;

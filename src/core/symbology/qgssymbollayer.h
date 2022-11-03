@@ -635,14 +635,14 @@ class CORE_EXPORT QgsSymbolLayer
     /**
      * Set symbol layer identifier
      * This id has to be unique in the whole project
-     * \since QGIS 3.28
+     * \since QGIS 3.30
      */
     void setId( const QString &id );
 
     /**
      * Returns symbol layer identifier
      * This id is unique in the whole project
-     * \since QGIS 3.28
+     * \since QGIS 3.30
      */
     const QString &id() const;
 

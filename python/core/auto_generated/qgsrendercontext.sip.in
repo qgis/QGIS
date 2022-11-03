@@ -123,7 +123,7 @@ Sets the list of disabled symbol layers.
 
 .. versionadded:: 3.12
 
-.. deprecated:: QGIS 3.28
+.. deprecated:: QGIS 3.30
    and replaced with setDisabledSymbolLayersV2
 %End
 
@@ -138,7 +138,7 @@ Sets the list of disabled symbol layer ids.
 
 .. seealso:: :py:func:`isSymbolLayerEnabledV2`
 
-.. versionadded:: 3.28
+.. versionadded:: 3.30
 %End
 
  QSet<const QgsSymbolLayer *> disabledSymbolLayers() const;
@@ -154,7 +154,7 @@ Returns the list of disabled symbol layers.
 
 .. versionadded:: 3.12
 
-.. deprecated:: QGIS 3.28
+.. deprecated:: QGIS 3.30
    and replaced with disabledSymbolLayersV2
 %End
 
@@ -169,10 +169,7 @@ Returns the list of disabled symbol layer ids.
 
 .. seealso:: :py:func:`isSymbolLayerEnabled`
 
-.. versionadded:: 3.12
-
-.. deprecated:: QGIS 3.28
-   and replaced with disabledSymbolLayersV2
+.. versionadded:: 3.30
 %End
 
     bool isSymbolLayerEnabled( const QgsSymbolLayer *layer ) const;

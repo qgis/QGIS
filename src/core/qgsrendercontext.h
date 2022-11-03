@@ -154,7 +154,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * \see disabledSymbolLayers()
      * \see isSymbolLayerEnabled()
      * \since QGIS 3.12
-     * \deprecated since QGIS 3.28 and replaced with setDisabledSymbolLayersV2
+     * \deprecated since QGIS 3.30 and replaced with setDisabledSymbolLayersV2
      */
     Q_DECL_DEPRECATED void setDisabledSymbolLayers( const QSet<const QgsSymbolLayer *> &symbolLayers );
 
@@ -165,7 +165,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * Sets the list of disabled symbol layer ids.
      * \see disabledSymbolLayersV2()
      * \see isSymbolLayerEnabledV2()
-     * \since QGIS 3.28
+     * \since QGIS 3.30
      */
     void setDisabledSymbolLayersV2( const QSet<QString> &symbolLayers );
 
@@ -177,7 +177,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * \see setDisabledSymbolLayers()
      * \see isSymbolLayerEnabled()
      * \since QGIS 3.12
-     * \deprecated since QGIS 3.28 and replaced with disabledSymbolLayersV2
+     * \deprecated since QGIS 3.30 and replaced with disabledSymbolLayersV2
      */
     Q_DECL_DEPRECATED QSet<const QgsSymbolLayer *> disabledSymbolLayers() const;
 
@@ -188,8 +188,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * Returns the list of disabled symbol layer ids.
      * \see setDisabledSymbolLayers()
      * \see isSymbolLayerEnabled()
-     * \since QGIS 3.12
-     * \deprecated since QGIS 3.28 and replaced with disabledSymbolLayersV2
+     * \since QGIS 3.30
      */
     const QSet<QString> &disabledSymbolLayersV2() const;
 
@@ -920,13 +919,13 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
 
     /**
      * Add a clip \a path to be applied to the \a symbolLayer before rendering
-     * \since QGIS 3.26, arguments changed and public API since 3.28
+     * \since QGIS 3.26, arguments changed and public API since 3.30
      */
     void addSymbolLayerClipPath( const QString &symbolLayerId, QPainterPath path );
 
     /**
      * Returns clip paths to be applied to the \a symbolLayer before rendering
-     * \since QGIS 3.26, arguments changed and public API since 3.28
+     * \since QGIS 3.26, arguments changed and public API since 3.30
      */
     QList<QPainterPath> symbolLayerClipPaths( const QString &symbolLayerId ) const;
 

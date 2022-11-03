@@ -657,7 +657,7 @@ This should be called prior to calling :py:func:`~QgsSymbolLayer.startRender` me
 Set symbol layer identifier
 This id has to be unique in the whole project
 
-.. versionadded:: 3.28
+.. versionadded:: 3.30
 %End
 
     const QString &id() const;
@@ -665,7 +665,7 @@ This id has to be unique in the whole project
 Returns symbol layer identifier
 This id is unique in the whole project
 
-.. versionadded:: 3.28
+.. versionadded:: 3.30
 %End
 
   protected:
