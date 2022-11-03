@@ -193,7 +193,7 @@ void QgsAppGpsConnection::onConnected( QgsGpsConnection *conn )
 
   emit connected();
   emit statusChanged( Qgis::GpsConnectionStatus::Connected );
-  showStatusBarMessage( tr( "Connected to GPS device." ) );
+  showMessage( Qgis::MessageLevel::Success, tr( "Connected to GPS device." ) );
 }
 
 void QgsAppGpsConnection::showStatusBarMessage( const QString &msg )
@@ -203,12 +203,37 @@ void QgsAppGpsConnection::showStatusBarMessage( const QString &msg )
 
 void QgsAppGpsConnection::showGpsConnectFailureWarning( const QString &message )
 {
-  QgsMessageBarItem *item = QgisApp::instance()->messageBar()->createMessage( QString(), message );
+  if ( mConnectionMessageItem )
+  {
+    // delete old connection message item, so that we don't stack up multiple outdated connection
+    // related messages
+    QgisApp::instance()->messageBar()->popWidget( mConnectionMessageItem );
+    mConnectionMessageItem = nullptr;
+  }
+
+  QgisApp::instance()->statusBarIface()->clearMessage();
+  mConnectionMessageItem = QgisApp::instance()->messageBar()->createMessage( QString(), message );
   QPushButton *configureButton = new QPushButton( tr( "Configure Device…" ) );
   connect( configureButton, &QPushButton::clicked, configureButton, [ = ]
   {
     QgisApp::instance()->showOptionsDialog( QgisApp::instance(), QStringLiteral( "mGpsOptions" ) );
   } );
-  item->layout()->addWidget( configureButton );
-  QgisApp::instance()->messageBar()->pushWidget( item, Qgis::MessageLevel::Critical );
+  mConnectionMessageItem->layout()->addWidget( configureButton );
+  QgisApp::instance()->messageBar()->pushWidget( mConnectionMessageItem, Qgis::MessageLevel::Critical );
+}
+
+void QgsAppGpsConnection::showMessage( Qgis::MessageLevel level, const QString &message )
+{
+  if ( mConnectionMessageItem )
+  {
+    // delete old connection message item, so that we don't stack up multiple outdated connection
+    // related messages
+    QgisApp::instance()->messageBar()->popWidget( mConnectionMessageItem );
+    mConnectionMessageItem = nullptr;
+  }
+
+  QgisApp::instance()->statusBarIface()->clearMessage();
+
+  mConnectionMessageItem = QgisApp::instance()->messageBar()->createMessage( QString(), message );
+  QgisApp::instance()->messageBar()->pushWidget( mConnectionMessageItem, level, QgsMessageBar::defaultMessageTimeout( level ) );
 }

@@ -19,10 +19,12 @@
 #include "qgis.h"
 
 #include <QObject>
+#include <QPointer>
 
 class QgsGpsConnection;
 class QgsGpsInformation;
 class QgsPoint;
+class QgsMessageBarItem;
 
 /**
  * Manages a single "canonical" GPS connection for use in the QGIS app, eg for displaying GPS
@@ -141,8 +143,10 @@ class APP_EXPORT QgsAppGpsConnection : public QObject
     void showStatusBarMessage( const QString &msg );
 
     void showGpsConnectFailureWarning( const QString &message );
+    void showMessage( Qgis::MessageLevel level, const QString &message );
 
     QgsGpsConnection *mConnection = nullptr;
+    QPointer< QgsMessageBarItem > mConnectionMessageItem;
 };
 
 
