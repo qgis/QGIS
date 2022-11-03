@@ -978,7 +978,7 @@ Encodes a reference to a parametric SVG into a path with parameters according to
 .. versionadded:: 3.0
 %End
 
-    static QSet<const QgsSymbolLayer *> toSymbolLayerPointers( QgsFeatureRenderer *renderer, const QSet<QgsSymbolLayerId> &symbolLayerIds );
+    static QSet<const QgsSymbolLayer *> toSymbolLayerPointers( const QgsFeatureRenderer *renderer, const QSet<QgsSymbolLayerId> &symbolLayerIds );
 %Docstring
 Converts a set of symbol layer id to a set of pointers to actual symbol layers carried by the feature renderer.
 
@@ -1029,6 +1029,15 @@ The method makes approximations and can modify ``angle`` in order to generate th
 :param angleRad: symbol layer rotation angle in radians (counter clockwise), it may be approximated by the method to minimize the tile size.
 
 :return: the size of the tile
+
+.. versionadded:: 3.30
+%End
+
+ static void fixOldSymbolLayerReferences( const QMap<QString, QgsMapLayer *> &mapLayers );
+%Docstring
+:py:class:`QgsSymbolLayerReference` uses :py:class:`QgsSymbolLayer` unique uuid identifier since QGIS 3.30, instead of the symbol
+key (rule for :py:class:`QgsRuleBasedRenderer` for instance) and index path, so this method migrates ``mapLayers`` old references
+to new ones.
 
 .. versionadded:: 3.30
 %End

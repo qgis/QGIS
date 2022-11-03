@@ -884,7 +884,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * Converts a set of symbol layer id to a set of pointers to actual symbol layers carried by the feature renderer.
      * \since QGIS 3.12
      */
-    static QSet<const QgsSymbolLayer *> toSymbolLayerPointers( QgsFeatureRenderer *renderer, const QSet<QgsSymbolLayerId> &symbolLayerIds );
+    static QSet<const QgsSymbolLayer *> toSymbolLayerPointers( const QgsFeatureRenderer *renderer, const QSet<QgsSymbolLayerId> &symbolLayerIds );
 
     /**
      * Calculates the frame rate (in frames per second) at which the given \a renderer must be redrawn.
@@ -927,6 +927,14 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \since QGIS 3.30
      */
     static QSize tileSize( int width, int height, double &angleRad SIP_INOUT );
+
+    /**
+     * QgsSymbolLayerReference uses QgsSymbolLayer unique uuid identifier since QGIS 3.30, instead of the symbol
+     * key (rule for QgsRuleBasedRenderer for instance) and index path, so this method migrates \a mapLayers old references
+     * to new ones.
+     * \since QGIS 3.30
+     */
+    Q_DECL_DEPRECATED static void fixOldSymbolLayerReferences( const QMap<QString, QgsMapLayer *> &mapLayers );
 
     ///@cond PRIVATE
 #ifndef SIP_RUN

@@ -145,7 +145,7 @@ class TestSelectiveMasking(unittest.TestCase):
                 cls.report != REPORT_TITLE):
             QDesktopServices.openUrl(QUrl("file:///{}".format(report_file_path)))
 
-    def get_symbollayer_ref(self, layer, ruleId, symbollayer_ids):
+    def get_symbollayer(self, layer, ruleId, symbollayer_ids):
         """
         Returns the symbol layer according to given layer, ruleId (None if no rule) and the path
         to symbol layer id (for instance [0, 1])
@@ -164,6 +164,14 @@ class TestSelectiveMasking(unittest.TestCase):
             symbol = symbollayer.subSymbol()
             symbollayer = symbol.symbolLayer(symbollayer_ids[i])
 
+        return symbollayer
+
+    def get_symbollayer_ref(self, layer, ruleId, symbollayer_ids):
+        """
+        Returns the symbol layer according to given layer, ruleId (None if no rule) and the path
+        to symbol layer id (for instance [0, 1])
+        """
+        symbollayer = self.get_symbollayer(layer, rule, symbollayer_ids)
         return QgsSymbolLayerReference(layer.id(), symbollayer.id())
 
     def check_renderings(self, map_settings, control_name):
@@ -265,7 +273,7 @@ class TestSelectiveMasking(unittest.TestCase):
         # simple ids
         mask_layer = QgsMaskMarkerSymbolLayer()
         mask_layer.setMasks([
-            self.get_symbollayer_ref(self.lines_layer, "", [0]),
+            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", [0])),
             QgsSymbolLayerReference(self.lines_layer2.id(), QgsSymbolLayerId("some_id", [1, 3, 5, 19])),
             QgsSymbolLayerReference(self.polys_layer.id(), QgsSymbolLayerId("some_other_id", [4, 5])),
         ])
@@ -273,8 +281,14 @@ class TestSelectiveMasking(unittest.TestCase):
         props = mask_layer.properties()
 
         mask_layer2 = QgsMaskMarkerSymbolLayer.create(props)
+        print(f"mask2={mask_layer2.masks()}")
+        print("mask={}".format([
+            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", [0])),
+            QgsSymbolLayerReference(self.lines_layer2.id(), QgsSymbolLayerId("some_id", [1, 3, 5, 19])),
+            QgsSymbolLayerReference(self.polys_layer.id(), QgsSymbolLayerId("some_other_id", [4, 5])),
+        ]))
         self.assertEqual(mask_layer2.masks(), [
-            self.get_symbollayer_ref(self.lines_layer, "", [0]),
+            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", [0])),
             QgsSymbolLayerReference(self.lines_layer2.id(), QgsSymbolLayerId("some_id", [1, 3, 5, 19])),
             QgsSymbolLayerReference(self.polys_layer.id(), QgsSymbolLayerId("some_other_id", [4, 5])),
         ])
@@ -312,6 +326,73 @@ class TestSelectiveMasking(unittest.TestCase):
             QgsSymbolLayerReference(self.lines_layer2.id(), QgsSymbolLayerId("some; id, #1", [1, 3, 5, 19])),
             QgsSymbolLayerReference(self.polys_layer.id(), QgsSymbolLayerId("some other; id, lik;e, this", [4, 5])),
         ])
+
+    def test_migrate_old_references(self):
+        """
+        Since QGIS 3.30, QgsSymbolLayerReference has change its definition, so we test we can migrate
+        old reference to new ones
+        """
+
+        # test label mask
+        label_settings = self.polys_layer.labeling().settings()
+        fmt = label_settings.format()
+        # enable a mask
+        fmt.mask().setEnabled(True)
+        fmt.mask().setSize(4.0)
+        # and mask other symbol layers underneath
+        oldMaskRefs = [
+            # the black part of roads
+            QgsSymbolLayerReference(self.lines_layer2.id(), QgsSymbolLayerId("", [1, 0])),
+            # the black jets
+            QgsSymbolLayerReference(self.points_layer.id(), QgsSymbolLayerId("B52", [0])),
+            QgsSymbolLayerReference(self.points_layer.id(), QgsSymbolLayerId("Jet", [0]))]
+        fmt.mask().setMaskedSymbolLayers(oldMaskRefs)
+
+        label_settings.setFormat(fmt)
+        self.polys_layer.labeling().setSettings(label_settings)
+
+        self.assertEqual([slRef.symbolLayerIdV2() for slRef in self.polys_layer.labeling().settings().format().mask().maskedSymbolLayers()],
+                         ["", "", ""])
+        self.assertEqual([slRef.symbolLayerId() for slRef in self.polys_layer.labeling().settings().format().mask().maskedSymbolLayers()],
+                         [slRef.symbolLayerId() for slRef in oldMaskRefs])
+
+        QgsSymbolLayerUtils.fixOldSymbolLayerReferences(QgsProject.instance().mapLayers())
+
+        self.assertEqual([QUuid(slRef.symbolLayerIdV2()).isNull() for slRef in self.polys_layer.labeling().settings().format().mask().maskedSymbolLayers()],
+                         [False, False, False])
+        self.assertEqual([slRef.symbolLayerIdV2() for slRef in self.polys_layer.labeling().settings().format().mask().maskedSymbolLayers()],
+                         [self.get_symbollayer(self.lines_layer2, "", [1, 0]).id(),
+                          self.get_symbollayer(self.points_layer, "B52", [0]).id(),
+                          self.get_symbollayer(self.points_layer, "Jet", [0]).id()])
+        self.assertEqual([slRef.symbolLayerId() for slRef in self.polys_layer.labeling().settings().format().mask().maskedSymbolLayers()],
+                         [QgsSymbolLayerId(), QgsSymbolLayerId(), QgsSymbolLayerId()])
+
+        # test symbol layer masks
+        p = QgsMarkerSymbol.createSimple({'color': '#fdbf6f', 'size': "7"})
+        self.points_layer.setRenderer(QgsSingleSymbolRenderer(p))
+
+        circle_symbol = QgsMarkerSymbol.createSimple({'size': '10'})
+        mask_layer = QgsMaskMarkerSymbolLayer()
+        mask_layer.setSubSymbol(circle_symbol)
+        oldMaskRefs = [QgsSymbolLayerReference(self.lines_layer2.id(), QgsSymbolLayerId("", [1, 0]))]
+        mask_layer.setMasks(oldMaskRefs)
+
+        # add this mask layer to the point layer
+        self.points_layer.renderer().symbol().appendSymbolLayer(mask_layer)
+
+        self.assertEqual([slRef.symbolLayerIdV2() for slRef in self.points_layer.renderer().symbol().symbolLayers()[1].masks()],
+                         [""])
+        self.assertEqual([slRef.symbolLayerId() for slRef in self.points_layer.renderer().symbol().symbolLayers()[1].masks()],
+                         [slRef.symbolLayerId() for slRef in oldMaskRefs])
+
+        QgsSymbolLayerUtils.fixOldSymbolLayerReferences(QgsProject.instance().mapLayers())
+
+        self.assertEqual([QUuid(slRef.symbolLayerIdV2()).isNull() for slRef in self.points_layer.renderer().symbol().symbolLayers()[1].masks()],
+                         [False])
+        self.assertEqual([slRef.symbolLayerIdV2() for slRef in self.points_layer.renderer().symbol().symbolLayers()[1].masks()],
+                         [self.get_symbollayer(self.lines_layer2, "", [1, 0]).id()])
+        self.assertEqual([slRef.symbolLayerId() for slRef in self.points_layer.renderer().symbol().symbolLayers()[1].masks()],
+                         [QgsSymbolLayerId()])
 
     def test_label_mask(self):
         # modify labeling settings

@@ -40,7 +40,7 @@ QgsSymbolLayerReferenceList stringToSymbolLayerReferenceList( const QString &str
     // TODO QGIS 4 : remove this if branch, keep only else part
     Q_NOWARN_DEPRECATED_PUSH
 
-    // old masked symbol layer format (before 3.28), we use unique id now!
+    // old masked symbol layer format (before 3.30), we use unique id now!
     // we load it the old fashion way and we will update the new one later when
     // the whole project is loaded
 
