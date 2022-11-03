@@ -21,6 +21,7 @@
 #include "qgisapp.h"
 #include "qgsstatusbar.h"
 #include "qgsmessagebar.h"
+#include "qgsmessagebaritem.h"
 
 QgsAppGpsConnection::QgsAppGpsConnection( QObject *parent )
   : QObject( parent )
@@ -122,7 +123,7 @@ void QgsAppGpsConnection::connectGps()
       if ( port.isEmpty() )
       {
         QgisApp::instance()->statusBarIface()->clearMessage();
-        QgisApp::instance()->messageBar()->pushCritical( QString(), tr( "No path to the GPS port is specified. Please set a path then try again." ) );
+        showGpsConnectFailureWarning( tr( "No path to the GPS port is specified. Please set a path then try again." ) );
         emit connectionError( tr( "No path to the GPS port is specified. Please set a path then try again." ) );
         emit statusChanged( Qgis::GpsConnectionStatus::Disconnected );
         return;
@@ -170,7 +171,7 @@ void QgsAppGpsConnection::onTimeOut()
   emit statusChanged( Qgis::GpsConnectionStatus::Disconnected );
 
   QgisApp::instance()->statusBarIface()->clearMessage();
-  QgisApp::instance()->messageBar()->pushCritical( QString(), tr( "Failed to connect to GPS device." ) );
+  showGpsConnectFailureWarning( tr( "Failed to connect to GPS device." ) );
 }
 
 void QgsAppGpsConnection::onConnected( QgsGpsConnection *conn )
@@ -198,4 +199,16 @@ void QgsAppGpsConnection::onConnected( QgsGpsConnection *conn )
 void QgsAppGpsConnection::showStatusBarMessage( const QString &msg )
 {
   QgisApp::instance()->statusBarIface()->showMessage( msg );
+}
+
+void QgsAppGpsConnection::showGpsConnectFailureWarning( const QString &message )
+{
+  QgsMessageBarItem *item = QgisApp::instance()->messageBar()->createMessage( QString(), message );
+  QPushButton *configureButton = new QPushButton( tr( "Configure Device…" ) );
+  connect( configureButton, &QPushButton::clicked, configureButton, [ = ]
+  {
+    QgisApp::instance()->showOptionsDialog( QgisApp::instance(), QStringLiteral( "mGpsOptions" ) );
+  } );
+  item->layout()->addWidget( configureButton );
+  QgisApp::instance()->messageBar()->pushWidget( item, Qgis::MessageLevel::Critical );
 }
