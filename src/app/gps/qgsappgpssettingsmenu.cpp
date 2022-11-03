@@ -22,6 +22,8 @@
 #include "qgsapplication.h"
 #include "qgsgpsmarker.h"
 #include "qgsappgpsdigitizing.h"
+#include "qgsproject.h"
+#include "qgsprojectgpssettings.h"
 
 #include <QRadioButton>
 #include <QButtonGroup>
@@ -60,8 +62,6 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
 {
   bool showLocationMarker = true;
   bool showBearingLine = false;
-  bool autoAddVertices = false;
-  bool autoCreateFeature = false;
   QgsGpsCanvasBridge::MapCenteringMode mapCenteringMode = QgsGpsCanvasBridge::MapCenteringMode::WhenLeavingExtent;
   bool rotateMap = false;
 
@@ -70,8 +70,6 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
     showLocationMarker = QgsGpsMarker::settingShowLocationMarker.value();
     showBearingLine = QgsGpsCanvasBridge::settingShowBearingLine.value();
     mapCenteringMode = QgsGpsCanvasBridge::settingMapCenteringMode.value();
-    autoAddVertices = QgsAppGpsDigitizing::settingAutoAddVertices.value();
-    autoCreateFeature = QgsAppGpsDigitizing::settingAutoCreateFeatures.value();
     rotateMap = QgsGpsCanvasBridge::settingRotateMap.value();
   }
   else
@@ -80,8 +78,6 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
     QgsSettings settings;
     showLocationMarker = settings.value( QStringLiteral( "showMarker" ), "true", QgsSettings::Gps ).toBool();
     showBearingLine = settings.value( QStringLiteral( "showBearingLine" ), false, QgsSettings::Gps ).toBool();
-    autoAddVertices = settings.value( QStringLiteral( "autoAddVertices" ), "false", QgsSettings::Gps ).toBool();
-    autoCreateFeature = settings.value( QStringLiteral( "autoCommit" ), "false", QgsSettings::Gps ).toBool();
     rotateMap = settings.value( QStringLiteral( "rotateMap" ), false, QgsSettings::Gps ).toBool();
 
     const QString panMode = settings.value( QStringLiteral( "panMode" ), "recenterWhenNeeded", QgsSettings::Gps ).toString();
@@ -186,23 +182,17 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
 
   mAutoAddTrackPointAction = new QAction( tr( "Automatically Add Track Points" ), this );
   mAutoAddTrackPointAction->setCheckable( true );
-  mAutoAddTrackPointAction->setChecked( autoAddVertices );
-  connect( mAutoAddTrackPointAction, &QAction::toggled, this, [ = ]( bool checked )
-  {
-    emit autoAddTrackPointsChanged( checked );
-    QgsAppGpsDigitizing::settingAutoAddVertices.setValue( checked );
-  } );
+  mAutoAddTrackPointAction->setChecked( QgsProject::instance()->gpsSettings()->automaticallyAddTrackPoints() );
+  connect( mAutoAddTrackPointAction, &QAction::toggled, QgsProject::instance()->gpsSettings(), &QgsProjectGpsSettings::setAutomaticallyAddTrackPoints );
+  connect( QgsProject::instance()->gpsSettings(), &QgsProjectGpsSettings::automaticallyAddTrackPointsChanged, mAutoAddTrackPointAction, &QAction::setChecked );
 
   addAction( mAutoAddTrackPointAction );
 
   mAutoSaveAddedFeatureAction = new QAction( tr( "Automatically Save Added Feature" ), this );
   mAutoSaveAddedFeatureAction->setCheckable( true );
-  mAutoSaveAddedFeatureAction->setChecked( autoCreateFeature );
-  connect( mAutoAddTrackPointAction, &QAction::toggled, this, [ = ]( bool checked )
-  {
-    emit autoAddFeatureChanged( checked );
-    QgsAppGpsDigitizing::settingAutoCreateFeatures.setValue( checked );
-  } );
+  mAutoSaveAddedFeatureAction->setChecked( QgsProject::instance()->gpsSettings()->automaticallyCommitFeatures() );
+  connect( mAutoSaveAddedFeatureAction, &QAction::toggled, QgsProject::instance()->gpsSettings(), &QgsProjectGpsSettings::setAutomaticallyCommitFeatures );
+  connect( QgsProject::instance()->gpsSettings(), &QgsProjectGpsSettings::automaticallyCommitFeaturesChanged, mAutoSaveAddedFeatureAction, &QAction::setChecked );
 
   addAction( mAutoSaveAddedFeatureAction );
 
@@ -286,16 +276,6 @@ QgsGpsCanvasBridge::MapCenteringMode QgsAppGpsSettingsMenu::mapCenteringMode() c
   {
     return QgsGpsCanvasBridge::MapCenteringMode::Never;
   }
-}
-
-bool QgsAppGpsSettingsMenu::autoAddTrackPoints() const
-{
-  return mAutoAddTrackPointAction->isChecked();
-}
-
-bool QgsAppGpsSettingsMenu::autoAddFeature() const
-{
-  return mAutoSaveAddedFeatureAction->isChecked();
 }
 
 void QgsAppGpsSettingsMenu::setCurrentTimeStampField( const QString &fieldName )

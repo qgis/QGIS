@@ -56,8 +56,6 @@ class APP_EXPORT QgsAppGpsSettingsMenu : public QMenu
     bool bearingLineVisible() const;
     bool rotateMap() const;
     QgsGpsCanvasBridge::MapCenteringMode mapCenteringMode() const;
-    bool autoAddTrackPoints() const;
-    bool autoAddFeature() const;
 
   public slots:
 
@@ -69,8 +67,6 @@ class APP_EXPORT QgsAppGpsSettingsMenu : public QMenu
     void bearingLineToggled( bool visible );
     void rotateMapToggled( bool enabled );
     void mapCenteringModeChanged( QgsGpsCanvasBridge::MapCenteringMode mode );
-    void autoAddTrackPointsChanged( bool enabled );
-    void autoAddFeatureChanged( bool enabled );
     void timeStampDestinationChanged( const QString &fieldName );
     void enableNmeaLog( bool enabled );
     void nmeaLogFileChanged( const QString &filename );

@@ -23,6 +23,7 @@
 #include "qgisapp.h"
 #include "qgsappgpssettingsmenu.h"
 #include "qgsapplication.h"
+#include "qgsprojectgpssettings.h"
 
 #include <QLabel>
 #include <QToolButton>
@@ -158,6 +159,9 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
 
   connect( QgisApp::instance(), &QgisApp::activeLayerChanged,
            this, &QgsGpsToolBar::updateCloseFeatureButton );
+
+  connect( QgsProject::instance()->gpsSettings(), &QgsProjectGpsSettings::automaticallyAddTrackPointsChanged, this, [ = ]( bool enabled ) { setAddVertexButtonEnabled( !enabled ); } );
+  setAddVertexButtonEnabled( !QgsProject::instance()->gpsSettings()->automaticallyAddTrackPoints() );
 }
 
 void QgsGpsToolBar::setAddVertexButtonEnabled( bool enabled )
