@@ -183,7 +183,14 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
   mAutoAddTrackVerticesAction = new QAction( tr( "Automatically Add Track Vertices" ), this );
   mAutoAddTrackVerticesAction->setCheckable( true );
   mAutoAddTrackVerticesAction->setChecked( QgsProject::instance()->gpsSettings()->automaticallyAddTrackVertices() );
-  connect( mAutoAddTrackVerticesAction, &QAction::toggled, QgsProject::instance()->gpsSettings(), &QgsProjectGpsSettings::setAutomaticallyAddTrackVertices );
+  connect( mAutoAddTrackVerticesAction, &QAction::toggled, this, [ = ]( bool checked )
+  {
+    if ( checked != QgsProject::instance()->gpsSettings()->automaticallyAddTrackVertices() )
+    {
+      QgsProject::instance()->gpsSettings()->setAutomaticallyAddTrackVertices( checked );
+      QgsProject::instance()->setDirty();
+    }
+  } );
   connect( QgsProject::instance()->gpsSettings(), &QgsProjectGpsSettings::automaticallyAddTrackVerticesChanged, mAutoAddTrackVerticesAction, &QAction::setChecked );
 
   addAction( mAutoAddTrackVerticesAction );
@@ -191,7 +198,14 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
   mAutoSaveAddedFeatureAction = new QAction( tr( "Automatically Save Added Feature" ), this );
   mAutoSaveAddedFeatureAction->setCheckable( true );
   mAutoSaveAddedFeatureAction->setChecked( QgsProject::instance()->gpsSettings()->automaticallyCommitFeatures() );
-  connect( mAutoSaveAddedFeatureAction, &QAction::toggled, QgsProject::instance()->gpsSettings(), &QgsProjectGpsSettings::setAutomaticallyCommitFeatures );
+  connect( mAutoSaveAddedFeatureAction, &QAction::toggled, this, [ = ]( bool checked )
+  {
+    if ( checked != QgsProject::instance()->gpsSettings()->automaticallyCommitFeatures() )
+    {
+      QgsProject::instance()->gpsSettings()->setAutomaticallyCommitFeatures( checked );
+      QgsProject::instance()->setDirty();
+    }
+  } );
   connect( QgsProject::instance()->gpsSettings(), &QgsProjectGpsSettings::automaticallyCommitFeaturesChanged, mAutoSaveAddedFeatureAction, &QAction::setChecked );
 
   addAction( mAutoSaveAddedFeatureAction );
