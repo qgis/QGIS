@@ -48,20 +48,20 @@ class TestQgsProjectGpsSettings(unittest.TestCase):
     def testSettings(self):
         p = QgsProjectGpsSettings()
         self.assertFalse(p.automaticallyCommitFeatures())
-        self.assertFalse(p.automaticallyAddTrackPoints())
+        self.assertFalse(p.automaticallyAddTrackVertices())
 
-        spy_add_track = QSignalSpy(p.automaticallyAddTrackPointsChanged)
+        spy_add_track = QSignalSpy(p.automaticallyAddTrackVerticesChanged)
         spy_auto_commit = QSignalSpy(p.automaticallyCommitFeaturesChanged)
 
-        p.setAutomaticallyAddTrackPoints(True)
+        p.setAutomaticallyAddTrackVertices(True)
         self.assertEqual(len(spy_add_track), 1)
         self.assertTrue(spy_add_track[-1][0])
 
-        p.setAutomaticallyAddTrackPoints(True)
+        p.setAutomaticallyAddTrackVertices(True)
         self.assertEqual(len(spy_add_track), 1)
 
-        self.assertTrue(p.automaticallyAddTrackPoints())
-        p.setAutomaticallyAddTrackPoints(False)
+        self.assertTrue(p.automaticallyAddTrackVertices())
+        p.setAutomaticallyAddTrackVertices(False)
         self.assertEqual(len(spy_add_track), 2)
         self.assertFalse(spy_add_track[-1][0])
 
@@ -83,15 +83,15 @@ class TestQgsProjectGpsSettings(unittest.TestCase):
         """
         p = QgsProjectGpsSettings()
         self.assertFalse(p.automaticallyCommitFeatures())
-        self.assertFalse(p.automaticallyAddTrackPoints())
+        self.assertFalse(p.automaticallyAddTrackVertices())
 
         p.setAutomaticallyCommitFeatures(True)
-        p.setAutomaticallyAddTrackPoints(True)
-        spy_add_track = QSignalSpy(p.automaticallyAddTrackPointsChanged)
+        p.setAutomaticallyAddTrackVertices(True)
+        spy_add_track = QSignalSpy(p.automaticallyAddTrackVerticesChanged)
         spy_auto_commit = QSignalSpy(p.automaticallyCommitFeaturesChanged)
 
         p.reset()
-        self.assertFalse(p.automaticallyAddTrackPoints())
+        self.assertFalse(p.automaticallyAddTrackVertices())
         self.assertFalse(p.automaticallyCommitFeatures())
 
         self.assertEqual(len(spy_add_track), 1)
@@ -103,19 +103,19 @@ class TestQgsProjectGpsSettings(unittest.TestCase):
         p = QgsProjectGpsSettings()
 
         p.setAutomaticallyCommitFeatures(True)
-        p.setAutomaticallyAddTrackPoints(True)
+        p.setAutomaticallyAddTrackVertices(True)
 
         doc = QDomDocument("testdoc")
         elem = p.writeXml(doc, QgsReadWriteContext())
 
         p2 = QgsProjectGpsSettings()
-        spy = QSignalSpy(p2.automaticallyAddTrackPointsChanged)
+        spy = QSignalSpy(p2.automaticallyAddTrackVerticesChanged)
         spy2 = QSignalSpy(p2.automaticallyCommitFeaturesChanged)
         self.assertTrue(p2.readXml(elem, QgsReadWriteContext()))
         self.assertEqual(len(spy), 1)
         self.assertEqual(len(spy2), 1)
         self.assertTrue(p.automaticallyCommitFeatures())
-        self.assertTrue(p.automaticallyAddTrackPoints())
+        self.assertTrue(p.automaticallyAddTrackVertices())
 
 
 if __name__ == '__main__':

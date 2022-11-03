@@ -24,7 +24,6 @@ with a GPS device.
   public:
 
 
-
     QgsProjectGpsSettings( QObject *parent = 0 );
 %Docstring
 Constructor for QgsProjectGpsSettings with the specified ``parent`` object.
@@ -51,14 +50,14 @@ Returns a DOM element representing the settings.
 .. seealso:: :py:func:`readXml`
 %End
 
-    bool automaticallyAddTrackPoints() const;
+    bool automaticallyAddTrackVertices() const;
 %Docstring
-Returns ``True`` if track points should be automatically created whenever
+Returns ``True`` if track vertices should be automatically created whenever
 new locations are received from the GPS device.
 
-.. seealso:: :py:func:`setAutomaticallyAddTrackPoints`
+.. seealso:: :py:func:`setAutomaticallyAddTrackVertices`
 
-.. seealso:: :py:func:`automaticallyAddTrackPointsChanged`
+.. seealso:: :py:func:`automaticallyAddTrackVerticesChanged`
 %End
 
     bool automaticallyCommitFeatures() const;
@@ -74,14 +73,14 @@ layer edit buffer).
 
   public slots:
 
-    void setAutomaticallyAddTrackPoints( bool enabled );
+    void setAutomaticallyAddTrackVertices( bool enabled );
 %Docstring
-Sets whether track points should be automatically created whenever
+Sets whether track vertices should be automatically created whenever
 new locations are received from the GPS device.
 
-.. seealso:: :py:func:`automaticallyAddTrackPoints`
+.. seealso:: :py:func:`automaticallyAddTrackVertices`
 
-.. seealso:: :py:func:`automaticallyAddTrackPointsChanged`
+.. seealso:: :py:func:`automaticallyAddTrackVerticesChanged`
 %End
 
     void setAutomaticallyCommitFeatures( bool enabled );
@@ -97,14 +96,14 @@ layer edit buffer).
 
   signals:
 
-    void automaticallyAddTrackPointsChanged( bool enabled );
+    void automaticallyAddTrackVerticesChanged( bool enabled );
 %Docstring
-Emitted whenever the :py:func:`~QgsProjectGpsSettings.automaticallyAddTrackPoints` setting
+Emitted whenever the :py:func:`~QgsProjectGpsSettings.automaticallyAddTrackVertices` setting
 is changed.
 
-.. seealso:: :py:func:`automaticallyAddTrackPoints`
+.. seealso:: :py:func:`automaticallyAddTrackVertices`
 
-.. seealso:: :py:func:`setAutomaticallyAddTrackPoints`
+.. seealso:: :py:func:`setAutomaticallyAddTrackVertices`
 %End
 
     void automaticallyCommitFeaturesChanged( bool enabled );

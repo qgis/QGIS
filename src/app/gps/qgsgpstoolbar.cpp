@@ -160,8 +160,8 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
   connect( QgisApp::instance(), &QgisApp::activeLayerChanged,
            this, &QgsGpsToolBar::updateCloseFeatureButton );
 
-  connect( QgsProject::instance()->gpsSettings(), &QgsProjectGpsSettings::automaticallyAddTrackPointsChanged, this, [ = ]( bool enabled ) { setAddVertexButtonEnabled( !enabled ); } );
-  setAddVertexButtonEnabled( !QgsProject::instance()->gpsSettings()->automaticallyAddTrackPoints() );
+  connect( QgsProject::instance()->gpsSettings(), &QgsProjectGpsSettings::automaticallyAddTrackVerticesChanged, this, [ = ]( bool enabled ) { setAddVertexButtonEnabled( !enabled ); } );
+  setAddVertexButtonEnabled( !QgsProject::instance()->gpsSettings()->automaticallyAddTrackVertices() );
 }
 
 void QgsGpsToolBar::setAddVertexButtonEnabled( bool enabled )

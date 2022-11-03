@@ -499,7 +499,7 @@ void QgsAppGpsDigitizing::gpsStateChanged( const QgsGpsInformation &info )
     mLastNmeaPosition = newNmeaPosition;
     mLastElevation = newAlt;
 
-    if ( QgsProject::instance()->gpsSettings()->automaticallyAddTrackPoints() )
+    if ( QgsProject::instance()->gpsSettings()->automaticallyAddTrackVertices() )
     {
       addVertex();
     }

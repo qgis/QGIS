@@ -180,13 +180,13 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
 
   addSeparator();
 
-  mAutoAddTrackPointAction = new QAction( tr( "Automatically Add Track Points" ), this );
-  mAutoAddTrackPointAction->setCheckable( true );
-  mAutoAddTrackPointAction->setChecked( QgsProject::instance()->gpsSettings()->automaticallyAddTrackPoints() );
-  connect( mAutoAddTrackPointAction, &QAction::toggled, QgsProject::instance()->gpsSettings(), &QgsProjectGpsSettings::setAutomaticallyAddTrackPoints );
-  connect( QgsProject::instance()->gpsSettings(), &QgsProjectGpsSettings::automaticallyAddTrackPointsChanged, mAutoAddTrackPointAction, &QAction::setChecked );
+  mAutoAddTrackVerticesAction = new QAction( tr( "Automatically Add Track Vertices" ), this );
+  mAutoAddTrackVerticesAction->setCheckable( true );
+  mAutoAddTrackVerticesAction->setChecked( QgsProject::instance()->gpsSettings()->automaticallyAddTrackVertices() );
+  connect( mAutoAddTrackVerticesAction, &QAction::toggled, QgsProject::instance()->gpsSettings(), &QgsProjectGpsSettings::setAutomaticallyAddTrackVertices );
+  connect( QgsProject::instance()->gpsSettings(), &QgsProjectGpsSettings::automaticallyAddTrackVerticesChanged, mAutoAddTrackVerticesAction, &QAction::setChecked );
 
-  addAction( mAutoAddTrackPointAction );
+  addAction( mAutoAddTrackVerticesAction );
 
   mAutoSaveAddedFeatureAction = new QAction( tr( "Automatically Save Added Feature" ), this );
   mAutoSaveAddedFeatureAction->setCheckable( true );
