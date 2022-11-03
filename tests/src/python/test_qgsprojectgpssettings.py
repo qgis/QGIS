@@ -11,6 +11,7 @@ __date__ = '03/11/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
 import qgis  # NOQA
+import os
 
 from qgis.core import (QgsProjectGpsSettings,
                        QgsReadWriteContext,
@@ -20,7 +21,9 @@ from qgis.core import (QgsProjectGpsSettings,
                        QgsLocalDefaultSettings,
                        QgsUnitTypes,
                        QgsCoordinateReferenceSystem,
-                       Qgis)
+                       Qgis,
+                       QgsVectorLayer,
+                       QgsProject)
 
 from qgis.PyQt.QtCore import QCoreApplication
 
@@ -77,6 +80,26 @@ class TestQgsProjectGpsSettings(unittest.TestCase):
         self.assertEqual(len(spy_auto_commit), 2)
         self.assertFalse(spy_auto_commit[-1][0])
 
+        layer1 = QgsVectorLayer(os.path.join(unitTestDataPath(), 'lines.shp'), 'layer1')
+        self.assertTrue(layer1.isValid())
+        layer2 = QgsVectorLayer(os.path.join(unitTestDataPath(), 'points.shp'), 'layer2')
+        self.assertTrue(layer2.isValid())
+
+        self.assertFalse(p.destinationLayer())
+        spy = QSignalSpy(p.destinationLayerChanged)
+        p.setDestinationLayer(layer1)
+        self.assertEqual(len(spy), 1)
+        self.assertEqual(spy[0][0], layer1)
+        self.assertEqual(p.destinationLayer(), layer1)
+
+        p.setDestinationLayer(layer1)
+        self.assertEqual(len(spy), 1)
+
+        p.setDestinationLayer(layer2)
+        self.assertEqual(len(spy), 2)
+        self.assertEqual(spy[1][0], layer2)
+        self.assertEqual(p.destinationLayer(), layer2)
+
     def testReset(self):
         """
         Test that resetting inherits local default settings
@@ -87,17 +110,25 @@ class TestQgsProjectGpsSettings(unittest.TestCase):
 
         p.setAutomaticallyCommitFeatures(True)
         p.setAutomaticallyAddTrackVertices(True)
+
+        layer1 = QgsVectorLayer(os.path.join(unitTestDataPath(), 'lines.shp'), 'layer1')
+        self.assertTrue(layer1.isValid())
+        p.setDestinationLayer(layer1)
+
         spy_add_track = QSignalSpy(p.automaticallyAddTrackVerticesChanged)
         spy_auto_commit = QSignalSpy(p.automaticallyCommitFeaturesChanged)
+        spy_dest_layer_changed = QSignalSpy(p.destinationLayerChanged)
 
         p.reset()
         self.assertFalse(p.automaticallyAddTrackVertices())
         self.assertFalse(p.automaticallyCommitFeatures())
+        self.assertFalse(p.destinationLayer())
 
         self.assertEqual(len(spy_add_track), 1)
         self.assertFalse(spy_auto_commit[-1][0])
         self.assertEqual(len(spy_auto_commit), 1)
         self.assertFalse(spy_auto_commit[-1][0])
+        self.assertEqual(len(spy_dest_layer_changed), 1)
 
     def testReadWrite(self):
         p = QgsProjectGpsSettings()
@@ -105,17 +136,33 @@ class TestQgsProjectGpsSettings(unittest.TestCase):
         p.setAutomaticallyCommitFeatures(True)
         p.setAutomaticallyAddTrackVertices(True)
 
+        layer1 = QgsVectorLayer(os.path.join(unitTestDataPath(), 'lines.shp'), 'layer1')
+        self.assertTrue(layer1.isValid())
+        p.setDestinationLayer(layer1)
+
+        project = QgsProject()
+        project.addMapLayer(layer1)
+
         doc = QDomDocument("testdoc")
         elem = p.writeXml(doc, QgsReadWriteContext())
 
         p2 = QgsProjectGpsSettings()
         spy = QSignalSpy(p2.automaticallyAddTrackVerticesChanged)
         spy2 = QSignalSpy(p2.automaticallyCommitFeaturesChanged)
+        spy_dest_layer_changed = QSignalSpy(p2.destinationLayerChanged)
+
         self.assertTrue(p2.readXml(elem, QgsReadWriteContext()))
         self.assertEqual(len(spy), 1)
         self.assertEqual(len(spy2), 1)
+        self.assertEqual(len(spy_dest_layer_changed), 1)
         self.assertTrue(p.automaticallyCommitFeatures())
         self.assertTrue(p.automaticallyAddTrackVertices())
+        # needs to be resolved first
+        self.assertFalse(p2.destinationLayer())
+
+        p2.resolveReferences(project)
+        self.assertEqual(len(spy_dest_layer_changed), 2)
+        self.assertEqual(p2.destinationLayer(), layer1)
 
 
 if __name__ == '__main__':

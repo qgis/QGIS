@@ -22,6 +22,13 @@ QgsProjectGpsSettings::QgsProjectGpsSettings( QObject *parent )
 
 }
 
+void QgsProjectGpsSettings::resolveReferences( const QgsProject *project )
+{
+  mDestinationLayer.resolveWeakly( project );
+
+  emit destinationLayerChanged( mDestinationLayer.get() );
+}
+
 QgsProjectGpsSettings::~QgsProjectGpsSettings() = default;
 
 void QgsProjectGpsSettings::reset()
@@ -29,8 +36,11 @@ void QgsProjectGpsSettings::reset()
   mAutoAddTrackVertices = false;
   mAutoCommitFeatures = false;
 
+  mDestinationLayer.setLayer( nullptr );
+
   emit automaticallyAddTrackVerticesChanged( false );
   emit automaticallyCommitFeaturesChanged( false );
+  emit destinationLayerChanged( nullptr );
 }
 
 bool QgsProjectGpsSettings::readXml( const QDomElement &element, const QgsReadWriteContext & )
@@ -38,8 +48,16 @@ bool QgsProjectGpsSettings::readXml( const QDomElement &element, const QgsReadWr
   mAutoAddTrackVertices = element.attribute( QStringLiteral( "autoAddTrackVertices" ), "0" ).toInt();
   mAutoCommitFeatures = element.attribute( QStringLiteral( "autoCommitFeatures" ), "0" ).toInt();
 
+  const QString layerId = element.attribute( QStringLiteral( "destinationLayer" ) );
+  const QString layerName = element.attribute( QStringLiteral( "destinationLayerName" ) );
+  const QString layerSource = element.attribute( QStringLiteral( "destinationLayerSource" ) );
+  const QString layerProvider = element.attribute( QStringLiteral( "destinationLayerProvider" ) );
+
+  mDestinationLayer = QgsVectorLayerRef( layerId, layerName, layerSource, layerProvider );
+
   emit automaticallyAddTrackVerticesChanged( mAutoAddTrackVertices );
   emit automaticallyCommitFeaturesChanged( mAutoCommitFeatures );
+  emit destinationLayerChanged( nullptr ); // wont' be set until resolve is called
   return true;
 }
 
@@ -49,6 +67,18 @@ QDomElement QgsProjectGpsSettings::writeXml( QDomDocument &doc, const QgsReadWri
 
   element.setAttribute( QStringLiteral( "autoAddTrackVertices" ),  mAutoAddTrackVertices ? 1 : 0 );
   element.setAttribute( QStringLiteral( "autoCommitFeatures" ),  mAutoCommitFeatures ? 1 : 0 );
+
+  if ( mDestinationLayer )
+  {
+    element.setAttribute( QStringLiteral( "destinationLayer" ), mDestinationLayer.layerId );
+    element.setAttribute( QStringLiteral( "destinationLayerName" ), mDestinationLayer.name );
+    element.setAttribute( QStringLiteral( "destinationLayerSource" ), mDestinationLayer.source );
+    element.setAttribute( QStringLiteral( "destinationLayerProvider" ), mDestinationLayer.provider );
+  }
+  else
+  {
+    element.setAttribute( QStringLiteral( "destinationLayer" ), QString() );
+  }
 
   return element;
 }
@@ -61,6 +91,11 @@ bool QgsProjectGpsSettings::automaticallyAddTrackVertices() const
 bool QgsProjectGpsSettings::automaticallyCommitFeatures() const
 {
   return mAutoCommitFeatures;
+}
+
+QgsVectorLayer *QgsProjectGpsSettings::destinationLayer() const
+{
+  return mDestinationLayer.get();
 }
 
 void QgsProjectGpsSettings::setAutomaticallyAddTrackVertices( bool enabled )
@@ -79,4 +114,15 @@ void QgsProjectGpsSettings::setAutomaticallyCommitFeatures( bool enabled )
 
   mAutoCommitFeatures = enabled;
   emit automaticallyCommitFeaturesChanged( enabled );
+}
+
+void QgsProjectGpsSettings::setDestinationLayer( QgsVectorLayer *layer )
+{
+  if ( layer == mDestinationLayer.get() )
+  {
+    return;
+  }
+
+  mDestinationLayer.setLayer( layer );
+  emit destinationLayerChanged( layer );
 }

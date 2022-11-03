@@ -18,6 +18,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgis.h"
+#include "qgsvectorlayerref.h"
 
 #include <QObject>
 
@@ -40,6 +41,7 @@ class CORE_EXPORT QgsProjectGpsSettings : public QObject
 
     Q_PROPERTY( bool automaticallyAddTrackVertices READ automaticallyAddTrackVertices WRITE setAutomaticallyAddTrackVertices NOTIFY automaticallyAddTrackVerticesChanged )
     Q_PROPERTY( bool automaticallyCommitFeatures READ automaticallyCommitFeatures WRITE setAutomaticallyCommitFeatures NOTIFY automaticallyCommitFeaturesChanged )
+    Q_PROPERTY( QgsVectorLayer *destinationLayer READ destinationLayer WRITE setDestinationLayer NOTIFY destinationLayerChanged )
 
     /**
      * Constructor for QgsProjectGpsSettings with the specified \a parent object.
@@ -47,6 +49,11 @@ class CORE_EXPORT QgsProjectGpsSettings : public QObject
     QgsProjectGpsSettings( QObject *parent = nullptr );
 
     ~QgsProjectGpsSettings() override;
+
+    /**
+     * Resolves reference to layers from stored layer ID (if it has not been resolved already)
+     */
+    void resolveReferences( const QgsProject *project );
 
     /**
      * Resets the settings to a default state.
@@ -84,6 +91,14 @@ class CORE_EXPORT QgsProjectGpsSettings : public QObject
      */
     bool automaticallyCommitFeatures() const;
 
+    /**
+     * Returns the destination layer to be used for storing features digitized from GPS.
+     *
+     * \see setDestinationLayer()
+     * \see destinationLayerChanged()
+     */
+    QgsVectorLayer *destinationLayer() const;
+
   public slots:
 
     /**
@@ -105,6 +120,14 @@ class CORE_EXPORT QgsProjectGpsSettings : public QObject
      */
     void setAutomaticallyCommitFeatures( bool enabled );
 
+    /**
+     * Sets the destination \a layer to be used for storing features digitized from GPS.
+     *
+     * \see destinationLayer()
+     * \see destinationLayerChanged()
+     */
+    void setDestinationLayer( QgsVectorLayer *layer );
+
   signals:
 
     /**
@@ -125,10 +148,21 @@ class CORE_EXPORT QgsProjectGpsSettings : public QObject
      */
     void automaticallyCommitFeaturesChanged( bool enabled );
 
+    /**
+     * Emitted whenever the destination layer for features digitized from GPS
+     * is changed.
+     *
+     * \see destinationLayer()
+     * \see setDestinationLayer()
+     */
+    void destinationLayerChanged( QgsVectorLayer *layer );
+
   private:
 
     bool mAutoAddTrackVertices = false;
     bool mAutoCommitFeatures = false;
+
+    QgsVectorLayerRef mDestinationLayer;
 
 };
 

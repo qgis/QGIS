@@ -31,6 +31,11 @@ Constructor for QgsProjectGpsSettings with the specified ``parent`` object.
 
     ~QgsProjectGpsSettings();
 
+    void resolveReferences( const QgsProject *project );
+%Docstring
+Resolves reference to layers from stored layer ID (if it has not been resolved already)
+%End
+
     void reset();
 %Docstring
 Resets the settings to a default state.
@@ -71,6 +76,15 @@ layer edit buffer).
 .. seealso:: :py:func:`automaticallyCommitFeaturesChanged`
 %End
 
+    QgsVectorLayer *destinationLayer() const;
+%Docstring
+Returns the destination layer to be used for storing features digitized from GPS.
+
+.. seealso:: :py:func:`setDestinationLayer`
+
+.. seealso:: :py:func:`destinationLayerChanged`
+%End
+
   public slots:
 
     void setAutomaticallyAddTrackVertices( bool enabled );
@@ -94,6 +108,15 @@ layer edit buffer).
 .. seealso:: :py:func:`automaticallyCommitFeaturesChanged`
 %End
 
+    void setDestinationLayer( QgsVectorLayer *layer );
+%Docstring
+Sets the destination ``layer`` to be used for storing features digitized from GPS.
+
+.. seealso:: :py:func:`destinationLayer`
+
+.. seealso:: :py:func:`destinationLayerChanged`
+%End
+
   signals:
 
     void automaticallyAddTrackVerticesChanged( bool enabled );
@@ -114,6 +137,16 @@ is changed.
 .. seealso:: :py:func:`automaticallyCommitFeatures`
 
 .. seealso:: :py:func:`setAutomaticallyCommitFeatures`
+%End
+
+    void destinationLayerChanged( QgsVectorLayer *layer );
+%Docstring
+Emitted whenever the destination layer for features digitized from GPS
+is changed.
+
+.. seealso:: :py:func:`destinationLayer`
+
+.. seealso:: :py:func:`setDestinationLayer`
 %End
 
 };
