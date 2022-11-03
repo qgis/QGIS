@@ -548,6 +548,11 @@ namespace QgsWms
     const QgsWmsParameter pFormatOpts( QgsWmsParameter::FORMAT_OPTIONS,
                                        QVariant::String );
     save( pFormatOpts );
+
+    const QgsWmsParameter pAddLayerGroups( QgsWmsParameter::ADDLAYERGROUPS,
+                                           QVariant::Bool,
+                                           QVariant( false ) );
+    save( pAddLayerGroups );
   }
 
   QgsWmsParameters::QgsWmsParameters( const QgsServerParameters &parameters )
@@ -1026,6 +1031,11 @@ namespace QgsWms
   bool QgsWmsParameters::tiledAsBool() const
   {
     return mWmsParameters.value( QgsWmsParameter::TILED ).toBool();
+  }
+
+  bool QgsWmsParameters::addLayerGroups() const
+  {
+    return mWmsParameters.value( QgsWmsParameter::ADDLAYERGROUPS ).toBool();
   }
 
   QString QgsWmsParameters::showFeatureCount() const

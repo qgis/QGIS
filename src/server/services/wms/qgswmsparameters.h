@@ -186,7 +186,8 @@ namespace QgsWms
         FORMAT_OPTIONS,
         SRCWIDTH,
         SRCHEIGHT,
-        TILED
+        TILED,
+        ADDLAYERGROUPS
       };
       Q_ENUM( Name )
 
@@ -654,6 +655,11 @@ namespace QgsWms
        * \since QGIS 3.10
        */
       bool tiledAsBool() const;
+
+      /**
+       * Returns true if layer groups shall be added to GetLegendGraphic results
+       */
+      bool addLayerGroups() const;
 
       /**
        * Returns infoFormat. If the INFO_FORMAT parameter is not used, then the
