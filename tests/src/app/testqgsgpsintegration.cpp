@@ -304,16 +304,16 @@ void TestQgsGpsIntegration::testTimestampWrite()
   QCOMPARE( _testWrite( tempLayerString, gpsDigitizing, QStringLiteral( "stringf" ),  Qt::TimeSpec::TimeZone ).toString( Qt::DateFormat::ISODate ),  tzTime.toString( Qt::DateFormat::ISODate ) );
 
   // Test write on line string field
-  gpsDigitizing.mCaptureList.push_back( QgsPoint( 1, 2 ) );
-  gpsDigitizing.mCaptureList.push_back( QgsPoint( 3, 4 ) );
+  gpsDigitizing.mCaptureListWgs84.push_back( QgsPoint( 1, 2 ) );
+  gpsDigitizing.mCaptureListWgs84.push_back( QgsPoint( 3, 4 ) );
   QCOMPARE( _testWrite( tempLayerLineString, gpsDigitizing, QStringLiteral( "stringf" ),  Qt::TimeSpec::UTC ).toString( Qt::DateFormat::ISODate ), dateTime.toString( Qt::DateFormat::ISODate ) );
 
 
-  gpsDigitizing.mCaptureList.push_back( QgsPoint( 1, 2 ) );
-  gpsDigitizing.mCaptureList.push_back( QgsPoint( 3, 4 ) );
+  gpsDigitizing.mCaptureListWgs84.push_back( QgsPoint( 1, 2 ) );
+  gpsDigitizing.mCaptureListWgs84.push_back( QgsPoint( 3, 4 ) );
   QCOMPARE( _testWrite( tempLayerLineString, gpsDigitizing, QStringLiteral( "stringf" ),  Qt::TimeSpec::LocalTime ).toString( Qt::DateFormat::ISODate ), localTime.toString( Qt::DateFormat::ISODate ) );
-  gpsDigitizing.mCaptureList.push_back( QgsPoint( 1, 2 ) );
-  gpsDigitizing.mCaptureList.push_back( QgsPoint( 3, 4 ) );
+  gpsDigitizing.mCaptureListWgs84.push_back( QgsPoint( 1, 2 ) );
+  gpsDigitizing.mCaptureListWgs84.push_back( QgsPoint( 3, 4 ) );
   QCOMPARE( _testWrite( tempLayerLineString, gpsDigitizing, QStringLiteral( "stringf" ),  Qt::TimeSpec::TimeZone ).toString( Qt::DateFormat::ISODate ),  tzTime.toString( Qt::DateFormat::ISODate ) );
 
   // Write on GPKG
