@@ -86,6 +86,7 @@ class QgsAttributeEditorContainer;
 class QgsPropertyCollection;
 class QgsMapViewsManager;
 class QgsProjectElevationProperties;
+class QgsProjectGpsSettings;
 
 /**
  * \ingroup core
@@ -862,7 +863,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsProjectElevationProperties *elevationProperties();
 
     /**
-     * Returns the project's display settings, which settings and properties relating
+     * Returns the project's display settings, which contains settings and properties relating
      * to how a QgsProject should display values such as map coordinates and bearings.
      * \note not available in Python bindings
      * \since QGIS 3.12
@@ -870,11 +871,26 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     const QgsProjectDisplaySettings *displaySettings() const SIP_SKIP;
 
     /**
-     * Returns the project's display settings, which settings and properties relating
+     * Returns the project's display settings, which contains settings and properties relating
      * to how a QgsProject should display values such as map coordinates and bearings.
      * \since QGIS 3.12
      */
     QgsProjectDisplaySettings *displaySettings();
+
+    /**
+     * Returns the project's GPS settings, which contains settings and properties relating
+     * to how a QgsProject should interact with a GPS device.
+     * \note not available in Python bindings
+     * \since QGIS 3.30
+     */
+    const QgsProjectGpsSettings *gpsSettings() const SIP_SKIP;
+
+    /**
+     * Returns the project's GPS settings, which contains settings and properties relating
+     * to how a QgsProject should interact with a GPS device.
+     * \since QGIS 3.30
+     */
+    QgsProjectGpsSettings *gpsSettings();
 
     /**
      * Returns pointer to the root (invisible) node of the project's layer tree
@@ -2247,6 +2263,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsProjectElevationProperties *mElevationProperties = nullptr;
 
     QgsProjectDisplaySettings *mDisplaySettings = nullptr;
+
+    QgsProjectGpsSettings *mGpsSettings = nullptr;
 
     QgsLayerTree *mRootGroup = nullptr;
 

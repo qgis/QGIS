@@ -821,10 +821,19 @@ Returns the project's elevation properties, which contains the project's elevati
 
     QgsProjectDisplaySettings *displaySettings();
 %Docstring
-Returns the project's display settings, which settings and properties relating
+Returns the project's display settings, which contains settings and properties relating
 to how a QgsProject should display values such as map coordinates and bearings.
 
 .. versionadded:: 3.12
+%End
+
+
+    QgsProjectGpsSettings *gpsSettings();
+%Docstring
+Returns the project's GPS settings, which contains settings and properties relating
+to how a QgsProject should interact with a GPS device.
+
+.. versionadded:: 3.30
 %End
 
     QgsLayerTree *layerTreeRoot() const;
