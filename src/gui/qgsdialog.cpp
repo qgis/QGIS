@@ -28,7 +28,7 @@ QgsDialog::QgsDialog( QWidget *parent, Qt::WindowFlags fl,
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
 
   // layout
-  QLayout *layout = nullptr;
+  QBoxLayout *layout = nullptr;
   if ( orientation == Qt::Horizontal )
     layout = new QVBoxLayout();
   else
