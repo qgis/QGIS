@@ -210,9 +210,9 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
   mFieldProxyModel->sourceFieldModel()->setAllowEmptyFieldName( true );
   mFieldProxyModel->setFilters( QgsFieldProxyModel::Filter::String | QgsFieldProxyModel::Filter::DateTime );
 
-  mTimeStampFieldMenu = new QMenu( tr( "Time Stamp Destination" ), this );
-  connect( mTimeStampFieldMenu, &QMenu::aboutToShow, this, &QgsAppGpsSettingsMenu::timeStampMenuAboutToShow );
-  addMenu( mTimeStampFieldMenu );
+  mTimeStampDestinationFieldMenu = new QMenu( tr( "Time Stamp Destination" ), this );
+  connect( mTimeStampDestinationFieldMenu, &QMenu::aboutToShow, this, &QgsAppGpsSettingsMenu::timeStampMenuAboutToShow );
+  addMenu( mTimeStampDestinationFieldMenu );
 
   addSeparator();
 
@@ -308,7 +308,7 @@ void QgsAppGpsSettingsMenu::timeStampMenuAboutToShow()
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( QgisApp::instance()->activeLayer() );
   mFieldProxyModel->sourceFieldModel()->setLayer( vlayer );
 
-  mTimeStampFieldMenu->clear();
+  mTimeStampDestinationFieldMenu->clear();
   bool foundPreviousField = false;
   for ( int row = 0; row < mFieldProxyModel->rowCount(); ++row )
   {
@@ -327,12 +327,12 @@ void QgsAppGpsSettingsMenu::timeStampMenuAboutToShow()
       mCurrentTimeStampField = fieldName;
       emit timeStampDestinationChanged( fieldName );
     } );
-    mTimeStampFieldMenu->addAction( fieldAction );
+    mTimeStampDestinationFieldMenu->addAction( fieldAction );
   }
 
   if ( !foundPreviousField )
   {
-    mTimeStampFieldMenu->actions().at( 0 )->setChecked( true );
+    mTimeStampDestinationFieldMenu->actions().at( 0 )->setChecked( true );
     mCurrentTimeStampField.clear();
   }
 }

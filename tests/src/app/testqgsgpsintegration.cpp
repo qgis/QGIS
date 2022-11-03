@@ -132,41 +132,41 @@ void TestQgsGpsIntegration::testTimeStampFields()
   mQgisApp->setActiveLayer( tempLayer );
   // allow menu to populate
   settingsMenu.timeStampMenuAboutToShow();
-  QCOMPARE( settingsMenu.mTimeStampFieldMenu->actions().count(), 1 );
-  QCOMPARE( settingsMenu.mTimeStampFieldMenu->actions().at( 0 )->text(), QString() );
-  QCOMPARE( settingsMenu.mTimeStampFieldMenu->actions().at( 0 )->data().toString(), QString() );
-  QVERIFY( settingsMenu.mTimeStampFieldMenu->actions().at( 0 )->isChecked() );
+  QCOMPARE( settingsMenu.mTimeStampDestinationFieldMenu->actions().count(), 1 );
+  QCOMPARE( settingsMenu.mTimeStampDestinationFieldMenu->actions().at( 0 )->text(), QString() );
+  QCOMPARE( settingsMenu.mTimeStampDestinationFieldMenu->actions().at( 0 )->data().toString(), QString() );
+  QVERIFY( settingsMenu.mTimeStampDestinationFieldMenu->actions().at( 0 )->isChecked() );
 
   mQgisApp->setActiveLayer( tempLayerString );
   settingsMenu.timeStampMenuAboutToShow();
-  QCOMPARE( settingsMenu.mTimeStampFieldMenu->actions().count(), 2 );
-  QCOMPARE( settingsMenu.mTimeStampFieldMenu->actions().at( 0 )->text(), QString() );
-  QCOMPARE( settingsMenu.mTimeStampFieldMenu->actions().at( 0 )->data().toString(), QString() );
-  QCOMPARE( settingsMenu.mTimeStampFieldMenu->actions().at( 1 )->text(), QStringLiteral( "stringf" ) );
-  QCOMPARE( settingsMenu.mTimeStampFieldMenu->actions().at( 1 )->data().toString(), QStringLiteral( "stringf" ) );
-  QVERIFY( settingsMenu.mTimeStampFieldMenu->actions().at( 0 )->isChecked() );
-  settingsMenu.mTimeStampFieldMenu->actions().at( 1 )->trigger();
+  QCOMPARE( settingsMenu.mTimeStampDestinationFieldMenu->actions().count(), 2 );
+  QCOMPARE( settingsMenu.mTimeStampDestinationFieldMenu->actions().at( 0 )->text(), QString() );
+  QCOMPARE( settingsMenu.mTimeStampDestinationFieldMenu->actions().at( 0 )->data().toString(), QString() );
+  QCOMPARE( settingsMenu.mTimeStampDestinationFieldMenu->actions().at( 1 )->text(), QStringLiteral( "stringf" ) );
+  QCOMPARE( settingsMenu.mTimeStampDestinationFieldMenu->actions().at( 1 )->data().toString(), QStringLiteral( "stringf" ) );
+  QVERIFY( settingsMenu.mTimeStampDestinationFieldMenu->actions().at( 0 )->isChecked() );
+  settingsMenu.mTimeStampDestinationFieldMenu->actions().at( 1 )->trigger();
   QCOMPARE( spy.count(), 1 );
   QCOMPARE( spy.at( 0 ).at( 0 ).toString(), QStringLiteral( "stringf" ) );
 
   mQgisApp->setActiveLayer( tempLayerDateTime );
   settingsMenu.timeStampMenuAboutToShow();
-  QCOMPARE( settingsMenu.mTimeStampFieldMenu->actions().count(), 2 );
-  QCOMPARE( settingsMenu.mTimeStampFieldMenu->actions().at( 0 )->text(), QString() );
-  QCOMPARE( settingsMenu.mTimeStampFieldMenu->actions().at( 0 )->data().toString(), QString() );
-  QCOMPARE( settingsMenu.mTimeStampFieldMenu->actions().at( 1 )->text(), QStringLiteral( "datetimef" ) );
-  QCOMPARE( settingsMenu.mTimeStampFieldMenu->actions().at( 1 )->data().toString(), QStringLiteral( "datetimef" ) );
-  QVERIFY( settingsMenu.mTimeStampFieldMenu->actions().at( 0 )->isChecked() );
-  settingsMenu.mTimeStampFieldMenu->actions().at( 1 )->trigger();
+  QCOMPARE( settingsMenu.mTimeStampDestinationFieldMenu->actions().count(), 2 );
+  QCOMPARE( settingsMenu.mTimeStampDestinationFieldMenu->actions().at( 0 )->text(), QString() );
+  QCOMPARE( settingsMenu.mTimeStampDestinationFieldMenu->actions().at( 0 )->data().toString(), QString() );
+  QCOMPARE( settingsMenu.mTimeStampDestinationFieldMenu->actions().at( 1 )->text(), QStringLiteral( "datetimef" ) );
+  QCOMPARE( settingsMenu.mTimeStampDestinationFieldMenu->actions().at( 1 )->data().toString(), QStringLiteral( "datetimef" ) );
+  QVERIFY( settingsMenu.mTimeStampDestinationFieldMenu->actions().at( 0 )->isChecked() );
+  settingsMenu.mTimeStampDestinationFieldMenu->actions().at( 1 )->trigger();
   QCOMPARE( spy.count(), 2 );
   QCOMPARE( spy.at( 1 ).at( 0 ).toString(), QStringLiteral( "datetimef" ) );
 
   settingsMenu.setCurrentTimeStampField( QString() );
   settingsMenu.timeStampMenuAboutToShow();
-  QVERIFY( settingsMenu.mTimeStampFieldMenu->actions().at( 0 )->isChecked() );
+  QVERIFY( settingsMenu.mTimeStampDestinationFieldMenu->actions().at( 0 )->isChecked() );
   settingsMenu.setCurrentTimeStampField( QStringLiteral( "datetimef" ) );
   settingsMenu.timeStampMenuAboutToShow();
-  QVERIFY( settingsMenu.mTimeStampFieldMenu->actions().at( 1 )->isChecked() );
+  QVERIFY( settingsMenu.mTimeStampDestinationFieldMenu->actions().at( 1 )->isChecked() );
 }
 
 void TestQgsGpsIntegration::testGpsOptionsTimeZoneWidgets()

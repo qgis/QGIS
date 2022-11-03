@@ -93,7 +93,7 @@ class APP_EXPORT QgsAppGpsSettingsMenu : public QMenu
     QRadioButton *mRadioNeverRecenter = nullptr;
 
     QgsFieldProxyModel *mFieldProxyModel = nullptr;
-    QMenu *mTimeStampFieldMenu = nullptr;
+    QMenu *mTimeStampDestinationFieldMenu = nullptr;
     QString mCurrentTimeStampField;
 
     friend class TestQgsGpsIntegration;

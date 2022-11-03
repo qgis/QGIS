@@ -332,7 +332,7 @@ void QgsGpsCanvasBridge::gpsStateChanged( const QgsGpsInformation &info )
 
     if ( mShowBearingLine )
     {
-      if ( ! mMapBearingItem )
+      if ( !mMapBearingItem )
       {
         mMapBearingItem = new QgsGpsBearingItem( mCanvas );
         updateBearingAppearance();
@@ -359,7 +359,7 @@ void QgsGpsCanvasBridge::gpsStateChanged( const QgsGpsInformation &info )
     if ( validFlag ) // update cursor position if valid position
     {
       // initially, cursor isn't drawn until first valid fix; remains visible until GPS disconnect
-      if ( ! mMapMarker )
+      if ( !mMapMarker )
       {
         mMapMarker = new QgsGpsMarker( mCanvas );
       }
