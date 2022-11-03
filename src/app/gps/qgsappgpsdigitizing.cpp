@@ -27,6 +27,7 @@
 #include "qgsfeatureaction.h"
 #include "qgsgpsconnection.h"
 #include "qgsappgpsconnection.h"
+#include "qgsprojectgpssettings.h"
 
 #include <QTimeZone>
 
@@ -189,7 +190,7 @@ void QgsAppGpsDigitizing::addFeature()
       QgsFeatureAction action( tr( "Feature Added" ), f, vlayer, QUuid(), -1, this );
       if ( action.addFeature( attrMap ) )
       {
-        if ( mAutoSave )
+        if ( QgsProject::instance()->gpsSettings()->automaticallyCommitFeatures() )
         {
           // should canvas->isDrawing() be checked?
           if ( !vlayer->commitChanges() ) //assumed to be vector layer and is editable and is in editing mode (preconditions have been tested)
@@ -283,7 +284,7 @@ void QgsAppGpsDigitizing::addFeature()
       QgsFeatureAction action( tr( "Feature added" ), f, vlayer, QUuid(), -1, this );
       if ( action.addFeature( attrMap ) )
       {
-        if ( mAutoSave )
+        if ( QgsProject::instance()->gpsSettings()->automaticallyCommitFeatures() )
         {
           if ( !vlayer->commitChanges() )
           {
@@ -313,16 +314,6 @@ void QgsAppGpsDigitizing::addFeature()
   vlayer->triggerRepaint();
 
   QgisApp::instance()->activateWindow();
-}
-
-void QgsAppGpsDigitizing::setAutoAddVertices( bool enabled )
-{
-  mAutoAddVertices = enabled;
-}
-
-void QgsAppGpsDigitizing::setAutoSaveFeature( bool enabled )
-{
-  mAutoSave = enabled;
 }
 
 void QgsAppGpsDigitizing::setTimeStampDestination( const QString &fieldName )
@@ -508,7 +499,7 @@ void QgsAppGpsDigitizing::gpsStateChanged( const QgsGpsInformation &info )
     mLastNmeaPosition = newNmeaPosition;
     mLastElevation = newAlt;
 
-    if ( mAutoAddVertices )
+    if ( QgsProject::instance()->gpsSettings()->automaticallyAddTrackPoints() )
     {
       addVertex();
     }

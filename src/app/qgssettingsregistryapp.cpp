@@ -71,8 +71,6 @@ QgsSettingsRegistryApp::QgsSettingsRegistryApp()
   addSettingsEntry( &QgsGpsCanvasBridge::settingRotateMap );
 
   addSettingsEntry( &QgsAppGpsDigitizing::settingTrackLineSymbol );
-  addSettingsEntry( &QgsAppGpsDigitizing::settingAutoAddVertices );
-  addSettingsEntry( &QgsAppGpsDigitizing::settingAutoCreateFeatures );
 
   addSettingsEntry( &QgsGpsMarker::settingLocationMarkerSymbol );
   addSettingsEntry( &QgsGpsMarker::settingShowLocationMarker );

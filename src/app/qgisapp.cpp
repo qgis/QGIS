@@ -1403,9 +1403,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   addToolBar( mGpsToolBar );
 
   mGpsDigitizing = new QgsAppGpsDigitizing( mGpsConnection, mMapCanvas, this );
-  mGpsDigitizing->setAutoAddVertices( mGpsSettingsMenu->autoAddTrackPoints() );
-  mGpsDigitizing->setAutoSaveFeature( mGpsSettingsMenu->autoAddFeature() );
-  mGpsToolBar->setAddVertexButtonEnabled( !mGpsSettingsMenu->autoAddTrackPoints() );
   connect( mGpsToolBar, &QgsGpsToolBar::addFeatureClicked, mGpsDigitizing, &QgsAppGpsDigitizing::addFeature );
   connect( mGpsToolBar, &QgsGpsToolBar::addVertexClicked, mGpsDigitizing, &QgsAppGpsDigitizing::addVertex );
   connect( mGpsToolBar, &QgsGpsToolBar::resetFeatureClicked, mGpsDigitizing, &QgsAppGpsDigitizing::resetFeature );
@@ -1419,9 +1416,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::bearingLineToggled, mGpsCanvasBridge, &QgsGpsCanvasBridge::setBearingLineVisible );
   connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::rotateMapToggled, mGpsCanvasBridge, &QgsGpsCanvasBridge::setRotateMap );
   connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::mapCenteringModeChanged, mGpsCanvasBridge, &QgsGpsCanvasBridge::setMapCenteringMode );
-  connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::autoAddTrackPointsChanged, mGpsDigitizing, &QgsAppGpsDigitizing::setAutoAddVertices );
-  connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::autoAddTrackPointsChanged, this, [ = ]( bool enabled ) { mGpsToolBar->setAddVertexButtonEnabled( !enabled ); } );
-  connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::autoAddFeatureChanged, mGpsDigitizing, &QgsAppGpsDigitizing::setAutoSaveFeature );
   connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::enableNmeaLog, mGpsDigitizing, &QgsAppGpsDigitizing::setNmeaLoggingEnabled );
   connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::nmeaLogFileChanged, mGpsDigitizing, &QgsAppGpsDigitizing::setNmeaLogFile );
   connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::timeStampDestinationChanged, mGpsDigitizing, &QgsAppGpsDigitizing::setTimeStampDestination );
