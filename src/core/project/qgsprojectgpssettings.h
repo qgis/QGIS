@@ -38,8 +38,8 @@ class CORE_EXPORT QgsProjectGpsSettings : public QObject
 
   public:
 
-    Q_PROPERTY( bool automaticallyAddTrackPoints READ automaticallyAddTrackPoints WRITE setAutomaticallyAddTrackPoints NOTIFY automaticallyAddTrackPointsChanged )
-
+    Q_PROPERTY( bool automaticallyAddTrackVertices READ automaticallyAddTrackVertices WRITE setAutomaticallyAddTrackVertices NOTIFY automaticallyAddTrackVerticesChanged )
+    Q_PROPERTY( bool automaticallyCommitFeatures READ automaticallyCommitFeatures WRITE setAutomaticallyCommitFeatures NOTIFY automaticallyCommitFeaturesChanged )
 
     /**
      * Constructor for QgsProjectGpsSettings with the specified \a parent object.
@@ -66,13 +66,13 @@ class CORE_EXPORT QgsProjectGpsSettings : public QObject
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
     /**
-     * Returns TRUE if track points should be automatically created whenever
+     * Returns TRUE if track vertices should be automatically created whenever
      * new locations are received from the GPS device.
      *
-     * \see setAutomaticallyAddTrackPoints()
-     * \see automaticallyAddTrackPointsChanged()
+     * \see setAutomaticallyAddTrackVertices()
+     * \see automaticallyAddTrackVerticesChanged()
      */
-    bool automaticallyAddTrackPoints() const;
+    bool automaticallyAddTrackVertices() const;
 
     /**
      * Returns TRUE if features created from GPS locations should be
@@ -87,13 +87,13 @@ class CORE_EXPORT QgsProjectGpsSettings : public QObject
   public slots:
 
     /**
-     * Sets whether track points should be automatically created whenever
+     * Sets whether track vertices should be automatically created whenever
      * new locations are received from the GPS device.
      *
-     * \see automaticallyAddTrackPoints()
-     * \see automaticallyAddTrackPointsChanged()
+     * \see automaticallyAddTrackVertices()
+     * \see automaticallyAddTrackVerticesChanged()
      */
-    void setAutomaticallyAddTrackPoints( bool enabled );
+    void setAutomaticallyAddTrackVertices( bool enabled );
 
     /**
      * Sets whether features created from GPS locations should be
@@ -108,13 +108,13 @@ class CORE_EXPORT QgsProjectGpsSettings : public QObject
   signals:
 
     /**
-     * Emitted whenever the automaticallyAddTrackPoints() setting
+     * Emitted whenever the automaticallyAddTrackVertices() setting
      * is changed.
      *
-     * \see automaticallyAddTrackPoints()
-     * \see setAutomaticallyAddTrackPoints()
+     * \see automaticallyAddTrackVertices()
+     * \see setAutomaticallyAddTrackVertices()
      */
-    void automaticallyAddTrackPointsChanged( bool enabled );
+    void automaticallyAddTrackVerticesChanged( bool enabled );
 
     /**
      * Emitted whenever the automaticallyCommitFeatures() setting
@@ -127,9 +127,8 @@ class CORE_EXPORT QgsProjectGpsSettings : public QObject
 
   private:
 
-    bool mAutoAddTrackPoints = false;
+    bool mAutoAddTrackVertices = false;
     bool mAutoCommitFeatures = false;
-
 
 };
 

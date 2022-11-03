@@ -80,7 +80,7 @@ class APP_EXPORT QgsAppGpsSettingsMenu : public QMenu
     QAction *mShowLocationMarkerAction = nullptr;
     QAction *mShowBearingLineAction = nullptr;
     QAction *mRotateMapAction = nullptr;
-    QAction *mAutoAddTrackPointAction = nullptr;
+    QAction *mAutoAddTrackVerticesAction = nullptr;
     QAction *mAutoSaveAddedFeatureAction = nullptr;
     QAction *mActionNmeaLog = nullptr;
 

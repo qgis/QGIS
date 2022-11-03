@@ -26,19 +26,19 @@ QgsProjectGpsSettings::~QgsProjectGpsSettings() = default;
 
 void QgsProjectGpsSettings::reset()
 {
-  mAutoAddTrackPoints = false;
+  mAutoAddTrackVertices = false;
   mAutoCommitFeatures = false;
 
-  emit automaticallyAddTrackPointsChanged( false );
+  emit automaticallyAddTrackVerticesChanged( false );
   emit automaticallyCommitFeaturesChanged( false );
 }
 
 bool QgsProjectGpsSettings::readXml( const QDomElement &element, const QgsReadWriteContext & )
 {
-  mAutoAddTrackPoints = element.attribute( QStringLiteral( "autoAddTrackPoints" ), "0" ).toInt();
+  mAutoAddTrackVertices = element.attribute( QStringLiteral( "autoAddTrackVertices" ), "0" ).toInt();
   mAutoCommitFeatures = element.attribute( QStringLiteral( "autoCommitFeatures" ), "0" ).toInt();
 
-  emit automaticallyAddTrackPointsChanged( mAutoAddTrackPoints );
+  emit automaticallyAddTrackVerticesChanged( mAutoAddTrackVertices );
   emit automaticallyCommitFeaturesChanged( mAutoCommitFeatures );
   return true;
 }
@@ -47,15 +47,15 @@ QDomElement QgsProjectGpsSettings::writeXml( QDomDocument &doc, const QgsReadWri
 {
   QDomElement element = doc.createElement( QStringLiteral( "ProjectGpsSettings" ) );
 
-  element.setAttribute( QStringLiteral( "autoAddTrackPoints" ),  mAutoAddTrackPoints ? 1 : 0 );
+  element.setAttribute( QStringLiteral( "autoAddTrackVertices" ),  mAutoAddTrackVertices ? 1 : 0 );
   element.setAttribute( QStringLiteral( "autoCommitFeatures" ),  mAutoCommitFeatures ? 1 : 0 );
 
   return element;
 }
 
-bool QgsProjectGpsSettings::automaticallyAddTrackPoints() const
+bool QgsProjectGpsSettings::automaticallyAddTrackVertices() const
 {
-  return mAutoAddTrackPoints;
+  return mAutoAddTrackVertices;
 }
 
 bool QgsProjectGpsSettings::automaticallyCommitFeatures() const
@@ -63,13 +63,13 @@ bool QgsProjectGpsSettings::automaticallyCommitFeatures() const
   return mAutoCommitFeatures;
 }
 
-void QgsProjectGpsSettings::setAutomaticallyAddTrackPoints( bool enabled )
+void QgsProjectGpsSettings::setAutomaticallyAddTrackVertices( bool enabled )
 {
-  if ( enabled == mAutoAddTrackPoints )
+  if ( enabled == mAutoAddTrackVertices )
     return;
 
-  mAutoAddTrackPoints = enabled;
-  emit automaticallyAddTrackPointsChanged( enabled );
+  mAutoAddTrackVertices = enabled;
+  emit automaticallyAddTrackVerticesChanged( enabled );
 }
 
 void QgsProjectGpsSettings::setAutomaticallyCommitFeatures( bool enabled )
