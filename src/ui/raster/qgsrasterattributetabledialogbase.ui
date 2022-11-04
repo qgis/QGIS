@@ -32,13 +32,6 @@
    <item>
     <widget class="QgsRasterAttributeTableWidget" name="mRatWidget" native="true"/>
    </item>
-   <item>
-    <widget class="QDialogButtonBox" name="mButtonBox">
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Close</set>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
  <customwidgets>
