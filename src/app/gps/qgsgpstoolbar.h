@@ -51,8 +51,7 @@ class QgsGpsToolBar : public QToolBar
   private slots:
 
     void updateLocationLabel( const QgsPoint &point );
-    void updateCloseFeatureButton( QgsVectorLayer *lyr );
-    void layerEditStateChanged();
+    void destinationLayerChanged( QgsVectorLayer *lyr );
     void destinationMenuAboutToShow();
 
   private:
@@ -72,8 +71,6 @@ class QgsGpsToolBar : public QToolBar
 
     QgsCoordinateReferenceSystem mWgs84CRS;
     bool mEnableAddVertexButton = true;
-
-    QPointer< QgsVectorLayer > mLastLayer;
 
     QgsMapLayerProxyModel *mDestinationLayerModel = nullptr;
 };
