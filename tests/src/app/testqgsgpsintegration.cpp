@@ -113,7 +113,7 @@ QDateTime TestQgsGpsIntegration::_testWrite( QgsVectorLayer *vlayer, QgsAppGpsDi
   vlayer->startEditing();
   gpsDigitizing.setTimeStampDestination( fieldName );
   gpsDigitizing.mTimeStampSpec = timeSpec;
-  gpsDigitizing.addFeature();
+  gpsDigitizing.createFeature();
   const auto fids { vlayer->allFeatureIds() };
   const auto fid { std::min_element( fids.begin(), fids.end() ) };
   const QgsFeature f { vlayer->getFeature( *fid ) };
@@ -345,15 +345,15 @@ void TestQgsGpsIntegration::testMultiPartLayers()
   multiLineString->startEditing();
 
   // not possible, no points
-  gpsDigitizing.addFeature();
+  gpsDigitizing.createFeature();
   QCOMPARE( multiLineString->featureCount(), 0L );
   // need at least 2 points
   gpsDigitizing.addVertex();
-  gpsDigitizing.addFeature();
+  gpsDigitizing.createFeature();
   QCOMPARE( multiLineString->featureCount(), 0L );
 
   gpsDigitizing.addVertex();
-  gpsDigitizing.addFeature();
+  gpsDigitizing.createFeature();
   QCOMPARE( multiLineString->featureCount(), 1L );
   QgsFeature f;
   QVERIFY( multiLineString->getFeatures().nextFeature( f ) );
@@ -369,19 +369,19 @@ void TestQgsGpsIntegration::testMultiPartLayers()
   multiPolygon->startEditing();
 
   // not possible, no points
-  gpsDigitizing.addFeature();
+  gpsDigitizing.createFeature();
   QCOMPARE( multiPolygon->featureCount(), 0L );
 
   // need at least 3 points
   gpsDigitizing.addVertex();
-  gpsDigitizing.addFeature();
+  gpsDigitizing.createFeature();
   QCOMPARE( multiPolygon->featureCount(), 0L );
   gpsDigitizing.addVertex();
-  gpsDigitizing.addFeature();
+  gpsDigitizing.createFeature();
   QCOMPARE( multiPolygon->featureCount(), 0L );
 
   gpsDigitizing.addVertex();
-  gpsDigitizing.addFeature();
+  gpsDigitizing.createFeature();
   QCOMPARE( multiPolygon->featureCount(), 1L );
   QVERIFY( multiPolygon->getFeatures().nextFeature( f ) );
   QCOMPARE( f.geometry().wkbType(), QgsWkbTypes::MultiPolygon );
