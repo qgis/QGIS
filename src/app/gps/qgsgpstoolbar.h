@@ -26,6 +26,7 @@ class QgsMapCanvas;
 class QLabel;
 class QgsVectorLayer;
 class QgsMapLayerProxyModel;
+class QToolButton;
 
 class QgsGpsToolBar : public QToolBar
 {
@@ -64,6 +65,8 @@ class QgsGpsToolBar : public QToolBar
     QAction *mAddTrackVertexAction = nullptr;
     QAction *mAddFeatureAction = nullptr;
     QAction *mResetFeatureAction = nullptr;
+
+    QToolButton *mDestinationLayerButton = nullptr;
 
     QMenu *mDestinationLayerMenu = nullptr;
 

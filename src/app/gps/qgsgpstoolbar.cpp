@@ -88,13 +88,13 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
   mDestinationLayerMenu = new QMenu( this );
   connect( mDestinationLayerMenu, &QMenu::aboutToShow, this, &QgsGpsToolBar::destinationMenuAboutToShow );
 
-  QToolButton *destinationLayerButton = new QToolButton();
-  destinationLayerButton->setAutoRaise( true );
-  destinationLayerButton->setToolTip( tr( "Set destination layer for GPS digitized features" ) );
-  destinationLayerButton->setMenu( mDestinationLayerMenu );
-  destinationLayerButton->setPopupMode( QToolButton::InstantPopup );
-  destinationLayerButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) ) );
-  addWidget( destinationLayerButton );
+  mDestinationLayerButton = new QToolButton();
+  mDestinationLayerButton->setAutoRaise( true );
+  mDestinationLayerButton->setToolTip( tr( "Set destination layer for GPS digitized features" ) );
+  mDestinationLayerButton->setMenu( mDestinationLayerMenu );
+  mDestinationLayerButton->setPopupMode( QToolButton::InstantPopup );
+  mDestinationLayerButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) ) );
+  addWidget( mDestinationLayerButton );
 
   mAddTrackVertexAction = new QAction( tr( "Add Track Vertex" ), this );
   mAddTrackVertexAction->setToolTip( tr( "Add vertex to GPS track using current GPS location" ) );
@@ -210,7 +210,11 @@ void QgsGpsToolBar::destinationLayerChanged( QgsVectorLayer *vlayer )
 {
   if ( vlayer )
   {
-
+    mDestinationLayerButton->setToolTip( tr( "GPS digitized features will be stored in %1" ).arg( vlayer->name() ) );
+  }
+  else
+  {
+    mDestinationLayerButton->setToolTip( tr( "Set destination layer for GPS digitized features" ) );
   }
 
   if ( !( vlayer && vlayer->isValid() ) )
