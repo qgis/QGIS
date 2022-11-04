@@ -49,7 +49,9 @@ class CORE_EXPORT QgsRasterAttributeTable
   public:
 
     /**
+     * \ingroup core
      * \brief The UsageInformation struct represents information about a field usage.
+     * \since QGIS 3.30
      */
     class CORE_EXPORT UsageInformation
     {
@@ -81,7 +83,9 @@ class CORE_EXPORT QgsRasterAttributeTable
     };
 
     /**
+     * \ingroup core
      * \brief The Field struct represents a Raster Attribute Table field, including its name, usage and type.
+     * \since QGIS 3.30
      */
     class CORE_EXPORT Field
     {
@@ -109,7 +113,9 @@ class CORE_EXPORT QgsRasterAttributeTable
     };
 
     /**
+     * \ingroup core
      * \brief The Field struct represents a Raster Attribute Table classification entry for a thematic Raster Attribute Table.
+     * \since QGIS 3.30
      */
     class CORE_EXPORT MinMaxClass
     {

@@ -29,6 +29,8 @@ methods to handle data from QGIS and to import/export a Raster Attribute Table f
 {
 %Docstring(signature="appended")
 The UsageInformation struct represents information about a field usage.
+
+.. versionadded:: 3.30
 %End
 
 %TypeHeaderCode
@@ -57,6 +59,8 @@ The UsageInformation struct represents information about a field usage.
 {
 %Docstring(signature="appended")
 The Field struct represents a Raster Attribute Table field, including its name, usage and type.
+
+.. versionadded:: 3.30
 %End
 
 %TypeHeaderCode
@@ -88,6 +92,8 @@ Returns ``True`` if the field carries a color ramp component information (RedMin
 {
 %Docstring(signature="appended")
 The Field struct represents a Raster Attribute Table classification entry for a thematic Raster Attribute Table.
+
+.. versionadded:: 3.30
 %End
 
 %TypeHeaderCode

@@ -31,7 +31,7 @@ class QgsRasterAttributeTable;
 
 /**
  * \ingroup core
-  * \brief Renderer for paletted raster images.
+ * \brief Renderer for paletted raster images.
 */
 class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
 {
@@ -57,6 +57,7 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     };
 
     /**
+     * \ingroup core
      * \brief Properties of a multi value class: a class that contains multiple values.
      * \since QGIS 3.30
      */
