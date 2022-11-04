@@ -124,7 +124,7 @@ void QgsAppGpsDigitizing::addVertex()
     emit trackIsEmptyChanged( false );
 }
 
-void QgsAppGpsDigitizing::resetFeature()
+void QgsAppGpsDigitizing::resetTrack()
 {
   mBlockGpsStateChanged++;
   createRubberBand(); //deletes existing rubberband
@@ -137,7 +137,7 @@ void QgsAppGpsDigitizing::resetFeature()
     emit trackIsEmptyChanged( true );
 }
 
-void QgsAppGpsDigitizing::addFeature()
+void QgsAppGpsDigitizing::createFeature()
 {
   QgsVectorLayer *vlayer = QgsProject::instance()->gpsSettings()->destinationLayer();
   if ( !vlayer )

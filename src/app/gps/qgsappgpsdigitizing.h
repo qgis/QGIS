@@ -52,8 +52,8 @@ class APP_EXPORT QgsAppGpsDigitizing: public QObject
 
   public slots:
     void addVertex();
-    void resetFeature();
-    void addFeature();
+    void resetTrack();
+    void createFeature();
 
     void setTimeStampDestination( const QString &fieldName );
 

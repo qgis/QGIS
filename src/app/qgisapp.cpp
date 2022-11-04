@@ -1403,9 +1403,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   addToolBar( mGpsToolBar );
 
   mGpsDigitizing = new QgsAppGpsDigitizing( mGpsConnection, mMapCanvas, this );
-  connect( mGpsToolBar, &QgsGpsToolBar::addFeatureClicked, mGpsDigitizing, &QgsAppGpsDigitizing::addFeature );
+  connect( mGpsToolBar, &QgsGpsToolBar::addFeatureClicked, mGpsDigitizing, &QgsAppGpsDigitizing::createFeature );
   connect( mGpsToolBar, &QgsGpsToolBar::addVertexClicked, mGpsDigitizing, &QgsAppGpsDigitizing::addVertex );
-  connect( mGpsToolBar, &QgsGpsToolBar::resetFeatureClicked, mGpsDigitizing, &QgsAppGpsDigitizing::resetFeature );
+  connect( mGpsToolBar, &QgsGpsToolBar::resetFeatureClicked, mGpsDigitizing, &QgsAppGpsDigitizing::resetTrack );
 
   mGpsCanvasBridge = new QgsGpsCanvasBridge( mGpsConnection, mMapCanvas );
   mGpsCanvasBridge->setLocationMarkerVisible( mGpsSettingsMenu->locationMarkerVisible() );
