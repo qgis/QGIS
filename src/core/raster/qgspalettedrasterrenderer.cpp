@@ -54,7 +54,7 @@ QgsPalettedRasterRenderer::QgsPalettedRasterRenderer( QgsRasterInterface *input,
     }
     else
     {
-      mMultiValueClassData.push_back( { { klass.value }, klass.color, klass.label } );
+      mMultiValueClassData.push_back( MultiValueClass{ { klass.value }, klass.color, klass.label } );
     }
   }
   updateArrays();
@@ -70,14 +70,15 @@ QgsPalettedRasterRenderer::QgsPalettedRasterRenderer( QgsRasterInterface *input,
 
 QgsPalettedRasterRenderer *QgsPalettedRasterRenderer::clone() const
 {
-  QgsPalettedRasterRenderer *renderer = nullptr;
-  renderer = new QgsPalettedRasterRenderer( nullptr, mBand, mMultiValueClassData );
+
+  std::unique_ptr< QgsPalettedRasterRenderer > renderer = std::make_unique< QgsPalettedRasterRenderer >( nullptr, mBand, mMultiValueClassData );
 
   if ( mSourceColorRamp )
     renderer->setSourceColorRamp( mSourceColorRamp->clone() );
 
   renderer->copyCommonProperties( this );
-  return renderer;
+
+  return renderer.release();
 }
 
 Qgis::RasterRendererFlags QgsPalettedRasterRenderer::flags() const
@@ -151,7 +152,7 @@ QString QgsPalettedRasterRenderer::label( double idx ) const
   if ( ! mMultiValueClassData.isEmpty() )
   {
     const auto constMClassData = mMultiValueClassData;
-    for ( const MultiValueClass &c : constMClassData )
+    for ( const MultiValueClass &c : std::as_const( constMClassData ) )
     {
       if ( c.values.contains( idx ) )
         return c.label;
@@ -262,7 +263,7 @@ QgsRasterBlock *QgsPalettedRasterRenderer::block( int, QgsRectangle  const &exte
 
 int QgsPalettedRasterRenderer::nColors() const
 {
-  return mMultiValueClassData.size() != 0 ? mMultiValueClassData.size() : 0;
+  return mMultiValueClassData.size();
 }
 
 void QgsPalettedRasterRenderer::writeXml( QDomDocument &doc, QDomElement &parentElem ) const
@@ -378,9 +379,19 @@ QList< QPair< QString, QColor > > QgsPalettedRasterRenderer::legendSymbologyItem
     if ( lab.isEmpty() )
     {
       QStringList values;
-      for ( const double val : std::as_const( classData.values ) )
+      for ( const QVariant &val : std::as_const( classData.values ) )
       {
-        values.push_back( QLocale().toString( val ) );
+        // Be tolerant here: if we can convert it to double use locale, if not just pass through.
+        bool ok;
+        const double numericValue { val.toDouble( &ok ) };
+        if ( ok )
+        {
+          values.push_back( QLocale().toString( numericValue ) );
+        }
+        else
+        {
+          values.push_back( val.toString() );
+        }
       }
       lab = values.join( QChar( ' ' ) );
     }
@@ -454,7 +465,12 @@ QgsPalettedRasterRenderer::MultiValueClassData QgsPalettedRasterRenderer::raster
   const QList<QgsRasterAttributeTable::MinMaxClass> minMaxClasses { attributeTable->minMaxClasses( classificationColumn ) };
   for ( const QgsRasterAttributeTable::MinMaxClass &minMaxClass : std::as_const( minMaxClasses ) )
   {
-    classData.push_back( { minMaxClass.minMaxValues, minMaxClass.color, minMaxClass.name  } );
+    QVector<QVariant> values;
+    for ( const double val : std::as_const( minMaxClass.minMaxValues ) )
+    {
+      values.push_back( QVariant( val ) );
+    }
+    classData.push_back( { values, minMaxClass.color, minMaxClass.name  } );
   }
 
   int numClasses { static_cast<int>( classData.count( ) ) };
@@ -753,9 +769,18 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classData() cons
   QgsPalettedRasterRenderer::ClassData data;
   for ( const MultiValueClass &klass : std::as_const( mMultiValueClassData ) )
   {
-    for ( const double val : std::as_const( klass.values ) )
+    for ( const QVariant &entry : std::as_const( klass.values ) )
     {
-      data.push_back( {val, klass.color, klass.label } );
+      bool ok;
+      const double value { entry.toDouble( &ok )};
+      if ( ok )
+      {
+        data.push_back( { value, klass.color, klass.label } );
+      }
+      else
+      {
+        QgsDebugMsgLevel( QStringLiteral( "Could not convert class value '%1' to double when creating classes." ).arg( entry.toString() ), 2 );
+      }
     }
   }
   return data;
@@ -768,9 +793,18 @@ void QgsPalettedRasterRenderer::updateArrays()
   MultiValueClassData::const_iterator it = mMultiValueClassData.constBegin();
   for ( ; it != mMultiValueClassData.constEnd(); ++it )
   {
-    for ( const double &value : std::as_const( it->values ) )
+    for ( const QVariant &entry : std::as_const( it->values ) )
     {
-      mColors[value] = qPremultiply( it->color.rgba() );
+      bool ok;
+      const double value { entry.toDouble( &ok )};
+      if ( ok )
+      {
+        mColors[value] = qPremultiply( it->color.rgba() );
+      }
+      else
+      {
+        QgsDebugMsgLevel( QStringLiteral( "Could not convert class value '%1' to double for color lookup." ).arg( entry.toString() ), 2 );
+      }
     }
   }
 }
@@ -779,3 +813,9 @@ bool QgsPalettedRasterRenderer::canCreateRasterAttributeTable( ) const
 {
   return true;
 }
+
+QgsPalettedRasterRenderer::MultiValueClass::MultiValueClass( const QVector<QVariant> &values, const QColor &color, const QString &label )
+  : values( values )
+  , color( color )
+  , label( label )
+{}

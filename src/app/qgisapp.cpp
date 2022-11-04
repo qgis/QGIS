@@ -117,9 +117,7 @@
 #include "options/qgsvectorrenderingoptions.h"
 
 #include "raster/qgsrasterelevationpropertieswidget.h"
-#include "raster/qgsrasterattributetabledialog.h"
-#include "raster/qgscreaterasterattributetabledialog.h"
-#include "raster/qgsloadrasterattributetabledialog.h"
+#include "qgsrasterattributetableapputils.h"
 #include "vector/qgsvectorelevationpropertieswidget.h"
 #include "mesh/qgsmeshelevationpropertieswidget.h"
 #include "elevation/qgselevationprofilewidget.h"
@@ -12019,65 +12017,19 @@ void QgisApp::legendLayerStretchUsingCurrentExtent()
 
 void QgisApp::openRasterAttributeTable()
 {
-  if ( !mLayerTreeView )
-    return;
-
-  //find current Layer
-  QgsMapLayer *currentLayer = mLayerTreeView->currentLayer();
-  if ( !currentLayer )
-    return;
-
-  QgsRasterLayer *layer = qobject_cast<QgsRasterLayer *>( currentLayer );
-  if ( layer && layer->attributeTableCount() > 0 )
-  {
-    QgsRasterAttributeTableDialog *dlg = new QgsRasterAttributeTableDialog( layer );
-    dlg->setAttribute( Qt::WA_DeleteOnClose );
-    dlg->show();
-  }
-}
-
-void QgisApp::loadRasterAttributeTableFromFile( )
-{
-  if ( !mLayerTreeView )
-    return;
-
-  //find current Layer
-  QgsMapLayer *currentLayer = mLayerTreeView->currentLayer();
-  if ( !currentLayer )
-    return;
-
-  if ( QgsRasterLayer *layer = qobject_cast<QgsRasterLayer *>( currentLayer ); layer )
-  {
-    QgsLoadRasterAttributeTableDialog dlg { layer };
-    dlg.setMessageBar( visibleMessageBar() );
-    if ( dlg.exec() == QDialog::Accepted && dlg.openWhenDone() )
-    {
-      openRasterAttributeTable();
-    }
-  }
+  QgsRasterAttributeTableAppUtils::openRasterAttributeTable( mLayerTreeView );
 }
 
 void QgisApp::createRasterAttributeTable()
 {
-  if ( !mLayerTreeView )
-    return;
-
-  //find current Layer
-  QgsMapLayer *currentLayer = mLayerTreeView->currentLayer();
-  if ( !currentLayer )
-    return;
-
-  if ( QgsRasterLayer *layer = qobject_cast<QgsRasterLayer *>( currentLayer ); layer && layer->canCreateRasterAttributeTable() )
-  {
-    // Create the attribute table from the renderer and open it
-    QgsCreateRasterAttributeTableDialog dlg { layer };
-    dlg.setMessageBar( visibleMessageBar() );
-    if ( dlg.exec() == QDialog::Accepted && dlg.openWhenDone() )
-    {
-      openRasterAttributeTable();
-    }
-  }
+  QgsRasterAttributeTableAppUtils::createRasterAttributeTable( mLayerTreeView, visibleMessageBar() );
 }
+
+void QgisApp::loadRasterAttributeTableFromFile()
+{
+  QgsRasterAttributeTableAppUtils::loadRasterAttributeTableFromFile( mLayerTreeView, visibleMessageBar() );
+}
+
 
 void QgisApp::applyStyleToGroup()
 {

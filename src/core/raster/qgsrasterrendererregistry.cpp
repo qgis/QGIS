@@ -127,7 +127,7 @@ QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
         std::unique_ptr<QgsColorRamp> ramp;
         if ( ! provider->attributeTable( grayBand )->hasColor() )
         {
-          ramp.reset( new QgsRandomColorRamp() );
+          ramp = std::make_unique< QgsRandomColorRamp >();
         }
         const QgsPalettedRasterRenderer::MultiValueClassData classes = QgsPalettedRasterRenderer::rasterAttributeTableToClassData( provider->attributeTable( grayBand ), -1, ramp.get() );
         renderer = new QgsPalettedRasterRenderer( provider,

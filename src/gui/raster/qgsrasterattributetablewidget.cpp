@@ -33,13 +33,14 @@
 #include <QFileDialog>
 
 QgsRasterAttributeTableWidget::QgsRasterAttributeTableWidget( QWidget *parent, QgsRasterLayer *rasterLayer, const int bandNumber )
-  : QWidget( parent )
+  : QgsPanelWidget( parent )
   , mRasterLayer( rasterLayer )
 {
   setupUi( this );
 
   // Create the toolbar
   QToolBar *editToolBar = new QToolBar( this );
+  editToolBar->setIconSize( QgsGuiUtils::iconSize() );
 
   mActionToggleEditing = new QAction( QgsApplication::getThemeIcon( "/mActionEditTable.svg" ), tr( "&Edit Attribute Table" ), editToolBar );
   mActionToggleEditing->setCheckable( true );
@@ -50,11 +51,11 @@ QgsRasterAttributeTableWidget::QgsRasterAttributeTableWidget( QWidget *parent, Q
 
   editToolBar->addAction( mActionToggleEditing );
 
-  mActionAddColumn = new QAction( QgsApplication::getThemeIcon( "/mActionNewAttribute.svg" ), tr( "Add &Column" ), editToolBar );
+  mActionAddColumn = new QAction( QgsApplication::getThemeIcon( "/mActionNewAttribute.svg" ), tr( "Add &Column…" ), editToolBar );
   connect( mActionAddColumn, &QAction::triggered, this, &QgsRasterAttributeTableWidget::addColumn );
   editToolBar->addAction( mActionAddColumn );
 
-  mActionAddRow = new QAction( QgsApplication::getThemeIcon( "/mActionNewTableRow.svg" ), tr( "&Add Row" ), editToolBar );
+  mActionAddRow = new QAction( QgsApplication::getThemeIcon( "/mActionNewTableRow.svg" ), tr( "&Add Row…" ), editToolBar );
   connect( mActionAddRow, &QAction::triggered, this, &QgsRasterAttributeTableWidget::addRow );
   editToolBar->addAction( mActionAddRow );
 
@@ -179,6 +180,12 @@ void QgsRasterAttributeTableWidget::updateButtons()
   mActionSaveChanges->setEnabled( mAttributeTableBuffer && mAttributeTableBuffer->isDirty() );
   mClassifyButton->setEnabled( mAttributeTableBuffer && mRasterLayer );
   mClassifyComboBox->setEnabled( mAttributeTableBuffer && mRasterLayer );
+}
+
+void QgsRasterAttributeTableWidget::setDockMode( bool dockMode )
+{
+  QgsPanelWidget::setDockMode( dockMode );
+  static_cast<QToolBar *>( layout()->menuBar() )->setIconSize( QgsGuiUtils::iconSize( dockMode ) );
 }
 
 void QgsRasterAttributeTableWidget::setMessageBar( QgsMessageBar *bar )

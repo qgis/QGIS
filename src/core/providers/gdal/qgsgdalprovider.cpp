@@ -3311,7 +3311,7 @@ bool QgsGdalProvider::writeNativeAttributeTable( QString *errorMessage ) //#spel
 
   if ( wasReopenedReadWrite )
   {
-    QgsDebugMsg( QStringLiteral( "re-opening the dataset in read-only mode" ) );
+    QgsDebugMsgLevel( QStringLiteral( "re-opening the dataset in read-only mode" ), 2 );
     setEditable( false );
   }
 

@@ -20,6 +20,7 @@
 #include "ui_qgsrasterattributetablewidgetbase.h"
 #include "qgsrasterattributetablemodel.h"
 #include "qgscolorrampimpl.h"
+#include "qgspanelwidget.h"
 
 #include <QWidget>
 #include <QStyledItemDelegate>
@@ -104,7 +105,7 @@ class ColorRampAlphaDelegate: public ColorRampDelegate
  * \brief The QgsRasterAttributeTableWidget class provides an attribute table for rasters and methods to edit the table.
  * \since QGIS 3.30
  */
-class GUI_EXPORT QgsRasterAttributeTableWidget : public QWidget, private Ui::QgsRasterAttributeTableWidgetBase
+class GUI_EXPORT QgsRasterAttributeTableWidget : public QgsPanelWidget, private Ui::QgsRasterAttributeTableWidgetBase
 {
     Q_OBJECT
 
@@ -188,6 +189,10 @@ class GUI_EXPORT QgsRasterAttributeTableWidget : public QWidget, private Ui::Qgs
 
     void init( int bandNumber = 0 );
     void updateButtons();
+
+    // QgsPanelWidget interface
+  public:
+    void setDockMode( bool dockMode ) override;
 };
 
 #endif // QGSRASTERATTRIBUTETABLEWIDGET_H
