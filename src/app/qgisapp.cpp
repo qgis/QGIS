@@ -1420,6 +1420,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::nmeaLogFileChanged, mGpsDigitizing, &QgsAppGpsDigitizing::setNmeaLogFile );
   connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::timeStampDestinationChanged, mGpsDigitizing, &QgsAppGpsDigitizing::setTimeStampDestination );
   connect( mGpsDigitizing, &QgsAppGpsDigitizing::timeStampDestinationChanged, mGpsSettingsMenu, &QgsAppGpsSettingsMenu::setCurrentTimeStampField );
+  connect( mGpsDigitizing, &QgsAppGpsDigitizing::trackIsEmptyChanged, mGpsToolBar, [ = ]( bool isEmpty ) { mGpsToolBar->setResetTrackButtonEnabled( !isEmpty ); } );
 
   mpGpsWidget = new QgsGpsInformationWidget( mGpsConnection, mMapCanvas );
   QgsPanelWidgetStack *gpsStack = new QgsPanelWidgetStack();

@@ -93,8 +93,9 @@ void QgsAppGpsDigitizing::addVertex()
   // we store the capture list in wgs84 and then transform to layer crs when
   // calling close feature
   const QgsPoint pointWgs84 = QgsPoint( mLastGpsPositionWgs84.x(), mLastGpsPositionWgs84.y(), mLastElevation );
-  mCaptureListWgs84.push_back( pointWgs84 );
 
+  const bool trackWasEmpty = mCaptureListWgs84.empty();
+  mCaptureListWgs84.push_back( pointWgs84 );
 
   // we store the rubber band points in map canvas CRS so transform to map crs
   // potential problem with transform errors and wrong coordinates if map CRS is changed after points are stored - SLM
@@ -118,14 +119,22 @@ void QgsAppGpsDigitizing::addVertex()
   }
 
   mRubberBand->addPoint( mapPoint );
+
+  if ( trackWasEmpty )
+    emit trackIsEmptyChanged( false );
 }
 
 void QgsAppGpsDigitizing::resetFeature()
 {
   mBlockGpsStateChanged++;
   createRubberBand(); //deletes existing rubberband
+
+  const bool trackWasEmpty = mCaptureListWgs84.isEmpty();
   mCaptureListWgs84.clear();
   mBlockGpsStateChanged--;
+
+  if ( !trackWasEmpty )
+    emit trackIsEmptyChanged( true );
 }
 
 void QgsAppGpsDigitizing::addFeature()
@@ -282,6 +291,7 @@ void QgsAppGpsDigitizing::addFeature()
 
       f.setGeometry( g );
       QgsFeatureAction action( tr( "Feature added" ), f, vlayer, QUuid(), -1, this );
+
       if ( action.addFeature( attrMap ) )
       {
         if ( QgsProject::instance()->gpsSettings()->automaticallyCommitFeatures() )
@@ -304,6 +314,10 @@ void QgsAppGpsDigitizing::addFeature()
       } // action.addFeature()
 
       mBlockGpsStateChanged--;
+
+      if ( mCaptureListWgs84.empty() )
+        emit trackIsEmptyChanged( true );
+
       break;
     }
 

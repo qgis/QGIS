@@ -45,6 +45,7 @@ class QgsGpsToolBar : public QToolBar
   public slots:
 
     void setAddVertexButtonEnabled( bool enabled );
+    void setResetTrackButtonEnabled( bool enabled );
 
   private slots:
 
