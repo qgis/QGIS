@@ -93,7 +93,7 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
   mDestinationLayerButton->setToolTip( tr( "Set destination layer for GPS digitized features" ) );
   mDestinationLayerButton->setMenu( mDestinationLayerMenu );
   mDestinationLayerButton->setPopupMode( QToolButton::InstantPopup );
-  mDestinationLayerButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) ) );
+  mDestinationLayerButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/gpsicons/mIconGpsDestinationLayer.svg" ) ) );
   addWidget( mDestinationLayerButton );
 
   mAddTrackVertexAction = new QAction( tr( "Add Track Vertex" ), this );
