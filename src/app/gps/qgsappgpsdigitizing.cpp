@@ -145,13 +145,13 @@ void QgsAppGpsDigitizing::addFeature()
 
   if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry && mCaptureListWgs84.size() < 2 )
   {
-    QgisApp::instance()->messageBar()->pushWarning( tr( "Add Feature" ), tr( "Cannot close a line feature until it has at least two vertices." ) );
+    QgisApp::instance()->messageBar()->pushWarning( tr( "Add Feature" ), tr( "Creating a line feature requires a track with at least two vertices." ) );
     return;
   }
   else if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry && mCaptureListWgs84.size() < 3 )
   {
     QgisApp::instance()->messageBar()->pushWarning( tr( "Add Feature" ),
-        tr( "Cannot close a polygon feature until it has at least three vertices." ) );
+        tr( "Creating a polygon feature requires a track with at least three vertices." ) );
     return;
   }
 
