@@ -121,6 +121,7 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
   mRecenterAction->setEnabled( false );
   mAddFeatureAction->setEnabled( false );
   mAddTrackVertexAction->setEnabled( false );
+  mResetFeatureAction->setEnabled( false );
   connect( mConnection, &QgsAppGpsConnection::statusChanged, this, [ = ]( Qgis::GpsConnectionStatus status )
   {
     switch ( status )
@@ -168,6 +169,11 @@ void QgsGpsToolBar::setAddVertexButtonEnabled( bool enabled )
 {
   mEnableAddVertexButton = enabled;
   mAddTrackVertexAction->setEnabled( mEnableAddVertexButton && mConnection->isConnected() );
+}
+
+void QgsGpsToolBar::setResetTrackButtonEnabled( bool enabled )
+{
+  mResetFeatureAction->setEnabled( enabled );
 }
 
 void QgsGpsToolBar::updateLocationLabel( const QgsPoint &point )

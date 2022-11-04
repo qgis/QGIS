@@ -62,6 +62,11 @@ class APP_EXPORT QgsAppGpsDigitizing: public QObject
 
   signals:
 
+    /**
+     * Emitted whenever the current track changes from being empty to non-empty or vice versa.
+     */
+    void trackIsEmptyChanged( bool isEmpty );
+
     void timeStampDestinationChanged( const QString &fieldName );
 
   private slots:
