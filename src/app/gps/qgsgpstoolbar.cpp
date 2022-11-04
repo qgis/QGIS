@@ -239,11 +239,8 @@ void QgsGpsToolBar::updateCloseFeatureButton( QgsVectorLayer *vlayer )
   QString icon = QStringLiteral( "mActionCaptureLine.svg" );;
   if ( vlayer )
   {
-    QgsVectorDataProvider *provider = vlayer->dataProvider();
     const QgsWkbTypes::GeometryType layerGeometryType = vlayer->geometryType();
-
-    bool enable = provider->capabilities() & QgsVectorDataProvider::AddFeatures &&  // layer can add features
-                  vlayer->isEditable() && vlayer->isSpatial();
+    bool enable = true;
 
     switch ( layerGeometryType )
     {
