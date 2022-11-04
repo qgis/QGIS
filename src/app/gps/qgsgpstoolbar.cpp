@@ -151,13 +151,13 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
         mConnectAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/gpsicons/mIconGpsDisconnect.svg" ) ) );
         mConnectAction->setEnabled( true );
         mRecenterAction->setEnabled( true );
-        mAddFeatureAction->setEnabled( true );
+        mAddFeatureAction->setEnabled( static_cast< bool >( QgsProject::instance()->gpsSettings()->destinationLayer() ) );
         mAddTrackVertexAction->setEnabled( mEnableAddVertexButton );
         break;
     }
   } );
 
-  connect( QgisApp::instance(), &QgisApp::activeLayerChanged,
+  connect( QgsProject::instance()->gpsSettings(), &QgsProjectGpsSettings::destinationLayerChanged,
            this, &QgsGpsToolBar::updateCloseFeatureButton );
 
   connect( QgsProject::instance()->gpsSettings(), &QgsProjectGpsSettings::automaticallyAddTrackVerticesChanged, this, [ = ]( bool enabled ) { setAddVertexButtonEnabled( !enabled ); } );
@@ -183,12 +183,13 @@ void QgsGpsToolBar::updateLocationLabel( const QgsPoint &point )
   }
 }
 
-void QgsGpsToolBar::updateCloseFeatureButton( QgsMapLayer *lyr )
+void QgsGpsToolBar::updateCloseFeatureButton( QgsVectorLayer *vlayer )
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( lyr );
-
   if ( !( vlayer && vlayer->isValid() ) )
+  {
+    mAddFeatureAction->setEnabled( false );
     return;
+  }
 
   // Add feature button tracks edit state of layer
   if ( vlayer != mLastLayer )

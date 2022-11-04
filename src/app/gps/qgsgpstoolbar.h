@@ -49,7 +49,7 @@ class QgsGpsToolBar : public QToolBar
   private slots:
 
     void updateLocationLabel( const QgsPoint &point );
-    void updateCloseFeatureButton( QgsMapLayer *lyr );
+    void updateCloseFeatureButton( QgsVectorLayer *lyr );
     void layerEditStateChanged();
 
   private:
