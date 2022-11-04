@@ -176,7 +176,7 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
   } );
 
   connect( QgsProject::instance()->gpsSettings(), &QgsProjectGpsSettings::destinationLayerChanged,
-           this, &QgsGpsToolBar::updateCloseFeatureButton );
+           this, &QgsGpsToolBar::destinationLayerChanged );
 
   connect( QgsProject::instance()->gpsSettings(), &QgsProjectGpsSettings::automaticallyAddTrackVerticesChanged, this, [ = ]( bool enabled ) { setAddVertexButtonEnabled( !enabled ); } );
   setAddVertexButtonEnabled( !QgsProject::instance()->gpsSettings()->automaticallyAddTrackVertices() );
@@ -206,32 +206,17 @@ void QgsGpsToolBar::updateLocationLabel( const QgsPoint &point )
   }
 }
 
-void QgsGpsToolBar::updateCloseFeatureButton( QgsVectorLayer *vlayer )
+void QgsGpsToolBar::destinationLayerChanged( QgsVectorLayer *vlayer )
 {
+  if ( vlayer )
+  {
+
+  }
+
   if ( !( vlayer && vlayer->isValid() ) )
   {
     mAddFeatureAction->setEnabled( false );
     return;
-  }
-
-  // Add feature button tracks edit state of layer
-  if ( vlayer != mLastLayer )
-  {
-    if ( mLastLayer )  // disconnect previous layer
-    {
-      disconnect( mLastLayer, &QgsVectorLayer::editingStarted,
-                  this, &QgsGpsToolBar::layerEditStateChanged );
-      disconnect( mLastLayer, &QgsVectorLayer::editingStopped,
-                  this, &QgsGpsToolBar::layerEditStateChanged );
-    }
-    if ( vlayer ) // connect new layer
-    {
-      connect( vlayer, &QgsVectorLayer::editingStarted,
-               this, &QgsGpsToolBar::layerEditStateChanged );
-      connect( vlayer, &QgsVectorLayer::editingStopped,
-               this, &QgsGpsToolBar::layerEditStateChanged );
-    }
-    mLastLayer = vlayer;
   }
 
   QString buttonLabel = tr( "Create Feature" );
@@ -277,11 +262,6 @@ void QgsGpsToolBar::updateCloseFeatureButton( QgsVectorLayer *vlayer )
   mAddFeatureAction->setText( buttonLabel );
   mAddFeatureAction->setIcon( QgsApplication::getThemeIcon( icon ) );
   mAddFeatureAction->setToolTip( buttonToolTip );
-}
-
-void QgsGpsToolBar::layerEditStateChanged()
-{
-  updateCloseFeatureButton( mLastLayer );
 }
 
 void QgsGpsToolBar::destinationMenuAboutToShow()
