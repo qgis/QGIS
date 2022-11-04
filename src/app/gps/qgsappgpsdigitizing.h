@@ -77,7 +77,7 @@ class APP_EXPORT QgsAppGpsDigitizing: public QObject
     /**
      * Updates compatible fields for timestamp recording
      */
-    void updateTimestampDestinationFields( QgsMapLayer *mapLayer );
+    void updateTimestampDestinationFields( QgsVectorLayer *mapLayer );
     void logNmeaSentence( const QString &nmeaString ); // added to handle 'raw' data
 
     void startLogging();

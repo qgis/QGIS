@@ -64,10 +64,10 @@ QgsAppGpsDigitizing::QgsAppGpsDigitizing( QgsAppGpsConnection *connection, QgsMa
   connect( mAcquisitionTimer.get(), &QTimer::timeout,
            this, &QgsAppGpsDigitizing::switchAcquisition );
 
-  connect( mCanvas, &QgsMapCanvas::currentLayerChanged,
+  connect( QgsProject::instance()->gpsSettings(), &QgsProjectGpsSettings::destinationLayerChanged,
            this, &QgsAppGpsDigitizing::updateTimestampDestinationFields );
 
-  updateTimestampDestinationFields( mCanvas->currentLayer() );
+  updateTimestampDestinationFields( QgsProject::instance()->gpsSettings()->destinationLayer() );
 
   connect( mConnection, &QgsAppGpsConnection::stateChanged, this, &QgsAppGpsDigitizing::gpsStateChanged );
   connect( mConnection, &QgsAppGpsConnection::connected, this, &QgsAppGpsDigitizing::gpsConnected );
@@ -130,7 +130,7 @@ void QgsAppGpsDigitizing::resetFeature()
 
 void QgsAppGpsDigitizing::addFeature()
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+  QgsVectorLayer *vlayer = QgsProject::instance()->gpsSettings()->destinationLayer();
   if ( !vlayer )
     return;
 
@@ -318,7 +318,7 @@ void QgsAppGpsDigitizing::addFeature()
 
 void QgsAppGpsDigitizing::setTimeStampDestination( const QString &fieldName )
 {
-  if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() ) )
+  if ( QgsVectorLayer *vlayer = QgsProject::instance()->gpsSettings()->destinationLayer() )
   {
     mPreferredTimestampFields[ vlayer->id() ] = fieldName;
   }
@@ -506,9 +506,8 @@ void QgsAppGpsDigitizing::gpsStateChanged( const QgsGpsInformation &info )
   }
 }
 
-void QgsAppGpsDigitizing::updateTimestampDestinationFields( QgsMapLayer *mapLayer )
+void QgsAppGpsDigitizing::updateTimestampDestinationFields( QgsVectorLayer *vlayer )
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mapLayer );
   if ( vlayer )
   {
     // Restore preferred if stored

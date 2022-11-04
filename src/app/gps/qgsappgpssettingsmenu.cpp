@@ -299,8 +299,7 @@ void QgsAppGpsSettingsMenu::setCurrentTimeStampField( const QString &fieldName )
 
 void QgsAppGpsSettingsMenu::timeStampMenuAboutToShow()
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( QgisApp::instance()->activeLayer() );
-  mFieldProxyModel->sourceFieldModel()->setLayer( vlayer );
+  mFieldProxyModel->sourceFieldModel()->setLayer( QgsProject::instance()->gpsSettings()->destinationLayer() );
 
   mTimeStampDestinationFieldMenu->clear();
   bool foundPreviousField = false;
