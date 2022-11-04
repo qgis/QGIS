@@ -2612,7 +2612,8 @@ static QVariant fcnGeomMakeValid( const QVariantList &values, const QgsExpressio
   }
   catch ( QgsNotSupportedException & )
   {
-    parent->setEvalErrorString( QObject::tr( "The make_valid parameters require a newer GEOS library version" ) ); return QVariant();
+    parent->setEvalErrorString( QObject::tr( "The make_valid parameters require a newer GEOS library version" ) );
+    return QVariant();
   }
 
   return QVariant::fromValue( valid );
