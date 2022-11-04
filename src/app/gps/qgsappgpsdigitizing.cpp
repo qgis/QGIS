@@ -155,6 +155,22 @@ void QgsAppGpsDigitizing::createFeature()
     return;
   }
 
+  if ( !vlayer->isEditable() )
+  {
+    if ( vlayer->startEditing() )
+    {
+      if ( !QgsProject::instance()->gpsSettings()->automaticallyCommitFeatures() )
+      {
+        QgisApp::instance()->messageBar()->pushInfo( tr( "Add Feature" ), tr( "Layer “%1” was made editable" ).arg( vlayer->name() ) );
+      }
+    }
+    else
+    {
+      QgisApp::instance()->messageBar()->pushWarning( tr( "Add Feature" ), tr( "Cannot create feature — the layer “%2” could not be made editable" ).arg( vlayer->name() ) );
+      return;
+    }
+  }
+
   // Handle timestamp
   QgsAttributeMap attrMap;
   const int idx { vlayer->fields().indexOf( mTimestampField ) };
@@ -213,6 +229,10 @@ void QgsAppGpsDigitizing::createFeature()
 
           vlayer->startEditing();
         }
+      }
+      else
+      {
+        QgisApp::instance()->messageBar()->pushCritical( QString(), tr( "Could not create new feature in layer %1" ).arg( vlayer->name() ) );
       }
 
       break;
@@ -311,7 +331,11 @@ void QgsAppGpsDigitizing::createFeature()
 
         // delete the elements of mCaptureList
         mCaptureListWgs84.clear();
-      } // action.addFeature()
+      }
+      else
+      {
+        QgisApp::instance()->messageBar()->pushCritical( QString(), tr( "Could not create new feature in layer %1" ).arg( vlayer->name() ) );
+      }
 
       mBlockGpsStateChanged--;
 
