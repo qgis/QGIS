@@ -24,6 +24,8 @@
 #include "qgsappgpssettingsmenu.h"
 #include "qgsapplication.h"
 #include "qgsprojectgpssettings.h"
+#include "qgsmaplayermodel.h"
+#include "qgsmaplayerproxymodel.h"
 
 #include <QLabel>
 #include <QToolButton>
@@ -78,6 +80,21 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
   addAction( mRecenterAction );
 
   addSeparator();
+
+  mDestinationLayerModel = new QgsMapLayerProxyModel( this );
+  mDestinationLayerModel->setProject( QgsProject::instance() );
+  mDestinationLayerModel->setFilters( QgsMapLayerProxyModel::Filter::HasGeometry | QgsMapLayerProxyModel::Filter::WritableLayer );
+
+  mDestinationLayerMenu = new QMenu( this );
+  connect( mDestinationLayerMenu, &QMenu::aboutToShow, this, &QgsGpsToolBar::destinationMenuAboutToShow );
+
+  QToolButton *destinationLayerButton = new QToolButton();
+  destinationLayerButton->setAutoRaise( true );
+  destinationLayerButton->setToolTip( tr( "Set destination layer for GPS digitized features" ) );
+  destinationLayerButton->setMenu( mDestinationLayerMenu );
+  destinationLayerButton->setPopupMode( QToolButton::InstantPopup );
+  destinationLayerButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) ) );
+  addWidget( destinationLayerButton );
 
   mAddTrackVertexAction = new QAction( tr( "Add Track Vertex" ), this );
   mAddTrackVertexAction->setToolTip( tr( "Add vertex to GPS track using current GPS location" ) );
@@ -269,3 +286,42 @@ void QgsGpsToolBar::layerEditStateChanged()
 {
   updateCloseFeatureButton( mLastLayer );
 }
+
+void QgsGpsToolBar::destinationMenuAboutToShow()
+{
+  mDestinationLayerMenu->clear();
+
+  const QString currentLayerId = QgsProject::instance()->gpsSettings()->destinationLayer() ?
+                                 QgsProject::instance()->gpsSettings()->destinationLayer()->id() : QString();
+
+  for ( int row = 0; row < mDestinationLayerModel->rowCount(); ++row )
+  {
+    const QModelIndex index = mDestinationLayerModel->index( row, 0 );
+
+    QAction *layerAction = new QAction( index.data( Qt::DisplayRole ).toString(), mDestinationLayerMenu );
+    layerAction->setToolTip( index.data( Qt::ToolTipRole ).toString() );
+    layerAction->setIcon( index.data( Qt::DecorationRole ).value< QIcon >() );
+    layerAction->setCheckable( true );
+
+    const QString actionLayerId = index.data( QgsMapLayerModel::ItemDataRole::LayerIdRole ).toString();
+
+    if ( actionLayerId == currentLayerId )
+      layerAction->setChecked( true );
+
+    connect( layerAction, &QAction::toggled, this, [ = ]( bool checked )
+    {
+      if ( checked )
+      {
+        QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( QgsProject::instance()->mapLayer( actionLayerId ) );
+        if ( layer != QgsProject::instance()->gpsSettings()->destinationLayer() )
+        {
+          QgsProject::instance()->gpsSettings()->setDestinationLayer( layer );
+          QgsProject::instance()->setDirty();
+        }
+      }
+    } );
+
+    mDestinationLayerMenu->addAction( layerAction );
+  }
+}
+
