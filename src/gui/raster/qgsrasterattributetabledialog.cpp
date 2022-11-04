@@ -25,7 +25,6 @@ QgsRasterAttributeTableDialog::QgsRasterAttributeTableDialog( QgsRasterLayer *ra
   mRatWidget->setRasterLayer( rasterLayer, bandNumber );
   setWindowTitle( tr( "Raster Attribute Table for %1" ).arg( rasterLayer->name() ) );
 
-  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsRasterAttributeTableDialog::reject );
   connect( rasterLayer, &QgsRasterLayer::dataSourceChanged, this, &QgsRasterAttributeTableDialog::reject );
   connect( rasterLayer, &QgsRasterLayer::willBeDeleted, this, &QgsRasterAttributeTableDialog::reject );
 
