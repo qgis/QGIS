@@ -2008,6 +2008,9 @@ QgisApp::~QgisApp()
   delete mGpsSettingsMenu;
   mGpsSettingsMenu = nullptr;
 
+  delete mGpsDigitizing;
+  mGpsDigitizing = nullptr;
+
   delete mGpsConnection;
   mGpsConnection = nullptr;
 
