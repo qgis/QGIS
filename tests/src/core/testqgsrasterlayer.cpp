@@ -90,6 +90,7 @@ class TestQgsRasterLayer : public QgsTest
     void multiBandColorRendererNoData();
     void multiBandColorRendererNoDataColor();
     void palettedRendererNoData();
+    void palettedRendererRasterAttributeTable();
     void palettedRendererNoDataColor();
     void singleBandGrayRendererNoData();
     void singleBandGrayRendererNoDataColor();
@@ -731,6 +732,61 @@ void TestQgsRasterLayer::palettedRendererNoData()
   mMapSettings->setDestinationCrs( rl->crs() );
   mMapSettings->setExtent( rl->extent() );
   QVERIFY( render( QStringLiteral( "raster_palettedrenderer_nodata" ) ) );
+}
+
+void TestQgsRasterLayer::palettedRendererRasterAttributeTable()
+{
+  const QString rasterFileName = mTestDataDir + "raster/band1_byte_attribute_table_epsg4326.tif";
+  std::unique_ptr< QgsRasterLayer> rl = std::make_unique< QgsRasterLayer >( rasterFileName,
+                                        QStringLiteral( "rl" ) );
+  QVERIFY( rl->isValid() );
+  QVERIFY( rl->dataProvider()->setNoDataValue( 1, 9999 ) );
+  mMapSettings->setLayers( QList<QgsMapLayer *>() << rl.get() );
+  mMapSettings->setDestinationCrs( rl->crs() );
+  mMapSettings->setExtent( rl->extent() );
+  QVERIFY( render( QStringLiteral( "raster_palettedrenderer_with_attribute_table" ) ) );
+  QgsPalettedRasterRenderer *rasterRenderer { static_cast<QgsPalettedRasterRenderer *>( rl->renderer() ) };
+  QVERIFY( rasterRenderer );
+
+  const QgsPalettedRasterRenderer::MultiValueClassData multiValueclasses { rasterRenderer->multiValueClasses() };
+  QCOMPARE( multiValueclasses.size(), 79 );
+
+  // The test class with multiple value
+  QgsPalettedRasterRenderer::MultiValueClass testClass = multiValueclasses.at( 0 );
+  QCOMPARE( testClass.label, QStringLiteral( "2" ) );
+  QCOMPARE( testClass.values.size(), 3 );
+  QCOMPARE( testClass.values.at( 0 ).toDouble( ), 2.0 );
+  QCOMPARE( testClass.values.at( 1 ).toDouble( ), 246.0 );
+  QCOMPARE( testClass.values.at( 2 ).toDouble( ), 254.0 );
+
+  // Test legacy classes
+  QgsPalettedRasterRenderer::ClassData legacyClasses { rasterRenderer->classes() };
+  QCOMPARE( legacyClasses.size(), 79 + 2 );
+
+  // Make sure the actual grouped values are returned as individual entries
+  struct Klass
+  {
+    QString label;
+    QString color;
+  };
+
+  QMap<double, Klass> classMap;
+  for ( const QgsPalettedRasterRenderer::Class &klass : std::as_const( legacyClasses ) )
+  {
+    classMap.insert( klass.value, { klass.label, klass.color.name() } );
+  }
+
+  QVERIFY( classMap.contains( 2.0 ) );
+  QVERIFY( classMap.contains( 246.0 ) );
+  QVERIFY( classMap.contains( 254.0 ) );
+
+  QCOMPARE( classMap.value( 2.0 ).label,  QStringLiteral( "2" ) );
+  QCOMPARE( classMap.value( 246.0 ).label,  classMap.value( 2.0 ).label );
+  QCOMPARE( classMap.value( 254.0 ).label,  classMap.value( 2.0 ).label );
+
+  QCOMPARE( classMap.value( 246.0 ).color, classMap.value( 2.0 ).color );
+  QCOMPARE( classMap.value( 254.0 ).color, classMap.value( 2.0 ).color );
+
 }
 
 void TestQgsRasterLayer::palettedRendererNoDataColor()
