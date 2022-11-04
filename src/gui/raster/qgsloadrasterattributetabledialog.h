@@ -18,22 +18,22 @@
 
 
 #include "qgis_gui.h"
-#include "qgis_sip.h"
 #include "qgis.h"
 #include "ui_qgsloadrasterattributetabledialogbase.h"
 #include <QDialog>
 
+#define SIP_NO_FILE
 
-#ifndef SIP_RUN
 class QgsRasterLayer;
 class QgsMessageBar;
-#endif
 
 
 /**
  * \ingroup gui
  * \brief The QgsLoadRasterAttributeTableDialog dialog let the user select a VAT.DBF file
  * and associate the resulting raster attribute table with a raster band.
+ *
+ * \note Not available in Python bindings
  * \since QGIS 3.30
  */
 class GUI_EXPORT QgsLoadRasterAttributeTableDialog: public QDialog, private Ui::QgsLoadRasterAttributeTableDialogBase
@@ -47,7 +47,7 @@ class GUI_EXPORT QgsLoadRasterAttributeTableDialog: public QDialog, private Ui::
      * \param rasterLayer the raster layer, must be suitable for creating a new raster attribute table
      * \param parent optional parent
      */
-    QgsLoadRasterAttributeTableDialog( QgsRasterLayer *rasterLayer, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsLoadRasterAttributeTableDialog( QgsRasterLayer *rasterLayer, QWidget *parent = nullptr );
 
     /**
      * Sets the message \a bar associated with the widget. This allows the widget to push feedback messages

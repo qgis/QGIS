@@ -25,46 +25,79 @@ methods to handle data from QGIS and to import/export a Raster Attribute Table f
 %End
   public:
 
-    struct UsageInformation
-    {
-      QString description;  //! Usage description
-      bool unique;  //! Usage must be unique
-      bool required;  //! Usage is required
-      bool isColor; //! Usage is part of a color component
-      bool isRamp; //! Usage is part of a ramp component
-      bool supported; //! Usage is supported
-      bool maybeClass;  //! May be suitable for classification
-      QList<QVariant::Type> allowedTypes; //! Usage allowed types
+    class UsageInformation
+{
+%Docstring(signature="appended")
+The UsageInformation struct represents information about a field usage.
+%End
+
+%TypeHeaderCode
+#include "qgsrasterattributetable.h"
+%End
+      public:
+
+        QString description;
+
+        bool unique;
+
+        bool required;
+
+        bool isColor;
+
+        bool isRamp;
+
+        bool supported;
+
+        bool maybeClass;
+
+        QList<QVariant::Type> allowedTypes;
     };
 
-    struct Field
-    {
+    class Field
+{
+%Docstring(signature="appended")
+The Field struct represents a Raster Attribute Table field, including its name, usage and type.
+%End
 
-      Field( const QString &name, const Qgis::RasterAttributeTableFieldUsage &usage, const QVariant::Type type );
+%TypeHeaderCode
+#include "qgsrasterattributetable.h"
+%End
+      public:
+
+        Field( const QString &name, const Qgis::RasterAttributeTableFieldUsage &usage, const QVariant::Type type );
 %Docstring
 Creates a new Field with ``name``, ``type`` and ``usage``.
 %End
 
-      bool isColor( ) const;
+        bool isColor( ) const;
 %Docstring
 Returns ``True`` if the field carries a color component (Red, Green, Blue and optionally Alpha) information.
 %End
 
-      bool isRamp( ) const;
+        bool isRamp( ) const;
 %Docstring
 Returns ``True`` if the field carries a color ramp component information (RedMin/RedMax, GreenMin/GreenMax, BlueMin/BlueMax and optionally AlphaMin/AlphaMax) information.
 %End
 
-      QString name;
-      Qgis::RasterAttributeTableFieldUsage usage;
-      QVariant::Type type;
+        QString name;
+        Qgis::RasterAttributeTableFieldUsage usage;
+        QVariant::Type type;
     };
 
-    struct MinMaxClass
-    {
-      QString name;
-      QVector< double > minMaxValues;
-      QColor color;
+    class MinMaxClass
+{
+%Docstring(signature="appended")
+The Field struct represents a Raster Attribute Table classification entry for a thematic Raster Attribute Table.
+%End
+
+%TypeHeaderCode
+#include "qgsrasterattributetable.h"
+%End
+      public:
+        QString name;
+
+        QVector< double > minMaxValues;
+        QColor color;
     };
 
     Qgis::RasterAttributeTableType type() const;
@@ -317,12 +350,12 @@ Sets the ``value`` for ``row`` and ``column``.
 Returns the ``value`` for ``row`` and ``column``.
 %End
 
-    double minValue( ) const;
+    double minimumValue( ) const;
 %Docstring
 Returns the minimum value of the MinMax (thematic) or Min (athematic) column, returns NaN on errors.
 %End
 
-    double maxValue( ) const;
+    double maximumValue( ) const;
 %Docstring
 Returns the maximum value of the MinMax (thematic) or Max (athematic) column, returns NaN on errors.
 %End
@@ -374,7 +407,7 @@ the current data are returned without any change.
 Try to determine the field usage from its ``name`` and ``type``.
 %End
 
-    const QString &filePath() const;
+    QString filePath() const;
 %Docstring
 Returns the (possibly empty) path of the file-based RAT, the path is set when a RAT is read or written from/to a file.
 
@@ -397,9 +430,12 @@ Returns the list of field usages for colors and values.
 
     static QgsRasterAttributeTable *createFromRaster( QgsRasterLayer *rasterLayer, int *bandNumber /Out/ = 0 ) /Factory/;
 %Docstring
-Creates a new Raster Attribute Table from a ``rasterLayer``, the renderer must be Paletted or SingleBandPseudoColor, optionally reporting in ``bandNumber`` the raster band from which the attribute table was created.
+Creates a new Raster Attribute Table from a raster layer, the renderer must be Paletted or SingleBandPseudoColor, optionally reporting the raster band from which the attribute table was created.
 
-:return: NULL in case of errors or unsupported renderer.
+:param rasterLayer: raster layer
+
+:return: - NULL in case of errors or unsupported renderer.
+         - bandNumber: band number
 %End
 
 

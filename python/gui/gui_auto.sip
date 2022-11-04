@@ -406,11 +406,7 @@
 %Include auto_generated/processing/models/qgsmodelgraphicsview.sip
 %Include auto_generated/providers/qgsabstractdbsourceselect.sip
 %Include auto_generated/raster/qgsrasterattributetablewidget.sip
-%Include auto_generated/raster/qgscreaterasterattributetabledialog.sip
-%Include auto_generated/raster/qgsloadrasterattributetabledialog.sip
 %Include auto_generated/raster/qgsrasterattributetabledialog.sip
-%Include auto_generated/raster/qgsrasterattributetableaddcolumndialog.sip
-%Include auto_generated/raster/qgsrasterattributetableaddrowdialog.sip
 %Include auto_generated/raster/qgscolorrampshaderwidget.sip
 %Include auto_generated/raster/qgshillshaderendererwidget.sip
 %Include auto_generated/raster/qgsmultibandcolorrendererwidget.sip

@@ -56,24 +56,26 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
       QString label;
     };
 
-    //! Properties of a multi value class
-    struct MultiValueClass
+    /**
+     * \brief Properties of a multi value class: a class that contains multiple values.
+     * \since QGIS 3.30
+     */
+    class MultiValueClass
     {
-      //! Constructor for Class
-      MultiValueClass( QVector< double > values, const QColor &color = QColor(), const QString &label = QString() )
-        : values( values )
-        , color( color )
-        , label( label )
-      {}
 
-      //! Values
-      QVector< double > values;
+      public:
 
-      //! Color to render value
-      QColor color;
+        //! Constructor for MultiValueClass from a list of values
+        MultiValueClass( const QVector< QVariant > &values, const QColor &color = QColor(), const QString &label = QString() );
 
-      //! Label for value
-      QString label;
+        //! Values
+        QVector< QVariant > values;
+
+        //! Color to render values
+        QColor color;
+
+        //! Label for values
+        QString label;
     };
 
 
@@ -181,7 +183,7 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
      * \note The method will return an empty list of classes in case the Raster Attribute Table is not thematic.
      * \since QGIS 3.30
      */
-    static QgsPalettedRasterRenderer::MultiValueClassData rasterAttributeTableToClassData( const QgsRasterAttributeTable *attributeTable, const int classificationColumn = -1, QgsColorRamp *ramp = nullptr );
+    static QgsPalettedRasterRenderer::MultiValueClassData rasterAttributeTableToClassData( const QgsRasterAttributeTable *attributeTable, int classificationColumn = -1, QgsColorRamp *ramp = nullptr );
 
     /**
      * Converts a \a string containing a color table or class data to to paletted renderer class data.

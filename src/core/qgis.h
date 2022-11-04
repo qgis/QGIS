@@ -27,7 +27,6 @@
 #include "qgstolerance.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "gdal.h"
 
 #ifdef SIP_RUN
 % ModuleHeaderCode
@@ -749,40 +748,42 @@ class CORE_EXPORT Qgis
 
     /**
      * \brief The RasterAttributeTableFieldUsage enum represents the usage of a Raster Attribute Table field.
+     * \note Directly mapped from GDALRATFieldUsage enum values.
      * \since QGIS 3.30
      */
     enum class RasterAttributeTableFieldUsage : int
     {
-      Generic = GFU_Generic, //!< Field usage Generic
-      PixelCount = GFU_PixelCount, //!< Field usage PixelCount
-      Name = GFU_Name, //!< Field usage Name
-      Min = GFU_Min, //!< Field usage Min
-      Max = GFU_Max, //!< Field usage Max
-      MinMax = GFU_MinMax, //!< Field usage MinMax
-      Red = GFU_Red, //!< Field usage Red
-      Green = GFU_Green, //!< Field usage Green
-      Blue = GFU_Blue, //!< Field usage Blue
-      Alpha = GFU_Alpha, //!< Field usage Alpha
-      RedMin = GFU_RedMin, //!< Field usage RedMin
-      GreenMin = GFU_GreenMin, //!< Field usage GreenMin
-      BlueMin = GFU_BlueMin, //!< Field usage BlueMin
-      AlphaMin = GFU_AlphaMin, //!< Field usage AlphaMin
-      RedMax = GFU_RedMax, //!< Field usage RedMax
-      GreenMax = GFU_GreenMax, //!< Field usage GreenMax
-      BlueMax = GFU_BlueMax, //!< Field usage BlueMax
-      AlphaMax = GFU_AlphaMax, //!< Field usage AlphaMax
-      MaxCount = GFU_MaxCount //!< Field usage MaxCount
+      Generic = 0, //!< Field usage Generic
+      PixelCount = 1, //!< Field usage PixelCount
+      Name = 2, //!< Field usage Name
+      Min = 3, //!< Field usage Min
+      Max = 4, //!< Field usage Max
+      MinMax = 5, //!< Field usage MinMax
+      Red = 6, //!< Field usage Red
+      Green = 7, //!< Field usage Green
+      Blue = 8, //!< Field usage Blue
+      Alpha = 9, //!< Field usage Alpha
+      RedMin = 10, //!< Field usage RedMin
+      GreenMin = 11, //!< Field usage GreenMin
+      BlueMin = 12, //!< Field usage BlueMin
+      AlphaMin = 13, //!< Field usage AlphaMin
+      RedMax = 14, //!< Field usage RedMax
+      GreenMax = 15, //!< Field usage GreenMax
+      BlueMax = 16, //!< Field usage BlueMax
+      AlphaMax = 17, //!< Field usage AlphaMax
+      MaxCount   //!< Not used by QGIS: GDAL Maximum GFU value (equals to GFU_AlphaMax+1 currently)
     };
     Q_ENUM( RasterAttributeTableFieldUsage )
 
     /**
      * \brief The RasterAttributeTableType enum represents the type of RAT.
+     *  note Directly mapped from GDALRATTableType enum values.
      * \since QGIS 3.30
      */
     enum class RasterAttributeTableType : int
     {
-      Thematic = GRTT_THEMATIC,
-      Athematic = GRTT_ATHEMATIC
+      Thematic = 0,
+      Athematic = 1
     };
     Q_ENUM( RasterAttributeTableType )
 

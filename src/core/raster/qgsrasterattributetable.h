@@ -51,52 +51,74 @@ class CORE_EXPORT QgsRasterAttributeTable
     /**
      * \brief The UsageInformation struct represents information about a field usage.
      */
-    struct CORE_EXPORT UsageInformation
+    class CORE_EXPORT UsageInformation
     {
-      QString description;  //! Usage description
-      bool unique;  //! Usage must be unique
-      bool required;  //! Usage is required
-      bool isColor; //! Usage is part of a color component
-      bool isRamp; //! Usage is part of a ramp component
-      bool supported; //! Usage is supported
-      bool maybeClass;  //! May be suitable for classification
-      QList<QVariant::Type> allowedTypes; //! Usage allowed types
+      public:
+
+        //! Usage description
+        QString description;
+
+        //! Usage must be unique
+        bool unique = false;
+
+        //! Usage is required
+        bool required = false;
+
+        //! Usage is part of a color component
+        bool isColor = false;
+
+        //! Usage is part of a ramp component
+        bool isRamp = false;
+
+        //! Usage is supported
+        bool supported = false;
+
+        //! May be suitable for classification
+        bool maybeClass = false;
+
+        //! Usage allowed types
+        QList<QVariant::Type> allowedTypes;
     };
 
     /**
      * \brief The Field struct represents a Raster Attribute Table field, including its name, usage and type.
      */
-    struct CORE_EXPORT Field
+    class CORE_EXPORT Field
     {
 
-      /**
-       * Creates a new Field with \a name, \a type and \a usage.
-       */
-      Field( const QString &name, const Qgis::RasterAttributeTableFieldUsage &usage, const QVariant::Type type ): name( name ), usage( usage ), type( type ) {}
+      public:
 
-      /**
-       * Returns TRUE if the field carries a color component (Red, Green, Blue and optionally Alpha) information.
-       */
-      bool isColor( ) const;
+        /**
+         * Creates a new Field with \a name, \a type and \a usage.
+         */
+        Field( const QString &name, const Qgis::RasterAttributeTableFieldUsage &usage, const QVariant::Type type ): name( name ), usage( usage ), type( type ) {}
 
-      /**
-       * Returns TRUE if the field carries a color ramp component information (RedMin/RedMax, GreenMin/GreenMax, BlueMin/BlueMax and optionally AlphaMin/AlphaMax) information.
-       */
-      bool isRamp( ) const;
+        /**
+         * Returns TRUE if the field carries a color component (Red, Green, Blue and optionally Alpha) information.
+         */
+        bool isColor( ) const;
 
-      QString name;
-      Qgis::RasterAttributeTableFieldUsage usage;
-      QVariant::Type type;
+        /**
+         * Returns TRUE if the field carries a color ramp component information (RedMin/RedMax, GreenMin/GreenMax, BlueMin/BlueMax and optionally AlphaMin/AlphaMax) information.
+         */
+        bool isRamp( ) const;
+
+        QString name;
+        Qgis::RasterAttributeTableFieldUsage usage;
+        QVariant::Type type;
     };
 
     /**
-     * \brief The Field struct represents a Raster Attribute Table classification entry for a MinMax thematic Raster Attribute Table.
+     * \brief The Field struct represents a Raster Attribute Table classification entry for a thematic Raster Attribute Table.
      */
-    struct CORE_EXPORT MinMaxClass
+    class CORE_EXPORT MinMaxClass
     {
-      QString name;
-      QVector< double > minMaxValues;
-      QColor color;
+      public:
+        QString name;
+
+        //! List of values for the class
+        QVector< double > minMaxValues;
+        QColor color;
     };
 
     /**
@@ -312,12 +334,12 @@ class CORE_EXPORT QgsRasterAttributeTable
     /**
      * Returns the minimum value of the MinMax (thematic) or Min (athematic) column, returns NaN on errors.
      */
-    double minValue( ) const;
+    double minimumValue( ) const;
 
     /**
      * Returns the maximum value of the MinMax (thematic) or Max (athematic) column, returns NaN on errors.
      */
-    double maxValue( ) const;
+    double maximumValue( ) const;
 
     /**
      * Returns a row of data for the given \a matchValue or and empty row
@@ -370,7 +392,7 @@ class CORE_EXPORT QgsRasterAttributeTable
     * \see writeToFile()
     * \see readFromFile()
     */
-    const QString &filePath() const;
+    QString filePath() const;
 
     /**
      * Returns the translated human readable name of \a fieldUsage.
@@ -384,7 +406,9 @@ class CORE_EXPORT QgsRasterAttributeTable
     static QList<Qgis::RasterAttributeTableFieldUsage> valueAndColorFieldUsages();
 
     /**
-     * Creates a new Raster Attribute Table from a \a rasterLayer, the renderer must be Paletted or SingleBandPseudoColor, optionally reporting in \a bandNumber the raster band from which the attribute table was created.
+     * Creates a new Raster Attribute Table from a raster layer, the renderer must be Paletted or SingleBandPseudoColor, optionally reporting the raster band from which the attribute table was created.
+     * \param rasterLayer raster layer
+     * \param bandNumber band number
      * \returns NULL in case of errors or unsupported renderer.
      */
     static QgsRasterAttributeTable *createFromRaster( QgsRasterLayer *rasterLayer, int *bandNumber SIP_OUT = nullptr ) SIP_FACTORY;

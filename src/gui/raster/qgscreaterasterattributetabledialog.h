@@ -17,20 +17,21 @@
 #define QGSCREATERASTERATTRIBUTETABLEDIALOG_H
 
 #include "qgis_gui.h"
-#include "qgis_sip.h"
 #include "qgis.h"
 #include "ui_qgscreaterasterattributetabledialogbase.h"
 #include <QDialog>
 
-#ifndef SIP_RUN
+#define SIP_NO_FILE
+
 class QgsRasterLayer;
 class QgsMessageBar;
-#endif
+
 
 /**
  * \ingroup gui
  * \brief The QgsCreateRasterAttributeTableDialog dialog collects the information required to create a new raster attribute table and performs the creation when the dialog is accepted.
  * \warning Client code must check if the creation of attribute tables is supported by the raster layer by calling QgsRasterLayer::canCreateAttributeTable() before using this dialog.
+ * \note Not available in Python bindings
  * \since QGIS 3.30
  */
 class GUI_EXPORT QgsCreateRasterAttributeTableDialog : public QDialog, private Ui::QgsCreateRasterAttributeTableDialogBase
@@ -43,7 +44,7 @@ class GUI_EXPORT QgsCreateRasterAttributeTableDialog : public QDialog, private U
      * \param rasterLayer the raster layer, must be suitable for creating a new raster attribute table
      * \param parent optional parent
      */
-    QgsCreateRasterAttributeTableDialog( QgsRasterLayer *rasterLayer, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsCreateRasterAttributeTableDialog( QgsRasterLayer *rasterLayer, QWidget *parent = nullptr );
 
     /**
      * Returns the file path in case of VAT.DBF save option.

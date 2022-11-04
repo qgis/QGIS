@@ -21,9 +21,13 @@
 #include "qgis.h"
 #include "ui_qgsrasterattributetableaddrowdialogbase.h"
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup gui
  * \brief The QgsRasterAttributeTableAddColumnDialog class collects options to add a new row to a raster attribute table.
+ *
+ * \note Not available in Python bindings
  * \since QGIS 3.30
  */
 class GUI_EXPORT QgsRasterAttributeTableAddRowDialog : public QDialog, private Ui::QgsRasterAttributeTableAddRowDialogBase
@@ -35,7 +39,7 @@ class GUI_EXPORT QgsRasterAttributeTableAddRowDialog : public QDialog, private U
      * Creates a new QgsRasterAttributeTableAddRowDialog
      * \param parent optional parent
      */
-    QgsRasterAttributeTableAddRowDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsRasterAttributeTableAddRowDialog( QWidget *parent = nullptr );
 
     /**
      * Returns TRUE if the desired insertion position for the new row is after the currently selected row, FALSE if the insertion point is before.

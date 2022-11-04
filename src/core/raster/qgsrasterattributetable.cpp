@@ -745,7 +745,7 @@ QVariant QgsRasterAttributeTable::value( const int row, const int column ) const
   return mData[ row ][ column ];
 }
 
-double QgsRasterAttributeTable::minValue() const
+double QgsRasterAttributeTable::minimumValue() const
 {
   const QList<Qgis::RasterAttributeTableFieldUsage> fieldUsages { usages() };
   bool ok { false };
@@ -780,7 +780,7 @@ double QgsRasterAttributeTable::minValue() const
   }
 }
 
-double QgsRasterAttributeTable::maxValue() const
+double QgsRasterAttributeTable::maximumValue() const
 {
   const QList<Qgis::RasterAttributeTableFieldUsage> fieldUsages { usages() };
   bool ok { false };
@@ -1237,7 +1237,7 @@ QHash<int, QgsRasterAttributeTable::UsageInformation> QgsRasterAttributeTable::u
 }
 ///@endcond PRIVATE
 
-const QString &QgsRasterAttributeTable::filePath() const
+QString QgsRasterAttributeTable::filePath() const
 {
   return mFilePath;
 }
@@ -1343,8 +1343,8 @@ QgsGradientColorRamp QgsRasterAttributeTable::colorRamp( QStringList &labels, co
     const bool hasColorOrRamp { hasColor() || hasRamp() };
     {
 
-      const double min { minValue() };
-      const double max { maxValue() };
+      const double min { minimumValue() };
+      const double max { maximumValue() };
       const double range { max - min };
 
       if ( range != 0 )
@@ -1485,7 +1485,7 @@ QgsRasterRenderer *QgsRasterAttributeTable::createRenderer( QgsRasterDataProvide
     return nullptr;
   }
 
-  QgsRasterRenderer *renderer = nullptr;
+  std::unique_ptr<QgsRasterRenderer> renderer;
 
   if ( type() == Qgis::RasterAttributeTableType::Thematic )
   {
@@ -1495,13 +1495,13 @@ QgsRasterRenderer *QgsRasterAttributeTable::createRenderer( QgsRasterDataProvide
       ramp.reset( new QgsRandomColorRamp() );
     }
     const QgsPalettedRasterRenderer::MultiValueClassData classes = QgsPalettedRasterRenderer::rasterAttributeTableToClassData( this, classificationColumn, ramp.get() );
-    renderer = new QgsPalettedRasterRenderer( provider,
-        bandNumber,
-        classes );
+    renderer = std::make_unique<QgsPalettedRasterRenderer>( provider,
+               bandNumber,
+               classes );
   }
   else
   {
-    QgsSingleBandPseudoColorRenderer *pseudoColorRenderer = new QgsSingleBandPseudoColorRenderer( provider, bandNumber );
+    std::unique_ptr<QgsSingleBandPseudoColorRenderer> pseudoColorRenderer = std::make_unique<QgsSingleBandPseudoColorRenderer>( provider, bandNumber );
     QStringList labels;
     // Athematic classification is not supported, but the classificationColumn will be used for labels.
     // if it's not specified, try to guess it here.
@@ -1516,23 +1516,23 @@ QgsRasterRenderer *QgsRasterAttributeTable::createRenderer( QgsRasterDataProvide
       }
     }
     QgsGradientColorRamp *ramp { colorRamp( labels, labelColumn ).clone() };
-    pseudoColorRenderer->setClassificationMin( minValue() );
-    pseudoColorRenderer->setClassificationMax( maxValue() );
+    pseudoColorRenderer->setClassificationMin( minimumValue() );
+    pseudoColorRenderer->setClassificationMax( maximumValue() );
     // Use discrete for single colors, interpolated for ramps
     pseudoColorRenderer->createShader( ramp, hasRamp() ? QgsColorRampShader::Type::Interpolated : QgsColorRampShader::Type::Discrete, QgsColorRampShader::ClassificationMode::Continuous, ramp->stops().count() + 2, true );
-    pseudoColorRenderer->shader()->setMaximumValue( maxValue() );
-    pseudoColorRenderer->shader()->setMinimumValue( minValue() );
+    pseudoColorRenderer->shader()->setMaximumValue( maximumValue() );
+    pseudoColorRenderer->shader()->setMinimumValue( minimumValue() );
     // Set labels
     if ( QgsColorRampShader *shaderFunction = static_cast<QgsColorRampShader *>( pseudoColorRenderer->shader()->rasterShaderFunction() ) )
     {
-      shaderFunction->setMinimumValue( minValue() );
-      shaderFunction->setMaximumValue( maxValue() );
+      shaderFunction->setMinimumValue( minimumValue() );
+      shaderFunction->setMaximumValue( maximumValue() );
       const bool labelsAreUsable { ramp->count() > 2 && labels.count() == ramp->count() - 1 };
 
       if ( labelsAreUsable )
       {
         QList<QgsColorRampShader::ColorRampItem> newItemList;
-        const double range { maxValue() - minValue() };
+        const double range { maximumValue() - minimumValue() };
         int stopIdx { 0 };
         for ( const QString &label : std::as_const( labels ) )
         {
@@ -1540,20 +1540,21 @@ QgsRasterRenderer *QgsRasterAttributeTable::createRenderer( QgsRasterDataProvide
           {
             break;
           }
-          double value { minValue() + ramp->stops().at( stopIdx ).offset * range };
+          double value { minimumValue() + ramp->stops().at( stopIdx ).offset * range };
           QgsColorRampShader::ColorRampItem item { value, ramp->stops().at( stopIdx ).color, label };
           newItemList.push_back( item );
           stopIdx++;
         }
 
-        QgsColorRampShader::ColorRampItem item { maxValue(), ramp->color2(), labels.last() };
+        QgsColorRampShader::ColorRampItem item { maximumValue(), ramp->color2(), labels.last() };
         newItemList.push_back( item );
         shaderFunction->setColorRampItemList( newItemList );
       }
     }
-    renderer = pseudoColorRenderer;
+    renderer.reset( pseudoColorRenderer.release() );
   }
-  return renderer;
+
+  return renderer.release();
 }
 
 QList<QList<QVariant> > QgsRasterAttributeTable::orderedRows() const
