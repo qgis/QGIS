@@ -25,6 +25,7 @@ class QgsAppGpsConnection;
 class QgsMapCanvas;
 class QLabel;
 class QgsVectorLayer;
+class QgsMapLayerProxyModel;
 
 class QgsGpsToolBar : public QToolBar
 {
@@ -52,6 +53,7 @@ class QgsGpsToolBar : public QToolBar
     void updateLocationLabel( const QgsPoint &point );
     void updateCloseFeatureButton( QgsVectorLayer *lyr );
     void layerEditStateChanged();
+    void destinationMenuAboutToShow();
 
   private:
 
@@ -64,12 +66,16 @@ class QgsGpsToolBar : public QToolBar
     QAction *mAddFeatureAction = nullptr;
     QAction *mResetFeatureAction = nullptr;
 
+    QMenu *mDestinationLayerMenu = nullptr;
+
     QLabel *mLocationLabel = nullptr;
 
     QgsCoordinateReferenceSystem mWgs84CRS;
     bool mEnableAddVertexButton = true;
 
     QPointer< QgsVectorLayer > mLastLayer;
+
+    QgsMapLayerProxyModel *mDestinationLayerModel = nullptr;
 };
 
 #endif // QGSGPSTOOLBAR_H
