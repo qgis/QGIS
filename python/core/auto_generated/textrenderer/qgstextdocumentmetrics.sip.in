@@ -51,6 +51,19 @@ Returns ``True`` if the metrics could not be calculated because the text format 
 Returns the overall size of the document.
 %End
 
+    QRectF outerBounds( Qgis::TextLayoutMode mode, Qgis::TextOrientation orientation ) const;
+%Docstring
+Returns the outer bounds of the document, which is the :py:func:`~QgsTextDocumentMetrics.documentSize` adjusted to account
+for any text elements which fall outside of the usual document margins (such as super or
+sub script elements)
+
+.. warning::
+
+   Currently this is only supported for the Qgis.TextLayoutMode.Labeling mode.
+
+.. versionadded:: 3.30
+%End
+
     double blockWidth( int blockIndex ) const;
 %Docstring
 Returns the width of the block at the specified index.
@@ -69,6 +82,14 @@ Returns the offset from the top of the document to the text baseline for the giv
     double fragmentHorizontalAdvance( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode mode ) const;
 %Docstring
 Returns the horizontal advance of the fragment at the specified block and fragment index.
+
+.. versionadded:: 3.30
+%End
+
+    double fragmentVerticalOffset( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode mode ) const;
+%Docstring
+Returns the vertical offset from a text block's baseline which should be applied
+to the fragment at the specified index within that block.
 
 .. versionadded:: 3.30
 %End

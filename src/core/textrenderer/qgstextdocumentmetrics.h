@@ -22,6 +22,7 @@
 
 #include <QVector>
 #include <QSizeF>
+#include <QRectF>
 
 class QgsTextDocument;
 class QgsRenderContext;
@@ -65,6 +66,17 @@ class CORE_EXPORT QgsTextDocumentMetrics
     QSizeF documentSize( Qgis::TextLayoutMode mode, Qgis::TextOrientation orientation ) const;
 
     /**
+     * Returns the outer bounds of the document, which is the documentSize() adjusted to account
+     * for any text elements which fall outside of the usual document margins (such as super or
+     * sub script elements)
+     *
+     * \warning Currently this is only supported for the Qgis::TextLayoutMode::Labeling mode.
+     *
+     * \since QGIS 3.30
+     */
+    QRectF outerBounds( Qgis::TextLayoutMode mode, Qgis::TextOrientation orientation ) const;
+
+    /**
      * Returns the width of the block at the specified index.
      */
     double blockWidth( int blockIndex ) const;
@@ -85,6 +97,14 @@ class CORE_EXPORT QgsTextDocumentMetrics
      * \since QGIS 3.30
      */
     double fragmentHorizontalAdvance( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode mode ) const;
+
+    /**
+     * Returns the vertical offset from a text block's baseline which should be applied
+     * to the fragment at the specified index within that block.
+     *
+     * \since QGIS 3.30
+     */
+    double fragmentVerticalOffset( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode mode ) const;
 
     /**
      * Returns the vertical orientation x offset for the specified block.
@@ -119,6 +139,8 @@ class CORE_EXPORT QgsTextDocumentMetrics
     QSizeF mDocumentSizePointRectMode;
     QSizeF mDocumentSizeVerticalOrientation;
 
+    QRectF mOuterBoundsLabelMode;
+
     QList < QList< QFont > > mFragmentFonts;
     QList< double > mBlockWidths;
     QList< double > mBlockHeights;
@@ -127,6 +149,10 @@ class CORE_EXPORT QgsTextDocumentMetrics
     QList< double > mBaselineOffsetsRectMode;
 
     QList< QList< double > > mFragmentHorizontalAdvance;
+
+    QList< QList< double > > mFragmentVerticalOffsetsLabelMode;
+    QList< QList< double > > mFragmentVerticalOffsetsPointMode;
+    QList< QList< double > > mFragmentVerticalOffsetsRectMode;
 
     QList< double > mVerticalOrientationXOffsets;
     QList< double > mBlockMaxDescent;
