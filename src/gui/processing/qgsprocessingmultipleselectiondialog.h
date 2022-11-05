@@ -124,6 +124,11 @@ class GUI_EXPORT QgsProcessingMultipleSelectionPanelWidget : public QgsPanelWidg
     QStandardItemModel *mModel = nullptr;
     //! Value formatter
     std::function< QString( const QVariant & )> mValueFormatter;
+
+    void dragEnterEvent( QDragEnterEvent *event ) override;
+    void dragLeaveEvent( QDragLeaveEvent *event ) override;
+    void dropEvent( QDropEvent *event ) override;
+    void paintEvent( QPaintEvent *e ) override;
   private slots:
 
     void selectAll( bool checked );
@@ -137,10 +142,16 @@ class GUI_EXPORT QgsProcessingMultipleSelectionPanelWidget : public QgsPanelWidg
 
     QList< QStandardItem * > currentItems();
 
-
     void populateList( const QVariantList &availableOptions, const QVariantList &selectedOptions );
 
     friend class TestProcessingGui;
+    bool mDragActive = false;
+
+    /**
+     * Returns a map layer, compatible with the filters set for the combo box, from
+     * the specified mime \a data (if possible!).
+     */
+    QList<int> existingMapLayerFromMimeData( const QMimeData *data ) const;
 };
 
 
