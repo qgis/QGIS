@@ -556,7 +556,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
     painter->drawRect( rect );
 
 
-    painter->setPen( QColor( 0, 0, 0, 120 ) );
+    painter->setPen( QColor( 0, 0, 0, 60 ) );
     const QgsMargins &margins = label->getFeaturePart()->feature()->visualMargin();
     if ( margins.top() > 0 )
     {
@@ -584,7 +584,10 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
                                      outerBoundsPt2.x() - outerBoundsPt1.x(),
                                      outerBoundsPt2.y() - outerBoundsPt1.y() );
 
-      painter->setPen( QColor( 255, 0, 255, 140 ) );
+      QPen pen( QColor( 255, 0, 255, 140 ) );
+      pen.setCosmetic( true );
+      pen.setWidth( 1 );
+      painter->setPen( pen );
       painter->drawRect( outerBoundsPixel );
     }
 
@@ -594,13 +597,39 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
       const QgsTextDocument &document = textFeature->document();
       const int blockCount = document.size();
 
+      double prevBlockBaseline = rect.bottom() - rect.top();
+
       // draw block baselines
-      painter->setPen( QColor( 0, 0, 255, 220 ) );
       for ( int blockIndex = 0; blockIndex < blockCount; ++blockIndex )
       {
         const double blockBaseLine = metrics.baselineOffset( blockIndex, Qgis::TextLayoutMode::Labeling );
-        painter->drawLine( QPointF( rect.left(), rect.top()  + blockBaseLine ),
-                           QPointF( rect.right(), rect.top() + blockBaseLine ) );
+
+        const QgsTextBlock &block = document.at( blockIndex );
+        const int fragmentCount = block.size();
+        double left = 0;
+        for ( int fragmentIndex = 0; fragmentIndex < fragmentCount; ++fragmentIndex )
+        {
+          const double fragmentVerticalOffset = metrics.fragmentVerticalOffset( blockIndex, fragmentIndex, Qgis::TextLayoutMode::Labeling );
+          const double right = left + metrics.fragmentHorizontalAdvance( blockIndex, fragmentIndex, Qgis::TextLayoutMode::Labeling );
+
+          if ( fragmentIndex > 0 )
+          {
+            QPen pen( QColor( 0, 0, 255, 220 ) );
+            pen.setStyle( Qt::PenStyle::DashLine );
+
+            painter->setPen( pen );
+
+            painter->drawLine( QPointF( rect.left() + left, rect.top() + blockBaseLine + fragmentVerticalOffset ),
+                               QPointF( rect.left() + left, rect.top() + prevBlockBaseline ) );
+
+          }
+
+          painter->setPen( QColor( 0, 0, 255, 220 ) );
+          painter->drawLine( QPointF( rect.left() + left, rect.top()  + blockBaseLine + fragmentVerticalOffset ),
+                             QPointF( rect.left() + right, rect.top() + blockBaseLine + fragmentVerticalOffset ) );
+          left = right;
+        }
+        prevBlockBaseline = blockBaseLine;
       }
     }
 

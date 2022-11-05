@@ -1460,7 +1460,7 @@ bool QgsPalLayerSettings::checkMinimumSizeMM( const QgsRenderContext &ct, const 
   return QgsPalLabeling::checkMinimumSizeMM( ct, geom, minSize );
 }
 
-void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f, QgsRenderContext *context, double *rotatedLabelX, double *rotatedLabelY, QgsTextDocument *document, QgsTextDocumentMetrics *documentMetrics )
+void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f, QgsRenderContext *context, double *rotatedLabelX, double *rotatedLabelY, QgsTextDocument *document, QgsTextDocumentMetrics *documentMetrics, QRectF *outerBounds )
 {
   if ( !fm || !f )
   {
@@ -1714,6 +1714,16 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
     *rotatedLabelY = rh * uPP;
   }
 #endif
+
+  if ( outerBounds && documentMetrics )
+  {
+    const QRectF outerBoundsPixels = documentMetrics->outerBounds( Qgis::TextLayoutMode::Labeling, orientation );
+
+    *outerBounds = QRectF( outerBoundsPixels.left() * uPP,
+                           outerBoundsPixels.top() * uPP,
+                           outerBoundsPixels.width() * uPP,
+                           outerBoundsPixels.height() * uPP );
+  }
 }
 
 void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext &context )
@@ -2018,15 +2028,16 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
 
   QgsTextDocument doc;
   QgsTextDocumentMetrics documentMetrics;
+  QRectF outerBounds;
   if ( format().allowHtmlFormatting() && !labelText.isEmpty() )
   {
     doc = QgsTextDocument::fromHtml( QStringList() << labelText );
     // also applies the line split to doc and calculates document metrics!
-    calculateLabelSize( labelFontMetrics.get(), labelText, labelWidth, labelHeight, mCurFeat, &context, &rotatedLabelX, &rotatedLabelY, &doc, &documentMetrics );
+    calculateLabelSize( labelFontMetrics.get(), labelText, labelWidth, labelHeight, mCurFeat, &context, &rotatedLabelX, &rotatedLabelY, &doc, &documentMetrics, &outerBounds );
   }
   else
   {
-    calculateLabelSize( labelFontMetrics.get(), labelText, labelWidth, labelHeight, mCurFeat, &context, &rotatedLabelX, &rotatedLabelY, nullptr, nullptr );
+    calculateLabelSize( labelFontMetrics.get(), labelText, labelWidth, labelHeight, mCurFeat, &context, &rotatedLabelX, &rotatedLabelY, nullptr, nullptr, &outerBounds );
   }
 
   // maximum angle between curved label characters (hardcoded defaults used in QGIS <2.0)
@@ -2666,6 +2677,11 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
     //register symbol size
     labelFeature->setSymbolSize( QSizeF( obstacleGeometry.boundingBox().width(),
                                          obstacleGeometry.boundingBox().height() ) );
+  }
+
+  if ( outerBounds.left() != 0 || outerBounds.top() != 0 || !qgsDoubleNear( outerBounds.width(), labelWidth ) || !qgsDoubleNear( outerBounds.height(), labelHeight ) )
+  {
+    labelFeature->setOuterBounds( outerBounds );
   }
 
   //set label's visual margin so that top visual margin is the leading, and bottom margin is the font's descent
