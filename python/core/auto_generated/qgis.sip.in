@@ -1005,6 +1005,13 @@ The development version
       Bottom,
     };
 
+    enum class TextCharacterVerticalAlignment
+    {
+      Normal,
+      SuperScript,
+      SubScript,
+    };
+
     enum class RenderSubcomponentProperty
     {
       Generic,

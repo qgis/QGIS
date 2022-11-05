@@ -18,6 +18,7 @@
 
 #include "qgis_sip.h"
 #include "qgis_core.h"
+#include "qgis.h"
 
 #include <QFont>
 #include <QColor>
@@ -195,6 +196,54 @@ class CORE_EXPORT QgsTextCharacterFormat
     void setOverline( BooleanValue enabled );
 
     /**
+     * Returns TRUE if the format has an explicit vertical alignment set.
+     *
+     * If FALSE is returned then the vertical alignment will be inherited.
+     *
+     * \see setHasVerticalAlignmentSet()
+     * \see verticalAlignment()
+     *
+     * \since QGIS 3.30
+     */
+    bool hasVerticalAlignmentSet() const { return mHasVerticalAlignSet; }
+
+    /**
+     * Sets whether the format has an explicit vertical alignment \a set.
+     *
+     * If \a set is FALSE then the vertical alignment will be inherited.
+     *
+     * \see hasVerticalAlignmentSet()
+     * \see setVerticalAlignment()
+     *
+     * \since QGIS 3.30
+     */
+    void setHasVerticalAlignmentSet( bool set ) { mHasVerticalAlignSet = set; }
+
+    /**
+     * Returns the format vertical alignment.
+     *
+     * This property is only respected if hasVerticalAlignmentSet() is TRUE.
+     *
+     * \see hasVerticalAlignmentSet()
+     * \see setVerticalAlignment()
+     *
+     * \since QGIS 3.30
+     */
+    Qgis::TextCharacterVerticalAlignment verticalAlignment() const { return mVerticalAlign; }
+
+    /**
+     * Sets the format vertical \a alignment.
+     *
+     * This property is only respected if hasVerticalAlignmentSet() is TRUE.
+     *
+     * \see hasVerticalAlignmentSet()
+     * \see verticalAlignment()
+     *
+     * \since QGIS 3.30
+     */
+    void setVerticalAlignment( Qgis::TextCharacterVerticalAlignment alignment ) { mVerticalAlign = alignment; }
+
+    /**
      * Updates the specified \a font in place, applying character formatting options which
      * are applicable on a font level when rendered in the given \a context.
      *
@@ -213,6 +262,10 @@ class CORE_EXPORT QgsTextCharacterFormat
     BooleanValue mItalic = BooleanValue::NotSet;
     double mFontPointSize = -1;
     QString mFontFamily;
+
+    bool mHasVerticalAlignSet = false;
+    Qgis::TextCharacterVerticalAlignment mVerticalAlign = Qgis::TextCharacterVerticalAlignment::Normal;
+
     BooleanValue mStrikethrough = BooleanValue::NotSet;
     BooleanValue mUnderline = BooleanValue::NotSet;
     BooleanValue mOverline = BooleanValue::NotSet;

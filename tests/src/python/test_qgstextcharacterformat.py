@@ -15,6 +15,7 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 import qgis  # NOQA
 
 from qgis.core import (
+    Qgis,
     QgsFontUtils,
     QgsTextCharacterFormat,
     QgsRenderContext
@@ -39,6 +40,8 @@ class TestQgsTextCharacterFormat(unittest.TestCase):
         self.assertEqual(format.overline(), QgsTextCharacterFormat.BooleanValue.NotSet)
         self.assertEqual(format.fontPointSize(), -1)
         self.assertFalse(format.family())
+        self.assertFalse(format.hasVerticalAlignmentSet())
+        self.assertEqual(format.verticalAlignment(), Qgis.TextCharacterVerticalAlignment.Normal)
 
         format.setTextColor(QColor(255, 0, 0))
         self.assertTrue(format.textColor().isValid())
@@ -58,6 +61,11 @@ class TestQgsTextCharacterFormat(unittest.TestCase):
 
         format.setFamily('comic sans')
         self.assertEqual(format.family(), 'comic sans')
+
+        format.setHasVerticalAlignmentSet(True)
+        self.assertTrue(format.hasVerticalAlignmentSet())
+        format.setVerticalAlignment(Qgis.TextCharacterVerticalAlignment.SuperScript)
+        self.assertEqual(format.verticalAlignment(), Qgis.TextCharacterVerticalAlignment.SuperScript)
 
     def testUpdateFont(self):
         context = QgsRenderContext()
