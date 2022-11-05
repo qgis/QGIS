@@ -78,9 +78,8 @@ foreach(TESTSRC ${TESTS})
   add_qgis_test( ${TESTSRC} MODULE gui LINKEDLIBRARIES qgis_gui qgis_analysis)
 endforeach(TESTSRC)
 
-add_qgis_test(testqgsrasterlayersaveasdialog.cpp MODULE gui LINKEDLIBRARIES qgis_gui qgis_analysis provider_postgres_gui_a)
-add_qgis_test(testqgslistwidget.cpp MODULE gui LINKEDLIBRARIES qgis_gui qgis_analysis LABELS "POSTGRES")
-
+add_qgis_test(testqgsrasterlayersaveasdialog.cpp MODULE gui LINKEDLIBRARIES qgis_gui qgis_analysis)
+add_qgis_test(testqgslistwidget.cpp MODULE gui LINKEDLIBRARIES qgis_gui qgis_analysis)
 
 if (ENABLE_PGTEST)
   SET_TESTS_PROPERTIES(
