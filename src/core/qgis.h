@@ -1654,6 +1654,9 @@ class CORE_EXPORT Qgis
     /**
      * Text vertical alignment.
      *
+     * This enum controls vertical alignment of text in a predefined rectangular
+     * bounding box. See also Qgis::TextCharacterVerticalAlignment.
+     *
      * \note Prior to QGIS 3.28 this was available as QgsTextRenderer::VAlignment
      *
      * \since QGIS 3.28
@@ -1665,6 +1668,22 @@ class CORE_EXPORT Qgis
       Bottom SIP_MONKEYPATCH_COMPAT_NAME( AlignBottom ), //!< Align to bottom
     };
     Q_ENUM( TextVerticalAlignment )
+
+    /**
+     * Text vertical alignment for characters.
+     *
+     * This enum controls vertical alignment of individual characters within a block
+     * of text.
+     *
+     * \since QGIS 3.30
+     */
+    enum class TextCharacterVerticalAlignment : int
+    {
+      Normal, //!< Adjacent characters are positioned in the standard way for text in the writing system in use
+      SuperScript, //!< Characters are placed above the base line for normal text.
+      SubScript, //!< Characters are placed below the base line for normal text.
+    };
+    Q_ENUM( TextCharacterVerticalAlignment )
 
     /**
      * Rendering subcomponent properties.
