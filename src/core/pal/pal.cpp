@@ -389,10 +389,10 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
       {
         switch ( mPlacementVersion )
         {
-          case QgsLabelingEngineSettings::PlacementEngineVersion1:
+          case Qgis::LabelPlacementEngineVersion::Version1:
             break;
 
-          case QgsLabelingEngineSettings::PlacementEngineVersion2:
+          case Qgis::LabelPlacementEngineVersion::Version2:
           {
             // v2 placement rips out candidates where the candidate cost is too high when compared to
             // their inactive cost
@@ -636,12 +636,12 @@ void Pal::setShowPartialLabels( bool show )
   this->mShowPartialLabels = show;
 }
 
-QgsLabelingEngineSettings::PlacementEngineVersion Pal::placementVersion() const
+Qgis::LabelPlacementEngineVersion Pal::placementVersion() const
 {
   return mPlacementVersion;
 }
 
-void Pal::setPlacementVersion( QgsLabelingEngineSettings::PlacementEngineVersion placementVersion )
+void Pal::setPlacementVersion( Qgis::LabelPlacementEngineVersion placementVersion )
 {
   mPlacementVersion = placementVersion;
 }

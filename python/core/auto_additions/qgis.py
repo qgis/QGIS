@@ -1385,6 +1385,49 @@ QgsRenderContext.TextFormatAlwaysText.__doc__ = "Always render text as text obje
 Qgis.TextRenderFormat.__doc__ = 'Options for rendering text.\n\n.. versionadded:: 3.22\n\n' + '* ``TextFormatAlwaysOutlines``: ' + Qgis.TextRenderFormat.AlwaysOutlines.__doc__ + '\n' + '* ``TextFormatAlwaysText``: ' + Qgis.TextRenderFormat.AlwaysText.__doc__
 # --
 Qgis.TextRenderFormat.baseClass = Qgis
+QgsLabelingEngineSettings.Flag = Qgis.LabelingFlag
+# monkey patching scoped based enum
+QgsLabelingEngineSettings.UseAllLabels = Qgis.LabelingFlag.UseAllLabels
+QgsLabelingEngineSettings.UseAllLabels.is_monkey_patched = True
+QgsLabelingEngineSettings.UseAllLabels.__doc__ = "Whether to draw all labels even if there would be collisions"
+QgsLabelingEngineSettings.UsePartialCandidates = Qgis.LabelingFlag.UsePartialCandidates
+QgsLabelingEngineSettings.UsePartialCandidates.is_monkey_patched = True
+QgsLabelingEngineSettings.UsePartialCandidates.__doc__ = "Whether to use also label candidates that are partially outside of the map view"
+QgsLabelingEngineSettings.RenderOutlineLabels = Qgis.LabelingFlag.RenderOutlineLabels
+QgsLabelingEngineSettings.RenderOutlineLabels.is_monkey_patched = True
+QgsLabelingEngineSettings.RenderOutlineLabels.__doc__ = "Whether to render labels as text or outlines. Deprecated and of QGIS 3.4.3 - use defaultTextRenderFormat() instead."
+QgsLabelingEngineSettings.DrawLabelRectOnly = Qgis.LabelingFlag.DrawLabelRectOnly
+QgsLabelingEngineSettings.DrawLabelRectOnly.is_monkey_patched = True
+QgsLabelingEngineSettings.DrawLabelRectOnly.__doc__ = "Whether to only draw the label rect and not the actual label text (used for unit tests)"
+QgsLabelingEngineSettings.DrawCandidates = Qgis.LabelingFlag.DrawCandidates
+QgsLabelingEngineSettings.DrawCandidates.is_monkey_patched = True
+QgsLabelingEngineSettings.DrawCandidates.__doc__ = "Whether to draw rectangles of generated candidates (good for debugging)"
+QgsLabelingEngineSettings.DrawUnplacedLabels = Qgis.LabelingFlag.DrawUnplacedLabels
+QgsLabelingEngineSettings.DrawUnplacedLabels.is_monkey_patched = True
+QgsLabelingEngineSettings.DrawUnplacedLabels.__doc__ = "Whether to render unplaced labels as an indicator/warning for users"
+QgsLabelingEngineSettings.CollectUnplacedLabels = Qgis.LabelingFlag.CollectUnplacedLabels
+QgsLabelingEngineSettings.CollectUnplacedLabels.is_monkey_patched = True
+QgsLabelingEngineSettings.CollectUnplacedLabels.__doc__ = "Whether unplaced labels should be collected in the labeling results (regardless of whether they are being rendered). Since QGIS 3.20"
+QgsLabelingEngineSettings.DrawLabelMetrics = Qgis.LabelingFlag.DrawLabelMetrics
+QgsLabelingEngineSettings.DrawLabelMetrics.is_monkey_patched = True
+QgsLabelingEngineSettings.DrawLabelMetrics.__doc__ = "Whether to render label metric guides (for debugging). Since QGIS 3.30"
+Qgis.LabelingFlag.__doc__ = 'Various flags that affect drawing and placement of labels.\n\nPrior to QGIS 3.30 this was available as :py:class:`QgsLabelingEngineSettings`.Flag\n\n.. versionadded:: 3.30\n\n' + '* ``UseAllLabels``: ' + Qgis.LabelingFlag.UseAllLabels.__doc__ + '\n' + '* ``UsePartialCandidates``: ' + Qgis.LabelingFlag.UsePartialCandidates.__doc__ + '\n' + '* ``RenderOutlineLabels``: ' + Qgis.LabelingFlag.RenderOutlineLabels.__doc__ + '\n' + '* ``DrawLabelRectOnly``: ' + Qgis.LabelingFlag.DrawLabelRectOnly.__doc__ + '\n' + '* ``DrawCandidates``: ' + Qgis.LabelingFlag.DrawCandidates.__doc__ + '\n' + '* ``DrawUnplacedLabels``: ' + Qgis.LabelingFlag.DrawUnplacedLabels.__doc__ + '\n' + '* ``CollectUnplacedLabels``: ' + Qgis.LabelingFlag.CollectUnplacedLabels.__doc__ + '\n' + '* ``DrawLabelMetrics``: ' + Qgis.LabelingFlag.DrawLabelMetrics.__doc__
+# --
+Qgis.LabelingFlag.baseClass = Qgis
+QgsLabelingEngineSettings.Flags = Qgis.LabelingFlags
+Qgis.LabelingFlags.baseClass = Qgis
+LabelingFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+QgsLabelingEngineSettings.PlacementEngineVersion = Qgis.LabelPlacementEngineVersion
+# monkey patching scoped based enum
+QgsLabelingEngineSettings.PlacementEngineVersion1 = Qgis.LabelPlacementEngineVersion.Version1
+QgsLabelingEngineSettings.PlacementEngineVersion1.is_monkey_patched = True
+QgsLabelingEngineSettings.PlacementEngineVersion1.__doc__ = "Version 1, matches placement from QGIS <= 3.10.1"
+QgsLabelingEngineSettings.PlacementEngineVersion2 = Qgis.LabelPlacementEngineVersion.Version2
+QgsLabelingEngineSettings.PlacementEngineVersion2.is_monkey_patched = True
+QgsLabelingEngineSettings.PlacementEngineVersion2.__doc__ = "Version 2 (default for new projects since QGIS 3.12)"
+Qgis.LabelPlacementEngineVersion.__doc__ = 'Labeling placement engine version.\n\nPrior to QGIS 3.30 this was available as :py:class:`QgsLabelingEngineSettings`.PlacementEngineVersion\n\n.. versionadded:: 3.30\n\n' + '* ``PlacementEngineVersion1``: ' + Qgis.LabelPlacementEngineVersion.Version1.__doc__ + '\n' + '* ``PlacementEngineVersion2``: ' + Qgis.LabelPlacementEngineVersion.Version2.__doc__
+# --
+Qgis.LabelPlacementEngineVersion.baseClass = Qgis
 QgsTextFormat.TextOrientation = Qgis.TextOrientation
 # monkey patching scoped based enum
 QgsTextFormat.HorizontalOrientation = Qgis.TextOrientation.Horizontal

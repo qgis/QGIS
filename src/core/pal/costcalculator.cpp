@@ -85,10 +85,10 @@ void CostCalculator::addObstacleCostPenalty( LabelPosition *lp, FeaturePart *obs
 
   switch ( pal->placementVersion() )
   {
-    case QgsLabelingEngineSettings::PlacementEngineVersion1:
+    case Qgis::LabelPlacementEngineVersion::Version1:
       break;
 
-    case QgsLabelingEngineSettings::PlacementEngineVersion2:
+    case Qgis::LabelPlacementEngineVersion::Version2:
     {
       // obstacle factor is from 0 -> 2, label priority is from 1 -> 0. argh!
       const double priority = 2 * ( 1 - lp->feature->calculatePriority() );

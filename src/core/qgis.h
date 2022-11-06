@@ -1522,6 +1522,51 @@ class CORE_EXPORT Qgis
     Q_ENUM( TextRenderFormat )
 
     /**
+     * Various flags that affect drawing and placement of labels.
+     *
+     * Prior to QGIS 3.30 this was available as QgsLabelingEngineSettings::Flag
+     *
+     * \since QGIS 3.30
+     */
+    enum class LabelingFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLabelingEngineSettings, Flag ) : int
+      {
+      UseAllLabels          = 1 << 1, //!< Whether to draw all labels even if there would be collisions
+      UsePartialCandidates  = 1 << 2, //!< Whether to use also label candidates that are partially outside of the map view
+      // TODO QGIS 4.0: remove
+      RenderOutlineLabels   = 1 << 3, //!< Whether to render labels as text or outlines. Deprecated and of QGIS 3.4.3 - use defaultTextRenderFormat() instead.
+      DrawLabelRectOnly     = 1 << 4, //!< Whether to only draw the label rect and not the actual label text (used for unit tests)
+      DrawCandidates        = 1 << 5, //!< Whether to draw rectangles of generated candidates (good for debugging)
+      DrawUnplacedLabels    = 1 << 6, //!< Whether to render unplaced labels as an indicator/warning for users
+      CollectUnplacedLabels = 1 << 7, //!< Whether unplaced labels should be collected in the labeling results (regardless of whether they are being rendered). Since QGIS 3.20
+      DrawLabelMetrics      = 1 << 8, //!< Whether to render label metric guides (for debugging). Since QGIS 3.30
+    };
+    Q_ENUM( LabelingFlag )
+
+    /**
+     * Flags that affect drawing and placement of labels.
+     *
+     * Prior to QGIS 3.30 this was available as QgsLabelingEngineSettings::Flags
+     *
+     * \since QGIS 3.30
+     */
+    Q_DECLARE_FLAGS( LabelingFlags, LabelingFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsLabelingEngineSettings, Flags )
+    Q_FLAG( LabelingFlags )
+
+    /**
+     * Labeling placement engine version.
+     *
+     * Prior to QGIS 3.30 this was available as QgsLabelingEngineSettings::PlacementEngineVersion
+     *
+     * \since QGIS 3.30
+     */
+    enum class LabelPlacementEngineVersion SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLabelingEngineSettings, PlacementEngineVersion ) : int
+      {
+      Version1 SIP_MONKEYPATCH_COMPAT_NAME( PlacementEngineVersion1 ), //!< Version 1, matches placement from QGIS <= 3.10.1
+      Version2 SIP_MONKEYPATCH_COMPAT_NAME( PlacementEngineVersion2 ), //!< Version 2 (default for new projects since QGIS 3.12)
+    };
+    Q_ENUM( LabelPlacementEngineVersion )
+
+    /**
      * Text orientations.
      *
      * \note Prior to QGIS 3.28 this was available as QgsTextFormat::TextOrientation
@@ -2525,6 +2570,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::CoordinateTransformationFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RasterTemporalCapabilityFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SelectionFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RasterRendererFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LabelingFlags )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.

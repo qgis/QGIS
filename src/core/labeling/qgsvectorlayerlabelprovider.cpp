@@ -478,7 +478,7 @@ void QgsVectorLayerLabelProvider::drawUnplacedLabel( QgsRenderContext &context, 
   QgsTextFormat format = mSettings.format();
   if ( mSettings.drawLabels
        && mSettings.unplacedVisibility() != Qgis::UnplacedLabelVisibility::NeverShow
-       && mEngine->engineSettings().flags() & QgsLabelingEngineSettings::DrawUnplacedLabels )
+       && mEngine->engineSettings().flags() & Qgis::LabelingFlag::DrawUnplacedLabels )
   {
     QgsPalLayerSettings tmpLyr( mSettings );
     format = tmpLyr.format();
@@ -506,7 +506,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
 
   QPointF outPt = xform.transform( label->getX(), label->getY() ).toQPointF();
 
-  if ( mEngine->engineSettings().testFlag( QgsLabelingEngineSettings::DrawLabelRectOnly ) )  // TODO: this should get directly to labeling engine
+  if ( mEngine->engineSettings().testFlag( Qgis::LabelingFlag::DrawLabelRectOnly ) )  // TODO: this should get directly to labeling engine
   {
     //debugging rect
     if ( drawType != Qgis::TextComponent::Text )
@@ -537,6 +537,39 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
       drawLabelPrivate( label->nextPart(), context, tmpLyr, drawType, dpiRatio );
 
     return;
+  }
+  if ( mEngine->engineSettings().testFlag( Qgis::LabelingFlag::DrawLabelMetrics ) )
+  {
+    if ( drawType != Qgis::TextComponent::Text )
+      return;
+
+    QgsPointXY outPt2 = xform.transform( label->getX() + label->getWidth(), label->getY() + label->getHeight() );
+    QRectF rect( 0, 0, outPt2.x() - outPt.x(), outPt2.y() - outPt.y() );
+    painter->save();
+    painter->setRenderHint( QPainter::Antialiasing, false );
+    painter->translate( QPointF( outPt.x(), outPt.y() ) );
+    painter->rotate( -label->getAlpha() * 180 / M_PI );
+
+    painter->setBrush( Qt::NoBrush );
+    painter->setPen( QColor( 255, 0, 0, 220 ) );
+
+    painter->drawRect( rect );
+
+    if ( QgsTextLabelFeature *textFeature = dynamic_cast< QgsTextLabelFeature * >( label->getFeaturePart()->feature() ) )
+    {
+      const QgsTextDocumentMetrics &metrics = textFeature->documentMetrics();
+      const QgsTextDocument &document = textFeature->document();
+      const int blockCount = document.size();
+
+      // draw block baselines
+      painter->setPen( QColor( 0, 0, 255, 220 ) );
+      for ( int blockIndex = 0; blockIndex < blockCount; ++blockIndex )
+      {
+        const double blockBaseLine = metrics.baselineOffset( blockIndex, Qgis::TextLayoutMode::Labeling );
+        painter->drawLine( QPointF( rect.left(), rect.top()  + blockBaseLine ), QPointF( rect.right(), rect.top() + blockBaseLine ) );
+      }
+    }
+    painter->restore();
   }
 
   QgsTextRenderer::Component component;

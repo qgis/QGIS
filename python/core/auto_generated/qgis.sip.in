@@ -921,6 +921,28 @@ The development version
       AlwaysText,
     };
 
+    enum class LabelingFlag
+      {
+      UseAllLabels,
+      UsePartialCandidates,
+      // TODO QGIS 4.0: remove
+      RenderOutlineLabels,
+      DrawLabelRectOnly,
+      DrawCandidates,
+      DrawUnplacedLabels,
+      CollectUnplacedLabels,
+      DrawLabelMetrics,
+    };
+
+    typedef QFlags<Qgis::LabelingFlag> LabelingFlags;
+
+
+    enum class LabelPlacementEngineVersion
+      {
+      Version1,
+      Version2,
+    };
+
     enum class TextOrientation
       {
       Horizontal,
@@ -1510,6 +1532,8 @@ QFlags<Qgis::RasterTemporalCapabilityFlag> operator|(Qgis::RasterTemporalCapabil
 QFlags<Qgis::SelectionFlag> operator|(Qgis::SelectionFlag f1, QFlags<Qgis::SelectionFlag> f2);
 
 QFlags<Qgis::RasterRendererFlag> operator|(Qgis::RasterRendererFlag f1, QFlags<Qgis::RasterRendererFlag> f2);
+
+QFlags<Qgis::LabelingFlag> operator|(Qgis::LabelingFlag f1, QFlags<Qgis::LabelingFlag> f2);
 
 
 
