@@ -44,6 +44,7 @@ QgsAttributeFormContainerEdit::QgsAttributeFormContainerEdit( QTreeWidgetItem *i
   mVisibilityExpressionWidget->setLayer( layer );
   mVisibilityExpressionWidget->setExpression( itemData.visibilityExpression()->expression() );
   mColumnCountSpinBox->setValue( itemData.columnCount() );
+  mBackgroundColorButton->setShowNull( true );
   mBackgroundColorButton->setColor( itemData.backgroundColor() );
   mCollapsedCheckBox->setChecked( itemData.collapsed() );
   mCollapsedCheckBox->setEnabled( itemData.showAsGroupBox() );
