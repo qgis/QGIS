@@ -18,7 +18,6 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgis.h"
-#include <QFlags>
 #include <QColor>
 
 class QgsProject;
@@ -31,19 +30,6 @@ class QgsProject;
 class CORE_EXPORT QgsLabelingEngineSettings
 {
   public:
-    //! Various flags that affect drawing and placement of labels
-    enum Flag
-    {
-      UseAllLabels          = 1 << 1,  //!< Whether to draw all labels even if there would be collisions
-      UsePartialCandidates  = 1 << 2,  //!< Whether to use also label candidates that are partially outside of the map view
-      // TODO QGIS 4.0: remove
-      RenderOutlineLabels   = 1 << 3,  //!< Whether to render labels as text or outlines. Deprecated and of QGIS 3.4.3 - use defaultTextRenderFormat() instead.
-      DrawLabelRectOnly     = 1 << 4,  //!< Whether to only draw the label rect and not the actual label text (used for unit tests)
-      DrawCandidates        = 1 << 5,  //!< Whether to draw rectangles of generated candidates (good for debugging)
-      DrawUnplacedLabels    = 1 << 6,  //!< Whether to render unplaced labels as an indicator/warning for users
-      CollectUnplacedLabels = 1 << 7,  //!< Whether unplaced labels should be collected in the labeling results (regardless of whether they are being rendered). Since QGIS 3.20
-    };
-    Q_DECLARE_FLAGS( Flags, Flag )
 
     // TODO QGIS 4 - remove
 
@@ -60,30 +46,19 @@ class CORE_EXPORT QgsLabelingEngineSettings
       Falp
     };
 
-    /**
-     * Placement engine version.
-     *
-     * \since QGIS 3.10.2
-     */
-    enum PlacementEngineVersion
-    {
-      PlacementEngineVersion1, //!< Version 1, matches placement from QGIS <= 3.10.1
-      PlacementEngineVersion2, //!< Version 2 (default for new projects since QGIS 3.12)
-    };
-
     QgsLabelingEngineSettings();
 
     //! Returns the configuration to the defaults
     void clear();
 
     //! Sets flags of the labeling engine
-    void setFlags( Flags flags ) { mFlags = flags; }
+    void setFlags( Qgis::LabelingFlags flags ) { mFlags = flags; }
     //! Gets flags of the labeling engine
-    Flags flags() const { return mFlags; }
+    Qgis::LabelingFlags flags() const { return mFlags; }
     //! Test whether a particular flag is enabled
-    bool testFlag( Flag f ) const { return mFlags.testFlag( f ); }
+    bool testFlag( Qgis::LabelingFlag f ) const { return mFlags.testFlag( f ); }
     //! Sets whether a particual flag is enabled
-    void setFlag( Flag f, bool enabled = true ) { if ( enabled ) mFlags |= f; else mFlags &= ~f; }
+    void setFlag( Qgis::LabelingFlag f, bool enabled = true ) { if ( enabled ) mFlags |= f; else mFlags &= ~static_cast< int >( f ); }
 
     /**
      * Returns the maximum number of line label candidate positions per centimeter.
@@ -204,7 +179,7 @@ class CORE_EXPORT QgsLabelingEngineSettings
      * \see setPlacementVersion()
      * \since QGIS 3.10.2
      */
-    PlacementEngineVersion placementVersion() const;
+    Qgis::LabelPlacementEngineVersion placementVersion() const;
 
     /**
      * Sets the placement engine \a version, which dictates how the label placement problem is solved.
@@ -212,11 +187,11 @@ class CORE_EXPORT QgsLabelingEngineSettings
      * \see placementVersion()
      * \since QGIS 3.10.2
      */
-    void setPlacementVersion( PlacementEngineVersion version );
+    void setPlacementVersion( Qgis::LabelPlacementEngineVersion version );
 
   private:
     //! Flags
-    Flags mFlags;
+    Qgis::LabelingFlags mFlags = Qgis::LabelingFlag::UsePartialCandidates;
     //! search method to use for removal collisions between labels
     Search mSearchMethod = Chain;
 
@@ -226,12 +201,10 @@ class CORE_EXPORT QgsLabelingEngineSettings
 
     QColor mUnplacedLabelColor = QColor( 255, 0, 0 );
 
-    PlacementEngineVersion mPlacementVersion = PlacementEngineVersion2;
+    Qgis::LabelPlacementEngineVersion mPlacementVersion = Qgis::LabelPlacementEngineVersion::Version2;
 
     Qgis::TextRenderFormat mDefaultTextRenderFormat = Qgis::TextRenderFormat::AlwaysOutlines;
 
 };
-
-Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLabelingEngineSettings::Flags )
 
 #endif // QGSLABELINGENGINESETTINGS_H

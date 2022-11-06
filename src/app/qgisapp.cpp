@@ -3034,13 +3034,13 @@ void QgisApp::createActions()
   connect( mActionShowUnplacedLabels, &QAction::toggled, this, [ = ]( bool active )
   {
     QgsLabelingEngineSettings engineSettings = QgsProject::instance()->labelingEngineSettings();
-    engineSettings.setFlag( QgsLabelingEngineSettings::DrawUnplacedLabels, active );
+    engineSettings.setFlag( Qgis::LabelingFlag::DrawUnplacedLabels, active );
     QgsProject::instance()->setLabelingEngineSettings( engineSettings );
     refreshMapCanvas( true );
   } );
   connect( QgsProject::instance(), &QgsProject::labelingEngineSettingsChanged, this, [ = ]
   {
-    whileBlocking( mActionShowUnplacedLabels )->setChecked( QgsProject::instance()->labelingEngineSettings().testFlag( QgsLabelingEngineSettings::DrawUnplacedLabels ) );
+    whileBlocking( mActionShowUnplacedLabels )->setChecked( QgsProject::instance()->labelingEngineSettings().testFlag( Qgis::LabelingFlag::DrawUnplacedLabels ) );
   } );
   connect( mActionPinLabels, &QAction::triggered, this, &QgisApp::pinLabels );
   connect( mActionShowHideLabels, &QAction::triggered, this, &QgisApp::showHideLabels );

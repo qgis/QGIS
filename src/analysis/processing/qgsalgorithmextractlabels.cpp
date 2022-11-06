@@ -601,8 +601,8 @@ bool QgsExtractLabelsAlgorithm::prepareAlgorithm( const QVariantMap &parameters,
 
   bool includeUnplaced = parameterAsBoolean( parameters, QStringLiteral( "INCLUDE_UNPLACED" ), context );
   mLabelSettings = context.project()->labelingEngineSettings();
-  mLabelSettings.setFlag( QgsLabelingEngineSettings::DrawUnplacedLabels, includeUnplaced );
-  mLabelSettings.setFlag( QgsLabelingEngineSettings::CollectUnplacedLabels, includeUnplaced );
+  mLabelSettings.setFlag( Qgis::LabelingFlag::DrawUnplacedLabels, includeUnplaced );
+  mLabelSettings.setFlag( Qgis::LabelingFlag::CollectUnplacedLabels, includeUnplaced );
 
   return true;
 }
