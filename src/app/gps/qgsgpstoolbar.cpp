@@ -275,6 +275,21 @@ void QgsGpsToolBar::destinationMenuAboutToShow()
   const QString currentLayerId = QgsProject::instance()->gpsSettings()->destinationLayer() ?
                                  QgsProject::instance()->gpsSettings()->destinationLayer()->id() : QString();
 
+  QAction *followAction = new QAction( tr( "Follow Active Layer" ), mDestinationLayerMenu );
+  followAction->setToolTip( tr( "Always add GPS digitized features to the active layer" ) );
+  followAction->setCheckable( true );
+  followAction->setChecked( QgsProject::instance()->gpsSettings()->destinationFollowsActiveLayer() );
+
+  connect( followAction, &QAction::toggled, this, [ = ]( bool checked )
+  {
+    if ( checked && !QgsProject::instance()->gpsSettings()->destinationFollowsActiveLayer() )
+    {
+      QgsProject::instance()->gpsSettings()->setDestinationFollowsActiveLayer( true );
+      QgsProject::instance()->setDirty();
+    }
+  } );
+  mDestinationLayerMenu->addAction( followAction );
+
   for ( int row = 0; row < mDestinationLayerModel->rowCount(); ++row )
   {
     const QModelIndex index = mDestinationLayerModel->index( row, 0 );
@@ -286,7 +301,7 @@ void QgsGpsToolBar::destinationMenuAboutToShow()
 
     const QString actionLayerId = index.data( QgsMapLayerModel::ItemDataRole::LayerIdRole ).toString();
 
-    if ( actionLayerId == currentLayerId )
+    if ( actionLayerId == currentLayerId && !QgsProject::instance()->gpsSettings()->destinationFollowsActiveLayer() )
       layerAction->setChecked( true );
 
     connect( layerAction, &QAction::toggled, this, [ = ]( bool checked )
@@ -296,6 +311,7 @@ void QgsGpsToolBar::destinationMenuAboutToShow()
         QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( QgsProject::instance()->mapLayer( actionLayerId ) );
         if ( layer != QgsProject::instance()->gpsSettings()->destinationLayer() )
         {
+          QgsProject::instance()->gpsSettings()->setDestinationFollowsActiveLayer( false );
           QgsProject::instance()->gpsSettings()->setDestinationLayer( layer );
           QgsProject::instance()->setDirty();
         }

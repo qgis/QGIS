@@ -92,7 +92,19 @@ class CORE_EXPORT QgsProjectGpsSettings : public QObject
     bool automaticallyCommitFeatures() const;
 
     /**
+     * Returns TRUE if the destination layer for storing features digitized from GPS
+     * should follow the current active layer automatically.
+     *
+     * \see setDestinationFollowsActiveLayer()
+     * \see destinationFollowsActiveLayerChanged()
+     */
+    bool destinationFollowsActiveLayer() const;
+
+    /**
      * Returns the destination layer to be used for storing features digitized from GPS.
+     *
+     * \note If destinationFollowsActiveLayer() is TRUE then this layer will be changed
+     * whenever the user changes the active layer in the QGIS interface.
      *
      * \see setDestinationLayer()
      * \see destinationLayerChanged()
@@ -121,7 +133,19 @@ class CORE_EXPORT QgsProjectGpsSettings : public QObject
     void setAutomaticallyCommitFeatures( bool enabled );
 
     /**
+     * Sets whether the destination layer for storing features digitized from GPS
+     * should follow the current active layer automatically.
+     *
+     * \see destinationFollowsActiveLayer()
+     * \see destinationFollowsActiveLayerChanged()
+     */
+    void setDestinationFollowsActiveLayer( bool follow );
+
+    /**
      * Sets the destination \a layer to be used for storing features digitized from GPS.
+     *
+     * \note If destinationFollowsActiveLayer() is TRUE then this layer will be changed
+     * whenever the user changes the active layer in the QGIS interface.
      *
      * \see destinationLayer()
      * \see destinationLayerChanged()
@@ -149,6 +173,15 @@ class CORE_EXPORT QgsProjectGpsSettings : public QObject
     void automaticallyCommitFeaturesChanged( bool enabled );
 
     /**
+     * Emitted whenever the destinationFollowsActiveLayer() setting
+     * is changed.
+     *
+     * \see destinationFollowsActiveLayer()
+     * \see setDestinationFollowsActiveLayer()
+     */
+    void destinationFollowsActiveLayerChanged( bool follows );
+
+    /**
      * Emitted whenever the destination layer for features digitized from GPS
      * is changed.
      *
@@ -162,6 +195,7 @@ class CORE_EXPORT QgsProjectGpsSettings : public QObject
     bool mAutoAddTrackVertices = false;
     bool mAutoCommitFeatures = false;
 
+    bool mDestinationFollowsActiveLayer = true;
     QgsVectorLayerRef mDestinationLayer;
 
 };
