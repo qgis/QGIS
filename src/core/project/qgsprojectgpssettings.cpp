@@ -35,11 +35,13 @@ void QgsProjectGpsSettings::reset()
 {
   mAutoAddTrackVertices = false;
   mAutoCommitFeatures = false;
+  mDestinationFollowsActiveLayer = true;
 
   mDestinationLayer.setLayer( nullptr );
 
-  emit automaticallyAddTrackVerticesChanged( false );
-  emit automaticallyCommitFeaturesChanged( false );
+  emit automaticallyAddTrackVerticesChanged( mAutoAddTrackVertices );
+  emit automaticallyCommitFeaturesChanged( mAutoCommitFeatures );
+  emit destinationFollowsActiveLayerChanged( mDestinationFollowsActiveLayer );
   emit destinationLayerChanged( nullptr );
 }
 
@@ -47,6 +49,7 @@ bool QgsProjectGpsSettings::readXml( const QDomElement &element, const QgsReadWr
 {
   mAutoAddTrackVertices = element.attribute( QStringLiteral( "autoAddTrackVertices" ), "0" ).toInt();
   mAutoCommitFeatures = element.attribute( QStringLiteral( "autoCommitFeatures" ), "0" ).toInt();
+  mDestinationFollowsActiveLayer = element.attribute( QStringLiteral( "destinationFollowsActiveLayer" ), "1" ).toInt();
 
   const QString layerId = element.attribute( QStringLiteral( "destinationLayer" ) );
   const QString layerName = element.attribute( QStringLiteral( "destinationLayerName" ) );
@@ -57,6 +60,7 @@ bool QgsProjectGpsSettings::readXml( const QDomElement &element, const QgsReadWr
 
   emit automaticallyAddTrackVerticesChanged( mAutoAddTrackVertices );
   emit automaticallyCommitFeaturesChanged( mAutoCommitFeatures );
+  emit destinationFollowsActiveLayerChanged( mDestinationFollowsActiveLayer );
   emit destinationLayerChanged( nullptr ); // wont' be set until resolve is called
   return true;
 }
@@ -67,6 +71,7 @@ QDomElement QgsProjectGpsSettings::writeXml( QDomDocument &doc, const QgsReadWri
 
   element.setAttribute( QStringLiteral( "autoAddTrackVertices" ),  mAutoAddTrackVertices ? 1 : 0 );
   element.setAttribute( QStringLiteral( "autoCommitFeatures" ),  mAutoCommitFeatures ? 1 : 0 );
+  element.setAttribute( QStringLiteral( "destinationFollowsActiveLayer" ),  mDestinationFollowsActiveLayer ? 1 : 0 );
 
   if ( mDestinationLayer )
   {
@@ -93,6 +98,11 @@ bool QgsProjectGpsSettings::automaticallyCommitFeatures() const
   return mAutoCommitFeatures;
 }
 
+bool QgsProjectGpsSettings::destinationFollowsActiveLayer() const
+{
+  return mDestinationFollowsActiveLayer;
+}
+
 QgsVectorLayer *QgsProjectGpsSettings::destinationLayer() const
 {
   return mDestinationLayer.get();
@@ -114,6 +124,15 @@ void QgsProjectGpsSettings::setAutomaticallyCommitFeatures( bool enabled )
 
   mAutoCommitFeatures = enabled;
   emit automaticallyCommitFeaturesChanged( enabled );
+}
+
+void QgsProjectGpsSettings::setDestinationFollowsActiveLayer( bool follow )
+{
+  if ( follow == mDestinationFollowsActiveLayer )
+    return;
+
+  mDestinationFollowsActiveLayer = follow;
+  emit destinationFollowsActiveLayerChanged( follow );
 }
 
 void QgsProjectGpsSettings::setDestinationLayer( QgsVectorLayer *layer )

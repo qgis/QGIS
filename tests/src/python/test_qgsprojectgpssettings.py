@@ -52,9 +52,11 @@ class TestQgsProjectGpsSettings(unittest.TestCase):
         p = QgsProjectGpsSettings()
         self.assertFalse(p.automaticallyCommitFeatures())
         self.assertFalse(p.automaticallyAddTrackVertices())
+        self.assertTrue(p.destinationFollowsActiveLayer())
 
         spy_add_track = QSignalSpy(p.automaticallyAddTrackVerticesChanged)
         spy_auto_commit = QSignalSpy(p.automaticallyCommitFeaturesChanged)
+        spy_destination_follows_active = QSignalSpy(p.destinationFollowsActiveLayerChanged)
 
         p.setAutomaticallyAddTrackVertices(True)
         self.assertEqual(len(spy_add_track), 1)
@@ -79,6 +81,18 @@ class TestQgsProjectGpsSettings(unittest.TestCase):
         p.setAutomaticallyCommitFeatures(False)
         self.assertEqual(len(spy_auto_commit), 2)
         self.assertFalse(spy_auto_commit[-1][0])
+
+        p.setDestinationFollowsActiveLayer(False)
+        self.assertEqual(len(spy_destination_follows_active), 1)
+        self.assertFalse(spy_destination_follows_active[-1][0])
+
+        p.setDestinationFollowsActiveLayer(False)
+        self.assertEqual(len(spy_destination_follows_active), 1)
+
+        self.assertFalse(p.destinationFollowsActiveLayer())
+        p.setDestinationFollowsActiveLayer(True)
+        self.assertEqual(len(spy_destination_follows_active), 2)
+        self.assertTrue(spy_destination_follows_active[-1][0])
 
         layer1 = QgsVectorLayer(os.path.join(unitTestDataPath(), 'lines.shp'), 'layer1')
         self.assertTrue(layer1.isValid())
@@ -107,9 +121,11 @@ class TestQgsProjectGpsSettings(unittest.TestCase):
         p = QgsProjectGpsSettings()
         self.assertFalse(p.automaticallyCommitFeatures())
         self.assertFalse(p.automaticallyAddTrackVertices())
+        self.assertTrue(p.destinationFollowsActiveLayer())
 
         p.setAutomaticallyCommitFeatures(True)
         p.setAutomaticallyAddTrackVertices(True)
+        p.setDestinationFollowsActiveLayer(False)
 
         layer1 = QgsVectorLayer(os.path.join(unitTestDataPath(), 'lines.shp'), 'layer1')
         self.assertTrue(layer1.isValid())
@@ -118,23 +134,28 @@ class TestQgsProjectGpsSettings(unittest.TestCase):
         spy_add_track = QSignalSpy(p.automaticallyAddTrackVerticesChanged)
         spy_auto_commit = QSignalSpy(p.automaticallyCommitFeaturesChanged)
         spy_dest_layer_changed = QSignalSpy(p.destinationLayerChanged)
+        spy_destination_follows_active = QSignalSpy(p.destinationFollowsActiveLayerChanged)
 
         p.reset()
         self.assertFalse(p.automaticallyAddTrackVertices())
         self.assertFalse(p.automaticallyCommitFeatures())
         self.assertFalse(p.destinationLayer())
+        self.assertTrue(p.destinationFollowsActiveLayer())
 
         self.assertEqual(len(spy_add_track), 1)
         self.assertFalse(spy_auto_commit[-1][0])
         self.assertEqual(len(spy_auto_commit), 1)
         self.assertFalse(spy_auto_commit[-1][0])
         self.assertEqual(len(spy_dest_layer_changed), 1)
+        self.assertEqual(len(spy_destination_follows_active), 1)
+        self.assertTrue(spy_destination_follows_active[-1][0])
 
     def testReadWrite(self):
         p = QgsProjectGpsSettings()
 
         p.setAutomaticallyCommitFeatures(True)
         p.setAutomaticallyAddTrackVertices(True)
+        p.setDestinationFollowsActiveLayer(False)
 
         layer1 = QgsVectorLayer(os.path.join(unitTestDataPath(), 'lines.shp'), 'layer1')
         self.assertTrue(layer1.isValid())
@@ -150,13 +171,16 @@ class TestQgsProjectGpsSettings(unittest.TestCase):
         spy = QSignalSpy(p2.automaticallyAddTrackVerticesChanged)
         spy2 = QSignalSpy(p2.automaticallyCommitFeaturesChanged)
         spy_dest_layer_changed = QSignalSpy(p2.destinationLayerChanged)
+        spy_destination_follows_active = QSignalSpy(p2.destinationFollowsActiveLayerChanged)
 
         self.assertTrue(p2.readXml(elem, QgsReadWriteContext()))
         self.assertEqual(len(spy), 1)
         self.assertEqual(len(spy2), 1)
         self.assertEqual(len(spy_dest_layer_changed), 1)
-        self.assertTrue(p.automaticallyCommitFeatures())
-        self.assertTrue(p.automaticallyAddTrackVertices())
+        self.assertEqual(len(spy_destination_follows_active), 1)
+        self.assertTrue(p2.automaticallyCommitFeatures())
+        self.assertTrue(p2.automaticallyAddTrackVertices())
+        self.assertFalse(p2.destinationFollowsActiveLayer())
         # needs to be resolved first
         self.assertFalse(p2.destinationLayer())
 

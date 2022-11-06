@@ -75,6 +75,25 @@ QgsAppGpsDigitizing::QgsAppGpsDigitizing( QgsAppGpsConnection *connection, QgsMa
 
   connect( QgsGui::instance(), &QgsGui::optionsChanged, this, &QgsAppGpsDigitizing::gpsSettingsChanged );
   gpsSettingsChanged();
+
+  connect( QgisApp::instance(), &QgisApp::activeLayerChanged, this, [ = ]( QgsMapLayer * layer )
+  {
+    if ( QgsProject::instance()->gpsSettings()->destinationFollowsActiveLayer() )
+    {
+      QgsProject::instance()->gpsSettings()->setDestinationLayer( qobject_cast< QgsVectorLayer *> ( layer ) );
+    }
+  } );
+  connect( QgsProject::instance()->gpsSettings(), &QgsProjectGpsSettings::destinationFollowsActiveLayerChanged, this, [ = ]( bool enabled )
+  {
+    if ( enabled )
+    {
+      QgsProject::instance()->gpsSettings()->setDestinationLayer( qobject_cast< QgsVectorLayer *> ( QgisApp::instance()->activeLayer() ) );
+    }
+  } );
+  if ( QgsProject::instance()->gpsSettings()->destinationFollowsActiveLayer() )
+  {
+    QgsProject::instance()->gpsSettings()->setDestinationLayer( qobject_cast< QgsVectorLayer *> ( QgisApp::instance()->activeLayer() ) );
+  }
 }
 
 QgsAppGpsDigitizing::~QgsAppGpsDigitizing()

@@ -76,9 +76,24 @@ layer edit buffer).
 .. seealso:: :py:func:`automaticallyCommitFeaturesChanged`
 %End
 
+    bool destinationFollowsActiveLayer() const;
+%Docstring
+Returns ``True`` if the destination layer for storing features digitized from GPS
+should follow the current active layer automatically.
+
+.. seealso:: :py:func:`setDestinationFollowsActiveLayer`
+
+.. seealso:: :py:func:`destinationFollowsActiveLayerChanged`
+%End
+
     QgsVectorLayer *destinationLayer() const;
 %Docstring
 Returns the destination layer to be used for storing features digitized from GPS.
+
+.. note::
+
+   If :py:func:`~QgsProjectGpsSettings.destinationFollowsActiveLayer` is ``True`` then this layer will be changed
+   whenever the user changes the active layer in the QGIS interface.
 
 .. seealso:: :py:func:`setDestinationLayer`
 
@@ -108,9 +123,24 @@ layer edit buffer).
 .. seealso:: :py:func:`automaticallyCommitFeaturesChanged`
 %End
 
+    void setDestinationFollowsActiveLayer( bool follow );
+%Docstring
+Sets whether the destination layer for storing features digitized from GPS
+should follow the current active layer automatically.
+
+.. seealso:: :py:func:`destinationFollowsActiveLayer`
+
+.. seealso:: :py:func:`destinationFollowsActiveLayerChanged`
+%End
+
     void setDestinationLayer( QgsVectorLayer *layer );
 %Docstring
 Sets the destination ``layer`` to be used for storing features digitized from GPS.
+
+.. note::
+
+   If :py:func:`~QgsProjectGpsSettings.destinationFollowsActiveLayer` is ``True`` then this layer will be changed
+   whenever the user changes the active layer in the QGIS interface.
 
 .. seealso:: :py:func:`destinationLayer`
 
@@ -137,6 +167,16 @@ is changed.
 .. seealso:: :py:func:`automaticallyCommitFeatures`
 
 .. seealso:: :py:func:`setAutomaticallyCommitFeatures`
+%End
+
+    void destinationFollowsActiveLayerChanged( bool follows );
+%Docstring
+Emitted whenever the :py:func:`~QgsProjectGpsSettings.destinationFollowsActiveLayer` setting
+is changed.
+
+.. seealso:: :py:func:`destinationFollowsActiveLayer`
+
+.. seealso:: :py:func:`setDestinationFollowsActiveLayer`
 %End
 
     void destinationLayerChanged( QgsVectorLayer *layer );
