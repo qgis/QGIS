@@ -57,17 +57,12 @@ class APP_EXPORT QgsAppGpsSettingsMenu : public QMenu
     bool rotateMap() const;
     Qgis::MapRecenteringMode mapCenteringMode() const;
 
-  public slots:
-
-    void setCurrentTimeStampField( const QString &fieldName );
-
   signals:
 
     void locationMarkerToggled( bool visible );
     void bearingLineToggled( bool visible );
     void rotateMapToggled( bool enabled );
     void mapCenteringModeChanged( Qgis::MapRecenteringMode mode );
-    void timeStampDestinationChanged( const QString &fieldName );
     void enableNmeaLog( bool enabled );
     void nmeaLogFileChanged( const QString &filename );
 
@@ -90,7 +85,6 @@ class APP_EXPORT QgsAppGpsSettingsMenu : public QMenu
 
     QgsFieldProxyModel *mFieldProxyModel = nullptr;
     QMenu *mTimeStampDestinationFieldMenu = nullptr;
-    QString mCurrentTimeStampField;
 
     friend class TestQgsGpsIntegration;
 

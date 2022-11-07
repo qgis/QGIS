@@ -54,9 +54,6 @@ class APP_EXPORT QgsAppGpsDigitizing: public QObject
     void addVertex();
     void resetTrack();
     void createFeature();
-
-    void setTimeStampDestination( const QString &fieldName );
-
     void setNmeaLogFile( const QString &filename );
     void setNmeaLoggingEnabled( bool enabled );
 
@@ -66,8 +63,6 @@ class APP_EXPORT QgsAppGpsDigitizing: public QObject
      * Emitted whenever the current track changes from being empty to non-empty or vice versa.
      */
     void trackIsEmptyChanged( bool isEmpty );
-
-    void timeStampDestinationChanged( const QString &fieldName );
 
   private slots:
     void gpsSettingsChanged();
@@ -79,10 +74,6 @@ class APP_EXPORT QgsAppGpsDigitizing: public QObject
 
     void gpsStateChanged( const QgsGpsInformation &info );
 
-    /**
-     * Updates compatible fields for timestamp recording
-     */
-    void updateTimestampDestinationFields( QgsVectorLayer *mapLayer );
     void logNmeaSentence( const QString &nmeaString ); // added to handle 'raw' data
 
     void startLogging();
@@ -121,10 +112,6 @@ class APP_EXPORT QgsAppGpsDigitizing: public QObject
     Qt::TimeSpec mTimeStampSpec = Qt::TimeSpec::LocalTime;
     QString mTimeZone;
     int mOffsetFromUtc = 0;
-
-    //! Temporary storage of preferred fields
-    QMap<QString, QString> mPreferredTimestampFields;
-    QString mTimestampField;
 
     QString mNmeaLogFile;
     bool mEnableNmeaLogging = false;

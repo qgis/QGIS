@@ -292,33 +292,36 @@ Qgis::MapRecenteringMode QgsAppGpsSettingsMenu::mapCenteringMode() const
   }
 }
 
-void QgsAppGpsSettingsMenu::setCurrentTimeStampField( const QString &fieldName )
-{
-  mCurrentTimeStampField = fieldName;
-}
-
 void QgsAppGpsSettingsMenu::timeStampMenuAboutToShow()
 {
   mFieldProxyModel->sourceFieldModel()->setLayer( QgsProject::instance()->gpsSettings()->destinationLayer() );
+  const QString currentTimeStampField = QgsProject::instance()->gpsSettings()->destinationTimeStampField();
 
   mTimeStampDestinationFieldMenu->clear();
   bool foundPreviousField = false;
   for ( int row = 0; row < mFieldProxyModel->rowCount(); ++row )
   {
     QAction *fieldAction = new QAction( mFieldProxyModel->data( mFieldProxyModel->index( row, 0 ) ).toString(), this );
+    if ( fieldAction->text().isEmpty() )
+    {
+      fieldAction->setText( tr( "Do Not Store" ) );
+    }
     fieldAction->setIcon( mFieldProxyModel->data( mFieldProxyModel->index( row, 0 ), Qt::DecorationRole ).value< QIcon >() );
     const QString fieldName = mFieldProxyModel->data( mFieldProxyModel->index( row, 0 ), QgsFieldModel::FieldNameRole ).toString();
     fieldAction->setData( fieldName );
     fieldAction->setCheckable( true );
-    if ( mCurrentTimeStampField == fieldName )
+    if ( currentTimeStampField == fieldName )
     {
       foundPreviousField = true;
-      fieldAction->setChecked( mCurrentTimeStampField == fieldName );
+      fieldAction->setChecked( currentTimeStampField == fieldName );
     }
     connect( fieldAction, &QAction::triggered, this, [ = ]()
     {
-      mCurrentTimeStampField = fieldName;
-      emit timeStampDestinationChanged( fieldName );
+      if ( QgsProject::instance()->gpsSettings()->destinationTimeStampField() != fieldName )
+      {
+        QgsProject::instance()->gpsSettings()->setDestinationTimeStampField( QgsProject::instance()->gpsSettings()->destinationLayer(), fieldName );
+        QgsProject::instance()->setDirty();
+      }
     } );
     mTimeStampDestinationFieldMenu->addAction( fieldAction );
   }
@@ -326,7 +329,6 @@ void QgsAppGpsSettingsMenu::timeStampMenuAboutToShow()
   if ( !foundPreviousField )
   {
     mTimeStampDestinationFieldMenu->actions().at( 0 )->setChecked( true );
-    mCurrentTimeStampField.clear();
   }
 }
 

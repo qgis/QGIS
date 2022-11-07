@@ -27,6 +27,11 @@ void QgsProjectGpsSettings::resolveReferences( const QgsProject *project )
   mDestinationLayer.resolveWeakly( project );
 
   emit destinationLayerChanged( mDestinationLayer.get() );
+
+  if ( mDestinationLayer )
+  {
+    emit destinationTimeStampFieldChanged( mDestinationTimestampFields.value( mDestinationLayer->id() ) );
+  }
 }
 
 QgsProjectGpsSettings::~QgsProjectGpsSettings() = default;
@@ -38,11 +43,13 @@ void QgsProjectGpsSettings::reset()
   mDestinationFollowsActiveLayer = true;
 
   mDestinationLayer.setLayer( nullptr );
+  mDestinationTimestampFields.clear();
 
   emit automaticallyAddTrackVerticesChanged( mAutoAddTrackVertices );
   emit automaticallyCommitFeaturesChanged( mAutoCommitFeatures );
   emit destinationFollowsActiveLayerChanged( mDestinationFollowsActiveLayer );
   emit destinationLayerChanged( nullptr );
+  emit destinationTimeStampFieldChanged( QString() );
 }
 
 bool QgsProjectGpsSettings::readXml( const QDomElement &element, const QgsReadWriteContext & )
@@ -58,10 +65,24 @@ bool QgsProjectGpsSettings::readXml( const QDomElement &element, const QgsReadWr
 
   mDestinationLayer = QgsVectorLayerRef( layerId, layerName, layerSource, layerProvider );
 
+  mDestinationTimestampFields.clear();
+  {
+    const QDomElement timeStampElement = element.firstChildElement( QStringLiteral( "timeStampFields" ) );
+    QDomElement layerElement = timeStampElement.firstChildElement();
+    while ( !layerElement.isNull() )
+    {
+      const QString layerId = layerElement.attribute( QStringLiteral( "destinationLayer" ) );
+      const QString field = layerElement.attribute( QStringLiteral( "field" ) );
+      mDestinationTimestampFields[ layerId ] = field;
+      layerElement = layerElement.nextSiblingElement();
+    }
+  }
+
   emit automaticallyAddTrackVerticesChanged( mAutoAddTrackVertices );
   emit automaticallyCommitFeaturesChanged( mAutoCommitFeatures );
   emit destinationFollowsActiveLayerChanged( mDestinationFollowsActiveLayer );
   emit destinationLayerChanged( nullptr ); // won't be set until resolve is called
+  emit destinationTimeStampFieldChanged( QString() );
   return true;
 }
 
@@ -85,6 +106,18 @@ QDomElement QgsProjectGpsSettings::writeXml( QDomDocument &doc, const QgsReadWri
     element.setAttribute( QStringLiteral( "destinationLayer" ), QString() );
   }
 
+  {
+    QDomElement timeStampElement = doc.createElement( QStringLiteral( "timeStampFields" ) );
+    for ( auto it = mDestinationTimestampFields.constBegin(); it != mDestinationTimestampFields.constEnd(); ++it )
+    {
+      QDomElement layerElement = doc.createElement( QStringLiteral( "field" ) );
+      layerElement.setAttribute( QStringLiteral( "destinationLayer" ), it.key() );
+      layerElement.setAttribute( QStringLiteral( "field" ), it.value() );
+      timeStampElement.appendChild( layerElement );
+    }
+    element.appendChild( timeStampElement );
+  }
+
   return element;
 }
 
@@ -106,6 +139,20 @@ bool QgsProjectGpsSettings::destinationFollowsActiveLayer() const
 QgsVectorLayer *QgsProjectGpsSettings::destinationLayer() const
 {
   return mDestinationLayer.get();
+}
+
+QMap<QString, QString> QgsProjectGpsSettings::destinationTimeStampFields() const
+{
+  return mDestinationTimestampFields;
+}
+
+QString QgsProjectGpsSettings::destinationTimeStampField() const
+{
+  if ( QgsVectorLayer *vl = destinationLayer() )
+  {
+    return mDestinationTimestampFields.value( vl->id() );
+  }
+  return QString();
 }
 
 void QgsProjectGpsSettings::setAutomaticallyAddTrackVertices( bool enabled )
@@ -144,4 +191,28 @@ void QgsProjectGpsSettings::setDestinationLayer( QgsVectorLayer *layer )
 
   mDestinationLayer.setLayer( layer );
   emit destinationLayerChanged( layer );
+
+  if ( layer )
+  {
+    emit destinationTimeStampFieldChanged( mDestinationTimestampFields.value( layer->id() ) );
+  }
+  else
+  {
+    emit destinationTimeStampFieldChanged( QString() );
+  }
+}
+
+void QgsProjectGpsSettings::setDestinationTimeStampField( QgsVectorLayer *layer, const QString &field )
+{
+  if ( !layer )
+    return;
+
+  if ( mDestinationTimestampFields.value( layer->id() ) != field )
+  {
+    mDestinationTimestampFields.insert( layer->id(), field );
+    if ( layer == destinationLayer() )
+    {
+      emit destinationTimeStampFieldChanged( field );
+    }
+  }
 }
