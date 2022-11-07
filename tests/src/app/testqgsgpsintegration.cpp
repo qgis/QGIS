@@ -22,10 +22,10 @@
 #include "qgsmapcanvas.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsappgpsconnection.h"
-#include "gps/qgsgpsinformationwidget.h"
 #include "gps/qgsappgpsdigitizing.h"
 #include "gps/qgsappgpssettingsmenu.h"
 #include "options/qgsgpsoptions.h"
+#include "qgsprojectgpssettings.h"
 #include "nmeatime.h"
 
 #include <QSignalSpy>
@@ -49,6 +49,7 @@ class TestQgsGpsIntegration : public QgsTest
     void testTimestamp();
     void testTimestampWrite();
     void testMultiPartLayers();
+    void testFollowActiveLayer();
 
   private:
     QDateTime _testWrite( QgsVectorLayer *vlayer, QgsAppGpsDigitizing &gpsDigitizing, const QString &fieldName, Qt::TimeSpec timeSpec, bool commit = false );
@@ -109,7 +110,7 @@ void TestQgsGpsIntegration::cleanupTestCase()
 
 QDateTime TestQgsGpsIntegration::_testWrite( QgsVectorLayer *vlayer, QgsAppGpsDigitizing &gpsDigitizing, const QString &fieldName, Qt::TimeSpec timeSpec, bool commit )
 {
-  mQgisApp->mapCanvas()->setCurrentLayer( vlayer );
+  mQgisApp->setActiveLayer( vlayer );
   vlayer->startEditing();
   gpsDigitizing.setTimeStampDestination( fieldName );
   gpsDigitizing.mTimeStampSpec = timeSpec;
@@ -127,6 +128,8 @@ QDateTime TestQgsGpsIntegration::_testWrite( QgsVectorLayer *vlayer, QgsAppGpsDi
 void TestQgsGpsIntegration::testTimeStampFields()
 {
   QgsAppGpsSettingsMenu settingsMenu( nullptr );
+  QgsAppGpsConnection connection( nullptr );
+  QgsAppGpsDigitizing gpsDigitizing( &connection, mQgisApp->mapCanvas() );
   QSignalSpy spy( &settingsMenu, &QgsAppGpsSettingsMenu::timeStampDestinationChanged );
 
   mQgisApp->setActiveLayer( tempLayer );
@@ -189,26 +192,26 @@ void TestQgsGpsIntegration::testStorePreferredFields()
   QgsAppGpsSettingsMenu menu( nullptr );
   QgsAppGpsDigitizing gpsDigitizing( &connection, canvas );
 
-  canvas->setCurrentLayer( tempLayerString );
+  mQgisApp->setActiveLayer( tempLayerString );
   gpsDigitizing.setTimeStampDestination( QStringLiteral( "stringf" ) );
-  canvas->setCurrentLayer( tempLayerDateTime );
+  mQgisApp->setActiveLayer( tempLayerDateTime );
   gpsDigitizing.setTimeStampDestination( QStringLiteral( "datetimef" ) );
-  canvas->setCurrentLayer( tempLayerLineString );
+  mQgisApp->setActiveLayer( tempLayerLineString );
   gpsDigitizing.setTimeStampDestination( QStringLiteral( "stringf" ) );
-  canvas->setCurrentLayer( tempGpkgLayerPointString );
+  mQgisApp->setActiveLayer( tempGpkgLayerPointString );
   gpsDigitizing.setTimeStampDestination( QStringLiteral( "datetimef" ) );
 
-  canvas->setCurrentLayer( tempLayer );
+  mQgisApp->setActiveLayer( tempLayer );
   QVERIFY( gpsDigitizing.mPreferredTimestampFields.contains( tempLayerString->id() ) );
   QCOMPARE( gpsDigitizing.mPreferredTimestampFields[ tempLayerString->id() ], QStringLiteral( "stringf" ) );
   QVERIFY( gpsDigitizing.mPreferredTimestampFields.contains( tempLayerDateTime->id() ) );
   QCOMPARE( gpsDigitizing.mPreferredTimestampFields[ tempLayerDateTime->id() ], QStringLiteral( "datetimef" ) );
 
   QSignalSpy spy( &gpsDigitizing, &QgsAppGpsDigitizing::timeStampDestinationChanged );
-  canvas->setCurrentLayer( tempLayerDateTime );
+  mQgisApp->setActiveLayer( tempLayerDateTime );
   QCOMPARE( spy.count(), 1 );
   QCOMPARE( spy.at( 0 ).at( 0 ).toString(), QStringLiteral( "datetimef" ) );
-  canvas->setCurrentLayer( tempLayerString );
+  mQgisApp->setActiveLayer( tempLayerString );
   QCOMPARE( spy.count(), 2 );
   QCOMPARE( spy.at( 1 ).at( 0 ).toString(), QStringLiteral( "stringf" ) );
 }
@@ -232,7 +235,7 @@ void TestQgsGpsIntegration::testTimestamp()
 
   ///////////////////////////////////////////
   // Test datetime layer
-  canvas->setCurrentLayer( tempLayerDateTime );
+  mQgisApp->setActiveLayer( tempLayerDateTime );
   int fieldIdx = tempLayerDateTime->fields().indexOf( QLatin1String( "datetimef" ) );
   gpsDigitizing.setTimeStampDestination( QStringLiteral( "datetimef" ) );
   // UTC
@@ -253,7 +256,7 @@ void TestQgsGpsIntegration::testTimestamp()
 
   ///////////////////////////////////////////
   // Test string
-  canvas->setCurrentLayer( tempLayerString );
+  mQgisApp->setActiveLayer( tempLayerString );
   fieldIdx = tempLayerString->fields().indexOf( QLatin1String( "stringf" ) );
   gpsDigitizing.setTimeStampDestination( QStringLiteral( "stringf" ) );
 
@@ -333,15 +336,17 @@ void TestQgsGpsIntegration::testTimestampWrite()
 
 void TestQgsGpsIntegration::testMultiPartLayers()
 {
-  std::unique_ptr< QgsVectorLayer >multiLineString = std::make_unique< QgsVectorLayer >( QStringLiteral( "MultiLinestring?crs=epsg:4326&field=intf:int&field=stringf:string" ),
+  QgsVectorLayer *multiLineString = new QgsVectorLayer( QStringLiteral( "MultiLinestring?crs=epsg:4326&field=intf:int&field=stringf:string" ),
       QStringLiteral( "vl4" ),
       QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( multiLineString );
 
   QgsMapCanvas *canvas = mQgisApp->mapCanvas();
   QgsAppGpsConnection connection( nullptr );
 
   QgsAppGpsDigitizing gpsDigitizing( &connection, canvas );
-  canvas->setCurrentLayer( multiLineString.get() );
+  mQgisApp->setActiveLayer( multiLineString );
+  QCOMPARE( QgsProject::instance()->gpsSettings()->destinationLayer(), multiLineString );
   multiLineString->startEditing();
 
   // not possible, no points
@@ -361,11 +366,14 @@ void TestQgsGpsIntegration::testMultiPartLayers()
   multiLineString->rollBack();
 
   // multipolygon
-  std::unique_ptr< QgsVectorLayer >multiPolygon = std::make_unique< QgsVectorLayer >( QStringLiteral( "MultiPolygon?crs=epsg:4326&field=intf:int&field=stringf:string" ),
+  QgsVectorLayer *multiPolygon = new QgsVectorLayer( QStringLiteral( "MultiPolygon?crs=epsg:4326&field=intf:int&field=stringf:string" ),
       QStringLiteral( "vl4" ),
       QStringLiteral( "memory" ) );
 
-  canvas->setCurrentLayer( multiPolygon.get() );
+  QgsProject::instance()->addMapLayer( multiPolygon );
+  mQgisApp->setActiveLayer( multiPolygon );
+  QCOMPARE( QgsProject::instance()->gpsSettings()->destinationLayer(), multiPolygon );
+
   multiPolygon->startEditing();
 
   // not possible, no points
@@ -386,6 +394,33 @@ void TestQgsGpsIntegration::testMultiPartLayers()
   QVERIFY( multiPolygon->getFeatures().nextFeature( f ) );
   QCOMPARE( f.geometry().wkbType(), QgsWkbTypes::MultiPolygon );
   multiPolygon->rollBack();
+}
+
+void TestQgsGpsIntegration::testFollowActiveLayer()
+{
+  QgsProject::instance()->gpsSettings()->setDestinationFollowsActiveLayer( true );
+
+  QgsMapCanvas *canvas = mQgisApp->mapCanvas();
+  QgsAppGpsConnection connection( nullptr );
+
+  QgsAppGpsSettingsMenu menu( nullptr );
+  QgsAppGpsDigitizing gpsDigitizing( &connection, canvas );
+
+  mQgisApp->setActiveLayer( tempLayerString );
+  QCOMPARE( QgsProject::instance()->gpsSettings()->destinationLayer(), tempLayerString );
+
+  mQgisApp->setActiveLayer( tempLayerDateTime );
+  QCOMPARE( QgsProject::instance()->gpsSettings()->destinationLayer(), tempLayerDateTime );
+
+  // disable auto follow active layer
+  QgsProject::instance()->gpsSettings()->setDestinationFollowsActiveLayer( false );
+
+  QgsProject::instance()->gpsSettings()->setDestinationLayer( tempLayerLineString );
+  QCOMPARE( QgsProject::instance()->gpsSettings()->destinationLayer(), tempLayerLineString );
+
+  mQgisApp->setActiveLayer( tempLayerString );
+  //should be unchanged
+  QCOMPARE( QgsProject::instance()->gpsSettings()->destinationLayer(), tempLayerLineString );
 }
 
 
