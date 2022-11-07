@@ -1982,6 +1982,19 @@ class CORE_EXPORT Qgis
     Q_DECLARE_FLAGS( ViewSyncModeFlags, ViewSyncModeFlag )
 
     /**
+     * Modes for recentering map canvases.
+     *
+     * \since QGIS 3.30
+     */
+    enum class MapRecenteringMode
+    {
+      Always, //!< Always recenter map
+      WhenOutsideVisibleExtent, //!< Only recenter map when new center would be outside of current visible extent
+      Never, //!< Never recenter map
+    };
+    Q_ENUM( MapRecenteringMode )
+
+    /**
      * History provider backends.
      *
      * \since QGIS 3.24

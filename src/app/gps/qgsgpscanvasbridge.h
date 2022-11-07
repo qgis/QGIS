@@ -41,18 +41,10 @@ class APP_EXPORT QgsGpsCanvasBridge : public QObject, public QgsMapCanvasInterac
 
   public:
 
-    enum class MapCenteringMode
-    {
-      Always,
-      WhenLeavingExtent,
-      Never
-    };
-    Q_ENUM( MapCenteringMode )
-
     static const inline QgsSettingsEntryBool settingShowBearingLine = QgsSettingsEntryBool( QStringLiteral( "show-bearing-line" ), QgsSettings::Prefix::GPS, false, QStringLiteral( "Whether the GPS bearing line symbol should be shown" ) );
     static const inline QgsSettingsEntryString settingBearingLineSymbol = QgsSettingsEntryString( QStringLiteral( "bearing-line-symbol" ), QgsSettings::Prefix::GPS, QString(), QStringLiteral( "Line symbol to use for GPS bearing line" ), Qgis::SettingsOptions(), 0 );
     static const inline QgsSettingsEntryInteger settingMapExtentRecenteringThreshold = QgsSettingsEntryInteger( QStringLiteral( "map-recentering-threshold" ), QgsSettings::Prefix::GPS, 50, QStringLiteral( "Threshold for GPS automatic map centering" ) );
-    static const inline QgsSettingsEntryEnumFlag<QgsGpsCanvasBridge::MapCenteringMode> settingMapCenteringMode = QgsSettingsEntryEnumFlag<QgsGpsCanvasBridge::MapCenteringMode>( QStringLiteral( "map-recentering" ), QgsSettings::Prefix::GPS, QgsGpsCanvasBridge::MapCenteringMode::WhenLeavingExtent, QStringLiteral( "Automatic GPS based map recentering mode" ) );
+    static const inline QgsSettingsEntryEnumFlag<Qgis::MapRecenteringMode> settingMapCenteringMode = QgsSettingsEntryEnumFlag<Qgis::MapRecenteringMode>( QStringLiteral( "map-recentering" ), QgsSettings::Prefix::GPS, Qgis::MapRecenteringMode::WhenOutsideVisibleExtent, QStringLiteral( "Automatic GPS based map recentering mode" ) );
     static const inline QgsSettingsEntryBool settingRotateMap = QgsSettingsEntryBool( QStringLiteral( "auto-map-rotate" ), QgsSettings::Prefix::GPS, false, QStringLiteral( "Whether to automatically rotate the map to match GPS bearing" ) );
     static const inline QgsSettingsEntryInteger settingMapRotateInterval = QgsSettingsEntryInteger( QStringLiteral( "map-rotate-interval" ), QgsSettings::Prefix::GPS, 0, QStringLiteral( "Interval for GPS automatic map rotation" ) );
 
@@ -66,7 +58,7 @@ class APP_EXPORT QgsGpsCanvasBridge : public QObject, public QgsMapCanvasInterac
     void setLocationMarkerVisible( bool show );
     void setBearingLineVisible( bool show );
     void setRotateMap( bool enabled );
-    void setMapCenteringMode( QgsGpsCanvasBridge::MapCenteringMode mode );
+    void setMapCenteringMode( Qgis::MapRecenteringMode mode );
     void tapAndHold( const QgsPointXY &mapPoint, QTapAndHoldGesture *gesture );
 
   private slots:
@@ -95,7 +87,7 @@ class APP_EXPORT QgsGpsCanvasBridge : public QObject, public QgsMapCanvasInterac
 
     bool mRotateMap = false;
 
-    QgsGpsCanvasBridge::MapCenteringMode mCenteringMode = QgsGpsCanvasBridge::MapCenteringMode::Always;
+    Qgis::MapRecenteringMode mCenteringMode = Qgis::MapRecenteringMode::Always;
 
     QgsDistanceArea mDistanceCalculator;
     QgsCoordinateTransform mCanvasToWgs84Transform;
