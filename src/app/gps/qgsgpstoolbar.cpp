@@ -121,9 +121,6 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
   mShowInfoAction->setCheckable( true );
   addAction( mShowInfoAction );
 
-  mLocationLabel = new QLabel();
-  addWidget( mLocationLabel );
-
   connect( mConnection, &QgsAppGpsConnection::positionChanged, this, &QgsGpsToolBar::updateLocationLabel );
   updateLocationLabel( mConnection->lastValidLocation() );
 
@@ -133,7 +130,7 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
   settingsButton->setMenu( QgisApp::instance()->gpsSettingsMenu() );
   settingsButton->setPopupMode( QToolButton::InstantPopup );
   settingsButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) ) );
-  addWidget( settingsButton );
+  mSettingsMenuAction = addWidget( settingsButton );
 
   mRecenterAction->setEnabled( false );
   mCreateFeatureAction->setEnabled( false );
@@ -152,6 +149,8 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
         mRecenterAction->setEnabled( false );
         mCreateFeatureAction->setEnabled( false );
         mAddTrackVertexAction->setEnabled( false );
+        delete mLocationLabel;
+        mLocationLabel = nullptr;
         break;
       case Qgis::GpsConnectionStatus::Connecting:
         whileBlocking( mConnectAction )->setChecked( true );
@@ -161,6 +160,8 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
         mRecenterAction->setEnabled( false );
         mCreateFeatureAction->setEnabled( false );
         mAddTrackVertexAction->setEnabled( false );
+        delete mLocationLabel;
+        mLocationLabel = nullptr;
         break;
       case Qgis::GpsConnectionStatus::Connected:
         whileBlocking( mConnectAction )->setChecked( true );
@@ -173,6 +174,8 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
         mAddTrackVertexAction->setEnabled( mEnableAddVertexButton );
         break;
     }
+    // this is necessary to ensure that the toolbar in floating mode correctly resizes to fit the label!
+    setFixedWidth( sizeHint().width() );
   } );
 
   connect( QgsProject::instance()->gpsSettings(), &QgsProjectGpsSettings::destinationLayerChanged,
@@ -180,6 +183,9 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
 
   connect( QgsProject::instance()->gpsSettings(), &QgsProjectGpsSettings::automaticallyAddTrackVerticesChanged, this, [ = ]( bool enabled ) { setAddVertexButtonEnabled( !enabled ); } );
   setAddVertexButtonEnabled( !QgsProject::instance()->gpsSettings()->automaticallyAddTrackVertices() );
+
+  // this is necessary to ensure that the toolbar in floating mode correctly resizes to fit the label!
+  setFixedWidth( sizeHint().width() );
 }
 
 void QgsGpsToolBar::setAddVertexButtonEnabled( bool enabled )
@@ -197,13 +203,22 @@ void QgsGpsToolBar::updateLocationLabel( const QgsPoint &point )
 {
   if ( point.isEmpty() )
   {
-    mLocationLabel->clear();
+    delete mLocationLabel;
+    mLocationLabel = nullptr;
   }
   else
   {
+    if ( !mLocationLabel )
+    {
+      mLocationLabel = new QLabel();
+      insertWidget( mSettingsMenuAction, mLocationLabel );
+    }
     const QString pos = QgsCoordinateUtils::formatCoordinateForProject( QgsProject::instance(), point, QgsCoordinateReferenceSystem(), 8 );
     mLocationLabel->setText( pos );
   }
+
+  // this is necessary to ensure that the toolbar in floating mode correctly resizes to fit the label!
+  setFixedWidth( sizeHint().width() );
 }
 
 void QgsGpsToolBar::destinationLayerChanged( QgsVectorLayer *vlayer )
