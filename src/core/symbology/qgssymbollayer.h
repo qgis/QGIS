@@ -701,7 +701,7 @@ class CORE_EXPORT QgsSymbolLayer
 
     /**
      * When renderering, install masks on \a context painter
-     * \param recursive if TRUE masks are installed recursively for all children symbol layers
+     * if \a recursive is TRUE masks are installed recursively for all children symbol layers
      * \see prepareMasks()
      * \see removeMasks()
      * \since QGIS 3.30
@@ -710,7 +710,7 @@ class CORE_EXPORT QgsSymbolLayer
 
     /**
      * When renderering, remove previously installed masks from \a context painter
-     * \param recursive if TRUE masks are removed recursively for all children symbol layers
+     * if \a recursive is TRUE masks are removed recursively for all children symbol layers
      * \see prepareMasks()
      * \see installMasks()
      * \since QGIS 3.30

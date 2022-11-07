@@ -710,8 +710,7 @@ Copies paint effect of this layer to another symbol layer
     void installMasks( QgsRenderContext &context, bool recursive );
 %Docstring
 When renderering, install masks on ``context`` painter
-
-:param recursive: if ``True`` masks are installed recursively for all children symbol layers
+if ``recursive`` is ``True`` masks are installed recursively for all children symbol layers
 
 .. seealso:: :py:func:`prepareMasks`
 
@@ -723,8 +722,7 @@ When renderering, install masks on ``context`` painter
     void removeMasks( QgsRenderContext &context, bool recursive );
 %Docstring
 When renderering, remove previously installed masks from ``context`` painter
-
-:param recursive: if ``True`` masks are removed recursively for all children symbol layers
+if ``recursive`` is ``True`` masks are removed recursively for all children symbol layers
 
 .. seealso:: :py:func:`prepareMasks`
 
