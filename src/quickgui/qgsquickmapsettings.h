@@ -26,8 +26,7 @@
 #include "qgsmapthemecollection.h"
 #include "qgspoint.h"
 #include "qgsrectangle.h"
-
-class QgsProject;
+#include "qgsproject.h"
 
 /**
  * \ingroup quick
