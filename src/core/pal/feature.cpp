@@ -2040,7 +2040,7 @@ std::size_t FeaturePart::createCandidatesOutsidePolygon( std::vector<std::unique
     // here we deviate a little from R&R, and instead of just calculating the centroid distance
     // to centroid of label, we calculate the distance from the centroid to the nearest point on the label
 
-    const double centroidDistance = candidate->getDistanceToPoint( cx, cy );
+    const double centroidDistance = candidate->getDistanceToPoint( cx, cy, false );
     const double centroidCost = centroidDistance / estimateOfMaxPossibleDistanceCentroidToLabel;
     candidate->setCost( centroidCost );
 

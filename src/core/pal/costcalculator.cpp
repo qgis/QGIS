@@ -16,7 +16,6 @@
 #include "layer.h"
 #include "pal.h"
 #include "feature.h"
-#include "geomfunction.h"
 #include "labelposition.h"
 #include "util.h"
 #include "costcalculator.h"
@@ -40,7 +39,7 @@ void CostCalculator::addObstacleCostPenalty( LabelPosition *lp, FeaturePart *obs
   {
     case GEOS_POINT:
 
-      dist = lp->getDistanceToPoint( obstacle->x[0], obstacle->y[0] );
+      dist = lp->getDistanceToPoint( obstacle->x[0], obstacle->y[0], true );
       if ( dist < 0 )
         n = 2;
       else if ( dist < distlabel )
