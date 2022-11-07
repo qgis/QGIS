@@ -657,7 +657,6 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
 
     /**
      * Loads a layer style from the provider storage, reporting its name.
-     * \param providerKey name of the data provider
      * \param uri data source uri
      * \param styleName the name of the style if available, empty otherwise
      * \param errCause report errors
