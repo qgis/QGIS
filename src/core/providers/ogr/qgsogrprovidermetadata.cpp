@@ -805,6 +805,7 @@ int QgsOgrProviderMetadata::listStyles(
   QMap<int, QString> mapIdToDescription;
   QMap<qlonglong, QList<int> > mapTimestampToId;
   int numberOfRelatedStyles = 0;
+
   while ( true )
   {
     gdal::ogr_feature_unique_ptr hFeature( OGR_L_GetNextFeature( hLayer ) );
@@ -839,8 +840,8 @@ int QgsOgrProviderMetadata::listStyles(
       int  year, month, day, hour, minute, second, TZ;
       OGR_F_GetFieldAsDateTime( hFeature.get(), OGR_FD_GetFieldIndex( hLayerDefn, "update_time" ),
                                 &year, &month, &day, &hour, &minute, &second, &TZ );
-      qlonglong ts = second + minute * 60 + hour * 3600 + day * 24 * 3600 +
-                     static_cast<qlonglong>( month ) * 31 * 24 * 3600 + static_cast<qlonglong>( year ) * 12 * 31 * 24 * 3600;
+      const qlonglong ts = second + minute * 60 + hour * 3600 + day * 24 * 3600 +
+                           static_cast<qlonglong>( month ) * 31 * 24 * 3600 + static_cast<qlonglong>( year ) * 12 * 31 * 24 * 3600;
 
       listTimestamp.append( ts );
       mapIdToStyleName[fid] = styleName;

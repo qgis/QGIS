@@ -1761,37 +1761,30 @@ QString QgsVectorLayer::loadDefaultStyle( bool &resultFlag )
 
   if ( resultFlag )
   {
-    // Try to load all stored styles
-    if ( mLoadAllStoredStyle )
+    // Try to load all stored styles from DB
+    if ( mLoadAllStoredStyle && mDataProvider && mDataProvider->isSaveAndLoadStyleToDatabaseSupported() )
     {
       QStringList ids, names, descriptions;
       QString errorMessage;
       listStylesInDatabase( ids, names, descriptions, errorMessage );
-      if ( ids.count() == names.count() )
+      Q_ASSERT( ids.count() == names.count() );
+      const QString currentStyleName { mStyleManager->currentStyle() };
+      for ( int i = 0; i < static_cast<int>( ids.count() ); ++i )
       {
-        const QString currentStyleName { mStyleManager->currentStyle() };
-        for ( int i = 0; i < ids.count(); ++i )
+        if ( names.at( i ) == currentStyleName )
         {
-          if ( names.at( i ) == currentStyleName )
-          {
-            continue;
-          }
-          errorMessage.clear();
-          const QString styleXml { getStyleFromDatabase( ids.at( i ), errorMessage ) };
-          if ( ! styleXml.isEmpty() && errorMessage.isEmpty() )
-          {
-            mStyleManager->addStyle( names.at( i ), QgsMapLayerStyle( styleXml ) );
-          }
-          else
-          {
-            QgsDebugMsgLevel( QStringLiteral( "Error retrieving style %1 from DB: %2" ).arg( ids.at( i ), errorMessage ), 2 );
-          }
+          continue;
         }
-      }
-      else
-      {
-        // Something is wery wrong!
-        QgsDebugMsg( "Number of ids and names differs after fetching styles from DB!" );
+        errorMessage.clear();
+        const QString styleXml { getStyleFromDatabase( ids.at( i ), errorMessage ) };
+        if ( ! styleXml.isEmpty() && errorMessage.isEmpty() )
+        {
+          mStyleManager->addStyle( names.at( i ), QgsMapLayerStyle( styleXml ) );
+        }
+        else
+        {
+          QgsDebugMsgLevel( QStringLiteral( "Error retrieving style %1 from DB: %2" ).arg( ids.at( i ), errorMessage ), 2 );
+        }
       }
     }
     return styleXml ;
