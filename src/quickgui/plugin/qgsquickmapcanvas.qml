@@ -161,13 +161,13 @@ Item {
 
     onPxChanged: {
       if ( enabled ) {
-        mapCanvasWrapper.mapSettings.center = utils.toQgsPoint( Qt.point( px, py ) )
+        mapCanvasWrapper.mapSettings.center = QgsQuick.Utils.toQgsPoint( Qt.point( px, py ) )
       }
     }
 
     onPyChanged: {
       if ( enabled ) {
-        mapCanvasWrapper.mapSettings.center = utils.toQgsPoint( Qt.point( px, py ) )
+        mapCanvasWrapper.mapSettings.center = QgsQuick.Utils.toQgsPoint( Qt.point( px, py ) )
       }
     }
   }
@@ -400,9 +400,5 @@ Item {
 
       userInteractedWithMap()
     }
-  }
-
-  QgsQuick.QgsQuickUtils {
-    id: utils
   }
 }

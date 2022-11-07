@@ -44,7 +44,7 @@ class QgsQuickUtils : public QObject
      * Helper function to convert QPointF to QgsPoint without any transformations.
      * Useful for converting these values in QML.
      */
-    Q_INVOKABLE QgsPoint toQgsPoint( const QPointF &point );
+    Q_INVOKABLE static QgsPoint toQgsPoint( const QPointF &point );
 };
 
 #endif // QGSQUICKUTILS_H
