@@ -112,7 +112,7 @@ QDateTime TestQgsGpsIntegration::_testWrite( QgsVectorLayer *vlayer, QgsAppGpsDi
 {
   mQgisApp->setActiveLayer( vlayer );
   vlayer->startEditing();
-  gpsDigitizing.setTimeStampDestination( fieldName );
+  QgsProject::instance()->gpsSettings()->setDestinationTimeStampField( vlayer, fieldName );
   gpsDigitizing.mTimeStampSpec = timeSpec;
   gpsDigitizing.createFeature();
   const auto fids { vlayer->allFeatureIds() };
@@ -130,44 +130,39 @@ void TestQgsGpsIntegration::testTimeStampFields()
   QgsAppGpsSettingsMenu settingsMenu( nullptr );
   QgsAppGpsConnection connection( nullptr );
   QgsAppGpsDigitizing gpsDigitizing( &connection, mQgisApp->mapCanvas() );
-  QSignalSpy spy( &settingsMenu, &QgsAppGpsSettingsMenu::timeStampDestinationChanged );
 
   mQgisApp->setActiveLayer( tempLayer );
   // allow menu to populate
   settingsMenu.timeStampMenuAboutToShow();
   QCOMPARE( settingsMenu.mTimeStampDestinationFieldMenu->actions().count(), 1 );
-  QCOMPARE( settingsMenu.mTimeStampDestinationFieldMenu->actions().at( 0 )->text(), QString() );
+  QCOMPARE( settingsMenu.mTimeStampDestinationFieldMenu->actions().at( 0 )->text(), QStringLiteral( "Do Not Store" ) );
   QCOMPARE( settingsMenu.mTimeStampDestinationFieldMenu->actions().at( 0 )->data().toString(), QString() );
   QVERIFY( settingsMenu.mTimeStampDestinationFieldMenu->actions().at( 0 )->isChecked() );
 
   mQgisApp->setActiveLayer( tempLayerString );
   settingsMenu.timeStampMenuAboutToShow();
   QCOMPARE( settingsMenu.mTimeStampDestinationFieldMenu->actions().count(), 2 );
-  QCOMPARE( settingsMenu.mTimeStampDestinationFieldMenu->actions().at( 0 )->text(), QString() );
+  QCOMPARE( settingsMenu.mTimeStampDestinationFieldMenu->actions().at( 0 )->text(), QStringLiteral( "Do Not Store" ) );
   QCOMPARE( settingsMenu.mTimeStampDestinationFieldMenu->actions().at( 0 )->data().toString(), QString() );
   QCOMPARE( settingsMenu.mTimeStampDestinationFieldMenu->actions().at( 1 )->text(), QStringLiteral( "stringf" ) );
   QCOMPARE( settingsMenu.mTimeStampDestinationFieldMenu->actions().at( 1 )->data().toString(), QStringLiteral( "stringf" ) );
   QVERIFY( settingsMenu.mTimeStampDestinationFieldMenu->actions().at( 0 )->isChecked() );
   settingsMenu.mTimeStampDestinationFieldMenu->actions().at( 1 )->trigger();
-  QCOMPARE( spy.count(), 1 );
-  QCOMPARE( spy.at( 0 ).at( 0 ).toString(), QStringLiteral( "stringf" ) );
 
   mQgisApp->setActiveLayer( tempLayerDateTime );
   settingsMenu.timeStampMenuAboutToShow();
   QCOMPARE( settingsMenu.mTimeStampDestinationFieldMenu->actions().count(), 2 );
-  QCOMPARE( settingsMenu.mTimeStampDestinationFieldMenu->actions().at( 0 )->text(), QString() );
+  QCOMPARE( settingsMenu.mTimeStampDestinationFieldMenu->actions().at( 0 )->text(), QStringLiteral( "Do Not Store" ) );
   QCOMPARE( settingsMenu.mTimeStampDestinationFieldMenu->actions().at( 0 )->data().toString(), QString() );
   QCOMPARE( settingsMenu.mTimeStampDestinationFieldMenu->actions().at( 1 )->text(), QStringLiteral( "datetimef" ) );
   QCOMPARE( settingsMenu.mTimeStampDestinationFieldMenu->actions().at( 1 )->data().toString(), QStringLiteral( "datetimef" ) );
   QVERIFY( settingsMenu.mTimeStampDestinationFieldMenu->actions().at( 0 )->isChecked() );
   settingsMenu.mTimeStampDestinationFieldMenu->actions().at( 1 )->trigger();
-  QCOMPARE( spy.count(), 2 );
-  QCOMPARE( spy.at( 1 ).at( 0 ).toString(), QStringLiteral( "datetimef" ) );
 
-  settingsMenu.setCurrentTimeStampField( QString() );
+  QgsProject::instance()->gpsSettings()->setDestinationTimeStampField( QgsProject::instance()->gpsSettings()->destinationLayer(), QString() );
   settingsMenu.timeStampMenuAboutToShow();
   QVERIFY( settingsMenu.mTimeStampDestinationFieldMenu->actions().at( 0 )->isChecked() );
-  settingsMenu.setCurrentTimeStampField( QStringLiteral( "datetimef" ) );
+  QgsProject::instance()->gpsSettings()->setDestinationTimeStampField( QgsProject::instance()->gpsSettings()->destinationLayer(), QStringLiteral( "datetimef" ) );
   settingsMenu.timeStampMenuAboutToShow();
   QVERIFY( settingsMenu.mTimeStampDestinationFieldMenu->actions().at( 1 )->isChecked() );
 }
@@ -193,27 +188,20 @@ void TestQgsGpsIntegration::testStorePreferredFields()
   QgsAppGpsDigitizing gpsDigitizing( &connection, canvas );
 
   mQgisApp->setActiveLayer( tempLayerString );
-  gpsDigitizing.setTimeStampDestination( QStringLiteral( "stringf" ) );
+  QgsProject::instance()->gpsSettings()->setDestinationTimeStampField( tempLayerString, QStringLiteral( "stringf" ) );
   mQgisApp->setActiveLayer( tempLayerDateTime );
-  gpsDigitizing.setTimeStampDestination( QStringLiteral( "datetimef" ) );
+  QgsProject::instance()->gpsSettings()->setDestinationTimeStampField( tempLayerDateTime, QStringLiteral( "datetimef" ) );
   mQgisApp->setActiveLayer( tempLayerLineString );
-  gpsDigitizing.setTimeStampDestination( QStringLiteral( "stringf" ) );
+  QgsProject::instance()->gpsSettings()->setDestinationTimeStampField( tempLayerLineString, QStringLiteral( "stringf" ) );
   mQgisApp->setActiveLayer( tempGpkgLayerPointString );
-  gpsDigitizing.setTimeStampDestination( QStringLiteral( "datetimef" ) );
+  QgsProject::instance()->gpsSettings()->setDestinationTimeStampField( tempGpkgLayerPointString, QStringLiteral( "datetimef" ) );
 
   mQgisApp->setActiveLayer( tempLayer );
-  QVERIFY( gpsDigitizing.mPreferredTimestampFields.contains( tempLayerString->id() ) );
-  QCOMPARE( gpsDigitizing.mPreferredTimestampFields[ tempLayerString->id() ], QStringLiteral( "stringf" ) );
-  QVERIFY( gpsDigitizing.mPreferredTimestampFields.contains( tempLayerDateTime->id() ) );
-  QCOMPARE( gpsDigitizing.mPreferredTimestampFields[ tempLayerDateTime->id() ], QStringLiteral( "datetimef" ) );
-
-  QSignalSpy spy( &gpsDigitizing, &QgsAppGpsDigitizing::timeStampDestinationChanged );
-  mQgisApp->setActiveLayer( tempLayerDateTime );
-  QCOMPARE( spy.count(), 1 );
-  QCOMPARE( spy.at( 0 ).at( 0 ).toString(), QStringLiteral( "datetimef" ) );
-  mQgisApp->setActiveLayer( tempLayerString );
-  QCOMPARE( spy.count(), 2 );
-  QCOMPARE( spy.at( 1 ).at( 0 ).toString(), QStringLiteral( "stringf" ) );
+  QMap< QString, QString > preferredTimeStamps = QgsProject::instance()->gpsSettings()->destinationTimeStampFields();
+  QVERIFY( preferredTimeStamps.contains( tempLayerString->id() ) );
+  QCOMPARE( preferredTimeStamps[ tempLayerString->id() ], QStringLiteral( "stringf" ) );
+  QVERIFY( preferredTimeStamps.contains( tempLayerDateTime->id() ) );
+  QCOMPARE( preferredTimeStamps[ tempLayerDateTime->id() ], QStringLiteral( "datetimef" ) );
 }
 
 void TestQgsGpsIntegration::testTimestamp()
@@ -237,7 +225,8 @@ void TestQgsGpsIntegration::testTimestamp()
   // Test datetime layer
   mQgisApp->setActiveLayer( tempLayerDateTime );
   int fieldIdx = tempLayerDateTime->fields().indexOf( QLatin1String( "datetimef" ) );
-  gpsDigitizing.setTimeStampDestination( QStringLiteral( "datetimef" ) );
+  QgsProject::instance()->gpsSettings()->setDestinationTimeStampField( tempLayerDateTime, QStringLiteral( "datetimef" ) );
+
   // UTC
   gpsDigitizing.mTimeStampSpec = Qt::TimeSpec::UTC;
   QVariant dt = gpsDigitizing.timestamp( tempLayerDateTime, fieldIdx );
@@ -258,7 +247,7 @@ void TestQgsGpsIntegration::testTimestamp()
   // Test string
   mQgisApp->setActiveLayer( tempLayerString );
   fieldIdx = tempLayerString->fields().indexOf( QLatin1String( "stringf" ) );
-  gpsDigitizing.setTimeStampDestination( QStringLiteral( "stringf" ) );
+  QgsProject::instance()->gpsSettings()->setDestinationTimeStampField( tempLayerString, QStringLiteral( "stringf" ) );
 
   // UTC
   gpsDigitizing.mTimeStampSpec = Qt::TimeSpec::UTC;

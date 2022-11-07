@@ -111,6 +111,24 @@ class CORE_EXPORT QgsProjectGpsSettings : public QObject
      */
     QgsVectorLayer *destinationLayer() const;
 
+    /**
+     * Returns the map of destination layer ID to target time stamp field name.
+     *
+     * \see destinationTimeStampField()
+     * \see setDestinationTimeStampField()
+     * \see setDestinationTimeStampField()
+     */
+    QMap< QString, QString > destinationTimeStampFields() const;
+
+    /**
+     * Returns the destination time stamp field name for the current destinationLayer(),
+     * or an empty string if time stamps should not be automatically saved.
+     *
+     * \see destinationTimeStampFields()
+     * \see setDestinationTimeStampField()
+     */
+    QString destinationTimeStampField() const;
+
   public slots:
 
     /**
@@ -152,6 +170,18 @@ class CORE_EXPORT QgsProjectGpsSettings : public QObject
      */
     void setDestinationLayer( QgsVectorLayer *layer );
 
+    /**
+     * Sets the destination field name for automatically storing timestamps in the
+     * specified destination \a layer.
+     *
+     * Set \a field argument to an empty string if time stamps should
+     * not be automatically saved.
+     *
+     * \see destinationTimeStampFields()
+     * \see destinationTimeStampField()
+     */
+    void setDestinationTimeStampField( QgsVectorLayer *layer, const QString &field );
+
   signals:
 
     /**
@@ -190,6 +220,19 @@ class CORE_EXPORT QgsProjectGpsSettings : public QObject
      */
     void destinationLayerChanged( QgsVectorLayer *layer );
 
+    /**
+     * Emitted whenever the destination field for automatic time stamps is
+     * changed.
+     *
+     * The \a field argument will be an empty string if time stamps should
+     * not be automatically saved.
+     *
+     * \see destinationTimeStampFields()
+     * \see destinationTimeStampField()
+     * \see setDestinationTimeStampField()
+     */
+    void destinationTimeStampFieldChanged( const QString &field );
+
   private:
 
     bool mAutoAddTrackVertices = false;
@@ -197,6 +240,8 @@ class CORE_EXPORT QgsProjectGpsSettings : public QObject
 
     bool mDestinationFollowsActiveLayer = true;
     QgsVectorLayerRef mDestinationLayer;
+
+    QMap<QString, QString> mDestinationTimestampFields;
 
 };
 

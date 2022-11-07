@@ -64,11 +64,6 @@ QgsAppGpsDigitizing::QgsAppGpsDigitizing( QgsAppGpsConnection *connection, QgsMa
   connect( mAcquisitionTimer.get(), &QTimer::timeout,
            this, &QgsAppGpsDigitizing::switchAcquisition );
 
-  connect( QgsProject::instance()->gpsSettings(), &QgsProjectGpsSettings::destinationLayerChanged,
-           this, &QgsAppGpsDigitizing::updateTimestampDestinationFields );
-
-  updateTimestampDestinationFields( QgsProject::instance()->gpsSettings()->destinationLayer() );
-
   connect( mConnection, &QgsAppGpsConnection::stateChanged, this, &QgsAppGpsDigitizing::gpsStateChanged );
   connect( mConnection, &QgsAppGpsConnection::connected, this, &QgsAppGpsDigitizing::gpsConnected );
   connect( mConnection, &QgsAppGpsConnection::disconnected, this, &QgsAppGpsDigitizing::gpsDisconnected );
@@ -192,7 +187,7 @@ void QgsAppGpsDigitizing::createFeature()
 
   // Handle timestamp
   QgsAttributeMap attrMap;
-  const int idx { vlayer->fields().indexOf( mTimestampField ) };
+  const int idx = vlayer->fields().indexOf( QgsProject::instance()->gpsSettings()->destinationTimeStampField() );
   if ( idx != -1 )
   {
     const QVariant ts = timestamp( vlayer, idx );
@@ -371,15 +366,6 @@ void QgsAppGpsDigitizing::createFeature()
   vlayer->triggerRepaint();
 
   QgisApp::instance()->activateWindow();
-}
-
-void QgsAppGpsDigitizing::setTimeStampDestination( const QString &fieldName )
-{
-  if ( QgsVectorLayer *vlayer = QgsProject::instance()->gpsSettings()->destinationLayer() )
-  {
-    mPreferredTimestampFields[ vlayer->id() ] = fieldName;
-  }
-  mTimestampField = fieldName;
 }
 
 void QgsAppGpsDigitizing::setNmeaLogFile( const QString &filename )
@@ -561,32 +547,6 @@ void QgsAppGpsDigitizing::gpsStateChanged( const QgsGpsInformation &info )
       addVertex();
     }
   }
-}
-
-void QgsAppGpsDigitizing::updateTimestampDestinationFields( QgsVectorLayer *vlayer )
-{
-  if ( vlayer )
-  {
-    // Restore preferred if stored
-    if ( mPreferredTimestampFields.contains( vlayer->id( ) ) )
-    {
-      const QString previousTimeStampField = mPreferredTimestampFields[ vlayer->id( ) ];
-      const int idx = vlayer->fields().indexOf( previousTimeStampField );
-      if ( idx >= 0 )
-        mTimestampField = previousTimeStampField;
-    }
-    // Cleanup preferred fields
-    const QStringList layerIds { mPreferredTimestampFields.keys( ) };
-    for ( const QString &layerId : layerIds )
-    {
-      if ( ! QgsProject::instance()->mapLayer( layerId ) )
-      {
-        mPreferredTimestampFields.remove( layerId );
-      }
-    }
-  }
-
-  emit timeStampDestinationChanged( mTimestampField );
 }
 
 void QgsAppGpsDigitizing::logNmeaSentence( const QString &nmeaString )

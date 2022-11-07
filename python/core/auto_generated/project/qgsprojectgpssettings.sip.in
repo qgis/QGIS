@@ -100,6 +100,27 @@ Returns the destination layer to be used for storing features digitized from GPS
 .. seealso:: :py:func:`destinationLayerChanged`
 %End
 
+    QMap< QString, QString > destinationTimeStampFields() const;
+%Docstring
+Returns the map of destination layer ID to target time stamp field name.
+
+.. seealso:: :py:func:`destinationTimeStampField`
+
+.. seealso:: :py:func:`setDestinationTimeStampField`
+
+.. seealso:: :py:func:`setDestinationTimeStampField`
+%End
+
+    QString destinationTimeStampField() const;
+%Docstring
+Returns the destination time stamp field name for the current :py:func:`~QgsProjectGpsSettings.destinationLayer`,
+or an empty string if time stamps should not be automatically saved.
+
+.. seealso:: :py:func:`destinationTimeStampFields`
+
+.. seealso:: :py:func:`setDestinationTimeStampField`
+%End
+
   public slots:
 
     void setAutomaticallyAddTrackVertices( bool enabled );
@@ -147,6 +168,19 @@ Sets the destination ``layer`` to be used for storing features digitized from GP
 .. seealso:: :py:func:`destinationLayerChanged`
 %End
 
+    void setDestinationTimeStampField( QgsVectorLayer *layer, const QString &field );
+%Docstring
+Sets the destination field name for automatically storing timestamps in the
+specified destination ``layer``.
+
+Set ``field`` argument to an empty string if time stamps should
+not be automatically saved.
+
+.. seealso:: :py:func:`destinationTimeStampFields`
+
+.. seealso:: :py:func:`destinationTimeStampField`
+%End
+
   signals:
 
     void automaticallyAddTrackVerticesChanged( bool enabled );
@@ -187,6 +221,21 @@ is changed.
 .. seealso:: :py:func:`destinationLayer`
 
 .. seealso:: :py:func:`setDestinationLayer`
+%End
+
+    void destinationTimeStampFieldChanged( const QString &field );
+%Docstring
+Emitted whenever the destination field for automatic time stamps is
+changed.
+
+The ``field`` argument will be an empty string if time stamps should
+not be automatically saved.
+
+.. seealso:: :py:func:`destinationTimeStampFields`
+
+.. seealso:: :py:func:`destinationTimeStampField`
+
+.. seealso:: :py:func:`setDestinationTimeStampField`
 %End
 
 };

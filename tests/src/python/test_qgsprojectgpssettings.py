@@ -53,6 +53,7 @@ class TestQgsProjectGpsSettings(unittest.TestCase):
         self.assertFalse(p.automaticallyCommitFeatures())
         self.assertFalse(p.automaticallyAddTrackVertices())
         self.assertTrue(p.destinationFollowsActiveLayer())
+        self.assertFalse(p.destinationTimeStampFields())
 
         spy_add_track = QSignalSpy(p.automaticallyAddTrackVerticesChanged)
         spy_auto_commit = QSignalSpy(p.automaticallyCommitFeaturesChanged)
@@ -114,6 +115,37 @@ class TestQgsProjectGpsSettings(unittest.TestCase):
         self.assertEqual(spy[1][0], layer2)
         self.assertEqual(p.destinationLayer(), layer2)
 
+        p.setDestinationTimeStampField(layer1, 'test')
+        p.setDestinationTimeStampField(layer2, 'test2')
+        self.assertEqual(p.destinationTimeStampFields(), {layer1.id(): 'test',
+                                                          layer2.id(): 'test2'})
+
+    def test_time_stamp_field_changes(self):
+        layer1 = QgsVectorLayer(os.path.join(unitTestDataPath(), 'lines.shp'), 'layer1')
+        self.assertTrue(layer1.isValid())
+        layer2 = QgsVectorLayer(os.path.join(unitTestDataPath(), 'points.shp'), 'layer2')
+        self.assertTrue(layer2.isValid())
+
+        p = QgsProjectGpsSettings()
+        spy_destination_time_stamp_field_changed = QSignalSpy(p.destinationTimeStampFieldChanged)
+
+        p.setDestinationTimeStampField(layer1, 'test')
+        # no signal emitted, layer1 is not destination layer
+        self.assertEqual(len(spy_destination_time_stamp_field_changed), 0)
+        p.setDestinationLayer(layer2)
+        self.assertEqual(len(spy_destination_time_stamp_field_changed), 1)
+        self.assertFalse(spy_destination_time_stamp_field_changed[-1][0])
+        p.setDestinationTimeStampField(layer2, 'test2')
+        self.assertEqual(len(spy_destination_time_stamp_field_changed), 2)
+        self.assertEqual(spy_destination_time_stamp_field_changed[-1][0], 'test2')
+        self.assertEqual(p.destinationTimeStampFields(), {layer1.id(): 'test',
+                                                          layer2.id(): 'test2'})
+
+        # changing destination layer will emit signal
+        p.setDestinationLayer(layer1)
+        self.assertEqual(len(spy_destination_time_stamp_field_changed), 3)
+        self.assertEqual(spy_destination_time_stamp_field_changed[-1][0], 'test')
+
     def testReset(self):
         """
         Test that resetting inherits local default settings
@@ -122,6 +154,7 @@ class TestQgsProjectGpsSettings(unittest.TestCase):
         self.assertFalse(p.automaticallyCommitFeatures())
         self.assertFalse(p.automaticallyAddTrackVertices())
         self.assertTrue(p.destinationFollowsActiveLayer())
+        self.assertFalse(p.destinationTimeStampFields())
 
         p.setAutomaticallyCommitFeatures(True)
         p.setAutomaticallyAddTrackVertices(True)
@@ -131,16 +164,20 @@ class TestQgsProjectGpsSettings(unittest.TestCase):
         self.assertTrue(layer1.isValid())
         p.setDestinationLayer(layer1)
 
+        p.setDestinationTimeStampField(layer1, 'test')
+
         spy_add_track = QSignalSpy(p.automaticallyAddTrackVerticesChanged)
         spy_auto_commit = QSignalSpy(p.automaticallyCommitFeaturesChanged)
         spy_dest_layer_changed = QSignalSpy(p.destinationLayerChanged)
         spy_destination_follows_active = QSignalSpy(p.destinationFollowsActiveLayerChanged)
+        spy_destination_time_stamp_field_changed = QSignalSpy(p.destinationTimeStampFieldChanged)
 
         p.reset()
         self.assertFalse(p.automaticallyAddTrackVertices())
         self.assertFalse(p.automaticallyCommitFeatures())
         self.assertFalse(p.destinationLayer())
         self.assertTrue(p.destinationFollowsActiveLayer())
+        self.assertFalse(p.destinationTimeStampFields())
 
         self.assertEqual(len(spy_add_track), 1)
         self.assertFalse(spy_auto_commit[-1][0])
@@ -149,6 +186,7 @@ class TestQgsProjectGpsSettings(unittest.TestCase):
         self.assertEqual(len(spy_dest_layer_changed), 1)
         self.assertEqual(len(spy_destination_follows_active), 1)
         self.assertTrue(spy_destination_follows_active[-1][0])
+        self.assertEqual(len(spy_destination_time_stamp_field_changed), 1)
 
     def testReadWrite(self):
         p = QgsProjectGpsSettings()
@@ -161,8 +199,15 @@ class TestQgsProjectGpsSettings(unittest.TestCase):
         self.assertTrue(layer1.isValid())
         p.setDestinationLayer(layer1)
 
+        layer2 = QgsVectorLayer(os.path.join(unitTestDataPath(), 'points.shp'), 'layer2')
+        self.assertTrue(layer2.isValid())
+
+        p.setDestinationTimeStampField(layer1, 'test')
+        p.setDestinationTimeStampField(layer2, 'test2')
+
         project = QgsProject()
         project.addMapLayer(layer1)
+        project.addMapLayer(layer2)
 
         doc = QDomDocument("testdoc")
         elem = p.writeXml(doc, QgsReadWriteContext())
@@ -172,21 +217,28 @@ class TestQgsProjectGpsSettings(unittest.TestCase):
         spy2 = QSignalSpy(p2.automaticallyCommitFeaturesChanged)
         spy_dest_layer_changed = QSignalSpy(p2.destinationLayerChanged)
         spy_destination_follows_active = QSignalSpy(p2.destinationFollowsActiveLayerChanged)
+        spy_destination_time_stamp_field_changed = QSignalSpy(p2.destinationTimeStampFieldChanged)
 
         self.assertTrue(p2.readXml(elem, QgsReadWriteContext()))
         self.assertEqual(len(spy), 1)
         self.assertEqual(len(spy2), 1)
         self.assertEqual(len(spy_dest_layer_changed), 1)
         self.assertEqual(len(spy_destination_follows_active), 1)
+        self.assertEqual(len(spy_destination_time_stamp_field_changed), 1)
+
         self.assertTrue(p2.automaticallyCommitFeatures())
         self.assertTrue(p2.automaticallyAddTrackVertices())
         self.assertFalse(p2.destinationFollowsActiveLayer())
+        self.assertEqual(p2.destinationTimeStampFields(), {layer1.id(): 'test',
+                                                           layer2.id(): 'test2'})
         # needs to be resolved first
         self.assertFalse(p2.destinationLayer())
 
         p2.resolveReferences(project)
         self.assertEqual(len(spy_dest_layer_changed), 2)
         self.assertEqual(p2.destinationLayer(), layer1)
+        self.assertEqual(len(spy_destination_time_stamp_field_changed), 2)
+        self.assertEqual(spy_destination_time_stamp_field_changed[-1][0], 'test')
 
 
 if __name__ == '__main__':
