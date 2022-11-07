@@ -1964,6 +1964,8 @@ QgisApp::QgisApp()
   mDigitizingTechniqueManager = new QgsMapToolsDigitizingTechniqueManager( this );
 
   mBearingNumericFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
+
+  connect( mLayerTreeView, &QgsLayerTreeView::currentLayerChanged, this, &QgisApp::onActiveLayerChanged );
   // More tests may need more members to be initialized
 }
 
