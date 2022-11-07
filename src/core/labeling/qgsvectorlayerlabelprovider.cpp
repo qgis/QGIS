@@ -555,6 +555,20 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
 
     painter->drawRect( rect );
 
+
+    painter->setPen( QColor( 0, 0, 0, 120 ) );
+    const QgsMargins &margins = label->getFeaturePart()->feature()->visualMargin();
+    if ( margins.top() > 0 )
+    {
+      const double topMargin = margins.top() / context.mapToPixel().mapUnitsPerPixel();
+      painter->drawLine( QPointF( rect.left(), rect.top() - topMargin ), QPointF( rect.right(), rect.top() - topMargin ) );
+    }
+    if ( margins.bottom() > 0 )
+    {
+      const double bottomMargin = margins.top() / context.mapToPixel().mapUnitsPerPixel();
+      painter->drawLine( QPointF( rect.left(), rect.bottom() + bottomMargin ), QPointF( rect.right(), rect.bottom() + bottomMargin ) );
+    }
+
     if ( QgsTextLabelFeature *textFeature = dynamic_cast< QgsTextLabelFeature * >( label->getFeaturePart()->feature() ) )
     {
       const QgsTextDocumentMetrics &metrics = textFeature->documentMetrics();

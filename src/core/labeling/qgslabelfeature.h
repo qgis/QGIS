@@ -58,9 +58,19 @@ class CORE_EXPORT QgsLabelFeature
 {
   public:
 
-    //! Create label feature, takes ownership of the geometry instance
+    /**
+     * Constructor for QgsLabelFeature.
+     *
+     * The feature \a id argument links the label feature back to the original layer feature.
+     *
+     * The \a geometry argument specifies the geometry associated with the feature, which is
+     * used by the labeling engine to generate candidate placements for the label. For
+     * a vector layer feature this will generally be the feature's geometry.
+     *
+     * The \a size argument dicates the size of the label's content (e.g. text width and height).
+     */
     QgsLabelFeature( QgsFeatureId id, geos::unique_ptr geometry, QSizeF size );
-    //! Clean up geometry and curved label info (if present)
+
     virtual ~QgsLabelFeature();
 
     //! Identifier of the label (unique within the parent label provider)
