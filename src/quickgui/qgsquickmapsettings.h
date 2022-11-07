@@ -23,7 +23,6 @@
 #include "qgscoordinatetransformcontext.h"
 #include "qgsmaplayer.h"
 #include "qgsmapsettings.h"
-#include "qgsmapthemecollection.h"
 #include "qgspoint.h"
 #include "qgsrectangle.h"
 #include "qgsproject.h"

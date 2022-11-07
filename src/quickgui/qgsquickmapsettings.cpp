@@ -18,7 +18,6 @@
 #include "qgsquickmapsettings.h"
 
 #include "qgsmaplayer.h"
-#include "qgsmaplayerstylemanager.h"
 #include "qgsmessagelog.h"
 #include "qgsprojectviewsettings.h"
 
