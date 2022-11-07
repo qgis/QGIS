@@ -103,10 +103,10 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
   connect( mAddTrackVertexAction, &QAction::triggered, this, &QgsGpsToolBar::addVertexClicked );
   addAction( mAddTrackVertexAction );
 
-  mAddFeatureAction = new QAction( tr( "Create Feature from Track" ), this );
-  mAddFeatureAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionCaptureLine.svg" ) ) );
-  connect( mAddFeatureAction, &QAction::triggered, this, &QgsGpsToolBar::addFeatureClicked );
-  addAction( mAddFeatureAction );
+  mCreateFeatureAction = new QAction( tr( "Create Feature from Track" ), this );
+  mCreateFeatureAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionCaptureLine.svg" ) ) );
+  connect( mCreateFeatureAction, &QAction::triggered, this, &QgsGpsToolBar::addFeatureClicked );
+  addAction( mCreateFeatureAction );
 
   mResetFeatureAction = new QAction( tr( "Reset Track" ), this );
   mResetFeatureAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/gpsicons/mActionReset.svg" ) ) );
@@ -136,7 +136,7 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
   addWidget( settingsButton );
 
   mRecenterAction->setEnabled( false );
-  mAddFeatureAction->setEnabled( false );
+  mCreateFeatureAction->setEnabled( false );
   mAddTrackVertexAction->setEnabled( false );
   mResetFeatureAction->setEnabled( false );
   connect( mConnection, &QgsAppGpsConnection::statusChanged, this, [ = ]( Qgis::GpsConnectionStatus status )
@@ -150,7 +150,7 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
         mConnectAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/gpsicons/mIconGpsConnect.svg" ) ) );
         mConnectAction->setEnabled( true );
         mRecenterAction->setEnabled( false );
-        mAddFeatureAction->setEnabled( false );
+        mCreateFeatureAction->setEnabled( false );
         mAddTrackVertexAction->setEnabled( false );
         break;
       case Qgis::GpsConnectionStatus::Connecting:
@@ -159,7 +159,7 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
         mConnectAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/gpsicons/mIconGpsConnect.svg" ) ) );
         mConnectAction->setEnabled( false );
         mRecenterAction->setEnabled( false );
-        mAddFeatureAction->setEnabled( false );
+        mCreateFeatureAction->setEnabled( false );
         mAddTrackVertexAction->setEnabled( false );
         break;
       case Qgis::GpsConnectionStatus::Connected:
@@ -169,7 +169,7 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
         mConnectAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/gpsicons/mIconGpsDisconnect.svg" ) ) );
         mConnectAction->setEnabled( true );
         mRecenterAction->setEnabled( true );
-        mAddFeatureAction->setEnabled( static_cast< bool >( QgsProject::instance()->gpsSettings()->destinationLayer() ) );
+        mCreateFeatureAction->setEnabled( static_cast< bool >( QgsProject::instance()->gpsSettings()->destinationLayer() ) );
         mAddTrackVertexAction->setEnabled( mEnableAddVertexButton );
         break;
     }
@@ -219,7 +219,7 @@ void QgsGpsToolBar::destinationLayerChanged( QgsVectorLayer *vlayer )
 
   if ( !( vlayer && vlayer->isValid() ) )
   {
-    mAddFeatureAction->setEnabled( false );
+    mCreateFeatureAction->setEnabled( false );
     return;
   }
 
@@ -257,15 +257,15 @@ void QgsGpsToolBar::destinationLayerChanged( QgsVectorLayer *vlayer )
         break;
     }
 
-    mAddFeatureAction->setEnabled( enable );
+    mCreateFeatureAction->setEnabled( enable );
   }
   else
   {
-    mAddFeatureAction->setEnabled( false );
+    mCreateFeatureAction->setEnabled( false );
   }
-  mAddFeatureAction->setText( buttonLabel );
-  mAddFeatureAction->setIcon( QgsApplication::getThemeIcon( icon ) );
-  mAddFeatureAction->setToolTip( buttonToolTip );
+  mCreateFeatureAction->setText( buttonLabel );
+  mCreateFeatureAction->setIcon( QgsApplication::getThemeIcon( icon ) );
+  mCreateFeatureAction->setToolTip( buttonToolTip );
 }
 
 void QgsGpsToolBar::destinationMenuAboutToShow()

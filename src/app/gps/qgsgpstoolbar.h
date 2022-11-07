@@ -63,7 +63,7 @@ class QgsGpsToolBar : public QToolBar
     QAction *mRecenterAction = nullptr;
     QAction *mShowInfoAction = nullptr;
     QAction *mAddTrackVertexAction = nullptr;
-    QAction *mAddFeatureAction = nullptr;
+    QAction *mCreateFeatureAction = nullptr;
     QAction *mResetFeatureAction = nullptr;
 
     QToolButton *mDestinationLayerButton = nullptr;
