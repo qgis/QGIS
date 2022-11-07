@@ -55,7 +55,7 @@ class APP_EXPORT QgsAppGpsSettingsMenu : public QMenu
     bool locationMarkerVisible() const;
     bool bearingLineVisible() const;
     bool rotateMap() const;
-    QgsGpsCanvasBridge::MapCenteringMode mapCenteringMode() const;
+    Qgis::MapRecenteringMode mapCenteringMode() const;
 
   public slots:
 
@@ -66,7 +66,7 @@ class APP_EXPORT QgsAppGpsSettingsMenu : public QMenu
     void locationMarkerToggled( bool visible );
     void bearingLineToggled( bool visible );
     void rotateMapToggled( bool enabled );
-    void mapCenteringModeChanged( QgsGpsCanvasBridge::MapCenteringMode mode );
+    void mapCenteringModeChanged( Qgis::MapRecenteringMode mode );
     void timeStampDestinationChanged( const QString &fieldName );
     void enableNmeaLog( bool enabled );
     void nmeaLogFileChanged( const QString &filename );

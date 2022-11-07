@@ -62,7 +62,7 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
 {
   bool showLocationMarker = true;
   bool showBearingLine = false;
-  QgsGpsCanvasBridge::MapCenteringMode mapCenteringMode = QgsGpsCanvasBridge::MapCenteringMode::WhenLeavingExtent;
+  Qgis::MapRecenteringMode mapCenteringMode = Qgis::MapRecenteringMode::WhenOutsideVisibleExtent;
   bool rotateMap = false;
 
   if ( QgsGpsCanvasBridge::settingShowBearingLine.exists( ) )
@@ -83,15 +83,15 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
     const QString panMode = settings.value( QStringLiteral( "panMode" ), "recenterWhenNeeded", QgsSettings::Gps ).toString();
     if ( panMode == QLatin1String( "none" ) )
     {
-      mapCenteringMode = QgsGpsCanvasBridge::MapCenteringMode::Never;
+      mapCenteringMode = Qgis::MapRecenteringMode::Never;
     }
     else if ( panMode == QLatin1String( "recenterAlways" ) )
     {
-      mapCenteringMode = QgsGpsCanvasBridge::MapCenteringMode::Always;
+      mapCenteringMode = Qgis::MapRecenteringMode::Always;
     }
     else
     {
-      mapCenteringMode = QgsGpsCanvasBridge::MapCenteringMode::WhenLeavingExtent;
+      mapCenteringMode = Qgis::MapRecenteringMode::WhenOutsideVisibleExtent;
     }
   }
 
@@ -137,13 +137,13 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
   //pan mode
   switch ( mapCenteringMode )
   {
-    case QgsGpsCanvasBridge::MapCenteringMode::Always:
+    case Qgis::MapRecenteringMode::Always:
       mRadioAlwaysRecenter->setChecked( true );
       break;
-    case QgsGpsCanvasBridge::MapCenteringMode::WhenLeavingExtent:
+    case Qgis::MapRecenteringMode::WhenOutsideVisibleExtent:
       mRadioRecenterWhenOutside->setChecked( true );
       break;
-    case QgsGpsCanvasBridge::MapCenteringMode::Never:
+    case Qgis::MapRecenteringMode::Never:
       mRadioNeverRecenter->setChecked( true );
       break;
   }
@@ -152,8 +152,8 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
   {
     if ( checked )
     {
-      QgsGpsCanvasBridge::settingMapCenteringMode.setValue( QgsGpsCanvasBridge::MapCenteringMode::Always );
-      emit mapCenteringModeChanged( QgsGpsCanvasBridge::MapCenteringMode::Always );
+      QgsGpsCanvasBridge::settingMapCenteringMode.setValue( Qgis::MapRecenteringMode::Always );
+      emit mapCenteringModeChanged( Qgis::MapRecenteringMode::Always );
     }
   } );
 
@@ -161,8 +161,8 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
   {
     if ( checked )
     {
-      QgsGpsCanvasBridge::settingMapCenteringMode.setValue( QgsGpsCanvasBridge::MapCenteringMode::WhenLeavingExtent );
-      emit mapCenteringModeChanged( QgsGpsCanvasBridge::MapCenteringMode::WhenLeavingExtent );
+      QgsGpsCanvasBridge::settingMapCenteringMode.setValue( Qgis::MapRecenteringMode::WhenOutsideVisibleExtent );
+      emit mapCenteringModeChanged( Qgis::MapRecenteringMode::WhenOutsideVisibleExtent );
     }
   } );
 
@@ -170,8 +170,8 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
   {
     if ( checked )
     {
-      QgsGpsCanvasBridge::settingMapCenteringMode.setValue( QgsGpsCanvasBridge::MapCenteringMode::Never );
-      emit mapCenteringModeChanged( QgsGpsCanvasBridge::MapCenteringMode::Never );
+      QgsGpsCanvasBridge::settingMapCenteringMode.setValue( Qgis::MapRecenteringMode::Never );
+      emit mapCenteringModeChanged( Qgis::MapRecenteringMode::Never );
     }
   } );
 
@@ -275,20 +275,20 @@ bool QgsAppGpsSettingsMenu::rotateMap() const
   return mRotateMapAction->isChecked();
 }
 
-QgsGpsCanvasBridge::MapCenteringMode QgsAppGpsSettingsMenu::mapCenteringMode() const
+Qgis::MapRecenteringMode QgsAppGpsSettingsMenu::mapCenteringMode() const
 {
   // pan mode
   if ( mRadioAlwaysRecenter->isChecked() )
   {
-    return QgsGpsCanvasBridge::MapCenteringMode::Always;
+    return Qgis::MapRecenteringMode::Always;
   }
   else if ( mRadioRecenterWhenOutside->isChecked() )
   {
-    return QgsGpsCanvasBridge::MapCenteringMode::WhenLeavingExtent;
+    return Qgis::MapRecenteringMode::WhenOutsideVisibleExtent;
   }
   else
   {
-    return QgsGpsCanvasBridge::MapCenteringMode::Never;
+    return Qgis::MapRecenteringMode::Never;
   }
 }
 

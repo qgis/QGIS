@@ -92,7 +92,7 @@ bool QgsGpsCanvasBridge::blockCanvasInteraction( Interaction interaction ) const
       // if we're connected and set to follow the GPS location, block the single click navigation mode
       // to avoid accidental map canvas pans away from the GPS location.
       // (for now, we don't block click-and-drag pans, as they are less likely to be accidentally triggered)
-      if ( mConnection->isConnected() && ( mCenteringMode != QgsGpsCanvasBridge::MapCenteringMode::Never ) )
+      if ( mConnection->isConnected() && ( mCenteringMode != Qgis::MapRecenteringMode::Never ) )
         return true;
 
       break;
@@ -124,7 +124,7 @@ void QgsGpsCanvasBridge::setRotateMap( bool enabled )
   mRotateMap = enabled;
 }
 
-void QgsGpsCanvasBridge::setMapCenteringMode( QgsGpsCanvasBridge::MapCenteringMode mode )
+void QgsGpsCanvasBridge::setMapCenteringMode( Qgis::MapRecenteringMode mode )
 {
   mCenteringMode = mode;
 }
@@ -227,8 +227,8 @@ void QgsGpsCanvasBridge::gpsStateChanged( const QgsGpsInformation &info )
     // Pan based on user specified behavior
     switch ( mCenteringMode )
     {
-      case QgsGpsCanvasBridge::MapCenteringMode::Always:
-      case QgsGpsCanvasBridge::MapCenteringMode::WhenLeavingExtent:
+      case Qgis::MapRecenteringMode::Always:
+      case Qgis::MapRecenteringMode::WhenOutsideVisibleExtent:
         try
         {
           const QgsPointXY point = mCanvasToWgs84Transform.transform( myNewCenter, Qgis::TransformDirection::Reverse );
@@ -241,8 +241,8 @@ void QgsGpsCanvasBridge::gpsStateChanged( const QgsGpsInformation &info )
           extentLimit.scale( mMapExtentMultiplier * 0.01 );
 
           // only change the extents if the point is beyond the current extents to minimize repaints
-          if ( mCenteringMode == QgsGpsCanvasBridge::MapCenteringMode::Always ||
-               ( mCenteringMode == QgsGpsCanvasBridge::MapCenteringMode::WhenLeavingExtent && !extentLimit.contains( point ) ) )
+          if ( mCenteringMode == Qgis::MapRecenteringMode::Always ||
+               ( mCenteringMode == Qgis::MapRecenteringMode::WhenOutsideVisibleExtent && !extentLimit.contains( point ) ) )
           {
             mCanvas->setExtent( rect, true );
             mCanvas->refresh();
@@ -254,7 +254,7 @@ void QgsGpsCanvasBridge::gpsStateChanged( const QgsGpsInformation &info )
         }
         break;
 
-      case QgsGpsCanvasBridge::MapCenteringMode::Never:
+      case Qgis::MapRecenteringMode::Never:
         break;
     }
 

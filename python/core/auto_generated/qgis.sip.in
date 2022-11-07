@@ -1175,6 +1175,13 @@ The development version
     typedef QFlags<Qgis::ViewSyncModeFlag> ViewSyncModeFlags;
 
 
+    enum class MapRecenteringMode
+    {
+      Always,
+      WhenOutsideVisibleExtent,
+      Never,
+    };
+
     enum class HistoryProviderBackend
     {
       LocalProfile,

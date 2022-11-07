@@ -1849,6 +1849,13 @@ Qgis.ViewSyncModeFlag.__doc__ = 'Synchronization of 2D map canvas and 3D view\n\
 # --
 Qgis.ViewSyncModeFlag.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.MapRecenteringMode.Always.__doc__ = "Always recenter map"
+Qgis.MapRecenteringMode.WhenOutsideVisibleExtent.__doc__ = "Only recenter map when new center would be outside of current visible extent"
+Qgis.MapRecenteringMode.Never.__doc__ = "Never recenter map"
+Qgis.MapRecenteringMode.__doc__ = 'Modes for recentering map canvases.\n\n.. versionadded:: 3.30\n\n' + '* ``Always``: ' + Qgis.MapRecenteringMode.Always.__doc__ + '\n' + '* ``WhenOutsideVisibleExtent``: ' + Qgis.MapRecenteringMode.WhenOutsideVisibleExtent.__doc__ + '\n' + '* ``Never``: ' + Qgis.MapRecenteringMode.Never.__doc__
+# --
+Qgis.MapRecenteringMode.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.HistoryProviderBackend.LocalProfile.__doc__ = "Local profile"
 Qgis.HistoryProviderBackend.__doc__ = 'History provider backends.\n\n.. versionadded:: 3.24\n\n' + '* ``LocalProfile``: ' + Qgis.HistoryProviderBackend.LocalProfile.__doc__
 # --
