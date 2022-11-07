@@ -21,6 +21,16 @@
 
 #include "qgspoint.h"
 
+/**
+ * \ingroup quick
+ *
+ * \brief The QgsQuickUtils class serves as a utility class for common operations
+ * needed either from QML or cpp.
+ *
+ * \note QML Type: QgsQuickUtils
+ *
+ * \since QGIS 3.30
+ */
 class QgsQuickUtils : public QObject
 {
     Q_OBJECT
