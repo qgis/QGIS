@@ -61,7 +61,7 @@ bool QgsProjectGpsSettings::readXml( const QDomElement &element, const QgsReadWr
   emit automaticallyAddTrackVerticesChanged( mAutoAddTrackVertices );
   emit automaticallyCommitFeaturesChanged( mAutoCommitFeatures );
   emit destinationFollowsActiveLayerChanged( mDestinationFollowsActiveLayer );
-  emit destinationLayerChanged( nullptr ); // wont' be set until resolve is called
+  emit destinationLayerChanged( nullptr ); // won't be set until resolve is called
   return true;
 }
 
