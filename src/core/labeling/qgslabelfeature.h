@@ -112,6 +112,24 @@ class CORE_EXPORT QgsLabelFeature
     QSizeF size( double angle = 0.0 ) const;
 
     /**
+     * Returns the extreme outer bounds of the label feature, including any surrounding content like
+     * borders or background shapes.
+     *
+     * \see setOuterBounds()
+     * \since QGIS 3.30
+     */
+    QRectF outerBounds() const { return mOuterBounds; }
+
+    /**
+     * Sets the extreme outer \a bounds of the label feature, including any surrounding content like
+     * borders or background shapes.
+     *
+     * \see outerBounds()
+     * \since QGIS 3.30
+     */
+    void setOuterBounds( const QRectF &bounds ) { mOuterBounds = bounds; }
+
+    /**
      * Sets the visual margin for the label feature. The visual margin represents a margin
      * within the label which should not be considered when calculating the positions of candidates
      * for the label feature. It is used in certain label placement modes to adjust the position
@@ -627,6 +645,8 @@ class CORE_EXPORT QgsLabelFeature
     QSizeF mSize;
     //! Width and height of the label when rotated between 45 to 135 and 235 to 315 degrees;
     QSizeF mRotatedSize;
+    //! Extreme outer bounds of the label feature, including any surrounding content like borders or background shapes.
+    QRectF mOuterBounds;
     //! Visual margin of label contents
     QgsMargins mVisualMargin;
     //! Size of associated rendered symbol, if applicable

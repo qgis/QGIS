@@ -569,6 +569,25 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
       painter->drawLine( QPointF( rect.left(), rect.bottom() + bottomMargin ), QPointF( rect.right(), rect.bottom() + bottomMargin ) );
     }
 
+    const QRectF outerBounds = label->getFeaturePart()->feature()->outerBounds();
+    if ( !outerBounds.isNull() )
+    {
+      const QRectF mapOuterBounds = QRectF( label->getX() + outerBounds.left(),
+                                            label->getY() + outerBounds.top(),
+                                            outerBounds.width(), outerBounds.height() );
+
+      QgsPointXY outerBoundsPt1 = xform.transform( mapOuterBounds.left(), mapOuterBounds.top() );
+      QgsPointXY outerBoundsPt2 = xform.transform( mapOuterBounds.right(), mapOuterBounds.bottom() );
+
+      const QRectF outerBoundsPixel( outerBoundsPt1.x() - outPt.x(),
+                                     outerBoundsPt1.y() - outPt.y(),
+                                     outerBoundsPt2.x() - outerBoundsPt1.x(),
+                                     outerBoundsPt2.y() - outerBoundsPt1.y() );
+
+      painter->setPen( QColor( 255, 0, 255, 140 ) );
+      painter->drawRect( outerBoundsPixel );
+    }
+
     if ( QgsTextLabelFeature *textFeature = dynamic_cast< QgsTextLabelFeature * >( label->getFeaturePart()->feature() ) )
     {
       const QgsTextDocumentMetrics &metrics = textFeature->documentMetrics();
@@ -583,6 +602,8 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
         painter->drawLine( QPointF( rect.left(), rect.top()  + blockBaseLine ), QPointF( rect.right(), rect.top() + blockBaseLine ) );
       }
     }
+
+
     painter->restore();
   }
 
