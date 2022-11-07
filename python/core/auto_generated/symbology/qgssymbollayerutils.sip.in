@@ -1045,6 +1045,13 @@ to new ones.
 .. versionadded:: 3.30
 %End
 
+    static void clearSymbolLayerIds( QgsSymbol *symbol );
+%Docstring
+Remove recursively unique id from all ``symbol`` symbol layers and set an empty string instead
+
+.. versionadded:: 3.30
+%End
+
 
 };
 

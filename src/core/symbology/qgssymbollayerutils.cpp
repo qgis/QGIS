@@ -5445,3 +5445,21 @@ void QgsSymbolLayerUtils::fixOldSymbolLayerReferences( const QMap<QString, QgsMa
     }
   }
 }
+
+void QgsSymbolLayerUtils::clearSymbolLayerIds( QgsSymbol *symbol )
+{
+  if ( !symbol )
+    return;
+
+  for ( int idx = 0; idx < symbol->symbolLayerCount(); idx++ )
+  {
+    QgsSymbolLayer *sl = symbol->symbolLayer( idx );
+
+    sl->setId( QString() );
+
+    // recurse over sub symbols
+    QgsSymbol *subSymbol = const_cast<QgsSymbolLayer *>( sl )->subSymbol();
+    if ( subSymbol )
+      clearSymbolLayerIds( subSymbol );
+  }
+}

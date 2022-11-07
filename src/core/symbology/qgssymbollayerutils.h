@@ -937,6 +937,12 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     Q_DECL_DEPRECATED static void fixOldSymbolLayerReferences( const QMap<QString, QgsMapLayer *> &mapLayers );
 
+    /**
+     * Remove recursively unique id from all \a symbol symbol layers and set an empty string instead
+     * \since QGIS 3.30
+     */
+    static void clearSymbolLayerIds( QgsSymbol *symbol );
+
     ///@cond PRIVATE
 #ifndef SIP_RUN
     static QgsProperty rotateWholeSymbol( double additionalRotation, const QgsProperty &property )
