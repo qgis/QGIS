@@ -54,6 +54,8 @@ Constructor for LayerOptions with ``transformContext``.
       QgsCoordinateTransformContext transformContext;
 
       bool loadDefaultStyle;
+
+      bool loadAllStoredStyles;
     };
 
     static QgsMapLayer *createLayer( const QString &uri, const QString &name, QgsMapLayerType type, const LayerOptions &options,

@@ -738,6 +738,7 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addSublayers( const QList<QgsProviderS
   {
     QgsProviderSublayerDetails::LayerOptions options( QgsProject::instance()->transformContext() );
     options.loadDefaultStyle = false;
+    options.loadAllStoredStyle = true;
 
     std::unique_ptr<QgsMapLayer> layer( sublayer.toLayer( options ) );
     if ( !layer )

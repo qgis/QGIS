@@ -6297,6 +6297,12 @@ bool QgsSpatiaLiteProviderMetadata::saveStyle( const QString &uri, const QString
 
 QString QgsSpatiaLiteProviderMetadata::loadStyle( const QString &uri, QString &errCause )
 {
+  QString styleName;
+  return loadStoredStyle( uri, styleName, errCause );
+}
+
+QString QgsSpatiaLiteProviderMetadata::loadStoredStyle( const QString &uri, QString &styleName, QString &errCause )
+{
   QgsDataSourceUri dsUri( uri );
   QString sqlitePath = dsUri.database();
   QgsDebugMsgLevel( "Database is: " + sqlitePath, 5 );
@@ -6322,7 +6328,7 @@ QString QgsSpatiaLiteProviderMetadata::loadStyle( const QString &uri, QString &e
     geomColumnExpr = QStringLiteral( "=" ) + QgsSqliteUtils::quotedString( dsUri.geometryColumn() );
   }
 
-  QString selectQmlQuery = QString( "SELECT styleQML"
+  QString selectQmlQuery = QString( "SELECT styleName, styleQML"
                                     " FROM layer_styles"
                                     " WHERE f_table_schema %1"
                                     " AND f_table_name=%2"
@@ -6345,7 +6351,8 @@ QString QgsSpatiaLiteProviderMetadata::loadStyle( const QString &uri, QString &e
     return QString();
   }
 
-  QString style = ( rows == 1 ) ? QString::fromUtf8( results[( rows * columns ) + 0 ] ) : QString();
+  styleName = ( rows == 1 ) ? QString::fromUtf8( results[( rows * columns ) + 0 ] ) : QString();
+  QString style = ( rows == 1 ) ? QString::fromUtf8( results[( rows * columns ) + 1 ] ) : QString();
   sqlite3_free_table( results );
 
   QgsSqliteHandle::closeDb( handle );

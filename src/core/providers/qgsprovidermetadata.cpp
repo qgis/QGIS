@@ -272,9 +272,9 @@ QString QgsProviderMetadata::loadStyle( const QString &, QString &errCause )
   return QString();
 }
 
-QString QgsProviderMetadata::loadStyle( const QString &, QString &, QString &errCause )
+QString QgsProviderMetadata::loadStoredStyle( const QString &, QString &, QString &errCause )
 {
-  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "loadStyle" ) );
+  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "loadStoredStyle" ) );
   return QString();
 }
 

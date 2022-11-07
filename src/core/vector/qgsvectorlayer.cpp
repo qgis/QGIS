@@ -160,6 +160,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   , mRefreshRendererTimer( new QTimer( this ) )
 {
   mShouldValidateCrs = !options.skipCrsValidation;
+  mLoadAllStoredStyle = options.loadAllStoredStyles;
 
   if ( options.fallbackCrs.isValid() )
     setCrs( options.fallbackCrs, false );
@@ -1756,9 +1757,45 @@ void QgsVectorLayer::setDataSourcePrivate( const QString &dataSource, const QStr
 QString QgsVectorLayer::loadDefaultStyle( bool &resultFlag )
 {
   // first try to load a user-defined default style - this should always take precedence
-  QString res = QgsMapLayer::loadDefaultStyle( resultFlag );
+  QString styleXml = QgsMapLayer::loadDefaultStyle( resultFlag );
+
   if ( resultFlag )
-    return res;
+  {
+    // Try to load all stored styles
+    if ( mLoadAllStoredStyle )
+    {
+      QStringList ids, names, descriptions;
+      QString errorMessage;
+      listStylesInDatabase( ids, names, descriptions, errorMessage );
+      if ( ids.count() == names.count() )
+      {
+        const QString currentStyleName { mStyleManager->currentStyle() };
+        for ( int i = 0; i < ids.count(); ++i )
+        {
+          if ( names.at( i ) == currentStyleName )
+          {
+            continue;
+          }
+          errorMessage.clear();
+          const QString styleXml { getStyleFromDatabase( ids.at( i ), errorMessage ) };
+          if ( ! styleXml.isEmpty() && errorMessage.isEmpty() )
+          {
+            mStyleManager->addStyle( names.at( i ), QgsMapLayerStyle( styleXml ) );
+          }
+          else
+          {
+            QgsDebugMsgLevel( QStringLiteral( "Error retrieving style %1 from DB: %2" ).arg( ids.at( i ), errorMessage ), 2 );
+          }
+        }
+      }
+      else
+      {
+        // Something is wery wrong!
+        QgsDebugMsg( "Number of ids and names differs after fetching styles from DB!" );
+      }
+    }
+    return styleXml ;
+  }
 
   if ( isSpatial() && mDataProvider->capabilities() & QgsVectorDataProvider::CreateRenderer )
   {
@@ -5563,8 +5600,10 @@ QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &resultFlag,
   QString styleName;
   if ( !loadFromLocalDB && mDataProvider && mDataProvider->isSaveAndLoadStyleToDatabaseSupported() )
   {
-    qml = QgsProviderRegistry::instance()->loadStyle( mProviderKey, mDataSource, styleName, errorMsg );
+    qml = QgsProviderRegistry::instance()->loadStoredStyle( mProviderKey, mDataSource, styleName, errorMsg );
   }
+
+  // Style was successfully loaded from provider storage
   if ( !qml.isEmpty() )
   {
     QDomDocument myDocument( QStringLiteral( "qgis" ) );

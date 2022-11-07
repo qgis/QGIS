@@ -498,6 +498,20 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
        * \since QGIS 3.28
        */
       bool forceReadOnly = false;
+
+      /**
+       * Controls whether the stored styles will be all loaded.
+       *
+       * If TRUE and the layer's provider supports style stored in the
+       * data source all the available styles will be loaded in addition
+       * to the default one.
+       *
+       * If FALSE (the default), the layer's provider will only load
+       * the default style.
+       *
+       * \since QGIS 3.30
+       */
+      bool loadAllStoredStyles = false;
     };
 
     /**
@@ -3062,6 +3076,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     //! Timer for triggering automatic redraw of the layer based on feature renderer settings (e.g. animated symbols)
     QTimer *mRefreshRendererTimer = nullptr;
+
+    /**
+     * Stores the value from LayerOptions.loadAllStoredStyles
+     */
+    bool mLoadAllStoredStyle = false;
+
 };
 
 

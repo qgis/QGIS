@@ -656,12 +656,15 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
     virtual QString loadStyle( const QString &uri, QString &errCause );
 
     /**
-     * Loads a layer style defined by \a uri.
-     * \param name the name of the style if available, empty otherwise.
+     * Loads a layer style from the provider storage, reporting its name.
+     * \param providerKey name of the data provider
+     * \param uri data source uri
+     * \param styleName the name of the style if available, empty otherwise
+     * \param errCause report errors
      * \returns the style QML (XML)
-     * \since QGIS 3.28
+     * \since QGIS 3.30
      */
-    virtual QString loadStyle( const QString &uri, QString &name, QString &errCause );
+    virtual QString loadStoredStyle( const QString &uri, QString &styleName, QString &errCause );
 
     /**
      * Saves \a metadata to the layer corresponding to the specified \a uri.
