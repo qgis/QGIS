@@ -101,9 +101,9 @@ Item {
   }
 
   /**
-   * Animates movement of map canvas from oldPos to newPos.
+   * Animates movement of map canvas from the current center to newPos.
    *
-   * oldPos and newPos need to be in device pixels.
+   * newPos need to be in device pixels.
    */
   function moveTo( newPos )
   {
@@ -161,12 +161,13 @@ Item {
 
     onPxChanged: {
       if ( enabled ) {
-        mapCanvasWrapper.mapSettings.setCenter( utils.toQgsPoint( Qt.point( px, py ) ) )
+        mapCanvasWrapper.mapSettings.center = utils.toQgsPoint( Qt.point( px, py ) )
       }
     }
+
     onPyChanged: {
       if ( enabled ) {
-        mapCanvasWrapper.mapSettings.setCenter( utils.toQgsPoint( Qt.point( px, py ) ) )
+        mapCanvasWrapper.mapSettings.center = utils.toQgsPoint( Qt.point( px, py ) )
       }
     }
   }
