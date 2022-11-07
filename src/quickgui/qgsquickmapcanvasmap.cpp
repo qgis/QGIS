@@ -401,7 +401,6 @@ void QgsQuickMapCanvasMap::geometryChange( const QRectF &newGeometry, const QRec
 {
   QQuickItem::geometryChange( newGeometry, oldGeometry );
 #endif
-  QQuickItem::geometryChanged( newGeometry, oldGeometry );
   if ( newGeometry.size() != oldGeometry.size() )
   {
     mMapSettings->setOutputSize( newGeometry.size().toSize() );
