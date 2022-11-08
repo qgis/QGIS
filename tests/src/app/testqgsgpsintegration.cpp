@@ -26,6 +26,7 @@
 #include "gps/qgsappgpssettingsmenu.h"
 #include "options/qgsgpsoptions.h"
 #include "qgsprojectgpssettings.h"
+#include "qgsgpsconnection.h"
 #include "nmeatime.h"
 
 #include <QSignalSpy>
@@ -50,6 +51,7 @@ class TestQgsGpsIntegration : public QgsTest
     void testTimestampWrite();
     void testMultiPartLayers();
     void testFollowActiveLayer();
+    void testTrackDistance();
 
   private:
     QDateTime _testWrite( QgsVectorLayer *vlayer, QgsAppGpsDigitizing &gpsDigitizing, const QString &fieldName, Qt::TimeSpec timeSpec, bool commit = false );
@@ -431,6 +433,64 @@ void TestQgsGpsIntegration::testFollowActiveLayer()
   mQgisApp->setActiveLayer( tempLayerString );
   //should be unchanged
   QCOMPARE( QgsProject::instance()->gpsSettings()->destinationLayer(), tempLayerLineString );
+}
+
+void TestQgsGpsIntegration::testTrackDistance()
+{
+  QgsVectorLayer *lineString = new QgsVectorLayer( QStringLiteral( "Linestring?crs=epsg:4326&field=intf:int&field=stringf:string" ),
+      QStringLiteral( "vl" ),
+      QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( lineString );
+
+  QgsMapCanvas *canvas = mQgisApp->mapCanvas();
+  QgsAppGpsConnection connection( nullptr );
+
+  QgsAppGpsDigitizing gpsDigitizing( &connection, canvas );
+  QgsProject::instance()->gpsSettings()->setDestinationFollowsActiveLayer( true );
+  mQgisApp->setActiveLayer( lineString );
+  QCOMPARE( QgsProject::instance()->gpsSettings()->destinationLayer(), lineString );
+  lineString->startEditing();
+
+  QSignalSpy spy( &gpsDigitizing, &QgsAppGpsDigitizing::trackChanged );
+
+  QgsGpsInformation info;
+  info.latitude = 45;
+  info.longitude = 100;
+
+  gpsDigitizing.gpsStateChanged( info );
+  gpsDigitizing.addVertex();
+  QCOMPARE( spy.count(), 1 );
+
+  QCOMPARE( gpsDigitizing.totalTrackLength(), 0 );
+  QCOMPARE( gpsDigitizing.trackDirectLength(), 0 );
+
+  info.latitude = 46;
+  info.longitude = 100;
+
+  gpsDigitizing.gpsStateChanged( info );
+  gpsDigitizing.addVertex();
+  QCOMPARE( spy.count(), 2 );
+
+  QgsProject::instance()->setCrs( QgsCoordinateReferenceSystem( "EPSG:3857" ) );
+  QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "NONE" ) );
+  QGSCOMPARENEAR( gpsDigitizing.totalTrackLength(), 1, 0.01 );
+  QGSCOMPARENEAR( gpsDigitizing.trackDirectLength(), 1, 0.01 );
+  QgsProject::instance()->setEllipsoid( QStringLiteral( "EPSG:7030" ) );
+  QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "EPSG:7030" ) );
+  QGSCOMPARENEAR( gpsDigitizing.totalTrackLength(), 111141.548, 1 );
+  QGSCOMPARENEAR( gpsDigitizing.trackDirectLength(), 111141.548, 1 );
+
+  info.latitude = 46;
+  info.longitude = 101;
+
+  gpsDigitizing.gpsStateChanged( info );
+  gpsDigitizing.addVertex();
+  QCOMPARE( spy.count(), 3 );
+  QGSCOMPARENEAR( gpsDigitizing.totalTrackLength(), 188604.338, 1 );
+  QGSCOMPARENEAR( gpsDigitizing.trackDirectLength(), 135869.0912, 1 );
+
+  gpsDigitizing.resetTrack();
+  QCOMPARE( spy.count(), 4 );
 }
 
 

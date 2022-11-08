@@ -50,6 +50,20 @@ class APP_EXPORT QgsAppGpsDigitizing: public QObject
     QgsAppGpsDigitizing( QgsAppGpsConnection *connection, QgsMapCanvas *canvas, QObject *parent = nullptr );
     ~QgsAppGpsDigitizing() override;
 
+    /**
+     * Returns the total length of the current digitized track (in meters).
+     *
+     * The returned length is calculated using ellipsoidal calculations.
+     */
+    double totalTrackLength() const;
+
+    /**
+     * Returns the direct length from the first vertex in the track to the last (in meters).
+     *
+     * The returned length is calculated using ellipsoidal calculations.
+     */
+    double trackDirectLength() const;
+
   public slots:
     void addVertex();
     void resetTrack();
@@ -63,6 +77,11 @@ class APP_EXPORT QgsAppGpsDigitizing: public QObject
      * Emitted whenever the current track changes from being empty to non-empty or vice versa.
      */
     void trackIsEmptyChanged( bool isEmpty );
+
+    /**
+     * Emitted whenever the recorded track is changed.
+     */
+    void trackChanged();
 
   private slots:
     void gpsSettingsChanged();
@@ -78,6 +97,8 @@ class APP_EXPORT QgsAppGpsDigitizing: public QObject
 
     void startLogging();
     void stopLogging();
+
+    void updateDistanceArea();
 
   private:
     void createRubberBand();
@@ -118,6 +139,8 @@ class APP_EXPORT QgsAppGpsDigitizing: public QObject
 
     std::unique_ptr< QFile > mLogFile;
     QTextStream mLogFileTextStream;
+
+    QgsDistanceArea mDa;
 
     friend class TestQgsGpsIntegration;
 };

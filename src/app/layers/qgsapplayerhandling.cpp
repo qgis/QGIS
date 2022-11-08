@@ -36,8 +36,6 @@
 #include "qgslayertreenode.h"
 #include "qgslayertree.h"
 #include "qgslayertreeview.h"
-#include "qgslayertreemodel.h"
-#include "qgslayertreeutils.h"
 #include "qgsgui.h"
 #include "qgsmbtiles.h"
 #include "qgsmessagelog.h"
