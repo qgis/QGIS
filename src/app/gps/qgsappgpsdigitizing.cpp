@@ -89,12 +89,32 @@ QgsAppGpsDigitizing::QgsAppGpsDigitizing( QgsAppGpsConnection *connection, QgsMa
   {
     QgsProject::instance()->gpsSettings()->setDestinationLayer( qobject_cast< QgsVectorLayer *> ( QgisApp::instance()->activeLayer() ) );
   }
+
+  connect( QgsProject::instance(), &QgsProject::transformContextChanged, this, &QgsAppGpsDigitizing::updateDistanceArea );
+  connect( QgsProject::instance(), &QgsProject::ellipsoidChanged, this, &QgsAppGpsDigitizing::updateDistanceArea );
+
+  updateDistanceArea();
 }
 
 QgsAppGpsDigitizing::~QgsAppGpsDigitizing()
 {
   delete mRubberBand;
   mRubberBand = nullptr;
+}
+
+double QgsAppGpsDigitizing::totalTrackLength() const
+{
+  QVector<QgsPointXY> points;
+  QgsGeometry::convertPointList( mCaptureListWgs84, points );
+  return mDa.measureLine( points );
+}
+
+double QgsAppGpsDigitizing::trackDirectLength() const
+{
+  if ( mCaptureListWgs84.empty() )
+    return 0;
+
+  return mDa.measureLine( { QgsPointXY( mCaptureListWgs84.constFirst() ), QgsPointXY( mCaptureListWgs84.constLast() )} );
 }
 
 void QgsAppGpsDigitizing::addVertex()
@@ -136,6 +156,8 @@ void QgsAppGpsDigitizing::addVertex()
 
   if ( trackWasEmpty )
     emit trackIsEmptyChanged( false );
+
+  emit trackChanged();
 }
 
 void QgsAppGpsDigitizing::resetTrack()
@@ -149,6 +171,7 @@ void QgsAppGpsDigitizing::resetTrack()
 
   if ( !trackWasEmpty )
     emit trackIsEmptyChanged( true );
+  emit trackChanged();
 }
 
 void QgsAppGpsDigitizing::createFeature()
@@ -355,6 +378,8 @@ void QgsAppGpsDigitizing::createFeature()
 
       if ( mCaptureListWgs84.empty() )
         emit trackIsEmptyChanged( true );
+
+      emit trackChanged();
 
       break;
     }
@@ -591,6 +616,12 @@ void QgsAppGpsDigitizing::stopLogging()
     mLogFile->close();
     mLogFile.reset();
   }
+}
+
+void QgsAppGpsDigitizing::updateDistanceArea()
+{
+  mDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  mDa.setSourceCrs( mWgs84CRS, QgsProject::instance()->transformContext() );
 }
 
 void QgsAppGpsDigitizing::createRubberBand()
