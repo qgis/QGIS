@@ -110,8 +110,16 @@ QDomElement QgsProjectGpsSettings::writeXml( QDomDocument &doc, const QgsReadWri
     QDomElement timeStampElement = doc.createElement( QStringLiteral( "timeStampFields" ) );
     for ( auto it = mDestinationTimestampFields.constBegin(); it != mDestinationTimestampFields.constEnd(); ++it )
     {
+      const QString layerId = it.key();
+      if ( QgsProject *project = qobject_cast< QgsProject * >( parent() ) )
+      {
+        // do some housekeeping and don't save removed layers in the project
+        if ( !project->mapLayer( layerId ) )
+          continue;
+      }
+
       QDomElement layerElement = doc.createElement( QStringLiteral( "field" ) );
-      layerElement.setAttribute( QStringLiteral( "destinationLayer" ), it.key() );
+      layerElement.setAttribute( QStringLiteral( "destinationLayer" ), layerId );
       layerElement.setAttribute( QStringLiteral( "field" ), it.value() );
       timeStampElement.appendChild( layerElement );
     }
