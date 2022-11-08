@@ -18,9 +18,7 @@
 #include "qgsquickmapsettings.h"
 
 #include "qgsmaplayer.h"
-#include "qgsmaplayerstylemanager.h"
 #include "qgsmessagelog.h"
-#include "qgsproject.h"
 #include "qgsprojectviewsettings.h"
 
 QgsQuickMapSettings::QgsQuickMapSettings( QObject *parent )
