@@ -58,7 +58,7 @@ jobs:
             with-qt6: ON
             with-qt5: OFF
             with-3d: ON
-            with-quick: OFF
+            with-quick: ON
             with-clazy: OFF
             with-grass7: OFF
             with-grass8: OFF
