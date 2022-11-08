@@ -461,12 +461,9 @@ if(WITH_CORE)
       set (HAVE_QT5SERIALPORT TRUE)
   endif()
 
-  find_package(${QT_VERSION_BASE} COMPONENTS Core Gui Widgets Network Xml Svg Concurrent Test Sql REQUIRED)
+  find_package(${QT_VERSION_BASE} COMPONENTS Core Gui Widgets Network Xml Svg Concurrent Test Sql Positioning REQUIRED)
   if (BUILD_WITH_QT6)
     find_package(${QT_VERSION_BASE} COMPONENTS Core5Compat REQUIRED)
-  else()
-    # TODO only available starting from Qt 6.2
-    find_package(${QT_VERSION_BASE} COMPONENTS Positioning)
   endif()
   if (NOT IOS)
     find_package(${QT_VERSION_BASE} COMPONENTS PrintSupport REQUIRED)
