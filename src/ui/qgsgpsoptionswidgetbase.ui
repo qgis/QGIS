@@ -47,9 +47,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-137</y>
+        <y>-157</y>
         <width>676</width>
-        <height>898</height>
+        <height>931</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -479,7 +479,7 @@
           <item row="2" column="1">
            <widget class="QComboBox" name="mCboTimeZones"/>
           </item>
-          <item row="3" column="0">
+          <item row="4" column="0">
            <widget class="QCheckBox" name="mCbxLeapSeconds">
             <property name="toolTip">
              <string>Apply leap seconds correction by adding the seconds to GPS timestamp</string>
@@ -489,8 +489,28 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="1">
+          <item row="4" column="1">
            <widget class="QgsSpinBox" name="mLeapSeconds"/>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="mLblOffsetFromUtc">
+            <property name="text">
+             <string>Offset from UTC</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QgsSpinBox" name="mOffsetFromUtc">
+            <property name="suffix">
+             <string> seconds</string>
+            </property>
+            <property name="minimum">
+             <number>-86400</number>
+            </property>
+            <property name="maximum">
+             <number>86400</number>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -545,6 +565,32 @@
    <header>qgssymbolbutton.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>mRadInternal</tabstop>
+  <tabstop>mCboDevices</tabstop>
+  <tabstop>mBtnRefreshDevices</tabstop>
+  <tabstop>mRadAutodetect</tabstop>
+  <tabstop>mGpsdDevice</tabstop>
+  <tabstop>mGpsdHost</tabstop>
+  <tabstop>mSpinGpsdPort</tabstop>
+  <tabstop>mRadGpsd</tabstop>
+  <tabstop>mRadSerialDevice</tabstop>
+  <tabstop>mCboDistanceThreshold</tabstop>
+  <tabstop>mCboAcquisitionInterval</tabstop>
+  <tabstop>mGpsMarkerSymbolButton</tabstop>
+  <tabstop>mCheckRotateLocationMarker</tabstop>
+  <tabstop>mBearingLineStyleButton</tabstop>
+  <tabstop>mTravelBearingCheckBox</tabstop>
+  <tabstop>mTrackLineStyleButton</tabstop>
+  <tabstop>mSpinMapExtentMultiplier</tabstop>
+  <tabstop>mSpinMapRotateInterval</tabstop>
+  <tabstop>mCboTimestampFormat</tabstop>
+  <tabstop>mCboTimeZones</tabstop>
+  <tabstop>mOffsetFromUtc</tabstop>
+  <tabstop>mCbxLeapSeconds</tabstop>
+  <tabstop>mLeapSeconds</tabstop>
+ </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>

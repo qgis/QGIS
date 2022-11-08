@@ -227,6 +227,7 @@ void TestQgsGpsIntegration::testTimestamp()
   gpsDigitizing.mLastNmeaTime = { 119, 5, 19, 12, 27, 34, 543 };
   gpsDigitizing.mApplyLeapSettings = false;
   gpsDigitizing.mLeapSeconds = 7;
+  gpsDigitizing.mOffsetFromUtc = -36000;
 
   QDateTime dateTime( QDate( 2019, 6, 19 ), QTime( 12, 27, 34, 543 ) );
   dateTime.setTimeSpec( Qt::TimeSpec::UTC );
@@ -242,6 +243,14 @@ void TestQgsGpsIntegration::testTimestamp()
   gpsDigitizing.mTimeStampSpec = Qt::TimeSpec::UTC;
   QVariant dt = gpsDigitizing.timestamp( tempLayerDateTime, fieldIdx );
   QCOMPARE( dt.toDateTime(), dateTime );
+
+  // offset from UTC
+  gpsDigitizing.mTimeStampSpec = Qt::TimeSpec::OffsetFromUTC;
+  dt = gpsDigitizing.timestamp( tempLayerDateTime, fieldIdx );
+  QCOMPARE( dt.toDateTime().offsetFromUtc(), -36000 );
+  QDateTime expected = dateTime.addSecs( - 36000 );
+  expected.setOffsetFromUtc( -36000 );
+  QCOMPARE( dt.toDateTime(), expected );
 
   // Local time
   gpsDigitizing.mTimeStampSpec = Qt::TimeSpec::LocalTime;
@@ -264,6 +273,11 @@ void TestQgsGpsIntegration::testTimestamp()
   gpsDigitizing.mTimeStampSpec = Qt::TimeSpec::UTC;
   dt = gpsDigitizing.timestamp( tempLayerString, fieldIdx );
   QCOMPARE( dt.toString(), dateTime.toString( Qt::DateFormat::ISODate ) );
+
+  // offset from UTC
+  gpsDigitizing.mTimeStampSpec = Qt::TimeSpec::OffsetFromUTC;
+  dt = gpsDigitizing.timestamp( tempLayerDateTime, fieldIdx );
+  QCOMPARE( dt.toString(), QStringLiteral( "2019-06-19T02:27:34.543-10:00" ) );
 
   // Local Time (not very robust because we cannot change the system timezone and it may be GMT)
   gpsDigitizing.mTimeStampSpec = Qt::TimeSpec::LocalTime;
@@ -289,20 +303,23 @@ void TestQgsGpsIntegration::testTimestampWrite()
   gpsDigitizing.mApplyLeapSettings = false;
   gpsDigitizing.mLeapSeconds = 7;
   gpsDigitizing.mTimeZone = QStringLiteral( "Asia/Colombo" );
+  gpsDigitizing.mOffsetFromUtc = -36000;
 
   QDateTime dateTime( QDate( 2019, 6, 19 ), QTime( 12, 27, 34, 543 ) );
   dateTime.setTimeSpec( Qt::TimeSpec::UTC );
   const QDateTime tzTime( dateTime.toTimeZone( QTimeZone( QStringLiteral( "Asia/Colombo" ).toUtf8() ) ) );
   const QDateTime localTime( dateTime.toLocalTime() );
+  const QDateTime offsetFromUtcTime = dateTime.toOffsetFromUtc( -36000 );
 
   // Test write on datetime field
   QCOMPARE( _testWrite( tempLayerDateTime, gpsDigitizing, QStringLiteral( "datetimef" ),  Qt::TimeSpec::UTC ), dateTime );
-
+  QCOMPARE( _testWrite( tempLayerDateTime, gpsDigitizing, QStringLiteral( "datetimef" ),  Qt::TimeSpec::OffsetFromUTC ), offsetFromUtcTime );
   QCOMPARE( _testWrite( tempLayerDateTime, gpsDigitizing, QStringLiteral( "datetimef" ),  Qt::TimeSpec::LocalTime ), localTime );
   QCOMPARE( _testWrite( tempLayerDateTime, gpsDigitizing, QStringLiteral( "datetimef" ),  Qt::TimeSpec::TimeZone ),  tzTime );
 
   // Test write on string field
   QCOMPARE( _testWrite( tempLayerString, gpsDigitizing, QStringLiteral( "stringf" ),  Qt::TimeSpec::UTC ).toString( Qt::DateFormat::ISODate ), dateTime.toString( Qt::DateFormat::ISODate ) );
+  QCOMPARE( _testWrite( tempLayerString, gpsDigitizing, QStringLiteral( "stringf" ),  Qt::TimeSpec::OffsetFromUTC ).toString( Qt::DateFormat::ISODate ), offsetFromUtcTime.toString( Qt::DateFormat::ISODate ) );
   QCOMPARE( _testWrite( tempLayerString, gpsDigitizing, QStringLiteral( "stringf" ),  Qt::TimeSpec::LocalTime ).toString( Qt::DateFormat::ISODate ), localTime.toString( Qt::DateFormat::ISODate ) );
   QCOMPARE( _testWrite( tempLayerString, gpsDigitizing, QStringLiteral( "stringf" ),  Qt::TimeSpec::TimeZone ).toString( Qt::DateFormat::ISODate ),  tzTime.toString( Qt::DateFormat::ISODate ) );
 
@@ -310,8 +327,9 @@ void TestQgsGpsIntegration::testTimestampWrite()
   gpsDigitizing.mCaptureListWgs84.push_back( QgsPoint( 1, 2 ) );
   gpsDigitizing.mCaptureListWgs84.push_back( QgsPoint( 3, 4 ) );
   QCOMPARE( _testWrite( tempLayerLineString, gpsDigitizing, QStringLiteral( "stringf" ),  Qt::TimeSpec::UTC ).toString( Qt::DateFormat::ISODate ), dateTime.toString( Qt::DateFormat::ISODate ) );
-
-
+  gpsDigitizing.mCaptureListWgs84.push_back( QgsPoint( 1, 2 ) );
+  gpsDigitizing.mCaptureListWgs84.push_back( QgsPoint( 3, 4 ) );
+  QCOMPARE( _testWrite( tempLayerLineString, gpsDigitizing, QStringLiteral( "stringf" ),  Qt::TimeSpec::OffsetFromUTC ).toString( Qt::DateFormat::ISODate ), offsetFromUtcTime.toString( Qt::DateFormat::ISODate ) );
   gpsDigitizing.mCaptureListWgs84.push_back( QgsPoint( 1, 2 ) );
   gpsDigitizing.mCaptureListWgs84.push_back( QgsPoint( 3, 4 ) );
   QCOMPARE( _testWrite( tempLayerLineString, gpsDigitizing, QStringLiteral( "stringf" ),  Qt::TimeSpec::LocalTime ).toString( Qt::DateFormat::ISODate ), localTime.toString( Qt::DateFormat::ISODate ) );
@@ -322,12 +340,15 @@ void TestQgsGpsIntegration::testTimestampWrite()
   // Write on GPKG
   // Test write on datetime field
   QCOMPARE( _testWrite( tempGpkgLayerPointString, gpsDigitizing, QStringLiteral( "datetimef" ), Qt::TimeSpec::UTC, true ), dateTime );
+  QCOMPARE( _testWrite( tempGpkgLayerPointString, gpsDigitizing, QStringLiteral( "datetimef" ), Qt::TimeSpec::OffsetFromUTC, true ), offsetFromUtcTime );
   QCOMPARE( _testWrite( tempGpkgLayerPointString, gpsDigitizing, QStringLiteral( "datetimef" ), Qt::TimeSpec::LocalTime, true ), localTime );
   QCOMPARE( _testWrite( tempGpkgLayerPointString, gpsDigitizing, QStringLiteral( "datetimef" ), Qt::TimeSpec::TimeZone, true ),  tzTime );
 
   // Test write on string field
   QCOMPARE( _testWrite( tempGpkgLayerPointString, gpsDigitizing, QStringLiteral( "stringf" ),
                         Qt::TimeSpec::UTC, true ).toString( Qt::DateFormat::ISODate ), dateTime.toString( Qt::DateFormat::ISODate ) );
+  QCOMPARE( _testWrite( tempGpkgLayerPointString, gpsDigitizing, QStringLiteral( "stringf" ),
+                        Qt::TimeSpec::OffsetFromUTC, true ).toString( Qt::DateFormat::ISODate ), offsetFromUtcTime.toString( Qt::DateFormat::ISODate ) );
   QCOMPARE( _testWrite( tempGpkgLayerPointString, gpsDigitizing, QStringLiteral( "stringf" ),
                         Qt::TimeSpec::LocalTime, true ).toString( Qt::DateFormat::ISODate ), localTime.toString( Qt::DateFormat::ISODate ) );
   QCOMPARE( _testWrite( tempGpkgLayerPointString, gpsDigitizing, QStringLiteral( "stringf" ),

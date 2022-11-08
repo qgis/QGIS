@@ -108,6 +108,7 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
   mSpinGpsdPort->setClearValue( 2947 );
   mSpinMapRotateInterval->setClearValue( 0 );
   mSpinMapExtentMultiplier->setClearValue( 50 );
+  mOffsetFromUtc->setClearValue( 0 );
 
   connect( mBtnRefreshDevices, &QToolButton::clicked, this, &QgsGpsOptionsWidget::refreshDevices );
 
@@ -144,6 +145,7 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
   int leapSeconds = 0;
   Qt::TimeSpec timeSpec = Qt::TimeSpec::LocalTime;
   QString timeZone;
+  int offsetFromUtc = 0;
   if ( QgsGpsConnection::settingsGpsConnectionType.exists() )
   {
     connectionType = QgsGpsConnection::settingsGpsConnectionType.value();
@@ -160,6 +162,7 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
     leapSeconds = static_cast< int >( QgsGpsConnection::settingGpsLeapSeconds.value() );
     timeSpec = QgsGpsConnection::settingsGpsTimeStampSpecification.value();
     timeZone = QgsGpsConnection::settingsGpsTimeStampTimeZone.value();
+    offsetFromUtc = static_cast< int >( QgsGpsConnection::settingsGpsTimeStampOffsetFromUtc.value() );
   }
   else
   {
@@ -215,6 +218,8 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
     timeZone = settings.value( QStringLiteral( "timestampTimeZone" ), QVariant(), QgsSettings::Gps ).toString();
   }
 
+  mOffsetFromUtc->setValue( offsetFromUtc );
+
   mGpsdHost->setText( gpsdHost );
   mSpinGpsdPort->setValue( gpsdPort );
   mGpsdDevice->setText( gpsdDevice );
@@ -255,6 +260,7 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
   // Qt::TimeZone 3 A named time zone using a specific set of Daylight Savings rules.
   mCboTimestampFormat->addItem( tr( "Local Time" ), Qt::TimeSpec::LocalTime );
   mCboTimestampFormat->addItem( tr( "UTC" ), Qt::TimeSpec::UTC );
+  mCboTimestampFormat->addItem( tr( "UTC with Offset" ), Qt::TimeSpec::OffsetFromUTC );
   mCboTimestampFormat->addItem( tr( "Time Zone" ), Qt::TimeSpec::TimeZone );
   mCboTimestampFormat->setCurrentIndex( mCboTimestampFormat->findData( timeSpec ) );
   if ( mCboTimestampFormat->currentIndex() < 0 )
@@ -262,6 +268,7 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
 
   connect( mCboTimestampFormat, qOverload< int >( &QComboBox::currentIndexChanged ),
            this, &QgsGpsOptionsWidget::timestampFormatChanged );
+  timestampFormatChanged( 0 );
   updateTimeZones();
 
   const QList<QByteArray> constTzs = QTimeZone::availableTimeZoneIds();
@@ -346,6 +353,7 @@ void QgsGpsOptionsWidget::apply()
   QgsGpsConnection::settingsGpsTimeStampTimeZone.setValue( mCboTimeZones->currentText() );
   QgsGpsConnection::settingGpsApplyLeapSecondsCorrection.setValue( mCbxLeapSeconds->isChecked() );
   QgsGpsConnection::settingGpsLeapSeconds.setValue( mLeapSeconds->value() );
+  QgsGpsConnection::settingsGpsTimeStampOffsetFromUtc.setValue( mOffsetFromUtc->value() );
 }
 
 void QgsGpsOptionsWidget::refreshDevices()
@@ -379,9 +387,13 @@ void QgsGpsOptionsWidget::refreshDevices()
 
 void QgsGpsOptionsWidget::timestampFormatChanged( int )
 {
-  const bool enabled { static_cast<Qt::TimeSpec>( mCboTimestampFormat->currentData( ).toInt() ) == Qt::TimeSpec::TimeZone };
-  mCboTimeZones->setEnabled( enabled );
-  mLblTimeZone->setEnabled( enabled );
+  const Qt::TimeSpec currentSpec = static_cast<Qt::TimeSpec>( mCboTimestampFormat->currentData( ).toInt() );
+  const bool timeZoneEnabled {currentSpec == Qt::TimeSpec::TimeZone };
+  mCboTimeZones->setEnabled( timeZoneEnabled );
+  mLblTimeZone->setEnabled( timeZoneEnabled );
+  const bool offsetFromUtcEnabled = currentSpec == Qt::TimeSpec::OffsetFromUTC;
+  mOffsetFromUtc->setEnabled( offsetFromUtcEnabled );
+  mLblOffsetFromUtc->setEnabled( offsetFromUtcEnabled );
 }
 
 void QgsGpsOptionsWidget::updateTimeZones()

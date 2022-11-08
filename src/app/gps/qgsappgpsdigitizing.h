@@ -120,6 +120,7 @@ class APP_EXPORT QgsAppGpsDigitizing: public QObject
     int mLeapSeconds = 0;
     Qt::TimeSpec mTimeStampSpec = Qt::TimeSpec::LocalTime;
     QString mTimeZone;
+    int mOffsetFromUtc = 0;
 
     //! Temporary storage of preferred fields
     QMap<QString, QString> mPreferredTimestampFields;
