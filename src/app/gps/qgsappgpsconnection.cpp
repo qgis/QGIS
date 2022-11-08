@@ -65,6 +65,14 @@ QgsPoint QgsAppGpsConnection::lastValidLocation() const
     return QgsPoint();
 }
 
+QgsGpsInformation QgsAppGpsConnection::lastInformation() const
+{
+  if ( mConnection )
+    return mConnection->currentGPSInformation();
+  else
+    return QgsGpsInformation();
+}
+
 void QgsAppGpsConnection::connectGps()
 {
   QString port;

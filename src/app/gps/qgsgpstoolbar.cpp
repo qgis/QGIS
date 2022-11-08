@@ -26,6 +26,7 @@
 #include "qgsprojectgpssettings.h"
 #include "qgsmaplayermodel.h"
 #include "qgsmaplayerproxymodel.h"
+#include "qgsgpsconnection.h"
 
 #include <QLabel>
 #include <QToolButton>
@@ -122,7 +123,8 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
   addAction( mShowInfoAction );
 
   connect( mConnection, &QgsAppGpsConnection::positionChanged, this, &QgsGpsToolBar::updateLocationLabel );
-  updateLocationLabel( mConnection->lastValidLocation() );
+  connect( mConnection, &QgsAppGpsConnection::stateChanged, this, &QgsGpsToolBar::updateLocationLabel );
+  updateLocationLabel();
 
   QToolButton *settingsButton = new QToolButton();
   settingsButton->setAutoRaise( true );
@@ -149,8 +151,8 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
         mRecenterAction->setEnabled( false );
         mCreateFeatureAction->setEnabled( false );
         mAddTrackVertexAction->setEnabled( false );
-        delete mLocationLabel;
-        mLocationLabel = nullptr;
+        delete mLocationButton;
+        mLocationButton = nullptr;
         break;
       case Qgis::GpsConnectionStatus::Connecting:
         whileBlocking( mConnectAction )->setChecked( true );
@@ -160,8 +162,8 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
         mRecenterAction->setEnabled( false );
         mCreateFeatureAction->setEnabled( false );
         mAddTrackVertexAction->setEnabled( false );
-        delete mLocationLabel;
-        mLocationLabel = nullptr;
+        delete mLocationButton;
+        mLocationButton = nullptr;
         break;
       case Qgis::GpsConnectionStatus::Connected:
         whileBlocking( mConnectAction )->setChecked( true );
@@ -199,22 +201,56 @@ void QgsGpsToolBar::setResetTrackButtonEnabled( bool enabled )
   mResetFeatureAction->setEnabled( enabled );
 }
 
-void QgsGpsToolBar::updateLocationLabel( const QgsPoint &point )
+void QgsGpsToolBar::updateLocationLabel()
 {
+  const QgsPoint point = mConnection->lastValidLocation();
   if ( point.isEmpty() )
   {
-    delete mLocationLabel;
-    mLocationLabel = nullptr;
+    delete mLocationButton;
+    mLocationButton = nullptr;
   }
   else
   {
-    if ( !mLocationLabel )
+    if ( !mLocationButton )
     {
-      mLocationLabel = new QLabel();
-      insertWidget( mSettingsMenuAction, mLocationLabel );
+      createLocationWidget();
     }
-    const QString pos = QgsCoordinateUtils::formatCoordinateForProject( QgsProject::instance(), point, QgsCoordinateReferenceSystem(), 8 );
-    mLocationLabel->setText( pos );
+
+    const QgsGpsInformation information = mConnection->lastInformation();
+
+    const Qgis::GpsInformationComponents visibleComponents = settingShowInToolbar.value();
+
+    QStringList parts;
+    for ( Qgis::GpsInformationComponent component :
+          {
+            Qgis::GpsInformationComponent::Location,
+            Qgis::GpsInformationComponent::Altitude,
+            Qgis::GpsInformationComponent::Bearing,
+            Qgis::GpsInformationComponent::GroundSpeed,
+          } )
+    {
+      if ( visibleComponents & component )
+      {
+        const QVariant value = information.componentValue( component );
+        switch ( component )
+        {
+          case Qgis::GpsInformationComponent::Location:
+            parts << QgsCoordinateUtils::formatCoordinateForProject( QgsProject::instance(), point, QgsCoordinateReferenceSystem(), 8 );
+            break;
+          case Qgis::GpsInformationComponent::Altitude:
+            parts << tr( "%1 m" ).arg( value.toDouble( ) );
+            break;
+          case Qgis::GpsInformationComponent::GroundSpeed:
+            parts << tr( "%1 km/h" ).arg( value.toDouble( ) );
+            break;
+          case Qgis::GpsInformationComponent::Bearing:
+            parts << QString::number( value.toDouble( ) ) + QChar( 176 );
+            break;
+        }
+      }
+    }
+
+    mLocationButton->setText( parts.join( ' ' ) );
   }
 
   // this is necessary to ensure that the toolbar in floating mode correctly resizes to fit the label!
@@ -335,5 +371,51 @@ void QgsGpsToolBar::destinationMenuAboutToShow()
 
     mDestinationLayerMenu->addAction( layerAction );
   }
+}
+
+void QgsGpsToolBar::createLocationWidget()
+{
+  mLocationButton = new QToolButton();
+  mLocationButton->setToolTip( tr( "Current GPS Location" ) );
+
+  QMenu *locationMenu = new QMenu( mLocationButton );
+
+  const Qgis::GpsInformationComponents visibleComponents = settingShowInToolbar.value();
+
+  for ( const auto &it : std::vector< std::pair< Qgis::GpsInformationComponent, QString> >
+{
+  { Qgis::GpsInformationComponent::Location, tr( "Show Location" ) },
+    { Qgis::GpsInformationComponent::Altitude, tr( "Show Altitude" ) },
+    { Qgis::GpsInformationComponent::GroundSpeed, tr( "Show Ground Speed" ) },
+    { Qgis::GpsInformationComponent::Bearing, tr( "Show Bearing" ) }
+  } )
+  {
+    const Qgis::GpsInformationComponent component = it.first;
+    QAction *showComponentAction = new QAction( it.second, locationMenu );
+    showComponentAction->setCheckable( true );
+    showComponentAction->setData( QVariant::fromValue( component ) );
+    showComponentAction->setChecked( visibleComponents & component );
+    locationMenu->addAction( showComponentAction );
+
+    connect( showComponentAction, &QAction::toggled, this, [ = ]( bool checked )
+    {
+      const Qgis::GpsInformationComponents currentVisibleComponents = settingShowInToolbar.value();
+      if ( checked )
+      {
+        settingShowInToolbar.setValue( currentVisibleComponents | component );
+      }
+      else
+      {
+        settingShowInToolbar.setValue( currentVisibleComponents & ~( static_cast< int >( component ) ) );
+      }
+      updateLocationLabel();
+    } );
+  }
+
+  mLocationButton->setMenu( locationMenu );
+  mLocationButton->setAutoRaise( true );
+  mLocationButton->setPopupMode( QToolButton::ToolButtonPopupMode::InstantPopup );
+
+  insertWidget( mSettingsMenuAction, mLocationButton );
 }
 

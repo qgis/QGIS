@@ -32,6 +32,7 @@
 #include "qgsappgpsdigitizing.h"
 #include "qgsgpscanvasbridge.h"
 #include "qgsgpsmarker.h"
+#include "qgsgpstoolbar.h"
 
 QgsSettingsRegistryApp::QgsSettingsRegistryApp()
   : QgsSettingsRegistry()
@@ -71,6 +72,8 @@ QgsSettingsRegistryApp::QgsSettingsRegistryApp()
   addSettingsEntry( &QgsGpsCanvasBridge::settingRotateMap );
 
   addSettingsEntry( &QgsAppGpsDigitizing::settingTrackLineSymbol );
+
+  addSettingsEntry( &QgsGpsToolBar::settingShowInToolbar );
 
   addSettingsEntry( &QgsGpsMarker::settingLocationMarkerSymbol );
   addSettingsEntry( &QgsGpsMarker::settingShowLocationMarker );
