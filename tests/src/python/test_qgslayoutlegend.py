@@ -780,6 +780,23 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
 
         QgsProject.instance().clear()
 
+    def test_ruleBase_child_filter(self):
+        """Test filter by map handling of rotated map."""
+        testproject = os.path.join(TEST_DATA_DIR, 'legend_else_rule_w_child.qgs')
+
+        QgsProject.instance().clear()
+        project_read = QgsProject.instance().read(testproject)
+        self.assertTrue(project_read)
+        layout = QgsProject.instance().layoutManager().layoutByName("test layout")
+
+        checker = QgsLayoutChecker(
+            'composer_legend_elseChild', layout)
+        checker.setControlPathPrefix("composer_legend")
+        result, message = checker.testLayout()
+        TestQgsLayoutItemLegend.report += checker.report()
+        self.assertTrue(result, message)
+
+        QgsProject.instance().clear()
 
 if __name__ == '__main__':
     unittest.main()

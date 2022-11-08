@@ -685,15 +685,22 @@ QSet<QString> QgsRuleBasedRenderer::Rule::legendKeysForFeature( const QgsFeature
     bool validKey = false;
     if ( rule->isElse() )
     {
-      RuleList lst = rulesForFeature( feature, context, false );
-      lst.removeOne( rule );
+      if ( rule->children().isEmpty() )
+      {
+        RuleList lst = rulesForFeature( feature, context, false );
+        lst.removeOne( rule );
 
-      if ( lst.empty() )
+        if ( lst.empty() )
+        {
+          validKey = true;
+        }
+      }
+      else
       {
         validKey = true;
       }
     }
-    else if ( !rule->isElse( ) && rule->willRenderFeature( feature, context ) )
+    else if ( rule->willRenderFeature( feature, context ) )
     {
       validKey = true;
     }
