@@ -29,7 +29,7 @@
  * \brief The QgsQuickUtils class serves as a utility class for common operations
  * needed either from QML or cpp.
  *
- * \note use in qml as a singleton, registered as "Utils", e.g. QgsQuick.Utils.<function>
+ * \note use in qml as a singleton, registered as "Utils", e.g. QgsQuick.Utils.toQgsPoint
  *
  * \since QGIS 3.30
  */
