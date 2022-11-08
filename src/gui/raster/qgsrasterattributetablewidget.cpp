@@ -40,7 +40,7 @@ QgsRasterAttributeTableWidget::QgsRasterAttributeTableWidget( QWidget *parent, Q
 
   // Create the toolbar
   QToolBar *editToolBar = new QToolBar( this );
-  editToolBar->setIconSize( QgsGuiUtils::iconSize() );
+  editToolBar->setIconSize( QgsGuiUtils::iconSize( true ) );
 
   mActionToggleEditing = new QAction( QgsApplication::getThemeIcon( "/mActionEditTable.svg" ), tr( "&Edit Attribute Table" ), editToolBar );
   mActionToggleEditing->setCheckable( true );
