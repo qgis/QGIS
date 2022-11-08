@@ -36,6 +36,7 @@ class QextSerialPort;
 class QgsAppGpsConnection;
 class QgsGpsInformation;
 class QgsMapCanvas;
+class QgsAppGpsDigitizing;
 
 /**
  * A dock widget that displays information from a GPS device and
@@ -47,7 +48,7 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, private Ui::Qgs
     Q_OBJECT
   public:
 
-    QgsGpsInformationWidget( QgsAppGpsConnection *connection, QgsMapCanvas *mapCanvas, QWidget *parent = nullptr );
+    QgsGpsInformationWidget( QgsAppGpsConnection *connection, QgsMapCanvas *mapCanvas, QgsAppGpsDigitizing *digitizing = nullptr, QWidget *parent = nullptr );
     ~QgsGpsInformationWidget() override;
 
   private slots:
@@ -64,6 +65,7 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, private Ui::Qgs
     void gpsConnecting();
     void gpsDisconnected();
     void gpsConnected();
+    void updateTrackInformation();
 
   private:
 
@@ -72,6 +74,7 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, private Ui::Qgs
 
     QgsAppGpsConnection *mConnection = nullptr;
     QPointer< QgsMapCanvas > mMapCanvas;
+    QgsAppGpsDigitizing *mDigitizing = nullptr;
 
     QwtPlot *mPlot = nullptr;
     QwtPlotCurve *mCurve = nullptr;

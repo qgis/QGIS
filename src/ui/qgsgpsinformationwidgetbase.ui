@@ -111,20 +111,77 @@
              <property name="spacing">
               <number>2</number>
              </property>
-             <item row="0" column="1">
-              <widget class="QLineEdit" name="mTxtLatitude">
+             <item row="3" column="0">
+              <widget class="QLabel" name="label_13">
                <property name="toolTip">
-                <string>latitude of position fix (degrees)</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Difference between WGS-84 earth ellipsoid and mean sea level.  -=geoid is below WGS-84 ellipsoid&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+               <property name="text">
+                <string>Geoidal separation</string>
+               </property>
+              </widget>
+             </item>
+             <item row="15" column="1">
+              <widget class="QLineEdit" name="mTxt3Dacc"/>
+             </item>
+             <item row="3" column="1">
+              <widget class="QLineEdit" name="mTxtAltitudeDiff"/>
+             </item>
+             <item row="17" column="0">
+              <widget class="QLabel" name="mLblFixMode">
+               <property name="text">
+                <string>Mode</string>
+               </property>
+              </widget>
+             </item>
+             <item row="20" column="1">
+              <widget class="QLineEdit" name="mTxtStatus">
+               <property name="toolTip">
+                <string>position fix status: Valid or Invalid</string>
                </property>
                <property name="readOnly">
                 <bool>true</bool>
                </property>
               </widget>
              </item>
-             <item row="10" column="0">
-              <widget class="QLabel" name="mLblHdop">
+             <item row="18" column="1">
+              <widget class="QLineEdit" name="mTxtFixType">
+               <property name="toolTip">
+                <string>position fix dimensions: 2D, 3D or No fix</string>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="11" column="0">
+              <widget class="QLabel" name="mLblVdop">
                <property name="text">
-                <string>HDOP</string>
+                <string>VDOP</string>
+               </property>
+              </widget>
+             </item>
+             <item row="7" column="1">
+              <widget class="QLineEdit" name="mTxtSpeed">
+               <property name="toolTip">
+                <string>speed over ground</string>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="18" column="0">
+              <widget class="QLabel" name="mLblFixType">
+               <property name="text">
+                <string>Dimensions</string>
+               </property>
+              </widget>
+             </item>
+             <item row="19" column="0">
+              <widget class="QLabel" name="mLblQuality">
+               <property name="text">
+                <string>Quality</string>
                </property>
               </widget>
              </item>
@@ -138,10 +195,30 @@
                </property>
               </widget>
              </item>
-             <item row="2" column="1">
-              <widget class="QLineEdit" name="mTxtAltitude">
+             <item row="7" column="0">
+              <widget class="QLabel" name="mLblSpeed">
                <property name="toolTip">
-                <string>antenna altitude with respect to geoid (mean sea level)</string>
+                <string/>
+               </property>
+               <property name="text">
+                <string>Speed</string>
+               </property>
+              </widget>
+             </item>
+             <item row="8" column="1">
+              <widget class="QLineEdit" name="mTxtDirection">
+               <property name="toolTip">
+                <string>track direction (degrees)</string>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QLineEdit" name="mTxtLongitude">
+               <property name="toolTip">
+                <string>longitude of position fix (degrees)</string>
                </property>
                <property name="readOnly">
                 <bool>true</bool>
@@ -164,48 +241,8 @@
                </property>
               </spacer>
              </item>
-             <item row="17" column="0">
-              <widget class="QLabel" name="mLblFixMode">
-               <property name="text">
-                <string>Mode</string>
-               </property>
-              </widget>
-             </item>
-             <item row="13" column="1">
-              <widget class="QLineEdit" name="mTxtHacc"/>
-             </item>
-             <item row="6" column="1">
-              <spacer name="verticalSpacer_5">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeType">
-                <enum>QSizePolicy::Fixed</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>20</width>
-                 <height>6</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item row="7" column="0">
-              <widget class="QLabel" name="mLblSpeed">
-               <property name="toolTip">
-                <string/>
-               </property>
-               <property name="text">
-                <string>Speed</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="mLblAltitude">
-               <property name="text">
-                <string>Altitude</string>
-               </property>
-              </widget>
+             <item row="14" column="1">
+              <widget class="QLineEdit" name="mTxtVacc"/>
              </item>
              <item row="1" column="0">
               <widget class="QLabel" name="mLblLongitude">
@@ -214,179 +251,15 @@
                </property>
               </widget>
              </item>
-             <item row="17" column="1">
-              <widget class="QLineEdit" name="mTxtFixMode">
-               <property name="toolTip">
-                <string>GPS receiver configuration 2D/3D mode: Automatic or Manual</string>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="0">
-              <widget class="QLabel" name="mLblLatitude">
+             <item row="13" column="0">
+              <widget class="QLabel" name="mLblHacc">
                <property name="text">
-                <string>Latitude</string>
+                <string>H accuracy</string>
                </property>
               </widget>
              </item>
-             <item row="5" column="0">
-              <widget class="QLabel" name="mLblUtcTime">
-               <property name="text">
-                <string>Time of fix</string>
-               </property>
-              </widget>
-             </item>
-             <item row="14" column="0">
-              <widget class="QLabel" name="mLblVacc">
-               <property name="text">
-                <string>V accuracy</string>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="1">
-              <spacer name="verticalSpacer_2">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeType">
-                <enum>QSizePolicy::Fixed</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>20</width>
-                 <height>6</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item row="18" column="0">
-              <widget class="QLabel" name="mLblFixType">
-               <property name="text">
-                <string>Dimensions</string>
-               </property>
-              </widget>
-             </item>
-             <item row="7" column="1">
-              <widget class="QLineEdit" name="mTxtSpeed">
-               <property name="toolTip">
-                <string>speed over ground</string>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="11" column="0">
-              <widget class="QLabel" name="mLblVdop">
-               <property name="text">
-                <string>VDOP</string>
-               </property>
-              </widget>
-             </item>
-             <item row="15" column="0">
-              <widget class="QLabel" name="mLbl3Dacc">
-               <property name="text">
-                <string>3D accuracy</string>
-               </property>
-              </widget>
-             </item>
-             <item row="18" column="1">
-              <widget class="QLineEdit" name="mTxtFixType">
-               <property name="toolTip">
-                <string>position fix dimensions: 2D, 3D or No fix</string>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="19" column="1">
-              <widget class="QLineEdit" name="mTxtQuality">
-               <property name="toolTip">
-                <string>Positioning quality indicator (NMEA GGA or comparable sentence)</string>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="20" column="0">
-              <widget class="QLabel" name="mLblStatus">
-               <property name="text">
-                <string>Status</string>
-               </property>
-              </widget>
-             </item>
-             <item row="5" column="1">
-              <widget class="QLineEdit" name="mTxtDateTime">
-               <property name="toolTip">
-                <string>date/time of position fix (UTC)</string>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="15" column="1">
-              <widget class="QLineEdit" name="mTxt3Dacc"/>
-             </item>
-             <item row="14" column="1">
-              <widget class="QLineEdit" name="mTxtVacc"/>
-             </item>
-             <item row="21" column="1">
-              <widget class="QLineEdit" name="mTxtSatellitesUsed">
-               <property name="toolTip">
-                <string>number of satellites used in the position fix</string>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="19" column="0">
-              <widget class="QLabel" name="mLblQuality">
-               <property name="text">
-                <string>Quality</string>
-               </property>
-              </widget>
-             </item>
-             <item row="20" column="1">
-              <widget class="QLineEdit" name="mTxtStatus">
-               <property name="toolTip">
-                <string>position fix status: Valid or Invalid</string>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="8" column="1">
-              <widget class="QLineEdit" name="mTxtDirection">
-               <property name="toolTip">
-                <string>track direction (degrees)</string>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="8" column="0">
-              <widget class="QLabel" name="mLblDirection">
-               <property name="toolTip">
-                <string/>
-               </property>
-               <property name="text">
-                <string>Direction</string>
-               </property>
-              </widget>
-             </item>
-             <item row="9" column="1">
-              <spacer name="verticalSpacer_4">
+             <item row="6" column="1">
+              <spacer name="verticalSpacer_5">
                <property name="orientation">
                 <enum>Qt::Vertical</enum>
                </property>
@@ -408,6 +281,16 @@
                </property>
               </widget>
              </item>
+             <item row="21" column="1">
+              <widget class="QLineEdit" name="mTxtSatellitesUsed">
+               <property name="toolTip">
+                <string>number of satellites used in the position fix</string>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
              <item row="11" column="1">
               <widget class="QLineEdit" name="mTxtVdop">
                <property name="toolTip">
@@ -418,20 +301,123 @@
                </property>
               </widget>
              </item>
-             <item row="12" column="0">
-              <widget class="QLabel" name="mLblPdop">
-               <property name="text">
-                <string>PDOP</string>
-               </property>
-              </widget>
+             <item row="13" column="1">
+              <widget class="QLineEdit" name="mTxtHacc"/>
              </item>
-             <item row="1" column="1">
-              <widget class="QLineEdit" name="mTxtLongitude">
+             <item row="2" column="1">
+              <widget class="QLineEdit" name="mTxtAltitude">
                <property name="toolTip">
-                <string>longitude of position fix (degrees)</string>
+                <string>antenna altitude with respect to geoid (mean sea level)</string>
                </property>
                <property name="readOnly">
                 <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="22" column="1">
+              <spacer name="verticalSpacer_10">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Fixed</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>6</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="10" column="0">
+              <widget class="QLabel" name="mLblHdop">
+               <property name="text">
+                <string>HDOP</string>
+               </property>
+              </widget>
+             </item>
+             <item row="14" column="0">
+              <widget class="QLabel" name="mLblVacc">
+               <property name="text">
+                <string>V accuracy</string>
+               </property>
+              </widget>
+             </item>
+             <item row="19" column="1">
+              <widget class="QLineEdit" name="mTxtQuality">
+               <property name="toolTip">
+                <string>Positioning quality indicator (NMEA GGA or comparable sentence)</string>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="0">
+              <widget class="QLabel" name="mLblUtcTime">
+               <property name="text">
+                <string>Time of fix</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLineEdit" name="mTxtLatitude">
+               <property name="toolTip">
+                <string>latitude of position fix (degrees)</string>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="8" column="0">
+              <widget class="QLabel" name="mLblDirection">
+               <property name="toolTip">
+                <string/>
+               </property>
+               <property name="text">
+                <string>Direction</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="mLblAltitude">
+               <property name="text">
+                <string>Altitude</string>
+               </property>
+              </widget>
+             </item>
+             <item row="9" column="1">
+              <spacer name="verticalSpacer_4">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Fixed</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>6</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="23" column="1">
+              <widget class="QLineEdit" name="mTxtTotalTrackLength">
+               <property name="toolTip">
+                <string>Total length of current GPS track</string>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="mLblLatitude">
+               <property name="text">
+                <string>Latitude</string>
                </property>
               </widget>
              </item>
@@ -445,25 +431,89 @@
                </property>
               </widget>
              </item>
-             <item row="13" column="0">
-              <widget class="QLabel" name="mLblHacc">
+             <item row="12" column="0">
+              <widget class="QLabel" name="mLblPdop">
                <property name="text">
-                <string>H accuracy</string>
+                <string>PDOP</string>
                </property>
               </widget>
              </item>
-             <item row="3" column="0">
-              <widget class="QLabel" name="label_13">
+             <item row="20" column="0">
+              <widget class="QLabel" name="mLblStatus">
+               <property name="text">
+                <string>Status</string>
+               </property>
+              </widget>
+             </item>
+             <item row="17" column="1">
+              <widget class="QLineEdit" name="mTxtFixMode">
                <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Difference between WGS-84 earth ellipsoid and mean sea level.  -=geoid is below WGS-84 ellipsoid&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>GPS receiver configuration 2D/3D mode: Automatic or Manual</string>
                </property>
-               <property name="text">
-                <string>Geoidal separation</string>
+               <property name="readOnly">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
-             <item row="3" column="1">
-              <widget class="QLineEdit" name="mTxtAltitudeDiff"/>
+             <item row="15" column="0">
+              <widget class="QLabel" name="mLbl3Dacc">
+               <property name="text">
+                <string>3D accuracy</string>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="1">
+              <widget class="QLineEdit" name="mTxtDateTime">
+               <property name="toolTip">
+                <string>date/time of position fix (UTC)</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="1">
+              <spacer name="verticalSpacer_2">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Fixed</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>6</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="23" column="0">
+              <widget class="QLabel" name="mLblSatellitesUsed_3">
+               <property name="text">
+                <string>Total track length</string>
+               </property>
+              </widget>
+             </item>
+             <item row="24" column="0">
+              <widget class="QLabel" name="mLblSatellitesUsed_4">
+               <property name="text">
+                <string>Distance from start of track</string>
+               </property>
+              </widget>
+             </item>
+             <item row="24" column="1">
+              <widget class="QLineEdit" name="mTxtDirectTrackLength">
+               <property name="toolTip">
+                <string>Direct distance from first vertex in GPS track to last vertex</string>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
              </item>
             </layout>
            </item>
@@ -706,6 +756,27 @@ gray = no data
   <tabstop>mTxtQuality</tabstop>
   <tabstop>mTxtStatus</tabstop>
   <tabstop>mTxtSatellitesUsed</tabstop>
+  <tabstop>mTxtTotalTrackLength</tabstop>
+  <tabstop>mTxtDirectTrackLength</tabstop>
+  <tabstop>mBtnPopupOptions</tabstop>
+  <tabstop>mTxtLatitude_2</tabstop>
+  <tabstop>mTxtPdop_2</tabstop>
+  <tabstop>mTxtAltitude_2</tabstop>
+  <tabstop>mTxtHacc_2</tabstop>
+  <tabstop>mTxtFixMode_2</tabstop>
+  <tabstop>mTxtSpeed_2</tabstop>
+  <tabstop>mTxtFixType_2</tabstop>
+  <tabstop>mTxtQuality_2</tabstop>
+  <tabstop>mTxtDateTime_2</tabstop>
+  <tabstop>mTxt3Dacc_2</tabstop>
+  <tabstop>mTxtVacc_2</tabstop>
+  <tabstop>mTxtSatellitesUsed_2</tabstop>
+  <tabstop>mTxtStatus_2</tabstop>
+  <tabstop>mTxtDirection_2</tabstop>
+  <tabstop>mTxtVdop_2</tabstop>
+  <tabstop>mTxtLongitude_2</tabstop>
+  <tabstop>mTxtHdop_2</tabstop>
+  <tabstop>mTxtAltitudeDiff_2</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

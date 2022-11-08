@@ -117,6 +117,11 @@ double QgsAppGpsDigitizing::trackDirectLength() const
   return mDa.measureLine( { QgsPointXY( mCaptureListWgs84.constFirst() ), QgsPointXY( mCaptureListWgs84.constLast() )} );
 }
 
+const QgsDistanceArea &QgsAppGpsDigitizing::distanceArea() const
+{
+  return mDa;
+}
+
 void QgsAppGpsDigitizing::addVertex()
 {
   if ( !mRubberBand )
@@ -622,6 +627,7 @@ void QgsAppGpsDigitizing::updateDistanceArea()
 {
   mDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
   mDa.setSourceCrs( mWgs84CRS, QgsProject::instance()->transformContext() );
+  emit distanceAreaChanged();
 }
 
 void QgsAppGpsDigitizing::createRubberBand()

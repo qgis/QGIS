@@ -27,6 +27,7 @@
 #include "qgsgpsconnection.h"
 #include "qgscoordinateutils.h"
 #include "qgsappgpssettingsmenu.h"
+#include "qgsappgpsdigitizing.h"
 
 // QWT Charting widget
 
@@ -53,10 +54,11 @@
 
 
 QgsGpsInformationWidget::QgsGpsInformationWidget( QgsAppGpsConnection *connection,
-    QgsMapCanvas *mapCanvas, QWidget *parent )
+    QgsMapCanvas *mapCanvas, QgsAppGpsDigitizing *digitizing, QWidget *parent )
   : QgsPanelWidget( parent )
   , mConnection( connection )
   , mMapCanvas( mapCanvas )
+  , mDigitizing( digitizing )
 {
   Q_ASSERT( mMapCanvas ); // precondition
   setupUi( this );
@@ -205,6 +207,9 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsAppGpsConnection *connectio
         break;
     }
   } );
+
+  connect( mDigitizing, &QgsAppGpsDigitizing::trackChanged, this, &QgsGpsInformationWidget::updateTrackInformation );
+  connect( mDigitizing, &QgsAppGpsDigitizing::distanceAreaChanged, this, &QgsGpsInformationWidget::updateTrackInformation );
 }
 
 QgsGpsInformationWidget::~QgsGpsInformationWidget()
@@ -286,6 +291,38 @@ void QgsGpsInformationWidget::timedout()
 void QgsGpsInformationWidget::gpsConnected()
 {
   mGPSPlainTextEdit->appendPlainText( tr( "Connected!" ) );
+}
+
+void QgsGpsInformationWidget::updateTrackInformation()
+{
+  const double totalTrackLength = mDigitizing->totalTrackLength();
+  const double directTrackLength = mDigitizing->trackDirectLength();
+
+  const QgsSettings settings;
+  const bool keepBaseUnit = settings.value( QStringLiteral( "qgis/measure/keepbaseunit" ), true ).toBool();
+  const int decimalPlaces = settings.value( QStringLiteral( "qgis/measure/decimalplaces" ), 3 ).toInt();
+
+  if ( totalTrackLength > 0 )
+  {
+    mTxtTotalTrackLength->setEnabled( true );
+    mTxtTotalTrackLength->setText( mDigitizing->distanceArea().formatDistance( totalTrackLength, decimalPlaces, mDigitizing->distanceArea().lengthUnits(), keepBaseUnit ) );
+  }
+  else
+  {
+    mTxtTotalTrackLength->setEnabled( false );
+    mTxtTotalTrackLength->setText( tr( "Not available" ) );
+  }
+
+  if ( directTrackLength > 0 )
+  {
+    mTxtDirectTrackLength->setEnabled( true );
+    mTxtDirectTrackLength->setText( mDigitizing->distanceArea().formatDistance( directTrackLength, decimalPlaces, mDigitizing->distanceArea().lengthUnits(), keepBaseUnit ) );
+  }
+  else
+  {
+    mTxtDirectTrackLength->setEnabled( false );
+    mTxtDirectTrackLength->setText( tr( "Not available" ) );
+  }
 }
 
 void QgsGpsInformationWidget::gpsDisconnected()
