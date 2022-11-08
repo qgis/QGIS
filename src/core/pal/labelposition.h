@@ -138,6 +138,10 @@ namespace pal
 
       /**
        * Gets distance from this label to a point. If point lies inside, returns negative number.
+       *
+       * If \a useOuterBounds is TRUE then the distance will be calculated to the outer bounds
+       * of the label (see QgsLabelFeature::outerBounds()), otherwise it will be calculated
+       * to the label's actual rectangle.
        */
       double getDistanceToPoint( double xp, double yp, bool useOuterBounds ) const;
 
