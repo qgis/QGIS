@@ -78,7 +78,7 @@ class QgsGpsToolBar : public QToolBar
 
     QMenu *mDestinationLayerMenu = nullptr;
 
-    QPointer< QToolButton > mLocationButton;
+    QPointer< QToolButton > mInformationButton;
 
     QgsCoordinateReferenceSystem mWgs84CRS;
     bool mEnableAddVertexButton = true;
