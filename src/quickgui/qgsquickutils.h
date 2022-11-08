@@ -31,7 +31,7 @@
  *
  * \since QGIS 3.30
  */
-class QgsQuickUtils : public QObject
+class QUICK_EXPORT QgsQuickUtils : public QObject
 {
     Q_OBJECT
 
