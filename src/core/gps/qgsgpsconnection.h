@@ -310,6 +310,13 @@ class CORE_EXPORT QgsGpsInformation
      */
     QString qualityDescription() const;
 
+    /**
+     * Returns the value of the corresponding GPS information \a component.
+     *
+     * \since QGIS 3.30
+     */
+    QVariant componentValue( Qgis::GpsInformationComponent component ) const;
+
   private:
 
     QMap< Qgis::GnssConstellation, Qgis::GpsFixStatus > mConstellationFixStatus;

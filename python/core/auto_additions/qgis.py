@@ -901,6 +901,16 @@ Qgis.GpsQualityIndicator.__doc__ = 'GPS signal quality indicator\n\n.. versionad
 # --
 Qgis.GpsQualityIndicator.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.GpsInformationComponent.Location.__doc__ = "2D location (latitude/longitude), as a QgsPointXY value"
+Qgis.GpsInformationComponent.Altitude.__doc__ = "Altitude/elevation above or below the mean sea level"
+Qgis.GpsInformationComponent.GroundSpeed.__doc__ = "Ground speed"
+Qgis.GpsInformationComponent.Bearing.__doc__ = "Bearing measured in degrees clockwise from true north to the direction of travel"
+Qgis.GpsInformationComponent.__doc__ = 'GPS information component.\n\n.. versionadded:: 3.30\n\n' + '* ``Location``: ' + Qgis.GpsInformationComponent.Location.__doc__ + '\n' + '* ``Altitude``: ' + Qgis.GpsInformationComponent.Altitude.__doc__ + '\n' + '* ``GroundSpeed``: ' + Qgis.GpsInformationComponent.GroundSpeed.__doc__ + '\n' + '* ``Bearing``: ' + Qgis.GpsInformationComponent.Bearing.__doc__
+# --
+Qgis.GpsInformationComponent.baseClass = Qgis
+Qgis.GpsInformationComponents.baseClass = Qgis
+GpsInformationComponents = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
 Qgis.BabelFormatCapability.Import.__doc__ = "Format supports importing"
 Qgis.BabelFormatCapability.Export.__doc__ = "Format supports exporting"
 Qgis.BabelFormatCapability.Waypoints.__doc__ = "Format supports waypoints"

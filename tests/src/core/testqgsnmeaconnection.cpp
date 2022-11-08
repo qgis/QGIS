@@ -72,6 +72,7 @@ class TestQgsNmeaConnection : public QgsTest
     void testFixStatusAcrossConstellations();
     void testConstellation();
     void testPosition();
+    void testComponent();
 
 };
 
@@ -408,6 +409,24 @@ void TestQgsNmeaConnection::testPosition()
   QCOMPARE( spy.count(), 2 );
   // last valid location remains unchanged
   QCOMPARE( connection.lastValidLocation(), QgsPoint( 19, 69, 35 ) );
+}
+
+void TestQgsNmeaConnection::testComponent()
+{
+  ReplayNmeaConnection connection;
+
+  QgsGpsInformation info = connection.push( QStringLiteral( "$GPGGA,084112.185,6900.0,N,01800.0,E,1,04,1.4,35.0,M,29.4,M,,0000*63" ) );
+
+  QCOMPARE( info.componentValue( Qgis::GpsInformationComponent::Location ).value< QgsPointXY >(), QgsPointXY( 18, 69 ) );
+  QCOMPARE( info.componentValue( Qgis::GpsInformationComponent::Altitude ).toDouble(), 35 );
+  QCOMPARE( info.componentValue( Qgis::GpsInformationComponent::GroundSpeed ).toDouble(), 0 );
+  QCOMPARE( info.componentValue( Qgis::GpsInformationComponent::Bearing ).toDouble(), 0 );
+
+  info = connection.push( QStringLiteral( "$GPRMC,084111.185,A,6938.6531,N,01856.8527,E,0.16,2.00,220120,,,A*6E" ) );
+  QCOMPARE( info.componentValue( Qgis::GpsInformationComponent::Location ).value< QgsPointXY >(), QgsPointXY( 18.94754499999999808, 69.644218333333341779 ) );
+  QCOMPARE( info.componentValue( Qgis::GpsInformationComponent::Altitude ).toDouble(), 35 );
+  QCOMPARE( info.componentValue( Qgis::GpsInformationComponent::GroundSpeed ).toDouble(),  0.29632 );
+  QCOMPARE( info.componentValue( Qgis::GpsInformationComponent::Bearing ).toDouble(), 2 );
 }
 
 QGSTEST_MAIN( TestQgsNmeaConnection )

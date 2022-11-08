@@ -1001,6 +1001,28 @@ class CORE_EXPORT Qgis
     Q_ENUM( GpsQualityIndicator )
 
     /**
+     * GPS information component.
+     *
+     * \since QGIS 3.30
+     */
+    enum class GpsInformationComponent : int
+    {
+      Location = 1 << 0, //!< 2D location (latitude/longitude), as a QgsPointXY value
+      Altitude = 1 << 1, //!< Altitude/elevation above or below the mean sea level
+      GroundSpeed = 1 << 2, //!< Ground speed
+      Bearing = 1 << 3, //!< Bearing measured in degrees clockwise from true north to the direction of travel
+    };
+
+    /**
+     * GPS information component.
+     *
+     * \since QGIS 3.30
+     */
+    Q_DECLARE_FLAGS( GpsInformationComponents, GpsInformationComponent )
+    Q_ENUM( GpsInformationComponent )
+    Q_FLAG( GpsInformationComponents )
+
+    /**
      * Babel GPS format capabilities.
      *
      * \since QGIS 3.22
@@ -2584,6 +2606,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RasterTemporalCapabilityFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SelectionFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RasterRendererFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LabelingFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::GpsInformationComponents )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.
