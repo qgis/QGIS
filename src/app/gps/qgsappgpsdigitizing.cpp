@@ -428,6 +428,7 @@ void QgsAppGpsDigitizing::gpsSettingsChanged()
     mLeapSeconds = static_cast< int >( QgsGpsConnection::settingGpsLeapSeconds.value() );
     mTimeStampSpec = QgsGpsConnection::settingsGpsTimeStampSpecification.value();
     mTimeZone = QgsGpsConnection::settingsGpsTimeStampTimeZone.value();
+    mOffsetFromUtc = static_cast< int >( QgsGpsConnection::settingsGpsTimeStampOffsetFromUtc.value() );
   }
   else
   {
@@ -656,7 +657,9 @@ QVariant QgsAppGpsDigitizing::timestamp( QgsVectorLayer *vlayer, int idx )
       time = time.addSecs( mLeapSeconds );
     }
     // Desired format
-    time = time.toTimeSpec( mTimeStampSpec );
+    if ( mTimeStampSpec != Qt::TimeSpec::OffsetFromUTC )
+      time = time.toTimeSpec( mTimeStampSpec );
+
     if ( mTimeStampSpec == Qt::TimeSpec::TimeZone )
     {
       // Get timezone from the combo
@@ -669,6 +672,10 @@ QVariant QgsAppGpsDigitizing::timestamp( QgsVectorLayer *vlayer, int idx )
     else if ( mTimeStampSpec == Qt::TimeSpec::LocalTime )
     {
       time = time.toLocalTime();
+    }
+    else if ( mTimeStampSpec == Qt::TimeSpec::OffsetFromUTC )
+    {
+      time = time.toOffsetFromUtc( mOffsetFromUtc );
     }
     else if ( mTimeStampSpec == Qt::TimeSpec::UTC )
     {

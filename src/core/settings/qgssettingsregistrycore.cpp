@@ -128,6 +128,7 @@ QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   addSettingsEntry( &QgsGpsConnection::settingGpsLeapSeconds );
   addSettingsEntry( &QgsGpsConnection::settingsGpsTimeStampSpecification );
   addSettingsEntry( &QgsGpsConnection::settingsGpsTimeStampTimeZone );
+  addSettingsEntry( &QgsGpsConnection::settingsGpsTimeStampOffsetFromUtc );
 }
 
 QgsSettingsRegistryCore::~QgsSettingsRegistryCore()

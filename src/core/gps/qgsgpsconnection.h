@@ -396,6 +396,9 @@ class CORE_EXPORT QgsGpsConnection : public QObject
     //! Settings entry GPS time stamp time zone
     static const inline QgsSettingsEntryString settingsGpsTimeStampTimeZone = QgsSettingsEntryString( QStringLiteral( "timestamp-time-zone" ), QgsSettings::Prefix::GPS, QString(), QStringLiteral( "GPS time stamp time zone" ) ) SIP_SKIP;
 
+    //! Settings entry GPS time offset from UTC in seconds
+    static const inline QgsSettingsEntryInteger settingsGpsTimeStampOffsetFromUtc = QgsSettingsEntryInteger( QStringLiteral( "timestamp-offset-from-utc" ), QgsSettings::Prefix::GPS, 0, QStringLiteral( "GPS time stamp offset from UTC (in seconds)" ) ) SIP_SKIP;
+
     /**
      * Constructor
      * \param dev input device for the connection (e.g. serial device). The class takes ownership of the object
