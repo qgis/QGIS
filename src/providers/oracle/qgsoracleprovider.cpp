@@ -3855,7 +3855,7 @@ QString QgsOracleProviderMetadata::loadStoredStyle( const QString &uri, QString 
   if ( !dsUri.geometryColumn().isEmpty() )
     args << dsUri.geometryColumn();
 
-  if ( !LoggedExecStatic( qry, "SELECT styleQML FROM ("
+  if ( !LoggedExecStatic( qry, "SELECT styleName, styleQML FROM ("
                           "SELECT styleQML"
                           " FROM layer_styles"
                           " WHERE f_table_catalog=?"
@@ -3874,7 +3874,8 @@ QString QgsOracleProviderMetadata::loadStoredStyle( const QString &uri, QString 
   }
   else
   {
-    style = qry.value( 0 ).toString();
+    styleName = qry.value( 0 ).toString();
+    style = qry.value( 1 ).toString();
   }
 
   conn->disconnect();
