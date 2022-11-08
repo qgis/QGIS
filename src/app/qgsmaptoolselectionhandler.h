@@ -210,6 +210,9 @@ class QgsMapToolSelectionHandler : public QObject
 
     //! Delay timer for continuous selection mode
     std::unique_ptr<QTimer> mOnMouseMoveDelayTimer;
+
+    //! Last cursor position after a move event, used by continuous selection mode
+    QPoint mMoveLastCursorPos;
 };
 
 #endif

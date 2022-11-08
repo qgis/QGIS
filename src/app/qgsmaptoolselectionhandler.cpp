@@ -196,20 +196,27 @@ void QgsMapToolSelectionHandler::selectFeaturesPressEvent( QgsMapMouseEvent *e )
 void QgsMapToolSelectionHandler::selectFeaturesMoveEvent( QgsMapMouseEvent *e )
 {
 
-  if ( mSelectionMode == QgsMapToolSelectionHandler::SelectOnMouseOver )
+  if ( mSelectionMode == QgsMapToolSelectionHandler::SelectOnMouseOver && mCanvas->underMouse() )
   {
+    mMoveLastCursorPos = e->pos();
     // This is a (well known, according to google) false positive,
     // I tried all possible NOLINT placements without success, this
     // ugly ifdef seems to do the trick with silencing the warning.
 #ifndef __clang_analyzer__
-    mOnMouseMoveDelayTimer = std::make_unique<QTimer>( );
-    mOnMouseMoveDelayTimer->singleShot( 300, mOnMouseMoveDelayTimer.get(), [ = ]
+    if ( ! mOnMouseMoveDelayTimer || ! mOnMouseMoveDelayTimer->isActive() )
     {
-      if ( mCanvas->underMouse() )
+      setSelectedGeometry( QgsGeometry::fromPointXY( toMapCoordinates( e->pos() ) ), e->modifiers() );
+      mOnMouseMoveDelayTimer = std::make_unique<QTimer>( );
+      mOnMouseMoveDelayTimer->setSingleShot( true );
+      connect( mOnMouseMoveDelayTimer.get(), &QTimer::timeout, this, [ = ]
       {
-        setSelectedGeometry( QgsGeometry::fromPointXY( toMapCoordinates( e->pos() ) ), e->modifiers() );
-      }
-    } );
+        if ( ! mMoveLastCursorPos.isNull() )
+        {
+          setSelectedGeometry( QgsGeometry::fromPointXY( toMapCoordinates( mMoveLastCursorPos ) ), e->modifiers() );
+        }
+      } );
+      mOnMouseMoveDelayTimer->start( 300 );
+    }
 #endif
     return;
   }
@@ -489,6 +496,7 @@ QgsGeometry QgsMapToolSelectionHandler::selectedGeometry() const
 void QgsMapToolSelectionHandler::setSelectedGeometry( const QgsGeometry &geometry, Qt::KeyboardModifiers modifiers )
 {
   mSelectionGeometry = geometry;
+  mMoveLastCursorPos = QPoint();
   emit geometryChanged( modifiers );
 }
 
