@@ -151,8 +151,8 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
         mRecenterAction->setEnabled( false );
         mCreateFeatureAction->setEnabled( false );
         mAddTrackVertexAction->setEnabled( false );
-        delete mLocationButton;
-        mLocationButton = nullptr;
+        delete mInformationButton;
+        mInformationButton = nullptr;
         break;
       case Qgis::GpsConnectionStatus::Connecting:
         whileBlocking( mConnectAction )->setChecked( true );
@@ -162,8 +162,8 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
         mRecenterAction->setEnabled( false );
         mCreateFeatureAction->setEnabled( false );
         mAddTrackVertexAction->setEnabled( false );
-        delete mLocationButton;
-        mLocationButton = nullptr;
+        delete mInformationButton;
+        mInformationButton = nullptr;
         break;
       case Qgis::GpsConnectionStatus::Connected:
         whileBlocking( mConnectAction )->setChecked( true );
@@ -206,12 +206,12 @@ void QgsGpsToolBar::updateLocationLabel()
   const QgsPoint point = mConnection->lastValidLocation();
   if ( point.isEmpty() )
   {
-    delete mLocationButton;
-    mLocationButton = nullptr;
+    delete mInformationButton;
+    mInformationButton = nullptr;
   }
   else
   {
-    if ( !mLocationButton )
+    if ( !mInformationButton )
     {
       createLocationWidget();
     }
@@ -250,7 +250,7 @@ void QgsGpsToolBar::updateLocationLabel()
       }
     }
 
-    mLocationButton->setText( parts.join( ' ' ) );
+    mInformationButton->setText( parts.join( ' ' ) );
   }
 
   // this is necessary to ensure that the toolbar in floating mode correctly resizes to fit the label!
@@ -375,10 +375,10 @@ void QgsGpsToolBar::destinationMenuAboutToShow()
 
 void QgsGpsToolBar::createLocationWidget()
 {
-  mLocationButton = new QToolButton();
-  mLocationButton->setToolTip( tr( "Current GPS Location" ) );
+  mInformationButton = new QToolButton();
+  mInformationButton->setToolTip( tr( "Current GPS Information" ) );
 
-  QMenu *locationMenu = new QMenu( mLocationButton );
+  QMenu *locationMenu = new QMenu( mInformationButton );
 
   const Qgis::GpsInformationComponents visibleComponents = settingShowInToolbar.value();
 
@@ -412,10 +412,10 @@ void QgsGpsToolBar::createLocationWidget()
     } );
   }
 
-  mLocationButton->setMenu( locationMenu );
-  mLocationButton->setAutoRaise( true );
-  mLocationButton->setPopupMode( QToolButton::ToolButtonPopupMode::InstantPopup );
+  mInformationButton->setMenu( locationMenu );
+  mInformationButton->setAutoRaise( true );
+  mInformationButton->setPopupMode( QToolButton::ToolButtonPopupMode::InstantPopup );
 
-  insertWidget( mSettingsMenuAction, mLocationButton );
+  insertWidget( mSettingsMenuAction, mInformationButton );
 }
 
