@@ -64,6 +64,11 @@ class APP_EXPORT QgsAppGpsDigitizing: public QObject
      */
     double trackDirectLength() const;
 
+    /**
+     * Returns the distance area calculator used to calculate track lengths.
+     */
+    const QgsDistanceArea &distanceArea() const;
+
   public slots:
     void addVertex();
     void resetTrack();
@@ -82,6 +87,11 @@ class APP_EXPORT QgsAppGpsDigitizing: public QObject
      * Emitted whenever the recorded track is changed.
      */
     void trackChanged();
+
+    /**
+     * Emitted whenever the distance area used to calculate track distances is changed.
+     */
+    void distanceAreaChanged();
 
   private slots:
     void gpsSettingsChanged();
