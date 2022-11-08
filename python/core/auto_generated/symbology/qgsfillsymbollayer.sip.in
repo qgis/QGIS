@@ -803,7 +803,7 @@ Returns the units used for the offset of the shapeburst fill.
     QgsShapeburstFillSymbolLayer( const QgsShapeburstFillSymbolLayer &other );
 };
 
-class QgsImageFillSymbolLayer: QgsFillSymbolLayer
+class QgsImageFillSymbolLayer: QgsFillSymbolLayer /Abstract/
 {
 %Docstring(signature="appended")
 Base class for polygon renderers generating texture images
@@ -2817,8 +2817,6 @@ Sets whether point markers should be ``clipped`` to the current part boundary on
   private:
     QgsCentroidFillSymbolLayer( const QgsCentroidFillSymbolLayer &other );
 };
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

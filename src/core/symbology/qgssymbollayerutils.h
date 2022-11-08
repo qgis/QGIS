@@ -943,6 +943,24 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     static void clearSymbolLayerIds( QgsSymbol *symbol );
 
+    /**
+     * Remove recursively unique id from \a symbolLayer and its children and set an empty string instead
+     * \since QGIS 3.30
+     */
+    static void clearSymbolLayerIds( QgsSymbolLayer *symbolLayer );
+
+    /**
+     * Regenerate recursively unique id from all \a symbol symbol layers
+     * \since QGIS 3.30
+     */
+    static void resetSymbolLayerIds( QgsSymbol *symbol );
+
+    /**
+     * Regenerate recursively unique id from \a symbolLayer and its children
+     * \since QGIS 3.30
+     */
+    static void resetSymbolLayerIds( QgsSymbolLayer *symbolLayer );
+
     ///@cond PRIVATE
 #ifndef SIP_RUN
     static QgsProperty rotateWholeSymbol( double additionalRotation, const QgsProperty &property )

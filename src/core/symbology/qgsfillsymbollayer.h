@@ -776,7 +776,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
  * \ingroup core
  * \brief Base class for polygon renderers generating texture images
 */
-class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
+class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer SIP_ABSTRACT
 {
   public:
 
@@ -2550,5 +2550,3 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
 };
 
 #endif
-
-

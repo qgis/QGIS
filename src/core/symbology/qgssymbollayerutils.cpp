@@ -5446,20 +5446,43 @@ void QgsSymbolLayerUtils::fixOldSymbolLayerReferences( const QMap<QString, QgsMa
   }
 }
 
-void QgsSymbolLayerUtils::clearSymbolLayerIds( QgsSymbol *symbol )
+template <typename Functor>
+void changeSymbolLayerIds( QgsSymbolLayer *sl, Functor &&generateId )
+{
+  sl->setId( generateId() );
+
+  // recurse over sub symbols
+  QgsSymbol *subSymbol = sl->subSymbol();
+  if ( subSymbol )
+    changeSymbolLayerIds( subSymbol, generateId );
+}
+
+template <typename Functor>
+void changeSymbolLayerIds( QgsSymbol *symbol, Functor &&generateId )
 {
   if ( !symbol )
     return;
 
   for ( int idx = 0; idx < symbol->symbolLayerCount(); idx++ )
-  {
-    QgsSymbolLayer *sl = symbol->symbolLayer( idx );
+    changeSymbolLayerIds( symbol->symbolLayer( idx ), generateId );
+}
 
-    sl->setId( QString() );
+void QgsSymbolLayerUtils::clearSymbolLayerIds( QgsSymbol *symbol )
+{
+  changeSymbolLayerIds( symbol, []() { return QString(); } );
+}
 
-    // recurse over sub symbols
-    QgsSymbol *subSymbol = const_cast<QgsSymbolLayer *>( sl )->subSymbol();
-    if ( subSymbol )
-      clearSymbolLayerIds( subSymbol );
-  }
+void QgsSymbolLayerUtils::clearSymbolLayerIds( QgsSymbolLayer *symbolLayer )
+{
+  changeSymbolLayerIds( symbolLayer, []() { return QString(); } );
+}
+
+void QgsSymbolLayerUtils::resetSymbolLayerIds( QgsSymbolLayer *symbolLayer )
+{
+  changeSymbolLayerIds( symbolLayer, []() { return QUuid::createUuid().toString(); } );
+}
+
+void QgsSymbolLayerUtils::resetSymbolLayerIds( QgsSymbol *symbol )
+{
+  changeSymbolLayerIds( symbol, []() { return QUuid::createUuid().toString(); } );
 }
