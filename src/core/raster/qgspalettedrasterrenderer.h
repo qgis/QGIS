@@ -38,7 +38,7 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
   public:
 
     //! Properties of a single value class
-    struct Class
+    struct CORE_EXPORT Class
     {
       //! Constructor for Class
       Class( double value, const QColor &color = QColor(), const QString &label = QString() )
@@ -61,7 +61,7 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
      * \brief Properties of a multi value class: a class that contains multiple values.
      * \since QGIS 3.30
      */
-    class MultiValueClass
+    class CORE_EXPORT MultiValueClass
     {
 
       public:

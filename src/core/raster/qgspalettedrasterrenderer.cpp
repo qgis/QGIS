@@ -814,7 +814,7 @@ bool QgsPalettedRasterRenderer::canCreateRasterAttributeTable( ) const
   return true;
 }
 
-QgsPalettedRasterRenderer::MultiValueClass::MultiValueClass( const QVector<QVariant> &values, const QColor &color, const QString &label )
+QgsPalettedRasterRenderer::MultiValueClass::MultiValueClass( const QVector< QVariant > &values, const QColor &color, const QString &label )
   : values( values )
   , color( color )
   , label( label )
