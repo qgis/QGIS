@@ -20,6 +20,7 @@
 #include <QPointer>
 
 #include "qgscoordinatereferencesystem.h"
+#include "qgssettingsentryenumflag.h"
 
 class QgsAppGpsConnection;
 class QgsMapCanvas;
@@ -28,11 +29,15 @@ class QgsVectorLayer;
 class QgsMapLayerProxyModel;
 class QToolButton;
 
+
+
 class QgsGpsToolBar : public QToolBar
 {
     Q_OBJECT
 
   public:
+
+    static const inline QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponents> settingShowInToolbar = QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponents>( QStringLiteral( "show-in-toolbar" ), QgsSettings::Prefix::GPS, Qgis::GpsInformationComponent::Location, QStringLiteral( "GPS information components to show in GPS toolbar" ) );
 
     QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
@@ -51,11 +56,13 @@ class QgsGpsToolBar : public QToolBar
 
   private slots:
 
-    void updateLocationLabel( const QgsPoint &point );
+    void updateLocationLabel();
     void destinationLayerChanged( QgsVectorLayer *lyr );
     void destinationMenuAboutToShow();
 
   private:
+
+    void createLocationWidget();
 
     QgsAppGpsConnection *mConnection = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
@@ -65,12 +72,13 @@ class QgsGpsToolBar : public QToolBar
     QAction *mAddTrackVertexAction = nullptr;
     QAction *mCreateFeatureAction = nullptr;
     QAction *mResetFeatureAction = nullptr;
+    QAction *mSettingsMenuAction = nullptr;
 
     QToolButton *mDestinationLayerButton = nullptr;
 
     QMenu *mDestinationLayerMenu = nullptr;
 
-    QLabel *mLocationLabel = nullptr;
+    QPointer< QToolButton > mLocationButton;
 
     QgsCoordinateReferenceSystem mWgs84CRS;
     bool mEnableAddVertexButton = true;

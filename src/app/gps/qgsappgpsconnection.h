@@ -68,6 +68,11 @@ class APP_EXPORT QgsAppGpsConnection : public QObject
      */
     QgsPoint lastValidLocation() const;
 
+    /**
+     * Returns the last received GPS information.
+     */
+    QgsGpsInformation lastInformation() const;
+
   public slots:
 
     /**
