@@ -1,4 +1,0 @@
-Polygon Shape Indices
-shapes_polygons
-QgsProcessingParameterFeatureSource|SHAPES|Shapes|2|None|False
-QgsProcessingParameterVectorDestination|INDEX|Shape Index

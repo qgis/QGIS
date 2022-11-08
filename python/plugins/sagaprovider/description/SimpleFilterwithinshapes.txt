@@ -1,8 +1,0 @@
-Simple Filter within shapes
-grid_filter
-QgsProcessingParameterRasterLayer|INPUT|Grid|None|False
-QgsProcessingParameterRasterDestination|RESULT|Filtered Grid
-QgsProcessingParameterFeatureSource|SHAPES|Boundaries|-1|None|False
-QgsProcessingParameterEnum|MODE|Search Mode|[0] Square;[1] Circle|False|1
-QgsProcessingParameterEnum|METHOD|Filter|[0] Smooth;[1] Sharpen;[2] Edge|False|0
-QgsProcessingParameterNumber|RADIUS|Radius|QgsProcessingParameterNumber.Integer|1|False|1|None

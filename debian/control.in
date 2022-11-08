@@ -77,7 +77,6 @@ Build-Depends:
  libprotobuf-dev,
  protobuf-compiler,
  libzstd-dev,
- saga,
  git,
  doxygen,
  graphviz,
@@ -423,8 +422,7 @@ Depends:
 Breaks: python-qgis-common (<< ${source:Version})
 Replaces: python-qgis-common (<< ${source:Version})
 Suggests:
-#focal jammy kinetic bullseye sid# otb-qgis,
- saga
+#focal jammy kinetic bullseye sid# otb-qgis
 Description: Python bindings to QGIS - architecture-independent files
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.

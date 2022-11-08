@@ -119,7 +119,6 @@ class TestProcessingGeneral(unittest.TestCase):
         self.assertIn('script', providers)
         self.assertIn('model', providers)
         self.assertIn('grass7', providers)
-        self.assertIn('saga', providers)
         self.assertIn('otb', providers)
 
 

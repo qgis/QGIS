@@ -212,10 +212,7 @@ class AlgorithmsTest(object):
         elif param['type'] == 'rasterhash':
             outdir = tempfile.mkdtemp()
             self.cleanup_paths.append(outdir)
-            if self.test_definition_file().lower().startswith('saga'):
-                basename = 'raster.sdat'
-            else:
-                basename = 'raster.tif'
+            basename = 'raster.tif'
             filepath = os.path.join(outdir, basename)
             return filepath
         elif param['type'] == 'directory':

@@ -1,6 +1,0 @@
-Convert Lines to Points
-shapes_points
-QgsProcessingParameterFeatureSource|LINES|Lines|1|None|False
-QgsProcessingParameterBoolean|ADD         |Insert Additional Points|True
-QgsProcessingParameterNumber|DIST|Insert Distance|QgsProcessingParameterNumber.Double|1.0|False|0.0|None
-QgsProcessingParameterVectorDestination|POINTS|Points

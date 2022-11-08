@@ -1,8 +1,0 @@
-Valley Depth
-ta_channels
-QgsProcessingParameterRasterLayer|ELEVATION|Elevation|None|False
-QgsProcessingParameterRasterDestination|VALLEY_DEPTH|Valley Depth
-QgsProcessingParameterRasterDestination|RIDGE_LEVEL|Ridge Level
-QgsProcessingParameterNumber|THRESHOLD|Tension Threshold [Percentage of Cell Size]|QgsProcessingParameterNumber.Double|1.000000|False|0.000000|None
-QgsProcessingParameterBoolean|NOUNDERGROUND|Keep Ridge Level above Surface|True
-QgsProcessingParameterNumber|ORDER|Ridge Detection Threshold|QgsProcessingParameterNumber.Integer|4|False|1|7

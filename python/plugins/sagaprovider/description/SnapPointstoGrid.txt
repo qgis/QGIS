@@ -1,9 +1,0 @@
-Snap Points to Grid
-shapes_points
-QgsProcessingParameterFeatureSource|INPUT|Points|0|None|False
-QgsProcessingParameterRasterLayer|GRID|Grid|None|False
-QgsProcessingParameterVectorDestination|OUTPUT|Result
-QgsProcessingParameterVectorDestination|MOVES|Moves
-QgsProcessingParameterNumber|DISTANCE|Search Distance (Map Units)|QgsProcessingParameterNumber.Double|0.000000|False|0.000000|None
-QgsProcessingParameterEnum|SHAPE|Search Shape|[0] circle;[1] square|False|0
-QgsProcessingParameterEnum|EXTREME|Extreme|[0] minimum;[1] maximum|False|1

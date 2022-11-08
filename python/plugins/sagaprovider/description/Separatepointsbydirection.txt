@@ -1,6 +1,0 @@
-Separate points by direction
-shapes_points
-QgsProcessingParameterFeatureSource|POINTS|Points|0|None|False
-QgsProcessingParameterNumber|DIRECTIONS|Number of Directions|QgsProcessingParameterNumber.Integer|4|False|1.0|None
-QgsProcessingParameterNumber|TOLERANCE|Tolerance (Degree)|QgsProcessingParameterNumber.Integer|5|False|0.0|None
-QgsProcessingParameterVectorDestination|OUTPUT|Point direction

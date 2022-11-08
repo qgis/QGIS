@@ -8,7 +8,6 @@ i18n/
 external/*
 ms-windows/osgeo4w/
 python/ext-libs/
-python/plugins/processing/algs/saga/
 python/qsci_apis/
 src/app/gps/qwtpolar-1.0/
 src/app/gps/qwtpolar-1.1.1/

@@ -1,5 +1,0 @@
-Polygon dissolve (all polygons)|Polygon Dissolve
-shapes_polygons
-QgsProcessingParameterFeatureSource|POLYGONS|Polygons|2|None|False
-QgsProcessingParameterBoolean|BND_KEEP|Keep inner boundaries|True
-QgsProcessingParameterVectorDestination|DISSOLVED|Dissolved

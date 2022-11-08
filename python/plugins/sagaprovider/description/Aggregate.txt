@@ -1,5 +1,0 @@
-Aggregate
-grid_tools
-QgsProcessingParameterRasterLayer|INPUT|Grid|None|False
-QgsProcessingParameterNumber|SIZE|Aggregation Size|QgsProcessingParameterNumber.Integer|3|False|None|None
-QgsProcessingParameterEnum|METHOD|Method|[0] Sum;[1] Min;[2] Max

@@ -1,7 +1,0 @@
-Identity
-shapes_polygons
-QgsProcessingParameterFeatureSource|A|Layer A|2|None|False
-QgsProcessingParameterFeatureSource|B|Layer B|2|None|False
-QgsProcessingParameterBoolean|SPLIT|Split Parts|True
-QgsProcessingParameterVectorDestination|RESULT|Identity
-

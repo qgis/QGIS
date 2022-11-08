@@ -1,8 +1,0 @@
-Shrink and Expand
-grid_tools
-QgsProcessingParameterRasterLayer|INPUT|Grid|None|False
-QgsProcessingParameterEnum|OPERATION|Operation|[0] Shrink;[1] Expand;[2] shrink and expand;[3] expand and shrink|False|3
-QgsProcessingParameterEnum|CIRCLE|Search Mode|[0] Square;[1] Circle
-QgsProcessingParameterNumber|RADIUS|Radius|QgsProcessingParameterNumber.Integer|1|False|1|None
-QgsProcessingParameterEnum|EXPAND|Method|[0] min;[1] max;[2] mean;[3] majority|False|3
-QgsProcessingParameterRasterDestination|RESULT|Result Grid

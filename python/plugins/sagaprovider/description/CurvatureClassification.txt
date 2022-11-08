@@ -1,5 +1,0 @@
-Curvature Classification
-ta_morphometry
-QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
-QgsProcessingParameterNumber|THRESHOLD|Threshold for plane|QgsProcessingParameterNumber.Double|0.0005|False|0.0000|None
-QgsProcessingParameterRasterDestination|CLASS|Curvature Classification
