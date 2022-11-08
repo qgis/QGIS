@@ -546,7 +546,7 @@ const GEOSPreparedGeometry *LabelPosition::preparedOuterBoundsGeom() const
 
 double LabelPosition::getDistanceToPoint( double xp, double yp, bool useOuterBounds ) const
 {
-  // this method considers the label's outer bounds
+  // this method may consider the label's outer bounds!
 
   GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
 

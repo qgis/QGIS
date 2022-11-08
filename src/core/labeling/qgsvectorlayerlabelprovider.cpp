@@ -599,10 +599,10 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
       for ( int blockIndex = 0; blockIndex < blockCount; ++blockIndex )
       {
         const double blockBaseLine = metrics.baselineOffset( blockIndex, Qgis::TextLayoutMode::Labeling );
-        painter->drawLine( QPointF( rect.left(), rect.top()  + blockBaseLine ), QPointF( rect.right(), rect.top() + blockBaseLine ) );
+        painter->drawLine( QPointF( rect.left(), rect.top()  + blockBaseLine ),
+                           QPointF( rect.right(), rect.top() + blockBaseLine ) );
       }
     }
-
 
     painter->restore();
   }
