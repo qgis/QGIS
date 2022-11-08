@@ -11,6 +11,8 @@ __copyright__ = 'Copyright 2018, The QGIS Project'
 
 import qgis  # NOQA
 from qgis.PyQt.QtCore import QModelIndex, QSize, Qt
+from qgis.testing import start_app, unittest
+from qgis.PyQt.QtCore import Qt, QSize, QModelIndex
 from qgis.PyQt.QtGui import QColor
 from qgis.core import (
     QgsAbstract3DSymbol,
@@ -2731,6 +2733,37 @@ class TestQgsStyleModel(unittest.TestCase):
         self.assertTrue(model.setData(model.index(5, 0), 'symbol3d new name', Qt.EditRole))
         self.assertEqual(model.data(model.index(5, 0), Qt.DisplayRole), 'symbol3d new name')
         self.assertEqual(style.symbol3DNames(), ['symbol3d new name'])
+
+    def test_reset_symbollayer_ids(self):
+        """
+        Test that we have different symbol layer ids everytime we get symbol from style
+        """
+        style = QgsStyle()
+        style.createMemoryDatabase()
+
+        layer = QgsLinePatternFillSymbolLayer()
+        fill_symbol = QgsFillSymbol([layer])
+
+        self.assertEqual(len(fill_symbol.symbolLayers()), 1)
+        subsymbol = fill_symbol.symbolLayers()[0].subSymbol()
+        self.assertTrue(subsymbol)
+        self.assertEqual(len(subsymbol.symbolLayers()), 1)
+        child_sl = subsymbol.symbolLayers()[0]
+        self.assertTrue(child_sl)
+        old_id = child_sl.id()
+        self.assertTrue(child_sl.id())
+
+        self.assertTrue(style.addSymbol('fillsymbol', fill_symbol, True))
+
+        new_fill_symbol = style.symbol('fillsymbol')
+        self.assertEqual(len(new_fill_symbol.symbolLayers()), 1)
+        subsymbol = new_fill_symbol.symbolLayers()[0].subSymbol()
+        self.assertTrue(subsymbol)
+        self.assertEqual(len(subsymbol.symbolLayers()), 1)
+        child_sl = subsymbol.symbolLayers()[0]
+        self.assertTrue(child_sl)
+        self.assertTrue(child_sl.id())
+        self.assertTrue(child_sl.id() != old_id)
 
 
 if __name__ == '__main__':
