@@ -798,5 +798,6 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
 
         QgsProject.instance().clear()
 
+
 if __name__ == '__main__':
     unittest.main()
