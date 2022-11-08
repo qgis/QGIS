@@ -3824,6 +3824,13 @@ bool QgsOracleProviderMetadata::saveStyle( const QString &uri,
 
 QString QgsOracleProviderMetadata::loadStyle( const QString &uri, QString &errCause )
 {
+  QString styleName;
+  return loadStoredStyle( uri, styleName, errCause );
+}
+
+
+QString QgsOracleProviderMetadata::loadStoredStyle( const QString &uri, QString &styleName, QString &errCause )
+{
   errCause.clear();
   QgsDataSourceUri dsUri( uri );
 
@@ -3874,6 +3881,7 @@ QString QgsOracleProviderMetadata::loadStyle( const QString &uri, QString &errCa
 
   return style;
 }
+
 
 int QgsOracleProviderMetadata::listStyles( const QString &uri,
     QStringList &ids,
@@ -4198,3 +4206,4 @@ QIcon QgsOracleProviderMetadata::icon() const
 {
   return QgsApplication::getThemeIcon( QStringLiteral( "mIconOracle.svg" ) );
 }
+
