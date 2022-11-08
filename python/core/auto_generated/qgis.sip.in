@@ -620,6 +620,8 @@ The development version
       Altitude,
       GroundSpeed,
       Bearing,
+      TotalTrackLength,
+      TrackDistanceFromStart,
     };
 
     typedef QFlags<Qgis::GpsInformationComponent> GpsInformationComponents;

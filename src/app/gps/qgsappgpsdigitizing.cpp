@@ -109,7 +109,7 @@ double QgsAppGpsDigitizing::totalTrackLength() const
   return mDa.measureLine( points );
 }
 
-double QgsAppGpsDigitizing::trackDirectLength() const
+double QgsAppGpsDigitizing::trackDistanceFromStart() const
 {
   if ( mCaptureListWgs84.empty() )
     return 0;

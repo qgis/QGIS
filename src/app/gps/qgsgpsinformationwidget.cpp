@@ -296,7 +296,7 @@ void QgsGpsInformationWidget::gpsConnected()
 void QgsGpsInformationWidget::updateTrackInformation()
 {
   const double totalTrackLength = mDigitizing->totalTrackLength();
-  const double directTrackLength = mDigitizing->trackDirectLength();
+  const double directTrackLength = mDigitizing->trackDistanceFromStart();
 
   const QgsSettings settings;
   const bool keepBaseUnit = settings.value( QStringLiteral( "qgis/measure/keepbaseunit" ), true ).toBool();
