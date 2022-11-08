@@ -103,7 +103,7 @@ Item {
   /**
    * Animates movement of map canvas from the current center to newPos.
    *
-   * newPos need to be in device pixels.
+   * newPos needs to be in device pixels.
    */
   function moveTo( newPos )
   {

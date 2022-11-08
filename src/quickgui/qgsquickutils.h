@@ -19,6 +19,8 @@
 #include <QObject>
 #include <qglobal.h>
 
+#include "qgis_quick.h"
+
 #include "qgspoint.h"
 
 /**
@@ -27,7 +29,7 @@
  * \brief The QgsQuickUtils class serves as a utility class for common operations
  * needed either from QML or cpp.
  *
- * \note QML Type: QgsQuickUtils
+ * \note use in qml as a singleton, registered as "Utils", e.g. QgsQuick.Utils.<function>
  *
  * \since QGIS 3.30
  */
