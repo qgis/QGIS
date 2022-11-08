@@ -198,6 +198,81 @@ void QgsProcessingMultipleSelectionPanelWidget::populateList( const QVariantList
   mSelectionList->setModel( mModel );
 }
 
+QList< int> QgsProcessingMultipleSelectionPanelWidget::existingMapLayerFromMimeData( const QMimeData *data ) const
+{
+  const QgsMimeDataUtils::UriList uriList = QgsMimeDataUtils::decodeUriList( data );
+  QList<int> indexes;
+  for ( const QgsMimeDataUtils::Uri &u : uriList )
+  {
+    // is this uri from the current project?
+    if ( QgsMapLayer *layer = u.mapLayer() )
+    {
+      for ( int i = 0; i < mModel->rowCount(); ++i )
+      {
+        // try to match project layers to current layers
+        if ( mModel->item( i )->data( Qt::UserRole ) == layer->id() )
+        {
+          indexes.append(i);
+        }
+        else if ( mModel->item( i )->data( Qt::UserRole ) == layer->source() )
+        {
+          indexes.append(i);
+        }
+      }
+    }
+  }
+  return indexes;
+}
+
+void QgsProcessingMultipleSelectionPanelWidget::dragEnterEvent( QDragEnterEvent *event )
+{
+  if ( !( event->possibleActions() & Qt::CopyAction ) )
+    return;
+
+  QList< int> indexes =  existingMapLayerFromMimeData( event->mimeData() );
+  if ( !indexes.isEmpty() )
+  {
+    // dragged an acceptable layer, phew
+    event->setDropAction( Qt::CopyAction );
+    event->accept();
+    mDragActive = true;
+    update();
+  }
+}
+
+void QgsProcessingMultipleSelectionPanelWidget::dragLeaveEvent( QDragLeaveEvent *event )
+{
+  QWidget::dragLeaveEvent( event );
+  if ( mDragActive )
+  {
+    event->accept();
+    mDragActive = false;
+    update();
+  }
+}
+
+void QgsProcessingMultipleSelectionPanelWidget::dropEvent( QDropEvent *event )
+{
+  if ( !( event->possibleActions() & Qt::CopyAction ) )
+    return;
+
+  QList< int> indexes =  existingMapLayerFromMimeData( event->mimeData() );
+  if ( !indexes.isEmpty() )
+  {
+    // dropped an acceptable layer, phew
+    setFocus( Qt::MouseFocusReason );
+    event->setDropAction( Qt::CopyAction );
+    event->accept();
+
+    for ( const int i : indexes )
+    {
+      mModel->item( i )->setCheckState( Qt::Checked );
+    }
+    emit selectionChanged();
+  }
+  mDragActive = false;
+  update();
+}
 
 void QgsProcessingMultipleSelectionPanelWidget::addOption( const QVariant &value, const QString &title, bool selected, bool updateExistingTitle )
 {
@@ -387,7 +462,7 @@ void QgsProcessingMultipleInputPanelWidget::dragEnterEvent( QDragEnterEvent *eve
 
 void QgsProcessingMultipleInputPanelWidget::dragLeaveEvent( QDragLeaveEvent *event )
 {
-  QComboBox::dragLeaveEvent( event );
+  QWidget::dragLeaveEvent( event );
   if ( mDragActive )
   {
     event->accept();

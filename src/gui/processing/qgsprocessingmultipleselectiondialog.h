@@ -128,7 +128,7 @@ class GUI_EXPORT QgsProcessingMultipleSelectionPanelWidget : public QgsPanelWidg
     void dragEnterEvent( QDragEnterEvent *event ) override;
     void dragLeaveEvent( QDragLeaveEvent *event ) override;
     void dropEvent( QDropEvent *event ) override;
-    void paintEvent( QPaintEvent *e ) override;
+    //void paintEvent( QPaintEvent *e ) override;
   private slots:
 
     void selectAll( bool checked );
@@ -257,8 +257,19 @@ class GUI_EXPORT QgsProcessingMultipleInputPanelWidget : public QgsProcessingMul
     void addFiles();
     void addDirectory();
 
-  private:
+    protected:
+    void dragEnterEvent( QDragEnterEvent *event ) override;
+    void dragLeaveEvent( QDragLeaveEvent *event ) override;
+    void dropEvent( QDropEvent *event ) override;
 
+  private:
+    bool mDragActive = false;
+
+    /**
+     * Returns a map layer, compatible with the filters set for the combo box, from
+     * the specified mime \a data (if possible!).
+     */
+    QList<int> existingMapLayerFromMimeData( const QMimeData *data ) const;
     void populateFromProject( QgsProject *project );
 
     const QgsProcessingParameterMultipleLayers *mParameter = nullptr;
