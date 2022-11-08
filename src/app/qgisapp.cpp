@@ -1408,6 +1408,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   connect( mGpsToolBar, &QgsGpsToolBar::addVertexClicked, mGpsDigitizing, &QgsAppGpsDigitizing::addVertex );
   connect( mGpsToolBar, &QgsGpsToolBar::resetFeatureClicked, mGpsDigitizing, &QgsAppGpsDigitizing::resetTrack );
 
+  mGpsToolBar->setGpsDigitizing( mGpsDigitizing );
+
   mGpsCanvasBridge = new QgsGpsCanvasBridge( mGpsConnection, mMapCanvas );
   mGpsCanvasBridge->setLocationMarkerVisible( mGpsSettingsMenu->locationMarkerVisible() );
   mGpsCanvasBridge->setBearingLineVisible( mGpsSettingsMenu->bearingLineVisible() );

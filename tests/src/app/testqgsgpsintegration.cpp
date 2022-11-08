@@ -462,7 +462,7 @@ void TestQgsGpsIntegration::testTrackDistance()
   QCOMPARE( spy.count(), 1 );
 
   QCOMPARE( gpsDigitizing.totalTrackLength(), 0 );
-  QCOMPARE( gpsDigitizing.trackDirectLength(), 0 );
+  QCOMPARE( gpsDigitizing.trackDistanceFromStart(), 0 );
 
   info.latitude = 46;
   info.longitude = 100;
@@ -474,11 +474,11 @@ void TestQgsGpsIntegration::testTrackDistance()
   QgsProject::instance()->setCrs( QgsCoordinateReferenceSystem( "EPSG:3857" ) );
   QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "NONE" ) );
   QGSCOMPARENEAR( gpsDigitizing.totalTrackLength(), 1, 0.01 );
-  QGSCOMPARENEAR( gpsDigitizing.trackDirectLength(), 1, 0.01 );
+  QGSCOMPARENEAR( gpsDigitizing.trackDistanceFromStart(), 1, 0.01 );
   QgsProject::instance()->setEllipsoid( QStringLiteral( "EPSG:7030" ) );
   QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "EPSG:7030" ) );
   QGSCOMPARENEAR( gpsDigitizing.totalTrackLength(), 111141.548, 1 );
-  QGSCOMPARENEAR( gpsDigitizing.trackDirectLength(), 111141.548, 1 );
+  QGSCOMPARENEAR( gpsDigitizing.trackDistanceFromStart(), 111141.548, 1 );
 
   info.latitude = 46;
   info.longitude = 101;
@@ -487,7 +487,7 @@ void TestQgsGpsIntegration::testTrackDistance()
   gpsDigitizing.addVertex();
   QCOMPARE( spy.count(), 3 );
   QGSCOMPARENEAR( gpsDigitizing.totalTrackLength(), 188604.338, 1 );
-  QGSCOMPARENEAR( gpsDigitizing.trackDirectLength(), 135869.0912, 1 );
+  QGSCOMPARENEAR( gpsDigitizing.trackDistanceFromStart(), 135869.0912, 1 );
 
   gpsDigitizing.resetTrack();
   QCOMPARE( spy.count(), 4 );

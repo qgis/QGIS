@@ -27,6 +27,8 @@
 #include "qgsmaplayermodel.h"
 #include "qgsmaplayerproxymodel.h"
 #include "qgsgpsconnection.h"
+#include "qgsappgpsdigitizing.h"
+#include "qgsunittypes.h"
 
 #include <QLabel>
 #include <QToolButton>
@@ -190,6 +192,13 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
   setFixedWidth( sizeHint().width() );
 }
 
+void QgsGpsToolBar::setGpsDigitizing( QgsAppGpsDigitizing *digitizing )
+{
+  mDigitizing = digitizing;
+  connect( mDigitizing, &QgsAppGpsDigitizing::distanceAreaChanged, this, &QgsGpsToolBar::updateLocationLabel );
+  connect( mDigitizing, &QgsAppGpsDigitizing::trackChanged, this, &QgsGpsToolBar::updateLocationLabel );
+}
+
 void QgsGpsToolBar::setAddVertexButtonEnabled( bool enabled )
 {
   mEnableAddVertexButton = enabled;
@@ -227,6 +236,8 @@ void QgsGpsToolBar::updateLocationLabel()
             Qgis::GpsInformationComponent::Altitude,
             Qgis::GpsInformationComponent::Bearing,
             Qgis::GpsInformationComponent::GroundSpeed,
+            Qgis::GpsInformationComponent::TotalTrackLength,
+            Qgis::GpsInformationComponent::TrackDistanceFromStart,
           } )
     {
       if ( visibleComponents & component )
@@ -246,6 +257,28 @@ void QgsGpsToolBar::updateLocationLabel()
           case Qgis::GpsInformationComponent::Bearing:
             parts << QString::number( value.toDouble( ) ) + QChar( 176 );
             break;
+
+          case Qgis::GpsInformationComponent::TotalTrackLength:
+          case Qgis::GpsInformationComponent::TrackDistanceFromStart:
+          {
+            if ( mDigitizing )
+            {
+              const double measurement = component == Qgis::GpsInformationComponent::TotalTrackLength
+                                         ? mDigitizing->totalTrackLength()
+                                         : mDigitizing->trackDistanceFromStart();
+
+              const QgsSettings settings;
+              const bool keepBaseUnit = settings.value( QStringLiteral( "qgis/measure/keepbaseunit" ), true ).toBool();
+              const int decimalPlaces = settings.value( QStringLiteral( "qgis/measure/decimalplaces" ), 3 ).toInt();
+
+              if ( measurement > 0 )
+                parts << mDigitizing->distanceArea().formatDistance( measurement, decimalPlaces, mDigitizing->distanceArea().lengthUnits(), keepBaseUnit );
+              else
+                parts << QStringLiteral( "0%1" ).arg( QgsUnitTypes::toAbbreviatedString( mDigitizing->distanceArea().lengthUnits() ) );
+            }
+
+            break;
+          }
         }
       }
     }
@@ -387,7 +420,10 @@ void QgsGpsToolBar::createLocationWidget()
   { Qgis::GpsInformationComponent::Location, tr( "Show Location" ) },
     { Qgis::GpsInformationComponent::Altitude, tr( "Show Altitude" ) },
     { Qgis::GpsInformationComponent::GroundSpeed, tr( "Show Ground Speed" ) },
-    { Qgis::GpsInformationComponent::Bearing, tr( "Show Bearing" ) }
+    { Qgis::GpsInformationComponent::Bearing, tr( "Show Bearing" ) },
+    { Qgis::GpsInformationComponent::TotalTrackLength, tr( "Show Total Track Length" ) },
+    { Qgis::GpsInformationComponent::TrackDistanceFromStart, tr( "Show Distance from Start of Track" ) }
+
   } )
   {
     const Qgis::GpsInformationComponent component = it.first;

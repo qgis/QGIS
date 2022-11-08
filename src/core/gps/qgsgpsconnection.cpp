@@ -140,6 +140,10 @@ QVariant QgsGpsInformation::componentValue( Qgis::GpsInformationComponent compon
       return speed;
     case Qgis::GpsInformationComponent::Bearing:
       return std::isnan( direction ) ? QVariant() : direction;
+
+    case Qgis::GpsInformationComponent::TotalTrackLength:
+    case Qgis::GpsInformationComponent::TrackDistanceFromStart:
+      return QVariant(); // not available
   }
   BUILTIN_UNREACHABLE
 }

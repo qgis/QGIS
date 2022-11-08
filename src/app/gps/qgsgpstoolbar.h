@@ -28,7 +28,7 @@ class QLabel;
 class QgsVectorLayer;
 class QgsMapLayerProxyModel;
 class QToolButton;
-
+class QgsAppGpsDigitizing;
 
 
 class QgsGpsToolBar : public QToolBar
@@ -42,6 +42,8 @@ class QgsGpsToolBar : public QToolBar
     QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
     QAction *showInfoAction() { return mShowInfoAction; }
+
+    void setGpsDigitizing( QgsAppGpsDigitizing *digitizing );
 
   signals:
 
@@ -66,6 +68,8 @@ class QgsGpsToolBar : public QToolBar
 
     QgsAppGpsConnection *mConnection = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
+    QPointer< QgsAppGpsDigitizing > mDigitizing;
+
     QAction *mConnectAction = nullptr;
     QAction *mRecenterAction = nullptr;
     QAction *mShowInfoAction = nullptr;

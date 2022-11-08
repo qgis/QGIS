@@ -62,7 +62,7 @@ class APP_EXPORT QgsAppGpsDigitizing: public QObject
      *
      * The returned length is calculated using ellipsoidal calculations.
      */
-    double trackDirectLength() const;
+    double trackDistanceFromStart() const;
 
     /**
      * Returns the distance area calculator used to calculate track lengths.
