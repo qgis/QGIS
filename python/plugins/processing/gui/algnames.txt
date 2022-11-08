@@ -16,19 +16,4 @@ gdal:gridinvdist,Interpolate (Inverse distance weighting)
 gdal:gridaverage,Interpolate (Average)
 gdal:contour,Contour lines
 qgis:creategrid,Create graticule
-saga:changegridvalues,Reclassify (simple)
-saga:creategraticule,Create graticule from extent
-saga:cubicsplineapproximation,Interpolate (Cubic spline)
-saga:filterclumps,Remove small pixel clumps (to no-data)
-saga:mergeshapeslayers,Merge vector layers
-saga:modifedquadraticshepard,Interpolate (Modified quadratic shepard)
-saga:naturalneighbour,Interpolate (Natural neighbor)
-saga:polygondissolvebyattribute,Polygon dissolve (by attribute)
-saga:polygondissolveallpolygons,Polygon dissolve (all polygons)
-saga:intersect,Polygon intersection
-saga:difference,Polygon difference
-saga:update,Polygon update
-saga:identity,Polygon identity
-saga:union,Polygon union
-saga:symmetricaldifference,Polygon symmetrical difference
-saga:simulation,Fire spreading simulation
+

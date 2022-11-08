@@ -1,9 +1,0 @@
-Create Polygons Graticule|Create Graticule
-shapes_tools
-Hardcoded|-TYPE 1
-QgsProcessingParameterFeatureSource|EXTENT|Extent|-1|None|True
-QgsProcessingParameterExtent|EXTENT_X_MIN EXTENT_X_MAX EXTENT_Y_MIN EXTENT_Y_MAX|Output extent|None|False
-QgsProcessingParameterNumber|DIVISION_X|Division Width|QgsProcessingParameterNumber.Double|1.0|False|None|None
-QgsProcessingParameterNumber|DIVISION_Y|Division Height|QgsProcessingParameterNumber.Double|1.0|False|None|None
-QgsProcessingParameterEnum|ALIGNMENT|Alignment|[0] Bottom left;[1] Top left;[2] Bottom right;[3] Top right;[4] Centered|False|0
-QgsProcessingParameterVectorDestination|GRATICULE_RECT|Rectangle Graticule

@@ -1,5 +1,0 @@
-Histogram Surface
-grid_visualisation
-QgsProcessingParameterRasterLayer|GRID|Grid|None|False
-QgsProcessingParameterEnum|METHOD|Method|[0] rows;[1] columns;[2] circle
-QgsProcessingParameterRasterDestination|HIST|Histogram

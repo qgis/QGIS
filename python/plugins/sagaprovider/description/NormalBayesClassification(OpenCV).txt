@@ -1,8 +1,0 @@
-Normal Bayes Classification (OpenCV)
-imagery_opencv
-QgsProcessingParameterMultipleLayers|FEATURES|Features|3|None|False
-QgsProcessingParameterBoolean|NORMALIZE|Normalize|False
-QgsProcessingParameterRasterDestination|PROBABILITY|Probability
-QgsProcessingParameterFeatureSource|TRAIN_AREAS|Training Areas|-1|None|False
-QgsProcessingParameterFeatureSource|TRAIN_CLASS|Class Identifier|5|None|False
-QgsProcessingParameterRasterDestination|CLASSES|Classification

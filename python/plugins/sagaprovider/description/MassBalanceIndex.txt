@@ -1,8 +1,0 @@
-Mass Balance Index
-ta_morphometry
-QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
-QgsProcessingParameterRasterLayer|HREL|Vertical Distance to Channel Network|None|True
-QgsProcessingParameterNumber|TSLOPE|T Slope|QgsProcessingParameterNumber.Double|15.0|False|None|None
-QgsProcessingParameterNumber|TCURVE|T Curvature|QgsProcessingParameterNumber.Double|0.01|False|None|None
-QgsProcessingParameterNumber|THREL|T Vertical Distance to Channel Network|QgsProcessingParameterNumber.Double|15.0|False|None|None
-QgsProcessingParameterRasterDestination|MBI|Mass Balance Index

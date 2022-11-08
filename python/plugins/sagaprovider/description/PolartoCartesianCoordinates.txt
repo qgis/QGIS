@@ -1,8 +1,0 @@
-Polar to Cartesian Coordinates
-shapes_tools
-QgsProcessingParameterFeatureSource|POLAR|Polar Coordinates|-1|None|False
-QgsProcessingParameterField|F_EXAGG|Exaggeration|None|POLAR|-1|False|False
-QgsProcessingParameterNumber|D_EXAGG|Exaggeration Factor|QgsProcessingParameterNumber.Integer|1|False|None|None
-QgsProcessingParameterNumber|RADIUS|Radius|QgsProcessingParameterNumber.Double|6371000.0|False|None|None
-QgsProcessingParameterBoolean|DEGREE       |Degree|True
-QgsProcessingParameterVectorDestination|CARTES|Cartesian Coordinates

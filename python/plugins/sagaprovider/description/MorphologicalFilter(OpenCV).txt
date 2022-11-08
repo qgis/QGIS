@@ -1,8 +1,0 @@
-Morphological Filter (OpenCV)
-imagery_opencv
-QgsProcessingParameterRasterLayer|INPUT|Input|None|False
-QgsProcessingParameterRasterDestination|OUTPUT|Output
-QgsProcessingParameterEnum|TYPE|Operation|[0] dilation;[1] erosion;[2] opening;[3] closing;[4] morpological gradient;[5] top hat;[6] black hat|False|0
-QgsProcessingParameterEnum|SHAPE|Element Shape|[0] ellipse;[1] rectangle;[2] cross|False|0
-QgsProcessingParameterNumber|RADIUS|Radius (cells)|QgsProcessingParameterNumber.Integer|1|False|0|None
-QgsProcessingParameterNumber|ITERATIONS|Iterations|QgsProcessingParameterNumber.Integer|1|False|1|None

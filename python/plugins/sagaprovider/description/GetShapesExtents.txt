@@ -1,5 +1,0 @@
-Get Shapes Extents
-shapes_tools
-QgsProcessingParameterFeatureSource|SHAPES|Shapes|-1|None|False
-QgsProcessingParameterEnum|OUTPUT|Get Extent for|[0] all shapes;[1] each shape;[2] each shape's part
-QgsProcessingParameterVectorDestination|EXTENTS|Extents

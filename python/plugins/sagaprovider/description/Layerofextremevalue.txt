@@ -1,5 +1,0 @@
-Layer of extreme value
-grid_analysis
-QgsProcessingParameterMultipleLayers|GRIDS|Grids|3|None|False
-QgsProcessingParameterEnum|CRITERIA|Method|[0] Maximum;[1] Minimum
-QgsProcessingParameterRasterDestination|RESULT|Result

@@ -1,8 +1,0 @@
-Cross Profiles
-ta_profiles
-QgsProcessingParameterRasterLayer|DEM|DEM|None|False
-QgsProcessingParameterFeatureSource|LINES|Lines|1|None|False
-QgsProcessingParameterNumber|DIST_LINE|Profile Distance|QgsProcessingParameterNumber.Double|10.0|False|0.0|None
-QgsProcessingParameterNumber|DIST_PROFILE|Profile Length|QgsProcessingParameterNumber.Double|10.0|False|0.0|None
-QgsProcessingParameterNumber|NUM_PROFILE|Profile Samples|QgsProcessingParameterNumber.Integer|10|False|3|None
-QgsProcessingParameterVectorDestination|PROFILES|Cross Profiles

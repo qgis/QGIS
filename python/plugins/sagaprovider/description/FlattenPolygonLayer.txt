@@ -1,4 +1,0 @@
-Flatten Polygon Layer
-shapes_polygons
-QgsProcessingParameterFeatureSource|INPUT|Input|2|None|False
-QgsProcessingParameterVectorDestination|OUTPUT|Output

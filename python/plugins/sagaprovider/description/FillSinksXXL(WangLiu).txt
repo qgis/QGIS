@@ -1,5 +1,0 @@
-Fill Sinks XXL (Wang & Liu)
-ta_preprocessor
-QgsProcessingParameterRasterLayer|ELEV|DEM|None|False
-QgsProcessingParameterNumber|MINSLOPE|Minimum Slope [Degree]|QgsProcessingParameterNumber.Double|0.1|False|0.0|None
-QgsProcessingParameterRasterDestination|FILLED|Filled DEM

@@ -1,5 +1,0 @@
-Grid Difference
-grid_calculus
-QgsProcessingParameterRasterLayer|A|A|None|False
-QgsProcessingParameterRasterLayer|B|B|None|False
-QgsProcessingParameterRasterDestination|C|Difference (A - B)

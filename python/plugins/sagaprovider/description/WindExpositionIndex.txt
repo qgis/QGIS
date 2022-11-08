@@ -1,9 +1,0 @@
-Wind Exposition Index
-ta_morphometry
-QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
-QgsProcessingParameterRasterDestination|EXPOSITION|Wind Exposition
-QgsProcessingParameterNumber|MAXDIST|Search Distance [km]|QgsProcessingParameterNumber.Double|300.000000|False|0.000000|None
-QgsProcessingParameterNumber|STEP|Angular Step Size (Degree)|QgsProcessingParameterNumber.Double|15.000000|False|1.000000|45.000000
-QgsProcessingParameterBoolean|OLDVER|Old Version|False
-QgsProcessingParameterNumber|ACCEL|Acceleration|QgsProcessingParameterNumber.Double|1.500000|False|1.000000|None
-QgsProcessingParameterBoolean|PYRAMIDS|Elevation Averaging|False

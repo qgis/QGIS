@@ -1,9 +1,0 @@
-RiverGridGeneration
-sim_rivflow
-QgsProcessingParameterRasterLayer|INPUT|Geländemodell (DTM)|None|False
-QgsProcessingParameterRasterDestination|OUTPUT|HG Raster
-QgsProcessingParameterNumber|SX|Abflusspfad-Quelle, x-Wert|QgsProcessingParameterNumber.Integer|0|False|0|None
-QgsProcessingParameterNumber|SY|Abflusspfad-Quelle, y-Wert|QgsProcessingParameterNumber.Integer|0|False|0|None
-QgsProcessingParameterNumber|MX|Abflusspfad-Mündung, x-Wert|QgsProcessingParameterNumber.Integer|0|False|0|None
-QgsProcessingParameterNumber|MY|Abflusspfad-Mündung, y-Wert|QgsProcessingParameterNumber.Integer|0|False|0|None
-QgsProcessingParameterBoolean|Owrite|Overwrite RiverGridCells|False

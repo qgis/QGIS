@@ -1,8 +1,0 @@
-PET (after Hargreaves, Table)
-climate_tools
-QgsProcessingParameterFeatureSource|TABLE|Data|5|None|False
-QgsProcessingParameterFeatureSource|JD|Julian Day|5|None|False
-QgsProcessingParameterFeatureSource|T|Mean Temperature|5|None|False
-QgsProcessingParameterFeatureSource|T_MIN|Minimum Temperature|5|None|False
-QgsProcessingParameterFeatureSource|T_MAX|Maximum Temperature|5|None|False
-QgsProcessingParameterNumber|LAT|Latitude|QgsProcessingParameterNumber.Double|53.000000|False|-90.000000|90.000000
