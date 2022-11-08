@@ -150,6 +150,13 @@ Returns a descriptive string for the signal quality.
 .. versionadded:: 3.16
 %End
 
+    QVariant componentValue( Qgis::GpsInformationComponent component ) const;
+%Docstring
+Returns the value of the corresponding GPS information ``component``.
+
+.. versionadded:: 3.30
+%End
+
 };
 
 class QgsGpsConnection : QObject

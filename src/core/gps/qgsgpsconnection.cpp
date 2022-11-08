@@ -119,9 +119,29 @@ QString QgsGpsInformation::qualityDescription() const
       return QCoreApplication::translate( "QgsGpsInformation", "Invalid" );
 
     case Qgis::GpsQualityIndicator::Unknown:
-    default:
       return QCoreApplication::translate( "QgsGpsInformation", "Unknown (%1)" ).arg( QString::number( quality ) );
   }
+  BUILTIN_UNREACHABLE
+}
+
+QVariant QgsGpsInformation::componentValue( Qgis::GpsInformationComponent component ) const
+{
+  if ( !isValid() )
+    return QVariant();
+
+  switch ( component )
+  {
+    case Qgis::GpsInformationComponent::Location:
+      return QgsPointXY( longitude, latitude );
+
+    case Qgis::GpsInformationComponent::Altitude:
+      return elevation;
+    case Qgis::GpsInformationComponent::GroundSpeed:
+      return speed;
+    case Qgis::GpsInformationComponent::Bearing:
+      return std::isnan( direction ) ? QVariant() : direction;
+  }
+  BUILTIN_UNREACHABLE
 }
 
 QgsGpsConnection::QgsGpsConnection( QIODevice *dev )

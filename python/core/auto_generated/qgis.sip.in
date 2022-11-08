@@ -614,6 +614,17 @@ The development version
       Simulation,
     };
 
+    enum class GpsInformationComponent
+    {
+      Location,
+      Altitude,
+      GroundSpeed,
+      Bearing,
+    };
+
+    typedef QFlags<Qgis::GpsInformationComponent> GpsInformationComponents;
+
+
     enum class BabelFormatCapability
     {
       Import,
@@ -1541,6 +1552,8 @@ QFlags<Qgis::SelectionFlag> operator|(Qgis::SelectionFlag f1, QFlags<Qgis::Selec
 QFlags<Qgis::RasterRendererFlag> operator|(Qgis::RasterRendererFlag f1, QFlags<Qgis::RasterRendererFlag> f2);
 
 QFlags<Qgis::LabelingFlag> operator|(Qgis::LabelingFlag f1, QFlags<Qgis::LabelingFlag> f2);
+
+QFlags<Qgis::GpsInformationComponent> operator|(Qgis::GpsInformationComponent f1, QFlags<Qgis::GpsInformationComponent> f2);
 
 
 
