@@ -140,11 +140,22 @@ class CORE_EXPORT QgsSymbolLayerReference
     //! Default constructor
     QgsSymbolLayerReference() = default;
 
-    //! Constructor
+    /**
+     * Constructor
+     * \param layerId layer id
+     * \param symbolLayer symbol layer id
+     * \deprecated since QGIS 3.30
+     */
     Q_DECL_DEPRECATED QgsSymbolLayerReference( const QString &layerId, const QgsSymbolLayerId &symbolLayer )
       : mLayerId( layerId ), mDeprecatedSymbolLayerId( symbolLayer )
     {}
 
+    /**
+     * Constructor
+     * \param layerId layer id
+     * \param symbolLayerId symbol layer id
+     * \since QGIS 3.30
+     */
     QgsSymbolLayerReference( const QString &layerId, const QString &symbolLayerId )
       : mLayerId( layerId ), mSymbolLayerId( symbolLayerId )
     {}

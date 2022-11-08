@@ -113,9 +113,22 @@ Default constructor
  QgsSymbolLayerReference( const QString &layerId, const QgsSymbolLayerId &symbolLayer );
 %Docstring
 Constructor
+
+:param layerId: layer id
+:param symbolLayer: symbol layer id
+
+.. deprecated:: QGIS 3.30
 %End
 
     QgsSymbolLayerReference( const QString &layerId, const QString &symbolLayerId );
+%Docstring
+Constructor
+
+:param layerId: layer id
+:param symbolLayerId: symbol layer id
+
+.. versionadded:: 3.30
+%End
 
     QString layerId() const;
 %Docstring

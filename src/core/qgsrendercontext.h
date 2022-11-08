@@ -164,7 +164,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      *
      * Sets the list of disabled symbol layer ids.
      * \see disabledSymbolLayersV2()
-     * \see isSymbolLayerEnabledV2()
+     * \see isSymbolLayerEnabled()
      * \since QGIS 3.30
      */
     void setDisabledSymbolLayersV2( const QSet<QString> &symbolLayers );

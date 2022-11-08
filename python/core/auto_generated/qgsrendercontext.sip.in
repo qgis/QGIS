@@ -136,7 +136,7 @@ Sets the list of disabled symbol layer ids.
 
 .. seealso:: :py:func:`disabledSymbolLayersV2`
 
-.. seealso:: :py:func:`isSymbolLayerEnabledV2`
+.. seealso:: :py:func:`isSymbolLayerEnabled`
 
 .. versionadded:: 3.30
 %End

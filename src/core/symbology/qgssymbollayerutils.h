@@ -934,6 +934,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * key (rule for QgsRuleBasedRenderer for instance) and index path, so this method migrates \a mapLayers old references
      * to new ones.
      * \since QGIS 3.30
+     * \deprecated since QGIS 3.30
      */
     Q_DECL_DEPRECATED static void fixOldSymbolLayerReferences( const QMap<QString, QgsMapLayer *> &mapLayers );
 

@@ -1043,6 +1043,8 @@ key (rule for :py:class:`QgsRuleBasedRenderer` for instance) and index path, so 
 to new ones.
 
 .. versionadded:: 3.30
+
+.. deprecated:: QGIS 3.30
 %End
 
     static void clearSymbolLayerIds( QgsSymbol *symbol );
