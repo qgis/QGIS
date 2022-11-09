@@ -53,6 +53,13 @@ class CORE_EXPORT QgsTextDocumentMetrics
     static QgsTextDocumentMetrics calculateMetrics( const QgsTextDocument &document, const QgsTextFormat &format, const QgsRenderContext &context, double scaleFactor = 1.0 );
 
     /**
+     * Returns TRUE if the metrics could not be calculated because the text format has a null font size.
+     *
+     * \since QGIS 3.30
+     */
+    bool isNullFontSize() const { return mIsNullSize; }
+
+    /**
      * Returns the overall size of the document.
      */
     QSizeF documentSize( Qgis::TextLayoutMode mode, Qgis::TextOrientation orientation ) const;
@@ -105,6 +112,8 @@ class CORE_EXPORT QgsTextDocumentMetrics
     double ascentOffset() const { return mFirstLineAscentOffset; }
 
   private:
+
+    bool mIsNullSize = false;
 
     QSizeF mDocumentSizeLabelMode;
     QSizeF mDocumentSizePointRectMode;

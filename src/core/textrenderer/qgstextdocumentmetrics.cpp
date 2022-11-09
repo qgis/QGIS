@@ -27,9 +27,8 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
 {
   QgsTextDocumentMetrics res;
 
-  bool isNullSize = false;
-  const QFont font = format.scaledFont( context, scaleFactor, &isNullSize );
-  if ( isNullSize )
+  const QFont font = format.scaledFont( context, scaleFactor, &res.mIsNullSize );
+  if ( res.isNullFontSize() )
     return res;
 
   // for absolute line heights
