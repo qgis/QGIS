@@ -3856,7 +3856,7 @@ QString QgsOracleProviderMetadata::loadStoredStyle( const QString &uri, QString 
     args << dsUri.geometryColumn();
 
   if ( !LoggedExecStatic( qry, "SELECT styleName, styleQML FROM ("
-                          "SELECT styleQML"
+                          "SELECT styleName, styleQML"
                           " FROM layer_styles"
                           " WHERE f_table_catalog=?"
                           " AND f_table_schema=?"
