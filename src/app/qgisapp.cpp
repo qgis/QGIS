@@ -6228,7 +6228,7 @@ bool QgisApp::addProject( const QString &projectFile )
     }
   }
 
-  if ( !usedCustomHandler && !QgsProject::instance()->read( projectFile ) && !QgsZipUtils::isZipFile( projectFile ) )
+  if ( !usedCustomHandler && !QgsProject::instance()->read( projectFile ) )
   {
     QString backupFile = projectFile + "~";
     QString loadBackupPrompt;
