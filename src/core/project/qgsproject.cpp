@@ -1551,7 +1551,7 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
 
     projectFile.close();
 
-    setError( tr( "%1 for file %2" ).arg( errorString, projectFile.fileName() ) );
+    setError( errorString );
 
     return false;
   }
@@ -3766,7 +3766,7 @@ bool QgsProject::unzip( const QString &filename, Qgis::ProjectReadFlags flags )
   // read the project file
   if ( ! readProjectFile( static_cast<QgsProjectArchive *>( mArchive.get() )->projectFile(), flags ) )
   {
-    setError( tr( "Cannot read unzipped qgs project file" ) );
+    setError( tr( "Cannot read unzipped qgs project file" ) + QStringLiteral( ": " ) + error() );
     return false;
   }
 
