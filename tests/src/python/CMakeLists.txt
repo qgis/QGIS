@@ -499,7 +499,7 @@ if (ENABLE_ORACLETEST)
   ADD_PYTHON_TEST(PyQgsProviderConnectionOracle test_qgsproviderconnection_oracle.py)
   ADD_PYTHON_TEST(PyQgsProjectStorageOracle test_project_storage_oracle.py)
   ADD_PYTHON_TEST(PyQgsStyleStorageOracle test_stylestorage_oracle.py)
-  SET_TESTS_PROPERTIES(PyQgsOracleProvider PyQgsProviderConnectionOracle PyQgsProjectStorageOracle PROPERTIES LABELS "ORACLE")
+  SET_TESTS_PROPERTIES(PyQgsOracleProvider PyQgsProviderConnectionOracle PyQgsProjectStorageOracle PyQgsStyleStorageOracle PROPERTIES LABELS "ORACLE")
 endif()
 
 if (ENABLE_HANATEST)
