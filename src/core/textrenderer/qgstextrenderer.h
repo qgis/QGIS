@@ -238,6 +238,9 @@ class CORE_EXPORT QgsTextRenderer
       //! Index of block
       int blockIndex = 0;
 
+      //! Index of first fragment in block
+      int firstFragmentIndex = 0;
+
       //! Current origin point for painting (generally current painter rotation point)
       QPointF origin;
       //! Whether to translate the painter to supplied origin

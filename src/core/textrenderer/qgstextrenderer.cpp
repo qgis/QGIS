@@ -385,8 +385,7 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
       int fragmentIndex = 0;
       for ( const QgsTextFragment &fragment : component.block )
       {
-        const QFont fragmentFont = metrics.fragmentFont( component.blockIndex, fragmentIndex );
-
+        const QFont fragmentFont = metrics.fragmentFont( component.blockIndex, component.firstFragmentIndex + fragmentIndex );
         const double letterSpacing = fragmentFont.letterSpacing() / scaleFactor;
 
         const QFontMetricsF fragmentMetrics( fragmentFont );
@@ -400,6 +399,7 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
           partYOffset += letterSpacing;
         }
         partLastDescent = fragmentMetrics.descent() / scaleFactor;
+
         fragmentIndex++;
       }
       height = partYOffset + partLastDescent;
@@ -1846,6 +1846,7 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
       Component subComponent;
       subComponent.block = QgsTextBlock( fragment );
       subComponent.blockIndex = blockIndex;
+      subComponent.firstFragmentIndex = fragmentIndex;
       subComponent.size = QSizeF( blockMaximumCharacterWidth, labelHeight + fragmentMetrics.descent() / fontScale );
       subComponent.offset = QPointF( 0.0, currentBlockYOffset );
       subComponent.rotation = -component.rotation * 180 / M_PI;
