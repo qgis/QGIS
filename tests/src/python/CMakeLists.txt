@@ -483,7 +483,7 @@ if (ENABLE_PGTEST)
     PyQgsRelationEditWidget PyQgsRelationPostgres PyQgsVectorLayerTools PyQgsProjectStoragePostgres
     PyQgsAuthManagerPKIPostgresTest PyQgsAuthManagerPasswordPostgresTest PyQgsAuthManagerOgrPostgresTest
     PyQgsDbManagerPostgis PyQgsDatabaseSchemaModel PyQgsDatabaseTableModel PyQgsDatabaseSchemaComboBox PyQgsDatabaseTableComboBox
-    PyQgsProviderConnectionPostgres PyQgsPostgresProviderLatency PyQgsLayerMetadataProviderPostgres
+    PyQgsProviderConnectionPostgres PyQgsPostgresProviderLatency PyQgsLayerMetadataProviderPostgres PyQgsStyleStoragePostgres
     PROPERTIES LABELS "POSTGRES")
 endif()
 
@@ -491,7 +491,7 @@ if (ENABLE_MSSQLTEST)
   ADD_PYTHON_TEST(PyQgsMssqlProvider test_provider_mssql.py)
   ADD_PYTHON_TEST(PyQgsProviderConnectionMssql test_qgsproviderconnection_mssql.py)
   ADD_PYTHON_TEST(PyQgsStyleStorageMssql test_stylestorage_mssql.py)
-  SET_TESTS_PROPERTIES(PyQgsMssqlProvider PyQgsProviderConnectionMssql PROPERTIES LABELS "MSSQL")
+  SET_TESTS_PROPERTIES(PyQgsMssqlProvider PyQgsProviderConnectionMssql PyQgsStyleStorageMssql PROPERTIES LABELS "MSSQL")
 endif()
 
 if (ENABLE_ORACLETEST)
