@@ -3233,20 +3233,50 @@ class TestQgsExpression: public QObject
 
     void eval_geometry_calc()
     {
-      QgsPolylineXY polyline, polygon_ring;
-      QgsPolyline polylineZ;
-      polyline << QgsPointXY( 0, 0 ) << QgsPointXY( 10, 0 );
-      polylineZ << QgsPoint( 0, 0, 0 ) << QgsPoint( 3, 0, 4 );
+      QgsPolylineXY polygon_ring;
       polygon_ring << QgsPointXY( 2, 1 ) << QgsPointXY( 10, 1 ) << QgsPointXY( 10, 6 ) << QgsPointXY( 2, 6 ) << QgsPointXY( 2, 1 );
-      QgsPolygonXY polygon;
-      polygon << polygon_ring;
-      QgsFeature fPolygon, fPolyline, fPolylineZ;
-      QgsGeometry polylineGeom = QgsGeometry::fromPolylineXY( polyline );
-      fPolyline.setGeometry( polylineGeom );
-      QgsGeometry polylineZGeom = QgsGeometry::fromPolyline( polylineZ );
-      fPolylineZ.setGeometry( polylineZGeom );
-      QgsGeometry polygonGeom = QgsGeometry::fromPolygonXY( polygon );
+      QgsPolygonXY polygonXY;
+      polygonXY << polygon_ring;
+      QgsGeometry polygonGeom = QgsGeometry::fromPolygonXY( polygonXY );
+      QgsFeature fPolygon;
       fPolygon.setGeometry( polygonGeom );
+
+      QgsPolylineXY polyline;
+      polyline << QgsPointXY( 0, 0 ) << QgsPointXY( 10, 0 );
+      QgsGeometry polylineGeom = QgsGeometry::fromPolylineXY( polyline );
+      QgsFeature fPolyline;
+      fPolyline.setGeometry( polylineGeom );
+
+      QgsPolyline polylineZ;
+      polylineZ << QgsPoint( 0, 0, 0 ) << QgsPoint( 3, 0, 4 );
+      QgsGeometry polylineZGeom = QgsGeometry::fromPolyline( polylineZ );
+      QgsFeature fPolylineZ;
+      fPolylineZ.setGeometry( polylineZGeom );
+
+      QgsPolyline polylineM;
+      polylineM << QgsPoint( QgsWkbTypes::PointM, 0, 0, 0, 0 ) << QgsPoint( QgsWkbTypes::PointM, 3, 0, 0, 8 );
+      QgsGeometry polylineMGeom = QgsGeometry::fromPolyline( polylineM );
+      QgsFeature fPolylineM;
+      fPolylineM.setGeometry( polylineMGeom );
+
+      QgsPolyline polylineZM;
+      polylineZM << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 0, 0 ) << QgsPoint( QgsWkbTypes::PointZM, 3, 0, 4, 8 );
+      QgsGeometry polylineZMGeom = QgsGeometry::fromPolyline( polylineZM );
+      QgsFeature fPolylineZM;
+      fPolylineZM.setGeometry( polylineZMGeom );
+
+      QgsMultiLineString mls;
+      QgsLineString part;
+      part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 10, 10, 10, 10 )
+                      << QgsPoint( QgsWkbTypes::PointZM, 20, 20, 20, 20 ) );
+      mls.addGeometry( part.clone() );
+      part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 30, 30, 30, 30 )
+                      << QgsPoint( QgsWkbTypes::PointZM, 40, 40, 40, 40 ) );
+      mls.addGeometry( part.clone() );
+      QgsGeometry multiStringZMGeom;
+      multiStringZMGeom.set( mls.clone() );
+      QgsFeature fMultiLineStringZM;
+      fMultiLineStringZM.setGeometry( multiStringZMGeom );
 
       QgsExpressionContext context;
 
@@ -3266,58 +3296,173 @@ class TestQgsExpression: public QObject
       QCOMPARE( vPerimeter.toDouble(), 26. );
 
       QgsExpression deprecatedExpXAt( QStringLiteral( "$x_at(1)" ) );
+      QgsExpression expXAt( QStringLiteral( "x_at(@geometry, 1)" ) );
       context.setFeature( fPolygon );
       QVariant xAt = deprecatedExpXAt.evaluate( &context );
+      QCOMPARE( xAt.toDouble(), 10.0 );
+      xAt = expXAt.evaluate( &context );
       QCOMPARE( xAt.toDouble(), 10.0 );
       context.setFeature( fPolyline );
       xAt = deprecatedExpXAt.evaluate( &context );
       QCOMPARE( xAt.toDouble(), 10.0 );
+      xAt = expXAt.evaluate( &context );
+      QCOMPARE( xAt.toDouble(), 10.0 );
 
       QgsExpression deprecatedExpXAtNeg( QStringLiteral( "$x_at(-2)" ) );
+      QgsExpression expXAtNeg( QStringLiteral( "x_at(@geometry, -2)" ) );
       context.setFeature( fPolygon );
       xAt = deprecatedExpXAtNeg.evaluate( &context );
       QCOMPARE( xAt.toDouble(), 2.0 );
+      xAt = expXAtNeg.evaluate( &context );
+      QCOMPARE( xAt.toDouble(), 2.0 );
 
       QgsExpression deprecatedExpYAt( QStringLiteral( "$y_at(2)" ) );
+      QgsExpression expYAt( QStringLiteral( "y_at(@geometry, 2)" ) );
       context.setFeature( fPolygon );
       QVariant yAt = deprecatedExpYAt.evaluate( &context );
       QCOMPARE( yAt.toDouble(), 6.0 );
+      yAt = expYAt.evaluate( &context );
+      QCOMPARE( yAt.toDouble(), 6.0 );
       QgsExpression deprecatedExpYAt2( QStringLiteral( "$y_at(1)" ) );
+      QgsExpression expYAt2( QStringLiteral( "y_at(@geometry, 1)" ) );
       context.setFeature( fPolyline );
       yAt = deprecatedExpYAt2.evaluate( &context );
       QCOMPARE( yAt.toDouble(), 0.0 );
 
       QgsExpression deprecatedExpYAtNeg( QStringLiteral( "$y_at(-2)" ) );
+      QgsExpression expYAtNeg( QStringLiteral( "y_at(@geometry, -2)" ) );
       context.setFeature( fPolygon );
       yAt = deprecatedExpYAtNeg.evaluate( &context );
       QCOMPARE( yAt.toDouble(), 6.0 );
+      yAt = expYAtNeg.evaluate( &context );
+      QCOMPARE( yAt.toDouble(), 6.0 );
 
-      QgsExpression expXAt( QStringLiteral( "x_at(1)" ) );
+      QgsExpression deprecatedAliasexpXAt( QStringLiteral( "x_at(1)" ) );
       context.setFeature( fPolygon );
-      xAt = expXAt.evaluate( &context );
+      xAt = deprecatedAliasexpXAt.evaluate( &context );
       QCOMPARE( xAt.toDouble(), 10.0 );
+      QgsExpression deprecatedAliasexpXAt2( QStringLiteral( "x_at(1)" ) );
       context.setFeature( fPolyline );
-      xAt = expXAt.evaluate( &context );
+      xAt = deprecatedAliasexpXAt2.evaluate( &context );
       QCOMPARE( xAt.toDouble(), 10.0 );
 
-      QgsExpression expXAtNeg( QStringLiteral( "x_at(-2)" ) );
+      QgsExpression deprecatedAliasexpYAt( QStringLiteral( "y_at(1)" ) );
+      context.setFeature( fPolygon );
+      yAt = deprecatedAliasexpYAt.evaluate( &context );
+      QCOMPARE( yAt.toDouble(), 1.0 );
+      QgsExpression deprecatedAliasexpYAt2( QStringLiteral( "y_at(1)" ) );
+      context.setFeature( fPolyline );
+      yAt = deprecatedAliasexpYAt2.evaluate( &context );
+      QCOMPARE( yAt.toDouble(), 0.0 );
+
+      // with a ZM geometry
+      expXAt = QgsExpression( QStringLiteral( "x_at(@geometry, 2)" ) );
+      context.setFeature( fMultiLineStringZM );
+      xAt = expXAt.evaluate( &context );
+      QCOMPARE( xAt.toDouble(), 30.0 );
+
+      QgsExpression expXAtNeg2( QStringLiteral( "x_at(@geometry, -2)" ) );
       context.setFeature( fPolygon );
       xAt = expXAtNeg.evaluate( &context );
       QCOMPARE( xAt.toDouble(), 2.0 );
 
-      QgsExpression expYAt( QStringLiteral( "y_at(2)" ) );
+      QgsExpression expYAt3( QStringLiteral( "y_at(@geometry, 2)" ) );
       context.setFeature( fPolygon );
       yAt = expYAt.evaluate( &context );
       QCOMPARE( yAt.toDouble(), 6.0 );
-      QgsExpression expYAt2( QStringLiteral( "$y_at(1)" ) );
+      QgsExpression expYAt4( QStringLiteral( "y_at(@geometry, 1)" ) );
       context.setFeature( fPolyline );
       yAt = expYAt2.evaluate( &context );
       QCOMPARE( yAt.toDouble(), 0.0 );
 
-      QgsExpression expYAtNeg( QStringLiteral( "y_at(-2)" ) );
+      // with a ZM geometry
+      expYAt2 = QgsExpression( QStringLiteral( "y_at(@geometry, 2)" ) );
+      context.setFeature( fMultiLineStringZM );
+      yAt = expYAt2.evaluate( &context );
+      QCOMPARE( yAt.toDouble(), 30.0 );
+
+      QgsExpression expYAtNeg2( QStringLiteral( "y_at(@geometry, -2)" ) );
       context.setFeature( fPolygon );
-      yAt = expYAtNeg.evaluate( &context );
+      yAt = expYAtNeg2.evaluate( &context );
       QCOMPARE( yAt.toDouble(), 6.0 );
+
+      // Test z_at
+
+      // a basic case
+      QgsExpression expZAt( QStringLiteral( "z_at(@geometry, 1)" ) );
+      context.setFeature( fPolylineZ );
+      QVariant zAt = expZAt.evaluate( &context );
+      QCOMPARE( zAt.toDouble(), 4.0 );
+
+      // with a negative range
+      expZAt = QgsExpression( QStringLiteral( "z_at(@geometry, -1)" ) );
+      context.setFeature( fPolylineZ );
+      zAt = expZAt.evaluate( &context );
+      QCOMPARE( zAt.toDouble(), 4.0 );
+
+      // with an index out of range
+      expZAt = QgsExpression( QStringLiteral( "z_at(@geometry, 3)" ) );
+      // even with a no Z geometry, an eval error should be raised.
+      context.setFeature( fPolyline );
+      zAt = expZAt.evaluate( &context );
+      QVERIFY( expZAt.hasEvalError() );
+
+      // with a geom with no Z
+      expZAt = QgsExpression( QStringLiteral( "z_at(@geometry, 1)" ) );
+      context.setFeature( fPolyline );
+      zAt = expZAt.evaluate( &context );
+      QVERIFY( zAt.isNull() );
+
+      // with a geom with no Z but with M
+      expZAt = QStringLiteral( "z_at(@geometry, 1)" );
+      context.setFeature( fPolylineM );
+      zAt = expZAt.evaluate( &context );
+      QVERIFY( zAt.isNull() );
+
+      // with a multi geom
+      expZAt = QStringLiteral( "z_at(@geometry, 2)" );
+      context.setFeature( fMultiLineStringZM );
+      zAt = expZAt.evaluate( &context );
+      QCOMPARE( zAt.toDouble(), 30.0 );
+
+      // Test m_at
+
+      // a basic case
+      QgsExpression expMAt( QStringLiteral( "m_at(@geometry, 1)" ) );
+      context.setFeature( fPolylineM );
+      QVariant mAt = expMAt.evaluate( &context );
+      QCOMPARE( mAt.toDouble(), 8.0 );
+
+      // with a negative range
+      expMAt = QgsExpression( QStringLiteral( "m_at(@geometry, -1)" ) );
+      context.setFeature( fPolylineM );
+      mAt = expMAt.evaluate( &context );
+      QCOMPARE( mAt.toDouble(), 8.0 );
+
+      // with an index out of range
+      expMAt = QgsExpression( QStringLiteral( "m_at(@geometry, 3)" ) );
+      // even with a no M geometry, an eval error should be raised.
+      context.setFeature( fPolyline );
+      mAt = expMAt.evaluate( &context );
+      QVERIFY( expMAt.hasEvalError() );
+
+      // with a geom with no M
+      expMAt = QgsExpression( QStringLiteral( "m_at(@geometry, 1)" ) );
+      context.setFeature( fPolyline );
+      mAt = expMAt.evaluate( &context );
+      QVERIFY( mAt.isNull() );
+
+      // with a geom with no M but with Z
+      expMAt = QStringLiteral( "m_at(@geometry, 1)" );
+      context.setFeature( fPolylineZ );
+      mAt = expMAt.evaluate( &context );
+      QVERIFY( mAt.isNull() );
+
+      // with a multi geom
+      expMAt = QStringLiteral( "m_at(@geometry, 3)" );
+      context.setFeature( fMultiLineStringZM );
+      mAt = expMAt.evaluate( &context );
+      QCOMPARE( mAt.toDouble(), 40.0 );
 
       QgsExpression exp4( QStringLiteral( "bounds_width($geometry)" ) );
       context.setFeature( fPolygon );
