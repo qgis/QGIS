@@ -39,6 +39,13 @@ based on the resultant font metrics. Failure to do so will result in poor qualit
 at small font sizes.
 %End
 
+    bool isNullFontSize() const;
+%Docstring
+Returns ``True`` if the metrics could not be calculated because the text format has a null font size.
+
+.. versionadded:: 3.30
+%End
+
     QSizeF documentSize( Qgis::TextLayoutMode mode, Qgis::TextOrientation orientation ) const;
 %Docstring
 Returns the overall size of the document.

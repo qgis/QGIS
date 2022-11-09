@@ -342,9 +342,7 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
     referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, -1.0 ) );
   }
 
-  bool isNullSize = false;
-  const QFont font = format.scaledFont( context, scaleFactor, &isNullSize );
-  if ( isNullSize )
+  if ( metrics.isNullFontSize() )
     return 0;
 
   referenceScaleOverride.reset();
@@ -516,9 +514,7 @@ void QgsTextRenderer::drawMask( QgsRenderContext &context, const QgsTextRenderer
     referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, -1.0 ) );
   }
 
-  bool isNullSize = false;
-  const QFont font = format.scaledFont( context, scaleFactor, &isNullSize );
-  if ( isNullSize )
+  if ( metrics.isNullFontSize() )
     return;
 
   referenceScaleOverride.reset();
@@ -634,6 +630,7 @@ double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTe
 double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTextFormat &format, QChar character, bool includeEffects )
 {
   const double scaleFactor = calculateScaleFactorForFormat( context, format );
+
   bool isNullSize = false;
   const QFont baseFont = format.scaledFont( context, scaleFactor, &isNullSize );
   if ( isNullSize )
@@ -759,12 +756,10 @@ double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTe
   //calculate max height of text lines
   const double scaleFactor = calculateScaleFactorForFormat( context, format );
 
-  bool isNullSize = false;
-  format.scaledFont( context, scaleFactor, &isNullSize );
-  if ( isNullSize )
+  const QgsTextDocumentMetrics metrics = QgsTextDocumentMetrics::calculateMetrics( document, format, context, scaleFactor );
+  if ( metrics.isNullFontSize() )
     return 0;
 
-  const QgsTextDocumentMetrics metrics = QgsTextDocumentMetrics::calculateMetrics( document, format, context, scaleFactor );
   return metrics.documentSize( mode, format.orientation() ).height();
 }
 
@@ -1342,9 +1337,7 @@ void QgsTextRenderer::drawTextInternal( Qgis::TextComponent drawType,
     referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, -1.0 ) );
   }
 
-  bool isNullSize = false;
-  format.scaledFont( context, fontScale, &isNullSize );
-  if ( isNullSize )
+  if ( metrics.isNullFontSize() )
     return;
 
   referenceScaleOverride.reset();
@@ -1608,11 +1601,10 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
         // to temporarily remove the reference scale here or we'll be applying the scaling twice
         referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, -1.0 ) );
       }
-      bool isNullSize = false;
-      const QFont font = format.scaledFont( context, fontScale, &isNullSize );
+
       referenceScaleOverride.reset();
 
-      if ( !isNullSize )
+      if ( !metrics.isNullFontSize() )
       {
         textp.scale( 1 / fontScale, 1 / fontScale );
 
@@ -1692,7 +1684,8 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
             context.painter()->drawText( xOffset, 0, fragment.text() );
             context.painter()->scale( fontScale, fontScale );
 
-            xOffset += fragment.horizontalAdvance( fragmentFont, context, true, fontScale );
+            xOffset += metrics.fragmentHorizontalAdvance( blockIndex, fragmentIndex, mode );
+            fragmentIndex++;
           }
         }
       }
@@ -1717,9 +1710,7 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
     referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, -1.0 ) );
   }
 
-  bool isNullSize = false;
-  const QFont font = format.scaledFont( context, fontScale, &isNullSize );
-  if ( isNullSize )
+  if ( metrics.isNullFontSize() )
     return;
 
   referenceScaleOverride.reset();
