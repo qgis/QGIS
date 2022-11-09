@@ -73,6 +73,13 @@ class CORE_EXPORT QgsTextDocumentMetrics
     double baselineOffset( int blockIndex, Qgis::TextLayoutMode mode ) const;
 
     /**
+     * Returns the horizontal advance of the fragment at the specified block and fragment index.
+     *
+     * \since QGIS 3.30
+     */
+    double fragmentHorizontalAdvance( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode mode ) const;
+
+    /**
      * Returns the vertical orientation x offset for the specified block.
      */
     double verticalOrientationXOffset( int blockIndex ) const;
@@ -109,6 +116,9 @@ class CORE_EXPORT QgsTextDocumentMetrics
     QList< double > mBaselineOffsetsLabelMode;
     QList< double > mBaselineOffsetsPointMode;
     QList< double > mBaselineOffsetsRectMode;
+
+    QList< QList< double > > mFragmentHorizontalAdvance;
+
     QList< double > mVerticalOrientationXOffsets;
     QList< double > mBlockMaxDescent;
     QList< double > mBlockMaxCharacterWidth;

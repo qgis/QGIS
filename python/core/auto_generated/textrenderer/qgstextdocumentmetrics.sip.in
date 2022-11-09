@@ -59,6 +59,13 @@ Returns the height of the block at the specified index.
 Returns the offset from the top of the document to the text baseline for the given block index.
 %End
 
+    double fragmentHorizontalAdvance( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode mode ) const;
+%Docstring
+Returns the horizontal advance of the fragment at the specified block and fragment index.
+
+.. versionadded:: 3.30
+%End
+
     double verticalOrientationXOffset( int blockIndex ) const;
 %Docstring
 Returns the vertical orientation x offset for the specified block.
