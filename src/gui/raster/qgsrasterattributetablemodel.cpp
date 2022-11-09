@@ -176,7 +176,7 @@ bool QgsRasterAttributeTableModel::removeColorOrRamp( QString *errorMessage )
   {
     if ( errorMessage )
     {
-      *errorMessage = tr( "RAT has not color or ramp information." );
+      *errorMessage = tr( "Raster attribute table does not have color or ramp information." );
     }
     return false;
   }

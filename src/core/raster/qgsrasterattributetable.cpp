@@ -439,7 +439,7 @@ bool QgsRasterAttributeTable::insertRow( int position, const QVariantList &rowDa
   {
     if ( errorMessage )
     {
-      *errorMessage = tr( "Row element count differs from field count (%1)'." ).arg( mFields.size() );
+      *errorMessage = tr( "Row element count differs from field count (%1)." ).arg( mFields.size() );
     }
     return false;
   }

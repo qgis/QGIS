@@ -59,7 +59,7 @@
       <item row="0" column="0" colspan="2">
        <widget class="QRadioButton" name="mNativeRadioButton">
         <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This method will save the attribute table using the data provider, &lt;/p&gt;&lt;p&gt;overwriting any existing attribute table for the raster band used&lt;/p&gt;&lt;p&gt;by the current style.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Depending on the data provider and the raster file format, the &lt;/p&gt;&lt;p&gt;attribute table will be embedded in the main raster file or saved&lt;/p&gt;&lt;p&gt; into a sidecar file manged by the data provider.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This method will save the attribute table using the data provider, &lt;/p&gt;&lt;p&gt;overwriting any existing attribute table for the raster band used&lt;/p&gt;&lt;p&gt;by the current style.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Depending on the data provider and the raster file format, the &lt;/p&gt;&lt;p&gt;attribute table will be embedded in the main raster file or saved&lt;/p&gt;&lt;p&gt; into a sidecar file managed by the data provider.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="text">
          <string>Managed by the data provider</string>
