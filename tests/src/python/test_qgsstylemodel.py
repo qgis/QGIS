@@ -2736,7 +2736,7 @@ class TestQgsStyleModel(unittest.TestCase):
 
     def test_reset_symbollayer_ids(self):
         """
-        Test that we have different symbol layer ids everytime we get symbol from style
+        Test that we have different symbol layer ids every time we get symbol from style
         """
         style = QgsStyle()
         style.createMemoryDatabase()
