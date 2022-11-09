@@ -336,6 +336,7 @@ class CORE_EXPORT QgsTextRenderer
     static void drawMask( QgsRenderContext &context,
                           const Component &component,
                           const QgsTextFormat &format,
+                          const QgsTextDocumentMetrics &metrics,
                           Qgis::TextLayoutMode mode );
 
     static void drawText( QgsRenderContext &context,

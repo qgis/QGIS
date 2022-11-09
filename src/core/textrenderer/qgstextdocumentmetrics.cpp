@@ -67,15 +67,21 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
 
     QList< QFont > fragmentFonts;
     fragmentFonts.reserve( fragmentSize );
+    QList< double >fragmentHorizontalAdvance;
+    fragmentHorizontalAdvance.reserve( fragmentSize );
     for ( int fragmentIndex = 0; fragmentIndex < fragmentSize; ++fragmentIndex )
     {
       const QgsTextFragment &fragment = block.at( fragmentIndex );
+      const QgsTextCharacterFormat &fragmentFormat = fragment.characterFormat();
 
       QFont updatedFont = font;
-      fragment.characterFormat().updateFontForFormat( updatedFont, context, scaleFactor );
+      fragmentFormat.updateFontForFormat( updatedFont, context, scaleFactor );
       const QFontMetricsF fm( updatedFont );
 
       const double fragmentWidth = fm.horizontalAdvance( fragment.text() ) / scaleFactor;
+
+      fragmentHorizontalAdvance << fragmentWidth;
+
       const double fragmentHeightUsingAscentDescent = ( fm.ascent() + fm.descent() ) / scaleFactor;
       const double fragmentHeightUsingLineSpacing = fm.lineSpacing() / scaleFactor;
 
@@ -149,6 +155,7 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
     res.mBaselineOffsetsRectMode << currentRectBaseline;
     res.mBlockMaxDescent << maxBlockDescent;
     res.mBlockMaxCharacterWidth << maxBlockMaxWidth;
+    res.mFragmentHorizontalAdvance << fragmentHorizontalAdvance;
 
     if ( blockIndex > 0 )
       lastLineLeading = maxBlockLeading;
@@ -248,6 +255,11 @@ double QgsTextDocumentMetrics::baselineOffset( int blockIndex, Qgis::TextLayoutM
       return mBaselineOffsetsLabelMode.value( blockIndex );
   }
   BUILTIN_UNREACHABLE
+}
+
+double QgsTextDocumentMetrics::fragmentHorizontalAdvance( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode ) const
+{
+  return mFragmentHorizontalAdvance.value( blockIndex ).value( fragmentIndex );
 }
 
 double QgsTextDocumentMetrics::verticalOrientationXOffset( int blockIndex ) const

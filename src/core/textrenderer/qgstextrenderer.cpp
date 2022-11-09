@@ -358,17 +358,19 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
     case Qgis::TextOrientation::Horizontal:
     {
       double xOffset = 0;
+      int fragmentIndex = 0;
       for ( const QgsTextFragment &fragment : component.block )
       {
-        QFont fragmentFont = font;
-        fragment.characterFormat().updateFontForFormat( fragmentFont, context, scaleFactor );
+        QFont fragmentFont = metrics.fragmentFont( component.blockIndex, fragmentIndex );
 
         if ( component.extraWordSpacing || component.extraLetterSpacing )
           applyExtraSpacingForLineJustification( fragmentFont, component.extraWordSpacing, component.extraLetterSpacing );
 
         path.addText( xOffset, 0, fragmentFont, fragment.text() );
 
-        xOffset += fragment.horizontalAdvance( fragmentFont, context, true, scaleFactor );
+        xOffset += metrics.fragmentHorizontalAdvance( component.blockIndex, fragmentIndex, mode );
+
+        fragmentIndex++;
       }
       advance = xOffset;
       break;
@@ -382,10 +384,11 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
       const double blockMaximumCharacterWidth = metrics.blockMaximumCharacterWidth( component.blockIndex );
       double partLastDescent = 0;
 
+      int fragmentIndex = 0;
       for ( const QgsTextFragment &fragment : component.block )
       {
-        QFont fragmentFont = font;
-        fragment.characterFormat().updateFontForFormat( fragmentFont, context, scaleFactor );
+        const QFont fragmentFont = metrics.fragmentFont( component.blockIndex, fragmentIndex );
+
         const double letterSpacing = fragmentFont.letterSpacing() / scaleFactor;
 
         const QFontMetricsF fragmentMetrics( fragmentFont );
@@ -399,6 +402,7 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
           partYOffset += letterSpacing;
         }
         partLastDescent = fragmentMetrics.descent() / scaleFactor;
+        fragmentIndex++;
       }
       height = partYOffset + partLastDescent;
       advance = partYOffset - component.offset.y() * scaleFactor;
@@ -480,7 +484,7 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
   return advance / scaleFactor;
 }
 
-void QgsTextRenderer::drawMask( QgsRenderContext &context, const QgsTextRenderer::Component &component, const QgsTextFormat &format,
+void QgsTextRenderer::drawMask( QgsRenderContext &context, const QgsTextRenderer::Component &component, const QgsTextFormat &format, const QgsTextDocumentMetrics &metrics,
                                 Qgis::TextLayoutMode mode )
 {
   QgsTextMaskSettings mask = format.mask();
@@ -520,14 +524,15 @@ void QgsTextRenderer::drawMask( QgsRenderContext &context, const QgsTextRenderer
   referenceScaleOverride.reset();
 
   double xOffset = 0;
+  int fragmentIndex = 0;
   for ( const QgsTextFragment &fragment : component.block )
   {
-    QFont fragmentFont = font;
-    fragment.characterFormat().updateFontForFormat( fragmentFont, context, scaleFactor );
+    const QFont fragmentFont = metrics.fragmentFont( component.blockIndex, fragmentIndex );
 
     path.addText( xOffset, 0, fragmentFont, fragment.text() );
 
-    xOffset += fragment.horizontalAdvance( fragmentFont, context, true, scaleFactor );
+    xOffset += metrics.fragmentHorizontalAdvance( component.blockIndex, fragmentIndex, mode );
+    fragmentIndex++;
   }
 
   QColor bufferColor( Qt::gray );
@@ -1581,7 +1586,7 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
     // draw the mask below the text (for preview)
     if ( format.mask().enabled() )
     {
-      QgsTextRenderer::drawMask( context, subComponent, format, mode );
+      QgsTextRenderer::drawMask( context, subComponent, format, metrics, mode );
     }
 
     if ( drawType == Qgis::TextComponent::Buffer )
@@ -1612,14 +1617,14 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
         textp.scale( 1 / fontScale, 1 / fontScale );
 
         double xOffset = 0;
+        int fragmentIndex = 0;
         for ( const QgsTextFragment &fragment : block )
         {
           // draw text, QPainterPath method
           QPainterPath path;
           path.setFillRule( Qt::WindingFill );
 
-          QFont fragmentFont = font;
-          fragment.characterFormat().updateFontForFormat( fragmentFont, context, fontScale );
+          QFont fragmentFont = metrics.fragmentFont( blockIndex, fragmentIndex );
 
           if ( extraWordSpace || extraLetterSpace )
             applyExtraSpacingForLineJustification( fragmentFont, extraWordSpace * fontScale, extraLetterSpace * fontScale );
@@ -1631,7 +1636,8 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
           textp.setBrush( textColor );
           textp.drawPath( path );
 
-          xOffset += fragment.horizontalAdvance( fragmentFont, context, true, fontScale );
+          xOffset += metrics.fragmentHorizontalAdvance( blockIndex, fragmentIndex, mode );
+          fragmentIndex ++;
         }
         textp.end();
       }
@@ -1667,10 +1673,10 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
         case Qgis::TextRenderFormat::AlwaysText:
         {
           double xOffset = 0;
+          int fragmentIndex = 0;
           for ( const QgsTextFragment &fragment : block )
           {
-            QFont fragmentFont = font;
-            fragment.characterFormat().updateFontForFormat( fragmentFont, context, fontScale );
+            QFont fragmentFont = metrics.fragmentFont( blockIndex, fragmentIndex );
 
             if ( extraWordSpace || extraLetterSpace )
               applyExtraSpacingForLineJustification( fragmentFont, extraWordSpace * fontScale, extraLetterSpace * fontScale );
@@ -1839,8 +1845,7 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
       // apply some character replacement to draw symbols in vertical presentation
       const QString line = QgsStringUtils::substituteVerticalCharacters( fragment.text() );
 
-      QFont fragmentFont( font );
-      fragment.characterFormat().updateFontForFormat( fragmentFont, context, fontScale );
+      const QFont fragmentFont = metrics.fragmentFont( blockIndex, fragmentIndex );
 
       QFontMetricsF fragmentMetrics( fragmentFont );
 
