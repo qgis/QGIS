@@ -9,10 +9,17 @@
 
 
 
+
+typedef struct _nmeaPOS nmeaPOS;
+typedef struct _nmeaTIME nmeaTIME;
+
 class QgsGpsLogger : QObject
 {
 %Docstring(signature="appended")
-Handles logging of incoming GPS data to a vector layer.
+Base class for objects which log incoming GPS data.
+
+This class handles generic logic regarding logging GPS data, such as creation of tracks
+from incoming GPS location points.
 
 .. versionadded:: 3.30
 %End
@@ -34,154 +41,117 @@ The logger will automatically record GPS information from the specified ``connec
     QgsGpsConnection *connection();
 %Docstring
 Returns the associated GPS connection.
+
+.. seealso:: :py:func:`setConnection`
 %End
 
-    void setPointsLayer( QgsVectorLayer *layer );
+    void setConnection( QgsGpsConnection *connection );
 %Docstring
-Sets the ``layer`` in which recorded GPS points should be stored.
+Sets the associated GPS connection.
 
-.. seealso:: :py:func:`setTracksLayer`
-
-.. seealso:: :py:func:`pointsLayer`
+.. seealso:: :py:func:`connection`
 %End
 
-    void setTracksLayer( QgsVectorLayer *layer );
+    void setEllipsoid( const QString &ellipsoid );
 %Docstring
-Sets the ``layer`` in which recorded GPS tracks should be stored.
-
-.. seealso:: :py:func:`setPointsLayer`
-
-.. seealso:: :py:func:`tracksLayer`
+Sets the ``ellipsoid`` which will be used for calculating distances in the log.
 %End
 
-    QgsVectorLayer *pointsLayer();
+    virtual void setTransformContext( const QgsCoordinateTransformContext &context );
 %Docstring
-Returns the layer in which recorded GPS points will be stored.
+Sets the coordinate transform ``context`` to be used when transforming
+GPS coordinates.
 
-May be ``None`` if points are not being stored.
-
-.. seealso:: :py:func:`setPointsLayer`
-
-.. seealso:: :py:func:`tracksLayer`
+.. seealso:: :py:func:`transformContext`
 %End
 
-    QgsVectorLayer *tracksLayer();
+    QgsCoordinateTransformContext transformContext() const;
 %Docstring
-Returns the layer in which recorded GPS tracks will be stored.
+Returns the coordinate transform context to be used when transforming
+GPS coordinates.
 
-May be ``None`` if tracks are not being stored.
-
-.. seealso:: :py:func:`setTracksLayer`
-
-.. seealso:: :py:func:`pointsLayer`
+.. seealso:: :py:func:`setTransformContext`
 %End
 
-    QString pointTimeField() const;
+    QVector<QgsPoint> currentTrack() const;
 %Docstring
-Returns the destination time field name from the :py:func:`~QgsGpsLogger.pointsLayer`.
+Returns the recorded points in the current track.
 
-If specified, timestamps for recorded points will be stored in this field.
-
-.. seealso:: :py:func:`setPointTimeField`
+These points will always be in WGS84 coordinate reference system.
 %End
 
-    void setPointTimeField( const QString &field );
+    QgsPointXY lastPosition() const;
 %Docstring
-Sets the destination time ``field`` name from the :py:func:`~QgsGpsLogger.pointsLayer`.
+Returns the last recorded position of the device.
 
-If specified, timestamps for recorded points will be stored in this field.
-
-.. seealso:: :py:func:`pointTimeField`
+The returned point will always be in WGS84 coordinate reference system.
 %End
 
-    QString pointDistanceFromPreviousField() const;
+    QDateTime lastTimestamp() const;
 %Docstring
-Returns the destination distance from previous point field name from the :py:func:`~QgsGpsLogger.pointsLayer`.
+Returns the last recorded timestamp from the device.
 
-If specified, the distance from the previous recorded point will be stored in this field.
-
-.. seealso:: :py:func:`setPointDistanceFromPreviousField`
+The returned time value will respect all user settings regarding GPS time zone
+handling.
 %End
 
-    void setPointDistanceFromPreviousField( const QString &field );
+    double lastElevation() const;
 %Docstring
-Sets the destination distance from previous point ``field`` name from the :py:func:`~QgsGpsLogger.pointsLayer`.
-
-If specified, the distance from the previous recorded point will be stored in this field.
-
-.. seealso:: :py:func:`pointDistanceFromPreviousField`
+Returns the last recorded elevation the device.
 %End
 
-    QString pointTimeDeltaFromPreviousField() const;
+    void resetTrack();
 %Docstring
-Returns the destination time delta from previous point field name from the :py:func:`~QgsGpsLogger.pointsLayer`.
-
-If specified, the time difference from the previous recorded point will be stored in this field.
-
-.. seealso:: :py:func:`setPointTimeDeltaFromPreviousField`
+Resets the current track, discarding all recorded points.
 %End
 
-    void setPointTimeDeltaFromPreviousField( const QString &field );
+    bool automaticallyAddTrackVertices() const;
 %Docstring
-Sets the destination time delta from previous point ``field`` name from the :py:func:`~QgsGpsLogger.pointsLayer`.
+Returns ``True`` if track vertices will be automatically added whenever
+the GPS position is changed.
 
-If specified, the time difference from the previous recorded point will be stored in this field.
-
-.. seealso:: :py:func:`pointTimeDeltaFromPreviousField`
+.. seealso:: :py:func:`setAutomaticallyAddTrackVertices`
 %End
 
-    QString trackStartTimeField() const;
+    void setAutomaticallyAddTrackVertices( bool enabled );
 %Docstring
-Returns the destination start time field name from the :py:func:`~QgsGpsLogger.tracksLayer`.
+Sets whether track vertices will be automatically added whenever
+the GPS position is changed.
 
-If specified, the start timestamps for recorded tracks will be stored in this field.
-
-.. seealso:: :py:func:`setTrackStartTimeField`
+.. seealso:: :py:func:`automaticallyAddTrackVertices`
 %End
 
-    void setTrackStartTimeField( const QString &field );
+    void updateGpsSettings();
 %Docstring
-Sets the destination start time ``field`` name from the :py:func:`~QgsGpsLogger.tracksLayer`.
-
-If specified, the start timestamps for recorded tracks will be stored in this field.
-
-.. seealso:: :py:func:`trackStartTimeField`
+Should be called whenever the QGIS GPS settings are changed.
 %End
 
-    QString trackEndTimeField() const;
+  signals:
+
+    void trackIsEmptyChanged( bool isEmpty );
 %Docstring
-Returns the destination end time field name from the :py:func:`~QgsGpsLogger.tracksLayer`.
-
-If specified, the end timestamps for recorded tracks will be stored in this field.
-
-.. seealso:: :py:func:`setTrackEndTimeField`
+Emitted whenever the current track changes from being empty to non-empty or vice versa.
 %End
 
-    void setTrackEndTimeField( const QString &field );
+    void trackReset();
 %Docstring
-Sets the destination end time ``field`` name from the :py:func:`~QgsGpsLogger.tracksLayer`.
-
-If specified, the end timestamps for recorded tracks will be stored in this field.
-
-.. seealso:: :py:func:`trackEndTimeField`
+Emitted whenever the current track is reset.
 %End
 
-    QString trackLengthField() const;
+    void trackVertexAdded( const QgsPoint &vertex );
 %Docstring
-Returns the destination track length field name from the :py:func:`~QgsGpsLogger.tracksLayer`.
+Emitted whenever a new vertex is added to the track.
 
-If specified, the total track length recorded tracks will be stored in this field.
-
-.. seealso:: :py:func:`setTrackLengthField`
+The ``vertex`` point will be in WGS84 coordinate reference system.
 %End
 
-    void setTrackLengthField( const QString &field );
+  protected:
+
+
+
+    void addTrackVertex();
 %Docstring
-Sets the destination track length ``field`` name from the :py:func:`~QgsGpsLogger.tracksLayer`.
-
-If specified, the total track length recorded tracks will be stored in this field.
-
-.. seealso:: :py:func:`trackLengthField`
+Adds a track vertex at the current GPS location.
 %End
 
 };

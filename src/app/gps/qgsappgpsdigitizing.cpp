@@ -32,12 +32,10 @@
 #include <QTimeZone>
 
 QgsAppGpsDigitizing::QgsAppGpsDigitizing( QgsAppGpsConnection *connection, QgsMapCanvas *canvas, QObject *parent )
-  : QObject( parent )
+  : QgsGpsLogger( nullptr, parent )
   , mConnection( connection )
   , mCanvas( canvas )
 {
-  mWgs84CRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
-
   mCanvasToWgs84Transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
   connect( mCanvas, &QgsMapCanvas::destinationCrsChanged, this, [ = ]
   {
@@ -45,26 +43,18 @@ QgsAppGpsDigitizing::QgsAppGpsDigitizing( QgsAppGpsConnection *connection, QgsMa
   } );
   connect( QgsProject::instance(), &QgsProject::transformContextChanged, this, [ = ]
   {
-    mCanvasToWgs84Transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
+    setTransformContext( QgsProject::instance()->transformContext() );
+    mCanvasToWgs84Transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mWgs84CRS, transformContext() );
   } );
+  setTransformContext( QgsProject::instance()->transformContext() );
 
-  mDistanceCalculator.setEllipsoid( QgsProject::instance()->ellipsoid() );
-  mDistanceCalculator.setSourceCrs( mWgs84CRS, QgsProject::instance()->transformContext() );
+  setEllipsoid( QgsProject::instance()->ellipsoid() );
+
   connect( QgsProject::instance(), &QgsProject::ellipsoidChanged, this, [ = ]
   {
-    mDistanceCalculator.setEllipsoid( QgsProject::instance()->ellipsoid() );
+    setEllipsoid( QgsProject::instance()->ellipsoid() );
   } );
 
-  mLastNmeaPosition.lat = nmea_degree2radian( 0.0 );
-  mLastNmeaPosition.lon = nmea_degree2radian( 0.0 );
-
-  mAcquisitionTimer = std::unique_ptr<QTimer>( new QTimer( this ) );
-  mAcquisitionTimer->setSingleShot( true );
-
-  connect( mAcquisitionTimer.get(), &QTimer::timeout,
-           this, &QgsAppGpsDigitizing::switchAcquisition );
-
-  connect( mConnection, &QgsAppGpsConnection::stateChanged, this, &QgsAppGpsDigitizing::gpsStateChanged );
   connect( mConnection, &QgsAppGpsConnection::connected, this, &QgsAppGpsDigitizing::gpsConnected );
   connect( mConnection, &QgsAppGpsConnection::disconnected, this, &QgsAppGpsDigitizing::gpsDisconnected );
 
@@ -90,10 +80,14 @@ QgsAppGpsDigitizing::QgsAppGpsDigitizing( QgsAppGpsConnection *connection, QgsMa
     QgsProject::instance()->gpsSettings()->setDestinationLayer( qobject_cast< QgsVectorLayer *> ( QgisApp::instance()->activeLayer() ) );
   }
 
-  connect( QgsProject::instance(), &QgsProject::transformContextChanged, this, &QgsAppGpsDigitizing::updateDistanceArea );
-  connect( QgsProject::instance(), &QgsProject::ellipsoidChanged, this, &QgsAppGpsDigitizing::updateDistanceArea );
+  setAutomaticallyAddTrackVertices( QgsProject::instance()->gpsSettings()->automaticallyAddTrackVertices() );
+  connect( QgsProject::instance()->gpsSettings(), &QgsProjectGpsSettings::automaticallyAddTrackVerticesChanged, this, [ = ]( bool enabled )
+  {
+    setAutomaticallyAddTrackVertices( enabled );
+  } );
 
-  updateDistanceArea();
+  connect( this, &QgsGpsLogger::trackVertexAdded, this, &QgsAppGpsDigitizing::addVertex );
+  connect( this, &QgsGpsLogger::trackReset, this, &QgsAppGpsDigitizing::onTrackReset );
 }
 
 QgsAppGpsDigitizing::~QgsAppGpsDigitizing()
@@ -122,19 +116,12 @@ const QgsDistanceArea &QgsAppGpsDigitizing::distanceArea() const
   return mDa;
 }
 
-void QgsAppGpsDigitizing::addVertex()
+void QgsAppGpsDigitizing::addVertex( const QgsPoint &wgs84Point )
 {
   if ( !mRubberBand )
   {
     createRubberBand();
   }
-
-  // we store the capture list in wgs84 and then transform to layer crs when
-  // calling close feature
-  const QgsPoint pointWgs84 = QgsPoint( mLastGpsPositionWgs84.x(), mLastGpsPositionWgs84.y(), mLastElevation );
-
-  const bool trackWasEmpty = mCaptureListWgs84.empty();
-  mCaptureListWgs84.push_back( pointWgs84 );
 
   // we store the rubber band points in map canvas CRS so transform to map crs
   // potential problem with transform errors and wrong coordinates if map CRS is changed after points are stored - SLM
@@ -144,39 +131,25 @@ void QgsAppGpsDigitizing::addVertex()
   {
     try
     {
-      mapPoint = mCanvasToWgs84Transform.transform( mLastGpsPositionWgs84, Qgis::TransformDirection::Reverse );
+      mapPoint = mCanvasToWgs84Transform.transform( wgs84Point, Qgis::TransformDirection::Reverse );
     }
     catch ( QgsCsException & )
     {
-      QgsDebugMsg( QStringLiteral( "Could not transform GPS location (%1, %2) to map CRS" ).arg( mLastGpsPositionWgs84.x() ).arg( mLastGpsPositionWgs84.y() ) );
+      QgsDebugMsg( QStringLiteral( "Could not transform GPS location (%1, %2) to map CRS" ).arg( wgs84Point.x() ).arg( wgs84Point.y() ) );
       return;
     }
   }
   else
   {
-    mapPoint = mLastGpsPositionWgs84;
+    mapPoint = wgs84Point;
   }
 
   mRubberBand->addPoint( mapPoint );
-
-  if ( trackWasEmpty )
-    emit trackIsEmptyChanged( false );
-
-  emit trackChanged();
 }
 
-void QgsAppGpsDigitizing::resetTrack()
+void QgsAppGpsDigitizing::onTrackReset()
 {
-  mBlockGpsStateChanged++;
   createRubberBand(); //deletes existing rubberband
-
-  const bool trackWasEmpty = mCaptureListWgs84.isEmpty();
-  mCaptureListWgs84.clear();
-  mBlockGpsStateChanged--;
-
-  if ( !trackWasEmpty )
-    emit trackIsEmptyChanged( true );
-  emit trackChanged();
 }
 
 void QgsAppGpsDigitizing::createFeature()
@@ -185,12 +158,13 @@ void QgsAppGpsDigitizing::createFeature()
   if ( !vlayer )
     return;
 
-  if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry && mCaptureListWgs84.size() < 2 )
+  const QVector< QgsPoint > captureListWgs84 = currentTrack();
+  if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry && captureListWgs84.size() < 2 )
   {
     QgisApp::instance()->messageBar()->pushWarning( tr( "Add Feature" ), tr( "Creating a line feature requires a track with at least two vertices." ) );
     return;
   }
-  else if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry && mCaptureListWgs84.size() < 3 )
+  else if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry && captureListWgs84.size() < 3 )
   {
     QgisApp::instance()->messageBar()->pushWarning( tr( "Add Feature" ),
         tr( "Creating a polygon feature requires a track with at least three vertices." ) );
@@ -234,11 +208,11 @@ void QgsAppGpsDigitizing::createFeature()
       QgsFeature f;
       try
       {
-        const QgsPointXY pointXYLayerCrs = wgs84ToLayerTransform.transform( mLastGpsPositionWgs84 );
+        const QgsPointXY pointXYLayerCrs = wgs84ToLayerTransform.transform( lastPosition() );
 
         QgsGeometry g;
         if ( is3D )
-          g = QgsGeometry( new QgsPoint( pointXYLayerCrs.x(), pointXYLayerCrs.y(), mLastElevation ) );
+          g = QgsGeometry( new QgsPoint( pointXYLayerCrs.x(), pointXYLayerCrs.y(), lastElevation() ) );
         else
           g = QgsGeometry::fromPointXY( pointXYLayerCrs );
 
@@ -288,7 +262,7 @@ void QgsAppGpsDigitizing::createFeature()
       QgsFeature f;
       QgsGeometry g;
 
-      std::unique_ptr<QgsLineString> ringWgs84( new QgsLineString( mCaptureListWgs84 ) );
+      std::unique_ptr<QgsLineString> ringWgs84( new QgsLineString( captureListWgs84 ) );
       if ( ! is3D )
         ringWgs84->dropZValue();
 
@@ -372,7 +346,7 @@ void QgsAppGpsDigitizing::createFeature()
         mRubberBand = nullptr;
 
         // delete the elements of mCaptureList
-        mCaptureListWgs84.clear();
+        resetTrack();
       }
       else
       {
@@ -380,11 +354,6 @@ void QgsAppGpsDigitizing::createFeature()
       }
 
       mBlockGpsStateChanged--;
-
-      if ( mCaptureListWgs84.empty() )
-        emit trackIsEmptyChanged( true );
-
-      emit trackChanged();
 
       break;
     }
@@ -431,54 +400,16 @@ void QgsAppGpsDigitizing::setNmeaLoggingEnabled( bool enabled )
   }
 }
 
+void QgsAppGpsDigitizing::createVertexAtCurrentLocation()
+{
+  addTrackVertex();
+}
+
 void QgsAppGpsDigitizing::gpsSettingsChanged()
 {
   updateTrackAppearance();
 
-  int acquisitionInterval = 0;
-  if ( QgsGpsConnection::settingsGpsConnectionType.exists() )
-  {
-    acquisitionInterval = static_cast< int >( QgsGpsConnection::settingGpsAcquisitionInterval.value() );
-    mDistanceThreshold = QgsGpsConnection::settingGpsDistanceThreshold.value();
-    mApplyLeapSettings = QgsGpsConnection::settingGpsApplyLeapSecondsCorrection.value();
-    mLeapSeconds = static_cast< int >( QgsGpsConnection::settingGpsLeapSeconds.value() );
-    mTimeStampSpec = QgsGpsConnection::settingsGpsTimeStampSpecification.value();
-    mTimeZone = QgsGpsConnection::settingsGpsTimeStampTimeZone.value();
-    mOffsetFromUtc = static_cast< int >( QgsGpsConnection::settingsGpsTimeStampOffsetFromUtc.value() );
-  }
-  else
-  {
-    // legacy settings
-    QgsSettings settings;
-
-    acquisitionInterval = settings.value( QStringLiteral( "acquisitionInterval" ), 0, QgsSettings::Gps ).toInt();
-    mDistanceThreshold = settings.value( QStringLiteral( "distanceThreshold" ), 0, QgsSettings::Gps ).toDouble();
-    mApplyLeapSettings = settings.value( QStringLiteral( "applyLeapSeconds" ), true, QgsSettings::Gps ).toBool();
-    mLeapSeconds = settings.value( QStringLiteral( "leapSecondsCorrection" ), 18, QgsSettings::Gps ).toInt();
-
-    switch ( settings.value( QStringLiteral( "timeStampFormat" ), Qt::LocalTime, QgsSettings::Gps ).toInt() )
-    {
-      case 0:
-        mTimeStampSpec = Qt::TimeSpec::LocalTime;
-        break;
-
-      case 1:
-        mTimeStampSpec = Qt::TimeSpec::UTC;
-        break;
-
-      case 2:
-        mTimeStampSpec = Qt::TimeSpec::TimeZone;
-        break;
-    }
-    mTimeZone = settings.value( QStringLiteral( "timestampTimeZone" ), QVariant(), QgsSettings::Gps ).toString();
-  }
-
-  mAcquisitionInterval = acquisitionInterval * 1000;
-  if ( mAcquisitionTimer->isActive() )
-    mAcquisitionTimer->stop();
-  mAcquisitionEnabled = true;
-
-  switchAcquisition();
+  updateGpsSettings();
 }
 
 void QgsAppGpsDigitizing::updateTrackAppearance()
@@ -502,82 +433,19 @@ void QgsAppGpsDigitizing::updateTrackAppearance()
   }
 }
 
-void QgsAppGpsDigitizing::switchAcquisition()
-{
-  if ( mAcquisitionInterval > 0 )
-  {
-    if ( mAcquisitionEnabled )
-      mAcquisitionTimer->start( mAcquisitionInterval );
-    else
-      //wait only acquisitionInterval/10 for new valid data
-      mAcquisitionTimer->start( mAcquisitionInterval / 10 );
-    // anyway switch to enabled / disabled acquisition
-    mAcquisitionEnabled = !mAcquisitionEnabled;
-  }
-}
-
 void QgsAppGpsDigitizing::gpsConnected()
 {
   if ( !mLogFile && mEnableNmeaLogging && !mNmeaLogFile.isEmpty() )
   {
     startLogging();
   }
+  setConnection( mConnection->connection() );
 }
 
 void QgsAppGpsDigitizing::gpsDisconnected()
 {
   stopLogging();
-}
-
-void QgsAppGpsDigitizing::gpsStateChanged( const QgsGpsInformation &info )
-{
-  if ( mBlockGpsStateChanged )
-    return;
-
-  const bool validFlag = info.isValid();
-  QgsPointXY newLocationWgs84;
-  nmeaPOS newNmeaPosition;
-  nmeaTIME newNmeaTime;
-  double newAlt = 0.0;
-  if ( validFlag )
-  {
-    newLocationWgs84 = QgsPointXY( info.longitude, info.latitude );
-    newNmeaPosition.lat = nmea_degree2radian( info.latitude );
-    newNmeaPosition.lon = nmea_degree2radian( info.longitude );
-    newAlt = info.elevation;
-    nmea_time_now( &newNmeaTime );
-    mLastNmeaTime = newNmeaTime;
-  }
-  else
-  {
-    newLocationWgs84 = mLastGpsPositionWgs84;
-    newNmeaPosition = mLastNmeaPosition;
-    newAlt = mLastElevation;
-  }
-  if ( !mAcquisitionEnabled || ( nmea_distance( &newNmeaPosition, &mLastNmeaPosition ) < mDistanceThreshold ) )
-  {
-    // do not update position if update is disabled by timer or distance is under threshold
-    newLocationWgs84 = mLastGpsPositionWgs84;
-
-  }
-  if ( validFlag && mAcquisitionEnabled )
-  {
-    // position updated by valid data, reset timer
-    switchAcquisition();
-  }
-
-  // Avoid refreshing / panning if we haven't moved
-  if ( mLastGpsPositionWgs84 != newLocationWgs84 )
-  {
-    mLastGpsPositionWgs84 = newLocationWgs84;
-    mLastNmeaPosition = newNmeaPosition;
-    mLastElevation = newAlt;
-
-    if ( QgsProject::instance()->gpsSettings()->automaticallyAddTrackVertices() )
-    {
-      addVertex();
-    }
-  }
+  setConnection( nullptr );
 }
 
 void QgsAppGpsDigitizing::logNmeaSentence( const QString &nmeaString )
@@ -623,13 +491,6 @@ void QgsAppGpsDigitizing::stopLogging()
   }
 }
 
-void QgsAppGpsDigitizing::updateDistanceArea()
-{
-  mDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
-  mDa.setSourceCrs( mWgs84CRS, QgsProject::instance()->transformContext() );
-  emit distanceAreaChanged();
-}
-
 void QgsAppGpsDigitizing::createRubberBand()
 {
   delete mRubberBand;
@@ -641,52 +502,18 @@ void QgsAppGpsDigitizing::createRubberBand()
 
 QVariant QgsAppGpsDigitizing::timestamp( QgsVectorLayer *vlayer, int idx )
 {
+  const QDateTime timestamp = lastTimestamp();
   QVariant value;
-  if ( idx != -1 )
+  if ( idx != -1 && timestamp.isValid() )
   {
-    QDateTime time( QDate( 1900 + mLastNmeaTime.year, mLastNmeaTime.mon + 1, mLastNmeaTime.day ),
-                    QTime( mLastNmeaTime.hour, mLastNmeaTime.min, mLastNmeaTime.sec, mLastNmeaTime.msec ) );
-    // Time from GPS is UTC time
-    time.setTimeSpec( Qt::UTC );
-    // Apply leap seconds correction
-    if ( mApplyLeapSettings && mLeapSeconds != 0 )
-    {
-      time = time.addSecs( mLeapSeconds );
-    }
-    // Desired format
-    if ( mTimeStampSpec != Qt::TimeSpec::OffsetFromUTC )
-      time = time.toTimeSpec( mTimeStampSpec );
-
-    if ( mTimeStampSpec == Qt::TimeSpec::TimeZone )
-    {
-      // Get timezone from the combo
-      const QTimeZone destTz( mTimeZone.toUtf8() );
-      if ( destTz.isValid() )
-      {
-        time = time.toTimeZone( destTz );
-      }
-    }
-    else if ( mTimeStampSpec == Qt::TimeSpec::LocalTime )
-    {
-      time = time.toLocalTime();
-    }
-    else if ( mTimeStampSpec == Qt::TimeSpec::OffsetFromUTC )
-    {
-      time = time.toOffsetFromUtc( mOffsetFromUtc );
-    }
-    else if ( mTimeStampSpec == Qt::TimeSpec::UTC )
-    {
-      // Do nothing: we are already in UTC
-    }
-
     // Only string and datetime fields are supported
     switch ( vlayer->fields().at( idx ).type() )
     {
       case QVariant::String:
-        value = time.toString( Qt::DateFormat::ISODate );
+        value = timestamp.toString( Qt::DateFormat::ISODate );
         break;
       case QVariant::DateTime:
-        value = time;
+        value = timestamp;
         break;
       default:
         break;

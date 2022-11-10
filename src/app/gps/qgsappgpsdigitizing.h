@@ -18,13 +18,10 @@
 
 #include <QObject>
 
-#include "info.h"
-#include "nmeatime.h"
-#include "qgspointxy.h"
 #include "qgscoordinatetransform.h"
-#include "qgsdistancearea.h"
 #include "qgis_app.h"
 #include "qgssettingsentryimpl.h"
+#include "qgsgpslogger.h"
 
 #include <QTextStream>
 
@@ -37,7 +34,7 @@ class QgsVectorLayer;
 class QTimer;
 class QFile;
 
-class APP_EXPORT QgsAppGpsDigitizing: public QObject
+class APP_EXPORT QgsAppGpsDigitizing: public QgsGpsLogger
 {
     Q_OBJECT
 
@@ -70,18 +67,11 @@ class APP_EXPORT QgsAppGpsDigitizing: public QObject
     const QgsDistanceArea &distanceArea() const;
 
   public slots:
-    void addVertex();
-    void resetTrack();
     void createFeature();
     void setNmeaLogFile( const QString &filename );
     void setNmeaLoggingEnabled( bool enabled );
 
-  signals:
-
-    /**
-     * Emitted whenever the current track changes from being empty to non-empty or vice versa.
-     */
-    void trackIsEmptyChanged( bool isEmpty );
+    void createVertexAtCurrentLocation();
 
     /**
      * Emitted whenever the recorded track is changed.
@@ -94,14 +84,13 @@ class APP_EXPORT QgsAppGpsDigitizing: public QObject
     void distanceAreaChanged();
 
   private slots:
+    void addVertex( const QgsPoint &wgs84Point );
+    void onTrackReset();
     void gpsSettingsChanged();
     void updateTrackAppearance();
-    void switchAcquisition();
 
     void gpsConnected();
     void gpsDisconnected();
-
-    void gpsStateChanged( const QgsGpsInformation &info );
 
     void logNmeaSentence( const QString &nmeaString ); // added to handle 'raw' data
 
@@ -117,32 +106,9 @@ class APP_EXPORT QgsAppGpsDigitizing: public QObject
     QgsAppGpsConnection *mConnection = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
 
-    QgsPointXY mLastGpsPositionWgs84;
-
     QgsRubberBand *mRubberBand = nullptr;
 
-    QVector<QgsPoint> mCaptureListWgs84;
-    double mLastElevation = 0.0;
-
-    nmeaPOS mLastNmeaPosition;
-    nmeaTIME mLastNmeaTime;
-
-    QgsCoordinateReferenceSystem mWgs84CRS;
-    QgsDistanceArea mDistanceCalculator;
     QgsCoordinateTransform mCanvasToWgs84Transform;
-
-    int mBlockGpsStateChanged = 0;
-
-    std::unique_ptr<QTimer> mAcquisitionTimer;
-    bool mAcquisitionEnabled = true;
-    int mAcquisitionInterval = 0;
-    double mDistanceThreshold = 0;
-
-    bool mApplyLeapSettings = false;
-    int mLeapSeconds = 0;
-    Qt::TimeSpec mTimeStampSpec = Qt::TimeSpec::LocalTime;
-    QString mTimeZone;
-    int mOffsetFromUtc = 0;
 
     QString mNmeaLogFile;
     bool mEnableNmeaLogging = false;

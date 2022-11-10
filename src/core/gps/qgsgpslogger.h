@@ -19,16 +19,27 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgis_sip.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsdistancearea.h"
+#include "qgscoordinatetransformcontext.h"
+
 #include <QObject>
 #include <QPointer>
 
 class QgsGpsConnection;
-class QgsVectorLayer;
+class QTimer;
+class QgsGpsInformation;
+
+typedef struct _nmeaPOS nmeaPOS;
+typedef struct _nmeaTIME nmeaTIME;
 
 /**
  * \ingroup core
  * \class QgsGpsLogger
- * \brief Handles logging of incoming GPS data to a vector layer.
+ * \brief Base class for objects which log incoming GPS data.
+ *
+ * This class handles generic logic regarding logging GPS data, such as creation of tracks
+ * from incoming GPS location points.
  *
  * \since QGIS 3.30
 */
@@ -49,166 +60,159 @@ class CORE_EXPORT QgsGpsLogger : public QObject
 
     /**
      * Returns the associated GPS connection.
+     *
+     * \see setConnection()
      */
     QgsGpsConnection *connection();
 
     /**
-     * Sets the \a layer in which recorded GPS points should be stored.
+     * Sets the associated GPS connection.
      *
-     * \see setTracksLayer()
-     * \see pointsLayer()
+     * \see connection()
      */
-    void setPointsLayer( QgsVectorLayer *layer );
+    void setConnection( QgsGpsConnection *connection );
 
     /**
-     * Sets the \a layer in which recorded GPS tracks should be stored.
-     *
-     * \see setPointsLayer()
-     * \see tracksLayer()
+     * Sets the \a ellipsoid which will be used for calculating distances in the log.
      */
-    void setTracksLayer( QgsVectorLayer *layer );
+    void setEllipsoid( const QString &ellipsoid );
 
     /**
-     * Returns the layer in which recorded GPS points will be stored.
+     * Sets the coordinate transform \a context to be used when transforming
+     * GPS coordinates.
      *
-     * May be NULLPTR if points are not being stored.
-     *
-     * \see setPointsLayer()
-     * \see tracksLayer()
+     * \see transformContext()
      */
-    QgsVectorLayer *pointsLayer();
+    virtual void setTransformContext( const QgsCoordinateTransformContext &context );
 
     /**
-     * Returns the layer in which recorded GPS tracks will be stored.
+     * Returns the coordinate transform context to be used when transforming
+     * GPS coordinates.
      *
-     * May be NULLPTR if tracks are not being stored.
-     *
-     * \see setTracksLayer()
-     * \see pointsLayer()
+     * \see setTransformContext()
      */
-    QgsVectorLayer *tracksLayer();
+    QgsCoordinateTransformContext transformContext() const;
 
     /**
-     * Returns the destination time field name from the pointsLayer().
+     * Returns the recorded points in the current track.
      *
-     * If specified, timestamps for recorded points will be stored in this field.
-     *
-     * \see setPointTimeField()
+     * These points will always be in WGS84 coordinate reference system.
      */
-    QString pointTimeField() const;
+    QVector<QgsPoint> currentTrack() const;
 
     /**
-     * Sets the destination time \a field name from the pointsLayer().
+     * Returns the last recorded position of the device.
      *
-     * If specified, timestamps for recorded points will be stored in this field.
-     *
-     * \see pointTimeField()
+     * The returned point will always be in WGS84 coordinate reference system.
      */
-    void setPointTimeField( const QString &field );
+    QgsPointXY lastPosition() const;
 
     /**
-     * Returns the destination distance from previous point field name from the pointsLayer().
+     * Returns the last recorded timestamp from the device.
      *
-     * If specified, the distance from the previous recorded point will be stored in this field.
-     *
-     * \see setPointDistanceFromPreviousField()
+     * The returned time value will respect all user settings regarding GPS time zone
+     * handling.
      */
-    QString pointDistanceFromPreviousField() const;
+    QDateTime lastTimestamp() const;
 
     /**
-     * Sets the destination distance from previous point \a field name from the pointsLayer().
-     *
-     * If specified, the distance from the previous recorded point will be stored in this field.
-     *
-     * \see pointDistanceFromPreviousField()
+     * Returns the last recorded elevation the device.
      */
-    void setPointDistanceFromPreviousField( const QString &field );
+    double lastElevation() const;
 
     /**
-     * Returns the destination time delta from previous point field name from the pointsLayer().
-     *
-     * If specified, the time difference from the previous recorded point will be stored in this field.
-     *
-     * \see setPointTimeDeltaFromPreviousField()
+     * Resets the current track, discarding all recorded points.
      */
-    QString pointTimeDeltaFromPreviousField() const;
+    void resetTrack();
 
     /**
-     * Sets the destination time delta from previous point \a field name from the pointsLayer().
+     * Returns TRUE if track vertices will be automatically added whenever
+     * the GPS position is changed.
      *
-     * If specified, the time difference from the previous recorded point will be stored in this field.
-     *
-     * \see pointTimeDeltaFromPreviousField()
+     * \see setAutomaticallyAddTrackVertices()
      */
-    void setPointTimeDeltaFromPreviousField( const QString &field );
+    bool automaticallyAddTrackVertices() const;
 
     /**
-     * Returns the destination start time field name from the tracksLayer().
+     * Sets whether track vertices will be automatically added whenever
+     * the GPS position is changed.
      *
-     * If specified, the start timestamps for recorded tracks will be stored in this field.
-     *
-     * \see setTrackStartTimeField()
+     * \see automaticallyAddTrackVertices()
      */
-    QString trackStartTimeField() const;
+    void setAutomaticallyAddTrackVertices( bool enabled );
 
     /**
-     * Sets the destination start time \a field name from the tracksLayer().
-     *
-     * If specified, the start timestamps for recorded tracks will be stored in this field.
-     *
-     * \see trackStartTimeField()
+     * Should be called whenever the QGIS GPS settings are changed.
      */
-    void setTrackStartTimeField( const QString &field );
+    void updateGpsSettings();
+
+  signals:
 
     /**
-     * Returns the destination end time field name from the tracksLayer().
-     *
-     * If specified, the end timestamps for recorded tracks will be stored in this field.
-     *
-     * \see setTrackEndTimeField()
+     * Emitted whenever the current track changes from being empty to non-empty or vice versa.
      */
-    QString trackEndTimeField() const;
+    void trackIsEmptyChanged( bool isEmpty );
 
     /**
-     * Sets the destination end time \a field name from the tracksLayer().
-     *
-     * If specified, the end timestamps for recorded tracks will be stored in this field.
-     *
-     * \see trackEndTimeField()
+     * Emitted whenever the current track is reset.
      */
-    void setTrackEndTimeField( const QString &field );
+    void trackReset();
 
     /**
-     * Returns the destination track length field name from the tracksLayer().
+     * Emitted whenever a new vertex is added to the track.
      *
-     * If specified, the total track length recorded tracks will be stored in this field.
-     *
-     * \see setTrackLengthField()
+     * The \a vertex point will be in WGS84 coordinate reference system.
      */
-    QString trackLengthField() const;
+    void trackVertexAdded( const QgsPoint &vertex );
+
+  protected:
+
+    //! WGS84 coordinate reference system
+    QgsCoordinateReferenceSystem mWgs84CRS;
+
+    //! Used to pause logging of incoming GPS messages
+    int mBlockGpsStateChanged = 0;
 
     /**
-     * Sets the destination track length \a field name from the tracksLayer().
-     *
-     * If specified, the total track length recorded tracks will be stored in this field.
-     *
-     * \see trackLengthField()
+     * Adds a track vertex at the current GPS location.
      */
-    void setTrackLengthField( const QString &field );
+    void addTrackVertex();
+
+  private slots:
+
+    void switchAcquisition();
+    void gpsStateChanged( const QgsGpsInformation &info );
 
   private:
 
     QPointer< QgsGpsConnection > mConnection;
-    QPointer< QgsVectorLayer > mPointsLayer;
-    QPointer< QgsVectorLayer > mTracksLayer;
 
-    QString mPointTimeField;
-    QString mPointDistanceFromPreviousField;
-    QString mPointTimeDeltaFromPreviousField;
+    QgsDistanceArea mDistanceCalculator;
 
-    QString mTrackStartTimeField;
-    QString mTrackEndTimeField;
-    QString mTrackLengthField;
+    QgsCoordinateTransformContext mTransformContext;
+
+    QgsPointXY mLastGpsPositionWgs84;
+    double mLastElevation = 0.0;
+
+    std::unique_ptr< nmeaPOS > mLastNmeaPosition;
+    std::unique_ptr< nmeaTIME > mLastNmeaTime;
+
+    QVector<QgsPoint> mCaptureListWgs84;
+
+    std::unique_ptr<QTimer> mAcquisitionTimer;
+    bool mAcquisitionEnabled = true;
+    int mAcquisitionInterval = 0;
+    double mDistanceThreshold = 0;
+
+    bool mApplyLeapSettings = false;
+    int mLeapSeconds = 0;
+    Qt::TimeSpec mTimeStampSpec = Qt::TimeSpec::LocalTime;
+    QString mTimeZone;
+    int mOffsetFromUtc = 0;
+
+    bool mAutomaticallyAddTrackVertices = true;
+
+    friend class TestQgsGpsIntegration;
 
 };
 

@@ -359,6 +359,7 @@
 %Include auto_generated/gps/qgsgpsdetector.sip
 %Include auto_generated/gps/qgsgpslogger.sip
 %Include auto_generated/gps/qgsnmeaconnection.sip
+%Include auto_generated/gps/qgsvectorlayergpslogger.sip
 %Include auto_generated/labeling/qgscalloutposition.sip
 %Include auto_generated/labeling/qgslabeling.sip
 %Include auto_generated/labeling/qgslabelingenginesettings.sip
