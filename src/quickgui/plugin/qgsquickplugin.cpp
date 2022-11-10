@@ -37,7 +37,7 @@
 #include "qgsquickplugin.h"
 #include "qgsquickutils.h"
 
-static QObject *_utilsProvider( QQmlEngine *engine, QJSEngine *scriptEngine )
+static QObject *buildUtilsSingleton( QQmlEngine *engine, QJSEngine *scriptEngine )
 {
   Q_UNUSED( engine )
   Q_UNUSED( scriptEngine )
@@ -67,6 +67,6 @@ void QgsQuickPlugin::registerTypes( const char *uri )
   qmlRegisterType< QgsQuickMapTransform >( uri, 0, 1, "MapTransform" );
   qmlRegisterType< QgsVectorLayer >( uri, 0, 1, "VectorLayer" );
 
-  qmlRegisterSingletonType< QgsQuickUtils >( uri, 0, 1, "Utils", _utilsProvider );
+  qmlRegisterSingletonType< QgsQuickUtils >( uri, 0, 1, "Utils", buildUtilsSingleton );
 
 }
