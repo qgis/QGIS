@@ -72,6 +72,7 @@ class TestQgsLabelingEngine : public QgsTest
     void testMergingLinesWithForks();
     void testMergingLinesWithMinimumSize();
     void testCurvedLabelsHtmlFormatting();
+    void testCurvedLabelsHtmlSuperSubscript();
     void testPointLabelHtmlFormatting();
     void testCurvedLabelsWithTinySegments();
     void testCurvedLabelCorrectLinePlacement();
@@ -1681,7 +1682,7 @@ void TestQgsLabelingEngine::testMergingLinesWithMinimumSize()
   QVERIFY( imageCheck( QStringLiteral( "label_merged_minimum_size" ), img, 20 ) );
 }
 
-void TestQgsLabelingEngine::testCurvedLabelsHtmlFormatting()
+void TestQgsLabelingEngine::testPointLabelHtmlFormatting()
 {
   // test point label rendering with HTML formatting
   QgsPalLayerSettings settings;
@@ -1734,7 +1735,63 @@ void TestQgsLabelingEngine::testCurvedLabelsHtmlFormatting()
   QVERIFY( imageCheck( QStringLiteral( "label_point_html_rendering" ), img, 20 ) );
 }
 
-void TestQgsLabelingEngine::testPointLabelHtmlFormatting()
+void TestQgsLabelingEngine::testCurvedLabelsHtmlSuperSubscript()
+{
+  // test line label rendering with HTML formatting
+  QgsPalLayerSettings settings;
+  setDefaultLabelParams( settings );
+
+  QgsTextFormat format = settings.format();
+  format.setSize( 50 );
+  format.setColor( QColor( 0, 0, 0 ) );
+  format.setAllowHtmlFormatting( true );
+  settings.setFormat( format );
+
+  settings.fieldName = QStringLiteral( "'<sub>sub</sub>n<sup>sup</sup>'" );
+  settings.isExpression = true;
+  settings.placement = Qgis::LabelPlacement::Curved;
+  settings.labelPerPart = false;
+  settings.lineSettings().setLineAnchorPercent( 0.5 );
+  settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
+  settings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::AboveLine | QgsLabeling::LinePlacementFlag::MapOrientation );
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+
+  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  vl2->setRenderer( new QgsNullSymbolRenderer() );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString (190000 5000010, 190100 5000000, 190200 5000000)" ) ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabelsEnabled( true );
+
+  // make a fake render context
+  const QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setLabelingEngineSettings( createLabelEngineSettings() );
+  mapSettings.setDestinationCrs( vl2->crs() );
+
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( f.geometry().boundingBox() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
+  engineSettings.setFlag( Qgis::LabelingFlag::UsePartialCandidates, false );
+  engineSettings.setFlag( Qgis::LabelingFlag::DrawCandidates, true );
+  mapSettings.setLabelingEngineSettings( engineSettings );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "label_curved_html_supersubscript" ), img, 20 ) );
+}
+
+void TestQgsLabelingEngine::testCurvedLabelsHtmlFormatting()
 {
   // test line label rendering with HTML formatting
   QgsPalLayerSettings settings;
