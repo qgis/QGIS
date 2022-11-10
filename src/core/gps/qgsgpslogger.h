@@ -26,13 +26,12 @@
 #include <QObject>
 #include <QPointer>
 #include <QDateTime>
+#include "info.h"
 
 class QgsGpsConnection;
 class QTimer;
 class QgsGpsInformation;
 
-typedef struct _nmeaPOS nmeaPOS;
-typedef struct _nmeaTIME nmeaTIME;
 
 /**
  * \ingroup core
@@ -214,7 +213,7 @@ class CORE_EXPORT QgsGpsLogger : public QObject
     QgsPointXY mLastGpsPositionWgs84;
     double mLastElevation = 0.0;
 
-    std::unique_ptr< nmeaPOS > mLastNmeaPosition;
+    nmeaPOS mLastNmeaPosition;
     QDateTime mLastTime;
 
     QDateTime mTrackStartTime;
