@@ -11,28 +11,24 @@ __date__ = '10/11/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.core import (
-    QgsGpsLogger,
-    QgsVectorLayerGpsLogger,
-    QgsVectorLayer,
-    QgsNmeaConnection,
-    NULL
-)
 from qgis.PyQt.QtCore import (
     QBuffer,
     QDateTime
 )
 from qgis.PyQt.QtTest import QSignalSpy
+from qgis.core import (
+    QgsVectorLayerGpsLogger,
+    QgsVectorLayer,
+    QgsNmeaConnection,
+    NULL
+)
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()
 
 TEST_DATA_DIR = unitTestDataPath()
-
-with open('/home/nyall/nmea.txt', 'rt') as f:
-    log = f.readlines()
 
 
 class GpsReplay(QgsNmeaConnection):
@@ -93,7 +89,9 @@ class TestQgsGpsLogger(unittest.TestCase):
         self.assertEqual(logger.trackLengthField(), 'track_length')
 
     def test_point_recording(self):
-        points_layer = QgsVectorLayer('Point?crs=EPSG:28355&field=timestamp:datetime&field=distance:double&field=seconds:double', 'points', 'memory')
+        points_layer = QgsVectorLayer(
+            'Point?crs=EPSG:28355&field=timestamp:datetime&field=distance:double&field=seconds:double', 'points',
+            'memory')
         self.assertTrue(points_layer.isValid())
         self.assertEqual(points_layer.crs().authid(), 'EPSG:28355')
 
@@ -207,7 +205,8 @@ class TestQgsGpsLogger(unittest.TestCase):
         self.assertEqual(f.geometry().asWkt(-3), 'PointZ (-1296000 21435000 0)')
 
     def test_track_recording(self):
-        line_layer = QgsVectorLayer('LineString?crs=EPSG:28355&field=start:datetime&field=end:string&field=length:double', 'lines', 'memory')
+        line_layer = QgsVectorLayer(
+            'LineString?crs=EPSG:28355&field=start:datetime&field=end:string&field=length:double', 'lines', 'memory')
         self.assertTrue(line_layer.isValid())
         self.assertEqual(line_layer.crs().authid(), 'EPSG:28355')
 
@@ -243,8 +242,11 @@ class TestQgsGpsLogger(unittest.TestCase):
 
         self.assertEqual(line_layer.featureCount(), 1)
         f = next(line_layer.getFeatures())
-        self.assertEqual(f.attributes(), [QDateTime(2020, 1, 22, 18, 41, 11, 185), QDateTime(2020, 1, 22, 18, 41, 18, 185), 0.021035000317942486])
-        self.assertEqual(f.geometry().asWkt(-2), 'LineStringZ (-1297400 21435500 0, -1297000 21435200 0, -1297400 21434700 0)')
+        self.assertEqual(f.attributes(),
+                         [QDateTime(2020, 1, 22, 18, 41, 11, 185), QDateTime(2020, 1, 22, 18, 41, 18, 185),
+                          0.021035000317942486])
+        self.assertEqual(f.geometry().asWkt(-2),
+                         'LineStringZ (-1297400 21435500 0, -1297000 21435200 0, -1297400 21434700 0)')
 
         self.assertFalse(logger.currentTrack())
 
