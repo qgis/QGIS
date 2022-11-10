@@ -2,7 +2,7 @@
   "name": "$x",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Returns the x coordinate of the current point feature. If the feature is a multipoint feature, then the x-coordinate of the first point will be returned.",
+  "description": "Returns the x coordinate of the current point feature. If the feature is a multipoint feature, then the x-coordinate of the first point will be returned. <b>WARNING: This function is deprecated. It is recommended to use the replacement x() function with @geometry variable instead.</b>",
   "examples": [{
     "expression": "$x",
     "returns": "42"
