@@ -1706,7 +1706,7 @@ static QVariant fcnRasterAttributes( const QVariantList &values, const QgsExpres
     return QVariant();
   }
 
-  int bandNb = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
+  const int bandNb = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
   if ( bandNb < 1 || bandNb > layer->bandCount() )
   {
     parent->setEvalErrorString( QObject::tr( "Function `raster_attributes` requires a valid raster band number." ) );
