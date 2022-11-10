@@ -1810,8 +1810,8 @@ static QVariant fcnMapToHtmlTable( const QVariantList &values, const QgsExpressi
 
   for ( auto it = dict.cbegin(); it != dict.cend(); ++it )
   {
-    headers.push_back( it.key() );
-    cells.push_back( it.value().toString( ) );
+    headers.push_back( it.key().toHtmlEscaped() );
+    cells.push_back( it.value().toString( ).toHtmlEscaped() );
   }
 
   return table.arg( headers.join( QStringLiteral( "</th><th>" ) ), cells.join( QStringLiteral( "</td><td>" ) ) );
@@ -1843,7 +1843,7 @@ static QVariant fcnMapToHtmlDefinitionList( const QVariantList &values, const Qg
 
   for ( auto it = dict.cbegin(); it != dict.cend(); ++it )
   {
-    rows.append( QStringLiteral( "<dt>%1</dt><dd>%2</dd>" ).arg( it.key(), it.value().toString() ) );
+    rows.append( QStringLiteral( "<dt>%1</dt><dd>%2</dd>" ).arg( it.key().toHtmlEscaped(), it.value().toString().toHtmlEscaped() ) );
   }
 
   return table.arg( rows );

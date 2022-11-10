@@ -65,6 +65,7 @@ class TestQgsExpression: public QObject
     QgsVectorLayer *mChildLayer2 = nullptr; // relation with composite keys
     QgsVectorLayer *mChildLayer = nullptr;
     QgsRasterLayer *mRasterLayer = nullptr;
+    QgsRasterLayer *mRasterLayerWithAttributeTable = nullptr;
     QgsMeshLayer *mMeshLayer = nullptr;
 
   private slots:
@@ -123,6 +124,13 @@ class TestQgsExpression: public QObject
       mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
                                          rasterFileInfo.completeBaseName() );
       QgsProject::instance()->addMapLayer( mRasterLayer );
+
+      QString rasterWithAttributeTableFileName = testDataDir + "/raster/band1_byte_attribute_table_epsg4326.tif";
+      QFileInfo rasterWithAttributeTableFileInfo( rasterWithAttributeTableFileName );
+      mRasterLayerWithAttributeTable = new QgsRasterLayer( rasterWithAttributeTableFileInfo.filePath(),
+          rasterWithAttributeTableFileInfo.completeBaseName() );
+      Q_ASSERT( mRasterLayerWithAttributeTable->isValid() );
+      QgsProject::instance()->addMapLayer( mRasterLayerWithAttributeTable );
 
       QString meshFileName = testDataDir + "/mesh/quad_flower.2dm";
       mMeshLayer = new QgsMeshLayer( meshFileName, "mesh layer", "mdal" );
@@ -352,6 +360,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "conditions -4" ) << "case when n p end" << false;
       QTest::newRow( "conditions -5" ) << "case p end" << false;
     }
+
     void parsing()
     {
       QFETCH( QString, string );
@@ -520,7 +529,7 @@ class TestQgsExpression: public QObject
       QCOMPARE( exp.dump(), dump );
     }
 
-    void  represent_attributes()
+    void represent_attributes()
     {
 
       QgsVectorLayer layer { QStringLiteral( "Point?field=col1:integer&field=col2:string" ), QStringLiteral( "test_represent_attributes" ), QStringLiteral( "memory" ) };
@@ -1666,6 +1675,10 @@ class TestQgsExpression: public QObject
       QTest::newRow( "array_replace (unbalanced array, before < after)" ) << "array_replace(array(1,2,3,4,5), array(1,2), array(6,7,8))" << true << QVariant();
       QTest::newRow( "array_replace (map)" ) << "array_replace(array('APP','SHOULD','ROCK'),map('APP','QGIS','SHOULD','DOES'))" << false << QVariant( QVariantList() << "QGIS" << "DOES" << "ROCK" );
 
+      // map HTML formatting
+      QTest::newRow( "map_to_html_table (map)" ) << "map_to_html_table(map('APP','QGIS','<SHOULD>','DOES'))" << false << QVariant( "\n  <table>\n    <thead>\n      <th>&lt;SHOULD&gt;</th><th>APP</th>\n    </thead>\n    <tbody>\n      <tr><td>DOES</td><td>QGIS</td></tr>\n    </tbody>\n  </table>" );
+      QTest::newRow( "map_to_html_dl (map)" ) << "map_to_html_dl(map('APP','QGIS','<SHOULD>','DOES'))" << false << QVariant( "\n  <dl>\n    <dt>&lt;SHOULD&gt;</dt><dd>DOES</dd><dt>APP</dt><dd>QGIS</dd>\n  </dl>" );
+
       //fuzzy matching
       QTest::newRow( "levenshtein" ) << "levenshtein('kitten','sitting')" << false << QVariant( 3 );
       QTest::newRow( "levenshtein" ) << "levenshtein('kitten','kiTTen')" << false << QVariant( 2 );
@@ -1937,6 +1950,12 @@ class TestQgsExpression: public QObject
       QTest::newRow( "raster_value invalid geometry" ) << QStringLiteral( "raster_value('%1',1,'invalid geom')" ).arg( mRasterLayer->name() ) << true << QVariant();
       QTest::newRow( "raster_value valid" ) << QStringLiteral( "raster_value('%1',1,make_point(1535390,5083270))" ).arg( mRasterLayer->name() ) << false << QVariant( 1.0 );
       QTest::newRow( "raster_value outside extent" ) << QStringLiteral( "raster_value('%1',1,make_point(1535370,5083250))" ).arg( mRasterLayer->name() ) << false << QVariant();
+
+      // Raster attributes
+      QTest::newRow( "raster_attributes band 1" ) << QStringLiteral( "map_to_html_dl(raster_attributes('%1',1,246))" ).arg( mRasterLayerWithAttributeTable->name() ) << false << QVariant( "\n  <dl>\n    <dt>Class</dt><dd>2</dd><dt>Value</dt><dd>246</dd>\n  </dl>" );
+      QTest::newRow( "raster_attributes band 1 not found value" ) << QStringLiteral( "raster_attributes('%1',1,100000)" ).arg( mRasterLayerWithAttributeTable->name() ) << false << QVariant( );
+      QTest::newRow( "raster_attributes wrong band 2" ) << QStringLiteral( "raster_attributes('%1',2,243)" ).arg( mRasterLayerWithAttributeTable->name() ) << true << QVariant();
+      QTest::newRow( "raster_attributes no attributes" ) << QStringLiteral( "raster_attributes('%1',1,1)" ).arg( mRasterLayerWithAttributeTable->name() ) << false << QVariant();
 
       //test conversions to bool
       QTest::newRow( "feature to bool false" ) << QStringLiteral( "case when get_feature('none','none',499) then true else false end" ) << false << QVariant( false );
@@ -3052,7 +3071,6 @@ class TestQgsExpression: public QObject
 
       QCOMPARE( refVar, expectedVars );
     }
-
 
     void referenced_functions()
     {
@@ -4577,7 +4595,6 @@ class TestQgsExpression: public QObject
 
     }
 
-
     void test_nowStatic()
     {
       QgsExpression e( QStringLiteral( "now()" ) );
@@ -4658,7 +4675,6 @@ class TestQgsExpression: public QObject
       QVERIFY( !e.evaluate( &context ).isValid() );
       QVERIFY( !e.hasEvalError() ); // no eval error - we are tolerant to this
     }
-
 
     void testSqliteFetchAndIncrementWithTranscationMode()
     {
@@ -5097,6 +5113,7 @@ class TestQgsExpression: public QObject
 
       QCOMPARE( QgsExpressionUtils::toLocalizedString( QString( "hello world" ) ), QStringLiteral( "hello world" ) );
     }
+
 };
 
 QGSTEST_MAIN( TestQgsExpression )
