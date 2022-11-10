@@ -21,6 +21,10 @@
 #include "qgstextfragment.h"
 #include "qgstextblock.h"
 
+// to match QTextEngine handling of superscript/subscript font sizes
+constexpr double SUPERSCRIPT_SUBSCRIPT_FONT_SIZE_SCALING_FACTOR = 2.0 / 3.0;
+
+
 QgsTextLabelFeature::QgsTextLabelFeature( QgsFeatureId id, geos::unique_ptr geometry, QSizeF size )
   : QgsLabelFeature( id, std::move( geometry ), size )
 {
@@ -78,6 +82,9 @@ QgsPrecalculatedTextMetrics QgsTextLabelFeature::calculateTextMetrics( const Qgs
   QVector< double > characterWidths( graphemes.count() );
   QVector< double > characterHeights( graphemes.count() );
   QVector< double > characterDescents( graphemes.count() );
+
+  QFont previousNonSuperSubScriptFont;
+
   for ( int i = 0; i < graphemes.count(); i++ )
   {
     // reconstruct how Qt creates word spacing, then adjust per individual stored character
@@ -92,6 +99,48 @@ QgsPrecalculatedTextMetrics QgsTextLabelFeature::calculateTextMetrics( const Qgs
     {
       QFont graphemeFont = baseFont;
       graphemeFormat->updateFontForFormat( graphemeFont, context, 1 );
+
+      if ( i == 0 )
+        previousNonSuperSubScriptFont = graphemeFont;
+
+      if ( graphemeFormat->hasVerticalAlignmentSet() )
+      {
+        switch ( graphemeFormat->verticalAlignment() )
+        {
+          case Qgis::TextCharacterVerticalAlignment::Normal:
+            previousNonSuperSubScriptFont = graphemeFont;
+            break;
+
+          case Qgis::TextCharacterVerticalAlignment::SuperScript:
+          {
+            if ( graphemeFormat->fontPointSize() < 0 )
+            {
+              // if fragment has no explicit font size set, then we scale the inherited font size to 60% of base font size
+              // this allows for easier use of super/subscript in labels as "my text<sup>2</sup>" will automatically render
+              // the superscript in a smaller font size. BUT if the fragment format HAS a non -1 font size then it indicates
+              // that the document has an explicit font size for the super/subscript element, eg "my text<sup style="font-size: 6pt">2</sup>"
+              // which we should respect
+              graphemeFont.setPixelSize( graphemeFont.pixelSize() * SUPERSCRIPT_SUBSCRIPT_FONT_SIZE_SCALING_FACTOR );
+            }
+            break;
+          }
+
+          case Qgis::TextCharacterVerticalAlignment::SubScript:
+          {
+            if ( graphemeFormat->fontPointSize() < 0 )
+            {
+              // see above!!
+              graphemeFont.setPixelSize( graphemeFont.pixelSize() * SUPERSCRIPT_SUBSCRIPT_FONT_SIZE_SCALING_FACTOR );
+            }
+            break;
+          }
+        }
+      }
+      else
+      {
+        previousNonSuperSubScriptFont = graphemeFont;
+      }
+
       const QFontMetricsF graphemeFontMetrics( graphemeFont );
       graphemeFirstCharHorizontalAdvance = graphemeFontMetrics.horizontalAdvance( QString( graphemes[i].at( 0 ) ) );
       graphemeFirstCharHorizontalAdvanceWithLetterSpacing = graphemeFontMetrics.horizontalAdvance( graphemes[i].at( 0 ) ) + letterSpacing;
