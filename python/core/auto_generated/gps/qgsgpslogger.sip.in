@@ -1,0 +1,49 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/gps/qgsgpslogger.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsGpsLogger : QObject
+%Docstring
+Handles logging of incoming GPS data to a vector layer.
+
+:py:class:`QgsBabelFormatRegistry` is not usually directly created, but rather accessed through
+:py:func:`QgsApplication.gpsBabelFormatRegistry()`.
+
+.. versionadded:: 3.30
+%End
+{
+
+  public:
+
+    QgsGpsLogger( QgsGpsConnection *connection, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for :py:class:`QgsGpsLogger` with the specified ``parent`` object.
+
+The logger will automatically record GPS information from the specified ``connection``.
+%End
+
+    ~QgsGpsLogger();
+
+    QgsGpsConnection *connection();
+%Docstring
+Returns the associated GPS connection.
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/gps/qgsgpslogger.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
