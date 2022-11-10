@@ -15,6 +15,7 @@
 
 #include "qgsgpslogger.h"
 #include "qgsgpsconnection.h"
+#include "qgsvectorlayer.h"
 
 QgsGpsLogger::QgsGpsLogger( QgsGpsConnection *connection, QObject *parent )
   : QObject( parent )
@@ -31,4 +32,84 @@ QgsGpsLogger::~QgsGpsLogger()
 QgsGpsConnection *QgsGpsLogger::connection()
 {
   return mConnection;
+}
+
+void QgsGpsLogger::setPointsLayer( QgsVectorLayer *layer )
+{
+  mPointsLayer = layer;
+}
+
+void QgsGpsLogger::setTracksLayer( QgsVectorLayer *layer )
+{
+  mTracksLayer = layer;
+}
+
+QgsVectorLayer *QgsGpsLogger::pointsLayer()
+{
+  return mPointsLayer;
+}
+
+QgsVectorLayer *QgsGpsLogger::tracksLayer()
+{
+  return mTracksLayer;
+}
+
+QString QgsGpsLogger::pointTimeField() const
+{
+  return mPointTimeField;
+}
+
+void QgsGpsLogger::setPointTimeField( const QString &field )
+{
+  mPointTimeField = field;
+}
+
+QString QgsGpsLogger::pointDistanceFromPreviousField() const
+{
+  return mPointDistanceFromPreviousField;
+}
+
+void QgsGpsLogger::setPointDistanceFromPreviousField( const QString &field )
+{
+  mPointDistanceFromPreviousField = field;
+}
+
+QString QgsGpsLogger::pointTimeDeltaFromPreviousField() const
+{
+  return mPointTimeDeltaFromPreviousField;
+}
+
+void QgsGpsLogger::setPointTimeDeltaFromPreviousField( const QString &field )
+{
+  mPointTimeDeltaFromPreviousField = field;
+}
+
+QString QgsGpsLogger::trackStartTimeField() const
+{
+  return mTrackStartTimeField;
+}
+
+void QgsGpsLogger::setTrackStartTimeField( const QString &field )
+{
+  mTrackStartTimeField = field;
+}
+
+QString QgsGpsLogger::trackEndTimeField() const
+{
+  return mTrackEndTimeField;
+}
+
+void QgsGpsLogger::setTrackEndTimeField( const QString &field )
+{
+  mTrackEndTimeField = field;
+}
+
+QString QgsGpsLogger::trackLengthField() const
+{
+  return mTrackLengthField;
+}
+
+void QgsGpsLogger::setTrackLengthField( const QString &field )
+{
+  mTrackLengthField = field;
 }
