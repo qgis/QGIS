@@ -1530,7 +1530,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * It may also contain embedded expressions.
      *
      * \note this method was only available for vector layers since QGIS 3.0
-     * \since QGIS 3.0
+     * \since QGIS 3.30
      */
     QString mapTipTemplate() const;
 
@@ -1830,9 +1830,10 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void layerModified();
 
     /**
-     * Emitted when the map tip changes
+     * Emitted when the map tip template changes
      *
-     * \since QGIS 3.0
+     * \note this method was only available for vector layers since QGIS 3.0
+     * \since QGIS 3.30
      */
     void mapTipTemplateChanged();
 

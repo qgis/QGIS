@@ -191,7 +191,7 @@ class CORE_EXPORT QgsExpressionContextUtils
     /**
      * Sets the expression context variables which are available for expressions triggered by moving the mouse over a feature
      * of the currently selected layer.
-     * \param position map coordinates of the currente pointer position in the CRS of the layer which triggered the action.
+     * \param position map coordinates of the current pointer position in the CRS of the layer which triggered the action.
      *
      * \since QGIS 3.30
      */

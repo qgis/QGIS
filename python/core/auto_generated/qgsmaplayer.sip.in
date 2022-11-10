@@ -1518,7 +1518,7 @@ It may also contain embedded expressions.
 
    this method was only available for vector layers since QGIS 3.0
 
-.. versionadded:: 3.0
+.. versionadded:: 3.30
 %End
 
     void setMapTipTemplate( const QString &mapTipTemplate );
@@ -1877,9 +1877,13 @@ Emitted when modifications has been done on layer
 
     void mapTipTemplateChanged();
 %Docstring
-Emitted when the map tip changes
+Emitted when the map tip template changes
 
-.. versionadded:: 3.0
+.. note::
+
+   this method was only available for vector layers since QGIS 3.0
+
+.. versionadded:: 3.30
 %End
 
   protected:
