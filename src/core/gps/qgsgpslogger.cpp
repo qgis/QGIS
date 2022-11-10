@@ -32,6 +32,8 @@ QgsGpsLogger::QgsGpsLogger( QgsGpsConnection *connection, QObject *parent )
   mAcquisitionTimer = std::unique_ptr<QTimer>( new QTimer( this ) );
   mAcquisitionTimer->setSingleShot( true );
 
+  updateGpsSettings();
+
   connect( mAcquisitionTimer.get(), &QTimer::timeout,
            this, &QgsGpsLogger::switchAcquisition );
 }
