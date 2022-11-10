@@ -3386,6 +3386,18 @@ class TestQgsExpression: public QObject
       yAt = expYAtNeg2.evaluate( &context );
       QCOMPARE( yAt.toDouble(), 6.0 );
 
+      // test with named parameter
+      QgsExpression expYAtWithI( QStringLiteral( "x_at(@geometry, i:=1)" ) );
+      context.setFeature( fPolygon );
+      yAt = expYAtWithI.evaluate( &context );
+      QCOMPARE( yAt.toDouble(), 10.0 );
+
+      QgsExpression expYAtWithVertex( QStringLiteral( "x_at(@geometry, vertex:=1)" ) );
+      context.setFeature( fPolygon );
+      yAt = expYAtWithVertex.evaluate( &context );
+      QCOMPARE( yAt.toDouble(), 10.0 );
+
+
       // Test z_at
 
       // a basic case
