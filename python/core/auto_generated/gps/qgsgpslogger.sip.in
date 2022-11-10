@@ -10,7 +10,6 @@
 
 
 
-typedef struct _nmeaPOS nmeaPOS;
 
 class QgsGpsLogger : QObject
 {
