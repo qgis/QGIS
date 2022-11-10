@@ -85,7 +85,7 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install python3-virtualenv virtualenv git
           git clone https://github.com/pblottiere/pyogctest
-          cd pyogctest && git checkout 1.1.0 && cd -
+          cd pyogctest && git checkout ogcapif_testsuite_1_4 && cd -
           virtualenv -p /usr/bin/python3 venv && source venv/bin/activate && pip install -e pyogctest/
 
       - name: Run WMS 1.3.0 OGC tests
