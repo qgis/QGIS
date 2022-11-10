@@ -90,12 +90,12 @@ class StyleStorageTestBase():
 
             try:
                 conn.dropVectorTable(schema, self.tableName())
-            except:
+            except Exception:
                 pass
 
             try:
                 conn.createSchema(schema)
-            except:
+            except Exception:
                 pass
 
             schemas = conn.schemas()
