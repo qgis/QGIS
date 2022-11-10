@@ -51,6 +51,16 @@ class StyleStorageTestBase():
 
         return conn.tableUri(schema_name, table_name)
 
+    def schemaName(self):
+        """Providers may override (Oracle?)"""
+
+        return 'test_styles_schema'
+
+    def tableName(self):
+        """Providers may override (Oracle?)"""
+
+        return 'test_styles_table'
+
     def testMultipleStyles(self):
 
         md = QgsProviderRegistry.instance().providerMetadata(self.providerKey)
@@ -65,13 +75,29 @@ class StyleStorageTestBase():
             and capabilities & QgsAbstractDatabaseProviderConnection.Schemas
                 and capabilities & QgsAbstractDatabaseProviderConnection.DropSchema):
 
-            schema = 'testStyles'
+            schema = self.schemaName()
             # Start clean
             if schema in conn.schemas():
                 conn.dropSchema(schema, True)
 
             # Create
             conn.createSchema(schema)
+            schemas = conn.schemas()
+            self.assertTrue(schema in schemas)
+
+        elif (capabilities & QgsAbstractDatabaseProviderConnection.Schemas):
+            schema = self.schemaName()
+
+            try:
+                conn.dropVectorTable(schema, self.tableName())
+            except:
+                pass
+
+            try:
+                conn.createSchema(schema)
+            except:
+                pass
+
             schemas = conn.schemas()
             self.assertTrue(schema in schemas)
 
@@ -82,8 +108,9 @@ class StyleStorageTestBase():
         typ = QgsWkbTypes.Point
 
         # Create table
-        conn.createVectorTable(schema, 'test_styles', fields, typ, crs, True, options)
-        uri = self.layerUri(conn, schema, 'test_styles')
+        conn.createVectorTable(schema, self.tableName(), fields, typ, crs, True, options)
+
+        uri = self.layerUri(conn, schema, self.tableName())
 
         vl = QgsVectorLayer(uri, 'vl', self.providerKey)
         self.assertTrue(vl.isValid())
