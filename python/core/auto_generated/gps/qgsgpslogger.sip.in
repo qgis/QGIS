@@ -14,9 +14,6 @@ class QgsGpsLogger : QObject
 %Docstring
 Handles logging of incoming GPS data to a vector layer.
 
-:py:class:`QgsBabelFormatRegistry` is not usually directly created, but rather accessed through
-:py:func:`QgsApplication.gpsBabelFormatRegistry()`.
-
 .. versionadded:: 3.30
 %End
 {

@@ -29,9 +29,6 @@ class QgsGpsConnection;
  * \class QgsGpsLogger
  * \brief Handles logging of incoming GPS data to a vector layer.
  *
- * QgsBabelFormatRegistry is not usually directly created, but rather accessed through
- * QgsApplication::gpsBabelFormatRegistry().
- *
  * \since QGIS 3.30
 */
 class CORE_EXPORT QgsGpsLogger : QObject
