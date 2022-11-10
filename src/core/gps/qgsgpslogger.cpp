@@ -16,7 +16,6 @@
 #include "qgsgpslogger.h"
 #include "qgsgpsconnection.h"
 #include "gmath.h"
-#include "info.h"
 
 #include <QTimer>
 #include <QTimeZone>
@@ -27,9 +26,8 @@ QgsGpsLogger::QgsGpsLogger( QgsGpsConnection *connection, QObject *parent )
 {
   setConnection( connection );
 
-  mLastNmeaPosition = std::make_unique< nmeaPOS >();
-  mLastNmeaPosition->lat = nmea_degree2radian( 0.0 );
-  mLastNmeaPosition->lon = nmea_degree2radian( 0.0 );
+  mLastNmeaPosition.lat = nmea_degree2radian( 0.0 );
+  mLastNmeaPosition.lon = nmea_degree2radian( 0.0 );
 
   mAcquisitionTimer = std::unique_ptr<QTimer>( new QTimer( this ) );
   mAcquisitionTimer->setSingleShot( true );
@@ -200,11 +198,10 @@ void QgsGpsLogger::gpsStateChanged( const QgsGpsInformation &info )
   else
   {
     newLocationWgs84 = mLastGpsPositionWgs84;
-    if ( mLastNmeaPosition )
-      newNmeaPosition = *mLastNmeaPosition;
+    newNmeaPosition = mLastNmeaPosition;
     newAlt = mLastElevation;
   }
-  if ( !mAcquisitionEnabled || !mLastNmeaPosition || ( nmea_distance( &newNmeaPosition, mLastNmeaPosition.get() ) < mDistanceThreshold ) )
+  if ( !mAcquisitionEnabled || ( nmea_distance( &newNmeaPosition, &mLastNmeaPosition ) < mDistanceThreshold ) )
   {
     // do not update position if update is disabled by timer or distance is under threshold
     newLocationWgs84 = mLastGpsPositionWgs84;
@@ -220,7 +217,7 @@ void QgsGpsLogger::gpsStateChanged( const QgsGpsInformation &info )
   if ( mLastGpsPositionWgs84 != newLocationWgs84 )
   {
     mLastGpsPositionWgs84 = newLocationWgs84;
-    mLastNmeaPosition = std::make_unique< nmeaPOS>( newNmeaPosition );
+    mLastNmeaPosition = newNmeaPosition;
     mLastElevation = newAlt;
 
     if ( mAutomaticallyAddTrackVertices )
