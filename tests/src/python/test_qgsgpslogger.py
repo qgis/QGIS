@@ -14,6 +14,7 @@ import qgis  # NOQA
 
 from qgis.core import (
     QgsGpsLogger,
+    QgsVectorLayerGpsLogger,
     QgsVectorLayer
 )
 from qgis.testing import start_app, unittest
@@ -27,7 +28,7 @@ TEST_DATA_DIR = unitTestDataPath()
 class TestQgsGpsLogger(unittest.TestCase):
 
     def test_setters(self):
-        logger = QgsGpsLogger(None)
+        logger = QgsVectorLayerGpsLogger(None)
         self.assertIsNone(logger.tracksLayer())
         self.assertIsNone(logger.pointsLayer())
 

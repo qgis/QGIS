@@ -69,6 +69,7 @@ set(QGIS_CORE_SRCS
   gps/qgsgpsdetector.cpp
   gps/qgsgpslogger.cpp
   gps/qgsnmeaconnection.cpp
+  gps/qgsvectorlayergpslogger.cpp
 
   plot/qgsplot.cpp
 
@@ -1405,6 +1406,7 @@ set(QGIS_CORE_HDRS
   gps/qgsgpsdetector.h
   gps/qgsgpslogger.h
   gps/qgsnmeaconnection.h
+  gps/qgsvectorlayergpslogger.h
 
   labeling/qgscalloutposition.h
   labeling/qgslabelfeature.h

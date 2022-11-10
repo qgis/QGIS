@@ -214,7 +214,7 @@ void TestQgsGpsIntegration::testTimestamp()
 
   // Widget config and input values
   // 2019/06/19 12:27:34.543[UTC]
-  gpsDigitizing.mLastNmeaTime = { 119, 5, 19, 12, 27, 34, 543 };
+  gpsDigitizing.mLastNmeaTime.reset( new nmeaTIME{ 119, 5, 19, 12, 27, 34, 543 } );
   gpsDigitizing.mApplyLeapSettings = false;
   gpsDigitizing.mLeapSeconds = 7;
   gpsDigitizing.mOffsetFromUtc = -36000;
@@ -290,7 +290,7 @@ void TestQgsGpsIntegration::testTimestampWrite()
 
   // Widget config and input values
   // 2019/06/19 12:27:34.543[UTC]
-  gpsDigitizing.mLastNmeaTime = { 119, 5, 19, 12, 27, 34, 543 };
+  gpsDigitizing.mLastNmeaTime.reset( new nmeaTIME{ 119, 5, 19, 12, 27, 34, 543 } );
   gpsDigitizing.mApplyLeapSettings = false;
   gpsDigitizing.mLeapSeconds = 7;
   gpsDigitizing.mTimeZone = QStringLiteral( "Asia/Colombo" );
@@ -365,11 +365,11 @@ void TestQgsGpsIntegration::testMultiPartLayers()
   gpsDigitizing.createFeature();
   QCOMPARE( multiLineString->featureCount(), 0L );
   // need at least 2 points
-  gpsDigitizing.addVertex();
+  gpsDigitizing.createVertexAtCurrentLocation();
   gpsDigitizing.createFeature();
   QCOMPARE( multiLineString->featureCount(), 0L );
 
-  gpsDigitizing.addVertex();
+  gpsDigitizing.createVertexAtCurrentLocation();
   gpsDigitizing.createFeature();
   QCOMPARE( multiLineString->featureCount(), 1L );
   QgsFeature f;
@@ -393,14 +393,14 @@ void TestQgsGpsIntegration::testMultiPartLayers()
   QCOMPARE( multiPolygon->featureCount(), 0L );
 
   // need at least 3 points
-  gpsDigitizing.addVertex();
+  gpsDigitizing.createVertexAtCurrentLocation();
   gpsDigitizing.createFeature();
   QCOMPARE( multiPolygon->featureCount(), 0L );
-  gpsDigitizing.addVertex();
+  gpsDigitizing.createVertexAtCurrentLocation();
   gpsDigitizing.createFeature();
   QCOMPARE( multiPolygon->featureCount(), 0L );
 
-  gpsDigitizing.addVertex();
+  gpsDigitizing.createVertexAtCurrentLocation();
   gpsDigitizing.createFeature();
   QCOMPARE( multiPolygon->featureCount(), 1L );
   QVERIFY( multiPolygon->getFeatures().nextFeature( f ) );

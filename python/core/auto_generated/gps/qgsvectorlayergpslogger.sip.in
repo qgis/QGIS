@@ -1,0 +1,194 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/gps/qgsvectorlayergpslogger.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsVectorLayerGpsLogger : QgsGpsLogger
+{
+%Docstring(signature="appended")
+Handles logging of incoming GPS data to a vector layer.
+
+.. versionadded:: 3.30
+%End
+
+%TypeHeaderCode
+#include "qgsvectorlayergpslogger.h"
+%End
+  public:
+
+    QgsVectorLayerGpsLogger( QgsGpsConnection *connection, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsVectorLayerGpsLogger with the specified ``parent`` object.
+
+The logger will automatically record GPS information from the specified ``connection``.
+%End
+
+    ~QgsVectorLayerGpsLogger();
+
+    void setPointsLayer( QgsVectorLayer *layer );
+%Docstring
+Sets the ``layer`` in which recorded GPS points should be stored.
+
+.. seealso:: :py:func:`setTracksLayer`
+
+.. seealso:: :py:func:`pointsLayer`
+%End
+
+    void setTracksLayer( QgsVectorLayer *layer );
+%Docstring
+Sets the ``layer`` in which recorded GPS tracks should be stored.
+
+.. seealso:: :py:func:`setPointsLayer`
+
+.. seealso:: :py:func:`tracksLayer`
+%End
+
+    QgsVectorLayer *pointsLayer();
+%Docstring
+Returns the layer in which recorded GPS points will be stored.
+
+May be ``None`` if points are not being stored.
+
+.. seealso:: :py:func:`setPointsLayer`
+
+.. seealso:: :py:func:`tracksLayer`
+%End
+
+    QgsVectorLayer *tracksLayer();
+%Docstring
+Returns the layer in which recorded GPS tracks will be stored.
+
+May be ``None`` if tracks are not being stored.
+
+.. seealso:: :py:func:`setTracksLayer`
+
+.. seealso:: :py:func:`pointsLayer`
+%End
+
+    QString pointTimeField() const;
+%Docstring
+Returns the destination time field name from the :py:func:`~QgsVectorLayerGpsLogger.pointsLayer`.
+
+If specified, timestamps for recorded points will be stored in this field.
+
+.. seealso:: :py:func:`setPointTimeField`
+%End
+
+    void setPointTimeField( const QString &field );
+%Docstring
+Sets the destination time ``field`` name from the :py:func:`~QgsVectorLayerGpsLogger.pointsLayer`.
+
+If specified, timestamps for recorded points will be stored in this field.
+
+.. seealso:: :py:func:`pointTimeField`
+%End
+
+    QString pointDistanceFromPreviousField() const;
+%Docstring
+Returns the destination distance from previous point field name from the :py:func:`~QgsVectorLayerGpsLogger.pointsLayer`.
+
+If specified, the distance from the previous recorded point will be stored in this field.
+
+.. seealso:: :py:func:`setPointDistanceFromPreviousField`
+%End
+
+    void setPointDistanceFromPreviousField( const QString &field );
+%Docstring
+Sets the destination distance from previous point ``field`` name from the :py:func:`~QgsVectorLayerGpsLogger.pointsLayer`.
+
+If specified, the distance from the previous recorded point will be stored in this field.
+
+.. seealso:: :py:func:`pointDistanceFromPreviousField`
+%End
+
+    QString pointTimeDeltaFromPreviousField() const;
+%Docstring
+Returns the destination time delta from previous point field name from the :py:func:`~QgsVectorLayerGpsLogger.pointsLayer`.
+
+If specified, the time difference from the previous recorded point will be stored in this field.
+
+.. seealso:: :py:func:`setPointTimeDeltaFromPreviousField`
+%End
+
+    void setPointTimeDeltaFromPreviousField( const QString &field );
+%Docstring
+Sets the destination time delta from previous point ``field`` name from the :py:func:`~QgsVectorLayerGpsLogger.pointsLayer`.
+
+If specified, the time difference from the previous recorded point will be stored in this field.
+
+.. seealso:: :py:func:`pointTimeDeltaFromPreviousField`
+%End
+
+    QString trackStartTimeField() const;
+%Docstring
+Returns the destination start time field name from the :py:func:`~QgsVectorLayerGpsLogger.tracksLayer`.
+
+If specified, the start timestamps for recorded tracks will be stored in this field.
+
+.. seealso:: :py:func:`setTrackStartTimeField`
+%End
+
+    void setTrackStartTimeField( const QString &field );
+%Docstring
+Sets the destination start time ``field`` name from the :py:func:`~QgsVectorLayerGpsLogger.tracksLayer`.
+
+If specified, the start timestamps for recorded tracks will be stored in this field.
+
+.. seealso:: :py:func:`trackStartTimeField`
+%End
+
+    QString trackEndTimeField() const;
+%Docstring
+Returns the destination end time field name from the :py:func:`~QgsVectorLayerGpsLogger.tracksLayer`.
+
+If specified, the end timestamps for recorded tracks will be stored in this field.
+
+.. seealso:: :py:func:`setTrackEndTimeField`
+%End
+
+    void setTrackEndTimeField( const QString &field );
+%Docstring
+Sets the destination end time ``field`` name from the :py:func:`~QgsVectorLayerGpsLogger.tracksLayer`.
+
+If specified, the end timestamps for recorded tracks will be stored in this field.
+
+.. seealso:: :py:func:`trackEndTimeField`
+%End
+
+    QString trackLengthField() const;
+%Docstring
+Returns the destination track length field name from the :py:func:`~QgsVectorLayerGpsLogger.tracksLayer`.
+
+If specified, the total track length recorded tracks will be stored in this field.
+
+.. seealso:: :py:func:`setTrackLengthField`
+%End
+
+    void setTrackLengthField( const QString &field );
+%Docstring
+Sets the destination track length ``field`` name from the :py:func:`~QgsVectorLayerGpsLogger.tracksLayer`.
+
+If specified, the total track length recorded tracks will be stored in this field.
+
+.. seealso:: :py:func:`trackLengthField`
+%End
+
+    virtual void setTransformContext( const QgsCoordinateTransformContext &context );
+
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/gps/qgsvectorlayergpslogger.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

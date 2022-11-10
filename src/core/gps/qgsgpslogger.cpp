@@ -15,13 +15,28 @@
 
 #include "qgsgpslogger.h"
 #include "qgsgpsconnection.h"
-#include "qgsvectorlayer.h"
+#include "gmath.h"
+#include "info.h"
+#include "nmeatime.h"
+
+#include <QTimer>
+#include <QTimeZone>
 
 QgsGpsLogger::QgsGpsLogger( QgsGpsConnection *connection, QObject *parent )
   : QObject( parent )
-  , mConnection( connection )
+  , mWgs84CRS( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) )
 {
+  setConnection( connection );
 
+  mLastNmeaPosition = std::make_unique< nmeaPOS >();
+  mLastNmeaPosition->lat = nmea_degree2radian( 0.0 );
+  mLastNmeaPosition->lon = nmea_degree2radian( 0.0 );
+
+  mAcquisitionTimer = std::unique_ptr<QTimer>( new QTimer( this ) );
+  mAcquisitionTimer->setSingleShot( true );
+
+  connect( mAcquisitionTimer.get(), &QTimer::timeout,
+           this, &QgsGpsLogger::switchAcquisition );
 }
 
 QgsGpsLogger::~QgsGpsLogger()
@@ -34,82 +49,242 @@ QgsGpsConnection *QgsGpsLogger::connection()
   return mConnection;
 }
 
-void QgsGpsLogger::setPointsLayer( QgsVectorLayer *layer )
+void QgsGpsLogger::setConnection( QgsGpsConnection *connection )
 {
-  mPointsLayer = layer;
+  if ( mConnection )
+  {
+    disconnect( mConnection, &QgsGpsConnection::stateChanged, this, &QgsGpsLogger::gpsStateChanged );
+  }
+
+  mConnection = connection;
+
+  if ( mConnection )
+  {
+    connect( mConnection, &QgsGpsConnection::stateChanged, this, &QgsGpsLogger::gpsStateChanged );
+  }
 }
 
-void QgsGpsLogger::setTracksLayer( QgsVectorLayer *layer )
+void QgsGpsLogger::setEllipsoid( const QString &ellipsoid )
 {
-  mTracksLayer = layer;
+  mDistanceCalculator.setEllipsoid( ellipsoid );
 }
 
-QgsVectorLayer *QgsGpsLogger::pointsLayer()
+void QgsGpsLogger::setTransformContext( const QgsCoordinateTransformContext &context )
 {
-  return mPointsLayer;
+  mTransformContext = context;
+  mDistanceCalculator.setSourceCrs( mWgs84CRS, mTransformContext );
 }
 
-QgsVectorLayer *QgsGpsLogger::tracksLayer()
+QgsCoordinateTransformContext QgsGpsLogger::transformContext() const
 {
-  return mTracksLayer;
+  return mTransformContext;
 }
 
-QString QgsGpsLogger::pointTimeField() const
+QVector<QgsPoint> QgsGpsLogger::currentTrack() const
 {
-  return mPointTimeField;
+  return mCaptureListWgs84;
 }
 
-void QgsGpsLogger::setPointTimeField( const QString &field )
+QgsPointXY QgsGpsLogger::lastPosition() const
 {
-  mPointTimeField = field;
+  return mLastGpsPositionWgs84;
 }
 
-QString QgsGpsLogger::pointDistanceFromPreviousField() const
+double QgsGpsLogger::lastElevation() const
 {
-  return mPointDistanceFromPreviousField;
+  return mLastElevation;
 }
 
-void QgsGpsLogger::setPointDistanceFromPreviousField( const QString &field )
+void QgsGpsLogger::resetTrack()
 {
-  mPointDistanceFromPreviousField = field;
+  mBlockGpsStateChanged++;
+
+  const bool trackWasEmpty = mCaptureListWgs84.isEmpty();
+  mCaptureListWgs84.clear();
+  mBlockGpsStateChanged--;
+
+  if ( !trackWasEmpty )
+    emit trackIsEmptyChanged( true );
+
+  emit trackReset();
 }
 
-QString QgsGpsLogger::pointTimeDeltaFromPreviousField() const
+void QgsGpsLogger::updateGpsSettings()
 {
-  return mPointTimeDeltaFromPreviousField;
+  int acquisitionInterval = 0;
+  if ( QgsGpsConnection::settingsGpsConnectionType.exists() )
+  {
+    acquisitionInterval = static_cast< int >( QgsGpsConnection::settingGpsAcquisitionInterval.value() );
+    mDistanceThreshold = QgsGpsConnection::settingGpsDistanceThreshold.value();
+    mApplyLeapSettings = QgsGpsConnection::settingGpsApplyLeapSecondsCorrection.value();
+    mLeapSeconds = static_cast< int >( QgsGpsConnection::settingGpsLeapSeconds.value() );
+    mTimeStampSpec = QgsGpsConnection::settingsGpsTimeStampSpecification.value();
+    mTimeZone = QgsGpsConnection::settingsGpsTimeStampTimeZone.value();
+    mOffsetFromUtc = static_cast< int >( QgsGpsConnection::settingsGpsTimeStampOffsetFromUtc.value() );
+  }
+  else
+  {
+    // legacy settings
+    QgsSettings settings;
+
+    acquisitionInterval = settings.value( QStringLiteral( "acquisitionInterval" ), 0, QgsSettings::Gps ).toInt();
+    mDistanceThreshold = settings.value( QStringLiteral( "distanceThreshold" ), 0, QgsSettings::Gps ).toDouble();
+    mApplyLeapSettings = settings.value( QStringLiteral( "applyLeapSeconds" ), true, QgsSettings::Gps ).toBool();
+    mLeapSeconds = settings.value( QStringLiteral( "leapSecondsCorrection" ), 18, QgsSettings::Gps ).toInt();
+
+    switch ( settings.value( QStringLiteral( "timeStampFormat" ), Qt::LocalTime, QgsSettings::Gps ).toInt() )
+    {
+      case 0:
+        mTimeStampSpec = Qt::TimeSpec::LocalTime;
+        break;
+
+      case 1:
+        mTimeStampSpec = Qt::TimeSpec::UTC;
+        break;
+
+      case 2:
+        mTimeStampSpec = Qt::TimeSpec::TimeZone;
+        break;
+    }
+    mTimeZone = settings.value( QStringLiteral( "timestampTimeZone" ), QVariant(), QgsSettings::Gps ).toString();
+  }
+
+  mAcquisitionInterval = acquisitionInterval * 1000;
+  if ( mAcquisitionTimer->isActive() )
+    mAcquisitionTimer->stop();
+  mAcquisitionEnabled = true;
+
+  switchAcquisition();
 }
 
-void QgsGpsLogger::setPointTimeDeltaFromPreviousField( const QString &field )
+void QgsGpsLogger::switchAcquisition()
 {
-  mPointTimeDeltaFromPreviousField = field;
+  if ( mAcquisitionInterval > 0 )
+  {
+    if ( mAcquisitionEnabled )
+      mAcquisitionTimer->start( mAcquisitionInterval );
+    else
+      //wait only acquisitionInterval/10 for new valid data
+      mAcquisitionTimer->start( mAcquisitionInterval / 10 );
+    // anyway switch to enabled / disabled acquisition
+    mAcquisitionEnabled = !mAcquisitionEnabled;
+  }
 }
 
-QString QgsGpsLogger::trackStartTimeField() const
+void QgsGpsLogger::gpsStateChanged( const QgsGpsInformation &info )
 {
-  return mTrackStartTimeField;
+  if ( mBlockGpsStateChanged )
+    return;
+
+  const bool validFlag = info.isValid();
+  QgsPointXY newLocationWgs84;
+  nmeaPOS newNmeaPosition;
+  double newAlt = 0.0;
+  if ( validFlag )
+  {
+    std::unique_ptr< nmeaTIME > newNmeaTime = std::make_unique< nmeaTIME >();
+    newLocationWgs84 = QgsPointXY( info.longitude, info.latitude );
+    newNmeaPosition.lat = nmea_degree2radian( info.latitude );
+    newNmeaPosition.lon = nmea_degree2radian( info.longitude );
+    newAlt = info.elevation;
+    nmea_time_now( newNmeaTime.get() );
+    mLastNmeaTime = std::move( newNmeaTime );
+  }
+  else
+  {
+    newLocationWgs84 = mLastGpsPositionWgs84;
+    if ( mLastNmeaPosition )
+      newNmeaPosition = *mLastNmeaPosition;
+    newAlt = mLastElevation;
+  }
+  if ( !mAcquisitionEnabled || !mLastNmeaPosition || ( nmea_distance( &newNmeaPosition, mLastNmeaPosition.get() ) < mDistanceThreshold ) )
+  {
+    // do not update position if update is disabled by timer or distance is under threshold
+    newLocationWgs84 = mLastGpsPositionWgs84;
+
+  }
+  if ( validFlag && mAcquisitionEnabled )
+  {
+    // position updated by valid data, reset timer
+    switchAcquisition();
+  }
+
+  // Avoid adding track vertices when we haven't moved
+  if ( mLastGpsPositionWgs84 != newLocationWgs84 )
+  {
+    mLastGpsPositionWgs84 = newLocationWgs84;
+    mLastNmeaPosition = std::make_unique< nmeaPOS>( newNmeaPosition );
+    mLastElevation = newAlt;
+
+    if ( mAutomaticallyAddTrackVertices )
+    {
+      addTrackVertex();
+    }
+  }
 }
 
-void QgsGpsLogger::setTrackStartTimeField( const QString &field )
+void QgsGpsLogger::addTrackVertex()
 {
-  mTrackStartTimeField = field;
+  const QgsPoint pointWgs84 = QgsPoint( mLastGpsPositionWgs84.x(), mLastGpsPositionWgs84.y(), mLastElevation );
+
+  const bool trackWasEmpty = mCaptureListWgs84.empty();
+  mCaptureListWgs84.push_back( pointWgs84 );
+
+  emit trackVertexAdded( pointWgs84 );
+
+  if ( trackWasEmpty )
+    emit trackIsEmptyChanged( false );
 }
 
-QString QgsGpsLogger::trackEndTimeField() const
+bool QgsGpsLogger::automaticallyAddTrackVertices() const
 {
-  return mTrackEndTimeField;
+  return mAutomaticallyAddTrackVertices;
 }
 
-void QgsGpsLogger::setTrackEndTimeField( const QString &field )
+void QgsGpsLogger::setAutomaticallyAddTrackVertices( bool enabled )
 {
-  mTrackEndTimeField = field;
+  mAutomaticallyAddTrackVertices = enabled;
 }
 
-QString QgsGpsLogger::trackLengthField() const
+QDateTime QgsGpsLogger::lastTimestamp() const
 {
-  return mTrackLengthField;
-}
+  if ( !mLastNmeaTime )
+    return QDateTime();
 
-void QgsGpsLogger::setTrackLengthField( const QString &field )
-{
-  mTrackLengthField = field;
+  QDateTime time( QDate( 1900 + mLastNmeaTime->year, mLastNmeaTime->mon + 1, mLastNmeaTime->day ),
+                  QTime( mLastNmeaTime->hour, mLastNmeaTime->min, mLastNmeaTime->sec, mLastNmeaTime->msec ) );
+  // Time from GPS is UTC time
+  time.setTimeSpec( Qt::UTC );
+  // Apply leap seconds correction
+  if ( mApplyLeapSettings && mLeapSeconds != 0 )
+  {
+    time = time.addSecs( mLeapSeconds );
+  }
+  // Desired format
+  if ( mTimeStampSpec != Qt::TimeSpec::OffsetFromUTC )
+    time = time.toTimeSpec( mTimeStampSpec );
+
+  if ( mTimeStampSpec == Qt::TimeSpec::TimeZone )
+  {
+    // Get timezone from the combo
+    const QTimeZone destTz( mTimeZone.toUtf8() );
+    if ( destTz.isValid() )
+    {
+      time = time.toTimeZone( destTz );
+    }
+  }
+  else if ( mTimeStampSpec == Qt::TimeSpec::LocalTime )
+  {
+    time = time.toLocalTime();
+  }
+  else if ( mTimeStampSpec == Qt::TimeSpec::OffsetFromUTC )
+  {
+    time = time.toOffsetFromUtc( mOffsetFromUtc );
+  }
+  else if ( mTimeStampSpec == Qt::TimeSpec::UTC )
+  {
+    // Do nothing: we are already in UTC
+  }
+
+  return time;
 }
