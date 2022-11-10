@@ -3001,6 +3001,58 @@ static QVariant fcnGeometryCollectionAsArray( const QVariantList &values, const 
   return array;
 }
 
+static QVariant fcnGeometryDissolve( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  if ( geom.isNull() )
+    return QVariant();
+
+  QVector<QgsGeometry> multiGeom = geom.asGeometryCollection();
+  QgsGeometry dissolved = unaryUnion( multiGeom );
+
+  return QVariant::fromValue( dissolved );
+}
+
+static QVariant fcnSplitGeometry( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsGeometry inGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  if ( inGeom.isNull() )
+    return QVariant();
+  QgsGeometry lineGeom = QgsExpressionUtils::getGeometry( values.at( 1 ), parent );
+  if ( lineGeom.isNull() || lineGeom.type()  )
+    return QVariant();
+  
+  convertPointList
+
+  QVector< QgsGeometry > outGeoms;
+  QVector< QgsGeometry > newGeometries;
+  QgsPointSequence topologyTestPoints;
+  Qgis::GeometryOperationResult result = inGeom.splitGeometry( splitter, newGeometries, false, topologyTestPoints, true );
+
+  if ( result == Qgis::GeometryOperationResult::Success )
+  {
+    // sometimes the resultant geometry has changed from the input, but only because of numerical precision issues.
+    // and is effectively indistinguishable from the input. By testing the Hausdorff distance is less than this threshold
+    // we are checking that the maximum "change" between the result and the input is actually significant enough to be meaningful...
+    if ( inGeom.hausdorffDistance( before ) < 1e-12 )
+    {
+      outGeoms.append( inGeom );
+    }
+    else
+    {
+      outGeoms.append( inGeom );
+      outGeoms.append( newGeometries );
+    }
+  }
+  else
+  {
+    outGeoms.append( inGeom );
+  }
+
+  return QgsGeometry::collectGeometry( outGeoms );
+}
+
+
 static QVariant fcnGeomX( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
@@ -8457,8 +8509,16 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
       QgsExpressionFunction::Parameter( QStringLiteral( "method" ), true, QStringLiteral( "structure" ) ),
 #endif
       QgsExpressionFunction::Parameter( QStringLiteral( "keep_collapsed" ), true, false )
-    }, fcnGeomMakeValid, QStringLiteral( "GeometryGroup" ) );
-
+    }, fcnGeomMakeValid, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "dissolve_geometry" ),  QgsExpressionFunction::ParameterList()
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "geometries" ) ),
+                                            fcnGeometryDissolve, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "to_singlepart" ),  QgsExpressionFunction::ParameterList()
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
+                                            fcnGeometryToSinglepart, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "to_multipart" ),  QgsExpressionFunction::ParameterList()
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
+                                            fcnGeometryToMultipart, QStringLiteral( "GeometryGroup" ) );
     functions << new QgsStaticExpressionFunction( QStringLiteral( "x_at" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ), true ) << QgsExpressionFunction::Parameter( QStringLiteral( "vertex" ), true ), fcnXat, QStringLiteral( "GeometryGroup" ) );
     functions << new QgsStaticExpressionFunction( QStringLiteral( "y_at" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ), true ) << QgsExpressionFunction::Parameter( QStringLiteral( "vertex" ), true ), fcnYat, QStringLiteral( "GeometryGroup" ) );
     functions << new QgsStaticExpressionFunction( QStringLiteral( "z_at" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "vertex" ), true ), fcnZat, QStringLiteral( "GeometryGroup" ) );
