@@ -2,13 +2,13 @@
   "name": "raster_attributes",
   "type": "function",
   "groups": ["Rasters"],
-  "description": "Returns a map with the fields names as keys and the raster attribute table values as values from the attribute table entry that matches the given raster value .",
+  "description": "Returns a map with the fields names as keys and the raster attribute table values as values from the attribute table entry that matches the given raster value.",
   "arguments": [{
     "arg": "layer",
     "description": "the name or id of a raster layer"
   }, {
     "arg": "band",
-    "description": "the band number to sample the value from and for the associated attribute table lookup. "
+    "description": "the band number for the associated attribute table lookup."
   }, {
     "arg": "value",
     "description": "raster value"
