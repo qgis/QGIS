@@ -25,6 +25,7 @@
 
 #include <QObject>
 #include <QPointer>
+#include <QDateTime>
 
 class QgsGpsConnection;
 class QTimer;
@@ -94,6 +95,12 @@ class CORE_EXPORT QgsGpsLogger : public QObject
     QgsCoordinateTransformContext transformContext() const;
 
     /**
+     * Returns the distance area calculator which should be used for
+     * calculating distances associated with the GPS log.
+     */
+    const QgsDistanceArea &distanceArea() const;
+
+    /**
      * Returns the recorded points in the current track.
      *
      * These points will always be in WGS84 coordinate reference system.
@@ -114,6 +121,14 @@ class CORE_EXPORT QgsGpsLogger : public QObject
      * handling.
      */
     QDateTime lastTimestamp() const;
+
+    /**
+     * Returns the timestamp at which the current track was started.
+     *
+     * The returned time value will respect all user settings regarding GPS time zone
+     * handling.
+     */
+    QDateTime trackStartTime() const;
 
     /**
      * Returns the last recorded elevation the device.
@@ -165,6 +180,11 @@ class CORE_EXPORT QgsGpsLogger : public QObject
      */
     void trackVertexAdded( const QgsPoint &vertex );
 
+    /**
+     * Emitted whenever the associated GPS device state is changed.
+     */
+    void stateChanged( const QgsGpsInformation &info );
+
   protected:
 
     //! WGS84 coordinate reference system
@@ -195,7 +215,9 @@ class CORE_EXPORT QgsGpsLogger : public QObject
     double mLastElevation = 0.0;
 
     std::unique_ptr< nmeaPOS > mLastNmeaPosition;
-    std::unique_ptr< nmeaTIME > mLastNmeaTime;
+    QDateTime mLastTime;
+
+    QDateTime mTrackStartTime;
 
     QVector<QgsPoint> mCaptureListWgs84;
 

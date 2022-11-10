@@ -214,7 +214,7 @@ void TestQgsGpsIntegration::testTimestamp()
 
   // Widget config and input values
   // 2019/06/19 12:27:34.543[UTC]
-  gpsDigitizing.mLastNmeaTime.reset( new nmeaTIME{ 119, 5, 19, 12, 27, 34, 543 } );
+  gpsDigitizing.mLastTime = QDateTime( QDate( 2019, 6, 19 ), QTime( 12, 27, 34, 543 ), Qt::UTC );
   gpsDigitizing.mApplyLeapSettings = false;
   gpsDigitizing.mLeapSeconds = 7;
   gpsDigitizing.mOffsetFromUtc = -36000;
@@ -290,7 +290,7 @@ void TestQgsGpsIntegration::testTimestampWrite()
 
   // Widget config and input values
   // 2019/06/19 12:27:34.543[UTC]
-  gpsDigitizing.mLastNmeaTime.reset( new nmeaTIME{ 119, 5, 19, 12, 27, 34, 543 } );
+  gpsDigitizing.mLastTime = QDateTime( QDate( 2019, 6, 19 ), QTime( 12, 27, 34, 543 ), Qt::UTC );
   gpsDigitizing.mApplyLeapSettings = false;
   gpsDigitizing.mLeapSeconds = 7;
   gpsDigitizing.mTimeZone = QStringLiteral( "Asia/Colombo" );

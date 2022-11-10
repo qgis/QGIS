@@ -9,6 +9,7 @@
 
 
 
+
 class QgsVectorLayerGpsLogger : QgsGpsLogger
 {
 %Docstring(signature="appended")
@@ -181,6 +182,13 @@ If specified, the total track length recorded tracks will be stored in this fiel
 
     virtual void setTransformContext( const QgsCoordinateTransformContext &context );
 
+
+  public slots:
+
+    void endCurrentTrack();
+%Docstring
+Ends the current track, storing it in the :py:func:`~QgsVectorLayerGpsLogger.tracksLayer` if appropriate.
+%End
 
 };
 

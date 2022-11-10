@@ -17,7 +17,6 @@
 #include "qgsgpsconnection.h"
 #include "gmath.h"
 #include "info.h"
-#include "nmeatime.h"
 
 #include <QTimer>
 #include <QTimeZone>
@@ -80,6 +79,11 @@ QgsCoordinateTransformContext QgsGpsLogger::transformContext() const
   return mTransformContext;
 }
 
+const QgsDistanceArea &QgsGpsLogger::distanceArea() const
+{
+  return mDistanceCalculator;
+}
+
 QVector<QgsPoint> QgsGpsLogger::currentTrack() const
 {
   return mCaptureListWgs84;
@@ -102,6 +106,7 @@ void QgsGpsLogger::resetTrack()
   const bool trackWasEmpty = mCaptureListWgs84.isEmpty();
   mCaptureListWgs84.clear();
   mBlockGpsStateChanged--;
+  mTrackStartTime = QDateTime();
 
   if ( !trackWasEmpty )
     emit trackIsEmptyChanged( true );
@@ -182,13 +187,15 @@ void QgsGpsLogger::gpsStateChanged( const QgsGpsInformation &info )
   double newAlt = 0.0;
   if ( validFlag )
   {
-    std::unique_ptr< nmeaTIME > newNmeaTime = std::make_unique< nmeaTIME >();
     newLocationWgs84 = QgsPointXY( info.longitude, info.latitude );
     newNmeaPosition.lat = nmea_degree2radian( info.latitude );
     newNmeaPosition.lon = nmea_degree2radian( info.longitude );
     newAlt = info.elevation;
-    nmea_time_now( newNmeaTime.get() );
-    mLastNmeaTime = std::move( newNmeaTime );
+
+    if ( info.utcDateTime.isValid() )
+    {
+      mLastTime = info.utcDateTime;
+    }
   }
   else
   {
@@ -221,6 +228,8 @@ void QgsGpsLogger::gpsStateChanged( const QgsGpsInformation &info )
       addTrackVertex();
     }
   }
+
+  emit stateChanged( info );
 }
 
 void QgsGpsLogger::addTrackVertex()
@@ -233,7 +242,10 @@ void QgsGpsLogger::addTrackVertex()
   emit trackVertexAdded( pointWgs84 );
 
   if ( trackWasEmpty )
+  {
+    mTrackStartTime = lastTimestamp();
     emit trackIsEmptyChanged( false );
+  }
 }
 
 bool QgsGpsLogger::automaticallyAddTrackVertices() const
@@ -248,11 +260,11 @@ void QgsGpsLogger::setAutomaticallyAddTrackVertices( bool enabled )
 
 QDateTime QgsGpsLogger::lastTimestamp() const
 {
-  if ( !mLastNmeaTime )
+  if ( !mLastTime.isValid() )
     return QDateTime();
 
-  QDateTime time( QDate( 1900 + mLastNmeaTime->year, mLastNmeaTime->mon + 1, mLastNmeaTime->day ),
-                  QTime( mLastNmeaTime->hour, mLastNmeaTime->min, mLastNmeaTime->sec, mLastNmeaTime->msec ) );
+  QDateTime time = mLastTime;
+
   // Time from GPS is UTC time
   time.setTimeSpec( Qt::UTC );
   // Apply leap seconds correction
@@ -287,4 +299,9 @@ QDateTime QgsGpsLogger::lastTimestamp() const
   }
 
   return time;
+}
+
+QDateTime QgsGpsLogger::trackStartTime() const
+{
+  return mTrackStartTime;
 }

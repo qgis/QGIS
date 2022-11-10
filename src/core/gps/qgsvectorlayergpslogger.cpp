@@ -15,17 +15,19 @@
 
 #include "qgsvectorlayergpslogger.h"
 #include "qgsvectorlayer.h"
-
+#include "qgsvectorlayerutils.h"
+#include "qgsgpsconnection.h"
+#include "qgslinestring.h"
 
 QgsVectorLayerGpsLogger::QgsVectorLayerGpsLogger( QgsGpsConnection *connection, QObject *parent )
   : QgsGpsLogger( connection, parent )
 {
-
+  connect( this, &QgsGpsLogger::stateChanged, this, &QgsVectorLayerGpsLogger::gpsStateChanged );
 }
 
 QgsVectorLayerGpsLogger::~QgsVectorLayerGpsLogger()
 {
-
+  endCurrentTrack();
 }
 
 void QgsVectorLayerGpsLogger::setPointsLayer( QgsVectorLayer *layer )
@@ -130,5 +132,132 @@ void QgsVectorLayerGpsLogger::setTransformContext( const QgsCoordinateTransformC
   {
     mWgs84toTrackLayerTransform = QgsCoordinateTransform( mWgs84CRS, mTracksLayer->crs(), transformContext() );
   }
+}
+
+void QgsVectorLayerGpsLogger::endCurrentTrack()
+{
+  const QVector< QgsPoint > track = currentTrack();
+  if ( track.isEmpty() )
+    return;
+
+  if ( mTracksLayer )
+  {
+    // record track
+    const QgsGeometry geometryWgs84 = QgsGeometry( new QgsLineString( track ) );
+    QgsGeometry geometry = geometryWgs84;
+
+    try
+    {
+      geometry.transform( mWgs84toTrackLayerTransform );
+    }
+    catch ( QgsCsException & )
+    {
+      QgsDebugMsg( QStringLiteral( "Error transforming GPS track" ) );
+    }
+
+    QgsAttributeMap attributes;
+
+    const int trackStartFieldIdx = mTracksLayer->fields().lookupField( mTrackStartTimeField );
+    if ( trackStartFieldIdx >= 0 )
+    {
+      attributes.insert( trackStartFieldIdx, timestamp( mTracksLayer, trackStartFieldIdx, trackStartTime() ) );
+    }
+
+    const int trackEndFieldIdx = mTracksLayer->fields().lookupField( mTrackEndTimeField );
+    if ( trackEndFieldIdx >= 0 )
+    {
+      attributes.insert( trackEndFieldIdx, timestamp( mTracksLayer, trackStartFieldIdx, lastTimestamp() ) );
+    }
+
+    const int trackLengthFieldIdx = mTracksLayer->fields().lookupField( mTrackLengthField );
+    if ( trackLengthFieldIdx >= 0 )
+    {
+      const double length = distanceArea().measureLength( geometryWgs84 );
+      attributes.insert( trackLengthFieldIdx, length );
+    }
+
+    QgsExpressionContext context = mTracksLayer->createExpressionContext();
+
+    QgsFeature feature = QgsVectorLayerUtils::createFeature( mTracksLayer, geometry, attributes, &context );
+
+    mTracksLayer->addFeature( feature, QgsFeatureSink::Flag::FastInsert );
+  }
+  resetTrack();
+}
+
+void QgsVectorLayerGpsLogger::gpsStateChanged( const QgsGpsInformation &info )
+{
+  if ( mPointsLayer && info.isValid() )
+  {
+    // record point
+    const QgsPointXY newPosition = lastPosition();
+    const QDateTime newTime = lastTimestamp();
+    QgsGeometry geometry( new QgsPoint( newPosition.x(), newPosition.y(), lastElevation() ) );
+
+    try
+    {
+      geometry.transform( mWgs84toPointLayerTransform );
+    }
+    catch ( QgsCsException & )
+    {
+      QgsDebugMsg( QStringLiteral( "Error transforming GPS point" ) );
+    }
+
+    QgsAttributeMap attributes;
+
+    const int pointTimeFieldIdx = mPointsLayer->fields().lookupField( mPointTimeField );
+    if ( pointTimeFieldIdx >= 0 )
+    {
+      attributes.insert( pointTimeFieldIdx, timestamp( mPointsLayer, pointTimeFieldIdx, lastTimestamp() ) );
+    }
+
+    const int pointDistanceFromPreviousIdx = mPointsLayer->fields().lookupField( mPointDistanceFromPreviousField );
+    if ( pointDistanceFromPreviousIdx >= 0 )
+    {
+      if ( !mLastPoint.isEmpty() )
+      {
+        const double distanceSinceLast = distanceArea().measureLine( mLastPoint, newPosition );
+        attributes.insert( pointDistanceFromPreviousIdx, distanceSinceLast );
+      }
+    }
+    mLastPoint = newPosition;
+
+    const int pointTimeSincePreviousFieldIdx = mPointsLayer->fields().lookupField( mPointTimeDeltaFromPreviousField );
+    if ( pointTimeFieldIdx >= 0 )
+    {
+      if ( mLastTime.isValid() )
+      {
+        attributes.insert( pointTimeSincePreviousFieldIdx, static_cast< double >( mLastTime.msecsTo( newTime ) ) / 1000 );
+      }
+    }
+    mLastTime = newTime;
+
+    QgsExpressionContext context = mPointsLayer->createExpressionContext();
+
+    QgsFeature feature = QgsVectorLayerUtils::createFeature( mPointsLayer, geometry, attributes, &context );
+
+    mPointsLayer->addFeature( feature, QgsFeatureSink::Flag::FastInsert );
+  }
+}
+
+QVariant QgsVectorLayerGpsLogger::timestamp( QgsVectorLayer *vlayer, int idx, const QDateTime &time )
+{
+  QVariant value;
+  if ( idx != -1 && time.isValid() )
+  {
+    // Only string and datetime fields are supported
+    switch ( vlayer->fields().at( idx ).type() )
+    {
+      case QVariant::String:
+        value = time.toString( Qt::DateFormat::ISODate );
+        break;
+      case QVariant::DateTime:
+        value = time;
+        break;
+      default:
+        break;
+    }
+  }
+  return value;
 }
 
