@@ -21,6 +21,8 @@
 #include "qgis_sip.h"
 #include "qgsgpslogger.h"
 
+#include <QDateTime>
+
 class QgsVectorLayer;
 
 /**
@@ -191,6 +193,17 @@ class CORE_EXPORT QgsVectorLayerGpsLogger : public QgsGpsLogger
 
     void setTransformContext( const QgsCoordinateTransformContext &context ) override;
 
+  public slots:
+
+    /**
+     * Ends the current track, storing it in the tracksLayer() if appropriate.
+     */
+    void endCurrentTrack();
+
+  private slots:
+
+    void gpsStateChanged( const QgsGpsInformation &information );
+
   private:
 
     QPointer< QgsVectorLayer > mPointsLayer;
@@ -206,6 +219,12 @@ class CORE_EXPORT QgsVectorLayerGpsLogger : public QgsGpsLogger
 
     QgsCoordinateTransform mWgs84toPointLayerTransform;
     QgsCoordinateTransform mWgs84toTrackLayerTransform;
+
+    QgsPointXY mLastPoint;
+    QDateTime mLastTime;
+
+    QVariant timestamp( QgsVectorLayer *vlayer, int idx, const QDateTime &time );
+
 
 };
 

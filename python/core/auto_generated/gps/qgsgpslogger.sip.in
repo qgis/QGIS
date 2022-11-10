@@ -73,6 +73,12 @@ GPS coordinates.
 .. seealso:: :py:func:`setTransformContext`
 %End
 
+    const QgsDistanceArea &distanceArea() const;
+%Docstring
+Returns the distance area calculator which should be used for
+calculating distances associated with the GPS log.
+%End
+
     QVector<QgsPoint> currentTrack() const;
 %Docstring
 Returns the recorded points in the current track.
@@ -90,6 +96,14 @@ The returned point will always be in WGS84 coordinate reference system.
     QDateTime lastTimestamp() const;
 %Docstring
 Returns the last recorded timestamp from the device.
+
+The returned time value will respect all user settings regarding GPS time zone
+handling.
+%End
+
+    QDateTime trackStartTime() const;
+%Docstring
+Returns the timestamp at which the current track was started.
 
 The returned time value will respect all user settings regarding GPS time zone
 handling.
@@ -143,6 +157,11 @@ Emitted whenever the current track is reset.
 Emitted whenever a new vertex is added to the track.
 
 The ``vertex`` point will be in WGS84 coordinate reference system.
+%End
+
+    void stateChanged( const QgsGpsInformation &info );
+%Docstring
+Emitted whenever the associated GPS device state is changed.
 %End
 
   protected:
