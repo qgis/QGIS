@@ -622,6 +622,16 @@ The development version
       Bearing,
       TotalTrackLength,
       TrackDistanceFromStart,
+      Pdop,
+      Hdop,
+      Vdop,
+      HorizontalAccuracy,
+      VerticalAccuracy,
+      HvAccuracy,
+      SatellitesUsed,
+      Timestamp,
+      TrackStartTime,
+      TrackEndTime,
     };
 
     typedef QFlags<Qgis::GpsInformationComponent> GpsInformationComponents;

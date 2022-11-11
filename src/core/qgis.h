@@ -1012,8 +1012,18 @@ class CORE_EXPORT Qgis
       Altitude = 1 << 1, //!< Altitude/elevation above or below the mean sea level
       GroundSpeed = 1 << 2, //!< Ground speed
       Bearing = 1 << 3, //!< Bearing measured in degrees clockwise from true north to the direction of travel
-      TotalTrackLength = 1 << 4, //!< Total distance of current GPS track (available from QGIS app library only)
-      TrackDistanceFromStart = 1 << 5, //!< Direct distance from first vertex in current GPS track to last vertex (available from QGIS app library only)
+      TotalTrackLength = 1 << 4, //!< Total distance of current GPS track (available from QgsGpsLogger class only)
+      TrackDistanceFromStart = 1 << 5, //!< Direct distance from first vertex in current GPS track to last vertex (available from QgsGpsLogger class only)
+      Pdop = 1 << 6, //!< Dilution of precision
+      Hdop = 1 << 7, //!< Horizontal dilution of precision
+      Vdop = 1 << 8, //!< Vertical dilution of precision
+      HorizontalAccuracy = 1 << 9, //!< Horizontal accuracy in meters
+      VerticalAccuracy = 1 << 10, //!< Vertical accuracy in meters
+      HvAccuracy = 1 << 11, //!< 3D RMS
+      SatellitesUsed = 1 << 12, //!< Count of satellites used in obtaining the fix
+      Timestamp = 1 << 13, //!< Timestamp
+      TrackStartTime = 1 << 14, //!< Timestamp at start of current track (available from QgsGpsLogger class only)
+      TrackEndTime = 1 << 15, //!< Timestamp at end (current point) of current track (available from QgsGpsLogger class only)
     };
 
     /**

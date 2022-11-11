@@ -280,6 +280,19 @@ void QgsGpsToolBar::updateLocationLabel()
 
             break;
           }
+
+          case Qgis::GpsInformationComponent::Pdop:
+          case Qgis::GpsInformationComponent::Hdop:
+          case Qgis::GpsInformationComponent::Vdop:
+          case Qgis::GpsInformationComponent::HorizontalAccuracy:
+          case Qgis::GpsInformationComponent::VerticalAccuracy:
+          case Qgis::GpsInformationComponent::HvAccuracy:
+          case Qgis::GpsInformationComponent::SatellitesUsed:
+          case Qgis::GpsInformationComponent::Timestamp:
+          case Qgis::GpsInformationComponent::TrackStartTime:
+          case Qgis::GpsInformationComponent::TrackEndTime:
+            // not supported yet
+            break;
         }
       }
     }
