@@ -180,6 +180,41 @@ double QgsGpsLogger::trackDistanceFromStart() const
   return mDistanceCalculator.measureLine( { QgsPointXY( mCaptureListWgs84.constFirst() ), QgsPointXY( mCaptureListWgs84.constLast() )} );
 }
 
+QVariant QgsGpsLogger::componentValue( Qgis::GpsInformationComponent component ) const
+{
+  if ( !mConnection )
+    return QVariant();
+
+  switch ( component )
+  {
+    case Qgis::GpsInformationComponent::Location:
+    case Qgis::GpsInformationComponent::Altitude:
+    case Qgis::GpsInformationComponent::GroundSpeed:
+    case Qgis::GpsInformationComponent::Bearing:
+    case Qgis::GpsInformationComponent::Pdop:
+    case Qgis::GpsInformationComponent::Hdop:
+    case Qgis::GpsInformationComponent::Vdop:
+    case Qgis::GpsInformationComponent::HorizontalAccuracy:
+    case Qgis::GpsInformationComponent::VerticalAccuracy:
+    case Qgis::GpsInformationComponent::HvAccuracy:
+    case Qgis::GpsInformationComponent::SatellitesUsed:
+      return mConnection->currentGPSInformation().componentValue( component );
+
+    case Qgis::GpsInformationComponent::Timestamp:
+      return lastTimestamp();
+
+    case Qgis::GpsInformationComponent::TotalTrackLength:
+      return totalTrackLength();
+    case Qgis::GpsInformationComponent::TrackDistanceFromStart:
+      return trackDistanceFromStart();
+    case Qgis::GpsInformationComponent::TrackStartTime:
+      return trackStartTime();
+    case Qgis::GpsInformationComponent::TrackEndTime:
+      return lastTimestamp();
+  }
+  BUILTIN_UNREACHABLE
+}
+
 void QgsGpsLogger::switchAcquisition()
 {
   if ( mAcquisitionInterval > 0 )

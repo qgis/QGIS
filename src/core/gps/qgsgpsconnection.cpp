@@ -141,8 +141,28 @@ QVariant QgsGpsInformation::componentValue( Qgis::GpsInformationComponent compon
     case Qgis::GpsInformationComponent::Bearing:
       return std::isnan( direction ) ? QVariant() : direction;
 
+    case Qgis::GpsInformationComponent::Pdop:
+      return pdop;
+    case Qgis::GpsInformationComponent::Hdop:
+      return hdop;
+    case Qgis::GpsInformationComponent::Vdop:
+      return vdop;
+    case Qgis::GpsInformationComponent::HorizontalAccuracy:
+      return hacc;
+    case Qgis::GpsInformationComponent::VerticalAccuracy:
+      return vacc;
+    case Qgis::GpsInformationComponent::HvAccuracy:
+      return hvacc;
+    case Qgis::GpsInformationComponent::SatellitesUsed:
+      return satellitesUsed;
+
+    case Qgis::GpsInformationComponent::Timestamp:
+      return utcDateTime;
+
     case Qgis::GpsInformationComponent::TotalTrackLength:
     case Qgis::GpsInformationComponent::TrackDistanceFromStart:
+    case Qgis::GpsInformationComponent::TrackStartTime:
+    case Qgis::GpsInformationComponent::TrackEndTime:
       return QVariant(); // not available
   }
   BUILTIN_UNREACHABLE

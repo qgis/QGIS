@@ -152,6 +152,11 @@ Returns the direct length from the first vertex in the track to the last (in met
 The returned length is calculated using ellipsoidal calculations.
 %End
 
+    QVariant componentValue( Qgis::GpsInformationComponent component ) const;
+%Docstring
+Returns the value of the corresponding GPS information ``component``.
+%End
+
   signals:
 
     void trackIsEmptyChanged( bool isEmpty );

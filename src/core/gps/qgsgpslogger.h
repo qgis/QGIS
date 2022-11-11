@@ -174,6 +174,11 @@ class CORE_EXPORT QgsGpsLogger : public QObject
      */
     double trackDistanceFromStart() const;
 
+    /**
+     * Returns the value of the corresponding GPS information \a component.
+     */
+    QVariant componentValue( Qgis::GpsInformationComponent component ) const;
+
   signals:
 
     /**
