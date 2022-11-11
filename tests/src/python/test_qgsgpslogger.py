@@ -12,6 +12,7 @@ __copyright__ = 'Copyright 2022, The QGIS Project'
 
 import qgis  # NOQA
 from qgis.PyQt.QtCore import (
+    Qt,
     QBuffer,
     QDateTime,
     QCoreApplication
@@ -69,9 +70,9 @@ class TestQgsGpsLogger(unittest.TestCase):
         start_app()
 
         settings = QgsSettings()
-        settings.setValue('gps/leap-seconds', 48)
-        settings.setValue('gps/timestamp-offset-from-utc', 3000)
-        settings.setValue('gps/timestamp-time-spec', 'OffsetFromUTC')
+        settings.setValue('/gps/leap-seconds', 48)
+        settings.setValue('/gps/timestamp-offset-from-utc', 3000)
+        settings.setValue('/gps/timestamp-time-spec', 'OffsetFromUTC')
 
     def test_setters(self):
         logger = QgsVectorLayerGpsLogger(None)
@@ -131,7 +132,9 @@ class TestQgsGpsLogger(unittest.TestCase):
 
         self.assertEqual(points_layer.featureCount(), 1)
         f = next(points_layer.getFeatures())
-        self.assertEqual(f.attributes(), [QDateTime(2020, 1, 22, 18, 41, 29, 185), None, None])
+        exp = QDateTime(2020, 1, 22, 9, 31, 59, 185)
+        exp.setOffsetFromUtc(3000)
+        self.assertEqual(f.attributes(), [exp, None, None])
         self.assertEqual(f.geometry().asWkt(-3), 'PointZ (-1297000 21436000 0)')
 
         gps_connection.send_message(
@@ -141,9 +144,13 @@ class TestQgsGpsLogger(unittest.TestCase):
         self.assertEqual(points_layer.featureCount(), 2)
         features = points_layer.getFeatures()
         f = next(features)
-        self.assertEqual(f.attributes(), [QDateTime(2020, 1, 22, 18, 41, 29, 185), None, None])
+        exp = QDateTime(2020, 1, 22, 9, 31, 59, 185)
+        exp.setOffsetFromUtc(3000)
+        self.assertEqual(f.attributes(), [exp, None, None])
         f = next(features)
-        self.assertEqual(f.attributes(), [QDateTime(2020, 1, 22, 18, 41, 31, 185), 0.004368333651276768, 2.0])
+        exp = QDateTime(2020, 1, 22, 9, 32, 1, 185)
+        exp.setOffsetFromUtc(3000)
+        self.assertEqual(f.attributes(), [exp, 0.004368333651276768, 2.0])
         self.assertEqual(f.geometry().asWkt(-3), 'PointZ (-1297000 21435000 0)')
 
         gps_connection.send_message(
@@ -153,11 +160,17 @@ class TestQgsGpsLogger(unittest.TestCase):
         self.assertEqual(points_layer.featureCount(), 3)
         features = points_layer.getFeatures()
         f = next(features)
-        self.assertEqual(f.attributes(), [QDateTime(2020, 1, 22, 18, 41, 29, 185), None, None])
+        exp = QDateTime(2020, 1, 22, 9, 31, 59, 185)
+        exp.setOffsetFromUtc(3000)
+        self.assertEqual(f.attributes(), [exp, None, None])
         f = next(features)
-        self.assertEqual(f.attributes(), [QDateTime(2020, 1, 22, 18, 41, 31, 185), 0.004368333651276768, 2.0])
+        exp = QDateTime(2020, 1, 22, 9, 32, 1, 185)
+        exp.setOffsetFromUtc(3000)
+        self.assertEqual(f.attributes(), [exp, 0.004368333651276768, 2.0])
         f = next(features)
-        self.assertEqual(f.attributes(), [QDateTime(2020, 1, 22, 18, 41, 35, 185), 0.006666666666660603, 4.0])
+        exp = QDateTime(2020, 1, 22, 9, 32, 5, 185)
+        exp.setOffsetFromUtc(3000)
+        self.assertEqual(f.attributes(), [exp, 0.006666666666660603, 4.0])
         self.assertEqual(f.geometry().asWkt(-3), 'PointZ (-1296000 21435000 0)')
 
         # stop recording distance
@@ -170,13 +183,21 @@ class TestQgsGpsLogger(unittest.TestCase):
         self.assertEqual(points_layer.featureCount(), 4)
         features = points_layer.getFeatures()
         f = next(features)
-        self.assertEqual(f.attributes(), [QDateTime(2020, 1, 22, 18, 41, 29, 185), None, None])
+        exp = QDateTime(2020, 1, 22, 9, 31, 59, 185)
+        exp.setOffsetFromUtc(3000)
+        self.assertEqual(f.attributes(), [exp, None, None])
         f = next(features)
-        self.assertEqual(f.attributes(), [QDateTime(2020, 1, 22, 18, 41, 31, 185), 0.004368333651276768, 2.0])
+        exp = QDateTime(2020, 1, 22, 9, 32, 1, 185)
+        exp.setOffsetFromUtc(3000)
+        self.assertEqual(f.attributes(), [exp, 0.004368333651276768, 2.0])
         f = next(features)
-        self.assertEqual(f.attributes(), [QDateTime(2020, 1, 22, 18, 41, 35, 185), 0.006666666666660603, 4.0])
+        exp = QDateTime(2020, 1, 22, 9, 32, 5, 185)
+        exp.setOffsetFromUtc(3000)
+        self.assertEqual(f.attributes(), [exp, 0.006666666666660603, 4.0])
         f = next(features)
-        self.assertEqual(f.attributes(), [QDateTime(2020, 1, 22, 18, 41, 36, 185), NULL, 1.0])
+        exp = QDateTime(2020, 1, 22, 9, 32, 6, 185)
+        exp.setOffsetFromUtc(3000)
+        self.assertEqual(f.attributes(), [exp, NULL, 1.0])
         self.assertEqual(f.geometry().asWkt(-3), 'PointZ (-1297000 21435000 0)')
 
         # stop recording time since previous
@@ -189,15 +210,25 @@ class TestQgsGpsLogger(unittest.TestCase):
         self.assertEqual(points_layer.featureCount(), 5)
         features = points_layer.getFeatures()
         f = next(features)
-        self.assertEqual(f.attributes(), [QDateTime(2020, 1, 22, 18, 41, 29, 185), None, None])
+        exp = QDateTime(2020, 1, 22, 9, 31, 59, 185)
+        exp.setOffsetFromUtc(3000)
+        self.assertEqual(f.attributes(), [exp, None, None])
         f = next(features)
-        self.assertEqual(f.attributes(), [QDateTime(2020, 1, 22, 18, 41, 31, 185), 0.004368333651276768, 2.0])
+        exp = QDateTime(2020, 1, 22, 9, 32, 1, 185)
+        exp.setOffsetFromUtc(3000)
+        self.assertEqual(f.attributes(), [exp, 0.004368333651276768, 2.0])
         f = next(features)
-        self.assertEqual(f.attributes(), [QDateTime(2020, 1, 22, 18, 41, 35, 185), 0.006666666666660603, 4.0])
+        exp = QDateTime(2020, 1, 22, 9, 32, 5, 185)
+        exp.setOffsetFromUtc(3000)
+        self.assertEqual(f.attributes(), [exp, 0.006666666666660603, 4.0])
         f = next(features)
-        self.assertEqual(f.attributes(), [QDateTime(2020, 1, 22, 18, 41, 36, 185), NULL, 1.0])
+        exp = QDateTime(2020, 1, 22, 9, 32, 6, 185)
+        exp.setOffsetFromUtc(3000)
+        self.assertEqual(f.attributes(), [exp, NULL, 1.0])
         f = next(features)
-        self.assertEqual(f.attributes(), [QDateTime(2020, 1, 22, 18, 41, 37, 185), NULL, NULL])
+        exp = QDateTime(2020, 1, 22, 9, 32, 7, 185)
+        exp.setOffsetFromUtc(3000)
+        self.assertEqual(f.attributes(), [exp, NULL, NULL])
         self.assertEqual(f.geometry().asWkt(-3), 'PointZ (-1296000 21435000 0)')
 
         # stop recording timestamp
@@ -210,15 +241,25 @@ class TestQgsGpsLogger(unittest.TestCase):
         self.assertEqual(points_layer.featureCount(), 6)
         features = points_layer.getFeatures()
         f = next(features)
-        self.assertEqual(f.attributes(), [QDateTime(2020, 1, 22, 18, 41, 29, 185), None, None])
+        exp = QDateTime(2020, 1, 22, 9, 31, 59, 185)
+        exp.setOffsetFromUtc(3000)
+        self.assertEqual(f.attributes(), [exp, None, None])
         f = next(features)
-        self.assertEqual(f.attributes(), [QDateTime(2020, 1, 22, 18, 41, 31, 185), 0.004368333651276768, 2.0])
+        exp = QDateTime(2020, 1, 22, 9, 32, 1, 185)
+        exp.setOffsetFromUtc(3000)
+        self.assertEqual(f.attributes(), [exp, 0.004368333651276768, 2.0])
         f = next(features)
-        self.assertEqual(f.attributes(), [QDateTime(2020, 1, 22, 18, 41, 35, 185), 0.006666666666660603, 4.0])
+        exp = QDateTime(2020, 1, 22, 9, 32, 5, 185)
+        exp.setOffsetFromUtc(3000)
+        self.assertEqual(f.attributes(), [exp, 0.006666666666660603, 4.0])
         f = next(features)
-        self.assertEqual(f.attributes(), [QDateTime(2020, 1, 22, 18, 41, 36, 185), NULL, 1.0])
+        exp = QDateTime(2020, 1, 22, 9, 32, 6, 185)
+        exp.setOffsetFromUtc(3000)
+        self.assertEqual(f.attributes(), [exp, NULL, 1.0])
         f = next(features)
-        self.assertEqual(f.attributes(), [QDateTime(2020, 1, 22, 18, 41, 37, 185), NULL, NULL])
+        exp = QDateTime(2020, 1, 22, 9, 32, 7, 185)
+        exp.setOffsetFromUtc(3000)
+        self.assertEqual(f.attributes(), [exp, NULL, NULL])
         f = next(features)
         self.assertEqual(f.attributes(), [NULL, NULL, NULL])
         self.assertEqual(f.geometry().asWkt(-3), 'PointZ (-1296000 21435000 0)')
@@ -261,8 +302,10 @@ class TestQgsGpsLogger(unittest.TestCase):
 
         self.assertEqual(line_layer.featureCount(), 1)
         f = next(line_layer.getFeatures())
+        exp = QDateTime(2020, 1, 22, 9, 31, 59, 185)
+        exp.setOffsetFromUtc(3000)
         self.assertEqual(f.attributes(),
-                         [QDateTime(2020, 1, 22, 18, 41, 29, 185), '2020-01-22T18:41:36',
+                         [exp, '2020-01-22T09:32:06+00:50',
                           0.021035000317942486])
         self.assertEqual(f.geometry().asWkt(-2),
                          'LineStringZ (-1297400 21435500 0, -1297000 21435200 0, -1297400 21434700 0)')

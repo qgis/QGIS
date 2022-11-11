@@ -120,7 +120,7 @@ void QgsGpsLogger::resetTrack()
 void QgsGpsLogger::updateGpsSettings()
 {
   int acquisitionInterval = 0;
-  if ( QgsGpsConnection::settingsGpsConnectionType.exists() )
+  if ( QgsGpsConnection::settingsGpsTimeStampSpecification.exists() )
   {
     acquisitionInterval = static_cast< int >( QgsGpsConnection::settingGpsAcquisitionInterval.value() );
     mDistanceThreshold = QgsGpsConnection::settingGpsDistanceThreshold.value();
