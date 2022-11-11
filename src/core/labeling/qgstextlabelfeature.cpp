@@ -112,6 +112,7 @@ QgsPrecalculatedTextMetrics QgsTextLabelFeature::calculateTextMetrics( const Qgs
             break;
 
           case Qgis::TextCharacterVerticalAlignment::SuperScript:
+          case Qgis::TextCharacterVerticalAlignment::SubScript:
           {
             if ( graphemeFormat->fontPointSize() < 0 )
             {
@@ -120,17 +121,7 @@ QgsPrecalculatedTextMetrics QgsTextLabelFeature::calculateTextMetrics( const Qgs
               // the superscript in a smaller font size. BUT if the fragment format HAS a non -1 font size then it indicates
               // that the document has an explicit font size for the super/subscript element, eg "my text<sup style="font-size: 6pt">2</sup>"
               // which we should respect
-              graphemeFont.setPixelSize( graphemeFont.pixelSize() * SUPERSCRIPT_SUBSCRIPT_FONT_SIZE_SCALING_FACTOR );
-            }
-            break;
-          }
-
-          case Qgis::TextCharacterVerticalAlignment::SubScript:
-          {
-            if ( graphemeFormat->fontPointSize() < 0 )
-            {
-              // see above!!
-              graphemeFont.setPixelSize( graphemeFont.pixelSize() * SUPERSCRIPT_SUBSCRIPT_FONT_SIZE_SCALING_FACTOR );
+              graphemeFont.setPixelSize( static_cast< int >( std::round( graphemeFont.pixelSize() * SUPERSCRIPT_SUBSCRIPT_FONT_SIZE_SCALING_FACTOR ) ) );
             }
             break;
           }
