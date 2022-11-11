@@ -109,10 +109,6 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
         self.assertEqual(value, gdal_rl.dataProvider().block(
             band, self.rl.extent(), 6, 5).data().toHex())
 
-    @classmethod
-    def tearDownClass(cls):
-        """Run after all tests"""
-
     def testExtent(self):
         extent = self.rl.extent()
         self.assertEqual(extent, QgsRectangle(
