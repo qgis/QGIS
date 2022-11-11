@@ -393,8 +393,6 @@ QDateTime CORE_EXPORT operator+( const QDateTime &start, const QgsInterval &inte
 //! Debug string representation of interval
 QDebug CORE_EXPORT operator<<( QDebug dbg, const QgsInterval &interval );
 
-
-
 #endif
 
 #endif // QGSINTERVAL_H
