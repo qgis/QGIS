@@ -14412,23 +14412,15 @@ void QgisApp::removeMapToolMessage()
 void QgisApp::showMapTip()
 {
   // Only show maptips if the mouse is still over the map canvas when timer is triggered
-  if ( mMapCanvas->underMouse() )
+  if ( mMapTipsVisible && mMapCanvas->underMouse() )
   {
     QPoint myPointerPos = mMapCanvas->mouseLastXY();
 
     //  Make sure there is an active layer before proceeding
     QgsMapLayer *mypLayer = mMapCanvas->currentLayer();
-    if ( mypLayer )
+    if ( mypLayer && !mypLayer->mapTipTemplate().isEmpty() )
     {
-      // only process vector and raster layers
-      if ( mypLayer->type() == QgsMapLayerType::VectorLayer || mypLayer->type() == QgsMapLayerType::RasterLayer )
-      {
-        // Show the maptip if the maptips button is depressed
-        if ( mMapTipsVisible )
-        {
-          mpMaptip->showMapTip( mypLayer, mLastMapPosition, myPointerPos, mMapCanvas );
-        }
-      }
+      mpMaptip->showMapTip( mypLayer, mLastMapPosition, myPointerPos, mMapCanvas );
     }
   }
 }

@@ -77,8 +77,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
 {
     Q_OBJECT
 
-    Q_PROPERTY( QString mapTipTemplate READ mapTipTemplate WRITE setMapTipTemplate NOTIFY mapTipTemplateChanged )
-
   public:
 
     //! \brief Default sample size (number of pixels) for estimated statistics/histogram calculation

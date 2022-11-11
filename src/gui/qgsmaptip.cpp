@@ -234,7 +234,8 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
   if ( !vlayer || !vlayer->isSpatial() )
     return QString();
 
-  if ( !layer->isInScaleRange( mapCanvas->mapSettings().scale() ) )
+  if ( !layer->isInScaleRange( mapCanvas->mapSettings().scale() ) ||
+       ( mapCanvas->mapSettings().isTemporal() && !layer->temporalProperties()->isVisibleInTemporalRange( mapCanvas->temporalRange() ) ) )
   {
     return QString();
   }
@@ -334,7 +335,8 @@ QString QgsMapTip::fetchRaster( QgsMapLayer *layer, QgsPointXY &mapPosition, Qgs
   if ( !rlayer )
     return QString();
 
-  if ( !layer->isInScaleRange( mapCanvas->mapSettings().scale() ) )
+  if ( !layer->isInScaleRange( mapCanvas->mapSettings().scale() ) ||
+       ( mapCanvas->mapSettings().isTemporal() && !layer->temporalProperties()->isVisibleInTemporalRange( mapCanvas->temporalRange() ) ) )
   {
     return QString();
   }
