@@ -759,27 +759,8 @@ gray = no data
   <tabstop>mTxtTotalTrackLength</tabstop>
   <tabstop>mTxtDirectTrackLength</tabstop>
   <tabstop>mBtnPopupOptions</tabstop>
-  <tabstop>mTxtLatitude_2</tabstop>
-  <tabstop>mTxtPdop_2</tabstop>
-  <tabstop>mTxtAltitude_2</tabstop>
-  <tabstop>mTxtHacc_2</tabstop>
-  <tabstop>mTxtFixMode_2</tabstop>
-  <tabstop>mTxtSpeed_2</tabstop>
-  <tabstop>mTxtFixType_2</tabstop>
-  <tabstop>mTxtQuality_2</tabstop>
-  <tabstop>mTxtDateTime_2</tabstop>
-  <tabstop>mTxt3Dacc_2</tabstop>
-  <tabstop>mTxtVacc_2</tabstop>
-  <tabstop>mTxtSatellitesUsed_2</tabstop>
-  <tabstop>mTxtStatus_2</tabstop>
-  <tabstop>mTxtDirection_2</tabstop>
-  <tabstop>mTxtVdop_2</tabstop>
-  <tabstop>mTxtLongitude_2</tabstop>
-  <tabstop>mTxtHdop_2</tabstop>
-  <tabstop>mTxtAltitudeDiff_2</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>
