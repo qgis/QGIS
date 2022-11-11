@@ -163,6 +163,8 @@ QVariant QgsGpsInformation::componentValue( Qgis::GpsInformationComponent compon
     case Qgis::GpsInformationComponent::TrackDistanceFromStart:
     case Qgis::GpsInformationComponent::TrackStartTime:
     case Qgis::GpsInformationComponent::TrackEndTime:
+    case Qgis::GpsInformationComponent::TrackDistanceSinceLastPoint:
+    case Qgis::GpsInformationComponent::TrackTimeSinceLastPoint:
       return QVariant(); // not available
   }
   BUILTIN_UNREACHABLE

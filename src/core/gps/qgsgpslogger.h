@@ -240,6 +240,9 @@ class CORE_EXPORT QgsGpsLogger : public QObject
     nmeaPOS mLastNmeaPosition;
     QDateTime mLastTime;
 
+    QDateTime mPreviousTrackPointTime;
+    QgsPointXY mPreviousTrackPoint;
+
     QDateTime mTrackStartTime;
 
     QVector<QgsPoint> mCaptureListWgs84;

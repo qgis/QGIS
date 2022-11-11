@@ -211,6 +211,11 @@ QVariant QgsGpsLogger::componentValue( Qgis::GpsInformationComponent component )
       return trackStartTime();
     case Qgis::GpsInformationComponent::TrackEndTime:
       return lastTimestamp();
+
+    case Qgis::GpsInformationComponent::TrackDistanceSinceLastPoint:
+      return mPreviousTrackPoint.isEmpty() ? QVariant() : distanceArea().measureLine( mPreviousTrackPoint, lastPosition() );
+    case Qgis::GpsInformationComponent::TrackTimeSinceLastPoint:
+      return mPreviousTrackPointTime.isValid() ? static_cast< double >( mPreviousTrackPointTime.msecsTo( lastTimestamp() ) ) / 1000 : QVariant();
   }
   BUILTIN_UNREACHABLE
 }
@@ -282,6 +287,9 @@ void QgsGpsLogger::gpsStateChanged( const QgsGpsInformation &info )
   }
 
   emit stateChanged( info );
+
+  mPreviousTrackPointTime = lastTimestamp();
+  mPreviousTrackPoint = mLastGpsPositionWgs84;
 }
 
 void QgsGpsLogger::addTrackVertex()

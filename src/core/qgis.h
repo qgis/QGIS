@@ -1024,6 +1024,8 @@ class CORE_EXPORT Qgis
       Timestamp = 1 << 13, //!< Timestamp
       TrackStartTime = 1 << 14, //!< Timestamp at start of current track (available from QgsGpsLogger class only)
       TrackEndTime = 1 << 15, //!< Timestamp at end (current point) of current track (available from QgsGpsLogger class only)
+      TrackDistanceSinceLastPoint = 1 << 16, //!< Distance since last recorded location (available from QgsGpsLogger class only)
+      TrackTimeSinceLastPoint = 1 << 17, //!< Time since last recorded location (available from QgsGpsLogger class only)
     };
 
     /**

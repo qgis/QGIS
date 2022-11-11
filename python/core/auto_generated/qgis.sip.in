@@ -632,6 +632,8 @@ The development version
       Timestamp,
       TrackStartTime,
       TrackEndTime,
+      TrackDistanceSinceLastPoint,
+      TrackTimeSinceLastPoint,
     };
 
     typedef QFlags<Qgis::GpsInformationComponent> GpsInformationComponents;
