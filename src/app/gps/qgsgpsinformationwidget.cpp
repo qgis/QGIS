@@ -208,7 +208,8 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsAppGpsConnection *connectio
     }
   } );
 
-  connect( mDigitizing, &QgsAppGpsDigitizing::trackChanged, this, &QgsGpsInformationWidget::updateTrackInformation );
+  connect( mDigitizing, &QgsAppGpsDigitizing::trackVertexAdded, this, &QgsGpsInformationWidget::updateTrackInformation );
+  connect( mDigitizing, &QgsAppGpsDigitizing::trackReset, this, &QgsGpsInformationWidget::updateTrackInformation );
   connect( mDigitizing, &QgsAppGpsDigitizing::distanceAreaChanged, this, &QgsGpsInformationWidget::updateTrackInformation );
 }
 

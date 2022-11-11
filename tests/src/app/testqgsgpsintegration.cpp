@@ -27,8 +27,6 @@
 #include "options/qgsgpsoptions.h"
 #include "qgsprojectgpssettings.h"
 #include "qgsgpsconnection.h"
-#include "nmeatime.h"
-
 #include <QSignalSpy>
 
 /**
@@ -451,14 +449,14 @@ void TestQgsGpsIntegration::testTrackDistance()
   QCOMPARE( QgsProject::instance()->gpsSettings()->destinationLayer(), lineString );
   lineString->startEditing();
 
-  QSignalSpy spy( &gpsDigitizing, &QgsAppGpsDigitizing::trackChanged );
+  QSignalSpy spy( &gpsDigitizing, &QgsAppGpsDigitizing::trackVertexAdded );
 
   QgsGpsInformation info;
   info.latitude = 45;
   info.longitude = 100;
 
   gpsDigitizing.gpsStateChanged( info );
-  gpsDigitizing.addVertex();
+  gpsDigitizing.createVertexAtCurrentLocation();
   QCOMPARE( spy.count(), 1 );
 
   QCOMPARE( gpsDigitizing.totalTrackLength(), 0 );
@@ -468,7 +466,7 @@ void TestQgsGpsIntegration::testTrackDistance()
   info.longitude = 100;
 
   gpsDigitizing.gpsStateChanged( info );
-  gpsDigitizing.addVertex();
+  gpsDigitizing.createVertexAtCurrentLocation();
   QCOMPARE( spy.count(), 2 );
 
   QgsProject::instance()->setCrs( QgsCoordinateReferenceSystem( "EPSG:3857" ) );
@@ -484,13 +482,14 @@ void TestQgsGpsIntegration::testTrackDistance()
   info.longitude = 101;
 
   gpsDigitizing.gpsStateChanged( info );
-  gpsDigitizing.addVertex();
+  gpsDigitizing.createVertexAtCurrentLocation();
   QCOMPARE( spy.count(), 3 );
   QGSCOMPARENEAR( gpsDigitizing.totalTrackLength(), 188604.338, 1 );
   QGSCOMPARENEAR( gpsDigitizing.trackDistanceFromStart(), 135869.0912, 1 );
 
+  QSignalSpy spyReset( &gpsDigitizing, &QgsGpsLogger::trackReset );
   gpsDigitizing.resetTrack();
-  QCOMPARE( spy.count(), 4 );
+  QCOMPARE( spyReset.count(), 1 );
 }
 
 
