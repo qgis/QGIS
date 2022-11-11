@@ -150,7 +150,7 @@ QUrl QgsNominatimGeocoder::requestUrl( const QString &address, const QgsRectangl
   QUrlQuery query;
   query.addQueryItem( QStringLiteral( "format" ), QStringLiteral( "json" ) );
   query.addQueryItem( QStringLiteral( "addressdetails" ), QStringLiteral( "1" ) );
-  if ( !bounds.isNull() )
+  if ( !bounds.isNull() && bounds.isFinite() )
   {
     query.addQueryItem( QStringLiteral( "viewbox" ), QStringLiteral( "%1,%2,%3,%4" ).arg( bounds.xMinimum() )
                         .arg( bounds.yMinimum() )
