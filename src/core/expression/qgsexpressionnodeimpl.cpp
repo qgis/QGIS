@@ -295,7 +295,7 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
         ENSURE_NO_EVAL_ERROR
         QDateTime datetime2 = QgsExpressionUtils::getDateTimeValue( vR, parent );
         ENSURE_NO_EVAL_ERROR
-        return datetime1 - datetime2;
+        return QgsInterval( datetime1 - datetime2 );
       }
       else
       {
