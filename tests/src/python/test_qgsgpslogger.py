@@ -18,6 +18,7 @@ from qgis.PyQt.QtCore import (
 )
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
+    Qgis,
     QgsVectorLayerGpsLogger,
     QgsVectorLayer,
     QgsNmeaConnection,
@@ -88,23 +89,23 @@ class TestQgsGpsLogger(unittest.TestCase):
         self.assertEqual(logger.pointsLayer(), points_layer)
         self.assertEqual(logger.tracksLayer(), tracks_layer)
 
-        logger.setPointTimeField('point_time_field')
-        self.assertEqual(logger.pointTimeField(), 'point_time_field')
+        logger.setDestinationField(Qgis.GpsInformationComponent.Timestamp, 'point_time_field')
+        self.assertEqual(logger.destinationField(Qgis.GpsInformationComponent.Timestamp), 'point_time_field')
 
-        logger.setPointDistanceFromPreviousField('point_distance_from_previous_field')
-        self.assertEqual(logger.pointDistanceFromPreviousField(), 'point_distance_from_previous_field')
+        logger.setDestinationField(Qgis.GpsInformationComponent.TrackDistanceSinceLastPoint, 'point_distance_from_previous_field')
+        self.assertEqual(logger.destinationField(Qgis.GpsInformationComponent.TrackDistanceSinceLastPoint), 'point_distance_from_previous_field')
 
-        logger.setPointTimeDeltaFromPreviousField('point_delta_from_previous_field')
-        self.assertEqual(logger.pointTimeDeltaFromPreviousField(), 'point_delta_from_previous_field')
+        logger.setDestinationField(Qgis.GpsInformationComponent.TrackTimeSinceLastPoint, 'point_delta_from_previous_field')
+        self.assertEqual(logger.destinationField(Qgis.GpsInformationComponent.TrackTimeSinceLastPoint), 'point_delta_from_previous_field')
 
-        logger.setTrackStartTimeField('track_start_time')
-        self.assertEqual(logger.trackStartTimeField(), 'track_start_time')
+        logger.setDestinationField(Qgis.GpsInformationComponent.TrackStartTime, 'track_start_time')
+        self.assertEqual(logger.destinationField(Qgis.GpsInformationComponent.TrackStartTime), 'track_start_time')
 
-        logger.setTrackEndTimeField('track_end_time')
-        self.assertEqual(logger.trackEndTimeField(), 'track_end_time')
+        logger.setDestinationField(Qgis.GpsInformationComponent.TrackStartTime, 'track_end_time')
+        self.assertEqual(logger.destinationField(Qgis.GpsInformationComponent.TrackStartTime), 'track_end_time')
 
-        logger.setTrackLengthField('track_length')
-        self.assertEqual(logger.trackLengthField(), 'track_length')
+        logger.setDestinationField(Qgis.GpsInformationComponent.TotalTrackLength, 'track_length')
+        self.assertEqual(logger.destinationField(Qgis.GpsInformationComponent.TotalTrackLength), 'track_length')
 
     def test_point_recording(self):
         points_layer = QgsVectorLayer(
@@ -119,9 +120,9 @@ class TestQgsGpsLogger(unittest.TestCase):
         logger.setPointsLayer(points_layer)
         spy = QSignalSpy(logger.stateChanged)
 
-        logger.setPointTimeField('timestamp')
-        logger.setPointDistanceFromPreviousField('distance')
-        logger.setPointTimeDeltaFromPreviousField('seconds')
+        logger.setDestinationField(Qgis.GpsInformationComponent.Timestamp, 'timestamp')
+        logger.setDestinationField(Qgis.GpsInformationComponent.TrackDistanceSinceLastPoint, 'distance')
+        logger.setDestinationField(Qgis.GpsInformationComponent.TrackTimeSinceLastPoint, 'seconds')
 
         points_layer.startEditing()
 
@@ -160,7 +161,7 @@ class TestQgsGpsLogger(unittest.TestCase):
         self.assertEqual(f.geometry().asWkt(-3), 'PointZ (-1296000 21435000 0)')
 
         # stop recording distance
-        logger.setPointDistanceFromPreviousField(None)
+        logger.setDestinationField(Qgis.GpsInformationComponent.TrackDistanceSinceLastPoint, None)
 
         gps_connection.send_message(
             '$GPRMC,084118.185,A,6939.1152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
@@ -179,7 +180,7 @@ class TestQgsGpsLogger(unittest.TestCase):
         self.assertEqual(f.geometry().asWkt(-3), 'PointZ (-1297000 21435000 0)')
 
         # stop recording time since previous
-        logger.setPointTimeDeltaFromPreviousField(None)
+        logger.setDestinationField(Qgis.GpsInformationComponent.TrackTimeSinceLastPoint, None)
 
         gps_connection.send_message(
             '$GPRMC,084119.185,A,6939.3152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
@@ -200,7 +201,7 @@ class TestQgsGpsLogger(unittest.TestCase):
         self.assertEqual(f.geometry().asWkt(-3), 'PointZ (-1296000 21435000 0)')
 
         # stop recording timestamp
-        logger.setPointTimeField(None)
+        logger.setDestinationField(Qgis.GpsInformationComponent.Timestamp, None)
 
         gps_connection.send_message(
             '$GPRMC,084120.185,A,6939.4152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
@@ -234,9 +235,9 @@ class TestQgsGpsLogger(unittest.TestCase):
         logger.setTracksLayer(line_layer)
         spy = QSignalSpy(logger.stateChanged)
 
-        logger.setTrackLengthField('length')
-        logger.setTrackStartTimeField('start')
-        logger.setTrackEndTimeField('end')
+        logger.setDestinationField(Qgis.GpsInformationComponent.TotalTrackLength, 'length')
+        logger.setDestinationField(Qgis.GpsInformationComponent.TrackStartTime, 'start')
+        logger.setDestinationField(Qgis.GpsInformationComponent.TrackEndTime, 'end')
 
         line_layer.startEditing()
 
@@ -261,7 +262,7 @@ class TestQgsGpsLogger(unittest.TestCase):
         self.assertEqual(line_layer.featureCount(), 1)
         f = next(line_layer.getFeatures())
         self.assertEqual(f.attributes(),
-                         [QDateTime(2020, 1, 22, 18, 41, 29, 185), QDateTime(2020, 1, 22, 18, 41, 36, 185),
+                         [QDateTime(2020, 1, 22, 18, 41, 29, 185), '2020-01-22T18:41:36',
                           0.021035000317942486])
         self.assertEqual(f.geometry().asWkt(-2),
                          'LineStringZ (-1297400 21435500 0, -1297000 21435200 0, -1297400 21434700 0)')

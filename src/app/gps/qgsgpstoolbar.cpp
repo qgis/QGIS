@@ -291,7 +291,9 @@ void QgsGpsToolBar::updateLocationLabel()
           case Qgis::GpsInformationComponent::Timestamp:
           case Qgis::GpsInformationComponent::TrackStartTime:
           case Qgis::GpsInformationComponent::TrackEndTime:
-            // not supported yet
+          case Qgis::GpsInformationComponent::TrackDistanceSinceLastPoint:
+          case Qgis::GpsInformationComponent::TrackTimeSinceLastPoint:
+            // not supported here
             break;
         }
       }

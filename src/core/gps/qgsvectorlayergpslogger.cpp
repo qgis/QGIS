@@ -60,64 +60,17 @@ QgsVectorLayer *QgsVectorLayerGpsLogger::tracksLayer()
   return mTracksLayer;
 }
 
-QString QgsVectorLayerGpsLogger::pointTimeField() const
+void QgsVectorLayerGpsLogger::setDestinationField( Qgis::GpsInformationComponent component, const QString &field )
 {
-  return mPointTimeField;
+  if ( field.isEmpty() )
+    mDestinationFields.remove( component );
+  else
+    mDestinationFields[ component ] = field;
 }
 
-void QgsVectorLayerGpsLogger::setPointTimeField( const QString &field )
+QString QgsVectorLayerGpsLogger::destinationField( Qgis::GpsInformationComponent component ) const
 {
-  mPointTimeField = field;
-}
-
-QString QgsVectorLayerGpsLogger::pointDistanceFromPreviousField() const
-{
-  return mPointDistanceFromPreviousField;
-}
-
-void QgsVectorLayerGpsLogger::setPointDistanceFromPreviousField( const QString &field )
-{
-  mPointDistanceFromPreviousField = field;
-}
-
-QString QgsVectorLayerGpsLogger::pointTimeDeltaFromPreviousField() const
-{
-  return mPointTimeDeltaFromPreviousField;
-}
-
-void QgsVectorLayerGpsLogger::setPointTimeDeltaFromPreviousField( const QString &field )
-{
-  mPointTimeDeltaFromPreviousField = field;
-}
-
-QString QgsVectorLayerGpsLogger::trackStartTimeField() const
-{
-  return mTrackStartTimeField;
-}
-
-void QgsVectorLayerGpsLogger::setTrackStartTimeField( const QString &field )
-{
-  mTrackStartTimeField = field;
-}
-
-QString QgsVectorLayerGpsLogger::trackEndTimeField() const
-{
-  return mTrackEndTimeField;
-}
-
-void QgsVectorLayerGpsLogger::setTrackEndTimeField( const QString &field )
-{
-  mTrackEndTimeField = field;
-}
-
-QString QgsVectorLayerGpsLogger::trackLengthField() const
-{
-  return mTrackLengthField;
-}
-
-void QgsVectorLayerGpsLogger::setTrackLengthField( const QString &field )
-{
-  mTrackLengthField = field;
+  return mDestinationFields.value( component );
 }
 
 void QgsVectorLayerGpsLogger::setTransformContext( const QgsCoordinateTransformContext &context )
@@ -143,8 +96,7 @@ void QgsVectorLayerGpsLogger::endCurrentTrack()
   if ( mTracksLayer )
   {
     // record track
-    const QgsGeometry geometryWgs84 = QgsGeometry( new QgsLineString( track ) );
-    QgsGeometry geometry = geometryWgs84;
+    QgsGeometry geometry = QgsGeometry( new QgsLineString( track ) );
 
     try
     {
@@ -157,23 +109,61 @@ void QgsVectorLayerGpsLogger::endCurrentTrack()
 
     QgsAttributeMap attributes;
 
-    const int trackStartFieldIdx = mTracksLayer->fields().lookupField( mTrackStartTimeField );
-    if ( trackStartFieldIdx >= 0 )
+    for ( auto it = mDestinationFields.constBegin(); it != mDestinationFields.constEnd(); ++it )
     {
-      attributes.insert( trackStartFieldIdx, timestamp( mTracksLayer, trackStartFieldIdx, trackStartTime() ) );
-    }
+      if ( it.value().isEmpty() )
+        continue;
 
-    const int trackEndFieldIdx = mTracksLayer->fields().lookupField( mTrackEndTimeField );
-    if ( trackEndFieldIdx >= 0 )
-    {
-      attributes.insert( trackEndFieldIdx, timestamp( mTracksLayer, trackStartFieldIdx, lastTimestamp() ) );
-    }
+      switch ( it.key() )
+      {
+        case Qgis::GpsInformationComponent::Location:
+        case Qgis::GpsInformationComponent::Altitude:
+        case Qgis::GpsInformationComponent::GroundSpeed:
+        case Qgis::GpsInformationComponent::Bearing:
+        case Qgis::GpsInformationComponent::Pdop:
+        case Qgis::GpsInformationComponent::Hdop:
+        case Qgis::GpsInformationComponent::Vdop:
+        case Qgis::GpsInformationComponent::HorizontalAccuracy:
+        case Qgis::GpsInformationComponent::VerticalAccuracy:
+        case Qgis::GpsInformationComponent::HvAccuracy:
+        case Qgis::GpsInformationComponent::SatellitesUsed:
+        case Qgis::GpsInformationComponent::Timestamp:
+        case Qgis::GpsInformationComponent::TrackDistanceSinceLastPoint:
+        case Qgis::GpsInformationComponent::TrackTimeSinceLastPoint:
+          continue; // points layer fields
 
-    const int trackLengthFieldIdx = mTracksLayer->fields().lookupField( mTrackLengthField );
-    if ( trackLengthFieldIdx >= 0 )
-    {
-      const double length = distanceArea().measureLength( geometryWgs84 );
-      attributes.insert( trackLengthFieldIdx, length );
+        case Qgis::GpsInformationComponent::TrackStartTime:
+        case Qgis::GpsInformationComponent::TrackEndTime:
+        {
+          // time field
+          const int fieldIdx = mTracksLayer->fields().lookupField( it.value() );
+          if ( fieldIdx >= 0 )
+          {
+            const QVariant value = componentValue( it.key() );
+            if ( value.toDateTime().isValid() )
+            {
+              attributes.insert( fieldIdx, timestamp( mTracksLayer, fieldIdx, value.toDateTime() ) );
+            }
+          }
+          break;
+        }
+
+        case Qgis::GpsInformationComponent::TotalTrackLength:
+        case Qgis::GpsInformationComponent::TrackDistanceFromStart:
+        {
+          // non-time fields
+          const int fieldIdx = mTracksLayer->fields().lookupField( it.value() );
+          if ( fieldIdx >= 0 )
+          {
+            const QVariant value = componentValue( it.key() );
+            if ( !QgsVariantUtils::isNull( value ) )
+            {
+              attributes.insert( fieldIdx, value );
+            }
+          }
+          break;
+        }
+      }
     }
 
     QgsExpressionContext context = mTracksLayer->createExpressionContext();
@@ -205,32 +195,62 @@ void QgsVectorLayerGpsLogger::gpsStateChanged( const QgsGpsInformation &info )
 
     QgsAttributeMap attributes;
 
-    const int pointTimeFieldIdx = mPointsLayer->fields().lookupField( mPointTimeField );
-    if ( pointTimeFieldIdx >= 0 )
+    for ( auto it = mDestinationFields.constBegin(); it != mDestinationFields.constEnd(); ++it )
     {
-      attributes.insert( pointTimeFieldIdx, timestamp( mPointsLayer, pointTimeFieldIdx, lastTimestamp() ) );
-    }
+      if ( it.value().isEmpty() )
+        continue;
 
-    const int pointDistanceFromPreviousIdx = mPointsLayer->fields().lookupField( mPointDistanceFromPreviousField );
-    if ( pointDistanceFromPreviousIdx >= 0 )
-    {
-      if ( !mLastPoint.isEmpty() )
+      switch ( it.key() )
       {
-        const double distanceSinceLast = distanceArea().measureLine( mLastPoint, newPosition );
-        attributes.insert( pointDistanceFromPreviousIdx, distanceSinceLast );
+        case Qgis::GpsInformationComponent::Location:
+        case Qgis::GpsInformationComponent::Altitude:
+        case Qgis::GpsInformationComponent::GroundSpeed:
+        case Qgis::GpsInformationComponent::Bearing:
+        case Qgis::GpsInformationComponent::Pdop:
+        case Qgis::GpsInformationComponent::Hdop:
+        case Qgis::GpsInformationComponent::Vdop:
+        case Qgis::GpsInformationComponent::HorizontalAccuracy:
+        case Qgis::GpsInformationComponent::VerticalAccuracy:
+        case Qgis::GpsInformationComponent::HvAccuracy:
+        case Qgis::GpsInformationComponent::SatellitesUsed:
+        case Qgis::GpsInformationComponent::TrackDistanceSinceLastPoint:
+        case Qgis::GpsInformationComponent::TrackTimeSinceLastPoint:
+        {
+          // non-time fields
+          const int fieldIdx = mPointsLayer->fields().lookupField( it.value() );
+          if ( fieldIdx >= 0 )
+          {
+            const QVariant value = componentValue( it.key() );
+            if ( !QgsVariantUtils::isNull( value ) )
+            {
+              attributes.insert( fieldIdx, value );
+            }
+          }
+          break;
+        }
+
+        case Qgis::GpsInformationComponent::Timestamp:
+        {
+          // time field
+          const int fieldIdx = mPointsLayer->fields().lookupField( it.value() );
+          if ( fieldIdx >= 0 )
+          {
+            const QVariant value = componentValue( it.key() );
+            if ( value.toDateTime().isValid() )
+            {
+              attributes.insert( fieldIdx, timestamp( mPointsLayer, fieldIdx, value.toDateTime() ) );
+            }
+          }
+          break;
+        }
+
+        case Qgis::GpsInformationComponent::TrackStartTime:
+        case Qgis::GpsInformationComponent::TrackEndTime:
+        case Qgis::GpsInformationComponent::TotalTrackLength:
+        case Qgis::GpsInformationComponent::TrackDistanceFromStart:
+          continue; // track related field
       }
     }
-    mLastPoint = newPosition;
-
-    const int pointTimeSincePreviousFieldIdx = mPointsLayer->fields().lookupField( mPointTimeDeltaFromPreviousField );
-    if ( pointTimeFieldIdx >= 0 )
-    {
-      if ( mLastTime.isValid() )
-      {
-        attributes.insert( pointTimeSincePreviousFieldIdx, static_cast< double >( mLastTime.msecsTo( newTime ) ) / 1000 );
-      }
-    }
-    mLastTime = newTime;
 
     QgsExpressionContext context = mPointsLayer->createExpressionContext();
 

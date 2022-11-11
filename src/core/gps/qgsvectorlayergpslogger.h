@@ -84,112 +84,44 @@ class CORE_EXPORT QgsVectorLayerGpsLogger : public QgsGpsLogger
     QgsVectorLayer *tracksLayer();
 
     /**
-     * Returns the destination time field name from the pointsLayer().
+     * Sets a destination \a field name for a specific GPS information \a component.
      *
-     * If specified, timestamps for recorded points will be stored in this field.
+     * Depending on the \a component, the field will either refer to the pointsLayer() or tracksLayer().
      *
-     * \see setPointTimeField()
+     * Fields stored in the pointsLayer() are:
+     *
+     * - Qgis::GpsInformationComponent::Location:
+     * - Qgis::GpsInformationComponent::Altitude:
+     * - Qgis::GpsInformationComponent::GroundSpeed:
+     * - Qgis::GpsInformationComponent::Bearing:
+     * - Qgis::GpsInformationComponent::Pdop:
+     * - Qgis::GpsInformationComponent::Hdop:
+     * - Qgis::GpsInformationComponent::Vdop:
+     * - Qgis::GpsInformationComponent::HorizontalAccuracy:
+     * - Qgis::GpsInformationComponent::VerticalAccuracy:
+     * - Qgis::GpsInformationComponent::HvAccuracy:
+     * - Qgis::GpsInformationComponent::SatellitesUsed:
+     * - Qgis::GpsInformationComponent::Timestamp:
+     * - Qgis::GpsInformationComponent::TrackDistanceSinceLastPoint:
+     * - Qgis::GpsInformationComponent::TrackTimeSinceLastPoint:
+     *
+     * Fields stored in the tracksLayer() are:
+     *
+     * - Qgis::GpsInformationComponent::TrackStartTime:
+     * - Qgis::GpsInformationComponent::TrackEndTime:
+     * - Qgis::GpsInformationComponent::TotalTrackLength:
+     * - Qgis::GpsInformationComponent::TrackDistanceFromStart:
+     *
+     * \see destinationField()
      */
-    QString pointTimeField() const;
+    void setDestinationField( Qgis::GpsInformationComponent component, const QString &field );
 
     /**
-     * Sets the destination time \a field name from the pointsLayer().
+     * Returns the destination field name for a specific GPS information \a component.
      *
-     * If specified, timestamps for recorded points will be stored in this field.
-     *
-     * \see pointTimeField()
+     * \see setDestinationField()
      */
-    void setPointTimeField( const QString &field );
-
-    /**
-     * Returns the destination distance from previous point field name from the pointsLayer().
-     *
-     * If specified, the distance from the previous recorded point will be stored in this field.
-     *
-     * \see setPointDistanceFromPreviousField()
-     */
-    QString pointDistanceFromPreviousField() const;
-
-    /**
-     * Sets the destination distance from previous point \a field name from the pointsLayer().
-     *
-     * If specified, the distance from the previous recorded point will be stored in this field.
-     *
-     * \see pointDistanceFromPreviousField()
-     */
-    void setPointDistanceFromPreviousField( const QString &field );
-
-    /**
-     * Returns the destination time delta from previous point field name from the pointsLayer().
-     *
-     * If specified, the time difference from the previous recorded point will be stored in this field.
-     *
-     * \see setPointTimeDeltaFromPreviousField()
-     */
-    QString pointTimeDeltaFromPreviousField() const;
-
-    /**
-     * Sets the destination time delta from previous point \a field name from the pointsLayer().
-     *
-     * If specified, the time difference from the previous recorded point will be stored in this field.
-     *
-     * \see pointTimeDeltaFromPreviousField()
-     */
-    void setPointTimeDeltaFromPreviousField( const QString &field );
-
-    /**
-     * Returns the destination start time field name from the tracksLayer().
-     *
-     * If specified, the start timestamps for recorded tracks will be stored in this field.
-     *
-     * \see setTrackStartTimeField()
-     */
-    QString trackStartTimeField() const;
-
-    /**
-     * Sets the destination start time \a field name from the tracksLayer().
-     *
-     * If specified, the start timestamps for recorded tracks will be stored in this field.
-     *
-     * \see trackStartTimeField()
-     */
-    void setTrackStartTimeField( const QString &field );
-
-    /**
-     * Returns the destination end time field name from the tracksLayer().
-     *
-     * If specified, the end timestamps for recorded tracks will be stored in this field.
-     *
-     * \see setTrackEndTimeField()
-     */
-    QString trackEndTimeField() const;
-
-    /**
-     * Sets the destination end time \a field name from the tracksLayer().
-     *
-     * If specified, the end timestamps for recorded tracks will be stored in this field.
-     *
-     * \see trackEndTimeField()
-     */
-    void setTrackEndTimeField( const QString &field );
-
-    /**
-     * Returns the destination track length field name from the tracksLayer().
-     *
-     * If specified, the total track length recorded tracks will be stored in this field.
-     *
-     * \see setTrackLengthField()
-     */
-    QString trackLengthField() const;
-
-    /**
-     * Sets the destination track length \a field name from the tracksLayer().
-     *
-     * If specified, the total track length recorded tracks will be stored in this field.
-     *
-     * \see trackLengthField()
-     */
-    void setTrackLengthField( const QString &field );
+    QString destinationField( Qgis::GpsInformationComponent component ) const;
 
     void setTransformContext( const QgsCoordinateTransformContext &context ) override;
 
@@ -209,22 +141,12 @@ class CORE_EXPORT QgsVectorLayerGpsLogger : public QgsGpsLogger
     QPointer< QgsVectorLayer > mPointsLayer;
     QPointer< QgsVectorLayer > mTracksLayer;
 
-    QString mPointTimeField;
-    QString mPointDistanceFromPreviousField;
-    QString mPointTimeDeltaFromPreviousField;
-
-    QString mTrackStartTimeField;
-    QString mTrackEndTimeField;
-    QString mTrackLengthField;
-
     QgsCoordinateTransform mWgs84toPointLayerTransform;
     QgsCoordinateTransform mWgs84toTrackLayerTransform;
 
-    QgsPointXY mLastPoint;
-    QDateTime mLastTime;
+    QMap< Qgis::GpsInformationComponent, QString > mDestinationFields;
 
     QVariant timestamp( QgsVectorLayer *vlayer, int idx, const QDateTime &time );
-
 
 };
 

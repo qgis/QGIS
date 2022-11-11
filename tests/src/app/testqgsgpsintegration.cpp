@@ -72,6 +72,7 @@ void TestQgsGpsIntegration::initTestCase()
   QCoreApplication::setOrganizationName( QStringLiteral( "QGISGpsTests" ) );
   QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
   QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QgsSettings().clear( );
 
   mQgisApp = new QgisApp();
 
