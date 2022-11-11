@@ -38,9 +38,9 @@ QgsInterval::QgsInterval( double seconds )
 }
 
 QgsInterval::QgsInterval( std::chrono::milliseconds milliseconds )
-  : mSeconds( milliseconds.count() / 1000.0 )
+  : mSeconds( static_cast<double>( milliseconds.count() ) / 1000.0 )
   , mValid( true )
-  , mOriginalDuration( milliseconds.count() )
+  , mOriginalDuration( static_cast<double>( milliseconds.count() ) )
   , mOriginalUnit( QgsUnitTypes::TemporalMilliseconds )
 {
 }
