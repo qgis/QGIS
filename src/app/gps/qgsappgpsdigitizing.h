@@ -48,20 +48,6 @@ class APP_EXPORT QgsAppGpsDigitizing: public QgsGpsLogger
     ~QgsAppGpsDigitizing() override;
 
     /**
-     * Returns the total length of the current digitized track (in meters).
-     *
-     * The returned length is calculated using ellipsoidal calculations.
-     */
-    double totalTrackLength() const;
-
-    /**
-     * Returns the direct length from the first vertex in the track to the last (in meters).
-     *
-     * The returned length is calculated using ellipsoidal calculations.
-     */
-    double trackDistanceFromStart() const;
-
-    /**
      * Returns the distance area calculator used to calculate track lengths.
      */
     const QgsDistanceArea &distanceArea() const;
@@ -72,16 +58,6 @@ class APP_EXPORT QgsAppGpsDigitizing: public QgsGpsLogger
     void setNmeaLoggingEnabled( bool enabled );
 
     void createVertexAtCurrentLocation();
-
-    /**
-     * Emitted whenever the recorded track is changed.
-     */
-    void trackChanged();
-
-    /**
-     * Emitted whenever the distance area used to calculate track distances is changed.
-     */
-    void distanceAreaChanged();
 
   private slots:
     void addVertex( const QgsPoint &wgs84Point );
@@ -96,8 +72,6 @@ class APP_EXPORT QgsAppGpsDigitizing: public QgsGpsLogger
 
     void startLogging();
     void stopLogging();
-
-    void updateDistanceArea();
 
   private:
     void createRubberBand();

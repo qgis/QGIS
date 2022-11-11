@@ -16,6 +16,7 @@
 #include "qgsgpslogger.h"
 #include "qgsgpsconnection.h"
 #include "gmath.h"
+#include "qgsgeometry.h"
 
 #include <QTimer>
 #include <QTimeZone>
@@ -66,12 +67,14 @@ void QgsGpsLogger::setConnection( QgsGpsConnection *connection )
 void QgsGpsLogger::setEllipsoid( const QString &ellipsoid )
 {
   mDistanceCalculator.setEllipsoid( ellipsoid );
+  emit distanceAreaChanged();
 }
 
 void QgsGpsLogger::setTransformContext( const QgsCoordinateTransformContext &context )
 {
   mTransformContext = context;
   mDistanceCalculator.setSourceCrs( mWgs84CRS, mTransformContext );
+  emit distanceAreaChanged();
 }
 
 QgsCoordinateTransformContext QgsGpsLogger::transformContext() const
@@ -160,6 +163,21 @@ void QgsGpsLogger::updateGpsSettings()
   mAcquisitionEnabled = true;
 
   switchAcquisition();
+}
+
+double QgsGpsLogger::totalTrackLength() const
+{
+  QVector<QgsPointXY> points;
+  QgsGeometry::convertPointList( mCaptureListWgs84, points );
+  return mDistanceCalculator.measureLine( points );
+}
+
+double QgsGpsLogger::trackDistanceFromStart() const
+{
+  if ( mCaptureListWgs84.empty() )
+    return 0;
+
+  return mDistanceCalculator.measureLine( { QgsPointXY( mCaptureListWgs84.constFirst() ), QgsPointXY( mCaptureListWgs84.constLast() )} );
 }
 
 void QgsGpsLogger::switchAcquisition()

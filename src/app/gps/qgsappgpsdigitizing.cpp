@@ -96,21 +96,6 @@ QgsAppGpsDigitizing::~QgsAppGpsDigitizing()
   mRubberBand = nullptr;
 }
 
-double QgsAppGpsDigitizing::totalTrackLength() const
-{
-  QVector<QgsPointXY> points;
-  QgsGeometry::convertPointList( mCaptureListWgs84, points );
-  return mDa.measureLine( points );
-}
-
-double QgsAppGpsDigitizing::trackDistanceFromStart() const
-{
-  if ( mCaptureListWgs84.empty() )
-    return 0;
-
-  return mDa.measureLine( { QgsPointXY( mCaptureListWgs84.constFirst() ), QgsPointXY( mCaptureListWgs84.constLast() )} );
-}
-
 const QgsDistanceArea &QgsAppGpsDigitizing::distanceArea() const
 {
   return mDa;

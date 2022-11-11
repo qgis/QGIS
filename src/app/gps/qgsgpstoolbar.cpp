@@ -196,7 +196,8 @@ void QgsGpsToolBar::setGpsDigitizing( QgsAppGpsDigitizing *digitizing )
 {
   mDigitizing = digitizing;
   connect( mDigitizing, &QgsAppGpsDigitizing::distanceAreaChanged, this, &QgsGpsToolBar::updateLocationLabel );
-  connect( mDigitizing, &QgsAppGpsDigitizing::trackChanged, this, &QgsGpsToolBar::updateLocationLabel );
+  connect( mDigitizing, &QgsAppGpsDigitizing::trackVertexAdded, this, &QgsGpsToolBar::updateLocationLabel );
+  connect( mDigitizing, &QgsAppGpsDigitizing::trackReset, this, &QgsGpsToolBar::updateLocationLabel );
 }
 
 void QgsGpsToolBar::setAddVertexButtonEnabled( bool enabled )

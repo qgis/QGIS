@@ -160,6 +160,20 @@ class CORE_EXPORT QgsGpsLogger : public QObject
      */
     void updateGpsSettings();
 
+    /**
+     * Returns the total length of the current digitized track (in meters).
+     *
+     * The returned length is calculated using ellipsoidal calculations.
+     */
+    double totalTrackLength() const;
+
+    /**
+     * Returns the direct length from the first vertex in the track to the last (in meters).
+     *
+     * The returned length is calculated using ellipsoidal calculations.
+     */
+    double trackDistanceFromStart() const;
+
   signals:
 
     /**
@@ -183,6 +197,11 @@ class CORE_EXPORT QgsGpsLogger : public QObject
      * Emitted whenever the associated GPS device state is changed.
      */
     void stateChanged( const QgsGpsInformation &info );
+
+    /**
+     * Emitted whenever the distance area used to calculate track distances is changed.
+     */
+    void distanceAreaChanged();
 
   protected:
 

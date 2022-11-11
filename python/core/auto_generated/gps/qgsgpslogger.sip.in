@@ -138,6 +138,20 @@ the GPS position is changed.
 Should be called whenever the QGIS GPS settings are changed.
 %End
 
+    double totalTrackLength() const;
+%Docstring
+Returns the total length of the current digitized track (in meters).
+
+The returned length is calculated using ellipsoidal calculations.
+%End
+
+    double trackDistanceFromStart() const;
+%Docstring
+Returns the direct length from the first vertex in the track to the last (in meters).
+
+The returned length is calculated using ellipsoidal calculations.
+%End
+
   signals:
 
     void trackIsEmptyChanged( bool isEmpty );
@@ -160,6 +174,11 @@ The ``vertex`` point will be in WGS84 coordinate reference system.
     void stateChanged( const QgsGpsInformation &info );
 %Docstring
 Emitted whenever the associated GPS device state is changed.
+%End
+
+    void distanceAreaChanged();
+%Docstring
+Emitted whenever the distance area used to calculate track distances is changed.
 %End
 
   protected:
