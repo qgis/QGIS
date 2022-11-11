@@ -31,7 +31,6 @@ class QgsRubberBand;
 class QgsPoint;
 class QgsGpsInformation;
 class QgsVectorLayer;
-class QTimer;
 class QFile;
 
 class APP_EXPORT QgsAppGpsDigitizing: public QgsGpsLogger
@@ -46,11 +45,6 @@ class APP_EXPORT QgsAppGpsDigitizing: public QgsGpsLogger
 
     QgsAppGpsDigitizing( QgsAppGpsConnection *connection, QgsMapCanvas *canvas, QObject *parent = nullptr );
     ~QgsAppGpsDigitizing() override;
-
-    /**
-     * Returns the distance area calculator used to calculate track lengths.
-     */
-    const QgsDistanceArea &distanceArea() const;
 
   public slots:
     void createFeature();
@@ -89,8 +83,6 @@ class APP_EXPORT QgsAppGpsDigitizing: public QgsGpsLogger
 
     std::unique_ptr< QFile > mLogFile;
     QTextStream mLogFileTextStream;
-
-    QgsDistanceArea mDa;
 
     friend class TestQgsGpsIntegration;
 };

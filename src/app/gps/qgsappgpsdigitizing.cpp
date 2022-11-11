@@ -20,8 +20,6 @@
 #include "qgsgui.h"
 #include "qgisapp.h"
 #include "qgsmessagebar.h"
-#include "gmath.h"
-#include "info.h"
 #include "qgspolygon.h"
 #include "qgsmapcanvas.h"
 #include "qgsfeatureaction.h"
@@ -94,11 +92,6 @@ QgsAppGpsDigitizing::~QgsAppGpsDigitizing()
 {
   delete mRubberBand;
   mRubberBand = nullptr;
-}
-
-const QgsDistanceArea &QgsAppGpsDigitizing::distanceArea() const
-{
-  return mDa;
 }
 
 void QgsAppGpsDigitizing::addVertex( const QgsPoint &wgs84Point )
