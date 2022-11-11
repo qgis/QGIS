@@ -128,7 +128,7 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
               // the superscript in a smaller font size. BUT if the fragment format HAS a non -1 font size then it indicates
               // that the document has an explicit font size for the super/subscript element, eg "my text<sup style="font-size: 6pt">2</sup>"
               // which we should respect
-              updatedFont.setPixelSize( updatedFont.pixelSize() * SUPERSCRIPT_SUBSCRIPT_FONT_SIZE_SCALING_FACTOR );
+              updatedFont.setPixelSize( static_cast< int >( std::round( updatedFont.pixelSize() * SUPERSCRIPT_SUBSCRIPT_FONT_SIZE_SCALING_FACTOR ) ) );
               fm = QFontMetricsF( updatedFont );
             }
 
@@ -148,7 +148,7 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
             if ( fragmentFormat.fontPointSize() < 0 )
             {
               // see above!!
-              updatedFont.setPixelSize( updatedFont.pixelSize() * SUPERSCRIPT_SUBSCRIPT_FONT_SIZE_SCALING_FACTOR );
+              updatedFont.setPixelSize( static_cast< int>( std::round( updatedFont.pixelSize() * SUPERSCRIPT_SUBSCRIPT_FONT_SIZE_SCALING_FACTOR ) ) );
               fm = QFontMetricsF( updatedFont );
             }
 
@@ -365,7 +365,6 @@ QRectF QgsTextDocumentMetrics::outerBounds( Qgis::TextLayoutMode mode, Qgis::Tex
       BUILTIN_UNREACHABLE
 
     case Qgis::TextOrientation::Vertical:
-      return QRectF();
     case Qgis::TextOrientation::RotationBased:
       return QRectF(); // label mode only
   }

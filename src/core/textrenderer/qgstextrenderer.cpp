@@ -1690,7 +1690,7 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
             context.painter()->setRenderHint( QPainter::TextAntialiasing );
 
             context.painter()->scale( 1 / fontScale, 1 / fontScale );
-            context.painter()->drawText( xOffset, yOffset, fragment.text() );
+            context.painter()->drawText( QPointF( xOffset, yOffset ), fragment.text() );
             context.painter()->scale( fontScale, fontScale );
 
             xOffset += metrics.fragmentHorizontalAdvance( blockIndex, fragmentIndex, mode );
@@ -1952,7 +1952,7 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
             {
               double partXOffset = ( blockMaximumCharacterWidth - ( fragmentMetrics.horizontalAdvance( part ) / fontScale - letterSpacing ) ) / 2;
               context.painter()->scale( 1 / fontScale, 1 / fontScale );
-              context.painter()->drawText( partXOffset * fontScale, ( currentBlockYOffset + partYOffset ) * fontScale, part );
+              context.painter()->drawText( QPointF( partXOffset * fontScale, ( currentBlockYOffset + partYOffset ) * fontScale ), part );
               context.painter()->scale( fontScale, fontScale );
               partYOffset += fragmentMetrics.ascent() / fontScale + letterSpacing;
             }
