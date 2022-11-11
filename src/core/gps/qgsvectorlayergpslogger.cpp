@@ -181,7 +181,6 @@ void QgsVectorLayerGpsLogger::gpsStateChanged( const QgsGpsInformation &info )
   {
     // record point
     const QgsPointXY newPosition = lastPosition();
-    const QDateTime newTime = lastTimestamp();
     QgsGeometry geometry( new QgsPoint( newPosition.x(), newPosition.y(), lastElevation() ) );
 
     try
