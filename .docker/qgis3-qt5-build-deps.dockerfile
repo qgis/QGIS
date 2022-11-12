@@ -1,5 +1,5 @@
 
-ARG DISTRO_VERSION=20.04
+ARG DISTRO_VERSION=22.04
 
 # Oracle Docker image is too large, so we add as less dependencies as possible
 # so there is enough space on GitHub runner
