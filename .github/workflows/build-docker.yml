@@ -51,6 +51,7 @@ jobs:
       DOCKER_BUILD_DEPS_FILE: qgis3-qt5-build-deps.dockerfile
 
     strategy:
+      fail-fast: false
       matrix: ${{ fromJSON( needs.define-strategy.outputs.matrix ) }}
 
     steps:
