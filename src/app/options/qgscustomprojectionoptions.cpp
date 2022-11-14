@@ -207,8 +207,11 @@ void QgsCustomProjectionOptionsWidget::pbnRemove_clicked()
     mDefinitions.erase( mDefinitions.begin() + row );
   }
 
-  leName->setEnabled( false );
-  mCrsDefinitionWidget->setEnabled( false );
+  if ( mDefinitions.empty() )
+  {
+    leName->setEnabled( false );
+    mCrsDefinitionWidget->setEnabled( false );
+  }
 }
 
 void QgsCustomProjectionOptionsWidget::leNameList_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous )
