@@ -343,7 +343,7 @@ void TestQgsNmeaConnection::testConstellation()
   QCOMPARE( info.satellitesInView.at( 1 ).constellation(), Qgis::GnssConstellation::Gps );
   QCOMPARE( info.satellitesInView.at( 2 ).constellation(), Qgis::GnssConstellation::Gps );
   QCOMPARE( info.satellitesInView.at( 3 ).constellation(), Qgis::GnssConstellation::Gps );
-  
+
   info = connection.push( QStringLiteral( "$GLGSV,8,5,30,06,33,224,00,08,19,298,00,09,21,234,00,13,18,286,00*7E" ) );
   QCOMPARE( info.satellitesInView.count(), 8 );
   QCOMPARE( info.satellitesInView.at( 4 ).constellation(), Qgis::GnssConstellation::Glonass );
