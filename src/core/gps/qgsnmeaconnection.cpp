@@ -404,6 +404,7 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
 
       if ( satelliteInfo.satType == 'P' && satelliteInfo.id > 32 )
       {
+        satelliteInfo.mConstellation = Qgis::GnssConstellation::Sbas;
         satelliteInfo.satType = 'S';
         satelliteInfo.id = currentSatellite.id + 87;
       }
