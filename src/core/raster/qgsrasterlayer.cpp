@@ -168,6 +168,7 @@ QgsRasterLayer *QgsRasterLayer::clone() const
   QgsMapLayer::clone( layer );
   layer->mElevationProperties = mElevationProperties->clone();
   layer->mElevationProperties->setParent( layer );
+  layer->setMapTipTemplate( mapTipTemplate() );
 
   // do not clone data provider which is the first element in pipe
   for ( int i = 1; i < mPipe->size(); i++ )
@@ -2129,6 +2130,9 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
   if ( !elemDataDefinedProperties.isNull() )
     mPipe->dataDefinedProperties().readXml( elemDataDefinedProperties, QgsRasterPipe::propertyDefinitions() );
 
+  if ( categories.testFlag( MapTips ) )
+    setMapTipTemplate( layer_node.namedItem( QStringLiteral( "mapTip" ) ).toElement().text() );
+
   readCustomProperties( layer_node );
 
   emit rendererChanged();
@@ -2328,6 +2332,15 @@ bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &documen
 
   QDomElement layerElement = layer_node.toElement();
   writeCommonStyle( layerElement, document, context, categories );
+
+  // save map tip
+  if ( categories.testFlag( MapTips ) )
+  {
+    QDomElement mapTipElem = document.createElement( QStringLiteral( "mapTip" ) );
+    QDomText mapTipText = document.createTextNode( mapTipTemplate() );
+    mapTipElem.appendChild( mapTipText );
+    layer_node.toElement().appendChild( mapTipElem );
+  }
 
   // Store pipe members into pipe element, in future, it will be
   // possible to add custom filters into the pipe

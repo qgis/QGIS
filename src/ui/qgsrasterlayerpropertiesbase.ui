@@ -205,6 +205,15 @@
          </item>
          <item>
           <property name="text">
+           <string>Display</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/propertyicons/display.svg</normaloff>:/images/themes/default/propertyicons/display.svg</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Attribute Tables</string>
           </property>
           <property name="toolTip">
@@ -1450,6 +1459,110 @@ p, li { white-space: pre-wrap; }
            </item>
           </layout>
          </widget>
+         <widget class="QWidget" name="mOptsPage_Display">
+          <layout class="QVBoxLayout" name="verticalLayout_25">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QWidget" name="scrollArea_10" native="true">
+             <property name="widgetResizable" stdset="0">
+              <bool>true</bool>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_101">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item row="0" column="0">
+               <widget class="QGroupBox" name="groupBox_2">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="title">
+                 <string>HTML Map Tip</string>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_81">
+                 <item row="1" column="2">
+                  <widget class="QPushButton" name="mInsertExpressionButton">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="toolTip">
+                    <string>Inserts the selected field or expression into the map tip</string>
+                   </property>
+                   <property name="text">
+                    <string>Insert</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="0" colspan="3">
+                  <widget class="QgsCodeEditorHTML" name="mMapTipWidget" native="true">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>100</height>
+                    </size>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0" colspan="2">
+                  <widget class="QgsExpressionLineEdit" name="mMapTipExpressionWidget" native="true">
+                   <property name="focusPolicy">
+                    <enum>Qt::StrongFocus</enum>
+                   </property>
+                   <property name="toolTip">
+                    <string>The valid attribute names for this layer</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0" colspan="3">
+                  <widget class="QLabel" name="labelMapTipInfo">
+                   <property name="text">
+                    <string>The HTML map tips are shown when moving mouse over features of the currently selected layer when the 'Show Map Tips' action is toggled on.</string>
+                   </property>
+                   <property name="wordWrap">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
          <widget class="QWidget" name="mOptsPage_RasterAttributeTable">
           <layout class="QVBoxLayout" name="verticalLayout_rat">
            <property name="leftMargin">
@@ -1470,7 +1583,7 @@ p, li { white-space: pre-wrap; }
               <item>
                <widget class="QLabel" name="mRasterAttributeTableLabel">
                 <property name="text">
-                 <string>There are no raster attribute tables associated with this data source. 
+                 <string>There are no raster attribute tables associated with this data source.
 
 If the current symbology can be converted to an attribute table you can create a new attribute table using the context menu available in the layer tree or the button below.
 
@@ -1954,18 +2067,6 @@ You can also import an existing raster attribute table from a VAT.DBF file and a
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
@@ -1999,6 +2100,23 @@ You can also import an existing raster attribute table from a VAT.DBF file and a
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsCodeEditorHTML</class>
+   <extends>QWidget</extends>
+   <header>qgscodeeditorhtml.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsBlendModeComboBox</class>
    <extends>QComboBox</extends>
    <header>qgsblendmodecombobox.h</header>
@@ -2007,6 +2125,12 @@ You can also import an existing raster attribute table from a VAT.DBF file and a
    <class>QgsImageSourceLineEdit</class>
    <extends>QWidget</extends>
    <header>qgsfilecontentsourcelineedit.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsExpressionLineEdit</class>
+   <extends>QWidget</extends>
+   <header>qgsexpressionlineedit.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -535,6 +535,13 @@ QgsExpressionContextScope *QgsExpressionContextUtils::mapToolCaptureScope( const
   return scope;
 }
 
+QgsExpressionContextScope *QgsExpressionContextUtils::mapLayerPositionScope( const QgsPointXY &position )
+{
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Map Layer Position" ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layer_cursor_point" ), QVariant::fromValue( QgsGeometry::fromPointXY( position ) ) ) );
+  return scope;
+}
+
 QgsExpressionContextScope *QgsExpressionContextUtils::updateSymbolScope( const QgsSymbol *symbol, QgsExpressionContextScope *symbolScope )
 {
   if ( !symbolScope )

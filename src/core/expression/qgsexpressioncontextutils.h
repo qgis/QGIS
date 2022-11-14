@@ -189,6 +189,15 @@ class CORE_EXPORT QgsExpressionContextUtils
     static QgsExpressionContextScope *mapToolCaptureScope( const QList<QgsPointLocator::Match> &matches ) SIP_FACTORY;
 
     /**
+     * Sets the expression context variables which are available for expressions triggered by moving the mouse over a feature
+     * of the currently selected layer.
+     * \param position map coordinates of the current pointer position in the CRS of the layer which triggered the action.
+     *
+     * \since QGIS 3.30
+     */
+    static QgsExpressionContextScope *mapLayerPositionScope( const QgsPointXY &position ) SIP_FACTORY;
+
+    /**
      * Updates a symbol scope related to a QgsSymbol to an expression context.
      * \param symbol symbol to extract properties from
      * \param symbolScope pointer to an existing scope to update

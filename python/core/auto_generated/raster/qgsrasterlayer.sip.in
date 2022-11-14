@@ -467,7 +467,6 @@ Emitted when the layer's subset string has changed.
 .. versionadded:: 3.12
 %End
 
-
   protected:
     virtual bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
 

@@ -1508,6 +1508,33 @@ Set placeholder image for legend. If the string is empty, a generated legend wil
 .. versionadded:: 3.22
 %End
 
+    QString mapTipTemplate() const;
+%Docstring
+The mapTip is a pretty, html representation for feature information.
+
+It may also contain embedded expressions.
+
+.. note::
+
+   this method was only available for vector layers since QGIS 3.0
+
+.. versionadded:: 3.30
+%End
+
+    void setMapTipTemplate( const QString &mapTipTemplate );
+%Docstring
+The mapTip is a pretty, html representation for feature information.
+
+It may also contain embedded expressions.
+
+.. note::
+
+   this method was only available for vector layers since QGIS 3.0
+
+.. versionadded:: 3.30
+%End
+
+
   public slots:
 
     void setMinimumScale( double scale );
@@ -1846,6 +1873,17 @@ Emitted when edited changes have been successfully written to the data provider.
 Emitted when modifications has been done on layer
 
 .. versionadded:: 3.22
+%End
+
+    void mapTipTemplateChanged();
+%Docstring
+Emitted when the map tip template changes
+
+.. note::
+
+   this method was only available for vector layers since QGIS 3.0
+
+.. versionadded:: 3.30
 %End
 
   protected:

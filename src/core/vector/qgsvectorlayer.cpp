@@ -5220,20 +5220,6 @@ void QgsVectorLayer::setEditFormConfig( const QgsEditFormConfig &editFormConfig 
   emit editFormConfigChanged();
 }
 
-QString QgsVectorLayer::mapTipTemplate() const
-{
-  return mMapTipTemplate;
-}
-
-void QgsVectorLayer::setMapTipTemplate( const QString &mapTip )
-{
-  if ( mMapTipTemplate == mapTip )
-    return;
-
-  mMapTipTemplate = mapTip;
-  emit mapTipTemplateChanged();
-}
-
 QgsAttributeTableConfig QgsVectorLayer::attributeTableConfig() const
 {
   QgsAttributeTableConfig config = mAttributeTableConfig;

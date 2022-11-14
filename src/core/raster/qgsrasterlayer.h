@@ -76,6 +76,7 @@ typedef QList < QPair< QString, QColor > > QgsLegendColorList;
 class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfileSource
 {
     Q_OBJECT
+
   public:
 
     //! \brief Default sample size (number of pixels) for estimated statistics/histogram calculation
@@ -509,7 +510,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      */
     void subsetStringChanged();
 
-
   protected:
     bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) override;
     bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) override;
@@ -608,6 +608,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
 
     QDomDocument mOriginalStyleDocument;
     QDomElement mOriginalStyleElement;
+
 };
 
 // clazy:excludeall=qstring-allocations
