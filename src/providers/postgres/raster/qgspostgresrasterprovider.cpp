@@ -1000,6 +1000,8 @@ bool QgsPostgresRasterProvider::init()
 
   // WARNING: multiple failure and return points!
 
+  mOverViews.clear();
+
   if ( !determinePrimaryKey() )
   {
     QgsMessageLog::logMessage( tr( "PostgreSQL raster layer has no primary key." ), tr( "PostGIS" ) );
@@ -1273,9 +1275,12 @@ bool QgsPostgresRasterProvider::init()
 
   // Get the full raster and extract information
   // Note: this can be very slow
-  // Use oveviews if we can, even if they are probably missing for unconstrained tables
-
-  findOverviews();
+  // Use oveviews if we can, even if they are probably missing for unconstrained tables.
+  // Overviews are useless if there is a filter.
+  if ( subsetString().isEmpty() )
+  {
+    findOverviews();
+  }
 
   QString tableToQuery { mQuery };
 
@@ -1340,7 +1345,7 @@ bool QgsPostgresRasterProvider::init()
 
     mExtent = p.boundingBox();
 
-    // Tile size (in this path the raster is considered untiled, so this is actually the whole size
+    // Tile size (in this path the raster is considered untiled, so this is actually the whole size)
     mTileWidth = result.PQgetvalue( 0, 3 ).toInt( &ok );
 
     if ( ! ok )
@@ -1939,9 +1944,9 @@ bool QgsPostgresRasterProvider::loadFields()
     QgsField newField = QgsField( fieldName, fieldType, fieldTypeName, fieldSize, fieldPrec, fieldComment, fieldSubType );
 
     QgsFieldConstraints constraints;
-    if ( notNullMap[tableoid][attnum] || ( mPrimaryKeyAttrs.size() == 1 && mPrimaryKeyAttrs[0] == fieldName ) || identityMap[tableoid][attnum] != ' ' )
+    if ( notNullMap[tableoid][attnum] || ( mPrimaryKeyAttrs.size() == 1 && mPrimaryKeyAttrs[0] == i ) || identityMap[tableoid][attnum] != ' ' )
       constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
-    if ( uniqueMap[tableoid][attnum] || ( mPrimaryKeyAttrs.size() == 1 && mPrimaryKeyAttrs[0] == fieldName ) || identityMap[tableoid][attnum] != ' ' )
+    if ( uniqueMap[tableoid][attnum] || ( mPrimaryKeyAttrs.size() == 1 && mPrimaryKeyAttrs[0] == i ) || identityMap[tableoid][attnum] != ' ' )
       constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
     newField.setConstraints( constraints );
 
@@ -2058,6 +2063,11 @@ QgsPostgresProvider::Relkind QgsPostgresRasterProvider::relkind() const
 bool QgsPostgresRasterProvider::determinePrimaryKey()
 {
 
+  if ( !loadFields() )
+  {
+    return false;
+  }
+
   // check to see if there is an unique index on the relation, which
   // can be used as a key into the table. Primary keys are always
   // unique indices, so we catch them as well.
@@ -2110,7 +2120,9 @@ bool QgsPostgresRasterProvider::determinePrimaryKey()
             // Could warn the user here that performance will suffer if
             // attribute isn't indexed (and that they may want to add a
             // primary key to the table)
-            mPrimaryKeyAttrs << res.PQgetvalue( 0, 0 );
+            const QString keyName { res.PQgetvalue( 0, 0 ) };
+            Q_ASSERT( mAttributeFields.indexFromName( keyName ) >= 0 );
+            mPrimaryKeyAttrs << mAttributeFields.indexFromName( keyName );
           }
         }
 
@@ -2126,7 +2138,7 @@ bool QgsPostgresRasterProvider::determinePrimaryKey()
             // oid isn't indexed (and that they may want to add a
             // primary key to the table)
             mPrimaryKeyType = PktOid;
-            mPrimaryKeyAttrs << QStringLiteral( "oid" );
+            mPrimaryKeyAttrs.clear();
           }
         }
 
@@ -2140,7 +2152,7 @@ bool QgsPostgresRasterProvider::determinePrimaryKey()
             mPrimaryKeyType = PktTid;
             QgsMessageLog::logMessage( tr( "Primary key is ctid - changing of existing features disabled (%1; %2)" ).arg( mRasterColumn, mQuery ) );
             // TODO: set capabilities to RO when writing will be implemented
-            mPrimaryKeyAttrs << QStringLiteral( "ctid" );
+            mPrimaryKeyAttrs.clear();
           }
         }
 
@@ -2212,12 +2224,13 @@ bool QgsPostgresRasterProvider::determinePrimaryKey()
         }
         // Always use PktFidMap for multi-field keys
         mPrimaryKeyType = i ? QgsPostgresPrimaryKeyType::PktFidMap : pkType;
-        mPrimaryKeyAttrs << name;
+        Q_ASSERT( mAttributeFields.indexFromName( name ) >= 0 );
+        mPrimaryKeyAttrs << mAttributeFields.indexFromName( name );
       }
 
       if ( mightBeNull || isParentTable )
       {
-        QgsMessageLog::logMessage( tr( "Ignoring key candidate because of NULL values or inherited table" ), tr( "PostGIS" ) );
+        QgsMessageLog::logMessage( tr( "Ignoring key candidate because of NULL values or inherited table" ), tr( "PostGIS" ), Qgis::MessageLevel::Info );
         mPrimaryKeyType = PktUnknown;
         mPrimaryKeyAttrs.clear();
       }
@@ -2228,60 +2241,97 @@ bool QgsPostgresRasterProvider::determinePrimaryKey()
     determinePrimaryKeyFromUriKeyColumn();
   }
 
-  if ( mPrimaryKeyAttrs.size() == 0 )
-  {
-    QgsMessageLog::logMessage( tr( "Could not find a primary key for PostGIS raster table %1" ).arg( mQuery ), tr( "PostGIS" ) );
-    mPrimaryKeyType = PktUnknown;
-  }
-
   return mPrimaryKeyType != PktUnknown;
 }
 
-
-
 void QgsPostgresRasterProvider::determinePrimaryKeyFromUriKeyColumn()
 {
-  mPrimaryKeyAttrs.clear();
-  const QString keyCandidate {  mUri.keyColumn() };
-  QgsPostgresPrimaryKeyType pkType { QgsPostgresPrimaryKeyType::PktUnknown };
-  const QString sql = QStringLiteral( "SELECT data_type FROM information_schema.columns "
-                                      "WHERE column_name = %1 AND table_name = %2 AND table_schema = %3" )
-                      .arg( keyCandidate, mTableName,  mSchemaName );
-  QgsPostgresResult result( connectionRO()->PQexec( sql ) );
-  if ( PGRES_TUPLES_OK == result.PQresultStatus() )
-  {
-    const QString fieldTypeName { result.PQgetvalue( 0, 0 ) };
+  QString primaryKey = mUri.keyColumn();
+  mPrimaryKeyType = PktUnknown;
 
-    if ( fieldTypeName == QLatin1String( "oid" ) )
+  if ( !primaryKey.isEmpty() )
+  {
+    const QStringList cols = parseUriKey( primaryKey );
+
+    primaryKey.clear();
+    QString del;
+    for ( const QString &col : cols )
     {
-      pkType = QgsPostgresPrimaryKeyType::PktOid;
+      primaryKey += del + quotedIdentifier( col );
+      del = QStringLiteral( "," );
     }
-    else if ( fieldTypeName == QLatin1String( "integer" ) )
+
+    for ( const QString &col : cols )
     {
-      pkType = QgsPostgresPrimaryKeyType::PktInt;
+      int idx = fields().lookupField( col );
+      if ( idx < 0 )
+      {
+        QgsMessageLog::logMessage( tr( "Key field '%1' for view/query not found." ).arg( col ), tr( "PostGIS" ) );
+        mPrimaryKeyAttrs.clear();
+        break;
+      }
+
+      mPrimaryKeyAttrs << idx;
     }
-    else if ( fieldTypeName == QLatin1String( "bigint" ) )
+
+    if ( !mPrimaryKeyAttrs.isEmpty() )
     {
-      pkType = QgsPostgresPrimaryKeyType::PktUint64;
+
+      if ( mUseEstimatedMetadata )
+      {
+        mPrimaryKeyType = PktFidMap; // Map by default
+        if ( mPrimaryKeyAttrs.size() == 1 )
+        {
+          QgsField fld = mAttributeFields.at( mPrimaryKeyAttrs.at( 0 ) );
+          mPrimaryKeyType = pkType( fld );
+        }
+      }
+      else
+      {
+        QgsMessageLog::logMessage( tr( "Primary key field '%1' for view/query not unique." ).arg( primaryKey ), tr( "PostGIS" ) );
+      }
     }
-    mPrimaryKeyAttrs.push_back( mUri.keyColumn() );
-    mPrimaryKeyType = pkType;
+    else
+    {
+      QgsMessageLog::logMessage( tr( "Keys for view/query undefined." ), tr( "PostGIS" ) );
+    }
+  }
+  else
+  {
+    QgsMessageLog::logMessage( tr( "No key field for view/query given." ), tr( "PostGIS" ) );
   }
 }
 
+
 QString QgsPostgresRasterProvider::pkSql()
 {
-  Q_ASSERT_X( ! mPrimaryKeyAttrs.isEmpty(), "QgsPostgresRasterProvider::pkSql()",  "No PK is defined!" );
-  if ( mPrimaryKeyAttrs.count( ) > 1 )
+  switch ( mPrimaryKeyType )
   {
-    QStringList pkeys;
-    for ( const QString &k : std::as_const( mPrimaryKeyAttrs ) )
+    case QgsPostgresPrimaryKeyType::PktOid:
+      return QStringLiteral( "oid" );
+    case QgsPostgresPrimaryKeyType::PktTid:
+      return QStringLiteral( "ctid" );
+    default:
     {
-      pkeys.push_back( quotedIdentifier( k ) );
+      if ( mPrimaryKeyAttrs.count( ) > 1 )
+      {
+        QStringList pkeys;
+        for ( const int &keyIndex : std::as_const( mPrimaryKeyAttrs ) )
+        {
+          if ( mAttributeFields.exists( keyIndex ) )
+          {
+            pkeys.push_back( quotedIdentifier( mAttributeFields.at( keyIndex ).name() ) );
+          }
+          else
+          {
+            QgsDebugMsg( QStringLiteral( "Attribute not found %1" ).arg( keyIndex ) );
+          }
+        }
+        return pkeys.join( ',' ).prepend( '(' ).append( ')' );
+      }
+      return mAttributeFields.exists( mPrimaryKeyAttrs.first() ) ? quotedIdentifier( mAttributeFields.at( mPrimaryKeyAttrs.first() ).name() ) : QString();
     }
-    return pkeys.join( ',' ).prepend( '(' ).append( ')' );
   }
-  return quotedIdentifier( mPrimaryKeyAttrs.first() );
 }
 
 QString QgsPostgresRasterProvider::dataComment() const
@@ -2336,6 +2386,26 @@ int QgsPostgresRasterProvider::xSize() const
 int QgsPostgresRasterProvider::ySize() const
 {
   return static_cast<int>( mHeight );
+}
+
+QgsPostgresPrimaryKeyType QgsPostgresRasterProvider::pkType( const QgsField &fld )
+{
+  switch ( fld.type() )
+  {
+    case QVariant::LongLong:
+      // PostgreSQL doesn't have native "unsigned" types.
+      // Unsigned primary keys are emulated by the serial/bigserial
+      // pseudo-types, in which autogenerated values are always > 0;
+      // however, the database accepts manually inserted 0 and negative values
+      // in these fields.
+      return PktInt64;
+
+    case QVariant::Int:
+      return PktInt;
+
+    default:
+      return PktFidMap;
+  }
 }
 
 Qgis::DataType QgsPostgresRasterProvider::sourceDataType( int bandNo ) const

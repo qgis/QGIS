@@ -11363,6 +11363,11 @@ void QgisApp::layerSubsetString( QgsMapLayer *mapLayer )
                 mLayerTreeView->refreshLayerSymbology( rlayer->id() );
                 activateDeactivateLayerRelatedActions( rlayer );
               }
+              else
+              {
+                QMessageBox::warning( this, tr( "Error Setting Filter" ),
+                                      tr( "The filtered layer returned no rows. The PostgreSQL raster provider requires at least one row in order to extract the information required to create a valid layer." ) );
+              }
             }
           }
         }
