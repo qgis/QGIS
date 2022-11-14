@@ -30,6 +30,7 @@
 #include "vertextool/qgsvertexeditor.h"
 #include "elevation/qgselevationprofilewidget.h"
 #include "qgsappgpsdigitizing.h"
+#include "qgsappgpslogging.h"
 #include "qgsgpscanvasbridge.h"
 #include "qgsgpsmarker.h"
 #include "qgsgpstoolbar.h"
@@ -62,8 +63,8 @@ QgsSettingsRegistryApp::QgsSettingsRegistryApp()
 
   addSettingsEntry( &QgsIdentifyResultsDialog::settingHideNullValues );
 
-  addSettingsEntry( &QgsAppGpsDigitizing::settingLastLogFolder );
-  addSettingsEntry( &QgsAppGpsDigitizing::settingLastGpkgLog );
+  addSettingsEntry( &QgsAppGpsLogging::settingLastLogFolder );
+  addSettingsEntry( &QgsAppGpsLogging::settingLastGpkgLog );
 
   addSettingsEntry( &QgsGpsCanvasBridge::settingShowBearingLine );
   addSettingsEntry( &QgsGpsCanvasBridge::settingBearingLineSymbol );
