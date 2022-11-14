@@ -252,6 +252,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsgpsinformationwidget.h"
 #include "qgsappgpsconnection.h"
 #include "qgsappgpsdigitizing.h"
+#include "qgsappgpslogging.h"
 #include "qgsappgpssettingsmenu.h"
 #include "qgsgpstoolbar.h"
 #include "qgsgpscanvasbridge.h"
@@ -1408,6 +1409,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   connect( mGpsToolBar, &QgsGpsToolBar::addVertexClicked, mGpsDigitizing, &QgsAppGpsDigitizing::createVertexAtCurrentLocation );
   connect( mGpsToolBar, &QgsGpsToolBar::resetFeatureClicked, mGpsDigitizing, &QgsAppGpsDigitizing::resetTrack );
 
+  mGpsLogging = new QgsAppGpsLogging( mGpsConnection, this );
+
   mGpsToolBar->setGpsDigitizing( mGpsDigitizing );
 
   mGpsCanvasBridge = new QgsGpsCanvasBridge( mGpsConnection, mMapCanvas );
@@ -1419,8 +1422,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::bearingLineToggled, mGpsCanvasBridge, &QgsGpsCanvasBridge::setBearingLineVisible );
   connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::rotateMapToggled, mGpsCanvasBridge, &QgsGpsCanvasBridge::setRotateMap );
   connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::mapCenteringModeChanged, mGpsCanvasBridge, &QgsGpsCanvasBridge::setMapCenteringMode );
-  connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::enableNmeaLog, mGpsDigitizing, &QgsAppGpsDigitizing::setNmeaLoggingEnabled );
-  connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::nmeaLogFileChanged, mGpsDigitizing, &QgsAppGpsDigitizing::setNmeaLogFile );
+  connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::enableNmeaLog, mGpsLogging, &QgsAppGpsLogging::setNmeaLoggingEnabled );
+  connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::nmeaLogFileChanged, mGpsLogging, &QgsAppGpsLogging::setNmeaLogFile );
+  connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::gpkgLogDestinationChanged, mGpsLogging, &QgsAppGpsLogging::setGpkgLogFile );
   connect( mGpsDigitizing, &QgsAppGpsDigitizing::trackIsEmptyChanged, mGpsToolBar, [ = ]( bool isEmpty ) { mGpsToolBar->setResetTrackButtonEnabled( !isEmpty ); } );
 
   mpGpsWidget = new QgsGpsInformationWidget( mGpsConnection, mMapCanvas, mGpsDigitizing );
@@ -2014,6 +2018,9 @@ QgisApp::~QgisApp()
 
   delete mGpsDigitizing;
   mGpsDigitizing = nullptr;
+
+  delete mGpsLogging;
+  mGpsLogging = nullptr;
 
   delete mGpsConnection;
   mGpsConnection = nullptr;

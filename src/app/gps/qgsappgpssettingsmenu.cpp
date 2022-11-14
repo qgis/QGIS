@@ -24,6 +24,7 @@
 #include "qgsappgpsdigitizing.h"
 #include "qgsproject.h"
 #include "qgsprojectgpssettings.h"
+#include "qgsappgpslogging.h"
 
 #include <QRadioButton>
 #include <QButtonGroup>
@@ -226,7 +227,7 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
   {
     if ( checked )
     {
-      const QString lastGpkgLog = QgsAppGpsDigitizing::settingLastGpkgLog.value();
+      const QString lastGpkgLog = QgsAppGpsLogging::settingLastGpkgLog.value();
       const QString initialPath = lastGpkgLog.isEmpty() ? QDir::homePath() : lastGpkgLog;
 
       QString selectedFilter;
@@ -240,9 +241,8 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
         return;
       }
 
-
       fileName = QgsFileUtils::addExtensionFromFilter( fileName, selectedFilter );
-      QgsAppGpsDigitizing::settingLastGpkgLog.setValue( fileName );
+      QgsAppGpsLogging::settingLastGpkgLog.setValue( fileName );
 
       emit gpkgLogDestinationChanged( fileName );
     }
@@ -259,7 +259,7 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
   {
     if ( checked )
     {
-      const QString lastLogFolder = QgsAppGpsDigitizing::settingLastLogFolder.value();
+      const QString lastLogFolder = QgsAppGpsLogging::settingLastLogFolder.value();
       const QString initialFolder = lastLogFolder.isEmpty() ? QDir::homePath() : lastLogFolder;
 
       QString fileName = QFileDialog::getSaveFileName( this, tr( "GPS Log File" ), initialFolder, tr( "NMEA files" ) + " (*.nmea)" );
@@ -271,7 +271,7 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
       }
 
       fileName = QgsFileUtils::ensureFileNameHasExtension( fileName, { QStringLiteral( "nmea" ) } );
-      QgsAppGpsDigitizing::settingLastLogFolder.setValue( QFileInfo( fileName ).absolutePath() );
+      QgsAppGpsLogging::settingLastLogFolder.setValue( QFileInfo( fileName ).absolutePath() );
 
       emit nmeaLogFileChanged( fileName );
       emit enableNmeaLog( true );

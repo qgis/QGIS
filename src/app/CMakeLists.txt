@@ -266,6 +266,7 @@ set(QGIS_APP_SRCS
 
   gps/qgsappgpsconnection.cpp
   gps/qgsappgpsdigitizing.cpp
+  gps/qgsappgpslogging.cpp
   gps/qgsappgpssettingsmenu.cpp
   gps/qgsgpsbearingitem.cpp
   gps/qgsgpscanvasbridge.cpp
