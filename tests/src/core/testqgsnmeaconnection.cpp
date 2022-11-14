@@ -136,7 +136,7 @@ void TestQgsNmeaConnection::testBasic()
 
   info = connection.push( QStringLiteral( "$GPGGA,084112.185,6938.6532,N,01856.8526,E,1,04,1.4,35.0,M,29.4,M,,0000*63" ) );
   QVERIFY( info.isValid() );
-  QVERIFY( !info.satInfoComplete );
+  QVERIFY( info.satInfoComplete );
   QCOMPARE( info.bestFixStatus( constellation ), Qgis::GpsFixStatus::NoData );
   QCOMPARE( info.qualityDescription(), QStringLiteral( "Autonomous" ) );
   QGSCOMPARENEAR( info.latitude, 69.6442183333, 0.00001 );
