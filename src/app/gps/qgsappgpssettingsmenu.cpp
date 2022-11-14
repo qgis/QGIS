@@ -220,6 +220,39 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
 
   addSeparator();
 
+  mActionGpkgLog = new QAction( "Log to GeoPackage/Spatialite…" );
+  mActionGpkgLog->setCheckable( true );
+  connect( mActionGpkgLog, &QAction::toggled, this, [ = ]( bool checked )
+  {
+    if ( checked )
+    {
+      const QString lastGpkgLog = QgsAppGpsDigitizing::settingLastGpkgLog.value();
+      const QString initialPath = lastGpkgLog.isEmpty() ? QDir::homePath() : lastGpkgLog;
+
+      QString selectedFilter;
+      QString fileName = QFileDialog::getSaveFileName( this, tr( "GPS Log File" ), initialPath,
+                         tr( "GeoPackage" ) + " (*.gpkg *.GPKG);;" + tr( "SpatiaLite" ) + " (*.sqlite *.db *.sqlite3 *.db3 *.s3db);;",
+                         &selectedFilter, QFileDialog::Option::DontConfirmOverwrite );
+      if ( fileName.isEmpty() )
+      {
+        mActionGpkgLog->setChecked( false );
+        emit gpkgLogDestinationChanged( QString() );
+        return;
+      }
+
+
+      fileName = QgsFileUtils::addExtensionFromFilter( fileName, selectedFilter );
+      QgsAppGpsDigitizing::settingLastGpkgLog.setValue( fileName );
+
+      emit gpkgLogDestinationChanged( fileName );
+    }
+    else
+    {
+      emit gpkgLogDestinationChanged( QString() );
+    }
+  } );
+  addAction( mActionGpkgLog );
+
   mActionNmeaLog = new QAction( "Log NMEA Sentences…" );
   mActionNmeaLog->setCheckable( true );
   connect( mActionNmeaLog, &QAction::toggled, this, [ = ]( bool checked )
@@ -249,6 +282,8 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
     }
   } );
   addAction( mActionNmeaLog );
+
+  addSeparator();
 
   QAction *settingsAction = new QAction( tr( "GPS Settings…" ), this );
   settingsAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) ) );
