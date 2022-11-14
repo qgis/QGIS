@@ -327,6 +327,11 @@ Qgis::MapRecenteringMode QgsAppGpsSettingsMenu::mapCenteringMode() const
   }
 }
 
+void QgsAppGpsSettingsMenu::onGpkgLoggingFailed()
+{
+  mActionGpkgLog->setChecked( false );
+}
+
 void QgsAppGpsSettingsMenu::timeStampMenuAboutToShow()
 {
   mFieldProxyModel->sourceFieldModel()->setLayer( QgsProject::instance()->gpsSettings()->destinationLayer() );

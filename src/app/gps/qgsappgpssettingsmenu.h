@@ -57,6 +57,10 @@ class APP_EXPORT QgsAppGpsSettingsMenu : public QMenu
     bool rotateMap() const;
     Qgis::MapRecenteringMode mapCenteringMode() const;
 
+  public slots:
+
+    void onGpkgLoggingFailed();
+
   signals:
 
     void locationMarkerToggled( bool visible );

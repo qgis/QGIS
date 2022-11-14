@@ -1425,6 +1425,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::enableNmeaLog, mGpsLogging, &QgsAppGpsLogging::setNmeaLoggingEnabled );
   connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::nmeaLogFileChanged, mGpsLogging, &QgsAppGpsLogging::setNmeaLogFile );
   connect( mGpsSettingsMenu, &QgsAppGpsSettingsMenu::gpkgLogDestinationChanged, mGpsLogging, &QgsAppGpsLogging::setGpkgLogFile );
+  connect( mGpsLogging, &QgsAppGpsLogging::gpkgLoggingFailed, mGpsSettingsMenu, &QgsAppGpsSettingsMenu::onGpkgLoggingFailed );
   connect( mGpsDigitizing, &QgsAppGpsDigitizing::trackIsEmptyChanged, mGpsToolBar, [ = ]( bool isEmpty ) { mGpsToolBar->setResetTrackButtonEnabled( !isEmpty ); } );
 
   mpGpsWidget = new QgsGpsInformationWidget( mGpsConnection, mMapCanvas, mGpsDigitizing );
