@@ -35,10 +35,8 @@
 #include "qgsprojectversion.h"
 #include "qgsrasterlayer.h"
 #include "qgsreadwritecontext.h"
-#include "qgsrectangle.h"
 #include "qgsrelationmanager.h"
 #include "qgsannotationmanager.h"
-#include "qgsvectorlayerjoininfo.h"
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsmapthemecollection.h"
 #include "qgslayerdefinition.h"
@@ -47,7 +45,6 @@
 #include "qgstransactiongroup.h"
 #include "qgsvectordataprovider.h"
 #include "qgsprojectbadlayerhandler.h"
-#include "qgsmaplayerlistutils_p.h"
 #include "qgsmeshlayer.h"
 #include "qgslayoutmanager.h"
 #include "qgsbookmarkmanager.h"
@@ -70,6 +67,7 @@
 #include "qgsmapviewsmanager.h"
 #include "qgsprojectelevationproperties.h"
 #include "qgscombinedstylemodel.h"
+#include "qgsprojectgpssettings.h"
 
 #include <algorithm>
 #include <QApplication>
@@ -381,6 +379,7 @@ QgsProject::QgsProject( QObject *parent, Qgis::ProjectCapabilities capabilities 
   , mTimeSettings( new QgsProjectTimeSettings( this ) )
   , mElevationProperties( new QgsProjectElevationProperties( this ) )
   , mDisplaySettings( new QgsProjectDisplaySettings( this ) )
+  , mGpsSettings( new QgsProjectGpsSettings( this ) )
   , mRootGroup( new QgsLayerTree )
   , mLabelingEngineSettings( new QgsLabelingEngineSettings )
   , mArchive( new QgsArchive() )
@@ -974,6 +973,7 @@ void QgsProject::clear()
   mTimeSettings->reset();
   mElevationProperties->reset();
   mDisplaySettings->reset();
+  mGpsSettings->reset();
   mSnappingConfig.reset();
   mAvoidIntersectionsMode = Qgis::AvoidIntersectionsMode::AllowIntersections;
   emit avoidIntersectionsModeChanged();
@@ -1551,7 +1551,7 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
 
     projectFile.close();
 
-    setError( tr( "%1 for file %2" ).arg( errorString, projectFile.fileName() ) );
+    setError( errorString );
 
     return false;
   }
@@ -2009,9 +2009,19 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   mElevationProperties->resolveReferences( this );
 
   profile.switchTask( tr( "Loading display settings" ) );
-  const QDomElement displaySettingsElement = doc->documentElement().firstChildElement( QStringLiteral( "ProjectDisplaySettings" ) );
-  if ( !displaySettingsElement.isNull() )
-    mDisplaySettings->readXml( displaySettingsElement, context );
+  {
+    const QDomElement displaySettingsElement = doc->documentElement().firstChildElement( QStringLiteral( "ProjectDisplaySettings" ) );
+    if ( !displaySettingsElement.isNull() )
+      mDisplaySettings->readXml( displaySettingsElement, context );
+  }
+
+  profile.switchTask( tr( "Loading GPS settings" ) );
+  {
+    const QDomElement gpsSettingsElement = doc->documentElement().firstChildElement( QStringLiteral( "ProjectGpsSettings" ) );
+    if ( !gpsSettingsElement.isNull() )
+      mGpsSettings->readXml( gpsSettingsElement, context );
+    mGpsSettings->resolveReferences( this );
+  }
 
   profile.switchTask( tr( "Updating variables" ) );
   emit customVariablesChanged();
@@ -2745,32 +2755,55 @@ bool QgsProject::writeProjectFile( const QString &filename )
   mMetadata.writeMetadataXml( metadataElem, *doc );
   qgisNode.appendChild( metadataElem );
 
-  const QDomElement annotationsElem = mAnnotationManager->writeXml( *doc, context );
-  qgisNode.appendChild( annotationsElem );
+  {
+    const QDomElement annotationsElem = mAnnotationManager->writeXml( *doc, context );
+    qgisNode.appendChild( annotationsElem );
+  }
 
-  const QDomElement layoutElem = mLayoutManager->writeXml( *doc );
-  qgisNode.appendChild( layoutElem );
+  {
+    const QDomElement layoutElem = mLayoutManager->writeXml( *doc );
+    qgisNode.appendChild( layoutElem );
+  }
 
-  const QDomElement views3DElem = m3DViewsManager->writeXml( *doc );
-  qgisNode.appendChild( views3DElem );
+  {
+    const QDomElement views3DElem = m3DViewsManager->writeXml( *doc );
+    qgisNode.appendChild( views3DElem );
+  }
 
-  const QDomElement bookmarkElem = mBookmarkManager->writeXml( *doc );
-  qgisNode.appendChild( bookmarkElem );
+  {
+    const QDomElement bookmarkElem = mBookmarkManager->writeXml( *doc );
+    qgisNode.appendChild( bookmarkElem );
+  }
 
-  const QDomElement viewSettingsElem = mViewSettings->writeXml( *doc, context );
-  qgisNode.appendChild( viewSettingsElem );
+  {
+    const QDomElement viewSettingsElem = mViewSettings->writeXml( *doc, context );
+    qgisNode.appendChild( viewSettingsElem );
+  }
 
-  const QDomElement styleSettingsElem = mStyleSettings->writeXml( *doc, context );
-  qgisNode.appendChild( styleSettingsElem );
+  {
+    const QDomElement styleSettingsElem = mStyleSettings->writeXml( *doc, context );
+    qgisNode.appendChild( styleSettingsElem );
+  }
 
-  const QDomElement timeSettingsElement = mTimeSettings->writeXml( *doc, context );
-  qgisNode.appendChild( timeSettingsElement );
+  {
+    const QDomElement timeSettingsElement = mTimeSettings->writeXml( *doc, context );
+    qgisNode.appendChild( timeSettingsElement );
+  }
 
-  const QDomElement elevationPropertiesElement = mElevationProperties->writeXml( *doc, context );
-  qgisNode.appendChild( elevationPropertiesElement );
+  {
+    const QDomElement elevationPropertiesElement = mElevationProperties->writeXml( *doc, context );
+    qgisNode.appendChild( elevationPropertiesElement );
+  }
 
-  const QDomElement displaySettingsElem = mDisplaySettings->writeXml( *doc, context );
-  qgisNode.appendChild( displaySettingsElem );
+  {
+    const QDomElement displaySettingsElem = mDisplaySettings->writeXml( *doc, context );
+    qgisNode.appendChild( displaySettingsElem );
+  }
+
+  {
+    const QDomElement gpsSettingsElem = mGpsSettings->writeXml( *doc, context );
+    qgisNode.appendChild( gpsSettingsElem );
+  }
 
   // now wrap it up and ship it to the project file
   doc->normalize();             // XXX I'm not entirely sure what this does
@@ -3518,6 +3551,16 @@ QgsProjectDisplaySettings *QgsProject::displaySettings()
   return mDisplaySettings;
 }
 
+const QgsProjectGpsSettings *QgsProject::gpsSettings() const
+{
+  return mGpsSettings;
+}
+
+QgsProjectGpsSettings *QgsProject::gpsSettings()
+{
+  return mGpsSettings;
+}
+
 QgsLayerTree *QgsProject::layerTreeRoot() const
 {
   return mRootGroup;
@@ -3723,7 +3766,7 @@ bool QgsProject::unzip( const QString &filename, Qgis::ProjectReadFlags flags )
   // read the project file
   if ( ! readProjectFile( static_cast<QgsProjectArchive *>( mArchive.get() )->projectFile(), flags ) )
   {
-    setError( tr( "Cannot read unzipped qgs project file" ) );
+    setError( tr( "Cannot read unzipped qgs project file" ) + QStringLiteral( ": " ) + error() );
     return false;
   }
 

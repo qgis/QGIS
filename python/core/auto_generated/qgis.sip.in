@@ -572,6 +572,34 @@ The development version
       Gpsd,
     };
 
+    enum class GpsConnectionStatus
+    {
+      Disconnected,
+      Connecting,
+      Connected,
+    };
+
+    enum class GpsFixStatus
+      {
+      NoData,
+      NoFix,
+      Fix2D,
+      Fix3D
+    };
+
+
+    enum class GnssConstellation
+    {
+      Unknown,
+      Gps,
+      Glonass,
+      Galileo,
+      BeiDou,
+      Qzss,
+      Navic,
+      Sbas,
+    };
+
     enum class GpsQualityIndicator
     {
       Unknown,
@@ -585,6 +613,31 @@ The development version
       Manual,
       Simulation,
     };
+
+    enum class GpsInformationComponent
+    {
+      Location,
+      Altitude,
+      GroundSpeed,
+      Bearing,
+      TotalTrackLength,
+      TrackDistanceFromStart,
+      Pdop,
+      Hdop,
+      Vdop,
+      HorizontalAccuracy,
+      VerticalAccuracy,
+      HvAccuracy,
+      SatellitesUsed,
+      Timestamp,
+      TrackStartTime,
+      TrackEndTime,
+      TrackDistanceSinceLastPoint,
+      TrackTimeSinceLastPoint,
+    };
+
+    typedef QFlags<Qgis::GpsInformationComponent> GpsInformationComponents;
+
 
     enum class BabelFormatCapability
     {
@@ -893,6 +946,28 @@ The development version
       AlwaysText,
     };
 
+    enum class LabelingFlag
+      {
+      UseAllLabels,
+      UsePartialCandidates,
+      // TODO QGIS 4.0: remove
+      RenderOutlineLabels,
+      DrawLabelRectOnly,
+      DrawCandidates,
+      DrawUnplacedLabels,
+      CollectUnplacedLabels,
+      DrawLabelMetrics,
+    };
+
+    typedef QFlags<Qgis::LabelingFlag> LabelingFlags;
+
+
+    enum class LabelPlacementEngineVersion
+      {
+      Version1,
+      Version2,
+    };
+
     enum class TextOrientation
       {
       Horizontal,
@@ -928,6 +1003,13 @@ The development version
       Top,
       VerticalCenter,
       Bottom,
+    };
+
+    enum class TextCharacterVerticalAlignment
+    {
+      Normal,
+      SuperScript,
+      SubScript,
     };
 
     enum class RenderSubcomponentProperty
@@ -1124,6 +1206,13 @@ The development version
     };
     typedef QFlags<Qgis::ViewSyncModeFlag> ViewSyncModeFlags;
 
+
+    enum class MapRecenteringMode
+    {
+      Always,
+      WhenOutsideVisibleExtent,
+      Never,
+    };
 
     enum class HistoryProviderBackend
     {
@@ -1483,6 +1572,10 @@ QFlags<Qgis::SelectionFlag> operator|(Qgis::SelectionFlag f1, QFlags<Qgis::Selec
 
 QFlags<Qgis::RasterRendererFlag> operator|(Qgis::RasterRendererFlag f1, QFlags<Qgis::RasterRendererFlag> f2);
 
+QFlags<Qgis::LabelingFlag> operator|(Qgis::LabelingFlag f1, QFlags<Qgis::LabelingFlag> f2);
+
+QFlags<Qgis::GpsInformationComponent> operator|(Qgis::GpsInformationComponent f1, QFlags<Qgis::GpsInformationComponent> f2);
+
 
 
 
@@ -1540,7 +1633,6 @@ Returns a double ``number``, rounded (as close as possible) to the specified num
 
 .. versionadded:: 3.0
 %End
-
 
 
 

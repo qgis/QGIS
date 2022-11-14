@@ -16,6 +16,7 @@
 #define QGSCONDITIONALSTYLE_H
 
 #include "qgis_core.h"
+#include <QObject>
 #include <QFont>
 #include <QColor>
 #include <QPixmap>

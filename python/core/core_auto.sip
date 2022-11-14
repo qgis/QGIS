@@ -357,7 +357,9 @@
 %Include auto_generated/gps/qgsgpsconnection.sip
 %Include auto_generated/gps/qgsgpsdconnection.sip
 %Include auto_generated/gps/qgsgpsdetector.sip
+%Include auto_generated/gps/qgsgpslogger.sip
 %Include auto_generated/gps/qgsnmeaconnection.sip
+%Include auto_generated/gps/qgsvectorlayergpslogger.sip
 %Include auto_generated/labeling/qgscalloutposition.sip
 %Include auto_generated/labeling/qgslabeling.sip
 %Include auto_generated/labeling/qgslabelingenginesettings.sip
@@ -554,6 +556,7 @@
 %Include auto_generated/project/qgsprojectdisplaysettings.sip
 %Include auto_generated/project/qgsprojectelevationproperties.sip
 %Include auto_generated/project/qgsprojectfiletransform.sip
+%Include auto_generated/project/qgsprojectgpssettings.sip
 %Include auto_generated/project/qgsprojectproperty.sip
 %Include auto_generated/project/qgsprojectservervalidator.sip
 %Include auto_generated/project/qgsprojectstorage.sip

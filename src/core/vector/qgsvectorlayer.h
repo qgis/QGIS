@@ -394,7 +394,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     Q_PROPERTY( QString subsetString READ subsetString WRITE setSubsetString NOTIFY subsetStringChanged )
     Q_PROPERTY( QString displayExpression READ displayExpression WRITE setDisplayExpression NOTIFY displayExpressionChanged )
-    Q_PROPERTY( QString mapTipTemplate READ mapTipTemplate WRITE setMapTipTemplate NOTIFY mapTipTemplateChanged )
     Q_PROPERTY( QgsEditFormConfig editFormConfig READ editFormConfig WRITE setEditFormConfig NOTIFY editFormConfigChanged )
     Q_PROPERTY( bool readOnly READ isReadOnly WRITE setReadOnly NOTIFY readOnlyChanged )
     Q_PROPERTY( bool supportsEditing READ supportsEditing NOTIFY supportsEditingChanged )
@@ -498,6 +497,20 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
        * \since QGIS 3.28
        */
       bool forceReadOnly = false;
+
+      /**
+       * Controls whether the stored styles will be all loaded.
+       *
+       * If TRUE and the layer's provider supports style stored in the
+       * data source all the available styles will be loaded in addition
+       * to the default one.
+       *
+       * If FALSE (the default), the layer's provider will only load
+       * the default style.
+       *
+       * \since QGIS 3.30
+       */
+      bool loadAllStoredStyles = false;
     };
 
     /**
@@ -2364,24 +2377,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     void setAttributeTableConfig( const QgsAttributeTableConfig &attributeTableConfig );
 
-    /**
-     * The mapTip is a pretty, html representation for feature information.
-     *
-     * It may also contain embedded expressions.
-     *
-     * \since QGIS 3.0
-     */
-    QString mapTipTemplate() const;
-
-    /**
-     * The mapTip is a pretty, html representation for feature information.
-     *
-     * It may also contain embedded expressions.
-     *
-     * \since QGIS 3.0
-     */
-    void setMapTipTemplate( const QString &mapTipTemplate );
-
     QgsExpressionContext createExpressionContext() const FINAL;
 
     QgsExpressionContextScope *createExpressionContextScope() const FINAL SIP_FACTORY;
@@ -2777,13 +2772,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void writeCustomSymbology( QDomElement &element, QDomDocument &doc, QString &errorMessage ) const;
 
     /**
-     * Emitted when the map tip changes
-     *
-     * \since QGIS 3.0
-     */
-    void mapTipTemplateChanged();
-
-    /**
      * Emitted when the display expression changes
      *
      * \since QGIS 3.0
@@ -2909,8 +2897,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     //! The preview expression used to generate a human readable preview string for features
     QString mDisplayExpression;
-
-    QString mMapTipTemplate;
 
     //! The user-defined actions that are accessed from the Identify Results dialog box
     QgsActionManager *mActions = nullptr;
@@ -3062,6 +3048,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     //! Timer for triggering automatic redraw of the layer based on feature renderer settings (e.g. animated symbols)
     QTimer *mRefreshRendererTimer = nullptr;
+
+    /**
+     * Stores the value from LayerOptions.loadAllStoredStyles
+     */
+    bool mLoadAllStoredStyle = false;
+
 };
 
 

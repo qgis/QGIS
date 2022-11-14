@@ -733,14 +733,14 @@ Qgis.RasterAttributeTableFieldUsage.RedMax.__doc__ = "Field usage RedMax"
 Qgis.RasterAttributeTableFieldUsage.GreenMax.__doc__ = "Field usage GreenMax"
 Qgis.RasterAttributeTableFieldUsage.BlueMax.__doc__ = "Field usage BlueMax"
 Qgis.RasterAttributeTableFieldUsage.AlphaMax.__doc__ = "Field usage AlphaMax"
-Qgis.RasterAttributeTableFieldUsage.MaxCount.__doc__ = "Field usage MaxCount"
-Qgis.RasterAttributeTableFieldUsage.__doc__ = 'The RasterAttributeTableFieldUsage enum represents the usage of a RAT field.\n\n.. versionadded:: 3.30\n\n' + '* ``Generic``: ' + Qgis.RasterAttributeTableFieldUsage.Generic.__doc__ + '\n' + '* ``PixelCount``: ' + Qgis.RasterAttributeTableFieldUsage.PixelCount.__doc__ + '\n' + '* ``Name``: ' + Qgis.RasterAttributeTableFieldUsage.Name.__doc__ + '\n' + '* ``Min``: ' + Qgis.RasterAttributeTableFieldUsage.Min.__doc__ + '\n' + '* ``Max``: ' + Qgis.RasterAttributeTableFieldUsage.Max.__doc__ + '\n' + '* ``MinMax``: ' + Qgis.RasterAttributeTableFieldUsage.MinMax.__doc__ + '\n' + '* ``Red``: ' + Qgis.RasterAttributeTableFieldUsage.Red.__doc__ + '\n' + '* ``Green``: ' + Qgis.RasterAttributeTableFieldUsage.Green.__doc__ + '\n' + '* ``Blue``: ' + Qgis.RasterAttributeTableFieldUsage.Blue.__doc__ + '\n' + '* ``Alpha``: ' + Qgis.RasterAttributeTableFieldUsage.Alpha.__doc__ + '\n' + '* ``RedMin``: ' + Qgis.RasterAttributeTableFieldUsage.RedMin.__doc__ + '\n' + '* ``GreenMin``: ' + Qgis.RasterAttributeTableFieldUsage.GreenMin.__doc__ + '\n' + '* ``BlueMin``: ' + Qgis.RasterAttributeTableFieldUsage.BlueMin.__doc__ + '\n' + '* ``AlphaMin``: ' + Qgis.RasterAttributeTableFieldUsage.AlphaMin.__doc__ + '\n' + '* ``RedMax``: ' + Qgis.RasterAttributeTableFieldUsage.RedMax.__doc__ + '\n' + '* ``GreenMax``: ' + Qgis.RasterAttributeTableFieldUsage.GreenMax.__doc__ + '\n' + '* ``BlueMax``: ' + Qgis.RasterAttributeTableFieldUsage.BlueMax.__doc__ + '\n' + '* ``AlphaMax``: ' + Qgis.RasterAttributeTableFieldUsage.AlphaMax.__doc__ + '\n' + '* ``MaxCount``: ' + Qgis.RasterAttributeTableFieldUsage.MaxCount.__doc__
+Qgis.RasterAttributeTableFieldUsage.MaxCount.__doc__ = "Not used by QGIS: GDAL Maximum GFU value (equals to GFU_AlphaMax+1 currently)"
+Qgis.RasterAttributeTableFieldUsage.__doc__ = 'The RasterAttributeTableFieldUsage enum represents the usage of a Raster Attribute Table field.\n\n.. note::\n\n   Directly mapped from GDALRATFieldUsage enum values.\n\n.. versionadded:: 3.30\n\n' + '* ``Generic``: ' + Qgis.RasterAttributeTableFieldUsage.Generic.__doc__ + '\n' + '* ``PixelCount``: ' + Qgis.RasterAttributeTableFieldUsage.PixelCount.__doc__ + '\n' + '* ``Name``: ' + Qgis.RasterAttributeTableFieldUsage.Name.__doc__ + '\n' + '* ``Min``: ' + Qgis.RasterAttributeTableFieldUsage.Min.__doc__ + '\n' + '* ``Max``: ' + Qgis.RasterAttributeTableFieldUsage.Max.__doc__ + '\n' + '* ``MinMax``: ' + Qgis.RasterAttributeTableFieldUsage.MinMax.__doc__ + '\n' + '* ``Red``: ' + Qgis.RasterAttributeTableFieldUsage.Red.__doc__ + '\n' + '* ``Green``: ' + Qgis.RasterAttributeTableFieldUsage.Green.__doc__ + '\n' + '* ``Blue``: ' + Qgis.RasterAttributeTableFieldUsage.Blue.__doc__ + '\n' + '* ``Alpha``: ' + Qgis.RasterAttributeTableFieldUsage.Alpha.__doc__ + '\n' + '* ``RedMin``: ' + Qgis.RasterAttributeTableFieldUsage.RedMin.__doc__ + '\n' + '* ``GreenMin``: ' + Qgis.RasterAttributeTableFieldUsage.GreenMin.__doc__ + '\n' + '* ``BlueMin``: ' + Qgis.RasterAttributeTableFieldUsage.BlueMin.__doc__ + '\n' + '* ``AlphaMin``: ' + Qgis.RasterAttributeTableFieldUsage.AlphaMin.__doc__ + '\n' + '* ``RedMax``: ' + Qgis.RasterAttributeTableFieldUsage.RedMax.__doc__ + '\n' + '* ``GreenMax``: ' + Qgis.RasterAttributeTableFieldUsage.GreenMax.__doc__ + '\n' + '* ``BlueMax``: ' + Qgis.RasterAttributeTableFieldUsage.BlueMax.__doc__ + '\n' + '* ``AlphaMax``: ' + Qgis.RasterAttributeTableFieldUsage.AlphaMax.__doc__ + '\n' + '* ``MaxCount``: ' + Qgis.RasterAttributeTableFieldUsage.MaxCount.__doc__
 # --
 Qgis.RasterAttributeTableFieldUsage.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.RasterAttributeTableType.Thematic.__doc__ = ""
 Qgis.RasterAttributeTableType.Athematic.__doc__ = ""
-Qgis.RasterAttributeTableType.__doc__ = 'The RasterAttributeTableType enum represents the type of RAT.\n\n.. versionadded:: 3.30\n\n' + '* ``Thematic``: ' + Qgis.RasterAttributeTableType.Thematic.__doc__ + '\n' + '* ``Athematic``: ' + Qgis.RasterAttributeTableType.Athematic.__doc__
+Qgis.RasterAttributeTableType.__doc__ = 'The RasterAttributeTableType enum represents the type of RAT.\nnote Directly mapped from GDALRATTableType enum values.\n\n.. versionadded:: 3.30\n\n' + '* ``Thematic``: ' + Qgis.RasterAttributeTableType.Thematic.__doc__ + '\n' + '* ``Athematic``: ' + Qgis.RasterAttributeTableType.Athematic.__doc__
 # --
 Qgis.RasterAttributeTableType.baseClass = Qgis
 # monkey patching scoped based enum
@@ -851,6 +851,42 @@ Qgis.GpsConnectionType.__doc__ = 'GPS connection types.\n\n.. versionadded:: 3.3
 # --
 Qgis.GpsConnectionType.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.GpsConnectionStatus.Disconnected.__doc__ = "Device is disconnected"
+Qgis.GpsConnectionStatus.Connecting.__doc__ = "Device is connecting"
+Qgis.GpsConnectionStatus.Connected.__doc__ = "Device is successfully connected"
+Qgis.GpsConnectionStatus.__doc__ = 'GPS connection status.\n\n.. versionadded:: 3.30\n\n' + '* ``Disconnected``: ' + Qgis.GpsConnectionStatus.Disconnected.__doc__ + '\n' + '* ``Connecting``: ' + Qgis.GpsConnectionStatus.Connecting.__doc__ + '\n' + '* ``Connected``: ' + Qgis.GpsConnectionStatus.Connected.__doc__
+# --
+Qgis.GpsConnectionStatus.baseClass = Qgis
+QgsGpsInformation.FixStatus = Qgis.GpsFixStatus
+# monkey patching scoped based enum
+QgsGpsInformation.NoData = Qgis.GpsFixStatus.NoData
+QgsGpsInformation.NoData.is_monkey_patched = True
+QgsGpsInformation.NoData.__doc__ = "No fix data available"
+QgsGpsInformation.NoFix = Qgis.GpsFixStatus.NoFix
+QgsGpsInformation.NoFix.is_monkey_patched = True
+QgsGpsInformation.NoFix.__doc__ = "GPS is not fixed"
+QgsGpsInformation.Fix2D = Qgis.GpsFixStatus.Fix2D
+QgsGpsInformation.Fix2D.is_monkey_patched = True
+QgsGpsInformation.Fix2D.__doc__ = "2D fix"
+QgsGpsInformation.Fix3D = Qgis.GpsFixStatus.Fix3D
+QgsGpsInformation.Fix3D.is_monkey_patched = True
+QgsGpsInformation.Fix3D.__doc__ = "3D fix"
+Qgis.GpsFixStatus.__doc__ = 'GPS fix status.\n\n.. note::\n\n   Prior to QGIS 3.30 this was available as :py:class:`QgsGpsInformation`.FixStatus\n\n.. versionadded:: 3.30\n\n' + '* ``NoData``: ' + Qgis.GpsFixStatus.NoData.__doc__ + '\n' + '* ``NoFix``: ' + Qgis.GpsFixStatus.NoFix.__doc__ + '\n' + '* ``Fix2D``: ' + Qgis.GpsFixStatus.Fix2D.__doc__ + '\n' + '* ``Fix3D``: ' + Qgis.GpsFixStatus.Fix3D.__doc__
+# --
+Qgis.GpsFixStatus.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.GnssConstellation.Unknown.__doc__ = "Unknown/other system"
+Qgis.GnssConstellation.Gps.__doc__ = "Global Positioning System (GPS)"
+Qgis.GnssConstellation.Glonass.__doc__ = "Global Navigation Satellite System (GLONASS)"
+Qgis.GnssConstellation.Galileo.__doc__ = "Galileo"
+Qgis.GnssConstellation.BeiDou.__doc__ = "BeiDou"
+Qgis.GnssConstellation.Qzss.__doc__ = "Quasi Zenith Satellite System (QZSS)"
+Qgis.GnssConstellation.Navic.__doc__ = "Indian Regional Navigation Satellite System (IRNSS) / NAVIC"
+Qgis.GnssConstellation.Sbas.__doc__ = "SBAS"
+Qgis.GnssConstellation.__doc__ = 'GNSS constellation\n\n.. versionadded:: 3.30\n\n' + '* ``Unknown``: ' + Qgis.GnssConstellation.Unknown.__doc__ + '\n' + '* ``Gps``: ' + Qgis.GnssConstellation.Gps.__doc__ + '\n' + '* ``Glonass``: ' + Qgis.GnssConstellation.Glonass.__doc__ + '\n' + '* ``Galileo``: ' + Qgis.GnssConstellation.Galileo.__doc__ + '\n' + '* ``BeiDou``: ' + Qgis.GnssConstellation.BeiDou.__doc__ + '\n' + '* ``Qzss``: ' + Qgis.GnssConstellation.Qzss.__doc__ + '\n' + '* ``Navic``: ' + Qgis.GnssConstellation.Navic.__doc__ + '\n' + '* ``Sbas``: ' + Qgis.GnssConstellation.Sbas.__doc__
+# --
+Qgis.GnssConstellation.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.GpsQualityIndicator.Unknown.__doc__ = "Unknown"
 Qgis.GpsQualityIndicator.Invalid.__doc__ = "Invalid"
 Qgis.GpsQualityIndicator.GPS.__doc__ = "Standalone"
@@ -864,6 +900,30 @@ Qgis.GpsQualityIndicator.Simulation.__doc__ = "Simulation mode"
 Qgis.GpsQualityIndicator.__doc__ = 'GPS signal quality indicator\n\n.. versionadded:: 3.22.6\n\n' + '* ``Unknown``: ' + Qgis.GpsQualityIndicator.Unknown.__doc__ + '\n' + '* ``Invalid``: ' + Qgis.GpsQualityIndicator.Invalid.__doc__ + '\n' + '* ``GPS``: ' + Qgis.GpsQualityIndicator.GPS.__doc__ + '\n' + '* ``DGPS``: ' + Qgis.GpsQualityIndicator.DGPS.__doc__ + '\n' + '* ``PPS``: ' + Qgis.GpsQualityIndicator.PPS.__doc__ + '\n' + '* ``RTK``: ' + Qgis.GpsQualityIndicator.RTK.__doc__ + '\n' + '* ``FloatRTK``: ' + Qgis.GpsQualityIndicator.FloatRTK.__doc__ + '\n' + '* ``Estimated``: ' + Qgis.GpsQualityIndicator.Estimated.__doc__ + '\n' + '* ``Manual``: ' + Qgis.GpsQualityIndicator.Manual.__doc__ + '\n' + '* ``Simulation``: ' + Qgis.GpsQualityIndicator.Simulation.__doc__
 # --
 Qgis.GpsQualityIndicator.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.GpsInformationComponent.Location.__doc__ = "2D location (latitude/longitude), as a QgsPointXY value"
+Qgis.GpsInformationComponent.Altitude.__doc__ = "Altitude/elevation above or below the mean sea level"
+Qgis.GpsInformationComponent.GroundSpeed.__doc__ = "Ground speed"
+Qgis.GpsInformationComponent.Bearing.__doc__ = "Bearing measured in degrees clockwise from true north to the direction of travel"
+Qgis.GpsInformationComponent.TotalTrackLength.__doc__ = "Total distance of current GPS track (available from QgsGpsLogger class only)"
+Qgis.GpsInformationComponent.TrackDistanceFromStart.__doc__ = "Direct distance from first vertex in current GPS track to last vertex (available from QgsGpsLogger class only)"
+Qgis.GpsInformationComponent.Pdop.__doc__ = "Dilution of precision"
+Qgis.GpsInformationComponent.Hdop.__doc__ = "Horizontal dilution of precision"
+Qgis.GpsInformationComponent.Vdop.__doc__ = "Vertical dilution of precision"
+Qgis.GpsInformationComponent.HorizontalAccuracy.__doc__ = "Horizontal accuracy in meters"
+Qgis.GpsInformationComponent.VerticalAccuracy.__doc__ = "Vertical accuracy in meters"
+Qgis.GpsInformationComponent.HvAccuracy.__doc__ = "3D RMS"
+Qgis.GpsInformationComponent.SatellitesUsed.__doc__ = "Count of satellites used in obtaining the fix"
+Qgis.GpsInformationComponent.Timestamp.__doc__ = "Timestamp"
+Qgis.GpsInformationComponent.TrackStartTime.__doc__ = "Timestamp at start of current track (available from QgsGpsLogger class only)"
+Qgis.GpsInformationComponent.TrackEndTime.__doc__ = "Timestamp at end (current point) of current track (available from QgsGpsLogger class only)"
+Qgis.GpsInformationComponent.TrackDistanceSinceLastPoint.__doc__ = "Distance since last recorded location (available from QgsGpsLogger class only)"
+Qgis.GpsInformationComponent.TrackTimeSinceLastPoint.__doc__ = "Time since last recorded location (available from QgsGpsLogger class only)"
+Qgis.GpsInformationComponent.__doc__ = 'GPS information component.\n\n.. versionadded:: 3.30\n\n' + '* ``Location``: ' + Qgis.GpsInformationComponent.Location.__doc__ + '\n' + '* ``Altitude``: ' + Qgis.GpsInformationComponent.Altitude.__doc__ + '\n' + '* ``GroundSpeed``: ' + Qgis.GpsInformationComponent.GroundSpeed.__doc__ + '\n' + '* ``Bearing``: ' + Qgis.GpsInformationComponent.Bearing.__doc__ + '\n' + '* ``TotalTrackLength``: ' + Qgis.GpsInformationComponent.TotalTrackLength.__doc__ + '\n' + '* ``TrackDistanceFromStart``: ' + Qgis.GpsInformationComponent.TrackDistanceFromStart.__doc__ + '\n' + '* ``Pdop``: ' + Qgis.GpsInformationComponent.Pdop.__doc__ + '\n' + '* ``Hdop``: ' + Qgis.GpsInformationComponent.Hdop.__doc__ + '\n' + '* ``Vdop``: ' + Qgis.GpsInformationComponent.Vdop.__doc__ + '\n' + '* ``HorizontalAccuracy``: ' + Qgis.GpsInformationComponent.HorizontalAccuracy.__doc__ + '\n' + '* ``VerticalAccuracy``: ' + Qgis.GpsInformationComponent.VerticalAccuracy.__doc__ + '\n' + '* ``HvAccuracy``: ' + Qgis.GpsInformationComponent.HvAccuracy.__doc__ + '\n' + '* ``SatellitesUsed``: ' + Qgis.GpsInformationComponent.SatellitesUsed.__doc__ + '\n' + '* ``Timestamp``: ' + Qgis.GpsInformationComponent.Timestamp.__doc__ + '\n' + '* ``TrackStartTime``: ' + Qgis.GpsInformationComponent.TrackStartTime.__doc__ + '\n' + '* ``TrackEndTime``: ' + Qgis.GpsInformationComponent.TrackEndTime.__doc__ + '\n' + '* ``TrackDistanceSinceLastPoint``: ' + Qgis.GpsInformationComponent.TrackDistanceSinceLastPoint.__doc__ + '\n' + '* ``TrackTimeSinceLastPoint``: ' + Qgis.GpsInformationComponent.TrackTimeSinceLastPoint.__doc__
+# --
+Qgis.GpsInformationComponent.baseClass = Qgis
+Qgis.GpsInformationComponents.baseClass = Qgis
+GpsInformationComponents = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.BabelFormatCapability.Import.__doc__ = "Format supports importing"
 Qgis.BabelFormatCapability.Export.__doc__ = "Format supports exporting"
@@ -1349,6 +1409,49 @@ QgsRenderContext.TextFormatAlwaysText.__doc__ = "Always render text as text obje
 Qgis.TextRenderFormat.__doc__ = 'Options for rendering text.\n\n.. versionadded:: 3.22\n\n' + '* ``TextFormatAlwaysOutlines``: ' + Qgis.TextRenderFormat.AlwaysOutlines.__doc__ + '\n' + '* ``TextFormatAlwaysText``: ' + Qgis.TextRenderFormat.AlwaysText.__doc__
 # --
 Qgis.TextRenderFormat.baseClass = Qgis
+QgsLabelingEngineSettings.Flag = Qgis.LabelingFlag
+# monkey patching scoped based enum
+QgsLabelingEngineSettings.UseAllLabels = Qgis.LabelingFlag.UseAllLabels
+QgsLabelingEngineSettings.UseAllLabels.is_monkey_patched = True
+QgsLabelingEngineSettings.UseAllLabels.__doc__ = "Whether to draw all labels even if there would be collisions"
+QgsLabelingEngineSettings.UsePartialCandidates = Qgis.LabelingFlag.UsePartialCandidates
+QgsLabelingEngineSettings.UsePartialCandidates.is_monkey_patched = True
+QgsLabelingEngineSettings.UsePartialCandidates.__doc__ = "Whether to use also label candidates that are partially outside of the map view"
+QgsLabelingEngineSettings.RenderOutlineLabels = Qgis.LabelingFlag.RenderOutlineLabels
+QgsLabelingEngineSettings.RenderOutlineLabels.is_monkey_patched = True
+QgsLabelingEngineSettings.RenderOutlineLabels.__doc__ = "Whether to render labels as text or outlines. Deprecated and of QGIS 3.4.3 - use defaultTextRenderFormat() instead."
+QgsLabelingEngineSettings.DrawLabelRectOnly = Qgis.LabelingFlag.DrawLabelRectOnly
+QgsLabelingEngineSettings.DrawLabelRectOnly.is_monkey_patched = True
+QgsLabelingEngineSettings.DrawLabelRectOnly.__doc__ = "Whether to only draw the label rect and not the actual label text (used for unit tests)"
+QgsLabelingEngineSettings.DrawCandidates = Qgis.LabelingFlag.DrawCandidates
+QgsLabelingEngineSettings.DrawCandidates.is_monkey_patched = True
+QgsLabelingEngineSettings.DrawCandidates.__doc__ = "Whether to draw rectangles of generated candidates (good for debugging)"
+QgsLabelingEngineSettings.DrawUnplacedLabels = Qgis.LabelingFlag.DrawUnplacedLabels
+QgsLabelingEngineSettings.DrawUnplacedLabels.is_monkey_patched = True
+QgsLabelingEngineSettings.DrawUnplacedLabels.__doc__ = "Whether to render unplaced labels as an indicator/warning for users"
+QgsLabelingEngineSettings.CollectUnplacedLabels = Qgis.LabelingFlag.CollectUnplacedLabels
+QgsLabelingEngineSettings.CollectUnplacedLabels.is_monkey_patched = True
+QgsLabelingEngineSettings.CollectUnplacedLabels.__doc__ = "Whether unplaced labels should be collected in the labeling results (regardless of whether they are being rendered). Since QGIS 3.20"
+QgsLabelingEngineSettings.DrawLabelMetrics = Qgis.LabelingFlag.DrawLabelMetrics
+QgsLabelingEngineSettings.DrawLabelMetrics.is_monkey_patched = True
+QgsLabelingEngineSettings.DrawLabelMetrics.__doc__ = "Whether to render label metric guides (for debugging). Since QGIS 3.30"
+Qgis.LabelingFlag.__doc__ = 'Various flags that affect drawing and placement of labels.\n\nPrior to QGIS 3.30 this was available as :py:class:`QgsLabelingEngineSettings`.Flag\n\n.. versionadded:: 3.30\n\n' + '* ``UseAllLabels``: ' + Qgis.LabelingFlag.UseAllLabels.__doc__ + '\n' + '* ``UsePartialCandidates``: ' + Qgis.LabelingFlag.UsePartialCandidates.__doc__ + '\n' + '* ``RenderOutlineLabels``: ' + Qgis.LabelingFlag.RenderOutlineLabels.__doc__ + '\n' + '* ``DrawLabelRectOnly``: ' + Qgis.LabelingFlag.DrawLabelRectOnly.__doc__ + '\n' + '* ``DrawCandidates``: ' + Qgis.LabelingFlag.DrawCandidates.__doc__ + '\n' + '* ``DrawUnplacedLabels``: ' + Qgis.LabelingFlag.DrawUnplacedLabels.__doc__ + '\n' + '* ``CollectUnplacedLabels``: ' + Qgis.LabelingFlag.CollectUnplacedLabels.__doc__ + '\n' + '* ``DrawLabelMetrics``: ' + Qgis.LabelingFlag.DrawLabelMetrics.__doc__
+# --
+Qgis.LabelingFlag.baseClass = Qgis
+QgsLabelingEngineSettings.Flags = Qgis.LabelingFlags
+Qgis.LabelingFlags.baseClass = Qgis
+LabelingFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+QgsLabelingEngineSettings.PlacementEngineVersion = Qgis.LabelPlacementEngineVersion
+# monkey patching scoped based enum
+QgsLabelingEngineSettings.PlacementEngineVersion1 = Qgis.LabelPlacementEngineVersion.Version1
+QgsLabelingEngineSettings.PlacementEngineVersion1.is_monkey_patched = True
+QgsLabelingEngineSettings.PlacementEngineVersion1.__doc__ = "Version 1, matches placement from QGIS <= 3.10.1"
+QgsLabelingEngineSettings.PlacementEngineVersion2 = Qgis.LabelPlacementEngineVersion.Version2
+QgsLabelingEngineSettings.PlacementEngineVersion2.is_monkey_patched = True
+QgsLabelingEngineSettings.PlacementEngineVersion2.__doc__ = "Version 2 (default for new projects since QGIS 3.12)"
+Qgis.LabelPlacementEngineVersion.__doc__ = 'Labeling placement engine version.\n\nPrior to QGIS 3.30 this was available as :py:class:`QgsLabelingEngineSettings`.PlacementEngineVersion\n\n.. versionadded:: 3.30\n\n' + '* ``PlacementEngineVersion1``: ' + Qgis.LabelPlacementEngineVersion.Version1.__doc__ + '\n' + '* ``PlacementEngineVersion2``: ' + Qgis.LabelPlacementEngineVersion.Version2.__doc__
+# --
+Qgis.LabelPlacementEngineVersion.baseClass = Qgis
 QgsTextFormat.TextOrientation = Qgis.TextOrientation
 # monkey patching scoped based enum
 QgsTextFormat.HorizontalOrientation = Qgis.TextOrientation.Horizontal
@@ -1422,9 +1525,16 @@ QgsTextRenderer.AlignVCenter.__doc__ = "Center align"
 QgsTextRenderer.AlignBottom = Qgis.TextVerticalAlignment.Bottom
 QgsTextRenderer.AlignBottom.is_monkey_patched = True
 QgsTextRenderer.AlignBottom.__doc__ = "Align to bottom"
-Qgis.TextVerticalAlignment.__doc__ = 'Text vertical alignment.\n\n.. note::\n\n   Prior to QGIS 3.28 this was available as :py:class:`QgsTextRenderer`.VAlignment\n\n.. versionadded:: 3.28\n\n' + '* ``AlignTop``: ' + Qgis.TextVerticalAlignment.Top.__doc__ + '\n' + '* ``AlignVCenter``: ' + Qgis.TextVerticalAlignment.VerticalCenter.__doc__ + '\n' + '* ``AlignBottom``: ' + Qgis.TextVerticalAlignment.Bottom.__doc__
+Qgis.TextVerticalAlignment.__doc__ = 'Text vertical alignment.\n\nThis enum controls vertical alignment of text in a predefined rectangular\nbounding box. See also Qgis.TextCharacterVerticalAlignment.\n\n.. note::\n\n   Prior to QGIS 3.28 this was available as :py:class:`QgsTextRenderer`.VAlignment\n\n.. versionadded:: 3.28\n\n' + '* ``AlignTop``: ' + Qgis.TextVerticalAlignment.Top.__doc__ + '\n' + '* ``AlignVCenter``: ' + Qgis.TextVerticalAlignment.VerticalCenter.__doc__ + '\n' + '* ``AlignBottom``: ' + Qgis.TextVerticalAlignment.Bottom.__doc__
 # --
 Qgis.TextVerticalAlignment.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.TextCharacterVerticalAlignment.Normal.__doc__ = "Adjacent characters are positioned in the standard way for text in the writing system in use"
+Qgis.TextCharacterVerticalAlignment.SuperScript.__doc__ = "Characters are placed above the base line for normal text."
+Qgis.TextCharacterVerticalAlignment.SubScript.__doc__ = "Characters are placed below the base line for normal text."
+Qgis.TextCharacterVerticalAlignment.__doc__ = 'Text vertical alignment for characters.\n\nThis enum controls vertical alignment of individual characters within a block\nof text.\n\n.. versionadded:: 3.30\n\n' + '* ``Normal``: ' + Qgis.TextCharacterVerticalAlignment.Normal.__doc__ + '\n' + '* ``SuperScript``: ' + Qgis.TextCharacterVerticalAlignment.SuperScript.__doc__ + '\n' + '* ``SubScript``: ' + Qgis.TextCharacterVerticalAlignment.SubScript.__doc__
+# --
+Qgis.TextCharacterVerticalAlignment.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.RenderSubcomponentProperty.Generic.__doc__ = "Generic subcomponent property"
 Qgis.RenderSubcomponentProperty.ShadowOffset.__doc__ = "Shadow offset"
@@ -1769,6 +1879,13 @@ Qgis.ViewSyncModeFlag.Sync2DTo3D.__doc__ = "Update the 2D main canvas extent to 
 Qgis.ViewSyncModeFlag.__doc__ = 'Synchronization of 2D map canvas and 3D view\n\n.. versionadded:: 3.26\n\n' + '* ``Sync3DTo2D``: ' + Qgis.ViewSyncModeFlag.Sync3DTo2D.__doc__ + '\n' + '* ``Sync2DTo3D``: ' + Qgis.ViewSyncModeFlag.Sync2DTo3D.__doc__
 # --
 Qgis.ViewSyncModeFlag.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.MapRecenteringMode.Always.__doc__ = "Always recenter map"
+Qgis.MapRecenteringMode.WhenOutsideVisibleExtent.__doc__ = "Only recenter map when new center would be outside of current visible extent"
+Qgis.MapRecenteringMode.Never.__doc__ = "Never recenter map"
+Qgis.MapRecenteringMode.__doc__ = 'Modes for recentering map canvases.\n\n.. versionadded:: 3.30\n\n' + '* ``Always``: ' + Qgis.MapRecenteringMode.Always.__doc__ + '\n' + '* ``WhenOutsideVisibleExtent``: ' + Qgis.MapRecenteringMode.WhenOutsideVisibleExtent.__doc__ + '\n' + '* ``Never``: ' + Qgis.MapRecenteringMode.Never.__doc__
+# --
+Qgis.MapRecenteringMode.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.HistoryProviderBackend.LocalProfile.__doc__ = "Local profile"
 Qgis.HistoryProviderBackend.__doc__ = 'History provider backends.\n\n.. versionadded:: 3.24\n\n' + '* ``LocalProfile``: ' + Qgis.HistoryProviderBackend.LocalProfile.__doc__

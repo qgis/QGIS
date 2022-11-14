@@ -121,6 +121,8 @@ class QAuthenticator;
 class QgsBrowserDockWidget;
 class QgsAdvancedDigitizingDockWidget;
 class QgsGpsInformationWidget;
+class QgsGpsCanvasBridge;
+class QgsAppGpsDigitizing;
 class QgsStatisticalSummaryDockWidget;
 class QgsMapCanvasTracer;
 class QgsTemporalControllerDockWidget;
@@ -154,6 +156,8 @@ class QgsMapToolCapture;
 class QgsElevationProfileWidget;
 class QgsScreenHelper;
 class QgsAppGpsConnection;
+class QgsGpsToolBar;
+class QgsAppGpsSettingsMenu;
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -881,6 +885,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     void setGpsPanelConnection( QgsGpsConnection *connection );
 
+    /**
+     * Returns the GPS settings menu;
+     */
+    QgsAppGpsSettingsMenu *gpsSettingsMenu();
+
     //! Returns the application vertex editor
     QgsVertexEditor *vertexEditor() { return mVertexEditorDock; }
 
@@ -1095,6 +1104,33 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Only works on raster layers.
     */
     void legendLayerStretchUsingCurrentExtent();
+
+    /**
+     * Open the Raster Attribute Table for the raster layer.
+     * Only works on raster layers.
+     *
+     * \since QGIS 3.30
+     */
+    void openRasterAttributeTable();
+
+    /**
+     * Creates a new Raster Attribute Table from the raster layer renderer if the
+     * renderer supports it.
+     *
+     * Only works on raster layers.
+     *
+     * \since QGIS 3.30
+     */
+    void createRasterAttributeTable();
+
+    /**
+     * Loads a Raster Attribute Table from a VAT.DBF file.
+     *
+     * Only works on raster layers.
+     *
+     * \since QGIS 3.30
+     */
+    void loadRasterAttributeTableFromFile();
 
     //! Watch for QFileOpenEvent.
     bool event( QEvent *event ) override;
@@ -1311,6 +1347,19 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * on any layer.
      */
     bool checkUnsavedLayerEdits();
+
+    /**
+     * Checks for unsaved changes in raster attribute tables and prompts the user to save
+     * or discard these changes for each raster attribute table.
+     *
+     * Returns TRUE if there are no unsaved raster attribute table remaining, or the user
+     * opted to discard them all. Returns FALSE if the user opted to cancel
+     * on any raster attribute table.
+     *
+     * \param mapLayers optional list of layers to check, if empty all project raster layers will be checked.
+     * \param allowCancel optional flag (default TRUE) that switches on the "Cancel" button.
+     */
+    bool checkUnsavedRasterAttributeTableEdits( const QList<QgsMapLayer *> &mapLayers = QList<QgsMapLayer *>(), bool allowCancel = true );
 
     /**
      * Checks whether memory layers (with features) exist in the project, and if so
@@ -2557,7 +2606,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Persistent GPS toolbox
     QgsAppGpsConnection *mGpsConnection = nullptr;
+    QgsAppGpsSettingsMenu *mGpsSettingsMenu = nullptr;
     QgsGpsInformationWidget *mpGpsWidget = nullptr;
+    QgsGpsToolBar *mGpsToolBar = nullptr;
+    QgsGpsCanvasBridge *mGpsCanvasBridge = nullptr;
+    QgsAppGpsDigitizing *mGpsDigitizing = nullptr;
 
     QgsMessageBarItem *mLastMapToolMessage = nullptr;
 

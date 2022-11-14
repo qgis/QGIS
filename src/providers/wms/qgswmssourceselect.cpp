@@ -1165,9 +1165,12 @@ void QgsWMSSourceSelect::filterLayers( const QString &searchText )
   {
     // show everything and reset tree nesting
     setChildrenVisible( lstLayers->invisibleRootItem(), true );
-    for ( QTreeWidgetItem *item : mTreeInitialExpand.keys() )
+    for ( auto it = mTreeInitialExpand.constBegin(); it != mTreeInitialExpand.constEnd(); it++ )
+    {
+      QTreeWidgetItem *item = it.key();
       if ( item )
-        item->setExpanded( mTreeInitialExpand.value( item ) );
+        item->setExpanded( it.value() );
+    }
     mTreeInitialExpand.clear();
   }
   else

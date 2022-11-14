@@ -108,10 +108,10 @@ QVariantMap QgsExplodeHstoreAlgorithm::processAlgorithm( const QVariantMap &para
       feedback->setProgress( progress );
 
     QVariantMap currentHStore = QgsHstoreUtils::parse( feat.attribute( fieldName ).toString() );
-    for ( const QString &key : currentHStore.keys() )
+    for ( auto key = currentHStore.keyBegin(); key != currentHStore.keyEnd(); key++ )
     {
-      if ( expectedFields.isEmpty() && ! fieldsToAdd.contains( key ) )
-        fieldsToAdd.insert( 0, key );
+      if ( expectedFields.isEmpty() && ! fieldsToAdd.contains( *key ) )
+        fieldsToAdd.insert( 0, *key );
     }
     hstoreFeatures.insert( feat.id(), currentHStore );
     features.append( feat );

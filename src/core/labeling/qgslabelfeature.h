@@ -58,9 +58,19 @@ class CORE_EXPORT QgsLabelFeature
 {
   public:
 
-    //! Create label feature, takes ownership of the geometry instance
+    /**
+     * Constructor for QgsLabelFeature.
+     *
+     * The feature \a id argument links the label feature back to the original layer feature.
+     *
+     * The \a geometry argument specifies the geometry associated with the feature, which is
+     * used by the labeling engine to generate candidate placements for the label. For
+     * a vector layer feature this will generally be the feature's geometry.
+     *
+     * The \a size argument dicates the size of the label's content (e.g. text width and height).
+     */
     QgsLabelFeature( QgsFeatureId id, geos::unique_ptr geometry, QSizeF size );
-    //! Clean up geometry and curved label info (if present)
+
     virtual ~QgsLabelFeature();
 
     //! Identifier of the label (unique within the parent label provider)
@@ -100,6 +110,24 @@ class CORE_EXPORT QgsLabelFeature
 
     //! Size of the label (in map units)
     QSizeF size( double angle = 0.0 ) const;
+
+    /**
+     * Returns the extreme outer bounds of the label feature, including any surrounding content like
+     * borders or background shapes.
+     *
+     * \see setOuterBounds()
+     * \since QGIS 3.30
+     */
+    QRectF outerBounds() const { return mOuterBounds; }
+
+    /**
+     * Sets the extreme outer \a bounds of the label feature, including any surrounding content like
+     * borders or background shapes.
+     *
+     * \see outerBounds()
+     * \since QGIS 3.30
+     */
+    void setOuterBounds( const QRectF &bounds ) { mOuterBounds = bounds; }
 
     /**
      * Sets the visual margin for the label feature. The visual margin represents a margin
@@ -617,6 +645,8 @@ class CORE_EXPORT QgsLabelFeature
     QSizeF mSize;
     //! Width and height of the label when rotated between 45 to 135 and 235 to 315 degrees;
     QSizeF mRotatedSize;
+    //! Extreme outer bounds of the label feature, including any surrounding content like borders or background shapes.
+    QRectF mOuterBounds;
     //! Visual margin of label contents
     QgsMargins mVisualMargin;
     //! Size of associated rendered symbol, if applicable

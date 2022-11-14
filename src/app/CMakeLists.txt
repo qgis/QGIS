@@ -62,6 +62,7 @@ set(QGIS_APP_SRCS
   qgsprovidersublayersdialog.cpp
   qgspuzzlewidget.cpp
   qgsversionmigration.cpp
+  qgsrasterattributetableapputils.cpp
   qgssnappinglayertreemodel.cpp
   qgssnappingwidget.cpp
   qgsstatusbarcoordinateswidget.cpp
@@ -264,9 +265,13 @@ set(QGIS_APP_SRCS
   options/qgsvectorrenderingoptions.cpp
 
   gps/qgsappgpsconnection.cpp
+  gps/qgsappgpsdigitizing.cpp
+  gps/qgsappgpssettingsmenu.cpp
   gps/qgsgpsbearingitem.cpp
+  gps/qgsgpscanvasbridge.cpp
   gps/qgsgpsinformationwidget.cpp
   gps/qgsgpsmarker.cpp
+  gps/qgsgpstoolbar.cpp
 
   project/qgsprojectelevationsettingswidget.cpp
 

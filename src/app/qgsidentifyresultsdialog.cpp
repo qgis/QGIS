@@ -466,11 +466,12 @@ void QgsIdentifyResultsDialog::initSelectionModes()
   mSelectModeButton = new QToolButton( mIdentifyToolbar );
   mSelectModeButton->setPopupMode( QToolButton::MenuButtonPopup );
   QList<QAction *> selectActions;
-  selectActions << mActionSelectFeatures << mActionSelectPolygon
+  selectActions << mActionSelectFeatures << mActionSelectFeaturesOnMouseOver << mActionSelectPolygon
                 << mActionSelectFreehand << mActionSelectRadius;
 
   QActionGroup *group = new QActionGroup( this );
   group->addAction( mActionSelectFeatures );
+  group->addAction( mActionSelectFeaturesOnMouseOver );
   group->addAction( mActionSelectPolygon );
   group->addAction( mActionSelectFreehand );
   group->addAction( mActionSelectRadius );
@@ -478,9 +479,11 @@ void QgsIdentifyResultsDialog::initSelectionModes()
   mSelectModeButton->addActions( selectActions );
   mSelectModeButton->setDefaultAction( mActionSelectFeatures );
 
+
   mIdentifyToolbar->addWidget( mSelectModeButton );
 
   connect( mActionSelectFeatures, &QAction::triggered, this, &QgsIdentifyResultsDialog::setSelectionMode );
+  connect( mActionSelectFeaturesOnMouseOver, &QAction::triggered, this, &QgsIdentifyResultsDialog::setSelectionMode );
   connect( mActionSelectPolygon, &QAction::triggered, this, &QgsIdentifyResultsDialog::setSelectionMode );
   connect( mActionSelectFreehand, &QAction::triggered, this, &QgsIdentifyResultsDialog::setSelectionMode );
   connect( mActionSelectRadius, &QAction::triggered, this, &QgsIdentifyResultsDialog::setSelectionMode );
@@ -2400,6 +2403,13 @@ void QgsIdentifyResultsDialog::mActionAutoFeatureForm_toggled( bool checked )
 {
   QgsSettings settings;
   settings.setValue( QStringLiteral( "Map/identifyAutoFeatureForm" ), checked );
+  mActionSelectFeaturesOnMouseOver->setEnabled( ! checked );
+  if ( mSelectModeButton->defaultAction( ) == mActionSelectFeaturesOnMouseOver )
+  {
+    mSelectionMode = QgsMapToolSelectionHandler::SelectSimple;
+    mSelectModeButton->setDefaultAction( mActionSelectFeatures );
+    emit selectionModeChanged();
+  }
 }
 
 void QgsIdentifyResultsDialog::mActionHideDerivedAttributes_toggled( bool checked )
@@ -2543,6 +2553,11 @@ void QgsIdentifyResultsDialog::setSelectionMode()
     mSelectModeButton->setDefaultAction( mActionSelectPolygon );
     mSelectionMode = QgsMapToolSelectionHandler::SelectPolygon;
   }
+  else if ( obj == mActionSelectFeaturesOnMouseOver )
+  {
+    mSelectModeButton->setDefaultAction( mActionSelectFeaturesOnMouseOver );
+    mSelectionMode = QgsMapToolSelectionHandler::SelectOnMouseOver;
+  }
   else if ( obj == mActionSelectFreehand )
   {
     mSelectModeButton->setDefaultAction( mActionSelectFreehand );
@@ -2555,7 +2570,10 @@ void QgsIdentifyResultsDialog::setSelectionMode()
   }
 
   if ( oldMode != mSelectionMode )
+  {
+    mActionAutoFeatureForm->setEnabled( mSelectionMode != QgsMapToolSelectionHandler::SelectOnMouseOver );
     emit selectionModeChanged();
+  }
 }
 
 QgsMapToolSelectionHandler::SelectionMode QgsIdentifyResultsDialog::selectionMode() const

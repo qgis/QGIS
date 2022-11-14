@@ -1,7 +1,0 @@
-Grid Values to Points
-shapes_grid
-QgsProcessingParameterMultipleLayers|GRIDS|Grids|3|None|False
-QgsProcessingParameterFeatureSource|POLYGONS|Polygons|-1|None|True
-QgsProcessingParameterBoolean|NODATA|Exclude NoData Cells|True
-QgsProcessingParameterEnum|TYPE|Type|[0] nodes;[1] cells
-QgsProcessingParameterVectorDestination|SHAPES|Shapes

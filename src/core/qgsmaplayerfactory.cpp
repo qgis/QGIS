@@ -81,6 +81,7 @@ QgsMapLayer *QgsMapLayerFactory::createLayer( const QString &uri, const QString 
       QgsVectorLayer::LayerOptions vectorOptions;
       vectorOptions.transformContext = options.transformContext;
       vectorOptions.loadDefaultStyle = options.loadDefaultStyle;
+      vectorOptions.loadAllStoredStyles = options.loadAllStoredStyles;
       return new QgsVectorLayer( uri, name, provider, vectorOptions );
     }
 

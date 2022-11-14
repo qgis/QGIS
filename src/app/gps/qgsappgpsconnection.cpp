@@ -21,6 +21,7 @@
 #include "qgisapp.h"
 #include "qgsstatusbar.h"
 #include "qgsmessagebar.h"
+#include "qgsmessagebaritem.h"
 
 QgsAppGpsConnection::QgsAppGpsConnection( QObject *parent )
   : QObject( parent )
@@ -54,6 +55,22 @@ void QgsAppGpsConnection::setConnection( QgsGpsConnection *connection )
   }
 
   onConnected( connection );
+}
+
+QgsPoint QgsAppGpsConnection::lastValidLocation() const
+{
+  if ( mConnection )
+    return mConnection->lastValidLocation();
+  else
+    return QgsPoint();
+}
+
+QgsGpsInformation QgsAppGpsConnection::lastInformation() const
+{
+  if ( mConnection )
+    return mConnection->currentGPSInformation();
+  else
+    return QgsGpsInformation();
 }
 
 void QgsAppGpsConnection::connectGps()
@@ -114,8 +131,9 @@ void QgsAppGpsConnection::connectGps()
       if ( port.isEmpty() )
       {
         QgisApp::instance()->statusBarIface()->clearMessage();
-        QgisApp::instance()->messageBar()->pushCritical( QString(), tr( "No path to the GPS port is specified. Please set a path then try again." ) );
+        showGpsConnectFailureWarning( tr( "No path to the GPS port is specified. Please set a path then try again." ) );
         emit connectionError( tr( "No path to the GPS port is specified. Please set a path then try again." ) );
+        emit statusChanged( Qgis::GpsConnectionStatus::Disconnected );
         return;
       }
       break;
@@ -127,6 +145,9 @@ void QgsAppGpsConnection::connectGps()
   }
 
   emit connecting();
+  emit statusChanged( Qgis::GpsConnectionStatus::Connecting );
+  emit fixStatusChanged( Qgis::GpsFixStatus::NoData );
+
   showStatusBarMessage( tr( "Connecting to GPS device %1…" ).arg( port ) );
 
   QgsGpsDetector *detector = new QgsGpsDetector( port );
@@ -144,6 +165,8 @@ void QgsAppGpsConnection::disconnectGps()
     mConnection = nullptr;
 
     emit disconnected();
+    emit statusChanged( Qgis::GpsConnectionStatus::Disconnected );
+    emit fixStatusChanged( Qgis::GpsFixStatus::NoData );
 
     showStatusBarMessage( tr( "Disconnected from GPS device." ) );
   }
@@ -153,9 +176,10 @@ void QgsAppGpsConnection::onTimeOut()
 {
   mConnection = nullptr;
   emit connectionTimedOut();
+  emit statusChanged( Qgis::GpsConnectionStatus::Disconnected );
 
   QgisApp::instance()->statusBarIface()->clearMessage();
-  QgisApp::instance()->messageBar()->pushCritical( QString(), tr( "Failed to connect to GPS device." ) );
+  showGpsConnectFailureWarning( tr( "Failed to connect to GPS device." ) );
 }
 
 void QgsAppGpsConnection::onConnected( QgsGpsConnection *conn )
@@ -163,15 +187,61 @@ void QgsAppGpsConnection::onConnected( QgsGpsConnection *conn )
   mConnection = conn;
   connect( mConnection, &QgsGpsConnection::stateChanged, this, &QgsAppGpsConnection::stateChanged );
   connect( mConnection, &QgsGpsConnection::nmeaSentenceReceived, this, &QgsAppGpsConnection::nmeaSentenceReceived );
+  connect( mConnection, &QgsGpsConnection::fixStatusChanged, this, &QgsAppGpsConnection::fixStatusChanged );
+  connect( mConnection, &QgsGpsConnection::positionChanged, this, &QgsAppGpsConnection::positionChanged );
+
+  Qgis::GnssConstellation constellation = Qgis::GnssConstellation::Unknown;
+  // emit signals so initial fix status is correctly advertised
+  emit stateChanged( mConnection->currentGPSInformation() );
+  emit fixStatusChanged( mConnection->currentGPSInformation().bestFixStatus( constellation ) );
+  emit positionChanged( mConnection->lastValidLocation() );
 
   //insert connection into registry such that it can also be used by other dialogs or plugins
   QgsApplication::gpsConnectionRegistry()->registerConnection( mConnection );
 
   emit connected();
-  showStatusBarMessage( tr( "Connected to GPS device." ) );
+  emit statusChanged( Qgis::GpsConnectionStatus::Connected );
+  showMessage( Qgis::MessageLevel::Success, tr( "Connected to GPS device." ) );
 }
 
 void QgsAppGpsConnection::showStatusBarMessage( const QString &msg )
 {
   QgisApp::instance()->statusBarIface()->showMessage( msg );
+}
+
+void QgsAppGpsConnection::showGpsConnectFailureWarning( const QString &message )
+{
+  if ( mConnectionMessageItem )
+  {
+    // delete old connection message item, so that we don't stack up multiple outdated connection
+    // related messages
+    QgisApp::instance()->messageBar()->popWidget( mConnectionMessageItem );
+    mConnectionMessageItem = nullptr;
+  }
+
+  QgisApp::instance()->statusBarIface()->clearMessage();
+  mConnectionMessageItem = QgisApp::instance()->messageBar()->createMessage( QString(), message );
+  QPushButton *configureButton = new QPushButton( tr( "Configure Device…" ) );
+  connect( configureButton, &QPushButton::clicked, configureButton, [ = ]
+  {
+    QgisApp::instance()->showOptionsDialog( QgisApp::instance(), QStringLiteral( "mGpsOptions" ) );
+  } );
+  mConnectionMessageItem->layout()->addWidget( configureButton );
+  QgisApp::instance()->messageBar()->pushWidget( mConnectionMessageItem, Qgis::MessageLevel::Critical );
+}
+
+void QgsAppGpsConnection::showMessage( Qgis::MessageLevel level, const QString &message )
+{
+  if ( mConnectionMessageItem )
+  {
+    // delete old connection message item, so that we don't stack up multiple outdated connection
+    // related messages
+    QgisApp::instance()->messageBar()->popWidget( mConnectionMessageItem );
+    mConnectionMessageItem = nullptr;
+  }
+
+  QgisApp::instance()->statusBarIface()->clearMessage();
+
+  mConnectionMessageItem = QgisApp::instance()->messageBar()->createMessage( QString(), message );
+  QgisApp::instance()->messageBar()->pushWidget( mConnectionMessageItem, level, QgsMessageBar::defaultMessageTimeout( level ) );
 }

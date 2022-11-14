@@ -124,6 +124,11 @@ QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   addSettingsEntry( &QgsGpsConnection::settingGpsAcquisitionInterval );
   addSettingsEntry( &QgsGpsConnection::settingGpsDistanceThreshold );
   addSettingsEntry( &QgsGpsConnection::settingGpsBearingFromTravelDirection );
+  addSettingsEntry( &QgsGpsConnection::settingGpsApplyLeapSecondsCorrection );
+  addSettingsEntry( &QgsGpsConnection::settingGpsLeapSeconds );
+  addSettingsEntry( &QgsGpsConnection::settingsGpsTimeStampSpecification );
+  addSettingsEntry( &QgsGpsConnection::settingsGpsTimeStampTimeZone );
+  addSettingsEntry( &QgsGpsConnection::settingsGpsTimeStampOffsetFromUtc );
 }
 
 QgsSettingsRegistryCore::~QgsSettingsRegistryCore()

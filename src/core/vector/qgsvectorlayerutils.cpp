@@ -331,7 +331,7 @@ QVariant QgsVectorLayerUtils::createUniqueValueFromCache( const QgsVectorLayer *
         {
           // no base seed - fetch first value from layer
           QgsFeatureRequest req;
-          base = existingValues.isEmpty() ? QString() : existingValues.values().first().toString();
+          base = existingValues.isEmpty() ? QString() : existingValues.constBegin()->toString();
         }
 
         // try variants like base_1, base_2, etc until a new value found

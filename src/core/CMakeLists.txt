@@ -67,7 +67,9 @@ set(QGIS_CORE_SRCS
   gps/qgsgpsconnectionregistry.cpp
   gps/qgsgpsdconnection.cpp
   gps/qgsgpsdetector.cpp
+  gps/qgsgpslogger.cpp
   gps/qgsnmeaconnection.cpp
+  gps/qgsvectorlayergpslogger.cpp
 
   plot/qgsplot.cpp
 
@@ -660,6 +662,7 @@ set(QGIS_CORE_SRCS
   project/qgsprojectelevationproperties.cpp
   project/qgsprojectfiletransform.cpp
   project/qgsprojectdisplaysettings.cpp
+  project/qgsprojectgpssettings.cpp
   project/qgsprojectproperty.cpp
   project/qgsprojectservervalidator.cpp
   project/qgsprojectstorage.cpp
@@ -1401,7 +1404,9 @@ set(QGIS_CORE_HDRS
   gps/qgsgpsconnection.h
   gps/qgsgpsdconnection.h
   gps/qgsgpsdetector.h
+  gps/qgsgpslogger.h
   gps/qgsnmeaconnection.h
+  gps/qgsvectorlayergpslogger.h
 
   labeling/qgscalloutposition.h
   labeling/qgslabelfeature.h
@@ -1666,6 +1671,7 @@ set(QGIS_CORE_HDRS
   project/qgsprojectdisplaysettings.h
   project/qgsprojectelevationproperties.h
   project/qgsprojectfiletransform.h
+  project/qgsprojectgpssettings.h
   project/qgsprojectproperty.h
   project/qgsprojectservervalidator.h
   project/qgsprojectstorage.h

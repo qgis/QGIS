@@ -78,6 +78,9 @@ class TestQgsNominatimGeocoder(unittest.TestCase):
         self.assertEqual(geocoder.requestUrl('20 green st, twaddlingham', QgsRectangle(3, 5, 6, 8)).toString(),
                          'https://nominatim.qgis.org/search?format=json&addressdetails=1&viewbox=3,5,6,8&q=20 green st, twaddlingham')
 
+        self.assertEqual(geocoder.requestUrl('20 green st, twaddlingham', QgsRectangle(float('-inf'), float('-inf'), float('inf'), float('inf'))).toString(),
+                         'https://nominatim.qgis.org/search?format=json&addressdetails=1&q=20 green st, twaddlingham')
+
         geocoder = QgsNominatimGeocoder(countryCodes='ca,km', endpoint='https://my.server/search')
         self.assertEqual(geocoder.requestUrl('20 green st, twaddlingham', QgsRectangle(3, 5, 6, 8)).toString(),
                          'https://my.server/search?format=json&addressdetails=1&viewbox=3,5,6,8&countrycodes=ca,km&q=20 green st, twaddlingham')

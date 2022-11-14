@@ -1,9 +1,0 @@
-LS Factor
-ta_hydrology
-QgsProcessingParameterRasterLayer|SLOPE|Slope|None|False
-QgsProcessingParameterRasterLayer|AREA|Catchment Area|None|False
-QgsProcessingParameterEnum|CONV|Area to Length Conversion|[0] no conversion (areas already given as specific catchment area);[1] 1 / cell size (specific catchment area);[2] square root (catchment length)
-QgsProcessingParameterEnum|METHOD|Method (LS)|[0] Moore et al. 1991;[1] Desmet & Govers 1996;[2] Boehner & Selige 2006
-QgsProcessingParameterNumber|EROSIVITY|Rill/Interrill Erosivity|QgsProcessingParameterNumber.Double|0.0|False|None|None
-QgsProcessingParameterEnum|STABILITY|Stability|[0] stable;[1] instable (thawing)
-QgsProcessingParameterRasterDestination|LS|LS Factor

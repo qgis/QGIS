@@ -1,6 +1,0 @@
-Transect through polygon shapefile
-shapes_transect
-QgsProcessingParameterFeatureSource|TRANSECT|Line Transect(s)|1|None|False
-QgsProcessingParameterFeatureSource|THEME|Theme|-1|None|False
-QgsProcessingParameterField|THEME_FIELD|Theme Field|None|THEME|-1|False|False
-QgsProcessingParameterVectorDestination|TRANSECT_RESULT|Result table

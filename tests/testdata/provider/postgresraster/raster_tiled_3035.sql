@@ -23,3 +23,6 @@ SELECT AddRasterConstraints('','o_2_raster_tiled_3035','rast',TRUE,TRUE,TRUE,TRU
 SELECT AddRasterConstraints('','o_4_raster_tiled_3035','rast',TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE);
 SELECT AddOverviewConstraints('','o_2_raster_tiled_3035','rast','','raster_tiled_3035','rast',2);
 SELECT AddOverviewConstraints('','o_4_raster_tiled_3035','rast','','raster_tiled_3035','rast',4);
+
+-- views
+CREATE VIEW "public"."raster_tiled_3035_view" AS SELECT rid, rast FROM "public"."raster_tiled_3035"  WHERE rid < 2;

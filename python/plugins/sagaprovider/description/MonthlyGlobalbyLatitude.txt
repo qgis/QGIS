@@ -1,7 +1,0 @@
-Monthly Global by Latitude
-climate_tools
-QgsProcessingParameterFeatureSource|ALBEDO|Albedo|5|None|True
-QgsProcessingParameterField|FIELD|Field|None|ALBEDO|-1|False|True
-QgsProcessingParameterNumber|YEAR|Year [ka]|QgsProcessingParameterNumber.Double|2.000000|False|None|None
-QgsProcessingParameterNumber|DLAT|Latitude Increment [Degree]|QgsProcessingParameterNumber.Integer|5|False|1|90
-QgsProcessingParameterVectorDestination|SOLARRAD|Solar Radiation

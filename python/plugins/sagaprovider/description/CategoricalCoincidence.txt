@@ -1,8 +1,0 @@
-Categorical Coincidence
-statistics_grid
-QgsProcessingParameterMultipleLayers|GRIDS|Grids|3|None|False
-QgsProcessingParameterRasterDestination|CATEGORIES|Number of Categories
-QgsProcessingParameterRasterDestination|COINCIDENCE|Coincidence
-QgsProcessingParameterRasterDestination|MAJ_COUNT|Dominance of Majority
-QgsProcessingParameterRasterDestination|MAJ_VALUE|Value of Majority
-QgsProcessingParameterNumber|RADIUS|Radius [Cells]|QgsProcessingParameterNumber.Integer|0|False|0|None

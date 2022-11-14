@@ -1697,6 +1697,56 @@ static QVariant fcnRasterValue( const QVariantList &values, const QgsExpressionC
   return std::isnan( value ) ? QVariant() : value;
 }
 
+static QVariant fcnRasterAttributes( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsRasterLayer *layer = QgsExpressionUtils::getRasterLayer( values.at( 0 ), parent );
+  if ( !layer || !layer->dataProvider() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `raster_attributes` requires a valid raster layer." ) );
+    return QVariant();
+  }
+
+  const int bandNb = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
+  if ( bandNb < 1 || bandNb > layer->bandCount() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `raster_attributes` requires a valid raster band number." ) );
+    return QVariant();
+  }
+
+  const double value = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
+  if ( std::isnan( value ) )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `raster_attributes` requires a valid raster value." ) );
+    return QVariant();
+  }
+
+  if ( ! layer->dataProvider()->attributeTable( bandNb ) )
+  {
+    return QVariant();
+  }
+
+  const QVariantList data = layer->dataProvider()->attributeTable( bandNb )->row( value );
+  if ( data.isEmpty() )
+  {
+    return QVariant();
+  }
+
+  QVariantMap result;
+  const QList<QgsRasterAttributeTable::Field> fields { layer->dataProvider()->attributeTable( bandNb )->fields() };
+  for ( int idx = 0; idx < static_cast<int>( fields.count( ) ) && idx < static_cast<int>( data.count() ); ++idx )
+  {
+    const QgsRasterAttributeTable::Field field { fields.at( idx ) };
+    if ( field.isColor() || field.isRamp() )
+    {
+      continue;
+    }
+    result.insert( fields.at( idx ).name, data.at( idx ) );
+  }
+
+  return result;
+}
+
+
 static QVariant fcnFeature( const QVariantList &, const QgsExpressionContext *context, QgsExpression *, const QgsExpressionNodeFunction * )
 {
   if ( !context )
@@ -1727,6 +1777,78 @@ static QVariant fcnAttribute( const QVariantList &values, const QgsExpressionCon
 
   return feature.attribute( attr );
 }
+
+static QVariant fcnMapToHtmlTable( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QString table { R"html(
+  <table>
+    <thead>
+      <th>%1</th>
+    </thead>
+    <tbody>
+      <tr><td>%2</td></tr>
+    </tbody>
+  </table>)html" };
+  QVariantMap dict;
+  if ( values.size() == 1 )
+  {
+    dict = QgsExpressionUtils::getMapValue( values.at( 0 ), parent );
+  }
+  else
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `map_to_html_table` requires one parameter. %n given.", nullptr, values.length() ) );
+    return QVariant();
+  }
+
+  if ( dict.isEmpty() )
+  {
+    return QVariant();
+  }
+
+  QStringList headers;
+  QStringList cells;
+
+  for ( auto it = dict.cbegin(); it != dict.cend(); ++it )
+  {
+    headers.push_back( it.key().toHtmlEscaped() );
+    cells.push_back( it.value().toString( ).toHtmlEscaped() );
+  }
+
+  return table.arg( headers.join( QStringLiteral( "</th><th>" ) ), cells.join( QStringLiteral( "</td><td>" ) ) );
+}
+
+static QVariant fcnMapToHtmlDefinitionList( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QString table { R"html(
+  <dl>
+    %1
+  </dl>)html" };
+  QVariantMap dict;
+  if ( values.size() == 1 )
+  {
+    dict = QgsExpressionUtils::getMapValue( values.at( 0 ), parent );
+  }
+  else
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `map_to_html_dl` requires one parameter. %n given.", nullptr, values.length() ) );
+    return QVariant();
+  }
+
+  if ( dict.isEmpty() )
+  {
+    return QVariant();
+  }
+
+  QString rows;
+
+  for ( auto it = dict.cbegin(); it != dict.cend(); ++it )
+  {
+    rows.append( QStringLiteral( "<dt>%1</dt><dd>%2</dd>" ).arg( it.key().toHtmlEscaped(), it.value().toString().toHtmlEscaped() ) );
+  }
+
+  return table.arg( rows );
+}
+
 
 static QVariant fcnAttributes( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
@@ -4596,6 +4718,7 @@ static QVariant fcnConvexHull( const QVariantList &values, const QgsExpressionCo
   return result;
 }
 
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=11 )
 static QVariant fcnConcaveHull( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   try
@@ -4613,7 +4736,7 @@ static QVariant fcnConcaveHull( const QVariantList &values, const QgsExpressionC
     return QVariant();
   }
 }
-
+#endif
 
 static QVariant fcnMinimalCircle( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
@@ -6218,7 +6341,7 @@ static QVariant fcnArrayMajority( const QVariantList &values, const QgsExpressio
     if ( hash.isEmpty() )
       return QVariant();
 
-    return QVariant( hash.keys( maxValue ).first() );
+    return QVariant( hash.key( maxValue ) );
   }
   else if ( option.compare( QLatin1String( "median" ), Qt::CaseInsensitive ) == 0 )
   {
@@ -6229,7 +6352,7 @@ static QVariant fcnArrayMajority( const QVariantList &values, const QgsExpressio
     if ( maxValue * 2 <= list.size() )
       return QVariant();
 
-    return QVariant( hash.keys( maxValue ).first() );
+    return QVariant( hash.key( maxValue ) );
   }
   else
   {
@@ -6262,7 +6385,7 @@ static QVariant fcnArrayMinority( const QVariantList &values, const QgsExpressio
     if ( hash.isEmpty() )
       return QVariant();
 
-    return QVariant( hash.keys( minValue ).first() );
+    return QVariant( hash.key( minValue ) );
   }
   else if ( option.compare( QLatin1String( "median" ), Qt::CaseInsensitive ) == 0 )
   {
@@ -6270,7 +6393,7 @@ static QVariant fcnArrayMinority( const QVariantList &values, const QgsExpressio
   }
   else if ( option.compare( QLatin1String( "real_minority" ), Qt::CaseInsensitive ) == 0 )
   {
-    if ( hash.keys().isEmpty() )
+    if ( hash.isEmpty() )
       return QVariant();
 
     // Remove the majority, all others are minority
@@ -8111,9 +8234,11 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "is_empty" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnIsEmpty, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "is_empty_or_null" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnIsEmptyOrNull, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false, QStringList(), true )
         << new QgsStaticExpressionFunction( QStringLiteral( "convex_hull" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnConvexHull, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "convexHull" ) )
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=11 )
         << new QgsStaticExpressionFunction( QStringLiteral( "concave_hull" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "target_percent" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "allow_holes" ), true, false ), fcnConcaveHull, QStringLiteral( "GeometryGroup" ) )
+#endif
         << new QgsStaticExpressionFunction( QStringLiteral( "oriented_bbox" ), QgsExpressionFunction::ParameterList()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
                                             fcnOrientedBBox, QStringLiteral( "GeometryGroup" ) )
@@ -8467,6 +8592,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "env" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "name" ) ), fcnEnvVar, QStringLiteral( "General" ), QString() )
         << new QgsWithVariableExpressionFunction()
         << new QgsStaticExpressionFunction( QStringLiteral( "raster_value" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "band" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "point" ) ), fcnRasterValue, QStringLiteral( "Rasters" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "raster_attributes" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "band" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "point" ) ), fcnRasterAttributes, QStringLiteral( "Rasters" ) )
 
         // functions for arrays
         << new QgsArrayForeachExpressionFunction()
@@ -8521,6 +8647,10 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "map_prefix_keys" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "map" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "prefix" ) ),
                                             fcnMapPrefixKeys, QStringLiteral( "Maps" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "map_to_html_table" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "map" ) ),
+                                            fcnMapToHtmlTable, QStringLiteral( "Maps" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "map_to_html_dl" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "map" ) ),
+                                            fcnMapToHtmlDefinitionList, QStringLiteral( "Maps" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "url_encode" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "map" ) ),
                                             fcnToFormUrlEncode, QStringLiteral( "Maps" ) )
 

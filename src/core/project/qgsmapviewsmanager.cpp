@@ -48,7 +48,7 @@ bool QgsMapViewsManager::readXml( const QDomElement &element, const QDomDocument
 QDomElement QgsMapViewsManager::writeXml( QDomDocument &doc ) const
 {
   QDomElement dom = doc.createElement( "mapViewDocks3D" );
-  for ( QDomElement d : m3DMapViewsDom.values() )
+  for ( QDomElement d : m3DMapViewsDom )
     dom.appendChild( d );
   return dom;
 }

@@ -128,6 +128,7 @@ set(TESTS
  testqgsnetworkaccessmanager.cpp
  testqgsnetworkcontentfetcher.cpp
  testqgsnewsfeedparser.cpp
+ testqgsnmeaconnection.cpp
  testqgsofflineediting.cpp
  testqgsogcutils.cpp
  testqgsogrprovider.cpp

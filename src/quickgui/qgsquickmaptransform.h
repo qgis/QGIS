@@ -20,8 +20,7 @@
 #include <QMatrix4x4>
 
 #include "qgis_quick.h"
-
-class QgsQuickMapSettings;
+#include "qgsquickmapsettings.h"
 
 /**
  * \ingroup quick

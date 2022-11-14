@@ -5,6 +5,7 @@ set(QGIS_QUICK_GUI_MOC_HDRS
   qgsquickmapcanvasmap.h
   qgsquickmapsettings.h
   qgsquickmaptransform.h
+  qgsquickutils.h
 )
 
 set(QGIS_QUICK_GUI_SRC
@@ -12,6 +13,7 @@ set(QGIS_QUICK_GUI_SRC
   qgsquickmapcanvasmap.cpp
   qgsquickmapsettings.cpp
   qgsquickmaptransform.cpp
+  qgsquickutils.cpp
 )
 
 include_directories(
@@ -55,18 +57,16 @@ add_library(qgis_quick ${LIBRARY_TYPE}
 # require c++17
 target_compile_features(qgis_quick PRIVATE cxx_std_17)
 
-if (BUILD_WITH_QT6)
-  target_link_libraries(qgis_quick Qt6::Quick Qt6::Qml Qt6::Xml Qt6::Concurrent Qt6::Positioning qgis_core)
-else()
-  target_link_libraries(qgis_quick Qt5::Quick Qt5::Qml Qt5::Xml Qt5::Concurrent Qt5::Positioning qgis_core)
-endif()
+target_link_libraries(qgis_quick
+    ${QT_VERSION_BASE}::Quick
+    ${QT_VERSION_BASE}::Qml
+    ${QT_VERSION_BASE}::Xml
+    ${QT_VERSION_BASE}::Concurrent
+    ${QT_VERSION_BASE}::Positioning
+    qgis_core)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Android")
-  if (BUILD_WITH_QT6)
-    target_link_libraries(qgis_quick Qt6::AndroidExtras)
-  else()
-    target_link_libraries(qgis_quick Qt5::AndroidExtras)
-  endif()
+  target_link_libraries(qgis_quick ${QT_VERSION_BASE}::AndroidExtras)
 endif()
 target_compile_definitions(qgis_quick PRIVATE "-DQT_NO_FOREACH")
 

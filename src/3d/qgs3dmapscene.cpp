@@ -328,7 +328,7 @@ void Qgs3DMapScene::registerPickHandler( Qgs3DMapScenePickHandler *pickHandler )
   if ( mPickHandlers.isEmpty() )
   {
     // we need to add object pickers
-    for ( Qt3DCore::QEntity *entity : mLayerEntities.values() )
+    for ( Qt3DCore::QEntity *entity : mLayerEntities )
     {
       if ( QgsChunkedEntity *chunkedEntity = qobject_cast<QgsChunkedEntity *>( entity ) )
         chunkedEntity->setPickingEnabled( true );
@@ -345,7 +345,7 @@ void Qgs3DMapScene::unregisterPickHandler( Qgs3DMapScenePickHandler *pickHandler
   if ( mPickHandlers.isEmpty() )
   {
     // we need to remove pickers
-    for ( Qt3DCore::QEntity *entity : mLayerEntities.values() )
+    for ( Qt3DCore::QEntity *entity : mLayerEntities )
     {
       if ( QgsChunkedEntity *chunkedEntity = qobject_cast<QgsChunkedEntity *>( entity ) )
         chunkedEntity->setPickingEnabled( false );
@@ -750,8 +750,9 @@ void Qgs3DMapScene::onLayersChanged()
 
 void Qgs3DMapScene::updateTemporal()
 {
-  for ( auto layer : mLayerEntities.keys() )
+  for ( auto it = mLayerEntities.keyBegin(); it != mLayerEntities.keyEnd(); it++ )
   {
+    QgsMapLayer *layer = *it;
     if ( layer->temporalProperties()->isActive() )
     {
       removeLayerEntity( layer );
@@ -1219,9 +1220,10 @@ QgsRectangle Qgs3DMapScene::sceneExtent()
   QgsRectangle extent;
   extent.setMinimal();
 
-  for ( QgsMapLayer *layer : mLayerEntities.keys() )
+  for ( auto it = mLayerEntities.constBegin(); it != mLayerEntities.constEnd(); it++ )
   {
-    Qt3DCore::QEntity *layerEntity = mLayerEntities[ layer ];
+    QgsMapLayer *layer = it.key();
+    Qt3DCore::QEntity *layerEntity = it.value();
     QgsChunkedEntity *c = qobject_cast<QgsChunkedEntity *>( layerEntity );
     if ( !c )
       continue;

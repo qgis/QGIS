@@ -1,7 +1,0 @@
-Rank Filter
-grid_filter
-QgsProcessingParameterRasterLayer|INPUT|Grid|None|False
-QgsProcessingParameterEnum|MODE|Search Mode|[0] Square;[1] Circle
-QgsProcessingParameterNumber|RADIUS|Radius|QgsProcessingParameterNumber.Integer|1|False|1.0|None
-QgsProcessingParameterNumber|RANK|Rank [Percent]|QgsProcessingParameterNumber.Integer|50|False|None|None
-QgsProcessingParameterRasterDestination|RESULT|Filtered Grid

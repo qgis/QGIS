@@ -1,8 +1,0 @@
-Laplacian Filter
-grid_filter
-QgsProcessingParameterRasterLayer|INPUT|Grid|None|False
-QgsProcessingParameterEnum|METHOD|Method|[0] standard kernel 1;[1] standard kernel 2;[2] Standard kernel 3;[3] user defined kernel
-QgsProcessingParameterNumber|SIGMA|Standard Deviation (Percent of Radius)|QgsProcessingParameterNumber.Integer|0|False|None|None
-QgsProcessingParameterNumber|RADIUS|Radius|QgsProcessingParameterNumber.Integer|1|False|None|None
-QgsProcessingParameterEnum|MODE|Search Mode|[0] square;[1] circle
-QgsProcessingParameterRasterDestination|RESULT|Filtered Grid

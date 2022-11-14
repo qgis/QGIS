@@ -1,9 +1,0 @@
-Variogram Surface
-statistics_points
-QgsProcessingParameterFeatureSource|POINTS|Points|0|None|False
-QgsProcessingParameterField|FIELD|Attribute|None|POINTS|-1|False|False
-QgsProcessingParameterNumber|DISTCOUNT|Number of Distance Classes|QgsProcessingParameterNumber.Integer|10|False|1.0|None
-QgsProcessingParameterNumber|NSKIP|Skip Number|QgsProcessingParameterNumber.Integer|1|False|None|None
-QgsProcessingParameterRasterDestination|COUNT|Number of Pairs
-QgsProcessingParameterRasterDestination|VARIANCE|Variogram Surface
-QgsProcessingParameterRasterDestination|COVARIANCE|Covariance Surface

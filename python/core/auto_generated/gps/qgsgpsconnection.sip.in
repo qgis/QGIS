@@ -40,9 +40,17 @@ Encapsulates information relating to a GPS satellite.
 
     QChar satType;
 
+    Qgis::GnssConstellation constellation() const;
+%Docstring
+Returns the GNSS constellation associated with the information.
+
+.. versionadded:: 3.30
+%End
+
     bool operator==( const QgsSatelliteInfo &other ) const;
 
     bool operator!=( const QgsSatelliteInfo &other ) const;
+
 };
 
 class QgsGpsInformation
@@ -55,14 +63,6 @@ Encapsulates information relating to a GPS position fix.
 #include "qgsgpsconnection.h"
 %End
   public:
-
-    enum FixStatus
-    {
-      NoData,
-      NoFix,
-      Fix2D,
-      Fix3D
-    };
 
     double latitude;
 
@@ -98,6 +98,24 @@ Encapsulates information relating to a GPS position fix.
 
     int fixType;
 
+    QMap< Qgis::GnssConstellation, Qgis::GpsFixStatus > constellationFixStatus() const;
+%Docstring
+Returns a map of GNSS constellation to fix status.
+
+.. versionadded:: 3.30
+%End
+
+    Qgis::GpsFixStatus bestFixStatus( Qgis::GnssConstellation &constellation /Out/ ) const;
+%Docstring
+Returns the best fix status and corresponding constellation.
+
+
+:return: - best current fix status
+         - constellation: will be set to the constellation with best fix status
+
+.. versionadded:: 3.30
+%End
+
     int quality;
 
     Qgis::GpsQualityIndicator qualityIndicator;
@@ -117,11 +135,12 @@ Returns whether the connection information is valid
 .. versionadded:: 3.10
 %End
 
-    FixStatus fixStatus() const;
+ Qgis::GpsFixStatus fixStatus() const /Deprecated/;
 %Docstring
 Returns the fix status
 
-.. versionadded:: 3.10
+.. deprecated::
+  , use :py:func:`~QgsGpsInformation.constellationFixStatus` or :py:func:`~QgsGpsInformation.bestFixStatus` instead.
 %End
 
     QString qualityDescription() const;
@@ -130,6 +149,14 @@ Returns a descriptive string for the signal quality.
 
 .. versionadded:: 3.16
 %End
+
+    QVariant componentValue( Qgis::GpsInformationComponent component ) const;
+%Docstring
+Returns the value of the corresponding GPS information ``component``.
+
+.. versionadded:: 3.30
+%End
+
 };
 
 class QgsGpsConnection : QObject
@@ -160,6 +187,11 @@ Abstract base class for connection to a GPS device
       DataReceived,
       GPSDataReceived
     };
+
+
+
+
+
 
 
 
@@ -200,9 +232,41 @@ Returns the status. Possible state are not connected, connected, data received
 Returns the current gps information (lat, lon, etc.)
 %End
 
+    QgsPoint lastValidLocation() const;
+%Docstring
+Returns the last valid location obtained by the device.
+
+.. versionadded:: 3.30
+%End
+
   signals:
+
     void stateChanged( const QgsGpsInformation &info );
-    void nmeaSentenceReceived( const QString &substring ); // added to capture 'raw' data
+%Docstring
+Emitted whenever the GPS state is changed.
+%End
+
+
+    void nmeaSentenceReceived( const QString &substring );
+%Docstring
+Emitted whenever the GPS device receives a raw NMEA sentence.
+%End
+
+    void fixStatusChanged( Qgis::GpsFixStatus status );
+%Docstring
+Emitted when the GPS device fix status is changed.
+
+.. versionadded:: 3.30
+%End
+
+    void positionChanged( const QgsPoint &point );
+%Docstring
+Emitted when the GPS position changes.
+
+This signal is only emitted when the new GPS location is considered valid (see :py:func:`QgsGpsInformation.isValid()`).
+
+.. versionadded:: 3.30
+%End
 
   protected:
 
@@ -211,7 +275,9 @@ Returns the current gps information (lat, lon, etc.)
 %Docstring
 Parse available data source content
 %End
+
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

@@ -133,7 +133,7 @@ namespace QgsGuiUtils
     QString outputFileName;
     QString ext;
 #if defined(Q_OS_WIN) || defined(Q_OS_MAC) || defined(Q_OS_LINUX)
-    outputFileName = QFileDialog::getSaveFileName( parent, message, initialPath, QStringList( filterMap.keys() ).join( QLatin1String( ";;" ) ), &selectedFilter );
+    outputFileName = QFileDialog::getSaveFileName( parent, message, initialPath, qgsMapJoinKeys( filterMap, QStringLiteral( ";;" ) ), &selectedFilter );
 
     if ( !outputFileName.isNull() )
     {
@@ -145,7 +145,7 @@ namespace QgsGuiUtils
 #else
 
     //create a file dialog using the filter list generated above
-    std::unique_ptr<QFileDialog> fileDialog( new QFileDialog( parent, message, initialPath, QStringList( filterMap.keys() ).join( ";;" ) ) );
+    std::unique_ptr<QFileDialog> fileDialog( new QFileDialog( parent, message, initialPath, qgsMapJoinKeys( filterMap, QStringLiteral( ";;" ) ) ) );
 
     // allow for selection of more than one file
     fileDialog->setFileMode( QFileDialog::AnyFile );

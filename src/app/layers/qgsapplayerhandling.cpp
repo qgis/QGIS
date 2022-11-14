@@ -36,8 +36,6 @@
 #include "qgslayertreenode.h"
 #include "qgslayertree.h"
 #include "qgslayertreeview.h"
-#include "qgslayertreemodel.h"
-#include "qgslayertreeutils.h"
 #include "qgsgui.h"
 #include "qgsmbtiles.h"
 #include "qgsmessagelog.h"
@@ -175,40 +173,6 @@ void QgsAppLayerHandling::addSortedLayersToLegend( QList<QgsMapLayer *> &layers 
     } );
   }
 
-  QgsLayerTreeGroup *parent = nullptr;
-  QgsLayerTreeNode *currentNode = QgisApp::instance()->layerTreeView()->currentNode();
-  int currentIndex = 0;
-  if ( currentNode && currentNode->parent() )
-  {
-    if ( QgsLayerTree::isGroup( currentNode ) )
-    {
-      parent = qobject_cast<QgsLayerTreeGroup *>( currentNode );
-    }
-    else if ( QgsLayerTree::isLayer( currentNode ) )
-    {
-      const QList<QgsLayerTreeNode *> currentNodeSiblings = currentNode->parent()->children();
-      int nodeIdx = 0;
-      for ( const QgsLayerTreeNode *child : std::as_const( currentNodeSiblings ) )
-      {
-        nodeIdx++;
-        if ( child == currentNode )
-        {
-          currentIndex = nodeIdx - 1;
-          break;
-        }
-      }
-      parent = qobject_cast<QgsLayerTreeGroup *>( currentNode->parent() );
-    }
-    else
-    {
-      parent = qobject_cast<QgsLayerTreeGroup *>( QgsProject::instance()->layerTreeRoot() );
-    }
-  }
-  else
-  {
-    parent = qobject_cast<QgsLayerTreeGroup *>( QgsProject::instance()->layerTreeRoot() );
-  }
-
   for ( QgsMapLayer *layer : layers )
   {
     if ( layer->customProperty( QStringLiteral( "_legend_added" ), false ).toBool() )
@@ -216,19 +180,7 @@ void QgsAppLayerHandling::addSortedLayersToLegend( QList<QgsMapLayer *> &layers 
       layer->removeCustomProperty( QStringLiteral( "_legend_added" ) );
       continue;
     }
-
-    switch ( QgsProject::instance()->layerTreeRegistryBridge()->layerInsertionMethod() )
-    {
-      case Qgis::LayerTreeInsertionMethod::AboveInsertionPoint:
-        parent->insertLayer( currentIndex, layer );
-        break;
-      case Qgis::LayerTreeInsertionMethod::TopOfTree:
-        QgsProject::instance()->layerTreeRoot()->insertLayer( 0, layer );
-        break;
-      case Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup:
-        QgsLayerTreeUtils::insertLayerAtOptimalPlacement( parent, layer );
-        break;
-    }
+    emit QgsProject::instance()->legendLayersAdded( QList<QgsMapLayer *>() << layer );
   }
   QgisApp::instance()->layerTreeView()->setCurrentLayer( layers.at( 0 ) );
 }
@@ -738,6 +690,7 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addSublayers( const QList<QgsProviderS
   {
     QgsProviderSublayerDetails::LayerOptions options( QgsProject::instance()->transformContext() );
     options.loadDefaultStyle = false;
+    options.loadAllStoredStyle = true;
 
     std::unique_ptr<QgsMapLayer> layer( sublayer.toLayer( options ) );
     if ( !layer )

@@ -76,6 +76,7 @@ typedef QList < QPair< QString, QColor > > QgsLegendColorList;
 class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfileSource
 {
     Q_OBJECT
+
   public:
 
     //! \brief Default sample size (number of pixels) for estimated statistics/histogram calculation
@@ -323,6 +324,18 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
     QgsRasterAttributeTable *attributeTable( int bandNumber ) const;
 
     /**
+     * Returns the number of attribute tables for the raster by counting the number of bands that have an associated attribute table.
+     * \since QGIS 3.30
+     */
+    int attributeTableCount( ) const;
+
+    /**
+     * Returns TRUE if the raster renderer is suitable for creation of a raster attribute table. The supported renderers are QgsPalettedRasterRenderer and QgsSingleBandPseudoColorRenderer.
+     * \since QGIS 3.30
+     */
+    bool canCreateRasterAttributeTable( );
+
+    /**
      * Returns the source data provider.
      *
      * This will be NULLPTR if the layer is invalid.
@@ -497,7 +510,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      */
     void subsetStringChanged();
 
-
   protected:
     bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) override;
     bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) override;
@@ -553,6 +565,23 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      */
     void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags ) override;
 
+    /**
+     * Writes the paths to the external raster attribute table files associated with the raster bands.
+     * \param layerNode layer node
+     * \param doc document
+     * \param context read-write context
+     * \since QGIS 3.30
+     */
+    void writeRasterAttributeTableExternalPaths( QDomNode &layerNode, QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
+    /**
+     * Reads the paths to the external raster attribute table files associated with the raster bands and loads the raster attribute tables, the raster symbology is not changed.
+     * \param layerNode layer node
+     * \param context read-write context
+     * \since QGIS 3.30
+     */
+    void readRasterAttributeTableExternalPaths( const QDomNode &layerNode, QgsReadWriteContext &context ) const;
+
     //! \brief  Constant defining flag for XML and a constant that signals property not used
     const QString QSTRING_NOT_SET;
     const QString TRSTRING_NOT_SET;
@@ -579,6 +608,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
 
     QDomDocument mOriginalStyleDocument;
     QDomElement mOriginalStyleElement;
+
 };
 
 // clazy:excludeall=qstring-allocations

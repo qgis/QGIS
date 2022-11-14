@@ -405,10 +405,13 @@
 %Include auto_generated/processing/models/qgsmodelgraphicsscene.sip
 %Include auto_generated/processing/models/qgsmodelgraphicsview.sip
 %Include auto_generated/providers/qgsabstractdbsourceselect.sip
+%Include auto_generated/raster/qgsrasterattributetablewidget.sip
+%Include auto_generated/raster/qgsrasterattributetabledialog.sip
 %Include auto_generated/raster/qgscolorrampshaderwidget.sip
 %Include auto_generated/raster/qgshillshaderendererwidget.sip
 %Include auto_generated/raster/qgsmultibandcolorrendererwidget.sip
 %Include auto_generated/raster/qgspalettedrendererwidget.sip
+%Include auto_generated/raster/qgsrasterattributetablemodel.sip
 %Include auto_generated/raster/qgsrasterbandcombobox.sip
 %Include auto_generated/raster/qgsrastercontourrendererwidget.sip
 %Include auto_generated/raster/qgsrasterhistogramwidget.sip

@@ -1,5 +1,0 @@
-Analytical Hierarchy Process
-grid_analysis
-QgsProcessingParameterMultipleLayers|GRIDS|Input Grids|3|None|False
-QgsProcessingParameterFeatureSource|TABLE|Pairwise Comparisons Table|5|None|False
-QgsProcessingParameterRasterDestination|OUTPUT|Output Grid

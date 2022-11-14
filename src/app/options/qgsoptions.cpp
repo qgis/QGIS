@@ -711,7 +711,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   cmbLegendDoubleClickAction->setCurrentIndex( mSettings->value( QStringLiteral( "/qgis/legendDoubleClickAction" ), 0 ).toInt() );
 
-  mLayerTreeInsertionMethod->addItem( tr( "Above currently currently selected layer" ), QVariant::fromValue( Qgis::LayerTreeInsertionMethod::AboveInsertionPoint ) );
+  mLayerTreeInsertionMethod->addItem( tr( "Above currently selected layer" ), QVariant::fromValue( Qgis::LayerTreeInsertionMethod::AboveInsertionPoint ) );
   mLayerTreeInsertionMethod->addItem( tr( "Always on top of the layer tree" ), QVariant::fromValue( Qgis::LayerTreeInsertionMethod::TopOfTree ) );
   mLayerTreeInsertionMethod->addItem( tr( "Optimal index within current layer tree group" ), QVariant::fromValue( Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup ) );
   mLayerTreeInsertionMethod->setCurrentIndex( mLayerTreeInsertionMethod->findData( QVariant::fromValue( mSettings->enumValue( QStringLiteral( "/qgis/layerTreeInsertionMethod" ), Qgis::LayerTreeInsertionMethod::AboveInsertionPoint ) ) ) );
@@ -1293,7 +1293,7 @@ void QgsOptions::checkPageWidgetNameMap()
   traverseModel( QModelIndex() );
 
   Q_ASSERT_X( pageNames.count() == pageTitles.count(),  "QgsOptions::checkPageWidgetNameMap()", QStringLiteral( "QgisApp::optionsPagesMap() is outdated, contains too many entries, "
-              " this is often a problem with missing translations for the entries (extra entries: %1)" ).arg( ( pageNames.keys().toSet() - pageTitles.toSet() ).values().join( ',' ) ).toLocal8Bit().constData() );
+              " this is often a problem with missing translations for the entries (extra entries: %1)" ).arg( qgsSetJoin( QSet( pageNames.keyBegin(), pageNames.keyEnd() ) - pageTitles.toSet(), QStringLiteral( "," ) ) ).toLocal8Bit().constData() );
 
   int page = 0;
   for ( const QString &pageTitle : std::as_const( pageTitles ) )

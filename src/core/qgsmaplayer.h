@@ -80,6 +80,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     Q_PROPERTY( QgsMapLayerType type READ type CONSTANT )
     Q_PROPERTY( bool isValid READ isValid NOTIFY isValidChanged )
     Q_PROPERTY( double opacity READ opacity WRITE setOpacity NOTIFY opacityChanged )
+    Q_PROPERTY( QString mapTipTemplate READ mapTipTemplate WRITE setMapTipTemplate NOTIFY mapTipTemplateChanged )
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
@@ -1523,6 +1524,27 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     void setLegendPlaceholderImage( const QString &imgPath ) { mLegendPlaceholderImage = imgPath; }
 
+    /**
+     * The mapTip is a pretty, html representation for feature information.
+     *
+     * It may also contain embedded expressions.
+     *
+     * \note this method was only available for vector layers since QGIS 3.0
+     * \since QGIS 3.30
+     */
+    QString mapTipTemplate() const;
+
+    /**
+     * The mapTip is a pretty, html representation for feature information.
+     *
+     * It may also contain embedded expressions.
+     *
+     * \note this method was only available for vector layers since QGIS 3.0
+     * \since QGIS 3.30
+     */
+    void setMapTipTemplate( const QString &mapTipTemplate );
+
+
   public slots:
 
     /**
@@ -1806,6 +1828,14 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \since QGIS 3.22 in the QgsMapLayer base class
      */
     void layerModified();
+
+    /**
+     * Emitted when the map tip template changes
+     *
+     * \note this method was only available for vector layers since QGIS 3.0
+     * \since QGIS 3.30
+     */
+    void mapTipTemplateChanged();
 
   private slots:
 
@@ -2126,6 +2156,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     //! Path to placeholder image for layer legend. If the string is empty, a generated legend is shown
     QString mLegendPlaceholderImage;
+
+    //! Maptip template
+    QString mMapTipTemplate;
 
     friend class QgsVectorLayer;
     friend class TestQgsMapLayer;

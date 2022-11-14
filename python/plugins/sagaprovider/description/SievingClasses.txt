@@ -1,8 +1,0 @@
-Sieving Classes
-grid_filter
-QgsProcessingParameterRasterLayer|INPUT|Classes|None|False
-QgsProcessingParameterRasterDestination|OUTPUT|Sieved Classes
-QgsProcessingParameterEnum|MODE|Neighbourhood|[0] Neumann;[1] Moore|False|1
-QgsProcessingParameterNumber|THRESHOLD|Minimum Threshold|QgsProcessingParameterNumber.Integer|4|False|2|None
-QgsProcessingParameterEnum|ALL|Class Selection|[0] single class;[1] all classes|False|1
-QgsProcessingParameterNumber|CLASS|Class Identifier|QgsProcessingParameterNumber.Double|1.000000|False|None|None

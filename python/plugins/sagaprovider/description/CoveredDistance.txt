@@ -1,4 +1,0 @@
-Covered Distance
-grid_analysis
-QgsProcessingParameterMultipleLayers|INPUT|Grids|3|None|False
-QgsProcessingParameterRasterDestination|RESULT|Covered Distance

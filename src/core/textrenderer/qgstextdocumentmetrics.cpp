@@ -23,13 +23,19 @@
 
 #include <QFontMetricsF>
 
+// to match QTextEngine handling of superscript/subscript font sizes
+constexpr double SUPERSCRIPT_SUBSCRIPT_FONT_SIZE_SCALING_FACTOR = 2.0 / 3.0;
+
+// to match Qt behavior in QTextLine::draw
+constexpr double SUPERSCRIPT_VERTICAL_BASELINE_ADJUSTMENT_FACTOR = 0.5;
+constexpr double SUBSCRIPT_VERTICAL_BASELINE_ADJUSTMENT_FACTOR = 1.0 / 6.0;
+
 QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDocument &document, const QgsTextFormat &format, const QgsRenderContext &context, double scaleFactor )
 {
   QgsTextDocumentMetrics res;
 
-  bool isNullSize = false;
-  const QFont font = format.scaledFont( context, scaleFactor, &isNullSize );
-  if ( isNullSize )
+  const QFont font = format.scaledFont( context, scaleFactor, &res.mIsNullSize );
+  if ( res.isNullFontSize() )
     return res;
 
   // for absolute line heights
@@ -49,14 +55,25 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
 
   QVector < double > blockVerticalLineSpacing;
 
+  double outerXMin = 0;
+  double outerXMax = 0;
+  double outerYMinLabel = 0;
+  double outerYMaxLabel = 0;
+
   for ( int blockIndex = 0; blockIndex < blockSize; blockIndex++ )
   {
     const QgsTextBlock &block = document.at( blockIndex );
 
     double blockWidth = 0;
+    double blockXMax = 0;
+    double blockYMaxAdjustLabel = 0;
+
     double blockHeightUsingAscentDescent = 0;
     double blockHeightUsingLineSpacing = 0;
     double blockHeightVerticalOrientation = 0;
+
+    double blockHeightUsingAscentAccountingForVerticalOffset = 0;
+
     const int fragmentSize = block.size();
 
     double maxBlockAscent = 0;
@@ -65,26 +82,110 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
     double maxBlockLeading = 0;
     double maxBlockMaxWidth = 0;
 
+    QList< double > fragmentVerticalOffsets;
+    fragmentVerticalOffsets.reserve( fragmentSize );
+
     QList< QFont > fragmentFonts;
     fragmentFonts.reserve( fragmentSize );
+    QList< double >fragmentHorizontalAdvance;
+    fragmentHorizontalAdvance.reserve( fragmentSize );
+
+    QFont previousNonSuperSubScriptFont;
+
     for ( int fragmentIndex = 0; fragmentIndex < fragmentSize; ++fragmentIndex )
     {
       const QgsTextFragment &fragment = block.at( fragmentIndex );
+      const QgsTextCharacterFormat &fragmentFormat = fragment.characterFormat();
+
+      double fragmentHeightForVerticallyOffsetText = 0;
+      double fragmentYMaxAdjust = 0;
 
       QFont updatedFont = font;
-      fragment.characterFormat().updateFontForFormat( updatedFont, context, scaleFactor );
-      const QFontMetricsF fm( updatedFont );
+      fragmentFormat.updateFontForFormat( updatedFont, context, scaleFactor );
+
+      QFontMetricsF fm( updatedFont );
+
+      if ( fragmentIndex == 0 )
+        previousNonSuperSubScriptFont = updatedFont;
+
+      double fragmentVerticalOffset = 0;
+      if ( fragmentFormat.hasVerticalAlignmentSet() )
+      {
+        switch ( fragmentFormat.verticalAlignment() )
+        {
+          case Qgis::TextCharacterVerticalAlignment::Normal:
+            previousNonSuperSubScriptFont = updatedFont;
+            break;
+
+          case Qgis::TextCharacterVerticalAlignment::SuperScript:
+          {
+            const QFontMetricsF previousFM( previousNonSuperSubScriptFont );
+
+            if ( fragmentFormat.fontPointSize() < 0 )
+            {
+              // if fragment has no explicit font size set, then we scale the inherited font size to 60% of base font size
+              // this allows for easier use of super/subscript in labels as "my text<sup>2</sup>" will automatically render
+              // the superscript in a smaller font size. BUT if the fragment format HAS a non -1 font size then it indicates
+              // that the document has an explicit font size for the super/subscript element, eg "my text<sup style="font-size: 6pt">2</sup>"
+              // which we should respect
+              updatedFont.setPixelSize( static_cast< int >( std::round( updatedFont.pixelSize() * SUPERSCRIPT_SUBSCRIPT_FONT_SIZE_SCALING_FACTOR ) ) );
+              fm = QFontMetricsF( updatedFont );
+            }
+
+            // to match Qt behavior in QTextLine::draw
+            fragmentVerticalOffset = -( previousFM.ascent() + previousFM.descent() ) * SUPERSCRIPT_VERTICAL_BASELINE_ADJUSTMENT_FACTOR / scaleFactor;
+
+            // note -- this should really be fm.ascent(), not fm.capHeight() -- but in practice the ascent of most fonts is too large
+            // and causes unnecessarily large bounding boxes of vertically offset text!
+            fragmentHeightForVerticallyOffsetText = -fragmentVerticalOffset + fm.capHeight() / scaleFactor;
+            break;
+          }
+
+          case Qgis::TextCharacterVerticalAlignment::SubScript:
+          {
+            const QFontMetricsF previousFM( previousNonSuperSubScriptFont );
+
+            if ( fragmentFormat.fontPointSize() < 0 )
+            {
+              // see above!!
+              updatedFont.setPixelSize( static_cast< int>( std::round( updatedFont.pixelSize() * SUPERSCRIPT_SUBSCRIPT_FONT_SIZE_SCALING_FACTOR ) ) );
+              fm = QFontMetricsF( updatedFont );
+            }
+
+            // to match Qt behavior in QTextLine::draw
+            fragmentVerticalOffset = ( previousFM.ascent() + previousFM.descent() ) * SUBSCRIPT_VERTICAL_BASELINE_ADJUSTMENT_FACTOR / scaleFactor;
+
+            fragmentYMaxAdjust = fragmentVerticalOffset + fm.descent() / scaleFactor;
+            break;
+          }
+        }
+      }
+      else
+      {
+        previousNonSuperSubScriptFont = updatedFont;
+      }
+      fragmentVerticalOffsets << fragmentVerticalOffset;
 
       const double fragmentWidth = fm.horizontalAdvance( fragment.text() ) / scaleFactor;
+
+      fragmentHorizontalAdvance << fragmentWidth;
+
       const double fragmentHeightUsingAscentDescent = ( fm.ascent() + fm.descent() ) / scaleFactor;
       const double fragmentHeightUsingLineSpacing = fm.lineSpacing() / scaleFactor;
 
       blockWidth += fragmentWidth;
+      blockXMax += fragmentWidth;
       blockHeightUsingAscentDescent = std::max( blockHeightUsingAscentDescent, fragmentHeightUsingAscentDescent );
+
       blockHeightUsingLineSpacing = std::max( blockHeightUsingLineSpacing, fragmentHeightUsingLineSpacing );
       maxBlockAscent = std::max( maxBlockAscent, fm.ascent() / scaleFactor );
+
+      blockHeightUsingAscentAccountingForVerticalOffset = std::max( std::max( maxBlockAscent, fragmentHeightForVerticallyOffsetText ), blockHeightUsingAscentAccountingForVerticalOffset );
+
       maxBlockDescent = std::max( maxBlockDescent, fm.descent() / scaleFactor );
       maxBlockMaxWidth = std::max( maxBlockMaxWidth, fm.maxWidth() / scaleFactor );
+
+      blockYMaxAdjustLabel = std::max( blockYMaxAdjustLabel, fragmentYMaxAdjust );
 
       if ( ( fm.lineSpacing() / scaleFactor ) > maxLineSpacing )
       {
@@ -112,6 +213,9 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
       // for standard text rendering. Line height is also slightly different.
       currentLabelBaseline = -res.mFirstLineAscentOffset;
 
+      if ( blockHeightUsingAscentAccountingForVerticalOffset > maxBlockAscent )
+        outerYMinLabel = maxBlockAscent - blockHeightUsingAscentAccountingForVerticalOffset;
+
       // standard rendering - designed to exactly replicate QPainter's drawText method
       currentRectBaseline = -res.mFirstLineAscentOffset + lineHeight - 1 /*baseline*/;
 
@@ -136,11 +240,19 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
         res.mLastLineAscentOffset = 0.25 * maxBlockAscent;
     }
 
+    if ( blockIndex == blockSize - 1 )
+    {
+      if ( blockYMaxAdjustLabel > maxBlockDescent )
+        outerYMaxLabel = blockYMaxAdjustLabel - maxBlockDescent;
+    }
+
     blockVerticalLineSpacing << ( format.lineHeightUnit() == QgsUnitTypes::RenderPercentage ? ( maxBlockMaxWidth * format.lineHeight() ) : lineHeightPainterUnits );
 
     res.mBlockHeights << blockHeightUsingLineSpacing;
 
     width = std::max( width, blockWidth );
+    outerXMax = std::max( outerXMax, blockXMax );
+
     heightVerticalOrientation = std::max( heightVerticalOrientation, blockHeightVerticalOrientation );
     res.mBlockWidths << blockWidth;
     res.mFragmentFonts << fragmentFonts;
@@ -149,6 +261,10 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
     res.mBaselineOffsetsRectMode << currentRectBaseline;
     res.mBlockMaxDescent << maxBlockDescent;
     res.mBlockMaxCharacterWidth << maxBlockMaxWidth;
+    res.mFragmentVerticalOffsetsLabelMode << fragmentVerticalOffsets;
+    res.mFragmentVerticalOffsetsRectMode << fragmentVerticalOffsets;
+    res.mFragmentVerticalOffsetsPointMode << fragmentVerticalOffsets;
+    res.mFragmentHorizontalAdvance << fragmentHorizontalAdvance;
 
     if ( blockIndex > 0 )
       lastLineLeading = maxBlockLeading;
@@ -198,6 +314,10 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
     res.mDocumentSizeVerticalOrientation = QSizeF( widthVerticalOrientation, heightVerticalOrientation );
   }
 
+  res.mOuterBoundsLabelMode = QRectF( outerXMin, -outerYMaxLabel,
+                                      outerXMax - outerXMin,
+                                      heightLabelMode - outerYMinLabel + outerYMaxLabel );
+
   return res;
 }
 
@@ -226,6 +346,30 @@ QSizeF QgsTextDocumentMetrics::documentSize( Qgis::TextLayoutMode mode, Qgis::Te
   BUILTIN_UNREACHABLE
 }
 
+QRectF QgsTextDocumentMetrics::outerBounds( Qgis::TextLayoutMode mode, Qgis::TextOrientation orientation ) const
+{
+  switch ( orientation )
+  {
+    case Qgis::TextOrientation::Horizontal:
+      switch ( mode )
+      {
+        case Qgis::TextLayoutMode::Rectangle:
+        case Qgis::TextLayoutMode::Point:
+          return QRectF();
+
+        case Qgis::TextLayoutMode::Labeling:
+          return mOuterBoundsLabelMode;
+      };
+      BUILTIN_UNREACHABLE
+
+    case Qgis::TextOrientation::Vertical:
+    case Qgis::TextOrientation::RotationBased:
+      return QRectF(); // label mode only
+  }
+
+  BUILTIN_UNREACHABLE
+}
+
 double QgsTextDocumentMetrics::blockWidth( int blockIndex ) const
 {
   return mBlockWidths.value( blockIndex );
@@ -246,6 +390,25 @@ double QgsTextDocumentMetrics::baselineOffset( int blockIndex, Qgis::TextLayoutM
       return mBaselineOffsetsPointMode.value( blockIndex );
     case Qgis::TextLayoutMode::Labeling:
       return mBaselineOffsetsLabelMode.value( blockIndex );
+  }
+  BUILTIN_UNREACHABLE
+}
+
+double QgsTextDocumentMetrics::fragmentHorizontalAdvance( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode ) const
+{
+  return mFragmentHorizontalAdvance.value( blockIndex ).value( fragmentIndex );
+}
+
+double QgsTextDocumentMetrics::fragmentVerticalOffset( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode mode ) const
+{
+  switch ( mode )
+  {
+    case Qgis::TextLayoutMode::Rectangle:
+      return mFragmentVerticalOffsetsRectMode.value( blockIndex ).value( fragmentIndex );
+    case Qgis::TextLayoutMode::Point:
+      return mFragmentVerticalOffsetsPointMode.value( blockIndex ).value( fragmentIndex );
+    case Qgis::TextLayoutMode::Labeling:
+      return mFragmentVerticalOffsetsLabelMode.value( blockIndex ).value( fragmentIndex );
   }
   BUILTIN_UNREACHABLE
 }

@@ -1,7 +1,14 @@
-set(QGIS_GUI_SRCS
+set(QGIS_GUI_SRCS  
+  raster/qgscreaterasterattributetabledialog.cpp
+  raster/qgsloadrasterattributetabledialog.cpp
+  raster/qgsrasterattributetablewidget.cpp
+  raster/qgsrasterattributetabledialog.cpp
+  raster/qgsrasterattributetableaddcolumndialog.cpp
+  raster/qgsrasterattributetableaddrowdialog.cpp
   raster/qgscolorrampshaderwidget.cpp
   raster/qgsmultibandcolorrendererwidget.cpp
   raster/qgspalettedrendererwidget.cpp
+  raster/qgsrasterattributetablemodel.cpp
   raster/qgsrasterbandcombobox.cpp
   raster/qgsrastercontourrendererwidget.cpp
   raster/qgsrasterhistogramwidget.cpp
@@ -1278,10 +1285,17 @@ set(QGIS_GUI_HDRS
   providers/ogr/qgsogritemguiprovider.h
   providers/ogr/qgsogrsourceselect.h
 
+  raster/qgsrasterattributetablewidget.h
+  raster/qgscreaterasterattributetabledialog.h
+  raster/qgsloadrasterattributetabledialog.h
+  raster/qgsrasterattributetabledialog.h
+  raster/qgsrasterattributetableaddcolumndialog.h
+  raster/qgsrasterattributetableaddrowdialog.h
   raster/qgscolorrampshaderwidget.h
   raster/qgshillshaderendererwidget.h
   raster/qgsmultibandcolorrendererwidget.h
   raster/qgspalettedrendererwidget.h
+  raster/qgsrasterattributetablemodel.h
   raster/qgsrasterbandcombobox.h
   raster/qgsrastercontourrendererwidget.h
   raster/qgsrasterhistogramwidget.h
@@ -1439,6 +1453,12 @@ set(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsquerybuilderbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgspointcloudquerybuilderbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsqueryresultwidgetbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrasterattributetablewidgetbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrasterattributetabledialogbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrasterattributetableaddrowdialogbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscreaterasterattributetabledialogbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsloadrasterattributetabledialogbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrasterattributetableaddcolumndialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssqlcomposerdialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssublayersdialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgstablewidgetuibase.h

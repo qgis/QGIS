@@ -461,12 +461,9 @@ if(WITH_CORE)
       set (HAVE_QT5SERIALPORT TRUE)
   endif()
 
-  find_package(${QT_VERSION_BASE} COMPONENTS Core Gui Widgets Network Xml Svg Concurrent Test Sql REQUIRED)
+  find_package(${QT_VERSION_BASE} COMPONENTS Core Gui Widgets Network Xml Svg Concurrent Test Sql Positioning REQUIRED)
   if (BUILD_WITH_QT6)
     find_package(${QT_VERSION_BASE} COMPONENTS Core5Compat REQUIRED)
-  else()
-    # TODO only available starting from Qt 6.2
-    find_package(${QT_VERSION_BASE} COMPONENTS Positioning)
   endif()
   if (NOT IOS)
     find_package(${QT_VERSION_BASE} COMPONENTS PrintSupport REQUIRED)
@@ -883,7 +880,7 @@ if (WITH_CORE)
   if (WITH_CLAZY)
     set(CMAKE_CXX_BASE_FLAGS "${CMAKE_CXX_FLAGS}")
     #  qcolor-from-literal crashes clang with clazy 1.11
-    set(CLAZY_BASE_CHECKS "connect-3arg-lambda,lambda-unique-connection,empty-qstringliteral,fully-qualified-moc-types,lowercase-qml-type-name,qfileinfo-exists,qmap-with-pointer-key,unused-non-trivial-variable,overridden-signal,qdeleteall,qstring-left,skipped-base-method,isempty-vs-count,missing-qobject-macro")
+    set(CLAZY_BASE_CHECKS "connect-3arg-lambda,lambda-unique-connection,empty-qstringliteral,fully-qualified-moc-types,lowercase-qml-type-name,qfileinfo-exists,qmap-with-pointer-key,unused-non-trivial-variable,overridden-signal,qdeleteall,qstring-left,skipped-base-method,isempty-vs-count,missing-qobject-macro,container-anti-pattern")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_BASE_FLAGS} -Xclang -plugin-arg-clazy -Xclang ${CLAZY_BASE_CHECKS}")
 
     if (WERROR AND NOT ${QGISDEBUG})

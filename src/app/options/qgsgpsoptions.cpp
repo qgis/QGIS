@@ -21,8 +21,11 @@
 #include "qgssymbollayerutils.h"
 #include "qgsgpsdetector.h"
 #include "qgsgpsconnection.h"
-#include "qgsgpsinformationwidget.h"
+#include "qgsgpscanvasbridge.h"
+#include "qgsappgpsdigitizing.h"
 #include "qgslinesymbol.h"
+
+#include <QTimeZone>
 
 const int MAXACQUISITIONINTERVAL = 3000; // max gps information acquisition suspension interval (in seconds)
 const int MAXDISTANCETHRESHOLD = 200; // max gps distance threshold (in meters)
@@ -35,6 +38,7 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
   : QgsOptionsPageWidget( parent )
 {
   setupUi( this );
+  setObjectName( "mGpsOptions" );
 
   connect( mRadAutodetect, &QRadioButton::toggled, mCboDevices, &QWidget::setDisabled );
   connect( mRadAutodetect, &QRadioButton::toggled, mGpsdHost, &QWidget::setDisabled );
@@ -73,7 +77,7 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
   QgsSettings settings;
   QDomDocument doc;
   QDomElement elem;
-  QString bearingLineSymbolXml = QgsGpsInformationWidget::settingBearingLineSymbol.value();
+  QString bearingLineSymbolXml = QgsGpsCanvasBridge::settingBearingLineSymbol.value();
   if ( bearingLineSymbolXml.isEmpty() )
   {
     bearingLineSymbolXml = settings.value( QStringLiteral( "bearingLineSymbol" ), QVariant(), QgsSettings::Gps ).toString();
@@ -88,7 +92,7 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
       mBearingLineStyleButton->setSymbol( bearingSymbol.release() );
   }
 
-  const QString trackLineSymbolXml = QgsGpsInformationWidget::settingTrackLineSymbol.value();
+  const QString trackLineSymbolXml = QgsAppGpsDigitizing::settingTrackLineSymbol.value();
   if ( !trackLineSymbolXml.isEmpty() )
   {
     doc.setContent( trackLineSymbolXml );
@@ -104,6 +108,7 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
   mSpinGpsdPort->setClearValue( 2947 );
   mSpinMapRotateInterval->setClearValue( 0 );
   mSpinMapExtentMultiplier->setClearValue( 50 );
+  mOffsetFromUtc->setClearValue( 0 );
 
   connect( mBtnRefreshDevices, &QToolButton::clicked, this, &QgsGpsOptionsWidget::refreshDevices );
 
@@ -136,6 +141,11 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
   bool bearingFromTravelDirection = false;
   int recenteringThreshold = 50;
   int rotateInterval = 0;
+  bool applyLeapSeconds = true;
+  int leapSeconds = 0;
+  Qt::TimeSpec timeSpec = Qt::TimeSpec::LocalTime;
+  QString timeZone;
+  int offsetFromUtc = 0;
   if ( QgsGpsConnection::settingsGpsConnectionType.exists() )
   {
     connectionType = QgsGpsConnection::settingsGpsConnectionType.value();
@@ -145,8 +155,14 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
     acquisitionInterval = static_cast< int >( QgsGpsConnection::settingGpsAcquisitionInterval.value() );
     distanceThreshold = QgsGpsConnection::settingGpsDistanceThreshold.value();
     bearingFromTravelDirection = QgsGpsConnection::settingGpsBearingFromTravelDirection.value();
-    recenteringThreshold = static_cast< int >( QgsGpsInformationWidget::settingMapExtentRecenteringThreshold.value() );
-    rotateInterval = static_cast< int >( QgsGpsInformationWidget::settingMapRotateInterval.value() );
+    recenteringThreshold = static_cast< int >( QgsGpsCanvasBridge::settingMapExtentRecenteringThreshold.value() );
+    rotateInterval = static_cast< int >( QgsGpsCanvasBridge::settingMapRotateInterval.value() );
+
+    applyLeapSeconds = QgsGpsConnection::settingGpsApplyLeapSecondsCorrection.value();
+    leapSeconds = static_cast< int >( QgsGpsConnection::settingGpsLeapSeconds.value() );
+    timeSpec = QgsGpsConnection::settingsGpsTimeStampSpecification.value();
+    timeZone = QgsGpsConnection::settingsGpsTimeStampTimeZone.value();
+    offsetFromUtc = static_cast< int >( QgsGpsConnection::settingsGpsTimeStampOffsetFromUtc.value() );
   }
   else
   {
@@ -181,7 +197,28 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
 
     recenteringThreshold = settings.value( QStringLiteral( "mapExtentMultiplier" ), "50", QgsSettings::Gps ).toInt();
     rotateInterval = settings.value( QStringLiteral( "rotateMapInterval" ), 0, QgsSettings::Gps ).toInt();
+
+    applyLeapSeconds = settings.value( QStringLiteral( "applyLeapSeconds" ), true, QgsSettings::Gps ).toBool();
+    leapSeconds = settings.value( QStringLiteral( "leapSecondsCorrection" ), 18, QgsSettings::Gps ).toInt();
+
+    switch ( settings.value( QStringLiteral( "timeStampFormat" ), Qt::LocalTime, QgsSettings::Gps ).toInt() )
+    {
+      case 0:
+        timeSpec = Qt::TimeSpec::LocalTime;
+        break;
+
+      case 1:
+        timeSpec = Qt::TimeSpec::UTC;
+        break;
+
+      case 2:
+        timeSpec = Qt::TimeSpec::TimeZone;
+        break;
+    }
+    timeZone = settings.value( QStringLiteral( "timestampTimeZone" ), QVariant(), QgsSettings::Gps ).toString();
   }
+
+  mOffsetFromUtc->setValue( offsetFromUtc );
 
   mGpsdHost->setText( gpsdHost );
   mSpinGpsdPort->setValue( gpsdPort );
@@ -217,6 +254,41 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
   mSpinMapExtentMultiplier->setValue( recenteringThreshold );
   mSpinMapRotateInterval->setValue( rotateInterval );
 
+  // Qt::LocalTime  0 Locale dependent time (Timezones and Daylight Savings Time).
+  // Qt::UTC  1 Coordinated Universal Time, replaces Greenwich Mean Time.
+  // SKIP this one: Qt::OffsetFromUTC  2 An offset in seconds from Coordinated Universal Time.
+  // Qt::TimeZone 3 A named time zone using a specific set of Daylight Savings rules.
+  mCboTimestampFormat->addItem( tr( "Local Time" ), Qt::TimeSpec::LocalTime );
+  mCboTimestampFormat->addItem( tr( "UTC" ), Qt::TimeSpec::UTC );
+  mCboTimestampFormat->addItem( tr( "UTC with Offset" ), Qt::TimeSpec::OffsetFromUTC );
+  mCboTimestampFormat->addItem( tr( "Time Zone" ), Qt::TimeSpec::TimeZone );
+  mCboTimestampFormat->setCurrentIndex( mCboTimestampFormat->findData( timeSpec ) );
+  if ( mCboTimestampFormat->currentIndex() < 0 )
+    mCboTimestampFormat->setCurrentIndex( 0 );
+
+  connect( mCboTimestampFormat, qOverload< int >( &QComboBox::currentIndexChanged ),
+           this, &QgsGpsOptionsWidget::timestampFormatChanged );
+  timestampFormatChanged( 0 );
+  updateTimeZones();
+
+  const QList<QByteArray> constTzs = QTimeZone::availableTimeZoneIds();
+  for ( const QByteArray &tzId : constTzs )
+  {
+    mCboTimeZones->addItem( tzId );
+  }
+  int tzIdx = mCboTimeZones->findText( timeZone );
+  if ( tzIdx == -1 )
+  {
+    const QString currentTz { QTimeZone::systemTimeZoneId() };
+    tzIdx = mCboTimeZones->findText( currentTz );
+  }
+  mCboTimeZones->setCurrentIndex( tzIdx );
+
+  mCbxLeapSeconds->setChecked( applyLeapSeconds );
+  // Leap seconds as of 2019-06-20, if the default changes, it can be updated in qgis_global_settings.ini
+  mLeapSeconds->setValue( leapSeconds );
+  mLeapSeconds->setClearValue( 18 );
+
   refreshDevices();
 }
 
@@ -236,7 +308,7 @@ void QgsGpsOptionsWidget::apply()
     QDomDocument doc;
     const QDomElement elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "gps-bearing-symbol" ), lineSymbol, doc, QgsReadWriteContext() );
     doc.appendChild( elem );
-    QgsGpsInformationWidget::settingBearingLineSymbol.setValue( doc.toString( 0 ) );
+    QgsGpsCanvasBridge::settingBearingLineSymbol.setValue( doc.toString( 0 ) );
   }
 
   if ( QgsSymbol *lineSymbol = mTrackLineStyleButton->symbol() )
@@ -244,7 +316,7 @@ void QgsGpsOptionsWidget::apply()
     QDomDocument doc;
     const QDomElement elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "gps-track-symbol" ), lineSymbol, doc, QgsReadWriteContext() );
     doc.appendChild( elem );
-    QgsGpsInformationWidget::settingTrackLineSymbol.setValue( doc.toString( 0 ) );
+    QgsAppGpsDigitizing::settingTrackLineSymbol.setValue( doc.toString( 0 ) );
   }
 
   QgsGpsConnection::settingsGpsSerialDevice.setValue( mCboDevices->currentData().toString() );
@@ -274,8 +346,14 @@ void QgsGpsOptionsWidget::apply()
   QgsGpsConnection::settingGpsDistanceThreshold.setValue( mCboDistanceThreshold->currentText().toDouble() );
   QgsGpsConnection::settingGpsBearingFromTravelDirection.setValue( mTravelBearingCheckBox->isChecked() );
 
-  QgsGpsInformationWidget::settingMapExtentRecenteringThreshold.setValue( mSpinMapExtentMultiplier->value() );
-  QgsGpsInformationWidget::settingMapRotateInterval.setValue( mSpinMapRotateInterval->value() );
+  QgsGpsCanvasBridge::settingMapExtentRecenteringThreshold.setValue( mSpinMapExtentMultiplier->value() );
+  QgsGpsCanvasBridge::settingMapRotateInterval.setValue( mSpinMapRotateInterval->value() );
+
+  QgsGpsConnection::settingsGpsTimeStampSpecification.setValue( static_cast< Qt::TimeSpec >( mCboTimestampFormat->currentData( ).toInt() ) );
+  QgsGpsConnection::settingsGpsTimeStampTimeZone.setValue( mCboTimeZones->currentText() );
+  QgsGpsConnection::settingGpsApplyLeapSecondsCorrection.setValue( mCbxLeapSeconds->isChecked() );
+  QgsGpsConnection::settingGpsLeapSeconds.setValue( mLeapSeconds->value() );
+  QgsGpsConnection::settingsGpsTimeStampOffsetFromUtc.setValue( mOffsetFromUtc->value() );
 }
 
 void QgsGpsOptionsWidget::refreshDevices()
@@ -307,6 +385,23 @@ void QgsGpsOptionsWidget::refreshDevices()
   mCboDevices->setCurrentIndex( idx < 0 ? 0 : idx );
 }
 
+void QgsGpsOptionsWidget::timestampFormatChanged( int )
+{
+  const Qt::TimeSpec currentSpec = static_cast<Qt::TimeSpec>( mCboTimestampFormat->currentData( ).toInt() );
+  const bool timeZoneEnabled {currentSpec == Qt::TimeSpec::TimeZone };
+  mCboTimeZones->setEnabled( timeZoneEnabled );
+  mLblTimeZone->setEnabled( timeZoneEnabled );
+  const bool offsetFromUtcEnabled = currentSpec == Qt::TimeSpec::OffsetFromUTC;
+  mOffsetFromUtc->setEnabled( offsetFromUtcEnabled );
+  mLblOffsetFromUtc->setEnabled( offsetFromUtcEnabled );
+}
+
+void QgsGpsOptionsWidget::updateTimeZones()
+{
+  const bool enabled = static_cast<Qt::TimeSpec>( mCboTimestampFormat->currentData( ).toInt() ) == Qt::TimeSpec::TimeZone;
+  mCboTimeZones->setEnabled( enabled );
+  mLblTimeZone->setEnabled( enabled );
+}
 
 //
 // QgsGpsOptionsFactory

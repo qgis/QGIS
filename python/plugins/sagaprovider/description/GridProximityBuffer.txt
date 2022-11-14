@@ -1,8 +1,0 @@
-Grid Proximity Buffer
-grid_tools
-QgsProcessingParameterRasterLayer|SOURCE|Source Grid|None|False
-QgsProcessingParameterNumber|DIST|Buffer distance|QgsProcessingParameterNumber.Double|500.0|False|None|None
-QgsProcessingParameterNumber|IVAL|Equidistance|QgsProcessingParameterNumber.Double|100.0|False|None|None
-QgsProcessingParameterRasterDestination|DISTANCE|Distance Grid
-QgsProcessingParameterRasterDestination|ALLOC|Allocation Grid
-QgsProcessingParameterRasterDestination|BUFFER|Buffer Grid

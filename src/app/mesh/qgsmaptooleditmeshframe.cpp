@@ -1984,9 +1984,8 @@ void QgsMapToolEditMeshFrame::prepareSelection()
   if ( !mSelectedVertices.isEmpty() )
   {
     double vertexZValue = 0;
-    const QList selectVertices = mSelectedVertices.keys();
-    for ( int i : selectVertices )
-      vertexZValue += mapVertex( i ).z();
+    for ( auto i = mSelectedVertices.keyBegin(); i != mSelectedVertices.keyEnd(); i++ )
+      vertexZValue += mapVertex( *i ).z();
     vertexZValue /= mSelectedVertices.count();
 
     if ( !mZValueWidget )
@@ -2168,9 +2167,9 @@ void QgsMapToolEditMeshFrame::updateSelectecVerticesMarker()
 {
   qDeleteAll( mSelectedVerticesMarker );
   mSelectedVerticesMarker.clear();
-  const QList selectVertices = mSelectedVertices.keys();
-  for ( const int vertexIndex : selectVertices )
+  for ( auto it = mSelectedVertices.keyBegin(); it != mSelectedVertices.keyEnd(); it ++ )
   {
+    const int vertexIndex = *it;
     QgsVertexMarker *marker = new QgsVertexMarker( canvas() );
     marker->setIconType( QgsVertexMarker::ICON_CIRCLE );
     marker->setIconSize( QgsGuiUtils::scaleIconSize( 10 ) );

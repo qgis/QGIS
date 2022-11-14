@@ -58,7 +58,7 @@ jobs:
             with-qt6: ON
             with-qt5: OFF
             with-3d: ON
-            with-quick: OFF
+            with-quick: ON
             with-clazy: OFF
             with-grass7: OFF
             with-grass8: OFF
@@ -126,7 +126,7 @@ jobs:
           docker push "qgis/qgis3-build-deps:${DOCKER_TAG}"
 
       - name: Prepare build cache for pull request
-        uses: pat-s/always-upload-cache@v3.0.1
+        uses: pat-s/always-upload-cache@v3.0.11
         if: github.event_name == 'pull_request'
         with:
           path: /home/runner/QGIS/.ccache
@@ -140,7 +140,7 @@ jobs:
 
       - name: Prepare build cache for branch/tag
         # use a fork of actions/cache@v2 to upload cache even when the build or test failed
-        uses: pat-s/always-upload-cache@v3.0.1
+        uses: pat-s/always-upload-cache@v3.0.11
         if: github.event_name != 'pull_request'
         with:
           path: /home/runner/QGIS/.ccache

@@ -770,7 +770,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * Writes the filesystem-based attribute table for the specified \a bandNumber to \a path, optionally reporting any error in \a errorMessage, returns TRUE on success.
      *
      * \returns TRUE on success
-     * \note No checks for RAT validity are performed when saving, it is client code responsibility to handle validation.
+     * \note No checks for Raster Attribute Table validity are performed when saving, it is client code responsibility to handle validation.
      * \since QGIS 3.30
      */
     bool writeFileBasedAttributeTable( int bandNumber, const QString &path, QString *errorMessage SIP_OUT = nullptr ) const;
@@ -790,10 +790,10 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * provider capability will try to save the native attribute table.
      *
      * \returns TRUE on success
-     * \note No checks for RAT validity are performed when saving, it is client code responsibility to handle validation.
+     * \note No checks for Raster Attribute Table validity are performed when saving, it is client code responsibility to handle validation.
      * \since QGIS 3.30
      */
-    virtual bool writeNativeAttributeTable( QString *errorMessage SIP_OUT = nullptr ) const;  //#spellok
+    virtual bool writeNativeAttributeTable( QString *errorMessage SIP_OUT = nullptr );  //#spellok
 
     /**
      * Reads the native attribute table, optionally reporting any error in \a errorMessage, returns TRUE on success.

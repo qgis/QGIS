@@ -734,7 +734,7 @@ Writes the filesystem-based attribute table for the specified ``bandNumber`` to 
 
 .. note::
 
-   No checks for RAT validity are performed when saving, it is client code responsibility to handle validation.
+   No checks for Raster Attribute Table validity are performed when saving, it is client code responsibility to handle validation.
 
 .. versionadded:: 3.30
 %End
@@ -748,7 +748,7 @@ Loads the filesystem-based attribute table for the specified ``bandNumber`` from
 .. versionadded:: 3.30
 %End
 
-    virtual bool writeNativeAttributeTable( QString *errorMessage /Out/ = 0 ) const;  //#spellok
+    virtual bool writeNativeAttributeTable( QString *errorMessage /Out/ = 0 );  //#spellok
 
     virtual bool readNativeAttributeTable( QString *errorMessage /Out/  = 0 );
 %Docstring

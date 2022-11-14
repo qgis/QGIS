@@ -315,19 +315,18 @@ QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPointXY &point
   const double yMin = yMax - yres;
   const QgsRectangle pixelExtent( xMin, yMin, xMax, yMax );
 
-  for ( int i = 1; i <= bandCount(); i++ )
+  for ( int bandNumber = 1; bandNumber <= bandCount(); bandNumber++ )
   {
-    std::unique_ptr< QgsRasterBlock > bandBlock( block( i, pixelExtent, 1, 1 ) );
+    std::unique_ptr< QgsRasterBlock > bandBlock( block( bandNumber, pixelExtent, 1, 1 ) );
 
     if ( bandBlock )
     {
       const double value = bandBlock->value( 0 );
-
-      results.insert( i, value );
+      results.insert( bandNumber, value );
     }
     else
     {
-      results.insert( i, QVariant() );
+      results.insert( bandNumber, QVariant() );
     }
   }
   return QgsRasterIdentifyResult( QgsRaster::IdentifyFormatValue, results );
@@ -670,7 +669,7 @@ void QgsRasterDataProvider::setAttributeTable( int bandNumber, QgsRasterAttribut
 
 void QgsRasterDataProvider::removeAttributeTable( int bandNumber )
 {
-  if ( mAttributeTables.find( bandNumber ) !=  std::end( mAttributeTables ) )
+  if ( mAttributeTables.find( bandNumber ) != std::end( mAttributeTables ) )
   {
     mAttributeTables.erase( bandNumber );
   }
@@ -684,7 +683,7 @@ bool QgsRasterDataProvider::writeFileBasedAttributeTable( int bandNumber, const 
   {
     if ( errorMessage )
     {
-      *errorMessage = QObject::tr( "Raster has no RAT for band %1" ).arg( bandNumber );
+      *errorMessage = QObject::tr( "Raster has no Raster Attribute Table for band %1" ).arg( bandNumber );
     }
     return false;
   }
@@ -694,7 +693,10 @@ bool QgsRasterDataProvider::writeFileBasedAttributeTable( int bandNumber, const 
 
 bool QgsRasterDataProvider::readNativeAttributeTable( QString *errorMessage )
 {
-  Q_UNUSED( errorMessage )
+  if ( errorMessage )
+  {
+    *errorMessage = QObject::tr( "Raster data provider has no native Raster Attribute Table support." );
+  }
   return false;
 }
 
@@ -712,7 +714,7 @@ bool QgsRasterDataProvider::readFileBasedAttributeTable( int bandNumber, const Q
   }
 }
 
-bool QgsRasterDataProvider::writeNativeAttributeTable( QString *errorMessage ) const  //#spellok
+bool QgsRasterDataProvider::writeNativeAttributeTable( QString *errorMessage )  //#spellok
 {
   Q_UNUSED( errorMessage );
   return false;

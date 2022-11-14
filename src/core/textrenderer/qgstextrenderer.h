@@ -238,6 +238,9 @@ class CORE_EXPORT QgsTextRenderer
       //! Index of block
       int blockIndex = 0;
 
+      //! Index of first fragment in block
+      int firstFragmentIndex = 0;
+
       //! Current origin point for painting (generally current painter rotation point)
       QPointF origin;
       //! Whether to translate the painter to supplied origin
@@ -336,6 +339,7 @@ class CORE_EXPORT QgsTextRenderer
     static void drawMask( QgsRenderContext &context,
                           const Component &component,
                           const QgsTextFormat &format,
+                          const QgsTextDocumentMetrics &metrics,
                           Qgis::TextLayoutMode mode );
 
     static void drawText( QgsRenderContext &context,

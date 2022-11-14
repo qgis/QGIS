@@ -44,6 +44,7 @@ Constructor for QgsInterval.
 :param seconds: duration of interval in seconds
 %End
 
+
     QgsInterval( double duration, QgsUnitTypes::TemporalUnit unit );
 %Docstring
 Constructor for QgsInterval, using the specified ``duration`` and ``units``.

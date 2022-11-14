@@ -758,7 +758,7 @@ class CORE_EXPORT QgsPalLayerSettings
      */
 #ifndef SIP_RUN
     void calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f = nullptr, QgsRenderContext *context = nullptr, double *rotatedLabelX SIP_OUT = nullptr, double *rotatedLabelY SIP_OUT = nullptr,
-                             QgsTextDocument *document = nullptr, QgsTextDocumentMetrics *documentMetrics = nullptr );
+                             QgsTextDocument *document = nullptr, QgsTextDocumentMetrics *documentMetrics = nullptr, QRectF *outerBounds = nullptr );
 #else
     void calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f = nullptr, QgsRenderContext *context = nullptr, double *rotatedLabelX SIP_OUT = nullptr, double *rotatedLabelY SIP_OUT = nullptr );
 #endif

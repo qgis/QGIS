@@ -966,6 +966,13 @@
         <file>themes/default/mIconFonts.svg</file>
         <file>themes/default/mActionNewFileGeodatabase.svg</file>
         <file>themes/default/mIconBrowserRelations.svg</file>
+        <file>themes/default/mActionIdentifyByMouseOver.svg</file>
+        <file>themes/default/gpsicons/mIconGpsConnect.svg</file>
+        <file>themes/default/gpsicons/mIconGpsDisconnect.svg</file>
+        <file>themes/default/gpsicons/mActionRecenter.svg</file>
+        <file>themes/default/gpsicons/mActionReset.svg</file>
+        <file>themes/default/gpsicons/mActionAddTrackPoint.svg</file>
+        <file>themes/default/gpsicons/mIconGpsDestinationLayer.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

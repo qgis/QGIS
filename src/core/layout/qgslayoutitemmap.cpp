@@ -1547,9 +1547,9 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
   QgsLabelingEngineSettings labelSettings = mLayout->project()->labelingEngineSettings();
 
   // override project "show partial labels" setting with this map's setting
-  labelSettings.setFlag( QgsLabelingEngineSettings::UsePartialCandidates, mMapFlags & ShowPartialLabels );
-  labelSettings.setFlag( QgsLabelingEngineSettings::DrawUnplacedLabels, mMapFlags & ShowUnplacedLabels );
-  labelSettings.setFlag( QgsLabelingEngineSettings::CollectUnplacedLabels, true );
+  labelSettings.setFlag( Qgis::LabelingFlag::UsePartialCandidates, mMapFlags & ShowPartialLabels );
+  labelSettings.setFlag( Qgis::LabelingFlag::DrawUnplacedLabels, mMapFlags & ShowUnplacedLabels );
+  labelSettings.setFlag( Qgis::LabelingFlag::CollectUnplacedLabels, true );
   jobMapSettings.setLabelingEngineSettings( labelSettings );
 
   // override the default text render format inherited from the labeling engine settings using the layout's render context setting
@@ -1724,7 +1724,7 @@ QgsExpressionContext QgsLayoutItemMap::createExpressionContext() const
 
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_start_time" ), isTemporal() ? temporalRange().begin() : QVariant(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_end_time" ), isTemporal() ? temporalRange().end() : QVariant(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_interval" ), isTemporal() ? ( temporalRange().end() - temporalRange().begin() ) : QVariant(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_interval" ), isTemporal() ? QgsInterval( temporalRange().end() - temporalRange().begin() ) : QVariant(), true ) );
 
 #if 0 // not relevant here! (but left so as to respect all the dangerous warnings in QgsExpressionContextUtils::mapSettingsScope)
   if ( mapSettings.frameRate() >= 0 )

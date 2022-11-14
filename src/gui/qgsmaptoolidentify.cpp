@@ -1080,7 +1080,51 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
           }
         }
         attributes.insert( dprovider->generateBandName( it.key() ), valueString );
+
+        // Get raster attribute table attributes
+        if ( const QgsRasterAttributeTable *rat = layer->attributeTable( it.key() ) )
+        {
+          bool ok;
+          const double doubleValue { it.value().toDouble( &ok ) };
+          if ( ok )
+          {
+            const QVariantList row = rat->row( doubleValue );
+            if ( ! row.isEmpty() )
+            {
+              for ( int colIdx = 0; colIdx < std::min( rat->fields().count( ), row.count() ); ++colIdx )
+              {
+                const QgsRasterAttributeTable::Field ratField { rat->fields().at( colIdx ) };
+
+                // Skip value and color fields
+                if ( QgsRasterAttributeTable::valueAndColorFieldUsages().contains( ratField.usage ) )
+                {
+                  continue;
+                }
+
+                QString ratValue;
+                switch ( ratField.type )
+                {
+                  case QVariant::Type::Char:
+                  case QVariant::Type::Int:
+                  case QVariant::Type::UInt:
+                  case QVariant::Type::LongLong:
+                  case QVariant::Type::ULongLong:
+                    ratValue = QLocale().toString( row.at( colIdx ).toLongLong() );
+                    break;
+                  case QVariant::Type::Double:
+                    ratValue = QLocale().toString( row.at( colIdx ).toDouble( ) );
+                    break;
+                  default:
+                    ratValue = row.at( colIdx ).toString();
+                }
+                attributes.insert( ratField.name, ratValue );
+              }
+            }
+          }
+        }  // end RAT
+
       }
+
       QString label = layer->name();
       results->append( IdentifyResult( qobject_cast<QgsMapLayer *>( layer ), label, attributes, derivedAttributes ) );
     }

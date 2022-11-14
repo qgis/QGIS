@@ -544,7 +544,7 @@ bool QgsWmsProvider::setImageCrs( QString const &crs )
 
       if ( mSettings.mTileMatrixSetId.isEmpty() && tl->setLinks.size() == 1 )
       {
-        QString tms = tl->setLinks.keys()[0];
+        QString tms = tl->setLinks.constBegin().key();
 
         if ( !mCaps.mTileMatrixSets.contains( tms ) )
         {
@@ -579,8 +579,8 @@ bool QgsWmsProvider::setImageCrs( QString const &crs )
       }
       if ( !mTileMatrixSet->tileMatrices.empty() )
       {
-        setProperty( "tileWidth", mTileMatrixSet->tileMatrices.values().first().tileWidth );
-        setProperty( "tileHeight", mTileMatrixSet->tileMatrices.values().first().tileHeight );
+        setProperty( "tileWidth", mTileMatrixSet->tileMatrices.first().tileWidth );
+        setProperty( "tileHeight", mTileMatrixSet->tileMatrices.first().tileHeight );
       }
     }
     else
@@ -3135,6 +3135,41 @@ QString QgsWmsProvider::htmlMetadata()
                               "</table></div></td></tr>\n" );  // End nested table 1
 
   return metadata;
+}
+
+double QgsWmsProvider::sample( const QgsPointXY &point, int band, bool *ok, const QgsRectangle &boundingBox, int width, int height, int dpi )
+{
+  if ( ok )
+    *ok = false;
+
+  Qgis::DataType bandDataType = sourceDataType( band );
+  if ( mSettings.mTiled && mTileMatrixSet &&
+       ( bandDataType != Qgis::DataType::UnknownDataType && bandDataType != Qgis::DataType::ARGB32 && bandDataType != Qgis::DataType::ARGB32_Premultiplied ) )
+  {
+    const double maximumNativeResolution = mNativeResolutions.at( 0 );
+    const double xMin = point.x() - std::fmod( point.x(), maximumNativeResolution );
+    const double yMin = point.y() - std::fmod( point.y(), maximumNativeResolution );
+    QgsRectangle rect( xMin, yMin, xMin + maximumNativeResolution, yMin + maximumNativeResolution );
+
+
+    std::unique_ptr<QgsRasterBlock> b( block( band, rect, 1, 1 ) );
+    if ( b->isValid() )
+    {
+      bool isNoData = true;
+      const double value = b->valueAndNoData( 0, 0, isNoData );
+      if ( !isNoData )
+      {
+        if ( ok )
+          *ok = true;
+
+        return value;
+      }
+    }
+
+    return std::numeric_limits<double>::quiet_NaN();
+  }
+
+  return QgsRasterDataProvider::sample( point, band, ok, boundingBox, width, height, dpi );
 }
 
 QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )

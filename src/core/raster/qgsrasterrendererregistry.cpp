@@ -21,6 +21,7 @@
 #include "qgsrastertransparency.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgspalettedrasterrenderer.h"
+#include "qgscolorrampimpl.h"
 #include "qgsrastercontourrenderer.h"
 #include "qgssinglebandcolordatarenderer.h"
 #include "qgssinglebandgrayrenderer.h"
@@ -121,23 +122,54 @@ QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
     case QgsRaster::PalettedColor:
     {
       const int grayBand = 1; //reasonable default
-      const QgsPalettedRasterRenderer::ClassData classes = QgsPalettedRasterRenderer::colorTableToClassData( provider->colorTable( grayBand ) );
-      renderer = new QgsPalettedRasterRenderer( provider,
-          grayBand,
-          classes );
+      if ( provider->attributeTable( grayBand ) )
+      {
+        std::unique_ptr<QgsColorRamp> ramp;
+        if ( ! provider->attributeTable( grayBand )->hasColor() )
+        {
+          ramp = std::make_unique< QgsRandomColorRamp >();
+        }
+        const QgsPalettedRasterRenderer::MultiValueClassData classes = QgsPalettedRasterRenderer::rasterAttributeTableToClassData( provider->attributeTable( grayBand ), -1, ramp.get() );
+        renderer = new QgsPalettedRasterRenderer( provider,
+            grayBand,
+            classes );
+      }
+      else
+      {
+        const QgsPalettedRasterRenderer::ClassData classes = QgsPalettedRasterRenderer::colorTableToClassData( provider->colorTable( grayBand ) );
+        renderer = new QgsPalettedRasterRenderer( provider,
+            grayBand,
+            classes );
+      }
     }
     break;
     case QgsRaster::MultiBandSingleBandGray:
     case QgsRaster::SingleBandGray:
     {
       const int grayBand = 1;
-      renderer = new QgsSingleBandGrayRenderer( provider, grayBand );
 
-      QgsContrastEnhancement *ce = new QgsContrastEnhancement( ( Qgis::DataType )(
-            provider->dataType( grayBand ) ) );
+      // If the raster band has an attribute table try to use it.
+      QString ratErrorMessage;
+      if ( QgsRasterAttributeTable *rat = provider->attributeTable( grayBand ); rat && rat->isValid( &ratErrorMessage ) )
+      {
+        renderer = rat->createRenderer( provider, grayBand );
+      }
 
-// Default contrast enhancement is set from QgsRasterLayer, it has already setContrastEnhancementAlgorithm(). Default enhancement must only be set if default style was not loaded (to avoid stats calculation).
-      ( ( QgsSingleBandGrayRenderer * )renderer )->setContrastEnhancement( ce );
+      if ( ! ratErrorMessage.isEmpty() )
+      {
+        QgsDebugMsgLevel( QStringLiteral( "Invalid RAT from band 1, RAT was not used to create the renderer: %1." ).arg( ratErrorMessage ), 2 );
+      }
+
+      if ( ! renderer )
+      {
+        renderer = new QgsSingleBandGrayRenderer( provider, grayBand );
+
+        QgsContrastEnhancement *ce = new QgsContrastEnhancement( ( Qgis::DataType )(
+              provider->dataType( grayBand ) ) );
+
+        // Default contrast enhancement is set from QgsRasterLayer, it has already setContrastEnhancementAlgorithm(). Default enhancement must only be set if default style was not loaded (to avoid stats calculation).
+        ( ( QgsSingleBandGrayRenderer * )renderer )->setContrastEnhancement( ce );
+      }
       break;
     }
     case QgsRaster::SingleBandPseudoColor:

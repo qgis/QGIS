@@ -16,10 +16,15 @@
 #define QGSAPPGPSCONNECTION_H
 
 #include "qgis_app.h"
+#include "qgis.h"
 
 #include <QObject>
+#include <QPointer>
+
 class QgsGpsConnection;
 class QgsGpsInformation;
+class QgsPoint;
+class QgsMessageBarItem;
 
 /**
  * Manages a single "canonical" GPS connection for use in the QGIS app, eg for displaying GPS
@@ -58,6 +63,16 @@ class APP_EXPORT QgsAppGpsConnection : public QObject
      */
     void setConnection( QgsGpsConnection *connection );
 
+    /**
+     * Returns the last recorded GPS position.
+     */
+    QgsPoint lastValidLocation() const;
+
+    /**
+     * Returns the last received GPS information.
+     */
+    QgsGpsInformation lastInformation() const;
+
   public slots:
 
     /**
@@ -88,6 +103,11 @@ class APP_EXPORT QgsAppGpsConnection : public QObject
     void connected();
 
     /**
+     * Emitted when the connection status changes.
+     */
+    void statusChanged( Qgis::GpsConnectionStatus status );
+
+    /**
      * Emitted when the GPS device has been disconnected.
      */
     void disconnected();
@@ -96,6 +116,11 @@ class APP_EXPORT QgsAppGpsConnection : public QObject
      * Emitted when a connection timeout occurs.
      */
     void connectionTimedOut();
+
+    /**
+     * Emitted when the GPS fix status is changed
+     */
+    void fixStatusChanged( Qgis::GpsFixStatus status );
 
     /**
      * Emitted when the state of the associated GPS device changes.
@@ -107,6 +132,11 @@ class APP_EXPORT QgsAppGpsConnection : public QObject
      */
     void nmeaSentenceReceived( const QString &substring );
 
+    /**
+     * Emitted when the GPS position changes.
+     */
+    void positionChanged( const QgsPoint &point );
+
   private slots:
 
     void onTimeOut();
@@ -117,7 +147,11 @@ class APP_EXPORT QgsAppGpsConnection : public QObject
 
     void showStatusBarMessage( const QString &msg );
 
+    void showGpsConnectFailureWarning( const QString &message );
+    void showMessage( Qgis::MessageLevel level, const QString &message );
+
     QgsGpsConnection *mConnection = nullptr;
+    QPointer< QgsMessageBarItem > mConnectionMessageItem;
 };
 
 

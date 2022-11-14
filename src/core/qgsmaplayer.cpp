@@ -816,6 +816,20 @@ void QgsMapLayer::writeStyleManager( QDomNode &layerNode, QDomDocument &doc ) co
   }
 }
 
+QString QgsMapLayer::mapTipTemplate() const
+{
+  return mMapTipTemplate;
+}
+
+void QgsMapLayer::setMapTipTemplate( const QString &mapTip )
+{
+  if ( mMapTipTemplate == mapTip )
+    return;
+
+  mMapTipTemplate = mapTip;
+  emit mapTipTemplateChanged();
+}
+
 bool QgsMapLayer::isValid() const
 {
   return mValid;

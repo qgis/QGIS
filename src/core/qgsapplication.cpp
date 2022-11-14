@@ -83,6 +83,7 @@
 #include "qgsunsetattributevalue.h"
 #include "qgscolorrampimpl.h"
 #include "qgsinterval.h"
+#include "qgsgpsconnection.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
@@ -279,6 +280,7 @@ void QgsApplication::init( QString profileFolder )
     qRegisterMetaType<QgsFeatureStoreList>( "QgsFeatureStoreList" );
     qRegisterMetaType<Qgis::MessageLevel>( "Qgis::MessageLevel" );
     qRegisterMetaType<Qgis::BrowserItemState>( "Qgis::BrowserItemState" );
+    qRegisterMetaType<Qgis::GpsFixStatus>( "Qgis::GpsFixStatus" );
     qRegisterMetaType<QgsReferencedRectangle>( "QgsReferencedRectangle" );
     qRegisterMetaType<QgsReferencedPointXY>( "QgsReferencedPointXY" );
     qRegisterMetaType<QgsReferencedGeometry>( "QgsReferencedGeometry" );
@@ -293,6 +295,7 @@ void QgsApplication::init( QString profileFolder )
     qRegisterMetaType<QgsInterval>( "QgsInterval" );
     qRegisterMetaType<QgsRectangle>( "QgsRectangle" );
     qRegisterMetaType<QgsPointXY>( "QgsPointXY" );
+    qRegisterMetaType<QgsPoint>( "QgsPoint" );
     qRegisterMetaType<QgsDatumTransform::GridDetails>( "QgsDatumTransform::GridDetails" );
     qRegisterMetaType<QgsDatumTransform::TransformDetails>( "QgsDatumTransform::TransformDetails" );
     qRegisterMetaType<QgsNewsFeedParser::Entry>( "QgsNewsFeedParser::Entry" );
@@ -323,6 +326,7 @@ void QgsApplication::init( QString profileFolder )
     qRegisterMetaType<QMap<QNetworkRequest::KnownHeaders, QVariant>>( "QMap<QNetworkRequest::KnownHeaders,QVariant>" );
     qRegisterMetaType<QList<QNetworkReply::RawHeaderPair>>( "QList<QNetworkReply::RawHeaderPair>" );
     qRegisterMetaType< QAuthenticator * >( "QAuthenticator*" );
+    qRegisterMetaType< QgsGpsInformation >( "QgsGpsInformation" );
   } );
 
   ( void ) resolvePkgPath();

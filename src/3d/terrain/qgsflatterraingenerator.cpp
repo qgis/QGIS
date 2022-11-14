@@ -69,7 +69,6 @@ Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *pare
   transform->setScale( side );
   transform->setTranslation( QVector3D( bbox.xMin + half, 0, bbox.zMin + half ) );
 
-  entity->setEnabled( false );
   entity->setParent( parent );
   return entity;
 }

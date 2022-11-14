@@ -26,6 +26,7 @@
 #include "qgis_core.h"
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
+#include "qgspoint.h"
 
 class QIODevice;
 
@@ -97,6 +98,13 @@ class CORE_EXPORT QgsSatelliteInfo
      */
     QChar satType;
 
+    /**
+     * Returns the GNSS constellation associated with the information.
+     *
+     * \since QGIS 3.30
+     */
+    Qgis::GnssConstellation constellation() const { return mConstellation; }
+
     bool operator==( const QgsSatelliteInfo &other ) const
     {
       return id == other.id &&
@@ -104,13 +112,20 @@ class CORE_EXPORT QgsSatelliteInfo
              elevation == other.elevation &&
              azimuth == other.azimuth &&
              signal == other.signal &&
-             satType == other.satType;
+             satType == other.satType &&
+             mConstellation == other.mConstellation;
     }
 
     bool operator!=( const QgsSatelliteInfo &other ) const
     {
       return !operator==( other );
     }
+
+  private:
+
+    Qgis::GnssConstellation mConstellation = Qgis::GnssConstellation::Unknown;
+
+    friend class QgsNmeaConnection;
 };
 
 /**
@@ -121,18 +136,6 @@ class CORE_EXPORT QgsSatelliteInfo
 class CORE_EXPORT QgsGpsInformation
 {
   public:
-
-    /**
-     * GPS fix status
-     * \since QGIS 3.10
-     */
-    enum FixStatus
-    {
-      NoData,
-      NoFix,
-      Fix2D,
-      Fix3D
-    };
 
     /**
      * Latitude in decimal degrees, using the WGS84 datum. A positive value indicates the Northern Hemisphere, and
@@ -234,8 +237,27 @@ class CORE_EXPORT QgsGpsInformation
 
     /**
      * Contains the fix type, where 1 = no fix, 2 = 2d fix, 3 = 3d fix
+     *
+     * \deprecated, use constellationFixStatus() or bestFixStatus() instead.
      */
     int fixType = 0;
+
+    /**
+     * Returns a map of GNSS constellation to fix status.
+     *
+     * \since QGIS 3.30
+     */
+    QMap< Qgis::GnssConstellation, Qgis::GpsFixStatus > constellationFixStatus() const { return mConstellationFixStatus; }
+
+    /**
+     * Returns the best fix status and corresponding constellation.
+     *
+     * \param constellation will be set to the constellation with best fix status
+     * \returns best current fix status
+     *
+     * \since QGIS 3.30
+     */
+    Qgis::GpsFixStatus bestFixStatus( Qgis::GnssConstellation &constellation SIP_OUT ) const;
 
     /**
      * GPS quality indicator (0 = Invalid; 1 = Fix; 2 = Differential, 3 = Sensitive, etc.)
@@ -277,9 +299,9 @@ class CORE_EXPORT QgsGpsInformation
 
     /**
      * Returns the fix status
-     * \since QGIS 3.10
+     * \deprecated, use constellationFixStatus() or bestFixStatus() instead.
      */
-    FixStatus fixStatus() const;
+    Q_DECL_DEPRECATED Qgis::GpsFixStatus fixStatus() const SIP_DEPRECATED;
 
     /**
      * Returns a descriptive string for the signal quality.
@@ -287,6 +309,21 @@ class CORE_EXPORT QgsGpsInformation
      * \since QGIS 3.16
      */
     QString qualityDescription() const;
+
+    /**
+     * Returns the value of the corresponding GPS information \a component.
+     *
+     * \since QGIS 3.30
+     */
+    QVariant componentValue( Qgis::GpsInformationComponent component ) const;
+
+  private:
+
+    QMap< Qgis::GnssConstellation, Qgis::GpsFixStatus > mConstellationFixStatus;
+
+    friend class QgsNmeaConnection;
+    friend class QgsQtLocationConnection;
+
 };
 
 /**
@@ -347,6 +384,21 @@ class CORE_EXPORT QgsGpsConnection : public QObject
     //! Settings entry GPS calculate bearing from travel direction
     static const inline QgsSettingsEntryBool settingGpsBearingFromTravelDirection = QgsSettingsEntryBool( QStringLiteral( "calculate-bearing-from-travel" ), QgsSettings::Prefix::GPS, false, QStringLiteral( "Calculate GPS bearing from travel direction" ) ) SIP_SKIP;
 
+    //! Settings entry GPS apply leap seconds correction
+    static const inline QgsSettingsEntryBool settingGpsApplyLeapSecondsCorrection = QgsSettingsEntryBool( QStringLiteral( "apply-leap-seconds-correction" ), QgsSettings::Prefix::GPS, true, QStringLiteral( "Whether leap seconds corrections should be applied to GPS timestamps" ) ) SIP_SKIP;
+
+    //! Settings entry GPS leap seconds correction amount (in seconds)
+    static const inline QgsSettingsEntryInteger settingGpsLeapSeconds = QgsSettingsEntryInteger( QStringLiteral( "leap-seconds" ), QgsSettings::Prefix::GPS, 18, QStringLiteral( "Leap seconds correction amount (in seconds)" ) ) SIP_SKIP;
+
+    //! Settings entry time specification for GPS time stamps
+    static const inline QgsSettingsEntryEnumFlag<Qt::TimeSpec> settingsGpsTimeStampSpecification = QgsSettingsEntryEnumFlag<Qt::TimeSpec>( QStringLiteral( "timestamp-time-spec" ), QgsSettings::Prefix::GPS, Qt::TimeSpec::LocalTime, QStringLiteral( "GPS time stamp specification" ) ) SIP_SKIP;
+
+    //! Settings entry GPS time stamp time zone
+    static const inline QgsSettingsEntryString settingsGpsTimeStampTimeZone = QgsSettingsEntryString( QStringLiteral( "timestamp-time-zone" ), QgsSettings::Prefix::GPS, QString(), QStringLiteral( "GPS time stamp time zone" ) ) SIP_SKIP;
+
+    //! Settings entry GPS time offset from UTC in seconds
+    static const inline QgsSettingsEntryInteger settingsGpsTimeStampOffsetFromUtc = QgsSettingsEntryInteger( QStringLiteral( "timestamp-offset-from-utc" ), QgsSettings::Prefix::GPS, 0, QStringLiteral( "GPS time stamp offset from UTC (in seconds)" ) ) SIP_SKIP;
+
     /**
      * Constructor
      * \param dev input device for the connection (e.g. serial device). The class takes ownership of the object
@@ -367,9 +419,42 @@ class CORE_EXPORT QgsGpsConnection : public QObject
     //! Returns the current gps information (lat, lon, etc.)
     QgsGpsInformation currentGPSInformation() const { return mLastGPSInformation; }
 
+    /**
+     * Returns the last valid location obtained by the device.
+     *
+     * \since QGIS 3.30
+     */
+    QgsPoint lastValidLocation() const { return mLastLocation; }
+
   signals:
+
+    /**
+     * Emitted whenever the GPS state is changed.
+     */
     void stateChanged( const QgsGpsInformation &info );
-    void nmeaSentenceReceived( const QString &substring ); // added to capture 'raw' data
+
+    // TODO QGIS 4.0 -- move to QgsNmeaConnection, it makes no sense in the base class
+
+    /**
+     * Emitted whenever the GPS device receives a raw NMEA sentence.
+     */
+    void nmeaSentenceReceived( const QString &substring );
+
+    /**
+     * Emitted when the GPS device fix status is changed.
+     *
+     * \since QGIS 3.30
+     */
+    void fixStatusChanged( Qgis::GpsFixStatus status );
+
+    /**
+     * Emitted when the GPS position changes.
+     *
+     * This signal is only emitted when the new GPS location is considered valid (see QgsGpsInformation::isValid()).
+     *
+     * \since QGIS 3.30
+     */
+    void positionChanged( const QgsPoint &point );
 
   protected:
     //! Data source (e.g. serial device, socket, file,...)
@@ -379,6 +464,10 @@ class CORE_EXPORT QgsGpsConnection : public QObject
     //! Connection status
     Status mStatus = NotConnected;
 
+  private slots:
+
+    void onStateChanged( const QgsGpsInformation &info );
+
   private:
     //! Closes and deletes mSource
     void cleanupSource();
@@ -387,6 +476,16 @@ class CORE_EXPORT QgsGpsConnection : public QObject
   protected slots:
     //! Parse available data source content
     virtual void parseData() = 0;
+
+  private:
+
+    //! Last fix status
+    Qgis::GpsFixStatus mLastFixStatus = Qgis::GpsFixStatus::NoData;
+
+    //! Last recorded valid location
+    QgsPoint mLastLocation;
 };
+
+Q_DECLARE_METATYPE( QgsGpsInformation )
 
 #endif // QGSGPSCONNECTION_H

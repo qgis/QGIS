@@ -126,7 +126,6 @@ Qt3DCore::QEntity *QgsDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *par
   mNode->setExactBbox( QgsAABB( x0, zMin * map.terrainVerticalScale(), -y0, x0 + side, zMax * map.terrainVerticalScale(), -( y0 + side ) ) );
   mNode->updateParentBoundingBoxesRecursively();
 
-  entity->setEnabled( false );
   entity->setParent( parent );
   return entity;
 }
@@ -248,14 +247,16 @@ int QgsDemHeightMapGenerator::render( const QgsChunkNodeId &nodeId )
 
 void QgsDemHeightMapGenerator::waitForFinished()
 {
-  for ( QFutureWatcher<QByteArray> *fw : mJobs.keys() )
+  for ( auto it = mJobs.keyBegin(); it != mJobs.keyEnd(); it++ )
   {
+    QFutureWatcher<QByteArray> *fw = *it;
     disconnect( fw, &QFutureWatcher<QByteArray>::finished, this, &QgsDemHeightMapGenerator::onFutureFinished );
     disconnect( fw, &QFutureWatcher<QByteArray>::finished, fw, &QObject::deleteLater );
   }
   QVector<QFutureWatcher<QByteArray>*> toBeDeleted;
-  for ( QFutureWatcher<QByteArray> *fw : mJobs.keys() )
+  for ( auto it = mJobs.keyBegin(); it != mJobs.keyEnd(); it++ )
   {
+    QFutureWatcher<QByteArray> *fw = *it;
     fw->waitForFinished();
     JobData jobData = mJobs.value( fw );
     toBeDeleted.push_back( fw );

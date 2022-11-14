@@ -27,7 +27,6 @@
 #include "qgstolerance.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "gdal.h"
 
 #ifdef SIP_RUN
 % ModuleHeaderCode
@@ -747,42 +746,44 @@ class CORE_EXPORT Qgis
     Q_ENUM( RasterRendererFlag )
     Q_FLAG( RasterRendererFlags )
 
-    /*
-     * \brief The RasterAttributeTableFieldUsage enum represents the usage of a RAT field.
+    /**
+     * \brief The RasterAttributeTableFieldUsage enum represents the usage of a Raster Attribute Table field.
+     * \note Directly mapped from GDALRATFieldUsage enum values.
      * \since QGIS 3.30
      */
     enum class RasterAttributeTableFieldUsage : int
     {
-      Generic = GFU_Generic, //!< Field usage Generic
-      PixelCount = GFU_PixelCount, //!< Field usage PixelCount
-      Name = GFU_Name, //!< Field usage Name
-      Min = GFU_Min, //!< Field usage Min
-      Max = GFU_Max, //!< Field usage Max
-      MinMax = GFU_MinMax, //!< Field usage MinMax
-      Red = GFU_Red, //!< Field usage Red
-      Green = GFU_Green, //!< Field usage Green
-      Blue = GFU_Blue, //!< Field usage Blue
-      Alpha = GFU_Alpha, //!< Field usage Alpha
-      RedMin = GFU_RedMin, //!< Field usage RedMin
-      GreenMin = GFU_GreenMin, //!< Field usage GreenMin
-      BlueMin = GFU_BlueMin, //!< Field usage BlueMin
-      AlphaMin = GFU_AlphaMin, //!< Field usage AlphaMin
-      RedMax = GFU_RedMax, //!< Field usage RedMax
-      GreenMax = GFU_GreenMax, //!< Field usage GreenMax
-      BlueMax = GFU_BlueMax, //!< Field usage BlueMax
-      AlphaMax = GFU_AlphaMax, //!< Field usage AlphaMax
-      MaxCount = GFU_MaxCount //!< Field usage MaxCount
+      Generic = 0, //!< Field usage Generic
+      PixelCount = 1, //!< Field usage PixelCount
+      Name = 2, //!< Field usage Name
+      Min = 3, //!< Field usage Min
+      Max = 4, //!< Field usage Max
+      MinMax = 5, //!< Field usage MinMax
+      Red = 6, //!< Field usage Red
+      Green = 7, //!< Field usage Green
+      Blue = 8, //!< Field usage Blue
+      Alpha = 9, //!< Field usage Alpha
+      RedMin = 10, //!< Field usage RedMin
+      GreenMin = 11, //!< Field usage GreenMin
+      BlueMin = 12, //!< Field usage BlueMin
+      AlphaMin = 13, //!< Field usage AlphaMin
+      RedMax = 14, //!< Field usage RedMax
+      GreenMax = 15, //!< Field usage GreenMax
+      BlueMax = 16, //!< Field usage BlueMax
+      AlphaMax = 17, //!< Field usage AlphaMax
+      MaxCount   //!< Not used by QGIS: GDAL Maximum GFU value (equals to GFU_AlphaMax+1 currently)
     };
     Q_ENUM( RasterAttributeTableFieldUsage )
 
     /**
      * \brief The RasterAttributeTableType enum represents the type of RAT.
+     *  note Directly mapped from GDALRATTableType enum values.
      * \since QGIS 3.30
      */
     enum class RasterAttributeTableType : int
     {
-      Thematic = GRTT_THEMATIC,
-      Athematic = GRTT_ATHEMATIC
+      Thematic = 0,
+      Athematic = 1
     };
     Q_ENUM( RasterAttributeTableType )
 
@@ -933,6 +934,54 @@ class CORE_EXPORT Qgis
     Q_ENUM( GpsConnectionType )
 
     /**
+     * GPS connection status.
+     *
+     * \since QGIS 3.30
+     */
+    enum class GpsConnectionStatus : int
+    {
+      Disconnected, //!< Device is disconnected
+      Connecting, //!< Device is connecting
+      Connected, //!< Device is successfully connected
+    };
+    Q_ENUM( GpsConnectionStatus )
+
+    /**
+     * GPS fix status.
+     *
+     * \note Prior to QGIS 3.30 this was available as QgsGpsInformation::FixStatus
+     *
+     * \since QGIS 3.30
+     */
+    enum class GpsFixStatus SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsGpsInformation, FixStatus ) : int
+      {
+      NoData, //!< No fix data available
+      NoFix, //!< GPS is not fixed
+      Fix2D, //!< 2D fix
+      Fix3D //!< 3D fix
+    };
+    Q_ENUM( GpsFixStatus );
+
+
+    /**
+     * GNSS constellation
+     *
+     * \since QGIS 3.30
+     */
+    enum class GnssConstellation
+    {
+      Unknown, //!< Unknown/other system
+      Gps, //!< Global Positioning System (GPS)
+      Glonass, //!< Global Navigation Satellite System (GLONASS)
+      Galileo, //!< Galileo
+      BeiDou, //!< BeiDou
+      Qzss, //!< Quasi Zenith Satellite System (QZSS)
+      Navic, //!< Indian Regional Navigation Satellite System (IRNSS) / NAVIC
+      Sbas, //!< SBAS
+    };
+    Q_ENUM( GnssConstellation );
+
+    /**
      * GPS signal quality indicator
      *
      * \since QGIS 3.22.6
@@ -951,6 +1000,42 @@ class CORE_EXPORT Qgis
       Simulation, //!< Simulation mode
     };
     Q_ENUM( GpsQualityIndicator )
+
+    /**
+     * GPS information component.
+     *
+     * \since QGIS 3.30
+     */
+    enum class GpsInformationComponent : int
+    {
+      Location = 1 << 0, //!< 2D location (latitude/longitude), as a QgsPointXY value
+      Altitude = 1 << 1, //!< Altitude/elevation above or below the mean sea level
+      GroundSpeed = 1 << 2, //!< Ground speed
+      Bearing = 1 << 3, //!< Bearing measured in degrees clockwise from true north to the direction of travel
+      TotalTrackLength = 1 << 4, //!< Total distance of current GPS track (available from QgsGpsLogger class only)
+      TrackDistanceFromStart = 1 << 5, //!< Direct distance from first vertex in current GPS track to last vertex (available from QgsGpsLogger class only)
+      Pdop = 1 << 6, //!< Dilution of precision
+      Hdop = 1 << 7, //!< Horizontal dilution of precision
+      Vdop = 1 << 8, //!< Vertical dilution of precision
+      HorizontalAccuracy = 1 << 9, //!< Horizontal accuracy in meters
+      VerticalAccuracy = 1 << 10, //!< Vertical accuracy in meters
+      HvAccuracy = 1 << 11, //!< 3D RMS
+      SatellitesUsed = 1 << 12, //!< Count of satellites used in obtaining the fix
+      Timestamp = 1 << 13, //!< Timestamp
+      TrackStartTime = 1 << 14, //!< Timestamp at start of current track (available from QgsGpsLogger class only)
+      TrackEndTime = 1 << 15, //!< Timestamp at end (current point) of current track (available from QgsGpsLogger class only)
+      TrackDistanceSinceLastPoint = 1 << 16, //!< Distance since last recorded location (available from QgsGpsLogger class only)
+      TrackTimeSinceLastPoint = 1 << 17, //!< Time since last recorded location (available from QgsGpsLogger class only)
+    };
+
+    /**
+     * GPS information component.
+     *
+     * \since QGIS 3.30
+     */
+    Q_DECLARE_FLAGS( GpsInformationComponents, GpsInformationComponent )
+    Q_ENUM( GpsInformationComponent )
+    Q_FLAG( GpsInformationComponents )
 
     /**
      * Babel GPS format capabilities.
@@ -1474,6 +1559,51 @@ class CORE_EXPORT Qgis
     Q_ENUM( TextRenderFormat )
 
     /**
+     * Various flags that affect drawing and placement of labels.
+     *
+     * Prior to QGIS 3.30 this was available as QgsLabelingEngineSettings::Flag
+     *
+     * \since QGIS 3.30
+     */
+    enum class LabelingFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLabelingEngineSettings, Flag ) : int
+      {
+      UseAllLabels          = 1 << 1, //!< Whether to draw all labels even if there would be collisions
+      UsePartialCandidates  = 1 << 2, //!< Whether to use also label candidates that are partially outside of the map view
+      // TODO QGIS 4.0: remove
+      RenderOutlineLabels   = 1 << 3, //!< Whether to render labels as text or outlines. Deprecated and of QGIS 3.4.3 - use defaultTextRenderFormat() instead.
+      DrawLabelRectOnly     = 1 << 4, //!< Whether to only draw the label rect and not the actual label text (used for unit tests)
+      DrawCandidates        = 1 << 5, //!< Whether to draw rectangles of generated candidates (good for debugging)
+      DrawUnplacedLabels    = 1 << 6, //!< Whether to render unplaced labels as an indicator/warning for users
+      CollectUnplacedLabels = 1 << 7, //!< Whether unplaced labels should be collected in the labeling results (regardless of whether they are being rendered). Since QGIS 3.20
+      DrawLabelMetrics      = 1 << 8, //!< Whether to render label metric guides (for debugging). Since QGIS 3.30
+    };
+    Q_ENUM( LabelingFlag )
+
+    /**
+     * Flags that affect drawing and placement of labels.
+     *
+     * Prior to QGIS 3.30 this was available as QgsLabelingEngineSettings::Flags
+     *
+     * \since QGIS 3.30
+     */
+    Q_DECLARE_FLAGS( LabelingFlags, LabelingFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsLabelingEngineSettings, Flags )
+    Q_FLAG( LabelingFlags )
+
+    /**
+     * Labeling placement engine version.
+     *
+     * Prior to QGIS 3.30 this was available as QgsLabelingEngineSettings::PlacementEngineVersion
+     *
+     * \since QGIS 3.30
+     */
+    enum class LabelPlacementEngineVersion SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLabelingEngineSettings, PlacementEngineVersion ) : int
+      {
+      Version1 SIP_MONKEYPATCH_COMPAT_NAME( PlacementEngineVersion1 ), //!< Version 1, matches placement from QGIS <= 3.10.1
+      Version2 SIP_MONKEYPATCH_COMPAT_NAME( PlacementEngineVersion2 ), //!< Version 2 (default for new projects since QGIS 3.12)
+    };
+    Q_ENUM( LabelPlacementEngineVersion )
+
+    /**
      * Text orientations.
      *
      * \note Prior to QGIS 3.28 this was available as QgsTextFormat::TextOrientation
@@ -1538,6 +1668,9 @@ class CORE_EXPORT Qgis
     /**
      * Text vertical alignment.
      *
+     * This enum controls vertical alignment of text in a predefined rectangular
+     * bounding box. See also Qgis::TextCharacterVerticalAlignment.
+     *
      * \note Prior to QGIS 3.28 this was available as QgsTextRenderer::VAlignment
      *
      * \since QGIS 3.28
@@ -1549,6 +1682,22 @@ class CORE_EXPORT Qgis
       Bottom SIP_MONKEYPATCH_COMPAT_NAME( AlignBottom ), //!< Align to bottom
     };
     Q_ENUM( TextVerticalAlignment )
+
+    /**
+     * Text vertical alignment for characters.
+     *
+     * This enum controls vertical alignment of individual characters within a block
+     * of text.
+     *
+     * \since QGIS 3.30
+     */
+    enum class TextCharacterVerticalAlignment : int
+    {
+      Normal, //!< Adjacent characters are positioned in the standard way for text in the writing system in use
+      SuperScript, //!< Characters are placed above the base line for normal text.
+      SubScript, //!< Characters are placed below the base line for normal text.
+    };
+    Q_ENUM( TextCharacterVerticalAlignment )
 
     /**
      * Rendering subcomponent properties.
@@ -1887,6 +2036,19 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( ViewSyncModeFlag )
     Q_DECLARE_FLAGS( ViewSyncModeFlags, ViewSyncModeFlag )
+
+    /**
+     * Modes for recentering map canvases.
+     *
+     * \since QGIS 3.30
+     */
+    enum class MapRecenteringMode
+    {
+      Always, //!< Always recenter map
+      WhenOutsideVisibleExtent, //!< Only recenter map when new center would be outside of current visible extent
+      Never, //!< Never recenter map
+    };
+    Q_ENUM( MapRecenteringMode )
 
     /**
      * History provider backends.
@@ -2445,6 +2607,7 @@ class CORE_EXPORT Qgis
 };
 
 QHASH_FOR_CLASS_ENUM( Qgis::CaptureTechnique )
+QHASH_FOR_CLASS_ENUM( Qgis::RasterAttributeTableFieldUsage )
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolRenderHints )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolFlags )
@@ -2477,6 +2640,8 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::CoordinateTransformationFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RasterTemporalCapabilityFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SelectionFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RasterRendererFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LabelingFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::GpsInformationComponents )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.
@@ -2671,8 +2836,58 @@ inline double qgsRound( double number, int places )
   return ( std::round( number * m * scaleFactor ) / scaleFactor ) * m;
 }
 
-
 #ifndef SIP_RUN
+
+/**
+ * Joins all the \a map keys into a single string with each element separated by the given
+ * \a separator.
+ * This method avoid calling keys() before joining because it creates an unneeded temporary list
+ * see clazy container-anti-pattern
+ */
+template<class Key, class Value>
+QString qgsMapJoinKeys( const QMap<Key, Value> &map, const QString &separator )
+{
+  QString result;
+  for ( auto it = map.constBegin(); it != map.constEnd(); it++ )
+    result += QString( "%1%2" ).arg( it.key() ).arg( separator );
+
+  result.chop( separator.size() );
+  return result;
+}
+
+/**
+ * Joins all the \a map values into a single string with each element separated by the given
+ * \a separator.
+ * This method avoid calling values() before joining because it creates an unneeded temporary list
+ * see clazy container-anti-pattern
+ */
+template<class Key, class Value>
+QString qgsMapJoinValues( const QMap<Key, Value> &map, const QString &separator )
+{
+  QString result;
+  for ( auto it = map.constBegin(); it != map.constEnd(); it++ )
+    result += QString( "%1%2" ).arg( it.value() ).arg( separator );
+
+  result.chop( separator.size() );
+  return result;
+}
+
+/**
+ * Joins all the \a set values into a single string with each element separated by the given
+ * \a separator.
+ * This method avoid calling values() before joining because it creates an unneeded temporary list
+ * see clazy container-anti-pattern
+ */
+template<class T>
+QString qgsSetJoin( const QSet<T> &set, const QString &separator )
+{
+  QString result;
+  for ( auto it = set.constBegin(); it != set.constEnd(); it++ )
+    result += QString( "%1%2" ).arg( *it ).arg( separator );
+
+  result.chop( separator.size() );
+  return result;
+}
 
 ///@cond PRIVATE
 
