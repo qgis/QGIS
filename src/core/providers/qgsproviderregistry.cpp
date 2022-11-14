@@ -707,6 +707,19 @@ QString QgsProviderRegistry::loadStyle( const QString &providerKey, const QStrin
   return ret;
 }
 
+QString QgsProviderRegistry::loadStoredStyle( const QString &providerKey, const QString &uri, QString &styleName, QString &errCause )
+{
+  QString ret;
+  QgsProviderMetadata *meta = findMetadata_( mProviders, providerKey );
+  if ( meta )
+    ret = meta->loadStoredStyle( uri, styleName, errCause );
+  else
+  {
+    errCause = QObject::tr( "Unable to load %1 provider" ).arg( providerKey );
+  }
+  return ret;
+}
+
 bool QgsProviderRegistry::saveLayerMetadata( const QString &providerKey, const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage )
 {
   errorMessage.clear();
