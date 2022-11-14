@@ -51,8 +51,8 @@ class APP_EXPORT QgsAppGpsLogging: public QgsGpsLogger
 
     void logNmeaSentence( const QString &nmeaString ); // added to handle 'raw' data
 
-    void startLogging();
-    void stopLogging();
+    void startNmeaLogging();
+    void stopNmeaLogging();
 
   private:
     QgsAppGpsConnection *mConnection = nullptr;

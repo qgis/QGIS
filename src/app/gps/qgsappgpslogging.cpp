@@ -51,14 +51,14 @@ void QgsAppGpsLogging::setNmeaLogFile( const QString &filename )
 {
   if ( mLogFile )
   {
-    stopLogging();
+    stopNmeaLogging();
   }
 
   mNmeaLogFile = filename;
 
   if ( mEnableNmeaLogging && !mNmeaLogFile.isEmpty() )
   {
-    startLogging();
+    startNmeaLogging();
   }
 }
 
@@ -69,14 +69,14 @@ void QgsAppGpsLogging::setNmeaLoggingEnabled( bool enabled )
 
   if ( mLogFile && !enabled )
   {
-    stopLogging();
+    stopNmeaLogging();
   }
 
   mEnableNmeaLogging = enabled;
 
   if ( mEnableNmeaLogging && !mNmeaLogFile.isEmpty() )
   {
-    startLogging();
+    startNmeaLogging();
   }
 }
 
@@ -90,14 +90,14 @@ void QgsAppGpsLogging::gpsConnected()
 {
   if ( !mLogFile && mEnableNmeaLogging && !mNmeaLogFile.isEmpty() )
   {
-    startLogging();
+    startNmeaLogging();
   }
   setConnection( mConnection->connection() );
 }
 
 void QgsAppGpsLogging::gpsDisconnected()
 {
-  stopLogging();
+  stopNmeaLogging();
   setConnection( nullptr );
 }
 
@@ -109,7 +109,7 @@ void QgsAppGpsLogging::logNmeaSentence( const QString &nmeaString )
   }
 }
 
-void QgsAppGpsLogging::startLogging()
+void QgsAppGpsLogging::startNmeaLogging()
 {
   if ( !mLogFile )
   {
@@ -134,7 +134,7 @@ void QgsAppGpsLogging::startLogging()
   }
 }
 
-void QgsAppGpsLogging::stopLogging()
+void QgsAppGpsLogging::stopNmeaLogging()
 {
   if ( mLogFile && mLogFile->isOpen() )
   {
