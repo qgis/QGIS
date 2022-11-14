@@ -279,8 +279,6 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
   // adjust baselines
   if ( !res.mBaselineOffsetsLabelMode.isEmpty() )
   {
-    // outerYMinLabel += res.mBaselineOffsetsLabelMode[0];
-
     const double labelModeBaselineAdjust = res.mBaselineOffsetsLabelMode.constLast() + res.mLastLineAscentOffset;
     const double pointModeBaselineAdjust = res.mBaselineOffsetsPointMode.constLast();
     for ( int i = 0; i < blockSize; ++i )
