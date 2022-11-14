@@ -337,40 +337,12 @@ void TestQgsNmeaConnection::testConstellation()
   ReplayNmeaConnection connection;
   // GSV sentences
 
-  QgsGpsInformation info = connection.push( QStringLiteral( "$GPGSV,8,5,30,06,33,224,00,08,19,298,33,09,21,234,34,13,18,286,00*7E" ) );
+  QgsGpsInformation info = connection.push( QStringLiteral( "$GPGSV,8,5,30,06,33,224,00,08,19,298,00,09,21,234,00,13,18,286,00*7E" ) );
   QCOMPARE( info.satellitesInView.count(), 4 );
-  if ( info.satellitesInView.at( 0 ).satType == 'P' )
-  {
-    QCOMPARE( info.satellitesInView.at( 0 ).constellation(), Qgis::GnssConstellation::Gps );
-  }
-  else if ( info.satellitesInView.at( 0 ).satType == 'S' )
-  {
-    QCOMPARE( info.satellitesInView.at( 0 ).constellation(), Qgis::GnssConstellation::Sbas );
-  }
-  if ( info.satellitesInView.at( 1 ).satType == 'P' )
-  {
-    QCOMPARE( info.satellitesInView.at( 1 ).constellation(), Qgis::GnssConstellation::Gps );
-  }
-  else if ( info.satellitesInView.at( 1 ).satType == 'S' )
-  {
-    QCOMPARE( info.satellitesInView.at( 1 ).constellation(), Qgis::GnssConstellation::Sbas );
-  }
-  if ( info.satellitesInView.at( 2 ).satType == 'P' )
-  {
-    QCOMPARE( info.satellitesInView.at( 2 ).constellation(), Qgis::GnssConstellation::Gps );
-  }
-  else if ( info.satellitesInView.at( 2 ).satType == 'S' )
-  {
-    QCOMPARE( info.satellitesInView.at( 2 ).constellation(), Qgis::GnssConstellation::Sbas );
-  }
-  if ( info.satellitesInView.at( 3 ).satType == 'P' )
-  {
-    QCOMPARE( info.satellitesInView.at( 3 ).constellation(), Qgis::GnssConstellation::Gps );
-  }
-  else if ( info.satellitesInView.at( 3 ).satType == 'S' )
-  {
-    QCOMPARE( info.satellitesInView.at( 3 ).constellation(), Qgis::GnssConstellation::Sbas );
-  }
+  QCOMPARE( info.satellitesInView.at( 0 ).constellation(), Qgis::GnssConstellation::Gps );
+  QCOMPARE( info.satellitesInView.at( 1 ).constellation(), Qgis::GnssConstellation::Gps );
+  QCOMPARE( info.satellitesInView.at( 2 ).constellation(), Qgis::GnssConstellation::Gps );
+  QCOMPARE( info.satellitesInView.at( 3 ).constellation(), Qgis::GnssConstellation::Gps );
   
   info = connection.push( QStringLiteral( "$GLGSV,8,5,30,06,33,224,00,08,19,298,00,09,21,234,00,13,18,286,00*7E" ) );
   QCOMPARE( info.satellitesInView.count(), 8 );
@@ -399,6 +371,13 @@ void TestQgsNmeaConnection::testConstellation()
   QCOMPARE( info.satellitesInView.at( 17 ).constellation(), Qgis::GnssConstellation::BeiDou );
   QCOMPARE( info.satellitesInView.at( 18 ).constellation(), Qgis::GnssConstellation::BeiDou );
   QCOMPARE( info.satellitesInView.at( 19 ).constellation(), Qgis::GnssConstellation::BeiDou );
+
+  info = connection.push( QStringLiteral( "$GPGSV,8,5,33,64,33,224,34,08,19,298,35,09,21,234,36,13,18,286,00*7E" ) );
+  QCOMPARE( info.satellitesInView.count(), 24 );
+  QCOMPARE( info.satellitesInView.at( 20 ).constellation(), Qgis::GnssConstellation::Sbas );
+  QCOMPARE( info.satellitesInView.at( 21 ).constellation(), Qgis::GnssConstellation::Sbas );
+  QCOMPARE( info.satellitesInView.at( 22 ).constellation(), Qgis::GnssConstellation::Sbas );
+  QCOMPARE( info.satellitesInView.at( 23 ).constellation(), Qgis::GnssConstellation::Sbas );
 }
 
 void TestQgsNmeaConnection::testPosition()
