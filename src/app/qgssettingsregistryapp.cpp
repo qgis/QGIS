@@ -63,6 +63,7 @@ QgsSettingsRegistryApp::QgsSettingsRegistryApp()
   addSettingsEntry( &QgsIdentifyResultsDialog::settingHideNullValues );
 
   addSettingsEntry( &QgsAppGpsDigitizing::settingLastLogFolder );
+  addSettingsEntry( &QgsAppGpsDigitizing::settingLastGpkgLog );
 
   addSettingsEntry( &QgsGpsCanvasBridge::settingShowBearingLine );
   addSettingsEntry( &QgsGpsCanvasBridge::settingBearingLineSymbol );

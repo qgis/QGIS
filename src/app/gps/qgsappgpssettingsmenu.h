@@ -64,6 +64,7 @@ class APP_EXPORT QgsAppGpsSettingsMenu : public QMenu
     void rotateMapToggled( bool enabled );
     void mapCenteringModeChanged( Qgis::MapRecenteringMode mode );
     void enableNmeaLog( bool enabled );
+    void gpkgLogDestinationChanged( const QString &path );
     void nmeaLogFileChanged( const QString &filename );
 
   private slots:
@@ -77,6 +78,7 @@ class APP_EXPORT QgsAppGpsSettingsMenu : public QMenu
     QAction *mRotateMapAction = nullptr;
     QAction *mAutoAddTrackVerticesAction = nullptr;
     QAction *mAutoSaveAddedFeatureAction = nullptr;
+    QAction *mActionGpkgLog = nullptr;
     QAction *mActionNmeaLog = nullptr;
 
     QRadioButton *mRadioAlwaysRecenter = nullptr;
