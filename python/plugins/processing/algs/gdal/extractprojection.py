@@ -104,7 +104,10 @@ class ExtractProjection(GdalAlgorithm):
         outFileName = inFileName[0]
         # this is not a good idea as it won't work with an extension like .jpeg
         # outFileExt = '.' + inFileName[1][1:4:2] + 'w'
-        outFileExt = inFileName[1][0:2] + inFileName[1][-1] + 'w'
+        if ( len(inFileName[1]) < 4 ):
+            outFileExt = '.wld'
+        else:
+            outFileExt = inFileName[1][0:2] + inFileName[1][-1] + 'w'
 
         results = {}
         if crs != '' and createPrj:
