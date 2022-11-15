@@ -170,7 +170,10 @@ void QgsVectorLayerGpsLogger::endCurrentTrack()
 
     QgsFeature feature = QgsVectorLayerUtils::createFeature( mTracksLayer, geometry, attributes, &context );
 
-    mTracksLayer->addFeature( feature, QgsFeatureSink::Flag::FastInsert );
+    if ( mUseEditBuffer )
+      mTracksLayer->addFeature( feature, QgsFeatureSink::Flag::FastInsert );
+    else
+      mTracksLayer->dataProvider()->addFeature( feature, QgsFeatureSink::Flag::FastInsert );
   }
   resetTrack();
 }
@@ -255,7 +258,10 @@ void QgsVectorLayerGpsLogger::gpsStateChanged( const QgsGpsInformation &info )
 
     QgsFeature feature = QgsVectorLayerUtils::createFeature( mPointsLayer, geometry, attributes, &context );
 
-    mPointsLayer->addFeature( feature, QgsFeatureSink::Flag::FastInsert );
+    if ( mUseEditBuffer )
+      mPointsLayer->addFeature( feature, QgsFeatureSink::Flag::FastInsert );
+    else
+      mPointsLayer->dataProvider()->addFeature( feature, QgsFeatureSink::Flag::FastInsert );
   }
 }
 

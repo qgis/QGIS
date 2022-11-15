@@ -48,6 +48,28 @@ class CORE_EXPORT QgsVectorLayerGpsLogger : public QgsGpsLogger
     ~QgsVectorLayerGpsLogger() override;
 
     /**
+     * Returns TRUE if the logger will use the vector layer edit buffer for the destination layers.
+     *
+     * If FALSE then the features will be written directly to the destination layer's data providers.
+     *
+     * The default behavior is to use the edit buffer.
+     *
+     * \see setWriteToEditBuffer()
+     */
+    bool writeToEditBuffer() const { return mUseEditBuffer; }
+
+    /**
+     * Sets whether the logger will use the vector layer edit buffer for the destination layers.
+     *
+     * If \a buffer is FALSE then the features will be written directly to the destination layer's data providers.
+     *
+     * The default behavior is to use the edit buffer.
+     *
+     * \see writeToEditBuffer()
+     */
+    void setWriteToEditBuffer( bool buffer ) { mUseEditBuffer = buffer; }
+
+    /**
      * Sets the \a layer in which recorded GPS points should be stored.
      *
      * \see setTracksLayer()
@@ -137,6 +159,8 @@ class CORE_EXPORT QgsVectorLayerGpsLogger : public QgsGpsLogger
     void gpsStateChanged( const QgsGpsInformation &information );
 
   private:
+
+    bool mUseEditBuffer = true;
 
     QPointer< QgsVectorLayer > mPointsLayer;
     QPointer< QgsVectorLayer > mTracksLayer;
