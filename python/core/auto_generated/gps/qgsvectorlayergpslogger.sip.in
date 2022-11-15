@@ -32,6 +32,28 @@ The logger will automatically record GPS information from the specified ``connec
 
     ~QgsVectorLayerGpsLogger();
 
+    bool writeToEditBuffer() const;
+%Docstring
+Returns ``True`` if the logger will use the vector layer edit buffer for the destination layers.
+
+If ``False`` then the features will be written directly to the destination layer's data providers.
+
+The default behavior is to use the edit buffer.
+
+.. seealso:: :py:func:`setWriteToEditBuffer`
+%End
+
+    void setWriteToEditBuffer( bool buffer );
+%Docstring
+Sets whether the logger will use the vector layer edit buffer for the destination layers.
+
+If ``buffer`` is ``False`` then the features will be written directly to the destination layer's data providers.
+
+The default behavior is to use the edit buffer.
+
+.. seealso:: :py:func:`writeToEditBuffer`
+%End
+
     void setPointsLayer( QgsVectorLayer *layer );
 %Docstring
 Sets the ``layer`` in which recorded GPS points should be stored.

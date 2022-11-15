@@ -264,6 +264,18 @@ class TestQgsGpsLogger(unittest.TestCase):
         self.assertEqual(f.attributes(), [NULL, NULL, NULL])
         self.assertEqual(f.geometry().asWkt(-3), 'PointZ (-1296000 21435000 0)')
 
+        # points should be written to layer's edit buffer
+        self.assertTrue(logger.writeToEditBuffer())
+        self.assertEqual(points_layer.dataProvider().featureCount(), 0)
+
+        # write direct to data provider
+        logger.setWriteToEditBuffer(False)
+        self.assertFalse(logger.writeToEditBuffer())
+
+        gps_connection.send_message(
+            '$GPRMC,084129.185,A,6939.4152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
+        self.assertEqual(points_layer.dataProvider().featureCount(), 1)
+
     def test_track_recording(self):
         line_layer = QgsVectorLayer(
             'LineString?crs=EPSG:28355&field=start:datetime&field=end:string&field=length:double', 'lines', 'memory')
@@ -311,6 +323,20 @@ class TestQgsGpsLogger(unittest.TestCase):
                          'LineStringZ (-1297400 21435500 0, -1297000 21435200 0, -1297400 21434700 0)')
 
         self.assertFalse(logger.currentTrack())
+
+        # points should be written to layer's edit buffer
+        self.assertEqual(line_layer.dataProvider().featureCount(), 0)
+
+        # write direct to data provider
+        logger.setWriteToEditBuffer(False)
+        self.assertFalse(logger.writeToEditBuffer())
+
+        gps_connection.send_message(
+            '$GPRMC,084129.185,A,6939.4152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
+        gps_connection.send_message(
+            '$GPRMC,084129.185,A,6939.4152,N,01956.8526,E,0.05,2.00,220120,,,A*6C')
+        logger.endCurrentTrack()
+        self.assertEqual(line_layer.dataProvider().featureCount(), 1)
 
 
 if __name__ == '__main__':
