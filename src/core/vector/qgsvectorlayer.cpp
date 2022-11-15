@@ -1766,10 +1766,11 @@ QString QgsVectorLayer::loadDefaultStyle( bool &resultFlag )
     {
       QStringList ids, names, descriptions;
       QString errorMessage;
-      listStylesInDatabase( ids, names, descriptions, errorMessage );
+      // Get the number of styles related to current layer.
+      const int relatedStylesCount { listStylesInDatabase( ids, names, descriptions, errorMessage ) };
       Q_ASSERT( ids.count() == names.count() );
       const QString currentStyleName { mStyleManager->currentStyle() };
-      for ( int i = 0; i < static_cast<int>( ids.count() ); ++i )
+      for ( int i = 0; i < relatedStylesCount; ++i )
       {
         if ( names.at( i ) == currentStyleName )
         {
