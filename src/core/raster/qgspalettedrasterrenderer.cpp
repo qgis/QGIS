@@ -463,6 +463,9 @@ QgsPalettedRasterRenderer::MultiValueClassData QgsPalettedRasterRenderer::raster
   QgsPalettedRasterRenderer::MultiValueClassData classData;
 
   const QList<QgsRasterAttributeTable::MinMaxClass> minMaxClasses { attributeTable->minMaxClasses( classificationColumn ) };
+  if ( minMaxClasses.empty() )
+    return QgsPalettedRasterRenderer::MultiValueClassData();
+
   for ( const QgsRasterAttributeTable::MinMaxClass &minMaxClass : std::as_const( minMaxClasses ) )
   {
     QVector<QVariant> values;
