@@ -614,6 +614,8 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
 
         checkBefore()
 
+        spy = QSignalSpy(layer.layerModified)
+
         # try to add feature without editing mode
         self.assertFalse(layer.addFeature(feat))
 
@@ -624,8 +626,12 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         bad_feature = QgsFeature()
         self.assertFalse(layer.addFeature(bad_feature))
 
+        self.assertEqual(len(spy), 0)
+
         # add good feature
         self.assertTrue(layer.addFeature(feat))
+
+        self.assertEqual(len(spy), 1)
 
         checkAfter()
         self.assertEqual(layer.dataProvider().featureCount(), 0)
@@ -633,8 +639,12 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         # now try undo/redo
         layer.undoStack().undo()
         checkBefore()
+        self.assertEqual(len(spy), 2)
+
         layer.undoStack().redo()
         checkAfter()
+
+        self.assertEqual(len(spy), 3)
 
         self.assertTrue(layer.commitChanges())
 
@@ -681,22 +691,33 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         # add feature
         layer.startEditing()
 
+        spy = QSignalSpy(layer.layerModified)
+
         # try adding feature with incorrect number of fields
         bad_feature = QgsFeature()
         self.assertFalse(layer.addFeatures([bad_feature]))
 
+        self.assertEqual(len(spy), 0)
+
         # add good features
         self.assertTrue(layer.addFeatures([feat1, feat2]))
+
+        self.assertEqual(len(spy), 1)
 
         checkAfter()
         self.assertEqual(layer.dataProvider().featureCount(), 0)
 
         # now try undo/redo
         layer.undoStack().undo()
+
+        self.assertEqual(len(spy), 2)
         layer.undoStack().undo()
+        self.assertEqual(len(spy), 3)
         checkBefore()
         layer.undoStack().redo()
+        self.assertEqual(len(spy), 4)
         layer.undoStack().redo()
+        self.assertEqual(len(spy), 5)
         checkAfter()
 
         self.assertTrue(layer.commitChanges())
@@ -737,12 +758,18 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
 
         checkBefore()
 
+        spy = QSignalSpy(layer.layerModified)
+
         # try to delete feature without editing mode
         self.assertFalse(layer.deleteFeature(fid))
+
+        self.assertEqual(len(spy), 0)
 
         # delete feature
         layer.startEditing()
         self.assertTrue(layer.deleteFeature(fid))
+
+        self.assertEqual(len(spy), 1)
 
         checkAfter()
 
@@ -751,8 +778,10 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
 
         # now try undo/redo
         layer.undoStack().undo()
+        self.assertEqual(len(spy), 2)
         checkBefore()
         layer.undoStack().redo()
+        self.assertEqual(len(spy), 3)
         checkAfter()
 
         self.assertEqual(layer.dataProvider().featureCount(), 1)
@@ -761,6 +790,107 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
 
         checkAfter()
         self.assertEqual(layer.dataProvider().featureCount(), 0)
+
+    def test_DeleteFeatures(self):
+        layer = createLayerWithFivePoints()
+
+        def checkAfter():
+            self.assertEqual(layer.featureCount(), 3)
+
+            # check select+nextFeature
+            fi = layer.getFeatures()
+            f = next(fi)
+            fid2 = f.id()
+            self.assertEqual(f.geometry().asPoint(), QgsPointXY(200, 200))
+            f = next(fi)
+            fid4 = f.id()
+            self.assertEqual(f.geometry().asPoint(), QgsPointXY(400, 300))
+            f = next(fi)
+            fid5 = f.id()
+            self.assertEqual(f.geometry().asPoint(), QgsPointXY(0, 0))
+            with self.assertRaises(StopIteration):
+                next(fi)
+
+            # check feature at id
+            f2 = next(layer.getFeatures(QgsFeatureRequest(fid2)))
+            self.assertEqual(f2.geometry().asPoint(), QgsPointXY(200, 200))
+            f2 = next(layer.getFeatures(QgsFeatureRequest(fid4)))
+            self.assertEqual(f2.geometry().asPoint(), QgsPointXY(400, 300))
+            f2 = next(layer.getFeatures(QgsFeatureRequest(fid5)))
+            self.assertEqual(f2.geometry().asPoint(), QgsPointXY(0, 0))
+
+        def checkBefore():
+            self.assertEqual(layer.featureCount(), 5)
+
+            # check select+nextFeature
+            fi = layer.getFeatures()
+            f = next(fi)
+            fid1 = f.id()
+            self.assertEqual(f.geometry().asPoint(), QgsPointXY(100, 200))
+            f = next(fi)
+            fid2 = f.id()
+            self.assertEqual(f.geometry().asPoint(), QgsPointXY(200, 200))
+            f = next(fi)
+            fid3 = f.id()
+            self.assertEqual(f.geometry().asPoint(), QgsPointXY(300, 200))
+            f = next(fi)
+            fid4 = f.id()
+            self.assertEqual(f.geometry().asPoint(), QgsPointXY(400, 300))
+            f = next(fi)
+            fid5 = f.id()
+            self.assertEqual(f.geometry().asPoint(), QgsPointXY(0, 0))
+            with self.assertRaises(StopIteration):
+                next(fi)
+
+            # check feature at id
+            f2 = next(layer.getFeatures(QgsFeatureRequest(fid1)))
+            self.assertEqual(f2.geometry().asPoint(), QgsPointXY(100, 200))
+            f2 = next(layer.getFeatures(QgsFeatureRequest(fid2)))
+            self.assertEqual(f2.geometry().asPoint(), QgsPointXY(200, 200))
+            f2 = next(layer.getFeatures(QgsFeatureRequest(fid3)))
+            self.assertEqual(f2.geometry().asPoint(), QgsPointXY(300, 200))
+            f2 = next(layer.getFeatures(QgsFeatureRequest(fid4)))
+            self.assertEqual(f2.geometry().asPoint(), QgsPointXY(400, 300))
+            f2 = next(layer.getFeatures(QgsFeatureRequest(fid5)))
+            self.assertEqual(f2.geometry().asPoint(), QgsPointXY(0, 0))
+
+            return fid1, fid2, fid3, fid4, fid5
+
+        fid1, fid2, fid3, fid4, fid5 = checkBefore()
+
+        spy = QSignalSpy(layer.layerModified)
+
+        # try to delete features without editing mode
+        self.assertFalse(layer.deleteFeatures([fid1, fid2]))
+
+        self.assertEqual(len(spy), 0)
+
+        # delete features
+        layer.startEditing()
+        self.assertTrue(layer.deleteFeatures([fid1, fid3]))
+
+        self.assertEqual(len(spy), 1)
+
+        checkAfter()
+
+        # now try undo/redo
+        layer.undoStack().undo()
+        self.assertEqual(len(spy), 2)
+        layer.undoStack().undo()
+        self.assertEqual(len(spy), 3)
+        checkBefore()
+        layer.undoStack().redo()
+        self.assertEqual(len(spy), 4)
+        layer.undoStack().redo()
+        self.assertEqual(len(spy), 5)
+        checkAfter()
+
+        self.assertEqual(layer.dataProvider().featureCount(), 5)
+
+        self.assertTrue(layer.commitChanges())
+
+        checkAfter()
+        self.assertEqual(layer.dataProvider().featureCount(), 3)
 
     def test_DeleteFeatureAfterAddFeature(self):
 
@@ -889,6 +1019,60 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         layer.undoStack().undo()
         checkBefore()
         layer.undoStack().redo()
+        checkAfter()
+
+        self.assertTrue(layer.commitChanges())
+        checkAfter()
+
+    def test_ChangeAttributeValues(self):
+        layer = createLayerWithOnePoint()
+        fid = 1
+
+        def checkAfter():
+            # check select+nextFeature
+            fi = layer.getFeatures()
+            f = next(fi)
+            self.assertEqual(f[0], "good")
+            self.assertEqual(f[1], 100)
+
+            # check feature at id
+            f2 = next(layer.getFeatures(QgsFeatureRequest(f.id())))
+            self.assertEqual(f2[0], "good")
+            self.assertEqual(f2[1], 100)
+
+        def checkBefore():
+            # check select+nextFeature
+            f = next(layer.getFeatures())
+            self.assertEqual(f[0], "test")
+            self.assertEqual(f[1], 123)
+
+        checkBefore()
+
+        spy = QSignalSpy(layer.layerModified)
+
+        # try to change attribute without editing mode
+        self.assertFalse(layer.changeAttributeValues(fid, {0: "good", 1: 100}))
+
+        self.assertEqual(len(spy), 0)
+
+        # change attribute
+        layer.startEditing()
+        self.assertTrue(layer.changeAttributeValues(fid, {0: "good", 1: 100}))
+
+        self.assertEqual(len(spy), 1)
+
+        checkAfter()
+
+        # now try undo/redo
+        layer.undoStack().undo()
+        self.assertEqual(len(spy), 2)
+        layer.undoStack().undo()
+        self.assertEqual(len(spy), 3)
+        checkBefore()
+        layer.undoStack().redo()
+        self.assertEqual(len(spy), 4)
+        layer.undoStack().redo()
+        self.assertEqual(len(spy), 5)
         checkAfter()
 
         self.assertTrue(layer.commitChanges())
