@@ -330,6 +330,8 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
 
     QgsVectorLayerEditBufferGroup *mEditBufferGroup = nullptr;
 
+    int mBlockModifiedSignals = 0;
+
     friend class QgsGrassProvider; //GRASS provider totally abuses the edit buffer
 
   private:
