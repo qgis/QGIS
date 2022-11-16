@@ -53,6 +53,9 @@ bool QgsVectorLayerEditBuffer::isModified() const
 
 void QgsVectorLayerEditBuffer::undoIndexChanged( int index )
 {
+  if ( mBlockModifiedSignals )
+    return;
+
   QgsDebugMsgLevel( QStringLiteral( "undo index changed %1" ).arg( index ), 4 );
   Q_UNUSED( index )
   emit layerModified();
@@ -149,11 +152,22 @@ bool QgsVectorLayerEditBuffer::addFeatures( QgsFeatureList &features )
   if ( !( L->dataProvider()->capabilities() & QgsVectorDataProvider::AddFeatures ) )
     return false;
 
+  // we don't want to emit layerModified for every added feature, rather just once for the batch lot
+  mBlockModifiedSignals++;
+
   bool result = true;
+  bool anyAdded = false;
   for ( QgsFeatureList::iterator iter = features.begin(); iter != features.end(); ++iter )
   {
-    result = result && addFeature( *iter );
+    const bool thisFeatureResult = addFeature( *iter );
+    result = result && thisFeatureResult;
+    anyAdded |= thisFeatureResult;
   }
+
+  mBlockModifiedSignals--;
+
+  if ( anyAdded )
+    emit layerModified();
 
   L->updateExtents();
   return result;
@@ -198,10 +212,15 @@ bool QgsVectorLayerEditBuffer::deleteFeatures( const QgsFeatureIds &fids )
     return false;
   }
 
+  // we don't want to emit layerModified for every deleted feature, rather just once for the batch lot
+  mBlockModifiedSignals++;
+
   bool ok = true;
-  const auto constFids = fids;
-  for ( QgsFeatureId fid : constFids )
+  for ( QgsFeatureId fid : fids )
     ok = deleteFeature( fid ) && ok;
+
+  mBlockModifiedSignals--;
+  emit layerModified();
 
   return ok;
 }
@@ -231,6 +250,10 @@ bool QgsVectorLayerEditBuffer::changeGeometry( QgsFeatureId fid, const QgsGeomet
 bool QgsVectorLayerEditBuffer::changeAttributeValues( QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues )
 {
   bool success = true;
+
+  // we don't want to emit layerModified for every changed attribute, rather just once for the batch lot
+  mBlockModifiedSignals++;
+
   for ( auto it = newValues.constBegin() ; it != newValues.constEnd(); ++it )
   {
     const int field = it.key();
@@ -242,6 +265,9 @@ bool QgsVectorLayerEditBuffer::changeAttributeValues( QgsFeatureId fid, const Qg
 
     success &= changeAttributeValue( fid, field, newValue, oldValue );
   }
+
+  mBlockModifiedSignals--;
+  emit layerModified();
 
   return success;
 }
