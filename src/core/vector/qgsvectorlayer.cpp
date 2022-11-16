@@ -3438,9 +3438,24 @@ bool QgsVectorLayer::deleteFeature( QgsFeatureId fid, QgsVectorLayer::DeleteCont
 bool QgsVectorLayer::deleteFeatures( const QgsFeatureIds &fids, QgsVectorLayer::DeleteContext *context )
 {
   bool res = true;
-  const auto constFids = fids;
-  for ( QgsFeatureId fid : constFids )
-    res = deleteFeatureCascade( fid, context ) && res;
+
+  if ( ( context && context->cascade ) || mJoinBuffer->containsJoins() )
+  {
+    // should ideally be "deleteFeaturesCascade" for performance!
+    for ( QgsFeatureId fid : fids )
+      res = deleteFeatureCascade( fid, context ) && res;
+  }
+  else
+  {
+    if ( mEditBuffer )
+    {
+      res = mEditBuffer->deleteFeatures( fids );
+    }
+    else
+    {
+      res = false;
+    }
+  }
 
   if ( res )
   {
