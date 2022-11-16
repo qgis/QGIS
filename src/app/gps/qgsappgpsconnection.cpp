@@ -160,8 +160,8 @@ void QgsAppGpsConnection::disconnectGps()
 {
   if ( mConnection )
   {
-    QgsApplication::gpsConnectionRegistry()->unregisterConnection( mConnection );
-    delete mConnection;
+    // we don't actually delete the connection until everything has had time to respond to the cleanup signals
+    std::unique_ptr< QgsGpsConnection > oldConnection( mConnection );
     mConnection = nullptr;
 
     emit disconnected();
@@ -169,6 +169,8 @@ void QgsAppGpsConnection::disconnectGps()
     emit fixStatusChanged( Qgis::GpsFixStatus::NoData );
 
     showStatusBarMessage( tr( "Disconnected from GPS device." ) );
+
+    QgsApplication::gpsConnectionRegistry()->unregisterConnection( oldConnection.get() );
   }
 }
 
