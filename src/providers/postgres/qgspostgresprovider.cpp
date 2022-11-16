@@ -2056,9 +2056,51 @@ QSet<QVariant> QgsPostgresProvider::uniqueValues( int index, int limit ) const
   {
     // get the field name
     QgsField fld = field( index );
-    QString sql = QStringLiteral( "SELECT DISTINCT %1 FROM %2" )
-                  .arg( quotedIdentifier( fld.name() ),
-                        mQuery );
+    QString sql;
+
+    // Postgres does not provide an "index skip scan" feature.
+    // This can make SELECT DISTINCT queries really slow.
+    // It is possible to emulate the "index skip scan" behavior to quickly if the column has an index.
+    // See: https://wiki.postgresql.org/wiki/Loose_indexscan
+    const QString hasIndexSql = QStringLiteral(
+                                  "SELECT COUNT(*)"
+                                  " FROM pg_class t, pg_class i, pg_namespace ns, pg_index ix, pg_attribute a"
+                                  " WHERE"
+                                  " t.oid=ix.indrelid"
+                                  " AND t.relnamespace=ns.oid"
+                                  " AND i.oid=ix.indexrelid"
+                                  " AND a.attrelid=t.oid"
+                                  " AND a.attnum=ANY(ix.indkey)"
+                                  " AND ns.nspname=%1"
+                                  " AND t.relname=%2"
+                                  " AND a.attname=%3"
+                                ).arg(
+                                  QgsPostgresConn::quotedValue( mUri.schema() ),
+                                  QgsPostgresConn::quotedValue( mUri.table() ),
+                                  QgsPostgresConn::quotedValue( fld.name() ) );
+    QgsPostgresResult hasIndexResult( connectionRO()->LoggedPQexec( "QgsPostgresProvider", hasIndexSql ) );
+    const bool fldHasIndex = hasIndexResult.PQgetvalue( 0, 0 ).toInt() == 1;
+
+    if ( fldHasIndex )
+    {
+      // Replicates "index skip scan" behavior
+      sql += QStringLiteral(
+               "WITH RECURSIVE cte AS ("
+               " ( SELECT %1 FROM %2 ORDER  BY %1 LIMIT 1 )"
+               " UNION ALL"
+               " SELECT l.* FROM cte c"
+               " CROSS JOIN LATERAL ( SELECT %1 FROM %2 t WHERE t.%1 > c.%1 ORDER BY %1 LIMIT 1) l"
+               " )"
+               " SELECT %1 from cte" )
+             .arg( quotedIdentifier( fld.name() ), mQuery );
+    }
+    else
+    {
+      QgsMessageLog::logMessage( tr( "Column '%1' doesn't have an index. UniqueValues computation can be very slow" ).arg( fld.name() ), tr( "PostGIS" ) );
+      sql += QStringLiteral( "SELECT DISTINCT %1 FROM %2" )
+             .arg( quotedIdentifier( fld.name() ),
+                   mQuery );
+    }
 
     if ( !mSqlWhereClause.isEmpty() )
     {
