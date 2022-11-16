@@ -181,7 +181,10 @@ void QgsAppGpsLogging::startNmeaLogging()
     mLogFileTextStream.setDevice( mLogFile.get() );
 
     // crude way to separate chunks - use when manually editing file - NMEA parsers should discard
-    mLogFileTextStream << "====" << "\r\n";
+    if ( mLogFile->size() > 0 )
+    {
+      mLogFileTextStream << "====" << "\r\n";
+    }
 
     connect( mConnection, &QgsAppGpsConnection::nmeaSentenceReceived, this, &QgsAppGpsLogging::logNmeaSentence ); // added to handle raw data
   }
