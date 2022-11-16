@@ -41,7 +41,7 @@ endif
 
 QT_PLUGINS_DIR = lib/$(DEB_BUILD_MULTIARCH)/qt5/plugins
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"bullseye focal jammy kinetic"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"bullseye focal jammy kinetic lunar"))
 	DISTRIBUTION := sid
 endif
 
@@ -106,7 +106,7 @@ ifneq ($(SHA),)
 	CMAKE_OPTS += -DSHA=$(SHA)
 endif
 
-ifeq (,$(findstring $(DISTRIBUTION),"sid kinetic"))
+ifeq (,$(findstring $(DISTRIBUTION),"sid kinetic lunar"))
 	CMAKE_OPTS += -DWITH_PDAL=TRUE
 endif
 
@@ -117,7 +117,7 @@ ifneq (,$(findstring ;$(GRASSVER);, ";7;8;"))
 		-DGRASS_PREFIX$(GRASSVER)=/usr/lib/$(GRASS)
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"sid kinetic"))
+ifneq (,$(findstring $(DISTRIBUTION),"sid kinetic lunar"))
 	CMAKE_OPTS += -DGDAL_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgdal.so
 endif
 
@@ -325,7 +325,7 @@ override_dh_auto_install:
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis/usr/bin/qgis
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis/usr/bin/qgis_process
 
-ifneq (,$(findstring $(DISTRIBUTION),"jammy kinetic sid"))
+ifneq (,$(findstring $(DISTRIBUTION),"jammy kinetic lunar sid"))
 	mkdir -p $(CURDIR)/debian/libqgis-dev
 	cd $(CURDIR)/debian/tmp && find . -name "*.sip" | tar --remove-files -cf - -T - | tar -C $(CURDIR)/debian/libqgis-dev -xf - --xform 's,\./usr/lib/python./dist-packages/qgis,usr/share/sip/qgis,'
 	find $(CURDIR)/debian/tmp/ -depth -empty -type d -delete
@@ -351,7 +351,7 @@ override_dh_installmime:
 override_dh_python3:
 	dh_python3
 	dh_python3 usr/share/qgis/grass/scripts
-ifeq (,$(findstring $(DISTRIBUTION),"jammy kinetic sid"))
+ifeq (,$(findstring $(DISTRIBUTION),"jammy kinetic lunar sid"))
 	dh_sip3 -ppython3-qgis
 endif
 
