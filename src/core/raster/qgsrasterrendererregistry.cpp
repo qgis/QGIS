@@ -115,13 +115,14 @@ QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
     return nullptr;
   }
 
-
-  QgsRasterRenderer *renderer = nullptr;
+  std::unique_ptr< QgsRasterRenderer > renderer;
   switch ( drawingStyle )
   {
     case QgsRaster::PalettedColor:
     {
       const int grayBand = 1; //reasonable default
+
+      // first preference -- use attribute table to generate classes
       if ( provider->attributeTable( grayBand ) )
       {
         std::unique_ptr<QgsColorRamp> ramp;
@@ -130,19 +131,36 @@ QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
           ramp = std::make_unique< QgsRandomColorRamp >();
         }
         const QgsPalettedRasterRenderer::MultiValueClassData classes = QgsPalettedRasterRenderer::rasterAttributeTableToClassData( provider->attributeTable( grayBand ), -1, ramp.get() );
-        renderer = new QgsPalettedRasterRenderer( provider,
-            grayBand,
-            classes );
+        if ( !classes.empty() )
+        {
+          renderer = std::make_unique< QgsPalettedRasterRenderer >( provider, grayBand, classes );
+        }
       }
-      else
+
+      // second preference -- use raster color table to generate classes
+      if ( !renderer )
       {
         const QgsPalettedRasterRenderer::ClassData classes = QgsPalettedRasterRenderer::colorTableToClassData( provider->colorTable( grayBand ) );
-        renderer = new QgsPalettedRasterRenderer( provider,
-            grayBand,
-            classes );
+        if ( !classes.empty() )
+        {
+          renderer = std::make_unique< QgsPalettedRasterRenderer >( provider, grayBand, classes );
+        }
+      }
+
+      // last preference -- just fallback to single band gray renderer if we couldn't determine color palette
+      if ( ! renderer )
+      {
+        renderer = std::make_unique< QgsSingleBandGrayRenderer >( provider, grayBand );
+
+        QgsContrastEnhancement *ce = new QgsContrastEnhancement( ( Qgis::DataType )(
+              provider->dataType( grayBand ) ) );
+
+        // Default contrast enhancement is set from QgsRasterLayer, it has already setContrastEnhancementAlgorithm(). Default enhancement must only be set if default style was not loaded (to avoid stats calculation).
+        qgis::down_cast< QgsSingleBandGrayRenderer * >( renderer.get() )->setContrastEnhancement( ce );
       }
     }
     break;
+
     case QgsRaster::MultiBandSingleBandGray:
     case QgsRaster::SingleBandGray:
     {
@@ -152,7 +170,7 @@ QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
       QString ratErrorMessage;
       if ( QgsRasterAttributeTable *rat = provider->attributeTable( grayBand ); rat && rat->isValid( &ratErrorMessage ) )
       {
-        renderer = rat->createRenderer( provider, grayBand );
+        renderer.reset( rat->createRenderer( provider, grayBand ) );
       }
 
       if ( ! ratErrorMessage.isEmpty() )
@@ -162,16 +180,17 @@ QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
 
       if ( ! renderer )
       {
-        renderer = new QgsSingleBandGrayRenderer( provider, grayBand );
+        renderer = std::make_unique< QgsSingleBandGrayRenderer >( provider, grayBand );
 
         QgsContrastEnhancement *ce = new QgsContrastEnhancement( ( Qgis::DataType )(
               provider->dataType( grayBand ) ) );
 
         // Default contrast enhancement is set from QgsRasterLayer, it has already setContrastEnhancementAlgorithm(). Default enhancement must only be set if default style was not loaded (to avoid stats calculation).
-        ( ( QgsSingleBandGrayRenderer * )renderer )->setContrastEnhancement( ce );
+        qgis::down_cast< QgsSingleBandGrayRenderer * >( renderer.get() )->setContrastEnhancement( ce );
       }
       break;
     }
+
     case QgsRaster::SingleBandPseudoColor:
     {
       const int bandNo = 1;
@@ -180,7 +199,7 @@ QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
       // TODO: avoid calculating statistics if not necessary (default style loaded)
       minMaxValuesForBand( bandNo, provider, minValue, maxValue );
       QgsRasterShader *shader = new QgsRasterShader( minValue, maxValue );
-      renderer = new QgsSingleBandPseudoColorRenderer( provider, bandNo, shader );
+      renderer = std::make_unique< QgsSingleBandPseudoColorRenderer >( provider, bandNo, shader );
       break;
     }
     case QgsRaster::MultiBandColor:
@@ -203,19 +222,19 @@ QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
         blueBand = -1;
       }
 
-      renderer = new QgsMultiBandColorRenderer( provider, redBand, greenBand, blueBand );
+      renderer = std::make_unique< QgsMultiBandColorRenderer >( provider, redBand, greenBand, blueBand );
       break;
     }
     case QgsRaster::SingleBandColorDataStyle:
     {
-      renderer = new QgsSingleBandColorDataRenderer( provider, 1 );
+      renderer = std::make_unique< QgsSingleBandColorDataRenderer >( provider, 1 );
       break;
     }
     default:
       return nullptr;
   }
 
-  QgsRasterTransparency *tr = new QgsRasterTransparency(); //renderer takes ownership
+  std::unique_ptr< QgsRasterTransparency > tr = std::make_unique< QgsRasterTransparency >();
   const int bandCount = renderer->usesBands().size();
   if ( bandCount == 1 )
   {
@@ -227,8 +246,8 @@ QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
     const QList<QgsRasterTransparency::TransparentThreeValuePixel> transparentThreeValueList;
     tr->setTransparentThreeValuePixelList( transparentThreeValueList );
   }
-  renderer->setRasterTransparency( tr );
-  return renderer;
+  renderer->setRasterTransparency( tr.release() );
+  return renderer.release();
 }
 
 bool QgsRasterRendererRegistry::minMaxValuesForBand( int band, QgsRasterDataProvider *provider, double &minValue, double &maxValue ) const

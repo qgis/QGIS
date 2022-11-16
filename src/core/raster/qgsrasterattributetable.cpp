@@ -1478,7 +1478,6 @@ QgsGradientColorRamp QgsRasterAttributeTable::colorRamp( QStringList &labels, co
 
 QgsRasterRenderer *QgsRasterAttributeTable::createRenderer( QgsRasterDataProvider *provider, const int bandNumber, const int classificationColumn )
 {
-
   if ( ! provider )
   {
     return nullptr;
@@ -1494,6 +1493,9 @@ QgsRasterRenderer *QgsRasterAttributeTable::createRenderer( QgsRasterDataProvide
       ramp.reset( new QgsRandomColorRamp() );
     }
     const QgsPalettedRasterRenderer::MultiValueClassData classes = QgsPalettedRasterRenderer::rasterAttributeTableToClassData( this, classificationColumn, ramp.get() );
+    if ( classes.isEmpty() )
+      return nullptr;
+
     renderer = std::make_unique<QgsPalettedRasterRenderer>( provider,
                bandNumber,
                classes );
