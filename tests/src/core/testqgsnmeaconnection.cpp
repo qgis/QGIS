@@ -116,7 +116,7 @@ void TestQgsNmeaConnection::testBasic()
 
   info =  connection.push( QStringLiteral( "$GPGSV,3,3,12,17,31,279,,28,27,320,,23,23,026,,14,22,060,*7B" ) );
   QVERIFY( info.isValid() );
-  QVERIFY( info.satInfoComplete );
+  QVERIFY( !info.satInfoComplete );
   QCOMPARE( info.bestFixStatus( constellation ), Qgis::GpsFixStatus::NoData );
   QCOMPARE( info.qualityDescription(), QStringLiteral( "Unknown (-1)" ) );
   QCOMPARE( info.latitude, 0 );
@@ -146,7 +146,7 @@ void TestQgsNmeaConnection::testBasic()
 
   info = connection.push( QStringLiteral( "$GPGSA,A,3,07,05,16,26,,,,,,,,,3.4,1.4,3.1*33" ) );
   QVERIFY( info.isValid() );
-  QVERIFY( info.satInfoComplete );
+  QVERIFY( !info.satInfoComplete );
   QCOMPARE( info.bestFixStatus( constellation ), Qgis::GpsFixStatus::Fix3D );
   QCOMPARE( constellation, Qgis::GnssConstellation::Gps );
   QCOMPARE( info.qualityDescription(), QStringLiteral( "Autonomous" ) );
@@ -177,7 +177,7 @@ void TestQgsNmeaConnection::testBasic()
 
   info = connection.push( QStringLiteral( "$GPGSA,A,3,07,05,16,26,,,,,,,,,3.4,1.4,3.1*33" ) );
   QVERIFY( info.isValid() );
-  QVERIFY( info.satInfoComplete );
+  QVERIFY( !info.satInfoComplete );
   QCOMPARE( info.bestFixStatus( constellation ), Qgis::GpsFixStatus::Fix3D );
   QCOMPARE( info.qualityDescription(), QStringLiteral( "Autonomous" ) );
   QGSCOMPARENEAR( info.latitude, 69.6442183333, 0.00001 );
