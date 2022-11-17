@@ -3479,14 +3479,7 @@ bool QgsVectorLayer::deleteFeatures( const QgsFeatureIds &fids, QgsVectorLayer::
   }
   else
   {
-    if ( mEditBuffer )
-    {
-      res = mEditBuffer->deleteFeatures( fids );
-    }
-    else
-    {
-      res = false;
-    }
+    res = mEditBuffer && mEditBuffer->deleteFeatures( fids );
   }
 
   if ( res )
