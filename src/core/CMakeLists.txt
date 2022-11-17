@@ -67,8 +67,10 @@ set(QGIS_CORE_SRCS
   gps/qgsgpsconnectionregistry.cpp
   gps/qgsgpsdconnection.cpp
   gps/qgsgpsdetector.cpp
+  gps/qgsgpsinformation.cpp
   gps/qgsgpslogger.cpp
   gps/qgsnmeaconnection.cpp
+  gps/qgssatelliteinformation.cpp
   gps/qgsvectorlayergpslogger.cpp
 
   plot/qgsplot.cpp
@@ -1404,8 +1406,10 @@ set(QGIS_CORE_HDRS
   gps/qgsgpsconnection.h
   gps/qgsgpsdconnection.h
   gps/qgsgpsdetector.h
+  gps/qgsgpsinformation.h
   gps/qgsgpslogger.h
   gps/qgsnmeaconnection.h
+  gps/qgssatelliteinformation.h
   gps/qgsvectorlayergpslogger.h
 
   labeling/qgscalloutposition.h
