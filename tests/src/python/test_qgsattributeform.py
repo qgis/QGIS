@@ -119,7 +119,7 @@ class TestQgsAttributeForm(unittest.TestCase):
 
     def test_duplicated_widgets_multiedit(self):
         """
-        Test multiedit whith duplicated widgets
+        Test multiedit with duplicated widgets
         """
 
         field_type = 'integer'
