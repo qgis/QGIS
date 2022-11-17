@@ -1018,7 +1018,7 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
     }
 
     // See https://docs.microsoft.com/en-us/previous-versions/software-testing/cc441928(v=msdn.10)
-    const QString sampleFilter = QString( "(ABS(CAST((BINARY_CHECKSUM([%1])) as int)) % 100) = 42" ).arg( cols );
+    const QString sampleFilter = QString( "(ABS(CAST((BINARY_CHECKSUM(%1)) as int)) % 100) = 42" ).arg( cols );
 
     const QString statementSample = statement + ( mSqlWhereClause.isEmpty() ? " WHERE " : " AND " ) + sampleFilter;
 
