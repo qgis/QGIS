@@ -874,7 +874,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
             'FEATURE_COUNT=10&FILTER=testlayer%20%C3%A8%C3%A9' +
             urllib.parse.quote(':"XXXXXXXXXNAMEXXXXXXX" = \'two\''))
 
-        self.assertEqual(response_body.decode('utf8'), '<ServiceExceptionReport xmlns="http://www.opengis.net/ogc" version="1.3.0">\n <ServiceException code="InvalidParameterValue">Filter not valid for layer testlayer èé: check the filter syntax and the field names.</ServiceException>\n</ServiceExceptionReport>\n')
+        self.assertEqual(response_body.decode('utf8'), '<?xml version="1.0" encoding="UTF-8"?>\n<ServiceExceptionReport xmlns="http://www.opengis.net/ogc" version="1.3.0">\n <ServiceException code="InvalidParameterValue">Filter not valid for layer testlayer èé: check the filter syntax and the field names.</ServiceException>\n</ServiceExceptionReport>\n')
 
     def testGetFeatureInfoFilterAllowedExtraTokens(self):
         """Test GetFeatureInfo with forbidden and extra tokens
