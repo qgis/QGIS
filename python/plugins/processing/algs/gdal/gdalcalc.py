@@ -50,6 +50,10 @@ class gdalcalc(GdalAlgorithm):
     BAND_E = 'BAND_E'
     BAND_F = 'BAND_F'
     FORMULA = 'FORMULA'
+    # TODO QGIS 4.0 : Rename EXTENT_OPT to EXTENT
+    EXTENT_OPT = 'EXTENT_OPT'
+    EXTENT_OPTIONS = ['ignore', 'fail', 'union', 'intersect']
+    # TODO QGIS 4.0 : Rename EXTENT to PROJWIN or CUSTOM_EXTENT
     EXTENT = 'PROJWIN'
     OUTPUT = 'OUTPUT'
     NO_DATA = 'NO_DATA'
@@ -142,6 +146,15 @@ class gdalcalc(GdalAlgorithm):
                 optional=True))
 
         if GdalUtils.version() >= 3030000:
+            extent_opt_param = QgsProcessingParameterEnum(
+                self.EXTENT_OPT,
+                self.tr('Handling of extent differences'),
+                options=[o.title() for o in self.EXTENT_OPTIONS],
+                defaultValue=0)
+            extent_opt_param.setHelp(self.tr('This option determines how to handle rasters with different extents'))
+            self.addParameter(extent_opt_param)
+
+        if GdalUtils.version() >= 3030000:
             extent_param = QgsProcessingParameterExtent(self.EXTENT,
                                                         self.tr('Output extent'),
                                                         optional=True)
@@ -192,11 +205,6 @@ class gdalcalc(GdalAlgorithm):
     def commandName(self):
         return 'gdal_calc'
 
-    def processAlgorithm(self, parameters, context, feedback):
-        if GdalUtils.version() < 3030000 and self.EXTENT in parameters.keys():
-            raise QgsProcessingException(self.tr('The output extent option is only available on GDAL 3.3 or later'))
-        return GdalAlgorithm.processAlgorithm(self, parameters, context, feedback)
-
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
 
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
@@ -222,6 +230,38 @@ class gdalcalc(GdalAlgorithm):
         layer = self.parameterAsRasterLayer(parameters, self.INPUT_A, context)
         if layer is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT_A))
+
+        def all_equal(iterator):
+            iterator = iter(iterator)
+            try:
+                first = next(iterator)
+            except StopIteration:
+                return True
+            return all(first == x for x in iterator)
+
+        # Check GDAL version for projwin and extent options (GDAL 3.3 is required)
+        if GdalUtils.version() < 3030000 and self.EXTENT in parameters.keys():
+            raise QgsProcessingException(self.tr('The custom output extent option (--projwin) is only available on GDAL 3.3 or later'))
+        if GdalUtils.version() < 3030000 and self.EXTENT_OPT in parameters.keys():
+            raise QgsProcessingException(self.tr('The output extent option (--extent) is only available on GDAL 3.3 or later'))
+        # --projwin and --extent option are mutually exclusive
+        if (self.EXTENT in parameters.keys() and parameters[self.EXTENT] is not None) and (self.EXTENT_OPT in parameters.keys() and parameters[self.EXTENT_OPT] != 0):
+            raise QgsProcessingException(self.tr('The custom output extent option (--projwin) and output extent option (--extent) are mutually exclusive'))
+        # If extent option is defined, pixel size and SRS of all input raster must be the same
+        if self.EXTENT_OPT in parameters.keys() and parameters[self.EXTENT_OPT] != 0:
+            pixel_size_X, pixel_size_Y, srs = [], [], []
+            for input_layer in [self.INPUT_A, self.INPUT_B, self.INPUT_C, self.INPUT_D, self.INPUT_E, self.INPUT_F]:
+                if input_layer in parameters and parameters[input_layer] is not None:
+                    layer = self.parameterAsRasterLayer(parameters, input_layer, context)
+                    pixel_size_X.append(layer.rasterUnitsPerPixelX())
+                    pixel_size_Y.append(layer.rasterUnitsPerPixelY())
+                    srs.append(layer.crs().authid())
+            if not (all_equal(pixel_size_X) and all_equal(pixel_size_Y) and all_equal(srs)):
+                raise QgsProcessingException(self.tr('For all output extent options, the pixel size (resolution) and SRS (Spatial Reference System) of all the input rasters must be the same'))
+
+        extent = self.EXTENT_OPTIONS[self.parameterAsEnum(parameters, self.EXTENT_OPT, context)]
+        if extent != 'ignore':
+            arguments.append(f'--extent={extent}')
 
         bbox = self.parameterAsExtent(parameters, self.EXTENT, context, layer.crs())
         if not bbox.isNull():

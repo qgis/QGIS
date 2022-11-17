@@ -685,6 +685,40 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                     ['gdal_calc.py',
                      '--overwrite --calc "{}" --format JPEG --type Float32 --projwin 1.0 4.0 3.0 2.0 -A {} --A_band 1 --outfile {}'.format(formula, source, output)])
 
+                # Inputs A and B share same pixel size and CRS
+                self.assertEqual(
+                    alg.getConsoleCommands({'INPUT_A': source,
+                                            'BAND_A': 1,
+                                            'INPUT_B': source,
+                                            'BAND_B': 1,
+                                            'FORMULA': formula,
+                                            'EXTENT_OPT': 3,
+                                            'OUTPUT': output}, context, feedback),
+                    ['gdal_calc.py',
+                     '--overwrite --calc "{}" --format JPEG --type Float32 --extent=intersect -A {} --A_band 1 -B {} --B_band 1 --outfile {}'.format(formula, source, source, output)])
+
+                # Test mutually exclusive --extent and --projwin. Should raise an exception
+                self.assertRaises(
+                    QgsProcessingException,
+                    lambda: alg.getConsoleCommands({'INPUT_A': source,
+                                                    'BAND_A': 1,
+                                                    'FORMULA': formula,
+                                                    'PROJWIN': extent,
+                                                    'EXTENT_OPT': 3,
+                                                    'OUTPUT': output}, context, feedback))
+
+                # Inputs A and B do not share same pixel size and CRS. Should raise an exception
+                source2 = os.path.join(testDataPath, 'raster.tif')
+                self.assertRaises(
+                    QgsProcessingException,
+                    lambda: alg.getConsoleCommands({'INPUT_A': source,
+                                                    'BAND_A': 1,
+                                                    'INPUT_B': source2,
+                                                    'BAND_B': 1,
+                                                    'FORMULA': formula,
+                                                    'EXTENT_OPT': 3,
+                                                    'OUTPUT': output}, context, feedback))
+
             # check that formula is not escaped and formula is returned as it is
             formula = 'A * 2'  # <--- add spaces in the formula
             self.assertEqual(
