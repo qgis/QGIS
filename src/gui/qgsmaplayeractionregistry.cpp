@@ -16,6 +16,7 @@
 #include "qgsmaplayeractionregistry.h"
 #include "qgsgui.h"
 #include "qgsvectorlayer.h"
+#include "qgsattributedialog.h"
 
 QgsMapLayerAction::QgsMapLayerAction( const QString &name, QObject *parent, Targets targets, const QIcon &icon, QgsMapLayerAction::Flags flags )
   : QAction( icon, name, parent )
@@ -195,3 +196,21 @@ QgsMapLayerAction *QgsMapLayerActionRegistry::defaultActionForLayer( QgsMapLayer
 
   return mDefaultLayerActionMap[ layer ];
 }
+
+//
+// QgsMapLayerActionContext
+//
+
+QgsMapLayerActionContext::QgsMapLayerActionContext() = default;
+
+QgsAttributeDialog *QgsMapLayerActionContext::attributeDialog() const
+{
+  return mAttributeDialog;
+}
+
+void QgsMapLayerActionContext::setAttributeDialog( QgsAttributeDialog *dialog )
+{
+  mAttributeDialog = dialog;
+}
+
+QgsMapLayerActionContextGenerator::~QgsMapLayerActionContextGenerator() = default;
