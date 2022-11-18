@@ -122,7 +122,7 @@ cmake \
  -DCXX_EXTRA_FLAGS="${CLANG_WARNINGS}" \
  -DWERROR=TRUE \
  -DWITH_CLAZY=${WITH_CLAZY} \
- ${CMAKE_EXTRA_ARGS[*]} ..
+ "${CMAKE_EXTRA_ARGS[@]}" ..
 echo "::endgroup::"
 
 # Workaround https://github.com/actions/checkout/issues/760
