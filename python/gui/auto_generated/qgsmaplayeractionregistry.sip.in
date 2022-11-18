@@ -124,9 +124,23 @@ Layer behavior flags.
 .. versionadded:: 3.0
 %End
 
-    virtual bool canRunUsingLayer( QgsMapLayer *layer ) const;
+ virtual bool canRunUsingLayer( QgsMapLayer *layer ) const /Deprecated/;
 %Docstring
-True if action can run using the specified layer
+Returns ``True`` if the action can run using the specified layer.
+
+.. deprecated::
+   use the version with :py:class:`QgsMapLayerActionContext` instead.
+%End
+
+    virtual bool canRunUsingLayer( QgsMapLayer *layer, const QgsMapLayerActionContext &context ) const;
+%Docstring
+Returns ``True`` if the action can run using the specified layer.
+
+.. note::
+
+   Classes which implement this should return ``False`` to the deprecated :py:func:`~QgsMapLayerAction.canRunUsingLayer` method which does not accept a :py:class:`QgsMapLayerActionContext` argument.
+
+.. versionadded:: 3.30
 %End
 
  virtual void triggerForFeatures( QgsMapLayer *layer, const QList<QgsFeature> &featureList ) /Deprecated/;
@@ -269,9 +283,11 @@ QgsMapLayerActionRegistry is not usually directly created, but rather accessed t
 Adds a map layer action to the registry
 %End
 
-    QList<QgsMapLayerAction *> mapLayerActions( QgsMapLayer *layer, QgsMapLayerAction::Targets targets = QgsMapLayerAction::AllActions );
+    QList<QgsMapLayerAction *> mapLayerActions( QgsMapLayer *layer, QgsMapLayerAction::Targets targets = QgsMapLayerAction::AllActions, const QgsMapLayerActionContext &context = QgsMapLayerActionContext() );
 %Docstring
-Returns the map layer actions which can run on the specified layer
+Returns the map layer actions which can run on the specified layer.
+
+The ``context`` argument was added in QGIS 3.30.
 %End
 
     bool removeMapLayerAction( QgsMapLayerAction *action );

@@ -413,11 +413,11 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         else
           target = QgsMapLayerAction::Target::MultipleFeatures;
 
-        const QList<QgsMapLayerAction *> constRegisteredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer, target );
+        QgsMapLayerActionContext context;
+        const QList<QgsMapLayerAction *> constRegisteredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer, target, context );
         if ( !constRegisteredActions.isEmpty() )
         {
           QMenu *actionMenu = menu->addMenu( tr( "Actions on Selection (%1)" ).arg( selectionCount ) );
-          QgsMapLayerActionContext context;
           for ( QgsMapLayerAction *action : constRegisteredActions )
           {
             if ( target == QgsMapLayerAction::Target::SingleFeature )
