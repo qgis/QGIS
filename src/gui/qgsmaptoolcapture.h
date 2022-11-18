@@ -155,6 +155,8 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * Returns the rubberBand currently owned by this map tool and
      * transfers ownership to the caller.
      *
+     * May be NULLPTR.
+     *
      * \since QGIS 3.8
      */
     QgsRubberBand *takeRubberBand() SIP_FACTORY;
