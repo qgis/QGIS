@@ -7481,7 +7481,8 @@ void QgisApp::refreshFeatureActions()
   }
 
   //add actions registered in QgsMapLayerActionRegistry
-  QList<QgsMapLayerAction *> registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer, QgsMapLayerAction::SingleFeature );
+  QgsMapLayerActionContext context;
+  QList<QgsMapLayerAction *> registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer, QgsMapLayerAction::SingleFeature, context );
   if ( !actions.isEmpty() && !registeredActions.empty() )
   {
     //add a separator between user defined and standard actions
@@ -14894,7 +14895,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
 
       bool isEditable = vlayer->isEditable();
       bool layerHasSelection = vlayer->selectedFeatureCount() > 0;
-      bool layerHasActions = !vlayer->actions()->actions( QStringLiteral( "Canvas" ) ).isEmpty() || !QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer ).isEmpty();
+      QgsMapLayerActionContext context;
+      bool layerHasActions = !vlayer->actions()->actions( QStringLiteral( "Canvas" ) ).isEmpty() || !QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer, QgsMapLayerAction::AllActions, context ).isEmpty();
       bool isSpatial = vlayer->isSpatial();
 
       mActionLocalHistogramStretch->setEnabled( false );
@@ -15526,7 +15528,8 @@ void QgisApp::refreshActionFeatureAction()
   if ( !vlayer )
     return;
 
-  bool layerHasActions = !vlayer->actions()->actions( QStringLiteral( "Canvas" ) ).isEmpty() || !QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer ).isEmpty();
+  QgsMapLayerActionContext context;
+  bool layerHasActions = !vlayer->actions()->actions( QStringLiteral( "Canvas" ) ).isEmpty() || !QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer, QgsMapLayerAction::AllActions, context ).isEmpty();
   mActionFeatureAction->setEnabled( layerHasActions );
 }
 

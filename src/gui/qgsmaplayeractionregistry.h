@@ -141,8 +141,21 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
      */
     QgsMapLayerAction::Flags flags() const;
 
-    //! True if action can run using the specified layer
-    virtual bool canRunUsingLayer( QgsMapLayer *layer ) const;
+    /**
+     * Returns TRUE if the action can run using the specified layer.
+     *
+     * \deprecated use the version with QgsMapLayerActionContext instead.
+     */
+    Q_DECL_DEPRECATED virtual bool canRunUsingLayer( QgsMapLayer *layer ) const SIP_DEPRECATED;
+
+    /**
+     * Returns TRUE if the action can run using the specified layer.
+     *
+     * \note Classes which implement this should return FALSE to the deprecated canRunUsingLayer() method which does not accept a QgsMapLayerActionContext argument.
+     *
+     * \since QGIS 3.30
+     */
+    virtual bool canRunUsingLayer( QgsMapLayer *layer, const QgsMapLayerActionContext &context ) const;
 
     /**
      * Triggers the action with the specified layer and list of feature.
@@ -284,8 +297,12 @@ class GUI_EXPORT QgsMapLayerActionRegistry : public QObject
     //! Adds a map layer action to the registry
     void addMapLayerAction( QgsMapLayerAction *action );
 
-    //! Returns the map layer actions which can run on the specified layer
-    QList<QgsMapLayerAction *> mapLayerActions( QgsMapLayer *layer, QgsMapLayerAction::Targets targets = QgsMapLayerAction::AllActions );
+    /**
+     * Returns the map layer actions which can run on the specified layer.
+     *
+     * The \a context argument was added in QGIS 3.30.
+     */
+    QList<QgsMapLayerAction *> mapLayerActions( QgsMapLayer *layer, QgsMapLayerAction::Targets targets = QgsMapLayerAction::AllActions, const QgsMapLayerActionContext &context = QgsMapLayerActionContext() );
 
     //! Removes a map layer action from the registry
     bool removeMapLayerAction( QgsMapLayerAction *action );

@@ -19,7 +19,6 @@
 
 #include "qgsattributeform.h"
 #include "qgshighlight.h"
-#include "qgsapplication.h"
 #include "qgssettings.h"
 #include "qgsmessagebar.h"
 
@@ -177,3 +176,4 @@ QgsMapLayerActionContext QgsAttributeDialog::createActionContext()
   context.setAttributeDialog( this );
   return context;
 }
+

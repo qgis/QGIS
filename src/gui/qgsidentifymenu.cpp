@@ -238,7 +238,8 @@ void QgsIdentifyMenu::addRasterLayer( QgsMapLayer *layer )
   QMenu *layerMenu = nullptr;
 
   QList<QgsMapLayerAction *> separators = QList<QgsMapLayerAction *>();
-  QList<QgsMapLayerAction *> layerActions = mCustomActionRegistry.mapLayerActions( layer, QgsMapLayerAction::Layer );
+  QgsMapLayerActionContext context;
+  QList<QgsMapLayerAction *> layerActions = mCustomActionRegistry.mapLayerActions( layer, QgsMapLayerAction::Layer, context );
   const int nCustomActions = layerActions.count();
   if ( nCustomActions )
   {
@@ -246,7 +247,7 @@ void QgsIdentifyMenu::addRasterLayer( QgsMapLayer *layer )
   }
   if ( mShowFeatureActions )
   {
-    layerActions.append( QgsGui::mapLayerActionRegistry()->mapLayerActions( layer, QgsMapLayerAction::Layer ) );
+    layerActions.append( QgsGui::mapLayerActionRegistry()->mapLayerActions( layer, QgsMapLayerAction::Layer, context ) );
     if ( layerActions.count() > nCustomActions )
     {
       separators.append( layerActions[nCustomActions] );
@@ -306,7 +307,8 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
   const QgsMapLayerAction::Targets targets = results.count() > 1 ? QgsMapLayerAction::Layer | QgsMapLayerAction::MultipleFeatures : QgsMapLayerAction::Layer;
 
   QList<QgsMapLayerAction *> separators = QList<QgsMapLayerAction *>();
-  QList<QgsMapLayerAction *> layerActions = mCustomActionRegistry.mapLayerActions( layer, targets );
+  QgsMapLayerActionContext actionContext;
+  QList<QgsMapLayerAction *> layerActions = mCustomActionRegistry.mapLayerActions( layer, targets, actionContext );
   const int nCustomActions = layerActions.count();
   if ( nCustomActions )
   {
@@ -314,7 +316,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
   }
   if ( mShowFeatureActions )
   {
-    layerActions << QgsGui::mapLayerActionRegistry()->mapLayerActions( layer, targets );
+    layerActions << QgsGui::mapLayerActionRegistry()->mapLayerActions( layer, targets, actionContext );
 
     if ( layerActions.count() > nCustomActions )
     {
@@ -333,7 +335,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
   // i.e custom actions or map layer actions at feature level
   if ( !createMenu )
   {
-    createMenu = !mCustomActionRegistry.mapLayerActions( layer, QgsMapLayerAction::SingleFeature ).isEmpty();
+    createMenu = !mCustomActionRegistry.mapLayerActions( layer, QgsMapLayerAction::SingleFeature, actionContext ).isEmpty();
     if ( !createMenu && mShowFeatureActions )
     {
       QgsActionMenu *featureActionMenu = new QgsActionMenu( layer, results[0].mFeature, QStringLiteral( "Feature" ), this );
@@ -410,7 +412,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
     QMenu *featureMenu = nullptr;
     QgsActionMenu *featureActionMenu = nullptr;
 
-    const QList<QgsMapLayerAction *> customFeatureActions = mCustomActionRegistry.mapLayerActions( layer, QgsMapLayerAction::SingleFeature );
+    const QList<QgsMapLayerAction *> customFeatureActions = mCustomActionRegistry.mapLayerActions( layer, QgsMapLayerAction::SingleFeature, actionContext );
     if ( mShowFeatureActions )
     {
       featureActionMenu = new QgsActionMenu( layer, result.mFeature, QStringLiteral( "Feature" ), layerMenu );

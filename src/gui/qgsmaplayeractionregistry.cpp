@@ -56,6 +56,11 @@ QgsMapLayerAction::Flags QgsMapLayerAction::flags() const
 
 bool QgsMapLayerAction::canRunUsingLayer( QgsMapLayer *layer ) const
 {
+  return canRunUsingLayer( layer, QgsMapLayerActionContext() );
+}
+
+bool QgsMapLayerAction::canRunUsingLayer( QgsMapLayer *layer, const QgsMapLayerActionContext & ) const
+{
   if ( mFlags & EnabledOnlyWhenEditable )
   {
     // action is only enabled for editable layers
@@ -144,14 +149,20 @@ void QgsMapLayerActionRegistry::addMapLayerAction( QgsMapLayerAction *action )
   emit changed();
 }
 
-QList< QgsMapLayerAction * > QgsMapLayerActionRegistry::mapLayerActions( QgsMapLayer *layer, QgsMapLayerAction::Targets targets )
+QList< QgsMapLayerAction * > QgsMapLayerActionRegistry::mapLayerActions( QgsMapLayer *layer, QgsMapLayerAction::Targets targets, const QgsMapLayerActionContext &context )
 {
   QList< QgsMapLayerAction * > validActions;
 
-  const auto constMMapLayerActionList = mMapLayerActionList;
-  for ( QgsMapLayerAction *action : constMMapLayerActionList )
+  for ( QgsMapLayerAction *action : std::as_const( mMapLayerActionList ) )
   {
-    if ( action->canRunUsingLayer( layer ) && ( targets & action->targets() ) )
+    bool canRun = false;
+    Q_NOWARN_DEPRECATED_PUSH
+    canRun = action->canRunUsingLayer( layer );
+    Q_NOWARN_DEPRECATED_POP
+    if ( !canRun )
+      canRun = action->canRunUsingLayer( layer, context );
+
+    if ( canRun && ( targets & action->targets() ) )
     {
       validActions.append( action );
     }

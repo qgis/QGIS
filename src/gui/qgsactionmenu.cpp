@@ -42,6 +42,7 @@ QgsActionMenu::QgsActionMenu( QgsVectorLayer *layer, const QgsFeatureId fid, con
 void QgsActionMenu::setActionContextGenerator( QgsMapLayerActionContextGenerator *generator )
 {
   mContextGenerator = generator;
+  reloadActions();
 }
 
 void QgsActionMenu::init()
@@ -159,7 +160,7 @@ void QgsActionMenu::reloadActions()
     mVisibleActionCount++;
   }
 
-  const QList<QgsMapLayerAction *> mapLayerActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer, QgsMapLayerAction::SingleFeature );
+  const QList<QgsMapLayerAction *> mapLayerActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer, QgsMapLayerAction::SingleFeature, mContextGenerator ? mContextGenerator->createActionContext() : QgsMapLayerActionContext() );
 
   if ( !mapLayerActions.isEmpty() )
   {
