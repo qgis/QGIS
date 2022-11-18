@@ -497,7 +497,11 @@ void QgsAttributeTableView::actionTriggered()
     QgsMapLayerAction *layerAction = qobject_cast<QgsMapLayerAction *>( object );
     if ( layerAction )
     {
+      QgsMapLayerActionContext context;
+      Q_NOWARN_DEPRECATED_PUSH
       layerAction->triggerForFeature( mFilterModel->layer(), f );
+      Q_NOWARN_DEPRECATED_POP
+      layerAction->triggerForFeature( mFilterModel->layer(), f, context );
     }
   }
 }

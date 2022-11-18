@@ -93,7 +93,12 @@ void QgsActionMenu::triggerAction()
   if ( data.actionType == MapLayerAction )
   {
     QgsMapLayerAction *mapLayerAction = data.actionData.value<QgsMapLayerAction *>();
+
+    QgsMapLayerActionContext context;
+    Q_NOWARN_DEPRECATED_PUSH
     mapLayerAction->triggerForFeature( data.mapLayer, mFeature );
+    Q_NOWARN_DEPRECATED_POP
+    mapLayerAction->triggerForFeature( data.mapLayer, mFeature, context );
   }
   else if ( data.actionType == AttributeAction )
   {

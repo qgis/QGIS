@@ -909,10 +909,13 @@ void QgsAttributeTableModel::executeAction( QUuid action, const QModelIndex &idx
   mLayer->actions()->doAction( action, f, fieldIdx( idx.column() ) );
 }
 
-void QgsAttributeTableModel::executeMapLayerAction( QgsMapLayerAction *action, const QModelIndex &idx ) const
+void QgsAttributeTableModel::executeMapLayerAction( QgsMapLayerAction *action, const QModelIndex &idx, const QgsMapLayerActionContext &context ) const
 {
   const QgsFeature f = feature( idx );
+  Q_NOWARN_DEPRECATED_PUSH
   action->triggerForFeature( mLayer, f );
+  Q_NOWARN_DEPRECATED_POP
+  action->triggerForFeature( mLayer, f, context );
 }
 
 QgsFeature QgsAttributeTableModel::feature( const QModelIndex &idx ) const

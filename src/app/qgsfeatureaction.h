@@ -23,6 +23,7 @@
 #include <QPair>
 #include <QAction>
 #include <QUuid>
+#include <QPointer>
 #include "qgis_app.h"
 #include "qgshighlight.h"
 

@@ -417,15 +417,28 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         if ( !constRegisteredActions.isEmpty() )
         {
           QMenu *actionMenu = menu->addMenu( tr( "Actions on Selection (%1)" ).arg( selectionCount ) );
+          QgsMapLayerActionContext context;
           for ( QgsMapLayerAction *action : constRegisteredActions )
           {
             if ( target == QgsMapLayerAction::Target::SingleFeature )
             {
-              actionMenu->addAction( action->text(), action, [ = ]() { action->triggerForFeature( vlayer,  vlayer->selectedFeatures().at( 0 ) ); } );
+              actionMenu->addAction( action->text(), action, [ = ]()
+              {
+                Q_NOWARN_DEPRECATED_PUSH
+                action->triggerForFeature( vlayer,  vlayer->selectedFeatures().at( 0 ) );
+                Q_NOWARN_DEPRECATED_POP
+                action->triggerForFeature( vlayer,  vlayer->selectedFeatures().at( 0 ), context );
+              } );
             }
             else if ( target == QgsMapLayerAction::Target::MultipleFeatures )
             {
-              actionMenu->addAction( action->text(), action, [ = ]() {action->triggerForFeatures( vlayer, vlayer->selectedFeatures() );} );
+              actionMenu->addAction( action->text(), action, [ = ]()
+              {
+                Q_NOWARN_DEPRECATED_PUSH
+                action->triggerForFeatures( vlayer, vlayer->selectedFeatures() );
+                Q_NOWARN_DEPRECATED_POP
+                action->triggerForFeatures( vlayer, vlayer->selectedFeatures(), context );
+              } );
             }
           }
         }
