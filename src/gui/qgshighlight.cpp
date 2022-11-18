@@ -414,9 +414,9 @@ void QgsHighlight::paint( QPainter *p )
         setRenderContextVariables( p, mRenderContext );
 
         // default to 1.5 mm radius square points
-        double pointSizeRadius = 1.5;
+        double pointSizeRadius = mPointSizeRadiusMM;
         QgsUnitTypes::RenderUnit sizeUnit = QgsUnitTypes::RenderMillimeters;
-        PointSymbol symbol = Square;
+        PointSymbol symbol = mPointSymbol;
 
         // but for point clouds, use actual sizes (+a little margin!)
         if ( QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( mLayer ) )
