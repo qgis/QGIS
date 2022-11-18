@@ -53,14 +53,33 @@ QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas *canvas, CaptureMode mo
 {
 }
 
+std::unique_ptr<QgsHighlight> QgsMapToolAddFeature::createHighlight( QgsVectorLayer *layer, const QgsFeature &f )
+{
+  std::unique_ptr< QgsHighlight > highlight = std::make_unique< QgsHighlight >( mCanvas, f.geometry(), layer );
+  highlight->applyDefaultStyle();
+  return highlight;
+};
+
 bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, const QgsFeature &f, bool showModal )
 {
   QgsFeature feat( f );
   std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::mapToolCaptureScope( snappingMatches() ) );
   QgsFeatureAction *action = new QgsFeatureAction( tr( "add feature" ), feat, vlayer, QUuid(), -1, this );
+
+  std::unique_ptr< QgsHighlight > highlight;
   if ( QgsRubberBand *rb = takeRubberBand() )
+  {
     connect( action, &QgsFeatureAction::addFeatureFinished, rb, &QgsRubberBand::deleteLater );
-  const bool res = action->addFeature( QgsAttributeMap(), showModal, std::move( scope ) );
+  }
+  else
+  {
+    // if we didn't get a rubber band, then create manually a highlight for the geometry. This ensures
+    // that tools which don't create a rubber band (ie those which digitize single points) still have
+    // a visible way of representing the captured geometry
+    highlight = createHighlight( vlayer, f );
+  }
+
+  const bool res = action->addFeature( QgsAttributeMap(), showModal, std::move( scope ), false, std::move( highlight ) );
   if ( showModal )
     delete action;
   return res;

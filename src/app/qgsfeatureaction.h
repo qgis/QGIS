@@ -24,10 +24,10 @@
 #include <QAction>
 #include <QUuid>
 #include "qgis_app.h"
+#include "qgshighlight.h"
 
 class QgsIdentifyResultsDialog;
 class QgsVectorLayer;
-class QgsHighlight;
 class QgsAttributeDialog;
 class QgsExpressionContextScope;
 
@@ -47,13 +47,15 @@ class APP_EXPORT QgsFeatureAction : public QAction
      * \param scope              Scope of the expression
      * \param showModal          If the used dialog should be modal or not
      * \param hideParent         If the parent widget should be hidden, when the used dialog is opened
+     * \param highlight          Optional canvas highlight for feature
      *
      * \returns TRUE if feature was added if showModal is true. If showModal is FALSE, returns TRUE in every case
      */
     bool addFeature( const QgsAttributeMap &defaultAttributes = QgsAttributeMap(),
                      bool showModal = true,
                      std::unique_ptr<QgsExpressionContextScope >scope = std::unique_ptr< QgsExpressionContextScope >(),
-                     bool hideParent = false );
+                     bool hideParent = false,
+                     std::unique_ptr<QgsHighlight> highlight = std::unique_ptr<QgsHighlight>() );
 
   public slots:
     void execute();
