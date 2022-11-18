@@ -125,11 +125,11 @@ void QgsAttributeDialog::init( QgsVectorLayer *layer, QgsFeature *feature, const
   connect( layer, &QObject::destroyed, this, &QWidget::close );
 
   mMenu = new QgsActionMenu( layer, mAttributeForm->feature(), QStringLiteral( "Feature" ), this );
-  if ( !mMenu->menuActions().isEmpty() )
+  if ( !mMenu->isEmpty() )
   {
-    QMenuBar *menuBar = new QMenuBar( this );
-    menuBar->addMenu( mMenu );
-    layout()->setMenuBar( menuBar );
+    mMenuBar = new QMenuBar( this );
+    mMenuBar->addMenu( mMenu );
+    layout()->setMenuBar( mMenuBar );
   }
 
   restoreGeometry();
@@ -140,6 +140,19 @@ void QgsAttributeDialog::setMode( QgsAttributeEditorContext::Mode mode )
 {
   mAttributeForm->setMode( mode );
   mMenu->setMode( mode );
+
+  if ( !mMenu->isEmpty() && !mMenuBar )
+  {
+    mMenuBar = new QMenuBar( this );
+    mMenuBar->addMenu( mMenu );
+    layout()->setMenuBar( mMenuBar );
+  }
+  else if ( mMenu->isEmpty() && mMenuBar )
+  {
+    layout()->setMenuBar( nullptr );
+    delete mMenuBar;
+    mMenuBar = nullptr;
+  }
 }
 
 bool QgsAttributeDialog::event( QEvent *e )

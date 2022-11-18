@@ -119,6 +119,13 @@ class GUI_EXPORT QgsActionMenu : public QMenu
      */
     QList<QgsAction> menuActions();
 
+    /**
+     * Returns TRUE if the menu has no valid actions.
+     *
+     * \since QGIS 3.30
+     */
+    bool isEmpty() const;
+
   signals:
     void reinit();
 
@@ -132,12 +139,13 @@ class GUI_EXPORT QgsActionMenu : public QMenu
     QgsFeature feature();
 
     QgsVectorLayer *mLayer = nullptr;
+    int mVisibleActionCount = 0;
     QList<QgsAction> mActions;
     QgsFeature mFeature;
     QgsFeatureId mFeatureId;
     QString mActionScope;
     QgsExpressionContextScope mExpressionContextScope;
-    QgsAttributeEditorContext::Mode mMode;
+    QgsAttributeEditorContext::Mode mMode = QgsAttributeEditorContext::SingleEditMode;
 };
 
 
