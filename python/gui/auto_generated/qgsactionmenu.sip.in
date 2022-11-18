@@ -101,6 +101,13 @@ Returns menu actions
 .. versionadded:: 3.12
 %End
 
+    bool isEmpty() const;
+%Docstring
+Returns ``True`` if the menu has no valid actions.
+
+.. versionadded:: 3.30
+%End
+
   signals:
     void reinit();
 
