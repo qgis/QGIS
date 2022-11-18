@@ -92,7 +92,7 @@ cmake \
  -DCXX_EXTRA_FLAGS="${CLANG_WARNINGS}" \
  -DWERROR=TRUE \
  -DADD_CLAZY_CHECKS=ON \
- ${CMAKE_EXTRA_ARGS[*]} ..
+ "${CMAKE_EXTRA_ARGS[@]}" ..
 echo "::endgroup::"
 
 # Workaround https://github.com/actions/checkout/issues/760
