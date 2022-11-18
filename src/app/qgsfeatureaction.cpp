@@ -167,7 +167,7 @@ bool QgsFeatureAction::editFeature( bool showModal )
   return true;
 }
 
-bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, bool showModal, std::unique_ptr< QgsExpressionContextScope > scope, bool hideParent )
+bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, bool showModal, std::unique_ptr< QgsExpressionContextScope > scope, bool hideParent, std::unique_ptr<QgsHighlight> highlight )
 {
   if ( !mLayer || !mLayer->isEditable() )
     return false;
@@ -260,6 +260,8 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, boo
     dialog->setEditCommandMessage( text() );
     if ( scope )
       dialog->setExtraContextScope( new QgsExpressionContextScope( *scope ) );
+    if ( highlight )
+      dialog->setHighlight( highlight.release() );
 
     connect( dialog->attributeForm(), &QgsAttributeForm::featureSaved, this, &QgsFeatureAction::onFeatureSaved );
 
