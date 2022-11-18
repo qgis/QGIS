@@ -43,7 +43,6 @@
 #include "qgsfeaturelistcombobox.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeaturefiltermodel.h"
-#include "qgsidentifymenu.h"
 #include "qgsvectorlayerutils.h"
 
 
@@ -584,7 +583,7 @@ void QgsRelationReferenceWidget::highlightFeature( QgsFeature f, CanvasExtent ca
   // highlight
   deleteHighlight();
   mHighlight = new QgsHighlight( mCanvas, f, mReferencedLayer );
-  QgsIdentifyMenu::styleHighlight( mHighlight );
+  mHighlight->applyDefaultStyle();
   mHighlight->show();
 
   QTimer *timer = new QTimer( this );

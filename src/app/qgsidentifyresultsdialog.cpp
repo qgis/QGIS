@@ -2151,7 +2151,7 @@ void QgsIdentifyResultsDialog::highlightFeature( QTreeWidgetItem *item )
     highlight->setWidth( 2 );
   }
 
-  QgsIdentifyMenu::styleHighlight( highlight );
+  highlight->applyDefaultStyle();
   highlight->show();
   mHighlights.insert( featItem, highlight );
 }

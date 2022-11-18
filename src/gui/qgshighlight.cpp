@@ -306,6 +306,21 @@ void QgsHighlight::updatePosition()
   updateRect();
 }
 
+void QgsHighlight::applyDefaultStyle()
+{
+  const QgsSettings settings;
+  QColor color = QColor( settings.value( QStringLiteral( "Map/highlight/color" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
+  const int alpha = settings.value( QStringLiteral( "Map/highlight/colorAlpha" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toInt();
+  const double buffer = settings.value( QStringLiteral( "Map/highlight/buffer" ), Qgis::DEFAULT_HIGHLIGHT_BUFFER_MM ).toDouble();
+  const double minWidth = settings.value( QStringLiteral( "Map/highlight/minWidth" ), Qgis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM ).toDouble();
+
+  setColor( color ); // sets also fill with default alpha
+  color.setAlpha( alpha );
+  setFillColor( color ); // sets fill with alpha
+  setBuffer( buffer );
+  setMinWidth( minWidth );
+}
+
 void QgsHighlight::paint( QPainter *p )
 {
   if ( mFeature.hasGeometry() )

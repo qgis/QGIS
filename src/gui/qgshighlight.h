@@ -172,6 +172,13 @@ class GUI_EXPORT QgsHighlight : public QgsMapCanvasItem
 
     void updatePosition() override;
 
+    /**
+     * Applies the default style from the user settings to the highlight.
+     *
+     * \since QGIS 3.30
+     */
+    void applyDefaultStyle();
+
   protected:
     void paint( QPainter *p ) override;
 
