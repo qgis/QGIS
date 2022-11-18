@@ -1280,9 +1280,13 @@ QList<QgsRasterAttributeTable::MinMaxClass> QgsRasterAttributeTable::minMaxClass
     {
       classificationIndex = fieldUsages.indexOf( Qgis::RasterAttributeTableFieldUsage::Name );
     }
-    else
+    else if ( fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::Generic ) )
     {
       classificationIndex = fieldUsages.indexOf( Qgis::RasterAttributeTableFieldUsage::Generic );
+    }
+    else
+    {
+      classificationIndex = fieldUsages.indexOf( Qgis::RasterAttributeTableFieldUsage::MinMax );
     }
   }
   else if ( classificationIndex >= mFields.count( ) )
