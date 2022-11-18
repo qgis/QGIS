@@ -251,8 +251,6 @@ void QgsGpsToolBar::updateLocationLabel()
             parts << QgsCoordinateUtils::formatCoordinateForProject( QgsProject::instance(), point, QgsCoordinateReferenceSystem(), 8 );
             break;
           case Qgis::GpsInformationComponent::Altitude:
-            parts << tr( "%1 m" ).arg( value.toDouble( ) );
-            break;
           case Qgis::GpsInformationComponent::EllipsoidAltitude:
             parts << tr( "%1 m" ).arg( value.toDouble( ) );
             break;
