@@ -897,9 +897,16 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &maste
       QAction *action = menu->addAction( tr( "Actions on Selection (%1)" ).arg( mLayer->selectedFeatureCount() ) );
       action->setEnabled( false );
 
+      QgsMapLayerActionContext context;
       for ( QgsMapLayerAction *action : registeredActions )
       {
-        menu->addAction( action->text(), action, [ = ]() {action->triggerForFeatures( mLayer, mLayer->selectedFeatures() );} );
+        menu->addAction( action->text(), action, [ = ]()
+        {
+          Q_NOWARN_DEPRECATED_PUSH
+          action->triggerForFeatures( mLayer, mLayer->selectedFeatures() );
+          Q_NOWARN_DEPRECATED_POP
+          action->triggerForFeatures( mLayer, mLayer->selectedFeatures(), context );
+        } );
       }
     }
   }
@@ -1347,5 +1354,6 @@ void QgsAttributeTableAction::featureForm()
 
 void QgsAttributeTableMapLayerAction::execute()
 {
-  mDualView->masterModel()->executeMapLayerAction( mAction, mFieldIdx );
+  QgsMapLayerActionContext context;
+  mDualView->masterModel()->executeMapLayerAction( mAction, mFieldIdx, context );
 }

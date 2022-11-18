@@ -89,17 +89,38 @@ bool QgsMapLayerAction::canRunUsingLayer( QgsMapLayer *layer ) const
 
 void QgsMapLayerAction::triggerForFeatures( QgsMapLayer *layer, const QList<QgsFeature> &featureList )
 {
+  Q_NOWARN_DEPRECATED_PUSH
   emit triggeredForFeatures( layer, featureList );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void QgsMapLayerAction::triggerForFeature( QgsMapLayer *layer, const QgsFeature &feature )
 {
+  Q_NOWARN_DEPRECATED_PUSH
   emit triggeredForFeature( layer, feature );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void QgsMapLayerAction::triggerForLayer( QgsMapLayer *layer )
 {
+  Q_NOWARN_DEPRECATED_PUSH
   emit triggeredForLayer( layer );
+  Q_NOWARN_DEPRECATED_POP
+}
+
+void QgsMapLayerAction::triggerForFeatures( QgsMapLayer *layer, const QList<QgsFeature> &featureList, const QgsMapLayerActionContext &context )
+{
+  emit triggeredForFeaturesV2( layer, featureList, context );
+}
+
+void QgsMapLayerAction::triggerForFeature( QgsMapLayer *layer, const QgsFeature &feature, const QgsMapLayerActionContext &context )
+{
+  emit triggeredForFeatureV2( layer, feature, context );
+}
+
+void QgsMapLayerAction::triggerForLayer( QgsMapLayer *layer, const QgsMapLayerActionContext &context )
+{
+  emit triggeredForLayerV2( layer, context );
 }
 
 bool QgsMapLayerAction::isEnabledOnlyWhenEditable() const

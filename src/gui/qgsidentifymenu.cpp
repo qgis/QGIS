@@ -528,10 +528,15 @@ void QgsIdentifyMenu::triggerMapLayerAction()
 
   if ( actData.mIsValid && actData.mMapLayerAction )
   {
+    QgsMapLayerActionContext context;
+
     // layer
     if ( actData.mMapLayerAction->targets().testFlag( QgsMapLayerAction::Layer ) )
     {
+      Q_NOWARN_DEPRECATED_PUSH
       actData.mMapLayerAction->triggerForLayer( actData.mLayer );
+      Q_NOWARN_DEPRECATED_POP
+      actData.mMapLayerAction->triggerForLayer( actData.mLayer, context );
     }
 
     // multiples features
@@ -543,7 +548,10 @@ void QgsIdentifyMenu::triggerMapLayerAction()
       {
         featureList << result.mFeature;
       }
+      Q_NOWARN_DEPRECATED_PUSH
       actData.mMapLayerAction->triggerForFeatures( actData.mLayer, featureList );
+      Q_NOWARN_DEPRECATED_POP
+      actData.mMapLayerAction->triggerForFeatures( actData.mLayer, featureList, context );
     }
 
     // single feature
@@ -554,7 +562,10 @@ void QgsIdentifyMenu::triggerMapLayerAction()
       {
         if ( result.mFeature.id() == actData.mFeatureId )
         {
+          Q_NOWARN_DEPRECATED_PUSH
           actData.mMapLayerAction->triggerForFeature( actData.mLayer, result.mFeature );
+          Q_NOWARN_DEPRECATED_POP
+          actData.mMapLayerAction->triggerForFeature( actData.mLayer, result.mFeature, context );
           return;
         }
       }

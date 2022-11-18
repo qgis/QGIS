@@ -1749,7 +1749,11 @@ void QgsIdentifyResultsDialog::doMapLayerAction( QTreeWidgetItem *item, QgsMapLa
     return;
 
   const QgsFeature feat = featItem->data( 0, FeatureRole ).value< QgsFeature >();
+  QgsMapLayerActionContext context;
+  Q_NOWARN_DEPRECATED_PUSH
   action->triggerForFeature( layer, feat );
+  Q_NOWARN_DEPRECATED_POP
+  action->triggerForFeature( layer, feat, context );
 }
 
 QTreeWidgetItem *QgsIdentifyResultsDialog::featureItem( QTreeWidgetItem *item )
@@ -2531,7 +2535,11 @@ void QgsIdentifyResultsDialog::formatChanged( int index )
 
 void QgsIdentifyResultsDialogMapLayerAction::execute()
 {
+  QgsMapLayerActionContext context;
+  Q_NOWARN_DEPRECATED_PUSH
   mAction->triggerForFeature( mLayer, *mFeature );
+  Q_NOWARN_DEPRECATED_POP
+  mAction->triggerForFeature( mLayer, *mFeature, context );
 }
 
 void QgsIdentifyResultsDialog::showHelp()

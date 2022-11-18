@@ -10,6 +10,23 @@
 
 
 
+class QgsMapLayerActionContext
+{
+%Docstring(signature="appended")
+Encapsulates the context in which a :py:class:`QgsMapLayerAction` action is executed.
+
+.. versionadded:: 3.30
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayeractionregistry.h"
+%End
+  public:
+
+
+};
+
+
 class QgsMapLayerAction : QAction
 {
 %Docstring(signature="appended")
@@ -74,19 +91,49 @@ Layer behavior flags.
 True if action can run using the specified layer
 %End
 
-    virtual void triggerForFeatures( QgsMapLayer *layer, const QList<QgsFeature> &featureList );
+ virtual void triggerForFeatures( QgsMapLayer *layer, const QList<QgsFeature> &featureList ) /Deprecated/;
 %Docstring
 Triggers the action with the specified layer and list of feature.
+
+.. deprecated::
+   use the version with :py:class:`QgsMapLayerActionContext` instead.
 %End
 
-    virtual void triggerForFeature( QgsMapLayer *layer, const QgsFeature &feature );
+ virtual void triggerForFeature( QgsMapLayer *layer, const QgsFeature &feature ) /Deprecated/;
 %Docstring
 Triggers the action with the specified layer and feature.
+
+.. deprecated::
+   use the version with :py:class:`QgsMapLayerActionContext` instead.
 %End
 
-    virtual void triggerForLayer( QgsMapLayer *layer );
+ virtual void triggerForLayer( QgsMapLayer *layer ) /Deprecated/;
 %Docstring
 Triggers the action with the specified layer.
+
+.. deprecated::
+   use the version with :py:class:`QgsMapLayerActionContext` instead.
+%End
+
+    virtual void triggerForFeatures( QgsMapLayer *layer, const QList<QgsFeature> &featureList, const QgsMapLayerActionContext &context );
+%Docstring
+Triggers the action with the specified layer and list of feature.
+
+.. versionadded:: 3.30
+%End
+
+    virtual void triggerForFeature( QgsMapLayer *layer, const QgsFeature &feature, const QgsMapLayerActionContext &context );
+%Docstring
+Triggers the action with the specified layer and feature.
+
+.. versionadded:: 3.30
+%End
+
+    virtual void triggerForLayer( QgsMapLayer *layer, const QgsMapLayerActionContext &context );
+%Docstring
+Triggers the action with the specified layer.
+
+.. versionadded:: 3.30
 %End
 
     void setTargets( Targets targets );
@@ -106,19 +153,50 @@ Returns ``True`` if the action is only enabled for layers in editable mode.
 %End
 
   signals:
-    void triggeredForFeatures( QgsMapLayer *layer, const QList<QgsFeature> &featureList );
+
+ void triggeredForFeatures( QgsMapLayer *layer, const QList<QgsFeature> &featureList ) /Deprecated/;
 %Docstring
 Triggered when action has been run for a specific list of features
+
+.. deprecated::
+   use the version with :py:class:`QgsMapLayerActionContext` instead.
 %End
 
-    void triggeredForFeature( QgsMapLayer *layer, const QgsFeature &feature );
+ void triggeredForFeature( QgsMapLayer *layer, const QgsFeature &feature ) /Deprecated/;
 %Docstring
 Triggered when action has been run for a specific feature
+
+.. deprecated::
+   use the version with :py:class:`QgsMapLayerActionContext` instead.
 %End
 
-    void triggeredForLayer( QgsMapLayer *layer );
+ void triggeredForLayer( QgsMapLayer *layer ) /Deprecated/;
 %Docstring
 Triggered when action has been run for a specific layer
+
+.. deprecated::
+   use the version with :py:class:`QgsMapLayerActionContext` instead.
+%End
+
+    void triggeredForFeaturesV2( QgsMapLayer *layer, const QList<QgsFeature> &featureList, const QgsMapLayerActionContext &context );
+%Docstring
+Triggered when action has been run for a specific list of features
+
+.. versionadded:: 3.30
+%End
+
+    void triggeredForFeatureV2( QgsMapLayer *layer, const QgsFeature &feature, const QgsMapLayerActionContext &context );
+%Docstring
+Triggered when action has been run for a specific feature.
+
+.. versionadded:: 3.30
+%End
+
+    void triggeredForLayerV2( QgsMapLayer *layer, const QgsMapLayerActionContext &context );
+%Docstring
+Triggered when action has been run for a specific layer.
+
+.. versionadded:: 3.30
 %End
 
 };

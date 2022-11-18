@@ -191,7 +191,11 @@ void QgsMapToolFeatureAction::doActionForFeature( QgsVectorLayer *layer, const Q
     QgsMapLayerAction *mapLayerAction = QgsGui::mapLayerActionRegistry()->defaultActionForLayer( layer );
     if ( mapLayerAction )
     {
+      QgsMapLayerActionContext context;
+      Q_NOWARN_DEPRECATED_PUSH
       mapLayerAction->triggerForFeature( layer, feature );
+      Q_NOWARN_DEPRECATED_POP
+      mapLayerAction->triggerForFeature( layer, feature, context );
     }
   }
 }
