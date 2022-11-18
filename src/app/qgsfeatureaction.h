@@ -38,11 +38,6 @@ class APP_EXPORT QgsFeatureAction : public QAction
   public:
     QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *vl, QUuid actionId = QUuid(), int defaultAttr = -1, QObject *parent = nullptr );
 
-  public slots:
-    void execute();
-    bool viewFeatureForm( QgsHighlight *h = nullptr );
-    bool editFeature( bool showModal = true );
-
     /**
      * Add a new feature to the layer.
      * Will set the default values to recently used or provider defaults based on settings
@@ -55,7 +50,15 @@ class APP_EXPORT QgsFeatureAction : public QAction
      *
      * \returns TRUE if feature was added if showModal is true. If showModal is FALSE, returns TRUE in every case
      */
-    bool addFeature( const QgsAttributeMap &defaultAttributes = QgsAttributeMap(), bool showModal = true, QgsExpressionContextScope *scope = nullptr, bool hideParent = false );
+    bool addFeature( const QgsAttributeMap &defaultAttributes = QgsAttributeMap(),
+                     bool showModal = true,
+                     std::unique_ptr<QgsExpressionContextScope >scope = std::unique_ptr< QgsExpressionContextScope >(),
+                     bool hideParent = false );
+
+  public slots:
+    void execute();
+    bool viewFeatureForm( QgsHighlight *h = nullptr );
+    bool editFeature( bool showModal = true );
 
     /**
      * Sets whether to force suppression of the attribute form popup after creating a new feature.
