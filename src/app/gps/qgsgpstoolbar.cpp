@@ -26,9 +26,9 @@
 #include "qgsprojectgpssettings.h"
 #include "qgsmaplayermodel.h"
 #include "qgsmaplayerproxymodel.h"
-#include "qgsgpsconnection.h"
 #include "qgsappgpsdigitizing.h"
 #include "qgsunittypes.h"
+#include "qgsgpsinformation.h"
 
 #include <QLabel>
 #include <QToolButton>
@@ -235,6 +235,7 @@ void QgsGpsToolBar::updateLocationLabel()
           {
             Qgis::GpsInformationComponent::Location,
             Qgis::GpsInformationComponent::Altitude,
+            Qgis::GpsInformationComponent::EllipsoidAltitude,
             Qgis::GpsInformationComponent::Bearing,
             Qgis::GpsInformationComponent::GroundSpeed,
             Qgis::GpsInformationComponent::TotalTrackLength,
@@ -250,6 +251,9 @@ void QgsGpsToolBar::updateLocationLabel()
             parts << QgsCoordinateUtils::formatCoordinateForProject( QgsProject::instance(), point, QgsCoordinateReferenceSystem(), 8 );
             break;
           case Qgis::GpsInformationComponent::Altitude:
+            parts << tr( "%1 m" ).arg( value.toDouble( ) );
+            break;
+          case Qgis::GpsInformationComponent::EllipsoidAltitude:
             parts << tr( "%1 m" ).arg( value.toDouble( ) );
             break;
           case Qgis::GpsInformationComponent::GroundSpeed:
@@ -281,6 +285,7 @@ void QgsGpsToolBar::updateLocationLabel()
             break;
           }
 
+          case Qgis::GpsInformationComponent::GeoidalSeparation:
           case Qgis::GpsInformationComponent::Pdop:
           case Qgis::GpsInformationComponent::Hdop:
           case Qgis::GpsInformationComponent::Vdop:
@@ -434,7 +439,8 @@ void QgsGpsToolBar::createLocationWidget()
   for ( const auto &it : std::vector< std::pair< Qgis::GpsInformationComponent, QString> >
 {
   { Qgis::GpsInformationComponent::Location, tr( "Show Location" ) },
-    { Qgis::GpsInformationComponent::Altitude, tr( "Show Altitude" ) },
+    { Qgis::GpsInformationComponent::Altitude, tr( "Show Altitude (Geoid)" ) },
+    { Qgis::GpsInformationComponent::EllipsoidAltitude, tr( "Show Altitude (WGS-84 Ellipsoid)" ) },
     { Qgis::GpsInformationComponent::GroundSpeed, tr( "Show Ground Speed" ) },
     { Qgis::GpsInformationComponent::Bearing, tr( "Show Bearing" ) },
     { Qgis::GpsInformationComponent::TotalTrackLength, tr( "Show Total Track Length" ) },

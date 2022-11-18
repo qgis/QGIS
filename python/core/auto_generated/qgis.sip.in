@@ -634,6 +634,8 @@ The development version
       TrackEndTime,
       TrackDistanceSinceLastPoint,
       TrackTimeSinceLastPoint,
+      GeoidalSeparation,
+      EllipsoidAltitude,
     };
 
     typedef QFlags<Qgis::GpsInformationComponent> GpsInformationComponents;

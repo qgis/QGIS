@@ -131,7 +131,14 @@ QVariant QgsGpsInformation::componentValue( Qgis::GpsInformationComponent compon
       return QgsPointXY( longitude, latitude );
 
     case Qgis::GpsInformationComponent::Altitude:
-      return elevation;
+      return std::isnan( elevation ) ? QVariant() : elevation;
+
+    case Qgis::GpsInformationComponent::GeoidalSeparation:
+      return std::isnan( elevation_diff ) ? QVariant() : elevation_diff;
+
+    case Qgis::GpsInformationComponent::EllipsoidAltitude:
+      return std::isnan( elevation ) || std::isnan( elevation_diff ) ? QVariant() : elevation + elevation_diff;
+
     case Qgis::GpsInformationComponent::GroundSpeed:
       return speed;
     case Qgis::GpsInformationComponent::Bearing:
