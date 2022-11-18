@@ -129,6 +129,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
     bool mEditable;
 
     QgsActionMenu *mMenu;
+    QMenuBar *mMenuBar = nullptr;
 
     static int sFormCounter;
 

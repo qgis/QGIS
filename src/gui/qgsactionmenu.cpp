@@ -113,6 +113,8 @@ void QgsActionMenu::reloadActions()
 {
   clear();
 
+  mVisibleActionCount = 0;
+
   mActions = mLayer->actions()->actions( mActionScope );
 
   const auto constMActions = mActions;
@@ -143,6 +145,8 @@ void QgsActionMenu::reloadActions()
     }
     connect( qAction, &QAction::triggered, this, &QgsActionMenu::triggerAction );
     addAction( qAction );
+
+    mVisibleActionCount++;
   }
 
   const QList<QgsMapLayerAction *> mapLayerActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer, QgsMapLayerAction::SingleFeature );
@@ -150,19 +154,21 @@ void QgsActionMenu::reloadActions()
   if ( !mapLayerActions.isEmpty() )
   {
     //add a separator between user defined and standard actions
-    addSeparator();
+    if ( mVisibleActionCount > 0 )
+      addSeparator();
 
     for ( int i = 0; i < mapLayerActions.size(); ++i )
     {
-      QgsMapLayerAction *qaction = mapLayerActions.at( i );
+      QgsMapLayerAction *mapLayerAction = mapLayerActions.at( i );
 
-      if ( qaction->isEnabledOnlyWhenEditable() && ( mMode == QgsAttributeEditorContext::AddFeatureMode || mMode == QgsAttributeEditorContext::IdentifyMode ) )
+      if ( mapLayerAction->isEnabledOnlyWhenEditable() && ( mMode == QgsAttributeEditorContext::AddFeatureMode || mMode == QgsAttributeEditorContext::IdentifyMode ) )
         continue;
 
-      QAction *qAction = new QAction( qaction->icon(), qaction->text(), this );
-      qAction->setData( QVariant::fromValue<ActionData>( ActionData( qaction, mFeatureId, mLayer ) ) );
+      QAction *qAction = new QAction( mapLayerAction->icon(), mapLayerAction->text(), this );
+      qAction->setData( QVariant::fromValue<ActionData>( ActionData( mapLayerAction, mFeatureId, mLayer ) ) );
       addAction( qAction );
       connect( qAction, &QAction::triggered, this, &QgsActionMenu::triggerAction );
+      mVisibleActionCount++;
     }
   }
 
@@ -209,4 +215,9 @@ QgsExpressionContextScope QgsActionMenu::expressionContextScope() const
 QList<QgsAction> QgsActionMenu::menuActions()
 {
   return mActions;
+}
+
+bool QgsActionMenu::isEmpty() const
+{
+  return mVisibleActionCount == 0;
 }
