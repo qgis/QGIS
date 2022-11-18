@@ -57,6 +57,8 @@ std::unique_ptr<QgsHighlight> QgsMapToolAddFeature::createHighlight( QgsVectorLa
 {
   std::unique_ptr< QgsHighlight > highlight = std::make_unique< QgsHighlight >( mCanvas, f.geometry(), layer );
   highlight->applyDefaultStyle();
+  highlight->mPointSizeRadiusMM = 1.0;
+  highlight->mPointSymbol = QgsHighlight::PointSymbol::Circle;
   return highlight;
 };
 
