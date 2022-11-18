@@ -21,13 +21,14 @@
 
 #include "qgsfeature.h"
 #include "qgsaction.h"
+#include "qgsattributeeditorcontext.h"
 #include "qgis_gui.h"
-#include "qgsattributeform.h"
 
 class QgsMapLayer;
 class QgsMapLayerAction;
 class QgsVectorLayer;
 class QgsActionManager;
+class QgsMapLayerActionContextGenerator;
 
 /**
  * \ingroup gui
@@ -82,6 +83,15 @@ class GUI_EXPORT QgsActionMenu : public QMenu
      * \param actionScope The action scope this menu will run in
      */
     explicit QgsActionMenu( QgsVectorLayer *layer, QgsFeatureId fid, const QString &actionScope, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Sets a QgsMapLayerActionContextGenerator to create action contexts for the menu.
+     *
+     * The \a generator object must exist for the lifetime of the menu.
+     *
+     * \since QGIS 3.30
+     */
+    void setActionContextGenerator( QgsMapLayerActionContextGenerator *generator );
 
     /**
      * Change the feature on which actions are performed
@@ -146,6 +156,8 @@ class GUI_EXPORT QgsActionMenu : public QMenu
     QString mActionScope;
     QgsExpressionContextScope mExpressionContextScope;
     QgsAttributeEditorContext::Mode mMode = QgsAttributeEditorContext::SingleEditMode;
+
+    QgsMapLayerActionContextGenerator *mContextGenerator = nullptr;
 };
 
 

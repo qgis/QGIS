@@ -23,9 +23,47 @@ Encapsulates the context in which a :py:class:`QgsMapLayerAction` action is exec
 %End
   public:
 
+    QgsMapLayerActionContext();
+
+    QgsAttributeDialog *attributeDialog() const;
+%Docstring
+Returns the attribute dialog associated with the action's execution.
+
+May be ``None`` if the action is not being executed from an attribute dialog.
+
+.. seealso:: :py:func:`setAttributeDialog`
+%End
+
+    void setAttributeDialog( QgsAttributeDialog *dialog );
+%Docstring
+Sets the attribute ``dialog`` associated with the action's execution.
+
+.. seealso:: :py:func:`attributeDialog`
+%End
 
 };
 
+
+class QgsMapLayerActionContextGenerator
+{
+%Docstring(signature="appended")
+An interface for objects which can create a QgsMapLayerActionContext.
+
+.. versionadded:: 3.30
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayeractionregistry.h"
+%End
+  public:
+
+    virtual ~QgsMapLayerActionContextGenerator();
+
+    virtual QgsMapLayerActionContext createActionContext() = 0;
+%Docstring
+Creates a :py:class:`QgsMapLayerActionContext`.
+%End
+};
 
 class QgsMapLayerAction : QAction
 {

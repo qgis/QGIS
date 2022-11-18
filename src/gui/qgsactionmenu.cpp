@@ -39,6 +39,11 @@ QgsActionMenu::QgsActionMenu( QgsVectorLayer *layer, const QgsFeatureId fid, con
   init();
 }
 
+void QgsActionMenu::setActionContextGenerator( QgsMapLayerActionContextGenerator *generator )
+{
+  mContextGenerator = generator;
+}
+
 void QgsActionMenu::init()
 {
   setTitle( tr( "&Actions" ) );
@@ -94,7 +99,7 @@ void QgsActionMenu::triggerAction()
   {
     QgsMapLayerAction *mapLayerAction = data.actionData.value<QgsMapLayerAction *>();
 
-    QgsMapLayerActionContext context;
+    const QgsMapLayerActionContext context = mContextGenerator ? mContextGenerator->createActionContext() : QgsMapLayerActionContext();
     Q_NOWARN_DEPRECATED_PUSH
     mapLayerAction->triggerForFeature( data.mapLayer, mFeature );
     Q_NOWARN_DEPRECATED_POP

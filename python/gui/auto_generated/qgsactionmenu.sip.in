@@ -65,6 +65,15 @@ Constructs a new QgsActionMenu
 :param actionScope: The action scope this menu will run in
 %End
 
+    void setActionContextGenerator( QgsMapLayerActionContextGenerator *generator );
+%Docstring
+Sets a :py:class:`QgsMapLayerActionContextGenerator` to create action contexts for the menu.
+
+The ``generator`` object must exist for the lifetime of the menu.
+
+.. versionadded:: 3.30
+%End
+
     void setFeature( const QgsFeature &feature );
 %Docstring
 Change the feature on which actions are performed

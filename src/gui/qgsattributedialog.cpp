@@ -125,6 +125,7 @@ void QgsAttributeDialog::init( QgsVectorLayer *layer, QgsFeature *feature, const
   connect( layer, &QObject::destroyed, this, &QWidget::close );
 
   mMenu = new QgsActionMenu( layer, mAttributeForm->feature(), QStringLiteral( "Feature" ), this );
+  mMenu->setActionContextGenerator( this );
   if ( !mMenu->isEmpty() )
   {
     mMenuBar = new QMenuBar( this );
@@ -168,4 +169,11 @@ bool QgsAttributeDialog::event( QEvent *e )
 void QgsAttributeDialog::setExtraContextScope( QgsExpressionContextScope *extraScope )
 {
   mAttributeForm->setExtraContextScope( extraScope );
+}
+
+QgsMapLayerActionContext QgsAttributeDialog::createActionContext()
+{
+  QgsMapLayerActionContext context;
+  context.setAttributeDialog( this );
+  return context;
 }

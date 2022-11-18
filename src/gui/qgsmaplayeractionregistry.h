@@ -21,12 +21,14 @@
 #include <QList>
 #include <QMap>
 #include <QAction>
+#include <QPointer>
 
 #include "qgis.h"
 #include "qgis_gui.h"
 
 class QgsFeature;
 class QgsMapLayer;
+class QgsAttributeDialog;
 
 /**
  * \ingroup gui
@@ -37,10 +39,49 @@ class GUI_EXPORT QgsMapLayerActionContext
 {
   public:
 
+    QgsMapLayerActionContext();
+
+    /**
+     * Returns the attribute dialog associated with the action's execution.
+     *
+     * May be NULLPTR if the action is not being executed from an attribute dialog.
+     *
+     * \see setAttributeDialog()
+     */
+    QgsAttributeDialog *attributeDialog() const;
+
+    /**
+     * Sets the attribute \a dialog associated with the action's execution.
+     *
+     * \see attributeDialog()
+     */
+    void setAttributeDialog( QgsAttributeDialog *dialog );
+
+  private:
+
+    QPointer< QgsAttributeDialog > mAttributeDialog;
+
 
 };
 
 Q_DECLARE_METATYPE( QgsMapLayerActionContext )
+
+/**
+ * \ingroup gui
+ * \brief An interface for objects which can create a QgsMapLayerActionContext.
+ * \since QGIS 3.30
+ */
+class GUI_EXPORT QgsMapLayerActionContextGenerator
+{
+  public:
+
+    virtual ~QgsMapLayerActionContextGenerator();
+
+    /**
+     * Creates a QgsMapLayerActionContext.
+     */
+    virtual QgsMapLayerActionContext createActionContext() = 0;
+};
 
 /**
  * \ingroup gui
