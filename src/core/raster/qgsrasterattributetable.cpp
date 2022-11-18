@@ -1286,7 +1286,7 @@ QList<QgsRasterAttributeTable::MinMaxClass> QgsRasterAttributeTable::minMaxClass
     }
     else
     {
-      classificationIndex = fieldUsages.indexOf( Qgis::RasterAttributeTableFieldUsage::MinMax );
+      classificationIndex = minMaxIndex;
     }
   }
   else if ( classificationIndex >= mFields.count( ) )
