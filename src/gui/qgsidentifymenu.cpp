@@ -673,7 +673,7 @@ void QgsIdentifyMenu::handleMenuHover()
       continue;
 
     QgsHighlight *hl = new QgsHighlight( mCanvas, result.mFeature.geometry(), vl );
-    styleHighlight( hl );
+    hl->applyDefaultStyle();
     mRubberBands.append( hl );
     connect( vl, &QObject::destroyed, this, &QgsIdentifyMenu::layerDestroyed );
   }
@@ -681,17 +681,7 @@ void QgsIdentifyMenu::handleMenuHover()
 
 void QgsIdentifyMenu::styleHighlight( QgsHighlight *highlight )
 {
-  const QgsSettings settings;
-  QColor color = QColor( settings.value( QStringLiteral( "Map/highlight/color" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
-  const int alpha = settings.value( QStringLiteral( "Map/highlight/colorAlpha" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toInt();
-  const double buffer = settings.value( QStringLiteral( "Map/highlight/buffer" ), Qgis::DEFAULT_HIGHLIGHT_BUFFER_MM ).toDouble();
-  const double minWidth = settings.value( QStringLiteral( "Map/highlight/minWidth" ), Qgis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM ).toDouble();
-
-  highlight->setColor( color ); // sets also fill with default alpha
-  color.setAlpha( alpha );
-  highlight->setFillColor( color ); // sets fill with alpha
-  highlight->setBuffer( buffer );
-  highlight->setMinWidth( minWidth );
+  highlight->applyDefaultStyle();
 }
 
 void QgsIdentifyMenu::deleteRubberBands()
