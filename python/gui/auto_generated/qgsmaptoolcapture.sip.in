@@ -138,6 +138,8 @@ convenient method to clean members
 Returns the rubberBand currently owned by this map tool and
 transfers ownership to the caller.
 
+May be ``None``.
+
 .. versionadded:: 3.8
 %End
 
