@@ -57,14 +57,14 @@ QUuid QgsActionManager::addAction( QgsAction::ActionType type, const QString &na
 
 void QgsActionManager::addAction( const QgsAction &action )
 {
-  QgsDebugMsg( "add action " + action.name() );
+  QgsDebugMsgLevel( "add action " + action.name(), 3 );
   mActions.append( action );
   if ( mLayer && mLayer->dataProvider() && !action.notificationMessage().isEmpty() )
   {
     mLayer->dataProvider()->setListening( true );
     if ( !mOnNotifyConnected )
     {
-      QgsDebugMsg( QStringLiteral( "connecting to notify" ) );
+      QgsDebugMsgLevel( QStringLiteral( "connecting to notify" ), 3 );
       connect( mLayer->dataProvider(), &QgsDataProvider::notify, this, &QgsActionManager::onNotifyRunActions );
       mOnNotifyConnected = true;
     }
