@@ -27,6 +27,7 @@ const std::vector< std::tuple< Qgis::GpsInformationComponent, std::tuple< QVaria
 {
   { Qgis::GpsInformationComponent::Timestamp, { QVariant::DateTime, QStringLiteral( "timestamp" )}},
   { Qgis::GpsInformationComponent::Altitude, { QVariant::Double, QStringLiteral( "altitude" )}},
+  { Qgis::GpsInformationComponent::EllipsoidAltitude, { QVariant::Double, QStringLiteral( "altitude_wgs84" )}},
   { Qgis::GpsInformationComponent::GroundSpeed, { QVariant::Double, QStringLiteral( "ground_speed" )}},
   { Qgis::GpsInformationComponent::Bearing, { QVariant::Double, QStringLiteral( "bearing" )}},
   { Qgis::GpsInformationComponent::Pdop, { QVariant::Double, QStringLiteral( "pdop" )}},

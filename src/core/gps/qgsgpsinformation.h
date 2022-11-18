@@ -54,8 +54,13 @@ class CORE_EXPORT QgsGpsInformation
     double elevation = 0;
 
     /**
-     * Geoidal separation (Diff. between WGS-84 earth ellipsoid and
-     * mean sea level.
+     * Geoidal separation (in meters).
+     *
+     * The difference between the WGS-84 Earth ellipsoid and the mean sea level (geoid).
+     *
+     * Negative values indicate that mean sea level is below the ellipsoid.
+     *
+     * This value can be added to the elevation value to obtain the geoidal elevation.
      *
      * \since QGIS 3.18
      */

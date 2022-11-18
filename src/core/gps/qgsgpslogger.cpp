@@ -189,6 +189,8 @@ QVariant QgsGpsLogger::componentValue( Qgis::GpsInformationComponent component )
   {
     case Qgis::GpsInformationComponent::Location:
     case Qgis::GpsInformationComponent::Altitude:
+    case Qgis::GpsInformationComponent::GeoidalSeparation:
+    case Qgis::GpsInformationComponent::EllipsoidAltitude:
     case Qgis::GpsInformationComponent::GroundSpeed:
     case Qgis::GpsInformationComponent::Bearing:
     case Qgis::GpsInformationComponent::Pdop:

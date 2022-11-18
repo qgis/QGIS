@@ -449,6 +449,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
 
     mTxtAltitude->setText( tr( "%1 m" ).arg( info.elevation, 0, 'f', 3 ) );
     mTxtAltitudeDiff->setText( tr( "%1 m" ).arg( info.elevation_diff, 0, 'f', 3 ) );
+    mTxtAltitudeEllipsoid->setText( tr( "%1 m" ).arg( info.elevation + info.elevation_diff, 0, 'f', 3 ) );
 
     if ( mDateTimeFormat.isEmpty() )
     {

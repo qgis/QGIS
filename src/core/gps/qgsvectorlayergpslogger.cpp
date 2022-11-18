@@ -118,6 +118,8 @@ void QgsVectorLayerGpsLogger::endCurrentTrack()
       {
         case Qgis::GpsInformationComponent::Location:
         case Qgis::GpsInformationComponent::Altitude:
+        case Qgis::GpsInformationComponent::GeoidalSeparation:
+        case Qgis::GpsInformationComponent::EllipsoidAltitude:
         case Qgis::GpsInformationComponent::GroundSpeed:
         case Qgis::GpsInformationComponent::Bearing:
         case Qgis::GpsInformationComponent::Pdop:
@@ -206,6 +208,8 @@ void QgsVectorLayerGpsLogger::gpsStateChanged( const QgsGpsInformation &info )
       {
         case Qgis::GpsInformationComponent::Location:
         case Qgis::GpsInformationComponent::Altitude:
+        case Qgis::GpsInformationComponent::GeoidalSeparation:
+        case Qgis::GpsInformationComponent::EllipsoidAltitude:
         case Qgis::GpsInformationComponent::GroundSpeed:
         case Qgis::GpsInformationComponent::Bearing:
         case Qgis::GpsInformationComponent::Pdop:
