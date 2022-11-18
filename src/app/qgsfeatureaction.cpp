@@ -167,7 +167,7 @@ bool QgsFeatureAction::editFeature( bool showModal )
   return true;
 }
 
-bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, bool showModal, QgsExpressionContextScope *scope SIP_TRANSFER, bool hideParent )
+bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, bool showModal, std::unique_ptr< QgsExpressionContextScope > scope, bool hideParent )
 {
   if ( !mLayer || !mLayer->isEditable() )
     return false;
@@ -197,7 +197,7 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, boo
   // values and field constraints
   QgsExpressionContext context = mLayer->createExpressionContext();
   if ( scope )
-    context.appendScope( scope );
+    context.appendScope( scope.release() );
 
   const QgsFeature newFeature = QgsVectorLayerUtils::createFeature( mLayer, mFeature->geometry(), initialAttributeValues,
                                 &context );
