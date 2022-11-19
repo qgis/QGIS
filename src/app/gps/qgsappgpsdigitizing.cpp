@@ -26,14 +26,95 @@
 #include "qgsgpsconnection.h"
 #include "qgsappgpsconnection.h"
 #include "qgsprojectgpssettings.h"
+#include "qgsapplication.h"
+#include "qgsattributeform.h"
+#include "qgsattributedialog.h"
+#include "qgshighlight.h"
+#include "qgsidentifymenu.h"
 
 #include <QTimeZone>
+
+QgsUpdateGpsDetailsAction::QgsUpdateGpsDetailsAction( QgsAppGpsConnection *connection, QgsAppGpsDigitizing *digitizing, QObject *parent )
+  : QgsMapLayerAction( tr( "Update GPS Information" ), parent, QgsMapLayerAction::Target::SingleFeature, QgsApplication::getThemeIcon( QStringLiteral( "/gpsicons/mActionRecenter.svg" ) ) )
+  , mConnection( connection )
+  , mDigitizing( digitizing )
+{
+
+}
+
+bool QgsUpdateGpsDetailsAction::canRunUsingLayer( QgsMapLayer * ) const
+{
+  return false;
+}
+
+bool QgsUpdateGpsDetailsAction::canRunUsingLayer( QgsMapLayer *layer, const QgsMapLayerActionContext &context ) const
+{
+  return mConnection && mConnection->isConnected() && context.attributeDialog() && context.attributeDialog()->attributeForm()->mode() == QgsAttributeEditorContext::Mode::AddFeatureMode
+         && layer == QgsProject::instance()->gpsSettings()->destinationLayer();
+}
+
+void QgsUpdateGpsDetailsAction::triggerForFeature( QgsMapLayer *layer, const QgsFeature &, const QgsMapLayerActionContext &context )
+{
+  QgsVectorLayer *vlayer = QgsProject::instance()->gpsSettings()->destinationLayer();
+  if ( !vlayer || ! mConnection || !mConnection->isConnected()
+       || layer != vlayer )
+    return;
+
+  QgsAttributeDialog *dialog = context.attributeDialog();
+  if ( !dialog )
+    return;
+
+  QgsAttributeForm *form = dialog->attributeForm();
+  if ( !form )
+    return;
+
+  QString error;
+  const QgsGeometry resultWgs84 = mDigitizing->currentGeometry( vlayer->wkbType(), error );
+  if ( !error.isEmpty() )
+  {
+    if ( QgsMessageBar *messageBar = context.messageBar() )
+      messageBar->pushWarning( QString(), error );
+    return;
+  }
+
+  const QgsCoordinateTransform wgs84ToLayerTransform( QgsCoordinateReferenceSystem( "EPSG:4326" ), vlayer->crs(), QgsProject::instance() );
+  QgsGeometry geometryLayerCrs;
+  try
+  {
+    geometryLayerCrs = resultWgs84;
+    geometryLayerCrs.transform( wgs84ToLayerTransform );
+  }
+  catch ( QgsCsException & )
+  {
+    if ( QgsMessageBar *messageBar = context.messageBar() )
+      messageBar->pushCritical( QString(),
+                                tr( "Error reprojecting GPS location to layer CRS." ) );
+    return;
+  }
+
+  if ( !geometryLayerCrs.isNull() )
+  {
+    form->changeGeometry( geometryLayerCrs );
+    QgsHighlight *highlight = new QgsHighlight( mDigitizing->canvas(), geometryLayerCrs, vlayer );
+    highlight->applyDefaultStyle();
+    highlight->mPointSizeRadiusMM = 1;
+    highlight->mPointSymbol = QgsHighlight::PointSymbol::Circle;
+    dialog->setHighlight( highlight );
+
+    if ( QgsMessageBar *messageBar = context.messageBar() )
+      messageBar->pushSuccess( QString(), tr( "Updated feature location from GPS." ) );
+  }
+}
+
 
 QgsAppGpsDigitizing::QgsAppGpsDigitizing( QgsAppGpsConnection *connection, QgsMapCanvas *canvas, QObject *parent )
   : QgsGpsLogger( nullptr, parent )
   , mConnection( connection )
   , mCanvas( canvas )
 {
+  mUpdateGpsDetailsAction = new QgsUpdateGpsDetailsAction( mConnection, this, this );
+  QgsGui::mapLayerActionRegistry()->addMapLayerAction( mUpdateGpsDetailsAction );
+
   mCanvasToWgs84Transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
   connect( mCanvas, &QgsMapCanvas::destinationCrsChanged, this, [ = ]
   {
@@ -90,8 +171,15 @@ QgsAppGpsDigitizing::QgsAppGpsDigitizing( QgsAppGpsConnection *connection, QgsMa
 
 QgsAppGpsDigitizing::~QgsAppGpsDigitizing()
 {
+  QgsGui::mapLayerActionRegistry()->removeMapLayerAction( mUpdateGpsDetailsAction );
+
   delete mRubberBand;
   mRubberBand = nullptr;
+}
+
+QgsMapCanvas *QgsAppGpsDigitizing::canvas()
+{
+  return mCanvas;
 }
 
 void QgsAppGpsDigitizing::addVertex( const QgsPoint &wgs84Point )

@@ -227,7 +227,7 @@ class CORE_EXPORT QgsGpsLogger : public QObject
     QgsCoordinateReferenceSystem mWgs84CRS;
 
     //! Used to pause logging of incoming GPS messages
-    int mBlockGpsStateChanged = 0;
+    mutable int mBlockGpsStateChanged = 0;
 
     /**
      * Adds a track vertex at the current GPS location.
