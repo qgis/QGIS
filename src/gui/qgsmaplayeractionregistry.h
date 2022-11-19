@@ -29,6 +29,7 @@
 class QgsFeature;
 class QgsMapLayer;
 class QgsAttributeDialog;
+class QgsMessageBar;
 
 /**
  * \ingroup gui
@@ -57,11 +58,26 @@ class GUI_EXPORT QgsMapLayerActionContext
      */
     void setAttributeDialog( QgsAttributeDialog *dialog );
 
+    /**
+     * Returns the message bar associated with the action's execution.
+     *
+     * May be NULLPTR.
+     *
+     * \see setMessageBar()
+     */
+    QgsMessageBar *messageBar() const;
+
+    /**
+     * Sets the message \a bar associated with the action's execution.
+     *
+     * \see messageBar()
+     */
+    void setMessageBar( QgsMessageBar *bar );
+
   private:
 
     QPointer< QgsAttributeDialog > mAttributeDialog;
-
-
+    QPointer< QgsMessageBar > mMessageBar;
 };
 
 Q_DECLARE_METATYPE( QgsMapLayerActionContext )

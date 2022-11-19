@@ -112,6 +112,7 @@ class QgsAppMapTools;
 class QgsMapToolIdentifyAction;
 class Qgs3DMapCanvasWidget;
 class QgsVertexEditor;
+class QgsMapLayerActionContext;
 
 class QDomDocument;
 class QNetworkReply;
@@ -868,6 +869,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Returns pointer to the identify map tool - used by identify tool in 3D view
     QgsMapToolIdentifyAction *identifyMapTool() const;
+
+    QgsMapLayerActionContext createMapLayerActionContext();
 
     /**
      * Take screenshots for user documentation
