@@ -282,7 +282,6 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      */
     void openFilteredFeaturesAttributeTable( const QString &filter );
 
-
   public slots:
 
     /**
@@ -293,6 +292,13 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * \param hintText A hint text for non existent joined features
      */
     void changeAttribute( const QString &field, const QVariant &value, const QString &hintText = QString() );
+
+    /**
+     * Changes the \a geometry of the feature attached to the form.
+     *
+     * \since QGIS 3.30
+     */
+    void changeGeometry( const QgsGeometry &geometry );
 
     /**
      * Update all editors to correspond to a different feature.

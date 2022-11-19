@@ -269,7 +269,6 @@ Emitted when the user chooses to open the attribute table dialog with a filtered
 .. versionadded:: 3.24
 %End
 
-
   public slots:
 
     void changeAttribute( const QString &field, const QVariant &value, const QString &hintText = QString() );
@@ -279,6 +278,13 @@ Call this to change the content of a given attribute. Will update the editor(s) 
 :param field: The field to change
 :param value: The new value
 :param hintText: A hint text for non existent joined features
+%End
+
+    void changeGeometry( const QgsGeometry &geometry );
+%Docstring
+Changes the ``geometry`` of the feature attached to the form.
+
+.. versionadded:: 3.30
 %End
 
     void setFeature( const QgsFeature &feature );
