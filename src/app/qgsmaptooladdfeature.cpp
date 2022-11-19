@@ -81,10 +81,21 @@ bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, const QgsFeature 
     highlight = createHighlight( vlayer, f );
   }
 
-  const bool res = action->addFeature( QgsAttributeMap(), showModal, std::move( scope ), false, std::move( highlight ) );
+  const QgsFeatureAction::AddFeatureResult res = action->addFeature( QgsAttributeMap(), showModal, std::move( scope ), false, std::move( highlight ) );
   if ( showModal )
     delete action;
-  return res;
+
+  switch ( res )
+  {
+    case QgsFeatureAction::AddFeatureResult::Success:
+    case QgsFeatureAction::AddFeatureResult::Pending:
+      return true;
+    case QgsFeatureAction::AddFeatureResult::LayerStateError:
+    case QgsFeatureAction::AddFeatureResult::Canceled:
+    case QgsFeatureAction::AddFeatureResult::FeatureError:
+      return false;
+  }
+  BUILTIN_UNREACHABLE
 }
 
 void QgsMapToolAddFeature::featureDigitized( const QgsFeature &feature )

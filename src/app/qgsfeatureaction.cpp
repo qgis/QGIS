@@ -167,10 +167,10 @@ bool QgsFeatureAction::editFeature( bool showModal )
   return true;
 }
 
-bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, bool showModal, std::unique_ptr< QgsExpressionContextScope > scope, bool hideParent, std::unique_ptr<QgsHighlight> highlight )
+QgsFeatureAction::AddFeatureResult QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, bool showModal, std::unique_ptr< QgsExpressionContextScope > scope, bool hideParent, std::unique_ptr<QgsHighlight> highlight )
 {
   if ( !mLayer || !mLayer->isEditable() )
-    return false;
+    return AddFeatureResult::LayerStateError;
 
   const bool reuseAllLastValues = QgsSettingsRegistryCore::settingsDigitizingReuseLastValues.value();
   QgsDebugMsgLevel( QStringLiteral( "reuseAllLastValues: %1" ).arg( reuseAllLastValues ), 2 );
@@ -235,6 +235,7 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, boo
   if ( mForceSuppressFormPopup )
     isDisabledAttributeValuesDlg = true;
 
+  bool dialogWasShown = false;
   if ( isDisabledAttributeValuesDlg )
   {
     mLayer->beginEditCommand( text() );
@@ -277,15 +278,17 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, boo
         hideParentWidget();
       }
       mFeature = nullptr;
-      return true;
+      return AddFeatureResult::Pending;
     }
 
+    dialogWasShown = true;
     dialog->exec();
     emit addFeatureFinished();
   }
 
   // Will be set in the onFeatureSaved SLOT
-  return mFeatureSaved;
+  // assume dialog was canceled if dialog was shown yet feature wasn't added
+  return mFeatureSaved ? AddFeatureResult::Success : ( dialogWasShown ? AddFeatureResult::Canceled : AddFeatureResult::FeatureError );
 }
 
 void QgsFeatureAction::setForceSuppressFormPopup( bool force )

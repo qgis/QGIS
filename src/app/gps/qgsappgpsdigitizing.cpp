@@ -323,28 +323,37 @@ void QgsAppGpsDigitizing::createFeature()
     case QgsWkbTypes::PointGeometry:
     {
       QgsFeatureAction action( tr( "Feature Added" ), f, vlayer, QUuid(), -1, this );
-      if ( action.addFeature( attrMap ) )
+      const QgsFeatureAction::AddFeatureResult result = action.addFeature( attrMap );
+      switch ( result )
       {
-        if ( QgsProject::instance()->gpsSettings()->automaticallyCommitFeatures() )
+        case QgsFeatureAction::AddFeatureResult::Success:
         {
-          // should canvas->isDrawing() be checked?
-          if ( !vlayer->commitChanges() ) //assumed to be vector layer and is editable and is in editing mode (preconditions have been tested)
+          if ( QgsProject::instance()->gpsSettings()->automaticallyCommitFeatures() )
           {
-            QgisApp::instance()->messageBar()->pushCritical(
-              tr( "Save Layer Edits" ),
-              tr( "Could not commit changes to layer %1\n\nErrors: %2\n" )
-              .arg( vlayer->name(),
-                    vlayer->commitErrors().join( QLatin1String( "\n  " ) ) ) );
+            // should canvas->isDrawing() be checked?
+            if ( !vlayer->commitChanges() ) //assumed to be vector layer and is editable and is in editing mode (preconditions have been tested)
+            {
+              QgisApp::instance()->messageBar()->pushCritical(
+                tr( "Save Layer Edits" ),
+                tr( "Could not commit changes to layer %1\n\nErrors: %2\n" )
+                .arg( vlayer->name(),
+                      vlayer->commitErrors().join( QLatin1String( "\n  " ) ) ) );
+            }
+
+            vlayer->startEditing();
           }
-
-          vlayer->startEditing();
         }
-      }
-      else
-      {
-        QgisApp::instance()->messageBar()->pushCritical( QString(), tr( "Could not create new feature in layer %1" ).arg( vlayer->name() ) );
-      }
+        break;
 
+        case QgsFeatureAction::AddFeatureResult::Canceled:
+        case QgsFeatureAction::AddFeatureResult::Pending:
+          break;
+
+        case QgsFeatureAction::AddFeatureResult::LayerStateError:
+        case QgsFeatureAction::AddFeatureResult::FeatureError:
+          QgisApp::instance()->messageBar()->pushCritical( QString(), tr( "Could not create new feature in layer %1" ).arg( vlayer->name() ) );
+          break;
+      }
       break;
     }
 
@@ -355,31 +364,41 @@ void QgsAppGpsDigitizing::createFeature()
 
       QgsFeatureAction action( tr( "Feature added" ), f, vlayer, QUuid(), -1, this );
 
-      if ( action.addFeature( attrMap ) )
+      const QgsFeatureAction::AddFeatureResult result = action.addFeature( attrMap );
+      switch ( result )
       {
-        if ( QgsProject::instance()->gpsSettings()->automaticallyCommitFeatures() )
+        case QgsFeatureAction::AddFeatureResult::Success:
         {
-          if ( !vlayer->commitChanges() )
+          if ( QgsProject::instance()->gpsSettings()->automaticallyCommitFeatures() )
           {
-            QgisApp::instance()->messageBar()->pushCritical( tr( "Save Layer Edits" ),
-                tr( "Could not commit changes to layer %1\n\nErrors: %2\n" )
-                .arg( vlayer->name(),
-                      vlayer->commitErrors().join( QLatin1String( "\n  " ) ) ) );
+            if ( !vlayer->commitChanges() )
+            {
+              QgisApp::instance()->messageBar()->pushCritical( tr( "Save Layer Edits" ),
+                  tr( "Could not commit changes to layer %1\n\nErrors: %2\n" )
+                  .arg( vlayer->name(),
+                        vlayer->commitErrors().join( QLatin1String( "\n  " ) ) ) );
+            }
+
+            vlayer->startEditing();
           }
+          delete mRubberBand;
+          mRubberBand = nullptr;
 
-          vlayer->startEditing();
+          // delete the elements of mCaptureList
+          resetTrack();
         }
-        delete mRubberBand;
-        mRubberBand = nullptr;
+        break;
 
-        // delete the elements of mCaptureList
-        resetTrack();
-      }
-      else
-      {
-        QgisApp::instance()->messageBar()->pushCritical( QString(), tr( "Could not create new feature in layer %1" ).arg( vlayer->name() ) );
-      }
+        case QgsFeatureAction::AddFeatureResult::Canceled:
+        case QgsFeatureAction::AddFeatureResult::Pending:
+          break;
 
+        case QgsFeatureAction::AddFeatureResult::LayerStateError:
+        case QgsFeatureAction::AddFeatureResult::FeatureError:
+          QgisApp::instance()->messageBar()->pushCritical( QString(), tr( "Could not create new feature in layer %1" ).arg( vlayer->name() ) );
+          break;
+
+      }
       mBlockGpsStateChanged--;
 
       break;
