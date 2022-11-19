@@ -174,6 +174,7 @@ QgsMapLayerActionContext QgsAttributeDialog::createActionContext()
 {
   QgsMapLayerActionContext context;
   context.setAttributeDialog( this );
+  context.setMessageBar( mMessageBar );
   return context;
 }
 

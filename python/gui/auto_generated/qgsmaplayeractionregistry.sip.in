@@ -41,6 +41,22 @@ Sets the attribute ``dialog`` associated with the action's execution.
 .. seealso:: :py:func:`attributeDialog`
 %End
 
+    QgsMessageBar *messageBar() const;
+%Docstring
+Returns the message bar associated with the action's execution.
+
+May be ``None``.
+
+.. seealso:: :py:func:`setMessageBar`
+%End
+
+    void setMessageBar( QgsMessageBar *bar );
+%Docstring
+Sets the message ``bar`` associated with the action's execution.
+
+.. seealso:: :py:func:`messageBar`
+%End
+
 };
 
 

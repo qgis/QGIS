@@ -17,6 +17,7 @@
 #include "qgsgui.h"
 #include "qgsvectorlayer.h"
 #include "qgsattributedialog.h"
+#include "qgsmessagebar.h"
 
 QgsMapLayerAction::QgsMapLayerAction( const QString &name, QObject *parent, Targets targets, const QIcon &icon, QgsMapLayerAction::Flags flags )
   : QAction( icon, name, parent )
@@ -224,4 +225,17 @@ void QgsMapLayerActionContext::setAttributeDialog( QgsAttributeDialog *dialog )
   mAttributeDialog = dialog;
 }
 
+QgsMessageBar *QgsMapLayerActionContext::messageBar() const
+{
+  return mMessageBar;
+}
+
+void QgsMapLayerActionContext::setMessageBar( QgsMessageBar *bar )
+{
+  mMessageBar = bar;
+}
+
+//
+// QgsMapLayerActionContextGenerator
+//
 QgsMapLayerActionContextGenerator::~QgsMapLayerActionContextGenerator() = default;

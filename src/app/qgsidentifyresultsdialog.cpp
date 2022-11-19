@@ -643,7 +643,7 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
   }
 
   //get valid QgsMapLayerActions for this layer
-  QgsMapLayerActionContext context;
+  QgsMapLayerActionContext context = QgisApp::instance()->createMapLayerActionContext();
   const QList< QgsMapLayerAction * > registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer, QgsMapLayerAction::AllActions, context );
   const QList<QgsAction> actions = vlayer->actions()->actions( QStringLiteral( "Feature" ) );
 
@@ -1583,7 +1583,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
   if ( featItem && featItem->data( 0, Qt::UserRole + 1 ).isValid() && vlayer )
   {
     //get valid QgsMapLayerActions for this layer
-    QgsMapLayerActionContext context;
+    QgsMapLayerActionContext context = QgisApp::instance()->createMapLayerActionContext();
     const QList< QgsMapLayerAction * > registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer, QgsMapLayerAction::AllActions, context );
 
     if ( !registeredActions.isEmpty() )
@@ -1751,7 +1751,7 @@ void QgsIdentifyResultsDialog::doMapLayerAction( QTreeWidgetItem *item, QgsMapLa
     return;
 
   const QgsFeature feat = featItem->data( 0, FeatureRole ).value< QgsFeature >();
-  QgsMapLayerActionContext context;
+  QgsMapLayerActionContext context = QgisApp::instance()->createMapLayerActionContext();
   Q_NOWARN_DEPRECATED_PUSH
   action->triggerForFeature( layer, feat );
   Q_NOWARN_DEPRECATED_POP
@@ -2537,7 +2537,7 @@ void QgsIdentifyResultsDialog::formatChanged( int index )
 
 void QgsIdentifyResultsDialogMapLayerAction::execute()
 {
-  QgsMapLayerActionContext context;
+  QgsMapLayerActionContext context = QgisApp::instance()->createMapLayerActionContext();
   Q_NOWARN_DEPRECATED_PUSH
   mAction->triggerForFeature( mLayer, *mFeature );
   Q_NOWARN_DEPRECATED_POP
