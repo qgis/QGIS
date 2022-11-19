@@ -34,6 +34,7 @@
 #include <QComboBox>
 #include <QUuid>
 #include <QFileDialog>
+#include <QMessageBox>
 
 QgsVectorLayer *QgsNewMemoryLayerDialog::runAndCreateLayer( QWidget *parent, const QgsCoordinateReferenceSystem &defaultCrs )
 {
@@ -113,7 +114,10 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
   connect( mAttributeView, &QTreeWidget::itemSelectionChanged, this, &QgsNewMemoryLayerDialog::selectionChanged );
   connect( mAddAttributeButton, &QToolButton::clicked, this, &QgsNewMemoryLayerDialog::mAddAttributeButton_clicked );
   connect( mRemoveAttributeButton, &QToolButton::clicked, this, &QgsNewMemoryLayerDialog::mRemoveAttributeButton_clicked );
+
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsNewMemoryLayerDialog::showHelp );
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsNewMemoryLayerDialog::accept );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsNewMemoryLayerDialog::reject );
 
   mNameLineEdit->selectAll();
   mNameLineEdit->setFocus();
@@ -301,6 +305,25 @@ QgsFields QgsNewMemoryLayerDialog::fields() const
   }
 
   return fields;
+}
+
+void QgsNewMemoryLayerDialog::accept()
+{
+  if ( !mFieldNameEdit->text().trimmed().isEmpty() )
+  {
+    const QString currentFieldName = mFieldNameEdit->text();
+    if ( fields().lookupField( currentFieldName ) == -1 )
+    {
+      if ( QMessageBox::question( this, tr( "New Temporary Scratch Layer" ),
+                                  tr( "The field “%1” has not been added to the fields list. Are you sure you want to proceed and discard this field?" ).arg( currentFieldName ),
+                                  QMessageBox::Ok | QMessageBox::Cancel ) != QMessageBox::Ok )
+      {
+        return;
+      }
+    }
+  }
+
+  QDialog::accept();
 }
 
 void QgsNewMemoryLayerDialog::mAddAttributeButton_clicked()
