@@ -84,6 +84,18 @@ Returns the recorded points in the current track.
 These points will always be in WGS84 coordinate reference system.
 %End
 
+    QgsGeometry currentGeometry( QgsWkbTypes::Type type, QString &error /Out/ ) const;
+%Docstring
+Returns the current logged GPS positions as a geometry of the specified ``type``.
+
+The returned geometries will always be in the WGS84 (EPSG:4326) coordinate reference system.
+
+:param type: desired geometry type
+
+:return: - logged GPS positions as a geometry.
+         - error: Will be set to a user-friendly error if the logged positions could not be converted to an appropriate geometry
+%End
+
     QgsPointXY lastPosition() const;
 %Docstring
 Returns the last recorded position of the device.

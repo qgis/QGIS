@@ -136,18 +136,50 @@ void QgsAppGpsDigitizing::createFeature()
   if ( !vlayer )
     return;
 
-  const QVector< QgsPoint > captureListWgs84 = currentTrack();
-  if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry && captureListWgs84.size() < 2 )
+  QString error;
+  const QgsGeometry resultWgs84 = QgsGpsLogger::currentGeometry( vlayer->wkbType(), error );
+  if ( !error.isEmpty() )
   {
-    QgisApp::instance()->messageBar()->pushWarning( tr( "Add Feature" ), tr( "Creating a line feature requires a track with at least two vertices." ) );
+    QgisApp::instance()->messageBar()->pushWarning( tr( "Add Feature" ), error );
     return;
   }
-  else if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry && captureListWgs84.size() < 3 )
+
+  const QgsCoordinateTransform wgs84ToLayerTransform( mWgs84CRS, vlayer->crs(), QgsProject::instance() );
+  QgsGeometry geometryLayerCrs;
+  try
   {
-    QgisApp::instance()->messageBar()->pushWarning( tr( "Add Feature" ),
-        tr( "Creating a polygon feature requires a track with at least three vertices." ) );
+    geometryLayerCrs = resultWgs84;
+    geometryLayerCrs.transform( wgs84ToLayerTransform );
+  }
+  catch ( QgsCsException & )
+  {
+    QgisApp::instance()->messageBar()->pushCritical( tr( "Add Feature" ),
+        tr( "Error reprojecting feature to layer CRS." ) );
     return;
   }
+
+  if ( geometryLayerCrs.type() == QgsWkbTypes::PolygonGeometry )
+  {
+    const int avoidIntersectionsReturn = geometryLayerCrs.avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers() );
+    if ( avoidIntersectionsReturn == 1 )
+    {
+      //not a polygon type. Impossible to get there
+    }
+    else if ( avoidIntersectionsReturn == 2 )
+    {
+      //bail out...
+      QgisApp::instance()->messageBar()->pushWarning( tr( "Add Feature" ), tr( "The feature could not be added because removing the polygon intersections would change the geometry type." ) );
+      return;
+    }
+    else if ( avoidIntersectionsReturn == 3 )
+    {
+      QgisApp::instance()->messageBar()->pushCritical( tr( "Add Feature" ), tr( "The feature has been added, but at least one geometry intersected is invalid. These geometries must be manually repaired." ) );
+      return;
+    }
+  }
+
+  if ( geometryLayerCrs.isNull() )
+    return;
 
   if ( !vlayer->isEditable() )
   {
@@ -177,35 +209,13 @@ void QgsAppGpsDigitizing::createFeature()
     }
   }
 
-  const QgsCoordinateTransform wgs84ToLayerTransform( mWgs84CRS, vlayer->crs(), QgsProject::instance() );
-  const bool is3D = QgsWkbTypes::hasZ( vlayer->wkbType() );
+  QgsFeature f;
+  f.setGeometry( geometryLayerCrs );
+
   switch ( vlayer->geometryType() )
   {
     case QgsWkbTypes::PointGeometry:
     {
-      QgsFeature f;
-      try
-      {
-        const QgsPointXY pointXYLayerCrs = wgs84ToLayerTransform.transform( lastPosition() );
-
-        QgsGeometry g;
-        if ( is3D )
-          g = QgsGeometry( new QgsPoint( pointXYLayerCrs.x(), pointXYLayerCrs.y(), lastElevation() ) );
-        else
-          g = QgsGeometry::fromPointXY( pointXYLayerCrs );
-
-        if ( QgsWkbTypes::isMultiType( vlayer->wkbType() ) )
-          g.convertToMultiType();
-
-        f.setGeometry( g );
-      }
-      catch ( QgsCsException & )
-      {
-        QgisApp::instance()->messageBar()->pushCritical( tr( "Add Feature" ),
-            tr( "Error reprojecting feature to layer CRS." ) );
-        return;
-      }
-
       QgsFeatureAction action( tr( "Feature Added" ), f, vlayer, QUuid(), -1, this );
       if ( action.addFeature( attrMap ) )
       {
@@ -237,73 +247,6 @@ void QgsAppGpsDigitizing::createFeature()
     {
       mBlockGpsStateChanged++;
 
-      QgsFeature f;
-      QgsGeometry g;
-
-      std::unique_ptr<QgsLineString> ringWgs84( new QgsLineString( captureListWgs84 ) );
-      if ( ! is3D )
-        ringWgs84->dropZValue();
-
-      if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry )
-      {
-
-        g = QgsGeometry( ringWgs84.release() );
-        try
-        {
-          g.transform( wgs84ToLayerTransform );
-        }
-        catch ( QgsCsException & )
-        {
-          QgisApp::instance()->messageBar()->pushWarning( tr( "Add Feature" ),
-              tr( "Error reprojecting feature to layer CRS." ) );
-          return;
-        }
-        if ( QgsWkbTypes::isMultiType( vlayer->wkbType() ) )
-          g.convertToMultiType();
-      }
-      else if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry )
-      {
-        ringWgs84->close();
-        std::unique_ptr<QgsPolygon> polygon( new QgsPolygon() );
-        polygon->setExteriorRing( ringWgs84.release() );
-
-        g = QgsGeometry( polygon.release() );
-        try
-        {
-          g.transform( wgs84ToLayerTransform );
-        }
-        catch ( QgsCsException & )
-        {
-          mBlockGpsStateChanged--;
-          QgisApp::instance()->messageBar()->pushWarning( tr( "Add Feature" ),
-              tr( "Error reprojecting feature to layer CRS." ) );
-          return;
-        }
-
-        if ( QgsWkbTypes::isMultiType( vlayer->wkbType() ) )
-          g.convertToMultiType();
-
-        const int avoidIntersectionsReturn = g.avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers() );
-        if ( avoidIntersectionsReturn == 1 )
-        {
-          //not a polygon type. Impossible to get there
-        }
-        else if ( avoidIntersectionsReturn == 2 )
-        {
-          //bail out...
-          QgisApp::instance()->messageBar()->pushWarning( tr( "Add Feature" ), tr( "The feature could not be added because removing the polygon intersections would change the geometry type." ) );
-          mBlockGpsStateChanged--;
-          return;
-        }
-        else if ( avoidIntersectionsReturn == 3 )
-        {
-          QgisApp::instance()->messageBar()->pushCritical( tr( "Add Feature" ), tr( "The feature has been added, but at least one geometry intersected is invalid. These geometries must be manually repaired." ) );
-          mBlockGpsStateChanged--;
-          return;
-        }
-      }
-
-      f.setGeometry( g );
       QgsFeatureAction action( tr( "Feature added" ), f, vlayer, QUuid(), -1, this );
 
       if ( action.addFeature( attrMap ) )
@@ -418,3 +361,4 @@ QVariant QgsAppGpsDigitizing::timestamp( QgsVectorLayer *vlayer, int idx )
   }
   return value;
 }
+

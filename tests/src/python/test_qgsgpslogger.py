@@ -20,10 +20,12 @@ from qgis.PyQt.QtCore import (
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     Qgis,
+    QgsGpsLogger,
     QgsVectorLayerGpsLogger,
     QgsVectorLayer,
     QgsNmeaConnection,
     QgsSettings,
+    QgsWkbTypes,
     NULL
 )
 from qgis.testing import start_app, unittest
@@ -107,6 +109,87 @@ class TestQgsGpsLogger(unittest.TestCase):
 
         logger.setDestinationField(Qgis.GpsInformationComponent.TotalTrackLength, 'track_length')
         self.assertEqual(logger.destinationField(Qgis.GpsInformationComponent.TotalTrackLength), 'track_length')
+
+    def test_current_geometry(self):
+        gps_connection = GpsReplay()
+
+        logger = QgsGpsLogger(gps_connection)
+        spy = QSignalSpy(logger.stateChanged)
+
+        gps_connection.send_message('$GPRMC,084111.185,A,6938.6531,N,01856.8527,E,0.16,2.00,220120,,,A*6E')
+        self.assertEqual(len(spy), 1)
+
+        # not enough vertices for these types yet:
+        res, err = logger.currentGeometry(QgsWkbTypes.LineString)
+        self.assertTrue(err)
+        res, err = logger.currentGeometry(QgsWkbTypes.LineStringZ)
+        self.assertTrue(err)
+        res, err = logger.currentGeometry(QgsWkbTypes.Polygon)
+        self.assertTrue(err)
+        res, err = logger.currentGeometry(QgsWkbTypes.PolygonZ)
+        self.assertTrue(err)
+
+        # can create points
+        res, err = logger.currentGeometry(QgsWkbTypes.Point)
+        self.assertFalse(err)
+        self.assertEqual(res.asWkt(4), 'Point (18.9475 69.6442)')
+        res, err = logger.currentGeometry(QgsWkbTypes.PointZ)
+        self.assertFalse(err)
+        self.assertEqual(res.asWkt(4), 'PointZ (18.9475 69.6442 0)')
+
+        # make elevation available
+        gps_connection.send_message("$GPGGA,084112.185,6939.6532,N,01856.8526,E,1,04,1.4,35.0,M,29.4,M,,0000*63")
+        res, err = logger.currentGeometry(QgsWkbTypes.PointZ)
+        self.assertFalse(err)
+        self.assertEqual(res.asWkt(4), 'PointZ (18.9475 69.6609 35)')
+        res, err = logger.currentGeometry(QgsWkbTypes.MultiPointZ)
+        self.assertFalse(err)
+        self.assertEqual(res.asWkt(4), 'MultiPointZ ((18.9475 69.6609 35))')
+
+        res, err = logger.currentGeometry(QgsWkbTypes.LineString)
+        self.assertFalse(err)
+        self.assertEqual(res.asWkt(4), 'LineString (18.9475 69.6442, 18.9475 69.6609)')
+        res, err = logger.currentGeometry(QgsWkbTypes.LineStringZ)
+        self.assertFalse(err)
+        self.assertEqual(res.asWkt(4), 'LineStringZ (18.9475 69.6442 0, 18.9475 69.6609 35)')
+        res, err = logger.currentGeometry(QgsWkbTypes.MultiLineStringZ)
+        self.assertFalse(err)
+        self.assertEqual(res.asWkt(4), 'MultiLineStringZ ((18.9475 69.6442 0, 18.9475 69.6609 35))')
+
+        # note enough vertices for polygons yet
+        res, err = logger.currentGeometry(QgsWkbTypes.Polygon)
+        self.assertTrue(err)
+        res, err = logger.currentGeometry(QgsWkbTypes.PolygonZ)
+        self.assertTrue(err)
+
+        gps_connection.send_message("$GPGGA,084112.185,6939.6532,N,01866.8526,E,1,04,1.4,35.0,M,29.4,M,,0000*63")
+
+        res, err = logger.currentGeometry(QgsWkbTypes.PointZ)
+        self.assertFalse(err)
+        self.assertEqual(res.asWkt(4), 'PointZ (19.1142 69.6609 35)')
+        res, err = logger.currentGeometry(QgsWkbTypes.MultiPointZ)
+        self.assertFalse(err)
+        self.assertEqual(res.asWkt(4), 'MultiPointZ ((19.1142 69.6609 35))')
+
+        res, err = logger.currentGeometry(QgsWkbTypes.LineString)
+        self.assertFalse(err)
+        self.assertEqual(res.asWkt(4), 'LineString (18.9475 69.6442, 18.9475 69.6609, 19.1142 69.6609)')
+        res, err = logger.currentGeometry(QgsWkbTypes.LineStringZ)
+        self.assertFalse(err)
+        self.assertEqual(res.asWkt(4), 'LineStringZ (18.9475 69.6442 0, 18.9475 69.6609 35, 19.1142 69.6609 35)')
+        res, err = logger.currentGeometry(QgsWkbTypes.MultiLineStringZ)
+        self.assertFalse(err)
+        self.assertEqual(res.asWkt(4), 'MultiLineStringZ ((18.9475 69.6442 0, 18.9475 69.6609 35, 19.1142 69.6609 35))')
+
+        res, err = logger.currentGeometry(QgsWkbTypes.Polygon)
+        self.assertFalse(err)
+        self.assertEqual(res.asWkt(4), 'Polygon ((18.9475 69.6442, 18.9475 69.6609, 19.1142 69.6609, 18.9475 69.6442))')
+        res, err = logger.currentGeometry(QgsWkbTypes.PolygonZ)
+        self.assertFalse(err)
+        self.assertEqual(res.asWkt(4), 'PolygonZ ((18.9475 69.6442 0, 18.9475 69.6609 35, 19.1142 69.6609 35, 18.9475 69.6442 0))')
+        res, err = logger.currentGeometry(QgsWkbTypes.MultiPolygonZ)
+        self.assertFalse(err)
+        self.assertEqual(res.asWkt(4), 'MultiPolygonZ (((18.9475 69.6442 0, 18.9475 69.6609 35, 19.1142 69.6609 35, 18.9475 69.6442 0)))')
 
     def test_point_recording(self):
         points_layer = QgsVectorLayer(

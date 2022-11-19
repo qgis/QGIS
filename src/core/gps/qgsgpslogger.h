@@ -22,6 +22,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdistancearea.h"
 #include "qgscoordinatetransformcontext.h"
+#include "qgswkbtypes.h"
 
 #include <QObject>
 #include <QPointer>
@@ -105,6 +106,18 @@ class CORE_EXPORT QgsGpsLogger : public QObject
      * These points will always be in WGS84 coordinate reference system.
      */
     QVector<QgsPoint> currentTrack() const;
+
+    /**
+     * Returns the current logged GPS positions as a geometry of the specified \a type.
+     *
+     * The returned geometries will always be in the WGS84 (EPSG:4326) coordinate reference system.
+     *
+     * \param type desired geometry type
+     * \param error Will be set to a user-friendly error if the logged positions could not be converted to an appropriate geometry
+     *
+     * \returns logged GPS positions as a geometry.
+     */
+    QgsGeometry currentGeometry( QgsWkbTypes::Type type, QString &error SIP_OUT ) const;
 
     /**
      * Returns the last recorded position of the device.

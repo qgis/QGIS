@@ -17,6 +17,8 @@
 #include "qgsgpsconnection.h"
 #include "gmath.h"
 #include "qgsgeometry.h"
+#include "qgslinestring.h"
+#include "qgspolygon.h"
 
 #include <QTimer>
 #include <QTimeZone>
@@ -90,6 +92,76 @@ const QgsDistanceArea &QgsGpsLogger::distanceArea() const
 QVector<QgsPoint> QgsGpsLogger::currentTrack() const
 {
   return mCaptureListWgs84;
+}
+
+QgsGeometry QgsGpsLogger::currentGeometry( QgsWkbTypes::Type type, QString &error ) const
+{
+  const QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::geometryType( type );
+  const QVector< QgsPoint > captureListWgs84 = currentTrack();
+  if ( geometryType == QgsWkbTypes::LineGeometry && captureListWgs84.size() < 2 )
+  {
+    error = tr( "Creating a line feature requires a track with at least two vertices." );
+    return QgsGeometry();
+  }
+  else if ( geometryType == QgsWkbTypes::PolygonGeometry && captureListWgs84.size() < 3 )
+  {
+    error = tr( "Creating a polygon feature requires a track with at least three vertices." );
+    return QgsGeometry();
+  }
+
+  const bool is3D = QgsWkbTypes::hasZ( type );
+  switch ( geometryType )
+  {
+    case QgsWkbTypes::PointGeometry:
+    {
+      const QgsPointXY pointXYWgs84 = lastPosition();
+
+      QgsGeometry g;
+      if ( is3D )
+        g = QgsGeometry( new QgsPoint( pointXYWgs84.x(), pointXYWgs84.y(), lastElevation() ) );
+      else
+        g = QgsGeometry::fromPointXY( pointXYWgs84 );
+
+      if ( QgsWkbTypes::isMultiType( type ) )
+        g.convertToMultiType();
+
+      return g;
+    }
+
+    case QgsWkbTypes::LineGeometry:
+    case QgsWkbTypes::PolygonGeometry:
+    {
+      QgsGeometry g;
+
+      std::unique_ptr<QgsLineString> ringWgs84( new QgsLineString( captureListWgs84 ) );
+      if ( ! is3D )
+        ringWgs84->dropZValue();
+
+      if ( geometryType == QgsWkbTypes::LineGeometry )
+      {
+        g = QgsGeometry( ringWgs84.release() );
+        if ( QgsWkbTypes::isMultiType( type ) )
+          g.convertToMultiType();
+      }
+      else if ( geometryType == QgsWkbTypes::PolygonGeometry )
+      {
+        ringWgs84->close();
+        std::unique_ptr<QgsPolygon> polygon( new QgsPolygon() );
+        polygon->setExteriorRing( ringWgs84.release() );
+
+        g = QgsGeometry( polygon.release() );
+
+        if ( QgsWkbTypes::isMultiType( type ) )
+          g.convertToMultiType();
+      }
+      return g;
+    }
+
+    case QgsWkbTypes::NullGeometry:
+    case QgsWkbTypes::UnknownGeometry:
+      break;
+  }
+  return QgsGeometry();
 }
 
 QgsPointXY QgsGpsLogger::lastPosition() const
