@@ -336,6 +336,33 @@ void QgsNewSpatialiteLayerDialog::buttonBox_rejected()
 
 bool QgsNewSpatialiteLayerDialog::apply()
 {
+  if ( !mNameEdit->text().trimmed().isEmpty() )
+  {
+    const QString currentFieldName = mNameEdit->text();
+    bool currentFound = false;
+    QTreeWidgetItemIterator it( mAttributeView );
+    while ( *it )
+    {
+      QTreeWidgetItem *item = *it;
+      if ( item->text( 0 ) == currentFieldName )
+      {
+        currentFound = true;
+        break;
+      }
+      ++it;
+    }
+
+    if ( !currentFound )
+    {
+      if ( QMessageBox::question( this, windowTitle(),
+                                  tr( "The field “%1” has not been added to the fields list. Are you sure you want to proceed and discard this field?" ).arg( currentFieldName ),
+                                  QMessageBox::Ok | QMessageBox::Cancel ) != QMessageBox::Ok )
+      {
+        return false;
+      }
+    }
+  }
+
   const QgsDataSourceUri dbUri = mDatabaseComboBox->currentConnectionUri();
   const QString dbPath = dbUri.database();
 
