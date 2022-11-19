@@ -289,6 +289,11 @@ void QgsAttributeForm::changeAttribute( const QString &field, const QVariant &va
   }
 }
 
+void QgsAttributeForm::changeGeometry( const QgsGeometry &geometry )
+{
+  mFeature.setGeometry( geometry );
+}
+
 void QgsAttributeForm::setFeature( const QgsFeature &feature )
 {
   mIsSettingFeature = true;
