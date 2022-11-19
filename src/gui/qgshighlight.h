@@ -220,6 +220,7 @@ class GUI_EXPORT QgsHighlight : public QgsMapCanvasItem
 
     // we don't want to make PointSymbol public for now, so just grant access selectively via a friend
     friend class QgsMapToolAddFeature;
+    friend class QgsUpdateGpsDetailsAction;
     double mPointSizeRadiusMM = 1.5;
     PointSymbol mPointSymbol = PointSymbol::Square;
 };

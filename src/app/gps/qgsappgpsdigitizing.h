@@ -22,6 +22,8 @@
 #include "qgis_app.h"
 #include "qgssettingsentryimpl.h"
 #include "qgsgpslogger.h"
+#include "qgsmaplayeractionregistry.h"
+#include "qgswkbtypes.h"
 
 class QgsAppGpsConnection;
 class QgsMapCanvas;
@@ -29,6 +31,24 @@ class QgsRubberBand;
 class QgsPoint;
 class QgsGpsInformation;
 class QgsVectorLayer;
+
+class QgsAppGpsDigitizing;
+
+class QgsUpdateGpsDetailsAction : public QgsMapLayerAction
+{
+    Q_OBJECT
+
+  public:
+
+    QgsUpdateGpsDetailsAction( QgsAppGpsConnection *connection, QgsAppGpsDigitizing *digitizing, QObject *parent );
+    bool canRunUsingLayer( QgsMapLayer *layer ) const override;
+    bool canRunUsingLayer( QgsMapLayer *layer, const QgsMapLayerActionContext &context ) const override;
+    void triggerForFeature( QgsMapLayer *layer, const QgsFeature &feature, const QgsMapLayerActionContext &context ) override;
+  private:
+    QgsAppGpsConnection *mConnection = nullptr;
+    QgsAppGpsDigitizing *mDigitizing = nullptr;
+
+};
 
 class APP_EXPORT QgsAppGpsDigitizing: public QgsGpsLogger
 {
@@ -40,6 +60,8 @@ class APP_EXPORT QgsAppGpsDigitizing: public QgsGpsLogger
 
     QgsAppGpsDigitizing( QgsAppGpsConnection *connection, QgsMapCanvas *canvas, QObject *parent = nullptr );
     ~QgsAppGpsDigitizing() override;
+
+    QgsMapCanvas *canvas();
 
   public slots:
     void createFeature();
@@ -64,6 +86,8 @@ class APP_EXPORT QgsAppGpsDigitizing: public QgsGpsLogger
     QgsRubberBand *mRubberBand = nullptr;
 
     QgsCoordinateTransform mCanvasToWgs84Transform;
+
+    QgsUpdateGpsDetailsAction *mUpdateGpsDetailsAction = nullptr;
 
     friend class TestQgsGpsIntegration;
 };
