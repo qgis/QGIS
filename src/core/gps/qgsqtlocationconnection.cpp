@@ -101,7 +101,7 @@ void QgsQtLocationConnection::parseData()
       //mLastGPSInformation.status;   //< Status (A = active or V = void)
 
       emit stateChanged( mLastGPSInformation );
-      QgsDebugMsg( QStringLiteral( "Valid QGeoPositionInfo, positionUpdated" ) );
+      QgsDebugMsgLevel( QStringLiteral( "Valid QGeoPositionInfo, positionUpdated" ), 2 );
     }
   }
 }
@@ -123,7 +123,7 @@ void QgsQtLocationConnection::satellitesInViewUpdated(
   }
   mLastGPSInformation.satInfoComplete = true;  //to be used to determine when to graph signal and satellite position
   emit stateChanged( mLastGPSInformation );
-  QgsDebugMsg( QStringLiteral( "satellitesInViewUpdated" ) );
+  QgsDebugMsgLevel( QStringLiteral( "satellitesInViewUpdated" ), 2 );
 }
 
 void QgsQtLocationConnection::satellitesInUseUpdated(
@@ -150,12 +150,12 @@ void QgsQtLocationConnection::satellitesInUseUpdated(
   }
   mLastGPSInformation.satInfoComplete = true;  //to be used to determine when to graph signal and satellite position
   emit stateChanged( mLastGPSInformation );
-  QgsDebugMsg( QStringLiteral( "satellitesInUseUpdated" ) );
+  QgsDebugMsgLevel( QStringLiteral( "satellitesInUseUpdated" ), 2 );
 }
 
 void QgsQtLocationConnection::startGPS()
 {
-  QgsDebugMsg( QStringLiteral( "Starting GPS QtLocation connection" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Starting GPS QtLocation connection" ), 2 );
   // Obtain the location data source if it is not obtained already
   if ( !locationDataSource )
   {
@@ -188,14 +188,14 @@ void QgsQtLocationConnection::startGPS()
 
 void QgsQtLocationConnection::startSatelliteMonitor()
 {
-  QgsDebugMsg( QStringLiteral( "Starting GPS QtLocation satellite monitor" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Starting GPS QtLocation satellite monitor" ), 2 );
 
   if ( !satelliteInfoSource )
   {
     satelliteInfoSource = QGeoSatelliteInfoSource::createDefaultSource( this );
     if ( satelliteInfoSource )
     {
-      QgsDebugMsg( QStringLiteral( "satelliteMonitor started" ) );
+      QgsDebugMsgLevel( QStringLiteral( "satelliteMonitor started" ), 2 );
       // Whenever the satellite info source signals that the number of
       // satellites in use is updated, the satellitesInUseUpdated function
       // is called
