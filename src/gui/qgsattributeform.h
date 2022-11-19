@@ -201,6 +201,12 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      */
     void setExtraContextScope( QgsExpressionContextScope *extraScope SIP_TRANSFER );
 
+    /**
+     * Returns TRUE if any of the form widgets need feature geometry
+     * \since QGIS 3.20
+     */
+    bool needsGeometry() const;
+
   signals:
 
     /**
@@ -339,12 +345,6 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * \since QGIS 3.14
      */
     void parentFormValueChanged( const QString &attribute, const QVariant &newValue );
-
-    /**
-     * Returns TRUE if any of the form widgets need feature geometry
-     * \since QGIS 3.20
-     */
-    bool needsGeometry() const;
 
   private slots:
     void onAttributeChanged( const QVariant &value, const QVariantList &additionalFieldValues );

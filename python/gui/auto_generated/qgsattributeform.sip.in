@@ -186,6 +186,13 @@ for calculations in this form.
 .. versionadded:: 3.16
 %End
 
+    bool needsGeometry() const;
+%Docstring
+Returns ``True`` if any of the form widgets need feature geometry
+
+.. versionadded:: 3.20
+%End
+
   signals:
 
  void attributeChanged( const QString &attribute, const QVariant &value ) /Deprecated/;
@@ -326,13 +333,6 @@ Notify the form widgets that something has changed in case they
 have filter expressions that depend on the parent form scope.
 
 .. versionadded:: 3.14
-%End
-
-    bool needsGeometry() const;
-%Docstring
-Returns ``True`` if any of the form widgets need feature geometry
-
-.. versionadded:: 3.20
 %End
 
 };
