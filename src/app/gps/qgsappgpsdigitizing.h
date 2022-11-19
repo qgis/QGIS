@@ -24,6 +24,7 @@
 #include "qgsgpslogger.h"
 #include "qgsmaplayeractionregistry.h"
 #include "qgswkbtypes.h"
+#include "qgsattributes.h"
 
 class QgsAppGpsConnection;
 class QgsMapCanvas;
@@ -63,6 +64,11 @@ class APP_EXPORT QgsAppGpsDigitizing: public QgsGpsLogger
 
     QgsMapCanvas *canvas();
 
+    /**
+     * Returns the map of attributes which are auto-populated from GPS information, with their current derived values.
+     */
+    QgsAttributeMap derivedAttributes() const;
+
   public slots:
     void createFeature();
     void createVertexAtCurrentLocation();
@@ -78,7 +84,7 @@ class APP_EXPORT QgsAppGpsDigitizing: public QgsGpsLogger
 
   private:
     void createRubberBand();
-    QVariant timestamp( QgsVectorLayer *vlayer, int idx );
+    QVariant timestamp( QgsVectorLayer *vlayer, int idx ) const;
 
     QgsAppGpsConnection *mConnection = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
