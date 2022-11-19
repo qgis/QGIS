@@ -35,10 +35,22 @@ bool QgsGuiVectorLayerTools::addFeature( QgsVectorLayer *layer, const QgsAttribu
   QgsFeatureAction *a = new QgsFeatureAction( tr( "Add feature" ), *f, layer, QUuid(), -1, parentWidget );
   a->setForceSuppressFormPopup( forceSuppressFormPopup() );
   connect( a, &QgsFeatureAction::addFeatureFinished, a, &QObject::deleteLater );
-  const bool added = a->addFeature( defaultValues, showModal, nullptr, hideParent );
+  const QgsFeatureAction::AddFeatureResult result = a->addFeature( defaultValues, showModal, nullptr, hideParent );
   if ( !feat )
     delete f;
-  return added;
+
+  switch ( result )
+  {
+    case QgsFeatureAction::AddFeatureResult::Success:
+    case QgsFeatureAction::AddFeatureResult::Pending:
+      return true;
+
+    case QgsFeatureAction::AddFeatureResult::LayerStateError:
+    case QgsFeatureAction::AddFeatureResult::Canceled:
+    case QgsFeatureAction::AddFeatureResult::FeatureError:
+      return false;
+  }
+  BUILTIN_UNREACHABLE
 }
 
 bool QgsGuiVectorLayerTools::startEditing( QgsVectorLayer *layer ) const

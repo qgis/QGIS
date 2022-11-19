@@ -39,6 +39,15 @@ class APP_EXPORT QgsFeatureAction : public QAction
   public:
     QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *vl, QUuid actionId = QUuid(), int defaultAttr = -1, QObject *parent = nullptr );
 
+    enum class AddFeatureResult
+    {
+      Success = 0,
+      LayerStateError = 1,
+      Canceled = 2,
+      Pending = 3,
+      FeatureError = 4
+    };
+
     /**
      * Add a new feature to the layer.
      * Will set the default values to recently used or provider defaults based on settings
@@ -50,13 +59,13 @@ class APP_EXPORT QgsFeatureAction : public QAction
      * \param hideParent         If the parent widget should be hidden, when the used dialog is opened
      * \param highlight          Optional canvas highlight for feature
      *
-     * \returns TRUE if feature was added if showModal is true. If showModal is FALSE, returns TRUE in every case
+     * \returns result if feature was added if showModal is true. If showModal is FALSE, returns Pending in every case
      */
-    bool addFeature( const QgsAttributeMap &defaultAttributes = QgsAttributeMap(),
-                     bool showModal = true,
-                     std::unique_ptr<QgsExpressionContextScope >scope = std::unique_ptr< QgsExpressionContextScope >(),
-                     bool hideParent = false,
-                     std::unique_ptr<QgsHighlight> highlight = std::unique_ptr<QgsHighlight>() );
+    AddFeatureResult addFeature( const QgsAttributeMap &defaultAttributes = QgsAttributeMap(),
+                                 bool showModal = true,
+                                 std::unique_ptr<QgsExpressionContextScope >scope = std::unique_ptr< QgsExpressionContextScope >(),
+                                 bool hideParent = false,
+                                 std::unique_ptr<QgsHighlight> highlight = std::unique_ptr<QgsHighlight>() );
 
   public slots:
     void execute();

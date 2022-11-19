@@ -701,11 +701,21 @@ void QgsAttributeTableDialog::mActionAddFeatureViaAttributeTable_triggered()
   QgsFeature f;
   QgsFeatureAction action( tr( "Geometryless feature added" ), f, mLayer, QUuid(), -1, this );
   action.setForceSuppressFormPopup( true ); // we're already showing the table, allowing users to enter the new feature's attributes directly
-  if ( action.addFeature() )
+
+  const QgsFeatureAction::AddFeatureResult result = action.addFeature();
+  switch ( result )
   {
-    masterModel->reload( masterModel->index( 0, 0 ), masterModel->index( masterModel->rowCount() - 1, masterModel->columnCount() - 1 ) );
-    mMainView->setCurrentEditSelection( QgsFeatureIds() << action.feature().id() );
-    mMainView->tableView()->scrollToFeature( action.feature().id(), 0 );
+    case QgsFeatureAction::AddFeatureResult::Success:
+    case QgsFeatureAction::AddFeatureResult::Pending:
+      masterModel->reload( masterModel->index( 0, 0 ), masterModel->index( masterModel->rowCount() - 1, masterModel->columnCount() - 1 ) );
+      mMainView->setCurrentEditSelection( QgsFeatureIds() << action.feature().id() );
+      mMainView->tableView()->scrollToFeature( action.feature().id(), 0 );
+      break;
+
+    case QgsFeatureAction::AddFeatureResult::LayerStateError:
+    case QgsFeatureAction::AddFeatureResult::Canceled:
+    case QgsFeatureAction::AddFeatureResult::FeatureError:
+      break;
   }
 }
 
@@ -723,11 +733,20 @@ void QgsAttributeTableDialog::mActionAddFeatureViaAttributeForm_triggered()
   QgsFeatureAction action( tr( "Feature Added" ), f, mLayer, QUuid(), -1, this );
   QgsAttributeTableModel *masterModel = mMainView->masterModel();
 
-  if ( action.addFeature() )
+  const QgsFeatureAction::AddFeatureResult result = action.addFeature();
+  switch ( result )
   {
-    masterModel->reload( masterModel->index( 0, 0 ), masterModel->index( masterModel->rowCount() - 1, masterModel->columnCount() - 1 ) );
-    mMainView->setCurrentEditSelection( QgsFeatureIds() << action.feature().id() );
-    mMainView->tableView()->scrollToFeature( action.feature().id(), 0 );
+    case QgsFeatureAction::AddFeatureResult::Success:
+    case QgsFeatureAction::AddFeatureResult::Pending:
+      masterModel->reload( masterModel->index( 0, 0 ), masterModel->index( masterModel->rowCount() - 1, masterModel->columnCount() - 1 ) );
+      mMainView->setCurrentEditSelection( QgsFeatureIds() << action.feature().id() );
+      mMainView->tableView()->scrollToFeature( action.feature().id(), 0 );
+      break;
+
+    case QgsFeatureAction::AddFeatureResult::LayerStateError:
+    case QgsFeatureAction::AddFeatureResult::Canceled:
+    case QgsFeatureAction::AddFeatureResult::FeatureError:
+      break;
   }
 }
 
