@@ -4987,7 +4987,7 @@ java.io.IOExceptionCannot do natural order without a primary key, please add it 
 </wfs:FeatureCollection>"""))
 
         httpd_thread = threading.Thread(target=httpd.serve_forever)
-        httpd_thread.setDaemon(True)
+        httpd_thread.daemon = True
         httpd_thread.start()
 
         vl = QgsVectorLayer("url='http://localhost:{}' typename='my:typename' version='1.0.0'".format(port), 'test',

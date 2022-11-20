@@ -1344,7 +1344,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         port = httpd.server_address[1]
 
         httpd_thread = threading.Thread(target=httpd.serve_forever)
-        httpd_thread.setDaemon(True)
+        httpd_thread.daemon = True
         httpd_thread.start()
 
         qs = "?" + "&".join(["%s=%s" % i for i in list({

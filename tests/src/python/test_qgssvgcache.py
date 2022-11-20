@@ -47,7 +47,7 @@ class TestQgsSvgCache(unittest.TestCase):
         cls.port = cls.httpd.server_address[1]
 
         cls.httpd_thread = threading.Thread(target=cls.httpd.serve_forever)
-        cls.httpd_thread.setDaemon(True)
+        cls.httpd_thread.daemon = True
         cls.httpd_thread.start()
 
     def setUp(self):
