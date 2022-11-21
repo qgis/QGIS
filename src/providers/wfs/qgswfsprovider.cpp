@@ -176,30 +176,8 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
     mShared->setCurrentRect( QgsRectangle() );
   };
 
-  // For WFS >= 1.1, by default, issue a GetFeature on one feature to check
-  // if gml:description, gml:identifier, gml:name attributes are
-  // present (unless mShared->mURI.skipInitialGetFeature() returns false)
-  // Another reason to issue it if we do not known the exact geometry type
-  // from describeFeatureType()
-  if ( !mShared->mWFSVersion.startsWith( QLatin1String( "1.0" ) ) &&
-       !mShared->mURI.skipInitialGetFeature() )
+  const auto TryToDetectGeometryType = [&]()
   {
-    // Try to see if gml:description, gml:identifier, gml:name attributes are
-    // present. So insert them temporarily in mShared->mFields so that the
-    // GML parser can detect them.
-    const auto addGMLFields = [ = ]( bool forceAdd )
-    {
-      if ( mShared->mFields.indexOf( QLatin1String( "description" ) ) < 0  && ( forceAdd || mSampleFeatureHasDescription ) )
-        mShared->mFields.append( QgsField( QStringLiteral( "description" ), QVariant::String, QStringLiteral( "xsd:string" ) ) );
-      if ( mShared->mFields.indexOf( QLatin1String( "identifier" ) ) < 0  && ( forceAdd || mSampleFeatureHasIdentifier ) )
-        mShared->mFields.append( QgsField( QStringLiteral( "identifier" ), QVariant::String, QStringLiteral( "xsd:string" ) ) );
-      if ( mShared->mFields.indexOf( QLatin1String( "name" ) ) < 0  && ( forceAdd || mSampleFeatureHasName ) )
-        mShared->mFields.append( QgsField( QStringLiteral( "name" ), QVariant::String, QStringLiteral( "xsd:string" ) ) );
-    };
-
-    const QgsFields fieldsBackup = mShared->mFields;
-    addGMLFields( true );
-
     const QgsWkbTypes::Type initialGeometryType = mShared->mWKBType;
 
     // try first without a BBOX, because some servers exhibit very poor
@@ -237,13 +215,50 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
     {
       mShared->mWKBType = initialGeometryType;
     }
+  };
 
-    // Edit the final mFields to add the description, identifier, name fields
-    // if they were actually found.
-    mShared->mFields.clear();
-    addGMLFields( false );
-    for ( const QgsField &field : fieldsBackup )
-      mShared->mFields.append( field );
+  if ( !mShared->mURI.skipInitialGetFeature() )
+  {
+    // For WFS = 1.0, issue a GetFeature on one feature to check
+    // if we do not known the exact geometry type from
+    // describeFeatureType()
+    if ( mShared->mWFSVersion.startsWith( QLatin1String( "1.0" ) ) &&
+         mShared->mWKBType == QgsWkbTypes::Unknown )
+    {
+      TryToDetectGeometryType();
+    }
+    // For WFS >= 1.1, by default, issue a GetFeature on one feature to check
+    // if gml:description, gml:identifier, gml:name attributes are
+    // present (unless mShared->mURI.skipInitialGetFeature() returns false)
+    // Another reason to issue it if we do not known the exact geometry type
+    // from describeFeatureType()
+    else if ( !mShared->mWFSVersion.startsWith( QLatin1String( "1.0" ) ) )
+    {
+      // Try to see if gml:description, gml:identifier, gml:name attributes are
+      // present. So insert them temporarily in mShared->mFields so that the
+      // GML parser can detect them.
+      const auto addGMLFields = [ = ]( bool forceAdd )
+      {
+        if ( mShared->mFields.indexOf( QLatin1String( "description" ) ) < 0  && ( forceAdd || mSampleFeatureHasDescription ) )
+          mShared->mFields.append( QgsField( QStringLiteral( "description" ), QVariant::String, QStringLiteral( "xsd:string" ) ) );
+        if ( mShared->mFields.indexOf( QLatin1String( "identifier" ) ) < 0  && ( forceAdd || mSampleFeatureHasIdentifier ) )
+          mShared->mFields.append( QgsField( QStringLiteral( "identifier" ), QVariant::String, QStringLiteral( "xsd:string" ) ) );
+        if ( mShared->mFields.indexOf( QLatin1String( "name" ) ) < 0  && ( forceAdd || mSampleFeatureHasName ) )
+          mShared->mFields.append( QgsField( QStringLiteral( "name" ), QVariant::String, QStringLiteral( "xsd:string" ) ) );
+      };
+
+      const QgsFields fieldsBackup = mShared->mFields;
+      addGMLFields( true );
+
+      TryToDetectGeometryType();
+
+      // Edit the final mFields to add the description, identifier, name fields
+      // if they were actually found.
+      mShared->mFields.clear();
+      addGMLFields( false );
+      for ( const QgsField &field : fieldsBackup )
+        mShared->mFields.append( field );
+    }
   }
 }
 
