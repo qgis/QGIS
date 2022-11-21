@@ -2556,7 +2556,7 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
     long long layerFeatureCount = 0;
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
     int nEntryCount = 0;
-    OGRGeometryTypeCounter *pasCounter;
+    OGRGeometryTypeCounter *pasCounter = nullptr;
     {
       QRecursiveMutex *mutex;
       OGRLayerH hLayer = layer->getHandleAndMutex( mutex );
