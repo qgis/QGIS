@@ -2152,6 +2152,13 @@ QString QgsOgrProviderUtils::ogrWkbGeometryTypeName( OGRwkbGeometryType type )
   return geom;
 }
 
+static bool isMultiPatchAsGeomCollectionZOfTinZ( const QString &driverName )
+{
+  return driverName == QLatin1String( "ESRI Shapefile" ) ||
+         driverName == QLatin1String( "OpenFileGDB" ) ||
+         driverName == QLatin1String( "FileGDB" );
+}
+
 OGRwkbGeometryType QgsOgrProviderUtils::resolveGeometryTypeForFeature( OGRFeatureH feature, const QString &driverName )
 {
   if ( OGRGeometryH geom = OGR_F_GetGeometryRef( feature ) )
@@ -2160,7 +2167,7 @@ OGRwkbGeometryType QgsOgrProviderUtils::resolveGeometryTypeForFeature( OGRFeatur
 
     // ESRI MultiPatch can be reported as GeometryCollectionZ of TINZ
     if ( wkbFlatten( gType ) == wkbGeometryCollection &&
-         ( driverName == QLatin1String( "ESRI Shapefile" ) || driverName == QLatin1String( "OpenFileGDB" ) || driverName == QLatin1String( "FileGDB" ) ) &&
+         isMultiPatchAsGeomCollectionZOfTinZ( driverName ) &&
          OGR_G_GetGeometryCount( geom ) >= 1 &&
          wkbFlatten( OGR_G_GetGeometryType( OGR_G_GetGeometryRef( geom, 0 ) ) ) == wkbTIN )
     {
@@ -2542,13 +2549,58 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
     QgsDebugMsgLevel( QStringLiteral( "Unknown geometry type, count features for each geometry type" ), 2 );
     // Add virtual sublayers for supported geometry types if layer type is unknown
     // Count features for geometry types
-    QMap<OGRwkbGeometryType, int> fCount;
+    QMap<OGRwkbGeometryType, int64_t> fCount;
     QSet<OGRwkbGeometryType> fHasZ;
     // TODO: avoid reading attributes, setRelevantFields cannot be called here because it is not constant
 
+    long long layerFeatureCount = 0;
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+    int nEntryCount = 0;
+    OGRGeometryTypeCounter *pasCounter = nullptr;
+    {
+      QRecursiveMutex *mutex;
+      OGRLayerH hLayer = layer->getHandleAndMutex( mutex );
+      QMutexLocker locker( mutex );
+
+      constexpr int iGeomField = 0;
+      GDALProgressFunc pfnProgress = nullptr;
+      if ( feedback )
+      {
+        pfnProgress = []( double, const char *, void *pData )
+        {
+          return static_cast<QgsFeedback *>( pData )->isCanceled() ? 0 : 1;
+        };
+      }
+      int flags = 0;
+      if ( isMultiPatchAsGeomCollectionZOfTinZ( driverName ) )
+        flags |= OGR_GGT_GEOMCOLLECTIONZ_TINZ;
+      pasCounter = OGR_L_GetGeometryTypes(
+                     hLayer, iGeomField, flags, &nEntryCount,
+                     pfnProgress, feedback );
+    }
+    if ( pasCounter )
+    {
+      for ( int i = 0; i < nEntryCount; ++i )
+      {
+        layerFeatureCount += pasCounter[i].nCount;
+        OGRwkbGeometryType gType = pasCounter[i].eGeomType;
+        if ( gType != wkbNone )
+        {
+          if ( gType == wkbTINZ )
+            gType = wkbMultiPolygon25D;
+          bool hasZ = wkbHasZ( gType );
+          gType = QgsOgrProviderUtils::ogrWkbSingleFlatten( gType );
+          fCount[gType] = fCount.value( gType ) + pasCounter[i].nCount;
+          if ( hasZ )
+            fHasZ.insert( gType );
+        }
+      }
+      CPLFree( pasCounter );
+    }
+
+#else
     layer->ResetReading();
     gdal::ogr_feature_unique_ptr fet;
-    long long layerFeatureCount = 0;
     while ( fet.reset( layer->GetNextFeature() ), fet )
     {
       ++layerFeatureCount;
@@ -2566,6 +2618,7 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
         break;
     }
     layer->ResetReading();
+#endif
     if ( fCount.isEmpty() )
     {
       if ( layerFeatureCount > 0 )
@@ -2611,7 +2664,7 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
     res.reserve( fCount.size() );
 
     bool bIs25D = wkbHasZ( layerGeomType );
-    QMap<OGRwkbGeometryType, int>::const_iterator countIt = fCount.constBegin();
+    QMap<OGRwkbGeometryType, int64_t>::const_iterator countIt = fCount.constBegin();
     for ( ; countIt != fCount.constEnd(); ++countIt )
     {
       if ( feedback && feedback->isCanceled() )
