@@ -257,7 +257,7 @@ class CORE_EXPORT QgsLegendRenderer
      *
      * If \a context is NULLPTR, no painting will be attempted, but the required size will still be calculated and returned.
      */
-    QSizeF drawTitle( QgsRenderContext &context, double top, Qt::AlignmentFlag halignment = Qt::AlignLeft, double legendWidth = 0 );
+    QSizeF drawTitle( QgsRenderContext &context, double top, Qt::AlignmentFlag halignment = Qt::AlignLeft, double legendWidth = 0 ) const;
 
     /**
      * Draws an \a group and return its actual size, using the specified render \a context.

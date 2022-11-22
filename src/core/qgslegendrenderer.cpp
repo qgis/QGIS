@@ -687,7 +687,7 @@ int QgsLegendRenderer::setColumns( QList<LegendComponentGroup> &componentGroups 
   return targetNumberColumns;
 }
 
-QSizeF QgsLegendRenderer::drawTitle( QgsRenderContext &context, double top, Qt::AlignmentFlag halignment, double legendWidth )
+QSizeF QgsLegendRenderer::drawTitle( QgsRenderContext &context, double top, Qt::AlignmentFlag halignment, double legendWidth ) const
 {
   QSizeF size( 0, 0 );
   if ( mSettings.title().isEmpty() )
