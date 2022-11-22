@@ -34,7 +34,7 @@
  *
  * Usual values for such an expression are
  *
- * - `now()` for a timestamp for a record
+ * - now() for a timestamp for a record
  * - `@some_variable` to insert a project or application level variable like
  *   the username of the one digitizing a feature
  * - `$length` to insert a derived attribute of a geometry
