@@ -1635,7 +1635,7 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
           textp.setBrush( textColor );
           textp.drawPath( path );
 
-          xOffset += metrics.fragmentHorizontalAdvance( blockIndex, fragmentIndex, mode );
+          xOffset += metrics.fragmentHorizontalAdvance( blockIndex, fragmentIndex, mode ) * fontScale;
           fragmentIndex ++;
         }
         textp.end();
