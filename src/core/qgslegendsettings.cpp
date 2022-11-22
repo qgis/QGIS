@@ -37,21 +37,30 @@ QgsLegendSettings::QgsLegendSettings()
   QgsTextFormat f = rstyle( QgsLegendStyle::Title ).textFormat();
   f.setSize( 16.0 );
   f.setSizeUnit( QgsUnitTypes::RenderPoints );
+  // these default line heights are not ideal, but needed to maintain api
+  f.setLineHeight( 1.1 );
+  f.setLineHeightUnit( QgsUnitTypes::RenderPercentage );
   rstyle( QgsLegendStyle::Title ).setTextFormat( f );
 
   f = rstyle( QgsLegendStyle::Group ).textFormat();
   f.setSize( 14.0 );
   f.setSizeUnit( QgsUnitTypes::RenderPoints );
+  f.setLineHeight( 1.1 );
+  f.setLineHeightUnit( QgsUnitTypes::RenderPercentage );
   rstyle( QgsLegendStyle::Group ).setTextFormat( f );
 
   f = rstyle( QgsLegendStyle::Subgroup ).textFormat();
   f.setSize( 12.0 );
   f.setSizeUnit( QgsUnitTypes::RenderPoints );
+  f.setLineHeight( 1.1 );
+  f.setLineHeightUnit( QgsUnitTypes::RenderPercentage );
   rstyle( QgsLegendStyle::Subgroup ).setTextFormat( f );
 
   f = rstyle( QgsLegendStyle::SymbolLabel ).textFormat();
   f.setSize( 12.0 );
   f.setSizeUnit( QgsUnitTypes::RenderPoints );
+  f.setLineHeight( 1.1 );
+  f.setLineHeightUnit( QgsUnitTypes::RenderPercentage );
   rstyle( QgsLegendStyle::SymbolLabel ).setTextFormat( f );
 }
 
