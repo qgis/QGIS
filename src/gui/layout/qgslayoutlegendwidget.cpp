@@ -20,7 +20,6 @@
 #include "qgslayoutlegendlayersdialog.h"
 #include "qgslayoutitemwidget.h"
 #include "qgslayoutitemmap.h"
-#include "qgslayout.h"
 #include "qgsguiutils.h"
 #include "qgslayoutdesignerinterface.h"
 
@@ -32,7 +31,6 @@
 #include "qgslegendrenderer.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerlegend.h"
-#include "qgsproject.h"
 #include "qgsrenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgslayoutatlas.h"
@@ -41,9 +39,8 @@
 #include "qgsunittypes.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgslegendpatchshapewidget.h"
-#include "qgslayertreefilterproxymodel.h"
 #include "qgscolorramplegendnodewidget.h"
+#include "qgssymbol.h"
 
 #include <QMenu>
 #include <QMessageBox>
@@ -107,7 +104,6 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
   connect( mIconLabelSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mIconLabelSpaceSpinBox_valueChanged );
   connect( mBoxSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mBoxSpaceSpinBox_valueChanged );
   connect( mColumnSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mColumnSpaceSpinBox_valueChanged );
-  connect( mLineSpacingSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mLineSpacingSpinBox_valueChanged );
   connect( mCheckBoxAutoUpdate, &QCheckBox::stateChanged, this, [ = ]( int state ) { mCheckBoxAutoUpdate_stateChanged( state ); } );
   connect( mCheckboxResizeContents, &QCheckBox::toggled, this, &QgsLayoutLegendWidget::mCheckboxResizeContents_toggled );
   connect( mRasterStrokeGroupBox, &QgsCollapsibleGroupBoxBasic::toggled, this, &QgsLayoutLegendWidget::mRasterStrokeGroupBox_toggled );
@@ -278,7 +274,6 @@ void QgsLayoutLegendWidget::setGuiElements()
   mSymbolSideSpaceSpinBox->setValue( mLegend->style( QgsLegendStyle::Symbol ).margin( QgsLegendStyle::Left ) );
   mBoxSpaceSpinBox->setValue( mLegend->boxSpace() );
   mColumnSpaceSpinBox->setValue( mLegend->columnSpace() );
-  mLineSpacingSpinBox->setValue( mLegend->lineSpacing() );
 
   mRasterStrokeGroupBox->setChecked( mLegend->drawRasterStroke() );
   mRasterStrokeWidthSpinBox->setValue( mLegend->rasterStrokeWidth() );
@@ -707,18 +702,6 @@ void QgsLayoutLegendWidget::mColumnSpaceSpinBox_valueChanged( double d )
   {
     mLegend->beginCommand( tr( "Change Column Space" ), QgsLayoutItem::UndoLegendColumnSpace );
     mLegend->setColumnSpace( d );
-    mLegend->adjustBoxSize();
-    mLegend->update();
-    mLegend->endCommand();
-  }
-}
-
-void QgsLayoutLegendWidget::mLineSpacingSpinBox_valueChanged( double d )
-{
-  if ( mLegend )
-  {
-    mLegend->beginCommand( tr( "Change Line Space" ), QgsLayoutItem::UndoLegendLineSpacing );
-    mLegend->setLineSpacing( d );
     mLegend->adjustBoxSize();
     mLegend->update();
     mLegend->endCommand();
@@ -1326,7 +1309,6 @@ void QgsLayoutLegendWidget::blockAllSignals( bool b )
   mLayerFontButton->blockSignals( b );
   mItemFontButton->blockSignals( b );
   mWrapCharLineEdit->blockSignals( b );
-  mLineSpacingSpinBox->blockSignals( b );
 }
 
 void QgsLayoutLegendWidget::selectedChanged( const QModelIndex &current, const QModelIndex &previous )

@@ -88,6 +88,33 @@ void QgsLegendSettings::setLayerFontColor( const QColor &fontColor )
   rstyle( QgsLegendStyle::Subgroup ).textFormat().setColor( fontColor );
 }
 
+void QgsLegendSettings::setLineSpacing( double s ) SIP_DEPRECATED
+{
+  // line spacing *was* a fixed amount (in mm) added between each line of text.
+  mLineSpacing = s;
+
+  QgsTextFormat f = rstyle( QgsLegendStyle::Title ).textFormat();
+  // assume font sizes in points, since that was what we always had from before this method was deprecated
+  f.setLineHeight( f.size() * 0.352778 + s );
+  f.setLineHeightUnit( QgsUnitTypes::RenderMillimeters );
+  rstyle( QgsLegendStyle::Title ).setTextFormat( f );
+
+  f = rstyle( QgsLegendStyle::Group ).textFormat();
+  f.setLineHeight( f.size() * 0.352778 + s );
+  f.setLineHeightUnit( QgsUnitTypes::RenderMillimeters );
+  rstyle( QgsLegendStyle::Group ).setTextFormat( f );
+
+  f = rstyle( QgsLegendStyle::Subgroup ).textFormat();
+  f.setLineHeight( f.size() * 0.352778 + s );
+  f.setLineHeightUnit( QgsUnitTypes::RenderMillimeters );
+  rstyle( QgsLegendStyle::Subgroup ).setTextFormat( f );
+
+  f = rstyle( QgsLegendStyle::SymbolLabel ).textFormat();
+  f.setLineHeight( f.size() * 0.352778 + s );
+  f.setLineHeightUnit( QgsUnitTypes::RenderMillimeters );
+  rstyle( QgsLegendStyle::SymbolLabel ).setTextFormat( f );
+}
+
 double QgsLegendSettings::mmPerMapUnit() const
 {
   return mMmPerMapUnit;

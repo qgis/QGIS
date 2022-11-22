@@ -371,15 +371,17 @@ class CORE_EXPORT QgsLegendSettings
      * Returns the line spacing to use between lines of legend text.
      *
      * \see setLineSpacing()
+     * \deprecated use QgsLegendStyle::textFormat() from style() instead.
      */
-    double lineSpacing() const { return mLineSpacing; }
+    Q_DECL_DEPRECATED double lineSpacing() const SIP_DEPRECATED  { return mLineSpacing; }
 
     /**
      * Sets the line spacing to use between lines of legend text.
      *
      * \see lineSpacing()
+     * \deprecated use QgsLegendStyle::setTextFormat() from style() instead.
      */
-    void setLineSpacing( double s ) { mLineSpacing = s; }
+    Q_DECL_DEPRECATED void setLineSpacing( double s );
 
     /**
      * \deprecated Use scale factor from render contexts instead.

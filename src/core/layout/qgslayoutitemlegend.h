@@ -265,14 +265,18 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     /**
      * Returns the spacing in-between lines in layout units.
      * \see setLineSpacing()
+     *
+     * \deprecated use QgsLegendStyle::textFormat() from style() instead.
      */
-    double lineSpacing() const;
+    Q_DECL_DEPRECATED double lineSpacing() const SIP_DEPRECATED;
 
     /**
      * Sets the \a spacing in-between multiple lines.
      * \see lineSpacing()
+     *
+     * \deprecated use QgsLegendStyle::setTextFormat() from style() instead.
      */
-    void setLineSpacing( double spacing );
+    Q_DECL_DEPRECATED void setLineSpacing( double spacing ) SIP_DEPRECATED;
 
     /**
      * Returns the legend box space.

@@ -240,18 +240,24 @@ Set the ``margin`` for a legend ``component``.
 Set the ``margin`` for a particular ``side`` of a legend ``component``.
 %End
 
-    double lineSpacing() const;
+ double lineSpacing() const /Deprecated/;
 %Docstring
 Returns the spacing in-between lines in layout units.
 
 .. seealso:: :py:func:`setLineSpacing`
+
+.. deprecated::
+   use :py:func:`QgsLegendStyle.textFormat()` from :py:func:`~QgsLayoutItemLegend.style` instead.
 %End
 
-    void setLineSpacing( double spacing );
+ void setLineSpacing( double spacing ) /Deprecated/;
 %Docstring
 Sets the ``spacing`` in-between multiple lines.
 
 .. seealso:: :py:func:`lineSpacing`
+
+.. deprecated::
+   use :py:func:`QgsLegendStyle.setTextFormat()` from :py:func:`~QgsLayoutItemLegend.style` instead.
 %End
 
     double boxSpace() const;

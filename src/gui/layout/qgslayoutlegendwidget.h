@@ -89,7 +89,6 @@ class GUI_EXPORT QgsLayoutLegendWidget: public QgsLayoutItemBaseWidget, public Q
     void mIconLabelSpaceSpinBox_valueChanged( double d );
     void mBoxSpaceSpinBox_valueChanged( double d );
     void mColumnSpaceSpinBox_valueChanged( double d );
-    void mLineSpacingSpinBox_valueChanged( double d );
     void mCheckBoxAutoUpdate_stateChanged( int state, bool userTriggered = true );
     void composerMapChanged( QgsLayoutItem *item );
     void mCheckboxResizeContents_toggled( bool checked );
