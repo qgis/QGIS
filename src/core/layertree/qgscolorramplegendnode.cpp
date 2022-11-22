@@ -209,11 +209,7 @@ QSizeF QgsColorRampLegendNode::drawSymbol( const QgsLegendSettings &settings, It
     context = tempRenderContext.get();
   }
 
-  const QFont symbolLabelFont = settings.style( QgsLegendStyle::SymbolLabel ).font();
-  QgsTextFormat format = mSettings.textFormat().isValid() ? mSettings.textFormat() : QgsTextFormat::fromQFont( symbolLabelFont );
-  if ( !mSettings.textFormat().isValid() )
-    format.setColor( settings.fontColor() );
-
+  const QgsTextFormat format = mSettings.textFormat().isValid() ? mSettings.textFormat() : settings.style( QgsLegendStyle::SymbolLabel ).textFormat();
   const QString minLabel = labelForMinimum();
   const QString maxLabel = labelForMaximum();
 
@@ -413,10 +409,7 @@ QSizeF QgsColorRampLegendNode::drawSymbolText( const QgsLegendSettings &settings
     context = tempRenderContext.get();
   }
 
-  const QFont symbolLabelFont = settings.style( QgsLegendStyle::SymbolLabel ).font();
-  QgsTextFormat format = mSettings.textFormat().isValid() ? mSettings.textFormat() : QgsTextFormat::fromQFont( symbolLabelFont );
-  if ( !mSettings.textFormat().isValid() )
-    format.setColor( settings.fontColor() );
+  const QgsTextFormat format = mSettings.textFormat().isValid() ? mSettings.textFormat() : settings.style( QgsLegendStyle::SymbolLabel ).textFormat();
 
   const QString minLabel = labelForMinimum();
   const QString maxLabel = labelForMaximum();

@@ -169,6 +169,11 @@ Default implementation does nothing.
       QgsLegendPatchShape patchShape;
 
       QSizeF patchSize;
+
+      const QgsTextDocument *textDocument;
+
+      const QgsTextDocumentMetrics *textDocumentMetrics;
+
     };
 
     struct ItemMetrics

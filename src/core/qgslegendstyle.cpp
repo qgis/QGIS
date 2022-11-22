@@ -32,6 +32,21 @@ QgsLegendStyle::QgsLegendStyle()
 {
 }
 
+void QgsLegendStyle::setFont( const QFont &font )
+{
+  mTextFormat.setFont( font );
+  if ( font.pointSizeF() > 0 )
+  {
+    mTextFormat.setSize( font.pointSizeF() );
+    mTextFormat.setSizeUnit( QgsUnitTypes::RenderPoints );
+  }
+  else if ( font.pixelSize() > 0 )
+  {
+    mTextFormat.setSize( font.pixelSize() );
+    mTextFormat.setSizeUnit( QgsUnitTypes::RenderPixels );
+  }
+}
+
 void QgsLegendStyle::setMargin( double margin )
 {
   mMarginMap[Top] = margin;
@@ -40,7 +55,7 @@ void QgsLegendStyle::setMargin( double margin )
   mMarginMap[Right] = margin;
 }
 
-void QgsLegendStyle::writeXml( const QString &name, QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext & ) const
+void QgsLegendStyle::writeXml( const QString &name, QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   if ( elem.isNull() )
     return;
@@ -60,19 +75,31 @@ void QgsLegendStyle::writeXml( const QString &name, QDomElement &elem, QDomDocum
   if ( !qgsDoubleNear( mMarginMap[Right], 0.0 ) )
     styleElem.setAttribute( QStringLiteral( "marginRight" ), QString::number( mMarginMap[Right] ) );
 
-  styleElem.appendChild( QgsFontUtils::toXmlElement( mFont, doc, QStringLiteral( "styleFont" ) ) );
+  QDomElement textElem = mTextFormat.writeXml( doc, context );
+  styleElem.appendChild( textElem );
 
   elem.appendChild( styleElem );
 }
 
-void QgsLegendStyle::readXml( const QDomElement &elem, const QDomDocument &doc, const QgsReadWriteContext & )
+void QgsLegendStyle::readXml( const QDomElement &elem, const QDomDocument &doc, const QgsReadWriteContext &context )
 {
   Q_UNUSED( doc )
   if ( elem.isNull() ) return;
 
-  if ( !QgsFontUtils::setFromXmlChildNode( mFont, elem, QStringLiteral( "styleFont" ) ) )
+  QDomNodeList textFormatNodeList = elem.elementsByTagName( QStringLiteral( "text-style" ) );
+  if ( !textFormatNodeList.isEmpty() )
   {
-    mFont.fromString( elem.attribute( QStringLiteral( "font" ) ) );
+    QDomElement textFormatElem = textFormatNodeList.at( 0 ).toElement();
+    mTextFormat.readXml( textFormatElem, context );
+  }
+  else
+  {
+    QFont f;
+    if ( !QgsFontUtils::setFromXmlChildNode( f, elem, QStringLiteral( "styleFont" ) ) )
+    {
+      f.fromString( elem.attribute( QStringLiteral( "font" ) ) );
+    }
+    mTextFormat = QgsTextFormat::fromQFont( f );
   }
 
   mMarginMap[Top] = elem.attribute( QStringLiteral( "marginTop" ), QStringLiteral( "0" ) ).toDouble();
