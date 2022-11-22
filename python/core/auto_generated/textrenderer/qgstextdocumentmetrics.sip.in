@@ -74,6 +74,13 @@ Returns the width of the block at the specified index.
 Returns the height of the block at the specified index.
 %End
 
+    double firstLineCapHeight() const;
+%Docstring
+Returns the cap height for the first line of text.
+
+.. versionadded:: 3.30
+%End
+
     double baselineOffset( int blockIndex, Qgis::TextLayoutMode mode ) const;
 %Docstring
 Returns the offset from the top of the document to the text baseline for the given block index.

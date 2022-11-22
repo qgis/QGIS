@@ -87,6 +87,13 @@ class CORE_EXPORT QgsTextDocumentMetrics
     double blockHeight( int blockIndex ) const;
 
     /**
+     * Returns the cap height for the first line of text.
+     *
+     * \since QGIS 3.30
+     */
+    double firstLineCapHeight() const;
+
+    /**
      * Returns the offset from the top of the document to the text baseline for the given block index.
      */
     double baselineOffset( int blockIndex, Qgis::TextLayoutMode mode ) const;
@@ -138,6 +145,8 @@ class CORE_EXPORT QgsTextDocumentMetrics
     QSizeF mDocumentSizeLabelMode;
     QSizeF mDocumentSizePointRectMode;
     QSizeF mDocumentSizeVerticalOrientation;
+    QSizeF mDocumentSizeCapHeightMode;
+    QSizeF mDocumentSizeAscentMode;
 
     QRectF mOuterBoundsLabelMode;
 
@@ -147,6 +156,8 @@ class CORE_EXPORT QgsTextDocumentMetrics
     QList< double > mBaselineOffsetsLabelMode;
     QList< double > mBaselineOffsetsPointMode;
     QList< double > mBaselineOffsetsRectMode;
+    QList< double > mBaselineOffsetsCapHeightMode;
+    QList< double > mBaselineOffsetsAscentBased;
 
     QList< QList< double > > mFragmentHorizontalAdvance;
 
@@ -159,6 +170,7 @@ class CORE_EXPORT QgsTextDocumentMetrics
     QList< double > mBlockMaxCharacterWidth;
     double mFirstLineAscentOffset = 0;
     double mLastLineAscentOffset = 0;
+    double mFirstLineCapHeight = 0;
 
 };
 

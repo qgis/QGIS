@@ -1480,7 +1480,8 @@ class PyQgsTextRenderer(unittest.TestCase):
                     rect=QRectF(100, 100, 50, 250),
                     vAlignment=QgsTextRenderer.AlignTop,
                     flags=Qgis.TextRendererFlags(),
-                    image_size=400):
+                    image_size=400,
+                    mode=Qgis.TextLayoutMode.Rectangle):
 
         image = QImage(image_size, image_size, QImage.Format_RGB32)
 
@@ -1516,7 +1517,10 @@ class PyQgsTextRenderer(unittest.TestCase):
                                      alignment,
                                      text,
                                      context,
-                                     format, vAlignment=vAlignment, flags=flags)
+                                     format,
+                                     vAlignment=vAlignment,
+                                     flags=flags,
+                                     mode=mode)
 
         painter.setFont(format.scaledFont(context))
         painter.setPen(QPen(QColor(255, 0, 255, 200)))
@@ -1600,6 +1604,44 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.setAllowHtmlFormatting(True)
         format.setSize(30)
         assert self.checkRender(format, 'rect_html', rect=QRectF(100, 100, 100, 100), text=['first <span style="font-size:50pt">line</span>', 'second <span style="font-size:50pt">line</span>', 'third line'])
+
+    def testDrawRectCapHeightMode(self):
+        """
+        Test drawing text in rect mode with cap height based line heights
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        assert self.checkRender(format, 'rect_cap_height_mode', rect=QRectF(100, 100, 100, 100), text=['first line', 'second line', 'third line'], mode=Qgis.TextLayoutMode.RectangleCapHeightBased)
+
+    def testDrawRectCapHeightModeMixedHtml(self):
+        """
+        Test drawing text in rect mode with cap height based line heights
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setAllowHtmlFormatting(True)
+        format.setSize(30)
+        assert self.checkRender(format, 'rect_cap_height_mode_html', rect=QRectF(100, 100, 100, 100), text=['first <span style="font-size:50pt">line</span>', 'second <span style="font-size:50pt">line</span>', 'third line'], mode=Qgis.TextLayoutMode.RectangleCapHeightBased)
+
+    def testDrawRectAscentMode(self):
+        """
+        Test drawing text in rect mode with cap height based line heights
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        assert self.checkRender(format, 'rect_ascent_mode', rect=QRectF(100, 100, 100, 100), text=['first line', 'second line', 'third line'], mode=Qgis.TextLayoutMode.RectangleAscentBased)
+
+    def testDrawRectAscentModeMixedHtml(self):
+        """
+        Test drawing text in rect mode with ascent based line heights
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setAllowHtmlFormatting(True)
+        format.setSize(30)
+        assert self.checkRender(format, 'rect_ascent_mode_html', rect=QRectF(100, 100, 100, 100), text=['first <span style="font-size:50pt">line</span>', 'second <span style="font-size:50pt">line</span>', 'third line'], mode=Qgis.TextLayoutMode.RectangleAscentBased)
 
     def testDrawForcedItalic(self):
         """

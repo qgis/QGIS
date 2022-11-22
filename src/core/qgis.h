@@ -1632,6 +1632,8 @@ class CORE_EXPORT Qgis
       Rectangle SIP_MONKEYPATCH_COMPAT_NAME( Rect ), //!< Text within rectangle layout mode
       Point, //!< Text at point of origin layout mode
       Labeling SIP_MONKEYPATCH_COMPAT_NAME( Label ), //!< Labeling-specific layout mode
+      RectangleCapHeightBased, //!< Similar to Rectangle mode, but uses cap height only when calculating font heights for the first line of text, and cap height + descent for subsequent lines of text (since QGIS 3.30)
+      RectangleAscentBased, //!< Similar to Rectangle mode, but uses ascents only when calculating font and line heights. (since QGIS 3.30)
     };
     Q_ENUM( TextLayoutMode )
 

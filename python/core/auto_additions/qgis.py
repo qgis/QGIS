@@ -1479,7 +1479,13 @@ QgsTextRenderer.Point.__doc__ = "Text at point of origin layout mode"
 QgsTextRenderer.Label = Qgis.TextLayoutMode.Labeling
 QgsTextRenderer.Label.is_monkey_patched = True
 QgsTextRenderer.Label.__doc__ = "Labeling-specific layout mode"
-Qgis.TextLayoutMode.__doc__ = 'Text layout modes.\n\n.. note::\n\n   Prior to QGIS 3.28 this was available as :py:class:`QgsTextRenderer`.DrawMode\n\n.. versionadded:: 3.28\n\n' + '* ``Rect``: ' + Qgis.TextLayoutMode.Rectangle.__doc__ + '\n' + '* ``Point``: ' + Qgis.TextLayoutMode.Point.__doc__ + '\n' + '* ``Label``: ' + Qgis.TextLayoutMode.Labeling.__doc__
+QgsTextRenderer.RectangleCapHeightBased = Qgis.TextLayoutMode.RectangleCapHeightBased
+QgsTextRenderer.RectangleCapHeightBased.is_monkey_patched = True
+QgsTextRenderer.RectangleCapHeightBased.__doc__ = "Similar to Rectangle mode, but uses cap height only when calculating font heights for the first line of text, and cap height + descent for subsequent lines of text (since QGIS 3.30)"
+QgsTextRenderer.RectangleAscentBased = Qgis.TextLayoutMode.RectangleAscentBased
+QgsTextRenderer.RectangleAscentBased.is_monkey_patched = True
+QgsTextRenderer.RectangleAscentBased.__doc__ = "Similar to Rectangle mode, but uses ascents only when calculating font and line heights. (since QGIS 3.30)"
+Qgis.TextLayoutMode.__doc__ = 'Text layout modes.\n\n.. note::\n\n   Prior to QGIS 3.28 this was available as :py:class:`QgsTextRenderer`.DrawMode\n\n.. versionadded:: 3.28\n\n' + '* ``Rect``: ' + Qgis.TextLayoutMode.Rectangle.__doc__ + '\n' + '* ``Point``: ' + Qgis.TextLayoutMode.Point.__doc__ + '\n' + '* ``Label``: ' + Qgis.TextLayoutMode.Labeling.__doc__ + '\n' + '* ``RectangleCapHeightBased``: ' + Qgis.TextLayoutMode.RectangleCapHeightBased.__doc__ + '\n' + '* ``RectangleAscentBased``: ' + Qgis.TextLayoutMode.RectangleAscentBased.__doc__
 # --
 Qgis.TextLayoutMode.baseClass = Qgis
 QgsTextRenderer.TextPart = Qgis.TextComponent

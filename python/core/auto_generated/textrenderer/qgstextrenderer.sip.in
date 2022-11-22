@@ -59,7 +59,8 @@ Calculates pixel size (considering output size should be in pixel or map units, 
     static void drawText( const QRectF &rect, double rotation, Qgis::TextHorizontalAlignment alignment, const QStringList &textLines,
                           QgsRenderContext &context, const QgsTextFormat &format,
                           bool drawAsOutlines = true, Qgis::TextVerticalAlignment vAlignment = Qgis::TextVerticalAlignment::Top,
-                          Qgis::TextRendererFlags flags = Qgis::TextRendererFlags() );
+                          Qgis::TextRendererFlags flags = Qgis::TextRendererFlags(),
+                          Qgis::TextLayoutMode mode = Qgis::TextLayoutMode::Rectangle );
 %Docstring
 Draws text within a rectangle using the specified settings.
 
@@ -75,6 +76,7 @@ Draws text within a rectangle using the specified settings.
                        as of QGIS 3.4.3 and the text format should be set using :py:func:`QgsRenderContext.setTextRenderFormat()` instead.
 :param vAlignment: vertical alignment (since QGIS 3.16)
 :param flags: text rendering flags (since QGIS 3.24)
+:param mode: text layout mode. Only Qgis.TextLayoutMode.Rectangle, Qgis.TextLayoutMode.RectangleCapHeightBased and Qgis.TextLayoutMode.RectangleAscentBased are accepted (since QGIS 3.30)
 %End
 
     static void drawText( QPointF point, double rotation, Qgis::TextHorizontalAlignment alignment, const QStringList &textLines,
