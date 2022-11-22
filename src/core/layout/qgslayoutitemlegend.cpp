@@ -357,12 +357,16 @@ void QgsLayoutItemLegend::setStyle( QgsLegendStyle::Style s, const QgsLegendStyl
 
 QFont QgsLayoutItemLegend::styleFont( QgsLegendStyle::Style s ) const
 {
+  Q_NOWARN_DEPRECATED_PUSH
   return mSettings.style( s ).font();
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void QgsLayoutItemLegend::setStyleFont( QgsLegendStyle::Style s, const QFont &f )
 {
+  Q_NOWARN_DEPRECATED_PUSH
   rstyle( s ).setFont( f );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void QgsLayoutItemLegend::setStyleMargin( QgsLegendStyle::Style s, double margin )
@@ -407,12 +411,16 @@ void QgsLayoutItemLegend::setColumnSpace( double s )
 
 QColor QgsLayoutItemLegend::fontColor() const
 {
+  Q_NOWARN_DEPRECATED_PUSH
   return mSettings.fontColor();
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void QgsLayoutItemLegend::setFontColor( const QColor &c )
 {
+  Q_NOWARN_DEPRECATED_PUSH
   mSettings.setFontColor( c );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 double QgsLayoutItemLegend::symbolWidth() const
@@ -592,7 +600,6 @@ bool QgsLayoutItemLegend::writePropertiesToElement( QDomElement &legendElem, QDo
   legendElem.setAttribute( QStringLiteral( "wmsLegendWidth" ), QString::number( mSettings.wmsLegendSize().width() ) );
   legendElem.setAttribute( QStringLiteral( "wmsLegendHeight" ), QString::number( mSettings.wmsLegendSize().height() ) );
   legendElem.setAttribute( QStringLiteral( "wrapChar" ), mSettings.wrapChar() );
-  legendElem.setAttribute( QStringLiteral( "fontColor" ), mSettings.fontColor().name() );
 
   legendElem.setAttribute( QStringLiteral( "resizeToContents" ), mSizeToContents );
 
@@ -604,11 +611,11 @@ bool QgsLayoutItemLegend::writePropertiesToElement( QDomElement &legendElem, QDo
   QDomElement legendStyles = doc.createElement( QStringLiteral( "styles" ) );
   legendElem.appendChild( legendStyles );
 
-  style( QgsLegendStyle::Title ).writeXml( QStringLiteral( "title" ), legendStyles, doc );
-  style( QgsLegendStyle::Group ).writeXml( QStringLiteral( "group" ), legendStyles, doc );
-  style( QgsLegendStyle::Subgroup ).writeXml( QStringLiteral( "subgroup" ), legendStyles, doc );
-  style( QgsLegendStyle::Symbol ).writeXml( QStringLiteral( "symbol" ), legendStyles, doc );
-  style( QgsLegendStyle::SymbolLabel ).writeXml( QStringLiteral( "symbolLabel" ), legendStyles, doc );
+  style( QgsLegendStyle::Title ).writeXml( QStringLiteral( "title" ), legendStyles, doc, context );
+  style( QgsLegendStyle::Group ).writeXml( QStringLiteral( "group" ), legendStyles, doc, context );
+  style( QgsLegendStyle::Subgroup ).writeXml( QStringLiteral( "subgroup" ), legendStyles, doc, context );
+  style( QgsLegendStyle::Symbol ).writeXml( QStringLiteral( "symbol" ), legendStyles, doc, context );
+  style( QgsLegendStyle::SymbolLabel ).writeXml( QStringLiteral( "symbolLabel" ), legendStyles, doc, context );
 
   if ( mCustomLayerTree )
   {
@@ -663,9 +670,15 @@ bool QgsLayoutItemLegend::readPropertiesFromElement( const QDomElement &itemElem
   }
 
   //font color
-  QColor fontClr;
-  fontClr.setNamedColor( itemElem.attribute( QStringLiteral( "fontColor" ), QStringLiteral( "#000000" ) ) );
-  mSettings.setFontColor( fontClr );
+  if ( itemElem.hasAttribute( QStringLiteral( "fontColor" ) ) )
+  {
+    QColor fontClr;
+    fontClr.setNamedColor( itemElem.attribute( QStringLiteral( "fontColor" ), QStringLiteral( "#000000" ) ) );
+    rstyle( QgsLegendStyle::Title ).textFormat().setColor( fontClr );
+    rstyle( QgsLegendStyle::Group ).textFormat().setColor( fontClr );
+    rstyle( QgsLegendStyle::Subgroup ).textFormat().setColor( fontClr );
+    rstyle( QgsLegendStyle::SymbolLabel ).textFormat().setColor( fontClr );
+  }
 
   //spaces
   mSettings.setBoxSpace( itemElem.attribute( QStringLiteral( "boxSpace" ), QStringLiteral( "2.0" ) ).toDouble() );

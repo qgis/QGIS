@@ -172,21 +172,27 @@ If ``False``, then then columns will be individually resized to their minimum po
 .. seealso:: :py:func:`equalColumnWidth`
 %End
 
-    QColor fontColor() const;
+ QColor fontColor() const /Deprecated/;
 %Docstring
 Returns the font color used for legend items.
 
 .. seealso:: :py:func:`setFontColor`
+
+.. deprecated::
+   Use :py:func:`QgsLegendStyle.textFormat()` instead.
 %End
 
-    void setFontColor( const QColor &c );
+ void setFontColor( const QColor &c ) /Deprecated/;
 %Docstring
 Sets the font color used for legend items.
 
 .. seealso:: :py:func:`fontColor`
+
+.. deprecated::
+   Use :py:func:`QgsLegendStyle.textFormat()` instead.
 %End
 
-    QColor layerFontColor() const;
+ QColor layerFontColor() const /Deprecated/;
 %Docstring
 Returns layer font color, defaults to :py:func:`~QgsLegendSettings.fontColor`
 
@@ -194,10 +200,11 @@ Returns layer font color, defaults to :py:func:`~QgsLegendSettings.fontColor`
 
 .. seealso:: :py:func:`fontColor`
 
-.. versionadded:: 3.4.7
+.. deprecated::
+   Use :py:func:`QgsLegendStyle.textFormat()` instead.
 %End
 
-    void setLayerFontColor( const QColor &fontColor );
+ void setLayerFontColor( const QColor &fontColor ) /Deprecated/;
 %Docstring
 Sets layer font color to ``fontColor``
 Overrides :py:func:`~QgsLegendSettings.fontColor`
@@ -206,7 +213,8 @@ Overrides :py:func:`~QgsLegendSettings.fontColor`
 
 .. seealso:: :py:func:`fontColor`
 
-.. versionadded:: 3.4.7
+.. deprecated::
+   Use :py:func:`QgsLegendStyle.textFormat()` instead.
 %End
 
     QSizeF symbolSize() const;

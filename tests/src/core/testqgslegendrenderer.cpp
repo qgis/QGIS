@@ -50,16 +50,18 @@
 
 static void _setStandardTestFont( QgsLegendSettings &settings, const QString &style = QStringLiteral( "Roman" ) )
 {
-  QList< QgsLegendStyle::Style> styles;
-  styles << QgsLegendStyle::Title
-         << QgsLegendStyle::Group
-         << QgsLegendStyle::Subgroup
-         << QgsLegendStyle::SymbolLabel;
-  for ( const QgsLegendStyle::Style st : styles )
+  for ( const QgsLegendStyle::Style st :
+        {
+          QgsLegendStyle::Title,
+          QgsLegendStyle::Group,
+          QgsLegendStyle::Subgroup,
+          QgsLegendStyle::SymbolLabel
+        } )
   {
     QFont font( QgsFontUtils::getStandardTestFont( style ) );
-    font.setPointSizeF( settings.style( st ).font().pointSizeF() );
-    settings.rstyle( st ).setFont( font );
+    QgsTextFormat f = settings.rstyle( st ).textFormat();
+    f.setFont( font );
+    settings.rstyle( st ).setTextFormat( f );
   }
 }
 
@@ -85,6 +87,8 @@ static QImage _renderLegend( QgsLayerTreeModel *legendModel, QgsLegendSettings &
   QPainter painter( &img );
   painter.setRenderHint( QPainter::Antialiasing, true );
   QgsRenderContext context = QgsRenderContext::fromQPainter( &painter );
+  context.setTextRenderFormat( Qgis::TextRenderFormat::AlwaysText );
+  context.setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering, true );
 
   {
     const QgsScopedRenderContextScaleToMm scaleToMm( context );
@@ -207,7 +211,7 @@ class TestQgsLegendRenderer : public QgsTest
 
     bool _verifyImage( const QImage &image, const QString &testName, int diff = 30 )
     {
-      return imageCheck( testName, testName, image, QString(), diff, QSize( 3, 3 ) );
+      return imageCheck( testName, testName, image, QString(), diff, QSize( 6, 10 ) );
     }
 };
 

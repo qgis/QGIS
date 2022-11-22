@@ -1292,7 +1292,10 @@ bool QgsCompositionConverter::readLegendXml( QgsLayoutItemLegend *layoutItem, co
   //font color
   QColor fontClr;
   fontClr.setNamedColor( itemElem.attribute( QStringLiteral( "fontColor" ), QStringLiteral( "#000000" ) ) );
-  layoutItem->setFontColor( fontClr );
+  layoutItem->rstyle( QgsLegendStyle::Title ).textFormat().setColor( fontClr );
+  layoutItem->rstyle( QgsLegendStyle::Group ).textFormat().setColor( fontClr );
+  layoutItem->rstyle( QgsLegendStyle::Subgroup ).textFormat().setColor( fontClr );
+  layoutItem->rstyle( QgsLegendStyle::SymbolLabel ).textFormat().setColor( fontClr );
 
   //spaces
   layoutItem->setBoxSpace( itemElem.attribute( QStringLiteral( "boxSpace" ), QStringLiteral( "2.0" ) ).toDouble() );

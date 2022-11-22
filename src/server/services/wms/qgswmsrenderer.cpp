@@ -73,6 +73,8 @@
 #include "qgsattributeeditorelement.h"
 #include "qgsattributeeditorfield.h"
 #include "qgsdimensionfilter.h"
+#include "qgstextdocument.h"
+#include "qgstextdocumentmetrics.h"
 
 #include <QImage>
 #include <QPainter>

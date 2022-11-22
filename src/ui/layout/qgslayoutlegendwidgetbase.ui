@@ -469,6 +469,20 @@
           <bool>true</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,0,0">
+          <item row="11" column="0">
+           <widget class="QLabel" name="label_20">
+            <property name="text">
+             <string>Alignment</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="label_22">
+            <property name="text">
+             <string>Font</string>
+            </property>
+           </widget>
+          </item>
           <item row="7" column="1" colspan="2">
            <widget class="QgsFontButton" name="mLayerFontButton">
             <property name="sizePolicy">
@@ -482,16 +496,10 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1" colspan="2">
-           <widget class="QgsFontButton" name="mTitleFontButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
+          <item row="6" column="0" colspan="3">
+           <widget class="QLabel" name="label_23">
             <property name="text">
-             <string>Title font</string>
+             <string>&lt;b&gt;Subgroup Headings&lt;/b&gt;</string>
             </property>
            </widget>
           </item>
@@ -502,59 +510,17 @@
             </property>
            </widget>
           </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="label_18_alignment">
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_29">
             <property name="text">
              <string>Alignment</string>
             </property>
            </widget>
           </item>
-          <item row="12" column="1" colspan="2">
-           <widget class="QgsColorButton" name="mFontColorButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>120</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>16777215</height>
-             </size>
-            </property>
+          <item row="5" column="0">
+           <widget class="QLabel" name="label_18_alignment">
             <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="10" column="0">
-           <widget class="QLabel" name="label_26">
-            <property name="text">
-             <string>Font</string>
-            </property>
-           </widget>
-          </item>
-          <item row="11" column="1" colspan="2">
-           <widget class="QgsAlignmentComboBox" name="mItemAlignCombo"/>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_28">
-            <property name="text">
-             <string>Font</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0" colspan="3">
-           <widget class="QLabel" name="label_27">
-            <property name="text">
-             <string>&lt;b&gt;Legend Title&lt;/b&gt;</string>
+             <string>Alignment</string>
             </property>
            </widget>
           </item>
@@ -565,65 +531,8 @@
             </property>
            </widget>
           </item>
-          <item row="10" column="1" colspan="2">
-           <widget class="QgsFontButton" name="mItemFontButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Item font</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1" colspan="2">
-           <widget class="QgsAlignmentComboBox" name="mTitleAlignCombo"/>
-          </item>
-          <item row="3" column="0" colspan="3">
-           <widget class="QLabel" name="label_21">
-            <property name="text">
-             <string>&lt;b&gt;Group Headings&lt;/b&gt;</string>
-            </property>
-           </widget>
-          </item>
-          <item row="11" column="0">
-           <widget class="QLabel" name="label_20">
-            <property name="text">
-             <string>Alignment</string>
-            </property>
-           </widget>
-          </item>
-          <item row="8" column="1" colspan="2">
-           <widget class="QgsAlignmentComboBox" name="mSubgroupAlignCombo"/>
-          </item>
-          <item row="7" column="0">
-           <widget class="QLabel" name="label_24">
-            <property name="text">
-             <string>Font</string>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="0" colspan="3">
-           <widget class="QLabel" name="label_23">
-            <property name="text">
-             <string>&lt;b&gt;Subgroup Headings&lt;/b&gt;</string>
-            </property>
-           </widget>
-          </item>
-          <item row="12" column="0">
-           <widget class="QLabel" name="label_16">
-            <property name="text">
-             <string>Font color</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="1" colspan="2">
-           <widget class="QgsAlignmentComboBox" name="mGroupAlignCombo"/>
-          </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="label_22">
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_28">
             <property name="text">
              <string>Font</string>
             </property>
@@ -642,10 +551,69 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_29">
+          <item row="10" column="1" colspan="2">
+           <widget class="QgsFontButton" name="mItemFontButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="text">
-             <string>Alignment</string>
+             <string>Item font</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="0">
+           <widget class="QLabel" name="label_24">
+            <property name="text">
+             <string>Font</string>
+            </property>
+           </widget>
+          </item>
+          <item row="10" column="0">
+           <widget class="QLabel" name="label_26">
+            <property name="text">
+             <string>Font</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1" colspan="2">
+           <widget class="QgsAlignmentComboBox" name="mGroupAlignCombo"/>
+          </item>
+          <item row="1" column="1" colspan="2">
+           <widget class="QgsFontButton" name="mTitleFontButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Title font</string>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="1" colspan="2">
+           <widget class="QgsAlignmentComboBox" name="mSubgroupAlignCombo"/>
+          </item>
+          <item row="2" column="1" colspan="2">
+           <widget class="QgsAlignmentComboBox" name="mTitleAlignCombo"/>
+          </item>
+          <item row="11" column="1" colspan="2">
+           <widget class="QgsAlignmentComboBox" name="mItemAlignCombo"/>
+          </item>
+          <item row="0" column="0" colspan="3">
+           <widget class="QLabel" name="label_27">
+            <property name="text">
+             <string>&lt;b&gt;Legend Title&lt;/b&gt;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="3">
+           <widget class="QLabel" name="label_21">
+            <property name="text">
+             <string>&lt;b&gt;Group Headings&lt;/b&gt;</string>
             </property>
            </widget>
           </item>
@@ -1467,7 +1435,6 @@
   <tabstop>mSubgroupAlignCombo</tabstop>
   <tabstop>mItemFontButton</tabstop>
   <tabstop>mItemAlignCombo</tabstop>
-  <tabstop>mFontColorButton</tabstop>
   <tabstop>mColumnsColGroupBox</tabstop>
   <tabstop>mColumnCountSpinBox</tabstop>
   <tabstop>mColumnsDDBtn</tabstop>
