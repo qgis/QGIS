@@ -105,17 +105,22 @@ void QgsTextRenderer::drawText( const QRectF &rect, double rotation, Qgis::TextH
   const double fontScale = calculateScaleFactorForFormat( context, format );
   const QgsTextDocumentMetrics metrics = QgsTextDocumentMetrics::calculateMetrics( document, format, context, fontScale );
 
-  if ( tmpFormat.background().enabled() )
+  drawDocument( rect, tmpFormat, document, metrics, context, alignment, vAlignment, rotation, mode, flags );
+}
+
+void QgsTextRenderer::drawDocument( const QRectF &rect, const QgsTextFormat &format, const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics, QgsRenderContext &context, Qgis::TextHorizontalAlignment horizontalAlignment, Qgis::TextVerticalAlignment verticalAlignment, double rotation, Qgis::TextLayoutMode mode, Qgis::TextRendererFlags )
+{
+  if ( format.background().enabled() )
   {
-    drawPart( rect, rotation, alignment, vAlignment, document, metrics, context, tmpFormat, Qgis::TextComponent::Background, Qgis::TextLayoutMode::Rectangle );
+    drawPart( rect, rotation, horizontalAlignment, verticalAlignment, document, metrics, context, format, Qgis::TextComponent::Background, mode );
   }
 
-  if ( tmpFormat.buffer().enabled() )
+  if ( format.buffer().enabled() )
   {
-    drawPart( rect, rotation, alignment, vAlignment, document, metrics, context, tmpFormat, Qgis::TextComponent::Buffer, Qgis::TextLayoutMode::Rectangle );
+    drawPart( rect, rotation, horizontalAlignment, verticalAlignment, document, metrics, context, format, Qgis::TextComponent::Buffer, mode );
   }
 
-  drawPart( rect, rotation, alignment, vAlignment, document, metrics, context, tmpFormat, Qgis::TextComponent::Text, Qgis::TextLayoutMode::Rectangle );
+  drawPart( rect, rotation, horizontalAlignment, verticalAlignment, document, metrics, context, format, Qgis::TextComponent::Text, mode );
 }
 
 void QgsTextRenderer::drawText( QPointF point, double rotation, Qgis::TextHorizontalAlignment alignment, const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, bool )
@@ -241,7 +246,7 @@ void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, Qgis::TextH
     {
       drawTextInternal( part, context, format, component,
                         document, metrics,
-                        alignment, vAlignment );
+                        alignment, vAlignment, mode );
       break;
     }
   }

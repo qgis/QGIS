@@ -41,7 +41,9 @@ from qgis.core import (Qgis,
                        QgsFontUtils,
                        QgsSymbolLayerId,
                        QgsSymbolLayerReference,
-                       QgsStringUtils)
+                       QgsStringUtils,
+                       QgsTextDocument,
+                       QgsTextDocumentMetrics)
 from qgis.testing import unittest, start_app
 
 from utilities import getTestFont, svgSymbolsPath
@@ -1597,13 +1599,55 @@ class PyQgsTextRenderer(unittest.TestCase):
 
     def testDrawRectMixedHtml(self):
         """
-        Test drawing text in rect mode with cap height based line heights
+        Test drawing text in rect mode with mixed html fonts
         """
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
         format.setAllowHtmlFormatting(True)
         format.setSize(30)
         assert self.checkRender(format, 'rect_html', rect=QRectF(100, 100, 100, 100), text=['first <span style="font-size:50pt">line</span>', 'second <span style="font-size:50pt">line</span>', 'third line'])
+
+    def testDrawDocumentRect(self):
+        """
+        Test drawing text document in rect mode
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setAllowHtmlFormatting(True)
+        format.setSize(30)
+
+        image = QImage(400, 400, QImage.Format_RGB32)
+
+        painter = QPainter()
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 50, 50))
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+        context.setFlag(QgsRenderContext.ApplyScalingWorkaroundForTextRendering, True)
+
+        painter.begin(image)
+        painter.setRenderHint(QPainter.Antialiasing)
+        image.fill(QColor(152, 219, 249))
+
+        painter.setBrush(QBrush(QColor(182, 239, 255)))
+        painter.setPen(Qt.NoPen)
+
+        doc = QgsTextDocument.fromHtml(['first <span style="font-size:50pt">line</span>', 'second <span style="font-size:50pt">line</span>', 'third line'])
+
+        metrics = QgsTextDocumentMetrics.calculateMetrics(doc, format, context, QgsTextRenderer.FONT_WORKAROUND_SCALE)
+
+        QgsTextRenderer.drawDocument(QRectF(100, 100, 100, 100),
+                                     format,
+                                     doc,
+                                     metrics,
+                                     context,
+                                     mode=Qgis.TextLayoutMode.Rectangle)
+
+        painter.end()
+
+        self.assertTrue(self.imageCheck('draw_document_rect', 'draw_document_rect', image))
 
     def testDrawRectCapHeightMode(self):
         """
@@ -1624,6 +1668,48 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.setSize(30)
         assert self.checkRender(format, 'rect_cap_height_mode_html', rect=QRectF(100, 100, 100, 100), text=['first <span style="font-size:50pt">line</span>', 'second <span style="font-size:50pt">line</span>', 'third line'], mode=Qgis.TextLayoutMode.RectangleCapHeightBased)
 
+    def testDrawDocumentRectCapHeightMode(self):
+        """
+        Test drawing text document in rect cap height mode
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setAllowHtmlFormatting(True)
+        format.setSize(30)
+
+        image = QImage(400, 400, QImage.Format_RGB32)
+
+        painter = QPainter()
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 50, 50))
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+        context.setFlag(QgsRenderContext.ApplyScalingWorkaroundForTextRendering, True)
+
+        painter.begin(image)
+        painter.setRenderHint(QPainter.Antialiasing)
+        image.fill(QColor(152, 219, 249))
+
+        painter.setBrush(QBrush(QColor(182, 239, 255)))
+        painter.setPen(Qt.NoPen)
+
+        doc = QgsTextDocument.fromHtml(['first <span style="font-size:50pt">line</span>', 'second <span style="font-size:50pt">line</span>', 'third line'])
+
+        metrics = QgsTextDocumentMetrics.calculateMetrics(doc, format, context, QgsTextRenderer.FONT_WORKAROUND_SCALE)
+
+        QgsTextRenderer.drawDocument(QRectF(100, 100, 100, 100),
+                                     format,
+                                     doc,
+                                     metrics,
+                                     context,
+                                     mode=Qgis.TextLayoutMode.RectangleCapHeightBased)
+
+        painter.end()
+
+        self.assertTrue(self.imageCheck('draw_document_rect_cap_height', 'draw_document_rect_cap_height', image))
+
     def testDrawRectAscentMode(self):
         """
         Test drawing text in rect mode with cap height based line heights
@@ -1642,6 +1728,48 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.setAllowHtmlFormatting(True)
         format.setSize(30)
         assert self.checkRender(format, 'rect_ascent_mode_html', rect=QRectF(100, 100, 100, 100), text=['first <span style="font-size:50pt">line</span>', 'second <span style="font-size:50pt">line</span>', 'third line'], mode=Qgis.TextLayoutMode.RectangleAscentBased)
+
+    def testDrawDocumentRectAscentMode(self):
+        """
+        Test drawing text document in rect ascent mode
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setAllowHtmlFormatting(True)
+        format.setSize(30)
+
+        image = QImage(400, 400, QImage.Format_RGB32)
+
+        painter = QPainter()
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 50, 50))
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+        context.setFlag(QgsRenderContext.ApplyScalingWorkaroundForTextRendering, True)
+
+        painter.begin(image)
+        painter.setRenderHint(QPainter.Antialiasing)
+        image.fill(QColor(152, 219, 249))
+
+        painter.setBrush(QBrush(QColor(182, 239, 255)))
+        painter.setPen(Qt.NoPen)
+
+        doc = QgsTextDocument.fromHtml(['first <span style="font-size:50pt">line</span>', 'second <span style="font-size:50pt">line</span>', 'third line'])
+
+        metrics = QgsTextDocumentMetrics.calculateMetrics(doc, format, context, QgsTextRenderer.FONT_WORKAROUND_SCALE)
+
+        QgsTextRenderer.drawDocument(QRectF(100, 100, 100, 100),
+                                     format,
+                                     doc,
+                                     metrics,
+                                     context,
+                                     mode=Qgis.TextLayoutMode.RectangleAscentBased)
+
+        painter.end()
+
+        self.assertTrue(self.imageCheck('draw_document_rect_ascent', 'draw_document_rect_ascent', image))
 
     def testDrawForcedItalic(self):
         """
