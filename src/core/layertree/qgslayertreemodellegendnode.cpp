@@ -91,11 +91,13 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsLayerTreeModelLegendNode::draw( cons
   const QStringList lines = settings.evaluateItemText( data( Qt::DisplayRole ).toString(), ctx->context->expressionContext() );
 
   const QgsTextDocument textDocument = f.allowHtmlFormatting() ? QgsTextDocument::fromHtml( lines ) : QgsTextDocument::fromPlainText( lines );
+  // cppcheck-suppress autoVariables
   ctx->textDocument = &textDocument;
 
   std::optional< QgsScopedRenderContextScaleToPixels > scaleToPx( *ctx->context );
   const QgsTextDocumentMetrics textDocumentMetrics = QgsTextDocumentMetrics::calculateMetrics( textDocument, f, *ctx->context,
-      ctx->context->flags() & Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering ? QgsTextRenderer::FONT_WORKAROUND_SCALE : 1 );
+      ( ctx->context->flags() & Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering ) ? QgsTextRenderer::FONT_WORKAROUND_SCALE : 1 );
+  // cppcheck-suppress autoVariables
   ctx->textDocumentMetrics = &textDocumentMetrics;
   scaleToPx.reset();
 
@@ -194,13 +196,13 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings &set
 
   const QgsTextFormat format = settings.style( QgsLegendStyle::SymbolLabel ).textFormat();
 
-  const double dotsPerMM = ctx->context->scaleFactor();
+  const double dotsPerMM = context->scaleFactor();
   QgsScopedRenderContextScaleToPixels scaleToPx( *context );
 
   // TODO when no metrics
   // TODO --- line spacing!!!
 
-  const QSizeF documentSize = ctx->textDocumentMetrics->documentSize( Qgis::TextLayoutMode::RectangleCapHeightBased, Qgis::TextOrientation::Horizontal );
+  const QSizeF documentSize = ctx ? ctx->textDocumentMetrics->documentSize( Qgis::TextLayoutMode::RectangleCapHeightBased, Qgis::TextOrientation::Horizontal ) : QSizeF();
   const QSizeF labelSizeMM( documentSize / dotsPerMM );
 
   double labelXMin = 0.0;
