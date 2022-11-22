@@ -850,7 +850,9 @@ void TestQgsLegendRenderer::testLineSpacing()
 
   QgsLegendSettings settings;
   settings.setWrapChar( QStringLiteral( "\n" ) );
+  Q_NOWARN_DEPRECATED_PUSH
   settings.setLineSpacing( 3 );
+  Q_NOWARN_DEPRECATED_POP
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
   QImage res = _renderLegend( &legendModel, settings );
   QVERIFY( _verifyImage( res, testName ) );

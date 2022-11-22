@@ -19,7 +19,6 @@
 #include "qgslayoutitemlegend.h"
 #include "qgslayoutitemregistry.h"
 #include "qgslayoutitemmap.h"
-#include "qgslayout.h"
 #include "qgslayoutmodel.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
@@ -31,8 +30,11 @@
 #include "qgssymbollayerutils.h"
 #include "qgslayertreeutils.h"
 #include "qgslayoututils.h"
-#include "qgsmapthemecollection.h"
+#include "qgslayout.h"
 #include "qgsstyleentityvisitor.h"
+#include "qgslayertreemodellegendnode.h"
+#include "qgsvectorlayer.h"
+
 #include <QDomDocument>
 #include <QDomElement>
 #include <QPainter>
@@ -253,7 +255,7 @@ void QgsLayoutItemLegend::adjustBoxSize()
 
   QgsLegendRenderer legendRenderer( mLegendModel.get(), mSettings );
   const QSizeF size = legendRenderer.minimumSize( &context );
-  QgsDebugMsg( QStringLiteral( "width = %1 height = %2" ).arg( size.width() ).arg( size.height() ) );
+  QgsDebugMsgLevel( QStringLiteral( "width = %1 height = %2" ).arg( size.width() ).arg( size.height() ), 2 );
   if ( size.isValid() )
   {
     const QgsLayoutSize newSize = mLayout->convertFromLayoutUnits( size, sizeWithUnits().units() );
@@ -381,12 +383,16 @@ void QgsLayoutItemLegend::setStyleMargin( QgsLegendStyle::Style s, QgsLegendStyl
 
 double QgsLayoutItemLegend::lineSpacing() const
 {
+  Q_NOWARN_DEPRECATED_PUSH
   return mSettings.lineSpacing();
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void QgsLayoutItemLegend::setLineSpacing( double spacing )
 {
+  Q_NOWARN_DEPRECATED_PUSH
   mSettings.setLineSpacing( spacing );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 double QgsLayoutItemLegend::boxSpace() const
@@ -591,7 +597,6 @@ bool QgsLayoutItemLegend::writePropertiesToElement( QDomElement &legendElem, QDo
   legendElem.setAttribute( QStringLiteral( "symbolAlignment" ), mSettings.symbolAlignment() );
 
   legendElem.setAttribute( QStringLiteral( "symbolAlignment" ), mSettings.symbolAlignment() );
-  legendElem.setAttribute( QStringLiteral( "lineSpacing" ), QString::number( mSettings.lineSpacing() ) );
 
   legendElem.setAttribute( QStringLiteral( "rasterBorder" ), mSettings.drawRasterStroke() );
   legendElem.setAttribute( QStringLiteral( "rasterBorderColor" ), QgsSymbolLayerUtils::encodeColor( mSettings.rasterStrokeColor() ) );
@@ -691,7 +696,32 @@ bool QgsLayoutItemLegend::readPropertiesFromElement( const QDomElement &itemElem
   mSettings.setMinimumSymbolSize( itemElem.attribute( QStringLiteral( "minSymbolSize" ), QStringLiteral( "0.0" ) ).toDouble() );
 
   mSettings.setWmsLegendSize( QSizeF( itemElem.attribute( QStringLiteral( "wmsLegendWidth" ), QStringLiteral( "50" ) ).toDouble(), itemElem.attribute( QStringLiteral( "wmsLegendHeight" ), QStringLiteral( "25" ) ).toDouble() ) );
-  mSettings.setLineSpacing( itemElem.attribute( QStringLiteral( "lineSpacing" ), QStringLiteral( "1.0" ) ).toDouble() );
+
+  if ( itemElem.hasAttribute( QStringLiteral( "lineSpacing" ) ) )
+  {
+    const double spacing = itemElem.attribute( QStringLiteral( "lineSpacing" ), QStringLiteral( "1.0" ) ).toDouble();
+    // line spacing *was* a fixed amount (in mm) added between each line of text.
+    QgsTextFormat f = rstyle( QgsLegendStyle::Title ).textFormat();
+    // assume font sizes in points, since that was what we always had from before this method was deprecated
+    f.setLineHeight( f.size() * 0.352778 + spacing );
+    f.setLineHeightUnit( QgsUnitTypes::RenderMillimeters );
+    rstyle( QgsLegendStyle::Title ).setTextFormat( f );
+
+    f = rstyle( QgsLegendStyle::Group ).textFormat();
+    f.setLineHeight( f.size() * 0.352778 + spacing );
+    f.setLineHeightUnit( QgsUnitTypes::RenderMillimeters );
+    rstyle( QgsLegendStyle::Group ).setTextFormat( f );
+
+    f = rstyle( QgsLegendStyle::Subgroup ).textFormat();
+    f.setLineHeight( f.size() * 0.352778 + spacing );
+    f.setLineHeightUnit( QgsUnitTypes::RenderMillimeters );
+    rstyle( QgsLegendStyle::Subgroup ).setTextFormat( f );
+
+    f = rstyle( QgsLegendStyle::SymbolLabel ).textFormat();
+    f.setLineHeight( f.size() * 0.352778 + spacing );
+    f.setLineHeightUnit( QgsUnitTypes::RenderMillimeters );
+    rstyle( QgsLegendStyle::SymbolLabel ).setTextFormat( f );
+  }
 
   mSettings.setDrawRasterStroke( itemElem.attribute( QStringLiteral( "rasterBorder" ), QStringLiteral( "1" ) ) != QLatin1String( "0" ) );
   mSettings.setRasterStrokeColor( QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "rasterBorderColor" ), QStringLiteral( "0,0,0" ) ) ) );
@@ -1090,9 +1120,6 @@ bool QgsLayoutItemLegend::accept( QgsStyleEntityVisitorInterface *visitor ) cons
 
 
 // -------------------------------------------------------------------------
-#include "qgslayertreemodellegendnode.h"
-#include "qgsvectorlayer.h"
-#include "qgsmaplayerlegend.h"
 
 QgsLegendModel::QgsLegendModel( QgsLayerTree *rootNode, QObject *parent, QgsLayoutItemLegend *layout )
   : QgsLayerTreeModel( rootNode, parent )

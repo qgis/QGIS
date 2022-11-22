@@ -395,18 +395,24 @@ Sets the desired size (in millimeters) of WMS legend graphics shown in the legen
 .. seealso:: :py:func:`wmsLegendSize`
 %End
 
-    double lineSpacing() const;
+ double lineSpacing() const /Deprecated/;
 %Docstring
 Returns the line spacing to use between lines of legend text.
 
 .. seealso:: :py:func:`setLineSpacing`
+
+.. deprecated::
+   use :py:func:`QgsLegendStyle.textFormat()` from :py:func:`~QgsLegendSettings.style` instead.
 %End
 
-    void setLineSpacing( double s );
+ void setLineSpacing( double s );
 %Docstring
 Sets the line spacing to use between lines of legend text.
 
 .. seealso:: :py:func:`lineSpacing`
+
+.. deprecated::
+   use :py:func:`QgsLegendStyle.setTextFormat()` from :py:func:`~QgsLegendSettings.style` instead.
 %End
 
  double mmPerMapUnit() const /Deprecated/;
