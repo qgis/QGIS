@@ -1470,8 +1470,9 @@ class PyQgsTextRenderer(unittest.TestCase):
         checker.setRenderedImage(file_name)
         checker.setColorTolerance(2)
         result = checker.compareImages(name, 20)
-        PyQgsTextRenderer.report += checker.report()
-        print(checker.report())
+        if checker.report():
+            PyQgsTextRenderer.report += checker.report()
+            print(checker.report())
         return result
 
     def checkRender(self, format, name, part=None, angle=0, alignment=QgsTextRenderer.AlignLeft,
@@ -1589,6 +1590,16 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.setFont(getTestFont('bold'))
         format.setSize(1100)
         assert self.checkRender(format, 'massive_font', rect=QRectF(-800, -600, 1000, 1000), text=['a t'], image_size=800)
+
+    def testDrawRectMixedHtml(self):
+        """
+        Test drawing text in rect mode with cap height based line heights
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setAllowHtmlFormatting(True)
+        format.setSize(30)
+        assert self.checkRender(format, 'rect_html', rect=QRectF(100, 100, 100, 100), text=['first <span style="font-size:50pt">line</span>', 'second <span style="font-size:50pt">line</span>', 'third line'])
 
     def testDrawForcedItalic(self):
         """
