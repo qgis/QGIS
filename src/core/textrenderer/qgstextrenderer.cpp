@@ -78,7 +78,8 @@ int QgsTextRenderer::sizeToPixel( double size, const QgsRenderContext &c, QgsUni
   return static_cast< int >( c.convertToPainterUnits( size, unit, mapUnitScale ) + 0.5 ); //NOLINT
 }
 
-void QgsTextRenderer::drawText( const QRectF &rect, double rotation, Qgis::TextHorizontalAlignment alignment, const QStringList &text, QgsRenderContext &context, const QgsTextFormat &format, bool, Qgis::TextVerticalAlignment vAlignment, Qgis::TextRendererFlags flags )
+void QgsTextRenderer::drawText( const QRectF &rect, double rotation, Qgis::TextHorizontalAlignment alignment, const QStringList &text, QgsRenderContext &context, const QgsTextFormat &format, bool, Qgis::TextVerticalAlignment vAlignment, Qgis::TextRendererFlags flags,
+                                Qgis::TextLayoutMode mode )
 {
   QgsTextFormat tmpFormat = format;
   if ( format.dataDefinedProperties().hasActiveProperties() ) // note, we use format instead of tmpFormat here, it's const and potentially avoids a detach
@@ -812,6 +813,8 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
     switch ( mode )
     {
       case Qgis::TextLayoutMode::Rectangle:
+      case Qgis::TextLayoutMode::RectangleCapHeightBased:
+      case Qgis::TextLayoutMode::RectangleAscentBased:
         switch ( component.hAlign )
         {
           case Qgis::TextHorizontalAlignment::Left:
@@ -1458,6 +1461,8 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
       break;
 
     case Qgis::TextLayoutMode::Rectangle:
+    case Qgis::TextLayoutMode::RectangleCapHeightBased:
+    case Qgis::TextLayoutMode::RectangleAscentBased:
       labelWidest = component.size.width();
       break;
   }
@@ -1541,6 +1546,8 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
       {
         case Qgis::TextLayoutMode::Labeling:
         case Qgis::TextLayoutMode::Rectangle:
+        case Qgis::TextLayoutMode::RectangleCapHeightBased:
+        case Qgis::TextLayoutMode::RectangleAscentBased:
           xMultiLineOffset = labelWidthDiff;
           break;
 
@@ -1736,6 +1743,8 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
       break;
 
     case Qgis::TextLayoutMode::Rectangle:
+    case Qgis::TextLayoutMode::RectangleCapHeightBased:
+    case Qgis::TextLayoutMode::RectangleAscentBased:
       textRectWidth = component.size.width();
       break;
   }
@@ -1795,6 +1804,8 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
       {
         case Qgis::TextLayoutMode::Labeling:
         case Qgis::TextLayoutMode::Rectangle:
+        case Qgis::TextLayoutMode::RectangleCapHeightBased:
+        case Qgis::TextLayoutMode::RectangleAscentBased:
           xOffset += hAlignmentOffset;
           break;
 
@@ -1830,6 +1841,8 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
         break;
 
       case Qgis::TextLayoutMode::Rectangle:
+      case Qgis::TextLayoutMode::RectangleCapHeightBased:
+      case Qgis::TextLayoutMode::RectangleAscentBased:
         yOffset = 0;
         break;
     }

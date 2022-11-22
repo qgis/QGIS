@@ -85,6 +85,7 @@ class CORE_EXPORT QgsTextRenderer
      * as of QGIS 3.4.3 and the text format should be set using QgsRenderContext::setTextRenderFormat() instead.
      * \param vAlignment vertical alignment (since QGIS 3.16)
      * \param flags text rendering flags (since QGIS 3.24)
+     * \param mode text layout mode. Only Qgis::TextLayoutMode::Rectangle, Qgis::TextLayoutMode::RectangleCapHeightBased and Qgis::TextLayoutMode::RectangleAscentBased are accepted (since QGIS 3.30)
      */
     static void drawText( const QRectF &rect, double rotation, Qgis::TextHorizontalAlignment alignment, const QStringList &textLines,
                           QgsRenderContext &context, const QgsTextFormat &format,

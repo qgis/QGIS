@@ -44,11 +44,15 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
   double width = 0;
   double heightLabelMode = 0;
   double heightPointRectMode = 0;
+  double heightCapHeightMode = 0;
+  double heightAscentMode = 0;
   const int blockSize = document.size();
   res.mFragmentFonts.reserve( blockSize );
   double currentLabelBaseline = 0;
   double currentPointBaseline = 0;
   double currentRectBaseline = 0;
+  double currentCapHeightBasedBaseline = 0;
+  double currentAscentBasedBaseline = 0;
   double lastLineLeading = 0;
 
   double heightVerticalOrientation = 0;
@@ -81,6 +85,7 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
     double maxLineSpacing = 0;
     double maxBlockLeading = 0;
     double maxBlockMaxWidth = 0;
+    double maxBlockCapHeight = 0;
 
     QList< double > fragmentVerticalOffsets;
     fragmentVerticalOffsets.reserve( fragmentSize );
@@ -180,6 +185,8 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
       blockHeightUsingLineSpacing = std::max( blockHeightUsingLineSpacing, fragmentHeightUsingLineSpacing );
       maxBlockAscent = std::max( maxBlockAscent, fm.ascent() / scaleFactor );
 
+      maxBlockCapHeight = std::max( maxBlockCapHeight, fm.capHeight() / scaleFactor );
+
       blockHeightUsingAscentAccountingForVerticalOffset = std::max( std::max( maxBlockAscent, fragmentHeightForVerticallyOffsetText ), blockHeightUsingAscentAccountingForVerticalOffset );
 
       maxBlockDescent = std::max( maxBlockDescent, fm.descent() / scaleFactor );
@@ -206,6 +213,7 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
       // needed to move bottom of text's descender to within bottom edge of label
       res.mFirstLineAscentOffset = 0.25 * maxBlockAscent; // descent() is not enough
       res.mLastLineAscentOffset = res.mFirstLineAscentOffset;
+      res.mFirstLineCapHeight = maxBlockCapHeight;
       const double lineHeight = ( maxBlockAscent + maxBlockDescent ); // ignore +1 for baseline
 
       // rendering labels needs special handling - in this case text should be
@@ -219,11 +227,16 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
       // standard rendering - designed to exactly replicate QPainter's drawText method
       currentRectBaseline = -res.mFirstLineAscentOffset + lineHeight - 1 /*baseline*/;
 
+      currentCapHeightBasedBaseline = res.mFirstLineCapHeight;
+      currentAscentBasedBaseline = maxBlockAscent;
+
       // standard rendering - designed to exactly replicate QPainter's drawText rect method
       currentPointBaseline = 0;
 
       heightLabelMode += blockHeightUsingAscentDescent;
       heightPointRectMode += blockHeightUsingAscentDescent;
+      heightCapHeightMode += maxBlockCapHeight;
+      heightAscentMode += maxBlockAscent;
     }
     else
     {
@@ -233,9 +246,15 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
       currentLabelBaseline += thisLineHeightUsingAscentDescent;
       currentRectBaseline += thisLineHeightUsingLineSpacing;
       currentPointBaseline += thisLineHeightUsingLineSpacing;
+      // using cap height??
+      currentCapHeightBasedBaseline += thisLineHeightUsingLineSpacing;
+      // using ascent?
+      currentAscentBasedBaseline += thisLineHeightUsingLineSpacing;
 
       heightLabelMode += thisLineHeightUsingAscentDescent;
       heightPointRectMode += thisLineHeightUsingLineSpacing;
+      heightCapHeightMode += thisLineHeightUsingLineSpacing;
+      heightAscentMode += thisLineHeightUsingLineSpacing;
       if ( blockIndex == blockSize - 1 )
         res.mLastLineAscentOffset = 0.25 * maxBlockAscent;
     }
@@ -259,6 +278,8 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
     res.mBaselineOffsetsLabelMode << currentLabelBaseline;
     res.mBaselineOffsetsPointMode << currentPointBaseline;
     res.mBaselineOffsetsRectMode << currentRectBaseline;
+    res.mBaselineOffsetsCapHeightMode << currentCapHeightBasedBaseline;
+    res.mBaselineOffsetsAscentBased << currentAscentBasedBaseline;
     res.mBlockMaxDescent << maxBlockDescent;
     res.mBlockMaxCharacterWidth << maxBlockMaxWidth;
     res.mFragmentVerticalOffsetsLabelMode << fragmentVerticalOffsets;
@@ -275,6 +296,8 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
 
   res.mDocumentSizeLabelMode = QSizeF( width, heightLabelMode );
   res.mDocumentSizePointRectMode = QSizeF( width, heightPointRectMode );
+  res.mDocumentSizeCapHeightMode = QSizeF( width, heightCapHeightMode );
+  res.mDocumentSizeAscentMode = QSizeF( width, heightAscentMode );
 
   // adjust baselines
   if ( !res.mBaselineOffsetsLabelMode.isEmpty() )
@@ -332,6 +355,12 @@ QSizeF QgsTextDocumentMetrics::documentSize( Qgis::TextLayoutMode mode, Qgis::Te
         case Qgis::TextLayoutMode::Point:
           return mDocumentSizePointRectMode;
 
+        case Qgis::TextLayoutMode::RectangleCapHeightBased:
+          return mDocumentSizeCapHeightMode;
+
+        case Qgis::TextLayoutMode::RectangleAscentBased:
+          return mDocumentSizeAscentMode;
+
         case Qgis::TextLayoutMode::Labeling:
           return mDocumentSizeLabelMode;
       };
@@ -354,6 +383,8 @@ QRectF QgsTextDocumentMetrics::outerBounds( Qgis::TextLayoutMode mode, Qgis::Tex
       switch ( mode )
       {
         case Qgis::TextLayoutMode::Rectangle:
+        case Qgis::TextLayoutMode::RectangleCapHeightBased:
+        case Qgis::TextLayoutMode::RectangleAscentBased:
         case Qgis::TextLayoutMode::Point:
           return QRectF();
 
@@ -380,12 +411,21 @@ double QgsTextDocumentMetrics::blockHeight( int blockIndex ) const
   return mBlockHeights.value( blockIndex );
 }
 
+double QgsTextDocumentMetrics::firstLineCapHeight() const
+{
+  return mFirstLineCapHeight;
+}
+
 double QgsTextDocumentMetrics::baselineOffset( int blockIndex, Qgis::TextLayoutMode mode ) const
 {
   switch ( mode )
   {
     case Qgis::TextLayoutMode::Rectangle:
       return mBaselineOffsetsRectMode.value( blockIndex );
+    case Qgis::TextLayoutMode::RectangleCapHeightBased:
+      return mBaselineOffsetsCapHeightMode.value( blockIndex );
+    case Qgis::TextLayoutMode::RectangleAscentBased:
+      return mBaselineOffsetsAscentBased.value( blockIndex );
     case Qgis::TextLayoutMode::Point:
       return mBaselineOffsetsPointMode.value( blockIndex );
     case Qgis::TextLayoutMode::Labeling:
@@ -404,6 +444,8 @@ double QgsTextDocumentMetrics::fragmentVerticalOffset( int blockIndex, int fragm
   switch ( mode )
   {
     case Qgis::TextLayoutMode::Rectangle:
+    case Qgis::TextLayoutMode::RectangleCapHeightBased:
+    case Qgis::TextLayoutMode::RectangleAscentBased:
       return mFragmentVerticalOffsetsRectMode.value( blockIndex ).value( fragmentIndex );
     case Qgis::TextLayoutMode::Point:
       return mFragmentVerticalOffsetsPointMode.value( blockIndex ).value( fragmentIndex );

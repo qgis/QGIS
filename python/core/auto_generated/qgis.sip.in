@@ -982,6 +982,8 @@ The development version
       Rectangle,
       Point,
       Labeling,
+      RectangleCapHeightBased,
+      RectangleAscentBased,
     };
 
     enum class TextComponent
