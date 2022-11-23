@@ -155,17 +155,17 @@ QgsAbstract3DSymbol *QgsPolygon3DSymbol::create()
   return new QgsPolygon3DSymbol();
 }
 
-QgsAbstractMaterialSettings *QgsPolygon3DSymbol::material() const
+QgsAbstractMaterialSettings *QgsPolygon3DSymbol::materialSettings() const
 {
   return mMaterialSettings.get();
 }
 
-void QgsPolygon3DSymbol::setMaterial( QgsAbstractMaterialSettings *material )
+void QgsPolygon3DSymbol::setMaterialSettings( QgsAbstractMaterialSettings *materialSettings )
 {
-  if ( material == mMaterialSettings.get() )
+  if ( materialSettings == mMaterialSettings.get() )
     return;
 
-  mMaterialSettings.reset( material );
+  mMaterialSettings.reset( materialSettings );
 }
 
 bool QgsPolygon3DSymbol::exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore::QEntity *entity, const QString &objectNamePrefix ) const

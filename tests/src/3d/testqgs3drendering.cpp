@@ -132,10 +132,10 @@ void TestQgs3DRendering::initTestCase()
   // so we do not get some possible artifacts
   mLayerBuildings->setRenderer( nullptr );
 
-  QgsPhongMaterialSettings material;
-  material.setAmbient( Qt::lightGray );
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setAmbient( Qt::lightGray );
   QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
-  symbol3d->setMaterial( material.clone() );
+  symbol3d->setMaterialSettings( materialSettings.clone() );
   symbol3d->setExtrusionHeight( 10.f );
   QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
   mLayerBuildings->setRenderer3D( renderer3d );
@@ -416,7 +416,7 @@ void TestQgs3DRendering::testExtrudedPolygons()
   materialSettings.setAmbient( Qt::lightGray );
   materialSettings.setOpacity( 0.5f );
   QgsPolygon3DSymbol *symbol3dOpacity = new QgsPolygon3DSymbol;
-  symbol3dOpacity->setMaterial( materialSettings.clone() );
+  symbol3dOpacity->setMaterialSettings( materialSettings.clone() );
   symbol3dOpacity->setExtrusionHeight( 10.f );
   QgsVectorLayer3DRenderer *renderer3dOpacity = new QgsVectorLayer3DRenderer( symbol3dOpacity );
   mLayerBuildings->setRenderer3D( renderer3dOpacity );
@@ -440,11 +440,11 @@ void TestQgs3DRendering::testExtrudedPolygonsDataDefined()
   propertyColection.setProperty( QgsAbstractMaterialSettings::Diffuse, diffuseColor );
   propertyColection.setProperty( QgsAbstractMaterialSettings::Ambient, ambientColor );
   propertyColection.setProperty( QgsAbstractMaterialSettings::Specular, specularColor );
-  QgsPhongMaterialSettings material;
-  material.setDataDefinedProperties( propertyColection );
-  material.setAmbient( Qt::red );
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setDataDefinedProperties( propertyColection );
+  materialSettings.setAmbient( Qt::red );
   QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
-  symbol3d->setMaterial( material.clone() );
+  symbol3d->setMaterialSettings( materialSettings.clone() );
   symbol3d->setExtrusionHeight( 10.f );
   QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
   mLayerBuildings->setRenderer3D( renderer3d );
@@ -510,7 +510,7 @@ void TestQgs3DRendering::testExtrudedPolygonsGoochShading()
   materialSettings.setAlpha( 0.2f );
   materialSettings.setBeta( 0.6f );
   QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
-  symbol3d->setMaterial( materialSettings.clone() );
+  symbol3d->setMaterialSettings( materialSettings.clone() );
   symbol3d->setExtrusionHeight( 10.f );
   QgsVectorLayer3DRenderer *renderer3dOpacity = new QgsVectorLayer3DRenderer( symbol3d );
   mLayerBuildings->setRenderer3D( renderer3dOpacity );
@@ -537,10 +537,10 @@ void TestQgs3DRendering::testPolygonsEdges()
   map->setCrs( mProject->crs() );
   map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
 
-  QgsPhongMaterialSettings material;
-  material.setAmbient( Qt::lightGray );
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setAmbient( Qt::lightGray );
   QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
-  symbol3d->setMaterial( material.clone() );
+  symbol3d->setMaterialSettings( materialSettings.clone() );
   symbol3d->setExtrusionHeight( 10.f );
   symbol3d->setHeight( 20.f );
   symbol3d->setEdgesEnabled( true );
@@ -981,16 +981,16 @@ void TestQgs3DRendering::testMeshSimplified()
 
 void TestQgs3DRendering::testRuleBasedRenderer()
 {
-  QgsPhongMaterialSettings material;
-  material.setAmbient( Qt::lightGray );
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setAmbient( Qt::lightGray );
   QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
-  symbol3d->setMaterial( material.clone() );
+  symbol3d->setMaterialSettings( materialSettings.clone() );
   symbol3d->setExtrusionHeight( 10.f );
 
-  QgsPhongMaterialSettings material2;
-  material2.setAmbient( Qt::red );
+  QgsPhongMaterialSettings materialSettings2;
+  materialSettings2.setAmbient( Qt::red );
   QgsPolygon3DSymbol *symbol3d2 = new QgsPolygon3DSymbol;
-  symbol3d2->setMaterial( material2.clone() );
+  symbol3d2->setMaterialSettings( materialSettings2.clone() );
   symbol3d2->setExtrusionHeight( 10.f );
 
   QgsRuleBased3DRenderer::Rule *root = new QgsRuleBased3DRenderer::Rule( nullptr );
