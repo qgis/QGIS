@@ -38,14 +38,18 @@ void QgsSourceSelectProviderRegistry::addProvider( QgsSourceSelectProvider *prov
   {
     return first->ordering() < second->ordering();
   } );
+
+  emit providerAdded( provider->name() );
 }
 
 bool QgsSourceSelectProviderRegistry::removeProvider( QgsSourceSelectProvider *provider )
 {
+  const QString name = provider ? provider->name() : QString();
   const int index = mProviders.indexOf( provider );
   if ( index >= 0 )
   {
     delete mProviders.takeAt( index );
+    emit providerRemoved( name );
     return true;
   }
   return false;
