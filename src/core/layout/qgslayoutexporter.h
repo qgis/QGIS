@@ -29,6 +29,7 @@
 
 #ifndef QT_NO_PRINTER
 #include <QPrinter>
+#endif
 
 class QgsLayout;
 class QPainter;
@@ -459,6 +460,8 @@ class CORE_EXPORT QgsLayoutExporter
 
     };
 
+#ifndef QT_NO_PRINTER
+
     /**
      * Prints the layout to a \a printer, using the specified export \a settings.
      *
@@ -477,7 +480,7 @@ class CORE_EXPORT QgsLayoutExporter
     static ExportResult print( QgsAbstractLayoutIterator *iterator, QPrinter &printer,
                                const QgsLayoutExporter::PrintExportSettings &settings,
                                QString &error SIP_OUT, QgsFeedback *feedback = nullptr );
-
+#endif
 
     //! Contains settings relating to exporting layouts to SVG
     struct SvgExportSettings
@@ -718,6 +721,8 @@ class CORE_EXPORT QgsLayoutExporter
     //! Write a world file
     void writeWorldFile( const QString &fileName, double a, double b, double c, double d, double e, double f ) const;
 
+#ifndef QT_NO_PRINTER
+
     /**
      * Prepare a \a printer for printing a layout as a PDF, to the destination \a filePath.
      */
@@ -741,6 +746,7 @@ class CORE_EXPORT QgsLayoutExporter
     ExportResult printPrivate( QPrinter &printer, QPainter &painter, bool startNewPage = false, double dpi = -1, bool rasterize = false );
 
     static void updatePrinterPageSize( QgsLayout *layout, QPrinter &printer, int page );
+#endif
 
     ExportResult renderToLayeredSvg( const SvgExportSettings &settings, double width, double height, int page, const QRectF &bounds,
                                      const QString &filename, unsigned int svgLayerId, const QString &layerName,
@@ -758,8 +764,6 @@ class CORE_EXPORT QgsLayoutExporter
     friend class TestQgsLayoutExporter;
 
 };
-
-#endif // ! QT_NO_PRINTER
 
 #endif //QGSLAYOUTEXPORTER_H
 
