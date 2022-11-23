@@ -413,7 +413,7 @@ void QgsAttributeTableModel::loadAttributes()
     return;
   }
 
-  const QgsFields &fields = mLayer->fields();
+  const QgsFields fields = mLayer->fields();
   if ( mFields == fields )
     return;
 
