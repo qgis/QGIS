@@ -9,8 +9,7 @@
 
 
 
-
-class QgsSourceSelectProviderRegistry
+class QgsSourceSelectProviderRegistry : QObject
 {
 %Docstring(signature="appended")
 This class keeps a list of source select providers that may add items to the :py:class:`QgsDataSourceManagerDialog`
@@ -78,6 +77,22 @@ Gets select widget from provider with ``name``
 The function is replacement of  :py:func:`QgsProviderRegistry.createSelectionWidget()` from QGIS 3.8
 
 .. versionadded:: 3.10
+%End
+
+  signals:
+
+    void providerAdded( const QString &name );
+%Docstring
+Emitted whenever a provider is added to the registry.
+
+.. versionadded:: 3.30
+%End
+
+    void providerRemoved( const QString &name );
+%Docstring
+Emitted whenever a provider is removed from the registry.
+
+.. versionadded:: 3.30
 %End
 
   private:
