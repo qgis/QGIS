@@ -2502,8 +2502,8 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.30
      */
-    enum class ActionType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsActionMenu, ActionType ) : int
-      {
+    enum class ActionType : int
+    {
       Invalid, //!< Invalid
       MapLayerAction, //!< Standard actions (defined by core or plugins), corresponds to QgsMapLayerAction class.
       AttributeAction //!< Custom actions (manually defined in layer properties), corresponds to QgsAction class.
@@ -2517,8 +2517,8 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.30
      */
-    enum class MapLayerActionTarget SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayerAction, Target ) : int
-      {
+    enum class MapLayerActionTarget : int
+    {
       Layer = 1 << 0, //!< Action targets a complete layer
       SingleFeature = 1 << 1, //!< Action targets a single feature from a layer
       MultipleFeatures = 1 << 2, //!< Action targets multiple features from a layer
@@ -2533,7 +2533,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.30
      */
-    Q_DECLARE_FLAGS( MapLayerActionTargets, MapLayerActionTarget ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsMapLayerAction, Targets )
+    Q_DECLARE_FLAGS( MapLayerActionTargets, MapLayerActionTarget )
     Q_FLAG( MapLayerActionTargets )
 
     /**
@@ -2543,8 +2543,8 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.30
      */
-    enum class MapLayerActionFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayerAction, Flag ) : int
-      {
+    enum class MapLayerActionFlag : int
+    {
       EnabledOnlyWhenEditable = 1 << 1, //!< Action should be shown only for editable layers
     };
     Q_ENUM( MapLayerActionFlag )
@@ -2556,7 +2556,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.30
      */
-    Q_DECLARE_FLAGS( MapLayerActionFlags, MapLayerActionFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsMapLayerAction, Flags )
+    Q_DECLARE_FLAGS( MapLayerActionFlags, MapLayerActionFlag )
     Q_FLAG( MapLayerActionFlags )
 
     /**
