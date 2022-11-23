@@ -293,15 +293,15 @@ void QgsMesh3DSymbol::setEnabled( bool enabled )
 }
 
 
-QgsAbstractMaterialSettings *QgsMesh3DSymbol::material() const
+QgsAbstractMaterialSettings *QgsMesh3DSymbol::materialSettings() const
 {
   return mMaterialSettings.get();
 }
 
-void QgsMesh3DSymbol::setMaterial( QgsAbstractMaterialSettings *material )
+void QgsMesh3DSymbol::setMaterialSettings( QgsAbstractMaterialSettings *materialSettings )
 {
-  if ( material == mMaterialSettings.get() )
+  if ( materialSettings == mMaterialSettings.get() )
     return;
 
-  mMaterialSettings.reset( material );
+  mMaterialSettings.reset( materialSettings );
 }
