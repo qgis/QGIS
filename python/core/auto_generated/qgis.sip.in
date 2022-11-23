@@ -1449,14 +1449,14 @@ The development version
     };
 
     enum class ActionType
-      {
+    {
       Invalid,
       MapLayerAction,
       AttributeAction
     };
 
     enum class MapLayerActionTarget
-      {
+    {
       Layer,
       SingleFeature,
       MultipleFeatures,
@@ -1467,7 +1467,7 @@ The development version
 
 
     enum class MapLayerActionFlag
-      {
+    {
       EnabledOnlyWhenEditable,
     };
 

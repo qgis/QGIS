@@ -2197,49 +2197,28 @@ Qgis.LayerTreeInsertionMethod.OptimalInInsertionGroup.__doc__ = "Layers are adde
 Qgis.LayerTreeInsertionMethod.__doc__ = 'Layer tree insertion methods\n\n.. versionadded:: 3.30\n\n' + '* ``AboveInsertionPoint``: ' + Qgis.LayerTreeInsertionMethod.AboveInsertionPoint.__doc__ + '\n' + '* ``TopOfTree``: ' + Qgis.LayerTreeInsertionMethod.TopOfTree.__doc__ + '\n' + '* ``OptimalInInsertionGroup``: ' + Qgis.LayerTreeInsertionMethod.OptimalInInsertionGroup.__doc__
 # --
 Qgis.LayerTreeInsertionMethod.baseClass = Qgis
-QgsActionMenu.ActionType = Qgis.ActionType
 # monkey patching scoped based enum
-QgsActionMenu.Invalid = Qgis.ActionType.Invalid
-QgsActionMenu.Invalid.is_monkey_patched = True
-QgsActionMenu.Invalid.__doc__ = "Invalid"
-QgsActionMenu.MapLayerAction = Qgis.ActionType.MapLayerAction
-QgsActionMenu.MapLayerAction.is_monkey_patched = True
-QgsActionMenu.MapLayerAction.__doc__ = "Standard actions (defined by core or plugins), corresponds to QgsMapLayerAction class."
-QgsActionMenu.AttributeAction = Qgis.ActionType.AttributeAction
-QgsActionMenu.AttributeAction.is_monkey_patched = True
-QgsActionMenu.AttributeAction.__doc__ = "Custom actions (manually defined in layer properties), corresponds to QgsAction class."
+Qgis.ActionType.Invalid.__doc__ = "Invalid"
+Qgis.ActionType.MapLayerAction.__doc__ = "Standard actions (defined by core or plugins), corresponds to QgsMapLayerAction class."
+Qgis.ActionType.AttributeAction.__doc__ = "Custom actions (manually defined in layer properties), corresponds to QgsAction class."
 Qgis.ActionType.__doc__ = 'Action types.\n\nPrior to QGIS 3.30 this was available as :py:class:`QgsActionMenu`.ActionType\n\n.. versionadded:: 3.30\n\n' + '* ``Invalid``: ' + Qgis.ActionType.Invalid.__doc__ + '\n' + '* ``MapLayerAction``: ' + Qgis.ActionType.MapLayerAction.__doc__ + '\n' + '* ``AttributeAction``: ' + Qgis.ActionType.AttributeAction.__doc__
 # --
 Qgis.ActionType.baseClass = Qgis
-QgsMapLayerAction.Target = Qgis.MapLayerActionTarget
 # monkey patching scoped based enum
-QgsMapLayerAction.Layer = Qgis.MapLayerActionTarget.Layer
-QgsMapLayerAction.Layer.is_monkey_patched = True
-QgsMapLayerAction.Layer.__doc__ = "Action targets a complete layer"
-QgsMapLayerAction.SingleFeature = Qgis.MapLayerActionTarget.SingleFeature
-QgsMapLayerAction.SingleFeature.is_monkey_patched = True
-QgsMapLayerAction.SingleFeature.__doc__ = "Action targets a single feature from a layer"
-QgsMapLayerAction.MultipleFeatures = Qgis.MapLayerActionTarget.MultipleFeatures
-QgsMapLayerAction.MultipleFeatures.is_monkey_patched = True
-QgsMapLayerAction.MultipleFeatures.__doc__ = "Action targets multiple features from a layer"
-QgsMapLayerAction.AllActions = Qgis.MapLayerActionTarget.AllActions
-QgsMapLayerAction.AllActions.is_monkey_patched = True
-QgsMapLayerAction.AllActions.__doc__ = ""
+Qgis.MapLayerActionTarget.Layer.__doc__ = "Action targets a complete layer"
+Qgis.MapLayerActionTarget.SingleFeature.__doc__ = "Action targets a single feature from a layer"
+Qgis.MapLayerActionTarget.MultipleFeatures.__doc__ = "Action targets multiple features from a layer"
+Qgis.MapLayerActionTarget.AllActions.__doc__ = ""
 Qgis.MapLayerActionTarget.__doc__ = 'Map layer action targets.\n\nPrior to QGIS 3.30 this was available as :py:class:`QgsMapLayerAction`.Target\n\n.. versionadded:: 3.30\n\n' + '* ``Layer``: ' + Qgis.MapLayerActionTarget.Layer.__doc__ + '\n' + '* ``SingleFeature``: ' + Qgis.MapLayerActionTarget.SingleFeature.__doc__ + '\n' + '* ``MultipleFeatures``: ' + Qgis.MapLayerActionTarget.MultipleFeatures.__doc__ + '\n' + '* ``AllActions``: ' + Qgis.MapLayerActionTarget.AllActions.__doc__
 # --
 Qgis.MapLayerActionTarget.baseClass = Qgis
-QgsMapLayerAction.Targets = Qgis.MapLayerActionTargets
 Qgis.MapLayerActionTargets.baseClass = Qgis
 MapLayerActionTargets = Qgis  # dirty hack since SIP seems to introduce the flags in module
-QgsMapLayerAction.Flag = Qgis.MapLayerActionFlag
 # monkey patching scoped based enum
-QgsMapLayerAction.EnabledOnlyWhenEditable = Qgis.MapLayerActionFlag.EnabledOnlyWhenEditable
-QgsMapLayerAction.EnabledOnlyWhenEditable.is_monkey_patched = True
-QgsMapLayerAction.EnabledOnlyWhenEditable.__doc__ = "Action should be shown only for editable layers"
+Qgis.MapLayerActionFlag.EnabledOnlyWhenEditable.__doc__ = "Action should be shown only for editable layers"
 Qgis.MapLayerActionFlag.__doc__ = 'Map layer action flags.\n\nPrior to QGIS 3.30 this was available as :py:class:`QgsMapLayerAction`.Flag\n\n.. versionadded:: 3.30\n\n' + '* ``EnabledOnlyWhenEditable``: ' + Qgis.MapLayerActionFlag.EnabledOnlyWhenEditable.__doc__
 # --
 Qgis.MapLayerActionFlag.baseClass = Qgis
-QgsMapLayerAction.Flags = Qgis.MapLayerActionFlags
 Qgis.MapLayerActionFlags.baseClass = Qgis
 MapLayerActionFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsAction.ActionType = Qgis.AttributeActionType
