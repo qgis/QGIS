@@ -64,7 +64,7 @@ void QgsLine3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVec
   cboAltClamping->setCurrentIndex( cboAltClamping->findData( static_cast< int >( lineSymbol->altitudeClamping() ) ) );
   cboAltBinding->setCurrentIndex( static_cast<int>( lineSymbol->altitudeBinding() ) );
   chkSimpleLines->setChecked( lineSymbol->renderAsSimpleLines() );
-  widgetMaterial->setSettings( lineSymbol->material(), layer );
+  widgetMaterial->setSettings( lineSymbol->materialSettings(), layer );
   widgetMaterial->setTechnique( chkSimpleLines->isChecked() ? QgsMaterialSettingsRenderingTechnique::Lines
                                 : QgsMaterialSettingsRenderingTechnique::Triangles );
   updateGuiState();
@@ -79,7 +79,7 @@ QgsAbstract3DSymbol *QgsLine3DSymbolWidget::symbol()
   sym->setAltitudeClamping( static_cast<Qgis::AltitudeClamping>( cboAltClamping->currentData().toInt() ) );
   sym->setAltitudeBinding( static_cast<Qgis::AltitudeBinding>( cboAltBinding->currentIndex() ) );
   sym->setRenderAsSimpleLines( chkSimpleLines->isChecked() );
-  sym->setMaterial( widgetMaterial->settings() );
+  sym->setMaterialSettings( widgetMaterial->settings() );
   return sym.release();
 }
 
@@ -121,4 +121,3 @@ void QgsLine3DSymbolWidget::simple3DLinesToggled( bool active )
     }
   }
 }
-

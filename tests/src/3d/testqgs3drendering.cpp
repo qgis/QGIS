@@ -594,9 +594,9 @@ void TestQgs3DRendering::testLineRendering()
   QgsLine3DSymbol *lineSymbol = new QgsLine3DSymbol;
   lineSymbol->setRenderAsSimpleLines( true );
   lineSymbol->setWidth( 10 );
-  QgsSimpleLineMaterialSettings mat;
-  mat.setAmbient( Qt::red );
-  lineSymbol->setMaterial( mat.clone() );
+  QgsSimpleLineMaterialSettings matSettings;
+  matSettings.setAmbient( Qt::red );
+  lineSymbol->setMaterialSettings( matSettings.clone() );
   layerLines->setRenderer3D( new QgsVectorLayer3DRenderer( lineSymbol ) );
 
   QVector<QgsPoint> pts;
@@ -653,9 +653,9 @@ void TestQgs3DRendering::testLineRenderingCurved()
   QgsLine3DSymbol *lineSymbol = new QgsLine3DSymbol;
   lineSymbol->setRenderAsSimpleLines( true );
   lineSymbol->setWidth( 10 );
-  QgsSimpleLineMaterialSettings mat;
-  mat.setAmbient( Qt::red );
-  lineSymbol->setMaterial( mat.clone() );
+  QgsSimpleLineMaterialSettings matSettings;
+  matSettings.setAmbient( Qt::red );
+  lineSymbol->setMaterialSettings( matSettings.clone() );
   layerLines->setRenderer3D( new QgsVectorLayer3DRenderer( lineSymbol ) );
 
   QVector<QgsPoint> pts;
@@ -711,9 +711,9 @@ void TestQgs3DRendering::testBufferedLineRendering()
   QgsLine3DSymbol *lineSymbol = new QgsLine3DSymbol;
   lineSymbol->setWidth( 10 );
   lineSymbol->setExtrusionHeight( 30 );
-  QgsPhongMaterialSettings mat;
-  mat.setAmbient( Qt::red );
-  lineSymbol->setMaterial( mat.clone() );
+  QgsPhongMaterialSettings matSettings;
+  matSettings.setAmbient( Qt::red );
+  lineSymbol->setMaterialSettings( matSettings.clone() );
   layerLines->setRenderer3D( new QgsVectorLayer3DRenderer( lineSymbol ) );
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
@@ -760,9 +760,9 @@ void TestQgs3DRendering::testBufferedLineRenderingWidth()
   lineSymbol->setWidth( 20 );
   lineSymbol->setExtrusionHeight( 30 );
   lineSymbol->setHeight( 10 );
-  QgsPhongMaterialSettings mat;
-  mat.setAmbient( Qt::red );
-  lineSymbol->setMaterial( mat.clone() );
+  QgsPhongMaterialSettings matSettings;
+  matSettings.setAmbient( Qt::red );
+  lineSymbol->setMaterialSettings( matSettings.clone() );
   layerLines->setRenderer3D( new QgsVectorLayer3DRenderer( lineSymbol ) );
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
@@ -1252,9 +1252,9 @@ void TestQgs3DRendering::testEpsg4978LineRendering()
   QgsLine3DSymbol *lineSymbol = new QgsLine3DSymbol;
   lineSymbol->setRenderAsSimpleLines( true );
   lineSymbol->setWidth( 2 );
-  QgsSimpleLineMaterialSettings mat;
-  mat.setAmbient( Qt::red );
-  lineSymbol->setMaterial( mat.clone() );
+  QgsSimpleLineMaterialSettings matSettings;
+  matSettings.setAmbient( Qt::red );
+  lineSymbol->setMaterialSettings( matSettings.clone() );
   layerLines->setRenderer3D( new QgsVectorLayer3DRenderer( lineSymbol ) );
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;

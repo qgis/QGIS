@@ -85,17 +85,17 @@ void QgsLine3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContex
   mMaterialSettings->readXml( elemMaterial, context );
 }
 
-QgsAbstractMaterialSettings *QgsLine3DSymbol::material() const
+QgsAbstractMaterialSettings *QgsLine3DSymbol::materialSettings() const
 {
   return mMaterialSettings.get();
 }
 
-void QgsLine3DSymbol::setMaterial( QgsAbstractMaterialSettings *material )
+void QgsLine3DSymbol::setMaterialSettings( QgsAbstractMaterialSettings *materialSettings )
 {
-  if ( material == mMaterialSettings.get() )
+  if ( materialSettings == mMaterialSettings.get() )
     return;
 
-  mMaterialSettings.reset( material );
+  mMaterialSettings.reset( materialSettings );
 }
 
 QList<QgsWkbTypes::GeometryType> QgsLine3DSymbol::compatibleGeometryTypes() const
@@ -133,7 +133,7 @@ bool QgsLine3DSymbol::exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore::
     {
       Qgs3DExportObject *object = exporter->processGeometryRenderer( r, objectNamePrefix );
       if ( object == nullptr ) continue;
-      object->setupMaterial( material() );
+      object->setupMaterial( materialSettings() );
       exporter->mObjects.push_back( object );
     }
     return renderers.size() != 0;
