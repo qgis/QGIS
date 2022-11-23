@@ -21,6 +21,8 @@
 #include "qgshighlight.h"
 #include "qgssettings.h"
 #include "qgsmessagebar.h"
+#include "qgsactionmenu.h"
+#include "qgsmaplayeractioncontext.h"
 
 QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget *parent, bool showDialogButtons, const QgsAttributeEditorContext &context )
   : QDialog( parent )

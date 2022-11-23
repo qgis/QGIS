@@ -1,4 +1,4 @@
-# The following has been generated automatically from src/gui/actions/qgsmaplayeractionregistry.h
+# The following has been generated automatically from src/gui/actions/qgsmaplayeraction.h
 QgsMapLayerAction.Targets.baseClass = QgsMapLayerAction
 Targets = QgsMapLayerAction  # dirty hack since SIP seems to introduce the flags in module
 QgsMapLayerAction.Flags.baseClass = QgsMapLayerAction

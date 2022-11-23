@@ -15,6 +15,7 @@
 
 #include "qgsactionmenu.h"
 #include "qgsvectorlayer.h"
+#include "qgsmaplayeractioncontextgenerator.h"
 #include "qgsmaplayeractionregistry.h"
 #include "qgsactionmanager.h"
 #include "qgsfeatureiterator.h"

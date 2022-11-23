@@ -21,8 +21,7 @@
 #include "qgis_sip.h"
 #include "qgsattributeform.h"
 #include "qgstrackedvectorlayertools.h"
-#include "qgsactionmenu.h"
-#include "qgsmaplayeractionregistry.h"
+#include "qgsmaplayeractioncontextgenerator.h"
 
 #include <QDialog>
 #include <QMenuBar>
@@ -30,6 +29,7 @@
 #include "qgis_gui.h"
 
 class QgsHighlight;
+class QgsActionMenu;
 
 /**
  * \ingroup gui

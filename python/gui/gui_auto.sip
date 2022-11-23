@@ -232,6 +232,9 @@
 %Include auto_generated/qgsvscrollarea.sip
 %Include auto_generated/qgswindowmanagerinterface.sip
 %Include auto_generated/actions/qgsactionmenu.sip
+%Include auto_generated/actions/qgsmaplayeraction.sip
+%Include auto_generated/actions/qgsmaplayeractioncontext.sip
+%Include auto_generated/actions/qgsmaplayeractioncontextgenerator.sip
 %Include auto_generated/actions/qgsmaplayeractionregistry.sip
 %Include auto_generated/annotations/qgsannotationitemcommonpropertieswidget.sip
 %Include auto_generated/annotations/qgsannotationitemguiregistry.sip
