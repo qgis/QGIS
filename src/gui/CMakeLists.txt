@@ -1,4 +1,7 @@
-set(QGIS_GUI_SRCS  
+set(QGIS_GUI_SRCS
+  actions/qgsactionmenu.cpp
+  actions/qgsmaplayeractionregistry.cpp
+
   raster/qgscreaterasterattributetabledialog.cpp
   raster/qgsloadrasterattributetabledialog.cpp
   raster/qgsrasterattributetablewidget.cpp
@@ -429,7 +432,6 @@ set(QGIS_GUI_SRCS
   qgisinterface.cpp
   qgs3dsymbolwidget.cpp
   qgsabstractmaptoolhandler.cpp
-  qgsactionmenu.cpp
   qgsaddattrdialog.cpp
   qgsaddtaborgroup.cpp
   qgsadvanceddigitizingcanvasitem.cpp
@@ -558,7 +560,6 @@ set(QGIS_GUI_SRCS
   qgsmapcanvassnappingutils.cpp
   qgsmapcanvastracer.cpp
   qgsmapcanvasutils.cpp
-  qgsmaplayeractionregistry.cpp
   qgsmaplayercombobox.cpp
   qgsmaplayerconfigwidgetfactory.cpp
   qgsmaplayerloadstyledialog.cpp
@@ -693,7 +694,6 @@ set(QGIS_GUI_HDRS
   qgs3dsymbolwidget.h
   qgsabstractdatasourcewidget.h
   qgsabstractmaptoolhandler.h
-  qgsactionmenu.h
   qgsaddattrdialog.h
   qgsaddtaborgroup.h
   qgsadvanceddigitizingdockwidget.h
@@ -823,7 +823,6 @@ set(QGIS_GUI_HDRS
   qgsmapcanvassnappingutils.h
   qgsmapcanvastracer.h
   qgsmapcanvasutils.h
-  qgsmaplayeractionregistry.h
   qgsmaplayercombobox.h
   qgsmaplayerconfigwidget.h
   qgsmaplayerconfigwidgetfactory.h
@@ -950,6 +949,9 @@ set(QGIS_GUI_HDRS
   qgsvertexmarker.h
   qgsvscrollarea.h
   qgswindowmanagerinterface.h
+
+  actions/qgsactionmenu.h
+  actions/qgsmaplayeractionregistry.h
 
   annotations/qgsannotationitemcommonpropertieswidget.h
   annotations/qgsannotationitemguiregistry.h
@@ -1555,6 +1557,7 @@ endif()
 
 target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/src/gui/actions
   ${CMAKE_SOURCE_DIR}/src/gui/annotations
   ${CMAKE_SOURCE_DIR}/src/gui/attributeformconfig
   ${CMAKE_SOURCE_DIR}/src/gui/symbology

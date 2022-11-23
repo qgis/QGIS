@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgsmaplayeractionregistry.h                                  *
+ * src/gui/actions/qgsmaplayeractionregistry.h                          *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -337,7 +337,7 @@ QFlags<QgsMapLayerAction::Flag> operator|(QgsMapLayerAction::Flag f1, QFlags<Qgs
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgsmaplayeractionregistry.h                                  *
+ * src/gui/actions/qgsmaplayeractionregistry.h                          *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
