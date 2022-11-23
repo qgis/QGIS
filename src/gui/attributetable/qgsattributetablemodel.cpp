@@ -106,8 +106,18 @@ int QgsAttributeTableModel::extraColumns() const
 
 void QgsAttributeTableModel::setExtraColumns( int extraColumns )
 {
-  mExtraColumns = extraColumns;
-  loadAttributes();
+  if ( extraColumns > mExtraColumns )
+  {
+    beginInsertColumns( QModelIndex(), mFieldCount + mExtraColumns, mFieldCount + extraColumns - 1 );
+    mExtraColumns = extraColumns;
+    endInsertColumns();
+  }
+  else if ( extraColumns < mExtraColumns )
+  {
+    beginRemoveColumns( QModelIndex(), mFieldCount + extraColumns, mFieldCount + mExtraColumns - 1 );
+    mExtraColumns = extraColumns;
+    endRemoveColumns();
+  }
 }
 
 void QgsAttributeTableModel::featuresDeleted( const QgsFeatureIds &fids )
@@ -403,10 +413,15 @@ void QgsAttributeTableModel::loadAttributes()
     return;
   }
 
+  const QgsFields &fields = mLayer->fields();
+  if ( mFields == fields )
+    return;
+
+  mFields = fields;
+
   bool ins = false, rm = false;
 
   QgsAttributeList attributes;
-  const QgsFields &fields = mLayer->fields();
 
   mWidgetFactories.clear();
   mAttributeWidgetCaches.clear();

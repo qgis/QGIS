@@ -335,6 +335,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
     mutable QgsFeature mFeat;
 
+    QgsFields mFields;
     QgsAttributeList mAttributes;
     QVector<QgsEditorWidgetFactory *> mWidgetFactories;
     QVector<QgsFieldFormatter *> mFieldFormatters;
