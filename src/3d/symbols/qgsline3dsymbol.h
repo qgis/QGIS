@@ -110,7 +110,7 @@ class _3D_EXPORT QgsLine3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCTORS
     float mHeight = 0.0f;           //!< Base height of polygons
     float mExtrusionHeight = 0.0f;  //!< How much to extrude (0 means no walls)
     bool mRenderAsSimpleLines = false;   //!< Whether to render data with simple lines (otherwise it uses buffer)
-    std::unique_ptr< QgsAbstractMaterialSettings > mMaterial;  //!< Defines appearance of objects
+    std::unique_ptr< QgsAbstractMaterialSettings > mMaterialSettings;  //!< Defines appearance of objects
 };
 
 
