@@ -2574,7 +2574,7 @@ class CORE_EXPORT Qgis
       GenericPython, //!< Python
       Mac, //!< MacOS specific
       Windows, //!< Windows specific
-      Unix, //!< Unix specifc
+      Unix, //!< Unix specific
       OpenUrl, //!< Open URL action
       SubmitUrlEncoded, //!< POST data to an URL, using "application/x-www-form-urlencoded" or "application/json" if the body is valid JSON \since QGIS 3.24
       SubmitUrlMultipart, //!< POST data to an URL using "multipart/form-data"  \since QGIS 3.24
