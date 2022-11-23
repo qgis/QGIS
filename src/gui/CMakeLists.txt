@@ -1,5 +1,8 @@
 set(QGIS_GUI_SRCS
   actions/qgsactionmenu.cpp
+  actions/qgsmaplayeraction.cpp
+  actions/qgsmaplayeractioncontext.cpp
+  actions/qgsmaplayeractioncontextgenerator.cpp
   actions/qgsmaplayeractionregistry.cpp
 
   raster/qgscreaterasterattributetabledialog.cpp
@@ -951,6 +954,9 @@ set(QGIS_GUI_HDRS
   qgswindowmanagerinterface.h
 
   actions/qgsactionmenu.h
+  actions/qgsmaplayeraction.h
+  actions/qgsmaplayeractioncontext.h
+  actions/qgsmaplayeractioncontextgenerator.h
   actions/qgsmaplayeractionregistry.h
 
   annotations/qgsannotationitemcommonpropertieswidget.h
