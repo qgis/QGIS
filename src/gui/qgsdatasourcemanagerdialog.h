@@ -167,12 +167,14 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     void providerDialogsRefreshRequested();
 
   private:
-    void addProviderDialog( QgsAbstractDataSourceWidget *dlg, const QString &providerKey, const QString &providerName, const QIcon &icon, const QString &toolTip = QString() );
+    void addProviderDialog( QgsAbstractDataSourceWidget *dlg, const QString &providerKey, const QString &providerName, const QString &text, const QIcon &icon, const QString &toolTip = QString() );
+    void removeProviderDialog( const QString &providerName );
     void makeConnections( QgsAbstractDataSourceWidget *dlg, const QString &providerKey );
     Ui::QgsDataSourceManagerDialog *ui = nullptr;
     QgsBrowserDockWidget *mBrowserWidget = nullptr;
     int mPreviousRow;
-    QStringList mPageNames;
+    QStringList mPageProviderKeys;
+    QStringList mPageProviderNames;
     // Map canvas
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
