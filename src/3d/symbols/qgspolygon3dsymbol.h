@@ -171,7 +171,7 @@ class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCT
 
     float mHeight = 0.0f;           //!< Base height of polygons
     float mExtrusionHeight = 0.0f;  //!< How much to extrude (0 means no walls)
-    std::unique_ptr< QgsAbstractMaterialSettings > mMaterial; //!< Defines appearance of objects
+    std::unique_ptr< QgsAbstractMaterialSettings > mMaterialSettings; //!< Defines appearance of objects
     Qgs3DTypes::CullingMode mCullingMode = Qgs3DTypes::NoCulling;  //!< Front/back culling mode
     bool mInvertNormals = false;
     bool mAddBackFaces = false;
