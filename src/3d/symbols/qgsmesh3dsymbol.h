@@ -347,7 +347,7 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
     //! how to handle altitude of vector features
     Qgis::AltitudeClamping mAltClamping = Qgis::AltitudeClamping::Relative;
     float mHeight = 0.0f;           //!< Base height of triangles
-    std::unique_ptr< QgsAbstractMaterialSettings > mMaterial;  //!< Defines appearance of objects
+    std::unique_ptr< QgsAbstractMaterialSettings > mMaterialSettings;  //!< Defines appearance of objects
     bool mAddBackFaces = false;
 
     bool mEnabled = true;
