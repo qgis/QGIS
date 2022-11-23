@@ -1,0 +1,28 @@
+{
+  "name": "split_geometry",
+  "type": "function",
+  "groups": ["GeometryGroup"],
+  "description": "Returns a valid geometry or an empty geometry if the geometry could not be made valid.",
+  "arguments": [{
+    "arg": "baseGeometry",
+    "description": "The geomety(ies) to split"
+  },
+  {
+    "arg": "splittingGeometry",
+    "description": " The geometry(ies) used to perform the split, polygons will be converted to lines."
+  }],
+  "examples": [{
+    "expression": "geom_to_wkt(split_geometry(geom_from_wkt('POLYGON((3 2, 4 1, 5 8, 3 2, 4 2))',line)))",
+    "returns": "'Polygon ((3 2, 5 8, 4 1, 3 2))'"
+  }, {
+    "expression": "geom_to_wkt(split_geometry(geom_from_wkt('POLYGON((3 2, 4 1, 5 8, 3 2, 4 2))',polygon)))",
+    "returns": "'GeometryCollection (Polygon ((5 8, 4 1, 3 2, 5 8)),LineString (3 2, 4 2))'"
+  }, {
+    "expression": "geom_to_wkt(split_geometry(geom_from_wkt('POLYGON((3 2, 4 1, 5 8, 3 2, 4 2))',points)))",
+    "returns": "'Polygon ((3 2, 4 1, 5 8, 3 2))'"
+  }, {
+    "expression": "geom_to_wkt(split_geometry(geom_from_wkt('POLYGON((3 2, 4 1, 5 8, 3 2, 4 2))',nullgeom)))",
+    "returns": "An empty geometry"
+  }],
+  "tags": ["rules", "valid", "ogc", "according", "formed", "repair", "fix"]
+}

@@ -3003,55 +3003,70 @@ static QVariant fcnGeometryCollectionAsArray( const QVariantList &values, const 
 
 static QVariant fcnGeometryDissolve( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
-  if ( geom.isNull() )
-    return QVariant();
-
-  QVector<QgsGeometry> multiGeom = geom.asGeometryCollection();
-  QgsGeometry dissolved = unaryUnion( multiGeom );
-
+  QgsGeometry geom;
+  QVector<QgsGeometry> geometries;
+  for ( int i = 0; i < values.count(); i++ )
+  {
+    geom = QgsExpressionUtils::getGeometry( values.at( i ), parent );
+    if ( geom.isNull() )
+      continue;
+    geometries.append( geom.asGeometryCollection() );
+  }
+  QgsGeometry dissolved = QgsGeometry().unaryUnion( geometries );
   return QVariant::fromValue( dissolved );
 }
 
 static QVariant fcnSplitGeometry( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QgsGeometry inGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  QgsGeometry initGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  QgsGeometry inGeom = initGeom;
   if ( inGeom.isNull() )
     return QVariant();
-  QgsGeometry lineGeom = QgsExpressionUtils::getGeometry( values.at( 1 ), parent );
-  if ( lineGeom.isNull() || lineGeom.type()  )
+  QgsGeometry splitGeom = QgsExpressionUtils::getGeometry( values.at( 1 ), parent );
+  if ( splitGeom.isNull() )
     return QVariant();
-  
-  convertPointList
+  if ( splitGeom.type() == QgsWkbTypes::PointGeometry )
+    return QVariant::fromValue( initGeom );
 
-  QVector< QgsGeometry > outGeoms;
-  QVector< QgsGeometry > newGeometries;
-  QgsPointSequence topologyTestPoints;
-  Qgis::GeometryOperationResult result = inGeom.splitGeometry( splitter, newGeometries, false, topologyTestPoints, true );
-
-  if ( result == Qgis::GeometryOperationResult::Success )
+  QVector< QgsGeometry > outGeoms = initGeom.asGeometryCollection();
+  auto splitterFcn = [ = ]( const QVector< QgsGeometry > &sourceGeom, const QVector<QgsPoint> &line ) -> QVector< QgsGeometry >
   {
-    // sometimes the resultant geometry has changed from the input, but only because of numerical precision issues.
-    // and is effectively indistinguishable from the input. By testing the Hausdorff distance is less than this threshold
-    // we are checking that the maximum "change" between the result and the input is actually significant enough to be meaningful...
-    if ( inGeom.hausdorffDistance( before ) < 1e-12 )
-    {
-      outGeoms.append( inGeom );
-    }
-    else
-    {
-      outGeoms.append( inGeom );
-      outGeoms.append( newGeometries );
-    }
-  }
-  else
-  {
-    outGeoms.append( inGeom );
-  }
 
+    QVector< QgsGeometry > outGeom;
+    QVector< QgsGeometry > newGeometries;
+    QgsPointSequence topologyTestPoints;
+
+    for ( const QgsGeometry &part : sourceGeom )
+    {
+      QgsGeometry partCopy = QgsGeometry( part );
+      QgsGeos geos( partCopy.get() );
+      QString error;
+      QgsGeometryEngine::EngineOperationResult result = geos.splitGeometry( line, newGeometries, true, topologyTestPoints, &error, false );
+
+      if ( result == QgsGeometryEngine::Success )
+      {
+        outGeom.append( newGeometries );
+      }
+      else
+      {
+        outGeom.append( partCopy );
+      }
+    }
+    return outGeom;
+  };
+
+  for ( auto splitPart = splitGeom.const_parts_begin(); splitPart != splitGeom.const_parts_end(); ++splitPart )
+  {
+    QgsGeometry partGeom( ( *splitPart )->clone() );
+    QVector<QgsPoint> splitter;
+    for ( auto pointIt = partGeom.vertices_begin(); pointIt != partGeom.vertices_end(); ++pointIt )
+      splitter.append( ( *pointIt ) );
+    if ( splitter.size() < 2 )
+      continue;
+    outGeoms = { splitterFcn( outGeoms, splitter ) };
+  }
   return QgsGeometry::collectGeometry( outGeoms );
 }
-
 
 static QVariant fcnGeomX( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
@@ -8510,9 +8525,12 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
 #endif
       QgsExpressionFunction::Parameter( QStringLiteral( "keep_collapsed" ), true, false )
     }, fcnGeomMakeValid, QStringLiteral( "GeometryGroup" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "dissolve_geometry" ),  QgsExpressionFunction::ParameterList()
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "geometries" ) ),
+        << new QgsStaticExpressionFunction( QStringLiteral( "dissolve_geometries" ), -1,
                                             fcnGeometryDissolve, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "split_geometry" ),  QgsExpressionFunction::ParameterList()
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "baseGeometry" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "splittingGeometry" ) ),
+                                            fcnSplitGeometry, QStringLiteral( "GeometryGroup" ) );
         << new QgsStaticExpressionFunction( QStringLiteral( "to_singlepart" ),  QgsExpressionFunction::ParameterList()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
                                             fcnGeometryToSinglepart, QStringLiteral( "GeometryGroup" ) )

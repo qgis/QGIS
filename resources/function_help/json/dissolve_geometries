@@ -1,0 +1,24 @@
+{
+  "name": "dissolve_geometries",
+  "type": "function",
+  "groups": ["GeometryGroup"],
+  "description": "Returns a valid geometry or an empty geometry if the geometry could not be made valid.",
+  "arguments": [{
+    "arg": "geometries",
+    "description": "a collection or multipart geometry"
+  }],
+  "examples": [{
+    "expression": "geom_to_wkt(dissolve_geometries(geom_from_wkt('POLYGON((3 2, 4 1, 5 8, 3 2, 4 2))')))",
+    "returns": "'Polygon ((3 2, 5 8, 4 1, 3 2))'"
+  }, {
+    "expression": "geom_to_wkt(dissolve_geometries(geom_from_wkt('POLYGON((3 2, 4 1, 5 8, 3 2, 4 2))')))",
+    "returns": "'GeometryCollection (Polygon ((5 8, 4 1, 3 2, 5 8)),LineString (3 2, 4 2))'"
+  }, {
+    "expression": "geom_to_wkt(dissolve_geometries(geom_from_wkt('POLYGON((3 2, 4 1, 5 8))')))",
+    "returns": "'Polygon ((3 2, 4 1, 5 8, 3 2))'"
+  }, {
+    "expression": "dissolve_geometries(geom_from_wkt('LINESTRING(0 0)'))",
+    "returns": "An empty geometry"
+  }],
+  "tags": ["dissolve", "merge", "combine", "union", "multi", "collection"]
+}
