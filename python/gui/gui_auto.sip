@@ -3,7 +3,6 @@
 %Include auto_generated/qgs3dsymbolwidget.sip
 %Include auto_generated/qgsabstractdatasourcewidget.sip
 %Include auto_generated/qgsabstractmaptoolhandler.sip
-%Include auto_generated/qgsactionmenu.sip
 %Include auto_generated/qgsadvanceddigitizingdockwidget.sip
 %Include auto_generated/qgsadvanceddigitizingfloater.sip
 %Include auto_generated/qgsaggregatetoolbutton.sip
@@ -120,7 +119,6 @@
 %Include auto_generated/qgsmapcanvassnappingutils.sip
 %Include auto_generated/qgsmapcanvastracer.sip
 %Include auto_generated/qgsmapcanvasutils.sip
-%Include auto_generated/qgsmaplayeractionregistry.sip
 %Include auto_generated/qgsmaplayercombobox.sip
 %Include auto_generated/qgsmaplayerconfigwidget.sip
 %Include auto_generated/qgsmaplayerconfigwidgetfactory.sip
@@ -233,6 +231,8 @@
 %Include auto_generated/qgsvertexmarker.sip
 %Include auto_generated/qgsvscrollarea.sip
 %Include auto_generated/qgswindowmanagerinterface.sip
+%Include auto_generated/actions/qgsactionmenu.sip
+%Include auto_generated/actions/qgsmaplayeractionregistry.sip
 %Include auto_generated/annotations/qgsannotationitemcommonpropertieswidget.sip
 %Include auto_generated/annotations/qgsannotationitemguiregistry.sip
 %Include auto_generated/annotations/qgsannotationitemwidget.sip

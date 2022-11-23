@@ -31,6 +31,11 @@ set(QGIS_CORE_SRCS
   ${FLEX_QgsMeshCalcLexer_OUTPUTS}
   ${BISON_QgsMeshCalcParser_OUTPUTS}
 
+  actions/qgsaction.cpp
+  actions/qgsactionscope.cpp
+  actions/qgsactionscoperegistry.cpp
+  actions/qgsactionmanager.cpp
+
   callouts/qgscallout.cpp
   callouts/qgscalloutsregistry.cpp
 
@@ -330,10 +335,6 @@ set(QGIS_CORE_SRCS
   qgsabstractcontentcache.cpp
   qgsabstractgeopdfexporter.cpp
   qgsapplication.cpp
-  qgsaction.cpp
-  qgsactionscope.cpp
-  qgsactionscoperegistry.cpp
-  qgsactionmanager.cpp
   qgsaggregatecalculator.cpp
   qgsanimatedicon.cpp
   qgspostgresstringutils.cpp
@@ -995,10 +996,6 @@ set(QGIS_CORE_HDRS
   qgis_sip.h
   qgsabstractcontentcache.h
   qgsabstractgeopdfexporter.h
-  qgsaction.h
-  qgsactionmanager.h
-  qgsactionscope.h
-  qgsactionscoperegistry.h
   qgsaggregatecalculator.h
   qgsanimatedicon.h
   qgsapplication.h
@@ -1238,6 +1235,11 @@ set(QGIS_CORE_HDRS
   3d/qgsabstract3dsymbol.h
   3d/qgsabstract3drenderer.h
   3d/qgsabstractpointcloud3drenderer.h
+
+  actions/qgsaction.h
+  actions/qgsactionmanager.h
+  actions/qgsactionscope.h
+  actions/qgsactionscoperegistry.h
 
   annotations/qgsannotation.h
   annotations/qgsannotationitem.h
@@ -2160,6 +2162,7 @@ target_include_directories(qgis_core PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
   3d
+  actions
   annotations
   auth
   browser

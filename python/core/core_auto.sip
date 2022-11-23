@@ -1,10 +1,6 @@
 // Include auto-generated SIP files
 %Include auto_generated/qgis.sip
 %Include auto_generated/qgsabstractcontentcache.sip
-%Include auto_generated/qgsaction.sip
-%Include auto_generated/qgsactionmanager.sip
-%Include auto_generated/qgsactionscope.sip
-%Include auto_generated/qgsactionscoperegistry.sip
 %Include auto_generated/qgsaggregatecalculator.sip
 %Include auto_generated/qgsanimatedicon.sip
 %Include auto_generated/qgsapplication.sip
@@ -218,6 +214,10 @@
 %Include auto_generated/./3d/qgsabstract3dsymbol.sip
 %Include auto_generated/./3d/qgsabstract3drenderer.sip
 %Include auto_generated/./3d/qgsabstractpointcloud3drenderer.sip
+%Include auto_generated/actions/qgsaction.sip
+%Include auto_generated/actions/qgsactionmanager.sip
+%Include auto_generated/actions/qgsactionscope.sip
+%Include auto_generated/actions/qgsactionscoperegistry.sip
 %Include auto_generated/annotations/qgsannotation.sip
 %Include auto_generated/annotations/qgsannotationitem.sip
 %Include auto_generated/annotations/qgsannotationitemeditoperation.sip
