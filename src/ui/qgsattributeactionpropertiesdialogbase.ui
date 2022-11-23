@@ -207,46 +207,6 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <item>
-      <property name="text">
-       <string>Generic</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Python</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Mac</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Windows</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Unix</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Open URL</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Submit URL (urlencoded or JSON)</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Submit URL (multipart)</string>
-      </property>
-     </item>
     </widget>
    </item>
    <item row="4" column="0" colspan="3">
@@ -333,7 +293,6 @@
   <tabstop>mInsertFieldOrExpression</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>

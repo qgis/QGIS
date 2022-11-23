@@ -31,7 +31,7 @@ class CustomActionRegistry : public QgsMapLayerActionRegistry
     Q_OBJECT
 
   public:
-
+#include "qgsmaplayeractionregistry.h"
     CustomActionRegistry() = default;
     // remove all actions
     void clear() { mMapLayerActionList.clear(); }

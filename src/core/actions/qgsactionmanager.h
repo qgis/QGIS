@@ -30,15 +30,14 @@
 #include <QObject>
 #include <QUuid>
 
+#include "qgsexpressioncontext.h"
 #include "qgsaction.h"
-#include "qgsfeature.h"
 
 class QDomNode;
 class QDomDocument;
 class QgsPythonUtils;
 class QgsVectorLayer;
-class QgsExpressionContextScope;
-class QgsExpressionContext;
+class QgsFeature;
 
 /**
  * \ingroup core
@@ -55,9 +54,7 @@ class CORE_EXPORT QgsActionManager: public QObject
 
   public:
     //! Constructor
-    QgsActionManager( QgsVectorLayer *layer )
-      : mLayer( layer )
-    {}
+    QgsActionManager( QgsVectorLayer *layer );
 
     /**
      * Add an action with the given name and action details.
@@ -66,7 +63,7 @@ class CORE_EXPORT QgsActionManager: public QObject
      * any stdout from the process will be captured and displayed in a
      * dialog box.
      */
-    QUuid addAction( QgsAction::ActionType type, const QString &name, const QString &command, bool capture = false );
+    QUuid addAction( Qgis::AttributeActionType type, const QString &name, const QString &command, bool capture = false );
 
     /**
      * Add an action with the given name and action details.
@@ -75,7 +72,7 @@ class CORE_EXPORT QgsActionManager: public QObject
      * any stdout from the process will be captured and displayed in a
      * dialog box.
      */
-    QUuid addAction( QgsAction::ActionType type, const QString &name, const QString &command, const QString &icon, bool capture = false );
+    QUuid addAction( Qgis::AttributeActionType type, const QString &name, const QString &command, const QString &icon, bool capture = false );
 
     /**
      * Add a new action to this list.

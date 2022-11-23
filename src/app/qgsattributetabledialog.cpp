@@ -30,12 +30,9 @@
 #include "qgsvectorlayerutils.h"
 #include "qgsvectordataprovider.h"
 #include "qgsexpression.h"
-#include "qgsexpressionbuilderwidget.h"
 #include "qgsaddattrdialog.h"
 #include "qgsdelattrdialog.h"
-#include "qgsdockwidget.h"
 #include "qgsfeatureiterator.h"
-#include "qgssearchquerybuilder.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
@@ -44,12 +41,8 @@
 #include "qgsactionmanager.h"
 #include "qgsmessagebar.h"
 #include "qgsexpressionselectiondialog.h"
-#include "qgsfeaturelistmodel.h"
-#include "qgsrubberband.h"
 #include "qgsfields.h"
-#include "qgseditorwidgetregistry.h"
 #include "qgsfieldproxymodel.h"
-#include "qgsgui.h"
 #include "qgsclipboard.h"
 #include "qgsfeaturestore.h"
 #include "qgsguiutils.h"
@@ -59,6 +52,7 @@
 #include "qgsvectorlayereditbuffer.h"
 #include "qgstransactiongroup.h"
 #include "qgsdockablewidgethelper.h"
+#include "qgsactionmenu.h"
 
 QgsExpressionContext QgsAttributeTableDialog::createExpressionContext() const
 {

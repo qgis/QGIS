@@ -20,7 +20,6 @@
 #include "qgsgui.h"
 #include "qgisapp.h"
 #include "qgsmessagebar.h"
-#include "qgspolygon.h"
 #include "qgsmapcanvas.h"
 #include "qgsfeatureaction.h"
 #include "qgsgpsconnection.h"
@@ -30,12 +29,11 @@
 #include "qgsattributeform.h"
 #include "qgsattributedialog.h"
 #include "qgshighlight.h"
-#include "qgsidentifymenu.h"
 
 #include <QTimeZone>
 
 QgsUpdateGpsDetailsAction::QgsUpdateGpsDetailsAction( QgsAppGpsConnection *connection, QgsAppGpsDigitizing *digitizing, QObject *parent )
-  : QgsMapLayerAction( tr( "Update GPS Information" ), parent, QgsMapLayerAction::Target::SingleFeature, QgsApplication::getThemeIcon( QStringLiteral( "/gpsicons/mActionRecenter.svg" ) ) )
+  : QgsMapLayerAction( tr( "Update GPS Information" ), parent, Qgis::MapLayerActionTarget::SingleFeature, QgsApplication::getThemeIcon( QStringLiteral( "/gpsicons/mActionRecenter.svg" ) ) )
   , mConnection( connection )
   , mDigitizing( digitizing )
 {

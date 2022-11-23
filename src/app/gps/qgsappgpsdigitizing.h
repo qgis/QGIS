@@ -22,8 +22,7 @@
 #include "qgis_app.h"
 #include "qgssettingsentryimpl.h"
 #include "qgsgpslogger.h"
-#include "qgsmaplayeractionregistry.h"
-#include "qgswkbtypes.h"
+#include "qgsmaplayeraction.h"
 #include "qgsattributes.h"
 
 class QgsAppGpsConnection;

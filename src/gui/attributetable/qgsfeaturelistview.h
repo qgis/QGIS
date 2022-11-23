@@ -19,7 +19,6 @@
 #include <QListView>
 #include "qgis_sip.h"
 #include <qdebug.h>
-#include "qgsactionmenu.h"
 
 #include "qgsfeature.h" // For QgsFeatureIds
 #include "qgis_gui.h"
@@ -34,6 +33,7 @@ class QgsVectorLayer;
 class QgsVectorLayerCache;
 class QgsFeatureListViewDelegate;
 class QRect;
+class QgsActionMenu;
 
 /**
  * \ingroup gui

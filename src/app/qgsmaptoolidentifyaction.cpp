@@ -35,6 +35,7 @@
 #include "qgssettings.h"
 #include "qgsmapmouseevent.h"
 #include "qgslayertreeview.h"
+#include "qgsmaplayeraction.h"
 
 #include <QCursor>
 #include <QPixmap>
@@ -48,7 +49,7 @@ QgsMapToolIdentifyAction::QgsMapToolIdentifyAction( QgsMapCanvas *canvas )
   setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::Identify ) );
   connect( this, &QgsMapToolIdentify::changedRasterResults, this, &QgsMapToolIdentifyAction::handleChangedRasterResults );
   mIdentifyMenu->setAllowMultipleReturn( true );
-  QgsMapLayerAction *attrTableAction = new QgsMapLayerAction( tr( "Show Attribute Table" ), mIdentifyMenu, QgsMapLayerType::VectorLayer, QgsMapLayerAction::MultipleFeatures );
+  QgsMapLayerAction *attrTableAction = new QgsMapLayerAction( tr( "Show Attribute Table" ), mIdentifyMenu, QgsMapLayerType::VectorLayer, Qgis::MapLayerActionTarget::MultipleFeatures );
   connect( attrTableAction, &QgsMapLayerAction::triggeredForFeaturesV2, this, &QgsMapToolIdentifyAction::showAttributeTable );
   identifyMenu()->addCustomAction( attrTableAction );
   mSelectionHandler = new QgsMapToolSelectionHandler( canvas, QgsMapToolSelectionHandler::SelectSimple );

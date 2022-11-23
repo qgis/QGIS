@@ -53,7 +53,7 @@
 #include "qgsxmlutils.h"
 #include "qgsmeshlayer.h"
 #include "qgsmapcanvasutils.h"
-
+#include "qgsmaplayeraction.h"
 
 QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView *view, QgsMapCanvas *canvas )
   : mView( view )
@@ -407,11 +407,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       if ( vlayer && vlayer->selectedFeatureCount() > 0 )
       {
         const int selectionCount = vlayer->selectedFeatureCount();
-        QgsMapLayerAction::Target target;
-        if ( selectionCount == 1 )
-          target = QgsMapLayerAction::Target::SingleFeature;
-        else
-          target = QgsMapLayerAction::Target::MultipleFeatures;
+        const Qgis::MapLayerActionTarget target = selectionCount == 1 ? Qgis::MapLayerActionTarget::SingleFeature : Qgis::MapLayerActionTarget::MultipleFeatures;
 
         QgsMapLayerActionContext context;
         const QList<QgsMapLayerAction *> constRegisteredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer, target, context );
@@ -420,7 +416,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           QMenu *actionMenu = menu->addMenu( tr( "Actions on Selection (%1)" ).arg( selectionCount ) );
           for ( QgsMapLayerAction *action : constRegisteredActions )
           {
-            if ( target == QgsMapLayerAction::Target::SingleFeature )
+            if ( target == Qgis::MapLayerActionTarget::SingleFeature )
             {
               actionMenu->addAction( action->text(), action, [ = ]()
               {
@@ -430,7 +426,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
                 action->triggerForFeature( vlayer,  vlayer->selectedFeatures().at( 0 ), context );
               } );
             }
-            else if ( target == QgsMapLayerAction::Target::MultipleFeatures )
+            else if ( target == Qgis::MapLayerActionTarget::MultipleFeatures )
             {
               actionMenu->addAction( action->text(), action, [ = ]()
               {

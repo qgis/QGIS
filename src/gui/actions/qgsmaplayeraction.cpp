@@ -20,14 +20,14 @@
 #include "qgsvectorlayer.h"
 #include "qgsmaplayeractioncontext.h"
 
-QgsMapLayerAction::QgsMapLayerAction( const QString &name, QObject *parent, Targets targets, const QIcon &icon, QgsMapLayerAction::Flags flags )
+QgsMapLayerAction::QgsMapLayerAction( const QString &name, QObject *parent, Qgis::MapLayerActionTargets targets, const QIcon &icon, Qgis::MapLayerActionFlags flags )
   : QAction( icon, name, parent )
   , mTargets( targets )
   , mFlags( flags )
 {
 }
 
-QgsMapLayerAction::QgsMapLayerAction( const QString &name, QObject *parent, QgsMapLayer *layer, Targets targets, const QIcon &icon, QgsMapLayerAction::Flags flags )
+QgsMapLayerAction::QgsMapLayerAction( const QString &name, QObject *parent, QgsMapLayer *layer, Qgis::MapLayerActionTargets targets, const QIcon &icon, Qgis::MapLayerActionFlags flags )
   : QAction( icon, name, parent )
   , mSingleLayer( true )
   , mActionLayer( layer )
@@ -36,7 +36,7 @@ QgsMapLayerAction::QgsMapLayerAction( const QString &name, QObject *parent, QgsM
 {
 }
 
-QgsMapLayerAction::QgsMapLayerAction( const QString &name, QObject *parent, QgsMapLayerType layerType, Targets targets, const QIcon &icon, QgsMapLayerAction::Flags flags )
+QgsMapLayerAction::QgsMapLayerAction( const QString &name, QObject *parent, QgsMapLayerType layerType, Qgis::MapLayerActionTargets targets, const QIcon &icon, Qgis::MapLayerActionFlags flags )
   : QAction( icon, name, parent )
   , mSpecificLayerType( true )
   , mLayerType( layerType )
@@ -51,7 +51,7 @@ QgsMapLayerAction::~QgsMapLayerAction()
   QgsGui::mapLayerActionRegistry()->removeMapLayerAction( this );
 }
 
-QgsMapLayerAction::Flags QgsMapLayerAction::flags() const
+Qgis::MapLayerActionFlags QgsMapLayerAction::flags() const
 {
   return mFlags;
 }
@@ -63,7 +63,7 @@ bool QgsMapLayerAction::canRunUsingLayer( QgsMapLayer *layer ) const
 
 bool QgsMapLayerAction::canRunUsingLayer( QgsMapLayer *layer, const QgsMapLayerActionContext & ) const
 {
-  if ( mFlags & EnabledOnlyWhenEditable )
+  if ( mFlags & Qgis::MapLayerActionFlag::EnabledOnlyWhenEditable )
   {
     // action is only enabled for editable layers
     if ( !layer )
@@ -133,6 +133,6 @@ void QgsMapLayerAction::triggerForLayer( QgsMapLayer *layer, const QgsMapLayerAc
 
 bool QgsMapLayerAction::isEnabledOnlyWhenEditable() const
 {
-  return mFlags & EnabledOnlyWhenEditable;
+  return mFlags & Qgis::MapLayerActionFlag::EnabledOnlyWhenEditable;
 }
 

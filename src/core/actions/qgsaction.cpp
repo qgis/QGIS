@@ -34,26 +34,42 @@
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgswebview.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsmessagelog.h"
 #include "qgsvariantutils.h"
 
 bool QgsAction::runable() const
 {
-  return mType == Generic ||
-         mType == GenericPython ||
-         mType == OpenUrl ||
-         mType == SubmitUrlEncoded ||
-         mType == SubmitUrlMultipart ||
+  switch ( mType )
+  {
+    case Qgis::AttributeActionType::Generic:
+    case Qgis::AttributeActionType::GenericPython:
+    case Qgis::AttributeActionType::OpenUrl:
+    case Qgis::AttributeActionType::SubmitUrlEncoded:
+    case Qgis::AttributeActionType::SubmitUrlMultipart:
+      return true;
+
 #if defined(Q_OS_WIN)
-         mType == Windows
+    case Qgis::AttributeActionType::Windows:
+      return true;
+    case Qgis::AttributeActionType::Mac:
+    case Qgis::AttributeActionType::Unix:
+      return false;
 #elif defined(Q_OS_MAC)
-         mType == Mac
+    case Qgis::AttributeActionType::Mac:
+      return true;
+    case Qgis::AttributeActionType::Windows:
+    case Qgis::AttributeActionType::Unix:
+      return false;
 #else
-         mType == Unix
+    case Qgis::AttributeActionType::Unix:
+      return true;
+    case Qgis::AttributeActionType::Mac:
+    case Qgis::AttributeActionType::Windows:
+      return false;
 #endif
-         ;
+  }
+  return false;
 }
 
 void QgsAction::run( QgsVectorLayer *layer, const QgsFeature &feature, const QgsExpressionContext &expressionContext ) const
@@ -92,7 +108,7 @@ void QgsAction::handleFormSubmitAction( const QString &expandedAction ) const
 
   QNetworkReply *reply = nullptr;
 
-  if ( mType != QgsAction::SubmitUrlMultipart )
+  if ( mType != Qgis::AttributeActionType::SubmitUrlMultipart )
   {
     QString contentType { QStringLiteral( "application/x-www-form-urlencoded" ) };
     // check for json
@@ -270,7 +286,7 @@ void QgsAction::run( const QgsExpressionContext &expressionContext ) const
   const QString expandedAction = QgsExpression::replaceExpressionText( mCommand, &context );
   QApplication::restoreOverrideCursor();
 
-  if ( mType == QgsAction::OpenUrl )
+  if ( mType == Qgis::AttributeActionType::OpenUrl )
   {
     const QFileInfo finfo( expandedAction );
     if ( finfo.exists() && finfo.isFile() )
@@ -278,11 +294,11 @@ void QgsAction::run( const QgsExpressionContext &expressionContext ) const
     else
       QDesktopServices::openUrl( QUrl( expandedAction, QUrl::TolerantMode ) );
   }
-  else if ( mType == QgsAction::SubmitUrlEncoded || mType == QgsAction::SubmitUrlMultipart )
+  else if ( mType == Qgis::AttributeActionType::SubmitUrlEncoded || mType == Qgis::AttributeActionType::SubmitUrlMultipart )
   {
     handleFormSubmitAction( expandedAction );
   }
-  else if ( mType == QgsAction::GenericPython )
+  else if ( mType == Qgis::AttributeActionType::GenericPython )
   {
     // TODO: capture output from QgsPythonRunner (like QgsRunProcess does)
     QgsPythonRunner::run( expandedAction );
@@ -326,7 +342,7 @@ void QgsAction::readXml( const QDomNode &actionNode )
     }
   }
 
-  mType = static_cast< QgsAction::ActionType >( actionElement.attributeNode( QStringLiteral( "type" ) ).value().toInt() );
+  mType = static_cast< Qgis::AttributeActionType >( actionElement.attributeNode( QStringLiteral( "type" ) ).value().toInt() );
   mDescription = actionElement.attributeNode( QStringLiteral( "name" ) ).value();
   mCommand = actionElement.attributeNode( QStringLiteral( "action" ) ).value();
   mIcon = actionElement.attributeNode( QStringLiteral( "icon" ) ).value();
@@ -342,7 +358,7 @@ void QgsAction::readXml( const QDomNode &actionNode )
 void QgsAction::writeXml( QDomNode &actionsNode ) const
 {
   QDomElement actionSetting = actionsNode.ownerDocument().createElement( QStringLiteral( "actionsetting" ) );
-  actionSetting.setAttribute( QStringLiteral( "type" ), mType );
+  actionSetting.setAttribute( QStringLiteral( "type" ), static_cast< int >( mType ) );
   actionSetting.setAttribute( QStringLiteral( "name" ), mDescription );
   actionSetting.setAttribute( QStringLiteral( "shortTitle" ), mShortTitle );
   actionSetting.setAttribute( QStringLiteral( "icon" ), mIcon );
@@ -378,42 +394,42 @@ QString QgsAction::html() const
   QString typeText;
   switch ( mType )
   {
-    case Generic:
+    case Qgis::AttributeActionType::Generic:
     {
       typeText = QObject::tr( "Generic" );
       break;
     }
-    case GenericPython:
+    case Qgis::AttributeActionType::GenericPython:
     {
       typeText = QObject::tr( "Generic Python" );
       break;
     }
-    case Mac:
+    case Qgis::AttributeActionType::Mac:
     {
       typeText = QObject::tr( "Mac" );
       break;
     }
-    case Windows:
+    case Qgis::AttributeActionType::Windows:
     {
       typeText = QObject::tr( "Windows" );
       break;
     }
-    case Unix:
+    case Qgis::AttributeActionType::Unix:
     {
       typeText = QObject::tr( "Unix" );
       break;
     }
-    case OpenUrl:
+    case Qgis::AttributeActionType::OpenUrl:
     {
       typeText = QObject::tr( "Open URL" );
       break;
     }
-    case SubmitUrlEncoded:
+    case Qgis::AttributeActionType::SubmitUrlEncoded:
     {
       typeText = QObject::tr( "Submit URL (urlencoded or JSON)" );
       break;
     }
-    case SubmitUrlMultipart:
+    case Qgis::AttributeActionType::SubmitUrlMultipart:
     {
       typeText = QObject::tr( "Submit URL (multipart)" );
       break;

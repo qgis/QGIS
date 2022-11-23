@@ -38,7 +38,7 @@ QgsMapLayerActionRegistry is not usually directly created, but rather accessed t
 Adds a map layer action to the registry
 %End
 
-    QList<QgsMapLayerAction *> mapLayerActions( QgsMapLayer *layer, QgsMapLayerAction::Targets targets = QgsMapLayerAction::AllActions, const QgsMapLayerActionContext &context = QgsMapLayerActionContext() );
+    QList<QgsMapLayerAction *> mapLayerActions( QgsMapLayer *layer, Qgis::MapLayerActionTargets targets = Qgis::MapLayerActionTarget::AllActions, const QgsMapLayerActionContext &context = QgsMapLayerActionContext() );
 %Docstring
 Returns the map layer actions which can run on the specified layer.
 

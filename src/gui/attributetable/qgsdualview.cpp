@@ -31,8 +31,7 @@
 #include "qgsfeaturelistmodel.h"
 #include "qgsifeatureselectionmanager.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaplayeractionregistry.h"
-#include "qgsmessagelog.h"
+#include "qgsmaplayeraction.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayercache.h"
 #include "qgsorganizetablecolumnsdialog.h"
@@ -46,6 +45,7 @@
 #include "qgsmapcanvasutils.h"
 #include "qgsmessagebar.h"
 #include "qgsvectorlayereditbuffer.h"
+#include "qgsactionmenu.h"
 
 
 QgsDualView::QgsDualView( QWidget *parent )
@@ -873,7 +873,7 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &maste
 
   //add actions from QgsMapLayerActionRegistry to context menu
   QgsMapLayerActionContext context;
-  const QList<QgsMapLayerAction *> registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer, QgsMapLayerAction::Layer | QgsMapLayerAction::SingleFeature, context );
+  const QList<QgsMapLayerAction *> registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer, Qgis::MapLayerActionTarget::Layer | Qgis::MapLayerActionTarget::SingleFeature, context );
   if ( !registeredActions.isEmpty() )
   {
     //add a separator between user defined and standard actions
@@ -891,7 +891,7 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &maste
   const QgsFeatureId currentFid = mMasterModel->rowToId( masterIndex.row() );
   if ( mLayer->selectedFeatureCount() > 1 && mLayer->selectedFeatureIds().contains( currentFid ) )
   {
-    const QList<QgsMapLayerAction *> registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer, QgsMapLayerAction::MultipleFeatures, context );
+    const QList<QgsMapLayerAction *> registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer, Qgis::MapLayerActionTarget::MultipleFeatures, context );
     if ( !registeredActions.isEmpty() )
     {
       menu->addSeparator();

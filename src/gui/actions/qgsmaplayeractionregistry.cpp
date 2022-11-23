@@ -14,10 +14,11 @@
  ***************************************************************************/
 
 #include "qgsmaplayeractionregistry.h"
+#include "qgsmaplayeraction.h"
 
 QgsMapLayerActionRegistry::QgsMapLayerActionRegistry( QObject *parent ) : QObject( parent )
 {
-  // constructor does nothing
+
 }
 
 void QgsMapLayerActionRegistry::addMapLayerAction( QgsMapLayerAction *action )
@@ -26,7 +27,7 @@ void QgsMapLayerActionRegistry::addMapLayerAction( QgsMapLayerAction *action )
   emit changed();
 }
 
-QList< QgsMapLayerAction * > QgsMapLayerActionRegistry::mapLayerActions( QgsMapLayer *layer, QgsMapLayerAction::Targets targets, const QgsMapLayerActionContext &context )
+QList< QgsMapLayerAction * > QgsMapLayerActionRegistry::mapLayerActions( QgsMapLayer *layer, Qgis::MapLayerActionTargets targets, const QgsMapLayerActionContext &context )
 {
   QList< QgsMapLayerAction * > validActions;
 

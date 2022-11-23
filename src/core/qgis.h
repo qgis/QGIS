@@ -2498,6 +2498,90 @@ class CORE_EXPORT Qgis
     Q_ENUM( LayerTreeInsertionMethod )
 
     /**
+     * Action types.
+     *
+     * Prior to QGIS 3.30 this was available as QgsActionMenu::ActionType
+     *
+     * \since QGIS 3.30
+     */
+    enum class ActionType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsActionMenu, ActionType ) : int
+      {
+      Invalid, //!< Invalid
+      MapLayerAction, //!< Standard actions (defined by core or plugins), corresponds to QgsMapLayerAction class.
+      AttributeAction //!< Custom actions (manually defined in layer properties), corresponds to QgsAction class.
+    };
+    Q_ENUM( ActionType )
+
+    /**
+     * Map layer action targets.
+     *
+     * Prior to QGIS 3.30 this was available as QgsMapLayerAction::Target
+     *
+     * \since QGIS 3.30
+     */
+    enum class MapLayerActionTarget SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayerAction, Target ) : int
+      {
+      Layer = 1 << 0, //!< Action targets a complete layer
+      SingleFeature = 1 << 1, //!< Action targets a single feature from a layer
+      MultipleFeatures = 1 << 2, //!< Action targets multiple features from a layer
+      AllActions = Layer | SingleFeature | MultipleFeatures
+    };
+    Q_ENUM( MapLayerActionTarget )
+
+    /**
+     * Map layer action targets.
+     *
+     * Prior to QGIS 3.30 this was available as QgsMapLayerAction::Targets
+     *
+     * \since QGIS 3.30
+     */
+    Q_DECLARE_FLAGS( MapLayerActionTargets, MapLayerActionTarget ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsMapLayerAction, Targets )
+    Q_FLAG( MapLayerActionTargets )
+
+    /**
+     * Map layer action flags.
+     *
+     * Prior to QGIS 3.30 this was available as QgsMapLayerAction::Flag
+     *
+     * \since QGIS 3.30
+     */
+    enum class MapLayerActionFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayerAction, Flag ) : int
+      {
+      EnabledOnlyWhenEditable = 1 << 1, //!< Action should be shown only for editable layers
+    };
+    Q_ENUM( MapLayerActionFlag )
+
+    /**
+     * Map layer action flags.
+     *
+     * Prior to QGIS 3.30 this was available as QgsMapLayerAction::Flags
+     *
+     * \since QGIS 3.30
+     */
+    Q_DECLARE_FLAGS( MapLayerActionFlags, MapLayerActionFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsMapLayerAction, Flags )
+    Q_FLAG( MapLayerActionFlags )
+
+    /**
+     * Attribute action types.
+     *
+     * Prior to QGIS 3.30 this was available as QgsAction::ActionType
+     *
+     * \since QGIS 3.30
+     */
+    enum class AttributeActionType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsAction, ActionType ) : int
+      {
+      Generic, //!< Generic
+      GenericPython, //!< Python
+      Mac, //!< MacOS specific
+      Windows, //!< Windows specific
+      Unix, //!< Unix specifc
+      OpenUrl, //!< Open URL action
+      SubmitUrlEncoded, //!< POST data to an URL, using "application/x-www-form-urlencoded" or "application/json" if the body is valid JSON \since QGIS 3.24
+      SubmitUrlMultipart, //!< POST data to an URL using "multipart/form-data"  \since QGIS 3.24
+    };
+    Q_ENUM( AttributeActionType )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */
@@ -2646,6 +2730,8 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SelectionFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RasterRendererFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LabelingFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::GpsInformationComponents )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapLayerActionTargets )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapLayerActionFlags )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.

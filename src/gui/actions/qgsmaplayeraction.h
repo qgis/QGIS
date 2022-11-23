@@ -43,43 +43,18 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     Q_OBJECT
 
   public:
-    enum Target
-    {
-      Layer = 1,
-      SingleFeature = 2,
-      MultipleFeatures = 4,
-      AllActions = Layer | SingleFeature | MultipleFeatures
-    };
-    Q_DECLARE_FLAGS( Targets, Target )
-    Q_FLAG( Targets )
-
-    /**
-     * Flags which control action behavior
-     * /since QGIS 3.0
-     */
-    enum Flag
-    {
-      EnabledOnlyWhenEditable = 1 << 1, //!< Action should be shown only for editable layers
-    };
-
-    /**
-     * Action behavior flags.
-     * \since QGIS 3.0
-     */
-    Q_DECLARE_FLAGS( Flags, Flag )
-    Q_FLAG( Flags )
 
     /**
      * Creates a map layer action which can run on any layer
      * \note using AllActions as a target probably does not make a lot of sense. This default action was settled for API compatibility reasons.
      */
-    QgsMapLayerAction( const QString &name, QObject *parent SIP_TRANSFERTHIS, Targets targets = AllActions, const QIcon &icon = QIcon(), QgsMapLayerAction::Flags flags = QgsMapLayerAction::Flags() );
+    QgsMapLayerAction( const QString &name, QObject *parent SIP_TRANSFERTHIS, Qgis::MapLayerActionTargets targets = Qgis::MapLayerActionTarget::AllActions, const QIcon &icon = QIcon(), Qgis::MapLayerActionFlags flags = Qgis::MapLayerActionFlags() );
 
     //! Creates a map layer action which can run only on a specific layer
-    QgsMapLayerAction( const QString &name, QObject *parent SIP_TRANSFERTHIS, QgsMapLayer *layer, Targets targets = AllActions, const QIcon &icon = QIcon(), QgsMapLayerAction::Flags flags = QgsMapLayerAction::Flags() );
+    QgsMapLayerAction( const QString &name, QObject *parent SIP_TRANSFERTHIS, QgsMapLayer *layer, Qgis::MapLayerActionTargets targets = Qgis::MapLayerActionTarget::AllActions, const QIcon &icon = QIcon(), Qgis::MapLayerActionFlags flags = Qgis::MapLayerActionFlags() );
 
     //! Creates a map layer action which can run on a specific type of layer
-    QgsMapLayerAction( const QString &name, QObject *parent SIP_TRANSFERTHIS, QgsMapLayerType layerType, Targets targets = AllActions, const QIcon &icon = QIcon(), QgsMapLayerAction::Flags flags = QgsMapLayerAction::Flags() );
+    QgsMapLayerAction( const QString &name, QObject *parent SIP_TRANSFERTHIS, QgsMapLayerType layerType, Qgis::MapLayerActionTargets targets = Qgis::MapLayerActionTarget::AllActions, const QIcon &icon = QIcon(), Qgis::MapLayerActionFlags flags = Qgis::MapLayerActionFlags() );
 
     ~QgsMapLayerAction() override;
 
@@ -87,7 +62,7 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
      * Layer behavior flags.
      * \since QGIS 3.0
      */
-    QgsMapLayerAction::Flags flags() const;
+    Qgis::MapLayerActionFlags flags() const;
 
     /**
      * Returns TRUE if the action can run using the specified layer.
@@ -148,9 +123,9 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     virtual void triggerForLayer( QgsMapLayer *layer, const QgsMapLayerActionContext &context );
 
     //! Define the targets of the action
-    void setTargets( Targets targets ) {mTargets = targets;}
+    void setTargets( Qgis::MapLayerActionTargets targets ) {mTargets = targets;}
     //! Returns availibity of action
-    const Targets &targets() const {return mTargets;}
+    Qgis::MapLayerActionTargets targets() const {return mTargets;}
 
     /**
      * Returns TRUE if the action is only enabled for layers in editable mode.
@@ -214,12 +189,10 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     QgsMapLayerType mLayerType = QgsMapLayerType::VectorLayer;
 
     // determine if the action can be run on layer and/or single feature and/or multiple features
-    Targets mTargets = Targets();
+    Qgis::MapLayerActionTargets mTargets = Qgis::MapLayerActionTargets();
 
-    QgsMapLayerAction::Flags mFlags = QgsMapLayerAction::Flags();
+    Qgis::MapLayerActionFlags mFlags = Qgis::MapLayerActionFlags();
 };
 
-Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapLayerAction::Targets )
-Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapLayerAction::Flags )
 
 #endif // QGSMAPLAYERACTION_H
