@@ -84,11 +84,11 @@
 #include "qgssettings.h"
 #include "qgsgui.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgsidentifymenu.h"
 #include "qgsjsonutils.h"
 #include "qgsjsoneditwidget.h"
 #include "qgspointcloudlayer.h"
 #include "qgscolorrampimpl.h"
+#include "qgsmaplayeraction.h"
 
 #include <nlohmann/json.hpp>
 
@@ -644,7 +644,7 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
 
   //get valid QgsMapLayerActions for this layer
   QgsMapLayerActionContext context = QgisApp::instance()->createMapLayerActionContext();
-  const QList< QgsMapLayerAction * > registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer, QgsMapLayerAction::AllActions, context );
+  const QList< QgsMapLayerAction * > registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer, Qgis::MapLayerActionTarget::AllActions, context );
   const QList<QgsAction> actions = vlayer->actions()->actions( QStringLiteral( "Feature" ) );
 
   if ( ( !vlayer->fields().isEmpty() || !actions.isEmpty() || !registeredActions.isEmpty() ) && !QgsSettings().value( QStringLiteral( "/Map/hideDerivedAttributes" ), false ).toBool() )
@@ -1584,7 +1584,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
   {
     //get valid QgsMapLayerActions for this layer
     QgsMapLayerActionContext context = QgisApp::instance()->createMapLayerActionContext();
-    const QList< QgsMapLayerAction * > registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer, QgsMapLayerAction::AllActions, context );
+    const QList< QgsMapLayerAction * > registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer, Qgis::MapLayerActionTarget::AllActions, context );
 
     if ( !registeredActions.isEmpty() )
     {

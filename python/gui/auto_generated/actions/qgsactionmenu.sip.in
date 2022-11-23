@@ -21,12 +21,6 @@ This class is a menu that is populated automatically with the actions defined fo
 #include "qgsactionmenu.h"
 %End
   public:
-    enum ActionType
-    {
-      Invalid,
-      MapLayerAction,
-      AttributeAction
-    };
 
     struct ActionData
     {
@@ -38,7 +32,7 @@ Constructor for ActionData.
       ActionData( const QgsAction &action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
       ActionData( QgsMapLayerAction *action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
 
-      QgsActionMenu::ActionType actionType;
+      Qgis::ActionType actionType;
       QVariant actionData;
       QgsFeatureId featureId;
       QgsMapLayer *mapLayer;

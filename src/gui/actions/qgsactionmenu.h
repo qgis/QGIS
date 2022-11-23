@@ -20,8 +20,8 @@
 #include "qgis_sip.h"
 
 #include "qgsfeature.h"
-#include "qgsaction.h"
 #include "qgsattributeeditorcontext.h"
+#include "qgsaction.h"
 #include "qgis_gui.h"
 
 class QgsMapLayer;
@@ -40,12 +40,6 @@ class GUI_EXPORT QgsActionMenu : public QMenu
     Q_OBJECT
 
   public:
-    enum ActionType
-    {
-      Invalid,        //!< Invalid
-      MapLayerAction, //!< Standard actions (defined by core or plugins)
-      AttributeAction //!< Custom actions (manually defined in layer properties)
-    };
 
     struct GUI_EXPORT ActionData
     {
@@ -57,7 +51,7 @@ class GUI_EXPORT QgsActionMenu : public QMenu
       ActionData( const QgsAction &action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
       ActionData( QgsMapLayerAction *action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
 
-      QgsActionMenu::ActionType actionType = Invalid;
+      Qgis::ActionType actionType = Qgis::ActionType::Invalid;
       QVariant actionData;
       QgsFeatureId featureId = 0;
       QgsMapLayer *mapLayer = nullptr;

@@ -1446,6 +1446,44 @@ The development version
       OptimalInInsertionGroup,
     };
 
+    enum class ActionType
+      {
+      Invalid,
+      MapLayerAction,
+      AttributeAction
+    };
+
+    enum class MapLayerActionTarget
+      {
+      Layer,
+      SingleFeature,
+      MultipleFeatures,
+      AllActions
+    };
+
+    typedef QFlags<Qgis::MapLayerActionTarget> MapLayerActionTargets;
+
+
+    enum class MapLayerActionFlag
+      {
+      EnabledOnlyWhenEditable,
+    };
+
+    typedef QFlags<Qgis::MapLayerActionFlag> MapLayerActionFlags;
+
+
+    enum class AttributeActionType
+      {
+      Generic,
+      GenericPython,
+      Mac,
+      Windows,
+      Unix,
+      OpenUrl,
+      SubmitUrlEncoded,
+      SubmitUrlMultipart,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
@@ -1577,6 +1615,10 @@ QFlags<Qgis::RasterRendererFlag> operator|(Qgis::RasterRendererFlag f1, QFlags<Q
 QFlags<Qgis::LabelingFlag> operator|(Qgis::LabelingFlag f1, QFlags<Qgis::LabelingFlag> f2);
 
 QFlags<Qgis::GpsInformationComponent> operator|(Qgis::GpsInformationComponent f1, QFlags<Qgis::GpsInformationComponent> f2);
+
+QFlags<Qgis::MapLayerActionTarget> operator|(Qgis::MapLayerActionTarget f1, QFlags<Qgis::MapLayerActionTarget> f2);
+
+QFlags<Qgis::MapLayerActionFlag> operator|(Qgis::MapLayerActionFlag f1, QFlags<Qgis::MapLayerActionFlag> f2);
 
 
 

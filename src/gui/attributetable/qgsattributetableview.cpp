@@ -20,7 +20,6 @@
 #include <QToolButton>
 #include <QHBoxLayout>
 
-#include "qgssettings.h"
 #include "qgsactionmanager.h"
 #include "qgsattributetableview.h"
 #include "qgsattributetablemodel.h"
@@ -29,14 +28,12 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayercache.h"
 #include "qgsvectorlayerselectionmanager.h"
-#include "qgsvectordataprovider.h"
-#include "qgslogger.h"
-#include "qgsmapcanvas.h"
 #include "qgsfeatureselectionmodel.h"
 #include "qgsmaplayeractionregistry.h"
 #include "qgsfeatureiterator.h"
 #include "qgsstringutils.h"
 #include "qgsgui.h"
+#include "qgsmaplayeraction.h"
 
 QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
   : QgsTableView( parent )
@@ -252,7 +249,7 @@ QWidget *QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
   }
 
   QgsMapLayerActionContext context;
-  const auto mapLayerActions {QgsGui::mapLayerActionRegistry()->mapLayerActions( mFilterModel->layer(), QgsMapLayerAction::SingleFeature, context ) };
+  const QList< QgsMapLayerAction * > mapLayerActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mFilterModel->layer(), Qgis::MapLayerActionTarget::SingleFeature, context );
   // next add any registered actions for this layer
   for ( QgsMapLayerAction *mapLayerAction : mapLayerActions )
   {

@@ -198,7 +198,7 @@ void TestQgsMapToolIdentifyAction::clickxy()
   canvas->setCurrentLayer( tempLayer.get() );
 
   // create/add action
-  QgsAction act( QgsAction::GenericPython, "MyAction", "", true );
+  QgsAction act( Qgis::AttributeActionType::GenericPython, "MyAction", "", true );
 
   QSet<QString> scopes;
   scopes << "Feature";

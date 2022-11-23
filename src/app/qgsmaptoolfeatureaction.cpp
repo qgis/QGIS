@@ -16,16 +16,11 @@
 #include "qgsmaptoolfeatureaction.h"
 
 #include "qgsfeatureiterator.h"
-#include "qgsfields.h"
-#include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptopixel.h"
-#include "qgsmessageviewer.h"
 #include "qgsactionmanager.h"
-#include "qgscoordinatereferencesystem.h"
 #include "qgsexception.h"
-#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgsmaplayeractionregistry.h"
@@ -34,6 +29,7 @@
 #include "qgsstatusbar.h"
 #include "qgsmapmouseevent.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsmaplayeraction.h"
 
 #include <QSettings>
 #include <QStatusBar>
@@ -71,7 +67,7 @@ void QgsMapToolFeatureAction::canvasReleaseEvent( QgsMapMouseEvent *e )
 
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
   QgsMapLayerActionContext context;
-  if ( vlayer->actions()->actions( QStringLiteral( "Canvas" ) ).isEmpty() && QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer, QgsMapLayerAction::AllActions, context ).isEmpty() )
+  if ( vlayer->actions()->actions( QStringLiteral( "Canvas" ) ).isEmpty() && QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer, Qgis::MapLayerActionTarget::AllActions, context ).isEmpty() )
   {
     emit messageEmitted( tr( "The active vector layer has no defined actions" ), Qgis::MessageLevel::Info );
     return;

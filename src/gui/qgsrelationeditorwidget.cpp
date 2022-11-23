@@ -16,27 +16,19 @@
 #include "qgsrelationeditorwidget.h"
 
 #include "qgsapplication.h"
-#include "qgsdistancearea.h"
 #include "qgsfeatureiterator.h"
-#include "qgsvectordataprovider.h"
 #include "qgsexpression.h"
 #include "qgsfeature.h"
-#include "qgsfeatureselectiondlg.h"
-#include "qgsgenericfeatureselectionmanager.h"
 #include "qgsiconutils.h"
 #include "qgsrelation.h"
-#include "qgsvectorlayertools.h"
-#include "qgsproject.h"
-#include "qgstransactiongroup.h"
 #include "qgslogger.h"
 #include "qgsvectorlayerutils.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayerselectionmanager.h"
 #include "qgsmaptooldigitizefeature.h"
-#include "qgsexpressioncontextutils.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
-#include "qgscollapsiblegroupbox.h"
+#include "qgsactionmenu.h"
 
 #include <QHBoxLayout>
 #include <QLabel>

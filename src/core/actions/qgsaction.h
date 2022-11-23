@@ -17,12 +17,14 @@
 #define QGSACTION_H
 
 #include "qgis_core.h"
+#include "qgis.h"
+#include "qgsexpressioncontext.h"
+
 #include <QSet>
 #include <QString>
 #include <QIcon>
 #include <QUuid>
 
-#include "qgsexpressioncontext.h"
 #include <memory>
 
 class QgsExpressionContextScope;
@@ -34,17 +36,6 @@ class QgsExpressionContextScope;
 class CORE_EXPORT QgsAction
 {
   public:
-    enum ActionType
-    {
-      Generic,
-      GenericPython,
-      Mac,
-      Windows,
-      Unix,
-      OpenUrl,
-      SubmitUrlEncoded, //!< POST data to an URL, using "application/x-www-form-urlencoded" or "application/json" if the body is valid JSON \since QGIS 3.24
-      SubmitUrlMultipart, //!< POST data to an URL using "multipart/form-data"  \since QGIS 3.24
-    };
 
     /**
      * Default constructor
@@ -60,7 +51,7 @@ class CORE_EXPORT QgsAction
      * \param capture       If this is set to TRUE, the output will be captured when an action is run
      * \param enabledOnlyWhenEditable if TRUE then action is only enable in editmode. Not available in Python bindings.
      */
-    QgsAction( ActionType type, const QString &description, const QString &command, bool capture = false, bool enabledOnlyWhenEditable SIP_PYARGREMOVE = false )
+    QgsAction( Qgis::AttributeActionType type, const QString &description, const QString &command, bool capture = false, bool enabledOnlyWhenEditable SIP_PYARGREMOVE = false )
       : mType( type )
       , mDescription( description )
       , mCommand( command )
@@ -82,7 +73,7 @@ class CORE_EXPORT QgsAction
      * \param notificationMessage  A particular message which reception will trigger the action
      * \param enabledOnlyWhenEditable if TRUE then action is only enable in editmode. Not available in Python bindings.
      */
-    QgsAction( ActionType type, const QString &description, const QString &action, const QString &icon, bool capture, const QString &shortTitle = QString(), const QSet<QString> &actionScopes = QSet<QString>(), const QString &notificationMessage = QString(), bool enabledOnlyWhenEditable SIP_PYARGREMOVE = false )
+    QgsAction( Qgis::AttributeActionType type, const QString &description, const QString &action, const QString &icon, bool capture, const QString &shortTitle = QString(), const QSet<QString> &actionScopes = QSet<QString>(), const QString &notificationMessage = QString(), bool enabledOnlyWhenEditable SIP_PYARGREMOVE = false )
       : mType( type )
       , mDescription( description )
       , mShortTitle( shortTitle )
@@ -109,7 +100,7 @@ class CORE_EXPORT QgsAction
      * \param notificationMessage  A particular message which reception will trigger the action
      * \param enabledOnlyWhenEditable if TRUE then action is only enable in editmode. Not available in Python bindings.
      */
-    QgsAction( const QUuid &id, ActionType type, const QString &description, const QString &action, const QString &icon, bool capture, const QString &shortTitle = QString(), const QSet<QString> &actionScopes = QSet<QString>(), const QString &notificationMessage = QString(), bool enabledOnlyWhenEditable SIP_PYARGREMOVE = false )
+    QgsAction( const QUuid &id, Qgis::AttributeActionType type, const QString &description, const QString &action, const QString &icon, bool capture, const QString &shortTitle = QString(), const QSet<QString> &actionScopes = QSet<QString>(), const QString &notificationMessage = QString(), bool enabledOnlyWhenEditable SIP_PYARGREMOVE = false )
       : mType( type )
       , mDescription( description )
       , mShortTitle( shortTitle )
@@ -166,7 +157,7 @@ class CORE_EXPORT QgsAction
     QString notificationMessage() const { return mNotificationMessage; }
 
     //! The action type
-    ActionType type() const { return mType; }
+    Qgis::AttributeActionType type() const { return mType; }
 
     //! Whether to capture output for display when this action is run
     bool capture() const { return mCaptureOutput; }
@@ -265,7 +256,7 @@ class CORE_EXPORT QgsAction
   private:
 
     void handleFormSubmitAction( const QString &expandedAction ) const;
-    ActionType mType = Generic;
+    Qgis::AttributeActionType mType = Qgis::AttributeActionType::Generic;
     QString mDescription;
     QString mShortTitle;
     QString mIcon;

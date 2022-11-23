@@ -23,7 +23,6 @@
  ***************************************************************************/
 
 #include "qgsactionmanager.h"
-#include "qgspythonrunner.h"
 #include "qgsrunprocess.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
@@ -31,6 +30,7 @@
 #include "qgsexpression.h"
 #include "qgsdataprovider.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsaction.h"
 
 #include <QList>
 #include <QStringList>
@@ -41,14 +41,18 @@
 #include <QFileInfo>
 #include <QRegularExpression>
 
-QUuid QgsActionManager::addAction( QgsAction::ActionType type, const QString &name, const QString &command, bool capture )
+QgsActionManager::QgsActionManager( QgsVectorLayer *layer )
+  : mLayer( layer )
+{}
+
+QUuid QgsActionManager::addAction( Qgis::AttributeActionType type, const QString &name, const QString &command, bool capture )
 {
   QgsAction action( type, name, command, capture );
   addAction( action );
   return action.id();
 }
 
-QUuid QgsActionManager::addAction( QgsAction::ActionType type, const QString &name, const QString &command, const QString &icon, bool capture )
+QUuid QgsActionManager::addAction( Qgis::AttributeActionType type, const QString &name, const QString &command, const QString &icon, bool capture )
 {
   QgsAction action( type, name, command, icon, capture );
   addAction( action );
@@ -189,7 +193,7 @@ void QgsActionManager::runAction( const QgsAction &action )
 {
   switch ( action.type() )
   {
-    case QgsAction::OpenUrl:
+    case Qgis::AttributeActionType::OpenUrl:
     {
       QFileInfo finfo( action.command() );
       if ( finfo.exists() && finfo.isFile() )
@@ -198,17 +202,17 @@ void QgsActionManager::runAction( const QgsAction &action )
         QDesktopServices::openUrl( QUrl( action.command(), QUrl::TolerantMode ) );
       break;
     }
-    case QgsAction::GenericPython:
-    case QgsAction::SubmitUrlEncoded:
-    case QgsAction::SubmitUrlMultipart:
+    case Qgis::AttributeActionType::GenericPython:
+    case Qgis::AttributeActionType::SubmitUrlEncoded:
+    case Qgis::AttributeActionType::SubmitUrlMultipart:
     {
       action.run( QgsExpressionContext() );
       break;
     }
-    case QgsAction::Generic:
-    case QgsAction::Mac:
-    case QgsAction::Unix:
-    case QgsAction::Windows:
+    case Qgis::AttributeActionType::Generic:
+    case Qgis::AttributeActionType::Mac:
+    case Qgis::AttributeActionType::Unix:
+    case Qgis::AttributeActionType::Windows:
     {
       // The QgsRunProcess instance created by this static function
       // deletes itself when no longer needed.

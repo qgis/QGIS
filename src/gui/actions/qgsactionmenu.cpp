@@ -16,6 +16,7 @@
 #include "qgsactionmenu.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaplayeractioncontextgenerator.h"
+#include "qgsmaplayeraction.h"
 #include "qgsmaplayeractionregistry.h"
 #include "qgsactionmanager.h"
 #include "qgsfeatureiterator.h"
@@ -94,30 +95,34 @@ void QgsActionMenu::triggerAction()
 
   const ActionData data = action->data().value<ActionData>();
 
-  if ( data.actionType == Invalid )
-    return;
-
-  if ( data.actionType == MapLayerAction )
+  switch ( data.actionType )
   {
-    QgsMapLayerAction *mapLayerAction = data.actionData.value<QgsMapLayerAction *>();
+    case Qgis::ActionType::Invalid:
+      return;
+    case Qgis::ActionType::MapLayerAction:
+    {
+      QgsMapLayerAction *mapLayerAction = data.actionData.value<QgsMapLayerAction *>();
 
-    const QgsMapLayerActionContext context = mContextGenerator ? mContextGenerator->createActionContext() : QgsMapLayerActionContext();
-    Q_NOWARN_DEPRECATED_PUSH
-    mapLayerAction->triggerForFeature( data.mapLayer, mFeature );
-    Q_NOWARN_DEPRECATED_POP
-    mapLayerAction->triggerForFeature( data.mapLayer, mFeature, context );
-  }
-  else if ( data.actionType == AttributeAction )
-  {
-    // define custom substitutions: layer id and clicked coords
-    QgsExpressionContext context = mLayer->createExpressionContext();
-    context.setFeature( mFeature );
+      const QgsMapLayerActionContext context = mContextGenerator ? mContextGenerator->createActionContext() : QgsMapLayerActionContext();
+      Q_NOWARN_DEPRECATED_PUSH
+      mapLayerAction->triggerForFeature( data.mapLayer, mFeature );
+      Q_NOWARN_DEPRECATED_POP
+      mapLayerAction->triggerForFeature( data.mapLayer, mFeature, context );
+      break;
+    }
+    case Qgis::ActionType::AttributeAction:
+    {
+      // define custom substitutions: layer id and clicked coords
+      QgsExpressionContext context = mLayer->createExpressionContext();
+      context.setFeature( mFeature );
 
-    QgsExpressionContextScope *actionScope = new QgsExpressionContextScope();
-    actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "action_scope" ), mActionScope, true ) );
-    context << actionScope;
-    const QgsAction act = data.actionData.value<QgsAction>();
-    act.run( context );
+      QgsExpressionContextScope *actionScope = new QgsExpressionContextScope();
+      actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "action_scope" ), mActionScope, true ) );
+      context << actionScope;
+      const QgsAction act = data.actionData.value<QgsAction>();
+      act.run( context );
+      break;
+    }
   }
 }
 
@@ -161,7 +166,7 @@ void QgsActionMenu::reloadActions()
     mVisibleActionCount++;
   }
 
-  const QList<QgsMapLayerAction *> mapLayerActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer, QgsMapLayerAction::SingleFeature, mContextGenerator ? mContextGenerator->createActionContext() : QgsMapLayerActionContext() );
+  const QList<QgsMapLayerAction *> mapLayerActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer, Qgis::MapLayerActionTarget::SingleFeature, mContextGenerator ? mContextGenerator->createActionContext() : QgsMapLayerActionContext() );
 
   if ( !mapLayerActions.isEmpty() )
   {
@@ -198,7 +203,7 @@ void QgsActionMenu::layerWillBeDeleted()
 
 
 QgsActionMenu::ActionData::ActionData( QgsMapLayerAction *action, QgsFeatureId featureId, QgsMapLayer *mapLayer )
-  : actionType( MapLayerAction )
+  : actionType( Qgis::ActionType::MapLayerAction )
   , actionData( QVariant::fromValue<QgsMapLayerAction*>( action ) )
   , featureId( featureId )
   , mapLayer( mapLayer )
@@ -206,7 +211,7 @@ QgsActionMenu::ActionData::ActionData( QgsMapLayerAction *action, QgsFeatureId f
 
 
 QgsActionMenu::ActionData::ActionData( const QgsAction &action, QgsFeatureId featureId, QgsMapLayer *mapLayer )
-  : actionType( AttributeAction )
+  : actionType( Qgis::ActionType::AttributeAction )
   , actionData( QVariant::fromValue<QgsAction>( action ) )
   , featureId( featureId )
   , mapLayer( mapLayer )

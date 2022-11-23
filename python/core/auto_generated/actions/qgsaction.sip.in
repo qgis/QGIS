@@ -9,6 +9,7 @@
 
 
 
+
 class QgsAction
 {
 %Docstring(signature="appended")
@@ -19,24 +20,13 @@ Utility class that encapsulates an action based on vector attributes.
 #include "qgsaction.h"
 %End
   public:
-    enum ActionType
-    {
-      Generic,
-      GenericPython,
-      Mac,
-      Windows,
-      Unix,
-      OpenUrl,
-      SubmitUrlEncoded,
-      SubmitUrlMultipart,
-    };
 
     QgsAction();
 %Docstring
 Default constructor
 %End
 
-    QgsAction( ActionType type, const QString &description, const QString &command, bool capture = false);
+    QgsAction( Qgis::AttributeActionType type, const QString &description, const QString &command, bool capture = false);
 %Docstring
 Create a new QgsAction
 
@@ -46,7 +36,7 @@ Create a new QgsAction
 :param capture: If this is set to ``True``, the output will be captured when an action is run
 %End
 
-    QgsAction( ActionType type, const QString &description, const QString &action, const QString &icon, bool capture, const QString &shortTitle = QString(), const QSet<QString> &actionScopes = QSet<QString>(), const QString &notificationMessage = QString());
+    QgsAction( Qgis::AttributeActionType type, const QString &description, const QString &action, const QString &icon, bool capture, const QString &shortTitle = QString(), const QSet<QString> &actionScopes = QSet<QString>(), const QString &notificationMessage = QString());
 %Docstring
 Create a new QgsAction
 
@@ -60,7 +50,7 @@ Create a new QgsAction
 :param notificationMessage: A particular message which reception will trigger the action
 %End
 
-    QgsAction( const QUuid &id, ActionType type, const QString &description, const QString &action, const QString &icon, bool capture, const QString &shortTitle = QString(), const QSet<QString> &actionScopes = QSet<QString>(), const QString &notificationMessage = QString());
+    QgsAction( const QUuid &id, Qgis::AttributeActionType type, const QString &description, const QString &action, const QString &icon, bool capture, const QString &shortTitle = QString(), const QSet<QString> &actionScopes = QSet<QString>(), const QString &notificationMessage = QString());
 %Docstring
 Create a new QgsAction
 
@@ -126,7 +116,7 @@ Returns the notification message that triggers the action
 .. versionadded:: 3.0
 %End
 
-    ActionType type() const;
+    Qgis::AttributeActionType type() const;
 %Docstring
 The action type
 %End
