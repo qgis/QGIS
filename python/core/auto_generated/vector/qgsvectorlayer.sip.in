@@ -143,8 +143,8 @@ attribute operators, “BBOX, Disjoint, Intersects, Touches, Crosses, Contains, 
 spatial binary operators and the QGIS local “geomFromWKT, geomFromGML”
 geometry constructor functions.
 
-OGC API - Features data provider (oapif)
-~~~~~~~~-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+OGC API Features data provider (oapif)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Used to access data provided by a OGC API - Features server.
 
