@@ -203,7 +203,7 @@ typedef QSet<int> QgsAttributeIds;
  * spatial binary operators and the QGIS local “geomFromWKT, geomFromGML”
  * geometry constructor functions.
  *
- * \subsection oapif OGC API - Features data provider (oapif)
+ * \subsection oapif OGC API Features data provider (oapif)
  *
  * Used to access data provided by a OGC API - Features server.
  *
