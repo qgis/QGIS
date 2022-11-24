@@ -40,10 +40,7 @@
 
 bool QgsAction::runable() const
 {
-#ifdef __clang__
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wbugprone-branch-clone"
-#endif
+#ifndef __clang_analyzer__
   switch ( mType )
   {
     case Qgis::AttributeActionType::Generic:
@@ -74,8 +71,6 @@ bool QgsAction::runable() const
 #endif
   }
   return false;
-#ifdef __clang__
-#pragma clang diagnostic pop
 #endif
 }
 
@@ -314,7 +309,9 @@ void QgsAction::run( const QgsExpressionContext &expressionContext ) const
   {
     // The QgsRunProcess instance created by this static function
     // deletes itself when no longer needed.
+#ifndef __clang_analyzer__
     QgsRunProcess::create( expandedAction, mCaptureOutput );
+#endif
   }
 }
 
