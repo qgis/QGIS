@@ -3612,17 +3612,26 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
       int gmlPart = -1;
       int xsdPart = -1;
       int jsonPart = -1;
+
+      // Headers are case insensitive
+
       for ( int i = 0; i < mIdentifyResultHeaders.size(); i++ )
       {
-        if ( xsdPart == -1 && mIdentifyResultHeaders.at( i ).value( "Content-Disposition" ).contains( ".xsd" ) )
+        QgsNetworkReplyParser::RawHeaderMap identifyResultHeader;
+        for ( auto it = mIdentifyResultHeaders.at( i ).cbegin(); it != mIdentifyResultHeaders.at( i ).cend(); ++it )
+        {
+          identifyResultHeader.insert( it.key().toLower(), it.value() );
+        }
+
+        if ( xsdPart == -1 && identifyResultHeader.value( "content-disposition" ).contains( ".xsd" ) )
         {
           xsdPart = i;
         }
-        else if ( gmlPart == -1 && mIdentifyResultHeaders.at( i ).value( "Content-Disposition" ).contains( ".dat" ) )
+        else if ( gmlPart == -1 && identifyResultHeader.value( "content-disposition" ).contains( ".dat" ) )
         {
           gmlPart = i;
         }
-        else if ( jsonPart == -1 && mIdentifyResultHeaders.at( i ).value( "Content-Type" ).contains( "json" ) )
+        else if ( jsonPart == -1 && identifyResultHeader.value( "content-type" ).contains( "json" ) )
         {
           jsonPart = i;
         }
