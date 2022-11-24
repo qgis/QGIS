@@ -40,6 +40,10 @@
 
 bool QgsAction::runable() const
 {
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wbugprone-branch-clone"
+#endif
   switch ( mType )
   {
     case Qgis::AttributeActionType::Generic:
@@ -70,6 +74,9 @@ bool QgsAction::runable() const
 #endif
   }
   return false;
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
 }
 
 void QgsAction::run( QgsVectorLayer *layer, const QgsFeature &feature, const QgsExpressionContext &expressionContext ) const
