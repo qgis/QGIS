@@ -618,8 +618,8 @@ void QgsRelationEditorWidget::updateUiSingleEdit()
 
   mStackedWidget->setCurrentWidget( mDualView );
 
-  const QgsFeatureRequest request = mRelation.getRelatedFeaturesRequest( mFeatureList.first() );
-
+  QgsFeatureRequest request = mRelation.getRelatedFeaturesRequest( mFeatureList.first() );
+  QgsVectorLayer *layer = nullptr;
   if ( mNmRelation.isValid() )
   {
     QgsFeatureIterator it = mRelation.referencingLayer()->getFeatures( request );
@@ -635,11 +635,26 @@ void QgsRelationEditorWidget::updateUiSingleEdit()
     QgsFeatureRequest nmRequest;
     nmRequest.setFilterExpression( filters.join( QLatin1String( " OR " ) ) );
 
-    initDualView( mNmRelation.referencedLayer(), nmRequest );
+    request = nmRequest;
+    layer = mNmRelation.referencedLayer();
   }
   else if ( mRelation.referencingLayer() )
   {
-    initDualView( mRelation.referencingLayer(), request );
+    layer = mRelation.referencingLayer();
+  }
+
+  if ( !layer )
+    return;
+
+  // don't recreate all the widget from scratch if only the request has changed
+  if ( !mDualView->masterModel() || layer != mDualView->masterModel()->layer() )
+  {
+    initDualView( layer, request );
+  }
+  else
+  {
+    mDualView->setRequest( request );
+    mDualView->masterModel()->loadLayer();
   }
 }
 
