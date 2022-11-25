@@ -1040,6 +1040,11 @@ Qgis::RelationshipCapabilities QgsAbstractDatabaseProviderConnection::supportedR
   return Qgis::RelationshipCapabilities();
 }
 
+QStringList QgsAbstractDatabaseProviderConnection::relatedTableTypes() const
+{
+  return {};
+}
+
 QgsProviderSqlQueryBuilder *QgsAbstractDatabaseProviderConnection::queryBuilder() const
 {
   return new QgsProviderSqlQueryBuilder();

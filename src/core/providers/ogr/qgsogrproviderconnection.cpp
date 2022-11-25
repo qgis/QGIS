@@ -592,6 +592,35 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
   {
     Qgis::SqlLayerDefinitionCapability::SubsetStringFilter,
   };
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+  if ( const char *pszRelatedTableTypes = GDALGetMetadataItem( hDriver, GDAL_DMD_RELATIONSHIP_RELATED_TABLE_TYPES, nullptr ) )
+  {
+    char **papszTokens = CSLTokenizeString2( pszRelatedTableTypes, " ", 0 );
+    mRelatedTableTypes = QgsOgrUtils::cStringListToQStringList( papszTokens );
+    CSLDestroy( papszTokens );
+  }
+#else
+  if ( mDriverName == QLatin1String( "OpenFileGDB" ) )
+  {
+    mRelatedTableTypes = QStringList
+    {
+      QStringLiteral( "media" ),
+      QStringLiteral( "features" )
+    };
+  }
+  else if ( mDriverName == QLatin1String( "GPKG" ) )
+  {
+    mRelatedTableTypes = QStringList
+    {
+      QStringLiteral( "media" ),
+      QStringLiteral( "simple_attributes" ),
+      QStringLiteral( "features" ),
+      QStringLiteral( "attributes" ),
+      QStringLiteral( "tiles" )
+    };
+  }
+#endif
 }
 
 QString QgsOgrProviderConnection::databaseQueryLogIdentifier() const
@@ -1013,6 +1042,11 @@ QList<Qgis::RelationshipStrength> QgsOgrProviderConnection::supportedRelationshi
 Qgis::RelationshipCapabilities QgsOgrProviderConnection::supportedRelationshipCapabilities() const
 {
   return mRelationshipCapabilities;
+}
+
+QStringList QgsOgrProviderConnection::relatedTableTypes() const
+{
+  return mRelatedTableTypes;
 }
 
 QList<QgsWeakRelation> QgsOgrProviderConnection::relationships( const QString &schema, const QString &tableName ) const

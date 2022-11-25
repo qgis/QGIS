@@ -93,6 +93,7 @@ class QgsOgrProviderConnection : public QgsAbstractDatabaseProviderConnection
     QList< Qgis::RelationshipCardinality > supportedRelationshipCardinalities() const override;
     QList< Qgis::RelationshipStrength > supportedRelationshipStrengths() const override;
     Qgis::RelationshipCapabilities supportedRelationshipCapabilities() const override;
+    QStringList relatedTableTypes() const override;
     QList< QgsWeakRelation > relationships( const QString &schema = QString(), const QString &tableName = QString() ) const override;
     void addRelationship( const QgsWeakRelation &relationship ) const override;
     void updateRelationship( const QgsWeakRelation &relationship ) const override;
@@ -115,7 +116,7 @@ class QgsOgrProviderConnection : public QgsAbstractDatabaseProviderConnection
     QList< Qgis::RelationshipCardinality > mSupportedRelationshipCardinality;
     QList< Qgis::RelationshipStrength > mSupportedRelationshipStrength;
     Qgis::RelationshipCapabilities mRelationshipCapabilities;
-
+    QStringList mRelatedTableTypes;
 };
 
 

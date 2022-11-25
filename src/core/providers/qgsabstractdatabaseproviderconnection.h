@@ -1002,6 +1002,18 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual Qgis::RelationshipCapabilities supportedRelationshipCapabilities() const;
 
     /**
+     * Returns a list of the related table types supported by the database format.
+     *
+     * The related table type is a free-form string representing the type of related features, where the
+     * exact interpretation is format dependent. For instance, table types from GeoPackage
+     * relationships will directly reflect the categories from the GeoPackage related
+     * tables extension (i.e. "media", "simple attributes", "features", "attributes" and "tiles").
+     *
+     * \since QGIS 3.30
+     */
+    virtual QStringList relatedTableTypes() const;
+
+    /**
      * Returns a list of relationships detected in the database.
      *
      * This is supported on providers with the Capability::RetrieveRelationships capability only.
