@@ -1,0 +1,13 @@
+*****
+Content-Type: application/json
+
+{
+   "nodes":[
+      {
+         "icon":"iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAP0lEQVQ4jWNgGAV0A4wE5P8Tqx6fQf/TljijCMyK2YtTDy6DMAwhZBgTHheRBIaOQYzQsCAakBr9xOgZBbQGAKb+C8EdAkkoAAAAAElFTkSuQmCC",
+         "title":"A test vector layer",
+         "type":"layer"
+      }
+   ],
+   "title":""
+}
