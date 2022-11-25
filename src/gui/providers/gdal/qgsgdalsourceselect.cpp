@@ -85,6 +85,7 @@ QgsGdalSourceSelect::QgsGdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
     fillOpenOptions();
   } );
   mOpenOptionsGroupBox->setVisible( false );
+  mAuthSettingsProtocol->setDataprovider( QStringLiteral( "gdal" ) );
 }
 
 bool QgsGdalSourceSelect::isProtocolCloudType()
