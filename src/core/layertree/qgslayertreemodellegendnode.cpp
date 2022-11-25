@@ -198,7 +198,7 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings &set
 
   // TODO QGIS 4.0 -- make these all mandatory
   std::optional< QgsTextDocument > tempDocument;
-  const QgsTextDocument *document = ctx->textDocument;
+  const QgsTextDocument *document = ctx ? ctx->textDocument : nullptr;
   if ( !document )
   {
     const QStringList lines = settings.evaluateItemText( data( Qt::DisplayRole ).toString(), context->expressionContext() );
@@ -207,7 +207,7 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings &set
   }
 
   std::optional< QgsTextDocumentMetrics > tempMetrics;
-  const QgsTextDocumentMetrics *metrics = ctx->textDocumentMetrics;
+  const QgsTextDocumentMetrics *metrics = ctx ? ctx->textDocumentMetrics : nullptr;
   if ( !metrics )
   {
     tempMetrics.emplace( QgsTextDocumentMetrics::calculateMetrics( *document, format, *context ) );
