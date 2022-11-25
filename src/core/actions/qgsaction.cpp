@@ -40,7 +40,8 @@
 
 bool QgsAction::runable() const
 {
-#ifndef __clang_analyzer__
+// clang analyzer is not happy because of the multiple duplicate return branches, but this is ok :)
+// NOLINTBEGIN(bugprone-branch-clone)
   switch ( mType )
   {
     case Qgis::AttributeActionType::Generic:
@@ -71,7 +72,7 @@ bool QgsAction::runable() const
 #endif
   }
   return false;
-#endif
+  // NOLINTEND(bugprone-branch-clone)
 }
 
 void QgsAction::run( QgsVectorLayer *layer, const QgsFeature &feature, const QgsExpressionContext &expressionContext ) const
@@ -309,9 +310,7 @@ void QgsAction::run( const QgsExpressionContext &expressionContext ) const
   {
     // The QgsRunProcess instance created by this static function
     // deletes itself when no longer needed.
-#ifndef __clang_analyzer__
-    QgsRunProcess::create( expandedAction, mCaptureOutput );
-#endif
+    QgsRunProcess::create( expandedAction, mCaptureOutput ); // NOLINT
   }
 }
 
