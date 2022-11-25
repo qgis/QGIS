@@ -65,6 +65,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       View = 1 << 4,              //!< View table
       MaterializedView = 1 << 5,  //!< Materialized view table
       Foreign = 1 << 6,           //!< Foreign data wrapper
+      IncludeSystemTables = 1 << 7, //!< Include system tables (since QGIS 3.30)
     };
 
     Q_ENUM( TableFlag )

@@ -186,7 +186,10 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsOgrProviderConnec
   QList<QgsAbstractDatabaseProviderConnection::TableProperty> tableInfo;
 
   QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) );
-  const QList< QgsProviderSublayerDetails > subLayers = metadata->querySublayers( uri(), Qgis::SublayerQueryFlag::IncludeSystemTables, nullptr );
+  const QList< QgsProviderSublayerDetails > subLayers = metadata->querySublayers(
+        uri(),
+        ( flags & TableFlag::IncludeSystemTables ) ? Qgis::SublayerQueryFlag::IncludeSystemTables : Qgis::SublayerQueryFlags(),
+        nullptr );
 
   tableInfo.reserve( subLayers.size() );
   for ( const QgsProviderSublayerDetails &subLayer : subLayers )
