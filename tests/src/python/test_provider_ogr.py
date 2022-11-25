@@ -2787,6 +2787,31 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(rel.strength(), QgsRelation.Composition)
         self.assertEqual(rel.fieldPairs(), {'REL_OBJECTID': 'OBJECTID'})
 
+    def test_provider_connection_tables(self):
+        """
+        Test retrieving tables via the connections API
+        """
+        metadata = QgsProviderRegistry.instance().providerMetadata('ogr')
+        # start with a connection which only supports one layer
+        conn = metadata.createConnection(TEST_DATA_DIR + '/' + 'relationships.gdb', {})
+        self.assertTrue(conn)
+
+        # don't want system tables included
+        self.assertCountEqual([t.tableName() for t in conn.tables()],
+                              ['table1', 'table2', 'table3', 'table4', 'table6', 'table7',
+                               'table8', 'table9', 'points', 'points__ATTACH',
+                               'composite_many_to_many', 'simple_attributed',
+                               'simple_many_to_many'])
+        # DO want system tables included
+        self.assertCountEqual([t.tableName() for t in conn.tables('',
+                                                                  QgsAbstractDatabaseProviderConnection.TableFlag.Aspatial | QgsAbstractDatabaseProviderConnection.TableFlag.Vector | QgsAbstractDatabaseProviderConnection.TableFlag.IncludeSystemTables)],
+                              ['table1', 'table2', 'table3', 'table4', 'table6', 'table7',
+                               'table8', 'table9', 'points', 'points__ATTACH',
+                               'composite_many_to_many', 'simple_attributed',
+                               'simple_many_to_many', 'GDB_DBTune', 'GDB_ItemRelationshipTypes',
+                               'GDB_ItemRelationships', 'GDB_ItemTypes', 'GDB_Items',
+                               'GDB_SpatialRefs', 'GDB_SystemCatalog'])
+
     @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 6, 0), "GDAL 3.6 required")
     def test_provider_connection_relationships(self):
         """

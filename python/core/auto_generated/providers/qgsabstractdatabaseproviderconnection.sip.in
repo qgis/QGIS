@@ -41,6 +41,7 @@ is not supported or cannot be performed without errors.
       View,
       MaterializedView,
       Foreign,
+      IncludeSystemTables,
     };
 
     typedef QFlags<QgsAbstractDatabaseProviderConnection::TableFlag> TableFlags;
