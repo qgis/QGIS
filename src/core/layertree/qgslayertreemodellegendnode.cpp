@@ -101,12 +101,12 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsLayerTreeModelLegendNode::draw( cons
   ctx->textDocumentMetrics = &textDocumentMetrics;
   scaleToPx.reset();
 
-  //const double textHeight = textDocumentMetrics.documentSize( Qgis::TextLayoutMode::Legend, Qgis::TextOrientation::Horizontal ).height() / ctx->context->scaleFactor();
-  const double textHeight = textDocumentMetrics.firstLineCapHeight() / ctx->context->scaleFactor();
-
   // itemHeight here is not really item height, it is only for symbol
   // vertical alignment purpose, i.e. OK take single line height
   // if there are more lines, those run under the symbol
+  // also note that we explicitly use the first line cap height here, in order to match the Qgis::TextLayoutMode::RectangleCapHeightBased mode
+  // used when rendering the symbol text
+  const double textHeight = textDocumentMetrics.firstLineCapHeight() / ctx->context->scaleFactor();
   const double itemHeight = std::max( static_cast< double >( ctx && ctx->patchSize.height() > 0 ? ctx->patchSize.height() : settings.symbolSize().height() ), textHeight );
 
   ItemMetrics im;
@@ -196,13 +196,28 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings &set
 
   const QgsTextFormat format = settings.style( QgsLegendStyle::SymbolLabel ).textFormat();
 
+  // TODO QGIS 4.0 -- make these all mandatory
+  std::optional< QgsTextDocument > tempDocument;
+  const QgsTextDocument *document = ctx->textDocument;
+  if ( !document )
+  {
+    const QStringList lines = settings.evaluateItemText( data( Qt::DisplayRole ).toString(), context->expressionContext() );
+    tempDocument.emplace( format.allowHtmlFormatting() ? QgsTextDocument::fromHtml( lines ) : QgsTextDocument::fromPlainText( lines ) );
+    document = &tempDocument.value();
+  }
+
+  std::optional< QgsTextDocumentMetrics > tempMetrics;
+  const QgsTextDocumentMetrics *metrics = ctx->textDocumentMetrics;
+  if ( !metrics )
+  {
+    tempMetrics.emplace( QgsTextDocumentMetrics::calculateMetrics( *document, format, *context ) );
+    metrics = &tempMetrics.value();
+  }
+
   const double dotsPerMM = context->scaleFactor();
   QgsScopedRenderContextScaleToPixels scaleToPx( *context );
 
-  // TODO when no metrics
-  // TODO --- line spacing!!!
-
-  const QSizeF documentSize = ctx ? ctx->textDocumentMetrics->documentSize( Qgis::TextLayoutMode::RectangleCapHeightBased, Qgis::TextOrientation::Horizontal ) : QSizeF();
+  const QSizeF documentSize = metrics->documentSize( Qgis::TextLayoutMode::RectangleCapHeightBased, Qgis::TextOrientation::Horizontal );
   const QSizeF labelSizeMM( documentSize / dotsPerMM );
 
   double labelXMin = 0.0;
@@ -247,7 +262,7 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings &set
     QgsTextRenderer::drawDocument( QRectF( labelXMin * dotsPerMM, std::round( labelYMM * dotsPerMM ),
                                            ( labelXMax - labelXMin )* dotsPerMM,
                                            std::max( symbolSizeMM.height(), labelSizeMM.height() ) * dotsPerMM ),
-                                   format, *ctx->textDocument, *ctx->textDocumentMetrics, *context, halign, Qgis::TextVerticalAlignment::Top,
+                                   format, *document, *metrics, *context, halign, Qgis::TextVerticalAlignment::Top,
                                    0, Qgis::TextLayoutMode::RectangleCapHeightBased );
   }
 

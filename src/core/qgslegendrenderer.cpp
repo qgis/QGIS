@@ -22,8 +22,6 @@
 #include "qgsrendercontext.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgstextrenderer.h"
-#include "qgstextdocument.h"
-#include "qgstextdocumentmetrics.h"
 #include <QJsonObject>
 #include <QPainter>
 
@@ -942,7 +940,7 @@ QSizeF QgsLegendRenderer::drawLayerTitle( QgsLayerTreeLayer *nodeLayer, QgsRende
   }
   const double sideMargin = mSettings.style( nodeLegendStyle( nodeLayer ) ).margin( QgsLegendStyle::Left );
 
-  size.rheight() = ( overallTextHeight /* ( - QgsTextRenderer::fontMetrics( context, layerFormat ).descent() ) */ ) / dotsPerMM;
+  size.rheight() = overallTextHeight / dotsPerMM;
   size.rwidth() = overallTextWidth / dotsPerMM + sideMargin *
                   ( mSettings.style( nodeLegendStyle( nodeLayer ) ).alignment() == Qt::AlignHCenter  ? 2 : 1 );
 
@@ -984,12 +982,9 @@ QSizeF QgsLegendRenderer::drawGroupTitle( QgsLayerTreeGroup *nodeGroup, QgsRende
   }
 
   const double sideMargin = mSettings.style( nodeLegendStyle( nodeGroup ) ).margin( QgsLegendStyle::Left );
-
-  // should this be after scaling????1
   const double dotsPerMM = context.scaleFactor();
 
-
-  size.rheight() = ( overallTextHeight  /*- QgsTextRenderer::fontMetrics( context, groupFormat ).descent()*/ ) / dotsPerMM;
+  size.rheight() = overallTextHeight / dotsPerMM;
   size.rwidth() = overallTextWidth / dotsPerMM + sideMargin *
                   ( mSettings.style( nodeLegendStyle( nodeGroup ) ).alignment() == Qt::AlignHCenter  ? 2 : 1 );
 
