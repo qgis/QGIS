@@ -2829,6 +2829,21 @@ class PyQgsOGRProvider(unittest.TestCase):
                           'IS', 'GROUP', 'COLUMN', 'DELETE', 'VALUES', 'IN', 'NOT', 'BY', 'OR',
                           'INTO', 'AND', 'SET'})
 
+    def test_provider_related_table_types(self):
+        """
+        Test retrieving related table types
+        """
+        metadata = QgsProviderRegistry.instance().providerMetadata('ogr')
+        # GDB
+        conn = metadata.createConnection(TEST_DATA_DIR + '/' + 'relationships.gdb', {})
+        self.assertCountEqual(conn.relatedTableTypes(), ['media', 'features'])
+        # GPKG
+        conn = metadata.createConnection(TEST_DATA_DIR + '/' + 'domains.gpkg', {})
+        self.assertCountEqual(conn.relatedTableTypes(), ['media', 'features', 'simple_attributes', 'attributes', 'tiles'])
+        # other (not supported)
+        conn = metadata.createConnection(TEST_DATA_DIR + '/' + 'lines.shp', {})
+        self.assertEqual(conn.relatedTableTypes(), [])
+
     @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 6, 0), "GDAL 3.6 required")
     def test_provider_relationship_capabilities(self):
         """
