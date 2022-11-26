@@ -405,6 +405,12 @@ QList<QgsLayerMetadataProviderResult> QgsGeoPackageProviderConnection::searchLay
   {
     try
     {
+      // first check if metadata tables/extension exists
+      if ( executeSql( QStringLiteral( "SELECT name FROM sqlite_master WHERE name='gpkg_metadata' AND type='table'" ), nullptr ).isEmpty() )
+      {
+        return results;
+      }
+
       const QString searchQuery { QStringLiteral( R"SQL(
       SELECT
         ref.table_name, md.metadata, gc.geometry_type_name
