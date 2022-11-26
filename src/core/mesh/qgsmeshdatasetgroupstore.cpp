@@ -698,7 +698,7 @@ bool QgsMeshExtraDatasetStore::hasTemporalCapabilities() const
   return mTemporalCapabilities->hasTemporalCapabilities();
 }
 
-quint64 QgsMeshExtraDatasetStore::datasetRelativeTime( QgsMeshDatasetIndex index ) const
+qint64 QgsMeshExtraDatasetStore::datasetRelativeTime( QgsMeshDatasetIndex index ) const
 {
   return mTemporalCapabilities->datasetTime( index );
 }
