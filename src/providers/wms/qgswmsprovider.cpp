@@ -224,6 +224,22 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
       temporalCapabilities()->setFlags( mTileLayer->temporalCapabilityFlags );
       temporalCapabilities()->setIntervalHandlingMethod( Qgis::TemporalIntervalMatchMethod::FindClosestMatchToStartOfRange );
     }
+
+    if ( !mSettings.mXyz )
+    {
+      switch ( mSettings.mTilePixelRatio )
+      {
+        case Qgis::TilePixelRatio::Unknown:
+          mTileLayer->dpi = -1;
+          break;
+        case Qgis::TilePixelRatio::StandardDpi:
+          mTileLayer->dpi = 96;
+          break;
+        case Qgis::TilePixelRatio::HighDpi:
+          mTileLayer->dpi = 192;
+          break;
+      }
+    }
   }
 
   if ( profile )
@@ -811,7 +827,9 @@ QImage *QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, in
 
       // if we know both source and output DPI, let's scale the tiles
       if ( mDpi != -1 && mTileLayer->dpi != -1 )
+      {
         vres *= static_cast<double>( mDpi ) / mTileLayer->dpi;
+      }
 
       // find nearest resolution
       tm = mTileMatrixSet->findNearestResolution( vres );

@@ -21,6 +21,7 @@
 #include <QNetworkCacheMetaData>
 #include <QRegularExpression>
 
+#include "qgis.h"
 #include "qgssettings.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdatasourceuri.h"
@@ -226,6 +227,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
     // tileMatrixSet may be empty if URI was converted from < 1.9 project file URI
     // in that case it means that the source is WMS-C
     mTileMatrixSetId = uri.param( QStringLiteral( "tileMatrixSet" ) );
+    mTilePixelRatio = uri.hasParam( QStringLiteral( "tilePixelRatio" ) ) ? static_cast< Qgis::TilePixelRatio >( uri.param( QStringLiteral( "tilePixelRatio" ) ).toInt() ) : Qgis::TilePixelRatio::Unknown;
   }
 
   if ( uri.hasParam( QStringLiteral( "tileDimensions" ) ) )

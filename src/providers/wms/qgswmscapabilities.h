@@ -845,6 +845,8 @@ class QgsWmsSettings
     //! name of the chosen tile matrix set
     QString                 mTileMatrixSetId;
 
+    Qgis::TilePixelRatio mTilePixelRatio = Qgis::TilePixelRatio::Unknown;
+
     /**
      * Maximum width and height of getmap requests
      */

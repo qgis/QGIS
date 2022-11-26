@@ -132,6 +132,11 @@ QgsDataSourceUri &QgsOwsConnection::addWmsWcsConnectionSettings( QgsDataSourceUr
   {
     uri.setParam( QStringLiteral( "dpiMode" ), dpiMode );
   }
+  const QString tilePixelRatio = settings.value( settingsKey + QStringLiteral( "/tilePixelRatio" ), "0" ).toString();
+  if ( tilePixelRatio != QStringLiteral( "0" ) )
+  {
+    uri.setParam( QStringLiteral( "tilePixelRatio" ), tilePixelRatio );
+  }
 
   return uri;
 }
@@ -163,6 +168,10 @@ QgsDataSourceUri &QgsOwsConnection::addWmsWcsConnectionSettings( QgsDataSourceUr
   if ( settingsConnectionDpiMode.exists( {service.toLower(), connName} ) )
   {
     uri.setParam( QStringLiteral( "dpiMode" ), QString::number( static_cast<int>( settingsConnectionDpiMode.value( {service.toLower(), connName} ) ) ) );
+  }
+  if ( settingsConnectionTilePixelRatio.exists( {service.toLower(), connName} ) )
+  {
+    uri.setParam( QStringLiteral( "tilePixelRatio" ), QString::number( static_cast<int>( settingsConnectionTilePixelRatio.value( {service.toLower(), connName} ) ) ) );
   }
 
   return uri;

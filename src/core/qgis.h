@@ -1955,6 +1955,17 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( DpiMode )
 
+    /**
+     * DpiMode enum
+     * \since QGIS 3.30
+     */
+    enum class TilePixelRatio
+    {
+      Unknown = 0, //!< Unknown (not scale)
+      StandardDpi = 1, //!< Standard (96 DPI)
+      HighDpi = 2, //!< High (192 DPI)
+    };
+    Q_ENUM( TilePixelRatio )
 
     // NOTE -- the hardcoded numbers here must match QFont::Capitalization!
 
