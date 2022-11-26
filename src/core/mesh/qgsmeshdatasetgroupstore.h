@@ -47,7 +47,7 @@ class QgsMeshExtraDatasetStore: public QgsMeshDatasetSourceInterface
     bool hasTemporalCapabilities() const;
 
     //! Returns the relative times of the dataset index with \a index, returned value in milliseconds
-    quint64 datasetRelativeTime( QgsMeshDatasetIndex index ) const;
+    qint64 datasetRelativeTime( QgsMeshDatasetIndex index ) const;
 
     //! Returns information related to the dataset group with \a groupIndex
     QString description( int groupIndex ) const;
