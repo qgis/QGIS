@@ -47,7 +47,7 @@ class QgsMeshExtraDatasetStore: public QgsMeshDatasetSourceInterface
     bool hasTemporalCapabilities() const;
 
     //! Returns the relative times of the dataset index with \a index, returned value in milliseconds
-    quint64 datasetRelativeTime( QgsMeshDatasetIndex index );
+    quint64 datasetRelativeTime( QgsMeshDatasetIndex index ) const;
 
     //! Returns information related to the dataset group with \a groupIndex
     QString description( int groupIndex ) const;
@@ -237,7 +237,7 @@ class QgsMeshDatasetGroupStore: public QObject
   private:
     QgsMeshLayer *mLayer = nullptr;
     QgsMeshDataProvider *mPersistentProvider = nullptr;
-    std::unique_ptr<QgsMeshExtraDatasetStore> mExtraDatasets;
+    QgsMeshExtraDatasetStore mExtraDatasets;
     QMap < int, DatasetGroup> mRegistery;
     QList<int> mPersistentExtraDatasetGroupIndexes;
     QMap<QString, int> mGroupNameToGlobalIndex;
