@@ -84,7 +84,6 @@ void QgsTextRenderer::drawText( const QRectF &rect, double rotation, Qgis::TextH
   QgsTextFormat tmpFormat = format;
   if ( format.dataDefinedProperties().hasActiveProperties() ) // note, we use format instead of tmpFormat here, it's const and potentially avoids a detach
     tmpFormat.updateDataDefinedProperties( context );
-  tmpFormat = updateShadowPosition( tmpFormat );
 
   QStringList textLines;
   for ( const QString &line : text )
@@ -110,17 +109,19 @@ void QgsTextRenderer::drawText( const QRectF &rect, double rotation, Qgis::TextH
 
 void QgsTextRenderer::drawDocument( const QRectF &rect, const QgsTextFormat &format, const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics, QgsRenderContext &context, Qgis::TextHorizontalAlignment horizontalAlignment, Qgis::TextVerticalAlignment verticalAlignment, double rotation, Qgis::TextLayoutMode mode, Qgis::TextRendererFlags )
 {
-  if ( format.background().enabled() )
+  const QgsTextFormat tmpFormat = updateShadowPosition( format );
+
+  if ( tmpFormat.background().enabled() )
   {
-    drawPart( rect, rotation, horizontalAlignment, verticalAlignment, document, metrics, context, format, Qgis::TextComponent::Background, mode );
+    drawPart( rect, rotation, horizontalAlignment, verticalAlignment, document, metrics, context, tmpFormat, Qgis::TextComponent::Background, mode );
   }
 
-  if ( format.buffer().enabled() )
+  if ( tmpFormat.buffer().enabled() )
   {
-    drawPart( rect, rotation, horizontalAlignment, verticalAlignment, document, metrics, context, format, Qgis::TextComponent::Buffer, mode );
+    drawPart( rect, rotation, horizontalAlignment, verticalAlignment, document, metrics, context, tmpFormat, Qgis::TextComponent::Buffer, mode );
   }
 
-  drawPart( rect, rotation, horizontalAlignment, verticalAlignment, document, metrics, context, format, Qgis::TextComponent::Text, mode );
+  drawPart( rect, rotation, horizontalAlignment, verticalAlignment, document, metrics, context, tmpFormat, Qgis::TextComponent::Text, mode );
 }
 
 void QgsTextRenderer::drawText( QPointF point, double rotation, Qgis::TextHorizontalAlignment alignment, const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, bool )
