@@ -303,11 +303,10 @@ QSet< QString > QgsPointDistanceRenderer::legendKeysForFeature( const QgsFeature
 
 QString QgsPointDistanceRenderer::legendKeyToExpression( const QString &key, QgsVectorLayer *layer, bool &ok ) const
 {
-  Q_UNUSED( layer );
   ok = false;
   if ( !mRenderer )
     return QString();
-  return key;
+  return mRenderer.legendKeyToExpression( key, layer, ok );
 }
 
 bool QgsPointDistanceRenderer::willRenderFeature( const QgsFeature &feature, QgsRenderContext &context ) const
