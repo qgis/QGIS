@@ -1771,6 +1771,56 @@ class PyQgsTextRenderer(unittest.TestCase):
 
         self.assertTrue(self.imageCheck('draw_document_rect_ascent', 'draw_document_rect_ascent', image))
 
+    def testDrawDocumentShadowPlacement(self):
+        """
+        Test drawing text document with shadow placement lowest
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setAllowHtmlFormatting(True)
+        format.setSize(30)
+        format.setColor(QColor(255, 255, 255))
+
+        format.shadow().setEnabled(True)
+        format.shadow().setShadowPlacement(QgsTextShadowSettings.ShadowLowest)
+        format.shadow().setOpacity(1.0)
+        format.shadow().setBlurRadius(0)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setOffsetUnit(QgsUnitTypes.RenderMillimeters)
+
+        image = QImage(400, 400, QImage.Format_RGB32)
+
+        painter = QPainter()
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 50, 50))
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+        context.setFlag(QgsRenderContext.ApplyScalingWorkaroundForTextRendering, True)
+
+        painter.begin(image)
+        painter.setRenderHint(QPainter.Antialiasing)
+        image.fill(QColor(152, 219, 249))
+
+        painter.setBrush(QBrush(QColor(182, 239, 255)))
+        painter.setPen(Qt.NoPen)
+
+        doc = QgsTextDocument.fromHtml(['first <span style="font-size:50pt">line</span>', 'second <span style="font-size:50pt">line</span>', 'third line'])
+
+        metrics = QgsTextDocumentMetrics.calculateMetrics(doc, format, context, QgsTextRenderer.FONT_WORKAROUND_SCALE)
+
+        QgsTextRenderer.drawDocument(QRectF(100, 100, 100, 100),
+                                     format,
+                                     doc,
+                                     metrics,
+                                     context,
+                                     mode=Qgis.TextLayoutMode.RectangleAscentBased)
+
+        painter.end()
+
+        self.assertTrue(self.imageCheck('draw_document_shadow_lowest', 'draw_document_shadow_lowest', image))
+
     def testDrawForcedItalic(self):
         """
         Test drawing with forced italic
