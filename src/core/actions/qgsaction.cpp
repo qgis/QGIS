@@ -310,7 +310,9 @@ void QgsAction::run( const QgsExpressionContext &expressionContext ) const
   {
     // The QgsRunProcess instance created by this static function
     // deletes itself when no longer needed.
-    QgsRunProcess::create( expandedAction, mCaptureOutput ); // NOLINT
+#ifndef __clang_analyzer__
+    QgsRunProcess::create( expandedAction, mCaptureOutput );
+#endif
   }
 }
 
