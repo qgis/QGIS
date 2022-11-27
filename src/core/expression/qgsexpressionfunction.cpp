@@ -3063,6 +3063,12 @@ static QVariant fcnSplitGeometry( const QVariantList &values, const QgsExpressio
       splitter.append( ( *pointIt ) );
     if ( splitter.size() < 2 )
       continue;
+    if ( partGeom.type() == QgsWkbTypes::PolygonGeometry )
+    {
+      QgsPoint firstVertex = partGeom.vertexAt( 0 );
+      if ( splitter.last() != firstVertex )
+        splitter.append( firstVertex );
+    }
     outGeoms = { splitterFcn( outGeoms, splitter ) };
   }
   return QgsGeometry::collectGeometry( outGeoms );
