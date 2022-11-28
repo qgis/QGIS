@@ -68,7 +68,7 @@
             <x>0</x>
             <y>0</y>
             <width>786</width>
-            <height>670</height>
+            <height>687</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_15">
@@ -205,7 +205,7 @@
                </widget>
               </item>
               <item row="2" column="1">
-               <widget class="QDateTimeEdit" name="mCreationDateTimeEdit">
+               <widget class="QgsDateTimeEdit" name="mCreationDateTimeEdit">
                 <property name="displayFormat">
                  <string>yyyy-MM-dd HH:mm:ss</string>
                 </property>
@@ -669,7 +669,7 @@
             <x>0</x>
             <y>0</y>
             <width>800</width>
-            <height>637</height>
+            <height>636</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -1075,7 +1075,7 @@
               <x>0</x>
               <y>0</y>
               <width>778</width>
-              <height>592</height>
+              <height>590</height>
              </rect>
             </property>
             <layout class="QGridLayout" name="gridLayout_2">
@@ -1404,6 +1404,95 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_17">
        <item>
+        <widget class="QgsCollapsibleGroupBox" name="groupBox_2">
+         <property name="title">
+          <string>Key Dates</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_3">
+          <item row="0" column="1">
+           <widget class="QgsDateTimeEdit" name="mCreationDateTimeEdit2">
+            <property name="displayFormat">
+             <string>yyyy-MM-dd HH:mm:ss</string>
+            </property>
+            <property name="calendarPopup">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QgsDateTimeEdit" name="mPublishedDateTimeEdit">
+            <property name="displayFormat">
+             <string>yyyy-MM-dd HH:mm:ss</string>
+            </property>
+            <property name="calendarPopup">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_17">
+            <property name="toolTip">
+             <string>Returns the human readable name of the resource, typically displayed in search results.</string>
+            </property>
+            <property name="text">
+             <string>Revised</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QgsDateTimeEdit" name="mRevisedDateTimeEdit">
+            <property name="displayFormat">
+             <string>yyyy-MM-dd HH:mm:ss</string>
+            </property>
+            <property name="calendarPopup">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_25">
+            <property name="toolTip">
+             <string>Returns the human readable name of the resource, typically displayed in search results.</string>
+            </property>
+            <property name="text">
+             <string>Published</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QgsDateTimeEdit" name="mSupersededDateTimeEdit">
+            <property name="displayFormat">
+             <string>yyyy-MM-dd HH:mm:ss</string>
+            </property>
+            <property name="calendarPopup">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_16">
+            <property name="toolTip">
+             <string>Returns the human readable name of the resource, typically displayed in search results.</string>
+            </property>
+            <property name="text">
+             <string>Created</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_30">
+            <property name="toolTip">
+             <string>Returns the human readable name of the resource, typically displayed in search results.</string>
+            </property>
+            <property name="text">
+             <string>Superseded</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
         <widget class="QLabel" name="mLabelHistory">
          <property name="text">
           <string notr="true">Label text set in qgsmetadatawidget.cpp</string>
@@ -1567,12 +1656,17 @@
   <tabstop>btnAddLink</tabstop>
   <tabstop>btnRemoveLink</tabstop>
   <tabstop>tabLinks</tabstop>
+  <tabstop>mCreationDateTimeEdit2</tabstop>
+  <tabstop>mPublishedDateTimeEdit</tabstop>
+  <tabstop>mRevisedDateTimeEdit</tabstop>
+  <tabstop>mSupersededDateTimeEdit</tabstop>
   <tabstop>btnAddHistory</tabstop>
   <tabstop>btnRemoveHistory</tabstop>
   <tabstop>listHistory</tabstop>
   <tabstop>resultsCheckMetadata</tabstop>
  </tabstops>
  <resources>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>

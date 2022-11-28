@@ -2250,3 +2250,11 @@ QgsAction.SubmitUrlMultipart.__doc__ = "POST data to an URL using \"multipart/fo
 Qgis.AttributeActionType.__doc__ = 'Attribute action types.\n\nPrior to QGIS 3.30 this was available as :py:class:`QgsAction`.ActionType\n\n.. versionadded:: 3.30\n\n' + '* ``Generic``: ' + Qgis.AttributeActionType.Generic.__doc__ + '\n' + '* ``GenericPython``: ' + Qgis.AttributeActionType.GenericPython.__doc__ + '\n' + '* ``Mac``: ' + Qgis.AttributeActionType.Mac.__doc__ + '\n' + '* ``Windows``: ' + Qgis.AttributeActionType.Windows.__doc__ + '\n' + '* ``Unix``: ' + Qgis.AttributeActionType.Unix.__doc__ + '\n' + '* ``OpenUrl``: ' + Qgis.AttributeActionType.OpenUrl.__doc__ + '\n' + '* ``SubmitUrlEncoded``: ' + Qgis.AttributeActionType.SubmitUrlEncoded.__doc__ + '\n' + '* ``SubmitUrlMultipart``: ' + Qgis.AttributeActionType.SubmitUrlMultipart.__doc__
 # --
 Qgis.AttributeActionType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.MetadataDateType.Created.__doc__ = "Date created"
+Qgis.MetadataDateType.Published.__doc__ = "Date published"
+Qgis.MetadataDateType.Revised.__doc__ = "Date revised"
+Qgis.MetadataDateType.Superseded.__doc__ = "Date superseded"
+Qgis.MetadataDateType.__doc__ = 'Date types for metadata.\n\n.. versionadded:: 3.30\n\n' + '* ``Created``: ' + Qgis.MetadataDateType.Created.__doc__ + '\n' + '* ``Published``: ' + Qgis.MetadataDateType.Published.__doc__ + '\n' + '* ``Revised``: ' + Qgis.MetadataDateType.Revised.__doc__ + '\n' + '* ``Superseded``: ' + Qgis.MetadataDateType.Superseded.__doc__
+# --
+Qgis.MetadataDateType.baseClass = Qgis

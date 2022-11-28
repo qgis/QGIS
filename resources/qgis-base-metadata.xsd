@@ -66,6 +66,11 @@
 					<xs:documentation>Set of descriptive keywords associated with a given resource.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
+			<xs:element name="dates" type="rm:datesType">
+				<xs:annotation>
+					<xs:documentation>Set of key dates associated with a given resource.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
 			<xs:element name="contact" type="rm:contactType" maxOccurs="unbounded">
 				<xs:annotation>
 					<xs:documentation>Contact person/entity associated with a given resource.</xs:documentation>
@@ -101,6 +106,25 @@
 				<xs:documentation>Reference (URI/URL preferred) to a codelist or vocabulary associated with keyword list.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="datesType">
+		<xs:sequence>
+			<xs:element name="date" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>A dates associated with a resource.</xs:documentation>
+				</xs:annotation>
+				<xs:attribute name="type" type="xs:string">
+					<xs:annotation>
+						<xs:documentation>Date type, valid values are Created, Published, Revised, Superseded.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="value" type="xs:dateTime">
+					<xs:annotation>
+						<xs:documentation>Associated datetime value.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:element>
+		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="contactType">
 		<xs:sequence>
