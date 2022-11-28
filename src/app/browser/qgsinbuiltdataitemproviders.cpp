@@ -2325,7 +2325,7 @@ QString QgsRelationshipDetailsWidget::htmlMetadata( const QgsWeakRelation &relat
 
   if ( relation.cardinality() != Qgis::RelationshipCardinality::ManyToMany )
   {
-    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Tables" ) + QStringLiteral( "</td><td>" ) + relation.referencedLayerName()
+    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Tables" ) + QStringLiteral( "</td><td>" )
                 + QStringLiteral( "%1 → %2" ).arg( relation.referencedLayerName(),
                     relation.referencingLayerName() ) + QStringLiteral( "</td></tr>\n" );
 
@@ -2344,7 +2344,7 @@ QString QgsRelationshipDetailsWidget::htmlMetadata( const QgsWeakRelation &relat
   }
   else
   {
-    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Tables" ) + QStringLiteral( "</td><td>" ) + relation.referencedLayerName()
+    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Tables" ) + QStringLiteral( "</td><td>" )
                 + QStringLiteral( "%1 → %2 → %3" ).arg( relation.referencedLayerName(),
                     relation.mappingTableName(),
                     relation.referencingLayerName() ) + QStringLiteral( "</td></tr>\n" );
