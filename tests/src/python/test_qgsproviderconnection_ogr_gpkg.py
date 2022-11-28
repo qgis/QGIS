@@ -158,6 +158,13 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
         self.assertIn(table_info.primaryKeyColumns()[0], fields.names())
         self.assertEqual(fields.names(), ['fid', 'id', 'typ', 'name', 'ortsrat', 'id_long', 'geom'])
 
+        # aspatial table
+        fields = conn.fields('', 'myNewAspatialTable')
+        table_info = conn.table('', 'myNewAspatialTable')
+        self.assertFalse(table_info.geometryColumn())
+        self.assertIn(table_info.primaryKeyColumns()[0], fields.names())
+        self.assertEqual(fields.names(), ['fid'])
+
     @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 5, 0), "GDAL 3.5 required")
     def test_gpkg_field_domain_names(self):
         """
