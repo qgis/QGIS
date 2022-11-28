@@ -102,6 +102,8 @@ class GdalUtils:
         feedback.pushInfo(GdalUtils.tr('GDAL command output:'))
 
         loglines = [GdalUtils.tr('GDAL execution console output')]
+        # create string list of number from 0 to 99
+        progress_string_list = [str(a) for a in range(0, 100)]
 
         def on_stdout(ba):
             val = ba.data().decode('UTF-8')
@@ -109,8 +111,8 @@ class GdalUtils:
             if val == '100 - done.':
                 on_stdout.progress = 100
                 feedback.setProgress(on_stdout.progress)
-            elif val in ('0', '10', '20', '30', '40', '50', '60', '70', '80', '90'):
-                on_stdout.progress = int(val)
+            elif val.strip('. ') in progress_string_list:
+                on_stdout.progress = int(val.strip('. '))
                 feedback.setProgress(on_stdout.progress)
             elif val == '.':
                 on_stdout.progress += 2.5
