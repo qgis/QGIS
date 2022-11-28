@@ -535,7 +535,7 @@ QgsFields QgsGeoPackageProviderConnection::fields( const QString &schema, const 
     }
     // Append name of the geometry column, the data provider does not expose this information so we need an extra query:/
     const QString sql = QStringLiteral( "SELECT g.column_name "
-                                        "FROM gpkg_contents c LEFT JOIN gpkg_geometry_columns g ON (c.table_name = g.table_name) "
+                                        "FROM gpkg_contents c CROSS JOIN gpkg_geometry_columns g ON (c.table_name = g.table_name) "
                                         "WHERE c.table_name = %1" ).arg( QgsSqliteUtils::quotedString( table ) );
     try
     {
