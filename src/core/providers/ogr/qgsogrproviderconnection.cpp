@@ -542,6 +542,52 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
   }
 #endif
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+  if ( const char *pszIllegalFieldNames = GDALGetMetadataItem( hDriver, GDAL_DMD_ILLEGAL_FIELD_NAMES, nullptr ) )
+  {
+    char **papszTokens = CSLTokenizeString2( pszIllegalFieldNames, " ", 0 );
+    const QStringList illegalFieldNames = QgsOgrUtils::cStringListToQStringList( papszTokens );
+    for ( const QString &name : illegalFieldNames )
+      mIllegalFieldNames.insert( name );
+    CSLDestroy( papszTokens );
+  }
+#else
+  if ( mDriverName == QLatin1String( "OpenFileGDB" ) || mDriverName == QLatin1String( "FileGDB" ) )
+  {
+    mIllegalFieldNames =
+    {
+      QStringLiteral( "ADD" ),
+      QStringLiteral( "ALTER" ),
+      QStringLiteral( "AND" ),
+      QStringLiteral( "BETWEEN" ),
+      QStringLiteral( "BY" ),
+      QStringLiteral( "COLUMN" ),
+      QStringLiteral( "CREATE" ),
+      QStringLiteral( "DELETE" ),
+      QStringLiteral( "DROP" ),
+      QStringLiteral( "EXISTS" ),
+      QStringLiteral( "FOR" ),
+      QStringLiteral( "FROM" ),
+      QStringLiteral( "GROUP" ),
+      QStringLiteral( "IN" ),
+      QStringLiteral( "INSERT" ),
+      QStringLiteral( "INTO" ),
+      QStringLiteral( "IS" ),
+      QStringLiteral( "LIKE" ),
+      QStringLiteral( "NOT" ),
+      QStringLiteral( "NULL" ),
+      QStringLiteral( "OR" ),
+      QStringLiteral( "ORDER" ),
+      QStringLiteral( "SELECT" ),
+      QStringLiteral( "SET" ),
+      QStringLiteral( "TABLE" ),
+      QStringLiteral( "UPDATE" ),
+      QStringLiteral( "VALUES" ),
+      QStringLiteral( "WHERE" )
+    };
+  }
+#endif
+
   mSqlLayerDefinitionCapabilities =
   {
     Qgis::SqlLayerDefinitionCapability::SubsetStringFilter,
