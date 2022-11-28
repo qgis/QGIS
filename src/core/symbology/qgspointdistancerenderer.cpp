@@ -306,7 +306,7 @@ QString QgsPointDistanceRenderer::legendKeyToExpression( const QString &key, Qgs
   ok = false;
   if ( !mRenderer )
     return QString();
-  return mRenderer.legendKeyToExpression( key, layer, ok );
+  return mRenderer->legendKeyToExpression( key, layer, ok );
 }
 
 bool QgsPointDistanceRenderer::willRenderFeature( const QgsFeature &feature, QgsRenderContext &context ) const
