@@ -68,6 +68,11 @@ QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt:
   mNameEdit->setFocus();
 }
 
+void QgsAddAttrDialog::setIllegalFieldNames( const QSet<QString> &names )
+{
+  mIllegalFieldNames = names;
+}
+
 void QgsAddAttrDialog::mTypeBox_currentIndexChanged( int idx )
 {
   mTypeName->setText( mTypeBox->itemData( idx, Qt::UserRole + 1 ).toString() );
@@ -110,12 +115,25 @@ void QgsAddAttrDialog::setPrecisionMinMax()
 
 void QgsAddAttrDialog::accept()
 {
-  if ( mIsShapeFile && mNameEdit->text().compare( QLatin1String( "shape" ), Qt::CaseInsensitive ) == 0 )
+  const QString newName = mNameEdit->text().trimmed();
+  if ( mIsShapeFile && newName.compare( QLatin1String( "shape" ), Qt::CaseInsensitive ) == 0 )
   {
     QMessageBox::warning( this, tr( "Add Field" ),
                           tr( "Invalid field name. This field name is reserved and cannot be used." ) );
     return;
   }
+
+
+  for ( const QString &illegalName : std::as_const( mIllegalFieldNames ) )
+  {
+    if ( newName.compare( illegalName, Qt::CaseInsensitive ) == 0 )
+    {
+      QMessageBox::warning( this, tr( "Add Field" ),
+                            tr( "%1 is an illegal field name for this format and cannot be used." ).arg( newName ) );
+      return;
+    }
+  }
+
   if ( mNameEdit->text().isEmpty() )
   {
     QMessageBox::warning( this, tr( "Add Field" ),
