@@ -66,7 +66,7 @@
 					<xs:documentation>Set of descriptive keywords associated with a given resource.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:element name="dates" type="rm:datesType">
+			<xs:element name="dates" type="rm:datesType" minOccurs="0">
 				<xs:annotation>
 					<xs:documentation>Set of key dates associated with a given resource.</xs:documentation>
 				</xs:annotation>
@@ -148,7 +148,7 @@
 	</xs:complexType>
 	<xs:complexType name="datesType">
 		<xs:sequence>
-			<xs:element name="date" maxOccurs="unbounded" type="rm:dateType">
+			<xs:element name="date" minOccurs="0" maxOccurs="unbounded" type="rm:dateType">
 				<xs:annotation>
 					<xs:documentation>A date associated with a resource.</xs:documentation>
 				</xs:annotation>
