@@ -1089,7 +1089,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
         value = QgsStringUtils::insertLinks( value );
         value.prepend( QStringLiteral( "<pre style=\"font-family: monospace;\">" ) ).append( QStringLiteral( "</pre>" ) );
       }
-      attrItem->setHtml( value );
+      attrItem->setContent( value.toUtf8(), QStringLiteral( "text/html" ) );
     }
     else
     {
