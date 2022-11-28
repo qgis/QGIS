@@ -20,7 +20,7 @@
 
 #include <QGraphicsScene>
 #include <QGraphicsRectItem>
-#include <math.h>
+#include <cmath>
 
 QgsPlotRubberBand::QgsPlotRubberBand( QgsPlotCanvas *canvas )
   : mCanvas( canvas )
