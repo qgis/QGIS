@@ -372,19 +372,23 @@ void QgsNewVectorTableDialog::validate()
   mValidationErrors.clear();
 
   const bool isSpatial { mGeomTypeCbo->currentIndex() > 0 };
-  if ( mTableNames.contains( mTableName->text(), Qt::CaseSensitivity::CaseInsensitive ) )
+  if ( mTableName->text().trimmed().isEmpty() )
   {
-    mValidationErrors.push_back( tr( "Table <b>%1</b> already exists!" ).arg( mTableName->text() ) );
+    mValidationErrors.push_back( tr( "Table name cannot be empty" ) );
+  }
+  else if ( mTableNames.contains( mTableName->text(), Qt::CaseSensitivity::CaseInsensitive ) )
+  {
+    mValidationErrors.push_back( tr( "Table <b>%1</b> already exists" ).arg( mTableName->text() ) );
   }
   // Check for field names and geom col name
   if ( isSpatial && fields().names().contains( mGeomColumn->text(), Qt::CaseSensitivity::CaseInsensitive ) )
   {
-    mValidationErrors.push_back( tr( "Geometry column name <b>%1</b> cannot be equal to an existing field name!" ).arg( mGeomColumn->text() ) );
+    mValidationErrors.push_back( tr( "Geometry column name <b>%1</b> cannot be equal to an existing field name" ).arg( mGeomColumn->text() ) );
   }
   // No geometry and no fields? No party!
   if ( ! isSpatial && fields().count() == 0 )
   {
-    mValidationErrors.push_back( tr( "The table has no geometry column and no fields!" ) );
+    mValidationErrors.push_back( tr( "The table has no geometry column and no fields" ) );
   }
   // Check if precision is <= length
   const QgsFields cFields { fields() };
@@ -392,14 +396,21 @@ void QgsNewVectorTableDialog::validate()
   {
     if ( f.isNumeric() && f.length() >= 0 && f.precision() >= 0 && f.precision() > f.length() )
     {
-      mValidationErrors.push_back( tr( "Field <b>%1</b>: precision cannot be greater than length!" ).arg( f.name() ) );
+      mValidationErrors.push_back( tr( "Field <b>%1</b>: precision cannot be greater than length" ).arg( f.name() ) );
     }
 
-    for ( const QString &illegalName : std::as_const( mIllegalFieldNames ) )
+    if ( f.name().trimmed().isEmpty() )
     {
-      if ( f.name().compare( illegalName, Qt::CaseInsensitive ) == 0 )
+      mValidationErrors.push_back( tr( "Field name cannot be empty" ) );
+    }
+    else
+    {
+      for ( const QString &illegalName : std::as_const( mIllegalFieldNames ) )
       {
-        mValidationErrors.push_back( tr( "<b>%1</b> is an illegal field name for this format and cannot be used" ).arg( f.name() ) );
+        if ( f.name().compare( illegalName, Qt::CaseInsensitive ) == 0 )
+        {
+          mValidationErrors.push_back( tr( "<b>%1</b> is an illegal field name for this format and cannot be used" ).arg( f.name() ) );
+        }
       }
     }
   }
