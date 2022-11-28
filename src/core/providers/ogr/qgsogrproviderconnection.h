@@ -91,6 +91,7 @@ class QgsOgrProviderConnection : public QgsAbstractDatabaseProviderConnection
     void renameField( const QString &schema, const QString &tableName, const QString &name, const QString &newName ) const override;
     SqlVectorLayerOptions sqlOptions( const QString &layerSource ) override;
     QList< QgsWeakRelation > relationships( const QString &schema = QString(), const QString &tableName = QString() ) const override;
+    void addRelationship( const QgsWeakRelation &relationship ) const override;
 
   protected:
 

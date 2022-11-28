@@ -23,6 +23,7 @@ from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (
     NULL,
+    QgsCoordinateReferenceSystem,
     QgsAuthMethodConfig,
     QgsApplication,
     QgsCoordinateTransformContext,
@@ -54,7 +55,8 @@ from qgis.core import (
     QgsProviderMetadata,
     QgsRelation,
     QgsUnsetAttributeValue,
-    QgsFieldConstraints
+    QgsFieldConstraints,
+    QgsWeakRelation
 )
 
 from qgis.gui import (
@@ -2891,6 +2893,63 @@ class PyQgsOGRProvider(unittest.TestCase):
 
         relationships = conn.relationships('', 'table2')
         self.assertFalse(relationships)
+
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 6, 0), "GDAL 3.6 required")
+    def test_provider_connection_create_relationship(self):
+        """
+        Test creating relationship via the connections API
+        """
+        metadata = QgsProviderRegistry.instance().providerMetadata('ogr')
+        with tempfile.TemporaryDirectory() as temp_dir:
+            tmpfile = os.path.join(temp_dir, 'test_gdb.gdb')
+
+            ok, err = metadata.createDatabase(tmpfile)
+            self.assertTrue(ok)
+            self.assertFalse(err)
+
+            conn = metadata.createConnection(tmpfile, {})
+            self.assertTrue(conn)
+
+            conn.createVectorTable('', 'child', QgsFields(), QgsWkbTypes.Point, QgsCoordinateReferenceSystem('EPSG:4326'), False, {})
+            layer = QgsVectorLayer(tmpfile + '|layername=child')
+            self.assertTrue(layer.isValid())
+
+            conn.createVectorTable('', 'parent', QgsFields(), QgsWkbTypes.Point, QgsCoordinateReferenceSystem('EPSG:4326'), False, {})
+            layer = QgsVectorLayer(tmpfile + '|layername=parent')
+            self.assertTrue(layer.isValid())
+            del layer
+
+            self.assertTrue(
+                conn.capabilities() & QgsAbstractDatabaseProviderConnection.AddRelationship)
+
+            relationships = conn.relationships()
+            self.assertFalse(relationships)
+
+            rel = QgsWeakRelation('id',
+                                  'rel_name',
+                                  Qgis.RelationshipStrength.Association,
+                                  'referencing_id',
+                                  'referencing_name',
+                                  tmpfile + '|layername=child',
+                                  'ogr',
+                                  'referenced_id',
+                                  'referenced_name',
+                                  tmpfile + '|layername=parent',
+                                  'ogr'
+                                  )
+            rel.setReferencedLayerFields(['fielda'])
+            rel.setReferencingLayerFields(['fieldb'])
+
+            conn.addRelationship(rel)
+            relationships = conn.relationships()
+            self.assertEqual(len(relationships), 1)
+
+            result = relationships[0]
+            self.assertEqual(result.name(), 'rel_name')
+            self.assertEqual(result.referencingLayerSource(), tmpfile + '|layername=child')
+            self.assertEqual(result.referencedLayerSource(), tmpfile + '|layername=parent')
+            self.assertEqual(result.referencingLayerFields(), ['fieldb'])
+            self.assertEqual(result.referencedLayerFields(), ['fielda'])
 
     def testUniqueGeometryType(self):
         """
