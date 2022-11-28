@@ -723,6 +723,14 @@ Subclasses should add provider- and/or connection- specific words.
 .. versionadded:: 3.22
 %End
 
+    virtual QSet< QString > illegalFieldNames() const;
+%Docstring
+Returns a list of field names which are considered illegal by the connection and
+should not be used when creating or altering fields.
+
+.. versionadded:: 3.30
+%End
+
     virtual QStringList fieldDomainNames() const throw( QgsProviderConnectionException );
 %Docstring
 Returns a list of field domain names present on the provider.

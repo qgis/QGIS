@@ -2812,6 +2812,21 @@ class PyQgsOGRProvider(unittest.TestCase):
                                'GDB_ItemRelationships', 'GDB_ItemTypes', 'GDB_Items',
                                'GDB_SpatialRefs', 'GDB_SystemCatalog'])
 
+    def test_provider_connection_illegal_fields(self):
+        """
+        Test retrieving illegal field names via the connections API
+        """
+        metadata = QgsProviderRegistry.instance().providerMetadata('ogr')
+        # start with a connection which only supports one layer
+        conn = metadata.createConnection(TEST_DATA_DIR + '/' + 'relationships.gdb', {})
+        self.assertTrue(conn)
+
+        self.assertEqual(conn.illegalFieldNames(),
+                         {'ALTER', 'NULL', 'UPDATE', 'LIKE', 'FROM', 'WHERE', 'INSERT', 'CREATE',
+                          'EXISTS', 'ORDER', 'DROP', 'TABLE', 'BETWEEN', 'SELECT', 'FOR', 'ADD',
+                          'IS', 'GROUP', 'COLUMN', 'DELETE', 'VALUES', 'IN', 'NOT', 'BY', 'OR',
+                          'INTO', 'AND', 'SET'})
+
     @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 6, 0), "GDAL 3.6 required")
     def test_provider_connection_relationships(self):
         """

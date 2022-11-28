@@ -1015,6 +1015,11 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsAbstractDatabaseProviderConn
   };
 }
 
+QSet<QString> QgsAbstractDatabaseProviderConnection::illegalFieldNames() const
+{
+  return mIllegalFieldNames;
+}
+
 QList<Qgis::FieldDomainType> QgsAbstractDatabaseProviderConnection::supportedFieldDomainTypes() const
 {
   return {};

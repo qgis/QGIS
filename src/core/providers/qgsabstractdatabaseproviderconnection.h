@@ -837,6 +837,14 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual QMultiMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary();
 
     /**
+     * Returns a list of field names which are considered illegal by the connection and
+     * should not be used when creating or altering fields.
+     *
+     * \since QGIS 3.30
+     */
+    virtual QSet< QString > illegalFieldNames() const;
+
+    /**
      * Returns a list of field domain names present on the provider.
      *
      * This is supported on providers with the Capability::ListFieldDomains capability only.
@@ -954,6 +962,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     GeometryColumnCapabilities mGeometryColumnCapabilities = GeometryColumnCapabilities() SIP_SKIP;
     Qgis::SqlLayerDefinitionCapabilities mSqlLayerDefinitionCapabilities = Qgis::SqlLayerDefinitionCapabilities() SIP_SKIP;
     QString mProviderKey;
+    QSet<QString> mIllegalFieldNames SIP_SKIP;
 
 };
 
