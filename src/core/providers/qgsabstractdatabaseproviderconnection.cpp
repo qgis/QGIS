@@ -1340,6 +1340,11 @@ QList< QgsWeakRelation > QgsAbstractDatabaseProviderConnection::relationships( c
   return {};
 }
 
+void QgsAbstractDatabaseProviderConnection::addRelationship( const QgsWeakRelation & ) const
+{
+  checkCapability( Capability::AddRelationship );
+}
+
 QString QgsAbstractDatabaseProviderConnection::TableProperty::defaultName() const
 {
   QString n = mTableName;

@@ -32,6 +32,7 @@ class QgsCoordinateReferenceSystem;
 class QgsFieldDomain;
 
 class QTextCodec;
+class QgsWeakRelation;
 
 namespace gdal
 {
@@ -114,6 +115,22 @@ namespace gdal
 
   };
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+
+  /**
+   * Closes and cleanups GDAL relationship.
+   */
+  struct GDALRelationshipDeleter
+  {
+
+    /**
+     * Destroys GDAL \a relationship, using the correct gdal calls.
+     */
+    void CORE_EXPORT operator()( GDALRelationshipH relationship ) const;
+
+  };
+#endif
+
   /**
    * Scoped OGR data source.
    */
@@ -153,6 +170,14 @@ namespace gdal
    * Scoped GDAL warp options.
    */
   using warp_options_unique_ptr = std::unique_ptr< GDALWarpOptions, GDALWarpOptionsDeleter >;
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+
+  /**
+   * Scoped GDAL relationship.
+   */
+  using relationship_unique_ptr = std::unique_ptr< std::remove_pointer<GDALRelationshipH>::type, GDALRelationshipDeleter >;
+#endif
 }
 
 /**
@@ -426,6 +451,30 @@ class CORE_EXPORT QgsOgrUtils
     static OGRFieldDomainH convertFieldDomain( const QgsFieldDomain *domain );
 #endif
 #endif
+
+#ifndef SIP_RUN
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+
+    /**
+     * Converts an GDAL \a relationship definition to a QgsWeakRelation equivalent.
+     *
+     * \note Requires GDAL >= 3.6
+     * \note Not available in Python bindings
+     * \since QGIS 3.30
+     */
+    static QgsWeakRelation convertRelationship( GDALRelationshipH relationship, const QString &datasetUri );
+
+    /**
+     * Converts a QGIS relation to a GDAL relationship equivalent.
+     *
+     * \note Requires GDAL >= 3.6
+     * \note Not available in Python bindings
+     * \since QGIS 3.30
+     */
+    static gdal::relationship_unique_ptr convertRelationship( const QgsWeakRelation &relation, QString &error );
+#endif
+#endif
+
 };
 
 #endif // QGSOGRUTILS_H

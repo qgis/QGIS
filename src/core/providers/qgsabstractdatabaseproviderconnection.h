@@ -509,6 +509,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       AddFieldDomain = 1 << 25,                       //!< Can add new field domains to the database via addFieldDomain() (since QGIS 3.26)
       RenameField = 1 << 26,                          //!< Can rename existing fields via renameField() (since QGIS 3.28)
       RetrieveRelationships = 1 << 27,                //!< Can retrieve relationships from the database (since QGIS 3.28)
+      AddRelationship = 1 << 28,                      //!< Can add new relationships to the database via addRelationship() (since QGIS 3.30)
     };
     Q_ENUM( Capability )
     Q_DECLARE_FLAGS( Capabilities, Capability )
@@ -906,6 +907,14 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \since QGIS 3.28
      */
     virtual QList< QgsWeakRelation > relationships( const QString &schema = QString(), const QString &tableName = QString() ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Adds a new field \a relationship to the database.
+     *
+     * \throws QgsProviderConnectionException if any errors are encountered.
+     * \since QGIS 3.30
+     */
+    virtual void addRelationship( const QgsWeakRelation &relationship ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Returns a SQL query builder for the connection, which provides an interface for provider-specific creation of SQL queries.
