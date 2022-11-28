@@ -2614,6 +2614,20 @@ class CORE_EXPORT Qgis
     Q_ENUM( AttributeActionType )
 
     /**
+     * Date types for metadata.
+     *
+     * \since QGIS 3.30
+     */
+    enum class MetadataDateType
+    {
+      Created, //!< Date created
+      Published, //!< Date published
+      Revised, //!< Date revised
+      Superseded, //!< Date superseded
+    };
+    Q_ENUM( MetadataDateType )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */
