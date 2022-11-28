@@ -107,6 +107,8 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
     mSpatialIndexLabel->hide();
   }
 
+  mIllegalFieldNames = mConnection->illegalFieldNames();
+
   // Initial load of table names
   updateTableNames( mSchemaCbo->currentText() );
 
@@ -385,12 +387,20 @@ void QgsNewVectorTableDialog::validate()
     mValidationErrors.push_back( tr( "The table has no geometry column and no fields!" ) );
   }
   // Check if precision is <= length
-  const auto cFields { fields() };
-  for ( const auto &f : cFields )
+  const QgsFields cFields { fields() };
+  for ( const QgsField &f : cFields )
   {
     if ( f.isNumeric() && f.length() >= 0 && f.precision() >= 0 && f.precision() > f.length() )
     {
       mValidationErrors.push_back( tr( "Field <b>%1</b>: precision cannot be greater than length!" ).arg( f.name() ) );
+    }
+
+    for ( const QString &illegalName : std::as_const( mIllegalFieldNames ) )
+    {
+      if ( f.name().compare( illegalName, Qt::CaseInsensitive ) == 0 )
+      {
+        mValidationErrors.push_back( tr( "<b>%1</b> is an illegal field name for this format and cannot be used" ).arg( f.name() ) );
+      }
     }
   }
 
