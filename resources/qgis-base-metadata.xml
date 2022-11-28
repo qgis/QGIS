@@ -13,6 +13,12 @@
         <keyword>kw1</keyword>
         <keyword>kw2</keyword>
     </keywords>
+    <dates>
+        <date type="Created" value="2020-01-01T12:13:14" />
+        <date type="Superseded" value="2020-01-02T12:13:14" />
+        <date type="Published" value="2020-01-03T12:13:14" />
+        <date type="Revised" value="2020-01-04T12:13:14" />
+    </dates>
     <contact>
         <name>John Smith</name>
         <organization>ACME</organization>
