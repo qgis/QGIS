@@ -27,7 +27,6 @@
 #include "qgsdbquerylog.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsweakrelation.h"
-#include "qgsgdalutils.h"
 
 #include <QTextCodec>
 #include <QRegularExpression>
@@ -832,7 +831,7 @@ void QgsOgrProviderConnection::addFieldDomain( const QgsFieldDomain &domain, con
       if ( !GDALDatasetAddFieldDomain( hDS.get(), ogrDomain, &failureReason ) )
       {
         OGR_FldDomain_Destroy( ogrDomain );
-        QString error( failureReason );
+        const QString error( failureReason );
         CPLFree( failureReason );
         throw QgsProviderConnectionException( QObject::tr( "Could not create field domain: %1" ).arg( error ) );
       }
@@ -1004,7 +1003,7 @@ void QgsOgrProviderConnection::addRelationship( const QgsWeakRelation &relations
     char *failureReason = nullptr;
     if ( !GDALDatasetAddRelationship( hDS.get(), relationH.get(), &failureReason ) )
     {
-      QString error( failureReason );
+      const QString error( failureReason );
       CPLFree( failureReason );
       throw QgsProviderConnectionException( QObject::tr( "Could not create relationship: %1" ).arg( error ) );
     }
@@ -1049,7 +1048,7 @@ void QgsOgrProviderConnection::updateRelationship( const QgsWeakRelation &relati
     char *failureReason = nullptr;
     if ( !GDALDatasetUpdateRelationship( hDS.get(), relationH.get(), &failureReason ) )
     {
-      QString error( failureReason );
+      const QString error( failureReason );
       CPLFree( failureReason );
       throw QgsProviderConnectionException( QObject::tr( "Could not update relationship: %1" ).arg( error ) );
     }
@@ -1079,7 +1078,7 @@ void QgsOgrProviderConnection::deleteRelationship( const QgsWeakRelation &relati
     char *failureReason = nullptr;
     if ( !GDALDatasetDeleteRelationship( hDS.get(), relationshipName.toLocal8Bit().constData(), &failureReason ) )
     {
-      QString error( failureReason );
+      const QString error( failureReason );
       CPLFree( failureReason );
       throw QgsProviderConnectionException( QObject::tr( "Could not delete relationship: %1" ).arg( error ) );
     }
