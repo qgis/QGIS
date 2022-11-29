@@ -24,7 +24,6 @@
 #include "qgsrastertransparencywidget.h"
 #include "qgsrasterlayer.h"
 #include "qgsraster.h"
-#include "qgsrasterlayerrenderer.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrastertransparency.h"
 #include "qgsmaptoolemitpoint.h"
