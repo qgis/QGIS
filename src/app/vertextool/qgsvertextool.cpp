@@ -2229,15 +2229,18 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
   }
 
   VertexEdits beforeEdits;
-  const auto editKeys = edits.keys();
-  for ( QgsVectorLayer *layer : editKeys )
+  VertexEdits::const_iterator editLayer = edits.constBegin();
+  while ( editLayer != edits.constEnd() )
   {
-    const auto editFid = edits[layer].keys();
-    for ( QgsFeatureId fid : editFid )
+    QgsVectorLayer *layer = editLayer.key();
+    QHash<QgsFeatureId, QgsGeometry>::const_iterator editGeometry = editLayer.value().constBegin();
+    while ( editGeometry != editLayer.value().constEnd() )
     {
-      const QgsGeometry g = edits[layer][fid];
+      QgsFeatureId fid = editGeometry.key();
       beforeEdits[layer][fid] = layer->getGeometry( fid );
+      ++editGeometry;
     }
+    ++editLayer;
   }
 
   applyEditsToLayers( edits );
