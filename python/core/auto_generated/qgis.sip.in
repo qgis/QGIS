@@ -1163,6 +1163,12 @@ The development version
       GeoServer,
     };
 
+    enum class TilePixelRatio
+    {
+      Undefined,
+      StandardDpi,
+      HighDpi,
+    };
 
 
     enum class Capitalization

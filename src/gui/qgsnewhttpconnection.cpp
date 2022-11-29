@@ -65,12 +65,16 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
   txtName->setValidator( new QRegularExpressionValidator( QRegularExpression( "[^\\/]+" ), txtName ) );
 
   cmbDpiMode->clear();
-
   cmbDpiMode->addItem( tr( "all" ), static_cast<int>( Qgis::DpiMode::All ) );
   cmbDpiMode->addItem( tr( "off" ), static_cast<int>( Qgis::DpiMode::Off ) );
   cmbDpiMode->addItem( tr( "QGIS" ), static_cast<int>( Qgis::DpiMode::QGIS ) );
   cmbDpiMode->addItem( tr( "UMN" ), static_cast<int>( Qgis::DpiMode::UMN ) );
   cmbDpiMode->addItem( tr( "GeoServer" ), static_cast<int>( Qgis::DpiMode::GeoServer ) );
+
+  cmbTilePixelRatio->clear();
+  cmbTilePixelRatio->addItem( tr( "Undefined (not scaled)" ), static_cast<int>( Qgis::TilePixelRatio::Undefined ) );
+  cmbTilePixelRatio->addItem( tr( "Standard (96 DPI)" ), static_cast<int>( Qgis::TilePixelRatio::StandardDpi ) );
+  cmbTilePixelRatio->addItem( tr( "High (192 DPI)" ), static_cast<int>( Qgis::TilePixelRatio::HighDpi ) );
 
   cmbVersion->clear();
   cmbVersion->addItem( tr( "Maximum" ) );
@@ -135,6 +139,10 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
       mGroupBox->layout()->removeWidget( cmbDpiMode );
       lblDpiMode->setVisible( false );
       mGroupBox->layout()->removeWidget( lblDpiMode );
+      cmbTilePixelRatio->setVisible( false );
+      mGroupBox->layout()->removeWidget( cmbTilePixelRatio );
+      lblTilePixelRatio->setVisible( false );
+      mGroupBox->layout()->removeWidget( lblTilePixelRatio );
     }
   }
 
@@ -286,7 +294,7 @@ QString QgsNewHttpConnection::wmsSettingsKey( const QString &base, const QString
 
 void QgsNewHttpConnection::updateServiceSpecificSettings()
 {
-  QStringList detailsParameters = {mServiceName.toLower(), mOriginalConnName};
+  QStringList detailsParameters = { mServiceName.toLower(), mOriginalConnName };
 
   cbxIgnoreGetMapURI->setChecked( QgsOwsConnection::settingsConnectionIgnoreGetMapURI.value( detailsParameters ) );
   cbxWmsIgnoreReportedLayerExtents->setChecked( QgsOwsConnection::settingsConnectionReportedLayerExtents.value( detailsParameters ) );
@@ -301,6 +309,8 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
 
   Qgis::DpiMode dpiMode = QgsOwsConnection::settingsConnectionDpiMode.value( detailsParameters );
   cmbDpiMode->setCurrentIndex( cmbDpiMode->findData( static_cast<int>( dpiMode ) ) );
+  Qgis::TilePixelRatio tilePixelRatio = QgsOwsConnection::settingsConnectionTilePixelRatio.value( detailsParameters );
+  cmbTilePixelRatio->setCurrentIndex( cmbTilePixelRatio->findData( static_cast<int>( tilePixelRatio ) ) );
 
   const QString version = QgsOwsConnection::settingsConnectionVersion.value( detailsParameters );
   int versionIdx = WFS_VERSION_MAX; // AUTO
@@ -395,6 +405,8 @@ void QgsNewHttpConnection::accept()
 
     Qgis::DpiMode dpiMode = cmbDpiMode->currentData().value<Qgis::DpiMode>();
     QgsOwsConnection::settingsConnectionDpiMode.setValue( dpiMode, detailsParameters );
+    Qgis::TilePixelRatio tilePixelRatio = cmbTilePixelRatio->currentData().value<Qgis::TilePixelRatio>();
+    QgsOwsConnection::settingsConnectionTilePixelRatio.setValue( tilePixelRatio, detailsParameters );
 
     mHttpHeaders->updateSettings( settings, QStringLiteral( "qgis/connections-%1/%2" ).arg( mServiceName.toLower(), newConnectionName ) );
   }

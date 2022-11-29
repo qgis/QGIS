@@ -1821,6 +1821,13 @@ Qgis.DpiMode.GeoServer.__doc__ = "GeoServer"
 Qgis.DpiMode.__doc__ = 'DpiMode enum\n\n.. versionadded:: 3.26\n\n' + '* ``All``: ' + Qgis.DpiMode.All.__doc__ + '\n' + '* ``Off``: ' + Qgis.DpiMode.Off.__doc__ + '\n' + '* ``QGIS``: ' + Qgis.DpiMode.QGIS.__doc__ + '\n' + '* ``UMN``: ' + Qgis.DpiMode.UMN.__doc__ + '\n' + '* ``GeoServer``: ' + Qgis.DpiMode.GeoServer.__doc__
 # --
 Qgis.DpiMode.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.TilePixelRatio.Undefined.__doc__ = "Undefined (not scale)"
+Qgis.TilePixelRatio.StandardDpi.__doc__ = "Standard (96 DPI)"
+Qgis.TilePixelRatio.HighDpi.__doc__ = "High (192 DPI)"
+Qgis.TilePixelRatio.__doc__ = 'DpiMode enum\n\n.. versionadded:: 3.30\n\n' + '* ``Undefined``: ' + Qgis.TilePixelRatio.Undefined.__doc__ + '\n' + '* ``StandardDpi``: ' + Qgis.TilePixelRatio.StandardDpi.__doc__ + '\n' + '* ``HighDpi``: ' + Qgis.TilePixelRatio.HighDpi.__doc__
+# --
+Qgis.TilePixelRatio.baseClass = Qgis
 QgsStringUtils.Capitalization = Qgis.Capitalization
 # monkey patching scoped based enum
 QgsStringUtils.MixedCase = Qgis.Capitalization.MixedCase
