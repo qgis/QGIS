@@ -3800,9 +3800,9 @@ static QVariant fcnOldXat( const QVariantList &values, const QgsExpressionContex
 {
   FEAT_FROM_CONTEXT( context, feature )
   const QgsGeometry geom = feature.geometry();
-  int idx = QgsExpressionUtils::getNativeIntValue( values.at( 0 ), parent );
+  const int idx = QgsExpressionUtils::getNativeIntValue( values.at( 0 ), parent );
 
-  QVariant v = pointAt( geom, idx, parent );
+  const QVariant v = pointAt( geom, idx, parent );
 
   if ( !v.isNull() )
     return QVariant( v.value<QgsPoint>().x() );
@@ -3811,23 +3811,24 @@ static QVariant fcnOldXat( const QVariantList &values, const QgsExpressionContex
 }
 static QVariant fcnXat( const QVariantList &values, const QgsExpressionContext *f, QgsExpression *parent, const QgsExpressionNodeFunction *node )
 {
-  if ( values.at( 1 ).isNull() || values.at( 0 ).isNull() ) // the case where the alias x_at function is called like a $ function (x_at(i))
+  if ( values.at( 1 ).isNull() && !values.at( 0 ).isNull() ) // the case where the alias x_at function is called like a $ function (x_at(i))
   {
     return fcnOldXat( values, f, parent, node );
   }
-  else if ( values.at( 0 ).isNull() && !values.at( 1 ).isNull() ) // same as above with x_at(i:=0) (this values is at the second position)
+  else if ( values.at( 0 ).isNull() && !values.at( 1 ).isNull() ) // same as above with x_at(i:=0) (vertex value is at the second position)
   {
     return fcnOldXat( QVariantList() << values[1], f, parent, node );
   }
 
-  QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
-  int vertexNumber = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent ); // Should be one or 0 ???
+  const QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
   if ( geom.isNull() )
   {
     return QVariant();
   }
 
-  QVariant v = pointAt( geom, vertexNumber, parent );
+  const int vertexNumber = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
+
+  const QVariant v = pointAt( geom, vertexNumber, parent );
   if ( !v.isNull() )
     return QVariant( v.value<QgsPoint>().x() );
   else
@@ -3839,9 +3840,9 @@ static QVariant fcnOldYat( const QVariantList &values, const QgsExpressionContex
 {
   FEAT_FROM_CONTEXT( context, feature )
   const QgsGeometry geom = feature.geometry();
-  int idx = QgsExpressionUtils::getNativeIntValue( values.at( 0 ), parent );
+  const int idx = QgsExpressionUtils::getNativeIntValue( values.at( 0 ), parent );
 
-  QVariant v = pointAt( geom, idx, parent );
+  const QVariant v = pointAt( geom, idx, parent );
 
   if ( !v.isNull() )
     return QVariant( v.value<QgsPoint>().y() );
@@ -3850,23 +3851,24 @@ static QVariant fcnOldYat( const QVariantList &values, const QgsExpressionContex
 }
 static QVariant fcnYat( const QVariantList &values, const QgsExpressionContext *f, QgsExpression *parent, const QgsExpressionNodeFunction *node )
 {
-  if ( values.at( 1 ).isNull() ) // the case where the alias y_at function is called like a $ function (y_at(i))
+  if ( values.at( 1 ).isNull() && !values.at( 0 ).isNull() ) // the case where the alias y_at function is called like a $ function (y_at(i))
   {
     return fcnOldYat( values, f, parent, node );
   }
-  else if ( values.at( 0 ).isNull() && !values.at( 1 ).isNull() ) // same as above with x_at(i:=0) (this values is at the second position)
+  else if ( values.at( 0 ).isNull() && !values.at( 1 ).isNull() ) // same as above with x_at(i:=0) (vertex value is at the second position)
   {
     return fcnOldYat( QVariantList() << values[1], f, parent, node );
   }
 
-  QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
-  int vertexNumber = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
+  const QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
   if ( geom.isNull() )
   {
     return QVariant();
   }
 
-  QVariant v = pointAt( geom, vertexNumber, parent );
+  const int vertexNumber = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
+
+  const QVariant v = pointAt( geom, vertexNumber, parent );
   if ( !v.isNull() )
     return QVariant( v.value<QgsPoint>().y() );
   else
@@ -3875,14 +3877,15 @@ static QVariant fcnYat( const QVariantList &values, const QgsExpressionContext *
 
 static QVariant fcnZat( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
-  int vertexNumber = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
+  const QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
   if ( geom.isNull() )
   {
     return QVariant();
   }
 
-  QVariant v = pointAt( geom, vertexNumber, parent );
+  const int vertexNumber = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
+
+  const QVariant v = pointAt( geom, vertexNumber, parent );
   if ( !v.isNull() && v.value<QgsPoint>().is3D() )
     return QVariant( v.value<QgsPoint>().z() );
   else
@@ -3891,14 +3894,15 @@ static QVariant fcnZat( const QVariantList &values, const QgsExpressionContext *
 
 static QVariant fcnMat( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
-  int vertexNumber = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
+  const QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
   if ( geom.isNull() )
   {
     return QVariant();
   }
 
-  QVariant v = pointAt( geom, vertexNumber, parent );
+  const int vertexNumber = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
+
+  const QVariant v = pointAt( geom, vertexNumber, parent );
   if ( !v.isNull() && v.value<QgsPoint>().isMeasure() )
     return QVariant( v.value<QgsPoint>().m() );
   else
