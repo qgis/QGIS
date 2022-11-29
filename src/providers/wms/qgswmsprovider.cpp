@@ -229,7 +229,7 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
     {
       switch ( mSettings.mTilePixelRatio )
       {
-        case Qgis::TilePixelRatio::Unknown:
+        case Qgis::TilePixelRatio::Undefined:
           mTileLayer->dpi = -1;
           break;
         case Qgis::TilePixelRatio::StandardDpi:

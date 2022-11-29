@@ -1961,7 +1961,7 @@ class CORE_EXPORT Qgis
      */
     enum class TilePixelRatio
     {
-      Unknown = 0, //!< Unknown (not scale)
+      Undefined = 0, //!< Undefined (not scale)
       StandardDpi = 1, //!< Standard (96 DPI)
       HighDpi = 2, //!< High (192 DPI)
     };

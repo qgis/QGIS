@@ -1822,10 +1822,10 @@ Qgis.DpiMode.__doc__ = 'DpiMode enum\n\n.. versionadded:: 3.26\n\n' + '* ``All``
 # --
 Qgis.DpiMode.baseClass = Qgis
 # monkey patching scoped based enum
-Qgis.TilePixelRatio.Unknown.__doc__ = "Unknown (not scale)"
+Qgis.TilePixelRatio.Undefined.__doc__ = "Undefined (not scale)"
 Qgis.TilePixelRatio.StandardDpi.__doc__ = "Standard (96 DPI)"
 Qgis.TilePixelRatio.HighDpi.__doc__ = "High (192 DPI)"
-Qgis.TilePixelRatio.__doc__ = 'DpiMode enum\n\n.. versionadded:: 3.30\n\n' + '* ``Unknown``: ' + Qgis.TilePixelRatio.Unknown.__doc__ + '\n' + '* ``StandardDpi``: ' + Qgis.TilePixelRatio.StandardDpi.__doc__ + '\n' + '* ``HighDpi``: ' + Qgis.TilePixelRatio.HighDpi.__doc__
+Qgis.TilePixelRatio.__doc__ = 'DpiMode enum\n\n.. versionadded:: 3.30\n\n' + '* ``Undefined``: ' + Qgis.TilePixelRatio.Undefined.__doc__ + '\n' + '* ``StandardDpi``: ' + Qgis.TilePixelRatio.StandardDpi.__doc__ + '\n' + '* ``HighDpi``: ' + Qgis.TilePixelRatio.HighDpi.__doc__
 # --
 Qgis.TilePixelRatio.baseClass = Qgis
 QgsStringUtils.Capitalization = Qgis.Capitalization

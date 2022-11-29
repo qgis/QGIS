@@ -1165,7 +1165,7 @@ The development version
 
     enum class TilePixelRatio
     {
-      Unknown,
+      Undefined,
       StandardDpi,
       HighDpi,
     };
