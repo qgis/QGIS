@@ -1016,7 +1016,7 @@ void QgsOgrProviderConnection::addRelationship( const QgsWeakRelation &relations
     throw QgsProviderConnectionException( QObject::tr( "There was an error opening the dataset %1!" ).arg( uri() ) );
   }
 #else
-  Q_UNUSED( tableName )
+  Q_UNUSED( relationship )
   throw QgsProviderConnectionException( QObject::tr( "Adding relationships for datasets requires GDAL 3.6 or later" ) );
 #endif
 }
@@ -1061,7 +1061,7 @@ void QgsOgrProviderConnection::updateRelationship( const QgsWeakRelation &relati
     throw QgsProviderConnectionException( QObject::tr( "There was an error opening the dataset %1!" ).arg( uri() ) );
   }
 #else
-  Q_UNUSED( tableName )
+  Q_UNUSED( relationship )
   throw QgsProviderConnectionException( QObject::tr( "Updating relationships for datasets requires GDAL 3.6 or later" ) );
 #endif
 }
@@ -1091,7 +1091,7 @@ void QgsOgrProviderConnection::deleteRelationship( const QgsWeakRelation &relati
     throw QgsProviderConnectionException( QObject::tr( "There was an error opening the dataset %1!" ).arg( uri() ) );
   }
 #else
-  Q_UNUSED( tableName )
+  Q_UNUSED( relationship )
   throw QgsProviderConnectionException( QObject::tr( "Deleting relationships for datasets requires GDAL 3.6 or later" ) );
 #endif
 }
