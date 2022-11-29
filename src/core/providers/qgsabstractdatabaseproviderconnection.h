@@ -510,6 +510,8 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       RenameField = 1 << 26,                          //!< Can rename existing fields via renameField() (since QGIS 3.28)
       RetrieveRelationships = 1 << 27,                //!< Can retrieve relationships from the database (since QGIS 3.28)
       AddRelationship = 1 << 28,                      //!< Can add new relationships to the database via addRelationship() (since QGIS 3.30)
+      UpdateRelationship = 1 << 29,                   //!< Can update existing relationships in the database via updateRelationship() (since QGIS 3.30)
+      DeleteRelationship = 1 << 30,                   //!< Can delete existing relationships from the database via deleteRelationship() (since QGIS 3.30)
     };
     Q_ENUM( Capability )
     Q_DECLARE_FLAGS( Capabilities, Capability )
@@ -915,6 +917,22 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \since QGIS 3.30
      */
     virtual void addRelationship( const QgsWeakRelation &relationship ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Updates an existing \a relationship in the database.
+     *
+     * \throws QgsProviderConnectionException if any errors are encountered.
+     * \since QGIS 3.30
+     */
+    virtual void updateRelationship( const QgsWeakRelation &relationship ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Deletes an existing \a relationship in the database.
+     *
+     * \throws QgsProviderConnectionException if any errors are encountered.
+     * \since QGIS 3.30
+     */
+    virtual void deleteRelationship( const QgsWeakRelation &relationship ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Returns a SQL query builder for the connection, which provides an interface for provider-specific creation of SQL queries.

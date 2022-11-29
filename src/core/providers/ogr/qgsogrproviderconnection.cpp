@@ -497,6 +497,14 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
   {
     mCapabilities |= Capability::AddRelationship;
   }
+  if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_UPDATE_RELATIONSHIP, false ) )
+  {
+    mCapabilities |= Capability::UpdateRelationship;
+  }
+  if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_DELETE_RELATIONSHIP, false ) )
+  {
+    mCapabilities |= Capability::DeleteRelationship;
+  }
 #endif
 
   mSqlLayerDefinitionCapabilities =
@@ -1010,6 +1018,81 @@ void QgsOgrProviderConnection::addRelationship( const QgsWeakRelation &relations
 #else
   Q_UNUSED( tableName )
   throw QgsProviderConnectionException( QObject::tr( "Adding relationships for datasets requires GDAL 3.6 or later" ) );
+#endif
+}
+
+void QgsOgrProviderConnection::updateRelationship( const QgsWeakRelation &relationship ) const
+{
+  checkCapability( Capability::UpdateRelationship );
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+  gdal::ogr_datasource_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_UPDATE | GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
+  if ( hDS )
+  {
+    const QVariantMap leftParts = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) )->decodeUri( relationship.referencedLayerSource() );
+    const QString leftTableName = leftParts.value( QStringLiteral( "layerName" ) ).toString();
+    if ( leftTableName.isEmpty() )
+      throw QgsProviderConnectionException( QObject::tr( "Parent table name was not set" ) );
+
+    const QVariantMap rightParts = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) )->decodeUri( relationship.referencingLayerSource() );
+    const QString rightTableName = rightParts.value( QStringLiteral( "layerName" ) ).toString();
+    if ( rightTableName.isEmpty() )
+      throw QgsProviderConnectionException( QObject::tr( "Child table name was not set" ) );
+
+    QString error;
+    gdal::relationship_unique_ptr relationH = QgsOgrUtils::convertRelationship( relationship, error );
+    if ( !relationH )
+    {
+      throw QgsProviderConnectionException( error );
+    }
+
+    char *failureReason = nullptr;
+    if ( !GDALDatasetUpdateRelationship( hDS.get(), relationH.get(), &failureReason ) )
+    {
+      QString error( failureReason );
+      CPLFree( failureReason );
+      throw QgsProviderConnectionException( QObject::tr( "Could not update relationship: %1" ).arg( error ) );
+    }
+
+    CPLFree( failureReason );
+  }
+  else
+  {
+    throw QgsProviderConnectionException( QObject::tr( "There was an error opening the dataset %1!" ).arg( uri() ) );
+  }
+#else
+  Q_UNUSED( tableName )
+  throw QgsProviderConnectionException( QObject::tr( "Updating relationships for datasets requires GDAL 3.6 or later" ) );
+#endif
+}
+
+void QgsOgrProviderConnection::deleteRelationship( const QgsWeakRelation &relationship ) const
+{
+  checkCapability( Capability::DeleteRelationship );
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+  gdal::ogr_datasource_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_UPDATE | GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
+  if ( hDS )
+  {
+    const QString relationshipName = relationship.name();
+
+    char *failureReason = nullptr;
+    if ( !GDALDatasetDeleteRelationship( hDS.get(), relationshipName.toLocal8Bit().constData(), &failureReason ) )
+    {
+      QString error( failureReason );
+      CPLFree( failureReason );
+      throw QgsProviderConnectionException( QObject::tr( "Could not delete relationship: %1" ).arg( error ) );
+    }
+
+    CPLFree( failureReason );
+  }
+  else
+  {
+    throw QgsProviderConnectionException( QObject::tr( "There was an error opening the dataset %1!" ).arg( uri() ) );
+  }
+#else
+  Q_UNUSED( tableName )
+  throw QgsProviderConnectionException( QObject::tr( "Deleting relationships for datasets requires GDAL 3.6 or later" ) );
 #endif
 }
 

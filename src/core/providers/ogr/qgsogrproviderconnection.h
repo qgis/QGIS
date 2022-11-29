@@ -92,6 +92,8 @@ class QgsOgrProviderConnection : public QgsAbstractDatabaseProviderConnection
     SqlVectorLayerOptions sqlOptions( const QString &layerSource ) override;
     QList< QgsWeakRelation > relationships( const QString &schema = QString(), const QString &tableName = QString() ) const override;
     void addRelationship( const QgsWeakRelation &relationship ) const override;
+    void updateRelationship( const QgsWeakRelation &relationship ) const override;
+    void deleteRelationship( const QgsWeakRelation &relationship ) const override;
 
   protected:
 

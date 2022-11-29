@@ -358,6 +358,8 @@ This information is calculated from the geometry columns types.
       RenameField,
       RetrieveRelationships,
       AddRelationship,
+      UpdateRelationship,
+      DeleteRelationship,
     };
     typedef QFlags<QgsAbstractDatabaseProviderConnection::Capability> Capabilities;
 
@@ -802,6 +804,24 @@ forms the left (or "parent" / "referenced") side of the relationship are retriev
     virtual void addRelationship( const QgsWeakRelation &relationship ) const throw( QgsProviderConnectionException );
 %Docstring
 Adds a new field ``relationship`` to the database.
+
+:raises QgsProviderConnectionException: if any errors are encountered.
+
+.. versionadded:: 3.30
+%End
+
+    virtual void updateRelationship( const QgsWeakRelation &relationship ) const throw( QgsProviderConnectionException );
+%Docstring
+Updates an existing ``relationship`` in the database.
+
+:raises QgsProviderConnectionException: if any errors are encountered.
+
+.. versionadded:: 3.30
+%End
+
+    virtual void deleteRelationship( const QgsWeakRelation &relationship ) const throw( QgsProviderConnectionException );
+%Docstring
+Deletes an existing ``relationship`` in the database.
 
 :raises QgsProviderConnectionException: if any errors are encountered.
 
