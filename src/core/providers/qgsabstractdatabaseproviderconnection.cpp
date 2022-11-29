@@ -1345,6 +1345,16 @@ void QgsAbstractDatabaseProviderConnection::addRelationship( const QgsWeakRelati
   checkCapability( Capability::AddRelationship );
 }
 
+void QgsAbstractDatabaseProviderConnection::updateRelationship( const QgsWeakRelation & ) const
+{
+  checkCapability( Capability::UpdateRelationship );
+}
+
+void QgsAbstractDatabaseProviderConnection::deleteRelationship( const QgsWeakRelation & ) const
+{
+  checkCapability( Capability::DeleteRelationship );
+}
+
 QString QgsAbstractDatabaseProviderConnection::TableProperty::defaultName() const
 {
   QString n = mTableName;

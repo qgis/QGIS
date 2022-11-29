@@ -2895,7 +2895,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertFalse(relationships)
 
     @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 6, 0), "GDAL 3.6 required")
-    def test_provider_connection_create_relationship(self):
+    def test_provider_connection_modify_relationship(self):
         """
         Test creating relationship via the connections API
         """
@@ -2950,6 +2950,45 @@ class PyQgsOGRProvider(unittest.TestCase):
             self.assertEqual(result.referencedLayerSource(), tmpfile + '|layername=parent')
             self.assertEqual(result.referencingLayerFields(), ['fieldb'])
             self.assertEqual(result.referencedLayerFields(), ['fielda'])
+
+            # update relationship
+            rel.setReferencedLayerFields(['fieldc'])
+            rel.setReferencingLayerFields(['fieldd'])
+
+            conn.updateRelationship(rel)
+            relationships = conn.relationships()
+            self.assertEqual(len(relationships), 1)
+
+            result = relationships[0]
+            self.assertEqual(result.name(), 'rel_name')
+            self.assertEqual(result.referencingLayerSource(), tmpfile + '|layername=child')
+            self.assertEqual(result.referencedLayerSource(), tmpfile + '|layername=parent')
+            self.assertEqual(result.referencingLayerFields(), ['fieldd'])
+            self.assertEqual(result.referencedLayerFields(), ['fieldc'])
+
+            # try updating non-existing relationship
+            rel2 = QgsWeakRelation('id',
+                                   'dont_exist',
+                                   Qgis.RelationshipStrength.Association,
+                                   'referencing_id',
+                                   'referencing_name',
+                                   tmpfile + '|layername=child',
+                                   'ogr',
+                                   'referenced_id',
+                                   'referenced_name',
+                                   tmpfile + '|layername=parent',
+                                   'ogr'
+                                   )
+            with self.assertRaises(QgsProviderConnectionException):
+                conn.updateRelationship(rel2)
+
+            # delete
+            with self.assertRaises(QgsProviderConnectionException):
+                conn.deleteRelationship(rel2)
+
+            conn.deleteRelationship(rel)
+            relationships = conn.relationships()
+            self.assertFalse(relationships)
 
     def testUniqueGeometryType(self):
         """
