@@ -3,6 +3,7 @@ Building QGIS from source - step by step
 <!-- Table of contents generated with https://freelance-tech-writer.github.io/table-of-contents-generator/index.html -->
 
 # Table of Contents
+
 - [1. Introduction](#1-introduction)
 - [2. Overview](#2-overview)
 - [3. Building on GNU/Linux](#3-building-on-gnulinux)
@@ -13,6 +14,7 @@ Building QGIS from source - step by step
   - [3.5. Prepare your development environment](#35-prepare-your-development-environment)
   - [3.6. Check out the QGIS Source Code](#36-check-out-the-qgis-source-code)
   - [3.7. Starting the compile](#37-starting-the-compile)
+    - [3.7.1 Available compilation flags](#371-available-compilation-flags)
   - [3.8. Compiling with 3D](#38-compiling-with-3d)
     - [3.8.1. Compiling with 3D on old Debian based distributions](#381-compiling-with-3d-on-old-debian-based-distributions)
   - [3.9. Building different branches](#39-building-different-branches)
@@ -340,6 +342,35 @@ ninja pycore
 ninja qgis_desktop
 ```
 
+### 3.7.1 Available compilation flags
+
+QGIS build is tunable according to your needs. Many flags are available to activate or deactivate some functionalities, here is a subset:
+
+* `BUILD_WITH_QT6`: Enable (experimental) Qt6 support
+* `WITH_3D`: Determines whether QGIS 3D library should be built
+* `WITH_ANALYSIS`: Determines whether QGIS analysis library should be built
+* `WITH_AUTH`: Determines whether QGIS authentication methods should be built
+* `WITH_BINDINGS`: Determines whether Python bindings should be built
+* `WITH_COPC`: Determines whether Cloud Optimized Point Cloud (COPC) support should be built
+* `WITH_DESKTOP`: Determines whether QGIS desktop should be built
+* `WITH_EPT`: Determines whether Entwine Point Cloud (EPT) support should be built
+* `WITH_GRASS${GRASS_CACHE_VERSION}`: Determines whether GRASS ${GRASS_SEARCH_VERSION} plugin should be built
+* `WITH_GUI`: Determines whether QGIS GUI library (and everything built on top of it) should be built
+* `WITH_HANA`: Determines whether SAP HANA Spatial support should be built
+* `WITH_ORACLE`: Determines whether Oracle support should be built
+* `WITH_PDAL`: Determines whether PDAL support should be built
+* `WITH_POSTGRESQL`: Determines whether POSTGRESQL support should be built
+* `WITH_QGIS_PROCESS`: Determines whether the standalone \"qgis_process\" tool should be built
+* `WITH_QSPATIALITE`: Determines whether QSPATIALITE sql driver should be built
+* `WITH_SERVER`: Determines whether QGIS server should be built
+* `WITH_SPATIALITE`: Determines whether Spatialite support should be built (required for spatialite, virtual, wfs providers)
+
+A complete list can been extracted from the source code with the following command line:
+
+```bash
+cmake .. -N -LH | grep -B1 WITH_
+```
+
 ## 3.8. Compiling with 3D
 
 In the cmake, you need to enable:
@@ -431,6 +462,7 @@ We assume that you have the source code of QGIS ready and created a
 new subdirectory called `build` or `build-qt5` in it.
 
 ### 3.11.1. Install build dependencies
+
 |Distribution|Install command for packages|
 |------------|----------------------------|
 | Fedora 35 Workstation | ``dnf install qt5-qtbase-private-devel qt5-qtwebkit-devel qt5-qtlocation-devel qt5-qttools-static qca-qt5-devel qca-qt5-ossl qt5-qt3d-devel python3-qt5-devel python3-qscintilla-qt5-devel qscintilla-qt5-devel python3-qscintilla-qt5 clang flex bison geos-devel gdal-devel hdf5-devel sqlite-devel libspatialite-devel qt5-qtsvg-devel spatialindex-devel expat-devel netcdf-devel proj-devel qwt-qt5-devel gsl-devel PDAL PDAL-devel postgresql-devel cmake python3-future gdal-python3 gdal-python-tools python3-psycopg2 python3-PyYAML python3-pygments python3-jinja2 python3-OWSLib qca-qt5-ossl qwt-qt5-devel qtkeychain-qt5-devel qwt-devel libzip-devel exiv2-devel python3-sip-devel protobuf-lite protobuf-lite-devel libzstd-devel qt5-qtserialport-devel`` |
@@ -603,6 +635,7 @@ call C:\OSGeo4W64\QGIS\ms-windows\osgeo4w\msvc-env.bat x86_64
 Save the batch file as `C:\OSGeo4W64\OSGeo4W-dev.bat` and run it.
 
 #### 4.1.4.1 Using configonly.bat to create the MSVC solution file
+
 We will be using the file `ms-windows/osgeo4w/configonly.bat` to create an MSVC solution file.
 There are two supported CMake generators for creating a solution file: Ninja, and native MSVC.
 The advantage of using native MSVC solution is that you can find the root of build problems much more easily.
@@ -614,7 +647,9 @@ configonly.bat
 ```
 
 #### 4.1.4.2 Compiling QGIS with MSVC
+
 We will need to run MSVC with all the environment variables set, thus we will run it as follows:
+
 * Run the batch file OSGeo4W-dev.bat you created before.
 * On the command prompt run `call gdal-dev-env.bat` to add the release gdal and proj libraries to your PATH.
 * On the command prompt run `devenv` to open MSVC.
@@ -623,12 +658,14 @@ We will need to run MSVC with all the environment variables set, thus we will ru
 * If it fails, run it again and again until there are (hopefully) no errors.
 
 Running QGIS from within MSVC:
+
 * Edit the properties of the project ALL_BUILD to include the path to the executable:
 * Debugging -> Command -> `C:\OSGeo4W64\QGIS\ms-windows\osgeo4w\build-qgis-test-x86_64\output\bin\RelWithDebInfo\qgis.exe`.
 * To run, use the menu commands: Debug -> Start Debugging (F5) or Start Without Debugging (Ctrl+F5).
 * Ignore the "These projects are out of date" message, it appears even if no files were changed.
 
 ### 4.1.5 Old alternative method that might still work using cmake-gui
+
 Create a 'build' directory somewhere. This will be where all the build output
 will be generated.
 
