@@ -111,12 +111,20 @@ class GdalUtils:
             if val == '100 - done.':
                 on_stdout.progress = 100
                 feedback.setProgress(on_stdout.progress)
-            elif val.strip('. ') in progress_string_list:
-                on_stdout.progress = int(val.strip('. '))
-                feedback.setProgress(on_stdout.progress)
-            elif val == '.':
-                on_stdout.progress += 2.5
-                feedback.setProgress(on_stdout.progress)
+            else:
+                # remove any number of trailing "." or ".." strings
+                match = re.match(r'.*?(\d+)\.+\s*$', val)
+                found_number = False
+                if match:
+                    int_val = match.group(1)
+                    if int_val in progress_string_list:
+                        on_stdout.progress = int(int_val)
+                        feedback.setProgress(on_stdout.progress)
+                        found_number = True
+
+                if not found_number and val == '.':
+                    on_stdout.progress += 2.5
+                    feedback.setProgress(on_stdout.progress)
 
             on_stdout.buffer += val
             if on_stdout.buffer.endswith('\n') or on_stdout.buffer.endswith('\r'):
