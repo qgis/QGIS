@@ -92,7 +92,7 @@ We present the required and optional dependencies for building, using
 the upstream package names, rather than names within any particular
 packaging system.
 
-Required build tools:
+Required build tools (not needed at runtime):
 
 * C++ compiler supporting C++17
 * CMake >= 3.12.0
@@ -101,7 +101,7 @@ Required build tools:
 * Bison >= 2.4
 * Python >= 3.7
 
-Required build dependencies:
+Required build-time and run-time dependencies:
 
 * Qt >= 5.14.0
 * Proj >= 7.2.0
@@ -117,12 +117,12 @@ Required build dependencies:
 * qtkeychain (>= 0.5)
 * libzip
 
-Optional dependencies:
+Optional build-time and run-time dependencies:
 
 * for GRASS providers and plugin - GRASS >= 7.0.0.
 * for georeferencer - GSL >= 1.8
 * for PostGIS support - PostgreSQL >= 8.0.x
-* for gps plugin - gpsbabel
+* for gps plugin - gpsbabel (likely runtime only)
 * for mapserver export and PyQGIS - Python >= 3.6
 * for python support - SIP >= 4.12, PyQt >= 5.3 must match Qt version, Qscintilla2
 * for qgis mapserver - FastCGI
