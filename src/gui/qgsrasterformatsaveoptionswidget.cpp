@@ -19,7 +19,6 @@
 #include "qgslogger.h"
 #include "qgsdialog.h"
 #include "qgsrasterlayer.h"
-#include "qgsproviderregistry.h"
 #include "qgsrasterdataprovider.h"
 #include "qgssettings.h"
 #include "qgsgdalutils.h"
@@ -29,6 +28,7 @@
 #include <QTextEdit>
 #include <QMouseEvent>
 #include <QMenu>
+#include <QFileInfo>
 
 
 QMap< QString, QStringList > QgsRasterFormatSaveOptionsWidget::sBuiltinProfiles;

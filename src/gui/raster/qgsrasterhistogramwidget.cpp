@@ -17,13 +17,12 @@
 
 #include "qgsapplication.h"
 #include "qgsguiutils.h"
-#include "qgsrasterrendererregistry.h"
 #include "qgsrasterrendererwidget.h"
 #include "qgsrasterhistogramwidget.h"
 #include "qgsrasterminmaxwidget.h"
-#include "qgsrasterdataprovider.h"
 #include "qgsdoublevalidator.h"
 #include "qgssettings.h"
+#include "qgsrasterlayer.h"
 
 #include <QMenu>
 #include <QFileInfo>
