@@ -161,7 +161,7 @@ void QgsRasterTransparencyWidget::syncToLayer()
   }
 
   const QgsRasterRangeList noDataRangeList = mRasterLayer->dataProvider()->userNoDataValues( 1 );
-  QgsDebugMsg( QStringLiteral( "noDataRangeList.size = %1" ).arg( noDataRangeList.size() ) );
+  QgsDebugMsgLevel( QStringLiteral( "noDataRangeList.size = %1" ).arg( noDataRangeList.size() ), 2 );
   if ( !noDataRangeList.isEmpty() )
   {
     const double v = QgsRasterBlock::printValue( noDataRangeList.value( 0 ).min() ).toDouble();
@@ -181,7 +181,7 @@ void QgsRasterTransparencyWidget::syncToLayer()
 void QgsRasterTransparencyWidget::transparencyCellTextEdited( const QString &text )
 {
   Q_UNUSED( text )
-  QgsDebugMsg( QStringLiteral( "text = %1" ).arg( text ) );
+  QgsDebugMsgLevel( QStringLiteral( "text = %1" ).arg( text ), 2 );
   QgsRasterRenderer *renderer = mRasterLayer->renderer();
   if ( !renderer )
   {
@@ -207,14 +207,14 @@ void QgsRasterTransparencyWidget::transparencyCellTextEdited( const QString &tex
       }
       if ( row != -1 ) break;
     }
-    QgsDebugMsg( QStringLiteral( "row = %1 column =%2" ).arg( row ).arg( column ) );
+    QgsDebugMsgLevel( QStringLiteral( "row = %1 column =%2" ).arg( row ).arg( column ), 2 );
 
     if ( column == 0 )
     {
       QLineEdit *toLineEdit = dynamic_cast<QLineEdit *>( tableTransparency->cellWidget( row, 1 ) );
       if ( !toLineEdit ) return;
       const bool toChanged = mTransparencyToEdited.value( row );
-      QgsDebugMsg( QStringLiteral( "toChanged = %1" ).arg( toChanged ) );
+      QgsDebugMsgLevel( QStringLiteral( "toChanged = %1" ).arg( toChanged ), 2 );
       if ( !toChanged )
       {
         toLineEdit->setText( lineEdit->text() );
@@ -587,7 +587,7 @@ void QgsRasterTransparencyWidget::pixelSelected( const QgsPointXY &canvasPoint )
           return; // Don't add nodata, transparent anyway
         }
         const double value = myPixelMap.value( bandNo ).toDouble();
-        QgsDebugMsg( QStringLiteral( "value = %1" ).arg( value, 0, 'g', 17 ) );
+        QgsDebugMsgLevel( QStringLiteral( "value = %1" ).arg( value, 0, 'g', 17 ), 2 );
         values.append( value );
       }
     }
@@ -703,7 +703,7 @@ void QgsRasterTransparencyWidget::setupTransparencyTable( int nBands )
 
 void QgsRasterTransparencyWidget::setTransparencyCell( int row, int column, double value )
 {
-  QgsDebugMsg( QStringLiteral( "value = %1" ).arg( value, 0, 'g', 17 ) );
+  QgsDebugMsgLevel( QStringLiteral( "value = %1" ).arg( value, 0, 'g', 17 ), 2 );
   QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
   if ( !provider ) return;
 
