@@ -2968,7 +2968,7 @@ class PyQgsOGRProvider(unittest.TestCase):
 
             # try updating non-existing relationship
             rel2 = QgsWeakRelation('id',
-                                   'dont_exist',
+                                   'nope',
                                    Qgis.RelationshipStrength.Association,
                                    'referencing_id',
                                    'referencing_name',
