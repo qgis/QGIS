@@ -27,6 +27,9 @@
 #include "qgsdbquerylog.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsweakrelation.h"
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,4,0)
+#include "qgsgdalutils.h"
+#endif
 
 #include <QTextCodec>
 #include <QRegularExpression>
