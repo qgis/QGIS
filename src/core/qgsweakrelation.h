@@ -58,12 +58,10 @@ class CORE_EXPORT QgsWeakRelation
      */
     QgsWeakRelation();
 
-#ifndef SIP_RUN
-
     /**
      * Creates a QgsWeakRelation.
      *
-     * \note Not available in Python bindings.
+     * \since QGIS 3.30
      */
     QgsWeakRelation( const QString &relationId,
                      const QString &relationName,
@@ -77,7 +75,6 @@ class CORE_EXPORT QgsWeakRelation
                      const QString &referencedLayerSource,
                      const QString &referencedLayerProviderKey
                    );
-#endif
 
     /**
      * Resolves a weak relation in the given \a project returning a list of possibly invalid QgsRelations
