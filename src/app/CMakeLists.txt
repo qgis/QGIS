@@ -374,7 +374,7 @@ endif()
 
 find_package(${QT_VERSION_BASE} COMPONENTS UiTools REQUIRED)
 
-set (WITH_QWTPOLAR FALSE CACHE BOOL "Determines whether QwtPolar should be built")
+set (WITH_QWTPOLAR FALSE CACHE BOOL "Determines whether QwtPolar is available or whether functionality requiring QwtPolar should be disabled.")
 
 if (WITH_QWTPOLAR)
   add_definitions(-DWITH_QWTPOLAR)
