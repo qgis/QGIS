@@ -2377,8 +2377,6 @@ void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
       editor->updateEditor( mLockedFeature.get() );
   }
 
-
-
   for ( it = edits.begin() ; it != edits.end(); ++it )
   {
     QgsVectorLayer *layer = it.key();
@@ -2399,7 +2397,6 @@ void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
           break;
       }
       QgsGeometry featGeom = it2.value();
-      layer->changeGeometry( it2.key(), featGeom );
       if ( avoidIntersectionsLayers.size() > 0 )
       {
         QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures;
@@ -2416,12 +2413,19 @@ void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
           case 3:
             emit messageEmitted( tr( "At least one geometry intersected is invalid. These geometries must be manually repaired." ), Qgis::MessageLevel::Warning );
             break;
+
           default:
             break;
         }
+        // if the geometry has been changed
+        if ( avoidIntersectionsReturn != 1 && avoidIntersectionsReturn != 4 )
+        {
+          layer->changeGeometry( it2.key(), featGeom );
+          edits[layer][it2.key()] = featGeom;
+        }
+
       }
-      layer->changeGeometry( it2.key(), featGeom );
-      edits[layer][it2.key()] = featGeom;
+
     }
     layer->endEditCommand();
     layer->triggerRepaint();
