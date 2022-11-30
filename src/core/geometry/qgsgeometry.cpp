@@ -1523,6 +1523,13 @@ QVector<QgsGeometry> QgsGeometry::coerceToType( const QgsWkbTypes::Type type, do
     newGeom.get()->addMValue( defaultM );
   }
 
+  // need to convert between 25D and Z (and vice versa)
+  if ( QgsWkbTypes::hasZ( type ) && !QgsWkbTypes::hasM( type )
+       && newGeom.constGet()->is3D() && !newGeom.constGet()->isMeasure() )
+  {
+    newGeom.get()->convertTo( type );
+  }
+
   // Multi -> single
   if ( ! QgsWkbTypes::isMultiType( type ) && newGeom.isMultipart( ) )
   {
@@ -4018,4 +4025,3 @@ bool QgsGeometry::Error::hasWhere() const
 {
   return mHasLocation;
 }
-

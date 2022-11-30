@@ -261,6 +261,14 @@ bool QgsAbstractGeometry::convertTo( QgsWkbTypes::Type type )
   if ( QgsWkbTypes::flatType( type ) != QgsWkbTypes::flatType( mWkbType ) )
     return false;
 
+  // converts blindly between 25D and Z (and vice versa)
+  if ( QgsWkbTypes::hasZ( type ) && !QgsWkbTypes::hasM( type )
+       && is3D() && !isMeasure() )
+  {
+    mWkbType = type;
+    return true;
+  }
+
   const bool needZ = QgsWkbTypes::hasZ( type );
   const bool needM = QgsWkbTypes::hasM( type );
   if ( !needZ )

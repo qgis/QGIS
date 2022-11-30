@@ -6346,6 +6346,40 @@ class TestQgsGeometry(unittest.TestCase):
                                        QgsWkbTypes.MultiLineString),
                          ['MultiLineString ((1 1, 1 2, 2 2, 1 1),(3 3, 4 3, 4 4, 3 3))'])
 
+        # Test to change from 25D et Z and vice versa
+        geom = QgsGeometry.fromWkt('Point z (1 1 3)')
+        newGeom = geom.coerceToType(QgsWkbTypes.Point25D)
+        self.assertEqual(len(newGeom), 1)
+        self.assertEqual(newGeom[0].wkbType(), QgsWkbTypes.Point25D)
+        self.assertEqual(newGeom[0].asWkt(2), 'PointZ (1 1 3)')
+        geom = newGeom[0]
+        newGeom = geom.coerceToType(QgsWkbTypes.PointZ)
+        self.assertEqual(len(newGeom), 1)
+        self.assertEqual(newGeom[0].wkbType(), QgsWkbTypes.PointZ)
+        self.assertEqual(newGeom[0].asWkt(2), 'PointZ (1 1 3)')
+
+        geom = QgsGeometry.fromWkt('LineStringZ (1 1 1, 2 2 2, 3 3 3)')
+        newGeom = geom.coerceToType(QgsWkbTypes.LineString25D)
+        self.assertEqual(len(newGeom), 1)
+        self.assertEqual(newGeom[0].wkbType(), QgsWkbTypes.LineString25D)
+        self.assertEqual(newGeom[0].asWkt(2), 'LineStringZ (1 1 1, 2 2 2, 3 3 3)')
+        geom = newGeom[0]
+        newGeom = geom.coerceToType(QgsWkbTypes.LineStringZ)
+        self.assertEqual(len(newGeom), 1)
+        self.assertEqual(newGeom[0].wkbType(), QgsWkbTypes.LineStringZ)
+        self.assertEqual(newGeom[0].asWkt(2), 'LineStringZ (1 1 1, 2 2 2, 3 3 3)')
+
+        geom = QgsGeometry.fromWkt('PolygonZ ((1 1 1, 2 2 2, 3 3 3, 1 1 1))')
+        newGeom = geom.coerceToType(QgsWkbTypes.Polygon25D)
+        self.assertEqual(len(newGeom), 1)
+        self.assertEqual(newGeom[0].wkbType(), QgsWkbTypes.Polygon25D)
+        self.assertEqual(newGeom[0].asWkt(2), 'PolygonZ ((1 1 1, 2 2 2, 3 3 3, 1 1 1))')
+        geom = newGeom[0]
+        newGeom = geom.coerceToType(QgsWkbTypes.PolygonZ)
+        self.assertEqual(len(newGeom), 1)
+        self.assertEqual(newGeom[0].wkbType(), QgsWkbTypes.PolygonZ)
+        self.assertEqual(newGeom[0].asWkt(2), 'PolygonZ ((1 1 1, 2 2 2, 3 3 3, 1 1 1))')
+
     def testTriangularWaves(self):
         """Test triangular waves"""
         self.assertEqual(QgsGeometry.fromWkt('Point (1 1)').triangularWaves(1, 2).asWkt(3), 'Point (1 1)')
