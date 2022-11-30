@@ -52,6 +52,7 @@
 #include <QShortcut>
 #include <QSpinBox>
 #include <QSplashScreen>
+#include <QStandardPaths>
 #include <QUrl>
 #include <QRegularExpression>
 #ifndef QT_NO_SSL

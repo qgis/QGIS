@@ -4,9 +4,14 @@
 # Redistribution and use is allowed according to the terms of the BSD license.
 # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 
-SET(PYUIC_PROG_NAME pyuic5)
-SET(PYUIC_PROG_NAMES pyuic5)
-SET(PYRCC_PROG_NAME pyrcc5)
+IF(BUILD_WITH_QT6)
+  SET(PYUIC_PROG_NAME pyuic6)
+  SET(PYUIC_PROG_NAMES pyuic6)
+ELSE()
+  SET(PYUIC_PROG_NAME pyuic5)
+  SET(PYUIC_PROG_NAMES pyuic5)
+  SET(PYRCC_PROG_NAME pyrcc5)
+ENDIF()
 
 IF(NOT PYUIC_PROGRAM)
   FIND_PROGRAM(PYUIC_PROGRAM NAMES ${PYUIC_PROG_NAMES} PATHS $ENV{LIB_DIR}/bin)
@@ -50,12 +55,12 @@ MACRO(PYQT_WRAP_UI outfiles )
   ENDFOREACH(it)
 ENDMACRO(PYQT_WRAP_UI)
 
-IF(NOT PYRCC_PROGRAM)
+IF(NOT PYRCC_PROGRAM AND NOT BUILD_WITH_QT6)
   FIND_PROGRAM(PYRCC_PROGRAM NAMES ${PYRCC_PROG_NAME} PATHS $ENV{LIB_DIR}/bin)
   IF (NOT PYRCC_PROGRAM)
     MESSAGE(FATAL_ERROR "pyrcc5 not found - aborting")
   ENDIF (NOT PYRCC_PROGRAM)
-ENDIF(NOT PYRCC_PROGRAM)
+ENDIF(NOT PYRCC_PROGRAM AND NOT BUILD_WITH_QT6)
 
 # Adapted from QT4_ADD_RESOURCES
 MACRO (PYQT_ADD_RESOURCES outfiles )
@@ -77,10 +82,17 @@ MACRO (PYQT_ADD_RESOURCES outfiles )
       ENDIF(NOT _ABS_PATH_INDICATOR)
       SET(_RC_DEPENDS ${_RC_DEPENDS} "${_RC_FILE}")
     ENDFOREACH(_RC_FILE)
-    ADD_CUSTOM_COMMAND(OUTPUT ${outfile}
-      COMMAND ${PYRCC_PROGRAM} ${_name_opt} -o ${outfile} ${infile}
-      MAIN_DEPENDENCY ${infile}
-      DEPENDS ${_RC_DEPENDS})
+    IF (BUILD_WITH_QT6)
+      ADD_CUSTOM_COMMAND(OUTPUT ${outfile}
+        COMMAND Qt6::rcc -g python -o ${outfile} ${infile}
+        MAIN_DEPENDENCY ${infile}
+        DEPENDS ${_RC_DEPENDS})
+    ELSE()
+      ADD_CUSTOM_COMMAND(OUTPUT ${outfile}
+        COMMAND ${PYRCC_PROGRAM} ${_name_opt} -o ${outfile} ${infile}
+        MAIN_DEPENDENCY ${infile}
+        DEPENDS ${_RC_DEPENDS})
+    ENDIF()
     SET(${outfiles} ${${outfiles}} ${outfile})
   ENDFOREACH (it)
 ENDMACRO (PYQT_ADD_RESOURCES)

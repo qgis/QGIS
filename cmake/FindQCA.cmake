@@ -20,7 +20,8 @@ if(QCA_INCLUDE_DIR AND QCA_LIBRARY)
 
 else(QCA_INCLUDE_DIR AND QCA_LIBRARY)
 
-  set(QCA_LIBRARY_NAMES qca-qt5 qca2-qt5 qca-qt6 qca)
+  set(QCA_LIBRARY_NAMES qca-${QT_VERSION_BASE_LOWER} qca2-${QT_VERSION_BASE_LOWER} qca)
+  set(QCA_PATH_SUFFIXES ${QT_VERSION_BASE_LOWER}/QtCrypto Qca-${QT_VERSION_BASE_LOWER}/QtCrypto qt/Qca-${QT_VERSION_BASE_LOWER}/QtCrypto ${QT_VERSION_BASE_LOWER}/Qca-${QT_VERSION_BASE_LOWER}/QtCrypto QtCrypto)
 
   find_library(QCA_LIBRARY
     NAMES ${QCA_LIBRARY_NAMES}
@@ -45,7 +46,7 @@ else(QCA_INCLUDE_DIR AND QCA_LIBRARY)
       "$ENV{LIB_DIR}/include"
       $ENV{INCLUDE}
       /usr/local/include
-      PATH_SUFFIXES QtCrypto qt5/QtCrypto Qca-qt5/QtCrypto qt/Qca-qt5/QtCrypto qt5/Qca-qt5/QtCrypto Qca-qt6/QtCrypto
+      PATH_SUFFIXES ${QCA_PATH_SUFFIXES}
   )
 
   if(QCA_LIBRARY AND QCA_INCLUDE_DIR)
