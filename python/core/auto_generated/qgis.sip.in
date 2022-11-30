@@ -1427,6 +1427,16 @@ The development version
       ManyToMany,
     };
 
+    enum class RelationshipCapability
+    {
+      MultipleFieldKeys,
+      ForwardPathLabel,
+      BackwardPathLabel,
+    };
+
+    typedef QFlags<Qgis::RelationshipCapability> RelationshipCapabilities;
+
+
     enum class CoordinateDisplayType
     {
       MapCrs,
@@ -1627,6 +1637,8 @@ QFlags<Qgis::GpsInformationComponent> operator|(Qgis::GpsInformationComponent f1
 QFlags<Qgis::MapLayerActionTarget> operator|(Qgis::MapLayerActionTarget f1, QFlags<Qgis::MapLayerActionTarget> f2);
 
 QFlags<Qgis::MapLayerActionFlag> operator|(Qgis::MapLayerActionFlag f1, QFlags<Qgis::MapLayerActionFlag> f2);
+
+QFlags<Qgis::RelationshipCapability> operator|(Qgis::RelationshipCapability f1, QFlags<Qgis::RelationshipCapability> f2);
 
 
 

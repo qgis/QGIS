@@ -1020,6 +1020,21 @@ QList<Qgis::FieldDomainType> QgsAbstractDatabaseProviderConnection::supportedFie
   return {};
 }
 
+QList<Qgis::RelationshipCardinality> QgsAbstractDatabaseProviderConnection::supportedRelationshipCardinalities() const
+{
+  return {};
+}
+
+QList<Qgis::RelationshipStrength> QgsAbstractDatabaseProviderConnection::supportedRelationshipStrengths() const
+{
+  return {};
+}
+
+Qgis::RelationshipCapabilities QgsAbstractDatabaseProviderConnection::supportedRelationshipCapabilities() const
+{
+  return Qgis::RelationshipCapabilities();
+}
+
 QgsProviderSqlQueryBuilder *QgsAbstractDatabaseProviderConnection::queryBuilder() const
 {
   return new QgsProviderSqlQueryBuilder();

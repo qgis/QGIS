@@ -2178,6 +2178,15 @@ Qgis.RelationshipCardinality.__doc__ = 'Relationship cardinality.\n\n.. versiona
 # --
 Qgis.RelationshipCardinality.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.RelationshipCapability.MultipleFieldKeys.__doc__ = "Supports multiple field keys (as opposed to a singular field)"
+Qgis.RelationshipCapability.ForwardPathLabel.__doc__ = "Supports forward path labels"
+Qgis.RelationshipCapability.BackwardPathLabel.__doc__ = "Supports backward path labels"
+Qgis.RelationshipCapability.__doc__ = 'Relationship capabilities.\n\n.. versionadded:: 3.30\n\n' + '* ``MultipleFieldKeys``: ' + Qgis.RelationshipCapability.MultipleFieldKeys.__doc__ + '\n' + '* ``ForwardPathLabel``: ' + Qgis.RelationshipCapability.ForwardPathLabel.__doc__ + '\n' + '* ``BackwardPathLabel``: ' + Qgis.RelationshipCapability.BackwardPathLabel.__doc__
+# --
+Qgis.RelationshipCapability.baseClass = Qgis
+Qgis.RelationshipCapabilities.baseClass = Qgis
+RelationshipCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
 Qgis.CoordinateDisplayType.MapCrs.__doc__ = "Map CRS"
 Qgis.CoordinateDisplayType.MapGeographic.__doc__ = "Map Geographic CRS equivalent (stays unchanged if the map CRS is geographic)"
 Qgis.CoordinateDisplayType.CustomCrs.__doc__ = "Custom CRS"

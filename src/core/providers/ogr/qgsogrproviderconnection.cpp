@@ -507,6 +507,39 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
   {
     mCapabilities |= Capability::DeleteRelationship;
   }
+
+  if ( const char *pszRelationshipFlags = GDALGetMetadataItem( hDriver, GDAL_DMD_RELATIONSHIP_FLAGS, nullptr ) )
+  {
+    char **papszTokens = CSLTokenizeString2( pszRelationshipFlags, " ", 0 );
+    if ( CSLFindString( papszTokens, "OneToOne" ) >= 0 )
+      mSupportedRelationshipCardinality.append( Qgis::RelationshipCardinality::OneToOne );
+
+    if ( CSLFindString( papszTokens, "OneToMany" ) >= 0 )
+      mSupportedRelationshipCardinality.append( Qgis::RelationshipCardinality::OneToMany );
+
+    if ( CSLFindString( papszTokens, "ManyToOne" ) >= 0 )
+      mSupportedRelationshipCardinality.append( Qgis::RelationshipCardinality::ManyToOne );
+
+    if ( CSLFindString( papszTokens, "ManyToMany" ) >= 0 )
+      mSupportedRelationshipCardinality.append( Qgis::RelationshipCardinality::ManyToMany );
+
+    if ( CSLFindString( papszTokens, "Composite" ) >= 0 )
+      mSupportedRelationshipStrength.append( Qgis::RelationshipStrength::Composition );
+
+    if ( CSLFindString( papszTokens, "Association" ) >= 0 )
+      mSupportedRelationshipStrength.append( Qgis::RelationshipStrength::Association );
+
+    if ( CSLFindString( papszTokens, "MultipleFieldKeys" ) >= 0 )
+      mRelationshipCapabilities |= Qgis::RelationshipCapability::MultipleFieldKeys;
+
+    if ( CSLFindString( papszTokens, "ForwardPathLabel" ) >= 0 )
+      mRelationshipCapabilities |= Qgis::RelationshipCapability::ForwardPathLabel;
+
+    if ( CSLFindString( papszTokens, "BackwardPathLabel" ) >= 0 )
+      mRelationshipCapabilities |= Qgis::RelationshipCapability::BackwardPathLabel;
+
+    CSLDestroy( papszTokens );
+  }
 #endif
 
   mSqlLayerDefinitionCapabilities =
@@ -919,6 +952,21 @@ QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsOgrProviderConne
     options.sql = QStringLiteral( "SELECT * FROM %1" ).arg( QgsSqliteUtils::quotedIdentifier( decoded[ QStringLiteral( "layerName" ) ].toString() ) );
   }
   return options;
+}
+
+QList<Qgis::RelationshipCardinality> QgsOgrProviderConnection::supportedRelationshipCardinalities() const
+{
+  return mSupportedRelationshipCardinality;
+}
+
+QList<Qgis::RelationshipStrength> QgsOgrProviderConnection::supportedRelationshipStrengths() const
+{
+  return mSupportedRelationshipStrength;
+}
+
+Qgis::RelationshipCapabilities QgsOgrProviderConnection::supportedRelationshipCapabilities() const
+{
+  return mRelationshipCapabilities;
 }
 
 QList<QgsWeakRelation> QgsOgrProviderConnection::relationships( const QString &schema, const QString &tableName ) const
