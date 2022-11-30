@@ -99,6 +99,8 @@ QString QgsExpressionNode::NodeList::cleanNamedNodeName( const QString &name )
     cleaned = QStringLiteral( "geometry1" );
   else if ( cleaned == QLatin1String( "geometry b" ) )
     cleaned = QStringLiteral( "geometry2" );
+  else if ( cleaned == QLatin1String( "i" ) )
+    cleaned = QStringLiteral( "vertex" );
 
   return cleaned;
 }
