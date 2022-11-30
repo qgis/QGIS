@@ -122,7 +122,7 @@ Optional build-time and run-time dependencies:
 * for GRASS providers and plugin - GRASS >= 7.0.0.
 * for georeferencer - GSL >= 1.8
 * for PostGIS support - PostgreSQL >= 8.0.x
-* for gps plugin - gpsbabel (likely runtime only)
+* for external gps device support - gpsbabel (runtime only)
 * for mapserver export and PyQGIS - Python >= 3.6
 * for python support - SIP >= 4.12, PyQt >= 5.3 must match Qt version, Qscintilla2
 * for qgis mapserver - FastCGI
