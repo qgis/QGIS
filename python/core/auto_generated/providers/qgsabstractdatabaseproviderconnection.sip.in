@@ -787,6 +787,95 @@ Adds a new field ``domain`` to the database.
 .. versionadded:: 3.26
 %End
 
+    SIP_PYOBJECT supportedRelationshipCardinalities() const /TypeHint="List[Qgis.RelationshipCardinality]"/;
+%Docstring
+Returns a list of relationship cardinalities which are supported by the provider.
+
+.. versionadded:: 3.30
+%End
+%MethodCode
+    // adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
+
+    const QList< Qgis::RelationshipCardinality > cppRes = sipCpp->supportedRelationshipCardinalities();
+
+    PyObject *l = PyList_New( cppRes.size() );
+
+    if ( !l )
+      sipIsErr = 1;
+    else
+    {
+      for ( int i = 0; i < cppRes.size(); ++i )
+      {
+        PyObject *eobj = sipConvertFromEnum( static_cast<int>( cppRes.at( i ) ),
+                                             sipType_Qgis_RelationshipCardinality );
+
+        if ( !eobj )
+        {
+          sipIsErr = 1;
+        }
+
+        PyList_SetItem( l, i, eobj );
+      }
+
+      if ( !sipIsErr )
+      {
+        sipRes = l;
+      }
+      else
+      {
+        Py_DECREF( l );
+      }
+    }
+%End
+
+    SIP_PYOBJECT supportedRelationshipStrengths() const /TypeHint="List[Qgis.RelationshipStrength]"/;
+%Docstring
+Returns a list of relationship strengths which are supported by the provider.
+
+.. versionadded:: 3.30
+%End
+%MethodCode
+    // adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
+
+    const QList< Qgis::RelationshipStrength > cppRes = sipCpp->supportedRelationshipStrengths();
+
+    PyObject *l = PyList_New( cppRes.size() );
+
+    if ( !l )
+      sipIsErr = 1;
+    else
+    {
+      for ( int i = 0; i < cppRes.size(); ++i )
+      {
+        PyObject *eobj = sipConvertFromEnum( static_cast<int>( cppRes.at( i ) ),
+                                             sipType_Qgis_RelationshipStrength );
+
+        if ( !eobj )
+        {
+          sipIsErr = 1;
+        }
+
+        PyList_SetItem( l, i, eobj );
+      }
+
+      if ( !sipIsErr )
+      {
+        sipRes = l;
+      }
+      else
+      {
+        Py_DECREF( l );
+      }
+    }
+%End
+
+    virtual Qgis::RelationshipCapabilities supportedRelationshipCapabilities() const;
+%Docstring
+Returns the relationship capabilities supported by the provider.
+
+.. versionadded:: 3.30
+%End
+
     virtual QList< QgsWeakRelation > relationships( const QString &schema = QString(), const QString &tableName = QString() ) const throw( QgsProviderConnectionException );
 %Docstring
 Returns a list of relationships detected in the database.

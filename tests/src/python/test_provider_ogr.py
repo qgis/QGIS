@@ -2815,6 +2815,30 @@ class PyQgsOGRProvider(unittest.TestCase):
                                'GDB_SpatialRefs', 'GDB_SystemCatalog'])
 
     @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 6, 0), "GDAL 3.6 required")
+    def test_provider_relationship_capabilities(self):
+        """
+        Test retrieving relationship capabilities
+        """
+        metadata = QgsProviderRegistry.instance().providerMetadata('ogr')
+        # GDB
+        conn = metadata.createConnection(TEST_DATA_DIR + '/' + 'relationships.gdb', {})
+        self.assertCountEqual(conn.supportedRelationshipCardinalities(), [Qgis.RelationshipCardinality.OneToMany, Qgis.RelationshipCardinality.ManyToMany, Qgis.RelationshipCardinality.OneToOne])
+        self.assertCountEqual(conn.supportedRelationshipStrengths(), [Qgis.RelationshipStrength.Composition, Qgis.RelationshipStrength.Association])
+        self.assertEqual(conn.supportedRelationshipCapabilities(), Qgis.RelationshipCapabilities(Qgis.RelationshipCapability.ForwardPathLabel | Qgis.RelationshipCapability.BackwardPathLabel))
+
+        # GPKG
+        conn = metadata.createConnection(TEST_DATA_DIR + '/' + 'domains.gpkg', {})
+        self.assertCountEqual(conn.supportedRelationshipCardinalities(), [Qgis.RelationshipCardinality.ManyToMany])
+        self.assertCountEqual(conn.supportedRelationshipStrengths(), [Qgis.RelationshipStrength.Association])
+        self.assertEqual(conn.supportedRelationshipCapabilities(), Qgis.RelationshipCapabilities())
+
+        # other (not supported)
+        conn = metadata.createConnection(TEST_DATA_DIR + '/' + 'lines.shp', {})
+        self.assertCountEqual(conn.supportedRelationshipCardinalities(), [])
+        self.assertCountEqual(conn.supportedRelationshipStrengths(), [])
+        self.assertEqual(conn.supportedRelationshipCapabilities(), Qgis.RelationshipCapabilities())
+
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 6, 0), "GDAL 3.6 required")
     def test_provider_connection_relationships(self):
         """
         Test retrieving relationships via the connections API

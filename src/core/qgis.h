@@ -2464,6 +2464,27 @@ class CORE_EXPORT Qgis
     Q_ENUM( RelationshipCardinality )
 
     /**
+     * Relationship capabilities.
+     *
+     * \since QGIS 3.30
+     */
+    enum class RelationshipCapability : int
+    {
+      MultipleFieldKeys = 1 << 0, //!< Supports multiple field keys (as opposed to a singular field)
+      ForwardPathLabel = 1 << 1, //!< Supports forward path labels
+      BackwardPathLabel = 1 << 2, //!< Supports backward path labels
+    };
+    Q_ENUM( RelationshipCapability )
+
+    /**
+     * Relationship capabilities.
+     *
+     * \since QGIS 3.30
+     */
+    Q_DECLARE_FLAGS( RelationshipCapabilities, RelationshipCapability )
+    Q_FLAG( RelationshipCapabilities )
+
+    /**
      * Formats for displaying coordinates
      *
      * \since QGIS 3.28
@@ -2743,6 +2764,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LabelingFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::GpsInformationComponents )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapLayerActionTargets )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapLayerActionFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RelationshipCapabilities )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.
