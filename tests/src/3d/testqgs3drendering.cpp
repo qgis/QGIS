@@ -132,10 +132,10 @@ void TestQgs3DRendering::initTestCase()
   // so we do not get some possible artifacts
   mLayerBuildings->setRenderer( nullptr );
 
-  QgsPhongMaterialSettings material;
-  material.setAmbient( Qt::lightGray );
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setAmbient( Qt::lightGray );
   QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
-  symbol3d->setMaterial( material.clone() );
+  symbol3d->setMaterialSettings( materialSettings.clone() );
   symbol3d->setExtrusionHeight( 10.f );
   QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
   mLayerBuildings->setRenderer3D( renderer3d );
@@ -416,7 +416,7 @@ void TestQgs3DRendering::testExtrudedPolygons()
   materialSettings.setAmbient( Qt::lightGray );
   materialSettings.setOpacity( 0.5f );
   QgsPolygon3DSymbol *symbol3dOpacity = new QgsPolygon3DSymbol;
-  symbol3dOpacity->setMaterial( materialSettings.clone() );
+  symbol3dOpacity->setMaterialSettings( materialSettings.clone() );
   symbol3dOpacity->setExtrusionHeight( 10.f );
   QgsVectorLayer3DRenderer *renderer3dOpacity = new QgsVectorLayer3DRenderer( symbol3dOpacity );
   mLayerBuildings->setRenderer3D( renderer3dOpacity );
@@ -440,11 +440,11 @@ void TestQgs3DRendering::testExtrudedPolygonsDataDefined()
   propertyColection.setProperty( QgsAbstractMaterialSettings::Diffuse, diffuseColor );
   propertyColection.setProperty( QgsAbstractMaterialSettings::Ambient, ambientColor );
   propertyColection.setProperty( QgsAbstractMaterialSettings::Specular, specularColor );
-  QgsPhongMaterialSettings material;
-  material.setDataDefinedProperties( propertyColection );
-  material.setAmbient( Qt::red );
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setDataDefinedProperties( propertyColection );
+  materialSettings.setAmbient( Qt::red );
   QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
-  symbol3d->setMaterial( material.clone() );
+  symbol3d->setMaterialSettings( materialSettings.clone() );
   symbol3d->setExtrusionHeight( 10.f );
   QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
   mLayerBuildings->setRenderer3D( renderer3d );
@@ -510,7 +510,7 @@ void TestQgs3DRendering::testExtrudedPolygonsGoochShading()
   materialSettings.setAlpha( 0.2f );
   materialSettings.setBeta( 0.6f );
   QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
-  symbol3d->setMaterial( materialSettings.clone() );
+  symbol3d->setMaterialSettings( materialSettings.clone() );
   symbol3d->setExtrusionHeight( 10.f );
   QgsVectorLayer3DRenderer *renderer3dOpacity = new QgsVectorLayer3DRenderer( symbol3d );
   mLayerBuildings->setRenderer3D( renderer3dOpacity );
@@ -537,10 +537,10 @@ void TestQgs3DRendering::testPolygonsEdges()
   map->setCrs( mProject->crs() );
   map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
 
-  QgsPhongMaterialSettings material;
-  material.setAmbient( Qt::lightGray );
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setAmbient( Qt::lightGray );
   QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
-  symbol3d->setMaterial( material.clone() );
+  symbol3d->setMaterialSettings( materialSettings.clone() );
   symbol3d->setExtrusionHeight( 10.f );
   symbol3d->setHeight( 20.f );
   symbol3d->setEdgesEnabled( true );
@@ -594,9 +594,9 @@ void TestQgs3DRendering::testLineRendering()
   QgsLine3DSymbol *lineSymbol = new QgsLine3DSymbol;
   lineSymbol->setRenderAsSimpleLines( true );
   lineSymbol->setWidth( 10 );
-  QgsSimpleLineMaterialSettings mat;
-  mat.setAmbient( Qt::red );
-  lineSymbol->setMaterial( mat.clone() );
+  QgsSimpleLineMaterialSettings matSettings;
+  matSettings.setAmbient( Qt::red );
+  lineSymbol->setMaterialSettings( matSettings.clone() );
   layerLines->setRenderer3D( new QgsVectorLayer3DRenderer( lineSymbol ) );
 
   QVector<QgsPoint> pts;
@@ -653,9 +653,9 @@ void TestQgs3DRendering::testLineRenderingCurved()
   QgsLine3DSymbol *lineSymbol = new QgsLine3DSymbol;
   lineSymbol->setRenderAsSimpleLines( true );
   lineSymbol->setWidth( 10 );
-  QgsSimpleLineMaterialSettings mat;
-  mat.setAmbient( Qt::red );
-  lineSymbol->setMaterial( mat.clone() );
+  QgsSimpleLineMaterialSettings matSettings;
+  matSettings.setAmbient( Qt::red );
+  lineSymbol->setMaterialSettings( matSettings.clone() );
   layerLines->setRenderer3D( new QgsVectorLayer3DRenderer( lineSymbol ) );
 
   QVector<QgsPoint> pts;
@@ -711,9 +711,9 @@ void TestQgs3DRendering::testBufferedLineRendering()
   QgsLine3DSymbol *lineSymbol = new QgsLine3DSymbol;
   lineSymbol->setWidth( 10 );
   lineSymbol->setExtrusionHeight( 30 );
-  QgsPhongMaterialSettings mat;
-  mat.setAmbient( Qt::red );
-  lineSymbol->setMaterial( mat.clone() );
+  QgsPhongMaterialSettings matSettings;
+  matSettings.setAmbient( Qt::red );
+  lineSymbol->setMaterialSettings( matSettings.clone() );
   layerLines->setRenderer3D( new QgsVectorLayer3DRenderer( lineSymbol ) );
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
@@ -760,9 +760,9 @@ void TestQgs3DRendering::testBufferedLineRenderingWidth()
   lineSymbol->setWidth( 20 );
   lineSymbol->setExtrusionHeight( 30 );
   lineSymbol->setHeight( 10 );
-  QgsPhongMaterialSettings mat;
-  mat.setAmbient( Qt::red );
-  lineSymbol->setMaterial( mat.clone() );
+  QgsPhongMaterialSettings matSettings;
+  matSettings.setAmbient( Qt::red );
+  lineSymbol->setMaterialSettings( matSettings.clone() );
   layerLines->setRenderer3D( new QgsVectorLayer3DRenderer( lineSymbol ) );
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
@@ -981,16 +981,16 @@ void TestQgs3DRendering::testMeshSimplified()
 
 void TestQgs3DRendering::testRuleBasedRenderer()
 {
-  QgsPhongMaterialSettings material;
-  material.setAmbient( Qt::lightGray );
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setAmbient( Qt::lightGray );
   QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
-  symbol3d->setMaterial( material.clone() );
+  symbol3d->setMaterialSettings( materialSettings.clone() );
   symbol3d->setExtrusionHeight( 10.f );
 
-  QgsPhongMaterialSettings material2;
-  material2.setAmbient( Qt::red );
+  QgsPhongMaterialSettings materialSettings2;
+  materialSettings2.setAmbient( Qt::red );
   QgsPolygon3DSymbol *symbol3d2 = new QgsPolygon3DSymbol;
-  symbol3d2->setMaterial( material2.clone() );
+  symbol3d2->setMaterialSettings( materialSettings2.clone() );
   symbol3d2->setExtrusionHeight( 10.f );
 
   QgsRuleBased3DRenderer::Rule *root = new QgsRuleBased3DRenderer::Rule( nullptr );
@@ -1121,9 +1121,9 @@ void TestQgs3DRendering::testInstancedRendering()
   QVariantMap vmSphere;
   vmSphere[QStringLiteral( "radius" )] = 80.0f;
   sphere3DSymbol->setShapeProperties( vmSphere );
-  QgsPhongMaterialSettings material;
-  material.setAmbient( Qt::gray );
-  sphere3DSymbol->setMaterial( material.clone() );
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setAmbient( Qt::gray );
+  sphere3DSymbol->setMaterialSettings( materialSettings.clone() );
 
   layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( sphere3DSymbol ) );
 
@@ -1157,7 +1157,7 @@ void TestQgs3DRendering::testInstancedRendering()
   vmCylinder[QStringLiteral( "radius" )] = 20.0f;
   vmCylinder[QStringLiteral( "length" )] = 200.0f;
   cylinder3DSymbol->setShapeProperties( vmCylinder );
-  cylinder3DSymbol->setMaterial( material.clone() );
+  cylinder3DSymbol->setMaterialSettings( materialSettings.clone() );
 
   layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( cylinder3DSymbol ) );
 
@@ -1252,9 +1252,9 @@ void TestQgs3DRendering::testEpsg4978LineRendering()
   QgsLine3DSymbol *lineSymbol = new QgsLine3DSymbol;
   lineSymbol->setRenderAsSimpleLines( true );
   lineSymbol->setWidth( 2 );
-  QgsSimpleLineMaterialSettings mat;
-  mat.setAmbient( Qt::red );
-  lineSymbol->setMaterial( mat.clone() );
+  QgsSimpleLineMaterialSettings matSettings;
+  matSettings.setAmbient( Qt::red );
+  lineSymbol->setMaterialSettings( matSettings.clone() );
   layerLines->setRenderer3D( new QgsVectorLayer3DRenderer( lineSymbol ) );
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
