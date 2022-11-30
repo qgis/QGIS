@@ -2418,7 +2418,7 @@ void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
             break;
         }
         // if the geometry has been changed
-        if ( avoidIntersectionsReturn != 4 )
+        if ( avoidIntersectionsReturn != 1 && avoidIntersectionsReturn != 4 )
         {
           layer->changeGeometry( it2.key(), featGeom );
           edits[layer][it2.key()] = featGeom;
