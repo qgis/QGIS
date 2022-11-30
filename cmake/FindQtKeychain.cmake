@@ -21,10 +21,10 @@ FIND_PATH(QTKEYCHAIN_INCLUDE_DIR keychain.h
   $ENV{INCLUDE}
   /usr/local/include
   /usr/include
-  PATH_SUFFIXES qt5keychain qtkeychain qt6keychain
+  PATH_SUFFIXES ${QT_VERSION_BASE_LOWER}keychain qtkeychain
 )
 
-FIND_LIBRARY(QTKEYCHAIN_LIBRARY NAMES qt5keychain qtkeychain qt6keychain
+FIND_LIBRARY(QTKEYCHAIN_LIBRARY NAMES ${QT_VERSION_BASE_LOWER}keychain qtkeychain
   PATHS
   ${LIB_DIR}
   "$ENV{LIB_DIR}"
