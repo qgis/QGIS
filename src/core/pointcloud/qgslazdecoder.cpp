@@ -462,7 +462,7 @@ void decodePoint( char *buf, int lasPointFormat, char *dataBuffer, std::size_t &
 }
 
 template<typename FileType>
-QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttributeCollection &requestedAttributes, QgsPointCloudExpression &filterExpression )
+QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttributeCollection &requestedAttributes, QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect )
 {
   if ( ! file.good() )
     return nullptr;
@@ -519,6 +519,20 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
       return block.release();
     }
 
+    int xAttributeOffset, yAttributeOffset;
+    const QgsPointCloudAttribute *attributeX;
+    const QgsPointCloudAttribute *attributeY;
+    const bool hasFilterRect = !filterRect.isEmpty();
+    if ( hasFilterRect )
+    {
+      attributeX = requestedAttributes.find( QLatin1String( "X" ), xAttributeOffset );
+      attributeY = requestedAttributes.find( QLatin1String( "Y" ), yAttributeOffset );
+      filterRect.setXMinimum( ( filterRect.xMinimum() - offset.x() ) / scale.x() );
+      filterRect.setXMaximum( ( filterRect.xMaximum() - offset.x() ) / scale.x() );
+      filterRect.setYMinimum( ( filterRect.yMinimum() - offset.y() ) / scale.y() );
+      filterRect.setYMaximum( ( filterRect.yMaximum() - offset.y() ) / scale.y() );
+    }
+
     std::vector<char> rawExtrabytes = f.vlrData( "LASF_Spec", 4 );
     QVector<QgsLazInfo::ExtraBytesAttributeDetails> extrabyteAttributesDetails = QgsLazInfo::parseExtrabytes( rawExtrabytes.data(), rawExtrabytes.size(), f.header().point_record_length );
     std::vector< QgsLazDecoder::RequestedAttributeDetails > requestedAttributeDetails = __prepareRequestedAttributeDetails( requestedAttributes, extrabyteAttributesDetails );
@@ -530,16 +544,26 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
       decodePoint( buf, lasPointFormat, dataBuffer, outputOffset, requestedAttributeDetails );
 
       // check if point needs to be filtered out
-      if ( filterIsValid )
+      bool skipThisPoint = false;
+      if ( hasFilterRect )
+      {
+        const double x = attributeX->convertValueToDouble( dataBuffer + outputOffset - requestedPointRecordSize + xAttributeOffset );
+        const double y = attributeY->convertValueToDouble( dataBuffer + outputOffset - requestedPointRecordSize + yAttributeOffset );
+        if ( !filterRect.contains( x, y ) )
+          skipThisPoint = true;
+      }
+      if ( !skipThisPoint && filterIsValid )
       {
         // we're always evaluating the last written point in the buffer
         double eval = filterExpression.evaluate( i - skippedPoints );
         if ( !eval || std::isnan( eval ) )
-        {
-          // if the point is filtered out, rewind the offset so the next point is written over it
-          outputOffset -= requestedPointRecordSize;
-          ++skippedPoints;
-        }
+          skipThisPoint = true;
+      }
+      if ( skipThisPoint )
+      {
+        // if the point is filtered out, rewind the offset so the next point is written over it
+        outputOffset -= requestedPointRecordSize;
+        ++skippedPoints;
       }
     }
 
@@ -558,22 +582,22 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
 
 QgsPointCloudBlock *QgsLazDecoder::decompressLaz( const QString &filename,
     const QgsPointCloudAttributeCollection &requestedAttributes,
-    QgsPointCloudExpression &filterExpression )
+    QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect )
 {
   std::ifstream file( toNativePath( filename ), std::ios::binary );
 
-  return __decompressLaz<std::ifstream>( file, requestedAttributes, filterExpression );
+  return __decompressLaz<std::ifstream>( file, requestedAttributes, filterExpression, filterRect );
 }
 
 QgsPointCloudBlock *QgsLazDecoder::decompressLaz( const QByteArray &byteArrayData,
     const QgsPointCloudAttributeCollection &requestedAttributes,
-    QgsPointCloudExpression &filterExpression )
+    QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect )
 {
   std::istringstream file( byteArrayData.toStdString() );
-  return __decompressLaz<std::istringstream>( file, requestedAttributes, filterExpression );
+  return __decompressLaz<std::istringstream>( file, requestedAttributes, filterExpression, filterRect );
 }
 
-QgsPointCloudBlock *QgsLazDecoder::decompressCopc( const QByteArray &data, QgsLazInfo &lazInfo, int32_t pointCount, const QgsPointCloudAttributeCollection &requestedAttributes, QgsPointCloudExpression &filterExpression )
+QgsPointCloudBlock *QgsLazDecoder::decompressCopc( const QByteArray &data, QgsLazInfo &lazInfo, int32_t pointCount, const QgsPointCloudAttributeCollection &requestedAttributes, QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect )
 {
   // COPC only supports point formats 6, 7 and 8
   int lasPointFormat = lazInfo.pointFormat();
@@ -610,6 +634,19 @@ QgsPointCloudBlock *QgsLazDecoder::decompressCopc( const QByteArray &data, QgsLa
     return block.release();
   }
 
+  int xAttributeOffset, yAttributeOffset;
+  const QgsPointCloudAttribute *attributeX;
+  const QgsPointCloudAttribute *attributeY;
+  const bool hasFilterRect = !filterRect.isEmpty();
+  if ( hasFilterRect )
+  {
+    attributeX = requestedAttributes.find( QLatin1String( "X" ), xAttributeOffset );
+    attributeY = requestedAttributes.find( QLatin1String( "Y" ), yAttributeOffset );
+    filterRect.setXMinimum( ( filterRect.xMinimum() - lazInfo.offset().x() ) / lazInfo.scale().x() );
+    filterRect.setXMaximum( ( filterRect.xMaximum() - lazInfo.offset().x() ) / lazInfo.scale().x() );
+    filterRect.setYMinimum( ( filterRect.yMinimum() - lazInfo.offset().y() ) / lazInfo.scale().y() );
+    filterRect.setYMaximum( ( filterRect.yMaximum() - lazInfo.offset().y() ) / lazInfo.scale().y() );
+  }
   for ( int i = 0 ; i < pointCount; ++i )
   {
     decompressor.decompress( decodedData.get() );
@@ -618,16 +655,27 @@ QgsPointCloudBlock *QgsLazDecoder::decompressCopc( const QByteArray &data, QgsLa
     decodePoint( buf, lasPointFormat, dataBuffer, outputOffset, requestedAttributeDetails );
 
     // check if point needs to be filtered out
-    if ( filterIsValid )
+    bool skipThisPoint = false;
+
+    if ( hasFilterRect )
+    {
+      const double x = attributeX->convertValueToDouble( dataBuffer + outputOffset - requestedPointRecordSize + xAttributeOffset );
+      const double y = attributeY->convertValueToDouble( dataBuffer + outputOffset - requestedPointRecordSize + yAttributeOffset );
+      if ( !filterRect.contains( x, y ) )
+        skipThisPoint = true;
+    }
+    if ( !skipThisPoint && filterIsValid )
     {
       // we're always evaluating the last written point in the buffer
       double eval = filterExpression.evaluate( i - skippedPoints );
       if ( !eval || std::isnan( eval ) )
-      {
-        // if the point is filtered out, rewind the offset so the next point is written over it
-        outputOffset -= requestedPointRecordSize;
-        ++skippedPoints;
-      }
+        skipThisPoint = true;
+    }
+    if ( skipThisPoint )
+    {
+      // if the point is filtered out, rewind the offset so the next point is written over it
+      outputOffset -= requestedPointRecordSize;
+      ++skippedPoints;
     }
   }
 
