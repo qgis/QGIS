@@ -100,7 +100,7 @@ jobs:
 
       - name: Build Docker Container with Build Environment
         id: docker-build
-        uses: whoan/docker-build-with-cache-action@v5
+        uses: whoan/docker-build-with-cache-action@v6
         with:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
@@ -342,7 +342,7 @@ jobs:
 
       - name: Build Docker Container with Testing Environment
         id: docker-build
-        uses: whoan/docker-build-with-cache-action@v5
+        uses: whoan/docker-build-with-cache-action@v6
         with:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
@@ -424,7 +424,7 @@ jobs:
 
       - name: Build Docker Container with Testing Environment
         id: docker-build
-        uses: whoan/docker-build-with-cache-action@v5
+        uses: whoan/docker-build-with-cache-action@v6
         with:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
