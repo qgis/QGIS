@@ -39,7 +39,11 @@ void CPL_STDCALL showError( CPLErr errClass, int errNo, const char *msg )
 
 int main( int argc, char **argv )
 {
-  const QCoreApplication app( argc, argv );
+  const QTemporaryDir stemp;
+  QSettings::setDefaultFormat( QSettings::IniFormat );
+  QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, stemp.path() );
+
+  QgsApplication app( argc, argv, false, QString(), QStringLiteral( "crssync" ) );
 
   const QStringList args = QCoreApplication::arguments();
 
@@ -50,10 +54,6 @@ int main( int argc, char **argv )
     if ( arg == QLatin1String( "--verbose" ) )
       verbose = true;
   }
-
-  const QTemporaryDir stemp;
-  QSettings::setDefaultFormat( QSettings::IniFormat );
-  QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, stemp.path() );
 
   const QTemporaryDir temp;
   QgsApplication::init( temp.path() );
