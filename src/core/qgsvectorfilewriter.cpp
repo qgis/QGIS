@@ -164,7 +164,11 @@ bool QgsVectorFileWriter::supportsFeatureStyles( const QString &driverName )
   if ( !driverMetadata )
     return false;
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+  return CSLFetchBoolean( driverMetadata, GDAL_DCAP_FEATURE_STYLES_WRITE, false );
+#else
   return CSLFetchBoolean( driverMetadata, GDAL_DCAP_FEATURE_STYLES, false );
+#endif
 }
 
 void QgsVectorFileWriter::init( QString vectorFileName,
