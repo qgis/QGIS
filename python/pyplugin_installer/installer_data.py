@@ -551,7 +551,7 @@ class Plugins(QObject):
         def pluginMetadata(fct):
             """ calls metadataParser for current l10n.
                 If failed, fallbacks to the standard metadata """
-            locale = QgsSettings().value('locale/userLocale')[0:2]
+            locale = QgsSettings().value('locale/userLocale')
             if locale and fct in translatableAttributes:
                 value = metadataParser("{}[{}]".format(fct, locale))
                 if value:
