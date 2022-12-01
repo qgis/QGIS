@@ -3464,6 +3464,11 @@ void QgsMapCanvas::startPreviewJob( int number )
   context.maxRenderingTimeMs = MAXIMUM_LAYER_PREVIEW_TIME_MS;
   for ( QgsMapLayer *layer : layers )
   {
+    if ( layer->customProperty( QStringLiteral( "rendering/noPreviewJobs" ), false ).toBool() )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "Layer %1 not rendered because it is explicitly blocked from preview jobs" ).arg( layer->id() ), 3 );
+      continue;
+    }
     context.lastRenderingTimeMs = mLastLayerRenderTime.value( layer->id(), 0 );
     QgsDataProvider *provider = layer->dataProvider();
     if ( provider && !provider->renderInPreview( context ) )
