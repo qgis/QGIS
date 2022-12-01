@@ -2848,8 +2848,12 @@ void QgsOgrProvider::computeCapabilities()
       ability |= TransactionSupport;
     }
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+    if ( GDALGetMetadataItem( mOgrLayer->driver(), GDAL_DCAP_FEATURE_STYLES_READ, nullptr ) != nullptr )
+#else
     // GDAL KML driver doesn't support reading feature style, skip metadata check until GDAL can separate reading/writing capability
     if ( mGDALDriverName != QLatin1String( "KML" ) && GDALGetMetadataItem( mOgrLayer->driver(), GDAL_DCAP_FEATURE_STYLES, nullptr ) != nullptr )
+#endif
     {
       ability |= FeatureSymbology;
       ability |= CreateRenderer;
