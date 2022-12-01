@@ -30,7 +30,7 @@ from typing import (
 
 from qgis.PyQt.QtCore import (pyqtSignal, QObject, QCoreApplication, QFile,
                               QDir, QDirIterator, QDate, QUrl, QFileInfo,
-                              QLocale, QByteArray)
+                              QByteArray)
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
 from qgis.core import Qgis, QgsSettings, QgsNetworkRequestParameters
@@ -551,7 +551,7 @@ class Plugins(QObject):
         def pluginMetadata(fct):
             """ calls metadataParser for current l10n.
                 If failed, fallbacks to the standard metadata """
-            locale = QLocale.system().name()
+            locale = QgsSettings().value('locale/userLocale')[0:2]
             if locale and fct in translatableAttributes:
                 value = metadataParser("{}[{}]".format(fct, locale))
                 if value:
