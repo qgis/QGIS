@@ -8532,8 +8532,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "dissolve_geometries" ), -1,
                                             fcnGeometryDissolve, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "split_geometry" ),  QgsExpressionFunction::ParameterList()
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "baseGeometry" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "splittingGeometry" ) ),
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "split_by" ) ),
                                             fcnSplitGeometry, QStringLiteral( "GeometryGroup" ) );
         << new QgsStaticExpressionFunction( QStringLiteral( "to_singlepart" ),  QgsExpressionFunction::ParameterList()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),

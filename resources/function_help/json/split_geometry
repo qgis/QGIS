@@ -2,27 +2,27 @@
   "name": "split_geometry",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Returns a valid geometry or an empty geometry if the geometry could not be made valid.",
+  "description": "Returns a multipart geometry if the provided geometry is not a point and is crossed by an edge of the second geometry provided. Otherwise will return the unchanged geometry.",
   "arguments": [{
-    "arg": "baseGeometry",
-    "description": "The geomety(ies) to split"
+    "arg": "geometry",
+    "description": "The geometry(ies) to split"
   },
   {
-    "arg": "splittingGeometry",
-    "description": " The geometry(ies) used to perform the split, polygons will be converted to lines."
+    "arg": "split_by",
+    "description": " The geometry(ies) used to perform the split, polygons will be converted to closed lines."
   }],
   "examples": [{
-    "expression": "geom_to_wkt(split_geometry(geom_from_wkt('POLYGON((3 2, 4 1, 5 8, 3 2, 4 2))',line)))",
-    "returns": "'Polygon ((3 2, 5 8, 4 1, 3 2))'"
+    "expression": "geom_to_wkt(split_geometry(geom_from_wkt('LINESTRING(0 0,5 5)'),geom_from_wkt('LINESTRING(5 0,0 5)')))",
+    "returns": "'MultiLineString ((0 0, 2.5 2.5),(2.5 2.5, 5 5))'"
   }, {
-    "expression": "geom_to_wkt(split_geometry(geom_from_wkt('POLYGON((3 2, 4 1, 5 8, 3 2, 4 2))',polygon)))",
-    "returns": "'GeometryCollection (Polygon ((5 8, 4 1, 3 2, 5 8)),LineString (3 2, 4 2))'"
+    "expression": "geom_to_wkt(split_geometry(geom_from_wkt('POLYGON((0 0,5 0,5 5))'),geom_from_wkt('LINESTRING(5 0,0 5)')))",
+    "returns": "'MultiPolygon (((0 0, 2.5 2.5, 5 0, 0 0)),((5 0, 2.5 2.5, 5 5, 5 0)))'"
   }, {
-    "expression": "geom_to_wkt(split_geometry(geom_from_wkt('POLYGON((3 2, 4 1, 5 8, 3 2, 4 2))',points)))",
-    "returns": "'Polygon ((3 2, 4 1, 5 8, 3 2))'"
+    "expression": "geom_to_wkt(split_geometry(geom_from_wkt('POLYGON((0 0,5 0,5 5))'),geom_from_wkt('POINT(1 1)')))",
+    "returns": "'Polygon ((0 0, 5 0, 5 5))'"
   }, {
-    "expression": "geom_to_wkt(split_geometry(geom_from_wkt('POLYGON((3 2, 4 1, 5 8, 3 2, 4 2))',nullgeom)))",
-    "returns": "An empty geometry"
+    "expression": "geom_to_wkt(split_geometry(geom_from_wkt('MULTIPOINT((0 0),(5 0),(5 5),(0 0))'),geom_from_wkt('LINESTRING((0 0,5 5))')))",
+    "returns": "'MultiPoint ((0 0),(5 0),(5 5),(0 0))'"
   }],
-  "tags": ["rules", "valid", "ogc", "according", "formed", "repair", "fix"]
+  "tags": ["split","separate","divide","intersect","cut"]
 }
