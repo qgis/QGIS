@@ -3020,12 +3020,10 @@ static QVariant fcnSplitGeometry( const QVariantList &values, const QgsExpressio
 {
   QgsGeometry initGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
   QgsGeometry inGeom = initGeom;
-  if ( inGeom.isNull() )
-    return QVariant();
+  if ( inGeom.isNull() || inGeom.type() == QgsWkbTypes::PointGeometry )
+    return QVariant::fromValue( initGeom );
   QgsGeometry splitGeom = QgsExpressionUtils::getGeometry( values.at( 1 ), parent );
-  if ( splitGeom.isNull() )
-    return QVariant();
-  if ( splitGeom.type() == QgsWkbTypes::PointGeometry )
+  if ( splitGeom.isNull() || splitGeom.type() == QgsWkbTypes::PointGeometry )
     return QVariant::fromValue( initGeom );
 
   QVector< QgsGeometry > outGeoms = initGeom.asGeometryCollection();
