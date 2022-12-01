@@ -933,16 +933,15 @@ int QgsProcessingExec::execute( const QString &id, const QVariantMap &params, co
     }
   }
 
-  std::unique_ptr< QgsProject > project;
+  QgsProject *project = nullptr;
   if ( !projectPath.isEmpty() )
   {
-    project = std::make_unique< QgsProject >();
+    project = QgsProject::instance();
     if ( !project->read( projectPath ) )
     {
       std::cerr << QStringLiteral( "Could not load the QGIS project \"%1\"\n" ).arg( projectPath ).toLocal8Bit().constData();
       return 1;
     }
-    QgsProject::setInstance( project.get() );
   }
 
   if ( !useJson )
@@ -990,7 +989,8 @@ int QgsProcessingExec::execute( const QString &id, const QVariantMap &params, co
   context.setEllipsoid( ellipsoid );
   context.setDistanceUnit( distanceUnit );
   context.setAreaUnit( areaUnit );
-  context.setProject( project.get() );
+  if ( project )
+    context.setProject( project );
   context.setLogLevel( logLevel );
 
   const QgsProcessingParameterDefinitions defs = alg->parameterDefinitions();
