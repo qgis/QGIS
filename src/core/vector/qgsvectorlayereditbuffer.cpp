@@ -54,6 +54,7 @@ void QgsVectorLayerEditBuffer::undoIndexChanged( int index )
 {
   QgsDebugMsgLevel( QStringLiteral( "undo index changed %1" ).arg( index ), 4 );
   Q_UNUSED( index )
+  L->triggerRepaint();
   emit layerModified();
 }
 
@@ -140,12 +141,19 @@ bool QgsVectorLayerEditBuffer::addFeatures( QgsFeatureList &features )
     return false;
 
   bool result = true;
+  bool anyAdded = false;
   for ( QgsFeatureList::iterator iter = features.begin(); iter != features.end(); ++iter )
   {
-    result = result && addFeature( *iter );
+    const bool thisFeatureResult = addFeature( *iter );
+    result = result && thisFeatureResult;
+    anyAdded |= thisFeatureResult;
   }
 
-  L->updateExtents();
+  if ( anyAdded )
+  {
+    L->triggerRepaint();
+    L->updateExtents();
+  }
   return result;
 }
 
@@ -189,9 +197,10 @@ bool QgsVectorLayerEditBuffer::deleteFeatures( const QgsFeatureIds &fids )
   }
 
   bool ok = true;
-  const auto constFids = fids;
-  for ( QgsFeatureId fid : constFids )
+  for ( QgsFeatureId fid : fids )
     ok = deleteFeature( fid ) && ok;
+
+  L->triggerRepaint();
 
   return ok;
 }
@@ -232,6 +241,8 @@ bool QgsVectorLayerEditBuffer::changeAttributeValues( QgsFeatureId fid, const Qg
 
     success &= changeAttributeValue( fid, field, newValue, oldValue );
   }
+
+  L->triggerRepaint();
 
   return success;
 }

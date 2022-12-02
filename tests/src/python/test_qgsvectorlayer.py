@@ -259,12 +259,15 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         layer = createLayerWithOnePoint()
         layer.startEditing()
 
+        repaint_spy = QSignalSpy(layer.repaintRequested)
+
         self.assertEqual(layer.undoStack().count(), 0)
         self.assertEqual(layer.undoStack().index(), 0)
         f = QgsFeature()
         f.setAttributes(["test", 123])
         f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(100, 200)))
         self.assertTrue(layer.addFeatures([f]))
+        self.assertEqual(len(repaint_spy), 1)
         self.assertEqual(layer.undoStack().count(), 1)
         self.assertEqual(layer.undoStack().index(), 1)
         self.assertEqual(layer.featureCount(), 2)
@@ -273,40 +276,51 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertEqual(layer.undoStack().count(), 1)
         self.assertEqual(layer.undoStack().index(), 0)
         self.assertEqual(layer.featureCount(), 1)
+        self.assertEqual(len(repaint_spy), 2)
 
         layer.undoStack().redo()
         self.assertEqual(layer.undoStack().count(), 1)
         self.assertEqual(layer.undoStack().index(), 1)
         self.assertEqual(layer.featureCount(), 2)
+        self.assertEqual(len(repaint_spy), 3)
 
         # macro commands
         layer.beginEditCommand("Test command 1")
         self.assertTrue(layer.addFeatures([f]))
+        self.assertEqual(len(repaint_spy), 4)
         self.assertTrue(layer.addFeatures([f]))
+        self.assertEqual(len(repaint_spy), 5)
         layer.endEditCommand()
         self.assertEqual(layer.undoStack().count(), 2)
         self.assertEqual(layer.undoStack().index(), 2)
         self.assertEqual(layer.featureCount(), 4)
+        self.assertEqual(len(repaint_spy), 6)
 
         layer.undoStack().undo()
         self.assertEqual(layer.undoStack().count(), 2)
         self.assertEqual(layer.undoStack().index(), 1)
         self.assertEqual(layer.featureCount(), 2)
+        self.assertEqual(len(repaint_spy), 7)
 
         layer.undoStack().redo()
         self.assertEqual(layer.undoStack().count(), 2)
         self.assertEqual(layer.undoStack().index(), 2)
         self.assertEqual(layer.featureCount(), 4)
+        self.assertEqual(len(repaint_spy), 8)
 
         # throw away a macro command
         layer.beginEditCommand("Test command 1")
         self.assertTrue(layer.addFeatures([f]))
+        self.assertEqual(len(repaint_spy), 9)
         self.assertTrue(layer.addFeatures([f]))
+        self.assertEqual(len(repaint_spy), 10)
         self.assertEqual(layer.featureCount(), 6)
+        prev_repaint_count = len(repaint_spy)
         layer.destroyEditCommand()
         self.assertEqual(layer.undoStack().count(), 2)
         self.assertEqual(layer.undoStack().index(), 2)
         self.assertEqual(layer.featureCount(), 4)
+        self.assertGreaterEqual(len(repaint_spy), prev_repaint_count)
 
     def testSetDataSource(self):
         """
@@ -600,8 +614,11 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
 
         checkBefore()
 
+        repaint_spy = QSignalSpy(layer.repaintRequested)
+
         # try to add feature without editing mode
         self.assertFalse(layer.addFeature(feat))
+        self.assertEqual(len(repaint_spy), 0)
 
         # add feature
         layer.startEditing()
@@ -609,9 +626,12 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         # try adding feature with incorrect number of fields
         bad_feature = QgsFeature()
         self.assertFalse(layer.addFeature(bad_feature))
+        self.assertEqual(len(repaint_spy), 0)
 
         # add good feature
         self.assertTrue(layer.addFeature(feat))
+
+        self.assertEqual(len(repaint_spy), 1)
 
         checkAfter()
         self.assertEqual(layer.dataProvider().featureCount(), 0)
@@ -619,8 +639,12 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         # now try undo/redo
         layer.undoStack().undo()
         checkBefore()
+        self.assertEqual(len(repaint_spy), 2)
+
         layer.undoStack().redo()
         checkAfter()
+
+        self.assertEqual(len(repaint_spy), 3)
 
         self.assertTrue(layer.commitChanges())
 
@@ -667,22 +691,33 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         # add feature
         layer.startEditing()
 
+        repaint_spy = QSignalSpy(layer.repaintRequested)
+
         # try adding feature with incorrect number of fields
         bad_feature = QgsFeature()
         self.assertFalse(layer.addFeatures([bad_feature]))
 
+        self.assertEqual(len(repaint_spy), 0)
+
         # add good features
         self.assertTrue(layer.addFeatures([feat1, feat2]))
+
+        self.assertEqual(len(repaint_spy), 1)
 
         checkAfter()
         self.assertEqual(layer.dataProvider().featureCount(), 0)
 
         # now try undo/redo
         layer.undoStack().undo()
+
+        self.assertEqual(len(repaint_spy), 2)
         layer.undoStack().undo()
+        self.assertEqual(len(repaint_spy), 3)
         checkBefore()
         layer.undoStack().redo()
+        self.assertEqual(len(repaint_spy), 4)
         layer.undoStack().redo()
+        self.assertEqual(len(repaint_spy), 5)
         checkAfter()
 
         self.assertTrue(layer.commitChanges())
@@ -723,12 +758,18 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
 
         checkBefore()
 
+        repaint_spy = QSignalSpy(layer.repaintRequested)
+
         # try to delete feature without editing mode
         self.assertFalse(layer.deleteFeature(fid))
+
+        self.assertEqual(len(repaint_spy), 0)
 
         # delete feature
         layer.startEditing()
         self.assertTrue(layer.deleteFeature(fid))
+
+        self.assertEqual(len(repaint_spy), 1)
 
         checkAfter()
 
@@ -737,8 +778,10 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
 
         # now try undo/redo
         layer.undoStack().undo()
+        self.assertEqual(len(repaint_spy), 2)
         checkBefore()
         layer.undoStack().redo()
+        self.assertEqual(len(repaint_spy), 3)
         checkAfter()
 
         self.assertEqual(layer.dataProvider().featureCount(), 1)
@@ -862,20 +905,26 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
 
         checkBefore()
 
+        repaint_spy = QSignalSpy(layer.repaintRequested)
+
         # try to change attribute without editing mode
         self.assertFalse(layer.changeAttributeValue(fid, 0, "good"))
+        self.assertEqual(len(repaint_spy), 0)
 
         # change attribute
         layer.startEditing()
         self.assertTrue(layer.changeAttributeValue(fid, 0, "good"))
+        self.assertEqual(len(repaint_spy), 1)
 
         checkAfter()
 
         # now try undo/redo
         layer.undoStack().undo()
         checkBefore()
+        self.assertEqual(len(repaint_spy), 2)
         layer.undoStack().redo()
         checkAfter()
+        self.assertEqual(len(repaint_spy), 3)
 
         self.assertTrue(layer.commitChanges())
         checkAfter()
@@ -955,6 +1004,8 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         # try to change geometry without editing mode
         self.assertFalse(layer.changeGeometry(fid, QgsGeometry.fromPointXY(QgsPointXY(300, 400))))
 
+        repaint_spy = QSignalSpy(layer.repaintRequested)
+
         checkBefore()
 
         # change geometry
@@ -962,13 +1013,16 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         layer.beginEditCommand("ChangeGeometry")
         self.assertTrue(layer.changeGeometry(fid, QgsGeometry.fromPointXY(QgsPointXY(300, 400))))
         layer.endEditCommand()
+        self.assertEqual(len(repaint_spy), 1)
 
         checkAfter()
 
         # now try undo/redo
         layer.undoStack().undo()
+        self.assertEqual(len(repaint_spy), 2)
         checkBefore()
         layer.undoStack().redo()
+        self.assertEqual(len(repaint_spy), 3)
         checkAfter()
 
         self.assertTrue(layer.commitChanges())
@@ -1069,15 +1123,20 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
 
         layer.startEditing()
 
+        repaint_spy = QSignalSpy(layer.repaintRequested)
+
         # no matching feature
         f = QgsFeature(1123)
         self.assertFalse(layer.updateFeature(f))
+        self.assertEqual(len(repaint_spy), 0)
 
         # change geometry and attributes
         f = features[0]
         f.setAttributes(['new', 321])
         f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(-200, -200)))
         self.assertTrue(layer.updateFeature(f))
+        self.assertGreaterEqual(len(repaint_spy), 1)
+        prev_spy_count = len(repaint_spy)
 
         new_feature = next(layer.getFeatures(QgsFeatureRequest(f.id())))
         self.assertEqual(new_feature.attributes(), ['new', 321])
@@ -1088,11 +1147,15 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         f6.setAttributes(["test6", 555])
         self.assertTrue(layer.dataProvider().addFeatures([f6]))
         features = [f for f in layer.getFeatures()]
+        self.assertGreaterEqual(len(repaint_spy), prev_spy_count)
+        prev_spy_count = len(repaint_spy)
 
         # update feature with no geometry -> have geometry
         f = features[-1]
         f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(-350, -250)))
         self.assertTrue(layer.updateFeature(f))
+        self.assertGreaterEqual(len(repaint_spy), prev_spy_count)
+        prev_spy_count = len(repaint_spy)
         new_feature = next(layer.getFeatures(QgsFeatureRequest(f.id())))
         self.assertEqual(new_feature.attributes(), ['test6', 555])
         self.assertTrue(new_feature.hasGeometry())
@@ -1102,6 +1165,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         f = features[1]
         f.clearGeometry()
         self.assertTrue(layer.updateFeature(f))
+        self.assertGreaterEqual(len(repaint_spy), prev_spy_count)
         new_feature = next(layer.getFeatures(QgsFeatureRequest(f.id())))
         self.assertEqual(new_feature.attributes(), ['test2', 457])
         self.assertFalse(new_feature.hasGeometry())
