@@ -166,7 +166,7 @@ QgsFeatureRenderer *QgsPointDisplacementRenderer::create( QDomElement &symbology
   else
   {
     QFont f;
-    if ( !QgsFontUtils::setFromXmlChildNode( f, symbologyElem, QStringLiteral( "LabelFont" ) ) )
+    if ( !QgsFontUtils::setFromXmlChildNode( f, symbologyElem, QStringLiteral( "labelFontProperties" ) ) )
     {
       f.fromString( symbologyElem.attribute( QStringLiteral( "font" ), QString() ) );
     }
