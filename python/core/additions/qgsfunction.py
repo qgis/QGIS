@@ -48,11 +48,24 @@ def register_function(function, arg_count, group, usesgeometry=False,
 
     Eval errors can be raised using parent.setEvalErrorString("Error message")
 
-    :param function:
-    :param arg_count:
-    :param group:
-    :param usesgeometry:
-    :param handlesnull: Needs to be set to True if this function does not always return NULL if any parameter is NULL. Default False.
+    :param function: Function to be registered.
+    :param arg_count: Defines the number of arguments. With args="auto" the number of
+                    arguments will automatically be extracted from the signature. With
+                    args=-1, any number of arguments are accepted. Note that two
+                    arguments, feature and parent, are always automatically passed.
+                    Defaults to "auto".
+    :param group: The expression group to which this expression should be added.
+                    Defaults to "custom".
+    :param usesgeometry: Defines if this expression requires the geometry (i.e.
+                    feature.geometry()). Defaults to False.
+    :param referenced_columns: A list of attribute names that are required to run this
+                    function. QgsFeatureRequest.ALL_ATTRIBUTES can be used to indicate all
+                    attributes. Potentially used by the expression engine and providers to
+                    efficiently limit requests to the specified column(s).
+                    Defaults to [QgsFeatureRequest.ALL_ATTRIBUTES].
+    :param handlesnull: Defines if this expression has custom handling for NULL values.
+                    If False, the result will always be NULL if any parameter is NULL.
+                    Defaults to False.
     :return:
     """
 
@@ -141,18 +154,23 @@ def qgsfunction(args='auto', group='custom', **kwargs):
     r"""
     Decorator function used to define a user expression function.
 
-    :param args: Number of parameters, set to 'auto' to accept a variable length of parameters.
-    :param group: The expression group to which this expression should be added.
+    :param args: Defines the number of arguments. With ``'auto'`` the number of arguments will automatically
+                be extracted from the signature. With ``-1``, any number of arguments are accepted. Note
+                that two arguments, feature and parent, are always automatically passed. Defaults to ``"auto"``.
+    :param group: The expression group to which this expression should be added. Defaults to ``"custom"``.
     :param \**kwargs:
         See below
 
     :Keyword Arguments:
-        * *referenced_columns* (``list``) --
-          An array of field names on which this expression works. Can be set to ``[QgsFeatureRequest.ALL_ATTRIBUTES]``. By default empty.
         * *usesgeometry* (``bool``) --
-          Defines if this expression requires the geometry. By default False.
+            Defines if this expression requires the geometry (i.e. ``feature.geometry()``). Defaults to False.
+        * *referenced_columns* (``list``) --
+            A list of attribute names that are required to run this function. ``QgsFeatureRequest.ALL_ATTRIBUTES``
+            can be used to indicate all attributes. Potentially used by the expression engine and providers to
+            efficiently limit requests to the specified column(s). Defaults to ``[QgsFeatureRequest.ALL_ATTRIBUTES]``.
         * *handlesnull* (``bool``) --
-          Defines if this expression has custom handling for NULL values. If False, the result will always be NULL as soon as any parameter is NULL. False by default.
+            Defines if this expression has custom handling for NULL values. If False, the result will always be
+            NULL if any parameter is NULL. Defaults to False.
 
     Example:
       @qgsfunction(2, 'test'):

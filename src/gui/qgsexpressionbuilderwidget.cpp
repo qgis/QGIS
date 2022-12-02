@@ -226,18 +226,22 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
  The @qgsfunction decorator accepts the following arguments:\n\
 \n\
 \n\
- : param args: Defines the number of arguments. With ``args = 'auto'`` the number of\n\
-               arguments will automatically be extracted from the signature.\n\
-               With ``args = -1``, any number of arguments are accepted.\n\
- : param group: The name of the group under which this expression function will\n\
-                be listed.\n\
- : param handlesnull: Set this to True if your function has custom handling for NULL values.\n\
-                     If False, the result will always be NULL as soon as any parameter is NULL.\n\
-                     Defaults to False.\n\
- : param usesgeometry : Set this to True if your function requires access to\n\
-                        feature.geometry(). Defaults to False.\n\
- : param referenced_columns: An array of attribute names that are required to run\n\
-                             this function. Defaults to [QgsFeatureRequest.ALL_ATTRIBUTES].\n\
+ : param args: Defines the number of arguments. With ``args='auto'`` the number of\n\
+              arguments will automatically be extracted from the signature.\n\
+              With ``args=-1``, any number of arguments are accepted.\n\
+              Note that two arguments, feature and parent, are always automatically passed.\n\
+              Defaults to ``'auto'``.\n\
+ : param group: The expression group to which this expression should be added.\n\
+              Defaults to ``'custom'``.\n\
+ : param usesgeometry : Defines if this expression requires the geometry (i.e. feature.geometry()).\n\
+              Defaults to False.\n\
+ : param referenced_columns: A list of attribute names that are required to run this function.\n\
+              ``QgsFeatureRequest.ALL_ATTRIBUTES`` can be used to indicate all attributes.\n\
+              Potentially used by the expression engine and providers to efficiently limit\n\
+              requests to the specified column(s). Defaults to ``[QgsFeatureRequest.ALL_ATTRIBUTES]``.\n\
+ : param handlesnull: Defines if this expression has custom handling for NULL values.\n\
+              If False, the result will always be NULL if any parameter is NULL.\n\
+              Defaults to False.\n\
      \"\"\"" ) );
 }
 
