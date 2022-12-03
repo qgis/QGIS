@@ -1631,12 +1631,15 @@ class TestQgsExpression: public QObject
       QTest::newRow( "split_geom_multipoly_multipoly" ) << "num_geometries(split_geometry(geom_from_wkt('MULTIPOLYGON(((1 1,2 1,2 2,1 2)),((3 3,4 3,4 4,3 4)),((3 1,4 1,4 2,3 2)))'),geom_from_wkt('MULTIPOLYGON(((1.5 1.5,2.5 1.5,2.5 2.5,1.5 2.5)),((2.5 1.5,2.5 3.5,3.5 3.5,3.5 1.5)))')))" << false << QVariant( 6 );
       QTest::newRow( "split_geom_invalid_valid" ) << "num_geometries(split_geometry(geom_from_wkt('MULTIPOLYGON(((1 1,2 1)))'),geom_from_wkt('MULTIPOLYGON(((1.5 1.5,2.5 1.5,2.5 2.5,1.5 2.5)),((2.5 1.5,2.5 3.5,3.5 3.5,3.5 1.5)))')))" << false << QVariant( 1 );
       QTest::newRow( "split_geom_valid_invalid" ) << "num_geometries(split_geometry(geom_from_wkt('POLYGON((1 1,3 1,3 3,1 3))'),geom_from_wkt('POLYGON((0 0,4 4))')))" << false << QVariant( 1 );
-      QTest::newRow( "split_geom_invalid_invalid" ) << "num_geometries(split_geometry(geom_from_wkt('POLYGON((0 0,5 5))'),geom_from_wkt('POLYGON(5 0,0 5))')))" << false << QVariant( 0 );
-      QTest::newRow( "split_geom_null_line" ) << "num_geometries(split_geometry(geom_from_wkt(''),geom_from_wkt('POLYGON((0 0,5 0,5 5))')))" << false << QVariant( 0 );
+      QTest::newRow( "split_geom_invalid_invalid" ) << "num_geometries(split_geometry(geom_from_wkt('POLYGON((0 0,5 5))'),geom_from_wkt('POLYGON(5 0,0 5))')))" << false << QVariant();
+      QTest::newRow( "split_geom_null_line" ) << "num_geometries(split_geometry(geom_from_wkt(''),geom_from_wkt('POLYGON((0 0,5 0,5 5))')))" << false << QVariant();
       QTest::newRow( "split_geom_poly_null" ) << "num_geometries(split_geometry(geom_from_wkt('POLYGON((0 0,5 0,5 5))'),geom_from_wkt('LINESTRING()')))" << false << QVariant( 1 );
       QTest::newRow( "split_geom_poly_point" ) << "num_geometries(split_geometry(geom_from_wkt('POLYGON((0 0,5 0,5 5))'),geom_from_wkt('POINT(1 1)')))" << false << QVariant( 1 );
       QTest::newRow( "split_geom_line_point" ) << "num_geometries(split_geometry(geom_from_wkt('LINESTRING((0 0,5 5))'),geom_from_wkt('POINT(1 1)')))" << false << QVariant( 1 );
       QTest::newRow( "split_geom_multiPoint" ) << "num_geometries(split_geometry(geom_from_wkt('MULTIPOINT((0 0),(5 0),(5 5),(0 0))'),geom_from_wkt('LINESTRING((0 0,5 5))')))" << false << QVariant( 4 );
+      QTest::newRow( "normalize_singleparth" ) << "geom_to_wkt(normalize(geom_from_wkt('Polygon ((0.1 0.8, -0.5 0.5, 0.3 0.3, -0.5 -0.1, 0.4 -0.4, -0.1 0, 0.6 0.4, -0.1 0.6, 0.1 0.8))')))" << false << QVariant( "Polygon ((-0.5 -0.1, 0.3 0.3, -0.5 0.5, 0.1 0.8, -0.1 0.6, 0.6 0.4, -0.1 0, 0.4 -0.4, -0.5 -0.1))" );
+      QTest::newRow( "normalize_multipart" ) << "geom_to_wkt(normalize(geom_from_wkt('MULTIPOLYGON(((2 2,1 1,1 2)),((4 4,3 4,3 3)),((4 2,4 1,3 1,3 2)))')))" << false << QVariant( "MultiPolygon (((3 2, 3 1, 4 1, 4 2)),((3 3, 3 4, 4 4)),((1 2, 1 1, 2 2)))" );
+      QTest::newRow( "normalize_invalid" ) << "geom_to_wkt(normalize(geom_from_wkt('POLYGON((0 2,2 2,2 4,0 0))')))" << false << QVariant( "'Polygon ((0 0, 2 4, 2 2, 0 2))'" );
 
 #if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=11 )
       QTest::newRow( "concave_hull not geom" ) << "concave_hull('r', 1)" << true << QVariant();
