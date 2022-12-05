@@ -412,6 +412,24 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertFalse(settingsEntryString_1.exists())
         self.assertFalse(settingsEntryString_2.exists())
 
+    def test_migrate_from_key(self):
+        settingsNewKey = "settingsEntryMigrationNewKey"
+        settingsEntryNew = QgsSettingsEntryString(settingsNewKey, self.pluginName)
+        settingsEntryNew.remove()
+
+        settingsOldKey = "settingsEntryMigrationOldKey"
+        settingsEntryOld = QgsSettingsEntryString(settingsOldKey, self.pluginName)
+        settingsEntryOld.setValue("value from old key")
+
+        self.assertFalse(settingsEntryNew.exists())
+        self.assertTrue(settingsEntryNew.migrateFromKey(f"plugins/{self.pluginName}/{settingsOldKey}"))
+        self.assertTrue(settingsEntryNew.exists())
+
+        self.assertEqual(settingsEntryNew.value(), settingsEntryOld.value())
+        settingsEntryNew.setValue("a new value")
+        self.assertFalse(settingsEntryNew.migrateFromKey(settingsOldKey))
+        self.assertNotEqual(settingsEntryNew.value(), settingsEntryOld.value())
+
 
 if __name__ == '__main__':
     unittest.main()
