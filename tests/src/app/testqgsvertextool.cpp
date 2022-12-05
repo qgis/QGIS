@@ -30,6 +30,8 @@
 #include "qgssettingsregistrycore.h"
 #include "testqgsmaptoolutils.h"
 
+#include <QSignalSpy>
+
 bool operator==( const QgsGeometry &g1, const QgsGeometry &g2 )
 {
   if ( g1.isNull() && g2.isNull() )
@@ -1061,13 +1063,19 @@ void TestQgsVertexTool::testAddVertexTopoFirstSegment()
 
 void TestQgsVertexTool::testAvoidIntersections()
 {
-  // check that when adding a vertex to the first segment of a polygon's ring with topo editing
-  // enabled, the geometry does not get corrupted (#20774)
+  // There is one feature in the layer
+  QCOMPARE( mLayerPolygon->featureCount(), ( long )1 );
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "Polygon ((4 1, 7 1, 7 4, 4 4, 4 1))" ) ); // avoid rounding errors
 
   QgsProject::instance()->setTopologicalEditing( true );
   const Qgis::AvoidIntersectionsMode mode( QgsProject::instance()->avoidIntersectionsMode() );
   QgsProject::instance()->setAvoidIntersectionsMode( Qgis::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer );
 
+  QSignalSpy spy( mLayerPolygon, &QgsVectorLayer::geometryChanged );
+
+  // Adds another polygon with topo editing
+  // to check that when adding a vertex to the first segment of a polygon's ring with topo editing
+  // enabled, the geometry does not get corrupted (#20774)
   QgsPolygonXY polygon2;
   QgsPolylineXY polygon2exterior;
   polygon2exterior << QgsPointXY( 8, 2 ) << QgsPointXY( 9, 2 ) << QgsPointXY( 9, 3 ) << QgsPointXY( 8, 3 ) << QgsPointXY( 8, 2 );
@@ -1077,32 +1085,66 @@ void TestQgsVertexTool::testAvoidIntersections()
 
   mLayerPolygon->addFeature( polygonF2 );
   const QgsFeatureId mFidPolygonF2 = polygonF2.id();
+
+  // Starting point
   QCOMPARE( mLayerPolygon->featureCount(), ( long )2 );
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "Polygon ((4 1, 7 1, 7 4, 4 4, 4 1))" ) );
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF2 ).geometry(), QgsGeometry::fromWkt( "Polygon ((8 2, 9 2, 9 3, 8 3, 8 2))" ) );
+
+  QCOMPARE( mLayerPolygon->undoStack()->index(), 2 );
+
+  // Moves one vertex but without intersection
+  spy.clear();
+  QCOMPARE( spy.count(), 0 );
+
+  mouseClick( 4, 4, Qt::LeftButton );
+  mouseClick( 5, 5, Qt::LeftButton );
+
+  QCOMPARE( spy.count(), 1 ); // 1 for the moved vertex
+
+  QCOMPARE( mLayerPolygon->featureCount(), ( long )2 );
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "Polygon ((4 1, 7 1, 7 4, 5 5, 4 1))" ) );
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF2 ).geometry(), QgsGeometry::fromWkt( "Polygon ((8 2, 9 2, 9 3, 8 3, 8 2))" ) );
+
+  mLayerPolygon->undoStack()->undo();
+  QCOMPARE( mLayerPolygon->undoStack()->index(), 2 );
+
+  // Moves one vertex
+  spy.clear();
+  QCOMPARE( spy.count(), 0 );
 
   mouseClick( 7, 1, Qt::LeftButton );
   mouseClick( 9, 2, Qt::LeftButton );
 
-  QCOMPARE( mLayerPolygon->undoStack()->index(), 3 );
+  QCOMPARE( spy.count(), 2 ); // 1 for the moved vertex and 1 for the updated geometry
 
-  QCOMPARE( QgsGeometry::fromWkt( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry().asWkt( 1 ) ), QgsGeometry::fromWkt( "Polygon ((4 4, 7 4, 8 3, 8 2, 9 2, 4 1, 4 4))" ) ); // avoid rounding errors
-  QCOMPARE( QgsGeometry::fromWkt( mLayerPolygon->getFeature( mFidPolygonF2 ).geometry().asWkt( 1 ) ), QgsGeometry::fromWkt( "Polygon ((8 2, 9 2, 9 3, 8 3, 8 2))" ) );
+  QCOMPARE( mLayerPolygon->featureCount(), ( long )2 );
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "Polygon ((4 4, 7 4, 8 3, 8 2, 9 2, 4 1, 4 4))" ) );
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF2 ).geometry(), QgsGeometry::fromWkt( "Polygon ((8 2, 9 2, 9 3, 8 3, 8 2))" ) );
 
   mLayerPolygon->undoStack()->undo();
+  QCOMPARE( mLayerPolygon->undoStack()->index(), 2 );
 
-  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((4 1, 7 1, 7 4, 4 4, 4 1))" ) );
+  // Moves polygons and check that geometry are not avoided
+  // the new position of the first polygon is the old posiiton of the second polygon
+  spy.clear();
+  QCOMPARE( spy.count(), 0 );
 
-  // Move polygons and check that geometry are not avoided
-  // select polygons
+  // select the 2 polygons
   mousePress( 3, 5, Qt::LeftButton );
   mouseMove( 9.5, 0.5 );
   mouseRelease( 9.5, 0.5, Qt::LeftButton );
+
+  QCOMPARE( spy.count(), 0 );
 
   // move polygons
   mouseClick( 8, 2, Qt::LeftButton );
   mouseClick( 5, 2, Qt::LeftButton );
 
-  QCOMPARE( QgsGeometry::fromWkt( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry().asWkt( 1 ) ), QgsGeometry::fromWkt( "Polygon ((1 1, 4 1, 4 4, 1 4, 1 1))" ) );
-  QCOMPARE( QgsGeometry::fromWkt( mLayerPolygon->getFeature( mFidPolygonF2 ).geometry().asWkt( 1 ) ), QgsGeometry::fromWkt( "Polygon ((5 2, 6 2, 6 3, 5 3, 5 2))" ) );
+  QCOMPARE( spy.count(), 2 ); // 2 for the moved geometries
+
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "Polygon ((1 1, 4 1, 4 4, 1 4, 1 1))" ) );
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF2 ).geometry(), QgsGeometry::fromWkt( "Polygon ((5 2, 6 2, 6 3, 5 3, 5 2))" ) );
 
   mLayerPolygon->undoStack()->undo();
   mLayerPolygon->undoStack()->undo(); // delete feature
@@ -1110,7 +1152,10 @@ void TestQgsVertexTool::testAvoidIntersections()
   QCOMPARE( mLayerPolygon->featureCount(), ( long )1 );
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((4 1, 7 1, 7 4, 4 4, 4 1))" ) );
 
-  // If topologicalEditing and avoidIntersections are activated we must take care that the topological points are well added.
+  QCOMPARE( mLayerPolygon->undoStack()->index(), 1 );
+
+  // If topologicalEditing and avoidIntersections are activated, we must take care that the topological points are well added.
+  // Adds 2 new polygons
   QgsPolygonXY polygon_topo1;
   QgsPolylineXY polygon_topo1exterior;
   polygon_topo1exterior << QgsPointXY( 0, 10 ) << QgsPointXY( 0, 20 ) << QgsPointXY( 5, 15 ) << QgsPointXY( 0, 10 );
@@ -1132,7 +1177,11 @@ void TestQgsVertexTool::testAvoidIntersections()
   const QgsFeatureId mFidPolygonF_topo2 = polygonF_topo2.id();
 
   QCOMPARE( mLayerPolygon->featureCount(), ( long )3 );
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "Polygon ((4 1, 7 1, 7 4, 4 4, 4 1))" ) );
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF_topo1 ).geometry(), QgsGeometry::fromWkt( "Polygon ((0 10, 0 20, 5 15, 0 10))" ) );
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF_topo2 ).geometry(), QgsGeometry::fromWkt( "Polygon ((10 15, 15 10, 15 20, 10 15))" ) );
 
+  // Moves one vertex over the other polygon
   mouseClick( 5, 15, Qt::LeftButton );
   mouseClick( 12.5, 15, Qt::LeftButton );
 
@@ -1145,10 +1194,10 @@ void TestQgsVertexTool::testAvoidIntersections()
   mLayerPolygon->undoStack()->undo(); // delete feature polygonF_topo1
   QCOMPARE( mLayerPolygon->featureCount(), ( long )1 );
 
-
   QgsProject::instance()->setTopologicalEditing( false );
   QgsProject::instance()->setAvoidIntersectionsMode( mode );
 }
+
 void TestQgsVertexTool::testActiveLayerPriority()
 {
   // check that features from current layer get priority when picking points

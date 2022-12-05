@@ -2406,6 +2406,7 @@ class CORE_EXPORT QgsGeometry
      *          1 if geometry is not of polygon type,
      *          2 if avoid intersection would change the geometry type,
      *          3 at least one geometry intersected is invalid. The algorithm may not work and return the same geometry as the input. You must fix your intersecting geometries.
+     *          4 if the geometry is not intersected by one of the geometries present in the provided layers.
      * \since QGIS 1.5
      */
     int avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers,
