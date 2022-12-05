@@ -440,6 +440,8 @@ void QgsNmeaConnection::processVtgSentence( const char *data, int len )
   nmeaGPVTG result;
   if ( nmea_parse_GPVTG( data, len, &result ) )
   {
+    if ( !std::isnan( result.dir ) )
+      mLastGPSInformation.direction = result.dir;
     mLastGPSInformation.speed = result.spk;
   }
 }
