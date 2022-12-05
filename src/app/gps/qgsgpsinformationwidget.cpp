@@ -82,22 +82,23 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsAppGpsConnection *connectio
   //
   mPlot = new QwtPlot( mpHistogramWidget );
   mPlot->setAutoReplot( false );   // plot on demand
-  //mpPlot->setTitle(QObject::tr("Signal Status"));
-  //mpPlot->insertLegend(new QwtLegend(), QwtPlot::BottomLegend);
+  //mPlot->setTitle(QObject::tr("Signal dB Value"));
+  //mPlot->insertLegend(new QwtLegend(), QwtPlot::BottomLegend);
   // Set axis titles
-  //mpPlot->setAxisTitle(QwtPlot::xBottom, QObject::tr("Satellite"));
-  //mpPlot->setAxisTitle(QwtPlot::yLeft, QObject::tr("Value"));
+  //mPlot->setAxisTitle(QwtPlot::xBottom, QObject::tr("Satellite"));
+  //mPlot->setAxisTitle(QwtPlot::yLeft, QObject::tr("dB Value"));
   mPlot->setAxisScale( QwtPlot::xBottom, 0, 20 );
-  mPlot->setAxisScale( QwtPlot::yLeft, 0, 100 );  // max is 50dB SNR, I believe - SLM
+  mPlot->setAxisScale( QwtPlot::yLeft, 0, 60 );  // max is 50dB SNR, I believe - SLM
   // add a grid
-  //QwtPlotGrid * mypGrid = new QwtPlotGrid();
-  //mypGrid->attach( mpPlot );
-  //display satellites first
+  QwtPlotGrid * mypGrid = new QwtPlotGrid();
+  mGrid->enableX (false);
+  mypGrid->attach( mpPlot );
+  // display satellites first
   mCurve = new QwtPlotCurve();
   mCurve->setRenderHint( QwtPlotItem::RenderAntialiased );
   mCurve->setPen( QPen( Qt::blue ) );
   mCurve->setBrush( QBrush( Qt::blue ) );
-  mPlot->enableAxis( QwtPlot::yLeft, false );
+  mPlot->enableAxis( QwtPlot::yLeft, true );
   mPlot->enableAxis( QwtPlot::xBottom, false );
   mCurve->attach( mPlot );
   //ensure all children get removed
@@ -269,12 +270,17 @@ void QgsGpsInformationWidget::gpsConnecting()
   mTxtLatitude->clear();
   mTxtLongitude->clear();
   mTxtAltitude->clear();
+  mTxtAltitudeDiff->clear();
+  mTxtAltitudeEllipsoid->clear();
   mTxtDateTime->clear();
   mTxtSpeed->clear();
   mTxtDirection->clear();
   mTxtHdop->clear();
   mTxtVdop->clear();
   mTxtPdop->clear();
+  mTxtHacc->clear();
+  mTxtVacc->clear();
+  mTxt3Dacc->clear();
   mTxtFixMode->clear();
   mTxtFixType->clear();
   mTxtQuality->clear();
@@ -328,6 +334,27 @@ void QgsGpsInformationWidget::updateTrackInformation()
 
 void QgsGpsInformationWidget::gpsDisconnected()
 {
+  // clear position page fields to give better indication that something happened (or didn't happen)
+  mTxtLatitude->clear();
+  mTxtLongitude->clear();
+  mTxtAltitude->clear();
+  mTxtAltitudeDiff->clear();
+  mTxtAltitudeEllipsoid->clear();
+  mTxtDateTime->clear();
+  mTxtSpeed->clear();
+  mTxtDirection->clear();
+  mTxtHdop->clear();
+  mTxtVdop->clear();
+  mTxtPdop->clear();
+  mTxtHacc->clear();
+  mTxtVacc->clear();
+  mTxt3Dacc->clear();
+  mTxtFixMode->clear();
+  mTxtFixType->clear();
+  mTxtQuality->clear();
+  mTxtSatellitesUsed->clear();
+  mTxtStatus->clear();
+
   mGPSPlainTextEdit->appendPlainText( tr( "Disconnected…" ) );
 }
 
