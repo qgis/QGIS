@@ -367,7 +367,11 @@ void QgsAttributeTableModel::attributeValueChanged( QgsFeatureId fid, int idx, c
   if ( mFeatureRequest.filterType() == QgsFeatureRequest::FilterNone )
   {
     if ( loadFeatureAtId( fid ) )
-      setData( index( idToRow( fid ), fieldCol( idx ) ), value, Qt::EditRole );
+    {
+      const QModelIndex modelIndex = index( idToRow( fid ), fieldCol( idx ) );
+      setData( modelIndex, value, Qt::EditRole );
+      emit dataChanged( modelIndex, modelIndex, QVector<int>() << Qt::DisplayRole );
+    }
   }
   else
   {
@@ -383,7 +387,9 @@ void QgsAttributeTableModel::attributeValueChanged( QgsFeatureId fid, int idx, c
         else
         {
           // Update representation
-          setData( index( idToRow( fid ), fieldCol( idx ) ), value, Qt::EditRole );
+          const QModelIndex modelIndex = index( idToRow( fid ), fieldCol( idx ) );
+          setData( modelIndex, value, Qt::EditRole );
+          emit dataChanged( modelIndex, modelIndex, QVector<int>() << Qt::DisplayRole );
         }
       }
       else
