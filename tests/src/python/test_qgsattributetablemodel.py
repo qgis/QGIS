@@ -31,9 +31,12 @@ from qgis.core import (
     QgsField,
     QgsFields,
     QgsWkbTypes,
+    QgsFeatureRequest
 )
 from qgis.PyQt.QtCore import Qt, QTemporaryDir, QVariant
 from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtTest import QSignalSpy
+
 from qgis.testing import (start_app,
                           unittest
                           )
@@ -116,7 +119,19 @@ class TestQgsAttributeTableModel(unittest.TestCase):
 
         # change attribute value for a feature and commit
         self.layer.startEditing()
+
+        spy = QSignalSpy(self.am.dataChanged)
+
         self.layer.changeAttributeValue(fid, field_idx, new_value)
+
+        # ensure that dataChanged signal was raised
+        self.assertEqual(len(spy), 1)
+        self.assertEqual(spy[-1][0].row(), model_index.row())
+        self.assertEqual(spy[-1][0].column(), field_idx)
+        self.assertEqual(spy[-1][1].row(), model_index.row())
+        self.assertEqual(spy[-1][1].column(), field_idx)
+        self.assertEqual(spy[-1][2], [Qt.DisplayRole])
+
         self.layer.commitChanges()
 
         # check the feature in layer is good
@@ -126,6 +141,51 @@ class TestQgsAttributeTableModel(unittest.TestCase):
         # get the same feature from model and layer
         model_index = self.am.idToIndex(fid)
         feature_model = self.am.feature(model_index)
+
+        # check that index from layer and model are sync
+        self.assertEqual(feature.attribute(field_idx), feature_model.attribute(field_idx))
+
+    def testEditWithFilter(self):
+        fid = 2
+        field_idx = 1
+        new_value = 334
+
+        # get the same feature from model and layer
+        feature = self.layer.getFeature(fid)
+        am = QgsAttributeTableModel(self.cache)
+        am.setRequest(QgsFeatureRequest().setFilterFid(fid))
+        am.loadLayer()
+
+        model_index = am.idToIndex(fid)
+        feature_model = am.feature(model_index)
+
+        # check that feature from layer and model are sync
+        self.assertEqual(feature.attribute(field_idx), feature_model.attribute(field_idx))
+
+        # change attribute value for a feature and commit
+        self.layer.startEditing()
+
+        spy = QSignalSpy(am.dataChanged)
+
+        self.layer.changeAttributeValue(fid, field_idx, new_value)
+
+        # ensure that dataChanged signal was raised
+        self.assertEqual(len(spy), 1)
+        self.assertEqual(spy[-1][0].row(), model_index.row())
+        self.assertEqual(spy[-1][0].column(), field_idx)
+        self.assertEqual(spy[-1][1].row(), model_index.row())
+        self.assertEqual(spy[-1][1].column(), field_idx)
+        self.assertEqual(spy[-1][2], [Qt.DisplayRole])
+
+        self.layer.commitChanges()
+
+        # check the feature in layer is good
+        feature = self.layer.getFeature(fid)
+        self.assertEqual(feature.attribute(field_idx), new_value)
+
+        # get the same feature from model and layer
+        model_index = am.idToIndex(fid)
+        feature_model = am.feature(model_index)
 
         # check that index from layer and model are sync
         self.assertEqual(feature.attribute(field_idx), feature_model.attribute(field_idx))
