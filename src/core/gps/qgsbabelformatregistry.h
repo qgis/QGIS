@@ -47,9 +47,7 @@ class CORE_EXPORT QgsBabelFormatRegistry
     static const inline QgsSettingsEntryString settingsBabelTrkDownload = QgsSettingsEntryString( QStringLiteral( "babelDevices/%1/trkdownload" ), QgsSettings::Prefix::GPS );
     static const inline QgsSettingsEntryString settingsBabelTrkUpload = QgsSettingsEntryString( QStringLiteral( "babelDevices/%1/trkupload" ), QgsSettings::Prefix::GPS );
 
-    static const inline QgsSettingsEntryGroup settingsBabelDeviceGroup = QgsSettingsEntryGroup( {&settingsBabelWptDownload, &settingsBabelWptUpload,
-        &settingsBabelRteDownload, &settingsBabelRteUpload,
-        &settingsBabelTrkDownload, &settingsBabelTrkUpload } );
+    static const inline QgsSettingsEntryGroup settingsBabelDeviceGroup = QgsSettingsEntryGroup( {&settingsBabelWptDownload, &settingsBabelWptUpload, &settingsBabelRteDownload, &settingsBabelRteUpload, &settingsBabelTrkDownload, &settingsBabelTrkUpload } );
 #endif
 
     /**
