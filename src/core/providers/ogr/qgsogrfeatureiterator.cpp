@@ -30,6 +30,7 @@
 #include "qgsogrtransaction.h"
 #include "qgssymbol.h"
 #include "qgsgeometryengine.h"
+#include "qgsdbquerylog.h"
 
 #include <QTextCodec>
 #include <QFile>
@@ -279,6 +280,23 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
     std::sort( mRequestAttributes.begin(), mRequestAttributes.end() );
   }
 
+  // Install query logger
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+  GDALDatasetSetQueryLoggerFunc( mConn->ds, [ ]( const char *pszSQL, const char *pszError, int64_t lNumRecords, int64_t lExecutionTimeMilliseconds, void *pQueryLoggerArg )
+  {
+    QgsDatabaseQueryLogEntry entry;
+    entry.initiatorClass = QStringLiteral( "QgsOgrFeatureIterator" );
+    entry.origin = QGS_QUERY_LOG_ORIGIN;
+    entry.provider = QStringLiteral( "ogr" );
+    entry.uri = *reinterpret_cast<QString *>( pQueryLoggerArg );
+    entry.query = QString( pszSQL );
+    entry.error = QString( pszError );
+    entry.startedTime = QDateTime::currentMSecsSinceEpoch() - lExecutionTimeMilliseconds;
+    entry.fetchedRows = lNumRecords;
+    QgsApplication::databaseQueryLog()->log( entry );
+    QgsApplication::databaseQueryLog()->finished( entry );
+  }, reinterpret_cast<void *>( &mConn->path ) );
+#endif
   //start with first feature
   rewind();
 

@@ -126,6 +126,7 @@ class QgsOgrFeatureIterator final: public QgsAbstractFeatureIteratorFromSource<Q
     bool fetchFeatureWithId( QgsFeatureId id, QgsFeature &feature ) const;
 
     void resetReading();
+
 };
 
 ///@endcond
