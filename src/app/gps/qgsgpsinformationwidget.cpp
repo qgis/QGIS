@@ -354,6 +354,11 @@ void QgsGpsInformationWidget::gpsDisconnected()
   mTxtQuality->clear();
   mTxtSatellitesUsed->clear();
   mTxtStatus->clear();
+  
+  // Clear Plot Signal data
+  QVector<QPointF> data;
+  mCurve->setSamples( data );
+  mPlot->replot();
 
   mGPSPlainTextEdit->appendPlainText( tr( "Disconnected…" ) );
 }
