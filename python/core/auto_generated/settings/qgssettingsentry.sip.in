@@ -306,6 +306,24 @@ Returns the current value (or default) if there is no former value.
 .. versionadded:: 3.26
 %End
 
+    bool migrateFromKey( const QString &oldKey, const QString &oldSection = QString(), const QString &dynamicKeyPart = QString() ) const;
+%Docstring
+Check if the settings does not exist and try to set it from a given ``oldKey`` and ``oldSection``
+
+.. versionadded:: 3.30
+%End
+
+    bool migrateFromKey( const QString &oldKey, const QString &oldSection, const QStringList &dynamicKeyPartList ) const;
+%Docstring
+Check if the settings does not exist and try to set it from a given ``oldKey``
+
+.. note::
+
+   The old key must contain its section (the section from the current setting will not be prepended)
+
+.. versionadded:: 3.30
+%End
+
   protected:
 
     bool setVariantValuePrivate( const QVariant &value, const QStringList &dynamicKeyPartList = QStringList() ) const;
@@ -375,6 +393,7 @@ The ``defaultValueOverride`` argument if valid is used instead of the normal def
 %Docstring
 Returns the settings value with a ``defaultValueOverride`` and with an optional ``dynamicKeyPart``
 %End
+
     T valueWithDefaultOverride( const T &defaultValueOverride, const QStringList &dynamicKeyPartList ) const;
 %Docstring
 Returns the settings value with a ``defaultValueOverride`` for the ``dynamicKeyPartList``
@@ -505,6 +524,7 @@ The ``defaultValueOverride`` argument if valid is used instead of the normal def
 %Docstring
 Returns the settings value with a ``defaultValueOverride`` and with an optional ``dynamicKeyPart``
 %End
+
     T valueWithDefaultOverride( T defaultValueOverride, const QStringList &dynamicKeyPartList ) const;
 %Docstring
 Returns the settings value with a ``defaultValueOverride`` for the ``dynamicKeyPartList``
