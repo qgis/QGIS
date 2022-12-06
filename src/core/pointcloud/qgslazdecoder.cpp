@@ -372,7 +372,7 @@ void decodePoint( char *buf, int lasPointFormat, char *dataBuffer, std::size_t &
         lazStoreToStream_<unsigned char>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? p14.eofFlag() : p10.edge_of_flight_line );
         break;
       case QgsLazDecoder::LazAttribute::ScanAngleRank:
-        lazStoreToStream_<char>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? p14.scanAngle() : p10.scan_angle_rank );
+        lazStoreToStream_<char>( dataBuffer, outputOffset, requestedAttribute.type, char( isLas14 ? p14.scanAngle() : p10.scan_angle_rank ) );
         break;
       case QgsLazDecoder::LazAttribute::UserData:
         lazStoreToStream_<unsigned char>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? p14.userData() : p10.user_data );
@@ -395,10 +395,10 @@ void decodePoint( char *buf, int lasPointFormat, char *dataBuffer, std::size_t &
         lazStoreToStream_<unsigned short>( dataBuffer, outputOffset, requestedAttribute.type, rgb.b );
         break;
       case QgsLazDecoder::LazAttribute::ScannerChannel:
-        lazStoreToStream_<char>( dataBuffer, outputOffset, requestedAttribute.type, p14.scannerChannel() );
+        lazStoreToStream_<char>( dataBuffer, outputOffset, requestedAttribute.type, char( p14.scannerChannel() ) );
         break;
       case QgsLazDecoder::LazAttribute::ClassificationFlags:
-        lazStoreToStream_<char>( dataBuffer, outputOffset, requestedAttribute.type, p14.classFlags() );
+        lazStoreToStream_<char>( dataBuffer, outputOffset, requestedAttribute.type, char( p14.classFlags() ) );
         break;
       case QgsLazDecoder::LazAttribute::NIR:
       {
