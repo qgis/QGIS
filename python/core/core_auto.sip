@@ -164,6 +164,7 @@
 %Include auto_generated/qgsscalecalculator.sip
 %Include auto_generated/qgsscaleutils.sip
 %Include auto_generated/qgsselectioncontext.sip
+%Include auto_generated/qgsshadingrenderer.sip
 %Include auto_generated/qgssimplifymethod.sip
 %Include auto_generated/qgssingleitemmodel.sip
 %Include auto_generated/qgssldexportcontext.sip

@@ -497,6 +497,7 @@ set(QGIS_CORE_SRCS
   qgsscalecalculator.cpp
   qgsscaleutils.cpp
   qgsselectioncontext.cpp
+  qgsshadingrenderer.cpp
   qgsshapegenerator.cpp
   qgssimplifymethod.cpp
   qgssingleitemmodel.cpp
@@ -1178,6 +1179,7 @@ set(QGIS_CORE_HDRS
   qgsscalecalculator.h
   qgsscaleutils.h
   qgsselectioncontext.h
+  qgsshadingrenderer.h
   qgsshapegenerator.h
   qgssimplifymethod.h
   qgssingleitemmodel.h

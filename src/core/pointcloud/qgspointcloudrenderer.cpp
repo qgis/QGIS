@@ -41,7 +41,7 @@ QgsPointCloudRenderContext::QgsPointCloudRenderContext( QgsRenderContext &contex
 
 void QgsPointCloudRenderContext::setElevationMap( QgsElevationMap *elevationMap )
 {
-  mElevationMap.reset( elevationMap );
+  mElevationMap = elevationMap;
 }
 
 long QgsPointCloudRenderContext::pointsRendered() const

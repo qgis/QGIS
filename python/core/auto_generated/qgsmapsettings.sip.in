@@ -978,7 +978,26 @@ Defaults to -1 if the map is not associated with an animation.
 .. versionadded:: 3.26
 %End
 
+    const QgsShadingRenderer &shadingRenderer() const;
+%Docstring
+Returns the shading renderer used to render shading on the entire map
+
+.. seealso:: :py:func:`setShadingRenderer`
+
+.. versionadded:: 3.30
+%End
+
+    void setShadingRenderer( const QgsShadingRenderer &shadingRenderer );
+%Docstring
+Sets the shading renderer used to render shading on the entire map
+
+.. seealso:: :py:func:`setShadingRenderer`
+
+.. versionadded:: 3.30
+%End
+
   protected:
+
 
 
 

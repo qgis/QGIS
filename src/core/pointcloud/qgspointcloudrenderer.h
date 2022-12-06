@@ -183,14 +183,14 @@ class CORE_EXPORT QgsPointCloudRenderContext
      *
      * \since QGIS 3.28
      */
-    void setElevationMap( QgsElevationMap *elevationMap SIP_TRANSFER );
+    void setElevationMap( QgsElevationMap *elevationMap );
 
     /**
      * Returns elevation map. It may be a null pointer if elevation map is not needed in rendering.
      *
      * \since QGIS 3.28
      */
-    QgsElevationMap *elevationMap() { return mElevationMap.get(); }
+    QgsElevationMap *elevationMap() { return mElevationMap; }
 #endif
 
 #ifndef SIP_RUN
@@ -260,7 +260,7 @@ class CORE_EXPORT QgsPointCloudRenderContext
     int mZOffset = 0;
     double mZValueScale = 1.0;
     double mZValueFixedOffset = 0;
-    std::unique_ptr<QgsElevationMap> mElevationMap;
+    QgsElevationMap *mElevationMap = nullptr;
 
     QgsFeedback *mFeedback = nullptr;
 };

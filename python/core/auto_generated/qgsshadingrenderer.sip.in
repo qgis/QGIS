@@ -1,0 +1,162 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsshadingrenderer.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsShadingRenderer
+{
+%Docstring(signature="appended")
+This class can render shading on image with different methods (eye dome Lighting, hill shading,...).
+Instane od this class support differents settings:
+- activate/deactivate the hafind renderer
+- activate/deactivate a shading methods
+- parameters of each shading methods
+
+To render shading on image the caller call :py:func:`~renderShading` with the image and
+an elevation map (see QgsElevationMap()) as parameters. The shading is applied on the image in place.
+Elevation map and image must have same sizes.
+
+.. versionadded:: 3.30
+%End
+
+%TypeHeaderCode
+#include "qgsshadingrenderer.h"
+%End
+  public:
+    QgsShadingRenderer();
+
+    void renderShading( const QgsElevationMap &elevation, QImage &image, const QgsRenderContext &context ) const;
+%Docstring
+Render shading on ``image`` condidering the elevation map ``elevation`` and the renderer context ``context``
+If elevation map and the image don't have same sizes, nothing happens.
+%End
+
+    bool isActive() const;
+%Docstring
+Return whether this shading renderer is active.
+%End
+
+    void setActiveEyeDomeLighting( bool active );
+%Docstring
+Sets active the eye dome lighting shading method.
+%End
+
+    double eyeDomeLightingStrength() const;
+%Docstring
+Returns the strength of the eye dome lighting method.
+
+.. seealso:: :py:func:`setEyeDomeLightingStrength`
+%End
+
+    void setEyeDomeLightingStrength( double strength );
+%Docstring
+Sets the ``strength`` of the eye dome lighting method.
+
+.. seealso:: :py:func:`eyeDomeLightingStrength`
+%End
+
+    double eyeDomeLightingDistance() const;
+%Docstring
+Returns the distance of the eye dome lighting method, that is the distance where the
+effect is apply from the source elevation.
+
+.. seealso:: :py:func:`setEyeDomeLightingDistance`
+%End
+
+    void setEyeDomeLightingDistance( double distance );
+%Docstring
+Sets the distance of the eye dome lighting method, that is the distance where the
+effect is apply from the source elevation.
+
+.. seealso:: :py:func:`eyeDomeLightingDistance`
+%End
+
+    const QgsUnitTypes::RenderUnit &eyeDomeLightingDistanceUnit() const;
+%Docstring
+Returns the unit of the distance of the eye dome lighting method returned by :py:func:`~QgsShadingRenderer.eyeDomeLightingDistance`.
+
+.. seealso:: :py:func:`setEyeDomeLightingDistanceUnit`
+%End
+
+    void setEyeDomeLightingDistanceUnit( const QgsUnitTypes::RenderUnit &newEyeDomeLightingDistanceUnit );
+%Docstring
+Sets the unit of the distance of the eye dome lighting method set by :py:func:`~QgsShadingRenderer.setEyeDomeLightingDistance`.
+
+.. seealso:: :py:func:`eyeDomeLightingDistanceUnit`
+%End
+
+    void setActiveHillShading( bool active );
+%Docstring
+Sets active the hill shading
+%End
+
+    double hillShadingZFactor() const;
+%Docstring
+Returns the z factor used by the hill shading method.
+
+.. seealso:: :py:func:`setHillShadingZFactor`
+%End
+
+    void setHillShadingZFactor( double zFactor );
+%Docstring
+Sets the z factor used by the hill shading method.
+
+.. seealso:: :py:func:`hillShadingZFactor`
+%End
+
+    bool isHillShadingMultidirectional() const;
+%Docstring
+Returns whether the hill shading method is multidirectional.
+
+.. seealso:: :py:func:`setHillShadingMultidirectional`
+%End
+
+    void setHillShadingMultidirectional( bool multiDirectional );
+%Docstring
+Sets whether the hill shading method is multidirectional.
+
+.. seealso:: :py:func:`isHillShadingMultidirectional`
+%End
+
+    double lightAltitude() const;
+%Docstring
+Returns the altitude of the light (degree) that can be used by some methods (e.g. hill shading).
+
+.. seealso:: :py:func:`setLightAltitude`
+%End
+
+    void setLightAltitude( double lightAltitude );
+%Docstring
+Sets the altitude of the light (degree) that can be used by some methods (e.g. hill shading).
+
+.. seealso:: :py:func:`setLightAltitude`
+%End
+
+    double lightAzimuth() const;
+%Docstring
+Returns the azimuth of the light (degree) that can be used by some methods (e.g. hill shading).
+
+.. seealso:: :py:func:`setLightAltitude`
+%End
+
+    void setLightAzimuth( double lightAzimuth );
+%Docstring
+Sets the azimuth of the light (degree) that can be used by some methods (e.g. hill shading).
+
+.. seealso:: :py:func:`lightAzimuth`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsshadingrenderer.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

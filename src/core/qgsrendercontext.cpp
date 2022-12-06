@@ -24,6 +24,7 @@
 #include "qgsfeaturefilterprovider.h"
 #include "qgslogger.h"
 #include "qgspoint.h"
+#include "qgselevationmap.h"
 
 #define POINTS_TO_MM 2.83464567
 #define INCH_TO_MM 25.4
@@ -85,6 +86,7 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
 #ifdef QGISDEBUG
   , mHasTransformContext( rh.mHasTransformContext )
 #endif
+  , mElevationMap( rh.mElevationMap )
 {
 }
 
@@ -136,6 +138,7 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
 #ifdef QGISDEBUG
   mHasTransformContext = rh.mHasTransformContext;
 #endif
+  mElevationMap = rh.elevationMap();
 
   return *this;
 }
@@ -695,6 +698,16 @@ long long QgsRenderContext::currentFrame() const
 void QgsRenderContext::setCurrentFrame( long long frame )
 {
   mCurrentFrame = frame;
+}
+
+QgsElevationMap *QgsRenderContext::elevationMap() const
+{
+  return mElevationMap;
+}
+
+void QgsRenderContext::setElevationMap( QgsElevationMap *newElevationMap )
+{
+  mElevationMap = newElevationMap;
 }
 
 void QgsRenderContext::addSymbolLayerClipPath( const QgsSymbolLayer *symbolLayer, QPainterPath path )
