@@ -91,7 +91,7 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsAppGpsConnection *connectio
   mPlot->setAxisScale( QwtPlot::yLeft, 0, 60 );  // max is 50dB SNR, I believe - SLM
   // add a grid
   QwtPlotGrid * mGrid = new QwtPlotGrid();
-  mGrid->enableX (false);
+  mGrid->enableX ( false );
   mGrid->attach( mPlot );
   // display satellites first
   mCurve = new QwtPlotCurve();
