@@ -23,7 +23,6 @@
 #include "qgspalettedrasterrenderer.h"
 #include "qgscolorschemelist.h"
 #include "qgsrasterlayer.h"
-#include "qgsrasterdataprovider.h"
 #include "ui_qgspalettedrendererwidgetbase.h"
 #include "qgis_gui.h"
 
@@ -46,7 +45,7 @@ class QgsPalettedRendererClassGatherer: public QThread
 
   public:
     QgsPalettedRendererClassGatherer( QgsRasterLayer *layer, int bandNumber, const QgsPalettedRasterRenderer::ClassData &existingClasses, QgsColorRamp *ramp = nullptr )
-      : mLayer( layer )
+      : mProvider( ( layer && layer->dataProvider() ) ? layer->dataProvider()->clone() : nullptr )
       , mBandNumber( bandNumber )
       , mRamp( ramp )
       , mClasses( existingClasses )
@@ -87,7 +86,7 @@ class QgsPalettedRendererClassGatherer: public QThread
 
   private:
 
-    QgsRasterLayer *mLayer = nullptr;
+    std::unique_ptr< QgsRasterDataProvider > mProvider;
     int mBandNumber;
     std::unique_ptr< QgsColorRamp > mRamp;
     QString mSubstring;
