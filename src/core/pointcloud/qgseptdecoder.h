@@ -19,18 +19,14 @@
 #define QGSEPTDECODER_H
 
 
-#include "qgis_core.h"
-#include "qgis_sip.h"
 #include "qgspointcloudblock.h"
 #include "qgspointcloudattribute.h"
 
-#include "lazperf/lazperf.hpp"
-#include "lazperf/readers.hpp"
+#include <QString>
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
-#include <QString>
 
 class QgsPointCloudExpression;
 class QgsRectangle;

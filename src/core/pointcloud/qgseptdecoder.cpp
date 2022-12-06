@@ -16,30 +16,20 @@
  ***************************************************************************/
 
 #include "qgseptdecoder.h"
-#include "qgseptpointcloudindex.h"
 #include "qgslazdecoder.h"
 #include "qgspointcloudattribute.h"
 #include "qgsvector3d.h"
-#include "qgsconfig.h"
-#include "qgslogger.h"
+#include "qgspointcloudexpression.h"
+#include "qgsrectangle.h"
 
 #include <QFile>
-#include <QDir>
-#include <iostream>
-#include <memory>
-#include <cstring>
-#include <QElapsedTimer>
-#include <QTemporaryFile>
-#include <string>
 
 #include <zstd.h>
-
-#include "lazperf/las.hpp"
 
 
 ///@cond PRIVATE
 
-QgsPointCloudBlock *_decompressBinary( const QByteArray &dataUncompressed, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect )
+QgsPointCloudBlock *decompressBinary_( const QByteArray &dataUncompressed, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect )
 {
   const std::size_t pointRecordSize = attributes.pointRecordSize( );
   const std::size_t requestedPointRecordSize = requestedAttributes.pointRecordSize();
@@ -119,7 +109,7 @@ QgsPointCloudBlock *_decompressBinary( const QByteArray &dataUncompressed, const
   {
     for ( const AttributeData &attribute : attributeData )
     {
-      _lazSerialize( destinationBuffer, outputOffset,
+      lazSerialize_( destinationBuffer, outputOffset,
                      attribute.requestedType, s,
                      attribute.inputType, attribute.inputSize, i * pointRecordSize + attribute.inputOffset );
 
@@ -164,12 +154,12 @@ QgsPointCloudBlock *QgsEptDecoder::decompressBinary( const QString &filename, co
     return nullptr;
 
   const QByteArray dataUncompressed = f.read( f.size() );
-  return _decompressBinary( dataUncompressed, attributes, requestedAttributes, scale, offset, filterExpression, filterRect );
+  return decompressBinary_( dataUncompressed, attributes, requestedAttributes, scale, offset, filterExpression, filterRect );
 }
 
 QgsPointCloudBlock *QgsEptDecoder::decompressBinary( const QByteArray &data, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect )
 {
-  return _decompressBinary( data, attributes, requestedAttributes, scale, offset, filterExpression, filterRect );
+  return decompressBinary_( data, attributes, requestedAttributes, scale, offset, filterExpression, filterRect );
 }
 
 /* *************************************************************************************** */
@@ -214,13 +204,13 @@ QgsPointCloudBlock *QgsEptDecoder::decompressZStandard( const QString &filename,
 
   const QByteArray dataCompressed = f.readAll();
   const QByteArray dataUncompressed = decompressZtdStream( dataCompressed );
-  return _decompressBinary( dataUncompressed, attributes, requestedAttributes, scale, offset, filterExpression, filterRect );
+  return decompressBinary_( dataUncompressed, attributes, requestedAttributes, scale, offset, filterExpression, filterRect );
 }
 
 QgsPointCloudBlock *QgsEptDecoder::decompressZStandard( const QByteArray &data, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect )
 {
   const QByteArray dataUncompressed = decompressZtdStream( data );
-  return _decompressBinary( dataUncompressed, attributes, requestedAttributes, scale, offset, filterExpression, filterRect );
+  return decompressBinary_( dataUncompressed, attributes, requestedAttributes, scale, offset, filterExpression, filterRect );
 }
 
 /* *************************************************************************************** */
