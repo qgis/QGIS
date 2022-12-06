@@ -10422,16 +10422,36 @@ void QgisApp::mergeSelectedFeatures()
 
     if ( isPrimaryKey && !isDefaultValue )
     {
-      const QgsField pkField { vl->fields().field( i ) };
       QgsFeatureRequest request;
       request.setFlags( QgsFeatureRequest::Flag::NoGeometry );
-      request.setSubsetOfAttributes( QStringList() << pkField.name(), vl->fields( ) );
-      request.setFilterExpression( QgsExpression::createFieldEqualityExpression( pkField.name(), val, pkField.type( ) ) );
+      // Handle multi pks
+      if ( vl->dataProvider()->pkAttributeIndexes().count() > 1 && vl->dataProvider()->pkAttributeIndexes().count() <= attrs.count() )
+      {
+        const auto pkIdxList { vl->dataProvider()->pkAttributeIndexes() };
+        QStringList conditions;
+        QStringList fieldNames;
+        for ( const int &pkIdx : std::as_const( pkIdxList ) )
+        {
+          const QgsField pkField { vl->fields().field( pkIdx ) };
+          conditions.push_back( QgsExpression::createFieldEqualityExpression( pkField.name(), attrs.at( pkIdx ), pkField.type( ) ) );
+          fieldNames.push_back( pkField.name() );
+        }
+        request.setSubsetOfAttributes( fieldNames, vl->fields( ) );
+        request.setFilterExpression( conditions.join( QStringLiteral( " AND " ) ) );
+      }
+      else  // single pk
+      {
+        const QgsField pkField { vl->fields().field( i ) };
+        request.setSubsetOfAttributes( QStringList() << pkField.name(), vl->fields( ) );
+        request.setFilterExpression( QgsExpression::createFieldEqualityExpression( pkField.name(), val, pkField.type( ) ) );
+      }
+
       QgsFeature f;
       QgsFeatureIterator featureIterator = vl->getFeatures( request );
       if ( featureIterator.nextFeature( f ) )
       {
         mergeFeatureId = f.id( );
+        break;
       }
     }
 
