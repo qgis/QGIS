@@ -558,4 +558,62 @@ class CORE_EXPORT QgsSettingsEntryColor : public QgsSettingsEntryByReference<QCo
 
 };
 
+/**
+ * \class QgsSettingsEntryStringMap
+ * \ingroup core
+ *
+ * \brief A string list settings entry.
+ * \since QGIS 3.20
+ */
+class CORE_EXPORT QgsSettingsEntryVariantMap : public QgsSettingsEntryByReference<QVariantMap>
+{
+  public:
+
+    /**
+     * Constructor for QgsSettingsEntryVariantMap.
+     *
+     * The \a key argument specifies the final part of the settings key.
+     * The \a section argument specifies the section.
+     * The \a defaultValue argument specifies the default value for the settings entry.
+     * The \a description argument specifies a description for the settings entry.
+     * The \a options arguments specifies the options for the settings entry.
+     */
+    QgsSettingsEntryVariantMap( const QString &key,
+                                const QString &section,
+                                const QVariantMap &defaultValue = QVariantMap(),
+                                const QString &description = QString(),
+                                Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_MAKE_PRIVATE
+  : QgsSettingsEntryByReference( key, section, defaultValue, description, options )
+    {
+    }
+
+#ifdef SIP_RUN
+
+    /**
+     * Constructor for QgsSettingsEntryStringMap.
+     * This constructor is intended to be used from plugins.
+     *
+     * The \a key argument specifies the key of the settings.
+     * The \a pluginName argument is inserted in the key after the section.
+     * The \a defaultValue argument specifies the default value for the settings entry.
+     * The \a description argument specifies a description for the settings entry.
+     * The \a options arguments specifies the options for the settings entry.
+     */
+    QgsSettingsEntryVariantMap( const QString &key,
+                                const QString &pluginName,
+                                const QVariantMap &defaultValue = QVariantMap(),
+                                const QString &description = QString(),
+                                Qgis::SettingsOptions options = Qgis::SettingsOptions() );
+    % MethodCode
+    sipCpp = new sipQgsSettingsEntryVariantMap( QgsSettingsEntryVariantMap( *a0, QStringLiteral( "plugins/%1" ).arg( *a1 ), *a2, *a3, *a4 ) );
+    % End
+#endif
+
+    virtual Qgis::SettingsType settingsType() const override;
+
+  private:
+    QVariantMap convertFromVariant( const QVariant &value ) const override SIP_FORCE;
+
+};
+
 #endif // QGSSETTINGSENTRYIMPL_H

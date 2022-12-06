@@ -106,6 +106,9 @@ bool QgsSettingsEntryGroup::hasDynamicKey() const
 }
 
 
+/*--------------*/
+
+
 QString QgsSettingsEntryBase::key( const QString &dynamicKeyPart ) const
 {
   return key( dynamicKeyPartToList( dynamicKeyPart ) );

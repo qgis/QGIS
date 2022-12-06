@@ -226,3 +226,12 @@ Qgis::SettingsType QgsSettingsEntryColor::settingsType() const
   return Qgis::SettingsType::Color;
 }
 
+QVariantMap QgsSettingsEntryVariantMap::convertFromVariant( const QVariant &value ) const
+{
+  return value.value<QVariantMap>();
+}
+
+Qgis::SettingsType QgsSettingsEntryVariantMap::settingsType() const
+{
+  return Qgis::SettingsType::VariantMap;
+}

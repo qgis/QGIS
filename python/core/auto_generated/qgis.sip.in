@@ -153,6 +153,7 @@ The development version
       Variant,
       String,
       StringList,
+      VariantMap,
       Bool,
       Integer,
       Double,

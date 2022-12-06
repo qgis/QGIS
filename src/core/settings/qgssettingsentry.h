@@ -110,6 +110,8 @@ class CORE_EXPORT QgsSettingsEntryBase
       sipType = sipType_QgsSettingsEntryString;
     else if ( dynamic_cast< QgsSettingsEntryStringList * >( sipCpp ) )
       sipType = sipType_QgsSettingsEntryStringList;
+    else if ( dynamic_cast< QgsSettingsEntryVariantMap * >( sipCpp ) )
+      sipType = sipType_QgsSettingsEntryVariantMap;
     else if ( dynamic_cast< QgsSettingsEntryBool * >( sipCpp ) )
       sipType = sipType_QgsSettingsEntryBool;
     else if ( dynamic_cast< QgsSettingsEntryInteger * >( sipCpp ) )
