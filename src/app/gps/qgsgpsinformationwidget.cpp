@@ -286,7 +286,6 @@ void QgsGpsInformationWidget::gpsConnecting()
   mTxtQuality->clear();
   mTxtSatellitesUsed->clear();
   mTxtStatus->clear();
-  
   mGPSPlainTextEdit->appendPlainText( tr( "Connecting…" ) );
 }
 
