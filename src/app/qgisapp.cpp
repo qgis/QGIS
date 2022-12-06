@@ -9756,7 +9756,6 @@ void QgisApp::mergeSelectedFeatures()
       if ( featureIterator.nextFeature( f ) )
       {
         mergeFeatureId = f.id( );
-        break;
       }
     }
 
