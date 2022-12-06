@@ -24,6 +24,7 @@
 #include <QDir>
 #include <fstream>
 #include <QVector>
+#include <QQueue>
 
 //qgis includes...
 #include "qgis.h"
@@ -78,6 +79,7 @@ class TestQgsEptProvider : public QgsTest
     void testExtraBytesAttributesExtraction();
     void testExtraBytesAttributesValues();
     void testPointCloudIndex();
+    void testPointCloudRequest();
 
     void testStatsCalculator();
 
@@ -640,6 +642,74 @@ void TestQgsEptProvider::testPointCloudIndex()
     QVERIFY( bounds.yMax() == 88000 );
     QVERIFY( bounds.zMax() == 0 );
   }
+}
+
+void TestQgsEptProvider::testPointCloudRequest()
+{
+  std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/ept/lone-star-laszip/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
+  QVERIFY( layer->isValid() );
+
+  QgsPointCloudIndex *index = layer->dataProvider()->index();
+  QVERIFY( index->isValid() );
+
+  QVector<IndexedPointCloudNode> nodes;
+  QQueue<IndexedPointCloudNode> queue;
+  queue.push_back( index->root() );
+  while ( !queue.empty() )
+  {
+    IndexedPointCloudNode node = queue.front();
+    queue.pop_front();
+    nodes.push_back( node );
+
+    for ( const IndexedPointCloudNode &child : index->nodeChildren( node ) )
+    {
+      queue.push_back( child );
+    }
+  }
+
+  QgsPointCloudRequest request;
+  request.setAttributes( layer->attributes() );
+  // If request.setFilterRect() is not called, no filter should be applied
+  int count = 0;
+  for ( IndexedPointCloudNode node : nodes )
+  {
+    auto block = index->nodeData( node, request );
+    count += block->pointCount();
+  }
+  QCOMPARE( count, layer->pointCount() );
+
+  // Now let's repeat the counting with an extent
+  QgsRectangle extent( 515390, 4918360, 515400, 4918370 );
+  request.setFilterRect( extent );
+  count = 0;
+  for ( IndexedPointCloudNode node : nodes )
+  {
+    auto block = index->nodeData( node, request );
+    count += block->pointCount();
+  }
+  QCOMPARE( count, 217600 );
+
+  // Now let's repeat the counting with an extent away from the pointcloud
+  extent = QgsRectangle( 0, 0, 1, 1 );
+  request.setFilterRect( extent );
+  count = 0;
+  for ( IndexedPointCloudNode node : nodes )
+  {
+    auto block = index->nodeData( node, request );
+    count += block->pointCount();
+  }
+  QCOMPARE( count, 0 );
+
+  // An empty extent should fetch all points again
+  count = 0;
+  extent = QgsRectangle();
+  request.setFilterRect( extent );
+  for ( IndexedPointCloudNode node : nodes )
+  {
+    auto block = index->nodeData( node, request );
+    count += block->pointCount();
+  }
+  QCOMPARE( count, layer->pointCount() );
 }
 
 void TestQgsEptProvider::testStatsCalculator()
