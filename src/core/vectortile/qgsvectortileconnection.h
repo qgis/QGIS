@@ -17,6 +17,7 @@
 #define QGSVECTORTILECONNECTION_H
 
 #include "qgis_core.h"
+#include "qgssettingsentryimpl.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
@@ -29,6 +30,23 @@ class CORE_EXPORT QgsVectorTileProviderConnection : public QgsAbstractProviderCo
 {
 
   public:
+
+#ifndef SIP_RUN
+    static const inline QgsSettingsEntryString settingsConnectionSelected = QgsSettingsEntryString( QStringLiteral( "connections-vector-tile/selected" ), QgsSettings::Prefix::QGIS );
+
+    static const inline QgsSettingsEntryString settingsUrl = QgsSettingsEntryString( QStringLiteral( "connections-vector-tile/%1/url" ), QgsSettings::Prefix::QGIS );
+    static const inline QgsSettingsEntryInteger settingsZzmin = QgsSettingsEntryInteger( QStringLiteral( "connections-vector-tile/%1/zmin" ), QgsSettings::Prefix::QGIS, -1 );
+    static const inline QgsSettingsEntryInteger settingsZmax = QgsSettingsEntryInteger( QStringLiteral( "connections-vector-tile/%1/zmax" ), QgsSettings::Prefix::QGIS, -1 );
+    static const inline QgsSettingsEntryString settingsAuthcfg = QgsSettingsEntryString( QStringLiteral( "connections-vector-tile/%1/authcfg" ), QgsSettings::Prefix::QGIS );
+    static const inline QgsSettingsEntryString settingsUsername = QgsSettingsEntryString( QStringLiteral( "connections-vector-tile/%1/username" ), QgsSettings::Prefix::QGIS );
+    static const inline QgsSettingsEntryString settingsPassword = QgsSettingsEntryString( QStringLiteral( "connections-vector-tile/%1/password" ), QgsSettings::Prefix::QGIS );
+    static const inline QgsSettingsEntryString settingsStyleUrl = QgsSettingsEntryString( QStringLiteral( "connections-vector-tile/%1/styleUrl" ), QgsSettings::Prefix::QGIS );
+    static const inline QgsSettingsEntryString settingsServiceType = QgsSettingsEntryString( QStringLiteral( "connections-vector-tile/%1/serviceType" ), QgsSettings::Prefix::QGIS );
+    static const inline QgsSettingsEntryVariantMap settingsHeaders = QgsSettingsEntryVariantMap( QStringLiteral( "connections-vector-tile/%1/http-header" ), QgsSettings::Prefix::QGIS );
+
+    static const inline QgsSettingsEntryGroup settingsConnections = QgsSettingsEntryGroup( {&settingsUrl, &settingsZzmin, &settingsZmax, &settingsAuthcfg, &settingsUsername, &settingsPassword, &settingsStyleUrl, &settingsServiceType, &settingsHeaders } );
+#endif
+
     QgsVectorTileProviderConnection( const QString &name );
     QgsVectorTileProviderConnection( const QString &uri, const QVariantMap &configuration );
 

@@ -29,6 +29,8 @@
 #include "qgsogrdbconnection.h"
 #include "qgsfontmanager.h"
 #include "qgsgpsconnection.h"
+#include "qgsvectortileconnection.h"
+
 
 QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   : QgsSettingsRegistry()
@@ -112,6 +114,9 @@ QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   addSettingsEntry( &QgsOwsConnection::settingsConnectionSelected );
   addSettingsEntryGroup( &QgsOwsConnection::settingsServiceConnectionDetailsGroup );
   addSettingsEntryGroup( &QgsOwsConnection::settingsServiceConnectionCredentialsGroup );
+
+  addSettingsEntry( &QgsVectorTileProviderConnection::settingsConnectionSelected );
+  addSettingsEntryGroup( &QgsVectorTileProviderConnection::settingsConnections );
 
   addSettingsEntry( &QgsFontManager::settingsFontFamilyReplacements );
   addSettingsEntry( &QgsFontManager::settingsDownloadMissingFonts );
