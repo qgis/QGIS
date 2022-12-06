@@ -359,7 +359,7 @@ void QgsGpsInformationWidget::gpsDisconnected()
   QVector<QPointF> data;
   mCurve->setSamples( data );
   mPlot->replot();
-
+  
   mGPSPlainTextEdit->appendPlainText( tr( "Disconnected…" ) );
 }
 
