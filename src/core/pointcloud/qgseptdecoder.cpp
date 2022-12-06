@@ -118,7 +118,7 @@ QgsPointCloudBlock *decompressBinary_( const QByteArray &dataUncompressed, const
 
     // check if point needs to be filtered out
     bool skipThisPoint = false;
-    if ( hasFilterRect )
+    if ( hasFilterRect && attributeX && attributeY )
     {
       const double x = attributeX->convertValueToDouble( destinationBuffer + outputOffset - requestedPointRecordSize + xAttributeOffset );
       const double y = attributeY->convertValueToDouble( destinationBuffer + outputOffset - requestedPointRecordSize + yAttributeOffset );

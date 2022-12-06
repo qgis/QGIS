@@ -545,7 +545,7 @@ QgsPointCloudBlock *decompressLaz_( FileType &file, const QgsPointCloudAttribute
 
       // check if point needs to be filtered out
       bool skipThisPoint = false;
-      if ( hasFilterRect )
+      if ( hasFilterRect && attributeX && attributeY )
       {
         const double x = attributeX->convertValueToDouble( dataBuffer + outputOffset - requestedPointRecordSize + xAttributeOffset );
         const double y = attributeY->convertValueToDouble( dataBuffer + outputOffset - requestedPointRecordSize + yAttributeOffset );
@@ -657,7 +657,7 @@ QgsPointCloudBlock *QgsLazDecoder::decompressCopc( const QByteArray &data, QgsLa
     // check if point needs to be filtered out
     bool skipThisPoint = false;
 
-    if ( hasFilterRect )
+    if ( hasFilterRect && attributeX && attributeY )
     {
       const double x = attributeX->convertValueToDouble( dataBuffer + outputOffset - requestedPointRecordSize + xAttributeOffset );
       const double y = attributeY->convertValueToDouble( dataBuffer + outputOffset - requestedPointRecordSize + yAttributeOffset );
