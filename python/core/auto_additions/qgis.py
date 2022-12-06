@@ -158,6 +158,9 @@ QgsSettingsEntryBase.String.__doc__ = "String"
 QgsSettingsEntryBase.StringList = Qgis.SettingsType.StringList
 QgsSettingsEntryBase.StringList.is_monkey_patched = True
 QgsSettingsEntryBase.StringList.__doc__ = "List of strings"
+QgsSettingsEntryBase.VariantMap = Qgis.SettingsType.VariantMap
+QgsSettingsEntryBase.VariantMap.is_monkey_patched = True
+QgsSettingsEntryBase.VariantMap.__doc__ = "Map of strings"
 QgsSettingsEntryBase.Bool = Qgis.SettingsType.Bool
 QgsSettingsEntryBase.Bool.is_monkey_patched = True
 QgsSettingsEntryBase.Bool.__doc__ = "Boolean"
@@ -173,7 +176,7 @@ QgsSettingsEntryBase.EnumFlag.__doc__ = "Enum or Flag"
 QgsSettingsEntryBase.Color = Qgis.SettingsType.Color
 QgsSettingsEntryBase.Color.is_monkey_patched = True
 QgsSettingsEntryBase.Color.__doc__ = "Color"
-Qgis.SettingsType.__doc__ = 'Types of settings entries\n\n.. versionadded:: 3.26\n\n' + '* ``Variant``: ' + Qgis.SettingsType.Variant.__doc__ + '\n' + '* ``String``: ' + Qgis.SettingsType.String.__doc__ + '\n' + '* ``StringList``: ' + Qgis.SettingsType.StringList.__doc__ + '\n' + '* ``Bool``: ' + Qgis.SettingsType.Bool.__doc__ + '\n' + '* ``Integer``: ' + Qgis.SettingsType.Integer.__doc__ + '\n' + '* ``Double``: ' + Qgis.SettingsType.Double.__doc__ + '\n' + '* ``EnumFlag``: ' + Qgis.SettingsType.EnumFlag.__doc__ + '\n' + '* ``Color``: ' + Qgis.SettingsType.Color.__doc__
+Qgis.SettingsType.__doc__ = 'Types of settings entries\n\n.. versionadded:: 3.26\n\n' + '* ``Variant``: ' + Qgis.SettingsType.Variant.__doc__ + '\n' + '* ``String``: ' + Qgis.SettingsType.String.__doc__ + '\n' + '* ``StringList``: ' + Qgis.SettingsType.StringList.__doc__ + '\n' + '* ``VariantMap``: ' + Qgis.SettingsType.VariantMap.__doc__ + '\n' + '* ``Bool``: ' + Qgis.SettingsType.Bool.__doc__ + '\n' + '* ``Integer``: ' + Qgis.SettingsType.Integer.__doc__ + '\n' + '* ``Double``: ' + Qgis.SettingsType.Double.__doc__ + '\n' + '* ``EnumFlag``: ' + Qgis.SettingsType.EnumFlag.__doc__ + '\n' + '* ``Color``: ' + Qgis.SettingsType.Color.__doc__
 # --
 Qgis.SettingsType.baseClass = Qgis
 # monkey patching scoped based enum

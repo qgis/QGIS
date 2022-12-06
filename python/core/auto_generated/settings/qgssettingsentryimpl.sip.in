@@ -569,6 +569,68 @@ The ``options`` arguments specifies the options for the settings entry.
 
 };
 
+
+typedef QgsSettingsEntryByReference<QVariantMap> QgsSettingsEntryByReferenceQVariantMapBase;
+
+class QgsSettingsEntryVariantMap : QgsSettingsEntryByReferenceQVariantMapBase
+{
+%Docstring(signature="appended")
+
+A string list settings entry.
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsentry.h"
+typedef QgsSettingsEntryByReference<QVariantMap> QgsSettingsEntryByReferenceQVariantMapBase;
+%End
+  public:
+
+  private:
+    QgsSettingsEntryVariantMap( const QString &key,
+                                const QString &section,
+                                const QVariantMap &defaultValue = QVariantMap(),
+                                const QString &description = QString(),
+                                Qgis::SettingsOptions options = Qgis::SettingsOptions() );
+%Docstring
+Constructor for QgsSettingsEntryVariantMap.
+
+The ``key`` argument specifies the final part of the settings key.
+The ``section`` argument specifies the section.
+The ``defaultValue`` argument specifies the default value for the settings entry.
+The ``description`` argument specifies a description for the settings entry.
+The ``options`` arguments specifies the options for the settings entry.
+%End
+  public:
+
+    QgsSettingsEntryVariantMap( const QString &key,
+                                const QString &pluginName,
+                                const QVariantMap &defaultValue = QVariantMap(),
+                                const QString &description = QString(),
+                                Qgis::SettingsOptions options = Qgis::SettingsOptions() );
+%Docstring
+Constructor for :py:class:`QgsSettingsEntryStringMap`.
+This constructor is intended to be used from plugins.
+
+The ``key`` argument specifies the key of the settings.
+The ``pluginName`` argument is inserted in the key after the section.
+The ``defaultValue`` argument specifies the default value for the settings entry.
+The ``description`` argument specifies a description for the settings entry.
+The ``options`` arguments specifies the options for the settings entry.
+%End
+%MethodCode
+    sipCpp = new sipQgsSettingsEntryVariantMap( QgsSettingsEntryVariantMap( *a0, QStringLiteral( "plugins/%1" ).arg( *a1 ), *a2, *a3, *a4 ) );
+%End
+
+    virtual Qgis::SettingsType settingsType() const;
+
+  private:
+    virtual QVariantMap convertFromVariant( const QVariant &value ) const;
+
+};
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

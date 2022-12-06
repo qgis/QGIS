@@ -232,6 +232,7 @@ class CORE_EXPORT Qgis
       Variant, //!< Generic variant
       String, //!< String
       StringList, //!< List of strings
+      VariantMap, //!< Map of strings
       Bool, //!< Boolean
       Integer, //!< Integer
       Double, //!< Double precision number
