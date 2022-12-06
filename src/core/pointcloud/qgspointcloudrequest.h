@@ -54,16 +54,16 @@ class CORE_EXPORT QgsPointCloudRequest
      * Returns the rectangle from which points will be taken, in point cloud's crs. If the returned rectangle is empty, then no filter rectangle is set.
      * \since QGIS 3.30
      */
-    QgsRectangle filterRect() const { return mExtent; }
+    QgsRectangle filterRect() const { return mFilterRect; }
 
     /**
      * Sets the rectangle from which points will be taken, in point cloud's crs. An empty rectangle removes the filter.
      * \since QGIS 3.30
      */
-    void setFilterRect( QgsRectangle extent ) { mExtent = extent; }
+    void setFilterRect( QgsRectangle extent ) { mFilterRect = extent; }
   private:
     QgsPointCloudAttributeCollection mAttributes;
-    QgsRectangle mExtent;
+    QgsRectangle mFilterRect;
 };
 
 #endif // QGSPOINTCLOUDREQUEST_H

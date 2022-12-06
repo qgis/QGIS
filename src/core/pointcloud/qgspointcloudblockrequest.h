@@ -72,7 +72,7 @@ class CORE_EXPORT QgsPointCloudBlockRequest : public QObject
     QString mErrorStr;
     QgsVector3D mScale, mOffset;
     QgsPointCloudExpression mFilterExpression;
-    QgsRectangle mExtent;
+    QgsRectangle mFilterRect;
 };
 
 #endif // QGSPOINTCLOUDBLOCKREQUEST_H

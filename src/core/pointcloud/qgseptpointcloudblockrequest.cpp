@@ -53,15 +53,15 @@ void QgsEptPointCloudBlockRequest::blockFinishedLoading()
       mBlock = nullptr;
       if ( mDataType == QLatin1String( "binary" ) )
       {
-        mBlock = QgsEptDecoder::decompressBinary( mTileDownloadManagerReply->data(), mAttributes, mRequestedAttributes, mScale, mOffset, mFilterExpression, mExtent );
+        mBlock = QgsEptDecoder::decompressBinary( mTileDownloadManagerReply->data(), mAttributes, mRequestedAttributes, mScale, mOffset, mFilterExpression, mFilterRect );
       }
       else if ( mDataType == QLatin1String( "zstandard" ) )
       {
-        mBlock = QgsEptDecoder::decompressZStandard( mTileDownloadManagerReply->data(), mAttributes, mRequestedAttributes, mScale, mOffset, mFilterExpression, mExtent );
+        mBlock = QgsEptDecoder::decompressZStandard( mTileDownloadManagerReply->data(), mAttributes, mRequestedAttributes, mScale, mOffset, mFilterExpression, mFilterRect );
       }
       else if ( mDataType == QLatin1String( "laszip" ) )
       {
-        mBlock = QgsLazDecoder::decompressLaz( mTileDownloadManagerReply->data(), mRequestedAttributes, mFilterExpression, mExtent );
+        mBlock = QgsLazDecoder::decompressLaz( mTileDownloadManagerReply->data(), mRequestedAttributes, mFilterExpression, mFilterRect );
       }
       else
       {

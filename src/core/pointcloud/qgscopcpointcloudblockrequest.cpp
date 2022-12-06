@@ -60,7 +60,7 @@ void QgsCopcPointCloudBlockRequest::blockFinishedLoading()
     {
       try
       {
-        mBlock = QgsLazDecoder::decompressCopc( mTileDownloadManagerReply->data(), mLazInfo, mPointCount, mRequestedAttributes, mFilterExpression, mExtent );
+        mBlock = QgsLazDecoder::decompressCopc( mTileDownloadManagerReply->data(), mLazInfo, mPointCount, mRequestedAttributes, mFilterExpression, mFilterRect );
       }
       catch ( std::exception &e )
       {

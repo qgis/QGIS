@@ -28,7 +28,7 @@ QgsPointCloudBlockRequest::QgsPointCloudBlockRequest( const IndexedPointCloudNod
     const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filterExpression, const QgsRectangle &filterRect )
   : mNode( node ), mUri( uri ),
     mAttributes( attributes ), mRequestedAttributes( requestedAttributes ),
-    mScale( scale ), mOffset( offset ), mFilterExpression( filterExpression ), mExtent( filterRect )
+    mScale( scale ), mOffset( offset ), mFilterExpression( filterExpression ), mFilterRect( filterRect )
 {
 }
 
