@@ -87,6 +87,12 @@ class QgsWFSDataSourceURI
     //! Sets OGC filter xml or a QGIS expression
     void setFilter( const QString &filterIn );
 
+    //! Returns whether there is a geometry type filter.
+    bool hasGeometryTypeFilter() const;
+
+    //! Gets the geometry type filter.
+    QgsWkbTypes::Type geometryTypeFilter() const;
+
     //! Gets SQL query
     QString sql() const;
 

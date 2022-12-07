@@ -23,19 +23,19 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsogcutils.h"
-#include "qgsoapifprovider.h"
-#include "qgswfsdataitems.h"
 #include "qgswfsconstants.h"
 #include "qgswfsfeatureiterator.h"
 #include "qgswfsprovider.h"
 #include "qgswfscapabilities.h"
 #include "qgswfsdescribefeaturetype.h"
+#include "qgswfsgetfeature.h"
 #include "qgswfstransactionrequest.h"
 #include "qgswfsshareddata.h"
 #include "qgswfsutils.h"
 #include "qgssettings.h"
 
 #include <QApplication>
+#include <QDateTime>
 #include <QDomDocument>
 #include <QMessageBox>
 #include <QDomNodeList>
@@ -53,7 +53,6 @@
 
 const QString QgsWFSProvider::WFS_PROVIDER_KEY = QStringLiteral( "WFS" );
 const QString QgsWFSProvider::WFS_PROVIDER_DESCRIPTION = QStringLiteral( "WFS data provider" );
-
 
 QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &options, const QgsWfsCapabilities::Capabilities &caps )
   : QgsVectorDataProvider( uri, options )
@@ -143,6 +142,25 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
     return;
   }
 
+  if ( mShared->mWKBType == QgsWkbTypes::Unknown &&
+       mShared->mURI.hasGeometryTypeFilter() &&
+       mShared->mCaps.supportsGeometryTypeFilters() )
+  {
+    mShared->mWKBType = mShared->mURI.geometryTypeFilter();
+    if ( mShared->mWKBType != QgsWkbTypes::Unknown )
+    {
+      mShared->computeGeometryTypeFilter();
+    }
+  }
+
+  if ( !mShared->mURI.skipInitialGetFeature() )
+  {
+    issueInitialGetFeature();
+  }
+}
+
+void QgsWFSProvider::issueInitialGetFeature()
+{
   const auto GetGeometryTypeFromOneFeature = [&]( bool includeBbox )
   {
     const bool requestMadeFromMainThread = QThread::currentThread() == QApplication::instance()->thread();
@@ -217,48 +235,45 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
     }
   };
 
-  if ( !mShared->mURI.skipInitialGetFeature() )
+  // For WFS = 1.0, issue a GetFeature on one feature to check
+  // if we do not known the exact geometry type from
+  // describeFeatureType()
+  if ( mShared->mWFSVersion.startsWith( QLatin1String( "1.0" ) ) &&
+       mShared->mWKBType == QgsWkbTypes::Unknown )
   {
-    // For WFS = 1.0, issue a GetFeature on one feature to check
-    // if we do not known the exact geometry type from
-    // describeFeatureType()
-    if ( mShared->mWFSVersion.startsWith( QLatin1String( "1.0" ) ) &&
-         mShared->mWKBType == QgsWkbTypes::Unknown )
+    TryToDetectGeometryType();
+  }
+  // For WFS >= 1.1, by default, issue a GetFeature on one feature to check
+  // if gml:description, gml:identifier, gml:name attributes are
+  // present (unless mShared->mURI.skipInitialGetFeature() returns false)
+  // Another reason to issue it if we do not known the exact geometry type
+  // from describeFeatureType()
+  else if ( !mShared->mWFSVersion.startsWith( QLatin1String( "1.0" ) ) )
+  {
+    // Try to see if gml:description, gml:identifier, gml:name attributes are
+    // present. So insert them temporarily in mShared->mFields so that the
+    // GML parser can detect them.
+    const auto addGMLFields = [ = ]( bool forceAdd )
     {
-      TryToDetectGeometryType();
-    }
-    // For WFS >= 1.1, by default, issue a GetFeature on one feature to check
-    // if gml:description, gml:identifier, gml:name attributes are
-    // present (unless mShared->mURI.skipInitialGetFeature() returns false)
-    // Another reason to issue it if we do not known the exact geometry type
-    // from describeFeatureType()
-    else if ( !mShared->mWFSVersion.startsWith( QLatin1String( "1.0" ) ) )
-    {
-      // Try to see if gml:description, gml:identifier, gml:name attributes are
-      // present. So insert them temporarily in mShared->mFields so that the
-      // GML parser can detect them.
-      const auto addGMLFields = [ = ]( bool forceAdd )
-      {
-        if ( mShared->mFields.indexOf( QLatin1String( "description" ) ) < 0  && ( forceAdd || mSampleFeatureHasDescription ) )
-          mShared->mFields.append( QgsField( QStringLiteral( "description" ), QVariant::String, QStringLiteral( "xsd:string" ) ) );
-        if ( mShared->mFields.indexOf( QLatin1String( "identifier" ) ) < 0  && ( forceAdd || mSampleFeatureHasIdentifier ) )
-          mShared->mFields.append( QgsField( QStringLiteral( "identifier" ), QVariant::String, QStringLiteral( "xsd:string" ) ) );
-        if ( mShared->mFields.indexOf( QLatin1String( "name" ) ) < 0  && ( forceAdd || mSampleFeatureHasName ) )
-          mShared->mFields.append( QgsField( QStringLiteral( "name" ), QVariant::String, QStringLiteral( "xsd:string" ) ) );
-      };
+      if ( mShared->mFields.indexOf( QLatin1String( "description" ) ) < 0  && ( forceAdd || mSampleFeatureHasDescription ) )
+        mShared->mFields.append( QgsField( QStringLiteral( "description" ), QVariant::String, QStringLiteral( "xsd:string" ) ) );
+      if ( mShared->mFields.indexOf( QLatin1String( "identifier" ) ) < 0  && ( forceAdd || mSampleFeatureHasIdentifier ) )
+        mShared->mFields.append( QgsField( QStringLiteral( "identifier" ), QVariant::String, QStringLiteral( "xsd:string" ) ) );
+      if ( mShared->mFields.indexOf( QLatin1String( "name" ) ) < 0  && ( forceAdd || mSampleFeatureHasName ) )
+        mShared->mFields.append( QgsField( QStringLiteral( "name" ), QVariant::String, QStringLiteral( "xsd:string" ) ) );
+    };
 
-      const QgsFields fieldsBackup = mShared->mFields;
-      addGMLFields( true );
+    const QgsFields fieldsBackup = mShared->mFields;
+    addGMLFields( true );
 
-      TryToDetectGeometryType();
+    TryToDetectGeometryType();
 
-      // Edit the final mFields to add the description, identifier, name fields
-      // if they were actually found.
-      mShared->mFields.clear();
-      addGMLFields( false );
-      for ( const QgsField &field : fieldsBackup )
-        mShared->mFields.append( field );
-    }
+    // Edit the final mFields to add the description, identifier, name fields
+    // if they were actually found.
+    mShared->mFields.clear();
+    addGMLFields( false );
+    for ( const QgsField &field : fieldsBackup )
+      mShared->mFields.append( field );
   }
 }
 
@@ -1983,18 +1998,9 @@ bool QgsWFSProvider::getCapabilities()
 
   if ( mShared->mCaps.version.isEmpty() )
   {
-    QgsWfsCapabilities getCapabilities( mShared->mURI.uri() );
-    const bool synchronous = true;
-    const bool forceRefresh = false;
-    if ( !getCapabilities.requestCapabilities( synchronous, forceRefresh ) )
-    {
-      QgsMessageLog::logMessage( tr( "GetCapabilities failed for url %1: %2" ).
-                                 arg( dataSourceUri(), getCapabilities.errorMessage() ), tr( "WFS" ) );
+    mShared->mCaps = getCachedCapabilities( mShared->mURI.uri() );
+    if ( mShared->mCaps.version.isEmpty() )
       return false;
-    }
-
-    const QgsWfsCapabilities::Capabilities caps = getCapabilities.capabilities();
-    mShared->mCaps = caps;
   }
   mShared->mURI.setGetEndpoints( mShared->mCaps.operationGetEndpoints );
   mShared->mURI.setPostEndpoints( mShared->mCaps.operationPostEndpoints );
@@ -2174,37 +2180,40 @@ void QgsWFSProvider::handleException( const QDomDocument &serverResponse )
   pushError( tr( "Unhandled response: %1" ).arg( exceptionElem.tagName() ) );
 }
 
-QgsWFSProvider *QgsWfsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+QgsWfsCapabilities::Capabilities QgsWFSProvider::getCachedCapabilities( const QString &uri )
 {
-  Q_UNUSED( flags );
-  return new QgsWFSProvider( uri, options );
+  static QMutex mutex;
+  static std::map<QString, std::pair<QDateTime, QgsWfsCapabilities::Capabilities>> gCacheCaps;
+
+  constexpr int DELAY_OF_CACHING_IN_SECS = 10;
+  QDateTime now = QDateTime::currentDateTime();
+  {
+    QMutexLocker lock( &mutex );
+    auto iter = gCacheCaps.find( uri );
+    if ( iter != gCacheCaps.end() && iter->second.first.secsTo( now ) < DELAY_OF_CACHING_IN_SECS )
+    {
+      return iter->second.second;
+    }
+  }
+  QgsWfsCapabilities::Capabilities caps;
+  QgsWfsCapabilities getCapabilities( uri );
+  const bool synchronous = true;
+  const bool forceRefresh = false;
+  if ( !getCapabilities.requestCapabilities( synchronous, forceRefresh ) )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "GetCapabilities failed for url %1: %2" ).
+                               arg( uri, getCapabilities.errorMessage() ),
+                               QObject::tr( "WFS" ) );
+    return caps;
+  }
+
+  caps = getCapabilities.capabilities();
+
+  QgsSettings s;
+  if ( s.value( QStringLiteral( "qgis/wfsCapabilitiesMemoryCacheAllowed" ), true ).toBool() )
+  {
+    QMutexLocker lock( &mutex );
+    gCacheCaps[uri] = std::make_pair( now, caps );
+  }
+  return caps;
 }
-
-QList<QgsMapLayerType> QgsWfsProviderMetadata::supportedLayerTypes() const
-{
-  return { QgsMapLayerType::VectorLayer };
-}
-
-QList<QgsDataItemProvider *> QgsWfsProviderMetadata::dataItemProviders() const
-{
-  QList<QgsDataItemProvider *> providers;
-  providers << new QgsWfsDataItemProvider;
-  return providers;
-}
-
-
-QgsWfsProviderMetadata::QgsWfsProviderMetadata():
-  QgsProviderMetadata( QgsWFSProvider::WFS_PROVIDER_KEY, QgsWFSProvider::WFS_PROVIDER_DESCRIPTION ) {}
-
-QIcon QgsWfsProviderMetadata::icon() const
-{
-  return QgsApplication::getThemeIcon( QStringLiteral( "mIconWfs.svg" ) );
-}
-
-
-#ifndef HAVE_STATIC_PROVIDERS
-QGISEXTERN void *multipleProviderMetadataFactory()
-{
-  return new std::vector<QgsProviderMetadata *> { new QgsWfsProviderMetadata(), new QgsOapifProviderMetadata() };
-}
-#endif

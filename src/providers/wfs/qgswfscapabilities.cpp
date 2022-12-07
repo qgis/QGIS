@@ -119,6 +119,36 @@ QString QgsWfsCapabilities::Capabilities::getNamespaceParameterValue( const QStr
   return QString();
 }
 
+bool QgsWfsCapabilities::Capabilities::supportsGeometryTypeFilters() const
+{
+  // Detect servers, such as Deegree, that expose additional filter functions
+  // to test if a geometry is a (multi)point, (multi)curve or (multi)surface
+  // This can be used to figure out which geometry types are present in layers
+  // that describe a generic geometry type.
+  bool hasIsPoint = false;
+  bool hasIsCurve = false;
+  bool hasIsSurface = false;
+  for ( const auto &function : functionList )
+  {
+    if ( function.minArgs == 1 && function.maxArgs == 1 )
+    {
+      if ( function.name == QLatin1String( "IsPoint" ) )
+      {
+        hasIsPoint = true;
+      }
+      else if ( function.name == QLatin1String( "IsCurve" ) )
+      {
+        hasIsCurve = true;
+      }
+      else if ( function.name == QLatin1String( "IsSurface" ) )
+      {
+        hasIsSurface = true;
+      }
+    }
+  }
+  return hasIsPoint && hasIsCurve && hasIsSurface;
+}
+
 class CPLXMLTreeUniquePointer
 {
   public:

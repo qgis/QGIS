@@ -172,7 +172,8 @@ QSet<QString> QgsWFSDataSourceURI::unknownParamKeys() const
     QgsWFSConstants::URI_PARAM_PAGING_ENABLED,
     QgsWFSConstants::URI_PARAM_PAGE_SIZE,
     QgsWFSConstants::URI_PARAM_WFST_1_1_PREFER_COORDINATES,
-    QgsWFSConstants::URI_PARAM_SKIP_INITIAL_GET_FEATURE
+    QgsWFSConstants::URI_PARAM_SKIP_INITIAL_GET_FEATURE,
+    QgsWFSConstants::URI_PARAM_GEOMETRY_TYPE_FILTER,
   };
 
   QSet<QString> l_unknownParamKeys;
@@ -353,6 +354,16 @@ void QgsWFSDataSourceURI::setFilter( const QString &filter )
   {
     mURI.setParam( QgsWFSConstants::URI_PARAM_FILTER, filter );
   }
+}
+
+bool QgsWFSDataSourceURI::hasGeometryTypeFilter() const
+{
+  return mURI.hasParam( QgsWFSConstants::URI_PARAM_GEOMETRY_TYPE_FILTER );
+}
+
+QgsWkbTypes::Type QgsWFSDataSourceURI::geometryTypeFilter() const
+{
+  return QgsWkbTypes::parseType( mURI.param( QgsWFSConstants::URI_PARAM_GEOMETRY_TYPE_FILTER ) );
 }
 
 QString QgsWFSDataSourceURI::sql() const
