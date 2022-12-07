@@ -58,7 +58,7 @@
         itemsPerPageText: ''
       }"
       >
-        <template v-slot:item.zoomToFeature="{ item }">
+        <template v-slot:[`item.zoomToFeature`]="{ item }">
           <v-icon @click="zoomToFeature(item.feature)">mdi-magnify</v-icon>
         </template>
       </v-data-table>

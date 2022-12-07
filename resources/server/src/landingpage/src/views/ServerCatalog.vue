@@ -15,7 +15,7 @@
       <v-container id="catalog" class="fill-height" fluid v-if="catalog">
         <v-row align="center" v-if="error.length > 0 || status == `empty`">
           <v-col cols="12">
-            <Error v-if="error.length > 0" :error="error" />
+            <MyError v-if="error.length > 0" :error="error" />
             <v-alert type="warning" v-if="status == `empty`">
               <h2>This QGIS Server catalog does not contain any project.</h2>
               <p>
@@ -90,14 +90,14 @@
               >
                 <template v-slot:activator="{ on }">
                   <v-btn color="orange" text v-on="on">
-                    <v-icon>mdi-information</v-icon>Metadata
+                    <v-icon>mdi-information</v-icon>ProjectMetadata
                   </v-btn>
                 </template>
                 <v-card>
                   <v-card-title>{{ project.title }}</v-card-title>
                   <v-divider></v-divider>
                   <v-card-text style="height: 300px">
-                    <Metadata :project="project" />
+                    <ProjectMetadata :project="project" />
                   </v-card-text>
                   <v-divider></v-divider>
                   <v-card-actions>
@@ -134,18 +134,18 @@ import { LMap, LControlAttribution, LTileLayer } from "vue2-leaflet";
 import "leaflet/dist/leaflet.css";
 import { latLng, Polygon } from "leaflet";
 import WMS from "leaflet.wms/dist/leaflet.wms.js";
-import Metadata from "@/components/Metadata.vue";
-import Error from "@/components/Error.vue";
+import ProjectMetadata from "@/components/ProjectMetadata.vue";
+import MyError from "@/components/MyError.vue";
 import Utils from "@/js/Utils.js";
 
 export default {
-  name: "Catalog",
+  name: "ServerCatalog",
   components: {
     LMap,
     LControlAttribution,
     LTileLayer,
-    Metadata,
-    Error,
+    ProjectMetadata,
+    MyError,
   },
   computed: {
     status() {
