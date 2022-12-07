@@ -2309,6 +2309,23 @@ not change the geometry.
 :return: ``True`` in case of success and ``False`` else
 %End
 
+    bool convertToCurvedMultiType();
+%Docstring
+Converts a geometry into a multitype geometry of curve kind (when there
+is a corresponding curve type).
+e.g. a polygon into a multisurface geometry with one polygon,
+a multipolygon into a multisurface, a linestring into a multicurve
+geometry with one linestring, or a multilinestring into a multicurve.
+If it is already a multipart curve geometry, it will return ``True`` and
+not change the geometry. It will also return ``True`` and do nothing if
+the current geometry is a multipoint or a geometry collection. A single
+point will be transformed to a multipoint.
+
+:return: ``True`` in case of success and ``False`` else
+
+.. versionadded:: 3.30
+%End
+
     bool convertToSingleType();
 %Docstring
 Converts multi type geometry into single type geometry
