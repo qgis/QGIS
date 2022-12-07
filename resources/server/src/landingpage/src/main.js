@@ -27,7 +27,7 @@ const routes = [
   {
     path: "/",
     name: "catalog",
-    component: () => import("@/views/Catalog.vue"),
+    component: () => import("@/views/ServerCatalog.vue"),
     meta: {
       title: "QGIS Server Catalog - Home Page",
       metaTags: [
