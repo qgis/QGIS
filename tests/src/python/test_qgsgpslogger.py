@@ -193,7 +193,7 @@ class TestQgsGpsLogger(unittest.TestCase):
 
     def test_point_recording(self):
         points_layer = QgsVectorLayer(
-            'Point?crs=EPSG:28355&field=timestamp:datetime&field=distance:double&field=seconds:double', 'points',
+            'PointZ?crs=EPSG:28355&field=timestamp:datetime&field=distance:double&field=seconds:double', 'points',
             'memory')
         self.assertTrue(points_layer.isValid())
         self.assertEqual(points_layer.crs().authid(), 'EPSG:28355')
@@ -359,9 +359,132 @@ class TestQgsGpsLogger(unittest.TestCase):
             '$GPRMC,084129.185,A,6939.4152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
         self.assertEqual(points_layer.dataProvider().featureCount(), 1)
 
+    def test_point_recording_no_z(self):
+        points_layer = QgsVectorLayer(
+            'Point?crs=EPSG:28355&field=timestamp:datetime&field=distance:double&field=seconds:double', 'points',
+            'memory')
+        self.assertTrue(points_layer.isValid())
+        self.assertEqual(points_layer.crs().authid(), 'EPSG:28355')
+
+        gps_connection = GpsReplay()
+
+        logger = QgsVectorLayerGpsLogger(gps_connection)
+        logger.setPointsLayer(points_layer)
+        spy = QSignalSpy(logger.stateChanged)
+
+        logger.setDestinationField(Qgis.GpsInformationComponent.Timestamp, 'timestamp')
+        logger.setDestinationField(Qgis.GpsInformationComponent.TrackDistanceSinceLastPoint, 'distance')
+        logger.setDestinationField(Qgis.GpsInformationComponent.TrackTimeSinceLastPoint, 'seconds')
+
+        points_layer.startEditing()
+
+        gps_connection.send_message('$GPRMC,084111.185,A,6938.6531,N,01856.8527,E,0.16,2.00,220120,,,A*6E')
+        self.assertEqual(len(spy), 1)
+
+        self.assertEqual(points_layer.featureCount(), 1)
+        f = next(points_layer.getFeatures())
+        exp = QDateTime(2020, 1, 22, 9, 31, 59, 185)
+        exp.setOffsetFromUtc(3000)
+        self.assertEqual(f.attributes(), [exp, None, None])
+        # should be no z value in geometry, to match layer dimensionality
+        self.assertEqual(f.geometry().asWkt(-3), 'Point (-1297000 21436000)')
+
+    def test_point_recording_m_value_epoch(self):
+        points_layer = QgsVectorLayer(
+            'PointM?crs=EPSG:28355&field=timestamp:datetime&field=distance:double&field=seconds:double', 'points',
+            'memory')
+        self.assertTrue(points_layer.isValid())
+        self.assertEqual(points_layer.crs().authid(), 'EPSG:28355')
+
+        QgsSettings().setValue('gps/store-attribute-in-m-values', True)
+        QgsSettings().setValue('gps/m-value-attribute', 'Timestamp')
+
+        gps_connection = GpsReplay()
+
+        logger = QgsVectorLayerGpsLogger(gps_connection)
+        logger.setPointsLayer(points_layer)
+        spy = QSignalSpy(logger.stateChanged)
+        points_layer.startEditing()
+
+        gps_connection.send_message('$GPRMC,084111.185,A,6938.6531,N,01856.8527,E,0.16,2.00,220120,,,A*6E')
+        self.assertEqual(len(spy), 1)
+
+        self.assertEqual(logger.lastMValue(), 1579682471185.0)
+
+        self.assertEqual(points_layer.featureCount(), 1)
+        f = next(points_layer.getFeatures())
+        exp = QDateTime(2020, 1, 22, 9, 31, 59, 185)
+        exp.setOffsetFromUtc(3000)
+        self.assertEqual(f.geometry().asWkt(-3), 'PointM (-1297000 21436000 1579682471000)')
+
+        gps_connection.send_message(
+            '$GPRMC,084113.185,A,6938.9152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
+        self.assertEqual(len(spy), 2)
+        self.assertEqual(logger.lastMValue(), 1579682473185.)
+
+        self.assertEqual(points_layer.featureCount(), 2)
+        features = points_layer.getFeatures()
+        next(features)
+        f = next(features)
+        self.assertEqual(f.geometry().asWkt(-3), 'PointM (-1297000 21435000 1579682473000)')
+
+        gps_connection.send_message(
+            '$GPRMC,084117.185,A,6939.3152,N,01856.8526,E,0.05,Z2.00,220120,,,A*6C')
+        self.assertEqual(len(spy), 3)
+        self.assertEqual(logger.lastMValue(), 1579682477185.0)
+
+        self.assertEqual(points_layer.featureCount(), 3)
+        features = points_layer.getFeatures()
+        next(features)
+        next(features)
+        f = next(features)
+        self.assertEqual(f.geometry().asWkt(-3), 'PointM (-1296000 21435000 1579682477000)')
+        QgsSettings().setValue('gps/store-attribute-in-m-values', False)
+
+    def test_point_recording_m_value_altitude(self):
+        points_layer = QgsVectorLayer(
+            'PointZM?crs=EPSG:28355&field=timestamp:datetime&field=distance:double&field=seconds:double',
+            'points',
+            'memory')
+        self.assertTrue(points_layer.isValid())
+        self.assertEqual(points_layer.crs().authid(), 'EPSG:28355')
+        self.assertEqual(points_layer.wkbType(), QgsWkbTypes.PointZM)
+
+        QgsSettings().setValue('gps/store-attribute-in-m-values', True)
+        QgsSettings().setValue('gps/m-value-attribute', 'Altitude')
+
+        gps_connection = GpsReplay()
+
+        logger = QgsVectorLayerGpsLogger(gps_connection)
+        logger.setPointsLayer(points_layer)
+        spy = QSignalSpy(logger.stateChanged)
+        points_layer.startEditing()
+
+        gps_connection.send_message('$GPRMC,084111.185,A,6938.6531,N,01856.8527,E,0.16,2.00,220120,,,A*6E')
+        self.assertEqual(len(spy), 1)
+        self.assertEqual(logger.lastMValue(), 0)
+
+        self.assertEqual(points_layer.featureCount(), 1)
+        f = next(points_layer.getFeatures())
+        exp = QDateTime(2020, 1, 22, 9, 31, 59, 185)
+        exp.setOffsetFromUtc(3000)
+        self.assertEqual(f.geometry().asWkt(-3), 'PointZM (-1297000 21436000 0 0)')
+
+        gps_connection.send_message("$GPGGA,084112.185,6938.9152,N,01856.8526,E,1,04,1.4,3335.0,M,29.4,M,,0000*63")
+        self.assertEqual(len(spy), 2)
+        self.assertEqual(logger.lastMValue(), 3335.0)
+
+        self.assertEqual(points_layer.featureCount(), 2)
+        features = points_layer.getFeatures()
+        f = next(features)
+        self.assertEqual(f.geometry().asWkt(-3), 'PointZM (-1297000 21436000 0 0)')
+        f = next(features)
+        self.assertEqual(f.geometry().asWkt(-3), 'PointZM (-1297000 21435000 3000 3000)')
+        QgsSettings().setValue('gps/store-attribute-in-m-values', False)
+
     def test_track_recording(self):
         line_layer = QgsVectorLayer(
-            'LineString?crs=EPSG:28355&field=start:datetime&field=end:string&field=length:double', 'lines', 'memory')
+            'LineStringZ?crs=EPSG:28355&field=start:datetime&field=end:string&field=length:double', 'lines', 'memory')
         self.assertTrue(line_layer.isValid())
         self.assertEqual(line_layer.crs().authid(), 'EPSG:28355')
 
@@ -420,6 +543,101 @@ class TestQgsGpsLogger(unittest.TestCase):
             '$GPRMC,084129.185,A,6939.4152,N,01956.8526,E,0.05,2.00,220120,,,A*6C')
         logger.endCurrentTrack()
         self.assertEqual(line_layer.dataProvider().featureCount(), 1)
+
+    def test_track_recording_no_z(self):
+        line_layer = QgsVectorLayer(
+            'LineString?crs=EPSG:28355&field=start:datetime&field=end:string&field=length:double', 'lines', 'memory')
+        self.assertTrue(line_layer.isValid())
+        self.assertEqual(line_layer.crs().authid(), 'EPSG:28355')
+
+        gps_connection = GpsReplay()
+
+        logger = QgsVectorLayerGpsLogger(gps_connection)
+        logger.setTracksLayer(line_layer)
+        spy = QSignalSpy(logger.stateChanged)
+
+        logger.setDestinationField(Qgis.GpsInformationComponent.TotalTrackLength, 'length')
+        logger.setDestinationField(Qgis.GpsInformationComponent.TrackStartTime, 'start')
+        logger.setDestinationField(Qgis.GpsInformationComponent.TrackEndTime, 'end')
+
+        line_layer.startEditing()
+
+        gps_connection.send_message('$GPRMC,084111.185,A,6938.6531,N,01856.8527,E,0.16,2.00,220120,,,A*6E')
+        self.assertEqual(len(spy), 1)
+
+        # should be no features until track is ended
+        self.assertEqual(line_layer.featureCount(), 0)
+
+        gps_connection.send_message(
+            '$GPRMC,084113.185,A,6938.9152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
+        self.assertEqual(len(spy), 2)
+
+        gps_connection.send_message(
+            '$GPRMC,084118.185,A,6938.9152,N,01857.8526,E,0.05,2.00,220120,,,A*6C')
+        self.assertEqual(len(spy), 3)
+
+        self.assertEqual(line_layer.featureCount(), 0)
+
+        logger.endCurrentTrack()
+
+        self.assertEqual(line_layer.featureCount(), 1)
+        f = next(line_layer.getFeatures())
+        exp = QDateTime(2020, 1, 22, 9, 31, 59, 185)
+        exp.setOffsetFromUtc(3000)
+        self.assertEqual(f.attributes(),
+                         [exp, '2020-01-22T09:32:06+00:50',
+                          0.021035000317942486])
+        self.assertEqual(f.geometry().asWkt(-2),
+                         'LineString (-1297400 21435500, -1297000 21435200, -1297400 21434700)')
+
+    def test_track_recording_z_m_timestamp(self):
+        line_layer = QgsVectorLayer(
+            'LineStringZM?crs=EPSG:28355&field=start:datetime&field=end:string&field=length:double', 'lines', 'memory')
+        self.assertTrue(line_layer.isValid())
+        self.assertEqual(line_layer.crs().authid(), 'EPSG:28355')
+
+        QgsSettings().setValue('gps/store-attribute-in-m-values', True)
+        QgsSettings().setValue('gps/m-value-attribute', 'Timestamp')
+
+        gps_connection = GpsReplay()
+
+        logger = QgsVectorLayerGpsLogger(gps_connection)
+        logger.setTracksLayer(line_layer)
+        spy = QSignalSpy(logger.stateChanged)
+
+        logger.setDestinationField(Qgis.GpsInformationComponent.TotalTrackLength, 'length')
+        logger.setDestinationField(Qgis.GpsInformationComponent.TrackStartTime, 'start')
+        logger.setDestinationField(Qgis.GpsInformationComponent.TrackEndTime, 'end')
+
+        line_layer.startEditing()
+
+        gps_connection.send_message('$GPRMC,084111.185,A,6938.6531,N,01856.8527,E,0.16,2.00,220120,,,A*6E')
+        self.assertEqual(len(spy), 1)
+
+        # should be no features until track is ended
+        self.assertEqual(line_layer.featureCount(), 0)
+
+        gps_connection.send_message(
+            '$GPRMC,084113.185,A,6938.9152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
+        self.assertEqual(len(spy), 2)
+
+        gps_connection.send_message(
+            '$GPRMC,084118.185,A,6938.9152,N,01857.8526,E,0.05,2.00,220120,,,A*6C')
+        self.assertEqual(len(spy), 3)
+
+        self.assertEqual(line_layer.featureCount(), 0)
+
+        logger.endCurrentTrack()
+
+        self.assertEqual(line_layer.featureCount(), 1)
+        f = next(line_layer.getFeatures())
+        exp = QDateTime(2020, 1, 22, 9, 31, 59, 185)
+        exp.setOffsetFromUtc(3000)
+        self.assertEqual(f.attributes(),
+                         [exp, '2020-01-22T09:32:06+00:50',
+                          0.021035000317942486])
+        self.assertEqual(f.geometry().asWkt(-2),
+                         'LineStringZM (-1297400 21435500 0 1579682471200, -1297000 21435200 0 1579682473200, -1297400 21434700 0 1579682478200)')
 
 
 if __name__ == '__main__':

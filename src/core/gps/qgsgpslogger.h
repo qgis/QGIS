@@ -23,6 +23,8 @@
 #include "qgsdistancearea.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgswkbtypes.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsentryenumflag.h"
 
 #include <QObject>
 #include <QPointer>
@@ -49,6 +51,12 @@ class CORE_EXPORT QgsGpsLogger : public QObject
     Q_OBJECT
 
   public:
+
+    //! Settings entry for whether storing GPS attributes as geometry M values should be enabled
+    static const inline QgsSettingsEntryBool settingsGpsStoreAttributeInMValues = QgsSettingsEntryBool( QStringLiteral( "store-attribute-in-m-values" ), QgsSettings::Prefix::GPS, false, QStringLiteral( "Whether GPS attributes should be stored in geometry m values" ) ) SIP_SKIP;
+
+    //! Settings entry dictating which GPS attribute should be stored in geometry M values
+    static const inline QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponent> settingsGpsMValueComponent = QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponent>( QStringLiteral( "m-value-attribute" ), QgsSettings::Prefix::GPS, Qgis::GpsInformationComponent::Timestamp, QStringLiteral( "Which GPS attribute should be stored in geometry m values" ) ) SIP_SKIP;
 
     /**
      * Constructor for QgsGpsLogger with the specified \a parent object.
@@ -146,6 +154,11 @@ class CORE_EXPORT QgsGpsLogger : public QObject
      * Returns the last recorded elevation the device.
      */
     double lastElevation() const;
+
+    /**
+     * Returns the last recorded value corresponding to the QgsGpsLogger::settingsGpsMValueComponent setting.
+     */
+    double lastMValue() const;
 
     /**
      * Resets the current track, discarding all recorded points.
@@ -272,6 +285,9 @@ class CORE_EXPORT QgsGpsLogger : public QObject
     int mOffsetFromUtc = 0;
 
     bool mAutomaticallyAddTrackVertices = true;
+    bool mStoreAttributeInMValues = false;
+    Qgis::GpsInformationComponent mMValueComponent = Qgis::GpsInformationComponent::Timestamp;
+    double mLastMValue = std::numeric_limits<double>::quiet_NaN();
 
     friend class TestQgsGpsIntegration;
 
