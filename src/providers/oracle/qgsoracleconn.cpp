@@ -851,20 +851,20 @@ QgsWkbTypes::Type QgsOracleConn::wkbTypeFromDatabase( int gtype )
     switch ( t )
     {
       case 1:
-        return QgsWkbTypes::Point25D;
+        return QgsWkbTypes::PointZ;
       case 2:
         return QgsWkbTypes::CompoundCurveZ;
       case 3:
-        return QgsWkbTypes::Polygon25D;
+        return QgsWkbTypes::PolygonZ;
       case 4:
         QgsDebugMsg( QStringLiteral( "geometry collection type %1 unsupported" ).arg( gtype ) );
         return QgsWkbTypes::Unknown;
       case 5:
-        return QgsWkbTypes::MultiPoint25D;
+        return QgsWkbTypes::MultiPointZ;
       case 6:
         return QgsWkbTypes::MultiCurveZ;
       case 7:
-        return QgsWkbTypes::MultiPolygon25D;
+        return QgsWkbTypes::MultiPolygonZ;
       default:
         QgsDebugMsg( QStringLiteral( "gtype %1 unsupported" ).arg( gtype ) );
         return QgsWkbTypes::Unknown;
