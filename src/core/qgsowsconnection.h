@@ -43,7 +43,7 @@ class CORE_EXPORT QgsOwsConnection : public QObject
     static const inline QgsSettingsEntryString settingsConnectionSelected = QgsSettingsEntryString( QStringLiteral( "connections-%1/selected" ), QgsSettings::Prefix::QGIS ) SIP_SKIP;
 
     static const inline QgsSettingsEntryString settingsConnectionUrl = QgsSettingsEntryString( QStringLiteral( "connections-%1/%2/url" ), QgsSettings::Prefix::QGIS, QString() ) SIP_SKIP;
-    static const inline QgsSettingsEntryString settingsConnectionReferer = QgsSettingsEntryString( QStringLiteral( "connections-%1/%2/referer" ), QgsSettings::Prefix::QGIS, QString() ) SIP_SKIP;
+    static const inline QgsSettingsEntryVariantMap settingsConnectionHeader = QgsSettingsEntryVariantMap( QStringLiteral( "connections-%1/%2/url" ), QgsSettings::Prefix::QGIS ) SIP_SKIP;
     static const inline QgsSettingsEntryString settingsConnectionVersion = QgsSettingsEntryString( QStringLiteral( "connections-%1/%2/version" ), QgsSettings::Prefix::QGIS, QString() ) SIP_SKIP;
     static const inline QgsSettingsEntryBool settingsConnectionIgnoreGetMapURI = QgsSettingsEntryBool( QStringLiteral( "connections-%1/%2/ignoreGetMapURI" ), QgsSettings::Prefix::QGIS, false ) SIP_SKIP;
     static const inline QgsSettingsEntryBool settingsConnectionIgnoreGetFeatureInfoURI = QgsSettingsEntryBool( QStringLiteral( "connections-%1/%2/ignoreGetFeatureInfoURI" ), QgsSettings::Prefix::QGIS, false ) SIP_SKIP;
@@ -62,7 +62,7 @@ class CORE_EXPORT QgsOwsConnection : public QObject
     static const inline QgsSettingsEntryString settingsConnectionPassword = QgsSettingsEntryString( QStringLiteral( "%1/%2/password" ), QgsSettings::Prefix::QGIS ) SIP_SKIP;
     static const inline QgsSettingsEntryString settingsConnectionAuthCfg = QgsSettingsEntryString( QStringLiteral( "%1/%2/authcfg" ), QgsSettings::Prefix::QGIS ) SIP_SKIP;
 
-    static const inline QgsSettingsEntryGroup settingsServiceConnectionDetailsGroup = QgsSettingsEntryGroup( {&settingsConnectionUrl, &settingsConnectionReferer, &settingsConnectionVersion, &settingsConnectionIgnoreGetMapURI, &settingsConnectionIgnoreGetFeatureInfoURI, &settingsConnectionSmoothPixmapTransform, &settingsConnectionReportedLayerExtents, &settingsConnectionDpiMode, &settingsConnectionTilePixelRatio, &settingsConnectionMaxNumFeatures, &settingsConnectionPagesize, &settingsConnectionPagingEnabled, &settingsConnectionPreferCoordinatesForWfsT11, &settingsConnectionIgnoreAxisOrientation, &settingsConnectionInvertAxisOrientation} );
+    static const inline QgsSettingsEntryGroup settingsServiceConnectionDetailsGroup = QgsSettingsEntryGroup( {&settingsConnectionUrl, &settingsConnectionHeader, &settingsConnectionVersion, &settingsConnectionIgnoreGetMapURI, &settingsConnectionIgnoreGetFeatureInfoURI, &settingsConnectionSmoothPixmapTransform, &settingsConnectionReportedLayerExtents, &settingsConnectionDpiMode, &settingsConnectionTilePixelRatio, &settingsConnectionMaxNumFeatures, &settingsConnectionPagesize, &settingsConnectionPagingEnabled, &settingsConnectionPreferCoordinatesForWfsT11, &settingsConnectionIgnoreAxisOrientation, &settingsConnectionInvertAxisOrientation} );
     static const inline QgsSettingsEntryGroup settingsServiceConnectionCredentialsGroup = QgsSettingsEntryGroup( {&settingsConnectionUsername, &settingsConnectionPassword, &settingsConnectionAuthCfg} );
 
     /**
