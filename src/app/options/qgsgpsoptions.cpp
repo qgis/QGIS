@@ -131,6 +131,20 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
   mCboAcquisitionInterval->setValidator( mAcquisitionIntValidator );
   mCboDistanceThreshold->setValidator( mDistanceThresholdValidator );
 
+  mComboMValueAttribute->addItem( tr( "Do not Store M Values" ) );
+  mComboMValueAttribute->addItem( tr( "Timestamp (Milliseconds Since Epoch)" ), QVariant::fromValue( Qgis::GpsInformationComponent::Timestamp ) );
+  mComboMValueAttribute->addItem( tr( "Ground Speed" ), QVariant::fromValue( Qgis::GpsInformationComponent::GroundSpeed ) );
+  mComboMValueAttribute->addItem( tr( "Bearing" ), QVariant::fromValue( Qgis::GpsInformationComponent::Bearing ) );
+  mComboMValueAttribute->addItem( tr( "Altitude (Geoid)" ), QVariant::fromValue( Qgis::GpsInformationComponent::EllipsoidAltitude ) );
+  mComboMValueAttribute->addItem( tr( "Altitude (WGS-84 Ellipsoid)" ), QVariant::fromValue( Qgis::GpsInformationComponent::Altitude ) );
+  mComboMValueAttribute->addItem( tr( "PDOP" ), QVariant::fromValue( Qgis::GpsInformationComponent::Pdop ) );
+  mComboMValueAttribute->addItem( tr( "HDOP" ), QVariant::fromValue( Qgis::GpsInformationComponent::Hdop ) );
+  mComboMValueAttribute->addItem( tr( "VDOP" ), QVariant::fromValue( Qgis::GpsInformationComponent::Vdop ) );
+  mComboMValueAttribute->addItem( tr( "Horizontal Accuracy" ), QVariant::fromValue( Qgis::GpsInformationComponent::HorizontalAccuracy ) );
+  mComboMValueAttribute->addItem( tr( "Vertical Accuracy" ), QVariant::fromValue( Qgis::GpsInformationComponent::VerticalAccuracy ) );
+  mComboMValueAttribute->addItem( tr( "Accuracy (3D RMS)" ), QVariant::fromValue( Qgis::GpsInformationComponent::HvAccuracy ) );
+  mComboMValueAttribute->addItem( tr( "Satellites Used" ), QVariant::fromValue( Qgis::GpsInformationComponent::SatellitesUsed ) );
+  mComboMValueAttribute->setCurrentIndex( 0 );
 
   Qgis::GpsConnectionType connectionType = Qgis::GpsConnectionType::Automatic;
   QString gpsdHost;
@@ -163,6 +177,11 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
     timeSpec = QgsGpsConnection::settingsGpsTimeStampSpecification.value();
     timeZone = QgsGpsConnection::settingsGpsTimeStampTimeZone.value();
     offsetFromUtc = static_cast< int >( QgsGpsConnection::settingsGpsTimeStampOffsetFromUtc.value() );
+
+    if ( QgsGpsLogger::settingsGpsStoreAttributeInMValues.value() )
+    {
+      mComboMValueAttribute->setCurrentIndex( mComboMValueAttribute->findData( QVariant::fromValue( QgsGpsLogger::settingsGpsMValueComponent.value() ) ) );
+    }
   }
   else
   {
@@ -354,6 +373,16 @@ void QgsGpsOptionsWidget::apply()
   QgsGpsConnection::settingGpsApplyLeapSecondsCorrection.setValue( mCbxLeapSeconds->isChecked() );
   QgsGpsConnection::settingGpsLeapSeconds.setValue( mLeapSeconds->value() );
   QgsGpsConnection::settingsGpsTimeStampOffsetFromUtc.setValue( mOffsetFromUtc->value() );
+
+  if ( !mComboMValueAttribute->currentData().isValid() )
+  {
+    QgsGpsLogger::settingsGpsStoreAttributeInMValues.setValue( false );
+  }
+  else
+  {
+    QgsGpsLogger::settingsGpsStoreAttributeInMValues.setValue( true );
+    QgsGpsLogger::settingsGpsMValueComponent.setValue( mComboMValueAttribute->currentData().value< Qgis::GpsInformationComponent >() );
+  }
 }
 
 void QgsGpsOptionsWidget::refreshDevices()
