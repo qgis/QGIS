@@ -559,11 +559,11 @@ class CORE_EXPORT QgsSettingsEntryColor : public QgsSettingsEntryByReference<QCo
 };
 
 /**
- * \class QgsSettingsEntryStringMap
+ * \class QgsSettingsEntryVariantMap
  * \ingroup core
  *
  * \brief A string list settings entry.
- * \since QGIS 3.20
+ * \since QGIS 3.30
  */
 class CORE_EXPORT QgsSettingsEntryVariantMap : public QgsSettingsEntryByReference<QVariantMap>
 {
