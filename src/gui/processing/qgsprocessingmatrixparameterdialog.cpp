@@ -51,6 +51,9 @@ QgsProcessingMatrixParameterPanelWidget::QgsProcessingMatrixParameterPanelWidget
   } );
   connect( this, &QgsPanelWidget::panelAccepted, this, [ = ]()
   {
+    // save any current cell edits
+    mTblView->setCurrentIndex( QModelIndex() );
+
     if ( !mWasCanceled )
       emit widgetChanged();
   } );
