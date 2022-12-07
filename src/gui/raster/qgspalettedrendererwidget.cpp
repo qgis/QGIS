@@ -863,7 +863,7 @@ void QgsPalettedRendererClassGatherer::run()
         }
       }
       i ++;
-      emit progressChanged( 100 * ( i / static_cast<float>( newClasses.count() ) ) );
+      emit progressChanged( 100 * ( static_cast< double >( i ) / static_cast<double>( newClasses.count() ) ) );
     }
     mClasses = newClasses;
   }
