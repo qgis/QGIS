@@ -1064,7 +1064,8 @@ namespace QgsWfs
         else
           query.addQueryItem( QStringLiteral( "VERSION" ), QStringLiteral( "1.0.0" ) );
 
-        for ( auto param : query.queryItems() )
+        const auto constItems { query.queryItems() };
+        for ( const auto &param : std::as_const( constItems ) )
         {
           if ( sParamFilter.contains( param.first.toUpper() ) )
             query.removeAllQueryItems( param.first );
@@ -1283,6 +1284,15 @@ namespace QgsWfs
           fcString += QLatin1String( "  " );
         else
           fcString += QLatin1String( " ," );
+
+        const QgsCoordinateReferenceSystem destinationCrs { params.srsName.isEmpty( ) ? QStringLiteral( "EPSG:4326" ) : params.srsName };
+        if ( ! destinationCrs.isValid() )
+        {
+          throw QgsRequestNotWellFormedException( QStringLiteral( "srsName error: '%1' is not valid." ).arg( params.srsName ) );
+        }
+
+        mJsonExporter.setDestinationCrs( destinationCrs );
+        mJsonExporter.setTransformGeometries( true );
         mJsonExporter.setSourceCrs( params.crs );
         mJsonExporter.setIncludeGeometry( false );
         mJsonExporter.setIncludeAttributes( !params.attributeIndexes.isEmpty() );

@@ -19,6 +19,7 @@ import os
 # Needed on Qt 5 so that the serialization of XML is consistent among all executions
 os.environ['QT_HASH_SEED'] = '1'
 
+import json
 import re
 import urllib.request
 import urllib.parse
@@ -720,6 +721,104 @@ class TestQgsServerWFS(QgsServerTestBase):
                 ("OUTPUTFORMAT=%s" % ct)
                 + "&SRSNAME=EPSG:4326&TYPENAME=testlayer&FEATUREID=testlayer.0",
                 'wfs_getFeature_1_0_0_featureid_0_json')
+
+    def test_getFeatureFeatureJsonCrs(self):
+        """Test issue GH #25171, geojson srsName"""
+
+        project = QgsProject()
+        layer = QgsVectorLayer("Point?crs=epsg:3857&field=fldint:integer",
+                               "layer", "memory")
+        project.addMapLayers([layer])
+        project.writeEntry("WFSLayers", "/", [layer.id()])
+        f = QgsFeature(layer.fields())
+
+        f.setGeometry(QgsGeometry.fromWkt('point(807305 5592878)'))
+        f.setAttributes([123])
+        layer.dataProvider().addFeatures([f])
+        f = QgsFeature(layer.fields())
+        f.setGeometry(QgsGeometry.fromWkt('point(812191 5589555)'))
+        f.setAttributes([123])
+        layer.dataProvider().addFeatures([f])
+
+        query_string = "?" + "&".join(["%s=%s" % i for i in list({
+            "SERVICE": "WFS",
+            "REQUEST": "GetFeature",
+            "VERSION": "1.1.0",
+            "TYPENAME": "layer",
+            "SRSNAME": "EPSG:3857",
+            "outputFormat": "GeoJSON"
+        }.items())])
+
+        header, body = self._execute_request_project(query_string, project)
+        json.loads(body)
+        jdata = json.loads(body)
+        jdata['features'][0]['geometry']
+        jdata['features'][0]['geometry']['coordinates']
+        self.assertEqual(jdata['features'][0]['geometry']['coordinates'], [807305, 5592878])
+
+        query_string = "?" + "&".join(["%s=%s" % i for i in list({
+            "SERVICE": "WFS",
+            "REQUEST": "GetFeature",
+            "VERSION": "1.1.0",
+            "TYPENAME": "layer",
+            "SRSNAME": "EPSG:4326",
+            "outputFormat": "GeoJSON"
+        }.items())])
+
+        header, body = self._execute_request_project(query_string, project)
+        json.loads(body)
+        jdata = json.loads(body)
+        jdata['features'][0]['geometry']
+        jdata['features'][0]['geometry']['coordinates']
+        self.assertEqual([int(i) for i in jdata['features'][0]['geometry']['coordinates']], [7, 44])
+
+        query_string = "?" + "&".join(["%s=%s" % i for i in list({
+            "SERVICE": "WFS",
+            "REQUEST": "GetFeature",
+            "VERSION": "1.1.0",
+            "TYPENAME": "layer",
+            "outputFormat": "GeoJSON"
+        }.items())])
+
+        header, body = self._execute_request_project(query_string, project)
+        json.loads(body)
+        jdata = json.loads(body)
+        jdata['features'][0]['geometry']
+        jdata['features'][0]['geometry']['coordinates']
+        self.assertEqual([int(i) for i in jdata['features'][0]['geometry']['coordinates']], [7, 44])
+
+        query_string = "?" + "&".join(["%s=%s" % i for i in list({
+            "SERVICE": "WFS",
+            "REQUEST": "GetFeature",
+            "VERSION": "1.1.0",
+            "TYPENAME": "layer",
+            "SRSNAME": "EPSG:32632",
+            "outputFormat": "GeoJSON"
+        }.items())])
+
+        header, body = self._execute_request_project(query_string, project)
+        json.loads(body)
+        jdata = json.loads(body)
+        jdata['features'][0]['geometry']
+        jdata['features'][0]['geometry']['coordinates']
+        self.assertEqual([int(i) for i in jdata['features'][0]['geometry']['coordinates']], [361806, 4964192])
+
+        query_string = "?" + "&".join(["%s=%s" % i for i in list({
+            "SERVICE": "WFS",
+            "REQUEST": "GetFeature",
+            "VERSION": "1.1.0",
+            "TYPENAME": "layer",
+            "SRSNAME": "EPSG:3857",
+            "outputFormat": "GeoJSON",
+            "FEATUREID": "layer.2"
+        }.items())])
+
+        header, body = self._execute_request_project(query_string, project)
+        json.loads(body)
+        jdata = json.loads(body)
+        jdata['features'][0]['geometry']
+        jdata['features'][0]['geometry']['coordinates']
+        self.assertEqual([int(i) for i in jdata['features'][0]['geometry']['coordinates']], [812191, 5589555])
 
     def test_insert_srsName(self):
         """Test srsName is respected when insering"""
