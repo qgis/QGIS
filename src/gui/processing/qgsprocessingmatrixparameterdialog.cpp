@@ -43,14 +43,16 @@ QgsProcessingMatrixParameterPanelWidget::QgsProcessingMatrixParameterPanelWidget
   mButtonRemoveAll = new QPushButton( tr( "Remove All" ) );
   mButtonBox->addButton( mButtonRemoveAll, QDialogButtonBox::ActionRole );
 
-  connect( mButtonBox->button( QDialogButtonBox::Ok ), &QPushButton::clicked, this, [ = ]
-  {
-    emit widgetChanged();
-    acceptPanel();
-  } );
+  connect( mButtonBox->button( QDialogButtonBox::Ok ), &QPushButton::clicked, this, &QgsPanelWidget::acceptPanel );
   connect( mButtonBox->button( QDialogButtonBox::Cancel ), &QPushButton::clicked, this, [ = ]
   {
+    mWasCanceled = true;
     acceptPanel();
+  } );
+  connect( this, &QgsPanelWidget::panelAccepted, this, [ = ]()
+  {
+    if ( !mWasCanceled )
+      emit widgetChanged();
   } );
 
   connect( mButtonAdd, &QPushButton::clicked, this, &QgsProcessingMatrixParameterPanelWidget::addRow );
