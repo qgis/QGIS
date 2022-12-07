@@ -658,6 +658,8 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
         source = os.path.join(testDataPath, 'dem.tif')
+        source2 = os.path.join(testDataPath, 'raster.tif')
+        source3 = os.path.join(testDataPath, 'raster with spaces.tif')
         alg = gdalcalc()
         alg.initAlgorithm()
 
@@ -687,15 +689,15 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
 
                 # Inputs A and B share same pixel size and CRS
                 self.assertEqual(
-                    alg.getConsoleCommands({'INPUT_A': source,
+                    alg.getConsoleCommands({'INPUT_A': source2,
                                             'BAND_A': 1,
-                                            'INPUT_B': source,
+                                            'INPUT_B': source3,
                                             'BAND_B': 1,
                                             'FORMULA': formula,
                                             'EXTENT_OPT': 3,
                                             'OUTPUT': output}, context, feedback),
                     ['gdal_calc.py',
-                     '--overwrite --calc "{}" --format JPEG --type Float32 --extent=intersect -A {} --A_band 1 -B {} --B_band 1 --outfile {}'.format(formula, source, source, output)])
+                     '--overwrite --calc "{}" --format JPEG --type Float32 --extent=intersect -A {} --A_band 1 -B "{}" --B_band 1 --outfile {}'.format(formula, source2, source3, output)])
 
                 # Test mutually exclusive --extent and --projwin. Should raise an exception
                 self.assertRaises(
