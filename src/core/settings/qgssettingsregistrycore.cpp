@@ -29,6 +29,7 @@
 #include "qgsogrdbconnection.h"
 #include "qgsfontmanager.h"
 #include "qgsgpsconnection.h"
+#include "qgsgpslogger.h"
 
 QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   : QgsSettingsRegistry()
@@ -129,6 +130,9 @@ QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   addSettingsEntry( &QgsGpsConnection::settingsGpsTimeStampSpecification );
   addSettingsEntry( &QgsGpsConnection::settingsGpsTimeStampTimeZone );
   addSettingsEntry( &QgsGpsConnection::settingsGpsTimeStampOffsetFromUtc );
+
+  addSettingsEntry( &QgsGpsLogger::settingsGpsStoreAttributeInMValues );
+  addSettingsEntry( &QgsGpsLogger::settingsGpsMValueComponent );
 }
 
 QgsSettingsRegistryCore::~QgsSettingsRegistryCore()

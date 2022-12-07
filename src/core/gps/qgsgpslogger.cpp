@@ -110,6 +110,7 @@ QgsGeometry QgsGpsLogger::currentGeometry( QgsWkbTypes::Type type, QString &erro
   }
 
   const bool is3D = QgsWkbTypes::hasZ( type );
+  const bool isMeasure = QgsWkbTypes::hasM( type );
   switch ( geometryType )
   {
     case QgsWkbTypes::PointGeometry:
@@ -121,6 +122,9 @@ QgsGeometry QgsGpsLogger::currentGeometry( QgsWkbTypes::Type type, QString &erro
         g = QgsGeometry( new QgsPoint( pointXYWgs84.x(), pointXYWgs84.y(), lastElevation() ) );
       else
         g = QgsGeometry::fromPointXY( pointXYWgs84 );
+
+      if ( isMeasure )
+        g.get()->addMValue( lastMValue() );
 
       if ( QgsWkbTypes::isMultiType( type ) )
         g.convertToMultiType();
@@ -134,8 +138,10 @@ QgsGeometry QgsGpsLogger::currentGeometry( QgsWkbTypes::Type type, QString &erro
       QgsGeometry g;
 
       std::unique_ptr<QgsLineString> ringWgs84( new QgsLineString( captureListWgs84 ) );
-      if ( ! is3D )
+      if ( !is3D )
         ringWgs84->dropZValue();
+      if ( !isMeasure )
+        ringWgs84->dropMValue();
 
       if ( geometryType == QgsWkbTypes::LineGeometry )
       {
@@ -174,6 +180,11 @@ double QgsGpsLogger::lastElevation() const
   return mLastElevation;
 }
 
+double QgsGpsLogger::lastMValue() const
+{
+  return mLastMValue;
+}
+
 void QgsGpsLogger::resetTrack()
 {
   mBlockGpsStateChanged++;
@@ -201,6 +212,9 @@ void QgsGpsLogger::updateGpsSettings()
     mTimeStampSpec = QgsGpsConnection::settingsGpsTimeStampSpecification.value();
     mTimeZone = QgsGpsConnection::settingsGpsTimeStampTimeZone.value();
     mOffsetFromUtc = static_cast< int >( QgsGpsConnection::settingsGpsTimeStampOffsetFromUtc.value() );
+
+    mStoreAttributeInMValues = settingsGpsStoreAttributeInMValues.value();
+    mMValueComponent = settingsGpsMValueComponent.value();
   }
   else
   {
@@ -328,6 +342,41 @@ void QgsGpsLogger::gpsStateChanged( const QgsGpsInformation &info )
     {
       mLastTime = info.utcDateTime;
     }
+
+    switch ( mMValueComponent )
+    {
+      case Qgis::GpsInformationComponent::Altitude:
+      case Qgis::GpsInformationComponent::GroundSpeed:
+      case Qgis::GpsInformationComponent::Bearing:
+      case Qgis::GpsInformationComponent::Pdop:
+      case Qgis::GpsInformationComponent::Hdop:
+      case Qgis::GpsInformationComponent::Vdop:
+      case Qgis::GpsInformationComponent::HorizontalAccuracy:
+      case Qgis::GpsInformationComponent::VerticalAccuracy:
+      case Qgis::GpsInformationComponent::HvAccuracy:
+      case Qgis::GpsInformationComponent::SatellitesUsed:
+      case Qgis::GpsInformationComponent::GeoidalSeparation:
+      case Qgis::GpsInformationComponent::EllipsoidAltitude:
+      {
+        const QVariant value = info.componentValue( mMValueComponent );
+        mLastMValue = value.isValid() ? info.componentValue( mMValueComponent ).toDouble() : std::numeric_limits< double >::quiet_NaN();
+        break;
+      }
+
+      case Qgis::GpsInformationComponent::Timestamp:
+        mLastMValue = info.utcDateTime.toMSecsSinceEpoch();
+        break;
+
+      case Qgis::GpsInformationComponent::Location:
+      case Qgis::GpsInformationComponent::TotalTrackLength:
+      case Qgis::GpsInformationComponent::TrackDistanceFromStart:
+      case Qgis::GpsInformationComponent::TrackStartTime:
+      case Qgis::GpsInformationComponent::TrackEndTime:
+      case Qgis::GpsInformationComponent::TrackDistanceSinceLastPoint:
+      case Qgis::GpsInformationComponent::TrackTimeSinceLastPoint:
+        // not possible
+        break;
+    }
   }
   else
   {
@@ -368,7 +417,12 @@ void QgsGpsLogger::gpsStateChanged( const QgsGpsInformation &info )
 
 void QgsGpsLogger::addTrackVertex()
 {
-  const QgsPoint pointWgs84 = QgsPoint( mLastGpsPositionWgs84.x(), mLastGpsPositionWgs84.y(), mLastElevation );
+  QgsPoint pointWgs84 = QgsPoint( mLastGpsPositionWgs84.x(), mLastGpsPositionWgs84.y(), mLastElevation );
+
+  if ( mStoreAttributeInMValues )
+  {
+    pointWgs84.addMValue( mLastMValue );
+  }
 
   const bool trackWasEmpty = mCaptureListWgs84.empty();
   mCaptureListWgs84.push_back( pointWgs84 );

@@ -27,6 +27,8 @@ from incoming GPS location points.
 %End
   public:
 
+
+
     QgsGpsLogger( QgsGpsConnection *connection, QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsGpsLogger with the specified ``parent`` object.
@@ -122,6 +124,11 @@ handling.
     double lastElevation() const;
 %Docstring
 Returns the last recorded elevation the device.
+%End
+
+    double lastMValue() const;
+%Docstring
+Returns the last recorded value corresponding to the QgsGpsLogger.settingsGpsMValueComponent setting.
 %End
 
     void resetTrack();
