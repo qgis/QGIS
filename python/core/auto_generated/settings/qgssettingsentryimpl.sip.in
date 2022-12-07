@@ -578,7 +578,7 @@ class QgsSettingsEntryVariantMap : QgsSettingsEntryByReferenceQVariantMapBase
 
 A string list settings entry.
 
-.. versionadded:: 3.20
+.. versionadded:: 3.30
 %End
 
 %TypeHeaderCode
