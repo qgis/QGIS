@@ -269,12 +269,17 @@ void QgsGpsInformationWidget::gpsConnecting()
   mTxtLatitude->clear();
   mTxtLongitude->clear();
   mTxtAltitude->clear();
+  mTxtAltitudeDiff->clear();
+  mTxtAltitudeEllipsoid->clear();
   mTxtDateTime->clear();
   mTxtSpeed->clear();
   mTxtDirection->clear();
   mTxtHdop->clear();
   mTxtVdop->clear();
   mTxtPdop->clear();
+  mTxtHacc->clear();
+  mTxtVacc->clear();
+  mTxt3Dacc->clear();
   mTxtFixMode->clear();
   mTxtFixType->clear();
   mTxtQuality->clear();
@@ -328,6 +333,32 @@ void QgsGpsInformationWidget::updateTrackInformation()
 
 void QgsGpsInformationWidget::gpsDisconnected()
 {
+  // clear position page fields to give better indication that something happened (or didn't happen)
+  mTxtLatitude->clear();
+  mTxtLongitude->clear();
+  mTxtAltitude->clear();
+  mTxtAltitudeDiff->clear();
+  mTxtAltitudeEllipsoid->clear();
+  mTxtDateTime->clear();
+  mTxtSpeed->clear();
+  mTxtDirection->clear();
+  mTxtHdop->clear();
+  mTxtVdop->clear();
+  mTxtPdop->clear();
+  mTxtHacc->clear();
+  mTxtVacc->clear();
+  mTxt3Dacc->clear();
+  mTxtFixMode->clear();
+  mTxtFixType->clear();
+  mTxtQuality->clear();
+  mTxtSatellitesUsed->clear();
+  mTxtStatus->clear();
+  
+  // Clear Plot Signal data
+  QVector<QPointF> data;
+  mCurve->setSamples( data );
+  mPlot->replot();
+
   mGPSPlainTextEdit->appendPlainText( tr( "Disconnected…" ) );
 }
 
