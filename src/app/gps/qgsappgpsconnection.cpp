@@ -148,6 +148,7 @@ void QgsAppGpsConnection::connectGps()
   emit statusChanged( Qgis::GpsConnectionStatus::Connecting );
   emit fixStatusChanged( Qgis::GpsFixStatus::NoData );
 
+  QgisApp::instance()->statusBarIface()->clearMessage();
   showStatusBarMessage( tr( "Connecting to GPS device %1…" ).arg( port ) );
 
   QgsGpsDetector *detector = new QgsGpsDetector( port );
@@ -168,6 +169,7 @@ void QgsAppGpsConnection::disconnectGps()
     emit statusChanged( Qgis::GpsConnectionStatus::Disconnected );
     emit fixStatusChanged( Qgis::GpsFixStatus::NoData );
 
+    QgisApp::instance()->statusBarIface()->clearMessage();
     showStatusBarMessage( tr( "Disconnected from GPS device." ) );
 
     QgsApplication::gpsConnectionRegistry()->unregisterConnection( oldConnection.get() );
@@ -176,12 +178,18 @@ void QgsAppGpsConnection::disconnectGps()
 
 void QgsAppGpsConnection::onTimeOut()
 {
+  std::unique_ptr< QgsGpsConnection > oldConnection( mConnection );
   mConnection = nullptr;
-  emit connectionTimedOut();
+
+  emit disconnected();
   emit statusChanged( Qgis::GpsConnectionStatus::Disconnected );
+  emit fixStatusChanged( Qgis::GpsFixStatus::NoData );
+  emit connectionTimedOut();
 
   QgisApp::instance()->statusBarIface()->clearMessage();
-  showGpsConnectFailureWarning( tr( "Failed to connect to GPS device." ) );
+  showGpsConnectFailureWarning( tr( "TIMEOUT - Failed to connect to GPS device." ) );
+
+  QgsApplication::gpsConnectionRegistry()->unregisterConnection( oldConnection.get() );
 }
 
 void QgsAppGpsConnection::onConnected( QgsGpsConnection *conn )
