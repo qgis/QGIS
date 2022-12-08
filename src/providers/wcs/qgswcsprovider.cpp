@@ -1044,7 +1044,6 @@ void QgsWcsProvider::parseServiceException( QDomElement const &e, const QString 
   }
   else
   {
-    const QStringList codes;
     seCode = e.attribute( QStringLiteral( "exceptionCode" ) );
     // UMN Mapserver (6.0.3) has messed/switched 'locator' and 'exceptionCode'
     if ( ! exceptions.contains( seCode ) )

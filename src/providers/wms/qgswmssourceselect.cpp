@@ -1047,7 +1047,6 @@ QString QgsWMSSourceSelect::connName()
 void QgsWMSSourceSelect::collectSelectedLayers( QStringList &layers, QStringList &styles, QStringList &titles )
 {
   //go through list in layer order tab
-  QStringList selectedLayerList;
   for ( int i = mLayerOrderTreeWidget->topLevelItemCount() - 1; i >= 0; --i )
   {
     layers << mLayerOrderTreeWidget->topLevelItem( i )->text( 0 );

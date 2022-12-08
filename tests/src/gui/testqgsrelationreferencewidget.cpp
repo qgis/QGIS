@@ -203,7 +203,6 @@ void TestQgsRelationReferenceWidget::testChainFilter()
   }
 
   loop.exec();
-  QStringList items = getComboBoxItems( w.mComboBox );
   QCOMPARE( w.mComboBox->currentText(), allowNull ? QString( "NULL" ) : QString( "10" ) );
 
   // set first filter
@@ -725,7 +724,6 @@ void TestQgsRelationReferenceWidget::testSetFilterExpression()
   w.init();
 
   loop.exec();
-  QStringList items = getComboBoxItems( w.mComboBox );
   QCOMPARE( w.mComboBox->currentText(), QStringLiteral( "NULL" ) );
   // in case there is no filter, the number of filtered features will be 4
   QCOMPARE( w.mComboBox->count(), 3 );
@@ -750,8 +748,6 @@ void TestQgsRelationReferenceWidget::testSetFilterExpressionWithOrClause()
   w.setRelation( *mRelation, true );
   w.setFilterExpression( QStringLiteral( " \"raccord\" = 'sleeve' OR FALSE " ) );
   w.init();
-
-  QStringList items = getComboBoxItems( w.mComboBox );
 
   loop.exec();
 

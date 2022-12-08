@@ -89,7 +89,6 @@ void QgsDockableWidgetHelper::writeXml( QDomElement &viewDom )
   viewDom.setAttribute( QStringLiteral( "area" ), mDockArea );
   viewDom.setAttribute( QStringLiteral( "uuid" ), mUuid );
 
-  QStringList tabifiedDocks;
   if ( mDock )
   {
     const QList<QDockWidget * > tabSiblings = mOwnerWindow->tabifiedDockWidgets( mDock );
