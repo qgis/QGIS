@@ -22,6 +22,7 @@
 #include <gdal.h>
 
 #include "qgsogrutils.h"
+#include "qgsrasterdataprovider.h"
 
 /**
  * \ingroup core
@@ -102,7 +103,7 @@ class CORE_EXPORT QgsGdalUtils
     static gdal::dataset_unique_ptr imageToMemoryDataset( const QImage &image );
 
     /**
-     * Converts an raster \a block to a  single band GDAL memory dataset.
+     * Converts a raster \a block to a  single band GDAL memory dataset.
      *
      * \warning The \a block must stay allocated for the lifetime of the returned gdal dataset.
      *
@@ -135,6 +136,20 @@ class CORE_EXPORT QgsGdalUtils
      * \since QGIS 3.16
      */
     static void *rpcAwareCreateTransformer( GDALDatasetH hSrcDS, GDALDatasetH hDstDS = nullptr, char **papszOptions = nullptr );
+
+    /**
+     * Returns the GDAL data type corresponding to the QGIS data type \a dataType
+     *
+     * \since QGIS 3.30
+     */
+    static GDALDataType gdalDataTypeFromQgisDataType( Qgis::DataType dataType );
+
+    /**
+     * Returns the GDAL resampling method corresponding to the QGIS resampling  \a method
+     *
+     * \since QGIS 3.30
+     */
+    static GDALResampleAlg getGDALResamplingAlgorithm( QgsRasterDataProvider::ResamplingMethod method );
 
 #ifndef QT_NO_NETWORKPROXY
     //! Sets the gdal proxy variables

@@ -363,6 +363,93 @@ void *QgsGdalUtils::rpcAwareCreateTransformer( GDALDatasetH hSrcDS, GDALDatasetH
   return transformer;
 }
 
+GDALDataType QgsGdalUtils::gdalDataTypeFromQgisDataType( Qgis::DataType dataType )
+{
+  switch ( dataType )
+  {
+    case Qgis::DataType::UnknownDataType:
+      return GDALDataType::GDT_Unknown;
+      break;
+    case Qgis::DataType::Byte:
+      return GDALDataType::GDT_Byte;
+      break;
+    case Qgis::DataType::UInt16:
+      return GDALDataType::GDT_UInt16;
+      break;
+    case Qgis::DataType::Int16:
+      return GDALDataType::GDT_Int16;
+      break;
+    case Qgis::DataType::UInt32:
+      return GDALDataType::GDT_UInt32;
+      break;
+    case Qgis::DataType::Int32:
+      return GDALDataType::GDT_Int32;
+      break;
+    case Qgis::DataType::Float32:
+      return GDALDataType::GDT_Float32;
+      break;
+    case Qgis::DataType::Float64:
+      return GDALDataType::GDT_Float64;
+      break;
+    case Qgis::DataType::CInt16:
+      return GDALDataType::GDT_CInt16;
+      break;
+    case Qgis::DataType::CInt32:
+      return GDALDataType::GDT_CInt32;
+      break;
+    case Qgis::DataType::CFloat32:
+      return GDALDataType::GDT_CFloat32;
+      break;
+    case Qgis::DataType::CFloat64:
+      return GDALDataType::GDT_CFloat64;
+      break;
+    case Qgis::DataType::ARGB32:
+    case Qgis::DataType::ARGB32_Premultiplied:
+      return GDALDataType::GDT_Unknown;
+      break;
+  };
+
+  return GDALDataType::GDT_Unknown;
+}
+
+GDALResampleAlg QgsGdalUtils::getGDALResamplingAlgorithm( QgsRasterDataProvider::ResamplingMethod method )
+{
+  GDALResampleAlg eResampleAlg = GRA_NearestNeighbour;
+  switch ( method )
+  {
+    case QgsRasterDataProvider::ResamplingMethod::Nearest:
+    case QgsRasterDataProvider::ResamplingMethod::Gauss: // Gauss not available in GDALResampleAlg
+      eResampleAlg = GRA_NearestNeighbour;
+      break;
+
+    case QgsRasterDataProvider::ResamplingMethod::Bilinear:
+      eResampleAlg = GRA_Bilinear;
+      break;
+
+    case QgsRasterDataProvider::ResamplingMethod::Cubic:
+      eResampleAlg = GRA_Cubic;
+      break;
+
+    case QgsRasterDataProvider::ResamplingMethod::CubicSpline:
+      eResampleAlg = GRA_CubicSpline;
+      break;
+
+    case QgsRasterDataProvider::ResamplingMethod::Lanczos:
+      eResampleAlg = GRA_Lanczos;
+      break;
+
+    case QgsRasterDataProvider::ResamplingMethod::Average:
+      eResampleAlg = GRA_Average;
+      break;
+
+    case QgsRasterDataProvider::ResamplingMethod::Mode:
+      eResampleAlg = GRA_Mode;
+      break;
+  }
+
+  return eResampleAlg;
+}
+
 #ifndef QT_NO_NETWORKPROXY
 void QgsGdalUtils::setupProxy()
 {
