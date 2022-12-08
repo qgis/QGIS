@@ -364,7 +364,7 @@ void QgsGpsLogger::gpsStateChanged( const QgsGpsInformation &info )
       }
 
       case Qgis::GpsInformationComponent::Timestamp:
-        mLastMValue = info.utcDateTime.toMSecsSinceEpoch();
+        mLastMValue = static_cast< double >( info.utcDateTime.toMSecsSinceEpoch() );
         break;
 
       case Qgis::GpsInformationComponent::Location:
