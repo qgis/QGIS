@@ -1351,7 +1351,11 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
 
     // look for unique attribute values to place in statement instead of passing as parameter
     // e.g. for defaults
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     for ( int idx = 0; idx < std::min( attributevec.size(), mAttributeFields.size() ); ++idx )
+#else
+    for ( int idx = 0; idx < std::min( attributevec.size(), static_cast<qsizetype>( mAttributeFields.size() ) ); ++idx )
+#endif
     {
       if ( mAlwaysGenerated.at( idx ) )
         continue;
@@ -4207,4 +4211,3 @@ QIcon QgsOracleProviderMetadata::icon() const
 {
   return QgsApplication::getThemeIcon( QStringLiteral( "mIconOracle.svg" ) );
 }
-

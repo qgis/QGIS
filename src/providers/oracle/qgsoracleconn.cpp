@@ -68,7 +68,6 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceUri uri, bool transaction )
   : mRef( 1 )
   , mCurrentUser( QString() )
   , mHasSpatial( -1 )
-  , mLock( QMutex::Recursive )
   , mTransaction( transaction )
 {
   QgsDebugMsgLevel( QStringLiteral( "New Oracle connection for " ) + uri.connectionInfo( false ), 2 );
@@ -231,25 +230,26 @@ void QgsOracleConn::unref()
 
 QString QgsOracleConn::getLastExecutedQuery( const QSqlQuery &query )
 {
-  QString str = query.lastQuery();
-  QMapIterator<QString, QVariant> it( query.boundValues() );
-  while ( it.hasNext() )
-  {
-    it.next();
-    const QVariant &var { it.value().toString() };
-    QSqlField field( QString( ), var.type() );
-    if ( var.isNull() )
-    {
-      field.clear();
-    }
-    else
-    {
-      field.setValue( var );
-    }
-    const QString formatV = query.driver()->formatValue( field );
-    str.replace( it.key(), formatV );
-  }
-  return str;
+  return query.executedQuery();
+  // QString str = query.lastQuery();
+  // QMapIterator<QString, QVariant> it( query.boundValues() );
+  // while ( it.hasNext() )
+  // {
+  //   it.next();
+  //   const QVariant &var { it.value().toString() };
+  //   QSqlField field( QString( ), var.type() );
+  //   if ( var.isNull() )
+  //   {
+  //     field.clear();
+  //   }
+  //   else
+  //   {
+  //     field.setValue( var );
+  //   }
+  //   const QString formatV = query.driver()->formatValue( field );
+  //   str.replace( it.key(), formatV );
+  // }
+  // return str;
 }
 
 bool QgsOracleConn::exec( QSqlQuery &qry, const QString &sql, const QVariantList &params )

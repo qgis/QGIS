@@ -819,11 +819,13 @@ void QOCISpatialResultPrivate::outValues( QVector<QVariant> &values, IndicatorAr
 
     qOraOutValue( values[i], tmpStorage, err );
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QVariant::Type typ = values.at( i ).type();
+#else
+    QMetaType typ = values.at( i ).metaType();
+#endif
     if ( indicators[i] == -1 ) // NULL
       values[i] = QVariant( typ );
-    else
-      values[i] = QVariant( typ, values.at( i ).constData() );
   }
 }
 
