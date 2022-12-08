@@ -2418,8 +2418,6 @@ void QgsStyleManagerDialog::populateGroups()
 
 void QgsStyleManagerDialog::groupChanged( const QModelIndex &index )
 {
-  QStringList groupSymbols;
-
   const QString category = index.data( Qt::UserRole + 1 ).toString();
   sPreviousTag = category;
 
@@ -3009,4 +3007,3 @@ void QgsStyleManagerDialog::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "style_library/style_manager.html" ) );
 }
-

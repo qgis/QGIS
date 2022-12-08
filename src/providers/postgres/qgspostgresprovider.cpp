@@ -1737,8 +1737,6 @@ bool QgsPostgresProvider::determinePrimaryKey()
     res = connectionRO()->LoggedPQexec( "QgsPostgresProvider", sql );
     QgsDebugMsgLevel( QStringLiteral( "Got %1 rows." ).arg( res.PQntuples() ), 2 );
 
-    QStringList log;
-
     // no primary or unique indices found
     if ( res.PQntuples() == 0 )
     {

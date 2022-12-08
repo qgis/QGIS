@@ -1147,7 +1147,6 @@ QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const
     static std::once_flag initialized;
     std::call_once( initialized, [ = ]( )
     {
-      QStringList meshExtensions;
       QStringList datasetsExtensions;
       QgsMdalProvider::fileMeshExtensions( sExtensions, datasetsExtensions );
       Q_UNUSED( datasetsExtensions )

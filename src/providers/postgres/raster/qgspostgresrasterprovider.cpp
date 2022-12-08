@@ -2089,8 +2089,6 @@ bool QgsPostgresRasterProvider::determinePrimaryKey()
     res = connectionRO()->PQexec( sql );
     QgsDebugMsgLevel( QStringLiteral( "Got %1 rows." ).arg( res.PQntuples() ), 4 );
 
-    QStringList log;
-
     // no primary or unique indices found
     if ( res.PQntuples() == 0 )
     {
