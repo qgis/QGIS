@@ -33,7 +33,7 @@
 
 #include <QSqlDatabase>
 #include <QSqlQuery>
-#include <QMutex>
+#include <QRecursiveMutex>
 
 class QgsField;
 
@@ -284,7 +284,7 @@ class QgsOracleConn : public QObject
     //! List of the supported layers
     QVector<QgsOracleLayerProperty> mLayersSupported;
 
-    mutable QMutex mLock;
+    mutable QRecursiveMutex mLock;
     bool mTransaction = false;
     int mSavePointId = 1;
 
