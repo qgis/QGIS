@@ -229,26 +229,29 @@ void QgsOracleConn::unref()
 
 QString QgsOracleConn::getLastExecutedQuery( const QSqlQuery &query )
 {
-  return query.executedQuery();
-  // QString str = query.lastQuery();
-  // QMapIterator<QString, QVariant> it( query.boundValues() );
-  // while ( it.hasNext() )
-  // {
-  //   it.next();
-  //   const QVariant &var { it.value().toString() };
-  //   QSqlField field( QString( ), var.type() );
-  //   if ( var.isNull() )
-  //   {
-  //     field.clear();
-  //   }
-  //   else
-  //   {
-  //     field.setValue( var );
-  //   }
-  //   const QString formatV = query.driver()->formatValue( field );
-  //   str.replace( it.key(), formatV );
-  // }
-  // return str;
+  QString str = query.lastQuery();
+
+  const QRegularExpression re( "(?:\\?|\\:[a-z|A-Z]*)" );
+  QRegularExpressionMatch match;
+  int start = 0;
+  for ( QVariant value : query.boundValues() )
+  {
+    const QVariant &var { value.toString() };
+    QSqlField field( QString( ), var.type() );
+    if ( var.isNull() )
+    {
+      field.clear();
+    }
+    else
+    {
+      field.setValue( var );
+    }
+    const QString formatV = query.driver()->formatValue( field );
+
+    const int i = str.indexOf( re, start, &match );
+    str.replace( i, match.captured().size(), formatV );
+  }
+  return str;
 }
 
 bool QgsOracleConn::exec( QSqlQuery &qry, const QString &sql, const QVariantList &params )
