@@ -601,7 +601,7 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
   ENSURE_NO_EVAL_ERROR
   QVariant value = node->eval( parent, context );
   ENSURE_NO_EVAL_ERROR
-  QgsVectorLayer *vl = QgsExpressionUtils::getVectorLayer( value, parent );
+  QgsVectorLayer *vl = QgsExpressionUtils::getVectorLayer( value, context, parent );
   if ( !vl )
   {
     parent->setEvalErrorString( QObject::tr( "Cannot find layer with name or ID '%1'" ).arg( value.toString() ) );
@@ -745,7 +745,7 @@ static QVariant fcnAggregateRelation( const QVariantList &values, const QgsExpre
   }
 
   // first step - find current layer
-  QgsVectorLayer *vl = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), parent );
+  QgsVectorLayer *vl = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), context, parent );
   if ( !vl )
   {
     parent->setEvalErrorString( QObject::tr( "Cannot use relation aggregate function in this context" ) );
@@ -868,7 +868,7 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
   }
 
   // first step - find current layer
-  QgsVectorLayer *vl = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), parent );
+  QgsVectorLayer *vl = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), context, parent );
   if ( !vl )
   {
     parent->setEvalErrorString( QObject::tr( "Cannot use aggregate function in this context" ) );
@@ -1655,9 +1655,9 @@ static QVariant fcnFeatureId( const QVariantList &, const QgsExpressionContext *
   return QVariant( static_cast< int >( f.id() ) );
 }
 
-static QVariant fcnRasterValue( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnRasterValue( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QgsRasterLayer *layer = QgsExpressionUtils::getRasterLayer( values.at( 0 ), parent );
+  QgsRasterLayer *layer = QgsExpressionUtils::getRasterLayer( values.at( 0 ), context, parent );
   if ( !layer || !layer->dataProvider() )
   {
     parent->setEvalErrorString( QObject::tr( "Function `raster_value` requires a valid raster layer." ) );
@@ -1697,9 +1697,9 @@ static QVariant fcnRasterValue( const QVariantList &values, const QgsExpressionC
   return std::isnan( value ) ? QVariant() : value;
 }
 
-static QVariant fcnRasterAttributes( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnRasterAttributes( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QgsRasterLayer *layer = QgsExpressionUtils::getRasterLayer( values.at( 0 ), parent );
+  QgsRasterLayer *layer = QgsExpressionUtils::getRasterLayer( values.at( 0 ), context, parent );
   if ( !layer || !layer->dataProvider() )
   {
     parent->setEvalErrorString( QObject::tr( "Function `raster_attributes` requires a valid raster layer." ) );
@@ -1879,16 +1879,16 @@ static QVariant fcnRepresentAttributes( const QVariantList &values, const QgsExp
   if ( values.isEmpty() )
   {
     feature = context->feature();
-    layer = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), parent );
+    layer = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), context, parent );
   }
   else if ( values.size() == 1 )
   {
-    layer = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), parent );
+    layer = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), context, parent );
     feature = QgsExpressionUtils::getFeature( values.at( 0 ), parent );
   }
   else if ( values.size() == 2 )
   {
-    layer = QgsExpressionUtils::getVectorLayer( values.at( 0 ), parent );
+    layer = QgsExpressionUtils::getVectorLayer( values.at( 0 ), context,  parent );
     feature = QgsExpressionUtils::getFeature( values.at( 1 ), parent );
   }
   else
@@ -1962,21 +1962,21 @@ static QVariant fcnCoreFeatureMaptipDisplay( const QVariantList &values, const Q
   if ( values.isEmpty() )
   {
     feature = context->feature();
-    layer = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), parent );
+    layer = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), context, parent );
   }
   else if ( values.size() == 1 )
   {
-    layer = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), parent );
+    layer = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), context, parent );
     feature = QgsExpressionUtils::getFeature( values.at( 0 ), parent );
   }
   else if ( values.size() == 2 )
   {
-    layer = QgsExpressionUtils::getVectorLayer( values.at( 0 ), parent );
+    layer = QgsExpressionUtils::getVectorLayer( values.at( 0 ), context, parent );
     feature = QgsExpressionUtils::getFeature( values.at( 1 ), parent );
   }
   else if ( values.size() == 3 )
   {
-    layer = QgsExpressionUtils::getVectorLayer( values.at( 0 ), parent );
+    layer = QgsExpressionUtils::getVectorLayer( values.at( 0 ), context, parent );
     feature = QgsExpressionUtils::getFeature( values.at( 1 ), parent );
     evaluate = values.value( 2 ).toBool();
   }
@@ -2051,16 +2051,16 @@ static QVariant fcnIsSelected( const QVariantList &values, const QgsExpressionCo
   if ( values.isEmpty() )
   {
     feature = context->feature();
-    layer = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), parent );
+    layer = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), context, parent );
   }
   else if ( values.size() == 1 )
   {
-    layer = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), parent );
+    layer = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), context, parent );
     feature = QgsExpressionUtils::getFeature( values.at( 0 ), parent );
   }
   else if ( values.size() == 2 )
   {
-    layer = QgsExpressionUtils::getVectorLayer( values.at( 0 ), parent );
+    layer = QgsExpressionUtils::getVectorLayer( values.at( 0 ), context, parent );
     feature = QgsExpressionUtils::getFeature( values.at( 1 ), parent );
   }
   else
@@ -2082,9 +2082,9 @@ static QVariant fcnNumSelected( const QVariantList &values, const QgsExpressionC
   QgsVectorLayer *layer = nullptr;
 
   if ( values.isEmpty() )
-    layer = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), parent );
+    layer = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), context, parent );
   else if ( values.count() == 1 )
-    layer = QgsExpressionUtils::getVectorLayer( values.at( 0 ), parent );
+    layer = QgsExpressionUtils::getVectorLayer( values.at( 0 ), context, parent );
   else
   {
     parent->setEvalErrorString( QObject::tr( "Function `num_selected` requires no more than one parameter. %n given.", nullptr, values.length() ) );
@@ -2099,7 +2099,7 @@ static QVariant fcnNumSelected( const QVariantList &values, const QgsExpressionC
   return layer->selectedFeatureCount();
 }
 
-static QVariant fcnSqliteFetchAndIncrement( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnSqliteFetchAndIncrement( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   static QMap<QString, qlonglong> counterCache;
   QVariant functionResult;
@@ -2107,7 +2107,7 @@ static QVariant fcnSqliteFetchAndIncrement( const QVariantList &values, const Qg
   std::function<void()> fetchAndIncrementFunc = [ =, &functionResult ]()
   {
     QString database;
-    const QgsVectorLayer *layer = QgsExpressionUtils::getVectorLayer( values.at( 0 ), parent );
+    const QgsVectorLayer *layer = QgsExpressionUtils::getVectorLayer( values.at( 0 ), context, parent );
 
     if ( layer )
     {
@@ -2604,9 +2604,9 @@ static QVariant fcnDateTimeFromEpoch( const QVariantList &values, const QgsExpre
   return QVariant( QDateTime::fromMSecsSinceEpoch( millisecs_since_epoch ) );
 }
 
-static QVariant fcnExif( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnExif( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  const QString filepath = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
+  const QString filepath = QgsExpressionUtils::getFilePathValue( values.at( 0 ), context, parent );
   if ( parent->hasEvalError() )
   {
     parent->setEvalErrorString( QObject::tr( "Function `%1` requires a value which represents a possible file path" ).arg( QLatin1String( "exif" ) ) );
@@ -2616,9 +2616,9 @@ static QVariant fcnExif( const QVariantList &values, const QgsExpressionContext 
   return !tag.isNull() ? QgsExifTools::readTag( filepath, tag ) : QVariant( QgsExifTools::readTags( filepath ) );
 }
 
-static QVariant fcnExifGeoTag( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnExifGeoTag( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  const QString filepath = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
+  const QString filepath = QgsExpressionUtils::getFilePathValue( values.at( 0 ), context, parent );
   if ( parent->hasEvalError() )
   {
     parent->setEvalErrorString( QObject::tr( "Function `%1` requires a value which represents a possible file path" ).arg( QLatin1String( "exif_geotag" ) ) );
@@ -5875,7 +5875,7 @@ static QVariant fcnTransformGeometry( const QVariantList &values, const QgsExpre
 static QVariant fcnGetFeatureById( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QVariant result;
-  QgsVectorLayer *vl = QgsExpressionUtils::getVectorLayer( values.at( 0 ), parent );
+  QgsVectorLayer *vl = QgsExpressionUtils::getVectorLayer( values.at( 0 ), context, parent );
   if ( vl )
   {
     QgsFeatureId fid = QgsExpressionUtils::getIntValue( values.at( 1 ), parent );
@@ -5900,7 +5900,7 @@ static QVariant fcnGetFeature( const QVariantList &values, const QgsExpressionCo
 {
   //arguments: 1. layer id / name, 2. key attribute, 3. eq value
 
-  std::unique_ptr<QgsVectorLayerFeatureSource> featureSource = QgsExpressionUtils::getFeatureSource( values.at( 0 ), parent );
+  std::unique_ptr<QgsVectorLayerFeatureSource> featureSource = QgsExpressionUtils::getFeatureSource( values.at( 0 ), context, parent );
 
   //no layer found
   if ( !featureSource )
@@ -5999,7 +5999,7 @@ static QVariant fcnRepresentValue( const QVariantList &values, const QgsExpressi
     }
     else
     {
-      QgsVectorLayer *layer = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), parent );
+      QgsVectorLayer *layer = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), context, parent );
 
       const QString cacheValueKey = QStringLiteral( "repvalfcnval:%1:%2:%3" ).arg( layer ? layer->id() : QStringLiteral( "[None]" ), fieldName, value.toString() );
       if ( context->hasCachedValue( cacheValueKey ) )
@@ -6041,9 +6041,9 @@ static QVariant fcnMimeType( const QVariantList &values, const QgsExpressionCont
   return db.mimeTypeForData( data.toByteArray() ).name();
 }
 
-static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QgsMapLayer *layer = QgsExpressionUtils::getMapLayer( values.at( 0 ), parent );
+  QgsMapLayer *layer = QgsExpressionUtils::getMapLayer( values.at( 0 ), context, parent );
 
   if ( !layer )
     return QVariant();
@@ -6145,9 +6145,9 @@ static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpres
   return QVariant();
 }
 
-static QVariant fcnDecodeUri( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnDecodeUri( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QgsMapLayer *layer = QgsExpressionUtils::getMapLayer( values.at( 0 ), parent );
+  QgsMapLayer *layer = QgsExpressionUtils::getMapLayer( values.at( 0 ), context, parent );
   if ( !layer )
   {
     parent->setEvalErrorString( QObject::tr( "Cannot find layer %1" ).arg( values.at( 0 ).toString() ) );
@@ -6854,9 +6854,9 @@ static QVariant fcnEnvVar( const QVariantList &values, const QgsExpressionContex
   return QProcessEnvironment::systemEnvironment().value( envVarName );
 }
 
-static QVariant fcnBaseFileName( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnBaseFileName( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
+  const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), context, parent );
   if ( parent->hasEvalError() )
   {
     parent->setEvalErrorString( QObject::tr( "Function `%1` requires a value which represents a possible file path" ).arg( QLatin1String( "base_file_name" ) ) );
@@ -6865,9 +6865,9 @@ static QVariant fcnBaseFileName( const QVariantList &values, const QgsExpression
   return QFileInfo( file ).completeBaseName();
 }
 
-static QVariant fcnFileSuffix( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnFileSuffix( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
+  const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), context, parent );
   if ( parent->hasEvalError() )
   {
     parent->setEvalErrorString( QObject::tr( "Function `%1` requires a value which represents a possible file path" ).arg( QLatin1String( "file_suffix" ) ) );
@@ -6876,9 +6876,9 @@ static QVariant fcnFileSuffix( const QVariantList &values, const QgsExpressionCo
   return QFileInfo( file ).completeSuffix();
 }
 
-static QVariant fcnFileExists( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnFileExists( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
+  const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), context, parent );
   if ( parent->hasEvalError() )
   {
     parent->setEvalErrorString( QObject::tr( "Function `%1` requires a value which represents a possible file path" ).arg( QLatin1String( "file_exists" ) ) );
@@ -6887,9 +6887,9 @@ static QVariant fcnFileExists( const QVariantList &values, const QgsExpressionCo
   return QFileInfo::exists( file );
 }
 
-static QVariant fcnFileName( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnFileName( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
+  const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), context, parent );
   if ( parent->hasEvalError() )
   {
     parent->setEvalErrorString( QObject::tr( "Function `%1` requires a value which represents a possible file path" ).arg( QLatin1String( "file_name" ) ) );
@@ -6898,9 +6898,9 @@ static QVariant fcnFileName( const QVariantList &values, const QgsExpressionCont
   return QFileInfo( file ).fileName();
 }
 
-static QVariant fcnPathIsFile( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnPathIsFile( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
+  const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), context, parent );
   if ( parent->hasEvalError() )
   {
     parent->setEvalErrorString( QObject::tr( "Function `%1` requires a value which represents a possible file path" ).arg( QLatin1String( "is_file" ) ) );
@@ -6909,9 +6909,9 @@ static QVariant fcnPathIsFile( const QVariantList &values, const QgsExpressionCo
   return QFileInfo( file ).isFile();
 }
 
-static QVariant fcnPathIsDir( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnPathIsDir( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
+  const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), context, parent );
   if ( parent->hasEvalError() )
   {
     parent->setEvalErrorString( QObject::tr( "Function `%1` requires a value which represents a possible file path" ).arg( QLatin1String( "is_directory" ) ) );
@@ -6920,9 +6920,9 @@ static QVariant fcnPathIsDir( const QVariantList &values, const QgsExpressionCon
   return QFileInfo( file ).isDir();
 }
 
-static QVariant fcnFilePath( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnFilePath( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
+  const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), context, parent );
   if ( parent->hasEvalError() )
   {
     parent->setEvalErrorString( QObject::tr( "Function `%1` requires a value which represents a possible file path" ).arg( QLatin1String( "file_path" ) ) );
@@ -6931,9 +6931,9 @@ static QVariant fcnFilePath( const QVariantList &values, const QgsExpressionCont
   return QDir::toNativeSeparators( QFileInfo( file ).path() );
 }
 
-static QVariant fcnFileSize( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnFileSize( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), parent );
+  const QString file = QgsExpressionUtils::getFilePathValue( values.at( 0 ), context, parent );
   if ( parent->hasEvalError() )
   {
     parent->setEvalErrorString( QObject::tr( "Function `%1` requires a value which represents a possible file path" ).arg( QLatin1String( "file_size" ) ) );
@@ -7061,7 +7061,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
 {
 
   const QVariant sourceLayerRef = context->variable( QStringLiteral( "layer" ) ); //used to detect if sourceLayer and targetLayer are the same
-  QgsVectorLayer *sourceLayer = QgsExpressionUtils::getVectorLayer( sourceLayerRef, parent );
+  QgsVectorLayer *sourceLayer = QgsExpressionUtils::getVectorLayer( sourceLayerRef, context, parent );
 
   QgsFeatureRequest request;
   request.setTimeout( 10000 );
@@ -7082,7 +7082,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   QString subExpString = node->dump();
 
   bool testOnly = ( subExpString == "NULL" );
-  QgsVectorLayer *targetLayer = QgsExpressionUtils::getVectorLayer( targetLayerValue, parent );
+  QgsVectorLayer *targetLayer = QgsExpressionUtils::getVectorLayer( targetLayerValue, context, parent );
   if ( !targetLayer ) // No layer, no joy
   {
     parent->setEvalErrorString( QObject::tr( "Layer '%1' could not be loaded." ).arg( targetLayerValue.toString() ) );

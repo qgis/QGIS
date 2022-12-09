@@ -22,8 +22,6 @@
 #include "qgsprocessingmodelalgorithm.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgsmapsettings.h"
-#include "qgssymbollayerutils.h"
-#include "qgslayout.h"
 #include "qgslayoutitem.h"
 #include "qgsexpressionutils.h"
 #include "qgslayoutpagecollection.h"
@@ -959,7 +957,7 @@ QgsExpressionContextUtils::GetLayerVisibility::GetLayerVisibility()
   : QgsScopedExpressionFunction( QStringLiteral( "is_layer_visible" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "id" ) ), QStringLiteral( "General" ) )
 {}
 
-QVariant QgsExpressionContextUtils::GetLayerVisibility::func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+QVariant QgsExpressionContextUtils::GetLayerVisibility::func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   if ( mLayers.isEmpty() )
   {
@@ -967,7 +965,7 @@ QVariant QgsExpressionContextUtils::GetLayerVisibility::func( const QVariantList
   }
 
   bool isVisible = false;
-  QgsMapLayer *layer = QgsExpressionUtils::getMapLayer( values.at( 0 ), parent );
+  QgsMapLayer *layer = QgsExpressionUtils::getMapLayer( values.at( 0 ), context, parent );
   if ( layer && mLayers.contains( layer ) )
   {
     isVisible = true;
