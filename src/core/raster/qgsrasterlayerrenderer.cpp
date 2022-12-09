@@ -466,7 +466,6 @@ void QgsRasterLayerRenderer::drawElevationMap()
         alg = QgsGdalUtils::getGDALResamplingAlgorithm( dataProvider->zoomedInResamplingMethod() );
 
       Qgis::DataType dataType = dataProvider->dataType( bandNumber );
-      GDALDataType gdalDataType = QgsGdalUtils::gdalDataTypeFromQgisDataType( dataType );
 
       int sourceWidth = static_cast< int >( std::ceil( extentInLayerCoordinate.width() / requestedResToProvider ) );
       int sourceHeight = static_cast< int >( std::ceil( extentInLayerCoordinate.height() / requestedResToProvider ) );
@@ -474,19 +473,17 @@ void QgsRasterLayerRenderer::drawElevationMap()
       // Now we can do the resampling
       std::unique_ptr<QgsRasterBlock> sourcedata( dataProvider->block( bandNumber, extentInLayerCoordinate, sourceWidth, sourceHeight, mFeedback ) );
       gdal::dataset_unique_ptr gdalDsInput =
-        QgsGdalUtils::blockToSingleBandMemoryDataset( sourceWidth, sourceHeight, extentInLayerCoordinate, sourcedata->bits(), gdalDataType );
+        QgsGdalUtils::blockToSingleBandMemoryDataset( extentInLayerCoordinate, sourcedata.get() );
+
 
       elevationBlock.reset( new QgsRasterBlock( dataType,
                             outputWidh,
                             outputHeight ) );
 
+      elevationBlock->setNoDataValue( dataProvider->sourceNoDataValue( bandNumber ) );
+
       gdal::dataset_unique_ptr gdalDsOutput =
-        QgsGdalUtils::blockToSingleBandMemoryDataset(
-          elevationBlock->width(),
-          elevationBlock->height(),
-          mRasterViewPort->mDrawnExtent,
-          elevationBlock->bits(),
-          gdalDataType );
+        QgsGdalUtils::blockToSingleBandMemoryDataset( mRasterViewPort->mDrawnExtent, elevationBlock.get() );
 
 
       // For coordinate transformation, we try to obtain a coordinate operation string from the transform context.
@@ -555,6 +552,8 @@ void QgsRasterLayerRenderer::drawElevationMap()
 
         std::unique_ptr<QgsRasterBlock> rotatedElevationBlock =
           std::make_unique<QgsRasterBlock>( elevationBlock->dataType(), right - left + 1, bottom - top + 1 );
+
+        rotatedElevationBlock->setNoDataValue( elevationBlock->noDataValue() );
 
         gdal::dataset_unique_ptr gdalDsOutput =
           QgsGdalUtils::blockToSingleBandMemoryDataset( angleRad, origin, gridXSize, gridYSize, rotatedElevationBlock.get() );

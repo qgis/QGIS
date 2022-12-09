@@ -189,8 +189,18 @@ gdal::dataset_unique_ptr QgsGdalUtils::blockToSingleBandMemoryDataset( const Qgs
   if ( !block )
     return nullptr;
 
-  return blockToSingleBandMemoryDataset( block->width(), block->height(), extent, block->bits(), gdalDataTypeFromQgisDataType( block->dataType() ) );
+  gdal::dataset_unique_ptr ret = blockToSingleBandMemoryDataset( block->width(), block->height(), extent, block->bits(), gdalDataTypeFromQgisDataType( block->dataType() ) );
+  if ( ret )
+  {
+    GDALRasterBandH band = GDALGetRasterBand( ret.get(), 1 );
+    if ( band )
+      GDALSetRasterNoDataValue( band, block->noDataValue() );
+  }
+
+  return ret;
 }
+
+
 
 gdal::dataset_unique_ptr QgsGdalUtils::blockToSingleBandMemoryDataset( double rotation,
     const QgsPointXY &origin,
@@ -227,6 +237,10 @@ gdal::dataset_unique_ptr QgsGdalUtils::blockToSingleBandMemoryDataset( double ro
   CSLDestroy( papszOptions );
 
   GDALSetGeoTransform( hDstDS.get(), geoTransform );
+
+  GDALRasterBandH band = GDALGetRasterBand( hDstDS.get(), 1 );
+  if ( band )
+    GDALSetRasterNoDataValue( band, block->noDataValue() );
 
   return hDstDS;
 }
