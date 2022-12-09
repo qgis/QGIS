@@ -178,12 +178,7 @@ void QgsAppGpsConnection::disconnectGps()
 
 void QgsAppGpsConnection::onTimeOut()
 {
-  std::unique_ptr< QgsGpsConnection > oldConnection( mConnection );
-  mConnection = nullptr;
-
-  emit disconnected();
-  emit statusChanged( Qgis::GpsConnectionStatus::Disconnected );
-  emit fixStatusChanged( Qgis::GpsFixStatus::NoData );
+  disconnectGps();
   emit connectionTimedOut();
 
   QgisApp::instance()->statusBarIface()->clearMessage();
