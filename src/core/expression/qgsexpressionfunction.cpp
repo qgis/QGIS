@@ -6174,20 +6174,9 @@ static QVariant fcnDecodeUri( const QVariantList &values, const QgsExpressionCon
   }
 }
 
-static QVariant fcnGetRasterBandStat( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnGetRasterBandStat( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QString layerIdOrName = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
-
-  //try to find a matching layer by name
-  QgsMapLayer *layer = QgsProject::instance()->mapLayer( layerIdOrName ); //search by id first
-  if ( !layer )
-  {
-    QList<QgsMapLayer *> layersByName = QgsProject::instance()->mapLayersByName( layerIdOrName );
-    if ( !layersByName.isEmpty() )
-    {
-      layer = layersByName.at( 0 );
-    }
-  }
+  QgsMapLayer *layer = QgsExpressionUtils::getMapLayer( values.at( 0 ), context, parent );
 
   if ( !layer )
     return QVariant();
@@ -6199,7 +6188,7 @@ static QVariant fcnGetRasterBandStat( const QVariantList &values, const QgsExpre
   int band = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
   if ( band < 1 || band > rl->bandCount() )
   {
-    parent->setEvalErrorString( QObject::tr( "Invalid band number %1 for layer %2" ).arg( band ).arg( layerIdOrName ) );
+    parent->setEvalErrorString( QObject::tr( "Invalid band number %1 for layer" ).arg( band ) );
     return QVariant();
   }
 
