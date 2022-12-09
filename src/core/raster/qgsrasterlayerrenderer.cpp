@@ -508,23 +508,53 @@ void QgsRasterLayerRenderer::drawElevationMap()
 
     if ( canRenderElevation )
     {
-      // Now rendering elevation on the elevation map, we nned totake care of rotation:
-      // again a resampling but this time with a geotransform.
       if ( renderContext()->mapToPixel().mapRotation() )
       {
+        // Now rendering elevation on the elevation map, we need to take care of rotation:
+        // again a resampling but this time with a geotransform.
         const QgsMapToPixel &mtp = renderContext()->mapToPixel();
         QgsElevationMap *elevMap = renderContext()->elevationMap();
 
-        QgsPointXY origin = mtp.toMapCoordinates( 0, 0 );
-        double gridXSize = mtp.toMapCoordinates( elevMap->rawElevationImage().width(), 0 ).distance( origin );
-        double gridYSize = mtp.toMapCoordinates( 0, elevMap->rawElevationImage().height() ).distance( origin );
+        int elevMapWidth = elevMap->rawElevationImage().width();
+        int elevMapHeight = elevMap->rawElevationImage().height();
+
+        int bottom = 0;
+        int top = elevMapHeight;
+        int left = elevMapWidth;
+        int right = 0;
+
+        QList<QgsPointXY> corners;
+        corners << QgsPointXY( mRasterViewPort->mDrawnExtent.xMinimum(), mRasterViewPort->mDrawnExtent.yMinimum() )
+                << QgsPointXY( mRasterViewPort->mDrawnExtent.xMaximum(), mRasterViewPort->mDrawnExtent.yMaximum() )
+                << QgsPointXY( mRasterViewPort->mDrawnExtent.xMinimum(), mRasterViewPort->mDrawnExtent.yMaximum() )
+                << QgsPointXY( mRasterViewPort->mDrawnExtent.xMaximum(), mRasterViewPort->mDrawnExtent.yMinimum() );
+
+        for ( const QgsPointXY &corner : std::as_const( corners ) )
+        {
+          const QgsPointXY dpt = mtp.transform( corner );
+          int x = static_cast<int>( dpt.x() + 0.5 );
+          int y = static_cast<int>( dpt.y() + 0.5 );
+
+          if ( x < left )
+            left = x;
+          if ( x > right )
+            right = x;
+          if ( y < top )
+            top = y;
+          if ( y > bottom )
+            bottom = y;
+        }
+
+        const QgsPointXY origin = mtp.toMapCoordinates( left, top );
+        double gridXSize = mtp.toMapCoordinates( right, top ).distance( origin );
+        double gridYSize = mtp.toMapCoordinates( left, bottom ).distance( origin );
         double angleRad = renderContext()->mapToPixel().mapRotation() / 180 * M_PI;
 
         gdal::dataset_unique_ptr gdalDsInput =
           QgsGdalUtils::blockToSingleBandMemoryDataset( mRasterViewPort->mDrawnExtent, elevationBlock.get() );
 
         std::unique_ptr<QgsRasterBlock> rotatedElevationBlock =
-          std::make_unique<QgsRasterBlock>( elevationBlock->dataType(), elevMap->rawElevationImage().width(), elevMap->rawElevationImage().height() );
+          std::make_unique<QgsRasterBlock>( elevationBlock->dataType(), right - left + 1, bottom - top + 1 );
 
         gdal::dataset_unique_ptr gdalDsOutput =
           QgsGdalUtils::blockToSingleBandMemoryDataset( angleRad, origin, gridXSize, gridYSize, rotatedElevationBlock.get() );
@@ -539,8 +569,8 @@ void QgsRasterLayerRenderer::drawElevationMap()
 
         renderContext()->elevationMap()->fillWithRasterBlock(
           elevationBlock.get(),
-          0,
-          0 );
+          top,
+          left );
       }
       else
       {
