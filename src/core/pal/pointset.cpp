@@ -591,15 +591,17 @@ void PointSet::offsetCurveByDistance( double distance )
       newGeos = std::move( longestPartClone );
     }
 
+#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<11
     if ( distance < 0 )
     {
-      // geos reverses the direction of offset curves with negative distances -- we don't want that!
+      // geos < 3.11 reverses the direction of offset curves with negative distances -- we don't want that!
       geos::unique_ptr reversed( GEOSReverse_r( geosctxt, newGeos.get() ) );
       if ( !reversed )
         return;
 
       newGeos = std::move( reversed );
     }
+#endif
 
     const int newNbPoints = GEOSGeomGetNumPoints_r( geosctxt, newGeos.get() );
     const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, newGeos.get() );
