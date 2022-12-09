@@ -183,8 +183,6 @@ void QgsAppGpsConnection::onTimeOut()
 
   QgisApp::instance()->statusBarIface()->clearMessage();
   showGpsConnectFailureWarning( tr( "TIMEOUT - Failed to connect to GPS device." ) );
-
-  QgsApplication::gpsConnectionRegistry()->unregisterConnection( oldConnection.get() );
 }
 
 void QgsAppGpsConnection::onConnected( QgsGpsConnection *conn )
