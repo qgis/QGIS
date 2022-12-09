@@ -22,7 +22,8 @@
 
 QgsShadingRenderer::QgsShadingRenderer()
 {
-  mHillShadingMultiDir = true;
+  mRenderHillShading = false;
+  mRenderEdl = true;
 }
 
 void QgsShadingRenderer::renderShading( const QgsElevationMap &elevation, QImage &image,  const QgsRenderContext &context ) const

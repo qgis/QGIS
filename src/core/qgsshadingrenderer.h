@@ -161,12 +161,12 @@ class CORE_EXPORT QgsShadingRenderer
   private:
     bool mIsActive = true;
 
-    bool mRenderEdl = false;
+    bool mRenderEdl = true;
     double mEyeDomeLightingStrength = 1000.0;
     double mEyeDomeLightingDistance = 0.5;
     QgsUnitTypes::RenderUnit mEyeDomeLightingDistanceUnit = QgsUnitTypes::RenderMillimeters;
 
-    bool mRenderHillShading = true;
+    bool mRenderHillShading = false;
     double mLightAltitude = 45.0;
     double mLightAzimuth = 315.0;
     double mHillShadingZFactor = 1.0;

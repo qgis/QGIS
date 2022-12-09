@@ -435,7 +435,7 @@ void QgsRasterLayerRenderer::drawElevationMap()
       // Using the raster projector lead to have big artifacts when rendering the elevation map.
       // To get a smoother elevation map, we use GDAL resampling with coordinates transform
 
-      const QgsRectangle &extentInLayerCoordinate = renderContext()->extent();
+      QgsRectangle extentInLayerCoordinate = renderContext()->extent();
       // We need to set the best resolution to require data to the provider.
       // This resolution is not the device resolution as we will resample this first data.
       double requestedResToProvider;
@@ -467,8 +467,10 @@ void QgsRasterLayerRenderer::drawElevationMap()
 
       Qgis::DataType dataType = dataProvider->dataType( bandNumber );
 
-      int sourceWidth = static_cast< int >( std::ceil( extentInLayerCoordinate.width() / requestedResToProvider ) );
-      int sourceHeight = static_cast< int >( std::ceil( extentInLayerCoordinate.height() / requestedResToProvider ) );
+      // we need extra pixels on border to avoid effect border whith resampling (at least 2 pixels band for cubic alg)
+      int sourceWidth = static_cast< int >( std::ceil( extentInLayerCoordinate.width() / requestedResToProvider ) ) + 4;
+      int sourceHeight = static_cast< int >( std::ceil( extentInLayerCoordinate.height() / requestedResToProvider ) ) + 4;
+      extentInLayerCoordinate = extentInLayerCoordinate.buffered( requestedResToProvider * 2 );
 
       // Now we can do the resampling
       std::unique_ptr<QgsRasterBlock> sourcedata( dataProvider->block( bandNumber, extentInLayerCoordinate, sourceWidth, sourceHeight, mFeedback ) );

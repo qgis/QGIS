@@ -34,6 +34,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsrendercontext.h"
+#include "qgselevationmap.h"
 
 QgsMeshLayerInterpolator::QgsMeshLayerInterpolator(
   const QgsTriangularMesh &m,
@@ -181,9 +182,11 @@ QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent
         }
       }
     }
-
   }
 
+  QgsElevationMap *elevationMap = mContext.elevationMap();
+  if ( elevationMap && elevationMap->isValid() )
+    elevationMap->fillWithRasterBlock( outputBlock.get(), 0, 0 );
   return outputBlock.release();
 }
 

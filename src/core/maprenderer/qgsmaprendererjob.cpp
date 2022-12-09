@@ -409,7 +409,7 @@ QImage *QgsMapRendererJob::allocateImage( QString layerId )
 QgsElevationMap *QgsMapRendererJob::allocateElevationMap( QString layerId )
 {
   std::unique_ptr<QgsElevationMap> elevationMap = std::make_unique<QgsElevationMap>( mSettings.deviceOutputSize() );
-  if ( elevationMap->isValid() )
+  if ( !elevationMap->isValid() )
   {
     mErrors.append( Error( layerId, tr( "Insufficient memory for elevation map %1x%2" ).arg( mSettings.outputSize().width() ).arg( mSettings.outputSize().height() ) ) );
     return nullptr;
@@ -1151,7 +1151,7 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings &settings,
     if ( mainElevationMap )
     {
       QgsElevationMap layerElevationMap = layerElevationToBeComposed( settings, job, cache );
-      if ( !layerElevationMap.isValid() )
+      if ( layerElevationMap.isValid() )
         mainElevationMap->combine( layerElevationMap );
     }
 

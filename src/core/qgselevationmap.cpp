@@ -92,11 +92,15 @@ void QgsElevationMap::applyEyeDomeLighting( QImage &img, int distance, float str
       qgssize index = j * static_cast<qgssize>( imgWidth ) + i;
       float factor = 0.0f;
       float centerDepth = decodeElevation( elevPtr[ index ] );
+      if ( elevPtr[ index ] == 0 )
+        continue;
       for ( int k = 0; k < 4; ++k )
       {
         int iNeighbour = i + distance * neighbours[2 * k];
         int jNeighbour = j + distance * neighbours[2 * k + 1];
         qgssize neighbourIndex = jNeighbour * static_cast<qgssize>( imgWidth ) + iNeighbour;
+        if ( elevPtr[ neighbourIndex ] == 0 )
+          continue;
         float neighbourDepth = decodeElevation( elevPtr[ neighbourIndex ] );
         factor += std::max<float>( 0, -( centerDepth - neighbourDepth ) );
       }
@@ -175,11 +179,12 @@ void QgsElevationMap::applyHillShading( QImage &img, bool multiDirectional, doub
       pixelValues[5] = decodeElevation( elevPtr[colRowToIndex( colR, rowC )] );
       pixelValues[8] = decodeElevation( elevPtr[colRowToIndex( colR, rowD )] );
 
-
       if ( elevPtr[centerIndex] != 0 )
       {
         // This is center cell. Use this in place of nodata neighbors
         const double x22 = pixelValues[4];
+//        if ( std::isnan( x22 ) )
+//          continue;
 
         const double x11 =  std::isnan( pixelValues[0] ) ? x22 : pixelValues[0];
         const double x21 =  std::isnan( pixelValues[3] ) ? x22 : pixelValues[3];
@@ -292,7 +297,7 @@ void QgsElevationMap::combine( const QgsElevationMap &otherElevationMap )
 
 bool QgsElevationMap::isValid() const
 {
-  return mElevationImage.isNull();
+  return !mElevationImage.isNull();
 }
 
 void QgsElevationMap::fillWithRasterBlock( QgsRasterBlock *block, int top, int left )
