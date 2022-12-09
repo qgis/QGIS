@@ -4580,12 +4580,13 @@ class TestQgsExpression: public QObject
     {
       QgsExpression exp;
       // NULL value
-      QgsMapLayer *res = QgsExpressionUtils::getMapLayer( QVariant(), &exp );
+      QgsExpressionContext context;
+      QgsMapLayer *res = QgsExpressionUtils::getMapLayer( QVariant(), &context, &exp );
       QVERIFY( !res );
       QVERIFY( !exp.hasEvalError() );
 
       // value which CANNOT be a map layer
-      res = QgsExpressionUtils::getMapLayer( QVariant( 5 ), &exp );
+      res = QgsExpressionUtils::getMapLayer( QVariant( 5 ), &context,  &exp );
       QVERIFY( !res );
 #if 0
       // TODO probably **should** raise an eval error for this situation?
@@ -4595,31 +4596,31 @@ class TestQgsExpression: public QObject
       // with weak map layer pointer
       exp = QgsExpression();
       QgsWeakMapLayerPointer weakPointer( mPointsLayer );
-      res = QgsExpressionUtils::getMapLayer( QVariant::fromValue( weakPointer ), &exp );
+      res = QgsExpressionUtils::getMapLayer( QVariant::fromValue( weakPointer ), &context,  &exp );
       QCOMPARE( res, mPointsLayer );
       QVERIFY( !exp.hasEvalError() );
 
       // with raw map layer pointer
       exp = QgsExpression();
-      res = QgsExpressionUtils::getMapLayer( QVariant::fromValue( mPointsLayer ), &exp );
+      res = QgsExpressionUtils::getMapLayer( QVariant::fromValue( mPointsLayer ), &context, &exp );
       QCOMPARE( res, mPointsLayer );
       QVERIFY( !exp.hasEvalError() );
 
       // with layer id
       exp = QgsExpression();
-      res = QgsExpressionUtils::getMapLayer( mPointsLayer->id(), &exp );
+      res = QgsExpressionUtils::getMapLayer( mPointsLayer->id(), &context, &exp );
       QCOMPARE( res, mPointsLayer );
       QVERIFY( !exp.hasEvalError() );
 
       // with layer name
       exp = QgsExpression();
-      res = QgsExpressionUtils::getMapLayer( mPointsLayer->name(), &exp );
+      res = QgsExpressionUtils::getMapLayer( mPointsLayer->name(), &context, &exp );
       QCOMPARE( res, mPointsLayer );
       QVERIFY( !exp.hasEvalError() );
 
       // with string which is neither id or name
       exp = QgsExpression();
-      res = QgsExpressionUtils::getMapLayer( QStringLiteral( "xxxA" ), &exp );
+      res = QgsExpressionUtils::getMapLayer( QStringLiteral( "xxxA" ), &context, &exp );
       QVERIFY( !res );
 #if 0
       // TODO -- probably should flag an error here?
@@ -4630,26 +4631,27 @@ class TestQgsExpression: public QObject
     void testGetFilePathValue()
     {
       QgsExpression exp;
+      QgsExpressionContext context;
       // NULL value
-      QString path = QgsExpressionUtils::getFilePathValue( QVariant(), &exp );
+      QString path = QgsExpressionUtils::getFilePathValue( QVariant(), &context, &exp );
       QVERIFY( path.isEmpty() );
       QVERIFY( !exp.hasEvalError() );
 
       // value which CANNOT be a file path
-      path = QgsExpressionUtils::getFilePathValue( QVariant::fromValue( QgsGeometry() ), &exp );
+      path = QgsExpressionUtils::getFilePathValue( QVariant::fromValue( QgsGeometry() ), &context,  &exp );
       QVERIFY( path.isEmpty() );
       QVERIFY( exp.hasEvalError() );
       QCOMPARE( exp.evalErrorString(), QStringLiteral( "Cannot convert value to a file path" ) );
 
       // good value
       exp = QgsExpression();
-      path = QgsExpressionUtils::getFilePathValue( QVariant::fromValue( QStringLiteral( "/home/me/mine.txt" ) ), &exp );
+      path = QgsExpressionUtils::getFilePathValue( QVariant::fromValue( QStringLiteral( "/home/me/mine.txt" ) ), &context,  &exp );
       QCOMPARE( path, QStringLiteral( "/home/me/mine.txt" ) );
       QVERIFY( !exp.hasEvalError() );
 
       // with map layer pointer -- should use layer path
       exp = QgsExpression();
-      path = QgsExpressionUtils::getFilePathValue( QVariant::fromValue( mPointsLayer ), &exp );
+      path = QgsExpressionUtils::getFilePathValue( QVariant::fromValue( mPointsLayer ), &context, &exp );
       QCOMPARE( path, QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/points.shp" ) );
       QVERIFY( !exp.hasEvalError() );
     }

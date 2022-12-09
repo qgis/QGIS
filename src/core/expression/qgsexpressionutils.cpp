@@ -14,11 +14,11 @@
  ***************************************************************************/
 
 #include "qgsexpressionutils.h"
-#include "qgsexpressionnode.h"
 #include "qgsvectorlayer.h"
 #include "qgscolorrampimpl.h"
 #include "qgsproviderregistry.h"
 #include "qgsvariantutils.h"
+#include "qgsproject.h"
 
 ///@cond PRIVATE
 
@@ -51,11 +51,42 @@ QgsGradientColorRamp QgsExpressionUtils::getRamp( const QVariant &value, QgsExpr
   return QgsGradientColorRamp();
 }
 
-QString QgsExpressionUtils::getFilePathValue( const QVariant &value, QgsExpression *parent )
+QgsMapLayer *QgsExpressionUtils::getMapLayer( const QVariant &value, const QgsExpressionContext *context, QgsExpression * )
+{
+  // First check if we already received a layer pointer
+  QgsMapLayer *ml = value.value< QgsWeakMapLayerPointer >().data();
+  if ( !ml )
+  {
+    ml = value.value< QgsMapLayer * >();
+#ifdef QGISDEBUG
+    if ( ml )
+    {
+      qWarning( "Raw map layer pointer stored in expression evaluation, switch to QgsWeakMapLayerPointer instead" );
+    }
+#endif
+  }
+  if ( ml )
+    return ml;
+
+  // last resort - QgsProject instance. This is bad, we need to remove this!
+  QgsProject *project = QgsProject::instance();
+
+  // No pointer yet, maybe it's a layer id?
+  ml = project->mapLayer( value.toString() );
+  if ( ml )
+    return ml;
+
+  // Still nothing? Check for layer name
+  ml = project->mapLayersByName( value.toString() ).value( 0 );
+
+  return ml;
+}
+
+QString QgsExpressionUtils::getFilePathValue( const QVariant &value, const QgsExpressionContext *context, QgsExpression *parent )
 {
   // if it's a map layer, return the file path of that layer...
   QString res;
-  if ( QgsMapLayer *layer = getMapLayer( value, parent ) )
+  if ( QgsMapLayer *layer = getMapLayer( value, context, parent ) )
   {
     const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->source() );
     res = parts.value( QStringLiteral( "path" ) ).toString();

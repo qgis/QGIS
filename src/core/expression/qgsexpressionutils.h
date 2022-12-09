@@ -23,8 +23,6 @@
 #include "qgsexpression.h"
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgsrasterlayer.h"
-#include "qgsproject.h"
-#include "qgsrelationmanager.h"
 #include "qgsvectorlayer.h"
 #include "qgsmeshlayer.h"
 #include "qgsvariantutils.h"
@@ -353,41 +351,15 @@ class CORE_EXPORT QgsExpressionUtils
       return nullptr;
     }
 
-    static QgsMapLayer *getMapLayer( const QVariant &value, QgsExpression * )
-    {
-      // First check if we already received a layer pointer
-      QgsMapLayer *ml = value.value< QgsWeakMapLayerPointer >().data();
-      if ( !ml )
-      {
-        ml = value.value< QgsMapLayer * >();
-#ifdef QGISDEBUG
-        if ( ml )
-        {
-          qWarning( "Raw map layer pointer stored in expression evaluation, switch to QgsWeakMapLayerPointer instead" );
-        }
-#endif
-      }
+    static QgsMapLayer *getMapLayer( const QVariant &value, const QgsExpressionContext *context, QgsExpression * );
 
-      QgsProject *project = QgsProject::instance();
-
-      // No pointer yet, maybe it's a layer id?
-      if ( !ml )
-        ml = project->mapLayer( value.toString() );
-
-      // Still nothing? Check for layer name
-      if ( !ml )
-        ml = project->mapLayersByName( value.toString() ).value( 0 );
-
-      return ml;
-    }
-
-    static std::unique_ptr<QgsVectorLayerFeatureSource> getFeatureSource( const QVariant &value, QgsExpression *e )
+    static std::unique_ptr<QgsVectorLayerFeatureSource> getFeatureSource( const QVariant &value, const QgsExpressionContext *context, QgsExpression *e )
     {
       std::unique_ptr<QgsVectorLayerFeatureSource> featureSource;
 
-      auto getFeatureSource = [ &value, e, &featureSource ]
+      auto getFeatureSource = [ &value, context, e, &featureSource ]
       {
-        QgsVectorLayer *layer = getVectorLayer( value, e );
+        QgsVectorLayer *layer = getVectorLayer( value, context, e );
 
         if ( layer )
         {
@@ -405,19 +377,19 @@ class CORE_EXPORT QgsExpressionUtils
       return featureSource;
     }
 
-    static QgsVectorLayer *getVectorLayer( const QVariant &value, QgsExpression *e )
+    static QgsVectorLayer *getVectorLayer( const QVariant &value, const QgsExpressionContext *context, QgsExpression *e )
     {
-      return qobject_cast<QgsVectorLayer *>( getMapLayer( value, e ) );
+      return qobject_cast<QgsVectorLayer *>( getMapLayer( value, context, e ) );
     }
 
-    static QgsRasterLayer *getRasterLayer( const QVariant &value, QgsExpression *e )
+    static QgsRasterLayer *getRasterLayer( const QVariant &value, const QgsExpressionContext *context, QgsExpression *e )
     {
-      return qobject_cast<QgsRasterLayer *>( getMapLayer( value, e ) );
+      return qobject_cast<QgsRasterLayer *>( getMapLayer( value, context, e ) );
     }
 
-    static QgsMeshLayer *getMeshLayer( const QVariant &value, QgsExpression *e )
+    static QgsMeshLayer *getMeshLayer( const QVariant &value, const QgsExpressionContext *context, QgsExpression *e )
     {
-      return qobject_cast<QgsMeshLayer *>( getMapLayer( value, e ) );
+      return qobject_cast<QgsMeshLayer *>( getMapLayer( value, context, e ) );
     }
 
     /**
@@ -425,7 +397,7 @@ class CORE_EXPORT QgsExpressionUtils
      *
      * \since QGIS 3.24
      */
-    static QString getFilePathValue( const QVariant &value, QgsExpression *parent );
+    static QString getFilePathValue( const QVariant &value, const QgsExpressionContext *context, QgsExpression *parent );
 
     static QVariantList getListValue( const QVariant &value, QgsExpression *parent )
     {
