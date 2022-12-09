@@ -184,7 +184,54 @@ gdal::dataset_unique_ptr QgsGdalUtils::blockToSingleBandMemoryDataset( int pixel
   return hDstDS;
 }
 
-bool QgsGdalUtils::resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH hDstDS, GDALResampleAlg resampleAlg, const char *pszCoordinateOperation )
+gdal::dataset_unique_ptr QgsGdalUtils::blockToSingleBandMemoryDataset( const QgsRectangle &extent, QgsRasterBlock *block )
+{
+  if ( !block )
+    return nullptr;
+
+  return blockToSingleBandMemoryDataset( block->width(), block->height(), extent, block->bits(), gdalDataTypeFromQgisDataType( block->dataType() ) );
+}
+
+gdal::dataset_unique_ptr QgsGdalUtils::blockToSingleBandMemoryDataset( double rotation,
+    const QgsPointXY &origin,
+    double gridXSize,
+    double gridYSize,
+    QgsRasterBlock *block )
+{
+  if ( !block )
+    return nullptr;
+
+  GDALDriverH hDriverMem = GDALGetDriverByName( "MEM" );
+  if ( !hDriverMem )
+    return nullptr;
+
+  const double cellSizeX = gridXSize / block->width();
+  const double cellSizeY = gridYSize / block->height();
+  double geoTransform[6];
+  geoTransform[0] = origin.x();
+  geoTransform[1] = cellSizeX * std::cos( rotation );
+  geoTransform[2] = cellSizeY * std::sin( rotation );
+  geoTransform[3] = origin.y();
+  geoTransform[4] = cellSizeX * std::sin( rotation );
+  geoTransform[5] = -cellSizeY * std::cos( rotation );
+
+  GDALDataType dataType = gdalDataTypeFromQgisDataType( block->dataType() );
+  gdal::dataset_unique_ptr hDstDS( GDALCreate( hDriverMem, "", block->width(), block->height(), 0, dataType, nullptr ) );
+
+  int dataTypeSize = GDALGetDataTypeSizeBytes( dataType );
+  char **papszOptions = QgsGdalUtils::papszFromStringList( QStringList()
+                        << QStringLiteral( "PIXELOFFSET=%1" ).arg( dataTypeSize )
+                        << QStringLiteral( "LINEOFFSET=%1" ).arg( block->width() * dataTypeSize )
+                        << QStringLiteral( "DATAPOINTER=%1" ).arg( reinterpret_cast< qulonglong >( block->bits() ) ) );
+  GDALAddBand( hDstDS.get(), dataType, papszOptions );
+  CSLDestroy( papszOptions );
+
+  GDALSetGeoTransform( hDstDS.get(), geoTransform );
+
+  return hDstDS;
+}
+
+static bool _resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH hDstDS, GDALResampleAlg resampleAlg, char **papszOptions )
 {
   gdal::warp_options_unique_ptr psWarpOptions( GDALCreateWarpOptions() );
   psWarpOptions->hSrcDS = hSrcDS;
@@ -199,11 +246,7 @@ bool QgsGdalUtils::resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH h
   psWarpOptions->eResampleAlg = resampleAlg;
 
   // Establish reprojection transformer.
-  char **papszOptions = nullptr;
-  if ( pszCoordinateOperation != nullptr )
-    papszOptions = CSLSetNameValue( papszOptions, "COORDINATE_OPERATION", pszCoordinateOperation );
   psWarpOptions->pTransformerArg = GDALCreateGenImgProjTransformer2( hSrcDS, hDstDS, papszOptions );
-  CSLDestroy( papszOptions );
 
   if ( ! psWarpOptions->pTransformerArg )
   {
@@ -211,6 +254,7 @@ bool QgsGdalUtils::resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH h
   }
 
   psWarpOptions->pfnTransformer = GDALGenImgProjTransform;
+  psWarpOptions->papszWarpOptions = CSLSetNameValue( psWarpOptions-> papszWarpOptions, "INIT_DEST", "NO_DATA" );
 
   // Initialize and execute the warp operation.
   GDALWarpOperation oOperation;
@@ -219,6 +263,33 @@ bool QgsGdalUtils::resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH h
   const bool retVal { oOperation.ChunkAndWarpImage( 0, 0, GDALGetRasterXSize( hDstDS ), GDALGetRasterYSize( hDstDS ) ) == CE_None };
   GDALDestroyGenImgProjTransformer( psWarpOptions->pTransformerArg );
   return retVal;
+}
+
+bool QgsGdalUtils::resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH hDstDS, GDALResampleAlg resampleAlg, const char *pszCoordinateOperation )
+{
+  char **papszOptions = nullptr;
+  if ( pszCoordinateOperation != nullptr )
+    papszOptions = CSLSetNameValue( papszOptions, "COORDINATE_OPERATION", pszCoordinateOperation );
+
+  bool result = _resampleSingleBandRaster( hSrcDS, hDstDS, resampleAlg, papszOptions );
+  CSLDestroy( papszOptions );
+  return result;
+}
+
+bool QgsGdalUtils::resampleSingleBandRaster( GDALDatasetH hSrcDS,
+    GDALDatasetH hDstDS,
+    GDALResampleAlg resampleAlg,
+    const QgsCoordinateReferenceSystem &sourceCrs,
+    const QgsCoordinateReferenceSystem &destinationCrs )
+{
+  char **papszOptions = nullptr;
+
+  papszOptions = CSLSetNameValue( papszOptions, "SRC_SRS", sourceCrs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ).toUtf8().constData() );
+  papszOptions = CSLSetNameValue( papszOptions, "DST_SRS", destinationCrs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ).toUtf8().constData() );
+
+  bool result = _resampleSingleBandRaster( hSrcDS, hDstDS, resampleAlg, papszOptions );
+  CSLDestroy( papszOptions );
+  return result;
 }
 
 QImage QgsGdalUtils::resampleImage( const QImage &image, QSize outputSize, GDALRIOResampleAlg resampleAlg )

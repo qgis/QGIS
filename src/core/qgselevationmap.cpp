@@ -294,3 +294,33 @@ bool QgsElevationMap::isValid() const
 {
   return mElevationImage.isNull();
 }
+
+void QgsElevationMap::fillWithRasterBlock( QgsRasterBlock *block, int top, int left )
+{
+  QRgb *dataPtr = reinterpret_cast<QRgb *>( mElevationImage.bits() );
+
+  int widthMap = mElevationImage.width();
+  int heightMap = mElevationImage.height();
+  int widthBlock = block->width();
+  int combinedHeight = std::min( mElevationImage.height(), block->height() + top );
+  int combinedWidth = std::min( widthMap,  widthBlock + left );
+  for ( int row = std::max( 0, top ); row < combinedHeight; ++row )
+  {
+    if ( row >= heightMap )
+      continue;
+
+    for ( int col = std::max( 0, left ); col < combinedWidth; ++col )
+    {
+      if ( col >= widthMap )
+        continue;
+
+      bool isNoData = true;
+      double value = block->valueAndNoData( ( row - top ), ( col - left ), isNoData );
+      qgssize index = static_cast<qgssize>( col + row * widthMap );
+      if ( isNoData )
+        dataPtr[index] = 0;
+      else
+        dataPtr[index] = encodeElevation( value );
+    }
+  }
+}

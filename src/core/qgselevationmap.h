@@ -116,6 +116,12 @@ class CORE_EXPORT QgsElevationMap
     void combine( const QgsElevationMap &otherElevationMap );
 
     /**
+     * Fills the elevation map with values contains in a raster \a block starting from position
+     * defined by \a top and \a left.
+     */
+    void fillWithRasterBlock( QgsRasterBlock *block, int top, int left ) SIP_SKIP;
+
+    /**
      * Returns whether the elevation map is valid.
      *
      * \since QGIS 3.30

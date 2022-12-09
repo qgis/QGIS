@@ -35,7 +35,6 @@ void QgsShadingRenderer::renderShading( const QgsElevationMap &elevation, QImage
 
   if ( mRenderHillShading )
     renderHillShading( elevation, image, context );
-
 }
 
 bool QgsShadingRenderer::isActive() const

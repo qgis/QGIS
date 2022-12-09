@@ -64,10 +64,31 @@ class CORE_EXPORT QgsGdalUtils
     /**
      * Resamples a single band raster to the destination dataset with different resolution (and possibly with different CRS).
      * Ideally the source dataset should cover the whole area or the destination dataset.
+     *
+     * In case of different CRS, the parameter \a pszCoordinateOperation is the Proj coordinate operation string, that
+     * can be obtained with QgsCoordinateTransformContext::calculateCoordinateOperation()
+     *
      * \returns TRUE on success
      * \since QGIS 3.8
      */
     static bool resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH hDstDS, GDALResampleAlg resampleAlg, const char *pszCoordinateOperation );
+
+    /**
+     * Resamples a single band raster to the destination dataset with different resolution and differnt CRS.
+     * Ideally the source dataset should cover the whole area or the destination dataset.
+     *
+     * \note If possible, it is preferable to use the overload method win paramater \a pszCoordinateOperation.
+     *       But if it is not possible otr it fails to obtain the Proj coordinate operation string,
+     *       this function is an alternative.
+     *
+     * \returns TRUE on success
+     * \since QGIS 3.30
+     */
+    static bool resampleSingleBandRaster( GDALDatasetH hSrcDS,
+                                          GDALDatasetH hDstDS,
+                                          GDALResampleAlg resampleAlg,
+                                          const QgsCoordinateReferenceSystem &sourceCrs,
+                                          const QgsCoordinateReferenceSystem &destinationCrs );
 
     /**
      * Resamples a QImage \a image using GDAL resampler.
@@ -103,13 +124,32 @@ class CORE_EXPORT QgsGdalUtils
     static gdal::dataset_unique_ptr imageToMemoryDataset( const QImage &image );
 
     /**
-     * Converts a raster \a block to a  single band GDAL memory dataset.
+     * Converts a data \a block to a single band GDAL memory dataset.
      *
-     * \warning The \a block must stay allocated for the lifetime of the returned gdal dataset.
+     * \warning The data \a block must stay allocated for the lifetime of the returned gdal dataset.
      *
      * \since QGIS 3.26
      */
     static gdal::dataset_unique_ptr blockToSingleBandMemoryDataset( int pixelWidth, int pixelHeight, const QgsRectangle &extent, void *block,  GDALDataType dataType );
+
+    /**
+     * Converts a raster \a block to a single band GDAL memory dataset.
+     *
+     * \warning The raster \a block must stay allocated for the lifetime of the returned gdal dataset.
+     *
+     * \since QGIS 3.30
+     */
+    static gdal::dataset_unique_ptr blockToSingleBandMemoryDataset( const QgsRectangle &extent, QgsRasterBlock *block );
+
+    /**
+     * Converts a raster \a block to a single band GDAL memory dataset with \a rotation angle,side sizes of the grid,
+     * origin if the grid (top left if rotation == 0)
+     *
+     * \warning The raster \a block must stay allocated for the lifetime of the returned gdal dataset.
+     *
+     * \since QGIS 3.30
+     */
+    static gdal::dataset_unique_ptr blockToSingleBandMemoryDataset( double rotation, const QgsPointXY &origin, double gridXSize,  double gridYSize,   QgsRasterBlock *block );
 
     /**
      * This is a copy of GDALAutoCreateWarpedVRT optimized for imagery using RPC georeferencing
