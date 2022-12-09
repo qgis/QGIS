@@ -8,6 +8,8 @@ set (WFS_SRCS
   qgswfsgetcapabilities.cpp
   qgswfsgetcapabilities_1_0_0.cpp
   qgswfsdescribefeaturetype.cpp
+  qgswfsdescribefeaturetypegml.cpp
+  qgswfsdescribefeaturetypejson.cpp
   qgswfsgetfeature.cpp
   qgswfstransaction.cpp
   qgswfstransaction_1_0_0.cpp
