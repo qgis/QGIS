@@ -507,6 +507,7 @@ void QgsRasterLayerRenderer::drawElevationMap()
 
     if ( canRenderElevation )
     {
+      QPoint topLeft;
       if ( renderContext()->mapToPixel().mapRotation() )
       {
         // Now rendering elevation on the elevation map, we need to take care of rotation:
@@ -568,18 +569,17 @@ void QgsRasterLayerRenderer::drawElevationMap()
           elevationBlock.reset( rotatedElevationBlock.release() );
         }
 
-        renderContext()->elevationMap()->fillWithRasterBlock(
-          elevationBlock.get(),
-          top,
-          left );
+        topLeft = QPoint( left, top );
+
       }
       else
       {
-        renderContext()->elevationMap()->fillWithRasterBlock(
-          elevationBlock.get(),
-          mRasterViewPort->mTopLeftPoint.y(),
-          mRasterViewPort->mTopLeftPoint.x() );
+        topLeft = mRasterViewPort->mTopLeftPoint.toQPointF().toPoint();
       }
+      renderContext()->elevationMap()->fillWithRasterBlock(
+        elevationBlock.get(),
+        topLeft.y(),
+        topLeft.x() );
     }
   }
 }

@@ -135,5 +135,5 @@ void QgsShadingRenderer::renderEdl( const QgsElevationMap &elevation, QImage &im
 void QgsShadingRenderer::renderHillShading( const QgsElevationMap &elevation, QImage &image, const QgsRenderContext &context ) const
 {
   double pixelSize = context.mapToPixel().mapUnitsPerPixel();
-  elevation.applyHillShading( image, mHillShadingMultiDir, mLightAltitude, mLightAzimuth, 2, pixelSize, pixelSize );
+  elevation.applyHillShading( image, mHillShadingMultiDir, mLightAltitude, mLightAzimuth, mHillShadingZFactor, pixelSize, pixelSize );
 }
