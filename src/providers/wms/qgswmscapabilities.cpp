@@ -528,15 +528,7 @@ bool QgsWmsCapabilities::parseResponse( const QByteArray &response, QgsWmsParser
       format = QgsRaster::IdentifyFormatText;
     else if ( f == QLatin1String( "text/html" ) )
       format = QgsRaster::IdentifyFormatHtml;
-    else if ( f.startsWith( QLatin1String( "GML." ) ) )
-      format = QgsRaster::IdentifyFormatFeature; // 1.0
-    else if ( f == QLatin1String( "application/vnd.ogc.gml" ) )
-      format = QgsRaster::IdentifyFormatFeature;
-    else if ( f == QLatin1String( "application/json" ) )
-      format = QgsRaster::IdentifyFormatFeature;
-    else if ( f == QLatin1String( "application/geojson" ) )
-      format = QgsRaster::IdentifyFormatFeature;
-    else if ( f.contains( QLatin1String( "gml" ), Qt::CaseInsensitive ) )
+    else if ( f.startsWith( QLatin1String( "GML." ) ) || f == QLatin1String( "application/vnd.ogc.gml" ) || f == QLatin1String( "application/json" ) || f == QLatin1String( "application/geojson" ) || f.contains( QLatin1String( "gml" ), Qt::CaseInsensitive ) || f == QLatin1String( "text/xml" ) )
       format = QgsRaster::IdentifyFormatFeature;
 
     mIdentifyFormats.insert( format, f );
