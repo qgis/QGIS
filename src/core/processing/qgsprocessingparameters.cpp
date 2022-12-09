@@ -1968,7 +1968,6 @@ QStringList QgsProcessingParameters::parameterAsFields( const QgsProcessingParam
   if ( !definition )
     return QStringList();
 
-  const QStringList resultStringList;
   return parameterAsFields( definition, parameters.value( definition->name() ), context );
 }
 
@@ -4335,7 +4334,6 @@ QString QgsProcessingParameterMultipleLayers::asPythonString( const QgsProcessin
 
 QString QgsProcessingParameterMultipleLayers::createFileFilter() const
 {
-  const QStringList exts;
   switch ( mLayerType )
   {
     case QgsProcessing::TypeFile:

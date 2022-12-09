@@ -137,7 +137,7 @@ if(WITH_CORE)
 
   set (WITH_GUI TRUE CACHE BOOL "Determines whether QGIS GUI library (and everything built on top of it) should be built")
 
-  set (WITH_OAUTH2_PLUGIN TRUE CACHE BOOL "Build OAuth2 authentication method plugin")
+  set (WITH_OAUTH2_PLUGIN TRUE CACHE BOOL "Determines whether OAuth2 authentication method plugin should be built")
   if(WITH_OAUTH2_PLUGIN)
     set(HAVE_OAUTH2_PLUGIN TRUE)
   endif()
@@ -176,16 +176,16 @@ if(WITH_CORE)
   mark_as_advanced (NATIVE_CRSSYNC_BIN)
 
   # try to configure and build python bindings by default
-  set (WITH_BINDINGS TRUE CACHE BOOL "Determines whether python bindings should be built")
+  set (WITH_BINDINGS TRUE CACHE BOOL "Determines whether Python bindings should be built")
   if (WITH_BINDINGS)
     # By default bindings will be installed only to QGIS directory
     # Someone might want to install it to python site-packages directory
     # as otherwise user has to use PYTHONPATH environment variable to add
     # QGIS bindings to package search path
-    set (BINDINGS_GLOBAL_INSTALL FALSE CACHE BOOL "Install bindings to global python directory? (might need root)")
+    set (BINDINGS_GLOBAL_INSTALL FALSE CACHE BOOL "Install bindings to global Python directory? (might need root)")
     set (SIP_GLOBAL_INSTALL FALSE CACHE BOOL "Install sip source files to system sip directory? (might need root)")
     set (WITH_STAGED_PLUGINS TRUE CACHE BOOL "Stage-install core Python plugins to run from build directory? (utilities and console are always staged)")
-    set (WITH_PY_COMPILE FALSE CACHE BOOL "Determines whether Python modules in staged or installed locations are byte-compiled")
+    set (WITH_PY_COMPILE FALSE CACHE BOOL "Determines whether Python modules in staged or installed locations should be byte-compiled")
     # concatenate QScintilla2 API files
     if (WITH_GUI)
       set (WITH_QSCIAPI TRUE CACHE BOOL "Whether to generate PyQGIS QScintilla2 API file. (For devs) run 'make qsci-pap-src' in between QGIS build and install to regenerate .pap file in source tree for console auto-completion.")
@@ -201,9 +201,9 @@ if(WITH_CORE)
 
     set (SERVER_SKIP_ECW FALSE CACHE BOOL "Determines whether QGIS server should disable ECW (ECW in server apps requires a special license)")
 
-    set (WITH_SERVER_PLUGINS ${WITH_BINDINGS} CACHE BOOL "Determines whether QGIS server support for python plugins should be built")
+    set (WITH_SERVER_PLUGINS ${WITH_BINDINGS} CACHE BOOL "Determines whether QGIS server support for Python plugins should be built")
     if(WITH_SERVER_PLUGINS AND NOT WITH_BINDINGS)
-      message(FATAL_ERROR "Server plugins are not supported without python bindings. Enable WITH_BINDINGS or disable WITH_SERVER_PLUGINS")
+      message(FATAL_ERROR "Server plugins are not supported without Python bindings. Enable WITH_BINDINGS or disable WITH_SERVER_PLUGINS")
     endif()
     if(WITH_SERVER_PLUGINS)
       set(HAVE_SERVER_PYTHON_PLUGINS TRUE)
@@ -243,7 +243,7 @@ if(WITH_CORE)
   endif()
 
   # try to configure and build MDAL support
-  set (WITH_INTERNAL_MDAL TRUE CACHE BOOL "Determines whether MDAL should be built from internal copy")
+  set (WITH_INTERNAL_MDAL TRUE CACHE BOOL "Determines whether MDAL should be built from internal copy (recommended)")
   if (NOT WITH_INTERNAL_MDAL)
     set (MDAL_PREFIX "" CACHE PATH "Path to MDAL base directory")
   endif()
@@ -408,7 +408,7 @@ if(WITH_CORE)
     message(STATUS "Qt WebKit support DISABLED.")
   endif()
 
-  set (WITH_INTERNAL_LAZPERF TRUE CACHE BOOL "Determines whether LazPerf should be built from internal copy")
+  set (WITH_INTERNAL_LAZPERF TRUE CACHE BOOL "Determines whether LazPerf should be built from internal copy (recommended)")
   if (WITH_EPT OR WITH_COPC)
     if (NOT WITH_INTERNAL_LAZPERF)
       find_package(LazPerf) # for decompression of point clouds
@@ -438,7 +438,7 @@ if(WITH_CORE)
   #############################################################
   # search for Qt
 
-  set (BUILD_WITH_QT6 FALSE CACHE BOOL "Enable (broken, experimental) Qt6 support")
+  set (BUILD_WITH_QT6 FALSE CACHE BOOL "Enable (experimental) Qt6 support")
   if (BUILD_WITH_QT6)
     set(QT_MIN_VERSION 6.0.0)
     set(QT_VERSION_BASE "Qt6")
@@ -542,7 +542,7 @@ endif()
 set(CMAKE_AUTOMOC ON)
 
 # build our version of astyle
-set (WITH_ASTYLE FALSE CACHE BOOL "If you plan to contribute you should reindent with scripts/prepare_commit.sh (using 'our' astyle)")
+set (WITH_ASTYLE FALSE CACHE BOOL "Deprecated. Should be OFF. If you plan to contribute you should reindent with scripts/prepare_commit.sh (using 'our' astyle)")
 
 # QML
 set(QML_IMPORT_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" CACHE PATH "QML directory for QML autocomplete")

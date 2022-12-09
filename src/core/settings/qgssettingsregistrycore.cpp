@@ -29,6 +29,7 @@
 #include "qgsfontmanager.h"
 #include "qgsgpsconnection.h"
 #include "qgsbabelformatregistry.h"
+#include "qgsgpslogger.h"
 
 
 QgsSettingsRegistryCore::QgsSettingsRegistryCore()
@@ -134,6 +135,8 @@ QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   addSettingsEntry( &QgsBabelFormatRegistry::settingsBabelDeviceList );
   addSettingsEntryGroup( &QgsBabelFormatRegistry::settingsBabelDeviceGroup );
 
+  addSettingsEntry( &QgsGpsLogger::settingsGpsStoreAttributeInMValues );
+  addSettingsEntry( &QgsGpsLogger::settingsGpsMValueComponent );
 }
 
 QgsSettingsRegistryCore::~QgsSettingsRegistryCore()

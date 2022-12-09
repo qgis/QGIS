@@ -107,6 +107,15 @@ void QgsVectorLayerGpsLogger::endCurrentTrack()
       QgsDebugMsg( QStringLiteral( "Error transforming GPS track" ) );
     }
 
+    if ( geometry.constGet()->is3D() && !QgsWkbTypes::hasZ( mTracksLayer->wkbType() ) )
+    {
+      geometry.get()->dropZValue();
+    }
+    if ( geometry.constGet()->isMeasure() && !QgsWkbTypes::hasM( mTracksLayer->wkbType() ) )
+    {
+      geometry.get()->dropMValue();
+    }
+
     QgsAttributeMap attributes;
 
     for ( auto it = mDestinationFields.constBegin(); it != mDestinationFields.constEnd(); ++it )
@@ -186,7 +195,16 @@ void QgsVectorLayerGpsLogger::gpsStateChanged( const QgsGpsInformation &info )
   {
     // record point
     const QgsPointXY newPosition = lastPosition();
-    QgsGeometry geometry( new QgsPoint( newPosition.x(), newPosition.y(), lastElevation() ) );
+    QgsGeometry geometry( new QgsPoint( newPosition.x(), newPosition.y(), lastElevation(), lastMValue() ) );
+
+    if ( geometry.constGet()->is3D() && !QgsWkbTypes::hasZ( mPointsLayer->wkbType() ) )
+    {
+      geometry.get()->dropZValue();
+    }
+    if ( geometry.constGet()->isMeasure() && !QgsWkbTypes::hasM( mPointsLayer->wkbType() ) )
+    {
+      geometry.get()->dropMValue();
+    }
 
     try
     {

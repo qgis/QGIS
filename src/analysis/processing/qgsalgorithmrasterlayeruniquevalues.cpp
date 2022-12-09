@@ -159,6 +159,8 @@ QVariantMap QgsRasterLayerUniqueValuesReportAlgorithm::processAlgorithm( const Q
         }
       }
     }
+    if ( feedback->isCanceled() )
+      break;
   }
 
   QMap< double, qgssize > sortedUniqueValues;

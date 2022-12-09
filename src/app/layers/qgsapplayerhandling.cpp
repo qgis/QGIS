@@ -1585,7 +1585,6 @@ void QgsAppLayerHandling::resolveVectorLayerDependencies( QgsVectorLayer *vl, Qg
               // where the dependency was actually loaded but it was found as broken
               // because the source does not match anymore (for instance when loaded
               // from a style definition).
-              QStringList layerUris;
               for ( auto it = QgsProject::instance()->mapLayers().cbegin(); it != QgsProject::instance()->mapLayers().cend(); ++it )
               {
                 if ( it.value()->publicSource() == layerUri )
@@ -1694,4 +1693,3 @@ void QgsAppLayerHandling::onVectorLayerStyleLoaded( QgsVectorLayer *vl, QgsMapLa
     }
   }
 }
-

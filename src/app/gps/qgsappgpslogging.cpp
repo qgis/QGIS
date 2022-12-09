@@ -334,7 +334,7 @@ bool QgsAppGpsLogging::createOrUpdateLogDatabase()
 
       const Qgis::VectorExportResult result = ogrMetadata->createEmptyLayer( mGpkgLogFile,
                                               pointFields,
-                                              QgsWkbTypes::PointZ,
+                                              QgsGpsLogger::settingsGpsStoreAttributeInMValues.value() ? QgsWkbTypes::PointZM : QgsWkbTypes::PointZ,
                                               QgsCoordinateReferenceSystem( "EPSG:4326" ),
                                               false, unusedMap, error, &options );
       if ( result != Qgis::VectorExportResult::Success )
@@ -374,7 +374,7 @@ bool QgsAppGpsLogging::createOrUpdateLogDatabase()
 
       const Qgis::VectorExportResult result = ogrMetadata->createEmptyLayer( mGpkgLogFile,
                                               tracksFields,
-                                              QgsWkbTypes::LineStringZ,
+                                              QgsGpsLogger::settingsGpsStoreAttributeInMValues.value() ? QgsWkbTypes::LineStringZM : QgsWkbTypes::LineStringZ,
                                               QgsCoordinateReferenceSystem( "EPSG:4326" ),
                                               false, unusedMap, error, &options );
       if ( result != Qgis::VectorExportResult::Success )

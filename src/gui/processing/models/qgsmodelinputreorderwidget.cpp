@@ -59,7 +59,6 @@ void QgsModelInputReorderWidget::setModel( QgsProcessingModelAlgorithm *model )
 {
   mModel = model;
   mParameters = mModel->orderedParameters();
-  QStringList res;
   mItemModel->clear();
   for ( const QgsProcessingModelParameter &param : std::as_const( mParameters ) )
   {

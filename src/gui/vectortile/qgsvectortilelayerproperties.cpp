@@ -214,8 +214,6 @@ void QgsVectorTileLayerProperties::loadStyle()
 {
   const QgsSettings settings;  // where we keep last used filter in persistent state
 
-  QStringList ids, names, descriptions;
-
   QgsMapLayerLoadStyleDialog dlg( mLayer );
 
   if ( dlg.exec() )
