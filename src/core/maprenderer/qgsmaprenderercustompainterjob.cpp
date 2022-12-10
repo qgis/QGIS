@@ -20,6 +20,7 @@
 #include "qgslogger.h"
 #include "qgsmaplayerrenderer.h"
 #include "qgsmaplayerlistutils_p.h"
+#include "qgselevationmap.h"
 
 #include <QtConcurrentRun>
 
@@ -300,6 +301,11 @@ void QgsMapRendererCustomPainterJob::doRender()
   QElapsedTimer renderTime;
   renderTime.start();
 
+  const QgsShadingRenderer mapShadingRenderer = mSettings.shadingRenderer();
+  std::unique_ptr<QgsElevationMap> mainElevationMap;
+  if ( mapShadingRenderer.isActive() )
+    mainElevationMap.reset( new QgsElevationMap( mSettings.outputSize() ) );
+
   for ( LayerRenderJob &job : mLayerJobs )
   {
     if ( job.context()->renderingStopped() )
@@ -343,11 +349,29 @@ void QgsMapRendererCustomPainterJob::doRender()
       mPainter->setOpacity( 1.0 );
     }
 
+    if ( mainElevationMap )
+    {
+      const QgsElevationMap &layerElevationMap = *job.context()->elevationMap();
+      if ( layerElevationMap.isValid() )
+        mainElevationMap->combine( layerElevationMap );
+    }
+
     emit layerRendered( job.layerId );
   }
 
   emit renderingLayersFinished();
   QgsDebugMsgLevel( QStringLiteral( "Done rendering map layers" ), 5 );
+
+  if ( mapShadingRenderer.isActive() &&  mainElevationMap )
+  {
+    QImage image( mainElevationMap->rawElevationImage().size(), QImage::Format_ARGB32 );
+    image.fill( Qt::white );
+    mapShadingRenderer.renderShading( *mainElevationMap.get(), image, QgsRenderContext::fromMapSettings( mSettings ) );
+    mPainter->save();
+    mPainter->setCompositionMode( QPainter::CompositionMode_Multiply );
+    mPainter->drawImage( 0, 0, image );
+    mPainter->restore();
+  }
 
   if ( mSettings.testFlag( Qgis::MapSettingsFlag::DrawLabeling ) && !mLabelJob.context.renderingStopped() )
   {

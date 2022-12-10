@@ -607,12 +607,12 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
         layerJobs.pop_back();
         continue;
       }
+    }
 
-      if ( shadingRenderer.isActive() )
-      {
-        job.elevationMap = allocateElevationMap( ml->id() );
-        job.context()->setElevationMap( job.elevationMap );
-      }
+    if ( shadingRenderer.isActive() )
+    {
+      job.elevationMap = allocateElevationMap( ml->id() );
+      job.context()->setElevationMap( job.elevationMap );
     }
 
     job.renderingTime = layerTime.elapsed(); // include job preparation time in layer rendering time
