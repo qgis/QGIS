@@ -35,6 +35,7 @@ class QgsWfsProviderMetadata final: public QgsProviderMetadata
     QList< QgsMapLayerType > supportedLayerTypes() const override;
     QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
     QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
+    QString suggestGroupNameForUri( const QString &uri ) const override;
 };
 
 #endif // QGSWFSPROVIDERMETADATA_H

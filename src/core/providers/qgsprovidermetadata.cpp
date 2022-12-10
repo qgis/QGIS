@@ -77,6 +77,11 @@ QString QgsProviderMetadata::library() const
   return mLibrary;
 }
 
+QString QgsProviderMetadata::suggestGroupNameForUri( const QString & /*uri*/ ) const
+{
+  return QString();
+}
+
 QgsProviderMetadata::CreateDataProviderFunction QgsProviderMetadata::createFunction() const
 {
   return mCreateFunction;

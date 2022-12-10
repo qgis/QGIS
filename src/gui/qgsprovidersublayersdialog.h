@@ -106,6 +106,11 @@ class GUI_EXPORT QgsProviderSublayersDialog : public QDialog, private Ui::QgsPro
      */
     QString groupName() const;
 
+    /**
+     * Sets an appropriate name for the layer group.
+     */
+    void setGroupName( const QString &groupNameIn );
+
   signals:
 
     /**
@@ -122,7 +127,7 @@ class GUI_EXPORT QgsProviderSublayersDialog : public QDialog, private Ui::QgsPro
     QgsProviderSublayerDialogModel *mModel = nullptr;
     QgsProviderSublayerProxyModel *mProxyModel = nullptr;
     QPointer< QgsProviderSublayerTask > mTask;
-    QString mFilePath;
+    QString mGroupName;
     bool mBlockSelectionChanges = false;
 
 };

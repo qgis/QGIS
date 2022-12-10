@@ -179,6 +179,13 @@ QString QgsWFSProvider::buildGeometryCollectionFilter( const QgsWfsCapabilities:
   return doc.toString();
 }
 
+QString QgsWfsProviderMetadata::suggestGroupNameForUri( const QString &uri ) const
+{
+  QgsWFSDataSourceURI wfsUri( uri );
+  return wfsUri.typeName();
+}
+
+
 QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags, QgsFeedback *feedback ) const
 {
   QList<QgsProviderSublayerDetails> res;

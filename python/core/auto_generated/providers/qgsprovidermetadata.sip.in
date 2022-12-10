@@ -396,6 +396,16 @@ The optional ``feedback`` argument can be used to provide cancellation support f
 .. versionadded:: 3.22
 %End
 
+    virtual QString suggestGroupNameForUri( const QString &uri ) const;
+%Docstring
+Returns a name that can be used as a group name for sublayers got from
+the specified ``uri``.
+
+The default implementation returns an empty string.
+
+.. versionadded:: 3.30
+%End
+
     virtual QgsDataProvider *createProvider( const QString &uri,
         const QgsDataProvider::ProviderOptions &options,
         QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) /Factory/;
