@@ -349,7 +349,7 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
         details.setType( QgsMapLayerType::VectorLayer );
         details.setProviderKey( QgsWFSProvider::WFS_PROVIDER_KEY );
         details.setUri( uri + QStringLiteral( " " ) + QgsWFSConstants::URI_PARAM_GEOMETRY_TYPE_FILTER + QStringLiteral( "='" ) + QgsWkbTypes::displayString( tuple.wkbType ) + QStringLiteral( "'" ) );
-        details.setName( QgsWkbTypes::translatedDisplayString( tuple.wkbType ) );
+        details.setName( wfsUri.typeName() + QStringLiteral( " " ) + QgsWkbTypes::translatedDisplayString( tuple.wkbType ) );
         details.setWkbType( tuple.wkbType );
         if ( countsAllValid )
           details.setFeatureCount( featureCounts[tuple.index] );

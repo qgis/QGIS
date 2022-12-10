@@ -5823,6 +5823,7 @@ Can't recognize service requested.
 
         self.assertEqual(sublayers[0].uri(), uri + " geometryTypeFilter='NoGeometry'")
         self.assertEqual(sublayers[0].type(), QgsMapLayerType.VectorLayer)
+        self.assertEqual(sublayers[0].name(), "my:typename " + QgsWkbTypes.translatedDisplayString(QgsWkbTypes.NoGeometry))
         self.assertEqual(sublayers[0].providerKey(), "WFS")
         self.assertEqual(sublayers[0].wkbType(), QgsWkbTypes.NoGeometry)
         self.assertEqual(sublayers[0].featureCount(), 2)
