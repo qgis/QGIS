@@ -272,6 +272,10 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
         connect( thisRequest, &QgsWfsRequest::downloadFinished, thisRequest, downloadFinishedLambda );
       }
       QgsSettings s;
+      if ( !s.contains( QStringLiteral( "qgis/wfsGetFeatureGeometryTypesTimeout" ) ) )
+      {
+        s.setValue( QStringLiteral( "qgis/wfsGetFeatureGeometryTypesTimeout" ), 2.0 );
+      }
       const double timeout = s.value( QStringLiteral( "qgis/wfsGetFeatureGeometryTypesTimeout" ), 2.0 ).toDouble();
       timerForHits.setInterval( static_cast<int>( timeout * 1000 ) );
       timerForHits.setSingleShot( true );
