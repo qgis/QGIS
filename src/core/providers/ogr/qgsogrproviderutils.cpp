@@ -992,6 +992,7 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
   bool bIsGpkg = QFileInfo( filePath ).suffix().compare( QLatin1String( "gpkg" ), Qt::CaseInsensitive ) == 0;
   const bool bIsLocalGpkg = bIsGpkg &&
                             IsLocalFile( filePath ) &&
+                            !filePath.startsWith( "/vsizip/" ) &&
                             !CPLGetConfigOption( "OGR_SQLITE_JOURNAL", nullptr ) &&
                             QgsSettings().value( QStringLiteral( "qgis/walForSqlite3" ), true ).toBool();
 
