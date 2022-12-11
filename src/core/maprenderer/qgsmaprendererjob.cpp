@@ -575,7 +575,10 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
       job.cached = true;
       job.imageInitialized = true;
       job.img = new QImage( mCache->cacheImage( ml->id() ) );
-      if ( shadingRenderer.isActive() &&  mCache->hasCacheImage( ELEVATION_MAP_CACHE_PREFIX + ml->id() ) )
+      if ( shadingRenderer.isActive() &&
+           ml->elevationProperties() &&
+           ml->elevationProperties()->hasElevation() &&
+           mCache->hasCacheImage( ELEVATION_MAP_CACHE_PREFIX + ml->id() ) )
         job.elevationMap = new QgsElevationMap( mCache->cacheImage( ELEVATION_MAP_CACHE_PREFIX + ml->id() ) );
       job.img->setDevicePixelRatio( static_cast<qreal>( mSettings.devicePixelRatio() ) );
       job.renderer = nullptr;
@@ -609,7 +612,9 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
       }
     }
 
-    if ( shadingRenderer.isActive() )
+    if ( shadingRenderer.isActive()
+         && ml->elevationProperties()
+         && ml->elevationProperties()->hasElevation() )
     {
       job.elevationMap = allocateElevationMap( ml->id() );
       job.context()->setElevationMap( job.elevationMap );

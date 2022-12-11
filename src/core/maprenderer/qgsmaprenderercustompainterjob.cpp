@@ -349,7 +349,7 @@ void QgsMapRendererCustomPainterJob::doRender()
       mPainter->setOpacity( 1.0 );
     }
 
-    if ( mainElevationMap )
+    if ( mainElevationMap && job.context()->elevationMap() )
     {
       const QgsElevationMap &layerElevationMap = *job.context()->elevationMap();
       if ( layerElevationMap.isValid() )

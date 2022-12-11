@@ -570,7 +570,6 @@ void QgsRasterLayerRenderer::drawElevationMap()
         }
 
         topLeft = QPoint( left, top );
-
       }
       else
       {
