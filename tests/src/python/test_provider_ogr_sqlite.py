@@ -356,7 +356,7 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
         f = None
         ds = None
 
-        layer = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+        layer = QgsVectorLayer('{}'.format(tmpfile) + "|layername=" + "test", 'test', 'ogr')
 
         # Check that pk field has unique constraint
         fields = layer.fields()
@@ -371,7 +371,7 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
         self.assertTrue(layer.commitChanges())
         self.assertEqual(layer.featureCount(), 2)
 
-        layer = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+        layer = QgsVectorLayer('{}'.format(tmpfile) + "|layername=" + "test", 'test', 'ogr')
         self.assertEqual(layer.featureCount(), 2)
         self.assertEqual([f for f in layer.getFeatures()][0].geometry().asWkt(), 'Polygon ((0.5 0, 0.5 1, 1 1, 1 0, 0.5 0))')
         self.assertEqual([f for f in layer.getFeatures()][1].geometry().asWkt(), 'Polygon ((0.5 1, 0.5 0, 0 0, 0 1, 0.5 1))')

@@ -155,7 +155,7 @@ class QtSqlDBCursor(object):
                     isinstance(value, QDateTime)):
                 value = value.toString()
             elif isinstance(value, QByteArray):
-                value = u"GEOMETRY"
+                value = "GEOMETRY"
                 # value = value.toHex()
 
             row.append(value)

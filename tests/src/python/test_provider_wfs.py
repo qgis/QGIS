@@ -3134,7 +3134,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 """.encode('UTF-8'))
 
         # Create test layer
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' skipInitialGetFeature='true'", u'test', u'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' skipInitialGetFeature='true'", 'test', 'WFS')
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.dataProvider().capabilities() & vl.dataProvider().EditingCapabilities,
                          vl.dataProvider().NoCapabilities)
@@ -3218,7 +3218,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 """.encode('UTF-8'))
 
         # Create test layer
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' skipInitialGetFeature='true'", u'test', u'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' skipInitialGetFeature='true'", 'test', 'WFS')
         self.assertTrue(vl.isValid())
         self.assertNotEqual(vl.dataProvider().capabilities() & vl.dataProvider().EditingCapabilities,
                             vl.dataProvider().NoCapabilities)

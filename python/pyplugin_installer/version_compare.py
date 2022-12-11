@@ -140,12 +140,12 @@ def compareVersions(a, b):
     for i in range(l):
         if compareElements(v1[i], v2[i]):
             return compareElements(v1[i], v2[i])
-    # if the lists are identical till the end of the shorther string, try to compare the odd tail
+    # if the lists are identical till the end of the shorter string, try to compare the odd tail
     # with the simple space (because the 'alpha', 'beta', 'preview' and 'rc' are LESS then nothing)
     if len(v1) > l:
-        return compareElements(v1[l], u' ')
+        return compareElements(v1[l], ' ')
     if len(v2) > l:
-        return compareElements(u' ', v2[l])
+        return compareElements(' ', v2[l])
     # if everything else fails...
     if a > b:
         return 1

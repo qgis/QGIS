@@ -30,7 +30,7 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
     uploads = alg.parameterAsEnums(parameters, 'upload', context)
     columns = alg.parameterAsFields(parameters, 'column', context)
     if len(columns) != len(uploads):
-        return False, alg.tr(u"The number of columns and the number of upload parameters should be equal!")
+        return False, alg.tr("The number of columns and the number of upload parameters should be equal!")
 
     return True, None
 

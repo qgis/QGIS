@@ -44,7 +44,7 @@ class ORDatabaseInfo(DatabaseInfo):
     def connectionDetails(self):
         tbl = []
 
-        if self.db.connector.host != u"":
+        if self.db.connector.host != "":
             tbl.append((QApplication.translate("DBManagerPlugin", "Host:"),
                         self.db.connector.host))
         tbl.append((QApplication.translate("DBManagerPlugin", "Database:"),
@@ -193,7 +193,7 @@ class ORTableInfo(TableInfo):
                 privileges.append("delete")
 
             if len(privileges) > 0:
-                priv_string = u", ".join(privileges)
+                priv_string = ", ".join(privileges)
             else:
                 priv_string = QApplication.translate(
                     "DBManagerPlugin",
@@ -218,7 +218,7 @@ class ORTableInfo(TableInfo):
 
         # primary key defined?
         if (not self.table.isView and
-                self.table.objectType != u"MATERIALIZED VIEW"):
+                self.table.objectType != "MATERIALIZED VIEW"):
             pk = [fld for fld in self.table.fields() if fld.primaryKey]
             if len(pk) <= 0:
                 ret.append(
@@ -269,7 +269,7 @@ class ORTableInfo(TableInfo):
         for fld in self.table.fields():
             char_max_len = fld.charMaxLen if fld.charMaxLen else ""
             if fld.modifier:
-                char_max_len = u"{},{}".format(char_max_len, fld.modifier)
+                char_max_len = "{},{}".format(char_max_len, fld.modifier)
             is_null_txt = "N" if fld.notNull else "Y"
 
             # make primary key field underlined
@@ -333,8 +333,8 @@ class ORTableInfo(TableInfo):
             tbl.append((idx.name, idx.column, idx.indexType,
                         idx.status, idx.analyzed, idx.compression,
                         idx.isUnique,
-                        (u'<a href="action:index/{}/rebuild">Rebuild'
-                         u"""</a>""".format(idx.name))))
+                        ('<a href="action:index/{}/rebuild">Rebuild'
+                         """</a>""".format(idx.name))))
 
         return HtmlTable(tbl, {"class": "header"})
 
@@ -355,20 +355,20 @@ class ORTableInfo(TableInfo):
 
         # add table contents
         for trig in self.table.triggers():
-            name = (u"""{0} (<a href="action:trigger/"""
-                    u"""{0}/{1}">{1}</a>)""".format(trig.name, "delete"))
+            name = ("""{0} (<a href="action:trigger/"""
+                    """{0}/{1}">{1}</a>)""".format(trig.name, "delete"))
 
-            if trig.enabled == u"ENABLED":
+            if trig.enabled == "ENABLED":
                 enabled, action = (
                     QApplication.translate("DBManagerPlugin", "Yes"),
-                    u"disable")
+                    "disable")
             else:
                 enabled, action = (
                     QApplication.translate("DBManagerPlugin", "No"),
                     "enable")
 
-            txt_enabled = (u"""{0} (<a href="action:trigger/"""
-                           u"""{1}/{2}">{2}</a>)""".format(
+            txt_enabled = ("""{0} (<a href="action:trigger/"""
+                           """{1}/{2}">{2}</a>)""".format(
                                enabled, trig.name, action))
 
             tbl.append((name, trig.event, trig.type, txt_enabled))
@@ -462,7 +462,7 @@ class ORTableInfo(TableInfo):
                         'Triggers'),
                     triggers_details))
 
-        if self.table.objectType == u"MATERIALIZED VIEW":
+        if self.table.objectType == "MATERIALIZED VIEW":
             mview_info = self.getMViewInfo()
             ret.append(
                 HtmlSection(
@@ -524,7 +524,7 @@ class ORTableInfo(TableInfo):
         definition of the view.
         """
 
-        if self.table.objectType not in [u"VIEW", u"MATERIALIZED VIEW"]:
+        if self.table.objectType not in ["VIEW", "MATERIALIZED VIEW"]:
             return []
 
         ret = self.getTableInfo()
@@ -539,10 +539,10 @@ class ORTableInfo(TableInfo):
         result = highlight(view_def, lexer, formatter)
 
         if view_def:
-            if self.table.objectType == u"VIEW":
-                title = u"View Definition"
+            if self.table.objectType == "VIEW":
+                title = "View Definition"
             else:
-                title = u"Materialized View Definition"
+                title = "Materialized View Definition"
             ret.append(
                 HtmlSection(
                     QApplication.translate("DBManagerPlugin", title),
@@ -551,7 +551,7 @@ class ORTableInfo(TableInfo):
         return ret
 
     def toHtml(self):
-        if self.table.objectType in [u"VIEW", u"MATERIALIZED VIEW"]:
+        if self.table.objectType in ["VIEW", "MATERIALIZED VIEW"]:
             ret = self.getViewInfo()
         else:
             ret = self.getTableInfo()
@@ -598,7 +598,7 @@ class ORVectorTableInfo(ORTableInfo, VectorTableInfo):
             tbl.append(
                 (QApplication.translate(
                     "DBManagerPlugin", "Spatial ref:"),
-                 u"{0} ({1})".format(sr_info, srid)))
+                 "{0} ({1})".format(sr_info, srid)))
 
         # estimated extent
         if not self.table.estimatedExtent:
@@ -610,8 +610,8 @@ class ORVectorTableInfo(ORTableInfo, VectorTableInfo):
             self.table.blockSignals(False)
 
         if self.table.estimatedExtent:
-            estimated_extent_str = (u"{:.9f}, {:.9f} - {:.9f}, "
-                                    u"{:.9f}".format(
+            estimated_extent_str = ("{:.9f}, {:.9f} - {:.9f}, "
+                                    "{:.9f}".format(
                                         *self.table.estimatedExtent))
 
             tbl.append(
@@ -622,8 +622,8 @@ class ORVectorTableInfo(ORTableInfo, VectorTableInfo):
         # extent
         extent_str = None
         if self.table.extent and len(self.table.extent) == 4:
-            extent_str = (u"{:.9f}, {:.9f} - {:.9f}, "
-                          u"{:.9f}".format(*self.table.extent))
+            extent_str = ("{:.9f}, {:.9f} - {:.9f}, "
+                          "{:.9f}".format(*self.table.extent))
         elif (self.table.rowCount is not None and self.table.rowCount > 0) or (self.table.estimatedRowCount is not None and self.table.estimatedRowCount > 0):
             # Can't calculate an extent on empty layer
             extent_str = QApplication.translate(

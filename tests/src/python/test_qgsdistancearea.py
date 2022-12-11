@@ -89,7 +89,7 @@ class TestQgsDistanceArea(unittest.TestCase):
                              QgsProject.instance().transformContext())
         if (da_3068.sourceCrs().isGeographic()):
             da_3068.setEllipsoid(da_3068.sourceCrs().ellipsoidAcronym())
-        print(("setting [{}] srid [{}] description [{}]".format(u'Soldner Berlin', da_3068.sourceCrs().authid(),
+        print(("setting [{}] srid [{}] description [{}]".format('Soldner Berlin', da_3068.sourceCrs().authid(),
                                                                 da_3068.sourceCrs().description())))
         self.assertEqual(da_3068.sourceCrs().authid(), 'EPSG:3068')
         da_wsg84.setSourceCrs(QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:4326'),
@@ -97,13 +97,13 @@ class TestQgsDistanceArea(unittest.TestCase):
         if (da_wsg84.sourceCrs().isGeographic()):
             da_wsg84.setEllipsoid(da_wsg84.sourceCrs().ellipsoidAcronym())
         self.assertEqual(da_wsg84.sourceCrs().authid(), 'EPSG:4326')
-        print(("setting [{}] srid [{}] description [{}] isGeographic[{}]".format(u'Wsg84',
+        print(("setting [{}] srid [{}] description [{}] isGeographic[{}]".format('Wsg84',
                                                                                  da_wsg84.sourceCrs().authid(),
                                                                                  da_wsg84.sourceCrs().description(),
                                                                                  da_wsg84.sourceCrs().isGeographic())))
         # print(("-- projectionAcronym[{}] ellipsoidAcronym[{}] toWkt[{}] mapUnits[{}] toProj4[{}]".format(da_wsg84.sourceCrs().projectionAcronym(),da_wsg84.sourceCrs().ellipsoidAcronym(), da_wsg84.sourceCrs().toWkt(),da_wsg84.sourceCrs().mapUnits(),da_wsg84.sourceCrs().toProj())))
-        print(("Testing Position change for[{}] years[{}]".format(u'Ampelanlage - Potsdamer Platz, Verkehrsinsel',
-                                                                  u'1924 and 1998')))
+        print(("Testing Position change for[{}] years[{}]".format('Ampelanlage - Potsdamer Platz, Verkehrsinsel',
+                                                                  '1924 and 1998')))
 
         # 1924-10-24 SRID=3068;POINT(23099.49 20296.69)
         # 1924-10-24 SRID=4326;POINT(13.37650707988041 52.50952361017194)
@@ -174,7 +174,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         self.assertEqual(da_3068.sourceCrs().authid(), 'EPSG:3068')
         print((
             "setting [{}] srid [{}] description [{}] isGeographic[{}] lengthUnits[{}] projectionAcronym[{}] ellipsoidAcronym[{}]".format(
-                u'EPSG:3068', da_3068.sourceCrs().authid(), da_3068.sourceCrs().description(),
+                'EPSG:3068', da_3068.sourceCrs().authid(), da_3068.sourceCrs().description(),
                 da_3068.sourceCrs().isGeographic(), QgsUnitTypes.toString(da_3068.lengthUnits()),
                 da_3068.sourceCrs().projectionAcronym(), da_3068.sourceCrs().ellipsoidAcronym())))
         da_wsg84 = QgsDistanceArea()
@@ -185,7 +185,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         self.assertEqual(da_wsg84.sourceCrs().authid(), 'EPSG:4326')
         print((
             "setting [{}] srid [{}] description [{}] isGeographic[{}] lengthUnits[{}] projectionAcronym[{}] ellipsoidAcronym[{}] ellipsoid[{}]".format(
-                u'EPSG:4326', da_wsg84.sourceCrs().authid(), da_wsg84.sourceCrs().description(),
+                'EPSG:4326', da_wsg84.sourceCrs().authid(), da_wsg84.sourceCrs().description(),
                 da_wsg84.sourceCrs().isGeographic(), QgsUnitTypes.toString(da_wsg84.lengthUnits()),
                 da_wsg84.sourceCrs().projectionAcronym(), da_wsg84.sourceCrs().ellipsoidAcronym(),
                 da_wsg84.ellipsoid())))
@@ -197,7 +197,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         self.assertEqual(da_4314.sourceCrs().authid(), 'EPSG:4314')
         print((
             "setting [{}] srid [{}] description [{}] isGeographic[{}] lengthUnits[{}] projectionAcronym[{}] ellipsoidAcronym[{}]".format(
-                u'EPSG:4314', da_4314.sourceCrs().authid(), da_4314.sourceCrs().description(),
+                'EPSG:4314', da_4314.sourceCrs().authid(), da_4314.sourceCrs().description(),
                 da_4314.sourceCrs().isGeographic(), QgsUnitTypes.toString(da_4314.lengthUnits()),
                 da_4314.sourceCrs().projectionAcronym(), da_4314.sourceCrs().ellipsoidAcronym())))
         da_4805 = QgsDistanceArea()
@@ -208,7 +208,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         self.assertEqual(da_4805.sourceCrs().authid(), 'EPSG:4805')
         print((
             "setting [{}] srid [{}] description [{}] isGeographic[{}] lengthUnits[{}] projectionAcronym[{}] ellipsoidAcronym[{}]".format(
-                u'EPSG:4805', da_4805.sourceCrs().authid(), da_4805.sourceCrs().description(),
+                'EPSG:4805', da_4805.sourceCrs().authid(), da_4805.sourceCrs().description(),
                 da_4805.sourceCrs().isGeographic(), QgsUnitTypes.toString(da_4805.lengthUnits()),
                 da_4805.sourceCrs().projectionAcronym(), da_4805.sourceCrs().ellipsoidAcronym())))
         # EPSG:5665 unknown, why?
@@ -219,7 +219,7 @@ class TestQgsDistanceArea(unittest.TestCase):
             da_5665.setEllipsoid(da_5665.sourceCrs().ellipsoidAcronym())
         print((
             "setting [{}] srid [{}] description [{}] isGeographic[{}] lengthUnits[{}] projectionAcronym[{}] ellipsoidAcronym[{}]".format(
-                u'EPSG:5665', da_5665.sourceCrs().authid(), da_5665.sourceCrs().description(),
+                'EPSG:5665', da_5665.sourceCrs().authid(), da_5665.sourceCrs().description(),
                 da_5665.sourceCrs().isGeographic(), QgsUnitTypes.toString(da_5665.lengthUnits()),
                 da_5665.sourceCrs().projectionAcronym(), da_5665.sourceCrs().ellipsoidAcronym())))
         # self.assertEqual(da_5665.sourceCrs().authid(), 'EPSG:5665')
@@ -230,7 +230,7 @@ class TestQgsDistanceArea(unittest.TestCase):
             da_25833.setEllipsoid(da_25833.sourceCrs().ellipsoidAcronym())
         print((
             "setting [{}] srid [{}] description [{}] isGeographic[{}] lengthUnits[{}] projectionAcronym[{}] ellipsoidAcronym[{}]".format(
-                u'EPSG:25833', da_25833.sourceCrs().authid(), da_25833.sourceCrs().description(),
+                'EPSG:25833', da_25833.sourceCrs().authid(), da_25833.sourceCrs().description(),
                 da_25833.sourceCrs().isGeographic(), QgsUnitTypes.toString(da_25833.lengthUnits()),
                 da_25833.sourceCrs().projectionAcronym(), da_25833.sourceCrs().ellipsoidAcronym())))
         self.assertEqual(da_25833.sourceCrs().authid(), 'EPSG:25833')
