@@ -458,7 +458,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
     virtual QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const;
 
     /**
-     * Returns a name that can be used as a group name for sublayers got from
+     * Returns a name that can be used as a group name for sublayers retrieved from
      * the specified \a uri.
      *
      * The default implementation returns an empty string.

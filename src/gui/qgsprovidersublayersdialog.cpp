@@ -111,7 +111,7 @@ void QgsProviderSublayerDialogModel::setGeometryTypesResolved( bool resolved )
   emit dataChanged( index( 0, 0 ), index( rowCount( QModelIndex() ), columnCount() ) );
 }
 
-QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, const QString &filePathIn, const QList<QgsProviderSublayerDetails> initialDetails, const QList<QgsMapLayerType> &acceptableTypes, QWidget *parent, Qt::WindowFlags fl )
+QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, const QString &providerKey, const QString &filePathIn, const QList<QgsProviderSublayerDetails> initialDetails, const QList<QgsMapLayerType> &acceptableTypes, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
 {
   setupUi( this );
@@ -177,7 +177,7 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
   if ( QgsProviderUtils::sublayerDetailsAreIncomplete( initialDetails ) )
   {
     // initial details are incomplete, so fire up a task in the background to fully populate the model...
-    mTask = new QgsProviderSublayerTask( uri, true );
+    mTask = new QgsProviderSublayerTask( uri, providerKey, true );
     connect( mTask.data(), &QgsProviderSublayerTask::taskCompleted, this, [ = ]
     {
       QList< QgsProviderSublayerDetails > res = mTask->results();

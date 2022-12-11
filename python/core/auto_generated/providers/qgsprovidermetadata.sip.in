@@ -398,7 +398,7 @@ The optional ``feedback`` argument can be used to provide cancellation support f
 
     virtual QString suggestGroupNameForUri( const QString &uri ) const;
 %Docstring
-Returns a name that can be used as a group name for sublayers got from
+Returns a name that can be used as a group name for sublayers retrieved from
 the specified ``uri``.
 
 The default implementation returns an empty string.

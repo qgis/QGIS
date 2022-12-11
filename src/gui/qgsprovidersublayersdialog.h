@@ -78,6 +78,7 @@ class GUI_EXPORT QgsProviderSublayersDialog : public QDialog, private Ui::QgsPro
      * Constructor.
      */
     QgsProviderSublayersDialog( const QString &uri,
+                                const QString &providerKey,
                                 const QString &filePath,
                                 const QList< QgsProviderSublayerDetails> initialDetails = QList< QgsProviderSublayerDetails>(),
                                 const QList< QgsMapLayerType > &acceptableTypes = QList< QgsMapLayerType >(),
