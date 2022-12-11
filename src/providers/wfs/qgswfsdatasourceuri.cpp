@@ -28,7 +28,9 @@ QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString &uri )
 
   // Compatibility with QGIS < 2.16 layer URI of the format
   // http://example.com/?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=x&SRSNAME=y&username=foo&password=
-  if ( !mURI.hasParam( QgsWFSConstants::URI_PARAM_URL ) )
+  if ( !mURI.hasParam( QgsWFSConstants::URI_PARAM_URL ) &&
+       ( uri.startsWith( QLatin1String( "http://" ) ) ||
+         uri.startsWith( QLatin1String( "https://" ) ) ) )
   {
     mDeprecatedURI = true;
     static const QSet<QString> sFilter
@@ -102,7 +104,7 @@ QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString &uri )
     if ( !bbox.isEmpty() )
       mURI.setParam( QgsWFSConstants::URI_PARAM_RESTRICT_TO_REQUEST_BBOX, QStringLiteral( "1" ) );
   }
-  else
+  else if ( mURI.hasParam( QgsWFSConstants::URI_PARAM_URL ) )
   {
     QUrl url( mURI.param( QgsWFSConstants::URI_PARAM_URL ) );
     QUrlQuery query( url );
@@ -147,6 +149,12 @@ QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString &uri )
     mAuth.mPassword = mURI.password();
     mAuth.mAuthCfg = mURI.authConfigId();
   }
+}
+
+bool QgsWFSDataSourceURI::isValid() const
+{
+  return mURI.hasParam( QgsWFSConstants::URI_PARAM_URL ) &&
+         mURI.hasParam( QgsWFSConstants::URI_PARAM_TYPENAME );
 }
 
 QSet<QString> QgsWFSDataSourceURI::unknownParamKeys() const

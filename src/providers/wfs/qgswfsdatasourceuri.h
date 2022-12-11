@@ -42,6 +42,9 @@ class QgsWFSDataSourceURI
 
     explicit QgsWFSDataSourceURI( const QString &uri );
 
+    //! Returns whether the URI is a valid one
+    bool isValid() const;
+
     //! Returns the URI, optionally with the authentication configuration expanded
     QString uri( bool expandAuthConfig = false ) const;
 

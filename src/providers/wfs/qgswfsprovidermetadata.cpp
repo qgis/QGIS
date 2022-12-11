@@ -194,6 +194,8 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
     return res;
 
   QgsWFSDataSourceURI wfsUri( uri );
+  if ( !wfsUri.isValid() )
+    return res;
 
   QgsWfsCapabilities::Capabilities caps = QgsWFSProvider::getCachedCapabilities( uri );
   if ( caps.version.isEmpty() )

@@ -5818,6 +5818,10 @@ Can't recognize service requested.
         uri = "url='http://" + endpoint + "' typename='my:typename' version='2.0.0'"
 
         metadata = QgsProviderRegistry.instance().providerMetadata('wfs')
+
+        sublayers = metadata.querySublayers("invalid")
+        self.assertEqual(len(sublayers), 0)
+
         sublayers = metadata.querySublayers(uri)
         self.assertEqual(len(sublayers), 5)
 
