@@ -123,12 +123,7 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
 
   if ( !fileName.isEmpty() )
   {
-    mGroupName = fileName;
-    const QgsSettings settings;
-    if ( settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() )
-    {
-      mGroupName = QgsMapLayer::formatLayerName( mGroupName );
-    }
+    setGroupName( fileName );
   }
 
   setWindowTitle( fileName.isEmpty() ? tr( "Select Items to Add" ) : QStringLiteral( "%1 | %2" ).arg( tr( "Select Items to Add" ), fileName ) );

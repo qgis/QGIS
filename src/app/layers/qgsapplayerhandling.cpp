@@ -728,8 +728,11 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addSublayers( const QList<QgsProviderS
     }
     else
     {
-      if ( layerName != baseName && !layerName.isEmpty() && !baseName.isEmpty() )
+      if ( layerName != baseName && !layerName.isEmpty() && !baseName.isEmpty() &&
+           !layerName.startsWith( baseName ) )
+      {
         layer->setName( QStringLiteral( "%1 — %2" ).arg( baseName, layerName ) );
+      }
       else if ( !layerName.isEmpty() )
         layer->setName( layerName );
       else if ( !baseName.isEmpty() )
