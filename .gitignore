@@ -30,6 +30,7 @@ venv
 /CMakeLists.txt.user.*
 api_doc
 /build*
+debian/control
 debian/*.debhelper
 debian/*.substvars
 debian/qgis.sh
