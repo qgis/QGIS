@@ -161,7 +161,7 @@ QString QgsWFSProvider::buildGeometryCollectionFilter( const QgsWfsCapabilities:
   for ( const QString &function : { QStringLiteral( "IsPoint" ), QStringLiteral( "IsCurve" ), QStringLiteral( "IsSurface" ) } )
   {
     QDomElement propertyIsEqualToElem = doc.createElement( filterPrefix + QStringLiteral( ":PropertyIsEqualTo" ) );
-    filterElem.appendChild( propertyIsEqualToElem );
+    andElem.appendChild( propertyIsEqualToElem );
     QDomElement functionElem = doc.createElement( filterPrefix + QStringLiteral( ":Function" ) );
     propertyIsEqualToElem.appendChild( functionElem );
     QDomAttr attrFunctionName = doc.createAttribute( QStringLiteral( "name" ) );

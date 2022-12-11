@@ -5956,25 +5956,25 @@ Can't recognize service requested.
     <fes:ValueReference>geometry</fes:ValueReference>
    </fes:PropertyIsNull>
   </fes:Not>
+  <fes:PropertyIsEqualTo>
+   <fes:Function name="IsPoint">
+    <fes:ValueReference>geometry</fes:ValueReference>
+   </fes:Function>
+   <fes:Literal>false</fes:Literal>
+  </fes:PropertyIsEqualTo>
+  <fes:PropertyIsEqualTo>
+   <fes:Function name="IsCurve">
+    <fes:ValueReference>geometry</fes:ValueReference>
+   </fes:Function>
+   <fes:Literal>false</fes:Literal>
+  </fes:PropertyIsEqualTo>
+  <fes:PropertyIsEqualTo>
+   <fes:Function name="IsSurface">
+    <fes:ValueReference>geometry</fes:ValueReference>
+   </fes:Function>
+   <fes:Literal>false</fes:Literal>
+  </fes:PropertyIsEqualTo>
  </fes:And>
- <fes:PropertyIsEqualTo>
-  <fes:Function name="IsPoint">
-   <fes:ValueReference>geometry</fes:ValueReference>
-  </fes:Function>
-  <fes:Literal>false</fes:Literal>
- </fes:PropertyIsEqualTo>
- <fes:PropertyIsEqualTo>
-  <fes:Function name="IsCurve">
-   <fes:ValueReference>geometry</fes:ValueReference>
-  </fes:Function>
-  <fes:Literal>false</fes:Literal>
- </fes:PropertyIsEqualTo>
- <fes:PropertyIsEqualTo>
-  <fes:Function name="IsSurface">
-   <fes:ValueReference>geometry</fes:ValueReference>
-  </fes:Function>
-  <fes:Literal>false</fes:Literal>
- </fes:PropertyIsEqualTo>
 </fes:Filter>
 """), 'wb') as f:
             f.write("""
@@ -6002,25 +6002,25 @@ Can't recognize service requested.
     <fes:ValueReference>geometry</fes:ValueReference>
    </fes:PropertyIsNull>
   </fes:Not>
+  <fes:PropertyIsEqualTo>
+   <fes:Function name="IsPoint">
+    <fes:ValueReference>geometry</fes:ValueReference>
+   </fes:Function>
+   <fes:Literal>false</fes:Literal>
+  </fes:PropertyIsEqualTo>
+  <fes:PropertyIsEqualTo>
+   <fes:Function name="IsCurve">
+    <fes:ValueReference>geometry</fes:ValueReference>
+   </fes:Function>
+   <fes:Literal>false</fes:Literal>
+  </fes:PropertyIsEqualTo>
+  <fes:PropertyIsEqualTo>
+   <fes:Function name="IsSurface">
+    <fes:ValueReference>geometry</fes:ValueReference>
+   </fes:Function>
+   <fes:Literal>false</fes:Literal>
+  </fes:PropertyIsEqualTo>
  </fes:And>
- <fes:PropertyIsEqualTo>
-  <fes:Function name="IsPoint">
-   <fes:ValueReference>geometry</fes:ValueReference>
-  </fes:Function>
-  <fes:Literal>false</fes:Literal>
- </fes:PropertyIsEqualTo>
- <fes:PropertyIsEqualTo>
-  <fes:Function name="IsCurve">
-   <fes:ValueReference>geometry</fes:ValueReference>
-  </fes:Function>
-  <fes:Literal>false</fes:Literal>
- </fes:PropertyIsEqualTo>
- <fes:PropertyIsEqualTo>
-  <fes:Function name="IsSurface">
-   <fes:ValueReference>geometry</fes:ValueReference>
-  </fes:Function>
-  <fes:Literal>false</fes:Literal>
- </fes:PropertyIsEqualTo>
 </fes:Filter>
 &RESULTTYPE=hits"""), 'wb') as f:
             f.write("""<wfs:FeatureCollection
