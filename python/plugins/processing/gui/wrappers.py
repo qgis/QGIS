@@ -136,7 +136,7 @@ dialogTypes = {"AlgorithmDialog": DIALOG_STANDARD,
 def getExtendedLayerName(layer):
     authid = layer.crs().authid()
     if ProcessingConfig.getSetting(ProcessingConfig.SHOW_CRS_DEF) and authid is not None:
-        return u'{} [{}]'.format(layer.name(), authid)
+        return '{} [{}]'.format(layer.name(), authid)
     else:
         return layer.name()
 

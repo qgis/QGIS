@@ -516,7 +516,7 @@ class ProviderTestCase(FeatureSourceTestCase):
         self.assertEqual(len(result), 2)
         self.assertTrue(result.issubset(set(['Pear', 'Orange', 'Apple'])))
 
-        assert set([u'Apple', u'Honey', u'Orange', u'Pear', NULL]) == set(
+        assert set(['Apple', 'Honey', 'Orange', 'Pear', NULL]) == set(
             self.source.uniqueValues(field_index)), 'Got {}'.format(set(self.source.uniqueValues(field_index)))
 
         if self.source.supportsSubsetString():

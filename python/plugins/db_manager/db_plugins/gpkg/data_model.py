@@ -34,11 +34,11 @@ class GPKGTableDataModel(TableDataModel):
     def __init__(self, table, parent=None):
         TableDataModel.__init__(self, table, parent)
 
-        # fields_txt = u", ".join(self.fields)
+        # fields_txt = ", ".join(self.fields)
         # table_txt = self.db.quoteId((self.table.schemaName(), self.table.name))
 
         # run query and get results
-        # sql = u"SELECT %s FROM %s" % (fields_txt, table_txt)
+        # sql = "SELECT %s FROM %s" % (fields_txt, table_txt)
         # self.resdata = self.db._fetchAll(sql, include_fid_and_geometry = True)
 
         self.resdata = self.db._fetchAllFromLayer(table)
