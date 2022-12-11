@@ -76,10 +76,10 @@ class ORDatabaseInfo(DatabaseInfo):
                 HtmlParagraph(
                     QApplication.translate(
                         "DBManagerPlugin",
-                        (u"<warning> ALL_SDO_GEOM_METADATA"
-                         u" view doesn't exist!\n"
-                         u"This view is essential for many"
-                         u"GIS applications for enumeration of tables."))))
+                        "<warning> ALL_SDO_GEOM_METADATA"
+                        " view doesn't exist!\n"
+                        "This view is essential for many"
+                        " GIS applications for enumeration of tables.")))
 
         return ret
 
@@ -176,8 +176,8 @@ class ORTableInfo(TableInfo):
                 "DBManagerPlugin", "Privileges:"),
                 QApplication.translate(
                 "DBManagerPlugin",
-                (u"<warning> This user doesn't have usage privileges"
-                 u"for this schema!"))))
+                "<warning> This user doesn't have usage privileges"
+                " for this schema!")))
         else:
             table_priv = self.table.database().connector.getTablePrivileges(
                 (self.table.schemaName(), self.table.name))
@@ -244,9 +244,9 @@ class ORTableInfo(TableInfo):
             ret.append(HtmlParagraph(
                 QApplication.translate(
                     "DBManagerPlugin",
-                    (u"<warning> ALL_SDO_GEOM_METADATA table doesn't exist!\n"
-                     u"This table is essential for many GIS"
-                     u"applications for enumeration of tables."))))
+                    "<warning> ALL_SDO_GEOM_METADATA table doesn't exist!\n"
+                    "This table is essential for many GIS"
+                    " applications for enumeration of tables.")))
 
         return ret
 
@@ -378,10 +378,10 @@ class ORTableInfo(TableInfo):
             HtmlParagraph(
                 QApplication.translate(
                     "DBManagerPlugin",
-                    (u'<a href="action:triggers/enable">'
-                     u'Enable all triggers</a> / '
-                     u'<a href="action:triggers/disable">'
-                     u'Disable all triggers</a>'))))
+                    '<a href="action:triggers/enable">'
+                    'Enable all triggers</a> / '
+                    '<a href="action:triggers/disable">'
+                    'Disable all triggers</a>')))
 
         return ret
 
@@ -509,10 +509,9 @@ class ORTableInfo(TableInfo):
         tbl.append((QApplication.translate("DBManagerPlugin",
                                            "Use no index:"),
                     values[9]))
-        tbl.append((QApplication.translate(
-            "DBManagerPlugin",
-            (u'<a href="action:mview/refresh">Refresh the materialized view</a>')),
-            u""))
+        tbl.append(('<a href="action:mview/refresh">{0}</a>'.format(
+            QApplication.translate("DBManagerPlugin", "Refresh the materialized view")),
+            ""))
         ret.append(HtmlTable(tbl))
 
         return ret
@@ -644,9 +643,9 @@ class ORVectorTableInfo(ORTableInfo, VectorTableInfo):
                 HtmlParagraph(
                     QApplication.translate(
                         "DBManagerPlugin",
-                        (u'<warning> Metadata extent is different from'
-                         u'real extent. You should <a href="action:extent'
-                         u'/update">update it</a>!'))))
+                        '<warning> Metadata extent is different from'
+                        ' real extent. You should <a href="action:extent'
+                        '/update">update it</a>!')))
 
         # is there an entry in geometry_columns?
         if self.table.geomType.lower() == 'geometry':
@@ -663,8 +662,8 @@ class ORVectorTableInfo(ORTableInfo, VectorTableInfo):
                     HtmlParagraph(
                         QApplication.translate(
                             "DBManagerPlugin",
-                            (u'<warning> No spatial index defined (<a href='
-                             u'"action:spatialindex/create">'
-                             u'create it</a>).'))))
+                            '<warning> No spatial index defined (<a href='
+                            '"action:spatialindex/create">'
+                            'create it</a>).')))
 
         return ret
