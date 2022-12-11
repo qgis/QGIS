@@ -784,6 +784,12 @@ bool QgsProject::rollBack( QStringList &rollbackErrors, bool stopEditing, QgsVec
   return false;
 }
 
+void QgsProject::setMapShadingEnabled( bool enabled )
+{
+  mMapShadinRenderer.setActive( enabled );
+  emit mapShadingRendererChanged();
+}
+
 void QgsProject::setFileName( const QString &name )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -1812,6 +1818,15 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   }
   emit transformContextChanged();
 
+  // map shading
+  const QDomNode mapShadingNode = doc->documentElement().namedItem( QStringLiteral( "map-shading-renderer" ) );
+  if ( !mapShadingNode.isNull() )
+  {
+    mMapShadinRenderer.readXml( mapShadingNode.toElement(), context );
+  }
+  emit mapShadingRendererChanged();
+
+
   //add variables defined in project file - do this early in the reading cycle, as other components
   //(e.g. layouts) may depend on these variables
   const QStringList variableNames = readListEntry( QStringLiteral( "Variables" ), QStringLiteral( "/variableNames" ) );
@@ -2758,6 +2773,10 @@ bool QgsProject::writeProjectFile( const QString &filename )
   QDomElement srsNode = doc->createElement( QStringLiteral( "projectCrs" ) );
   mCrs.writeXml( srsNode, *doc );
   qgisNode.appendChild( srsNode );
+
+  QDomElement mapShadingNode = doc->createElement( QStringLiteral( "map-shading-renderer" ) );
+  mMapShadinRenderer.writeXml( mapShadingNode, *doc, context );
+  qgisNode.appendChild( mapShadingNode );
 
   // write layer tree - make sure it is without embedded subgroups
   QgsLayerTreeNode *clonedRoot = mRootGroup->clone();
@@ -4405,6 +4424,12 @@ QgsPropertiesDefinition &QgsProject::dataDefinedServerPropertyDefinitions()
   return sPropertyDefinitions;
 }
 
+void QgsProject::setMapShadinRenderer( const QgsShadingRenderer &newMapShadinRenderer )
+{
+  mMapShadinRenderer = newMapShadinRenderer;
+  emit mapShadingRendererChanged();
+}
+
 const QgsAuxiliaryStorage *QgsProject::auxiliaryStorage() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -4676,6 +4701,11 @@ bool QgsProject::accept( QgsStyleEntityVisitorInterface *visitor ) const
     return false;
 
   return true;
+}
+
+QgsShadingRenderer QgsProject::mapShadingRenderer() const
+{
+  return mMapShadinRenderer;
 }
 
 void QgsProject::loadProjectFlags( const QDomDocument *doc )

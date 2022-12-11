@@ -16,6 +16,7 @@
 #ifndef QGSSHADINGRENDERER_H
 #define QGSSHADINGRENDERER_H
 
+#include "qdom.h"
 #include "qgsunittypes.h"
 #include "qgis_sip.h"
 
@@ -23,6 +24,8 @@ class QImage;
 class QgsElevationMap;
 class QgsRenderContext;
 class QgsMapSettings;
+class QDomDocument;
+class QgsReadWriteContext;
 
 /**
  * \ingroup core
@@ -49,7 +52,10 @@ class CORE_EXPORT QgsShadingRenderer
      */
     void renderShading( const QgsElevationMap &elevation, QImage &image, const QgsRenderContext &context ) const;
 
-    //! Return whether this shading renderer is active.
+    //! Sets whether this shading renderer is active.
+    void setActive( bool active );
+
+    //! Returns whether this shading renderer is active.
     bool isActive() const;
 
     //! Sets active the eye dome lighting shading method.
@@ -157,6 +163,12 @@ class CORE_EXPORT QgsShadingRenderer
      * \see lightAzimuth()
      */
     void setLightAzimuth( double lightAzimuth );
+
+    //! Writes configuration on a DOM element
+    void writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
+    //! Reads configuration from a DOM element
+    void readXml( const QDomElement &element, const QgsReadWriteContext &context );
 
   private:
     bool mIsActive = true;

@@ -53,6 +53,7 @@
 #include "qgssettings.h"
 #include "qgspropertycollection.h"
 #include "qgsvectorlayereditbuffergroup.h"
+#include "qgsshadingrenderer.h"
 
 #include "qgsrelationmanager.h"
 #include "qgsmapthemecollection.h"
@@ -1634,6 +1635,20 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
+    /**
+     * Returns the shading renderer used for global map shading
+     *
+     * \since QGIS 3.30
+     */
+    QgsShadingRenderer mapShadingRenderer() const;
+
+    /**
+     * Sets the shading renderer used for global map shading
+     *
+     * \since QGIS 3.30
+     */
+    void setMapShadinRenderer( const QgsShadingRenderer &newMapShadinRenderer );
+
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
@@ -2015,6 +2030,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     Q_DECL_DEPRECATED void mapScalesChanged() SIP_DEPRECATED;
 
+    /**
+     * Emitted when the map shading renderer changes
+     *
+     *
+     */
+    void mapShadingRendererChanged();
+
   public slots:
 
     /**
@@ -2146,6 +2168,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 3.26
      */
     bool rollBack( QStringList &rollbackErrors SIP_OUT, bool stopEditing = true, QgsVectorLayer *vectorLayer = nullptr );
+
+    void setMapShadingEnabled( bool enabled );
 
   private slots:
     void onMapLayersAdded( const QList<QgsMapLayer *> &layers );
@@ -2332,6 +2356,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     mutable std::unique_ptr< QgsExpressionContextScope > mProjectScope;
 
     int mBlockSnappingUpdates = 0;
+
+    QgsShadingRenderer mMapShadinRenderer;
 
     friend class QgsApplication;
 

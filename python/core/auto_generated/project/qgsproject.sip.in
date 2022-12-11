@@ -1605,6 +1605,20 @@ should be canceled.
 .. versionadded:: 3.10
 %End
 
+    QgsShadingRenderer mapShadingRenderer() const;
+%Docstring
+Returns the shading renderer used for global map shading
+
+.. versionadded:: 3.30
+%End
+
+    void setMapShadinRenderer( const QgsShadingRenderer &newMapShadinRenderer );
+%Docstring
+Sets the shading renderer used for global map shading
+
+.. versionadded:: 3.30
+%End
+
     SIP_PYOBJECT __repr__();
 %MethodCode
     QString str = QStringLiteral( "<QgsProject: '%1'%2>" ).arg( sipCpp->fileName(),
@@ -2035,6 +2049,11 @@ Emitted when the list of custom project map scales changes.
    Use :py:func:`~QgsProject.viewSettings` instead
 %End
 
+    void mapShadingRendererChanged();
+%Docstring
+Emitted when the map shading renderer changes
+%End
+
   public slots:
 
     void setSnappingConfig( const QgsSnappingConfig &snappingConfig );
@@ -2181,6 +2200,8 @@ Stops a current editing operation on vectorLayer and discards any uncommitted ed
 
 .. versionadded:: 3.26
 %End
+
+    void setMapShadingEnabled( bool enabled );
 
 };
 

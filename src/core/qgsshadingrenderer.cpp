@@ -38,6 +38,11 @@ void QgsShadingRenderer::renderShading( const QgsElevationMap &elevation, QImage
     renderHillShading( elevation, image, context );
 }
 
+void QgsShadingRenderer::setActive( bool active )
+{
+  mIsActive = active;
+}
+
 bool QgsShadingRenderer::isActive() const
 {
   return mIsActive;
@@ -91,6 +96,16 @@ double QgsShadingRenderer::lightAzimuth() const
 void QgsShadingRenderer::setLightAzimuth( double lightAzimuth )
 {
   mLightAzimuth = lightAzimuth;
+}
+
+void QgsShadingRenderer::writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext & ) const
+{
+  elem.setAttribute( QStringLiteral( "is-active" ), mIsActive ? 1 : 0 );
+}
+
+void QgsShadingRenderer::readXml( const QDomElement &element, const QgsReadWriteContext & )
+{
+  mIsActive = element.attribute( QStringLiteral( "is-active" ) ).toInt() == 1;
 }
 
 const QgsUnitTypes::RenderUnit &QgsShadingRenderer::eyeDomeLightingDistanceUnit() const

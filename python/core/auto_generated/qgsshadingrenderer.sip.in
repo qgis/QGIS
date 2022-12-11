@@ -36,9 +36,14 @@ Render shading on ``image`` condidering the elevation map ``elevation`` and the 
 If elevation map and the image don't have same sizes, nothing happens.
 %End
 
+    void setActive( bool active );
+%Docstring
+Sets whether this shading renderer is active.
+%End
+
     bool isActive() const;
 %Docstring
-Return whether this shading renderer is active.
+Returns whether this shading renderer is active.
 %End
 
     void setActiveEyeDomeLighting( bool active );
@@ -149,6 +154,16 @@ Returns the azimuth of the light (degree) that can be used by some methods (e.g.
 Sets the azimuth of the light (degree) that can be used by some methods (e.g. hill shading).
 
 .. seealso:: :py:func:`lightAzimuth`
+%End
+
+    void writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const;
+%Docstring
+Writes configuration on a DOM element
+%End
+
+    void readXml( const QDomElement &element, const QgsReadWriteContext &context );
+%Docstring
+Reads configuration from a DOM element
 %End
 
 };

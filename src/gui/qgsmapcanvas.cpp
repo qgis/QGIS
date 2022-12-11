@@ -1246,6 +1246,15 @@ void QgsMapCanvas::updateDevicePixelFromScreen()
   refresh();
 }
 
+void QgsMapCanvas::onMapShadingChanged()
+{
+  if ( !mProject )
+    return;
+  mSettings.setShadingRenderer( mProject->mapShadingRenderer() );
+  mCache->clear();
+  refresh();
+}
+
 void QgsMapCanvas::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
 {
   if ( temporalRange() == dateTimeRange )
@@ -2739,7 +2748,13 @@ void QgsMapCanvas::unsetMapTool( QgsMapTool *tool )
 
 void QgsMapCanvas::setProject( QgsProject *project )
 {
+  if ( mProject )
+    disconnect( mProject, &QgsProject::mapShadingRendererChanged, this, &QgsMapCanvas::onMapShadingChanged );
+
   mProject = project;
+
+  if ( mProject )
+    connect( mProject, &QgsProject::mapShadingRendererChanged, this, &QgsMapCanvas::onMapShadingChanged );
 }
 
 void QgsMapCanvas::setCanvasColor( const QColor &color )
