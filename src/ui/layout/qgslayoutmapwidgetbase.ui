@@ -88,9 +88,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
-        <width>548</width>
-        <height>1336</height>
+        <y>-155</y>
+        <width>545</width>
+        <height>1244</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -175,7 +175,7 @@
             <item row="2" column="0">
              <layout class="QHBoxLayout" name="horizontalLayout_2">
               <item>
-               <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
+               <widget class="QgsProjectionSelectionWidget" name="mCrsSelector">
                 <property name="focusPolicy">
                  <enum>Qt::StrongFocus</enum>
                 </property>
@@ -542,7 +542,17 @@
           <string notr="true">composeritem</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_2">
-          <item row="0" column="0">
+          <item row="3" column="0">
+           <widget class="QRadioButton" name="mAtlasPredefinedScaleRadio">
+            <property name="toolTip">
+             <string>Use one of the predefined scales of the project where the atlas feature best fits.</string>
+            </property>
+            <property name="text">
+             <string>Predefined scale (best fit)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
            <widget class="QRadioButton" name="mAtlasMarginRadio">
             <property name="enabled">
              <bool>false</bool>
@@ -552,7 +562,40 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
+          <item row="1" column="0">
+           <widget class="QLabel" name="mGeometryOverrideLabel">
+            <property name="text">
+             <string>Atlas Geometry override</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QRadioButton" name="mAtlasFixedScaleRadio">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>Fixed scale</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="2">
+           <widget class="QgsPropertyOverrideButton" name="mGeometryOverrideDDBtn"/>
+          </item>
+          <item row="2" column="1" colspan="2">
            <layout class="QHBoxLayout" name="horizontalLayout_11">
             <item>
              <widget class="QgsSpinBox" name="mAtlasMarginSpinBox">
@@ -584,26 +627,6 @@
              </widget>
             </item>
            </layout>
-          </item>
-          <item row="1" column="0">
-           <widget class="QRadioButton" name="mAtlasPredefinedScaleRadio">
-            <property name="toolTip">
-             <string>Use one of the predefined scales of the project where the atlas feature best fits.</string>
-            </property>
-            <property name="text">
-             <string>Predefined scale (best fit)</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QRadioButton" name="mAtlasFixedScaleRadio">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="text">
-             <string>Fixed scale</string>
-            </property>
-           </widget>
           </item>
          </layout>
         </widget>
@@ -1016,10 +1039,9 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
-   <container>1</container>
+   <class>QgsMapLayerComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsmaplayercombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsProjectionSelectionWidget</class>
@@ -1028,14 +1050,14 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsPropertyOverrideButton</class>
    <extends>QToolButton</extends>
    <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsSymbolButton</class>
@@ -1043,14 +1065,15 @@
    <header>qgssymbolbutton.h</header>
   </customwidget>
   <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsBlendModeComboBox</class>
    <extends>QComboBox</extends>
    <header>qgsblendmodecombobox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsMapLayerComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsmaplayercombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>

@@ -1185,6 +1185,8 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
 
     QPolygonF calculateVisibleExtentPolygon( bool includeClipping ) const;
 
+    QgsGeometry atlasGeometry( const QgsCoordinateReferenceSystem crs ) const;
+
     friend class QgsLayoutItemMapGrid;
     friend class QgsLayoutItemMapOverview;
     friend class QgsLayoutItemLegend;

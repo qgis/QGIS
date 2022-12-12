@@ -59,6 +59,7 @@ void QgsLayoutObject::initPropertyDefinitions()
     { QgsLayoutObject::MarginTop, QgsPropertyDefinition( "dataDefinedMarginTop", QObject::tr( "Top margin" ), QgsPropertyDefinition::DoublePositive ) },
     { QgsLayoutObject::MarginRight, QgsPropertyDefinition( "dataDefinedMarginRight", QObject::tr( "Right margin" ), QgsPropertyDefinition::DoublePositive ) },
     { QgsLayoutObject::MarginBottom, QgsPropertyDefinition( "dataDefinedMarginBottom", QObject::tr( "Bottom margin" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::AtlasGeometryOverride, QgsPropertyDefinition( "dataDefinedAtlasGeometryOverride", QgsPropertyDefinition::DataTypeString, QObject::tr( "Atlas Geometry" ), tr( "geometry to use as the map extent" ) ) },
     { QgsLayoutObject::MapRotation, QgsPropertyDefinition( "dataDefinedMapRotation", QObject::tr( "Map rotation" ), QgsPropertyDefinition::Rotation ) },
     { QgsLayoutObject::MapScale, QgsPropertyDefinition( "dataDefinedMapScale", QObject::tr( "Map scale" ), QgsPropertyDefinition::DoublePositive ) },
     { QgsLayoutObject::MapXMin, QgsPropertyDefinition( "dataDefinedMapXMin", QObject::tr( "Extent minimum X" ), QgsPropertyDefinition::Double ) },
@@ -158,6 +159,7 @@ bool QgsLayoutObject::propertyAssociatesWithParentMultiframe( QgsLayoutObject::D
     case QgsLayoutObject::ExcludeFromExports:
     case QgsLayoutObject::FrameColor:
     case QgsLayoutObject::BackgroundColor:
+    case QgsLayoutObject::AtlasGeometryOverride:
     case QgsLayoutObject::MapRotation:
     case QgsLayoutObject::MapScale:
     case QgsLayoutObject::MapXMin:
