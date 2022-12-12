@@ -82,10 +82,12 @@ QgsMapLayer *QgsExpressionUtils::getMapLayer( const QVariant &value, const QgsEx
     ml = project->mapLayersByName( value.toString() ).value( 0 );
   };
 
+#ifndef __clang_analyzer__
   if ( QThread::currentThread() == qApp->thread() )
     getMapLayerFromProjectInstance();
   else
     QMetaObject::invokeMethod( qApp, getMapLayerFromProjectInstance, Qt::BlockingQueuedConnection );
+#endif
 
   return ml;
 }
@@ -105,10 +107,12 @@ QVariant QgsExpressionUtils::runMapLayerFunctionThreadSafe( const QVariant &valu
   // Anything else risks a crash.
 
   // Note that this is not completely correct -- a layer may have been created on a non-main thread!
+#ifndef __clang_analyzer__
   if ( QThread::currentThread() == qApp->thread() )
     runFunction();
   else
     QMetaObject::invokeMethod( qApp, runFunction, Qt::BlockingQueuedConnection );
+#endif
 
   return res;
 }
