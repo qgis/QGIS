@@ -98,7 +98,7 @@
       <number>900</number>
      </property>
      <property name="value">
-      <number>45</number>
+      <number>450</number>
      </property>
      <property name="orientation">
       <enum>Qt::Vertical</enum>
