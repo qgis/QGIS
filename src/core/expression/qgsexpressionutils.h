@@ -355,12 +355,22 @@ class CORE_EXPORT QgsExpressionUtils
     static QgsMapLayer *getMapLayer( const QVariant &value, const QgsExpressionContext *context, QgsExpression * );
 
     /**
+     * Executes a lambda \a function for a \a value which corresponds to a map layer, in a thread-safe way.
+     *
+     * \since QGIS 3.30
+     */
+    static void executeLambdaForMapLayer( const QVariant &value, const QgsExpressionContext *context, QgsExpression *expression, const std::function< void( QgsMapLayer * )> &function );
+
+    /**
      * Evaluates a \a value to a map layer, then runs a \a function on the layer in a thread safe way before returning the result of the function.
      *
      * \since QGIS 3.30
      */
     static QVariant runMapLayerFunctionThreadSafe( const QVariant &value, const QgsExpressionContext *context, QgsExpression *expression, const std::function<QVariant( QgsMapLayer * ) > &function );
 
+    /**
+     * Gets a vector layer feature source for a \a value which corresponds to a vector layer, in a thread-safe way.
+     */
     static std::unique_ptr<QgsVectorLayerFeatureSource> getFeatureSource( const QVariant &value, const QgsExpressionContext *context, QgsExpression *e );
 
     static QgsVectorLayer *getVectorLayer( const QVariant &value, const QgsExpressionContext *context, QgsExpression *e )
