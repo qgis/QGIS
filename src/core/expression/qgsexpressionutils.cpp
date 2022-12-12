@@ -69,15 +69,23 @@ QgsMapLayer *QgsExpressionUtils::getMapLayer( const QVariant &value, const QgsEx
     return ml;
 
   // last resort - QgsProject instance. This is bad, we need to remove this!
-  QgsProject *project = QgsProject::instance();
+  auto getMapLayerFromProjectInstance = [ value, &ml ]
+  {
+    QgsProject *project = QgsProject::instance();
 
-  // No pointer yet, maybe it's a layer id?
-  ml = project->mapLayer( value.toString() );
-  if ( ml )
-    return ml;
+    // No pointer yet, maybe it's a layer id?
+    ml = project->mapLayer( value.toString() );
+    if ( ml )
+      return;
 
-  // Still nothing? Check for layer name
-  ml = project->mapLayersByName( value.toString() ).value( 0 );
+    // Still nothing? Check for layer name
+    ml = project->mapLayersByName( value.toString() ).value( 0 );
+  };
+
+  if ( QThread::currentThread() == qApp->thread() )
+    getMapLayerFromProjectInstance();
+  else
+    QMetaObject::invokeMethod( qApp, getMapLayerFromProjectInstance, Qt::BlockingQueuedConnection );
 
   return ml;
 }
