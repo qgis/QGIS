@@ -1657,44 +1657,59 @@ static QVariant fcnFeatureId( const QVariantList &, const QgsExpressionContext *
 
 static QVariant fcnRasterValue( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QgsRasterLayer *layer = QgsExpressionUtils::getRasterLayer( values.at( 0 ), context, parent );
-  if ( !layer || !layer->dataProvider() )
+  const int bandNb = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
+  const QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 2 ), parent );
+  bool foundLayer = false;
+  const QVariant res = QgsExpressionUtils::runMapLayerFunctionThreadSafe( values.at( 0 ), context, parent, [parent, bandNb, geom]( QgsMapLayer * mapLayer )
+  {
+    QgsRasterLayer *layer = qobject_cast< QgsRasterLayer * >( mapLayer );
+    if ( !layer || !layer->dataProvider() )
+    {
+      parent->setEvalErrorString( QObject::tr( "Function `raster_value` requires a valid raster layer." ) );
+      return QVariant();
+    }
+
+    if ( bandNb < 1 || bandNb > layer->bandCount() )
+    {
+      parent->setEvalErrorString( QObject::tr( "Function `raster_value` requires a valid raster band number." ) );
+      return QVariant();
+    }
+
+    if ( geom.isNull() || geom.type() != QgsWkbTypes::PointGeometry )
+    {
+      parent->setEvalErrorString( QObject::tr( "Function `raster_value` requires a valid point geometry." ) );
+      return QVariant();
+    }
+
+    QgsPointXY point = geom.asPoint();
+    if ( geom.isMultipart() )
+    {
+      QgsMultiPointXY multiPoint = geom.asMultiPoint();
+      if ( multiPoint.count() == 1 )
+      {
+        point = multiPoint[0];
+      }
+      else
+      {
+        // if the geometry contains more than one part, return an undefined value
+        return QVariant();
+      }
+    }
+
+    double value = layer->dataProvider()->sample( point, bandNb );
+    return std::isnan( value ) ? QVariant() : value;
+  },
+  foundLayer );
+
+  if ( !foundLayer )
   {
     parent->setEvalErrorString( QObject::tr( "Function `raster_value` requires a valid raster layer." ) );
     return QVariant();
   }
-
-  int bandNb = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
-  if ( bandNb < 1 || bandNb > layer->bandCount() )
+  else
   {
-    parent->setEvalErrorString( QObject::tr( "Function `raster_value` requires a valid raster band number." ) );
-    return QVariant();
+    return res;
   }
-
-  QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 2 ), parent );
-  if ( geom.isNull() || geom.type() != QgsWkbTypes::PointGeometry )
-  {
-    parent->setEvalErrorString( QObject::tr( "Function `raster_value` requires a valid point geometry." ) );
-    return QVariant();
-  }
-
-  QgsPointXY point = geom.asPoint();
-  if ( geom.isMultipart() )
-  {
-    QgsMultiPointXY multiPoint = geom.asMultiPoint();
-    if ( multiPoint.count() == 1 )
-    {
-      point = multiPoint[0];
-    }
-    else
-    {
-      // if the geometry contains more than one part, return an undefined value
-      return QVariant();
-    }
-  }
-
-  double value = layer->dataProvider()->sample( point, bandNb );
-  return std::isnan( value ) ? QVariant() : value;
 }
 
 static QVariant fcnRasterAttributes( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -1702,7 +1717,8 @@ static QVariant fcnRasterAttributes( const QVariantList &values, const QgsExpres
   const int bandNb = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
   const double value = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
 
-  return QgsExpressionUtils::runMapLayerFunctionThreadSafe( values.at( 0 ), context, parent, [parent, bandNb, value]( QgsMapLayer * mapLayer )-> QVariant
+  bool foundLayer = false;
+  const QVariant res = QgsExpressionUtils::runMapLayerFunctionThreadSafe( values.at( 0 ), context, parent, [parent, bandNb, value]( QgsMapLayer * mapLayer )-> QVariant
   {
     QgsRasterLayer *layer = qobject_cast< QgsRasterLayer *>( mapLayer );
     if ( !layer || !layer->dataProvider() )
@@ -1747,7 +1763,17 @@ static QVariant fcnRasterAttributes( const QVariantList &values, const QgsExpres
     }
 
     return result;
-  } );
+  }, foundLayer );
+
+  if ( !foundLayer )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `raster_attributes` requires a valid raster layer." ) );
+    return QVariant();
+  }
+  else
+  {
+    return res;
+  }
 }
 
 static QVariant fcnFeature( const QVariantList &, const QgsExpressionContext *context, QgsExpression *, const QgsExpressionNodeFunction * )
@@ -5877,10 +5903,11 @@ static QVariant fcnTransformGeometry( const QVariantList &values, const QgsExpre
 
 static QVariant fcnGetFeatureById( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  std::unique_ptr<QgsVectorLayerFeatureSource> featureSource = QgsExpressionUtils::getFeatureSource( values.at( 0 ), context, parent );
+  bool foundLayer = false;
+  std::unique_ptr<QgsVectorLayerFeatureSource> featureSource = QgsExpressionUtils::getFeatureSource( values.at( 0 ), context, parent, foundLayer );
 
   //no layer found
-  if ( !featureSource )
+  if ( !featureSource || !foundLayer )
   {
     return QVariant();
   }
@@ -5906,11 +5933,11 @@ static QVariant fcnGetFeatureById( const QVariantList &values, const QgsExpressi
 static QVariant fcnGetFeature( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   //arguments: 1. layer id / name, 2. key attribute, 3. eq value
-
-  std::unique_ptr<QgsVectorLayerFeatureSource> featureSource = QgsExpressionUtils::getFeatureSource( values.at( 0 ), context, parent );
+  bool foundLayer = false;
+  std::unique_ptr<QgsVectorLayerFeatureSource> featureSource = QgsExpressionUtils::getFeatureSource( values.at( 0 ), context, parent, foundLayer );
 
   //no layer found
-  if ( !featureSource )
+  if ( !featureSource || !foundLayer )
   {
     return QVariant();
   }
@@ -6052,7 +6079,8 @@ static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpres
 {
   const QString layerProperty = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
 
-  return QgsExpressionUtils::runMapLayerFunctionThreadSafe( values.at( 0 ), context, parent, [layerProperty]( QgsMapLayer * layer )-> QVariant
+  bool foundLayer = false;
+  const QVariant res = QgsExpressionUtils::runMapLayerFunctionThreadSafe( values.at( 0 ), context, parent, [layerProperty]( QgsMapLayer * layer )-> QVariant
   {
     if ( !layer )
       return QVariant();
@@ -6151,14 +6179,21 @@ static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpres
     }
 
     return QVariant();
-  } );
+  }, foundLayer );
+
+  if ( !foundLayer )
+    return QVariant();
+  else
+    return res;
 }
 
 static QVariant fcnDecodeUri( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   const QString uriPart = values.at( 1 ).toString();
 
-  return QgsExpressionUtils::runMapLayerFunctionThreadSafe( values.at( 0 ), context, parent, [parent, uriPart]( QgsMapLayer * layer )-> QVariant
+  bool foundLayer = false;
+
+  const QVariant res = QgsExpressionUtils::runMapLayerFunctionThreadSafe( values.at( 0 ), context, parent, [parent, uriPart]( QgsMapLayer * layer )-> QVariant
   {
     if ( !layer->dataProvider() )
     {
@@ -6176,7 +6211,17 @@ static QVariant fcnDecodeUri( const QVariantList &values, const QgsExpressionCon
     {
       return decodedUri;
     }
-  } );
+  }, foundLayer );
+
+  if ( !foundLayer )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `decode_uri` requires a valid layer." ) );
+    return QVariant();
+  }
+  else
+  {
+    return res;
+  }
 }
 
 static QVariant fcnGetRasterBandStat( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -6184,7 +6229,8 @@ static QVariant fcnGetRasterBandStat( const QVariantList &values, const QgsExpre
   const int band = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
   const QString layerProperty = QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
 
-  return QgsExpressionUtils::runMapLayerFunctionThreadSafe( values.at( 0 ), context, parent, [parent, band, layerProperty]( QgsMapLayer * layer )-> QVariant
+  bool foundLayer = false;
+  const QVariant res = QgsExpressionUtils::runMapLayerFunctionThreadSafe( values.at( 0 ), context, parent, [parent, band, layerProperty]( QgsMapLayer * layer )-> QVariant
   {
     QgsRasterLayer *rl = qobject_cast< QgsRasterLayer * >( layer );
     if ( !rl )
@@ -6233,7 +6279,19 @@ static QVariant fcnGetRasterBandStat( const QVariantList &values, const QgsExpre
         return stats.sum;
     }
     return QVariant();
-  } );
+  }, foundLayer );
+
+  if ( !foundLayer )
+  {
+#if 0 // for consistency with other functions we should raise an error here, but for compatibility with old projects we don't
+    parent->setEvalErrorString( QObject::tr( "Function `raster_statistic` requires a valid raster layer." ) );
+#endif
+    return QVariant();
+  }
+  else
+  {
+    return res;
+  }
 }
 
 static QVariant fcnArray( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * )
