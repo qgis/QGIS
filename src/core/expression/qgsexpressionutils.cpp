@@ -51,7 +51,7 @@ QgsGradientColorRamp QgsExpressionUtils::getRamp( const QVariant &value, QgsExpr
   return QgsGradientColorRamp();
 }
 
-QgsMapLayer *QgsExpressionUtils::getMapLayer( const QVariant &value, const QgsExpressionContext *context, QgsExpression * )
+QgsMapLayer *QgsExpressionUtils::getMapLayer( const QVariant &value, const QgsExpressionContext *, QgsExpression * )
 {
   // First check if we already received a layer pointer
   QgsMapLayer *ml = value.value< QgsWeakMapLayerPointer >().data();
