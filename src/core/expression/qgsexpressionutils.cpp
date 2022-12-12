@@ -54,7 +54,7 @@ QgsGradientColorRamp QgsExpressionUtils::getRamp( const QVariant &value, QgsExpr
 QgsMapLayer *QgsExpressionUtils::getMapLayer( const QVariant &value, const QgsExpressionContext *, QgsExpression * )
 {
   // First check if we already received a layer pointer
-  QgsMapLayer *ml = value.value< QgsWeakMapLayerPointer >().data();
+  QPointer< QgsMapLayer > ml = value.value< QgsWeakMapLayerPointer >().data();
   if ( !ml )
   {
     ml = value.value< QgsMapLayer * >();
@@ -68,18 +68,19 @@ QgsMapLayer *QgsExpressionUtils::getMapLayer( const QVariant &value, const QgsEx
   if ( ml )
     return ml;
 
+  const QString identifier = value.toString();
   // last resort - QgsProject instance. This is bad, we need to remove this!
-  auto getMapLayerFromProjectInstance = [ value, &ml ]
+  auto getMapLayerFromProjectInstance = [ &ml, identifier ]
   {
     QgsProject *project = QgsProject::instance();
 
     // No pointer yet, maybe it's a layer id?
-    ml = project->mapLayer( value.toString() );
+    ml = project->mapLayer( identifier );
     if ( ml )
       return;
 
     // Still nothing? Check for layer name
-    ml = project->mapLayersByName( value.toString() ).value( 0 );
+    ml = project->mapLayersByName( identifier ).value( 0 );
   };
 
 #ifndef __clang_analyzer__
@@ -92,27 +93,68 @@ QgsMapLayer *QgsExpressionUtils::getMapLayer( const QVariant &value, const QgsEx
   return ml;
 }
 
-QVariant QgsExpressionUtils::runMapLayerFunctionThreadSafe( const QVariant &value, const QgsExpressionContext *context, QgsExpression *expression, const std::function<QVariant( QgsMapLayer * )> &function )
+void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const QgsExpressionContext *context, QgsExpression *expression, const std::function<void ( QgsMapLayer * )> &function )
 {
-  QVariant res;
-  auto runFunction = [ value, context, expression, &function, &res ]
+  // First check if we already received a layer pointer
+  QPointer< QgsMapLayer > ml = value.value< QgsWeakMapLayerPointer >().data();
+  if ( !ml )
+  {
+    ml = value.value< QgsMapLayer * >();
+#ifdef QGISDEBUG
+    if ( ml )
+    {
+      qWarning( "Raw map layer pointer stored in expression evaluation, switch to QgsWeakMapLayerPointer instead" );
+    }
+#endif
+  }
+  if ( ml )
+  {
+    QPointer< QgsMapLayer > layerPointer( ml );
+    auto runFunction = [ layerPointer, &function ]
+    {
+      if ( QgsMapLayer *layer = layerPointer.data() )
+      {
+        function( layer );
+      }
+    };
+
+    // Make sure we only deal with the layer on the thread where it lives.
+    // Anything else risks a crash.
+
+    if ( QThread::currentThread() == ml->thread() )
+      runFunction();
+    else
+      QMetaObject::invokeMethod( ml, runFunction, Qt::BlockingQueuedConnection );
+
+    return;
+  }
+
+  // if no layer stores, then this is only for layers in project and therefore associated with the main thread
+  auto runFunction = [ value, context, expression, &function ]
   {
     if ( QgsMapLayer *layer = getMapLayer( value, context, expression ) )
     {
-      res = function( layer );
+      function( layer );
     }
   };
 
   // Make sure we only deal with the layer on the thread where it lives.
   // Anything else risks a crash.
-
-  // Note that this is not completely correct -- a layer may have been created on a non-main thread!
-#ifndef __clang_analyzer__
-  if ( QThread::currentThread() == qApp->thread() )
+  if ( QThread::currentThread() == QgsProject::instance()->thread() )
     runFunction();
   else
-    QMetaObject::invokeMethod( qApp, runFunction, Qt::BlockingQueuedConnection );
-#endif
+    QMetaObject::invokeMethod( QgsProject::instance(), runFunction, Qt::BlockingQueuedConnection );
+}
+
+QVariant QgsExpressionUtils::runMapLayerFunctionThreadSafe( const QVariant &value, const QgsExpressionContext *context, QgsExpression *expression, const std::function<QVariant( QgsMapLayer * )> &function )
+{
+  QVariant res;
+
+  executeLambdaForMapLayer( value, context, expression, [&res, function]( QgsMapLayer * layer )
+  {
+    if ( layer )
+      res = function( layer );
+  } );
 
   return res;
 }
@@ -121,25 +163,13 @@ std::unique_ptr<QgsVectorLayerFeatureSource> QgsExpressionUtils::getFeatureSourc
 {
   std::unique_ptr<QgsVectorLayerFeatureSource> featureSource;
 
-#ifndef __clang_analyzer__
-  auto getFeatureSource = [ &value, context, e, &featureSource ]
+  executeLambdaForMapLayer( value, context, e, [&featureSource]( QgsMapLayer * layer )
   {
-    QgsVectorLayer *layer = getVectorLayer( value, context, e );
-
-    if ( layer )
+    if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( layer ) )
     {
-      featureSource.reset( new QgsVectorLayerFeatureSource( layer ) );
+      featureSource.reset( new QgsVectorLayerFeatureSource( vl ) );
     }
-  };
-
-  // Make sure we only deal with the vector layer on the main thread where it lives.
-  // Anything else risks a crash.
-
-  if ( QThread::currentThread() == qApp->thread() )
-    getFeatureSource();
-  else
-    QMetaObject::invokeMethod( qApp, getFeatureSource, Qt::BlockingQueuedConnection );
-#endif
+  } );
 
   return featureSource;
 }
