@@ -115,10 +115,11 @@ void QgsElevationMap::applyEyeDomeLighting( QImage &img, int distance, float str
 void QgsElevationMap::applyHillShading( QImage &img, bool multiDirectional, double altitude, double azimuth, double zFactor, double cellSizeX, double cellSizeY ) const
 {
   // algs from  src/raster/qgshillshaderenderer.cpp
-  double zenithRad = std::max( 0.0, 90 - altitude ) * M_PI / 180.0 ;
-  double cosZenithRad = std::cos( zenithRad );
-  double sin_altRadian = std::sin( zenithRad );
-  double cos_alt_mul_z = cosZenithRad * zFactor ;
+  //double zenithRad = std::max( 0.0, 90 - altitude ) * M_PI / 180.0 ;
+  double altRad = altitude * M_PI / 180.0;
+  double cos_altRadian = std::cos( altRad );
+  double sin_altRadian = std::sin( altRad );
+  double cos_alt_mul_z = cos_altRadian * zFactor ;
   double azimuthRad = -1 * azimuth * M_PI / 180.0;
   double cos_az_mul_cos_alt_mul_z = std::cos( azimuthRad ) * cos_alt_mul_z;
   double sin_az_mul_cos_alt_mul_z = std::sin( azimuthRad ) * cos_alt_mul_z;

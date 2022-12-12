@@ -58,8 +58,11 @@ class CORE_EXPORT QgsShadingRenderer
     //! Returns whether this shading renderer is active.
     bool isActive() const;
 
-    //! Sets active the eye dome lighting shading method.
+    //! Sets active the eye-dome lighting shading method.
     void setActiveEyeDomeLighting( bool active );
+
+    //! Returns whether eye-dome lighting shading method is active
+    bool isActiveEyeDomeLighting() const;
 
     /**
      * Returns the strength of the eye dome lighting method.
@@ -105,8 +108,11 @@ class CORE_EXPORT QgsShadingRenderer
      */
     void setEyeDomeLightingDistanceUnit( const QgsUnitTypes::RenderUnit &newEyeDomeLightingDistanceUnit );
 
-    //! Sets active the hill shading
+    //! Sets active the hillshading
     void setActiveHillShading( bool active );
+
+    //! Returns whether the hillshading is active
+    bool isActiveHillShading() const;
 
     /**
      * Returns the z factor used by the hill shading method.
@@ -165,7 +171,7 @@ class CORE_EXPORT QgsShadingRenderer
     void setLightAzimuth( double lightAzimuth );
 
     //! Writes configuration on a DOM element
-    void writeXml(QDomElement &elem, const QgsReadWriteContext &context ) const;
+    void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
 
     //! Reads configuration from a DOM element
     void readXml( const QDomElement &element, const QgsReadWriteContext &context );

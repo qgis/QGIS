@@ -22,8 +22,6 @@
 
 QgsShadingRenderer::QgsShadingRenderer()
 {
-  mRenderHillShading = false;
-  mRenderEdl = true;
 }
 
 void QgsShadingRenderer::renderShading( const QgsElevationMap &elevation, QImage &image,  const QgsRenderContext &context ) const
@@ -53,9 +51,19 @@ void QgsShadingRenderer::setActiveEyeDomeLighting( bool active )
   mRenderEdl = active;
 }
 
+bool QgsShadingRenderer::isActiveEyeDomeLighting() const
+{
+  return mRenderEdl;
+}
+
 void QgsShadingRenderer::setActiveHillShading( bool active )
 {
   mRenderHillShading = active;
+}
+
+bool QgsShadingRenderer::isActiveHillShading() const
+{
+  return mRenderHillShading;
 }
 
 double QgsShadingRenderer::hillShadingZFactor() const
@@ -98,14 +106,54 @@ void QgsShadingRenderer::setLightAzimuth( double lightAzimuth )
   mLightAzimuth = lightAzimuth;
 }
 
-void QgsShadingRenderer::writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext & ) const
+void QgsShadingRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext & ) const
 {
   elem.setAttribute( QStringLiteral( "is-active" ), mIsActive ? 1 : 0 );
+
+  elem.setAttribute( QStringLiteral( "edl-is-active" ), mRenderEdl ? 1 : 0 );
+  elem.setAttribute( QStringLiteral( "edl-strength" ), mEyeDomeLightingStrength );
+  elem.setAttribute( QStringLiteral( "edl-distance" ), mEyeDomeLightingDistance );
+  elem.setAttribute( QStringLiteral( "edl-distance-unit" ), static_cast<int>( mEyeDomeLightingDistanceUnit ) );
+
+  elem.setAttribute( QStringLiteral( "hillshading-is-active" ), mRenderHillShading ? 1 : 0 );
+  elem.setAttribute( QStringLiteral( "hillshading-z-factor" ), mHillShadingZFactor );
+  elem.setAttribute( QStringLiteral( "hillshading-is-multidirectional" ), mHillShadingMultiDir ? 1 : 0 );
+
+  elem.setAttribute( QStringLiteral( "light-altitude" ), mLightAltitude );
+  elem.setAttribute( QStringLiteral( "light-azimuth" ), mLightAzimuth );
 }
 
 void QgsShadingRenderer::readXml( const QDomElement &element, const QgsReadWriteContext & )
 {
-  mIsActive = element.attribute( QStringLiteral( "is-active" ) ).toInt() == 1;
+  if ( element.hasAttribute( QStringLiteral( "is-active" ) ) )
+    mIsActive = element.attribute( QStringLiteral( "is-active" ) ).toInt() == 1;
+
+  if ( element.hasAttribute( QStringLiteral( "edl-is-active" ) ) )
+    mRenderEdl = element.attribute( QStringLiteral( "edl-is-active" ) ).toInt() == 1;
+
+  if ( element.hasAttribute( QStringLiteral( "edl-strength" ) ) )
+    mEyeDomeLightingStrength = element.attribute( QStringLiteral( "edl-strength" ) ).toDouble();
+
+  if ( element.hasAttribute( QStringLiteral( "edl-distance" ) ) )
+    mEyeDomeLightingDistance = element.attribute( QStringLiteral( "edl-distance" ) ).toDouble();
+
+  if ( element.hasAttribute( QStringLiteral( "edl-distance-unit" ) ) )
+    mEyeDomeLightingDistanceUnit = static_cast<QgsUnitTypes::RenderUnit>( element.attribute( QStringLiteral( "edl-distance-unit" ) ).toInt() );
+
+  if ( element.hasAttribute( QStringLiteral( "hillshading-is-active" ) ) )
+    mRenderHillShading = element.attribute( QStringLiteral( "hillshading-is-active" ) ).toInt() == 1;
+
+  if ( element.hasAttribute( QStringLiteral( "hillshading-z-factor" ) ) )
+    mHillShadingZFactor = element.attribute( QStringLiteral( "hillshading-z-factor" ) ).toDouble();
+
+  if ( element.hasAttribute( QStringLiteral( "hillshading-is-multidirectional" ) ) )
+    mHillShadingMultiDir = element.attribute( QStringLiteral( "hillshading-is-multidirectional" ) ).toInt() == 1;
+
+  if ( element.hasAttribute( QStringLiteral( "light-altitude" ) ) )
+    mLightAltitude = element.attribute( QStringLiteral( "light-altitude" ) ).toDouble();
+
+  if ( element.hasAttribute( QStringLiteral( "light-azimuth" ) ) )
+    mLightAzimuth = element.attribute( QStringLiteral( "light-azimuth" ) ).toDouble();
 }
 
 const QgsUnitTypes::RenderUnit &QgsShadingRenderer::eyeDomeLightingDistanceUnit() const
