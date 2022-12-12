@@ -5877,24 +5877,28 @@ static QVariant fcnTransformGeometry( const QVariantList &values, const QgsExpre
 
 static QVariant fcnGetFeatureById( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QVariant result;
-  QgsVectorLayer *vl = QgsExpressionUtils::getVectorLayer( values.at( 0 ), context, parent );
-  if ( vl )
+  std::unique_ptr<QgsVectorLayerFeatureSource> featureSource = QgsExpressionUtils::getFeatureSource( values.at( 0 ), context, parent );
+
+  //no layer found
+  if ( !featureSource )
   {
-    QgsFeatureId fid = QgsExpressionUtils::getIntValue( values.at( 1 ), parent );
-
-    QgsFeatureRequest req;
-    req.setFilterFid( fid );
-    req.setTimeout( 10000 );
-    req.setRequestMayBeNested( true );
-    if ( context )
-      req.setFeedback( context->feedback() );
-    QgsFeatureIterator fIt = vl->getFeatures( req );
-
-    QgsFeature fet;
-    if ( fIt.nextFeature( fet ) )
-      result = QVariant::fromValue( fet );
+    return QVariant();
   }
+
+  const QgsFeatureId fid = QgsExpressionUtils::getIntValue( values.at( 1 ), parent );
+
+  QgsFeatureRequest req;
+  req.setFilterFid( fid );
+  req.setTimeout( 10000 );
+  req.setRequestMayBeNested( true );
+  if ( context )
+    req.setFeedback( context->feedback() );
+  QgsFeatureIterator fIt = featureSource->getFeatures( req );
+
+  QgsFeature fet;
+  QVariant result;
+  if ( fIt.nextFeature( fet ) )
+    result = QVariant::fromValue( fet );
 
   return result;
 }
