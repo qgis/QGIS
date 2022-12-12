@@ -21,17 +21,15 @@
 
 #include "qgsfeature.h"
 #include "qgsexpression.h"
-#include "qgsvectorlayerfeatureiterator.h"
-#include "qgsrasterlayer.h"
-#include "qgsvectorlayer.h"
-#include "qgsmeshlayer.h"
 #include "qgsvariantutils.h"
+#include "qgsfeaturerequest.h"
 
 #include <QThread>
 #include <QLocale>
 #include <functional>
 
 class QgsGradientColorRamp;
+class QgsVectorLayerFeatureSource;
 
 #define ENSURE_NO_EVAL_ERROR   {  if ( parent->hasEvalError() ) return QVariant(); }
 #define SET_EVAL_ERROR(x)   { parent->setEvalErrorString( x ); return QVariant(); }
@@ -352,7 +350,10 @@ class CORE_EXPORT QgsExpressionUtils
       return nullptr;
     }
 
-    static QgsMapLayer *getMapLayer( const QVariant &value, const QgsExpressionContext *context, QgsExpression * );
+    /**
+     * \deprecated Not actually deprecated, but this method is not thread safe -- use with extreme caution only when the thread safety has already been taken care of by the caller!
+     */
+    Q_DECL_DEPRECATED static QgsMapLayer *getMapLayer( const QVariant &value, const QgsExpressionContext *context, QgsExpression * );
 
     /**
      * Executes a lambda \a function for a \a value which corresponds to a map layer, in a thread-safe way.
@@ -373,10 +374,10 @@ class CORE_EXPORT QgsExpressionUtils
      */
     static std::unique_ptr<QgsVectorLayerFeatureSource> getFeatureSource( const QVariant &value, const QgsExpressionContext *context, QgsExpression *e, bool &foundLayer );
 
-    static QgsVectorLayer *getVectorLayer( const QVariant &value, const QgsExpressionContext *context, QgsExpression *e )
-    {
-      return qobject_cast<QgsVectorLayer *>( getMapLayer( value, context, e ) );
-    }
+    /**
+     * \deprecated Not actually deprecated, but this method is not thread safe -- use with extreme caution only when the thread safety has already been taken care of by the caller!
+     */
+    Q_DECL_DEPRECATED static QgsVectorLayer *getVectorLayer( const QVariant &value, const QgsExpressionContext *context, QgsExpression *e );
 
     /**
      * Tries to convert a \a value to a file path.
@@ -477,6 +478,13 @@ class CORE_EXPORT QgsExpressionUtils
      * \since QGIS 3.22
      */
     static std::tuple<QVariant::Type, int> determineResultType( const QString &expression, const QgsVectorLayer *layer, QgsFeatureRequest request = QgsFeatureRequest(), QgsExpressionContext context = QgsExpressionContext(), bool *foundFeatures = nullptr );
+
+  private:
+
+    /**
+     * \warning Only call when thread safety has been taken care of by the caller!
+     */
+    static QgsMapLayer *getMapLayerPrivate( const QVariant &value, const QgsExpressionContext *context, QgsExpression * );
 
 };
 

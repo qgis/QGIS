@@ -19,6 +19,7 @@
 #include "qgsproviderregistry.h"
 #include "qgsvariantutils.h"
 #include "qgsproject.h"
+#include "qgsvectorlayerfeatureiterator.h"
 
 ///@cond PRIVATE
 
@@ -51,7 +52,12 @@ QgsGradientColorRamp QgsExpressionUtils::getRamp( const QVariant &value, QgsExpr
   return QgsGradientColorRamp();
 }
 
-QgsMapLayer *QgsExpressionUtils::getMapLayer( const QVariant &value, const QgsExpressionContext *, QgsExpression * )
+QgsMapLayer *QgsExpressionUtils::getMapLayer( const QVariant &value, const QgsExpressionContext *context, QgsExpression *parent )
+{
+  return getMapLayerPrivate( value, context, parent );
+}
+
+QgsMapLayer *QgsExpressionUtils::getMapLayerPrivate( const QVariant &value, const QgsExpressionContext *, QgsExpression * )
 {
   // First check if we already received a layer pointer
   QPointer< QgsMapLayer > ml = value.value< QgsWeakMapLayerPointer >().data();
@@ -133,7 +139,7 @@ void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const 
   // if no layer stores, then this is only for layers in project and therefore associated with the main thread
   auto runFunction = [ value, context, expression, &function, &foundLayer ]
   {
-    if ( QgsMapLayer *layer = getMapLayer( value, context, expression ) )
+    if ( QgsMapLayer *layer = getMapLayerPrivate( value, context, expression ) )
     {
       foundLayer = true;
       function( layer );
@@ -181,15 +187,22 @@ std::unique_ptr<QgsVectorLayerFeatureSource> QgsExpressionUtils::getFeatureSourc
   return featureSource;
 }
 
+QgsVectorLayer *QgsExpressionUtils::getVectorLayer( const QVariant &value, const QgsExpressionContext *context, QgsExpression *e )
+{
+  return qobject_cast<QgsVectorLayer *>( getMapLayerPrivate( value, context, e ) );
+}
+
 QString QgsExpressionUtils::getFilePathValue( const QVariant &value, const QgsExpressionContext *context, QgsExpression *parent )
 {
   // if it's a map layer, return the file path of that layer...
   QString res;
+  Q_NOWARN_DEPRECATED_PUSH
   if ( QgsMapLayer *layer = getMapLayer( value, context, parent ) )
   {
     const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->source() );
     res = parts.value( QStringLiteral( "path" ) ).toString();
   }
+  Q_NOWARN_DEPRECATED_POP
 
   if ( res.isEmpty() )
     res = value.toString();

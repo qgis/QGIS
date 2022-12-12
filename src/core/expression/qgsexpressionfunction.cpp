@@ -601,7 +601,11 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
   ENSURE_NO_EVAL_ERROR
   QVariant value = node->eval( parent, context );
   ENSURE_NO_EVAL_ERROR
+
+  // TODO this expression function is NOT thread safe
+  Q_NOWARN_DEPRECATED_PUSH
   QgsVectorLayer *vl = QgsExpressionUtils::getVectorLayer( value, context, parent );
+  Q_NOWARN_DEPRECATED_POP
   if ( !vl )
   {
     parent->setEvalErrorString( QObject::tr( "Cannot find layer with name or ID '%1'" ).arg( value.toString() ) );
@@ -745,7 +749,11 @@ static QVariant fcnAggregateRelation( const QVariantList &values, const QgsExpre
   }
 
   // first step - find current layer
+
+  // TODO this expression function is NOT thread safe
+  Q_NOWARN_DEPRECATED_PUSH
   QgsVectorLayer *vl = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), context, parent );
+  Q_NOWARN_DEPRECATED_POP
   if ( !vl )
   {
     parent->setEvalErrorString( QObject::tr( "Cannot use relation aggregate function in this context" ) );
@@ -868,7 +876,11 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
   }
 
   // first step - find current layer
+
+  // TODO this expression function is NOT thread safe
+  Q_NOWARN_DEPRECATED_PUSH
   QgsVectorLayer *vl = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), context, parent );
+  Q_NOWARN_DEPRECATED_POP
   if ( !vl )
   {
     parent->setEvalErrorString( QObject::tr( "Cannot use aggregate function in this context" ) );
@@ -1905,6 +1917,8 @@ static QVariant fcnRepresentAttributes( const QVariantList &values, const QgsExp
   QgsVectorLayer *layer = nullptr;
   QgsFeature feature;
 
+  // TODO this expression function is NOT thread safe
+  Q_NOWARN_DEPRECATED_PUSH
   if ( values.isEmpty() )
   {
     feature = context->feature();
@@ -1925,6 +1939,7 @@ static QVariant fcnRepresentAttributes( const QVariantList &values, const QgsExp
     parent->setEvalErrorString( QObject::tr( "Function `represent_attributes` requires no more than two parameters. %n given.", nullptr, values.length() ) );
     return QVariant();
   }
+  Q_NOWARN_DEPRECATED_POP
 
   if ( !layer )
   {
@@ -1988,6 +2003,8 @@ static QVariant fcnCoreFeatureMaptipDisplay( const QVariantList &values, const Q
   QgsFeature feature;
   bool evaluate = true;
 
+  // TODO this expression function is NOT thread safe
+  Q_NOWARN_DEPRECATED_PUSH
   if ( values.isEmpty() )
   {
     feature = context->feature();
@@ -2027,6 +2044,7 @@ static QVariant fcnCoreFeatureMaptipDisplay( const QVariantList &values, const Q
     parent->setEvalErrorString( QObject::tr( "The layer is not valid." ) );
     return QVariant( );
   }
+  Q_NOWARN_DEPRECATED_POP
 
   if ( !feature.isValid() )
   {
@@ -6063,7 +6081,10 @@ static QVariant fcnRepresentValue( const QVariantList &values, const QgsExpressi
     }
     else
     {
+      // TODO this function is NOT thread safe
+      Q_NOWARN_DEPRECATED_PUSH
       QgsVectorLayer *layer = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), context, parent );
+      Q_NOWARN_DEPRECATED_POP
 
       const QString cacheValueKey = QStringLiteral( "repvalfcnval:%1:%2:%3" ).arg( layer ? layer->id() : QStringLiteral( "[None]" ), fieldName, value.toString() );
       if ( context->hasCachedValue( cacheValueKey ) )
@@ -7142,7 +7163,10 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
 {
 
   const QVariant sourceLayerRef = context->variable( QStringLiteral( "layer" ) ); //used to detect if sourceLayer and targetLayer are the same
+  // TODO this function is NOT thread safe
+  Q_NOWARN_DEPRECATED_PUSH
   QgsVectorLayer *sourceLayer = QgsExpressionUtils::getVectorLayer( sourceLayerRef, context, parent );
+  Q_NOWARN_DEPRECATED_POP
 
   QgsFeatureRequest request;
   request.setTimeout( 10000 );
@@ -7163,7 +7187,10 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   QString subExpString = node->dump();
 
   bool testOnly = ( subExpString == "NULL" );
+  // TODO this function is NOT thread safe
+  Q_NOWARN_DEPRECATED_PUSH
   QgsVectorLayer *targetLayer = QgsExpressionUtils::getVectorLayer( targetLayerValue, context, parent );
+  Q_NOWARN_DEPRECATED_POP
   if ( !targetLayer ) // No layer, no joy
   {
     parent->setEvalErrorString( QObject::tr( "Layer '%1' could not be loaded." ).arg( targetLayerValue.toString() ) );
