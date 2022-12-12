@@ -117,6 +117,33 @@ QVariant QgsExpressionUtils::runMapLayerFunctionThreadSafe( const QVariant &valu
   return res;
 }
 
+std::unique_ptr<QgsVectorLayerFeatureSource> QgsExpressionUtils::getFeatureSource( const QVariant &value, const QgsExpressionContext *context, QgsExpression *e )
+{
+  std::unique_ptr<QgsVectorLayerFeatureSource> featureSource;
+
+#ifndef __clang_analyzer__
+  auto getFeatureSource = [ &value, context, e, &featureSource ]
+  {
+    QgsVectorLayer *layer = getVectorLayer( value, context, e );
+
+    if ( layer )
+    {
+      featureSource.reset( new QgsVectorLayerFeatureSource( layer ) );
+    }
+  };
+
+  // Make sure we only deal with the vector layer on the main thread where it lives.
+  // Anything else risks a crash.
+
+  if ( QThread::currentThread() == qApp->thread() )
+    getFeatureSource();
+  else
+    QMetaObject::invokeMethod( qApp, getFeatureSource, Qt::BlockingQueuedConnection );
+#endif
+
+  return featureSource;
+}
+
 QString QgsExpressionUtils::getFilePathValue( const QVariant &value, const QgsExpressionContext *context, QgsExpression *parent )
 {
   // if it's a map layer, return the file path of that layer...

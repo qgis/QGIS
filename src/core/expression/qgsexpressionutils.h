@@ -361,29 +361,7 @@ class CORE_EXPORT QgsExpressionUtils
      */
     static QVariant runMapLayerFunctionThreadSafe( const QVariant &value, const QgsExpressionContext *context, QgsExpression *expression, const std::function<QVariant( QgsMapLayer * ) > &function );
 
-    static std::unique_ptr<QgsVectorLayerFeatureSource> getFeatureSource( const QVariant &value, const QgsExpressionContext *context, QgsExpression *e )
-    {
-      std::unique_ptr<QgsVectorLayerFeatureSource> featureSource;
-
-      auto getFeatureSource = [ &value, context, e, &featureSource ]
-      {
-        QgsVectorLayer *layer = getVectorLayer( value, context, e );
-
-        if ( layer )
-        {
-          featureSource.reset( new QgsVectorLayerFeatureSource( layer ) );
-        }
-      };
-
-      // Make sure we only deal with the vector layer on the main thread where it lives.
-      // Anything else risks a crash.
-      if ( QThread::currentThread() == qApp->thread() )
-        getFeatureSource();
-      else
-        QMetaObject::invokeMethod( qApp, getFeatureSource, Qt::BlockingQueuedConnection );
-
-      return featureSource;
-    }
+    static std::unique_ptr<QgsVectorLayerFeatureSource> getFeatureSource( const QVariant &value, const QgsExpressionContext *context, QgsExpression *e );
 
     static QgsVectorLayer *getVectorLayer( const QVariant &value, const QgsExpressionContext *context, QgsExpression *e )
     {
