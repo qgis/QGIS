@@ -2150,10 +2150,11 @@ static QVariant fcnSqliteFetchAndIncrement( const QVariantList &values, const Qg
   static QMap<QString, qlonglong> counterCache;
   QVariant functionResult;
 
-  std::function<void()> fetchAndIncrementFunc = [ =, &functionResult ]()
+  auto fetchAndIncrementFunc = [ values, parent, &functionResult ]( QgsMapLayer * mapLayer, const QString & databaseArgument )
   {
     QString database;
-    const QgsVectorLayer *layer = QgsExpressionUtils::getVectorLayer( values.at( 0 ), context, parent );
+
+    const QgsVectorLayer *layer = qobject_cast< QgsVectorLayer *>( mapLayer );
 
     if ( layer )
     {
@@ -2166,7 +2167,7 @@ static QVariant fcnSqliteFetchAndIncrement( const QVariantList &values, const Qg
     }
     else
     {
-      database = values.at( 0 ).toString();
+      database = databaseArgument;
     }
 
     const QString table = values.at( 1 ).toString();
@@ -2301,7 +2302,19 @@ static QVariant fcnSqliteFetchAndIncrement( const QVariantList &values, const Qg
     functionResult = QVariant();
   };
 
-  QgsThreadingUtils::runOnMainThread( fetchAndIncrementFunc );
+  bool foundLayer = false;
+  QgsExpressionUtils::executeLambdaForMapLayer( values.at( 0 ), context, parent, [&fetchAndIncrementFunc]( QgsMapLayer * layer )
+  {
+    fetchAndIncrementFunc( layer, QString() );
+  }, foundLayer );
+  if ( !foundLayer )
+  {
+    const QString databasePath = values.at( 0 ).toString();
+    QgsThreadingUtils::runOnMainThread( [&fetchAndIncrementFunc, databasePath]
+    {
+      fetchAndIncrementFunc( nullptr, databasePath );
+    } );
+  }
 
   return functionResult;
 }

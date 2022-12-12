@@ -77,7 +77,7 @@ class CORE_EXPORT QgsThreadingUtils
           QSemaphore semaphoreWorkerThreadReady( 1 );
 
           // Acquire both semaphores. We want the main thread and the current thread to be blocked
-          // until it's save to continue.
+          // until it's safe to continue.
           semaphoreMainThreadReady.acquire();
           semaphoreWorkerThreadReady.acquire();
 
