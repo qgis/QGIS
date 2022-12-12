@@ -82,6 +82,29 @@ QgsMapLayer *QgsExpressionUtils::getMapLayer( const QVariant &value, const QgsEx
   return ml;
 }
 
+QVariant QgsExpressionUtils::runMapLayerFunctionThreadSafe( const QVariant &value, const QgsExpressionContext *context, QgsExpression *expression, const std::function<QVariant( QgsMapLayer * )> &function )
+{
+  QVariant res;
+  auto runFunction = [ value, context, expression, &function, &res ]
+  {
+    if ( QgsMapLayer *layer = getMapLayer( value, context, expression ) )
+    {
+      res = function( layer );
+    }
+  };
+
+  // Make sure we only deal with the layer on the thread where it lives.
+  // Anything else risks a crash.
+
+  // Note that this is not completely correct -- a layer may have been created on a non-main thread!
+  if ( QThread::currentThread() == qApp->thread() )
+    runFunction();
+  else
+    QMetaObject::invokeMethod( qApp, runFunction, Qt::BlockingQueuedConnection );
+
+  return res;
+}
+
 QString QgsExpressionUtils::getFilePathValue( const QVariant &value, const QgsExpressionContext *context, QgsExpression *parent )
 {
   // if it's a map layer, return the file path of that layer...

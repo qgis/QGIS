@@ -29,6 +29,7 @@
 
 #include <QThread>
 #include <QLocale>
+#include <functional>
 
 class QgsGradientColorRamp;
 
@@ -352,6 +353,13 @@ class CORE_EXPORT QgsExpressionUtils
     }
 
     static QgsMapLayer *getMapLayer( const QVariant &value, const QgsExpressionContext *context, QgsExpression * );
+
+    /**
+     * Evalutes a \a value to a map layer, then runs a \a function on the layer in a thread safe way before returning the result of the function.
+     *
+     * \since QGIS 3.30
+     */
+    static QVariant runMapLayerFunctionThreadSafe( const QVariant &value, const QgsExpressionContext *context, QgsExpression *expression, const std::function<QVariant( QgsMapLayer * ) > &function );
 
     static std::unique_ptr<QgsVectorLayerFeatureSource> getFeatureSource( const QVariant &value, const QgsExpressionContext *context, QgsExpression *e )
     {

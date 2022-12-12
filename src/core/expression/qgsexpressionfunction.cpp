@@ -1699,53 +1699,56 @@ static QVariant fcnRasterValue( const QVariantList &values, const QgsExpressionC
 
 static QVariant fcnRasterAttributes( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QgsRasterLayer *layer = QgsExpressionUtils::getRasterLayer( values.at( 0 ), context, parent );
-  if ( !layer || !layer->dataProvider() )
-  {
-    parent->setEvalErrorString( QObject::tr( "Function `raster_attributes` requires a valid raster layer." ) );
-    return QVariant();
-  }
-
   const int bandNb = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
-  if ( bandNb < 1 || bandNb > layer->bandCount() )
-  {
-    parent->setEvalErrorString( QObject::tr( "Function `raster_attributes` requires a valid raster band number." ) );
-    return QVariant();
-  }
-
   const double value = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
-  if ( std::isnan( value ) )
-  {
-    parent->setEvalErrorString( QObject::tr( "Function `raster_attributes` requires a valid raster value." ) );
-    return QVariant();
-  }
 
-  if ( ! layer->dataProvider()->attributeTable( bandNb ) )
+  return QgsExpressionUtils::runMapLayerFunctionThreadSafe( values.at( 0 ), context, parent, [parent, bandNb, value]( QgsMapLayer * mapLayer )-> QVariant
   {
-    return QVariant();
-  }
-
-  const QVariantList data = layer->dataProvider()->attributeTable( bandNb )->row( value );
-  if ( data.isEmpty() )
-  {
-    return QVariant();
-  }
-
-  QVariantMap result;
-  const QList<QgsRasterAttributeTable::Field> fields { layer->dataProvider()->attributeTable( bandNb )->fields() };
-  for ( int idx = 0; idx < static_cast<int>( fields.count( ) ) && idx < static_cast<int>( data.count() ); ++idx )
-  {
-    const QgsRasterAttributeTable::Field field { fields.at( idx ) };
-    if ( field.isColor() || field.isRamp() )
+    QgsRasterLayer *layer = qobject_cast< QgsRasterLayer *>( mapLayer );
+    if ( !layer || !layer->dataProvider() )
     {
-      continue;
+      parent->setEvalErrorString( QObject::tr( "Function `raster_attributes` requires a valid raster layer." ) );
+      return QVariant();
     }
-    result.insert( fields.at( idx ).name, data.at( idx ) );
-  }
 
-  return result;
+    if ( bandNb < 1 || bandNb > layer->bandCount() )
+    {
+      parent->setEvalErrorString( QObject::tr( "Function `raster_attributes` requires a valid raster band number." ) );
+      return QVariant();
+    }
+
+    if ( std::isnan( value ) )
+    {
+      parent->setEvalErrorString( QObject::tr( "Function `raster_attributes` requires a valid raster value." ) );
+      return QVariant();
+    }
+
+    if ( ! layer->dataProvider()->attributeTable( bandNb ) )
+    {
+      return QVariant();
+    }
+
+    const QVariantList data = layer->dataProvider()->attributeTable( bandNb )->row( value );
+    if ( data.isEmpty() )
+    {
+      return QVariant();
+    }
+
+    QVariantMap result;
+    const QList<QgsRasterAttributeTable::Field> fields { layer->dataProvider()->attributeTable( bandNb )->fields() };
+    for ( int idx = 0; idx < static_cast<int>( fields.count( ) ) && idx < static_cast<int>( data.count() ); ++idx )
+    {
+      const QgsRasterAttributeTable::Field field { fields.at( idx ) };
+      if ( field.isColor() || field.isRamp() )
+      {
+        continue;
+      }
+      result.insert( fields.at( idx ).name, data.at( idx ) );
+    }
+
+    return result;
+  } );
 }
-
 
 static QVariant fcnFeature( const QVariantList &, const QgsExpressionContext *context, QgsExpression *, const QgsExpressionNodeFunction * )
 {
@@ -6043,193 +6046,190 @@ static QVariant fcnMimeType( const QVariantList &values, const QgsExpressionCont
 
 static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QgsMapLayer *layer = QgsExpressionUtils::getMapLayer( values.at( 0 ), context, parent );
+  const QString layerProperty = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
 
-  if ( !layer )
+  return QgsExpressionUtils::runMapLayerFunctionThreadSafe( values.at( 0 ), context, parent, [layerProperty]( QgsMapLayer * layer )-> QVariant
+  {
+    if ( !layer )
+      return QVariant();
+
+    // here, we always prefer the layer metadata values over the older server-specific published values
+    if ( QString::compare( layerProperty, QStringLiteral( "name" ), Qt::CaseInsensitive ) == 0 )
+      return layer->name();
+    else if ( QString::compare( layerProperty, QStringLiteral( "id" ), Qt::CaseInsensitive ) == 0 )
+      return layer->id();
+    else if ( QString::compare( layerProperty, QStringLiteral( "title" ), Qt::CaseInsensitive ) == 0 )
+      return !layer->metadata().title().isEmpty() ? layer->metadata().title() : layer->title();
+    else if ( QString::compare( layerProperty, QStringLiteral( "abstract" ), Qt::CaseInsensitive ) == 0 )
+      return !layer->metadata().abstract().isEmpty() ? layer->metadata().abstract() : layer->abstract();
+    else if ( QString::compare( layerProperty, QStringLiteral( "keywords" ), Qt::CaseInsensitive ) == 0 )
+    {
+      QStringList keywords;
+      const QgsAbstractMetadataBase::KeywordMap keywordMap = layer->metadata().keywords();
+      for ( auto it = keywordMap.constBegin(); it != keywordMap.constEnd(); ++it )
+      {
+        keywords.append( it.value() );
+      }
+      if ( !keywords.isEmpty() )
+        return keywords;
+      return layer->keywordList();
+    }
+    else if ( QString::compare( layerProperty, QStringLiteral( "data_url" ), Qt::CaseInsensitive ) == 0 )
+      return layer->dataUrl();
+    else if ( QString::compare( layerProperty, QStringLiteral( "attribution" ), Qt::CaseInsensitive ) == 0 )
+    {
+      return !layer->metadata().rights().isEmpty() ? QVariant( layer->metadata().rights() ) : QVariant( layer->attribution() );
+    }
+    else if ( QString::compare( layerProperty, QStringLiteral( "attribution_url" ), Qt::CaseInsensitive ) == 0 )
+      return layer->attributionUrl();
+    else if ( QString::compare( layerProperty, QStringLiteral( "source" ), Qt::CaseInsensitive ) == 0 )
+      return layer->publicSource();
+    else if ( QString::compare( layerProperty, QStringLiteral( "min_scale" ), Qt::CaseInsensitive ) == 0 )
+      return layer->minimumScale();
+    else if ( QString::compare( layerProperty, QStringLiteral( "max_scale" ), Qt::CaseInsensitive ) == 0 )
+      return layer->maximumScale();
+    else if ( QString::compare( layerProperty, QStringLiteral( "is_editable" ), Qt::CaseInsensitive ) == 0 )
+      return layer->isEditable();
+    else if ( QString::compare( layerProperty, QStringLiteral( "crs" ), Qt::CaseInsensitive ) == 0 )
+      return layer->crs().authid();
+    else if ( QString::compare( layerProperty, QStringLiteral( "crs_definition" ), Qt::CaseInsensitive ) == 0 )
+      return layer->crs().toProj();
+    else if ( QString::compare( layerProperty, QStringLiteral( "crs_description" ), Qt::CaseInsensitive ) == 0 )
+      return layer->crs().description();
+    else if ( QString::compare( layerProperty, QStringLiteral( "extent" ), Qt::CaseInsensitive ) == 0 )
+    {
+      QgsGeometry extentGeom = QgsGeometry::fromRect( layer->extent() );
+      QVariant result = QVariant::fromValue( extentGeom );
+      return result;
+    }
+    else if ( QString::compare( layerProperty, QStringLiteral( "distance_units" ), Qt::CaseInsensitive ) == 0 )
+      return QgsUnitTypes::encodeUnit( layer->crs().mapUnits() );
+    else if ( QString::compare( layerProperty, QStringLiteral( "path" ), Qt::CaseInsensitive ) == 0 )
+    {
+      const QVariantMap decodedUri = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->source() );
+      return decodedUri.value( QStringLiteral( "path" ) );
+    }
+    else if ( QString::compare( layerProperty, QStringLiteral( "type" ), Qt::CaseInsensitive ) == 0 )
+    {
+      switch ( layer->type() )
+      {
+        case QgsMapLayerType::VectorLayer:
+          return QCoreApplication::translate( "expressions", "Vector" );
+        case QgsMapLayerType::RasterLayer:
+          return QCoreApplication::translate( "expressions", "Raster" );
+        case QgsMapLayerType::MeshLayer:
+          return QCoreApplication::translate( "expressions", "Mesh" );
+        case QgsMapLayerType::VectorTileLayer:
+          return QCoreApplication::translate( "expressions", "Vector Tile" );
+        case QgsMapLayerType::PluginLayer:
+          return QCoreApplication::translate( "expressions", "Plugin" );
+        case QgsMapLayerType::AnnotationLayer:
+          return QCoreApplication::translate( "expressions", "Annotation" );
+        case QgsMapLayerType::PointCloudLayer:
+          return QCoreApplication::translate( "expressions", "Point Cloud" );
+        case QgsMapLayerType::GroupLayer:
+          return QCoreApplication::translate( "expressions", "Group" );
+      }
+    }
+    else
+    {
+      //vector layer methods
+      QgsVectorLayer *vLayer = qobject_cast< QgsVectorLayer * >( layer );
+      if ( vLayer )
+      {
+        if ( QString::compare( layerProperty, QStringLiteral( "storage_type" ), Qt::CaseInsensitive ) == 0 )
+          return vLayer->storageType();
+        else if ( QString::compare( layerProperty, QStringLiteral( "geometry_type" ), Qt::CaseInsensitive ) == 0 )
+          return QgsWkbTypes::geometryDisplayString( vLayer->geometryType() );
+        else if ( QString::compare( layerProperty, QStringLiteral( "feature_count" ), Qt::CaseInsensitive ) == 0 )
+          return QVariant::fromValue( vLayer->featureCount() );
+      }
+    }
+
     return QVariant();
-
-  // here, we always prefer the layer metadata values over the older server-specific published values
-  QString layerProperty = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
-  if ( QString::compare( layerProperty, QStringLiteral( "name" ), Qt::CaseInsensitive ) == 0 )
-    return layer->name();
-  else if ( QString::compare( layerProperty, QStringLiteral( "id" ), Qt::CaseInsensitive ) == 0 )
-    return layer->id();
-  else if ( QString::compare( layerProperty, QStringLiteral( "title" ), Qt::CaseInsensitive ) == 0 )
-    return !layer->metadata().title().isEmpty() ? layer->metadata().title() : layer->title();
-  else if ( QString::compare( layerProperty, QStringLiteral( "abstract" ), Qt::CaseInsensitive ) == 0 )
-    return !layer->metadata().abstract().isEmpty() ? layer->metadata().abstract() : layer->abstract();
-  else if ( QString::compare( layerProperty, QStringLiteral( "keywords" ), Qt::CaseInsensitive ) == 0 )
-  {
-    QStringList keywords;
-    const QgsAbstractMetadataBase::KeywordMap keywordMap = layer->metadata().keywords();
-    for ( auto it = keywordMap.constBegin(); it != keywordMap.constEnd(); ++it )
-    {
-      keywords.append( it.value() );
-    }
-    if ( !keywords.isEmpty() )
-      return keywords;
-    return layer->keywordList();
-  }
-  else if ( QString::compare( layerProperty, QStringLiteral( "data_url" ), Qt::CaseInsensitive ) == 0 )
-    return layer->dataUrl();
-  else if ( QString::compare( layerProperty, QStringLiteral( "attribution" ), Qt::CaseInsensitive ) == 0 )
-  {
-    return !layer->metadata().rights().isEmpty() ? QVariant( layer->metadata().rights() ) : QVariant( layer->attribution() );
-  }
-  else if ( QString::compare( layerProperty, QStringLiteral( "attribution_url" ), Qt::CaseInsensitive ) == 0 )
-    return layer->attributionUrl();
-  else if ( QString::compare( layerProperty, QStringLiteral( "source" ), Qt::CaseInsensitive ) == 0 )
-    return layer->publicSource();
-  else if ( QString::compare( layerProperty, QStringLiteral( "min_scale" ), Qt::CaseInsensitive ) == 0 )
-    return layer->minimumScale();
-  else if ( QString::compare( layerProperty, QStringLiteral( "max_scale" ), Qt::CaseInsensitive ) == 0 )
-    return layer->maximumScale();
-  else if ( QString::compare( layerProperty, QStringLiteral( "is_editable" ), Qt::CaseInsensitive ) == 0 )
-    return layer->isEditable();
-  else if ( QString::compare( layerProperty, QStringLiteral( "crs" ), Qt::CaseInsensitive ) == 0 )
-    return layer->crs().authid();
-  else if ( QString::compare( layerProperty, QStringLiteral( "crs_definition" ), Qt::CaseInsensitive ) == 0 )
-    return layer->crs().toProj();
-  else if ( QString::compare( layerProperty, QStringLiteral( "crs_description" ), Qt::CaseInsensitive ) == 0 )
-    return layer->crs().description();
-  else if ( QString::compare( layerProperty, QStringLiteral( "extent" ), Qt::CaseInsensitive ) == 0 )
-  {
-    QgsGeometry extentGeom = QgsGeometry::fromRect( layer->extent() );
-    QVariant result = QVariant::fromValue( extentGeom );
-    return result;
-  }
-  else if ( QString::compare( layerProperty, QStringLiteral( "distance_units" ), Qt::CaseInsensitive ) == 0 )
-    return QgsUnitTypes::encodeUnit( layer->crs().mapUnits() );
-  else if ( QString::compare( layerProperty, QStringLiteral( "path" ), Qt::CaseInsensitive ) == 0 )
-  {
-    const QVariantMap decodedUri = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->source() );
-    return decodedUri.value( QStringLiteral( "path" ) );
-  }
-  else if ( QString::compare( layerProperty, QStringLiteral( "type" ), Qt::CaseInsensitive ) == 0 )
-  {
-    switch ( layer->type() )
-    {
-      case QgsMapLayerType::VectorLayer:
-        return QCoreApplication::translate( "expressions", "Vector" );
-      case QgsMapLayerType::RasterLayer:
-        return QCoreApplication::translate( "expressions", "Raster" );
-      case QgsMapLayerType::MeshLayer:
-        return QCoreApplication::translate( "expressions", "Mesh" );
-      case QgsMapLayerType::VectorTileLayer:
-        return QCoreApplication::translate( "expressions", "Vector Tile" );
-      case QgsMapLayerType::PluginLayer:
-        return QCoreApplication::translate( "expressions", "Plugin" );
-      case QgsMapLayerType::AnnotationLayer:
-        return QCoreApplication::translate( "expressions", "Annotation" );
-      case QgsMapLayerType::PointCloudLayer:
-        return QCoreApplication::translate( "expressions", "Point Cloud" );
-      case QgsMapLayerType::GroupLayer:
-        return QCoreApplication::translate( "expressions", "Group" );
-    }
-  }
-  else
-  {
-    //vector layer methods
-    QgsVectorLayer *vLayer = qobject_cast< QgsVectorLayer * >( layer );
-    if ( vLayer )
-    {
-      if ( QString::compare( layerProperty, QStringLiteral( "storage_type" ), Qt::CaseInsensitive ) == 0 )
-        return vLayer->storageType();
-      else if ( QString::compare( layerProperty, QStringLiteral( "geometry_type" ), Qt::CaseInsensitive ) == 0 )
-        return QgsWkbTypes::geometryDisplayString( vLayer->geometryType() );
-      else if ( QString::compare( layerProperty, QStringLiteral( "feature_count" ), Qt::CaseInsensitive ) == 0 )
-        return QVariant::fromValue( vLayer->featureCount() );
-    }
-  }
-
-  return QVariant();
+  } );
 }
 
 static QVariant fcnDecodeUri( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QgsMapLayer *layer = QgsExpressionUtils::getMapLayer( values.at( 0 ), context, parent );
-  if ( !layer )
-  {
-    parent->setEvalErrorString( QObject::tr( "Cannot find layer %1" ).arg( values.at( 0 ).toString() ) );
-    return QVariant();
-  }
-
-  if ( !layer->dataProvider() )
-  {
-    parent->setEvalErrorString( QObject::tr( "Layer %1 has invalid data provider" ).arg( layer->name() ) );
-    return QVariant();
-  }
-
   const QString uriPart = values.at( 1 ).toString();
 
-  const QVariantMap decodedUri = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->dataProvider()->dataSourceUri() );
+  return QgsExpressionUtils::runMapLayerFunctionThreadSafe( values.at( 0 ), context, parent, [parent, uriPart]( QgsMapLayer * layer )-> QVariant
+  {
+    if ( !layer->dataProvider() )
+    {
+      parent->setEvalErrorString( QObject::tr( "Layer %1 has invalid data provider" ).arg( layer->name() ) );
+      return QVariant();
+    }
 
-  if ( !uriPart.isNull() )
-  {
-    return decodedUri.value( values.at( 1 ).toString() );
-  }
-  else
-  {
-    return decodedUri;
-  }
+    const QVariantMap decodedUri = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->dataProvider()->dataSourceUri() );
+
+    if ( !uriPart.isNull() )
+    {
+      return decodedUri.value( uriPart );
+    }
+    else
+    {
+      return decodedUri;
+    }
+  } );
 }
 
 static QVariant fcnGetRasterBandStat( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QgsMapLayer *layer = QgsExpressionUtils::getMapLayer( values.at( 0 ), context, parent );
+  const int band = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
+  const QString layerProperty = QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
 
-  if ( !layer )
-    return QVariant();
-
-  QgsRasterLayer *rl = qobject_cast< QgsRasterLayer * >( layer );
-  if ( !rl )
-    return QVariant();
-
-  int band = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
-  if ( band < 1 || band > rl->bandCount() )
+  return QgsExpressionUtils::runMapLayerFunctionThreadSafe( values.at( 0 ), context, parent, [parent, band, layerProperty]( QgsMapLayer * layer )-> QVariant
   {
-    parent->setEvalErrorString( QObject::tr( "Invalid band number %1 for layer" ).arg( band ) );
+    QgsRasterLayer *rl = qobject_cast< QgsRasterLayer * >( layer );
+    if ( !rl )
+      return QVariant();
+
+    if ( band < 1 || band > rl->bandCount() )
+    {
+      parent->setEvalErrorString( QObject::tr( "Invalid band number %1 for layer" ).arg( band ) );
+      return QVariant();
+    }
+
+    int stat = 0;
+
+    if ( QString::compare( layerProperty, QStringLiteral( "avg" ), Qt::CaseInsensitive ) == 0 )
+      stat = QgsRasterBandStats::Mean;
+    else if ( QString::compare( layerProperty, QStringLiteral( "stdev" ), Qt::CaseInsensitive ) == 0 )
+      stat = QgsRasterBandStats::StdDev;
+    else if ( QString::compare( layerProperty, QStringLiteral( "min" ), Qt::CaseInsensitive ) == 0 )
+      stat = QgsRasterBandStats::Min;
+    else if ( QString::compare( layerProperty, QStringLiteral( "max" ), Qt::CaseInsensitive ) == 0 )
+      stat = QgsRasterBandStats::Max;
+    else if ( QString::compare( layerProperty, QStringLiteral( "range" ), Qt::CaseInsensitive ) == 0 )
+      stat = QgsRasterBandStats::Range;
+    else if ( QString::compare( layerProperty, QStringLiteral( "sum" ), Qt::CaseInsensitive ) == 0 )
+      stat = QgsRasterBandStats::Sum;
+    else
+    {
+      parent->setEvalErrorString( QObject::tr( "Invalid raster statistic: '%1'" ).arg( layerProperty ) );
+      return QVariant();
+    }
+
+    QgsRasterBandStats stats = rl->dataProvider()->bandStatistics( band, stat );
+    switch ( stat )
+    {
+      case QgsRasterBandStats::Mean:
+        return stats.mean;
+      case QgsRasterBandStats::StdDev:
+        return stats.stdDev;
+      case QgsRasterBandStats::Min:
+        return stats.minimumValue;
+      case QgsRasterBandStats::Max:
+        return stats.maximumValue;
+      case QgsRasterBandStats::Range:
+        return stats.range;
+      case QgsRasterBandStats::Sum:
+        return stats.sum;
+    }
     return QVariant();
-  }
-
-  QString layerProperty = QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
-  int stat = 0;
-
-  if ( QString::compare( layerProperty, QStringLiteral( "avg" ), Qt::CaseInsensitive ) == 0 )
-    stat = QgsRasterBandStats::Mean;
-  else if ( QString::compare( layerProperty, QStringLiteral( "stdev" ), Qt::CaseInsensitive ) == 0 )
-    stat = QgsRasterBandStats::StdDev;
-  else if ( QString::compare( layerProperty, QStringLiteral( "min" ), Qt::CaseInsensitive ) == 0 )
-    stat = QgsRasterBandStats::Min;
-  else if ( QString::compare( layerProperty, QStringLiteral( "max" ), Qt::CaseInsensitive ) == 0 )
-    stat = QgsRasterBandStats::Max;
-  else if ( QString::compare( layerProperty, QStringLiteral( "range" ), Qt::CaseInsensitive ) == 0 )
-    stat = QgsRasterBandStats::Range;
-  else if ( QString::compare( layerProperty, QStringLiteral( "sum" ), Qt::CaseInsensitive ) == 0 )
-    stat = QgsRasterBandStats::Sum;
-  else
-  {
-    parent->setEvalErrorString( QObject::tr( "Invalid raster statistic: '%1'" ).arg( layerProperty ) );
-    return QVariant();
-  }
-
-  QgsRasterBandStats stats = rl->dataProvider()->bandStatistics( band, stat );
-  switch ( stat )
-  {
-    case QgsRasterBandStats::Mean:
-      return stats.mean;
-    case QgsRasterBandStats::StdDev:
-      return stats.stdDev;
-    case QgsRasterBandStats::Min:
-      return stats.minimumValue;
-    case QgsRasterBandStats::Max:
-      return stats.maximumValue;
-    case QgsRasterBandStats::Range:
-      return stats.range;
-    case QgsRasterBandStats::Sum:
-      return stats.sum;
-  }
-  return QVariant();
+  } );
 }
 
 static QVariant fcnArray( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * )
