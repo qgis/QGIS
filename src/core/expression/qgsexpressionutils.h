@@ -355,7 +355,7 @@ class CORE_EXPORT QgsExpressionUtils
     static QgsMapLayer *getMapLayer( const QVariant &value, const QgsExpressionContext *context, QgsExpression * );
 
     /**
-     * Evalutes a \a value to a map layer, then runs a \a function on the layer in a thread safe way before returning the result of the function.
+     * Evaluates a \a value to a map layer, then runs a \a function on the layer in a thread safe way before returning the result of the function.
      *
      * \since QGIS 3.30
      */
