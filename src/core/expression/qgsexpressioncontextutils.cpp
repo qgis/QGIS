@@ -34,6 +34,7 @@
 #include "qgsmarkersymbol.h"
 #include "qgstriangularmesh.h"
 #include "qgsvectortileutils.h"
+#include "qgsmeshlayer.h"
 
 QgsExpressionContextScope *QgsExpressionContextUtils::globalScope()
 {
@@ -965,7 +966,9 @@ QVariant QgsExpressionContextUtils::GetLayerVisibility::func( const QVariantList
   }
 
   bool isVisible = false;
+  Q_NOWARN_DEPRECATED_PUSH
   QgsMapLayer *layer = QgsExpressionUtils::getMapLayer( values.at( 0 ), context, parent );
+  Q_NOWARN_DEPRECATED_POP
   if ( layer && mLayers.contains( layer ) )
   {
     isVisible = true;

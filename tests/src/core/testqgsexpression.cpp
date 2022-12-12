@@ -36,6 +36,7 @@
 #include "qgsvectorlayerutils.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsexpressionutils.h"
+#include "qgsmeshlayer.h"
 #include <geos_c.h>
 
 static void _parseAndEvalExpr( int arg )
@@ -4581,6 +4582,7 @@ class TestQgsExpression: public QObject
       QgsExpression exp;
       // NULL value
       QgsExpressionContext context;
+      Q_NOWARN_DEPRECATED_PUSH
       QgsMapLayer *res = QgsExpressionUtils::getMapLayer( QVariant(), &context, &exp );
       QVERIFY( !res );
       QVERIFY( !exp.hasEvalError() );
@@ -4626,6 +4628,7 @@ class TestQgsExpression: public QObject
       // TODO -- probably should flag an error here?
       QVERIFY( !exp.hasEvalError() );
 #endif
+      Q_NOWARN_DEPRECATED_POP
     }
 
     void testGetFilePathValue()
