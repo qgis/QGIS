@@ -93,7 +93,7 @@ QgsMapLayer *QgsExpressionUtils::getMapLayer( const QVariant &value, const QgsEx
   return ml;
 }
 
-void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const QgsExpressionContext *context, QgsExpression *expression, const std::function<void ( QgsMapLayer * )> &function )
+void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const QgsExpressionContext *context, QgsExpression *expression, const std::function<void ( QgsMapLayer * )> &function, bool &foundLayer )
 {
   // First check if we already received a layer pointer
   QPointer< QgsMapLayer > ml = value.value< QgsWeakMapLayerPointer >().data();
@@ -110,10 +110,11 @@ void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const 
   if ( ml )
   {
     QPointer< QgsMapLayer > layerPointer( ml );
-    auto runFunction = [ layerPointer, &function ]
+    auto runFunction = [ layerPointer, &function, &foundLayer ]
     {
       if ( QgsMapLayer *layer = layerPointer.data() )
       {
+        foundLayer = true;
         function( layer );
       }
     };
@@ -130,11 +131,16 @@ void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const 
   }
 
   // if no layer stores, then this is only for layers in project and therefore associated with the main thread
-  auto runFunction = [ value, context, expression, &function ]
+  auto runFunction = [ value, context, expression, &function, &foundLayer ]
   {
     if ( QgsMapLayer *layer = getMapLayer( value, context, expression ) )
     {
+      foundLayer = true;
       function( layer );
+    }
+    else
+    {
+      foundLayer = false;
     }
   };
 
@@ -146,20 +152,21 @@ void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const 
     QMetaObject::invokeMethod( QgsProject::instance(), runFunction, Qt::BlockingQueuedConnection );
 }
 
-QVariant QgsExpressionUtils::runMapLayerFunctionThreadSafe( const QVariant &value, const QgsExpressionContext *context, QgsExpression *expression, const std::function<QVariant( QgsMapLayer * )> &function )
+QVariant QgsExpressionUtils::runMapLayerFunctionThreadSafe( const QVariant &value, const QgsExpressionContext *context, QgsExpression *expression, const std::function<QVariant( QgsMapLayer * )> &function, bool &foundLayer )
 {
   QVariant res;
+  foundLayer = false;
 
   executeLambdaForMapLayer( value, context, expression, [&res, function]( QgsMapLayer * layer )
   {
     if ( layer )
       res = function( layer );
-  } );
+  }, foundLayer );
 
   return res;
 }
 
-std::unique_ptr<QgsVectorLayerFeatureSource> QgsExpressionUtils::getFeatureSource( const QVariant &value, const QgsExpressionContext *context, QgsExpression *e )
+std::unique_ptr<QgsVectorLayerFeatureSource> QgsExpressionUtils::getFeatureSource( const QVariant &value, const QgsExpressionContext *context, QgsExpression *e, bool &foundLayer )
 {
   std::unique_ptr<QgsVectorLayerFeatureSource> featureSource;
 
@@ -169,7 +176,7 @@ std::unique_ptr<QgsVectorLayerFeatureSource> QgsExpressionUtils::getFeatureSourc
     {
       featureSource.reset( new QgsVectorLayerFeatureSource( vl ) );
     }
-  } );
+  }, foundLayer );
 
   return featureSource;
 }
