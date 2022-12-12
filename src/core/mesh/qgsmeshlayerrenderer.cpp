@@ -42,6 +42,7 @@
 #include "qgsmeshdataprovidertemporalcapabilities.h"
 #include "qgsmapclippingutils.h"
 #include "qgscolorrampshader.h"
+#include "qgsmeshlayerelevationproperties.h"
 
 QgsMeshLayerRenderer::QgsMeshLayerRenderer(
   QgsMeshLayer *layer,
@@ -78,6 +79,13 @@ QgsMeshLayerRenderer::QgsMeshLayerRenderer(
   calculateOutputSize();
 
   mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( *renderContext(), layer );
+
+  if ( layer->elevationProperties() && layer->elevationProperties()->hasElevation() )
+  {
+    mRenderElevationMap = true;
+    mElevationScale = layer->elevationProperties()->zScale();
+    mElevationOffset = layer->elevationProperties()->zOffset();
+  }
 }
 
 void QgsMeshLayerRenderer::copyTriangularMeshes( QgsMeshLayer *layer, QgsRenderContext &context )
@@ -556,6 +564,7 @@ void QgsMeshLayerRenderer::renderScalarDatasetOnFaces( const QgsMeshRendererScal
                                          context,
                                          mOutputSize );
   interpolator.setSpatialIndexActive( mIsMeshSimplificationActive );
+  interpolator.setElevationMapSettings( mRenderElevationMap, mElevationScale, mElevationOffset );
   QgsSingleBandPseudoColorRenderer renderer( &interpolator, 0, sh );  // takes ownership of sh
   renderer.setClassificationMin( scalarSettings.classificationMinimum() );
   renderer.setClassificationMax( scalarSettings.classificationMaximum() );

@@ -2357,7 +2357,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     int mBlockSnappingUpdates = 0;
 
-    QgsShadingRenderer mMapShadinRenderer;
+    QgsShadingRenderer mMapShadingRenderer;
 
     friend class QgsApplication;
 

@@ -91,6 +91,10 @@ class CORE_EXPORT QgsRasterLayerRenderer : public QgsMapLayerRenderer
 
     QList< QgsMapClippingRegion > mClippingRegions;
 
+    double mElevationScale = 1.0;
+    double mElevationOffset = 0.0;
+    bool mDrawElevationMap = false;
+
     void drawElevationMap();
 
     friend class QgsRasterLayerRendererFeedback;

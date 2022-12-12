@@ -117,9 +117,9 @@ class CORE_EXPORT QgsElevationMap
 
     /**
      * Fills the elevation map with values contains in a raster \a block starting from position
-     * defined by \a top and \a left.
+     * defined by \a top and \a left. The z scale \a zScale and vertical \a offset are applied if provided.
      */
-    void fillWithRasterBlock( QgsRasterBlock *block, int top, int left ) SIP_SKIP;
+    void fillWithRasterBlock( QgsRasterBlock *block, int top, int left, double zScale = 1.0, double offset = 0.0 ) SIP_SKIP;
 
     /**
      * Returns whether the elevation map is valid.

@@ -786,7 +786,7 @@ bool QgsProject::rollBack( QStringList &rollbackErrors, bool stopEditing, QgsVec
 
 void QgsProject::setMapShadingEnabled( bool enabled )
 {
-  mMapShadinRenderer.setActive( enabled );
+  mMapShadingRenderer.setActive( enabled );
   emit mapShadingRendererChanged();
 }
 
@@ -1822,7 +1822,7 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   const QDomNode mapShadingNode = doc->documentElement().namedItem( QStringLiteral( "map-shading-renderer" ) );
   if ( !mapShadingNode.isNull() )
   {
-    mMapShadinRenderer.readXml( mapShadingNode.toElement(), context );
+    mMapShadingRenderer.readXml( mapShadingNode.toElement(), context );
   }
   emit mapShadingRendererChanged();
 
@@ -2775,7 +2775,7 @@ bool QgsProject::writeProjectFile( const QString &filename )
   qgisNode.appendChild( srsNode );
 
   QDomElement mapShadingNode = doc->createElement( QStringLiteral( "map-shading-renderer" ) );
-  mMapShadinRenderer.writeXml( mapShadingNode, *doc, context );
+  mMapShadingRenderer.writeXml( mapShadingNode, context );
   qgisNode.appendChild( mapShadingNode );
 
   // write layer tree - make sure it is without embedded subgroups
@@ -4426,7 +4426,7 @@ QgsPropertiesDefinition &QgsProject::dataDefinedServerPropertyDefinitions()
 
 void QgsProject::setMapShadinRenderer( const QgsShadingRenderer &newMapShadinRenderer )
 {
-  mMapShadinRenderer = newMapShadinRenderer;
+  mMapShadingRenderer = newMapShadinRenderer;
   emit mapShadingRendererChanged();
 }
 
@@ -4705,7 +4705,7 @@ bool QgsProject::accept( QgsStyleEntityVisitorInterface *visitor ) const
 
 QgsShadingRenderer QgsProject::mapShadingRenderer() const
 {
-  return mMapShadinRenderer;
+  return mMapShadingRenderer;
 }
 
 void QgsProject::loadProjectFlags( const QDomDocument *doc )

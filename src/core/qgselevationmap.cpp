@@ -300,7 +300,7 @@ bool QgsElevationMap::isValid() const
   return !mElevationImage.isNull();
 }
 
-void QgsElevationMap::fillWithRasterBlock( QgsRasterBlock *block, int top, int left )
+void QgsElevationMap::fillWithRasterBlock( QgsRasterBlock *block, int top, int left, double zScale, double offset )
 {
   QRgb *dataPtr = reinterpret_cast<QRgb *>( mElevationImage.bits() );
 
@@ -325,7 +325,7 @@ void QgsElevationMap::fillWithRasterBlock( QgsRasterBlock *block, int top, int l
       if ( isNoData )
         dataPtr[index] = 0;
       else
-        dataPtr[index] = encodeElevation( value );
+        dataPtr[index] = encodeElevation( value * zScale + offset );
     }
   }
 }

@@ -165,7 +165,7 @@ class CORE_EXPORT QgsShadingRenderer
     void setLightAzimuth( double lightAzimuth );
 
     //! Writes configuration on a DOM element
-    void writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const;
+    void writeXml(QDomElement &elem, const QgsReadWriteContext &context ) const;
 
     //! Reads configuration from a DOM element
     void readXml( const QDomElement &element, const QgsReadWriteContext &context );

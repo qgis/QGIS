@@ -1191,11 +1191,11 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     //! clip paths to be applied to the symbol layer before rendering
     QMap< const QgsSymbolLayer *, QList<QPainterPath> > mSymbolLayerClipPaths;
 
-    QgsElevationMap *mElevationMap = nullptr;
-
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;
 #endif
+
+    QgsElevationMap *mElevationMap = nullptr;
 };
 
 #ifndef SIP_RUN

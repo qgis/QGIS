@@ -184,13 +184,24 @@ QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent
     }
   }
 
-  QgsElevationMap *elevationMap = mContext.elevationMap();
-  if ( elevationMap && elevationMap->isValid() )
-    elevationMap->fillWithRasterBlock( outputBlock.get(), 0, 0 );
+  if ( mRenderElevation )
+  {
+    QgsElevationMap *elevationMap = mContext.elevationMap();
+    if ( elevationMap && elevationMap->isValid() )
+      elevationMap->fillWithRasterBlock( outputBlock.get(), 0, 0, mElevationScale, mElevationOffset );
+  }
+
   return outputBlock.release();
 }
 
 void QgsMeshLayerInterpolator::setSpatialIndexActive( bool active ) {mSpatialIndexActive = active;}
+
+void QgsMeshLayerInterpolator::setElevationMapSettings(bool renderElevationMap, double elevationScale, double elevationOffset)
+{
+    mRenderElevation = renderElevationMap;
+    mElevationScale = elevationScale;
+    mElevationOffset = elevationOffset;
+}
 
 ///@endcond
 

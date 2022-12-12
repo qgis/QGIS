@@ -30,6 +30,7 @@
 #include "qgselevationmap.h"
 #include "qgsgdalutils.h"
 #include "qgsrasterresamplefilter.h"
+#include "qgsrasterlayerelevationproperties.h"
 
 #include <QElapsedTimer>
 #include <QPointer>
@@ -288,6 +289,13 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
 
   mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( *renderContext(), layer );
 
+  if ( layer->elevationProperties() && layer->elevationProperties()->hasElevation() )
+  {
+    mDrawElevationMap = true;
+    mElevationScale = layer->elevationProperties()->zScale();
+    mElevationOffset = layer->elevationProperties()->zOffset();
+  }
+
   mFeedback->setRenderContext( rendererContext );
 
   mPipe->moveToThread( nullptr );
@@ -355,7 +363,8 @@ bool QgsRasterLayerRenderer::render()
   QgsRasterDrawer drawer( &iterator );
   drawer.draw( *( renderContext() ), mRasterViewPort, mFeedback );
 
-  drawElevationMap();
+  if ( mDrawElevationMap )
+    drawElevationMap();
 
   if ( restoreOldResamplingStage )
   {
@@ -575,10 +584,13 @@ void QgsRasterLayerRenderer::drawElevationMap()
       {
         topLeft = mRasterViewPort->mTopLeftPoint.toQPointF().toPoint();
       }
+
       renderContext()->elevationMap()->fillWithRasterBlock(
         elevationBlock.get(),
         topLeft.y(),
-        topLeft.x() );
+        topLeft.x(),
+        mElevationScale,
+        mElevationOffset );
     }
   }
 }
