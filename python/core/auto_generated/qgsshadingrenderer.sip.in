@@ -48,7 +48,12 @@ Returns whether this shading renderer is active.
 
     void setActiveEyeDomeLighting( bool active );
 %Docstring
-Sets active the eye dome lighting shading method.
+Sets active the eye-dome lighting shading method.
+%End
+
+    bool isActiveEyeDomeLighting() const;
+%Docstring
+Returns whether eye-dome lighting shading method is active
 %End
 
     double eyeDomeLightingStrength() const;
@@ -97,7 +102,12 @@ Sets the unit of the distance of the eye dome lighting method set by :py:func:`~
 
     void setActiveHillShading( bool active );
 %Docstring
-Sets active the hill shading
+Sets active the hillshading
+%End
+
+    bool isActiveHillShading() const;
+%Docstring
+Returns whether the hillshading is active
 %End
 
     double hillShadingZFactor() const;
@@ -156,7 +166,7 @@ Sets the azimuth of the light (degree) that can be used by some methods (e.g. hi
 .. seealso:: :py:func:`lightAzimuth`
 %End
 
-    void writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const;
+    void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
 %Docstring
 Writes configuration on a DOM element
 %End
