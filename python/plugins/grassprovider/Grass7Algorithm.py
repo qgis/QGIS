@@ -276,6 +276,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 multiLine=True, optional=True
             )
             param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+            param.setHelp(self.tr('Creation options should be comma separated'))
             self.params.append(param)
 
             # Add a metadata parameter for format export
@@ -285,6 +286,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 multiLine=True, optional=True
             )
             param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+            param.setHelp(self.tr('Metadata options should be comma separated'))
             self.params.append(param)
 
         if hasVectorInput:
