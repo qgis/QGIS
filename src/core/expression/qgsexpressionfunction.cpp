@@ -2074,23 +2074,22 @@ static QVariant fcnFeatureMaptip( const QVariantList &values, const QgsExpressio
 
 static QVariant fcnIsSelected( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QgsVectorLayer *layer = nullptr;
   QgsFeature feature;
-
+  QVariant layer;
   if ( values.isEmpty() )
   {
     feature = context->feature();
-    layer = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), context, parent );
+    layer = context->variable( QStringLiteral( "layer" ) );
   }
   else if ( values.size() == 1 )
   {
-    layer = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), context, parent );
     feature = QgsExpressionUtils::getFeature( values.at( 0 ), parent );
+    layer = context->variable( QStringLiteral( "layer" ) );
   }
   else if ( values.size() == 2 )
   {
-    layer = QgsExpressionUtils::getVectorLayer( values.at( 0 ), context, parent );
     feature = QgsExpressionUtils::getFeature( values.at( 1 ), parent );
+    layer = values.at( 0 );
   }
   else
   {
@@ -2098,34 +2097,52 @@ static QVariant fcnIsSelected( const QVariantList &values, const QgsExpressionCo
     return QVariant();
   }
 
-  if ( !layer || !feature.isValid() )
+  bool foundLayer = false;
+  const QVariant res = QgsExpressionUtils::runMapLayerFunctionThreadSafe( layer, context, parent, [feature]( QgsMapLayer * mapLayer ) -> QVariant
   {
-    return QVariant( QVariant::Bool );
-  }
+    QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( mapLayer );
+    if ( !layer || !feature.isValid() )
+    {
+      return QVariant( QVariant::Bool );
+    }
 
-  return layer->selectedFeatureIds().contains( feature.id() );
+    return layer->selectedFeatureIds().contains( feature.id() );
+  }, foundLayer );
+  if ( !foundLayer )
+    return  QVariant( QVariant::Bool );
+  else
+    return res;
 }
 
 static QVariant fcnNumSelected( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QgsVectorLayer *layer = nullptr;
+  QVariant layer;
 
   if ( values.isEmpty() )
-    layer = QgsExpressionUtils::getVectorLayer( context->variable( QStringLiteral( "layer" ) ), context, parent );
+    layer = context->variable( QStringLiteral( "layer" ) );
   else if ( values.count() == 1 )
-    layer = QgsExpressionUtils::getVectorLayer( values.at( 0 ), context, parent );
+    layer = values.at( 0 );
   else
   {
     parent->setEvalErrorString( QObject::tr( "Function `num_selected` requires no more than one parameter. %n given.", nullptr, values.length() ) );
     return QVariant();
   }
 
-  if ( !layer )
+  bool foundLayer = false;
+  const QVariant res = QgsExpressionUtils::runMapLayerFunctionThreadSafe( layer, context, parent, []( QgsMapLayer * mapLayer ) -> QVariant
   {
-    return QVariant( QVariant::LongLong );
-  }
+    QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( mapLayer );
+    if ( !layer )
+    {
+      return QVariant( QVariant::LongLong );
+    }
 
-  return layer->selectedFeatureCount();
+    return layer->selectedFeatureCount();
+  }, foundLayer );
+  if ( !foundLayer )
+    return  QVariant( QVariant::LongLong );
+  else
+    return res;
 }
 
 static QVariant fcnSqliteFetchAndIncrement( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
