@@ -246,6 +246,7 @@ QgsExpressionContext::QgsExpressionContext( const QgsExpressionContext &other ) 
   mHighlightedVariables = other.mHighlightedVariables;
   mHighlightedFunctions = other.mHighlightedFunctions;
   mCachedValues = other.mCachedValues;
+  mFeedback = other.mFeedback;
 }
 
 QgsExpressionContext &QgsExpressionContext::operator=( QgsExpressionContext &&other ) noexcept
@@ -260,6 +261,7 @@ QgsExpressionContext &QgsExpressionContext::operator=( QgsExpressionContext &&ot
     mHighlightedVariables = other.mHighlightedVariables;
     mHighlightedFunctions = other.mHighlightedFunctions;
     mCachedValues = other.mCachedValues;
+    mFeedback = other.mFeedback;
   }
   return *this;
 }
@@ -278,6 +280,7 @@ QgsExpressionContext &QgsExpressionContext::operator=( const QgsExpressionContex
   mHighlightedVariables = other.mHighlightedVariables;
   mHighlightedFunctions = other.mHighlightedFunctions;
   mCachedValues = other.mCachedValues;
+  mFeedback = other.mFeedback;
   return *this;
 }
 
