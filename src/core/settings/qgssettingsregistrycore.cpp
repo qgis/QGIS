@@ -25,11 +25,12 @@
 #include "qgsnewsfeedparser.h"
 #include "qgsowsconnection.h"
 #include "qgsprocessing.h"
-#include "qgsvectorlayer.h"
 #include "qgsogrdbconnection.h"
 #include "qgsfontmanager.h"
 #include "qgsgpsconnection.h"
+#include "qgsbabelformatregistry.h"
 #include "qgsgpslogger.h"
+
 
 QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   : QgsSettingsRegistry()
@@ -130,6 +131,9 @@ QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   addSettingsEntry( &QgsGpsConnection::settingsGpsTimeStampSpecification );
   addSettingsEntry( &QgsGpsConnection::settingsGpsTimeStampTimeZone );
   addSettingsEntry( &QgsGpsConnection::settingsGpsTimeStampOffsetFromUtc );
+
+  addSettingsEntry( &QgsBabelFormatRegistry::settingsBabelDeviceList );
+  addSettingsEntryGroup( &QgsBabelFormatRegistry::settingsBabelDeviceGroup );
 
   addSettingsEntry( &QgsGpsLogger::settingsGpsStoreAttributeInMValues );
   addSettingsEntry( &QgsGpsLogger::settingsGpsMValueComponent );

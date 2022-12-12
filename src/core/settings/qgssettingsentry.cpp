@@ -113,7 +113,12 @@ QString QgsSettingsEntryBase::key( const QString &dynamicKeyPart ) const
 
 QString QgsSettingsEntryBase::key( const QStringList &dynamicKeyPartList ) const
 {
-  QString completeKey = mKey;
+  return completeKeyPrivate( mKey, dynamicKeyPartList );
+}
+
+QString QgsSettingsEntryBase::completeKeyPrivate( const QString &key, const QStringList &dynamicKeyPartList ) const
+{
+  QString completeKey = key;
   if ( !mPluginName.isEmpty() )
   {
     if ( !completeKey.startsWith( '/' ) )
@@ -280,11 +285,34 @@ QVariant QgsSettingsEntryBase::formerValueAsVariant( const QStringList &dynamicK
 {
   Q_ASSERT( mOptions.testFlag( Qgis::SettingsOption::SaveFormerValue ) );
   QVariant defaultValueOverride = valueAsVariant( key( dynamicKeyPartList ) );
-  return  QgsSettings().value( formerValuekey( dynamicKeyPartList ), defaultValueOverride );
+  return QgsSettings().value( formerValuekey( dynamicKeyPartList ), defaultValueOverride );
+}
+
+bool QgsSettingsEntryBase::migrateFromKey( const QString &oldKey, const QString &oldSection, const QString &dynamicKeyPart ) const
+{
+  return migrateFromKey( oldKey, oldSection, dynamicKeyPartToList( dynamicKeyPart ) );
+}
+
+bool QgsSettingsEntryBase::migrateFromKey( const QString &oldKey, const QString &oldSection, const QStringList &dynamicKeyPartList ) const
+{
+  if ( exists( dynamicKeyPartList ) )
+    return false;
+
+  const QString oldCompleteKey = completeKeyPrivate( QStringLiteral( "%1/%2" ).arg( oldSection, oldKey ), dynamicKeyPartList );
+
+  if ( QgsSettings().contains( oldCompleteKey ) )
+  {
+    QVariant oldValue = QgsSettings().value( oldCompleteKey, mDefaultValue );
+    setVariantValuePrivate( oldValue );
+    return true;
+  }
+  return false;
 }
 
 QString QgsSettingsEntryBase::formerValuekey( const QStringList &dynamicKeyPartList ) const
 {
   return key( dynamicKeyPartList ) + QStringLiteral( "_formervalue" );
 }
+
+
 
