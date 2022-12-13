@@ -28,6 +28,7 @@
 #include "qgspainteffectregistry.h"
 #include "qgsapplication.h"
 #include "qgsmaplayerutils.h"
+#include "qgsthreadingutils.h"
 
 QgsGroupLayer::QgsGroupLayer( const QString &name, const LayerOptions &options )
   : QgsMapLayer( QgsMapLayerType::GroupLayer, name )
@@ -52,6 +53,8 @@ QgsGroupLayer::~QgsGroupLayer()
 
 QgsGroupLayer *QgsGroupLayer::clone() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const QgsGroupLayer::LayerOptions options( mTransformContext );
   std::unique_ptr< QgsGroupLayer > layer = std::make_unique< QgsGroupLayer >( name(), options );
   QgsMapLayer::clone( layer.get() );
@@ -62,16 +65,22 @@ QgsGroupLayer *QgsGroupLayer::clone() const
 
 QgsMapLayerRenderer *QgsGroupLayer::createMapRenderer( QgsRenderContext &context )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return new QgsGroupLayerRenderer( this, context );
 }
 
 QgsRectangle QgsGroupLayer::extent() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return QgsMapLayerUtils::combinedExtent( childLayers(), crs(), mTransformContext );
 }
 
 void QgsGroupLayer::setTransformContext( const QgsCoordinateTransformContext &context )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mDataProvider )
     mDataProvider->setTransformContext( context );
 
@@ -81,6 +90,8 @@ void QgsGroupLayer::setTransformContext( const QgsCoordinateTransformContext &co
 
 bool QgsGroupLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext &context )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mReadFlags & QgsMapLayer::FlagDontResolveLayers )
   {
     return false;
@@ -113,6 +124,8 @@ bool QgsGroupLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext &con
 
 bool QgsGroupLayer::writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   // first get the layer element so that we can append the type attribute
   QDomElement mapLayerNode = layer_node.toElement();
 
@@ -140,6 +153,8 @@ bool QgsGroupLayer::writeXml( QDomNode &layer_node, QDomDocument &doc, const Qgs
 
 bool QgsGroupLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &, const QgsReadWriteContext &, QgsMapLayer::StyleCategories categories ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   // add the layer opacity
   if ( categories.testFlag( Rendering ) )
   {
@@ -170,6 +185,8 @@ bool QgsGroupLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &
 
 bool QgsGroupLayer::readSymbology( const QDomNode &node, QString &, QgsReadWriteContext &, QgsMapLayer::StyleCategories categories )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( categories.testFlag( Rendering ) )
   {
     const QDomNode layerOpacityNode = node.namedItem( QStringLiteral( "layerOpacity" ) );
@@ -209,16 +226,22 @@ bool QgsGroupLayer::readSymbology( const QDomNode &node, QString &, QgsReadWrite
 
 QgsDataProvider *QgsGroupLayer::dataProvider()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mDataProvider;
 }
 
 const QgsDataProvider *QgsGroupLayer::dataProvider() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mDataProvider;
 }
 
 QString QgsGroupLayer::htmlMetadata() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QString metadata = QStringLiteral( "<html>\n<body>\n<h1>" ) + tr( "General" ) + QStringLiteral( "</h1>\n<hr>\n" ) + QStringLiteral( "<table class=\"list-view\">\n" );
 
   metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Name" ) + QStringLiteral( "</td><td>" ) + name() + QStringLiteral( "</td></tr>\n" );
@@ -233,6 +256,8 @@ QString QgsGroupLayer::htmlMetadata() const
 
 void QgsGroupLayer::resolveReferences( QgsProject *project )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsMapLayer::resolveReferences( project );
   for ( int i = 0; i < mChildren.size(); ++i )
   {
@@ -255,6 +280,8 @@ void QgsGroupLayer::resolveReferences( QgsProject *project )
 
 void QgsGroupLayer::setChildLayers( const QList< QgsMapLayer * > &layers )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const QList< QgsMapLayer * > currentLayers = _qgis_listRefToRaw( mChildren );
   for ( QgsMapLayer *layer : layers )
   {
@@ -288,16 +315,22 @@ void QgsGroupLayer::setChildLayers( const QList< QgsMapLayer * > &layers )
 
 QList< QgsMapLayer * > QgsGroupLayer::childLayers() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return _qgis_listRefToRaw( mChildren );
 }
 
 QgsPaintEffect *QgsGroupLayer::paintEffect() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mPaintEffect.get();
 }
 
 void QgsGroupLayer::setPaintEffect( QgsPaintEffect *effect )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   mPaintEffect.reset( effect );
 }
 
@@ -313,31 +346,43 @@ QgsGroupLayerDataProvider::QgsGroupLayerDataProvider(
 
 void QgsGroupLayerDataProvider::setCrs( const QgsCoordinateReferenceSystem &crs )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   mCrs = crs;
 }
 
 QgsCoordinateReferenceSystem QgsGroupLayerDataProvider::crs() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mCrs;
 }
 
 QString QgsGroupLayerDataProvider::name() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return QStringLiteral( "annotation" );
 }
 
 QString QgsGroupLayerDataProvider::description() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return QString();
 }
 
 QgsRectangle QgsGroupLayerDataProvider::extent() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return QgsRectangle();
 }
 
 bool QgsGroupLayerDataProvider::isValid() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return true;
 }
 ///@endcond

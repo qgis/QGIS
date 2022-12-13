@@ -38,6 +38,7 @@
 #include "qgsgeometryengine.h"
 #include "qgsvectortilemvtdecoder.h"
 #include "qgsrasterlayer.h"
+#include "qgsthreadingutils.h"
 
 #include <QUrl>
 #include <QUrlQuery>
@@ -62,6 +63,8 @@ QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseN
 
 void QgsVectorTileLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &, const QgsDataProvider::ProviderOptions &, QgsDataProvider::ReadFlags )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   mDataSource = dataSource;
   mLayerName = baseName;
   mDataProvider.reset();
@@ -71,6 +74,8 @@ void QgsVectorTileLayer::setDataSourcePrivate( const QString &dataSource, const 
 
 bool QgsVectorTileLayer::loadDataSource()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( mDataSource );
 
@@ -173,6 +178,8 @@ bool QgsVectorTileLayer::loadDataSource()
 
 bool QgsVectorTileLayer::setupArcgisVectorTileServiceConnection( const QString &uri, const QgsDataSourceUri &dataSourceUri )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QString tileServiceUri = uri;
   QUrl url( tileServiceUri );
   // some services don't default to json format, while others do... so let's explicitly request it!
@@ -329,6 +336,8 @@ QgsVectorTileLayer::~QgsVectorTileLayer() = default;
 
 QgsVectorTileLayer *QgsVectorTileLayer::clone() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const QgsVectorTileLayer::LayerOptions options( mTransformContext );
   QgsVectorTileLayer *layer = new QgsVectorTileLayer( source(), name(), options );
   layer->setRenderer( renderer() ? renderer()->clone() : nullptr );
@@ -337,21 +346,29 @@ QgsVectorTileLayer *QgsVectorTileLayer::clone() const
 
 QgsDataProvider *QgsVectorTileLayer::dataProvider()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mDataProvider.get();
 }
 
 const QgsDataProvider *QgsVectorTileLayer::dataProvider() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mDataProvider.get();
 }
 
 QgsMapLayerRenderer *QgsVectorTileLayer::createMapRenderer( QgsRenderContext &rendererContext )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return new QgsVectorTileLayerRenderer( this, rendererContext );
 }
 
 bool QgsVectorTileLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext &context )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   setValid( loadDataSource() );
 
   const QDomElement matrixSetElement = layerNode.firstChildElement( QStringLiteral( "matrixSet" ) );
@@ -371,6 +388,8 @@ bool QgsVectorTileLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
 
 bool QgsVectorTileLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QDomElement mapLayerNode = layerNode.toElement();
   mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( QgsMapLayerType::VectorTileLayer ) );
 
@@ -393,6 +412,8 @@ bool QgsVectorTileLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const
 
 bool QgsVectorTileLayer::readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const QDomElement elem = node.toElement();
 
   readCommonStyle( elem, context, categories );
@@ -470,6 +491,8 @@ bool QgsVectorTileLayer::readSymbology( const QDomNode &node, QString &errorMess
 
 bool QgsVectorTileLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   Q_UNUSED( errorMessage )
   QDomElement elem = node.toElement();
 
@@ -517,6 +540,8 @@ bool QgsVectorTileLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
 
 void QgsVectorTileLayer::setTransformContext( const QgsCoordinateTransformContext &transformContext )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mDataProvider )
     mDataProvider->setTransformContext( transformContext );
 
@@ -526,6 +551,8 @@ void QgsVectorTileLayer::setTransformContext( const QgsCoordinateTransformContex
 
 QString QgsVectorTileLayer::loadDefaultStyle( bool &resultFlag )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QString error;
   QStringList warnings;
   resultFlag = loadDefaultStyle( error, warnings );
@@ -534,6 +561,8 @@ QString QgsVectorTileLayer::loadDefaultStyle( bool &resultFlag )
 
 Qgis::MapLayerProperties QgsVectorTileLayer::properties() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   Qgis::MapLayerProperties res;
   if ( mSourceType == QLatin1String( "xyz" ) )
   {
@@ -550,16 +579,22 @@ Qgis::MapLayerProperties QgsVectorTileLayer::properties() const
 
 bool QgsVectorTileLayer::loadDefaultStyle( QString &error, QStringList &warnings )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return loadDefaultStyleAndSubLayersPrivate( error, warnings, nullptr );
 }
 
 bool QgsVectorTileLayer::loadDefaultStyleAndSubLayers( QString &error, QStringList &warnings, QList<QgsMapLayer *> &subLayers )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return loadDefaultStyleAndSubLayersPrivate( error, warnings, &subLayers );
 }
 
 bool QgsVectorTileLayer::loadDefaultStyleAndSubLayersPrivate( QString &error, QStringList &warnings, QList<QgsMapLayer *> *subLayers )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( mDataSource );
 
@@ -725,6 +760,8 @@ bool QgsVectorTileLayer::loadDefaultStyleAndSubLayersPrivate( QString &error, QS
 
 QString QgsVectorTileLayer::loadDefaultMetadata( bool &resultFlag )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( mDataSource );
   if ( mSourceType == QLatin1String( "xyz" ) && dsUri.param( QStringLiteral( "serviceType" ) ) == QLatin1String( "arcgis" ) )
@@ -774,6 +811,8 @@ QString QgsVectorTileLayer::loadDefaultMetadata( bool &resultFlag )
 
 QString QgsVectorTileLayer::encodedSource( const QString &source, const QgsReadWriteContext &context ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( source );
 
@@ -804,6 +843,8 @@ QString QgsVectorTileLayer::encodedSource( const QString &source, const QgsReadW
 
 QString QgsVectorTileLayer::decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   Q_UNUSED( provider )
 
   QgsDataSourceUri dsUri;
@@ -835,6 +876,8 @@ QString QgsVectorTileLayer::decodedSource( const QString &source, const QString 
 
 QString QgsVectorTileLayer::htmlMetadata() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const QgsLayerMetadataFormatter htmlFormatter( metadata() );
 
   QString info = QStringLiteral( "<html><head></head>\n<body>\n" );
@@ -891,6 +934,8 @@ QString QgsVectorTileLayer::htmlMetadata() const
 
 QByteArray QgsVectorTileLayer::getRawTile( QgsTileXYZ tileID )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const QgsTileMatrix tileMatrix = mMatrixSet.tileMatrix( tileID.zoomLevel() );
   const QgsTileRange tileRange( tileID.column(), tileID.column(), tileID.row(), tileID.row() );
 
@@ -906,28 +951,38 @@ QByteArray QgsVectorTileLayer::getRawTile( QgsTileXYZ tileID )
 
 void QgsVectorTileLayer::setRenderer( QgsVectorTileRenderer *r )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   mRenderer.reset( r );
   triggerRepaint();
 }
 
 QgsVectorTileRenderer *QgsVectorTileLayer::renderer() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mRenderer.get();
 }
 
 void QgsVectorTileLayer::setLabeling( QgsVectorTileLabeling *labeling )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   mLabeling.reset( labeling );
   triggerRepaint();
 }
 
 QgsVectorTileLabeling *QgsVectorTileLayer::labeling() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mLabeling.get();
 }
 
 QList<QgsFeature> QgsVectorTileLayer::selectedFeatures() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QList< QgsFeature > res;
   res.reserve( mSelectedFeatures.size() );
   for ( auto it = mSelectedFeatures.begin(); it != mSelectedFeatures.end(); ++it )
@@ -938,11 +993,15 @@ QList<QgsFeature> QgsVectorTileLayer::selectedFeatures() const
 
 int QgsVectorTileLayer::selectedFeatureCount() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mSelectedFeatures.size();
 }
 
 void QgsVectorTileLayer::selectByGeometry( const QgsGeometry &geometry, const QgsSelectionContext &context, Qgis::SelectBehavior behavior, Qgis::SelectGeometryRelationship relationship, Qgis::SelectionFlags flags, QgsRenderContext *renderContext )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( !isInScaleRange( context.scale() ) )
   {
     QgsDebugMsgLevel( QStringLiteral( "Out of scale limits" ), 2 );
@@ -1280,6 +1339,8 @@ void QgsVectorTileLayer::selectByGeometry( const QgsGeometry &geometry, const Qg
 
 void QgsVectorTileLayer::removeSelection()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mSelectedFeatures.empty() )
     return;
 
@@ -1300,31 +1361,43 @@ QgsVectorTileDataProvider::QgsVectorTileDataProvider(
 
 QgsCoordinateReferenceSystem QgsVectorTileDataProvider::crs() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) );
 }
 
 QString QgsVectorTileDataProvider::name() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return QStringLiteral( "vectortile" );
 }
 
 QString QgsVectorTileDataProvider::description() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return QString();
 }
 
 QgsRectangle QgsVectorTileDataProvider::extent() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return QgsRectangle();
 }
 
 bool QgsVectorTileDataProvider::isValid() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return true;
 }
 
 bool QgsVectorTileDataProvider::renderInPreview( const PreviewContext &context )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   // Vector tiles by design are very CPU light to render, so we are much more permissive here compared
   // with other layer types. (Generally if a vector tile layer has taken more than a few milliseconds to render it's
   // a result of network requests, and the tile manager class handles these gracefully for us)
