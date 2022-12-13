@@ -431,7 +431,8 @@ QString QgsVectorLayer::sourceName() const
 
 void QgsVectorLayer::reload()
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // non fatal for now -- the QgsVirtualLayerTask class is not thread safe and calls this
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   if ( mDataProvider )
   {
@@ -4338,7 +4339,8 @@ void QgsVectorLayer::updateExpressionField( int index, const QString &exp )
 
 void QgsVectorLayer::updateFields()
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // non fatal for now -- the QgsVirtualLayerTask class is not thread safe and calls this
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   if ( !mDataProvider )
     return;
