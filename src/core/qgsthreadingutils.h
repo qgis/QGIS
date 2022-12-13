@@ -35,6 +35,12 @@
 #define QGIS_PROTECT_QOBJECT_THREAD_ACCESS do {} while(false);
 #endif
 
+#if defined(QGISDEBUG)
+#define QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL if ( QThread::currentThread() != thread() ) {qWarning() << QStringLiteral("%2 (%1:%3) is run from a different thread than the object %4 lives in [0x%5 vs 0x%6]" ).arg( QString( __FILE__ ), QString( __FUNCTION__ ), QString::number( __LINE__  ), objectName() ).arg( reinterpret_cast< qint64 >( QThread::currentThread() ), 0, 16 ).arg( reinterpret_cast< qint64 >( thread() ), 0, 16 ).toLocal8Bit().constData(); }
+#else
+#define QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL do {} while(false);
+#endif
+
 
 /**
  * \ingroup core
