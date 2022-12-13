@@ -105,7 +105,23 @@ void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeat
   requestB.setNoAttributes();
   if ( outputAttrs != OutputBA )
     requestB.setDestinationCrs( sourceA.sourceCrs(), context.transformContext() );
-  const QgsSpatialIndex indexB( sourceB.getFeatures( requestB ), feedback );
+
+  double step = sourceB.featureCount() > 0 ? 100.0 / sourceB.featureCount() : 1;
+  long long i = 0;
+  QgsFeatureIterator fi = sourceB.getFeatures( requestB );
+
+  feedback->setProgressText( QObject::tr( "Creating spatial index" ) );
+  const QgsSpatialIndex indexB( fi, [&]( const QgsFeature & )->bool
+  {
+    i++;
+    if ( feedback->isCanceled() )
+      return false;
+
+    feedback->setProgress( i * step );
+
+    return true;
+  } );
+
   if ( feedback->isCanceled() )
     return;
 
@@ -116,6 +132,8 @@ void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeat
 
   if ( totalCount == 0 )
     totalCount = 1;  // avoid division by zero
+
+  feedback->setProgressText( QObject::tr( "Calculating difference" ) );
 
   QgsFeature featA;
   QgsFeatureRequest requestA;
@@ -222,12 +240,29 @@ void QgsOverlayUtils::intersection( const QgsFeatureSource &sourceA, const QgsFe
   request.setDestinationCrs( sourceA.sourceCrs(), context.transformContext() );
 
   QgsFeature outFeat;
-  const QgsSpatialIndex indexB( sourceB.getFeatures( request ), feedback );
+
+  double step = sourceB.featureCount() > 0 ? 100.0 / sourceB.featureCount() : 1;
+  long long i = 0;
+  QgsFeatureIterator fi = sourceB.getFeatures( request );
+  feedback->setProgressText( QObject::tr( "Creating spatial index" ) );
+  const QgsSpatialIndex indexB( fi, [&]( const QgsFeature & )->bool
+  {
+    i++;
+    if ( feedback->isCanceled() )
+      return false;
+
+    feedback->setProgress( i * step );
+
+    return true;
+  } );
+
   if ( feedback->isCanceled() )
     return;
 
   if ( totalCount == 0 )
     totalCount = 1;  // avoid division by zero
+
+  feedback->setProgressText( QObject::tr( "Calculating intersection" ) );
 
   QgsFeature featA;
   QgsFeatureIterator fitA = sourceA.getFeatures( QgsFeatureRequest().setSubsetOfAttributes( fieldIndicesA ) );
