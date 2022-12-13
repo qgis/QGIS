@@ -2077,9 +2077,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! handle project crs changes
     void projectCrsChanged();
 
-    //! handles project global map shading changes
-    void projectMapShadingChanged();
-
     //! Updates the temporal range in layers that are using project temporal range.
     void projectTemporalRangeChanged();
 
@@ -2488,8 +2485,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QProgressBar *mProgressBar = nullptr;
     //! Widget used to suppress rendering
     QCheckBox *mRenderSuppressionCBox = nullptr;
-    //! Widget used to enable/disable global map shading
-    QCheckBox *mMapShadingCheckBox = nullptr;
     //! Widget in status bar used to show current project CRS
     QLabel *mOnTheFlyProjectionStatusLabel = nullptr;
     //! Widget in status bar used to show status of on the fly projection

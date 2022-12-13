@@ -3940,13 +3940,6 @@ void QgisApp::createStatusBar()
   mRenderSuppressionCBox->setToolTip( tr( "Toggle map rendering" ) );
   mStatusBar->addPermanentWidget( mRenderSuppressionCBox, 0 );
 
-  mMapShadingCheckBox = new QCheckBox( tr( "Shading" ), mStatusBar );
-  mMapShadingCheckBox->setObjectName( QStringLiteral( "mMapShadingCheckBox" ) );
-  mMapShadingCheckBox->setChecked( true );
-  mMapShadingCheckBox->setFont( statusBarFont );
-  mMapShadingCheckBox->setToolTip( tr( "Toggle global map shading" ) );
-  mStatusBar->addPermanentWidget( mMapShadingCheckBox, 0 );
-
   // On the fly projection status bar icon
   // Changed this to a tool button since a QPushButton is
   // sculpted on OS X and the icon is never displayed [gsherman]
@@ -4270,8 +4263,6 @@ void QgisApp::setupConnections()
       canvasRefreshFinished(); // deals with the busy indicator in case of ongoing rendering
   } );
 
-  connect( mMapShadingCheckBox, &QAbstractButton::toggled, QgsProject::instance(), &QgsProject::setMapShadingEnabled );
-
   connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgisApp::reprojectAnnotations );
 
   // connect MapCanvas keyPress event so we can check if selected feature collection must be deleted
@@ -4280,7 +4271,6 @@ void QgisApp::setupConnections()
   // project crs connections
   connect( QgsProject::instance(), &QgsProject::crsChanged, this, &QgisApp::projectCrsChanged );
 
-  connect( QgsProject::instance(), &QgsProject::mapShadingRendererChanged, this, &QgisApp::projectMapShadingChanged );
   connect( QgsProject::instance()->viewSettings(), &QgsProjectViewSettings::mapScalesChanged, this, [ = ] { mScaleWidget->updateScales(); } );
 
   connect( QgsProject::instance(), &QgsProject::missingDatumTransforms, this, [ = ]( const QStringList & transforms )
@@ -11545,11 +11535,6 @@ void QgisApp::projectCrsChanged()
                                 QgsProject::instance()->crs(), it.value() );
     }
   }
-}
-
-void QgisApp::projectMapShadingChanged()
-{
-  whileBlocking( mMapShadingCheckBox )->setChecked( QgsProject::instance()->mapShadingRenderer().isActive() );
 }
 
 void QgisApp::projectTemporalRangeChanged()
