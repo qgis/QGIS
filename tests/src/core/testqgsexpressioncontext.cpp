@@ -1008,7 +1008,6 @@ void TestQgsExpressionContext::layerStores()
   scope1->addLayerStore( store2.get() );
   QCOMPARE( scope1->layerStores(), QList< QgsMapLayerStore *>( {&store1, store2.get() } ) );
 
-  QgsExpressionContextScope *scope2 = new QgsExpressionContextScope();
   QgsExpressionContextScope *scope3 = new QgsExpressionContextScope();
   QgsMapLayerStore store3;
   scope3->addLayerStore( &store3 );
@@ -1017,6 +1016,8 @@ void TestQgsExpressionContext::layerStores()
 
   QgsExpressionContext context;
   QVERIFY( context.layerStores().isEmpty() );
+
+  QgsExpressionContextScope *scope2 = new QgsExpressionContextScope();
   context.appendScopes( { scope1, scope2, scope3 } );
   // stores from scope 3 should take precedence
   QCOMPARE( context.layerStores(), QList< QgsMapLayerStore *>( {&store3, &store1, store2.get() } ) );
