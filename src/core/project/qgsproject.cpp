@@ -68,6 +68,7 @@
 #include "qgsprojectelevationproperties.h"
 #include "qgscombinedstylemodel.h"
 #include "qgsprojectgpssettings.h"
+#include "qgsthreadingutils.h"
 
 #include <algorithm>
 #include <QApplication>
@@ -486,6 +487,8 @@ QgsProject *QgsProject::instance()
 
 void QgsProject::setTitle( const QString &title )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( title == mMetadata.title() )
     return;
 
@@ -498,11 +501,15 @@ void QgsProject::setTitle( const QString &title )
 
 QString QgsProject::title() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mMetadata.title();
 }
 
 void QgsProject::setFlags( Qgis::ProjectFlags flags )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const bool oldEvaluateDefaultValues = mFlags & Qgis::ProjectFlag::EvaluateDefaultValuesOnProviderSide;
   const bool newEvaluateDefaultValues = flags & Qgis::ProjectFlag::EvaluateDefaultValuesOnProviderSide;
   if ( oldEvaluateDefaultValues != newEvaluateDefaultValues )
@@ -536,6 +543,8 @@ void QgsProject::setFlags( Qgis::ProjectFlags flags )
 
 void QgsProject::setFlag( Qgis::ProjectFlag flag, bool enabled )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   Qgis::ProjectFlags newFlags = mFlags;
   if ( enabled )
     newFlags |= flag;
@@ -546,31 +555,43 @@ void QgsProject::setFlag( Qgis::ProjectFlag flag, bool enabled )
 
 QString QgsProject::saveUser() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mSaveUser;
 }
 
 QString QgsProject::saveUserFullName() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mSaveUserFull;
 }
 
 QDateTime QgsProject::lastSaveDateTime() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mSaveDateTime;
 }
 
 QgsProjectVersion QgsProject::lastSaveVersion() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mSaveVersion;
 }
 
 bool QgsProject::isDirty() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mDirty;
 }
 
 void QgsProject::setDirty( const bool dirty )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( dirty && mDirtyBlockCount > 0 )
     return;
 
@@ -586,6 +607,8 @@ void QgsProject::setDirty( const bool dirty )
 
 void QgsProject::setPresetHomePath( const QString &path )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( path == mHomePath )
     return;
 
@@ -600,6 +623,8 @@ void QgsProject::setPresetHomePath( const QString &path )
 
 void QgsProject::registerTranslatableContainers( QgsTranslationContext *translationContext, QgsAttributeEditorContainer *parent, const QString &layerId )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const QList<QgsAttributeEditorElement *> elements = parent->children();
 
   for ( QgsAttributeEditorElement *element : elements )
@@ -618,6 +643,8 @@ void QgsProject::registerTranslatableContainers( QgsTranslationContext *translat
 
 void QgsProject::registerTranslatableObjects( QgsTranslationContext *translationContext )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   //register layers
   const QList<QgsLayerTreeLayer *> layers = mRootGroup->findLayers();
 
@@ -671,16 +698,22 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
 
 void QgsProject::setDataDefinedServerProperties( const QgsPropertyCollection &properties )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   mDataDefinedServerProperties = properties;
 }
 
 QgsPropertyCollection QgsProject::dataDefinedServerProperties() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mDataDefinedServerProperties;
 }
 
 bool QgsProject::startEditing( QgsVectorLayer *vectorLayer )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   switch ( mTransactionMode )
   {
     case Qgis::TransactionMode::Disabled:
@@ -700,6 +733,8 @@ bool QgsProject::startEditing( QgsVectorLayer *vectorLayer )
 
 bool QgsProject::commitChanges( QStringList &commitErrors, bool stopEditing, QgsVectorLayer *vectorLayer )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   switch ( mTransactionMode )
   {
     case Qgis::TransactionMode::Disabled:
@@ -724,6 +759,8 @@ bool QgsProject::commitChanges( QStringList &commitErrors, bool stopEditing, Qgs
 
 bool QgsProject::rollBack( QStringList &rollbackErrors, bool stopEditing, QgsVectorLayer *vectorLayer )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   switch ( mTransactionMode )
   {
     case Qgis::TransactionMode::Disabled:
@@ -748,6 +785,8 @@ bool QgsProject::rollBack( QStringList &rollbackErrors, bool stopEditing, QgsVec
 
 void QgsProject::setFileName( const QString &name )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( name == mFile.fileName() )
     return;
 
@@ -768,31 +807,43 @@ void QgsProject::setFileName( const QString &name )
 
 QString QgsProject::fileName() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mFile.fileName();
 }
 
 void QgsProject::setOriginalPath( const QString &path )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   mOriginalPath = path;
 }
 
 QString QgsProject::originalPath() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mOriginalPath;
 }
 
 QFileInfo QgsProject::fileInfo() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return QFileInfo( mFile );
 }
 
 QgsProjectStorage *QgsProject::projectStorage() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return QgsApplication::projectStorageRegistry()->projectStorageFromUri( mFile.fileName() );
 }
 
 QDateTime QgsProject::lastModified() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( QgsProjectStorage *storage = projectStorage() )
   {
     QgsProjectStorage::Metadata metadata;
@@ -807,6 +858,8 @@ QDateTime QgsProject::lastModified() const
 
 QString QgsProject::absolutePath() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( projectStorage() )
     return QString();
 
@@ -818,6 +871,8 @@ QString QgsProject::absolutePath() const
 
 QString QgsProject::absoluteFilePath() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( projectStorage() )
     return QString();
 
@@ -829,6 +884,8 @@ QString QgsProject::absoluteFilePath() const
 
 QString QgsProject::baseName() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( QgsProjectStorage *storage = projectStorage() )
   {
     QgsProjectStorage::Metadata metadata;
@@ -843,12 +900,16 @@ QString QgsProject::baseName() const
 
 Qgis::FilePathType QgsProject::filePathStorage() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const bool absolutePaths = readBoolEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), false );
   return absolutePaths ? Qgis::FilePathType::Absolute : Qgis::FilePathType::Relative;
 }
 
 void QgsProject::setFilePathStorage( Qgis::FilePathType type )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   switch ( type )
   {
     case Qgis::FilePathType::Absolute:
@@ -862,11 +923,15 @@ void QgsProject::setFilePathStorage( Qgis::FilePathType type )
 
 QgsCoordinateReferenceSystem QgsProject::crs() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mCrs;
 }
 
 void QgsProject::setCrs( const QgsCoordinateReferenceSystem &crs, bool adjustEllipsoid )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( crs != mCrs )
   {
     mCrs = crs;
@@ -888,6 +953,8 @@ void QgsProject::setCrs( const QgsCoordinateReferenceSystem &crs, bool adjustEll
 
 QString QgsProject::ellipsoid() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( !crs().isValid() )
     return geoNone();
 
@@ -896,6 +963,8 @@ QString QgsProject::ellipsoid() const
 
 void QgsProject::setEllipsoid( const QString &ellipsoid )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( ellipsoid == readEntry( QStringLiteral( "Measure" ), QStringLiteral( "/Ellipsoid" ) ) )
     return;
 
@@ -906,11 +975,15 @@ void QgsProject::setEllipsoid( const QString &ellipsoid )
 
 QgsCoordinateTransformContext QgsProject::transformContext() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mTransformContext;
 }
 
 void QgsProject::setTransformContext( const QgsCoordinateTransformContext &context )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( context == mTransformContext )
     return;
 
@@ -927,6 +1000,8 @@ void QgsProject::setTransformContext( const QgsCoordinateTransformContext &conte
 
 void QgsProject::clear()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   ScopedIntIncrementor snapSingleBlocker( &mBlockSnappingUpdates );
 
   mProjectScope.reset();
@@ -1167,7 +1242,6 @@ static void readProjectFileMetadata( const QDomDocument &doc, QString &lastUser,
   lastSaveDateTime = QDateTime::fromString( qgisElement.attribute( QStringLiteral( "saveDateTime" ), QString() ), Qt::ISODate );
 }
 
-
 QgsProjectVersion getVersion( const QDomDocument &doc )
 {
   const QDomNodeList nl = doc.elementsByTagName( QStringLiteral( "qgis" ) );
@@ -1185,14 +1259,17 @@ QgsProjectVersion getVersion( const QDomDocument &doc )
   return projectVersion;
 }
 
-
 QgsSnappingConfig QgsProject::snappingConfig() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mSnappingConfig;
 }
 
 void QgsProject::setSnappingConfig( const QgsSnappingConfig &snappingConfig )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mSnappingConfig == snappingConfig )
     return;
 
@@ -1203,6 +1280,8 @@ void QgsProject::setSnappingConfig( const QgsSnappingConfig &snappingConfig )
 
 void QgsProject::setAvoidIntersectionsMode( const Qgis::AvoidIntersectionsMode mode )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mAvoidIntersectionsMode == mode )
     return;
 
@@ -1212,6 +1291,8 @@ void QgsProject::setAvoidIntersectionsMode( const Qgis::AvoidIntersectionsMode m
 
 bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &brokenNodes, Qgis::ProjectReadFlags flags )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   // Layer order is set by the restoring the legend settings from project file.
   // This is done on the 'readProject( ... )' signal
 
@@ -1294,6 +1375,8 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
 
 bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &brokenNodes, QgsReadWriteContext &context, Qgis::ProjectReadFlags flags )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const QString type = layerElem.attribute( QStringLiteral( "type" ) );
   QgsDebugMsgLevel( "Layer type is " + type, 4 );
   std::unique_ptr<QgsMapLayer> mapLayer;
@@ -1434,6 +1517,8 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
 
 bool QgsProject::read( const QString &filename, Qgis::ProjectReadFlags flags )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   mFile.setFileName( filename );
   mCachedHomePath.clear();
   mProjectScope.reset();
@@ -1443,6 +1528,8 @@ bool QgsProject::read( const QString &filename, Qgis::ProjectReadFlags flags )
 
 bool QgsProject::read( Qgis::ProjectReadFlags flags )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const QString filename = mFile.fileName();
   bool returnValue;
 
@@ -1509,6 +1596,8 @@ bool QgsProject::read( Qgis::ProjectReadFlags flags )
 
 bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlags flags )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   // avoid multiple emission of snapping updated signals
   ScopedIntIncrementor snapSignalBlock( &mBlockSnappingUpdates );
 
@@ -2087,9 +2176,10 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   return true;
 }
 
-
 bool QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group, Qgis::ProjectReadFlags flags )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   bool valid = true;
   const auto constChildren = group->children();
   for ( QgsLayerTreeNode *child : constChildren )
@@ -2139,11 +2229,15 @@ bool QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group, Qgis::ProjectReadF
 
 QVariantMap QgsProject::customVariables() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mCustomVariables;
 }
 
 void QgsProject::setCustomVariables( const QVariantMap &variables )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( variables == mCustomVariables )
     return;
 
@@ -2169,28 +2263,38 @@ void QgsProject::setCustomVariables( const QVariantMap &variables )
 
 void QgsProject::setLabelingEngineSettings( const QgsLabelingEngineSettings &settings )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   *mLabelingEngineSettings = settings;
   emit labelingEngineSettingsChanged();
 }
 
 const QgsLabelingEngineSettings &QgsProject::labelingEngineSettings() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return *mLabelingEngineSettings;
 }
 
 QgsMapLayerStore *QgsProject::layerStore()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   mProjectScope.reset();
   return mLayerStore.get();
 }
 
 const QgsMapLayerStore *QgsProject::layerStore() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mLayerStore.get();
 }
 
 QList<QgsVectorLayer *> QgsProject::avoidIntersectionsLayers() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QList<QgsVectorLayer *> layers;
   const QStringList layerIds = readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/AvoidIntersectionsList" ), QStringList() );
   const auto constLayerIds = layerIds;
@@ -2204,6 +2308,8 @@ QList<QgsVectorLayer *> QgsProject::avoidIntersectionsLayers() const
 
 void QgsProject::setAvoidIntersectionsLayers( const QList<QgsVectorLayer *> &layers )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QStringList list;
   list.reserve( layers.size() );
   for ( QgsVectorLayer *layer : layers )
@@ -2214,6 +2320,8 @@ void QgsProject::setAvoidIntersectionsLayers( const QList<QgsVectorLayer *> &lay
 
 QgsExpressionContext QgsProject::createExpressionContext() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsExpressionContext context;
 
   context << QgsExpressionContextUtils::globalScope()
@@ -2224,6 +2332,8 @@ QgsExpressionContext QgsProject::createExpressionContext() const
 
 QgsExpressionContextScope *QgsProject::createExpressionContextScope() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   // MUCH cheaper to clone than build
   if ( mProjectScope )
   {
@@ -2308,6 +2418,8 @@ QgsExpressionContextScope *QgsProject::createExpressionContextScope() const
 
 void QgsProject::onMapLayersAdded( const QList<QgsMapLayer *> &layers )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const QMap<QString, QgsMapLayer *> existingMaps = mapLayers();
 
   const auto constLayers = layers;
@@ -2338,12 +2450,16 @@ void QgsProject::onMapLayersAdded( const QList<QgsMapLayer *> &layers )
 
 void QgsProject::onMapLayersRemoved( const QList<QgsMapLayer *> &layers )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( !mBlockSnappingUpdates && mSnappingConfig.removeLayers( layers ) )
     emit snappingConfigChanged( mSnappingConfig );
 }
 
 void QgsProject::cleanTransactionGroups( bool force )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   bool changed = false;
   for ( QMap< QPair< QString, QString>, QgsTransactionGroup *>::Iterator tg = mTransactionGroups.begin(); tg != mTransactionGroups.end(); )
   {
@@ -2364,6 +2480,8 @@ void QgsProject::cleanTransactionGroups( bool force )
 
 void QgsProject::updateTransactionGroups()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   mEditBufferGroup.clear();
 
   switch ( mTransactionMode )
@@ -2432,6 +2550,8 @@ void QgsProject::updateTransactionGroups()
 
 bool QgsProject::readLayer( const QDomNode &layerNode )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsReadWriteContext context;
   context.setPathResolver( pathResolver() );
   context.setProjectTranslator( this );
@@ -2460,6 +2580,8 @@ bool QgsProject::readLayer( const QDomNode &layerNode )
 
 bool QgsProject::write( const QString &filename )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   mFile.setFileName( filename );
   mCachedHomePath.clear();
   return write();
@@ -2467,6 +2589,8 @@ bool QgsProject::write( const QString &filename )
 
 bool QgsProject::write()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   mProjectScope.reset();
   if ( QgsProjectStorage *storage = projectStorage() )
   {
@@ -2550,6 +2674,8 @@ bool QgsProject::write()
 
 bool QgsProject::writeProjectFile( const QString &filename )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QFile projectFile( filename );
   clearError();
 
@@ -2887,6 +3013,8 @@ bool QgsProject::writeProjectFile( const QString &filename )
 
 bool QgsProject::writeEntry( const QString &scope, QString const &key, bool value )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   bool propertiesModified;
   const bool success = addKey_( scope, key, &mProperties, value, propertiesModified );
 
@@ -2898,6 +3026,8 @@ bool QgsProject::writeEntry( const QString &scope, QString const &key, bool valu
 
 bool QgsProject::writeEntry( const QString &scope, const QString &key, double value )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   bool propertiesModified;
   const bool success = addKey_( scope, key, &mProperties, value, propertiesModified );
 
@@ -2909,6 +3039,8 @@ bool QgsProject::writeEntry( const QString &scope, const QString &key, double va
 
 bool QgsProject::writeEntry( const QString &scope, QString const &key, int value )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   bool propertiesModified;
   const bool success = addKey_( scope, key, &mProperties, value, propertiesModified );
 
@@ -2920,6 +3052,8 @@ bool QgsProject::writeEntry( const QString &scope, QString const &key, int value
 
 bool QgsProject::writeEntry( const QString &scope, const QString &key, const QString &value )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   bool propertiesModified;
   const bool success = addKey_( scope, key, &mProperties, value, propertiesModified );
 
@@ -2931,6 +3065,8 @@ bool QgsProject::writeEntry( const QString &scope, const QString &key, const QSt
 
 bool QgsProject::writeEntry( const QString &scope, const QString &key, const QStringList &value )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   bool propertiesModified;
   const bool success = addKey_( scope, key, &mProperties, value, propertiesModified );
 
@@ -2945,6 +3081,8 @@ QStringList QgsProject::readListEntry( const QString &scope,
                                        const QStringList &def,
                                        bool *ok ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsProjectProperty *property = findKey_( scope, key, mProperties );
 
   QVariant value;
@@ -2969,12 +3107,13 @@ QStringList QgsProject::readListEntry( const QString &scope,
   return def;
 }
 
-
 QString QgsProject::readEntry( const QString &scope,
                                const QString &key,
                                const QString &def,
                                bool *ok ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsProjectProperty *property = findKey_( scope, key, mProperties );
 
   QVariant value;
@@ -2999,6 +3138,8 @@ QString QgsProject::readEntry( const QString &scope,
 int QgsProject::readNumEntry( const QString &scope, const QString &key, int def,
                               bool *ok ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsProjectProperty *property = findKey_( scope, key, mProperties );
 
   QVariant value;
@@ -3027,6 +3168,8 @@ double QgsProject::readDoubleEntry( const QString &scope, const QString &key,
                                     double def,
                                     bool *ok ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsProjectProperty *property = findKey_( scope, key, mProperties );
   if ( property )
   {
@@ -3048,6 +3191,8 @@ double QgsProject::readDoubleEntry( const QString &scope, const QString &key,
 bool QgsProject::readBoolEntry( const QString &scope, const QString &key, bool def,
                                 bool *ok ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsProjectProperty *property = findKey_( scope, key, mProperties );
 
   if ( property )
@@ -3069,6 +3214,8 @@ bool QgsProject::readBoolEntry( const QString &scope, const QString &key, bool d
 
 bool QgsProject::removeEntry( const QString &scope, const QString &key )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( findKey_( scope, key, mProperties ) )
   {
     removeKey_( scope, key, mProperties );
@@ -3078,9 +3225,10 @@ bool QgsProject::removeEntry( const QString &scope, const QString &key )
   return !findKey_( scope, key, mProperties );
 }
 
-
 QStringList QgsProject::entryList( const QString &scope, const QString &key ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsProjectProperty *foundProperty = findKey_( scope, key, mProperties );
 
   QStringList entries;
@@ -3098,6 +3246,8 @@ QStringList QgsProject::entryList( const QString &scope, const QString &key ) co
 
 QStringList QgsProject::subkeyList( const QString &scope, const QString &key ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsProjectProperty *foundProperty = findKey_( scope, key, mProperties );
 
   QStringList entries;
@@ -3115,11 +3265,15 @@ QStringList QgsProject::subkeyList( const QString &scope, const QString &key ) c
 
 void QgsProject::dumpProperties() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   dump_( mProperties );
 }
 
 QgsPathResolver QgsProject::pathResolver() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QString filePath;
   switch ( filePathStorage() )
   {
@@ -3148,37 +3302,51 @@ QgsPathResolver QgsProject::pathResolver() const
 
 QString QgsProject::readPath( const QString &src ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return pathResolver().readPath( src );
 }
 
 QString QgsProject::writePath( const QString &src ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return pathResolver().writePath( src );
 }
 
 void QgsProject::setError( const QString &errorMessage )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   mErrorMessage = errorMessage;
 }
 
 QString QgsProject::error() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mErrorMessage;
 }
 
 void QgsProject::clearError()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   setError( QString() );
 }
 
 void QgsProject::setBadLayerHandler( QgsProjectBadLayerHandler *handler )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   delete mBadLayerHandler;
   mBadLayerHandler = handler;
 }
 
 QString QgsProject::layerIsEmbedded( const QString &id ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const QHash< QString, QPair< QString, bool > >::const_iterator it = mEmbeddedLayers.find( id );
   if ( it == mEmbeddedLayers.constEnd() )
   {
@@ -3190,6 +3358,8 @@ QString QgsProject::layerIsEmbedded( const QString &id ) const
 bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &projectFilePath, QList<QDomNode> &brokenNodes,
                                       bool saveFlag, Qgis::ProjectReadFlags flags )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsDebugCall;
 
   static QString sPrevProjectFilePath;
@@ -3281,9 +3451,10 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
   return false;
 }
 
-
 QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers, Qgis::ProjectReadFlags flags )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QString qgsProjectFile = projectFilePath;
   QgsProjectArchive archive;
   if ( projectFilePath.endsWith( QLatin1String( ".qgz" ), Qt::CaseInsensitive ) )
@@ -3360,6 +3531,8 @@ QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, co
 
 void QgsProject::initializeEmbeddedSubtree( const QString &projectFilePath, QgsLayerTreeGroup *group, Qgis::ProjectReadFlags flags )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const auto constChildren = group->children();
   for ( QgsLayerTreeNode *child : constChildren )
   {
@@ -3381,27 +3554,37 @@ void QgsProject::initializeEmbeddedSubtree( const QString &projectFilePath, QgsL
 
 bool QgsProject::evaluateDefaultValues() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mFlags & Qgis::ProjectFlag::EvaluateDefaultValuesOnProviderSide;
 }
 
 void QgsProject::setEvaluateDefaultValues( bool evaluateDefaultValues )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   setFlag( Qgis::ProjectFlag::EvaluateDefaultValuesOnProviderSide, evaluateDefaultValues );
 }
 
 void QgsProject::setTopologicalEditing( bool enabled )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   writeEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/TopologicalEditing" ), ( enabled ? 1 : 0 ) );
   emit topologicalEditingChanged();
 }
 
 bool QgsProject::topologicalEditing() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return readNumEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/TopologicalEditing" ), 0 );
 }
 
 void QgsProject::setDistanceUnits( QgsUnitTypes::DistanceUnit unit )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mDistanceUnits == unit )
     return;
 
@@ -3412,6 +3595,8 @@ void QgsProject::setDistanceUnits( QgsUnitTypes::DistanceUnit unit )
 
 void QgsProject::setAreaUnits( QgsUnitTypes::AreaUnit unit )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mAreaUnits == unit )
     return;
 
@@ -3422,6 +3607,8 @@ void QgsProject::setAreaUnits( QgsUnitTypes::AreaUnit unit )
 
 QString QgsProject::homePath() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( !mCachedHomePath.isEmpty() )
     return mCachedHomePath;
 
@@ -3463,126 +3650,176 @@ QString QgsProject::homePath() const
 
 QString QgsProject::presetHomePath() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mHomePath;
 }
 
 QgsRelationManager *QgsProject::relationManager() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mRelationManager;
 }
 
 const QgsLayoutManager *QgsProject::layoutManager() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mLayoutManager.get();
 }
 
 QgsLayoutManager *QgsProject::layoutManager()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mLayoutManager.get();
 }
 
 const QgsMapViewsManager *QgsProject::viewsManager() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return m3DViewsManager.get();
 }
 
 QgsMapViewsManager *QgsProject::viewsManager()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return m3DViewsManager.get();
 }
 
 const QgsBookmarkManager *QgsProject::bookmarkManager() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mBookmarkManager;
 }
 
 QgsBookmarkManager *QgsProject::bookmarkManager()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mBookmarkManager;
 }
 
 const QgsProjectViewSettings *QgsProject::viewSettings() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mViewSettings;
 }
 
 QgsProjectViewSettings *QgsProject::viewSettings()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mViewSettings;
 }
 
 const QgsProjectStyleSettings *QgsProject::styleSettings() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mStyleSettings;
 }
 
 QgsProjectStyleSettings *QgsProject::styleSettings()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mStyleSettings;
 }
 
 const QgsProjectTimeSettings *QgsProject::timeSettings() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mTimeSettings;
 }
 
 QgsProjectTimeSettings *QgsProject::timeSettings()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mTimeSettings;
 }
 
 const QgsProjectElevationProperties *QgsProject::elevationProperties() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mElevationProperties;
 }
 
 QgsProjectElevationProperties *QgsProject::elevationProperties()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mElevationProperties;
 }
 
 const QgsProjectDisplaySettings *QgsProject::displaySettings() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mDisplaySettings;
 }
 
 QgsProjectDisplaySettings *QgsProject::displaySettings()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mDisplaySettings;
 }
 
 const QgsProjectGpsSettings *QgsProject::gpsSettings() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mGpsSettings;
 }
 
 QgsProjectGpsSettings *QgsProject::gpsSettings()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mGpsSettings;
 }
 
 QgsLayerTree *QgsProject::layerTreeRoot() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mRootGroup;
 }
 
 QgsMapThemeCollection *QgsProject::mapThemeCollection()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mMapThemeCollection.get();
 }
 
 QgsAnnotationManager *QgsProject::annotationManager()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mAnnotationManager.get();
 }
 
 const QgsAnnotationManager *QgsProject::annotationManager() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mAnnotationManager.get();
 }
 
 void QgsProject::setNonIdentifiableLayers( const QList<QgsMapLayer *> &layers )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const QMap<QString, QgsMapLayer *> &projectLayers = mapLayers();
   for ( QMap<QString, QgsMapLayer *>::const_iterator it = projectLayers.constBegin(); it != projectLayers.constEnd(); ++it )
   {
@@ -3602,6 +3839,8 @@ void QgsProject::setNonIdentifiableLayers( const QList<QgsMapLayer *> &layers )
 
 void QgsProject::setNonIdentifiableLayers( const QStringList &layerIds )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QList<QgsMapLayer *> nonIdentifiableLayers;
   nonIdentifiableLayers.reserve( layerIds.count() );
   for ( const QString &layerId : layerIds )
@@ -3617,6 +3856,8 @@ void QgsProject::setNonIdentifiableLayers( const QStringList &layerIds )
 
 QStringList QgsProject::nonIdentifiableLayers() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QStringList nonIdentifiableLayers;
 
   const QMap<QString, QgsMapLayer *> &layers = mapLayers();
@@ -3632,11 +3873,15 @@ QStringList QgsProject::nonIdentifiableLayers() const
 
 bool QgsProject::autoTransaction() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mTransactionMode == Qgis::TransactionMode::AutomaticGroups;
 }
 
 void QgsProject::setAutoTransaction( bool autoTransaction )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( autoTransaction
        && mTransactionMode == Qgis::TransactionMode::AutomaticGroups )
     return;
@@ -3655,11 +3900,15 @@ void QgsProject::setAutoTransaction( bool autoTransaction )
 
 Qgis::TransactionMode QgsProject::transactionMode() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mTransactionMode;
 }
 
 bool QgsProject::setTransactionMode( Qgis::TransactionMode transactionMode )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( transactionMode == mTransactionMode )
     return true;
 
@@ -3681,6 +3930,8 @@ bool QgsProject::setTransactionMode( Qgis::TransactionMode transactionMode )
 
 QMap<QPair<QString, QString>, QgsTransactionGroup *> QgsProject::transactionGroups()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mTransactionGroups;
 }
 
@@ -3692,26 +3943,36 @@ QMap<QPair<QString, QString>, QgsTransactionGroup *> QgsProject::transactionGrou
 
 int QgsProject::count() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mLayerStore->count();
 }
 
 int QgsProject::validCount() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mLayerStore->validCount();
 }
 
 QgsMapLayer *QgsProject::mapLayer( const QString &layerId ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mLayerStore->mapLayer( layerId );
 }
 
 QList<QgsMapLayer *> QgsProject::mapLayersByName( const QString &layerName ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mLayerStore->mapLayersByName( layerName );
 }
 
 QList<QgsMapLayer *> QgsProject::mapLayersByShortName( const QString &shortName ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QList<QgsMapLayer *> layers;
   const auto constMapLayers { mLayerStore->mapLayers() };
   for ( const auto &l : constMapLayers )
@@ -3731,6 +3992,8 @@ QList<QgsMapLayer *> QgsProject::mapLayersByShortName( const QString &shortName 
 
 bool QgsProject::unzip( const QString &filename, Qgis::ProjectReadFlags flags )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   clearError();
   std::unique_ptr<QgsProjectArchive> archive( new QgsProjectArchive() );
 
@@ -3778,6 +4041,8 @@ bool QgsProject::unzip( const QString &filename, Qgis::ProjectReadFlags flags )
 
 bool QgsProject::zip( const QString &filename )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   clearError();
 
   // save the current project in a temporary .qgs file
@@ -3863,6 +4128,8 @@ bool QgsProject::zip( const QString &filename )
 
 bool QgsProject::isZipped() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return QgsZipUtils::isZipFile( mFile.fileName() );
 }
 
@@ -3871,6 +4138,8 @@ QList<QgsMapLayer *> QgsProject::addMapLayers(
   bool addToLegend,
   bool takeOwnership )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const QList<QgsMapLayer *> myResultList { mLayerStore->addMapLayers( layers, takeOwnership ) };
   if ( !myResultList.isEmpty() )
   {
@@ -3910,6 +4179,8 @@ QgsProject::addMapLayer( QgsMapLayer *layer,
                          bool addToLegend,
                          bool takeOwnership )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QList<QgsMapLayer *> addedLayers;
   addedLayers = addMapLayers( QList<QgsMapLayer *>() << layer, addToLegend, takeOwnership );
   return addedLayers.isEmpty() ? nullptr : addedLayers[0];
@@ -3917,6 +4188,8 @@ QgsProject::addMapLayer( QgsMapLayer *layer,
 
 void QgsProject::removeAuxiliaryLayer( const QgsMapLayer *ml )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( ! ml || ml->type() != QgsMapLayerType::VectorLayer )
     return;
 
@@ -3930,6 +4203,8 @@ void QgsProject::removeAuxiliaryLayer( const QgsMapLayer *ml )
 
 void QgsProject::removeMapLayers( const QStringList &layerIds )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   for ( const auto &layerId : layerIds )
     removeAuxiliaryLayer( mLayerStore->mapLayer( layerId ) );
 
@@ -3939,6 +4214,8 @@ void QgsProject::removeMapLayers( const QStringList &layerIds )
 
 void QgsProject::removeMapLayers( const QList<QgsMapLayer *> &layers )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   for ( const auto &layer : layers )
     removeAuxiliaryLayer( layer );
 
@@ -3948,6 +4225,8 @@ void QgsProject::removeMapLayers( const QList<QgsMapLayer *> &layers )
 
 void QgsProject::removeMapLayer( const QString &layerId )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   removeAuxiliaryLayer( mLayerStore->mapLayer( layerId ) );
   mProjectScope.reset();
   mLayerStore->removeMapLayer( layerId );
@@ -3955,6 +4234,8 @@ void QgsProject::removeMapLayer( const QString &layerId )
 
 void QgsProject::removeMapLayer( QgsMapLayer *layer )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   removeAuxiliaryLayer( layer );
   mProjectScope.reset();
   mLayerStore->removeMapLayer( layer );
@@ -3962,17 +4243,23 @@ void QgsProject::removeMapLayer( QgsMapLayer *layer )
 
 QgsMapLayer *QgsProject::takeMapLayer( QgsMapLayer *layer )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   mProjectScope.reset();
   return mLayerStore->takeMapLayer( layer );
 }
 
 QgsAnnotationLayer *QgsProject::mainAnnotationLayer()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mMainAnnotationLayer;
 }
 
 void QgsProject::removeAllMapLayers()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mLayerStore->count() == 0 )
     return;
 
@@ -3988,6 +4275,8 @@ void QgsProject::removeAllMapLayers()
 
 void QgsProject::reloadAllLayers()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const QMap<QString, QgsMapLayer *> layers = mLayerStore->mapLayers();
   QMap<QString, QgsMapLayer *>::const_iterator it = layers.constBegin();
   for ( ; it != layers.constEnd(); ++it )
@@ -3998,21 +4287,29 @@ void QgsProject::reloadAllLayers()
 
 QMap<QString, QgsMapLayer *> QgsProject::mapLayers( const bool validOnly ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return validOnly ? mLayerStore->validMapLayers() : mLayerStore->mapLayers();
 }
 
 QgsTransactionGroup *QgsProject::transactionGroup( const QString &providerKey, const QString &connString )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mTransactionGroups.value( qMakePair( providerKey, connString ) );
 }
 
 QgsVectorLayerEditBufferGroup *QgsProject::editBufferGroup()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return &mEditBufferGroup;
 }
 
 QgsCoordinateReferenceSystem QgsProject::defaultCrsForNewLayers() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsCoordinateReferenceSystem defaultCrs;
 
   // TODO QGIS 4.0 -- remove this method, and place it somewhere in app (where it belongs)
@@ -4035,16 +4332,22 @@ QgsCoordinateReferenceSystem QgsProject::defaultCrsForNewLayers() const
 
 void QgsProject::setTrustLayerMetadata( bool trust )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   setFlag( Qgis::ProjectFlag::TrustStoredLayerStatistics, trust );
 }
 
 bool QgsProject::trustLayerMetadata() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mFlags & Qgis::ProjectFlag::TrustStoredLayerStatistics;
 }
 
 bool QgsProject::saveAuxiliaryStorage( const QString &filename )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const QMap<QString, QgsMapLayer *> layers = mapLayers();
   bool empty = true;
   for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
@@ -4088,16 +4391,22 @@ QgsPropertiesDefinition &QgsProject::dataDefinedServerPropertyDefinitions()
 
 const QgsAuxiliaryStorage *QgsProject::auxiliaryStorage() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mAuxiliaryStorage.get();
 }
 
 QgsAuxiliaryStorage *QgsProject::auxiliaryStorage()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mAuxiliaryStorage.get();
 }
 
 QString QgsProject::createAttachedFile( const QString &nameTemplate )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const QDir archiveDir( mArchive->dir() );
   QTemporaryFile tmpFile( archiveDir.filePath( "XXXXXX_" + nameTemplate ), this );
   tmpFile.setAutoRemove( false );
@@ -4108,6 +4417,8 @@ QString QgsProject::createAttachedFile( const QString &nameTemplate )
 
 QStringList QgsProject::attachedFiles() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QStringList attachments;
   const QString baseName = QFileInfo( fileName() ).baseName();
   const QStringList files = mArchive->files();
@@ -4124,16 +4435,22 @@ QStringList QgsProject::attachedFiles() const
 
 bool QgsProject::removeAttachedFile( const QString &path )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mArchive->removeFile( path );
 }
 
 QString QgsProject::attachmentIdentifier( const QString &attachedFile ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return QStringLiteral( "attachment:///%1" ).arg( QFileInfo( attachedFile ).fileName() );
 }
 
 QString QgsProject::resolveAttachmentIdentifier( const QString &identifier ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( identifier.startsWith( QLatin1String( "attachment:///" ) ) )
   {
     return QDir( mArchive->dir() ).absoluteFilePath( identifier.mid( 14 ) );
@@ -4143,11 +4460,15 @@ QString QgsProject::resolveAttachmentIdentifier( const QString &identifier ) con
 
 const QgsProjectMetadata &QgsProject::metadata() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mMetadata;
 }
 
 void QgsProject::setMetadata( const QgsProjectMetadata &metadata )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( metadata == mMetadata )
     return;
 
@@ -4161,6 +4482,8 @@ void QgsProject::setMetadata( const QgsProjectMetadata &metadata )
 
 QSet<QgsMapLayer *> QgsProject::requiredLayers() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QSet<QgsMapLayer *> requiredLayers;
 
   const QMap<QString, QgsMapLayer *> &layers = mapLayers();
@@ -4176,6 +4499,8 @@ QSet<QgsMapLayer *> QgsProject::requiredLayers() const
 
 void QgsProject::setRequiredLayers( const QSet<QgsMapLayer *> &layers )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const QMap<QString, QgsMapLayer *> &projectLayers = mapLayers();
   for ( QMap<QString, QgsMapLayer *>::const_iterator it = projectLayers.constBegin(); it != projectLayers.constEnd(); ++it )
   {
@@ -4191,6 +4516,8 @@ void QgsProject::setRequiredLayers( const QSet<QgsMapLayer *> &layers )
 
 void QgsProject::setProjectColors( const QgsNamedColorList &colors )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   // save colors to project
   QStringList customColors;
   QStringList customColorLabels;
@@ -4211,6 +4538,8 @@ void QgsProject::setProjectColors( const QgsNamedColorList &colors )
 
 void QgsProject::setBackgroundColor( const QColor &color )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mBackgroundColor == color )
     return;
 
@@ -4220,11 +4549,15 @@ void QgsProject::setBackgroundColor( const QColor &color )
 
 QColor QgsProject::backgroundColor() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mBackgroundColor;
 }
 
 void QgsProject::setSelectionColor( const QColor &color )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mSelectionColor == color )
     return;
 
@@ -4234,31 +4567,43 @@ void QgsProject::setSelectionColor( const QColor &color )
 
 QColor QgsProject::selectionColor() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mSelectionColor;
 }
 
 void QgsProject::setMapScales( const QVector<double> &scales )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   mViewSettings->setMapScales( scales );
 }
 
 QVector<double> QgsProject::mapScales() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mViewSettings->mapScales();
 }
 
 void QgsProject::setUseProjectScales( bool enabled )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   mViewSettings->setUseProjectScales( enabled );
 }
 
 bool QgsProject::useProjectScales() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mViewSettings->useProjectScales();
 }
 
 void QgsProject::generateTsFile( const QString &locale )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsTranslationContext translationContext;
   translationContext.setProject( this );
   translationContext.setFileName( QStringLiteral( "%1/%2.ts" ).arg( absolutePath(), baseName() ) );
@@ -4270,6 +4615,8 @@ void QgsProject::generateTsFile( const QString &locale )
 
 QString QgsProject::translate( const QString &context, const QString &sourceText, const char *disambiguation, int n ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( !mTranslator )
   {
     return sourceText;
@@ -4286,6 +4633,8 @@ QString QgsProject::translate( const QString &context, const QString &sourceText
 
 bool QgsProject::accept( QgsStyleEntityVisitorInterface *visitor ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const QMap<QString, QgsMapLayer *> layers = mapLayers( false );
   if ( !layers.empty() )
   {
@@ -4314,6 +4663,8 @@ bool QgsProject::accept( QgsStyleEntityVisitorInterface *visitor ) const
 
 void QgsProject::loadProjectFlags( const QDomDocument *doc )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QDomElement element = doc->documentElement().firstChildElement( QStringLiteral( "projectFlags" ) );
   Qgis::ProjectFlags flags;
   if ( !element.isNull() )
