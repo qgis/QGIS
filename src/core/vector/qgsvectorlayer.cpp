@@ -4945,7 +4945,8 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
                                     const QgsAggregateCalculator::AggregateParameters &parameters, QgsExpressionContext *context,
                                     bool *ok, QgsFeatureIds *fids, QgsFeedback *feedback, QString *error ) const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // non fatal for now -- the aggregate expression functions are not thread safe and call this
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   if ( ok )
     *ok = false;

@@ -104,7 +104,7 @@ class TestQgsDiagram : public QgsTest
     void cleanupTestCase()
     {
       delete mMapSettings;
-      delete mPointsLayer;
+      QgsProject::instance()->removeAllMapLayers();
 
       QgsApplication::exitQgis();
     }
