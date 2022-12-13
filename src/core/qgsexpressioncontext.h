@@ -22,10 +22,13 @@
 #include <QString>
 #include <QStringList>
 #include <QSet>
+#include <QPointer>
+
 #include "qgsexpressionfunction.h"
 #include "qgsfeature.h"
 
 class QgsReadWriteContext;
+class QgsMapLayerStore;
 
 /**
  * \ingroup core
@@ -427,6 +430,26 @@ class CORE_EXPORT QgsExpressionContextScope
      */
     void removeHiddenVariable( const QString &hiddenVariable );
 
+    /**
+     * Adds a layer \a store to the scope.
+     *
+     * Ownership of the \a store is not transferred to the scope, it is the caller's
+     * responsibility to ensure that the store remains alive for the duration of the
+     * expression context.
+     *
+     * \see layerStores()
+     * \since QGIS 3.30
+     */
+    void addLayerStore( QgsMapLayerStore *store );
+
+    /**
+     * Returns the list of layer stores associated with the scope.
+     *
+     * \see addLayerStore()
+     * \since QGIS 3.30
+     */
+    QList< QgsMapLayerStore * > layerStores() const;
+
   private:
     QString mName;
     QHash<QString, StaticVariable> mVariables;
@@ -436,6 +459,8 @@ class CORE_EXPORT QgsExpressionContextScope
     bool mHasGeometry = false;
     QgsGeometry mGeometry;
     QStringList mHiddenVariables;
+
+    QList< QPointer< QgsMapLayerStore > > mLayerStores;
 };
 
 /**
@@ -823,6 +848,13 @@ class CORE_EXPORT QgsExpressionContext
      * \since QGIS 2.16
      */
     void clearCachedValues() const;
+
+    /**
+     * Returns the list of layer stores associated with the context.
+     *
+     * \since QGIS 3.30
+     */
+    QList< QgsMapLayerStore * > layerStores() const;
 
     /**
      * Attach a \a feedback object that can be queried regularly by the expression engine to check

@@ -57,7 +57,7 @@ QgsMapLayer *QgsExpressionUtils::getMapLayer( const QVariant &value, const QgsEx
   return getMapLayerPrivate( value, context, parent );
 }
 
-QgsMapLayer *QgsExpressionUtils::getMapLayerPrivate( const QVariant &value, const QgsExpressionContext *, QgsExpression * )
+QgsMapLayer *QgsExpressionUtils::getMapLayerPrivate( const QVariant &value, const QgsExpressionContext *context, QgsExpression * )
 {
   // First check if we already received a layer pointer
   QPointer< QgsMapLayer > ml = value.value< QgsWeakMapLayerPointer >().data();
@@ -75,6 +75,38 @@ QgsMapLayer *QgsExpressionUtils::getMapLayerPrivate( const QVariant &value, cons
     return ml;
 
   const QString identifier = value.toString();
+
+  // check through layer stores from context
+  if ( context )
+  {
+    const QList< QgsMapLayerStore * > stores = context->layerStores();
+    for ( QgsMapLayerStore *store : stores )
+    {
+      QPointer< QgsMapLayerStore > storePointer( store );
+      auto findLayerInStoreFunction = [ storePointer, &ml, identifier ]
+      {
+        if ( QgsMapLayerStore *store = storePointer.data() )
+        {
+          // look for matching layer by id
+          ml = store->mapLayer( identifier );
+          return;
+
+          // Still nothing? Check for layer name
+          ml = store->mapLayersByName( identifier ).value( 0 );
+        }
+      };
+
+      // Make sure we only deal with the store on the thread where it lives.
+      // Anything else risks a crash.
+      if ( QThread::currentThread() == store->thread() )
+        findLayerInStoreFunction();
+      else
+        QMetaObject::invokeMethod( store, findLayerInStoreFunction, Qt::BlockingQueuedConnection );
+      if ( ml )
+        return ml;
+    }
+  }
+
   // last resort - QgsProject instance. This is bad, we need to remove this!
   auto getMapLayerFromProjectInstance = [ &ml, identifier ]
   {
@@ -136,26 +168,102 @@ void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const 
     return;
   }
 
-  // if no layer stores, then this is only for layers in project and therefore associated with the main thread
-  auto runFunction = [ value, context, expression, &function, &foundLayer ]
+  if ( context->layerStores().empty() )
   {
-    if ( QgsMapLayer *layer = getMapLayerPrivate( value, context, expression ) )
+    // if no layer stores, then this is only for layers in project and therefore associated with the main thread
+    auto runFunction = [ value, context, expression, &function, &foundLayer ]
     {
-      foundLayer = true;
-      function( layer );
-    }
-    else
-    {
-      foundLayer = false;
-    }
-  };
+      if ( QgsMapLayer *layer = getMapLayerPrivate( value, context, expression ) )
+      {
+        foundLayer = true;
+        function( layer );
+      }
+      else
+      {
+        foundLayer = false;
+      }
+    };
 
-  // Make sure we only deal with the layer on the thread where it lives.
-  // Anything else risks a crash.
-  if ( QThread::currentThread() == QgsProject::instance()->thread() )
-    runFunction();
+    // Make sure we only deal with the project on the thread where it lives.
+    // Anything else risks a crash.
+    if ( QThread::currentThread() == QgsProject::instance()->thread() )
+      runFunction();
+    else
+      QMetaObject::invokeMethod( QgsProject::instance(), runFunction, Qt::BlockingQueuedConnection );
+  }
   else
-    QMetaObject::invokeMethod( QgsProject::instance(), runFunction, Qt::BlockingQueuedConnection );
+  {
+    // if layer stores, then we can't be certain in advance of which thread the layer will have affinity with.
+    // So we need to fetch the layer and then run the function on the layer's thread.
+
+    const QString identifier = value.toString();
+    // check through layer stores from context
+    if ( context )
+    {
+      const QList< QgsMapLayerStore * > stores = context->layerStores();
+
+      for ( QgsMapLayerStore *store : stores )
+      {
+        QPointer< QgsMapLayerStore > storePointer( store );
+        auto findLayerInStoreFunction = [ storePointer, identifier, function, &foundLayer ]
+        {
+          QgsMapLayer *ml = nullptr;
+          if ( QgsMapLayerStore *store = storePointer.data() )
+          {
+            // look for matching layer by id
+            ml = store->mapLayer( identifier );
+            if ( !ml )
+            {
+              // Still nothing? Check for layer name
+              ml = store->mapLayersByName( identifier ).value( 0 );
+            }
+
+            if ( ml )
+            {
+              function( ml );
+              foundLayer = true;
+            }
+          }
+        };
+
+        // Make sure we only deal with the store on the thread where it lives.
+        // Anything else risks a crash.
+        if ( QThread::currentThread() == store->thread() )
+          findLayerInStoreFunction();
+        else
+          QMetaObject::invokeMethod( store, findLayerInStoreFunction, Qt::BlockingQueuedConnection );
+
+        if ( foundLayer )
+          return;
+      }
+    }
+
+    // last resort - QgsProject instance. This is bad, we need to remove this!
+    auto getMapLayerFromProjectInstance = [ value, &ml, identifier, &function, &foundLayer ]
+    {
+      QgsProject *project = QgsProject::instance();
+
+      // maybe it's a layer id?
+      QgsMapLayer *ml = project->mapLayer( identifier );
+
+      // Still nothing? Check for layer name
+      if ( !ml )
+      {
+        ml = project->mapLayersByName( identifier ).value( 0 );
+      }
+
+      if ( ml )
+      {
+        foundLayer = true;
+        function( ml );
+      }
+    };
+
+    if ( QThread::currentThread() == QgsProject::instance()->thread() )
+      getMapLayerFromProjectInstance();
+    else
+      QMetaObject::invokeMethod( QgsProject::instance(), getMapLayerFromProjectInstance, Qt::BlockingQueuedConnection );
+  }
 }
 
 QVariant QgsExpressionUtils::runMapLayerFunctionThreadSafe( const QVariant &value, const QgsExpressionContext *context, QgsExpression *expression, const std::function<QVariant( QgsMapLayer * )> &function, bool &foundLayer )

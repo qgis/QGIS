@@ -4624,6 +4624,73 @@ class TestQgsExpression: public QObject
       exp = QgsExpression();
       res = QgsExpressionUtils::getMapLayer( QStringLiteral( "xxxA" ), &context, &exp );
       QVERIFY( !res );
+
+      // test using layers from layer store
+      QgsMapLayerStore store;
+      QgsExpressionContextScope *scope = new QgsExpressionContextScope();
+
+      context.appendScope( scope );
+
+      QgsVectorLayer *layer1 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:string&field=datef:date(0,0)" ), QStringLiteral( "test_store_1" ), QStringLiteral( "memory" ) );
+      QgsVectorLayer *layer2 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:string&field=datef:date(0,0)" ), QStringLiteral( "test_store_2" ), QStringLiteral( "memory" ) );
+      store.addMapLayer( layer1 );
+      store.addMapLayer( layer2 );
+      scope->addLayerStore( &store );
+
+      // from layer store, by layer id
+      exp = QgsExpression();
+      res = QgsExpressionUtils::getMapLayer( layer1->id(), &context, &exp );
+      QCOMPARE( res, layer1 );
+      QVERIFY( !exp.hasEvalError() );
+
+      exp = QgsExpression();
+      res = QgsExpressionUtils::getMapLayer( layer2->id(), &context, &exp );
+      QCOMPARE( res, layer2 );
+      QVERIFY( !exp.hasEvalError() );
+
+      exp = QgsExpression();
+      res = QgsExpressionUtils::getMapLayer( mPointsLayer->id(), &context, &exp );
+      QCOMPARE( res, mPointsLayer );
+      QVERIFY( !exp.hasEvalError() );
+
+      // with a second store in a different scope
+      QgsExpressionContextScope *scope2 = new QgsExpressionContextScope();
+
+      context.appendScope( scope2 );
+
+      QgsMapLayerStore store2;
+      QgsVectorLayer *layer3 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:string&field=datef:date(0,0)" ), QStringLiteral( "test_store_3" ), QStringLiteral( "memory" ) );
+      store2.addMapLayer( layer3 );
+      scope2->addLayerStore( &store2 );
+
+      exp = QgsExpression();
+      res = QgsExpressionUtils::getMapLayer( layer3->id(), &context, &exp );
+      QCOMPARE( res, layer3 );
+      QVERIFY( !exp.hasEvalError() );
+
+
+      // from layer store, by name
+
+      exp = QgsExpression();
+      res = QgsExpressionUtils::getMapLayer( layer1->name(), &context, &exp );
+      QCOMPARE( res, layer1 );
+      QVERIFY( !exp.hasEvalError() );
+
+      exp = QgsExpression();
+      res = QgsExpressionUtils::getMapLayer( layer2->name(), &context, &exp );
+      QCOMPARE( res, layer2 );
+      QVERIFY( !exp.hasEvalError() );
+
+      exp = QgsExpression();
+      res = QgsExpressionUtils::getMapLayer( layer3->name(), &context, &exp );
+      QCOMPARE( res, layer3 );
+      QVERIFY( !exp.hasEvalError() );
+
+      exp = QgsExpression();
+      res = QgsExpressionUtils::getMapLayer( mPointsLayer->name(), &context, &exp );
+      QCOMPARE( res, mPointsLayer );
+      QVERIFY( !exp.hasEvalError() );
+
 #if 0
       // TODO -- probably should flag an error here?
       QVERIFY( !exp.hasEvalError() );

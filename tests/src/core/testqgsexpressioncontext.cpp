@@ -22,6 +22,7 @@
 #include "qgsproject.h"
 #include "qgscolorscheme.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsmaplayerstore.h"
 
 #include <QObject>
 #include "qgstest.h"
@@ -59,6 +60,7 @@ class TestQgsExpressionContext : public QObject
     void valuesAsMap();
     void description();
     void readWriteScope();
+    void layerStores();
 
   private:
 
@@ -993,6 +995,34 @@ void TestQgsExpressionContext::readWriteScope()
   QCOMPARE( qgis::listToSet( s2.variableNames() ), QSet< QString >() << QStringLiteral( "v1" ) << QStringLiteral( "v2" ) );
   QCOMPARE( s2.variable( QStringLiteral( "v1" ) ).toString(), QStringLiteral( "t1" ) );
   QCOMPARE( s2.variable( QStringLiteral( "v2" ) ).toInt(), 55 );
+}
+
+void TestQgsExpressionContext::layerStores()
+{
+  QgsExpressionContextScope *scope1 = new QgsExpressionContextScope();
+  QVERIFY( scope1->layerStores().isEmpty() );
+
+  QgsMapLayerStore store1;
+  std::unique_ptr< QgsMapLayerStore > store2 = std::make_unique< QgsMapLayerStore >();
+  scope1->addLayerStore( &store1 );
+  scope1->addLayerStore( store2.get() );
+  QCOMPARE( scope1->layerStores(), QList< QgsMapLayerStore *>( {&store1, store2.get() } ) );
+
+  QgsExpressionContextScope *scope2 = new QgsExpressionContextScope();
+  QgsExpressionContextScope *scope3 = new QgsExpressionContextScope();
+  QgsMapLayerStore store3;
+  scope3->addLayerStore( &store3 );
+
+  QCOMPARE( scope3->layerStores(), QList< QgsMapLayerStore *>( {&store3 } ) );
+
+  QgsExpressionContext context;
+  QVERIFY( context.layerStores().isEmpty() );
+  context.appendScopes( { scope1, scope2, scope3 } );
+  // stores from scope 3 should take precedence
+  QCOMPARE( context.layerStores(), QList< QgsMapLayerStore *>( {&store3, &store1, store2.get() } ) );
+
+  store2.reset();
+  QCOMPARE( context.layerStores(), QList< QgsMapLayerStore *>( {&store3, &store1 } ) );
 }
 
 QGSTEST_MAIN( TestQgsExpressionContext )
