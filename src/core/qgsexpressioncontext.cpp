@@ -48,6 +48,7 @@ QgsExpressionContextScope::QgsExpressionContextScope( const QgsExpressionContext
   , mHasGeometry( other.mHasGeometry )
   , mGeometry( other.mGeometry )
   , mHiddenVariables( other.mHiddenVariables )
+  , mLayerStores( other.mLayerStores )
 {
   QHash<QString, QgsScopedExpressionFunction * >::const_iterator it = other.mFunctions.constBegin();
   for ( ; it != other.mFunctions.constEnd(); ++it )
@@ -65,6 +66,7 @@ QgsExpressionContextScope &QgsExpressionContextScope::operator=( const QgsExpres
   mHasGeometry = other.mHasGeometry;
   mGeometry = other.mGeometry;
   mHiddenVariables = other.mHiddenVariables;
+  mLayerStores = other.mLayerStores;
 
   qDeleteAll( mFunctions );
   mFunctions.clear();
