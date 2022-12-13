@@ -291,9 +291,12 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
 
   if ( layer->elevationProperties() && layer->elevationProperties()->hasElevation() )
   {
+    QgsRasterLayerElevationProperties *elevProp
+      = static_cast<QgsRasterLayerElevationProperties *>( layer->elevationProperties() );
     mDrawElevationMap = true;
-    mElevationScale = layer->elevationProperties()->zScale();
-    mElevationOffset = layer->elevationProperties()->zOffset();
+    mElevationScale = elevProp->zScale();
+    mElevationOffset = elevProp->zOffset();
+    mElevationBand = elevProp->bandNumber();
   }
 
   mFeedback->setRenderContext( rendererContext );
@@ -424,14 +427,13 @@ void QgsRasterLayerRenderer::drawElevationMap()
     qgssize outputWidh = mRasterViewPort->mWidth / dpiScalefactor;
     qgssize outputHeight = mRasterViewPort->mHeight / dpiScalefactor;
 
-    int bandNumber = 1;
     bool canRenderElevation = false;
     std::unique_ptr<QgsRasterBlock> elevationBlock;
     if ( mRasterViewPort->mSrcCRS == mRasterViewPort->mDestCRS )
     {
       elevationBlock.reset(
         dataProvider->block(
-          bandNumber,
+          mElevationBand,
           mRasterViewPort->mDrawnExtent,
           outputWidh,
           outputHeight,
@@ -474,7 +476,7 @@ void QgsRasterLayerRenderer::drawElevationMap()
       else
         alg = QgsGdalUtils::getGDALResamplingAlgorithm( dataProvider->zoomedInResamplingMethod() );
 
-      Qgis::DataType dataType = dataProvider->dataType( bandNumber );
+      Qgis::DataType dataType = dataProvider->dataType( mElevationBand );
 
       // we need extra pixels on border to avoid effect border whith resampling (at least 2 pixels band for cubic alg)
       int sourceWidth = static_cast< int >( std::ceil( extentInLayerCoordinate.width() / requestedResToProvider ) ) + 4;
@@ -482,7 +484,7 @@ void QgsRasterLayerRenderer::drawElevationMap()
       extentInLayerCoordinate = extentInLayerCoordinate.buffered( requestedResToProvider * 2 );
 
       // Now we can do the resampling
-      std::unique_ptr<QgsRasterBlock> sourcedata( dataProvider->block( bandNumber, extentInLayerCoordinate, sourceWidth, sourceHeight, mFeedback ) );
+      std::unique_ptr<QgsRasterBlock> sourcedata( dataProvider->block( mElevationBand, extentInLayerCoordinate, sourceWidth, sourceHeight, mFeedback ) );
       gdal::dataset_unique_ptr gdalDsInput =
         QgsGdalUtils::blockToSingleBandMemoryDataset( extentInLayerCoordinate, sourcedata.get() );
 
@@ -491,7 +493,7 @@ void QgsRasterLayerRenderer::drawElevationMap()
                             outputWidh,
                             outputHeight ) );
 
-      elevationBlock->setNoDataValue( dataProvider->sourceNoDataValue( bandNumber ) );
+      elevationBlock->setNoDataValue( dataProvider->sourceNoDataValue( mElevationBand ) );
 
       gdal::dataset_unique_ptr gdalDsOutput =
         QgsGdalUtils::blockToSingleBandMemoryDataset( mRasterViewPort->mDrawnExtent, elevationBlock.get() );
