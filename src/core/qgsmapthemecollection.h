@@ -160,7 +160,6 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
         /**
          * Returns whether information about checked/unchecked state of groups has been recorded
          * and thus whether checkedGroupNodes() is valid.
-         * \note Not available in Python bindings
          * \since QGIS 3.10.1
          */
         bool hasCheckedStateInfo() const { return mHasCheckedStateInfo; };
@@ -173,7 +172,6 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
 
         /**
          * Sets whether the map theme contains valid checked/unchecked state of group nodes
-         * \note Not available in Python bindings
          * \since QGIS 3.10.1
          */
         void setHasCheckedStateInfo( bool hasInfo ) { mHasCheckedStateInfo = hasInfo; };

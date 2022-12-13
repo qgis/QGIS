@@ -117,10 +117,6 @@ and thus whether :py:func:`~MapThemeRecord.expandedGroupNodes` and expandedLegen
 Returns whether information about checked/unchecked state of groups has been recorded
 and thus whether :py:func:`~MapThemeRecord.checkedGroupNodes` is valid.
 
-.. note::
-
-   Not available in Python bindings
-
 .. versionadded:: 3.10.1
 %End
         void setHasExpandedStateInfo( bool hasInfo );
@@ -133,10 +129,6 @@ Sets whether the map theme contains valid expanded/collapsed state of nodes
         void setHasCheckedStateInfo( bool hasInfo );
 %Docstring
 Sets whether the map theme contains valid checked/unchecked state of group nodes
-
-.. note::
-
-   Not available in Python bindings
 
 .. versionadded:: 3.10.1
 %End
