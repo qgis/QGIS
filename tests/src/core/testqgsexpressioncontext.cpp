@@ -1019,6 +1019,7 @@ void TestQgsExpressionContext::layerStores()
 
   QgsExpressionContextScope *scope2 = new QgsExpressionContextScope();
   context.appendScopes( { scope1, scope2, scope3 } );
+
   // stores from scope 3 should take precedence
   QCOMPARE( context.layerStores(), QList< QgsMapLayerStore *>( {&store3, &store1, store2.get() } ) );
 
