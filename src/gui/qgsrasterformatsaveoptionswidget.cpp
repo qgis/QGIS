@@ -66,14 +66,17 @@ QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget *par
       ( QStringList() << QStringLiteral( "GTiff" ) << tr( "No Compression" )
         << QStringLiteral( "COMPRESS=NONE BIGTIFF=IF_NEEDED" ) );
     sBuiltinProfiles[ QStringLiteral( "z_gtiff_2medium" )] =
-      ( QStringList() << QStringLiteral( "GTiff" ) << tr( "Low Compression" )
+      ( QStringList() << QStringLiteral( "GTiff" ) << tr( "Low Compression (lossless)" )
         << QStringLiteral( "COMPRESS=PACKBITS" ) );
     sBuiltinProfiles[ QStringLiteral( "z_gtiff_3small" )] =
-      ( QStringList() << QStringLiteral( "GTiff" ) << tr( "High Compression" )
+      ( QStringList() << QStringLiteral( "GTiff" ) << tr( "High Compression (lossless)" )
         << QStringLiteral( "COMPRESS=DEFLATE PREDICTOR=2 ZLEVEL=9" ) );
     sBuiltinProfiles[ QStringLiteral( "z_gtiff_4jpeg" )] =
-      ( QStringList() << QStringLiteral( "GTiff" ) << tr( "JPEG Compression" )
+      ( QStringList() << QStringLiteral( "GTiff" ) << tr( "JPEG Compression (lossy)" )
         << QStringLiteral( "COMPRESS=JPEG JPEG_QUALITY=75" ) );
+    sBuiltinProfiles[ QStringLiteral( "z_gtiff_lzw" )] =
+      ( QStringList() << QStringLiteral( "GTiff" ) << tr( "LZW Compression (lossless)" )
+        << QStringLiteral( "COMPRESS=LZW" ) );
 
     // overview compression schemes for GTiff format, see
     // http://www.gdal.org/gdaladdo.html and http://www.gdal.org/frmt_gtiff.html
