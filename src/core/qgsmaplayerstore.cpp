@@ -18,6 +18,7 @@
 #include "qgsmaplayerstore.h"
 #include "qgsmaplayer.h"
 #include "qgslogger.h"
+#include "qgsthreadingutils.h"
 #include <QList>
 
 QgsMapLayerStore::QgsMapLayerStore( QObject *parent )
@@ -76,6 +77,9 @@ QList<QgsMapLayer *> QgsMapLayerStore::addMapLayers( const QList<QgsMapLayer *> 
       QgsDebugMsg( QStringLiteral( "Cannot add null layers" ) );
       continue;
     }
+
+    QGIS_CHECK_QOBJECT_THREAD_EQUALITY( myLayer );
+
     // If the layer is already in the store but its validity has flipped to TRUE reset data source
     if ( mMapLayers.contains( myLayer->id() ) && ! mMapLayers[myLayer->id()]->isValid() && myLayer->isValid() && myLayer->dataProvider() )
     {
