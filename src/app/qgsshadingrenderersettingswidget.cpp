@@ -16,6 +16,7 @@
 #include "qgsshadingrenderersettingswidget.h"
 #include "ui_qgsshadingrenderersettingswidget.h"
 
+#include "qgsapplication.h"
 #include "qgsproject.h"
 #include "qgsshadingrenderer.h"
 
@@ -93,10 +94,11 @@ void QgsShadingRendererSettingsWidget::onChanged()
 
 QgsShadingRendererSettingsWidgetFactory::QgsShadingRendererSettingsWidgetFactory( QObject *parent ): QObject( parent )
 {
-
+  setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mShadingRenderer.svg" ) ) );
+  setTitle( tr( "Shading renderer" ) );
 }
 
-QgsMapLayerConfigWidget *QgsShadingRendererSettingsWidgetFactory::createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget, QWidget *parent ) const
+QgsMapLayerConfigWidget *QgsShadingRendererSettingsWidgetFactory::createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool, QWidget *parent ) const
 {
   return new QgsShadingRendererSettingsWidget( layer, canvas, parent );
 }
