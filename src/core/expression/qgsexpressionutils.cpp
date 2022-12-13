@@ -239,7 +239,7 @@ void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const 
     }
 
     // last resort - QgsProject instance. This is bad, we need to remove this!
-    auto getMapLayerFromProjectInstance = [ value, &ml, identifier, &function, &foundLayer ]
+    auto getMapLayerFromProjectInstance = [ value, identifier, &function, &foundLayer ]
     {
       QgsProject *project = QgsProject::instance();
 
