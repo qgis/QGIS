@@ -117,7 +117,7 @@ void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeat
     if ( feedback->isCanceled() )
       return false;
 
-    feedback->setProgress( static_cast< double >( i * step ) );
+    feedback->setProgress( static_cast< double >( i ) * step );
 
     return true;
   } );
@@ -251,7 +251,7 @@ void QgsOverlayUtils::intersection( const QgsFeatureSource &sourceA, const QgsFe
     if ( feedback->isCanceled() )
       return false;
 
-    feedback->setProgress( static_cast< double >( i * step ) );
+    feedback->setProgress( static_cast< double >( i ) * step );
 
     return true;
   } );
