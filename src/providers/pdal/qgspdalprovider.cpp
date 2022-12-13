@@ -28,6 +28,7 @@
 #include "qgstaskmanager.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsproviderutils.h"
+#include "qgsthreadingutils.h"
 
 #include <pdal/Options.hpp>
 #include <pdal/StageFactory.hpp>
@@ -62,16 +63,22 @@ QgsPdalProvider::~QgsPdalProvider() = default;
 
 QgsCoordinateReferenceSystem QgsPdalProvider::crs() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mCrs;
 }
 
 QgsRectangle QgsPdalProvider::extent() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mExtent;
 }
 
 QgsPointCloudAttributeCollection QgsPdalProvider::attributes() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mIndex ? mIndex->attributes() : QgsPointCloudAttributeCollection();
 }
 
@@ -93,6 +100,8 @@ static QString _outCopcFile( const QString &filename )
 
 void QgsPdalProvider::generateIndex()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mRunningIndexingTask || ( mIndex && mIndex->isValid() ) )
     return;
 
@@ -122,6 +131,8 @@ void QgsPdalProvider::generateIndex()
 
 QgsPointCloudDataProvider::PointCloudIndexGenerationState QgsPdalProvider::indexingState()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mIndex && mIndex->isValid() )
     return PointCloudIndexGenerationState::Indexed;
   else if ( mRunningIndexingTask )
@@ -132,6 +143,8 @@ QgsPointCloudDataProvider::PointCloudIndexGenerationState QgsPdalProvider::index
 
 void QgsPdalProvider::loadIndex( )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mIndex && mIndex->isValid() )
     return;
   // Try to load copc index
@@ -165,6 +178,8 @@ void QgsPdalProvider::loadIndex( )
 
 void QgsPdalProvider::onGenerateIndexFinished()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsPdalIndexingTask *task = qobject_cast<QgsPdalIndexingTask *>( QObject::sender() );
   // this may be already canceled task that we don't care anymore...
   if ( task == mRunningIndexingTask )
@@ -178,6 +193,8 @@ void QgsPdalProvider::onGenerateIndexFinished()
 
 void QgsPdalProvider::onGenerateIndexFailed()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsPdalIndexingTask *task = qobject_cast<QgsPdalIndexingTask *>( QObject::sender() );
   // this may be already canceled task that we don't care anymore...
   if ( task == mRunningIndexingTask )
@@ -196,6 +213,8 @@ void QgsPdalProvider::onGenerateIndexFailed()
 
 bool QgsPdalProvider::anyIndexingTaskExists()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const QList< QgsTask * > tasks = QgsApplication::taskManager()->activeTasks();
   for ( const QgsTask *task : tasks )
   {
@@ -210,36 +229,50 @@ bool QgsPdalProvider::anyIndexingTaskExists()
 
 qint64 QgsPdalProvider::pointCount() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mPointCount;
 }
 
 QVariantMap QgsPdalProvider::originalMetadata() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mOriginalMetadata;
 }
 
 bool QgsPdalProvider::isValid() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mIsValid;
 }
 
 QString QgsPdalProvider::name() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return QStringLiteral( "pdal" );
 }
 
 QString QgsPdalProvider::description() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return QStringLiteral( "Point Clouds PDAL" );
 }
 
 QgsPointCloudIndex *QgsPdalProvider::index() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mIndex.get();
 }
 
 bool QgsPdalProvider::load( const QString &uri )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   try
   {
     pdal::StageFactory stageFactory;
