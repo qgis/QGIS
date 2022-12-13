@@ -17,6 +17,7 @@
 #include "ui_qgsdirectionallightwidget.h"
 
 #include "qgis.h"
+#include <QDebug>
 
 QgsDirectionalLightWidget::QgsDirectionalLightWidget( QWidget *parent ) :
   QWidget( parent )
@@ -25,22 +26,26 @@ QgsDirectionalLightWidget::QgsDirectionalLightWidget( QWidget *parent ) :
 
   connect( mAzimuthSpinBox,  qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value )
   {
-    whileBlocking( mDialAzimuth )->setValue( static_cast<int>( value * 10 ) );
+    whileBlocking( mDialAzimuth )->setValue( static_cast<int>( value * 10 + 1800 ) % 3600 );
+    emit directionChanged();
   } );
 
   connect( mDialAzimuth, &QDial::valueChanged, this, [this]( int value )
   {
-    whileBlocking( mAzimuthSpinBox )->setValue( value / 10.0 );
+    whileBlocking( mAzimuthSpinBox )->setValue( std::fmod( value / 10.0 + 180, 360.0 ) );
+    emit directionChanged();
   } );
 
   connect( mAltitudeSpinBox,  qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value )
   {
     whileBlocking( mAltitudeSlider )->setValue( static_cast<int>( value * 10 ) );
+    emit directionChanged();
   } );
 
   connect( mAltitudeSlider, &QSlider::valueChanged, this, [this]( int value )
   {
     whileBlocking( mAltitudeSpinBox )->setValue( value / 10.0 );
+    emit directionChanged();
   } );
 }
 

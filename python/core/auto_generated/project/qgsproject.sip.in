@@ -1612,7 +1612,7 @@ Returns the shading renderer used for global map shading
 .. versionadded:: 3.30
 %End
 
-    void setMapShadinRenderer( const QgsShadingRenderer &newMapShadinRenderer );
+    void setMapShadingRenderer( const QgsShadingRenderer &newMapShadinRenderer );
 %Docstring
 Sets the shading renderer used for global map shading
 

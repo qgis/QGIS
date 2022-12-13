@@ -4424,7 +4424,7 @@ QgsPropertiesDefinition &QgsProject::dataDefinedServerPropertyDefinitions()
   return sPropertyDefinitions;
 }
 
-void QgsProject::setMapShadinRenderer( const QgsShadingRenderer &newMapShadinRenderer )
+void QgsProject::setMapShadingRenderer( const QgsShadingRenderer &newMapShadinRenderer )
 {
   mMapShadingRenderer = newMapShadinRenderer;
   emit mapShadingRendererChanged();

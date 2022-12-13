@@ -51,6 +51,9 @@ class GUI_EXPORT QgsDirectionalLightWidget : public QWidget, private Ui::QgsDire
     //! Returns the \a altitude value (degree)
     double altitude() const;
 
+
+  signals:
+    void directionChanged();
   private:
 
 };

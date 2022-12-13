@@ -1647,7 +1647,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \since QGIS 3.30
      */
-    void setMapShadinRenderer( const QgsShadingRenderer &newMapShadinRenderer );
+    void setMapShadingRenderer( const QgsShadingRenderer &newMapShadinRenderer );
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();

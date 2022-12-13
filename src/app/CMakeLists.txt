@@ -62,6 +62,7 @@ set(QGIS_APP_SRCS
   qgspuzzlewidget.cpp
   qgsversionmigration.cpp
   qgsrasterattributetableapputils.cpp
+  qgsshadingrenderersettingswidget.cpp
   qgssnappinglayertreemodel.cpp
   qgssnappingwidget.cpp
   qgsstatusbarcoordinateswidget.cpp

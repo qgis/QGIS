@@ -152,7 +152,7 @@ void QgsProjectElevationSettingsWidget::apply()
   shadingRenderer.setLightAltitude( mDirectionalLightWidget->altitude() );
   shadingRenderer.setLightAzimuth( mDirectionalLightWidget->azimuth() );
 
-  QgsProject::instance()->setMapShadinRenderer( shadingRenderer );
+  QgsProject::instance()->setMapShadingRenderer( shadingRenderer );
 }
 
 bool QgsProjectElevationSettingsWidget::validate()
