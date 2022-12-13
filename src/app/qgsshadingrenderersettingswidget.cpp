@@ -25,8 +25,8 @@ QgsShadingRendererSettingsWidget::QgsShadingRendererSettingsWidget( QgsMapLayer 
 {
   setupUi( this );
 
-  mCombineMethodCombo->addItem( tr( "Keep Highest Elevation" ), static_cast<int>( QgsElevationMap::CombineMethod::KeepHighestElevation ) );
-  mCombineMethodCombo->addItem( tr( "Keep Highest Layer in Map" ), static_cast<int>( QgsElevationMap::CombineMethod::KeepNewElevation ) );
+  mCombineMethodCombo->addItem( tr( "Highest Elevation" ), static_cast<int>( QgsElevationMap::CombineMethod::HighestElevation ) );
+  mCombineMethodCombo->addItem( tr( "Based on Layer's Order" ), static_cast<int>( QgsElevationMap::CombineMethod::NewerElevation ) );
 
   syncToProject();
 

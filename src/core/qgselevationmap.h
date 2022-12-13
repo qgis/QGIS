@@ -46,8 +46,8 @@ class CORE_EXPORT QgsElevationMap
     //! Methods used to select the elevation when two elevation map are combined
     enum class CombineMethod
     {
-      KeepHighestElevation, //!< Keep the highest elevation if it is not null
-      KeepNewElevation, //!< Keep the new elevation regardless of its value if it is not null
+      HighestElevation, //!< Keep the highest elevation if it is not null
+      NewerElevation, //!< Keep the new elevation regardless of its value if it is not null
     };
 
     //! Default constructor

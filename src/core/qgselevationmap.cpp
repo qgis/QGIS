@@ -293,7 +293,7 @@ void QgsElevationMap::combine( const QgsElevationMap &otherElevationMap, Combine
       {
         switch ( method )
         {
-          case CombineMethod::KeepHighestElevation:
+          case CombineMethod::HighestElevation:
           {
             double elev = decodeElevation( elevPtr[index] );
             double otherElev = decodeElevation( otherElevPtr[indexOther] );
@@ -301,7 +301,7 @@ void QgsElevationMap::combine( const QgsElevationMap &otherElevationMap, Combine
               elevPtr[index] = otherElevPtr[indexOther];
           }
           break;
-          case CombineMethod::KeepNewElevation:
+          case CombineMethod::NewerElevation:
             elevPtr[index] = otherElevPtr[indexOther];
             break;
         }

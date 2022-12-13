@@ -194,7 +194,7 @@ class CORE_EXPORT QgsShadingRenderer
   private:
     bool mIsActive = true;
 
-    QgsElevationMap::CombineMethod mCombinedElevationMethod = QgsElevationMap::CombineMethod::KeepHighestElevation;
+    QgsElevationMap::CombineMethod mCombinedElevationMethod = QgsElevationMap::CombineMethod::HighestElevation;
 
     bool mRenderEdl = true;
     double mEyeDomeLightingStrength = 1000.0;

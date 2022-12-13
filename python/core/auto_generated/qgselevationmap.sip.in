@@ -34,8 +34,8 @@ in meters.
 
     enum class CombineMethod
     {
-      KeepHighestElevation,
-      KeepNewElevation,
+      HighestElevation,
+      NewerElevation,
     };
 
     QgsElevationMap();
