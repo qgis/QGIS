@@ -4644,11 +4644,17 @@ class TestQgsExpression: public QObject
         QCOMPARE( res, mPointsLayer );
         QVERIFY( !exp.hasEvalError() );
 
+        exp = QgsExpression( QStringLiteral( "layer_property('%1', 'id')" ).arg( pointsLayerId ) );
+        QCOMPARE( exp.evaluate( &context ).toString(), pointsLayerId );
+
         // with layer name
         exp = QgsExpression();
         res = QgsExpressionUtils::getMapLayer( pointsLayerName, &context, &exp );
         QCOMPARE( res, mPointsLayer );
         QVERIFY( !exp.hasEvalError() );
+
+        exp = QgsExpression( QStringLiteral( "layer_property('%1', 'id')" ).arg( pointsLayerName ) );
+        QCOMPARE( exp.evaluate( &context ).toString(), pointsLayerId );
 
         // with string which is neither id or name
         exp = QgsExpression();
@@ -4673,15 +4679,24 @@ class TestQgsExpression: public QObject
         QCOMPARE( res, layer1 );
         QVERIFY( !exp.hasEvalError() );
 
+        exp = QgsExpression( QStringLiteral( "layer_property('%1', 'id')" ).arg( layer1->id() ) );
+        QCOMPARE( exp.evaluate( &context ).toString(), layer1->id() );
+
         exp = QgsExpression();
         res = QgsExpressionUtils::getMapLayer( layer2->id(), &context, &exp );
         QCOMPARE( res, layer2 );
         QVERIFY( !exp.hasEvalError() );
 
+        exp = QgsExpression( QStringLiteral( "layer_property('%1', 'id')" ).arg( layer2->id() ) );
+        QCOMPARE( exp.evaluate( &context ).toString(), layer2->id() );
+
         exp = QgsExpression();
         res = QgsExpressionUtils::getMapLayer( pointsLayerId, &context, &exp );
         QCOMPARE( res, mPointsLayer );
         QVERIFY( !exp.hasEvalError() );
+
+        exp = QgsExpression( QStringLiteral( "layer_property('%1', 'id')" ).arg( pointsLayerId ) );
+        QCOMPARE( exp.evaluate( &context ).toString(), pointsLayerId );
 
         // with a second store in a different scope
         QgsExpressionContextScope *scope2 = new QgsExpressionContextScope();
@@ -4698,6 +4713,9 @@ class TestQgsExpression: public QObject
         QCOMPARE( res, layer3 );
         QVERIFY( !exp.hasEvalError() );
 
+        exp = QgsExpression( QStringLiteral( "layer_property('%1', 'id')" ).arg( layer3->id() ) );
+        QCOMPARE( exp.evaluate( &context ).toString(), layer3->id() );
+
 
         // from layer store, by name
 
@@ -4706,20 +4724,32 @@ class TestQgsExpression: public QObject
         QCOMPARE( res, layer1 );
         QVERIFY( !exp.hasEvalError() );
 
+        exp = QgsExpression( QStringLiteral( "layer_property('%1', 'id')" ).arg( layer1->name() ) );
+        QCOMPARE( exp.evaluate( &context ).toString(), layer1->id() );
+
         exp = QgsExpression();
         res = QgsExpressionUtils::getMapLayer( layer2->name(), &context, &exp );
         QCOMPARE( res, layer2 );
         QVERIFY( !exp.hasEvalError() );
+
+        exp = QgsExpression( QStringLiteral( "layer_property('%1', 'id')" ).arg( layer2->name() ) );
+        QCOMPARE( exp.evaluate( &context ).toString(), layer2->id() );
 
         exp = QgsExpression();
         res = QgsExpressionUtils::getMapLayer( layer3->name(), &context, &exp );
         QCOMPARE( res, layer3 );
         QVERIFY( !exp.hasEvalError() );
 
+        exp = QgsExpression( QStringLiteral( "layer_property('%1', 'id')" ).arg( layer3->name() ) );
+        QCOMPARE( exp.evaluate( &context ).toString(), layer3->id() );
+
         exp = QgsExpression();
         res = QgsExpressionUtils::getMapLayer( pointsLayerName, &context, &exp );
         QCOMPARE( res, mPointsLayer );
         QVERIFY( !exp.hasEvalError() );
+
+        exp = QgsExpression( QStringLiteral( "layer_property('%1', 'id')" ).arg( pointsLayerName ) );
+        QCOMPARE( exp.evaluate( &context ).toString(), pointsLayerId );
 
 #if 0
         // TODO -- probably should flag an error here?
