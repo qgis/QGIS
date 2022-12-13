@@ -89,7 +89,9 @@ QgsMapLayer *QgsExpressionUtils::getMapLayerPrivate( const QVariant &value, cons
         {
           // look for matching layer by id
           ml = store->mapLayer( identifier );
-          return;
+
+          if ( ml )
+            return;
 
           // Still nothing? Check for layer name
           ml = store->mapLayersByName( identifier ).value( 0 );
@@ -133,6 +135,7 @@ QgsMapLayer *QgsExpressionUtils::getMapLayerPrivate( const QVariant &value, cons
 
 void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const QgsExpressionContext *context, QgsExpression *expression, const std::function<void ( QgsMapLayer * )> &function, bool &foundLayer )
 {
+  foundLayer = false;
   // First check if we already received a layer pointer
   QPointer< QgsMapLayer > ml = value.value< QgsWeakMapLayerPointer >().data();
   if ( !ml )
