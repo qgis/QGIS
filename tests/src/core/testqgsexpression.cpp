@@ -16,6 +16,7 @@
 #include <QObject>
 #include <QString>
 #include <QtConcurrentMap>
+#include <QSignalSpy>
 
 #include <qgsapplication.h>
 //header for class being tested
@@ -48,6 +49,27 @@ static void _parseAndEvalExpr( int arg )
     exp.evaluate();
   }
 }
+
+class RunLambdaInThread : public QThread
+{
+    Q_OBJECT
+
+  public :
+    RunLambdaInThread( const std::function< void() > &function )
+      : mFunction( function )
+    {}
+
+    void run() override
+    {
+      mFunction();
+      exit();
+    }
+
+  private:
+    std::function< void() > mFunction;
+
+
+};
 
 class TestQgsExpression: public QObject
 {
@@ -4579,256 +4601,304 @@ class TestQgsExpression: public QObject
 
     void testExpressionUtilsMapLayerRetrieval()
     {
-      QgsExpression exp;
-      // NULL value
-      QgsExpressionContext context;
-      Q_NOWARN_DEPRECATED_PUSH
-      QgsMapLayer *res = QgsExpressionUtils::getMapLayer( QVariant(), &context, &exp );
-      QVERIFY( !res );
-      QVERIFY( !exp.hasEvalError() );
-
-      // value which CANNOT be a map layer
-      res = QgsExpressionUtils::getMapLayer( QVariant( 5 ), &context,  &exp );
-      QVERIFY( !res );
-#if 0
-      // TODO probably **should** raise an eval error for this situation?
-      QVERIFY( exp.hasEvalError() );
-#endif
-
-      // with weak map layer pointer
-      exp = QgsExpression();
       QgsWeakMapLayerPointer weakPointer( mPointsLayer );
-      res = QgsExpressionUtils::getMapLayer( QVariant::fromValue( weakPointer ), &context,  &exp );
-      QCOMPARE( res, mPointsLayer );
-      QVERIFY( !exp.hasEvalError() );
+      QVariant rawPointer = QVariant::fromValue( mPointsLayer );
+      const QString pointsLayerId = mPointsLayer->id();
+      const QString pointsLayerName = mPointsLayer->name();
 
-      // with raw map layer pointer
-      exp = QgsExpression();
-      res = QgsExpressionUtils::getMapLayer( QVariant::fromValue( mPointsLayer ), &context, &exp );
-      QCOMPARE( res, mPointsLayer );
-      QVERIFY( !exp.hasEvalError() );
+      bool testOk = false;
+      auto runTest = [weakPointer, rawPointer, pointsLayerId, pointsLayerName, this, &testOk]
+      {
+        testOk = false;
+        QgsExpression exp;
+        // NULL value
+        QgsExpressionContext context;
+        Q_NOWARN_DEPRECATED_PUSH
+        QgsMapLayer *res = QgsExpressionUtils::getMapLayer( QVariant(), &context, &exp );
+        QVERIFY( !res );
+        QVERIFY( !exp.hasEvalError() );
 
-      // with layer id
-      exp = QgsExpression();
-      res = QgsExpressionUtils::getMapLayer( mPointsLayer->id(), &context, &exp );
-      QCOMPARE( res, mPointsLayer );
-      QVERIFY( !exp.hasEvalError() );
+        // value which CANNOT be a map layer
+        res = QgsExpressionUtils::getMapLayer( QVariant( 5 ), &context,  &exp );
+        QVERIFY( !res );
+#if 0
+        // TODO probably **should** raise an eval error for this situation?
+        QVERIFY( exp.hasEvalError() );
+#endif
 
-      // with layer name
-      exp = QgsExpression();
-      res = QgsExpressionUtils::getMapLayer( mPointsLayer->name(), &context, &exp );
-      QCOMPARE( res, mPointsLayer );
-      QVERIFY( !exp.hasEvalError() );
+        // with weak map layer pointer
+        exp = QgsExpression();
+        res = QgsExpressionUtils::getMapLayer( QVariant::fromValue( weakPointer ), &context,  &exp );
+        QCOMPARE( res, mPointsLayer );
+        QVERIFY( !exp.hasEvalError() );
 
-      // with string which is neither id or name
-      exp = QgsExpression();
-      res = QgsExpressionUtils::getMapLayer( QStringLiteral( "xxxA" ), &context, &exp );
-      QVERIFY( !res );
+        // with raw map layer pointer
+        exp = QgsExpression();
+        res = QgsExpressionUtils::getMapLayer( rawPointer, &context, &exp );
+        QCOMPARE( res, mPointsLayer );
+        QVERIFY( !exp.hasEvalError() );
 
-      // test using layers from layer store
-      QgsMapLayerStore store;
-      QgsExpressionContextScope *scope = new QgsExpressionContextScope();
+        // with layer id
+        exp = QgsExpression();
+        res = QgsExpressionUtils::getMapLayer( pointsLayerId, &context, &exp );
+        QCOMPARE( res, mPointsLayer );
+        QVERIFY( !exp.hasEvalError() );
 
-      context.appendScope( scope );
+        // with layer name
+        exp = QgsExpression();
+        res = QgsExpressionUtils::getMapLayer( pointsLayerName, &context, &exp );
+        QCOMPARE( res, mPointsLayer );
+        QVERIFY( !exp.hasEvalError() );
 
-      QgsVectorLayer *layer1 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:string&field=datef:date(0,0)" ), QStringLiteral( "test_store_1" ), QStringLiteral( "memory" ) );
-      QgsVectorLayer *layer2 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:string&field=datef:date(0,0)" ), QStringLiteral( "test_store_2" ), QStringLiteral( "memory" ) );
-      store.addMapLayer( layer1 );
-      store.addMapLayer( layer2 );
-      scope->addLayerStore( &store );
+        // with string which is neither id or name
+        exp = QgsExpression();
+        res = QgsExpressionUtils::getMapLayer( QStringLiteral( "xxxA" ), &context, &exp );
+        QVERIFY( !res );
 
-      // from layer store, by layer id
-      exp = QgsExpression();
-      res = QgsExpressionUtils::getMapLayer( layer1->id(), &context, &exp );
-      QCOMPARE( res, layer1 );
-      QVERIFY( !exp.hasEvalError() );
+        // test using layers from layer store
+        QgsMapLayerStore store;
+        QgsExpressionContextScope *scope = new QgsExpressionContextScope();
 
-      exp = QgsExpression();
-      res = QgsExpressionUtils::getMapLayer( layer2->id(), &context, &exp );
-      QCOMPARE( res, layer2 );
-      QVERIFY( !exp.hasEvalError() );
+        context.appendScope( scope );
 
-      exp = QgsExpression();
-      res = QgsExpressionUtils::getMapLayer( mPointsLayer->id(), &context, &exp );
-      QCOMPARE( res, mPointsLayer );
-      QVERIFY( !exp.hasEvalError() );
+        QgsVectorLayer *layer1 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:string&field=datef:date(0,0)" ), QStringLiteral( "test_store_1" ), QStringLiteral( "memory" ) );
+        QgsVectorLayer *layer2 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:string&field=datef:date(0,0)" ), QStringLiteral( "test_store_2" ), QStringLiteral( "memory" ) );
+        store.addMapLayer( layer1 );
+        store.addMapLayer( layer2 );
+        scope->addLayerStore( &store );
 
-      // with a second store in a different scope
-      QgsExpressionContextScope *scope2 = new QgsExpressionContextScope();
+        // from layer store, by layer id
+        exp = QgsExpression();
+        res = QgsExpressionUtils::getMapLayer( layer1->id(), &context, &exp );
+        QCOMPARE( res, layer1 );
+        QVERIFY( !exp.hasEvalError() );
 
-      context.appendScope( scope2 );
+        exp = QgsExpression();
+        res = QgsExpressionUtils::getMapLayer( layer2->id(), &context, &exp );
+        QCOMPARE( res, layer2 );
+        QVERIFY( !exp.hasEvalError() );
 
-      QgsMapLayerStore store2;
-      QgsVectorLayer *layer3 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:string&field=datef:date(0,0)" ), QStringLiteral( "test_store_3" ), QStringLiteral( "memory" ) );
-      store2.addMapLayer( layer3 );
-      scope2->addLayerStore( &store2 );
+        exp = QgsExpression();
+        res = QgsExpressionUtils::getMapLayer( pointsLayerId, &context, &exp );
+        QCOMPARE( res, mPointsLayer );
+        QVERIFY( !exp.hasEvalError() );
 
-      exp = QgsExpression();
-      res = QgsExpressionUtils::getMapLayer( layer3->id(), &context, &exp );
-      QCOMPARE( res, layer3 );
-      QVERIFY( !exp.hasEvalError() );
+        // with a second store in a different scope
+        QgsExpressionContextScope *scope2 = new QgsExpressionContextScope();
+
+        context.appendScope( scope2 );
+
+        QgsMapLayerStore store2;
+        QgsVectorLayer *layer3 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:string&field=datef:date(0,0)" ), QStringLiteral( "test_store_3" ), QStringLiteral( "memory" ) );
+        store2.addMapLayer( layer3 );
+        scope2->addLayerStore( &store2 );
+
+        exp = QgsExpression();
+        res = QgsExpressionUtils::getMapLayer( layer3->id(), &context, &exp );
+        QCOMPARE( res, layer3 );
+        QVERIFY( !exp.hasEvalError() );
 
 
-      // from layer store, by name
+        // from layer store, by name
 
-      exp = QgsExpression();
-      res = QgsExpressionUtils::getMapLayer( layer1->name(), &context, &exp );
-      QCOMPARE( res, layer1 );
-      QVERIFY( !exp.hasEvalError() );
+        exp = QgsExpression();
+        res = QgsExpressionUtils::getMapLayer( layer1->name(), &context, &exp );
+        QCOMPARE( res, layer1 );
+        QVERIFY( !exp.hasEvalError() );
 
-      exp = QgsExpression();
-      res = QgsExpressionUtils::getMapLayer( layer2->name(), &context, &exp );
-      QCOMPARE( res, layer2 );
-      QVERIFY( !exp.hasEvalError() );
+        exp = QgsExpression();
+        res = QgsExpressionUtils::getMapLayer( layer2->name(), &context, &exp );
+        QCOMPARE( res, layer2 );
+        QVERIFY( !exp.hasEvalError() );
 
-      exp = QgsExpression();
-      res = QgsExpressionUtils::getMapLayer( layer3->name(), &context, &exp );
-      QCOMPARE( res, layer3 );
-      QVERIFY( !exp.hasEvalError() );
+        exp = QgsExpression();
+        res = QgsExpressionUtils::getMapLayer( layer3->name(), &context, &exp );
+        QCOMPARE( res, layer3 );
+        QVERIFY( !exp.hasEvalError() );
 
-      exp = QgsExpression();
-      res = QgsExpressionUtils::getMapLayer( mPointsLayer->name(), &context, &exp );
-      QCOMPARE( res, mPointsLayer );
-      QVERIFY( !exp.hasEvalError() );
+        exp = QgsExpression();
+        res = QgsExpressionUtils::getMapLayer( pointsLayerName, &context, &exp );
+        QCOMPARE( res, mPointsLayer );
+        QVERIFY( !exp.hasEvalError() );
 
 #if 0
-      // TODO -- probably should flag an error here?
-      QVERIFY( !exp.hasEvalError() );
+        // TODO -- probably should flag an error here?
+        QVERIFY( !exp.hasEvalError() );
 #endif
-      Q_NOWARN_DEPRECATED_POP
+        Q_NOWARN_DEPRECATED_POP
+
+        testOk = true;
+      };
+
+      runTest();
+      QVERIFY( testOk );
+      testOk = false;
+
+      // also run in a thread
+
+      QThread *thread = new RunLambdaInThread( runTest );
+      connect( thread, &QThread::finished, thread, &QObject::deleteLater );
+      QSignalSpy spy( thread, &QThread::finished );
+      thread->start();
+      spy.wait();
+      QVERIFY( testOk );
     }
 
     void testExpressionUtilsMapLayerExecuteLambda()
     {
-      QString gotLayerId;
+      QgsWeakMapLayerPointer weakPointer( mPointsLayer );
+      QVariant rawPointer = QVariant::fromValue( mPointsLayer );
+      const QString pointsLayerId = mPointsLayer->id();
+      const QString pointsLayerName = mPointsLayer->name();
 
-      auto lambda = [&gotLayerId]( QgsMapLayer * layer )
+      bool testOk = false;
+      auto runTest = [weakPointer, rawPointer, pointsLayerId, pointsLayerName, &testOk]
       {
-        if ( layer )
-          gotLayerId = layer->id();
-        else
-          gotLayerId.clear();
+        testOk = false;
+        QString gotLayerId;
+
+        auto lambda = [&gotLayerId]( QgsMapLayer * layer )
+        {
+          if ( layer )
+            gotLayerId = layer->id();
+          else
+            gotLayerId.clear();
+        };
+
+        QgsExpression exp;
+        // NULL value
+        QgsExpressionContext context;
+
+        bool foundLayer = false;
+        QgsExpressionUtils::executeLambdaForMapLayer( QVariant(), &context, &exp, lambda, foundLayer );
+        QVERIFY( !foundLayer );
+        QVERIFY( gotLayerId.isEmpty() );
+
+        // value which CANNOT be a map layer
+        QgsExpressionUtils::executeLambdaForMapLayer( QVariant( 5 ), &context, &exp, lambda, foundLayer );
+        QVERIFY( !foundLayer );
+        QVERIFY( gotLayerId.isEmpty() );
+
+        // with weak map layer pointer
+        QgsExpressionUtils::executeLambdaForMapLayer( QVariant::fromValue( weakPointer ), &context,  &exp, lambda, foundLayer );
+        QVERIFY( foundLayer );
+        QCOMPARE( gotLayerId, pointsLayerId );
+
+        // with raw map layer pointer
+        foundLayer = false;
+        gotLayerId.clear();
+        QgsExpressionUtils::executeLambdaForMapLayer( rawPointer, &context, &exp, lambda, foundLayer );
+        QVERIFY( foundLayer );
+        QCOMPARE( gotLayerId, pointsLayerId );
+
+        // with layer id
+        foundLayer = false;
+        gotLayerId.clear();
+        QgsExpressionUtils::executeLambdaForMapLayer( pointsLayerId, &context, &exp, lambda, foundLayer );
+        QVERIFY( foundLayer );
+        QCOMPARE( gotLayerId, pointsLayerId );
+
+        // with layer name
+        foundLayer = false;
+        gotLayerId.clear();
+        QgsExpressionUtils::executeLambdaForMapLayer( pointsLayerName, &context, &exp, lambda, foundLayer );
+        QVERIFY( foundLayer );
+        QCOMPARE( gotLayerId, pointsLayerId );
+
+        // with string which is neither id or name
+        foundLayer = false;
+        gotLayerId.clear();
+        QgsExpressionUtils::executeLambdaForMapLayer( QStringLiteral( "xxxA" ), &context, &exp, lambda, foundLayer );
+        QVERIFY( !foundLayer );
+        QVERIFY( gotLayerId.isEmpty() );
+
+        // test using layers from layer store
+        QgsMapLayerStore store;
+        QgsExpressionContextScope *scope = new QgsExpressionContextScope();
+
+        context.appendScope( scope );
+
+        QgsVectorLayer *layer1 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:string&field=datef:date(0,0)" ), QStringLiteral( "test_store_1" ), QStringLiteral( "memory" ) );
+        QgsVectorLayer *layer2 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:string&field=datef:date(0,0)" ), QStringLiteral( "test_store_2" ), QStringLiteral( "memory" ) );
+        store.addMapLayer( layer1 );
+        store.addMapLayer( layer2 );
+        scope->addLayerStore( &store );
+
+        // from layer store, by layer id
+        foundLayer = false;
+        gotLayerId.clear();
+        QgsExpressionUtils::executeLambdaForMapLayer( layer1->id(), &context, &exp, lambda, foundLayer );
+        QVERIFY( foundLayer );
+        QCOMPARE( gotLayerId, layer1->id() );
+
+        foundLayer = false;
+        gotLayerId.clear();
+        QgsExpressionUtils::executeLambdaForMapLayer( layer2->id(), &context, &exp, lambda, foundLayer );
+        QVERIFY( foundLayer );
+        QCOMPARE( gotLayerId, layer2->id() );
+
+        foundLayer = false;
+        gotLayerId.clear();
+        QgsExpressionUtils::executeLambdaForMapLayer( pointsLayerId, &context, &exp, lambda, foundLayer );
+        QVERIFY( foundLayer );
+        QCOMPARE( gotLayerId, pointsLayerId );
+
+        // with a second store in a different scope
+        QgsExpressionContextScope *scope2 = new QgsExpressionContextScope();
+
+        context.appendScope( scope2 );
+
+        QgsMapLayerStore store2;
+        QgsVectorLayer *layer3 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:string&field=datef:date(0,0)" ), QStringLiteral( "test_store_3" ), QStringLiteral( "memory" ) );
+        store2.addMapLayer( layer3 );
+        scope2->addLayerStore( &store2 );
+
+        foundLayer = false;
+        gotLayerId.clear();
+        QgsExpressionUtils::executeLambdaForMapLayer( layer3->id(), &context, &exp, lambda, foundLayer );
+        QVERIFY( foundLayer );
+        QCOMPARE( gotLayerId, layer3->id() );
+
+        // from layer store, by name
+        foundLayer = false;
+        gotLayerId.clear();
+        QgsExpressionUtils::executeLambdaForMapLayer( layer1->name(), &context, &exp, lambda, foundLayer );
+        QVERIFY( foundLayer );
+        QCOMPARE( gotLayerId, layer1->id() );
+
+        foundLayer = false;
+        gotLayerId.clear();
+        QgsExpressionUtils::executeLambdaForMapLayer( layer2->name(), &context, &exp, lambda, foundLayer );;
+        QVERIFY( foundLayer );
+        QCOMPARE( gotLayerId, layer2->id() );
+
+        foundLayer = false;
+        gotLayerId.clear();
+        QgsExpressionUtils::executeLambdaForMapLayer( layer3->name(), &context, &exp, lambda, foundLayer );;
+        QVERIFY( foundLayer );
+        QCOMPARE( gotLayerId, layer3->id() );
+
+        foundLayer = false;
+        gotLayerId.clear();
+        QgsExpressionUtils::executeLambdaForMapLayer( pointsLayerName, &context, &exp, lambda, foundLayer );
+        QVERIFY( foundLayer );
+        QCOMPARE( gotLayerId, pointsLayerId );
+
+        testOk = true;
       };
 
-      QgsExpression exp;
-      // NULL value
-      QgsExpressionContext context;
+      runTest();
+      QVERIFY( testOk );
+      testOk = false;
 
-      bool foundLayer = false;
-      QgsExpressionUtils::executeLambdaForMapLayer( QVariant(), &context, &exp, lambda, foundLayer );
-      QVERIFY( !foundLayer );
-      QVERIFY( gotLayerId.isEmpty() );
+      // also run in a thread
 
-      // value which CANNOT be a map layer
-      QgsExpressionUtils::executeLambdaForMapLayer( QVariant( 5 ), &context, &exp, lambda, foundLayer );
-      QVERIFY( !foundLayer );
-      QVERIFY( gotLayerId.isEmpty() );
-
-      // with weak map layer pointer
-      QgsWeakMapLayerPointer weakPointer( mPointsLayer );
-      QgsExpressionUtils::executeLambdaForMapLayer( QVariant::fromValue( weakPointer ), &context,  &exp, lambda, foundLayer );
-      QVERIFY( foundLayer );
-      QCOMPARE( gotLayerId, mPointsLayer->id() );
-
-      // with raw map layer pointer
-      foundLayer = false;
-      gotLayerId.clear();
-      QgsExpressionUtils::executeLambdaForMapLayer( QVariant::fromValue( mPointsLayer ), &context, &exp, lambda, foundLayer );
-      QVERIFY( foundLayer );
-      QCOMPARE( gotLayerId, mPointsLayer->id() );
-
-      // with layer id
-      foundLayer = false;
-      gotLayerId.clear();
-      QgsExpressionUtils::executeLambdaForMapLayer( mPointsLayer->id(), &context, &exp, lambda, foundLayer );
-      QVERIFY( foundLayer );
-      QCOMPARE( gotLayerId, mPointsLayer->id() );
-
-      // with layer name
-      foundLayer = false;
-      gotLayerId.clear();
-      QgsExpressionUtils::executeLambdaForMapLayer( mPointsLayer->name(), &context, &exp, lambda, foundLayer );
-      QVERIFY( foundLayer );
-      QCOMPARE( gotLayerId, mPointsLayer->id() );
-
-      // with string which is neither id or name
-      foundLayer = false;
-      gotLayerId.clear();
-      QgsExpressionUtils::executeLambdaForMapLayer( QStringLiteral( "xxxA" ), &context, &exp, lambda, foundLayer );
-      QVERIFY( !foundLayer );
-      QVERIFY( gotLayerId.isEmpty() );
-
-      // test using layers from layer store
-      QgsMapLayerStore store;
-      QgsExpressionContextScope *scope = new QgsExpressionContextScope();
-
-      context.appendScope( scope );
-
-      QgsVectorLayer *layer1 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:string&field=datef:date(0,0)" ), QStringLiteral( "test_store_1" ), QStringLiteral( "memory" ) );
-      QgsVectorLayer *layer2 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:string&field=datef:date(0,0)" ), QStringLiteral( "test_store_2" ), QStringLiteral( "memory" ) );
-      store.addMapLayer( layer1 );
-      store.addMapLayer( layer2 );
-      scope->addLayerStore( &store );
-
-      // from layer store, by layer id
-      foundLayer = false;
-      gotLayerId.clear();
-      QgsExpressionUtils::executeLambdaForMapLayer( layer1->id(), &context, &exp, lambda, foundLayer );
-      QVERIFY( foundLayer );
-      QCOMPARE( gotLayerId, layer1->id() );
-
-      foundLayer = false;
-      gotLayerId.clear();
-      QgsExpressionUtils::executeLambdaForMapLayer( layer2->id(), &context, &exp, lambda, foundLayer );
-      QVERIFY( foundLayer );
-      QCOMPARE( gotLayerId, layer2->id() );
-
-      foundLayer = false;
-      gotLayerId.clear();
-      QgsExpressionUtils::executeLambdaForMapLayer( mPointsLayer->id(), &context, &exp, lambda, foundLayer );
-      QVERIFY( foundLayer );
-      QCOMPARE( gotLayerId, mPointsLayer->id() );
-
-      // with a second store in a different scope
-      QgsExpressionContextScope *scope2 = new QgsExpressionContextScope();
-
-      context.appendScope( scope2 );
-
-      QgsMapLayerStore store2;
-      QgsVectorLayer *layer3 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:string&field=datef:date(0,0)" ), QStringLiteral( "test_store_3" ), QStringLiteral( "memory" ) );
-      store2.addMapLayer( layer3 );
-      scope2->addLayerStore( &store2 );
-
-      foundLayer = false;
-      gotLayerId.clear();
-      QgsExpressionUtils::executeLambdaForMapLayer( layer3->id(), &context, &exp, lambda, foundLayer );
-      QVERIFY( foundLayer );
-      QCOMPARE( gotLayerId, layer3->id() );
-
-      // from layer store, by name
-      foundLayer = false;
-      gotLayerId.clear();
-      QgsExpressionUtils::executeLambdaForMapLayer( layer1->name(), &context, &exp, lambda, foundLayer );
-      QVERIFY( foundLayer );
-      QCOMPARE( gotLayerId, layer1->id() );
-
-      foundLayer = false;
-      gotLayerId.clear();
-      QgsExpressionUtils::executeLambdaForMapLayer( layer2->name(), &context, &exp, lambda, foundLayer );;
-      QVERIFY( foundLayer );
-      QCOMPARE( gotLayerId, layer2->id() );
-
-      foundLayer = false;
-      gotLayerId.clear();
-      QgsExpressionUtils::executeLambdaForMapLayer( layer3->name(), &context, &exp, lambda, foundLayer );;
-      QVERIFY( foundLayer );
-      QCOMPARE( gotLayerId, layer3->id() );
-
-      foundLayer = false;
-      gotLayerId.clear();
-      QgsExpressionUtils::executeLambdaForMapLayer( mPointsLayer->name(), &context, &exp, lambda, foundLayer );
-      QVERIFY( foundLayer );
-      QCOMPARE( gotLayerId, mPointsLayer->id() );
+      QThread *thread = new RunLambdaInThread( runTest );
+      connect( thread, &QThread::finished, thread, &QObject::deleteLater );
+      QSignalSpy spy( thread, &QThread::finished );
+      thread->start();
+      spy.wait();
+      QVERIFY( testOk );
     }
 
     void testGetFilePathValue()
