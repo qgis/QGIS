@@ -18,7 +18,6 @@
 #include "qgis.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshdataprovidertemporalcapabilities.h"
-#include "qgsrectangle.h"
 #include "qgsthreadingutils.h"
 
 QgsMeshDataProvider::QgsMeshDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options,
@@ -63,8 +62,6 @@ QgsMeshDatasetIndex QgsMeshDatasetSourceInterface::datasetIndexAtTime(
   int groupIndex, qint64 time,
   QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod method ) const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
   const QDateTime requestDateTime = referenceTime.addMSecs( time );
   qint64 providerTime;
   const QDateTime providerReferenceTime = mTemporalCapabilities->referenceTime();
@@ -88,8 +85,6 @@ QgsMeshDatasetIndex QgsMeshDatasetSourceInterface::datasetIndexAtTime(
 
 QList<QgsMeshDatasetIndex> QgsMeshDatasetSourceInterface::datasetIndexInTimeInterval( const QDateTime &referenceTime, int groupIndex, qint64 time1, qint64 time2 ) const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
   const QDateTime requestDateTime = referenceTime.addMSecs( time1 );
   qint64 providerTime1;
   qint64 providerTime2;
