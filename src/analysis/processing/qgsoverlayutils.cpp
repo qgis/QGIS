@@ -106,7 +106,7 @@ void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeat
   if ( outputAttrs != OutputBA )
     requestB.setDestinationCrs( sourceA.sourceCrs(), context.transformContext() );
 
-  double step = sourceB.featureCount() > 0 ? 100.0 / sourceB.featureCount() : 1;
+  double step = sourceB.featureCount() > 0 ? 100.0 / static_cast< double >( sourceB.featureCount() ) : 1;
   long long i = 0;
   QgsFeatureIterator fi = sourceB.getFeatures( requestB );
 
@@ -117,7 +117,7 @@ void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeat
     if ( feedback->isCanceled() )
       return false;
 
-    feedback->setProgress( i * step );
+    feedback->setProgress( static_cast< double >( i * step ) );
 
     return true;
   } );
@@ -241,7 +241,7 @@ void QgsOverlayUtils::intersection( const QgsFeatureSource &sourceA, const QgsFe
 
   QgsFeature outFeat;
 
-  double step = sourceB.featureCount() > 0 ? 100.0 / sourceB.featureCount() : 1;
+  double step = sourceB.featureCount() > 0 ? 100.0 / static_cast< double >( sourceB.featureCount() ) : 1;
   long long i = 0;
   QgsFeatureIterator fi = sourceB.getFeatures( request );
   feedback->setProgressText( QObject::tr( "Creating spatial index" ) );
@@ -251,7 +251,7 @@ void QgsOverlayUtils::intersection( const QgsFeatureSource &sourceA, const QgsFe
     if ( feedback->isCanceled() )
       return false;
 
-    feedback->setProgress( i * step );
+    feedback->setProgress( static_cast< double >( i * step ) );
 
     return true;
   } );
