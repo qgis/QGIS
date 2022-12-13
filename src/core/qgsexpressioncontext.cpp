@@ -14,9 +14,9 @@
  ***************************************************************************/
 
 #include "qgsexpressioncontext.h"
-#include "qgslogger.h"
 #include "qgsxmlutils.h"
 #include "qgsexpression.h"
+#include "qgsmaplayerstore.h"
 
 const QString QgsExpressionContext::EXPR_FIELDS( QStringLiteral( "_fields_" ) );
 const QString QgsExpressionContext::EXPR_ORIGINAL_VALUE( QStringLiteral( "value" ) );
@@ -152,6 +152,22 @@ void QgsExpressionContextScope::removeHiddenVariable( const QString &hiddenVaria
     mHiddenVariables.removeAt( mHiddenVariables.indexOf( hiddenVariable ) );
 }
 
+void QgsExpressionContextScope::addLayerStore( QgsMapLayerStore *store )
+{
+  mLayerStores.append( store );
+}
+
+QList<QgsMapLayerStore *> QgsExpressionContextScope::layerStores() const
+{
+  QList<QgsMapLayerStore *> res;
+  res.reserve( mLayerStores.size() );
+  for ( QgsMapLayerStore *store : std::as_const( mLayerStores ) )
+  {
+    if ( store )
+      res << store;
+  }
+  return res;
+}
 
 /// @cond PRIVATE
 class QgsExpressionContextVariableCompare
@@ -686,6 +702,19 @@ QVariant QgsExpressionContext::cachedValue( const QString &key ) const
 void QgsExpressionContext::clearCachedValues() const
 {
   mCachedValues.clear();
+}
+
+QList<QgsMapLayerStore *> QgsExpressionContext::layerStores() const
+{
+  //iterate through stack backwards, so that higher priority layer stores take precedence
+  QList< QgsExpressionContextScope * >::const_iterator it = mStack.constEnd();
+  QList<QgsMapLayerStore *> res;
+  while ( it != mStack.constBegin() )
+  {
+    --it;
+    res.append( ( *it )->layerStores() );
+  }
+  return res;
 }
 
 void QgsExpressionContext::setFeedback( QgsFeedback *feedback )

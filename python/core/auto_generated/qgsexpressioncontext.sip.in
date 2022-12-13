@@ -9,6 +9,7 @@
 
 
 
+
 class QgsScopedExpressionFunction : QgsExpressionFunction
 {
 %Docstring(signature="appended")
@@ -463,6 +464,28 @@ Removes the passed variable from a list of hidden variables.
 .. versionadded:: 3.28
 %End
 
+    void addLayerStore( QgsMapLayerStore *store );
+%Docstring
+Adds a layer ``store`` to the scope.
+
+Ownership of the ``store`` is not transferred to the scope, it is the caller's
+responsibility to ensure that the store remains alive for the duration of the
+expression context.
+
+.. seealso:: :py:func:`layerStores`
+
+.. versionadded:: 3.30
+%End
+
+    QList< QgsMapLayerStore * > layerStores() const;
+%Docstring
+Returns the list of layer stores associated with the scope.
+
+.. seealso:: :py:func:`addLayerStore`
+
+.. versionadded:: 3.30
+%End
+
 };
 
 class QgsExpressionContext
@@ -915,6 +938,13 @@ Clears all cached values from the context.
 .. seealso:: :py:func:`cachedValue`
 
 .. versionadded:: 2.16
+%End
+
+    QList< QgsMapLayerStore * > layerStores() const;
+%Docstring
+Returns the list of layer stores associated with the context.
+
+.. versionadded:: 3.30
 %End
 
     void setFeedback( QgsFeedback *feedback );
