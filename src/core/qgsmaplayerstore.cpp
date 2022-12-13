@@ -32,11 +32,15 @@ QgsMapLayerStore::~QgsMapLayerStore()
 
 int QgsMapLayerStore::count() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mMapLayers.size();
 }
 
 int QgsMapLayerStore::validCount() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   int i = 0;
   const QList<QgsMapLayer *> cLayers = mMapLayers.values();
   for ( const auto l : cLayers )
@@ -49,11 +53,15 @@ int QgsMapLayerStore::validCount() const
 
 QgsMapLayer *QgsMapLayerStore::mapLayer( const QString &layerId ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mMapLayers.value( layerId );
 }
 
 QList<QgsMapLayer *> QgsMapLayerStore::mapLayersByName( const QString &layerName ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QList<QgsMapLayer *> myResultList;
   const auto constMMapLayers = mMapLayers;
   for ( QgsMapLayer *layer : constMMapLayers )
@@ -68,6 +76,8 @@ QList<QgsMapLayer *> QgsMapLayerStore::mapLayersByName( const QString &layerName
 
 QList<QgsMapLayer *> QgsMapLayerStore::addMapLayers( const QList<QgsMapLayer *> &layers, bool takeOwnership )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QList<QgsMapLayer *> myResultList;
   const auto constLayers = layers;
   for ( QgsMapLayer *myLayer : constLayers )
@@ -108,6 +118,8 @@ QList<QgsMapLayer *> QgsMapLayerStore::addMapLayers( const QList<QgsMapLayer *> 
 QgsMapLayer *
 QgsMapLayerStore::addMapLayer( QgsMapLayer *layer, bool takeOwnership )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QList<QgsMapLayer *> addedLayers;
   addedLayers = addMapLayers( QList<QgsMapLayer *>() << layer, takeOwnership );
   return addedLayers.isEmpty() ? nullptr : addedLayers[0];
@@ -115,6 +127,8 @@ QgsMapLayerStore::addMapLayer( QgsMapLayer *layer, bool takeOwnership )
 
 void QgsMapLayerStore::removeMapLayers( const QStringList &layerIds )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QList<QgsMapLayer *> layers;
   const auto constLayerIds = layerIds;
   for ( const QString &myId : constLayerIds )
@@ -127,6 +141,8 @@ void QgsMapLayerStore::removeMapLayers( const QStringList &layerIds )
 
 void QgsMapLayerStore::removeMapLayers( const QList<QgsMapLayer *> &layers )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( layers.isEmpty() )
     return;
 
@@ -169,17 +185,23 @@ void QgsMapLayerStore::removeMapLayers( const QList<QgsMapLayer *> &layers )
 
 void QgsMapLayerStore::removeMapLayer( const QString &layerId )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   removeMapLayers( QList<QgsMapLayer *>() << mMapLayers.value( layerId ) );
 }
 
 void QgsMapLayerStore::removeMapLayer( QgsMapLayer *layer )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( layer )
     removeMapLayers( QList<QgsMapLayer *>() << layer );
 }
 
 QgsMapLayer *QgsMapLayerStore::takeMapLayer( QgsMapLayer *layer )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( !layer )
     return nullptr;
 
@@ -201,6 +223,8 @@ QgsMapLayer *QgsMapLayerStore::takeMapLayer( QgsMapLayer *layer )
 
 void QgsMapLayerStore::removeAllMapLayers()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   emit allLayersRemoved();
   // now let all observers know to clear themselves,
   // and then consequently any of their map legends
@@ -210,6 +234,8 @@ void QgsMapLayerStore::removeAllMapLayers()
 
 void QgsMapLayerStore::transferLayersFromStore( QgsMapLayerStore *other )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( !other || other == this )
     return;
 
@@ -227,6 +253,8 @@ void QgsMapLayerStore::transferLayersFromStore( QgsMapLayerStore *other )
 
 void QgsMapLayerStore::onMapLayerDeleted( QObject *obj )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const QString id = mMapLayers.key( static_cast<QgsMapLayer *>( obj ) );
 
   if ( !id.isNull() )
@@ -238,11 +266,15 @@ void QgsMapLayerStore::onMapLayerDeleted( QObject *obj )
 
 QMap<QString, QgsMapLayer *> QgsMapLayerStore::mapLayers() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mMapLayers;
 }
 
 QMap<QString, QgsMapLayer *> QgsMapLayerStore::validMapLayers() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QMap<QString, QgsMapLayer *> validLayers;
   for ( auto it = mMapLayers.constBegin(); it != mMapLayers.constEnd(); it++ )
   {
