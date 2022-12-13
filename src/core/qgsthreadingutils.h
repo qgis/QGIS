@@ -19,12 +19,22 @@
 #define SIP_NO_FILE
 
 #include "qgis_core.h"
+#include "qgsconfig.h"
 
 #include "qgsfeedback.h"
 
 #include <QThread>
 #include <QSemaphore>
 #include <memory>
+
+#ifdef AGGRESSIVE_SAFE_MODE
+#define QGIS_PROTECT_QOBJECT_THREAD_ACCESS if ( QThread::currentThread() != thread() ) {qFatal( "%s", QStringLiteral("%2 (%1:%3) is run from a different thread than the object %4 lives in [0x%5 vs 0x%6]" ).arg( QString( __FILE__ ), QString( __FUNCTION__ ), QString::number( __LINE__  ), objectName() ).arg( reinterpret_cast< qint64 >( QThread::currentThread() ), 0, 16 ).arg( reinterpret_cast< qint64 >( thread() ), 0, 16 ).toLocal8Bit().constData() ); }
+#elif defined(QGISDEBUG)
+#define QGIS_PROTECT_QOBJECT_THREAD_ACCESS if ( QThread::currentThread() != thread() ) {qWarning() << QStringLiteral("%2 (%1:%3) is run from a different thread than the object %4 lives in [0x%5 vs 0x%6]" ).arg( QString( __FILE__ ), QString( __FUNCTION__ ), QString::number( __LINE__  ), objectName() ).arg( reinterpret_cast< qint64 >( QThread::currentThread() ), 0, 16 ).arg( reinterpret_cast< qint64 >( thread() ), 0, 16 ).toLocal8Bit().constData(); }
+#else
+#define QGIS_PROTECT_QOBJECT_THREAD_ACCESS do {} while(false);
+#endif
+
 
 /**
  * \ingroup core
