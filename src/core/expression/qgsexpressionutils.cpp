@@ -168,7 +168,7 @@ void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const 
     return;
   }
 
-  if ( context->layerStores().empty() )
+  if ( !context || context->layerStores().empty() )
   {
     // if no layer stores, then this is only for layers in project and therefore associated with the main thread
     auto runFunction = [ value, context, expression, &function, &foundLayer ]
