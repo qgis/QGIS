@@ -34,7 +34,7 @@ from qgis.testing import (
 )
 
 
-class TestPyQgsExternalStorageWebDAV(TestPyQgsExternalStorageBase, unittest.TestCase):
+class TestPyQgsExternalStorageWebDav(TestPyQgsExternalStorageBase, unittest.TestCase):
 
     storageType = "WebDAV"
     badUrl = "http://nothinghere/"
