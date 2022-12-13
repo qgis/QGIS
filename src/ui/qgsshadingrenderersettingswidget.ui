@@ -34,11 +34,18 @@
      <property name="checkable">
       <bool>true</bool>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <item>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Method to combine different sources</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="mCombineMethodCombo"/>
+      </item>
+      <item row="1" column="0" colspan="2">
        <widget class="QgsCollapsibleGroupBox" name="mEdlGroupBox">
         <property name="title">
          <string>Eye-Dome Lighting</string>
@@ -93,7 +100,7 @@
         </layout>
        </widget>
       </item>
-      <item>
+      <item row="2" column="0" colspan="2">
        <widget class="QgsCollapsibleGroupBox" name="mHillshadingGroupBox">
         <property name="title">
          <string>Hillshading</string>

@@ -19,6 +19,7 @@
 #include "qgsterrainprovider.h"
 #include "qgsprojectelevationproperties.h"
 #include "qgsrasterlayerelevationproperties.h"
+#include "qgsshadingrenderersettingswidget.h"
 
 QgsProjectElevationSettingsWidget::QgsProjectElevationSettingsWidget( QWidget *parent )
   : QgsOptionsPageWidget( parent )
@@ -86,26 +87,8 @@ QgsProjectElevationSettingsWidget::QgsProjectElevationSettingsWidget( QWidget *p
 
   validate();
 
-  QgsShadingRenderer shadingRenderer = QgsProject::instance()->mapShadingRenderer();
-
-  mShadingGroupBox->setChecked( shadingRenderer.isActive() );
-  mEdlGroupBox->setChecked( shadingRenderer.isActiveEyeDomeLighting() );
-  mEdlStrengthSpinBox->setValue( shadingRenderer.eyeDomeLightingStrength() );
-  mEdlDistanceSpinBox->setValue( shadingRenderer.eyeDomeLightingDistance() );
-  mEdlDistanceUnit->setUnits( QgsUnitTypes::RenderUnitList() <<
-                              QgsUnitTypes::RenderMillimeters <<
-                              QgsUnitTypes::RenderMetersInMapUnits <<
-                              QgsUnitTypes::RenderMapUnits <<
-                              QgsUnitTypes::RenderPixels <<
-                              QgsUnitTypes::RenderPoints <<
-                              QgsUnitTypes::RenderInches );
-  mEdlDistanceUnit->setUnit( shadingRenderer.eyeDomeLightingDistanceUnit() );
-  mHillshadingGroupBox->setChecked( shadingRenderer.isActiveHillShading() );
-  mHillshadingMultidirCheckBox->setChecked( shadingRenderer.isHillShadingMultidirectional() );
-  mHillshadingZFactorSpinBox->setValue( shadingRenderer.hillShadingZFactor() );
-
-  mDirectionalLightWidget->setAltitude( shadingRenderer.lightAltitude() );
-  mDirectionalLightWidget->setAzimuth( shadingRenderer.lightAzimuth() );
+  mShadingSettingsWidget = new QgsShadingRendererSettingsWidget( nullptr, nullptr, this );
+  mShadingSettingsLayout->addWidget( mShadingSettingsWidget );
 }
 
 void QgsProjectElevationSettingsWidget::apply()
@@ -138,21 +121,7 @@ void QgsProjectElevationSettingsWidget::apply()
 
   QgsProject::instance()->elevationProperties()->setTerrainProvider( provider.release() );
 
-  QgsShadingRenderer shadingRenderer;
-
-  shadingRenderer.setActive( mShadingGroupBox->isChecked() );
-  shadingRenderer.setActiveEyeDomeLighting( mEdlGroupBox->isChecked() );
-  shadingRenderer.setEyeDomeLightingStrength( mEdlStrengthSpinBox->value() );
-  shadingRenderer.setEyeDomeLightingDistance( mEdlDistanceSpinBox->value() );
-  shadingRenderer.setEyeDomeLightingDistanceUnit( mEdlDistanceUnit->unit() );
-  shadingRenderer.setActiveHillShading( mHillshadingGroupBox->isChecked() );
-  shadingRenderer.setHillShadingMultidirectional( mHillshadingMultidirCheckBox->isChecked() );
-  shadingRenderer.setHillShadingZFactor( mHillshadingZFactorSpinBox->value() );
-
-  shadingRenderer.setLightAltitude( mDirectionalLightWidget->altitude() );
-  shadingRenderer.setLightAzimuth( mDirectionalLightWidget->azimuth() );
-
-  QgsProject::instance()->setMapShadingRenderer( shadingRenderer );
+  mShadingSettingsWidget->apply();
 }
 
 bool QgsProjectElevationSettingsWidget::validate()

@@ -43,6 +43,13 @@ class CORE_EXPORT QgsElevationMap
 {
   public:
 
+    //! Methods used to select the elevation when two elevation map are combined
+    enum class CombineMethod
+    {
+      KeepHighestElevation, //!< Keep the highest elevation if it is not null
+      KeepNewElevation, //!< Keep the new elevation regardless of its value if it is not null
+    };
+
     //! Default constructor
     QgsElevationMap() = default;
 
@@ -107,13 +114,13 @@ class CORE_EXPORT QgsElevationMap
     /**
      * Combines this elevation map with \a otherElevationMap.
      * This elevation map keeps its size and takes elevation values of otherElevationMap that
-     * is not null for same row and column.
+     * is not null for same row and column following the combine \a method.
      * The other elevation map can have a different size, only rows and columns contained in
      * this elevation map will be considered.
      *
      * \since QGIS 3.30
      */
-    void combine( const QgsElevationMap &otherElevationMap );
+    void combine( const QgsElevationMap &otherElevationMap, CombineMethod method );
 
     /**
      * Fills the elevation map with values contains in a raster \a block starting from position

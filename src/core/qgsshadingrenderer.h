@@ -19,6 +19,7 @@
 #include "qdom.h"
 #include "qgsunittypes.h"
 #include "qgis_sip.h"
+#include "qgselevationmap.h"
 
 class QImage;
 class QgsElevationMap;
@@ -176,8 +177,24 @@ class CORE_EXPORT QgsShadingRenderer
     //! Reads configuration from a DOM element
     void readXml( const QDomElement &element, const QgsReadWriteContext &context );
 
+    /**
+     * Returns the method used when conbining different elevation sources.
+     *
+     * \see setCombinedElevationMethod()
+     */
+    QgsElevationMap::CombineMethod combinedElevationMethod() const;
+
+    /**
+     * Sets the method used when conbining different elevation sources.
+     *
+     * \see combinedElevationMethod()
+     */
+    void setCombinedElevationMethod( QgsElevationMap::CombineMethod newCombinedElevationMethod );
+
   private:
     bool mIsActive = true;
+
+    QgsElevationMap::CombineMethod mCombinedElevationMethod = QgsElevationMap::CombineMethod::KeepHighestElevation;
 
     bool mRenderEdl = true;
     double mEyeDomeLightingStrength = 1000.0;

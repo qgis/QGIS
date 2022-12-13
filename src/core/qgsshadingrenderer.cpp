@@ -110,6 +110,8 @@ void QgsShadingRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext 
 {
   elem.setAttribute( QStringLiteral( "is-active" ), mIsActive ? 1 : 0 );
 
+  elem.setAttribute( QStringLiteral( "combined-method" ), static_cast<int>( mCombinedElevationMethod ) );
+
   elem.setAttribute( QStringLiteral( "edl-is-active" ), mRenderEdl ? 1 : 0 );
   elem.setAttribute( QStringLiteral( "edl-strength" ), mEyeDomeLightingStrength );
   elem.setAttribute( QStringLiteral( "edl-distance" ), mEyeDomeLightingDistance );
@@ -127,6 +129,9 @@ void QgsShadingRenderer::readXml( const QDomElement &element, const QgsReadWrite
 {
   if ( element.hasAttribute( QStringLiteral( "is-active" ) ) )
     mIsActive = element.attribute( QStringLiteral( "is-active" ) ).toInt() == 1;
+
+  if ( element.hasAttribute( QStringLiteral( "combined-method" ) ) )
+    mCombinedElevationMethod = static_cast<QgsElevationMap::CombineMethod>( element.attribute( QStringLiteral( "combined-method" ) ).toInt() );
 
   if ( element.hasAttribute( QStringLiteral( "edl-is-active" ) ) )
     mRenderEdl = element.attribute( QStringLiteral( "edl-is-active" ) ).toInt() == 1;
@@ -154,6 +159,16 @@ void QgsShadingRenderer::readXml( const QDomElement &element, const QgsReadWrite
 
   if ( element.hasAttribute( QStringLiteral( "light-azimuth" ) ) )
     mLightAzimuth = element.attribute( QStringLiteral( "light-azimuth" ) ).toDouble();
+}
+
+QgsElevationMap::CombineMethod QgsShadingRenderer::combinedElevationMethod() const
+{
+  return mCombinedElevationMethod;
+}
+
+void QgsShadingRenderer::setCombinedElevationMethod( QgsElevationMap::CombineMethod newCombinedElevationMethod )
+{
+  mCombinedElevationMethod = newCombinedElevationMethod;
 }
 
 const QgsUnitTypes::RenderUnit &QgsShadingRenderer::eyeDomeLightingDistanceUnit() const

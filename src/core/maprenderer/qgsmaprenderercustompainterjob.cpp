@@ -353,7 +353,7 @@ void QgsMapRendererCustomPainterJob::doRender()
     {
       const QgsElevationMap &layerElevationMap = *job.context()->elevationMap();
       if ( layerElevationMap.isValid() )
-        mainElevationMap->combine( layerElevationMap );
+        mainElevationMap->combine( layerElevationMap, mapShadingRenderer.combinedElevationMethod() );
     }
 
     emit layerRendered( job.layerId );

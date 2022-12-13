@@ -25,11 +25,16 @@ QgsShadingRendererSettingsWidget::QgsShadingRendererSettingsWidget( QgsMapLayer 
 {
   setupUi( this );
 
+  mCombineMethodCombo->addItem( tr( "Keep Highest Elevation" ), static_cast<int>( QgsElevationMap::CombineMethod::KeepHighestElevation ) );
+  mCombineMethodCombo->addItem( tr( "Keep Highest Layer in Map" ), static_cast<int>( QgsElevationMap::CombineMethod::KeepNewElevation ) );
+
   syncToProject();
 
   connect( QgsProject::instance(), &QgsProject::mapShadingRendererChanged, this, &QgsShadingRendererSettingsWidget::syncToProject );
 
   connect( mShadingGroupBox, &QGroupBox::toggled, this, &QgsShadingRendererSettingsWidget::onChanged );
+
+  connect( mCombineMethodCombo,  qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsShadingRendererSettingsWidget::onChanged );
 
   connect( mEdlGroupBox, &QGroupBox::toggled, this, &QgsShadingRendererSettingsWidget::onChanged );
   connect( mEdlStrengthSpinBox,  qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsShadingRendererSettingsWidget::onChanged );
@@ -47,6 +52,7 @@ void QgsShadingRendererSettingsWidget::apply()
   QgsShadingRenderer shadingRenderer;
 
   shadingRenderer.setActive( mShadingGroupBox->isChecked() );
+  shadingRenderer.setCombinedElevationMethod( static_cast<QgsElevationMap::CombineMethod>( mCombineMethodCombo->currentData().toInt() ) );
   shadingRenderer.setActiveEyeDomeLighting( mEdlGroupBox->isChecked() );
   shadingRenderer.setEyeDomeLightingStrength( mEdlStrengthSpinBox->value() );
   shadingRenderer.setEyeDomeLightingDistance( mEdlDistanceSpinBox->value() );
@@ -66,6 +72,8 @@ void QgsShadingRendererSettingsWidget::syncToProject()
   mBlockUpdates = true;
   QgsShadingRenderer shadingRenderer = QgsProject::instance()->mapShadingRenderer();
   mShadingGroupBox->setChecked( shadingRenderer.isActive() );
+  mCombineMethodCombo->setCurrentIndex(
+    mCombineMethodCombo->findData( static_cast<int>( shadingRenderer.combinedElevationMethod() ) ) );
   mEdlGroupBox->setChecked( shadingRenderer.isActiveEyeDomeLighting() );
   mEdlStrengthSpinBox->setValue( shadingRenderer.eyeDomeLightingStrength() );
   mEdlDistanceSpinBox->setValue( shadingRenderer.eyeDomeLightingDistance() );
@@ -95,7 +103,7 @@ void QgsShadingRendererSettingsWidget::onChanged()
 QgsShadingRendererSettingsWidgetFactory::QgsShadingRendererSettingsWidgetFactory( QObject *parent ): QObject( parent )
 {
   setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mShadingRenderer.svg" ) ) );
-  setTitle( tr( "Shading renderer" ) );
+  setTitle( tr( "Shading Renderer" ) );
 }
 
 QgsMapLayerConfigWidget *QgsShadingRendererSettingsWidgetFactory::createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool, QWidget *parent ) const

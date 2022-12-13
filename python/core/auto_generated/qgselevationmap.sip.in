@@ -32,6 +32,12 @@ in meters.
 %End
   public:
 
+    enum class CombineMethod
+    {
+      KeepHighestElevation,
+      KeepNewElevation,
+    };
+
     QgsElevationMap();
 %Docstring
 Default constructor
@@ -103,11 +109,11 @@ Returns raw elevation image with elevations encoded as color values
 Returns painter to the underlying QImage with elevations
 %End
 
-    void combine( const QgsElevationMap &otherElevationMap );
+    void combine( const QgsElevationMap &otherElevationMap, CombineMethod method );
 %Docstring
 Combines this elevation map with ``otherElevationMap``.
 This elevation map keeps its size and takes elevation values of otherElevationMap that
-is not null for same row and column.
+is not null for same row and column following the combine ``method``.
 The other elevation map can have a different size, only rows and columns contained in
 this elevation map will be considered.
 

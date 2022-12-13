@@ -176,6 +176,20 @@ Writes configuration on a DOM element
 Reads configuration from a DOM element
 %End
 
+    QgsElevationMap::CombineMethod combinedElevationMethod() const;
+%Docstring
+Returns the method used when conbining different elevation sources.
+
+.. seealso:: :py:func:`setCombinedElevationMethod`
+%End
+
+    void setCombinedElevationMethod( QgsElevationMap::CombineMethod newCombinedElevationMethod );
+%Docstring
+Sets the method used when conbining different elevation sources.
+
+.. seealso:: :py:func:`combinedElevationMethod`
+%End
+
 };
 
 /************************************************************************

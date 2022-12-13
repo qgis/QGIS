@@ -216,120 +216,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QgsCollapsibleGroupBox" name="mShadingGroupBox">
-     <property name="title">
-      <string>Shading</string>
-     </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
-       <widget class="QgsCollapsibleGroupBox" name="mEdlGroupBox">
-        <property name="title">
-         <string>Eye-Dome Lighting</string>
-        </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_5">
-         <item row="0" column="1">
-          <widget class="QgsDoubleSpinBox" name="mEdlStrengthSpinBox">
-           <property name="toolTip">
-            <string>Adjusts how strong the added shading will be. Greater values mean stronger effect.</string>
-           </property>
-           <property name="decimals">
-            <number>0</number>
-           </property>
-           <property name="maximum">
-            <double>999999999999.000000000000000</double>
-           </property>
-           <property name="singleStep">
-            <double>100.000000000000000</double>
-           </property>
-           <property name="value">
-            <double>1000.000000000000000</double>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QgsDoubleSpinBox" name="mEdlDistanceSpinBox">
-           <property name="toolTip">
-            <string>Distance away from the original pixel to sample neighbors.</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="label_2">
-           <property name="text">
-            <string>Distance</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="label">
-           <property name="text">
-            <string>Strength</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="2">
-          <widget class="QgsUnitSelectionWidget" name="mEdlDistanceUnit" native="true"/>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
-       <widget class="QgsCollapsibleGroupBox" name="mHillshadingGroupBox">
-        <property name="title">
-         <string>Hillshading</string>
-        </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_6">
-         <item row="0" column="0">
-          <widget class="QLabel" name="mHillshadingZFactorLabel">
-           <property name="text">
-            <string>Z Factor</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="mHillshadingMultidirLabel">
-           <property name="text">
-            <string>Multidirectional</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QDoubleSpinBox" name="mHillshadingZFactorSpinBox">
-           <property name="maximum">
-            <double>9999999999999999455752309870428160.000000000000000</double>
-           </property>
-           <property name="value">
-            <double>1.000000000000000</double>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QCheckBox" name="mHillshadingMultidirCheckBox">
-           <property name="text">
-            <string/>
-           </property>
-           <property name="tristate">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0" colspan="2">
-          <widget class="QgsDirectionalLightWidget" name="mDirectionalLightWidget" native="true"/>
-         </item>
-        </layout>
-       </widget>
-      </item>
-     </layout>
-    </widget>
+    <layout class="QVBoxLayout" name="mShadingSettingsLayout"/>
    </item>
    <item>
     <spacer name="verticalSpacer">
@@ -361,24 +248,6 @@
    <class>QgsMessageBar</class>
    <extends>QWidget</extends>
    <header>qgsmessagebar.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDirectionalLightWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsdirectionallightwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsUnitSelectionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsunitselectionwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

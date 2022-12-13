@@ -1157,7 +1157,7 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings &settings,
     {
       QgsElevationMap layerElevationMap = layerElevationToBeComposed( settings, job, cache );
       if ( layerElevationMap.isValid() )
-        mainElevationMap->combine( layerElevationMap );
+        mainElevationMap->combine( layerElevationMap, mapShadingRenderer.combinedElevationMethod() );
     }
 
 

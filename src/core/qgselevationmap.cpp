@@ -273,7 +273,7 @@ QPainter *QgsElevationMap::painter() const
 
 }
 
-void QgsElevationMap::combine( const QgsElevationMap &otherElevationMap )
+void QgsElevationMap::combine( const QgsElevationMap &otherElevationMap, CombineMethod method )
 {
   QRgb *elevPtr = reinterpret_cast<QRgb *>( mElevationImage.bits() );
   const QRgb *otherElevPtr = reinterpret_cast<const QRgb *>( otherElevationMap.mElevationImage.constBits() );
@@ -290,7 +290,22 @@ void QgsElevationMap::combine( const QgsElevationMap &otherElevationMap )
       qgssize index = static_cast<qgssize>( col + row * width );
       qgssize indexOther = static_cast<qgssize>( col + row * widthOther );
       if ( otherElevPtr[indexOther] != 0 )
-        elevPtr[index] = otherElevPtr[indexOther];
+      {
+        switch ( method )
+        {
+          case CombineMethod::KeepHighestElevation:
+          {
+            double elev = decodeElevation( elevPtr[index] );
+            double otherElev = decodeElevation( otherElevPtr[indexOther] );
+            if ( otherElev > elev )
+              elevPtr[index] = otherElevPtr[indexOther];
+          }
+          break;
+          case CombineMethod::KeepNewElevation:
+            elevPtr[index] = otherElevPtr[indexOther];
+            break;
+        }
+      }
     }
   }
 }
