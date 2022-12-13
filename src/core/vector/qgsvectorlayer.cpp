@@ -442,7 +442,8 @@ void QgsVectorLayer::reload()
 
 QgsMapLayerRenderer *QgsVectorLayer::createMapRenderer( QgsRenderContext &rendererContext )
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // non fatal for now -- the "rasterize" processing algorithm is not thread safe and calls this
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   return new QgsVectorLayerRenderer( this, rendererContext );
 }
@@ -720,14 +721,16 @@ void QgsVectorLayer::reselect()
 
 QgsVectorDataProvider *QgsVectorLayer::dataProvider()
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // non fatal for now -- the "rasterize" processing algorithm is not thread safe and calls this
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   return mDataProvider;
 }
 
 const QgsVectorDataProvider *QgsVectorLayer::dataProvider() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // non fatal for now -- the "rasterize" processing algorithm is not thread safe and calls this
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   return mDataProvider;
 }
@@ -778,7 +781,8 @@ void QgsVectorLayer::setDiagramRenderer( QgsDiagramRenderer *r )
 
 QgsWkbTypes::GeometryType QgsVectorLayer::geometryType() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // non fatal for now -- the "rasterize" processing algorithm is not thread safe and calls this
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   return QgsWkbTypes::geometryType( mWkbType );
 }
@@ -853,7 +857,8 @@ QgsRectangle QgsVectorLayer::boundingBoxOfSelected() const
 
 bool QgsVectorLayer::labelsEnabled() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // non fatal for now -- the "rasterize" processing algorithm is not thread safe and calls this
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   return mLabelsEnabled && static_cast< bool >( mLabeling );
 }
@@ -867,7 +872,8 @@ void QgsVectorLayer::setLabelsEnabled( bool enabled )
 
 bool QgsVectorLayer::diagramsEnabled() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // non fatal for now -- the "rasterize" processing algorithm is not thread safe and calls this
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   if ( !mDiagramRenderer || !mDiagramLayerSettings )
     return false;
@@ -1125,7 +1131,8 @@ bool QgsVectorLayer::setSubsetString( const QString &subset )
 
 bool QgsVectorLayer::simplifyDrawingCanbeApplied( const QgsRenderContext &renderContext, QgsVectorSimplifyMethod::SimplifyHint simplifyHint ) const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // non fatal for now -- the "rasterize" processing algorithm is not thread safe and calls this
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   if ( isValid() && mDataProvider && !mEditBuffer && ( isSpatial() && geometryType() != QgsWkbTypes::PointGeometry ) && ( mSimplifyMethod.simplifyHints() & simplifyHint ) && renderContext.useRenderingOptimization() )
   {
@@ -3720,7 +3727,8 @@ bool QgsVectorLayer::deleteFeatures( const QgsFeatureIds &fids, QgsVectorLayer::
 
 QgsFields QgsVectorLayer::fields() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // non fatal for now -- the "rasterize" processing algorithm is not thread safe and calls this
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   return mFields;
 }
@@ -3921,7 +3929,8 @@ int QgsVectorLayer::selectedFeatureCount() const
 
 const QgsFeatureIds &QgsVectorLayer::selectedFeatureIds() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // non fatal for now -- the "rasterize" processing algorithm is not thread safe and calls this
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   return mSelectedFeatureIds;
 }
@@ -4051,7 +4060,8 @@ bool QgsVectorLayer::isEditable() const
 
 bool QgsVectorLayer::isSpatial() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // non fatal for now -- the "rasterize" processing algorithm is not thread safe and calls this
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   QgsWkbTypes::GeometryType t = geometryType();
   return t != QgsWkbTypes::NullGeometry && t != QgsWkbTypes::UnknownGeometry;
@@ -4187,7 +4197,8 @@ void QgsVectorLayer::removeFeatureRendererGenerator( const QString &id )
 
 QList<const QgsFeatureRendererGenerator *> QgsVectorLayer::featureRendererGenerators() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // non fatal for now -- the "rasterize" processing algorithm is not thread safe and calls this
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   QList< const QgsFeatureRendererGenerator * > res;
   for ( const QgsFeatureRendererGenerator *generator : mRendererGenerators )
@@ -4996,7 +5007,8 @@ void QgsVectorLayer::setFeatureBlendMode( QPainter::CompositionMode featureBlend
 
 QPainter::CompositionMode QgsVectorLayer::featureBlendMode() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // non fatal for now -- the "rasterize" processing algorithm is not thread safe and calls this
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   return mFeatureBlendMode;
 }
