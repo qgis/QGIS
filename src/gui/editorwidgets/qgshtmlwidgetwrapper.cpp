@@ -80,8 +80,11 @@ void QgsHtmlWidgetWrapper::checkGeometryNeeds()
   NeedsGeometryEvaluator evaluator;
 
   const QgsAttributeEditorContext attributecontext = context();
-  const QgsExpressionContext expressionContext = layer()->createExpressionContext();
-  evaluator.setExpressionContext( expressionContext );
+  if ( QgsVectorLayer *vl = layer() )
+  {
+    const QgsExpressionContext expressionContext = vl->createExpressionContext();
+    evaluator.setExpressionContext( expressionContext );
+  }
 
   auto frame = webView.page()->mainFrame();
   connect( frame, &QWebFrame::javaScriptWindowObjectCleared, frame, [ frame, &evaluator ]
