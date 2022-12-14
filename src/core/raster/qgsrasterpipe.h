@@ -74,6 +74,21 @@ class CORE_EXPORT QgsRasterPipe
     QgsRasterPipe &operator=( const QgsRasterPipe &rh ) = delete;
 
     /**
+     * Moves the pipe to another \a thread.
+     *
+     * This effects all QObject derived interfaces in the pipe, and follows the same
+     * behavior as QObject::moveToThread. Specifically, it is permitted to PUSH the
+     * pipe from the current thread to another thread, but NOT to PULL a pipe
+     * from another thread over to the current thread. Pulling is only supported
+     * by first pushsing the pipe from its current thread to a NULLPTR thread,
+     * and then later pulling to the current thread. See QObject documentation
+     * for more details.
+     *
+     * \since QGIS 3.30
+    */
+    void moveToThread( QThread *thread );
+
+    /**
      * Attempts to insert interface at specified index and connect
      * if connection would fail, the interface is not inserted and FALSE is returned
      *
