@@ -31,26 +31,33 @@
 #include <QCoreApplication>
 #include <memory>
 
-#ifdef AGGRESSIVE_SAFE_MODE
-#define QGIS_PROTECT_QOBJECT_THREAD_ACCESS if ( QThread::currentThread() != thread() ) {qFatal( "%s", QStringLiteral("%2 (%1:%3) is run from a different thread than the object %4 lives in [0x%5 vs 0x%6]" ).arg( QString( __FILE__ ), QString( __FUNCTION__ ), QString::number( __LINE__  ), objectName() ).arg( reinterpret_cast< qint64 >( QThread::currentThread() ), 0, 16 ).arg( reinterpret_cast< qint64 >( thread() ), 0, 16 ).toLocal8Bit().constData() ); }
+#ifdef __clang_analyzer__
+#define QGIS_PROTECT_QOBJECT_THREAD_ACCESS do {} while(false);
+#elif defined(AGGRESSIVE_SAFE_MODE)
+#define QGIS_PROTECT_QOBJECT_THREAD_ACCESS if ( QThread::currentThread() != thread() ) {qFatal( "%s", QStringLiteral("%2 (%1:%3) is run from a different thread than the object %4 lives in [0x%5 vs 0x%6]" ).arg( QStringLiteral( __FILE__ ), QStringLiteral( __FUNCTION__ ), QString::number( __LINE__  ), objectName() ).arg( reinterpret_cast< qint64 >( QThread::currentThread() ), 0, 16 ).arg( reinterpret_cast< qint64 >( thread() ), 0, 16 ).toLocal8Bit().constData() ); }
 #elif defined(QGISDEBUG)
-#define QGIS_PROTECT_QOBJECT_THREAD_ACCESS if ( QThread::currentThread() != thread() ) {qWarning() << QStringLiteral("%2 (%1:%3) is run from a different thread than the object %4 lives in [0x%5 vs 0x%6]" ).arg( QString( __FILE__ ), QString( __FUNCTION__ ), QString::number( __LINE__  ), objectName() ).arg( reinterpret_cast< qint64 >( QThread::currentThread() ), 0, 16 ).arg( reinterpret_cast< qint64 >( thread() ), 0, 16 ).toLocal8Bit().constData(); }
+#define QGIS_PROTECT_QOBJECT_THREAD_ACCESS if ( QThread::currentThread() != thread() ) {qWarning() << QStringLiteral("%2 (%1:%3) is run from a different thread than the object %4 lives in [0x%5 vs 0x%6]" ).arg( QStringLiteral( __FILE__ ), QStringLiteral( __FUNCTION__ ), QString::number( __LINE__  ), objectName() ).arg( reinterpret_cast< qint64 >( QThread::currentThread() ), 0, 16 ).arg( reinterpret_cast< qint64 >( thread() ), 0, 16 ).toLocal8Bit().constData(); }
 #else
 #define QGIS_PROTECT_QOBJECT_THREAD_ACCESS do {} while(false);
 #endif
 
-#if defined(QGISDEBUG)
+#ifdef __clang_analyzer__
+#define QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL do {} while(false);
+#elif defined(QGISDEBU#define QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL do {} while(false);
+G )
 // !!DO NOT USE THIS FOR NEW CODE !!
 // This is in place to keep legacy code running and should be removed in the future.
-#define QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL if ( QThread::currentThread() != thread() ) {qWarning() << QStringLiteral("%2 (%1:%3) is run from a different thread than the object %4 lives in [0x%5 vs 0x%6]" ).arg( QString( __FILE__ ), QString( __FUNCTION__ ), QString::number( __LINE__  ), objectName() ).arg( reinterpret_cast< qint64 >( QThread::currentThread() ), 0, 16 ).arg( reinterpret_cast< qint64 >( thread() ), 0, 16 ).toLocal8Bit().constData(); }
+#define QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL if ( QThread::currentThread() != thread() ) {qWarning() << QStringLiteral("%2 (%1:%3) is run from a different thread than the object %4 lives in [0x%5 vs 0x%6]" ).arg( QStringLiteral( __FILE__ ), QStringLiteral( __FUNCTION__ ), QString::number( __LINE__  ), objectName() ).arg( reinterpret_cast< qint64 >( QThread::currentThread() ), 0, 16 ).arg( reinterpret_cast< qint64 >( thread() ), 0, 16 ).toLocal8Bit().constData(); }
 #else
 #define QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL do {} while(false);
 #endif
 
-#ifdef AGGRESSIVE_SAFE_MODE
-#define QGIS_CHECK_QOBJECT_THREAD_EQUALITY(other) if ( other->thread() != thread() ) {qFatal( "%s", QStringLiteral("%2 (%1:%3) Object %4 is from a different thread than the object %5 lives in [0x%6 vs 0x%7]" ).arg( QString( __FILE__ ), QString( __FUNCTION__ ), QString::number( __LINE__  ), other->objectName(), objectName() ).arg( reinterpret_cast< qint64 >( QThread::currentThread() ), 0, 16 ).arg( reinterpret_cast< qint64 >( thread() ), 0, 16 ).toLocal8Bit().constData() ); }
+#ifdef __clang_analyzer__
+#define QGIS_CHECK_QOBJECT_THREAD_EQUALITY(other) do {} while(false);(void)other;
+#elif defined(AGGRESSIVE_SAFE_MODE)
+#define QGIS_CHECK_QOBJECT_THREAD_EQUALITY(other) if ( other->thread() != thread() ) {qFatal( "%s", QStringLiteral("%2 (%1:%3) Object %4 is from a different thread than the object %5 lives in [0x%6 vs 0x%7]" ).arg( QStringLiteral( __FILE__ ), QStringLiteral( __FUNCTION__ ), QString::number( __LINE__  ), other->objectName(), objectName() ).arg( reinterpret_cast< qint64 >( QThread::currentThread() ), 0, 16 ).arg( reinterpret_cast< qint64 >( thread() ), 0, 16 ).toLocal8Bit().constData() ); }
 #elif defined(QGISDEBUG)
-#define QGIS_CHECK_QOBJECT_THREAD_EQUALITY(other) if ( other->thread() != thread() ) {qWarning() << QStringLiteral("%2 (%1:%3) Object %4 is from a different thread than the object %5 lives in [0x%6 vs 0x%7]" ).arg( QString( __FILE__ ), QString( __FUNCTION__ ), QString::number( __LINE__  ), other->objectName(), objectName() ).arg( reinterpret_cast< qint64 >( QThread::currentThread() ), 0, 16 ).arg( reinterpret_cast< qint64 >( thread() ), 0, 16 ).toLocal8Bit().constData(); }
+#define QGIS_CHECK_QOBJECT_THREAD_EQUALITY(other) if ( other->thread() != thread() ) {qWarning() << QStringLiteral("%2 (%1:%3) Object %4 is from a different thread than the object %5 lives in [0x%6 vs 0x%7]" ).arg( QStringLiteral( __FILE__ ), QStringLiteral( __FUNCTION__ ), QString::number( __LINE__  ), other->objectName(), objectName() ).arg( reinterpret_cast< qint64 >( QThread::currentThread() ), 0, 16 ).arg( reinterpret_cast< qint64 >( thread() ), 0, 16 ).toLocal8Bit().constData(); }
 #else
 #define QGIS_CHECK_QOBJECT_THREAD_EQUALITY(other) do {} while(false);(void)other;
 #endif
