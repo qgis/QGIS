@@ -20,8 +20,6 @@
 #include "qgslogger.h"
 #include "qgsmaplayerrenderer.h"
 #include "qgsmaplayerlistutils_p.h"
-#include "qgsvectorlayerlabeling.h"
-#include "qgsrasterlayerrenderer.h"
 
 #include <QtConcurrentRun>
 
