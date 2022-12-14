@@ -37,6 +37,8 @@ static bool _palIsCanceled( void *ctx )
   return ( reinterpret_cast< QgsRenderContext * >( ctx ) )->renderingStopped();
 }
 
+///@cond PRIVATE
+
 /**
  * \ingroup core
  * \class QgsLabelSorter
@@ -72,6 +74,8 @@ class QgsLabelSorter
 
     const QStringList mLayerRenderingOrderIds;
 };
+
+///@endcond
 
 //
 // QgsLabelingEngine
