@@ -245,10 +245,17 @@ void QgsWFSProvider::issueInitialGetFeature()
   }
   // For WFS >= 1.1, by default, issue a GetFeature on one feature to check
   // if gml:description, gml:identifier, gml:name attributes are
-  // present (unless mShared->mURI.skipInitialGetFeature() returns false)
+  // present (unless mShared->mURI.skipInitialGetFeature() returns false),
+  // unless gmlId, gmlName, gmlDescription fields are found (some servers use
+  // that hack since gml:description/identifier/name attributes might be
+  // missed by clients...).
   // Another reason to issue it if we do not known the exact geometry type
   // from describeFeatureType()
-  else if ( !mShared->mWFSVersion.startsWith( QLatin1String( "1.0" ) ) )
+  else if ( !mShared->mWFSVersion.startsWith( QLatin1String( "1.0" ) ) &&
+            ( mShared->mWKBType == QgsWkbTypes::Unknown ||
+              mShared->mFields.indexOf( QLatin1String( "gmlId" ) ) < 0 ||
+              mShared->mFields.indexOf( QLatin1String( "gmlName" ) ) < 0 ||
+              mShared->mFields.indexOf( QLatin1String( "gmlDescription" ) ) < 0 ) )
   {
     // Try to see if gml:description, gml:identifier, gml:name attributes are
     // present. So insert them temporarily in mShared->mFields so that the
