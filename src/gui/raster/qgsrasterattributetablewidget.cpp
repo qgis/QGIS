@@ -22,9 +22,6 @@
 #include "qgsrasterattributetableaddrowdialog.h"
 #include "qgscolorbutton.h"
 #include "qgsgradientcolorrampdialog.h"
-#include "qgspalettedrasterrenderer.h"
-#include "qgssinglebandpseudocolorrenderer.h"
-#include "qgsrastershader.h"
 
 #include <QToolBar>
 #include <QAction>
@@ -377,6 +374,7 @@ void QgsRasterAttributeTableWidget::addColumn()
         }
       }
     }
+    setDelegates();
   }
 }
 
@@ -512,17 +510,26 @@ void QgsRasterAttributeTableWidget::setDelegates()
     const QList<QgsRasterAttributeTable::Field> tableFields { mAttributeTableBuffer->fields() };
     int fieldIdx { 0 };
     const QHash<Qgis::RasterAttributeTableFieldUsage, QgsRasterAttributeTable::UsageInformation> usageInfo { QgsRasterAttributeTable::usageInformation() };
+
     for ( const QgsRasterAttributeTable::Field &f : std::as_const( tableFields ) )
     {
       // Clear all delegates.
       mRATView->setItemDelegateForColumn( fieldIdx, nullptr );
+
       if ( usageInfo[f.usage].maybeClass )
       {
         mClassifyComboBox->addItem( QgsFields::iconForFieldType( f.type ), f.name, QVariant( fieldIdx ) );
       }
+
+      // Set delegates for doubles
+      if ( ( ! f.isColor() && ! f.isRamp() ) && f.type == QVariant::Type::Double )
+      {
+        mRATView->setItemDelegateForColumn( fieldIdx, new LocalizedDoubleDelegate( mRATView ) );
+      }
       fieldIdx++;
     }
 
+    // Set delegates for color and ramp
     if ( mAttributeTableBuffer->hasColor() )
     {
       if ( mAttributeTableBuffer->usages().contains( Qgis::RasterAttributeTableFieldUsage::Alpha ) )
@@ -609,6 +616,35 @@ QWidget *ColorRampAlphaDelegate::createEditor( QWidget *parent, const QStyleOpti
   QWidget *editor { ColorRampDelegate::createEditor( parent, option, index ) };
   // No opacity setting for ramps?
   return editor;
+}
+
+
+QString LocalizedDoubleDelegate::displayText( const QVariant &value, const QLocale &locale ) const
+{
+  Q_UNUSED( locale );
+  const QString s( value.toString() );
+  const int dotPosition( s.indexOf( '.' ) );
+  int precision;
+  if ( dotPosition < 0 && s.indexOf( 'e' ) < 0 )
+  {
+    precision = 0;
+    return QLocale().toString( value.toDouble(), 'f', precision );
+  }
+  else
+  {
+    if ( dotPosition < 0 ) precision = 0;
+    else precision = s.length() - dotPosition - 1;
+
+    if ( -1 < value.toDouble() && value.toDouble() < 1 )
+    {
+      return QLocale().toString( value.toDouble(), 'g', precision );
+    }
+    else
+    {
+      return QLocale().toString( value.toDouble(), 'f', precision );
+    }
+  }
+  return QLocale().toString( value.toDouble( ), 'f' );
 }
 
 ///@endcond private
