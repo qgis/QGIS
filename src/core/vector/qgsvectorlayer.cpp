@@ -5609,7 +5609,8 @@ void QgsVectorLayer::setAttributeTableConfig( const QgsAttributeTableConfig &att
 
 QgsExpressionContext QgsVectorLayer::createExpressionContext() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // called in a non-thread-safe way in some cases when calculating aggregates in a different thread
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   return QgsExpressionContext( QgsExpressionContextUtils::globalProjectLayerScopes( this ) );
 }
