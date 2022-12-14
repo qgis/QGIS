@@ -63,14 +63,6 @@ class CORE_EXPORT QgsRaster
       IdentifyFormatFeature   = 1 << 3, // WMS GML/JSON -> feature
     };
 
-    // Progress types
-    enum RasterProgressType
-    {
-      ProgressHistogram = 0,
-      ProgressPyramids  = 1,
-      ProgressStatistics = 2
-    };
-
     enum RasterBuildPyramids
     {
       PyramidsFlagNo = 0,
