@@ -2332,7 +2332,8 @@ QgsExpressionContext QgsProject::createExpressionContext() const
 
 QgsExpressionContextScope *QgsProject::createExpressionContextScope() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // this method is called quite extensively using QgsProject::instance()
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   // MUCH cheaper to clone than build
   if ( mProjectScope )
