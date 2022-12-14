@@ -38,6 +38,7 @@ RUN dnf -y --refresh install \
     python3-termcolor \
     qt6-qt3d-devel \
     qt6-qtbase-devel \
+    qt6-qtbase-private-devel \
     qt6-qtdeclarative-devel \
     qt6-qttools-static \
     qt6-qtserialport-devel \
