@@ -501,7 +501,8 @@ void QgsProject::setTitle( const QString &title )
 
 QString QgsProject::title() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // this method is called quite extensively from other threads via QgsProject::createExpressionContextScope()
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   return mMetadata.title();
 }
@@ -807,7 +808,8 @@ void QgsProject::setFileName( const QString &name )
 
 QString QgsProject::fileName() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // this method is called quite extensively from other threads via QgsProject::createExpressionContextScope()
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   return mFile.fileName();
 }
@@ -835,7 +837,8 @@ QFileInfo QgsProject::fileInfo() const
 
 QgsProjectStorage *QgsProject::projectStorage() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // this method is called quite extensively from other threads via QgsProject::createExpressionContextScope()
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   return QgsApplication::projectStorageRegistry()->projectStorageFromUri( mFile.fileName() );
 }
@@ -871,7 +874,8 @@ QString QgsProject::absolutePath() const
 
 QString QgsProject::absoluteFilePath() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // this method is called quite extensively from other threads via QgsProject::createExpressionContextScope()
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   if ( projectStorage() )
     return QString();
@@ -884,7 +888,8 @@ QString QgsProject::absoluteFilePath() const
 
 QString QgsProject::baseName() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // this method is called quite extensively from other threads via QgsProject::createExpressionContextScope()
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   if ( QgsProjectStorage *storage = projectStorage() )
   {
@@ -923,7 +928,8 @@ void QgsProject::setFilePathStorage( Qgis::FilePathType type )
 
 QgsCoordinateReferenceSystem QgsProject::crs() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // this method is called quite extensively from other threads via QgsProject::createExpressionContextScope()
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   return mCrs;
 }
@@ -953,7 +959,8 @@ void QgsProject::setCrs( const QgsCoordinateReferenceSystem &crs, bool adjustEll
 
 QString QgsProject::ellipsoid() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // this method is called quite extensively from other threads via QgsProject::createExpressionContextScope()
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   if ( !crs().isValid() )
     return geoNone();
@@ -975,7 +982,8 @@ void QgsProject::setEllipsoid( const QString &ellipsoid )
 
 QgsCoordinateTransformContext QgsProject::transformContext() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // this method is called quite extensively from other threads via QgsProject::createExpressionContextScope()
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   return mTransformContext;
 }
@@ -2229,7 +2237,8 @@ bool QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group, Qgis::ProjectReadF
 
 QVariantMap QgsProject::customVariables() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // this method is called quite extensively from other threads via QgsProject::createExpressionContextScope()
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   return mCustomVariables;
 }
@@ -3082,7 +3091,8 @@ QStringList QgsProject::readListEntry( const QString &scope,
                                        const QStringList &def,
                                        bool *ok ) const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // this method is called quite extensively from other threads via QgsProject::createExpressionContextScope()
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   QgsProjectProperty *property = findKey_( scope, key, mProperties );
 
@@ -3608,7 +3618,8 @@ void QgsProject::setAreaUnits( QgsUnitTypes::AreaUnit unit )
 
 QString QgsProject::homePath() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // this method is called quite extensively from other threads via QgsProject::createExpressionContextScope()
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   if ( !mCachedHomePath.isEmpty() )
     return mCachedHomePath;
@@ -4461,7 +4472,8 @@ QString QgsProject::resolveAttachmentIdentifier( const QString &identifier ) con
 
 const QgsProjectMetadata &QgsProject::metadata() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // this method is called quite extensively from other threads via QgsProject::createExpressionContextScope()
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   return mMetadata;
 }
