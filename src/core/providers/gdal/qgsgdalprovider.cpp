@@ -95,7 +95,6 @@ const int MAX_CACHE_SIZE = 50;
 
 struct QgsGdalProgress
 {
-  int type;
   QgsGdalProvider *provider = nullptr;
   QgsRasterBlockFeedback *feedback = nullptr;
 };
@@ -1911,7 +1910,6 @@ QgsRasterHistogram QgsGdalProvider::histogram( int bandNo,
   QgsDebugMsgLevel( QStringLiteral( "xSize() = %1 ySize() = %2 sampleSize = %3 bApproxOK = %4" ).arg( xSize() ).arg( ySize() ).arg( sampleSize ).arg( bApproxOK ), 2 );
 
   QgsGdalProgress myProg;
-  myProg.type = QgsRaster::ProgressHistogram;
   myProg.provider = this;
   myProg.feedback = feedback;
 
@@ -2827,7 +2825,6 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int bandNo, int stats, const
   double pdfMean;
   double pdfStdDev;
   QgsGdalProgress myProg;
-  myProg.type = QgsRaster::ProgressHistogram;
   myProg.provider = this;
   myProg.feedback = feedback;
 
