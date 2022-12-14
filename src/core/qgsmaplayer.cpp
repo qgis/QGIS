@@ -145,7 +145,8 @@ void QgsMapLayer::clone( QgsMapLayer *layer ) const
 
 QgsMapLayerType QgsMapLayer::type() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // because QgsVirtualLayerProvider is not anywhere NEAR thread safe:
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   return mLayerType;
 }
@@ -177,7 +178,8 @@ Qgis::MapLayerProperties QgsMapLayer::properties() const
 
 QString QgsMapLayer::id() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // because QgsVirtualLayerProvider is not anywhere NEAR thread safe:
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   return mID;
 }
@@ -196,7 +198,8 @@ void QgsMapLayer::setName( const QString &name )
 
 QString QgsMapLayer::name() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // because QgsVirtualLayerProvider is not anywhere NEAR thread safe:
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   QgsDebugMsgLevel( "returning name '" + mLayerName + '\'', 4 );
   return mLayerName;
@@ -907,7 +910,8 @@ void QgsMapLayer::setMapTipTemplate( const QString &mapTip )
 
 bool QgsMapLayer::isValid() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // because QgsVirtualLayerProvider is not anywhere NEAR thread safe:
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   return mValid;
 }
