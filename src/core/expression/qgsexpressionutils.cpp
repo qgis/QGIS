@@ -61,6 +61,12 @@ QgsMapLayer *QgsExpressionUtils::getMapLayerPrivate( const QVariant &value, cons
 {
   // First check if we already received a layer pointer
   QPointer< QgsMapLayer > ml = value.value< QgsWeakMapLayerPointer >().data();
+
+  // clang analyzer gets this function absolutely 100% wrong
+#ifdef __clang_analyzer__
+  ( void )context;
+#else
+
   if ( !ml )
   {
     ml = value.value< QgsMapLayer * >();
@@ -82,6 +88,7 @@ QgsMapLayer *QgsExpressionUtils::getMapLayerPrivate( const QVariant &value, cons
     const QList< QgsMapLayerStore * > stores = context->layerStores();
     for ( QgsMapLayerStore *store : stores )
     {
+
       QPointer< QgsMapLayerStore > storePointer( store );
       auto findLayerInStoreFunction = [ storePointer, &ml, identifier ]
       {
@@ -123,7 +130,6 @@ QgsMapLayer *QgsExpressionUtils::getMapLayerPrivate( const QVariant &value, cons
     ml = project->mapLayersByName( identifier ).value( 0 );
   };
 
-#ifndef __clang_analyzer__
   if ( QThread::currentThread() == qApp->thread() )
     getMapLayerFromProjectInstance();
   else
@@ -136,6 +142,10 @@ QgsMapLayer *QgsExpressionUtils::getMapLayerPrivate( const QVariant &value, cons
 void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const QgsExpressionContext *context, QgsExpression *expression, const std::function<void ( QgsMapLayer * )> &function, bool &foundLayer )
 {
   foundLayer = false;
+
+  // clang analyzer gets this function absolutely 100% wrong
+#ifndef __clang_analyzer__
+
   // First check if we already received a layer pointer
   QPointer< QgsMapLayer > ml = value.value< QgsWeakMapLayerPointer >().data();
   if ( !ml )
@@ -267,6 +277,7 @@ void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const 
     else
       QMetaObject::invokeMethod( QgsProject::instance(), getMapLayerFromProjectInstance, Qt::BlockingQueuedConnection );
   }
+#endif
 }
 
 QVariant QgsExpressionUtils::runMapLayerFunctionThreadSafe( const QVariant &value, const QgsExpressionContext *context, QgsExpression *expression, const std::function<QVariant( QgsMapLayer * )> &function, bool &foundLayer )
