@@ -8,6 +8,7 @@ RUN dnf -y --refresh install \
     ccache \
     clang \
     clazy \
+    curl \
     exiv2-devel \
     expat-devel \
     fcgi-devel \
@@ -99,3 +100,15 @@ RUN cd /usr/src \
   && qmake6 src/qscintilla.pro \
   && make -j4 \
   && make install
+
+# Oracle : client side
+RUN curl https://download.oracle.com/otn_software/linux/instantclient/199000/instantclient-basic-linux.x64-19.9.0.0.0dbru.zip > instantclient-basic-linux.x64-19.9.0.0.0dbru.zip
+RUN curl https://download.oracle.com/otn_software/linux/instantclient/199000/instantclient-sdk-linux.x64-19.9.0.0.0dbru.zip > instantclient-sdk-linux.x64-19.9.0.0.0dbru.zip
+RUN curl https://download.oracle.com/otn_software/linux/instantclient/199000/instantclient-sqlplus-linux.x64-19.9.0.0.0dbru.zip > instantclient-sqlplus-linux.x64-19.9.0.0.0dbru.zip
+
+RUN unzip instantclient-basic-linux.x64-19.9.0.0.0dbru.zip
+RUN unzip instantclient-sdk-linux.x64-19.9.0.0.0dbru.zip
+RUN unzip instantclient-sqlplus-linux.x64-19.9.0.0.0dbru.zip
+
+ENV PATH="/instantclient_19_9:${PATH}"
+ENV LD_LIBRARY_PATH="/instantclient_19_9:${LD_LIBRARY_PATH}"
