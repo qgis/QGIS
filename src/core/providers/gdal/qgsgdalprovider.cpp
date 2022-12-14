@@ -108,27 +108,15 @@ int CPL_STDCALL progressCallback( double dfComplete,
 {
   Q_UNUSED( pszMessage )
 
-  static double sDfLastComplete = -1.0;
-
   QgsGdalProgress *prog = static_cast<QgsGdalProgress *>( pProgressArg );
 
-  if ( sDfLastComplete > dfComplete )
+  if ( QgsRasterBlockFeedback *feedback = prog->feedback )
   {
-    if ( sDfLastComplete >= 1.0 )
-      sDfLastComplete = -1.0;
-    else
-      sDfLastComplete = dfComplete;
-  }
+    feedback->setProgress( dfComplete * 100 );
 
-  if ( std::floor( sDfLastComplete * 10 ) != std::floor( dfComplete * 10 ) )
-  {
-    if ( prog->feedback )
-      prog->feedback->setProgress( dfComplete * 100 );
+    if ( feedback->isCanceled() )
+      return false;
   }
-  sDfLastComplete = dfComplete;
-
-  if ( prog->feedback && prog->feedback->isCanceled() )
-    return false;
 
   return true;
 }
