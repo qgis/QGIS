@@ -71,6 +71,9 @@ Returns the layer id of the source layer.
 
 
 
+
+
+
   private:
     QgsVectorLayerFeatureSource( const QgsVectorLayerFeatureSource &other );
 };
