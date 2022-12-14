@@ -46,8 +46,8 @@ class QgsLabelSorter
 {
   public:
 
-    explicit QgsLabelSorter( const QgsMapSettings &mapSettings )
-      : mMapSettings( mapSettings )
+    explicit QgsLabelSorter( const QStringList &layerRenderingOrderIds )
+      : mLayerRenderingOrderIds( layerRenderingOrderIds )
     {}
 
     bool operator()( pal::LabelPosition *lp1, pal::LabelPosition *lp2 ) const
@@ -59,9 +59,8 @@ class QgsLabelSorter
         return lf1->zIndex() < lf2->zIndex();
 
       //equal z-index, so fallback to respecting layer render order
-      QStringList layerIds = mMapSettings.layerIds();
-      int layer1Pos = layerIds.indexOf( lf1->provider()->layerId() );
-      int layer2Pos = layerIds.indexOf( lf2->provider()->layerId() );
+      int layer1Pos = mLayerRenderingOrderIds.indexOf( lf1->provider()->layerId() );
+      int layer2Pos = mLayerRenderingOrderIds.indexOf( lf2->provider()->layerId() );
       if ( layer1Pos != layer2Pos && layer1Pos >= 0 && layer2Pos >= 0 )
         return layer1Pos > layer2Pos; //higher positions are rendered first
 
@@ -71,7 +70,7 @@ class QgsLabelSorter
 
   private:
 
-    const QgsMapSettings &mMapSettings;
+    const QStringList mLayerRenderingOrderIds;
 };
 
 //
@@ -91,6 +90,7 @@ QgsLabelingEngine::~QgsLabelingEngine()
 void QgsLabelingEngine::setMapSettings( const QgsMapSettings &mapSettings )
 {
   mMapSettings = mapSettings;
+  mLayerRenderingOrderIds = mMapSettings.layerIds();
   if ( mResults )
     mResults->setMapSettings( mapSettings );
 }
@@ -402,7 +402,7 @@ void QgsLabelingEngine::solve( QgsRenderContext &context )
                                 settings.testFlag( QgsLabelingEngineSettings::DrawUnplacedLabels ) || settings.testFlag( QgsLabelingEngineSettings::CollectUnplacedLabels ) ? &mUnlabeled : nullptr );
 
   // sort labels
-  std::sort( mLabels.begin(), mLabels.end(), QgsLabelSorter( mMapSettings ) );
+  std::sort( mLabels.begin(), mLabels.end(), QgsLabelSorter( mLayerRenderingOrderIds ) );
 
   QgsDebugMsgLevel( QStringLiteral( "LABELING work:  %1 ms ... labels# %2" ).arg( t.elapsed() ).arg( mLabels.size() ), 4 );
 }
