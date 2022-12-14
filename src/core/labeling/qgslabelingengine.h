@@ -346,6 +346,10 @@ class CORE_EXPORT QgsLabelingEngine
     QList<pal::LabelPosition *> mUnlabeled;
     QList<pal::LabelPosition *> mLabels;
 
+  private:
+
+    QStringList mLayerRenderingOrderIds;
+
 };
 
 /**
