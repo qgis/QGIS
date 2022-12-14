@@ -53,7 +53,8 @@ int QgsMapLayerStore::validCount() const
 
 QgsMapLayer *QgsMapLayerStore::mapLayer( const QString &layerId ) const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // because QgsVirtualLayerProvider is not anywhere NEAR thread safe:
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   return mMapLayers.value( layerId );
 }
@@ -266,14 +267,16 @@ void QgsMapLayerStore::onMapLayerDeleted( QObject *obj )
 
 QMap<QString, QgsMapLayer *> QgsMapLayerStore::mapLayers() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // because QgsVirtualLayerProvider is not anywhere NEAR thread safe:
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   return mMapLayers;
 }
 
 QMap<QString, QgsMapLayer *> QgsMapLayerStore::validMapLayers() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // because QgsVirtualLayerProvider is not anywhere NEAR thread safe:
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   QMap<QString, QgsMapLayer *> validLayers;
   for ( auto it = mMapLayers.constBegin(); it != mMapLayers.constEnd(); it++ )

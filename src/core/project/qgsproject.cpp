@@ -3969,7 +3969,8 @@ int QgsProject::validCount() const
 
 QgsMapLayer *QgsProject::mapLayer( const QString &layerId ) const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // because QgsVirtualLayerProvider is not anywhere NEAR thread safe:
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   return mLayerStore->mapLayer( layerId );
 }
@@ -4299,7 +4300,8 @@ void QgsProject::reloadAllLayers()
 
 QMap<QString, QgsMapLayer *> QgsProject::mapLayers( const bool validOnly ) const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // because QgsVirtualLayerProvider is not anywhere NEAR thread safe:
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   return validOnly ? mLayerStore->validMapLayers() : mLayerStore->mapLayers();
 }

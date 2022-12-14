@@ -51,7 +51,8 @@ const QgsDataProviderTemporalCapabilities *QgsDataProvider::temporalCapabilities
 
 void QgsDataProvider::reloadData()
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // Because QgsVirtualLayerTask is not thread safe:
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   reloadProviderData();
   emit dataChanged();
