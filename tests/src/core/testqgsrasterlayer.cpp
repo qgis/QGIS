@@ -378,9 +378,9 @@ void TestQgsRasterLayer::checkStats()
   QCOMPARE( myStatistics.minimumValue, 0.0 );
   QCOMPARE( myStatistics.maximumValue, 9.0 );
   QGSCOMPARENEAR( myStatistics.mean, 4.5, 4 * std::numeric_limits<double>::epsilon() );
-  const double stdDev = 2.87228132326901431;
+  const double stdDev = 2.8722813233;
   // TODO: verify why GDAL stdDev is so different from generic (2.88675)
-  QGSCOMPARENEAR( myStatistics.stdDev, stdDev, 0.00000000000001 );
+  QGSCOMPARENEAR( myStatistics.stdDev, stdDev, 0.000001 );
 
   // limited extent
   myStatistics = mpRasterLayer->dataProvider()->bandStatistics( 1,
