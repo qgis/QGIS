@@ -51,13 +51,6 @@ Raster namespace.
       IdentifyFormatFeature,
     };
 
-    enum RasterProgressType
-    {
-      ProgressHistogram,
-      ProgressPyramids,
-      ProgressStatistics
-    };
-
     enum RasterBuildPyramids
     {
       PyramidsFlagNo,
