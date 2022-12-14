@@ -89,7 +89,6 @@ const int MAX_CACHE_SIZE = 50;
 
 struct QgsGdalProgress
 {
-  QgsGdalProvider *provider = nullptr;
   QgsRasterBlockFeedback *feedback = nullptr;
 };
 //
@@ -1938,7 +1937,6 @@ QgsRasterHistogram QgsGdalProvider::histogram( int bandNo,
   QgsDebugMsgLevel( QStringLiteral( "xSize() = %1 ySize() = %2 sampleSize = %3 bApproxOK = %4" ).arg( xSize() ).arg( ySize() ).arg( sampleSize ).arg( bApproxOK ), 2 );
 
   QgsGdalProgress myProg;
-  myProg.provider = this;
   myProg.feedback = feedback;
 
 #if 0 // this is the old method
@@ -2183,8 +2181,6 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> &rasterPyr
   {
     //build the pyramid and show progress to console
     QgsGdalProgress myProg;
-    myProg.type = QgsRaster::ProgressPyramids;
-    myProg.provider = this;
     myProg.feedback = feedback;
     myError = GDALBuildOverviews( mGdalBaseDataset, method,
                                   myOverviewLevelsVector.size(), myOverviewLevelsVector.data(),
@@ -2849,7 +2845,6 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int bandNo, int stats, const
   double pdfMean;
   double pdfStdDev;
   QgsGdalProgress myProg;
-  myProg.provider = this;
   myProg.feedback = feedback;
 
   // try to fetch the cached stats (bForce=FALSE)
