@@ -66,6 +66,7 @@ LayerRenderJob &LayerRenderJob::operator=( LayerRenderJob &&other )
   opacity = other.opacity;
   cached = other.cached;
   layer = other.layer;
+  renderAboveLabels = other.renderAboveLabels;
   completed = other.completed;
   renderingTime = other.renderingTime;
   estimatedRenderingTime = other.estimatedRenderingTime ;
@@ -91,6 +92,7 @@ LayerRenderJob::LayerRenderJob( LayerRenderJob &&other )
   , blendMode( other.blendMode )
   , opacity( other.opacity )
   , cached( other.cached )
+  , renderAboveLabels( other.renderAboveLabels )
   , layer( other.layer )
   , completed( other.completed )
   , renderingTime( other.renderingTime )
@@ -506,6 +508,7 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
     LayerRenderJob &job = layerJobs.back();
     job.layer = ml;
     job.layerId = ml->id();
+    job.renderAboveLabels = ml->customProperty( QStringLiteral( "rendering/renderAboveLabels" ) ).toBool();
     job.estimatedRenderingTime = mLayerRenderingTimeHints.value( ml->id(), 0 );
 
     job.setContext( std::make_unique< QgsRenderContext >( QgsRenderContext::fromMapSettings( mSettings ) ) );
@@ -846,6 +849,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
     job2.setContext( std::make_unique< QgsRenderContext >( *job.context() ) );
     // also assign layer to match initial job
     job2.layer = job.layer;
+    job2.renderAboveLabels = job.renderAboveLabels;
     job2.layerId = job.layerId;
 
     // associate first pass job with second pass job
@@ -1078,7 +1082,7 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings &settings,
 #endif
   for ( const LayerRenderJob &job : jobs )
   {
-    if ( job.layer && job.layer->customProperty( QStringLiteral( "rendering/renderAboveLabels" ) ).toBool() )
+    if ( job.renderAboveLabels )
       continue; // skip layer for now, it will be rendered after labels
 
     QImage img = layerImageToBeComposed( settings, job, cache );
@@ -1119,7 +1123,7 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings &settings,
   // render any layers with the renderAboveLabels flag now
   for ( const LayerRenderJob &job : jobs )
   {
-    if ( !job.layer || !job.layer->customProperty( QStringLiteral( "rendering/renderAboveLabels" ) ).toBool() )
+    if ( !job.renderAboveLabels )
       continue;
 
     QImage img = layerImageToBeComposed( settings, job, cache );
