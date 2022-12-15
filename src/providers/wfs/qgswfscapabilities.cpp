@@ -41,7 +41,7 @@ QgsWfsCapabilities::QgsWfsCapabilities( const QString &uri, const QgsDataProvide
   connect( this, &QgsWfsRequest::downloadFinished, this, &QgsWfsCapabilities::capabilitiesReplyFinished, Qt::DirectConnection );
 }
 
-bool QgsWfsCapabilities::requestCapabilities( bool synchronous, bool forceRefresh )
+QUrl QgsWfsCapabilities::requestUrl() const
 {
   QUrl url( mUri.baseURL( ) );
   QUrlQuery query( url );
@@ -55,7 +55,12 @@ bool QgsWfsCapabilities::requestCapabilities( bool synchronous, bool forceRefres
     query.addQueryItem( QStringLiteral( "VERSION" ), version );
 
   url.setQuery( query );
-  if ( !sendGET( url, QString(), synchronous, forceRefresh ) )
+  return url;
+}
+
+bool QgsWfsCapabilities::requestCapabilities( bool synchronous, bool forceRefresh )
+{
+  if ( !sendGET( requestUrl(), QString(), synchronous, forceRefresh ) )
   {
     emit gotCapabilities();
     return false;

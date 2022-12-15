@@ -29,6 +29,9 @@ class QgsWfsCapabilities : public QgsWfsRequest
   public:
     explicit QgsWfsCapabilities( const QString &uri, const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions() );
 
+    //! returns request URL
+    QUrl requestUrl() const;
+
     //! start network connection to get capabilities
     bool requestCapabilities( bool synchronous, bool forceRefresh );
 

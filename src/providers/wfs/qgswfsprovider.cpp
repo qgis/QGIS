@@ -2190,20 +2190,23 @@ void QgsWFSProvider::handleException( const QDomDocument &serverResponse )
 QgsWfsCapabilities::Capabilities QgsWFSProvider::getCachedCapabilities( const QString &uri )
 {
   static QMutex mutex;
-  static std::map<QString, std::pair<QDateTime, QgsWfsCapabilities::Capabilities>> gCacheCaps;
+  static std::map<QUrl, std::pair<QDateTime, QgsWfsCapabilities::Capabilities>> gCacheCaps;
+  QgsWfsCapabilities getCapabilities( uri );
+  QUrl requestUrl = getCapabilities.requestUrl();
 
-  constexpr int DELAY_OF_CACHING_IN_SECS = 10;
   QDateTime now = QDateTime::currentDateTime();
   {
     QMutexLocker lock( &mutex );
-    auto iter = gCacheCaps.find( uri );
-    if ( iter != gCacheCaps.end() && iter->second.first.secsTo( now ) < DELAY_OF_CACHING_IN_SECS )
+    auto iter = gCacheCaps.find( requestUrl );
+    QgsSettings s;
+    const int delayOfCachingInSecs = s.value( QStringLiteral( "qgis/wfsMemoryCacheDelay" ), 60 ).toInt();
+    if ( iter != gCacheCaps.end() && iter->second.first.secsTo( now ) < delayOfCachingInSecs )
     {
+      QgsDebugMsgLevel( QStringLiteral( "Reusing cached GetCapabilities response for %1" ).arg( requestUrl.toString() ), 4 );
       return iter->second.second;
     }
   }
   QgsWfsCapabilities::Capabilities caps;
-  QgsWfsCapabilities getCapabilities( uri );
   const bool synchronous = true;
   const bool forceRefresh = false;
   if ( !getCapabilities.requestCapabilities( synchronous, forceRefresh ) )
@@ -2217,10 +2220,10 @@ QgsWfsCapabilities::Capabilities QgsWFSProvider::getCachedCapabilities( const QS
   caps = getCapabilities.capabilities();
 
   QgsSettings s;
-  if ( s.value( QStringLiteral( "qgis/wfsCapabilitiesMemoryCacheAllowed" ), true ).toBool() )
+  if ( s.value( QStringLiteral( "qgis/wfsMemoryCacheAllowed" ), true ).toBool() )
   {
     QMutexLocker lock( &mutex );
-    gCacheCaps[uri] = std::make_pair( now, caps );
+    gCacheCaps[requestUrl] = std::make_pair( now, caps );
   }
   return caps;
 }
