@@ -33,7 +33,6 @@
 #include "qgis_sip.h"
 #include "qgis.h"
 #include "qgsmaplayer.h"
-#include "qgsraster.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterviewport.h"
 #include "qgsrasterminmaxorigin.h"
@@ -182,25 +181,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
 
     QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) override SIP_FACTORY;
 
-    //! \brief This enumerator describes the types of shading that can be used
-    enum ColorShadingAlgorithm
-    {
-      UndefinedShader,
-      PseudoColorShader,
-      FreakOutShader,
-      ColorRampShader,
-      UserDefinedShader
-    };
-
-    //! \brief This enumerator describes the type of raster layer
-    enum LayerType
-    {
-      GrayOrUndefined,
-      Palette,
-      Multiband,
-      ColorLayer
-    };
-
     /**
      * This helper checks to see whether the file name appears to be a valid
      * raster file name.  If the file name looks like it could be valid,
@@ -233,7 +213,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
     /**
      * Returns the raster layer type (which is a read only property).
      */
-    LayerType rasterType() { return mRasterType; }
+    Qgis::RasterLayerType rasterType() const { return mRasterType; }
 
     /**
      * Sets the raster's \a renderer. Takes ownership of the renderer object.
@@ -533,7 +513,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
     bool update();
 
     //! Sets corresponding renderer for style
-    void setRendererForDrawingStyle( QgsRaster::DrawingStyle drawingStyle );
+    void setRendererForDrawingStyle( Qgis::RasterDrawingStyle drawingStyle );
 
     void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm,
                                  QgsRasterMinMaxOrigin::Limits limits,
@@ -599,7 +579,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
 
     QgsRasterViewPort mLastViewPort;
 
-    LayerType mRasterType = GrayOrUndefined;
+    Qgis::RasterLayerType mRasterType = Qgis::RasterLayerType::GrayOrUndefined;
 
     std::unique_ptr< QgsRasterPipe > mPipe;
 

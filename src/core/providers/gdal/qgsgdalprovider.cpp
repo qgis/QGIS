@@ -1289,7 +1289,7 @@ QString QgsGdalProvider::generateBandName( int bandNumber ) const
   return generatedBandName;
 }
 
-QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
+QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPointXY &point, Qgis::RasterIdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
 {
   QMutexLocker locker( mpMutex );
   if ( !initIfNeeded() )
@@ -1299,7 +1299,7 @@ QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPointXY &point, QgsR
 
   QMap<int, QVariant> results;
 
-  if ( format != QgsRaster::IdentifyFormatValue )
+  if ( format != Qgis::RasterIdentifyFormat::Value )
   {
     return QgsRasterIdentifyResult( ERR( tr( "Format not supported" ) ) );
   }
@@ -1311,7 +1311,7 @@ QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPointXY &point, QgsR
     {
       results.insert( bandNo, QVariant() ); // null QVariant represents no data
     }
-    return QgsRasterIdentifyResult( QgsRaster::IdentifyFormatValue, results );
+    return QgsRasterIdentifyResult( Qgis::RasterIdentifyFormat::Value, results );
   }
 
   QgsRectangle finalExtent = boundingBox;
@@ -1377,7 +1377,7 @@ QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPointXY &point, QgsR
         results.insert( i, value );
     }
   }
-  return QgsRasterIdentifyResult( QgsRaster::IdentifyFormatValue, results );
+  return QgsRasterIdentifyResult( Qgis::RasterIdentifyFormat::Value, results );
 }
 
 bool QgsGdalProvider::worldToPixel( double x, double y, int &col, int &row ) const
@@ -1667,7 +1667,7 @@ int QgsGdalProvider::bandCount() const
   return mBandCount;
 }
 
-int QgsGdalProvider::colorInterpretation( int bandNo ) const
+Qgis::RasterColorInterpretation QgsGdalProvider::colorInterpretation( int bandNo ) const
 {
   QMutexLocker locker( mpMutex );
   if ( !const_cast<QgsGdalProvider *>( this )->initIfNeeded() )
@@ -2038,7 +2038,7 @@ QgsRasterHistogram QgsGdalProvider::histogram( int bandNo,
  * \return null string on success, otherwise a string specifying error
  */
 QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> &rasterPyramidList,
-                                        const QString &resamplingMethod, QgsRaster::RasterPyramidsFormat format,
+                                        const QString &resamplingMethod, Qgis::RasterPyramidFormat format,
                                         const QStringList &configOptions, QgsRasterBlockFeedback *feedback )
 {
   QMutexLocker locker( mpMutex );
@@ -2060,7 +2060,7 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> &rasterPyr
   }
 
   // check if building internally
-  if ( format == QgsRaster::PyramidsInternal )
+  if ( format == Qgis::RasterPyramidFormat::Internal )
   {
 
     // test if the file is writable
@@ -2098,19 +2098,19 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> &rasterPyr
   QgsStringMap myConfigOptionsOld;
   myConfigOptionsOld[ QStringLiteral( "USE_RRD" )] = CPLGetConfigOption( "USE_RRD", "NO" );
   myConfigOptionsOld[ QStringLiteral( "TIFF_USE_OVR" )] = CPLGetConfigOption( "TIFF_USE_OVR", "NO" );
-  if ( format == QgsRaster::PyramidsErdas )
+  if ( format == Qgis::RasterPyramidFormat::Erdas )
     CPLSetConfigOption( "USE_RRD", "YES" );
   else
   {
     CPLSetConfigOption( "USE_RRD", "NO" );
-    if ( format == QgsRaster::PyramidsGTiff )
+    if ( format == Qgis::RasterPyramidFormat::GeoTiff )
     {
       CPLSetConfigOption( "TIFF_USE_OVR", "YES" );
     }
   }
 
   // add any driver-specific configuration options, save values to be restored later
-  if ( format != QgsRaster::PyramidsErdas && ! configOptions.isEmpty() )
+  if ( format != Qgis::RasterPyramidFormat::Erdas && ! configOptions.isEmpty() )
   {
     const auto constConfigOptions = configOptions;
     for ( const QString &option : constConfigOptions )
@@ -2240,7 +2240,7 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> &rasterPyr
   // is called next time, it crashes somewhere in GDAL:
   // https://trac.osgeo.org/gdal/ticket/4831
   // Crash can be avoided if dataset is reopened, fixed in GDAL 1.9.2
-  if ( format == QgsRaster::PyramidsInternal )
+  if ( format == Qgis::RasterPyramidFormat::Internal )
   {
     QgsDebugMsgLevel( QStringLiteral( "Reopening dataset ..." ), 2 );
     //close the gdal dataset and reopen it in read only mode
@@ -3825,33 +3825,40 @@ QString QgsGdalProvider::validateCreationOptions( const QStringList &createOptio
   return message;
 }
 
-QString QgsGdalProvider::validatePyramidsConfigOptions( QgsRaster::RasterPyramidsFormat pyramidsFormat,
+QString QgsGdalProvider::validatePyramidsConfigOptions( Qgis::RasterPyramidFormat pyramidsFormat,
     const QStringList &configOptions, const QString &fileFormat )
 {
   // Erdas Imagine format does not support config options
-  if ( pyramidsFormat == QgsRaster::PyramidsErdas )
+  switch ( pyramidsFormat )
   {
-    if ( ! configOptions.isEmpty() )
-      return QStringLiteral( "Erdas Imagine format does not support config options" );
-    else
-      return QString();
-  }
-  // Internal pyramids format only supported for gtiff/georaster/hfa/jp2kak/mrsid/nitf files
-  else if ( pyramidsFormat == QgsRaster::PyramidsInternal )
-  {
-    QStringList supportedFormats;
-    supportedFormats << QStringLiteral( "gtiff" ) << QStringLiteral( "georaster" ) << QStringLiteral( "hfa" ) << QStringLiteral( "gpkg" ) << QStringLiteral( "rasterlite" ) << QStringLiteral( "nitf" );
-    if ( ! supportedFormats.contains( fileFormat.toLower() ) )
-      return QStringLiteral( "Internal pyramids format only supported for gtiff/georaster/gpkg/rasterlite/nitf files (using %1)" ).arg( fileFormat );
-  }
-  else
-  {
-    // for gtiff external pyramids, validate gtiff-specific values
-    // PHOTOMETRIC_OVERVIEW=YCBCR requires a source raster with only 3 bands (RGB)
-    if ( configOptions.contains( QStringLiteral( "PHOTOMETRIC_OVERVIEW=YCBCR" ) ) )
+    case Qgis::RasterPyramidFormat::Erdas:
     {
-      if ( GDALGetRasterCount( mGdalDataset ) != 3 )
-        return QStringLiteral( "PHOTOMETRIC_OVERVIEW=YCBCR requires a source raster with only 3 bands (RGB)" );
+      if ( ! configOptions.isEmpty() )
+        return QStringLiteral( "Erdas Imagine format does not support config options" );
+      else
+        return QString();
+    }
+
+    // Internal pyramids format only supported for gtiff/georaster/hfa/jp2kak/mrsid/nitf files
+    case Qgis::RasterPyramidFormat::Internal:
+    {
+      QStringList supportedFormats;
+      supportedFormats << QStringLiteral( "gtiff" ) << QStringLiteral( "georaster" ) << QStringLiteral( "hfa" ) << QStringLiteral( "gpkg" ) << QStringLiteral( "rasterlite" ) << QStringLiteral( "nitf" );
+      if ( ! supportedFormats.contains( fileFormat.toLower() ) )
+        return QStringLiteral( "Internal pyramids format only supported for gtiff/georaster/gpkg/rasterlite/nitf files (using %1)" ).arg( fileFormat );
+      break;
+    }
+
+    case Qgis::RasterPyramidFormat::GeoTiff:
+    {
+      // for gtiff external pyramids, validate gtiff-specific values
+      // PHOTOMETRIC_OVERVIEW=YCBCR requires a source raster with only 3 bands (RGB)
+      if ( configOptions.contains( QStringLiteral( "PHOTOMETRIC_OVERVIEW=YCBCR" ) ) )
+      {
+        if ( GDALGetRasterCount( mGdalDataset ) != 3 )
+          return QStringLiteral( "PHOTOMETRIC_OVERVIEW=YCBCR requires a source raster with only 3 bands (RGB)" );
+      }
+      break;
     }
   }
 

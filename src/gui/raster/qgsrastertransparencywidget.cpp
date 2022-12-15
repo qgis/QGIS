@@ -23,7 +23,6 @@
 #include "qgssettings.h"
 #include "qgsrastertransparencywidget.h"
 #include "qgsrasterlayer.h"
-#include "qgsraster.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrastertransparency.h"
 #include "qgsmaptoolemitpoint.h"
@@ -571,7 +570,7 @@ void QgsRasterTransparencyWidget::pixelSelected( const QgsPointXY &canvasPoint )
     const int myWidth = mMapCanvas->extent().width() / mapUnitsPerPixel;
     const int myHeight = mMapCanvas->extent().height() / mapUnitsPerPixel;
 
-    const QMap<int, QVariant> myPixelMap = mRasterLayer->dataProvider()->identify( myPoint, QgsRaster::IdentifyFormatValue, myExtent, myWidth, myHeight ).results();
+    const QMap<int, QVariant> myPixelMap = mRasterLayer->dataProvider()->identify( myPoint, Qgis::RasterIdentifyFormat::Value, myExtent, myWidth, myHeight ).results();
 
     const QList<int> bands = renderer->usesBands();
 

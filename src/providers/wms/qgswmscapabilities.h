@@ -23,13 +23,13 @@
 #include <QVector>
 
 #include "qgsauthmanager.h"
-#include "qgsraster.h"
 #include "qgsrectangle.h"
 #include "qgsrasteriterator.h"
 #include "qgsapplication.h"
-#include "qgsdataprovider.h"
 #include "qgsinterval.h"
 #include "qgstemporalutils.h"
+#include "qgshttpheaders.h"
+#include "qgscoordinatetransformcontext.h"
 
 class QNetworkReply;
 
@@ -1039,7 +1039,7 @@ class QgsWmsCapabilities
     QgsWmsCapabilitiesProperty mCapabilities;
 
     //! Formats supported by server and provider
-    QMap<QgsRaster::IdentifyFormat, QString> mIdentifyFormats;
+    QMap<Qgis::RasterIdentifyFormat, QString> mIdentifyFormats;
 
 
     /**

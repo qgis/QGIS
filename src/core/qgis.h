@@ -2628,6 +2628,124 @@ class CORE_EXPORT Qgis
     Q_ENUM( MetadataDateType )
 
     /**
+     * Raster color interpretation.
+     *
+     * This is a modified copy of the GDAL GDALColorInterp enum.
+     *
+     * \note Prior to QGIS 3.30 this was available as QgsRaster::ColorInterpretation
+     *
+     * \since QGIS 3.30
+     */
+    enum class RasterColorInterpretation SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRaster, ColorInterpretation ) : int
+      {
+      Undefined SIP_MONKEYPATCH_COMPAT_NAME( UndefinedColorInterpretation ) = 0, //!< Undefined
+      GrayIndex = 1,          //!< Grayscale
+      PaletteIndex = 2,       //!< Paletted (see associated color table)
+      RedBand = 3,            //!< Red band of RGBA image
+      GreenBand = 4,          //!< Green band of RGBA image
+      BlueBand = 5,           //!< Blue band of RGBA image
+      AlphaBand = 6,          //!< Alpha (0=transparent, 255=opaque)
+      HueBand = 7,            //!< Hue band of HLS image
+      SaturationBand = 8,     //!< Saturation band of HLS image
+      LightnessBand = 9,      //!< Lightness band of HLS image
+      CyanBand = 10,          //!< Cyan band of CMYK image
+      MagentaBand = 11,       //!< Magenta band of CMYK image
+      YellowBand = 12,        //!< Yellow band of CMYK image
+      BlackBand = 13,         //!< Black band of CMLY image
+      YCbCr_YBand = 14,       //!< Y Luminance
+      YCbCr_CbBand = 15,      //!< Cb Chroma
+      YCbCr_CrBand = 16,      //!< Cr Chroma
+      ContinuousPalette = 17  //!< Continuous palette, QGIS addition, GRASS
+    };
+    Q_ENUM( RasterColorInterpretation )
+
+    /**
+     * Raster layer types.
+     *
+     * \note Prior to QGIS 3.30 this was available as QgsRasterLayer::LayerType
+     *
+     * \since QGIS 3.30
+    */
+    enum class RasterLayerType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterLayer, LayerType ) : int
+      {
+      GrayOrUndefined, //!< Gray or undefined
+      Palette, //!< Palette
+      MultiBand SIP_MONKEYPATCH_COMPAT_NAME( Multiband ), //!< Multi band
+      SingleBandColorData SIP_MONKEYPATCH_COMPAT_NAME( ColorLayer ), //!< Single band containing color data
+    };
+    Q_ENUM( RasterLayerType )
+
+    /**
+     * Raster drawing styles.
+     *
+     * \note Prior to QGIS 3.30 this was available as QgsRaster::DrawingStyle
+     *
+     * \since QGIS 3.30
+    */
+    enum class RasterDrawingStyle SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRaster, DrawingStyle ) : int
+      {
+      Undefined SIP_MONKEYPATCH_COMPAT_NAME( UndefinedDrawingStyle ),//!< Undefined
+      SingleBandGray, //!< A single band image drawn as a range of gray colors
+      SingleBandPseudoColor, //!< A single band image drawn using a pseudocolor algorithm
+      PalettedColor, //!< A "Palette" image drawn using color table
+      PalettedSingleBandGray, //!< A "Palette" layer drawn in gray scale
+      PalettedSingleBandPseudoColor, //!< A "Palette" layerdrawn using a pseudocolor algorithm
+      PalettedMultiBandColor, //!< Currently not supported
+      MultiBandSingleBandGray, //!< A layer containing 2 or more bands, but a single band drawn as a range of gray colors
+      MultiBandSingleBandPseudoColor, //!< A layer containing 2 or more bands, but a single band drawn using a pseudocolor algorithm
+      MultiBandColor, //!< A layer containing 2 or more bands, mapped to RGB color space. In the case of a multiband with only two bands, one band will be mapped to more than one color.
+      SingleBandColorData SIP_MONKEYPATCH_COMPAT_NAME( SingleBandColorDataStyle ), //!< ARGB values rendered directly
+    };
+    Q_ENUM( RasterDrawingStyle )
+
+    /**
+     * Raster pyramid formats.
+     *
+     * \note Prior to QGIS 3.30 this was available as QgsRaster::RasterPyramidsFormat
+     *
+     * \since QGIS 3.30
+     */
+    enum class RasterPyramidFormat SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRaster, RasterPyramidsFormat ) : int
+      {
+      GeoTiff SIP_MONKEYPATCH_COMPAT_NAME( PyramidsGTiff ) = 0, //!< Geotiff .ovr (external)
+      Internal SIP_MONKEYPATCH_COMPAT_NAME( PyramidsInternal ) = 1, //!< Internal
+      Erdas SIP_MONKEYPATCH_COMPAT_NAME( PyramidsErdas ) = 2 //!< Erdas Image .aux (external)
+    };
+    Q_ENUM( RasterPyramidFormat )
+
+    /**
+     * Raster pyramid building options.
+     *
+     * \note Prior to QGIS 3.30 this was available as QgsRaster::RasterBuildPyramids
+     *
+     * \since QGIS 3.30
+     */
+    enum class RasterBuildPyramidOption SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRaster, RasterBuildPyramids ) : int
+      {
+      No SIP_MONKEYPATCH_COMPAT_NAME( PyramidsFlagNo ) = 0, //!< Never
+      Yes SIP_MONKEYPATCH_COMPAT_NAME( PyramidsFlagYes ) = 1, //!< Yes
+      CopyExisting SIP_MONKEYPATCH_COMPAT_NAME( PyramidsCopyExisting ) = 2 //!< Copy existing
+    };
+    Q_ENUM( RasterBuildPyramidOption )
+
+    /**
+     * Raster identify formats.
+     *
+     * \note Prior to QGIS 3.30 this was available as QgsRaster::IdentifyFormat
+     *
+     * \since QGIS 3.30
+     */
+    enum class RasterIdentifyFormat SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRaster, IdentifyFormat ) : int
+      {
+      Undefined SIP_MONKEYPATCH_COMPAT_NAME( IdentifyFormatUndefined ) = 0, //!< Undefined
+      Value SIP_MONKEYPATCH_COMPAT_NAME( IdentifyFormatValue ) = 1, //!< Numerical pixel value
+      Text SIP_MONKEYPATCH_COMPAT_NAME( IdentifyFormatText ) = 1 << 1, //!< WMS text
+      Html SIP_MONKEYPATCH_COMPAT_NAME( IdentifyFormatHtml ) = 1 << 2, //!< WMS HTML
+      Feature SIP_MONKEYPATCH_COMPAT_NAME( IdentifyFormatFeature ) = 1 << 3, //!< WMS GML/JSON -> feature
+    };
+    Q_ENUM( RasterIdentifyFormat )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */

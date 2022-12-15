@@ -136,7 +136,7 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     QgsCoordinateReferenceSystem crs() const override;
     QgsRectangle extent() const override;
     bool isValid() const override;
-    QgsRasterIdentifyResult identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
+    QgsRasterIdentifyResult identify( const QgsPointXY &point, Qgis::RasterIdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
     double sample( const QgsPointXY &point, int band, bool *ok = nullptr, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
     QString lastErrorTitle() override;
     QString lastError() override;
@@ -144,7 +144,7 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     Qgis::DataType dataType( int bandNo ) const override;
     Qgis::DataType sourceDataType( int bandNo ) const override;
     int bandCount() const override;
-    int colorInterpretation( int bandNo ) const override;
+    Qgis::RasterColorInterpretation colorInterpretation( int bandNo ) const override;
     int xBlockSize() const override;
     int yBlockSize() const override;
     int xSize() const override;
@@ -193,7 +193,7 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
 
     QString buildPyramids( const QList<QgsRasterPyramid> &rasterPyramidList,
                            const QString &resamplingMethod = "NEAREST",
-                           QgsRaster::RasterPyramidsFormat format = QgsRaster::PyramidsGTiff,
+                           Qgis::RasterPyramidFormat format = Qgis::RasterPyramidFormat::GeoTiff,
                            const QStringList &createOptions = QStringList(),
                            QgsRasterBlockFeedback *feedback = nullptr ) override;
     QList<QgsRasterPyramid> buildPyramidList( const QList<int> &overviewList = QList<int>() ) override;
@@ -208,7 +208,7 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     bool remove() override;
 
     QString validateCreationOptions( const QStringList &createOptions, const QString &format ) override;
-    QString validatePyramidsConfigOptions( QgsRaster::RasterPyramidsFormat pyramidsFormat,
+    QString validatePyramidsConfigOptions( Qgis::RasterPyramidFormat pyramidsFormat,
                                            const QStringList &configOptions, const QString &fileFormat ) override;
 
     QgsPoint transformCoordinates( const QgsPoint &point, TransformType type ) override;

@@ -1510,6 +1510,74 @@ The development version
       Superseded,
     };
 
+    enum class RasterColorInterpretation
+      {
+      Undefined,
+      GrayIndex,
+      PaletteIndex,
+      RedBand,
+      GreenBand,
+      BlueBand,
+      AlphaBand,
+      HueBand,
+      SaturationBand,
+      LightnessBand,
+      CyanBand,
+      MagentaBand,
+      YellowBand,
+      BlackBand,
+      YCbCr_YBand,
+      YCbCr_CbBand,
+      YCbCr_CrBand,
+      ContinuousPalette
+    };
+
+    enum class RasterLayerType
+      {
+      GrayOrUndefined,
+      Palette,
+      MultiBand,
+      SingleBandColorData,
+    };
+
+    enum class RasterDrawingStyle
+      {
+      Undefined,
+      SingleBandGray,
+      SingleBandPseudoColor,
+      PalettedColor,
+      PalettedSingleBandGray,
+      PalettedSingleBandPseudoColor,
+      PalettedMultiBandColor,
+      MultiBandSingleBandGray,
+      MultiBandSingleBandPseudoColor,
+      MultiBandColor,
+      SingleBandColorData,
+    };
+
+    enum class RasterPyramidFormat
+      {
+      GeoTiff,
+      Internal,
+      Erdas
+    };
+
+    enum class RasterBuildPyramidOption
+      {
+      No,
+      Yes,
+      CopyExisting
+    };
+
+    enum class RasterIdentifyFormat
+      {
+      Undefined,
+      Value,
+      Text,
+      Html,
+      Feature,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;

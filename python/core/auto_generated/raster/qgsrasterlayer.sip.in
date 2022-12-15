@@ -110,23 +110,6 @@ created for the same data source and renderer is cloned too.
     virtual QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) /Factory/;
 
 
-    enum ColorShadingAlgorithm
-    {
-      UndefinedShader,
-      PseudoColorShader,
-      FreakOutShader,
-      ColorRampShader,
-      UserDefinedShader
-    };
-
-    enum LayerType
-    {
-      GrayOrUndefined,
-      Palette,
-      Multiband,
-      ColorLayer
-    };
-
     static bool isValidRasterFileName( const QString &fileNameQString, QString &retError );
 %Docstring
 This helper checks to see whether the file name appears to be a valid
@@ -161,7 +144,7 @@ Set the data provider.
 .. versionadded:: 3.2
 %End
 
-    LayerType rasterType();
+    Qgis::RasterLayerType rasterType() const;
 %Docstring
 Returns the raster layer type (which is a read only property).
 %End

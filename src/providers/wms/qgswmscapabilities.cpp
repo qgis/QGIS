@@ -30,7 +30,6 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsunittypes.h"
 #include "qgsexception.h"
-#include "qgsapplication.h"
 #include "qgstemporalutils.h"
 
 // %%% copied from qgswmsprovider.cpp
@@ -521,15 +520,15 @@ bool QgsWmsCapabilities::parseResponse( const QByteArray &response, QgsWmsParser
     //      GML.1, GML.2, or GML.3
     // 1.1.0, 1.3.0 - mime types, GML should use application/vnd.ogc.gml
     //      but in UMN Mapserver it may be also OUTPUTFORMAT, e.g. OGRGML
-    QgsRaster::IdentifyFormat format = QgsRaster::IdentifyFormatUndefined;
+    Qgis::RasterIdentifyFormat format = Qgis::RasterIdentifyFormat::Undefined;
     if ( f == QLatin1String( "MIME" ) )
-      format = QgsRaster::IdentifyFormatText; // 1.0
+      format = Qgis::RasterIdentifyFormat::Text; // 1.0
     else if ( f == QLatin1String( "text/plain" ) )
-      format = QgsRaster::IdentifyFormatText;
+      format = Qgis::RasterIdentifyFormat::Text;
     else if ( f == QLatin1String( "text/html" ) )
-      format = QgsRaster::IdentifyFormatHtml;
+      format = Qgis::RasterIdentifyFormat::Html;
     else if ( f.startsWith( QLatin1String( "GML." ) ) || f == QLatin1String( "application/vnd.ogc.gml" ) || f == QLatin1String( "application/json" ) || f == QLatin1String( "application/geojson" ) || f.contains( QLatin1String( "gml" ), Qt::CaseInsensitive ) || f == QLatin1String( "text/xml" ) )
-      format = QgsRaster::IdentifyFormatFeature;
+      format = Qgis::RasterIdentifyFormat::Feature;
 
     mIdentifyFormats.insert( format, f );
   }
@@ -1981,33 +1980,33 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
 
       tileLayer.infoFormats << secondChildElement.text();
 
-      QgsRaster::IdentifyFormat fmt = QgsRaster::IdentifyFormatUndefined;
+      Qgis::RasterIdentifyFormat fmt = Qgis::RasterIdentifyFormat::Undefined;
 
       QgsDebugMsgLevel( QStringLiteral( "format=%1" ).arg( format ), 2 );
 
       if ( format == QLatin1String( "MIME" ) )
-        fmt = QgsRaster::IdentifyFormatText; // 1.0
+        fmt = Qgis::RasterIdentifyFormat::Text; // 1.0
       else if ( format == QLatin1String( "text/plain" ) )
-        fmt = QgsRaster::IdentifyFormatText;
+        fmt = Qgis::RasterIdentifyFormat::Text;
       else if ( format == QLatin1String( "text/html" ) )
-        fmt = QgsRaster::IdentifyFormatHtml;
+        fmt = Qgis::RasterIdentifyFormat::Html;
       else if ( format.startsWith( QLatin1String( "GML." ) ) )
-        fmt = QgsRaster::IdentifyFormatFeature; // 1.0
+        fmt = Qgis::RasterIdentifyFormat::Feature; // 1.0
       else if ( format == QLatin1String( "application/vnd.ogc.gml" ) )
-        fmt = QgsRaster::IdentifyFormatFeature;
+        fmt = Qgis::RasterIdentifyFormat::Feature;
       else  if ( format.contains( QLatin1String( "gml" ), Qt::CaseInsensitive ) )
-        fmt = QgsRaster::IdentifyFormatFeature;
+        fmt = Qgis::RasterIdentifyFormat::Feature;
       else if ( format == QLatin1String( "application/json" ) )
-        fmt = QgsRaster::IdentifyFormatFeature;
+        fmt = Qgis::RasterIdentifyFormat::Feature;
       else if ( format == QLatin1String( "application/geojson" ) )
-        fmt = QgsRaster::IdentifyFormatFeature;
+        fmt = Qgis::RasterIdentifyFormat::Feature;
       else
       {
         QgsDebugMsg( QStringLiteral( "Unsupported featureInfoUrl format: %1" ).arg( format ) );
         continue;
       }
 
-      QgsDebugMsgLevel( QStringLiteral( "fmt=%1" ).arg( fmt ), 2 );
+      QgsDebugMsgLevel( QStringLiteral( "fmt=%1" ).arg( qgsEnumValueToKey( fmt ) ), 2 );
       mIdentifyFormats.insert( fmt, format );
     }
 
@@ -2234,33 +2233,33 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
       {
         tileLayer.getFeatureInfoURLs.insert( format, tmpl );
 
-        QgsRaster::IdentifyFormat fmt = QgsRaster::IdentifyFormatUndefined;
+        Qgis::RasterIdentifyFormat fmt = Qgis::RasterIdentifyFormat::Undefined;
 
         QgsDebugMsgLevel( QStringLiteral( "format=%1" ).arg( format ), 2 );
 
         if ( format == QLatin1String( "MIME" ) )
-          fmt = QgsRaster::IdentifyFormatText; // 1.0
+          fmt = Qgis::RasterIdentifyFormat::Text; // 1.0
         else if ( format == QLatin1String( "text/plain" ) )
-          fmt = QgsRaster::IdentifyFormatText;
+          fmt = Qgis::RasterIdentifyFormat::Text;
         else if ( format == QLatin1String( "text/html" ) )
-          fmt = QgsRaster::IdentifyFormatHtml;
+          fmt = Qgis::RasterIdentifyFormat::Html;
         else if ( format.startsWith( QLatin1String( "GML." ) ) )
-          fmt = QgsRaster::IdentifyFormatFeature; // 1.0
+          fmt = Qgis::RasterIdentifyFormat::Feature; // 1.0
         else if ( format == QLatin1String( "application/vnd.ogc.gml" ) )
-          fmt = QgsRaster::IdentifyFormatFeature;
+          fmt = Qgis::RasterIdentifyFormat::Feature;
         else  if ( format.contains( QLatin1String( "gml" ), Qt::CaseInsensitive ) )
-          fmt = QgsRaster::IdentifyFormatFeature;
+          fmt = Qgis::RasterIdentifyFormat::Feature;
         else if ( format == QLatin1String( "application/json" ) )
-          fmt = QgsRaster::IdentifyFormatFeature;
+          fmt = Qgis::RasterIdentifyFormat::Feature;
         else if ( format == QLatin1String( "application/geojson" ) )
-          fmt = QgsRaster::IdentifyFormatFeature;
+          fmt = Qgis::RasterIdentifyFormat::Feature;
         else
         {
           QgsDebugMsg( QStringLiteral( "Unsupported featureInfoUrl format: %1" ).arg( format ) );
           continue;
         }
 
-        QgsDebugMsgLevel( QStringLiteral( "fmt=%1" ).arg( fmt ), 2 );
+        QgsDebugMsgLevel( QStringLiteral( "fmt=%1" ).arg( qgsEnumValueToKey( fmt ) ), 2 );
         mIdentifyFormats.insert( fmt, format );
       }
       else

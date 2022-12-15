@@ -41,7 +41,7 @@ class CORE_EXPORT QgsRasterIdentifyResult
      *  \param format the result format
      *  \param results the results
      */
-    QgsRasterIdentifyResult( QgsRaster::IdentifyFormat format, const QMap<int, QVariant> &results );
+    QgsRasterIdentifyResult( Qgis::RasterIdentifyFormat format, const QMap<int, QVariant> &results );
 
     /**
      * \brief Constructor. Creates invalid result with error.
@@ -55,7 +55,7 @@ class CORE_EXPORT QgsRasterIdentifyResult
     bool isValid() const { return mValid; }
 
     //! Returns the results format.
-    QgsRaster::IdentifyFormat format() const { return mFormat; }
+    Qgis::RasterIdentifyFormat format() const { return mFormat; }
 
     /**
      * Returns the identify results. Results are different for each format:
@@ -83,7 +83,7 @@ class CORE_EXPORT QgsRasterIdentifyResult
     bool mValid = false;
 
     //! \brief Results format
-    QgsRaster::IdentifyFormat mFormat = QgsRaster::IdentifyFormatUndefined;
+    Qgis::RasterIdentifyFormat mFormat = Qgis::RasterIdentifyFormat::Undefined;
 
     // TODO: better hierarchy (sublayer multiple feature sets)?
     // TODO?: results are not consistent for different formats (per band x per sublayer)

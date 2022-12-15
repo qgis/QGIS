@@ -20,12 +20,12 @@
 #include "qgsproviderregistry.h"
 #include "qgsrasterinterface.h"
 #include "qgsrasteriterator.h"
-#include "qgsrasterlayer.h"
 #include "qgsrasterprojector.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasternuller.h"
 #include "qgsreadwritelocker.h"
 #include "qgsrasterpipe.h"
+#include "qgscontrastenhancement.h"
 
 #include <QCoreApplication>
 #include <QProgressDialog>
@@ -465,14 +465,14 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
         {
           const QString vrtFilePath( mOutputUrl + '/' + vrtFileName() );
           writeVRT( vrtFilePath );
-          if ( mBuildPyramidsFlag == QgsRaster::PyramidsFlagYes )
+          if ( mBuildPyramidsFlag == Qgis::RasterBuildPyramidOption::Yes )
           {
             buildPyramids( vrtFilePath );
           }
         }
         else
         {
-          if ( mBuildPyramidsFlag == QgsRaster::PyramidsFlagYes )
+          if ( mBuildPyramidsFlag == Qgis::RasterBuildPyramidOption::Yes )
           {
             buildPyramids( mOutputUrl, destProvider );
           }
@@ -734,14 +734,14 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
   {
     const QString vrtFilePath( mOutputUrl + '/' + vrtFileName() );
     writeVRT( vrtFilePath );
-    if ( mBuildPyramidsFlag == QgsRaster::PyramidsFlagYes )
+    if ( mBuildPyramidsFlag == Qgis::RasterBuildPyramidOption::Yes )
     {
       buildPyramids( vrtFilePath );
     }
   }
   else
   {
-    if ( mBuildPyramidsFlag == QgsRaster::PyramidsFlagYes )
+    if ( mBuildPyramidsFlag == Qgis::RasterBuildPyramidOption::Yes )
     {
       buildPyramids( mOutputUrl );
     }
@@ -823,7 +823,7 @@ void QgsRasterFileWriter::buildPyramids( const QString &filename, QgsRasterDataP
     myPyramidList[myCounterInt].setBuild( true );
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "building pyramids : %1 pyramids, %2 resampling, %3 format, %4 options" ).arg( myPyramidList.count() ).arg( mPyramidsResampling ).arg( mPyramidsFormat ).arg( mPyramidsConfigOptions.count() ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "building pyramids : %1 pyramids, %2 resampling, %3 format, %4 options" ).arg( myPyramidList.count() ).arg( mPyramidsResampling ).arg( qgsEnumValueToKey( mPyramidsFormat ) ).arg( mPyramidsConfigOptions.count() ), 4 );
   // QApplication::setOverrideCursor( Qt::WaitCursor );
   const QString res = destProvider->buildPyramids( myPyramidList, mPyramidsResampling,
                       mPyramidsFormat, mPyramidsConfigOptions );
