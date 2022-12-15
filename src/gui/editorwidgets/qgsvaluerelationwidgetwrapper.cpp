@@ -41,7 +41,7 @@
 #include <nlohmann/json.hpp>
 using namespace nlohmann;
 
-
+///@cond PRIVATE
 QgsFilteredTableWidget::QgsFilteredTableWidget( QWidget *parent, bool showSearch )
   : QWidget( parent )
 {
@@ -193,7 +193,7 @@ void QgsFilteredTableWidget::itemChanged_p( QTableWidgetItem *item )
   }
   emit itemChanged( item );
 }
-
+///@endcond
 
 
 QgsValueRelationWidgetWrapper::QgsValueRelationWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
