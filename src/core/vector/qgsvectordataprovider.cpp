@@ -575,7 +575,8 @@ QStringList QgsVectorDataProvider::uniqueStringsMatching( int index, const QStri
 QVariant QgsVectorDataProvider::aggregate( QgsAggregateCalculator::Aggregate aggregate, int index,
     const QgsAggregateCalculator::AggregateParameters &parameters, QgsExpressionContext *context, bool &ok, QgsFeatureIds *fids ) const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // non fatal for now -- the "aggregate" functions are not thread safe and call this
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   //base implementation does nothing
   Q_UNUSED( aggregate )
@@ -1003,7 +1004,8 @@ void QgsVectorDataProvider::setNativeTypes( const QList<NativeType> &nativeTypes
 
 QTextCodec *QgsVectorDataProvider::textEncoding() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // non fatal for now -- the "rasterize" processing algorithm is not thread safe and calls this
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   return mEncoding;
 }

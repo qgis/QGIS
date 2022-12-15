@@ -363,7 +363,8 @@ void QgsMapLayer::setBlendMode( const QPainter::CompositionMode blendMode )
 
 QPainter::CompositionMode QgsMapLayer::blendMode() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // non fatal for now -- the "rasterize" processing algorithm is not thread safe and calls this
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   return mBlendMode;
 }
@@ -381,7 +382,8 @@ void QgsMapLayer::setOpacity( double opacity )
 
 double QgsMapLayer::opacity() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // non fatal for now -- the "rasterize" processing algorithm is not thread safe and calls this
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   return mLayerOpacity;
 }
@@ -926,7 +928,8 @@ void QgsMapLayer::connectNotify( const char *signal )
 
 bool QgsMapLayer::isInScaleRange( double scale ) const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // non fatal for now -- the "rasterize" processing algorithm is not thread safe and calls this
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   return !mScaleBasedVisibility ||
          ( ( mMinScale == 0 || mMinScale * Qgis::SCALE_PRECISION < scale )
@@ -935,7 +938,8 @@ bool QgsMapLayer::isInScaleRange( double scale ) const
 
 bool QgsMapLayer::hasScaleBasedVisibility() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // non fatal for now -- the "rasterize" processing algorithm is not thread safe and calls this
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   return mScaleBasedVisibility;
 }
@@ -1055,7 +1059,8 @@ bool QgsMapLayer::supportsEditing() const
 
 QgsCoordinateReferenceSystem QgsMapLayer::crs() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // non fatal for now -- the "rasterize" processing algorithm is not thread safe and calls this
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   return mCRS;
 }
@@ -2203,7 +2208,8 @@ const QgsObjectCustomProperties &QgsMapLayer::customProperties() const
 
 QVariant QgsMapLayer::customProperty( const QString &value, const QVariant &defaultValue ) const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // non fatal for now -- the "rasterize" processing algorithm is not thread safe and calls this
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   return mCustomProperties.value( value, defaultValue );
 }
