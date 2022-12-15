@@ -1706,17 +1706,17 @@ void TestQgsValueRelationWidgetWrapper::testAllowMultiColumns()
   QFile::copy( myFileName + "/provider/test_json.gpkg", myTempDirName + "/test_json.gpkg" );
   const QString myTempFileName = myTempDirName + "/test_json.gpkg";
   const QFileInfo myMapFileInfo( myTempFileName );
-  QgsVectorLayer *vl_text = new QgsVectorLayer( myMapFileInfo.filePath() + "|layername=foo", "test", QStringLiteral( "ogr" ) );
-  QgsVectorLayer *vl_authors = new QgsVectorLayer( myMapFileInfo.filePath() + "|layername=author", "test", QStringLiteral( "ogr" ) );
+  std::unique_ptr<QgsVectorLayer> vl_text( new QgsVectorLayer( myMapFileInfo.filePath() + "|layername=foo", "test", QStringLiteral( "ogr" ) ) );
+  std::unique_ptr<QgsVectorLayer> vl_authors( new QgsVectorLayer( myMapFileInfo.filePath() + "|layername=author", "test", QStringLiteral( "ogr" ) ) );
   QVERIFY( vl_text->isValid() );
   QVERIFY( vl_authors->isValid() );
 
-  QgsProject::instance()->addMapLayer( vl_text, false, false );
-  QgsProject::instance()->addMapLayer( vl_authors, false, false );
+  QgsProject::instance()->addMapLayer( vl_text.get(), false, false );
+  QgsProject::instance()->addMapLayer( vl_authors.get(), false, false );
   vl_text->startEditing();
 
   // build a value relation widget wrapper for authors
-  QgsValueRelationWidgetWrapper w_favoriteauthors( vl_text, vl_text->fields().indexOf( QLatin1String( "PRFEDEA" ) ), nullptr, nullptr );
+  QgsValueRelationWidgetWrapper w_favoriteauthors( vl_text.get(), vl_text->fields().indexOf( QLatin1String( "PRFEDEA" ) ), nullptr, nullptr );
   QVariantMap cfg_favoriteauthors;
   cfg_favoriteauthors.insert( QStringLiteral( "Layer" ), vl_authors->id() );
   cfg_favoriteauthors.insert( QStringLiteral( "Key" ),  QStringLiteral( "fid" ) );
@@ -1754,17 +1754,17 @@ void TestQgsValueRelationWidgetWrapper::testAllowMultiAndCompleter()
   QFile::copy( myFileName + "/provider/test_json.gpkg", myTempDirName + "/test_json.gpkg" );
   const QString myTempFileName = myTempDirName + "/test_json.gpkg";
   const QFileInfo myMapFileInfo( myTempFileName );
-  QgsVectorLayer *vl_text = new QgsVectorLayer( myMapFileInfo.filePath() + "|layername=foo", "test", QStringLiteral( "ogr" ) );
-  QgsVectorLayer *vl_authors = new QgsVectorLayer( myMapFileInfo.filePath() + "|layername=author", "test", QStringLiteral( "ogr" ) );
+  std::unique_ptr<QgsVectorLayer> vl_text( new QgsVectorLayer( myMapFileInfo.filePath() + "|layername=foo", "test", QStringLiteral( "ogr" ) ) );
+  std::unique_ptr<QgsVectorLayer> vl_authors( new QgsVectorLayer( myMapFileInfo.filePath() + "|layername=author", "test", QStringLiteral( "ogr" ) ) );
   QVERIFY( vl_text->isValid() );
   QVERIFY( vl_authors->isValid() );
 
-  QgsProject::instance()->addMapLayer( vl_text, false, false );
-  QgsProject::instance()->addMapLayer( vl_authors, false, false );
+  QgsProject::instance()->addMapLayer( vl_text.get(), false, false );
+  QgsProject::instance()->addMapLayer( vl_authors.get(), false, false );
   vl_text->startEditing();
 
   // build a value relation widget wrapper for authors
-  QgsValueRelationWidgetWrapper w_favoriteauthors( vl_text, vl_text->fields().indexOf( QLatin1String( "PRFEDEA" ) ), nullptr, nullptr );
+  QgsValueRelationWidgetWrapper w_favoriteauthors( vl_text.get(), vl_text->fields().indexOf( QLatin1String( "PRFEDEA" ) ), nullptr, nullptr );
   QVariantMap cfg_favoriteauthors;
   cfg_favoriteauthors.insert( QStringLiteral( "Layer" ), vl_authors->id() );
   cfg_favoriteauthors.insert( QStringLiteral( "Key" ),  QStringLiteral( "fid" ) );
