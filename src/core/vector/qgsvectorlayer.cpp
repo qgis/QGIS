@@ -1154,7 +1154,8 @@ QgsConditionalLayerStyles *QgsVectorLayer::conditionalStyles() const
 
 QgsFeatureIterator QgsVectorLayer::getFeatures( const QgsFeatureRequest &request ) const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // non fatal for now -- the aggregate expression functions are not thread safe and call this
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   if ( !isValid() || !mDataProvider )
     return QgsFeatureIterator();
