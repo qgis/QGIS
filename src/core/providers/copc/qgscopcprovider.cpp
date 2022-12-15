@@ -107,7 +107,8 @@ QString QgsCopcProvider::description() const
 
 QgsPointCloudIndex *QgsCopcProvider::index() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // non fatal for now -- 2d rendering of point clouds is not thread safe and calls this
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   return mIndex.get();
 }
