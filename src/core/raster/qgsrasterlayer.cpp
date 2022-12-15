@@ -18,18 +18,15 @@ email                : tim at linfiniti.com
 #include "qgsbrightnesscontrastfilter.h"
 #include "qgscolorrampshader.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgscoordinatetransform.h"
 #include "qgsdatasourceuri.h"
 #include "qgshuesaturationfilter.h"
 #include "qgslayermetadataformatter.h"
 #include "qgslogger.h"
 #include "qgsmaplayerlegend.h"
-#include "qgsmaplayerutils.h"
 #include "qgsmaptopixel.h"
 #include "qgsmessagelog.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgspainting.h"
-#include "qgspalettedrasterrenderer.h"
 #include "qgspathresolver.h"
 #include "qgsprojectfiletransform.h"
 #include "qgsproviderregistry.h"
@@ -47,7 +44,6 @@ email                : tim at linfiniti.com
 #include "qgsxmlutils.h"
 #include "qgsrectangle.h"
 #include "qgsrendercontext.h"
-#include "qgssinglebandcolordatarenderer.h"
 #include "qgssinglebandgrayrenderer.h"
 #include "qgssinglebandpseudocolorrenderer.h"
 #include "qgssettings.h"
@@ -279,7 +275,7 @@ bool QgsRasterLayer::canCreateRasterAttributeTable()
   return mDataProvider && renderer() && renderer()->canCreateRasterAttributeTable();
 }
 
-void QgsRasterLayer::setRendererForDrawingStyle( QgsRaster::DrawingStyle drawingStyle )
+void QgsRasterLayer::setRendererForDrawingStyle( Qgis::RasterDrawingStyle drawingStyle )
 {
   setRenderer( QgsApplication::rasterRendererRegistry()->defaultRendererForDrawingStyle( drawingStyle, mDataProvider ) );
 }
@@ -541,7 +537,7 @@ QPixmap QgsRasterLayer::paletteAsPixmap( int bandNumber )
   // Only do this for the GDAL provider?
   // Maybe WMS can do this differently using QImage::numColors and QImage::color()
   if ( mDataProvider &&
-       mDataProvider->colorInterpretation( bandNumber ) == QgsRaster::PaletteIndex )
+       mDataProvider->colorInterpretation( bandNumber ) == Qgis::RasterColorInterpretation::PaletteIndex )
   {
     QgsDebugMsgLevel( QStringLiteral( "....found paletted image" ), 4 );
     QgsColorRampShader myShader;
@@ -636,11 +632,11 @@ double QgsRasterLayer::opacity() const
 
 void QgsRasterLayer::init()
 {
-  mRasterType = QgsRasterLayer::GrayOrUndefined;
+  mRasterType = Qgis::RasterLayerType::GrayOrUndefined;
 
   whileBlocking( this )->setLegend( QgsMapLayerLegend::defaultRasterLegend( this ) );
 
-  setRendererForDrawingStyle( QgsRaster::UndefinedDrawingStyle );
+  setRendererForDrawingStyle( Qgis::RasterDrawingStyle::Undefined );
 
   //Initialize the last view port structure, should really be a class
   mLastViewPort.mWidth = 0;
@@ -734,34 +730,34 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   {
     // handle singleband gray with alpha
     if ( mDataProvider->bandCount() == 2
-         && ( ( mDataProvider->colorInterpretation( 1 ) == QgsRaster::GrayIndex
-                && mDataProvider->colorInterpretation( 2 ) == QgsRaster::AlphaBand )
-              || ( mDataProvider->colorInterpretation( 1 ) == QgsRaster::AlphaBand
-                   && mDataProvider->colorInterpretation( 2 ) == QgsRaster::GrayIndex ) ) )
+         && ( ( mDataProvider->colorInterpretation( 1 ) == Qgis::RasterColorInterpretation::GrayIndex
+                && mDataProvider->colorInterpretation( 2 ) == Qgis::RasterColorInterpretation::AlphaBand )
+              || ( mDataProvider->colorInterpretation( 1 ) == Qgis::RasterColorInterpretation::AlphaBand
+                   && mDataProvider->colorInterpretation( 2 ) == Qgis::RasterColorInterpretation::GrayIndex ) ) )
     {
-      mRasterType = GrayOrUndefined;
+      mRasterType = Qgis::RasterLayerType::GrayOrUndefined;
     }
     else
     {
-      mRasterType = Multiband;
+      mRasterType = Qgis::RasterLayerType::MultiBand;
     }
   }
   else if ( mDataProvider->dataType( 1 ) == Qgis::DataType::ARGB32
             ||  mDataProvider->dataType( 1 ) == Qgis::DataType::ARGB32_Premultiplied )
   {
-    mRasterType = ColorLayer;
+    mRasterType = Qgis::RasterLayerType::SingleBandColorData;
   }
-  else if ( mDataProvider->colorInterpretation( 1 ) == QgsRaster::PaletteIndex
-            || mDataProvider->colorInterpretation( 1 ) == QgsRaster::ContinuousPalette )
+  else if ( mDataProvider->colorInterpretation( 1 ) == Qgis::RasterColorInterpretation::PaletteIndex
+            || mDataProvider->colorInterpretation( 1 ) == Qgis::RasterColorInterpretation::ContinuousPalette )
   {
-    mRasterType = Palette;
+    mRasterType = Qgis::RasterLayerType::Palette;
   }
   else
   {
-    mRasterType = GrayOrUndefined;
+    mRasterType = Qgis::RasterLayerType::GrayOrUndefined;
   }
 
-  QgsDebugMsgLevel( "mRasterType = " + QString::number( mRasterType ), 4 );
+  QgsDebugMsgLevel( "mRasterType = " + qgsEnumValueToKey( mRasterType ), 4 );
 
   // Raster Attribute Table logic to load from provider or same basename + vat.dbf file.
   QString errorMessage;
@@ -797,45 +793,59 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
     QgsDebugMsgLevel( "Native Raster Attribute Table read success", 2 );
   }
 
-  if ( mRasterType == ColorLayer )
+  switch ( mRasterType )
   {
-    QgsDebugMsgLevel( "Setting drawing style to SingleBandColorDataStyle " + QString::number( QgsRaster::SingleBandColorDataStyle ), 4 );
-    setRendererForDrawingStyle( QgsRaster::SingleBandColorDataStyle );
-  }
-  else if ( mRasterType == Palette && mDataProvider->colorInterpretation( 1 ) == QgsRaster::PaletteIndex )
-  {
-    setRendererForDrawingStyle( QgsRaster::PalettedColor ); //sensible default
-  }
-  else if ( mRasterType == Palette && mDataProvider->colorInterpretation( 1 ) == QgsRaster::ContinuousPalette )
-  {
-    setRendererForDrawingStyle( QgsRaster::SingleBandPseudoColor );
-    // Load color table
-    const QList<QgsColorRampShader::ColorRampItem> colorTable = mDataProvider->colorTable( 1 );
-    QgsSingleBandPseudoColorRenderer *r = dynamic_cast<QgsSingleBandPseudoColorRenderer *>( renderer() );
-    if ( r )
+    case Qgis::RasterLayerType::SingleBandColorData:
     {
-      // TODO: this should go somewhere else
-      QgsRasterShader *shader = new QgsRasterShader();
-      QgsColorRampShader *colorRampShader = new QgsColorRampShader();
-      colorRampShader->setColorRampType( QgsColorRampShader::Interpolated );
-      colorRampShader->setColorRampItemList( colorTable );
-      shader->setRasterShaderFunction( colorRampShader );
-      r->setShader( shader );
+      QgsDebugMsgLevel( "Setting drawing style to SingleBandColorDataStyle " + qgsEnumValueToKey( Qgis::RasterDrawingStyle::SingleBandColorData ), 4 );
+      setRendererForDrawingStyle( Qgis::RasterDrawingStyle::SingleBandColorData );
+      break;
     }
-  }
-  else if ( mRasterType == Multiband )
-  {
-    setRendererForDrawingStyle( QgsRaster::MultiBandColor );  //sensible default
-  }
-  else                        //GrayOrUndefined
-  {
-    setRendererForDrawingStyle( QgsRaster::SingleBandGray );  //sensible default
+    case Qgis::RasterLayerType::Palette:
+    {
+      if ( mDataProvider->colorInterpretation( 1 ) == Qgis::RasterColorInterpretation::PaletteIndex )
+      {
+        setRendererForDrawingStyle( Qgis::RasterDrawingStyle::PalettedColor ); //sensible default
+      }
+      else if ( mDataProvider->colorInterpretation( 1 ) == Qgis::RasterColorInterpretation::ContinuousPalette )
+      {
+        setRendererForDrawingStyle( Qgis::RasterDrawingStyle::SingleBandPseudoColor );
+        // Load color table
+        const QList<QgsColorRampShader::ColorRampItem> colorTable = mDataProvider->colorTable( 1 );
+        QgsSingleBandPseudoColorRenderer *r = dynamic_cast<QgsSingleBandPseudoColorRenderer *>( renderer() );
+        if ( r )
+        {
+          // TODO: this should go somewhere else
+          QgsRasterShader *shader = new QgsRasterShader();
+          QgsColorRampShader *colorRampShader = new QgsColorRampShader();
+          colorRampShader->setColorRampType( QgsColorRampShader::Interpolated );
+          colorRampShader->setColorRampItemList( colorTable );
+          shader->setRasterShaderFunction( colorRampShader );
+          r->setShader( shader );
+        }
+      }
+      else
+      {
+        setRendererForDrawingStyle( Qgis::RasterDrawingStyle::SingleBandGray );  //sensible default
+      }
+      break;
+    }
+    case Qgis::RasterLayerType::MultiBand:
+    {
+      setRendererForDrawingStyle( Qgis::RasterDrawingStyle::MultiBandColor );  //sensible default
+      break;
+    }
+    case Qgis::RasterLayerType::GrayOrUndefined:
+    {
+      setRendererForDrawingStyle( Qgis::RasterDrawingStyle::SingleBandGray );  //sensible default
+      break;
+    }
   }
 
   // Auto set alpha band
   for ( int bandNo = 1; bandNo <= mDataProvider->bandCount(); bandNo++ )
   {
-    if ( mDataProvider->colorInterpretation( bandNo ) == QgsRaster::AlphaBand )
+    if ( mDataProvider->colorInterpretation( bandNo ) == Qgis::RasterColorInterpretation::AlphaBand )
     {
       if ( auto *lRenderer = mPipe->renderer() )
       {
@@ -899,23 +909,23 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
 
   // Set default identify format - use the richest format available
   const int capabilities = mDataProvider->capabilities();
-  QgsRaster::IdentifyFormat identifyFormat = QgsRaster::IdentifyFormatUndefined;
+  Qgis::RasterIdentifyFormat identifyFormat = Qgis::RasterIdentifyFormat::Undefined;
   if ( capabilities & QgsRasterInterface::IdentifyHtml )
   {
     // HTML is usually richest
-    identifyFormat = QgsRaster::IdentifyFormatHtml;
+    identifyFormat = Qgis::RasterIdentifyFormat::Html;
   }
   else if ( capabilities & QgsRasterInterface::IdentifyFeature )
   {
-    identifyFormat = QgsRaster::IdentifyFormatFeature;
+    identifyFormat = Qgis::RasterIdentifyFormat::Feature;
   }
   else if ( capabilities & QgsRasterInterface::IdentifyText )
   {
-    identifyFormat = QgsRaster::IdentifyFormatText;
+    identifyFormat = Qgis::RasterIdentifyFormat::Text;
   }
   else if ( capabilities & QgsRasterInterface::IdentifyValue )
   {
-    identifyFormat = QgsRaster::IdentifyFormatValue;
+    identifyFormat = Qgis::RasterIdentifyFormat::Value;
   }
   setCustomProperty( QStringLiteral( "identify/format" ), QgsRasterDataProvider::identifyFormatName( identifyFormat ) );
 
@@ -2261,7 +2271,7 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
   // old wms settings we need to correct
   if ( res && mProviderKey == QLatin1String( "wms" ) && ( !renderer() || renderer()->type() != QLatin1String( "singlebandcolordata" ) ) )
   {
-    setRendererForDrawingStyle( QgsRaster::SingleBandColorDataStyle );
+    setRendererForDrawingStyle( Qgis::RasterDrawingStyle::SingleBandColorData );
   }
 
   // Check timestamp

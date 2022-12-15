@@ -923,7 +923,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
   QgsDebugMsg( QStringLiteral( "feature.isValid() = %1" ).arg( feature.isValid() ) );
   QTreeWidgetItem *layItem = layerItem( layer );
 
-  const QgsRaster::IdentifyFormat currentFormat = QgsRasterDataProvider::identifyFormatFromName( layer->customProperty( QStringLiteral( "identify/format" ) ).toString() );
+  const Qgis::RasterIdentifyFormat currentFormat = QgsRasterDataProvider::identifyFormatFromName( layer->customProperty( QStringLiteral( "identify/format" ) ).toString() );
 
   if ( !layItem )
   {
@@ -939,17 +939,17 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     // Add all supported formats, best first. HTML is considered the best because
     // it usually holds most information.
     const int capabilities = layer->dataProvider()->capabilities();
-    static const QList<QgsRaster::IdentifyFormat> formats
+    static const QList<Qgis::RasterIdentifyFormat> formats
     {
-      QgsRaster::IdentifyFormatHtml,
-      QgsRaster::IdentifyFormatFeature,
-      QgsRaster::IdentifyFormatText,
-      QgsRaster::IdentifyFormatValue };
+      Qgis::RasterIdentifyFormat::Html,
+      Qgis::RasterIdentifyFormat::Feature,
+      Qgis::RasterIdentifyFormat::Text,
+      Qgis::RasterIdentifyFormat::Value };
     for ( const auto &f : formats )
     {
       if ( !( QgsRasterDataProvider::identifyFormatToCapability( f ) & capabilities ) )
         continue;
-      formatCombo->addItem( QgsRasterDataProvider::identifyFormatLabel( f ), f );
+      formatCombo->addItem( QgsRasterDataProvider::identifyFormatLabel( f ), QVariant::fromValue( f ) );
       formatCombo->setItemData( formatCombo->count() - 1, QVariant::fromValue( qobject_cast<QObject *>( layer ) ), Qt::UserRole + 1 );
       if ( currentFormat == f )
         formatCombo->setCurrentIndex( formatCombo->count() - 1 );
@@ -1062,7 +1062,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     }
   }
 
-  if ( currentFormat == QgsRaster::IdentifyFormatHtml || currentFormat == QgsRaster::IdentifyFormatText )
+  if ( currentFormat == Qgis::RasterIdentifyFormat::Html || currentFormat == Qgis::RasterIdentifyFormat::Text )
   {
     QgsIdentifyResultsWebViewItem *attrItem = new QgsIdentifyResultsWebViewItem( lstResults );
 #ifdef WITH_QTWEBKIT
@@ -1073,7 +1073,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     // Adjust zoom: text is ok, but HTML seems rather big at least on Linux/KDE
     if ( horizontalDpi > 96 )
     {
-      attrItem->webView()->setZoomFactor( attrItem->webView()->zoomFactor() * ( currentFormat == QgsRaster::IdentifyFormatHtml ? 0.7 : 0.9 ) );
+      attrItem->webView()->setZoomFactor( attrItem->webView()->zoomFactor() * ( currentFormat == Qgis::RasterIdentifyFormat::Html ? 0.7 : 0.9 ) );
     }
     connect( attrItem->webView()->page(), &QWebPage::linkClicked, [ ]( const QUrl & url )
     {
@@ -1084,7 +1084,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     if ( !attributes.isEmpty() )
     {
       QString value { attributes.begin().value() };
-      if ( currentFormat ==  QgsRaster::IdentifyFormatText )
+      if ( currentFormat ==  Qgis::RasterIdentifyFormat::Text )
       {
         value = QgsStringUtils::insertLinks( value );
         value.prepend( QStringLiteral( "<pre style=\"font-family: monospace;\">" ) ).append( QStringLiteral( "</pre>" ) );
@@ -2487,8 +2487,8 @@ void QgsIdentifyResultsDialog::formatChanged( int index )
     return;
   }
 
-  const QgsRaster::IdentifyFormat format = static_cast<QgsRaster::IdentifyFormat>( combo->itemData( index, Qt::UserRole ).toInt() );
-  QgsDebugMsg( QStringLiteral( "format = %1" ).arg( format ) );
+  const Qgis::RasterIdentifyFormat format = combo->itemData( index, Qt::UserRole ).value< Qgis::RasterIdentifyFormat >();
+  QgsDebugMsg( QStringLiteral( "format = %1" ).arg( qgsEnumValueToKey( format ) ) );
   QgsRasterLayer *layer = qobject_cast<QgsRasterLayer *>( combo->itemData( index, Qt::UserRole + 1 ).value<QObject *>() );
   if ( !layer )
   {

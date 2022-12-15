@@ -33,7 +33,6 @@
 
 #include "qgscolorrampshader.h"
 #include "qgsdataprovider.h"
-#include "qgsraster.h"
 #include "qgsrasterattributetable.h"
 #include "qgsfields.h"
 #include "qgsrasterinterface.h"
@@ -155,68 +154,73 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     Qgis::DataType sourceDataType( int bandNo ) const override = 0;
 
     //! Returns data type for the band specified by number
-    virtual int colorInterpretation( int bandNo ) const;
+    virtual Qgis::RasterColorInterpretation colorInterpretation( int bandNo ) const;
 
-    QString colorName( int colorInterpretation ) const
+    /**
+     * Returns a string color name representation of a color interpretation.
+     */
+    QString colorName( Qgis::RasterColorInterpretation colorInterpretation ) const
     {
       // Modified copy from GDAL
       switch ( colorInterpretation )
       {
-        case QgsRaster::UndefinedColorInterpretation:
+        case Qgis::RasterColorInterpretation::Undefined:
           return QStringLiteral( "Undefined" );
 
-        case QgsRaster::GrayIndex:
+        case Qgis::RasterColorInterpretation::GrayIndex:
           return QStringLiteral( "Gray" );
 
-        case QgsRaster::PaletteIndex:
+        case Qgis::RasterColorInterpretation::PaletteIndex:
           return QStringLiteral( "Palette" );
 
-        case QgsRaster::RedBand:
+        case Qgis::RasterColorInterpretation::RedBand:
           return QStringLiteral( "Red" );
 
-        case QgsRaster::GreenBand:
+        case Qgis::RasterColorInterpretation::GreenBand:
           return QStringLiteral( "Green" );
 
-        case QgsRaster::BlueBand:
+        case Qgis::RasterColorInterpretation::BlueBand:
           return QStringLiteral( "Blue" );
 
-        case QgsRaster::AlphaBand:
+        case Qgis::RasterColorInterpretation::AlphaBand:
           return QStringLiteral( "Alpha" );
 
-        case QgsRaster::HueBand:
+        case Qgis::RasterColorInterpretation::HueBand:
           return QStringLiteral( "Hue" );
 
-        case QgsRaster::SaturationBand:
+        case Qgis::RasterColorInterpretation::SaturationBand:
           return QStringLiteral( "Saturation" );
 
-        case QgsRaster::LightnessBand:
+        case Qgis::RasterColorInterpretation::LightnessBand:
           return QStringLiteral( "Lightness" );
 
-        case QgsRaster::CyanBand:
+        case Qgis::RasterColorInterpretation::CyanBand:
           return QStringLiteral( "Cyan" );
 
-        case QgsRaster::MagentaBand:
+        case Qgis::RasterColorInterpretation::MagentaBand:
           return QStringLiteral( "Magenta" );
 
-        case QgsRaster::YellowBand:
+        case Qgis::RasterColorInterpretation::YellowBand:
           return QStringLiteral( "Yellow" );
 
-        case QgsRaster::BlackBand:
+        case Qgis::RasterColorInterpretation::BlackBand:
           return QStringLiteral( "Black" );
 
-        case QgsRaster::YCbCr_YBand:
+        case Qgis::RasterColorInterpretation::YCbCr_YBand:
           return QStringLiteral( "YCbCr_Y" );
 
-        case QgsRaster::YCbCr_CbBand:
+        case Qgis::RasterColorInterpretation::YCbCr_CbBand:
           return QStringLiteral( "YCbCr_Cb" );
 
-        case QgsRaster::YCbCr_CrBand:
+        case Qgis::RasterColorInterpretation::YCbCr_CrBand:
           return QStringLiteral( "YCbCr_Cr" );
 
-        default:
-          return QStringLiteral( "Unknown" );
+        case Qgis::RasterColorInterpretation::ContinuousPalette:
+          return QStringLiteral( "Continuous Palette" );
       }
+      return QString();
     }
+
     //! Reload data (data could change)
     virtual bool reload() { return true; }
 
@@ -330,7 +334,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      */
     virtual QString buildPyramids( const QList<QgsRasterPyramid> &pyramidList,
                                    const QString &resamplingMethod = "NEAREST",
-                                   QgsRaster::RasterPyramidsFormat format = QgsRaster::PyramidsGTiff,
+                                   Qgis::RasterPyramidFormat format = Qgis::RasterPyramidFormat::GeoTiff,
                                    const QStringList &configOptions = QStringList(),
                                    QgsRasterBlockFeedback *feedback = nullptr )
     {
@@ -404,7 +408,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      *       up to at least v1.3.0
      * \see sample(), which is much more efficient for simple "value at point" queries.
      */
-    virtual QgsRasterIdentifyResult identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 );
+    virtual QgsRasterIdentifyResult identify( const QgsPointXY &point, Qgis::RasterIdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 );
 
     /**
      * Samples a raster value from the specified \a band found at the \a point position. The context
@@ -591,14 +595,33 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * Validates pyramid creation options for a specific dataset and destination format
      * \note used by GDAL provider only
      */
-    virtual QString validatePyramidsConfigOptions( QgsRaster::RasterPyramidsFormat pyramidsFormat,
+    virtual QString validatePyramidsConfigOptions( Qgis::RasterPyramidFormat pyramidsFormat,
         const QStringList &configOptions, const QString &fileFormat )
     { Q_UNUSED( pyramidsFormat ) Q_UNUSED( configOptions ); Q_UNUSED( fileFormat ); return QString(); }
 
-    static QString identifyFormatName( QgsRaster::IdentifyFormat format );
-    static QgsRaster::IdentifyFormat identifyFormatFromName( const QString &formatName );
-    static QString identifyFormatLabel( QgsRaster::IdentifyFormat format );
-    static Capability identifyFormatToCapability( QgsRaster::IdentifyFormat format );
+    /**
+     * Converts a raster identify \a format to a string name.
+     *
+     * \see identifyFormatFromName()
+     */
+    static QString identifyFormatName( Qgis::RasterIdentifyFormat format );
+
+    /**
+     * Converts a string \a formatName to a raster identify format.
+     *
+     * \see identifyFormatName()
+     */
+    static Qgis::RasterIdentifyFormat identifyFormatFromName( const QString &formatName );
+
+    /**
+     * Converts a raster identify \a format to a translated string label.
+     */
+    static QString identifyFormatLabel( Qgis::RasterIdentifyFormat format );
+
+    /**
+     * Converts a raster identify \a format to a capability.
+     */
+    static Capability identifyFormatToCapability( Qgis::RasterIdentifyFormat format );
 
     /**
      * Step width for raster iterations.

@@ -471,7 +471,7 @@ void TestQgsRasterLayer::checkScaleOffset()
   QgsRasterDataProvider *myProvider = myRasterLayer->dataProvider();
   const QgsPointXY myPoint( 1535030, 5083350 );
   const QgsRectangle myRect( 1535030 - 5, 5083350 - 5, 1535030 + 5, 5083350 + 5 );
-  const QgsRasterIdentifyResult identifyResult = myProvider->identify( myPoint, QgsRaster::IdentifyFormatValue, myRect, 1, 1 );
+  const QgsRasterIdentifyResult identifyResult = myProvider->identify( myPoint, Qgis::RasterIdentifyFormat::Value, myRect, 1, 1 );
 
   if ( identifyResult.isValid() )
   {
@@ -527,7 +527,7 @@ void TestQgsRasterLayer::buildExternalOverviews()
   // OK now we can go on to test
   //
 
-  const QgsRaster::RasterPyramidsFormat myFormatFlag = QgsRaster::PyramidsGTiff;
+  const Qgis::RasterPyramidFormat myFormatFlag = Qgis::RasterPyramidFormat::GeoTiff;
   QList< QgsRasterPyramid > myPyramidList = mypLayer->dataProvider()->buildPyramidList();
   for ( int myCounterInt = 0; myCounterInt < myPyramidList.count(); myCounterInt++ )
   {

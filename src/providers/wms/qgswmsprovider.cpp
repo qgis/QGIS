@@ -26,14 +26,12 @@
 
 #include "qgslogger.h"
 #include "qgswmsprovider.h"
-#include "qgswmsconnection.h"
 #include "qgscoordinatetransform.h"
 #include "qgswmsdataitems.h"
 #include "qgsdatasourceuri.h"
 #include "qgsfeaturestore.h"
 #include "qgsgeometry.h"
 #include "qgsrasteridentifyresult.h"
-#include "qgsrasterlayer.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmapsettings.h"
@@ -3190,9 +3188,9 @@ double QgsWmsProvider::sample( const QgsPointXY &point, int band, bool *ok, cons
   return QgsRasterDataProvider::sample( point, band, ok, boundingBox, width, height, dpi );
 }
 
-QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
+QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, Qgis::RasterIdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
 {
-  QgsDebugMsgLevel( QStringLiteral( "format = %1" ).arg( format ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "format = %1" ).arg( qgsEnumValueToKey( format ) ), 2 );
 
   QString formatStr;
   formatStr = mCaps.mIdentifyFormats.value( format );
@@ -3201,7 +3199,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
     return QgsRasterIdentifyResult( QGS_ERROR( tr( "Format not supported" ) ) );
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "format = %1 format = %2" ).arg( format ).arg( formatStr ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "format = %1 format = %2" ).arg( qgsEnumValueToKey( format ) ).arg( formatStr ), 2 );
 
   QMap<int, QVariant> results;
   if ( !extent().contains( point ) )
@@ -3599,11 +3597,11 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
       }
     }
 
-    if ( format == QgsRaster::IdentifyFormatHtml || format == QgsRaster::IdentifyFormatText )
+    if ( format == Qgis::RasterIdentifyFormat::Html || format == Qgis::RasterIdentifyFormat::Text )
     {
       results.insert( results.size(), QString::fromUtf8( mIdentifyResultBodies.value( 0 ) ) );
     }
-    else if ( format == QgsRaster::IdentifyFormatFeature ) // GML
+    else if ( format == Qgis::RasterIdentifyFormat::Feature ) // GML
     {
       // The response maybe
       // 1) simple GML

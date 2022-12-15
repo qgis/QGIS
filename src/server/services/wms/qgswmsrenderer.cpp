@@ -2002,10 +2002,10 @@ namespace QgsWms
       return false;
     }
 
-    const QgsRaster::IdentifyFormat identifyFormat(
+    const Qgis::RasterIdentifyFormat identifyFormat(
       static_cast<bool>( layer->dataProvider()->capabilities() & QgsRasterDataProvider::IdentifyFeature )
-      ? QgsRaster::IdentifyFormat::IdentifyFormatFeature
-      : QgsRaster::IdentifyFormat::IdentifyFormatValue );
+      ? Qgis::RasterIdentifyFormat::Feature
+      : Qgis::RasterIdentifyFormat::Value );
 
     QgsRasterIdentifyResult identifyResult;
     if ( layer->crs() != mapSettings.destinationCrs() )
@@ -2039,7 +2039,7 @@ namespace QgsWms
       int gmlVersion = mWmsParameters.infoFormatVersion();
       QString typeName = mContext.layerNickname( *layer );
 
-      if ( identifyFormat == QgsRaster::IdentifyFormatValue )
+      if ( identifyFormat == Qgis::RasterIdentifyFormat::Value )
       {
         feature.initAttributes( attributes.count() );
         int index = 0;
@@ -2088,7 +2088,7 @@ namespace QgsWms
     }
     else
     {
-      if ( identifyFormat == QgsRaster::IdentifyFormatValue )
+      if ( identifyFormat == Qgis::RasterIdentifyFormat::Value )
       {
         for ( auto it = attributes.constBegin(); it != attributes.constEnd(); ++it )
         {

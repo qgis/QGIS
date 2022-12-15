@@ -29,6 +29,7 @@
 #include "qgshillshaderenderer.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
+#include "qgscontrastenhancement.h"
 
 #include <QIcon>
 
@@ -108,7 +109,7 @@ QList< QgsRasterRendererRegistryEntry > QgsRasterRendererRegistry::entries() con
   return result;
 }
 
-QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( QgsRaster::DrawingStyle drawingStyle, QgsRasterDataProvider *provider ) const
+QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qgis::RasterDrawingStyle drawingStyle, QgsRasterDataProvider *provider ) const
 {
   if ( !provider || provider->bandCount() < 1 )
   {
@@ -118,7 +119,7 @@ QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
   std::unique_ptr< QgsRasterRenderer > renderer;
   switch ( drawingStyle )
   {
-    case QgsRaster::PalettedColor:
+    case Qgis::RasterDrawingStyle::PalettedColor:
     {
       const int grayBand = 1; //reasonable default
 
@@ -161,8 +162,8 @@ QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
     }
     break;
 
-    case QgsRaster::MultiBandSingleBandGray:
-    case QgsRaster::SingleBandGray:
+    case Qgis::RasterDrawingStyle::MultiBandSingleBandGray:
+    case Qgis::RasterDrawingStyle::SingleBandGray:
     {
       const int grayBand = 1;
 
@@ -191,7 +192,7 @@ QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
       break;
     }
 
-    case QgsRaster::SingleBandPseudoColor:
+    case Qgis::RasterDrawingStyle::SingleBandPseudoColor:
     {
       const int bandNo = 1;
       double minValue = 0;
@@ -202,7 +203,7 @@ QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
       renderer = std::make_unique< QgsSingleBandPseudoColorRenderer >( provider, bandNo, shader );
       break;
     }
-    case QgsRaster::MultiBandColor:
+    case Qgis::RasterDrawingStyle::MultiBandColor:
     {
       const QgsSettings s;
 
@@ -225,7 +226,7 @@ QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
       renderer = std::make_unique< QgsMultiBandColorRenderer >( provider, redBand, greenBand, blueBand );
       break;
     }
-    case QgsRaster::SingleBandColorDataStyle:
+    case Qgis::RasterDrawingStyle::SingleBandColorData:
     {
       renderer = std::make_unique< QgsSingleBandColorDataRenderer >( provider, 1 );
       break;

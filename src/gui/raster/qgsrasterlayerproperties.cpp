@@ -21,17 +21,12 @@
 #include "qgsgui.h"
 #include "qgsapplication.h"
 #include "qgsbrightnesscontrastfilter.h"
-#include "qgscontrastenhancement.h"
-#include "qgscoordinatetransform.h"
 #include "qgscreaterasterattributetabledialog.h"
-#include "qgscolorrampimpl.h"
-#include "qgsprojectionselectiondialog.h"
 #include "qgslogger.h"
 #include "qgsloadrasterattributetabledialog.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerstyleguiutils.h"
 #include "qgsmaptoolemitpoint.h"
-#include "qgsmaptopixel.h"
 #include "qgsmetadatawidget.h"
 #include "qgsmetadataurlitemdelegate.h"
 #include "qgsmultibandcolorrenderer.h"
@@ -41,12 +36,10 @@
 #include "qgsprovidersourcewidgetproviderregistry.h"
 #include "qgsprovidersourcewidget.h"
 #include "qgsproject.h"
-#include "qgsrasterbandstats.h"
 #include "qgsrastercontourrendererwidget.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterhistogramwidget.h"
 #include "qgsrastertransparencywidget.h"
-#include "qgsrasteridentifyresult.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerproperties.h"
 #include "qgsrasterpyramid.h"
@@ -64,16 +57,11 @@
 #include "qgsfileutils.h"
 #include "qgswebview.h"
 #include "qgsvectorlayer.h"
-#include "qgsprovidermetadata.h"
-#include "qgsproviderregistry.h"
-#include "qgsrasterlayertemporalproperties.h"
 #include "qgsdoublevalidator.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
 #include "qgsprojectutils.h"
 #include "qgsrasterattributetablewidget.h"
-
 #include "qgsrasterlayertemporalpropertieswidget.h"
-#include "qgsprojecttimesettings.h"
 #include "qgsexpressioncontextutils.h"
 
 #include <QDesktopServices>
@@ -164,6 +152,10 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   connect( this, &QDialog::rejected, this, &QgsRasterLayerProperties::onCancel );
 
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsRasterLayerProperties::apply );
+
+  cbxPyramidsFormat->addItem( tr( "External" ), QVariant::fromValue( Qgis::RasterPyramidFormat::GeoTiff ) );
+  cbxPyramidsFormat->addItem( tr( "Internal (if possible)" ), QVariant::fromValue( Qgis::RasterPyramidFormat::Internal ) );
+  cbxPyramidsFormat->addItem( tr( "External (Erdas Imagine)" ), QVariant::fromValue( Qgis::RasterPyramidFormat::Erdas ) );
 
   // brightness/contrast controls
   connect( mSliderBrightness, &QAbstractSlider::valueChanged, mBrightnessSpinBox, &QSpinBox::setValue );
@@ -482,8 +474,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   {
     if ( QgsApplication::rasterRendererRegistry()->rendererData( name, entry ) )
     {
-      if ( ( mRasterLayer->rasterType() != QgsRasterLayer::ColorLayer && entry.name != QLatin1String( "singlebandcolordata" ) ) ||
-           ( mRasterLayer->rasterType() == QgsRasterLayer::ColorLayer && entry.name == QLatin1String( "singlebandcolordata" ) ) )
+      if ( ( mRasterLayer->rasterType() != Qgis::RasterLayerType::SingleBandColorData && entry.name != QLatin1String( "singlebandcolordata" ) ) ||
+           ( mRasterLayer->rasterType() == Qgis::RasterLayerType::SingleBandColorData && entry.name == QLatin1String( "singlebandcolordata" ) ) )
       {
         mRenderTypeComboBox->addItem( entry.visibleName, entry.name );
       }
@@ -672,12 +664,12 @@ void QgsRasterLayerProperties::setRendererWidget( const QString &rendererName )
       {
         if ( rendererName == QLatin1String( "singlebandgray" ) )
         {
-          whileBlocking( mRasterLayer )->setRenderer( QgsApplication::rasterRendererRegistry()->defaultRendererForDrawingStyle( QgsRaster::SingleBandGray, mRasterLayer->dataProvider() ) );
+          whileBlocking( mRasterLayer )->setRenderer( QgsApplication::rasterRendererRegistry()->defaultRendererForDrawingStyle( Qgis::RasterDrawingStyle::SingleBandGray, mRasterLayer->dataProvider() ) );
           whileBlocking( mRasterLayer )->setDefaultContrastEnhancement();
         }
         else if ( rendererName == QLatin1String( "multibandcolor" ) )
         {
-          whileBlocking( mRasterLayer )->setRenderer( QgsApplication::rasterRendererRegistry()->defaultRendererForDrawingStyle( QgsRaster::MultiBandColor, mRasterLayer->dataProvider() ) );
+          whileBlocking( mRasterLayer )->setRenderer( QgsApplication::rasterRendererRegistry()->defaultRendererForDrawingStyle( Qgis::RasterDrawingStyle::MultiBandColor, mRasterLayer->dataProvider() ) );
           whileBlocking( mRasterLayer )->setDefaultContrastEnhancement();
         }
       }
@@ -1175,7 +1167,7 @@ void QgsRasterLayerProperties::buttonBuildPyramids_clicked()
   QString res = provider->buildPyramids(
                   myPyramidList,
                   resamplingMethod,
-                  ( QgsRaster::RasterPyramidsFormat ) cbxPyramidsFormat->currentIndex(),
+                  cbxPyramidsFormat->currentData().value< Qgis::RasterPyramidFormat >(),
                   QStringList(),
                   feedback.get() );
   QApplication::restoreOverrideCursor();

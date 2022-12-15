@@ -17,8 +17,6 @@
 #include <cstring>
 #include "qgspostgresrasterprovider.h"
 #include "qgspostgresprovidermetadatautils.h"
-#include "qgslayermetadataproviderregistry.h"
-#include "qgspostgrestransaction.h"
 #include "qgsmessagelog.h"
 #include "qgsrectangle.h"
 #include "qgspolygon.h"
@@ -26,6 +24,7 @@
 #include "qgsgdalutils.h"
 #include "qgsstringutils.h"
 #include "qgsapplication.h"
+#include "qgsraster.h"
 
 #include <QRegularExpression>
 
