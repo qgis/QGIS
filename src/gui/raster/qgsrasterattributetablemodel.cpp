@@ -72,7 +72,7 @@ QString QgsRasterAttributeTableModel::headerTooltip( const int section ) const
   }
 
   const QString fieldName { hNames.at( section ) };
-  const bool isColor { hasColor() && section == hNames.count( ) - 1 };
+  const bool isColor { hasColor() && section == hNames.count( ) - 1 };  // *NOPAD*
 
   if ( isColor )
   {
@@ -330,7 +330,7 @@ QVariant QgsRasterAttributeTableModel::data( const QModelIndex &index, int role 
   if ( mRat && index.isValid() && index.row() < rowCount( QModelIndex() ) && index.column() < columnCount( QModelIndex() ) )
   {
     const QString fieldName { headerNames().at( index.column() ) };
-    const bool isColorOrRamp { ( hasColor() || hasRamp() ) && index.column() == columnCount( QModelIndex() ) - 1 };
+    const bool isColorOrRamp { ( hasColor() || hasRamp() ) && index.column() == columnCount( QModelIndex() ) - 1 }; // *NOPAD*
     bool ok;
     const QgsRasterAttributeTable::Field field { mRat->fieldByName( fieldName, &ok ) };
     if ( ! isColorOrRamp && ! ok )
