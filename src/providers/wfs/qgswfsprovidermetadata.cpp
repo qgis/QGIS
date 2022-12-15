@@ -290,7 +290,10 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
       timerForHits.setSingleShot( true );
       timerForHits.start();
       connect( &timerForHits, &QTimer::timeout, &loop, &QEventLoop::quit );
-      connect( feedback, &QgsFeedback::canceled, &loop, &QEventLoop::quit );
+      if ( feedback )
+      {
+        connect( feedback, &QgsFeedback::canceled, &loop, &QEventLoop::quit );
+      }
       loop.exec( QEventLoop::ExcludeUserInputEvents );
       // Make sure to terminate requests in this thread, to avoid potential
       // crash in main thread when "requests" goes out of scope.
