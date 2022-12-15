@@ -520,8 +520,8 @@ QgsPointCloudBlock *decompressLaz_( FileType &file, const QgsPointCloudAttribute
     }
 
     int xAttributeOffset, yAttributeOffset;
-    const QgsPointCloudAttribute *attributeX;
-    const QgsPointCloudAttribute *attributeY;
+    const QgsPointCloudAttribute *attributeX = nullptr;
+    const QgsPointCloudAttribute *attributeY = nullptr;
     const bool hasFilterRect = !filterRect.isEmpty();
     if ( hasFilterRect )
     {
@@ -635,8 +635,8 @@ QgsPointCloudBlock *QgsLazDecoder::decompressCopc( const QByteArray &data, QgsLa
   }
 
   int xAttributeOffset, yAttributeOffset;
-  const QgsPointCloudAttribute *attributeX;
-  const QgsPointCloudAttribute *attributeY;
+  const QgsPointCloudAttribute *attributeX = nullptr;
+  const QgsPointCloudAttribute *attributeY = nullptr;
   const bool hasFilterRect = !filterRect.isEmpty();
   if ( hasFilterRect )
   {

@@ -90,8 +90,8 @@ QgsPointCloudBlock *decompressBinary_( const QByteArray &dataUncompressed, const
   }
 
   int xAttributeOffset, yAttributeOffset;
-  const QgsPointCloudAttribute *attributeX;
-  const QgsPointCloudAttribute *attributeY;
+  const QgsPointCloudAttribute *attributeX = nullptr;
+  const QgsPointCloudAttribute *attributeY = nullptr;
   const bool hasFilterRect = !filterRect.isEmpty();
   if ( hasFilterRect )
   {
