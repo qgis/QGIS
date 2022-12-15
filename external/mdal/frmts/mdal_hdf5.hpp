@@ -77,7 +77,7 @@ class HdfFile
 
     inline HdfGroup group( const std::string &path ) const;
 
-    //!  Creates a group wint an absolute path
+    //!  Creates a group with an absolute path
     inline HdfGroup createGroup( const std::string &path ) const;
 
     /**

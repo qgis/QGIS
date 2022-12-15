@@ -132,6 +132,10 @@ void MDAL::DriverXmdf::readGroupsTree( HdfFile &file, const std::string &name, M
       {
         addDatasetGroupsFromXmdfGroup( groups, gGroup, "/Maximums", vertexCount, faceCount );
       }
+      else if ( groupName == "Final" )
+      {
+        addDatasetGroupsFromXmdfGroup( groups, gGroup, "/Final", vertexCount, faceCount );
+      }
       else
       {
         addDatasetGroupsFromXmdfGroup( groups, gGroup, "", vertexCount, faceCount );
