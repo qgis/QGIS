@@ -59,7 +59,7 @@ QgsFilteredTableWidget::QgsFilteredTableWidget( QWidget *parent, bool showSearch
   QVBoxLayout *layout = new QVBoxLayout();
   layout->addWidget( mSearchWidget );
   layout->addWidget( mTableWidget );
-  layout->setMargin( 0 );
+  layout->setContentsMargins( 0, 0, 0, 0 );
   layout->setSpacing( 0 );
   if ( showSearch )
   {
