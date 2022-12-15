@@ -1007,7 +1007,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
     void checkSymbologyConsistency();
 
     void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider,
-                               const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags ) override;
+                               const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags ) final;
 };
 
 #endif //QGSMESHLAYER_H

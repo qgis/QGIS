@@ -25,7 +25,6 @@
 #include "qgslogger.h"
 #include "qgsmaplayerlegend.h"
 #include "qgsmaplayerfactory.h"
-#include "qgsmaplayerutils.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshdatasetgroupstore.h"
 #include "qgsmeshlayer.h"
@@ -72,7 +71,7 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
   {
     flags |= QgsDataProvider::ForceReadOnly;
   }
-  setDataSourcePrivate( meshLayerPath, baseName, providerKey, providerOptions, flags );
+  QgsMeshLayer::setDataSourcePrivate( meshLayerPath, baseName, providerKey, providerOptions, flags );
   resetDatasetGroupTreeItem();
   setLegend( QgsMapLayerLegend::defaultMeshLegend( this ) );
 
