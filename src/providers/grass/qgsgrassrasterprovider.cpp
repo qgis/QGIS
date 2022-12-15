@@ -414,7 +414,7 @@ int QgsGrassRasterProvider::yBlockSize() const
 int QgsGrassRasterProvider::xSize() const { return mCols; }
 int QgsGrassRasterProvider::ySize() const { return mRows; }
 
-QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
+QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPointXY &point, Qgis::RasterIdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
 {
   Q_UNUSED( boundingBox )
   Q_UNUSED( width )
@@ -422,9 +422,9 @@ QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPointXY &poin
   QMap<int, QVariant> results;
   QMap<int, QVariant> noDataResults;
   noDataResults.insert( 1, QVariant() );
-  QgsRasterIdentifyResult noDataResult( QgsRaster::IdentifyFormatValue, results );
+  QgsRasterIdentifyResult noDataResult( Qgis::RasterIdentifyFormat::Value, results );
 
-  if ( format != QgsRaster::IdentifyFormatValue )
+  if ( format != Qgis::RasterIdentifyFormat::Value )
   {
     return QgsRasterIdentifyResult( QGS_ERROR( tr( "Format not supported" ) ) );
   }
@@ -461,7 +461,7 @@ QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPointXY &poin
 
   results.insert( 1, value );
 
-  return QgsRasterIdentifyResult( QgsRaster::IdentifyFormatValue, results );
+  return QgsRasterIdentifyResult( Qgis::RasterIdentifyFormat::Value, results );
 }
 
 int QgsGrassRasterProvider::capabilities() const
@@ -498,15 +498,15 @@ int QgsGrassRasterProvider::bandCount() const
   return 1;
 }
 
-int QgsGrassRasterProvider::colorInterpretation( int bandNo ) const
+Qgis::RasterColorInterpretation QgsGrassRasterProvider::colorInterpretation( int bandNo ) const
 {
   // TODO: avoid loading color table here or cache it
   QList<QgsColorRampShader::ColorRampItem> ct = colorTable( bandNo );
   if ( ct.size() > 0 )
   {
-    return QgsRaster::ContinuousPalette;
+    return Qgis::RasterColorInterpretation::ContinuousPalette;
   }
-  return QgsRaster::GrayIndex;
+  return Qgis::RasterColorInterpretation::GrayIndex;
 }
 
 QString QgsGrassRasterProvider::htmlMetadata()
