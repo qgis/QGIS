@@ -210,45 +210,43 @@ void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const 
     // So we need to fetch the layer and then run the function on the layer's thread.
 
     const QString identifier = value.toString();
+
     // check through layer stores from context
-    if ( context )
+    const QList< QgsMapLayerStore * > stores = context->layerStores();
+
+    for ( QgsMapLayerStore *store : stores )
     {
-      const QList< QgsMapLayerStore * > stores = context->layerStores();
-
-      for ( QgsMapLayerStore *store : stores )
+      QPointer< QgsMapLayerStore > storePointer( store );
+      auto findLayerInStoreFunction = [ storePointer, identifier, function, &foundLayer ]
       {
-        QPointer< QgsMapLayerStore > storePointer( store );
-        auto findLayerInStoreFunction = [ storePointer, identifier, function, &foundLayer ]
+        QgsMapLayer *ml = nullptr;
+        if ( QgsMapLayerStore *store = storePointer.data() )
         {
-          QgsMapLayer *ml = nullptr;
-          if ( QgsMapLayerStore *store = storePointer.data() )
+          // look for matching layer by id
+          ml = store->mapLayer( identifier );
+          if ( !ml )
           {
-            // look for matching layer by id
-            ml = store->mapLayer( identifier );
-            if ( !ml )
-            {
-              // Still nothing? Check for layer name
-              ml = store->mapLayersByName( identifier ).value( 0 );
-            }
-
-            if ( ml )
-            {
-              function( ml );
-              foundLayer = true;
-            }
+            // Still nothing? Check for layer name
+            ml = store->mapLayersByName( identifier ).value( 0 );
           }
-        };
 
-        // Make sure we only deal with the store on the thread where it lives.
-        // Anything else risks a crash.
-        if ( QThread::currentThread() == store->thread() )
-          findLayerInStoreFunction();
-        else
-          QMetaObject::invokeMethod( store, findLayerInStoreFunction, Qt::BlockingQueuedConnection );
+          if ( ml )
+          {
+            function( ml );
+            foundLayer = true;
+          }
+        }
+      };
 
-        if ( foundLayer )
-          return;
-      }
+      // Make sure we only deal with the store on the thread where it lives.
+      // Anything else risks a crash.
+      if ( QThread::currentThread() == store->thread() )
+        findLayerInStoreFunction();
+      else
+        QMetaObject::invokeMethod( store, findLayerInStoreFunction, Qt::BlockingQueuedConnection );
+
+      if ( foundLayer )
+        return;
     }
 
     // last resort - QgsProject instance. This is bad, we need to remove this!
