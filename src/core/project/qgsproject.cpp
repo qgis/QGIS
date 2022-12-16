@@ -3669,7 +3669,8 @@ QString QgsProject::presetHomePath() const
 
 QgsRelationManager *QgsProject::relationManager() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // because relation aggregate functions are not thread safe
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   return mRelationManager;
 }
