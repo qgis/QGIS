@@ -676,12 +676,15 @@ The development version
       SelectionIsGreaterThanOne,
       GeometryEngineError,
       LayerNotEditable,
+      // Add part issues
       AddPartSelectedGeometryNotFound,
       AddPartNotMultiGeometry,
+      // Add ring issues
       AddRingNotClosed,
       AddRingNotValid,
       AddRingCrossesExistingRings,
       AddRingNotInExistingFeature,
+      // Split features
       SplitCannotSplitPoint,
     };
 

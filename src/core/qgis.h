@@ -1102,15 +1102,15 @@ class CORE_EXPORT Qgis
       SelectionIsGreaterThanOne, //!< More than one features were selected
       GeometryEngineError, //!< Geometry engine misses a method implemented or an error occurred in the geometry engine
       LayerNotEditable, //!< Cannot edit layer
-      /* Add part issues */
+      // Add part issues
       AddPartSelectedGeometryNotFound, //!< The selected geometry cannot be found
       AddPartNotMultiGeometry, //!< The source geometry is not multi
-      /* Add ring issues*/
+      // Add ring issues
       AddRingNotClosed, //!< The input ring is not closed
       AddRingNotValid, //!< The input ring is not valid
       AddRingCrossesExistingRings, //!< The input ring crosses existing rings (it is not disjoint)
       AddRingNotInExistingFeature, //!< The input ring doesn't have any existing ring to fit into
-      /* Split features */
+      // Split features
       SplitCannotSplitPoint, //!< Cannot split points
     };
     Q_ENUM( GeometryOperationResult )
