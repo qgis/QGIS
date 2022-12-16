@@ -32,6 +32,7 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
     def __init__(self, key, pluginName, defaultValue, description=str(), options=Qgis.SettingsOptions()):
         """
         Constructor for PyQgsSettingsEntryEnumFlag.
+
         :param key: argument specifies the final part of the settings key.
         :param pluginName: argument is inserted in the key after the section.
         :param defaultValue: argument specifies the default value for the settings entry.
@@ -55,6 +56,7 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
     def value(self, dynamicKeyPart=None):
         """
         Get settings value.
+
         :param dynamicKeyPart: argument specifies the dynamic part of the settings key.
         """
         if self.__metaEnum.isFlag():
@@ -65,6 +67,7 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
     def valueWithDefaultOverride(self, defaultValueOverride, dynamicKeyPart=None):
         """
         Get settings value with a default value override.
+
         :param defaultValueOverride: argument if valid is used instead of the normal default value.
         :param dynamicKeyPart: argument specifies the dynamic part of the settings key.
         """
@@ -98,6 +101,7 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
     def setValue(self, value, dynamicKeyPart: (list, str) = None):
         """
         Set settings value.
+
         :param value: the value to set for the setting.
         :param dynamicKeyPart: argument specifies the dynamic part of the settings key (a single one a string, or several as a list)
         """
