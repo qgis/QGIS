@@ -3739,7 +3739,8 @@ const QgsProjectStyleSettings *QgsProject::styleSettings() const
 
 QgsProjectStyleSettings *QgsProject::styleSettings()
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  // this method is called quite extensively from other threads via QgsProject::createExpressionContextScope()
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
   return mStyleSettings;
 }
