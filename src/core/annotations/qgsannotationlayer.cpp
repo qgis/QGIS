@@ -440,9 +440,12 @@ bool QgsAnnotationLayer::writeXml( QDomNode &layer_node, QDomDocument &doc, cons
   return writeSymbology( layer_node, doc, errorMsg, context );
 }
 
-bool QgsAnnotationLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &, const QgsReadWriteContext &, QgsMapLayer::StyleCategories categories ) const
+bool QgsAnnotationLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &, const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  QDomElement layerElement = node.toElement();
+  writeCommonStyle( layerElement, doc, context, categories );
 
   // add the layer opacity
   if ( categories.testFlag( Rendering ) )
@@ -470,9 +473,12 @@ bool QgsAnnotationLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
   return true;
 }
 
-bool QgsAnnotationLayer::readSymbology( const QDomNode &node, QString &, QgsReadWriteContext &, QgsMapLayer::StyleCategories categories )
+bool QgsAnnotationLayer::readSymbology( const QDomNode &node, QString &, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  const QDomElement layerElement = node.toElement();
+  readCommonStyle( layerElement, context, categories );
 
   if ( categories.testFlag( Rendering ) )
   {
