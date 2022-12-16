@@ -72,7 +72,7 @@ QString QgsRasterAttributeTableModel::headerTooltip( const int section ) const
   }
 
   const QString fieldName { hNames.at( section ) };
-  const bool isColor { section == hNames.count( ) - 1 };
+  const bool isColor { hasColor() && section == hNames.count( ) - 1 };  // *NOPAD*
 
   if ( isColor )
   {
@@ -330,14 +330,14 @@ QVariant QgsRasterAttributeTableModel::data( const QModelIndex &index, int role 
   if ( mRat && index.isValid() && index.row() < rowCount( QModelIndex() ) && index.column() < columnCount( QModelIndex() ) )
   {
     const QString fieldName { headerNames().at( index.column() ) };
-    const bool isColorOrRamp { index.column() == columnCount( QModelIndex() ) - 1 };
+    const bool isColorOrRamp { ( hasColor() || hasRamp() ) && index.column() == columnCount( QModelIndex() ) - 1 }; // *NOPAD*
     bool ok;
     const QgsRasterAttributeTable::Field field { mRat->fieldByName( fieldName, &ok ) };
     if ( ! isColorOrRamp && ! ok )
     {
       return QVariant();
     }
-    if ( hasColor() && isColorOrRamp )
+    if ( isColorOrRamp && hasColor() )
     {
       switch ( role )
       {
@@ -357,7 +357,7 @@ QVariant QgsRasterAttributeTableModel::data( const QModelIndex &index, int role 
           return QVariant();
       }
     }
-    else if ( hasRamp() && isColorOrRamp )
+    else if ( isColorOrRamp && hasRamp() )
     {
       switch ( role )
       {
@@ -383,11 +383,11 @@ QVariant QgsRasterAttributeTableModel::data( const QModelIndex &index, int role 
           return QVariant();
       }
     }
-    else if ( ! isColorOrRamp && role == Qt::ItemDataRole::TextAlignmentRole && field.type != QVariant::String )
+    else if ( role == Qt::ItemDataRole::TextAlignmentRole && field.type != QVariant::String )
     {
       return QVariant( Qt::AlignmentFlag::AlignRight | Qt::AlignmentFlag::AlignVCenter );
     }
-    else if ( role == Qt::ItemDataRole::ToolTipRole && ( field.isColor() || field.isRamp() ) )
+    else if ( role == Qt::ItemDataRole::ToolTipRole && ( isColorOrRamp ) )
     {
       return tr( "This data is part of a color definition: click on '%1' column to edit." ).arg( ratColorHeaderName() );
     }
@@ -395,7 +395,7 @@ QVariant QgsRasterAttributeTableModel::data( const QModelIndex &index, int role 
     {
       return mRat->data().at( index.row() ).at( index.column() );
     }
-    else if ( role == Qt::ItemDataRole::FontRole && ( field.isColor() || field.isRamp() ) )
+    else if ( role == Qt::ItemDataRole::FontRole && ( isColorOrRamp ) )
     {
       QFont font;
       font.setItalic( true );

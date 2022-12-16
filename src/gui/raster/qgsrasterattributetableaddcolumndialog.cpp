@@ -15,7 +15,6 @@
  ***************************************************************************/
 #include "qgsrasterattributetableaddcolumndialog.h"
 #include "qgsrasterattributetable.h"
-#include "qgsfield.h"
 #include "qgsgui.h"
 
 #include <QPushButton>
@@ -35,10 +34,10 @@ QgsRasterAttributeTableAddColumnDialog::QgsRasterAttributeTableAddColumnDialog( 
   connect( mColor, &QRadioButton::toggled, this, [ = ]( bool ) { updateDialog(); } );
   connect( mUsage, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int ) { updateDialog(); } );
 
-  mDataType->addItem( QgsFields::iconForFieldType( QVariant::Type::String ), tr( "String" ), QVariant::String );
-  mDataType->addItem( QgsFields::iconForFieldType( QVariant::Type::Int ), tr( "Integer" ), QVariant::Int );
-  mDataType->addItem( QgsFields::iconForFieldType( QVariant::Type::LongLong ), tr( "Long Integer" ), QVariant::LongLong );
-  mDataType->addItem( QgsFields::iconForFieldType( QVariant::Type::Double ), tr( "Double" ), QVariant::Double );
+  mDataType->addItem( QgsFields::iconForFieldType( QVariant::Type::String ), tr( "String" ), static_cast<int>( QVariant::Type::String ) );
+  mDataType->addItem( QgsFields::iconForFieldType( QVariant::Type::Int ), tr( "Integer" ), static_cast<int>( QVariant::Type::Int ) );
+  mDataType->addItem( QgsFields::iconForFieldType( QVariant::Type::LongLong ), tr( "Long Integer" ), static_cast<int>( QVariant::Type::LongLong ) );
+  mDataType->addItem( QgsFields::iconForFieldType( QVariant::Type::Double ), tr( "Double" ), static_cast<int>( QVariant::Type::Double ) );
   mStandardColumn->setChecked( true );
 
   updateDialog();
@@ -96,9 +95,6 @@ void QgsRasterAttributeTableAddColumnDialog::updateDialog()
   const bool canAddMinMax { !hasMinMax &&mAttributeTable->type() == Qgis::RasterAttributeTableType::Thematic };
   const bool canAddMinAndMax { !hasMinAndMax &&mAttributeTable->type() == Qgis::RasterAttributeTableType::Athematic };
 
-  bool canAddColor { true };
-  bool canAddRamp { true };
-
   if ( mAttributeTable->hasColor() || mAttributeTable->hasRamp() )
   {
     mColor->setChecked( false );
@@ -106,15 +102,12 @@ void QgsRasterAttributeTableAddColumnDialog::updateDialog()
     mRamp->setChecked( false );
     mRamp->setEnabled( false );
     mStandardColumn->setChecked( true );
-    canAddColor = false;
-    canAddRamp = false;
   }
   else if ( mAttributeTable->type() == Qgis::RasterAttributeTableType::Thematic )
   {
     mColor->setEnabled( true );
     mRamp->setChecked( false );
     mRamp->setEnabled( false );
-    canAddRamp = false;
   }
   else
   {
@@ -161,8 +154,8 @@ void QgsRasterAttributeTableAddColumnDialog::updateDialog()
       if ( ( it.key() == Qgis::RasterAttributeTableFieldUsage::MinMax && ! canAddMinMax ) ||
            ( it.key() == Qgis::RasterAttributeTableFieldUsage::Min && ! canAddMinAndMax ) ||
            ( it.key() == Qgis::RasterAttributeTableFieldUsage::Max && ! canAddMinAndMax ) ||
-           ( it.value().isColor && ! canAddColor ) ||
-           ( it.value().isRamp && ! canAddRamp ) )
+           ( it.value().isColor ) ||
+           ( it.value().isRamp ) )
       {
         continue;
       }

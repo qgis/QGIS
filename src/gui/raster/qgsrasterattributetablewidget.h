@@ -21,6 +21,7 @@
 #include "qgsrasterattributetablemodel.h"
 #include "qgscolorrampimpl.h"
 #include "qgspanelwidget.h"
+#include "qgslocaleawarenumericlineeditdelegate.h"
 
 #include <QWidget>
 #include <QStyledItemDelegate>
@@ -97,6 +98,23 @@ class ColorRampAlphaDelegate: public ColorRampDelegate
     // QAbstractItemDelegate interface
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 };
+
+
+class LocalizedDoubleDelegate: public QgsLocaleAwareNumericLineEditDelegate
+{
+
+    Q_OBJECT
+
+  public:
+
+    LocalizedDoubleDelegate( QWidget *parent = nullptr ): QgsLocaleAwareNumericLineEditDelegate( Qgis::DataType::Float64, parent ) {};
+
+    // QStyledItemDelegate interface
+    QString displayText( const QVariant &value, const QLocale &locale ) const override;
+};
+
+
+
 #endif
 ///@endcond private
 

@@ -28,7 +28,7 @@ methods to handle data from QGIS and to import/export a Raster Attribute Table f
     class UsageInformation
 {
 %Docstring(signature="appended")
-The UsageInformation struct represents information about a field usage.
+The UsageInformation class represents information about a field usage.
 
 .. versionadded:: 3.30
 %End
@@ -58,7 +58,7 @@ The UsageInformation struct represents information about a field usage.
     class Field
 {
 %Docstring(signature="appended")
-The Field struct represents a Raster Attribute Table field, including its name, usage and type.
+The Field class represents a Raster Attribute Table field, including its name, usage and type.
 
 .. versionadded:: 3.30
 %End
@@ -91,7 +91,7 @@ Returns ``True`` if the field carries a color ramp component information (RedMin
     class MinMaxClass
 {
 %Docstring(signature="appended")
-The Field struct represents a Raster Attribute Table classification entry for a thematic Raster Attribute Table.
+The Field class represents a Raster Attribute Table classification entry for a thematic Raster Attribute Table.
 
 .. versionadded:: 3.30
 %End

@@ -19,7 +19,6 @@
 #include "qgsfields.h"
 #include "qgsfeature.h"
 #include "qgis_core.h"
-#include "gdal.h"
 #include "qgis_sip.h"
 #include "qgis.h"
 #include "qgscolorrampimpl.h"
@@ -50,7 +49,7 @@ class CORE_EXPORT QgsRasterAttributeTable
 
     /**
      * \ingroup core
-     * \brief The UsageInformation struct represents information about a field usage.
+     * \brief The UsageInformation class represents information about a field usage.
      * \since QGIS 3.30
      */
     class CORE_EXPORT UsageInformation
@@ -84,7 +83,7 @@ class CORE_EXPORT QgsRasterAttributeTable
 
     /**
      * \ingroup core
-     * \brief The Field struct represents a Raster Attribute Table field, including its name, usage and type.
+     * \brief The Field class represents a Raster Attribute Table field, including its name, usage and type.
      * \since QGIS 3.30
      */
     class CORE_EXPORT Field
@@ -114,7 +113,7 @@ class CORE_EXPORT QgsRasterAttributeTable
 
     /**
      * \ingroup core
-     * \brief The Field struct represents a Raster Attribute Table classification entry for a thematic Raster Attribute Table.
+     * \brief The Field class represents a Raster Attribute Table classification entry for a thematic Raster Attribute Table.
      * \since QGIS 3.30
      */
     class CORE_EXPORT MinMaxClass
