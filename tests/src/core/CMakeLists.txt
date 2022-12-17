@@ -12,6 +12,10 @@ if(HAVE_OPENCL)
     include_directories(SYSTEM ${OpenCL_INCLUDE_DIRS})
 endif()
 
+if (WITH_PDAL)
+    include_directories(SYSTEM "${PDAL_INCLUDE_DIR}")
+endif()
+
 #############################################################
 # Tests:
 
