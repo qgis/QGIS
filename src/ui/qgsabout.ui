@@ -398,7 +398,7 @@
             <widget class="QgsWebView" name="txtTranslators" native="true">
              <property name="url" stdset="0">
               <url>
-               <string>about:blank</string>
+               <string notr="true">about:blank</string>
               </url>
              </property>
             </widget>

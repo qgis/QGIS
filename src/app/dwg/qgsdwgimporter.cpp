@@ -1589,7 +1589,7 @@ void QgsDwgImporter::addArc( const DRW_Arc &data )
   QgsCircularString c;
   if ( !circularStringFromArc( data, c ) )
   {
-    LOG( tr( "Could not create circular string from  %2 [%1]" )
+    LOG( tr( "Could not create circular string from %2 [%1]" )
          .arg( QString::fromUtf8( CPLGetLastErrorMsg() ), tr( "arc" ) )
        );
     return;
