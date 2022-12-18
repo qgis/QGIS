@@ -201,6 +201,8 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item, QgsMapCanvas *ma
   connect( mMapItem, &QgsLayoutItemMap::extentChanged, mItemPropertiesWidget, &QgsLayoutItemPropertiesWidget::updateVariables );
   connect( mMapItem, &QgsLayoutItemMap::mapRotationChanged, mItemPropertiesWidget, &QgsLayoutItemPropertiesWidget::updateVariables );
 
+  connect( mGeometryOverrideDDBtn, &QgsPropertyOverrideButton::changed ,mMapItem, &QgsLayoutItemMap::refresh );
+
   blockAllSignals( false );
 }
 
@@ -948,7 +950,7 @@ void QgsLayoutMapWidget::toggleAtlasScalingOptionsByLayerType()
     return;
   }
 
-  if ( QgsWkbTypes::geometryType( layer->wkbType() ) == Qgis::GeometryType::Point && !mDataDefinedProperties.isActive( QgsLayoutObject::AtlasGeometryOverride ) )
+  if ( QgsWkbTypes::geometryType( layer->mMapItem->atlasGeometry( mMapItem->crs() ).wkbType() ) == Qgis::GeometryType::Point && !mDataDefinedProperties.isActive( QgsLayoutObject::AtlasGeometryOverride ) )
   {
     //For point layers buffer setting makes no sense, so set "fixed scale" on and disable margin control
     if ( mMapItem->atlasScalingMode() == QgsLayoutItemMap::Auto )
