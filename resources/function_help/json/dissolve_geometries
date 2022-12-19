@@ -5,7 +5,7 @@
   "description": "Returns a dissolved geometry by performing unary union on the inputs.",
   "arguments": [{
     "arg": "geometry",
-    "description": "One or any number of geometries, single part or multipart, to dissolve together"
+    "description": "Any number of geometries, single part or multipart, to dissolve together"
   }],
   "examples": [{
     "expression": "geom_to_wkt(dissolve_geometries(geom_from_wkt('MULTIPOLYGON(((1 1,2 1,2 2,1 2)), ((3 3,4 3,4 4,3 4)), ((3 1,4 1,4 2,3 2)))'),geom_from_wkt('POLYGON((1.5 1.5,3.5 1.5,3.5 3.5,3.5 .5))')))",

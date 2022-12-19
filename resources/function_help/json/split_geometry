@@ -5,11 +5,11 @@
   "description": "Returns a multipart geometry if the provided geometry is not a point and is crossed by an edge of the second geometry provided. Otherwise will return the unchanged geometry.",
   "arguments": [{
     "arg": "geometry",
-    "description": "The geometry(ies) to split"
+    "description": "The line or polygon geometry to split"
   },
   {
     "arg": "split_by",
-    "description": " The geometry(ies) used to perform the split, polygons will be converted to closed lines."
+    "description": " The geometry used to perform the split, polygons will be converted to closed lines."
   }],
   "examples": [{
     "expression": "geom_to_wkt(split_geometry(geom_from_wkt('LINESTRING(0 0,5 5)'),geom_from_wkt('LINESTRING(5 0,0 5)')))",
