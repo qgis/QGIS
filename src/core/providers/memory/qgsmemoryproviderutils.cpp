@@ -60,7 +60,7 @@ QString memoryLayerFieldType( QVariant::Type type )
   return QStringLiteral( "string" );
 }
 
-QgsVectorLayer *QgsMemoryProviderUtils::createMemoryLayer( const QString &name, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs )
+QgsVectorLayer *QgsMemoryProviderUtils::createMemoryLayer( const QString &name, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, bool loadDefaultStyle )
 {
   QString geomType = QgsWkbTypes::displayString( geometryType );
   if ( geomType.isNull() )
@@ -86,5 +86,6 @@ QgsVectorLayer *QgsMemoryProviderUtils::createMemoryLayer( const QString &name, 
   const QString uri = geomType + '?' + parts.join( '&' );
   QgsVectorLayer::LayerOptions options{ QgsCoordinateTransformContext() };
   options.skipCrsValidation = true;
+  options.loadDefaultStyle = loadDefaultStyle;
   return new QgsVectorLayer( uri, name, QStringLiteral( "memory" ), options );
 }
