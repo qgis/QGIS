@@ -76,6 +76,7 @@ bool QgsPointCloudLayerRenderer::render()
   QPainter *painter = context.renderContext().painter();
   bool applyEdl = mRenderer && mRenderer->eyeDomeLightingEnabled();
 
+  std::unique_ptr<QgsElevationMap> localElevationMap;
   if ( QImage *painterImage = dynamic_cast<QImage *>( painter->device() ) )
   {
     if ( applyEdl || renderContext()->elevationMap() )
@@ -244,7 +245,8 @@ bool QgsPointCloudLayerRenderer::render()
       double distanceDouble = context.renderContext().convertToPainterUnits(
                                 mRenderer->eyeDomeLightingDistance(), mRenderer->eyeDomeLightingDistanceUnit() );
       int distance = static_cast<int>( std::round( distanceDouble ) );
-      context.elevationMap()->applyEyeDomeLighting( *drawnImage, distance, strength, context.renderContext().rendererScale() );
+      if ( context.elevationMap() )
+        context.elevationMap()->applyEyeDomeLighting( *drawnImage, distance, strength, context.renderContext().rendererScale() );
     }
   }
 

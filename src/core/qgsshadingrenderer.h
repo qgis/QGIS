@@ -192,7 +192,7 @@ class CORE_EXPORT QgsShadingRenderer
     void setCombinedElevationMethod( QgsElevationMap::CombineMethod newCombinedElevationMethod );
 
   private:
-    bool mIsActive = true;
+    bool mIsActive = false;
 
     QgsElevationMap::CombineMethod mCombinedElevationMethod = QgsElevationMap::CombineMethod::HighestElevation;
 
