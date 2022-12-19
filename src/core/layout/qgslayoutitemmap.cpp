@@ -1496,7 +1496,10 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
   jobMapSettings.setBackgroundColor( Qt::transparent );
   jobMapSettings.setRotation( mEvaluatedMapRotation );
   if ( mLayout )
+  {
     jobMapSettings.setEllipsoid( mLayout->project()->ellipsoid() );
+    jobMapSettings.setShadingRenderer( mLayout->project()->mapShadingRenderer() );
+  }
 
   if ( includeLayerSettings )
   {
