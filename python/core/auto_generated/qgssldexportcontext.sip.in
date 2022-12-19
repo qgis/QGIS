@@ -1,0 +1,54 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgssldexportcontext.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+class QgsSldExportContext
+{
+%Docstring(signature="appended")
+/ingroup core
+/brief The :py:class:`QgsSldExportContext` class holds SLD export options and other information related to SLD export of a QGIS layer style.
+
+/since QGIS 3.30
+%End
+
+%TypeHeaderCode
+#include "qgssldexportcontext.h"
+%End
+  public:
+
+    QgsSldExportContext();
+    ~QgsSldExportContext();
+    QgsSldExportContext( const QgsSldExportContext &other );
+
+    QgsSldExportContext( const Qgis::SldExportOptions &options, const Qgis::SldExportVendorExtension &vendorExtension, const QString &filePath );
+%Docstring
+/brief Create a new QgsSldExportContext
+/param options SLD export options
+/param vendorExtension SLD export vendor extension
+/param filePath SLD export file path
+%End
+
+    Qgis::SldExportOptions exportOptions() const;
+    void setExportOptions( const Qgis::SldExportOptions &exportOptions );
+
+    Qgis::SldExportVendorExtension vendorExtensions() const;
+    void setVendorExtensions( const Qgis::SldExportVendorExtension &vendorExtensions );
+
+    QString exportFilePath() const;
+    void setExportFilePath( const QString &exportFilePath );
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgssldexportcontext.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

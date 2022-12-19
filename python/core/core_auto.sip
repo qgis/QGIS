@@ -166,6 +166,7 @@
 %Include auto_generated/qgsselectioncontext.sip
 %Include auto_generated/qgssimplifymethod.sip
 %Include auto_generated/qgssingleitemmodel.sip
+%Include auto_generated/qgssldexportcontext.sip
 %Include auto_generated/qgssnappingconfig.sip
 %Include auto_generated/qgssnappingutils.sip
 %Include auto_generated/qgsspatialindex.sip

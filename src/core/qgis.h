@@ -242,6 +242,34 @@ class CORE_EXPORT Qgis
     Q_ENUM( SettingsType )
 
     /**
+     * \brief SLD export options
+     *
+     * \since QGIS 3.30
+     */
+    enum class SldExportOption : int
+    {
+      NoOptions = 0,                      //!< Default SLD export
+      Svg = 1 << 0,                       //!< Export complex styles to separate SVG files for better compatibility with OGC servers
+    };
+    Q_ENUM( SldExportOption )
+    Q_DECLARE_FLAGS( SldExportOptions, SldExportOption )
+    Q_FLAG( SldExportOptions )
+
+    /**
+     * \brief SLD export vendor extensions, allow the use of vendor extensions when exporting to SLD.
+     *
+     * \since QGIS 3.30
+     */
+    enum class SldExportVendorExtension : int
+    {
+      NoVendorExtension = 0,             //!< No vendor extensions
+      GeoServerVendorExtension = 1 << 1, //!< Use GeoServer vendor extensions when required
+      DeegreeVendorExtension = 1 << 2,   //!< Use Deegree vendor extensions when required
+    };
+    Q_ENUM( SldExportVendorExtension )
+
+
+    /**
      * Settings options
      * \since QGIS 3.26
      */

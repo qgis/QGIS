@@ -180,6 +180,21 @@ Qgis.SettingsType.__doc__ = 'Types of settings entries\n\n.. versionadded:: 3.26
 # --
 Qgis.SettingsType.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.SldExportOption.NoOptions.__doc__ = "Default SLD export"
+Qgis.SldExportOption.Svg.__doc__ = "Export complex styles to separate SVG files for better compatibility with OGC servers"
+Qgis.SldExportOption.__doc__ = 'SLD export options\n\n.. versionadded:: 3.30\n\n' + '* ``NoOptions``: ' + Qgis.SldExportOption.NoOptions.__doc__ + '\n' + '* ``Svg``: ' + Qgis.SldExportOption.Svg.__doc__
+# --
+Qgis.SldExportOption.baseClass = Qgis
+Qgis.SldExportOptions.baseClass = Qgis
+SldExportOptions = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.SldExportVendorExtension.NoVendorExtension.__doc__ = "No vendor extensions"
+Qgis.SldExportVendorExtension.GeoServerVendorExtension.__doc__ = "Use GeoServer vendor extensions when required"
+Qgis.SldExportVendorExtension.DeegreeVendorExtension.__doc__ = "Use Deegree vendor extensions when required"
+Qgis.SldExportVendorExtension.__doc__ = 'SLD export vendor extensions, allow the use of vendor extensions when exporting to SLD.\n\n.. versionadded:: 3.30\n\n' + '* ``NoVendorExtension``: ' + Qgis.SldExportVendorExtension.NoVendorExtension.__doc__ + '\n' + '* ``GeoServerVendorExtension``: ' + Qgis.SldExportVendorExtension.GeoServerVendorExtension.__doc__ + '\n' + '* ``DeegreeVendorExtension``: ' + Qgis.SldExportVendorExtension.DeegreeVendorExtension.__doc__
+# --
+Qgis.SldExportVendorExtension.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.SettingsOption.SaveFormerValue.__doc__ = ""
 Qgis.SettingsOption.SaveEnumFlagAsInt.__doc__ = ""
 Qgis.SettingsOption.__doc__ = 'Settings options\n\n.. versionadded:: 3.26\n\n' + '* ``SaveFormerValue``: ' + Qgis.SettingsOption.SaveFormerValue.__doc__ + '\n' + '* ``SaveEnumFlagAsInt``: ' + Qgis.SettingsOption.SaveEnumFlagAsInt.__doc__
