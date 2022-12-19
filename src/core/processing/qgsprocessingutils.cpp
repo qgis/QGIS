@@ -808,7 +808,7 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
       destination = QStringLiteral( "output" );
 
     // memory provider cannot be used with QgsVectorLayerImport - so create layer manually
-    std::unique_ptr< QgsVectorLayer > layer( QgsMemoryProviderUtils::createMemoryLayer( destination, fields, geometryType, crs ) );
+    std::unique_ptr< QgsVectorLayer > layer( QgsMemoryProviderUtils::createMemoryLayer( destination, fields, geometryType, crs, false ) );
     if ( !layer || !layer->isValid() )
     {
       throw QgsProcessingException( QObject::tr( "Could not create memory layer" ) );
