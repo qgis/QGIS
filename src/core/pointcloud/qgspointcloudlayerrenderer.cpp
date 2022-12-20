@@ -80,7 +80,17 @@ bool QgsPointCloudLayerRenderer::render()
   if ( QImage *painterImage = dynamic_cast<QImage *>( painter->device() ) )
   {
     if ( applyEdl || renderContext()->elevationMap() )
-      context.setElevationMap( renderContext()->elevationMap() );
+    {
+      if ( renderContext()->elevationMap() )
+      {
+        context.setElevationMap( renderContext()->elevationMap() );
+      }
+      else
+      {
+        localElevationMap.reset( new QgsElevationMap( painterImage->size() ) );
+        context.setElevationMap( localElevationMap.get() );
+      }
+    }
   }
 
   QgsScopedQPainterState painterState( painter );
