@@ -5542,6 +5542,30 @@ class TestQgsExpression: public QObject
       QCOMPARE( exp.evaluate( &context ).toInt(), 20 );
     }
 
+    void testNodeSetCachedStaticValue()
+    {
+      QgsFields fields;
+      fields.append( QgsField( QStringLiteral( "first_field" ), QVariant::Int ) );
+      fields.append( QgsField( QStringLiteral( "second_field" ), QVariant::Int ) );
+      fields.append( QgsField( QStringLiteral( "third_field" ), QVariant::Int ) );
+
+      QgsFeature f( fields );
+      f.setAttributes( QgsAttributes() << 11 << 20 << 300 );
+
+      QgsExpressionContext context;
+      context.setFields( fields );
+      context.setFeature( f );
+
+      QgsExpression exp( QStringLiteral( "CASE WHEN \"first_field\" = 5 then \"second_field\" when \"first_field\" = 6 then \"second_field\" * 2 else \"second_field\" * 3 end" ) );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( !exp.rootNode()->hasCachedStaticValue() );
+
+      // force set a cached static value
+      exp.rootNode()->setCachedStaticValue( 55 );
+      QVERIFY( exp.rootNode()->hasCachedStaticValue() );
+      QCOMPARE( exp.rootNode()->cachedStaticValue().toInt(), 55 );
+    }
+
     void testExpressionUtilsToLocalizedString()
     {
       const QVariant t_int( 12346 );
