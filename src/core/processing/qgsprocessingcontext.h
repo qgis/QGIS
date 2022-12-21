@@ -88,6 +88,7 @@ class CORE_EXPORT QgsProcessingContext
       mProject = other.mProject;
       mTransformContext = other.mTransformContext;
       mExpressionContext = other.mExpressionContext;
+      mExpressionContext.setLoadedLayerStore( &tempLayerStore );
       mInvalidGeometryCallback = other.mInvalidGeometryCallback;
       mUseDefaultInvalidGeometryCallback = other.mUseDefaultInvalidGeometryCallback;
       mInvalidGeometryCheck = other.mInvalidGeometryCheck;
@@ -156,7 +157,7 @@ class CORE_EXPORT QgsProcessingContext
     /**
      * Sets the expression \a context.
      */
-    void setExpressionContext( const QgsExpressionContext &context ) { mExpressionContext = context; }
+    void setExpressionContext( const QgsExpressionContext &context );
 
     /**
      * Returns the coordinate transform context.
