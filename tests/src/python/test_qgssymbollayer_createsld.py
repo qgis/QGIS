@@ -26,12 +26,13 @@ from qgis.PyQt.QtXml import QDomDocument
 from qgis.PyQt.QtGui import QColor, QFont
 
 from qgis.core import (
+    Qgis,
     QgsSimpleMarkerSymbolLayer, QgsSimpleMarkerSymbolLayerBase, QgsUnitTypes, QgsSvgMarkerSymbolLayer,
     QgsFontMarkerSymbolLayer, QgsEllipseSymbolLayer, QgsSimpleLineSymbolLayer,
     QgsMarkerLineSymbolLayer, QgsMarkerSymbol, QgsSimpleFillSymbolLayer, QgsSVGFillSymbolLayer,
     QgsLinePatternFillSymbolLayer, QgsPointPatternFillSymbolLayer, QgsVectorLayer, QgsVectorLayerSimpleLabeling,
     QgsTextBufferSettings, QgsPalLayerSettings, QgsTextBackgroundSettings, QgsRuleBasedLabeling,
-    QgsLineSymbol)
+    QgsLineSymbol, QgsSymbolLayer, QgsSimpleMarkerSymbolLayer, QgsProperty)
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 
@@ -1225,6 +1226,19 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         self.assertEqual("ogc:Or", filter.nodeName())
         self.assertEqual(1, filter.elementsByTagName('ogc:PropertyIsEqualTo').size())
         self.assertEqual(1, filter.elementsByTagName('ogc:PropertyIsNull').size())
+
+    def testDataDefinedAngle(self):
+
+        l = QgsSimpleMarkerSymbolLayer(Qgis.MarkerShape.Triangle)
+        p = l.dataDefinedProperties()
+        p.setProperty(QgsSymbolLayer.Property.PropertyAngle, QgsProperty.fromExpression('"field_a"'))
+        dom = QDomDocument()
+        root = dom.createElement("FakeRoot")
+        dom.appendChild(root)
+        l.toSld(dom, root, dict())
+        rot = dom.elementsByTagName('se:Rotation').at(0).firstChild().toElement()
+        self.assertEqual(rot.tagName(), 'ogc:PropertyName')
+        self.assertEqual(rot.text(), 'field_a')
 
     def assertScaleDenominator(self, root, expectedMinScale, expectedMaxScale, index=0):
         rule = root.elementsByTagName('se:Rule').item(index).toElement()
