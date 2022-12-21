@@ -74,24 +74,6 @@ bool QgsPointCloudLayerRenderer::render()
 
   // Set up the render configuration options
   QPainter *painter = context.renderContext().painter();
-  bool applyEdl = mRenderer && mRenderer->eyeDomeLightingEnabled();
-
-  std::unique_ptr<QgsElevationMap> localElevationMap;
-  if ( QImage *painterImage = dynamic_cast<QImage *>( painter->device() ) )
-  {
-    if ( applyEdl || renderContext()->elevationMap() )
-    {
-      if ( renderContext()->elevationMap() )
-      {
-        context.setElevationMap( renderContext()->elevationMap() );
-      }
-      else
-      {
-        localElevationMap.reset( new QgsElevationMap( painterImage->size() ) );
-        context.setElevationMap( localElevationMap.get() );
-      }
-    }
-  }
 
   QgsScopedQPainterState painterState( painter );
   context.renderContext().setPainterFlagsUsingContext( painter );
@@ -138,7 +120,7 @@ bool QgsPointCloudLayerRenderer::render()
   if ( !context.renderContext().zRange().isInfinite() ||
        mRenderer->drawOrder2d() == Qgis::PointCloudDrawOrder::BottomToTop ||
        mRenderer->drawOrder2d() == Qgis::PointCloudDrawOrder::TopToBottom ||
-       applyEdl )
+       renderContext()->elevationMap() )
     mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Z" ), QgsPointCloudAttribute::Int32 ) );
 
   // collect attributes required by renderer
@@ -246,19 +228,6 @@ bool QgsPointCloudLayerRenderer::render()
 #endif
 
   mRenderer->stopRender( context );
-
-  if ( applyEdl )
-  {
-    if ( QImage *drawnImage = dynamic_cast<QImage *>( painter->device() ) )
-    {
-      double strength = mRenderer->eyeDomeLightingStrength();
-      double distanceDouble = context.renderContext().convertToPainterUnits(
-                                mRenderer->eyeDomeLightingDistance(), mRenderer->eyeDomeLightingDistanceUnit() );
-      int distance = static_cast<int>( std::round( distanceDouble ) );
-      if ( context.elevationMap() )
-        context.elevationMap()->applyEyeDomeLighting( *drawnImage, distance, strength, context.renderContext().rendererScale() );
-    }
-  }
 
   mReadyToCompose = true;
   return !canceled;
