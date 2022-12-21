@@ -1168,8 +1168,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param exportContext SLD export context
      * \returns a string with any status or error messages
      *
-     * \since QGIS 3.30
      * \see loadSldStyle()
+     * \since QGIS 3.30
      */
     virtual QString saveSldStyleV2( const QString &uri, bool &resultFlag, const QgsSldExportContext &exportContext ) const;
 

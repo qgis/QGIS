@@ -1068,9 +1068,9 @@ Saves the properties of this layer to an SLD format file.
 
 :return: a string with any status or error messages
 
-.. versionadded:: 3.30
-
 .. seealso:: :py:func:`loadSldStyle`
+
+.. versionadded:: 3.30
 %End
 
     virtual QString loadSldStyle( const QString &uri, bool &resultFlag );
