@@ -266,34 +266,37 @@ QPainter *QgsElevationMap::painter() const
 
 void QgsElevationMap::combine( const QgsElevationMap &otherElevationMap, CombineMethod method )
 {
+  if ( otherElevationMap.mElevationImage.size() != mElevationImage.size() )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "Elevation map with different sizes can not be combined" ), 4 );
+    return;
+  }
+
   QRgb *elevPtr = reinterpret_cast<QRgb *>( mElevationImage.bits() );
   const QRgb *otherElevPtr = reinterpret_cast<const QRgb *>( otherElevationMap.mElevationImage.constBits() );
 
   int width = mElevationImage.width();
-  int widthOther = otherElevationMap.mElevationImage.width();
-  int combinedHeight = std::min( mElevationImage.height(), otherElevationMap.mElevationImage.height() );
-  int combinedWidth = std::min( width,  widthOther );
+  int height = mElevationImage.height();
 
-  for ( int row = 0; row < combinedHeight; ++row )
+  for ( int row = 0; row < height; ++row )
   {
-    for ( int col = 0; col < combinedWidth; ++col )
+    for ( int col = 0; col < width; ++col )
     {
       qgssize index = static_cast<qgssize>( col + row * width );
-      qgssize indexOther = static_cast<qgssize>( col + row * widthOther );
-      if ( otherElevPtr[indexOther] != 0 )
+      if ( !isNoData( otherElevPtr[index] ) )
       {
         switch ( method )
         {
           case CombineMethod::HighestElevation:
           {
             double elev = decodeElevation( elevPtr[index] );
-            double otherElev = decodeElevation( otherElevPtr[indexOther] );
+            double otherElev = decodeElevation( otherElevPtr[index] );
             if ( otherElev > elev )
-              elevPtr[index] = otherElevPtr[indexOther];
+              elevPtr[index] = otherElevPtr[index];
           }
           break;
           case CombineMethod::NewerElevation:
-            elevPtr[index] = otherElevPtr[indexOther];
+            elevPtr[index] = otherElevPtr[index];
             break;
         }
       }
