@@ -20,18 +20,30 @@
 #include "qgis_core.h"
 
 /**
- * /ingroup core
- * /brief The QgsSldExportContext class holds SLD export options and other information related to SLD export of a QGIS layer style.
+ * \ingroup core
+ * \brief The QgsSldExportContext class holds SLD export options and other information related to SLD export of a QGIS layer style.
  *
- * /since QGIS 3.30
+ * \since QGIS 3.30
  */
 class CORE_EXPORT QgsSldExportContext
 {
   public:
 
+    /**
+     * Constructs a default SLD export context
+     */
     QgsSldExportContext() = default;
+
     ~QgsSldExportContext() = default;
+
+    /**
+     * Constructs a copy of SLD export context \a other
+     */
     QgsSldExportContext( const QgsSldExportContext &other ) = default;
+
+    /**
+     * Copy the values of \a other into the SLD export context
+     */
     QgsSldExportContext &operator=( const QgsSldExportContext &other ) = default;
 
     /**
@@ -42,13 +54,34 @@ class CORE_EXPORT QgsSldExportContext
      */
     QgsSldExportContext( const Qgis::SldExportOptions &options, const Qgis::SldExportVendorExtension &vendorExtension, const QString &filePath );
 
+    /**
+     * Returns the export options
+     */
     Qgis::SldExportOptions exportOptions() const;
+
+    /**
+     * Set export options to \a exportOptions
+     */
     void setExportOptions( const Qgis::SldExportOptions &exportOptions );
 
+    /**
+     * Returns the vendor extension enabled for the SLD export
+     */
     Qgis::SldExportVendorExtension vendorExtensions() const;
-    void setVendorExtensions( const Qgis::SldExportVendorExtension &vendorExtensions );
 
+    /**
+     * Sets the vendor extensions to \a vendorExtension
+     */
+    void setVendorExtension( const Qgis::SldExportVendorExtension &vendorExtension );
+
+    /**
+     * Returns the export file path for the SLD
+     */
     QString exportFilePath() const;
+
+    /**
+     * Sets the export file path for the SLD to \a exportFilePath
+     */
     void setExportFilePath( const QString &exportFilePath );
 
   private:

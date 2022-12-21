@@ -38,9 +38,9 @@ Qgis::SldExportVendorExtension QgsSldExportContext::vendorExtensions() const
   return mVendorExtensions;
 }
 
-void QgsSldExportContext::setVendorExtensions( const Qgis::SldExportVendorExtension &vendorExtensions )
+void QgsSldExportContext::setVendorExtension( const Qgis::SldExportVendorExtension &vendorExtension )
 {
-  mVendorExtensions = vendorExtensions;
+  mVendorExtensions = vendorExtension;
 }
 
 QString QgsSldExportContext::exportFilePath() const

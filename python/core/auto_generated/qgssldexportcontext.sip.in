@@ -10,10 +10,9 @@
 class QgsSldExportContext
 {
 %Docstring(signature="appended")
-/ingroup core
-/brief The :py:class:`QgsSldExportContext` class holds SLD export options and other information related to SLD export of a QGIS layer style.
+The :py:class:`QgsSldExportContext` class holds SLD export options and other information related to SLD export of a QGIS layer style.
 
-/since QGIS 3.30
+.. versionadded:: 3.30
 %End
 
 %TypeHeaderCode
@@ -22,8 +21,17 @@ class QgsSldExportContext
   public:
 
     QgsSldExportContext();
+%Docstring
+Constructs a default SLD export context
+%End
+
     ~QgsSldExportContext();
+
     QgsSldExportContext( const QgsSldExportContext &other );
+%Docstring
+Constructs a copy of SLD export context ``other``
+%End
+
 
     QgsSldExportContext( const Qgis::SldExportOptions &options, const Qgis::SldExportVendorExtension &vendorExtension, const QString &filePath );
 %Docstring
@@ -34,13 +42,34 @@ class QgsSldExportContext
 %End
 
     Qgis::SldExportOptions exportOptions() const;
+%Docstring
+Returns the export options
+%End
+
     void setExportOptions( const Qgis::SldExportOptions &exportOptions );
+%Docstring
+Set export options to ``exportOptions``
+%End
 
     Qgis::SldExportVendorExtension vendorExtensions() const;
-    void setVendorExtensions( const Qgis::SldExportVendorExtension &vendorExtensions );
+%Docstring
+Returns the vendor extension enabled for the SLD export
+%End
+
+    void setVendorExtension( const Qgis::SldExportVendorExtension &vendorExtension );
+%Docstring
+Sets the vendor extensions to ``vendorExtension``
+%End
 
     QString exportFilePath() const;
+%Docstring
+Returns the export file path for the SLD
+%End
+
     void setExportFilePath( const QString &exportFilePath );
+%Docstring
+Sets the export file path for the SLD to ``exportFilePath``
+%End
 
 };
 
