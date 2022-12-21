@@ -5600,6 +5600,66 @@ class TestQgsExpression: public QObject
       QCOMPARE( QgsExpressionUtils::toLocalizedString( QString( "hello world" ) ), QStringLiteral( "hello world" ) );
     }
 
+    void testLoadLayer()
+    {
+      QgsExpressionContext context;
+      QgsMapLayerStore store;
+
+      // load_layer is only available when a destination store is set
+      QVERIFY( !context.hasFunction( QStringLiteral( "load_layer" ) ) );
+      QVERIFY( !context.functionNames().contains( QStringLiteral( "load_layer" ) ) );
+      QVERIFY( !context.function( QStringLiteral( "load_layer" ) ) );
+
+      context.setLoadedLayerStore( &store );
+      QVERIFY( context.hasFunction( QStringLiteral( "load_layer" ) ) );
+      QVERIFY( context.functionNames().contains( QStringLiteral( "load_layer" ) ) );
+      QVERIFY( context.function( QStringLiteral( "load_layer" ) ) );
+
+      const QString pointsFileName = QStringLiteral( TEST_DATA_DIR ) + '/' + "points.shp";
+      QgsExpression exp( QStringLiteral( "layer_property(load_layer('%1', 'ogr'), 'feature_count')" ).arg( pointsFileName ) );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( !exp.hasEvalError() );
+      QCOMPARE( exp.evaluate( &context ).toInt(), 17 );
+
+      // non-static arguments are not allowed
+      QgsFields fields;
+      fields.append( QgsField( QStringLiteral( "first_field" ), QVariant::Int ) );
+
+      QgsFeature f( fields );
+      f.setAttributes( QgsAttributes() << 11 );
+      context.setFields( fields );
+      context.setFeature( f );
+
+      exp = QgsExpression( QStringLiteral( "layer_property(load_layer('%1' || \"first_field\", 'ogr'), 'feature_count')" ).arg( pointsFileName ) );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( exp.hasEvalError() );
+      QCOMPARE( exp.evalErrorString(), QStringLiteral( "load_layer requires a static value for the uri argument" ) );
+
+      exp = QgsExpression( QStringLiteral( "layer_property(load_layer('%1', 'ogr' || \"first_field\"), 'feature_count')" ).arg( pointsFileName ) );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( exp.hasEvalError() );
+      QCOMPARE( exp.evalErrorString(), QStringLiteral( "load_layer requires a static value for the provider argument" ) );
+
+      // invalid provider
+      exp = QgsExpression( QStringLiteral( "layer_property(load_layer('%1', 'magic'), 'feature_count')" ).arg( pointsFileName ) );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( exp.hasEvalError() );
+      QCOMPARE( exp.evalErrorString(), QStringLiteral( "Invalid provider argument for load_layer" ) );
+
+      // invalid uri
+      exp = QgsExpression( QStringLiteral( "layer_property(load_layer('nope', 'ogr'), 'feature_count')" ) );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( exp.hasEvalError() );
+      QCOMPARE( exp.evalErrorString(), QStringLiteral( "Could not load_layer with uri: nope" ) );
+
+      // raster layer
+      const QString rasterFileName = QStringLiteral( TEST_DATA_DIR ) + '/' + "tenbytenraster.asc";
+      exp = QgsExpression( QStringLiteral( "layer_property(load_layer('%1', 'gdal'), 'type')" ).arg( rasterFileName ) );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( !exp.hasEvalError() );
+      QCOMPARE( exp.evaluate( &context ).toString(), QStringLiteral( "Raster" ) );
+    }
+
 };
 
 QGSTEST_MAIN( TestQgsExpression )
