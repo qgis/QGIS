@@ -334,6 +334,15 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
     QVariant cachedStaticValue() const { return mCachedStaticValue; }
 
     /**
+     * Sets the cached static \a value for the node.
+     *
+     * \note Not available from Python bindings.
+     *
+     * \since QGIS 3.30
+     */
+    void setCachedStaticValue( const QVariant &value ) const SIP_SKIP;
+
+    /**
      * Returns a reference to the simplest node which represents this node,
      * after any compilation optimizations have been applied.
      *
