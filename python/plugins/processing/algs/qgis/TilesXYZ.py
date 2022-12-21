@@ -497,7 +497,8 @@ LEAFLET_TEMPLATE = '''
 <body>
   <div id="map"></div>
   <script>
-      var map = L.map('map').setView([{centery}, {centerx}], {avgzoom});
+      var map = L.map('map', {{ attributionControl: false }} ).setView([{centery}, {centerx}], {avgzoom});
+      L.control.attribution( {{ prefix: false }} ).addTo( map );
       L.tileLayer({tilesource}, {{
         minZoom: {minzoom},
         maxZoom: {maxzoom},

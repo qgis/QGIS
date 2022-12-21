@@ -41,7 +41,8 @@
                         "Core committer" : "Core contributor" ));
       }
     });
-    var map = L.map('developers-map').fitBounds(geojson.getBounds());
+    var map = L.map('developers-map', { attributionControl: false }).fitBounds(geojson.getBounds());
+    L.control.attribution( {  prefix: false } ).addTo( map );
     developersMapTiles.addTo(map);
     geojson.addTo(map);
      setTimeout(function() {
