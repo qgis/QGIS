@@ -31,6 +31,7 @@ QgsProcessingContext::QgsProcessingContext()
       mFeedback->reportError( QObject::tr( "Encountered a transform error when reprojecting feature with id %1." ).arg( feature.id() ) );
   };
   mTransformErrorCallback = callback;
+  mExpressionContext.setLoadedLayerStore( &tempLayerStore );
 }
 
 QgsProcessingContext::~QgsProcessingContext()
@@ -39,6 +40,13 @@ QgsProcessingContext::~QgsProcessingContext()
   {
     delete it.value().postProcessor();
   }
+}
+
+void QgsProcessingContext::setExpressionContext( const QgsExpressionContext &context )
+{
+  mExpressionContext = context;
+  // any layers temporarily loaded by expressions should use the same temporary layer store as this context
+  mExpressionContext.setLoadedLayerStore( &tempLayerStore );
 }
 
 void QgsProcessingContext::setLayersToLoadOnCompletion( const QMap<QString, QgsProcessingContext::LayerDetails> &layers )

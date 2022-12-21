@@ -1228,6 +1228,8 @@ void TestQgsProcessing::context()
   context.setInvalidGeometryCheck( QgsFeatureRequest::GeometrySkipInvalid );
   QCOMPARE( context.invalidGeometryCheck(), QgsFeatureRequest::GeometrySkipInvalid );
 
+  QCOMPARE( context.expressionContext().loadedLayerStore(), context.temporaryLayerStore() );
+
   QgsVectorLayer *vector = new QgsVectorLayer( "Polygon", "vector", "memory" );
   context.temporaryLayerStore()->addMapLayer( vector );
   QCOMPARE( context.temporaryLayerStore()->mapLayer( vector->id() ), vector );
@@ -1241,6 +1243,15 @@ void TestQgsProcessing::context()
   QCOMPARE( static_cast< int >( context2.logLevel() ), static_cast< int >( QgsProcessingContext::Verbose ) );
   // layers from temporaryLayerStore must not be copied by copyThreadSafeSettings
   QVERIFY( context2.temporaryLayerStore()->mapLayers().isEmpty() );
+  QCOMPARE( context2.expressionContext().loadedLayerStore(), context2.temporaryLayerStore() );
+
+  QgsExpressionContext expContext;
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope();
+  scope->setVariable( QStringLiteral( "var" ), 5 );
+  expContext.appendScope( scope );
+  context2.setExpressionContext( expContext );
+  QCOMPARE( context2.expressionContext().variable( QStringLiteral( "var" ) ).toInt(), 5 );
+  QCOMPARE( context2.expressionContext().loadedLayerStore(), context2.temporaryLayerStore() );
 
   // layers to load on completion
   QgsVectorLayer *v1 = new QgsVectorLayer( "Polygon", "V1", "memory" );
