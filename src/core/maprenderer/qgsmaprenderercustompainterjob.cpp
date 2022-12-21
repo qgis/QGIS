@@ -364,7 +364,7 @@ void QgsMapRendererCustomPainterJob::doRender()
 
   if ( mapShadingRenderer.isActive() &&  mainElevationMap )
   {
-    QImage image( mainElevationMap->rawElevationImage().size(), QImage::Format_ARGB32 );
+    QImage image( mainElevationMap->rawElevationImage().size(), QImage::Format_RGB32 );
     image.fill( Qt::white );
     mapShadingRenderer.renderShading( *mainElevationMap.get(), image, QgsRenderContext::fromMapSettings( mSettings ) );
     mPainter->save();
