@@ -310,6 +310,7 @@ QgsExpressionContext::QgsExpressionContext( const QgsExpressionContext &other ) 
   mHighlightedFunctions = other.mHighlightedFunctions;
   mCachedValues = other.mCachedValues;
   mFeedback = other.mFeedback;
+  mDestinationStore = other.mDestinationStore;
 }
 
 QgsExpressionContext &QgsExpressionContext::operator=( QgsExpressionContext &&other ) noexcept
@@ -325,6 +326,7 @@ QgsExpressionContext &QgsExpressionContext::operator=( QgsExpressionContext &&ot
     mHighlightedFunctions = other.mHighlightedFunctions;
     mCachedValues = other.mCachedValues;
     mFeedback = other.mFeedback;
+    mDestinationStore = other.mDestinationStore;
   }
   return *this;
 }
@@ -344,6 +346,7 @@ QgsExpressionContext &QgsExpressionContext::operator=( const QgsExpressionContex
   mHighlightedFunctions = other.mHighlightedFunctions;
   mCachedValues = other.mCachedValues;
   mFeedback = other.mFeedback;
+  mDestinationStore = other.mDestinationStore;
   return *this;
 }
 
@@ -716,7 +719,20 @@ QList<QgsMapLayerStore *> QgsExpressionContext::layerStores() const
     --it;
     res.append( ( *it )->layerStores() );
   }
+  // ensure that the destination store is also present in the list
+  if ( mDestinationStore && !res.contains( mDestinationStore ) )
+    res.append( mDestinationStore );
   return res;
+}
+
+void QgsExpressionContext::setLoadedLayerStore( QgsMapLayerStore *store )
+{
+  mDestinationStore = store;
+}
+
+QgsMapLayerStore *QgsExpressionContext::loadedLayerStore() const
+{
+  return mDestinationStore;
 }
 
 void QgsExpressionContext::setFeedback( QgsFeedback *feedback )
