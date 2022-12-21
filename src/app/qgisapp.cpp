@@ -5698,8 +5698,6 @@ bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
   if ( planimetric )
     prj->setEllipsoid( geoNone() );
 
-  prj->setMapShadingEnabled( true );
-
   /* New Empty Project Created
       (before attempting to load custom project templates/filepaths) */
 

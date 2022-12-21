@@ -1647,7 +1647,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \since QGIS 3.30
      */
-    void setMapShadingRenderer( const QgsShadingRenderer &newMapShadinRenderer );
+    void setMapShadingRenderer( const QgsShadingRenderer &newMapShadingRenderer );
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
@@ -2033,7 +2033,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Emitted when the map shading renderer changes
      *
-     *
+     * \since QGIS 3.30
      */
     void mapShadingRendererChanged();
 
@@ -2168,8 +2168,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 3.26
      */
     bool rollBack( QStringList &rollbackErrors SIP_OUT, bool stopEditing = true, QgsVectorLayer *vectorLayer = nullptr );
-
-    void setMapShadingEnabled( bool enabled );
 
   private slots:
     void onMapLayersAdded( const QList<QgsMapLayer *> &layers );

@@ -784,12 +784,6 @@ bool QgsProject::rollBack( QStringList &rollbackErrors, bool stopEditing, QgsVec
   return false;
 }
 
-void QgsProject::setMapShadingEnabled( bool enabled )
-{
-  mMapShadingRenderer.setActive( enabled );
-  emit mapShadingRendererChanged();
-}
-
 void QgsProject::setFileName( const QString &name )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -1033,6 +1027,7 @@ void QgsProject::clear()
   mCustomVariables.clear();
   mCrs = QgsCoordinateReferenceSystem();
   mMetadata = QgsProjectMetadata();
+  mMapShadingRenderer = QgsShadingRenderer();
   if ( !mSettings.value( QStringLiteral( "projects/anonymize_new_projects" ), false, QgsSettings::Core ).toBool() )
   {
     mMetadata.setCreationDateTime( QDateTime::currentDateTime() );
@@ -4424,9 +4419,9 @@ QgsPropertiesDefinition &QgsProject::dataDefinedServerPropertyDefinitions()
   return sPropertyDefinitions;
 }
 
-void QgsProject::setMapShadingRenderer( const QgsShadingRenderer &newMapShadinRenderer )
+void QgsProject::setMapShadingRenderer( const QgsShadingRenderer &newMapShadingRenderer )
 {
-  mMapShadingRenderer = newMapShadinRenderer;
+  mMapShadingRenderer = newMapShadingRenderer;
   emit mapShadingRendererChanged();
 }
 
