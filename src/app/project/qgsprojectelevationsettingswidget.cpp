@@ -19,7 +19,7 @@
 #include "qgsterrainprovider.h"
 #include "qgsprojectelevationproperties.h"
 #include "qgsrasterlayerelevationproperties.h"
-#include "qgsshadingrenderersettingswidget.h"
+#include "qgselevationshadingrenderersettingswidget.h"
 
 QgsProjectElevationSettingsWidget::QgsProjectElevationSettingsWidget( QWidget *parent )
   : QgsOptionsPageWidget( parent )
