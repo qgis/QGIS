@@ -51,9 +51,30 @@ class TestQgsAttributeTableModel(unittest.TestCase):
     def setUpClass(cls):
         QgsGui.editorWidgetRegistry().initEditors()
 
+        # to track down whether or not we have created widget regarding the field
+        class TestEditorWidgetFactory(QgsEditorWidgetFactory):
+
+            def __init__(self):
+                super().__init__("test")
+                self.widgetLoaded = 0
+
+            def create(self, vl, fieldIdx, editor, parent):
+                return None
+
+            def configWidget(self, vl, fieldIdx, parent):
+                return None
+
+            def fieldScore(self, vl, fieldIdx):
+                self.widgetLoaded += 1
+                return 0
+
+        cls.testWidgetFactory = TestEditorWidgetFactory()
+        QgsGui.editorWidgetRegistry().registerWidget("testWidget", cls.testWidgetFactory)
+
     def setUp(self):
         self.layer = self.createLayer()
         self.cache = QgsVectorLayerCache(self.layer, 100)
+        self.testWidgetFactory.widgetLoaded = 0
         self.am = QgsAttributeTableModel(self.cache)
         self.am.loadLayer()
 
@@ -282,32 +303,14 @@ class TestQgsAttributeTableModel(unittest.TestCase):
         self.assertEqual(len([f for f in vl.getFeatures()]), 1)
         self.assertEqual(am.rowCount(), 1)
 
-    def testExtraColumns(self):
+    def testColumnLazyLoading(self):
         """
-        Test that models handles correctly extra columns
-        and that attribute loading is done only when needed
+        Test that widget are loaded only when column is needed
+        and that models handles correctly extra columns
         """
 
-        # to track down whether or not we have created widget regarding the field
-        widgetLoaded = 0
-
-        class TestEditorWidgetFactory(QgsEditorWidgetFactory):
-
-            def __init__(self):
-                super().__init__("test")
-
-            def create(self, vl, fieldIdx, editor, parent):
-                return None
-
-            def configWidget(self, vl, fieldIdx, parent):
-                return None
-
-            def fieldScore(self, vl, fieldIdx):
-                nonlocal widgetLoaded
-                widgetLoaded += 1
-                return 0
-
-        QgsGui.editorWidgetRegistry().registerWidget("testWidget", TestEditorWidgetFactory())
+        twf = self.testWidgetFactory
+        self.assertEqual(twf.widgetLoaded, 0)
 
         # to track down if column have been inserted or removed
         colsInserted = 0
@@ -331,7 +334,7 @@ class TestQgsAttributeTableModel(unittest.TestCase):
                 super().__init__()
 
             def data(self, index, role):
-                if role == Qt.DisplayRole and index.column() > 1:
+                if role == Qt.DisplayRole and self.sourceModel().extraColumns() > 0 and index.column() > 1:
                     return f"extra_{index.column()}"
 
                 return super().data(index, role)
@@ -343,9 +346,13 @@ class TestQgsAttributeTableModel(unittest.TestCase):
         self.assertEqual(fm.data(fm.index(2, 1), Qt.DisplayRole), "2")
         self.assertEqual(fm.data(fm.index(2, 2), Qt.DisplayRole), None)
 
+        # 2 columns have been loaded since we call data
+        self.assertEqual(twf.widgetLoaded, 2)
+        twf.widgetLoaded = 0
+
         # only one column inserted, no widget loaded
         self.am.setExtraColumns(1)
-        self.assertEqual(widgetLoaded, 0)
+        self.assertEqual(twf.widgetLoaded, 0)
         self.assertEqual(colsInserted, 1)
         colsInserted = 0
         self.assertEqual(colsRemoved, 0)
@@ -354,9 +361,11 @@ class TestQgsAttributeTableModel(unittest.TestCase):
         self.assertEqual(fm.data(fm.index(2, 1), Qt.DisplayRole), "2")
         self.assertEqual(fm.data(fm.index(2, 2), Qt.DisplayRole), "extra_2")
 
+        self.assertEqual(twf.widgetLoaded, 0)
+
         # only one column removed, no widget loaded
         self.am.setExtraColumns(0)
-        self.assertEqual(widgetLoaded, 0)
+        self.assertEqual(twf.widgetLoaded, 0)
         self.assertEqual(colsInserted, 0)
         self.assertEqual(colsRemoved, 1)
         colsRemoved = 0
@@ -365,27 +374,39 @@ class TestQgsAttributeTableModel(unittest.TestCase):
         self.assertEqual(fm.data(fm.index(2, 1), Qt.DisplayRole), "2")
         self.assertEqual(fm.data(fm.index(2, 2), Qt.DisplayRole), None)
 
+        self.assertEqual(twf.widgetLoaded, 0)
+
         # nothing has changed, nothing should happened
         self.am.loadLayer()
-        self.assertEqual(widgetLoaded, 0)
+        self.assertEqual(twf.widgetLoaded, 0)
         self.assertEqual(colsInserted, 0)
         self.assertEqual(colsRemoved, 0)
 
-        # add field, widget are reloaded
+        # add field, widget will be reloaded when data will be called
         self.layer.addExpressionField("'newfield_' || \"fldtxt\"", QgsField("newfield", QVariant.String))
-        self.assertEqual(widgetLoaded, 3)
+        self.assertEqual(twf.widgetLoaded, 0)
         self.assertEqual(colsInserted, 1)
         self.assertEqual(colsRemoved, 0)
         colsInserted = 0
-        widgetLoaded = 0
+        twf.widgetLoaded = 0
 
-        # remove field, widget are loaded again
+        self.assertEqual(fm.data(fm.index(2, 0), Qt.DisplayRole), "test")
+        self.assertEqual(fm.data(fm.index(2, 1), Qt.DisplayRole), "2")
+        self.assertEqual(fm.data(fm.index(2, 2), Qt.DisplayRole), "newfield_test")
+        twf.widgetLoaded = 0
+
+        # remove field, widget will be reloaded again
         self.layer.removeExpressionField(2)
-        self.assertEqual(widgetLoaded, 2)
+        self.assertEqual(twf.widgetLoaded, 0)
         self.assertEqual(colsInserted, 0)
         self.assertEqual(colsRemoved, 1)
         colsRemoved = 0
-        widgetLoaded = 0
+
+        self.assertEqual(fm.data(fm.index(2, 0), Qt.DisplayRole), "test")
+        self.assertEqual(fm.data(fm.index(2, 1), Qt.DisplayRole), "2")
+        self.assertEqual(fm.data(fm.index(2, 2), Qt.DisplayRole), None)
+        self.assertEqual(twf.widgetLoaded, 2)
+        twf.widgetLoaded = 0
 
 
 if __name__ == '__main__':
