@@ -35,6 +35,9 @@
 #include "qgstriangularmesh.h"
 #include "qgsvectortileutils.h"
 #include "qgsmeshlayer.h"
+#include "qgsexpressionnodeimpl.h"
+#include "qgsproviderregistry.h"
+#include "qgsmaplayerfactory.h"
 
 QgsExpressionContextScope *QgsExpressionContextUtils::globalScope()
 {
@@ -917,6 +920,7 @@ void QgsExpressionContextUtils::registerContextFunctions()
   QgsExpression::registerFunction( new GetProcessingParameterValue( QVariantMap() ) );
   QgsExpression::registerFunction( new GetCurrentFormFieldValue( ) );
   QgsExpression::registerFunction( new GetCurrentParentFormFieldValue( ) );
+  QgsExpression::registerFunction( new LoadLayerFunction( ) );
 }
 
 bool QgsScopedExpressionFunction::usesGeometry( const QgsExpressionNodeFunction *node ) const
@@ -1296,4 +1300,110 @@ QgsExpressionContextScope *QgsExpressionContextUtils::meshExpressionScope( QgsMe
 
   return scope.release();
 }
+
+
+QVariant LoadLayerFunction::func( const QVariantList &, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  parent->setEvalErrorString( QObject::tr( "Invalid arguments for load_layer function" ) );
+  return QVariant();
+}
+
+bool LoadLayerFunction::isStatic( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const
+{
+  if ( node->args()->count() > 1 )
+  {
+    if ( !context )
+      return false;
+
+    QPointer< QgsMapLayerStore > store( context->loadedLayerStore() );
+    if ( !store )
+    {
+      parent->setEvalErrorString( QObject::tr( "load_layer cannot be used in this context" ) );
+      return false;
+    }
+
+    QgsExpressionNode *uriNode = node->args()->at( 0 );
+    QgsExpressionNode *providerNode = node->args()->at( 1 );
+    if ( !uriNode->isStatic( parent, context ) )
+    {
+      parent->setEvalErrorString( QObject::tr( "load_layer requires a static value for the uri argument" ) );
+      return false;
+    }
+    if ( !providerNode->isStatic( parent, context ) )
+    {
+      parent->setEvalErrorString( QObject::tr( "load_layer requires a static value for the provider argument" ) );
+      return false;
+    }
+
+    const QString uri = uriNode->eval( parent, context ).toString();
+    if ( uri.isEmpty() )
+    {
+      parent->setEvalErrorString( QObject::tr( "Invalid uri argument for load_layer" ) );
+      return false;
+    }
+
+    const QString providerKey = providerNode->eval( parent, context ).toString();
+    if ( providerKey.isEmpty() )
+    {
+      parent->setEvalErrorString( QObject::tr( "Invalid provider argument for load_layer" ) );
+      return false;
+    }
+
+    const QgsCoordinateTransformContext transformContext = context->variable( QStringLiteral( "_project_transform_context" ) ).value<QgsCoordinateTransformContext>();
+
+    bool res = false;
+    auto loadLayer = [ uri, providerKey, store, node, parent, &res, &transformContext ]
+    {
+      QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( providerKey );
+      if ( !metadata )
+      {
+        parent->setEvalErrorString( QObject::tr( "Invalid provider argument for load_layer" ) );
+        return;
+      }
+
+      if ( metadata->supportedLayerTypes().empty() )
+      {
+        parent->setEvalErrorString( QObject::tr( "Cannot use %1 provider for load_layer" ).arg( providerKey ) );
+        return;
+      }
+
+      QgsMapLayerFactory::LayerOptions layerOptions( transformContext );
+      layerOptions.loadAllStoredStyles = false;
+      layerOptions.loadDefaultStyle = false;
+
+      QgsMapLayer *layer = QgsMapLayerFactory::createLayer( uri, uri, metadata->supportedLayerTypes().value( 0 ), layerOptions, providerKey );
+      if ( !layer )
+      {
+        parent->setEvalErrorString( QObject::tr( "Could not load_layer with uri: %1" ).arg( uri ) );
+        return;
+      }
+      if ( !layer->isValid() )
+      {
+        delete layer;
+        parent->setEvalErrorString( QObject::tr( "Could not load_layer with uri: %1" ).arg( uri ) );
+        return;
+      }
+
+      store->addMapLayer( layer );
+
+      node->setCachedStaticValue( QVariant::fromValue( QgsWeakMapLayerPointer( layer ) ) );
+      res = true;
+    };
+
+    // Make sure we load the layer on the thread where the store lives
+    if ( QThread::currentThread() == store->thread() )
+      loadLayer();
+    else
+      QMetaObject::invokeMethod( store, loadLayer, Qt::BlockingQueuedConnection );
+
+    return res;
+  }
+  return false;
+}
+
+QgsScopedExpressionFunction *LoadLayerFunction::clone() const
+{
+  return new LoadLayerFunction();
+}
 ///@endcond
+

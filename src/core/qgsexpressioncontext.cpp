@@ -17,6 +17,7 @@
 #include "qgsxmlutils.h"
 #include "qgsexpression.h"
 #include "qgsmaplayerstore.h"
+#include "qgsexpressioncontextutils.h"
 
 const QString QgsExpressionContext::EXPR_FIELDS( QStringLiteral( "_fields_" ) );
 const QString QgsExpressionContext::EXPR_ORIGINAL_VALUE( QStringLiteral( "value" ) );
@@ -295,9 +296,15 @@ bool QgsExpressionContextScope::writeXml( QDomElement &element, QDomDocument &do
 // QgsExpressionContext
 //
 
+QgsExpressionContext::QgsExpressionContext()
+{
+  mLoadLayerFunction = std::make_unique< LoadLayerFunction >();
+}
+
 QgsExpressionContext::QgsExpressionContext( const QList<QgsExpressionContextScope *> &scopes )
   : mStack( scopes )
 {
+  mLoadLayerFunction = std::make_unique< LoadLayerFunction >();
 }
 
 QgsExpressionContext::QgsExpressionContext( const QgsExpressionContext &other ) : mStack{}
@@ -311,6 +318,7 @@ QgsExpressionContext::QgsExpressionContext( const QgsExpressionContext &other ) 
   mCachedValues = other.mCachedValues;
   mFeedback = other.mFeedback;
   mDestinationStore = other.mDestinationStore;
+  mLoadLayerFunction = std::make_unique< LoadLayerFunction >();
 }
 
 QgsExpressionContext &QgsExpressionContext::operator=( QgsExpressionContext &&other ) noexcept
@@ -533,8 +541,10 @@ QString QgsExpressionContext::description( const QString &name ) const
 
 bool QgsExpressionContext::hasFunction( const QString &name ) const
 {
-  const auto constMStack = mStack;
-  for ( const QgsExpressionContextScope *scope : constMStack )
+  if ( name.compare( QLatin1String( "load_layer" ) ) == 0 && mDestinationStore )
+    return true;
+
+  for ( const QgsExpressionContextScope *scope : mStack )
   {
     if ( scope->hasFunction( name ) )
       return true;
@@ -551,6 +561,10 @@ QStringList QgsExpressionContext::functionNames() const
     for ( const QString &name : functionNames )
       result.insert( name );
   }
+
+  if ( mDestinationStore )
+    result.insert( QStringLiteral( "load_layer" ) );
+
   QStringList listResult( result.constBegin(), result.constEnd() );
   listResult.sort();
   return listResult;
@@ -558,6 +572,11 @@ QStringList QgsExpressionContext::functionNames() const
 
 QgsExpressionFunction *QgsExpressionContext::function( const QString &name ) const
 {
+  if ( name.compare( QLatin1String( "load_layer" ) ) == 0 && mDestinationStore )
+  {
+    return mLoadLayerFunction.get();
+  }
+
   //iterate through stack backwards, so that higher priority variables take precedence
   QList< QgsExpressionContextScope * >::const_iterator it = mStack.constEnd();
   while ( it != mStack.constBegin() )

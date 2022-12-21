@@ -359,6 +359,24 @@ class CORE_EXPORT QgsExpressionContextUtils
 
 };
 
+///@cond PRIVATE
+#ifndef SIP_RUN
+class LoadLayerFunction : public QgsScopedExpressionFunction
+{
+  public:
+    LoadLayerFunction()
+      : QgsScopedExpressionFunction( QStringLiteral( "load_layer" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "uri" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "provider" ) ), QStringLiteral( "Map Layers" ) )
+    {}
+
+    QVariant func( const QVariantList &, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * ) override;
+    bool isStatic( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override;
+
+    QgsScopedExpressionFunction *clone() const override;
+
+};
+#endif
+///@endcond
+
 #ifndef SIP_RUN
 
 /**

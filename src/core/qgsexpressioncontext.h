@@ -29,6 +29,7 @@
 
 class QgsReadWriteContext;
 class QgsMapLayerStore;
+class LoadLayerFunction;
 
 /**
  * \ingroup core
@@ -481,7 +482,7 @@ class CORE_EXPORT QgsExpressionContext
   public:
 
     //! Constructor for QgsExpressionContext
-    QgsExpressionContext() = default;
+    QgsExpressionContext();
 
     /**
      * Initializes the context with given list of scopes.
@@ -936,6 +937,7 @@ class CORE_EXPORT QgsExpressionContext
 
     QgsFeedback *mFeedback = nullptr;
 
+    std::unique_ptr< LoadLayerFunction > mLoadLayerFunction;
     QPointer< QgsMapLayerStore > mDestinationStore;
 
     // Cache is mutable because we want to be able to add cached values to const contexts
