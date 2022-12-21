@@ -71,13 +71,6 @@ std::unique_ptr<QgsElevationMap> QgsElevationMap::fromRasterBlock( QgsRasterBloc
   return elevMap;
 }
 
-QgsElevationMap &QgsElevationMap::operator=( const QgsElevationMap &other )
-{
-  mPainter.reset();
-  mElevationImage = other.mElevationImage;
-  return *this;
-}
-
 void QgsElevationMap::applyEyeDomeLighting( QImage &img, int distance, float strength, float rendererScale ) const
 {
   const int imgWidth = img.width(), imgHeight = img.height();
@@ -92,14 +85,14 @@ void QgsElevationMap::applyEyeDomeLighting( QImage &img, int distance, float str
       qgssize index = j * static_cast<qgssize>( imgWidth ) + i;
       float factor = 0.0f;
       float centerDepth = decodeElevation( elevPtr[ index ] );
-      if ( elevPtr[ index ] == 0 )
+      if ( isNoData( elevPtr[ index ] ) )
         continue;
       for ( int k = 0; k < 4; ++k )
       {
         int iNeighbour = i + distance * neighbours[2 * k];
         int jNeighbour = j + distance * neighbours[2 * k + 1];
         qgssize neighbourIndex = jNeighbour * static_cast<qgssize>( imgWidth ) + iNeighbour;
-        if ( elevPtr[ neighbourIndex ] == 0 )
+        if ( isNoData( elevPtr[ index ] ) )
           continue;
         float neighbourDepth = decodeElevation( elevPtr[ neighbourIndex ] );
         factor += std::max<float>( 0, -( centerDepth - neighbourDepth ) );
@@ -115,7 +108,6 @@ void QgsElevationMap::applyEyeDomeLighting( QImage &img, int distance, float str
 void QgsElevationMap::applyHillShading( QImage &img, bool multiDirectional, double altitude, double azimuth, double zFactor, double cellSizeX, double cellSizeY ) const
 {
   // algs from  src/raster/qgshillshaderenderer.cpp
-  //double zenithRad = std::max( 0.0, 90 - altitude ) * M_PI / 180.0 ;
   double altRad = altitude * M_PI / 180.0;
   double cos_altRadian = std::cos( altRad );
   double sin_altRadian = std::sin( altRad );
@@ -140,14 +132,13 @@ void QgsElevationMap::applyHillShading( QImage &img, bool multiDirectional, doub
     return  static_cast<qgssize>( r * imgWidth + c );
   };
 
-  double defaultValue = decodeElevation( elevPtr[colRowToIndex( 0, 0 )] );
-  double pixelValues[9] =
-  {
-    0, defaultValue, 0,
-    0, defaultValue, 0,
-    0, decodeElevation( elevPtr[colRowToIndex( 0, 1 )] ), 0
-  };
+  float noData = noDataValue();
 
+  // Elevation value matrix
+  // 0 1 2   11 12 13
+  // 3 4 5   21 22 23
+  // 6 7 8   31 32 33
+  float pixelValues[9];
 
   for ( int rowC = 0; rowC < imgHeight ; ++rowC )
   {
@@ -183,23 +174,23 @@ void QgsElevationMap::applyHillShading( QImage &img, bool multiDirectional, doub
       if ( elevPtr[centerIndex] != 0 )
       {
         // This is center cell. Use this in place of nodata neighbors
-        const double x22 = pixelValues[4];
-//        if ( std::isnan( x22 ) )
-//          continue;
+        const float x22 = pixelValues[4];
+        if ( x22 == noData )
+          continue;
 
-        const double x11 =  std::isnan( pixelValues[0] ) ? x22 : pixelValues[0];
-        const double x21 =  std::isnan( pixelValues[3] ) ? x22 : pixelValues[3];
-        const double x31 =  std::isnan( pixelValues[6] ) ? x22 : pixelValues[6];
+        const float x11 = ( pixelValues[0] == noData ) ? x22 : pixelValues[0];
+        const float x21 = ( pixelValues[3] == noData ) ? x22 : pixelValues[3];
+        const float x31 = ( pixelValues[6] == noData ) ? x22 : pixelValues[6];
 
-        const double x12 = std::isnan( pixelValues[1] ) ? x22 : pixelValues[1];
-        const double x32 =  std::isnan( pixelValues[7] ) ? x22 : pixelValues[7];
+        const float x12 = ( pixelValues[1] == noData ) ? x22 : pixelValues[1];
+        const float x32 = ( pixelValues[7] == noData ) ? x22 : pixelValues[7];
 
-        const double x13 =  std::isnan( pixelValues[2] ) ? x22 : pixelValues[2];
-        const double x23 =  std::isnan( pixelValues[5] ) ? x22 : pixelValues[5];
-        const double x33 =  std::isnan( pixelValues[8] ) ? x22 : pixelValues[8];
+        const float x13 = ( pixelValues[2] == noData ) ? x22 : pixelValues[2];
+        const float x23 = ( pixelValues[5] == noData ) ? x22 : pixelValues[5];
+        const float x33 = ( pixelValues[8] == noData ) ? x22 : pixelValues[8];
 
-        const double derX = ( ( x13 + x23 + x23 + x33 ) - ( x11 + x21 + x21 + x31 ) ) / ( 8 * cellSizeX );
-        const double derY = ( ( x31 + x32 + x32 + x33 ) - ( x11 + x12 + x12 + x13 ) ) / ( 8 * -cellSizeY );
+        const double derX = static_cast<double>( ( x13 + x23 + x23 + x33 ) - ( x11 + x21 + x21 + x31 ) ) / ( 8 * cellSizeX );
+        const double derY = static_cast<double>( ( x31 + x32 + x32 + x33 ) - ( x11 + x12 + x12 + x13 ) ) / ( 8 * -cellSizeY );
 
         double shade = 0;
         if ( !multiDirectional )

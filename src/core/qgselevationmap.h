@@ -98,8 +98,6 @@ class CORE_EXPORT QgsElevationMap
      *
      * The parameters \a cellSizeX and \a cellSizeY are the sizes of the elevation map cells in unit consistent
      * with the unit of the encoded elevation in this elevation map.
-     * (TODO: maybe it would be good to have class members that handle this parameters and
-     * set when the instance is created).
      *
      * \since QGIS 3.30
      */
@@ -143,7 +141,11 @@ class CORE_EXPORT QgsElevationMap
     //! Creates an elevation map based on data from the given raster block.
     static std::unique_ptr<QgsElevationMap> fromRasterBlock( QgsRasterBlock *block ) SIP_SKIP;
 
-    QgsElevationMap &operator=( const QgsElevationMap &other );
+    //! Returns whether the encoded value is a no data value
+    inline bool isNoData( QRgb colorRaw ) const {return colorRaw == 0;}
+
+    //! Returns the no data value for the elevation map
+    inline float noDataValue() const {return decodeElevation( 0 );}
 
   private:
 
