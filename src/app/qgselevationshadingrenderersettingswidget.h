@@ -17,15 +17,15 @@
 #define QGSSHADINGRENDERERSETTINGSWIDGET_H
 
 #include "qgsmaplayerconfigwidget.h"
-#include "ui_qgsshadingrenderersettingswidget.h"
+#include "ui_qgselevationshadingrenderersettingswidget.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
 
-class QgsShadingRendererSettingsWidget : public QgsMapLayerConfigWidget, private Ui::QgsShadingRendererSettingsWidget
+class QgsElevationShadingRendererSettingsWidget : public QgsMapLayerConfigWidget, private Ui::QgsElevationShadingRendererSettingsWidget
 {
     Q_OBJECT
 
   public:
-    explicit QgsShadingRendererSettingsWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent = nullptr );
+    explicit QgsElevationShadingRendererSettingsWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
     void apply() override;
 
@@ -38,11 +38,11 @@ class QgsShadingRendererSettingsWidget : public QgsMapLayerConfigWidget, private
 };
 
 
-class GUI_EXPORT QgsShadingRendererSettingsWidgetFactory : public QObject, public QgsMapLayerConfigWidgetFactory
+class GUI_EXPORT QgsElevationShadingRendererSettingsWidgetFactory : public QObject, public QgsMapLayerConfigWidgetFactory
 {
     Q_OBJECT
   public:
-    explicit QgsShadingRendererSettingsWidgetFactory( QObject *parent = nullptr );
+    explicit QgsElevationShadingRendererSettingsWidgetFactory( QObject *parent = nullptr );
 
     QgsMapLayerConfigWidget *createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget, QWidget *parent ) const override;
     bool supportsStyleDock() const override { return true; }

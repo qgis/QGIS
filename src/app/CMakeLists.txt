@@ -30,6 +30,7 @@ set(QGIS_APP_SRCS
   qgsdevtoolspanelwidget.cpp
   qgsdiscoverrelationsdialog.cpp
   qgsdxfexportdialog.cpp
+  qgselevationshadingrenderersettingswidget.cpp
   qgsformannotationdialog.cpp
   qgsguivectorlayertools.cpp
   qgshtmlannotationdialog.cpp
@@ -62,7 +63,6 @@ set(QGIS_APP_SRCS
   qgspuzzlewidget.cpp
   qgsversionmigration.cpp
   qgsrasterattributetableapputils.cpp
-  qgsshadingrenderersettingswidget.cpp
   qgssnappinglayertreemodel.cpp
   qgssnappingwidget.cpp
   qgsstatusbarcoordinateswidget.cpp

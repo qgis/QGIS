@@ -1094,7 +1094,6 @@ void TestQgsMapRendererJob::testMapShading()
   QVERIFY( pointCloudLayer->isValid() );
 
   std::unique_ptr<QgsPointCloudAttributeByRampRenderer> pointCloudRenderer( new QgsPointCloudAttributeByRampRenderer );
-  pointCloudRenderer->setEyeDomeLightingEnabled( false );
   pointCloudRenderer->setDrawOrder2d( Qgis::PointCloudDrawOrder::BottomToTop );
   pointCloudLayer->setRenderer( pointCloudRenderer.release() );
 
@@ -1133,7 +1132,7 @@ void TestQgsMapRendererJob::testMapShading()
   vectorLayer->commitChanges();
   QVERIFY( vectorLayer->featureCount() == 1 );
   std::unique_ptr<QgsFillSymbol> fill( static_cast< QgsFillSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PolygonGeometry ) ) ) ;
-  fill->setColor( QColor( 255, 255, 255 ) );
+  fill->setColor( QColor( 255, 0, 255 ) );
   vectorLayer->setRenderer( new QgsSingleSymbolRenderer( fill.release() ) );
 
   QgsMapSettings mapSettings;
@@ -1142,14 +1141,14 @@ void TestQgsMapRendererJob::testMapShading()
   mapSettings.setOutputSize( QSize( 512, 512 ) );
   mapSettings.setOutputDpi( 96 );
   mapSettings.setLayers( QList< QgsMapLayer * >()
-                         << vectorLayer.get()
                          << pointCloudLayer.get()
                          << rasterLayer.get()
+                         << vectorLayer.get()
                          << meshLayer.get() );
 
-  QgsShadingRenderer shadingRenderer;
+  QgsElevationShadingRenderer shadingRenderer;
   shadingRenderer.setActive( true );
-  shadingRenderer.setActiveHillShading( true );
+  shadingRenderer.setActiveHillshading( true );
   shadingRenderer.setActiveEyeDomeLighting( false );
   mapSettings.setShadingRenderer( shadingRenderer );
   std::unique_ptr<QgsMapRendererSequentialJob> renderJob( new QgsMapRendererSequentialJob( mapSettings ) );
@@ -1167,8 +1166,8 @@ void TestQgsMapRendererJob::testMapShading()
   img = renderJob->renderedImage();
   QVERIFY( imageCheck( QStringLiteral( "render_shading_2" ), img ) );
 
-  shadingRenderer.setHillShadingMultidirectional( true );
-  shadingRenderer.setHillShadingZFactor( 5 );
+  shadingRenderer.setHillshadingMultidirectional( true );
+  shadingRenderer.setHillshadingZFactor( 5 );
   mapSettings.setShadingRenderer( shadingRenderer );
   renderJob.reset( new QgsMapRendererSequentialJob( mapSettings ) );
   renderJob->start();
@@ -1177,7 +1176,7 @@ void TestQgsMapRendererJob::testMapShading()
   QVERIFY( imageCheck( QStringLiteral( "render_shading_3" ), img ) );
 
   shadingRenderer.setCombinedElevationMethod( QgsElevationMap::CombineMethod::NewerElevation );
-  shadingRenderer.setActiveHillShading( false );
+  shadingRenderer.setActiveHillshading( false );
   shadingRenderer.setActiveEyeDomeLighting( true );
   mapSettings.setShadingRenderer( shadingRenderer );
   renderJob.reset( new QgsMapRendererSequentialJob( mapSettings ) );
@@ -1194,8 +1193,6 @@ void TestQgsMapRendererJob::testMapShading()
   renderJob->waitForFinished();
   img = renderJob->renderedImage();
   QVERIFY( imageCheck( QStringLiteral( "render_shading_5" ), img ) );
-
-
 }
 
 bool TestQgsMapRendererJob::imageCheck( const QString &testName, const QImage &image, int mismatchCount )

@@ -477,9 +477,9 @@ void QgsRasterLayerRenderer::drawElevationMap()
 
       GDALResampleAlg alg;
       if ( overSampling > 1 )
-        alg = QgsGdalUtils::getGDALResamplingAlgorithm( dataProvider->zoomedOutResamplingMethod() );
+        alg = QgsGdalUtils::gdalResamplingAlgorithm( dataProvider->zoomedOutResamplingMethod() );
       else
-        alg = QgsGdalUtils::getGDALResamplingAlgorithm( dataProvider->zoomedInResamplingMethod() );
+        alg = QgsGdalUtils::gdalResamplingAlgorithm( dataProvider->zoomedInResamplingMethod() );
 
       Qgis::DataType dataType = dataProvider->dataType( mElevationBand );
 
@@ -583,7 +583,7 @@ void QgsRasterLayerRenderer::drawElevationMap()
         if ( QgsGdalUtils::resampleSingleBandRaster(
                gdalDsInput.get(),
                gdalDsOutput.get(),
-               QgsGdalUtils::getGDALResamplingAlgorithm( dataProvider->zoomedInResamplingMethod() ), nullptr ) )
+               QgsGdalUtils::gdalResamplingAlgorithm( dataProvider->zoomedInResamplingMethod() ), nullptr ) )
         {
           elevationBlock.reset( rotatedElevationBlock.release() );
         }

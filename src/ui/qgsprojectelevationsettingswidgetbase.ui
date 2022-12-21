@@ -216,7 +216,7 @@
     </widget>
    </item>
    <item>
-    <layout class="QVBoxLayout" name="mShadingSettingsLayout"/>
+    <layout class="QVBoxLayout" name="mElevationShadingSettingsLayout"/>
    </item>
    <item>
     <spacer name="verticalSpacer">

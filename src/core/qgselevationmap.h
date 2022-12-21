@@ -101,7 +101,7 @@ class CORE_EXPORT QgsElevationMap
      *
      * \since QGIS 3.30
      */
-    void applyHillShading( QImage &img, bool multiDirectional, double altitude, double azimuth, double zFactor, double cellSizeX, double cellSizeY ) const;
+    void applyHillshading( QImage &img, bool multiDirectional, double altitude, double azimuth, double zFactor, double cellSizeX, double cellSizeY ) const;
 
     //! Returns raw elevation image with elevations encoded as color values
     QImage rawElevationImage() const { return mElevationImage; }
@@ -146,6 +146,8 @@ class CORE_EXPORT QgsElevationMap
 
     //! Returns the no data value for the elevation map
     inline float noDataValue() const {return decodeElevation( 0 );}
+
+    QgsElevationMap &operator=( const QgsElevationMap &other );
 
   private:
 

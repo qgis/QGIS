@@ -87,8 +87,8 @@ QgsProjectElevationSettingsWidget::QgsProjectElevationSettingsWidget( QWidget *p
 
   validate();
 
-  mShadingSettingsWidget = new QgsShadingRendererSettingsWidget( nullptr, nullptr, this );
-  mShadingSettingsLayout->addWidget( mShadingSettingsWidget );
+  mElevationShadingSettingsWidget = new QgsElevationShadingRendererSettingsWidget( nullptr, nullptr, this );
+  mElevationShadingSettingsLayout->addWidget( mElevationShadingSettingsWidget );
 }
 
 void QgsProjectElevationSettingsWidget::apply()
@@ -121,7 +121,7 @@ void QgsProjectElevationSettingsWidget::apply()
 
   QgsProject::instance()->elevationProperties()->setTerrainProvider( provider.release() );
 
-  mShadingSettingsWidget->apply();
+  mElevationShadingSettingsWidget->apply();
 }
 
 bool QgsProjectElevationSettingsWidget::validate()

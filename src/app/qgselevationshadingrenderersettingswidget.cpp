@@ -13,14 +13,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsshadingrenderersettingswidget.h"
-#include "ui_qgsshadingrenderersettingswidget.h"
+#include "qgselevationshadingrenderersettingswidget.h"
+#include "ui_qgselevationshadingrenderersettingswidget.h"
 
 #include "qgsapplication.h"
 #include "qgsproject.h"
-#include "qgsshadingrenderer.h"
+#include "qgselevationshadingrenderer.h"
 
-QgsShadingRendererSettingsWidget::QgsShadingRendererSettingsWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent ) :
+QgsElevationShadingRendererSettingsWidget::QgsElevationShadingRendererSettingsWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent ) :
   QgsMapLayerConfigWidget( layer, canvas, parent )
 {
   setupUi( this );
@@ -30,26 +30,26 @@ QgsShadingRendererSettingsWidget::QgsShadingRendererSettingsWidget( QgsMapLayer 
 
   syncToProject();
 
-  connect( QgsProject::instance(), &QgsProject::mapShadingRendererChanged, this, &QgsShadingRendererSettingsWidget::syncToProject );
+  connect( QgsProject::instance(), &QgsProject::elevationShadingRendererChanged, this, &QgsElevationShadingRendererSettingsWidget::syncToProject );
 
-  connect( mShadingGroupBox, &QGroupBox::toggled, this, &QgsShadingRendererSettingsWidget::onChanged );
+  connect( mShadingGroupBox, &QGroupBox::toggled, this, &QgsElevationShadingRendererSettingsWidget::onChanged );
 
-  connect( mCombineMethodCombo,  qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsShadingRendererSettingsWidget::onChanged );
+  connect( mCombineMethodCombo,  qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsElevationShadingRendererSettingsWidget::onChanged );
 
-  connect( mEdlGroupBox, &QGroupBox::toggled, this, &QgsShadingRendererSettingsWidget::onChanged );
-  connect( mEdlStrengthSpinBox,  qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsShadingRendererSettingsWidget::onChanged );
-  connect( mEdlDistanceSpinBox,  qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsShadingRendererSettingsWidget::onChanged );
+  connect( mEdlGroupBox, &QGroupBox::toggled, this, &QgsElevationShadingRendererSettingsWidget::onChanged );
+  connect( mEdlStrengthSpinBox,  qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsElevationShadingRendererSettingsWidget::onChanged );
+  connect( mEdlDistanceSpinBox,  qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsElevationShadingRendererSettingsWidget::onChanged );
 
-  connect( mHillshadingGroupBox, &QGroupBox::toggled, this, &QgsShadingRendererSettingsWidget::onChanged );
-  connect( mHillshadingZFactorSpinBox,  qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsShadingRendererSettingsWidget::onChanged );
-  connect( mHillshadingMultidirCheckBox, &QCheckBox::toggled, this, &QgsShadingRendererSettingsWidget::onChanged );
+  connect( mHillshadingGroupBox, &QGroupBox::toggled, this, &QgsElevationShadingRendererSettingsWidget::onChanged );
+  connect( mHillshadingZFactorSpinBox,  qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsElevationShadingRendererSettingsWidget::onChanged );
+  connect( mHillshadingMultidirCheckBox, &QCheckBox::toggled, this, &QgsElevationShadingRendererSettingsWidget::onChanged );
 
-  connect( mDirectionalLightWidget, &QgsDirectionalLightWidget::directionChanged, this, &QgsShadingRendererSettingsWidget::onChanged );
+  connect( mDirectionalLightWidget, &QgsDirectionalLightWidget::directionChanged, this, &QgsElevationShadingRendererSettingsWidget::onChanged );
 }
 
-void QgsShadingRendererSettingsWidget::apply()
+void QgsElevationShadingRendererSettingsWidget::apply()
 {
-  QgsShadingRenderer shadingRenderer;
+  QgsElevationShadingRenderer shadingRenderer;
 
   shadingRenderer.setActive( mShadingGroupBox->isChecked() );
   shadingRenderer.setCombinedElevationMethod( static_cast<QgsElevationMap::CombineMethod>( mCombineMethodCombo->currentData().toInt() ) );
@@ -57,20 +57,20 @@ void QgsShadingRendererSettingsWidget::apply()
   shadingRenderer.setEyeDomeLightingStrength( mEdlStrengthSpinBox->value() );
   shadingRenderer.setEyeDomeLightingDistance( mEdlDistanceSpinBox->value() );
   shadingRenderer.setEyeDomeLightingDistanceUnit( mEdlDistanceUnit->unit() );
-  shadingRenderer.setActiveHillShading( mHillshadingGroupBox->isChecked() );
-  shadingRenderer.setHillShadingMultidirectional( mHillshadingMultidirCheckBox->isChecked() );
-  shadingRenderer.setHillShadingZFactor( mHillshadingZFactorSpinBox->value() );
+  shadingRenderer.setActiveHillshading( mHillshadingGroupBox->isChecked() );
+  shadingRenderer.setHillshadingMultidirectional( mHillshadingMultidirCheckBox->isChecked() );
+  shadingRenderer.setHillshadingZFactor( mHillshadingZFactorSpinBox->value() );
 
   shadingRenderer.setLightAltitude( mDirectionalLightWidget->altitude() );
   shadingRenderer.setLightAzimuth( mDirectionalLightWidget->azimuth() );
 
-  QgsProject::instance()->setMapShadingRenderer( shadingRenderer );
+  QgsProject::instance()->setElevationShadingRenderer( shadingRenderer );
 }
 
-void QgsShadingRendererSettingsWidget::syncToProject()
+void QgsElevationShadingRendererSettingsWidget::syncToProject()
 {
   mBlockUpdates = true;
-  QgsShadingRenderer shadingRenderer = QgsProject::instance()->mapShadingRenderer();
+  QgsElevationShadingRenderer shadingRenderer = QgsProject::instance()->elevationShadingRenderer();
   mShadingGroupBox->setChecked( shadingRenderer.isActive() );
   mCombineMethodCombo->setCurrentIndex(
     mCombineMethodCombo->findData( static_cast<int>( shadingRenderer.combinedElevationMethod() ) ) );
@@ -85,8 +85,8 @@ void QgsShadingRendererSettingsWidget::syncToProject()
                               QgsUnitTypes::RenderPoints <<
                               QgsUnitTypes::RenderInches );
   mEdlDistanceUnit->setUnit( shadingRenderer.eyeDomeLightingDistanceUnit() );
-  mHillshadingGroupBox->setChecked( shadingRenderer.isActiveHillShading() );
-  mHillshadingMultidirCheckBox->setChecked( shadingRenderer.isHillShadingMultidirectional() );
+  mHillshadingGroupBox->setChecked( shadingRenderer.isActiveHillshading() );
+  mHillshadingMultidirCheckBox->setChecked( shadingRenderer.isHillshadingMultidirectional() );
   mHillshadingZFactorSpinBox->setValue( shadingRenderer.hillShadingZFactor() );
 
   mDirectionalLightWidget->setAltitude( shadingRenderer.lightAltitude() );
@@ -94,19 +94,19 @@ void QgsShadingRendererSettingsWidget::syncToProject()
   mBlockUpdates = false;
 }
 
-void QgsShadingRendererSettingsWidget::onChanged()
+void QgsElevationShadingRendererSettingsWidget::onChanged()
 {
   if ( !mBlockUpdates )
     emit widgetChanged();
 }
 
-QgsShadingRendererSettingsWidgetFactory::QgsShadingRendererSettingsWidgetFactory( QObject *parent ): QObject( parent )
+QgsElevationShadingRendererSettingsWidgetFactory::QgsElevationShadingRendererSettingsWidgetFactory( QObject *parent ): QObject( parent )
 {
   setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mShadingRenderer.svg" ) ) );
   setTitle( tr( "Shading Renderer" ) );
 }
 
-QgsMapLayerConfigWidget *QgsShadingRendererSettingsWidgetFactory::createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool, QWidget *parent ) const
+QgsMapLayerConfigWidget *QgsElevationShadingRendererSettingsWidgetFactory::createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool, QWidget *parent ) const
 {
-  return new QgsShadingRendererSettingsWidget( layer, canvas, parent );
+  return new QgsElevationShadingRendererSettingsWidget( layer, canvas, parent );
 }

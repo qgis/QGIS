@@ -1498,7 +1498,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   addWindow( mWindowAction );
 #endif
 
-  registerMapLayerPropertiesFactory( new QgsShadingRendererSettingsWidgetFactory( this ) );
+  registerMapLayerPropertiesFactory( new QgsElevationShadingRendererSettingsWidgetFactory( this ) );
   registerProjectPropertiesWidgetFactory( new QgsProjectElevationSettingsWidgetFactory( this ) );
 
   activateDeactivateLayerRelatedActions( nullptr ); // after members were created

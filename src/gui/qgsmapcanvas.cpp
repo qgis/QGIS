@@ -1250,8 +1250,7 @@ void QgsMapCanvas::onMapShadingChanged()
 {
   if ( !mProject )
     return;
-  mSettings.setShadingRenderer( mProject->mapShadingRenderer() );
-  mCache->clear();
+  mSettings.setShadingRenderer( mProject->elevationShadingRenderer() );
   refresh();
 }
 
@@ -2749,12 +2748,12 @@ void QgsMapCanvas::unsetMapTool( QgsMapTool *tool )
 void QgsMapCanvas::setProject( QgsProject *project )
 {
   if ( mProject )
-    disconnect( mProject, &QgsProject::mapShadingRendererChanged, this, &QgsMapCanvas::onMapShadingChanged );
+    disconnect( mProject, &QgsProject::elevationShadingRendererChanged, this, &QgsMapCanvas::onMapShadingChanged );
 
   mProject = project;
 
   if ( mProject )
-    connect( mProject, &QgsProject::mapShadingRendererChanged, this, &QgsMapCanvas::onMapShadingChanged );
+    connect( mProject, &QgsProject::elevationShadingRendererChanged, this, &QgsMapCanvas::onMapShadingChanged );
 }
 
 void QgsMapCanvas::setCanvasColor( const QColor &color )

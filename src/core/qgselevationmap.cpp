@@ -71,9 +71,16 @@ std::unique_ptr<QgsElevationMap> QgsElevationMap::fromRasterBlock( QgsRasterBloc
   return elevMap;
 }
 
+QgsElevationMap &QgsElevationMap::operator=(const QgsElevationMap &other)
+{
+    mPainter.reset();
+    mElevationImage = other.mElevationImage;
+    return *this;
+}
+
 void QgsElevationMap::applyEyeDomeLighting( QImage &img, int distance, float strength, float rendererScale ) const
 {
-  const int imgWidth = img.width(), imgHeight = img.height();
+    const int imgWidth = img.width(), imgHeight = img.height();
   QRgb *imgPtr = reinterpret_cast<QRgb *>( img.bits() );
   const QRgb *elevPtr = reinterpret_cast<const QRgb *>( mElevationImage.constBits() );
 
@@ -105,7 +112,7 @@ void QgsElevationMap::applyEyeDomeLighting( QImage &img, int distance, float str
   }
 }
 
-void QgsElevationMap::applyHillShading( QImage &img, bool multiDirectional, double altitude, double azimuth, double zFactor, double cellSizeX, double cellSizeY ) const
+void QgsElevationMap::applyHillshading( QImage &img, bool multiDirectional, double altitude, double azimuth, double zFactor, double cellSizeX, double cellSizeY ) const
 {
   // algs from  src/raster/qgshillshaderenderer.cpp
   double altRad = altitude * M_PI / 180.0;

@@ -499,7 +499,7 @@ GDALDataType QgsGdalUtils::gdalDataTypeFromQgisDataType( Qgis::DataType dataType
   return GDALDataType::GDT_Unknown;
 }
 
-GDALResampleAlg QgsGdalUtils::getGDALResamplingAlgorithm( QgsRasterDataProvider::ResamplingMethod method )
+GDALResampleAlg QgsGdalUtils::gdalResamplingAlgorithm( QgsRasterDataProvider::ResamplingMethod method )
 {
   GDALResampleAlg eResampleAlg = GRA_NearestNeighbour;
   switch ( method )

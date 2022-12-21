@@ -1193,9 +1193,9 @@ bool QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int
 
         GDALResampleAlg alg;
         if ( resamplingFactor < 1 || qgsDoubleNear( resamplingFactor, 1.0 ) )
-          alg = QgsGdalUtils::getGDALResamplingAlgorithm( mZoomedInResamplingMethod );
+          alg = QgsGdalUtils::gdalResamplingAlgorithm( mZoomedInResamplingMethod );
         else
-          alg = QgsGdalUtils::getGDALResamplingAlgorithm( mZoomedOutResamplingMethod );
+          alg = QgsGdalUtils::gdalResamplingAlgorithm( mZoomedOutResamplingMethod );
 
         gdal::dataset_unique_ptr gdalDsInput = QgsGdalUtils::blockToSingleBandMemoryDataset( image->width(), image->height(), effectiveExtent, data.data(), GDT_Float32 );
         gdal::dataset_unique_ptr gdalDsOutput = QgsGdalUtils::blockToSingleBandMemoryDataset( pixelWidth, pixelHeight, viewExtent, block, GDT_Float32 );

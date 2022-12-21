@@ -74,7 +74,7 @@ class CORE_EXPORT QgsGdalUtils
     static bool resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH hDstDS, GDALResampleAlg resampleAlg, const char *pszCoordinateOperation );
 
     /**
-     * Resamples a single band raster to the destination dataset with different resolution and differnt CRS.
+     * Resamples a single band raster to the destination dataset with different resolution and different CRS.
      * Ideally the source dataset should cover the whole area or the destination dataset.
      *
      * \note If possible, it is preferable to use the overload method win paramater \a pszCoordinateOperation.
@@ -189,7 +189,7 @@ class CORE_EXPORT QgsGdalUtils
      *
      * \since QGIS 3.30
      */
-    static GDALResampleAlg getGDALResamplingAlgorithm( QgsRasterDataProvider::ResamplingMethod method );
+    static GDALResampleAlg gdalResamplingAlgorithm( QgsRasterDataProvider::ResamplingMethod method );
 
 #ifndef QT_NO_NETWORKPROXY
     //! Sets the gdal proxy variables

@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsshadingrenderer.h - QgsShadingRenderer
+  qgselevationshadingrenderer.h - QgsElevationShadingRenderer
 
  ---------------------
  begin                : 4.12.2022
@@ -13,8 +13,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSSHADINGRENDERER_H
-#define QGSSHADINGRENDERER_H
+#ifndef QGSELEVATIONSHADINGRENDERER_H
+#define QGSELEVATIONSHADINGRENDERER_H
 
 #include "qdom.h"
 #include "qgsunittypes.h"
@@ -30,11 +30,12 @@ class QgsReadWriteContext;
 
 /**
  * \ingroup core
- * \brief This class can render shading on image with different methods (eye dome Lighting, hill shading,...).
- * Instane od this class support differents settings:
- * - activate/deactivate the hafind renderer
- * - activate/deactivate a shading methods
- * - parameters of each shading methods
+ * \brief This class can render elevation shading on an image with different methods (eye dome lighting, hillshading, ...).
+ *
+ * An instance of this class supports the following settings:
+ * - activate/deactivate elevation shading
+ * - activate/deactivate a particular shading method
+ * - parameters of each shading method
  *
  * To render shading on image the caller call renderShading() with the image and
  * an elevation map (see QgsElevationMap()) as parameters. The shading is applied on the image in place.
@@ -42,10 +43,10 @@ class QgsReadWriteContext;
  *
  * \since QGIS 3.30
  */
-class CORE_EXPORT QgsShadingRenderer
+class CORE_EXPORT QgsElevationShadingRenderer
 {
   public:
-    QgsShadingRenderer();
+    QgsElevationShadingRenderer();
 
     /**
      *  Render shading on \a image condidering the elevation map \a elevation and the renderer context \a context
@@ -110,38 +111,38 @@ class CORE_EXPORT QgsShadingRenderer
     void setEyeDomeLightingDistanceUnit( const QgsUnitTypes::RenderUnit &newEyeDomeLightingDistanceUnit );
 
     //! Sets active the hillshading
-    void setActiveHillShading( bool active );
+    void setActiveHillshading( bool active );
 
     //! Returns whether the hillshading is active
-    bool isActiveHillShading() const;
+    bool isActiveHillshading() const;
 
     /**
      * Returns the z factor used by the hill shading method.
      *
-     * \see setHillShadingZFactor(à)
+     * \see setHillshadingZFactor()
      */
     double hillShadingZFactor() const;
 
     /**
      * Sets the z factor used by the hill shading method.
      *
-     * \see hillShadingZFactor()
+     * \see hillshadingZFactor()
      */
-    void setHillShadingZFactor( double zFactor );
+    void setHillshadingZFactor( double zFactor );
 
     /**
      * Returns whether the hill shading method is multidirectional.
      *
-     * \see setHillShadingMultidirectional()
+     * \see setHillshadingMultidirectional()
      */
-    bool isHillShadingMultidirectional() const;
+    bool isHillshadingMultidirectional() const;
 
     /**
      * Sets whether the hill shading method is multidirectional.
      *
-     * \see isHillShadingMultidirectional()
+     * \see isHillshadingMultidirectional()
      */
-    void setHillShadingMultidirectional( bool multiDirectional );
+    void setHillshadingMultidirectional( bool multiDirectional );
 
     /**
      * Returns the altitude of the light (degree) that can be used by some methods (e.g. hill shading).
@@ -201,14 +202,14 @@ class CORE_EXPORT QgsShadingRenderer
     double mEyeDomeLightingDistance = 0.5;
     QgsUnitTypes::RenderUnit mEyeDomeLightingDistanceUnit = QgsUnitTypes::RenderMillimeters;
 
-    bool mRenderHillShading = false;
+    bool mRenderHillshading = false;
     double mLightAltitude = 45.0;
     double mLightAzimuth = 315.0;
-    double mHillShadingZFactor = 1.0;
-    bool mHillShadingMultiDir = false;
+    double mHillshadingZFactor = 1.0;
+    bool mHillshadingMultiDir = false;
 
     void renderEdl( const QgsElevationMap &elevation, QImage &image, const QgsRenderContext &context ) const;
-    void renderHillShading( const QgsElevationMap &elevation, QImage &image, const QgsRenderContext &context ) const;
+    void renderHillshading( const QgsElevationMap &elevation, QImage &image, const QgsRenderContext &context ) const;
 };
 
-#endif // QGSSHADINGRENDERER_H
+#endif // QGSELEVATIONSHADINGRENDERER_H

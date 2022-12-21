@@ -35,7 +35,7 @@
 #include "qgstemporalrangeobject.h"
 #include "qgsmapclippingregion.h"
 #include "qgsvectorsimplifymethod.h"
-#include "qgsshadingrenderer.h"
+#include "qgselevationshadingrenderer.h"
 
 class QPainter;
 
@@ -872,7 +872,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * \since QGIS 3.30
      *
      */
-    const QgsShadingRenderer &shadingRenderer() const;
+    const QgsElevationShadingRenderer &shadingRenderer() const;
 
     /**
      * Sets the shading renderer used to render shading on the entire map
@@ -881,7 +881,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * \since QGIS 3.30
      *
      */
-    void setShadingRenderer( const QgsShadingRenderer &shadingRenderer );
+    void setShadingRenderer( const QgsElevationShadingRenderer &shadingRenderer );
 
   protected:
 
@@ -944,7 +944,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
 
     Qgis::RendererUsage mRendererUsage = Qgis::RendererUsage::Unknown;
 
-    QgsShadingRenderer mShadingRenderer;
+    QgsElevationShadingRenderer mShadingRenderer;
 
     double mFrameRate = -1;
     long long mCurrentFrame = -1;

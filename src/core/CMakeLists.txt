@@ -377,6 +377,7 @@ set(QGIS_CORE_SRCS
   qgsdiagramrenderer.cpp
   qgsdistancearea.cpp
   qgselevationmap.cpp
+  qgselevationshadingrenderer.cpp
   qgselevationutils.cpp
   qgserror.cpp
   qgseventtracing.cpp
@@ -497,7 +498,6 @@ set(QGIS_CORE_SRCS
   qgsscalecalculator.cpp
   qgsscaleutils.cpp
   qgsselectioncontext.cpp
-  qgsshadingrenderer.cpp
   qgsshapegenerator.cpp
   qgssimplifymethod.cpp
   qgssingleitemmodel.cpp
@@ -1043,6 +1043,7 @@ set(QGIS_CORE_HDRS
   qgsdistancearea.h
   qgseditorwidgetsetup.h
   qgselevationmap.h
+  qgselevationshadingrenderer.h
   qgselevationutils.h
   qgserror.h
   qgseventtracing.h
@@ -1179,7 +1180,6 @@ set(QGIS_CORE_HDRS
   qgsscalecalculator.h
   qgsscaleutils.h
   qgsselectioncontext.h
-  qgsshadingrenderer.h
   qgsshapegenerator.h
   qgssimplifymethod.h
   qgssingleitemmodel.h

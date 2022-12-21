@@ -1027,7 +1027,7 @@ void QgsProject::clear()
   mCustomVariables.clear();
   mCrs = QgsCoordinateReferenceSystem();
   mMetadata = QgsProjectMetadata();
-  mMapShadingRenderer = QgsShadingRenderer();
+  mElevationShadingRenderer = QgsElevationShadingRenderer();
   if ( !mSettings.value( QStringLiteral( "projects/anonymize_new_projects" ), false, QgsSettings::Core ).toBool() )
   {
     mMetadata.setCreationDateTime( QDateTime::currentDateTime() );
@@ -1814,12 +1814,12 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   emit transformContextChanged();
 
   // map shading
-  const QDomNode mapShadingNode = doc->documentElement().namedItem( QStringLiteral( "map-shading-renderer" ) );
-  if ( !mapShadingNode.isNull() )
+  const QDomNode elevationShadingNode = doc->documentElement().namedItem( QStringLiteral( "elevation-shading-renderer" ) );
+  if ( !elevationShadingNode.isNull() )
   {
-    mMapShadingRenderer.readXml( mapShadingNode.toElement(), context );
+    mElevationShadingRenderer.readXml( elevationShadingNode.toElement(), context );
   }
-  emit mapShadingRendererChanged();
+  emit elevationShadingRendererChanged();
 
 
   //add variables defined in project file - do this early in the reading cycle, as other components
@@ -2769,9 +2769,9 @@ bool QgsProject::writeProjectFile( const QString &filename )
   mCrs.writeXml( srsNode, *doc );
   qgisNode.appendChild( srsNode );
 
-  QDomElement mapShadingNode = doc->createElement( QStringLiteral( "map-shading-renderer" ) );
-  mMapShadingRenderer.writeXml( mapShadingNode, context );
-  qgisNode.appendChild( mapShadingNode );
+  QDomElement elevationShadingNode = doc->createElement( QStringLiteral( "elevation-shading-renderer" ) );
+  mElevationShadingRenderer.writeXml( elevationShadingNode, context );
+  qgisNode.appendChild( elevationShadingNode );
 
   // write layer tree - make sure it is without embedded subgroups
   QgsLayerTreeNode *clonedRoot = mRootGroup->clone();
@@ -4419,10 +4419,10 @@ QgsPropertiesDefinition &QgsProject::dataDefinedServerPropertyDefinitions()
   return sPropertyDefinitions;
 }
 
-void QgsProject::setMapShadingRenderer( const QgsShadingRenderer &newMapShadingRenderer )
+void QgsProject::setElevationShadingRenderer( const QgsElevationShadingRenderer &elevationShadingRenderer )
 {
-  mMapShadingRenderer = newMapShadingRenderer;
-  emit mapShadingRendererChanged();
+  mElevationShadingRenderer = elevationShadingRenderer;
+  emit elevationShadingRendererChanged();
 }
 
 const QgsAuxiliaryStorage *QgsProject::auxiliaryStorage() const
@@ -4698,9 +4698,9 @@ bool QgsProject::accept( QgsStyleEntityVisitorInterface *visitor ) const
   return true;
 }
 
-QgsShadingRenderer QgsProject::mapShadingRenderer() const
+QgsElevationShadingRenderer QgsProject::elevationShadingRenderer() const
 {
-  return mMapShadingRenderer;
+  return mElevationShadingRenderer;
 }
 
 void QgsProject::loadProjectFlags( const QDomDocument *doc )
