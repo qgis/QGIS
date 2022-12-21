@@ -427,6 +427,10 @@ void QgsRasterLayerRenderer::drawElevationMap()
     qgssize outputWidh = mRasterViewPort->mWidth / dpiScalefactor;
     qgssize outputHeight = mRasterViewPort->mHeight / dpiScalefactor;
 
+    QSize viewSize = renderContext()->deviceOutputSize();
+    qgssize viewWidth = viewSize.width() / dpiScalefactor;
+    qgssize viewHeight = viewSize.height() / dpiScalefactor;
+
     bool canRenderElevation = false;
     std::unique_ptr<QgsRasterBlock> elevationBlock;
     if ( mRasterViewPort->mSrcCRS == mRasterViewPort->mDestCRS )
@@ -445,11 +449,20 @@ void QgsRasterLayerRenderer::drawElevationMap()
       // Destinaton CRS is different from the source CRS.
       // Using the raster projector lead to have big artifacts when rendering the elevation map.
       // To get a smoother elevation map, we use GDAL resampling with coordinates transform
+      QgsRectangle viewExtentInLayerCoordinate = renderContext()->extent();
 
-      QgsRectangle extentInLayerCoordinate = renderContext()->extent();
-      // We need to set the best resolution to require data to the provider.
-      // This resolution is not the device resolution as we will resample this first data.
-      double requestedResToProvider;
+      // If view extent is infinite, we use the data provider extent
+      if ( viewExtentInLayerCoordinate.xMinimum() == std::numeric_limits<double>::lowest() &&
+           viewExtentInLayerCoordinate.yMinimum() == std::numeric_limits<double>::lowest() &&
+           viewExtentInLayerCoordinate.xMaximum() == std::numeric_limits<double>::max() &&
+           viewExtentInLayerCoordinate.yMaximum() == std::numeric_limits<double>::max() )
+      {
+        viewExtentInLayerCoordinate = dataProvider->extent();
+      }
+
+      double xLayerResol = viewExtentInLayerCoordinate.width() / viewWidth;
+      double yLayerResol = viewExtentInLayerCoordinate.height() / viewHeight;
+
       double overSampling = 1;
       if ( mPipe->resampleFilter() )
         overSampling = mPipe->resampleFilter()->maxOversampling();
@@ -457,17 +470,9 @@ void QgsRasterLayerRenderer::drawElevationMap()
       if ( dataProvider->capabilities() & QgsRasterDataProvider::Size )
       {
         // If the dataprovider has size capability, we calculate the requested resolution to provider
-        double providerResol = dataProvider->extent().width() / dataProvider->xSize();
-        qgssize sourceXCount = static_cast< qgssize >( extentInLayerCoordinate.width() / providerResol );
-        if ( sourceXCount > mRasterViewPort->mWidth )
-          sourceXCount = mRasterViewPort->mWidth;
-
-        requestedResToProvider = extentInLayerCoordinate.width() / sourceXCount;
-        overSampling = requestedResToProvider / providerResol;
-      }
-      else
-      {
-        requestedResToProvider = renderContext()->extent().width() / mRasterViewPort->mWidth;
+        double providerXResol = dataProvider->extent().width() / dataProvider->xSize();
+        double providerYResol = dataProvider->extent().height() / dataProvider->ySize();
+        overSampling = ( xLayerResol / providerXResol + yLayerResol / providerYResol ) / 2;
       }
 
       GDALResampleAlg alg;
@@ -479,14 +484,18 @@ void QgsRasterLayerRenderer::drawElevationMap()
       Qgis::DataType dataType = dataProvider->dataType( mElevationBand );
 
       // we need extra pixels on border to avoid effect border whith resampling (at least 2 pixels band for cubic alg)
-      int sourceWidth = static_cast< int >( std::ceil( extentInLayerCoordinate.width() / requestedResToProvider ) ) + 4;
-      int sourceHeight = static_cast< int >( std::ceil( extentInLayerCoordinate.height() / requestedResToProvider ) ) + 4;
-      extentInLayerCoordinate = extentInLayerCoordinate.buffered( requestedResToProvider * 2 );
+      int sourceWidth = viewWidth + 4;
+      int sourceHeight = viewHeight + 4;
+      viewExtentInLayerCoordinate = QgsRectangle(
+                                      viewExtentInLayerCoordinate.xMinimum() - xLayerResol * 2,
+                                      viewExtentInLayerCoordinate.yMinimum() - yLayerResol * 2,
+                                      viewExtentInLayerCoordinate.xMaximum() + xLayerResol * 2,
+                                      viewExtentInLayerCoordinate.yMaximum() + yLayerResol * 2 );
 
       // Now we can do the resampling
-      std::unique_ptr<QgsRasterBlock> sourcedata( dataProvider->block( mElevationBand, extentInLayerCoordinate, sourceWidth, sourceHeight, mFeedback ) );
+      std::unique_ptr<QgsRasterBlock> sourcedata( dataProvider->block( mElevationBand, viewExtentInLayerCoordinate, sourceWidth, sourceHeight, mFeedback ) );
       gdal::dataset_unique_ptr gdalDsInput =
-        QgsGdalUtils::blockToSingleBandMemoryDataset( extentInLayerCoordinate, sourcedata.get() );
+        QgsGdalUtils::blockToSingleBandMemoryDataset( viewExtentInLayerCoordinate, sourcedata.get() );
 
 
       elevationBlock.reset( new QgsRasterBlock( dataType,
@@ -497,7 +506,6 @@ void QgsRasterLayerRenderer::drawElevationMap()
 
       gdal::dataset_unique_ptr gdalDsOutput =
         QgsGdalUtils::blockToSingleBandMemoryDataset( mRasterViewPort->mDrawnExtent, elevationBlock.get() );
-
 
       // For coordinate transformation, we try to obtain a coordinate operation string from the transform context.
       // Depending of the CRS, if we can't we use GDAL transformation directly from the source and destination CRS
