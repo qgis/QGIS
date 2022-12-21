@@ -601,7 +601,7 @@ class TilesXYZAlgorithmDirectory(TilesXYZAlgorithmBase):
                 minzoom=self.min_zoom,
                 maxzoom=self.max_zoom,
                 tms='true' if is_tms else 'false',
-                attribution=self.tr('Created by QGIS algorithm:') + ' "' + self.displayName() + '"'
+                attribution=self.tr('Created by QGIS algorithm:') + ' ' + self.displayName()
             )
             with open(output_html, "w") as fh:
                 fh.write(html_code)
