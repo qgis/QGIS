@@ -77,7 +77,7 @@ to set this to the map's scale denominator to get similarly looking results
 at different map scales.
 %End
 
-    void applyHillShading( QImage &img, bool multiDirectional, double altitude, double azimuth, double zFactor, double cellSizeX, double cellSizeY ) const;
+    void applyHillshading( QImage &img, bool multiDirectional, double altitude, double azimuth, double zFactor, double cellSizeX, double cellSizeY ) const;
 %Docstring
 Applies hill shading effect to the given image.
 
@@ -93,8 +93,6 @@ The parameter ``zFactor`` is the vertical exageration of the terrain.
 
 The parameters ``cellSizeX`` and ``cellSizeY`` are the sizes of the elevation map cells in unit consistent
 with the unit of the encoded elevation in this elevation map.
-(TODO: maybe it would be good to have class members that handle this parameters and
-set when the instance is created).
 
 .. versionadded:: 3.30
 %End
@@ -137,6 +135,16 @@ Converts elevation value to an actual color
 Converts a color back to elevation value
 %End
 
+
+    bool isNoData( QRgb colorRaw ) const;
+%Docstring
+Returns whether the encoded value is a no data value
+%End
+
+    float noDataValue() const;
+%Docstring
+Returns the no data value for the elevation map
+%End
 
 
 };

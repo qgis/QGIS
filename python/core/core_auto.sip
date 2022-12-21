@@ -41,6 +41,7 @@
 %Include auto_generated/qgsdistancearea.sip
 %Include auto_generated/qgseditorwidgetsetup.sip
 %Include auto_generated/qgselevationmap.sip
+%Include auto_generated/qgselevationshadingrenderer.sip
 %Include auto_generated/qgselevationutils.sip
 %Include auto_generated/qgserror.sip
 %Include auto_generated/qgsexpressioncontext.sip
@@ -164,7 +165,6 @@
 %Include auto_generated/qgsscalecalculator.sip
 %Include auto_generated/qgsscaleutils.sip
 %Include auto_generated/qgsselectioncontext.sip
-%Include auto_generated/qgsshadingrenderer.sip
 %Include auto_generated/qgssimplifymethod.sip
 %Include auto_generated/qgssingleitemmodel.sip
 %Include auto_generated/qgssldexportcontext.sip

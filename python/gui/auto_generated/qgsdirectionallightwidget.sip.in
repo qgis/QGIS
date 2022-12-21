@@ -1,0 +1,62 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsdirectionallightwidget.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+class QgsDirectionalLightWidget : QWidget
+{
+%Docstring(signature="appended")
+
+Widget for direction light settings
+
+The user can choose azimuth and altitude values.
+
+.. versionadded:: 3.30
+%End
+
+%TypeHeaderCode
+#include "qgsdirectionallightwidget.h"
+%End
+  public:
+    explicit QgsDirectionalLightWidget( QWidget *parent = 0 );
+%Docstring
+Contructor
+%End
+    ~QgsDirectionalLightWidget();
+
+    void setAzimuth( double azimuth );
+%Docstring
+Sets the ``azimuth`` value (degree)
+%End
+
+    double azimuth() const;
+%Docstring
+Returns the ``azimuth`` value (degree)
+%End
+
+    void setAltitude( double altitude );
+%Docstring
+Sets the ``altitude`` value (degree)
+%End
+
+    double altitude() const;
+%Docstring
+Returns the ``altitude`` value (degree)
+%End
+
+
+  signals:
+    void directionChanged();
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsdirectionallightwidget.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

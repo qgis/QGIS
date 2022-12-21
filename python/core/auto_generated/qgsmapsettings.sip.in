@@ -978,7 +978,7 @@ Defaults to -1 if the map is not associated with an animation.
 .. versionadded:: 3.26
 %End
 
-    const QgsShadingRenderer &shadingRenderer() const;
+    const QgsElevationShadingRenderer &shadingRenderer() const;
 %Docstring
 Returns the shading renderer used to render shading on the entire map
 
@@ -987,7 +987,7 @@ Returns the shading renderer used to render shading on the entire map
 .. versionadded:: 3.30
 %End
 
-    void setShadingRenderer( const QgsShadingRenderer &shadingRenderer );
+    void setShadingRenderer( const QgsElevationShadingRenderer &shadingRenderer );
 %Docstring
 Sets the shading renderer used to render shading on the entire map
 

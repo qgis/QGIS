@@ -1605,16 +1605,16 @@ should be canceled.
 .. versionadded:: 3.10
 %End
 
-    QgsShadingRenderer mapShadingRenderer() const;
+    QgsElevationShadingRenderer elevationShadingRenderer() const;
 %Docstring
-Returns the shading renderer used for global map shading
+Returns the elevation shading renderer used for map shading
 
 .. versionadded:: 3.30
 %End
 
-    void setMapShadingRenderer( const QgsShadingRenderer &newMapShadinRenderer );
+    void setElevationShadingRenderer( const QgsElevationShadingRenderer &elevationShadingRenderer );
 %Docstring
-Sets the shading renderer used for global map shading
+Sets the elevation shading renderer used for global map shading
 
 .. versionadded:: 3.30
 %End
@@ -2049,9 +2049,11 @@ Emitted when the list of custom project map scales changes.
    Use :py:func:`~QgsProject.viewSettings` instead
 %End
 
-    void mapShadingRendererChanged();
+    void elevationShadingRendererChanged();
 %Docstring
 Emitted when the map shading renderer changes
+
+.. versionadded:: 3.30
 %End
 
   public slots:
@@ -2200,8 +2202,6 @@ Stops a current editing operation on vectorLayer and discards any uncommitted ed
 
 .. versionadded:: 3.26
 %End
-
-    void setMapShadingEnabled( bool enabled );
 
 };
 
