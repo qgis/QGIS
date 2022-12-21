@@ -368,7 +368,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsscalevisibilitydialog.h"
 #include "qgsgroupwmsdatadialog.h"
 #include "qgsselectbyformdialog.h"
-#include "qgsshadingrenderersettingswidget.h"
+#include "qgselevationshadingrenderersettingswidget.h"
 #include "qgsshortcutsmanager.h"
 #include "qgssnappingwidget.h"
 #include "qgsstatisticalsummarydockwidget.h"
