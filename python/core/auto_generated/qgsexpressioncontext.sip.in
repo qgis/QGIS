@@ -947,6 +947,30 @@ Returns the list of layer stores associated with the context.
 .. versionadded:: 3.30
 %End
 
+    void setLoadedLayerStore( QgsMapLayerStore *store );
+%Docstring
+Sets the destination layer ``store`` for any layers loaded during
+expression evaluation.
+
+Ownership of the ``store`` is not transferred to the context, it is the caller's
+responsibility to ensure that the store remains alive for the duration of the
+expression context.
+
+.. seealso:: :py:func:`loadedLayerStore`
+
+.. versionadded:: 3.30
+%End
+
+    QgsMapLayerStore *loadedLayerStore() const;
+%Docstring
+Returns the destination layer store for any layers loaded during
+expression evaluation.
+
+.. seealso:: :py:func:`setLoadedLayerStore`
+
+.. versionadded:: 3.30
+%End
+
     void setFeedback( QgsFeedback *feedback );
 %Docstring
 Attach a ``feedback`` object that can be queried regularly by the expression engine to check

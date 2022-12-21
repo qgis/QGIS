@@ -1016,6 +1016,7 @@ void TestQgsExpressionContext::layerStores()
 
   QgsExpressionContext context;
   QVERIFY( context.layerStores().isEmpty() );
+  QVERIFY( !context.loadedLayerStore() );
 
   QgsExpressionContextScope *scope2 = new QgsExpressionContextScope();
   context.appendScopes( { scope1, scope2, scope3 } );
@@ -1025,6 +1026,20 @@ void TestQgsExpressionContext::layerStores()
 
   store2.reset();
   QCOMPARE( context.layerStores(), QList< QgsMapLayerStore *>( {&store3, &store1 } ) );
+
+  QVERIFY( !context.loadedLayerStore() );
+  QgsMapLayerStore store4;
+  context.setLoadedLayerStore( &store4 );
+  QCOMPARE( context.loadedLayerStore(), &store4 );
+  // store4 must also be present in layerStores()
+  QCOMPARE( context.layerStores(), QList< QgsMapLayerStore *>( {&store3, &store1, &store4 } ) );
+
+  QgsExpressionContext c2( context );
+  QCOMPARE( c2.loadedLayerStore(), &store4 );
+
+  QgsExpressionContext c3;
+  c3 = context;
+  QCOMPARE( c3.loadedLayerStore(), &store4 );
 }
 
 QGSTEST_MAIN( TestQgsExpressionContext )

@@ -857,6 +857,28 @@ class CORE_EXPORT QgsExpressionContext
     QList< QgsMapLayerStore * > layerStores() const;
 
     /**
+     * Sets the destination layer \a store for any layers loaded during
+     * expression evaluation.
+     *
+     * Ownership of the \a store is not transferred to the context, it is the caller's
+     * responsibility to ensure that the store remains alive for the duration of the
+     * expression context.
+     *
+     * \see loadedLayerStore()
+     * \since QGIS 3.30
+     */
+    void setLoadedLayerStore( QgsMapLayerStore *store );
+
+    /**
+     * Returns the destination layer store for any layers loaded during
+     * expression evaluation.
+     *
+     * \see setLoadedLayerStore()
+     * \since QGIS 3.30
+     */
+    QgsMapLayerStore *loadedLayerStore() const;
+
+    /**
      * Attach a \a feedback object that can be queried regularly by the expression engine to check
      * if expression evaluation should be canceled.
      *
@@ -913,6 +935,8 @@ class CORE_EXPORT QgsExpressionContext
     QStringList mHighlightedFunctions;
 
     QgsFeedback *mFeedback = nullptr;
+
+    QPointer< QgsMapLayerStore > mDestinationStore;
 
     // Cache is mutable because we want to be able to add cached values to const contexts
     mutable QMap< QString, QVariant > mCachedValues;
