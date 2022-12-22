@@ -19,27 +19,23 @@
 #define QGSLAZDECODER_H
 
 
-#include "qgis_core.h"
-#include "qgis_sip.h"
 #include "qgspointcloudblock.h"
 #include "qgspointcloudattribute.h"
 
-#include "lazperf/lazperf.hpp"
-#include "lazperf/readers.hpp"
-
 #include <string>
+#include <QString>
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
-#include <QString>
 
 class QgsPointCloudExpression;
 class QgsLazInfo;
+class QgsRectangle;
 
 template <typename T>
-bool _lazStoreToStream( char *s, size_t position, QgsPointCloudAttribute::DataType type, T value );
-bool _lazSerialize( char *data, size_t outputPosition, QgsPointCloudAttribute::DataType outputType,
+bool lazStoreToStream_( char *s, size_t position, QgsPointCloudAttribute::DataType type, T value );
+bool lazSerialize_( char *data, size_t outputPosition, QgsPointCloudAttribute::DataType outputType,
                     const char *input, QgsPointCloudAttribute::DataType inputType, int inputSize, size_t inputPosition );
 
 class QgsLazDecoder
@@ -86,10 +82,9 @@ class QgsLazDecoder
       int offset; // Used in case the attribute is an extra byte attribute
     };
 
-    static QgsPointCloudBlock *decompressLaz( const QString &filename, const QgsPointCloudAttributeCollection &requestedAttributes, QgsPointCloudExpression &filterExpression );
-    static QgsPointCloudBlock *decompressLaz( const QByteArray &data, const QgsPointCloudAttributeCollection &requestedAttributes, QgsPointCloudExpression &filterExpression );
-    static QgsPointCloudBlock *decompressCopc( const QString &filename, QgsLazInfo &lazInfo, uint64_t blockOffset, uint64_t blockSize, int32_t pointCount, const QgsPointCloudAttributeCollection &requestedAttributes, QgsPointCloudExpression &filterExpression );
-    static QgsPointCloudBlock *decompressCopc( const QByteArray &data, QgsLazInfo &lazInfo, int32_t pointCount, const QgsPointCloudAttributeCollection &requestedAttributes, QgsPointCloudExpression &filterExpression );
+    static QgsPointCloudBlock *decompressLaz( const QString &filename, const QgsPointCloudAttributeCollection &requestedAttributes, QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect );
+    static QgsPointCloudBlock *decompressLaz( const QByteArray &data, const QgsPointCloudAttributeCollection &requestedAttributes, QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect );
+    static QgsPointCloudBlock *decompressCopc( const QByteArray &data, QgsLazInfo &lazInfo, int32_t pointCount, const QgsPointCloudAttributeCollection &requestedAttributes, QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect );
 
 #if defined(_MSC_VER)
 
