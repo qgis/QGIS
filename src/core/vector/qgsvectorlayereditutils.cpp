@@ -87,12 +87,25 @@ bool QgsVectorLayerEditUtils::moveVertex( const QgsPoint &p, QgsFeatureId atFeat
 
   QgsGeometry geometry = f.geometry();
 
-  geometry.moveVertex( p, atVertex );
+  // If original point is not 3D but destination yes, check if it can be promoted
+  if ( p.is3D() && !geometry.vertexAt( atVertex ).is3D() && QgsWkbTypes::hasZ( mLayer->wkbType() ) )
+  {
+    if ( !geometry.get()->addZValue( std::numeric_limits<double>::quiet_NaN() ) )
+      return false;
+  }
 
-  mLayer->changeGeometry( atFeatureId, geometry );
-  return true;
+  // If original point has not M-value but destination yes, check if it can be promoted
+  if ( p.isMeasure() && !geometry.vertexAt( atVertex ).isMeasure() && QgsWkbTypes::hasM( mLayer->wkbType() ) )
+  {
+    if ( !geometry.get()->addMValue( std::numeric_limits<double>::quiet_NaN() ) )
+      return false;
+  }
+
+  if ( !geometry.moveVertex( p, atVertex ) )
+    return false;
+
+  return mLayer->changeGeometry( atFeatureId, geometry );
 }
-
 
 Qgis::VectorEditResult QgsVectorLayerEditUtils::deleteVertex( QgsFeatureId featureId, int vertex )
 {
