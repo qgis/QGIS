@@ -299,6 +299,12 @@ class TestQgsProcessExecutablePt2(unittest.TestCase):
         self.assertIn('OUTPUT:	abc:def', output)
         self.assertEqual(rc, 0)
 
+    def testLoadLayer(self):
+        rc, output, err = self.run_process(['run', '--no-python', 'native:raiseexception', '--MESSAGE=CONFIRMED', '--CONDITION=layer_property(load_layer(\'{}\',\'ogr\'),\'feature_count\')>10'.format(TEST_DATA_DIR + '/points.shp')])
+        self.assertIn('CONFIRMED', self._strip_ignorable_errors(err))
+
+        self.assertEqual(rc, 1)
+
 
 if __name__ == '__main__':
     # look for qgis bin path
