@@ -763,7 +763,7 @@ QgsRuleBasedRenderer::Rule *QgsRuleBasedRenderer::Rule::create( QDomElement &rul
   QString description = ruleElem.attribute( QStringLiteral( "description" ) );
   int scaleMinDenom = ruleElem.attribute( QStringLiteral( "scalemindenom" ), QStringLiteral( "0" ) ).toInt();
   int scaleMaxDenom = ruleElem.attribute( QStringLiteral( "scalemaxdenom" ), QStringLiteral( "0" ) ).toInt();
-  QString ruleKey = ruleElem.attribute( QStringLiteral( "key" ) );
+  QString ruleKey = QUuid::createUuid().toString();
   Rule *rule = new Rule( symbol, scaleMinDenom, scaleMaxDenom, filterExp, label, description );
 
   if ( !ruleKey.isEmpty() )
