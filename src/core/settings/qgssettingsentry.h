@@ -26,6 +26,7 @@
 #include "qgssettings.h"
 
 class QgsSettingsEntryBase;
+class QgsSettingsTreeElement;
 
 
 /**
@@ -39,7 +40,7 @@ class CORE_EXPORT QgsSettingsEntryGroup
 {
   public:
     //! Constructor
-    QgsSettingsEntryGroup( const QList<const QgsSettingsEntryBase *> settings )
+    QgsSettingsEntryGroup( QList<const QgsSettingsEntryBase *> settings )
       : QgsSettingsEntryGroup( settings, true )
     {}
 #ifdef SIP_RUN
@@ -52,7 +53,7 @@ class CORE_EXPORT QgsSettingsEntryGroup
 #endif
 
     //! Constructor
-    QgsSettingsEntryGroup( const QList<const QgsSettingsEntryBase *> settings, bool fatalErrorIfInvalid ) SIP_SKIP;
+    QgsSettingsEntryGroup( QList<const QgsSettingsEntryBase *> settings, bool fatalErrorIfInvalid ) SIP_SKIP;
 
     //! Returns if the group is valid (if settings share the same base key)
     bool isValid() const {return mIsValid;}
@@ -120,6 +121,8 @@ class CORE_EXPORT QgsSettingsEntryBase
       sipType = sipType_QgsSettingsEntryDouble;
     else if ( dynamic_cast< QgsSettingsEntryColor * >( sipCpp ) )
       sipType = sipType_QgsSettingsEntryColor;
+    else if ( dynamic_cast< QgsSettingsEntryBase * >( sipCpp ) )
+      sipType = sipType_QgsSettingsEntryBase;
     else
       sipType = NULL;
     SIP_END
@@ -132,7 +135,6 @@ class CORE_EXPORT QgsSettingsEntryBase
      * \since QGIS 3.26
      */
     static QStringList dynamicKeyPartToList( const QString &dynamicKeyPart );
-
 
     /**
      * Constructor for QgsSettingsEntryBase.
@@ -156,9 +158,24 @@ class CORE_EXPORT QgsSettingsEntryBase
     {}
 
     /**
+     * Constructor for QgsSettingsEntryBase.
+     *
+     * The \a key argument specifies the key of the settings.
+     * The \a parent argument specifies the parent in the tree of settings.
+     * The \a defaultValue argument specifies the default value for the settings entry.
+     * The \a description argument specifies a description for the settings entry.
+     * The \a options argument specifies the options for the settings entry.
+     */
+    QgsSettingsEntryBase( const QString &key,
+                          QgsSettingsTreeElement *parentTreeElement,
+                          const QVariant &defaultValue = QVariant(),
+                          const QString &description = QString(),
+                          Qgis::SettingsOptions options = Qgis::SettingsOptions() );
+
+    /**
      * Destructor for QgsSettingsEntryBase.
      */
-    virtual ~QgsSettingsEntryBase() {}
+    virtual ~QgsSettingsEntryBase();
 
     /**
      * Returns settings entry key.
@@ -297,7 +314,8 @@ class CORE_EXPORT QgsSettingsEntryBase
     /**
      * Returns the settings entry type.
      */
-    virtual Qgis::SettingsType settingsType() const = 0;
+    virtual Qgis::SettingsType settingsType() const {return Qgis::SettingsType::Custom;}
+    // This cannot be pure virtual otherwise SIP is failing
 
     /**
      * Returns the settings entry description.
@@ -319,17 +337,26 @@ class CORE_EXPORT QgsSettingsEntryBase
     QVariant formerValueAsVariant( const QStringList &dynamicKeyPartList ) const;
 
     /**
-     * Check if the settings does not exist and try to set it from a given \a oldKey and \a oldSection
+     * Checks if the settings does not exist and try to set it from a given \a oldKey.
+     * \arg dynamicKeyPartList is the optional dynamic key part to determine the key. It must be the same for origin and destination keys.
+     * If \a deleteOldKey, the setting with the old key will be removed
+     * \returns TRUE if the key exists and the setting value could be copied
      * \since QGIS 3.30
      */
-    bool migrateFromKey( const QString &oldKey, const QString &oldSection = QString(), const QString &dynamicKeyPart = QString() ) const;
+    bool copyValueFromKey( const QString &key, const QStringList &dynamicKeyPartList = QStringList(), bool deleteOldKey = false ) const;
 
     /**
-     * Check if the settings does not exist and try to set it from a given \a oldKey
-     * \note The old key must contain its section (the section from the current setting will not be prepended)
+     * Copies the settings to the given \a key
+     * \arg dynamicKeyPartList is the optional dynamic key part to determine the key. It must be the same for origin and destination keys.
      * \since QGIS 3.30
      */
-    bool migrateFromKey( const QString &oldKey, const QString &oldSection, const QStringList &dynamicKeyPartList ) const;
+    void copyValueToKey( const QString &key, const QStringList &dynamicKeyPartList = QStringList() ) const;
+
+    /**
+    * Returns the parent tree element
+    * \since QGIS 3.30
+    */
+    QgsSettingsTreeElement *parent() const {return mParentTreeElement;}
 
   protected:
 
@@ -345,6 +372,7 @@ class CORE_EXPORT QgsSettingsEntryBase
 
     QString completeKeyPrivate( const QString &key, const QStringList &dynamicKeyPartList ) const;
 
+    QgsSettingsTreeElement *mParentTreeElement = nullptr;
     QString mKey;
     QVariant mDefaultValue;
     QString mDescription;
@@ -372,6 +400,24 @@ class QgsSettingsEntryByReference : public QgsSettingsEntryBase
      * Constructor for QgsSettingsEntryByReference.
      *
      * The \a key argument specifies the key of the settings.
+     * The \a parent argument specifies the parent in the tree of settings.
+     * The \a defaultValue argument specifies the default value for the settings entry.
+     * The \a description argument specifies a description for the settings entry.
+     * The \a options arguments specifies the options for the settings entry.
+     */
+    QgsSettingsEntryByReference( const QString &key,
+                                 QgsSettingsTreeElement *parent,
+                                 const T &defaultValue,
+                                 const QString &description = QString(),
+                                 Qgis::SettingsOptions options = Qgis::SettingsOptions() )
+      : QgsSettingsEntryBase( key, parent, defaultValue, description, options )
+    {}
+
+    /**
+     * Constructor for QgsSettingsEntryByReference.
+     *
+     * The \a key argument specifies the key of the settings.
+     * The \a section argument specifies the section.
      * The \a defaultValue argument specifies the default value for the settings entry.
      * The \a description argument specifies a description for the settings entry.
      * The \a options arguments specifies the options for the settings entry.
@@ -513,6 +559,19 @@ class QgsSettingsEntryByValue : public QgsSettingsEntryBase
 {
   public:
 
+    /**
+     * Constructor for QgsSettingsEntryByValue.
+     *
+     * The \a key argument specifies the key of the settings.
+     * The \a parent argument specifies the parent in the tree of settings.
+     * The \a section argument specifies the section.
+     * The \a defaultValue argument specifies the default value for the settings entry.
+     * The \a description argument specifies a description for the settings entry.
+     * The \a options arguments specifies the options for the settings entry.
+     */
+    QgsSettingsEntryByValue( const QString &key, QgsSettingsTreeElement *parent, QVariant defaultValue, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions() )
+      : QgsSettingsEntryBase( key, parent, defaultValue, description, options )
+    {}
 
     /**
      * Constructor for QgsSettingsEntryByValue.
