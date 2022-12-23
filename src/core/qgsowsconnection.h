@@ -30,6 +30,7 @@
 #include <QStringList>
 #include <QPushButton>
 
+
 /**
  * \ingroup core
  * \brief Connections management
@@ -40,30 +41,31 @@ class CORE_EXPORT QgsOwsConnection : public QObject
 
   public:
 
-    static const inline QgsSettingsEntryString settingsConnectionSelected = QgsSettingsEntryString( QStringLiteral( "connections-%1/selected" ), QgsSettings::Prefix::QGIS ) SIP_SKIP;
+#ifndef SIP_RUN
+    static inline QgsSettingsTreeNamedListElement *sTtreeOwsConnections = QgsSettings::sTtreeConnections->createNamedListElement( QStringLiteral( "ows" ) );
+    static inline QgsSettingsTreeNamedListElement *sTreeConnectionServices = sTtreeOwsConnections->createNamedListElement( QStringLiteral( "services" ) );
 
-    static const inline QgsSettingsEntryString settingsConnectionUrl = QgsSettingsEntryString( QStringLiteral( "connections-%1/%2/url" ), QgsSettings::Prefix::QGIS, QString() ) SIP_SKIP;
-    static const inline QgsSettingsEntryString settingsConnectionReferer = QgsSettingsEntryString( QStringLiteral( "connections-%1/%2/referer" ), QgsSettings::Prefix::QGIS, QString() ) SIP_SKIP;
-    static const inline QgsSettingsEntryString settingsConnectionVersion = QgsSettingsEntryString( QStringLiteral( "connections-%1/%2/version" ), QgsSettings::Prefix::QGIS, QString() ) SIP_SKIP;
-    static const inline QgsSettingsEntryBool settingsConnectionIgnoreGetMapURI = QgsSettingsEntryBool( QStringLiteral( "connections-%1/%2/ignoreGetMapURI" ), QgsSettings::Prefix::QGIS, false ) SIP_SKIP;
-    static const inline QgsSettingsEntryBool settingsConnectionIgnoreGetFeatureInfoURI = QgsSettingsEntryBool( QStringLiteral( "connections-%1/%2/ignoreGetFeatureInfoURI" ), QgsSettings::Prefix::QGIS, false ) SIP_SKIP;
-    static const inline QgsSettingsEntryBool settingsConnectionSmoothPixmapTransform = QgsSettingsEntryBool( QStringLiteral( "connections-%1/%2/smoothPixmapTransform" ), QgsSettings::Prefix::QGIS, false ) SIP_SKIP;
-    static const inline QgsSettingsEntryBool settingsConnectionReportedLayerExtents = QgsSettingsEntryBool( QStringLiteral( "connections-%1/%2/reportedLayerExtents" ), QgsSettings::Prefix::QGIS, false ) SIP_SKIP;
-    static const inline QgsSettingsEntryEnumFlag<Qgis::DpiMode> settingsConnectionDpiMode = QgsSettingsEntryEnumFlag<Qgis::DpiMode>( QStringLiteral( "connections-%1/%2/dpiMode" ), QgsSettings::Prefix::QGIS, Qgis::DpiMode::All, QString(), Qgis::SettingsOption::SaveEnumFlagAsInt ) SIP_SKIP;
-    static const inline QgsSettingsEntryEnumFlag<Qgis::TilePixelRatio> settingsConnectionTilePixelRatio = QgsSettingsEntryEnumFlag<Qgis::TilePixelRatio>( QStringLiteral( "connections-%1/%2/tilePixelRatio" ), QgsSettings::Prefix::QGIS, Qgis::TilePixelRatio::Undefined, QString(), Qgis::SettingsOption::SaveEnumFlagAsInt ) SIP_SKIP;
-    static const inline QgsSettingsEntryString settingsConnectionMaxNumFeatures = QgsSettingsEntryString( QStringLiteral( "connections-%1/%2/maxnumfeatures" ), QgsSettings::Prefix::QGIS ) SIP_SKIP;
-    static const inline QgsSettingsEntryString settingsConnectionPagesize = QgsSettingsEntryString( QStringLiteral( "connections-%1/%2/pagesize" ), QgsSettings::Prefix::QGIS ) SIP_SKIP;
-    static const inline QgsSettingsEntryBool settingsConnectionPagingEnabled = QgsSettingsEntryBool( QStringLiteral( "connections-%1/%2/pagingenabled" ), QgsSettings::Prefix::QGIS, true ) SIP_SKIP;
-    static const inline QgsSettingsEntryBool settingsConnectionPreferCoordinatesForWfsT11 = QgsSettingsEntryBool( QStringLiteral( "connections-%1/%2/preferCoordinatesForWfsT11" ), QgsSettings::Prefix::QGIS, false ) SIP_SKIP;
-    static const inline QgsSettingsEntryBool settingsConnectionIgnoreAxisOrientation = QgsSettingsEntryBool( QStringLiteral( "connections-%1/%2/ignoreAxisOrientation" ), QgsSettings::Prefix::QGIS, false ) SIP_SKIP;
-    static const inline QgsSettingsEntryBool settingsConnectionInvertAxisOrientation = QgsSettingsEntryBool( QStringLiteral( "connections-%1/%2/invertAxisOrientation" ), QgsSettings::Prefix::QGIS, false ) SIP_SKIP;
+    static inline QgsSettingsEntryString *settingsConnectionUrl = new QgsSettingsEntryString( QStringLiteral( "url" ), sTreeConnectionServices, QString() ) ;
+    static inline QgsSettingsEntryVariantMap *settingsConnectionHeaders = new QgsSettingsEntryVariantMap( QStringLiteral( "http-header" ), sTreeConnectionServices ) ;
+    static inline QgsSettingsEntryString *settingsConnectionVersion = new QgsSettingsEntryString( QStringLiteral( "version" ), sTreeConnectionServices, QString() ) ;
+    static inline QgsSettingsEntryBool *settingsConnectionIgnoreGetMapURI = new QgsSettingsEntryBool( QStringLiteral( "ignoreGetMapURI" ), sTreeConnectionServices, false ) ;
+    static inline QgsSettingsEntryBool *settingsConnectionIgnoreGetFeatureInfoURI = new QgsSettingsEntryBool( QStringLiteral( "ignoreGetFeatureInfoURI" ), sTreeConnectionServices, false ) ;
+    static inline QgsSettingsEntryBool *settingsConnectionSmoothPixmapTransform = new QgsSettingsEntryBool( QStringLiteral( "smoothPixmapTransform" ), sTreeConnectionServices, false ) ;
+    static inline QgsSettingsEntryBool *settingsConnectionReportedLayerExtents = new QgsSettingsEntryBool( QStringLiteral( "reportedLayerExtents" ), sTreeConnectionServices, false ) ;
+    static inline QgsSettingsEntryEnumFlag<Qgis::DpiMode> *settingsConnectionDpiMode = new QgsSettingsEntryEnumFlag<Qgis::DpiMode>( QStringLiteral( "dpiMode" ), sTreeConnectionServices, Qgis::DpiMode::All, QString(), Qgis::SettingsOption::SaveEnumFlagAsInt ) ;
+    static inline QgsSettingsEntryEnumFlag<Qgis::TilePixelRatio> *settingsConnectionTilePixelRatio = new QgsSettingsEntryEnumFlag<Qgis::TilePixelRatio>( QStringLiteral( "tilePixelRatio" ), sTreeConnectionServices, Qgis::TilePixelRatio::Undefined, QString(), Qgis::SettingsOption::SaveEnumFlagAsInt ) ;
+    static inline QgsSettingsEntryString *settingsConnectionMaxNumFeatures = new QgsSettingsEntryString( QStringLiteral( "maxnumfeatures" ), sTreeConnectionServices ) ;
+    static inline QgsSettingsEntryString *settingsConnectionPagesize = new QgsSettingsEntryString( QStringLiteral( "pagesize" ), sTreeConnectionServices ) ;
+    static inline QgsSettingsEntryBool *settingsConnectionPagingEnabled = new QgsSettingsEntryBool( QStringLiteral( "pagingenabled" ), sTreeConnectionServices, true ) ;
+    static inline QgsSettingsEntryBool *settingsConnectionPreferCoordinatesForWfsT11 = new QgsSettingsEntryBool( QStringLiteral( "preferCoordinatesForWfsT11" ), sTreeConnectionServices, false ) ;
+    static inline QgsSettingsEntryBool *settingsConnectionIgnoreAxisOrientation = new QgsSettingsEntryBool( QStringLiteral( "ignoreAxisOrientation" ), sTreeConnectionServices, false ) ;
+    static inline QgsSettingsEntryBool *settingsConnectionInvertAxisOrientation = new QgsSettingsEntryBool( QStringLiteral( "invertAxisOrientation" ), sTreeConnectionServices, false ) ;
 
-    static const inline QgsSettingsEntryString settingsConnectionUsername = QgsSettingsEntryString( QStringLiteral( "%1/%2/username" ), QgsSettings::Prefix::QGIS ) SIP_SKIP;
-    static const inline QgsSettingsEntryString settingsConnectionPassword = QgsSettingsEntryString( QStringLiteral( "%1/%2/password" ), QgsSettings::Prefix::QGIS ) SIP_SKIP;
-    static const inline QgsSettingsEntryString settingsConnectionAuthCfg = QgsSettingsEntryString( QStringLiteral( "%1/%2/authcfg" ), QgsSettings::Prefix::QGIS ) SIP_SKIP;
+    static inline QgsSettingsEntryString *settingsConnectionUsername = new QgsSettingsEntryString( QStringLiteral( "username" ), sTreeConnectionServices ) ;
+    static inline QgsSettingsEntryString *settingsConnectionPassword = new QgsSettingsEntryString( QStringLiteral( "password" ), sTreeConnectionServices ) ;
+    static inline QgsSettingsEntryString *settingsConnectionAuthCfg = new QgsSettingsEntryString( QStringLiteral( "authcfg" ), sTreeConnectionServices ) ;
 
-    static const inline QgsSettingsEntryGroup settingsServiceConnectionDetailsGroup = QgsSettingsEntryGroup( {&settingsConnectionUrl, &settingsConnectionReferer, &settingsConnectionVersion, &settingsConnectionIgnoreGetMapURI, &settingsConnectionIgnoreGetFeatureInfoURI, &settingsConnectionSmoothPixmapTransform, &settingsConnectionReportedLayerExtents, &settingsConnectionDpiMode, &settingsConnectionTilePixelRatio, &settingsConnectionMaxNumFeatures, &settingsConnectionPagesize, &settingsConnectionPagingEnabled, &settingsConnectionPreferCoordinatesForWfsT11, &settingsConnectionIgnoreAxisOrientation, &settingsConnectionInvertAxisOrientation} );
-    static const inline QgsSettingsEntryGroup settingsServiceConnectionCredentialsGroup = QgsSettingsEntryGroup( {&settingsConnectionUsername, &settingsConnectionPassword, &settingsConnectionAuthCfg} );
+#endif
 
     /**
      * Constructor

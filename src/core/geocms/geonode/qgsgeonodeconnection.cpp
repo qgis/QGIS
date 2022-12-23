@@ -24,18 +24,18 @@ const QString QgsGeoNodeConnectionUtils::sGeoNodeConnection = QStringLiteral( "G
 QgsGeoNodeConnection::QgsGeoNodeConnection( const QString &name )
   : mConnName( name )
 {
-  mUri.setParam( QStringLiteral( "url" ), QgsOwsConnection::settingsConnectionUrl.value( {QgsGeoNodeConnectionUtils::sGeoNodeConnection.toLower(), mConnName} ) );
+  mUri.setParam( QStringLiteral( "url" ), QgsOwsConnection::settingsConnectionUrl->value( {QgsGeoNodeConnectionUtils::sGeoNodeConnection.toLower(), mConnName} ) );
 
   // Check for credentials and prepend to the connection info
-  const QString username = QgsOwsConnection::settingsConnectionUsername.value( {QgsGeoNodeConnectionUtils::sGeoNodeConnection, mConnName} );
-  const QString password = QgsOwsConnection::settingsConnectionPassword.value( {QgsGeoNodeConnectionUtils::sGeoNodeConnection, mConnName} );
+  const QString username = QgsOwsConnection::settingsConnectionUsername->value( {QgsGeoNodeConnectionUtils::sGeoNodeConnection, mConnName} );
+  const QString password = QgsOwsConnection::settingsConnectionPassword->value( {QgsGeoNodeConnectionUtils::sGeoNodeConnection, mConnName} );
   if ( !username.isEmpty() )
   {
     mUri.setUsername( username );
     mUri.setPassword( password );
   }
 
-  const QString authcfg = QgsOwsConnection::settingsConnectionAuthCfg.value( {QgsGeoNodeConnectionUtils::sGeoNodeConnection, mConnName} );
+  const QString authcfg = QgsOwsConnection::settingsConnectionAuthCfg->value( {QgsGeoNodeConnectionUtils::sGeoNodeConnection, mConnName} );
   if ( !authcfg.isEmpty() )
   {
     mUri.setAuthConfigId( authcfg );

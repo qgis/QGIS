@@ -772,9 +772,9 @@ QVector<QgsDataItem *> QgsWmsDataItemProvider::createDataItems( const QString &p
           QStringList serviceConnectionDetails = {QgsGeoNodeConnectionUtils::sGeoNodeConnection.toLower(), QStringLiteral( "%1/wms" ).arg( connectionName )};
 
           uri.setParam( QStringLiteral( "url" ), encodedUri );
-          if ( QgsOwsConnection::settingsConnectionDpiMode.exists( serviceConnectionDetails ) )
+          if ( QgsOwsConnection::settingsConnectionDpiMode->exists( serviceConnectionDetails ) )
           {
-            uri.setParam( QStringLiteral( "dpiMode" ), QString::number( static_cast<int>( QgsOwsConnection::settingsConnectionDpiMode.value( serviceConnectionDetails ) ) ) );
+            uri.setParam( QStringLiteral( "dpiMode" ), QString::number( static_cast<int>( QgsOwsConnection::settingsConnectionDpiMode->value( serviceConnectionDetails ) ) ) );
           }
 
           QgsDebugMsgLevel( QStringLiteral( "WMS full uri: '%1'." ).arg( QString( uri.encodedUri() ) ), 2 );
