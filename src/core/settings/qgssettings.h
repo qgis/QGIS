@@ -23,6 +23,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgslogger.h"
+#include "qgssettingstreeelement.h"
 
 /**
  * \ingroup core
@@ -78,6 +79,30 @@ class CORE_EXPORT QgsSettings : public QObject
       Misc,
       Gps, //!< GPS section, since QGIS 3.22
     };
+
+#ifndef SIP_RUN
+    static QgsSettingsTreeElement *treeRoot();
+    static inline QgsSettingsTreeElement *sTtreeConnections = treeRoot()->createChildElement( QStringLiteral( "connections" ) );
+    static inline QgsSettingsTreeElement *sTreeLocale = treeRoot()->createChildElement( QStringLiteral( "locale" ) );
+    static inline QgsSettingsTreeElement *sTreeGps = treeRoot()->createChildElement( QStringLiteral( "gps" ) );
+    static inline QgsSettingsTreeElement *sTreeQgis = treeRoot()->createChildElement( QStringLiteral( "qgis" ) );
+    static inline QgsSettingsTreeElement *sTreePlugins = treeRoot()->createChildElement( QStringLiteral( "plugins" ) );
+    static inline QgsSettingsTreeElement *sTreeSvg = treeRoot()->createChildElement( QStringLiteral( "svg" ) );
+#endif
+
+    /**
+     * Creates a settings tree element for the given \a pluginName
+     * \since QGIS 3.30
+     */
+    static QgsSettingsTreeElement *createPluginTreeElement( const QString &pluginName ) SIP_THROW( QgsSettingsException );
+
+
+    /**
+     * Unregisters the tree element for the given plugin
+     * \since QGIS 3.30
+     */
+    static void unregisterPluginTreeElement( const QString &pluginName );
+
 
     /**
      * \ingroup core
