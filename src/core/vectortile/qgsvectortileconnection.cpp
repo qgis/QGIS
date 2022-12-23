@@ -148,77 +148,81 @@ QStringList QgsVectorTileProviderConnection::connectionList()
 
 QgsVectorTileProviderConnection::Data QgsVectorTileProviderConnection::connection( const QString &name )
 {
-  QgsSettings settings;
-  settings.beginGroup( "qgis/connections-vector-tile/" + name );
-
-  if ( settings.value( "url" ).toString().isEmpty() )
+  if ( !settingsUrl->exists( name ) )
     return QgsVectorTileProviderConnection::Data();
 
   QgsVectorTileProviderConnection::Data conn;
-  conn.url = settings.value( QStringLiteral( "url" ) ).toString();
-  conn.zMin = settings.value( QStringLiteral( "zmin" ), -1 ).toInt();
-  conn.zMax = settings.value( QStringLiteral( "zmax" ), -1 ).toInt();
-  conn.authCfg = settings.value( QStringLiteral( "authcfg" ) ).toString();
-  conn.username = settings.value( QStringLiteral( "username" ) ).toString();
-  conn.password = settings.value( QStringLiteral( "password" ) ).toString();
-  conn.styleUrl = settings.value( QStringLiteral( "styleUrl" ) ).toString();
+  conn.url = settingsUrl->value( name );
+  conn.zMin = settingsZzmin->value( name );
+  conn.zMax = settingsZmax->value( name );
+  conn.authCfg = settingsAuthcfg->value( name );
+  conn.username = settingsUsername->value( name );
+  conn.password = settingsPassword->value( name );
+  conn.styleUrl = settingsStyleUrl->value( name );
 
-  conn.httpHeaders = QgsHttpHeaders( settings );
-
-  if ( settings.contains( QStringLiteral( "serviceType" ) ) )
+  if ( settingsHeaders->exists( name ) )
+    conn.httpHeaders = QgsHttpHeaders( settingsHeaders->value( name ) );
+  else
   {
-    if ( settings.value( QStringLiteral( "serviceType" ) ) == QLatin1String( "arcgis" ) )
-      conn.serviceType = ArcgisVectorTileService;
+    // TODO QGIS 4 (or before) remove compatibility import
+    QgsSettings settings;
+    settings.beginGroup( "qgis/connections-vector-tile/" + name );
+    Q_NOWARN_DEPRECATED_PUSH
+    conn.httpHeaders = QgsHttpHeaders( settings );
+    Q_NOWARN_DEPRECATED_POP
   }
+
+  if ( settingsServiceType->exists( name ) &&  settingsServiceType->value( name ) == QLatin1String( "arcgis" ) )
+    conn.serviceType = ArcgisVectorTileService;
 
   return conn;
 }
 
 void QgsVectorTileProviderConnection::deleteConnection( const QString &name )
 {
-  QgsSettings settings;
-  settings.remove( "qgis/connections-vector-tile/" + name );
+  sTreeConnectionVectorTile->deleteItem( name );
 }
 
 void QgsVectorTileProviderConnection::addConnection( const QString &name, QgsVectorTileProviderConnection::Data conn )
 {
+  settingsUrl->setValue( conn.url, name );
+  settingsZzmin->setValue( conn.zMin, name );
+  settingsZmax->setValue( conn.zMax, name );
+  settingsAuthcfg->setValue( conn.authCfg, name );
+  settingsUsername->setValue( conn.username, name );
+  settingsPassword->setValue( conn.password, name );
+  settingsStyleUrl->setValue( conn.styleUrl, name );
+
+  settingsHeaders->setValue( conn.httpHeaders.headers(), name );
+
+
+  // TODO QGIS 4 (or before) remove compatibility import
   QgsSettings settings;
-
   settings.beginGroup( "qgis/connections-vector-tile/" + name );
-  settings.setValue( QStringLiteral( "url" ), conn.url );
-  settings.setValue( QStringLiteral( "zmin" ), conn.zMin );
-  settings.setValue( QStringLiteral( "zmax" ), conn.zMax );
-  settings.setValue( QStringLiteral( "authcfg" ), conn.authCfg );
-  settings.setValue( QStringLiteral( "username" ), conn.username );
-  settings.setValue( QStringLiteral( "password" ), conn.password );
-  settings.setValue( QStringLiteral( "styleUrl" ), conn.styleUrl );
-
+  Q_NOWARN_DEPRECATED_PUSH
   conn.httpHeaders.updateSettings( settings );
-
+  Q_NOWARN_DEPRECATED_POP
   switch ( conn.serviceType )
   {
     case Generic:
       break;
 
     case ArcgisVectorTileService:
-      settings.setValue( QStringLiteral( "serviceType" ), QStringLiteral( "arcgis" ) );
+      settingsServiceType->setValue( QStringLiteral( "arcgis" ), name );
       break;
   }
 }
 
 QString QgsVectorTileProviderConnection::selectedConnection()
 {
-  const QgsSettings settings;
-  return settings.value( QStringLiteral( "qgis/connections-vector-tile/selected" ) ).toString();
+  return sTreeConnectionVectorTile->selectedItem();
 }
 
 void QgsVectorTileProviderConnection::setSelectedConnection( const QString &name )
 {
-  QgsSettings settings;
-  return settings.setValue( QStringLiteral( "qgis/connections-vector-tile/selected" ), name );
+  sTreeConnectionVectorTile->selectedItem( {name} );
 }
 
-//
 
 QgsVectorTileProviderConnection::QgsVectorTileProviderConnection( const QString &name )
   : QgsAbstractProviderConnection( name )

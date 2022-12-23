@@ -17,6 +17,7 @@
 #define QGSVECTORTILECONNECTION_H
 
 #include "qgis_core.h"
+#include "qgssettingsentryimpl.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
@@ -29,6 +30,22 @@ class CORE_EXPORT QgsVectorTileProviderConnection : public QgsAbstractProviderCo
 {
 
   public:
+
+#ifndef SIP_RUN
+
+    static inline QgsSettingsTreeNamedListElement *sTreeConnectionVectorTile = QgsSettings::sTtreeConnections->createNamedListElement( QStringLiteral( "vector-tile" ), QgsSettingsTreeNamedListElement::Option::NamedListSelectedItemSetting );
+
+    static inline QgsSettingsEntryString *settingsUrl = new QgsSettingsEntryString( QStringLiteral( "url" ), sTreeConnectionVectorTile );
+    static inline QgsSettingsEntryInteger *settingsZzmin = new QgsSettingsEntryInteger( QStringLiteral( "zmin" ), sTreeConnectionVectorTile, -1 );
+    static inline QgsSettingsEntryInteger *settingsZmax = new QgsSettingsEntryInteger( QStringLiteral( "zmax" ), sTreeConnectionVectorTile, -1 );
+    static inline QgsSettingsEntryString *settingsAuthcfg = new QgsSettingsEntryString( QStringLiteral( "authcfg" ), sTreeConnectionVectorTile );
+    static inline QgsSettingsEntryString *settingsUsername = new QgsSettingsEntryString( QStringLiteral( "username" ), sTreeConnectionVectorTile );
+    static inline QgsSettingsEntryString *settingsPassword = new QgsSettingsEntryString( QStringLiteral( "password" ), sTreeConnectionVectorTile );
+    static inline QgsSettingsEntryString *settingsStyleUrl = new QgsSettingsEntryString( QStringLiteral( "styleUrl" ), sTreeConnectionVectorTile );
+    static inline QgsSettingsEntryString *settingsServiceType = new QgsSettingsEntryString( QStringLiteral( "serviceType" ), sTreeConnectionVectorTile );
+    static inline QgsSettingsEntryVariantMap *settingsHeaders = new QgsSettingsEntryVariantMap( QStringLiteral( "http-header" ), sTreeConnectionVectorTile );
+#endif
+
     QgsVectorTileProviderConnection( const QString &name );
     QgsVectorTileProviderConnection( const QString &uri, const QVariantMap &configuration );
 
