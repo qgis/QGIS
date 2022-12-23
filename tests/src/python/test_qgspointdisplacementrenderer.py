@@ -132,7 +132,7 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
         f = QgsFontUtils.getStandardTestFont('Bold Oblique', 14)
         stylename = r.labelFormat().namedStyle()
         if stylename == "":
-          stylename = QgsFontUtils.resolveFontStyleName(r.labelFormat().font()) #style name may be lost along the way
+            stylename = QgsFontUtils.resolveFontStyleName(r.labelFormat().font())
         self.assertEqual(stylename, f.styleName())
         self.assertEqual(r.minimumLabelScale(), 50000)
         self.assertEqual(r.labelColor(), QColor(255, 0, 0))
