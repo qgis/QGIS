@@ -130,7 +130,10 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
         """ test properties of renderer against expected"""
         self.assertEqual(r.labelAttributeName(), 'name')
         f = QgsFontUtils.getStandardTestFont('Bold Oblique', 14)
-        self.assertEqual(r.labelFormat().font().styleName(), f.styleName())
+        stylename = r.labelFormat().namedStyle()
+        if stylename == "":
+          stylename = QgsFontUtils.resolveFontStyleName(r.labelFormat().font()) #style name may be lost along the way
+        self.assertEqual(stylename, f.styleName())
         self.assertEqual(r.minimumLabelScale(), 50000)
         self.assertEqual(r.labelColor(), QColor(255, 0, 0))
         self.assertEqual(r.tolerance(), 5)
