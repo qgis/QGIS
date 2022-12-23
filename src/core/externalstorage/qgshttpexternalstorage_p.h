@@ -33,7 +33,6 @@ class QgsFetchedContent;
 #define SIP_NO_FILE
 
 /**
- * \ingroup core
  * \brief External storage implementation using the protocol WebDAV.
  *
  * \since QGIS 3.22
@@ -54,7 +53,6 @@ class CORE_EXPORT QgsWebDavExternalStorage : public QgsExternalStorage
 };
 
 /**
- * \ingroup core
  * \brief External storage implementation using the protocol AWS S3.
  *
  * \since QGIS 3.28
@@ -75,7 +73,6 @@ class CORE_EXPORT QgsAwsS3ExternalStorage : public QgsExternalStorage
 };
 
 /**
- * \ingroup core
  * \brief Class for HTTP stored content
  *
  * \since QGIS 3.22
@@ -104,7 +101,6 @@ class QgsHttpExternalStorageStoredContent  : public QgsExternalStorageStoredCont
 };
 
 /**
- * \ingroup core
  * \brief Class for HTTP fetched content
  *
  * \since QGIS 3.22
@@ -134,7 +130,6 @@ class QgsHttpExternalStorageFetchedContent : public QgsExternalStorageFetchedCon
 
 
 /**
- * \ingroup core
  * \brief Task to store a file to a given url
  *
  * \since QGIS 3.22
