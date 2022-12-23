@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgstreewidgetitem.h"
+#include "qgsvariantutils.h"
 #include "qgis.h"
 
 QgsTreeWidgetItem::QgsTreeWidgetItem( QTreeWidget *parent, int type )
@@ -106,7 +107,7 @@ bool QgsTreeWidgetItem::operator<( const QTreeWidgetItem &other ) const
   if ( !val2.isValid() )
     val2 = other.text( column );
 
-  if ( !val1.isNull() && !val2.isNull() )
+  if ( !QgsVariantUtils::isNull( val1 ) && !QgsVariantUtils::isNull( val2 ) )
   {
     val = val1.toDouble( &ok1 ) < val2.toDouble( &ok2 );
     if ( ok1 && ok2 )

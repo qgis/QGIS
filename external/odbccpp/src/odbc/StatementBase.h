@@ -4,7 +4,7 @@
 #include <odbc/Config.h>
 #include <odbc/Forwards.h>
 //------------------------------------------------------------------------------
-namespace odbc {
+NS_ODBC_START
 //------------------------------------------------------------------------------
 /**
  * Base class for Statement and PreparedStatement.
@@ -73,6 +73,6 @@ public:
     void setQueryTimeout(unsigned long seconds);
 };
 //------------------------------------------------------------------------------
-} // namespace odbc
+NS_ODBC_END
 //------------------------------------------------------------------------------
 #endif

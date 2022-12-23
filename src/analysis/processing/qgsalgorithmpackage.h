@@ -58,6 +58,7 @@ class QgsPackageAlgorithm : public QgsProcessingAlgorithm
                              bool saveStyles, bool saveMetadata, bool selectedFeaturesOnly );
 
     std::vector< std::unique_ptr< QgsMapLayer> > mLayers;
+    QMap<QString, QString> mClonedLayerIds;
 
 };
 

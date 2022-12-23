@@ -21,7 +21,7 @@
 #include "ui_qgscolordialog.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "qgshelp.h"
+#include "qgsguiutils.h"
 
 class QColor;
 

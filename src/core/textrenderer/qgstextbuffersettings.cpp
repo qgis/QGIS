@@ -22,6 +22,7 @@
 #include "qgspainting.h"
 #include "qgspainteffectregistry.h"
 #include "qgstextrendererutils.h"
+#include "qgsapplication.h"
 
 QgsTextBufferSettings::QgsTextBufferSettings()
 {
@@ -184,7 +185,7 @@ void QgsTextBufferSettings::updateDataDefinedProperties( QgsRenderContext &conte
   }
 
   QVariant exprVal = properties.value( QgsPalLayerSettings::BufferUnit, context.expressionContext() );
-  if ( !exprVal.isNull() )
+  if ( !QgsVariantUtils::isNull( exprVal ) )
   {
     const QString units = exprVal.toString();
     if ( !units.isEmpty() )
@@ -200,7 +201,7 @@ void QgsTextBufferSettings::updateDataDefinedProperties( QgsRenderContext &conte
   {
     context.expressionContext().setOriginalValueVariable( d->opacity * 100 );
     const QVariant val = properties.value( QgsPalLayerSettings::BufferOpacity, context.expressionContext(), d->opacity * 100 );
-    if ( !val.isNull() )
+    if ( !QgsVariantUtils::isNull( val ) )
     {
       d->opacity = val.toDouble() / 100.0;
     }

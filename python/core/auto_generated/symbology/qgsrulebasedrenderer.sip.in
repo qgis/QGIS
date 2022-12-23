@@ -40,12 +40,17 @@ the rules and draws features with symbols from rules that match.
 
     struct RenderJob
     {
-        RenderJob( QgsRuleBasedRenderer::FeatureToRender &_ftr, QgsSymbol *_s );
 
-        QgsRuleBasedRenderer::FeatureToRender &ftr;
+        RenderJob( const QgsRuleBasedRenderer::FeatureToRender &_ftr, QgsSymbol *_s );
 %Docstring
-Feature to render
+Constructor for a render job, with the specified feature to render and symbol.
+
+.. note::
+
+   The symbol ownership is not transferred.
 %End
+
+        QgsRuleBasedRenderer::FeatureToRender ftr;
 
         QgsSymbol *symbol;
 
@@ -361,7 +366,7 @@ Create a rule from an XML definition
 :return: A new rule
 %End
 
-        const QgsRuleBasedRenderer::RuleList &children();
+        const QgsRuleBasedRenderer::RuleList &children() const;
 %Docstring
 Returns all children rules of this rule
 
@@ -510,6 +515,8 @@ Returns symbol for current feature. Should not be used individually: there could
     virtual bool legendSymbolItemChecked( const QString &key );
 
     virtual void checkLegendSymbolItem( const QString &key, bool state = true );
+
+    virtual QString legendKeyToExpression( const QString &key, QgsVectorLayer *layer, bool &ok ) const;
 
 
     virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol /Transfer/ );

@@ -213,7 +213,7 @@ class ProjectorData
     void nextHelper();
 
     //! Gets mCPMatrix as string
-    QString cpToString();
+    QString cpToString() const;
 
     /**
      * Use approximation (requested precision is Approximate and it is possible to calculate

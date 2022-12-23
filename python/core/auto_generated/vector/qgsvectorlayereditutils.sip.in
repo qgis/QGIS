@@ -87,6 +87,20 @@ Adds a ring to polygon/multipolygon features
 :return: OperationResult result code: success or reason of failure
 %End
 
+    Qgis::GeometryOperationResult addRingV2( QgsCurve *ring /Transfer/, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureIds *modifiedFeatureIds /Out/ = 0 );
+%Docstring
+Adds a ring to polygon/multipolygon features
+
+:param ring: ring to add (ownership is transferred)
+:param targetFeatureIds: if specified, only these features will be the candidates for adding a ring. Otherwise
+                         all intersecting features are tested and the ring is added to all valid features.
+
+:return: - OperationResult result code: success or reason of failure
+         - modifiedFeatureIds: feature IDS for features that ring was added to will be stored in this parameter
+
+.. versionadded:: 3.28
+%End
+
     Qgis::GeometryOperationResult addRing( QgsCurve *ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = 0 ) /PyName=addCurvedRing/;
 %Docstring
 Adds a ring to polygon/multipolygon features

@@ -96,8 +96,8 @@ class PGTableInfo(TableInfo):
                 privileges.append("update")
             if table_priv[3]:
                 privileges.append("delete")
-            priv_string = u", ".join(privileges) if len(privileges) > 0 else QApplication.translate("DBManagerPlugin",
-                                                                                                    '<warning> This user has no privileges!')
+            priv_string = ", ".join(privileges) if len(privileges) > 0 else QApplication.translate("DBManagerPlugin",
+                                                                                                   '<warning> This user has no privileges!')
             tbl.append((QApplication.translate("DBManagerPlugin", "Privileges:"), priv_string))
 
         ret.append(HtmlTable(tbl))
@@ -193,12 +193,12 @@ class PGTableInfo(TableInfo):
 
         # add table contents
         for trig in self.table.triggers():
-            name = u'%(name)s (<a href="action:trigger/%(name)s/%(action)s">%(action)s</a>)' % {"name": trig.name,
-                                                                                                "action": "delete"}
+            name = '%(name)s (<a href="action:trigger/%(name)s/%(action)s">%(action)s</a>)' % {"name": trig.name,
+                                                                                               "action": "delete"}
 
             (enabled, action) = (QApplication.translate("DBManagerPlugin", "Yes"), "disable") if trig.enabled else (
                 QApplication.translate("DBManagerPlugin", "No"), "enable")
-            txt_enabled = u'%(enabled)s (<a href="action:trigger/%(name)s/%(action)s">%(action)s</a>)' % {
+            txt_enabled = '%(enabled)s (<a href="action:trigger/%(name)s/%(action)s">%(action)s</a>)' % {
                 "name": trig.name, "action": action, "enabled": enabled}
 
             tbl.append((name, trig.function, trig.type2String(), txt_enabled))
@@ -221,8 +221,8 @@ class PGTableInfo(TableInfo):
 
         # add table contents
         for rule in self.table.rules():
-            name = u'%(name)s (<a href="action:rule/%(name)s/%(action)s">%(action)s</a>)' % {"name": rule.name,
-                                                                                             "action": "delete"}
+            name = '%(name)s (<a href="action:rule/%(name)s/%(action)s">%(action)s</a>)' % {"name": rule.name,
+                                                                                            "action": "delete"}
             tbl.append((name, rule.definition))
 
         return HtmlTable(tbl, {"class": "header"})

@@ -30,7 +30,7 @@ class HtmlContent(object):
 
     def toHtml(self):
         if isinstance(self.data, list) or isinstance(self.data, tuple):
-            html = u''
+            html = ''
             for item in self.data:
                 html += HtmlContent(item).toHtml()
             return html
@@ -76,19 +76,19 @@ class HtmlElem(object):
         self.attrs[name] = value
 
     def getAttrsHtml(self):
-        html = u''
+        html = ''
         for k, v in self.attrs.items():
-            html += u' %s="%s"' % (k, v)
+            html += ' %s="%s"' % (k, v)
         return html
 
     def openTagHtml(self):
-        return u"<%s%s>" % (self.tag, self.getAttrsHtml())
+        return "<%s%s>" % (self.tag, self.getAttrsHtml())
 
     def closeTagHtml(self):
-        return u"</%s>" % self.tag
+        return "</%s>" % self.tag
 
     def toHtml(self):
-        return u"%s%s%s" % (self.openTagHtml(), self.data.toHtml(), self.closeTagHtml())
+        return "%s%s%s" % (self.openTagHtml(), self.data.toHtml(), self.closeTagHtml())
 
     def hasContents(self):
         return self.data.toHtml() != ""
@@ -124,7 +124,7 @@ class HtmlTableCol(HtmlElem):
 
     def closeTagHtml(self):
         # FIX INVALID BEHAVIOR: an empty cell as last table's cell break margins
-        return u"&nbsp;%s" % HtmlElem.closeTagHtml(self)
+        return "&nbsp;%s" % HtmlElem.closeTagHtml(self)
 
 
 class HtmlTableRow(HtmlElem):

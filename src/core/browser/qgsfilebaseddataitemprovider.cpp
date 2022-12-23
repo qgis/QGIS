@@ -18,13 +18,13 @@
 #include "qgsproviderregistry.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
-#include "qgszipitem.h"
 #include "qgsogrproviderutils.h"
 #include "qgsstyle.h"
-#include "qgsgdalutils.h"
 #include "qgsgeopackagedataitems.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsfieldsitem.h"
+#include "qgsfielddomainsitem.h"
+#include "qgsrelationshipsitem.h"
 #include "qgsproviderutils.h"
 #include "qgsmbtiles.h"
 #include "qgsvectortiledataitems.h"
@@ -42,8 +42,8 @@ QgsProviderSublayerItem::QgsProviderSublayerItem( QgsDataItem *parent, const QSt
 {
   mToolTip = details.uri();
 
-  // no children, except for sqlite, which gets special handling because of the unusual situation with the spatialite provider
-  setState( details.driverName() == QLatin1String( "SQLite" ) ? Qgis::BrowserItemState::NotPopulated : Qgis::BrowserItemState::Populated );
+  // no children, except for vector layers, which will show the fields item
+  setState( details.type() == QgsMapLayerType::VectorLayer ? Qgis::BrowserItemState::NotPopulated : Qgis::BrowserItemState::Populated );
 }
 
 QVector<QgsDataItem *> QgsProviderSublayerItem::createChildren()
@@ -52,8 +52,7 @@ QVector<QgsDataItem *> QgsProviderSublayerItem::createChildren()
 
   if ( mDetails.type() == QgsMapLayerType::VectorLayer )
   {
-    // sqlite gets special handling because of the spatialite provider which supports the api required for a fields item.
-    // TODO -- allow read only fields items to be created directly from vector layers, so that all vector layers can show field items.
+    // sqlite gets special handling because it delegates to the dedicated spatialite provider
     if ( mDetails.driverName() == QLatin1String( "SQLite" ) )
     {
       children.push_back( new QgsFieldsItem( this,
@@ -61,8 +60,66 @@ QVector<QgsDataItem *> QgsProviderSublayerItem::createChildren()
                                              QStringLiteral( R"(dbname="%1")" ).arg( parent()->path().replace( '"', QLatin1String( R"(\")" ) ) ),
                                              QStringLiteral( "spatialite" ), QString(), name() ) );
     }
+    else if ( mDetails.providerKey() == QLatin1String( "ogr" ) )
+    {
+      // otherwise we use the default OGR database connection approach, which is the generic way to handle this
+      // for all OGR layer types
+      children.push_back( new QgsFieldsItem( this,
+                                             path() + QStringLiteral( "/columns/ " ),
+                                             path(),
+                                             QStringLiteral( "ogr" ), QString(), name() ) );
+
+      std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn( databaseConnection() );
+      if ( conn && ( conn->capabilities() & QgsAbstractDatabaseProviderConnection::Capability::RetrieveRelationships ) )
+      {
+        QString relationError;
+        QList< QgsWeakRelation > relations;
+        try
+        {
+          relations = conn->relationships( QString(), mDetails.name() );
+        }
+        catch ( QgsProviderConnectionException &ex )
+        {
+          relationError = ex.what();
+        }
+
+        if ( !relations.empty() || !relationError.isEmpty() )
+        {
+          std::unique_ptr< QgsRelationshipsItem > relationsItem = std::make_unique< QgsRelationshipsItem >( this, mPath + "/relations", conn->uri(), QStringLiteral( "ogr" ), QString(), mDetails.name() );
+          // force this item to appear last by setting a maximum string value for the sort key
+          relationsItem->setSortKey( QString( QChar( 0x11FFFF ) ) );
+          children.append( relationsItem.release() );
+        }
+      }
+    }
   }
   return children;
+}
+
+QgsProviderSublayerDetails QgsProviderSublayerItem::sublayerDetails() const
+{
+  return mDetails;
+}
+
+QgsAbstractDatabaseProviderConnection *QgsProviderSublayerItem::databaseConnection() const
+{
+  if ( parent() )
+  {
+    if ( QgsAbstractDatabaseProviderConnection *connection = parent()->databaseConnection() )
+      return connection;
+  }
+
+  if ( mDetails.providerKey() == QLatin1String( "ogr" ) )
+  {
+    if ( QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) )
+    {
+      QVariantMap parts;
+      parts.insert( QStringLiteral( "path" ), path() );
+      return static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( md->encodeUri( parts ), {} ) );
+    }
+  }
+
+  return nullptr;
 }
 
 Qgis::BrowserLayerType QgsProviderSublayerItem::layerTypeFromSublayer( const QgsProviderSublayerDetails &sublayer )
@@ -119,6 +176,38 @@ QString QgsProviderSublayerItem::layerName() const
 }
 
 //
+// QgsFileDataCollectionGroupItem
+//
+QgsFileDataCollectionGroupItem::QgsFileDataCollectionGroupItem( QgsDataItem *parent, const QString &groupName, const QString &path )
+  : QgsDataCollectionItem( parent, groupName, path )
+{
+  mCapabilities = Qgis::BrowserItemCapability::RefreshChildrenWhenItemIsRefreshed;
+  mIconName = QStringLiteral( "mIconDbSchema.svg" );
+}
+
+void QgsFileDataCollectionGroupItem::appendSublayer( const QgsProviderSublayerDetails &sublayer )
+{
+  mSublayers.append( sublayer );
+}
+
+bool QgsFileDataCollectionGroupItem::hasDragEnabled() const
+{
+  return true;
+}
+
+QgsMimeDataUtils::UriList QgsFileDataCollectionGroupItem::mimeUris() const
+{
+  QgsMimeDataUtils::UriList res;
+  res.reserve( mSublayers.size() );
+
+  for ( const QgsProviderSublayerDetails &sublayer : mSublayers )
+  {
+    res << sublayer.toMimeUri();
+  }
+  return res;
+}
+
+//
 // QgsFileDataCollectionItem
 //
 
@@ -157,10 +246,93 @@ QVector<QgsDataItem *> QgsFileDataCollectionItem::createChildren()
 
   QVector<QgsDataItem *> children;
   children.reserve( sublayers.size() );
+  QMap< QStringList, QgsFileDataCollectionGroupItem * > groupItems;
   for ( const QgsProviderSublayerDetails &sublayer : std::as_const( sublayers ) )
   {
-    QgsProviderSublayerItem *item = new QgsProviderSublayerItem( this, sublayer.name(), sublayer, QString() );
-    children.append( item );
+    QgsProviderSublayerItem *item = new QgsProviderSublayerItem( nullptr, sublayer.name(), sublayer, QString() );
+
+    if ( !sublayer.path().isEmpty() )
+    {
+      QStringList currentPath;
+      QStringList remainingPaths = sublayer.path();
+      QgsFileDataCollectionGroupItem *groupItem = nullptr;
+
+      while ( !remainingPaths.empty() )
+      {
+        currentPath << remainingPaths.takeAt( 0 );
+
+        auto it = groupItems.constFind( currentPath );
+        if ( it == groupItems.constEnd() )
+        {
+          QgsFileDataCollectionGroupItem *newGroupItem = new QgsFileDataCollectionGroupItem( this, currentPath.constLast(), path() + '/' + currentPath.join( ',' ) );
+          newGroupItem->setState( Qgis::BrowserItemState::Populated );
+          groupItems.insert( currentPath, newGroupItem );
+          if ( groupItem )
+            groupItem->addChildItem( newGroupItem );
+          else
+            children.append( newGroupItem );
+          groupItem = newGroupItem;
+        }
+        else
+        {
+          groupItem = it.value();
+        }
+
+        if ( groupItem )
+          groupItem->appendSublayer( sublayer );
+      }
+
+      if ( groupItem )
+        groupItem->addChildItem( item );
+    }
+    else
+    {
+      children.append( item );
+    }
+  }
+
+  std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn( databaseConnection() );
+  if ( conn && ( conn->capabilities() & QgsAbstractDatabaseProviderConnection::Capability::ListFieldDomains ) )
+  {
+    QString domainError;
+    QStringList fieldDomains;
+    try
+    {
+      fieldDomains = conn->fieldDomainNames();
+    }
+    catch ( QgsProviderConnectionException &ex )
+    {
+      domainError = ex.what();
+    }
+
+    if ( !fieldDomains.empty() || !domainError.isEmpty() )
+    {
+      std::unique_ptr< QgsFieldDomainsItem > domainsItem = std::make_unique< QgsFieldDomainsItem >( this, mPath + "/domains", conn->uri(), QStringLiteral( "ogr" ) );
+      // force this item to appear last by setting a maximum string value for the sort key
+      domainsItem->setSortKey( QString( QChar( 0x10FFFF ) ) );
+      children.append( domainsItem.release() );
+    }
+  }
+  if ( conn && ( conn->capabilities() & QgsAbstractDatabaseProviderConnection::Capability::RetrieveRelationships ) )
+  {
+    QString relationError;
+    QList< QgsWeakRelation > relations;
+    try
+    {
+      relations = conn->relationships();
+    }
+    catch ( QgsProviderConnectionException &ex )
+    {
+      relationError = ex.what();
+    }
+
+    if ( !relations.empty() || !relationError.isEmpty() )
+    {
+      std::unique_ptr< QgsRelationshipsItem > relationsItem = std::make_unique< QgsRelationshipsItem >( this, mPath + "/relations", conn->uri(), QStringLiteral( "ogr" ) );
+      // force this item to appear last by setting a maximum string value for the sort key
+      relationsItem->setSortKey( QString( QChar( 0x11FFFF ) ) );
+      children.append( relationsItem.release() );
+    }
   }
 
   return children;
@@ -182,15 +354,6 @@ QgsMimeDataUtils::UriList QgsFileDataCollectionItem::mimeUris() const
 
 QgsAbstractDatabaseProviderConnection *QgsFileDataCollectionItem::databaseConnection() const
 {
-  // sqlite gets special handling because of the spatialite provider which supports the api required database connections
-  const QFileInfo fi( mPath );
-  if ( fi.suffix().toLower() != QLatin1String( "sqlite" )  && fi.suffix().toLower() != QLatin1String( "db" ) )
-  {
-    return nullptr;
-  }
-
-  QgsAbstractDatabaseProviderConnection *conn = nullptr;
-
   // test that file is valid with OGR
   if ( OGRGetDriverCount() == 0 )
   {
@@ -199,26 +362,42 @@ QgsAbstractDatabaseProviderConnection *QgsFileDataCollectionItem::databaseConnec
   // do not print errors, but write to debug
   CPLPushErrorHandler( CPLQuietErrorHandler );
   CPLErrorReset();
-  gdal::dataset_unique_ptr hDS( GDALOpenEx( path().toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_READONLY, nullptr, nullptr, nullptr ) );
+  GDALDriverH hDriver = GDALIdentifyDriverEx( path().toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr );
   CPLPopErrorHandler();
 
-  if ( ! hDS )
+  if ( ! hDriver )
   {
-    QgsDebugMsgLevel( QStringLiteral( "GDALOpen error # %1 : %2 on %3" ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ).arg( path() ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "GDALIdentifyDriverEx error # %1 : %2 on %3" ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ).arg( path() ), 2 );
     return nullptr;
   }
 
-  GDALDriverH hDriver = GDALGetDatasetDriver( hDS.get() );
-  QString driverName = GDALGetDriverShortName( hDriver );
+  const QString driverName = GDALGetDriverShortName( hDriver );
+  if ( driverName == QLatin1String( "PDF" ) )
+  {
+    // unwanted drivers -- it's slow to create connections for these, and we don't really want
+    // to expose database capabilities for them (even though they kind of are database formats)
+    return nullptr;
+  }
 
+  QgsAbstractDatabaseProviderConnection *conn = nullptr;
   if ( driverName == QLatin1String( "SQLite" ) )
   {
-    QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "spatialite" ) ) };
-    if ( md )
+    // sqlite gets special handling, as we delegate to the native spatialite provider
+    if ( QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "spatialite" ) ) )
     {
       QgsDataSourceUri uri;
       uri.setDatabase( path( ) );
       conn = static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( uri.uri(), {} ) );
+    }
+  }
+  else
+  {
+    // for all other vector types we use the generic OGR provider
+    if ( QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) )
+    {
+      QVariantMap parts;
+      parts.insert( QStringLiteral( "path" ), path() );
+      conn = static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( md->encodeUri( parts ), {} ) );
     }
   }
   return conn;

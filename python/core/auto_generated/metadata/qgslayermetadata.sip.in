@@ -115,6 +115,7 @@ Constructor for Constraint.
 Constructor for QgsLayerMetadata.
 %End
 
+
     virtual QgsLayerMetadata *clone() const /Factory/;
 
 
@@ -279,6 +280,24 @@ Reads the metadata state from a ``layer``'s custom properties (see :py:func:`Qgs
 
 
     bool operator==( const QgsLayerMetadata &metadataOther ) const;
+
+    bool contains( const QString &searchString ) const;
+%Docstring
+Returns ``True`` if the metadata identifier, title, abstract, keywords or categories
+contain ``searchString`` using case-insensitive search.
+
+If ``searchString`` is empty this method returns ``False``.
+
+.. versionadded:: 3.28
+%End
+
+    bool matches( const QVector<QRegularExpression> &searchReList ) const;
+%Docstring
+Returns ``True`` if the metadata identifier, title, abstract, keywords or categories
+matches any regular expression from ``searchReList``.
+
+.. versionadded:: 3.28
+%End
 
 };
 

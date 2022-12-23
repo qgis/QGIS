@@ -30,6 +30,7 @@
 #include "qgslayoutmanager.h"
 #include "qgsmarkersymbol.h"
 
+
 class TestQgsProject : public QObject
 {
     Q_OBJECT
@@ -223,18 +224,9 @@ static QHash<QString, QString> _parseSvgPathsForLayers( const QString &projectFi
   while ( !layerElem.isNull() )
   {
     const QString layerName = layerElem.firstChildElement( QStringLiteral( "layername" ) ).text();
-    QString svgPath;
     const QDomElement symbolElem = layerElem.firstChildElement( QStringLiteral( "renderer-v2" ) ).firstChildElement( QStringLiteral( "symbols" ) ).firstChildElement( QStringLiteral( "symbol" ) ).firstChildElement( QStringLiteral( "layer" ) );
-    QDomElement propElem = symbolElem.firstChildElement( QStringLiteral( "prop" ) );
-    while ( !propElem.isNull() )
-    {
-      if ( propElem.attribute( QStringLiteral( "k" ) ) == QLatin1String( "name" ) )
-      {
-        svgPath = propElem.attribute( QStringLiteral( "v" ) );
-        break;
-      }
-      propElem = propElem.nextSiblingElement( QStringLiteral( "prop" ) );
-    }
+    QVariantMap props = QgsSymbolLayerUtils::parseProperties( symbolElem );
+    QString svgPath = props.value( QLatin1String( "name" ) ).toString();
     projectFileSvgPaths[layerName] = svgPath;
     layerElem = layerElem.nextSiblingElement();
   }
@@ -459,7 +451,7 @@ void TestQgsProject::testReadFlags()
 {
   const QString project1Path = QString( TEST_DATA_DIR ) + QStringLiteral( "/embedded_groups/project1.qgs" );
   QgsProject p;
-  QVERIFY( p.read( project1Path, QgsProject::ReadFlag::FlagDontResolveLayers ) );
+  QVERIFY( p.read( project1Path, Qgis::ProjectReadFlag::DontResolveLayers ) );
   auto layers = p.mapLayers();
   QCOMPARE( layers.count(), 3 );
   // layers should be invalid - we skipped loading them!
@@ -474,14 +466,14 @@ void TestQgsProject::testReadFlags()
   QVERIFY( ! layers.value( QStringLiteral( "polys20170310142652234" ) )->originalXmlProperties().isEmpty() );
 
   // do not store styles
-  QVERIFY( p.read( project1Path, QgsProject::ReadFlag::FlagDontStoreOriginalStyles ) );
+  QVERIFY( p.read( project1Path, Qgis::ProjectReadFlag::DontStoreOriginalStyles ) );
   layers = p.mapLayers();
   QVERIFY( layers.value( QStringLiteral( "polys20170310142652234" ) )->originalXmlProperties().isEmpty() );
 
   // project with embedded groups
   const QString project2Path = QString( TEST_DATA_DIR ) + QStringLiteral( "/embedded_groups/project2.qgs" );
   QgsProject p2;
-  QVERIFY( p2.read( project2Path, QgsProject::ReadFlag::FlagDontResolveLayers ) );
+  QVERIFY( p2.read( project2Path, Qgis::ProjectReadFlag::DontResolveLayers ) );
   // layers should be invalid - we skipped loading them!
   layers = p2.mapLayers();
   QCOMPARE( layers.count(), 2 );
@@ -493,7 +485,7 @@ void TestQgsProject::testReadFlags()
 
   const QString project3Path = QString( TEST_DATA_DIR ) + QStringLiteral( "/layouts/layout_casting.qgs" );
   QgsProject p3;
-  QVERIFY( p3.read( project3Path, QgsProject::ReadFlag::FlagDontLoadLayouts ) );
+  QVERIFY( p3.read( project3Path, Qgis::ProjectReadFlag::DontLoadLayouts ) );
   QCOMPARE( p3.layoutManager()->layouts().count(), 0 );
 }
 
@@ -742,8 +734,10 @@ void TestQgsProject::testDefaultRelativePaths()
 void TestQgsProject::testAttachmentsQgs()
 {
   // Test QgsProject::{createAttachedFile,attachedFiles,removeAttachedFile}
+  int defaultAttachmentSize = 0;
   {
     QgsProject p;
+    defaultAttachmentSize = p.attachedFiles().size();
 
     const QString fileName = p.createAttachedFile( "myattachment" );
     QVERIFY( QFile( fileName ).exists() );
@@ -751,6 +745,7 @@ void TestQgsProject::testAttachmentsQgs()
     QVERIFY( p.removeAttachedFile( fileName ) );
     QVERIFY( !p.attachedFiles().contains( fileName ) );
     QVERIFY( !p.removeAttachedFile( fileName ) );
+    QCOMPARE( p.attachedFiles().size(), defaultAttachmentSize );
   }
 
   // Verify that attachment is exists after re-reading project
@@ -775,9 +770,9 @@ void TestQgsProject::testAttachmentsQgs()
 
     QgsProject p2;
     p2.read( projFile.fileName() );
-    QVERIFY( p2.attachedFiles().size() == 1 );
+    QCOMPARE( p2.attachedFiles().size(), defaultAttachmentSize + 1 );
 
-    file.setFileName( p2.attachedFiles().at( 0 ) );
+    file.setFileName( p2.attachedFiles().at( defaultAttachmentSize ) );
     QVERIFY( file.open( QIODevice::ReadOnly ) );
     QVERIFY( file.readAll() == QByteArray( "Attachment" ) );
   }
@@ -810,9 +805,9 @@ void TestQgsProject::testAttachmentsQgs()
 
     QgsProject p2;
     p2.read( projFile.fileName() );
-    QVERIFY( p2.attachedFiles().size() == 1 );
-    QVERIFY( p2.mapLayers().size() == 1 );
-    QVERIFY( p2.mapLayer( p2.mapLayers().firstKey() )->source() == p2.attachedFiles().first() );
+    QCOMPARE( p2.attachedFiles().size(), defaultAttachmentSize + 1 );
+    QCOMPARE( p2.mapLayers().size(), 1 );
+    QCOMPARE( p2.mapLayer( p2.mapLayers().firstKey() )->source(), p2.attachedFiles().at( defaultAttachmentSize ) );
 
     // Verify that attachment file is removed when layer is deleted
     QgsMapLayer *p2layer = p2.mapLayer( p2.mapLayers().firstKey() );
@@ -826,9 +821,11 @@ void TestQgsProject::testAttachmentsQgs()
 
 void TestQgsProject::testAttachmentsQgz()
 {
+  int defaultAttachmentSize = 0;
   // Test QgsProject::{createAttachedFile,attachedFiles,removeAttachedFile}
   {
     QgsProject p;
+    defaultAttachmentSize = p.attachedFiles().size();
 
     const QString fileName = p.createAttachedFile( "myattachment" );
     QVERIFY( QFile( fileName ).exists() );
@@ -836,6 +833,7 @@ void TestQgsProject::testAttachmentsQgz()
     QVERIFY( p.removeAttachedFile( fileName ) );
     QVERIFY( !p.attachedFiles().contains( fileName ) );
     QVERIFY( !p.removeAttachedFile( fileName ) );
+    QCOMPARE( p.attachedFiles().size(), defaultAttachmentSize );
   }
 
   // Verify that attachment is exists after re-reading project
@@ -856,9 +854,9 @@ void TestQgsProject::testAttachmentsQgz()
 
     QgsProject p2;
     p2.read( projFile.fileName() );
-    QVERIFY( p2.attachedFiles().size() == 1 );
+    QCOMPARE( p2.attachedFiles().size(), defaultAttachmentSize + 1 );
 
-    file.setFileName( p2.attachedFiles().at( 0 ) );
+    file.setFileName( p2.attachedFiles().at( defaultAttachmentSize ) );
     QVERIFY( file.open( QIODevice::ReadOnly ) );
     QVERIFY( file.readAll() == QByteArray( "Attachment" ) );
   }
@@ -887,9 +885,9 @@ void TestQgsProject::testAttachmentsQgz()
 
     QgsProject p2;
     p2.read( projFile.fileName() );
-    QVERIFY( p2.attachedFiles().size() == 1 );
-    QVERIFY( p2.mapLayers().size() == 1 );
-    QVERIFY( p2.mapLayer( p2.mapLayers().firstKey() )->source() == p2.attachedFiles().first() );
+    QCOMPARE( p2.attachedFiles().size(), defaultAttachmentSize + 1 );
+    QCOMPARE( p2.mapLayers().size(), 1 );
+    QCOMPARE( p2.mapLayer( p2.mapLayers().firstKey() )->source(), p2.attachedFiles().at( defaultAttachmentSize ) );
 
     // Verify that attachment file is removed when layer is deleted
     QgsMapLayer *p2layer = p2.mapLayer( p2.mapLayers().firstKey() );

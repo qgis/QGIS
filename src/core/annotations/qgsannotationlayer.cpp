@@ -27,6 +27,7 @@
 #include "qgspainteffect.h"
 #include "qgseffectstack.h"
 #include "qgspainteffectregistry.h"
+#include "qgsthreadingutils.h"
 #include <QUuid>
 #include "RTree.h"
 
@@ -125,6 +126,8 @@ QgsAnnotationLayer::~QgsAnnotationLayer()
 
 void QgsAnnotationLayer::reset()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   setOpacity( 1.0 );
   setCrs( QgsCoordinateReferenceSystem() );
   setTransformContext( QgsCoordinateTransformContext() );
@@ -133,6 +136,8 @@ void QgsAnnotationLayer::reset()
 
 QString QgsAnnotationLayer::addItem( QgsAnnotationItem *item )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const QString uuid = QUuid::createUuid().toString();
   mItems.insert( uuid, item );
   if ( item->flags() & Qgis::AnnotationItemFlag::ScaleDependentBoundingBox )
@@ -147,6 +152,8 @@ QString QgsAnnotationLayer::addItem( QgsAnnotationItem *item )
 
 void QgsAnnotationLayer::replaceItem( const QString &id, QgsAnnotationItem *item )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   std::unique_ptr< QgsAnnotationItem> prevItem( mItems.take( id ) );
 
   if ( prevItem )
@@ -173,6 +180,8 @@ void QgsAnnotationLayer::replaceItem( const QString &id, QgsAnnotationItem *item
 
 bool QgsAnnotationLayer::removeItem( const QString &id )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( !mItems.contains( id ) )
     return false;
 
@@ -197,6 +206,8 @@ bool QgsAnnotationLayer::removeItem( const QString &id )
 
 void QgsAnnotationLayer::clear()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   qDeleteAll( mItems );
   mItems.clear();
   mSpatialIndex = std::make_unique< QgsAnnotationLayerSpatialIndex >();
@@ -207,17 +218,22 @@ void QgsAnnotationLayer::clear()
 
 bool QgsAnnotationLayer::isEmpty() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mItems.empty();
 }
 
 QgsAnnotationItem *QgsAnnotationLayer::item( const QString &id )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mItems.value( id );
 }
 
-
 QStringList QgsAnnotationLayer::queryIndex( const QgsRectangle &bounds, QgsFeedback *feedback ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QStringList res;
 
   mSpatialIndex->intersects( bounds, [&res, feedback]( const QString & uuid )->bool
@@ -230,6 +246,8 @@ QStringList QgsAnnotationLayer::queryIndex( const QgsRectangle &bounds, QgsFeedb
 
 QStringList QgsAnnotationLayer::itemsInBounds( const QgsRectangle &bounds, QgsRenderContext &context, QgsFeedback *feedback ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QStringList res = queryIndex( bounds, feedback );
   // we also have to search through any non-indexed items
   for ( const QString &uuid : mNonIndexedItems )
@@ -243,6 +261,8 @@ QStringList QgsAnnotationLayer::itemsInBounds( const QgsRectangle &bounds, QgsRe
 
 Qgis::AnnotationItemEditOperationResult QgsAnnotationLayer::applyEdit( QgsAbstractAnnotationItemEditOperation *operation )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   Qgis::AnnotationItemEditOperationResult res = Qgis::AnnotationItemEditOperationResult::Invalid;
   if ( QgsAnnotationItem *targetItem = item( operation->itemId() ) )
   {
@@ -279,12 +299,16 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationLayer::applyEdit( QgsAbstra
 
 Qgis::MapLayerProperties QgsAnnotationLayer::properties() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   // annotation layers are always editable
   return Qgis::MapLayerProperty::UsersCannotToggleEditing;
 }
 
 QgsAnnotationLayer *QgsAnnotationLayer::clone() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const QgsAnnotationLayer::LayerOptions options( mTransformContext );
   std::unique_ptr< QgsAnnotationLayer > layer = std::make_unique< QgsAnnotationLayer >( name(), options );
   QgsMapLayer::clone( layer.get() );
@@ -306,11 +330,15 @@ QgsAnnotationLayer *QgsAnnotationLayer::clone() const
 
 QgsMapLayerRenderer *QgsAnnotationLayer::createMapRenderer( QgsRenderContext &rendererContext )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return new QgsAnnotationLayerRenderer( this, rendererContext );
 }
 
 QgsRectangle QgsAnnotationLayer::extent() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsRectangle rect;
   for ( auto it = mItems.constBegin(); it != mItems.constEnd(); ++it )
   {
@@ -328,6 +356,8 @@ QgsRectangle QgsAnnotationLayer::extent() const
 
 void QgsAnnotationLayer::setTransformContext( const QgsCoordinateTransformContext &context )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mDataProvider )
     mDataProvider->setTransformContext( context );
 
@@ -337,6 +367,8 @@ void QgsAnnotationLayer::setTransformContext( const QgsCoordinateTransformContex
 
 bool QgsAnnotationLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext &context )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mReadFlags & QgsMapLayer::FlagDontResolveLayers )
   {
     return false;
@@ -379,6 +411,8 @@ bool QgsAnnotationLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
 
 bool QgsAnnotationLayer::writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   // first get the layer element so that we can append the type attribute
   QDomElement mapLayerNode = layer_node.toElement();
 
@@ -408,6 +442,8 @@ bool QgsAnnotationLayer::writeXml( QDomNode &layer_node, QDomDocument &doc, cons
 
 bool QgsAnnotationLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &, const QgsReadWriteContext &, QgsMapLayer::StyleCategories categories ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   // add the layer opacity
   if ( categories.testFlag( Rendering ) )
   {
@@ -436,6 +472,8 @@ bool QgsAnnotationLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
 
 bool QgsAnnotationLayer::readSymbology( const QDomNode &node, QString &, QgsReadWriteContext &, QgsMapLayer::StyleCategories categories )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( categories.testFlag( Rendering ) )
   {
     const QDomNode layerOpacityNode = node.namedItem( QStringLiteral( "layerOpacity" ) );
@@ -473,27 +511,37 @@ bool QgsAnnotationLayer::readSymbology( const QDomNode &node, QString &, QgsRead
 
 bool QgsAnnotationLayer::isEditable() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   // annotation layers are always editable
   return true;
 }
 
 bool QgsAnnotationLayer::supportsEditing() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return true;
 }
 
 QgsDataProvider *QgsAnnotationLayer::dataProvider()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mDataProvider;
 }
 
 const QgsDataProvider *QgsAnnotationLayer::dataProvider() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mDataProvider;
 }
 
 QString QgsAnnotationLayer::htmlMetadata() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QString metadata = QStringLiteral( "<html>\n<body>\n<h1>" ) + tr( "General" ) + QStringLiteral( "</h1>\n<hr>\n" ) + QStringLiteral( "<table class=\"list-view\">\n" );
 
   metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Name" ) + QStringLiteral( "</td><td>" ) + name() + QStringLiteral( "</td></tr>\n" );
@@ -545,11 +593,15 @@ QString QgsAnnotationLayer::htmlMetadata() const
 
 QgsPaintEffect *QgsAnnotationLayer::paintEffect() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mPaintEffect.get();
 }
 
 void QgsAnnotationLayer::setPaintEffect( QgsPaintEffect *effect )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   mPaintEffect.reset( effect );
 }
 
@@ -566,26 +618,36 @@ QgsAnnotationLayerDataProvider::QgsAnnotationLayerDataProvider(
 
 QgsCoordinateReferenceSystem QgsAnnotationLayerDataProvider::crs() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return QgsCoordinateReferenceSystem();
 }
 
 QString QgsAnnotationLayerDataProvider::name() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return QStringLiteral( "annotation" );
 }
 
 QString QgsAnnotationLayerDataProvider::description() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return QString();
 }
 
 QgsRectangle QgsAnnotationLayerDataProvider::extent() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return QgsRectangle();
 }
 
 bool QgsAnnotationLayerDataProvider::isValid() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return true;
 }
 ///@endcond

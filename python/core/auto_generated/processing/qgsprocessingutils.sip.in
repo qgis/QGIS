@@ -490,6 +490,13 @@ This method returns a fallback value of "las".
 .. versionadded:: 3.24
 %End
 
+    static QVariantMap removePointerValuesFromMap( const QVariantMap &map );
+%Docstring
+Removes any raw pointer values from an input ``map``, replacing them with
+appropriate string values where possible.
+
+.. versionadded:: 3.26
+%End
 
 };
 

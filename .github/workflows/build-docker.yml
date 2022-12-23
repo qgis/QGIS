@@ -17,8 +17,13 @@ on:
   workflow_dispatch:
     # POST https://api.github.com/repos/qgis/QGIS/actions/workflows/2264135/dispatches:
 
+permissions:
+  contents: read
+
 jobs:
   define-strategy:
+    permissions:
+      contents: none
     if: github.repository_owner == 'qgis'
     runs-on: ubuntu-latest
     outputs:
@@ -29,7 +34,7 @@ jobs:
           if [[ "${GITHUB_REF}" =~ ^refs/tags ]]; then
             echo "::set-output name=matrix::{\"branch\":[\"${GITHUB_REF##*/}\"]}"
           else
-            echo "::set-output name=matrix::{\"branch\":[\"master\", \"release-3_16\", \"release-3_22\"]}"
+            echo "::set-output name=matrix::{\"branch\":[\"master\", \"release-3_22\", \"release-3_28\"]}"
           fi
 
   build-docker:
@@ -46,6 +51,7 @@ jobs:
       DOCKER_BUILD_DEPS_FILE: qgis3-qt5-build-deps.dockerfile
 
     strategy:
+      fail-fast: false
       matrix: ${{ fromJSON( needs.define-strategy.outputs.matrix ) }}
 
     steps:
@@ -64,7 +70,7 @@ jobs:
 
       - name: Cache
         id: cache
-        uses: actions/cache@v2.1.7
+        uses: actions/cache@v3.0.11
         with:
           path: ~/.ccache
           key: docker-build-${{ matrix.branch }}-${{ github.sha }}

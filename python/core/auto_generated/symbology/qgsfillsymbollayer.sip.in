@@ -92,7 +92,7 @@ Units are specified by :py:func:`~QgsSimpleFillSymbolLayer.offsetUnit`.
 .. seealso:: :py:func:`setOffsetUnit`
 %End
 
-    QPointF offset();
+    QPointF offset() const;
 %Docstring
 Returns the offset by which polygons will be translated during rendering.
 
@@ -964,6 +964,10 @@ Used internally when reading/writing symbols.
     virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
 
     virtual bool usesMapUnits() const;
+
+    virtual QColor color() const;
+
+    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
 
 
     virtual QgsSymbol *subSymbol();

@@ -7,7 +7,7 @@
 //------------------------------------------------------------------------------
 using namespace std;
 //------------------------------------------------------------------------------
-namespace odbc {
+NS_ODBC_START
 //------------------------------------------------------------------------------
 ResultSetMetaDataBase::ResultSetMetaDataBase(StatementBase* stmt)
     : stmt_(stmt, true)
@@ -125,4 +125,4 @@ bool ResultSetMetaDataBase::isSigned(unsigned short columnIndex)
     return ret == SQL_FALSE;
 }
 //------------------------------------------------------------------------------
-} // namespace odbc
+NS_ODBC_END

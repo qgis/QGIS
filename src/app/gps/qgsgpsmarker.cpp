@@ -22,21 +22,23 @@
 #include "qgsexception.h"
 #include "qgsproject.h"
 #include "qgsmessagelog.h"
+#include "qgssymbollayerutils.h"
+#include "qgsmarkersymbol.h"
+#include "qgsgui.h"
 
 
 QgsGpsMarker::QgsGpsMarker( QgsMapCanvas *mapCanvas )
-  : QgsMapCanvasItem( mapCanvas )
+  : QgsMapCanvasMarkerSymbolItem( mapCanvas )
 {
-  mSize = 16;
   mWgs84CRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
-  mSvg.load( QStringLiteral( ":/images/north_arrows/gpsarrow2.svg" ) );
+  updateMarkerSymbol();
+
+  QObject::connect( QgsGui::instance(), &QgsGui::optionsChanged, this, &QgsGpsMarker::updateMarkerSymbol );
+
   setZValue( 200 );
 }
 
-void QgsGpsMarker::setSize( int size )
-{
-  mSize = size;
-}
+QgsGpsMarker::~QgsGpsMarker() = default;
 
 void QgsGpsMarker::setGpsPosition( const QgsPointXY &point )
 {
@@ -59,35 +61,31 @@ void QgsGpsMarker::setGpsPosition( const QgsPointXY &point )
     mCenter = point;
   }
 
-  const QPointF pt = toCanvasCoordinates( mCenter );
-  setPos( pt );
+  setPointLocation( mCenter );
+  updateSize();
 }
 
-void QgsGpsMarker::paint( QPainter *p )
+void QgsGpsMarker::setMarkerRotation( double rotation )
 {
-  if ( ! mSvg.isValid() )
+  QgsMarkerSymbol *renderedMarker = qgis::down_cast< QgsMarkerSymbol *>( symbol() );
+  if ( !settingRotateLocationMarker.value( ) )
   {
-    return;
+    renderedMarker->setAngle( mMarkerSymbol->angle() );
   }
-
-  // this needs to be done when the canvas is repainted to make for smoother map rendering
-  // if not done the map could be panned, but the cursor position won't be updated until the next valid GPS fix is received
-  const QPointF pt = toCanvasCoordinates( mCenter );
-  setPos( pt );
-
-  const double halfSize = mSize / 2.0;
-  mSvg.render( p, QRectF( 0 - halfSize, 0 - halfSize, mSize, mSize ) );
+  else
+  {
+    renderedMarker->setAngle( mMarkerSymbol->angle() + rotation + mMapCanvas->rotation() );
+  }
+  updateSize();
 }
 
-
-QRectF QgsGpsMarker::boundingRect() const
+void QgsGpsMarker::updateMarkerSymbol()
 {
-  const double halfSize = mSize / 2.0;
-  return QRectF( -halfSize, -halfSize, 2.0 * halfSize, 2.0 * halfSize );
-}
-
-void QgsGpsMarker::updatePosition()
-{
-  const QPointF pt = toCanvasCoordinates( mCenter );
-  setPos( pt );
+  const QString defaultSymbol = QgsGpsMarker::settingLocationMarkerSymbol.value();
+  QDomDocument symbolDoc;
+  symbolDoc.setContent( defaultSymbol );
+  const QDomElement markerElement = symbolDoc.documentElement();
+  mMarkerSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( markerElement, QgsReadWriteContext() ) );
+  setSymbol( std::unique_ptr< QgsMarkerSymbol >( mMarkerSymbol->clone() ) );
+  updateSize();
 }

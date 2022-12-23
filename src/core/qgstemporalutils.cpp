@@ -101,6 +101,7 @@ bool QgsTemporalUtils::exportAnimation( const QgsMapSettings &mapSettings, const
   navigator.setFrameDuration( settings.frameDuration );
   QgsMapSettings ms = mapSettings;
   const QgsExpressionContext context = ms.expressionContext();
+  ms.setFrameRate( settings.frameRate );
 
   const long long totalFrames = navigator.totalFrameCount();
   long long currentFrame = 0;
@@ -121,6 +122,7 @@ bool QgsTemporalUtils::exportAnimation( const QgsMapSettings &mapSettings, const
 
     ms.setIsTemporal( true );
     ms.setTemporalRange( navigator.dateTimeRangeForFrameNumber( currentFrame ) );
+    ms.setCurrentFrame( currentFrame );
 
     QgsExpressionContext frameContext = context;
     frameContext.appendScope( navigator.createExpressionContextScope() );

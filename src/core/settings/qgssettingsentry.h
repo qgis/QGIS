@@ -25,6 +25,70 @@
 #include "qgis_sip.h"
 #include "qgssettings.h"
 
+class QgsSettingsEntryBase;
+
+
+/**
+ * \ingroup core
+ * \class QgsSettingsEntryGroup
+ * \brief Creates a group of setting which have a common definition of base key
+ *
+ * \since QGIS 3.26
+ */
+class CORE_EXPORT QgsSettingsEntryGroup
+{
+  public:
+    //! Constructor
+    QgsSettingsEntryGroup( const QList<const QgsSettingsEntryBase *> settings )
+      : QgsSettingsEntryGroup( settings, true )
+    {}
+#ifdef SIP_RUN
+    % MethodCode
+    sipCpp = new QgsSettingsEntryGroup( *a0, false );
+    sipIsErr = sipCpp->isValid() ? 0 : 1;
+    if ( sipIsErr )
+      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Settings do not share the same base definition key for this group. This will lead to unpredictable results." ).toUtf8().constData() );
+    % End
+#endif
+
+    //! Constructor
+    QgsSettingsEntryGroup( const QList<const QgsSettingsEntryBase *> settings, bool fatalErrorIfInvalid ) SIP_SKIP;
+
+    //! Returns if the group is valid (if settings share the same base key)
+    bool isValid() const {return mIsValid;}
+
+    //! Returns the base key for the given \a dynamicKeyPartList
+    QString baseKey( const QStringList &dynamicKeyPartList = QStringList() ) const;
+
+    //! Returns all the settings
+    const QList<const QgsSettingsEntryBase *> settings() const {return mSettings;}
+
+    /**
+     * Removes all the settings at the base key for the given \a dynamicKeyPartList
+     * This means it might remove more settings than the ones registered in the group, use with caution
+     */
+    void removeAllSettingsAtBaseKey( const QStringList &dynamicKeyPartList = QStringList() ) const;
+
+    /**
+     * Removes all the settings from this group
+     * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
+     */
+    void removeAllChildrenSettings( const QString &dynamicKeyPart = QString() ) const;
+
+    /**
+     * Removes all the settings from this group
+     * The \a dynamicKeyPartList argument specifies the dynamic part of the settings key.
+     */
+    void removeAllChildrenSettings( const QStringList &dynamicKeyPartList ) const;
+
+  private:
+    bool hasDynamicKey() const;
+
+    QList<const QgsSettingsEntryBase *> mSettings;
+    QString mDefinitionBaseKey;
+    bool mIsValid = true;
+};
+
 /**
  * \ingroup core
  * \class QgsSettingsEntryBase
@@ -46,6 +110,8 @@ class CORE_EXPORT QgsSettingsEntryBase
       sipType = sipType_QgsSettingsEntryString;
     else if ( dynamic_cast< QgsSettingsEntryStringList * >( sipCpp ) )
       sipType = sipType_QgsSettingsEntryStringList;
+    else if ( dynamic_cast< QgsSettingsEntryVariantMap * >( sipCpp ) )
+      sipType = sipType_QgsSettingsEntryVariantMap;
     else if ( dynamic_cast< QgsSettingsEntryBool * >( sipCpp ) )
       sipType = sipType_QgsSettingsEntryBool;
     else if ( dynamic_cast< QgsSettingsEntryInteger * >( sipCpp ) )
@@ -60,6 +126,12 @@ class CORE_EXPORT QgsSettingsEntryBase
 #endif
 
   public:
+
+    /**
+     * Transforms a dynamic key part string to list
+     * \since QGIS 3.26
+     */
+    static QStringList dynamicKeyPartToList( const QString &dynamicKeyPart );
 
 
     /**
@@ -124,6 +196,12 @@ class CORE_EXPORT QgsSettingsEntryBase
      * Returns TRUE if a part of the settings key is built dynamically.
      */
     bool hasDynamicKey() const;
+
+    /**
+     * Returns the settings options
+     * \since QGIS 3.26
+     */
+    Qgis::SettingsOptions options() const {return mOptions;}
 
     /**
      * Returns TRUE if the settings is contained in the underlying QSettings.
@@ -240,6 +318,19 @@ class CORE_EXPORT QgsSettingsEntryBase
      */
     QVariant formerValueAsVariant( const QStringList &dynamicKeyPartList ) const;
 
+    /**
+     * Check if the settings does not exist and try to set it from a given \a oldKey and \a oldSection
+     * \since QGIS 3.30
+     */
+    bool migrateFromKey( const QString &oldKey, const QString &oldSection = QString(), const QString &dynamicKeyPart = QString() ) const;
+
+    /**
+     * Check if the settings does not exist and try to set it from a given \a oldKey
+     * \note The old key must contain its section (the section from the current setting will not be prepended)
+     * \since QGIS 3.30
+     */
+    bool migrateFromKey( const QString &oldKey, const QString &oldSection, const QStringList &dynamicKeyPartList ) const;
+
   protected:
 
     /**
@@ -249,14 +340,10 @@ class CORE_EXPORT QgsSettingsEntryBase
      */
     bool setVariantValuePrivate( const QVariant &value, const QStringList &dynamicKeyPartList = QStringList() ) const;
 
-    /**
-     * Transforms a dynamic key part string to list
-     * \since QGIS 3.26
-     */
-    QStringList dynamicKeyPartToList( const QString &dynamicKeyPart ) const;
-
   private:
     QString formerValuekey( const QStringList &dynamicKeyPartList ) const;
+
+    QString completeKeyPrivate( const QString &key, const QStringList &dynamicKeyPartList ) const;
 
     QString mKey;
     QVariant mDefaultValue;
@@ -318,6 +405,7 @@ class QgsSettingsEntryByReference : public QgsSettingsEntryBase
 
     //! Returns the settings value with a \a defaultValueOverride and with an optional \a dynamicKeyPart
     T valueWithDefaultOverride( const T &defaultValueOverride, const QString &dynamicKeyPart = QString() ) const { return this->convertFromVariant( valueAsVariantWithDefaultOverride( defaultValueOverride, dynamicKeyPart ) );}
+
     //! Returns the settings value with a \a defaultValueOverride for the \a dynamicKeyPartList
     T valueWithDefaultOverride( const T &defaultValueOverride, const QStringList &dynamicKeyPartList ) const { return this->convertFromVariant( valueAsVariantWithDefaultOverride( defaultValueOverride, dynamicKeyPartList ) );}
 
@@ -459,6 +547,7 @@ class QgsSettingsEntryByValue : public QgsSettingsEntryBase
 
     //! Returns the settings value with a \a defaultValueOverride and with an optional \a dynamicKeyPart
     T valueWithDefaultOverride( T defaultValueOverride, const QString &dynamicKeyPart = QString() ) const { return this->convertFromVariant( valueAsVariantWithDefaultOverride( defaultValueOverride, dynamicKeyPart ) );}
+
     //! Returns the settings value with a \a defaultValueOverride for the \a dynamicKeyPartList
     T valueWithDefaultOverride( T defaultValueOverride, const QStringList &dynamicKeyPartList ) const { return this->convertFromVariant( valueAsVariantWithDefaultOverride( defaultValueOverride, dynamicKeyPartList ) );}
 

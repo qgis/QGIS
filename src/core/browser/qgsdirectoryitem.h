@@ -200,11 +200,12 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     void directoryChanged();
 
   protected:
-    void init();
 
     QString mDirPath;
 
   private:
+
+    void init( const QString &dirName );
 
     void createOrDestroyFileSystemWatcher();
 

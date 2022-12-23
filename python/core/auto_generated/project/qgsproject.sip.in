@@ -36,30 +36,6 @@ open within the main QGIS application.
 %End
   public:
 
-    enum class ReadFlag
-    {
-      FlagDontResolveLayers,
-      FlagDontLoadLayouts,
-      FlagTrustLayerMetadata,
-      FlagDontStoreOriginalStyles,
-      FlagDontLoad3DViews,
-    };
-    typedef QFlags<QgsProject::ReadFlag> ReadFlags;
-
-
-    enum class FileFormat
-    {
-      Qgz,
-      Qgs,
-    };
-
-    enum class AvoidIntersectionsMode
-    {
-      AllowIntersections,
-      AvoidIntersectionsCurrentLayer,
-      AvoidIntersectionsLayers,
-    };
-
     enum DataDefinedServerProperty
     {
       NoProperty,
@@ -89,12 +65,14 @@ Set the current project singleton instance to ``project``
 .. versionadded:: 3.10.11
 %End
 
-
-    explicit QgsProject( QObject *parent /TransferThis/ = 0 );
+    explicit QgsProject( QObject *parent /TransferThis/ = 0, Qgis::ProjectCapabilities capabilities = Qgis::ProjectCapability::ProjectStyles );
 %Docstring
 Create a new QgsProject.
 
 Most of the time you want to use :py:func:`QgsProject.instance()` instead as many components of QGIS work with the singleton.
+
+Since QGIS 3.26.1 the ``capabilities`` argument specifies optional capabilities which can be selectively
+enabled for the project. These affect the QgsProject object for its entire lifetime.
 %End
 
     ~QgsProject();
@@ -123,6 +101,47 @@ Returns the project's title.
 .. note::
 
    Since QGIS 3.2 this is just a shortcut to retrieving the title from the project's :py:func:`~QgsProject.metadata`.
+%End
+
+    Qgis::ProjectCapabilities capabilities() const;
+%Docstring
+Returns the project's capabilities, which dictate optional functionality
+which can be selectively enabled for a QgsProject object.
+
+.. versionadded:: 3.26.1
+%End
+
+    Qgis::ProjectFlags flags() const;
+%Docstring
+Returns the project's flags, which dictate the behavior of the project.
+
+.. seealso:: :py:func:`setFlags`
+
+.. seealso:: :py:func:`setFlag`
+
+.. versionadded:: 3.26
+%End
+
+    void setFlags( Qgis::ProjectFlags flags );
+%Docstring
+Sets the project's ``flags``, which dictate the behavior of the project.
+
+.. seealso:: :py:func:`flags`
+
+.. seealso:: :py:func:`setFlag`
+
+.. versionadded:: 3.26
+%End
+
+    void setFlag( Qgis::ProjectFlag flag, bool enabled = true );
+%Docstring
+Sets whether a project ``flag`` is ``enabled``.
+
+.. seealso:: :py:func:`flags`
+
+.. seealso:: :py:func:`setFlags`
+
+.. versionadded:: 3.26
 %End
 
     QString saveUser() const;
@@ -365,7 +384,7 @@ Clears the project, removing all settings and resetting it back to an empty, def
 .. versionadded:: 2.4
 %End
 
-    bool read( const QString &filename, QgsProject::ReadFlags flags = QgsProject::ReadFlags() );
+    bool read( const QString &filename, Qgis::ProjectReadFlags flags = Qgis::ProjectReadFlags() );
 %Docstring
 Reads given project file from the given file.
 
@@ -375,7 +394,7 @@ Reads given project file from the given file.
 :return: ``True`` if project file has been read successfully
 %End
 
-    bool read( QgsProject::ReadFlags flags = QgsProject::ReadFlags() );
+    bool read( Qgis::ProjectReadFlags flags = Qgis::ProjectReadFlags() );
 %Docstring
 Reads the project from its currently associated file (see :py:func:`~QgsProject.fileName` ).
 
@@ -640,7 +659,7 @@ Returns an empty string if the matching layer is not embedded.
 %End
 
 
-    QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers, QgsProject::ReadFlags flags = QgsProject::ReadFlags() );
+    QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers,  Qgis::ProjectReadFlags flags = Qgis::ProjectReadFlags() );
 %Docstring
 Create layer group instance defined in an arbitrary project file.
 
@@ -773,6 +792,16 @@ relating to how a QgsProject should be viewed and behave inside a map canvas
 %End
 
 
+    QgsProjectStyleSettings *styleSettings();
+%Docstring
+Returns the project's style settings, which contains settings and properties
+relating to how a QgsProject should handle styling.
+(e.g. styling of a newly added vector layer)
+
+.. versionadded:: 3.26
+%End
+
+
     QgsProjectTimeSettings *timeSettings();
 %Docstring
 Returns the project's time settings, which contains the project's temporal range and other
@@ -782,12 +811,29 @@ time based settings.
 %End
 
 
+    QgsProjectElevationProperties *elevationProperties();
+%Docstring
+Returns the project's elevation properties, which contains the project's elevation related settings.
+
+.. versionadded:: 3.26
+%End
+
+
     QgsProjectDisplaySettings *displaySettings();
 %Docstring
-Returns the project's display settings, which settings and properties relating
+Returns the project's display settings, which contains settings and properties relating
 to how a QgsProject should display values such as map coordinates and bearings.
 
 .. versionadded:: 3.12
+%End
+
+
+    QgsProjectGpsSettings *gpsSettings();
+%Docstring
+Returns the project's GPS settings, which contains settings and properties relating
+to how a QgsProject should interact with a GPS device.
+
+.. versionadded:: 3.30
 %End
 
     QgsLayerTree *layerTreeRoot() const;
@@ -916,18 +962,20 @@ Returns the edit buffer group
 .. versionadded:: 3.26
 %End
 
-    bool evaluateDefaultValues() const;
+ bool evaluateDefaultValues() const /Deprecated/;
 %Docstring
 Should default values be evaluated on provider side when requested and not when committed.
 
-.. versionadded:: 2.16
+.. deprecated::
+   Test whether the :py:func:`~QgsProject.flags` method returns the Qgis.ProjectFlag.EvaluateDefaultValuesOnProviderSide flag instead.
 %End
 
-    void setEvaluateDefaultValues( bool evaluateDefaultValues );
+ void setEvaluateDefaultValues( bool evaluateDefaultValues ) /Deprecated/;
 %Docstring
 Defines if default values should be evaluated on provider side when requested and not when committed.
 
-.. versionadded:: 2.16
+.. deprecated::
+   use setFlag( Qgis.ProjectFlag.EvaluateDefaultValuesOnProviderSide ) instead.
 %End
 
     virtual QgsExpressionContext createExpressionContext() const;
@@ -957,14 +1005,14 @@ Only used if the avoid intersection mode is set to advanced.
 .. versionadded:: 3.0
 %End
 
-    void setAvoidIntersectionsMode( const AvoidIntersectionsMode mode );
+    void setAvoidIntersectionsMode( const Qgis::AvoidIntersectionsMode mode );
 %Docstring
 Sets the avoid intersections mode.
 
 .. versionadded:: 3.14
 %End
 
-    AvoidIntersectionsMode avoidIntersectionsMode() const;
+    Qgis::AvoidIntersectionsMode avoidIntersectionsMode() const;
 %Docstring
 Returns the current avoid intersections mode.
 
@@ -1280,7 +1328,7 @@ Returns the default CRS for new layers based on the settings and
 the current project CRS
 %End
 
-    void setTrustLayerMetadata( bool trust );
+ void setTrustLayerMetadata( bool trust ) /Deprecated/;
 %Docstring
 Sets the trust option allowing to indicate if the extent has to be
 read from the XML document when data source has no metadata or if the
@@ -1290,10 +1338,11 @@ materialized views with Postgres provider.
 
 :param trust: ``True`` to trust the project, ``False`` otherwise
 
-.. versionadded:: 3.0
+.. deprecated::
+   Use setFlag( Qgis.ProjectFlag.TrustStoredLayerStatistics ) instead.
 %End
 
-    bool trustLayerMetadata() const;
+ bool trustLayerMetadata() const /Deprecated/;
 %Docstring
 Returns ``True`` if the trust option is activated, ``False`` otherwise. This
 option allows indicateing if the extent has to be read from the XML
@@ -1302,7 +1351,8 @@ to determine it. Moreover, when this option is activated, primary key
 unicity is not checked for views and materialized views with Postgres
 provider.
 
-.. versionadded:: 3.0
+.. deprecated::
+   Test whether the :py:func:`~QgsProject.flags` method returns the Qgis.ProjectFlag.TrustStoredLayerStatistics flag instead.
 %End
 
 
@@ -1720,6 +1770,23 @@ Emitted when the project ``ellipsoid`` is changed.
 .. versionadded:: 3.0
 %End
 
+    void distanceUnitsChanged();
+%Docstring
+Emitted when the default distance units changes.
+
+.. seealso:: :py:func:`setDistanceUnits`
+
+.. versionadded:: 3.28
+%End
+
+    void areaUnitsChanged();
+%Docstring
+Emitted when the default area units changes.
+
+.. seealso:: :py:func:`setAreaUnits`
+
+.. versionadded:: 3.28
+%End
 
     void transformContextChanged();
 %Docstring
@@ -2077,12 +2144,19 @@ so if a stage fails, it can be difficult to roll back cleanly.
 Therefore any error message returned by commitErrors also includes which stage failed so
 that the user has some chance of repairing the damage cleanly.
 
-By setting ``stopEditing`` to ``False``, the layer will stay in editing mode.
-Otherwise the layer editing mode will be disabled if the commit is successful.
+:param stopEditing: if set to ``False``, the layer will stay in editing mode.
+                    Otherwise the layer editing mode will be disabled if the commit is successful.
+:param vectorLayer: for which the changes will be committed. For buffered transactions this
+                    parameter is not mandatory, as the changes from all layers will be committed.
+
+:return: - ``True`` if the commit was successful.
+         - commitErrors: will be set to a list of descriptive errors if the commit fails.
+
 
 .. seealso:: :py:func:`startEditing`
 
 .. seealso:: :py:func:`rollBack`
+
 
 .. versionadded:: 3.26
 %End
@@ -2091,17 +2165,24 @@ Otherwise the layer editing mode will be disabled if the commit is successful.
 %Docstring
 Stops a current editing operation on vectorLayer and discards any uncommitted edits.
 
+:param stopEditing: if set to ``False``, the layer will stay in editing mode.
+                    Otherwise the layer editing mode will be disabled if the rollback is successful.
+:param vectorLayer: for which the changes will be rolled back. For buffered transactions this
+                    parameter is not mandatory, as the changes from all layers will be rolled back.
+
+:return: - ``True`` if the rollback was successful.
+         - rollbackErrors: will be set to a list of descriptive errors if the rollback fails.
+
+
 .. seealso:: :py:func:`startEditing`
 
 .. seealso:: :py:func:`commitChanges`
+
 
 .. versionadded:: 3.26
 %End
 
 };
-
-QFlags<QgsProject::ReadFlag> operator|(QgsProject::ReadFlag f1, QFlags<QgsProject::ReadFlag> f2);
-
 
 class QgsProjectDirtyBlocker
 {

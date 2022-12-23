@@ -228,7 +228,7 @@ QgsRasterBlock *QgsMeshUtils::exportRasterBlock(
   std::unique_ptr<QgsTriangularMesh> triangularMesh = std::make_unique<QgsTriangularMesh>();
   triangularMesh->update( nativeMesh.get(), transform );
 
-  const QgsMeshDatasetGroupMetadata metadata = layer.dataProvider()->datasetGroupMetadata( datasetIndex );
+  const QgsMeshDatasetGroupMetadata metadata = layer.datasetGroupMetadata( datasetIndex );
   const QgsMeshDatasetGroupMetadata::DataType scalarDataType = QgsMeshLayerUtils::datasetValuesType( metadata.dataType() );
   const int count =  QgsMeshLayerUtils::datasetValuesCount( nativeMesh.get(), scalarDataType );
   const QgsMeshDataBlock vals = QgsMeshLayerUtils::datasetValues(
@@ -240,7 +240,7 @@ QgsRasterBlock *QgsMeshUtils::exportRasterBlock(
     return nullptr;
 
   const QVector<double> datasetValues = QgsMeshLayerUtils::calculateMagnitudes( vals );
-  const QgsMeshDataBlock activeFaceFlagValues = layer.dataProvider()->areFacesActive(
+  const QgsMeshDataBlock activeFaceFlagValues = layer.areFacesActive(
         datasetIndex,
         0,
         nativeMesh->faces.count() );

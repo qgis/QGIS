@@ -530,6 +530,8 @@ Creates a new QgsFilledMarkerSymbolLayer.
 
     virtual bool usesMapUnits() const;
 
+    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+
 
   private:
     QgsFilledMarkerSymbolLayer( const QgsFilledMarkerSymbolLayer & );
@@ -790,13 +792,13 @@ Used internally when reading/writing symbols.
 
     virtual void renderPoint( QPointF point, QgsSymbolRenderContext &context );
 
-
     virtual QVariantMap properties() const;
-
 
     virtual QgsRasterMarkerSymbolLayer *clone() const /Factory/;
 
     virtual bool usesMapUnits() const;
+
+    virtual QColor color() const;
 
 
     double calculateAspectRatio( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedAspectRatio ) const;
@@ -904,6 +906,21 @@ if the value set is lower or equal to 0 the aspect ratio will be preserved in re
 
   protected:
 
+    void setCommonProperties( const QVariantMap &properties );
+%Docstring
+Sets common class properties from a ``properties`` map.
+
+.. versionadded:: 3.26
+%End
+
+    void copyCommonProperties( QgsRasterMarkerSymbolLayer *other ) const;
+%Docstring
+Copies common properties to another layer.
+
+.. versionadded:: 3.26
+%End
+
+
 
 };
 
@@ -971,6 +988,8 @@ required fonts are not available on the system.
     virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 
     virtual bool usesMapUnits() const;
+
+    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
 
 
 
@@ -1121,6 +1140,67 @@ Sets the stroke join ``style``.
 
     virtual QRectF bounds( QPointF point, QgsSymbolRenderContext &context );
 
+
+};
+
+
+class QgsAnimatedMarkerSymbolLayer : QgsRasterMarkerSymbolLayer
+{
+%Docstring(signature="appended")
+Animated marker symbol layer class.
+
+The :py:class:`QgsAnimatedMarkerSymbolLayer` class renders frames from an animated raster image source (e.g.
+an animated GIF) during temporal animations or map exports.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsmarkersymbollayer.h"
+%End
+  public:
+
+    QgsAnimatedMarkerSymbolLayer( const QString &path = QString(),
+                                  double size = DEFAULT_RASTERMARKER_SIZE,
+                                  double angle = DEFAULT_RASTERMARKER_ANGLE );
+%Docstring
+Constructor for animated marker symbol layer using the specified source image ``path``.
+%End
+
+    ~QgsAnimatedMarkerSymbolLayer();
+
+
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
+%Docstring
+Creates an animated marker symbol layer from a string map of ``properties``.
+%End
+
+
+    virtual QString layerType() const;
+
+    virtual QVariantMap properties() const;
+
+    virtual QgsAnimatedMarkerSymbolLayer *clone() const /Factory/;
+
+
+    void setFrameRate( double rate );
+%Docstring
+Sets the marker frame ``rate`` in frame per second.
+
+.. seealso:: :py:func:`frameRate`
+%End
+
+    double frameRate() const;
+%Docstring
+Returns the marker frame rate in frame per second.
+
+.. seealso:: :py:func:`setFrameRate`
+%End
+
+    virtual void startRender( QgsSymbolRenderContext &context );
+
+
+  protected:
 
 };
 

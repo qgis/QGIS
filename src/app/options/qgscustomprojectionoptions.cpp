@@ -47,33 +47,33 @@ QgsCustomProjectionOptionsWidget::QgsCustomProjectionOptionsWidget( QWidget *par
   populateList();
   if ( mDefinitions.empty() )
   {
-    // create an empty definition which corresponds to the initial state of the dialog
-    mDefinitions << Definition();
-    QTreeWidgetItem *newItem = new QTreeWidgetItem( leNameList, QStringList() );
-    newItem->setText( QgisCrsNameColumn, QString() );
-    newItem->setText( QgisCrsParametersColumn, QString() );
-  }
-  whileBlocking( leName )->setText( mDefinitions[0].name );
-
-  mBlockUpdates++;
-
-  QgsCoordinateReferenceSystem crs;
-  Qgis::CrsDefinitionFormat format;
-  if ( mDefinitions.at( 0 ).wkt.isEmpty() )
-  {
-    crs.createFromProj( mDefinitions[0].proj );
-    format = Qgis::CrsDefinitionFormat::Proj;
+    leName->setEnabled( false );
+    mCrsDefinitionWidget->setEnabled( false );
   }
   else
   {
-    crs.createFromWkt( mDefinitions[0].wkt );
-    format = Qgis::CrsDefinitionFormat::Wkt;
+    whileBlocking( leName )->setText( mDefinitions[0].name );
+
+    mBlockUpdates++;
+
+    QgsCoordinateReferenceSystem crs;
+    Qgis::CrsDefinitionFormat format;
+    if ( mDefinitions.at( 0 ).wkt.isEmpty() )
+    {
+      crs.createFromProj( mDefinitions[0].proj );
+      format = Qgis::CrsDefinitionFormat::Proj;
+    }
+    else
+    {
+      crs.createFromWkt( mDefinitions[0].wkt );
+      format = Qgis::CrsDefinitionFormat::Wkt;
+    }
+    mCrsDefinitionWidget->setCrs( crs, format );
+
+    mBlockUpdates--;
+
+    leNameList->setCurrentItem( leNameList->topLevelItem( 0 ) );
   }
-  mCrsDefinitionWidget->setCrs( crs, format );
-
-  mBlockUpdates--;
-
-  leNameList->setCurrentItem( leNameList->topLevelItem( 0 ) );
 
   leNameList->hideColumn( QgisCrsIdColumn );
 
@@ -155,6 +155,9 @@ void QgsCustomProjectionOptionsWidget::pbnAdd_clicked()
 
   QTreeWidgetItem *newItem = new QTreeWidgetItem( leNameList, QStringList() );
 
+  leName->setEnabled( true );
+  mCrsDefinitionWidget->setEnabled( true );
+
   newItem->setText( QgisCrsNameColumn, name );
   newItem->setText( QgisCrsIdColumn, QString() );
   newItem->setText( QgisCrsParametersColumn, QString() );
@@ -202,6 +205,12 @@ void QgsCustomProjectionOptionsWidget::pbnRemove_clicked()
       mDeletedCRSs.push_back( mDefinitions[row].id );
     }
     mDefinitions.erase( mDefinitions.begin() + row );
+  }
+
+  if ( mDefinitions.empty() )
+  {
+    leName->setEnabled( false );
+    mCrsDefinitionWidget->setEnabled( false );
   }
 }
 

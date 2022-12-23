@@ -16,21 +16,20 @@
  ***************************************************************************/
 
 #include "qgslayoutobject.h"
-#include "qgslayout.h"
 #include "qgstest.h"
 #include "qgsproject.h"
 #include "qgsreadwritecontext.h"
 #include "qgsprintlayout.h"
 
-class TestQgsLayoutObject: public QObject
+class TestQgsLayoutObject: public QgsTest
 {
     Q_OBJECT
 
+  public:
+    TestQgsLayoutObject() : QgsTest( QStringLiteral( "Layout Object Tests" ) ) {}
+
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
+
     void creation(); //test creation of QgsLayoutObject
     void layout(); //test fetching layout from QgsLayoutObject
     void customProperties();
@@ -39,38 +38,8 @@ class TestQgsLayoutObject: public QObject
     void writeRetrieveDDProperty(); //test writing and retrieving dd properties from xml
     void writeRetrieveCustomProperties(); //test writing/retrieving custom properties from xml
 
-
-  private:
-    QString mReport;
-
 };
 
-void TestQgsLayoutObject::initTestCase()
-{
-  mReport = QStringLiteral( "<h1>Layout Object Tests</h1>\n" );
-}
-
-void TestQgsLayoutObject::cleanupTestCase()
-{
-  const QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-}
-
-void TestQgsLayoutObject::init()
-{
-
-}
-
-void TestQgsLayoutObject::cleanup()
-{
-
-}
 
 void TestQgsLayoutObject::creation()
 {

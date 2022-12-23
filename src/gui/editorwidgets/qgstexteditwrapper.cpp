@@ -74,7 +74,7 @@ QVariant QgsTextEditWrapper::value() const
     return QVariant( field().type() );
   }
 
-  if ( !defaultValue().isNull() && v == defaultValue().toString() )
+  if ( !QgsVariantUtils::isNull( defaultValue() ) && v == defaultValue().toString() )
   {
     return defaultValue();
   }
@@ -165,7 +165,7 @@ void QgsTextEditWrapper::initWidget( QWidget *editor )
     mLineEdit->setValidator( new QgsFieldValidator( mLineEdit, field(), defaultValue().toString() ) );
 
     QVariant defVal = defaultValue();
-    if ( defVal.isNull() )
+    if ( QgsVariantUtils::isNull( defVal ) )
     {
       defVal = QgsApplication::nullRepresentation();
     }
@@ -215,7 +215,7 @@ void QgsTextEditWrapper::showIndeterminateState()
   }
 
   //note - this is deliberately a zero length string, not a null string!
-  setWidgetValue( QStringLiteral( "" ) );  // skip-keyword-check
+  setWidgetValue( QLatin1String( "" ) );  // skip-keyword-check
 
   if ( mTextEdit )
     mTextEdit->blockSignals( false );
@@ -288,7 +288,7 @@ void QgsTextEditWrapper::textChanged( const QString & )
 void QgsTextEditWrapper::setWidgetValue( const QVariant &val )
 {
   QString v;
-  if ( val.isNull() )
+  if ( QgsVariantUtils::isNull( val ) )
   {
     if ( !( field().type() == QVariant::Int || field().type() == QVariant::Double || field().type() == QVariant::LongLong || field().type() == QVariant::Date ) )
       v = QgsApplication::nullRepresentation();
@@ -338,7 +338,7 @@ void QgsTextEditWrapper::setWidgetValue( const QVariant &val )
   const QVariant currentValue = value( );
   // Note: comparing QVariants leads to funny (and wrong) results:
   // QVariant(0.0) == QVariant(QVariant.Double) -> True
-  const bool changed { val != currentValue || val.isNull() != currentValue.isNull() };
+  const bool changed { val != currentValue || QgsVariantUtils::isNull( val ) != QgsVariantUtils::isNull( currentValue ) };
 
   if ( changed )
   {

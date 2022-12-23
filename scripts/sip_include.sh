@@ -25,9 +25,9 @@ DIR=$(git rev-parse --show-toplevel)
 
 pushd ${DIR} > /dev/null
 
-# GNU prefix command for mac os support (gsed, gsplit)
+# GNU prefix command for bsd/mac os support (gsed, gsplit)
 GP=
-if [[ "$OSTYPE" =~ darwin* ]]; then
+if [[ "$OSTYPE" == *bsd* ]] || [[ "$OSTYPE" =~ darwin* ]]; then
   GP=g
 fi
 

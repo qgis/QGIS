@@ -26,7 +26,7 @@
 #include "qgsvectorlayer.h"
 
 QgsPolygon3DSymbol::QgsPolygon3DSymbol()
-  : mMaterial( std::make_unique< QgsPhongMaterialSettings >() )
+  : mMaterialSettings( std::make_unique< QgsPhongMaterialSettings >() )
 {
 
 }
@@ -40,7 +40,7 @@ QgsAbstract3DSymbol *QgsPolygon3DSymbol::clone() const
   result->mAltBinding = mAltBinding;
   result->mHeight = mHeight;
   result->mExtrusionHeight = mExtrusionHeight;
-  result->mMaterial.reset( mMaterial->clone() );
+  result->mMaterialSettings.reset( mMaterialSettings->clone() );
   result->mCullingMode = mCullingMode;
   result->mInvertNormals = mInvertNormals;
   result->mAddBackFaces = mAddBackFaces;
@@ -69,9 +69,9 @@ void QgsPolygon3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext 
   elemDataProperties.setAttribute( QStringLiteral( "rendered-facade" ), mRenderedFacade );
   elem.appendChild( elemDataProperties );
 
-  elem.setAttribute( QStringLiteral( "material_type" ), mMaterial->type() );
+  elem.setAttribute( QStringLiteral( "material_type" ), mMaterialSettings->type() );
   QDomElement elemMaterial = doc.createElement( QStringLiteral( "material" ) );
-  mMaterial->writeXml( elemMaterial, context );
+  mMaterialSettings->writeXml( elemMaterial, context );
   elem.appendChild( elemMaterial );
 
   QDomElement elemDDP = doc.createElement( QStringLiteral( "data-defined-properties" ) );
@@ -101,10 +101,10 @@ void QgsPolygon3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteCon
 
   const QDomElement elemMaterial = elem.firstChildElement( QStringLiteral( "material" ) );
   const QString materialType = elem.attribute( QStringLiteral( "material_type" ), QStringLiteral( "phong" ) );
-  mMaterial.reset( Qgs3D::materialRegistry()->createMaterialSettings( materialType ) );
-  if ( !mMaterial )
-    mMaterial.reset( Qgs3D::materialRegistry()->createMaterialSettings( QStringLiteral( "phong" ) ) );
-  mMaterial->readXml( elemMaterial, context );
+  mMaterialSettings.reset( Qgs3D::materialRegistry()->createMaterialSettings( materialType ) );
+  if ( !mMaterialSettings )
+    mMaterialSettings.reset( Qgs3D::materialRegistry()->createMaterialSettings( QStringLiteral( "phong" ) ) );
+  mMaterialSettings->readXml( elemMaterial, context );
 
   const QDomElement elemDDP = elem.firstChildElement( QStringLiteral( "data-defined-properties" ) );
   if ( !elemDDP.isNull() )
@@ -131,6 +131,22 @@ void QgsPolygon3DSymbol::setDefaultPropertiesFromLayer( const QgsVectorLayer *la
   mAltClamping = props->clamping();
   mAltBinding = props->binding();
   mExtrusionHeight = props->extrusionEnabled() ? static_cast< float>( props->extrusionHeight() ) : 0.0f;
+  if ( props->dataDefinedProperties().isActive( QgsMapLayerElevationProperties::ExtrusionHeight ) )
+  {
+    mDataDefinedProperties.setProperty( PropertyExtrusionHeight, props->dataDefinedProperties().property( QgsMapLayerElevationProperties::ExtrusionHeight ) );
+  }
+  else
+  {
+    mDataDefinedProperties.setProperty( PropertyExtrusionHeight, QgsProperty() );
+  }
+  if ( props->dataDefinedProperties().isActive( QgsMapLayerElevationProperties::ZOffset ) )
+  {
+    mDataDefinedProperties.setProperty( PropertyHeight, props->dataDefinedProperties().property( QgsMapLayerElevationProperties::ZOffset ) );
+  }
+  else
+  {
+    mDataDefinedProperties.setProperty( PropertyHeight, QgsProperty() );
+  }
   mHeight = static_cast< float >( props->zOffset() );
 }
 
@@ -139,17 +155,17 @@ QgsAbstract3DSymbol *QgsPolygon3DSymbol::create()
   return new QgsPolygon3DSymbol();
 }
 
-QgsAbstractMaterialSettings *QgsPolygon3DSymbol::material() const
+QgsAbstractMaterialSettings *QgsPolygon3DSymbol::materialSettings() const
 {
-  return mMaterial.get();
+  return mMaterialSettings.get();
 }
 
-void QgsPolygon3DSymbol::setMaterial( QgsAbstractMaterialSettings *material )
+void QgsPolygon3DSymbol::setMaterialSettings( QgsAbstractMaterialSettings *materialSettings )
 {
-  if ( material == mMaterial.get() )
+  if ( materialSettings == mMaterialSettings.get() )
     return;
 
-  mMaterial.reset( material );
+  mMaterialSettings.reset( materialSettings );
 }
 
 bool QgsPolygon3DSymbol::exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore::QEntity *entity, const QString &objectNamePrefix ) const

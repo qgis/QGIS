@@ -152,6 +152,7 @@
     <addaction name="mActionIdentify"/>
     <addaction name="mMenuMeasure"/>
     <addaction name="mActionStatisticalSummary"/>
+    <addaction name="mActionElevationProfile"/>
     <addaction name="separator"/>
     <addaction name="mActionZoomFullExtent"/>
     <addaction name="mActionZoomToSelected"/>
@@ -270,10 +271,13 @@
     </widget>
     <addaction name="mActionHelpContents"/>
     <addaction name="mActionHelpAPI"/>
+    <addaction name="mActionHelpPyQgisAPI"/>
     <addaction name="separator"/>
     <addaction name="mMenuPluginHelp"/>
     <addaction name="separator"/>
     <addaction name="mActionReportaBug"/>
+    <addaction name="mActionDonate"/>
+    <addaction name="mActionGetInvolved"/>
     <addaction name="mActionNeedSupport"/>
     <addaction name="separator"/>
     <addaction name="mActionQgisHomePage"/>
@@ -1623,7 +1627,7 @@ Shift+R to enable range selection.</string>
      <normaloff>:/images/themes/default/mActionAddMssqlLayer.svg</normaloff>:/images/themes/default/mActionAddMssqlLayer.svg</iconset>
    </property>
    <property name="text">
-    <string>Add MSSQL Spatial Layer…</string>
+    <string>Add MS SQL Server Layer…</string>
    </property>
   </action>
   <action name="mActionAddOracleLayer">
@@ -1941,7 +1945,12 @@ Shift+R to enable range selection.</string>
   </action>
   <action name="mActionHelpAPI">
    <property name="text">
-    <string>API Documentation</string>
+    <string>C++ API Documentation</string>
+   </property>
+  </action>
+  <action name="mActionHelpPyQgisAPI">
+   <property name="text">
+    <string>PyQGIS API Documentation</string>
    </property>
   </action>
   <action name="mActionQgisHomePage">
@@ -3339,6 +3348,28 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    </property>
    <property name="text">
     <string>Digitize Shape</string>
+   </property>
+  </action>
+  <action name="mActionElevationProfile">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mLayoutItem3DMap.svg</normaloff>:/images/themes/default/mLayoutItem3DMap.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Elevation Profile</string>
+   </property>
+   <property name="toolTip">
+    <string>Open an interactive elevation profile chart</string>
+   </property>
+  </action>
+  <action name="mActionDonate">
+   <property name="text">
+    <string>Donate to QGIS</string>
+   </property>
+  </action>
+  <action name="mActionGetInvolved">
+   <property name="text">
+    <string>Get Involved</string>
    </property>
   </action>
  </widget>

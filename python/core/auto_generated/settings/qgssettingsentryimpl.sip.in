@@ -73,7 +73,6 @@ The ``options`` arguments specifies the options for the settings entry.
 };
 
 
-
 typedef QgsSettingsEntryByReference<QString> QgsSettingsEntryByReferenceQStringBase;
 
 class QgsSettingsEntryString : QgsSettingsEntryByReferenceQStringBase
@@ -143,7 +142,7 @@ Set the string minimum length.
 minLength The string minimum length.
 %End
 
-    int minLength();
+    int minLength() const;
 %Docstring
 Returns the string minimum length.
 %End
@@ -155,7 +154,7 @@ Set the string maximum length.
 maxLength The string maximum length.
 %End
 
-    int maxLength();
+    int maxLength() const;
 %Docstring
 Returns the string maximum length. By -1 there is no limitation.
 %End
@@ -367,7 +366,7 @@ Set the minimum value.
 minValue The minimum value.
 %End
 
-    qlonglong minValue();
+    qlonglong minValue() const;
 %Docstring
 Returns the minimum value.
 %End
@@ -379,7 +378,7 @@ Set the maximum value.
 maxValue The maximum value.
 %End
 
-    qlonglong maxValue();
+    qlonglong maxValue() const;
 %Docstring
 Returns the maximum value.
 %End
@@ -567,6 +566,68 @@ The ``options`` arguments specifies the options for the settings entry.
 
   private:
     virtual QColor convertFromVariant( const QVariant &value ) const;
+
+};
+
+
+typedef QgsSettingsEntryByReference<QVariantMap> QgsSettingsEntryByReferenceQVariantMapBase;
+
+class QgsSettingsEntryVariantMap : QgsSettingsEntryByReferenceQVariantMapBase
+{
+%Docstring(signature="appended")
+
+A string list settings entry.
+
+.. versionadded:: 3.30
+%End
+
+%TypeHeaderCode
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsentry.h"
+typedef QgsSettingsEntryByReference<QVariantMap> QgsSettingsEntryByReferenceQVariantMapBase;
+%End
+  public:
+
+  private:
+    QgsSettingsEntryVariantMap( const QString &key,
+                                const QString &section,
+                                const QVariantMap &defaultValue = QVariantMap(),
+                                const QString &description = QString(),
+                                Qgis::SettingsOptions options = Qgis::SettingsOptions() );
+%Docstring
+Constructor for QgsSettingsEntryVariantMap.
+
+The ``key`` argument specifies the final part of the settings key.
+The ``section`` argument specifies the section.
+The ``defaultValue`` argument specifies the default value for the settings entry.
+The ``description`` argument specifies a description for the settings entry.
+The ``options`` arguments specifies the options for the settings entry.
+%End
+  public:
+
+    QgsSettingsEntryVariantMap( const QString &key,
+                                const QString &pluginName,
+                                const QVariantMap &defaultValue = QVariantMap(),
+                                const QString &description = QString(),
+                                Qgis::SettingsOptions options = Qgis::SettingsOptions() );
+%Docstring
+Constructor for :py:class:`QgsSettingsEntryStringMap`.
+This constructor is intended to be used from plugins.
+
+The ``key`` argument specifies the key of the settings.
+The ``pluginName`` argument is inserted in the key after the section.
+The ``defaultValue`` argument specifies the default value for the settings entry.
+The ``description`` argument specifies a description for the settings entry.
+The ``options`` arguments specifies the options for the settings entry.
+%End
+%MethodCode
+    sipCpp = new sipQgsSettingsEntryVariantMap( QgsSettingsEntryVariantMap( *a0, QStringLiteral( "plugins/%1" ).arg( *a1 ), *a2, *a3, *a4 ) );
+%End
+
+    virtual Qgis::SettingsType settingsType() const;
+
+  private:
+    virtual QVariantMap convertFromVariant( const QVariant &value ) const;
 
 };
 

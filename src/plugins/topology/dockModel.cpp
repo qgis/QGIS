@@ -94,7 +94,7 @@ QVariant DockModel::data( const QModelIndex &index, int role ) const
       val = QVariant();
   }
 
-  if ( val.isNull() )
+  if ( QgsVariantUtils::isNull( val ) )
   {
     return QVariant();
   }

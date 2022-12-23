@@ -12,7 +12,7 @@
 
 typedef QList < QPair< QString, QColor > > QgsLegendColorList;
 
-class QgsRasterLayer : QgsMapLayer
+class QgsRasterLayer : QgsMapLayer, QgsAbstractProfileSource
 {
 %Docstring(signature="appended")
 
@@ -107,22 +107,8 @@ created for the same data source and renderer is cloned too.
 .. versionadded:: 3.0
 %End
 
-    enum ColorShadingAlgorithm
-    {
-      UndefinedShader,
-      PseudoColorShader,
-      FreakOutShader,
-      ColorRampShader,
-      UserDefinedShader
-    };
+    virtual QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) /Factory/;
 
-    enum LayerType
-    {
-      GrayOrUndefined,
-      Palette,
-      Multiband,
-      ColorLayer
-    };
 
     static bool isValidRasterFileName( const QString &fileNameQString, QString &retError );
 %Docstring
@@ -158,7 +144,7 @@ Set the data provider.
 .. versionadded:: 3.2
 %End
 
-    LayerType rasterType();
+    Qgis::RasterLayerType rasterType() const;
 %Docstring
 Returns the raster layer type (which is a read only property).
 %End
@@ -249,6 +235,27 @@ Returns the number of bands in this layer.
     QString bandName( int bandNoInt ) const;
 %Docstring
 Returns the name of a band given its number.
+%End
+
+    QgsRasterAttributeTable *attributeTable( int bandNumber ) const;
+%Docstring
+Returns the (possibly NULL) raster attribute table for the given band ``bandNumber``.
+
+.. versionadded:: 3.30
+%End
+
+    int attributeTableCount( ) const;
+%Docstring
+Returns the number of attribute tables for the raster by counting the number of bands that have an associated attribute table.
+
+.. versionadded:: 3.30
+%End
+
+    bool canCreateRasterAttributeTable( );
+%Docstring
+Returns ``True`` if the raster renderer is suitable for creation of a raster attribute table. The supported renderers are :py:class:`QgsPalettedRasterRenderer` and :py:class:`QgsSingleBandPseudoColorRenderer`.
+
+.. versionadded:: 3.30
 %End
 
     virtual QgsRasterDataProvider *dataProvider();
@@ -442,7 +449,6 @@ Emitted when the layer's subset string has changed.
 
 .. versionadded:: 3.12
 %End
-
 
   protected:
     virtual bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );

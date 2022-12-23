@@ -31,6 +31,7 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QPainterPath>
+#include <QImage>
 
 class QPainter;
 class QSize;
@@ -74,6 +75,8 @@ class CORE_EXPORT QgsSymbolLayer
           sipType = sipType_QgsSvgMarkerSymbolLayer;
         else if ( sipCpp->layerType() == "RasterMarker" )
           sipType = sipType_QgsRasterMarkerSymbolLayer;
+        else if ( sipCpp->layerType() == "AnimatedMarker" )
+          sipType = sipType_QgsAnimatedMarkerSymbolLayer;
         else if ( sipCpp->layerType() == "VectorField" )
           sipType = sipType_QgsVectorFieldSymbolLayer;
         else if ( sipCpp->layerType() == "MaskMarker" )
@@ -248,38 +251,87 @@ class CORE_EXPORT QgsSymbolLayer
     void setEnabled( bool enabled ) { mEnabled = enabled; }
 
     /**
-     * The fill color.
+     * Returns the "representative" color of the symbol layer.
+     *
+     * Depending on the symbol layer type, this will have different meaning. For instance, a line
+     * symbol layer will generally return the stroke color of the layer, while a fill symbol layer
+     * will return the "fill" color instead of stroke.
+     *
+     * Some symbol layer types will return an invalid QColor if they have no representative
+     * color associated (e.g. raster image based symbol layers).
+     *
+     * \see setColor()
+     * \see strokeColor()
+     * \see fillColor()
      */
-    virtual QColor color() const { return mColor; }
+    virtual QColor color() const;
 
     /**
-     * The fill color.
+     * Sets the "representative" color for the symbol layer.
+     *
+     * Depending on the symbol layer type, this will have different meaning. For instance, a line
+     * symbol layer will generally set the stroke color of the layer, while a fill symbol layer
+     * will set the "fill" color instead of stroke.
+     *
+     * \see color()
+     * \see setStrokeColor()
+     * \see setFillColor()
      */
-    virtual void setColor( const QColor &color ) { mColor = color; }
+    virtual void setColor( const QColor &color );
 
     /**
-     * Set stroke color. Supported by marker and fill layers.
+     * Sets the stroke \a color for the symbol layer.
+     *
+     * This property is not supported by all symbol layer types, only those with a stroke component.
+     *
+     * \see strokeColor()
+     * \see setColor()
+     * \see setFillColor()
+     *
      * \since QGIS 2.1
     */
-    virtual void setStrokeColor( const QColor &color ) { Q_UNUSED( color ) }
+    virtual void setStrokeColor( const QColor &color );
 
     /**
-     * Gets stroke color. Supported by marker and fill layers.
+     * Returns the stroke color for the symbol layer.
+     *
+     * This property is not supported by all symbol layer types, only those with a stroke component. Symbol
+     * layers without a stroke component will return an invalid QColor.
+     *
+     * \see setStrokeColor()
+     * \see color()
+     * \see fillColor()
+     *
      * \since QGIS 2.1
     */
-    virtual QColor strokeColor() const { return QColor(); }
+    virtual QColor strokeColor() const;
 
     /**
-     * Set fill color. Supported by marker and fill layers.
+     * Sets the fill \a color for the symbol layer.
+     *
+     * This property is not supported by all symbol layer types, only those with a fill component.
+     *
+     * \see fillColor()
+     * \see setColor()
+     * \see setStrokeColor()
+     *
      * \since QGIS 2.1
     */
-    virtual void setFillColor( const QColor &color ) { Q_UNUSED( color ) }
+    virtual void setFillColor( const QColor &color );
 
     /**
-     * Gets fill color. Supported by marker and fill layers.
+     * Returns the fill color for the symbol layer.
+     *
+     * This property is not supported by all symbol layer types, only those with a fill component. Symbol
+     * layers without a fill component will return an invalid QColor.
+     *
+     * \see setFillColor()
+     * \see color()
+     * \see strokeColor()
+     *
      * \since QGIS 2.1
     */
-    virtual QColor fillColor() const { return QColor(); }
+    virtual QColor fillColor() const;
 
     /**
      * Returns a string that represents this layer type. Used for serialization.
@@ -571,6 +623,13 @@ class CORE_EXPORT QgsSymbolLayer
      */
     virtual QList<QgsSymbolLayerReference> masks() const;
 
+    /**
+     * Prepares all mask internal objects according to what is defined in \a context
+     * This should be called prior to calling startRender() method.
+     * \since QGIS 3.26
+     */
+    virtual void prepareMasks( const QgsSymbolRenderContext &context );
+
   protected:
 
     /**
@@ -593,6 +652,9 @@ class CORE_EXPORT QgsSymbolLayer
 
     std::unique_ptr< QgsPaintEffect > mPaintEffect;
     QgsFields mFields;
+
+    // clip path to be used during rendering
+    QPainterPath mClipPath;
 
     // Configuration of selected symbology implementation
     //! Whether styles for selected features ignore symbol alpha
@@ -1195,5 +1257,3 @@ class CORE_EXPORT QgsFillSymbolLayer : public QgsSymbolLayer
 class QgsSymbolLayerWidget;  // why does SIP fail, when this isn't here
 
 #endif
-
-

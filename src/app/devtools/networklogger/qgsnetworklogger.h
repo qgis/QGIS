@@ -20,7 +20,7 @@
 #include <QElapsedTimer>
 #include "qgsnetworkaccessmanager.h"
 
-class QgsNetworkLoggerNode;
+class QgsDevToolsModelNode;
 class QgsNetworkLoggerRequestGroup;
 class QgsNetworkLoggerRootNode;
 class QAction;
@@ -66,7 +66,7 @@ class QgsNetworkLogger : public QAbstractItemModel
     /**
      * Returns node for given index. Returns root node for invalid index.
      */
-    QgsNetworkLoggerNode *index2node( const QModelIndex &index ) const;
+    QgsDevToolsModelNode *index2node( const QModelIndex &index ) const;
 
     /**
      * Returns a list of actions corresponding to the item at the specified \a index.
@@ -109,8 +109,8 @@ class QgsNetworkLogger : public QAbstractItemModel
   private:
 
     //! Returns index for a given node
-    QModelIndex node2index( QgsNetworkLoggerNode *node ) const;
-    QModelIndex indexOfParentLayerTreeNode( QgsNetworkLoggerNode *parentNode ) const;
+    QModelIndex node2index( QgsDevToolsModelNode *node ) const;
+    QModelIndex indexOfParentLayerTreeNode( QgsDevToolsModelNode *parentNode ) const;
 
     QgsNetworkAccessManager *mNam = nullptr;
     bool mIsLogging = false;
@@ -131,6 +131,7 @@ class QgsNetworkLogger : public QAbstractItemModel
  */
 class QgsNetworkLoggerProxyModel : public QSortFilterProxyModel
 {
+    Q_OBJECT
   public:
 
     /**

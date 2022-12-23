@@ -22,7 +22,7 @@
 #include <QCursor>
 #include <QString>
 #include <QObject>
-
+#include <QPointer>
 #include <QGestureEvent>
 #include "qgis_gui.h"
 
@@ -92,8 +92,10 @@ class GUI_EXPORT QgsMapTool : public QObject
       sipType = sipType_QgsMapToolAdvancedDigitizing;
     else if ( dynamic_cast<QgsMapToolEdit *>( sipCpp ) != NULL )
       sipType = sipType_QgsMapToolEdit;
+    else if ( sipCpp->inherits( "QgsMapTool" ) ) // e.g. map tools from QGIS app library, which aren't exposed to SIP
+      sipType = sipType_QgsMapTool;
     else
-      sipType = NULL;
+      sipType = nullptr;
     SIP_END
 #endif
 
@@ -333,7 +335,7 @@ class GUI_EXPORT QgsMapTool : public QObject
     void setToolName( const QString &name );
 
     //! The pointer to the map canvas
-    QgsMapCanvas *mCanvas = nullptr;
+    QPointer< QgsMapCanvas > mCanvas;
 
     //! The cursor used in the map tool
     QCursor mCursor;
@@ -353,6 +355,7 @@ class GUI_EXPORT QgsMapTool : public QObject
     //! The translated name of the map tool
     QString mToolName;
 
+    friend class QgsMapCanvas;
     friend class TestQgsMapToolEdit;
 
 };

@@ -154,43 +154,43 @@
     </widget>
    </item>
    <item>
-   <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
      <property name="leftMargin">
-     <number>5</number>
+      <number>5</number>
      </property>
      <property name="topMargin">
-     <number>5</number>
+      <number>5</number>
      </property>
      <property name="rightMargin">
-     <number>5</number>
+      <number>5</number>
      </property>
      <item>
-     <widget class="QLabel" name="lblIdentifyMode">
+      <widget class="QLabel" name="lblIdentifyMode">
        <property name="toolTip">
-       <string>Select identify mode</string>
+        <string>Select identify mode</string>
        </property>
        <property name="text">
-       <string>Mode</string>
+        <string>Mode</string>
        </property>
-     </widget>
+      </widget>
      </item>
      <item>
-     <widget class="QComboBox" name="cmbIdentifyMode">
+      <widget class="QComboBox" name="cmbIdentifyMode">
        <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
-       </sizepolicy>
+        </sizepolicy>
        </property>
        <property name="sizeAdjustPolicy">
-       <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
+        <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
        </property>
        <property name="minimumContentsLength">
-       <number>6</number>
+        <number>6</number>
        </property>
-     </widget>
+      </widget>
      </item>
-   </layout>
+    </layout>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -325,6 +325,18 @@
     <string>Identify Features by area or single click</string>
    </property>
   </action>
+  <action name="mActionSelectFeaturesOnMouseOver">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionIdentifyByMouseOver.svg</normaloff>:/images/themes/default/mActionIdentifyByMouseOver.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Identify Feature(s) on mouse over</string>
+   </property>
+   <property name="toolTip">
+    <string>Identify Features by hovering on a feature with the mouse</string>
+   </property>
+  </action>
   <action name="mActionSelectPolygon">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -383,6 +395,17 @@
     <string>Help</string>
    </property>
   </action>
+  <action name="mActionHideNullValues">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Hide NULL Values from Results</string>
+   </property>
+   <property name="toolTip">
+    <string>Hide NULL Values from Results</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -394,6 +417,8 @@
   </customwidget>
  </customwidgets>
  <resources>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>

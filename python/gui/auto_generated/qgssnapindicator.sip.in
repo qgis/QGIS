@@ -10,7 +10,6 @@
 
 
 
-
 class QgsSnapIndicator
 {
 %Docstring(signature="appended")

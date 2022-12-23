@@ -144,12 +144,12 @@ class TestDBManagerPostgisPlugin(unittest.TestCase):
         res = database.sqlResultModel("SELECT 'é'::text", obj)
         self.assertIsInstance(res, PGSqlResultModel)
         dat = res.getData(0, 0)
-        self.assertEqual(dat, u"é")
+        self.assertEqual(dat, "é")
         # SQL as unicode literal
-        res = database.sqlResultModel(u"SELECT 'é'::text", obj)
+        res = database.sqlResultModel("SELECT 'é'::text", obj)
         self.assertIsInstance(res, PGSqlResultModel)
         dat = res.getData(0, 0)
-        self.assertEqual(dat, u"é")
+        self.assertEqual(dat, "é")
 
 
 if __name__ == '__main__':

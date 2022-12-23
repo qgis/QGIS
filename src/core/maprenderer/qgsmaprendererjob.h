@@ -24,6 +24,7 @@
 #include <QObject>
 #include <QTime>
 #include <QElapsedTimer>
+#include <QPicture>
 
 #include "qgsrendercontext.h"
 #include "qgslabelsink.h"
@@ -31,6 +32,7 @@
 #include "qgsmaskidprovider.h"
 #include "qgssettingsentryimpl.h"
 
+class QPicture;
 
 class QgsLabelingEngine;
 class QgsLabelingResults;
@@ -97,6 +99,9 @@ class LayerRenderJob
     //! If TRUE, img already contains cached image from previous rendering
     bool cached = false;
 
+    //! Whether layer should be rendered above labels
+    bool renderAboveLabels = false;
+
     QgsWeakMapLayerPointer layer;
 
     /**
@@ -148,14 +153,29 @@ class LayerRenderJob
      *   pass by another job. We then need to know which first pass image and which masks correspond.
      */
 
-    //! Mask image, needed during the first pass if a mask is defined
-    QImage *maskImage = nullptr;
+    //! painter used to draw mask
+    std::unique_ptr<QPainter> maskPainter;
+
+
+    //! Mask paint device, needed during the first pass to render the mask
+    std::unique_ptr<QPaintDevice> maskPaintDevice;
+
+    /**
+     * If effects are involved in masking we need to rasterize the layer rendering even if
+     * vector output has been requested
+     */
+    bool maskRequiresLayerRasterization = false;
 
     /**
      * Pointer to the first pass job, needed during the second pass
      * to access first pass painter and image.
      */
     LayerRenderJob *firstPassJob = nullptr;
+
+    /**
+     * QPicture representation of rendered layer. Used only for vector layer content when required for layer masking.
+     */
+    std::unique_ptr<QPicture> picture;
 
     /**
      * Pointer to first pass jobs that carry a mask image, needed during the second pass.
@@ -184,17 +204,23 @@ struct LabelRenderJob
    */
   QImage *img = nullptr;
 
+  //! QPicture representation of rendered labels. Used only for vector layer content when required for layer masking.
+  std::unique_ptr<QPicture> picture;
+
+  //! painters used to draw mask
+  std::vector< std::unique_ptr<QPainter> > maskPainters;
+
   /**
-   * Mask images
+   * Contains either mask images or QgsMaskPaintDevice is full vector rendering is enabled and possible (no effects e.g.)
    *
    * There is only one label job, with labels coming from different layers or rules (for rule-based labeling).
-   * So we may have different labels with different label masks. We then need one different mask image for each configuration of label masks.
-   * Labels that share the same kind of label masks, i.e. having the same set of symbol layers that are to be masked, should share the same mask image.
-   * Labels that have different label masks, i.e. having different set of symbol layers that are to be masked, should have different mask images.
+   * So we may have different labels with different label masks. We then need one different mask paint device for each configuration of label masks.
+   * Labels that share the same kind of label masks, i.e. having the same set of symbol layers that are to be masked, should share the same mask paint device.
+   * Labels that have different label masks, i.e. having different set of symbol layers that are to be masked, should have different mask paint device.
    * The index in the vector corresponds to the mask identifier.
    * \see maskIdProvider
    */
-  QVector<QImage *> maskImages;
+  std::vector< std::unique_ptr<QPaintDevice> > maskPaintDevices;
 
   /**
    * A mask id provider that is used to compute a mask image identifier for each label layer.
@@ -531,6 +557,12 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
      */
     std::vector< LayerRenderJob > prepareSecondPassJobs( std::vector< LayerRenderJob > &firstPassJobs, LabelRenderJob &labelJob ) SIP_SKIP;
 
+    /**
+     * Initialize \a secondPassJobs according to what have been rendered (mask clipping path e.g.) in first pass jobs and \a labelJob.
+     * \since QGIS 3.26
+     */
+    void initSecondPassJobs( std::vector< LayerRenderJob > &secondPassJobs, LabelRenderJob &labelJob ) const SIP_SKIP;
+
     //! \note not available in Python bindings
     static QImage composeImage( const QgsMapSettings &settings,
                                 const std::vector< LayerRenderJob > &jobs,
@@ -546,7 +578,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
      * \note not available in Python bindings
      * \since QGIS 3.12
      */
-    static void composeSecondPass( std::vector< LayerRenderJob > &secondPassJobs, LabelRenderJob &labelJob ) SIP_SKIP;
+    static void composeSecondPass( std::vector< LayerRenderJob > &secondPassJobs, LabelRenderJob &labelJob, bool forceVector = false ) SIP_SKIP;
 
     //! \note not available in Python bindings
     void logRenderingTime( const std::vector< LayerRenderJob > &jobs, const std::vector< LayerRenderJob > &secondPassJobs, const LabelRenderJob &labelJob ) SIP_SKIP;
@@ -595,7 +627,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
     QImage *allocateImage( QString layerId );
 
     //! Convenient method to allocate a new image and a new QPainter on this image
-    QPainter *allocateImageAndPainter( QString layerId, QImage *&image );
+    QPainter *allocateImageAndPainter( QString layerId, QImage *&image, const QgsRenderContext *context );
 
     /**
      *  This pure virtual method has to be implemented in derived class for starting the rendering.
@@ -607,6 +639,10 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
     QgsLabelSink *mLabelSink = nullptr;
     QgsLabelingEngineFeedback *mLabelingEngineFeedback = nullptr;
 
+    typedef std::pair<std::unique_ptr<QPicture>, QPainter * > PictureAndPainter;
+
+    //! Convenient method to allocate a new qpicture and associated qpainter
+    PictureAndPainter allocatePictureAndPainter( const QgsRenderContext *context );
 };
 
 

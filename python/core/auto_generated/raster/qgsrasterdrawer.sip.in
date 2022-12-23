@@ -21,12 +21,22 @@ The drawing pipe for raster layers.
 %End
   public:
 
-    QgsRasterDrawer( QgsRasterIterator *iterator, double dpiTarget = -1.0 );
+ QgsRasterDrawer( QgsRasterIterator *iterator, double dpiTarget ) /Deprecated/;
 %Docstring
 The QgsRasterDrawer constructor.
 
 :param iterator: the raster iterator to fetch data from
-:param dpiTarget: the target ``dpi`` (dots per inch) to be taken into consideration when rendering
+:param dpiTarget: the target dpi (dots per inch) to be taken into consideration when rendering
+
+.. deprecated:: QGIS 3.28.
+   Use the constructor without the ``dpiTarget`` argument instead, as DPI is now handled by the :py:func:`~QgsRasterDrawer.draw` method which accepts a :py:class:`QgsRenderContext`.
+%End
+
+    QgsRasterDrawer( QgsRasterIterator *iterator );
+%Docstring
+The QgsRasterDrawer constructor.
+
+:param iterator: the raster iterator to fetch data from
 %End
 
     void draw( QPainter *p, QgsRasterViewPort *viewPort, const QgsMapToPixel *qgsMapToPixel, QgsRasterBlockFeedback *feedback = 0 );
@@ -37,6 +47,17 @@ Draws raster data.
 :param viewPort: viewport to render
 :param qgsMapToPixel: map to pixel converter
 :param feedback: optional raster feedback object for cancellation/preview. Added in QGIS 3.0.
+%End
+
+    void draw( QgsRenderContext &context, QgsRasterViewPort *viewPort, QgsRasterBlockFeedback *feedback = 0 );
+%Docstring
+Draws raster data.
+
+:param context: the render context
+:param viewPort: viewport to render
+:param feedback: optional raster feedback object for cancellation/preview.
+
+.. versionadded:: 3.28
 %End
 
   protected:

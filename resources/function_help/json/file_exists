@@ -2,14 +2,14 @@
   "name": "file_exists",
   "type": "function",
   "groups": ["Files and Paths"],
-  "description": "Returns true if a file path exists.",
+  "description": "Returns TRUE if a file path exists.",
   "arguments": [{
     "arg": "path",
     "description": "a file path or a map layer value. If a map layer value is specified then the file source of the layer will be used."
   }],
   "examples": [{
     "expression": "file_exists('/home/qgis/data/country_boundaries.shp')",
-    "returns": "true"
+    "returns": "TRUE"
   }],
   "tags": ["path", "exists", "file"]
 }

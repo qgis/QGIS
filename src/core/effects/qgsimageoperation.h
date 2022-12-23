@@ -310,7 +310,7 @@ class CORE_EXPORT QgsImageOperation
           : mMode( mode )
         {  }
 
-        void operator()( QRgb &rgb, int x, int y );
+        void operator()( QRgb &rgb, int x, int y ) const;
 
       private:
         GrayscaleMode mMode;
@@ -433,7 +433,7 @@ class CORE_EXPORT QgsImageOperation
 
         typedef void result_type;
 
-        LineOperationDirection direction() { return mDirection; }
+        LineOperationDirection direction() const { return mDirection; }
 
         void operator()( QRgb *startRef, int lineLength, int bytesPerLine )
         {
@@ -502,8 +502,8 @@ class CORE_EXPORT QgsImageOperation
         double *mKernel = nullptr;
         QgsFeedback *mFeedback = nullptr;
 
-        inline QRgb gaussianBlurVertical( int posy, unsigned char *sourceFirstLine, int sourceBpl, int height );
-        inline QRgb gaussianBlurHorizontal( int posx, unsigned char *sourceFirstLine, int width );
+        inline QRgb gaussianBlurVertical( int posy, unsigned char *sourceFirstLine, int sourceBpl, int height ) const;
+        inline QRgb gaussianBlurHorizontal( int posx, unsigned char *sourceFirstLine, int width ) const;
     };
 
     //flip
@@ -518,9 +518,9 @@ class CORE_EXPORT QgsImageOperation
 
         typedef void result_type;
 
-        LineOperationDirection direction() { return mDirection; }
+        LineOperationDirection direction() const { return mDirection; }
 
-        void operator()( QRgb *startRef, int lineLength, int bytesPerLine );
+        void operator()( QRgb *startRef, int lineLength, int bytesPerLine ) const;
 
       private:
         LineOperationDirection mDirection;

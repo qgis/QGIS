@@ -40,28 +40,16 @@ class TestQgsServerWMSLocaleOverride(TestQgsServerWMSTestBase):
     # Set to True to re-generate reference files for this class
     regenerate_reference = False
 
-    def setUp(self):
-        """Create the server instance"""
-        self.fontFamily = QgsFontUtils.standardTestFontFamily()
-        QgsFontUtils.loadStandardTestFonts(['All'])
-
-        self.testdata_path = unitTestDataPath('qgis_server') + '/'
-
-        d = unitTestDataPath('qgis_server') + '/'
-        self.projectPath = os.path.join(d, "project.qgs")
-
-        # Clean env just to be sure
-        env_vars = ['QUERY_STRING', 'QGIS_PROJECT_FILE']
-        for ev in env_vars:
-            try:
-                del os.environ[ev]
-            except KeyError:
-                pass
+    @classmethod
+    def setUpClass(self):
 
         os.environ['QGIS_SERVER_OVERRIDE_SYSTEM_LOCALE'] = 'EN_us'
         os.environ['QGIS_SERVER_SHOW_GROUP_SEPARATOR'] = '0'
 
-        self.server = QgsServer()
+        super().setUpClass()
+
+        # d = os.path.join(self.temporary_path, 'qgis_server')
+        # self.projectPath = os.path.join(d, "project.qgs")
 
     def testGetFeatureInfoThousandSeparator(self):
 

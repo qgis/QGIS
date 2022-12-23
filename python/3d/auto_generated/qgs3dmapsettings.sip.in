@@ -27,7 +27,6 @@ Definition of the world.
 #include "qgs3dmapsettings.h"
 %End
   public:
-
     Qgs3DMapSettings();
 %Docstring
 Constructor for Qgs3DMapSettings
@@ -184,6 +183,7 @@ This setting dictates which layers are to be rendered using their 3D rendering c
 %End
 
 
+
     void setTerrainVerticalScale( double zScale );
 %Docstring
 Sets vertical scale (exaggeration) of terrain
@@ -251,6 +251,7 @@ Sets the terrain elevation offset (used to move the terrain up or down)
 %Docstring
 Returns the elevation offset of the terrain (used to move the terrain up or down)
 %End
+
 
 
     void setTerrainShadingEnabled( bool enabled );
@@ -468,32 +469,24 @@ Returns the corner where the shadow map preview is displayed
 Returns the size of the shadow map preview
 %End
 
-    QList<QgsPointLightSettings> pointLights() const;
+    QList<QgsLightSource *> lightSources() const;
 %Docstring
-Returns list of point lights defined in the scene
+Returns list of directional light sources defined in the scene.
 
-.. versionadded:: 3.6
+.. seealso:: :py:func:`setLightSources`
+
+.. versionadded:: 3.26
 %End
 
-    QList<QgsDirectionalLightSettings> directionalLights() const;
+    void setLightSources( const QList<QgsLightSource *> &lights /Transfer/ );
 %Docstring
-Returns list of directional lights defined in the scene
+Sets the list of ``light`` sources defined in the scene.
 
-.. versionadded:: 3.16
-%End
+Ownership of the lights is transferred to the settings.
 
-    void setPointLights( const QList<QgsPointLightSettings> &pointLights );
-%Docstring
-Sets list of point lights defined in the scene
+.. seealso:: :py:func:`lightSources`
 
-.. versionadded:: 3.6
-%End
-
-    void setDirectionalLights( const QList<QgsDirectionalLightSettings> &directionalLights );
-%Docstring
-Sets list of directional lights defined in the scene
-
-.. versionadded:: 3.16
+.. versionadded:: 3.26
 %End
 
     float fieldOfView() const;
@@ -549,6 +542,8 @@ Default value is 96
 
 
 
+
+
     bool isSkyboxEnabled() const;
 %Docstring
 Returns whether the skybox is enabled.
@@ -585,7 +580,7 @@ Sets whether FPS counter label is enabled
 .. versionadded:: 3.18
 %End
 
-    bool terrainRenderingEnabled();
+    bool terrainRenderingEnabled() const;
 %Docstring
 Returns whether the 2D terrain surface will be rendered.
 
@@ -619,6 +614,57 @@ Sets the renderer usage
 .. seealso:: :py:func:`rendererUsage`
 
 .. versionadded:: 3.24
+%End
+
+    Qgis::ViewSyncModeFlags viewSyncMode() const;
+%Docstring
+Returns the view sync mode (used to synchronize the 2D main map canvas and the 3D camera navigation)
+
+.. versionadded:: 3.26
+%End
+
+    void setViewSyncMode( Qgis::ViewSyncModeFlags mode );
+%Docstring
+Sets the view sync mode (used to synchronize the 2D main map canvas and the 3D camera navigation)
+
+.. versionadded:: 3.26
+%End
+
+    bool viewFrustumVisualizationEnabled() const;
+%Docstring
+Returns whether the camera's view frustum is visualized on the 2D map canvas
+
+.. versionadded:: 3.26
+%End
+
+    void setViewFrustumVisualizationEnabled( bool enabled );
+%Docstring
+Sets whether the camera's view frustum is visualized on the 2D map canvas
+
+.. versionadded:: 3.26
+%End
+
+
+
+    bool isDebugOverlayEnabled() const;
+%Docstring
+Returns whether debug overlay is enabled
+
+.. seealso:: :py:func:`setIsDebugOverlayEnabled`
+
+.. versionadded:: 3.26
+%End
+
+    void setIsDebugOverlayEnabled( bool debugOverlayEnabled );
+%Docstring
+Sets whether debug overlay is enabled
+The debug overlay displays some debugging and profiling information.
+It has been introduced in Qt version 5.15.
+This parameter is transient. It is not saved in the project parameters.
+
+.. seealso:: :py:func:`isDebugOverlayEnabled`
+
+.. versionadded:: 3.26
 %End
 
   signals:
@@ -774,6 +820,13 @@ Emitted when the list of point lights changes
 .. versionadded:: 3.6
 %End
 
+    void lightSourcesChanged();
+%Docstring
+Emitted when any of the light source settings in the map changes.
+
+.. versionadded:: 3.26
+%End
+
     void directionalLightsChanged();
 %Docstring
 Emitted when the list of directional lights changes
@@ -823,11 +876,40 @@ Emitted when shadow rendering settings are changed
 .. versionadded:: 3.16
 %End
 
+
+    void ambientOcclusionSettingsChanged();
+%Docstring
+Emitted when ambient occlusion rendering settings are changed
+
+.. versionadded:: 3.28
+%End
+
     void fpsCounterEnabledChanged( bool fpsCounterEnabled );
 %Docstring
 Emitted when the FPS counter is enabled or disabled
 
 .. versionadded:: 3.18
+%End
+
+    void viewFrustumVisualizationEnabledChanged();
+%Docstring
+Emitted when the camera's view frustum visualization on the main 2D map canvas is enabled or disabled
+
+.. versionadded:: 3.26
+%End
+
+    void axisSettingsChanged();
+%Docstring
+Emitted when 3d axis rendering settings are changed
+
+.. versionadded:: 3.26
+%End
+
+    void debugOverlayEnabledChanged( bool debugOverlayEnabled );
+%Docstring
+Emitted when the debug overaly is enabled or disabled
+
+.. versionadded:: 3.26
 %End
 
   private:

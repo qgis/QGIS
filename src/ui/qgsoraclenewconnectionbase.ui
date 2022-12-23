@@ -54,44 +54,6 @@
       <string>Connection Information</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_1">
-      <item row="1" column="1" colspan="2">
-       <widget class="QLineEdit" name="txtDatabase">
-        <property name="toolTip">
-         <string>Database name, or service name (described in tnsnames.ora) if no host and port has been set</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1" colspan="2">
-       <widget class="QLineEdit" name="txtPort">
-        <property name="text">
-         <string>1521</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1" colspan="2">
-       <widget class="QLineEdit" name="txtName">
-        <property name="toolTip">
-         <string>Name of the new connection</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1" colspan="2">
-       <widget class="QLineEdit" name="txtOptions">
-        <property name="echoMode">
-         <enum>QLineEdit::Normal</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1" colspan="2">
-       <widget class="QLineEdit" name="txtHost"/>
-      </item>
-      <item row="5" column="0">
-       <widget class="QLabel" name="TextLabel3_4">
-        <property name="text">
-         <string>Workspace</string>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
@@ -112,33 +74,6 @@
         </property>
         <property name="text">
          <string>Only existing geometry types</string>
-        </property>
-       </widget>
-      </item>
-      <item row="12" column="0" colspan="3">
-       <widget class="QCheckBox" name="cb_userTablesOnly">
-        <property name="toolTip">
-         <string>When searching for spatial tables restrict the search to tables that are owned by the user.</string>
-        </property>
-        <property name="whatsThis">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When searching for spatial tables restrict the search to tables that are owned by the user.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="text">
-         <string>Only look for user's tables</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="1" colspan="2">
-       <widget class="QLineEdit" name="txtWorkspace">
-        <property name="echoMode">
-         <enum>QLineEdit::Normal</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="TextLabel3_3">
-        <property name="text">
-         <string>Options</string>
         </property>
        </widget>
       </item>
@@ -165,16 +100,41 @@
         </property>
        </widget>
       </item>
-      <item row="16" column="0" colspan="3">
-       <widget class="QCheckBox" name="cb_includeGeoAttributes">
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="whatsThis">
-         <string/>
-        </property>
+      <item row="6" column="0">
+       <widget class="QLabel" name="TextLabel3_5">
         <property name="text">
-         <string>Include additional geometry attributes</string>
+         <string>Schema</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" colspan="2">
+       <widget class="QLineEdit" name="txtDatabase">
+        <property name="toolTip">
+         <string>Database name, or service name (described in tnsnames.ora) if no host and port has been set</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" colspan="2">
+       <widget class="QLineEdit" name="txtHost"/>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="TextLabel3_3">
+        <property name="text">
+         <string>Options</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1" colspan="2">
+       <widget class="QLineEdit" name="txtPort">
+        <property name="text">
+         <string>1521</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1" colspan="2">
+       <widget class="QLineEdit" name="txtOptions">
+        <property name="echoMode">
+         <enum>QLineEdit::Normal</enum>
         </property>
        </widget>
       </item>
@@ -185,43 +145,6 @@
         </property>
         <property name="checked">
          <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="TextLabel1_2">
-        <property name="text">
-         <string>Name</string>
-        </property>
-        <property name="buddy">
-         <cstring>txtName</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="TextLabel1">
-        <property name="text">
-         <string>Host</string>
-        </property>
-        <property name="buddy">
-         <cstring>txtHost</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="0">
-       <widget class="QLabel" name="TextLabel3_5">
-        <property name="text">
-         <string>Schema</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="1" colspan="2">
-       <widget class="QgsFilterLineEdit" name="txtSchema">
-        <property name="toolTip">
-         <string>If specified, only tables from the matching schema will be fetched and listed for the provider</string>
-        </property>
-        <property name="echoMode">
-         <enum>QLineEdit::Normal</enum>
         </property>
        </widget>
       </item>
@@ -249,6 +172,43 @@
         </layout>
        </widget>
       </item>
+      <item row="6" column="1" colspan="2">
+       <widget class="QgsFilterLineEdit" name="txtSchema">
+        <property name="toolTip">
+         <string>If specified, only tables from the matching schema will be fetched and listed for the provider</string>
+        </property>
+        <property name="echoMode">
+         <enum>QLineEdit::Normal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" colspan="2">
+       <widget class="QLineEdit" name="txtName">
+        <property name="toolTip">
+         <string>Name of the new connection</string>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="2">
+       <widget class="QPushButton" name="btnConnect">
+        <property name="text">
+         <string>&amp;Test Connect</string>
+        </property>
+       </widget>
+      </item>
+      <item row="12" column="0" colspan="3">
+       <widget class="QCheckBox" name="cb_userTablesOnly">
+        <property name="toolTip">
+         <string>When searching for spatial tables restrict the search to tables that are owned by the user.</string>
+        </property>
+        <property name="whatsThis">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When searching for spatial tables restrict the search to tables that are owned by the user.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Only look for user's tables</string>
+        </property>
+       </widget>
+      </item>
       <item row="10" column="0" colspan="2">
        <widget class="QCheckBox" name="cb_geometryColumnsOnly">
         <property name="toolTip">
@@ -262,10 +222,57 @@
         </property>
        </widget>
       </item>
-      <item row="10" column="2">
-       <widget class="QPushButton" name="btnConnect">
+      <item row="0" column="0">
+       <widget class="QLabel" name="TextLabel1_2">
         <property name="text">
-         <string>&amp;Test Connect</string>
+         <string>Name</string>
+        </property>
+        <property name="buddy">
+         <cstring>txtName</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="TextLabel1">
+        <property name="text">
+         <string>Host</string>
+        </property>
+        <property name="buddy">
+         <cstring>txtHost</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="16" column="0" colspan="3">
+       <widget class="QCheckBox" name="cb_includeGeoAttributes">
+        <property name="toolTip">
+         <string/>
+        </property>
+        <property name="whatsThis">
+         <string/>
+        </property>
+        <property name="text">
+         <string>Include additional geometry attributes</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="TextLabel3_4">
+        <property name="text">
+         <string>Workspace</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1" colspan="2">
+       <widget class="QLineEdit" name="txtWorkspace">
+        <property name="echoMode">
+         <enum>QLineEdit::Normal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="17" column="0">
+       <widget class="QCheckBox" name="cb_projectsInDatabase">
+        <property name="text">
+         <string>Allow saving/loading QGIS projects in the database</string>
         </property>
        </widget>
       </item>

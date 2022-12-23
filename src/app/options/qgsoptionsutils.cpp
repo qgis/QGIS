@@ -18,7 +18,16 @@
 #include "qgis.h"
 #include "qgsoptionswidgetfactory.h"
 
-QgsScopedOptionsWidgetFactory::QgsScopedOptionsWidgetFactory() = default;
+QgsScopedOptionsWidgetFactory::QgsScopedOptionsWidgetFactory( std::unique_ptr< QgsOptionsWidgetFactory > &&factory )
+{
+  reset( std::move( factory ) );
+}
+
+QgsScopedOptionsWidgetFactory::QgsScopedOptionsWidgetFactory( QgsScopedOptionsWidgetFactory &&other )
+  : mFactory( std::move( other.mFactory ) )
+{
+
+}
 
 QgsScopedOptionsWidgetFactory::~QgsScopedOptionsWidgetFactory()
 {

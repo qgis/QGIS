@@ -358,6 +358,11 @@ corresponds to the last point in the line.
 
 
 
+
+
+
+
+
     double zAt( int index ) const;
 %Docstring
 Returns the z-coordinate of the specified node in the line string.
@@ -528,6 +533,7 @@ corresponds to the last point in the line.
         sipCpp->setMAt( count + a0, a1 );
     }
 %End
+
 
     void setPoints( const QgsPointSequence &points );
 %Docstring
@@ -700,6 +706,16 @@ of the curve.
 
     virtual void sumUpArea( double &sum /Out/ ) const;
 
+%Docstring
+Calculates the shoelace/triangle formula sum for the points in the linestring.
+If the linestring is closed (i.e. a polygon) then the polygon area is equal to the absolute value of the sum.
+Please note that the sum will be negative if the points are defined in clockwise order.
+Therefore, if you want to use the sum as an area (as the method name indicates) then you probably should use the absolute value,
+since otherwise a bug can be introduced (such as the bug fixed for github issue 49578)
+
+.. seealso:: :py:func:`https`
+%End
+
     virtual double vertexAngle( QgsVertexId vertex ) const;
 
     virtual double segmentLength( QgsVertexId startVertex ) const;
@@ -821,6 +837,15 @@ corresponds to the last point in the line.
     }
 %End
 
+
+    QgsBox3d calculateBoundingBox3d() const;
+%Docstring
+Calculates the minimal 3D bounding box for the geometry.
+
+.. seealso:: :py:func:`calculateBoundingBox`
+
+.. versionadded:: 3.26
+%End
 
   protected:
 

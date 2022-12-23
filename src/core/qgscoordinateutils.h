@@ -73,9 +73,24 @@ class CORE_EXPORT QgsCoordinateUtils
     /**
      * Formats a \a point coordinate for use with the specified \a project, respecting the project's
      * coordinate display settings.
+     *
+     * \note This method returns the x and y coordinates as a concatenated string which respects the project's coordinate axis display order.
+     * See formatCoordinatePartsForProject() for a method which returns separate x and y coordinate strings.
+     *
      * \since QGIS 3.2
      */
     Q_INVOKABLE static QString formatCoordinateForProject( QgsProject *project, const QgsPointXY &point, const QgsCoordinateReferenceSystem &destCrs, int precision );
+
+    /**
+     * Formats a \a point coordinate for use with the specified \a project, respecting the project's
+     * coordinate display settings.
+     *
+     * \note This method returns the x and y coordinates as separate strings, see formatCoordinateForProject() for a method which returns a single concatenated string
+     * respecting the project's coordinate axis display order.
+     *
+     * \since QGIS 3.28
+     */
+    Q_INVOKABLE static void formatCoordinatePartsForProject( QgsProject *project, const QgsPointXY &point, const QgsCoordinateReferenceSystem &destCrs, int precision, QString &x, QString &y );
 
     /**
      * Formats an \a extent for use with the specified \a project, respecting the project's

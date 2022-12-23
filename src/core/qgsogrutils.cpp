@@ -21,7 +21,6 @@
 #include "qgslinestring.h"
 #include "qgsmultipoint.h"
 #include "qgsmultilinestring.h"
-#include "qgsogrprovider.h"
 #include "qgslinesymbollayer.h"
 #include "qgspolygon.h"
 #include "qgsmultipolygon.h"
@@ -36,6 +35,12 @@
 #include "qgslinesymbol.h"
 #include "qgsmarkersymbol.h"
 #include "qgsfielddomain.h"
+#include "qgsfontmanager.h"
+#include "qgsvariantutils.h"
+#include "qgsweakrelation.h"
+#include "qgsproviderregistry.h"
+#include "qgsprovidermetadata.h"
+#include "qgsogrproviderutils.h"
 
 #include <QTextCodec>
 #include <QUuid>
@@ -50,28 +55,28 @@
 #include "ogr_srs_api.h"
 
 
-void gdal::OGRDataSourceDeleter::operator()( OGRDataSourceH source )
+void gdal::OGRDataSourceDeleter::operator()( OGRDataSourceH source ) const
 {
   OGR_DS_Destroy( source );
 }
 
 
-void gdal::OGRGeometryDeleter::operator()( OGRGeometryH geometry )
+void gdal::OGRGeometryDeleter::operator()( OGRGeometryH geometry ) const
 {
   OGR_G_DestroyGeometry( geometry );
 }
 
-void gdal::OGRFldDeleter::operator()( OGRFieldDefnH definition )
+void gdal::OGRFldDeleter::operator()( OGRFieldDefnH definition ) const
 {
   OGR_Fld_Destroy( definition );
 }
 
-void gdal::OGRFeatureDeleter::operator()( OGRFeatureH feature )
+void gdal::OGRFeatureDeleter::operator()( OGRFeatureH feature ) const
 {
   OGR_F_Destroy( feature );
 }
 
-void gdal::GDALDatasetCloser::operator()( GDALDatasetH dataset )
+void gdal::GDALDatasetCloser::operator()( GDALDatasetH dataset ) const
 {
   GDALClose( dataset );
 }
@@ -96,10 +101,17 @@ void gdal::fast_delete_and_close( gdal::dataset_unique_ptr &dataset, GDALDriverH
 }
 
 
-void gdal::GDALWarpOptionsDeleter::operator()( GDALWarpOptions *options )
+void gdal::GDALWarpOptionsDeleter::operator()( GDALWarpOptions *options ) const
 {
   GDALDestroyWarpOptions( options );
 }
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+void gdal::GDALRelationshipDeleter::operator()( GDALRelationshipH relationship ) const
+{
+  GDALDestroyRelationship( relationship );
+}
+#endif
 
 QVariant QgsOgrUtils::OGRFieldtoVariant( const OGRField *value, OGRFieldType type )
 {
@@ -603,7 +615,7 @@ bool QgsOgrUtils::readOgrFeatureGeometry( OGRFeatureH ogrFet, QgsFeature &featur
 
 std::unique_ptr< QgsPoint > ogrGeometryToQgsPoint( OGRGeometryH geom )
 {
-  QgsWkbTypes::Type wkbType = static_cast<QgsWkbTypes::Type>( OGR_G_GetGeometryType( geom ) );
+  QgsWkbTypes::Type wkbType = QgsOgrUtils::ogrGeometryTypeToQgsWkbType( OGR_G_GetGeometryType( geom ) );
 
   double x, y, z, m;
   OGR_G_GetPointZM( geom, 0, &x, &y, &z, &m );
@@ -626,7 +638,7 @@ std::unique_ptr< QgsMultiPoint > ogrGeometryToQgsMultiPoint( OGRGeometryH geom )
 
 std::unique_ptr< QgsLineString > ogrGeometryToQgsLineString( OGRGeometryH geom )
 {
-  QgsWkbTypes::Type wkbType = static_cast<QgsWkbTypes::Type>( OGR_G_GetGeometryType( geom ) );
+  QgsWkbTypes::Type wkbType = QgsOgrUtils::ogrGeometryTypeToQgsWkbType( OGR_G_GetGeometryType( geom ) );
 
   int count = OGR_G_GetPointCount( geom );
   QVector< double > x( count );
@@ -995,8 +1007,10 @@ QgsFields QgsOgrUtils::stringToFields( const QString &string, QTextCodec *encodi
 
 QStringList QgsOgrUtils::cStringListToQStringList( char **stringList )
 {
-  QStringList strings;
+  if ( !stringList )
+    return {};
 
+  QStringList strings;
   // presume null terminated string list
   for ( qgssize i = 0; stringList[i]; ++i )
   {
@@ -1124,170 +1138,16 @@ QString QgsOgrUtils::readShapefileEncoding( const QString &path )
 
 QString QgsOgrUtils::readShapefileEncodingFromCpg( const QString &path )
 {
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,1,0)
   QString errCause;
   QgsOgrLayerUniquePtr layer = QgsOgrProviderUtils::getLayer( path, false, QStringList(), 0, errCause, false );
   return layer ? layer->GetMetadataItem( QStringLiteral( "ENCODING_FROM_CPG" ), QStringLiteral( "SHAPEFILE" ) ) : QString();
-#else
-  if ( !QFileInfo::exists( path ) )
-    return QString();
-
-  // first try to read cpg file, if present
-  const QFileInfo fi( path );
-  const QString baseName = fi.completeBaseName();
-  const QString cpgPath = fi.dir().filePath( QStringLiteral( "%1.%2" ).arg( baseName, fi.suffix() == QLatin1String( "SHP" ) ? QStringLiteral( "CPG" ) : QStringLiteral( "cpg" ) ) );
-  if ( QFile::exists( cpgPath ) )
-  {
-    QFile cpgFile( cpgPath );
-    if ( cpgFile.open( QIODevice::ReadOnly ) )
-    {
-      QTextStream cpgStream( &cpgFile );
-      const QString cpgString = cpgStream.readLine();
-      cpgFile.close();
-
-      if ( !cpgString.isEmpty() )
-      {
-        // from OGRShapeLayer::ConvertCodePage
-        // https://github.com/OSGeo/gdal/blob/master/gdal/ogr/ogrsf_frmts/shape/ogrshapelayer.cpp#L342
-        bool ok = false;
-        int cpgCodePage = cpgString.toInt( &ok );
-        if ( ok && ( ( cpgCodePage >= 437 && cpgCodePage <= 950 )
-                     || ( cpgCodePage >= 1250 && cpgCodePage <= 1258 ) ) )
-        {
-          return QStringLiteral( "CP%1" ).arg( cpgCodePage );
-        }
-        else if ( cpgString.startsWith( QLatin1String( "8859" ) ) )
-        {
-          if ( cpgString.length() > 4 && cpgString.at( 4 ) == '-' )
-            return QStringLiteral( "ISO-8859-%1" ).arg( cpgString.mid( 5 ) );
-          else
-            return QStringLiteral( "ISO-8859-%1" ).arg( cpgString.mid( 4 ) );
-        }
-        else if ( cpgString.startsWith( QLatin1String( "UTF-8" ), Qt::CaseInsensitive ) ||
-                  cpgString.startsWith( QLatin1String( "UTF8" ), Qt::CaseInsensitive ) )
-          return QStringLiteral( "UTF-8" );
-        else if ( cpgString.startsWith( QLatin1String( "ANSI 1251" ), Qt::CaseInsensitive ) )
-          return QStringLiteral( "CP1251" );
-
-        return cpgString;
-      }
-    }
-  }
-
-  return QString();
-#endif
 }
 
 QString QgsOgrUtils::readShapefileEncodingFromLdid( const QString &path )
 {
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,1,0)
   QString errCause;
   QgsOgrLayerUniquePtr layer = QgsOgrProviderUtils::getLayer( path, false, QStringList(), 0, errCause, false );
   return layer ? layer->GetMetadataItem( QStringLiteral( "ENCODING_FROM_LDID" ), QStringLiteral( "SHAPEFILE" ) ) : QString();
-#else
-  // from OGRShapeLayer::ConvertCodePage
-  // https://github.com/OSGeo/gdal/blob/master/gdal/ogr/ogrsf_frmts/shape/ogrshapelayer.cpp#L342
-
-  if ( !QFileInfo::exists( path ) )
-    return QString();
-
-  // first try to read cpg file, if present
-  const QFileInfo fi( path );
-  const QString baseName = fi.completeBaseName();
-
-  // fallback to LDID value, read from DBF file
-  const QString dbfPath = fi.dir().filePath( QStringLiteral( "%1.%2" ).arg( baseName, fi.suffix() == QLatin1String( "SHP" ) ? QStringLiteral( "DBF" ) : QStringLiteral( "dbf" ) ) );
-  if ( QFile::exists( dbfPath ) )
-  {
-    QFile dbfFile( dbfPath );
-    if ( dbfFile.open( QIODevice::ReadOnly ) )
-    {
-      dbfFile.read( 29 );
-      QDataStream dbfIn( &dbfFile );
-      dbfIn.setByteOrder( QDataStream::LittleEndian );
-      quint8 ldid;
-      dbfIn >> ldid;
-      dbfFile.close();
-
-      int nCP = -1;  // Windows code page.
-
-      // http://www.autopark.ru/ASBProgrammerGuide/DBFSTRUC.HTM
-      switch ( ldid )
-      {
-        case 1: nCP = 437;      break;
-        case 2: nCP = 850;      break;
-        case 3: nCP = 1252;     break;
-        case 4: nCP = 10000;    break;
-        case 8: nCP = 865;      break;
-        case 10: nCP = 850;     break;
-        case 11: nCP = 437;     break;
-        case 13: nCP = 437;     break;
-        case 14: nCP = 850;     break;
-        case 15: nCP = 437;     break;
-        case 16: nCP = 850;     break;
-        case 17: nCP = 437;     break;
-        case 18: nCP = 850;     break;
-        case 19: nCP = 932;     break;
-        case 20: nCP = 850;     break;
-        case 21: nCP = 437;     break;
-        case 22: nCP = 850;     break;
-        case 23: nCP = 865;     break;
-        case 24: nCP = 437;     break;
-        case 25: nCP = 437;     break;
-        case 26: nCP = 850;     break;
-        case 27: nCP = 437;     break;
-        case 28: nCP = 863;     break;
-        case 29: nCP = 850;     break;
-        case 31: nCP = 852;     break;
-        case 34: nCP = 852;     break;
-        case 35: nCP = 852;     break;
-        case 36: nCP = 860;     break;
-        case 37: nCP = 850;     break;
-        case 38: nCP = 866;     break;
-        case 55: nCP = 850;     break;
-        case 64: nCP = 852;     break;
-        case 77: nCP = 936;     break;
-        case 78: nCP = 949;     break;
-        case 79: nCP = 950;     break;
-        case 80: nCP = 874;     break;
-        case 87: return QStringLiteral( "ISO-8859-1" );
-        case 88: nCP = 1252;     break;
-        case 89: nCP = 1252;     break;
-        case 100: nCP = 852;     break;
-        case 101: nCP = 866;     break;
-        case 102: nCP = 865;     break;
-        case 103: nCP = 861;     break;
-        case 104: nCP = 895;     break;
-        case 105: nCP = 620;     break;
-        case 106: nCP = 737;     break;
-        case 107: nCP = 857;     break;
-        case 108: nCP = 863;     break;
-        case 120: nCP = 950;     break;
-        case 121: nCP = 949;     break;
-        case 122: nCP = 936;     break;
-        case 123: nCP = 932;     break;
-        case 124: nCP = 874;     break;
-        case 134: nCP = 737;     break;
-        case 135: nCP = 852;     break;
-        case 136: nCP = 857;     break;
-        case 150: nCP = 10007;   break;
-        case 151: nCP = 10029;   break;
-        case 200: nCP = 1250;    break;
-        case 201: nCP = 1251;    break;
-        case 202: nCP = 1254;    break;
-        case 203: nCP = 1253;    break;
-        case 204: nCP = 1257;    break;
-        default: break;
-      }
-
-      if ( nCP != -1 )
-      {
-        return QStringLiteral( "CP%1" ).arg( nCP );
-      }
-    }
-  }
-  return QString();
-#endif
 }
 
 QVariantMap QgsOgrUtils::parseStyleString( const QString &string )
@@ -1635,12 +1495,16 @@ std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &st
 
       bool familyFound = false;
       QString fontFamily;
+      QString matched;
       for ( const QString &family : std::as_const( families ) )
       {
-        if ( QgsFontUtils::fontFamilyMatchOnSystem( family ) )
+        const QString processedFamily = QgsApplication::fontManager()->processFontFamilyName( family );
+
+        if ( QgsFontUtils::fontFamilyMatchOnSystem( processedFamily ) ||
+             QgsApplication::fontManager()->tryToDownloadFontFamily( processedFamily, matched ) )
         {
           familyFound = true;
-          fontFamily = family;
+          fontFamily = processedFamily;
           break;
         }
       }
@@ -2029,6 +1893,124 @@ QVariant QgsOgrUtils::stringToVariant( OGRFieldType type, OGRFieldSubType, const
   return ok ? res : QVariant();
 }
 
+QList<QgsVectorDataProvider::NativeType> QgsOgrUtils::nativeFieldTypesForDriver( GDALDriverH driver )
+{
+  if ( !driver )
+    return {};
+
+  const QString driverName = QString::fromUtf8( GDALGetDriverShortName( driver ) );
+
+  int nMaxIntLen = 11;
+  int nMaxInt64Len = 21;
+  int nMaxDoubleLen = 20;
+  int nMaxDoublePrec = 15;
+  int nDateLen = 8;
+  if ( driverName == QLatin1String( "GPKG" ) )
+  {
+    // GPKG only supports field length for text (and binary)
+    nMaxIntLen = 0;
+    nMaxInt64Len = 0;
+    nMaxDoubleLen = 0;
+    nMaxDoublePrec = 0;
+    nDateLen = 0;
+  }
+
+  QList<QgsVectorDataProvider::NativeType> nativeTypes;
+  nativeTypes
+      << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Int ), QStringLiteral( "integer" ), QVariant::Int, 0, nMaxIntLen )
+      << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::LongLong ), QStringLiteral( "integer64" ), QVariant::LongLong, 0, nMaxInt64Len )
+      << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal number (real)" ), QStringLiteral( "double" ), QVariant::Double, 0, nMaxDoubleLen, 0, nMaxDoublePrec )
+      << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::String ), QStringLiteral( "string" ), QVariant::String, 0, 65535 );
+
+  if ( driverName == QLatin1String( "GPKG" ) )
+    nativeTypes << QgsVectorDataProvider::NativeType( QObject::tr( "JSON (string)" ), QStringLiteral( "JSON" ), QVariant::Map, 0, 0, 0, 0, QVariant::String );
+
+  bool supportsDate = true;
+  bool supportsTime = true;
+  bool supportsDateTime = true;
+  bool supportsBinary = false;
+  bool supportIntegerList = false;
+  bool supportInteger64List = false;
+  bool supportRealList = false;
+  bool supportsStringList = false;
+
+  // For drivers that advertise their data type, use that instead of the
+  // above hardcoded defaults.
+  if ( const char *pszDataTypes = GDALGetMetadataItem( driver, GDAL_DMD_CREATIONFIELDDATATYPES, nullptr ) )
+  {
+    char **papszTokens = CSLTokenizeString2( pszDataTypes, " ", 0 );
+    supportsDate = CSLFindString( papszTokens, "Date" ) >= 0;
+    supportsTime = CSLFindString( papszTokens, "Time" ) >= 0;
+    supportsDateTime = CSLFindString( papszTokens, "DateTime" ) >= 0;
+    supportsBinary = CSLFindString( papszTokens, "Binary" ) >= 0;
+    supportIntegerList = CSLFindString( papszTokens, "IntegerList" ) >= 0;
+    supportInteger64List = CSLFindString( papszTokens, "Integer64List" ) >= 0;
+    supportRealList = CSLFindString( papszTokens, "RealList" ) >= 0;
+    supportsStringList = CSLFindString( papszTokens, "StringList" ) >= 0;
+    CSLDestroy( papszTokens );
+  }
+
+  // Older versions of GDAL incorrectly report that shapefiles support
+  // DateTime.
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,2,0)
+  if ( driverName == QLatin1String( "ESRI Shapefile" ) )
+  {
+    supportsDateTime = false;
+  }
+#endif
+
+  if ( supportsDate )
+  {
+    nativeTypes
+        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Date ), QStringLiteral( "date" ), QVariant::Date, nDateLen, nDateLen );
+  }
+  if ( supportsTime )
+  {
+    nativeTypes
+        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Time ), QStringLiteral( "time" ), QVariant::Time );
+  }
+  if ( supportsDateTime )
+  {
+    nativeTypes
+        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::DateTime ), QStringLiteral( "datetime" ), QVariant::DateTime );
+  }
+  if ( supportsBinary )
+  {
+    nativeTypes
+        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::ByteArray ), QStringLiteral( "binary" ), QVariant::ByteArray );
+  }
+  if ( supportIntegerList )
+  {
+    nativeTypes
+        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::Int ), QStringLiteral( "integerlist" ), QVariant::List, 0, 0, 0, 0, QVariant::Int );
+  }
+  if ( supportInteger64List )
+  {
+    nativeTypes
+        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::LongLong ), QStringLiteral( "integer64list" ), QVariant::List, 0, 0, 0, 0, QVariant::LongLong );
+  }
+  if ( supportRealList )
+  {
+    nativeTypes
+        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::Double ), QStringLiteral( "doublelist" ), QVariant::List, 0, 0, 0, 0, QVariant::Double );
+  }
+  if ( supportsStringList )
+  {
+    nativeTypes
+        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::StringList ), QStringLiteral( "stringlist" ), QVariant::List, 0, 0, 0, 0, QVariant::String );
+  }
+
+  const char *pszDataSubTypes = GDALGetMetadataItem( driver, GDAL_DMD_CREATIONFIELDDATASUBTYPES, nullptr );
+  if ( pszDataSubTypes && strstr( pszDataSubTypes, "Boolean" ) )
+  {
+    // boolean data type
+    nativeTypes
+        << QgsVectorDataProvider::NativeType( QObject::tr( "Boolean" ), QStringLiteral( "bool" ), QVariant::Bool );
+  }
+
+  return nativeTypes;
+}
+
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,3,0)
 std::unique_ptr< QgsFieldDomain > QgsOgrUtils::convertFieldDomain( OGRFieldDomainH domain )
@@ -2227,4 +2209,288 @@ OGRFieldDomainH QgsOgrUtils::convertFieldDomain( const QgsFieldDomain *domain )
   return res;
 }
 
+#endif
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+QgsWeakRelation QgsOgrUtils::convertRelationship( GDALRelationshipH relationship, const QString &datasetUri )
+{
+  QgsProviderMetadata *ogrProviderMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) );
+  const QVariantMap datasetUriParts = ogrProviderMetadata->decodeUri( datasetUri );
+
+  const QString leftTableName( GDALRelationshipGetLeftTableName( relationship ) );
+
+  QVariantMap leftTableUriParts = datasetUriParts;
+  leftTableUriParts.insert( QStringLiteral( "layerName" ), leftTableName );
+  const QString leftTableSource = ogrProviderMetadata->encodeUri( leftTableUriParts );
+
+  const QString rightTableName( GDALRelationshipGetRightTableName( relationship ) );
+  QVariantMap rightTableUriParts = datasetUriParts;
+  rightTableUriParts.insert( QStringLiteral( "layerName" ), rightTableName );
+  const QString rightTableSource = ogrProviderMetadata->encodeUri( rightTableUriParts );
+
+  const QString mappingTableName( GDALRelationshipGetMappingTableName( relationship ) );
+  QString mappingTableSource;
+  if ( !mappingTableName.isEmpty() )
+  {
+    QVariantMap mappingTableUriParts = datasetUriParts;
+    mappingTableUriParts.insert( QStringLiteral( "layerName" ), mappingTableName );
+    mappingTableSource = ogrProviderMetadata->encodeUri( mappingTableUriParts );
+  }
+
+  const QString relationshipName( GDALRelationshipGetName( relationship ) );
+
+  char **cslLeftTableFieldNames = GDALRelationshipGetLeftTableFields( relationship );
+  const QStringList leftTableFieldNames = QgsOgrUtils::cStringListToQStringList( cslLeftTableFieldNames );
+  CSLDestroy( cslLeftTableFieldNames );
+
+  char **cslRightTableFieldNames = GDALRelationshipGetRightTableFields( relationship );
+  const QStringList rightTableFieldNames = QgsOgrUtils::cStringListToQStringList( cslRightTableFieldNames );
+  CSLDestroy( cslRightTableFieldNames );
+
+  char **cslLeftMappingTableFieldNames = GDALRelationshipGetLeftMappingTableFields( relationship );
+  const QStringList leftMappingTableFieldNames = QgsOgrUtils::cStringListToQStringList( cslLeftMappingTableFieldNames );
+  CSLDestroy( cslLeftMappingTableFieldNames );
+
+  char **cslRightMappingTableFieldNames = GDALRelationshipGetRightMappingTableFields( relationship );
+  const QStringList rightMappingTableFieldNames = QgsOgrUtils::cStringListToQStringList( cslRightMappingTableFieldNames );
+  CSLDestroy( cslRightMappingTableFieldNames );
+
+  const QString forwardPathLabel( GDALRelationshipGetForwardPathLabel( relationship ) );
+  const QString backwardPathLabel( GDALRelationshipGetBackwardPathLabel( relationship ) );
+  const QString relatedTableType( GDALRelationshipGetRelatedTableType( relationship ) );
+
+  const GDALRelationshipType relationshipType = GDALRelationshipGetType( relationship );
+  Qgis::RelationshipStrength strength = Qgis::RelationshipStrength::Association;
+  switch ( relationshipType )
+  {
+    case GRT_COMPOSITE:
+      strength = Qgis::RelationshipStrength::Composition;
+      break;
+
+    case GRT_ASSOCIATION:
+      strength = Qgis::RelationshipStrength::Association;
+      break;
+
+    case GRT_AGGREGATION:
+      QgsLogger::warning( "Aggregation relationships are not supported, treating as association instead" );
+      break;
+  }
+
+  const GDALRelationshipCardinality eCardinality = GDALRelationshipGetCardinality( relationship );
+  Qgis::RelationshipCardinality cardinality = Qgis::RelationshipCardinality::OneToOne;
+  switch ( eCardinality )
+  {
+    case GRC_ONE_TO_ONE:
+      cardinality = Qgis::RelationshipCardinality::OneToOne;
+      break;
+    case GRC_ONE_TO_MANY:
+      cardinality = Qgis::RelationshipCardinality::OneToMany;
+      break;
+    case GRC_MANY_TO_ONE:
+      cardinality = Qgis::RelationshipCardinality::ManyToOne;
+      break;
+    case GRC_MANY_TO_MANY:
+      cardinality = Qgis::RelationshipCardinality::ManyToMany;
+      break;
+  }
+
+  switch ( cardinality )
+  {
+    case Qgis::RelationshipCardinality::OneToOne:
+    case Qgis::RelationshipCardinality::OneToMany:
+    case Qgis::RelationshipCardinality::ManyToOne:
+    {
+      QgsWeakRelation rel( relationshipName,
+                           relationshipName,
+                           strength,
+                           QString(), QString(), rightTableSource, QStringLiteral( "ogr" ),
+                           QString(), QString(), leftTableSource, QStringLiteral( "ogr" ) );
+      rel.setCardinality( cardinality );
+      rel.setForwardPathLabel( forwardPathLabel );
+      rel.setBackwardPathLabel( backwardPathLabel );
+      rel.setRelatedTableType( relatedTableType );
+      rel.setReferencedLayerFields( leftTableFieldNames );
+      rel.setReferencingLayerFields( rightTableFieldNames );
+      return rel;
+    }
+
+    case Qgis::RelationshipCardinality::ManyToMany:
+    {
+      QgsWeakRelation rel( relationshipName,
+                           relationshipName,
+                           strength,
+                           QString(), QString(), rightTableSource, QStringLiteral( "ogr" ),
+                           QString(), QString(), leftTableSource, QStringLiteral( "ogr" ) );
+      rel.setCardinality( cardinality );
+      rel.setForwardPathLabel( forwardPathLabel );
+      rel.setBackwardPathLabel( backwardPathLabel );
+      rel.setRelatedTableType( relatedTableType );
+      rel.setMappingTable( QgsVectorLayerRef( QString(), QString(), mappingTableSource, QStringLiteral( "ogr" ) ) );
+      rel.setReferencedLayerFields( leftTableFieldNames );
+      rel.setMappingReferencedLayerFields( leftMappingTableFieldNames );
+      rel.setReferencingLayerFields( rightTableFieldNames );
+      rel.setMappingReferencingLayerFields( rightMappingTableFieldNames );
+      return rel;
+    }
+  }
+  return QgsWeakRelation();
+}
+
+gdal::relationship_unique_ptr QgsOgrUtils::convertRelationship( const QgsWeakRelation &relationship, QString &error )
+{
+  GDALRelationshipCardinality gCardinality = GDALRelationshipCardinality::GRC_ONE_TO_MANY;
+  switch ( relationship.cardinality() )
+  {
+    case Qgis::RelationshipCardinality::OneToOne:
+      gCardinality = GDALRelationshipCardinality::GRC_ONE_TO_ONE;
+      break;
+    case Qgis::RelationshipCardinality::OneToMany:
+      gCardinality = GDALRelationshipCardinality::GRC_ONE_TO_MANY;
+      break;
+    case Qgis::RelationshipCardinality::ManyToOne:
+      gCardinality = GDALRelationshipCardinality::GRC_MANY_TO_ONE;
+      break;
+    case Qgis::RelationshipCardinality::ManyToMany:
+      gCardinality = GDALRelationshipCardinality::GRC_MANY_TO_MANY;
+      break;
+  }
+
+  QgsProviderMetadata *ogrProviderMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) );
+
+  const QVariantMap leftParts = ogrProviderMetadata->decodeUri( relationship.referencedLayerSource() );
+  const QString leftTableName = leftParts.value( QStringLiteral( "layerName" ) ).toString();
+  if ( leftTableName.isEmpty() )
+  {
+    error = QObject::tr( "Parent table name was not set" );
+    return nullptr;
+  }
+
+  const QVariantMap rightParts = ogrProviderMetadata->decodeUri( relationship.referencingLayerSource() );
+  const QString rightTableName = rightParts.value( QStringLiteral( "layerName" ) ).toString();
+  if ( rightTableName.isEmpty() )
+  {
+    error = QObject::tr( "Child table name was not set" );
+    return nullptr;
+  }
+
+  if ( leftParts.value( QStringLiteral( "path" ) ).toString() != rightParts.value( QStringLiteral( "path" ) ).toString() )
+  {
+    error = QObject::tr( "Parent and child table must be from the same dataset" );
+    return nullptr;
+  }
+
+  QString mappingTableName;
+  if ( !relationship.mappingTableSource().isEmpty() )
+  {
+    const QVariantMap mappingParts = ogrProviderMetadata->decodeUri( relationship.mappingTableSource() );
+    mappingTableName = mappingParts.value( QStringLiteral( "layerName" ) ).toString();
+    if ( leftParts.value( QStringLiteral( "path" ) ).toString() != mappingParts.value( QStringLiteral( "path" ) ).toString() )
+    {
+      error = QObject::tr( "Parent and mapping table must be from the same dataset" );
+      return nullptr;
+    }
+  }
+
+  gdal::relationship_unique_ptr relationH( GDALRelationshipCreate( relationship.name().toLocal8Bit().constData(),
+      leftTableName.toLocal8Bit().constData(),
+      rightTableName.toLocal8Bit().constData(),
+      gCardinality ) );
+
+  // set left table fields
+  const QStringList leftFieldNames = relationship.referencedLayerFields();
+  int count = leftFieldNames.count();
+  char **lst = new char *[count + 1];
+  if ( count > 0 )
+  {
+    int pos = 0;
+    for ( const QString &string : leftFieldNames )
+    {
+      lst[pos] = CPLStrdup( string.toLocal8Bit().constData() );
+      pos++;
+    }
+  }
+  lst[count] = nullptr;
+  GDALRelationshipSetLeftTableFields( relationH.get(), lst );
+  CSLDestroy( lst );
+
+  // set right table fields
+  const QStringList rightFieldNames = relationship.referencingLayerFields();
+  count = rightFieldNames.count();
+  lst = new char *[count + 1];
+  if ( count > 0 )
+  {
+    int pos = 0;
+    for ( const QString &string : rightFieldNames )
+    {
+      lst[pos] = CPLStrdup( string.toLocal8Bit().constData() );
+      pos++;
+    }
+  }
+  lst[count] = nullptr;
+  GDALRelationshipSetRightTableFields( relationH.get(), lst );
+  CSLDestroy( lst );
+
+  if ( !mappingTableName.isEmpty() )
+  {
+    GDALRelationshipSetMappingTableName( relationH.get(), mappingTableName.toLocal8Bit().constData() );
+
+    // set left mapping table fields
+    const QStringList leftFieldNames = relationship.mappingReferencedLayerFields();
+    int count = leftFieldNames.count();
+    char **lst = new char *[count + 1];
+    if ( count > 0 )
+    {
+      int pos = 0;
+      for ( const QString &string : leftFieldNames )
+      {
+        lst[pos] = CPLStrdup( string.toLocal8Bit().constData() );
+        pos++;
+      }
+    }
+    lst[count] = nullptr;
+    GDALRelationshipSetLeftMappingTableFields( relationH.get(), lst );
+    CSLDestroy( lst );
+
+    // set right table fields
+    const QStringList rightFieldNames = relationship.mappingReferencingLayerFields();
+    count = rightFieldNames.count();
+    lst = new char *[count + 1];
+    if ( count > 0 )
+    {
+      int pos = 0;
+      for ( const QString &string : rightFieldNames )
+      {
+        lst[pos] = CPLStrdup( string.toLocal8Bit().constData() );
+        pos++;
+      }
+    }
+    lst[count] = nullptr;
+    GDALRelationshipSetRightMappingTableFields( relationH.get(), lst );
+    CSLDestroy( lst );
+  }
+
+  // set type
+  switch ( relationship.strength() )
+  {
+    case Qgis::RelationshipStrength::Association:
+      GDALRelationshipSetType( relationH.get(), GDALRelationshipType::GRT_ASSOCIATION );
+      break;
+
+    case Qgis::RelationshipStrength::Composition:
+      GDALRelationshipSetType( relationH.get(), GDALRelationshipType::GRT_COMPOSITE );
+      break;
+  }
+
+  // set labels
+  if ( !relationship.forwardPathLabel().isEmpty() )
+    GDALRelationshipSetForwardPathLabel( relationH.get(), relationship.forwardPathLabel().toLocal8Bit().constData() );
+  if ( !relationship.backwardPathLabel().isEmpty() )
+    GDALRelationshipSetBackwardPathLabel( relationH.get(), relationship.backwardPathLabel().toLocal8Bit().constData() );
+
+  // set table type
+  if ( !relationship.relatedTableType().isEmpty() )
+    GDALRelationshipSetRelatedTableType( relationH.get(), relationship.relatedTableType().toLocal8Bit().constData() );
+
+  return relationH;
+}
 #endif

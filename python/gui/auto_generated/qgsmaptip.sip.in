@@ -56,11 +56,12 @@ Show a maptip at a given point on the map canvas
 :param mpMapCanvas: a map canvas on which the tip is drawn
 %End
 
-    void clear( QgsMapCanvas *mpMapCanvas = 0 );
+    void clear( QgsMapCanvas *mpMapCanvas = 0, int msDelay = 0 );
 %Docstring
 Clear the current maptip if it exists
 
 :param mpMapCanvas: the canvas from which the tip should be cleared.
+:param msDelay: optional time in ms to defer clearing the maptip (since QGIS 3.26)
 %End
 
     void applyFontSettings();

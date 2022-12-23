@@ -59,19 +59,38 @@ QString QgsCoordinateFormatter::formatY( double y, QgsCoordinateFormatter::Forma
   return QString(); //avoid warnings
 }
 
-QString QgsCoordinateFormatter::format( const QgsPointXY &point, QgsCoordinateFormatter::Format format, int precision, FormatFlags flags )
+QString QgsCoordinateFormatter::format( const QgsPointXY &point, QgsCoordinateFormatter::Format format, int precision, FormatFlags flags, Qgis::CoordinateOrder order )
 {
-  return QStringLiteral( "%1%2%3" ).arg( formatX( point.x(), format, precision, flags ),
-                                         QgsCoordinateFormatter::separator(),
-                                         formatY( point.y(), format, precision, flags ) );
+  const QString formattedX = formatX( point.x(), format, precision, flags );
+  const QString formattedY = formatY( point.y(), format, precision, flags );
+
+  switch ( order )
+  {
+    case Qgis::CoordinateOrder::Default:
+    case Qgis::CoordinateOrder::XY:
+      return QStringLiteral( "%1%2%3" ).arg( formattedX, QgsCoordinateFormatter::separator(), formattedY );
+
+    case Qgis::CoordinateOrder::YX:
+      return QStringLiteral( "%1%2%3" ).arg( formattedY, QgsCoordinateFormatter::separator(), formattedX );
+  }
+  BUILTIN_UNREACHABLE
 }
 
-QString QgsCoordinateFormatter::asPair( double x, double y, int precision )
+QString QgsCoordinateFormatter::asPair( double x, double y, int precision, Qgis::CoordinateOrder order )
 {
-  QString s = formatAsPair( x, precision );
-  s += QgsCoordinateFormatter::separator();
-  s += formatAsPair( y, precision );
-  return s;
+  const QString formattedX = formatAsPair( x, precision );
+  const QString formattedY = formatAsPair( y, precision );
+
+  switch ( order )
+  {
+    case Qgis::CoordinateOrder::Default:
+    case Qgis::CoordinateOrder::XY:
+      return QStringLiteral( "%1%2%3" ).arg( formattedX, QgsCoordinateFormatter::separator(), formattedY );
+
+    case Qgis::CoordinateOrder::YX:
+      return QStringLiteral( "%1%2%3" ).arg( formattedY, QgsCoordinateFormatter::separator(), formattedX );
+  }
+  BUILTIN_UNREACHABLE
 }
 
 QChar QgsCoordinateFormatter::separator()

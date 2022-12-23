@@ -1,7 +1,11 @@
 QWidget
 {
-    color: @text;
     background: transparent;
+}
+
+QLabel, QCheckBox, QRadioButton, QMenu::item
+{
+    color: @text;
 }
 
 QWindow, QMainWindow, QMdiSubWindow, QDialog, QAbstractScrollArea, QFocusFrame, QWizardPage, QDockWidget, QDockWidgetGroupWindow, QTabWidget, QGroupBox
@@ -197,7 +201,6 @@ QLineEdit
     padding: 0.12em;
     border: 1px solid #111;
     background-color: #888;
-    color: #111;
     selection-background-color: @selection;
     selection-color: @text;
 }
@@ -269,9 +272,31 @@ QToolButton:checked:disabled
 {
     border: 1px solid rgba(215,128,26,100);
 }
-QToolButton::menu-arrow 
+QToolButton::menu-arrow
 {
     image: url(@theme_path/icons/arrow-down.svg);
+    width: 0.8em;
+    height: 1.2em;
+}
+QToolButton::menu-arrow:disabled
+{
+    image: url(@theme_path/icons/arrow-down-disabled.svg);
+    width: 0.8em;
+    height: 1.2em;
+}
+QToolButton::menu-indicator
+{
+    top: 0.2em;
+    right: -0.2em;
+    image: url(@theme_path/icons/arrow-down.svg);
+    width: 0.8em;
+    height: 1.2em;
+}
+QToolButton::menu-indicator:disabled
+{
+    top: 0.2em;
+    right: -0.2em;
+    image: url(@theme_path/icons/arrow-down-disabled.svg);
     width: 0.8em;
     height: 1.2em;
 }
@@ -610,7 +635,7 @@ QRadioButton::indicator:hover
 }
 
 /* ==================================================================================== */
-/* GROUP                                                                                */
+/* GROUP / FRAME                                                                        */
 /* ==================================================================================== */
 
 QGroupBox {
@@ -647,6 +672,10 @@ QGroupBox::indicator:checked {
 
 QGroupBox::indicator:checked:disabled {
     image: url(@theme_path/icons/qcheckbox-checked-disabled.svg);
+}
+
+QFrame, QFrame:disabled {
+    border:1px solid rgba(0,0,0,0);
 }
 
 /* ==================================================================================== */
@@ -791,6 +820,8 @@ QAbstractItemView, QListView
 QAbstractItemView:disabled, QListView:disabled
 {
     color: @itemdarkbackground;
+    border: 1px solid @itemdarkbackground;
+    border-radius: 0px;
 }
 
 QAbstractItemView::selected, QListView::selected {
@@ -922,6 +953,8 @@ QTableView {
 
 QTableView:disabled {
     color: @itemdarkbackground;
+    border: 1px solid @itemdarkbackground;
+    border-radius: 0px;
 }
 
 QTableView::indicator {
@@ -947,6 +980,11 @@ QTableView QTableCornerButton::section {
 }
 
 QHeaderView {
+    background-color:transparent;
+    border:0;
+}
+
+QHeaderView:disabled {
     background-color:transparent;
     border:0;
 }

@@ -30,11 +30,11 @@
 #include "qgslinesymbol.h"
 #include "qgsfillsymbol.h"
 
-class TestQgsRubberband : public QObject
+class TestQgsRubberband : public QgsTest
 {
     Q_OBJECT
   public:
-    TestQgsRubberband() = default;
+    TestQgsRubberband() : QgsTest( QStringLiteral( "Rubberband Tests" ) ) {}
 
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.
@@ -58,7 +58,6 @@ class TestQgsRubberband : public QObject
     QgsVectorLayer *mPolygonLayer = nullptr;
     QString mTestDataDir;
     QgsRubberBand *mRubberband = nullptr;
-    QString mReport;
 };
 
 void TestQgsRubberband::initTestCase()
@@ -86,7 +85,6 @@ void TestQgsRubberband::initTestCase()
   mCanvas->hide();
 
   mRubberband = nullptr;
-  mReport += QLatin1String( "<h1>Rubberband Tests</h1>\n" );
 }
 
 void TestQgsRubberband::cleanupTestCase()
@@ -94,15 +92,6 @@ void TestQgsRubberband::cleanupTestCase()
   delete mRubberband;
   delete mPolygonLayer;
   delete mCanvas;
-
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
 
   QgsApplication::exitQgis();
 }

@@ -170,7 +170,7 @@ Returns the layer cache this model uses as backend.
 Execute an action
 %End
 
-    void executeMapLayerAction( QgsMapLayerAction *action, const QModelIndex &idx ) const;
+    void executeMapLayerAction( QgsMapLayerAction *action, const QModelIndex &idx, const QgsMapLayerActionContext &context = QgsMapLayerActionContext() ) const;
 %Docstring
 Execute a :py:class:`QgsMapLayerAction`
 %End

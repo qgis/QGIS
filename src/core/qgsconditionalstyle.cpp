@@ -86,6 +86,18 @@ bool QgsConditionalLayerStyles::writeXml( QDomNode &node, QDomDocument &doc, con
   return true;
 }
 
+bool QgsConditionalLayerStyles::rulesNeedGeometry() const
+{
+  for ( const QgsConditionalStyle &style : std::as_const( mRowStyles ) )
+  {
+    if ( QgsExpression( style.rule() ).needsGeometry() )
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
 bool QgsConditionalLayerStyles::readXml( const QDomNode &node, const QgsReadWriteContext &context )
 {
   const QDomElement condel = node.firstChildElement( QStringLiteral( "conditionalstyles" ) );

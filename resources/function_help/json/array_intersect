@@ -2,7 +2,7 @@
   "name": "array_intersect",
   "type": "function",
   "groups": ["Arrays"],
-  "description": "Returns true if at least one element of array1 exists in array2.",
+  "description": "Returns TRUE if at least one element of array1 exists in array2.",
   "arguments": [{
     "arg": "array1",
     "description": "an array"
@@ -12,7 +12,7 @@
   }],
   "examples": [{
     "expression": "array_intersect(array(1,2,3,4),array(4,0,2,5))",
-    "returns": "true"
+    "returns": "TRUE"
   }],
   "tags": ["array", "element", "exists", "intersection", "overlap"]
 }

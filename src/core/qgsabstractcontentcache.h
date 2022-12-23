@@ -25,13 +25,10 @@
 #include "qgsapplication.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsnetworkcontentfetchertask.h"
+#include "qgsvariantutils.h"
 
 #include <QObject>
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-#include <QMutex>
-#else
 #include <QRecursiveMutex>
-#endif
 #include <QCache>
 #include <QSet>
 #include <QDateTime>
@@ -214,9 +211,6 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
                              long maxCacheSize = 20000000,
                              int fileModifiedCheckTimeout = 30000 )
       : QgsAbstractContentCacheBase( parent )
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-      , mMutex( QMutex::Recursive )
-#endif
       , mMaxCacheSize( maxCacheSize )
       , mFileModifiedCheckTimeout( fileModifiedCheckTimeout )
       , mTypeString( typeString.isEmpty() ? QObject::tr( "Content" ) : typeString )
@@ -394,7 +388,7 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
         bool ok = true;
 
         const QVariant status = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
-        if ( !status.isNull() && status.toInt() >= 400 )
+        if ( !QgsVariantUtils::isNull( status ) && status.toInt() >= 400 )
         {
           const QVariant phrase = reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
           QgsMessageLog::logMessage( tr( "%4 request error [status: %1 - reason phrase: %2] for %3" ).arg( status.toInt() ).arg( phrase.toString(), path, mTypeString ), mTypeString );
@@ -554,11 +548,8 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
 
       return currentEntry;
     }
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    mutable QMutex mMutex;
-#else
     mutable QRecursiveMutex mMutex;
-#endif
+
     //! Estimated total size of all cached content
     long mTotalSize = 0;
 

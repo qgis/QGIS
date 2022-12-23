@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>448</width>
-    <height>556</height>
+    <height>510</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -37,58 +37,8 @@
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
        <layout class="QGridLayout" name="gridLayout_2">
-        <item row="0" column="0">
-         <widget class="QLabel" name="TextLabel1_2">
-          <property name="text">
-           <string>&amp;Name</string>
-          </property>
-          <property name="buddy">
-           <cstring>txtName</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QLineEdit" name="txtName">
-          <property name="toolTip">
-           <string>Name of the new connection</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="label">
-          <property name="text">
-           <string>Service</string>
-          </property>
-          <property name="buddy">
-           <cstring>txtService</cstring>
-          </property>
-         </widget>
-        </item>
         <item row="1" column="1">
          <widget class="QLineEdit" name="txtService"/>
-        </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="TextLabel1">
-          <property name="text">
-           <string>Hos&amp;t</string>
-          </property>
-          <property name="buddy">
-           <cstring>txtHost</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="QLineEdit" name="txtHost"/>
-        </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="TextLabel2_2">
-          <property name="text">
-           <string>Port</string>
-          </property>
-          <property name="buddy">
-           <cstring>txtPort</cstring>
-          </property>
-         </widget>
         </item>
         <item row="3" column="1">
          <widget class="QLineEdit" name="txtPort">
@@ -96,19 +46,6 @@
            <string>5432</string>
           </property>
          </widget>
-        </item>
-        <item row="4" column="0">
-         <widget class="QLabel" name="TextLabel2">
-          <property name="text">
-           <string>&amp;Database</string>
-          </property>
-          <property name="buddy">
-           <cstring>txtDatabase</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="1">
-         <widget class="QLineEdit" name="txtDatabase"/>
         </item>
         <item row="5" column="0">
          <widget class="QLabel" name="TextLabel3_3">
@@ -120,8 +57,81 @@
           </property>
          </widget>
         </item>
+        <item row="0" column="1">
+         <widget class="QLineEdit" name="txtName">
+          <property name="toolTip">
+           <string>Name of the new connection</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLineEdit" name="txtHost"/>
+        </item>
+        <item row="4" column="1">
+         <widget class="QLineEdit" name="txtDatabase"/>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="TextLabel2">
+          <property name="text">
+           <string>&amp;Database</string>
+          </property>
+          <property name="buddy">
+           <cstring>txtDatabase</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="TextLabel1_2">
+          <property name="text">
+           <string>&amp;Name</string>
+          </property>
+          <property name="buddy">
+           <cstring>txtName</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="TextLabel1">
+          <property name="text">
+           <string>Hos&amp;t</string>
+          </property>
+          <property name="buddy">
+           <cstring>txtHost</cstring>
+          </property>
+         </widget>
+        </item>
         <item row="5" column="1">
          <widget class="QComboBox" name="cbxSSLmode"/>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Service</string>
+          </property>
+          <property name="buddy">
+           <cstring>txtService</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="TextLabel2_2">
+          <property name="text">
+           <string>Port</string>
+          </property>
+          <property name="buddy">
+           <cstring>txtPort</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="1">
+         <widget class="QLineEdit" name="txtSessionRole"/>
+        </item>
+        <item row="6" column="0">
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>Session ROLE</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -224,6 +234,13 @@
        <widget class="QCheckBox" name="cb_projectsInDatabase">
         <property name="text">
          <string>Allow saving/loading QGIS projects in the database</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="cb_metadataInDatabase">
+        <property name="text">
+         <string>Allow saving/loading QGIS layer metadata in the database</string>
         </property>
        </widget>
       </item>

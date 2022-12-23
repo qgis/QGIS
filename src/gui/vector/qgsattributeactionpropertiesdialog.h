@@ -22,7 +22,6 @@
 #include "ui_qgsattributeactionpropertiesdialogbase.h"
 #include "qgsexpressioncontextgenerator.h"
 
-#include "qgsaction.h"
 #include "qgshelp.h"
 #include "qgis_gui.h"
 
@@ -37,11 +36,15 @@ class GUI_EXPORT QgsAttributeActionPropertiesDialog: public QDialog, private Ui:
     Q_OBJECT
 
   public:
-    QgsAttributeActionPropertiesDialog( QgsAction::ActionType type, const QString &description, const QString &shortTitle, const QString &iconPath, const QString &actionText, bool capture, const QSet<QString> &actionScopes, const QString &notificationMessage, bool isEnabledOnlyWhenEditable, QgsVectorLayer *layer, QWidget *parent = nullptr );
+
+    /**
+     * Constructor for QgsAttributeActionPropertiesDialog.
+     */
+    QgsAttributeActionPropertiesDialog( Qgis::AttributeActionType type, const QString &description, const QString &shortTitle, const QString &iconPath, const QString &actionText, bool capture, const QSet<QString> &actionScopes, const QString &notificationMessage, bool isEnabledOnlyWhenEditable, QgsVectorLayer *layer, QWidget *parent = nullptr );
 
     QgsAttributeActionPropertiesDialog( QgsVectorLayer *layer, QWidget *parent = nullptr );
 
-    QgsAction::ActionType type() const;
+    Qgis::AttributeActionType type() const;
 
     QString description() const;
 

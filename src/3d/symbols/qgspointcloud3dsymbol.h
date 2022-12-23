@@ -163,8 +163,10 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol SIP_ABSTRACT
      */
     void setVerticalFilterThreshold( float verticalFilterThreshold );
 
+    void copyBaseSettings( QgsAbstract3DSymbol *destination ) const override;
+
   protected:
-    float mPointSize = 2.0;
+    float mPointSize = 3.0;
     bool mRenderAsTriangles = false;
     bool mHorizontalTriangleFilter = false;
     float mHorizontalFilterThreshold = 10.0;
@@ -184,8 +186,6 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol SIP_ABSTRACT
      * \since QGIS 3.26
      */
     void readBaseXml( const QDomElement &elem, const QgsReadWriteContext &context );
-
-    void copyBaseSettings( QgsAbstract3DSymbol *destination ) const override;
 };
 
 /**

@@ -27,17 +27,18 @@
 
 class QColor;
 class QDomElement;
+class QgsRasterAttributeTable;
 
 /**
  * \ingroup core
-  * \brief Renderer for paletted raster images.
+ * \brief Renderer for paletted raster images.
 */
 class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
 {
   public:
 
     //! Properties of a single value class
-    struct Class
+    struct CORE_EXPORT Class
     {
       //! Constructor for Class
       Class( double value, const QColor &color = QColor(), const QString &label = QString() )
@@ -55,13 +56,46 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
       QString label;
     };
 
+    /**
+     * \ingroup core
+     * \brief Properties of a multi value class: a class that contains multiple values.
+     * \since QGIS 3.30
+     */
+    class CORE_EXPORT MultiValueClass
+    {
+
+      public:
+
+        //! Constructor for MultiValueClass from a list of values
+        MultiValueClass( const QVector< QVariant > &values, const QColor &color = QColor(), const QString &label = QString() );
+
+        //! Values
+        QVector< QVariant > values;
+
+        //! Color to render values
+        QColor color;
+
+        //! Label for values
+        QString label;
+    };
+
+
     //! Map of value to class properties
     typedef QList< QgsPalettedRasterRenderer::Class > ClassData;
+
+    //! Map of multi value to class properties
+    typedef QList< QgsPalettedRasterRenderer::MultiValueClass > MultiValueClassData;
 
     /**
      * Constructor for QgsPalettedRasterRenderer.
      */
     QgsPalettedRasterRenderer( QgsRasterInterface *input, int bandNumber, const ClassData &classes );
+
+    /**
+     * Constructor for QgsPalettedRasterRenderer from multi value classes.
+     * \since QGIS 3.30
+     */
+    QgsPalettedRasterRenderer( QgsRasterInterface *input, int bandNumber, const MultiValueClassData &classes ) SIP_SKIP;
 
     //! QgsPalettedRasterRenderer cannot be copied. Use clone() instead.
     QgsPalettedRasterRenderer( const QgsPalettedRasterRenderer & ) = delete;
@@ -69,17 +103,33 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     const QgsPalettedRasterRenderer &operator=( const QgsPalettedRasterRenderer & ) = delete;
 
     QgsPalettedRasterRenderer *clone() const override SIP_FACTORY;
+    Qgis::RasterRendererFlags flags() const override;
+
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) SIP_FACTORY;
 
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override SIP_FACTORY;
 
     //! Returns number of colors
-    int nColors() const { return mClassData.size(); }
+    int nColors() const;
 
     /**
      * Returns a map of value to classes (colors) used by the renderer.
      */
     ClassData classes() const;
+
+    /**
+     * Returns a map of multi value to classes (colors) used by the renderer.
+     * \since QGIS 3.30
+     */
+    MultiValueClassData multiValueClasses( ) const;
+
+    bool canCreateRasterAttributeTable( ) const override;
+
+    /**
+     * Sets the multi value classes to \a setMultiValueClasses.
+     * \since QGIS 3.30
+     */
+    void setMultiValueClasses( const MultiValueClassData &classes );
 
     /**
      * Returns optional category label
@@ -127,7 +177,18 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     static QgsPalettedRasterRenderer::ClassData colorTableToClassData( const QList<QgsColorRampShader::ColorRampItem> &table );
 
     /**
+     * Reads and returns classes from the Raster Attribute Table \a attributeTable, optionally classifying the attribute table
+     * by \a classificationColumn and setting the colors from \a ramp.
+     * The default value of -1 for the classificationColumn uses the first available value column.
+     *
+     * \note The method will return an empty list of classes in case the Raster Attribute Table is not thematic.
+     * \since QGIS 3.30
+     */
+    static QgsPalettedRasterRenderer::MultiValueClassData rasterAttributeTableToClassData( const QgsRasterAttributeTable *attributeTable, int classificationColumn = -1, QgsColorRamp *ramp = nullptr );
+
+    /**
      * Converts a \a string containing a color table or class data to to paletted renderer class data.
+     *
      * \see classDataFromFile()
      * \see classDataToString()
      * \since QGIS 3.0
@@ -156,6 +217,7 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     static QgsPalettedRasterRenderer::ClassData classDataFromRaster( QgsRasterInterface *raster, int bandNumber, QgsColorRamp *ramp = nullptr,
         QgsRasterBlockFeedback *feedback = nullptr );
 
+
   private:
 #ifdef SIP_RUN
     QgsPalettedRasterRenderer( const QgsPalettedRasterRenderer & );
@@ -164,7 +226,9 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
 
 
     int mBand;
-    ClassData mClassData;
+    MultiValueClassData mMultiValueClassData;
+
+    ClassData classData() const;
 
     //! Source color ramp
     std::unique_ptr<QgsColorRamp> mSourceColorRamp;

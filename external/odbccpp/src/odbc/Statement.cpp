@@ -6,7 +6,7 @@
 //------------------------------------------------------------------------------
 using namespace std;
 //------------------------------------------------------------------------------
-namespace odbc {
+NS_ODBC_START
 //------------------------------------------------------------------------------
 Statement::Statement(Connection* parent) : StatementBase(parent)
 {
@@ -43,4 +43,4 @@ ResultSetRef Statement::executeQuery(const char16_t* sql)
     return ret;
 }
 //------------------------------------------------------------------------------
-} // namespace odbc
+NS_ODBC_END

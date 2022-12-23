@@ -483,13 +483,19 @@ tests:
       step: 0.5
     results:
       beam_rad:
-        hash: 4428e6601576375c17cb0d37f74e3317db218b9660d3e9483f444279
+        hash:
+        - 4428e6601576375c17cb0d37f74e3317db218b9660d3e9483f444279
+        - 177dd510c048532ee905f67673bed984510b9240a3bd0f9bea8cc89c
         type: rasterhash
       diff_rad:
-        hash: a05bb9e71f3a539b74a07235b5873738d3049960c8b2b5fd37cc7826
+        hash:
+        - a05bb9e71f3a539b74a07235b5873738d3049960c8b2b5fd37cc7826
+        - f2224f9dda5d7ef4c5c7075e06e7ccec29df7cba239a6f62e67c152b
         type: rasterhash
       glob_rad:
-        hash: 511d713ab666e171167a9a137ea246eefc90042e149ded73281362fa
+        hash:
+        - 511d713ab666e171167a9a137ea246eefc90042e149ded73281362fa
+        - 1784c5fce7fad3e2ffba7c0282336cb5114232bf8ab3a87532eca151
         type: rasterhash
       insol_time:
         hash: 45954c661088e55d7740f7b9b89e21217a34d25868f751e8d0a67d31
@@ -498,6 +504,7 @@ tests:
         hash:
         - 278011afa98bcdfd87a2c476bc4abac96266a2a13ac9d20696733941
         - 9122d379bbb74ae973392b2465f61a8563fcdcbf063373f3fb6bb202
+        - 6cd2adea6a69573c379fb4a3f8233354097fa70ea44970e894fb9587
         type: rasterhash
 
   - algorithm: grass7:r.sun.incidout
@@ -530,12 +537,15 @@ tests:
         hash: b2459789ef2f04adc13a02d016f314594eaaf6f89e42fdf35d06e46b
         type: rasterhash
       diff_rad:
-        hash: 7dbe38013812f372389f1ce1b60eae6755e005326e2373472ec65443
+        hash:
+        - 7dbe38013812f372389f1ce1b60eae6755e005326e2373472ec65443
+        - 14d5e9d9b5194d55e7188ea56f2c9caa25de9dda75e05957a63f5ba7
         type: rasterhash
       glob_rad:
         hash:
         - 41e68104b039b794efb580a52c79e61af84261f9fad8b2aaedce0316
         - bd223108400e76477cfcdadbf7f69292b14cc1d7fa54f56c2085f00c
+        - 6579b1280cec88938f8688a71903936b17cc9dc65ed93ba68dc11cc8
         type: rasterhash
       incidout:
         hash: 5cd5e5a410da7593d2e0d3ad3cb01818cebddfb73d0439fcf8b30d05
@@ -544,6 +554,7 @@ tests:
         hash:
         - 5ac2d870ae11d726a16809cda2915b248f0180f3eedc0c7a4c8d8de5
         - 26c92b13369154fba0baeb85bd830431f9585064133810c3b8967f87
+        - bc31d9d673ae07709d3fe9e2918d6bcae046db2ef5fea673b98ec0e3
         type: rasterhash
 
   - algorithm: grass7:r.stats

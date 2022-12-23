@@ -131,6 +131,7 @@ this menu can also be customized
 %End
 
 
+
   public slots:
     void formatChanged( QgsRasterLayer *layer );
 

@@ -81,7 +81,7 @@ QString QgsDetectVectorChangesAlgorithm::shortHelpString() const
                       "When comparing features, the original and revised feature geometries will be compared against each other. Depending "
                       "on the Geometry Comparison Behavior setting, the comparison will either be made using an exact comparison (where "
                       "geometries must be an exact match for each other, including the order and count of vertices) or a topological "
-                      "comparison only (where are geometries area considered equal if all of their component edges overlap. E.g. "
+                      "comparison only (where geometries are considered equal if all of their component edges overlap. E.g. "
                       "lines with the same vertex locations but opposite direction will be considered equal by this method). If the topological "
                       "comparison is selected then any z or m values present in the geometries will not be compared.\n\n"
                       "By default, the algorithm compares all attributes from the original and revised features. If the Attributes to Consider for Match "
@@ -92,7 +92,7 @@ QString QgsDetectVectorChangesAlgorithm::shortHelpString() const
                       "raised and the resultant outputs may be misleading.\n\n"
                       "The algorithm outputs three layers, one containing all features which are considered to be unchanged between the revisions, "
                       "one containing features deleted from the original layer which are not present in the revised layer, and one containing features "
-                      "add to the revised layer which are not present in the original layer." );
+                      "added to the revised layer which are not present in the original layer." );
 }
 
 QString QgsDetectVectorChangesAlgorithm::shortDescription() const

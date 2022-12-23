@@ -38,11 +38,10 @@
 #include "qgsvectorlayer.h"
 #include "qgslinestring.h"
 #include "qgsmultipolygon.h"
+#include "qgspolygon.h"
 
 #include "qgslinevertexdata_p.h"
 #include "qgslinematerial_p.h"
-
-#include "qgsimagetexture.h"
 
 /// @cond PRIVATE
 
@@ -92,7 +91,7 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
   outEdges.withAdjacency = true;
   outEdges.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), 0, &context.map() );
 
-  const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast< const QgsPhongTexturedMaterialSettings * >( mSymbol->material() );
+  const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast< const QgsPhongTexturedMaterialSettings * >( mSymbol->materialSettings() );
 
   outNormal.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true, mSymbol->invertNormals(), mSymbol->addBackFaces(), false,
                                texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates(),
@@ -106,7 +105,7 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
 
   QSet<QString> attrs = mSymbol->dataDefinedProperties().referencedFields( context.expressionContext() );
   attributeNames.unite( attrs );
-  attrs = mSymbol->material()->dataDefinedProperties().referencedFields( context.expressionContext() );
+  attrs = mSymbol->materialSettings()->dataDefinedProperties().referencedFields( context.expressionContext() );
   attributeNames.unite( attrs );
   return true;
 }
@@ -145,13 +144,13 @@ void QgsPolygon3DSymbolHandler::processPolygon( QgsPolygon *polyClone, QgsFeatur
   out.tessellator->addPolygon( *polyClone, extrusionHeight );
   delete polyClone;
 
-  if ( mSymbol->material()->dataDefinedProperties().hasActiveProperties() )
+  if ( mSymbol->materialSettings()->dataDefinedProperties().hasActiveProperties() )
     processMaterialDatadefined( out.tessellator->dataVerticesCount() - oldVerticesCount, context.expressionContext(), out );
 }
 
 void QgsPolygon3DSymbolHandler::processMaterialDatadefined( uint verticesCount, const QgsExpressionContext &context, QgsPolygon3DSymbolHandler::PolygonData &out )
 {
-  const QByteArray bytes = mSymbol->material()->dataDefinedVertexColorsAsByte( context );
+  const QByteArray bytes = mSymbol->materialSettings()->dataDefinedVertexColorsAsByte( context );
   out.materialDataDefined.append( bytes.repeated( verticesCount ) );
 }
 
@@ -210,8 +209,9 @@ void QgsPolygon3DSymbolHandler::processFeature( const QgsFeature &f, const Qgs3D
   }
   else
     qWarning() << "not a polygon";
-}
 
+  mFeatureCount++;
+}
 
 void QgsPolygon3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context )
 {
@@ -258,13 +258,13 @@ void QgsPolygon3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs
   const QByteArray data( ( const char * )out.tessellator->data().constData(), out.tessellator->data().count() * sizeof( float ) );
   const int nVerts = data.count() / out.tessellator->stride();
 
-  const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast< const QgsPhongTexturedMaterialSettings * >( mSymbol->material() );
+  const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast< const QgsPhongTexturedMaterialSettings * >( mSymbol->materialSettings() );
 
   QgsTessellatedPolygonGeometry *geometry = new QgsTessellatedPolygonGeometry( true, mSymbol->invertNormals(), mSymbol->addBackFaces(),
       texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates() );
   geometry->setData( data, nVerts, out.triangleIndexFids, out.triangleIndexStartingIndices );
-  if ( mSymbol->material()->dataDefinedProperties().hasActiveProperties() )
-    mSymbol->material()->applyDataDefinedToGeometry( geometry, nVerts, out.materialDataDefined );
+  if ( mSymbol->materialSettings()->dataDefinedProperties().hasActiveProperties() )
+    mSymbol->materialSettings()->applyDataDefinedToGeometry( geometry, nVerts, out.materialDataDefined );
 
   Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
   renderer->setGeometry( geometry );
@@ -316,8 +316,8 @@ Qt3DRender::QMaterial *QgsPolygon3DSymbolHandler::material( const QgsPolygon3DSy
   materialContext.setIsSelected( isSelected );
   materialContext.setSelectionColor( context.map().selectionColor() );
 
-  const bool dataDefined = mSymbol->material()->dataDefinedProperties().hasActiveProperties();
-  Qt3DRender::QMaterial *material = symbol->material()->toMaterial( dataDefined ?
+  const bool dataDefined = mSymbol->materialSettings()->dataDefinedProperties().hasActiveProperties();
+  Qt3DRender::QMaterial *material = symbol->materialSettings()->toMaterial( dataDefined ?
                                     QgsMaterialSettingsRenderingTechnique::TrianglesDataDefined : QgsMaterialSettingsRenderingTechnique::Triangles,
                                     materialContext );
   applyCullingMode( symbol->cullingMode(), material );

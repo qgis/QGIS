@@ -52,24 +52,6 @@
 #include <QStyledItemDelegate>
 #include <QRandomGenerator>
 
-/**
- * \ingroup gui
- * \class EditBlockerDelegate
- */
-class EditBlockerDelegate: public QStyledItemDelegate
-{
-  public:
-    EditBlockerDelegate( QObject *parent = nullptr )
-      : QStyledItemDelegate( parent )
-    {}
-
-    QWidget *createEditor( QWidget *, const QStyleOptionViewItem &, const QModelIndex & ) const override
-    {
-      return nullptr;
-    }
-};
-
-
 QgsExpressionContext QgsDiagramProperties::createExpressionContext() const
 {
   QgsExpressionContext expContext;
@@ -112,16 +94,16 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   mDiagramFontButton->setMode( QgsFontButton::ModeQFont );
 
   mDiagramTypeComboBox->blockSignals( true );
-  QPixmap pix = QgsApplication::getThemePixmap( QStringLiteral( "diagramNone" ) );
-  mDiagramTypeComboBox->addItem( pix, tr( "No Diagrams" ), "None" );
-  pix = QgsApplication::getThemePixmap( QStringLiteral( "pie-chart" ) );
-  mDiagramTypeComboBox->addItem( pix, tr( "Pie Chart" ), DIAGRAM_NAME_PIE );
-  pix = QgsApplication::getThemePixmap( QStringLiteral( "text" ) );
-  mDiagramTypeComboBox->addItem( pix, tr( "Text Diagram" ), DIAGRAM_NAME_TEXT );
-  pix = QgsApplication::getThemePixmap( QStringLiteral( "histogram" ) );
-  mDiagramTypeComboBox->addItem( pix, tr( "Histogram" ), DIAGRAM_NAME_HISTOGRAM );
-  pix = QgsApplication::getThemePixmap( QStringLiteral( "stacked-bar" ) );
-  mDiagramTypeComboBox->addItem( pix, tr( "Stacked Bars" ), DIAGRAM_NAME_STACKED );
+  QIcon icon = QgsApplication::getThemeIcon( QStringLiteral( "diagramNone.svg" ) );
+  mDiagramTypeComboBox->addItem( icon, tr( "No Diagrams" ), "None" );
+  icon = QgsApplication::getThemeIcon( QStringLiteral( "pie-chart.svg" ) );
+  mDiagramTypeComboBox->addItem( icon, tr( "Pie Chart" ), DIAGRAM_NAME_PIE );
+  icon = QgsApplication::getThemeIcon( QStringLiteral( "text.svg" ) );
+  mDiagramTypeComboBox->addItem( icon, tr( "Text Diagram" ), DIAGRAM_NAME_TEXT );
+  icon = QgsApplication::getThemeIcon( QStringLiteral( "histogram.svg" ) );
+  mDiagramTypeComboBox->addItem( icon, tr( "Histogram" ), DIAGRAM_NAME_HISTOGRAM );
+  icon = QgsApplication::getThemeIcon( QStringLiteral( "stacked-bar.svg" ) );
+  mDiagramTypeComboBox->addItem( icon, tr( "Stacked Bars" ), DIAGRAM_NAME_STACKED );
   mDiagramTypeComboBox->blockSignals( false );
 
   mAxisLineStyleButton->setSymbolType( Qgis::SymbolType::Line );
@@ -445,9 +427,7 @@ void QgsDiagramProperties::syncToLayer()
         newItem->setText( 0, *catIt );
         newItem->setData( 0, RoleAttributeExpression, *catIt );
         newItem->setFlags( newItem->flags() & ~Qt::ItemIsDropEnabled );
-        QColor col( *coIt );
-        col.setAlpha( 255 );
-        newItem->setData( ColumnColor, Qt::EditRole, col );
+        newItem->setData( ColumnColor, Qt::EditRole, *coIt );
         newItem->setText( 2, *labIt );
         newItem->setFlags( newItem->flags() | Qt::ItemIsEditable );
       }
@@ -836,7 +816,6 @@ void QgsDiagramProperties::apply()
   for ( int i = 0; i < mDiagramAttributesTreeWidget->topLevelItemCount(); ++i )
   {
     QColor color = mDiagramAttributesTreeWidget->topLevelItem( i )->data( ColumnColor, Qt::EditRole ).value<QColor>();
-    color.setAlphaF( ds.opacity );
     categoryColors.append( color );
     categoryAttributes.append( mDiagramAttributesTreeWidget->topLevelItem( i )->data( 0, RoleAttributeExpression ).toString() );
     categoryLabels.append( mDiagramAttributesTreeWidget->topLevelItem( i )->text( 2 ) );

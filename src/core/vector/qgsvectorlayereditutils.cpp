@@ -118,6 +118,75 @@ Qgis::VectorEditResult QgsVectorLayerEditUtils::deleteVertex( QgsFeatureId featu
   return !geometry.isNull() ? Qgis::VectorEditResult::Success : Qgis::VectorEditResult::EmptyGeometry;
 }
 
+
+static
+Qgis::GeometryOperationResult staticAddRing( QgsVectorLayer *layer, std::unique_ptr< QgsCurve > &ring, const QgsFeatureIds &targetFeatureIds, QgsFeatureIds *modifiedFeatureIds, bool firstOne = true )
+{
+
+  if ( !layer || !layer->isSpatial() )
+  {
+    return Qgis::GeometryOperationResult::AddRingNotInExistingFeature;
+  }
+
+  if ( !ring )
+  {
+    return Qgis::GeometryOperationResult::InvalidInputGeometryType;
+  }
+
+  if ( !ring->isClosed() )
+  {
+    return Qgis::GeometryOperationResult::AddRingNotClosed;
+  }
+
+  if ( !layer->isValid() || !layer->editBuffer() || !layer->dataProvider() )
+  {
+    return Qgis::GeometryOperationResult::LayerNotEditable;
+  }
+
+  Qgis::GeometryOperationResult addRingReturnCode = Qgis::GeometryOperationResult::AddRingNotInExistingFeature; //default: return code for 'ring not inserted'
+  QgsFeature f;
+
+  QgsFeatureIterator fit;
+  if ( !targetFeatureIds.isEmpty() )
+  {
+    //check only specified features
+    fit = layer->getFeatures( QgsFeatureRequest().setFilterFids( targetFeatureIds ) );
+  }
+  else
+  {
+    //check all intersecting features
+    QgsRectangle bBox = ring->boundingBox();
+    fit = layer->getFeatures( QgsFeatureRequest().setFilterRect( bBox ).setFlags( QgsFeatureRequest::ExactIntersect ) );
+  }
+
+  //find first valid feature we can add the ring to
+  while ( fit.nextFeature( f ) )
+  {
+    if ( !f.hasGeometry() )
+      continue;
+
+    //add ring takes ownership of ring, and deletes it if there's an error
+    QgsGeometry g = f.geometry();
+
+    addRingReturnCode = g.addRing( static_cast< QgsCurve * >( ring->clone() ) );
+    if ( addRingReturnCode == Qgis::GeometryOperationResult::Success )
+    {
+      layer->changeGeometry( f.id(), g );
+      if ( modifiedFeatureIds )
+      {
+        modifiedFeatureIds->insert( f.id() );
+        if ( firstOne )
+        {
+          break;
+        }
+      }
+
+    }
+  }
+
+  return addRingReturnCode;
+}
+
 Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addRing( const QVector<QgsPointXY> &ring, const QgsFeatureIds &targetFeatureIds, QgsFeatureId *modifiedFeatureId )
 {
   QgsPointSequence l;
@@ -136,52 +205,25 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addRing( const QgsPointSe
 
 Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addRing( QgsCurve *ring, const QgsFeatureIds &targetFeatureIds, QgsFeatureId *modifiedFeatureId )
 {
-  if ( !mLayer->isSpatial() )
+  std::unique_ptr<QgsCurve> uniquePtrRing( ring );
+  if ( modifiedFeatureId )
   {
-    delete ring;
-    return Qgis::GeometryOperationResult::AddRingNotInExistingFeature;
+    QgsFeatureIds *modifiedFeatureIds = new QgsFeatureIds;
+    Qgis::GeometryOperationResult result = staticAddRing( mLayer, uniquePtrRing, targetFeatureIds, modifiedFeatureIds, true );
+    *modifiedFeatureId = *modifiedFeatureIds->begin();
+    return result;
   }
-
-  Qgis::GeometryOperationResult addRingReturnCode = Qgis::GeometryOperationResult::AddRingNotInExistingFeature; //default: return code for 'ring not inserted'
-  QgsFeature f;
-
-  QgsFeatureIterator fit;
-  if ( !targetFeatureIds.isEmpty() )
-  {
-    //check only specified features
-    fit = mLayer->getFeatures( QgsFeatureRequest().setFilterFids( targetFeatureIds ) );
-  }
-  else
-  {
-    //check all intersecting features
-    QgsRectangle bBox = ring->boundingBox();
-    fit = mLayer->getFeatures( QgsFeatureRequest().setFilterRect( bBox ).setFlags( QgsFeatureRequest::ExactIntersect ) );
-  }
-
-  //find first valid feature we can add the ring to
-  while ( fit.nextFeature( f ) )
-  {
-    if ( !f.hasGeometry() )
-      continue;
-
-    //add ring takes ownership of ring, and deletes it if there's an error
-    QgsGeometry g = f.geometry();
-
-    addRingReturnCode = g.addRing( static_cast< QgsCurve * >( ring->clone() ) );
-    if ( addRingReturnCode == Qgis::GeometryOperationResult::Success )
-    {
-      mLayer->changeGeometry( f.id(), g );
-      if ( modifiedFeatureId )
-        *modifiedFeatureId = f.id();
-
-      //setModified( true, true );
-      break;
-    }
-  }
-
-  delete ring;
-  return addRingReturnCode;
+  return staticAddRing( mLayer, uniquePtrRing, targetFeatureIds, nullptr, true );
 }
+
+Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addRingV2( QgsCurve *ring, const QgsFeatureIds &targetFeatureIds, QgsFeatureIds *modifiedFeatureIds )
+{
+
+  std::unique_ptr<QgsCurve> uniquePtrRing( ring );
+  return staticAddRing( mLayer, uniquePtrRing, targetFeatureIds, modifiedFeatureIds, false );
+}
+
+
 
 Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addPart( const QVector<QgsPointXY> &points, QgsFeatureId featureId )
 {

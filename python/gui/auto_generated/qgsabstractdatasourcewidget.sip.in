@@ -20,6 +20,9 @@ This class provides common functionality and the interface for all
 source select dialogs used by data providers to configure data sources
 and add layers.
 
+The implementation is generic enough to handle other layer search and
+selection widgets.
+
 .. versionadded:: 3.0
 %End
 
@@ -28,19 +31,27 @@ and add layers.
 %End
   public:
 
-    void setMapCanvas( const QgsMapCanvas *mapCanvas );
-%Docstring
-Store a pointer to the map canvas to retrieve extent and CRS
-Used to select an appropriate CRS and possibly to retrieve data only in the current extent
-%End
-
-    void setBrowserModel( QgsBrowserModel *model );
+    virtual void setBrowserModel( QgsBrowserModel *model );
 %Docstring
 Sets a browser ``model`` to use with the widget.
 
 .. seealso:: :py:func:`browserModel`
 
 .. versionadded:: 3.18
+%End
+
+    virtual QgsMapCanvas *mapCanvas();
+%Docstring
+Returns the dialog map canvas
+
+.. seealso:: :py:func:`setMapCanvas`
+%End
+
+    virtual void setMapCanvas( QgsMapCanvas *mapCanvas );
+%Docstring
+Sets the dialog map canvas
+
+.. seealso:: :py:func:`mapCanvas`
 %End
 
   public slots:
@@ -169,7 +180,6 @@ Emitted when a ``message`` with ``title`` and ``level`` must be shown to the use
 .. versionadded:: 3.14
 %End
 
-
   protected:
 
     QgsAbstractDataSourceWidget( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
@@ -180,11 +190,6 @@ Constructor
     QgsProviderRegistry::WidgetMode widgetMode() const;
 %Docstring
 Returns the widget mode
-%End
-
-    const QgsMapCanvas *mapCanvas() const;
-%Docstring
-Returns the map canvas (can be ``None``)
 %End
 
     QgsBrowserModel *browserModel();

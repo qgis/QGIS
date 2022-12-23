@@ -37,7 +37,7 @@ QString QgsCurrencyNumericFormat::visibleName() const
 
 int QgsCurrencyNumericFormat::sortKey()
 {
-  return QgsNumericFormat::sortKey();
+  return DEFAULT_SORT_KEY;
 }
 
 double QgsCurrencyNumericFormat::suggestSampleValue() const

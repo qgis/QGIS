@@ -37,19 +37,15 @@ std::string HdfFile::filePath() const
   return mPath;
 }
 
-HdfGroup HdfGroup::create( hid_t file, const std::string &path )
+HdfGroup::HdfGroup( HdfFile::SharedHandle file, const std::string &path )
+  : mFile( file )
 {
-  auto d = std::make_shared< Handle >( H5Gcreate2( file, path.c_str(), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT ) );
-  return HdfGroup( d );
+  d = std::make_shared< Handle >( H5Gopen( file->id, path.c_str() ) );
 }
 
-HdfGroup::HdfGroup( hid_t file, const std::string &path )
-{
-  d = std::make_shared< Handle >( H5Gopen( file, path.c_str() ) );
-}
-
-HdfGroup::HdfGroup( std::shared_ptr<Handle> handle )
-  : d( handle )
+HdfGroup::HdfGroup( std::shared_ptr<Handle> handle, HdfFile::SharedHandle file )
+  : mFile( file )
+  , d( handle )
 {
 }
 
@@ -162,25 +158,28 @@ void HdfAttribute::write( int value )
     throw MDAL::Error( MDAL_Status::Err_FailToWriteToDisk, "Could not write data" );
 }
 
-HdfDataset::HdfDataset( hid_t file, const std::string &path, HdfDataType dtype, size_t nItems )
-  : mType( dtype )
+HdfDataset::HdfDataset( HdfFile::SharedHandle file, const std::string &path, HdfDataType dtype, size_t nItems )
+  : mFile( file ),
+    mType( dtype )
 {
   // Crete dataspace for attribute
   std::vector<hsize_t> dimsSingle = {nItems};
   HdfDataspace dsc( dimsSingle );
 
-  d = std::make_shared< Handle >( H5Dcreate2( file, path.c_str(), dtype.id(), dsc.id(), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT ) );
+  d = std::make_shared< Handle >( H5Dcreate2( file->id, path.c_str(), dtype.id(), dsc.id(), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT ) );
 }
 
 
-HdfDataset::HdfDataset( hid_t file, const std::string &path, HdfDataType dtype, HdfDataspace dataspace )
-  : mType( dtype )
+HdfDataset::HdfDataset( HdfFile::SharedHandle file, const std::string &path, HdfDataType dtype, HdfDataspace dataspace )
+  : mFile( file ),
+    mType( dtype )
 {
-  d = std::make_shared< Handle >( H5Dcreate2( file, path.c_str(), dtype.id(), dataspace.id(), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT ) );
+  d = std::make_shared< Handle >( H5Dcreate2( file->id, path.c_str(), dtype.id(), dataspace.id(), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT ) );
 }
 
-HdfDataset::HdfDataset( hid_t file, const std::string &path )
-  : d( std::make_shared< Handle >( H5Dopen2( file, path.c_str(), H5P_DEFAULT ) ) )
+HdfDataset::HdfDataset( HdfFile::SharedHandle file, const std::string &path )
+  : mFile( file ),
+    d( std::make_shared< Handle >( H5Dopen2( file->id, path.c_str(), H5P_DEFAULT ) ) )
 {
 }
 

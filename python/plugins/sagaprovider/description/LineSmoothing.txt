@@ -1,9 +1,0 @@
-Line Smoothing
-shapes_lines
-QgsProcessingParameterFeatureSource|LINES_IN|Lines|1|None|False
-QgsProcessingParameterVectorDestination|LINES_OUT|Smoothed Lines
-QgsProcessingParameterEnum|METHOD|Method|[0] basic SIA model;[1] improved SIA model;[2] Gaussian Filtering|False|2
-QgsProcessingParameterNumber|SENSITIVITY|Sensitivity|QgsProcessingParameterNumber.Integer|3|False|1|None
-QgsProcessingParameterNumber|ITERATIONS|Iterations|QgsProcessingParameterNumber.Integer|10|False|1|None
-QgsProcessingParameterNumber|PRESERVATION|Preservation|QgsProcessingParameterNumber.Double|10.000000|False|1.000000|None
-QgsProcessingParameterNumber|SIGMA|Sigma|QgsProcessingParameterNumber.Double|2.000000|False|0.500000|None

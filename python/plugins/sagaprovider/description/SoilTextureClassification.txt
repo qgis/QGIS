@@ -1,7 +1,0 @@
-Soil Texture Classification
-grid_analysis
-QgsProcessingParameterRasterLayer|SAND|Sand|None|True
-QgsProcessingParameterRasterLayer|SILT|Silt|None|True
-QgsProcessingParameterRasterLayer|CLAY|Clay|None|True
-QgsProcessingParameterRasterDestination|TEXTURE|Soil Texture
-QgsProcessingParameterRasterDestination|SUM|Sum

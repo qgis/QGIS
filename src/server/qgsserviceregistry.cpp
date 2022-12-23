@@ -104,13 +104,15 @@ QgsService *QgsServiceRegistry::getService( const QString &name, const QString &
     else
     {
       // Return the default version
-      QgsMessageLog::logMessage( QString( "Service %1 %2 not found, returning default" ).arg( name, version ) );
+      QgsMessageLog::logMessage( QString( "Service %1 %2 not found, returning default" ).arg( name, version ),
+                                 QStringLiteral( "Server" ), Qgis::MessageLevel::Warning );
       service = mServices[v->second].get();
     }
   }
   else
   {
-    QgsMessageLog::logMessage( QString( "Service %1 is not registered" ).arg( name ) );
+    QgsMessageLog::logMessage( QString( "Service %1 is not registered" ).arg( name ),
+                               QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
   }
   return service;
 }
@@ -124,11 +126,13 @@ void QgsServiceRegistry::registerService( QgsService *service )
   const QString key = makeServiceKey( name, version );
   if ( mServices.constFind( key ) != mServices.constEnd() )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Error Service %1 %2 is already registered" ).arg( name, version ) );
+    QgsMessageLog::logMessage( QStringLiteral( "Error Service %1 %2 is already registered" ).arg( name, version ),
+                               QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
     return;
   }
 
-  QgsMessageLog::logMessage( QStringLiteral( "Adding service %1 %2" ).arg( name, version ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
+  QgsMessageLog::logMessage( QStringLiteral( "Adding service %1 %2" ).arg( name, version ),
+                             QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
   mServices.insert( key, std::shared_ptr<QgsService>( service ) );
 
   // Check the default version
@@ -175,7 +179,8 @@ int QgsServiceRegistry::unregisterApi( const QString &name, const QString &versi
       {
         if ( ( *it )->name() == name )
         {
-          QgsMessageLog::logMessage( QString( "Unregistering API %1 %2" ).arg( name, ( *it )->version() ) );
+          QgsMessageLog::logMessage( QString( "Unregistering API %1 %2" ).arg( name, ( *it )->version() ),
+                                     QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
           it = mApis.erase( it );
           ++removed;
         }
@@ -193,7 +198,8 @@ int QgsServiceRegistry::unregisterApi( const QString &name, const QString &versi
       const ApiTable::iterator found = mApis.find( key );
       if ( found != mApis.end() )
       {
-        QgsMessageLog::logMessage( QString( "Unregistering API %1 %2" ).arg( name, version ) );
+        QgsMessageLog::logMessage( QString( "Unregistering API %1 %2" ).arg( name, version ),
+                                   QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
         mApis.erase( found );
         removed = 1;
 
@@ -228,11 +234,13 @@ QgsServerApi *QgsServiceRegistry::apiForRequest( const QgsServerRequest &request
 {
   for ( const auto &api : mApis )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Trying URL path: '%1' for '%2'" ).arg( request.url().path(), api->rootPath() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
+    QgsMessageLog::logMessage( QStringLiteral( "Trying URL path: '%1' for '%2'" ).arg( request.url().path(), api->rootPath() ),
+                               QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
     if ( api->accept( request.url() ) )
     {
       Q_ASSERT( !api->name().isEmpty() );
-      QgsMessageLog::logMessage( QStringLiteral( "API %1 accepts the URL path '%2' " ).arg( api->name(), request.url().path() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
+      QgsMessageLog::logMessage( QStringLiteral( "API %1 accepts the URL path '%2' " ).arg( api->name(), request.url().path() ),
+                                 QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
       return api.get();
     }
   }
@@ -257,13 +265,15 @@ QgsServerApi *QgsServiceRegistry::getApi( const QString &name, const QString &ve
     else
     {
       // Return the default version
-      QgsMessageLog::logMessage( QString( "API %1 %2 not found, returning default" ).arg( name, version ) );
+      QgsMessageLog::logMessage( QString( "API %1 %2 not found, returning default" ).arg( name, version ),
+                                 QStringLiteral( "Server" ), Qgis::MessageLevel::Warning );
       api = mApis[v->second].get();
     }
   }
   else
   {
-    QgsMessageLog::logMessage( QString( "API %1 is not registered" ).arg( name ) );
+    QgsMessageLog::logMessage( QString( "API %1 is not registered" ).arg( name ),
+                               QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
   }
   return api;
 }
@@ -283,7 +293,8 @@ int QgsServiceRegistry::unregisterService( const QString &name, const QString &v
       {
         if ( ( *it )->name() == name )
         {
-          QgsMessageLog::logMessage( QString( "Unregistering service %1 %2" ).arg( name, ( *it )->version() ) );
+          QgsMessageLog::logMessage( QString( "Unregistering service %1 %2" ).arg( name, ( *it )->version() ),
+                                     QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
           it = mServices.erase( it );
           ++removed;
         }
@@ -301,7 +312,8 @@ int QgsServiceRegistry::unregisterService( const QString &name, const QString &v
       const ServiceTable::iterator found = mServices.find( key );
       if ( found != mServices.end() )
       {
-        QgsMessageLog::logMessage( QString( "Unregistering service %1 %2" ).arg( name, version ) );
+        QgsMessageLog::logMessage( QString( "Unregistering service %1 %2" ).arg( name, version ),
+                                   QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
         mServices.erase( found );
         removed = 1;
 
@@ -356,7 +368,8 @@ bool QgsServiceRegistry::registerApi( QgsServerApi *api )
   const QString key = makeServiceKey( name, version );
   if ( mApis.constFind( key ) != mApis.constEnd() )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Error API %1 %2 is already registered" ).arg( name, version ) );
+    QgsMessageLog::logMessage( QStringLiteral( "Error API %1 %2 is already registered" ).arg( name, version ),
+                               QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
     return false;
   }
 

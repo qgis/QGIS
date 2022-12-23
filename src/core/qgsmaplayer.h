@@ -80,6 +80,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     Q_PROPERTY( QgsMapLayerType type READ type CONSTANT )
     Q_PROPERTY( bool isValid READ isValid NOTIFY isValidChanged )
     Q_PROPERTY( double opacity READ opacity WRITE setOpacity NOTIFY opacityChanged )
+    Q_PROPERTY( QString mapTipTemplate READ mapTipTemplate WRITE setMapTipTemplate NOTIFY mapTipTemplateChanged )
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
@@ -640,6 +641,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
       FlagDontResolveLayers = 1 << 0, //!< Don't resolve layer paths or create data providers for layers.
       FlagTrustLayerMetadata = 1 << 1, //!< Trust layer metadata. Improves layer load time by skipping expensive checks like primary key unicity, geometry type and srid and by using estimated metadata on layer load. Since QGIS 3.16
       FlagReadExtentFromXml = 1 << 2, //!< Read extent from xml and skip get extent from provider.
+      FlagForceReadOnly = 1 << 3, //!< Force open as read only.
     };
     Q_DECLARE_FLAGS( ReadFlags, ReadFlag )
 
@@ -1102,10 +1104,23 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * record in the users style table in their personal qgis.db)
      * \param resultFlag a reference to a flag that will be set to FALSE if
      * we did not manage to save the default style.
+     * \param categories the style categories to be saved (since QGIS 3.26)
      * \returns a QString with any status messages
      * \see loadNamedStyle() and \see saveNamedStyle()
      */
-    virtual QString saveDefaultStyle( bool &resultFlag SIP_OUT );
+    virtual QString saveDefaultStyle( bool &resultFlag SIP_OUT, StyleCategories categories );
+
+    /**
+     * Save the properties of this layer as the default style
+     * (either as a .qml file on disk or as a
+     * record in the users style table in their personal qgis.db)
+     * \param resultFlag a reference to a flag that will be set to FALSE if
+     * we did not manage to save the default style.
+     * \returns a QString with any status messages
+     * \see loadNamedStyle() and \see saveNamedStyle()
+     * \deprecated since QGIS 3.26
+     */
+    Q_DECL_DEPRECATED virtual QString saveDefaultStyle( bool &resultFlag SIP_OUT ) SIP_DEPRECATED;
 
     /**
      * Save the properties of this layer as a named style
@@ -1509,6 +1524,27 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     void setLegendPlaceholderImage( const QString &imgPath ) { mLegendPlaceholderImage = imgPath; }
 
+    /**
+     * The mapTip is a pretty, html representation for feature information.
+     *
+     * It may also contain embedded expressions.
+     *
+     * \note this method was only available for vector layers since QGIS 3.0
+     * \since QGIS 3.30
+     */
+    QString mapTipTemplate() const;
+
+    /**
+     * The mapTip is a pretty, html representation for feature information.
+     *
+     * It may also contain embedded expressions.
+     *
+     * \note this method was only available for vector layers since QGIS 3.0
+     * \since QGIS 3.30
+     */
+    void setMapTipTemplate( const QString &mapTipTemplate );
+
+
   public slots:
 
     /**
@@ -1792,6 +1828,14 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \since QGIS 3.22 in the QgsMapLayer base class
      */
     void layerModified();
+
+    /**
+     * Emitted when the map tip template changes
+     *
+     * \note this method was only available for vector layers since QGIS 3.0
+     * \since QGIS 3.30
+     */
+    void mapTipTemplateChanged();
 
   private slots:
 
@@ -2112,6 +2156,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     //! Path to placeholder image for layer legend. If the string is empty, a generated legend is shown
     QString mLegendPlaceholderImage;
+
+    //! Maptip template
+    QString mMapTipTemplate;
 
     friend class QgsVectorLayer;
     friend class TestQgsMapLayer;

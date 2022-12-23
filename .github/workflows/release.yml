@@ -5,8 +5,13 @@ on:
     tags:
       - 'final-*_*_*'
 
+permissions:
+  contents: read
+
 jobs:
   build:
+    permissions:
+      contents: none
     name: Create Release
     runs-on: ubuntu-latest
     steps:

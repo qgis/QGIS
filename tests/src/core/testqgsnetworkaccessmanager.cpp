@@ -1096,6 +1096,7 @@ void TestQgsNetworkAccessManager::fetchTimeout()
 
 class FunctionThread : public QThread
 {
+    Q_OBJECT
   public:
     FunctionThread( const std::function<bool()> &f ) : m_f( f ), m_result( false ) {}
     bool getResult() const

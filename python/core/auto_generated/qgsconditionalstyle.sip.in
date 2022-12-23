@@ -73,6 +73,13 @@ Writes the condition styles state to a DOM node.
 .. seealso:: :py:func:`readXml`
 %End
 
+    bool rulesNeedGeometry() const;
+%Docstring
+Returns ``True`` if at least one rule needs geometry.
+
+.. versionadded:: 3.26.3
+%End
+
   signals:
 
     void changed();

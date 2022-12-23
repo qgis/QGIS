@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmsplitvectorlayer.h"
 #include "qgsvectorfilewriter.h"
+#include "qgsvariantutils.h"
 
 ///@cond PRIVATE
 
@@ -62,13 +63,16 @@ QgsSplitVectorLayerAlgorithm *QgsSplitVectorLayerAlgorithm::createInstance() con
 
 void QgsSplitVectorLayerAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << QgsProcessing::TypeVector ) );
   addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ), QObject::tr( "Unique ID field" ),
                 QVariant(), QStringLiteral( "INPUT" ) ) );
+  std::unique_ptr< QgsProcessingParameterBoolean > prefixFieldParam = std::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "PREFIX_FIELD" ),
+      QObject::tr( "Add field prefix to file names" ), true );
+  addParameter( prefixFieldParam.release() );
 
   const QStringList options = QgsVectorFileWriter::supportedFormatExtensions();
-  auto fileTypeParam = std::make_unique < QgsProcessingParameterEnum >( QStringLiteral( "FILE_TYPE" ), QObject::tr( "Output file type" ), options, false, QVariantList() << 0, true );
-  fileTypeParam->setFlags( QgsProcessingParameterDefinition::FlagAdvanced );
+  auto fileTypeParam = std::make_unique < QgsProcessingParameterEnum >( QStringLiteral( "FILE_TYPE" ), QObject::tr( "Output file type" ), options, false, 0, true );
+  fileTypeParam->setFlags( fileTypeParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( fileTypeParam.release() );
 
   addParameter( new QgsProcessingParameterFolderDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output directory" ) ) );
@@ -104,7 +108,12 @@ QVariantMap QgsSplitVectorLayerAlgorithm::processAlgorithm( const QVariantMap &p
   const QgsWkbTypes::Type geometryType = source->wkbType();
   const int fieldIndex = fields.lookupField( fieldName );
   const QSet< QVariant > uniqueValues = source->uniqueValues( fieldIndex );
-  const QString baseName = outputDir + QDir::separator() + fieldName;
+  QString baseName = outputDir + QDir::separator();
+
+  if ( parameterAsBool( parameters, QStringLiteral( "PREFIX_FIELD" ), context ) )
+  {
+    baseName.append( fieldName + "_" );
+  }
 
   int current = 0;
   const double step = uniqueValues.size() > 0 ? 100.0 / uniqueValues.size() : 1;
@@ -120,17 +129,17 @@ QVariantMap QgsSplitVectorLayerAlgorithm::processAlgorithm( const QVariantMap &p
       break;
 
     QString fileName;
-    if ( ( *it ).isNull() )
+    if ( QgsVariantUtils::isNull( *it ) )
     {
-      fileName = QStringLiteral( "%1_NULL.%2" ).arg( baseName ).arg( outputFormat );
+      fileName = QStringLiteral( "%1NULL.%2" ).arg( baseName ).arg( outputFormat );
     }
     else if ( ( *it ).toString().isEmpty() )
     {
-      fileName = QStringLiteral( "%1_EMPTY.%2" ).arg( baseName ).arg( outputFormat );
+      fileName = QStringLiteral( "%1EMPTY.%2" ).arg( baseName ).arg( outputFormat );
     }
     else
     {
-      fileName = QStringLiteral( "%1_%2.%3" ).arg( baseName ).arg( ( *it ).toString() ).arg( outputFormat );
+      fileName = QStringLiteral( "%1%2.%3" ).arg( baseName ).arg( ( *it ).toString() ).arg( outputFormat );
     }
     feedback->pushInfo( QObject::tr( "Creating layer: %1" ).arg( fileName ) );
 

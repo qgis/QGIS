@@ -163,6 +163,36 @@ class CORE_EXPORT QgsProjectViewSettings : public QObject
     bool useProjectScales() const;
 
     /**
+     * Returns the default map rotation (in clockwise degrees) for maps in the project.
+     *
+     * \warning When a project is opened in the QGIS desktop application and saved, individual
+     * map canvases will store their own previous map rotations as custom project properties. Reloading
+     * this saved version of the project will trigger the canvases to restore their individual rotations.
+     * Accordingly, in the QGIS desktop application, this setting only forms a default, initial
+     * view used when the project is opened for the very first time (or when new map canvases are opened in
+     * that project.)
+     *
+     * \see setDefaultRotation()
+     * \since QGIS 3.28
+     */
+    double defaultRotation() const;
+
+    /**
+     * Set the default \a rotation of maps in the project, in clockwise degrees.
+     *
+     * \warning When a project is opened in the QGIS desktop application and saved, individual
+     * map canvases will store their own previous map rotations as custom project properties. Reloading
+     * this saved version of the project will trigger the canvases to restore their individual rotations.
+     * Accordingly, in the QGIS desktop application, this setting only forms a default, initial
+     * view used when the project is opened for the very first time (or when new map canvases are opened in
+     * that project.)
+     *
+     * \see defaultRotation()
+     * \since QGIS 3.28
+     */
+    void setDefaultRotation( double rotation );
+
+    /**
      * Reads the settings's state from a DOM element.
      * \see writeXml()
      */
@@ -198,6 +228,7 @@ class CORE_EXPORT QgsProjectViewSettings : public QObject
     bool mUseProjectScales = false;
     QgsReferencedRectangle mDefaultViewExtent;
     QgsReferencedRectangle mPresetFullExtent;
+    double mDefaultRotation = 0;
 };
 
 #endif // QGSPROJECTVIEWSETTINGS_H

@@ -42,6 +42,7 @@
 #include "qgsexpressioncontextgenerator.h"
 #include "qgsexpressioncontextscopegenerator.h"
 #include "qgsexpressioncontext.h"
+#include "qgsabstractprofilesource.h"
 
 class QPainter;
 class QImage;
@@ -175,8 +176,7 @@ typedef QSet<int> QgsAttributeIds;
  *
  * Used to access data provided by a web feature service.
  *
- * The url can be a HTTP url to a WFS server (legacy, e.g. http://foobar/wfs?TYPENAME=xxx&SRSNAME=yyy[&FILTER=zzz]), or,
- * starting with QGIS 2.16, a URI constructed using the QgsDataSourceUri class with the following parameters :
+ * The url can be a HTTP url to a WFS server (legacy, e.g. http://foobar/wfs?TYPENAME=xxx&SRSNAME=yyy[&FILTER=zzz]), or a URI constructed using the QgsDataSourceUri class with the following parameters (note that parameter keys are case sensitive):
  *
  * - url=string (mandatory): HTTP url to a WFS server endpoint. e.g http://foobar/wfs
  * - typename=string (mandatory): WFS typename
@@ -195,8 +195,7 @@ typedef QSet<int> QgsAttributeIds;
  * - InvertAxisOrientation=1: to invert axis order
  * - hideDownloadProgressDialog=1: to hide the download progress dialog
  *
- * The ‘FILTER’ query string parameter can be used to filter
- * the WFS feature type. The ‘FILTER’ key value can either be a QGIS expression
+ * The ‘filter’ key value can either be a QGIS expression
  * or an OGC XML filter. If the value is set to a QGIS expression the driver will
  * turn it into OGC XML filter before passing it to the WFS server. Beware the
  * QGIS expression filter only supports” =, !=, <, >, <=, >=, AND, OR, NOT, LIKE, IS NULL”
@@ -204,7 +203,7 @@ typedef QSet<int> QgsAttributeIds;
  * spatial binary operators and the QGIS local “geomFromWKT, geomFromGML”
  * geometry constructor functions.
  *
- * \subsection oapif OGC API - Features data provider (oapif)
+ * \subsection oapif OGC API Features data provider (oapif)
  *
  * Used to access data provided by a OGC API - Features server.
  *
@@ -389,13 +388,12 @@ typedef QSet<int> QgsAttributeIds;
  *
  * \see QgsVectorLayerUtils()
  */
-class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionContextGenerator, public QgsExpressionContextScopeGenerator, public QgsFeatureSink, public QgsFeatureSource
+class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionContextGenerator, public QgsExpressionContextScopeGenerator, public QgsFeatureSink, public QgsFeatureSource, public QgsAbstractProfileSource
 {
     Q_OBJECT
 
     Q_PROPERTY( QString subsetString READ subsetString WRITE setSubsetString NOTIFY subsetStringChanged )
     Q_PROPERTY( QString displayExpression READ displayExpression WRITE setDisplayExpression NOTIFY displayExpressionChanged )
-    Q_PROPERTY( QString mapTipTemplate READ mapTipTemplate WRITE setMapTipTemplate NOTIFY mapTipTemplateChanged )
     Q_PROPERTY( QgsEditFormConfig editFormConfig READ editFormConfig WRITE setEditFormConfig NOTIFY editFormConfigChanged )
     Q_PROPERTY( bool readOnly READ isReadOnly WRITE setReadOnly NOTIFY readOnlyChanged )
     Q_PROPERTY( bool supportsEditing READ supportsEditing NOTIFY supportsEditingChanged )
@@ -487,6 +485,32 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
        */
       bool skipCrsValidation = false;
 
+      /**
+       * Controls whether the layer is forced to be load as Read Only
+       *
+       * If TRUE, then the layer's provider will only check read capabilities.
+       * Write capabilities will be skipped.
+       *
+       * If FALSE (the default), the layer's provider will check the
+       * edition capabilities based on user rights or file rights or
+       * others.
+       * \since QGIS 3.28
+       */
+      bool forceReadOnly = false;
+
+      /**
+       * Controls whether the stored styles will be all loaded.
+       *
+       * If TRUE and the layer's provider supports style stored in the
+       * data source all the available styles will be loaded in addition
+       * to the default one.
+       *
+       * If FALSE (the default), the layer's provider will only load
+       * the default style.
+       *
+       * \since QGIS 3.30
+       */
+      bool loadAllStoredStyles = false;
     };
 
     /**
@@ -627,6 +651,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     const QgsVectorDataProvider *dataProvider() const FINAL SIP_SKIP;
     QgsMapLayerTemporalProperties *temporalProperties() override;
     QgsMapLayerElevationProperties *elevationProperties() override;
+    QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) override SIP_FACTORY;
 
     /**
      * Sets the text \a encoding of the data provider.
@@ -770,11 +795,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param expression expression to evaluate to select features
      * \param behavior selection type, allows adding to current selection, removing
      * from selection, etc.
+     * \param context since QGIS 3.26, specifies an optional expression context to use when selecting features. If not specified a default one will be built.
      * \see selectByRect()
      * \see selectByIds()
      * \since QGIS 2.16
      */
-    Q_INVOKABLE void selectByExpression( const QString &expression, Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection );
+    Q_INVOKABLE void selectByExpression( const QString &expression, Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection, QgsExpressionContext *context = nullptr );
 
     /**
      * Selects matching features using a list of feature IDs. Will emit the
@@ -986,6 +1012,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param useAsDefault Set to TRUE if style should be used as the default style for the layer
      * \param uiFileContent
      * \param msgError will be set to a descriptive error message if any occurs
+     * \param categories the style categories to be saved.
      *
      *
      * \note Prior to QGIS 3.24, this method would show a message box warning when a
@@ -996,7 +1023,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     virtual void saveStyleToDatabase( const QString &name, const QString &description,
                                       bool useAsDefault, const QString &uiFileContent,
-                                      QString &msgError SIP_OUT );
+                                      QString &msgError SIP_OUT,
+                                      QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
 
     /**
      * Lists all the style in db split into related to the layer and not related to
@@ -1308,7 +1336,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \returns TRUE in case of success and FALSE otherwise
      */
-    Q_INVOKABLE bool deleteSelectedFeatures( int *deletedCount = nullptr, DeleteContext *context = nullptr );
+    Q_INVOKABLE bool deleteSelectedFeatures( int *deletedCount = nullptr, QgsVectorLayer::DeleteContext *context = nullptr );
 
     /**
      * Adds a ring to polygon/multipolygon features
@@ -1722,7 +1750,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Makes layer read-only (editing disabled) or not
-     * \returns FALSE if the layer is in editing yet
+     * \returns FALSE if the layer is in editing yet or if the data source is in read-only mode
+     *
+     * \see readOnlyChanged()
      */
     bool setReadOnly( bool readonly = true );
 
@@ -2002,10 +2032,22 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Returns the layer's weak relations as specified in the layer's style.
      * \returns A list of weak relations
      * \note not available in Python bindings
+     *
+     * \see setWeakRelations()
+     *
      * \since QGIS 3.12
      */
-    QList<QgsWeakRelation> weakRelations( ) const SIP_SKIP;
+    QList<QgsWeakRelation> weakRelations() const SIP_SKIP;
 
+    /**
+     * Sets the layer's weak \a relations.
+     *
+     * \note Not available in Python bindings.
+     * \see weakRelations()
+     *
+     * \since QGIS 3.28
+     */
+    void setWeakRelations( const QList< QgsWeakRelation > &relations ) SIP_SKIP;
 
     //! Buffer with uncommitted editing operations. Only valid after editing has been turned on.
     Q_INVOKABLE QgsVectorLayerEditBuffer *editBuffer() { return mEditBuffer; }
@@ -2335,24 +2377,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     void setAttributeTableConfig( const QgsAttributeTableConfig &attributeTableConfig );
 
-    /**
-     * The mapTip is a pretty, html representation for feature information.
-     *
-     * It may also contain embedded expressions.
-     *
-     * \since QGIS 3.0
-     */
-    QString mapTipTemplate() const;
-
-    /**
-     * The mapTip is a pretty, html representation for feature information.
-     *
-     * It may also contain embedded expressions.
-     *
-     * \since QGIS 3.0
-     */
-    void setMapTipTemplate( const QString &mapTipTemplate );
-
     QgsExpressionContext createExpressionContext() const FINAL;
 
     QgsExpressionContextScope *createExpressionContextScope() const FINAL SIP_FACTORY;
@@ -2540,7 +2564,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
 
-    SpatialIndexPresence hasSpatialIndex() const override;
+    QgsFeatureSource::SpatialIndexPresence hasSpatialIndex() const override;
 
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
@@ -2748,13 +2772,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void writeCustomSymbology( QDomElement &element, QDomDocument &doc, QString &errorMessage ) const;
 
     /**
-     * Emitted when the map tip changes
-     *
-     * \since QGIS 3.0
-     */
-    void mapTipTemplateChanged();
-
-    /**
      * Emitted when the display expression changes
      *
      * \since QGIS 3.0
@@ -2776,6 +2793,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Emitted when the read only state of this layer is changed.
      * Only applies to manually set readonly state, not to the edit mode.
+     *
+     * \see setReadOnly()
      *
      * \since QGIS 3.0
      */
@@ -2815,7 +2834,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void updateDefaultValues( QgsFeatureId fid, QgsFeature feature = QgsFeature() );
 
     /**
-     * Returns TRUE if the provider is in read-only mode
+     * Returns TRUE if the layer is in read-only mode
+     *
+     * \note the layer can be in read-only mode by construction or by action
+     * \see QgsVectorLayer::LayerOptions.forceReadOnly
+     * \see QgsMapLayer::FlagForceReadOnly
+     * \see setReadOnly()
+     * \see readOnlyChanged()
      */
     bool isReadOnly() const FINAL;
 
@@ -2873,12 +2898,18 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! The preview expression used to generate a human readable preview string for features
     QString mDisplayExpression;
 
-    QString mMapTipTemplate;
-
     //! The user-defined actions that are accessed from the Identify Results dialog box
     QgsActionManager *mActions = nullptr;
 
-    //! Flag indicating whether the layer is in read-only mode (editing disabled) or not
+    //! Flag indicating whether the layer has been created in read-only mode (editing disabled) or not
+    bool mDataSourceReadOnly = false;
+
+    /**
+     * Flag indicating whether the layer has been converted in read-only mode (editing disabled) or not
+     * \see setReadOnly()
+     * \see readOnlyChanged()
+     * \see isReadOnly()
+     */
     bool mReadOnly = false;
 
     /**
@@ -3014,6 +3045,15 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     bool mSetLegendFromStyle = false;
 
     QList< QgsFeatureRendererGenerator * > mRendererGenerators;
+
+    //! Timer for triggering automatic redraw of the layer based on feature renderer settings (e.g. animated symbols)
+    QTimer *mRefreshRendererTimer = nullptr;
+
+    /**
+     * Stores the value from LayerOptions.loadAllStoredStyles
+     */
+    bool mLoadAllStoredStyle = false;
+
 };
 
 

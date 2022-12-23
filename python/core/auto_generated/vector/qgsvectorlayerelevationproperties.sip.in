@@ -10,6 +10,7 @@
 
 
 
+
 class QgsVectorLayerElevationProperties : QgsMapLayerElevationProperties
 {
 %Docstring(signature="appended")
@@ -27,6 +28,7 @@ Vector layer specific subclass of :py:class:`QgsMapLayerElevationProperties`.
 %Docstring
 Constructor for QgsVectorLayerElevationProperties, with the specified ``parent`` object.
 %End
+    ~QgsVectorLayerElevationProperties();
 
     virtual bool hasElevation() const;
 
@@ -34,9 +36,17 @@ Constructor for QgsVectorLayerElevationProperties, with the specified ``parent``
 
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 
+    virtual void setDefaultsFromLayer( QgsMapLayer *layer );
+
+    virtual QgsVectorLayerElevationProperties *clone() const /Factory/;
+
+    virtual QString htmlSummary() const;
+
     virtual bool isVisibleInZRange( const QgsDoubleRange &range ) const;
 
     virtual QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const;
+
+    virtual bool showByDefaultInElevationProfilePlots() const;
 
 
     Qgis::AltitudeClamping clamping() const;
@@ -75,6 +85,20 @@ Sets the altitude ``binding`` method, which determines how altitude is bound to 
    Binding only relevant for line or polygon feature types -- it is not applicable for point layers.
 
 .. seealso:: :py:func:`binding`
+%End
+
+    Qgis::VectorProfileType type() const;
+%Docstring
+Returns the type of profile the layer represents.
+
+.. seealso:: :py:func:`setType`
+%End
+
+    void setType( Qgis::VectorProfileType type );
+%Docstring
+Sets the ``type`` of profile the layer represents.
+
+.. seealso:: :py:func:`type`
 %End
 
     bool extrusionEnabled() const;
@@ -123,6 +147,148 @@ Sets the feature extrusion height.
    the :py:func:`~QgsVectorLayerElevationProperties.zScale` factor is NOT applied to extrusion heights.
 
 .. seealso:: :py:func:`extrusionHeight`
+%End
+
+    bool respectLayerSymbology() const;
+%Docstring
+Returns ``True`` if layer symbology should be respected when rendering elevation profile plots.
+
+Specifically, this will result in the layer's symbols (or symbol colors) being used to draw features in the
+profile plots.
+
+.. seealso:: :py:func:`setRespectLayerSymbology`
+%End
+
+    void setRespectLayerSymbology( bool enabled );
+%Docstring
+Sets whether layer symbology should be respected when rendering elevation profile plots.
+
+Specifically, this will result in the layer's symbols (or symbol colors) being used to draw features in the
+profile plots.
+
+.. seealso:: :py:func:`respectLayerSymbology`
+%End
+
+    QgsLineSymbol *profileLineSymbol() const;
+%Docstring
+Returns the symbol used to render lines for the layer in elevation profile plots.
+
+The symbol will be used in the following circumstances:
+
+- A point feature is shown on the profile chart when :py:func:`~QgsVectorLayerElevationProperties.extrusionEnabled` is ``True``
+- A line feature is intersected by a profile line and :py:func:`~QgsVectorLayerElevationProperties.extrusionEnabled` is ``True``
+- A polygon feature is intersected by a profile line and :py:func:`~QgsVectorLayerElevationProperties.extrusionEnabled` is ``False``
+
+.. seealso:: :py:func:`setProfileLineSymbol`
+%End
+
+    void setProfileLineSymbol( QgsLineSymbol *symbol /Transfer/ );
+%Docstring
+Sets the line ``symbol`` used to render lines for the layer in elevation profile plots.
+
+Ownership of ``symbol`` is transferred to the plot.
+
+The symbol will be used in the following circumstances:
+
+- A point feature is shown on the profile chart when :py:func:`~QgsVectorLayerElevationProperties.extrusionEnabled` is ``True``
+- A line feature is intersected by a profile line and :py:func:`~QgsVectorLayerElevationProperties.extrusionEnabled` is ``True``
+- A polygon feature is intersected by a profile line and :py:func:`~QgsVectorLayerElevationProperties.extrusionEnabled` is ``False``
+
+.. seealso:: :py:func:`profileLineSymbol`
+%End
+
+    QgsFillSymbol *profileFillSymbol() const;
+%Docstring
+Returns the symbol used to render polygons for the layer in elevation profile plots.
+
+The symbol will be used in the following circumstances:
+
+- A polygon feature is intersected by a profile line and :py:func:`~QgsVectorLayerElevationProperties.extrusionEnabled` is ``True``
+
+.. seealso:: :py:func:`setProfileFillSymbol`
+%End
+
+    void setProfileFillSymbol( QgsFillSymbol *symbol /Transfer/ );
+%Docstring
+Sets the fill ``symbol`` used to render polygons for the layer in elevation profile plots.
+
+Ownership of ``symbol`` is transferred to the plot.
+
+The symbol will be used in the following circumstances:
+
+- A polygon feature is intersected by a profile line and :py:func:`~QgsVectorLayerElevationProperties.extrusionEnabled` is ``True``
+
+.. seealso:: :py:func:`profileFillSymbol`
+%End
+
+    QgsMarkerSymbol *profileMarkerSymbol() const;
+%Docstring
+Returns the symbol used to render points for the layer in elevation profile plots.
+
+The symbol will be used in the following circumstances:
+
+- A point feature is shown on the profile chart when :py:func:`~QgsVectorLayerElevationProperties.extrusionEnabled` is ``False``
+- A line feature is intersected by a profile line and :py:func:`~QgsVectorLayerElevationProperties.extrusionEnabled` is ``False``
+
+.. seealso:: :py:func:`setProfileMarkerSymbol`
+%End
+
+    void setProfileMarkerSymbol( QgsMarkerSymbol *symbol /Transfer/ );
+%Docstring
+Sets the marker ``symbol`` used to render points for the layer in elevation profile plots.
+
+Ownership of ``symbol`` is transferred to the plot.
+
+The symbol will be used in the following circumstances:
+
+- A point feature is shown on the profile chart when :py:func:`~QgsVectorLayerElevationProperties.extrusionEnabled` is ``False``
+- A line feature is intersected by a profile line and :py:func:`~QgsVectorLayerElevationProperties.extrusionEnabled` is ``False``
+
+.. seealso:: :py:func:`profileMarkerSymbol`
+%End
+
+    Qgis::ProfileSurfaceSymbology profileSymbology() const;
+%Docstring
+Returns the symbology option used to render the vector profile in elevation profile plots.
+
+.. note::
+
+   This setting is only used when :py:func:`~QgsVectorLayerElevationProperties.type` is Qgis.VectorProfileType.ContinuousSurface.
+
+.. seealso:: :py:func:`setProfileSymbology`
+%End
+
+    void setProfileSymbology( Qgis::ProfileSurfaceSymbology symbology );
+%Docstring
+Sets the ``symbology`` option used to render the vector profile in elevation profile plots.
+
+.. note::
+
+   This setting is only used when :py:func:`~QgsVectorLayerElevationProperties.type` is Qgis.VectorProfileType.ContinuousSurface.
+
+.. seealso:: :py:func:`setProfileSymbology`
+%End
+
+    bool showMarkerSymbolInSurfacePlots() const;
+%Docstring
+Returns ``True`` if the marker symbol should also be shown in continuous surface plots.
+
+.. note::
+
+   This setting is only used when :py:func:`~QgsVectorLayerElevationProperties.type` is Qgis.VectorProfileType.ContinuousSurface.
+
+.. seealso:: :py:func:`setShowMarkerSymbolInSurfacePlots`
+%End
+
+    void setShowMarkerSymbolInSurfacePlots( bool show );
+%Docstring
+Sets whehter the marker symbol should also be shown in continuous surface plots.
+
+.. note::
+
+   This setting is only used when :py:func:`~QgsVectorLayerElevationProperties.type` is Qgis.VectorProfileType.ContinuousSurface.
+
+.. seealso:: :py:func:`showMarkerSymbolInSurfacePlots`
 %End
 
 };

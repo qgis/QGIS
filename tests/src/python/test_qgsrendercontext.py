@@ -83,6 +83,14 @@ class TestQgsRenderContext(unittest.TestCase):
         # should have an invalid mapToPixel by default
         self.assertFalse(c.mapToPixel().isValid())
 
+        self.assertEqual(c.frameRate(), -1)
+        c.setFrameRate(30)
+        self.assertEqual(c.frameRate(), 30)
+
+        self.assertEqual(c.currentFrame(), -1)
+        c.setCurrentFrame(6)
+        self.assertEqual(c.currentFrame(), 6)
+
     def testCopyConstructor(self):
         """
         Test the copy constructor
@@ -96,6 +104,8 @@ class TestQgsRenderContext(unittest.TestCase):
         c1.setOutputSize(QSize(100, 200))
         c1.setImageFormat(QImage.Format_Alpha8)
         c1.setDevicePixelRatio(2)
+        c1.setFrameRate(30)
+        c1.setCurrentFrame(6)
 
         c2 = QgsRenderContext(c1)
         self.assertEqual(c2.textRenderFormat(), QgsRenderContext.TextFormatAlwaysText)
@@ -106,6 +116,8 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertEqual(c2.imageFormat(), QImage.Format_Alpha8)
         self.assertEqual(c2.devicePixelRatio(), 2)
         self.assertEqual(c2.deviceOutputSize(), QSize(200, 400))
+        self.assertEqual(c2.frameRate(), 30)
+        self.assertEqual(c2.currentFrame(), 6)
 
         c1.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysOutlines)
         c2 = QgsRenderContext(c1)
@@ -172,6 +184,8 @@ class TestQgsRenderContext(unittest.TestCase):
         ms.setOutputSize(QSize(100, 100))
         ms.setDevicePixelRatio(2)
         ms.setOutputImageFormat(QImage.Format_Alpha8)
+        ms.setFrameRate(30)
+        ms.setCurrentFrame(6)
 
         ms.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysText)
         rc = QgsRenderContext.fromMapSettings(ms)
@@ -185,6 +199,8 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertEqual(rc.devicePixelRatio(), 2)
         self.assertEqual(rc.deviceOutputSize(), QSize(200, 200))
         self.assertEqual(rc.imageFormat(), QImage.Format_Alpha8)
+        self.assertEqual(rc.frameRate(), 30)
+        self.assertEqual(rc.currentFrame(), 6)
 
         # should have an valid mapToPixel
         self.assertTrue(rc.mapToPixel().isValid())

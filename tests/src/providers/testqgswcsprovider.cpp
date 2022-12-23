@@ -27,6 +27,7 @@
 #include <qgsrasterchecker.h>
 #include <qgsproviderregistry.h>
 #include <qgsapplication.h>
+#include "qgsprovidermetadata.h"
 
 #define TINY_VALUE  std::numeric_limits<double>::epsilon() * 20
 
@@ -34,20 +35,25 @@
  * \ingroup UnitTests
  * This is a unit test for the QgsRasterLayer class.
  */
-class TestQgsWcsProvider: public QObject
+class TestQgsWcsProvider: public QgsTest
 {
     Q_OBJECT
+
+  public:
+
+    TestQgsWcsProvider() : QgsTest( QStringLiteral( "WCS provider tests" ) ) {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init() {} // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
 
+    void providerUriUpdates();
     void read();
   private:
     bool read( const QString &identifier, const QString &wcsUri, const QString &filePath, QString &report );
     QString mTestDataDir;
-    QString mReport;
     QString mUrl;
 };
 
@@ -57,10 +63,7 @@ void TestQgsWcsProvider::initTestCase()
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::initQgis();
-  QString mySettings = QgsApplication::showSettings();
-  mySettings = mySettings.replace( '\n', QLatin1String( "<br />" ) );
-  mReport += QLatin1String( "<h1>WCS provider tests</h1>\n" );
-  mReport += "<p>" + mySettings + "</p>";
+
   // Style is now inlined by QgsRasterChecker
 #if 0
   mReport += "<style>";
@@ -82,15 +85,6 @@ void TestQgsWcsProvider::initTestCase()
 //runs after all tests
 void TestQgsWcsProvider::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   QgsApplication::exitQgis();
 }
 
@@ -161,6 +155,34 @@ bool TestQgsWcsProvider::read( const QString &identifier, const QString &wcsUri,
   report += checker.report();
   return ok;
 }
+
+void TestQgsWcsProvider::providerUriUpdates()
+{
+  QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( "wcs" );
+  QString uriString = QStringLiteral( "crs=EPSG:4326&dpiMode=7&"
+                                      "layers=testlayer&styles&"
+                                      "url=http://localhost:8380/mapserv&"
+                                      "testParam=true" );
+
+  QVariantMap parts = metadata->decodeUri( uriString );
+  QVariantMap expectedParts { { QString( "crs" ), QVariant( "EPSG:4326" ) },  { QString( "dpiMode" ), QVariant( "7" ) },
+    { QString( "testParam" ), QVariant( "true" ) },  { QString( "layers" ), QVariant( "testlayer" ) },
+    { QString( "styles" ), QString() },  { QString( "url" ), QVariant( "http://localhost:8380/mapserv" ) } };
+  QCOMPARE( parts, expectedParts );
+
+  parts["testParam"] = QVariant( "false" );
+
+  QCOMPARE( parts["testParam"], QVariant( "false" ) );
+
+  QString updatedUri = metadata->encodeUri( parts );
+  QString expectedUri = QStringLiteral( "crs=EPSG:4326&dpiMode=7&"
+                                        "layers=testlayer&styles&"
+                                        "testParam=false&"
+                                        "url=http://localhost:8380/mapserv" );
+  QCOMPARE( updatedUri, expectedUri );
+
+}
+
 
 QGSTEST_MAIN( TestQgsWcsProvider )
 #include "testqgswcsprovider.moc"

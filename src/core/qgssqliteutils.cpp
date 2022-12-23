@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgssqliteutils.h"
+#include "qgsvariantutils.h"
 
 #include <sqlite3.h>
 #include <cstdarg>
@@ -28,12 +29,12 @@
 #include <algorithm>
 // end temporary
 
-void QgsSqlite3Closer::operator()( sqlite3 *database )
+void QgsSqlite3Closer::operator()( sqlite3 *database ) const
 {
   sqlite3_close_v2( database );
 }
 
-void QgsSqlite3StatementFinalizer::operator()( sqlite3_stmt *statement )
+void QgsSqlite3StatementFinalizer::operator()( sqlite3_stmt *statement ) const
 {
   sqlite3_finalize( statement );
 }
@@ -265,7 +266,7 @@ QString QgsSqliteUtils::quotedIdentifier( const QString &identifier )
 
 QString QgsSqliteUtils::quotedValue( const QVariant &value )
 {
-  if ( value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
     return QStringLiteral( "NULL" );
 
   switch ( value.type() )

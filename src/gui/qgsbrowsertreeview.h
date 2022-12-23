@@ -20,7 +20,15 @@
 #include "qgis_sip.h"
 #include "qgis_gui.h"
 
+#ifdef SIP_RUN
+// this is needed for the "convert to subclass" code below to compile
+% ModuleHeaderCode
+#include "qgsbrowsertreeview.h"
+% End
+#endif
+
 class QgsBrowserGuiModel;
+class QgsDataItem;
 
 /**
  * \ingroup gui
@@ -31,6 +39,16 @@ class QgsBrowserGuiModel;
  */
 class GUI_EXPORT QgsBrowserTreeView : public QTreeView
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( qobject_cast<QgsBrowserTreeView *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsBrowserTreeView;
+    else
+      sipType = nullptr;
+    SIP_END
+#endif
+
     Q_OBJECT
   public:
 
@@ -50,6 +68,24 @@ class GUI_EXPORT QgsBrowserTreeView : public QTreeView
 
     // Set section where to store settings (because we have 2 browser dock widgets)
     void setSettingsSection( const QString &section ) { mSettingsSection = section; }
+
+    /**
+     * Sets the \a item currently selected in the view.
+     *
+     * Returns TRUE if the item was found and could be selected.
+     *
+     * \since QGIS 3.28
+     */
+    bool setSelectedItem( QgsDataItem *item );
+
+    /**
+     * Expands out a file \a path in the view.
+     *
+     * The \a path must correspond to a valid directory existing on the file system.
+     *
+     * \since QGIS 3.28
+     */
+    void expandPath( const QString &path );
 
   protected:
 

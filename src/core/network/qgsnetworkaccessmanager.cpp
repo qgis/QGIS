@@ -35,11 +35,7 @@
 #include <QTimer>
 #include <QBuffer>
 #include <QNetworkReply>
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-#include <QMutex>
-#else
 #include <QRecursiveMutex>
-#endif
 #include <QThreadStorage>
 #include <QAuthenticator>
 #include <QStandardPaths>
@@ -55,6 +51,7 @@
 QgsNetworkAccessManager *QgsNetworkAccessManager::sMainNAM = nullptr;
 
 static std::vector< std::pair< QString, std::function< void( QNetworkRequest * ) > > > sCustomPreprocessors;
+static std::vector< std::pair< QString, std::function< void( const QNetworkRequest &, QNetworkReply * ) > > > sCustomReplyPreprocessors;
 
 /// @cond PRIVATE
 class QgsNetworkProxyFactory : public QNetworkProxyFactory
@@ -132,9 +129,6 @@ class QgsNetworkCookieJar : public QNetworkCookieJar
     QgsNetworkCookieJar( QgsNetworkAccessManager *parent )
       : QNetworkCookieJar( parent )
       , mNam( parent )
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-      , mMutex( QMutex::Recursive )
-#endif
     {}
 
     bool deleteCookie( const QNetworkCookie &cookie ) override
@@ -186,11 +180,7 @@ class QgsNetworkCookieJar : public QNetworkCookieJar
     }
 
     QgsNetworkAccessManager *mNam = nullptr;
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    mutable QMutex mMutex;
-#else
     mutable QRecursiveMutex mMutex;
-#endif
 };
 ///@endcond
 
@@ -217,6 +207,7 @@ QgsNetworkAccessManager *QgsNetworkAccessManager::instance( Qt::ConnectionType c
 
 QgsNetworkAccessManager::QgsNetworkAccessManager( QObject *parent )
   : QNetworkAccessManager( parent )
+  , mSslErrorHandlerSemaphore( 1 )
   , mAuthRequestHandlerSemaphore( 1 )
 {
   setProxyFactory( new QgsNetworkProxyFactory() );
@@ -370,6 +361,11 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   connect( reply, &QNetworkReply::sslErrors, this, &QgsNetworkAccessManager::onReplySslErrors );
 #endif
 
+  for ( const auto &replyPreprocessor :  sCustomReplyPreprocessors )
+  {
+    replyPreprocessor.second( req, reply );
+  }
+
   // The timer will call abortRequest slot to abort the connection if needed.
   // The timer is stopped by the finished signal and is restarted on downloadProgress and
   // uploadProgress.
@@ -389,14 +385,6 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
 
   return reply;
 }
-
-#ifndef QT_NO_SSL
-void QgsNetworkAccessManager::unlockAfterSslErrorHandled()
-{
-  Q_ASSERT( QThread::currentThread() == QApplication::instance()->thread() );
-  mSslErrorWaitCondition.wakeOne();
-}
-#endif
 
 void QgsNetworkAccessManager::abortRequest()
 {
@@ -439,6 +427,9 @@ void QgsNetworkAccessManager::onReplySslErrors( const QList<QSslError> &errors )
 
   emit requestEncounteredSslErrors( getRequestId( reply ), errors );
 
+  // acquire semaphore a first time, so we block next acquire until release is called
+  mSslErrorHandlerSemaphore.acquire();
+
   // in main thread this will trigger SSL error handler immediately and return once the errors are handled,
   // while in worker thread the signal will be queued (and return immediately) -- hence the need to lock the thread in the next block
   emit sslErrorsOccurred( reply, errors );
@@ -446,9 +437,8 @@ void QgsNetworkAccessManager::onReplySslErrors( const QList<QSslError> &errors )
   {
     // lock thread and wait till error is handled. If we return from this slot now, then the reply will resume
     // without actually giving the main thread the chance to act on the ssl error and possibly ignore it.
-    mSslErrorHandlerMutex.lock();
-    mSslErrorWaitCondition.wait( &mSslErrorHandlerMutex );
-    mSslErrorHandlerMutex.unlock();
+    mSslErrorHandlerSemaphore.acquire();
+    mSslErrorHandlerSemaphore.release();
     afterSslErrorHandled( reply );
   }
 }
@@ -459,11 +449,6 @@ void QgsNetworkAccessManager::afterSslErrorHandled( QNetworkReply *reply )
   {
     restartTimeout( reply );
     emit sslErrorsHandled( reply );
-  }
-  else if ( this == sMainNAM )
-  {
-    // notify other threads to allow them to handle the reply
-    qobject_cast< QgsNetworkAccessManager *>( reply->manager() )->unlockAfterSslErrorHandled(); // safe to call directly - the other thread will be stuck waiting for us
   }
 }
 
@@ -510,6 +495,7 @@ void QgsNetworkAccessManager::handleSslErrors( QNetworkReply *reply, const QList
 {
   mSslErrorHandler->handleSslErrors( reply, errors );
   afterSslErrorHandled( reply );
+  qobject_cast<QgsNetworkAccessManager *>( reply->manager() )->mSslErrorHandlerSemaphore.release();
 }
 
 #endif
@@ -524,7 +510,9 @@ void QgsNetworkAccessManager::onAuthRequired( QNetworkReply *reply, QAuthenticat
 
   emit requestRequiresAuth( getRequestId( reply ), auth->realm() );
 
+  // acquire semaphore a first time, so we block next acquire until release is called
   mAuthRequestHandlerSemaphore.acquire();
+
   // in main thread this will trigger auth handler immediately and return once the request is satisfied,
   // while in worker thread the signal will be queued (and return immediately) -- hence the need to lock the thread in the next block
   emit authRequestOccurred( reply, auth );
@@ -752,7 +740,7 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
   QString cacheDirectory = settings.value( QStringLiteral( "cache/directory" ) ).toString();
   if ( cacheDirectory.isEmpty() )
     cacheDirectory = QStandardPaths::writableLocation( QStandardPaths::CacheLocation );
-  const qint64 cacheSize = settings.value( QStringLiteral( "cache/size" ), 50 * 1024 * 1024 ).toLongLong();
+  const qint64 cacheSize = settings.value( QStringLiteral( "cache/size" ), 256 * 1024 * 1024 ).toLongLong();
   newcache->setCacheDirectory( cacheDirectory );
   newcache->setMaximumCacheSize( cacheSize );
   QgsDebugMsgLevel( QStringLiteral( "cacheDirectory: %1" ).arg( newcache->cacheDirectory() ), 4 );
@@ -820,6 +808,23 @@ bool QgsNetworkAccessManager::removeRequestPreprocessor( const QString &id )
     return a.first == id;
   } ), sCustomPreprocessors.end() );
   return prevCount != sCustomPreprocessors.size();
+}
+
+QString QgsNetworkAccessManager::setReplyPreprocessor( const std::function<void ( const QNetworkRequest &, QNetworkReply * )> &processor )
+{
+  QString id = QUuid::createUuid().toString();
+  sCustomReplyPreprocessors.emplace_back( std::make_pair( id, processor ) );
+  return id;
+}
+
+bool QgsNetworkAccessManager::removeReplyPreprocessor( const QString &id )
+{
+  const size_t prevCount = sCustomReplyPreprocessors.size();
+  sCustomReplyPreprocessors.erase( std::remove_if( sCustomReplyPreprocessors.begin(), sCustomReplyPreprocessors.end(), [id]( std::pair< QString, std::function< void( const QNetworkRequest &, QNetworkReply * ) > > &a )
+  {
+    return a.first == id;
+  } ), sCustomReplyPreprocessors.end() );
+  return prevCount != sCustomReplyPreprocessors.size();
 }
 
 void QgsNetworkAccessManager::preprocessRequest( QNetworkRequest *req ) const

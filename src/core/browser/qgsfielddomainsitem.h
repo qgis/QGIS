@@ -21,7 +21,6 @@
 #include "qgis_core.h"
 #include "qgsdataitem.h"
 #include "qgsabstractdatabaseproviderconnection.h"
-#include "qgsfield.h"
 
 /**
  * \ingroup core

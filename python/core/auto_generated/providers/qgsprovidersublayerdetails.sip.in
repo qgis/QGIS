@@ -86,6 +86,8 @@ Constructor for LayerOptions with ``transformContext``.
       QgsCoordinateTransformContext transformContext;
 
       bool loadDefaultStyle;
+
+      bool loadAllStoredStyle;
     };
 
     QgsMapLayer *toLayer( const LayerOptions &options ) const /Factory/;
@@ -257,6 +259,13 @@ Returns ``True`` if the layer is a potential dataset container and an in-depth s
 of its contents was skipped.
 
 .. seealso:: :py:func:`setSkippedContainerScan`
+%End
+
+    QgsMimeDataUtils::Uri toMimeUri() const;
+%Docstring
+Converts the sublayer details to a :py:class:`QgsMimeDataUtils`.Uri representing the sublayer.
+
+.. versionadded:: 3.28
 %End
 
     bool operator==( const QgsProviderSublayerDetails &other ) const;

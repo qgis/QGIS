@@ -28,11 +28,11 @@ Needs to be subclassed (e.g. for slope and aspect).
                                  float *x13, float *x23, float *x33 ) = 0;
 
   protected:
-    float calcFirstDerX( float *x11, float *x21, float *x31, float *x12, float *x22, float *x32, float *x13, float *x23, float *x33 );
+    float calcFirstDerX( float *x11, float *x21, float *x31, float *x12, float *x22, float *x32, float *x13, float *x23, float *x33 ) const;
 %Docstring
 Calculates the first order derivative in x-direction according to Horn (1981)
 %End
-    float calcFirstDerY( float *x11, float *x21, float *x31, float *x12, float *x22, float *x32, float *x13, float *x23, float *x33 );
+    float calcFirstDerY( float *x11, float *x21, float *x31, float *x12, float *x22, float *x32, float *x13, float *x23, float *x33 ) const;
 %Docstring
 Calculates the first order derivative in y-direction according to Horn (1981)
 %End

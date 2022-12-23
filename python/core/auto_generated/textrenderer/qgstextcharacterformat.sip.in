@@ -65,6 +65,88 @@ is desired and the default format color should be used.
 .. seealso:: :py:func:`textColor`
 %End
 
+    double fontPointSize() const;
+%Docstring
+Returns the font point size, or -1 if the font size is not set
+and should be inherited.
+
+.. seealso:: :py:func:`setFontPointSize`
+
+.. versionadded:: 3.28
+%End
+
+    void setFontPointSize( double size );
+%Docstring
+Sets the font point ``size``.
+
+Set ``size`` to -1 if the font size is not set
+and should be inherited.
+
+.. seealso:: :py:func:`fontPointSize`
+
+.. versionadded:: 3.28
+%End
+
+    QString family() const;
+%Docstring
+Returns the font family name, or an empty string if the
+family is not set and should be inherited.
+
+.. seealso:: :py:func:`setFamily`
+
+.. versionadded:: 3.28
+%End
+
+    void setFamily( const QString &family );
+%Docstring
+Sets the font ``family`` name.
+
+Set to an empty string if the family should be inherited.
+
+.. seealso:: :py:func:`family`
+
+.. versionadded:: 3.28
+%End
+
+    int fontWeight() const;
+%Docstring
+Returns the font weight, or -1 if the font weight is not set
+and should be inherited.
+
+.. seealso:: :py:func:`setFontWeight`
+
+.. versionadded:: 3.28
+%End
+
+    void setFontWeight( int fontWeight );
+%Docstring
+Sets the font ``weight``.
+
+Set ``weight`` to -1 if the font weight is not set
+and should be inherited.
+
+.. seealso:: :py:func:`fontWeight`
+
+.. versionadded:: 3.28
+%End
+
+    BooleanValue italic() const;
+%Docstring
+Returns whether the format has italic enabled.
+
+.. seealso:: :py:func:`setItalic`
+
+.. versionadded:: 3.28
+%End
+
+    void setItalic( BooleanValue enabled );
+%Docstring
+Sets whether the format has italic ``enabled``.
+
+.. seealso:: :py:func:`italic`
+
+.. versionadded:: 3.28
+%End
 
     BooleanValue strikeOut() const;
 %Docstring
@@ -108,10 +190,62 @@ Sets whether the format has overline ``enabled``.
 .. seealso:: :py:func:`overline`
 %End
 
-    void updateFontForFormat( QFont &font, double scaleFactor = 1.0 ) const;
+    bool hasVerticalAlignmentSet() const;
+%Docstring
+Returns ``True`` if the format has an explicit vertical alignment set.
+
+If ``False`` is returned then the vertical alignment will be inherited.
+
+.. seealso:: :py:func:`setHasVerticalAlignmentSet`
+
+.. seealso:: :py:func:`verticalAlignment`
+
+.. versionadded:: 3.30
+%End
+
+    void setHasVerticalAlignmentSet( bool set );
+%Docstring
+Sets whether the format has an explicit vertical alignment ``set``.
+
+If ``set`` is ``False`` then the vertical alignment will be inherited.
+
+.. seealso:: :py:func:`hasVerticalAlignmentSet`
+
+.. seealso:: :py:func:`setVerticalAlignment`
+
+.. versionadded:: 3.30
+%End
+
+    Qgis::TextCharacterVerticalAlignment verticalAlignment() const;
+%Docstring
+Returns the format vertical alignment.
+
+This property is only respected if :py:func:`~QgsTextCharacterFormat.hasVerticalAlignmentSet` is ``True``.
+
+.. seealso:: :py:func:`hasVerticalAlignmentSet`
+
+.. seealso:: :py:func:`setVerticalAlignment`
+
+.. versionadded:: 3.30
+%End
+
+    void setVerticalAlignment( Qgis::TextCharacterVerticalAlignment alignment );
+%Docstring
+Sets the format vertical ``alignment``.
+
+This property is only respected if :py:func:`~QgsTextCharacterFormat.hasVerticalAlignmentSet` is ``True``.
+
+.. seealso:: :py:func:`hasVerticalAlignmentSet`
+
+.. seealso:: :py:func:`verticalAlignment`
+
+.. versionadded:: 3.30
+%End
+
+    void updateFontForFormat( QFont &font, const QgsRenderContext &context, double scaleFactor = 1.0 ) const;
 %Docstring
 Updates the specified ``font`` in place, applying character formatting options which
-are applicable on a font level.
+are applicable on a font level when rendered in the given ``context``.
 
 The optional ``scaleFactor`` parameter can specify a font size scaling factor. It is recommended to set this to
 :py:class:`QgsTextRenderer`.FONT_WORKAROUND_SCALE and then manually calculations

@@ -385,7 +385,7 @@ void QgsMeshRendererVectorArrowSettings::readXml( const QDomElement &elem )
 // ---------------------------------------------------------------------
 
 QgsMeshRendererSettings::QgsMeshRendererSettings()
-  : mAveragingMethod( new QgsMeshMultiLevelsAveragingMethod() )
+  : mAveragingMethod( new QgsMeshSigmaAveragingMethod() )
 {
 }
 
@@ -413,19 +413,19 @@ QDomElement QgsMeshRendererSettings::writeXml( QDomDocument &doc, const QgsReadW
   elemActiveDatasetGroup.setAttribute( QStringLiteral( "vector" ), mActiveVectorDatasetGroup );
   elem.appendChild( elemActiveDatasetGroup );
 
-  for ( const int groupIndex : mRendererScalarSettings.keys() )
+  for ( auto groupIndex = mRendererScalarSettings.keyBegin(); groupIndex != mRendererScalarSettings.keyEnd(); groupIndex++ )
   {
-    const QgsMeshRendererScalarSettings &scalarSettings = mRendererScalarSettings[groupIndex];
+    const QgsMeshRendererScalarSettings &scalarSettings = mRendererScalarSettings[*groupIndex];
     QDomElement elemScalar = scalarSettings.writeXml( doc, context );
-    elemScalar.setAttribute( QStringLiteral( "group" ), groupIndex );
+    elemScalar.setAttribute( QStringLiteral( "group" ), *groupIndex );
     elem.appendChild( elemScalar );
   }
 
-  for ( const int groupIndex : mRendererVectorSettings.keys() )
+  for ( auto groupIndex = mRendererVectorSettings.keyBegin(); groupIndex != mRendererVectorSettings.keyEnd(); groupIndex++ )
   {
-    const QgsMeshRendererVectorSettings &vectorSettings = mRendererVectorSettings[groupIndex];
+    const QgsMeshRendererVectorSettings &vectorSettings = mRendererVectorSettings[*groupIndex];
     QDomElement elemVector = vectorSettings.writeXml( doc, context );
-    elemVector.setAttribute( QStringLiteral( "group" ), groupIndex );
+    elemVector.setAttribute( QStringLiteral( "group" ), *groupIndex );
     elem.appendChild( elemVector );
   }
 

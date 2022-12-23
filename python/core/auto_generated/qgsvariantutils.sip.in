@@ -29,6 +29,16 @@ Returns a user-friendly translated string representing a QVariant ``type``.
 The optional ``subType`` can be used to specify the type of variant list or map values.
 %End
 
+    static bool isNull( const QVariant &variant );
+%Docstring
+Returns ``True`` if the specified ``variant`` should be considered a NULL value.
+
+This method is more rigorous vs QVariant.isNull(), which will return
+``False`` on newer Qt versions for tests like `QVariant( QDateTime() ).isNull()`.
+
+.. versionadded:: 3.28
+%End
+
 };
 
 /************************************************************************

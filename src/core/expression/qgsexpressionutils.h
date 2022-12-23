@@ -21,17 +21,15 @@
 
 #include "qgsfeature.h"
 #include "qgsexpression.h"
-#include "qgsvectorlayerfeatureiterator.h"
-#include "qgsrasterlayer.h"
-#include "qgsproject.h"
-#include "qgsrelationmanager.h"
-#include "qgsvectorlayer.h"
-#include "qgsmeshlayer.h"
+#include "qgsvariantutils.h"
+#include "qgsfeaturerequest.h"
 
 #include <QThread>
 #include <QLocale>
+#include <functional>
 
 class QgsGradientColorRamp;
+class QgsVectorLayerFeatureSource;
 
 #define ENSURE_NO_EVAL_ERROR   {  if ( parent->hasEvalError() ) return QVariant(); }
 #define SET_EVAL_ERROR(x)   { parent->setEvalErrorString( x ); return QVariant(); }
@@ -88,17 +86,17 @@ class CORE_EXPORT QgsExpressionUtils
     static TVL getTVLValue( const QVariant &value, QgsExpression *parent )
     {
       // we need to convert to TVL
-      if ( value.isNull() )
+      if ( QgsVariantUtils::isNull( value ) )
         return Unknown;
 
       //handle some special cases
-      if ( value.canConvert<QgsGeometry>() )
+      if ( value.userType() == QMetaType::type( "QgsGeometry" ) )
       {
         //geom is false if empty
         const QgsGeometry geom = value.value<QgsGeometry>();
         return geom.isNull() ? False : True;
       }
-      else if ( value.canConvert<QgsFeature>() )
+      else if ( value.userType() == QMetaType::type( "QgsFeature" ) )
       {
         //feat is false if non-valid
         const QgsFeature feat = value.value<QgsFeature>();
@@ -171,7 +169,7 @@ class CORE_EXPORT QgsExpressionUtils
 
     static inline bool isIntervalSafe( const QVariant &v )
     {
-      if ( v.canConvert<QgsInterval>() )
+      if ( v.userType() == QMetaType::type( "QgsInterval" ) )
       {
         return true;
       }
@@ -185,7 +183,7 @@ class CORE_EXPORT QgsExpressionUtils
 
     static inline bool isNull( const QVariant &v )
     {
-      return v.isNull();
+      return QgsVariantUtils::isNull( v );
     }
 
     static inline bool isList( const QVariant &v )
@@ -308,7 +306,7 @@ class CORE_EXPORT QgsExpressionUtils
 
     static QgsInterval getInterval( const QVariant &value, QgsExpression *parent, bool report_error = false )
     {
-      if ( value.canConvert<QgsInterval>() )
+      if ( value.userType() == QMetaType::type( "QgsInterval" ) )
         return value.value<QgsInterval>();
 
       QgsInterval inter = QgsInterval::fromString( value.toString() );
@@ -327,7 +325,7 @@ class CORE_EXPORT QgsExpressionUtils
 
     static QgsGeometry getGeometry( const QVariant &value, QgsExpression *parent )
     {
-      if ( value.canConvert<QgsGeometry>() )
+      if ( value.userType() == QMetaType::type( "QgsGeometry" ) )
         return value.value<QgsGeometry>();
 
       parent->setEvalErrorString( QStringLiteral( "Cannot convert to geometry" ) );
@@ -336,7 +334,7 @@ class CORE_EXPORT QgsExpressionUtils
 
     static QgsFeature getFeature( const QVariant &value, QgsExpression *parent )
     {
-      if ( value.canConvert<QgsFeature>() )
+      if ( value.userType() == QMetaType::type( "QgsFeature" ) )
         return value.value<QgsFeature>();
 
       parent->setEvalErrorString( QStringLiteral( "Cannot convert to feature" ) );
@@ -352,79 +350,41 @@ class CORE_EXPORT QgsExpressionUtils
       return nullptr;
     }
 
-    static QgsMapLayer *getMapLayer( const QVariant &value, QgsExpression * )
-    {
-      // First check if we already received a layer pointer
-      QgsMapLayer *ml = value.value< QgsWeakMapLayerPointer >().data();
-      if ( !ml )
-      {
-        ml = value.value< QgsMapLayer * >();
-#ifdef QGISDEBUG
-        if ( ml )
-        {
-          qWarning( "Raw map layer pointer stored in expression evaluation, switch to QgsWeakMapLayerPointer instead" );
-        }
-#endif
-      }
+    /**
+     * \deprecated Not actually deprecated, but this method is not thread safe -- use with extreme caution only when the thread safety has already been taken care of by the caller!
+     */
+    Q_DECL_DEPRECATED static QgsMapLayer *getMapLayer( const QVariant &value, const QgsExpressionContext *context, QgsExpression * );
 
-      QgsProject *project = QgsProject::instance();
+    /**
+     * Executes a lambda \a function for a \a value which corresponds to a map layer, in a thread-safe way.
+     *
+     * \since QGIS 3.30
+     */
+    static void executeLambdaForMapLayer( const QVariant &value, const QgsExpressionContext *context, QgsExpression *expression, const std::function< void( QgsMapLayer * )> &function, bool &foundLayer );
 
-      // No pointer yet, maybe it's a layer id?
-      if ( !ml )
-        ml = project->mapLayer( value.toString() );
+    /**
+     * Evaluates a \a value to a map layer, then runs a \a function on the layer in a thread safe way before returning the result of the function.
+     *
+     * \since QGIS 3.30
+     */
+    static QVariant runMapLayerFunctionThreadSafe( const QVariant &value, const QgsExpressionContext *context, QgsExpression *expression, const std::function<QVariant( QgsMapLayer * ) > &function, bool &foundLayer );
 
-      // Still nothing? Check for layer name
-      if ( !ml )
-        ml = project->mapLayersByName( value.toString() ).value( 0 );
+    /**
+     * Gets a vector layer feature source for a \a value which corresponds to a vector layer, in a thread-safe way.
+     */
+    static std::unique_ptr<QgsVectorLayerFeatureSource> getFeatureSource( const QVariant &value, const QgsExpressionContext *context, QgsExpression *e, bool &foundLayer );
 
-      return ml;
-    }
-
-    static std::unique_ptr<QgsVectorLayerFeatureSource> getFeatureSource( const QVariant &value, QgsExpression *e )
-    {
-      std::unique_ptr<QgsVectorLayerFeatureSource> featureSource;
-
-      auto getFeatureSource = [ &value, e, &featureSource ]
-      {
-        QgsVectorLayer *layer = getVectorLayer( value, e );
-
-        if ( layer )
-        {
-          featureSource.reset( new QgsVectorLayerFeatureSource( layer ) );
-        }
-      };
-
-      // Make sure we only deal with the vector layer on the main thread where it lives.
-      // Anything else risks a crash.
-      if ( QThread::currentThread() == qApp->thread() )
-        getFeatureSource();
-      else
-        QMetaObject::invokeMethod( qApp, getFeatureSource, Qt::BlockingQueuedConnection );
-
-      return featureSource;
-    }
-
-    static QgsVectorLayer *getVectorLayer( const QVariant &value, QgsExpression *e )
-    {
-      return qobject_cast<QgsVectorLayer *>( getMapLayer( value, e ) );
-    }
-
-    static QgsRasterLayer *getRasterLayer( const QVariant &value, QgsExpression *e )
-    {
-      return qobject_cast<QgsRasterLayer *>( getMapLayer( value, e ) );
-    }
-
-    static QgsMeshLayer *getMeshLayer( const QVariant &value, QgsExpression *e )
-    {
-      return qobject_cast<QgsMeshLayer *>( getMapLayer( value, e ) );
-    }
+    /**
+     * \deprecated Not actually deprecated, but this method is not thread safe -- use with extreme caution only when the thread safety has already been taken care of by the caller!
+     */
+    Q_DECL_DEPRECATED static QgsVectorLayer *getVectorLayer( const QVariant &value, const QgsExpressionContext *context, QgsExpression *e );
 
     /**
      * Tries to convert a \a value to a file path.
      *
      * \since QGIS 3.24
      */
-    static QString getFilePathValue( const QVariant &value, QgsExpression *parent );
+    static QString getFilePathValue( const QVariant &value, const QgsExpressionContext *context, QgsExpression *parent );
 
     static QVariantList getListValue( const QVariant &value, QgsExpression *parent )
     {
@@ -518,6 +478,13 @@ class CORE_EXPORT QgsExpressionUtils
      * \since QGIS 3.22
      */
     static std::tuple<QVariant::Type, int> determineResultType( const QString &expression, const QgsVectorLayer *layer, QgsFeatureRequest request = QgsFeatureRequest(), QgsExpressionContext context = QgsExpressionContext(), bool *foundFeatures = nullptr );
+
+  private:
+
+    /**
+     * \warning Only call when thread safety has been taken care of by the caller!
+     */
+    static QgsMapLayer *getMapLayerPrivate( const QVariant &value, const QgsExpressionContext *context, QgsExpression * );
 
 };
 

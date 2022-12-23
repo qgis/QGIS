@@ -13,11 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstest.h"
+#include "qgsconfig.h"
 #include <QObject>
 
 #include <qgspostgresconn.h>
 #include <qgsfields.h>
 #include <qgspostgresprovider.h>
+#include <qgsdatasourceuri.h>
 
 // Helper function for QCOMPARE
 char *toString( const QgsPostgresGeometryColumnType &t )
@@ -56,28 +58,35 @@ class TestQgsPostgresConn: public QObject
     Q_OBJECT
 
   private:
+#ifdef ENABLE_PGTEST
     QgsPostgresConn *_connection;
+
 
     QgsPostgresConn *getConnection()
     {
       if ( ! _connection )
       {
         const char *connstring = getenv( "QGIS_PGTEST_DB" );
-        if ( NULL == connstring ) connstring = "service=qgis_test";
+        if ( !connstring ) connstring = "service=qgis_test";
         _connection = QgsPostgresConn::connectDb( connstring, true );
         assert( _connection );
       }
       return _connection;
     }
+#endif
 
   private slots:
     void initTestCase() // will be called before the first testfunction is executed.
     {
+#ifdef ENABLE_PGTEST
       this->_connection = 0;
+#endif
     }
     void cleanupTestCase() // will be called after the last testfunction was executed.
     {
+#ifdef ENABLE_PGTEST
       if ( this->_connection ) this->_connection->unref();
+#endif
     }
 
     void quotedValueHstore()
@@ -150,6 +159,7 @@ class TestQgsPostgresConn: public QObject
       QCOMPARE( actual, QString( "E'{{\"hello foo\",b},{c,\"hello bar\"}}'" ) );
     }
 
+#ifdef ENABLE_PGTEST
     void supportedLayers()
     {
       QgsPostgresConn *conn = getConnection();
@@ -195,6 +205,65 @@ class TestQgsPostgresConn: public QObject
 
     }
 
+    void connectDb()
+    {
+      QgsPostgresConn *conn = getConnection();
+      QVERIFY( conn != 0 );
+
+      const QString sql = QStringLiteral( "SELECT SESSION_USER, CURRENT_USER;" );
+
+      QgsPostgresResult result( conn->PQexec( sql ) );
+      // current_user is the same as session_user
+      QCOMPARE( result.PQgetvalue( 0, 0 ), result.PQgetvalue( 0, 1 ) );
+
+      const char *connstring = getenv( "QGIS_PGTEST_DB" );
+      if ( !connstring ) connstring = "service=qgis_test";
+      const QString conninfo( connstring );
+      QgsDataSourceUri uri( conninfo );
+
+      // Update postgres uri to use qgis_test_user which is member of qgis_test_group
+      uri.setUsername( QStringLiteral( "qgis_test_user" ) );
+      uri.setPassword( QStringLiteral( "qgis_test_user_password" ) );
+
+      // Connection with qgis_test_user without session_role
+      conn = QgsPostgresConn::connectDb( uri, true );
+      QVERIFY( conn );
+      result = conn->PQexec( sql );
+      const QString session_user = result.PQgetvalue( 0, 0 );
+      QCOMPARE( session_user, "qgis_test_user" );
+      // current_user is the same as session_user
+      QCOMPARE( result.PQgetvalue( 0, 1 ), session_user );
+      conn->unref();
+
+      // Add known session_role parameter to postgres uri
+      uri.setParam( QStringLiteral( "session_role" ),  QStringLiteral( "qgis_test_group" ) );
+      conn = QgsPostgresConn::connectDb( uri, true );
+      QVERIFY( conn );
+      result = conn->PQexec( sql );
+      // session_user does not change
+      QCOMPARE( result.PQgetvalue( 0, 0 ), session_user );
+      // current_user has changed
+      QCOMPARE( result.PQgetvalue( 0, 1 ), "qgis_test_group" );
+      conn->unref();
+
+      // Add unknown session_role parameter to postgres uri
+      // uri.setParam( QStringLiteral( "session_role" ),  QStringLiteral( "qgis_test_unknown_group" ) );
+      // conn = QgsPostgresConn::connectDb( uri.connectionInfo( true ), true );
+      // QVERIFY( !conn );
+      // conn->unref();
+
+      // Remove session_role parameter from postgre uri
+      uri.removeParam( QStringLiteral( "session_role" ) );
+      conn = QgsPostgresConn::connectDb( uri, true );
+      QVERIFY( conn );
+      result = conn->PQexec( sql );
+      // session_user does not change
+      QCOMPARE( result.PQgetvalue( 0, 0 ), session_user );
+      // current_user back to session_user
+      QCOMPARE( result.PQgetvalue( 0, 1 ), session_user );
+      conn->unref();
+    }
+#endif
 };
 
 QGSTEST_MAIN( TestQgsPostgresConn )

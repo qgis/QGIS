@@ -1,7 +1,0 @@
-Geometric Figures
-grid_calculus
-QgsProcessingParameterNumber|CELL_COUNT|Cell Count|QgsProcessingParameterNumber.Integer|0|False|None|None
-QgsProcessingParameterNumber|CELL_SIZE|Cell Size|QgsProcessingParameterNumber.Integer|0|False|None|None
-QgsProcessingParameterEnum|FIGURE|Figure|[0] Cone (up);[1] Cone (down);[2] Plane
-QgsProcessingParameterNumber|PLANE|Direction of Plane [Degree]|QgsProcessingParameterNumber.Integer|0|False|None|None
-QgsProcessingParameterRasterDestination|RESULT|Result

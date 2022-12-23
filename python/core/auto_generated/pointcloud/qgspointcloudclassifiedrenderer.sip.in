@@ -37,6 +37,8 @@ The ``label`` argument specifies the label used for this category in legends and
 The ``render`` argument indicates whether the category should initially be rendered and appear checked in the layer tree.
 %End
 
+    bool operator==( const QgsPointCloudCategory &other ) const;
+
     int value() const;
 %Docstring
 Returns the value corresponding to this category.
@@ -114,7 +116,7 @@ Renders point clouds by a classification attribute.
 %End
   public:
 
-    QgsPointCloudClassifiedRenderer();
+    QgsPointCloudClassifiedRenderer( const QString &attributeName = QString(), const QgsPointCloudCategoryList &categories = QgsPointCloudCategoryList() );
 %Docstring
 Constructor for QgsPointCloudClassifiedRenderer.
 %End

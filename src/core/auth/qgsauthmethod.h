@@ -23,11 +23,7 @@
 #include <QNetworkRequest>
 #include <QStringList>
 #include <QUrl>
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-#include <QMutex>
-#else
 #include <QRecursiveMutex>
-#endif
 
 #include "qgsconfig.h"
 #include "qgis_core.h"
@@ -206,11 +202,7 @@ class CORE_EXPORT QgsAuthMethod : public QObject
     QgsAuthMethod::Expansions mExpansions = QgsAuthMethod::Expansions();
     QStringList mDataProviders;
     int mVersion = 0;
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    QMutex mMutex;
-#else
     QRecursiveMutex mMutex;
-#endif
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAuthMethod::Expansions )
 

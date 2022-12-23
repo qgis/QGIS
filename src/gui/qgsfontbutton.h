@@ -26,6 +26,7 @@ class QgsExpressionContextGenerator;
 class QgsMapCanvas;
 class QgsMessageBar;
 class QgsTextFormatPanelWidget;
+class QgsScreenHelper;
 
 
 /**
@@ -307,6 +308,8 @@ class GUI_EXPORT QgsFontButton : public QToolButton
     void addRecentColor( const QColor &color );
 
   private:
+
+    QgsScreenHelper *mScreenHelper = nullptr;
 
     QSize mSizeHint;
 

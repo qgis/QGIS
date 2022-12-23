@@ -41,18 +41,18 @@ static QgsFields createFields( const QList<QgsMeshDatasetGroupMetadata> &groupMe
     {
       if ( vectorOption == 0 || vectorOption == 2 )
       {
-        fields.append( QStringLiteral( "%1_x" ).arg( meta.name() ) );
-        fields.append( QStringLiteral( "%1_y" ).arg( meta.name() ) );
+        fields.append( QgsField( QStringLiteral( "%1_x" ).arg( meta.name() ), QVariant::Double ) );
+        fields.append( QgsField( QStringLiteral( "%1_y" ).arg( meta.name() ), QVariant::Double ) );
       }
 
       if ( vectorOption == 1 || vectorOption == 2 )
       {
-        fields.append( QStringLiteral( "%1_mag" ).arg( meta.name() ) );
-        fields.append( QStringLiteral( "%1_dir" ).arg( meta.name() ) );
+        fields.append( QgsField( QStringLiteral( "%1_mag" ).arg( meta.name() ), QVariant::Double ) );
+        fields.append( QgsField( QStringLiteral( "%1_dir" ).arg( meta.name() ), QVariant::Double ) );
       }
     }
     else
-      fields.append( meta.name() );
+      fields.append( QgsField( meta.name(), QVariant::Double ) );
   }
   return fields;
 }
@@ -210,7 +210,7 @@ void QgsExportMeshOnElement::initAlgorithm( const QVariantMap &configuration )
                   QStringLiteral( "DATASET_GROUPS" ),
                   QObject::tr( "Dataset groups" ),
                   QStringLiteral( "INPUT" ),
-                  supportedDataType() ) );
+                  supportedDataType(), true ) );
 
   addParameter( new QgsProcessingParameterMeshDatasetTime(
                   QStringLiteral( "DATASET_TIME" ),
@@ -333,19 +333,19 @@ QVariantMap QgsExportMeshOnElement::processAlgorithm( const QVariantMap &paramet
 
   QList<QgsMeshDatasetGroupMetadata> metaList;
   metaList.reserve( mDataPerGroup.size() );
-  for ( const DataGroup &dataGroup : mDataPerGroup )
+  for ( const DataGroup &dataGroup : std::as_const( mDataPerGroup ) )
     metaList.append( dataGroup.metadata );
   QgsFields fields = createFields( metaList, mExportVectorOption );
 
   QgsCoordinateReferenceSystem outputCrs = parameterAsCrs( parameters, QStringLiteral( "CRS_OUTPUT" ), context );
   QString identifier;
-  QgsFeatureSink *sink = parameterAsSink( parameters,
-                                          QStringLiteral( "OUTPUT" ),
-                                          context,
-                                          identifier,
-                                          fields,
-                                          sinkGeometryType(),
-                                          outputCrs );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters,
+                                        QStringLiteral( "OUTPUT" ),
+                                        context,
+                                        identifier,
+                                        fields,
+                                        sinkGeometryType(),
+                                        outputCrs ) );
   if ( !sink )
     return QVariantMap();
 
@@ -381,8 +381,8 @@ QVariantMap QgsExportMeshOnElement::processAlgorithm( const QVariantMap &paramet
     feat.setGeometry( geom );
     feat.setAttributes( attributes );
 
-    if ( !sink->addFeature( feat ) )
-      throw QgsProcessingException( writeFeatureError( sink, parameters, QStringLiteral( "OUTPUT" ) ) );
+    if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
 
     if ( feedback )
     {
@@ -621,13 +621,13 @@ QVariantMap QgsExportMeshOnGridAlgorithm::processAlgorithm( const QVariantMap &p
   //create sink
   QgsCoordinateReferenceSystem outputCrs = parameterAsCrs( parameters, QStringLiteral( "CRS_OUTPUT" ), context );
   QString identifier;
-  QgsFeatureSink *sink = parameterAsSink( parameters,
-                                          QStringLiteral( "OUTPUT" ),
-                                          context,
-                                          identifier,
-                                          fields,
-                                          QgsWkbTypes::Point,
-                                          outputCrs );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters,
+                                        QStringLiteral( "OUTPUT" ),
+                                        context,
+                                        identifier,
+                                        fields,
+                                        QgsWkbTypes::Point,
+                                        outputCrs ) );
   if ( !sink )
     return QVariantMap();
 
@@ -1083,32 +1083,34 @@ QVariantMap QgsMeshContoursAlgorithm::processAlgorithm( const QVariantMap &param
   // Create vector layers
   QgsFields polygonFields;
   QgsFields lineFields;
-  polygonFields.append( QObject::tr( "group" ) );
-  polygonFields.append( QObject::tr( "time" ) );
-  polygonFields.append( QObject::tr( "min_value" ) );
-  polygonFields.append( QObject::tr( "max_value" ) );
-  lineFields.append( QObject::tr( "group" ) );
-  lineFields.append( QObject::tr( "time" ) );
-  lineFields.append( QObject::tr( "value" ) );
+  polygonFields.append( QgsField( QObject::tr( "group" ), QVariant::String ) );
+  polygonFields.append( QgsField( QObject::tr( "time" ), QVariant::String ) );
+  polygonFields.append( QgsField( QObject::tr( "min_value" ), QVariant::Double ) );
+  polygonFields.append( QgsField( QObject::tr( "max_value" ), QVariant::Double ) );
+  lineFields.append( QgsField( QObject::tr( "group" ), QVariant::String ) );
+  lineFields.append( QgsField( QObject::tr( "time" ), QVariant::String ) );
+  lineFields.append( QgsField( QObject::tr( "value" ), QVariant::Double ) );
 
   QgsCoordinateReferenceSystem outputCrs = parameterAsCrs( parameters, QStringLiteral( "CRS_OUTPUT" ), context );
 
   QString lineIdentifier;
   QString polygonIdentifier;
-  QgsFeatureSink *sinkPolygons = parameterAsSink( parameters,
-                                 QStringLiteral( "OUTPUT_POLYGONS" ),
-                                 context,
-                                 polygonIdentifier,
-                                 polygonFields,
-                                 QgsWkbTypes::PolygonZ,
-                                 outputCrs );
-  QgsFeatureSink *sinkLines = parameterAsSink( parameters,
-                              QStringLiteral( "OUTPUT_LINES" ),
-                              context,
-                              lineIdentifier,
-                              lineFields,
-                              QgsWkbTypes::LineStringZ,
-                              outputCrs );
+  std::unique_ptr<QgsFeatureSink> sinkPolygons( parameterAsSink(
+        parameters,
+        QStringLiteral( "OUTPUT_POLYGONS" ),
+        context,
+        polygonIdentifier,
+        polygonFields,
+        QgsWkbTypes::PolygonZ,
+        outputCrs ) );
+  std::unique_ptr<QgsFeatureSink> sinkLines( parameterAsSink(
+        parameters,
+        QStringLiteral( "OUTPUT_LINES" ),
+        context,
+        lineIdentifier,
+        lineFields,
+        QgsWkbTypes::LineStringZ,
+        outputCrs ) );
 
   if ( !sinkLines || !sinkPolygons )
     return QVariantMap();
@@ -1564,7 +1566,7 @@ bool QgsMeshExportTimeSeries::prepareAlgorithm( const QVariantMap &parameters, Q
       {
         //QMap<qint64, DataGroup> temporalGroup;
         QgsMeshDatasetIndex lastDatasetIndex;
-        for ( qint64  relativeTimeStep : mRelativeTimeSteps )
+        for ( qint64  relativeTimeStep : std::as_const( mRelativeTimeSteps ) )
         {
           QMap<int, int> &groupIndexToData = mRelativeTimeToData[relativeTimeStep];
           QgsInterval timeStepInterval( relativeTimeStep / 1000.0 );

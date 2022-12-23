@@ -290,14 +290,14 @@ class QueryBuilderDlg(QDialog):
         value = index.data(Qt.EditRole)
 
         if value is None:
-            queryWord = u'NULL'
+            queryWord = 'NULL'
         elif isinstance(value, (int, float)):
             queryWord = str(value)
         else:
             queryWord = self.db.connector.quoteString(value)
 
         if queryWord.strip() != '':
-            self.ui.where.insertPlainText(u' ' + queryWord)
+            self.ui.where.insertPlainText(' ' + queryWord)
             self.ui.where.setFocus()
 
     def use_rtree(self):

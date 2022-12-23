@@ -7,7 +7,7 @@
 #include <vector>
 #include <odbc/Config.h>
 //------------------------------------------------------------------------------
-namespace odbc {
+NS_ODBC_START
 //------------------------------------------------------------------------------
 /**
  *  Specifies the type of an ODBC DSN.
@@ -1048,6 +1048,6 @@ inline std::ostream& operator<<(std::ostream& out, const Binary& val)
     return out;
 }
 //------------------------------------------------------------------------------
-} // namespace odbc
+NS_ODBC_END
 //------------------------------------------------------------------------------
 #endif

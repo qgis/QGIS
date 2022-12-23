@@ -899,6 +899,8 @@ calculating individual symbol angles.
 
     virtual QgsUnitTypes::RenderUnit outputUnit() const ${SIP_FINAL};
 
+    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+
     virtual void setMapUnitScale( const QgsMapUnitScale &scale ) ${SIP_FINAL};
 
     virtual QgsMapUnitScale mapUnitScale() const ${SIP_FINAL};
@@ -1378,6 +1380,8 @@ Set the line opacity.
 
     virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
 
+    virtual QColor color() const;
+
 
   protected:
 
@@ -1438,6 +1442,8 @@ serialized in the ``properties`` map (corresponding to the output from
     virtual QgsMapUnitScale mapUnitScale() const;
 
     virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
+
+    virtual QColor color() const;
 
 
     Qgis::GradientColorSource gradientColorType() const;

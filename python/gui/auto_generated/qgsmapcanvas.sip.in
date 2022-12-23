@@ -329,9 +329,9 @@ Centers canvas extent to feature ids
 :param alwaysRecenter: if ``False``, the canvas is recentered only if the bounding box is not contained within the current extent
 %End
 
-    void panToSelected( QgsVectorLayer *layer = 0 );
+    void panToSelected( QgsMapLayer *layer = 0 );
 %Docstring
-Pan to the selected features of current (vector) layer keeping same extent.
+Pan to the selected features of current ayer keeping same extent.
 %End
 
     void panToSelected( const QList<QgsMapLayer *> &layers );
@@ -1021,9 +1021,9 @@ Zoom in with fixed factor
 Zoom out with fixed factor
 %End
 
-    void zoomToSelected( QgsVectorLayer *layer = 0 );
+    void zoomToSelected( QgsMapLayer *layer = 0 );
 %Docstring
-Zoom to the extent of the selected features of provided (vector) layer.
+Zoom to the extent of the selected features of provided map layer.
 
 :param layer: optionally specify different than current layer
 %End
@@ -1194,10 +1194,13 @@ Emit map tool changed with the old tool
 .. versionadded:: 2.3
 %End
 
-
-    void selectionChanged( QgsVectorLayer *layer );
+    void selectionChanged( QgsMapLayer *layer );
 %Docstring
-Emitted when selection in any layer gets changed
+Emitted when selection in any ``layer`` gets changed.
+
+.. note::
+
+   Since QGIS 3.28 this signal is emitted for multiple layer types, including :py:class:`QgsVectorLayer` and :py:class:`QgsVectorTileLayer`
 %End
 
     void zoomLastStatusChanged( bool );

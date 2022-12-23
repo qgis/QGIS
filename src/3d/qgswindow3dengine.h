@@ -59,6 +59,9 @@ class _3D_EXPORT QgsWindow3DEngine : public QgsAbstract3DEngine
     //! Returns the internal 3D window where all the rendered output is displayed
     QWindow *window();
 
+    //! Returns the root entity
+    Qt3DCore::QEntity *root() const;
+
     //! Sets whether shadow rendering is enabled
     void setShadowRenderingEnabled( bool enabled );
     //! Returns whether shadow rendering is enabled

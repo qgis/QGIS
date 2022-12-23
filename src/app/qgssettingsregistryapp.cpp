@@ -20,8 +20,20 @@
 #include "qgsapplication.h"
 
 #include "qgsmaptoolsdigitizingtechniquemanager.h"
+#include "qgsidentifyresultsdialog.h"
+
+#ifdef HAVE_GEOREFERENCER
 #include "georeferencer/qgsgeorefmainwindow.h"
 #include "georeferencer/qgstransformsettingsdialog.h"
+#endif
+
+#include "vertextool/qgsvertexeditor.h"
+#include "elevation/qgselevationprofilewidget.h"
+#include "qgsappgpsdigitizing.h"
+#include "qgsappgpslogging.h"
+#include "qgsgpscanvasbridge.h"
+#include "qgsgpsmarker.h"
+#include "qgsgpstoolbar.h"
 
 QgsSettingsRegistryApp::QgsSettingsRegistryApp()
   : QgsSettingsRegistry()
@@ -30,6 +42,7 @@ QgsSettingsRegistryApp::QgsSettingsRegistryApp()
   addSettingsEntry( &QgsMapToolsDigitizingTechniqueManager::settingMapToolShapeDefaultForShape );
   addSettingsEntry( &QgsMapToolsDigitizingTechniqueManager::settingMapToolShapeCurrent );
 
+#ifdef HAVE_GEOREFERENCER
   addSettingsEntry( &QgsGeoreferencerMainWindow::settingResamplingMethod );
   addSettingsEntry( &QgsGeoreferencerMainWindow::settingCompressionMethod );
   addSettingsEntry( &QgsGeoreferencerMainWindow::settingUseZeroForTransparent );
@@ -41,6 +54,32 @@ QgsSettingsRegistryApp::QgsSettingsRegistryApp()
 
   addSettingsEntry( &QgsTransformSettingsDialog::settingLastDestinationFolder );
   addSettingsEntry( &QgsTransformSettingsDialog::settingLastPdfFolder );
+#endif
+
+  addSettingsEntry( &QgsVertexEditor::settingAutoPopupVertexEditorDock );
+
+  addSettingsEntry( &QgsElevationProfileWidget::settingTolerance );
+  addSettingsEntry( &QgsElevationProfileWidget::settingShowLayerTree );
+
+  addSettingsEntry( &QgsIdentifyResultsDialog::settingHideNullValues );
+
+  addSettingsEntry( &QgsAppGpsLogging::settingLastLogFolder );
+  addSettingsEntry( &QgsAppGpsLogging::settingLastGpkgLog );
+
+  addSettingsEntry( &QgsGpsCanvasBridge::settingShowBearingLine );
+  addSettingsEntry( &QgsGpsCanvasBridge::settingBearingLineSymbol );
+  addSettingsEntry( &QgsGpsCanvasBridge::settingMapCenteringMode );
+  addSettingsEntry( &QgsGpsCanvasBridge::settingMapExtentRecenteringThreshold );
+  addSettingsEntry( &QgsGpsCanvasBridge::settingMapRotateInterval );
+  addSettingsEntry( &QgsGpsCanvasBridge::settingRotateMap );
+
+  addSettingsEntry( &QgsAppGpsDigitizing::settingTrackLineSymbol );
+
+  addSettingsEntry( &QgsGpsToolBar::settingShowInToolbar );
+
+  addSettingsEntry( &QgsGpsMarker::settingLocationMarkerSymbol );
+  addSettingsEntry( &QgsGpsMarker::settingShowLocationMarker );
+  addSettingsEntry( &QgsGpsMarker::settingRotateLocationMarker );
 
   QgsApplication::settingsRegistryCore()->addSubRegistry( this );
 }

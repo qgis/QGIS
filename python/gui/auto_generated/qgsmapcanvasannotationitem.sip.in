@@ -28,7 +28,10 @@ An interactive map canvas item which displays a :py:class:`QgsAnnotation`.
 %End
 %ConvertToSubClassCode
     if ( dynamic_cast<QgsMapCanvasAnnotationItem *>( sipCpp ) )
+    {
       sipType = sipType_QgsMapCanvasAnnotationItem;
+      *sipCppRet = dynamic_cast<QgsMapCanvasAnnotationItem *>( sipCpp );
+    }
     else
       sipType = nullptr;
 %End

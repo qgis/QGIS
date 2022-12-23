@@ -82,10 +82,11 @@ class TestQgsVectorLayerEditBufferGroup(unittest.TestCase):
         self.assertTrue(layer_c.editBuffer())
         self.assertEqual(len(editBufferGroup.modifiedLayers()), 0)
 
-        commitErrors = []
-        self.assertTrue(editBufferGroup.commitChanges(commitErrors, False))
+        success, commitErrors = editBufferGroup.commitChanges(False)
+        self.assertTrue(success)
         self.assertTrue(editBufferGroup.isEditing())
-        self.assertTrue(editBufferGroup.commitChanges(commitErrors, True))
+        success, commitErrors = editBufferGroup.commitChanges(True)
+        self.assertTrue(success)
         self.assertFalse(editBufferGroup.isEditing())
 
         self.assertTrue(editBufferGroup.startEditing())
@@ -102,8 +103,8 @@ class TestQgsVectorLayerEditBufferGroup(unittest.TestCase):
         self.assertEqual(layer_a.featureCount(), 1)
         self.assertEqual(layer_a.dataProvider().featureCount(), 0)
 
-        rollbackErrors = []
-        self.assertTrue(editBufferGroup.rollBack(rollbackErrors, False))
+        success, rollbackErrors = editBufferGroup.rollBack(False)
+        self.assertTrue(success)
         self.assertTrue(editBufferGroup.isEditing())
         self.assertEqual(layer_a.featureCount(), 0)
 
@@ -111,10 +112,42 @@ class TestQgsVectorLayerEditBufferGroup(unittest.TestCase):
         self.assertEqual(layer_a.featureCount(), 1)
         self.assertEqual(layer_a.dataProvider().featureCount(), 0)
 
-        self.assertTrue(editBufferGroup.commitChanges(commitErrors, True))
+        success, commitErrors = editBufferGroup.commitChanges(True)
+        self.assertTrue(success)
         self.assertFalse(editBufferGroup.isEditing())
         self.assertEqual(layer_a.featureCount(), 1)
         self.assertEqual(layer_a.dataProvider().featureCount(), 1)
+
+    def testSetBufferedGroupsAfterAutomaticGroups(self):
+
+        ml = QgsVectorLayer('Point?crs=epsg:4326&field=int:integer&field=int2:integer', 'test', 'memory')
+
+        # Load 2 layer from a geopackage
+        d = QTemporaryDir()
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.driverName = 'GPKG'
+        options.layerName = 'layer_a'
+        err, msg, newFileName, newLayer = QgsVectorFileWriter.writeAsVectorFormatV3(ml, os.path.join(d.path(), 'test_EditBufferGroup.gpkg'), QgsCoordinateTransformContext(), options)
+
+        options.layerName = 'layer_b'
+        options.actionOnExistingFile = QgsVectorFileWriter.CreateOrOverwriteLayer
+        err, msg, newFileName, newLayer = QgsVectorFileWriter.writeAsVectorFormatV3(ml, os.path.join(d.path(), 'test_EditBufferGroup.gpkg'), QgsCoordinateTransformContext(), options)
+
+        layer_a = QgsVectorLayer(newFileName + '|layername=layer_a')
+        self.assertTrue(layer_a.isValid())
+        layer_b = QgsVectorLayer(newFileName + '|layername=layer_b')
+        self.assertTrue(layer_b.isValid())
+
+        project = QgsProject()
+        project.addMapLayers([layer_a, layer_b, ml])
+
+        project.setTransactionMode(Qgis.TransactionMode.AutomaticGroups)
+        project.setTransactionMode(Qgis.TransactionMode.BufferedGroups)
+
+        project.startEditing()
+        success, rollbackErrors = project.rollBack(True)
+
+        self.assertTrue(success)
 
 
 if __name__ == '__main__':

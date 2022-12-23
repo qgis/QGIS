@@ -37,6 +37,21 @@ Constructor for an empty QgsRasterPipe.
     ~QgsRasterPipe();
 
 
+    void moveToThread( QThread *thread );
+%Docstring
+Moves the pipe to another ``thread``.
+
+This effects all QObject derived interfaces in the pipe, and follows the same
+behavior as QObject.moveToThread. Specifically, it is permitted to PUSH the
+pipe from the current thread to another thread, but NOT to PULL a pipe
+from another thread over to the current thread. Pulling is only supported
+by first pushsing the pipe from its current thread to a ``None`` thread,
+and then later pulling to the current thread. See QObject documentation
+for more details.
+
+.. versionadded:: 3.30
+%End
+
     bool insert( int idx, QgsRasterInterface *interface /Transfer/ );
 %Docstring
 Attempts to insert interface at specified index and connect

@@ -153,6 +153,7 @@ The development version
       Variant,
       String,
       StringList,
+      VariantMap,
       Bool,
       Integer,
       Double,
@@ -163,6 +164,7 @@ The development version
     enum class SettingsOption
     {
       SaveFormerValue,
+      SaveEnumFlagAsInt,
     };
     typedef QFlags<Qgis::SettingsOption> SettingsOptions;
 
@@ -192,7 +194,6 @@ The development version
       DynamicRotation,
     };
     typedef QFlags<Qgis::SymbolRenderHint> SymbolRenderHints;
-
 
 
     enum class SymbolFlag
@@ -343,6 +344,78 @@ The development version
       NeverShow,
     };
 
+    enum class LabelOverlapHandling
+    {
+      PreventOverlap,
+      AllowOverlapIfRequired,
+      AllowOverlapAtNoCost,
+    };
+
+    enum class LabelPlacement
+      {
+      AroundPoint,
+      OverPoint,
+      Line,
+      Curved,
+      Horizontal,
+      Free,
+      OrderedPositionsAroundPoint,
+      PerimeterCurved,
+      OutsidePolygons,
+    };
+
+
+    enum class LabelPredefinedPointPosition
+      {
+      TopLeft,
+      TopSlightlyLeft,
+      TopMiddle,
+      TopSlightlyRight,
+      TopRight,
+      MiddleLeft,
+      MiddleRight,
+      BottomLeft,
+      BottomSlightlyLeft,
+      BottomMiddle,
+      BottomSlightlyRight,
+      BottomRight,
+    };
+
+    enum class LabelOffsetType
+      {
+      FromPoint,
+      FromSymbolBounds,
+    };
+
+    enum class LabelQuadrantPosition
+      {
+      AboveLeft,
+      Above,
+      AboveRight,
+      Left,
+      Over,
+      Right,
+      BelowLeft,
+      Below,
+      BelowRight,
+    };
+
+    enum class UpsideDownLabelHandling
+      {
+      FlipUpsideDownLabels,
+      AllowUpsideDownWhenRotationIsDefined,
+      AlwaysAllowUpsideDown
+    };
+
+    enum class LabelMultiLineAlignment
+      {
+      Left,
+      Center,
+      Right,
+      FollowPlacement,
+      Justify,
+    };
+
     enum class SublayerQueryFlag
     {
       FastScan,
@@ -380,6 +453,44 @@ The development version
       Provider
     };
 
+    enum class RasterRendererFlag
+    {
+      InternalLayerOpacityHandling,
+    };
+
+    typedef QFlags<Qgis::RasterRendererFlag> RasterRendererFlags;
+
+
+
+    enum class RasterAttributeTableFieldUsage
+    {
+      Generic,
+      PixelCount,
+      Name,
+      Min,
+      Max,
+      MinMax,
+      Red,
+      Green,
+      Blue,
+      Alpha,
+      RedMin,
+      GreenMin,
+      BlueMin,
+      AlphaMin,
+      RedMax,
+      GreenMax,
+      BlueMax,
+      AlphaMax,
+      MaxCount
+    };
+
+    enum class RasterAttributeTableType
+    {
+      Thematic,
+      Athematic
+    };
+
     enum class MeshEditingErrorType
     {
       NoError,
@@ -413,6 +524,22 @@ The development version
       RemoveFromSelection,
     };
 
+    enum class SelectGeometryRelationship
+    {
+      Intersect,
+      Within,
+    };
+
+    enum class SelectionFlag
+    {
+      SingleFeatureSelection,
+      ToggleSelection,
+    };
+
+    typedef QFlags<Qgis::SelectionFlag> SelectionFlags;
+
+
+
     enum class VectorEditResult
       {
       Success,
@@ -437,6 +564,83 @@ The development version
       Failed,
       Canceled,
     };
+
+    enum class GpsConnectionType
+    {
+      Automatic,
+      Internal,
+      Serial,
+      Gpsd,
+    };
+
+    enum class GpsConnectionStatus
+    {
+      Disconnected,
+      Connecting,
+      Connected,
+    };
+
+    enum class GpsFixStatus
+      {
+      NoData,
+      NoFix,
+      Fix2D,
+      Fix3D
+    };
+
+
+    enum class GnssConstellation
+    {
+      Unknown,
+      Gps,
+      Glonass,
+      Galileo,
+      BeiDou,
+      Qzss,
+      Navic,
+      Sbas,
+    };
+
+    enum class GpsQualityIndicator
+    {
+      Unknown,
+      Invalid,
+      GPS,
+      DGPS,
+      PPS,
+      RTK,
+      FloatRTK,
+      Estimated,
+      Manual,
+      Simulation,
+    };
+
+    enum class GpsInformationComponent
+    {
+      Location,
+      Altitude,
+      GroundSpeed,
+      Bearing,
+      TotalTrackLength,
+      TrackDistanceFromStart,
+      Pdop,
+      Hdop,
+      Vdop,
+      HorizontalAccuracy,
+      VerticalAccuracy,
+      HvAccuracy,
+      SatellitesUsed,
+      Timestamp,
+      TrackStartTime,
+      TrackEndTime,
+      TrackDistanceSinceLastPoint,
+      TrackTimeSinceLastPoint,
+      GeoidalSeparation,
+      EllipsoidAltitude,
+    };
+
+    typedef QFlags<Qgis::GpsInformationComponent> GpsInformationComponents;
+
 
     enum class BabelFormatCapability
     {
@@ -473,12 +677,15 @@ The development version
       SelectionIsGreaterThanOne,
       GeometryEngineError,
       LayerNotEditable,
+      // Add part issues
       AddPartSelectedGeometryNotFound,
       AddPartNotMultiGeometry,
+      // Add ring issues
       AddRingNotClosed,
       AddRingNotValid,
       AddRingCrossesExistingRings,
       AddRingNotInExistingFeature,
+      // Split features
       SplitCannotSplitPoint,
     };
 
@@ -515,6 +722,12 @@ The development version
       Bevel,
     };
 
+    enum class MakeValidMethod
+    {
+      Linework,
+      Structure,
+    };
+
     enum class SpatialFilterType
     {
       NoFilter,
@@ -538,13 +751,63 @@ The development version
     typedef QFlags<Qgis::MapLayerProperty> MapLayerProperties;
 
 
-
     enum class DataProviderFlag
     {
       IsBasemapSource,
     };
     typedef QFlags<Qgis::DataProviderFlag> DataProviderFlags;
 
+
+    enum class CrsAxisDirection
+    {
+      North,
+      NorthNorthEast,
+      NorthEast,
+      EastNorthEast,
+      East,
+      EastSouthEast,
+      SouthEast,
+      SouthSouthEast,
+      South,
+      SouthSouthWest,
+      SouthWest,
+      WestSouthWest,
+      West,
+      WestNorthWest,
+      NorthWest,
+      NorthNorthWest,
+      GeocentricX,
+      GeocentricY,
+      GeocentricZ,
+      Up,
+      Down,
+      Forward,
+      Aft,
+      Port,
+      Starboard,
+      Clockwise,
+      CounterClockwise,
+      ColumnPositive,
+      ColumnNegative,
+      RowPositive,
+      RowNegative,
+      DisplayRight,
+      DisplayLeft,
+      DisplayUp,
+      DisplayDown,
+      Future,
+      Past,
+      Towards,
+      AwayFrom,
+      Unspecified,
+    };
+
+    enum class CoordinateOrder
+    {
+      Default,
+      XY,
+      YX,
+    };
 
     enum class AnnotationItemFlag
     {
@@ -611,11 +874,28 @@ The development version
       FindClosestMatchToEndOfRange
     };
 
+    enum class RasterTemporalCapabilityFlag
+    {
+      RequestedTimesMustExactlyMatchAllAvailableTemporalRanges,
+    };
+
+    typedef QFlags<Qgis::RasterTemporalCapabilityFlag> RasterTemporalCapabilityFlags;
+
+
     enum class TransformDirection
       {
       Forward,
       Reverse
     };
+
+    enum class CoordinateTransformationFlag
+    {
+      BallparkTransformsAreAppropriate,
+      IgnoreImpossibleTransformations,
+    };
+
+    typedef QFlags<Qgis::CoordinateTransformationFlag> CoordinateTransformationFlags;
+
 
     enum class MapSettingsFlag
       {
@@ -635,6 +915,7 @@ The development version
       Render3DMap,
       HighQualityImageTransforms,
       SkipSymbolRendering,
+      ForceRasterMasks,
     };
     typedef QFlags<Qgis::MapSettingsFlag> MapSettingsFlags;
 
@@ -669,6 +950,74 @@ The development version
       {
       AlwaysOutlines,
       AlwaysText,
+    };
+
+    enum class LabelingFlag
+      {
+      UseAllLabels,
+      UsePartialCandidates,
+      // TODO QGIS 4.0: remove
+      RenderOutlineLabels,
+      DrawLabelRectOnly,
+      DrawCandidates,
+      DrawUnplacedLabels,
+      CollectUnplacedLabels,
+      DrawLabelMetrics,
+    };
+
+    typedef QFlags<Qgis::LabelingFlag> LabelingFlags;
+
+
+    enum class LabelPlacementEngineVersion
+      {
+      Version1,
+      Version2,
+    };
+
+    enum class TextOrientation
+      {
+      Horizontal,
+      Vertical,
+      RotationBased,
+    };
+
+    enum class TextLayoutMode
+      {
+      Rectangle,
+      Point,
+      Labeling,
+      RectangleCapHeightBased,
+      RectangleAscentBased,
+    };
+
+    enum class TextComponent
+      {
+      Text,
+      Buffer,
+      Background,
+      Shadow,
+    };
+
+    enum class TextHorizontalAlignment
+      {
+      Left,
+      Center,
+      Right,
+      Justify,
+    };
+
+    enum class TextVerticalAlignment
+      {
+      Top,
+      VerticalCenter,
+      Bottom,
+    };
+
+    enum class TextCharacterVerticalAlignment
+    {
+      Normal,
+      SuperScript,
+      SubScript,
     };
 
     enum class RenderSubcomponentProperty
@@ -716,6 +1065,14 @@ The development version
       HalfArc,
       ThirdArc,
       QuarterArc,
+      ParallelogramRight,
+      ParallelogramLeft,
+      Trapezoid,
+      Shield,
+      DiamondStar,
+      Heart,
+      Decagon,
+      RoundedSquare,
     };
 
     enum class MarkerLinePlacement
@@ -795,6 +1152,27 @@ The development version
       ScaleGapOnly,
     };
 
+    enum class GraduatedMethod
+      {
+      Color,
+      Size,
+    };
+
+    enum class DpiMode
+    {
+      All,
+      Off,
+      QGIS,
+      UMN,
+      GeoServer,
+    };
+
+    enum class TilePixelRatio
+    {
+      Undefined,
+      StandardDpi,
+      HighDpi,
+    };
 
 
     enum class Capitalization
@@ -833,6 +1211,21 @@ The development version
       View,
       Export,
       Unknown,
+    };
+
+    enum class ViewSyncModeFlag
+    {
+      Sync3DTo2D,
+      Sync2DTo3D,
+    };
+    typedef QFlags<Qgis::ViewSyncModeFlag> ViewSyncModeFlags;
+
+
+    enum class MapRecenteringMode
+    {
+      Always,
+      WhenOutsideVisibleExtent,
+      Never,
     };
 
     enum class HistoryProviderBackend
@@ -888,6 +1281,305 @@ The development version
     {
       Vertex,
       Centroid,
+    };
+
+    enum class BetweenLineConstraint
+    {
+      NoConstraint,
+      Perpendicular,
+      Parallel
+    };
+
+    enum class LineExtensionSide
+    {
+      BeforeVertex,
+      AfterVertex,
+      NoVertex,
+    };
+
+    enum class ProjectFlag
+    {
+      EvaluateDefaultValuesOnProviderSide,
+      TrustStoredLayerStatistics,
+      RememberLayerEditStatusBetweenSessions,
+      RememberAttributeTableWindowsBetweenSessions,
+    };
+    typedef QFlags<Qgis::ProjectFlag> ProjectFlags;
+
+
+    enum class PlotToolFlag
+    {
+      ShowContextMenu,
+    };
+    typedef QFlags<Qgis::PlotToolFlag> PlotToolFlags;
+
+
+    enum class LightSourceType
+    {
+      Point,
+      Directional,
+    };
+
+    enum class ProfileSurfaceSymbology
+    {
+      Line,
+      FillBelow,
+    };
+
+    enum class VectorProfileType
+    {
+      IndividualFeatures,
+      ContinuousSurface,
+    };
+
+    enum class ProfileGeneratorFlag
+    {
+      RespectsMaximumErrorMapUnit,
+      RespectsDistanceRange,
+      RespectsElevationRange,
+    };
+    typedef QFlags<Qgis::ProfileGeneratorFlag> ProfileGeneratorFlags;
+
+
+    enum class PointCloudSymbol
+      {
+      Square,
+      Circle,
+    };
+
+    enum class PointCloudDrawOrder
+      {
+      Default,
+      BottomToTop,
+      TopToBottom,
+    };
+
+    enum class AvoidIntersectionsMode
+      {
+      AllowIntersections,
+      AvoidIntersectionsCurrentLayer,
+      AvoidIntersectionsLayers,
+    };
+
+    enum class ProjectFileFormat
+      {
+      Qgz,
+      Qgs,
+    };
+
+    enum class ProjectReadFlag
+      {
+      DontResolveLayers,
+      DontLoadLayouts,
+      TrustLayerMetadata,
+      DontStoreOriginalStyles,
+      DontLoad3DViews,
+      DontLoadProjectStyles,
+      ForceReadOnlyLayers,
+    };
+
+    typedef QFlags<Qgis::ProjectReadFlag> ProjectReadFlags;
+
+
+    enum class ProjectCapability
+    {
+      ProjectStyles,
+    };
+
+    typedef QFlags<Qgis::ProjectCapability> ProjectCapabilities;
+
+
+    enum class MapBoxGlStyleSourceType
+    {
+      Vector,
+      Raster,
+      RasterDem,
+      GeoJson,
+      Image,
+      Video,
+      Unknown,
+    };
+
+    enum class ArcGisRestServiceType
+      {
+      FeatureServer,
+      MapServer,
+      ImageServer,
+      GlobeServer,
+      GPServer,
+      GeocodeServer,
+      Unknown,
+    };
+
+    enum class RelationshipType
+      {
+      Normal,
+      Generated,
+    };
+
+    enum class RelationshipStrength
+      {
+      Association,
+      Composition,
+    };
+
+    enum class RelationshipCardinality
+    {
+      OneToOne,
+      OneToMany,
+      ManyToOne,
+      ManyToMany,
+    };
+
+    enum class RelationshipCapability
+    {
+      MultipleFieldKeys,
+      ForwardPathLabel,
+      BackwardPathLabel,
+    };
+
+    typedef QFlags<Qgis::RelationshipCapability> RelationshipCapabilities;
+
+
+    enum class CoordinateDisplayType
+    {
+      MapCrs,
+      MapGeographic,
+      CustomCrs,
+    };
+
+    enum class ScriptLanguage
+    {
+      Css,
+      QgisExpression,
+      Html,
+      JavaScript,
+      Json,
+      Python,
+      R,
+      Sql,
+      Unknown,
+    };
+
+    enum class LayerTreeInsertionMethod
+    {
+      AboveInsertionPoint,
+      TopOfTree,
+      OptimalInInsertionGroup,
+    };
+
+    enum class ActionType
+    {
+      Invalid,
+      MapLayerAction,
+      AttributeAction
+    };
+
+    enum class MapLayerActionTarget
+    {
+      Layer,
+      SingleFeature,
+      MultipleFeatures,
+      AllActions
+    };
+
+    typedef QFlags<Qgis::MapLayerActionTarget> MapLayerActionTargets;
+
+
+    enum class MapLayerActionFlag
+    {
+      EnabledOnlyWhenEditable,
+    };
+
+    typedef QFlags<Qgis::MapLayerActionFlag> MapLayerActionFlags;
+
+
+    enum class AttributeActionType
+      {
+      Generic,
+      GenericPython,
+      Mac,
+      Windows,
+      Unix,
+      OpenUrl,
+      SubmitUrlEncoded,
+      SubmitUrlMultipart,
+    };
+
+    enum class MetadataDateType
+    {
+      Created,
+      Published,
+      Revised,
+      Superseded,
+    };
+
+    enum class RasterColorInterpretation
+      {
+      Undefined,
+      GrayIndex,
+      PaletteIndex,
+      RedBand,
+      GreenBand,
+      BlueBand,
+      AlphaBand,
+      HueBand,
+      SaturationBand,
+      LightnessBand,
+      CyanBand,
+      MagentaBand,
+      YellowBand,
+      BlackBand,
+      YCbCr_YBand,
+      YCbCr_CbBand,
+      YCbCr_CrBand,
+      ContinuousPalette
+    };
+
+    enum class RasterLayerType
+      {
+      GrayOrUndefined,
+      Palette,
+      MultiBand,
+      SingleBandColorData,
+    };
+
+    enum class RasterDrawingStyle
+      {
+      Undefined,
+      SingleBandGray,
+      SingleBandPseudoColor,
+      PalettedColor,
+      PalettedSingleBandGray,
+      PalettedSingleBandPseudoColor,
+      PalettedMultiBandColor,
+      MultiBandSingleBandGray,
+      MultiBandSingleBandPseudoColor,
+      MultiBandColor,
+      SingleBandColorData,
+    };
+
+    enum class RasterPyramidFormat
+      {
+      GeoTiff,
+      Internal,
+      Erdas
+    };
+
+    enum class RasterBuildPyramidOption
+      {
+      No,
+      Yes,
+      CopyExisting
+    };
+
+    enum class RasterIdentifyFormat
+      {
+      Undefined,
+      Value,
+      Text,
+      Html,
+      Feature,
     };
 
     static const double DEFAULT_SEARCH_RADIUS_MM;
@@ -1002,6 +1694,31 @@ QFlags<Qgis::DataProviderFlag> operator|(Qgis::DataProviderFlag f1, QFlags<Qgis:
 
 QFlags<Qgis::SnappingType> operator|(Qgis::SnappingType f1, QFlags<Qgis::SnappingType> f2);
 
+QFlags<Qgis::PlotToolFlag> operator|(Qgis::PlotToolFlag f1, QFlags<Qgis::PlotToolFlag> f2);
+
+QFlags<Qgis::ProfileGeneratorFlag> operator|(Qgis::ProfileGeneratorFlag f1, QFlags<Qgis::ProfileGeneratorFlag> f2);
+
+QFlags<Qgis::ProjectReadFlag> operator|(Qgis::ProjectReadFlag f1, QFlags<Qgis::ProjectReadFlag> f2);
+
+QFlags<Qgis::ProjectCapability> operator|(Qgis::ProjectCapability f1, QFlags<Qgis::ProjectCapability> f2);
+
+QFlags<Qgis::CoordinateTransformationFlag> operator|(Qgis::CoordinateTransformationFlag f1, QFlags<Qgis::CoordinateTransformationFlag> f2);
+
+QFlags<Qgis::RasterTemporalCapabilityFlag> operator|(Qgis::RasterTemporalCapabilityFlag f1, QFlags<Qgis::RasterTemporalCapabilityFlag> f2);
+
+QFlags<Qgis::SelectionFlag> operator|(Qgis::SelectionFlag f1, QFlags<Qgis::SelectionFlag> f2);
+
+QFlags<Qgis::RasterRendererFlag> operator|(Qgis::RasterRendererFlag f1, QFlags<Qgis::RasterRendererFlag> f2);
+
+QFlags<Qgis::LabelingFlag> operator|(Qgis::LabelingFlag f1, QFlags<Qgis::LabelingFlag> f2);
+
+QFlags<Qgis::GpsInformationComponent> operator|(Qgis::GpsInformationComponent f1, QFlags<Qgis::GpsInformationComponent> f2);
+
+QFlags<Qgis::MapLayerActionTarget> operator|(Qgis::MapLayerActionTarget f1, QFlags<Qgis::MapLayerActionTarget> f2);
+
+QFlags<Qgis::MapLayerActionFlag> operator|(Qgis::MapLayerActionFlag f1, QFlags<Qgis::MapLayerActionFlag> f2);
+
+QFlags<Qgis::RelationshipCapability> operator|(Qgis::RelationshipCapability f1, QFlags<Qgis::RelationshipCapability> f2);
 
 
 
@@ -1060,7 +1777,6 @@ Returns a double ``number``, rounded (as close as possible) to the specified num
 
 .. versionadded:: 3.0
 %End
-
 
 
 

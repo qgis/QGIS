@@ -238,6 +238,13 @@ namespace QgsServerProjectUtils
   SERVER_EXPORT bool wmsFeatureInfoSegmentizeWktGeometry( const QgsProject &project );
 
   /**
+   * Returns if legend groups should be in the legend graphic response if GetLegendGraphic is called on a layer group.
+   * \param project the QGIS project
+   * \returns if the GetLegendGraphic response has to contain legend groups
+   */
+  SERVER_EXPORT bool wmsAddLegendGroupsLegendGraphic( const QgsProject &project );
+
+  /**
    * Returns the geometry precision for GetFeatureInfo request.
    * \param project the QGIS project
    * \returns the geometry precision for GetFeatureInfo request.
@@ -440,17 +447,17 @@ namespace QgsServerProjectUtils
 
   /**
    * Returns the service url defined in the environment variable or with HTTP header.
-   * The is calculated from, in the order:
+   * This is calculated from (in order of precedence):
    *
-   * - Value defined in the project per service.
-   * - The ``<service>_SERVICE_URL`` environment variable.
-   * - The ``SERVICE_URL`` environment variable.
-   * - The custom ``X-Qgis-<service>-Servcie-Url`` header.
-   * - The custom ``X-Qgis-Service-Url`` header.
-   * - Build form the standard ``Forwarded`` header.
-   * - Build form the pseudo standard ``X-Forwarded-Host`` and ``X-Forwarded-Proto`` headers.
-   * - Build form the standard ``Host`` header and the server protocol.
-   * - Build form the server name and the server protocol.
+   * - Value defined in the project per service
+   * - The ``QGIS_SERVER_<service>_SERVICE_URL`` environment variable
+   * - The ``QGIS_SERVER_SERVICE_URL`` environment variable
+   * - The custom ``X-Qgis-<service>-Service-Url`` header
+   * - The custom ``X-Qgis-Service-Url`` header
+   * - Build from the standard ``Forwarded`` header
+   * - Build from the pseudo standard ``X-Forwarded-Host`` and ``X-Forwarded-Proto`` headers
+   * - Build from the standard ``Host`` header and the server protocol
+   * - Build from the server name and the server protocol.
    *
    * \param request the request
    * \param service the used service

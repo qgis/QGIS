@@ -45,9 +45,10 @@ class TestQgsServerWMSGetMapIgnoreBadLayers(QgsServerTestBase):
 
     # regenerate_reference = True
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
         os.environ['QGIS_SERVER_IGNORE_BAD_LAYERS'] = 'true'
-        super().setUp()
+        super().setUpClass()
 
     def test_wms_getmap_datasource_error_ignore(self):
         """Must NOT throw a server exception if datasource if not available and QGIS_SERVER_IGNORE_BAD_LAYERS is set"""
@@ -72,7 +73,7 @@ class TestQgsServerWMSGetMapIgnoreBadLayers(QgsServerTestBase):
 
         r, h = self._result(self._execute_request(qs))
 
-        self.assertFalse('ServerException' in str(r))
+        self.assertFalse('ServerException' in str(r), 'Unexpected ServerException ' + str(r))
 
 
 if __name__ == '__main__':

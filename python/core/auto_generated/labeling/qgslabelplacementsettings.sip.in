@@ -1,0 +1,76 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/labeling/qgslabelplacementsettings.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsLabelPlacementSettings
+{
+%Docstring(signature="appended")
+
+Contains general settings related to how labels are placed.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgslabelplacementsettings.h"
+%End
+  public:
+
+    Qgis::LabelOverlapHandling overlapHandling() const;
+%Docstring
+Returns the technique used to handle overlapping labels.
+
+.. seealso:: :py:func:`setOverlapHandling`
+%End
+
+    void setOverlapHandling( Qgis::LabelOverlapHandling handling );
+%Docstring
+Sets the technique used to handle overlapping labels.
+
+.. seealso:: :py:func:`overlapHandling`
+%End
+
+    bool allowDegradedPlacement() const;
+%Docstring
+Returns ``True`` if labels can be placed in inferior fallback positions if they cannot otherwise
+be placed.
+
+For instance, this will permit a curved line label to fallback to a horizontal label at the end of the line
+if the label cannot otherwise be placed on the line in a curved manner.
+
+.. seealso:: :py:func:`setAllowDegradedPlacement`
+%End
+
+    void setAllowDegradedPlacement( bool allow );
+%Docstring
+Sets whether labels can be placed in inferior fallback positions if they cannot otherwise
+be placed.
+
+For instance, this will permit a curved line label to fallback to a horizontal label at the end of the line
+if the label cannot otherwise be placed on the line in a curved manner.
+
+.. seealso:: :py:func:`allowDegradedPlacement`
+%End
+
+    void updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context );
+%Docstring
+Updates the placement settings to respect any data defined properties
+set within the specified ``properties`` collection.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/labeling/qgslabelplacementsettings.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

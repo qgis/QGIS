@@ -42,18 +42,17 @@
 #include <QObject>
 #include "qgstest.h"
 
-class TestQgsLayoutMap : public QObject
+class TestQgsLayoutMap : public QgsTest
 {
     Q_OBJECT
 
   public:
-    TestQgsLayoutMap() = default;
+    TestQgsLayoutMap() : QgsTest( QStringLiteral( "Layout Map Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
     void id();
     void render();
     void uniqueId(); //test if map id is adapted when doing copy paste
@@ -83,7 +82,6 @@ class TestQgsLayoutMap : public QObject
     QgsVectorLayer *mPointsLayer = nullptr;
     QgsVectorLayer *mPolysLayer = nullptr;
     QgsVectorLayer *mLinesLayer = nullptr;
-    QString mReport;
 };
 
 void TestQgsLayoutMap::initTestCase()
@@ -114,22 +112,10 @@ void TestQgsLayoutMap::initTestCase()
 
   // some layers need to be in project for data-defined layers functionality
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mRasterLayer << mPointsLayer << mPolysLayer << mLinesLayer );
-
-  mReport = QStringLiteral( "<h1>Composer Map Tests</h1>\n" );
-
 }
 
 void TestQgsLayoutMap::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   QgsApplication::exitQgis();
 }
 
@@ -144,10 +130,6 @@ void TestQgsLayoutMap::init()
   mComposerMap->setLayers( QList<QgsMapLayer *>() << mRasterLayer );
   mComposition->addComposerMap( mComposerMap );
 #endif
-}
-
-void TestQgsLayoutMap::cleanup()
-{
 }
 
 void TestQgsLayoutMap::id()
@@ -1818,7 +1800,7 @@ void TestQgsLayoutMap::testLayeredExportLabelsByLayer()
   pointsLayer->setLabelsEnabled( true );
 
   settings.fieldName = QStringLiteral( "Name" );
-  settings.placement = QgsPalLayerSettings::Line;
+  settings.placement = Qgis::LabelPlacement::Line;
   settings.zIndex = 3;
   linesLayer->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   linesLayer->setLabelsEnabled( true );
@@ -1957,9 +1939,10 @@ void TestQgsLayoutMap::testLabelResults()
 
   settings.fieldName = QStringLiteral( "\"id\"" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::OverPoint;
+  settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.priority = 10;
-  settings.displayAll = true;
+  settings.placementSettings().setAllowDegradedPlacement( true );
+  settings.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapIfRequired );
 
   QgsVectorLayer *vl2 = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
 
@@ -2015,7 +1998,9 @@ void TestQgsLayoutMap::testLabelResults()
   p.addMapLayer( vl3 );
   // with unplaced labels -- all vl3 labels will be unplaced, because they are conflicting with those in vl2
   settings.priority = 1;
-  settings.displayAll = false;
+  settings.placementSettings().setAllowDegradedPlacement( false );
+  settings.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::PreventOverlap );
+
   vl3->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   vl3->setLabelsEnabled( true );
   map->setLayers( { vl2, vl3 } );

@@ -22,9 +22,14 @@ Email                : sherman at mrcc dot com
 #include <qgsapplication.h>
 #include "qgsrenderchecker.h"
 
-class TestQgsApplication: public QObject
+class TestQgsApplication: public QgsTest
 {
     Q_OBJECT
+
+  public:
+
+    TestQgsApplication() : QgsTest( QStringLiteral( "QgsApplication Tests" ) ) {}
+
   private slots:
     void checkPaths();
     void checkGdalSkip();
@@ -39,7 +44,7 @@ class TestQgsApplication: public QObject
   private:
     QString getQgisPath();
     bool renderCheck( const QString &testName, QImage &image, int mismatchCount = 0 );
-    QString mReport;
+
 };
 
 
@@ -52,21 +57,10 @@ void TestQgsApplication::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   qDebug( "%s", QgsApplication::showSettings().toUtf8().constData() );
-
-  mReport = QStringLiteral( "<h1>QgsApplication Tests</h1>\n" );
-
 }
 
 void TestQgsApplication::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
   QgsApplication::exitQgis();
 }
 
@@ -118,7 +112,6 @@ void TestQgsApplication::themeIcon()
 
 bool TestQgsApplication::renderCheck( const QString &testName, QImage &image, int mismatchCount )
 {
-  mReport += "<h2>" + testName + "</h2>\n";
   const QString myTmpDir = QDir::tempPath() + '/';
   const QString myFileName = myTmpDir + testName + ".png";
   image.save( myFileName, "PNG" );

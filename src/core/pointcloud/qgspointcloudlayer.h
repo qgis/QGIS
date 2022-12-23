@@ -23,12 +23,15 @@ class QgsPointCloudLayerRenderer;
 #include "qgspointclouddataprovider.h"
 #include "qgsmaplayer.h"
 #include "qgis_core.h"
+#include "qgsabstractprofilesource.h"
+#include "qgspointcloudstatistics.h"
 
 #include <QString>
 #include <memory>
 
 class QgsPointCloudRenderer;
 class QgsPointCloudLayerElevationProperties;
+class QgsAbstractPointCloud3DRenderer;
 
 /**
  * \ingroup core
@@ -39,7 +42,7 @@ class QgsPointCloudLayerElevationProperties;
  *
  * \since QGIS 3.18
  */
-class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
+class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractProfileSource
 {
     Q_OBJECT
   public:
@@ -82,8 +85,26 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
        * Set to TRUE if point cloud index generation should be skipped.
        */
       bool skipIndexGeneration = false;
+
+      /**
+       * Set to true if the statistics calculation for this point cloud is disabled
+       * \since QGIS 3.26
+       */
+      bool skipStatisticsCalculation = false;
     };
 
+
+    /**
+     * Point cloud statistics calculation task
+     * \since QGIS 3.26
+     */
+    enum class PointCloudStatisticsCalculationState : int
+    {
+      NotStarted = 0, //!< The statistics calculation task has not been started
+      Calculating = 1 << 0, //!< The statistics calculation task is running
+      Calculated = 1 << 1 //!< The statistics calculation task is done and statistics are available
+    };
+    Q_ENUM( PointCloudStatisticsCalculationState )
 
     /**
      * Constructor - creates a point cloud layer
@@ -111,6 +132,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
     QgsPointCloudLayer *clone() const override SIP_FACTORY;
     QgsRectangle extent() const override;
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
+    QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) override SIP_FACTORY;
 
     QgsPointCloudDataProvider *dataProvider() override;
     const QgsPointCloudDataProvider *dataProvider() const override SIP_SKIP;
@@ -186,6 +208,42 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
      */
     QString subsetString() const;
 
+    /**
+     * Sets whether this layer's 3D renderer should be automatically updated
+     * with changes applied to the layer's 2D renderer
+     *
+     * \since QGIS 3.26
+     */
+    void setSync3DRendererTo2DRenderer( bool sync );
+
+    /**
+     * Returns whether this layer's 3D renderer should be automatically updated
+     * with changes applied to the layer's 2D renderer
+     *
+     * \since QGIS 3.26
+     */
+    bool sync3DRendererTo2DRenderer() const;
+
+    /**
+     * Updates the layer's 3D renderer's symbol to match that of the layer's 2D renderer
+     *
+     * \returns TRUE on success, FALSE otherwise
+     * \since QGIS 3.26
+     */
+    bool convertRenderer3DFromRenderer2D();
+
+    /**
+     * Returns the object containing statistics
+     * \since QGIS 3.26
+     */
+    const QgsPointCloudStatistics statistics() const { return mStatistics; }
+
+    /**
+     * Returns the status of point cloud statistics calculation
+     *
+     * \since QGIS 3.26
+     */
+    PointCloudStatisticsCalculationState statisticsCalculationState() const { return mStatisticsCalculationState; }
   signals:
 
     /**
@@ -195,6 +253,20 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
      */
     void subsetStringChanged();
 
+    /**
+     * Signals an error related to this point cloud layer.
+     *
+     * \since QGIS 3.26
+     */
+    void raiseError( const QString &msg );
+
+    /**
+     * Emitted when statistics calculation state has changed
+     *
+     * \since QGIS 3.26
+     */
+    void statisticsCalculationStateChanged( QgsPointCloudLayer::PointCloudStatisticsCalculationState state );
+
   private slots:
     void onPointCloudIndexGenerationStateChanged( QgsPointCloudDataProvider::PointCloudIndexGenerationState state );
     void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags ) override;
@@ -202,6 +274,10 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
   private:
 
     bool isReadOnly() const override {return true;}
+
+    void calculateStatistics();
+
+    void resetRenderer();
 
 #ifdef SIP_RUN
     QgsPointCloudLayer( const QgsPointCloudLayer &rhs );
@@ -212,6 +288,13 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
     std::unique_ptr<QgsPointCloudRenderer> mRenderer;
 
     QgsPointCloudLayerElevationProperties *mElevationProperties = nullptr;
+
+    LayerOptions mLayerOptions;
+
+    bool mSync3DRendererTo2DRenderer = true;
+    QgsPointCloudStatistics mStatistics;
+    PointCloudStatisticsCalculationState mStatisticsCalculationState = PointCloudStatisticsCalculationState::NotStarted;
+    long mStatsCalculationTask = 0;
 };
 
 

@@ -21,6 +21,7 @@
 #include <QDir>
 
 #include "qgssettings.h"
+#include "qgsvariantutils.h"
 #include "qgslogger.h"
 
 Q_GLOBAL_STATIC( QString, sGlobalSettingsPath )
@@ -115,13 +116,8 @@ QStringList QgsSettings::allKeys() const
   QStringList keys = mUserSettings->allKeys();
   if ( mGlobalSettings )
   {
-    for ( const auto &s : mGlobalSettings->allKeys() )
-    {
-      if ( ! keys.contains( s ) )
-      {
-        keys.append( s );
-      }
-    }
+    const QStringList constAllKeys = mGlobalSettings->allKeys();
+    std::copy_if( constAllKeys.constBegin(), constAllKeys.constEnd(), std::back_inserter( keys ), [&keys]( const QString & key ) {return !keys.contains( key );} );
   }
   return keys;
 }
@@ -132,13 +128,8 @@ QStringList QgsSettings::childKeys() const
   QStringList keys = mUserSettings->childKeys();
   if ( mGlobalSettings )
   {
-    for ( const auto &s : mGlobalSettings->childKeys() )
-    {
-      if ( ! keys.contains( s ) )
-      {
-        keys.append( s );
-      }
-    }
+    const QStringList constChildKeys = mGlobalSettings->childKeys();
+    std::copy_if( constChildKeys.constBegin(), constChildKeys.constEnd(), std::back_inserter( keys ), [&keys]( const QString & key ) {return !keys.contains( key );} );
   }
   return keys;
 }
@@ -148,13 +139,8 @@ QStringList QgsSettings::childGroups() const
   QStringList keys = mUserSettings->childGroups();
   if ( mGlobalSettings )
   {
-    for ( const auto &s : mGlobalSettings->childGroups() )
-    {
-      if ( ! keys.contains( s ) )
-      {
-        keys.append( s );
-      }
-    }
+    const QStringList constChildGroups = mGlobalSettings->childGroups();
+    std::copy_if( constChildGroups.constBegin(), constChildGroups.constEnd(), std::back_inserter( keys ), [&keys]( const QString & key ) {return !keys.contains( key );} );
   }
   return keys;
 }
@@ -176,7 +162,7 @@ QString QgsSettings::globalSettingsPath()
 QVariant QgsSettings::value( const QString &key, const QVariant &defaultValue, const QgsSettings::Section section ) const
 {
   const QString pKey = prefixedKey( key, section );
-  if ( !mUserSettings->value( pKey ).isNull() )
+  if ( !QgsVariantUtils::isNull( mUserSettings->value( pKey ) ) )
   {
     return mUserSettings->value( pKey );
   }

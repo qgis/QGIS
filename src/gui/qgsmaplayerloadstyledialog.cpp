@@ -59,8 +59,8 @@ QgsMapLayerLoadStyleDialog::QgsMapLayerLoadStyleDialog( QgsMapLayer *layer, QWid
   {
     const QgsVectorLayerProperties::StyleType type = currentStyleType();
     QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( mLayer );
-    mFileLabel->setVisible( !vl || type != QgsVectorLayerProperties::StyleType::DB );
-    mFileWidget->setVisible( !vl || type != QgsVectorLayerProperties::StyleType::DB );
+    mFileLabel->setVisible( !vl || ( type != QgsVectorLayerProperties::StyleType::DB && type != QgsVectorLayerProperties::StyleType::Local ) );
+    mFileWidget->setVisible( !vl || ( type != QgsVectorLayerProperties::StyleType::DB && type != QgsVectorLayerProperties::StyleType::Local ) );
     if ( vl )
     {
       mFromDbWidget->setVisible( type == QgsVectorLayerProperties::StyleType::DB );
@@ -76,6 +76,7 @@ QgsMapLayerLoadStyleDialog::QgsMapLayerLoadStyleDialog( QgsMapLayer *layer, QWid
     updateLoadButtonState();
   } );
   mStyleTypeComboBox->addItem( tr( "From File" ), QgsVectorLayerProperties::QML ); // QML is used as entry, but works for SLD too, see currentStyleType()
+  mStyleTypeComboBox->addItem( tr( "Default from local database" ), QgsVectorLayerProperties::Local );
 
   if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( mLayer ) )
   {
@@ -346,7 +347,8 @@ void QgsMapLayerLoadStyleDialog::updateLoadButtonState()
     mLoadButton->setEnabled( ( type == QgsVectorLayerProperties::DB
                                && ( mRelatedTable->selectionModel()->hasSelection() || mOthersTable->selectionModel()->hasSelection()
                                   ) ) ||
-                             ( type != QgsVectorLayerProperties::DB && !mFileWidget->filePath().isEmpty() ) );
+                             ( type != QgsVectorLayerProperties::DB && !mFileWidget->filePath().isEmpty() ) ||
+                             type == QgsVectorLayerProperties::Local );
   }
   else
   {

@@ -10,7 +10,6 @@
 
 
 
-
 class QgsPhongMaterialSettings : QgsAbstractMaterialSettings
 {
 %Docstring(signature="appended")
@@ -68,6 +67,13 @@ Returns specular color component
 Returns shininess of the surface
 %End
 
+    float opacity() const;
+%Docstring
+Returns the opacity of the surface
+
+.. versionadded:: 3.26
+%End
+
     virtual QMap<QString, QString> toExportParameters() const;
 
 
@@ -87,6 +93,15 @@ Sets specular color component
 %Docstring
 Sets shininess of the surface
 %End
+
+    void setOpacity( float opacity );
+%Docstring
+Sets opacity of the surface
+
+.. versionadded:: 3.26
+%End
+
+
 
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 

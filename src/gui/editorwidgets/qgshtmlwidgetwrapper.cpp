@@ -44,7 +44,8 @@ void QgsHtmlWidgetWrapper::initWidget( QWidget *editor )
   if ( !mWidget )
     return;
 
-  mWidget->setHtml( mHtmlCode );
+  mWidget->setHtml( mHtmlCode.replace( "\n", " " ) );
+
 #ifdef WITH_QTWEBKIT
 
   const int horizontalDpi = mWidget->logicalDpiX();
@@ -53,7 +54,7 @@ void QgsHtmlWidgetWrapper::initWidget( QWidget *editor )
 
   QWebPage *page = mWidget->page();
   connect( page, &QWebPage::contentsChanged, this, &QgsHtmlWidgetWrapper::fixHeight, Qt::ConnectionType::UniqueConnection );
-  connect( page, &QWebPage::loadFinished, this, [ = ]( bool ) { fixHeight(); }, Qt::ConnectionType::UniqueConnection );
+  connect( page, &QWebPage::loadFinished, this, &QgsHtmlWidgetWrapper::fixHeight, Qt::ConnectionType::UniqueConnection );
 
 #endif
 
@@ -79,8 +80,11 @@ void QgsHtmlWidgetWrapper::checkGeometryNeeds()
   NeedsGeometryEvaluator evaluator;
 
   const QgsAttributeEditorContext attributecontext = context();
-  const QgsExpressionContext expressionContext = layer()->createExpressionContext();
-  evaluator.setExpressionContext( expressionContext );
+  if ( QgsVectorLayer *vl = layer() )
+  {
+    const QgsExpressionContext expressionContext = vl->createExpressionContext();
+    evaluator.setExpressionContext( expressionContext );
+  }
 
   auto frame = webView.page()->mainFrame();
   connect( frame, &QWebFrame::javaScriptWindowObjectCleared, frame, [ frame, &evaluator ]
@@ -156,14 +160,14 @@ void HtmlExpression::setExpressionContext( const QgsExpressionContext &context )
 
 QString HtmlExpression::evaluate( const QString &expression ) const
 {
-  QgsExpression exp = QgsExpression( expression );
+  QgsExpression exp { expression };
   exp.prepare( &mExpressionContext );
   return exp.evaluate( &mExpressionContext ).toString();
 }
 
 void NeedsGeometryEvaluator::evaluate( const QString &expression )
 {
-  QgsExpression exp = QgsExpression( expression );
+  QgsExpression exp { expression };
   exp.prepare( &mExpressionContext );
   mNeedsGeometry |= exp.needsGeometry();
 }

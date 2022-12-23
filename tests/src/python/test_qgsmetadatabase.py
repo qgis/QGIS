@@ -21,7 +21,8 @@ from qgis.core import (QgsAbstractMetadataBase,
                        QgsVectorLayer,
                        QgsNativeMetadataBaseValidator,
                        QgsBox3d,
-                       QgsDateTimeRange)
+                       QgsDateTimeRange,
+                       Qgis)
 from qgis.PyQt.QtCore import (QDate,
                               QTime,
                               QDateTime)
@@ -66,6 +67,16 @@ class TestQgsMetadataBase(unittest.TestCase):
         self.assertEqual(m.history(), ['accidentally deleted some features'])
         m.addHistoryItem('panicked and deleted more')
         self.assertEqual(m.history(), ['accidentally deleted some features', 'panicked and deleted more'])
+
+        m.setDateTime(Qgis.MetadataDateType.Published, QDateTime(QDate(2022, 1, 2), QTime(12, 13, 14)))
+        self.assertEqual(m.dateTime(Qgis.MetadataDateType.Published), QDateTime(QDate(2022, 1, 2), QTime(12, 13, 14)))
+        self.assertEqual(m.dateTime(Qgis.MetadataDateType.Created),
+                         QDateTime())
+        m.setDateTime(Qgis.MetadataDateType.Created,
+                      QDateTime(QDate(2020, 1, 2), QTime(12, 13, 14)))
+        self.assertEqual(m.dateTime(Qgis.MetadataDateType.Published), QDateTime(QDate(2022, 1, 2), QTime(12, 13, 14)))
+        self.assertEqual(m.dateTime(Qgis.MetadataDateType.Created),
+                         QDateTime(QDate(2020, 1, 2), QTime(12, 13, 14)))
 
     def testEquality(self):
         a = QgsAbstractMetadataBase.Address()
@@ -342,6 +353,14 @@ class TestQgsMetadataBase(unittest.TestCase):
 
         m.setLinks([l, l2, l3])
 
+        m.setDateTime(Qgis.MetadataDateType.Created, QDateTime(QDate(2020, 1, 2), QTime(11, 12, 13)))
+        m.setDateTime(Qgis.MetadataDateType.Published,
+                      QDateTime(QDate(2020, 1, 3), QTime(11, 12, 13)))
+        m.setDateTime(Qgis.MetadataDateType.Revised,
+                      QDateTime(QDate(2020, 1, 4), QTime(11, 12, 13)))
+        m.setDateTime(Qgis.MetadataDateType.Superseded,
+                      QDateTime(QDate(2020, 1, 5), QTime(11, 12, 13)))
+
         return m
 
     def checkExpectedMetadata(self, m):
@@ -387,6 +406,14 @@ class TestQgsMetadataBase(unittest.TestCase):
         self.assertEqual(m.links()[2].format, 'ESRI Shapefile')
         self.assertEqual(m.links()[2].mimeType, 'application/gzip')
         self.assertEqual(m.links()[2].size, '283676')
+
+        self.assertEqual(m.dateTime(Qgis.MetadataDateType.Created), QDateTime(QDate(2020, 1, 2), QTime(11, 12, 13)))
+        self.assertEqual(m.dateTime(Qgis.MetadataDateType.Published),
+                         QDateTime(QDate(2020, 1, 3), QTime(11, 12, 13)))
+        self.assertEqual(m.dateTime(Qgis.MetadataDateType.Revised),
+                         QDateTime(QDate(2020, 1, 4), QTime(11, 12, 13)))
+        self.assertEqual(m.dateTime(Qgis.MetadataDateType.Superseded),
+                         QDateTime(QDate(2020, 1, 5), QTime(11, 12, 13)))
 
     def testStandard(self):
         m = self.createTestMetadata()
@@ -622,6 +649,19 @@ class TestQgsMetadataBase(unittest.TestCase):
         m2.setLinks([QgsAbstractMetadataBase.Link('l2'), QgsAbstractMetadataBase.Link('ll2')])
         m1.combine(m2)
         self.assertEqual(m1.links(), [QgsAbstractMetadataBase.Link('l2'), QgsAbstractMetadataBase.Link('ll2')])
+
+        m1.setDateTime(Qgis.MetadataDateType.Created, QDateTime(QDate(2020, 1, 2), QTime(1, 2, 3)))
+        m1.setDateTime(Qgis.MetadataDateType.Revised, QDateTime(QDate(2020, 1, 3), QTime(1, 2, 3)))
+
+        m2.setDateTime(Qgis.MetadataDateType.Revised, QDateTime(QDate(2020, 1, 4), QTime(1, 2, 3)))
+        m2.setDateTime(Qgis.MetadataDateType.Superseded, QDateTime(QDate(2020, 1, 5), QTime(1, 2, 3)))
+        m1.combine(m2)
+
+        self.assertEqual(m1.dateTime(Qgis.MetadataDateType.Created), QDateTime(QDate(2020, 1, 2), QTime(1, 2, 3)))
+        self.assertEqual(m1.dateTime(Qgis.MetadataDateType.Revised),
+                         QDateTime(QDate(2020, 1, 4), QTime(1, 2, 3)))
+        self.assertEqual(m1.dateTime(Qgis.MetadataDateType.Superseded),
+                         QDateTime(QDate(2020, 1, 5), QTime(1, 2, 3)))
 
 
 if __name__ == '__main__':

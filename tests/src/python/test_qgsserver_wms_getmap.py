@@ -24,15 +24,18 @@ import urllib.request
 import urllib.parse
 import urllib.error
 
+from lxml import etree as et
+
 from qgis.testing import unittest
-from qgis.PyQt.QtCore import QSize
-from qgis.PyQt.QtGui import QImage
+from qgis.PyQt.QtCore import QSize, QDate, QDateTime, QTime
+from qgis.PyQt.QtGui import QImage, QColor
 
 import osgeo.gdal  # NOQA
 
 from test_qgsserver import QgsServerTestBase
 from utilities import unitTestDataPath
-from qgis.core import QgsProject, QgsVectorLayer
+from qgis.core import QgsProject, QgsVectorLayer, QgsVectorLayerTemporalProperties, QgsGeometry, QgsFeature
+from qgis.server import QgsServerProjectUtils
 
 # Strip path and content length because path may vary
 RE_STRIP_UNCHECKABLE = br'MAP=[^"]+|Content-Length: \d+'
@@ -947,7 +950,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         }.items())])
 
         expected = self.strip_version_xmlns(
-            b'<ServiceExceptionReport  >\n <ServiceException code="Security">The filter string  "name" IN ( \'africa , \'eurasia\' ) has been rejected because of security reasons. Note: Text strings have to be enclosed in single or double quotes. A space between each word / special character is mandatory. Allowed Keywords and special characters are  IS,NOT,NULL,AND,OR,IN,=,&lt;,>=,>,>=,!=,\',\',(,),DMETAPHONE,SOUNDEX. Not allowed are semicolons in the filter expression.</ServiceException>\n</ServiceExceptionReport>\n')
+            b'<?xml version="1.0" encoding="UTF-8"?>\n<ServiceExceptionReport  >\n <ServiceException code="Security">The filter string  "name" IN ( \'africa , \'eurasia\' ) has been rejected because of security reasons. Note: Text strings have to be enclosed in single or double quotes. A space between each word / special character is mandatory. Allowed Keywords and special characters are IS,NOT,NULL,AND,OR,IN,=,&lt;,>=,>,>=,!=,\',\',(,),DMETAPHONE,SOUNDEX. Not allowed are semicolons in the filter expression.</ServiceException>\n</ServiceExceptionReport>\n')
         r, h = self._result(self._execute_request(qs))
 
         self.assertEqual(self.strip_version_xmlns(r), expected)
@@ -1341,7 +1344,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         port = httpd.server_address[1]
 
         httpd_thread = threading.Thread(target=httpd.serve_forever)
-        httpd_thread.setDaemon(True)
+        httpd_thread.daemon = True
         httpd_thread.start()
 
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -1442,7 +1445,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
             "REQUEST": "GetMap",
             "VERSION": "1.1.1",
             "SERVICE": "WMS",
-            "SLD_BODY": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><StyledLayerDescriptor xmlns=\"http://www.opengis.net/sld\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:ogc=\"http://www.opengis.net/ogc\" xsi:schemaLocation=\"http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd\" version=\"1.1.0\" xmlns:se=\"http://www.opengis.net/se\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"> <NamedLayer> <se:Name>db_point</se:Name> <UserStyle> <se:Name>db_point_style</se:Name> <se:FeatureTypeStyle> <se:Rule> <se:Name>Single symbol</se:Name> <ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\"> <ogc:PropertyIsEqualTo> <ogc:PropertyName>gid</ogc:PropertyName> <ogc:Literal>1</ogc:Literal> </ogc:PropertyIsEqualTo> </ogc:Filter> <se:PointSymbolizer uom=\"http://www.opengeospatial.org/se/units/metre\"> <se:Graphic> <se:Mark> <se:WellKnownName>square</se:WellKnownName> <se:Fill> <se:SvgParameter name=\"fill\">5e86a1</se:SvgParameter> </se:Fill> <se:Stroke> <se:SvgParameter name=\"stroke\">000000</se:SvgParameter> </se:Stroke> </se:Mark> <se:Size>0.007</se:Size> </se:Graphic> </se:PointSymbolizer> </se:Rule> </se:FeatureTypeStyle> </UserStyle> </NamedLayer> </StyledLayerDescriptor>",
+            "SLD_BODY": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><StyledLayerDescriptor xmlns=\"http://www.opengis.net/sld\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:ogc=\"http://www.opengis.net/ogc\" xsi:schemaLocation=\"http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd\" version=\"1.1.0\" xmlns:se=\"http://www.opengis.net/se\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"> <NamedLayer> <se:Name>db_point</se:Name> <UserStyle> <se:Name>db_point_style</se:Name> <se:FeatureTypeStyle> <se:Rule> <se:Name>Single symbol</se:Name> <ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\"> <ogc:PropertyIsEqualTo> <ogc:PropertyName>gid</ogc:PropertyName> <ogc:Literal>1</ogc:Literal> </ogc:PropertyIsEqualTo> </ogc:Filter> <se:PointSymbolizer uom=\"http://www.opengeospatial.org/se/units/metre\"> <se:Graphic> <se:Mark> <se:WellKnownName>square</se:WellKnownName> <se:Fill> <se:SvgParameter name=\"fill\">5e86a1</se:SvgParameter> </se:Fill> <se:Stroke> <se:SvgParameter name=\"stroke\">000000</se:SvgParameter> </se:Stroke> </se:Mark> <se:Size>1000000</se:Size> </se:Graphic> </se:PointSymbolizer> </se:Rule> </se:FeatureTypeStyle> </UserStyle> </NamedLayer> </StyledLayerDescriptor>",
             "BBOX": "-16817707,-4710778,5696513,14587125",
             "WIDTH": "500",
             "HEIGHT": "500",
@@ -1960,6 +1963,149 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
 
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_AnnotationItem")
+
+    def test_temporal_properties(self):
+        """Test temporal properties"""
+
+        # sample table with likely single field
+        layer_date = QgsVectorLayer("Point?srid=EPSG:4326&field=event_id:integer&field=event_date:date", "test_date", "memory")
+        self.assertTrue(layer_date.isValid())
+        f = QgsFeature()
+        f.setAttributes([1, QDate(2001, 1, 1)])
+        f.setGeometry(QgsGeometry.fromWkt('Point (1 1)'))
+        self.assertTrue(layer_date.dataProvider().addFeature(f))
+
+        f.setAttributes([2, QDate(2002, 2, 2)])
+        f.setGeometry(QgsGeometry.fromWkt('Point (2 2)'))
+        self.assertTrue(layer_date.dataProvider().addFeature(f))
+
+        single_symbol_renderer = layer_date.renderer()
+        symbol = single_symbol_renderer.symbol()
+        symbol.setColor(QColor.fromRgb(255, 0, 0))
+
+        props_date = layer_date.temporalProperties()
+        props_date.setIsActive(False)
+        props_date = layer_date.temporalProperties()
+        self.assertFalse(props_date.isActive())
+        self.assertEqual(props_date.startField(), 'event_date')
+        self.assertFalse(props_date.endField())
+        self.assertEqual(props_date.mode(), QgsVectorLayerTemporalProperties.ModeFeatureDateTimeInstantFromField)
+
+        # sample table with likely dual fields
+        layer_range = QgsVectorLayer("Point?srid=EPSG:4326&field=event_id:integer&field=start_date:datetime&field=end_date:datetime", "test_range", "memory")
+        self.assertTrue(layer_range.isValid())
+        f = QgsFeature()
+        f.setAttributes([3, QDateTime(QDate(2003, 3, 3), QTime(3, 3, 2)), QDateTime(QDate(2003, 3, 3), QTime(3, 3, 4))])
+        f.setGeometry(QgsGeometry.fromWkt('Point (3 3)'))
+        self.assertTrue(layer_range.dataProvider().addFeature(f))
+
+        f.setAttributes([4, QDateTime(QDate(2004, 4, 4), QTime(4, 4, 3)), QDateTime(QDate(2004, 4, 4), QTime(4, 4, 5))])
+        f.setGeometry(QgsGeometry.fromWkt('Point (4 4)'))
+        self.assertTrue(layer_range.dataProvider().addFeature(f))
+
+        single_symbol_renderer = layer_range.renderer()
+        symbol = single_symbol_renderer.symbol()
+        symbol.setColor(QColor.fromRgb(0, 0, 255))
+
+        props_range = layer_range.temporalProperties()
+        props_range.setIsActive(False)
+        props_range = layer_range.temporalProperties()
+        self.assertFalse(props_range.isActive())
+        self.assertEqual(props_range.startField(), 'start_date')
+        self.assertEqual(props_range.endField(), 'end_date')
+        self.assertEqual(props_range.mode(), QgsVectorLayerTemporalProperties.ModeFeatureDateTimeStartAndEndFromFields)
+
+        project = QgsProject()
+        project.addMapLayers([layer_date, layer_range])
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetMap",
+            "LAYERS": "test_date,test_range",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "0,0,5,5",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:4326",
+            "TRANSPARENT": "TRUE"
+        }.items())])
+
+        r, h = self._result(self._execute_request_project(qs, project))
+        self._img_diff_error(r, h, "WMS_GetMap_TemporalProperties_no_filter")
+
+        # Time filter but no exposed properties
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetMap",
+            "LAYERS": "test_date,test_range",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "0,0,5,5",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:4326",
+            "TRANSPARENT": "TRUE",
+            "TIME": "2001-01-01"
+        }.items())])
+
+        r, h = self._result(self._execute_request_project(qs, project))
+        self._img_diff_error(r, h, "WMS_GetMap_TemporalProperties_no_filter")
+
+        # Activate!
+        props_date.setIsActive(True)
+        props_range.setIsActive(True)
+
+        r, h = self._result(self._execute_request_project(qs, project))
+        self._img_diff_error(r, h, "WMS_GetMap_TemporalProperties_date_filter")
+
+        # Filtr both layers
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetMap",
+            "LAYERS": "test_date,test_range",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "0,0,5,5",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:4326",
+            "TRANSPARENT": "TRUE",
+            "TIME": "2002-02-02/2003-03-04"
+        }.items())])
+
+        r, h = self._result(self._execute_request_project(qs, project))
+        self._img_diff_error(r, h, "WMS_GetMap_TemporalProperties_datetime_filter")
+
+        # Test get capabilities
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetCapabilities",
+        }.items())])
+
+        r, h = self._result(self._execute_request_project(qs, project))
+        t = et.fromstring(r)
+        ns = t.nsmap
+        del ns[None]
+        ns['wms'] = 'http://www.opengis.net/wms'
+
+        date_dimension = t.xpath("//wms:Layer/wms:Name[text()='test_date']/../wms:Dimension", namespaces=ns)[0]
+        self.assertEqual(date_dimension.attrib, {'units': 'ISO8601', 'name': 'TIME'})
+
+        date_extent = t.xpath("//wms:Layer/wms:Name[text()='test_date']/../wms:Extent", namespaces=ns)[0]
+        self.assertEqual(date_extent.attrib, {'name': 'TIME'})
+        self.assertEqual(date_extent.text, '2001-01-01/2002-02-02')
+
+        range_dimension = t.xpath("//wms:Layer/wms:Name[text()='test_range']/../wms:Dimension", namespaces=ns)[0]
+        self.assertEqual(range_dimension.attrib, {'units': 'ISO8601', 'name': 'TIME'})
+
+        range_extent = t.xpath("//wms:Layer/wms:Name[text()='test_range']/../wms:Extent", namespaces=ns)[0]
+        self.assertEqual(range_extent.attrib, {'name': 'TIME'})
+        self.assertEqual(range_extent.text, '2003-03-03/2004-04-04')
 
 
 if __name__ == '__main__':

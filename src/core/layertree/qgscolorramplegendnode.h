@@ -19,8 +19,6 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgslayertreemodellegendnode.h"
-#include "qgslegendsymbolitem.h"
-#include "qgstextformat.h"
 #include "qgscolorramplegendnodesettings.h"
 
 class QgsColorRamp;

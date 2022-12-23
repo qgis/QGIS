@@ -80,6 +80,7 @@ class TestQgsMapCanvas : public QObject
     void testZoomResolutions();
     void testTooltipEvent();
     void testMapLayers();
+    void testExtentHistory();
 
   private:
     QgsMapCanvas *mCanvas = nullptr;
@@ -374,26 +375,26 @@ void TestQgsMapCanvas::testZoomByWheel()
   mCanvas->setWheelFactor( 2 );
 
   //test zoom out
-  QWheelEvent e( QPoint( 0, 0 ), -QWheelEvent::DefaultDeltasPerStep, Qt::NoButton, Qt::NoModifier );
-  mCanvas->wheelEvent( &e );
+  std::unique_ptr< QWheelEvent > e = std::make_unique< QWheelEvent >( QPoint( 0, 0 ), QPointF(), QPoint( 0, -QWheelEvent::DefaultDeltasPerStep ), QPoint( 0, -QWheelEvent::DefaultDeltasPerStep ), Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false );
+  mCanvas->wheelEvent( e.get() );
   QGSCOMPARENEAR( mCanvas->extent().width(), originalWidth * 2.0, 0.1 );
   QGSCOMPARENEAR( mCanvas->extent().height(), originalHeight * 2.0, 0.1 );
 
   //test zoom in
-  e = QWheelEvent( QPoint( 0, 0 ), QWheelEvent::DefaultDeltasPerStep, Qt::NoButton, Qt::NoModifier );
-  mCanvas->wheelEvent( &e );
+  e = std::make_unique< QWheelEvent >( QPoint( 0, 0 ), QPointF(), QPoint( 0, QWheelEvent::DefaultDeltasPerStep ), QPoint( 0, QWheelEvent::DefaultDeltasPerStep ), Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false );
+  mCanvas->wheelEvent( e.get() );
   QGSCOMPARENEAR( mCanvas->extent().width(), originalWidth, 0.1 );
   QGSCOMPARENEAR( mCanvas->extent().height(), originalHeight, 0.1 );
 
   // test zoom out with ctrl
-  e = QWheelEvent( QPoint( 0, 0 ), -QWheelEvent::DefaultDeltasPerStep, Qt::NoButton, Qt::ControlModifier );
-  mCanvas->wheelEvent( &e );
+  e = std::make_unique< QWheelEvent >( QPoint( 0, 0 ), QPointF(), QPoint( 0, -QWheelEvent::DefaultDeltasPerStep ), QPoint( 0, -QWheelEvent::DefaultDeltasPerStep ), Qt::NoButton, Qt::ControlModifier, Qt::NoScrollPhase, false );
+  mCanvas->wheelEvent( e.get() );
   QGSCOMPARENEAR( mCanvas->extent().width(), 1.05 * originalWidth, 0.1 );
   QGSCOMPARENEAR( mCanvas->extent().height(), 1.05 * originalHeight, 0.1 );
 
   //test zoom in with ctrl
-  e = QWheelEvent( QPoint( 0, 0 ), QWheelEvent::DefaultDeltasPerStep, Qt::NoButton, Qt::ControlModifier );
-  mCanvas->wheelEvent( &e );
+  e = std::make_unique< QWheelEvent >( QPoint( 0, 0 ), QPointF(), QPoint( 0, QWheelEvent::DefaultDeltasPerStep ), QPoint( 0, QWheelEvent::DefaultDeltasPerStep ), Qt::NoButton, Qt::ControlModifier, Qt::NoScrollPhase, false );
+  mCanvas->wheelEvent( e.get() );
   QGSCOMPARENEAR( mCanvas->extent().width(), originalWidth, 0.1 );
   QGSCOMPARENEAR( mCanvas->extent().height(), originalHeight, 0.1 );
 }
@@ -413,15 +414,15 @@ void TestQgsMapCanvas::testShiftZoom()
   // start by testing a tool with shift-zoom enabled
   mCanvas->setMapTool( &panTool );
 
-  QMouseEvent e( QMouseEvent::MouseButtonPress, startPos,
-                 Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
-  mCanvas->mousePressEvent( &e );
-  e = QMouseEvent( QMouseEvent::MouseMove, endPos,
-                   Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
-  mCanvas->mouseMoveEvent( &e );
-  e = QMouseEvent( QMouseEvent::MouseButtonRelease, endPos,
-                   Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
-  mCanvas->mouseReleaseEvent( &e );
+  std::unique_ptr< QMouseEvent > e = std::make_unique< QMouseEvent >( QMouseEvent::MouseButtonPress, startPos,
+                                     Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  mCanvas->mousePressEvent( e.get() );
+  e = std::make_unique< QMouseEvent >( QMouseEvent::MouseMove, endPos,
+                                       Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  mCanvas->mouseMoveEvent( e.get() );
+  e = std::make_unique< QMouseEvent >( QMouseEvent::MouseButtonRelease, endPos,
+                                       Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  mCanvas->mouseReleaseEvent( e.get() );
 
   QGSCOMPARENEAR( mCanvas->extent().width(), originalWidth / 2.0, 0.2 );
   QGSCOMPARENEAR( mCanvas->extent().height(), originalHeight / 2.0, 0.2 );
@@ -430,15 +431,15 @@ void TestQgsMapCanvas::testShiftZoom()
   mCanvas->setExtent( QgsRectangle( 0, 0, 10, 10 ) );
 
   //test that a shift-click (no movement) will not zoom
-  e = QMouseEvent( QMouseEvent::MouseButtonPress, startPos,
-                   Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
-  mCanvas->mousePressEvent( &e );
-  e = QMouseEvent( QMouseEvent::MouseMove, startPos,
-                   Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
-  mCanvas->mouseMoveEvent( &e );
-  e = QMouseEvent( QMouseEvent::MouseButtonRelease, startPos,
-                   Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
-  mCanvas->mouseReleaseEvent( &e );
+  e = std::make_unique< QMouseEvent >( QMouseEvent::MouseButtonPress, startPos,
+                                       Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  mCanvas->mousePressEvent( e.get() );
+  e = std::make_unique< QMouseEvent >( QMouseEvent::MouseMove, startPos,
+                                       Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  mCanvas->mouseMoveEvent( e.get() );
+  e = std::make_unique< QMouseEvent >( QMouseEvent::MouseButtonRelease, startPos,
+                                       Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  mCanvas->mouseReleaseEvent( e.get() );
 
   QGSCOMPARENEAR( mCanvas->extent().width(), originalWidth, 0.0001 );
   QGSCOMPARENEAR( mCanvas->extent().height(), originalHeight, 0.0001 );
@@ -450,15 +451,15 @@ void TestQgsMapCanvas::testShiftZoom()
   QgsMapToolTest mapTool( mCanvas );
   mCanvas->setMapTool( &mapTool );
 
-  e = QMouseEvent( QMouseEvent::MouseButtonPress, startPos,
-                   Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
-  mCanvas->mousePressEvent( &e );
-  e = QMouseEvent( QMouseEvent::MouseMove, endPos,
-                   Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
-  mCanvas->mouseMoveEvent( &e );
-  e = QMouseEvent( QMouseEvent::MouseButtonRelease, endPos,
-                   Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
-  mCanvas->mouseReleaseEvent( &e );
+  e = std::make_unique< QMouseEvent >( QMouseEvent::MouseButtonPress, startPos,
+                                       Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  mCanvas->mousePressEvent( e.get() );
+  e = std::make_unique< QMouseEvent >( QMouseEvent::MouseMove, endPos,
+                                       Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  mCanvas->mouseMoveEvent( e.get() );
+  e = std::make_unique< QMouseEvent >( QMouseEvent::MouseButtonRelease, endPos,
+                                       Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  mCanvas->mouseReleaseEvent( e.get() );
 
   QGSCOMPARENEAR( mCanvas->extent().width(), originalWidth, 0.00001 );
   QGSCOMPARENEAR( mCanvas->extent().height(), originalHeight, 0.00001 );
@@ -537,19 +538,55 @@ void TestQgsMapCanvas::testZoomResolutions()
 {
   mCanvas->setExtent( QgsRectangle( 0, 0, 10, 10 ) );
   const double resolution = mCanvas->mapSettings().mapUnitsPerPixel();
+  const double wheelFactor = 2.0;
+  mCanvas->setWheelFactor( wheelFactor );
 
   const double nextResolution = qCeil( resolution ) + 1;
   QList<double> resolutions = QList<double>() << nextResolution << ( 2.5 * nextResolution ) << ( 3.6 * nextResolution ) << ( 4.7 * nextResolution );
   mCanvas->setZoomResolutions( resolutions );
 
+  // From first to last resolution in list
+  // Ensure we are at first resolution
+  while ( mCanvas->mapSettings().mapUnitsPerPixel() < resolutions[0] )
+  {
+    mCanvas->zoomOut();
+  }
+  int nResolutions = resolutions.size();
+  for ( int i = 1; i < nResolutions; ++i )
+  {
+    mCanvas->zoomOut();
+    QGSCOMPARENEAR( mCanvas->mapSettings().mapUnitsPerPixel(), resolutions[i], 0.0001 );
+  }
+
+  // beyond last resolution
   mCanvas->zoomOut();
-  QGSCOMPARENEAR( mCanvas->mapSettings().mapUnitsPerPixel(), resolutions[0], 0.0001 );
+  QGSCOMPARENEAR( mCanvas->mapSettings().mapUnitsPerPixel(), wheelFactor * resolutions.last(), 0.0001 );
 
   mCanvas->zoomOut();
-  QGSCOMPARENEAR( mCanvas->mapSettings().mapUnitsPerPixel(), resolutions[1], 0.0001 );
+  QGSCOMPARENEAR( mCanvas->mapSettings().mapUnitsPerPixel(), wheelFactor * wheelFactor * resolutions.last(), 0.0001 );
 
   mCanvas->zoomIn();
-  QGSCOMPARENEAR( mCanvas->mapSettings().mapUnitsPerPixel(), resolutions[0], 0.0001 );
+  QGSCOMPARENEAR( mCanvas->mapSettings().mapUnitsPerPixel(), wheelFactor * resolutions.last(), 0.0001 );
+
+  // From last to first resolution in list
+  for ( int i = nResolutions - 1; i >= 0; --i )
+  {
+    mCanvas->zoomIn();
+    QGSCOMPARENEAR( mCanvas->mapSettings().mapUnitsPerPixel(), resolutions[i], 0.0001 );
+  }
+
+  // before first resolution
+  mCanvas->zoomIn();
+  QGSCOMPARENEAR( mCanvas->mapSettings().mapUnitsPerPixel(), resolutions.first() / wheelFactor, 0.0001 );
+
+  mCanvas->zoomIn();
+  QGSCOMPARENEAR( mCanvas->mapSettings().mapUnitsPerPixel(), resolutions.first() / ( wheelFactor * wheelFactor ), 0.0001 );
+
+  mCanvas->zoomOut();
+  QGSCOMPARENEAR( mCanvas->mapSettings().mapUnitsPerPixel(), resolutions.first() / wheelFactor, 0.0001 );
+
+  mCanvas->zoomOut();
+  QGSCOMPARENEAR( mCanvas->mapSettings().mapUnitsPerPixel(), resolutions.first(), 0.0001 );
 
   QCOMPARE( mCanvas->zoomResolutions(), resolutions );
 }
@@ -585,6 +622,22 @@ void TestQgsMapCanvas::testMapLayers()
   QCOMPARE( canvas->layer( vl1->id() ), vl1 );
   QCOMPARE( canvas->layer( vl2->id() ), vl2.get() );
   QCOMPARE( canvas->layer( QStringLiteral( "xxx" ) ), nullptr );
+}
+
+void TestQgsMapCanvas::testExtentHistory()
+{
+  QgsRectangle initialExtent;
+  const QList<double> rotations = QList<double>() << 0.0 << 30.0;
+  for ( double rotation : rotations )
+  {
+    mCanvas->setRotation( rotation );
+    mCanvas->clearExtentHistory();
+    mCanvas->setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+    initialExtent = mCanvas->extent();
+    mCanvas->setExtent( QgsRectangle( 100, 100, 110, 110 ) );
+    mCanvas->zoomToPreviousExtent();
+    QCOMPARE( mCanvas->extent(), initialExtent );
+  }
 }
 
 QGSTEST_MAIN( TestQgsMapCanvas )

@@ -2713,7 +2713,7 @@ void TestQgsCompoundCurve::crs3dTransformAndReverse()
   QGSCOMPARENEAR( pt.z(), 5.0, 0.001 );
   QCOMPARE( pt.m(), 6.0 );
 
-#if PROJ_VERSION_MAJOR<6 // note - z value transform doesn't currently work with proj 6+, because we don't yet support compound CRS definitions
+#if 0 // note - z value transform doesn't currently work with proj 6+, because we don't yet support compound CRS definitions
   //z value transform
   cc.transform( tr, Qgis::TransformDirection::Forward, true );
 

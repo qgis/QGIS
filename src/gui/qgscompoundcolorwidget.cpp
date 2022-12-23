@@ -19,6 +19,8 @@
 #include "qgssymbollayerutils.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
+#include "qgsscreenhelper.h"
+#include "qgsguiutils.h"
 
 #include <QHeaderView>
 #include <QPushButton>
@@ -26,7 +28,6 @@
 #include <QToolButton>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QDesktopWidget>
 #include <QMouseEvent>
 #include <QScreen>
 #include <QInputDialog>
@@ -37,6 +38,9 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &c
   : QgsPanelWidget( parent )
 {
   setupUi( this );
+
+  mScreenHelper = new QgsScreenHelper( this );
+
   connect( mHueRadio, &QRadioButton::toggled, this, &QgsCompoundColorWidget::mHueRadio_toggled );
   connect( mSaturationRadio, &QRadioButton::toggled, this, &QgsCompoundColorWidget::mSaturationRadio_toggled );
   connect( mValueRadio, &QRadioButton::toggled, this, &QgsCompoundColorWidget::mValueRadio_toggled );
@@ -305,6 +309,7 @@ void QgsCompoundColorWidget::setAllowOpacity( const bool allowOpacity )
   mAllowAlpha = allowOpacity;
   mAlphaLabel->setVisible( allowOpacity );
   mAlphaSlider->setVisible( allowOpacity );
+  mColorText->setAllowOpacity( allowOpacity );
   if ( !allowOpacity )
   {
     mAlphaLayout->setContentsMargins( 0, 0, 0, 0 );
@@ -790,9 +795,12 @@ QColor QgsCompoundColorWidget::sampleColor( QPoint point ) const
   {
     return QColor();
   }
-  const QPixmap snappedPixmap = screen->grabWindow( QApplication::desktop()->winId(),
-                                point.x() - sampleRadius,
-                                point.y() - sampleRadius,
+
+  const int x = point.x() - screen->geometry().left();
+  const int y = point.y() - screen->geometry().top();
+  const QPixmap snappedPixmap = screen->grabWindow( 0,
+                                x - sampleRadius,
+                                y - sampleRadius,
                                 1 + sampleRadius * 2,
                                 1 + sampleRadius * 2 );
   const QImage snappedImage = snappedPixmap.toImage();

@@ -190,7 +190,7 @@ class CORE_EXPORT QgsLayoutTableColumn
      */
     Q_DECL_DEPRECATED QgsLayoutTableColumn *clone() SIP_DEPRECATED SIP_FACTORY {return new QgsLayoutTableColumn( *this );}
 
-    bool operator==( const QgsLayoutTableColumn &other )
+    bool operator==( const QgsLayoutTableColumn &other ) const
     {
       return mHeading == other.mHeading
              && mAttribute == other.mAttribute
@@ -200,6 +200,19 @@ class CORE_EXPORT QgsLayoutTableColumn
              && mHAlignment == other.mHAlignment
              && mVAlignment == other.mVAlignment;
     }
+
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str;
+    if ( sipCpp->heading() != sipCpp->attribute() && !sipCpp->heading().isEmpty() )
+      str = QStringLiteral( "<QgsLayoutTableColumn: %1 (\"%2\")>" ).arg( sipCpp->attribute(), sipCpp->heading() );
+    else
+      str = QStringLiteral( "<QgsLayoutTableColumn: %1>" ).arg( sipCpp->attribute() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
   private:
 

@@ -35,6 +35,7 @@ class QgsMeshDataProvider;
  */
 class QgsMeshDatasetListModel: public QAbstractListModel
 {
+    Q_OBJECT
   public:
     //! Constructor
     QgsMeshDatasetListModel( QObject *parent );

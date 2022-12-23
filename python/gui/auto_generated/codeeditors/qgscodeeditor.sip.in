@@ -12,6 +12,56 @@
 
 
 
+class QgsCodeInterpreter
+{
+%Docstring(signature="appended")
+An interface for code interpreters.
+
+.. versionadded:: 3.30
+%End
+
+%TypeHeaderCode
+#include "qgscodeeditor.h"
+%End
+  public:
+
+    virtual ~QgsCodeInterpreter();
+
+    int exec( const QString &command );
+%Docstring
+Executes a ``command`` in the interpreter.
+
+Returns an interpreter specific state value.
+%End
+
+    virtual int currentState() const;
+%Docstring
+Returns the current interpreter state.
+
+The actual interpretation of the returned values depend on
+the interpreter subclass.
+%End
+
+    virtual QString promptForState( int state ) const = 0;
+%Docstring
+Returns the interactive prompt string to use for the
+interpreter, given a ``state``.
+%End
+
+  protected:
+
+    virtual int execCommandImpl( const QString &command ) = 0;
+%Docstring
+Pure virtual method for executing commands in the interpreter.
+
+Subclasses must implement this method. It will be called internally
+whenever the public :py:func:`~QgsCodeInterpreter.exec` method is called.
+%End
+
+};
+
+
+
 
 class QgsCodeEditor : QsciScintilla
 {
@@ -30,30 +80,61 @@ A text editor based on QScintilla2.
 %End
   public:
 
-    enum MarginRole
+    enum class Mode
     {
+      ScriptEditor,
+      OutputDisplay,
+      CommandInput,
+    };
+
+    enum class MarginRole
+      {
       LineNumbers,
       ErrorIndicators,
       FoldingControls,
     };
 
-    QgsCodeEditor( QWidget *parent /TransferThis/ = 0, const QString &title = QString(), bool folding = false, bool margin = false );
+    enum class Flag
+    {
+      CodeFolding,
+    };
+
+    typedef QFlags<QgsCodeEditor::Flag> Flags;
+
+
+    QgsCodeEditor( QWidget * parent /TransferThis/ = 0, const QString & title = QString(), bool folding = false, bool margin = false, QgsCodeEditor::Flags flags = QgsCodeEditor::Flags(), QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor );
 %Docstring
 Construct a new code editor.
 
 :param parent: The parent QWidget
 :param title: The title to show in the code editor dialog
-:param folding: ``False``: Enable folding for code editor
+:param folding: ``False``: Enable folding for code editor (deprecated, use ``flags`` instead)
 :param margin: ``False``: Enable margin for code editor (deprecated)
+:param flags: flags controlling behavior of code editor (since QGIS 3.28)
+:param mode: code editor mode (since QGIS 3.30)
 
 .. versionadded:: 2.6
 %End
 
-    void setTitle( const QString &title );
+    void setTitle( const QString & title );
 %Docstring
 Set the widget title
 
 :param title: widget title
+%End
+
+    virtual Qgis::ScriptLanguage language() const;
+%Docstring
+Returns the associated scripting language.
+
+.. versionadded:: 3.30
+%End
+
+    static QString languageToString( Qgis::ScriptLanguage language );
+%Docstring
+Returns a user-friendly, translated name of the specified script ``language``.
+
+.. versionadded:: 3.30
 %End
 
  void setMarginVisible( bool margin ) /Deprecated/;
@@ -108,7 +189,7 @@ Returns ``True`` if the folding controls are visible in the editor.
 .. seealso:: :py:func:`setFoldingVisible`
 %End
 
-    void insertText( const QString &text );
+    void insertText( const QString & text );
 %Docstring
 Insert text at cursor position, or replace any selected text if user has
 made a selection.
@@ -116,7 +197,7 @@ made a selection.
 :param text: The text to be inserted
 %End
 
-    static QColor defaultColor( QgsCodeEditorColorScheme::ColorRole role, const QString &theme = QString() );
+    static QColor defaultColor( QgsCodeEditorColorScheme::ColorRole role, const QString & theme = QString() );
 %Docstring
 Returns the default color for the specified ``role``.
 
@@ -141,7 +222,7 @@ selected a custom color scheme for the editor.
 .. versionadded:: 3.16
 %End
 
-    static void setColor( QgsCodeEditorColorScheme::ColorRole role, const QColor &color );
+    static void setColor( QgsCodeEditorColorScheme::ColorRole role, const QColor & color );
 %Docstring
 Sets the ``color`` to use in the editor for the specified ``role``.
 
@@ -163,7 +244,7 @@ Returns the monospaced font to use for code editors.
 %End
 
 
-    void addWarning( int lineNumber, const QString &warning );
+    void addWarning( int lineNumber, const QString & warning );
 %Docstring
 Adds a ``warning`` message and indicator to the specified a ``lineNumber``.
 
@@ -181,13 +262,186 @@ Clears all warning messages from the editor.
 .. versionadded:: 3.16
 %End
 
+    QgsCodeEditor::Mode mode() const;
+%Docstring
+Returns the code editor mode.
+
+.. versionadded:: 3.30
+%End
+
+    bool isCursorOnLastLine() const;
+%Docstring
+Returns ``True`` if the cursor is on the last line of the document.
+
+.. versionadded:: 3.28
+%End
+
+    void setHistoryFilePath( const QString &path );
+%Docstring
+Sets the file path to use for recording and retrieving previously
+executed commands.
+
+.. note::
+
+   Applies to code editors in the QgsCodeEditor.Mode.CommandInput mode only.
+
+.. versionadded:: 3.30
+%End
+
+    QStringList history() const;
+%Docstring
+Returns the list of commands previously executed in the editor.
+
+.. note::
+
+   Applies to code editors in the QgsCodeEditor.Mode.CommandInput mode only.
+
+.. versionadded:: 3.30
+%End
+
+    QgsCodeInterpreter *interpreter() const;
+%Docstring
+Returns the attached code interpreter, or ``None`` if not set.
+
+.. seealso:: :py:func:`setInterpreter`
+
+.. versionadded:: 3.30
+%End
+
+    void setInterpreter( QgsCodeInterpreter *newInterpreter );
+%Docstring
+Sets an attached code interpreter for executing commands when the editor
+is in the QgsCodeEditor.Mode.CommandInput mode.
+
+.. seealso:: :py:func:`interpreter`
+
+.. versionadded:: 3.30
+%End
+
+  public slots:
+
+    void runCommand( const QString &command );
+%Docstring
+Runs a command in the editor.
+
+An :py:func:`~QgsCodeEditor.interpreter` must be set.
+
+.. versionadded:: 3.30
+%End
+
+    virtual void moveCursorToStart();
+%Docstring
+Moves the cursor to the start of the document and scrolls to ensure
+it is visible.
+
+.. versionadded:: 3.28
+%End
+
+    virtual void moveCursorToEnd();
+%Docstring
+Moves the cursor to the end of the document and scrolls to ensure
+it is visible.
+
+.. versionadded:: 3.28
+%End
+
+    void showPreviousCommand();
+%Docstring
+Shows the previous command from the session in the editor.
+
+.. note::
+
+   Applies to code editors in the QgsCodeEditor.Mode.CommandInput mode only.
+
+.. versionadded:: 3.30
+%End
+
+    void showNextCommand();
+%Docstring
+Shows the next command from the session in the editor.
+
+.. note::
+
+   Applies to code editors in the QgsCodeEditor.Mode.CommandInput mode only.
+
+.. versionadded:: 3.30
+%End
+
+    void showHistory();
+%Docstring
+Shows the command history dialog.
+
+.. note::
+
+   Applies to code editors in the QgsCodeEditor.Mode.CommandInput mode only.
+
+.. versionadded:: 3.30
+%End
+
+    void removeHistoryCommand( int index );
+%Docstring
+Removes the command at the specified ``index`` from the history of the code editor.
+
+.. versionadded:: 3.30
+%End
+
+    void clearSessionHistory();
+%Docstring
+Clears the history of commands run in the current session.
+
+.. note::
+
+   Applies to code editors in the QgsCodeEditor.Mode.CommandInput mode only.
+
+.. versionadded:: 3.30
+%End
+
+    void clearPersistentHistory();
+%Docstring
+Clears the entire persistent history of commands run in the editor.
+
+.. note::
+
+   Applies to code editors in the QgsCodeEditor.Mode.CommandInput mode only.
+
+.. versionadded:: 3.30
+%End
+
+    bool writeHistoryFile();
+%Docstring
+Stores the commands executed in the editor to the persistent history file.
+
+.. versionadded:: 3.30
+%End
+
+  signals:
+
+    void sessionHistoryCleared();
+%Docstring
+Emitted when the history of commands run in the current session is cleared.
+
+.. versionadded:: 3.30
+%End
+
+    void persistentHistoryCleared();
+%Docstring
+Emitted when the persistent history of commands run in the editor is cleared.
+
+.. versionadded:: 3.30
+%End
+
   protected:
 
-    bool isFixedPitch( const QFont &font );
+    static bool isFixedPitch( const QFont &font );
+%Docstring
+Returns ``True`` if a ``font`` is a fixed pitch font.
+%End
 
     virtual void focusOutEvent( QFocusEvent *event );
 
     virtual void keyPressEvent( QKeyEvent *event );
+
+    virtual void contextMenuEvent( QContextMenuEvent *event );
 
 
     virtual void initializeLexer();
@@ -220,7 +474,39 @@ Performs tasks which must be run after a lexer has been set for the widget.
 .. versionadded:: 3.16
 %End
 
+    void updateSoftHistory();
+%Docstring
+Updates the soft history by storing the current editor text in the history.
+
+.. versionadded:: 3.30
+%End
+
+    void updatePrompt();
+%Docstring
+Triggers an update of the interactive prompt part of the editor.
+
+.. note::
+
+   Applies to code editors in the QgsCodeEditor.Mode.CommandInput mode only.
+
+.. versionadded:: 3.30
+%End
+
+    virtual void populateContextMenu( QMenu *menu );
+%Docstring
+Called when the context ``menu`` for the widget is about to be shown, after it
+has been fully populated with the standard actions created by the base class.
+
+This method provides an opportunity for subclasses to add additional non-standard
+actions to the context menu.
+
+.. versionadded:: 3.30
+%End
+
 };
+
+QFlags<QgsCodeEditor::Flag> operator|(QgsCodeEditor::Flag f1, QFlags<QgsCodeEditor::Flag> f2);
+
 
 
 /************************************************************************

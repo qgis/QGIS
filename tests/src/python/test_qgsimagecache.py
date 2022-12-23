@@ -47,7 +47,7 @@ class TestQgsImageCache(unittest.TestCase):
         cls.port = cls.httpd.server_address[1]
 
         cls.httpd_thread = threading.Thread(target=cls.httpd.serve_forever)
-        cls.httpd_thread.setDaemon(True)
+        cls.httpd_thread.daemon = True
         cls.httpd_thread.start()
 
     def setUp(self):
@@ -88,7 +88,7 @@ class TestQgsImageCache(unittest.TestCase):
     def testRemoteImageMissing(self):
         """Test fetching remote image with bad url"""
         url = 'http://localhost:{}/qgis_local_server/xxx.png'.format(str(TestQgsImageCache.port))  # oooo naughty
-        image, in_cache = QgsApplication.imageCache().pathAsImage(url, QSize(100, 100), 1.0, True)
+        image, in_cache = QgsApplication.imageCache().pathAsImage(url, QSize(100, 100), True, 1.0)
 
         self.assertTrue(self.imageCheck('Remote image missing', 'waiting_image', image))
 

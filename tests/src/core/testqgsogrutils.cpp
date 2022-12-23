@@ -39,6 +39,7 @@
 #include "qgsfontutils.h"
 #include "qgssymbol.h"
 #include "qgsfielddomain.h"
+#include "qgsweakrelation.h"
 
 class TestQgsOgrUtils: public QObject
 {
@@ -76,6 +77,11 @@ class TestQgsOgrUtils: public QObject
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,3,0)
     void testConvertFieldDomain();
     void testConvertToFieldDomain();
+#endif
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+    void testConvertGdalRelationship();
+    void testConvertToGdalRelationship();
 #endif
 
   private:
@@ -206,16 +212,16 @@ void TestQgsOgrUtils::ogrGeometryToQgsGeometry2_data()
   QTest::addColumn<int>( "type" );
 
   QTest::newRow( "point" ) << QStringLiteral( "Point (1.1 2.2)" ) << static_cast< int >( QgsWkbTypes::Point );
-  QTest::newRow( "pointz" ) << QStringLiteral( "PointZ (1.1 2.2 3.3)" ) <<  static_cast< int >( QgsWkbTypes::Point25D ); // ogr uses 25d for z
+  QTest::newRow( "pointz" ) << QStringLiteral( "PointZ (1.1 2.2 3.3)" ) <<  static_cast< int >( QgsWkbTypes::PointZ );
   QTest::newRow( "pointm" ) << QStringLiteral( "PointM (1.1 2.2 3.3)" ) <<  static_cast< int >( QgsWkbTypes::PointM );
   QTest::newRow( "pointzm" ) << QStringLiteral( "PointZM (1.1 2.2 3.3 4.4)" ) <<  static_cast< int >( QgsWkbTypes::PointZM );
-  QTest::newRow( "point25d" ) << QStringLiteral( "Point25D (1.1 2.2 3.3)" ) <<  static_cast< int >( QgsWkbTypes::Point25D );
+  QTest::newRow( "point25d" ) << QStringLiteral( "Point25D (1.1 2.2 3.3)" ) <<  static_cast< int >( QgsWkbTypes::PointZ );
 
   QTest::newRow( "linestring" ) << QStringLiteral( "LineString (1.1 2.2, 3.3 4.4)" ) << static_cast< int >( QgsWkbTypes::LineString );
-  QTest::newRow( "linestringz" ) << QStringLiteral( "LineStringZ (1.1 2.2 3.3, 4.4 5.5 6.6)" ) <<  static_cast< int >( QgsWkbTypes::LineString25D ); // ogr uses 25d for z
+  QTest::newRow( "linestringz" ) << QStringLiteral( "LineStringZ (1.1 2.2 3.3, 4.4 5.5 6.6)" ) <<  static_cast< int >( QgsWkbTypes::LineStringZ );
   QTest::newRow( "linestringm" ) << QStringLiteral( "LineStringM (1.1 2.2 3.3, 4.4 5.5 6.6)" ) <<  static_cast< int >( QgsWkbTypes::LineStringM );
   QTest::newRow( "linestringzm" ) << QStringLiteral( "LineStringZM (1.1 2.2 3.3 4.4, 5.5 6.6 7.7 8.8)" ) <<  static_cast< int >( QgsWkbTypes::LineStringZM );
-  QTest::newRow( "linestring25d" ) << QStringLiteral( "LineString25D (1.1 2.2 3.3, 4.4 5.5 6.6)" ) <<  static_cast< int >( QgsWkbTypes::LineString25D );
+  QTest::newRow( "linestring25d" ) << QStringLiteral( "LineString25D (1.1 2.2 3.3, 4.4 5.5 6.6)" ) <<  static_cast< int >( QgsWkbTypes::LineStringZ );
 
   QTest::newRow( "linestring" ) << QStringLiteral( "MultiLineString ((1.1 2.2, 3.3 4.4))" ) << static_cast< int >( QgsWkbTypes::MultiLineString );
   QTest::newRow( "linestring" ) << QStringLiteral( "MultiLineString ((1.1 2.2, 3.3 4.4),(5 5, 6 6))" ) << static_cast< int >( QgsWkbTypes::MultiLineString );
@@ -1132,6 +1138,204 @@ void TestQgsOgrUtils::testConvertToFieldDomain()
 
 }
 #endif
+
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+void TestQgsOgrUtils::testConvertGdalRelationship()
+{
+  gdal::relationship_unique_ptr relationH( GDALRelationshipCreate( "relation_name",
+      "left_table",
+      "right_table",
+      GDALRelationshipCardinality::GRC_ONE_TO_ONE ) );
+
+  QgsWeakRelation rel = QgsOgrUtils::convertRelationship( relationH.get(), QStringLiteral( "/some_data.gdb" ) );
+  QCOMPARE( rel.name(), QStringLiteral( "relation_name" ) );
+  QCOMPARE( rel.referencedLayerSource(), QStringLiteral( "/some_data.gdb|layername=left_table" ) );
+  QCOMPARE( rel.referencingLayerSource(), QStringLiteral( "/some_data.gdb|layername=right_table" ) );
+  QCOMPARE( rel.cardinality(), Qgis::RelationshipCardinality::OneToOne );
+
+  relationH.reset( GDALRelationshipCreate( "relation_name",
+                   "left_table",
+                   "right_table",
+                   GDALRelationshipCardinality::GRC_ONE_TO_MANY ) );
+  rel = QgsOgrUtils::convertRelationship( relationH.get(), QStringLiteral( "/some_data.gdb" ) );
+  QCOMPARE( rel.cardinality(), Qgis::RelationshipCardinality::OneToMany );
+
+  relationH.reset( GDALRelationshipCreate( "relation_name",
+                   "left_table",
+                   "right_table",
+                   GDALRelationshipCardinality::GRC_MANY_TO_ONE ) );
+  rel = QgsOgrUtils::convertRelationship( relationH.get(), QStringLiteral( "/some_data.gdb" ) );
+  QCOMPARE( rel.cardinality(), Qgis::RelationshipCardinality::ManyToOne );
+
+  relationH.reset( GDALRelationshipCreate( "relation_name",
+                   "left_table",
+                   "right_table",
+                   GDALRelationshipCardinality::GRC_MANY_TO_MANY ) );
+  rel = QgsOgrUtils::convertRelationship( relationH.get(), QStringLiteral( "/some_data.gdb" ) );
+  QCOMPARE( rel.cardinality(), Qgis::RelationshipCardinality::ManyToMany );
+
+  const char *const fieldsLeft[] {"fielda", "fieldb", nullptr};
+  GDALRelationshipSetLeftTableFields( relationH.get(), fieldsLeft );
+
+  const char *const fieldsRight[] {"fieldc", "fieldd", nullptr};
+  GDALRelationshipSetRightTableFields( relationH.get(), fieldsRight );
+
+  rel = QgsOgrUtils::convertRelationship( relationH.get(), QStringLiteral( "/some_data.gdb" ) );
+  QCOMPARE( rel.referencedLayerFields(), QStringList() << QStringLiteral( "fielda" ) << QStringLiteral( "fieldb" ) );
+  QCOMPARE( rel.referencingLayerFields(), QStringList() << QStringLiteral( "fieldc" ) << QStringLiteral( "fieldd" ) );
+
+  QCOMPARE( rel.mappingTableSource(), QString() );
+
+  GDALRelationshipSetMappingTableName( relationH.get(), "mapping_table" );
+
+  const char *const mappingFieldsLeft[] {"fieldd", "fielde", nullptr};
+  GDALRelationshipSetLeftMappingTableFields( relationH.get(), mappingFieldsLeft );
+
+  const char *const mappingFieldsRight[] {"fieldf", "fieldg", nullptr};
+  GDALRelationshipSetRightMappingTableFields( relationH.get(), mappingFieldsRight );
+
+  rel = QgsOgrUtils::convertRelationship( relationH.get(), QStringLiteral( "/some_data.gdb" ) );
+  QCOMPARE( rel.mappingTableSource(), QStringLiteral( "/some_data.gdb|layername=mapping_table" ) );
+  QCOMPARE( rel.referencedLayerFields(), QStringList() << QStringLiteral( "fielda" ) << QStringLiteral( "fieldb" ) );
+  QCOMPARE( rel.referencingLayerFields(), QStringList() << QStringLiteral( "fieldc" ) << QStringLiteral( "fieldd" ) );
+  QCOMPARE( rel.mappingReferencedLayerFields(), QStringList() << QStringLiteral( "fieldd" ) << QStringLiteral( "fielde" ) );
+  QCOMPARE( rel.mappingReferencingLayerFields(), QStringList() << QStringLiteral( "fieldf" ) << QStringLiteral( "fieldg" ) );
+
+  GDALRelationshipSetType( relationH.get(), GRT_COMPOSITE );
+  rel = QgsOgrUtils::convertRelationship( relationH.get(), QStringLiteral( "/some_data.gdb" ) );
+  QCOMPARE( rel.strength(), Qgis::RelationshipStrength::Composition );
+  GDALRelationshipSetType( relationH.get(), GRT_ASSOCIATION );
+  rel = QgsOgrUtils::convertRelationship( relationH.get(), QStringLiteral( "/some_data.gdb" ) );
+  QCOMPARE( rel.strength(), Qgis::RelationshipStrength::Association );
+
+  GDALRelationshipSetForwardPathLabel( relationH.get(), "forward label" );
+  GDALRelationshipSetBackwardPathLabel( relationH.get(), "backward label" );
+  rel = QgsOgrUtils::convertRelationship( relationH.get(), QStringLiteral( "/some_data.gdb" ) );
+  QCOMPARE( rel.forwardPathLabel(), QStringLiteral( "forward label" ) );
+  QCOMPARE( rel.backwardPathLabel(), QStringLiteral( "backward label" ) );
+
+  GDALRelationshipSetRelatedTableType( relationH.get(), "table_type" );
+  rel = QgsOgrUtils::convertRelationship( relationH.get(), QStringLiteral( "/some_data.gdb" ) );
+  QCOMPARE( rel.relatedTableType(), QStringLiteral( "table_type" ) );
+}
+
+void TestQgsOgrUtils::testConvertToGdalRelationship()
+{
+  QgsWeakRelation rel( QStringLiteral( "id" ), QStringLiteral( "name" ),
+                       Qgis::RelationshipStrength::Association,
+                       QStringLiteral( "referencing_layer_id" ),
+                       QStringLiteral( "referencing_layer_name" ),
+                       QStringLiteral( "/some_data.gdb|layername=referencing" ),
+                       QStringLiteral( "ogr" ),
+                       QStringLiteral( "referenced_layer_id" ),
+                       QStringLiteral( "referenced_layer_name" ),
+                       QStringLiteral( "/some_data.gdb|layername=referenced" ),
+                       QStringLiteral( "ogr" ) );
+  rel.setReferencedLayerFields( QStringList() << QStringLiteral( "fielda" ) << QStringLiteral( "fieldb" ) );
+  rel.setReferencingLayerFields( QStringList() << QStringLiteral( "fieldc" ) << QStringLiteral( "fieldd" ) );
+  rel.setCardinality( Qgis::RelationshipCardinality::OneToMany );
+
+  QString error;
+  gdal::relationship_unique_ptr relationH = QgsOgrUtils::convertRelationship( rel, error );
+
+  QCOMPARE( QString( GDALRelationshipGetName( relationH.get() ) ), QStringLiteral( "name" ) );
+  QCOMPARE( QString( GDALRelationshipGetLeftTableName( relationH.get() ) ), QStringLiteral( "referenced" ) );
+  QCOMPARE( QString( GDALRelationshipGetRightTableName( relationH.get() ) ), QStringLiteral( "referencing" ) );
+
+  char **cslLeftTableFieldNames = GDALRelationshipGetLeftTableFields( relationH.get() );
+  const QStringList leftTableFieldNames = QgsOgrUtils::cStringListToQStringList( cslLeftTableFieldNames );
+  CSLDestroy( cslLeftTableFieldNames );
+  QCOMPARE( leftTableFieldNames, QStringList() << QStringLiteral( "fielda" ) << QStringLiteral( "fieldb" ) );
+
+  char **cslRightTableFieldNames = GDALRelationshipGetRightTableFields( relationH.get() );
+  const QStringList rightTableFieldNames = QgsOgrUtils::cStringListToQStringList( cslRightTableFieldNames );
+  CSLDestroy( cslRightTableFieldNames );
+  QCOMPARE( rightTableFieldNames, QStringList() << QStringLiteral( "fieldc" ) << QStringLiteral( "fieldd" ) );
+
+  QCOMPARE( GDALRelationshipGetCardinality( relationH.get() ), GDALRelationshipCardinality::GRC_ONE_TO_MANY );
+  rel.setCardinality( Qgis::RelationshipCardinality::OneToOne );
+  relationH = QgsOgrUtils::convertRelationship( rel, error );
+  QCOMPARE( GDALRelationshipGetCardinality( relationH.get() ), GDALRelationshipCardinality::GRC_ONE_TO_ONE );
+  rel.setCardinality( Qgis::RelationshipCardinality::ManyToOne );
+  relationH = QgsOgrUtils::convertRelationship( rel, error );
+  QCOMPARE( GDALRelationshipGetCardinality( relationH.get() ), GDALRelationshipCardinality::GRC_MANY_TO_ONE );
+  rel.setCardinality( Qgis::RelationshipCardinality::ManyToMany );
+  relationH = QgsOgrUtils::convertRelationship( rel, error );
+  QCOMPARE( GDALRelationshipGetCardinality( relationH.get() ), GDALRelationshipCardinality::GRC_MANY_TO_MANY );
+
+  QCOMPARE( GDALRelationshipGetType( relationH.get() ), GDALRelationshipType::GRT_ASSOCIATION );
+
+  rel = QgsWeakRelation( QStringLiteral( "id" ), QStringLiteral( "name" ),
+                         Qgis::RelationshipStrength::Composition,
+                         QStringLiteral( "referencing_layer_id" ),
+                         QStringLiteral( "referencing_layer_name" ),
+                         QStringLiteral( "/some_data.gdb|layername=referencing" ),
+                         QStringLiteral( "ogr" ),
+                         QStringLiteral( "referenced_layer_id" ),
+                         QStringLiteral( "referenced_layer_name" ),
+                         QStringLiteral( "/some_data.gdb|layername=referenced" ),
+                         QStringLiteral( "ogr" ) );
+  relationH = QgsOgrUtils::convertRelationship( rel, error );
+  QCOMPARE( GDALRelationshipGetType( relationH.get() ), GDALRelationshipType::GRT_COMPOSITE );
+
+  rel.setForwardPathLabel( QStringLiteral( "forward" ) );
+  rel.setBackwardPathLabel( QStringLiteral( "backward" ) );
+  relationH = QgsOgrUtils::convertRelationship( rel, error );
+  QCOMPARE( QString( GDALRelationshipGetForwardPathLabel( relationH.get() ) ), QStringLiteral( "forward" ) );
+  QCOMPARE( QString( GDALRelationshipGetBackwardPathLabel( relationH.get() ) ), QStringLiteral( "backward" ) );
+
+  rel.setRelatedTableType( QStringLiteral( "table_type" ) );
+  relationH = QgsOgrUtils::convertRelationship( rel, error );
+  QCOMPARE( QString( GDALRelationshipGetRelatedTableType( relationH.get() ) ), QStringLiteral( "table_type" ) );
+
+  rel.setMappingTable( QgsVectorLayerRef( QStringLiteral( "mapping_id" ),
+                                          QStringLiteral( "mapping_name" ),
+                                          QStringLiteral( "/some_data.gdb|layername=mapping" ),
+                                          QStringLiteral( "ogr" ) ) );
+  rel.setMappingReferencedLayerFields( QStringList() << QStringLiteral( "fielde" ) << QStringLiteral( "fieldf" ) );
+  rel.setMappingReferencingLayerFields( QStringList() << QStringLiteral( "fieldh" ) << QStringLiteral( "fieldi" ) );
+  relationH = QgsOgrUtils::convertRelationship( rel, error );
+  QCOMPARE( QString( GDALRelationshipGetMappingTableName( relationH.get() ) ), QStringLiteral( "mapping" ) );
+
+  char **cslLeftMappingTableFieldNames = GDALRelationshipGetLeftMappingTableFields( relationH.get() );
+  const QStringList leftMappingTableFieldNames = QgsOgrUtils::cStringListToQStringList( cslLeftMappingTableFieldNames );
+  CSLDestroy( cslLeftMappingTableFieldNames );
+  QCOMPARE( leftMappingTableFieldNames, QStringList() << QStringLiteral( "fielde" ) << QStringLiteral( "fieldf" ) );
+
+  char **cslRightMappingTableFieldNames = GDALRelationshipGetRightMappingTableFields( relationH.get() );
+  const QStringList rightMappingTableFieldNames = QgsOgrUtils::cStringListToQStringList( cslRightMappingTableFieldNames );
+  CSLDestroy( cslRightMappingTableFieldNames );
+  QCOMPARE( rightMappingTableFieldNames, QStringList() << QStringLiteral( "fieldh" ) << QStringLiteral( "fieldi" ) );
+
+  // check that error is raised when tables from different dataset
+  rel.setMappingTable( QgsVectorLayerRef( QStringLiteral( "mapping_id" ),
+                                          QStringLiteral( "mapping_name" ),
+                                          QStringLiteral( "/some_other_data.gdb|layername=mapping" ),
+                                          QStringLiteral( "ogr" ) ) );
+  relationH = QgsOgrUtils::convertRelationship( rel, error );
+  QVERIFY( !relationH.get() );
+  QCOMPARE( error, QStringLiteral( "Parent and mapping table must be from the same dataset" ) );
+  error.clear();
+
+  rel = QgsWeakRelation( QStringLiteral( "id" ), QStringLiteral( "name" ),
+                         Qgis::RelationshipStrength::Composition,
+                         QStringLiteral( "referencing_layer_id" ),
+                         QStringLiteral( "referencing_layer_name" ),
+                         QStringLiteral( "/some_data.gdb|layername=referencing" ),
+                         QStringLiteral( "ogr" ),
+                         QStringLiteral( "referenced_layer_id" ),
+                         QStringLiteral( "referenced_layer_name" ),
+                         QStringLiteral( "/some_other_data.gdb|layername=referenced" ),
+                         QStringLiteral( "ogr" ) );
+  relationH = QgsOgrUtils::convertRelationship( rel, error );
+  QVERIFY( !relationH.get() );
+  QCOMPARE( error, QStringLiteral( "Parent and child table must be from the same dataset" ) );
+  error.clear();
+
+}
+#endif
+
 
 QGSTEST_MAIN( TestQgsOgrUtils )
 #include "testqgsogrutils.moc"

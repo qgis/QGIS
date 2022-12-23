@@ -57,7 +57,7 @@ class TestQgsRelationPostgresql(unittest.TestCase):
 
         for i in range(len(tables)):
             vl_tables[i] = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'pk\' table="relations"."{}" sql='.format(tables[i]), tables[i], 'postgres')
-            assert(vl_tables[i].isValid())
+            assert vl_tables[i].isValid()
             QgsProject.instance().addMapLayer(vl_tables[i])
 
         relations = self.relMgr.discoverRelations([], vl_tables)

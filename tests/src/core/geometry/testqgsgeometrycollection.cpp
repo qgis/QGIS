@@ -667,7 +667,7 @@ void TestQgsGeometryCollection::geometryCollection()
   QGSCOMPARENEAR( intR->boundingBox().xMaximum(), 6474984, 100 );
   QGSCOMPARENEAR( intR->boundingBox().yMaximum(), -3526584, 100 );
 
-#if PROJ_VERSION_MAJOR<6 // note - z value transform doesn't currently work with proj 6+, because we don't yet support compound CRS definitions
+#if 0 // note - z value transform doesn't currently work with proj 6+, because we don't yet support compound CRS definitions
   //z value transform
   pTransform.transform( tr, Qgis::TransformDirection::Forward, true );
   extR = static_cast< const QgsLineString * >( pTransform.geometryN( 0 ) );

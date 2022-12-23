@@ -52,7 +52,7 @@ class DlgCreateIndex(QDialog, Ui_Dialog):
             self.cboColumn.addItem(fld.name)
 
     def columnChanged(self):
-        self.editName.setText(u"idx_%s_%s" % (self.table.name, self.cboColumn.currentText()))
+        self.editName.setText("idx_%s_%s" % (self.table.name, self.cboColumn.currentText()))
 
     def createIndex(self):
         idx = self.getIndex()

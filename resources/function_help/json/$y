@@ -2,7 +2,7 @@
   "name": "$y",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Returns the y coordinate of the current point feature. If the feature is a multipoint feature, then the y-coordinate of the first point will be returned.",
+  "description": "Returns the y coordinate of the current point feature. If the feature is a multipoint feature, then the y-coordinate of the first point will be returned. <b>WARNING: This function is deprecated. It is recommended to use the replacement y() function with @geometry variable instead.</b>",
   "examples": [{
     "expression": "$y",
     "returns": "42"

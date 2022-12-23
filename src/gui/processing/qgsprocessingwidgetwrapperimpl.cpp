@@ -2280,7 +2280,7 @@ void QgsProcessingExpressionWidgetWrapper::setParentLayerWrapperValue( const Qgs
   }
 
   QVariant val = parentWrapper->parameterValue();
-  if ( val.canConvert<QgsProcessingFeatureSourceDefinition>() )
+  if ( val.userType() == QMetaType::type( "QgsProcessingFeatureSourceDefinition" ) )
   {
     // input is a QgsProcessingFeatureSourceDefinition - get extra properties from it
     QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );
@@ -4141,7 +4141,6 @@ void QgsProcessingFieldPanelWidget::setValue( const QVariant &value )
 void QgsProcessingFieldPanelWidget::showDialog()
 {
   QVariantList availableOptions;
-  QStringList fieldNames;
   availableOptions.reserve( mFields.size() );
   for ( const QgsField &field : std::as_const( mFields ) )
   {
@@ -4431,7 +4430,7 @@ void QgsProcessingFieldWidgetWrapper::setParentLayerWrapperValue( const QgsAbstr
 
   QVariant value = parentWrapper->parameterValue();
 
-  if ( value.canConvert<QgsProcessingFeatureSourceDefinition>() )
+  if ( value.userType() == QMetaType::type( "QgsProcessingFeatureSourceDefinition" ) )
   {
     // input is a QgsProcessingFeatureSourceDefinition - source from it.
     // this is normally discouraged, and algorithms should NEVER do this -- but in this case we can make
@@ -6405,7 +6404,6 @@ void QgsProcessingRasterBandPanelWidget::setValue( const QVariant &value )
 void QgsProcessingRasterBandPanelWidget::showDialog()
 {
   QVariantList availableOptions;
-  QStringList fieldNames;
   availableOptions.reserve( mBands.size() );
   for ( int band : std::as_const( mBands ) )
   {
@@ -7130,7 +7128,7 @@ void QgsProcessingMultipleLayerWidgetWrapper::setWidgetValue( const QVariant &va
 
     for ( const QVariant &v : value.toList() )
     {
-      if ( v.canConvert< QgsProcessingModelChildParameterSource >() )
+      if ( v.userType() == QMetaType::type( "QgsProcessingModelChildParameterSource" ) )
       {
         const QgsProcessingModelChildParameterSource source = v.value< QgsProcessingModelChildParameterSource >();
         opts << QVariant::fromValue( source );
@@ -7357,7 +7355,7 @@ void QgsProcessingAnnotationLayerWidgetWrapper::setWidgetValue( const QVariant &
     }
 
     QVariant val = value;
-    if ( val.canConvert<QgsProperty>() )
+    if ( val.userType() == QMetaType::type( "QgsProperty" ) )
     {
       if ( val.value< QgsProperty >().propertyType() == QgsProperty::StaticProperty )
       {

@@ -1,0 +1,346 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/project/qgsprojectstylesettings.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsProjectStyleSettings : QObject
+{
+%Docstring(signature="appended")
+Contains settings and properties relating to how a :py:class:`QgsProject` should handle
+styling.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsprojectstylesettings.h"
+%End
+  public:
+
+    QgsProjectStyleSettings( QgsProject *project = 0 );
+%Docstring
+Constructor for QgsProjectStyleSettings for the specified ``project``.
+
+Ownership is transferred to the ``project``.
+%End
+
+    ~QgsProjectStyleSettings();
+
+    QgsSymbol *defaultSymbol( Qgis::SymbolType symbolType ) const /Factory/;
+%Docstring
+Returns the project default symbol for a given type.
+
+:param symbolType: the symbol type
+
+:return: a symbol pointer or NULL if there is no default set
+
+.. note::
+
+   the symbol ownership is transferred to the caller
+%End
+
+    void setDefaultSymbol( Qgis::SymbolType symbolType, QgsSymbol *symbol );
+%Docstring
+Sets the project default symbol for a given type.
+
+:param symbolType: the symbol type
+:param symbol: the symbol pointer, set to NULL to clear default
+
+.. note::
+
+   the symbol ownership is not transferred
+%End
+
+    QgsColorRamp *defaultColorRamp() const /Factory/;
+%Docstring
+Returns the project default color ramp.
+
+:return: a color ramp pointer or NULL if there is no default set
+
+.. note::
+
+   the color ramp ownership is transferred to the caller
+%End
+
+    void setDefaultColorRamp( QgsColorRamp *colorRamp );
+%Docstring
+Sets the project default color ramp.
+
+:param colorRamp: the color ramp, set to NULL to clear default
+
+.. note::
+
+   the color ramp ownership is not transferred
+%End
+
+    QgsTextFormat defaultTextFormat() const;
+%Docstring
+Returns the project default text format.
+
+.. note::
+
+   if no default is defined, the returned format will be invalid
+%End
+
+    void setDefaultTextFormat( const QgsTextFormat &textFormat );
+%Docstring
+Sets the project default text format.
+
+:param textFormat: the text format, an invalid format is interpreted as no default
+%End
+
+    bool randomizeDefaultSymbolColor() const;
+%Docstring
+Returns whether the default symbol fill color is randomized.
+%End
+
+    void setRandomizeDefaultSymbolColor( bool randomized );
+%Docstring
+Sets whether the default symbol fill color is randomized.
+%End
+
+    double defaultSymbolOpacity() const;
+%Docstring
+Returns the default symbol opacity.
+%End
+
+    void setDefaultSymbolOpacity( double opacity );
+%Docstring
+Sets the default symbol opacity.
+%End
+
+    void reset();
+%Docstring
+Resets the settings to a default state.
+%End
+
+    void setProjectStyle( QgsStyle *style /Transfer/ );
+%Docstring
+Sets the style database to use for the project style.
+
+.. seealso:: :py:func:`projectStyle`
+%End
+
+    QgsStyle *projectStyle();
+%Docstring
+Returns the style database to use for project specific styles.
+
+.. seealso:: :py:func:`setProjectStyle`
+%End
+
+    bool readXml( const QDomElement &element, const QgsReadWriteContext &context, Qgis::ProjectReadFlags flags = Qgis::ProjectReadFlags() );
+%Docstring
+Reads the settings's state from a DOM element.
+
+.. seealso:: :py:func:`writeXml`
+%End
+
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
+%Docstring
+Returns a DOM element representing the settings.
+
+.. seealso:: :py:func:`readXml`
+%End
+
+    QStringList styleDatabasePaths() const;
+%Docstring
+Returns a list of all style databases (file paths) associated with the project.
+
+The file paths returned by this method will always be absolute paths. Depending on the
+project settings, they may be converted to relative paths when the project is saved.
+
+.. seealso:: :py:func:`styles`
+
+.. seealso:: :py:func:`addStyleDatabasePath`
+
+.. seealso:: :py:func:`setStyleDatabasePaths`
+%End
+
+    QList< QgsStyle * > styles() const;
+%Docstring
+Returns a list of all the styles associated with the project.
+
+.. seealso:: :py:func:`styleDatabasePaths`
+%End
+
+    QgsStyle *styleAtPath( const QString &path );
+%Docstring
+Returns a reference to the style database associated with the project with matching file ``path``.
+%End
+
+    void addStyleDatabasePath( const QString &path );
+%Docstring
+Adds a style database ``path`` to the project.
+
+Paths can be either style .db databases, or .xml exports of style databases.
+
+The file path added by this method must always be absolute paths. Depending on the
+project settings, they may be converted to relative paths when the project is saved.
+
+.. seealso:: :py:func:`styleDatabasePaths`
+
+.. seealso:: :py:func:`setStyleDatabasePaths`
+
+.. seealso:: :py:func:`styleDatabasesChanged`
+%End
+
+    void setStyleDatabasePaths( const QStringList &paths );
+%Docstring
+Sets the ``paths`` to all style databases associated with the project.
+
+Paths can be either style .db databases, or .xml exports of style databases.
+
+The file paths set by this method must always be absolute paths. Depending on the
+project settings, they may be converted to relative paths when the project is saved.
+
+.. seealso:: :py:func:`addStyleDatabasePath`
+
+.. seealso:: :py:func:`styleDatabasePaths`
+
+.. seealso:: :py:func:`styleDatabasesChanged`
+%End
+
+    QgsCombinedStyleModel *combinedStyleModel();
+%Docstring
+Returns the combined style model which includes all style databases
+associated with the project.
+
+This model also includes :py:func:`QgsStyle.defaultStyle()`.
+
+.. note::
+
+   This is only available on builds based on Qt 5.13 or later.
+
+.. seealso:: :py:func:`styles`
+%End
+
+  signals:
+
+    void styleDatabasesChanged();
+%Docstring
+Emitted whenever the set of style databases associated with the project is changed.
+%End
+
+};
+
+class QgsProjectStyleDatabaseModel : QAbstractListModel
+{
+%Docstring(signature="appended")
+
+List model representing the style databases associated with a :py:class:`QgsProject`.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsprojectstylesettings.h"
+%End
+  public:
+
+    enum Role
+    {
+      StyleRole,
+      PathRole,
+    };
+
+    explicit QgsProjectStyleDatabaseModel( QgsProjectStyleSettings *settings, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsProjectStyleDatabaseModel, showing the styles from the specified ``settings``.
+%End
+
+    virtual int rowCount( const QModelIndex &parent ) const;
+
+    virtual QVariant data( const QModelIndex &index, int role ) const;
+
+
+    QgsStyle *styleFromIndex( const QModelIndex &index ) const;
+%Docstring
+Returns the style at the corresponding ``index``.
+
+.. seealso:: :py:func:`indexFromStyle`
+%End
+
+    QModelIndex indexFromStyle( QgsStyle *style ) const;
+%Docstring
+Returns the model index corresponding to a ``style``.
+
+.. seealso:: :py:func:`styleFromIndex`
+%End
+
+    void setShowDefaultStyle( bool show );
+%Docstring
+Sets whether the default style should also be included in the model.
+
+.. seealso:: :py:func:`showDefaultStyle`
+%End
+
+    bool showDefaultStyle() const;
+%Docstring
+Returns ``True`` if the model includes the default style.
+
+.. seealso:: :py:func:`setShowDefaultStyle`
+%End
+
+};
+
+class QgsProjectStyleDatabaseProxyModel : QSortFilterProxyModel
+{
+%Docstring(signature="appended")
+
+A proxy model for filtering QgsProjectStyleDatabaseModel.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsprojectstylesettings.h"
+%End
+  public:
+
+    enum class Filter
+    {
+      FilterHideReadOnly,
+    };
+    typedef QFlags<QgsProjectStyleDatabaseProxyModel::Filter> Filters;
+
+
+    QgsProjectStyleDatabaseProxyModel( QgsProjectStyleDatabaseModel *model, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsProjectStyleDatabaseProxyModel, for the specified style database ``model``.
+%End
+
+    virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
+
+
+    QgsProjectStyleDatabaseProxyModel::Filters filters() const;
+%Docstring
+Returns the current filters used for filtering available style.
+
+.. seealso:: :py:func:`setFilters`
+%End
+
+    void setFilters( QgsProjectStyleDatabaseProxyModel::Filters filters );
+%Docstring
+Sets the current ``filters`` used for filtering available styles.
+
+.. seealso:: :py:func:`filters`
+%End
+
+};
+QFlags<QgsProjectStyleDatabaseProxyModel::Filter> operator|(QgsProjectStyleDatabaseProxyModel::Filter f1, QFlags<QgsProjectStyleDatabaseProxyModel::Filter> f2);
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/project/qgsprojectstylesettings.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -115,26 +115,31 @@
      </layout>
     </widget>
    </item>
-   <item row="2" column="0">
-    <widget class="QTreeView" name="treeView">
-     <property name="editTriggers">
-      <set>QAbstractItemView::NoEditTriggers</set>
+   <item row="7" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
-     <property name="alternatingRowColors">
-      <bool>true</bool>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Help</set>
      </property>
-     <property name="selectionMode">
-      <enum>QAbstractItemView::ExtendedSelection</enum>
-     </property>
-     <property name="sortingEnabled">
-      <bool>true</bool>
-     </property>
-     <attribute name="headerVisible">
-      <bool>true</bool>
-     </attribute>
     </widget>
    </item>
-   <item row="4" column="0">
+   <item row="1" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayoutFilter">
+     <item>
+      <widget class="QgsFilterLineEdit" name="lineFilter">
+       <property name="showSearchIcon">
+        <bool>true</bool>
+       </property>
+       <property name="qgisRelation" stdset="0">
+        <string notr="true"/>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="6" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_4">
      <item>
       <widget class="QCheckBox" name="cbxUseTitleLayerName">
@@ -158,48 +163,34 @@
      </item>
     </layout>
    </item>
-   <item row="1" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayoutFilter">
-     <item>
-      <widget class="QLabel" name="labelFilter">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="text">
-        <string>Filter</string>
-       </property>
-       <property name="buddy">
-        <cstring>lineFilter</cstring>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="lineFilter">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="toolTip">
-        <string>Display WFS FeatureTypes containing this word in the title, name or abstract</string>
-       </property>
-       <property name="whatsThis">
-        <string>Display WFS FeatureTypes containing this word in the title, name or abstract</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="5" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+   <item row="4" column="0">
+    <widget class="QTreeView" name="treeView">
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
      </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Help</set>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
      </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::ExtendedSelection</enum>
+     </property>
+     <property name="sortingEnabled">
+      <bool>true</bool>
+     </property>
+     <attribute name="headerVisible">
+      <bool>true</bool>
+     </attribute>
     </widget>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>cmbConnections</tabstop>
   <tabstop>btnConnect</tabstop>
@@ -208,7 +199,6 @@
   <tabstop>btnDelete</tabstop>
   <tabstop>btnLoad</tabstop>
   <tabstop>btnSave</tabstop>
-  <tabstop>lineFilter</tabstop>
   <tabstop>treeView</tabstop>
   <tabstop>cbxUseTitleLayerName</tabstop>
  </tabstops>

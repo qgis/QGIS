@@ -30,6 +30,7 @@
 #include "qgis_gui.h"
 #include "qgsresamplingutils.h"
 #include "qgsrasterpipe.h"
+#include "qgsexpressioncontextgenerator.h"
 
 class QgsPointXY;
 class QgsMapLayer;
@@ -46,6 +47,7 @@ class QgsMapLayerConfigWidgetFactory;
 class QgsMapLayerConfigWidget;
 class QgsPropertyOverrideButton;
 class QgsRasterTransparencyWidget;
+class QgsRasterAttributeTableWidget;
 
 
 /**
@@ -256,6 +258,11 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
 
     void setRendererWidget( const QString &rendererName );
 
+    /**
+     * Setup or update the raster attribute table options page.
+     */
+    void updateRasterAttributeTableOptionsPage();
+
     //TODO: we should move these gradient generators somewhere more generic
     //so they can be used generically throughout the app
     QLinearGradient greenGradient();
@@ -296,5 +303,7 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     friend class QgsAppScreenShots;
 
     QgsCoordinateReferenceSystem mBackupCrs;
+
+    QgsRasterAttributeTableWidget *mRasterAttributeTableWidget = nullptr;
 };
 #endif

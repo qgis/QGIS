@@ -16,33 +16,26 @@
 #include "qgsapplication.h"
 #include "qgisapp.h"
 #include "qgsattributetabledialog.h"
-#include "qgsdistancearea.h"
 #include "qgsfeature.h"
 #include "qgsfeaturestore.h"
-#include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsidentifycontext.h"
 #include "qgsidentifyresultsdialog.h"
 #include "qgsidentifymenu.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaptopixel.h"
-#include "qgsmessageviewer.h"
 #include "qgsmaptoolidentifyaction.h"
 #include "qgsmaptoolselectionhandler.h"
 #include "qgsrasterlayer.h"
-#include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
-#include "qgsrenderer.h"
 #include "qgsunittypes.h"
 #include "qgsstatusbar.h"
-#include "qgsactionscoperegistry.h"
 #include "qgssettings.h"
 #include "qgsmapmouseevent.h"
-#include "qgspointcloudlayer.h"
 #include "qgslayertreeview.h"
+#include "qgsmaplayeraction.h"
 
 #include <QCursor>
 #include <QPixmap>
@@ -56,8 +49,8 @@ QgsMapToolIdentifyAction::QgsMapToolIdentifyAction( QgsMapCanvas *canvas )
   setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::Identify ) );
   connect( this, &QgsMapToolIdentify::changedRasterResults, this, &QgsMapToolIdentifyAction::handleChangedRasterResults );
   mIdentifyMenu->setAllowMultipleReturn( true );
-  QgsMapLayerAction *attrTableAction = new QgsMapLayerAction( tr( "Show Attribute Table" ), mIdentifyMenu, QgsMapLayerType::VectorLayer, QgsMapLayerAction::MultipleFeatures );
-  connect( attrTableAction, &QgsMapLayerAction::triggeredForFeatures, this, &QgsMapToolIdentifyAction::showAttributeTable );
+  QgsMapLayerAction *attrTableAction = new QgsMapLayerAction( tr( "Show Attribute Table" ), mIdentifyMenu, QgsMapLayerType::VectorLayer, Qgis::MapLayerActionTarget::MultipleFeatures );
+  connect( attrTableAction, &QgsMapLayerAction::triggeredForFeaturesV2, this, &QgsMapToolIdentifyAction::showAttributeTable );
   identifyMenu()->addCustomAction( attrTableAction );
   mSelectionHandler = new QgsMapToolSelectionHandler( canvas, QgsMapToolSelectionHandler::SelectSimple );
   connect( mSelectionHandler, &QgsMapToolSelectionHandler::geometryChanged, this, &QgsMapToolIdentifyAction::identifyFromGeometry );
@@ -90,7 +83,7 @@ QgsIdentifyResultsDialog *QgsMapToolIdentifyAction::resultsDialog()
   return mResultsDialog;
 }
 
-void QgsMapToolIdentifyAction::showAttributeTable( QgsMapLayer *layer, const QList<QgsFeature> &featureList )
+void QgsMapToolIdentifyAction::showAttributeTable( QgsMapLayer *layer, const QList<QgsFeature> &featureList, const QgsMapLayerActionContext & )
 {
   resultsDialog()->clear();
 
@@ -98,13 +91,13 @@ void QgsMapToolIdentifyAction::showAttributeTable( QgsMapLayer *layer, const QLi
   if ( !vl || !vl->dataProvider() )
     return;
 
-  QString filter = QStringLiteral( "$id IN (" );
-  const auto constFeatureList = featureList;
-  for ( const QgsFeature &feature : constFeatureList )
+  QStringList idList;
+  idList.reserve( featureList.size() );
+  for ( const QgsFeature &feature : featureList )
   {
-    filter.append( QStringLiteral( "%1," ).arg( feature.id() ) );
+    idList.append( FID_TO_STRING( feature.id() ) );
   }
-  filter = filter.replace( QRegExp( ",$" ), QStringLiteral( ")" ) );
+  const QString filter = QStringLiteral( "$id IN (%1)" ).arg( idList.join( ',' ) );
 
   QgsAttributeTableDialog *tableDialog = new QgsAttributeTableDialog( vl, QgsAttributeTableFilterModel::ShowFilteredList );
   tableDialog->setFilterExpression( filter );

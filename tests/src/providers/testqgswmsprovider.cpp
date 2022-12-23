@@ -34,9 +34,14 @@
  * \ingroup UnitTests
  * This is a unit test for the WMS provider.
  */
-class TestQgsWmsProvider: public QObject
+class TestQgsWmsProvider: public QgsTest
 {
     Q_OBJECT
+
+  public:
+
+    TestQgsWmsProvider() : QgsTest( QStringLiteral( "WMS Provider Tests" ) ) {}
+
   private slots:
 
     void initTestCase()
@@ -53,22 +58,11 @@ class TestQgsWmsProvider: public QObject
 
       mCapabilities = new QgsWmsCapabilities();
       QVERIFY( mCapabilities->parseResponse( content, config ) );
-
-      mReport += QLatin1String( "<h1>WMS Provider Tests</h1>\n" );
     }
 
     //runs after all tests
     void cleanupTestCase()
     {
-      QString myReportFile = QDir::tempPath() + "/qgistest.html";
-      QFile myFile( myReportFile );
-      if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-      {
-        QTextStream myQTextStream( &myFile );
-        myQTextStream << mReport;
-        myFile.close();
-      }
-
       delete mCapabilities;
       QgsApplication::exitQgis();
     }
@@ -171,6 +165,23 @@ class TestQgsWmsProvider: public QObject
       mapSettings.setOutputSize( QSize( 400, 400 ) );
       mapSettings.setOutputDpi( 96 );
       QVERIFY( imageCheck( "mbtiles_1", mapSettings ) );
+    }
+
+    void testMBTilesSample()
+    {
+      QString dataDir( TEST_DATA_DIR );
+      QUrlQuery uq;
+      uq.addQueryItem( "type", "mbtiles" );
+      uq.addQueryItem( "interpretation", "maptilerterrain" );
+      uq.addQueryItem( "url", QUrl::fromLocalFile( dataDir + "/isle_of_man.mbtiles" ).toString() );
+
+      QgsRasterLayer layer( uq.toString(), "isle_of_man", "wms" );
+      QVERIFY( layer.isValid() );
+
+      bool ok = false;
+      const double value = layer.dataProvider()->sample( QgsPointXY( -496419, 7213350 ), 1, &ok );
+      QVERIFY( ok );
+      QCOMPARE( value, 1167617.375 );
     }
 
     void testDpiDependentData()
@@ -365,7 +376,6 @@ class TestQgsWmsProvider: public QObject
   private:
     QgsWmsCapabilities *mCapabilities = nullptr;
 
-    QString mReport;
 };
 
 QGSTEST_MAIN( TestQgsWmsProvider )

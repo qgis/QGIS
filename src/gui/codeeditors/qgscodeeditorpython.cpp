@@ -30,8 +30,12 @@
 #include <Qsci/qscilexerpython.h>
 #include <QDesktopServices>
 
-QgsCodeEditorPython::QgsCodeEditorPython( QWidget *parent, const QList<QString> &filenames )
-  : QgsCodeEditor( parent )
+QgsCodeEditorPython::QgsCodeEditorPython( QWidget *parent, const QList<QString> &filenames, Mode mode )
+  : QgsCodeEditor( parent,
+                   QString(),
+                   false,
+                   false,
+                   QgsCodeEditor::Flag::CodeFolding, mode )
   , mAPISFilesList( filenames )
 {
   if ( !parent )
@@ -42,6 +46,11 @@ QgsCodeEditorPython::QgsCodeEditorPython( QWidget *parent, const QList<QString> 
   setCaretWidth( 2 );
 
   QgsCodeEditorPython::initializeLexer();
+}
+
+Qgis::ScriptLanguage QgsCodeEditorPython::language() const
+{
+  return Qgis::ScriptLanguage::Python;
 }
 
 void QgsCodeEditorPython::initializeLexer()
@@ -170,7 +179,6 @@ void QgsCodeEditorPython::initializeLexer()
   }
 
   setLineNumbersVisible( true );
-  setFoldingVisible( true );
   setIndentationsUseTabs( false );
   setIndentationGuides( true );
 

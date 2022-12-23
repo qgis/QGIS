@@ -472,7 +472,7 @@ QgsLayerTreeLayer *QgsLayerTreeUtils::insertLayerBelow( QgsLayerTreeGroup *group
   }
   // insert the new layer
   QgsLayerTreeGroup *parent = static_cast<QgsLayerTreeGroup *>( inTree->parent() ) ? static_cast<QgsLayerTreeGroup *>( inTree->parent() ) : group;
-  return parent->insertLayer( idx, layerToInsert );
+  return parent->insertLayer( idx + 1, layerToInsert );
 }
 
 static void _collectMapLayers( const QList<QgsLayerTreeNode *> &nodes, QSet<QgsMapLayer *> &layersSet )
@@ -529,4 +529,171 @@ QgsLayerTreeGroup *QgsLayerTreeUtils::firstGroupWithoutCustomProperty( QgsLayerT
       Q_ASSERT( false );
   }
   return group;
+}
+
+QgsLayerTreeLayer *QgsLayerTreeUtils::insertLayerAtOptimalPlacement( QgsLayerTreeGroup *group, QgsMapLayer *layer )
+{
+  int vectorLineIndex = 0;
+  int vectorPolygonIndex = 0;
+  int pointCloudIndex = 0;
+  int meshIndex = 0;
+  int rasterIndex = 0;
+  int basemapIndex = 0;
+
+  const QList<QgsLayerTreeNode *> children = group->children();
+  int nodeIdx = 0;
+  for ( const QgsLayerTreeNode *child : children )
+  {
+    if ( QgsLayerTree::isLayer( child ) )
+    {
+      nodeIdx++;
+      const QgsMapLayer *layer = qobject_cast<const QgsLayerTreeLayer *>( child )->layer();
+      switch ( layer->type() )
+      {
+        case QgsMapLayerType::VectorLayer:
+        {
+          const QgsVectorLayer *vlayer = static_cast<const QgsVectorLayer *>( layer );
+          if ( vlayer->geometryType() == QgsWkbTypes::PointGeometry )
+          {
+            if ( vectorLineIndex < nodeIdx )
+              vectorLineIndex = nodeIdx;
+            if ( vectorPolygonIndex < nodeIdx )
+              vectorPolygonIndex = nodeIdx;
+            if ( pointCloudIndex < nodeIdx )
+              pointCloudIndex = nodeIdx;
+            if ( meshIndex < nodeIdx )
+              meshIndex = nodeIdx;
+            if ( rasterIndex < nodeIdx )
+              rasterIndex = nodeIdx;
+            if ( basemapIndex < nodeIdx )
+              basemapIndex = nodeIdx;
+          }
+          else if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry )
+          {
+            if ( vectorPolygonIndex < nodeIdx )
+              vectorPolygonIndex = nodeIdx;
+            if ( pointCloudIndex < nodeIdx )
+              pointCloudIndex = nodeIdx;
+            if ( meshIndex < nodeIdx )
+              meshIndex = nodeIdx;
+            if ( rasterIndex < nodeIdx )
+              rasterIndex = nodeIdx;
+            if ( basemapIndex < nodeIdx )
+              basemapIndex = nodeIdx;
+          }
+          else if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry )
+          {
+            if ( pointCloudIndex < nodeIdx )
+              pointCloudIndex = nodeIdx;
+            if ( meshIndex < nodeIdx )
+              meshIndex = nodeIdx;
+            if ( rasterIndex < nodeIdx )
+              rasterIndex = nodeIdx;
+            if ( basemapIndex < nodeIdx )
+              basemapIndex = nodeIdx;
+          }
+          break;
+        }
+
+        case QgsMapLayerType::PointCloudLayer:
+        {
+          if ( meshIndex < nodeIdx )
+            meshIndex = nodeIdx;
+          if ( rasterIndex < nodeIdx )
+            rasterIndex = nodeIdx;
+          if ( basemapIndex < nodeIdx )
+            basemapIndex = nodeIdx;
+          break;
+        }
+
+        case QgsMapLayerType::MeshLayer:
+        {
+          if ( rasterIndex < nodeIdx )
+            rasterIndex = nodeIdx;
+          if ( basemapIndex < nodeIdx )
+            basemapIndex = nodeIdx;
+          break;
+        }
+
+        case QgsMapLayerType::RasterLayer:
+        {
+          if ( layer->dataProvider() && layer->dataProvider()->name() == QStringLiteral( "gdal" ) )
+          {
+            // Assume non-gdal raster layers are most likely to be base maps (e.g. XYZ raster)
+            // Admittedly a gross assumption, but better than nothing
+            if ( basemapIndex < nodeIdx )
+              basemapIndex = nodeIdx;
+          }
+          break;
+        }
+
+        case QgsMapLayerType::VectorTileLayer:
+        case QgsMapLayerType::AnnotationLayer:
+        case QgsMapLayerType::GroupLayer:
+        case QgsMapLayerType::PluginLayer:
+        default:
+          break;
+      }
+    }
+  }
+
+  int index = 0;
+  switch ( layer->type() )
+  {
+    case QgsMapLayerType::VectorLayer:
+    {
+      QgsVectorLayer *vlayer = static_cast<QgsVectorLayer *>( layer );
+      if ( vlayer->geometryType() == QgsWkbTypes::PointGeometry )
+      {
+        index = 0;
+      }
+      else if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry )
+      {
+        index = vectorLineIndex;
+      }
+      else if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry )
+      {
+        index = vectorPolygonIndex;
+      }
+      break;
+    }
+
+    case QgsMapLayerType::PointCloudLayer:
+    {
+      index = pointCloudIndex;
+      break;
+    }
+
+    case QgsMapLayerType::MeshLayer:
+    {
+      index = meshIndex;
+      break;
+    }
+
+    case QgsMapLayerType::RasterLayer:
+    {
+      if ( layer->dataProvider() && layer->dataProvider()->name() == QStringLiteral( "gdal" ) )
+      {
+        index = rasterIndex;
+      }
+      else
+      {
+        index = basemapIndex;
+      }
+      break;
+    }
+
+    case QgsMapLayerType::VectorTileLayer:
+    {
+      index = basemapIndex;
+      break;
+    }
+
+    case QgsMapLayerType::AnnotationLayer:
+    case QgsMapLayerType::GroupLayer:
+    case QgsMapLayerType::PluginLayer:
+    default:
+      break;
+  }
+  return group->insertLayer( index, layer );
 }

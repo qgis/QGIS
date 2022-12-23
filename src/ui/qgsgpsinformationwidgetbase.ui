@@ -29,103 +29,7 @@
    <property name="verticalSpacing">
     <number>2</number>
    </property>
-   <item row="0" column="0">
-    <layout class="QGridLayout" name="gridLayout_15">
-     <item row="0" column="1">
-      <widget class="QLabel" name="mLblStatusIndicator">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>42</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>42</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string>Quick status indicator:
-green = good or 3D fix
-yellow = good 2D fix
-red = no fix or bad fix
-gray = no data
-
-2D/3D depends on this information being available</string>
-       </property>
-       <property name="frameShape">
-        <enum>QFrame::Box</enum>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="scaledContents">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="QPushButton" name="mBtnCloseFeature">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>&amp;Add Feature</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QPushButton" name="mBtnAddVertex">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Add Track Point</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QToolButton" name="mBtnResetFeature">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="toolTip">
-        <string>Reset track</string>
-       </property>
-       <property name="text">
-        <string>…</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/mActionDeleteSelected.svg</normaloff>:/images/themes/default/mActionDeleteSelected.svg</iconset>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="2" column="0">
+   <item row="1" column="0">
     <widget class="QStackedWidget" name="mStackedWidget">
      <property name="currentIndex">
       <number>0</number>
@@ -158,7 +62,7 @@ gray = no data
             <x>0</x>
             <y>0</y>
             <width>579</width>
-            <height>744</height>
+            <height>803</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_2">
@@ -207,102 +111,6 @@ gray = no data
              <property name="spacing">
               <number>2</number>
              </property>
-             <item row="0" column="1">
-              <widget class="QLineEdit" name="mTxtLatitude">
-               <property name="toolTip">
-                <string>latitude of position fix (degrees)</string>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="10" column="0">
-              <widget class="QLabel" name="mLblHdop">
-               <property name="text">
-                <string>HDOP</string>
-               </property>
-              </widget>
-             </item>
-             <item row="12" column="1">
-              <widget class="QLineEdit" name="mTxtPdop">
-               <property name="toolTip">
-                <string>Position Dilution of Precision</string>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1">
-              <widget class="QLineEdit" name="mTxtAltitude">
-               <property name="toolTip">
-                <string>antenna altitude with respect to geoid (mean sea level)</string>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="16" column="1">
-              <spacer name="verticalSpacer_3">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeType">
-                <enum>QSizePolicy::Fixed</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>20</width>
-                 <height>6</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item row="17" column="0">
-              <widget class="QLabel" name="mLblFixMode">
-               <property name="text">
-                <string>Mode</string>
-               </property>
-              </widget>
-             </item>
-             <item row="13" column="1">
-              <widget class="QLineEdit" name="mTxtHacc"/>
-             </item>
-             <item row="6" column="1">
-              <spacer name="verticalSpacer_5">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeType">
-                <enum>QSizePolicy::Fixed</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>20</width>
-                 <height>6</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item row="7" column="0">
-              <widget class="QLabel" name="mLblSpeed">
-               <property name="toolTip">
-                <string/>
-               </property>
-               <property name="text">
-                <string>Speed</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="mLblAltitude">
-               <property name="text">
-                <string>Altitude</string>
-               </property>
-              </widget>
-             </item>
              <item row="1" column="0">
               <widget class="QLabel" name="mLblLongitude">
                <property name="text">
@@ -310,178 +118,7 @@ gray = no data
                </property>
               </widget>
              </item>
-             <item row="17" column="1">
-              <widget class="QLineEdit" name="mTxtFixMode">
-               <property name="toolTip">
-                <string>GPS receiver configuration 2D/3D mode: Automatic or Manual</string>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="0">
-              <widget class="QLabel" name="mLblLatitude">
-               <property name="text">
-                <string>Latitude</string>
-               </property>
-              </widget>
-             </item>
-             <item row="5" column="0">
-              <widget class="QLabel" name="mLblUtcTime">
-               <property name="text">
-                <string>Time of fix</string>
-               </property>
-              </widget>
-             </item>
-             <item row="14" column="0">
-              <widget class="QLabel" name="mLblVacc">
-               <property name="text">
-                <string>V accuracy</string>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="1">
-              <spacer name="verticalSpacer_2">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeType">
-                <enum>QSizePolicy::Fixed</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>20</width>
-                 <height>6</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item row="18" column="0">
-              <widget class="QLabel" name="mLblFixType">
-               <property name="text">
-                <string>Dimensions</string>
-               </property>
-              </widget>
-             </item>
-             <item row="7" column="1">
-              <widget class="QLineEdit" name="mTxtSpeed">
-               <property name="toolTip">
-                <string>speed over ground</string>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="11" column="0">
-              <widget class="QLabel" name="mLblVdop">
-               <property name="text">
-                <string>VDOP</string>
-               </property>
-              </widget>
-             </item>
-             <item row="15" column="0">
-              <widget class="QLabel" name="mLbl3Dacc">
-               <property name="text">
-                <string>3D accuracy</string>
-               </property>
-              </widget>
-             </item>
-             <item row="18" column="1">
-              <widget class="QLineEdit" name="mTxtFixType">
-               <property name="toolTip">
-                <string>position fix dimensions: 2D, 3D or No fix</string>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="19" column="1">
-              <widget class="QLineEdit" name="mTxtQuality">
-               <property name="toolTip">
-                <string>Positioning quality indicator (NMEA GGA or comparable sentence)</string>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="20" column="0">
-              <widget class="QLabel" name="mLblStatus">
-               <property name="text">
-                <string>Status</string>
-               </property>
-              </widget>
-             </item>
-             <item row="5" column="1">
-              <widget class="QLineEdit" name="mTxtDateTime">
-               <property name="toolTip">
-                <string>date/time of position fix (UTC)</string>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="15" column="1">
-              <widget class="QLineEdit" name="mTxt3Dacc"/>
-             </item>
-             <item row="14" column="1">
-              <widget class="QLineEdit" name="mTxtVacc"/>
-             </item>
-             <item row="21" column="1">
-              <widget class="QLineEdit" name="mTxtSatellitesUsed">
-               <property name="toolTip">
-                <string>number of satellites used in the position fix</string>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="19" column="0">
-              <widget class="QLabel" name="mLblQuality">
-               <property name="text">
-                <string>Quality</string>
-               </property>
-              </widget>
-             </item>
-             <item row="20" column="1">
-              <widget class="QLineEdit" name="mTxtStatus">
-               <property name="toolTip">
-                <string>position fix status: Valid or Invalid</string>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="8" column="1">
-              <widget class="QLineEdit" name="mTxtDirection">
-               <property name="toolTip">
-                <string>track direction (degrees)</string>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="8" column="0">
-              <widget class="QLabel" name="mLblDirection">
-               <property name="toolTip">
-                <string/>
-               </property>
-               <property name="text">
-                <string>Direction</string>
-               </property>
-              </widget>
-             </item>
-             <item row="9" column="1">
+             <item row="11" column="1">
               <spacer name="verticalSpacer_4">
                <property name="orientation">
                 <enum>Qt::Vertical</enum>
@@ -497,14 +134,90 @@ gray = no data
                </property>
               </spacer>
              </item>
-             <item row="21" column="0">
-              <widget class="QLabel" name="mLblSatellitesUsed">
+             <item row="7" column="1">
+              <widget class="QLineEdit" name="mTxtDateTime">
+               <property name="toolTip">
+                <string>Date/time of position fix</string>
+               </property>
                <property name="text">
-                <string>Satellites</string>
+                <string/>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
-             <item row="11" column="1">
+             <item row="10" column="0">
+              <widget class="QLabel" name="mLblDirection">
+               <property name="toolTip">
+                <string/>
+               </property>
+               <property name="text">
+                <string>Direction</string>
+               </property>
+              </widget>
+             </item>
+             <item row="18" column="1">
+              <spacer name="verticalSpacer_3">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Fixed</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>6</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="13" column="0">
+              <widget class="QLabel" name="mLblVdop">
+               <property name="text">
+                <string>VDOP</string>
+               </property>
+              </widget>
+             </item>
+             <item row="15" column="0">
+              <widget class="QLabel" name="mLblHacc">
+               <property name="text">
+                <string>H accuracy</string>
+               </property>
+              </widget>
+             </item>
+             <item row="15" column="1">
+              <widget class="QLineEdit" name="mTxtHacc"/>
+             </item>
+             <item row="9" column="1">
+              <widget class="QLineEdit" name="mTxtSpeed">
+               <property name="toolTip">
+                <string>Speed over ground</string>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="26" column="0">
+              <widget class="QLabel" name="mLblSatellitesUsed_4">
+               <property name="text">
+                <string>Distance from start of track</string>
+               </property>
+              </widget>
+             </item>
+             <item row="14" column="1">
+              <widget class="QLineEdit" name="mTxtPdop">
+               <property name="toolTip">
+                <string>Position Dilution of Precision</string>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="13" column="1">
               <widget class="QLineEdit" name="mTxtVdop">
                <property name="toolTip">
                 <string>Vertical Dilution of Precision</string>
@@ -514,41 +227,122 @@ gray = no data
                </property>
               </widget>
              </item>
-             <item row="12" column="0">
-              <widget class="QLabel" name="mLblPdop">
+             <item row="22" column="0">
+              <widget class="QLabel" name="mLblStatus">
                <property name="text">
-                <string>PDOP</string>
+                <string>Status</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLineEdit" name="mTxtLatitude">
+               <property name="toolTip">
+                <string>Latitude of position fix (degrees)</string>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="16" column="0">
+              <widget class="QLabel" name="mLblVacc">
+               <property name="text">
+                <string>V accuracy</string>
+               </property>
+              </widget>
+             </item>
+             <item row="10" column="1">
+              <widget class="QLineEdit" name="mTxtDirection">
+               <property name="toolTip">
+                <string>Track direction (degrees)</string>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
              <item row="1" column="1">
               <widget class="QLineEdit" name="mTxtLongitude">
                <property name="toolTip">
-                <string>longitude of position fix (degrees)</string>
+                <string>Longitude of position fix (degrees)</string>
                </property>
                <property name="readOnly">
                 <bool>true</bool>
                </property>
               </widget>
              </item>
-             <item row="10" column="1">
-              <widget class="QLineEdit" name="mTxtHdop">
+             <item row="9" column="0">
+              <widget class="QLabel" name="mLblSpeed">
                <property name="toolTip">
-                <string>Horizontal Dilution of Precision</string>
+                <string/>
+               </property>
+               <property name="text">
+                <string>Speed</string>
+               </property>
+              </widget>
+             </item>
+             <item row="17" column="1">
+              <widget class="QLineEdit" name="mTxt3Dacc"/>
+             </item>
+             <item row="23" column="0">
+              <widget class="QLabel" name="mLblSatellitesUsed">
+               <property name="text">
+                <string>Satellites</string>
+               </property>
+              </widget>
+             </item>
+             <item row="19" column="1">
+              <widget class="QLineEdit" name="mTxtFixMode">
+               <property name="toolTip">
+                <string>GPS receiver configuration 2D/3D mode: Automatic or Manual</string>
                </property>
                <property name="readOnly">
                 <bool>true</bool>
                </property>
               </widget>
              </item>
-             <item row="13" column="0">
-              <widget class="QLabel" name="mLblHacc">
+             <item row="21" column="0">
+              <widget class="QLabel" name="mLblQuality">
                <property name="text">
-                <string>H accuracy</string>
+                <string>Quality</string>
                </property>
               </widget>
              </item>
-             <item row="3" column="0">
+             <item row="21" column="1">
+              <widget class="QLineEdit" name="mTxtQuality">
+               <property name="toolTip">
+                <string>Positioning quality indicator (NMEA GGA or comparable sentence)</string>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="1">
+              <widget class="QLineEdit" name="mTxtAltitudeDiff">
+               <property name="toolTip">
+                <string>Difference between the WGS-84 Earth ellipsoid and mean-sea-level</string>
+               </property>
+              </widget>
+             </item>
+             <item row="17" column="0">
+              <widget class="QLabel" name="mLbl3Dacc">
+               <property name="text">
+                <string>3D accuracy</string>
+               </property>
+              </widget>
+             </item>
+             <item row="16" column="1">
+              <widget class="QLineEdit" name="mTxtVacc"/>
+             </item>
+             <item row="25" column="0">
+              <widget class="QLabel" name="mLblSatellitesUsed_3">
+               <property name="text">
+                <string>Total track length</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="0">
               <widget class="QLabel" name="label_13">
                <property name="toolTip">
                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Difference between WGS-84 earth ellipsoid and mean sea level.  -=geoid is below WGS-84 ellipsoid&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -558,8 +352,186 @@ gray = no data
                </property>
               </widget>
              </item>
+             <item row="24" column="1">
+              <spacer name="verticalSpacer_10">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Fixed</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>6</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="mLblLatitude">
+               <property name="text">
+                <string>Latitude</string>
+               </property>
+              </widget>
+             </item>
+             <item row="12" column="1">
+              <widget class="QLineEdit" name="mTxtHdop">
+               <property name="toolTip">
+                <string>Horizontal Dilution of Precision</string>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="mLblAltitude">
+               <property name="text">
+                <string>Altitude (geoid)</string>
+               </property>
+              </widget>
+             </item>
+             <item row="20" column="0">
+              <widget class="QLabel" name="mLblFixType">
+               <property name="text">
+                <string>Dimensions</string>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="1">
+              <spacer name="verticalSpacer_2">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Fixed</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>6</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="26" column="1">
+              <widget class="QLineEdit" name="mTxtDirectTrackLength">
+               <property name="toolTip">
+                <string>Direct distance from first vertex in GPS track to last vertex</string>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="7" column="0">
+              <widget class="QLabel" name="mLblUtcTime">
+               <property name="text">
+                <string>Time of fix</string>
+               </property>
+              </widget>
+             </item>
+             <item row="19" column="0">
+              <widget class="QLabel" name="mLblFixMode">
+               <property name="text">
+                <string>Mode</string>
+               </property>
+              </widget>
+             </item>
+             <item row="23" column="1">
+              <widget class="QLineEdit" name="mTxtSatellitesUsed">
+               <property name="toolTip">
+                <string>Number of satellites used in the position fix</string>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="22" column="1">
+              <widget class="QLineEdit" name="mTxtStatus">
+               <property name="toolTip">
+                <string>Position fix status: Valid or Invalid</string>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="8" column="1">
+              <spacer name="verticalSpacer_5">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Fixed</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>6</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="20" column="1">
+              <widget class="QLineEdit" name="mTxtFixType">
+               <property name="toolTip">
+                <string>Position fix dimensions: 2D, 3D or No fix</string>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="12" column="0">
+              <widget class="QLabel" name="mLblHdop">
+               <property name="text">
+                <string>HDOP</string>
+               </property>
+              </widget>
+             </item>
+             <item row="14" column="0">
+              <widget class="QLabel" name="mLblPdop">
+               <property name="text">
+                <string>PDOP</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QLineEdit" name="mTxtAltitude">
+               <property name="toolTip">
+                <string>Antenna altitude with respect to geoid (mean sea level)</string>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="25" column="1">
+              <widget class="QLineEdit" name="mTxtTotalTrackLength">
+               <property name="toolTip">
+                <string>Total length of current GPS track</string>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0">
+              <widget class="QLabel" name="mLblAltitude_3">
+               <property name="text">
+                <string>Altitude (WGS 84 ellipsoid)</string>
+               </property>
+              </widget>
+             </item>
              <item row="3" column="1">
-              <widget class="QLineEdit" name="mTxtAltitudeDiff"/>
+              <widget class="QLineEdit" name="mTxtAltitudeEllipsoid">
+               <property name="toolTip">
+                <string>Antenna altitude with respect to the WGS-84 Earth ellipsoid</string>
+               </property>
+              </widget>
              </item>
             </layout>
            </item>
@@ -571,757 +543,6 @@ gray = no data
      </widget>
      <widget class="QWidget" name="stackedWidgetPage2"/>
      <widget class="QWidget" name="stackedWidgetPage3"/>
-     <widget class="QWidget" name="stackedWidgetPage4">
-      <layout class="QGridLayout" name="gridLayout_5">
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
-       <property name="verticalSpacing">
-        <number>6</number>
-       </property>
-       <item row="0" column="0">
-        <widget class="QgsScrollArea" name="scrollArea">
-         <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
-         </property>
-         <property name="widgetResizable">
-          <bool>true</bool>
-         </property>
-         <widget class="QWidget" name="scrollAreaWidgetContents">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>565</width>
-            <height>1126</height>
-           </rect>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_7">
-           <property name="leftMargin">
-            <number>2</number>
-           </property>
-           <property name="topMargin">
-            <number>2</number>
-           </property>
-           <property name="rightMargin">
-            <number>2</number>
-           </property>
-           <property name="bottomMargin">
-            <number>2</number>
-           </property>
-           <property name="verticalSpacing">
-            <number>4</number>
-           </property>
-           <item row="7" column="0">
-            <widget class="QgsCollapsibleGroupBox" name="mLogFileGroupBox">
-             <property name="enabled">
-              <bool>true</bool>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>0</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="toolTip">
-              <string>save GPS data (NMEA sentences) to a file</string>
-             </property>
-             <property name="title">
-              <string>Log File</string>
-             </property>
-             <property name="checkable">
-              <bool>true</bool>
-             </property>
-             <property name="checked">
-              <bool>false</bool>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_13" columnstretch="100,0">
-              <property name="topMargin">
-               <number>2</number>
-              </property>
-              <property name="bottomMargin">
-               <number>4</number>
-              </property>
-              <item row="0" column="0">
-               <widget class="QLineEdit" name="mTxtLogFile">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="acceptDrops">
-                 <bool>false</bool>
-                </property>
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QPushButton" name="mBtnLogFile">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                  <horstretch>23</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>23</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="toolTip">
-                 <string>browse for log file</string>
-                </property>
-                <property name="text">
-                 <string>…</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item row="4" column="0">
-            <widget class="QgsCollapsibleGroupBox" name="groupBox_4">
-             <property name="title">
-              <string>Filtering</string>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_14" columnstretch="0,1">
-              <item row="1" column="1">
-               <widget class="QComboBox" name="mCboDistanceThreshold">
-                <property name="editable">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="label_9">
-                <property name="text">
-                 <string>Distance threshold (meters)</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_8">
-                <property name="text">
-                 <string>Acquisition interval (seconds)</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QComboBox" name="mCboAcquisitionInterval">
-                <property name="editable">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item row="0" column="0">
-            <widget class="QgsCollapsibleGroupBox" name="mDeviceGroupBox">
-             <property name="title">
-              <string>Connection</string>
-             </property>
-             <layout class="QGridLayout" name="gridLayout">
-              <property name="topMargin">
-               <number>2</number>
-              </property>
-              <property name="bottomMargin">
-               <number>4</number>
-              </property>
-              <property name="spacing">
-               <number>2</number>
-              </property>
-              <item row="1" column="0">
-               <widget class="QRadioButton" name="mRadInternal">
-                <property name="text">
-                 <string>Internal</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="0">
-               <layout class="QHBoxLayout" name="horizontalLayout_3">
-                <property name="spacing">
-                 <number>2</number>
-                </property>
-                <property name="leftMargin">
-                 <number>20</number>
-                </property>
-                <item>
-                 <widget class="QComboBox" name="mCboDevices">
-                  <property name="enabled">
-                   <bool>false</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QToolButton" name="mBtnRefreshDevices">
-                  <property name="enabled">
-                   <bool>false</bool>
-                  </property>
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="toolTip">
-                   <string>Refresh serial device list</string>
-                  </property>
-                  <property name="text">
-                   <string>…</string>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="../../images/images.qrc">
-                    <normaloff>:/images/themes/default/mActionRefresh.svg</normaloff>:/images/themes/default/mActionRefresh.svg</iconset>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-              <item row="0" column="0">
-               <widget class="QRadioButton" name="mRadAutodetect">
-                <property name="text">
-                 <string>Autodetect</string>
-                </property>
-                <property name="checked">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="5" column="0">
-               <layout class="QGridLayout" name="gridLayout_12">
-                <property name="leftMargin">
-                 <number>20</number>
-                </property>
-                <property name="verticalSpacing">
-                 <number>2</number>
-                </property>
-                <item row="1" column="0">
-                 <widget class="QLabel" name="label_4">
-                  <property name="text">
-                   <string>Port</string>
-                  </property>
-                  <property name="buddy">
-                   <cstring>mGpsdPort</cstring>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="0">
-                 <widget class="QLabel" name="label_3">
-                  <property name="text">
-                   <string>Host</string>
-                  </property>
-                  <property name="buddy">
-                   <cstring>mGpsdHost</cstring>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="0">
-                 <widget class="QLabel" name="label_5">
-                  <property name="text">
-                   <string>Device</string>
-                  </property>
-                  <property name="buddy">
-                   <cstring>mGpsdDevice</cstring>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="1">
-                 <widget class="QLineEdit" name="mGpsdDevice">
-                  <property name="enabled">
-                   <bool>false</bool>
-                  </property>
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="1">
-                 <widget class="QLineEdit" name="mGpsdHost">
-                  <property name="enabled">
-                   <bool>false</bool>
-                  </property>
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="1">
-                 <widget class="QLineEdit" name="mGpsdPort">
-                  <property name="enabled">
-                   <bool>false</bool>
-                  </property>
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="inputMask">
-                   <string>00000</string>
-                  </property>
-                  <property name="maxLength">
-                   <number>5</number>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-              <item row="4" column="0">
-               <widget class="QRadioButton" name="mRadGpsd">
-                <property name="text">
-                 <string>gpsd</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <widget class="QRadioButton" name="mRadUserPath">
-                <property name="text">
-                 <string>Serial device</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="QgsCollapsibleGroupBox" name="groupBox_2">
-             <property name="title">
-              <string>Digitizing</string>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_9">
-              <property name="topMargin">
-               <number>2</number>
-              </property>
-              <property name="bottomMargin">
-               <number>4</number>
-              </property>
-              <property name="verticalSpacing">
-               <number>2</number>
-              </property>
-              <item row="2" column="0">
-               <widget class="QGroupBox" name="groupBox_3">
-                <property name="title">
-                 <string>Track</string>
-                </property>
-                <layout class="QGridLayout" name="gridLayout_16" columnstretch="0,1">
-                 <property name="topMargin">
-                  <number>2</number>
-                 </property>
-                 <property name="bottomMargin">
-                  <number>4</number>
-                 </property>
-                 <item row="1" column="0">
-                  <widget class="QLabel" name="label_6">
-                   <property name="text">
-                    <string>Line width</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="1">
-                  <widget class="QgsSpinBox" name="mSpinTrackWidth">
-                   <property name="toolTip">
-                    <string>Track width in pixels</string>
-                   </property>
-                   <property name="suffix">
-                    <string> px</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="0" colspan="2">
-                  <widget class="QCheckBox" name="mCbxAutoAddVertices">
-                   <property name="text">
-                    <string>Automatically add points</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="2" column="0">
-                  <widget class="QLabel" name="label_7">
-                   <property name="text">
-                    <string>Line color</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="2" column="1">
-                  <widget class="QgsColorButton" name="mBtnTrackColor">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="styleSheet">
-                    <string/>
-                   </property>
-                   <property name="text">
-                    <string/>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QCheckBox" name="mCbxAutoCommit">
-                <property name="toolTip">
-                 <string>save layer after every feature added</string>
-                </property>
-                <property name="text">
-                 <string>Automatically save added feature</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <widget class="QGroupBox" name="mGboxTimestamp">
-                <property name="title">
-                 <string>Timestamp Properties</string>
-                </property>
-                <layout class="QFormLayout" name="formLayout">
-                 <item row="0" column="0">
-                  <widget class="QLabel" name="label_10">
-                   <property name="toolTip">
-                    <string>Specify the field where the GPS timestamp will be saved, only string or datetime fields are supported</string>
-                   </property>
-                   <property name="text">
-                    <string>Destination</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="1">
-                  <widget class="QgsFieldComboBox" name="mCboTimestampField"/>
-                 </item>
-                 <item row="2" column="0">
-                  <widget class="QLabel" name="mLblTimestampFormat">
-                   <property name="text">
-                    <string>Format</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="2" column="1">
-                  <widget class="QComboBox" name="mCboTimestampFormat"/>
-                 </item>
-                 <item row="3" column="0">
-                  <widget class="QLabel" name="mLblTimeZone">
-                   <property name="text">
-                    <string>Timezone</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="3" column="1">
-                  <widget class="QComboBox" name="mCboTimeZones"/>
-                 </item>
-                 <item row="4" column="1">
-                  <widget class="QgsSpinBox" name="mLeapSeconds"/>
-                 </item>
-                 <item row="4" column="0">
-                  <widget class="QCheckBox" name="mCbxLeapSeconds">
-                   <property name="toolTip">
-                    <string>Apply leap seconds correction by adding the seconds to GPS timestamp</string>
-                   </property>
-                   <property name="text">
-                    <string>Leap seconds</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-              <item row="3" column="0">
-               <widget class="QCheckBox" name="mTravelBearingCheckBox">
-                <property name="toolTip">
-                 <string>If checked, the bearing reported by the GPS device will be ignored and the bearing will instead be calculated by the angle between the previous two GPS locations</string>
-                </property>
-                <property name="text">
-                 <string>Calculate bearing from travel direction</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item row="5" column="0">
-            <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
-             <property name="title">
-              <string>Map Centering and Rotation</string>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_8">
-              <property name="topMargin">
-               <number>2</number>
-              </property>
-              <property name="bottomMargin">
-               <number>4</number>
-              </property>
-              <property name="verticalSpacing">
-               <number>2</number>
-              </property>
-              <item row="2" column="0">
-               <layout class="QHBoxLayout" name="horizontalLayout">
-                <property name="leftMargin">
-                 <number>20</number>
-                </property>
-                <item>
-                 <widget class="QgsSpinBox" name="mSpinMapExtentMultiplier">
-                  <property name="enabled">
-                   <bool>false</bool>
-                  </property>
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="suffix">
-                   <string>% of map extent</string>
-                  </property>
-                  <property name="minimum">
-                   <number>5</number>
-                  </property>
-                  <property name="maximum">
-                   <number>100</number>
-                  </property>
-                  <property name="singleStep">
-                   <number>1</number>
-                  </property>
-                  <property name="value">
-                   <number>50</number>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-              <item row="0" column="0">
-               <widget class="QRadioButton" name="radRecenterMap">
-                <property name="text">
-                 <string>Always</string>
-                </property>
-                <property name="checked">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <widget class="QRadioButton" name="radRecenterWhenNeeded">
-                <property name="text">
-                 <string>When leaving</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="0">
-               <widget class="QRadioButton" name="radNeverRecenter">
-                <property name="text">
-                 <string>Never</string>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="0">
-               <widget class="QCheckBox" name="mRotateMapCheckBox">
-                <property name="text">
-                 <string>Rotate map to match GPS direction</string>
-                </property>
-               </widget>
-              </item>
-              <item row="5" column="0">
-               <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="0,1">
-                <property name="leftMargin">
-                 <number>20</number>
-                </property>
-                <item>
-                 <widget class="QLabel" name="label_12">
-                  <property name="text">
-                   <string>Frequency</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QgsSpinBox" name="mSpinMapRotateInterval">
-                  <property name="enabled">
-                   <bool>false</bool>
-                  </property>
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="specialValueText">
-                   <string>On GPS signal</string>
-                  </property>
-                  <property name="suffix">
-                   <string> s</string>
-                  </property>
-                  <property name="minimum">
-                   <number>0</number>
-                  </property>
-                  <property name="maximum">
-                   <number>1000</number>
-                  </property>
-                  <property name="singleStep">
-                   <number>1</number>
-                  </property>
-                  <property name="value">
-                   <number>0</number>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item row="3" column="0">
-            <widget class="QgsCollapsibleGroupBox" name="mGroupShowMarker">
-             <property name="title">
-              <string>Cursor</string>
-             </property>
-             <property name="checkable">
-              <bool>true</bool>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_3">
-              <property name="topMargin">
-               <number>4</number>
-              </property>
-              <property name="bottomMargin">
-               <number>4</number>
-              </property>
-              <property name="verticalSpacing">
-               <number>2</number>
-              </property>
-              <item row="1" column="2">
-               <widget class="QLabel" name="label_2">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="text">
-                 <string>Large</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <spacer name="horizontalSpacer_2">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>10</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="0" column="0" colspan="3">
-               <widget class="QSlider" name="mSliderMarkerSize">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimum">
-                 <number>8</number>
-                </property>
-                <property name="maximum">
-                 <number>128</number>
-                </property>
-                <property name="singleStep">
-                 <number>4</number>
-                </property>
-                <property name="pageStep">
-                 <number>8</number>
-                </property>
-                <property name="sliderPosition">
-                 <number>10</number>
-                </property>
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="tickPosition">
-                 <enum>QSlider::TicksBelow</enum>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="label">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="text">
-                 <string>Small</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item row="6" column="0">
-            <widget class="QgsCollapsibleGroupBox" name="mShowBearingLineCheck">
-             <property name="title">
-              <string>Show Bearing Line</string>
-             </property>
-             <property name="checkable">
-              <bool>true</bool>
-             </property>
-             <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="0,1">
-              <item>
-               <widget class="QLabel" name="label_11">
-                <property name="text">
-                 <string>Line style</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QgsSymbolButton" name="mBearingLineStyleButton">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </widget>
-       </item>
-      </layout>
-     </widget>
      <widget class="QWidget" name="stackedWidgetPage5">
       <layout class="QGridLayout" name="gridLayout_6">
        <property name="leftMargin">
@@ -1350,7 +571,7 @@ gray = no data
      </widget>
     </widget>
    </item>
-   <item row="1" column="0">
+   <item row="0" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <property name="spacing">
       <number>2</number>
@@ -1407,23 +628,6 @@ gray = no data
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="mBtnOptions">
-       <property name="toolTip">
-        <string>Options</string>
-       </property>
-       <property name="text">
-        <string>…</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/mActionOptions.svg</normaloff>:/images/themes/default/mActionOptions.svg</iconset>
-       </property>
-       <property name="autoRaise">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QToolButton" name="mBtnDebug">
        <property name="toolTip">
         <string>Debug</string>
@@ -1434,6 +638,23 @@ gray = no data
        <property name="icon">
         <iconset resource="../../images/images.qrc">
          <normaloff>:/images/themes/default/mActionEditCopy.svg</normaloff>:/images/themes/default/mActionEditCopy.svg</iconset>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mBtnPopupOptions">
+       <property name="toolTip">
+        <string>Options</string>
+       </property>
+       <property name="text">
+        <string>…</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionOptions.svg</normaloff>:/images/themes/default/mActionOptions.svg</iconset>
        </property>
        <property name="autoRaise">
         <bool>true</bool>
@@ -1454,18 +675,42 @@ gray = no data
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="mRecenterButton">
+      <widget class="QLabel" name="mLblStatusIndicator">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="text">
-        <string>Recenter</string>
+       <property name="minimumSize">
+        <size>
+         <width>42</width>
+         <height>0</height>
+        </size>
        </property>
-       <property name="checkable">
-        <bool>false</bool>
+       <property name="maximumSize">
+        <size>
+         <width>42</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string>Quick status indicator:
+green = good or 3D fix
+yellow = good 2D fix
+red = no fix or bad fix
+gray = no data
+
+2D/3D depends on this information being available</string>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::Box</enum>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -1491,37 +736,10 @@ gray = no data
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsFieldComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsfieldcombobox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsSymbolButton</class>
-   <extends>QToolButton</extends>
-   <header>qgssymbolbutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsPanelWidget</class>
@@ -1529,63 +747,19 @@ gray = no data
    <header>qgspanelwidget.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header location="global">qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>mBtnAddVertex</tabstop>
-  <tabstop>mBtnResetFeature</tabstop>
   <tabstop>mBtnPosition</tabstop>
   <tabstop>mBtnSignal</tabstop>
   <tabstop>mBtnSatellites</tabstop>
-  <tabstop>mBtnOptions</tabstop>
   <tabstop>mBtnDebug</tabstop>
-  <tabstop>mRecenterButton</tabstop>
   <tabstop>mConnectButton</tabstop>
-  <tabstop>scrollArea</tabstop>
-  <tabstop>mRadAutodetect</tabstop>
-  <tabstop>mRadInternal</tabstop>
-  <tabstop>mRadUserPath</tabstop>
-  <tabstop>mCboDevices</tabstop>
-  <tabstop>mBtnRefreshDevices</tabstop>
-  <tabstop>mRadGpsd</tabstop>
-  <tabstop>mGpsdHost</tabstop>
-  <tabstop>mGpsdPort</tabstop>
-  <tabstop>mGpsdDevice</tabstop>
-  <tabstop>mCbxAutoCommit</tabstop>
-  <tabstop>mCboTimestampField</tabstop>
-  <tabstop>mCboTimestampFormat</tabstop>
-  <tabstop>mCboTimeZones</tabstop>
-  <tabstop>mCbxLeapSeconds</tabstop>
-  <tabstop>mLeapSeconds</tabstop>
-  <tabstop>mCbxAutoAddVertices</tabstop>
-  <tabstop>mSpinTrackWidth</tabstop>
-  <tabstop>mBtnTrackColor</tabstop>
-  <tabstop>mTravelBearingCheckBox</tabstop>
-  <tabstop>mGroupShowMarker</tabstop>
-  <tabstop>mSliderMarkerSize</tabstop>
-  <tabstop>mCboAcquisitionInterval</tabstop>
-  <tabstop>mCboDistanceThreshold</tabstop>
-  <tabstop>radRecenterMap</tabstop>
-  <tabstop>radRecenterWhenNeeded</tabstop>
-  <tabstop>mSpinMapExtentMultiplier</tabstop>
-  <tabstop>radNeverRecenter</tabstop>
-  <tabstop>mRotateMapCheckBox</tabstop>
-  <tabstop>mSpinMapRotateInterval</tabstop>
-  <tabstop>mShowBearingLineCheck</tabstop>
-  <tabstop>mBearingLineStyleButton</tabstop>
-  <tabstop>mLogFileGroupBox</tabstop>
-  <tabstop>mTxtLogFile</tabstop>
-  <tabstop>mBtnLogFile</tabstop>
   <tabstop>mGPSPlainTextEdit</tabstop>
   <tabstop>scrollArea_2</tabstop>
   <tabstop>mTxtLatitude</tabstop>
   <tabstop>mTxtLongitude</tabstop>
   <tabstop>mTxtAltitude</tabstop>
+  <tabstop>mTxtAltitudeEllipsoid</tabstop>
   <tabstop>mTxtAltitudeDiff</tabstop>
   <tabstop>mTxtDateTime</tabstop>
   <tabstop>mTxtSpeed</tabstop>
@@ -1601,443 +775,13 @@ gray = no data
   <tabstop>mTxtQuality</tabstop>
   <tabstop>mTxtStatus</tabstop>
   <tabstop>mTxtSatellitesUsed</tabstop>
-  <tabstop>mBtnCloseFeature</tabstop>
+  <tabstop>mTxtTotalTrackLength</tabstop>
+  <tabstop>mTxtDirectTrackLength</tabstop>
+  <tabstop>mBtnPopupOptions</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
  </resources>
- <connections>
-  <connection>
-   <sender>mRadAutodetect</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mCboDevices</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>186</x>
-     <y>140</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>196</x>
-     <y>218</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mRadUserPath</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mCboDevices</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>250</x>
-     <y>188</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>242</x>
-     <y>218</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mRadAutodetect</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mGpsdHost</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>191</x>
-     <y>140</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>264</x>
-     <y>253</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mRadAutodetect</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mGpsdPort</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>278</x>
-     <y>140</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>264</x>
-     <y>282</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mRadAutodetect</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mGpsdDevice</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>278</x>
-     <y>140</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>264</x>
-     <y>311</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mRadUserPath</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mGpsdHost</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>79</x>
-     <y>188</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>142</x>
-     <y>253</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mRadUserPath</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mGpsdPort</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>278</x>
-     <y>188</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>264</x>
-     <y>282</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mRadUserPath</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mGpsdDevice</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>278</x>
-     <y>188</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>264</x>
-     <y>311</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mRadUserPath</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mCboDevices</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>278</x>
-     <y>188</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>253</x>
-     <y>218</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mRadUserPath</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mBtnRefreshDevices</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>278</x>
-     <y>188</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>277</x>
-     <y>216</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mRadAutodetect</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mBtnRefreshDevices</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>278</x>
-     <y>140</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>277</x>
-     <y>216</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mRadGpsd</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mGpsdHost</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>75</x>
-     <y>243</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>196</x>
-     <y>253</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mRadGpsd</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mGpsdPort</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>278</x>
-     <y>243</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>264</x>
-     <y>282</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mRadGpsd</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mGpsdDevice</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>278</x>
-     <y>243</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>264</x>
-     <y>311</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mRadGpsd</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mCboDevices</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>278</x>
-     <y>243</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>253</x>
-     <y>218</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mRadGpsd</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mBtnRefreshDevices</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>278</x>
-     <y>243</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>277</x>
-     <y>216</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>radRecenterWhenNeeded</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mSpinMapExtentMultiplier</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>151</x>
-     <y>597</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>180</x>
-     <y>622</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>radRecenterMap</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mSpinMapExtentMultiplier</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>151</x>
-     <y>573</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>180</x>
-     <y>622</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>radNeverRecenter</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mSpinMapExtentMultiplier</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>151</x>
-     <y>652</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>180</x>
-     <y>622</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mCbxAutoAddVertices</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mBtnAddVertex</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>130</x>
-     <y>424</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>122</x>
-     <y>41</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mConnectButton</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mDeviceGroupBox</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>191</x>
-     <y>71</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>107</x>
-     <y>173</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mConnectButton</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mLogFileGroupBox</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>191</x>
-     <y>71</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>109</x>
-     <y>684</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mRadInternal</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mGpsdHost</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>54</x>
-     <y>154</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>99</x>
-     <y>261</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mRadInternal</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mGpsdPort</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>40</x>
-     <y>160</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>100</x>
-     <y>288</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mRadInternal</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mGpsdDevice</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>27</x>
-     <y>159</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>107</x>
-     <y>319</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mRadInternal</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mCboDevices</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>140</x>
-     <y>152</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>129</x>
-     <y>211</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mRadInternal</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mBtnRefreshDevices</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>150</x>
-     <y>153</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>172</x>
-     <y>204</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

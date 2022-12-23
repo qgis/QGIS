@@ -32,7 +32,7 @@ Constructor for QgsFillSymbol, with the specified list of initial symbol ``layer
 
 Ownership of the ``layers`` are transferred to the symbol.
 %End
-    void setAngle( double angle );
+    void setAngle( double angle ) const;
 
     void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );
 %Docstring

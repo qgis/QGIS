@@ -7,7 +7,7 @@
         size="64"
       ></v-progress-circular>
     </v-overlay>
-    <Error v-if="error.length > 0" :error="error" />
+    <MyError v-if="error.length > 0" :error="error" />
     <template v-else>
       <v-app-bar app dense collapse-on-scroll clipped-left color="green" dark>
         <v-app-bar-nav-icon
@@ -83,7 +83,7 @@ import MapToolbar from "@/components/MapToolbar.vue";
 import MapFooter from "@/components/MapFooter.vue";
 import LeftSidebar from "@/components/LeftSidebar.vue";
 import AttributeTable from "@/components/AttributeTable.vue";
-import Error from "@/components/Error.vue";
+import MyError from "@/components/MyError.vue";
 import { LMap, LControlAttribution, LTileLayer } from "vue2-leaflet";
 import WmsSource from "@/js/WmsSource.js";
 import "leaflet/dist/leaflet.css";
@@ -114,7 +114,7 @@ export default {
     LTileLayer,
     MapToolbar,
     MapFooter,
-    Error,
+    MyError,
     LeftSidebar,
     AttributeTable,
   },

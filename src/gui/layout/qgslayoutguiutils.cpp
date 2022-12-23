@@ -127,6 +127,7 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
 
     if ( mapCanvas )
     {
+      map->setMapRotation( mapCanvas->rotation() );
       map->zoomToExtent( mapCanvas->mapSettings().visibleExtent() );
     }
 
@@ -228,10 +229,24 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
     const QString defaultFontString = settings.value( QStringLiteral( "LayoutDesigner/defaultFont" ), QVariant(), QgsSettings::Gui ).toString();
     if ( !defaultFontString.isEmpty() )
     {
-      legend->rstyle( QgsLegendStyle::Title ).rfont().setFamily( defaultFontString );
-      legend->rstyle( QgsLegendStyle::Group ).rfont().setFamily( defaultFontString );
-      legend->rstyle( QgsLegendStyle::Subgroup ).rfont().setFamily( defaultFontString );
-      legend->rstyle( QgsLegendStyle::SymbolLabel ).rfont().setFamily( defaultFontString );
+      QFont font;
+      font.setFamily( defaultFontString );
+
+      QgsTextFormat f = legend->rstyle( QgsLegendStyle::Title ).textFormat();
+      f.setFont( font );
+      legend->rstyle( QgsLegendStyle::Title ).setTextFormat( f );
+
+      f = legend->rstyle( QgsLegendStyle::Group ).textFormat();
+      f.setFont( font );
+      legend->rstyle( QgsLegendStyle::Group ).setTextFormat( f );
+
+      f = legend->rstyle( QgsLegendStyle::Subgroup ).textFormat();
+      f.setFont( font );
+      legend->rstyle( QgsLegendStyle::Subgroup ).setTextFormat( f );
+
+      f = legend->rstyle( QgsLegendStyle::SymbolLabel ).textFormat();
+      f.setFont( font );
+      legend->rstyle( QgsLegendStyle::SymbolLabel ).setTextFormat( f );
     }
 
     legend->updateLegend();

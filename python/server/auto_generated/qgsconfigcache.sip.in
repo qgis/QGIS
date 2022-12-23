@@ -11,6 +11,7 @@
 
 
 
+
 class QgsConfigCache : QObject
 {
 %Docstring(signature="appended")
@@ -23,6 +24,13 @@ Cache for server configuration.
 #include "qgsconfigcache.h"
 %End
   public:
+
+    static void initialize( QgsServerSettings *settings );
+%Docstring
+Initialize from settings.
+
+This method must be called prior any call to `QgsConfigCache.instance`
+%End
 
     static QgsConfigCache *instance();
 %Docstring
@@ -53,9 +61,36 @@ value is ``False``).
 .. versionadded:: 3.0
 %End
 
+    QString strategyName() const;
+%Docstring
+Returns the name of the current strategy
+
+.. versionadded:: 3.26
+%End
+
+  public:
+    QgsConfigCache( QgsServerSettings *settings );
+%Docstring
+Initialize from settings
+%End
+
+
   private:
     QgsConfigCache();
+  public slots:
+    void removeChangedEntry( const QString &path );
+%Docstring
+Remove cache entry
+%End
+
+    void removeChangedEntries();
+%Docstring
+Remove all changed cache entries
+%End
 };
+
+
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

@@ -229,10 +229,19 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
     void setSvgStrokeWidth( double width );
 
     /**
-     * Returns the current picture mode (image format).
-     * \see setMode()
+     * Returns the current picture mode (image format), FormatUnknown if given
+     * picture format is unknown
+     * \see setMode() originalMode()
      */
     Format mode() const { return mMode; }
+
+    /**
+     * Returns the original set picture mode (image format).
+     * It could differ from mode() if given picture format is unknown
+     * \see setMode() mode()
+     * \since 3.22
+     */
+    Format originalMode() const { return mOriginalMode; }
 
     /**
      * Sets the current picture \a mode (image format).
@@ -330,6 +339,7 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
     //! Absolute path to the image (may be also HTTP URL)
     QString mSourcePath;
     Format mMode = FormatUnknown;
+    Format mOriginalMode = FormatUnknown;
 
     QSize mDefaultSvgSize;
 

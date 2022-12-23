@@ -1,8 +1,0 @@
-Land Use Scenario Generator
-shapes_tools
-QgsProcessingParameterFeatureSource|FIELDS|Fields|-1|None|False
-QgsProcessingParameterFeatureSource|FIELD_ID|Field Identifier|5|None|False
-QgsProcessingParameterVectorDestination|SCENARIO|Land Use Scenario
-QgsProcessingParameterEnum|OUTPUT|Output of...|[0] Identifier;[1] Name|False|0
-QgsProcessingParameterFeatureSource|STATISTICS|Crop Statistics|5|None|False
-QgsProcessingParameterFeatureSource|KNOWN_CROPS|Known Crops|5|None|True

@@ -22,17 +22,6 @@
 //qgis includes...
 #include <qgstemporalnavigationobject.h>
 
-char *toString( const QgsDateTimeRange &range )
-{
-  const QString str = QStringLiteral( "<QgsDateTimeRange: %1%2, %3%4>" ).arg(
-                        range.includeBeginning() ? QStringLiteral( "[" ) : QStringLiteral( "(" ),
-                        range.begin().toString( Qt::ISODateWithMs ),
-                        range.end().toString( Qt::ISODateWithMs ),
-                        range.includeEnd() ? QStringLiteral( "]" ) : QStringLiteral( ")" ) );
-  char *dst = new char[str.size() + 1];
-  return qstrcpy( dst, str.toLocal8Bit().constData() );
-}
-
 /**
  * \ingroup UnitTests
  * This is a unit test for the QgsTemporalNavigationObject class.
@@ -351,6 +340,7 @@ void TestQgsTemporalNavigationObject::expressionContext()
   QCOMPARE( scope->variable( QStringLiteral( "frame_duration" ) ).value< QgsInterval >().seconds(), 3600.0 );
   QCOMPARE( scope->variable( QStringLiteral( "frame_timestep" ) ).value< double >(), 1.0 );
   QCOMPARE( scope->variable( QStringLiteral( "frame_timestep_unit" ) ).value< QgsUnitTypes::TemporalUnit >(), QgsUnitTypes::TemporalUnit::TemporalHours );
+  QCOMPARE( scope->variable( QStringLiteral( "frame_timestep_units" ) ).toString(), QStringLiteral( "hours" ) );
   QCOMPARE( scope->variable( QStringLiteral( "frame_number" ) ).toInt(), 1 );
   QCOMPARE( scope->variable( QStringLiteral( "animation_start_time" ) ).toDateTime(), range.begin() );
   QCOMPARE( scope->variable( QStringLiteral( "animation_end_time" ) ).toDateTime(), range.end() );

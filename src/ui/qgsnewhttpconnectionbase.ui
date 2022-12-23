@@ -140,35 +140,35 @@
          <string>WMS/WMTS Options</string>
         </property>
         <layout class="QGridLayout" name="gridLayout_2">
-         <item row="3" column="0" colspan="2">
+         <item row="5" column="0" colspan="2">
           <widget class="QCheckBox" name="cbxWmsIgnoreAxisOrientation">
            <property name="text">
             <string>Ignore axis orientation (WMS 1.3/WMTS)</string>
            </property>
           </widget>
          </item>
-         <item row="2" column="0" colspan="2">
+         <item row="3" column="0" colspan="2">
           <widget class="QCheckBox" name="cbxIgnoreGetFeatureInfoURI">
            <property name="text">
             <string>Ignore GetFeatureInfo URI reported in capabilities</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="0" colspan="2">
+         <item row="2" column="0" colspan="2">
           <widget class="QCheckBox" name="cbxIgnoreGetMapURI">
            <property name="text">
             <string>Ignore GetMap/GetTile/GetLegendGraphic URI reported in capabilities</string>
            </property>
           </widget>
          </item>
-         <item row="9" column="0" colspan="2">
+         <item row="10" column="0" colspan="2">
           <widget class="QCheckBox" name="cbxSmoothPixmapTransform">
            <property name="text">
             <string>Smooth pixmap transform</string>
            </property>
           </widget>
          </item>
-         <item row="5" column="0" colspan="2">
+         <item row="6" column="0" colspan="2">
           <widget class="QCheckBox" name="cbxWmsInvertAxisOrientation">
            <property name="text">
             <string>Invert axis orientation</string>
@@ -181,10 +181,23 @@
          <item row="0" column="0">
           <widget class="QLabel" name="lblDpiMode">
            <property name="text">
-            <string>DPI-&amp;Mode</string>
+            <string>WMS DPI-&amp;Mode</string>
            </property>
            <property name="buddy">
             <cstring>cmbDpiMode</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QComboBox" name="cmbTilePixelRatio"/>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="lblTilePixelRatio">
+           <property name="text">
+            <string>WMTS server-side tile pixel ratio</string>
+           </property>
+           <property name="buddy">
+            <cstring>cmbTilePixelRatio</cstring>
            </property>
           </widget>
          </item>

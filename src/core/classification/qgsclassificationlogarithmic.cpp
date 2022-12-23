@@ -38,7 +38,7 @@ QgsClassificationMethod *QgsClassificationLogarithmic::clone() const
 
 QString QgsClassificationLogarithmic::name() const
 {
-  return QObject::tr( "Logarithmic scale" );
+  return QObject::tr( "Logarithmic Scale" );
 }
 
 QString QgsClassificationLogarithmic::id() const

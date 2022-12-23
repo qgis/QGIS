@@ -40,7 +40,7 @@ class QgsPointCloudLayer3DRendererWidget : public QgsMapLayerConfigWidget
     void setDockMode( bool dockMode ) override;
 
     //! no transfer of ownership
-    void setRenderer( const QgsPointCloudLayer3DRenderer *renderer, QgsPointCloudLayer *layer );
+    void setRenderer( const QgsPointCloudLayer3DRenderer *renderer );
     //! no transfer of ownership
     QgsPointCloudLayer3DRenderer *renderer();
 

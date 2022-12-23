@@ -304,6 +304,8 @@ class GUI_EXPORT QgsExtentWidget : public QWidget, private Ui::QgsExtentGroupBox
 
     QgsMapLayer *mapLayerFromMimeData( const QMimeData *data ) const;
 
+    friend class TestProcessingGui;
+
 
 };
 

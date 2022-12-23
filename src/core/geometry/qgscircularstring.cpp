@@ -517,7 +517,7 @@ QByteArray QgsCircularString::asWkb( WkbFlags flags ) const
   wkb << static_cast<quint32>( wkbType() );
   QgsPointSequence pts;
   points( pts );
-  QgsGeometryUtils::pointsToWKB( wkb, pts, is3D(), isMeasure() );
+  QgsGeometryUtils::pointsToWKB( wkb, pts, is3D(), isMeasure(), flags );
   return wkbArray;
 }
 
@@ -1347,8 +1347,14 @@ bool QgsCircularString::pointAt( int node, QgsPoint &point, Qgis::VertexType &ty
 
 void QgsCircularString::sumUpArea( double &sum ) const
 {
-  int maxIndex = numPoints() - 2;
+  if ( mHasCachedSummedUpArea )
+  {
+    sum += mSummedUpArea;
+    return;
+  }
 
+  int maxIndex = numPoints() - 2;
+  mSummedUpArea = 0;
   for ( int i = 0; i < maxIndex; i += 2 )
   {
     QgsPoint p1( mX[i], mY[i] );
@@ -1359,11 +1365,11 @@ void QgsCircularString::sumUpArea( double &sum ) const
     if ( p1 == p3 )
     {
       double r2 = QgsGeometryUtils::sqrDistance2D( p1, p2 ) / 4.0;
-      sum += M_PI * r2;
+      mSummedUpArea += M_PI * r2;
       continue;
     }
 
-    sum += 0.5 * ( mX[i] * mY[i + 2] - mY[i] * mX[i + 2] );
+    mSummedUpArea += 0.5 * ( mX[i] * mY[i + 2] - mY[i] * mX[i + 2] );
 
     //calculate area between circle and chord, then sum / subtract from total area
     double midPointX = ( p1.x() + p3.x() ) / 2.0;
@@ -1397,13 +1403,16 @@ void QgsCircularString::sumUpArea( double &sum ) const
 
     if ( !circlePointLeftOfLine )
     {
-      sum += circleChordArea;
+      mSummedUpArea += circleChordArea;
     }
     else
     {
-      sum -= circleChordArea;
+      mSummedUpArea -= circleChordArea;
     }
   }
+
+  mHasCachedSummedUpArea = true;
+  sum += mSummedUpArea;
 }
 
 bool QgsCircularString::hasCurvedSegments() const

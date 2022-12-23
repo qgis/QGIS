@@ -77,7 +77,6 @@ class CORE_EXPORT QgsSettingsEntryVariant : public QgsSettingsEntryByReference<Q
     QVariant convertFromVariant( const QVariant &value ) const override SIP_FORCE {return value;}
 };
 
-
 /**
  * \class QgsSettingsEntryString
  * \ingroup core
@@ -149,7 +148,7 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntryByReference<QS
     /**
      * Returns the string minimum length.
      */
-    int minLength();
+    int minLength() const;
 
     /**
      * Set the string maximum length.
@@ -161,7 +160,7 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntryByReference<QS
     /**
      * Returns the string maximum length. By -1 there is no limitation.
      */
-    int maxLength();
+    int maxLength() const;
 
   private:
     bool checkValue( const QString &value ) const override SIP_FORCE;
@@ -362,7 +361,7 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryByValue<qlong
     /**
      * Returns the minimum value.
      */
-    qlonglong minValue();
+    qlonglong minValue() const;
 
     /**
      * Set the maximum value.
@@ -374,7 +373,7 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryByValue<qlong
     /**
      * Returns the maximum value.
      */
-    qlonglong maxValue();
+    qlonglong maxValue() const;
 
   private:
     bool checkValue( qlonglong value ) const override SIP_FORCE;
@@ -556,6 +555,64 @@ class CORE_EXPORT QgsSettingsEntryColor : public QgsSettingsEntryByReference<QCo
 
   private:
     QColor convertFromVariant( const QVariant &value ) const override SIP_FORCE;
+
+};
+
+/**
+ * \class QgsSettingsEntryVariantMap
+ * \ingroup core
+ *
+ * \brief A string list settings entry.
+ * \since QGIS 3.30
+ */
+class CORE_EXPORT QgsSettingsEntryVariantMap : public QgsSettingsEntryByReference<QVariantMap>
+{
+  public:
+
+    /**
+     * Constructor for QgsSettingsEntryVariantMap.
+     *
+     * The \a key argument specifies the final part of the settings key.
+     * The \a section argument specifies the section.
+     * The \a defaultValue argument specifies the default value for the settings entry.
+     * The \a description argument specifies a description for the settings entry.
+     * The \a options arguments specifies the options for the settings entry.
+     */
+    QgsSettingsEntryVariantMap( const QString &key,
+                                const QString &section,
+                                const QVariantMap &defaultValue = QVariantMap(),
+                                const QString &description = QString(),
+                                Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_MAKE_PRIVATE
+  : QgsSettingsEntryByReference( key, section, defaultValue, description, options )
+    {
+    }
+
+#ifdef SIP_RUN
+
+    /**
+     * Constructor for QgsSettingsEntryStringMap.
+     * This constructor is intended to be used from plugins.
+     *
+     * The \a key argument specifies the key of the settings.
+     * The \a pluginName argument is inserted in the key after the section.
+     * The \a defaultValue argument specifies the default value for the settings entry.
+     * The \a description argument specifies a description for the settings entry.
+     * The \a options arguments specifies the options for the settings entry.
+     */
+    QgsSettingsEntryVariantMap( const QString &key,
+                                const QString &pluginName,
+                                const QVariantMap &defaultValue = QVariantMap(),
+                                const QString &description = QString(),
+                                Qgis::SettingsOptions options = Qgis::SettingsOptions() );
+    % MethodCode
+    sipCpp = new sipQgsSettingsEntryVariantMap( QgsSettingsEntryVariantMap( *a0, QStringLiteral( "plugins/%1" ).arg( *a1 ), *a2, *a3, *a4 ) );
+    % End
+#endif
+
+    virtual Qgis::SettingsType settingsType() const override;
+
+  private:
+    QVariantMap convertFromVariant( const QVariant &value ) const override SIP_FORCE;
 
 };
 

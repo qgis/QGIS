@@ -46,6 +46,16 @@ QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( const QgsVectorLayer *
     layer->mJoinBuffer->createJoinCaches();
 
   mJoinBuffer.reset( layer->mJoinBuffer->clone() );
+  for ( const QgsVectorLayerJoinInfo &joinInfo : mJoinBuffer->vectorJoins() )
+  {
+    if ( QgsVectorLayer *joinLayer = joinInfo.joinLayer() )
+    {
+      JoinLayerSource source;
+      source.joinSource = std::make_shared< QgsVectorLayerFeatureSource >( joinLayer );
+      source.joinLayerFields = joinLayer->fields();
+      mJoinSources.insert( joinLayer->id(), source );
+    }
+  }
 
   mExpressionFieldBuffer.reset( new QgsExpressionFieldBuffer( *layer->mExpressionFieldBuffer ) );
   mCrs = layer->crs();
@@ -434,7 +444,7 @@ bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature &f )
 
   if ( guard.hasStackOverflow() )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Stack overflow, too many nested feature iterators.\nIterated layers:\n%3\n..." ).arg( mSource->id(), guard.topFrames() ), QObject::tr( "General" ), Qgis::MessageLevel::Critical );
+    QgsMessageLog::logMessage( QObject::tr( "Stack overflow, too many nested feature iterators.\nIterated layers:\n%1\n..." ).arg( guard.topFrames() ), QObject::tr( "General" ), Qgis::MessageLevel::Critical );
     return false;
   }
 
@@ -753,19 +763,19 @@ void QgsVectorLayerFeatureIterator::prepareJoin( int fieldIdx )
   const QgsVectorLayerJoinInfo *joinInfo = mSource->mJoinBuffer->joinForFieldIndex( fieldIdx, mSource->mFields, sourceLayerIndex );
   Q_ASSERT( joinInfo );
 
-  QgsVectorLayer *joinLayer = joinInfo->joinLayer();
-  if ( !joinLayer )
+  auto joinSourceIt = mSource->mJoinSources.constFind( joinInfo->joinLayerId() );
+  if ( joinSourceIt == mSource->mJoinSources.constEnd() )
     return;  // invalid join (unresolved reference to layer)
 
   if ( !mFetchJoinInfo.contains( joinInfo ) )
   {
     FetchJoinInfo info;
     info.joinInfo = joinInfo;
-    info.joinSource = std::make_shared< QgsVectorLayerFeatureSource >( joinLayer );
+    info.joinSource = joinSourceIt->joinSource;
     info.indexOffset = mSource->mJoinBuffer->joinedFieldsOffset( joinInfo, mSource->mFields );
     info.targetField = mSource->mFields.indexFromName( joinInfo->targetFieldName() );
-    info.joinField = joinLayer->fields().indexFromName( joinInfo->joinFieldName() );
-    info.joinLayerFields = joinLayer->fields();
+    info.joinField = joinSourceIt->joinLayerFields.indexFromName( joinInfo->joinFieldName() );
+    info.joinLayerFields = joinSourceIt->joinLayerFields;
 
     // for joined fields, we always need to request the targetField from the provider too
     if ( !mPreparedFields.contains( info.targetField ) && !mFieldsToPrepare.contains( info.targetField ) )
@@ -1126,7 +1136,7 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
 
   subsetString.append( QStringLiteral( "\"%1\"" ).arg( joinFieldName ) );
 
-  if ( joinValue.isNull() )
+  if ( QgsVariantUtils::isNull( joinValue ) )
   {
     subsetString += QLatin1String( " IS NULL" );
   }
@@ -1155,7 +1165,7 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
   // so we do not have to cache everything
   if ( joinInfo->hasSubset() )
   {
-    const QStringList subsetNames = QgsVectorLayerJoinInfo::joinFieldNamesSubset( *joinInfo );
+    const QStringList subsetNames = QgsVectorLayerJoinInfo::joinFieldNamesSubset( *joinInfo, joinLayerFields );
     const QVector<int> subsetIndices = QgsVectorLayerJoinBuffer::joinSubsetIndices( joinLayerFields, subsetNames );
     joinedAttributeIndices = qgis::setToList( qgis::listToSet( attributes ).intersect( qgis::listToSet( subsetIndices.toList() ) ) );
   }

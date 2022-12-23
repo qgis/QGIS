@@ -37,6 +37,7 @@ class QgsLayoutRuler;
 class QgsLayoutViewMenuProvider;
 class QgsLayoutViewSnapMarker;
 class QgsLayoutReportSectionLabel;
+class QgsScreenHelper;
 
 /**
  * \ingroup gui
@@ -544,17 +545,17 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     void scrollContentsBy( int dx, int dy ) override;
     void dragEnterEvent( QDragEnterEvent *e ) override;
     void paintEvent( QPaintEvent *event ) override;
-    void showEvent( QShowEvent *event ) override;
 
   private slots:
 
     void invalidateCachedRenders();
-    void updateDevicePixelFromScreen();
 
   private:
 
     //! Zoom layout from a mouse wheel event
     void wheelZoom( QWheelEvent *event );
+
+    QgsScreenHelper *mScreenHelper = nullptr;
 
     QPointer< QgsLayoutViewTool > mTool;
 
@@ -579,9 +580,6 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     QgsPreviewEffect *mPreviewEffect = nullptr;
 
     bool mPaintingEnabled = true;
-
-    double mScreenDpi = 96.0;
-    QMetaObject::Connection mScreenDpiChangedConnection;
 
     friend class TestQgsLayoutView;
     friend class QgsLayoutMouseHandles;

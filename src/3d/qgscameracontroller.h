@@ -166,6 +166,7 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
 
     /**
      * Returns distance of the camera from the point it is looking at.
+     * The value should not be smaller than 10.
      * \since QGIS 3.4
      */
     float distance() const { return mCameraPose.distanceFromCenterPoint(); }
@@ -232,7 +233,7 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     //! Emitted when viewport rectangle has been updated
     void viewportChanged();
     //! Emitted when the navigation mode is changed using the hotkey ctrl + ~
-    void navigationModeHotKeyPressed( QgsCameraController::NavigationMode mode );
+    void navigationModeChanged( QgsCameraController::NavigationMode mode );
 
     /**
      * Emitted whenever the camera movement speed is changed by the controller.
@@ -275,13 +276,13 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
 
     void handleTerrainNavigationWheelZoom();
 
-    double cameraCenterElevation();
-
     /**
      * Returns the minimum depth value in the square [px - 3, px + 3] * [py - 3, py + 3]
      * If the value is 1, the average depth of all non void pixels is returned instead.
      */
     double sampleDepthBuffer( const QImage &buffer, int px, int py );
+
+    bool screenPointToWorldPos( QPoint position, Qt3DRender::QCamera *cameraBefore, double &depth, QVector3D &worldPosition );
 
   private:
     //! Camera that is being controlled

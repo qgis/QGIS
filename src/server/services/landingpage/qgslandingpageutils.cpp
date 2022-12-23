@@ -241,7 +241,7 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
     {
       QgsRectangle extent { viewSettings->defaultViewExtent() };
       // Need conversion?
-      if ( viewSettings->defaultViewExtent().crs().authid() != 4326 )
+      if ( viewSettings->defaultViewExtent().crs().authid() != QLatin1String( "EPSG:4326" ) )
       {
         QgsCoordinateTransform ct { p->crs(), QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), p->transformContext() };
         extent = ct.transform( extent );
@@ -252,7 +252,7 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
       // Old projects do not have view extent information, we have no choice than
       // re-read the project and extract the information from there
     {
-      QgsProject temporaryProject;
+      QgsProject temporaryProject( nullptr, Qgis::ProjectCapabilities() );
       QObject::connect( &temporaryProject, &QgsProject::readProject, qApp, [ & ]( const QDomDocument & projectDoc )
       {
         const QDomNodeList canvasElements { projectDoc.elementsByTagName( QStringLiteral( "mapcanvas" ) ) };
@@ -274,7 +274,7 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
               canvasElement.firstChildElement( QStringLiteral( "ymax" ) ).text().toDouble(),
             };
             // Need conversion?
-            if ( temporaryProject.crs().authid() != 4326 )
+            if ( temporaryProject.crs().authid() != QLatin1String( "EPSG:4326" ) )
             {
               QgsCoordinateTransform ct { temporaryProject.crs(), QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), temporaryProject.transformContext() };
               extent = ct.transform( extent );
@@ -355,7 +355,7 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
     }
     info["extent"] = json::array( { extent.xMinimum(), extent.yMinimum(), extent.xMaximum(), extent.yMaximum() } );
     QgsRectangle geographicExtent { extent };
-    if ( targetCrs.authid() != 4326 )
+    if ( targetCrs.authid() != QLatin1String( "EPSG:4326" ) )
     {
       QgsCoordinateTransform ct { targetCrs,  QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), p->transformContext() };
       geographicExtent = ct.transform( geographicExtent );

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<description>
+  <dir>haxbyish</dir>
+  <name>Haxbyish</name>
+  <full>
+    Variants on the ever-popular gradient by W.F. Haxby, the name
+    indicate the percentage saturation and value compared to the
+    original (which can be found in the gmt collection).
+  </full>
+  <date>01/08/2012</date>
+</description>

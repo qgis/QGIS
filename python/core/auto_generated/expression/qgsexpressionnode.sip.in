@@ -45,6 +45,9 @@ Abstract base class for all nodes that can appear in an expression.
       case QgsExpressionNode::ntCondition:
         sipType = sipType_QgsExpressionNodeCondition;
         break;
+      case QgsExpressionNode::ntBetweenOperator:
+        sipType = sipType_QgsExpressionNodeBetweenOperator;
+        break;
       default:
         sipType = 0;
         break;
@@ -62,6 +65,7 @@ Abstract base class for all nodes that can appear in an expression.
       ntColumnRef,
       ntCondition,
       ntIndexOperator,
+      ntBetweenOperator,
     };
 
 

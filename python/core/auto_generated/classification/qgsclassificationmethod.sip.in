@@ -19,6 +19,7 @@
 #include "qgsclassificationprettybreaks.h"
 #include "qgsclassificationquantile.h"
 #include "qgsclassificationstandarddeviation.h"
+#include "qgsclassificationfixedinterval.h"
 %End
 
 
@@ -87,6 +88,8 @@ class QgsClassificationMethod /Abstract/
       sipType = sipType_QgsClassificationQuantile;
     else if ( dynamic_cast<QgsClassificationStandardDeviation *>( sipCpp ) )
       sipType = sipType_QgsClassificationStandardDeviation;
+    else if ( dynamic_cast<QgsClassificationFixedInterval *>( sipCpp ) )
+      sipType = sipType_QgsClassificationFixedInterval;
     else
       sipType = 0;
 %End
@@ -97,6 +100,7 @@ class QgsClassificationMethod /Abstract/
       NoFlag,
       ValuesNotRequired,
       SymmetricModeAvailable,
+      IgnoresClassCount,
     };
     typedef QFlags<QgsClassificationMethod::MethodProperty> MethodProperties;
 
@@ -138,6 +142,13 @@ The id of the method as saved in the project, must be unique in registry
     virtual QIcon icon() const;
 %Docstring
 The icon of the method
+%End
+
+    QgsClassificationMethod::MethodProperties flags() const;
+%Docstring
+Returns the classification flags.
+
+.. versionadded:: 3.26
 %End
 
     virtual QString labelForRange( double lowerValue, double upperValue, ClassPosition position = Inner ) const;

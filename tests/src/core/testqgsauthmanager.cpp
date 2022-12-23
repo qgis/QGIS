@@ -34,7 +34,7 @@
  * \ingroup UnitTests
  * Unit tests for QgsAuthManager
  */
-class TestQgsAuthManager: public QObject
+class TestQgsAuthManager: public QgsTest
 {
     Q_OBJECT
 
@@ -48,7 +48,6 @@ class TestQgsAuthManager: public QObject
   private slots:
     void initTestCase();
     void cleanupTestCase();
-    void init();
     void cleanup();
 
     void testMasterPassword();
@@ -66,12 +65,13 @@ class TestQgsAuthManager: public QObject
     QString mPkiData;
     QString mTempDir;
     const char *mPass = nullptr;
-    QString mReport;
+
 };
 
 
 TestQgsAuthManager::TestQgsAuthManager()
-  : mPkiData( QStringLiteral( TEST_DATA_DIR ) + "/auth_system/certs_keys" )
+  : QgsTest( QStringLiteral( "QgsAuthManager Tests" ) )
+  , mPkiData( QStringLiteral( TEST_DATA_DIR ) + "/auth_system/certs_keys" )
   , mTempDir( QDir::tempPath() + "/auth" )
   , mPass( "pass" )
 {
@@ -80,8 +80,6 @@ TestQgsAuthManager::TestQgsAuthManager()
 void TestQgsAuthManager::initTestCase()
 {
   cleanupTempDir();
-
-  mReport += QLatin1String( "<h1>QgsAuthManager Tests</h1>\n" );
 
   // make QGIS_AUTH_DB_DIR_PATH temp dir for qgis-auth.db and master password file
   const QDir tmpDir = QDir::temp();
@@ -93,10 +91,6 @@ void TestQgsAuthManager::initTestCase()
   QgsApplication::initQgis();
   QVERIFY2( !QgsApplication::authManager()->isDisabled(),
             "Authentication system is DISABLED" );
-
-  QString mySettings = QgsApplication::showSettings();
-  mySettings = mySettings.replace( '\n', QLatin1String( "<br />\n" ) );
-  mReport += "<p>" + mySettings + "</p>\n";
 
   // verify QGIS_AUTH_DB_DIR_PATH (temp auth db path) worked
   const QString db1( QFileInfo( QgsApplication::authManager()->authenticationDatabasePath() ).canonicalFilePath() );
@@ -161,21 +155,6 @@ void TestQgsAuthManager::cleanupTestCase()
 {
   QgsApplication::exitQgis();
   cleanupTempDir();
-
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-    // QDesktopServices::openUrl( "file:///" + myReportFile );
-  }
-}
-
-void TestQgsAuthManager::init()
-{
-  mReport += "<h2>" + QString( QTest::currentTestFunction() ) + "</h2>\n";
 }
 
 void TestQgsAuthManager::reportRow( const QString &msg )
@@ -274,9 +253,10 @@ void TestQgsAuthManager::testAuthConfigs()
     QVERIFY( config == config2 );
 
     // changed config should update then correctly roundtrip
-    for ( const QString &key : config2.configMap().keys() )
+    const QgsStringMap configMap = config2.configMap();
+    for ( auto it = configMap.constBegin(); it != configMap.constEnd(); it++ )
     {
-      config2.setConfig( key, config2.configMap().value( key ) + "changed" );
+      config2.setConfig( it.key(), it.value() + "changed" );
     }
     config2.setName( config2.name() + "changed" );
     config2.setUri( config2.uri() + "changed" );

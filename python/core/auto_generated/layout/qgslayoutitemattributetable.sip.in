@@ -300,6 +300,8 @@ Queries the attribute table's vector layer for attributes to show in the table.
 
     virtual QgsConditionalStyle conditionalCellStyle( int row, int column ) const;
 
+    virtual QgsTextFormat textFormatForCell( int row, int column ) const;
+
     virtual QgsExpressionContextScope *scopeForCell( int row, int column ) const /Factory/;
 
 

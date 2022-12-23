@@ -67,20 +67,22 @@ void QgsProcessingModelChildAlgorithm::copyNonDefinitionPropertiesFromModel( Qgs
   int i = 0;
   for ( auto it = mModelOutputs.begin(); it != mModelOutputs.end(); ++it )
   {
-    if ( !existingChild.modelOutputs().contains( it.key() ) )
+    const QMap<QString, QgsProcessingModelOutput> existingChildModelOutputs = existingChild.modelOutputs();
+    auto existingOutputIt = existingChildModelOutputs.find( it.key() );
+    if ( existingOutputIt == existingChildModelOutputs.end() )
       continue;
 
-    if ( !existingChild.modelOutputs().value( it.key() ).position().isNull() )
+    if ( !existingOutputIt->position().isNull() )
     {
-      it.value().setPosition( existingChild.modelOutputs().value( it.key() ).position() );
-      it.value().setSize( existingChild.modelOutputs().value( it.key() ).size() );
+      it.value().setPosition( existingOutputIt->position() );
+      it.value().setSize( existingOutputIt->size() );
     }
     else
       it.value().setPosition( position() + QPointF( size().width(), ( i + 1.5 ) * size().height() ) );
 
     if ( QgsProcessingModelComment *comment = it.value().comment() )
     {
-      if ( const QgsProcessingModelComment *existingComment = existingChild.modelOutputs().value( it.key() ).comment() )
+      if ( const QgsProcessingModelComment *existingComment = existingOutputIt->comment() )
       {
         comment->setDescription( existingComment->description() );
         comment->setSize( existingComment->size() );

@@ -44,19 +44,38 @@ void QgsGeometryValidator::stop()
   mStop = true;
 }
 
-void QgsGeometryValidator::checkRingIntersections( int partIndex0, int ringIndex0, const QgsLineString *ring0, int partIndex1, int ringIndex1, const QgsLineString *ring1 )
+void QgsGeometryValidator::checkRingIntersections( int partIndex0, int ringIndex0, const QgsCurve *ring0, int partIndex1, int ringIndex1, const QgsCurve *ring1 )
 {
-  for ( int i = 0; !mStop && i < ring0->numPoints() - 1; i++ )
+  const QgsLineString *ringLine0 = qgsgeometry_cast< const QgsLineString * >( ring0 );
+  std::unique_ptr< QgsLineString > segmentisedRing0;
+  if ( !ringLine0 )
   {
-    const double ring0XAti = ring0->xAt( i );
-    const double ring0YAti = ring0->yAt( i );
-    const QgsVector v( ring0->xAt( i + 1 ) - ring0XAti, ring0->yAt( i + 1 ) - ring0YAti );
+    segmentisedRing0.reset( qgsgeometry_cast< QgsLineString * >( ring0->segmentize() ) );
+    ringLine0 = segmentisedRing0.get();
+  }
 
-    for ( int j = 0; !mStop && j < ring1->numPoints() - 1; j++ )
+  const QgsLineString *ringLine1 = qgsgeometry_cast< const QgsLineString * >( ring1 );
+  std::unique_ptr< QgsLineString > segmentisedRing1;
+  if ( !ringLine1 )
+  {
+    segmentisedRing1.reset( qgsgeometry_cast< QgsLineString * >( ring1->segmentize() ) );
+    ringLine1 = segmentisedRing1.get();
+  }
+
+  Q_ASSERT( ringLine0 );
+  Q_ASSERT( ringLine1 );
+
+  for ( int i = 0; !mStop && i < ringLine0->numPoints() - 1; i++ )
+  {
+    const double ring0XAti = ringLine0->xAt( i );
+    const double ring0YAti = ringLine0->yAt( i );
+    const QgsVector v( ringLine0->xAt( i + 1 ) - ring0XAti, ringLine0->yAt( i + 1 ) - ring0YAti );
+
+    for ( int j = 0; !mStop && j < ringLine1->numPoints() - 1; j++ )
     {
-      const double ring1XAtj = ring1->xAt( j );
-      const double ring1YAtj = ring1->yAt( j );
-      const QgsVector w( ring1->xAt( j + 1 ) - ring1XAtj, ring1->yAt( j + 1 ) - ring1YAtj );
+      const double ring1XAtj = ringLine1->xAt( j );
+      const double ring1YAtj = ringLine1->yAt( j );
+      const QgsVector w( ringLine1->xAt( j + 1 ) - ring1XAtj, ringLine1->yAt( j + 1 ) - ring1YAtj );
 
       double sX;
       double sY;
@@ -68,8 +87,8 @@ void QgsGeometryValidator::checkRingIntersections( int partIndex0, int ringIndex
         {
           d = -distLine2Point( ring1XAtj, ring1YAtj, w.perpVector(), sX, sY );
           if ( d > 0 && d < w.length() &&
-               ring0->pointN( i + 1 ) != ring1->pointN( j + 1 ) && ring0->pointN( i + 1 ) != ring1->pointN( j ) &&
-               ring0->pointN( i + 0 ) != ring1->pointN( j + 1 ) && ring0->pointN( i + 0 ) != ring1->pointN( j ) )
+               ringLine0->pointN( i + 1 ) != ringLine1->pointN( j + 1 ) && ringLine0->pointN( i + 1 ) != ringLine1->pointN( j ) &&
+               ringLine0->pointN( i + 0 ) != ringLine1->pointN( j + 1 ) && ringLine0->pointN( i + 0 ) != ringLine1->pointN( j ) )
           {
             const QString msg = QObject::tr( "segment %1 of ring %2 of polygon %3 intersects segment %4 of ring %5 of polygon %6 at %7, %8" )
                                 .arg( i ).arg( ringIndex0 ).arg( partIndex0 )
@@ -245,8 +264,8 @@ void QgsGeometryValidator::validatePolygon( int partIndex, const QgsCurvePolygon
   {
     for ( int j = i + 1; !mStop && j < polygon->numInteriorRings(); j++ )
     {
-      checkRingIntersections( partIndex, i + 1, qgsgeometry_cast< QgsLineString * >( polygon->interiorRing( i ) ),
-                              partIndex, j + 1, qgsgeometry_cast< QgsLineString * >( polygon->interiorRing( j ) ) );
+      checkRingIntersections( partIndex, i + 1, polygon->interiorRing( i ),
+                              partIndex, j + 1, polygon->interiorRing( j ) );
     }
   }
 
@@ -359,8 +378,8 @@ void QgsGeometryValidator::run()
               }
               else
               {
-                checkRingIntersections( i, 0, qgsgeometry_cast< const QgsLineString * >( poly->exteriorRing() ),
-                                        j, 0, qgsgeometry_cast< const QgsLineString * >( poly2->exteriorRing() ) );
+                checkRingIntersections( i, 0, poly->exteriorRing(),
+                                        j, 0, poly2->exteriorRing() );
               }
             }
           }

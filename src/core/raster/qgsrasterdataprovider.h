@@ -33,7 +33,7 @@
 
 #include "qgscolorrampshader.h"
 #include "qgsdataprovider.h"
-#include "qgsraster.h"
+#include "qgsrasterattributetable.h"
 #include "qgsfields.h"
 #include "qgsrasterinterface.h"
 #include "qgsrasterpyramid.h"
@@ -104,6 +104,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
       ProviderHintCanPerformProviderResampling = 1 << 4, //!< Provider can perform resampling (to be opposed to post rendering resampling) (since QGIS 3.16)
       ReloadData = 1 << 5, //!< Is able to force reload data / clear local caches. Since QGIS 3.18, see QgsDataProvider::reloadProviderData()
       DpiDependentData = 1 << 6, //! Provider's rendering is dependent on requested pixel size of the viewport (since QGIS 3.20)
+      NativeRasterAttributeTable = 1 << 7, //!< Indicates that the provider supports native raster attribute table (since QGIS 3.30)
     };
 
     //! Provider capabilities
@@ -153,68 +154,73 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     Qgis::DataType sourceDataType( int bandNo ) const override = 0;
 
     //! Returns data type for the band specified by number
-    virtual int colorInterpretation( int bandNo ) const;
+    virtual Qgis::RasterColorInterpretation colorInterpretation( int bandNo ) const;
 
-    QString colorName( int colorInterpretation ) const
+    /**
+     * Returns a string color name representation of a color interpretation.
+     */
+    QString colorName( Qgis::RasterColorInterpretation colorInterpretation ) const
     {
       // Modified copy from GDAL
       switch ( colorInterpretation )
       {
-        case QgsRaster::UndefinedColorInterpretation:
+        case Qgis::RasterColorInterpretation::Undefined:
           return QStringLiteral( "Undefined" );
 
-        case QgsRaster::GrayIndex:
+        case Qgis::RasterColorInterpretation::GrayIndex:
           return QStringLiteral( "Gray" );
 
-        case QgsRaster::PaletteIndex:
+        case Qgis::RasterColorInterpretation::PaletteIndex:
           return QStringLiteral( "Palette" );
 
-        case QgsRaster::RedBand:
+        case Qgis::RasterColorInterpretation::RedBand:
           return QStringLiteral( "Red" );
 
-        case QgsRaster::GreenBand:
+        case Qgis::RasterColorInterpretation::GreenBand:
           return QStringLiteral( "Green" );
 
-        case QgsRaster::BlueBand:
+        case Qgis::RasterColorInterpretation::BlueBand:
           return QStringLiteral( "Blue" );
 
-        case QgsRaster::AlphaBand:
+        case Qgis::RasterColorInterpretation::AlphaBand:
           return QStringLiteral( "Alpha" );
 
-        case QgsRaster::HueBand:
+        case Qgis::RasterColorInterpretation::HueBand:
           return QStringLiteral( "Hue" );
 
-        case QgsRaster::SaturationBand:
+        case Qgis::RasterColorInterpretation::SaturationBand:
           return QStringLiteral( "Saturation" );
 
-        case QgsRaster::LightnessBand:
+        case Qgis::RasterColorInterpretation::LightnessBand:
           return QStringLiteral( "Lightness" );
 
-        case QgsRaster::CyanBand:
+        case Qgis::RasterColorInterpretation::CyanBand:
           return QStringLiteral( "Cyan" );
 
-        case QgsRaster::MagentaBand:
+        case Qgis::RasterColorInterpretation::MagentaBand:
           return QStringLiteral( "Magenta" );
 
-        case QgsRaster::YellowBand:
+        case Qgis::RasterColorInterpretation::YellowBand:
           return QStringLiteral( "Yellow" );
 
-        case QgsRaster::BlackBand:
+        case Qgis::RasterColorInterpretation::BlackBand:
           return QStringLiteral( "Black" );
 
-        case QgsRaster::YCbCr_YBand:
+        case Qgis::RasterColorInterpretation::YCbCr_YBand:
           return QStringLiteral( "YCbCr_Y" );
 
-        case QgsRaster::YCbCr_CbBand:
+        case Qgis::RasterColorInterpretation::YCbCr_CbBand:
           return QStringLiteral( "YCbCr_Cb" );
 
-        case QgsRaster::YCbCr_CrBand:
+        case Qgis::RasterColorInterpretation::YCbCr_CrBand:
           return QStringLiteral( "YCbCr_Cr" );
 
-        default:
-          return QStringLiteral( "Unknown" );
+        case Qgis::RasterColorInterpretation::ContinuousPalette:
+          return QStringLiteral( "Continuous Palette" );
       }
+      return QString();
     }
+
     //! Reload data (data could change)
     virtual bool reload() { return true; }
 
@@ -328,7 +334,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      */
     virtual QString buildPyramids( const QList<QgsRasterPyramid> &pyramidList,
                                    const QString &resamplingMethod = "NEAREST",
-                                   QgsRaster::RasterPyramidsFormat format = QgsRaster::PyramidsGTiff,
+                                   Qgis::RasterPyramidFormat format = Qgis::RasterPyramidFormat::GeoTiff,
                                    const QStringList &configOptions = QStringList(),
                                    QgsRasterBlockFeedback *feedback = nullptr )
     {
@@ -402,7 +408,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      *       up to at least v1.3.0
      * \see sample(), which is much more efficient for simple "value at point" queries.
      */
-    virtual QgsRasterIdentifyResult identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 );
+    virtual QgsRasterIdentifyResult identify( const QgsPointXY &point, Qgis::RasterIdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 );
 
     /**
      * Samples a raster value from the specified \a band found at the \a point position. The context
@@ -589,14 +595,33 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * Validates pyramid creation options for a specific dataset and destination format
      * \note used by GDAL provider only
      */
-    virtual QString validatePyramidsConfigOptions( QgsRaster::RasterPyramidsFormat pyramidsFormat,
+    virtual QString validatePyramidsConfigOptions( Qgis::RasterPyramidFormat pyramidsFormat,
         const QStringList &configOptions, const QString &fileFormat )
     { Q_UNUSED( pyramidsFormat ) Q_UNUSED( configOptions ); Q_UNUSED( fileFormat ); return QString(); }
 
-    static QString identifyFormatName( QgsRaster::IdentifyFormat format );
-    static QgsRaster::IdentifyFormat identifyFormatFromName( const QString &formatName );
-    static QString identifyFormatLabel( QgsRaster::IdentifyFormat format );
-    static Capability identifyFormatToCapability( QgsRaster::IdentifyFormat format );
+    /**
+     * Converts a raster identify \a format to a string name.
+     *
+     * \see identifyFormatFromName()
+     */
+    static QString identifyFormatName( Qgis::RasterIdentifyFormat format );
+
+    /**
+     * Converts a string \a formatName to a raster identify format.
+     *
+     * \see identifyFormatName()
+     */
+    static Qgis::RasterIdentifyFormat identifyFormatFromName( const QString &formatName );
+
+    /**
+     * Converts a raster identify \a format to a translated string label.
+     */
+    static QString identifyFormatLabel( Qgis::RasterIdentifyFormat format );
+
+    /**
+     * Converts a raster identify \a format to a capability.
+     */
+    static Capability identifyFormatToCapability( Qgis::RasterIdentifyFormat format );
 
     /**
      * Step width for raster iterations.
@@ -739,6 +764,71 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
 
+    /**
+     * Returns the (possibly NULL) attribute table for the specified \a bandNumber.
+     *
+     * \since QGIS 3.30
+     */
+    QgsRasterAttributeTable *attributeTable( int bandNumber ) const;
+
+    /**
+     * Set the attribute table to \a attributeTable for the specified \a bandNumber,
+     * if the \a attributeTable is NULL any existing attribute table for the specified
+     * band will be removed.
+     *
+     * \note Ownership of the attribute table is transferred to the provider.
+     * \since QGIS 3.30
+     */
+    void setAttributeTable( int bandNumber, QgsRasterAttributeTable *attributeTable SIP_TRANSFER );
+
+    /**
+     * Remove the attribute table for the specified \a bandNumber.
+     * If the attribute table does not exist this method does nothing.
+     *
+     * \since QGIS 3.30
+     */
+    void removeAttributeTable( int bandNumber );
+
+    /**
+     * Writes the filesystem-based attribute table for the specified \a bandNumber to \a path, optionally reporting any error in \a errorMessage, returns TRUE on success.
+     *
+     * \returns TRUE on success
+     * \note No checks for Raster Attribute Table validity are performed when saving, it is client code responsibility to handle validation.
+     * \since QGIS 3.30
+     */
+    bool writeFileBasedAttributeTable( int bandNumber, const QString &path, QString *errorMessage SIP_OUT = nullptr ) const;
+
+    /**
+     * Loads the filesystem-based attribute table for the specified \a bandNumber from \a path, optionally reporting any error in \a errorMessage, returns TRUE on success.
+     *
+     * \returns TRUE on success
+     * \since QGIS 3.30
+     */
+    bool readFileBasedAttributeTable( int bandNumber, const QString &path, QString *errorMessage SIP_OUT = nullptr );
+
+    /**
+     * Writes the native attribute table, optionally reporting any error in \a errorMessage, returns TRUE on success.
+     * The default implementation does nothing and returns FALSE.
+     * Data providers that have NativeRasterAttributeTable
+     * provider capability will try to save the native attribute table.
+     *
+     * \returns TRUE on success
+     * \note No checks for Raster Attribute Table validity are performed when saving, it is client code responsibility to handle validation.
+     * \since QGIS 3.30
+     */
+    virtual bool writeNativeAttributeTable( QString *errorMessage SIP_OUT = nullptr );  //#spellok
+
+    /**
+     * Reads the native attribute table, optionally reporting any error in \a errorMessage, returns TRUE on success.
+     * The default implementation does nothing and returns FALSE.
+     * Data providers that have NativeRasterAttributeTable provider capability will try to read the native attribute table.
+     *
+     * \returns TRUE on success
+     * \since QGIS 3.30
+     */
+    virtual bool readNativeAttributeTable( QString *errorMessage SIP_OUT  = nullptr );
+
+
   signals:
 
     /**
@@ -746,6 +836,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \since QGIS 2.14
      */
     void statusChanged( const QString & ) const;
+
 
   protected:
 
@@ -822,6 +913,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * Data provider temporal properties
      */
     std::unique_ptr< QgsRasterDataProviderTemporalCapabilities > mTemporalCapabilities;
+
+    std::map<int, std::unique_ptr<QgsRasterAttributeTable>> mAttributeTables;
 
 };
 

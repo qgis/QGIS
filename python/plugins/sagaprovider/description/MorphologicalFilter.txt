@@ -1,7 +1,0 @@
-Morphological Filter
-grid_filter
-QgsProcessingParameterRasterLayer|INPUT|Grid|None|False
-QgsProcessingParameterEnum|MODE|Search Mode|[0] Square;[1] Circle
-QgsProcessingParameterNumber|RADIUS|Radius|QgsProcessingParameterNumber.Integer|1|False|None|None
-QgsProcessingParameterEnum|METHOD|Method|[0] Dilation;[1] Erosion;[2] Opening;[3] Closing
-QgsProcessingParameterRasterDestination|RESULT|Filtered Grid

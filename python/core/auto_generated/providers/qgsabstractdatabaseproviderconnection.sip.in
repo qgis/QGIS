@@ -9,6 +9,7 @@
 
 
 
+
 class QgsAbstractDatabaseProviderConnection : QgsAbstractProviderConnection
 {
 %Docstring(signature="appended")
@@ -40,6 +41,7 @@ is not supported or cannot be performed without errors.
       View,
       MaterializedView,
       Foreign,
+      IncludeSystemTables,
     };
 
     typedef QFlags<QgsAbstractDatabaseProviderConnection::TableFlag> TableFlags;
@@ -125,7 +127,7 @@ Returns the number of rows returned by a SELECT query or Qgis.FeatureCountState.
 
 
 
-        double queryExecutionTime( );
+        double queryExecutionTime( ) const;
 %Docstring
 Returns the query execution time in milliseconds.
 %End
@@ -353,6 +355,11 @@ This information is calculated from the geometry columns types.
       RetrieveFieldDomain,
       SetFieldDomain,
       AddFieldDomain,
+      RenameField,
+      RetrieveRelationships,
+      AddRelationship,
+      UpdateRelationship,
+      DeleteRelationship,
     };
     typedef QFlags<QgsAbstractDatabaseProviderConnection::Capability> Capabilities;
 
@@ -362,7 +369,10 @@ This information is calculated from the geometry columns types.
       Z,
       M,
       SinglePart,
-      Curves
+      Curves,
+      SinglePoint,
+      SingleLineString,
+      SinglePolygon,
     };
 
     typedef QFlags<QgsAbstractDatabaseProviderConnection::GeometryColumnCapability> GeometryColumnCapabilities;
@@ -527,6 +537,25 @@ Adds a field.
 :raises QgsProviderConnectionException: if any errors are encountered.
 
 .. versionadded:: 3.16
+%End
+
+    virtual void renameField( const QString &schema, const QString &tableName, const QString &name, const QString &newName ) const throw( QgsProviderConnectionException );
+%Docstring
+Renames an existing field.
+
+:param schema: name of the schema (schema is ignored if not supported by the backend).
+:param tableName: name of the table
+:param name: current name of field
+:param newName: new name for field
+
+.. note::
+
+   it is responsibility of the caller to handle open layers and registry entries.
+
+
+:raises QgsProviderConnectionException: if any errors are encountered.
+
+.. versionadded:: 3.28
 %End
 
     virtual void renameSchema( const QString &name, const QString &newName ) const throw( QgsProviderConnectionException );
@@ -697,6 +726,14 @@ Subclasses should add provider- and/or connection- specific words.
 .. versionadded:: 3.22
 %End
 
+    virtual QSet< QString > illegalFieldNames() const;
+%Docstring
+Returns a list of field names which are considered illegal by the connection and
+should not be used when creating or altering fields.
+
+.. versionadded:: 3.30
+%End
+
     virtual QStringList fieldDomainNames() const throw( QgsProviderConnectionException );
 %Docstring
 Returns a list of field domain names present on the provider.
@@ -708,6 +745,13 @@ This is supported on providers with the Capability.ListFieldDomains capability o
 .. seealso:: :py:func:`fieldDomain`
 
 .. versionadded:: 3.26
+%End
+
+    virtual QList< Qgis::FieldDomainType > supportedFieldDomainTypes() const;
+%Docstring
+Returns a list of field domain types which are supported by the provider.
+
+.. versionadded:: 3.28
 %End
 
     virtual QgsFieldDomain *fieldDomain( const QString &name ) const throw( QgsProviderConnectionException ) /Factory/;
@@ -749,6 +793,182 @@ Adds a new field ``domain`` to the database.
 :raises QgsProviderConnectionException: if any errors are encountered.
 
 .. versionadded:: 3.26
+%End
+
+    SIP_PYOBJECT supportedRelationshipCardinalities() const /TypeHint="List[Qgis.RelationshipCardinality]"/;
+%Docstring
+Returns a list of relationship cardinalities which are supported by the provider.
+
+.. versionadded:: 3.30
+%End
+%MethodCode
+    // adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
+
+    const QList< Qgis::RelationshipCardinality > cppRes = sipCpp->supportedRelationshipCardinalities();
+
+    PyObject *l = PyList_New( cppRes.size() );
+
+    if ( !l )
+      sipIsErr = 1;
+    else
+    {
+      for ( int i = 0; i < cppRes.size(); ++i )
+      {
+        PyObject *eobj = sipConvertFromEnum( static_cast<int>( cppRes.at( i ) ),
+                                             sipType_Qgis_RelationshipCardinality );
+
+        if ( !eobj )
+        {
+          sipIsErr = 1;
+        }
+
+        PyList_SetItem( l, i, eobj );
+      }
+
+      if ( !sipIsErr )
+      {
+        sipRes = l;
+      }
+      else
+      {
+        Py_DECREF( l );
+      }
+    }
+%End
+
+    SIP_PYOBJECT supportedRelationshipStrengths() const /TypeHint="List[Qgis.RelationshipStrength]"/;
+%Docstring
+Returns a list of relationship strengths which are supported by the provider.
+
+.. versionadded:: 3.30
+%End
+%MethodCode
+    // adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
+
+    const QList< Qgis::RelationshipStrength > cppRes = sipCpp->supportedRelationshipStrengths();
+
+    PyObject *l = PyList_New( cppRes.size() );
+
+    if ( !l )
+      sipIsErr = 1;
+    else
+    {
+      for ( int i = 0; i < cppRes.size(); ++i )
+      {
+        PyObject *eobj = sipConvertFromEnum( static_cast<int>( cppRes.at( i ) ),
+                                             sipType_Qgis_RelationshipStrength );
+
+        if ( !eobj )
+        {
+          sipIsErr = 1;
+        }
+
+        PyList_SetItem( l, i, eobj );
+      }
+
+      if ( !sipIsErr )
+      {
+        sipRes = l;
+      }
+      else
+      {
+        Py_DECREF( l );
+      }
+    }
+%End
+
+    virtual Qgis::RelationshipCapabilities supportedRelationshipCapabilities() const;
+%Docstring
+Returns the relationship capabilities supported by the provider.
+
+.. versionadded:: 3.30
+%End
+
+    virtual QStringList relatedTableTypes() const;
+%Docstring
+Returns a list of the related table types supported by the database format.
+
+The related table type is a free-form string representing the type of related features, where the
+exact interpretation is format dependent. For instance, table types from GeoPackage
+relationships will directly reflect the categories from the GeoPackage related
+tables extension (i.e. "media", "simple attributes", "features", "attributes" and "tiles").
+
+.. versionadded:: 3.30
+%End
+
+    virtual QList< QgsWeakRelation > relationships( const QString &schema = QString(), const QString &tableName = QString() ) const throw( QgsProviderConnectionException );
+%Docstring
+Returns a list of relationships detected in the database.
+
+This is supported on providers with the Capability.RetrieveRelationships capability only.
+
+If a ``schema`` and/or ``tableName`` are specified, then only relationships where the specified table
+forms the left (or "parent" / "referenced") side of the relationship are retrieved.
+
+:raises QgsProviderConnectionException: if any errors are encountered.
+
+.. versionadded:: 3.28
+%End
+
+    virtual void addRelationship( const QgsWeakRelation &relationship ) const throw( QgsProviderConnectionException );
+%Docstring
+Adds a new field ``relationship`` to the database.
+
+:raises QgsProviderConnectionException: if any errors are encountered.
+
+.. versionadded:: 3.30
+%End
+
+    virtual void updateRelationship( const QgsWeakRelation &relationship ) const throw( QgsProviderConnectionException );
+%Docstring
+Updates an existing ``relationship`` in the database.
+
+:raises QgsProviderConnectionException: if any errors are encountered.
+
+.. versionadded:: 3.30
+%End
+
+    virtual void deleteRelationship( const QgsWeakRelation &relationship ) const throw( QgsProviderConnectionException );
+%Docstring
+Deletes an existing ``relationship`` in the database.
+
+:raises QgsProviderConnectionException: if any errors are encountered.
+
+.. versionadded:: 3.30
+%End
+
+    virtual QgsProviderSqlQueryBuilder *queryBuilder() const /Factory/;
+%Docstring
+Returns a SQL query builder for the connection, which provides an interface for provider-specific creation of SQL queries.
+
+The caller takes ownership of the returned object.
+
+.. versionadded:: 3.28
+%End
+
+    virtual QList<QgsLayerMetadataProviderResult> searchLayerMetadata( const QgsMetadataSearchContext &searchContext, const QString &searchString = QString(), const QgsRectangle &geographicExtent = QgsRectangle(), QgsFeedback *feedback = 0 ) const throw( QgsProviderConnectionException, QgsNotSupportedException );
+%Docstring
+Search the stored layer metadata in the connection,
+optionally limiting the search to the metadata identifier, title,
+abstract, keywords and categories.
+``searchContext`` context for the search
+``searchString`` limit the search to metadata having an extent intersecting ``geographicExtent``,
+an optional ``feedback`` can be used to monitor and control the search process.
+
+The default implementation raises a :py:class:`QgsNotSupportedException`, data providers may implement
+the search functionality.
+
+A :py:class:`QgsProviderConnectionException` is raised in case of errors happening during the search for
+providers that implement the search functionality.
+
+:return: a (possibly empty) list of :py:class:`QgsLayerMetadataProviderResult`, throws a :py:class:`QgsProviderConnectionException`
+         if any error occurred during the search.
+
+:raises QgsProviderConnectionException: 
+
+:raises QgsNotSupportedException: 
+
+.. versionadded:: 3.28
 %End
 
   protected:

@@ -191,7 +191,7 @@ QVariant QgsGenericNumericTransformer::transform( const QgsExpressionContext &co
 {
   Q_UNUSED( context )
 
-  if ( v.isNull() )
+  if ( QgsVariantUtils::isNull( v ) )
     return mNullOutput;
 
   bool ok;
@@ -395,7 +395,7 @@ QVariant QgsSizeScaleTransformer::transform( const QgsExpressionContext &context
 {
   Q_UNUSED( context )
 
-  if ( value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
     return mNullSize;
 
   bool ok;
@@ -598,7 +598,7 @@ QVariant QgsColorRampTransformer::transform( const QgsExpressionContext &context
 {
   Q_UNUSED( context )
 
-  if ( value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
     return mNullColor;
 
   bool ok;

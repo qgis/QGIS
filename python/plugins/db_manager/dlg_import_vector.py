@@ -28,6 +28,7 @@ from qgis.PyQt.QtCore import Qt, QFileInfo
 from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox
 
 from qgis.core import (QgsDataSourceUri,
+                       QgsVectorDataProvider,
                        QgsVectorLayer,
                        QgsMapLayerType,
                        QgsProviderRegistry,
@@ -255,10 +256,11 @@ class DlgImportVector(QDialog, Ui_Dialog):
         self.cboTable.setEditText(currentText)
 
     def populateEncodings(self):
-        encodings = ['ISO-8859-1', 'ISO-8859-2', 'UTF-8', 'CP1250']
-        for enc in encodings:
-            self.cboEncoding.addItem(enc)
-        self.cboEncoding.setCurrentIndex(2)
+        # populate the combo with supported encodings
+        self.cboEncoding.addItems(QgsVectorDataProvider.availableEncodings())
+
+        self.cboEncoding.insertItem(0, self.tr('Automatic'), "")
+        self.cboEncoding.setCurrentIndex(0)
 
     def accept(self):
         if self.mode == self.ASK_FOR_INPUT_MODE:
@@ -345,7 +347,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
                     inCrs = self.widgetSourceSrid.crs()
                     self.inLayer.setCrs(inCrs)
 
-                if self.chkEncoding.isEnabled() and self.chkEncoding.isChecked():
+                if self.chkEncoding.isEnabled() and self.chkEncoding.isChecked() and self.cboEncoding.currentData() is None:
                     enc = self.cboEncoding.currentText()
                     self.inLayer.setProviderEncoding(enc)
 

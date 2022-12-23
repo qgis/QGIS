@@ -59,7 +59,7 @@ class GUI_EXPORT QgsLabelingGui : public QgsTextFormatWidget
     void updateUi();
 
   protected slots:
-    void setFormatFromStyle( const QString &name, QgsStyle::StyleEntity type ) override;
+    void setFormatFromStyle( const QString &name, QgsStyle::StyleEntity type, const QString &stylePath ) override;
     void saveFormat() override;
 
   protected:

@@ -24,6 +24,8 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsreadwritecontext.h"
 
+class QgsRenderContext;
+
 /**
  * \ingroup core
  * \brief Stores coordinates of a tile in a tile matrix set. Tile matrix is identified
@@ -241,6 +243,20 @@ class CORE_EXPORT QgsTileMatrixSet
     QgsTileMatrix tileMatrix( int zoom ) const;
 
     /**
+     * Returns the root tile matrix (usually corresponding to zoom level 0).
+     *
+     * \since QGIS 3.28
+     */
+    QgsTileMatrix rootMatrix() const;
+
+    /**
+     * Sets the root tile \a matrix (usually corresponding to zoom level 0).
+     *
+     * \since QGIS 3.28
+     */
+    void setRootMatrix( const QgsTileMatrix &matrix );
+
+    /**
      * Adds a \a matrix to the set.
      *
      * Any existing matrix with the same QgsTileMatrix::zoomLevel() will be replaced.
@@ -290,6 +306,25 @@ class CORE_EXPORT QgsTileMatrixSet
     int scaleToZoomLevel( double scale ) const;
 
     /**
+     * Calculates the correct scale to use for the tiles when rendered using the specified render \a context.
+     *
+     * \since QGIS 3.26
+     */
+    double scaleForRenderContext( const QgsRenderContext &context ) const;
+
+    /**
+     * Calculates the correct scale to use for the tiles when rendered using the specified map properties.
+     *
+     * \since QGIS 3.26
+     */
+    double calculateTileScaleForMap( double actualMapScale,
+                                     const QgsCoordinateReferenceSystem &mapCrs,
+                                     const QgsRectangle &mapExtent,
+                                     const QSize mapSize,
+                                     const double mapDpi
+                                   ) const;
+
+    /**
      * Reads the set from an XML \a element.
      *
      * \see writeXml()
@@ -317,6 +352,8 @@ class CORE_EXPORT QgsTileMatrixSet
 
   private:
 
+    // Usually corresponds to zoom level 0, even if that zoom level is NOT present in the actual tile matrices for this set
+    QgsTileMatrix mRootMatrix;
     QMap< int, QgsTileMatrix > mTileMatrices;
     Qgis::ScaleToTileZoomLevelMethod mScaleToTileZoomMethod = Qgis::ScaleToTileZoomLevelMethod::MapBox;
 };

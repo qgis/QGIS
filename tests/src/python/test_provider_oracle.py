@@ -30,7 +30,8 @@ from qgis.core import (
     QgsField,
     QgsFields,
     QgsCoordinateReferenceSystem,
-    QgsProjUtils
+    QgsProjUtils,
+    QgsProviderRegistry
 )
 
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant
@@ -49,17 +50,17 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        cls.dbconn = "host=localhost/XEPDB1 port=1521 user='QGIS' password='qgis'"
+        cls.dbconn = "host=localhost dbname=XEPDB1 port=1521 user='QGIS' password='qgis'"
         if 'QGIS_ORACLETEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_ORACLETEST_DB']
         # Create test layers
         cls.vl = QgsVectorLayer(
             cls.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="QGIS"."SOME_DATA" (GEOM) sql=', 'test', 'oracle')
-        assert(cls.vl.isValid())
+        assert cls.vl.isValid()
         cls.source = cls.vl.dataProvider()
         cls.poly_vl = QgsVectorLayer(
             cls.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POLYGON table="QGIS"."SOME_POLY_DATA" (GEOM) sql=', 'test', 'oracle')
-        assert(cls.poly_vl.isValid())
+        assert cls.poly_vl.isValid()
         cls.poly_provider = cls.poly_vl.dataProvider()
 
         cls.conn = QSqlDatabase.addDatabase('QOCISPATIAL', "oracletest")
@@ -307,6 +308,36 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
 
         fid += 1
         self.check_geom(multipoints_z, fid, 'MultiPointZ ((1 2 7),(3 4 8))')
+
+    def testLayerStyles(self):
+
+        self.execSQLCommand('DROP TABLE "QGIS"."LAYER_STYLES"', True)
+
+        # Table without geometry column
+        vl_no_geom = QgsVectorLayer(
+            self.dbconn + ' sslmode=disable key=\'id\' table="QGIS"."DATE_TIMES" sql=', 'test', 'oracle')
+
+        # Save layer styles
+        self.assertEqual(self.vl.saveStyleToDatabase("mystyle", "the best", True, "something.ui"), "")
+        self.assertEqual(vl_no_geom.saveStyleToDatabase("my_other_style", "the very best", True, "else.ui"), "")
+
+        # Verify presence of styles in database
+        res, err = QgsProviderRegistry.instance().styleExists('oracle', self.vl.source(), 'mystyle')
+        self.assertTrue(res)
+        self.assertFalse(err)
+        res, err = QgsProviderRegistry.instance().styleExists('oracle', vl_no_geom.source(), 'my_other_style')
+        self.assertTrue(res)
+        self.assertFalse(err)
+
+        # Verify listing and loading of styles
+        self.assertEqual(self.vl.listStylesInDatabase(), (1, ['0', '1'], ['mystyle', 'my_other_style'], ['the best', 'the very best'], ''))
+        _, res = self.vl.loadNamedStyle(self.vl.source())
+        self.assertTrue(res)
+        self.assertEqual(vl_no_geom.listStylesInDatabase(), (1, ['1', '0'], ['my_other_style', 'mystyle'], ['the very best', 'the best'], ''))
+        _, res = vl_no_geom.loadNamedStyle(vl_no_geom.source())
+        self.assertTrue(res)
+
+        self.execSQLCommand('DROP TABLE "QGIS"."LAYER_STYLES"')
 
     def testCurves(self):
         vl = QgsVectorLayer('%s table="QGIS"."LINE_DATA" (GEOM) srid=4326 type=LINESTRING sql=' %
@@ -663,6 +694,38 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         fid += 1
         self.check_geom(multi_surface_z, fid, 'MultiSurfaceZ (CurvePolygonZ(CompoundCurveZ (CircularStringZ (-1 -5 1, 5 -7 2, 17 -6 3), (17 -6 3, -1 -5 1))), CurvePolygonZ (CircularStringZ (1 3 1, 7 3 2, 4 7 3, 3 5 4, 1 3 1)))', check_valid=False)
         fid += 1
+
+    def testFeatureCount(self):
+        self.execSQLCommand('CREATE OR REPLACE VIEW QGIS.VIEW_POLY_DATA AS SELECT * FROM QGIS.POLY_DATA')
+        self.execSQLCommand("BEGIN DBMS_STATS.GATHER_TABLE_STATS('QGIS', 'SOME_DATA'); END;")
+
+        view_layer = QgsVectorLayer(self.dbconn + ' sslmode=disable table="QGIS"."VIEW_POLY_DATA" key=\'pk\'',
+                                    'test', 'oracle')
+        self.assertTrue(view_layer.isValid())
+        self.assertGreater(view_layer.featureCount(), 0)
+        self.assertTrue(view_layer.setSubsetString('"pk" = 5'))
+        self.assertGreaterEqual(view_layer.featureCount(), 0)
+
+        view_layer_estimated = QgsVectorLayer(self.dbconn + ' sslmode=disable estimatedmetadata=true table="QGIS"."VIEW_POLY_DATA" key=\'pk\'',
+                                              'test', 'oracle')
+        self.assertTrue(view_layer_estimated.isValid())
+        self.assertGreater(view_layer_estimated.featureCount(), 0)
+        self.assertTrue(view_layer_estimated.setSubsetString('"pk" = 5'))
+        self.assertGreaterEqual(view_layer_estimated.featureCount(), 0)
+
+        self.assertGreater(self.vl.featureCount(), 0)
+        self.assertTrue(self.vl.setSubsetString('"pk" = 3'))
+        self.assertGreaterEqual(self.vl.featureCount(), 1)
+        self.assertTrue(self.vl.setSubsetString(''))
+
+        vl_estimated = QgsVectorLayer(self.dbconn + ' sslmode=disable estimatedmetadata=true table="QGIS"."SOME_DATA"',
+                                      'test', 'oracle')
+        self.assertTrue(vl_estimated.isValid())
+        self.assertGreater(vl_estimated.featureCount(), 0)
+        self.assertTrue(vl_estimated.setSubsetString('"pk" = 3'))
+        self.assertGreaterEqual(vl_estimated.featureCount(), 1)
+
+        self.execSQLCommand('DROP VIEW QGIS.VIEW_POLY_DATA')
 
     def testNestedInsert(self):
         tg = QgsTransactionGroup()

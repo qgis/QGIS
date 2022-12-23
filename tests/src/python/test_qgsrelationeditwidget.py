@@ -76,10 +76,10 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         cls.vltools = VlTools()
         cls.layers = {cls.vl_authors, cls.vl_books, cls.vl_link_books_authors}
 
-        assert(cls.vl_authors.isValid())
-        assert(cls.vl_books.isValid())
-        assert(cls.vl_editors.isValid())
-        assert(cls.vl_link_books_authors.isValid())
+        assert cls.vl_authors.isValid()
+        assert cls.vl_books.isValid()
+        assert cls.vl_editors.isValid()
+        assert cls.vl_link_books_authors.isValid()
 
     @classmethod
     def tearDownClass(cls):
@@ -99,7 +99,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         self.rel_a.setReferencedLayer(self.vl_authors.id())
         self.rel_a.addFieldPair('fk_author', 'pk')
         self.rel_a.setId('rel_a')
-        assert(self.rel_a.isValid())
+        assert self.rel_a.isValid()
         self.relMgr.addRelation(self.rel_a)
 
         self.rel_b = QgsRelation()
@@ -107,7 +107,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         self.rel_b.setReferencedLayer(self.vl_books.id())
         self.rel_b.addFieldPair('fk_book', 'pk')
         self.rel_b.setId('rel_b')
-        assert(self.rel_b.isValid())
+        assert self.rel_b.isValid()
         self.relMgr.addRelation(self.rel_b)
 
         self.startTransaction()

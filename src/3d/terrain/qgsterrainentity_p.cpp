@@ -116,7 +116,7 @@ bool QgsTerrainEntity::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, QV
     if ( n->entity() && ( minDist < 0 || n->bbox().distanceFromPoint( ray.origin() ) < minDist ) && QgsRayCastingUtils::rayBoxIntersection( ray, n->bbox() ) )
     {
       Qt3DRender::QGeometryRenderer *rend = n->entity()->findChild<Qt3DRender::QGeometryRenderer *>();
-      Qt3DRender::QGeometry *geom = rend->geometry();
+      auto *geom = rend->geometry();
       DemTerrainTileGeometry *demGeom = static_cast<DemTerrainTileGeometry *>( geom );
       Qt3DCore::QTransform *tr = n->entity()->findChild<Qt3DCore::QTransform *>();
       QVector3D nodeIntPoint;

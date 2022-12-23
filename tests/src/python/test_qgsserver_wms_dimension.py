@@ -37,7 +37,7 @@ class TestQgsServerWMSDimension(TestQgsServerWMSTestBase):
 
     def setUp(self):
         super().setUp()
-        self.testdata_path = unitTestDataPath("qgis_server_accesscontrol")
+        self.testdata_path = os.path.join(self.temporary_path, "qgis_server_accesscontrol")
 
         self.projectPath = os.path.join(self.testdata_path, 'project_with_dimensions.qgs')
         self.assertTrue(os.path.isfile(self.projectPath), 'Could not find project file "{}"'.format(self.projectPath))

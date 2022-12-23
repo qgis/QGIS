@@ -152,7 +152,7 @@ QgsSymbol *QgsGraduatedSymbolRenderer::originalSymbolForFeature( const QgsFeatur
   QVariant value = valueForFeature( feature, context );
 
   // Null values should not be categorized
-  if ( value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
     return nullptr;
 
   // find the right category
@@ -499,10 +499,10 @@ QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, co
   QString attrMethod = element.attribute( QStringLiteral( "graduatedMethod" ) );
   if ( !attrMethod.isEmpty() )
   {
-    if ( attrMethod == graduatedMethodStr( GraduatedColor ) )
-      r->setGraduatedMethod( GraduatedColor );
-    else if ( attrMethod == graduatedMethodStr( GraduatedSize ) )
-      r->setGraduatedMethod( GraduatedSize );
+    if ( attrMethod == graduatedMethodStr( Qgis::GraduatedMethod::Color ) )
+      r->setGraduatedMethod( Qgis::GraduatedMethod::Color );
+    else if ( attrMethod == graduatedMethodStr( Qgis::GraduatedMethod::Size ) )
+      r->setGraduatedMethod( Qgis::GraduatedMethod::Size );
   }
 
 
@@ -791,7 +791,7 @@ QSet< QString > QgsGraduatedSymbolRenderer::legendKeysForFeature( const QgsFeatu
   QVariant value = valueForFeature( feature, context );
 
   // Null values should not be categorized
-  if ( value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
     return QSet< QString >();
 
   // find the right category
@@ -800,6 +800,25 @@ QSet< QString > QgsGraduatedSymbolRenderer::legendKeysForFeature( const QgsFeatu
     return QSet< QString >() << key;
   else
     return QSet< QString >();
+}
+
+QString QgsGraduatedSymbolRenderer::legendKeyToExpression( const QString &key, QgsVectorLayer *layer, bool &ok ) const
+{
+  ok = false;
+  int ruleIndex = key.toInt( &ok );
+  if ( !ok || ruleIndex < 0 || ruleIndex >= mRanges.size() )
+  {
+    ok = false;
+    return QString();
+  }
+
+  const QString attributeComponent = QgsExpression::quoteFieldExpression( mAttrName, layer );
+
+  ok = true;
+  const QgsRendererRange &range = mRanges[ ruleIndex ];
+
+  return QStringLiteral( "(%1 >= %2) AND (%1 <= %3)" ).arg( attributeComponent, QgsExpression::quotedValue( range.lowerValue(), QVariant::Double ),
+         QgsExpression::quotedValue( range.upperValue(), QVariant::Double ) );
 }
 
 QgsSymbol *QgsGraduatedSymbolRenderer::sourceSymbol()
@@ -916,18 +935,23 @@ void QgsGraduatedSymbolRenderer::updateSymbols( QgsSymbol *sym )
   for ( const QgsRendererRange &range : std::as_const( mRanges ) )
   {
     std::unique_ptr<QgsSymbol> symbol( sym->clone() );
-    if ( mGraduatedMethod == GraduatedColor )
+    switch ( mGraduatedMethod )
     {
-      symbol->setColor( range.symbol()->color() );
-    }
-    else if ( mGraduatedMethod == GraduatedSize )
-    {
-      if ( symbol->type() == Qgis::SymbolType::Marker )
-        static_cast<QgsMarkerSymbol *>( symbol.get() )->setSize(
-          static_cast<QgsMarkerSymbol *>( range.symbol() )->size() );
-      else if ( symbol->type() == Qgis::SymbolType::Line )
-        static_cast<QgsLineSymbol *>( symbol.get() )->setWidth(
-          static_cast<QgsLineSymbol *>( range.symbol() )->width() );
+      case Qgis::GraduatedMethod::Color:
+      {
+        symbol->setColor( range.symbol()->color() );
+        break;
+      }
+      case Qgis::GraduatedMethod::Size:
+      {
+        if ( symbol->type() == Qgis::SymbolType::Marker )
+          static_cast<QgsMarkerSymbol *>( symbol.get() )->setSize(
+            static_cast<QgsMarkerSymbol *>( range.symbol() )->size() );
+        else if ( symbol->type() == Qgis::SymbolType::Line )
+          static_cast<QgsLineSymbol *>( symbol.get() )->setWidth(
+            static_cast<QgsLineSymbol *>( range.symbol() )->width() );
+        break;
+      }
     }
     updateRangeSymbol( i, symbol.release() );
     ++i;
@@ -1012,10 +1036,10 @@ void QgsGraduatedSymbolRenderer::addBreak( double breakValue, bool updateSymbols
   {
     switch ( mGraduatedMethod )
     {
-      case GraduatedColor:
+      case Qgis::GraduatedMethod::Color:
         updateColorRamp( mSourceColorRamp.get() );
         break;
-      case GraduatedSize:
+      case Qgis::GraduatedMethod::Size:
         setSymbolSizes( minSymbolSize(), maxSymbolSize() );
         break;
     }
@@ -1294,13 +1318,13 @@ QgsDataDefinedSizeLegend *QgsGraduatedSymbolRenderer::dataDefinedSizeLegend() co
   return mDataDefinedSizeLegend.get();
 }
 
-QString QgsGraduatedSymbolRenderer::graduatedMethodStr( GraduatedMethod method )
+QString QgsGraduatedSymbolRenderer::graduatedMethodStr( Qgis::GraduatedMethod method )
 {
   switch ( method )
   {
-    case GraduatedColor:
+    case Qgis::GraduatedMethod::Color:
       return QStringLiteral( "GraduatedColor" );
-    case GraduatedSize:
+    case Qgis::GraduatedMethod::Size:
       return QStringLiteral( "GraduatedSize" );
   }
   return QString();

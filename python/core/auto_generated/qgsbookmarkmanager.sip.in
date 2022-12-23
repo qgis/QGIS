@@ -111,8 +111,8 @@ Returns a DOM element representing the bookmark's properties.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    bool operator==( const QgsBookmark &other );
-    bool operator!=( const QgsBookmark &other );
+    bool operator==( const QgsBookmark &other ) const;
+    bool operator!=( const QgsBookmark &other ) const;
 
 };
 

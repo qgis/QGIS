@@ -26,6 +26,7 @@
 #include <QtDebug>
 
 #include "qgstiledownloadmanager.h"
+#include "qgspointcloudstatistics.h"
 
 IndexedPointCloudNode::IndexedPointCloudNode():
   mD( -1 ),
@@ -158,15 +159,19 @@ QgsPointCloudIndex::~QgsPointCloudIndex() = default;
 
 bool QgsPointCloudIndex::hasNode( const IndexedPointCloudNode &n ) const
 {
-  mHierarchyMutex.lock();
-  const bool found = mHierarchy.contains( n );
-  mHierarchyMutex.unlock();
-  return found;
+  QMutexLocker locker( &mHierarchyMutex );
+  return mHierarchy.contains( n );
+}
+
+qint64 QgsPointCloudIndex::nodePointCount( const IndexedPointCloudNode &n ) const
+{
+  QMutexLocker locker( &mHierarchyMutex );
+  return mHierarchy.value( n, -1 );
 }
 
 QList<IndexedPointCloudNode> QgsPointCloudIndex::nodeChildren( const IndexedPointCloudNode &n ) const
 {
-  mHierarchyMutex.lock();
+  QMutexLocker locker( &mHierarchyMutex );
   Q_ASSERT( mHierarchy.contains( n ) );
   QList<IndexedPointCloudNode> lst;
   const int d = n.d() + 1;
@@ -181,7 +186,6 @@ QList<IndexedPointCloudNode> QgsPointCloudIndex::nodeChildren( const IndexedPoin
     if ( mHierarchy.contains( n2 ) )
       lst.append( n2 );
   }
-  mHierarchyMutex.unlock();
   return lst;
 }
 
@@ -262,10 +266,100 @@ bool QgsPointCloudIndex::setSubsetString( const QString &subset )
     mFilterExpression.setExpression( lastExpression );
     return false;
   }
+
+  // fail if expression references unknown attributes
+  int offset;
+  const QSet<QString> attributes = mFilterExpression.referencedAttributes();
+  for ( const QString &attribute : attributes )
+  {
+    if ( !mAttributes.find( attribute, offset ) )
+    {
+      mFilterExpression.setExpression( lastExpression );
+      return false;
+    }
+  }
   return true;
 }
 
 QString QgsPointCloudIndex::subsetString() const
 {
   return mFilterExpression;
+}
+
+QVariant QgsPointCloudIndex::metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const
+{
+  if ( attribute == QLatin1String( "X" ) && statistic == QgsStatisticalSummary::Min )
+    return mExtent.xMinimum();
+  if ( attribute == QLatin1String( "X" ) && statistic == QgsStatisticalSummary::Max )
+    return mExtent.xMaximum();
+
+  if ( attribute == QLatin1String( "Y" ) && statistic == QgsStatisticalSummary::Min )
+    return mExtent.yMinimum();
+  if ( attribute == QLatin1String( "Y" ) && statistic == QgsStatisticalSummary::Max )
+    return mExtent.yMaximum();
+
+  if ( attribute == QLatin1String( "Z" ) && statistic == QgsStatisticalSummary::Min )
+    return mZMin;
+  if ( attribute == QLatin1String( "Z" ) && statistic == QgsStatisticalSummary::Max )
+    return mZMax;
+
+  return QVariant();
+}
+
+QVariantList QgsPointCloudIndex::metadataClasses( const QString &attribute ) const
+{
+  Q_UNUSED( attribute );
+  return QVariantList();
+}
+
+QVariant QgsPointCloudIndex::metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const
+{
+  Q_UNUSED( attribute );
+  Q_UNUSED( value );
+  Q_UNUSED( statistic );
+  return QVariant();
+}
+
+QgsPointCloudStatistics QgsPointCloudIndex::metadataStatistics() const
+{
+  QMap<QString, QgsPointCloudAttributeStatistics> statsMap;
+  for ( QgsPointCloudAttribute attribute : attributes().attributes() )
+  {
+    QString name = attribute.name();
+    QgsPointCloudAttributeStatistics s;
+    QVariant min = metadataStatistic( name, QgsStatisticalSummary::Min );
+    QVariant max = metadataStatistic( name, QgsStatisticalSummary::Max );
+    QVariant mean = metadataStatistic( name, QgsStatisticalSummary::Mean );
+    QVariant stDev = metadataStatistic( name, QgsStatisticalSummary::StDev );
+    if ( !min.isValid() )
+      continue;
+
+    s.minimum = min.toDouble();
+    s.maximum = max.toDouble();
+    s.mean = mean.toDouble();
+    s.stDev = stDev.toDouble();
+    s.count = metadataStatistic( name, QgsStatisticalSummary::Count ).toInt();
+    QVariantList classes = metadataClasses( name );
+    for ( QVariant c : classes )
+    {
+      s.classCount[ c.toInt() ] = metadataClassStatistic( name, c, QgsStatisticalSummary::Count ).toInt();
+    }
+    statsMap[ name ] = s;
+  }
+  return QgsPointCloudStatistics( pointCount(), statsMap );
+}
+
+void QgsPointCloudIndex::copyCommonProperties( QgsPointCloudIndex *destination ) const
+{
+  // Base QgsPointCloudIndex fields
+  destination->mExtent = mExtent;
+  destination->mZMin = mZMin;
+  destination->mZMax = mZMax;
+  destination->mHierarchy = mHierarchy;
+  destination->mScale = mScale;
+  destination->mOffset = mOffset;
+  destination->mRootBounds = mRootBounds;
+  destination->mAttributes = mAttributes;
+  destination->mSpan = mSpan;
+  destination->mFilterExpression = mFilterExpression;
 }

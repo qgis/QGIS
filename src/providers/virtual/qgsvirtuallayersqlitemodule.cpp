@@ -118,10 +118,10 @@ struct VTable
       , mValid( true )
     {
       QgsDataProvider::ProviderOptions providerOptions;
-      mProvider = static_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, source, providerOptions ) );
+      mProvider = qobject_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, source, providerOptions ) );
       if ( !mProvider )
       {
-        throw std::runtime_error( "Invalid provider" );
+        throw std::runtime_error( QStringLiteral( "Invalid provider: Cannot use %1 source layers in virtual layers" ).arg( provider ).toUtf8().constData() );
       }
       else if ( mProvider && !mProvider->isValid() )
       {
@@ -333,13 +333,20 @@ int vtableCreateConnect( sqlite3 *sql, void *aux, int argc, const char *const *a
   Q_UNUSED( aux )
   Q_UNUSED( isCreated )
 
-#define RETURN_CSTR_ERROR(err) if (outErr) {size_t s = strlen(err); *outErr=reinterpret_cast<char*>(sqlite3_malloc( static_cast<int>( s ) +1)); strncpy(*outErr, err, s);}
-#define RETURN_CPPSTR_ERROR(err) if (outErr) {*outErr=reinterpret_cast<char*>(sqlite3_malloc( static_cast<int>( err.toUtf8().size() )+1)); strncpy(*outErr, err.toUtf8().constData(), err.toUtf8().size());}
+  auto returnStrError = [&outErr]( const QString & err )
+  {
+    if ( outErr )
+    {
+      const int size = err.toUtf8().size();
+      *outErr = reinterpret_cast<char *>( sqlite3_malloc( size + 1 ) );
+      strncpy( *outErr, err.toUtf8().constData(), size + 1 );
+    }
+  };
 
   if ( argc < 4 )
   {
-    QString err( QStringLiteral( "Missing arguments: layer_id | provider, source" ) );
-    RETURN_CPPSTR_ERROR( err );
+    const QString err( QStringLiteral( "Missing arguments: layer_id | provider, source" ) );
+    returnStrError( err );
     return SQLITE_ERROR;
   }
 
@@ -363,11 +370,11 @@ int vtableCreateConnect( sqlite3 *sql, void *aux, int argc, const char *const *a
       {
         QString err( QStringLiteral( "Cannot find layer " ) );
         err += QString::fromUtf8( argv[3] );
-        RETURN_CPPSTR_ERROR( err );
+        returnStrError( err );
       }
       return SQLITE_ERROR;
     }
-    newVtab.reset( new VTable( sql, static_cast<QgsVectorLayer *>( l ) ) );
+    newVtab.reset( new VTable( sql, qobject_cast<QgsVectorLayer *>( l ) ) );
 
   }
   else if ( argc == 5 || argc == 6 )
@@ -400,7 +407,7 @@ int vtableCreateConnect( sqlite3 *sql, void *aux, int argc, const char *const *a
     }
     catch ( std::runtime_error &e )
     {
-      RETURN_CSTR_ERROR( e.what() );
+      returnStrError( e.what() );
       return SQLITE_ERROR;
     }
   }
@@ -408,13 +415,12 @@ int vtableCreateConnect( sqlite3 *sql, void *aux, int argc, const char *const *a
   r = sqlite3_declare_vtab( sql, newVtab->creationString().toUtf8().constData() );
   if ( r )
   {
-    RETURN_CSTR_ERROR( sqlite3_errmsg( sql ) );
+    returnStrError( sqlite3_errmsg( sql ) );
     return r;
   }
 
   *outVtab = reinterpret_cast< sqlite3_vtab * >( newVtab.release() );
   return SQLITE_OK;
-#undef RETURN_CSTR_ERROR
 #undef RETURN_CPPSTR_ERROR
 }
 
@@ -686,7 +692,7 @@ int vtableColumn( sqlite3_vtab_cursor *cursor, sqlite3_context *ctxt, int idx )
   }
 
   QVariant v = c->currentAttribute( idx );
-  if ( v.isNull() )
+  if ( QgsVariantUtils::isNull( v ) )
   {
     sqlite3_result_null( ctxt );
   }
@@ -802,7 +808,7 @@ void qgisFunctionWrapper( sqlite3_context *ctxt, int nArgs, sqlite3_value **args
     return;
   }
 
-  if ( ret.isNull() )
+  if ( QgsVariantUtils::isNull( ret ) )
   {
     sqlite3_result_null( ctxt );
     return;
@@ -827,14 +833,14 @@ void qgisFunctionWrapper( sqlite3_context *ctxt, int nArgs, sqlite3_value **args
     }
     case QVariant::UserType:
     {
-      if ( ret.canConvert<QgsGeometry>() )
+      if ( ret.userType() == QMetaType::type( "QgsGeometry" ) )
       {
         char *blob = nullptr;
         int size = 0;
         qgsGeometryToSpatialiteBlob( ret.value<QgsGeometry>(), /*srid*/0, blob, size );
         sqlite3_result_blob( ctxt, blob, size, deleteGeometryBlob );
       }
-      else if ( ret.canConvert<QgsInterval>() )
+      else if ( ret.userType() == QMetaType::type( "QgsInterval" ) )
       {
         sqlite3_result_double( ctxt, ret.value<QgsInterval>().seconds() );
       }

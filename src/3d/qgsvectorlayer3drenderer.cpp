@@ -70,10 +70,15 @@ Qt3DCore::QEntity *QgsVectorLayer3DRenderer::createEntity( const Qgs3DMapSetting
   if ( !mSymbol || !vl )
     return nullptr;
 
-  double zMin, zMax;
-  Qgs3DUtils::estimateVectorLayerZRange( vl, zMin, zMax );
-
-  return new QgsVectorLayerChunkedEntity( vl, zMin + map.terrainElevationOffset(), zMax +  + map.terrainElevationOffset(), tilingSettings(), mSymbol.get(), map );
+  // we start with a maximal z range (based on a number similar to the radius of the Earth),
+  // because we can't know this upfront. There's too many
+  // factors to consider eg vertex z data, terrain heights, data defined offsets and extrusion heights,...
+  // This range will be refined after populating the nodes to the actual z range of the generated chunks nodes.
+  // Assuming the vertical height is in meter, then it's extremely unlikely that a real vertical
+  // height will exceed this amount!
+  constexpr double MINIMUM_VECTOR_Z_ESTIMATE = -5000000;
+  constexpr double MAXIMUM_VECTOR_Z_ESTIMATE = 5000000;
+  return new QgsVectorLayerChunkedEntity( vl, MINIMUM_VECTOR_Z_ESTIMATE, MAXIMUM_VECTOR_Z_ESTIMATE, tilingSettings(), mSymbol.get(), map );
 }
 
 void QgsVectorLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const

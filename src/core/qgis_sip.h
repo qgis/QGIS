@@ -151,6 +151,11 @@
 #define SIP_PYARGREMOVE
 
 /*
+ * rename argument in SIP method
+ */
+#define SIP_PYARGRENAME(pyname)
+
+/*
  * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html?highlight=keepreference#function-annotation-ReleaseGIL
  */
 #define SIP_RELEASEGIL
@@ -190,7 +195,7 @@
  * try/catch blocks around call and catch the correct exception, otherwise only
  * unknown generic exceptions are available for Python code.
  */
-#define SIP_THROW(name)
+#define SIP_THROW(name, ...)
 
 /*
  * Will insert a `%End` directive in sip files

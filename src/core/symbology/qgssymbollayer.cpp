@@ -132,12 +132,23 @@ void QgsSymbolLayer::startFeatureRender( const QgsFeature &feature, QgsRenderCon
 {
   if ( QgsSymbol *lSubSymbol = subSymbol() )
     lSubSymbol->startFeatureRender( feature, context );
+
+  if ( !mClipPath.isEmpty() )
+  {
+    context.painter()->save();
+    context.painter()->setClipPath( mClipPath, Qt::IntersectClip );
+  }
 }
 
 void QgsSymbolLayer::stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context )
 {
   if ( QgsSymbol *lSubSymbol = subSymbol() )
     lSubSymbol->stopFeatureRender( feature, context );
+
+  if ( !mClipPath.isEmpty() )
+  {
+    context.painter()->restore();
+  }
 }
 
 QgsSymbol *QgsSymbolLayer::subSymbol()
@@ -231,6 +242,35 @@ QgsSymbolLayer::QgsSymbolLayer( Qgis::SymbolType type, bool locked )
 Qgis::SymbolLayerFlags QgsSymbolLayer::flags() const
 {
   return Qgis::SymbolLayerFlags();
+}
+
+QColor QgsSymbolLayer::color() const
+{
+  return mColor;
+}
+
+void QgsSymbolLayer::setColor( const QColor &color )
+{
+  mColor = color;
+}
+
+void QgsSymbolLayer::setStrokeColor( const QColor & )
+{
+
+}
+
+QColor QgsSymbolLayer::strokeColor() const
+{
+  return QColor();
+}
+
+void QgsSymbolLayer::setFillColor( const QColor & )
+{
+}
+
+QColor QgsSymbolLayer::fillColor() const
+{
+  return QColor();
 }
 
 void QgsSymbolLayer::prepareExpressions( const QgsSymbolRenderContext &context )
@@ -553,7 +593,7 @@ void QgsMarkerSymbolLayer::markerOffset( QgsSymbolRenderContext &context, double
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyHorizontalAnchor ) )
   {
     QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyHorizontalAnchor, context.renderContext().expressionContext() );
-    if ( !exprVal.isNull() )
+    if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       horizontalAnchorPoint = decodeHorizontalAnchorPoint( exprVal.toString() );
     }
@@ -561,7 +601,7 @@ void QgsMarkerSymbolLayer::markerOffset( QgsSymbolRenderContext &context, double
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyVerticalAnchor ) )
   {
     QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyVerticalAnchor, context.renderContext().expressionContext() );
-    if ( !exprVal.isNull() )
+    if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       verticalAnchorPoint = decodeVerticalAnchorPoint( exprVal.toString() );
     }
@@ -681,6 +721,7 @@ QgsMapUnitScale QgsMarkerSymbolLayer::mapUnitScale() const
 void QgsLineSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
   mWidthUnit = unit;
+  mOffsetUnit = unit;
 }
 
 QgsUnitTypes::RenderUnit QgsLineSymbolLayer::outputUnit() const
@@ -866,3 +907,26 @@ QList<QgsSymbolLayerReference> QgsSymbolLayer::masks() const
   return {};
 }
 
+void QgsSymbolLayer::prepareMasks( const QgsSymbolRenderContext &context )
+{
+  mClipPath.clear();
+
+  const QgsRenderContext &renderContext = context.renderContext();
+  const QList<QPainterPath> clipPaths = renderContext.symbolLayerClipPaths( this );
+  if ( !clipPaths.isEmpty() )
+  {
+    QPainterPath mergedPaths;
+    mergedPaths.setFillRule( Qt::WindingFill );
+    for ( QPainterPath path : clipPaths )
+    {
+      mergedPaths.addPath( path );
+    }
+
+    if ( !mergedPaths.isEmpty() )
+    {
+      mClipPath.addRect( 0, 0, renderContext.outputSize().width(),
+                         renderContext.outputSize().height() );
+      mClipPath = mClipPath.subtracted( mergedPaths );
+    }
+  }
+}

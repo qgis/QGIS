@@ -206,42 +206,46 @@ void _attribute( const char *data, std::size_t offset, QgsPointCloudAttribute::D
   switch ( type )
   {
     case QgsPointCloudAttribute::UChar:
+      value = *reinterpret_cast< const unsigned char * >( data + offset );
+      return;
+
     case QgsPointCloudAttribute::Char:
       value = *( data + offset );
-      break;
+      return;
 
     case QgsPointCloudAttribute::UInt32:
       value = *reinterpret_cast< const quint32 * >( data + offset );
-      break;
+      return;
+
     case QgsPointCloudAttribute::Int32:
       value = *reinterpret_cast< const qint32 * >( data + offset );
-      break;
+      return;
 
     case QgsPointCloudAttribute::UInt64:
       value = *reinterpret_cast< const quint64 * >( data + offset );
-      break;
+      return;
+
     case QgsPointCloudAttribute::Int64:
       value = *reinterpret_cast< const qint64 * >( data + offset );
-      break;
+      return;
 
     case QgsPointCloudAttribute::Short:
-    {
       value = *reinterpret_cast< const short * >( data + offset );
-    }
-    break;
+      return;
 
     case QgsPointCloudAttribute::UShort:
       value = *reinterpret_cast< const unsigned short * >( data + offset );
-      break;
+      return;
 
     case QgsPointCloudAttribute::Float:
       value = static_cast< T >( *reinterpret_cast< const float * >( data + offset ) );
-      break;
+      return;
 
     case QgsPointCloudAttribute::Double:
       value = *reinterpret_cast< const double * >( data + offset );
-      break;
+      return;
   }
+  BUILTIN_UNREACHABLE
 }
 
 double QgsPointCloudAttribute::convertValueToDouble( const char *ptr ) const
@@ -278,6 +282,12 @@ QVariantMap QgsPointCloudAttribute::getAttributeMap( const char *data, std::size
     switch ( attr.type() )
     {
       case QgsPointCloudAttribute::UChar:
+      {
+        const unsigned char value = *reinterpret_cast< const unsigned char * >( data + recordOffset + attributeOffset );
+        map[ attributeName ] = value;
+      }
+      break;
+
       case QgsPointCloudAttribute::Char:
       {
         const char value = *( data + recordOffset + attributeOffset );

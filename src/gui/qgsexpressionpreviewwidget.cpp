@@ -208,6 +208,7 @@ void QgsExpressionPreviewWidget::copyFullExpressionValue()
 {
   QClipboard *clipboard = QApplication::clipboard();
   const QVariant value = mExpression.evaluate( &mExpressionContext );
-  QgsDebugMsgLevel( QStringLiteral( "set clipboard: %1" ).arg( value.toString() ), 4 );
-  clipboard->setText( value.toString() );
+  const QString copiedValue = QgsExpression::formatPreviewString( value, false, 100000 );
+  QgsDebugMsgLevel( QStringLiteral( "set clipboard: %1" ).arg( copiedValue ), 4 );
+  clipboard->setText( copiedValue );
 }

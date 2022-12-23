@@ -68,7 +68,7 @@ class TestQgsServerWMTS(QgsServerTestBase):
             reference_name = 'wmts_' + request.lower()
 
         reference_name += '.txt'
-        reference_path = self.testdata_path + reference_name
+        reference_path = os.path.join(self.testdata_path, reference_name)
 
         self.store_reference(reference_path, response)
         f = open(reference_path, 'rb')
@@ -98,7 +98,7 @@ class TestQgsServerWMTS(QgsServerTestBase):
             reference_name = 'wmts_' + request.lower()
 
         reference_name += '.txt'
-        reference_path = self.testdata_path + reference_name
+        reference_path = os.path.join(self.testdata_path, reference_name)
 
         self.store_reference(reference_path, response)
         f = open(reference_path, 'rb')

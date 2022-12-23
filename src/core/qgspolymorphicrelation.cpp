@@ -14,14 +14,12 @@
  ***************************************************************************/
 
 #include "qgspolymorphicrelation.h"
-
-#include "qgsapplication.h"
-#include "qgsfeatureiterator.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgspolymorphicrelation_p.h"
-#include "qgsexpressioncontextutils.h"
+
+#include <QApplication>
 
 QgsPolymorphicRelation::QgsPolymorphicRelation()
   : d( new QgsPolymorphicRelationPrivate() )
@@ -78,7 +76,7 @@ QgsPolymorphicRelation QgsPolymorphicRelation::createFromXml( const QDomNode &no
   relation.d->mReferencedLayerIds = referencedLayerIds;
   relation.d->mRelationId = id;
   relation.d->mRelationName = name;
-  relation.d->mRelationStrength = qgsEnumKeyToValue<QgsRelation::RelationStrength>( relationStrength, QgsRelation::RelationStrength::Association );
+  relation.d->mRelationStrength = qgsEnumKeyToValue<Qgis::RelationshipStrength>( relationStrength, Qgis::RelationshipStrength::Association );
 
   QDomNodeList references = elem.elementsByTagName( QStringLiteral( "fieldRef" ) );
   for ( int i = 0; i < references.size(); ++i )
@@ -105,7 +103,7 @@ void QgsPolymorphicRelation::writeXml( QDomNode &node, QDomDocument &doc ) const
   elem.setAttribute( QStringLiteral( "referencedLayerField" ), d->mReferencedLayerField );
   elem.setAttribute( QStringLiteral( "referencedLayerExpression" ), d->mReferencedLayerExpression );
   elem.setAttribute( QStringLiteral( "referencedLayerIds" ), d->mReferencedLayerIds.join( "," ) );
-  elem.setAttribute( QStringLiteral( "relationStrength" ), qgsEnumValueToKey<QgsRelation::RelationStrength>( d->mRelationStrength ) );
+  elem.setAttribute( QStringLiteral( "relationStrength" ), qgsEnumValueToKey<Qgis::RelationshipStrength>( d->mRelationStrength ) );
 
   // note that a layer id can store a comma in theory. Luckyly, this is not easy to achieve, e.g. you need to modify the .qgs file manually
   for ( const QString &layerId : std::as_const( d->mReferencedLayerIds ) )
@@ -363,12 +361,12 @@ QStringList QgsPolymorphicRelation::referencedLayerIds() const
   return d->mReferencedLayerIds;
 }
 
-QgsRelation::RelationStrength QgsPolymorphicRelation::strength() const
+Qgis::RelationshipStrength QgsPolymorphicRelation::strength() const
 {
   return d->mRelationStrength;
 }
 
-void QgsPolymorphicRelation::setRelationStrength( QgsRelation::RelationStrength relationStrength )
+void QgsPolymorphicRelation::setRelationStrength( Qgis::RelationshipStrength relationStrength )
 {
   d.detach();
   d->mRelationStrength = relationStrength;

@@ -306,7 +306,7 @@ void TestQgsMeshCalculator::calcAndSave()
   const QString tempFilePath = QDir::tempPath() + '/' + "meshCalculatorResult.out";
   QgsMeshCalculator rc( QStringLiteral( "\"VertexScalarDataset\" + \"FaceScalarDataset\"" ),
                         QStringLiteral( "BINARY_DAT" ),
-                        "NewMixScalarDataset",
+                        "NewMixScalarDataset_saved",
                         tempFilePath,
                         extent,
                         0,

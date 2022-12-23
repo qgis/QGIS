@@ -5,6 +5,7 @@
 
 #include <string>
 #include <vector>
+#include <array>
 #include <assert.h>
 #include <netcdf.h>
 #include <cmath>
@@ -30,9 +31,9 @@ int NetCDFFile::handle() const
   return mNcid;
 }
 
-void NetCDFFile::openFile( const std::string &fileName )
+void NetCDFFile::openFile( const std::string &fileName, bool write )
 {
-  int res = nc_open( fileName.c_str(), NC_NOWRITE, &mNcid );
+  int res = nc_open( MDAL::systemFileName( fileName ).c_str(), write ? NC_WRITE : NC_NOWRITE, &mNcid );
   if ( res != NC_NOERR )
   {
     throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Could not open file " + fileName );
@@ -107,6 +108,42 @@ std::vector<double> NetCDFFile::readDoubleArr( const std::string &name, size_t d
   {
     if ( nc_get_var_double( mNcid, arr_id, arr_val.data() ) != NC_NOERR ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Could not read double array" );
   }
+  else if ( typep == NC_INT )
+  {
+    std::vector<int> arr_val_int( dim );
+    if ( nc_get_var_int( mNcid, arr_id, arr_val_int.data() ) != NC_NOERR ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Could not read integer array" );
+    for ( size_t i = 0; i < dim; ++i )
+    {
+      arr_val[i] = arr_val_int[i];
+    }
+  }
+  else if ( typep == NC_UINT )
+  {
+    std::vector<unsigned int> arr_val_uint( dim );
+    if ( nc_get_var_uint( mNcid, arr_id, arr_val_uint.data() ) != NC_NOERR ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Could not read integer array" );
+    for ( size_t i = 0; i < dim; ++i )
+    {
+      arr_val[i] = arr_val_uint[i];
+    }
+  }
+  else if ( typep == NC_INT64 )
+  {
+    std::vector<long long> arr_val_int( dim );
+    if ( nc_get_var_longlong( mNcid, arr_id, arr_val_int.data() ) != NC_NOERR ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Could not read integer array" );
+    for ( size_t i = 0; i < dim; ++i )
+    {
+      arr_val[i] = static_cast<double>( arr_val_int[i] );
+    }
+  }
+  else if ( typep == NC_UINT64 )
+  {
+    std::vector<unsigned long long> arr_val_int( dim );
+    if ( nc_get_var_ulonglong( mNcid, arr_id, arr_val_int.data() ) != NC_NOERR ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Could not read integer array" );
+    for ( size_t i = 0; i < dim; ++i )
+    {
+      arr_val[i] = static_cast<double>( arr_val_int[i] );
+    }
+  }
   else
   {
     throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Could not read double array" );
@@ -158,6 +195,42 @@ std::vector<double> NetCDFFile::readDoubleArr( int arr_id,
   else if ( typep == NC_DOUBLE )
   {
     if ( nc_get_vars_double( mNcid, arr_id, startp.data(), countp.data(), stridep.data(), arr_val.data() ) != NC_NOERR ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Could not read double array" );
+  }
+  else if ( typep == NC_INT )
+  {
+    std::vector<int> arr_val_int( count_dim1 * count_dim2 );
+    if ( nc_get_vars_int( mNcid, arr_id, startp.data(), countp.data(), stridep.data(), arr_val_int.data() ) != NC_NOERR ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Could not read double array" );
+    for ( size_t i = 0; i < count_dim1 * count_dim2; ++i )
+    {
+      arr_val[i] = arr_val_int[i];
+    }
+  }
+  else if ( typep == NC_UINT )
+  {
+    std::vector<unsigned int> arr_val_uint( count_dim1 * count_dim2 );
+    if ( nc_get_vars_uint( mNcid, arr_id, startp.data(), countp.data(), stridep.data(), arr_val_uint.data() ) != NC_NOERR ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Could not read double array" );
+    for ( size_t i = 0; i < count_dim1 * count_dim2; ++i )
+    {
+      arr_val[i] = arr_val_uint[i];
+    }
+  }
+  else if ( typep == NC_INT64 )
+  {
+    std::vector<long long> arr_val_int( count_dim1 * count_dim2 );
+    if ( nc_get_vars_longlong( mNcid, arr_id, startp.data(), countp.data(), stridep.data(), arr_val_int.data() ) != NC_NOERR ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Could not read double array" );
+    for ( size_t i = 0; i < count_dim1 * count_dim2; ++i )
+    {
+      arr_val[i] = static_cast<double>( arr_val_int[i] );
+    }
+  }
+  else if ( typep == NC_UINT64 )
+  {
+    std::vector<unsigned long long> arr_val_int( count_dim1 * count_dim2 );
+    if ( nc_get_vars_ulonglong( mNcid, arr_id, startp.data(), countp.data(), stridep.data(), arr_val_int.data() ) != NC_NOERR ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Could not read double array" );
+    for ( size_t i = 0; i < count_dim1 * count_dim2; ++i )
+    {
+      arr_val[i] = static_cast<double>( arr_val_int[i] );
+    }
   }
   else
   {
@@ -211,6 +284,33 @@ std::vector<double> NetCDFFile::readDoubleArr( int arr_id,
   {
     if ( nc_get_vars_double( mNcid, arr_id, startp.data(), countp.data(), stridep.data(), arr_val.data() ) != NC_NOERR )
       throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Could not read double array" );
+  }
+  else if ( typep == NC_UINT )
+  {
+    std::vector<unsigned int> arr_val_uint( count_dim );
+    if ( nc_get_vars_uint( mNcid, arr_id, startp.data(), countp.data(), stridep.data(), arr_val_uint.data() ) != NC_NOERR ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Could not read double array" );
+    for ( size_t i = 0; i < count_dim; ++i )
+    {
+      arr_val[i] = arr_val_uint[i];
+    }
+  }
+  else if ( typep == NC_INT64 )
+  {
+    std::vector<long long> arr_val_int( count_dim );
+    if ( nc_get_vars_longlong( mNcid, arr_id, startp.data(), countp.data(), stridep.data(), arr_val_int.data() ) != NC_NOERR ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Could not read double array" );
+    for ( size_t i = 0; i < count_dim; ++i )
+    {
+      arr_val[i] = static_cast<double>( arr_val_int[i] );
+    }
+  }
+  else if ( typep == NC_UINT64 )
+  {
+    std::vector<unsigned long long> arr_val_int( count_dim );
+    if ( nc_get_vars_ulonglong( mNcid, arr_id, startp.data(), countp.data(), stridep.data(), arr_val_int.data() ) != NC_NOERR ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Could not read double array" );
+    for ( size_t i = 0; i < count_dim; ++i )
+    {
+      arr_val[i] = static_cast<double>( arr_val_int[i] );
+    }
   }
   else
   {
@@ -319,6 +419,11 @@ double NetCDFFile::getFillValue( int varid ) const
   return getAttrDouble( varid, "_FillValue" );
 }
 
+void NetCDFFile::setFillValue( int varid, double fillValue )
+{
+  putAttrDouble( varid, "_FillValue", fillValue );
+}
+
 bool NetCDFFile::hasAttrDouble( int varid, const std::string &attr_name ) const
 {
   double res;
@@ -379,7 +484,7 @@ bool NetCDFFile::hasDimension( const std::string &name ) const
 
 void NetCDFFile::createFile( const std::string &fileName )
 {
-  int res = nc_create( fileName.c_str(), NC_CLOBBER, &mNcid );
+  int res = nc_create( MDAL::systemFileName( fileName ).c_str(), NC_CLOBBER, &mNcid );
   if ( res != NC_NOERR )
   {
     throw MDAL::Error( MDAL_Status::Err_FailToWriteToDisk, nc_strerror( res ) );
@@ -441,6 +546,17 @@ void NetCDFFile::putAttrDouble( int varId, const std::string &attrName, double v
 void NetCDFFile::putDataDouble( int varId, const size_t index, const double value )
 {
   int res = nc_put_var1_double( mNcid, varId, &index, &value );
+  if ( res != NC_NOERR )
+  {
+    throw MDAL::Error( MDAL_Status::Err_FailToWriteToDisk, nc_strerror( res ) );
+  }
+}
+
+void NetCDFFile::putDataArrayDouble( int varId, const size_t index, const std::vector<double> &values )
+{
+  std::array<size_t, 2> indexes = {index, 0};
+  std::array<size_t, 2> sizes = {1, values.size()};
+  int res = nc_put_vara_double( mNcid, varId, indexes.data(), sizes.data(), values.data() );
   if ( res != NC_NOERR )
   {
     throw MDAL::Error( MDAL_Status::Err_FailToWriteToDisk, nc_strerror( res ) );

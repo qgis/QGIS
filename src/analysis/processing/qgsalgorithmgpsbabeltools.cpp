@@ -98,8 +98,6 @@ QgsConvertGpxFeatureTypeAlgorithm *QgsConvertGpxFeatureTypeAlgorithm::createInst
 
 QVariantMap QgsConvertGpxFeatureTypeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QStringList convertStrings;
-
   const QString inputPath = parameterAsString( parameters, QStringLiteral( "INPUT" ), context );
   const QString outputPath = parameterAsString( parameters, QStringLiteral( "OUTPUT" ), context );
 
@@ -314,8 +312,6 @@ QgsConvertGpsDataAlgorithm *QgsConvertGpsDataAlgorithm::createInstance() const
 
 QVariantMap QgsConvertGpsDataAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QStringList convertStrings;
-
   const QString inputPath = parameterAsString( parameters, QStringLiteral( "INPUT" ), context );
   const QString outputPath = parameterAsString( parameters, QStringLiteral( "OUTPUT" ), context );
 

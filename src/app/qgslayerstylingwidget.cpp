@@ -29,6 +29,7 @@
 #include "qgsrendererrasterpropertieswidget.h"
 #include "qgsrenderermeshpropertieswidget.h"
 #include "qgsrasterhistogramwidget.h"
+#include "qgsrasterattributetablewidget.h"
 #include "qgsrasterrenderer.h"
 #include "qgsrasterrendererwidget.h"
 #include "qgsmapcanvas.h"
@@ -235,6 +236,11 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
         mOptionsListWidget->addItem( histogramItem );
         histogramItem->setToolTip( tr( "Histogram" ) );
       }
+
+      QListWidgetItem *rasterAttributeTableItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/attributes.svg" ) ), QString() );
+      rasterAttributeTableItem->setToolTip( tr( "Raster Attribute Tables" ) );
+      rasterAttributeTableItem->setData( Qt::UserRole, RasterAttributeTables );
+      mOptionsListWidget->addItem( rasterAttributeTableItem );
       break;
     }
     case QgsMapLayerType::MeshLayer:
@@ -414,8 +420,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
 
   mStackedWidget->setCurrentIndex( mLayerPage );
 
-  QgsPanelWidget *current = mWidgetStack->takeMainPanel();
-  if ( current )
+  if ( QgsPanelWidget *current = mWidgetStack->takeMainPanel() )
   {
     if ( QgsLabelingWidget *widget = qobject_cast<QgsLabelingWidget *>( current ) )
     {
@@ -619,6 +624,18 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
             }
             break;
           }
+          case 3: // Attribute Tables
+          {
+            if ( !mRasterAttributeTableWidget )
+            {
+              mRasterAttributeTableWidget = new QgsRasterAttributeTableWidget( mWidgetStack, rlayer );
+              mRasterAttributeTableWidget->setDockMode( true );
+            }
+
+            mWidgetStack->setMainPanel( mRasterAttributeTableWidget );
+
+            break;
+          }
           default:
             break;
         }
@@ -637,6 +654,8 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
             mMeshStyleWidget->setDockMode( true );
             connect( mMeshStyleWidget, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
             mWidgetStack->setMainPanel( mMeshStyleWidget );
+
+            connect( meshLayer, &QgsMeshLayer::reloaded, this, [this] {mMeshStyleWidget->syncToLayer( mCurrentLayer );} );
             break;
           }
 #ifdef HAVE_3D
@@ -650,6 +669,8 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
             }
             mMesh3DWidget->syncToLayer( meshLayer );
             mWidgetStack->setMainPanel( mMesh3DWidget );
+
+            connect( meshLayer, &QgsMeshLayer::reloaded, this, [this] {mMesh3DWidget->syncToLayer( mCurrentLayer );} );
             break;
           }
 #endif

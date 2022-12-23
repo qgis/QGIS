@@ -34,6 +34,7 @@
 #include <QComboBox>
 #include <QUuid>
 #include <QFileDialog>
+#include <QMessageBox>
 
 QgsVectorLayer *QgsNewMemoryLayerDialog::runAndCreateLayer( QWidget *parent, const QgsCoordinateReferenceSystem &defaultCrs )
 {
@@ -95,6 +96,7 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
   mTypeBox->addItem( QgsFields::iconForFieldType( QVariant::List, QVariant::Int ), QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::Int ), "integerlist" );
   mTypeBox->addItem( QgsFields::iconForFieldType( QVariant::List, QVariant::Double ), QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::Double ), "doublelist" );
   mTypeBox->addItem( QgsFields::iconForFieldType( QVariant::List, QVariant::LongLong ), QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::LongLong ), "integer64list" );
+  mTypeBox->addItem( QgsFields::iconForFieldType( QVariant::Map ), QgsVariantUtils::typeToDisplayString( QVariant::Map ), "map" );
   mTypeBox_currentIndexChanged( 1 );
 
   mWidth->setValidator( new QIntValidator( 1, 255, this ) );
@@ -112,7 +114,13 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
   connect( mAttributeView, &QTreeWidget::itemSelectionChanged, this, &QgsNewMemoryLayerDialog::selectionChanged );
   connect( mAddAttributeButton, &QToolButton::clicked, this, &QgsNewMemoryLayerDialog::mAddAttributeButton_clicked );
   connect( mRemoveAttributeButton, &QToolButton::clicked, this, &QgsNewMemoryLayerDialog::mRemoveAttributeButton_clicked );
+
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsNewMemoryLayerDialog::showHelp );
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsNewMemoryLayerDialog::accept );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsNewMemoryLayerDialog::reject );
+
+  mNameLineEdit->selectAll();
+  mNameLineEdit->setFocus();
 }
 
 QgsWkbTypes::Type QgsNewMemoryLayerDialog::selectedType() const
@@ -201,6 +209,7 @@ void QgsNewMemoryLayerDialog::mTypeBox_currentIndexChanged( int index )
     case 9: // Integerlist
     case 10: // Doublelist
     case 11: // Integer64list
+    case 12: // Map
       mWidth->clear();
       mWidth->setEnabled( false );
       mPrecision->clear();
@@ -287,6 +296,8 @@ QgsFields QgsNewMemoryLayerDialog::fields() const
       fieldType = QVariant::List;
       fieldSubType = QVariant::LongLong;
     }
+    else if ( typeName == QLatin1String( "map" ) )
+      fieldType = QVariant::Map;
 
     const QgsField field = QgsField( name, fieldType, typeName, width, precision, QString(), fieldSubType );
     fields.append( field );
@@ -294,6 +305,25 @@ QgsFields QgsNewMemoryLayerDialog::fields() const
   }
 
   return fields;
+}
+
+void QgsNewMemoryLayerDialog::accept()
+{
+  if ( !mFieldNameEdit->text().trimmed().isEmpty() )
+  {
+    const QString currentFieldName = mFieldNameEdit->text();
+    if ( fields().lookupField( currentFieldName ) == -1 )
+    {
+      if ( QMessageBox::question( this, tr( "New Temporary Scratch Layer" ),
+                                  tr( "The field “%1” has not been added to the fields list. Are you sure you want to proceed and discard this field?" ).arg( currentFieldName ),
+                                  QMessageBox::Ok | QMessageBox::Cancel ) != QMessageBox::Ok )
+      {
+        return;
+      }
+    }
+  }
+
+  QDialog::accept();
 }
 
 void QgsNewMemoryLayerDialog::mAddAttributeButton_clicked()

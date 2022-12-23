@@ -104,6 +104,7 @@ QgsSqlExpressionCompiler::Result QgsOgrExpressionCompiler::compileNode( const Qg
     case QgsExpressionNode::ntInOperator:
     case QgsExpressionNode::ntLiteral:
     case QgsExpressionNode::ntIndexOperator:
+    case QgsExpressionNode::ntBetweenOperator:
       break;
   }
 

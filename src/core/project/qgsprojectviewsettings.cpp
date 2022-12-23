@@ -16,7 +16,6 @@
 #include "qgsprojectviewsettings.h"
 #include "qgis.h"
 #include "qgsproject.h"
-#include "qgslogger.h"
 #include "qgsmaplayerutils.h"
 #include "qgscoordinatetransform.h"
 #include <QDomElement>
@@ -31,6 +30,8 @@ QgsProjectViewSettings::QgsProjectViewSettings( QgsProject *project )
 void QgsProjectViewSettings::reset()
 {
   mDefaultViewExtent = QgsReferencedRectangle();
+
+  mDefaultRotation = 0;
 
   const bool fullExtentChanged = !mPresetFullExtent.isNull();
   mPresetFullExtent = QgsReferencedRectangle();
@@ -130,6 +131,16 @@ bool QgsProjectViewSettings::useProjectScales() const
   return mUseProjectScales;
 }
 
+double QgsProjectViewSettings::defaultRotation() const
+{
+  return mDefaultRotation;
+}
+
+void QgsProjectViewSettings::setDefaultRotation( double rotation )
+{
+  mDefaultRotation = rotation;
+}
+
 bool QgsProjectViewSettings::readXml( const QDomElement &element, const QgsReadWriteContext & )
 {
   const bool useProjectScale = element.attribute( QStringLiteral( "UseProjectScales" ), QStringLiteral( "0" ) ).toInt();
@@ -185,6 +196,8 @@ bool QgsProjectViewSettings::readXml( const QDomElement &element, const QgsReadW
     setPresetFullExtent( QgsReferencedRectangle() );
   }
 
+  mDefaultRotation = element.attribute( QStringLiteral( "rotation" ), QStringLiteral( "0" ) ).toDouble();
+
   return true;
 }
 
@@ -192,6 +205,8 @@ QDomElement QgsProjectViewSettings::writeXml( QDomDocument &doc, const QgsReadWr
 {
   QDomElement element = doc.createElement( QStringLiteral( "ProjectViewSettings" ) );
   element.setAttribute( QStringLiteral( "UseProjectScales" ), mUseProjectScales ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+
+  element.setAttribute( QStringLiteral( "rotation" ), qgsDoubleToString( mDefaultRotation ) );
 
   QDomElement scales = doc.createElement( QStringLiteral( "Scales" ) );
   for ( const double scale : mMapScales )

@@ -23,13 +23,13 @@
 #include <QVector>
 
 #include "qgsauthmanager.h"
-#include "qgsraster.h"
 #include "qgsrectangle.h"
 #include "qgsrasteriterator.h"
 #include "qgsapplication.h"
-#include "qgsdataprovider.h"
 #include "qgsinterval.h"
 #include "qgstemporalutils.h"
+#include "qgshttpheaders.h"
+#include "qgscoordinatetransformcontext.h"
 
 class QNetworkReply;
 
@@ -199,7 +199,7 @@ struct QgsWmsDimensionProperty
       QDateTime start = QDateTime::fromString( extentContent.at( 0 ), Qt::ISODateWithMs );
       QDateTime end = QDateTime::fromString( extentContent.at( extentSize - 2 ), Qt::ISODateWithMs );
 
-      if ( start.isValid() & end.isValid() )
+      if ( start.isValid() && end.isValid() )
         return QgsDateTimeRange( start, end );
     }
 
@@ -349,7 +349,7 @@ struct QgsWmsLayerProperty
   int                fixedHeight;
 
   // TODO need to expand this to cover more of layer properties
-  bool equal( const QgsWmsLayerProperty &layerProperty )
+  bool equal( const QgsWmsLayerProperty &layerProperty ) const
   {
     if ( !( name == layerProperty.name ) )
       return false;
@@ -414,7 +414,7 @@ struct QgsWmstDates
 
   }
 
-  bool operator== ( const QgsWmstDates &other )
+  bool operator== ( const QgsWmstDates &other ) const
   {
     return dateTimes == other.dateTimes;
   }
@@ -437,7 +437,7 @@ struct QgsWmstExtentPair
   {
   }
 
-  bool operator ==( const QgsWmstExtentPair &other )
+  bool operator ==( const QgsWmstExtentPair &other ) const
   {
     return dates == other.dates &&
            resolution == other.resolution;
@@ -590,6 +590,41 @@ struct QgsWmtsTileLayer
 
   QHash<QString, QString> getTileURLs;
   QHash<QString, QString> getFeatureInfoURLs;
+
+  //! Dimension identifier for time dimension
+  QString timeDimensionIdentifier;
+
+  /**
+   * Types of date range formatting found on WMTS implementations.
+   *
+   * Note that the WMTS specification does not mandate any particular formats,
+   * so feel free to add newly encountered ones to this list!
+   */
+  enum class WmtsTimeFormat
+  {
+    yyyyMMdd, //!< YyyyMMdd e.g. 20210304
+    yyyy_MM_dd, //!< Yyyy-MM-dd e.g. 2021-03-04
+    yyyy, //!< Yyyy e.g. 2021
+    yyyyMMddyyyyMMddPxx, //!< YyyyMMddyyyyMMddPxx (WMS(t) style) e.g. 2021030420210306P10M
+    yyyyMMddThhmmssZ, //!< YyyyMMddThhmmssZ e.g. 20200304T121500Z
+  };
+
+  //! All available temporal ranges, taken from the TIME dimension if present
+  QList< QgsDateTimeRange > allTimeRanges;
+
+  //! Overall available temporal range
+  QgsDateTimeRange temporalExtent;
+
+  //! Temporal interval associated with TIME dimension
+  QgsInterval temporalInterval;
+
+  WmtsTimeFormat timeFormat = WmtsTimeFormat::yyyyMMdd;
+
+  //! Temporal capability flags
+  Qgis::RasterTemporalCapabilityFlags temporalCapabilityFlags;
+
+  //! Default value for time dimension
+  QString defaultTimeDimensionValue;
 };
 
 //! Capability Property structure
@@ -656,10 +691,10 @@ struct QgsWmsParserSettings
 
 struct QgsWmsAuthorization
 {
-  QgsWmsAuthorization( const QString &userName = QString(), const QString &password = QString(), const QString &referer = QString(), const QString &authcfg = QString() )
+  QgsWmsAuthorization( const QString &userName = QString(), const QString &password = QString(), const QgsHttpHeaders &httpHeaders = QgsHttpHeaders(), const QString &authcfg = QString() )
     : mUserName( userName )
     , mPassword( password )
-    , mReferer( referer )
+    , mHttpHeaders( httpHeaders )
     , mAuthCfg( authcfg )
   {}
 
@@ -674,10 +709,8 @@ struct QgsWmsAuthorization
       request.setRawHeader( "Authorization", "Basic " + QStringLiteral( "%1:%2" ).arg( mUserName, mPassword ).toUtf8().toBase64() );
     }
 
-    if ( !mReferer.isEmpty() )
-    {
-      request.setRawHeader( "Referer", mReferer.toLatin1() );
-    }
+    mHttpHeaders.updateNetworkRequest( request );
+
     return true;
   }
   //! Sets authorization reply
@@ -696,8 +729,8 @@ struct QgsWmsAuthorization
   //! Password for basic http authentication
   QString mPassword;
 
-  //! Referer for http requests
-  QString mReferer;
+  //! headers for http requests
+  QgsHttpHeaders mHttpHeaders;
 
   //! Authentication configuration ID
   QString mAuthCfg;
@@ -745,14 +778,21 @@ class QgsWmsSettings
      *
      * \since QGIS 3.14
      */
-    QgsTimeDuration parseWmstResolution( const QString &item );
+    static QgsTimeDuration parseWmstResolution( const QString &item );
 
     /**
      * Parse the given string item into QDateTime instant.
      *
      * \since QGIS 3.14
      */
-    QDateTime parseWmstDateTimes( const QString &item );
+    static QDateTime parseWmstDateTimes( const QString &item );
+
+    /**
+     * Parse the given dimension \a value corresponding to a WMTS time dimension.
+     *
+     * \since QGIS 3.28
+     */
+    static QgsDateTimeRange parseWmtsTimeValue( const QString &value, QgsWmtsTileLayer::WmtsTimeFormat &format );
 
     /**
      * Finds the least closest datetime from list of available dimension temporal ranges
@@ -804,6 +844,8 @@ class QgsWmsSettings
     QHash<QString, QString>  mTileDimensionValues;
     //! name of the chosen tile matrix set
     QString                 mTileMatrixSetId;
+
+    Qgis::TilePixelRatio mTilePixelRatio = Qgis::TilePixelRatio::Undefined;
 
     /**
      * Maximum width and height of getmap requests
@@ -881,7 +923,7 @@ class QgsWmsCapabilities
     QString lastError() const { return mError; }
     QString lastErrorFormat() const { return mErrorFormat; }
 
-    QgsWmsCapabilitiesProperty capabilitiesProperty() { return mCapabilities; }
+    QgsWmsCapabilitiesProperty capabilitiesProperty() const { return mCapabilities; }
 
     /**
      * \brief   Returns a list of the supported layers of the WMS server
@@ -997,7 +1039,7 @@ class QgsWmsCapabilities
     QgsWmsCapabilitiesProperty mCapabilities;
 
     //! Formats supported by server and provider
-    QMap<QgsRaster::IdentifyFormat, QString> mIdentifyFormats;
+    QMap<Qgis::RasterIdentifyFormat, QString> mIdentifyFormats;
 
 
     /**

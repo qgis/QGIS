@@ -114,7 +114,9 @@ QgsWmsParametersLayer QgsWmsRenderContext::parameters( const QgsMapLayer &layer 
 {
   QgsWmsParametersLayer parameters;
 
-  for ( const auto &params : mParameters.layersParameters() )
+  const QList<QgsWmsParametersLayer> cLayerParams { mParameters.layersParameters() };
+
+  for ( const auto &params : std::as_const( cLayerParams ) )
   {
     if ( params.mNickname == layerNickname( layer ) )
     {
@@ -266,7 +268,13 @@ bool QgsWmsRenderContext::updateExtent() const
 QString QgsWmsRenderContext::layerNickname( const QgsMapLayer &layer ) const
 {
   QString name = layer.shortName();
-  if ( QgsServerProjectUtils::wmsUseLayerIds( *mProject ) )
+  // For external layers we cannot use the layer id because it's not known to the client, use layer name instead.
+  if ( QgsServerProjectUtils::wmsUseLayerIds( *mProject ) &&
+       std::find_if( mExternalLayers.cbegin(), mExternalLayers.cend(),
+                     [ &layer ]( const QgsMapLayer * l )
+{
+  return l->id() == layer.id();
+  } ) == mExternalLayers.cend() )
   {
     name = layer.id();
   }
@@ -518,6 +526,7 @@ void QgsWmsRenderContext::searchLayersToRenderStyle()
 
     if ( ! param.mExternalUri.isEmpty() && ( mFlags & AddExternalLayers ) )
     {
+
       std::unique_ptr<QgsMapLayer> layer = std::make_unique< QgsRasterLayer >( param.mExternalUri, param.mNickname, QStringLiteral( "wms" ) );
 
       if ( layer->isValid() )
@@ -818,7 +827,7 @@ bool QgsWmsRenderContext::isExternalLayer( const QString &name ) const
 {
   for ( const auto &layer : mExternalLayers )
   {
-    if ( layer->name().compare( name ) == 0 )
+    if ( layerNickname( *layer ).compare( name ) == 0 )
       return true;
   }
 

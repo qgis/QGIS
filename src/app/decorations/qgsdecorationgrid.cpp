@@ -259,11 +259,7 @@ void QgsDecorationGrid::render( const QgsMapSettings &mapSettings, QgsRenderCont
         hIt = horizontalLines.constBegin();
         for ( ; hIt != horizontalLines.constEnd(); ++hIt )
         {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-          if ( hIt->second.intersect( vIt->second, &intersectionPoint ) == QLineF::BoundedIntersection )
-#else
           if ( hIt->second.intersects( vIt->second, &intersectionPoint ) == QLineF::BoundedIntersection )
-#endif
           {
             mMarkerSymbol->renderPoint( intersectionPoint, nullptr, context );
           }
@@ -308,7 +304,7 @@ void QgsDecorationGrid::drawCoordinateAnnotation( QgsRenderContext &context, QPo
   const QFontMetricsF textMetrics = QgsTextRenderer::fontMetrics( context, mTextFormat );
   const double textDescent = textMetrics.descent();
   const double textWidth = QgsTextRenderer::textWidth( context, mTextFormat, annotationStringList );
-  const double textHeight = QgsTextRenderer::textHeight( context, mTextFormat, annotationStringList, QgsTextRenderer::Point );
+  const double textHeight = QgsTextRenderer::textHeight( context, mTextFormat, annotationStringList, Qgis::TextLayoutMode::Point );
 
   double xpos = pos.x();
   double ypos = pos.y();
@@ -372,7 +368,7 @@ void QgsDecorationGrid::drawCoordinateAnnotation( QgsRenderContext &context, QPo
       }
   }
 
-  QgsTextRenderer::drawText( QPointF( xpos, ypos ), rotation, QgsTextRenderer::AlignLeft, annotationStringList, context, mTextFormat );
+  QgsTextRenderer::drawText( QPointF( xpos, ypos ), rotation, Qgis::TextHorizontalAlignment::Left, annotationStringList, context, mTextFormat );
 }
 
 static bool clipByRect( QLineF &line, const QPolygonF &rect )
@@ -388,11 +384,7 @@ static bool clipByRect( QLineF &line, const QPolygonF &rect )
   for ( ; it != borderLines.constEnd(); ++it )
   {
     QPointF intersectionPoint;
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    if ( it->intersect( line, &intersectionPoint ) == QLineF::BoundedIntersection )
-#else
     if ( it->intersects( line, &intersectionPoint ) == QLineF::BoundedIntersection )
-#endif
     {
       intersectionList.push_back( intersectionPoint );
       if ( intersectionList.size() >= 2 )

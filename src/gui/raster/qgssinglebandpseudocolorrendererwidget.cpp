@@ -133,11 +133,6 @@ void QgsSingleBandPseudoColorRendererWidget::doComputations()
 
 QgsRasterMinMaxWidget *QgsSingleBandPseudoColorRendererWidget::minMaxWidget() { return mMinMaxWidget; }
 
-int QgsSingleBandPseudoColorRendererWidget::currentBand() const
-{
-  return mBandComboBox->currentBand();
-}
-
 void QgsSingleBandPseudoColorRendererWidget::setMapCanvas( QgsMapCanvas *canvas )
 {
   QgsRasterRendererWidget::setMapCanvas( canvas );
@@ -188,7 +183,7 @@ void QgsSingleBandPseudoColorRendererWidget::bandChanged()
 
 void QgsSingleBandPseudoColorRendererWidget::loadMinMax( int bandNo, double min, double max )
 {
-  QgsDebugMsg( QStringLiteral( "theBandNo = %1 min = %2 max = %3" ).arg( bandNo ).arg( min ).arg( max ) );
+  QgsDebugMsgLevel( QStringLiteral( "theBandNo = %1 min = %2 max = %3" ).arg( bandNo ).arg( min ).arg( max ), 2 );
 
   const QString oldMinTextvalue = mMinLineEdit->text();
   const QString oldMaxTextvalue = mMaxLineEdit->text();
@@ -293,4 +288,18 @@ QString QgsSingleBandPseudoColorRendererWidget::displayValueWithMaxPrecision( co
     // Use QLocale default
     return QLocale().toString( value, 'g' );
   }
+}
+
+void QgsSingleBandPseudoColorRendererWidget::setMin( const QString &value, int )
+{
+  mMinLineEdit->setText( value );
+  minMaxModified();
+  mColorRampShaderWidget->classify();
+}
+
+void QgsSingleBandPseudoColorRendererWidget::setMax( const QString &value, int )
+{
+  mMaxLineEdit->setText( value );
+  minMaxModified();
+  mColorRampShaderWidget->classify();
 }

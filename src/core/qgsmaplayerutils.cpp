@@ -26,6 +26,7 @@
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
 #include "qgscoordinatetransform.h"
+#include <QRegularExpression>
 
 QgsRectangle QgsMapLayerUtils::combinedExtent( const QList<QgsMapLayer *> &layers, const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transformContext )
 {
@@ -136,4 +137,33 @@ bool QgsMapLayerUtils::updateLayerSourcePath( QgsMapLayer *layer, const QString 
   const QString newUri = QgsProviderRegistry::instance()->encodeUri( layer->providerType(), parts );
   layer->setDataSource( newUri, layer->name(), layer->providerType() );
   return true;
+}
+
+QList<QgsMapLayer *> QgsMapLayerUtils::sortLayersByType( const QList<QgsMapLayer *> &layers, const QList<QgsMapLayerType> &order )
+{
+  QList< QgsMapLayer * > res = layers;
+  std::sort( res.begin(), res.end(), [&order]( const QgsMapLayer * a, const QgsMapLayer * b ) -> bool
+  {
+    for ( QgsMapLayerType type : order )
+    {
+      if ( a->type() == type && b->type() != type )
+        return true;
+      else if ( b->type() == type )
+        return false;
+    }
+    return false;
+  } );
+  return res;
+}
+
+QString QgsMapLayerUtils::launderLayerName( const QString &name )
+{
+  QString laundered = name.toLower();
+  const thread_local QRegularExpression sRxSwapChars( QStringLiteral( "\\s" ) );
+  laundered.replace( sRxSwapChars, QStringLiteral( "_" ) );
+
+  const thread_local QRegularExpression sRxRemoveChars( QStringLiteral( "[^a-zA-Z0-9_]" ) );
+  laundered.replace( sRxRemoveChars, QString() );
+
+  return laundered;
 }

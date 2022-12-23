@@ -29,30 +29,6 @@
 #include "qgsapplication.h"
 #include "qgsscalewidget.h"
 
-class SnapTypeMenu: public QMenu
-{
-  public:
-    SnapTypeMenu( const QString &title, QWidget *parent = nullptr )
-      : QMenu( title, parent ) {}
-
-    void mouseReleaseEvent( QMouseEvent *e )
-    {
-      QAction *action = activeAction();
-      if ( action )
-        action->trigger();
-      else
-        QMenu::mouseReleaseEvent( e );
-    }
-
-    // set focus to parent so that mTypeButton is not displayed
-    void hideEvent( QHideEvent *e )
-    {
-      qobject_cast<QWidget *>( parent() )->setFocus();
-      QMenu::hideEvent( e );
-    }
-};
-
-
 QgsSnappingLayerDelegate::QgsSnappingLayerDelegate( QgsMapCanvas *canvas, QObject *parent )
   : QItemDelegate( parent )
   , mCanvas( canvas )
@@ -70,7 +46,7 @@ QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOp
     QToolButton *mTypeButton = new QToolButton( parent );
     mTypeButton->setToolTip( tr( "Snapping Type" ) );
     mTypeButton->setPopupMode( QToolButton::InstantPopup );
-    SnapTypeMenu *typeMenu = new SnapTypeMenu( tr( "Set Snapping Mode" ), parent );
+    SnappingLayerDelegateTypeMenu *typeMenu = new SnappingLayerDelegateTypeMenu( tr( "Set Snapping Mode" ), parent );
 
     for ( Qgis::SnappingType type : qgsEnumList<Qgis::SnappingType>() )
     {

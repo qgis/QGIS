@@ -27,10 +27,10 @@
 
 #include "qgsconditionalstyle.h"
 #include "qgsattributeeditorcontext.h"
+#include "qgsmaplayeractionregistry.h"
 #include "qgis_gui.h"
 
 class QgsMapCanvas;
-class QgsMapLayerAction;
 class QgsEditorWidgetFactory;
 class QgsFieldFormatter;
 class QgsVectorLayerCache;
@@ -180,7 +180,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     /**
      * Execute a QgsMapLayerAction
      */
-    void executeMapLayerAction( QgsMapLayerAction *action, const QModelIndex &idx ) const;
+    void executeMapLayerAction( QgsMapLayerAction *action, const QModelIndex &idx, const QgsMapLayerActionContext &context = QgsMapLayerActionContext() ) const;
 
     /**
      * Returns the feature attributes at given model index
@@ -335,6 +335,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
     mutable QgsFeature mFeat;
 
+    QgsFields mFields;
     QgsAttributeList mAttributes;
     QVector<QgsEditorWidgetFactory *> mWidgetFactories;
     QVector<QgsFieldFormatter *> mFieldFormatters;
@@ -394,6 +395,12 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
     //! Changed attribute values within a bulk edit command
     QMap<QPair<QgsFeatureId, int>, QVariant> mAttributeValueChanges;
+
+    //! Inserted feature IDs within a bulk edit command
+    QList<QgsFeatureId> mInsertedRowsChanges;
+
+    //! TRUE if triggered by afterRollback()
+    bool mIsCleaningUpAfterRollback = false;
 
     friend class TestQgsAttributeTable;
 

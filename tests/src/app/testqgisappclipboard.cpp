@@ -31,6 +31,8 @@
 #include "qgsgeometry.h"
 #include "qgspoint.h"
 #include "qgssettings.h"
+#include "qgsvectortilelayer.h"
+#include "qgsselectioncontext.h"
 
 /**
  * \ingroup UnitTests
@@ -51,10 +53,12 @@ class TestQgisAppClipboard : public QObject
 
     void copyPaste();
     void copyToText();
+    void copyToTextNoFields();
     void pasteWkt();
     void pasteGeoJson();
     void retrieveFields();
     void clipboardLogic(); //test clipboard logic
+    void testVectorTileLayer();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -94,8 +98,10 @@ void TestQgisAppClipboard::copyPaste()
   filesCounts.insert( QStringLiteral( "lines.shp" ), 6 );
   filesCounts.insert( QStringLiteral( "polys.shp" ), 10 );
 
-  for ( const QString &fileName : filesCounts.keys() )
+  for ( auto it = filesCounts.constBegin(); it != filesCounts.constEnd(); it++ )
   {
+    const QString fileName = it.key();
+
     // add vector layer
     const QString filePath = mTestDataDir + fileName;
     qDebug() << "add vector layer: " << filePath;
@@ -109,13 +115,13 @@ void TestQgisAppClipboard::copyPaste()
     const QgsFeatureList features = mQgisApp->clipboard()->copyOf();
     qDebug() << features.size() << " features copied to clipboard";
 
-    QVERIFY( features.size() == filesCounts.value( fileName ) );
+    QVERIFY( features.size() == it.value() );
 
     QgsVectorLayer *pastedLayer = mQgisApp->pasteAsNewMemoryVector( QStringLiteral( "pasted" ) );
     QVERIFY( pastedLayer );
     QVERIFY( pastedLayer->isValid() );
     qDebug() << pastedLayer->featureCount() << " features in pasted layer";
-    QVERIFY( pastedLayer->featureCount() == filesCounts.value( fileName ) );
+    QVERIFY( pastedLayer->featureCount() == it.value() );
   }
 }
 
@@ -223,6 +229,40 @@ void TestQgisAppClipboard::copyToText()
   mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
   QCOMPARE( result, QString( "wkt_geom\tint_field\tstring_field\nPoint (5 6)\t1\tSingle line text\nPoint (7 8)\t2\t\"Unix Multiline \nText\"\nPoint (9 10)\t3\t\"Windows Multiline \r\nText\"" ) );
 
+}
+
+void TestQgisAppClipboard::copyToTextNoFields()
+{
+  //set clipboard to some QgsFeatures with only geometries, no fields
+  QgsFields fields;
+  QgsFeature feat( fields, 5 );
+  feat.setGeometry( QgsGeometry( new QgsPoint( 5, 6 ) ) );
+  QgsFeature feat2( fields, 6 );
+  feat2.setGeometry( QgsGeometry( new QgsPoint( 7, 8 ) ) );
+  QgsFeatureStore feats;
+  feats.addFeature( feat );
+  feats.addFeature( feat2 );
+  feats.setFields( fields );
+  mQgisApp->clipboard()->replaceWithCopyOf( feats );
+
+  QgsSettings settings;
+  QString result, resultHtml;
+
+  // attributes with WKT
+  settings.setEnumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::AttributesWithWKT );
+  mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
+  QCOMPARE( result, QStringLiteral( "Point (5 6)\nPoint (7 8)" ) );
+
+  // HTML test
+  mQgisApp->clipboard()->replaceWithCopyOf( feats );
+  result = mQgisApp->clipboard()->data( "text/html" );
+  QCOMPARE( result, QStringLiteral( "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"><html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/></head><body><table border=\"1\"><tr><td>wkt_geom</td></tr><tr><td>Point (5 6)</td></tr><tr><td>Point (7 8)</td></tr></table></body></html>" ) );
+
+  // GeoJSON
+  settings.setEnumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::GeoJSON );
+  mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
+  const QString expected =  "{\"features\":[{\"geometry\":{\"coordinates\":[5.0,6.0],\"type\":\"Point\"},\"id\":5,\"properties\":null,\"type\":\"Feature\"},{\"geometry\":{\"coordinates\":[7.0,8.0],\"type\":\"Point\"},\"id\":6,\"properties\":null,\"type\":\"Feature\"}],\"type\":\"FeatureCollection\"}";
+  QCOMPARE( result, expected );
 }
 
 void TestQgisAppClipboard::pasteWkt()
@@ -481,6 +521,67 @@ void TestQgisAppClipboard::clipboardLogic()
   features = mQgisApp->clipboard()->copyOf( mQgisApp->clipboard()->fields() );
   QCOMPARE( features.length(), 1 );
   QCOMPARE( features.at( 0 ).attribute( "name" ).toString(), QString( "Dinagat Islands" ) );
+}
+
+void TestQgisAppClipboard::testVectorTileLayer()
+{
+  QString dataDir = QString( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  dataDir += "/vector_tile";
+
+  QgsDataSourceUri ds;
+  ds.setParam( "type", "xyz" );
+  ds.setParam( "url", QString( "file://%1/{z}-{x}-{y}.pbf" ).arg( dataDir ) );
+  ds.setParam( "zmax", "1" );
+  std::unique_ptr< QgsVectorTileLayer > layer = std::make_unique< QgsVectorTileLayer >( ds.encodedUri(), "Vector Tiles Test" );
+  QVERIFY( layer->isValid() );
+
+  QgsGeometry selectionGeometry = QgsGeometry::fromWkt( QStringLiteral( "Polygon ((13934091.75684908032417297 -1102962.40819426625967026, 11360512.80439674854278564 -2500048.12523981928825378, 12316413.55816475301980972 -5661873.69539554417133331, 16948855.67257896065711975 -6617774.44916355609893799, 18125348.90798573195934296 -2058863.16196227818727493, 15257646.64668171107769012 -735308.27212964743375778, 13934091.75684908032417297 -1102962.40819426625967026))" ) );
+  QgsSelectionContext context;
+  context.setScale( 315220096 );
+  layer->selectByGeometry( selectionGeometry, context, Qgis::SelectBehavior::SetSelection, Qgis::SelectGeometryRelationship::Intersect );
+
+  QCOMPARE( layer->selectedFeatureCount(), 4 );
+  const QList< QgsFeature > features = layer->selectedFeatures();
+
+  mQgisApp->clipboard()->replaceWithCopyOf( layer.get() );
+
+  // test that clipboard features are a "superset" of the incoming fields
+  QVERIFY( mQgisApp->clipboard()->fields().lookupField( QStringLiteral( "disputed" ) ) > -1 );
+  QVERIFY( mQgisApp->clipboard()->fields().lookupField( QStringLiteral( "maritime" ) ) > -1 );
+  QVERIFY( mQgisApp->clipboard()->fields().lookupField( QStringLiteral( "admin_level" ) ) > -1 );
+  QVERIFY( mQgisApp->clipboard()->fields().lookupField( QStringLiteral( "class" ) ) > -1 );
+  QVERIFY( mQgisApp->clipboard()->fields().lookupField( QStringLiteral( "name:th" ) ) > -1 );
+
+  QgsFeatureId maritimeId = -1;
+  QgsFeatureId oceanId = -1;
+  for ( const QgsFeature &feature :  features )
+  {
+    if ( feature.fields().lookupField( QStringLiteral( "maritime" ) ) > -1 )
+      maritimeId = feature.id();
+    else if ( feature.attribute( QStringLiteral( "class" ) ).toString() == QLatin1String( "ocean" ) )
+      oceanId = feature.id();
+  }
+
+  const QgsFeatureList clipboardFeatures = mQgisApp->clipboard()->copyOf();
+  QCOMPARE( clipboardFeatures.size(), 4 );
+
+  QgsFeature maritimeFeature;
+  QgsFeature oceanFeature;
+  for ( const QgsFeature &feature : clipboardFeatures )
+  {
+    if ( feature.id() == maritimeId )
+      maritimeFeature = feature;
+    else if ( feature.id() == oceanId )
+      oceanFeature = feature;
+  }
+  QVERIFY( maritimeFeature.isValid() );
+  QVERIFY( oceanFeature.isValid() );
+
+  // ensure that clipboard features are the superset of incoming fields, and that features have consistent fields with this superset
+  QCOMPARE( maritimeFeature.fields(), mQgisApp->clipboard()->fields() );
+  QCOMPARE( maritimeFeature.attribute( QStringLiteral( "maritime" ) ).toString(), QStringLiteral( "0" ) );
+  QCOMPARE( oceanFeature.fields(), mQgisApp->clipboard()->fields() );
+  QCOMPARE( oceanFeature.attribute( QStringLiteral( "class" ) ).toString(), QStringLiteral( "ocean" ) );
 }
 
 QGSTEST_MAIN( TestQgisAppClipboard )

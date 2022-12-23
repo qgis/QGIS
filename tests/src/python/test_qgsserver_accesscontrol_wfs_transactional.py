@@ -25,11 +25,12 @@ WFS_TRANSACTION_INSERT = """<?xml version="1.0" encoding="UTF-8"?>
           <gml:coordinates decimal="." cs="," ts=" ">{x},{y}</gml:coordinates>
         </gml:Point>
       </qgs:geometry>
+      <qgs:gid>{gid}</qgs:gid>
       <qgs:name>{name}</qgs:name>
       <qgs:color>{color}</qgs:color>
     </qgs:db_point>
   </wfs:Insert>
-</wfs:Transaction>""".format(x=1000, y=2000, name="test", color="{color}", xml_ns=XML_NS)
+</wfs:Transaction>"""
 
 WFS_TRANSACTION_UPDATE = """<?xml version="1.0" encoding="UTF-8"?>
 <wfs:Transaction {xml_ns}>
@@ -56,20 +57,25 @@ WFS_TRANSACTION_DELETE = """<?xml version="1.0" encoding="UTF-8"?>
 
 class TestQgsServerAccessControlWFSTransactional(TestQgsServerAccessControl):
 
+    @classmethod
+    def project_file(cls):
+        return 'project_shp.qgs'
+
     def test_wfstransaction_insert(self):
-        data = WFS_TRANSACTION_INSERT.format(x=1000, y=2000, name="test", color="{color}", xml_ns=XML_NS)
+        data = WFS_TRANSACTION_INSERT.format(x=1, y=2, name="test", color="{color}", gid="{gid}", xml_ns=XML_NS)
         self._test_colors({1: "blue"})
 
-        response, headers = self._post_fullaccess(data.format(color="red"))
+        response, headers = self._post_fullaccess(data.format(color="red", gid=2))
         self.assertEqual(
             headers.get("Content-Type"), "text/xml; charset=utf-8",
             "Content type for Insert is wrong: %s" % headers.get("Content-Type"))
+
         self.assertTrue(
             str(response).find("<SUCCESS/>") != -1,
             "WFS/Transactions Insert don't succeed\n%s" % response)
         self._test_colors({2: "red"})
 
-        response, headers = self._post_restricted(data.format(color="blue"))
+        response, headers = self._post_restricted(data.format(color="blue", gid=3))
         self.assertEqual(
             headers.get("Content-Type"), "text/xml; charset=utf-8",
             "Content type for Insert is wrong: %s" % headers.get("Content-Type"))
@@ -77,7 +83,7 @@ class TestQgsServerAccessControlWFSTransactional(TestQgsServerAccessControl):
             str(response).find("<SUCCESS/>") == -1,
             "WFS/Transactions Insert succeed\n%s" % response)
 
-        response, headers = self._post_restricted(data.format(color="red"), "LAYER_PERM=no")
+        response, headers = self._post_restricted(data.format(color="red", gid=4), "LAYER_PERM=no")
         self.assertEqual(
             headers.get("Content-Type"), "text/xml; charset=utf-8",
             "Content type for Insert is wrong: %s" % headers.get("Content-Type"))
@@ -86,17 +92,17 @@ class TestQgsServerAccessControlWFSTransactional(TestQgsServerAccessControl):
                 '<ServiceException code="Security">No permissions to do WFS changes on layer \\\'db_point\\\'</ServiceException>') != -1,
             "WFS/Transactions Insert succeed\n%s" % response)
 
-        response, headers = self._post_restricted(data.format(color="yellow"), "LAYER_PERM=yes")
+        response, headers = self._post_restricted(data.format(color="yellow", gid=5), "LAYER_PERM=yes")
         self.assertEqual(
             headers.get("Content-Type"), "text/xml; charset=utf-8",
             "Content type for Insert is wrong: %s" % headers.get("Content-Type"))
         self.assertTrue(
             str(response).find("<SUCCESS/>") != -1,
             "WFS/Transactions Insert don't succeed\n%s" % response)
-        self._test_colors({3: "yellow"})
+        self._test_colors({5: "yellow"})
 
     def test_wfstransaction_update(self):
-        data = WFS_TRANSACTION_UPDATE.format(id="1", color="{color}", xml_ns=XML_NS)
+        data = WFS_TRANSACTION_UPDATE.format(id="0", color="{color}", xml_ns=XML_NS)
         self._test_colors({1: "blue"})
 
         response, headers = self._post_restricted(data.format(color="yellow"))
@@ -146,7 +152,7 @@ class TestQgsServerAccessControlWFSTransactional(TestQgsServerAccessControl):
         self._test_colors({1: "yellow"})
 
     def test_wfstransaction_delete_fullaccess(self):
-        data = WFS_TRANSACTION_DELETE.format(id="1", xml_ns=XML_NS)
+        data = WFS_TRANSACTION_DELETE.format(id="0", xml_ns=XML_NS)
         self._test_colors({1: "blue"})
 
         response, headers = self._post_fullaccess(data)
@@ -155,10 +161,10 @@ class TestQgsServerAccessControlWFSTransactional(TestQgsServerAccessControl):
             "Content type for GetMap is wrong: %s" % headers.get("Content-Type"))
         self.assertTrue(
             str(response).find("<SUCCESS/>") != -1,
-            "WFS/Transactions Delete don't succeed\n%s" % response)
+            "WFS/Transactions Delete didn't succeed\n%s" % response)
 
     def test_wfstransaction_delete_restricted(self):
-        data = WFS_TRANSACTION_DELETE.format(id="1", xml_ns=XML_NS)
+        data = WFS_TRANSACTION_DELETE.format(id="0", xml_ns=XML_NS)
         self._test_colors({1: "blue"})
 
         response, headers = self._post_restricted(data)
@@ -169,7 +175,7 @@ class TestQgsServerAccessControlWFSTransactional(TestQgsServerAccessControl):
             str(response).find("<SUCCESS/>") == -1,
             "WFS/Transactions Delete succeed\n%s" % response)
 
-        data_update = WFS_TRANSACTION_UPDATE.format(id="1", color="red", xml_ns=XML_NS)
+        data_update = WFS_TRANSACTION_UPDATE.format(id="0", color="red", xml_ns=XML_NS)
         response, headers = self._post_fullaccess(data_update)
         self._test_colors({1: "red"})
 

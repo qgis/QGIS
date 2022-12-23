@@ -17,6 +17,7 @@
 #define QGSARCGISRESTDATAITEMGUIPROVIDER_H
 
 #include "qgsdataitemguiprovider.h"
+#include "qgsmimedatautils.h"
 
 
 class QgsArcGisRestDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
@@ -42,6 +43,7 @@ class QgsArcGisRestDataItemGuiProvider : public QObject, public QgsDataItemGuiPr
     static void refreshConnection( QgsDataItem *item );
     static void saveConnections();
     static void loadConnections( QgsDataItem *item );
+    void addFilteredLayer( const QgsMimeDataUtils::Uri &uri, QgsDataItemGuiContext context );
 };
 
 

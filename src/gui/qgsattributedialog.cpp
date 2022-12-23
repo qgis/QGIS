@@ -19,9 +19,10 @@
 
 #include "qgsattributeform.h"
 #include "qgshighlight.h"
-#include "qgsapplication.h"
 #include "qgssettings.h"
 #include "qgsmessagebar.h"
+#include "qgsactionmenu.h"
+#include "qgsmaplayeractioncontext.h"
 
 QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget *parent, bool showDialogButtons, const QgsAttributeEditorContext &context )
   : QDialog( parent )
@@ -125,11 +126,12 @@ void QgsAttributeDialog::init( QgsVectorLayer *layer, QgsFeature *feature, const
   connect( layer, &QObject::destroyed, this, &QWidget::close );
 
   mMenu = new QgsActionMenu( layer, mAttributeForm->feature(), QStringLiteral( "Feature" ), this );
-  if ( !mMenu->menuActions().isEmpty() )
+  mMenu->setActionContextGenerator( this );
+  if ( !mMenu->isEmpty() )
   {
-    QMenuBar *menuBar = new QMenuBar( this );
-    menuBar->addMenu( mMenu );
-    layout()->setMenuBar( menuBar );
+    mMenuBar = new QMenuBar( this );
+    mMenuBar->addMenu( mMenu );
+    layout()->setMenuBar( mMenuBar );
   }
 
   restoreGeometry();
@@ -140,6 +142,19 @@ void QgsAttributeDialog::setMode( QgsAttributeEditorContext::Mode mode )
 {
   mAttributeForm->setMode( mode );
   mMenu->setMode( mode );
+
+  if ( !mMenu->isEmpty() && !mMenuBar )
+  {
+    mMenuBar = new QMenuBar( this );
+    mMenuBar->addMenu( mMenu );
+    layout()->setMenuBar( mMenuBar );
+  }
+  else if ( mMenu->isEmpty() && mMenuBar )
+  {
+    layout()->setMenuBar( nullptr );
+    delete mMenuBar;
+    mMenuBar = nullptr;
+  }
 }
 
 bool QgsAttributeDialog::event( QEvent *e )
@@ -156,3 +171,12 @@ void QgsAttributeDialog::setExtraContextScope( QgsExpressionContextScope *extraS
 {
   mAttributeForm->setExtraContextScope( extraScope );
 }
+
+QgsMapLayerActionContext QgsAttributeDialog::createActionContext()
+{
+  QgsMapLayerActionContext context;
+  context.setAttributeDialog( this );
+  context.setMessageBar( mMessageBar );
+  return context;
+}
+

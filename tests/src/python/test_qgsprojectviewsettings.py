@@ -129,6 +129,32 @@ class TestQgsProjectViewSettings(unittest.TestCase):
         self.assertAlmostEqual(canvas.extent().yMaximum(), 0.02245788, 3)
         self.assertEqual(canvas.mapSettings().destinationCrs().authid(), 'EPSG:4326')
 
+    def testDefaultRotation(self):
+        p = QgsProjectViewSettings()
+        self.assertEqual(p.defaultRotation(), 0)
+
+        p.setDefaultRotation(37)
+        self.assertEqual(p.defaultRotation(), 37)
+
+        p.reset()
+        self.assertEqual(p.defaultRotation(), 0)
+
+    def testDefaultRotationWithCanvas(self):
+        p = QgsProject()
+        p.viewSettings().setDefaultRotation(14)
+
+        canvas = QgsMapCanvas()
+        canvas.setRotation(37)
+        canvas.show()
+
+        tmpDir = QTemporaryDir()
+        tmpFile = "{}/project.qgz".format(tmpDir.path())
+        self.assertTrue(p.write(tmpFile))
+
+        QgsProject.instance().read(tmpFile)
+
+        self.assertEqual(canvas.rotation(), 14)
+
     def testPresetFullExtent(self):
         p = QgsProjectViewSettings()
         self.assertTrue(p.presetFullExtent().isNull())

@@ -940,10 +940,10 @@ void TestQgsRasterCalculator::testFunctionTypeWithLayer()
   QCOMPARE( static_cast< int >( rc.processCalculation() ), 0 );
 
   //open output file and check results
-  QgsRasterLayer *result = new QgsRasterLayer( tmpName, QStringLiteral( "result" ) );
+  std::unique_ptr< QgsRasterLayer > result = std::make_unique< QgsRasterLayer >( tmpName, QStringLiteral( "result" ) );
   QCOMPARE( result->width(), 2 );
   QCOMPARE( result->height(), 3 );
-  QgsRasterBlock *block = result->dataProvider()->block( 1, extent, 2, 3 );
+  std::unique_ptr< QgsRasterBlock > block( result->dataProvider()->block( 1, extent, 2, 3 ) );
 
   QCOMPARE( block->value( 0, 0 ), 100.0 );
   QCOMPARE( block->value( 0, 1 ), 100.0 );
@@ -962,10 +962,10 @@ void TestQgsRasterCalculator::testFunctionTypeWithLayer()
   QCOMPARE( static_cast< int >( rc2.processCalculation() ), 0 );
 
   //open output file and check results
-  result = new QgsRasterLayer( tmpName, QStringLiteral( "result" ) );
+  result = std::make_unique< QgsRasterLayer >( tmpName, QStringLiteral( "result" ) );
   QCOMPARE( result->width(), 2 );
   QCOMPARE( result->height(), 3 );
-  block = result->dataProvider()->block( 1, extent, 2, 3 );
+  block.reset( result->dataProvider()->block( 1, extent, 2, 3 ) );
   QCOMPARE( block->value( 0, 0 ), 265.0 );
   QCOMPARE( block->value( 0, 1 ), 263.0 );
   QCOMPARE( block->value( 1, 0 ), 5.0 );
@@ -983,10 +983,10 @@ void TestQgsRasterCalculator::testFunctionTypeWithLayer()
   QCOMPARE( static_cast< int >( rc3.processCalculation() ), 0 );
 
   //open output file and check results
-  result = new QgsRasterLayer( tmpName, QStringLiteral( "result" ) );
+  result = std::make_unique< QgsRasterLayer >( tmpName, QStringLiteral( "result" ) );
   QCOMPARE( result->width(), 2 );
   QCOMPARE( result->height(), 3 );
-  block = result->dataProvider()->block( 1, extent, 2, 3 );
+  block.reset( result->dataProvider()->block( 1, extent, 2, 3 ) );
   QCOMPARE( block->value( 0, 0 ), 265.0 );
   QCOMPARE( block->value( 0, 1 ), 263.0 );
   QCOMPARE( block->value( 1, 0 ), -15.0 );
@@ -1004,10 +1004,10 @@ void TestQgsRasterCalculator::testFunctionTypeWithLayer()
   QCOMPARE( static_cast< int >( rc4.processCalculation() ), 0 );
 
   //open output file and check results
-  result = new QgsRasterLayer( tmpName, QStringLiteral( "result" ) );
+  result = std::make_unique< QgsRasterLayer >( tmpName, QStringLiteral( "result" ) );
   QCOMPARE( result->width(), 2 );
   QCOMPARE( result->height(), 3 );
-  block = result->dataProvider()->block( 1, extent, 2, 3 );
+  block.reset( result->dataProvider()->block( 1, extent, 2, 3 ) );
   QCOMPARE( block->value( 0, 0 ), 265.0 );
   QCOMPARE( block->value( 0, 1 ), 263.0 );
   QCOMPARE( block->value( 1, 0 ), 263.0 );
@@ -1025,18 +1025,16 @@ void TestQgsRasterCalculator::testFunctionTypeWithLayer()
   QCOMPARE( static_cast< int >( rc5.processCalculation() ), 0 );
 
   //open output file and check results
-  result = new QgsRasterLayer( tmpName, QStringLiteral( "result" ) );
+  result = std::make_unique< QgsRasterLayer >( tmpName, QStringLiteral( "result" ) );
   QCOMPARE( result->width(), 2 );
   QCOMPARE( result->height(), 3 );
-  block = result->dataProvider()->block( 1, extent, 2, 3 );
+  block.reset( result->dataProvider()->block( 1, extent, 2, 3 ) );
   QCOMPARE( block->value( 0, 0 ), 0.0 );
   QCOMPARE( block->value( 0, 1 ), 0.0 );
   QCOMPARE( block->value( 1, 0 ), 0.0 );
   QCOMPARE( block->value( 1, 1 ), 0.0 );
   QCOMPARE( block->value( 2, 0 ), 0.0 );
   QCOMPARE( block->value( 2, 1 ), 0.0 );
-  delete result;
-  delete block;
 }
 
 QGSTEST_MAIN( TestQgsRasterCalculator )

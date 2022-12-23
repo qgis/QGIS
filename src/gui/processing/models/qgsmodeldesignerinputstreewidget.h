@@ -34,6 +34,7 @@ class QMimeData;
  */
 class QgsModelDesignerInputsTreeWidget : public QTreeWidget
 {
+    Q_OBJECT
   public:
 
     /**

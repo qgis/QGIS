@@ -16,7 +16,6 @@
 #include "layer.h"
 #include "pal.h"
 #include "feature.h"
-#include "geomfunction.h"
 #include "labelposition.h"
 #include "util.h"
 #include "costcalculator.h"
@@ -40,7 +39,7 @@ void CostCalculator::addObstacleCostPenalty( LabelPosition *lp, FeaturePart *obs
   {
     case GEOS_POINT:
 
-      dist = lp->getDistanceToPoint( obstacle->x[0], obstacle->y[0] );
+      dist = lp->getDistanceToPoint( obstacle->x[0], obstacle->y[0], true );
       if ( dist < 0 )
         n = 2;
       else if ( dist < distlabel )
@@ -85,10 +84,10 @@ void CostCalculator::addObstacleCostPenalty( LabelPosition *lp, FeaturePart *obs
 
   switch ( pal->placementVersion() )
   {
-    case QgsLabelingEngineSettings::PlacementEngineVersion1:
+    case Qgis::LabelPlacementEngineVersion::Version1:
       break;
 
-    case QgsLabelingEngineSettings::PlacementEngineVersion2:
+    case Qgis::LabelPlacementEngineVersion::Version2:
     {
       // obstacle factor is from 0 -> 2, label priority is from 1 -> 0. argh!
       const double priority = 2 * ( 1 - lp->feature->calculatePriority() );
@@ -245,8 +244,8 @@ void CostCalculator::finalizeCandidatesCosts( Feats *feat, double bbx[4], double
 
   if ( feat->feature->getGeosType() == GEOS_POLYGON )
   {
-    const int arrangement = feat->feature->layer()->arrangement();
-    if ( arrangement == QgsPalLayerSettings::Free || arrangement == QgsPalLayerSettings::Horizontal )
+    const Qgis::LabelPlacement arrangement = feat->feature->layer()->arrangement();
+    if ( arrangement == Qgis::LabelPlacement::Free || arrangement == Qgis::LabelPlacement::Horizontal )
     {
       // prefer positions closer to the pole of inaccessibilities
       calculateCandidatePolygonRingDistanceCosts( feat->candidates, bbx, bby );

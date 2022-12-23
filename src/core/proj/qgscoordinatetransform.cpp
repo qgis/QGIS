@@ -59,13 +59,23 @@ QgsCoordinateTransform::QgsCoordinateTransform()
   d = new QgsCoordinateTransformPrivate();
 }
 
-QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, const QgsCoordinateTransformContext &context )
+QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, const QgsCoordinateTransformContext &context, Qgis::CoordinateTransformationFlags flags )
 {
   mContext = context;
   d = new QgsCoordinateTransformPrivate( source, destination, mContext );
+
+  if ( flags & Qgis::CoordinateTransformationFlag::IgnoreImpossibleTransformations )
+    mIgnoreImpossible = true;
+
 #ifdef QGISDEBUG
   mHasContext = true;
 #endif
+
+  if ( mIgnoreImpossible && !isTransformationPossible( source, destination ) )
+  {
+    d->invalidate();
+    return;
+  }
 
   if ( !d->checkValidity() )
     return;
@@ -77,9 +87,12 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSyst
     addToCache();
   }
   Q_NOWARN_DEPRECATED_POP
+
+  if ( flags & Qgis::CoordinateTransformationFlag::BallparkTransformsAreAppropriate )
+    mBallparkTransformsAreAppropriate = true;
 }
 
-QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, const QgsProject *project )
+QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, const QgsProject *project, Qgis::CoordinateTransformationFlags flags )
 {
   mContext = project ? project->transformContext() : QgsCoordinateTransformContext();
   d = new QgsCoordinateTransformPrivate( source, destination, mContext );
@@ -88,6 +101,15 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSyst
     mHasContext = true;
 #endif
 
+  if ( flags & Qgis::CoordinateTransformationFlag::IgnoreImpossibleTransformations )
+    mIgnoreImpossible = true;
+
+  if ( mIgnoreImpossible && !isTransformationPossible( source, destination ) )
+  {
+    d->invalidate();
+    return;
+  }
+
   if ( !d->checkValidity() )
     return;
 
@@ -98,6 +120,9 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSyst
     addToCache();
   }
   Q_NOWARN_DEPRECATED_POP
+
+  if ( flags & Qgis::CoordinateTransformationFlag::BallparkTransformsAreAppropriate )
+    mBallparkTransformsAreAppropriate = true;
 }
 
 QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, int sourceDatumTransform, int destinationDatumTransform )
@@ -142,10 +167,30 @@ QgsCoordinateTransform &QgsCoordinateTransform::operator=( const QgsCoordinateTr
 
 QgsCoordinateTransform::~QgsCoordinateTransform() {} //NOLINT
 
+bool QgsCoordinateTransform::isTransformationPossible( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination )
+{
+  if ( !source.isValid() || !destination.isValid() )
+    return false;
+
+#if PROJ_VERSION_MAJOR>8 || (PROJ_VERSION_MAJOR==8 && PROJ_VERSION_MINOR>=1)
+  if ( source.celestialBodyName() != destination.celestialBodyName() )
+    return false;
+#endif
+
+  return true;
+}
+
 void QgsCoordinateTransform::setSourceCrs( const QgsCoordinateReferenceSystem &crs )
 {
   d.detach();
   d->mSourceCRS = crs;
+
+  if ( mIgnoreImpossible && !isTransformationPossible( d->mSourceCRS, d->mDestCRS ) )
+  {
+    d->invalidate();
+    return;
+  }
+
   if ( !d->checkValidity() )
     return;
 
@@ -162,6 +207,13 @@ void QgsCoordinateTransform::setDestinationCrs( const QgsCoordinateReferenceSyst
 {
   d.detach();
   d->mDestCRS = crs;
+
+  if ( mIgnoreImpossible && !isTransformationPossible( d->mSourceCRS, d->mDestCRS ) )
+  {
+    d->invalidate();
+    return;
+  }
+
   if ( !d->checkValidity() )
     return;
 
@@ -182,6 +234,13 @@ void QgsCoordinateTransform::setContext( const QgsCoordinateTransformContext &co
 #ifdef QGISDEBUG
   mHasContext = true;
 #endif
+
+  if ( mIgnoreImpossible && !isTransformationPossible( d->mSourceCRS, d->mDestCRS ) )
+  {
+    d->invalidate();
+    return;
+  }
+
   if ( !d->checkValidity() )
     return;
 
@@ -800,14 +859,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 
     for ( int i = 0; i < numPoints; ++i )
     {
-      if ( direction == Qgis::TransformDirection::Forward )
-      {
-        points += QStringLiteral( "(%1, %2)\n" ).arg( x[i], 0, 'f' ).arg( y[i], 0, 'f' );
-      }
-      else
-      {
-        points += QStringLiteral( "(%1, %2)\n" ).arg( x[i], 0, 'f' ).arg( y[i], 0, 'f' );
-      }
+      points += QStringLiteral( "(%1, %2)\n" ).arg( x[i], 0, 'f' ).arg( y[i], 0, 'f' );
     }
 
     const QString dir = ( direction == Qgis::TransformDirection::Forward ) ? QObject::tr( "forward transform" ) : QObject::tr( "inverse transform" );

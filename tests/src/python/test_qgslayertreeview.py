@@ -70,6 +70,9 @@ class TestQgsLayerTreeView(unittest.TestCase):
         if USE_MODEL_TESTER:
             self.tester = QAbstractItemModelTester(self.model)
 
+        self.groupname = "group"
+        self.subgroupname = "sub-group"
+
     def nodeOrder(self, group):
 
         nodeorder = []
@@ -408,6 +411,161 @@ class TestQgsLayerTreeView(unittest.TestCase):
             groupname,
             groupname + '-' + self.layer5.name(),
             groupname + '-' + self.layer4.name(),
+        ])
+
+    def testAddGroupActionLayer(self):
+        """Test add group action on single layer"""
+
+        view = QgsLayerTreeView()
+        group = self.project.layerTreeRoot().insertGroup(0, "embeddedgroup")
+        group.addLayer(self.layer4)
+        group.addLayer(self.layer5)
+        groupname = group.name()
+        view.setModel(self.model)
+        if USE_MODEL_TESTER:
+            proxy_tester = QAbstractItemModelTester(view.model())
+        actions = QgsLayerTreeViewDefaultActions(view)
+        self.assertEqual(self.nodeOrder(self.project.layerTreeRoot().children()), [
+            groupname,
+            groupname + '-' + self.layer4.name(),
+            groupname + '-' + self.layer5.name(),
+            self.layer.name(),
+            self.layer2.name(),
+            self.layer3.name(),
+        ])
+
+        view.setCurrentLayer(self.layer2)
+        addgroup = actions.actionAddGroup()
+        addgroup.trigger()
+        self.assertEqual(self.nodeOrder(self.project.layerTreeRoot().children()), [
+            groupname,
+            groupname + '-' + self.layer4.name(),
+            groupname + '-' + self.layer5.name(),
+            self.layer.name(),
+            self.groupname + '1',
+            self.groupname + '1' + '-' + self.layer2.name(),
+            self.layer3.name()
+        ])
+
+    def testAddGroupActionLayers(self):
+        """Test add group action on several layers"""
+
+        view = QgsLayerTreeView()
+        group = self.project.layerTreeRoot().insertGroup(0, "embeddedgroup")
+        group.addLayer(self.layer4)
+        group.addLayer(self.layer5)
+        groupname = group.name()
+
+        view.setModel(self.model)
+        if USE_MODEL_TESTER:
+            proxy_tester = QAbstractItemModelTester(view.model())
+        actions = QgsLayerTreeViewDefaultActions(view)
+        self.assertEqual(self.nodeOrder(self.project.layerTreeRoot().children()), [
+            groupname,
+            groupname + '-' + self.layer4.name(),
+            groupname + '-' + self.layer5.name(),
+            self.layer.name(),
+            self.layer2.name(),
+            self.layer3.name(),
+        ])
+
+        selectionMode = view.selectionMode()
+        view.setSelectionMode(QgsLayerTreeView.MultiSelection)
+        view.setCurrentLayer(self.layer)
+        view.setCurrentLayer(self.layer2)
+        view.setSelectionMode(selectionMode)
+
+        addgroup = actions.actionAddGroup()
+        addgroup.trigger()
+        self.assertEqual(self.nodeOrder(self.project.layerTreeRoot().children()), [
+            groupname,
+            groupname + '-' + self.layer4.name(),
+            groupname + '-' + self.layer5.name(),
+            self.groupname + '1',
+            self.groupname + '1' + '-' + self.layer.name(),
+            self.groupname + '1' + '-' + self.layer2.name(),
+            self.layer3.name()
+        ])
+
+    def testAddGroupActionGroup(self):
+        """Test add group action on single group"""
+
+        view = QgsLayerTreeView()
+        group = self.project.layerTreeRoot().insertGroup(0, "embeddedgroup")
+        group.addLayer(self.layer4)
+        group.addLayer(self.layer5)
+        groupname = group.name()
+        view.setModel(self.model)
+        if USE_MODEL_TESTER:
+            proxy_tester = QAbstractItemModelTester(view.model())
+        actions = QgsLayerTreeViewDefaultActions(view)
+        self.assertEqual(self.nodeOrder(self.project.layerTreeRoot().children()), [
+            groupname,
+            groupname + '-' + self.layer4.name(),
+            groupname + '-' + self.layer5.name(),
+            self.layer.name(),
+            self.layer2.name(),
+            self.layer3.name(),
+        ])
+
+        nodeLayerIndex = view.node2index(group)
+        view.setCurrentIndex(nodeLayerIndex)
+        addgroup = actions.actionAddGroup()
+        addgroup.trigger()
+        self.assertEqual(self.nodeOrder(self.project.layerTreeRoot().children()), [
+            groupname,
+            groupname + '-' + self.layer4.name(),
+            groupname + '-' + self.layer5.name(),
+            groupname + '-' + self.subgroupname + '1',
+            self.layer.name(),
+            self.layer2.name(),
+            self.layer3.name()
+        ])
+
+    def testAddGroupActionGroups(self):
+        """Test add group action on several groups"""
+
+        view = QgsLayerTreeView()
+        group = self.project.layerTreeRoot().insertGroup(0, "embeddedgroup")
+        group.addLayer(self.layer4)
+        groupname = group.name()
+        group2 = self.project.layerTreeRoot().insertGroup(0, "embeddedgroup2")
+        group2.addLayer(self.layer5)
+        groupname2 = group2.name()
+
+        view.setModel(self.model)
+        if USE_MODEL_TESTER:
+            proxy_tester = QAbstractItemModelTester(view.model())
+        actions = QgsLayerTreeViewDefaultActions(view)
+        self.assertEqual(self.nodeOrder(self.project.layerTreeRoot().children()), [
+            groupname2,
+            groupname2 + '-' + self.layer5.name(),
+            groupname,
+            groupname + '-' + self.layer4.name(),
+            self.layer.name(),
+            self.layer2.name(),
+            self.layer3.name(),
+        ])
+
+        selectionMode = view.selectionMode()
+        view.setSelectionMode(QgsLayerTreeView.MultiSelection)
+        nodeLayerIndex = view.node2index(group)
+        view.setCurrentIndex(nodeLayerIndex)
+        nodeLayerIndex2 = view.node2index(group2)
+        view.setCurrentIndex(nodeLayerIndex2)
+        view.setSelectionMode(selectionMode)
+
+        addgroup = actions.actionAddGroup()
+        addgroup.trigger()
+        self.assertEqual(self.nodeOrder(self.project.layerTreeRoot().children()), [
+            self.groupname + '1',
+            self.groupname + '1' + '-' + groupname,
+            self.groupname + '1' + '-' + groupname + '-' + self.layer4.name(),
+            self.groupname + '1' + '-' + groupname2,
+            self.groupname + '1' + '-' + groupname2 + '-' + self.layer5.name(),
+            self.layer.name(),
+            self.layer2.name(),
+            self.layer3.name()
         ])
 
     def testSetLayerVisible(self):

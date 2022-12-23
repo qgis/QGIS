@@ -80,7 +80,7 @@ class TestAuthManager(unittest.TestCase):
         self.authm.updateNetworkRequest(req, ac.id())
         auth = bytes(req.rawHeader(b'Authorization'))[6:]
         # Note that RFC7617 states clearly: User-ids containing colons cannot be encoded in user-pass strings
-        u, p = base64.decodestring(auth).split(b':')
+        u, p = base64.b64decode(auth).split(b':')
         return u.decode('utf8'), p.decode('utf8')
 
     def testHeaderEncoding(self):

@@ -57,6 +57,19 @@ class CORE_EXPORT QgsFontUtils
     static bool fontFamilyHasStyle( const QString &family, const QString &style );
 
     /**
+     * Attempts to resolve the style name corresponding to the specified \a font object.
+     *
+     * If a font has been modified by calling QFont::setBold or QFont::setItalic, then its QFont::styleName
+     * may return an empty string. This method attempts to determine the correct style name which
+     * corresponds to the font's bold and italic settings.
+     *
+     * Returns an empty string if a matching style name could not be found.
+     *
+     * \since QGIS 3.26
+     */
+    static QString resolveFontStyleName( const QFont &font );
+
+    /**
      * Check whether font family is on system
      * \param family The family to test
      * \param chosen The actual family (possibly from different foundry) returned by system

@@ -21,6 +21,12 @@ Connections management
 %End
   public:
 
+
+
+
+    const QgsSettingsEntryGroup settingsServiceConnectionDetailsGroup;
+    const QgsSettingsEntryGroup settingsServiceConnectionCredentialsGroup;
+
     QgsOwsConnection( const QString &service, const QString &connName );
 %Docstring
 Constructor
@@ -55,20 +61,42 @@ Returns a string representing the service type, e.g. "WMS".
 Returns the connection uri.
 %End
 
-    static QgsDataSourceUri &addWmsWcsConnectionSettings( QgsDataSourceUri &uri, const QString &settingsKey );
+ static QgsDataSourceUri &addWmsWcsConnectionSettings( QgsDataSourceUri &uri, const QString &settingsKey ) /Deprecated/;
 %Docstring
 Adds uri parameters relating to the settings for a WMS or WCS connection to a :py:class:`QgsDataSourceUri` ``uri``.
 Connection settings are taken from the specified QSettings ``settingsKey``.
 
 .. versionadded:: 3.0
+
+.. deprecated:: QGIS 3.26
+   use addWmsWcsConnectionSettings with service and connection name parameters
 %End
 
-    static QgsDataSourceUri &addWfsConnectionSettings( QgsDataSourceUri &uri, const QString &settingsKey );
+    static QgsDataSourceUri &addWmsWcsConnectionSettings( QgsDataSourceUri &uri, const QString &service, const QString &connName );
+%Docstring
+Adds uri parameters relating to the settings for a WMS or WCS connection to a :py:class:`QgsDataSourceUri` ``uri``.
+Connection settings are taken from the specified ``servcie`` and ``connName``
+
+.. versionadded:: 3.26
+%End
+
+ static QgsDataSourceUri &addWfsConnectionSettings( QgsDataSourceUri &uri, const QString &settingsKey ) /Deprecated/;
 %Docstring
 Adds uri parameters relating to the settings for a WFS connection to a :py:class:`QgsDataSourceUri` ``uri``.
 Connection settings are taken from the specified QSettings ``settingsKey``.
 
 .. versionadded:: 3.0
+
+.. deprecated:: QGIS 3.26
+   use addWfsConnectionSettings with service and connection name parameters
+%End
+
+    static QgsDataSourceUri &addWfsConnectionSettings( QgsDataSourceUri &uri, const QString &service, const QString &connName );
+%Docstring
+Adds uri parameters relating to the settings for a WFS connection to a :py:class:`QgsDataSourceUri` ``uri``.
+Connection settings are taken from the specified ``servcie`` and ``connName``
+
+.. versionadded:: 3.26
 %End
 
     static QStringList connectionList( const QString &service );

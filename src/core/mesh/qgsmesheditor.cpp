@@ -19,8 +19,6 @@
 #include "qgsmeshdataprovider.h"
 #include "qgstriangularmesh.h"
 #include "qgsmeshlayer.h"
-#include "qgsmeshlayerutils.h"
-#include "qgslogger.h"
 #include "qgsgeometryengine.h"
 #include "qgsmeshadvancedediting.h"
 #include "qgsgeometryutils.h"
@@ -65,9 +63,87 @@ QgsMeshEditingError QgsMeshEditor::initialize()
 {
   QgsMeshEditingError error;
   mTopologicalMesh = QgsTopologicalMesh::createTopologicalMesh( mMesh, mMaximumVerticesPerFace, error );
+
+  if ( error.errorType == Qgis::MeshEditingErrorType::NoError )
+  {
+    // we check for free vertices that could be included in face here
+    // because we need the spatial index of the triangular mesh
+    const QList<int> freeVertices = mTopologicalMesh.freeVerticesIndexes();
+    for ( int vi : freeVertices )
+    {
+      if ( mTriangularMesh->faceIndexForPoint_v2( mTriangularMesh->vertices().at( vi ) ) != -1 )
+      {
+        error = QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, vi );
+        break;
+      }
+    }
+  }
+
   mValidFacesCount = mMesh->faceCount();
   mValidVerticesCount = mMesh->vertexCount();
   return error;
+}
+
+QgsMeshEditingError QgsMeshEditor::initializeWithErrorsFix()
+{
+  QgsMeshEditingError lastError;
+
+  while ( true )
+  {
+    lastError = initialize();
+    if ( lastError.errorType == Qgis::MeshEditingErrorType::NoError )
+      break;
+
+    if ( !fixError( lastError ) )
+      break;
+
+    mTriangularMesh->update( mMesh );
+  };
+
+  return lastError;
+}
+
+bool QgsMeshEditor::fixError( const QgsMeshEditingError &error )
+{
+  switch ( error.errorType )
+  {
+    case Qgis::MeshEditingErrorType::NoError:
+      return true;
+      break;
+    case Qgis::MeshEditingErrorType::InvalidFace:
+    case Qgis::MeshEditingErrorType::TooManyVerticesInFace:
+    case Qgis::MeshEditingErrorType::FlatFace:
+    case Qgis::MeshEditingErrorType::ManifoldFace:
+      if ( error.elementIndex != -1 && error.elementIndex < mMesh->faceCount() )
+      {
+        mMesh->faces.removeAt( error.elementIndex );
+        return true;
+      }
+      return false;
+      break;
+    case Qgis::MeshEditingErrorType::InvalidVertex:
+    case Qgis::MeshEditingErrorType::UniqueSharedVertex:
+    {
+      auto faceIt = mMesh->faces.begin();
+      while ( faceIt != mMesh->faces.end() )
+      {
+        if ( faceIt->contains( error.elementIndex ) )
+          faceIt = mMesh->faces.erase( faceIt );
+        else
+          ++faceIt;
+      }
+
+      if ( error.elementIndex >= 0 && error.elementIndex < mMesh->vertexCount() )
+      {
+        mMesh->vertices[error.elementIndex] = QgsMeshVertex();
+        reindex( false );
+      }
+      return true;
+    }
+    break;
+  }
+
+  return false;
 }
 
 void QgsMeshEditor::resetTriangularMesh( QgsTriangularMesh *triangularMesh )
@@ -608,7 +684,10 @@ QgsMeshEditingError QgsMeshEditor::removeVerticesWithoutFillHoles( const QList<i
 
   QSet<int> concernedNativeFaces;
   for ( const int vi : std::as_const( verticesIndexes ) )
-    concernedNativeFaces.unite( qgis::listToSet( mTopologicalMesh.facesAroundVertex( vi ) ) );
+  {
+    const QList<int> faces = mTopologicalMesh.facesAroundVertex( vi );
+    concernedNativeFaces.unite( QSet< int >( faces.begin(), faces.end() ) );
+  }
 
   error = mTopologicalMesh.facesCanBeRemoved( concernedNativeFaces.values() );
 
@@ -983,10 +1062,12 @@ bool QgsMeshEditor::reindex( bool renumbering )
     if ( !mTopologicalMesh.renumber() )
       return false;
 
-    QgsMeshEditingError error = initialize();
+    QgsMeshEditingError error;
+    mTopologicalMesh = QgsTopologicalMesh::createTopologicalMesh( mMesh, mMaximumVerticesPerFace, error );
+    mValidFacesCount = mMesh->faceCount();
+    mValidVerticesCount = mMesh->vertexCount();
     return error.errorType == Qgis::MeshEditingErrorType::NoError;
   }
-
   else
     return true;
 }

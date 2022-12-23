@@ -81,6 +81,13 @@ Returns the (possibly NULL) properties of the table this fields belong to.
 .. versionadded:: 3.16
 %End
 
+    bool canRenameFields() const;
+%Docstring
+Returns ``True`` if the connection supports renaming fields.
+
+.. versionadded:: 3.28
+%End
+
 };
 
 

@@ -143,6 +143,21 @@ Returns icon for point cloud layer
     virtual QgsAbstractDatabaseProviderConnection *databaseConnection() const;
 
 
+    const QgsLayerMetadata &layerMetadata() const;
+%Docstring
+Returns layer's metadata, it may be a default constructed metadata
+if metadata is not explicitly set.
+
+.. versionadded:: 3.28
+%End
+
+    void setLayerMetadata( const QgsLayerMetadata &metadata );
+%Docstring
+Set layer's ``metadata``.
+
+.. versionadded:: 3.28
+%End
+
 };
 
 

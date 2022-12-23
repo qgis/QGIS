@@ -30,6 +30,7 @@
 #include <QTextCodec>
 #include <QTextStream>
 #include <QObject>
+#include <QIcon>
 
 #include "qgis.h"
 #include "qgsapplication.h"
@@ -558,6 +559,11 @@ QgsGpxProviderMetadata::QgsGpxProviderMetadata():
 {
 }
 
+QIcon QgsGpxProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconGpx.svg" ) );
+}
+
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
   return new QgsGpxProviderMetadata();
@@ -581,4 +587,9 @@ QString QgsGpxProviderMetadata::encodeUri( const QVariantMap &parts ) const
 QVariantMap QgsGpxProviderMetadata::decodeUri( const QString &uri ) const
 {
   return QgsGPXProvider::decodeUri( uri );
+}
+
+QList<QgsMapLayerType> QgsGpxProviderMetadata::supportedLayerTypes() const
+{
+  return { QgsMapLayerType::VectorLayer };
 }

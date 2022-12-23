@@ -51,6 +51,9 @@ QString memoryLayerFieldType( QVariant::Type type )
     case QVariant::Bool:
       return QStringLiteral( "boolean" );
 
+    case QVariant::Map:
+      return QStringLiteral( "map" );
+
     default:
       break;
   }

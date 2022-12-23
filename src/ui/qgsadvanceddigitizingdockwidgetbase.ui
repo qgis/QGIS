@@ -10,12 +10,6 @@
     <height>262</height>
    </rect>
   </property>
-  <property name="maximumSize">
-   <size>
-    <width>524287</width>
-    <height>500</height>
-   </size>
-  </property>
   <property name="windowTitle">
    <string>Advanced Digitizing</string>
   </property>
@@ -56,6 +50,8 @@
       <addaction name="mSettingsAction"/>
       <addaction name="separator"/>
       <addaction name="mToggleFloaterAction"/>
+      <addaction name="separator"/>
+      <addaction name="mConstructionAction"/>
      </widget>
     </item>
     <item>
@@ -628,6 +624,18 @@
     <string>Toggle Floater</string>
    </property>
   </action>
+  <action name="mConstructionAction">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/algorithms/mAlgorithmExtractVertices.svg</normaloff>:/images/themes/default/algorithms/mAlgorithmExtractVertices.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Construction</string>
+   </property>
+   <property name="toolTip">
+    <string>Construction</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -663,6 +671,7 @@
   <tabstop>mRepeatingLockMButton</tabstop>
  </tabstops>
  <resources>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>

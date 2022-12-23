@@ -14,6 +14,7 @@
 #include "FileProcessor.hpp"
 #include "../untwine/ProgressWriter.hpp"
 
+#include <pdal/pdal_features.hpp>
 #include <pdal/StageFactory.hpp>
 #include <pdal/filters/StreamCallbackFilter.hpp>
 
@@ -29,18 +30,21 @@ FileProcessor::FileProcessor(const FileInfo& fi, size_t pointSize, const Grid& g
 
 void FileProcessor::run()
 {
+
     pdal::Options opts;
     opts.add("filename", m_fi.filename);
+    opts.add("count", m_fi.numPoints);
+#ifdef PDAL_LAS_START
+    if (m_fi.driver == "readers.las")
+        opts.add("start", m_fi.start);
+#endif
 
     pdal::StageFactory factory;
     pdal::Stage *s = factory.createStage(m_fi.driver);
     s->setOptions(opts);
 
-    pdal::StreamCallbackFilter f;
 
-    const PointCount CountIncrement = 100000;
     PointCount count = 0;
-    PointCount limit = CountIncrement;
 
     // We need to move the data from the PointRef to some output buffer. We copy the data
     // to the end of the *last* output buffer we used in hopes that it's the right one.
@@ -50,11 +54,9 @@ void FileProcessor::run()
     // This is some random cell that ultimately won't get used, but it contains a buffer
     // into which we can write data.
     Cell *cell = m_cellMgr.get(VoxelKey());
-#ifdef _MSC_VER
-    f.setCallback([this, &CountIncrement, &count, &limit, &cell](pdal::PointRef& point)
-#else
-    f.setCallback([this, &count, &limit, &cell](pdal::PointRef& point)
-#endif
+
+    pdal::StreamCallbackFilter f;
+    f.setCallback([this, &count, &cell](pdal::PointRef& point)
         {
             // Write the data into the point buffer in the cell.  This is the *last*
             // cell buffer that we used. We're hoping that it's the right one.
@@ -71,15 +73,15 @@ void FileProcessor::run()
                 cell = m_cellMgr.get(cellIndex);
                 cell->copyPoint(p);
             }
-            // Advance the cell - move the buffer pointer so when refer to the cell's
+            // Advance the cell - move the buffer pointer so when we refer to the cell's
             // point, we're referring to the next location in the cell's buffer.
             cell->advance();
             count++;
 
-            if (count == limit)
+            if (count == ProgressWriter::ChunkSize)
             {
-                m_progress.update(CountIncrement);
-                limit += CountIncrement;
+                m_progress.update();
+                count = 0;
             }
 
             return true;
@@ -96,10 +98,12 @@ void FileProcessor::run()
     }
     catch (const pdal::pdal_error& err)
     {
-        fatal(err.what());
+        throw FatalError(err.what());
     }
 
-    m_progress.update(count % CountIncrement);
+    // We normally call update for every CountIncrement points, but at the end, just
+    // tell the progress writer the number that we've done since the last update.
+    m_progress.update(count);
 }
 
 } // namespace epf

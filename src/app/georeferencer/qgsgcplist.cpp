@@ -143,19 +143,11 @@ bool QgsGCPList::saveGcps( const QString &filePath, const QgsCoordinateReference
     if ( targetCrs.isValid() )
     {
       points << QStringLiteral( "#CRS: %1" ).arg( targetCrs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) );
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-      points << endl;
-#else
       points << Qt::endl;
-#endif
     }
 
     points << "mapX,mapY,sourceX,sourceY,enable,dX,dY,residual";
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    points << endl;
-#else
     points << Qt::endl;
-#endif
 
     for ( QgsGeorefDataPoint *pt : *this )
     {
@@ -169,11 +161,7 @@ bool QgsGCPList::saveGcps( const QString &filePath, const QgsCoordinateReference
              .arg( qgsDoubleToString( pt->residual().x() ),
                    qgsDoubleToString( pt->residual().y() ),
                    qgsDoubleToString( std::sqrt( pt->residual().x() * pt->residual().x() + pt->residual().y() * pt->residual().y() ) ) );
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-      points << endl;
-#else
       points << Qt::endl;
-#endif
     }
     return true;
   }

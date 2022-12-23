@@ -173,7 +173,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      *   # True
      *  \endcode
      */
-    bool isDegenerate() SIP_HOLDGIL;
+    bool isDegenerate() const SIP_HOLDGIL;
 
     /**
      * Is the triangle isocele (two sides with the same length)?

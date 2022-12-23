@@ -62,8 +62,9 @@ void QgsPointCloudAttributeByRampRenderer::renderBlock( const QgsPointCloudBlock
     return;
   const QgsPointCloudAttribute::DataType attributeType = attribute->type();
 
+  const bool renderElevation = context.elevationMap();
   const QgsDoubleRange zRange = context.renderContext().zRange();
-  const bool considerZ = !zRange.isInfinite();
+  const bool considerZ = !zRange.isInfinite() || renderElevation;
 
   const bool applyZOffset = attribute->name() == QLatin1String( "Z" );
   const bool applyXOffset = attribute->name() == QLatin1String( "X" );
@@ -122,6 +123,8 @@ void QgsPointCloudAttributeByRampRenderer::renderBlock( const QgsPointCloudBlock
 
       mColorRampShader.shade( attributeValue, &red, &green, &blue, &alpha );
       drawPoint( x, y, QColor( red, green, blue, alpha ), context );
+      if ( renderElevation )
+        drawPointToElevationMap( x, y, z, context );
 
       rendered++;
     }
@@ -248,3 +251,51 @@ void QgsPointCloudAttributeByRampRenderer::setMaximum( double value )
   mMax = value;
 }
 
+std::unique_ptr<QgsPreparedPointCloudRendererData> QgsPointCloudAttributeByRampRenderer::prepare()
+{
+  std::unique_ptr< QgsPointCloudAttributeByRampRendererPreparedData> data = std::make_unique< QgsPointCloudAttributeByRampRendererPreparedData >();
+  data->attributeName = mAttribute;
+  data->colorRampShader = mColorRampShader;
+
+  data->attributeIsX = mAttribute == QLatin1String( "X" );
+  data->attributeIsY = mAttribute == QLatin1String( "Y" );
+  data->attributeIsZ = mAttribute == QLatin1String( "Z" );
+  return data;
+}
+
+QColor QgsPointCloudAttributeByRampRendererPreparedData::pointColor( const QgsPointCloudBlock *block, int i, double z )
+{
+  double attributeValue = 0;
+  if ( attributeIsZ )
+    attributeValue = z;
+  else
+    QgsPointCloudRenderContext::getAttribute( block->data(), i * block->pointRecordSize() + attributeOffset, attributeType, attributeValue );
+
+  if ( attributeIsX )
+    attributeValue = block->offset().x() + block->scale().x() * attributeValue;
+  else if ( attributeIsY )
+    attributeValue = block->offset().y() + block->scale().y() * attributeValue;
+
+  int red = 0;
+  int green = 0;
+  int blue = 0;
+  int alpha = 0;
+  colorRampShader.shade( attributeValue, &red, &green, &blue, &alpha );
+  return QColor( red, green, blue, alpha );
+}
+
+QSet<QString> QgsPointCloudAttributeByRampRendererPreparedData::usedAttributes() const
+{
+  return { attributeName };
+}
+
+bool QgsPointCloudAttributeByRampRendererPreparedData::prepareBlock( const QgsPointCloudBlock *block )
+{
+  const QgsPointCloudAttributeCollection attributes = block->attributes();
+  const QgsPointCloudAttribute *attribute = attributes.find( attributeName, attributeOffset );
+  if ( !attribute )
+    return false;
+
+  attributeType = attribute->type();
+  return true;
+}

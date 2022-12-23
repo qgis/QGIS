@@ -131,6 +131,22 @@ Finishes rendering and cleans up any resources
 Renders given vector tile. Must be called between startRender/stopRender.
 %End
 
+    virtual bool willRenderFeature( const QgsFeature &feature, int tileZoom, const QString &layerName, QgsRenderContext &context ) = 0;
+%Docstring
+Returns ``True`` if the specified ``feature`` will be rendered in the given render ``context``.
+
+.. versionadded:: 3.28
+%End
+
+    virtual void renderSelectedFeatures( const QList< QgsFeature > &selection, QgsRenderContext &context ) = 0;
+%Docstring
+Renders the specified features in a selected state.
+
+This will be called after rendering the tiles, so that the selected features are always visible on the top of the layer.
+
+.. versionadded:: 3.28
+%End
+
     virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const = 0;
 %Docstring
 Writes renderer's properties to given XML element

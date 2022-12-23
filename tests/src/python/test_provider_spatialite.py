@@ -297,8 +297,8 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
-        del(cls.vl)
-        del(cls.vl_poly)
+        del cls.vl
+        del cls.vl_poly
         # for the time being, keep the file to check with qgis
         # if os.path.exists(cls.dbname) :
         #    os.remove(cls.dbname)
@@ -414,7 +414,11 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
                     '"dt" = format_date(to_datetime(\'000www14ww13ww12www4ww5ww2020\',\'zzzwwwsswwmmwwhhwwwdwwMwwyyyy\'),\'yyyy-MM-dd hh:mm:ss\')',
                     'to_time("time") >= make_time(12, 14, 14)',
                     'to_time("time") = to_time(\'000www14ww13ww12www\',\'zzzwwwsswwmmwwhhwww\')',
-                    '"date" = to_date(\'www4ww5ww2020\',\'wwwdwwMwwyyyy\')'
+                    '"date" = to_date(\'www4ww5ww2020\',\'wwwdwwMwwyyyy\')',
+                    'dt BETWEEN make_datetime(2020, 5, 3, 12, 13, 14) AND make_datetime(2020, 5, 4, 12, 14, 14)',
+                    'dt NOT BETWEEN make_datetime(2020, 5, 3, 12, 13, 14) AND make_datetime(2020, 5, 4, 12, 14, 14)',
+                    '"dt" <= make_datetime(2020, 5, 4, 12, 13, 14)',
+                    '"date" <= make_datetime(2020, 5, 4, 12, 13, 14)'
                     ])
 
     def partiallyCompiledFilters(self):
@@ -1814,6 +1818,55 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         it.nextFeature(feature)
 
         self.assertTrue(feature.isValid())
+
+    def testRegression50523(self):
+        """Test for issue GH #50523"""
+
+        con = spatialite_connect(self.dbname, isolation_level=None)
+        cur = con.cursor()
+        cur.execute("BEGIN")
+        sql = """CREATE TABLE table50523 (
+            _id INTEGER PRIMARY KEY AUTOINCREMENT,
+            atttext TEXT NOT NULL)"""
+
+        cur.execute(sql)
+        sql = "SELECT AddGeometryColumn('table50523', 'position', 25832, 'POLYGON', 'XY', 0)"
+        cur.execute(sql)
+        cur.execute("COMMIT")
+        con.close()
+
+        layer = QgsVectorLayer(
+            'dbname=\'{}\' table="table50523" (position) sql='.format(self.dbname), 'test', 'spatialite')
+
+        self.assertTrue(layer.isValid())
+
+        # Check NOT NULL constraint on atttext
+        field = layer.fields().at(1)
+        self.assertTrue(bool(field.constraints().constraints() & QgsFieldConstraints.ConstraintNotNull))
+
+        self.assertTrue(layer.startEditing())
+
+        f = QgsFeature(layer.fields())
+        g = QgsGeometry.fromWkt('polygon((0 0, 1 1, 1 0, 0 0))')
+        g.isGeosValid()
+        self.assertTrue(g.isGeosValid())
+        f.setGeometry(g)
+        f.fields()
+        f.fields().names()
+        f.setAttribute(1, QVariant(QVariant.String))
+        f.setAttribute(0, 'Autogenerate')
+        self.assertTrue(layer.addFeatures([f]))
+        self.assertFalse(layer.commitChanges())
+        self.assertTrue(layer.rollBack())
+
+        self.assertTrue(layer.startEditing())
+        f.setAttribute(1, 'some text')
+        self.assertTrue(layer.addFeatures([f]))
+        self.assertTrue(layer.commitChanges())
+
+        layer = QgsVectorLayer(
+            'dbname=\'{}\' table="table50523" (position) sql='.format(self.dbname), 'test', 'spatialite')
+        self.assertEqual(len([f for f in layer.getFeatures()]), 1)
 
 
 if __name__ == '__main__':

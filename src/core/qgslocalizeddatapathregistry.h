@@ -78,7 +78,7 @@ class CORE_EXPORT QgsLocalizedDataPathRegistry
 #endif
 
     void readFromSettings();
-    void writeToSettings();
+    void writeToSettings() const;
 
     QList<QDir> mPaths;
     mutable QReadWriteLock mLock;

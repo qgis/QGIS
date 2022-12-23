@@ -1,8 +1,0 @@
-Create Point Grid
-shapes_points
-QgsProcessingParameterVectorDestination|POINTS|Point Grid
-QgsProcessingParameterNumber|X_EXTENT_MIN|X-Extent (Min)|QgsProcessingParameterNumber.Integer|None|False|None|None
-QgsProcessingParameterNumber|X_EXTENT_MAX|X-Extent (Max)|QgsProcessingParameterNumber.Integer|None|False|None|None
-QgsProcessingParameterNumber|Y_EXTENT_MIN|Y-Extent (Min)|QgsProcessingParameterNumber.Integer|None|False|None|None
-QgsProcessingParameterNumber|Y_EXTENT_MAX|Y-Extent (Max)|QgsProcessingParameterNumber.Integer|None|False|None|None
-QgsProcessingParameterNumber|DIST|Distance|QgsProcessingParameterNumber.Double|100.000000|False|None|None

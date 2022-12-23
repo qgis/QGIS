@@ -48,6 +48,7 @@ class QgsGeorefToolMovePoint;
 class QgsGCPCanvasItem;
 class QgsGcpPoint;
 class QgsMapLayer;
+class QgsScreenHelper;
 
 class QgsGeorefDockWidget : public QgsDockWidget
 {
@@ -182,6 +183,8 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     bool georeferenceRaster();
     bool georeferenceVector();
 
+    void postProcessGeoreferencedLayer( const QString &fileName, QgsMapLayerType type, const QString &provider );
+
     bool writeWorldFile( const QgsPointXY &origin, double pixelXSize, double pixelYSize, double rotation );
     bool writePDFReportFile( const QString &fileName, const QgsGeorefTransform &transform );
     bool writePDFMapFile( const QString &fileName, const QgsGeorefTransform &transform );
@@ -225,6 +228,8 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
 
     //! Docks / undocks this window
     void dockThisWindow( bool dock );
+
+    QgsScreenHelper *mScreenHelper = nullptr;
 
     QGridLayout *mCentralLayout = nullptr;
 

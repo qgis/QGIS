@@ -704,6 +704,13 @@ class GUI_EXPORT QgsColorTextWidget : public QgsColorWidget
 
     void setColor( const QColor &color, bool emitSignals = false ) override;
 
+    /**
+     * Sets whether opacity modification (transparency) is permitted.
+     * Defaults to TRUE.
+     * \param allowOpacity set to FALSE to disable opacity modification
+     */
+    void setAllowOpacity( bool allowOpacity );
+
   protected:
     void resizeEvent( QResizeEvent *event ) override;
 
@@ -716,6 +723,8 @@ class GUI_EXPORT QgsColorTextWidget : public QgsColorWidget
 
     /*Display format for colors*/
     ColorTextFormat mFormat = QgsColorTextWidget::HexRgb;
+
+    bool mAllowAlpha = true;
 
     /**
      * Updates the text based on the current color

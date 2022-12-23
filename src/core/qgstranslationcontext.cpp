@@ -50,7 +50,7 @@ void QgsTranslationContext::registerTranslation( const QString &context, const Q
   mTranslatableObjects.append( translatableObject );
 }
 
-void QgsTranslationContext::writeTsFile( const QString &locale )
+void QgsTranslationContext::writeTsFile( const QString &locale ) const
 {
   //write xml
   QDomDocument doc( QStringLiteral( "TS" ) );

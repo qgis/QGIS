@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>743</width>
-    <height>615</height>
+    <height>689</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -328,19 +328,6 @@
           <string>Options</string>
          </property>
          <layout class="QGridLayout">
-          <item row="0" column="0">
-           <widget class="QLabel" name="mLayerNameLabel">
-            <property name="text">
-             <string>Layer name</string>
-            </property>
-            <property name="buddy">
-             <cstring>mLayerNameLineEdit</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" colspan="2">
-           <widget class="QLineEdit" name="mLayerNameLineEdit"/>
-          </item>
           <item row="1" column="1">
            <widget class="QLineEdit" name="mTileWidthLineEdit"/>
           </item>
@@ -354,10 +341,26 @@
             </property>
            </widget>
           </item>
+          <item row="0" column="1" colspan="2">
+           <widget class="QLineEdit" name="mLayerNameLineEdit"/>
+          </item>
           <item row="1" column="2">
            <widget class="QLineEdit" name="mTileHeightLineEdit"/>
           </item>
-          <item row="2" column="0" colspan="2">
+          <item row="3" column="2">
+           <widget class="QLineEdit" name="mFeatureCountLineEdit"/>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="mLayerNameLabel">
+            <property name="text">
+             <string>Layer name</string>
+            </property>
+            <property name="buddy">
+             <cstring>mLayerNameLineEdit</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="2">
            <widget class="QLabel" name="mFeatureCountLabel">
             <property name="text">
              <string>Feature limit for GetFeatureInfo</string>
@@ -366,9 +369,6 @@
              <cstring>mFeatureCountLineEdit</cstring>
             </property>
            </widget>
-          </item>
-          <item row="2" column="2">
-           <widget class="QLineEdit" name="mFeatureCountLineEdit"/>
           </item>
          </layout>
         </widget>
@@ -414,6 +414,40 @@ Prefer network: default value; load from the network if the cached entry is olde
 
 Always network: always load from network and do not check if the cache has a valid entry (similar to the &quot;Reload&quot; feature in browsers)
 </string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QWidget" name="mSpatialExtentBoxWidget" native="true">
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QgsExtentGroupBox" name="mSpatialExtentBox">
+            <property name="title">
+             <string>Extent (current: none)</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+            <property name="collapsed" stdset="0">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -535,6 +569,20 @@ Always network: always load from network and do not check if the cache has a val
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsExtentGroupBox</class>
+   <extends>QgsCollapsibleGroupBox</extends>
+   <header>qgsextentgroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>mTabWidget</tabstop>
   <tabstop>mConnectionsComboBox</tabstop>

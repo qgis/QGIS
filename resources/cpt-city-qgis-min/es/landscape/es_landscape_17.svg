@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="ES Landscape 17" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(212,155,52)" stop-opacity="1.0000"/>
+        <stop offset="10.01%" stop-color="rgb(91,14,0)" stop-opacity="1.0000"/>
+        <stop offset="20.00%" stop-color="rgb(28,0,0)" stop-opacity="1.0000"/>
+        <stop offset="21.00%" stop-color="rgb(153,130,78)" stop-opacity="1.0000"/>
+        <stop offset="75.00%" stop-color="rgb(87,87,53)" stop-opacity="1.0000"/>
+        <stop offset="88.00%" stop-color="rgb(57,73,52)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(28,59,51)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#ES Landscape 17)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:38:25 2012"/>
+  </metadata>
+</svg>

@@ -12,6 +12,13 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
 
+from qgis.PyQt.QtCore import (
+    QDate,
+    QTime,
+    QDateTime,
+    QDir
+)
+
 from qgis.core import (QgsMapSettings,
                        QgsCoordinateReferenceSystem,
                        QgsRectangle,
@@ -30,12 +37,14 @@ from qgis.core import (QgsMapSettings,
                        QgsApplication,
                        QgsAnnotationLayer,
                        QgsAnnotationLineItem,
-                       QgsAnnotationMarkerItem
+                       QgsAnnotationMarkerItem,
+                       QgsTemporalController,
+                       QgsTemporalNavigationObject,
+                       QgsDateTimeRange,
+                       QgsInterval
                        )
 from qgis.gui import (QgsMapCanvas)
 
-from qgis.PyQt.QtCore import (Qt,
-                              QDir)
 from qgis.PyQt.QtXml import (QDomDocument, QDomElement)
 import time
 from qgis.testing import start_app, unittest
@@ -101,7 +110,7 @@ class TestQgsMapCanvas(unittest.TestCase):
         canvas.waitWhileRendering()
 
         # now we expect the canvas check to fail (since they'll be a new polygon rendered over it)
-        self.assertFalse(self.canvasImageCheck('empty_canvas', 'empty_canvas', canvas))
+        self.assertFalse(self.canvasImageCheck('empty_canvas', 'empty_canvas', canvas, expect_fail=True))
 
     def testRefreshOnTimer(self):
         """ test that map canvas refreshes with auto refreshing layers """
@@ -156,7 +165,7 @@ class TestQgsMapCanvas(unittest.TestCase):
             self.assertTrue(time.time() < timeout)
 
         # now canvas should look different...
-        self.assertFalse(self.canvasImageCheck('empty_canvas', 'empty_canvas', canvas))
+        self.assertFalse(self.canvasImageCheck('empty_canvas', 'empty_canvas', canvas, expect_fail=True))
 
         # switch off auto refresh
         layer.setAutoRefreshEnabled(False)
@@ -337,7 +346,7 @@ class TestQgsMapCanvas(unittest.TestCase):
         canvas.refresh()
         canvas.waitWhileRendering()
         # should be different - we should now render project layers
-        self.assertFalse(self.canvasImageCheck('theme4', 'theme4', canvas))
+        self.assertFalse(self.canvasImageCheck('theme4', 'theme4', canvas, expect_fail=True))
 
         # set canvas to theme1
         canvas.setTheme('theme1')
@@ -390,7 +399,7 @@ class TestQgsMapCanvas(unittest.TestCase):
         canvas.waitWhileRendering()
 
         # no annotation yet...
-        self.assertFalse(self.canvasImageCheck('main_annotation_layer', 'main_annotation_layer', canvas))
+        self.assertFalse(self.canvasImageCheck('main_annotation_layer', 'main_annotation_layer', canvas, expect_fail=True))
 
         annotation_layer = QgsProject.instance().mainAnnotationLayer()
         annotation_layer.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
@@ -408,7 +417,7 @@ class TestQgsMapCanvas(unittest.TestCase):
         self.assertTrue(self.canvasImageCheck('main_annotation_layer', 'main_annotation_layer', canvas))
         annotation_layer.clear()
 
-    def canvasImageCheck(self, name, reference_image, canvas):
+    def canvasImageCheck(self, name, reference_image, canvas, expect_fail=False):
         self.report += "<h2>Render {}</h2>\n".format(name)
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + 'mapcanvas_' + name + ".png"
@@ -419,6 +428,7 @@ class TestQgsMapCanvas(unittest.TestCase):
         checker.setControlName("expected_" + reference_image)
         checker.setRenderedImage(file_name)
         checker.setColorTolerance(2)
+        checker.setExpectFail(expect_fail)
         result = checker.runTest(name, 20)
         self.report += checker.report()
         print((self.report))
@@ -706,6 +716,64 @@ class TestQgsMapCanvas(unittest.TestCase):
 
         items_in_bounds = results.renderedAnnotationItemsInBounds(QgsRectangle(15, 15, 20, 20))
         self.assertCountEqual([i.itemId() for i in items_in_bounds], [i3_id])
+
+    def test_temporal_animation(self):
+        """
+        Test temporal animation logic
+        """
+        canvas = QgsMapCanvas()
+        self.assertEqual(canvas.mapSettings().frameRate(), -1)
+        self.assertEqual(canvas.mapSettings().currentFrame(), -1)
+
+        controller = QgsTemporalController()
+        canvas.setTemporalController(controller)
+        controller.updateTemporalRange.emit(QgsDateTimeRange(QDateTime(QDate(2020, 1, 2), QTime(1, 2, 3)),
+                                                             QDateTime(QDate(2020, 1, 4), QTime(1, 2, 3))))
+        # should be no change
+        self.assertEqual(canvas.mapSettings().frameRate(), -1)
+        self.assertEqual(canvas.mapSettings().currentFrame(), -1)
+
+        temporal_no = QgsTemporalNavigationObject()
+        temporal_no.setTemporalExtents(QgsDateTimeRange(QDateTime(QDate(2020, 1, 2), QTime(1, 2, 3)),
+                                                        QDateTime(QDate(2020, 1, 4), QTime(1, 2, 3))))
+        temporal_no.setFrameDuration(QgsInterval(0, 0, 0, 0, 1, 0, 0))
+
+        canvas.setTemporalController(temporal_no)
+        controller.updateTemporalRange.emit(QgsDateTimeRange(QDateTime(QDate(2020, 1, 2), QTime(1, 2, 3)),
+                                                             QDateTime(QDate(2020, 1, 4), QTime(1, 2, 3))))
+        # should be no change
+        self.assertEqual(canvas.mapSettings().frameRate(), -1)
+        self.assertEqual(canvas.mapSettings().currentFrame(), -1)
+
+        temporal_no.setFramesPerSecond(30)
+        temporal_no.pause()
+        temporal_no.setCurrentFrameNumber(6)
+        canvas.refresh()
+
+        # should be no change - temporal controller is not in animation mode
+        self.assertEqual(canvas.mapSettings().frameRate(), -1)
+        self.assertEqual(canvas.mapSettings().currentFrame(), -1)
+
+        temporal_no.setNavigationMode(QgsTemporalNavigationObject.Animated)
+        self.assertEqual(canvas.mapSettings().frameRate(), 30)
+        self.assertEqual(canvas.mapSettings().currentFrame(), 6)
+
+        temporal_no.setCurrentFrameNumber(7)
+        self.assertEqual(canvas.mapSettings().frameRate(), 30)
+        self.assertEqual(canvas.mapSettings().currentFrame(), 6)
+
+        # switch off animation mode
+        temporal_no.setNavigationMode(QgsTemporalNavigationObject.FixedRange)
+        self.assertEqual(canvas.mapSettings().frameRate(), -1)
+        self.assertEqual(canvas.mapSettings().currentFrame(), -1)
+
+        temporal_no.setNavigationMode(QgsTemporalNavigationObject.Animated)
+        self.assertEqual(canvas.mapSettings().frameRate(), 30)
+        self.assertEqual(canvas.mapSettings().currentFrame(), 7)
+
+        temporal_no.setNavigationMode(QgsTemporalNavigationObject.NavigationOff)
+        self.assertEqual(canvas.mapSettings().frameRate(), -1)
+        self.assertEqual(canvas.mapSettings().currentFrame(), -1)
 
 
 if __name__ == '__main__':

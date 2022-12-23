@@ -40,9 +40,14 @@
  * \ingroup UnitTests
  * This is a unit test for the QgsRasterFileWriter class.
  */
-class TestQgsRasterFileWriter: public QObject
+class TestQgsRasterFileWriter: public QgsTest
 {
     Q_OBJECT
+
+  public:
+
+    TestQgsRasterFileWriter() : QgsTest( QStringLiteral( "Raster File Writer Tests" ) ) {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -58,7 +63,6 @@ class TestQgsRasterFileWriter: public QObject
     void log( const QString &msg );
     void logError( const QString &msg );
     QString mTestDataDir;
-    QString mReport;
 };
 
 //runs before all tests
@@ -69,26 +73,14 @@ void TestQgsRasterFileWriter::initTestCase()
   QgsApplication::initQgis();
   // disable any PAM stuff to make sure stats are consistent
   CPLSetConfigOption( "GDAL_PAM_ENABLED", "NO" );
-  QString mySettings = QgsApplication::showSettings();
-  mySettings = mySettings.replace( '\n', QLatin1String( "<br />" ) );
   //create some objects that will be used in all tests...
   //create a raster layer that will be used in all tests...
   mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
-  mReport += QLatin1String( "<h1>Raster File Writer Tests</h1>\n" );
-  mReport += "<p>" + mySettings + "</p>";
 }
 //runs after all tests
 void TestQgsRasterFileWriter::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
 }
 
 void TestQgsRasterFileWriter::writeTest()
@@ -110,7 +102,7 @@ void TestQgsRasterFileWriter::writeTest()
 
 bool TestQgsRasterFileWriter::writeTest( const QString &rasterName )
 {
-  mReport += "<h2>" + rasterName + "</h2>\n";
+  const QString oldReport = mReport;
 
   const QString myFileName = mTestDataDir + '/' + rasterName;
   qDebug() << myFileName;
@@ -186,6 +178,12 @@ bool TestQgsRasterFileWriter::writeTest( const QString &rasterName )
 
   // All OK, we can delete the file
   tmpFile.setAutoRemove( ok );
+
+  if ( ok )
+  {
+    // don't output reports if test is successful
+    mReport = oldReport;
+  }
 
   return ok;
 }
@@ -295,7 +293,7 @@ void TestQgsRasterFileWriter::testVrtCreation()
   levelList << 2 << 4 << 8 << 16 << 32 << 64 << 128;
   rasterFileWriter->setPyramidsList( levelList );
   //3. Pyramid format
-  rasterFileWriter->setPyramidsFormat( QgsRaster::PyramidsGTiff );
+  rasterFileWriter->setPyramidsFormat( Qgis::RasterPyramidFormat::GeoTiff );
   //4. Resampling method
   rasterFileWriter->setPyramidsResampling( QStringLiteral( "NEAREST" ) );
   //5. Tiled mode => true for vrt creation

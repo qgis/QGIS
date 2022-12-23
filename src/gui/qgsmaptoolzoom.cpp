@@ -84,7 +84,8 @@ void QgsMapToolZoom::canvasPressEvent( QgsMapMouseEvent *e )
   if ( e->button() != Qt::LeftButton )
     return;
 
-  mZoomRect.setRect( 0, 0, 0, 0 );
+  mZoomRect.setTopLeft( e->pos() );
+  mZoomRect.setBottomRight( e->pos() );
 }
 
 
@@ -92,6 +93,13 @@ void QgsMapToolZoom::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   if ( e->button() != Qt::LeftButton )
     return;
+
+  if ( mCanceled )
+  {
+    mCanceled = false;
+    mDragging = false;
+    return;
+  }
 
   setZoomMode( e->modifiers().testFlag( Qt::AltModifier ) ^ mNativeZoomOut );
 
@@ -171,5 +179,12 @@ void QgsMapToolZoom::keyReleaseEvent( QKeyEvent *e )
   if ( e->key() == Qt::Key_Alt )
   {
     setZoomMode( mNativeZoomOut );
+  }
+
+  if ( e->key() == Qt::Key_Escape && mDragging )
+  {
+    mCanceled = true;
+    delete mRubberBand;
+    mRubberBand = nullptr;
   }
 }

@@ -32,8 +32,11 @@
 
 #include <chrono>
 
-QgsHanaProviderResultIterator::QgsHanaProviderResultIterator( QgsHanaResultSetRef &&resultSet )
-  : mResultSet( std::move( resultSet ) )
+using namespace NS_ODBC;
+
+QgsHanaProviderResultIterator::QgsHanaProviderResultIterator( QgsHanaConnectionRef &&conn, QgsHanaResultSetRef &&resultSet )
+  : mConnection( std::move( conn ) )
+  , mResultSet( std::move( resultSet ) )
   , mNumColumns( mResultSet->getMetadata().getColumnCount() )
   , mNextRow( mResultSet->next() )
 {}
@@ -67,7 +70,7 @@ QgsHanaProviderConnection::QgsHanaProviderConnection( const QString &name )
 {
   mProviderKey = QStringLiteral( "hana" );
   QgsHanaSettings settings( name, true );
-  setUri( settings.toDataSourceUri().uri() );
+  setUri( settings.toDataSourceUri().uri( false ) );
   setCapabilities();
 }
 
@@ -80,6 +83,21 @@ QgsHanaProviderConnection::QgsHanaProviderConnection( const QString &uri, const 
 
 void QgsHanaProviderConnection::setCapabilities()
 {
+  mGeometryColumnCapabilities =
+  {
+    //GeometryColumnCapability::Curves, not fully supported yet
+    GeometryColumnCapability::Z,
+    GeometryColumnCapability::M,
+    GeometryColumnCapability::SinglePart
+  };
+  mSqlLayerDefinitionCapabilities =
+  {
+    Qgis::SqlLayerDefinitionCapability::SubsetStringFilter,
+    Qgis::SqlLayerDefinitionCapability::PrimaryKeys,
+    Qgis::SqlLayerDefinitionCapability::GeometryColumn,
+    Qgis::SqlLayerDefinitionCapability::UnstableFeatureIds,
+  };
+
   /*
    * Capability::DropSchema         | CREATE SCHEMA from SYSTEMPRIVILEGE
    * Capability::CreateSchema       | CREATE SCHEMA from SYSTEMPRIVILEGE
@@ -268,17 +286,20 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsHanaProviderConnection::ex
 
   try
   {
-
-    odbc::PreparedStatementRef stmt = conn->prepareStatement( sql );
+    PreparedStatementRef stmt = conn->prepareStatement( sql );
     bool isQuery = stmt->getMetaDataUnicode()->getColumnCount() > 0;
     if ( isQuery )
     {
       QgsHanaResultSetRef rs = conn->executeQuery( sql );
-      odbc::ResultSetMetaDataUnicode &md = rs->getMetadata();
-      QueryResult ret( std::make_shared<QgsHanaProviderResultIterator>( std::move( rs ) ) );
+      ResultSetMetaDataUnicode &md = rs->getMetadata();
       unsigned short numColumns = md.getColumnCount();
+      QStringList columns;
+      columns.reserve( numColumns );
       for ( unsigned short i = 1; i <= numColumns; ++i )
-        ret.appendColumn( QgsHanaUtils::toQString( md.getColumnName( i ) ) );
+        columns << QgsHanaUtils::toQString( md.getColumnName( i ) );
+      QueryResult ret( std::make_shared<QgsHanaProviderResultIterator>( std::move( conn ), std::move( rs ) ) );
+      for ( unsigned short i = 0; i < numColumns; ++i )
+        ret.appendColumn( columns[i] );
       return ret;
     }
     else

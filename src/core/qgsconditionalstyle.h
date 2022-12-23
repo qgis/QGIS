@@ -16,6 +16,7 @@
 #define QGSCONDITIONALSTYLE_H
 
 #include "qgis_core.h"
+#include <QObject>
 #include <QFont>
 #include <QColor>
 #include <QPixmap>
@@ -91,6 +92,12 @@ class CORE_EXPORT QgsConditionalLayerStyles : public QObject
      * \see readXml()
      */
     bool writeXml( QDomNode &node, QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
+    /**
+     * Returns TRUE if at least one rule needs geometry.
+     * \since QGIS 3.26.3
+     */
+    bool rulesNeedGeometry() const;
 
   signals:
 

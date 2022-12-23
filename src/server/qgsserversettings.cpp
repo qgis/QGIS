@@ -18,6 +18,7 @@
 
 #include "qgsserversettings.h"
 #include "qgsapplication.h"
+#include "qgsvariantutils.h"
 
 #include <QSettings>
 #include <QDir>
@@ -125,7 +126,7 @@ void QgsServerSettings::initSettings()
                                QStringLiteral( "Specify the cache size" ),
                                QStringLiteral( "/cache/size" ),
                                QVariant::LongLong,
-                               QVariant( 50 * 1024 * 1024 ),
+                               QVariant( 256 * 1024 * 1024 ),
                                QVariant()
                              };
   mSettings[ sCacheSize.envVar ] = sCacheSize;
@@ -162,6 +163,18 @@ void QgsServerSettings::initSettings()
                                         QVariant()
                                       };
   mSettings[ sTrustLayerMetadata.envVar ] = sTrustLayerMetadata;
+
+
+  // force to open layers in read-only mode
+  const Setting sForceReadOnlyLayers = { QgsServerSettingsEnv::QGIS_SERVER_FORCE_READONLY_LAYERS,
+                                         QgsServerSettingsEnv::DEFAULT_VALUE,
+                                         QStringLiteral( "Force to open layers in read-only mode" ),
+                                         QString(),
+                                         QVariant::Bool,
+                                         QVariant( false ),
+                                         QVariant()
+                                       };
+  mSettings[ sForceReadOnlyLayers.envVar ] = sForceReadOnlyLayers;
 
   // don't load layouts
   const Setting sDontLoadLayouts = { QgsServerSettingsEnv::QGIS_SERVER_DISABLE_GETPRINT,
@@ -333,6 +346,39 @@ void QgsServerSettings::initSettings()
                                     QVariant()
                                   };
   mSettings[ sServiceUrl.envVar ] = sWmtsServiceUrl;
+
+  // the default config cache check interval
+  const Setting sConfigCacheCheckInterval = { QgsServerSettingsEnv::QGIS_SERVER_PROJECT_CACHE_CHECK_INTERVAL,
+                                              QgsServerSettingsEnv::DEFAULT_VALUE,
+                                              QStringLiteral( "The default project cache check interval" ),
+                                              QStringLiteral( "/qgis/server_project_cache_check_interval" ),
+                                              QVariant::Int,
+                                              QVariant( 0 ),
+                                              QVariant()
+                                            };
+  mSettings[ sConfigCacheCheckInterval.envVar ] = sConfigCacheCheckInterval;
+
+  // the default config cache strategy
+  const Setting sProjectCacheStrategy = { QgsServerSettingsEnv::QGIS_SERVER_PROJECT_CACHE_STRATEGY,
+                                          QgsServerSettingsEnv::DEFAULT_VALUE,
+                                          QStringLiteral( "Project's cache strategy. Possible values are 'off','filesystem' or 'periodic'" ),
+                                          QStringLiteral( "/qgis/server_project_cache_strategy" ),
+                                          QVariant::String,
+                                          QVariant( "" ),
+                                          QVariant()
+                                        };
+  mSettings[ sProjectCacheStrategy.envVar ] = sProjectCacheStrategy;
+
+  const Setting sAllowedExtraSqlTokens = { QgsServerSettingsEnv::QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS,
+                                           QgsServerSettingsEnv::DEFAULT_VALUE,
+                                           QStringLiteral( "List of comma separated SQL tokens to be added to the list of allowed tokens that the services accepts when filtering features" ),
+                                           QStringLiteral( "/qgis/server_allowed_extra_sql_tokens" ),
+                                           QVariant::String,
+                                           QVariant( "" ),
+                                           QVariant()
+                                         };
+  mSettings[ sAllowedExtraSqlTokens.envVar ] = sAllowedExtraSqlTokens;
+
 }
 
 void QgsServerSettings::load()
@@ -422,7 +468,7 @@ void QgsServerSettings::prioritize( const QMap<QgsServerSettingsEnv::EnvVar, QSt
       varValue.setValue( env.value( e ) );
     }
 
-    if ( ! varValue.isNull() && varValue.canConvert( s.type ) )
+    if ( !QgsVariantUtils::isNull( varValue ) && varValue.canConvert( s.type ) )
     {
       s.val = varValue;
       s.src = QgsServerSettingsEnv::ENVIRONMENT_VARIABLE;
@@ -578,12 +624,17 @@ bool QgsServerSettings::trustLayerMetadata() const
   return value( QgsServerSettingsEnv::QGIS_SERVER_TRUST_LAYER_METADATA ).toBool();
 }
 
+bool QgsServerSettings::forceReadOnlyLayers() const
+{
+  return value( QgsServerSettingsEnv::QGIS_SERVER_FORCE_READONLY_LAYERS ).toBool();
+}
+
 bool QgsServerSettings::getPrintDisabled() const
 {
   return value( QgsServerSettingsEnv::QGIS_SERVER_DISABLE_GETPRINT ).toBool();
 }
 
-bool QgsServerSettings::logProfile()
+bool QgsServerSettings::logProfile() const
 {
   return value( QgsServerSettingsEnv::QGIS_SERVER_LOG_PROFILE, false ).toBool();
 }
@@ -614,4 +665,32 @@ QString QgsServerSettings::serviceUrl( const QString &service ) const
   }
 
   return result;
+}
+
+int QgsServerSettings::projectCacheCheckInterval() const
+{
+  return value( QgsServerSettingsEnv::QGIS_SERVER_PROJECT_CACHE_CHECK_INTERVAL ).toInt();
+}
+
+QString QgsServerSettings::projectCacheStrategy() const
+{
+  QString result = value( QgsServerSettingsEnv::QGIS_SERVER_PROJECT_CACHE_STRATEGY ).toString();
+  if ( result.compare( QLatin1String( "filesystem" ) ) &&
+       result.compare( QLatin1String( "periodic" ) ) &&
+       result.compare( QLatin1String( "off" ) ) )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Invalid cache strategy, expecting 'filesystem', 'periodic' or 'off'. Using 'filesystem' as default." ), "Server", Qgis::MessageLevel::Warning );
+    result = QStringLiteral( "filesystem" );
+  }
+  return result;
+}
+
+QStringList QgsServerSettings::allowedExtraSqlTokens() const
+{
+  const QString strVal { value( QgsServerSettingsEnv::QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS ).toString().trimmed() };
+  if ( strVal.isEmpty() )
+  {
+    return QStringList();
+  }
+  return strVal.split( ',' );
 }

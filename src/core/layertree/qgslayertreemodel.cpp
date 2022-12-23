@@ -36,6 +36,7 @@
 #include "qgslayerdefinition.h"
 #include "qgsiconutils.h"
 #include "qgsmimedatautils.h"
+#include "qgssettingsregistrycore.h"
 
 #include <QPalette>
 
@@ -176,11 +177,16 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
     {
       QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
       QString name = nodeLayer->name();
-      if ( nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() && role == Qt::DisplayRole )
+      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
+      if ( vlayer && nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() && role == Qt::DisplayRole )
       {
-        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
-        if ( vlayer && vlayer->featureCount() >= 0 )
-          name += QStringLiteral( " [%1]" ).arg( vlayer->featureCount() );
+        const bool estimatedCount = QgsDataSourceUri( vlayer->dataProvider()->dataSourceUri() ).useEstimatedMetadata();
+        const qlonglong count = vlayer->featureCount();
+
+        // if you modify this line, please update QgsSymbolLegendNode::updateLabel
+        name += QStringLiteral( " [%1%2]" ).arg(
+                  estimatedCount ? QStringLiteral( "≈" ) : QString(),
+                  count != -1 ? QLocale().toString( count ) : tr( "N/A" ) );
       }
       return name;
     }
@@ -314,6 +320,14 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
         }
 
         parts << "<i>" + source.toHtmlEscaped() + "</i>";
+
+        QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
+        const bool showFeatureCount = nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toBool();
+        const bool estimatedCount = QgsDataSourceUri( layer->dataProvider()->dataSourceUri() ).useEstimatedMetadata();
+        if ( showFeatureCount && estimatedCount )
+        {
+          parts << tr( "<b>Feature count is estimated</b> : the feature count is determined by the database statistics" );
+        }
 
         return parts.join( QLatin1String( "<br/>" ) );
       }
@@ -879,11 +893,17 @@ void QgsLayerTreeModel::connectToLayer( QgsLayerTreeLayer *nodeLayer )
   {
     addLegendToLayer( nodeLayer );
 
-    // automatic collapse of legend nodes - useful if a layer has many legend nodes
+    // if we aren't loading a layer from a project, setup some nice default settings
     if ( !mRootNode->customProperty( QStringLiteral( "loading" ) ).toBool() )
     {
+      // automatic collapse of legend nodes - useful if a layer has many legend nodes
       if ( mAutoCollapseLegendNodesCount != -1 && rowCount( node2index( nodeLayer ) )  >= mAutoCollapseLegendNodesCount )
         nodeLayer->setExpanded( false );
+
+      if ( nodeLayer->layer()->type() == QgsMapLayerType::VectorLayer && QgsSettingsRegistryCore::settingsLayerTreeShowFeatureCountForNewLayers.value() )
+      {
+        nodeLayer->setCustomProperty( QStringLiteral( "showFeatureCount" ), true );
+      }
     }
   }
 
@@ -1064,6 +1084,7 @@ QMimeData *QgsLayerTreeModel::mimeData( const QModelIndexList &indexes ) const
 
   mimeData->setData( QStringLiteral( "application/qgis.layertreemodeldata" ), layerTreeDoc.toString().toUtf8() );
   mimeData->setData( QStringLiteral( "application/qgis.application.pid" ), QString::number( QCoreApplication::applicationPid() ).toUtf8() );
+  mimeData->setData( QStringLiteral( "application/qgis.layertree.source" ), QStringLiteral( ":0x%1" ).arg( reinterpret_cast<quintptr>( this ), 2 * QT_POINTER_SIZE, 16, QLatin1Char( '0' ) ).toUtf8() );
   mimeData->setData( QStringLiteral( "application/qgis.layertree.layerdefinitions" ), txt.toUtf8() );
   mimeData->setData( QStringLiteral( "application/x-vnd.qgis.qgis.uri" ), QgsMimeDataUtils::layerTreeNodesToUriList( nodesFinal ) );
 
@@ -1079,6 +1100,11 @@ bool QgsLayerTreeModel::dropMimeData( const QMimeData *data, Qt::DropAction acti
     return false;
 
   if ( column >= columnCount( parent ) )
+    return false;
+
+  // don't accept drops from some layer tree subclasses to non-matching subclasses
+  const QString restrictTypes( data->data( QStringLiteral( "application/qgis.restrictlayertreemodelsubclass" ) ) );
+  if ( !restrictTypes.isEmpty() && restrictTypes != QString( metaObject()->className() ) )
     return false;
 
   QgsLayerTreeNode *nodeParent = index2node( parent );

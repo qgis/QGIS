@@ -1,0 +1,137 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/textrenderer/qgstextdocumentmetrics.h                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsTextDocumentMetrics
+{
+%Docstring(signature="appended")
+
+Contains pre-calculated metrics of a :py:class:`QgsTextDocument`.
+
+.. warning::
+
+   This API is not considered stable and may change in future QGIS versions.
+
+.. versionadded:: 3.28
+%End
+
+%TypeHeaderCode
+#include "qgstextdocumentmetrics.h"
+%End
+  public:
+
+    static QgsTextDocumentMetrics calculateMetrics( const QgsTextDocument &document, const QgsTextFormat &format, const QgsRenderContext &context, double scaleFactor = 1.0 );
+%Docstring
+Returns precalculated text metrics for a text ``document``, when rendered using the
+given base ``format`` and render ``context``.
+
+The optional ``scaleFactor`` parameter can specify a font size scaling factor. It is recommended to set this to
+:py:class:`QgsTextRenderer`.FONT_WORKAROUND_SCALE and then manually calculations
+based on the resultant font metrics. Failure to do so will result in poor quality text rendering
+at small font sizes.
+%End
+
+    bool isNullFontSize() const;
+%Docstring
+Returns ``True`` if the metrics could not be calculated because the text format has a null font size.
+
+.. versionadded:: 3.30
+%End
+
+    QSizeF documentSize( Qgis::TextLayoutMode mode, Qgis::TextOrientation orientation ) const;
+%Docstring
+Returns the overall size of the document.
+%End
+
+    QRectF outerBounds( Qgis::TextLayoutMode mode, Qgis::TextOrientation orientation ) const;
+%Docstring
+Returns the outer bounds of the document, which is the :py:func:`~QgsTextDocumentMetrics.documentSize` adjusted to account
+for any text elements which fall outside of the usual document margins (such as super or
+sub script elements)
+
+.. warning::
+
+   Currently this is only supported for the Qgis.TextLayoutMode.Labeling mode.
+
+.. versionadded:: 3.30
+%End
+
+    double blockWidth( int blockIndex ) const;
+%Docstring
+Returns the width of the block at the specified index.
+%End
+
+    double blockHeight( int blockIndex ) const;
+%Docstring
+Returns the height of the block at the specified index.
+%End
+
+    double firstLineCapHeight() const;
+%Docstring
+Returns the cap height for the first line of text.
+
+.. versionadded:: 3.30
+%End
+
+    double baselineOffset( int blockIndex, Qgis::TextLayoutMode mode ) const;
+%Docstring
+Returns the offset from the top of the document to the text baseline for the given block index.
+%End
+
+    double fragmentHorizontalAdvance( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode mode ) const;
+%Docstring
+Returns the horizontal advance of the fragment at the specified block and fragment index.
+
+.. versionadded:: 3.30
+%End
+
+    double fragmentVerticalOffset( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode mode ) const;
+%Docstring
+Returns the vertical offset from a text block's baseline which should be applied
+to the fragment at the specified index within that block.
+
+.. versionadded:: 3.30
+%End
+
+    double verticalOrientationXOffset( int blockIndex ) const;
+%Docstring
+Returns the vertical orientation x offset for the specified block.
+%End
+
+    double blockMaximumCharacterWidth( int blockIndex ) const;
+%Docstring
+Returns the maximum character width for the specified block.
+%End
+
+    double blockMaximumDescent( int blockIndex ) const;
+%Docstring
+Returns the maximum descent encountered in the specified block.
+%End
+
+    QFont fragmentFont( int blockIndex, int fragmentIndex ) const;
+%Docstring
+Returns the calculated font for the fragment at the specified block and fragment indices.
+%End
+
+    double ascentOffset() const;
+%Docstring
+Returns the ascent offset of the first block in the document.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/textrenderer/qgstextdocumentmetrics.h                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

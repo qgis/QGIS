@@ -251,3 +251,15 @@ void QgsSingleBandGrayRendererWidget::showLegendSettings()
     }
   }
 }
+
+QgsContrastEnhancement::ContrastEnhancementAlgorithm QgsSingleBandGrayRendererWidget::contrastEnhancementAlgorithm() const
+{
+  return static_cast<QgsContrastEnhancement::ContrastEnhancementAlgorithm>( mContrastEnhancementComboBox->currentData().toInt() );
+}
+
+void QgsSingleBandGrayRendererWidget::setContrastEnhancementAlgorithm( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm )
+{
+  mDisableMinMaxWidgetRefresh = true;
+  mContrastEnhancementComboBox->setCurrentIndex( mContrastEnhancementComboBox->findData( static_cast<int>( algorithm ) ) );
+  mDisableMinMaxWidgetRefresh = false;
+}

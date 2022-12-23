@@ -258,6 +258,18 @@ Returns a GeoJSON string representation of a list of features (feature collectio
 %End
 
 
+    void setDestinationCrs( const QgsCoordinateReferenceSystem &destinationCrs );
+%Docstring
+Set the destination CRS for feature geometry transformation to ``destinationCrs``, this defaults to EPSG:4326
+and it is only effective when the automatic geometry transformation is active (it is by default).
+
+.. seealso:: :py:func:`setTransformGeometries`
+
+.. seealso:: :py:func:`setSourceCrs`
+
+.. versionadded:: 3.30
+%End
+
 };
 
 

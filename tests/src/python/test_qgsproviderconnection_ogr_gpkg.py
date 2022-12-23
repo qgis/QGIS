@@ -158,6 +158,13 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
         self.assertIn(table_info.primaryKeyColumns()[0], fields.names())
         self.assertEqual(fields.names(), ['fid', 'id', 'typ', 'name', 'ortsrat', 'id_long', 'geom'])
 
+        # aspatial table
+        fields = conn.fields('', 'myNewAspatialTable')
+        table_info = conn.table('', 'myNewAspatialTable')
+        self.assertFalse(table_info.geometryColumn())
+        self.assertIn(table_info.primaryKeyColumns()[0], fields.names())
+        self.assertEqual(fields.names(), ['fid'])
+
     @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 5, 0), "GDAL 3.5 required")
     def test_gpkg_field_domain_names(self):
         """
@@ -321,6 +328,39 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
         results = conn.executeSql(sql)
         self.assertEqual(results[0], ['Sülfeld',
                                       'POLYGON((612694.674 5807839.658, 612668.715 5808176.815, 612547.354 5808414.452, 612509.527 5808425.73, 612522.932 5808473.02, 612407.901 5808519.082, 612505.836 5808632.763, 612463.449 5808781.115, 612433.57 5808819.061, 612422.685 5808980.281999, 612473.423 5808995.424999, 612333.856 5809647.731, 612307.316 5809781.446, 612267.099 5809852.803, 612308.221 5810040.995, 613920.397 5811079.478, 613947.16 5811129.3, 614022.726 5811154.456, 614058.436 5811260.36, 614194.037 5811331.972, 614307.176 5811360.06, 614343.842 5811323.238, 614443.449 5811363.03, 614526.199 5811059.031, 614417.83 5811057.603, 614787.296 5809648.422, 614772.062 5809583.246, 614981.93 5809245.35, 614811.885 5809138.271, 615063.452 5809100.954, 615215.476 5809029.413, 615469.441 5808883.282, 615569.846 5808829.522, 615577.239 5808806.242, 615392.964 5808736.873, 615306.34 5808662.171, 615335.445 5808290.588, 615312.192 5808290.397, 614890.582 5808077.956, 615018.854 5807799.895, 614837.326 5807688.363, 614435.698 5807646.847, 614126.351 5807661.841, 613555.813 5807814.801, 612826.66 5807964.828, 612830.113 5807856.315, 612694.674 5807839.658))'])
+
+    def test_rename_field(self):
+        gpkg_domains_original_path = '{}/bug_17878.gpkg'.format(TEST_DATA_DIR)
+        temp_domains_path = '{}/rename_field.gpkg'.format(self.temp_dir.path())
+        shutil.copy(gpkg_domains_original_path, temp_domains_path)
+
+        md = QgsProviderRegistry.instance().providerMetadata('ogr')
+        conn = md.createConnection(self.uri, {})
+        fields = conn.fields('', 'cdb_lines')
+        self.assertEqual(fields.names(), ['fid', 'id', 'typ', 'name', 'ortsrat', 'id_long', 'geom'])
+
+        # invalid table name
+        with self.assertRaises(QgsProviderConnectionException):
+            conn.renameField('schema', 'asdasd', 'asd', 'xyz')
+        # invalid existing field name
+        with self.assertRaises(QgsProviderConnectionException):
+            conn.renameField('schema', 'cdb_lines', 'asd', 'xyz')
+        # try to rename over existing field
+        with self.assertRaises(QgsProviderConnectionException):
+            conn.renameField('schema', 'cdb_lines', 'name', 'ortsrat')
+        # try to rename geometry field
+        with self.assertRaises(QgsProviderConnectionException):
+            conn.renameField('schema', 'cdb_lines', 'geom', 'the_geom')
+
+        # good rename
+        conn.renameField('schema', 'cdb_lines', 'name', 'name2')
+        fields = conn.fields('', 'cdb_lines')
+        self.assertEqual(fields.names(), ['fid', 'id', 'typ', 'name2', 'ortsrat', 'id_long', 'geom'])
+
+        # make sure schema is ignored
+        conn.renameField('', 'cdb_lines', 'name2', 'name3')
+        fields = conn.fields('', 'cdb_lines')
+        self.assertEqual(fields.names(), ['fid', 'id', 'typ', 'name3', 'ortsrat', 'id_long', 'geom'])
 
 
 if __name__ == '__main__':

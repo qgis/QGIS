@@ -21,13 +21,48 @@
 
 /**
  * \ingroup core
+ * \class QgsGeoNodeConnectionUtils
+ * \brief Contains various utilities for managing the known collection of
+ * GeoNode servers associated with a QGIS install.
+ * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsGeoNodeConnectionUtils
+{
+  public:
+
+    /**
+     * Returns a list of all known GeoNode connection names.
+     */
+    static QStringList connectionList();
+
+    /**
+     * Deletes the GeoNode connection with matching \a name.
+     */
+    static void deleteConnection( const QString &name );
+
+    /**
+     * Returns the base path for settings related to GeoNode connections.
+     */
+    static QString pathGeoNodeConnection();
+
+    /**
+     * Returns the base path for settings related to GeoNode connection details.
+     * \deprecated since QGIS 3.26 use pathGeonNodeConnection() instead
+     */
+    Q_DECL_DEPRECATED static QString pathGeoNodeConnectionDetails() SIP_DEPRECATED;
+
+    // Path in QSetting
+    static const QString sGeoNodeConnection;
+};
+
+/**
+ * \ingroup core
  * \class QgsGeoNodeConnection
  * \brief Encapsulates settings related to a single GeoNode connection.
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsGeoNodeConnection
 {
-
   public:
 
     /**
@@ -87,48 +122,8 @@ class CORE_EXPORT QgsGeoNodeConnection
 
     //! Property of mUri
     QgsDataSourceUri mUri;
-
-    QString settingsKey() const;
 };
 
-/**
- * \ingroup core
- * \class QgsGeoNodeConnectionUtils
- * \brief Contains various utilities for managing the known collection of
- * GeoNode servers associated with a QGIS install.
- * \since QGIS 3.0
- */
-class CORE_EXPORT QgsGeoNodeConnectionUtils
-{
-  public:
-
-    /**
-     * Returns a list of all known GeoNode connection names.
-     */
-    static QStringList connectionList();
-
-    /**
-     * Deletes the GeoNode connection with matching \a name.
-     */
-    static void deleteConnection( const QString &name );
-
-    /**
-     * Returns the base path for settings related to GeoNode connections.
-     */
-    static QString pathGeoNodeConnection();
-
-    /**
-     * Returns the base path for settings related to GeoNode connection details.
-     */
-    static QString pathGeoNodeConnectionDetails();
-
-  private:
-
-    // Path in QSetting
-    static const QString sPathGeoNodeConnection;
-    static const QString sPathGeoNodeConnectionDetails;
-
-};
 
 
 #endif //QGSGEONODECONNECTION_H

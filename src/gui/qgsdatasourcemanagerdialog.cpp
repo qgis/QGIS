@@ -19,6 +19,7 @@
 #include "qgsdatasourcemanagerdialog.h"
 #include "ui_qgsdatasourcemanagerdialog.h"
 #include "qgsbrowserdockwidget.h"
+#include "qgslayermetadatasearchwidget.h"
 #include "qgssettings.h"
 #include "qgsproviderregistry.h"
 #include "qgssourceselectprovider.h"
@@ -58,14 +59,16 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserGuiModel *brow
   mBrowserWidget = new QgsBrowserDockWidget( QStringLiteral( "Browser" ), mBrowserModel, this );
   mBrowserWidget->setFeatures( QDockWidget::NoDockWidgetFeatures );
   ui->mOptionsStackedWidget->addWidget( mBrowserWidget );
-  mPageNames.append( QStringLiteral( "browser" ) );
+  mPageProviderKeys.append( QStringLiteral( "browser" ) );
+  mPageProviderNames.append( QStringLiteral( "browser" ) );
+
   // Forward all browser signals
   connect( mBrowserWidget, &QgsBrowserDockWidget::handleDropUriList, this, &QgsDataSourceManagerDialog::handleDropUriList );
   connect( mBrowserWidget, &QgsBrowserDockWidget::openFile, this, &QgsDataSourceManagerDialog::openFile );
   connect( mBrowserWidget, &QgsBrowserDockWidget::connectionsChanged, this, &QgsDataSourceManagerDialog::connectionsChanged );
   connect( this, &QgsDataSourceManagerDialog::updateProjectHome, mBrowserWidget->browserWidget(), &QgsBrowserWidget::updateProjectHome );
 
-  // Add provider dialogs
+  // Add registered source select dialogs
   const QList<QgsSourceSelectProvider *> sourceSelectProviders = QgsGui::sourceSelectProviderRegistry()->providers( );
   for ( QgsSourceSelectProvider *provider : sourceSelectProviders )
   {
@@ -75,8 +78,27 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserGuiModel *brow
       QgsMessageLog::logMessage( tr( "Cannot get %1 select dialog from source select provider %2." ).arg( provider->name(), provider->providerKey() ), QStringLiteral( "DataSourceManager" ), Qgis::MessageLevel::Critical );
       continue;
     }
-    addProviderDialog( dlg, provider->providerKey(), provider->text(), provider->icon( ), provider->toolTip( ) );
+    addProviderDialog( dlg, provider->providerKey(), provider->name(), provider->text(), provider->icon( ), provider->toolTip( ) );
   }
+
+  connect( QgsGui::sourceSelectProviderRegistry(), &QgsSourceSelectProviderRegistry::providerAdded, this, [ = ]( const QString & name )
+  {
+    if ( QgsSourceSelectProvider *provider = QgsGui::sourceSelectProviderRegistry()->providerByName( name ) )
+    {
+      QgsAbstractDataSourceWidget *dlg = provider->createDataSourceWidget( this );
+      if ( !dlg )
+      {
+        QgsMessageLog::logMessage( tr( "Cannot get %1 select dialog from source select provider %2." ).arg( provider->name(), provider->providerKey() ), QStringLiteral( "DataSourceManager" ), Qgis::MessageLevel::Critical );
+        return;
+      }
+      addProviderDialog( dlg, provider->providerKey(), provider->name(), provider->text(), provider->icon( ), provider->toolTip( ) );
+    }
+  } );
+
+  connect( QgsGui::sourceSelectProviderRegistry(), &QgsSourceSelectProviderRegistry::providerRemoved, this, [ = ]( const QString & name )
+  {
+    removeProviderDialog( name );
+  } );
 
   restoreOptionsBaseUi( tr( "Data Source Manager" ) );
 }
@@ -88,7 +110,8 @@ QgsDataSourceManagerDialog::~QgsDataSourceManagerDialog()
 
 void QgsDataSourceManagerDialog::openPage( const QString &pageName )
 {
-  const int pageIdx = mPageNames.indexOf( pageName );
+  // TODO -- this is actually using provider keys, not provider names!
+  const int pageIdx = mPageProviderKeys.indexOf( pageName );
   if ( pageIdx != -1 )
   {
     QTimer::singleShot( 0, this, [ = ] { setCurrentPage( pageIdx ); } );
@@ -98,6 +121,13 @@ void QgsDataSourceManagerDialog::openPage( const QString &pageName )
 QgsMessageBar *QgsDataSourceManagerDialog::messageBar() const
 {
   return mMessageBar;
+}
+
+void QgsDataSourceManagerDialog::activate()
+{
+  raise();
+  setWindowState( windowState() & ~Qt::WindowMinimized );
+  activateWindow();
 }
 
 void QgsDataSourceManagerDialog::setCurrentPage( int index )
@@ -152,11 +182,13 @@ void QgsDataSourceManagerDialog::vectorLayersAdded( const QStringList &layerQStr
   emit addVectorLayers( layerQStringList, enc, dataSourceType );
 }
 
-void QgsDataSourceManagerDialog::addProviderDialog( QgsAbstractDataSourceWidget *dlg, const QString &providerKey, const QString &providerName, const QIcon &icon, const QString &toolTip )
+void QgsDataSourceManagerDialog::addProviderDialog( QgsAbstractDataSourceWidget *dlg, const QString &providerKey, const QString &providerName, const QString &text, const QIcon &icon, const QString &toolTip )
 {
-  mPageNames.append( providerKey );
+  mPageProviderKeys.append( providerKey );
+  mPageProviderNames.append( providerName );
   ui->mOptionsStackedWidget->addWidget( dlg );
-  QListWidgetItem *layerItem = new QListWidgetItem( providerName, ui->mOptionsListWidget );
+  QListWidgetItem *layerItem = new QListWidgetItem( text, ui->mOptionsListWidget );
+  layerItem->setData( Qt::UserRole, providerName );
   layerItem->setToolTip( toolTip.isEmpty() ? tr( "Add %1 layer" ).arg( providerName ) : toolTip );
   layerItem->setIcon( icon );
   // Set crs and extent from canvas
@@ -169,6 +201,18 @@ void QgsDataSourceManagerDialog::addProviderDialog( QgsAbstractDataSourceWidget 
   connect( dlg, &QgsAbstractDataSourceWidget::rejected, this, &QgsDataSourceManagerDialog::reject );
   connect( dlg, &QgsAbstractDataSourceWidget::accepted, this, &QgsDataSourceManagerDialog::accept );
   makeConnections( dlg, providerKey );
+}
+
+void QgsDataSourceManagerDialog::removeProviderDialog( const QString &providerName )
+{
+  const int pageIdx = mPageProviderNames.indexOf( providerName );
+  if ( pageIdx != -1 )
+  {
+    ui->mOptionsStackedWidget->removeWidget( ui->mOptionsStackedWidget->widget( pageIdx ) );
+    mPageProviderKeys.removeAt( pageIdx );
+    mPageProviderNames.removeAt( pageIdx );
+    ui->mOptionsListWidget->removeItemWidget( ui->mOptionsListWidget->item( pageIdx ) );
+  }
 }
 
 void QgsDataSourceManagerDialog::makeConnections( QgsAbstractDataSourceWidget *dlg, const QString &providerKey )

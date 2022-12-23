@@ -34,6 +34,11 @@
 #include "qgspainting.h"
 #include "qgsmaplayerfactory.h"
 #include "qgsarcgisrestutils.h"
+#include "qgsselectioncontext.h"
+#include "qgsgeometryengine.h"
+#include "qgsvectortilemvtdecoder.h"
+#include "qgsrasterlayer.h"
+#include "qgsthreadingutils.h"
 
 #include <QUrl>
 #include <QUrlQuery>
@@ -52,10 +57,14 @@ QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseN
   QgsVectorTileBasicRenderer *renderer = new QgsVectorTileBasicRenderer;
   renderer->setStyles( QgsVectorTileBasicRenderer::simpleStyleWithRandomColors() );
   setRenderer( renderer );
+
+  connect( this, &QgsVectorTileLayer::selectionChanged, this, [ = ] { triggerRepaint(); } );
 }
 
 void QgsVectorTileLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &, const QgsDataProvider::ProviderOptions &, QgsDataProvider::ReadFlags )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   mDataSource = dataSource;
   mLayerName = baseName;
   mDataProvider.reset();
@@ -65,6 +74,8 @@ void QgsVectorTileLayer::setDataSourcePrivate( const QString &dataSource, const 
 
 bool QgsVectorTileLayer::loadDataSource()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( mDataSource );
 
@@ -86,13 +97,15 @@ bool QgsVectorTileLayer::loadDataSource()
     }
 
     // online tiles
-    mMatrixSet = QgsVectorTileMatrixSet::fromWebMercator();
-
+    int zMin = 0;
     if ( dsUri.hasParam( QStringLiteral( "zmin" ) ) )
-      mMatrixSet.dropMatricesOutsideZoomRange( dsUri.param( QStringLiteral( "zmin" ) ).toInt(), 99 );
-    if ( dsUri.hasParam( QStringLiteral( "zmax" ) ) )
-      mMatrixSet.dropMatricesOutsideZoomRange( 0, dsUri.param( QStringLiteral( "zmax" ) ).toInt() );
+      zMin = dsUri.param( QStringLiteral( "zmin" ) ).toInt();
 
+    int zMax = 14;
+    if ( dsUri.hasParam( QStringLiteral( "zmax" ) ) )
+      zMax = dsUri.param( QStringLiteral( "zmax" ) ).toInt();
+
+    mMatrixSet = QgsVectorTileMatrixSet::fromWebMercator( zMin, zMax );
     setExtent( QgsRectangle( -20037508.3427892, -20037508.3427892, 20037508.3427892, 20037508.3427892 ) );
   }
   else if ( mSourceType == QLatin1String( "mbtiles" ) )
@@ -165,7 +178,10 @@ bool QgsVectorTileLayer::loadDataSource()
 
 bool QgsVectorTileLayer::setupArcgisVectorTileServiceConnection( const QString &uri, const QgsDataSourceUri &dataSourceUri )
 {
-  QUrl url( uri );
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  QString tileServiceUri = uri;
+  QUrl url( tileServiceUri );
   // some services don't default to json format, while others do... so let's explicitly request it!
   // (refs https://github.com/qgis/QGIS/issues/4231)
   QUrlQuery query;
@@ -198,19 +214,74 @@ bool QgsVectorTileLayer::setupArcgisVectorTileServiceConnection( const QString &
   {
     return false;
   }
+
   mArcgisLayerConfiguration = doc.object().toVariantMap();
   if ( mArcgisLayerConfiguration.contains( QStringLiteral( "error" ) ) )
   {
     return false;
   }
 
-  mArcgisLayerConfiguration.insert( QStringLiteral( "serviceUri" ), uri );
-  mSourcePath = uri + '/' + mArcgisLayerConfiguration.value( QStringLiteral( "tiles" ) ).toList().value( 0 ).toString();
+  if ( !mArcgisLayerConfiguration.value( QStringLiteral( "tiles" ) ).isValid() )
+  {
+    // maybe url is pointing to a resources/styles/root.json type url, that's ok too!
+    const QString sourceUri = mArcgisLayerConfiguration.value( QStringLiteral( "sources" ) ).toMap().value( QStringLiteral( "esri" ) ).toMap().value( QStringLiteral( "url" ) ).toString();
+    if ( !sourceUri.isEmpty() )
+    {
+      QUrl url( sourceUri );
+      // some services don't default to json format, while others do... so let's explicitly request it!
+      // (refs https://github.com/qgis/QGIS/issues/4231)
+      QUrlQuery query;
+      query.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "pjson" ) );
+      url.setQuery( query );
+
+      QNetworkRequest request = QNetworkRequest( url );
+
+      QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLayer" ) )
+
+      QgsBlockingNetworkRequest networkRequest;
+      switch ( networkRequest.get( request ) )
+      {
+        case QgsBlockingNetworkRequest::NoError:
+          break;
+
+        case QgsBlockingNetworkRequest::NetworkError:
+        case QgsBlockingNetworkRequest::TimeoutError:
+        case QgsBlockingNetworkRequest::ServerExceptionError:
+          return false;
+      }
+
+      const QgsNetworkReplyContent content = networkRequest.reply();
+      const QByteArray raw = content.content();
+
+      // Parse data
+      QJsonParseError err;
+      const QJsonDocument doc = QJsonDocument::fromJson( raw, &err );
+      if ( doc.isNull() )
+      {
+        return false;
+      }
+
+      tileServiceUri = sourceUri;
+
+      // the resources/styles/root.json configuration is actually our style definition
+      mArcgisStyleConfiguration = mArcgisLayerConfiguration;
+      mArcgisLayerConfiguration = doc.object().toVariantMap();
+      if ( mArcgisLayerConfiguration.contains( QStringLiteral( "error" ) ) )
+      {
+        return false;
+      }
+    }
+  }
+
+  mSourcePath = tileServiceUri + '/' + mArcgisLayerConfiguration.value( QStringLiteral( "tiles" ) ).toList().value( 0 ).toString();
   if ( !QgsVectorTileUtils::checkXYZUrlTemplate( mSourcePath ) )
   {
     QgsDebugMsg( QStringLiteral( "Invalid format of URL for XYZ source: " ) + mSourcePath );
     return false;
   }
+
+  mArcgisLayerConfiguration.insert( QStringLiteral( "serviceUri" ), tileServiceUri );
+
 
   mMatrixSet.fromEsriJson( mArcgisLayerConfiguration );
   setCrs( mMatrixSet.crs() );
@@ -265,6 +336,8 @@ QgsVectorTileLayer::~QgsVectorTileLayer() = default;
 
 QgsVectorTileLayer *QgsVectorTileLayer::clone() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const QgsVectorTileLayer::LayerOptions options( mTransformContext );
   QgsVectorTileLayer *layer = new QgsVectorTileLayer( source(), name(), options );
   layer->setRenderer( renderer() ? renderer()->clone() : nullptr );
@@ -273,21 +346,29 @@ QgsVectorTileLayer *QgsVectorTileLayer::clone() const
 
 QgsDataProvider *QgsVectorTileLayer::dataProvider()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mDataProvider.get();
 }
 
 const QgsDataProvider *QgsVectorTileLayer::dataProvider() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mDataProvider.get();
 }
 
 QgsMapLayerRenderer *QgsVectorTileLayer::createMapRenderer( QgsRenderContext &rendererContext )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return new QgsVectorTileLayerRenderer( this, rendererContext );
 }
 
 bool QgsVectorTileLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext &context )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   setValid( loadDataSource() );
 
   const QDomElement matrixSetElement = layerNode.firstChildElement( QStringLiteral( "matrixSet" ) );
@@ -307,6 +388,8 @@ bool QgsVectorTileLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
 
 bool QgsVectorTileLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QDomElement mapLayerNode = layerNode.toElement();
   mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( QgsMapLayerType::VectorTileLayer ) );
 
@@ -329,6 +412,8 @@ bool QgsVectorTileLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const
 
 bool QgsVectorTileLayer::readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const QDomElement elem = node.toElement();
 
   readCommonStyle( elem, context, categories );
@@ -406,6 +491,8 @@ bool QgsVectorTileLayer::readSymbology( const QDomNode &node, QString &errorMess
 
 bool QgsVectorTileLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   Q_UNUSED( errorMessage )
   QDomElement elem = node.toElement();
 
@@ -453,6 +540,8 @@ bool QgsVectorTileLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
 
 void QgsVectorTileLayer::setTransformContext( const QgsCoordinateTransformContext &transformContext )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mDataProvider )
     mDataProvider->setTransformContext( transformContext );
 
@@ -462,6 +551,8 @@ void QgsVectorTileLayer::setTransformContext( const QgsCoordinateTransformContex
 
 QString QgsVectorTileLayer::loadDefaultStyle( bool &resultFlag )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QString error;
   QStringList warnings;
   resultFlag = loadDefaultStyle( error, warnings );
@@ -470,6 +561,8 @@ QString QgsVectorTileLayer::loadDefaultStyle( bool &resultFlag )
 
 Qgis::MapLayerProperties QgsVectorTileLayer::properties() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   Qgis::MapLayerProperties res;
   if ( mSourceType == QLatin1String( "xyz" ) )
   {
@@ -486,6 +579,22 @@ Qgis::MapLayerProperties QgsVectorTileLayer::properties() const
 
 bool QgsVectorTileLayer::loadDefaultStyle( QString &error, QStringList &warnings )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return loadDefaultStyleAndSubLayersPrivate( error, warnings, nullptr );
+}
+
+bool QgsVectorTileLayer::loadDefaultStyleAndSubLayers( QString &error, QStringList &warnings, QList<QgsMapLayer *> &subLayers )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return loadDefaultStyleAndSubLayersPrivate( error, warnings, &subLayers );
+}
+
+bool QgsVectorTileLayer::loadDefaultStyleAndSubLayersPrivate( QString &error, QStringList &warnings, QList<QgsMapLayer *> *subLayers )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( mDataSource );
 
@@ -521,27 +630,34 @@ bool QgsVectorTileLayer::loadDefaultStyle( QString &error, QStringList &warnings
       context.setSprites( spriteImage, spriteDefinition );
     }
   }
-  else if ( !styleUrl.isEmpty() )
+  else if ( !mArcgisStyleConfiguration.isEmpty() || !styleUrl.isEmpty() )
   {
-    QNetworkRequest request = QNetworkRequest( QUrl( styleUrl ) );
-
-    QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLayer" ) );
-
-    QgsBlockingNetworkRequest networkRequest;
-    switch ( networkRequest.get( request ) )
+    if ( !mArcgisStyleConfiguration.isEmpty() )
     {
-      case QgsBlockingNetworkRequest::NoError:
-        break;
-
-      case QgsBlockingNetworkRequest::NetworkError:
-      case QgsBlockingNetworkRequest::TimeoutError:
-      case QgsBlockingNetworkRequest::ServerExceptionError:
-        error = QObject::tr( "Error retrieving default style" );
-        return false;
+      styleDefinition = mArcgisStyleConfiguration;
     }
+    else
+    {
+      QNetworkRequest request = QNetworkRequest( QUrl( styleUrl ) );
 
-    const QgsNetworkReplyContent content = networkRequest.reply();
-    styleDefinition = QgsJsonUtils::parseJson( content.content() ).toMap();
+      QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLayer" ) );
+
+      QgsBlockingNetworkRequest networkRequest;
+      switch ( networkRequest.get( request ) )
+      {
+        case QgsBlockingNetworkRequest::NoError:
+          break;
+
+        case QgsBlockingNetworkRequest::NetworkError:
+        case QgsBlockingNetworkRequest::TimeoutError:
+        case QgsBlockingNetworkRequest::ServerExceptionError:
+          error = QObject::tr( "Error retrieving default style" );
+          return false;
+      }
+
+      const QgsNetworkReplyContent content = networkRequest.reply();
+      styleDefinition = QgsJsonUtils::parseJson( content.content() ).toMap();
+    }
 
     if ( styleDefinition.contains( QStringLiteral( "sprite" ) ) )
     {
@@ -626,6 +742,12 @@ bool QgsVectorTileLayer::loadDefaultStyle( QString &error, QStringList &warnings
     setRenderer( converter.renderer() );
     setLabeling( converter.labeling() );
     warnings = converter.warnings();
+
+    if ( subLayers )
+    {
+      *subLayers = converter.createSubLayers();
+    }
+
     return true;
   }
   else
@@ -638,6 +760,8 @@ bool QgsVectorTileLayer::loadDefaultStyle( QString &error, QStringList &warnings
 
 QString QgsVectorTileLayer::loadDefaultMetadata( bool &resultFlag )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( mDataSource );
   if ( mSourceType == QLatin1String( "xyz" ) && dsUri.param( QStringLiteral( "serviceType" ) ) == QLatin1String( "arcgis" ) )
@@ -687,6 +811,8 @@ QString QgsVectorTileLayer::loadDefaultMetadata( bool &resultFlag )
 
 QString QgsVectorTileLayer::encodedSource( const QString &source, const QgsReadWriteContext &context ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( source );
 
@@ -717,6 +843,8 @@ QString QgsVectorTileLayer::encodedSource( const QString &source, const QgsReadW
 
 QString QgsVectorTileLayer::decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   Q_UNUSED( provider )
 
   QgsDataSourceUri dsUri;
@@ -748,6 +876,8 @@ QString QgsVectorTileLayer::decodedSource( const QString &source, const QString 
 
 QString QgsVectorTileLayer::htmlMetadata() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const QgsLayerMetadataFormatter htmlFormatter( metadata() );
 
   QString info = QStringLiteral( "<html><head></head>\n<body>\n" );
@@ -804,16 +934,16 @@ QString QgsVectorTileLayer::htmlMetadata() const
 
 QByteArray QgsVectorTileLayer::getRawTile( QgsTileXYZ tileID )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const QgsTileMatrix tileMatrix = mMatrixSet.tileMatrix( tileID.zoomLevel() );
   const QgsTileRange tileRange( tileID.column(), tileID.column(), tileID.row(), tileID.row() );
 
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( mDataSource );
   const QString authcfg = dsUri.authConfigId();
-  QgsHttpHeaders headers;
-  headers [QStringLiteral( "referer" ) ] = dsUri.param( QStringLiteral( "referer" ) );
 
-  QList<QgsVectorTileRawData> rawTiles = QgsVectorTileLoader::blockingFetchTileRawData( mSourceType, mSourcePath, tileMatrix, QPointF(), tileRange, authcfg, headers );
+  QList<QgsVectorTileRawData> rawTiles = QgsVectorTileLoader::blockingFetchTileRawData( mSourceType, mSourcePath, tileMatrix, QPointF(), tileRange, authcfg, dsUri.httpHeaders() );
   if ( rawTiles.isEmpty() )
     return QByteArray();
   return rawTiles.first().data;
@@ -821,26 +951,402 @@ QByteArray QgsVectorTileLayer::getRawTile( QgsTileXYZ tileID )
 
 void QgsVectorTileLayer::setRenderer( QgsVectorTileRenderer *r )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   mRenderer.reset( r );
   triggerRepaint();
 }
 
 QgsVectorTileRenderer *QgsVectorTileLayer::renderer() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mRenderer.get();
 }
 
 void QgsVectorTileLayer::setLabeling( QgsVectorTileLabeling *labeling )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   mLabeling.reset( labeling );
   triggerRepaint();
 }
 
 QgsVectorTileLabeling *QgsVectorTileLayer::labeling() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mLabeling.get();
 }
 
+QList<QgsFeature> QgsVectorTileLayer::selectedFeatures() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  QList< QgsFeature > res;
+  res.reserve( mSelectedFeatures.size() );
+  for ( auto it = mSelectedFeatures.begin(); it != mSelectedFeatures.end(); ++it )
+    res.append( it.value() );
+
+  return res;
+}
+
+int QgsVectorTileLayer::selectedFeatureCount() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mSelectedFeatures.size();
+}
+
+void QgsVectorTileLayer::selectByGeometry( const QgsGeometry &geometry, const QgsSelectionContext &context, Qgis::SelectBehavior behavior, Qgis::SelectGeometryRelationship relationship, Qgis::SelectionFlags flags, QgsRenderContext *renderContext )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( !isInScaleRange( context.scale() ) )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "Out of scale limits" ), 2 );
+    return;
+  }
+
+  QSet< QgsFeatureId > prevSelection;
+  prevSelection.reserve( mSelectedFeatures.size() );
+  for ( auto it = mSelectedFeatures.begin(); it != mSelectedFeatures.end(); ++it )
+    prevSelection.insert( it.key() );
+
+  if ( !( flags & Qgis::SelectionFlag::ToggleSelection ) )
+  {
+    switch ( behavior )
+    {
+      case Qgis::SelectBehavior::SetSelection:
+        mSelectedFeatures.clear();
+        break;
+
+      case Qgis::SelectBehavior::IntersectSelection:
+      case Qgis::SelectBehavior::AddToSelection:
+      case Qgis::SelectBehavior::RemoveFromSelection:
+        break;
+    }
+  }
+
+  QgsGeometry selectionGeom = geometry;
+  bool isPointOrRectangle;
+  QgsPointXY point;
+  bool isSinglePoint = selectionGeom.type() == QgsWkbTypes::PointGeometry;
+  if ( isSinglePoint )
+  {
+    isPointOrRectangle = true;
+    point = selectionGeom.asPoint();
+    relationship = Qgis::SelectGeometryRelationship::Intersect;
+  }
+  else
+  {
+    // we have a polygon - maybe it is a rectangle - in such case we can avoid costly instersection tests later
+    isPointOrRectangle = QgsGeometry::fromRect( selectionGeom.boundingBox() ).isGeosEqual( selectionGeom );
+  }
+
+  auto addDerivedFields = []( QgsFeature & feature, const int tileZoom, const QString & layer )
+  {
+    QgsFields fields = feature.fields();
+    fields.append( QgsField( QStringLiteral( "tile_zoom" ), QVariant::Int ) );
+    fields.append( QgsField( QStringLiteral( "tile_layer" ), QVariant::String ) );
+    QgsAttributes attributes = feature.attributes();
+    attributes << tileZoom << layer;
+    feature.setFields( fields );
+    feature.setAttributes( attributes );
+  };
+
+  std::unique_ptr<QgsGeometryEngine> selectionGeomPrepared;
+  QList< QgsFeature > singleSelectCandidates;
+
+  QgsRectangle r;
+  if ( isSinglePoint )
+  {
+    r = QgsRectangle( point.x(), point.y(), point.x(), point.y() );
+  }
+  else
+  {
+    r = selectionGeom.boundingBox();
+
+    if ( !isPointOrRectangle || relationship == Qgis::SelectGeometryRelationship::Within )
+    {
+      // use prepared geometry for faster intersection test
+      selectionGeomPrepared.reset( QgsGeometry::createGeometryEngine( selectionGeom.constGet() ) );
+    }
+  }
+
+  switch ( behavior )
+  {
+    case Qgis::SelectBehavior::SetSelection:
+    case Qgis::SelectBehavior::AddToSelection:
+    {
+      // when adding to or setting a selection, we retrieve the tile data for the current scale
+      const int tileZoom = tileMatrixSet().scaleToZoomLevel( context.scale() );
+      const QgsTileMatrix tileMatrix = tileMatrixSet().tileMatrix( tileZoom );
+      const QgsTileRange tileRange = tileMatrix.tileRangeFromExtent( r );
+
+      for ( int row = tileRange.startRow(); row <= tileRange.endRow(); ++row )
+      {
+        for ( int col = tileRange.startColumn(); col <= tileRange.endColumn(); ++col )
+        {
+          QgsTileXYZ tileID( col, row, tileZoom );
+          QByteArray data = getRawTile( tileID );
+          if ( data.isEmpty() )
+            continue;  // failed to get data
+
+          QgsVectorTileMVTDecoder decoder( tileMatrixSet() );
+          if ( !decoder.decode( tileID, data ) )
+            continue;  // failed to decode
+
+          QMap<QString, QgsFields> perLayerFields;
+          const QStringList layerNames = decoder.layers();
+          for ( const QString &layerName : layerNames )
+          {
+            QSet<QString> fieldNames = qgis::listToSet( decoder.layerFieldNames( layerName ) );
+            perLayerFields[layerName] = QgsVectorTileUtils::makeQgisFields( fieldNames );
+          }
+
+          const QgsVectorTileFeatures features = decoder.layerFeatures( perLayerFields, QgsCoordinateTransform() );
+          const QStringList featuresLayerNames = features.keys();
+          for ( const QString &layerName : featuresLayerNames )
+          {
+            const QgsFields fFields = perLayerFields[layerName];
+            const QVector<QgsFeature> &layerFeatures = features[layerName];
+            for ( const QgsFeature &f : layerFeatures )
+            {
+              if ( renderContext && mRenderer && !mRenderer->willRenderFeature( f, tileZoom, layerName, *renderContext ) )
+                continue;
+
+              if ( f.geometry().intersects( r ) )
+              {
+                bool selectFeature = true;
+                if ( selectionGeomPrepared )
+                {
+                  switch ( relationship )
+                  {
+                    case Qgis::SelectGeometryRelationship::Intersect:
+                      selectFeature = selectionGeomPrepared->intersects( f.geometry().constGet() );
+                      break;
+                    case Qgis::SelectGeometryRelationship::Within:
+                      selectFeature = selectionGeomPrepared->contains( f.geometry().constGet() );
+                      break;
+                  }
+                }
+
+                if ( selectFeature )
+                {
+                  QgsFeature derivedFeature = f;
+                  addDerivedFields( derivedFeature, tileZoom, layerName );
+                  if ( flags & Qgis::SelectionFlag::SingleFeatureSelection )
+                    singleSelectCandidates << derivedFeature;
+                  else
+                    mSelectedFeatures.insert( derivedFeature.id(), derivedFeature );
+                }
+              }
+            }
+          }
+        }
+      }
+      break;
+    }
+
+    case Qgis::SelectBehavior::IntersectSelection:
+    case Qgis::SelectBehavior::RemoveFromSelection:
+    {
+      // when removing from the selection, we instead just iterate over the current selection and test against the geometry
+      // we do this as we don't want the selection removal operation to depend at all on the tile zoom
+      for ( auto it = mSelectedFeatures.begin(); it != mSelectedFeatures.end(); )
+      {
+        bool matchesGeometry = false;
+        if ( selectionGeomPrepared )
+        {
+          switch ( relationship )
+          {
+            case Qgis::SelectGeometryRelationship::Intersect:
+              matchesGeometry = selectionGeomPrepared->intersects( it->geometry().constGet() );
+              break;
+            case Qgis::SelectGeometryRelationship::Within:
+              matchesGeometry = selectionGeomPrepared->contains( it->geometry().constGet() );
+              break;
+          }
+        }
+        else
+        {
+          switch ( relationship )
+          {
+            case Qgis::SelectGeometryRelationship::Intersect:
+              matchesGeometry = it->geometry().intersects( r );
+              break;
+            case Qgis::SelectGeometryRelationship::Within:
+              matchesGeometry = r.contains( it->geometry().boundingBox() );
+              break;
+          }
+        }
+
+        if ( flags & Qgis::SelectionFlag::SingleFeatureSelection )
+        {
+          singleSelectCandidates << it.value();
+          it++;
+        }
+        else if ( ( matchesGeometry && behavior == Qgis::SelectBehavior::IntersectSelection )
+                  || ( !matchesGeometry && behavior == Qgis::SelectBehavior::RemoveFromSelection ) )
+        {
+          it++;
+        }
+        else
+        {
+          it = mSelectedFeatures.erase( it );
+        }
+      }
+      break;
+    }
+  }
+
+  if ( ( flags & Qgis::SelectionFlag::SingleFeatureSelection ) && !singleSelectCandidates.empty() )
+  {
+    QgsFeature bestCandidate;
+
+    if ( flags & Qgis::SelectionFlag::ToggleSelection )
+    {
+      // when toggling a selection, we first check to see if we can remove a feature from the current selection -- that takes precedence over adding new features to the selection
+
+      // find smallest feature in the current selection
+      double smallestArea = std::numeric_limits< double >::max();
+      double smallestLength = std::numeric_limits< double >::max();
+      for ( const QgsFeature &candidate : std::as_const( singleSelectCandidates ) )
+      {
+        if ( !mSelectedFeatures.contains( candidate.id() ) )
+          continue;
+
+        switch ( candidate.geometry().type() )
+        {
+          case QgsWkbTypes::PointGeometry:
+            bestCandidate = candidate;
+            break;
+          case QgsWkbTypes::LineGeometry:
+          {
+            const double length = candidate.geometry().length();
+            if ( length < smallestLength && bestCandidate.geometry().type() != QgsWkbTypes::PointGeometry )
+            {
+              bestCandidate = candidate;
+              smallestLength = length;
+            }
+            break;
+          }
+          case QgsWkbTypes::PolygonGeometry:
+          {
+            const double area = candidate.geometry().area();
+            if ( area < smallestArea && bestCandidate.geometry().type() != QgsWkbTypes::PointGeometry && bestCandidate.geometry().type() != QgsWkbTypes::LineGeometry )
+            {
+              bestCandidate = candidate;
+              smallestArea = area;
+            }
+            break;
+          }
+          case QgsWkbTypes::UnknownGeometry:
+          case QgsWkbTypes::NullGeometry:
+            break;
+        }
+      }
+    }
+
+    if ( !bestCandidate.isValid() )
+    {
+      // find smallest feature (ie. pick the "hardest" one to click on)
+      double smallestArea = std::numeric_limits< double >::max();
+      double smallestLength = std::numeric_limits< double >::max();
+      for ( const QgsFeature &candidate : std::as_const( singleSelectCandidates ) )
+      {
+        switch ( candidate.geometry().type() )
+        {
+          case QgsWkbTypes::PointGeometry:
+            bestCandidate = candidate;
+            break;
+          case QgsWkbTypes::LineGeometry:
+          {
+            const double length = candidate.geometry().length();
+            if ( length < smallestLength && bestCandidate.geometry().type() != QgsWkbTypes::PointGeometry )
+            {
+              bestCandidate = candidate;
+              smallestLength = length;
+            }
+            break;
+          }
+          case QgsWkbTypes::PolygonGeometry:
+          {
+            const double area = candidate.geometry().area();
+            if ( area < smallestArea && bestCandidate.geometry().type() != QgsWkbTypes::PointGeometry && bestCandidate.geometry().type() != QgsWkbTypes::LineGeometry )
+            {
+              bestCandidate = candidate;
+              smallestArea = area;
+            }
+            break;
+          }
+          case QgsWkbTypes::UnknownGeometry:
+          case QgsWkbTypes::NullGeometry:
+            break;
+        }
+      }
+    }
+
+    if ( flags & Qgis::SelectionFlag::ToggleSelection )
+    {
+      if ( prevSelection.contains( bestCandidate.id() ) )
+        mSelectedFeatures.remove( bestCandidate.id() );
+      else
+        mSelectedFeatures.insert( bestCandidate.id(), bestCandidate );
+    }
+    else
+    {
+      switch ( behavior )
+      {
+        case Qgis::SelectBehavior::SetSelection:
+        case Qgis::SelectBehavior::AddToSelection:
+          mSelectedFeatures.insert( bestCandidate.id(), bestCandidate );
+          break;
+
+        case Qgis::SelectBehavior::IntersectSelection:
+        {
+          if ( mSelectedFeatures.contains( bestCandidate.id() ) )
+          {
+            mSelectedFeatures.clear();
+            mSelectedFeatures.insert( bestCandidate.id(), bestCandidate );
+          }
+          else
+          {
+            mSelectedFeatures.clear();
+          }
+          break;
+        }
+
+        case Qgis::SelectBehavior::RemoveFromSelection:
+        {
+          mSelectedFeatures.remove( bestCandidate.id() );
+          break;
+        }
+      }
+    }
+  }
+
+  QSet< QgsFeatureId > newSelection;
+  newSelection.reserve( mSelectedFeatures.size() );
+  for ( auto it = mSelectedFeatures.begin(); it != mSelectedFeatures.end(); ++it )
+    newSelection.insert( it.key() );
+
+  // signal
+  if ( prevSelection != newSelection )
+    emit selectionChanged();
+}
+
+void QgsVectorTileLayer::removeSelection()
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( mSelectedFeatures.empty() )
+    return;
+
+  mSelectedFeatures.clear();
+  emit selectionChanged();
+}
 
 
 //
@@ -855,31 +1361,43 @@ QgsVectorTileDataProvider::QgsVectorTileDataProvider(
 
 QgsCoordinateReferenceSystem QgsVectorTileDataProvider::crs() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) );
 }
 
 QString QgsVectorTileDataProvider::name() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return QStringLiteral( "vectortile" );
 }
 
 QString QgsVectorTileDataProvider::description() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return QString();
 }
 
 QgsRectangle QgsVectorTileDataProvider::extent() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return QgsRectangle();
 }
 
 bool QgsVectorTileDataProvider::isValid() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return true;
 }
 
 bool QgsVectorTileDataProvider::renderInPreview( const PreviewContext &context )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   // Vector tiles by design are very CPU light to render, so we are much more permissive here compared
   // with other layer types. (Generally if a vector tile layer has taken more than a few milliseconds to render it's
   // a result of network requests, and the tile manager class handles these gracefully for us)

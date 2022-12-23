@@ -1,0 +1,112 @@
+"3D":
+  - any: [
+    'resources/3d/**/*',
+    'src/3d/**/*',
+    'src/app/3d/**/*',
+  ]
+
+"Annotations":
+  - any: [
+    'src/core/annotations/**/*',
+    'src/gui/annotations/**/*',
+  ]
+
+"Chore":
+  - any: [
+    '.ci/**/*',
+    '.docker/**/*',
+    '.github/**/*',
+  ]
+
+"DB Manager":
+  - any: ['python/plugins/db_manager/**/*']
+
+"Expressions":
+  - any: [
+    'src/core/expression/**/*',
+    'resources/function_help/**/*',
+  ]
+
+"Form":
+  - any: [
+    'src/core/editform/**/*',
+    'src/gui/attributeformconfig/**/*',
+  ]
+
+"GRASS":
+  - any: ['python/plugins/grassprovider/**/*']
+
+"GUI/UX":
+  - any: [
+    'images/**/*',
+    'resources/themes/**/*',
+#    'src/gui/**/*', too broad
+  ]
+
+"HANA data provider":
+  - any: [
+    'src/providers/hana/**/*',
+  ]
+
+"Labeling":
+  - any: [
+    'src/app/labeling/**/*',
+    'src/core/labeling/**/*',
+  ]
+
+"Locator":
+  - any: [
+    'src/core/locator/**/*',
+    'src/gui/locator/**/*',
+  ]
+
+"Mesh":
+  - any: [
+    'external/mdal/**/*',
+    'src/analysis/mesh/**/*',
+    'src/core/mesh/**/*',
+    'src/gui/mesh/**/*',
+  ]
+
+"Metasearch":
+  - any: ['python/plugins/MetaSearch/**/*']
+
+"Point Clouds":
+  - any: [
+    'src/app/pointcloud/**/*',
+    'src/core/pointcloud/**/*',
+    'src/gui/pointcloud/**/*',
+  ]
+
+"PostGIS data provider":
+  - any: ['src/providers/postgres/**/*']
+
+"Processing":
+  - any: [
+      'python/plugins/processing/**/*',
+      'src/analysis/**/*',
+      'src/core/processing/**/*',
+      'src/process/**/*'
+  ]
+
+"Python Console":
+  - any: [
+    'python/console/**/*',
+  ]
+
+"Quick":
+  - any: [
+    'src/quickgui/**/*',
+  ]
+
+"Server":
+  - any: [
+      'src/server/**/*',
+      'resources/server/**/*'
+  ]
+
+"Vector tiles":
+  - any: [
+    'src/core/vectortile/**/*',
+    'src/gui/vectortile/**/*',
+  ]

@@ -52,6 +52,20 @@ QgsBackgroundCachedSharedData::~QgsBackgroundCachedSharedData()
   Q_ASSERT( mCacheIdDbname.isEmpty() );
 }
 
+void QgsBackgroundCachedSharedData::copyStateToClone( QgsBackgroundCachedSharedData *clone ) const
+{
+  clone->mFields = mFields;
+  clone->mSourceCrs = mSourceCrs;
+  clone->mDistinctSelect = mDistinctSelect;
+  clone->mClientSideFilterExpression = mClientSideFilterExpression;
+  clone->mMaxFeatures = mMaxFeatures;
+  clone->mServerMaxFeatures = mServerMaxFeatures;
+  clone->mCapabilityExtent = mCapabilityExtent;
+  clone->mComputedExtent = mComputedExtent;
+  clone->mHasNumberMatched = mHasNumberMatched;
+  clone->mHideProgressDialog = mHideProgressDialog;
+}
+
 void QgsBackgroundCachedSharedData::cleanup()
 {
   invalidateCache();
@@ -395,7 +409,7 @@ bool QgsBackgroundCachedSharedData::createCache()
   return true;
 }
 
-int QgsBackgroundCachedSharedData::registerToCache( QgsBackgroundCachedFeatureIterator *iterator, int limit, const QgsRectangle &rect )
+int QgsBackgroundCachedSharedData::registerToCache( QgsBackgroundCachedFeatureIterator *iterator, int limit, const QgsRectangle &rect, const QString &serverExpression )
 {
   // This locks prevents 2 readers to register at the same time (and particularly
   // destroy the current mDownloader at the same time)
@@ -466,10 +480,15 @@ int QgsBackgroundCachedSharedData::registerToCache( QgsBackgroundCachedFeatureIt
   {
     newDownloadNeeded = true;
   }
-
+  //If there's a ongoing download, when having an expression that can be performed on the server and diverts from the previous one, then we need a new download.
+  else if ( mServerExpression != serverExpression )
+  {
+    newDownloadNeeded = true;
+  }
   if ( newDownloadNeeded || !mDownloader )
   {
     mRect = rect;
+    mServerExpression = serverExpression;
     mRequestLimit = ( limit > 0 && supportsLimitedFeatureCountDownloads() ) ? limit : 0;
     // to prevent deadlock when waiting the end of the downloader thread that will try to take the mutex in serializeFeatures()
     mMutex.unlock();
@@ -608,7 +627,7 @@ void QgsBackgroundCachedSharedData::serializeFeatures( QVector<QgsFeatureUniqueI
       {
         const QVariant &v = srcFeature.attributes().value( i );
         const QVariant::Type fieldType = dataProviderFields.at( idx ).type();
-        if ( v.type() == QVariant::DateTime && !v.isNull() )
+        if ( v.type() == QVariant::DateTime && !QgsVariantUtils::isNull( v ) )
           cachedFeature.setAttribute( idx, QVariant( v.toDateTime().toMSecsSinceEpoch() ) );
         else if ( QgsWFSUtils::isCompatibleType( v.type(), fieldType ) )
           cachedFeature.setAttribute( idx, v );
@@ -1100,7 +1119,7 @@ bool QgsBackgroundCachedSharedData::changeAttributeValues( const QgsChangedAttri
     {
       int idx = dataProviderFields.indexFromName( mMapUserVisibleFieldNameToSpatialiteColumnName[mFields.at( siter.key() ).name()] );
       Q_ASSERT( idx >= 0 );
-      if ( siter.value().type() == QVariant::DateTime && !siter.value().isNull() )
+      if ( siter.value().type() == QVariant::DateTime && !QgsVariantUtils::isNull( siter.value() ) )
         newAttrMap[idx] = QVariant( siter.value().toDateTime().toMSecsSinceEpoch() );
       else
         newAttrMap[idx] = siter.value();
@@ -1120,7 +1139,7 @@ QString QgsBackgroundCachedSharedData::getMD5( const QgsFeature &f )
   {
     const QVariant &v = attrs[i];
     hash.addData( QByteArray( ( const char * )&i, sizeof( i ) ) );
-    if ( v.isNull() )
+    if ( QgsVariantUtils::isNull( v ) )
     {
       // nothing to do
     }

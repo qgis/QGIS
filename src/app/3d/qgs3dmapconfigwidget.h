@@ -48,6 +48,7 @@ class Qgs3DMapConfigWidget : public QWidget, private Ui::Map3DConfigWidget
     void onTerrainLayerChanged();
     void updateMaxZoomLevel();
     void validate();
+    void on3DAxisChanged();
 
   private:
     Qgs3DMapSettings *mMap = nullptr;
@@ -55,7 +56,9 @@ class Qgs3DMapConfigWidget : public QWidget, private Ui::Map3DConfigWidget
     Qgs3DMapCanvas *m3DMapCanvas = nullptr;
     QgsMesh3dSymbolWidget *mMeshSymbolWidget = nullptr;
     QgsSkyboxRenderingSettingsWidget *mSkyboxSettingsWidget = nullptr;
-    QgsShadowRenderingSettingsWidget *mShadowSetiingsWidget = nullptr;
+    QgsShadowRenderingSettingsWidget *mShadowSettingsWidget = nullptr;
+
+    void init3DAxisPage();
 };
 
 #endif // QGS3DMAPCONFIGWIDGET_H

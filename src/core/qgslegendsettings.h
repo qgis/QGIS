@@ -193,32 +193,34 @@ class CORE_EXPORT QgsLegendSettings
      * Returns the font color used for legend items.
      *
      * \see setFontColor()
+    * \deprecated Use QgsLegendStyle::textFormat() instead.
      */
-    QColor fontColor() const {return mFontColor;}
+    Q_DECL_DEPRECATED QColor fontColor() const SIP_DEPRECATED;
 
     /**
      * Sets the font color used for legend items.
      *
      * \see fontColor()
+    * \deprecated Use QgsLegendStyle::textFormat() instead.
      */
-    void setFontColor( const QColor &c ) {mFontColor = c;}
+    Q_DECL_DEPRECATED void setFontColor( const QColor &c ) SIP_DEPRECATED;
 
     /**
      * Returns layer font color, defaults to fontColor()
      * \see setLayerFontColor()
      * \see fontColor()
-     * \since QGIS 3.4.7
+     * \deprecated Use QgsLegendStyle::textFormat() instead.
      */
-    QColor layerFontColor() const {return mLayerFontColor.isValid() ? mLayerFontColor : fontColor() ;}
+    Q_DECL_DEPRECATED QColor layerFontColor() const SIP_DEPRECATED;
 
     /**
      * Sets layer font color to \a fontColor
      * Overrides fontColor()
      * \see layerFontColor()
      * \see fontColor()
-     * \since QGIS 3.4.7
+     * \deprecated Use QgsLegendStyle::textFormat() instead.
      */
-    void setLayerFontColor( const QColor &fontColor ) {mLayerFontColor = fontColor;}
+    Q_DECL_DEPRECATED void setLayerFontColor( const QColor &fontColor ) SIP_DEPRECATED;
 
     /**
      * Returns the default symbol size (in millimeters) used for legend items.
@@ -369,15 +371,17 @@ class CORE_EXPORT QgsLegendSettings
      * Returns the line spacing to use between lines of legend text.
      *
      * \see setLineSpacing()
+     * \deprecated use QgsLegendStyle::textFormat() from style() instead.
      */
-    double lineSpacing() const { return mLineSpacing; }
+    Q_DECL_DEPRECATED double lineSpacing() const SIP_DEPRECATED  { return mLineSpacing; }
 
     /**
      * Sets the line spacing to use between lines of legend text.
      *
      * \see lineSpacing()
+     * \deprecated use QgsLegendStyle::setTextFormat() from style() instead.
      */
-    void setLineSpacing( double s ) { mLineSpacing = s; }
+    Q_DECL_DEPRECATED void setLineSpacing( double s );
 
     /**
      * \deprecated Use scale factor from render contexts instead.
@@ -502,41 +506,39 @@ class CORE_EXPORT QgsLegendSettings
 
     QString mTitle;
 
-//! Title alignment, one of Qt::AlignLeft, Qt::AlignHCenter, Qt::AlignRight)
+    //! Title alignment, one of Qt::AlignLeft, Qt::AlignHCenter, Qt::AlignRight)
     Qt::AlignmentFlag mTitleAlignment = Qt::AlignLeft;
 
     QString mWrapChar;
 
-    QColor mFontColor;
-
-//! Space between item box and contents
+    //! Space between item box and contents
     qreal mBoxSpace = 2;
 
-//! Width and height of symbol icon
+    //! Width and height of symbol icon
     QSizeF mSymbolSize;
 
-//! Maximum marker symbol size (in mm)
+    //! Maximum marker symbol size (in mm)
     double mMaxSymbolSize = 0.0;
 
-//! Minimum marker symbol size (in mm)
+    //! Minimum marker symbol size (in mm)
     double mMinSymbolSize = 0.0;
 
-//! Width and height of WMS legendGraphic pixmap
+    //! Width and height of WMS legendGraphic pixmap
     QSizeF mWmsLegendSize;
 
-//! Spacing between lines when wrapped
+    //! Spacing between lines when wrapped
     double mLineSpacing = 1;
 
-//! Space between columns
+    //! Space between columns
     double mColumnSpace = 2;
 
-//! Number of legend columns
+    //! Number of legend columns
     int mColumnCount = 1;
 
-//! Allow splitting layers into multiple columns
+    //! Allow splitting layers into multiple columns
     bool mSplitLayer = false;
 
-//! Use the same width (maximum) for all columns
+    //! Use the same width (maximum) for all columns
     bool mEqualColumnWidth = false;
 
     bool mRasterSymbolStroke = true;
@@ -545,22 +547,19 @@ class CORE_EXPORT QgsLegendSettings
 
     QMap<QgsLegendStyle::Style, QgsLegendStyle> mStyleMap;
 
-//! Conversion ratio between millimeters and map units - for symbols with size given in map units
+    //! Conversion ratio between millimeters and map units - for symbols with size given in map units
     double mMmPerMapUnit = 1;
 
-//! Whether to use advanced effects like opacity for symbols - may require their rasterization
+    //! Whether to use advanced effects like opacity for symbols - may require their rasterization
     bool mUseAdvancedEffects = true;
 
-//! Denominator of map's scale
+    //! Denominator of map's scale
     double mMapScale = 1;
 
-//! DPI to be used when rendering legend
+    //! DPI to be used when rendering legend
     int mDpi = 96;
 
-//! Font color for layers, overrides font color
-    QColor mLayerFontColor;
-
-//! Symbol alignment
+    //! Symbol alignment
     Qt::AlignmentFlag mSymbolAlignment = Qt::AlignLeft;
 };
 

@@ -22,16 +22,19 @@ email                : nyall dot dawson at gmail dot com
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
+class QgsLayerMetadataProviderResult;
+
 /**
  * Entry point for registration of the OGR data provider
  * \since QGIS 3.10
  */
 class QgsOgrProviderMetadata final: public QgsProviderMetadata
 {
+    Q_OBJECT
   public:
 
     QgsOgrProviderMetadata();
-
+    QIcon icon() const override;
     void initProvider() override;
     void cleanupProvider() override;
     QList< QgsDataItemProvider * > dataItemProviders() const override;
@@ -44,6 +47,7 @@ class QgsOgrProviderMetadata final: public QgsProviderMetadata
     bool uriIsBlocklisted( const QString &uri ) const override;
     QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
     QStringList sidecarFilesForUri( const QString &uri ) const override;
+    QList< QgsMapLayerType > supportedLayerTypes() const override;
     Qgis::VectorExportResult createEmptyLayer(
       const QString &uri,
       const QgsFields &fields,
@@ -53,6 +57,7 @@ class QgsOgrProviderMetadata final: public QgsProviderMetadata
       QMap<int, int> &oldToNewAttrIdxMap,
       QString &errorMessage,
       const QMap<QString, QVariant> *options ) override;
+    bool createDatabase( const QString &uri, QString &errorMessage ) override;
 
     // -----
     bool styleExists( const QString &uri, const QString &styleId, QString &errorCause ) override;
@@ -61,6 +66,7 @@ class QgsOgrProviderMetadata final: public QgsProviderMetadata
                     const QString &uiFileContent, bool useAsDefault, QString &errCause ) override;
     bool deleteStyleById( const QString &uri, const QString &styleId, QString &errCause ) override;
     QString loadStyle( const QString &uri, QString &errCause ) override;
+    QString loadStoredStyle( const QString &uri, QString &name, QString &errCause ) override;
     int listStyles( const QString &uri, QStringList &ids, QStringList &names,
                     QStringList &descriptions, QString &errCause ) override;
     QString getStyleById( const QString &uri, const QString &styleId, QString &errCause ) override;
@@ -79,6 +85,7 @@ class QgsOgrProviderMetadata final: public QgsProviderMetadata
   protected:
 
     QgsAbstractProviderConnection *createConnection( const QString &uri, const QVariantMap &configuration ) override;
+
 
 };
 

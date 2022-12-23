@@ -160,6 +160,19 @@ void QgsAbstractMetadataBase::addLink( const QgsAbstractMetadataBase::Link &link
   mLinks << link;
 }
 
+QDateTime QgsAbstractMetadataBase::dateTime( Qgis::MetadataDateType type ) const
+{
+  return mDates.value( type );
+}
+
+void QgsAbstractMetadataBase::setDateTime( Qgis::MetadataDateType type, QDateTime date )
+{
+  if ( !date.isValid() || date.isNull() )
+    mDates.remove( type );
+  else
+    mDates[type] = date;
+}
+
 QString QgsAbstractMetadataBase::language() const
 {
   return mLanguage;
@@ -280,6 +293,24 @@ bool QgsAbstractMetadataBase::readMetadataXml( const QDomElement &metadataElemen
     historyList.append( mne.text() );
   }
   setHistory( historyList );
+
+  {
+    mDates.clear();
+    const QDomElement dateElement = metadataElement.firstChildElement( QStringLiteral( "dates" ) );
+    if ( !dateElement.isNull() )
+    {
+      const QDomNodeList dateNodeList = dateElement.elementsByTagName( QStringLiteral( "date" ) );
+      const QMetaEnum dateEnum = QMetaEnum::fromType<Qgis::MetadataDateType>();
+      for ( int i = 0; i < dateNodeList.size(); i++ )
+      {
+        const QDomElement dateElement = dateNodeList.at( i ).toElement();
+        const Qgis::MetadataDateType type = static_cast< Qgis::MetadataDateType >( dateEnum.keyToValue( dateElement.attribute( QStringLiteral( "type" ) ).toStdString().c_str() ) );
+        const QDateTime value = QDateTime::fromString( dateElement.attribute( QStringLiteral( "value" ) ), Qt::ISODate );
+        if ( value.isValid() && !value.isNull() )
+          mDates.insert( type, value );
+      }
+    }
+  }
 
   return true;
 }
@@ -429,6 +460,24 @@ bool QgsAbstractMetadataBase::writeMetadataXml( QDomElement &metadataElement, QD
     metadataElement.appendChild( historyElement );
   }
 
+  // dates
+  {
+    const QMetaEnum dateEnum = QMetaEnum::fromType<Qgis::MetadataDateType>();
+    QDomElement datesElement = document.createElement( QStringLiteral( "dates" ) );
+    for ( int k = 0; k < dateEnum.keyCount(); k++ )
+    {
+      const Qgis::MetadataDateType type = static_cast< Qgis::MetadataDateType >( dateEnum.value( k ) );
+      if ( mDates.contains( type ) && mDates.value( type ).isValid() )
+      {
+        QDomElement dateElement = document.createElement( QStringLiteral( "date" ) );
+        dateElement.setAttribute( QStringLiteral( "type" ), dateEnum.valueToKey( static_cast< int >( type ) ) );
+        dateElement.setAttribute( QStringLiteral( "value" ), mDates.value( type ).toString( Qt::ISODate ) );
+        datesElement.appendChild( dateElement );
+      }
+    }
+    metadataElement.appendChild( datesElement );
+  }
+
   return true;
 }
 
@@ -466,6 +515,17 @@ void QgsAbstractMetadataBase::combine( const QgsAbstractMetadataBase *other )
 
   if ( !other->links().isEmpty() )
     mLinks = other->links();
+
+  const QMetaEnum dateEnum = QMetaEnum::fromType<Qgis::MetadataDateType>();
+  for ( int k = 0; k < dateEnum.keyCount(); k++ )
+  {
+    const Qgis::MetadataDateType type = static_cast< Qgis::MetadataDateType >( dateEnum.value( k ) );
+    if ( other->mDates.contains( type ) && other->mDates.value( type ).isValid() )
+    {
+      mDates.insert( type, other->mDates[type] );
+    }
+  }
+
 }
 
 bool QgsAbstractMetadataBase::equals( const QgsAbstractMetadataBase &metadataOther )  const
@@ -479,7 +539,8 @@ bool QgsAbstractMetadataBase::equals( const QgsAbstractMetadataBase &metadataOth
            ( mHistory == metadataOther.mHistory ) &&
            ( mKeywords == metadataOther.mKeywords ) &&
            ( mContacts == metadataOther.mContacts ) &&
-           ( mLinks == metadataOther.mLinks ) );
+           ( mLinks == metadataOther.mLinks ) &&
+           ( mDates == metadataOther.mDates ) );
 }
 
 

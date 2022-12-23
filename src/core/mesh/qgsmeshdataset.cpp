@@ -856,7 +856,7 @@ QgsMeshDatasetMetadata QgsMeshMemoryDataset::metadata() const
 void QgsMeshMemoryDataset::calculateMinMax()
 {
   double min = std::numeric_limits<double>::max();
-  double max = std::numeric_limits<double>::min();
+  double max = std::numeric_limits<double>::lowest();
 
   if ( !valid )
     return;
@@ -973,12 +973,12 @@ QDomElement QgsMeshMemoryDatasetGroup::writeXml( QDomDocument &doc, const QgsRea
   return QDomElement();
 }
 
-void QgsMeshDatasetGroup::calculateStatistic()
+void QgsMeshDatasetGroup::calculateStatistic() const
 {
   updateStatictic();
 }
 
-void QgsMeshDatasetGroup::setStatisticObsolete()
+void QgsMeshDatasetGroup::setStatisticObsolete() const
 {
   mIsStatisticObsolete = true;
 }
@@ -1004,7 +1004,7 @@ void QgsMeshDatasetGroup::updateStatictic() const
     return;
 
   double min = std::numeric_limits<double>::max();
-  double max = std::numeric_limits<double>::min();
+  double max = std::numeric_limits<double>::lowest();
 
   const int count = datasetCount();
   for ( int i = 0; i < count; ++i )
@@ -1046,7 +1046,7 @@ double QgsMeshDatasetGroup::maximum() const
   return mMaximum;
 }
 
-void QgsMeshDatasetGroup::setMinimumMaximum( double min, double max )
+void QgsMeshDatasetGroup::setMinimumMaximum( double min, double max ) const
 {
   mMinimum = min;
   mMaximum = max;

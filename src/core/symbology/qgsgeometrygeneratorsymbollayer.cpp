@@ -153,6 +153,16 @@ QgsUnitTypes::RenderUnit QgsGeometryGeneratorSymbolLayer::outputUnit() const
   return QgsUnitTypes::RenderUnknownUnit;
 }
 
+void QgsGeometryGeneratorSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
+{
+  if ( mFillSymbol )
+    mFillSymbol->setOutputUnit( unit );
+  else if ( mLineSymbol )
+    mLineSymbol->setOutputUnit( unit );
+  else if ( mMarkerSymbol )
+    mMarkerSymbol->setOutputUnit( unit );
+}
+
 QgsMapUnitScale QgsGeometryGeneratorSymbolLayer::mapUnitScale() const
 {
   if ( mFillSymbol )
@@ -257,6 +267,11 @@ void QgsGeometryGeneratorSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &c
 void QgsGeometryGeneratorSymbolLayer::setGeometryExpression( const QString &exp )
 {
   mExpression.reset( new QgsExpression( exp ) );
+}
+
+QString QgsGeometryGeneratorSymbolLayer::geometryExpression() const
+{
+  return mExpression->expression();
 }
 
 bool QgsGeometryGeneratorSymbolLayer::setSubSymbol( QgsSymbol *symbol )

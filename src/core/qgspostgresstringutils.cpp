@@ -74,7 +74,6 @@ QVariantList QgsPostgresStringUtils::parseArray( const QString &string )
   if ( newVal.trimmed().startsWith( '{' ) )
   {
     //it's a multidimensional array
-    QStringList values;
     QString subarray = newVal;
     while ( !subarray.isEmpty() )
     {

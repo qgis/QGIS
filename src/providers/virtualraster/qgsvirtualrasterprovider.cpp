@@ -16,6 +16,7 @@
 #include "qgsrastermatrix.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterprojector.h"
+#include "qgsapplication.h"
 
 #define PROVIDER_KEY QStringLiteral( "virtualraster" )
 #define PROVIDER_DESCRIPTION QStringLiteral( "Virtual Raster data provider" )
@@ -260,10 +261,20 @@ QgsVirtualRasterProviderMetadata::QgsVirtualRasterProviderMetadata()
 
 }
 
+QIcon QgsVirtualRasterProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconRaster.svg" ) );
+}
+
 QgsVirtualRasterProvider *QgsVirtualRasterProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
   Q_UNUSED( flags );
   return new QgsVirtualRasterProvider( uri, options );
+}
+
+QList<QgsMapLayerType> QgsVirtualRasterProviderMetadata::supportedLayerTypes() const
+{
+  return { QgsMapLayerType::RasterLayer };
 }
 
 QgsVirtualRasterProvider *QgsVirtualRasterProvider::clone() const

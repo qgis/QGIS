@@ -17,11 +17,14 @@
 
 #include "qgsapplication.h"
 #include "qgssettingsregistrycore.h"
+#include "qgsstylemanagerdialog.h"
 
 QgsSettingsRegistryGui::QgsSettingsRegistryGui()
   : QgsSettingsRegistry()
 {
   addSettingsEntry( &settingsRespectScreenDPI );
+  addSettingsEntry( &settingsAutomaticallyCheckForPluginUpdates );
+  addSettingsEntry( &QgsStyleManagerDialog::settingLastStyleDatabaseFolder );
 
   QgsApplication::settingsRegistryCore()->addSubRegistry( this );
 }

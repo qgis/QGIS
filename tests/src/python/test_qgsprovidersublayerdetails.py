@@ -169,6 +169,50 @@ class TestQgsProviderSublayerDetails(unittest.TestCase):
         self.assertIsInstance(ml, QgsVectorLayer)
         self.assertEqual(ml.name(), 'my sub layer')
 
+    def test_to_mime(self):
+        """
+        Test converting sub layer details to mime URIs
+        """
+        details = QgsProviderSublayerDetails()
+        details.setUri(os.path.join(unitTestDataPath(), 'lines.shp'))
+        details.setName('my sub layer')
+        details.setType(QgsMapLayerType.VectorLayer)
+        details.setProviderKey('ogr')
+
+        uri = details.toMimeUri()
+        self.assertEqual(uri.layerType, 'vector')
+        self.assertEqual(uri.providerKey, 'ogr')
+        self.assertEqual(uri.name, 'my sub layer')
+        self.assertEqual(uri.uri, os.path.join(unitTestDataPath(), 'lines.shp'))
+
+        details.setType(QgsMapLayerType.RasterLayer)
+        uri = details.toMimeUri()
+        self.assertEqual(uri.layerType, 'raster')
+
+        details.setType(QgsMapLayerType.MeshLayer)
+        uri = details.toMimeUri()
+        self.assertEqual(uri.layerType, 'mesh')
+
+        details.setType(QgsMapLayerType.VectorTileLayer)
+        uri = details.toMimeUri()
+        self.assertEqual(uri.layerType, 'vector-tile')
+
+        details.setType(QgsMapLayerType.PointCloudLayer)
+        uri = details.toMimeUri()
+        self.assertEqual(uri.layerType, 'pointcloud')
+
+        details.setType(QgsMapLayerType.PluginLayer)
+        uri = details.toMimeUri()
+        self.assertEqual(uri.layerType, 'plugin')
+
+        details.setType(QgsMapLayerType.GroupLayer)
+        uri = details.toMimeUri()
+        self.assertEqual(uri.layerType, 'group')
+
+        details.setType(QgsMapLayerType.AnnotationLayer)
+        uri = details.toMimeUri()
+        self.assertEqual(uri.layerType, 'annotation')
+
 
 if __name__ == '__main__':
     unittest.main()

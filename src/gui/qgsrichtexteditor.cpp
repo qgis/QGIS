@@ -207,13 +207,12 @@ QgsRichTextEditor::QgsRichTextEditor( QWidget *parent )
 
   // images
   connect( mActionInsertImage, &QAction::triggered, this, &QgsRichTextEditor::insertImage );
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  connect( mFontSizeCombo, qOverload< const QString &>( &QComboBox::activated ), this, &QgsRichTextEditor::textSize );
-#else
   connect( mFontSizeCombo, &QComboBox::textActivated, this, &QgsRichTextEditor::textSize );
-#endif
 
   fontChanged( mTextEdit->font() );
+
+  connect( mTextEdit, &QTextEdit::textChanged, this, &QgsRichTextEditor::textChanged );
+  connect( mSourceEdit, &QgsCodeEditorHTML::textChanged, this, &QgsRichTextEditor::textChanged );
 }
 
 QString QgsRichTextEditor::toPlainText() const

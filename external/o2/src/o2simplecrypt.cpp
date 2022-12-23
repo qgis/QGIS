@@ -31,6 +31,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <QDateTime>
 #include <QCryptographicHash>
 #include <QDataStream>
+#include <QIODevice>
+#include <QRandomGenerator>
 
 O0SimpleCrypt::O0SimpleCrypt():
     m_key(0),
@@ -38,7 +40,6 @@ O0SimpleCrypt::O0SimpleCrypt():
     m_protectionMode(ProtectionChecksum),
     m_lastError(ErrorNoError)
 {
-    qsrand(uint(QDateTime::currentMSecsSinceEpoch() & 0xFFFF));
 }
 
 O0SimpleCrypt::O0SimpleCrypt(quint64 key):
@@ -47,7 +48,6 @@ O0SimpleCrypt::O0SimpleCrypt(quint64 key):
     m_protectionMode(ProtectionChecksum),
     m_lastError(ErrorNoError)
 {
-    qsrand(uint(QDateTime::currentMSecsSinceEpoch() & 0xFFFF));
     splitKey();
 }
 
@@ -113,7 +113,7 @@ QByteArray O0SimpleCrypt::encryptToByteArray(QByteArray plaintext)
     }
 
     //prepend a random char to the string
-    char randomChar = char(qrand() & 0xFF);
+    char randomChar = char(QRandomGenerator::global()->generate() & 0xFF);
     ba = randomChar + integrityProtection + ba;
 
     int pos(0);

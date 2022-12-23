@@ -49,7 +49,9 @@ from qgis.core import (QgsVectorLayer,
                        QgsProperty,
                        QgsReadWriteContext,
                        QgsSymbolLayer,
-                       QgsRenderContext
+                       QgsRenderContext,
+                       QgsFeature,
+                       QgsGeometry
                        )
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -221,6 +223,59 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
         self.report += renderchecker.report()
         self.assertTrue(res)
         self._tearDown(layer)
+
+    def testMultiPoint(self):
+        """
+        Test multipoint handling
+        """
+        layer = QgsVectorLayer('Multipoint?field=cat:string', '', 'memory')
+        self.assertTrue(layer.isValid())
+
+        f = QgsFeature(layer.fields())
+        f.setAttributes(['a'])
+        f.setGeometry(QgsGeometry.fromWkt('MultiPoint(5 5, 5 6, 9 9)'))
+        layer.dataProvider().addFeature(f)
+        f.setAttributes(['b'])
+        f.setGeometry(QgsGeometry.fromWkt('MultiPoint(2 1, 2 2, 5 5)'))
+        layer.dataProvider().addFeature(f)
+        f.setAttributes(['c'])
+        f.setGeometry(QgsGeometry.fromWkt('MultiPoint(9 1)'))
+        layer.dataProvider().addFeature(f)
+
+        renderer = QgsPointDisplacementRenderer()
+        sym1 = QgsMarkerSymbol.createSimple({'color': '#ff00ff', 'size': '3', 'outline_style': 'no'})
+        sym_renderer = QgsCategorizedSymbolRenderer()
+        sym_renderer.setClassAttribute('cat')
+        sym1.setColor(QColor(255, 0, 0))
+        sym_renderer.addCategory(QgsRendererCategory('a', sym1.clone(), 'a'))
+        sym1.setColor(QColor(0, 255, 0))
+        sym_renderer.addCategory(QgsRendererCategory('b', sym1.clone(), 'b'))
+        sym1.setColor(QColor(0, 0, 255))
+        sym_renderer.addCategory(QgsRendererCategory('c', sym1.clone(), 'c'))
+        renderer.setEmbeddedRenderer(sym_renderer)
+
+        renderer.setCircleRadiusAddition(2)
+        renderer.setCircleWidth(1)
+        renderer.setCircleColor(QColor(0, 0, 0))
+        renderer.setCenterSymbol(QgsMarkerSymbol.createSimple({'color': '#ffff00', 'size': '3', 'outline_style': 'no'}))
+        renderer.setToleranceUnit(QgsUnitTypes.RenderMapUnits)
+        renderer.setTolerance(2)
+        layer.setRenderer(renderer)
+
+        rendered_layers = [layer]
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setExtent(QgsRectangle(0, 0, 10, 10))
+        mapsettings.setLayers(rendered_layers)
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlPathPrefix('displacement_renderer')
+        renderchecker.setControlName('expected_displacement_multipoint')
+        result = renderchecker.runTest('expected_displacement_multipoint')
+        self.report += renderchecker.report()
+        self.assertTrue(result)
 
     def testRenderVariables(self):
         """ test rendering with expression variables in marker """
@@ -428,6 +483,20 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
         self.report += renderchecker.report()
         self.assertTrue(res)
         self._tearDown(layer)
+
+    def test_legend_key_to_expression(self):
+        sym1 = QgsMarkerSymbol.createSimple({'color': '#fdbf6f', 'outline_color': 'black'})
+        sub_renderer = QgsSingleSymbolRenderer(sym1)
+
+        renderer = QgsPointDisplacementRenderer()
+        renderer.setEmbeddedRenderer(sub_renderer)
+
+        exp, ok = renderer.legendKeyToExpression('0', None)
+        self.assertTrue(ok)
+        self.assertEqual(exp, 'TRUE')
+
+        exp, ok = renderer.legendKeyToExpression('xxxx', None)
+        self.assertFalse(ok)
 
     def testUsedAttributes(self):
         layer, renderer, mapsettings = self._setUp()

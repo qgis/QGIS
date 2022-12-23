@@ -18,11 +18,23 @@
 #ifndef QGSPROVIDERSUBLAYERMODEL_H
 #define QGSPROVIDERSUBLAYERMODEL_H
 
-#include "qgstaskmanager.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgsprovidersublayerdetails.h"
+
 #include <QAbstractItemModel>
 #include <QSortFilterProxyModel>
+#include <QIcon>
+#include <memory>
+#include <deque>
 
-class QgsProviderSublayerDetails;
+///@cond PRIVATE
+class QgsProviderSublayerModelNode;
+class QgsProviderSublayerModelGroup;
+class QgsProviderSublayerModelSublayerNode;
+///@endcond
+
+
 
 /**
  * \ingroup core
@@ -200,19 +212,162 @@ class CORE_EXPORT QgsProviderSublayerModel: public QAbstractItemModel
     QModelIndex parent( const QModelIndex &index ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
     int rowCount( const QModelIndex &parent ) const override;
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
     QVariant data( const QModelIndex &index, int role ) const override;
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+
+    ///@cond PRIVATE
+
+    /**
+     * Returns node for given index. Returns root node for invalid index.
+     * \note Not available in Python bindings
+     */
+    QgsProviderSublayerModelNode *index2node( const QModelIndex &index ) const SIP_SKIP;
+    ///@endcond
 
   protected:
 
     //! Sublayer list
     QList<QgsProviderSublayerDetails> mSublayers;
 
-    //! Non layer item list
-    QList<NonLayerItem> mNonLayerItems;
+    std::unique_ptr< QgsProviderSublayerModelGroup > mRootNode;
+
+  private:
+    QModelIndex indexOfParentNode( QgsProviderSublayerModelNode *parentNode ) const;
+
+    QModelIndex node2index( QgsProviderSublayerModelNode *node ) const;
+};
+
+
+#ifndef SIP_RUN
+///@cond PRIVATE
+
+class CORE_EXPORT QgsProviderSublayerModelNode
+{
+  public:
+
+    virtual ~QgsProviderSublayerModelNode();
+
+    /**
+     * Returns the node's parent node.
+     *
+     * If parent is NULLPTR, the node is a root node
+     */
+    QgsProviderSublayerModelGroup *parent() { return mParent; }
+
+    /**
+     * Returns the node's data for the specified model \a role.
+     */
+    virtual QVariant data( int role = Qt::DisplayRole, int column = 0 ) const = 0;
+
+    /**
+     * Returns the number of child nodes owned by this node.
+     */
+    virtual int childCount() const = 0;
+
+  protected:
+
+    QgsProviderSublayerModelGroup *mParent = nullptr;
+
+    friend class QgsProviderSublayerModelGroup;
+};
+
+class CORE_EXPORT QgsProviderSublayerModelGroup : public QgsProviderSublayerModelNode
+{
+  public:
+
+    /**
+     * Constructor for a QgsProviderSublayerModelGroup, with the specified \a title.
+     */
+    QgsProviderSublayerModelGroup( const QString &title );
+
+    QgsProviderSublayerModelGroup( QgsProviderSublayerModelGroup &&other ) = default;
+    QgsProviderSublayerModelGroup &operator=( QgsProviderSublayerModelGroup && ) = default;
+
+    /**
+     * Returns the group's name
+     */
+    QString name() const { return mGroupTitle; }
+
+    /**
+     * Adds a \a child node to this node.
+     */
+    QgsProviderSublayerModelNode *addChild( std::unique_ptr< QgsProviderSublayerModelNode > child );
+
+    /**
+     * Returns the index of the specified \a child node.
+     *
+     * \warning \a child must be a valid child of this node.
+     */
+    int indexOf( QgsProviderSublayerModelNode *child ) const;
+
+    /**
+     * Returns the child at the specified \a index.
+     */
+    QgsProviderSublayerModelNode *childAt( int index );
+
+    /**
+     * Removes the child at the specified \a index.
+     */
+    void removeChildAt( int index );
+
+    /**
+     * Finds a child group with the specified name, or NULLPTR.
+     */
+    QgsProviderSublayerModelGroup *findGroup( const QString &name ) const;
+
+    /**
+     * Finds a nested child group by \a path.
+     */
+    QgsProviderSublayerModelGroup *findGroupForPath( const QStringList &path ) const;
+
+    QgsProviderSublayerModelSublayerNode *findSublayer( const QgsProviderSublayerDetails &sublayer );
+
+    int childCount() const override final { return mChildren.size(); }
+    QVariant data( int role = Qt::DisplayRole, int column = 0 ) const override;
+
+    void populateFromSublayers( const QList<QgsProviderSublayerDetails> &sublayers );
+
+  protected:
+
+
+    std::deque< std::unique_ptr< QgsProviderSublayerModelNode > > mChildren;
+
+    QString mGroupTitle;
 
 };
 
+class CORE_EXPORT QgsProviderSublayerModelSublayerNode : public QgsProviderSublayerModelNode
+{
+  public:
+
+    QgsProviderSublayerModelSublayerNode( const QgsProviderSublayerDetails &sublayer );
+    int childCount() const override final { return 0; }
+    QVariant data( int role = Qt::DisplayRole, int column = 0 ) const override;
+    QgsProviderSublayerDetails sublayer() const { return mSublayer; }
+
+  private:
+    QgsProviderSublayerDetails mSublayer;
+
+};
+
+class CORE_EXPORT QgsProviderSublayerModelNonLayerItemNode : public QgsProviderSublayerModelNode
+{
+  public:
+
+    QgsProviderSublayerModelNonLayerItemNode( const QgsProviderSublayerModel::NonLayerItem &item );
+    int childCount() const override final { return 0; }
+    QVariant data( int role = Qt::DisplayRole, int column = 0 ) const override;
+
+    QgsProviderSublayerModel::NonLayerItem item() const { return mItem; }
+
+  private:
+    QgsProviderSublayerModel::NonLayerItem mItem;
+
+};
+
+///@endcond PRIVATE
+#endif
 
 /**
  * \ingroup core
@@ -260,6 +415,22 @@ class CORE_EXPORT QgsProviderSublayerProxyModel: public QSortFilterProxyModel
      */
     void setIncludeSystemTables( bool include );
 
+    /**
+     * Returns TRUE if empty tables will be shown in the model.
+     *
+     * \see setIncludeEmptyLayers()
+     * \since QGIS 3.28
+     */
+    bool includeEmptyLayers() const;
+
+    /**
+     * Sets whether empty tables will be shown in the model.
+     *
+     * \see includeEmptyLayers()
+     * \since QGIS 3.28
+     */
+    void setIncludeEmptyLayers( bool include );
+
   protected:
     bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
     bool lessThan( const QModelIndex &source_left, const QModelIndex &source_right ) const override;
@@ -268,6 +439,7 @@ class CORE_EXPORT QgsProviderSublayerProxyModel: public QSortFilterProxyModel
 
     QString mFilterString;
     bool mIncludeSystemTables = false;
+    bool mIncludeEmptyLayers = true;
 
 };
 

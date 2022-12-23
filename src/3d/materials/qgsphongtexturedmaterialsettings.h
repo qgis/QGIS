@@ -89,6 +89,12 @@ class _3D_EXPORT QgsPhongTexturedMaterialSettings : public QgsAbstractMaterialSe
      */
     float textureRotation() const;
 
+    /**
+     * Returns the opacity of the surface
+     * \since QGIS 3.28
+     */
+    float opacity() const { return mOpacity; }
+
     //! Sets ambient color component
     void setAmbient( const QColor &ambient ) { mAmbient = ambient; }
 
@@ -113,6 +119,12 @@ class _3D_EXPORT QgsPhongTexturedMaterialSettings : public QgsAbstractMaterialSe
     //! Sets the texture rotation in degrees
     void setTextureRotation( float rotation ) { mTextureRotation = rotation; }
 
+    /**
+     * Sets opacity of the surface.
+     * \since QGIS 3.28
+     */
+    void setOpacity( float opacity ) { mOpacity = opacity; }
+
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
 #ifndef SIP_RUN
@@ -126,6 +138,7 @@ class _3D_EXPORT QgsPhongTexturedMaterialSettings : public QgsAbstractMaterialSe
       return mAmbient == other.mAmbient &&
              mSpecular == other.mSpecular &&
              mShininess == other.mShininess &&
+             mOpacity == other.mOpacity &&
              mDiffuseTexturePath == other.mDiffuseTexturePath &&
              mTextureScale == other.mTextureScale &&
              mTextureRotation == other.mTextureRotation;
@@ -135,6 +148,7 @@ class _3D_EXPORT QgsPhongTexturedMaterialSettings : public QgsAbstractMaterialSe
     QColor mAmbient{ QColor::fromRgbF( 0.1f, 0.1f, 0.1f, 1.0f ) };
     QColor mSpecular{ QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) };
     float mShininess = 0.0f;
+    float mOpacity = 1.0f;
     QString mDiffuseTexturePath;
     float mTextureScale{ 1.0f };
     float mTextureRotation{ 0.0f };

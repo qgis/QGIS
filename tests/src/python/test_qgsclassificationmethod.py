@@ -15,8 +15,16 @@ import random
 
 from qgis.PyQt.QtCore import QLocale
 from qgis.testing import unittest, start_app
-from qgis.core import QgsClassificationMethod, QgsClassificationLogarithmic, QgsClassificationJenks, QgsFeature, QgsVectorLayer, QgsPointXY, \
+from qgis.core import (
+    QgsClassificationMethod,
+    QgsClassificationLogarithmic,
+    QgsClassificationJenks,
+    QgsClassificationFixedInterval,
+    QgsFeature,
+    QgsVectorLayer,
+    QgsPointXY,
     QgsGeometry
+)
 
 start_app()
 
@@ -132,6 +140,28 @@ class TestQgsClassificationMethods(unittest.TestCase):
         self.assertEqual(len(r), 4)
         self.assertEqual(QgsClassificationMethod.rangesToBreaks(r),
                          [-506.0, -4.0, 499.0, 1000.0])
+
+    def testQgsClassificationFixedInterval(self):
+        values = [-33, -41, -43, 16, 29, 9, -35, 56, 26, -30]
+        vl = createMemoryLayer(values)
+        m = QgsClassificationFixedInterval()
+        m.setParameterValues({'INTERVAL': 10})
+
+        r = m.classes(vl, 'value', 4)
+        self.assertEqual(len(r), 10)
+        self.assertEqual(QgsClassificationMethod.rangesToBreaks(r),
+                         [-33.0, -23.0, -13.0, -3.0, 7.0, 17.0, 27.0, 37.0, 47.0, 57.0])
+
+    def testQgsClassificationFixedIntervalInvalidInterval(self):
+        values = [-33, -41, -43, 16, 29, 9, -35, 57, 26, -30]
+        vl = createMemoryLayer(values)
+        m = QgsClassificationFixedInterval()
+        m.setParameterValues({'INTERVAL': 0})
+
+        r = m.classes(vl, 'value', 4)
+        self.assertEqual(len(r), 1)
+        self.assertEqual(QgsClassificationMethod.rangesToBreaks(r),
+                         [57.0])
 
 
 if __name__ == "__main__":

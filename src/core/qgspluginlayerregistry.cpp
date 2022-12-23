@@ -26,7 +26,7 @@ QgsPluginLayerType::QgsPluginLayerType( const QString &name )
 {
 }
 
-QString QgsPluginLayerType::name()
+QString QgsPluginLayerType::name() const
 {
   return mName;
 }

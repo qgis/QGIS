@@ -1,0 +1,62 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/plot/qgsplottoolzoom.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsPlotToolZoom : QgsPlotTool
+{
+%Docstring(signature="appended")
+Plot tool for zooming into and out of the plot.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsplottoolzoom.h"
+%End
+  public:
+
+    QgsPlotToolZoom( QgsPlotCanvas *canvas /TransferThis/ );
+%Docstring
+Constructor for QgsPlotToolZoom, with the associated ``canvas``.
+%End
+    ~QgsPlotToolZoom();
+
+    virtual void plotPressEvent( QgsPlotMouseEvent *event );
+
+    virtual void plotMoveEvent( QgsPlotMouseEvent *event );
+
+    virtual void plotReleaseEvent( QgsPlotMouseEvent *event );
+
+    virtual void keyPressEvent( QKeyEvent *event );
+
+    virtual void keyReleaseEvent( QKeyEvent *event );
+
+    virtual void deactivate();
+
+
+  protected:
+
+
+
+
+
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/plot/qgsplottoolzoom.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

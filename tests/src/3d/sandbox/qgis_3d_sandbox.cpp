@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include <QApplication>
-#include <QDesktopWidget>
 
 #include "qgsapplication.h"
 #include "qgs3d.h"
@@ -29,6 +28,9 @@
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dmapcanvas.h"
+#include "qgsprojectviewsettings.h"
+
+#include <QScreen>
 
 void initCanvas3D( Qgs3DMapCanvas *canvas )
 {
@@ -38,10 +40,7 @@ void initCanvas3D( Qgs3DMapCanvas *canvas )
   QgsMapSettings ms;
   ms.setDestinationCrs( QgsProject::instance()->crs() );
   ms.setLayers( visibleLayers );
-  const QgsRectangle fullExtent = ms.fullExtent();
-
-  QgsRectangle extent = fullExtent;
-  extent.scale( 1.3 );
+  QgsRectangle fullExtent = QgsProject::instance()->viewSettings()->fullExtent();
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( QgsProject::instance()->crs() );
@@ -64,15 +63,24 @@ void initCanvas3D( Qgs3DMapCanvas *canvas )
   QgsPointLightSettings defaultPointLight;
   defaultPointLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
   defaultPointLight.setConstantAttenuation( 0 );
-  map->setPointLights( QList<QgsPointLightSettings>() << defaultPointLight );
-  map->setOutputDpi( QgsApplication::desktop()->logicalDpiX() );
+  map->setLightSources( {defaultPointLight.clone() } );
+  if ( QScreen *screen = QGuiApplication::primaryScreen() )
+  {
+    map->setOutputDpi( screen->physicalDotsPerInch() );
+  }
+  else
+  {
+    map->setOutputDpi( 96 );
+  }
 
   canvas->setMap( map );
 
+  QgsRectangle extent = fullExtent;
+  extent.scale( 1.3 );
   const float dist = static_cast< float >( std::max( extent.width(), extent.height() ) );
   canvas->setViewFromTop( extent.center(), dist * 2, 0 );
 
-  QObject::connect( canvas->scene(), &Qgs3DMapScene::totalPendingJobsCountChanged, [canvas]
+  QObject::connect( canvas->scene(), &Qgs3DMapScene::totalPendingJobsCountChanged, canvas, [canvas]
   {
     qDebug() << "pending jobs:" << canvas->scene()->totalPendingJobsCount();
   } );

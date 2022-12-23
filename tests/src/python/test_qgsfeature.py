@@ -20,7 +20,8 @@ from qgis.core import (QgsFeature,
                        QgsVectorLayer,
                        NULL,
                        QgsFields,
-                       QgsField)
+                       QgsField,
+                       QgsUnsetAttributeValue)
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 
@@ -56,6 +57,73 @@ class TestQgsFeature(unittest.TestCase):
 
         feat = QgsFeature(QgsFields(), 1234)
         self.assertEqual(feat.id(), 1234)
+
+    def test_equality(self):
+        fields = QgsFields()
+        field1 = QgsField('my_field')
+        fields.append(field1)
+        field2 = QgsField('my_field2')
+        fields.append(field2)
+
+        feat = QgsFeature(fields, 0)
+        feat.initAttributes(1)
+        feat.setAttribute(0, "text")
+        feat.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(123, 456)))
+
+        self.assertNotEqual(feat, QgsFeature())
+
+        feat2 = QgsFeature(fields, 0)
+        feat2.initAttributes(1)
+        feat2.setAttribute(0, "text")
+        feat2.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(123, 456)))
+
+        self.assertEqual(feat, feat2)
+
+        feat2.setId(5)
+        self.assertNotEqual(feat, feat2)
+        feat2.setId(0)
+        self.assertEqual(feat, feat2)
+
+        feat2.setAttribute(0, "text2")
+        self.assertNotEqual(feat, feat2)
+        feat2.setAttribute(0, "text")
+        self.assertEqual(feat, feat2)
+
+        feat2.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(1231, 4561)))
+        self.assertNotEqual(feat, feat2)
+        feat2.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(123, 456)))
+        self.assertEqual(feat, feat2)
+
+        field2 = QgsField('my_field3')
+        fields.append(field2)
+        feat2.setFields(fields)
+        self.assertNotEqual(feat, feat2)
+
+    def test_hash(self):
+        fields = QgsFields()
+        field1 = QgsField('my_field')
+        fields.append(field1)
+        field2 = QgsField('my_field2')
+        fields.append(field2)
+
+        feat = QgsFeature(fields, 0)
+        feat.initAttributes(1)
+        feat.setAttribute(0, "text")
+        feat.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(123, 456)))
+
+        self.assertIsNotNone(hash(feat))
+
+        # try a second identical feature, hash should be the same
+        feat2 = QgsFeature(fields, 0)
+        feat2.initAttributes(1)
+        feat2.setAttribute(0, "text")
+        feat2.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(123, 456)))
+
+        self.assertEqual(hash(feat), hash(feat2))
+
+        # different feature, different hash
+        feat2.setId(100)
+        self.assertNotEqual(hash(feat), hash(feat2))
 
     def test_ValidFeature(self):
         myPath = os.path.join(unitTestDataPath(), 'points.shp')
@@ -223,6 +291,19 @@ class TestQgsFeature(unittest.TestCase):
         # more attributes than fields
         with self.assertRaises(ValueError):
             _ = f.attributeMap()
+
+    def testUnsetFeature(self):
+        f = QgsFeature()
+        f.setAttributes([1, 'a', NULL, QgsUnsetAttributeValue(), QgsUnsetAttributeValue('Autonumber')])
+        with self.assertRaises(KeyError):
+            f.isUnsetValue(-1)
+        with self.assertRaises(KeyError):
+            f.isUnsetValue(5)
+        self.assertFalse(f.isUnsetValue(0))
+        self.assertFalse(f.isUnsetValue(1))
+        self.assertFalse(f.isUnsetValue(2))
+        self.assertTrue(f.isUnsetValue(3))
+        self.assertTrue(f.isUnsetValue(4))
 
 
 if __name__ == '__main__':

@@ -274,6 +274,12 @@ QgsBackgroundCachedFeatureIterator::QgsBackgroundCachedFeatureIterator(
   , mShared( shared )
   , mCachedFeaturesIter( mCachedFeatures.begin() )
 {
+  QString serverExpression;
+  if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression && mRequest.filterExpression() && mRequest.filterExpression()->isValid() )
+  {
+    serverExpression = mShared->computedExpression( *mRequest.filterExpression() );
+  }
+
   if ( !shared->clientSideFilterExpression().isEmpty() )
   {
     // backup current request because combine filter expression will remove the fid(s) filtering
@@ -363,8 +369,8 @@ QgsBackgroundCachedFeatureIterator::QgsBackgroundCachedFeatureIterator(
   }
 
   int genCounter = ( mShared->isRestrictedToRequestBBOX() && !mFilterRect.isNull() ) ?
-                   mShared->registerToCache( this, static_cast<int>( mRequest.limit() ), mFilterRect ) :
-                   mShared->registerToCache( this, static_cast<int>( mRequest.limit() ) );
+                   mShared->registerToCache( this, static_cast<int>( mRequest.limit() ), mFilterRect, serverExpression ) :
+                   mShared->registerToCache( this, static_cast<int>( mRequest.limit() ), QgsRectangle(), serverExpression );
   // Reload cacheDataProvider as registerToCache() has likely refreshed it
   cacheDataProvider = mShared->cacheDataProvider();
   mDownloadFinished = genCounter < 0;
@@ -442,7 +448,7 @@ void QgsBackgroundCachedFeatureIterator::fillRequestCache( QgsFeatureRequest req
 {
   requestCache.setFilterRect( mFilterRect );
 
-  if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) ||
+  if ( ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) || !mFilterRect.isNull() ) ||
        ( mRequest.spatialFilterType() == Qgis::SpatialFilterType::DistanceWithin ) ||
        ( mRequest.filterType() == QgsFeatureRequest::FilterExpression && mRequest.filterExpression()->needsGeometry() ) )
   {
@@ -650,7 +656,7 @@ bool QgsBackgroundCachedFeatureIterator::fetchFeature( QgsFeature &f )
       Q_ASSERT( idx >= 0 );
 
       const QVariant &v = cachedFeature.attributes().value( idx );
-      if ( !v.isNull() && v.type() == QVariant::String )
+      if ( !QgsVariantUtils::isNull( v ) && v.type() == QVariant::String )
       {
         QByteArray wkbGeom( QByteArray::fromHex( v.toString().toLatin1() ) );
         QgsGeometry g;
@@ -933,11 +939,11 @@ void QgsBackgroundCachedFeatureIterator::copyFeature( const QgsFeature &srcFeatu
     {
       const QVariant &v = srcFeature.attributes().value( idx );
       const QVariant::Type fieldType = fields.at( i ).type();
-      if ( v.isNull() )
+      if ( QgsVariantUtils::isNull( v ) )
         dstFeature.setAttribute( i, QVariant( fieldType ) );
       else if ( QgsWFSUtils::isCompatibleType( v.type(), fieldType ) )
         dstFeature.setAttribute( i, v );
-      else if ( fieldType == QVariant::DateTime && !v.isNull() )
+      else if ( fieldType == QVariant::DateTime && !QgsVariantUtils::isNull( v ) )
         dstFeature.setAttribute( i, QVariant( QDateTime::fromMSecsSinceEpoch( v.toLongLong() ) ) );
       else
         dstFeature.setAttribute( i, QgsVectorDataProvider::convertValue( fieldType, v.toString() ) );

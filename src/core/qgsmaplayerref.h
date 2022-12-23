@@ -160,7 +160,7 @@ struct _LayerRef
     return nullptr;
   }
 
-  bool layerMatchesWeakly( QgsMapLayer *layer, MatchType matchType = MatchType::All )
+  bool layerMatchesWeakly( QgsMapLayer *layer, MatchType matchType = MatchType::All ) const
   {
     // First match the name
     if ( matchType & MatchType::Name && ( layer->name().isEmpty() || layer->name() != name ) )

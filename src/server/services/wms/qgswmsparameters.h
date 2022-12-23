@@ -186,7 +186,8 @@ namespace QgsWms
         FORMAT_OPTIONS,
         SRCWIDTH,
         SRCHEIGHT,
-        TILED
+        TILED,
+        ADDLAYERGROUPS
       };
       Q_ENUM( Name )
 
@@ -319,7 +320,9 @@ namespace QgsWms
       static QgsWmsParameter::Name name( const QString &name );
 
       QgsWmsParameter::Name mName;
-      int mId = -1;
+
+      //! Map id for prefixed parameters (e.g. "0" for "map0:LAYERS" in GetPrint requests)
+      int mMapId = -1;
   };
 
   /**
@@ -652,6 +655,11 @@ namespace QgsWms
        * \since QGIS 3.10
        */
       bool tiledAsBool() const;
+
+      /**
+       * Returns true if layer groups shall be added to GetLegendGraphic results
+       */
+      bool addLayerGroups() const;
 
       /**
        * Returns infoFormat. If the INFO_FORMAT parameter is not used, then the
@@ -1380,7 +1388,7 @@ namespace QgsWms
       QMultiMap<QString, QgsWmsParametersFilter> layerFilters( const QStringList &layers ) const;
 
 
-      QMap<QgsWmsParameter::Name, QgsWmsParameter> mWmsParameters;
+      QMultiMap<QgsWmsParameter::Name, QgsWmsParameter> mWmsParameters;
       QMap<QString, QMap<QString, QString> > mExternalWMSParameters;
       QList<QgsProjectVersion> mVersions;
   };

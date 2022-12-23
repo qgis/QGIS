@@ -239,14 +239,18 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     /**
      * Returns the font settings for a legend \a component.
      * \see setStyleFont()
+     *
+     * \deprecated use QgsLegendStyle::textFormat() from style() instead.
      */
-    QFont styleFont( QgsLegendStyle::Style component ) const;
+    Q_DECL_DEPRECATED QFont styleFont( QgsLegendStyle::Style component ) const SIP_DEPRECATED;
 
     /**
      * Sets the style \a font for a legend \a component.
      * \see styleFont()
+     *
+     * \deprecated use QgsLegendStyle::setTextFormat() from style() instead.
      */
-    void setStyleFont( QgsLegendStyle::Style component, const QFont &font );
+    Q_DECL_DEPRECATED void setStyleFont( QgsLegendStyle::Style component, const QFont &font ) SIP_DEPRECATED;
 
     /**
      * Set the \a margin for a legend \a component.
@@ -261,14 +265,18 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     /**
      * Returns the spacing in-between lines in layout units.
      * \see setLineSpacing()
+     *
+     * \deprecated use QgsLegendStyle::textFormat() from style() instead.
      */
-    double lineSpacing() const;
+    Q_DECL_DEPRECATED double lineSpacing() const SIP_DEPRECATED;
 
     /**
      * Sets the \a spacing in-between multiple lines.
      * \see lineSpacing()
+     *
+     * \deprecated use QgsLegendStyle::setTextFormat() from style() instead.
      */
-    void setLineSpacing( double spacing );
+    Q_DECL_DEPRECATED void setLineSpacing( double spacing ) SIP_DEPRECATED;
 
     /**
      * Returns the legend box space.
@@ -297,14 +305,18 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     /**
      * Returns the legend font color.
      * \see setFontColor()
+     *
+     * \deprecated use QgsLegendStyle::setTextFormat() from style() instead.
      */
-    QColor fontColor() const;
+    Q_DECL_DEPRECATED QColor fontColor() const SIP_DEPRECATED;
 
     /**
      * Sets the legend font \a color.
      * \see fontColor()
+     *
+     * \deprecated use QgsLegendStyle::setTextFormat() from style() instead.
      */
-    void setFontColor( const QColor &color );
+    Q_DECL_DEPRECATED void setFontColor( const QColor &color ) SIP_DEPRECATED;
 
     /**
      * Returns the legend symbol width.

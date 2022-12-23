@@ -24,6 +24,7 @@
 #include "qgsvectorlayerref.h"
 #include "qgspostgresstringutils.h"
 #include "qgsmessagelog.h"
+#include "qgsvariantutils.h"
 
 #include <nlohmann/json.hpp>
 using namespace nlohmann;
@@ -91,7 +92,7 @@ QString QgsValueRelationFieldFormatter::representValue( QgsVectorLayer *layer, i
   }
   else
   {
-    if ( value.isNull() )
+    if ( QgsVariantUtils::isNull( value ) )
     {
       return QgsApplication::nullRepresentation();
     }
@@ -110,7 +111,7 @@ QString QgsValueRelationFieldFormatter::representValue( QgsVectorLayer *layer, i
 
 QVariant QgsValueRelationFieldFormatter::sortValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const
 {
-  return value.isNull() ? QString() : representValue( layer, fieldIndex, config, cache, value );
+  return QgsVariantUtils::isNull( value ) ? QString() : representValue( layer, fieldIndex, config, cache, value );
 }
 
 QVariant QgsValueRelationFieldFormatter::createCache( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config ) const

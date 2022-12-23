@@ -29,7 +29,6 @@
 
 #include "pointset.h"
 #include "util.h"
-#include "pal.h"
 #include "geomfunction.h"
 #include "qgsgeos.h"
 #include "qgsmessagelog.h"
@@ -107,26 +106,31 @@ void PointSet::createGeosGeom() const
     needClose = true;
   }
 
-  GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, nbPoints + ( needClose ? 1 : 0 ), 2 );
-  for ( int i = 0; i < nbPoints; ++i )
+  GEOSCoordSequence *coord = nullptr;
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=10 )
+  if ( !needClose )
   {
-#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
-    GEOSCoordSeq_setXY_r( geosctxt, coord, i, x[i], y[i] );
-#else
-    GEOSCoordSeq_setX_r( geosctxt, coord, i, x[i] );
-    GEOSCoordSeq_setY_r( geosctxt, coord, i, y[i] );
-#endif
+    // use optimised method if we don't have to force close an open ring
+    coord = GEOSCoordSeq_copyFromArrays_r( geosctxt, x.data(), y.data(), nullptr, nullptr, nbPoints );
   }
-
-  //close ring if needed
-  if ( needClose )
-  {
-#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
-    GEOSCoordSeq_setXY_r( geosctxt, coord, nbPoints, x[0], y[0] );
 #else
-    GEOSCoordSeq_setX_r( geosctxt, coord, nbPoints, x[0] );
-    GEOSCoordSeq_setY_r( geosctxt, coord, nbPoints, y[0] );
+  if ( false )
+  {
+  }
 #endif
+  else
+  {
+    coord = GEOSCoordSeq_create_r( geosctxt, nbPoints + ( needClose ? 1 : 0 ), 2 );
+    for ( int i = 0; i < nbPoints; ++i )
+    {
+      GEOSCoordSeq_setXY_r( geosctxt, coord, i, x[i], y[i] );
+    }
+
+    //close ring if needed
+    if ( needClose )
+    {
+      GEOSCoordSeq_setXY_r( geosctxt, coord, nbPoints, x[0], y[0] );
+    }
   }
 
   switch ( type )
@@ -159,7 +163,7 @@ const GEOSPreparedGeometry *PointSet::preparedGeom() const
   return mPreparedGeom;
 }
 
-void PointSet::invalidateGeos()
+void PointSet::invalidateGeos() const
 {
   GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
   if ( mOwnsGeom ) // delete old geometry if we own it
@@ -268,14 +272,7 @@ bool PointSet::containsPoint( double x, double y ) const
   GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
   try
   {
-#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
     geos::unique_ptr point( GEOSGeom_createPointFromXY_r( geosctxt, x, y ) );
-#else
-    GEOSCoordSequence *seq = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
-    GEOSCoordSeq_setX_r( geosctxt, seq, 0, x );
-    GEOSCoordSeq_setY_r( geosctxt, seq, 0, y );
-    geos::unique_ptr point( GEOSGeom_createPoint_r( geosctxt, seq ) );
-#endif
     const bool result = ( GEOSPreparedContainsProperly_r( geosctxt, preparedGeom(), point.get() ) == 1 );
 
     return result;
@@ -554,23 +551,23 @@ void PointSet::offsetCurveByDistance( double distance )
     return;
 
   GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
-  GEOSGeometry *newGeos;
+  geos::unique_ptr newGeos = nullptr;
   try
   {
-    newGeos = GEOSOffsetCurve_r( geosctxt, mGeos, distance, 0, GEOSBUF_JOIN_MITRE, 2 );
+    newGeos.reset( GEOSOffsetCurve_r( geosctxt, mGeos, distance, 0, GEOSBUF_JOIN_MITRE, 2 ) );
     if ( !newGeos )
       return;
 
     // happens sometime, if the offset curve self-intersects
-    if ( GEOSGeomTypeId_r( geosctxt, newGeos ) == GEOS_MULTILINESTRING )
+    if ( GEOSGeomTypeId_r( geosctxt, newGeos.get() ) == GEOS_MULTILINESTRING )
     {
       // we keep the longest part
-      const int nParts = GEOSGetNumGeometries_r( geosctxt, newGeos );
+      const int nParts = GEOSGetNumGeometries_r( geosctxt, newGeos.get() );
       double maximumLength = -1;
       const GEOSGeometry *longestPart = nullptr;
       for ( int i = 0; i < nParts; ++i )
       {
-        const GEOSGeometry *part = GEOSGetGeometryN_r( geosctxt, newGeos, i );
+        const GEOSGeometry *part = GEOSGetGeometryN_r( geosctxt, newGeos.get(), i );
         double partLength = -1;
         if ( GEOSLength_r( geosctxt, part, &partLength ) == 1 )
         {
@@ -585,17 +582,27 @@ void PointSet::offsetCurveByDistance( double distance )
       if ( !longestPart )
       {
         // something is really wrong!
-        GEOSGeom_destroy_r( geosctxt, newGeos );
         return;
       }
 
       geos::unique_ptr longestPartClone( GEOSGeom_clone_r( geosctxt, longestPart ) );
-      GEOSGeom_destroy_r( geosctxt, newGeos );
-      newGeos = longestPartClone.release();
+      newGeos = std::move( longestPartClone );
     }
 
-    const int newNbPoints = GEOSGeomGetNumPoints_r( geosctxt, newGeos );
-    const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, newGeos );
+#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<11
+    if ( distance < 0 )
+    {
+      // geos < 3.11 reverses the direction of offset curves with negative distances -- we don't want that!
+      geos::unique_ptr reversed( GEOSReverse_r( geosctxt, newGeos.get() ) );
+      if ( !reversed )
+        return;
+
+      newGeos = std::move( reversed );
+    }
+#endif
+
+    const int newNbPoints = GEOSGeomGetNumPoints_r( geosctxt, newGeos.get() );
+    const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, newGeos.get() );
     std::vector< double > newX;
     std::vector< double > newY;
     newX.resize( newNbPoints );
@@ -617,7 +624,7 @@ void PointSet::offsetCurveByDistance( double distance )
   }
 
   invalidateGeos();
-  mGeos = newGeos;
+  mGeos = newGeos.release();
   mOwnsGeom = true;
 }
 
@@ -861,58 +868,36 @@ double PointSet::minDistanceToPoint( double px, double py, double *rx, double *r
   GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
   try
   {
-#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
     geos::unique_ptr geosPt( GEOSGeom_createPointFromXY_r( geosctxt, px, py ) );
-#else
-    GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
-    GEOSCoordSeq_setX_r( geosctxt, coord, 0, px );
-    GEOSCoordSeq_setY_r( geosctxt, coord, 0, py );
-    geos::unique_ptr geosPt( GEOSGeom_createPoint_r( geosctxt, coord ) );
-#endif
     const int type = GEOSGeomTypeId_r( geosctxt, mGeos );
     const GEOSGeometry *extRing = nullptr;
-#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=9
     const GEOSPreparedGeometry *preparedExtRing = nullptr;
-#endif
 
     if ( type != GEOS_POLYGON )
     {
       extRing = mGeos;
-#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=9
       preparedExtRing = preparedGeom();
-#endif
     }
     else
     {
       //for polygons, we want distance to exterior ring (not an interior point)
       extRing = GEOSGetExteriorRing_r( geosctxt, mGeos );
-#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
       if ( ! mGeosPreparedBoundary )
       {
         mGeosPreparedBoundary = GEOSPrepare_r( geosctxt, extRing );
       }
       preparedExtRing = mGeosPreparedBoundary;
-#endif
     }
 
-#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
     const geos::coord_sequence_unique_ptr nearestCoord( GEOSPreparedNearestPoints_r( geosctxt, preparedExtRing, geosPt.get() ) );
-#else
-    geos::coord_sequence_unique_ptr nearestCoord( GEOSNearestPoints_r( geosctxt, extRing, geosPt.get() ) );
-#endif
     double nx;
     double ny;
-#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
     unsigned int nPoints = 0;
     GEOSCoordSeq_getSize_r( geosctxt, nearestCoord.get(), &nPoints );
     if ( nPoints == 0 )
       return 0;
 
     ( void )GEOSCoordSeq_getXY_r( geosctxt, nearestCoord.get(), 0, &nx, &ny );
-#else
-    ( void )GEOSCoordSeq_getX_r( geosctxt, nearestCoord.get(), 0, &nx );
-    ( void )GEOSCoordSeq_getY_r( geosctxt, nearestCoord.get(), 0, &ny );
-#endif
 
     if ( rx )
       *rx = nx;
@@ -944,16 +929,11 @@ void PointSet::getCentroid( double &px, double &py, bool forceInside ) const
     if ( centroidGeom )
     {
       const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, centroidGeom.get() );
-#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
       unsigned int nPoints = 0;
       GEOSCoordSeq_getSize_r( geosctxt, coordSeq, &nPoints );
       if ( nPoints == 0 )
         return;
       GEOSCoordSeq_getXY_r( geosctxt, coordSeq, 0, &px, &py );
-#else
-      GEOSCoordSeq_getX_r( geosctxt, coordSeq, 0, &px );
-      GEOSCoordSeq_getY_r( geosctxt, coordSeq, 0, &py );
-#endif
     }
 
     // check if centroid inside in polygon
@@ -964,17 +944,12 @@ void PointSet::getCentroid( double &px, double &py, bool forceInside ) const
       if ( pointGeom )
       {
         const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, pointGeom.get() );
-#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
         unsigned int nPoints = 0;
         GEOSCoordSeq_getSize_r( geosctxt, coordSeq, &nPoints );
         if ( nPoints == 0 )
           return;
 
         GEOSCoordSeq_getXY_r( geosctxt, coordSeq, 0, &px, &py );
-#else
-        GEOSCoordSeq_getX_r( geosctxt, coordSeq, 0, &px );
-        GEOSCoordSeq_getY_r( geosctxt, coordSeq, 0, &py );
-#endif
       }
     }
   }
@@ -997,7 +972,7 @@ bool PointSet::boundingBoxIntersects( const PointSet *other ) const
   return y1 <= y2;
 }
 
-void PointSet::getPointByDistance( double *d, double *ad, double dl, double *px, double *py )
+void PointSet::getPointByDistance( double *d, double *ad, double dl, double *px, double *py ) const
 {
   int i;
   double dx, dy, di;

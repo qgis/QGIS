@@ -178,15 +178,11 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
 
   // In case we must issue a BBOX and we have a filter, we must combine
   // both as a single filter, as both BBOX and FILTER aren't supported together
-  if ( !rect.isNull() && !mShared->mWFSFilter.isEmpty() )
+  if ( ( !rect.isNull() && !mShared->mWFSFilter.isEmpty() )
+       || ( !mShared->mServerExpression.isEmpty() && !mShared->mWFSFilter.isEmpty() )
+       || ( !rect.isNull() && !mShared->mServerExpression.isEmpty() )
+     )
   {
-    double minx = rect.xMinimum();
-    double miny = rect.yMinimum();
-    double maxx = rect.xMaximum();
-    double maxy = rect.yMaximum();
-    QString filterBbox( QStringLiteral( "intersects_bbox($geometry, geomFromWKT('LINESTRING(%1 %2,%3 %4)'))" ).
-                        arg( minx ).arg( miny ).arg( maxx ).arg( maxy ) );
-    QgsExpression bboxExp( filterBbox );
     QgsOgcUtils::GMLVersion gmlVersion;
     QgsOgcUtils::FilterVersion filterVersion;
     bool honourAxisOrientation = false;
@@ -207,43 +203,95 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
       gmlVersion = QgsOgcUtils::GML_3_2_1;
       filterVersion = QgsOgcUtils::FILTER_FES_2_0;
     }
-    QDomDocument doc;
+
+    QDomDocument bboxDoc;
+    QDomDocument filterDoc;
+    QDomDocument expressionDoc;
+
     QString geometryAttribute( mShared->mGeometryAttribute );
     if ( mShared->mLayerPropertiesList.size() > 1 )
       geometryAttribute = mShared->mURI.typeName() + "/" + geometryAttribute;
-    else if ( mShared->mLayerPropertiesList.size() == 1 && !mShared->mLayerPropertiesList[0].mNamespacePrefix.isEmpty() )
-      geometryAttribute = mShared->mLayerPropertiesList[0].mNamespacePrefix + QStringLiteral( ":" ) + geometryAttribute;
-    QDomElement bboxElem = QgsOgcUtils::expressionToOgcFilter( bboxExp, doc,
-                           gmlVersion, filterVersion, geometryAttribute, mShared->srsName(),
-                           honourAxisOrientation, mShared->mURI.invertAxisOrientation() );
-    doc.appendChild( bboxElem );
-    QDomNode bboxNode = bboxElem.firstChildElement();
-    bboxNode = bboxElem.removeChild( bboxNode );
 
-    QDomDocument filterDoc;
-    ( void )filterDoc.setContent( mShared->mWFSFilter, true );
-    QDomNode filterNode = filterDoc.firstChildElement().firstChildElement();
-    filterNode = filterDoc.firstChildElement().removeChild( filterNode );
+    QDomNode bboxNode;
+    QDomNode filterNode;
+    QDomNode expressionNode;
 
-    QDomElement andElem = doc.createElement( ( filterVersion == QgsOgcUtils::FILTER_FES_2_0 ) ? "fes:And" : "ogc:And" );
-    andElem.appendChild( bboxNode );
-    andElem.appendChild( filterNode );
-    doc.firstChildElement().appendChild( andElem );
+    QDomDocument envelopeFilterDoc;
 
-    QSet<QString> setNamespaceURI;
-    for ( const QgsOgcUtils::LayerProperties &props : std::as_const( mShared->mLayerPropertiesList ) )
+    //having a filter
+    if ( !mShared->mWFSFilter.isEmpty() )
     {
-      if ( !props.mNamespacePrefix.isEmpty() && !props.mNamespaceURI.isEmpty() &&
-           !setNamespaceURI.contains( props.mNamespaceURI ) )
+      ( void )filterDoc.setContent( mShared->mWFSFilter, true );
+      filterNode = filterDoc.firstChildElement().firstChildElement();
+      filterNode = filterDoc.firstChildElement().removeChild( filterNode );
+      envelopeFilterDoc = filterDoc;
+    }
+
+    //having an expression
+    if ( !mShared->mServerExpression.isEmpty() )
+    {
+      ( void )expressionDoc.setContent( mShared->mServerExpression, true );
+      expressionNode = expressionDoc.firstChildElement().firstChildElement();
+      expressionNode = expressionDoc.firstChildElement().removeChild( expressionNode );
+      envelopeFilterDoc = expressionDoc;
+    }
+
+    //having a bbox
+    if ( !rect.isNull() )
+    {
+      double minx = rect.xMinimum();
+      double miny = rect.yMinimum();
+      double maxx = rect.xMaximum();
+      double maxy = rect.yMaximum();
+      QString filterBbox( QStringLiteral( "intersects_bbox($geometry, geomFromWKT('LINESTRING(%1 %2,%3 %4)'))" ).
+                          arg( minx ).arg( miny ).arg( maxx ).arg( maxy ) );
+      QgsExpression bboxExp( filterBbox );
+      QDomElement bboxElem = QgsOgcUtils::expressionToOgcFilter( bboxExp, bboxDoc,
+                             gmlVersion, filterVersion,
+                             mShared->mLayerPropertiesList.size() == 1 ? mShared->mLayerPropertiesList[0].mNamespacePrefix : QString(),
+                             mShared->mLayerPropertiesList.size() == 1 ? mShared->mLayerPropertiesList[0].mNamespaceURI : QString(),
+                             geometryAttribute, mShared->srsName(),
+                             honourAxisOrientation, mShared->mURI.invertAxisOrientation() );
+      bboxDoc.appendChild( bboxElem );
+
+      bboxNode = bboxElem.firstChildElement();
+      bboxNode = bboxElem.removeChild( bboxNode );
+      envelopeFilterDoc = bboxDoc;
+    }
+
+    QDomElement andElem = envelopeFilterDoc.createElement( ( filterVersion == QgsOgcUtils::FILTER_FES_2_0 ) ? "fes:And" : "ogc:And" );
+    if ( !expressionNode.isNull() )
+      andElem.appendChild( expressionNode );
+    if ( !bboxNode.isNull() )
+      andElem.appendChild( bboxNode );
+    if ( !filterNode.isNull() )
+      andElem.appendChild( filterNode );
+
+    envelopeFilterDoc.firstChildElement().appendChild( andElem );
+
+    if ( mShared->mLayerPropertiesList.size() == 1 &&
+         envelopeFilterDoc.firstChildElement().hasAttribute( QStringLiteral( "xmlns:" ) + mShared->mLayerPropertiesList[0].mNamespacePrefix ) )
+    {
+      // nothing to do
+    }
+    else
+    {
+      // add xmls:PREFIX=URI attributes to top element
+      QSet<QString> setNamespaceURI;
+      for ( const QgsOgcUtils::LayerProperties &props : std::as_const( mShared->mLayerPropertiesList ) )
       {
-        setNamespaceURI.insert( props.mNamespaceURI );
-        QDomAttr attr = doc.createAttribute( QStringLiteral( "xmlns:" ) + props.mNamespacePrefix );
-        attr.setValue( props.mNamespaceURI );
-        doc.firstChildElement().setAttributeNode( attr );
+        if ( !props.mNamespacePrefix.isEmpty() && !props.mNamespaceURI.isEmpty() &&
+             !setNamespaceURI.contains( props.mNamespaceURI ) )
+        {
+          setNamespaceURI.insert( props.mNamespaceURI );
+          QDomAttr attr = envelopeFilterDoc.createAttribute( QStringLiteral( "xmlns:" ) + props.mNamespacePrefix );
+          attr.setValue( props.mNamespaceURI );
+          envelopeFilterDoc.firstChildElement().setAttributeNode( attr );
+        }
       }
     }
 
-    query.addQueryItem( QStringLiteral( "FILTER" ), sanitizeFilter( doc.toString() ) );
+    query.addQueryItem( QStringLiteral( "FILTER" ), sanitizeFilter( envelopeFilterDoc.toString() ) );
   }
   else if ( !rect.isNull() )
   {
@@ -285,6 +333,10 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
   else if ( !mShared->mWFSFilter.isEmpty() )
   {
     query.addQueryItem( QStringLiteral( "FILTER" ), sanitizeFilter( mShared->mWFSFilter ) );
+  }
+  else if ( !mShared->mServerExpression.isEmpty() )
+  {
+    query.addQueryItem( QStringLiteral( "FILTER" ), sanitizeFilter( mShared->mServerExpression ) );
   }
 
   if ( !mShared->mSortBy.isEmpty() && !forHits )

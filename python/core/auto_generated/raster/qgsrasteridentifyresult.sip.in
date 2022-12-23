@@ -25,7 +25,7 @@ Raster identify results container.
 Constructor for QgsRasterIdentifyResult.
 %End
 
-    QgsRasterIdentifyResult( QgsRaster::IdentifyFormat format, const QMap<int, QVariant> &results );
+    QgsRasterIdentifyResult( Qgis::RasterIdentifyFormat format, const QMap<int, QVariant> &results );
 %Docstring
 Constructor. Creates valid result.
 
@@ -47,7 +47,7 @@ Constructor. Creates invalid result with error.
 Returns ``True`` if valid
 %End
 
-    QgsRaster::IdentifyFormat format() const;
+    Qgis::RasterIdentifyFormat format() const;
 %Docstring
 Returns the results format.
 %End

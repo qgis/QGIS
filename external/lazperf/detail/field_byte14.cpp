@@ -67,7 +67,7 @@ void Byte14Compressor::writeSizes()
 
 void Byte14Compressor::writeData()
 {
-    int32_t total = 0;
+    [[maybe_unused]] int32_t total = 0;
     for (size_t i = 0; i < count_; ++i)
     {
         if (valid_[i])

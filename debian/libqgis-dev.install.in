@@ -9,4 +9,4 @@ usr/lib/libqgis_server.so
 usr/lib/libqgisgrass?.so
 usr/lib/libqgispython.so
 usr/share/qgis/FindQGIS.cmake
-#!sid !impish#usr/share/sip/qgis
+#!sid !jammy !kinetic !lunar#usr/share/sip/qgis

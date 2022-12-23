@@ -132,17 +132,9 @@ bool QgsCredentialsConsole::request( const QString &realm, QString &username, QS
   QTextStream in( stdin, QIODevice::ReadOnly );
   QTextStream out( stdout, QIODevice::WriteOnly );
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  out << "credentials for " << realm << endl;
-#else
   out << "credentials for " << realm << Qt::endl;
-#endif
   if ( !message.isEmpty() )
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    out << "message: " << message << endl;
-#else
     out << "message: " << message << Qt::endl;
-#endif
   out << "username: ";
   in >> username;
   out << "password: ";

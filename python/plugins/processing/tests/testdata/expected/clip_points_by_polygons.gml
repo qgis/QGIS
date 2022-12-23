@@ -10,35 +10,35 @@
       <gml:coord><gml:X>7</gml:X><gml:Y>3</gml:Y></gml:coord>
     </gml:Box>
   </gml:boundedBy>
-                                                                                                                                                               
+
   <gml:featureMember>
     <ogr:clip_points_by_polygons fid="points.0">
-      <ogr:geometryProperty><gml:MultiPoint srsName="EPSG:4326"><gml:pointMember><gml:Point><gml:coordinates>1,1</gml:coordinates></gml:Point></gml:pointMember></gml:MultiPoint></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>1,1</gml:coordinates></gml:Point></ogr:geometryProperty>
     </ogr:clip_points_by_polygons>
   </gml:featureMember>
   <gml:featureMember>
     <ogr:clip_points_by_polygons fid="points.1">
-      <ogr:geometryProperty><gml:MultiPoint srsName="EPSG:4326"><gml:pointMember><gml:Point><gml:coordinates>3,3</gml:coordinates></gml:Point></gml:pointMember></gml:MultiPoint></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>3,3</gml:coordinates></gml:Point></ogr:geometryProperty>
     </ogr:clip_points_by_polygons>
   </gml:featureMember>
   <gml:featureMember>
     <ogr:clip_points_by_polygons fid="points.2">
-      <ogr:geometryProperty><gml:MultiPoint srsName="EPSG:4326"><gml:pointMember><gml:Point><gml:coordinates>2,2</gml:coordinates></gml:Point></gml:pointMember></gml:MultiPoint></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>2,2</gml:coordinates></gml:Point></ogr:geometryProperty>
     </ogr:clip_points_by_polygons>
   </gml:featureMember>
   <gml:featureMember>
     <ogr:clip_points_by_polygons fid="points.8">
-      <ogr:geometryProperty><gml:MultiPoint srsName="EPSG:4326"><gml:pointMember><gml:Point><gml:coordinates>0,-1</gml:coordinates></gml:Point></gml:pointMember></gml:MultiPoint></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>0,-1</gml:coordinates></gml:Point></ogr:geometryProperty>
     </ogr:clip_points_by_polygons>
   </gml:featureMember>
   <gml:featureMember>
     <ogr:clip_points_by_polygons fid="points.7">
-      <ogr:geometryProperty><gml:MultiPoint srsName="EPSG:4326"><gml:pointMember><gml:Point><gml:coordinates>7,-1</gml:coordinates></gml:Point></gml:pointMember></gml:MultiPoint></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>7,-1</gml:coordinates></gml:Point></ogr:geometryProperty>
     </ogr:clip_points_by_polygons>
   </gml:featureMember>
   <gml:featureMember>
     <ogr:clip_points_by_polygons fid="points.4">
-      <ogr:geometryProperty><gml:MultiPoint srsName="EPSG:4326"><gml:pointMember><gml:Point><gml:coordinates>4,1</gml:coordinates></gml:Point></gml:pointMember></gml:MultiPoint></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>4,1</gml:coordinates></gml:Point></ogr:geometryProperty>
     </ogr:clip_points_by_polygons>
   </gml:featureMember>
 </ogr:FeatureCollection>

@@ -128,8 +128,8 @@ QgsRasterCalculator::QgsRasterCalculator( const QString &formulaString, const QS
   , mNumOutputColumns( nOutputColumns )
   , mNumOutputRows( nOutputRows )
   , mRasterEntries( rasterEntries )
+  , mTransformContext( QgsProject::instance()->transformContext() )
 {
-  mTransformContext = QgsProject::instance()->transformContext();
 }
 
 QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback *feedback )

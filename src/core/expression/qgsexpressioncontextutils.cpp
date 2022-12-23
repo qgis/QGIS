@@ -22,8 +22,6 @@
 #include "qgsprocessingmodelalgorithm.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgsmapsettings.h"
-#include "qgssymbollayerutils.h"
-#include "qgslayout.h"
 #include "qgslayoutitem.h"
 #include "qgsexpressionutils.h"
 #include "qgslayoutpagecollection.h"
@@ -36,6 +34,7 @@
 #include "qgsmarkersymbol.h"
 #include "qgstriangularmesh.h"
 #include "qgsvectortileutils.h"
+#include "qgsmeshlayer.h"
 
 QgsExpressionContextScope *QgsExpressionContextUtils::globalScope()
 {
@@ -498,10 +497,15 @@ QgsExpressionContextScope *QgsExpressionContextUtils::mapSettingsScope( const Qg
 
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_start_time" ), mapSettings.isTemporal() ? mapSettings.temporalRange().begin() : QVariant(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_end_time" ), mapSettings.isTemporal() ? mapSettings.temporalRange().end() : QVariant(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_interval" ), mapSettings.isTemporal() ? ( mapSettings.temporalRange().end() - mapSettings.temporalRange().begin() ) : QVariant(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_interval" ), mapSettings.isTemporal() ? QgsInterval( mapSettings.temporalRange().end() - mapSettings.temporalRange().begin() ) : QVariant(), true ) );
 
   // IMPORTANT: ANY CHANGES HERE ALSO NEED TO BE MADE TO QgsLayoutItemMap::createExpressionContext()
   // (rationale is described in QgsLayoutItemMap::createExpressionContext() )
+
+  if ( mapSettings.frameRate() >= 0 )
+    scope->setVariable( QStringLiteral( "frame_rate" ), mapSettings.frameRate(), true );
+  if ( mapSettings.currentFrame() >= 0 )
+    scope->setVariable( QStringLiteral( "frame_number" ), mapSettings.currentFrame(), true );
 
   return scope;
 }
@@ -527,6 +531,13 @@ QgsExpressionContextScope *QgsExpressionContextUtils::mapToolCaptureScope( const
 
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "snapping_results" ), matchList ) );
 
+  return scope;
+}
+
+QgsExpressionContextScope *QgsExpressionContextUtils::mapLayerPositionScope( const QgsPointXY &position )
+{
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Map Layer Position" ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layer_cursor_point" ), QVariant::fromValue( QgsGeometry::fromPointXY( position ) ) ) );
   return scope;
 }
 
@@ -947,7 +958,7 @@ QgsExpressionContextUtils::GetLayerVisibility::GetLayerVisibility()
   : QgsScopedExpressionFunction( QStringLiteral( "is_layer_visible" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "id" ) ), QStringLiteral( "General" ) )
 {}
 
-QVariant QgsExpressionContextUtils::GetLayerVisibility::func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+QVariant QgsExpressionContextUtils::GetLayerVisibility::func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   if ( mLayers.isEmpty() )
   {
@@ -955,7 +966,9 @@ QVariant QgsExpressionContextUtils::GetLayerVisibility::func( const QVariantList
   }
 
   bool isVisible = false;
-  QgsMapLayer *layer = QgsExpressionUtils::getMapLayer( values.at( 0 ), parent );
+  Q_NOWARN_DEPRECATED_PUSH
+  QgsMapLayer *layer = QgsExpressionUtils::getMapLayer( values.at( 0 ), context, parent );
+  Q_NOWARN_DEPRECATED_POP
   if ( layer && mLayers.contains( layer ) )
   {
     isVisible = true;

@@ -185,7 +185,7 @@ const QgsProcessingParameterDefinition *QgsAbstractProcessingParameterWidgetWrap
 
 void QgsAbstractProcessingParameterWidgetWrapper::setParameterValue( const QVariant &value, QgsProcessingContext &context )
 {
-  if ( mPropertyButton && value.canConvert< QgsProperty >() )
+  if ( mPropertyButton && value.userType() == QMetaType::type( "QgsProperty" ) )
   {
     mPropertyButton->setToProperty( value.value< QgsProperty >() );
   }
@@ -332,7 +332,7 @@ void QgsAbstractProcessingParameterWidgetWrapper::setDynamicParentLayerParameter
     }
 
     QVariant val = parentWrapper->parameterValue();
-    if ( val.canConvert<QgsProcessingFeatureSourceDefinition>() )
+    if ( val.userType() == QMetaType::type( "QgsProcessingFeatureSourceDefinition" ) )
     {
       // input is a QgsProcessingFeatureSourceDefinition - get extra properties from it
       const QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );

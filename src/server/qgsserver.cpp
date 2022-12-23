@@ -365,6 +365,9 @@ bool QgsServer::init()
   // qDebug() << QStringLiteral( "Initializing server modules from: %1" ).arg( modulePath );
   sServiceRegistry->init( modulePath,  sServerInterface );
 
+  // Initialize config cache
+  QgsConfigCache::initialize( sSettings );
+
   sInitialized = true;
   QgsMessageLog::logMessage( QStringLiteral( "Server initialized" ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
   return true;
@@ -395,6 +398,16 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
     qApp->processEvents();
 
     response.clear();
+
+    // Clean up qgis access control filter's cache to prevent side effects
+    // across requests
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    QgsAccessControl *accessControls = sServerInterface->accessControls();
+    if ( accessControls )
+    {
+      accessControls->unresolveFilterFeatures();
+    }
+#endif
 
     // Pass the filters to the requestHandler, this is needed for the following reasons:
     // Allow server request to call sendResponse plugin hook if enabled
@@ -453,13 +466,14 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
         printRequestParameters( params.toMap(), logLevel );
 
         // Setup project (config file path)
-        if ( ! project )
+        if ( !project )
         {
           const QString configFilePath = configPath( *sConfigFilePath, params.map() );
 
           // load the project if needed and not empty
           if ( ! configFilePath.isEmpty() )
           {
+            // Note that  QgsConfigCache::project( ... ) call QgsProject::setInstance(...)
             project = mConfigCache->project( configFilePath, sServerInterface->serverSettings() );
           }
         }
@@ -483,6 +497,7 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
         // Dispatcher: if SERVICE is set, we assume a OWS service, if not, let's try an API
         // TODO: QGIS 4 fix the OWS services and treat them as APIs
         QgsServerApi *api = nullptr;
+
         if ( params.service().isEmpty() && ( api = sServiceRegistry->apiForRequest( request ) ) )
         {
           const QgsServerApiContext context { api->rootPath(), &request, &responseDecorator, project, sServerInterface };
@@ -490,7 +505,6 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
         }
         else
         {
-
           // Project is mandatory for OWS at this point
           if ( ! project )
           {

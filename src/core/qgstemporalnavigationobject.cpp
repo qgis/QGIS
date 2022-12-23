@@ -78,9 +78,13 @@ QgsExpressionContextScope *QgsTemporalNavigationObject::createExpressionContextS
   scope->setVariable( QStringLiteral( "frame_duration" ), mFrameDuration, true );
   scope->setVariable( QStringLiteral( "frame_timestep" ), mFrameDuration.originalDuration(), true );
   scope->setVariable( QStringLiteral( "frame_timestep_unit" ), mFrameDuration.originalUnit(), true );
+  scope->setVariable( QStringLiteral( "frame_timestep_units" ), QgsUnitTypes::toString( mFrameDuration.originalUnit() ), true );
   scope->setVariable( QStringLiteral( "animation_start_time" ), mTemporalExtents.begin(), true );
   scope->setVariable( QStringLiteral( "animation_end_time" ), mTemporalExtents.end(), true );
-  scope->setVariable( QStringLiteral( "animation_interval" ), mTemporalExtents.end() - mTemporalExtents.begin(), true );
+  scope->setVariable( QStringLiteral( "animation_interval" ), QgsInterval( mTemporalExtents.end() - mTemporalExtents.begin() ), true );
+
+  scope->addHiddenVariable( QStringLiteral( "frame_timestep_unit" ) );
+
   return scope.release();
 }
 
@@ -367,7 +371,7 @@ long long QgsTemporalNavigationObject::findBestFrameNumberForFrameStart( const Q
       // We tend to receive a framestart of 'now()' upon startup for example
       if ( mTemporalExtents.contains( frameStart ) )
       {
-        roughFrameStart = static_cast< long long >( std::floor( ( frameStart - mTemporalExtents.begin() ).seconds() / mFrameDuration.seconds() ) );
+        roughFrameStart = static_cast< long long >( std::floor( QgsInterval( frameStart - mTemporalExtents.begin() ).seconds() / mFrameDuration.seconds() ) );
       }
       roughFrameEnd = roughFrameStart + 100; // just in case we miss the guess
     }

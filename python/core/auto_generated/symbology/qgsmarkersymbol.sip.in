@@ -34,7 +34,7 @@ Constructor for QgsMarkerSymbol, with the specified list of initial symbol ``lay
 Ownership of the ``layers`` are transferred to the symbol.
 %End
 
-    void setAngle( double symbolAngle );
+    void setAngle( double symbolAngle ) const;
 %Docstring
 Sets the angle for the whole symbol. Individual symbol layer sizes
 will be rotated to maintain their current relative angle to the whole symbol angle.
@@ -76,7 +76,7 @@ Returns data defined angle for whole symbol (including all symbol layers).
 .. versionadded:: 3.0
 %End
 
-    void setLineAngle( double lineAngle );
+    void setLineAngle( double lineAngle ) const;
 %Docstring
 Sets the line angle modification for the symbol's angle. This angle is added to
 the marker's rotation and data defined rotation before rendering the symbol, and
@@ -87,7 +87,7 @@ is usually used for orienting symbols to match a line's angle.
 .. versionadded:: 2.9
 %End
 
-    void setSize( double size );
+    void setSize( double size ) const;
 %Docstring
 Sets the size for the whole symbol. Individual symbol layer sizes
 will be scaled to maintain their current relative size to the whole symbol size.
@@ -136,7 +136,7 @@ size of each symbol layer using the provided render ``context``.
 .. versionadded:: 3.4.5
 %End
 
-    void setSizeUnit( QgsUnitTypes::RenderUnit unit );
+    void setSizeUnit( QgsUnitTypes::RenderUnit unit ) const;
 %Docstring
 Sets the size units for the whole symbol (including all symbol layers).
 
@@ -166,7 +166,7 @@ Returns the size units for the whole symbol (including all symbol layers).
 .. versionadded:: 2.16
 %End
 
-    void setSizeMapUnitScale( const QgsMapUnitScale &scale );
+    void setSizeMapUnitScale( const QgsMapUnitScale &scale ) const;
 %Docstring
 Sets the size map unit scale for the whole symbol (including all symbol layers).
 
@@ -196,7 +196,7 @@ for the first symbol layer.
 .. versionadded:: 2.16
 %End
 
-    void setDataDefinedSize( const QgsProperty &property );
+    void setDataDefinedSize( const QgsProperty &property ) const;
 %Docstring
 Set data defined size for whole symbol (including all symbol layers).
 
@@ -217,7 +217,7 @@ Returns data defined size for whole symbol (including all symbol layers).
 .. versionadded:: 3.0
 %End
 
-    void setScaleMethod( Qgis::ScaleMethod scaleMethod );
+    void setScaleMethod( Qgis::ScaleMethod scaleMethod ) const;
 %Docstring
 Sets the method to use for scaling the marker's size.
 
@@ -226,7 +226,7 @@ Sets the method to use for scaling the marker's size.
 .. seealso:: :py:func:`scaleMethod`
 %End
 
-    Qgis::ScaleMethod scaleMethod();
+    Qgis::ScaleMethod scaleMethod() const;
 %Docstring
 Returns the method to use for scaling the marker's size.
 
@@ -267,7 +267,6 @@ and :py:func:`~QgsMarkerSymbol.stopRender` calls, or data defined rotation and o
 
 
 };
-
 
 
 /************************************************************************

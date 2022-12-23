@@ -136,8 +136,19 @@ Returns the output URL for the raster.
     void setMaxTileWidth( int w );
     int maxTileWidth() const;
 
-    QgsRaster::RasterBuildPyramids buildPyramidsFlag() const;
-    void setBuildPyramidsFlag( QgsRaster::RasterBuildPyramids f );
+    Qgis::RasterBuildPyramidOption buildPyramidsFlag() const;
+%Docstring
+Returns the pyramid building option.
+
+.. seealso:: :py:func:`setBuildPyramidsFlag`
+%End
+
+    void setBuildPyramidsFlag( Qgis::RasterBuildPyramidOption f );
+%Docstring
+Sets the pyramid building option.
+
+.. seealso:: :py:func:`buildPyramidsFlag`
+%End
 
     QList< int > pyramidsList() const;
     void setPyramidsList( const QList< int > &list );
@@ -145,8 +156,19 @@ Returns the output URL for the raster.
     QString pyramidsResampling() const;
     void setPyramidsResampling( const QString &str );
 
-    QgsRaster::RasterPyramidsFormat pyramidsFormat() const;
-    void setPyramidsFormat( QgsRaster::RasterPyramidsFormat f );
+    Qgis::RasterPyramidFormat pyramidsFormat() const;
+%Docstring
+Returns the raster pyramid format.
+
+.. seealso:: :py:func:`setPyramidsFormat`
+%End
+
+    void setPyramidsFormat( Qgis::RasterPyramidFormat f );
+%Docstring
+Sets the raster pyramid format.
+
+.. seealso:: :py:func:`pyramidsFormat`
+%End
 
     void setMaxTileHeight( int h );
     int maxTileHeight() const;

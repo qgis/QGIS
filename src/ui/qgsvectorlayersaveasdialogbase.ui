@@ -78,7 +78,7 @@
        </widget>
       </item>
       <item row="2" column="2">
-       <widget class="QLineEdit" name="leLayername">
+       <widget class="QgsFilterLineEdit" name="leLayername">
         <property name="enabled">
          <bool>false</bool>
         </property>
@@ -98,7 +98,7 @@
         <x>0</x>
         <y>0</y>
         <width>557</width>
-        <height>987</height>
+        <height>1000</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -180,6 +180,13 @@
              </widget>
             </item>
            </layout>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="mUseAliasesForExportedName">
+            <property name="text">
+             <string>Use aliases for exported name</string>
+            </property>
+           </widget>
           </item>
           <item>
            <widget class="QCheckBox" name="mReplaceRawFieldValues">
@@ -503,6 +510,11 @@
    <class>QgsScaleWidget</class>
    <extends>QWidget</extends>
    <header>qgsscalewidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

@@ -1,5 +1,5 @@
 
-ARG DISTRO_VERSION=20.04
+ARG DISTRO_VERSION=22.04
 
 # Oracle Docker image is too large, so we add as less dependencies as possible
 # so there is enough space on GitHub runner
@@ -18,16 +18,18 @@ RUN  apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     apt-transport-https \
     ca-certificates \
+    clazy \
     cmake \
     curl \
     dh-python \
+    git \
     gdal-bin \
     gpsbabel \
     graphviz \
     libaio1 \
     libexiv2-27 \
     libfcgi0ldbl \
-    'libgsl23|libgsl23' \
+    libgsl27 \
     'libprotobuf-lite17|libprotobuf-lite23' \
     libqca-qt5-2-plugins \
     libqt53dextras5 \
@@ -69,6 +71,7 @@ RUN  apt-get update \
     python3-sip \
     python3-termcolor \
     python3-yaml \
+    qpdf \
     qt3d-assimpsceneimport-plugin \
     qt3d-defaultgeometryloader-plugin \
     qt3d-gltfsceneio-plugin \
@@ -149,10 +152,10 @@ RUN curl -v -j -k -L -H "Cookie: eula_3_1_agreed=tools.hana.ondemand.com/develop
 ENV PATH="/usr/sap/hdbclient:${PATH}"
 
 # MSSQL: client side
-RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
-RUN curl https://packages.microsoft.com/config/ubuntu/19.04/prod.list | tee /etc/apt/sources.list.d/msprod.list
-RUN apt-get update
-RUN ACCEPT_EULA=Y apt-get install -y --allow-unauthenticated msodbcsql17 mssql-tools
+# RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+# RUN curl https://packages.microsoft.com/config/ubuntu/19.04/prod.list | tee /etc/apt/sources.list.d/msprod.list
+# RUN apt-get update
+# RUN ACCEPT_EULA=Y apt-get install -y --allow-unauthenticated msodbcsql17 mssql-tools
 
 # OTB: download and install otb packages for QGIS tests
 RUN curl -k https://www.orfeo-toolbox.org/packages/archives/OTB/OTB-7.1.0-Linux64.run -o /tmp/OTB-Linux64.run && sh /tmp/OTB-Linux64.run --target /opt/otb
@@ -168,7 +171,6 @@ RUN  apt-get update \
     clang \
     cmake \
     flex \
-    git \
     grass-dev \
     libexiv2-dev \
     libexpat1-dev \
@@ -212,15 +214,6 @@ RUN  apt-get update \
     opencl-headers \
     ocl-icd-opencl-dev \
   && apt-get clean
-
-# Clazy
-#RUN curl -k https://downloads.kdab.com/clazy/1.6/Clazy-x86_64-1.6.AppImage -o /tmp/Clazy.AppImage \
-#  && chmod +x /tmp/Clazy.AppImage \
-#  && mkdir /opt/clazy \
-#  && cd /opt/clazy \
-#  && /tmp/Clazy.AppImage --appimage-extract \
-#  && ln -s /opt/clazy/squashfs-root/AppRun /usr/bin/clazy \
-#  && ln -s ../../bin/ccache /usr/lib/ccache/clazy
 
 ENV PATH="/usr/local/bin:${PATH}"
 

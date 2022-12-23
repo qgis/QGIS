@@ -59,6 +59,9 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
       case QgsExpressionNode::ntCondition:
         sipType = sipType_QgsExpressionNodeCondition;
         break;
+      case QgsExpressionNode::ntBetweenOperator:
+        sipType = sipType_QgsExpressionNodeBetweenOperator;
+        break;
       default:
         sipType = 0;
         break;
@@ -81,6 +84,7 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
       ntColumnRef, //!< \see QgsExpression::Node::NodeColumnRef
       ntCondition, //!< \see QgsExpression::Node::NodeCondition
       ntIndexOperator, //!< Index operator
+      ntBetweenOperator, //!< Between operator \since QGIS 3.26
     };
 
 

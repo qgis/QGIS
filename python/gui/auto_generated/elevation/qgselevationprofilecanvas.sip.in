@@ -1,0 +1,248 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/elevation/qgselevationprofilecanvas.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsElevationProfileCanvas : QgsPlotCanvas
+{
+%Docstring(signature="appended")
+A canvas for elevation profiles.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgselevationprofilecanvas.h"
+%End
+  public:
+
+    QgsElevationProfileCanvas( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsElevationProfileCanvas, with the specified ``parent`` widget.
+%End
+
+    ~QgsElevationProfileCanvas();
+    virtual QgsCoordinateReferenceSystem crs() const;
+
+    virtual QgsPoint toMapCoordinates( const QgsPointXY &point ) const;
+
+    virtual QgsPointXY toCanvasCoordinates( const QgsPoint &point ) const;
+
+    virtual void resizeEvent( QResizeEvent *event );
+
+    virtual void paintEvent( QPaintEvent *event );
+
+    virtual void panContentsBy( double dx, double dy );
+
+    virtual void centerPlotOn( double x, double y );
+
+    virtual void scalePlot( double factor );
+
+    virtual QgsPointXY snapToPlot( QPoint point );
+
+
+    void scalePlot( double xFactor, double yFactor );
+%Docstring
+Scales the plot axis by the given factors.
+%End
+
+    virtual void zoomToRect( const QRectF &rect );
+
+    virtual void wheelZoom( QWheelEvent *event );
+
+    virtual void mouseMoveEvent( QMouseEvent *e );
+
+
+    QRectF plotArea() const;
+%Docstring
+Returns the interior rectangle representing the surface of the plot, in canvas coordinates.
+%End
+
+    virtual void refresh();
+
+%Docstring
+Triggers a complete regeneration of the profile, causing the profile extraction to perform in the
+background.
+%End
+
+    void invalidateCurrentPlotExtent();
+%Docstring
+Invalidates the current plot extent, which means that the visible plot area will be
+recalculated and "zoom full" operation occur when the next profile generation completes.
+%End
+
+    void setProject( QgsProject *project );
+%Docstring
+Sets the ``project`` associated with the profile.
+
+This must be set before any layers which utilize terrain based elevation settings can be
+included in the canvas.
+%End
+
+    void setLayers( const QList< QgsMapLayer * > &layers );
+%Docstring
+Sets the list of ``layers`` to include in the profile.
+
+.. seealso:: :py:func:`layers`
+%End
+
+    QList< QgsMapLayer * > layers() const;
+%Docstring
+Returns the list of layers included in the profile.
+
+.. seealso:: :py:func:`setLayers`
+%End
+
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Sets the ``crs`` associated with the canvas' map coordinates.
+
+.. seealso:: :py:func:`crs`
+%End
+
+    void setProfileCurve( QgsCurve *curve /Transfer/ );
+%Docstring
+Sets the profile ``curve``.
+
+The CRS associated with ``curve`` is set via :py:func:`~QgsElevationProfileCanvas.setCrs`.
+
+Ownership is transferred to the plot canvas.
+
+.. seealso:: :py:func:`profileCurve`
+%End
+
+    QgsCurve *profileCurve() const;
+%Docstring
+Returns the profile curve.
+
+The CRS associated with the curve is retrieved via :py:func:`~QgsElevationProfileCanvas.crs`.
+
+.. seealso:: :py:func:`setProfileCurve`
+%End
+
+    void setTolerance( double tolerance );
+%Docstring
+Sets the profile tolerance (in :py:func:`~QgsElevationProfileCanvas.crs` units).
+
+This value determines how far from the :py:func:`~QgsElevationProfileCanvas.profileCurve` is appropriate for inclusion of results. For instance,
+when a profile is generated for a point vector layer this tolerance distance will dictate how far from the
+actual profile curve a point can reside within to be included in the results.
+
+.. seealso:: :py:func:`tolerance`
+%End
+
+    double tolerance() const;
+%Docstring
+Returns the tolerance of the profile (in :py:func:`~QgsElevationProfileCanvas.crs` units).
+
+This value determines how far from the :py:func:`~QgsElevationProfileCanvas.profileCurve` is appropriate for inclusion of results. For instance,
+when a profile is generated for a point vector layer this tolerance distance will dictate how far from the
+actual profile curve a point can reside within to be included in the results.
+
+.. seealso:: :py:func:`setTolerance`
+%End
+
+    void setVisiblePlotRange( double minimumDistance, double maximumDistance, double minimumElevation, double maximumElevation );
+%Docstring
+Sets the visible area of the plot.
+
+.. seealso:: :py:func:`visibleDistanceRange`
+
+.. seealso:: :py:func:`visibleElevationRange`
+%End
+
+    QgsDoubleRange visibleDistanceRange() const;
+%Docstring
+Returns the distance range currently visible in the plot.
+
+.. seealso:: :py:func:`visibleElevationRange`
+
+.. seealso:: :py:func:`setVisiblePlotRange`
+%End
+
+    QgsDoubleRange visibleElevationRange() const;
+%Docstring
+Returns the elevation range currently visible in the plot.
+
+.. seealso:: :py:func:`visibleDistanceRange`
+
+.. seealso:: :py:func:`setVisiblePlotRange`
+%End
+
+
+    void render( QgsRenderContext &context, double width, double height, const Qgs2DPlot &plotSettings );
+%Docstring
+Renders a portion of the profile using the specified render ``context``.
+%End
+
+    QVector<QgsProfileIdentifyResults> identify( QPointF point );
+%Docstring
+Identify results visible at the specified plot point.
+%End
+
+    QVector<QgsProfileIdentifyResults> identify( const QRectF &rect );
+%Docstring
+Identify results visible within the specified plot rect.
+%End
+
+    QgsProfilePoint canvasPointToPlotPoint( QPointF point ) const;
+%Docstring
+Converts a canvas point to the equivalent plot point.
+
+.. seealso:: :py:func:`plotPointToCanvasPoint`
+%End
+
+    QgsPointXY plotPointToCanvasPoint( const QgsProfilePoint &point ) const;
+%Docstring
+Converts a plot point to the equivalent canvas point.
+
+.. seealso:: :py:func:`canvasPointToPlotPoint`
+%End
+
+  signals:
+
+    void activeJobCountChanged( int count );
+%Docstring
+Emitted when the number of active background jobs changes.
+%End
+
+    void canvasPointHovered( const QgsPointXY &point, const QgsProfilePoint &profilePoint );
+%Docstring
+Emitted when the mouse hovers over the specified point (in canvas coordinates).
+
+The ``profilePoint`` argument gives the hovered profile point, which may be snapped.
+%End
+
+  public slots:
+
+    void zoomFull();
+%Docstring
+Zooms to the full extent of the profile.
+%End
+
+    void clear();
+%Docstring
+Clears the current profile.
+%End
+
+    void setSnappingEnabled( bool enabled );
+%Docstring
+Sets whether snapping of cursor points is enabled.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/elevation/qgselevationprofilecanvas.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

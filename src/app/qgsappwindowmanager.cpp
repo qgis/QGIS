@@ -40,7 +40,7 @@ QWidget *QgsAppWindowManager::openStandardDialog( QgsWindowManagerInterface::Sta
     {
       if ( !mStyleManagerDialog )
       {
-        mStyleManagerDialog = new QgsStyleManagerDialog( QgsStyle::defaultStyle(), QgisApp::instance(), Qt::Window );
+        mStyleManagerDialog = new QgsStyleManagerDialog( QgisApp::instance(), Qt::Window );
         mStyleManagerDialog->setAttribute( Qt::WA_DeleteOnClose );
       }
       mStyleManagerDialog->show();

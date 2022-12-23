@@ -17,9 +17,11 @@
 #ifndef QGSCADUTILS_H
 #define QGSCADUTILS_H
 
-#include "qgis_core.h"
+#include <QQueue>
 
+#include "qgis_core.h"
 #include "qgspointlocator.h"
+
 
 class QgsSnappingUtils;
 
@@ -67,7 +69,6 @@ class CORE_EXPORT QgsCadUtils
     class AlignMapPointOutput
     {
       public:
-
         //! Whether the combination of constraints is actually valid
         bool valid;
 
@@ -88,6 +89,10 @@ class CORE_EXPORT QgsCadUtils
 
         //! Angle (in degrees) to which we have soft-locked ourselves (if not set it is -1)
         double softLockCommonAngle;
+
+        Qgis::LineExtensionSide softLockLineExtension;
+        double softLockX;
+        double softLockY;
     };
 
     /**
@@ -126,6 +131,9 @@ class CORE_EXPORT QgsCadUtils
         //! Constraint for soft lock to a common angle
         QgsCadUtils::AlignMapPointConstraint commonAngleConstraint;
 
+        QgsCadUtils::AlignMapPointConstraint lineExtensionConstraint;
+        QgsCadUtils::AlignMapPointConstraint xyVertexConstraint;
+
         /**
          * Dumps the context's properties, for debugging.
          * \note Not available in Python bindings.
@@ -149,7 +157,7 @@ class CORE_EXPORT QgsCadUtils
          * \see cadPoints()
          * \since QGIS 3.22
          */
-        void setCadPoints( const QList< QgsPoint> &points ) { mCadPointList = points; };
+        void setCadPoints( const QList< QgsPoint > &points ) { mCadPointList = points; };
 
         /**
          * Sets the recent CAD point at the specified \a index to \a point (in map coordinates).
@@ -166,6 +174,24 @@ class CORE_EXPORT QgsCadUtils
          * \since QGIS 3.22
          */
         QgsPoint cadPoint( int index ) const { return mCadPointList[index]; };
+
+        /**
+         * Sets the queue of locked vertices.
+         *
+         * Point locator matches are stored instead of vertices to keep more context.
+         *
+         * \see lockedSnapVertices()
+         * \since QGIS 3.26
+         */
+        void setLockedSnapVertices( const QQueue< QgsPointLocator::Match > &lockedSnapVertices ) { mLockedSnapVertices = lockedSnapVertices; } SIP_SKIP;
+
+        /**
+         * Returns the queue of point locator matches that contain the locked vertices.
+         *
+         * \see setLockedSnapVertices()
+         * \since QGIS 3.26
+         */
+        QQueue< QgsPointLocator::Match > lockedSnapVertices() const { return mLockedSnapVertices; } SIP_SKIP;
 
 
 #ifdef SIP_RUN
@@ -184,6 +210,7 @@ class CORE_EXPORT QgsCadUtils
          * point (index 2) for alignment purposes.
          */
         QList<QgsPoint> mCadPointList;
+        QQueue< QgsPointLocator::Match > mLockedSnapVertices;
 
     };
 

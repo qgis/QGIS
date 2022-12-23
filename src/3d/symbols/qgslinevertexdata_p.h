@@ -32,17 +32,23 @@
 
 #define SIP_NO_FILE
 
-#include "qgs3dtypes.h"
 #include "qgis.h"
+
 
 namespace Qt3DCore
 {
   class QNode;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+  class QGeometry;
+#endif
 }
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 namespace Qt3DRender
 {
   class QGeometry;
 }
+#endif
 
 class QgsLineString;
 class Qgs3DMapSettings;
@@ -80,7 +86,11 @@ struct QgsLineVertexData
 
   QByteArray createVertexBuffer();
   QByteArray createIndexBuffer();
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   Qt3DRender::QGeometry *createGeometry( Qt3DCore::QNode *parent );
+#else
+  Qt3DCore::QGeometry *createGeometry( Qt3DCore::QNode *parent );
+#endif
 
   void addLineString( const QgsLineString &lineString, float extraHeightOffset = 0 );
   void addVerticalLines( const QgsLineString &lineString, float verticalLength, float extraHeightOffset = 0 );

@@ -1,5 +1,4 @@
 # black list
-PyQgsLocalServer
 PyQgsPalLabelingServer
 qgis_composerutils
 PyQgsAppStartup
@@ -23,3 +22,5 @@ test_core_layerdefinition
 
 # MSSQL requires the MSSQL docker
 PyQgsProviderConnectionMssql
+PyQgsStyleStorageMssql
+

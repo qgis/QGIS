@@ -51,7 +51,8 @@ from qgis.core import (QgsApplication,
                        QgsProcessingParameterFileDestination,
                        QgsProcessingParameterFolderDestination,
                        QgsProcessingParameterRasterDestination,
-                       QgsProcessingParameterVectorDestination)
+                       QgsProcessingParameterVectorDestination,
+                       QgsProcessingModelAlgorithm)
 
 from processing.core import parameters
 from processing.modeler.exceptions import UndefinedParameterException
@@ -198,9 +199,7 @@ class ModelerParameterDefinitionDialog(QDialog):
                                 self.tr('Invalid parameter name'))
             return
 
-        validChars = \
-            'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-        safeName = ''.join(c for c in description if c in validChars)
+        safeName = QgsProcessingModelAlgorithm.safeName(description)
         name = safeName.lower()
 
         # Destination parameter

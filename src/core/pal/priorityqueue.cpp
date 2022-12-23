@@ -73,7 +73,7 @@ PriorityQueue::~PriorityQueue()
   delete[] pos;
 }
 
-int PriorityQueue::getSize()
+int PriorityQueue::getSize() const
 {
   return size;
 }
@@ -103,12 +103,12 @@ int PriorityQueue::getBest()
 }
 
 
-bool PriorityQueue::isIn( int key )
+bool PriorityQueue::isIn( int key ) const
 {
   return key <= maxId && pos[key] >= 0;
 }
 
-int PriorityQueue::getId( int key )
+int PriorityQueue::getId( int key ) const
 {
   return key <= maxId ? pos[key] : -1;
 }
@@ -304,7 +304,7 @@ void PriorityQueue::print()
 }
 
 
-int PriorityQueue::getSizeByPos()
+int PriorityQueue::getSizeByPos() const
 {
   int i;
   int count = 0;

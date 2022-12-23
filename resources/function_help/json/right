@@ -14,5 +14,5 @@
     "expression": "right('Hello World',5)",
     "returns": "'World'"
   }],
-  "tags": ["last", "substring", "rightmost", "characters", "contains"]
+  "tags": ["last", "end", "substring", "rightmost", "characters", "contains"]
 }

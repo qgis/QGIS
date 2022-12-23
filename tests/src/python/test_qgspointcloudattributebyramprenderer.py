@@ -102,10 +102,12 @@ class TestQgsPointCloudAttributeByRampRenderer(unittest.TestCase):
         self.assertEqual(rr.maximum(), 15)
         self.assertEqual(rr.colorRampShader().minimumValue(), 20)
         self.assertEqual(rr.colorRampShader().maximumValue(), 30)
-        self.assertEqual(rr.colorRampShader().sourceColorRamp().color1().name(),
-                         renderer.colorRampShader().sourceColorRamp().color1().name())
-        self.assertEqual(rr.colorRampShader().sourceColorRamp().color2().name(),
-                         renderer.colorRampShader().sourceColorRamp().color2().name())
+        cloned_shader = rr.colorRampShader()
+        original_shader = renderer.colorRampShader()
+        self.assertEqual(cloned_shader.sourceColorRamp().color1().name(),
+                         original_shader.sourceColorRamp().color1().name())
+        self.assertEqual(cloned_shader.sourceColorRamp().color2().name(),
+                         original_shader.sourceColorRamp().color2().name())
 
         doc = QDomDocument("testdoc")
         elem = renderer.save(doc, QgsReadWriteContext())
@@ -120,12 +122,13 @@ class TestQgsPointCloudAttributeByRampRenderer(unittest.TestCase):
         self.assertEqual(r2.attribute(), 'attr')
         self.assertEqual(r2.minimum(), 5)
         self.assertEqual(r2.maximum(), 15)
-        self.assertEqual(r2.colorRampShader().minimumValue(), 20)
-        self.assertEqual(r2.colorRampShader().maximumValue(), 30)
-        self.assertEqual(r2.colorRampShader().sourceColorRamp().color1().name(),
-                         renderer.colorRampShader().sourceColorRamp().color1().name())
-        self.assertEqual(r2.colorRampShader().sourceColorRamp().color2().name(),
-                         renderer.colorRampShader().sourceColorRamp().color2().name())
+        restored_shader = r2.colorRampShader()
+        self.assertEqual(restored_shader.minimumValue(), 20)
+        self.assertEqual(restored_shader.maximumValue(), 30)
+        self.assertEqual(restored_shader.sourceColorRamp().color1().name(),
+                         original_shader.sourceColorRamp().color1().name())
+        self.assertEqual(restored_shader.sourceColorRamp().color2().name(),
+                         original_shader.sourceColorRamp().color2().name())
 
     def testUsedAttributes(self):
         renderer = QgsPointCloudAttributeByRampRenderer()

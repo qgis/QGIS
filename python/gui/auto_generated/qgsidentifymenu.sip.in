@@ -56,6 +56,19 @@ QgsIdentifyMenu is a menu to be used to choose within a list of QgsMapTool.Ident
 
     ~QgsIdentifyMenu();
 
+
+    static QList<QgsMapToolIdentify::IdentifyResult> findFeaturesOnCanvas( QgsMapMouseEvent *event, QgsMapCanvas *canvas, const QList<QgsWkbTypes::GeometryType> &geometryTypes );
+%Docstring
+Searches for features on the map ``canvas``, which are located at the specified ``event`` point.
+
+The ``geometryTypes`` argument lists acceptable geometry types.
+
+This method searches through all layers on the canvas, attempting to find matching features at the event
+point.
+
+.. versionadded:: 3.26
+%End
+
     void setAllowMultipleReturn( bool multipleReturn );
 %Docstring
 define if the menu executed can return multiple results (e.g. all results or all identified features of a vector layer)
@@ -148,11 +161,12 @@ exec
 :param pos: the position where the menu will be executed
 %End
 
-    static void styleHighlight( QgsHighlight *highlight );
+ static void styleHighlight( QgsHighlight *highlight ) /Deprecated/;
 %Docstring
 Applies style from the settings to the highlight
 
-.. versionadded:: 3.8
+.. deprecated::
+   Use :py:func:`QgsHighlight.applyDefaultStyle()` instead.
 %End
 
   protected:

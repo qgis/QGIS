@@ -1078,7 +1078,8 @@ class GUI_EXPORT QgisInterface : public QObject
      * mOptsPage_Rendering, mOptsPage_Temporal, mOptsPage_Metadata
      *
      * Point Cloud Layer:
-     * mOptsPage_Information, mOptsPage_Source, mOptsPage_Metadata, mOptsPage_Statistics
+     * mOptsPage_Information, mOptsPage_Source, mOptsPage_Metadata, mOptsPage_Statistics,
+     * mOptsPage_Rendering
      *
      * Vector Tile Layer:
      * mOptsPage_Information, mOptsPage_Style, mOptsPage_Labeling, mOptsPage_Metadata
@@ -1387,7 +1388,7 @@ class GUI_EXPORT QgisInterface : public QObject
      *
      * \since QGIS 3.16
      */
-    virtual void setGpsPanelConnection( QgsGpsConnection *connection ) = 0;
+    virtual void setGpsPanelConnection( QgsGpsConnection *connection SIP_TRANSFER ) = 0;
 
   signals:
 

@@ -62,7 +62,19 @@ class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 4
      * \param transform Transformation from layer CRS to destination (e.g. map) CRS. With invalid transform, it keeps the native mesh CRS
      * \returns TRUE if the mesh is effectivly updated, and FALSE if not
     */
-    bool update( QgsMesh *nativeMesh, const QgsCoordinateTransform &transform = QgsCoordinateTransform() );
+    bool update( QgsMesh *nativeMesh, const QgsCoordinateTransform &transform );
+
+    /**
+     * Constructs triangular mesh from layer's native mesh using the coordinate transform already set. Populates spatial index.
+     * \param nativeMesh QgsMesh to access native vertices and faces
+     *
+     * \returns TRUE if the mesh is effectivly updated, and FALSE if not
+     *
+     * \note if the coordinate transform is not already set, it uses the native mesh CRS
+     *
+     * \since QGIS 3.28
+    */
+    bool update( QgsMesh *nativeMesh );
 
     /**
      * Returns vertices in map coordinate system

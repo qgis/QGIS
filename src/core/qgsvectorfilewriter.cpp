@@ -164,7 +164,11 @@ bool QgsVectorFileWriter::supportsFeatureStyles( const QString &driverName )
   if ( !driverMetadata )
     return false;
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+  return CSLFetchBoolean( driverMetadata, GDAL_DCAP_FEATURE_STYLES_WRITE, false );
+#else
   return CSLFetchBoolean( driverMetadata, GDAL_DCAP_FEATURE_STYLES, false );
+#endif
 }
 
 void QgsVectorFileWriter::init( QString vectorFileName,
@@ -342,6 +346,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     }
     options[ datasourceOptions.size()] = nullptr;
   }
+
   mAttrIdxToOgrIdx.remove( 0 );
 
   // create the data source
@@ -1075,7 +1080,6 @@ class QgsVectorFileWriterMetadataContainer
                              )
                            );
 
-#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,1,0)
       // FlatGeobuf
       datasetOptions.clear();
       layerOptions.clear();
@@ -1091,7 +1095,6 @@ class QgsVectorFileWriterMetadataContainer
                                QStringLiteral( "UTF-8" )
                              )
                            );
-#endif
 
       // ESRI Shapefile
       datasetOptions.clear();
@@ -2336,12 +2339,12 @@ OGRwkbGeometryType QgsVectorFileWriter::ogrTypeFromWkbType( QgsWkbTypes::Type ty
   return ogrType;
 }
 
-QgsVectorFileWriter::WriterError QgsVectorFileWriter::hasError()
+QgsVectorFileWriter::WriterError QgsVectorFileWriter::hasError() const
 {
   return mError;
 }
 
-QString QgsVectorFileWriter::errorMessage()
+QString QgsVectorFileWriter::errorMessage() const
 {
   return mErrorMessage;
 }
@@ -2449,7 +2452,12 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
     QVariant attrValue = feature.attribute( fldIdx );
     QgsField field = mFields.at( fldIdx );
 
-    if ( !attrValue.isValid() || attrValue.isNull() )
+    if ( feature.isUnsetValue( fldIdx ) )
+    {
+      OGR_F_UnsetField( poFeature.get(), ogrField );
+      continue;
+    }
+    else if ( QgsVariantUtils::isNull( attrValue ) )
     {
 // Starting with GDAL 2.2, there are 2 concepts: unset fields and null fields
 // whereas previously there was only unset fields. For a GeoJSON output,
@@ -2794,9 +2802,19 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
         // add m/z values if not present in the input wkb type -- this is needed for formats which determine
         // geometry type based on features, e.g. geojson
         if ( QgsWkbTypes::hasZ( mWkbType ) && !QgsWkbTypes::hasZ( geom.wkbType() ) )
-          geom.get()->addZValue( 0 );
+        {
+          if ( mOgrDriverName == QLatin1String( "ESRI Shapefile" ) )
+            geom.get()->addZValue( std::numeric_limits<double>::quiet_NaN() );
+          else
+            geom.get()->addZValue( 0 );
+        }
         if ( QgsWkbTypes::hasM( mWkbType ) && !QgsWkbTypes::hasM( geom.wkbType() ) )
-          geom.get()->addMValue( 0 );
+        {
+          if ( mOgrDriverName == QLatin1String( "ESRI Shapefile" ) )
+            geom.get()->addMValue( std::numeric_limits<double>::quiet_NaN() );
+          else
+            geom.get()->addMValue( 0 );
+        }
 
         if ( !mGeom2 )
         {
@@ -2820,7 +2838,11 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
           return nullptr;
         }
 
-        QByteArray wkb( geom.asWkb() );
+        QgsAbstractGeometry::WkbFlags wkbFlags;
+        if ( mOgrDriverName == QLatin1String( "ESRI Shapefile" ) )
+          wkbFlags |= QgsAbstractGeometry::FlagExportNanAsDoubleMin;
+
+        QByteArray wkb( geom.asWkb( wkbFlags ) );
         OGRErr err = OGR_G_ImportFromWkb( mGeom2, reinterpret_cast<unsigned char *>( const_cast<char *>( wkb.constData() ) ), wkb.length() );
         if ( err != OGRERR_NONE )
         {
@@ -2836,7 +2858,11 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
       }
       else // wkb type matches
       {
-        QByteArray wkb( geom.asWkb( QgsAbstractGeometry::FlagExportTrianglesAsPolygons ) );
+        QgsAbstractGeometry::WkbFlags wkbFlags = QgsAbstractGeometry::FlagExportTrianglesAsPolygons;
+        if ( mOgrDriverName == QLatin1String( "ESRI Shapefile" ) )
+          wkbFlags |= QgsAbstractGeometry::FlagExportNanAsDoubleMin;
+
+        QByteArray wkb( geom.asWkb( wkbFlags ) );
         OGRGeometryH ogrGeom = createEmptyGeometry( mWkbType );
         OGRErr err = OGR_G_ImportFromWkb( ogrGeom, reinterpret_cast<unsigned char *>( const_cast<char *>( wkb.constData() ) ), wkb.length() );
         if ( err != OGRERR_NONE )
@@ -2892,22 +2918,6 @@ QgsVectorFileWriter::~QgsVectorFileWriter()
       QgsDebugMsg( QStringLiteral( "Error while committing transaction on OGRLayer." ) );
     }
   }
-
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,1,0) && GDAL_VERSION_NUM <= GDAL_COMPUTE_VERSION(3,1,3)
-  if ( mDS )
-  {
-    // Workaround bug in GDAL 3.1.0 to 3.1.3 that creates XLSX and ODS files incompatible with LibreOffice due to use of ZIP64
-    QString drvName = GDALGetDriverShortName( GDALGetDatasetDriver( mDS.get() ) );
-    if ( drvName == QLatin1String( "XLSX" ) ||
-         drvName == QLatin1String( "ODS" ) )
-    {
-      CPLSetThreadLocalConfigOption( "CPL_CREATE_ZIP64", "NO" );
-      mDS.reset();
-      CPLSetThreadLocalConfigOption( "CPL_CREATE_ZIP64", nullptr );
-    }
-  }
-#endif
-
   mDS.reset();
 
   if ( mOgrRef )
@@ -3092,7 +3102,16 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::prepareWriteAsVectorFormat
   {
     for ( int attrIdx : std::as_const( details.attributes ) )
     {
-      details.outputFields.append( details.sourceFields.at( attrIdx ) );
+      if ( details.sourceFields.exists( attrIdx ) )
+      {
+        QgsField field = details.sourceFields.at( attrIdx );
+        field.setName( options.attributesExportNames.value( attrIdx, field.name() ) );
+        details.outputFields.append( field );
+      }
+      else
+      {
+        QgsDebugMsg( QStringLiteral( "No such source field with index '%1' available." ).arg( attrIdx ) );
+      }
     }
   }
 
@@ -3588,7 +3607,7 @@ QStringList QgsVectorFileWriter::supportedFormatExtensions( const VectorFormatOp
     }
   }
 
-  QStringList extensionList = qgis::setToList( extensions );
+  QStringList extensionList( extensions.constBegin(), extensions.constEnd() );
 
   std::sort( extensionList.begin(), extensionList.end(), [options]( const QString & a, const QString & b ) -> bool
   {

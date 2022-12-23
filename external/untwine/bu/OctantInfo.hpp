@@ -56,6 +56,8 @@ public:
         return false;
     }
 
+    void mergeSmallFiles(const std::string tempDir, size_t pointSize);
+
     std::list<FileInfo>& fileInfos()
         { return m_fileInfos; }
     const std::list<FileInfo>& fileInfos() const

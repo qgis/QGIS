@@ -1,6 +1,0 @@
-Principle Components Analysis
-table_calculus
-QgsProcessingParameterFeatureSource|TABLE|Table|5|None|False
-QgsProcessingParameterEnum|METHOD|Method|[0] correlation matrix;[1] variance-covariance matrix;[2] sums-of-squares-and-cross-products matrix
-QgsProcessingParameterNumber|NFIRST|Number of Components|QgsProcessingParameterNumber.Integer|3|False|None|None
-QgsProcessingParameterVectorDestination|PCA|Principle Components

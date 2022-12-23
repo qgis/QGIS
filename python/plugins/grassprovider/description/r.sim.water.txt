@@ -6,11 +6,11 @@ QgsProcessingParameterRasterLayer|dx|Name of the x-derivatives raster map [m/m]|
 QgsProcessingParameterRasterLayer|dy|Name of the y-derivatives raster map [m/m]|None|False
 QgsProcessingParameterRasterLayer|rain|Name of the rainfall excess rate (rain-infilt) raster map [mm/hr]|None|True
 QgsProcessingParameterNumber|rain_value|Rainfall excess rate unique value [mm/hr]|QgsProcessingParameterNumber.Double|50|True|None|None
-QgsProcessingParameterRasterLayer|infil|Name of the runoff infiltration rate raster map [mm/hr]|None|False
+QgsProcessingParameterRasterLayer|infil|Name of the runoff infiltration rate raster map [mm/hr]|None|True
 QgsProcessingParameterNumber|infil_value|Runoff infiltration rate unique value [mm/hr]|QgsProcessingParameterNumber.Double|0.0|True|None|None
 QgsProcessingParameterRasterLayer|man|Name of the Mannings n raster map|None|True
 QgsProcessingParameterNumber|man_value|Manning's n unique value|QgsProcessingParameterNumber.Double|0.1|True|None|None
-QgsProcessingParameterRasterLayer|flow_control|Name of the flow controls raster map (permeability ratio 0-1)|None|False
+QgsProcessingParameterRasterLayer|flow_control|Name of the flow controls raster map (permeability ratio 0-1)|None|True
 QgsProcessingParameterFeatureSource|observation|Sampling locations vector points|0|None|True
 QgsProcessingParameterNumber|nwalkers|Number of walkers, default is twice the number of cells|QgsProcessingParameterNumber.Integer|None|True|None|None
 QgsProcessingParameterNumber|niterations|Time used for iterations [minutes]|QgsProcessingParameterNumber.Integer|10|True|None|None
@@ -19,7 +19,7 @@ QgsProcessingParameterNumber|diffusion_coeff|Water diffusion constant|QgsProcess
 QgsProcessingParameterNumber|hmax|Threshold water depth [m]|QgsProcessingParameterNumber.Double|4.0|True|None|None
 QgsProcessingParameterNumber|halpha|Diffusion increase constant|QgsProcessingParameterNumber.Double|4.0|True|None|None
 QgsProcessingParameterNumber|hbeta|Weighting factor for water flow velocity vector|QgsProcessingParameterNumber.Double|0.5|True|None|None
-QgsProcessingParameterBoolean|-t|Time-series output|True
+QgsProcessingParameterBoolean|-t|Time-series output|False
 QgsProcessingParameterRasterDestination|depth|Water depth [m]
 QgsProcessingParameterRasterDestination|discharge|Water discharge [m3/s]
 QgsProcessingParameterRasterDestination|error|Simulation error [m]

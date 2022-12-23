@@ -253,4 +253,37 @@ void QgsChunkNode::setExactBbox( const QgsAABB &box )
   // TODO: propagate better estimate to children?
 }
 
+void QgsChunkNode::updateParentBoundingBoxesRecursively() const
+{
+  QgsChunkNode *currentNode = parent();
+  while ( currentNode )
+  {
+    QgsChunkNode *const *currentNodeChildren = currentNode->children();
+    float xMin = std::numeric_limits< float >::max();
+    float xMax = -std::numeric_limits< float >::max();
+    float yMin = std::numeric_limits< float >::max();
+    float yMax = -std::numeric_limits< float >::max();
+    float zMin = std::numeric_limits< float >::max();
+    float zMax = -std::numeric_limits< float >::max();
+    for ( int i = 0; i < currentNode->childCount(); ++i )
+    {
+      const QgsAABB childBBox = currentNodeChildren[i]->bbox();
+      if ( childBBox.xMin < xMin )
+        xMin = childBBox.xMin;
+      if ( childBBox.yMin < yMin )
+        yMin = childBBox.yMin;
+      if ( childBBox.zMin < zMin )
+        zMin = childBBox.zMin;
+      if ( childBBox.xMax > xMax )
+        xMax = childBBox.xMax;
+      if ( childBBox.yMax > yMax )
+        yMax = childBBox.yMax;
+      if ( childBBox.zMax > zMax )
+        zMax = childBBox.zMax;
+    }
+    currentNode->setExactBbox( QgsAABB( xMin, yMin, zMin, xMax, yMax, zMax ) );
+    currentNode = currentNode->parent();
+  }
+}
+
 /// @endcond

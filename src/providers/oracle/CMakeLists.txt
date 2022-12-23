@@ -16,10 +16,12 @@ set(ORACLE_SRCS
   qgsoracleexpressioncompiler.cpp
   qgsoracletransaction.cpp
   qgsoracleproviderconnection.cpp
+  qgsoracleprojectstorage.cpp
 )
 
 if (WITH_GUI)
   set(ORACLE_SRCS ${ORACLE_SRCS}
+    qgsoracleprojectstoragedialog.cpp
     qgsoraclesourceselect.cpp
   )
 endif()

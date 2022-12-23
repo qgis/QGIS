@@ -76,7 +76,7 @@ bool QgsValueMapWidgetWrapper::valid() const
 void QgsValueMapWidgetWrapper::updateValues( const QVariant &value, const QVariantList & )
 {
   QString v;
-  if ( value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
     v = QgsValueMapFieldFormatter::NULL_VALUE;
   else
     v = value.toString();
@@ -85,7 +85,7 @@ void QgsValueMapWidgetWrapper::updateValues( const QVariant &value, const QVaria
   {
     if ( mComboBox->findData( v ) == -1 )
     {
-      if ( value.isNull( ) )
+      if ( QgsVariantUtils::isNull( value ) )
       {
         mComboBox->addItem( QgsApplication::nullRepresentation().prepend( '(' ).append( ')' ), v );
       }

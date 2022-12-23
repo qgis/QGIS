@@ -20,6 +20,7 @@
 #include "qgsapplication.h"
 #include "qgssettings.h"
 #include "qgsreferencedgeometry.h"
+#include "qgsvariantutils.h"
 
 #include <QDataStream>
 #include <QIcon>
@@ -254,7 +255,7 @@ void QgsField::setConfigurationFlags( QgsField::ConfigurationFlags flags )
 
 QString QgsField::displayString( const QVariant &v ) const
 {
-  if ( v.isNull() )
+  if ( QgsVariantUtils::isNull( v ) )
   {
     return QgsApplication::nullRepresentation();
   }
@@ -341,6 +342,15 @@ QString QgsField::displayString( const QVariant &v ) const
         return QString::number( v.toDouble(), 'f', d->precision );
       }
     }
+    else
+    {
+      const double vDouble = v.toDouble();
+      // mimic Qt 5 handling of when to switch to exponential forms
+      if ( std::fabs( vDouble ) < 1e-04 )
+        return QString::number( vDouble, 'g', QLocale::FloatingPointShortest );
+      else
+        return QString::number( vDouble, 'f', QLocale::FloatingPointShortest );
+    }
   }
   // Other numeric types than doubles
   else if ( isNumeric() &&
@@ -405,7 +415,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
   if ( errorMessage )
     errorMessage->clear();
 
-  if ( v.isNull() )
+  if ( QgsVariantUtils::isNull( v ) )
   {
     v.convert( d->type );
     return true;
@@ -562,12 +572,31 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
     return false;
   }
 
+  if ( ( d->type == QVariant::StringList || ( d->type == QVariant::List && d->subType == QVariant::String ) )
+       && ( v.type() == QVariant::String ) )
+  {
+    v = QStringList( { v.toString() } );
+    return true;
+  }
+
+  if ( ( d->type == QVariant::StringList || d->type == QVariant::List ) && !( v.type() == QVariant::StringList || v.type() == QVariant::List ) )
+  {
+    v = QVariant( d->type );
+
+    if ( errorMessage )
+      *errorMessage = QObject::tr( "Could not convert value \"%1\" to target list type" ).arg( original.toString() );
+
+    return false;
+  }
+
   if ( !v.convert( d->type ) )
   {
     v = QVariant( d->type );
 
     if ( errorMessage )
-      *errorMessage = QObject::tr( "Could not convert value \"%1\" to target type" ).arg( original.toString() );
+      *errorMessage = QObject::tr( "Could not convert value \"%1\" to target type \"%2\"" )
+                      .arg( original.toString() )
+                      .arg( d->typeName );
 
     return false;
   }

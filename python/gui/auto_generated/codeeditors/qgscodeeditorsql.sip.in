@@ -31,6 +31,8 @@ code autocompletion.
 Constructor for QgsCodeEditorSQL
 %End
 
+    virtual Qgis::ScriptLanguage language() const;
+
 
     virtual ~QgsCodeEditorSQL();
 

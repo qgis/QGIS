@@ -37,6 +37,13 @@
 #include "qgspoint3dsymbol.h"
 #include "qgspolygon3dsymbol.h"
 
+#include "qgspointcloudrenderer.h"
+#include "qgspointcloud3dsymbol.h"
+#include "qgspointcloudlayer3drenderer.h"
+#include "qgspointcloudrgbrenderer.h"
+#include "qgspointcloudattributebyramprenderer.h"
+#include "qgspointcloudclassifiedrenderer.h"
+
 #include <QtMath>
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DRender/QRenderSettings>
@@ -132,7 +139,7 @@ QImage Qgs3DUtils::captureSceneDepthBuffer( QgsAbstract3DEngine &engine, Qgs3DMa
 }
 
 bool Qgs3DUtils::exportAnimation( const Qgs3DAnimationSettings &animationSettings,
-                                  const Qgs3DMapSettings &mapSettings,
+                                  Qgs3DMapSettings &mapSettings,
                                   int framesPerSecond,
                                   const QString &outputDirectory,
                                   const QString &fileNameTemplate,
@@ -141,13 +148,6 @@ bool Qgs3DUtils::exportAnimation( const Qgs3DAnimationSettings &animationSetting
                                   QgsFeedback *feedback
                                 )
 {
-  QgsOffscreen3DEngine engine;
-  engine.setSize( outputSize );
-  Qgs3DMapScene *scene = new Qgs3DMapScene( mapSettings, &engine );
-  engine.setRootEntity( scene );
-  // We need to change render policy to RenderPolicy::Always, since otherwise render capture node won't work
-  engine.renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::RenderPolicy::Always );
-
   if ( animationSettings.keyFrames().size() < 2 )
   {
     error = QObject::tr( "Unable to export 3D animation. Add at least 2 keyframes" );
@@ -183,6 +183,22 @@ bool Qgs3DUtils::exportAnimation( const Qgs3DAnimationSettings &animationSetting
     error = QObject::tr( "Filename template must contain all # placeholders in one continuous group." );
     return false;
   }
+
+  if ( !QDir().exists( outputDirectory ) )
+  {
+    if ( !QDir().mkpath( outputDirectory ) )
+    {
+      error = QObject::tr( "Output directory could not be created." );
+      return false;
+    }
+  }
+
+  QgsOffscreen3DEngine engine;
+  engine.setSize( outputSize );
+  Qgs3DMapScene *scene = new Qgs3DMapScene( mapSettings, &engine );
+  engine.setRootEntity( scene );
+  // We need to change render policy to RenderPolicy::Always, since otherwise render capture node won't work
+  engine.renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::RenderPolicy::Always );
 
   while ( time <= duration )
   {
@@ -314,7 +330,7 @@ float Qgs3DUtils::clampAltitude( const QgsPoint &p, Qgis::AltitudeClamping altCl
     case Qgis::AltitudeClamping::Terrain:
     {
       const QgsPointXY pt = altBind == Qgis::AltitudeBinding::Vertex ? p : centroid;
-      terrainZ = map.terrainGenerator() ? map.terrainGenerator()->heightAt( pt.x(), pt.y(), map ) : 0;
+      terrainZ = map.terrainRenderingEnabled() && map.terrainGenerator() ? map.terrainGenerator()->heightAt( pt.x(), pt.y(), map ) : 0;
       break;
     }
 
@@ -364,7 +380,7 @@ void Qgs3DUtils::clampAltitudes( QgsLineString *lineString, Qgis::AltitudeClampi
             break;
         }
 
-        terrainZ = map.terrainGenerator() ? map.terrainGenerator()->heightAt( pt.x(), pt.y(), map ) : 0;
+        terrainZ = map.terrainRenderingEnabled() && map.terrainGenerator() ? map.terrainGenerator()->heightAt( pt.x(), pt.y(), map ) : 0;
         break;
       }
 
@@ -458,8 +474,8 @@ void Qgs3DUtils::extractPointPositions( const QgsFeature &f, const Qgs3DMapSetti
     {
       geomZ = pt.z();
     }
-    const float terrainZ = map.terrainGenerator() ? map.terrainGenerator()->heightAt( pt.x(), pt.y(), map ) * map.terrainVerticalScale() : 0;
-    float h;
+    const float terrainZ = map.terrainRenderingEnabled() && map.terrainGenerator() ? map.terrainGenerator()->heightAt( pt.x(), pt.y(), map ) * map.terrainVerticalScale() : 0;
+    float h = 0.0f;
     switch ( altClamp )
     {
       case Qgis::AltitudeClamping::Absolute:
@@ -630,7 +646,7 @@ void Qgs3DUtils::estimateVectorLayerZRange( QgsVectorLayer *layer, double &zMin,
   }
 
   zMin = std::numeric_limits<double>::max();
-  zMax = std::numeric_limits<double>::min();
+  zMax = std::numeric_limits<double>::lowest();
 
   QgsFeature f;
   QgsFeatureIterator it = layer->getFeatures( QgsFeatureRequest().setNoAttributes().setLimit( 100 ) );
@@ -645,7 +661,7 @@ void Qgs3DUtils::estimateVectorLayerZRange( QgsVectorLayer *layer, double &zMin,
     }
   }
 
-  if ( zMin == std::numeric_limits<double>::max() && zMax == std::numeric_limits<double>::min() )
+  if ( zMin == std::numeric_limits<double>::max() && zMax == std::numeric_limits<double>::lowest() )
   {
     zMin = 0;
     zMax = 0;
@@ -726,4 +742,51 @@ QVector2D Qgs3DUtils::screenToTextureCoordinates( QVector2D screenXY, QSize winS
 QVector2D Qgs3DUtils::textureToScreenCoordinates( QVector2D textureXY, QSize winSize )
 {
   return QVector2D( textureXY.x() * winSize.width(), ( 1 - textureXY.y() ) * winSize.height() );
+}
+
+std::unique_ptr<QgsPointCloudLayer3DRenderer> Qgs3DUtils::convert2DPointCloudRendererTo3D( QgsPointCloudRenderer *renderer )
+{
+  if ( !renderer )
+    return nullptr;
+
+  std::unique_ptr< QgsPointCloud3DSymbol > symbol3D;
+  if ( renderer->type() == QLatin1String( "ramp" ) )
+  {
+    const QgsPointCloudAttributeByRampRenderer *renderer2D = dynamic_cast< const QgsPointCloudAttributeByRampRenderer * >( renderer );
+    symbol3D = std::make_unique< QgsColorRampPointCloud3DSymbol >();
+    QgsColorRampPointCloud3DSymbol *symbol = static_cast< QgsColorRampPointCloud3DSymbol * >( symbol3D.get() );
+    symbol->setAttribute( renderer2D->attribute() );
+    symbol->setColorRampShaderMinMax( renderer2D->minimum(), renderer2D->maximum() );
+    symbol->setColorRampShader( renderer2D->colorRampShader() );
+  }
+  else if ( renderer->type() == QLatin1String( "rgb" ) )
+  {
+    const QgsPointCloudRgbRenderer *renderer2D = dynamic_cast< const QgsPointCloudRgbRenderer * >( renderer );
+    symbol3D = std::make_unique< QgsRgbPointCloud3DSymbol >();
+    QgsRgbPointCloud3DSymbol *symbol = static_cast< QgsRgbPointCloud3DSymbol * >( symbol3D.get() );
+    symbol->setRedAttribute( renderer2D->redAttribute() );
+    symbol->setGreenAttribute( renderer2D->greenAttribute() );
+    symbol->setBlueAttribute( renderer2D->blueAttribute() );
+
+    symbol->setRedContrastEnhancement( renderer2D->redContrastEnhancement() ? new QgsContrastEnhancement( *renderer2D->redContrastEnhancement() ) : nullptr );
+    symbol->setGreenContrastEnhancement( renderer2D->greenContrastEnhancement() ? new QgsContrastEnhancement( *renderer2D->greenContrastEnhancement() ) : nullptr );
+    symbol->setBlueContrastEnhancement( renderer2D->blueContrastEnhancement() ? new QgsContrastEnhancement( *renderer2D->blueContrastEnhancement() ) : nullptr );
+  }
+  else if ( renderer->type() == QLatin1String( "classified" ) )
+  {
+
+    const QgsPointCloudClassifiedRenderer *renderer2D = dynamic_cast< const QgsPointCloudClassifiedRenderer * >( renderer );
+    symbol3D = std::make_unique< QgsClassificationPointCloud3DSymbol >();
+    QgsClassificationPointCloud3DSymbol *symbol = static_cast< QgsClassificationPointCloud3DSymbol * >( symbol3D.get() );
+    symbol->setAttribute( renderer2D->attribute() );
+    symbol->setCategoriesList( renderer2D->categories() );
+  }
+
+  if ( symbol3D )
+  {
+    std::unique_ptr< QgsPointCloudLayer3DRenderer > renderer3D = std::make_unique< QgsPointCloudLayer3DRenderer >();
+    renderer3D->setSymbol( symbol3D.release() );
+    return renderer3D;
+  }
+  return nullptr;
 }

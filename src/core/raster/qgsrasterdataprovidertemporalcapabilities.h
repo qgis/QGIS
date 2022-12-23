@@ -47,6 +47,20 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
     QgsRasterDataProviderTemporalCapabilities( bool enabled = false );
 
     /**
+     * Returns the capability flags for the provider.
+     *
+     * \since QGIS 3.28
+     */
+    Qgis::RasterTemporalCapabilityFlags flags() const;
+
+    /**
+     * Sets the capability flags for the provider.
+     *
+     * \since QGIS 3.28
+     */
+    void setFlags( Qgis::RasterTemporalCapabilityFlags flags );
+
+    /**
      * Returns the desired method to use when resolving a temporal interval to matching
      * layers or bands in the data provider.
      *
@@ -182,6 +196,8 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
 
     //! Interval handling method
     Qgis::TemporalIntervalMatchMethod mIntervalMatchMethod = Qgis::TemporalIntervalMatchMethod::MatchUsingWholeRange;
+
+    Qgis::RasterTemporalCapabilityFlags mFlags;
 
     friend class QgsRasterLayerRenderer;
     friend class TestQgsRasterDataProviderTemporalCapabilities;

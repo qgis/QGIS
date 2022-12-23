@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Create a New MSSQL Connection</string>
+   <string>Create a New MS SQL Server Connection</string>
   </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>

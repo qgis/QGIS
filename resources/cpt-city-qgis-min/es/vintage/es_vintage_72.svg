@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="ES Vintage 72" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(26,30,31)" stop-opacity="1.0000"/>
+        <stop offset="7.79%" stop-color="rgb(57,15,30)" stop-opacity="1.0000"/>
+        <stop offset="14.99%" stop-color="rgb(89,0,30)" stop-opacity="1.0000"/>
+        <stop offset="16.99%" stop-color="rgb(214,218,217)" stop-opacity="1.0000"/>
+        <stop offset="18.99%" stop-color="rgb(54,18,32)" stop-opacity="1.0000"/>
+        <stop offset="50.00%" stop-color="rgb(73,5,27)" stop-opacity="1.0000"/>
+        <stop offset="81.01%" stop-color="rgb(54,18,32)" stop-opacity="1.0000"/>
+        <stop offset="83.01%" stop-color="rgb(214,218,217)" stop-opacity="1.0000"/>
+        <stop offset="85.01%" stop-color="rgb(89,0,30)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(26,30,31)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#ES Vintage 72)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:38:51 2012"/>
+  </metadata>
+</svg>

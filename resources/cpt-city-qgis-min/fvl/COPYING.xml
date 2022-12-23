@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author>
+      <name>Felix von Luschan</name>
+    </author>
+    <author>
+      <name>R. Biasutti</name>
+    </author>
+    <author href="http://en.wikipedia.org/wiki/User:Dark_Tea">
+      <name>Dark Tea</name>
+      <alias>Dark Tichondrias</alias>
+    </author>
+    <author href="http://en.wikipedia.org/wiki/User:Dbachmann">
+      <name>Dbachmann</name>
+    </author>
+  </authors>
+  <license>
+    <informal>Attribution and share-alike required</informal>
+    <year>2010</year>
+    <text href="http://creativecommons.org/licenses/by-sa/3.0/"/>
+  </license>
+  <src>
+    <format>png images</format>
+    <link href="http://en.wikipedia.org/wiki/File:Unlabeled_Renatto_Luschan_Skin_color_map.png">von-luschan-red</link>
+    <link href="http://en.wikipedia.org/wiki/File:Felix_von_Luschan_Skin_Color_chart.svg">von-luschan</link>
+    <link href="http://commons.wikimedia.org/wiki/File:Map_of_skin_hue_equi.png">biasutti</link>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="cc3"/>
+  </distribute>
+</copying>

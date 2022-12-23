@@ -714,6 +714,28 @@ class TestQgsRasterLayer(unittest.TestCase):
 
         self.assertTrue(checker.runTest("expected_raster_invertcolors"), "Invert colors rendering test failed")
 
+    def testInvertSemiOpaqueColors(self):
+        """ test raster invert colors filter"""
+        path = os.path.join(unitTestDataPath(),
+                            'landsat_4326.tif')
+        info = QFileInfo(path)
+        base_name = info.baseName()
+        layer = QgsRasterLayer(path, base_name)
+        self.assertTrue(layer.isValid(), 'Raster not loaded: {}'.format(path))
+
+        layer.setOpacity(0.33)
+        layer.hueSaturationFilter().setInvertColors(True)
+
+        ms = QgsMapSettings()
+        ms.setLayers([layer])
+        ms.setExtent(layer.extent())
+
+        checker = QgsRenderChecker()
+        checker.setControlName("expected_raster_invertsemiopaquecolors")
+        checker.setMapSettings(ms)
+
+        self.assertTrue(checker.runTest("expected_raster_invertsemiopaquecolors"), "Invert colors rendering test failed")
+
     def testPalettedColorTableToClassData(self):
         entries = [QgsColorRampShader.ColorRampItem(5, QColor(255, 0, 0), 'item1'),
                    QgsColorRampShader.ColorRampItem(3, QColor(0, 255, 0), 'item2'),
@@ -944,10 +966,10 @@ class TestQgsRasterLayer(unittest.TestCase):
         self.assertEqual(classes[0].color.name(), '#c80000')
         self.assertEqual(classes[1].color.name(), '#b21600')
         self.assertEqual(classes[2].color.name(), '#9c2c00')
-        self.assertEqual(classes[3].color.name(), '#854200')
+        self.assertIn(classes[3].color.name(), ('#854200', '#854300'))
         self.assertEqual(classes[4].color.name(), '#6f5900')
         self.assertEqual(classes[5].color.name(), '#596f00')
-        self.assertEqual(classes[6].color.name(), '#428500')
+        self.assertIn(classes[6].color.name(), ('#428500', '#438500'))
         self.assertEqual(classes[7].color.name(), '#2c9c00')
         self.assertEqual(classes[8].color.name(), '#16b200')
         self.assertEqual(classes[9].color.name(), '#00c800')

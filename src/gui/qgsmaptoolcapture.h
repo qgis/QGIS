@@ -22,7 +22,6 @@
 #include "qgscompoundcurve.h"
 #include "qgsgeometry.h"
 #include "qobjectuniqueptr.h"
-#include "qgssnappingutils.h"
 
 #include <QPoint>
 #include <QList>
@@ -156,6 +155,8 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * Returns the rubberBand currently owned by this map tool and
      * transfers ownership to the caller.
      *
+     * May be NULLPTR.
+     *
      * \since QGIS 3.8
      */
     QgsRubberBand *takeRubberBand() SIP_FACTORY;
@@ -242,7 +243,12 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     /**
      * Fetches the original point from the source layer if it has the same
      * CRS as the current layer.
-     * \returns 0 in case of success, 1 if not applicable (CRS mismatch), 2 in case of failure
+     * If topological editing is activated, the points are projected to the
+     * current layer CRS.
+     * \returns
+     *  0 in case of success
+     *  1 if not applicable (CRS mismatch / invalid layer)
+     *  2 in case of failure
      * \since QGIS 2.14
      */
     int fetchLayerPoint( const QgsPointLocator::Match &match, QgsPoint &layerPoint );
@@ -391,7 +397,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     QObjectUniquePtr<QgsRubberBand> mRubberBand;
 
     //! Temporary rubber band for polylines and polygons. this connects the last added point to the mouse cursor position
-    std::unique_ptr<QgsMapToolCaptureRubberBand> mTempRubberBand;
+    QObjectParentUniquePtr<QgsMapToolCaptureRubberBand> mTempRubberBand;
 
     //! List to store the points of digitized lines and polygons (in layer coordinates)
     QgsCompoundCurve mCaptureCurve;
@@ -427,7 +433,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     Qgis::CaptureTechnique mCurrentCaptureTechnique = Qgis::CaptureTechnique::StraightSegments;
 
-    QgsMapToolShapeAbstract *mCurrentShapeMapTool = nullptr;
+    QObjectUniquePtr< QgsMapToolShapeAbstract > mCurrentShapeMapTool;
 
     bool mAllowAddingStreamingPoints = false;
     int mStreamingToleranceInPixels = 1;

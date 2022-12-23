@@ -182,4 +182,21 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     void cleanGroup( QgsLayerTreeNode *node );
 };
 
+class SnapTypeMenu: public QMenu
+{
+    Q_OBJECT
+  public:
+    SnapTypeMenu( const QString &title, QWidget *parent = nullptr )
+      : QMenu( title, parent ) {}
+
+    void mouseReleaseEvent( QMouseEvent *e )
+    {
+      QAction *action = activeAction();
+      if ( action )
+        action->trigger();
+      else
+        QMenu::mouseReleaseEvent( e );
+    }
+};
+
 #endif

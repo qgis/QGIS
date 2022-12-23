@@ -25,6 +25,21 @@ class QgsFeatureRenderer;
 class QgsSymbolLayer;
 class QgsSymbolLayerId;
 
+
+#ifndef SIP_RUN
+
+struct QgsMaskedLayer
+{
+  bool hasEffects = false;
+
+  // masked symbol layers
+  QSet<QgsSymbolLayerId> symbolLayerIds;
+};
+
+typedef QHash<QString, QgsMaskedLayer> QgsMaskedLayers;
+
+#endif
+
 /**
  * \ingroup core
  * \class QgsVectorLayerUtils
@@ -336,7 +351,7 @@ class CORE_EXPORT QgsVectorLayerUtils
       * \note Not available in Python bindings
       * \since QGIS 3.12
       */
-    static QHash<QString, QHash<QString, QSet<QgsSymbolLayerId>>> labelMasks( const QgsVectorLayer * ) SIP_SKIP;
+    static QHash<QString, QgsMaskedLayers> labelMasks( const QgsVectorLayer * ) SIP_SKIP;
 
     /**
      * Returns all masks that may be defined on symbol layers for a given vector layer.
@@ -345,7 +360,7 @@ class CORE_EXPORT QgsVectorLayerUtils
      * \note Not available in Python bindings
      * \since QGIS 3.12
      */
-    static QHash<QString, QSet<QgsSymbolLayerId>> symbolLayerMasks( const QgsVectorLayer * ) SIP_SKIP;
+    static QgsMaskedLayers symbolLayerMasks( const QgsVectorLayer * ) SIP_SKIP;
 
     /**
      * \returns a descriptive string for a \a feature, suitable for displaying to the user.

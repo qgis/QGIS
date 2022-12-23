@@ -35,7 +35,7 @@ QgsFieldProxyModel *QgsFieldProxyModel::setFilters( QgsFieldProxyModel::Filters 
 bool QgsFieldProxyModel::isReadOnly( const QModelIndex &index ) const
 {
   const QVariant originVariant = sourceModel()->data( index, QgsFieldModel::FieldOriginRole );
-  if ( originVariant.isNull() )
+  if ( QgsVariantUtils::isNull( originVariant ) )
   {
     //expression
     return true;
@@ -91,7 +91,7 @@ bool QgsFieldProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
   const QVariant typeVar = sourceModel()->data( index, QgsFieldModel::FieldTypeRole );
 
   // if expression, consider valid
-  if ( typeVar.isNull() )
+  if ( QgsVariantUtils::isNull( typeVar ) )
     return true;
 
   bool ok;

@@ -1,5 +1,0 @@
-Fourier Transformation (OpenCV)
-imagery_opencv
-QgsProcessingParameterRasterLayer|INPUT|Input|None|False
-QgsProcessingParameterRasterDestination|REAL|Fourier Transformation (Real)
-QgsProcessingParameterRasterDestination|IMAG|Fourier Transformation (Imaginary)

@@ -1,7 +1,0 @@
-Spatial Point Pattern Analysis
-statistics_points
-QgsProcessingParameterFeatureSource|POINTS|Points|0|None|False
-QgsProcessingParameterNumber|STEP|Vertex Distance [Degree]|QgsProcessingParameterNumber.Integer|5|False|None|None
-QgsProcessingParameterVectorDestination|CENTRE|Mean Centre
-QgsProcessingParameterVectorDestination|STDDIST|Standard Distance
-QgsProcessingParameterVectorDestination|BBOX|Bounding Box

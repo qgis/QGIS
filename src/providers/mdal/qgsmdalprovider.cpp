@@ -27,6 +27,7 @@
 
 #include <QFileInfo>
 #include <QRegularExpression>
+#include <QIcon>
 #include <mutex>
 
 const QString QgsMdalProvider::MDAL_PROVIDER_KEY = QStringLiteral( "mdal" );
@@ -1146,7 +1147,6 @@ QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const
     static std::once_flag initialized;
     std::call_once( initialized, [ = ]( )
     {
-      QStringList meshExtensions;
       QStringList datasetsExtensions;
       QgsMdalProvider::fileMeshExtensions( sExtensions, datasetsExtensions );
       Q_UNUSED( datasetsExtensions )
@@ -1213,6 +1213,11 @@ QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const
     layerIndex++;
   }
   return res;
+}
+
+QList<QgsMapLayerType> QgsMdalProviderMetadata::supportedLayerTypes() const
+{
+  return { QgsMapLayerType::MeshLayer };
 }
 
 QString QgsMdalProviderMetadata::filters( FilterType type )
@@ -1285,6 +1290,11 @@ QList<QgsMeshDriverMetadata> QgsMdalProviderMetadata::meshDriversMetadata()
 QgsMdalProviderMetadata::QgsMdalProviderMetadata()
   : QgsProviderMetadata( QgsMdalProvider::MDAL_PROVIDER_KEY, QgsMdalProvider::MDAL_PROVIDER_DESCRIPTION )
 {}
+
+QIcon QgsMdalProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconMeshLayer.svg" ) );
+}
 
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {

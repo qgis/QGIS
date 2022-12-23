@@ -279,6 +279,7 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
     bool getTableContents( QgsLayoutTableContents &contents ) override;
 
     QgsConditionalStyle conditionalCellStyle( int row, int column ) const override;
+    QgsTextFormat textFormatForCell( int row, int column ) const override;
     QgsExpressionContextScope *scopeForCell( int row, int column ) const override SIP_FACTORY;
 
     QgsExpressionContext createExpressionContext() const override;

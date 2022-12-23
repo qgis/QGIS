@@ -19,7 +19,6 @@
 #include <QListView>
 #include "qgis_sip.h"
 #include <qdebug.h>
-#include "qgsactionmenu.h"
 
 #include "qgsfeature.h" // For QgsFeatureIds
 #include "qgis_gui.h"
@@ -34,6 +33,7 @@ class QgsVectorLayer;
 class QgsVectorLayerCache;
 class QgsFeatureListViewDelegate;
 class QRect;
+class QgsActionMenu;
 
 /**
  * \ingroup gui
@@ -251,7 +251,16 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     QgsIFeatureSelectionManager *mOwnedFeatureSelectionManager = nullptr;
     QgsIFeatureSelectionManager *mFeatureSelectionManager = nullptr;
     QgsFeatureListViewDelegate *mItemDelegate = nullptr;
-    bool mEditSelectionDrag = false; // Is set to true when the user initiated a left button click over an edit button and still keeps pressing //!< TODO
+
+    enum class DragMode
+    {
+      Inactive,
+      ExpandSelection,
+      MoveSelection
+    };
+
+    DragMode mDragMode = DragMode::Inactive;
+
     int mRowAnchor = 0;
     QItemSelectionModel::SelectionFlags mCtrlDragSelectionFlag;
 

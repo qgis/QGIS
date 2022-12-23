@@ -39,6 +39,10 @@
 #include "providers/ept/qgseptprovider.h"
 #endif
 
+#ifdef HAVE_COPC
+#include "providers/copc/qgscopcprovider.h"
+#endif
+
 #include "qgsruntimeprofiler.h"
 #include "qgsfileutils.h"
 
@@ -167,16 +171,14 @@ class PdalUnusableUriHandlerInterface : public QgsProviderRegistry::UnusableUriH
 void QgsProviderRegistry::init()
 {
   // add static providers
-  Q_NOWARN_DEPRECATED_PUSH
   {
     const QgsScopedRuntimeProfile profile( QObject::tr( "Create memory layer provider" ) );
-    mProviders[ QgsMemoryProvider::providerKey() ] = new QgsProviderMetadata( QgsMemoryProvider::providerKey(), QgsMemoryProvider::providerDescription(), &QgsMemoryProvider::createProvider );
+    mProviders[ QgsMemoryProvider::providerKey() ] = new QgsMemoryProviderMetadata();
   }
   {
     const QgsScopedRuntimeProfile profile( QObject::tr( "Create mesh memory layer provider" ) );
-    mProviders[ QgsMeshMemoryDataProvider::providerKey() ] = new QgsProviderMetadata( QgsMeshMemoryDataProvider::providerKey(), QgsMeshMemoryDataProvider::providerDescription(), &QgsMeshMemoryDataProvider::createProvider );
+    mProviders[ QgsMeshMemoryDataProvider::providerKey() ] = new QgsMeshMemoryProviderMetadata();
   }
-  Q_NOWARN_DEPRECATED_POP
   {
     const QgsScopedRuntimeProfile profile( QObject::tr( "Create GDAL provider" ) );
     mProviders[ QgsGdalProvider::providerKey() ] = new QgsGdalProviderMetadata();
@@ -197,7 +199,13 @@ void QgsProviderRegistry::init()
     mProviders[ pc->key() ] = pc;
   }
 #endif
-
+#ifdef HAVE_COPC
+  {
+    const QgsScopedRuntimeProfile profile( QObject::tr( "Create COPC point cloud provider" ) );
+    QgsProviderMetadata *pc = new QgsCopcProviderMetadata();
+    mProviders[ pc->key() ] = pc;
+  }
+#endif
   registerUnusableUriHandler( new PdalUnusableUriHandlerInterface() );
 
 #ifdef HAVE_STATIC_PROVIDERS
@@ -699,6 +707,19 @@ QString QgsProviderRegistry::loadStyle( const QString &providerKey, const QStrin
   return ret;
 }
 
+QString QgsProviderRegistry::loadStoredStyle( const QString &providerKey, const QString &uri, QString &styleName, QString &errCause )
+{
+  QString ret;
+  QgsProviderMetadata *meta = findMetadata_( mProviders, providerKey );
+  if ( meta )
+    ret = meta->loadStoredStyle( uri, styleName, errCause );
+  else
+  {
+    errCause = QObject::tr( "Unable to load %1 provider" ).arg( providerKey );
+  }
+  return ret;
+}
+
 bool QgsProviderRegistry::saveLayerMetadata( const QString &providerKey, const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage )
 {
   errorMessage.clear();
@@ -743,7 +764,7 @@ QWidget *QgsProviderRegistry::createSelectionWidget( const QString &providerKey,
 }
 
 QFunctionPointer QgsProviderRegistry::function( QString const &providerKey,
-    QString const &functionName )
+    QString const &functionName ) const
 {
   Q_NOWARN_DEPRECATED_PUSH
   const QString lib = library( providerKey );
@@ -865,6 +886,17 @@ QStringList QgsProviderRegistry::providerList() const
 QgsProviderMetadata *QgsProviderRegistry::providerMetadata( const QString &providerKey ) const
 {
   return findMetadata_( mProviders, providerKey );
+}
+
+QSet<QString> QgsProviderRegistry::providersForLayerType( QgsMapLayerType type ) const
+{
+  QSet<QString> lst;
+  for ( Providers::const_iterator it = mProviders.begin(); it != mProviders.end(); ++it )
+  {
+    if ( it->second->supportedLayerTypes().contains( type ) )
+      lst.insert( it->first );
+  }
+  return lst;
 }
 
 QList<QgsProviderRegistry::ProviderCandidateDetails> QgsProviderRegistry::preferredProvidersForUri( const QString &uri ) const

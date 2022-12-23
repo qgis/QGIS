@@ -187,9 +187,22 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
      * Returns the list of field names to use for joining considering
      * blocklisted fields and subset.
      *
+     * \warning This method is NOT thread safe, and MUST be called from the thread where the vector layers
+     * participating in the join reside. See variant which accepts a QgsFields argument for a thread safe alternative.
+     *
      * \since QGIS 3.0
      */
     static QStringList joinFieldNamesSubset( const QgsVectorLayerJoinInfo &info, bool blocklisted = true );
+
+    /**
+     * Returns the list of field names to use for joining considering
+     * blocklisted fields and subset.
+     *
+     * This method is thread safe.
+     *
+     * \since QGIS 3.30
+     */
+    static QStringList joinFieldNamesSubset( const QgsVectorLayerJoinInfo &info, const QgsFields &joinLayerFields, bool blocklisted = true );
 
     bool operator==( const QgsVectorLayerJoinInfo &other ) const
     {

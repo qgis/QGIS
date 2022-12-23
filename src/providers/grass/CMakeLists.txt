@@ -62,7 +62,7 @@ macro(ADD_GRASSLIB GRASS_BUILD_VERSION)
       )
     endif()
 
-    if (WITH_QT6)
+    if (BUILD_WITH_QT6)
       QT6_WRAP_UI (GRASS_LIBRARY_UIS_H
 	../qgsgrassoptionsbase.ui
       )

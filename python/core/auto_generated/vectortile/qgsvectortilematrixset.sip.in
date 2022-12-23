@@ -22,7 +22,7 @@ Encapsulates properties of a vector tile matrix set, including tile origins and 
 %End
   public:
 
-    static QgsVectorTileMatrixSet fromWebMercator();
+    static QgsVectorTileMatrixSet fromWebMercator( int minimumZoom = 0, int maximumZoom = 14 );
 %Docstring
 Returns a vector tile structure corresponding to the standard web mercator/GoogleCRS84Quad setup.
 %End

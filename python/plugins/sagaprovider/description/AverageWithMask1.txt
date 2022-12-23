@@ -1,8 +1,0 @@
-Average With Mask 1
-contrib_perego
-QgsProcessingParameterRasterLayer|INPUT|Input|None|False
-QgsProcessingParameterRasterLayer|MASK|Mask Grid|None|False
-QgsProcessingParameterRasterDestination|RESULT|AWM1 Grid
-QgsProcessingParameterNumber|V|Mask value|QgsProcessingParameterNumber.Double|1.000000|False|None|None
-QgsProcessingParameterNumber|RX|Radius X|QgsProcessingParameterNumber.Integer|1|False|1|None
-QgsProcessingParameterNumber|RY|Radius Y|QgsProcessingParameterNumber.Integer|1|False|1|None

@@ -25,6 +25,8 @@
  */
 class QuantizedMeshTerrainGenerator : public QgsTerrainGenerator
 {
+    Q_OBJECT
+
   public:
     QuantizedMeshTerrainGenerator();
 

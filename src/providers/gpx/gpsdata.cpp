@@ -148,11 +148,7 @@ void QgsTrack::writeXml( QTextStream &stream )
 QgsGpsData::DataMap QgsGpsData::sDataObjects;
 
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-QMutex QgsGpsData::sDataObjectsMutex { QMutex::Recursive };
-#else
 QRecursiveMutex QgsGpsData::sDataObjectsMutex;
-#endif
 
 QgsGpsData::QgsGpsData()
 {

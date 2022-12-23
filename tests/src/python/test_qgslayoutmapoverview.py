@@ -28,7 +28,12 @@ from qgis.core import (QgsLayoutItemMap,
                        QgsFillSymbol,
                        QgsSingleSymbolRenderer,
                        QgsCoordinateReferenceSystem,
-                       QgsLayoutItemMapOverview)
+                       QgsLayoutItemMapOverview,
+                       QgsFeature,
+                       QgsSymbolLayer,
+                       QgsProperty,
+                       QgsGeometry,
+                       QgsPointXY)
 
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -183,7 +188,11 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         layer = overviewMap.overview().asMapLayer()
         self.assertIsNotNone(layer)
         self.assertTrue(layer.isValid())
-        self.assertEqual([f.geometry().asWkt() for f in layer.getFeatures()], ['Polygon ((96 -120, 160 -120, 160 -152, 96 -152, 96 -120))'])
+        geoms = [f.geometry() for f in layer.getFeatures()]
+        for g in geoms:
+            g.normalize()
+
+        self.assertEqual([g.asWkt() for g in geoms], ['Polygon ((96 -152, 96 -120, 160 -120, 160 -152, 96 -152))'])
 
         # check that layer has correct renderer
         fill_symbol = QgsFillSymbol.createSimple({'color': '#00ff00', 'outline_color': '#ff0000', 'outline_width': '10'})
@@ -202,22 +211,34 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         # should have no effect
         overviewMap.setMapRotation(45)
         layer = overviewMap.overview().asMapLayer()
-        self.assertEqual([f.geometry().asWkt() for f in layer.getFeatures()], ['Polygon ((96 -120, 160 -120, 160 -152, 96 -152, 96 -120))'])
+        geoms = [f.geometry() for f in layer.getFeatures()]
+        for g in geoms:
+            g.normalize()
+        self.assertEqual([g.asWkt() for g in geoms], ['Polygon ((96 -152, 96 -120, 160 -120, 160 -152, 96 -152))'])
 
         map.setMapRotation(15)
         layer = overviewMap.overview().asMapLayer()
-        self.assertEqual([f.geometry().asWkt(0) for f in layer.getFeatures()], ['Polygon ((93 -129, 155 -112, 163 -143, 101 -160, 93 -129))'])
+        geoms = [f.geometry() for f in layer.getFeatures()]
+        for g in geoms:
+            g.normalize()
+        self.assertEqual([g.asWkt(0) for g in geoms], ['Polygon ((93 -129, 155 -112, 163 -143, 101 -160, 93 -129))'])
 
         # with reprojection
         map.setCrs(QgsCoordinateReferenceSystem('EPSG:3875'))
         layer = overviewMap.overview().asMapLayer()
-        self.assertEqual([f.geometry().asWkt(0) for f in layer.getFeatures()], ['Polygon ((93 -129, 96 -128, 99 -127, 102 -126, 105 -126, 108 -125, 111 -124, 114 -123, 116 -123, 119 -122, 122 -121, 125 -120, 128 -119, 131 -119, 134 -118, 137 -117, 140 -116, 143 -115, 146 -115, 149 -114, 152 -113, 155 -112, 155 -114, 156 -115, 156 -117, 156 -118, 157 -120, 157 -121, 158 -123, 158 -124, 158 -126, 159 -127, 159 -128, 160 -130, 160 -131, 160 -133, 161 -134, 161 -136, 161 -137, 162 -139, 162 -140, 163 -142, 163 -143, 160 -144, 157 -145, 154 -146, 151 -146, 148 -147, 145 -148, 142 -149, 140 -149, 137 -150, 134 -151, 131 -152, 128 -153, 125 -153, 122 -154, 119 -155, 116 -156, 113 -157, 110 -157, 107 -158, 104 -159, 101 -160, 101 -158, 100 -157, 100 -155, 100 -154, 99 -152, 99 -151, 98 -149, 98 -148, 98 -146, 97 -145, 97 -144, 96 -142, 96 -141, 96 -139, 95 -138, 95 -136, 95 -135, 94 -133, 94 -132, 93 -130, 93 -129))'])
+        geoms = [f.geometry() for f in layer.getFeatures()]
+        for g in geoms:
+            g.normalize()
+        self.assertEqual([g.asWkt(0) for g in geoms], ['Polygon ((93 -129, 96 -128, 99 -127, 102 -126, 105 -126, 108 -125, 111 -124, 114 -123, 116 -123, 119 -122, 122 -121, 125 -120, 128 -119, 131 -119, 134 -118, 137 -117, 140 -116, 143 -115, 146 -115, 149 -114, 152 -113, 155 -112, 155 -114, 156 -115, 156 -117, 156 -118, 157 -120, 157 -121, 158 -123, 158 -124, 158 -126, 159 -127, 159 -128, 160 -130, 160 -131, 160 -133, 161 -134, 161 -136, 161 -137, 162 -139, 162 -140, 163 -142, 163 -143, 160 -144, 157 -145, 154 -146, 151 -146, 148 -147, 145 -148, 142 -149, 140 -149, 137 -150, 134 -151, 131 -152, 128 -153, 125 -153, 122 -154, 119 -155, 116 -156, 113 -157, 110 -157, 107 -158, 104 -159, 101 -160, 101 -158, 100 -157, 100 -155, 100 -154, 99 -152, 99 -151, 98 -149, 98 -148, 98 -146, 97 -145, 97 -144, 96 -142, 96 -141, 96 -139, 95 -138, 95 -136, 95 -135, 94 -133, 94 -132, 93 -130, 93 -129))'])
 
         map.setCrs(overviewMap.crs())
         # with invert
         overviewMap.overview().setInverted(True)
         layer = overviewMap.overview().asMapLayer()
-        self.assertEqual([f.geometry().asWkt(0) for f in layer.getFeatures()], ['Polygon ((-53 -128, 128 53, 309 -128, 128 -309, -53 -128),(93 -129, 101 -160, 163 -143, 155 -112, 93 -129))'])
+        geoms = [f.geometry() for f in layer.getFeatures()]
+        for g in geoms:
+            g.normalize()
+        self.assertEqual([g.asWkt(0) for g in geoms], ['Polygon ((-53 -128, 128 53, 309 -128, 128 -309, -53 -128),(93 -129, 101 -160, 163 -143, 155 -112, 93 -129))'])
 
     def test_StackingPosition(self):
         l = QgsLayout(QgsProject.instance())
@@ -324,6 +345,64 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         overviewMap.overview().setStackingLayer(self.raster_layer)
 
         checker = QgsLayoutChecker('composermap_overview_abovemap', l)
+        checker.setColorTolerance(6)
+        checker.setControlPathPrefix("composer_mapoverview")
+        myTestResult, myMessage = checker.testLayout()
+        self.report += checker.report()
+        self.assertTrue(myTestResult, myMessage)
+
+    def testOverviewExpressionContextStacking(self):
+        atlas_layer = QgsVectorLayer("Point?crs=epsg:4326&field=attr:int(1)&field=label:string(20)", "points", "memory")
+
+        atlas_feature1 = QgsFeature(atlas_layer.fields())
+        atlas_feature1.setAttributes([5, 'a'])
+        atlas_feature1.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(55, 55)))
+        atlas_layer.dataProvider().addFeature(atlas_feature1)
+        atlas_feature2 = QgsFeature(atlas_layer.fields())
+        atlas_feature2.setAttributes([15, 'b'])
+        atlas_feature2.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(55, 55)))
+        atlas_layer.dataProvider().addFeature(atlas_feature2)
+
+        l = QgsLayout(QgsProject.instance())
+        l.initializeDefaults()
+        map = QgsLayoutItemMap(l)
+        map.attemptSetSceneRect(QRectF(20, 20, 200, 100))
+        map.setFrameEnabled(True)
+        map.setLayers([atlas_layer])
+        l.addLayoutItem(map)
+
+        overviewMap = QgsLayoutItemMap(l)
+        overviewMap.attemptSetSceneRect(QRectF(20, 130, 70, 70))
+        l.addLayoutItem(overviewMap)
+        overviewMap.setFrameEnabled(True)
+        overviewMap.setLayers([atlas_layer])
+        # zoom in
+        myRectangle = QgsRectangle(96, -152, 160, -120)
+        map.setExtent(myRectangle)
+        myRectangle2 = QgsRectangle(-20, -276, 276, 20)
+        overviewMap.setExtent(myRectangle2)
+        overviewMap.overview().setLinkedMap(map)
+        overviewMap.overview().setStackingPosition(QgsLayoutItemMapItem.StackAboveMapLayer)
+        overviewMap.overview().setStackingLayer(atlas_layer)
+
+        fill_symbol = QgsFillSymbol.createSimple({'color': '#0000ff', 'outline_style': 'no'})
+        fill_symbol[0].setDataDefinedProperty(QgsSymbolLayer.PropertyFillColor, QgsProperty.fromExpression('case when label=\'a\' then \'red\' else \'green\' end'))
+
+        overviewMap.overview().setFrameSymbol(fill_symbol)
+
+        l.reportContext().setLayer(atlas_layer)
+        l.reportContext().setFeature(atlas_feature1)
+
+        checker = QgsLayoutChecker('composermap_overview_atlas_1', l)
+        checker.setColorTolerance(6)
+        checker.setControlPathPrefix("composer_mapoverview")
+        myTestResult, myMessage = checker.testLayout()
+        self.report += checker.report()
+        self.assertTrue(myTestResult, myMessage)
+
+        l.reportContext().setFeature(atlas_feature2)
+
+        checker = QgsLayoutChecker('composermap_overview_atlas_2', l)
         checker.setColorTolerance(6)
         checker.setControlPathPrefix("composer_mapoverview")
         myTestResult, myMessage = checker.testLayout()

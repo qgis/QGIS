@@ -28,6 +28,9 @@ QgsWmtsDimensions::QgsWmtsDimensions( const QgsWmtsTileLayer &layer, QWidget *pa
   setupUi( this );
 
   QStringList dims = layer.dimensions.keys();
+  // time dimension gets special handling (through the temporal framework)
+  dims.removeAll( layer.timeDimensionIdentifier );
+
   std::sort( dims.begin(), dims.end() );
 
   mDimensions->setRowCount( dims.size() );
@@ -50,9 +53,9 @@ QgsWmtsDimensions::QgsWmtsDimensions( const QgsWmtsTileLayer &layer, QWidget *pa
   QgsGui::enableAutoGeometryRestore( this );
 }
 
-void QgsWmtsDimensions::selectedDimensions( QHash<QString, QString> &selected )
+QHash<QString, QString> QgsWmtsDimensions::selectedDimensions() const
 {
-  selected.clear();
+  QHash<QString, QString> selected;
 
   for ( int i = 0; i < mDimensions->rowCount(); i++ )
   {
@@ -60,4 +63,6 @@ void QgsWmtsDimensions::selectedDimensions( QHash<QString, QString> &selected )
     Q_ASSERT( cb );
     selected.insert( mDimensions->item( i, 0 )->text(), cb->currentText() );
   }
+
+  return selected;
 }

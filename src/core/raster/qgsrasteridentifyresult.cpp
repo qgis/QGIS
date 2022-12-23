@@ -22,7 +22,7 @@
 #include "qgsrasteridentifyresult.h"
 #include "qgsrasterdataprovider.h"
 
-QgsRasterIdentifyResult::QgsRasterIdentifyResult( QgsRaster::IdentifyFormat format, const QMap<int, QVariant> &results )
+QgsRasterIdentifyResult::QgsRasterIdentifyResult( Qgis::RasterIdentifyFormat format, const QMap<int, QVariant> &results )
   : mValid( true )
   , mFormat( format )
   , mResults( results )

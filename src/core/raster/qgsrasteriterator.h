@@ -41,6 +41,25 @@ class CORE_EXPORT QgsRasterIterator
     QgsRasterIterator( QgsRasterInterface *input );
 
     /**
+     * Given an overall raster extent and width and height in pixels, calculates the sub region
+     * of the raster covering the specified \a subRegion.
+     *
+     * \param rasterExtent overall raster extent
+     * \param rasterWidth overall raster width
+     * \param rasterHeight overall raster height
+     * \param subRegion desired sub region extent
+     * \param subRegionWidth width in pixels of sub region
+     * \param subRegionHeight height in pixels of sub region
+     * \param subRegionLeft starting column of left side of sub region
+     * \param subRegionTop starting row of top side of sub region
+     *
+     * \returns sub region geographic extent, snapped to exact pixel boundaries
+     *
+     * \since QGIS 3.26
+     */
+    static QgsRectangle subRegion( const QgsRectangle &rasterExtent, int rasterWidth, int rasterHeight, const QgsRectangle &subRegion, int &subRegionWidth SIP_OUT, int &subRegionHeight SIP_OUT, int &subRegionLeft SIP_OUT, int &subRegionTop SIP_OUT );
+
+    /**
      * Start reading of raster band. Raster data can then be retrieved by calling readNextRasterPart until it returns FALSE.
      * \param bandNumber number of raster band to read
      * \param nCols number of columns

@@ -316,6 +316,14 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
         )
         self.assertRegex(exp.evalErrorString(), regex)
 
+    def testBetween(self):
+
+        e = QgsExpression()
+        e.setExpression("'b'")
+        self.assertTrue(e.isValid(), e.parserErrorString())
+        e.setExpression("'b' between 'a' AND 'c'")
+        self.assertTrue(e.isValid(), e.parserErrorString())
+
 
 if __name__ == "__main__":
     unittest.main()

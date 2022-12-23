@@ -17,7 +17,7 @@
 
 #include "qgslogger.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgssettings.h"
+#include "qgsrendercontext.h"
 
 QgsTileMatrix QgsTileMatrix::fromWebMercator( int zoomLevel )
 {
@@ -142,11 +142,23 @@ void QgsTileMatrixSet::addGoogleCrs84QuadTiles( int minimumZoom, int maximumZoom
   {
     addMatrix( QgsTileMatrix::fromWebMercator( zoom ) );
   }
+
+  mRootMatrix = QgsTileMatrix::fromWebMercator( 0 );
 }
 
 QgsTileMatrix QgsTileMatrixSet::tileMatrix( int zoom ) const
 {
   return mTileMatrices.value( zoom );
+}
+
+QgsTileMatrix QgsTileMatrixSet::rootMatrix() const
+{
+  return mRootMatrix;
+}
+
+void QgsTileMatrixSet::setRootMatrix( const QgsTileMatrix &matrix )
+{
+  mRootMatrix = matrix;
 }
 
 void QgsTileMatrixSet::addMatrix( const QgsTileMatrix &matrix )
@@ -257,34 +269,94 @@ int QgsTileMatrixSet::scaleToZoomLevel( double scale ) const
   return std::clamp( tileZoom, minimumZoom(), maximumZoom() );
 }
 
+double QgsTileMatrixSet::scaleForRenderContext( const QgsRenderContext &context ) const
+{
+  return calculateTileScaleForMap( context.rendererScale(),
+                                   context.coordinateTransform().destinationCrs(),
+                                   context.mapExtent(),
+                                   context.outputSize(),
+                                   context.painter()->device()->logicalDpiX() );
+}
+
+double QgsTileMatrixSet::calculateTileScaleForMap( double actualMapScale, const QgsCoordinateReferenceSystem &mapCrs, const QgsRectangle &mapExtent, const QSize mapSize, const double mapDpi ) const
+{
+  switch ( mScaleToTileZoomMethod )
+  {
+    case Qgis::ScaleToTileZoomLevelMethod::MapBox:
+      return actualMapScale;
+
+    case Qgis::ScaleToTileZoomLevelMethod::Esri:
+      if ( mapCrs.isGeographic() )
+      {
+        // ESRI calculates the scale for geographic CRS ***ALWAYS*** at the equator, regardless of map extent!
+        // see https://support.esri.com/en/technical-article/000007211, https://gis.stackexchange.com/questions/33270/how-does-arcmap-calculate-scalebar-inside-a-wgs84-layout
+        constexpr double METERS_PER_DEGREE = M_PI / 180.0 * 6378137;
+        constexpr double INCHES_PER_METER = 39.370078;
+        const double mapWidthInches = mapExtent.width() * METERS_PER_DEGREE * INCHES_PER_METER;
+
+        double scale = mapWidthInches * mapDpi / static_cast< double >( mapSize.width() );
+
+        // Note: I **think** there's also some magic which ESRI applies when rendering tiles ON SCREEN,
+        // which may be something like adjusting the scale based on the ratio between the map DPI and 96 DPI,
+        // e.g. scale *= mapDpi / 96.0;
+        // BUT the same adjustment isn't applied when exporting maps. This needs further investigation!
+
+        return scale;
+      }
+      else
+      {
+        return actualMapScale;
+      }
+  }
+  BUILTIN_UNREACHABLE
+}
+
 bool QgsTileMatrixSet::readXml( const QDomElement &element, QgsReadWriteContext & )
 {
   mTileMatrices.clear();
 
   mScaleToTileZoomMethod = qgsEnumKeyToValue( element.attribute( QStringLiteral( "scaleToZoomMethod" ) ), Qgis::ScaleToTileZoomLevelMethod::MapBox );
 
-  const QDomNodeList children = element.childNodes();
-  for ( int i = 0; i < children.size(); i++ )
+  auto readMatrixFromElement = []( const QDomElement & matrixElement )->QgsTileMatrix
   {
-    const QDomElement matrixElement = children.at( i ).toElement();
-
     QgsTileMatrix matrix;
     matrix.mZoomLevel = matrixElement.attribute( QStringLiteral( "zoomLevel" ) ).toInt();
     matrix.mMatrixWidth = matrixElement.attribute( QStringLiteral( "matrixWidth" ) ).toInt();
     matrix.mMatrixHeight = matrixElement.attribute( QStringLiteral( "matrixHeight" ) ).toInt();
     matrix.mExtent = QgsRectangle(
-                       matrixElement.attribute( QStringLiteral( "xMin" ) ).toDouble(),
-                       matrixElement.attribute( QStringLiteral( "yMin" ) ).toDouble(),
-                       matrixElement.attribute( QStringLiteral( "xMax" ) ).toDouble(),
-                       matrixElement.attribute( QStringLiteral( "yMax" ) ).toDouble()
-                     );
+      matrixElement.attribute( QStringLiteral( "xMin" ) ).toDouble(),
+      matrixElement.attribute( QStringLiteral( "yMin" ) ).toDouble(),
+      matrixElement.attribute( QStringLiteral( "xMax" ) ).toDouble(),
+      matrixElement.attribute( QStringLiteral( "yMax" ) ).toDouble()
+    );
 
     matrix.mScaleDenom = matrixElement.attribute( QStringLiteral( "scale" ) ).toDouble();
     matrix.mTileXSpan = matrixElement.attribute( QStringLiteral( "tileXSpan" ) ).toDouble();
     matrix.mTileYSpan = matrixElement.attribute( QStringLiteral( "tileYSpan" ) ).toDouble();
     matrix.mCrs.readXml( matrixElement );
+    return matrix;
+  };
+
+  const QDomNodeList children = element.childNodes();
+  for ( int i = 0; i < children.size(); i++ )
+  {
+    const QDomElement matrixElement = children.at( i ).toElement();
+    if ( matrixElement.tagName() == QLatin1String( "rootMatrix" ) )
+      continue;
+
+    QgsTileMatrix matrix = readMatrixFromElement( matrixElement );
+    if ( matrix.zoomLevel() == 0 ) // old project compatibility
+      mRootMatrix = matrix;
+
     addMatrix( matrix );
   }
+
+  const QDomElement rootElement = element.firstChildElement( QStringLiteral( "rootMatrix" ) );
+  if ( !rootElement.isNull() )
+  {
+    mRootMatrix = readMatrixFromElement( rootElement );
+  }
+
   return true;
 }
 
@@ -293,24 +365,34 @@ QDomElement QgsTileMatrixSet::writeXml( QDomDocument &document, const QgsReadWri
   QDomElement setElement = document.createElement( QStringLiteral( "matrixSet" ) );
   setElement.setAttribute( QStringLiteral( "scaleToZoomMethod" ), qgsEnumValueToKey( mScaleToTileZoomMethod ) );
 
+  auto writeMatrixToElement = [&document]( const QgsTileMatrix & matrix, QDomElement & matrixElement )
+  {
+    matrixElement.setAttribute( QStringLiteral( "zoomLevel" ), matrix.zoomLevel() );
+    matrixElement.setAttribute( QStringLiteral( "matrixWidth" ), matrix.matrixWidth() );
+    matrixElement.setAttribute( QStringLiteral( "matrixHeight" ), matrix.matrixHeight() );
+
+    matrixElement.setAttribute( QStringLiteral( "xMin" ), qgsDoubleToString( matrix.mExtent.xMinimum() ) );
+    matrixElement.setAttribute( QStringLiteral( "xMax" ), qgsDoubleToString( matrix.mExtent.xMaximum() ) );
+    matrixElement.setAttribute( QStringLiteral( "yMin" ), qgsDoubleToString( matrix.mExtent.yMinimum() ) );
+    matrixElement.setAttribute( QStringLiteral( "yMax" ), qgsDoubleToString( matrix.mExtent.yMaximum() ) );
+
+    matrixElement.setAttribute( QStringLiteral( "scale" ), qgsDoubleToString( matrix.scale() ) );
+    matrixElement.setAttribute( QStringLiteral( "tileXSpan" ), qgsDoubleToString( matrix.mTileXSpan ) );
+    matrixElement.setAttribute( QStringLiteral( "tileYSpan" ), qgsDoubleToString( matrix.mTileYSpan ) );
+
+    matrix.crs().writeXml( matrixElement, document );
+  };
+
   for ( auto it = mTileMatrices.constBegin(); it != mTileMatrices.constEnd(); ++it )
   {
     QDomElement matrixElement = document.createElement( QStringLiteral( "matrix" ) );
-    matrixElement.setAttribute( QStringLiteral( "zoomLevel" ), it->zoomLevel() );
-    matrixElement.setAttribute( QStringLiteral( "matrixWidth" ), it->matrixWidth() );
-    matrixElement.setAttribute( QStringLiteral( "matrixHeight" ), it->matrixHeight() );
-
-    matrixElement.setAttribute( QStringLiteral( "xMin" ), qgsDoubleToString( it->mExtent.xMinimum() ) );
-    matrixElement.setAttribute( QStringLiteral( "xMax" ), qgsDoubleToString( it->mExtent.xMaximum() ) );
-    matrixElement.setAttribute( QStringLiteral( "yMin" ), qgsDoubleToString( it->mExtent.yMinimum() ) );
-    matrixElement.setAttribute( QStringLiteral( "yMax" ), qgsDoubleToString( it->mExtent.yMaximum() ) );
-
-    matrixElement.setAttribute( QStringLiteral( "scale" ), qgsDoubleToString( it->scale() ) );
-    matrixElement.setAttribute( QStringLiteral( "tileXSpan" ), qgsDoubleToString( it->mTileXSpan ) );
-    matrixElement.setAttribute( QStringLiteral( "tileYSpan" ), qgsDoubleToString( it->mTileYSpan ) );
-
-    it->crs().writeXml( matrixElement, document );
+    writeMatrixToElement( *it, matrixElement );
     setElement.appendChild( matrixElement );
   }
+
+  QDomElement rootElement = document.createElement( QStringLiteral( "rootMatrix" ) );
+  writeMatrixToElement( mRootMatrix, rootElement );
+  setElement.appendChild( rootElement );
+
   return setElement;
 }

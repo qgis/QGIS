@@ -180,7 +180,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             'FORMAT': 'image/png',
             # 'WIDTH': '20', # optional
             # 'HEIGHT': '20', # optional
-            'LAYER': u'testlayer%20èé',
+            'LAYER': 'testlayer%20èé',
             'LAYERFONTBOLD': 'TRUE',
             'LAYERFONTSIZE': '30',
             'ITEMFONTBOLD': 'TRUE',
@@ -190,7 +190,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             'LAYERTITLE': 'TRUE',
             'RULELABEL': 'TRUE'
         }
-        qs = '?' + '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
+        qs = '?' + '&'.join(["%s=%s" % (k, v) for k, v in parms.items()])
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_test", 250, QSize(15, 15))
 
@@ -203,7 +203,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             'FORMAT': 'image/png',
             # 'WIDTH': '20', # optional
             # 'HEIGHT': '20', # optional
-            'LAYER': u'testlayer%20èé',
+            'LAYER': 'testlayer%20èé',
             'LAYERFONTBOLD': 'TRUE',
             'LAYERFONTSIZE': '30',
             'ITEMFONTBOLD': 'TRUE',
@@ -211,7 +211,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             'ITEMFONTFAMILY': self.fontFamily,
             'ITEMFONTSIZE': '20'
         }
-        qs = '?' + '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
+        qs = '?' + '&'.join(["%s=%s" % (k, v) for k, v in parms.items()])
         r, h = self._result(self._execute_request(qs))
 
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_test", 250, QSize(15, 15))
@@ -224,11 +224,11 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             'FORMAT': 'image/png',
             # 'WIDTH': '20', # optional
             # 'HEIGHT': '20', # optional
-            'LAYER': u'testlayer%20èé',
+            'LAYER': 'testlayer%20èé',
             'LAYERTITLE': 'FALSE',
             'RULELABEL': 'FALSE'
         }
-        qs = '?' + '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
+        qs = '?' + '&'.join(["%s=%s" % (k, v) for k, v in parms.items()])
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_test_layertitle_false", 250, QSize(15, 15))
 
@@ -240,7 +240,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             'VERSION': '1.3.0',
             'REQUEST': 'GetLegendGraphic',
             'FORMAT': 'image/png',
-            'LAYER': u'testlayer%20èé',
+            'LAYER': 'testlayer%20èé',
             'LAYERFONTBOLD': 'TRUE',
             'LAYERFONTSIZE': '30',
             'ITEMFONTBOLD': 'TRUE',
@@ -249,7 +249,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             'ITEMFONTFAMILY': self.fontFamily,
             'RULELABEL': 'FALSE'
         }
-        qs = '?' + '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
+        qs = '?' + '&'.join(["%s=%s" % (k, v) for k, v in parms.items()])
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_rulelabel_false", 250, QSize(15, 15))
 
@@ -259,7 +259,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             'VERSION': '1.3.0',
             'REQUEST': 'GetLegendGraphic',
             'FORMAT': 'image/png',
-            'LAYER': u'testlayer%20èé',
+            'LAYER': 'testlayer%20èé',
             'LAYERFONTBOLD': 'TRUE',
             'LAYERFONTSIZE': '30',
             'ITEMFONTBOLD': 'TRUE',
@@ -269,7 +269,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             'LAYERTITLE': 'FALSE',
             'RULELABEL': 'TRUE'
         }
-        qs = '?' + '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
+        qs = '?' + '&'.join(["%s=%s" % (k, v) for k, v in parms.items()])
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_rulelabel_true", 250, QSize(15, 15))
 
@@ -280,7 +280,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             'VERSION': '1.3.0',
             'REQUEST': 'GetLegendGraphic',
             'FORMAT': 'image/png',
-            'LAYER': u'testlayer%20èé',
+            'LAYER': 'testlayer%20èé',
             'LAYERFONTBOLD': 'TRUE',
             'LAYERFONTSIZE': '30',
             'ITEMFONTBOLD': 'TRUE',
@@ -289,7 +289,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             'ITEMFONTFAMILY': self.fontFamily,
             'LAYERTITLE': 'FALSE'
         }
-        qs = '?' + '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
+        qs = '?' + '&'.join(["%s=%s" % (k, v) for k, v in parms.items()])
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_rulelabel_notset", 250, QSize(15, 15))
 
@@ -300,11 +300,11 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             'VERSION': '1.3.0',
             'REQUEST': 'GetLegendGraphic',
             'FORMAT': 'image/png',
-            'LAYER': u'testlayer%20èé',
+            'LAYER': 'testlayer%20èé',
             'LAYERTITLE': 'FALSE',
             'RULELABEL': 'AUTO'
         }
-        qs = '?' + '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
+        qs = '?' + '&'.join(["%s=%s" % (k, v) for k, v in parms.items()])
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_rulelabel_auto", 250, QSize(15, 15))
 
@@ -316,12 +316,12 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             'VERSION': '1.3.0',
             'REQUEST': 'GetLegendGraphic',
             'FORMAT': 'image/png',
-            'LAYER': u'testlayer%20èé',
+            'LAYER': 'testlayer%20èé',
             'WIDTH': '20',
             'HEIGHT': '20',
             'RULE': 'rule0',
         }
-        qs = '?' + '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
+        qs = '?' + '&'.join(["%s=%s" % (k, v) for k, v in parms.items()])
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_rule0", 250, QSize(15, 15))
 
@@ -331,12 +331,12 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             'VERSION': '1.3.0',
             'REQUEST': 'GetLegendGraphic',
             'FORMAT': 'image/png',
-            'LAYER': u'testlayer%20èé',
+            'LAYER': 'testlayer%20èé',
             'WIDTH': '20',
             'HEIGHT': '20',
             'RULE': 'rule1',
         }
-        qs = '?' + '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
+        qs = '?' + '&'.join(["%s=%s" % (k, v) for k, v in parms.items()])
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_rule1", 250, QSize(15, 15))
 
@@ -356,7 +356,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Basic")
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Basic", max_size_diff=QSize(1, 1))
 
     def test_wms_GetLegendGraphic_Transparent(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -375,7 +375,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Transparent")
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Transparent", max_size_diff=QSize(1, 1))
 
     def test_wms_GetLegendGraphic_Background(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -394,7 +394,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Background")
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Background", max_size_diff=QSize(1, 1))
 
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
@@ -412,7 +412,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Background_Hex")
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Background_Hex", max_size_diff=QSize(1, 1))
 
     def test_wms_GetLegendGraphic_BoxSpace(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -431,7 +431,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_BoxSpace")
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_BoxSpace", max_size_diff=QSize(5, 5))
 
     def test_wms_GetLegendGraphic_SymbolSpace(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -450,7 +450,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_SymbolSpace")
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_SymbolSpace", max_size_diff=QSize(1, 1))
 
     def test_wms_GetLegendGraphic_IconLabelSpace(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -469,7 +469,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_IconLabelSpace")
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_IconLabelSpace", max_size_diff=QSize(1, 1))
 
     def test_wms_GetLegendGraphic_SymbolSize(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -556,7 +556,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_BBox")
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_BBox", max_size_diff=QSize(1, 1))
 
     def test_wms_GetLegendGraphic_BBox2(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -575,7 +575,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_BBox2")
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_BBox2", max_size_diff=QSize(1, 1))
 
     def test_wms_GetLegendGraphic_BBox_Fallback(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -594,7 +594,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_BBox")
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_BBox", max_size_diff=QSize(1, 1))
 
     def test_wms_GetLegendGraphic_BBox2_Fallback(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -613,7 +613,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_BBox2")
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_BBox2", max_size_diff=QSize(1, 1))
 
     def test_wms_GetLegendGraphic_EmptyLegend(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -836,7 +836,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_LAYERFONTCOLOR", max_size_diff=QSize(10, 2))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_LAYERFONTCOLOR", max_size_diff=QSize(10, 10))
 
     def test_wms_GetLegendGraphic_ITEMFONTCOLOR(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -853,7 +853,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ITEMFONTCOLOR", max_size_diff=QSize(10, 2))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ITEMFONTCOLOR", max_size_diff=QSize(10, 10))
 
     def test_wms_GetLegendGraphic_ITEMFONTCOLOR_and_LAYERFONTCOLOR(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -871,7 +871,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ITEMFONTCOLOR_and_LAYERFONTCOLOR", max_size_diff=QSize(10, 2))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ITEMFONTCOLOR_and_LAYERFONTCOLOR", max_size_diff=QSize(10, 10))
 
     def test_wms_GetLegendGraphic_ITEMFONTCOLOR_and_LAYERFONTCOLOR_hex(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -889,7 +889,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ITEMFONTCOLOR_and_LAYERFONTCOLOR", max_size_diff=QSize(10, 2))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ITEMFONTCOLOR_and_LAYERFONTCOLOR", max_size_diff=QSize(10, 10))
 
     def test_BBoxNoWidthNoHeight(self):
         """Test with BBOX and no width/height (like QGIS client does)"""
@@ -932,7 +932,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
 
         r, h = self._result(self._execute_request(qs))
         self.assertFalse(b'Exception' in r)
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Regression32020_type1", max_size_diff=QSize(10, 2))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Regression32020_type1", max_size_diff=QSize(10, 5))
 
         # Visible is "Type 2"
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -949,7 +949,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
 
         r, h = self._result(self._execute_request(qs))
         self.assertFalse(b'Exception' in r)
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Regression32020_type2", max_size_diff=QSize(10, 2))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Regression32020_type2", max_size_diff=QSize(10, 5))
 
         # Visible is "Type 2" and 3
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -966,7 +966,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
 
         r, h = self._result(self._execute_request(qs))
         self.assertFalse(b'Exception' in r)
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Regression32020_type2_and_3", max_size_diff=QSize(10, 2))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Regression32020_type2_and_3", max_size_diff=QSize(10, 5))
 
         # Visible is "Type 1" and 3
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -983,7 +983,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
 
         r, h = self._result(self._execute_request(qs))
         self.assertFalse(b'Exception' in r)
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Regression32020_type1_and_3", max_size_diff=QSize(10, 2))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Regression32020_type1_and_3", max_size_diff=QSize(10, 5))
 
         # Change CRS: 3857
         # Visible is "Type 2"
@@ -1001,25 +1001,25 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
 
         r, h = self._result(self._execute_request(qs))
         self.assertFalse(b'Exception' in r)
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Regression32020_type2_3857", max_size_diff=QSize(10, 2))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Regression32020_type2_3857", max_size_diff=QSize(10, 5))
 
     def test_wms_GetLegendGraphic_JSON(self):
         self.wms_request_compare("GetLegendGraphic",
                                  "&LAYERS=testlayer%20%C3%A8%C3%A9"
                                  "&FORMAT=application/json",
-                                 "wms_getlegendgraphic_json")
+                                 ["wms_getlegendgraphic_json", "wms_getlegendgraphic_json2"])
 
     def test_wms_GetLegendGraphic_JSON_multiple_layers(self):
         self.wms_request_compare("GetLegendGraphic",
                                  "&LAYERS=testlayer%20%C3%A8%C3%A9,testlayer3"
                                  "&FORMAT=application/json",
-                                 "wms_getlegendgraphic_json_multiple_layers")
+                                 ["wms_getlegendgraphic_json_multiple_layers", "wms_getlegendgraphic_json_multiple_layers2"])
 
     def test_wms_GetLegendGraphic_JSON_multiple_symbol(self):
         self.wms_request_compare("GetLegendGraphic",
                                  "&LAYERS=cdb_lines"
                                  "&FORMAT=application/json",
-                                 "wms_getlegendgraphic_json_multiple_symbol",
+                                 ["wms_getlegendgraphic_json_multiple_symbol", "wms_getlegendgraphic_json_multiple_symbol2"],
                                  'test_project_wms_grouped_layers.qgs')
 
     def testJsonSymbolMaxMinScale(self):

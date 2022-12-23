@@ -295,6 +295,7 @@ void QgsCurve::clearCache() const
   mBoundingBox = QgsRectangle();
   mHasCachedValidity = false;
   mValidityFailureReason.clear();
+  mHasCachedSummedUpArea = false;
   QgsAbstractGeometry::clearCache();
 }
 

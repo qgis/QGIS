@@ -35,6 +35,7 @@ QgsReportSectionFieldGroupWidget::QgsReportSectionFieldGroupWidget( QgsReportOrg
   connect( mButtonEditFooter, &QPushButton::clicked, this, &QgsReportSectionFieldGroupWidget::editFooter );
 
   mLayerComboBox->setLayer( section->layer() );
+  mFieldComboBox->setLayer( section->layer() );
   mFieldComboBox->setField( section->field() );
   mSortAscendingCheckBox->setChecked( section->sortAscending() );
 

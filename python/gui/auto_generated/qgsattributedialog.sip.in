@@ -10,7 +10,7 @@
 
 
 
-class QgsAttributeDialog : QDialog
+class QgsAttributeDialog : QDialog, QgsMapLayerActionContextGenerator
 {
 
 %TypeHeaderCode
@@ -82,6 +82,9 @@ for calculations in this form.
 
 .. versionadded:: 3.16
 %End
+
+    virtual QgsMapLayerActionContext createActionContext();
+
 
   public slots:
     virtual void accept();

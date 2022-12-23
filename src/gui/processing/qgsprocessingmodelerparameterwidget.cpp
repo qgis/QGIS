@@ -212,7 +212,7 @@ QVariant QgsProcessingModelerParameterWidget::value() const
         const QVariantList vList = v.toList();
         if ( std::all_of( vList.begin(), vList.end(), []( const QVariant & val )
       {
-        return val.canConvert< QgsProcessingModelChildParameterSource >();
+        return val.userType() == QMetaType::type( "QgsProcessingModelChildParameterSource" );
         } ) )
         {
           return v;

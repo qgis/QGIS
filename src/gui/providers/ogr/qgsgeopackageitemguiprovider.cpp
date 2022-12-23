@@ -102,88 +102,6 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
     }
 
     menu->addSeparator();
-
-    const QString message = QObject::tr( "Delete %1…" ).arg( collectionItem->name() );
-    QAction *actionDelete = new QAction( message, menu );
-    const QString collectionPath = collectionItem->path();
-    const QString collectionName = collectionItem->name();
-    const QPointer< QgsDataItem > parent( collectionItem->parent() );
-    connect( actionDelete, &QAction::triggered, this, [this, collectionPath, collectionName, parent, context ]()
-    {
-      deleteGpkg( collectionPath, collectionName, parent, context );
-    } );
-    menu->addAction( actionDelete );
-
-    // Run VACUUM
-    QAction *actionVacuumDb = new QAction( tr( "Compact Database (VACUUM)" ), menu );
-    const QVariantMap dataVacuum;
-    const QString name = collectionItem->name();
-    const QString path = collectionItem->path();
-    actionVacuumDb->setData( dataVacuum );
-    connect( actionVacuumDb, &QAction::triggered, this, [this, context, name, path]
-    {
-      vacuum( path, name, context );
-    } );
-    menu->addAction( actionVacuumDb );
-  }
-}
-
-void QgsGeoPackageItemGuiProvider::deleteGpkg( const QString &itemPath, const QString &name, QPointer< QgsDataItem > parent, QgsDataItemGuiContext context )
-{
-  QString path = itemPath;
-  path = path.remove( QStringLiteral( "gpkg:/" ) );
-  if ( parent )
-  {
-    const QString title = QObject::tr( "Delete GeoPackage" );
-    // Check if the layer is in the project
-    const QgsMapLayer *projectLayer = nullptr;
-    const auto mapLayers = QgsProject::instance()->mapLayers();
-    for ( auto it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
-    {
-      const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( it.value()->providerType(), it.value()->source() );
-      if ( parts.value( QStringLiteral( "path" ) ).toString() == path )
-      {
-        projectLayer = it.value();
-      }
-    }
-    if ( ! projectLayer )
-    {
-      const QString confirmMessage = QObject::tr( "Are you sure you want to delete '%1'?" ).arg( path );
-
-      if ( QMessageBox::question( nullptr, title,
-                                  confirmMessage,
-                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-        return;
-
-      if ( !QFile::remove( path ) )
-      {
-        notify( title, tr( "Could not delete GeoPackage." ), context, Qgis::MessageLevel::Critical );
-      }
-      else
-      {
-        notify( title, tr( "GeoPackage deleted successfully." ), context, Qgis::MessageLevel::Success );
-        // If the deleted file was a stored connection, remove it too
-        if ( ! name.isEmpty() )
-        {
-          QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
-          try
-          {
-            md->deleteConnection( name );
-          }
-          catch ( QgsProviderConnectionException &ex )
-          {
-            QgsDebugMsg( QStringLiteral( "Could not remove GPKG connection %1: %2" ).arg( name, ex.what() ) );
-          }
-        }
-        if ( parent )
-          parent->refresh();
-      }
-    }
-    else
-    {
-      notify( title, QObject::tr( "The GeoPackage '%1' cannot be deleted because it is in the current project as '%2',"
-                                  " remove it from the project and retry." ).arg( path, projectLayer->name() ), context, Qgis::MessageLevel::Critical );
-    }
   }
 }
 
@@ -213,7 +131,7 @@ bool QgsGeoPackageItemGuiProvider::rename( QgsDataItem *item, const QString &new
 
     const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( layerItem->providerKey(), layerItem->uri() );
     QString errCause;
-    if ( parts.empty() || parts.value( QStringLiteral( "path" ) ).isNull() || parts.value( QStringLiteral( "layerName" ) ).isNull() )
+    if ( parts.empty() || QgsVariantUtils::isNull( parts.value( QStringLiteral( "path" ) ) ) || QgsVariantUtils::isNull( parts.value( QStringLiteral( "layerName" ) ) ) )
     {
       errCause = QObject::tr( "Layer URI %1 is not valid!" ).arg( layerItem->uri() );
     }
@@ -373,13 +291,6 @@ void QgsGeoPackageItemGuiProvider::vacuumGeoPackageDbAction( const QString &path
   }
 }
 
-void QgsGeoPackageItemGuiProvider::vacuum( const QString &itemPath, const QString &name, QgsDataItemGuiContext context )
-{
-  QString path = itemPath;
-  path = path.remove( QStringLiteral( "gpkg:/" ) );
-  vacuumGeoPackageDbAction( path, name, context );
-}
-
 void QgsGeoPackageItemGuiProvider::createDatabase( const QPointer< QgsGeoPackageRootItem > &item )
 {
   if ( item )
@@ -437,7 +348,12 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
     {
       importResults.append( tr( "You cannot import layer %1 over itself!" ).arg( dropUri.name ) );
       hasError = true;
-
+    }
+    // Neither we should support copying the whole GPKG file
+    else if ( dropUri.providerKey.isEmpty() && dropUri.uri == dropUri.filePath )
+    {
+      importResults.append( tr( "You cannot import a GeoPackage file over another GeoPackage file!" ) );
+      hasError = true;
     }
     else
     {

@@ -214,6 +214,16 @@ class CORE_EXPORT QgsFileUtils
      * \since QGIS 3.22
      */
     static bool isCloseToLimitOfOpenedFiles( int filesToBeOpened = 1 ) SIP_SKIP;
+
+    /**
+     * Given a file \a path, returns a list of all the components leading to that path.
+     *
+     * E.g. if \a path is "/home/user/Pictures/test.png", the returned list will contain
+     * "/" , "home", "user", "Pictures", "test.png".
+     *
+     * \since QGIS 3.28
+     */
+    static QStringList splitPathToComponents( const QString &path );
 };
 
 #endif // QGSFILEUTILS_H

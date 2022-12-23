@@ -104,7 +104,7 @@ void QgsValueMapConfigDlg::setConfig( const QVariantMap &config )
     const QVariantMap values = config.value( QStringLiteral( "map" ) ).toMap();
     for ( QVariantMap::ConstIterator mit = values.constBegin(); mit != values.constEnd(); mit++, row++ )
     {
-      if ( mit.value().isNull() )
+      if ( QgsVariantUtils::isNull( mit.value() ) )
         setRow( row, mit.key(), QString() );
       else
         setRow( row, mit.value().toString(), mit.key() );
@@ -140,9 +140,9 @@ void QgsValueMapConfigDlg::removeSelectedButtonPushed()
       }
     }
   }
-  for ( i = 0; i < rowsToRemove.size(); i++ )
+  for ( const int rowToRemoved : rowsToRemove )
   {
-    tableWidget->removeRow( rowsToRemove.values().at( i ) - removed );
+    tableWidget->removeRow( rowToRemoved - removed );
     removed++;
   }
   emit changed();
@@ -177,7 +177,7 @@ void QgsValueMapConfigDlg::updateMap( const QList<QPair<QString, QVariant>> &lis
 
   for ( const auto &pair : list )
   {
-    if ( pair.second.isNull() )
+    if ( QgsVariantUtils::isNull( pair.second ) )
       setRow( row, pair.first, QString() );
     else
       setRow( row, pair.first, pair.second.toString() );

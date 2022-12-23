@@ -74,6 +74,8 @@ class GUI_EXPORT QgsNewMemoryLayerDialog: public QDialog, private Ui::QgsNewMemo
      */
     QgsFields fields() const;
 
+    void accept() override;
+
   private:
 
     QString mCrsId;

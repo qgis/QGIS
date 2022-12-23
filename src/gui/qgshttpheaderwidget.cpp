@@ -51,7 +51,7 @@ void QgsHttpHeaderWidget::addQueryPairRow( const QString &key, const QString &va
   tblwdgQueryPairs->setItem( rowCnt, 0, keyItem );
 
   QTableWidgetItem *valueItem = new QTableWidgetItem( val );
-  keyItem->setFlags( itemFlags );
+  valueItem->setFlags( itemFlags );
   tblwdgQueryPairs->setItem( rowCnt, 1, valueItem );
 }
 
@@ -71,6 +71,14 @@ QgsHttpHeaders QgsHttpHeaderWidget::httpHeaders() const
   {
     querypairs [ "referer" ] = QVariant( mRefererLineEdit->text() ) ;
   }
+
+#if 0
+  for ( auto k : querypairs.keys() )
+  {
+    QgsLogger::debug( QString( "httpHeaders called: %1=%2" ).arg( k, querypairs[k].toString() ) );
+  }
+#endif
+
   return querypairs;
 }
 
@@ -80,7 +88,6 @@ void QgsHttpHeaderWidget::addQueryPair()
   addQueryPairRow( QString(), QString() );
   tblwdgQueryPairs->setFocus();
   tblwdgQueryPairs->setCurrentCell( tblwdgQueryPairs->rowCount() - 1, 0 );
-  tblwdgQueryPairs->edit( tblwdgQueryPairs->currentIndex() );
 }
 
 
@@ -96,10 +103,11 @@ void QgsHttpHeaderWidget::setFromSettings( const QgsSettings &settings, const QS
   QgsHttpHeaders headers;
   headers.setFromSettings( settings, key );
 
+  // clean table
+  for ( int i = tblwdgQueryPairs->rowCount(); i > 0; i-- )
+    tblwdgQueryPairs->removeRow( i - 1 );
+
   // push headers to table
-  tblwdgQueryPairs->clearContents();
-  /*QTableWidgetItem * item;
-  int row = 0;*/
   QList<QString> lst = headers.keys();
   for ( auto ite = lst.constBegin(); ite != lst.constEnd(); ++ite )
   {

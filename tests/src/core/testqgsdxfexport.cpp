@@ -76,8 +76,6 @@ class TestQgsDxfExport : public QObject
     QgsVectorLayer *mLineLayer = nullptr;
     QgsVectorLayer *mPolygonLayer = nullptr;
 
-    QString mReport;
-
     void setDefaultLabelParams( QgsPalLayerSettings &settings );
     QString getTempFileName( const QString &file ) const;
 
@@ -746,7 +744,7 @@ void TestQgsDxfExport::testTextQuadrant()
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "text" );
-  settings.placement = QgsPalLayerSettings::Placement::OverPoint;
+  settings.placement = Qgis::LabelPlacement::OverPoint;
 
   QgsPropertyCollection props = settings.dataDefinedProperties();
   QgsProperty offsetQuadProp = QgsProperty();

@@ -1,4 +1,0 @@
-Grids Sum
-grid_calculus
-QgsProcessingParameterMultipleLayers|GRIDS|Grids|3|None|False
-QgsProcessingParameterRasterDestination|RESULT|Sum

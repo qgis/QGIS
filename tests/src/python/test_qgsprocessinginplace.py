@@ -784,9 +784,11 @@ class TestQgsProcessingInPlace(unittest.TestCase):
             QgsFeatureRequest.GeometrySkipInvalid
         )
         self.assertEqual(polygon_layer.featureCount(), 3)
-        wkt1, wkt2, wkt3 = [f.geometry().asWkt() for f in new_features]
+        geoms = [f.geometry() for f in new_features]
+        [g.normalize() for g in geoms]
+        wkt1, wkt2, wkt3 = [g.asWkt() for g in geoms]
         self.assertEqual(wkt1, 'Polygon ((0 0, 1 1, 2 0, 0 0))')
-        self.assertEqual(wkt2, 'Polygon ((1 1, 0 2, 2 2, 1 1))')
+        self.assertEqual(wkt2, 'Polygon ((0 2, 2 2, 1 1, 0 2))')
         self.assertEqual(re.sub(r'0000\d+', '', wkt3), 'Polygon ((1.1 1.1, 1.1 2.1, 2.1 2.1, 2.1 1.1, 1.1 1.1))')
 
         # Test with Z (interpolated)
@@ -811,9 +813,11 @@ class TestQgsProcessingInPlace(unittest.TestCase):
             }
         )
         self.assertEqual(polygonz_layer.featureCount(), 2)
-        wkt1, wkt2 = [f.geometry().asWkt() for f in new_features]
+        geoms = [f.geometry() for f in new_features]
+        [g.normalize() for g in geoms]
+        wkt1, wkt2 = [g.asWkt() for g in geoms]
         self.assertEqual(wkt1, 'PolygonZ ((0 0 1, 1 1 2.25, 2 0 4, 0 0 1))')
-        self.assertEqual(wkt2, 'PolygonZ ((1 1 2.25, 0 2 3, 2 2 1, 1 1 2.25))')
+        self.assertEqual(wkt2, 'PolygonZ ((0 2 3, 2 2 1, 1 1 2.25, 0 2 3))')
 
     def _test_difference_on_invalid_geometries(self, geom_option):
         polygon_layer = self._make_layer('Polygon')

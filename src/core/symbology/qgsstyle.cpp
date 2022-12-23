@@ -25,6 +25,8 @@
 #include "qgslegendpatchshape.h"
 #include "qgslinestring.h"
 #include "qgspolygon.h"
+#include "qgsproject.h"
+#include "qgsprojectstylesettings.h"
 #include "qgsmarkersymbollayer.h"
 #include "qgslinesymbollayer.h"
 #include "qgsfillsymbollayer.h"
@@ -74,7 +76,8 @@ enum Symbol3DTable
 
 QgsStyle *QgsStyle::sDefaultStyle = nullptr;
 
-QgsStyle::QgsStyle()
+QgsStyle::QgsStyle( QObject *parent )
+  : QObject( parent )
 {
   std::unique_ptr< QgsSimpleMarkerSymbolLayer > simpleMarker = std::make_unique< QgsSimpleMarkerSymbolLayer >( Qgis::MarkerShape::Circle,
       1.6, 0, Qgis::ScaleMethod::ScaleArea, QColor( 84, 176, 74 ), QColor( 61, 128, 53 ) );
@@ -91,7 +94,18 @@ QgsStyle::QgsStyle()
 
 QgsStyle::~QgsStyle()
 {
+  emit aboutToBeDestroyed();
   clear();
+}
+
+void QgsStyle::setName( const QString &name )
+{
+  mName = name;
+}
+
+QString QgsStyle::name() const
+{
+  return mName;
 }
 
 bool QgsStyle::addEntity( const QString &name, const QgsStyleEntityInterface *entity, bool update )
@@ -151,11 +165,10 @@ QgsStyle *QgsStyle::defaultStyle() // static
     else
     {
       sDefaultStyle = new QgsStyle;
-      if ( sDefaultStyle->load( styleFilename ) )
-      {
-        sDefaultStyle->upgradeIfRequired();
-      }
+      sDefaultStyle->load( styleFilename );
+      sDefaultStyle->upgradeIfRequired();
     }
+    sDefaultStyle->setName( QObject::tr( "Default" ) );
   }
   return sDefaultStyle;
 }
@@ -831,55 +844,23 @@ bool QgsStyle::load( const QString &filename )
   }
 
   mFileName = filename;
+  createStyleMetadataTableIfNeeded();
   return true;
 }
 
-
-
-bool QgsStyle::save( QString filename )
+bool QgsStyle::save( const QString &filename )
 {
   mErrorString.clear();
 
-  if ( filename.isEmpty() )
-    filename = mFileName;
+  if ( !filename.isEmpty() )
+    mFileName = filename;
 
-  // TODO evaluate the requirement of this function and change implementation accordingly
-  // TODO remove QEXPECT_FAIL from TestStyle::testSaveLoad() when done
-#if 0
-  QDomDocument doc( "qgis_style" );
-  QDomElement root = doc.createElement( "qgis_style" );
-  root.setAttribute( "version", STYLE_CURRENT_VERSION );
-  doc.appendChild( root );
-
-  QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( mSymbols, "symbols", doc );
-
-  QDomElement rampsElem = doc.createElement( "colorramps" );
-
-  // save color ramps
-  for ( QMap<QString, QgsColorRamp *>::iterator itr = mColorRamps.begin(); itr != mColorRamps.end(); ++itr )
-  {
-    QDomElement rampEl = QgsSymbolLayerUtils::saveColorRamp( itr.key(), itr.value(), doc );
-    rampsElem.appendChild( rampEl );
-  }
-
-  root.appendChild( symbolsElem );
-  root.appendChild( rampsElem );
-
-  // save
-  QFile f( filename );
-  if ( !f.open( QFile::WriteOnly ) )
-  {
-    mErrorString = "Couldn't open file for writing: " + filename;
-    return false;
-  }
-  QTextStream ts( &f );
-  ts.setCodec( "UTF-8" );
-  doc.save( ts, 2 );
-  f.close();
-#endif
-
-  mFileName = filename;
   return true;
+}
+
+void QgsStyle::setFileName( const QString &filename )
+{
+  mFileName = filename;
 }
 
 bool QgsStyle::renameSymbol( const QString &oldName, const QString &newName )
@@ -1231,6 +1212,20 @@ QList<QList<QPolygonF> > QgsStyle::defaultPatchAsQPolygonF( Qgis::SymbolType typ
 QgsTextFormat QgsStyle::defaultTextFormat( QgsStyle::TextFormatContext ) const
 {
   return textFormat( QStringLiteral( "Default" ) );
+}
+
+QgsTextFormat QgsStyle::defaultTextFormatForProject( QgsProject *project, TextFormatContext context )
+{
+  if ( project )
+  {
+    QgsTextFormat defaultTextFormat = project->styleSettings()->defaultTextFormat();
+    if ( defaultTextFormat.isValid() )
+    {
+      return defaultTextFormat;
+    }
+  }
+
+  return QgsStyle::defaultStyle()->defaultTextFormat( context );
 }
 
 bool QgsStyle::saveSymbol3D( const QString &name, QgsAbstract3DSymbol *symbol, bool favorite, const QStringList &tags )
@@ -1754,7 +1749,7 @@ QStringList QgsStyle::findSymbols( StyleEntity type, const QString &qword )
     symbols << statement.columnAsText( 0 );
   }
 
-  return qgis::setToList( symbols );
+  return QStringList( symbols.constBegin(), symbols.constEnd() );
 }
 
 bool QgsStyle::tagSymbol( StyleEntity type, const QString &symbol, const QStringList &tags )
@@ -2461,7 +2456,8 @@ QStringList QgsStyle::symbolsOfSmartgroup( StyleEntity type, int id )
   }
 
   // return sorted, unique list
-  QStringList unique = qgis::setToList( qgis::listToSet( symbols ) );
+  const QSet< QString > uniqueSet( symbols.constBegin(), symbols.constEnd() );
+  QStringList unique( uniqueSet.begin(), uniqueSet.end() );
   std::sort( unique.begin(), unique.end() );
   return unique;
 }
@@ -2696,7 +2692,6 @@ bool QgsStyle::exportXml( const QString &filename )
   doc.save( ts, 2 );
   f.close();
 
-  mFileName = filename;
   return true;
 }
 
@@ -3034,7 +3029,6 @@ bool QgsStyle::importXml( const QString &filename, int sinceVersion )
   query = qgs_sqlite3_mprintf( "COMMIT TRANSACTION;" );
   runEmptyQuery( query );
 
-  mFileName = filename;
   return true;
 }
 
@@ -3056,6 +3050,21 @@ bool QgsStyle::isXmlStyleFile( const QString &path )
   QTextStream stream( &inputFile );
   const QString line = stream.readLine();
   return line == QLatin1String( "<!DOCTYPE qgis_style>" );
+}
+
+void QgsStyle::triggerIconRebuild()
+{
+  emit rebuildIconPreviews();
+}
+
+bool QgsStyle::isReadOnly() const
+{
+  return mReadOnly;
+}
+
+void QgsStyle::setReadOnly( bool readOnly )
+{
+  mReadOnly = readOnly;
 }
 
 bool QgsStyle::updateSymbol( StyleEntity type, const QString &name )

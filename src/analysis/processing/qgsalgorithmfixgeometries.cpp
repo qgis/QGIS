@@ -32,7 +32,7 @@ QString QgsFixGeometriesAlgorithm::displayName() const
 
 QStringList QgsFixGeometriesAlgorithm::tags() const
 {
-  return QObject::tr( "repair,invalid,geometry,make,valid" ).split( ',' );
+  return QObject::tr( "repair,invalid,geometry,make,valid,error" ).split( ',' );
 }
 
 QString QgsFixGeometriesAlgorithm::group() const
@@ -85,6 +85,34 @@ bool QgsFixGeometriesAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
   return ! QgsWkbTypes::hasM( layer->wkbType() );
 }
 
+void QgsFixGeometriesAlgorithm::initParameters( const QVariantMap & )
+{
+  std::unique_ptr< QgsProcessingParameterEnum> methodParameter = std::make_unique< QgsProcessingParameterEnum >(
+        QStringLiteral( "METHOD" ),
+        QObject::tr( "Repair method" ),
+        QStringList{ QObject::tr( "Linework" ), QObject::tr( "Structure" ) },
+        0,
+        false );
+#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<10
+  methodParameter->setDefaultValue( 0 );
+#else
+  methodParameter->setDefaultValue( 1 );
+#endif
+  addParameter( methodParameter.release() );
+}
+
+bool QgsFixGeometriesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+{
+  mMethod = static_cast< Qgis::MakeValidMethod>( parameterAsInt( parameters, QStringLiteral( "METHOD" ), context ) );
+#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<10
+  if ( mMethod == Qgis::MakeValidMethod::Structure )
+  {
+    throw QgsProcessingException( "The structured method to make geometries valid requires a QGIS build based on GEOS 3.10 or later" );
+  }
+#endif
+  return true;
+}
+
 QgsFeatureList QgsFixGeometriesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback )
 {
   if ( !feature.hasGeometry() )
@@ -92,7 +120,7 @@ QgsFeatureList QgsFixGeometriesAlgorithm::processFeature( const QgsFeature &feat
 
   QgsFeature outputFeature = feature;
 
-  QgsGeometry outputGeometry = outputFeature.geometry().makeValid();
+  QgsGeometry outputGeometry = outputFeature.geometry().makeValid( mMethod );
   if ( outputGeometry.isNull() )
   {
     feedback->pushInfo( QObject::tr( "makeValid failed for feature %1 " ).arg( feature.id() ) );
@@ -117,7 +145,13 @@ QgsFeatureList QgsFixGeometriesAlgorithm::processFeature( const QgsFeature &feat
       outputGeometry = QgsGeometry();
   }
 
-  outputGeometry.convertToMultiType();
+  if ( outputGeometry.type() != QgsWkbTypes::GeometryType::PointGeometry )
+  {
+    // some data providers are picky about the geometries we pass to them: we can't add single-part geometries
+    // when we promised multi-part geometries, so ensure we have the right type
+    outputGeometry.convertToMultiType();
+  }
+
   if ( QgsWkbTypes::geometryType( outputGeometry.wkbType() ) != QgsWkbTypes::geometryType( feature.geometry().wkbType() ) )
   {
     // don't keep geometries which have different types - e.g. lines converted to points

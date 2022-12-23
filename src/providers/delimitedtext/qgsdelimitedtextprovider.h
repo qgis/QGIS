@@ -254,12 +254,15 @@ class QgsDelimitedTextProvider final: public QgsVectorDataProvider
 
 class QgsDelimitedTextProviderMetadata final: public QgsProviderMetadata
 {
+    Q_OBJECT
   public:
     QgsDelimitedTextProviderMetadata();
+    QIcon icon() const override;
     QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
     ProviderCapabilities providerCapabilities() const override;
+    QList< QgsMapLayerType > supportedLayerTypes() const override;
 };
 
 #endif

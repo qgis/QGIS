@@ -1,0 +1,226 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/gps/qgsgpslogger.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsGpsLogger : QObject
+{
+%Docstring(signature="appended")
+Base class for objects which log incoming GPS data.
+
+This class handles generic logic regarding logging GPS data, such as creation of tracks
+from incoming GPS location points.
+
+.. versionadded:: 3.30
+%End
+
+%TypeHeaderCode
+#include "qgsgpslogger.h"
+%End
+  public:
+
+
+
+    QgsGpsLogger( QgsGpsConnection *connection, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsGpsLogger with the specified ``parent`` object.
+
+The logger will automatically record GPS information from the specified ``connection``.
+%End
+
+    ~QgsGpsLogger();
+
+    QgsGpsConnection *connection();
+%Docstring
+Returns the associated GPS connection.
+
+.. seealso:: :py:func:`setConnection`
+%End
+
+    void setConnection( QgsGpsConnection *connection );
+%Docstring
+Sets the associated GPS connection.
+
+.. seealso:: :py:func:`connection`
+%End
+
+    void setEllipsoid( const QString &ellipsoid );
+%Docstring
+Sets the ``ellipsoid`` which will be used for calculating distances in the log.
+%End
+
+    virtual void setTransformContext( const QgsCoordinateTransformContext &context );
+%Docstring
+Sets the coordinate transform ``context`` to be used when transforming
+GPS coordinates.
+
+.. seealso:: :py:func:`transformContext`
+%End
+
+    QgsCoordinateTransformContext transformContext() const;
+%Docstring
+Returns the coordinate transform context to be used when transforming
+GPS coordinates.
+
+.. seealso:: :py:func:`setTransformContext`
+%End
+
+    const QgsDistanceArea &distanceArea() const;
+%Docstring
+Returns the distance area calculator which should be used for
+calculating distances associated with the GPS log.
+%End
+
+    QVector<QgsPoint> currentTrack() const;
+%Docstring
+Returns the recorded points in the current track.
+
+These points will always be in WGS84 coordinate reference system.
+%End
+
+    QgsGeometry currentGeometry( QgsWkbTypes::Type type, QString &error /Out/ ) const;
+%Docstring
+Returns the current logged GPS positions as a geometry of the specified ``type``.
+
+The returned geometries will always be in the WGS84 (EPSG:4326) coordinate reference system.
+
+:param type: desired geometry type
+
+:return: - logged GPS positions as a geometry.
+         - error: Will be set to a user-friendly error if the logged positions could not be converted to an appropriate geometry
+%End
+
+    QgsPointXY lastPosition() const;
+%Docstring
+Returns the last recorded position of the device.
+
+The returned point will always be in WGS84 coordinate reference system.
+%End
+
+    QDateTime lastTimestamp() const;
+%Docstring
+Returns the last recorded timestamp from the device.
+
+The returned time value will respect all user settings regarding GPS time zone
+handling.
+%End
+
+    QDateTime trackStartTime() const;
+%Docstring
+Returns the timestamp at which the current track was started.
+
+The returned time value will respect all user settings regarding GPS time zone
+handling.
+%End
+
+    double lastElevation() const;
+%Docstring
+Returns the last recorded elevation the device.
+%End
+
+    double lastMValue() const;
+%Docstring
+Returns the last recorded value corresponding to the QgsGpsLogger.settingsGpsMValueComponent setting.
+%End
+
+    void resetTrack();
+%Docstring
+Resets the current track, discarding all recorded points.
+%End
+
+    bool automaticallyAddTrackVertices() const;
+%Docstring
+Returns ``True`` if track vertices will be automatically added whenever
+the GPS position is changed.
+
+.. seealso:: :py:func:`setAutomaticallyAddTrackVertices`
+%End
+
+    void setAutomaticallyAddTrackVertices( bool enabled );
+%Docstring
+Sets whether track vertices will be automatically added whenever
+the GPS position is changed.
+
+.. seealso:: :py:func:`automaticallyAddTrackVertices`
+%End
+
+    void updateGpsSettings();
+%Docstring
+Should be called whenever the QGIS GPS settings are changed.
+%End
+
+    double totalTrackLength() const;
+%Docstring
+Returns the total length of the current digitized track (in meters).
+
+The returned length is calculated using ellipsoidal calculations.
+%End
+
+    double trackDistanceFromStart() const;
+%Docstring
+Returns the direct length from the first vertex in the track to the last (in meters).
+
+The returned length is calculated using ellipsoidal calculations.
+%End
+
+    QVariant componentValue( Qgis::GpsInformationComponent component ) const;
+%Docstring
+Returns the value of the corresponding GPS information ``component``.
+%End
+
+  signals:
+
+    void trackIsEmptyChanged( bool isEmpty );
+%Docstring
+Emitted whenever the current track changes from being empty to non-empty or vice versa.
+%End
+
+    void trackReset();
+%Docstring
+Emitted whenever the current track is reset.
+%End
+
+    void trackVertexAdded( const QgsPoint &vertex );
+%Docstring
+Emitted whenever a new vertex is added to the track.
+
+The ``vertex`` point will be in WGS84 coordinate reference system.
+%End
+
+    void stateChanged( const QgsGpsInformation &info );
+%Docstring
+Emitted whenever the associated GPS device state is changed.
+%End
+
+    void distanceAreaChanged();
+%Docstring
+Emitted whenever the distance area used to calculate track distances is changed.
+%End
+
+  protected:
+
+
+
+    void addTrackVertex();
+%Docstring
+Adds a track vertex at the current GPS location.
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/gps/qgsgpslogger.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

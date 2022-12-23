@@ -33,6 +33,8 @@ class QgsReadWriteContext;
  */
 class CORE_EXPORT QgsNumericFormatContext
 {
+    Q_GADGET
+
   public:
 
     /**
@@ -183,6 +185,43 @@ class CORE_EXPORT QgsNumericFormatContext
       mExponential = character;
     }
 
+    /**
+     * Interpretation of numeric values.
+     *
+     * \since QGIS 3.26
+     */
+    enum class Interpretation
+    {
+      Generic, //!< Generic
+      Latitude, //!< Latitude values
+      Longitude, //!< Longitude values
+    };
+    Q_ENUM( Interpretation )
+
+    /**
+     * Returns the interpretation of the numbers being converted.
+     *
+     * \see setInterpretation()
+     *
+     * \since QGIS 3.26
+     */
+    Interpretation interpretation() const
+    {
+      return mInterpretation;
+    }
+
+    /**
+     * Sets the \a interpretation of the numbers being converted.
+     *
+     * \see interpretation()
+     *
+     * \since QGIS 3.26
+     */
+    void setInterpretation( Interpretation interpretation )
+    {
+      mInterpretation = interpretation;
+    }
+
   private:
     QChar mThousandsSep;
     QChar mDecimalSep;
@@ -191,6 +230,8 @@ class CORE_EXPORT QgsNumericFormatContext
     QChar mNegativeSign;
     QChar mPositiveSign;
     QChar mExponential;
+
+    Interpretation mInterpretation = Interpretation::Generic;
 };
 
 #ifdef SIP_RUN
@@ -201,6 +242,7 @@ class CORE_EXPORT QgsNumericFormatContext
 #include <qgsfallbacknumericformat.h>
 #include <qgspercentagenumericformat.h>
 #include <qgsscientificnumericformat.h>
+#include <qgscoordinatenumericformat.h>
 % End
 #endif
 
@@ -221,6 +263,8 @@ class CORE_EXPORT QgsNumericFormat
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( dynamic_cast< QgsBearingNumericFormat * >( sipCpp ) )
       sipType = sipType_QgsBearingNumericFormat;
+    else if ( dynamic_cast< QgsGeographicCoordinateNumericFormat * >( sipCpp ) )
+      sipType = sipType_QgsGeographicCoordinateNumericFormat;
     else if ( dynamic_cast< QgsFallbackNumericFormat * >( sipCpp ) )
       sipType = sipType_QgsFallbackNumericFormat;
     else if ( dynamic_cast< QgsPercentageNumericFormat * >( sipCpp ) )
@@ -305,6 +349,9 @@ class CORE_EXPORT QgsNumericFormat
     bool operator==( const QgsNumericFormat &other ) const;
     bool operator!=( const QgsNumericFormat &other ) const;
 
+  protected:
+
+    static constexpr int DEFAULT_SORT_KEY = 100;
 };
 
 #endif // QGSNUMERICFORMAT_H

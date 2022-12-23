@@ -39,6 +39,7 @@ class QgsLine3DSymbolWidget : public Qgs3DSymbolWidget, private Ui::Line3DSymbol
 
   private slots:
     void updateGuiState();
+    void simple3DLinesToggled( bool active );
 
 };
 

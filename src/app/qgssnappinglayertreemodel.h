@@ -102,4 +102,29 @@ class APP_EXPORT QgsSnappingLayerTreeModel : public QSortFilterProxyModel
     void hasRowchanged( QgsLayerTreeNode *node, const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> &oldSettings );
 };
 
+class SnappingLayerDelegateTypeMenu: public QMenu
+{
+    Q_OBJECT
+
+  public:
+    SnappingLayerDelegateTypeMenu( const QString &title, QWidget *parent = nullptr )
+      : QMenu( title, parent ) {}
+
+    void mouseReleaseEvent( QMouseEvent *e )
+    {
+      QAction *action = activeAction();
+      if ( action )
+        action->trigger();
+      else
+        QMenu::mouseReleaseEvent( e );
+    }
+
+    // set focus to parent so that mTypeButton is not displayed
+    void hideEvent( QHideEvent *e )
+    {
+      qobject_cast<QWidget *>( parent() )->setFocus();
+      QMenu::hideEvent( e );
+    }
+};
+
 #endif // QGSSNAPPINGLAYERTREEVIEW_H

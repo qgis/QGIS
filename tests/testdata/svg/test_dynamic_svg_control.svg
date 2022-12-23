@@ -4,8 +4,8 @@
         <circle cx="97.896" cy="154.12" r="15.875"/><path d="m82.815 148.83h30.162" stroke-width=".26458px" /><path d="m82.815 159.42h30.162" stroke-width=".25px"/>
     </g>
     <g stroke-width=".265" text-anchor="middle" alignment-baseline="middle">
-        <text x="98" y="147.5" font-size="6px">green?</text>
-        <text x="98" y="156.3" font-size="4.5px">supergreen</text>
+        <text x="98" y="147.5" font-size="6px" font-family="QGIS Vera Sans" font-weight="bold" >green?</text>
+        <text x="98" y="156.3" font-size="4.5px" font-family="QGIS Vera Sans" font-weight="bold">supergreen</text>
     </g>
 </g>
 </svg>

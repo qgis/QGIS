@@ -21,6 +21,8 @@
 #include "qgsstyle.h"
 #include "qgsgui.h"
 #include "qgsapplication.h"
+#include "qgsproject.h"
+#include "qgsprojectstylesettings.h"
 
 #include <QLineEdit>
 #include <QCheckBox>
@@ -73,6 +75,21 @@ QgsStyleSaveDialog::QgsStyleSaveDialog( QWidget *parent, QgsStyle::StyleEntity t
     case QgsStyle::TagEntity:
     case QgsStyle::SmartgroupEntity:
       break;
+  }
+
+  QgsProjectStyleDatabaseModel *projectStyleModel = new QgsProjectStyleDatabaseModel( QgsProject::instance()->styleSettings(), this );
+  QgsProjectStyleDatabaseProxyModel *styleProxyModel = new QgsProjectStyleDatabaseProxyModel( projectStyleModel, this );
+  styleProxyModel->setFilters( QgsProjectStyleDatabaseProxyModel::Filter::FilterHideReadOnly );
+
+  if ( styleProxyModel->rowCount( QModelIndex() ) == 0 )
+  {
+    mLabelDestination->hide();
+    mComboBoxDestination->hide();
+  }
+  else
+  {
+    projectStyleModel->setShowDefaultStyle( true );
+    mComboBoxDestination->setModel( styleProxyModel );
   }
 
   if ( possibleEntities.size() < 2 )
@@ -145,4 +162,16 @@ QgsStyle::StyleEntity QgsStyleSaveDialog::selectedType() const
     return static_cast< QgsStyle::StyleEntity >( mComboSaveAs->currentData().toInt() );
   else
     return mType;
+}
+
+QgsStyle *QgsStyleSaveDialog::destinationStyle()
+{
+  if ( QgsStyle *style = qobject_cast< QgsStyle * >( mComboBoxDestination->model()->data( mComboBoxDestination->model()->index( mComboBoxDestination->currentIndex(), 0, QModelIndex() ), QgsProjectStyleDatabaseModel::StyleRole ).value< QObject * >() ) )
+  {
+    return style;
+  }
+  else
+  {
+    return QgsStyle::defaultStyle();
+  }
 }

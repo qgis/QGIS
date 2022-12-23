@@ -1,0 +1,42 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/vectortile/qgsvectortilelayerproperties.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsVectorTileLayerProperties : QgsOptionsDialogBase
+{
+%Docstring(signature="appended")
+Vectortile layer properties dialog
+
+.. versionadded:: 3.28
+%End
+
+%TypeHeaderCode
+#include "qgsvectortilelayerproperties.h"
+%End
+  public:
+    QgsVectorTileLayerProperties( QgsVectorTileLayer *lyr, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent = 0, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
+%Docstring
+Constructor
+%End
+
+  protected slots:
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/vectortile/qgsvectortilelayerproperties.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

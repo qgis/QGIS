@@ -17,6 +17,9 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgis.h"
+#include "qgscoordinatereferencesystem.h"
+
 #include <QObject>
 #include <QVector>
 #include <memory>
@@ -25,6 +28,7 @@ class QDomElement;
 class QgsReadWriteContext;
 class QDomDocument;
 class QgsBearingNumericFormat;
+class QgsGeographicCoordinateNumericFormat;
 
 /**
  * \brief Contains settings and properties relating to how a QgsProject should display
@@ -38,6 +42,11 @@ class CORE_EXPORT QgsProjectDisplaySettings : public QObject
     Q_OBJECT
 
   public:
+
+    Q_PROPERTY( Qgis::CoordinateDisplayType coordinateType READ coordinateType WRITE setCoordinateType NOTIFY coordinateTypeChanged )
+    Q_PROPERTY( Qgis::CoordinateOrder coordinateAxisOrder READ coordinateAxisOrder WRITE setCoordinateAxisOrder NOTIFY coordinateAxisOrderChanged )
+    Q_PROPERTY( QgsCoordinateReferenceSystem coordinateCustomCrs READ coordinateCustomCrs WRITE setCoordinateCustomCrs NOTIFY coordinateCustomCrsChanged )
+    Q_PROPERTY( QgsCoordinateReferenceSystem coordinateCrs READ coordinateCrs NOTIFY coordinateCrsChanged )
 
     /**
      * Constructor for QgsProjectDisplaySettings with the specified \a parent object.
@@ -70,6 +79,78 @@ class CORE_EXPORT QgsProjectDisplaySettings : public QObject
     const QgsBearingNumericFormat *bearingFormat() const;
 
     /**
+     * Sets the project geographic coordinate \a format, which controls how geographic coordinates associated with the project are displayed.
+     *
+     * Ownership of \a format is transferred to the settings.
+     *
+     * \see geographicCoordinateFormat()
+     * \see geographicCoordinateFormatChanged()
+     *
+     * \since QGIS 3.26
+     */
+    void setGeographicCoordinateFormat( QgsGeographicCoordinateNumericFormat *format SIP_TRANSFER );
+
+    /**
+     * Returns the project's geographic coordinate format, which controls how geographic coordinates associated with the project are displayed.
+     *
+     * \see setGeographicCoordinateFormat()
+     * \see geographicCoordinateFormatChanged()
+     */
+    const QgsGeographicCoordinateNumericFormat *geographicCoordinateFormat() const;
+
+    /**
+     * Returns default coordinate type for the project.
+     * \see setCoordinateType()
+     * \since QGIS 3.28
+     */
+    Qgis::CoordinateDisplayType coordinateType() const { return mCoordinateType; }
+
+    /**
+     * Sets the default coordinate \a type for the project.
+     * \see coordinateType()
+     * \since QGIS 3.28
+     */
+    void setCoordinateType( Qgis::CoordinateDisplayType type );
+
+    /**
+     * Returns default coordinate axis order to use when displaying coordinates for the project.
+     * \see setCoordinateAxisOrder()
+     * \see coordinateAxisOrderChanged()
+     * \since QGIS 3.28
+     */
+    Qgis::CoordinateOrder coordinateAxisOrder() const { return mCoordinateAxisOrder; }
+
+    /**
+     * Sets the default coordinate axis \a order to use when displaying coordinates for the project.
+     * \see coordinateAxisOrder()
+     * \see coordinateAxisOrderChanged()
+     * \since QGIS 3.28
+     */
+    void setCoordinateAxisOrder( Qgis::CoordinateOrder order );
+
+    /**
+     * Returns the coordinate custom CRS used when the project coordinate type is set to Qgis.CoordinateDisplayType.CustomCrs.
+     * \see setCoordinateCustomCrs()
+     * \since QGIS 3.28
+     */
+    QgsCoordinateReferenceSystem coordinateCustomCrs() const { return mCoordinateCustomCrs; }
+
+    /**
+     * Sets the coordinate custom CRS used when the project coordinate type is set to Qgis.CoordinateDisplayType.CustomCrs.
+     * \see setCoordinateCustomCrs()
+     * \since QGIS 3.28
+     */
+    void setCoordinateCustomCrs( const QgsCoordinateReferenceSystem &crs );
+
+    /**
+     * Returns the coordinate display CRS used derived from the coordinate type.
+     * \see coordinateType()
+     * \note if not parented to a project object, an invalid CRS will be returned.
+     * \since QGIS 3.28
+     */
+    QgsCoordinateReferenceSystem coordinateCrs() const { return mCoordinateCrs; }
+
+    /**
      * Reads the settings's state from a DOM element.
      * \see writeXml()
      */
@@ -91,8 +172,60 @@ class CORE_EXPORT QgsProjectDisplaySettings : public QObject
      */
     void bearingFormatChanged();
 
+    /**
+     * Emitted when the geographic coordinate format changes.
+     *
+     * \see setGeographicCoordinateFormat()
+     * \see geographicCoordinateFormat()
+     */
+    void geographicCoordinateFormatChanged();
+
+    /**
+     * Emitted when the default coordinate format changes.
+     *
+     * \see setCoordinateType()
+     * \see coordinateType()
+     * \since QGIS 3.28
+     */
+    void coordinateTypeChanged();
+
+    /**
+     * Emitted when the default coordinate axis order changes.
+     *
+     * \see setCoordinateAxisOrder()
+     * \see coordinateAxisOrder()
+     * \since QGIS 3.28
+     */
+    void coordinateAxisOrderChanged();
+
+    /**
+     * Emitted when the coordinate custom CRS changes.
+     *
+     * \see setCoordinateCustomCrs()
+     * \see coordinateCustomCrs()
+     * \since QGIS 3.28
+     */
+    void coordinateCustomCrsChanged();
+
+    /**
+     * Emitted when the coordinate CRS changes.
+     *
+     * \see coordinateCrs()
+     * \see coordinateType()
+     * \since QGIS 3.28
+     */
+    void coordinateCrsChanged();
+
   private:
+    void updateCoordinateCrs();
+
     std::unique_ptr< QgsBearingNumericFormat > mBearingFormat;
+    std::unique_ptr< QgsGeographicCoordinateNumericFormat > mGeographicCoordinateFormat;
+
+    Qgis::CoordinateDisplayType mCoordinateType = Qgis::CoordinateDisplayType::MapCrs;
+    QgsCoordinateReferenceSystem mCoordinateCustomCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+    QgsCoordinateReferenceSystem mCoordinateCrs;
+    Qgis::CoordinateOrder mCoordinateAxisOrder = Qgis::CoordinateOrder::Default;
 
 };
 

@@ -685,6 +685,7 @@ class GUI_EXPORT QgsProcessingParameterWidgetFactoryInterface
  */
 class GUI_EXPORT QgsProcessingHiddenWidgetWrapper: public QgsAbstractProcessingParameterWidgetWrapper
 {
+    Q_OBJECT
   public:
 
     /**

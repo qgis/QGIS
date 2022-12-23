@@ -103,7 +103,7 @@ void QgsPointCloud3DSymbol::readBaseXml( const QDomElement &elem, const QgsReadW
 {
   Q_UNUSED( context )
 
-  mPointSize = elem.attribute( QStringLiteral( "point-size" ), QStringLiteral( "2.0" ) ).toFloat();
+  mPointSize = elem.attribute( QStringLiteral( "point-size" ), QStringLiteral( "3.0" ) ).toFloat();
   mRenderAsTriangles = elem.attribute( QStringLiteral( "render-as-triangles" ), QStringLiteral( "0" ) ).toInt() == 1;
   mHorizontalTriangleFilter = elem.attribute( QStringLiteral( "horizontal-triangle-filter" ), QStringLiteral( "0" ) ).toInt() == 1;
   mHorizontalFilterThreshold = elem.attribute( QStringLiteral( "horizontal-filter-threshold" ), QStringLiteral( "10.0" ) ).toFloat();

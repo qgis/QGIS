@@ -506,7 +506,7 @@ class FixPyqt(FixImports):
                 else:
                     member_name = member.value
                     as_name = None
-                if member_name != u",":
+                if member_name != ",":
                     found = False
                     for change in MAPPING[mod_member.value]:
                         if member_name in change[1]:

@@ -21,7 +21,7 @@
 #include "qgis_sip.h"
 #include "qgsattributeform.h"
 #include "qgstrackedvectorlayertools.h"
-#include "qgsactionmenu.h"
+#include "qgsmaplayeractioncontextgenerator.h"
 
 #include <QDialog>
 #include <QMenuBar>
@@ -29,12 +29,13 @@
 #include "qgis_gui.h"
 
 class QgsHighlight;
+class QgsActionMenu;
 
 /**
  * \ingroup gui
  * \class QgsAttributeDialog
  */
-class GUI_EXPORT QgsAttributeDialog : public QDialog
+class GUI_EXPORT QgsAttributeDialog : public QDialog, public QgsMapLayerActionContextGenerator
 {
     Q_OBJECT
 
@@ -103,6 +104,8 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
      */
     void setExtraContextScope( QgsExpressionContextScope *extraScope SIP_TRANSFER );
 
+    QgsMapLayerActionContext createActionContext() override;
+
   public slots:
     void accept() override;
     void reject() override;
@@ -129,6 +132,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
     bool mEditable;
 
     QgsActionMenu *mMenu;
+    QMenuBar *mMenuBar = nullptr;
 
     static int sFormCounter;
 

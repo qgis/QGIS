@@ -1,4 +1,0 @@
-Crop to Data
-grid_tools
-QgsProcessingParameterRasterLayer|INPUT|Input layer|None|False
-QgsProcessingParameterRasterDestination|OUTPUT|Cropped

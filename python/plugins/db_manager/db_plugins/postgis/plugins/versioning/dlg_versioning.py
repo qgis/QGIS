@@ -99,9 +99,9 @@ class DlgVersioning(QDialog, Ui_DlgVersioning):
                 self.cboTable.addItem(table.name)
 
     def get_escaped_name(self, schema, table, suffix):
-        name = self.db.connector.quoteId(u"%s%s" % (table, suffix))
+        name = self.db.connector.quoteId("%s%s" % (table, suffix))
         schema_name = self.db.connector.quoteId(schema) if schema else None
-        return u"%s.%s" % (schema_name, name) if schema_name else name
+        return "%s.%s" % (schema_name, name) if schema_name else name
 
     def updateSql(self):
         if self.cboTable.currentIndex() < 0 or len(self.tables) < self.cboTable.currentIndex():
@@ -165,35 +165,35 @@ class DlgVersioning(QDialog, Ui_DlgVersioning):
         # if self.current:
         sql.append(self.sql_updatesView())
 
-        self.txtSql.setPlainText(u'\n\n'.join(sql))
+        self.txtSql.setPlainText('\n\n'.join(sql))
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
 
         return sql
 
     def showHelp(self):
-        helpText = u"""In this dialog you can set up versioning support for a table. The table will be modified so that all changes will be recorded: there will be a column with start time and end time. Every row will have its start time, end time is assigned when the feature gets deleted. When a row is modified, the original data is marked with end time and new row is created. With this system, it's possible to get back to state of the table any time in history. When selecting rows from the table, you will always have to specify at what time do you want the rows."""
+        helpText = """In this dialog you can set up versioning support for a table. The table will be modified so that all changes will be recorded: there will be a column with start time and end time. Every row will have its start time, end time is assigned when the feature gets deleted. When a row is modified, the original data is marked with end time and new row is created. With this system, it's possible to get back to state of the table any time in history. When selecting rows from the table, you will always have to specify at what time do you want the rows."""
         QMessageBox.information(self, "Help", helpText)
 
     def sql_alterTable(self):
-        return u"ALTER TABLE %s ADD %s serial, ADD %s timestamp default '-infinity', ADD %s timestamp, ADD %s varchar;" % (
+        return "ALTER TABLE %s ADD %s serial, ADD %s timestamp default '-infinity', ADD %s timestamp, ADD %s varchar;" % (
             self.schematable, self.colPkey, self.colStart, self.colEnd, self.colUser)
 
     def sql_setPkey(self):
-        return u"ALTER TABLE %s DROP CONSTRAINT %s, ADD PRIMARY KEY (%s);" % (
+        return "ALTER TABLE %s DROP CONSTRAINT %s, ADD PRIMARY KEY (%s);" % (
             self.schematable, self.origPkeyName, self.colPkey)
 
     def sql_currentView(self):
         cols = self.colPkey + "," + ",".join(self.columns)
 
-        return u"CREATE VIEW %(view)s AS SELECT %(cols)s FROM %(schematable)s WHERE %(end)s IS NULL;" % \
+        return "CREATE VIEW %(view)s AS SELECT %(cols)s FROM %(schematable)s WHERE %(end)s IS NULL;" % \
                {'view': self.view, 'cols': cols, 'schematable': self.schematable, 'end': self.colEnd}
 
     def sql_functions(self):
         cols = ",".join(self.columns)
         all_cols = self.colPkey + "," + ",".join(self.columns)
-        old_cols = ",".join(u"OLD." + x for x in self.columns)
+        old_cols = ",".join("OLD." + x for x in self.columns)
 
-        sql = u"""
+        sql = """
 CREATE OR REPLACE FUNCTION %(func_at_time)s(timestamp)
 RETURNS SETOF %(view)s AS
 $$
@@ -237,7 +237,7 @@ LANGUAGE 'plpgsql';""" % {'view': self.view, 'schematable': self.schematable, 'c
         return sql
 
     def sql_triggers(self):
-        return u"""
+        return """
 CREATE RULE %(rule_del)s AS ON DELETE TO %(schematable)s
 DO INSTEAD UPDATE %(schematable)s SET %(end)s = current_timestamp WHERE %(pkey)s = OLD.%(pkey)s AND %(end)s IS NULL;
 
@@ -253,10 +253,10 @@ FOR EACH ROW EXECUTE PROCEDURE %(func_insert)s();""" % \
     def sql_updatesView(self):
         cols = ",".join(self.columns)
         return_cols = self.colPkey + "," + ",".join(self.columns)
-        new_cols = ",".join(u"NEW." + x for x in self.columns)
-        assign_cols = ",".join(u"%s = NEW.%s" % (x, x) for x in self.columns)
+        new_cols = ",".join("NEW." + x for x in self.columns)
+        assign_cols = ",".join("%s = NEW.%s" % (x, x) for x in self.columns)
 
-        return u"""
+        return """
 CREATE OR REPLACE RULE "_DELETE" AS ON DELETE TO %(view)s DO INSTEAD
   DELETE FROM %(schematable)s WHERE %(origpkey)s = old.%(origpkey)s;
 CREATE OR REPLACE RULE "_INSERT" AS ON INSERT TO %(view)s DO INSTEAD
@@ -273,7 +273,7 @@ CREATE OR REPLACE RULE "_UPDATE" AS ON UPDATE TO %(view)s DO INSTEAD
         # execute and commit the code
         QApplication.setOverrideCursor(Qt.WaitCursor)
         try:
-            sql = u"\n".join(self.updateSql())
+            sql = "\n".join(self.updateSql())
             self.db.connector._execute_and_commit(sql)
 
         except BaseError as e:

@@ -42,6 +42,10 @@ QgsFieldsItem::QgsFieldsItem( QgsDataItem *parent,
     {
       std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( mConnectionUri, {} ) ) };
       mTableProperty = std::make_unique<QgsAbstractDatabaseProviderConnection::TableProperty>( conn->table( schema, tableName ) );
+      if ( conn->capabilities() & QgsAbstractDatabaseProviderConnection::Capability::RenameField )
+      {
+        mCanRename = true;
+      }
     }
     catch ( QgsProviderConnectionException &ex )
     {
@@ -146,7 +150,12 @@ QgsFieldItem::QgsFieldItem( QgsDataItem *parent, const QgsField &field )
   , mField( field )
 {
   // Precondition
-  Q_ASSERT( static_cast<QgsFieldsItem *>( parent ) );
+  QgsFieldsItem *fieldsItem = qgis::down_cast<QgsFieldsItem *>( parent );
+  Q_ASSERT( fieldsItem );
+
+  if ( fieldsItem->canRenameFields() )
+    mCapabilities |= Qgis::BrowserItemCapability::Rename;
+
   setState( Qgis::BrowserItemState::Populated );
   const auto constraints { field.constraints().constraints() };
   QStringList constraintsText;
@@ -174,7 +183,7 @@ QIcon QgsFieldItem::icon()
   QgsFieldsItem *parentFields { static_cast<QgsFieldsItem *>( parent() ) };
   if ( parentFields && parentFields->tableProperty() &&
        parentFields->tableProperty()->geometryColumn() == mName &&
-       parentFields->tableProperty()->geometryColumnTypes().count() )
+       !parentFields->tableProperty()->geometryColumnTypes().isEmpty() )
   {
     if ( mField.typeName() == QLatin1String( "raster" ) )
     {

@@ -478,6 +478,8 @@ QList<QgsMapLayer *> QgsLayoutItemMapOverviewStack::modifyMapLayerList( const QL
     if ( !l )
       continue;
 
+    l->setCustomProperty( QStringLiteral( "_noset_layer_expression_context" ), true );
+
     switch ( item->stackingPosition() )
     {
       case QgsLayoutItemMapItem::StackAboveMapLabels:

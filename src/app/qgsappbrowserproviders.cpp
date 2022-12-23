@@ -28,6 +28,7 @@
 #include "qgsguiutils.h"
 #include "qgsfileutils.h"
 #include "qgsnewnamedialog.h"
+#include "layers/qgsapplayerhandling.h"
 
 #include <QDesktopServices>
 #include <QMessageBox>
@@ -145,7 +146,7 @@ QString QgsQlrDropHandler::customUriProviderKey() const
 void QgsQlrDropHandler::handleCustomUriDrop( const QgsMimeDataUtils::Uri &uri ) const
 {
   const QString path = uri.uri;
-  QgisApp::instance()->openLayerDefinition( path );
+  QgsAppLayerHandling::openLayerDefinition( path );
 }
 
 //
@@ -410,6 +411,9 @@ void QgsStyleXmlDataItem::browseStyle( const QString &xmlPath )
   auto cursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
   if ( s.importXml( xmlPath ) )
   {
+    s.setFileName( xmlPath );
+    s.setName( QFileInfo( xmlPath ).completeBaseName() );
+
     cursorOverride.reset();
     const QFileInfo fi( xmlPath );
     QgsStyleManagerDialog dlg( &s, QgisApp::instance(), Qt::WindowFlags(), true );
@@ -488,8 +492,11 @@ QVector<QgsDataItem *> QgsProjectRootDataItem::createChildren()
 {
   QVector<QgsDataItem *> childItems;
 
-  QgsProject p;
-  if ( !p.read( mPath, QgsProject::ReadFlag::FlagDontResolveLayers | QgsProject::ReadFlag::FlagDontLoadLayouts | QgsProject::ReadFlag::FlagDontStoreOriginalStyles ) )
+  QgsProject p( nullptr, Qgis::ProjectCapabilities() );
+  if ( !p.read( mPath, Qgis::ProjectReadFlag::DontResolveLayers
+                | Qgis::ProjectReadFlag::DontLoadLayouts
+                | Qgis::ProjectReadFlag::DontStoreOriginalStyles
+                | Qgis::ProjectReadFlag::DontLoad3DViews ) )
   {
     childItems.append( new QgsErrorItem( nullptr, p.error(), mPath + "/error" ) );
     return childItems;

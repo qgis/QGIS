@@ -19,21 +19,47 @@
 #include "qgsmaplayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerelevationproperties.h"
+#include "qgslinesymbol.h"
+#include "qgsfillsymbol.h"
 
 QgsRasterElevationPropertiesWidget::QgsRasterElevationPropertiesWidget( QgsRasterLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
 {
   setupUi( this );
+  setObjectName( QStringLiteral( "mOptsPage_Elevation" ) );
 
   mOffsetZSpinBox->setClearValue( 0 );
   mScaleZSpinBox->setClearValue( 1 );
   mElevationGroupBox->setChecked( false );
+  mLineStyleButton->setSymbolType( Qgis::SymbolType::Line );
+  mFillStyleButton->setSymbolType( Qgis::SymbolType::Fill );
+  mStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconSurfaceElevationLine.svg" ) ), tr( "Line" ), static_cast< int >( Qgis::ProfileSurfaceSymbology::Line ) );
+  mStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconSurfaceElevationFillBelow.svg" ) ), tr( "Fill Below" ), static_cast< int >( Qgis::ProfileSurfaceSymbology::FillBelow ) );
 
   syncToLayer( layer );
 
   connect( mOffsetZSpinBox, qOverload<double >( &QDoubleSpinBox::valueChanged ), this, &QgsRasterElevationPropertiesWidget::onChanged );
   connect( mScaleZSpinBox, qOverload<double >( &QDoubleSpinBox::valueChanged ), this, &QgsRasterElevationPropertiesWidget::onChanged );
   connect( mElevationGroupBox, &QGroupBox::toggled, this, &QgsRasterElevationPropertiesWidget::onChanged );
+  connect( mLineStyleButton, &QgsSymbolButton::changed, this, &QgsRasterElevationPropertiesWidget::onChanged );
+  connect( mFillStyleButton, &QgsSymbolButton::changed, this, &QgsRasterElevationPropertiesWidget::onChanged );
+  connect( mBandComboBox, &QgsRasterBandComboBox::bandChanged, this, &QgsRasterElevationPropertiesWidget::onChanged );
+  connect( mStyleComboBox, qOverload< int >( &QComboBox::currentIndexChanged ), this, [ = ]
+  {
+    switch ( static_cast< Qgis::ProfileSurfaceSymbology >( mStyleComboBox->currentData().toInt() ) )
+    {
+      case Qgis::ProfileSurfaceSymbology::Line:
+        mSymbologyStackedWidget->setCurrentWidget( mPageLine );
+        break;
+      case Qgis::ProfileSurfaceSymbology::FillBelow:
+        mSymbologyStackedWidget->setCurrentWidget( mPageFill );
+        break;
+    }
+
+    onChanged();
+  } );
+
+  setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#elevation-properties" ) );
 }
 
 void QgsRasterElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
@@ -47,6 +73,21 @@ void QgsRasterElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
   mElevationGroupBox->setChecked( props->isEnabled() );
   mOffsetZSpinBox->setValue( props->zOffset() );
   mScaleZSpinBox->setValue( props->zScale() );
+  mLineStyleButton->setSymbol( props->profileLineSymbol()->clone() );
+  mFillStyleButton->setSymbol( props->profileFillSymbol()->clone() );
+  mBandComboBox->setLayer( mLayer );
+  mBandComboBox->setBand( props->bandNumber() );
+  mStyleComboBox->setCurrentIndex( mStyleComboBox->findData( static_cast <int >( props->profileSymbology() ) ) );
+  switch ( props->profileSymbology() )
+  {
+    case Qgis::ProfileSurfaceSymbology::Line:
+      mSymbologyStackedWidget->setCurrentWidget( mPageLine );
+      break;
+    case Qgis::ProfileSurfaceSymbology::FillBelow:
+      mSymbologyStackedWidget->setCurrentWidget( mPageFill );
+      break;
+  }
+
   mBlockUpdates = false;
 }
 
@@ -59,6 +100,10 @@ void QgsRasterElevationPropertiesWidget::apply()
   props->setEnabled( mElevationGroupBox->isChecked() );
   props->setZOffset( mOffsetZSpinBox->value() );
   props->setZScale( mScaleZSpinBox->value() );
+  props->setProfileLineSymbol( mLineStyleButton->clonedSymbol< QgsLineSymbol >() );
+  props->setProfileFillSymbol( mFillStyleButton->clonedSymbol< QgsFillSymbol >() );
+  props->setProfileSymbology( static_cast< Qgis::ProfileSurfaceSymbology >( mStyleComboBox->currentData().toInt() ) );
+  props->setBandNumber( mBandComboBox->currentBand() );
   mLayer->trigger3DUpdate();
 }
 

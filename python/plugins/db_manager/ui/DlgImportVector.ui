@@ -183,6 +183,9 @@
       </item>
       <item row="4" column="0">
        <widget class="QCheckBox" name="chkEncoding">
+        <property name="toolTip">
+         <string>Input layer encoding</string>
+        </property>
         <property name="text">
          <string>Encoding</string>
         </property>

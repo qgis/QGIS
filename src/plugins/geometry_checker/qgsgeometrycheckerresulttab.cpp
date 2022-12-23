@@ -21,7 +21,6 @@
 #include <QDialogButtonBox>
 #include <QPlainTextEdit>
 
-#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrycheckerresulttab.h"
 #include "qgsgeometrycheckfixdialog.h"
 
@@ -34,16 +33,14 @@
 #include "qgisinterface.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
-#include "qgsproviderregistry.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsvscrollarea.h"
 #include "qgssettings.h"
-#include "qgsscrollarea.h"
 #include "qgsgeometrycheckerror.h"
-#include "qgsogrprovider.h"
+#include "qgsogrproviderutils.h"
 
 QString QgsGeometryCheckerResultTab::sSettingsGroup = QStringLiteral( "/geometry_checker/default_fix_methods/" );
 
@@ -78,7 +75,11 @@ QgsGeometryCheckerResultTab::QgsGeometryCheckerResultTab( QgisInterface *iface, 
   connect( checker, &QgsGeometryChecker::errorAdded, this, &QgsGeometryCheckerResultTab::addError );
   connect( checker, &QgsGeometryChecker::errorUpdated, this, &QgsGeometryCheckerResultTab::updateError );
   connect( ui.tableWidgetErrors->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsGeometryCheckerResultTab::onSelectionChanged );
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   connect( ui.buttonGroupSelectAction, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, [this]( int ) { QgsGeometryCheckerResultTab::highlightErrors(); } );
+#else
+  connect( ui.buttonGroupSelectAction, &QButtonGroup::idClicked, this, [this]( int ) { QgsGeometryCheckerResultTab::highlightErrors(); } );
+#endif
   connect( ui.pushButtonOpenAttributeTable, &QAbstractButton::clicked, this, &QgsGeometryCheckerResultTab::openAttributeTable );
   connect( ui.pushButtonFixWithDefault, &QAbstractButton::clicked, this, &QgsGeometryCheckerResultTab::fixErrorsWithDefault );
   connect( ui.pushButtonFixWithPrompt, &QAbstractButton::clicked, this, &QgsGeometryCheckerResultTab::fixErrorsWithPrompt );
@@ -88,7 +89,7 @@ QgsGeometryCheckerResultTab::QgsGeometryCheckerResultTab( QgisInterface *iface, 
   connect( ui.pushButtonExport, &QAbstractButton::clicked, this, &QgsGeometryCheckerResultTab::exportErrors );
 
   bool allLayersEditable = true;
-  for ( const QgsFeaturePool *featurePool : mChecker->featurePools().values() )
+  for ( const QgsFeaturePool *featurePool : mChecker->featurePools() )
   {
     if ( ( featurePool->layer()->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeGeometries ) == 0 )
     {
@@ -452,10 +453,11 @@ void QgsGeometryCheckerResultTab::openAttributeTable()
   {
     return;
   }
-  for ( const QString &layerId : ids.keys() )
+  for ( auto it = ids.constBegin(); it != ids.constEnd(); it++ )
   {
+    const QString layerId = it.key();
     QStringList expr;
-    for ( QgsFeatureId id : ids[layerId] )
+    for ( QgsFeatureId id : it.value() )
     {
       expr.append( QStringLiteral( "$id = %1 " ).arg( id ) );
     }
@@ -535,9 +537,9 @@ void QgsGeometryCheckerResultTab::fixErrors( bool prompt )
     ui.progressBarFixErrors->setVisible( false );
     unsetCursor();
   }
-  for ( const QString &layerId : mChecker->featurePools().keys() )
+  for ( const QgsFeaturePool *featurePool : mChecker->featurePools() )
   {
-    mChecker->featurePools()[layerId]->layer()->triggerRepaint();
+    featurePool->layer()->triggerRepaint();
   }
 
   if ( mStatistics.itemCount() > 0 )
@@ -602,7 +604,11 @@ void QgsGeometryCheckerResultTab::setDefaultResolutionMethods()
       groupBoxLayout->addWidget( radio );
       radioGroup->addButton( radio, id++ );
     }
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     connect( radioGroup, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsGeometryCheckerResultTab::storeDefaultResolutionMethod );
+#else
+    connect( radioGroup, &QButtonGroup::idClicked, this, &QgsGeometryCheckerResultTab::storeDefaultResolutionMethod );
+#endif
 
     scrollAreaLayout->addWidget( groupBox );
   }
@@ -624,9 +630,10 @@ void QgsGeometryCheckerResultTab::storeDefaultResolutionMethod( int id ) const
 void QgsGeometryCheckerResultTab::checkRemovedLayer( const QStringList &ids )
 {
   bool requiredLayersRemoved = false;
-  for ( const QString &layerId : mChecker->featurePools().keys() )
+  const QMap<QString, QgsFeaturePool *> &featurePools = mChecker->featurePools();
+  for ( auto it = featurePools.constBegin(); it != featurePools.constEnd(); it++ )
   {
-    if ( ids.contains( layerId ) )
+    if ( ids.contains( it.key() ) )
     {
       if ( isEnabled() )
         requiredLayersRemoved = true;

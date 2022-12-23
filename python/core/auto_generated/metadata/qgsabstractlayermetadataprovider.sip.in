@@ -1,0 +1,209 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/metadata/qgsabstractlayermetadataprovider.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+struct QgsMetadataSearchContext
+{
+  QgsCoordinateTransformContext transformContext;
+};
+
+class QgsLayerMetadataProviderResult: QgsLayerMetadata
+{
+%Docstring(signature="appended")
+Result record of layer metadata provider search.
+The result contains QGIS metadata information and all information
+that is required by QGIS to load the layer and to filter
+the results.
+
+The class extends :py:class:`QgsLayerMetadata` by adding information
+taken directly from the provider which is required for
+filtering (geographic extent) or because the actual
+values may be different by those stored in the metadata
+(CRS authid) or totally missing from the metadata
+(data provider name and layer type).
+
+.. versionadded:: 3.28
+%End
+
+%TypeHeaderCode
+#include "qgsabstractlayermetadataprovider.h"
+%End
+  public:
+
+    QgsLayerMetadataProviderResult( const QgsLayerMetadata &metadata );
+%Docstring
+Constructor for QgsLayerMetadataProviderResult.
+
+:param metadata: layer metadata.
+%End
+
+    QgsLayerMetadataProviderResult( );
+%Docstring
+Default constructor.
+%End
+
+    const QgsPolygon &geographicExtent() const;
+%Docstring
+Returns the layer extent in EPSG:4326
+%End
+
+    void setGeographicExtent( const QgsPolygon &geographicExtent );
+%Docstring
+Sets the layer extent in EPSG:4326 to ``geographicExtent``
+%End
+
+    const QgsWkbTypes::GeometryType &geometryType() const;
+%Docstring
+Returns the layer geometry type.
+%End
+
+    void setGeometryType( const QgsWkbTypes::GeometryType &geometryType );
+%Docstring
+Sets the layer geometry type to ``geometryType``.
+%End
+
+    const QString &authid() const;
+%Docstring
+Returns the layer CRS authid.
+%End
+
+    void setAuthid( const QString &authid );
+%Docstring
+Sets the layer ``authid``.
+%End
+
+    const QString &uri() const;
+%Docstring
+Returns the layer data source URI.
+%End
+
+    void setUri( const QString &Uri );
+%Docstring
+Sets the layer data source URI to ``Uri``.
+%End
+
+    const QString &dataProviderName() const;
+%Docstring
+Returns the data provider name.
+%End
+
+    void setDataProviderName( const QString &dataProviderName );
+%Docstring
+Sets the data provider name to ``dataProviderName``.
+%End
+
+    QgsMapLayerType layerType() const;
+%Docstring
+Returns the layer type.
+%End
+
+    void setLayerType( QgsMapLayerType layerType );
+%Docstring
+Sets the layer type to ``layerType``.
+%End
+
+    const QString &standardUri() const;
+%Docstring
+Returns the metadata standard URI (usually "http://mrcc.com/qgis.dtd")
+%End
+
+    void setStandardUri( const QString &standardUri );
+%Docstring
+Sets the metadata standard URI to ``standardUri``.
+%End
+
+
+};
+
+
+class QgsLayerMetadataSearchResults
+{
+%Docstring(signature="appended")
+Container of result records from a layer metadata search.
+
+Contains the records of the layer metadata provider that matched the
+search criteria and the list of the errors that occurred while
+searching for metadata.
+
+.. versionadded:: 3.28
+%End
+
+%TypeHeaderCode
+#include "qgsabstractlayermetadataprovider.h"
+%End
+  public:
+
+    QList<QgsLayerMetadataProviderResult> metadata() const;
+%Docstring
+Returns the list of metadata results.
+%End
+
+    void addMetadata( const QgsLayerMetadataProviderResult &metadata );
+%Docstring
+Adds a ``Metadata`` record to the list of results.
+%End
+
+    QStringList errors() const;
+%Docstring
+Returns the list of errors occurred during a metadata search.
+%End
+
+    void addError( const QString &error );
+%Docstring
+Adds a ``error`` to the list of errors.
+%End
+
+};
+
+
+class QgsAbstractLayerMetadataProvider
+{
+%Docstring(signature="appended")
+Layer metadata provider backend interface.
+
+.. versionadded:: 3.28
+%End
+
+%TypeHeaderCode
+#include "qgsabstractlayermetadataprovider.h"
+%End
+  public:
+
+    virtual ~QgsAbstractLayerMetadataProvider();
+
+    virtual QString id() const = 0;
+%Docstring
+Returns the id of the layer metadata provider implementation, usually the name of the data provider
+but it may be another unique identifier.
+%End
+
+    virtual QgsLayerMetadataSearchResults search( const QgsMetadataSearchContext &searchContext, const QString &searchString = QString(), const QgsRectangle &geographicExtent = QgsRectangle(), QgsFeedback *feedback = 0 ) const = 0;
+%Docstring
+Searches for metadata optionally filtering by search string and geographic extent.
+
+:param searchContext: context for the metadata search.
+:param searchString: defines a filter to limit the results to the records where the search string appears in the "identifier", "title" or "abstract" metadata fields, a case-insensitive comparison is used for the match.
+:param geographicExtent: defines a filter where the spatial extent matches the given extent in EPSG:4326
+:param feedback: can be used to monitor and control the search process.
+
+:return: a :py:class:`QgsLayerMetadataSearchResult` object with a list of metadata and errors
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/metadata/qgsabstractlayermetadataprovider.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

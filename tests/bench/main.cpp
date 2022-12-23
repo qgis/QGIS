@@ -27,17 +27,7 @@
 #include <cstdlib>
 
 #ifdef Q_OS_WIN
-// Open files in binary mode
 #include <fcntl.h> /*  _O_BINARY */
-#ifdef MSVC
-#undef _fmode
-int _fmode = _O_BINARY;
-#else
-// Only do this if we are not building on windows with msvc.
-// Recommended method for doing this with msvc is with a call to _set_fmode
-// which is the first thing we do in main().
-// Similarly, with MinGW set _fmode in main().
-#endif  //_MSC_VER
 #else
 #include <getopt.h>
 #endif
@@ -507,9 +497,6 @@ int main( int argc, char *argv[] )
       if ( q == QLatin1String( "Antialiasing" ) ) hints |= QPainter::Antialiasing;
       else if ( q == QLatin1String( "TextAntialiasing" ) ) hints |= QPainter::TextAntialiasing;
       else if ( q == QLatin1String( "SmoothPixmapTransform" ) ) hints |= QPainter::SmoothPixmapTransform;
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-      else if ( q == QLatin1String( "NonCosmeticDefaultPen" ) ) hints |= QPainter::NonCosmeticDefaultPen;
-#endif
       else
       {
         fprintf( stderr, "Unknown quality option\n" );

@@ -19,8 +19,15 @@
 #include "qgslogger.h"
 #include "qgsguiutils.h"
 #include "qgsdataitem.h"
+#include "qgsdirectoryitem.h"
+#include "qgsfileutils.h"
+#include "qgsfavoritesitem.h"
 
 #include <QKeyEvent>
+#include <QSortFilterProxyModel>
+#include <QDir>
+#include <QFileInfo>
+#include <QRegularExpression>
 
 QgsBrowserTreeView::QgsBrowserTreeView( QWidget *parent )
   : QTreeView( parent )
@@ -170,6 +177,147 @@ bool QgsBrowserTreeView::hasExpandedDescendant( const QModelIndex &index ) const
   return false;
 }
 
+void QgsBrowserTreeView::expandPath( const QString &str )
+{
+  const QStringList pathParts = QgsFileUtils::splitPathToComponents( str );
+  if ( pathParts.isEmpty() )
+    return;
+
+  // first we build a list of all directory item candidates we could use to start the expansion from
+  QVector< QgsDirectoryItem * > initialDirectoryItemCandidates;
+  const QVector< QgsDataItem * > rootItems = mBrowserModel->rootItems();
+  for ( QgsDataItem *item : rootItems )
+  {
+    if ( QgsDirectoryItem *dirItem = qobject_cast< QgsDirectoryItem * >( item ) )
+    {
+      initialDirectoryItemCandidates << dirItem;
+    }
+    else if ( QgsFavoritesItem *favoritesItem = qobject_cast< QgsFavoritesItem * >( item ) )
+    {
+      const QVector<QgsDataItem * > favoriteChildren = favoritesItem->children();
+      for ( QgsDataItem *favoriteChild : favoriteChildren )
+      {
+        if ( QgsDirectoryItem *dirItem = qobject_cast< QgsDirectoryItem * >( favoriteChild ) )
+        {
+          initialDirectoryItemCandidates << dirItem;
+        }
+      }
+    }
+  }
+
+  QgsDirectoryItem *currentDirectoryItem = nullptr;
+  QString currentCandidatePath;
+  for ( const QString &thisPart : pathParts )
+  {
+    currentCandidatePath += ( currentCandidatePath.isEmpty() || currentCandidatePath.endsWith( '/' ) ? QString() : QStringLiteral( "/" ) ) + thisPart;
+
+    auto it = initialDirectoryItemCandidates.begin();
+    while ( it != initialDirectoryItemCandidates.end() )
+    {
+      if ( !( *it )->dirPath().startsWith( currentCandidatePath ) )
+      {
+        it = initialDirectoryItemCandidates.erase( it );
+      }
+      else
+      {
+        if ( str.startsWith( ( *it )->dirPath() ) )
+          currentDirectoryItem = *it;
+        it++;
+      }
+    }
+  }
+
+  if ( !currentDirectoryItem )
+    return; // should we create a new root drive item automatically??
+
+  QStringList remainingParts = pathParts;
+  auto it = remainingParts.begin();
+  QDir currentDir = *it;
+  while ( it != remainingParts.end() )
+  {
+    if ( currentDirectoryItem->dirPath().startsWith( currentDir.filePath( *it ) ) )
+    {
+      currentDir = QDir( currentDir.filePath( *it ) );
+      it = remainingParts.erase( it );
+    }
+    else
+    {
+      break;
+    }
+  }
+
+  currentDir = QDir( currentDirectoryItem->dirPath() );
+  QList< QgsDirectoryItem * > pathItems;
+
+  pathItems << currentDirectoryItem;
+
+  for ( const QString &currentFolderName : std::as_const( remainingParts ) )
+  {
+    const QString thisPath = currentDir.filePath( currentFolderName );
+
+    if ( !QFile::exists( thisPath ) )
+      break;
+
+    // check if current directory item already has a child for the folder
+    QgsDirectoryItem *existingChild = nullptr;
+    const QVector< QgsDataItem * > children = currentDirectoryItem->children();
+    for ( QgsDataItem *child : children )
+    {
+      if ( QgsDirectoryItem *childDirectoryItem = qobject_cast< QgsDirectoryItem *>( child ) )
+      {
+        if ( childDirectoryItem->dirPath() == thisPath )
+        {
+          existingChild = childDirectoryItem;
+          break;
+        }
+      }
+    }
+
+    if ( existingChild )
+    {
+      pathItems << existingChild;
+      currentDirectoryItem  = existingChild;
+    }
+    else
+    {
+      QgsDirectoryItem *newDir = new QgsDirectoryItem( nullptr, currentFolderName, thisPath );
+      pathItems << newDir;
+      currentDirectoryItem ->addChildItem( newDir, true );
+      currentDirectoryItem  = newDir;
+    }
+
+    currentDir = QDir( thisPath );
+  }
+
+  for ( QgsDirectoryItem *i : std::as_const( pathItems ) )
+  {
+    QModelIndex index = mBrowserModel->findItem( i );
+    if ( QSortFilterProxyModel *proxyModel = qobject_cast< QSortFilterProxyModel *>( model() ) )
+    {
+      index = proxyModel->mapFromSource( index );
+    }
+    expand( index );
+  }
+}
+
+bool QgsBrowserTreeView::setSelectedItem( QgsDataItem *item )
+{
+  if ( !mBrowserModel )
+    return false;
+
+  QModelIndex index = mBrowserModel->findItem( item );
+  if ( !index.isValid() )
+    return false;
+
+  if ( QSortFilterProxyModel *proxyModel = qobject_cast< QSortFilterProxyModel *>( model() ) )
+  {
+    index = proxyModel->mapFromSource( index );
+  }
+
+  setCurrentIndex( index );
+  return true;
+}
+
 // rowsInserted signal is used to continue in state restoring
 void QgsBrowserTreeView::rowsInserted( const QModelIndex &parentIndex, int start, int end )
 {
@@ -205,11 +353,10 @@ void QgsBrowserTreeView::rowsInserted( const QModelIndex &parentIndex, int start
   {
     const QModelIndex childIndex = model()->index( i, 0, parentIndex );
     const QString childPath = model()->data( childIndex, QgsBrowserGuiModel::PathRole ).toString();
-    QString escapedChildPath = childPath;
-    escapedChildPath.replace( '|', QLatin1String( "\\|" ) );
+    const QString escapedChildPath = QRegularExpression::escape( childPath );
 
     QgsDebugMsgLevel( "childPath = " + childPath + " escapedChildPath = " + escapedChildPath, 2 );
-    if ( mExpandPaths.contains( childPath ) || mExpandPaths.indexOf( QRegExp( "^" + escapedChildPath + "/.*" ) ) != -1 )
+    if ( mExpandPaths.contains( childPath ) || mExpandPaths.indexOf( QRegularExpression( "^" + escapedChildPath + "/.*" ) ) != -1 )
     {
       QgsDebugMsgLevel( QStringLiteral( "-> expand" ), 2 );
       const QModelIndex modelIndex = browserModel()->findPath( childPath, Qt::MatchExactly );

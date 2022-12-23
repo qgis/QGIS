@@ -43,11 +43,11 @@
  * \ingroup UnitTests
  * This is a unit test for the vector layer class.
  */
-class TestQgsVectorLayer : public QObject
+class TestQgsVectorLayer : public QgsTest
 {
     Q_OBJECT
   public:
-    TestQgsVectorLayer() = default;
+    TestQgsVectorLayer() : QgsTest( QStringLiteral( "Vector Renderer Tests" ) ) {}
 
   private:
     bool mTestHasError =  false ;
@@ -56,15 +56,12 @@ class TestQgsVectorLayer : public QObject
     QgsVectorLayer *mpPolysLayer = nullptr;
     QgsVectorLayer *mpNonSpatialLayer = nullptr;
     QString mTestDataDir;
-    QString mReport;
 
 
   private slots:
 
     void initTestCase(); // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
 
     void nonSpatialIterator();
     void getValues();
@@ -80,6 +77,7 @@ class TestQgsVectorLayer : public QObject
     void testCopyPasteFieldConfiguration();
     void testCopyPasteFieldConfiguration_data();
     void testFieldExpression();
+    void testFieldAggregateExpression();
 };
 
 void TestQgsVectorLayer::initTestCase()
@@ -136,21 +134,10 @@ void TestQgsVectorLayer::initTestCase()
   // Register the layer with the registry
   QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpLinesLayer );
-
-  mReport += QLatin1String( "<h1>Vector Renderer Tests</h1>\n" );
 }
 
 void TestQgsVectorLayer::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-    //QDesktopServices::openUrl( "file:///" + myReportFile );
-  }
   QgsApplication::exitQgis();
 }
 
@@ -481,6 +468,36 @@ void TestQgsVectorLayer::testFieldExpression()
   QCOMPARE( layer1.expressionField( layer1.fields().lookupField( QStringLiteral( "virtual_field" ) ) ),  QStringLiteral( "'abc'" ) );
   QCOMPARE( layer1.expressionField( layer1.fields().lookupField( QStringLiteral( "name" ) ) ),  QString() );
 }
+
+void TestQgsVectorLayer::testFieldAggregateExpression()
+{
+  QString testPolysFile( TEST_DATA_DIR );
+  testPolysFile += QLatin1String( "/projects/communes.gpkg|layername=communes" );
+
+  QgsVectorLayer layer( testPolysFile, QStringLiteral( "layer1" ), QStringLiteral( "ogr" ) );
+  QVERIFY( layer.isValid() );
+
+  layer.addExpressionField( QStringLiteral( "sum($area)" ), QgsField( QStringLiteral( "virtual_field" ), QVariant::String ) );
+
+  const int vfIndex = layer.fields().count() - 1;
+  QCOMPARE( layer.fields().at( 0 ).name(), QStringLiteral( "fid" ) );
+  QCOMPARE( layer.fields().at( vfIndex ).name(), QStringLiteral( "virtual_field" ) );
+
+  QgsFeature feature;
+  auto featureIt = layer.getFeatures();
+  featureIt.nextFeature( feature );
+  QVERIFY( feature.isValid() );
+  QCOMPARE( feature.attribute( 0 ).toInt(), 1 );
+  QVERIFY( qgsDoubleNear( feature.attribute( vfIndex ).toDouble(), 359065580.0, 1 ) );
+
+  QgsFeature feature2;
+  featureIt.nextFeature( feature2 );
+  QVERIFY( feature2.isValid() );
+  QCOMPARE( feature2.attribute( 0 ).toInt(), 2 );
+  QVERIFY( qgsDoubleNear( feature2.attribute( vfIndex ).toDouble(), 359065580.0, 1 ) );
+}
+
+
 
 QGSTEST_MAIN( TestQgsVectorLayer )
 #include "testqgsvectorlayer.moc"

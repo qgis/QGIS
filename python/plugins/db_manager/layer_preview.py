@@ -40,7 +40,7 @@ class LayerPreview(QgsMapCanvas):
 
         self.item = None
         self.dirty = False
-        self.currentLayerId = None
+        self.current_layer = None
 
         # reuse settings from QGIS
         settings = QgsSettings()
@@ -107,7 +107,7 @@ class LayerPreview(QgsMapCanvas):
                         return
 
                     uri = table.database().uri()
-                    uri.setDataSource("", u"(SELECT * FROM %s LIMIT 1000)" % table.quotedName(), table.geomColumn, "",
+                    uri.setDataSource("", "(SELECT * FROM %s LIMIT 1000)" % table.quotedName(), table.geomColumn, "",
                                       uniqueField.name)
                     provider = table.database().dbplugin().providerName()
                     vl = QgsVectorLayer(uri.uri(False), table.name, provider)
@@ -118,19 +118,13 @@ class LayerPreview(QgsMapCanvas):
                     vl.deleteLater()
                     vl = None
 
-            # remove old layer (if any) and set new
-            if self.currentLayerId:
-                if not QgsProject.instance().layerTreeRoot().findLayer(self.currentLayerId):
-                    QgsProject.instance().removeMapLayers([self.currentLayerId])
-
             if vl and vl.isValid():
-                self.setLayers([vl])
-                QgsProject.instance().addMapLayers([vl], False)
+                self.current_layer = vl
+                self.setLayers([self.current_layer])
                 self.zoomToFullExtent()
-                self.currentLayerId = vl.id()
             else:
                 self.setLayers([])
-                self.currentLayerId = None
+                self.current_layer = None
 
             self.freeze(False)
             super().refresh()

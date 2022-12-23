@@ -561,6 +561,14 @@ Construct a new color line edit widget.
     virtual void setColor( const QColor &color, bool emitSignals = false );
 
 
+    void setAllowOpacity( bool allowOpacity );
+%Docstring
+Sets whether opacity modification (transparency) is permitted.
+Defaults to ``True``.
+
+:param allowOpacity: set to ``False`` to disable opacity modification
+%End
+
   protected:
     virtual void resizeEvent( QResizeEvent *event );
 

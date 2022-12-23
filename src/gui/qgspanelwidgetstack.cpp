@@ -43,6 +43,7 @@ void QgsPanelWidgetStack::setMainPanel( QgsPanelWidget *panel )
            Qt::UniqueConnection );
   mStackedWidget->insertWidget( 0, panel );
   mStackedWidget->setCurrentIndex( 0 );
+  updateMenuButton();
 }
 
 QgsPanelWidget *QgsPanelWidgetStack::mainPanel()
@@ -56,8 +57,15 @@ QgsPanelWidget *QgsPanelWidgetStack::takeMainPanel()
   acceptAllPanels();
 
   QWidget *widget = mStackedWidget->widget( 0 );
-  mStackedWidget->removeWidget( widget );
-  return qobject_cast<QgsPanelWidget *>( widget );
+  if ( widget )
+  {
+    mStackedWidget->removeWidget( widget );
+    return qobject_cast<QgsPanelWidget *>( widget );
+  }
+  else
+  {
+    return nullptr;
+  }
 }
 
 void QgsPanelWidgetStack::clear()

@@ -68,6 +68,7 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
       QML,
       SLD,
       DB,
+      Local,
     };
     Q_ENUM( StyleType )
 #endif

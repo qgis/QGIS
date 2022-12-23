@@ -87,6 +87,18 @@ Returns the squared 2D distance between two points.
 Returns the squared distance between a point and a line.
 %End
 
+    static double distToInfiniteLine( const QgsPoint &point, const QgsPoint &linePoint1, const QgsPoint &linePoint2, double epsilon = 1e-7 );
+%Docstring
+Returns the distance between a point and an infinite line.
+
+:param point: The point to find the distance to the line
+:param linePoint1: The first point of the line
+:param linePoint2: The second point of the line
+:param epsilon: The tolerance to use
+
+.. versionadded:: 3.26
+%End
+
     static bool lineIntersection( const QgsPoint &p1, QgsVector v1, const QgsPoint &p2, QgsVector v2, QgsPoint &intersection /Out/ ) /HoldGIL/;
 %Docstring
 Computes the intersection between two lines. Z dimension is

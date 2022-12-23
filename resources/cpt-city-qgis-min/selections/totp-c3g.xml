@@ -1,0 +1,541 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<selection cadence="high">
+  <name short="totp-c3g">Top of the (c3g) palettes</name>
+  <synopsis>The 75 most popular c3g gradients 
+    on 19/07/2022</synopsis>
+  <description>
+    The 75 most popular c3g files with the number downloaded 
+    shown in parentheses. The arrows indicate the change in rank in the last
+    month. This list is compiled from the files downloaded in the last year 
+    (a total of 13,282 files) and is updated irregularly, most recently on 
+    19/07/2022.
+  </description>
+  <gradients>
+
+    <gradient 
+       file="purplefly" 
+       dir="rc"  
+       rank="1"
+       direction="unchanged"
+       downloads="254"/>
+
+    <gradient 
+       file="Sunset_Real" 
+       dir="nd/atmospheric"  
+       rank="2"
+       direction="unchanged"
+       downloads="253"/>
+
+    <gradient 
+       file="temperature" 
+       dir="arendal"  
+       rank="3"
+       direction="up" 
+       downloads="234"/>
+
+    <gradient 
+       file="bhw1_28" 
+       dir="bhw/bhw1"  
+       rank="4"
+       direction="unchanged"
+       downloads="133"/>
+
+    <gradient 
+       file="christmas-candy" 
+       dir="ocal"  
+       rank="5"
+       direction="unchanged"
+       downloads="114"/>
+
+    <gradient 
+       file="bhw1_01" 
+       dir="bhw/bhw1"  
+       rank="6"
+       direction="unchanged"
+       downloads="110"/>
+
+    <gradient 
+       file="rainbow" 
+       dir="oc"  
+       rank="7"
+       direction="up" 
+       downloads="91"/>
+
+    <gradient 
+       file="thermal" 
+       dir="cmocean"  
+       rank="8"
+       direction="unchanged"
+       downloads="85"/>
+
+    <gradient 
+       file="GMT_ocean" 
+       dir="gmt"  
+       rank="9"
+       direction="up" 
+       downloads="82"/>
+
+    <gradient 
+       file="rainbow" 
+       dir="rc"  
+       rank="10"
+       direction="down"
+       downloads="81"/>
+
+    <gradient 
+       file="bath_112" 
+       dir="esri/hypsometry/bath"  
+       rank="11"
+       direction="up" 
+       downloads="80"/>
+
+    <gradient 
+       file="cequal" 
+       dir="imagej"  
+       rank="12"
+       direction="unchanged"
+       downloads="75"/>
+
+    <gradient 
+       file="GMT_hot" 
+       dir="gmt"  
+       rank="13"
+       direction="down"
+       downloads="74"/>
+
+    <gradient 
+       file="bhw1_14" 
+       dir="bhw/bhw1"  
+       rank="14"
+       direction="up" 
+       downloads="73"/>
+
+    <gradient 
+       file="autumnrose" 
+       dir="rc"  
+       rank="14"
+       direction="down"
+       downloads="73"/>
+
+    <gradient 
+       file="bhw1_05" 
+       dir="bhw/bhw1"  
+       rank="16"
+       direction="up" 
+       downloads="70"/>
+
+    <gradient 
+       file="bhw1_06" 
+       dir="bhw/bhw1"  
+       rank="17"
+       direction="down"
+       downloads="69"/>
+
+    <gradient 
+       file="DEM_print" 
+       dir="td"  
+       rank="18"
+       direction="up" 
+       downloads="63"/>
+
+    <gradient 
+       file="colorcube" 
+       dir="h5"  
+       rank="19"
+       direction="down"
+       downloads="60"/>
+
+    <gradient 
+       file="deep" 
+       dir="cmocean"  
+       rank="19"
+       direction="up" 
+       downloads="60"/>
+
+    <gradient 
+       file="bhw2_turq" 
+       dir="bhw/bhw2"  
+       rank="21"
+       direction="down"
+       downloads="59"/>
+
+    <gradient 
+       file="fire" 
+       dir="neota/elem"  
+       rank="22"
+       direction="up" 
+       downloads="57"/>
+
+    <gradient 
+       file="BlueWhiteOrangeRed" 
+       dir="ncl"  
+       rank="23"
+       direction="up" 
+       downloads="55"/>
+
+    <gradient 
+       file="aurora" 
+       dir="nord"  
+       rank="24"
+       direction="down"
+       downloads="54"/>
+
+    <gradient 
+       file="arctic" 
+       dir="arendal"  
+       rank="24"
+       direction="up" 
+       downloads="54"/>
+
+    <gradient 
+       file="GMT_cool" 
+       dir="gmt"  
+       rank="26"
+       direction="unchanged"
+       downloads="53"/>
+
+    <gradient 
+       file="GMT_rainbow" 
+       dir="gmt"  
+       rank="26"
+       direction="up" 
+       downloads="53"/>
+
+    <gradient 
+       file="colombia" 
+       dir="wkp/shadowxfox"  
+       rank="26"
+       direction="down"
+       downloads="53"/>
+
+    <gradient 
+       file="bhw1_15" 
+       dir="bhw/bhw1"  
+       rank="26"
+       direction="up" 
+       downloads="53"/>
+
+    <gradient 
+       file="elevation" 
+       dir="grass"  
+       rank="30"
+       direction="down"
+       downloads="52"/>
+
+    <gradient 
+       file="bhw1_04" 
+       dir="bhw/bhw1"  
+       rank="31"
+       direction="down"
+       downloads="50"/>
+
+    <gradient 
+       file="GMT_seis" 
+       dir="gmt"  
+       rank="31"
+       direction="down"
+       downloads="50"/>
+
+    <gradient 
+       file="Blues_09" 
+       dir="cb/seq"  
+       rank="33"
+       direction="down"
+       downloads="49"/>
+
+    <gradient 
+       file="moon" 
+       dir="pn"  
+       rank="33"
+       direction="up" 
+       downloads="49"/>
+
+    <gradient 
+       file="temp_19lev" 
+       dir="ncl"  
+       rank="33"
+       direction="up" 
+       downloads="49"/>
+
+    <gradient 
+       file="bhw2_22" 
+       dir="bhw/bhw2"  
+       rank="36"
+       direction="up" 
+       downloads="48"/>
+
+    <gradient 
+       file="bhw1_07" 
+       dir="bhw/bhw1"  
+       rank="36"
+       direction="up" 
+       downloads="48"/>
+
+    <gradient 
+       file="humidity" 
+       dir="ukmo/wow"  
+       rank="38"
+       direction="down"
+       downloads="46"/>
+
+    <gradient 
+       file="plasma" 
+       dir="mpl"  
+       rank="38"
+       direction="down"
+       downloads="46"/>
+
+    <gradient 
+       file="bhw2_xmas" 
+       dir="bhw/bhw2"  
+       rank="38"
+       direction="up" 
+       downloads="46"/>
+
+    <gradient 
+       file="DEM_screen" 
+       dir="td"  
+       rank="41"
+       direction="down"
+       downloads="45"/>
+
+    <gradient 
+       file="haline" 
+       dir="cmocean"  
+       rank="42"
+       direction="up" 
+       downloads="44"/>
+
+    <gradient 
+       file="bhw1_19" 
+       dir="bhw/bhw1"  
+       rank="43"
+       direction="unchanged"
+       downloads="43"/>
+
+    <gradient 
+       file="bhw1_26" 
+       dir="bhw/bhw1"  
+       rank="43"
+       direction="up" 
+       downloads="43"/>
+
+    <gradient 
+       file="bhw1_justducky" 
+       dir="bhw/bhw1"  
+       rank="43"
+       direction="down"
+       downloads="43"/>
+
+    <gradient 
+       file="bcyr" 
+       dir="grass"  
+       rank="46"
+       direction="down"
+       downloads="42"/>
+
+    <gradient 
+       file="Spectral_11" 
+       dir="cb/div"  
+       rank="47"
+       direction="down"
+       downloads="39"/>
+
+    <gradient 
+       file="bhw1_purplered" 
+       dir="bhw/bhw1"  
+       rank="47"
+       direction="down"
+       downloads="39"/>
+
+    <gradient 
+       file="YlOrRd_09" 
+       dir="cb/seq"  
+       rank="47"
+       direction="up" 
+       downloads="39"/>
+
+    <gradient 
+       file="seismic" 
+       dir="gery"  
+       rank="50"
+       direction="up" 
+       downloads="38"/>
+
+    <gradient 
+       file="bhw1_sunconure" 
+       dir="bhw/bhw1"  
+       rank="50"
+       direction="up" 
+       downloads="38"/>
+
+    <gradient 
+       file="xkcd-bath" 
+       dir="xkcd"  
+       rank="52"
+       direction="down"
+       downloads="37"/>
+
+    <gradient 
+       file="bhw4_009" 
+       dir="bhw/bhw4"  
+       rank="52"
+       direction="unchanged"
+       downloads="37"/>
+
+    <gradient 
+       file="trove" 
+       dir="rc"  
+       rank="54"
+       direction="down"
+       downloads="36"/>
+
+    <gradient 
+       file="bhw3_61" 
+       dir="bhw/bhw3"  
+       rank="54"
+       direction="down"
+       downloads="36"/>
+
+    <gradient 
+       file="temperature" 
+       dir="jjg/misc"  
+       rank="54"
+       direction="up" 
+       downloads="36"/>
+
+    <gradient 
+       file="jet" 
+       dir="h5"  
+       rank="57"
+       direction="unchanged"
+       downloads="35"/>
+
+    <gradient 
+       file="quagga" 
+       dir="rc"  
+       rank="57"
+       direction="down"
+       downloads="35"/>
+
+    <gradient 
+       file="earth" 
+       dir="gist"  
+       rank="59"
+       direction="down"
+       downloads="34"/>
+
+    <gradient 
+       file="GMT_sealand" 
+       dir="gmt"  
+       rank="60"
+       direction="unchanged"
+       downloads="33"/>
+
+    <gradient 
+       file="ETOPO1" 
+       dir="ngdc"  
+       rank="60"
+       direction="up" 
+       downloads="33"/>
+
+    <gradient 
+       file="bhw1_three" 
+       dir="bhw/bhw1"  
+       rank="60"
+       direction="up" 
+       downloads="33"/>
+
+    <gradient 
+       file="scoutie" 
+       dir="rc"  
+       rank="63"
+       direction="down"
+       downloads="32"/>
+
+    <gradient 
+       file="algae" 
+       dir="cmocean"  
+       rank="63"
+       direction="up" 
+       downloads="32"/>
+
+    <gradient 
+       file="aquamarinemermaid" 
+       dir="rc"  
+       rank="63"
+       direction="up" 
+       downloads="32"/>
+
+    <gradient 
+       file="Reds_09" 
+       dir="cb/seq"  
+       rank="66"
+       direction="up" 
+       downloads="31"/>
+
+    <gradient 
+       file="spellbound" 
+       dir="rc"  
+       rank="66"
+       direction="down"
+       downloads="31"/>
+
+    <gradient 
+       file="bhw2_xc" 
+       dir="bhw/bhw2"  
+       rank="66"
+       direction="unchanged"
+       downloads="31"/>
+
+    <gradient 
+       file="matter" 
+       dir="cmocean"  
+       rank="66"
+       direction="down"
+       downloads="31"/>
+
+    <gradient 
+       file="wiki-schwarzwald-cont" 
+       dir="wkp/schwarzwald"  
+       rank="70"
+       direction="down"
+       downloads="30"/>
+
+    <gradient 
+       file="bhw2_grrrrr" 
+       dir="bhw/bhw2"  
+       rank="71"
+       direction="unchanged"
+       downloads="29"/>
+
+    <gradient 
+       file="rgi_15" 
+       dir="ds/rgi"  
+       rank="71"
+       direction="up" 
+       downloads="29"/>
+
+    <gradient 
+       file="bhw1_02" 
+       dir="bhw/bhw1"  
+       rank="71"
+       direction="unchanged"
+       downloads="29"/>
+
+    <gradient 
+       file="wiki-2.0" 
+       dir="wkp/template"  
+       rank="74"
+       direction="up" 
+       downloads="28"/>
+
+    <gradient 
+       file="sunlitwave" 
+       dir="rc"  
+       rank="75"
+       direction="down"
+       downloads="27"/>
+
+  </gradients>
+</selection>

@@ -1,8 +1,0 @@
-Polygon Properties
-shapes_polygons
-QgsProcessingParameterFeatureSource|POLYGONS|Polygons|2|None|False
-QgsProcessingParameterBoolean|BPARTS        |Number of Parts|True
-QgsProcessingParameterBoolean|BPOINTS       |Number of Vertices|True
-QgsProcessingParameterBoolean|BLENGTH       |Perimeter|True
-QgsProcessingParameterBoolean|BAREA         |Area|True
-QgsProcessingParameterVectorDestination|OUTPUT|Polygons with Property Attributes

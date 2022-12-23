@@ -30,6 +30,7 @@
 #include "qgsapplication.h"
 #include "qgsvectorlayercache.h"
 #include "qgsrendercontext.h"
+#include "qgsmapcanvasutils.h"
 
 //////////////////
 // Filter Model //
@@ -624,17 +625,11 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
     r.setFilterRect( rect );
   }
 
-  if ( mCanvas->mapSettings().isTemporal() )
-  {
-    if ( !layer()->temporalProperties()->isVisibleInTemporalRange( mCanvas->mapSettings().temporalRange() ) )
-      return;
-
-    QgsVectorLayerTemporalContext temporalContext;
-    temporalContext.setLayer( layer() );
-    const QString temporalFilter = qobject_cast< const QgsVectorLayerTemporalProperties * >( layer()->temporalProperties() )->createFilterString( temporalContext, mCanvas->mapSettings().temporalRange() );
-    if ( !temporalFilter.isEmpty() )
-      r.setFilterExpression( temporalFilter );
-  }
+  const QString canvasFilter = QgsMapCanvasUtils::filterForLayer( mCanvas, layer() );
+  if ( canvasFilter == QLatin1String( "FALSE" ) )
+    return;
+  if ( !canvasFilter.isEmpty() )
+    r.setFilterExpression( canvasFilter );
 
   QgsFeatureIterator features = masterModel()->layerCache()->getFeatures( r );
 

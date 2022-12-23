@@ -582,7 +582,7 @@ void QgsAuthOAuth2Edit::selectCurrentDefinedConfig()
 void QgsAuthOAuth2Edit::getDefinedCustomDir()
 {
   const QString extradir = QFileDialog::getExistingDirectory( this, tr( "Select extra directory to parse" ),
-                           QDir::homePath(), QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks );
+                           QDir::homePath(), QFileDialog::DontResolveSymlinks );
   this->raise();
   this->activateWindow();
 

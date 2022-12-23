@@ -127,6 +127,7 @@ Base class for processing filters like renderers, reprojector, resampler etc.
 #include <qgssinglebandcolordatarenderer.h>
 #include <qgssinglebandgrayrenderer.h>
 #include <qgssinglebandpseudocolorrenderer.h>
+#include <qgsrastercontourrenderer.h>
 %End
 %ConvertToSubClassCode
     if ( dynamic_cast<QgsBrightnessContrastFilter *>( sipCpp ) )
@@ -158,6 +159,8 @@ Base class for processing filters like renderers, reprojector, resampler etc.
         sipType = sipType_QgsSingleBandGrayRenderer;
       else if ( dynamic_cast<QgsSingleBandPseudoColorRenderer *>( sipCpp ) )
         sipType = sipType_QgsSingleBandPseudoColorRenderer;
+      else if ( dynamic_cast<QgsRasterContourRenderer *>( sipCpp ) )
+        sipType = sipType_QgsRasterContourRenderer;
       else
         sipType = sipType_QgsRasterRenderer;
     }
@@ -520,7 +523,7 @@ Fill in histogram defaults if not specified
     void initStatistics( QgsRasterBandStats &statistics, int bandNo,
                          int stats = QgsRasterBandStats::All,
                          const QgsRectangle &boundingBox = QgsRectangle(),
-                         int binCount = 0 );
+                         int binCount = 0 ) const;
 %Docstring
 Fill in statistics defaults if not specified
 %End
@@ -529,8 +532,6 @@ Fill in statistics defaults if not specified
     QgsRasterInterface( const QgsRasterInterface & );
     QgsRasterInterface &operator=( const QgsRasterInterface & );
 };
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

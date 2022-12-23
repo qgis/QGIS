@@ -10,6 +10,9 @@
 
 
 
+
+
+
 class QgsProviderSublayerModel: QAbstractItemModel
 {
 %Docstring(signature="appended")
@@ -192,9 +195,13 @@ Adds a non-layer item (e.g. an embedded QGIS project item) to the model.
 
     virtual int rowCount( const QModelIndex &parent ) const;
 
+    virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+
     virtual QVariant data( const QModelIndex &index, int role ) const;
 
     virtual QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+
+
 
 
   protected:
@@ -202,6 +209,7 @@ Adds a non-layer item (e.g. an embedded QGIS project item) to the model.
 
 
 };
+
 
 
 class QgsProviderSublayerProxyModel: QSortFilterProxyModel
@@ -249,6 +257,24 @@ Returns ``True`` if system and internal tables will be shown in the model.
 Sets whether system and internal tables will be shown in the model.
 
 .. seealso:: :py:func:`includeSystemTables`
+%End
+
+    bool includeEmptyLayers() const;
+%Docstring
+Returns ``True`` if empty tables will be shown in the model.
+
+.. seealso:: :py:func:`setIncludeEmptyLayers`
+
+.. versionadded:: 3.28
+%End
+
+    void setIncludeEmptyLayers( bool include );
+%Docstring
+Sets whether empty tables will be shown in the model.
+
+.. seealso:: :py:func:`includeEmptyLayers`
+
+.. versionadded:: 3.28
 %End
 
   protected:

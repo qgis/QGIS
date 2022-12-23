@@ -935,6 +935,7 @@ rendering using QBrush objects.
 .. versionadded:: 3.16
 %End
 
+
     QgsDoubleRange zRange() const;
 %Docstring
 Returns the range of z-values which should be rendered.
@@ -1051,6 +1052,50 @@ Sets the renderer usage
 .. seealso:: :py:func:`rendererUsage`
 
 .. versionadded:: 3.24
+%End
+
+    double frameRate() const;
+%Docstring
+Returns the frame rate of the map, for maps which are part of an animation.
+
+Returns -1 if the map is not associated with an animation.
+
+.. seealso:: :py:func:`setFrameRate`
+
+.. versionadded:: 3.26
+%End
+
+    void setFrameRate( double rate );
+%Docstring
+Sets the frame ``rate`` of the map (in frames per second), for maps which are part of an animation.
+
+Defaults to -1 if the map is not associated with an animation.
+
+.. seealso:: :py:func:`frameRate`
+
+.. versionadded:: 3.26
+%End
+
+    long long currentFrame() const;
+%Docstring
+Returns the current frame number of the map (in frames per second), for maps which are part of an animation.
+
+Returns -1 if the map is not associated with an animation.
+
+.. seealso:: :py:func:`setCurrentFrame`
+
+.. versionadded:: 3.26
+%End
+
+    void setCurrentFrame( long long frame );
+%Docstring
+Sets the current ``frame`` of the map, for maps which are part of an animation.
+
+Defaults to -1 if the map is not associated with an animation.
+
+.. seealso:: :py:func:`currentFrame`
+
+.. versionadded:: 3.26
 %End
 
 };

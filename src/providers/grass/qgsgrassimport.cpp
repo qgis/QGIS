@@ -245,16 +245,16 @@ bool QgsGrassRasterImport::import()
   for ( int band = 1; band <= provider->bandCount(); band++ )
   {
     QgsDebugMsg( QString( "band = %1" ).arg( band ) );
-    int colorInterpretation = provider->colorInterpretation( band );
-    if ( colorInterpretation == QgsRaster::RedBand )
+    Qgis::RasterColorInterpretation colorInterpretation = provider->colorInterpretation( band );
+    if ( colorInterpretation == Qgis::RasterColorInterpretation::RedBand )
     {
       redBand = band;
     }
-    else if ( colorInterpretation == QgsRaster::GreenBand )
+    else if ( colorInterpretation == Qgis::RasterColorInterpretation::GreenBand )
     {
       greenBand = band;
     }
-    else if ( colorInterpretation == QgsRaster::BlueBand )
+    else if ( colorInterpretation == Qgis::RasterColorInterpretation::BlueBand )
     {
       blueBand = band;
     }

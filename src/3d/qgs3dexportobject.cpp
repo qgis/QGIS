@@ -19,13 +19,20 @@
 #include <QDir>
 #include <QImage>
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
-#include <Qt3DRender/QBufferDataGenerator>
-#include <Qt3DRender/QBufferDataGeneratorPtr>
+typedef Qt3DRender::QAttribute Qt3DQAttribute;
+typedef Qt3DRender::QBuffer Qt3DQBuffer;
+#else
+#include <Qt3DCore/QAttribute>
+#include <Qt3DCore/QBuffer>
+typedef Qt3DCore::QAttribute Qt3DQAttribute;
+typedef Qt3DCore::QBuffer Qt3DQBuffer;
+#endif
 
 #include "qgslogger.h"
-#include "qgsphongmaterialsettings.h"
+#include "qgsabstractmaterialsettings.h"
 
 
 template<typename T>
@@ -190,9 +197,9 @@ QString Qgs3DExportObject::saveMaterial( QTextStream &mtlOut, const QString &fol
     mTextureImage.save( filePath, "JPG" );
     mtlOut << "\tmap_Kd " << materialName << ".jpg" << "\n";
   }
-  for ( const QString &key : mMaterialParameters.keys() )
+  for ( auto it = mMaterialParameters.constBegin(); it != mMaterialParameters.constEnd(); it++ )
   {
-    mtlOut << "\t" << key << " " << mMaterialParameters[key] << "\n";
+    mtlOut << "\t" << it.key() << " " << it.value() << "\n";
   }
   mtlOut << "\tillum 2\n";
   return materialName;

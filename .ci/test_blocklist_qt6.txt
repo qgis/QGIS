@@ -1,53 +1,21 @@
 # Qt6 blocklist
 test_core_authconfig
-test_core_callout
 test_core_compositionconverter
-test_core_datadefinedsizelegend
 test_core_dxfexport
 test_core_expression
-test_core_field
-test_core_fontmarker
-test_core_geometry
 test_core_labelingengine
-test_core_layertree
-test_core_layout
-test_core_layouthtml
-test_core_layoutlabel
-test_core_layoutmanualtable
-test_core_layoutmap
-test_core_layoutmapgrid
-test_core_layoutmapoverview
-test_core_layoutmultiframe
 test_core_layoutpicture
-test_core_layoutscalebar
-test_core_layouttable
-test_core_legendrenderer
-test_core_mapdevicepixelratio
-test_core_maprendererjob
-test_core_maprotation
-test_core_meshlayer
-test_core_meshlayerrenderer
-test_core_networkaccessmanager
 test_core_ogcutils
-test_core_pallabeling
-test_core_point
-test_core_pointpatternfillsymbol
-test_core_project
-test_core_projectstorage
-test_core_rasterlayer
-test_core_rastermarker
-test_core_style
-test_core_tiledownloadmanager
 test_core_vectortilelayer
-test_core_coordinatereferencesystem
-test_analysis_processingalgs
-test_analysis_zonalstatistics
-test_analysis_meshcontours
-test_geometry_checker_geometrychecks
+test_gui_processinggui
+test_gui_querybuilder
+test_app_advanceddigitizing
+test_app_vertextool
+
+# Crashes -- also disabled on qt5 builds!
 test_gui_queryresultwidget
 
 # block list
-PyQgsLocalServer
 PyQgsPalLabelingServer
 qgis_composerutils
 PyQgsAppStartup
@@ -70,3 +38,4 @@ test_core_layerdefinition
 
 # MSSQL requires the MSSQL docker
 PyQgsProviderConnectionMssql
+PyQgsStyleStorageMssql

@@ -22,7 +22,7 @@
 
 #include "qgssettings.h"
 #include "qgsmanageconnectionsdialog.h"
-
+#include "qgshttpheaders.h"
 
 QgsManageConnectionsDialog::QgsManageConnectionsDialog( QWidget *parent, Mode mode, Type type, const QString &fileName )
   : QDialog( parent )
@@ -34,11 +34,11 @@ QgsManageConnectionsDialog::QgsManageConnectionsDialog( QWidget *parent, Mode mo
 
   // additional buttons
   QPushButton *pb = nullptr;
-  pb = new QPushButton( tr( "Select all" ) );
+  pb = new QPushButton( tr( "Select All" ) );
   buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
   connect( pb, &QAbstractButton::clicked, this, &QgsManageConnectionsDialog::selectAll );
 
-  pb = new QPushButton( tr( "Clear selection" ) );
+  pb = new QPushButton( tr( "Clear Selection" ) );
   buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
   connect( pb, &QAbstractButton::clicked, this, &QgsManageConnectionsDialog::clearSelection );
 
@@ -361,7 +361,7 @@ bool QgsManageConnectionsDialog::populateConnections()
         if ( root.tagName() != QLatin1String( "qgsMssqlConnections" ) )
         {
           QMessageBox::information( this, tr( "Loading Connections" ),
-                                    tr( "The file is not a MSSQL connections exchange file." ) );
+                                    tr( "The file is not a MS SQL Server connections exchange file." ) );
           return false;
         }
         break;
@@ -457,9 +457,11 @@ QDomDocument QgsManageConnectionsDialog::saveOWSConnections( const QStringList &
       el.setAttribute( QStringLiteral( "ignoreGetFeatureInfoURI" ), settings.value( path + connections[i] + "/ignoreGetFeatureInfoURI", false ).toBool() ? "true" : "false" );
       el.setAttribute( QStringLiteral( "ignoreAxisOrientation" ), settings.value( path + connections[i] + "/ignoreAxisOrientation", false ).toBool() ? "true" : "false" );
       el.setAttribute( QStringLiteral( "invertAxisOrientation" ), settings.value( path + connections[i] + "/invertAxisOrientation", false ).toBool() ? "true" : "false" );
-      el.setAttribute( QStringLiteral( "referer" ), settings.value( path + connections[ i ] + "/referer" ).toString() );
       el.setAttribute( QStringLiteral( "smoothPixmapTransform" ), settings.value( path + connections[i] + "/smoothPixmapTransform", false ).toBool() ? "true" : "false" );
       el.setAttribute( QStringLiteral( "dpiMode" ), settings.value( path + connections[i] + "/dpiMode", "7" ).toInt() );
+
+      QgsHttpHeaders httpHeader( path + connections[ i ] );
+      httpHeader.updateDomElement( el );
     }
 
     path = "/qgis/" + service.toUpper() + '/';
@@ -524,6 +526,10 @@ QDomDocument QgsManageConnectionsDialog::savePgConnections( const QStringList &c
     el.setAttribute( QStringLiteral( "sslmode" ), settings.value( path + "/sslmode", "1" ).toString() );
     el.setAttribute( QStringLiteral( "estimatedMetadata" ), settings.value( path + "/estimatedMetadata", "0" ).toString() );
     el.setAttribute( QStringLiteral( "projectsInDatabase" ), settings.value( path + "/projectsInDatabase", "0" ).toString() );
+    el.setAttribute( QStringLiteral( "dontResolveType" ), settings.value( path + "/dontResolveType", "0" ).toString() );
+    el.setAttribute( QStringLiteral( "allowGeometrylessTables" ), settings.value( path + "/allowGeometrylessTables", "0" ).toString() );
+    el.setAttribute( QStringLiteral( "geometryColumnsOnly" ), settings.value( path + "/geometryColumnsOnly", "0" ).toString() );
+    el.setAttribute( QStringLiteral( "publicOnly" ), settings.value( path + "/publicOnly", "0" ).toString() );
 
     el.setAttribute( QStringLiteral( "saveUsername" ), settings.value( path + "/saveUsername", "false" ).toString() );
 
@@ -726,8 +732,10 @@ QDomDocument QgsManageConnectionsDialog::saveXyzTilesConnections( const QStringL
     el.setAttribute( QStringLiteral( "authcfg" ), settings.value( path + "/authcfg" ).toString() );
     el.setAttribute( QStringLiteral( "username" ), settings.value( path + "/username" ).toString() );
     el.setAttribute( QStringLiteral( "password" ), settings.value( path + "/password" ).toString() );
-    el.setAttribute( QStringLiteral( "referer" ), settings.value( path + "/referer" ).toString() );
     el.setAttribute( QStringLiteral( "tilePixelRatio" ), settings.value( path + "/tilePixelRatio", 0 ).toDouble() );
+
+    QgsHttpHeaders httpHeader( path );
+    httpHeader.updateDomElement( el );
 
     root.appendChild( el );
   }
@@ -750,7 +758,9 @@ QDomDocument QgsManageConnectionsDialog::saveArcgisConnections( const QStringLis
     QDomElement el = doc.createElement( service.toLower() );
     el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
     el.setAttribute( QStringLiteral( "url" ), settings.value( path + connections[ i ] + "/url" ).toString() );
-    el.setAttribute( QStringLiteral( "referer" ), settings.value( path + connections[ i ] + "/referer" ).toString() );
+
+    QgsHttpHeaders httpHeader( path + connections[ i ] );
+    httpHeader.updateDomElement( el );
 
     path = "/qgis/" + service.toUpper() + '/';
     el.setAttribute( QStringLiteral( "username" ), settings.value( path + connections[ i ] + "/username" ).toString() );
@@ -784,8 +794,10 @@ QDomDocument QgsManageConnectionsDialog::saveVectorTileConnections( const QStrin
     el.setAttribute( QStringLiteral( "authcfg" ), settings.value( path + "/authcfg" ).toString() );
     el.setAttribute( QStringLiteral( "username" ), settings.value( path + "/username" ).toString() );
     el.setAttribute( QStringLiteral( "password" ), settings.value( path + "/password" ).toString() );
-    el.setAttribute( QStringLiteral( "referer" ), settings.value( path + "/referer" ).toString() );
     el.setAttribute( QStringLiteral( "styleUrl" ), settings.value( path + "/styleUrl" ).toString() );
+
+    QgsHttpHeaders httpHeader( path );
+    httpHeader.updateDomElement( el );
 
     root.appendChild( el );
   }
@@ -871,9 +883,12 @@ void QgsManageConnectionsDialog::loadOWSConnections( const QDomDocument &doc, co
     settings.setValue( QString( '/' + connectionName + "/ignoreGetFeatureInfoURI" ), child.attribute( QStringLiteral( "ignoreGetFeatureInfoURI" ) ) == QLatin1String( "true" ) );
     settings.setValue( QString( '/' + connectionName + "/ignoreAxisOrientation" ), child.attribute( QStringLiteral( "ignoreAxisOrientation" ) ) == QLatin1String( "true" ) );
     settings.setValue( QString( '/' + connectionName + "/invertAxisOrientation" ), child.attribute( QStringLiteral( "invertAxisOrientation" ) ) == QLatin1String( "true" ) );
-    settings.setValue( QString( '/' + connectionName + "/referer" ), child.attribute( QStringLiteral( "referer" ) ) );
     settings.setValue( QString( '/' + connectionName + "/smoothPixmapTransform" ), child.attribute( QStringLiteral( "smoothPixmapTransform" ) ) == QLatin1String( "true" ) );
     settings.setValue( QString( '/' + connectionName + "/dpiMode" ), child.attribute( QStringLiteral( "dpiMode" ), QStringLiteral( "7" ) ).toInt() );
+
+    QgsHttpHeaders httpHeader( child );
+    httpHeader.updateSettings( settings, QString( '/' + connectionName ) );
+
     settings.endGroup();
 
     if ( !child.attribute( QStringLiteral( "username" ) ).isEmpty() )
@@ -1069,6 +1084,10 @@ void QgsManageConnectionsDialog::loadPgConnections( const QDomDocument &doc, con
     settings.setValue( QStringLiteral( "/sslmode" ), child.attribute( QStringLiteral( "sslmode" ) ) );
     settings.setValue( QStringLiteral( "/estimatedMetadata" ), child.attribute( QStringLiteral( "estimatedMetadata" ) ) );
     settings.setValue( QStringLiteral( "/projectsInDatabase" ), child.attribute( QStringLiteral( "projectsInDatabase" ), 0 ) );
+    settings.setValue( QStringLiteral( "/dontResolveType" ), child.attribute( QStringLiteral( "dontResolveType" ), 0 ) );
+    settings.setValue( QStringLiteral( "/allowGeometrylessTables" ), child.attribute( QStringLiteral( "allowGeometrylessTables" ), 0 ) );
+    settings.setValue( QStringLiteral( "/geometryColumnsOnly" ), child.attribute( QStringLiteral( "geometryColumnsOnly" ), 0 ) );
+    settings.setValue( QStringLiteral( "/publicOnly" ), child.attribute( QStringLiteral( "publicOnly" ), 0 ) );
     settings.setValue( QStringLiteral( "/saveUsername" ), child.attribute( QStringLiteral( "saveUsername" ) ) );
     settings.setValue( QStringLiteral( "/username" ), child.attribute( QStringLiteral( "username" ) ) );
     settings.setValue( QStringLiteral( "/savePassword" ), child.attribute( QStringLiteral( "savePassword" ) ) );
@@ -1086,7 +1105,7 @@ void QgsManageConnectionsDialog::loadMssqlConnections( const QDomDocument &doc, 
   {
     QMessageBox::information( this,
                               tr( "Loading Connections" ),
-                              tr( "The file is not a MSSQL connections exchange file." ) );
+                              tr( "The file is not a MS SQL Server connections exchange file." ) );
     return;
   }
 
@@ -1530,8 +1549,11 @@ void QgsManageConnectionsDialog::loadXyzTilesConnections( const QDomDocument &do
     settings.setValue( QStringLiteral( "authcfg" ), child.attribute( QStringLiteral( "authcfg" ) ) );
     settings.setValue( QStringLiteral( "username" ), child.attribute( QStringLiteral( "username" ) ) );
     settings.setValue( QStringLiteral( "password" ), child.attribute( QStringLiteral( "password" ) ) );
-    settings.setValue( QStringLiteral( "referer" ), child.attribute( QStringLiteral( "referer" ) ) );
     settings.setValue( QStringLiteral( "tilePixelRatio" ), child.attribute( QStringLiteral( "tilePixelRatio" ) ) );
+
+    QgsHttpHeaders httpHeader( child );
+    httpHeader.updateSettings( settings );
+
     settings.endGroup();
 
     child = child.nextSiblingElement();
@@ -1612,7 +1634,10 @@ void QgsManageConnectionsDialog::loadArcgisConnections( const QDomDocument &doc,
     // no dups detected or overwrite is allowed
     settings.beginGroup( "/qgis/connections-" + service.toLower() );
     settings.setValue( QString( '/' + connectionName + "/url" ), child.attribute( QStringLiteral( "url" ) ) );
-    settings.setValue( QString( '/' + connectionName + "/referer" ), child.attribute( QStringLiteral( "referer" ) ) );
+
+    QgsHttpHeaders httpHeader( child );
+    httpHeader.updateSettings( settings, QString( '/' + connectionName ) );
+
     settings.endGroup();
 
     settings.beginGroup( "/qgis/" + service.toUpper() + '/' + connectionName );
@@ -1704,8 +1729,10 @@ void QgsManageConnectionsDialog::loadVectorTileConnections( const QDomDocument &
     settings.setValue( QStringLiteral( "authcfg" ), child.attribute( QStringLiteral( "authcfg" ) ) );
     settings.setValue( QStringLiteral( "username" ), child.attribute( QStringLiteral( "username" ) ) );
     settings.setValue( QStringLiteral( "password" ), child.attribute( QStringLiteral( "password" ) ) );
-    settings.setValue( QStringLiteral( "referer" ), child.attribute( QStringLiteral( "referer" ) ) );
     settings.setValue( QStringLiteral( "styleUrl" ), child.attribute( QStringLiteral( "styleUrl" ) ) );
+
+    QgsHttpHeaders httpHeader( child );
+    httpHeader.updateSettings( settings );
 
     settings.endGroup();
 

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="Ribbon Colors" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(244,32,67)" stop-opacity="1.0000"/>
+        <stop offset="12.50%" stop-color="rgb(230,123,67)" stop-opacity="1.0000"/>
+        <stop offset="25.00%" stop-color="rgb(217,215,66)" stop-opacity="1.0000"/>
+        <stop offset="37.50%" stop-color="rgb(109,233,159)" stop-opacity="1.0000"/>
+        <stop offset="50.00%" stop-color="rgb(1,252,252)" stop-opacity="1.0000"/>
+        <stop offset="62.50%" stop-color="rgb(2,149,215)" stop-opacity="1.0000"/>
+        <stop offset="75.00%" stop-color="rgb(2,46,177)" stop-opacity="1.0000"/>
+        <stop offset="87.50%" stop-color="rgb(128,150,89)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(255,255,0)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#Ribbon Colors)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:33:25 2012"/>
+  </metadata>
+</svg>

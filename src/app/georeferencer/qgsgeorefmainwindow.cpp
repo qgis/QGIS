@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDesktopWidget>
 #include <QDialogButtonBox>
 #include <QClipboard>
 #include <QFileDialog>
@@ -30,6 +29,7 @@
 #include <QStringList>
 #include <QList>
 #include <QUrl>
+#include <QActionGroup>
 
 #include "qgssettings.h"
 #include "qgisinterface.h"
@@ -37,7 +37,6 @@
 #include "qgsgui.h"
 #include "qgisapp.h"
 
-#include "qgslayout.h"
 #include "qgslayoutitemlabel.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitemtexttable.h"
@@ -52,7 +51,6 @@
 
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
-#include "../../gui/raster/qgsrasterlayerproperties.h"
 #include "qgsproviderregistry.h"
 
 #include "qgsgeorefdatapoint.h"
@@ -70,6 +68,7 @@
 #include "qgsgeorefmainwindow.h"
 #include "qgsmessagebar.h"
 #include "qgsvectorwarper.h"
+#include "qgsscreenhelper.h"
 
 QgsGeorefDockWidget::QgsGeorefDockWidget( const QString &title, QWidget *parent, Qt::WindowFlags flags )
   : QgsDockWidget( title, parent, flags )
@@ -83,6 +82,8 @@ QgsGeoreferencerMainWindow::QgsGeoreferencerMainWindow( QWidget *parent, Qt::Win
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
   setAcceptDrops( true );
+
+  mScreenHelper = new QgsScreenHelper( this );
 
   QWidget *centralWidget = this->centralWidget();
   mCentralLayout = new QGridLayout( centralWidget );
@@ -224,8 +225,6 @@ void QgsGeoreferencerMainWindow::openLayer( QgsMapLayerType layerType, const QSt
       dir = QDir::homePath();
 
     QString otherFiles = tr( "All other files (*)" );
-    QString lastUsedFilter;
-
     switch ( layerType )
     {
 
@@ -276,6 +275,23 @@ void QgsGeoreferencerMainWindow::openLayer( QgsMapLayerType layerType, const QSt
   else
   {
     mFileName = fileName;
+    uri = mFileName;
+    switch ( layerType )
+    {
+      case QgsMapLayerType::RasterLayer:
+        provider = QStringLiteral( "gdal" );
+        break;
+      case QgsMapLayerType::VectorLayer:
+        provider = QStringLiteral( "ogr" );
+        break;
+      case QgsMapLayerType::PluginLayer:
+      case QgsMapLayerType::MeshLayer:
+      case QgsMapLayerType::VectorTileLayer:
+      case QgsMapLayerType::AnnotationLayer:
+      case QgsMapLayerType::PointCloudLayer:
+      case QgsMapLayerType::GroupLayer:
+        break;
+    }
   }
   mModifiedFileName.clear();
   mCreateWorldFileOnly = false;
@@ -1334,7 +1350,7 @@ void QgsGeoreferencerMainWindow::loadSource( QgsMapLayerType layerType, const QS
 void QgsGeoreferencerMainWindow::readSettings()
 {
   QgsSettings s;
-  QRect georefRect = QApplication::desktop()->screenGeometry( QgisApp::instance() );
+  const QRect georefRect = mScreenHelper->availableGeometry();
   resize( s.value( QStringLiteral( "/Plugin-GeoReferencer/size" ), QSize( georefRect.width() / 2 + georefRect.width() / 5,
                    QgisApp::instance()->height() ) ).toSize() );
   move( s.value( QStringLiteral( "/Plugin-GeoReferencer/pos" ), QPoint( parentWidget()->width() / 2 - width() / 2, 0 ) ).toPoint() );
@@ -1473,14 +1489,8 @@ bool QgsGeoreferencerMainWindow::georeference()
       return false;
     }
 
-    if ( !mPdfOutputFile.isEmpty() )
-    {
-      writePDFReportFile( mPdfOutputFile, mGeorefTransform );
-    }
-    if ( !mPdfOutputMapFile.isEmpty() )
-    {
-      writePDFMapFile( mPdfOutputMapFile, mGeorefTransform );
-    }
+    postProcessGeoreferencedLayer( mFileName, QgsMapLayerType::RasterLayer, QStringLiteral( "gdal" ) );
+
     return true;
   }
   else
@@ -1537,26 +1547,7 @@ bool QgsGeoreferencerMainWindow::georeferenceRaster()
   bool result = true;
   connect( task, &QgsTask::taskCompleted, &loop, [&loop, this]
   {
-    if ( !mPdfOutputFile.isEmpty() )
-    {
-      writePDFReportFile( mPdfOutputFile, mGeorefTransform );
-    }
-    if ( !mPdfOutputMapFile.isEmpty() )
-    {
-      writePDFMapFile( mPdfOutputMapFile, mGeorefTransform );
-    }
-    if ( mSaveGcp )
-    {
-      mGCPpointsFileName = mFileName + QLatin1String( ".points" );
-      saveGCPs();
-    }
-
-    mMessageBar->pushMessage( tr( "Georeference Successful" ), tr( "Raster was successfully georeferenced." ), Qgis::MessageLevel::Success );
-    if ( mLoadInQgis )
-    {
-      const QString layerSource = mCreateWorldFileOnly ? mFileName : mModifiedFileName;
-      QgisApp::instance()->addRasterLayer( layerSource, QFileInfo( layerSource ).completeBaseName(), QStringLiteral( "gdal" ) );
-    }
+    postProcessGeoreferencedLayer( mCreateWorldFileOnly ? mFileName : mModifiedFileName, QgsMapLayerType::RasterLayer, QStringLiteral( "gdal" ) );
 
     loop.quit();
   } );
@@ -1621,25 +1612,7 @@ bool QgsGeoreferencerMainWindow::georeferenceVector()
   bool result = true;
   connect( task, &QgsTask::taskCompleted, &loop, [&loop, this]
   {
-    if ( !mPdfOutputFile.isEmpty() )
-    {
-      writePDFReportFile( mPdfOutputFile, mGeorefTransform );
-    }
-    if ( !mPdfOutputMapFile.isEmpty() )
-    {
-      writePDFMapFile( mPdfOutputMapFile, mGeorefTransform );
-    }
-    if ( mSaveGcp )
-    {
-      mGCPpointsFileName = mFileName + QLatin1String( ".points" );
-      saveGCPs();
-    }
-    mMessageBar->pushMessage( tr( "Georeference Successful" ), tr( "Vector layer was successfully georeferenced." ), Qgis::MessageLevel::Success );
-    if ( mLoadInQgis )
-    {
-      QgisApp::instance()->addVectorLayer( mModifiedFileName, QFileInfo( mModifiedFileName ).completeBaseName(), QStringLiteral( "ogr" ) );
-    }
-
+    postProcessGeoreferencedLayer( mModifiedFileName, QgsMapLayerType::VectorLayer, QStringLiteral( "ogr" ) );
     loop.quit();
   } );
 
@@ -1656,6 +1629,47 @@ bool QgsGeoreferencerMainWindow::georeferenceVector()
   QgsApplication::taskManager()->addTask( task );
   loop.exec();
   return result;
+}
+
+void QgsGeoreferencerMainWindow::postProcessGeoreferencedLayer( const QString &layerSource, QgsMapLayerType type, const QString &provider )
+{
+  if ( !mPdfOutputFile.isEmpty() )
+  {
+    writePDFReportFile( mPdfOutputFile, mGeorefTransform );
+  }
+  if ( !mPdfOutputMapFile.isEmpty() )
+  {
+    writePDFMapFile( mPdfOutputMapFile, mGeorefTransform );
+  }
+
+  if ( mSaveGcp )
+  {
+    mGCPpointsFileName = mFileName + QLatin1String( ".points" );
+    saveGCPs();
+  }
+
+  mMessageBar->pushMessage( tr( "Georeference Successful" ), tr( "Raster was successfully georeferenced." ), Qgis::MessageLevel::Success );
+  if ( mLoadInQgis )
+  {
+    switch ( type )
+    {
+      case QgsMapLayerType::VectorLayer:
+        QgisApp::instance()->addVectorLayer( layerSource, QFileInfo( layerSource ).completeBaseName(), provider );
+        break;
+
+      case QgsMapLayerType::RasterLayer:
+        QgisApp::instance()->addRasterLayer( layerSource, QFileInfo( layerSource ).completeBaseName(), provider );
+        break;
+
+      case QgsMapLayerType::PluginLayer:
+      case QgsMapLayerType::MeshLayer:
+      case QgsMapLayerType::VectorTileLayer:
+      case QgsMapLayerType::AnnotationLayer:
+      case QgsMapLayerType::PointCloudLayer:
+      case QgsMapLayerType::GroupLayer:
+        break;
+    }
+  }
 }
 
 bool QgsGeoreferencerMainWindow::writeWorldFile( const QgsPointXY &origin, double pixelXSize, double pixelYSize, double rotation )
@@ -1680,12 +1694,12 @@ bool QgsGeoreferencerMainWindow::writeWorldFile( const QgsPointXY &origin, doubl
   }
 
   QTextStream stream( &file );
-  stream << qgsDoubleToString( pixelXSize ) << endl
-         << rotationX << endl
-         << rotationY << endl
-         << qgsDoubleToString( -pixelYSize ) << endl
-         << qgsDoubleToString( origin.x() ) << endl
-         << qgsDoubleToString( origin.y() ) << endl;
+  stream << qgsDoubleToString( pixelXSize ) << Qt::endl
+         << rotationX << Qt::endl
+         << rotationY << Qt::endl
+         << qgsDoubleToString( -pixelYSize ) << Qt::endl
+         << qgsDoubleToString( origin.x() ) << Qt::endl
+         << qgsDoubleToString( origin.y() ) << Qt::endl;
   return true;
 }
 

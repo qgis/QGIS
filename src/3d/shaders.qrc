@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/">
+        <file>shaders/diffuseSpecular.frag</file>
+        <file>shaders/diffuseSpecular.vert</file>
         <file>shaders/instanced.frag</file>
         <file>shaders/instanced.vert</file>
         <file>shaders/light.inc.frag</file>
@@ -17,6 +19,7 @@
         <file>shaders/skybox.frag</file>
         <file>shaders/skybox.vert</file>
         <file>shaders/hdr_skybox.frag</file>
+        <file>shaders/phong.inc.frag</file>
         <file>shaders/postprocess.frag</file>
         <file>shaders/postprocess.vert</file>
         <file>shaders/preview.vert</file>
@@ -27,5 +30,9 @@
         <file>shaders/goochDataDefined.vert</file>
         <file>shaders/depth_render.frag</file>
         <file>shaders/depth_render.vert</file>
+        <file>shaders/ssao_factor_render.frag</file>
+        <file>shaders/ssao_factor_render.vert</file>
+        <file>shaders/ssao_factor_blur.frag</file>
+        <file>shaders/ssao_factor_blur.vert</file>
     </qresource>
 </RCC>

@@ -76,7 +76,7 @@ class TestQgsFileDownloader(unittest.TestCase):
         self.assertTrue(self.progress_was_called)
         self.assertFalse(self.canceled_was_called)
         self.assertTrue(self.error_was_called)
-        self.assertEqual(self.error_args[1], [u'Download failed: Host www.doesnotexistofthatimsure.qgis not found'])
+        self.assertEqual(self.error_args[1], ['Download failed: Host www.doesnotexistofthatimsure.qgis not found'])
         self.assertFalse(os.path.isfile(destination))
 
     @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'),
@@ -99,7 +99,7 @@ class TestQgsFileDownloader(unittest.TestCase):
         self.assertFalse(self.canceled_was_called)
         self.assertTrue(self.error_was_called)
         self.assertFalse(os.path.isfile(destination))
-        self.assertEqual(self.error_args[1], [u"Download failed: Protocol \"xyz\" is unknown"])
+        self.assertEqual(self.error_args[1], ["Download failed: Protocol \"xyz\" is unknown"])
 
     @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'),
                      'Test with http://www.github.com unstable. Needs local server.')
@@ -109,7 +109,7 @@ class TestQgsFileDownloader(unittest.TestCase):
         self.assertFalse(self.completed_was_called)
         self.assertFalse(self.canceled_was_called)
         self.assertTrue(self.error_was_called)
-        self.assertEqual(self.error_args[1], [u"No output filename specified"])
+        self.assertEqual(self.error_args[1], ["No output filename specified"])
 
     def test_BlankUrl(self):
         destination = tempfile.mktemp()
@@ -119,7 +119,7 @@ class TestQgsFileDownloader(unittest.TestCase):
         self.assertFalse(self.canceled_was_called)
         self.assertTrue(self.error_was_called)
         self.assertFalse(os.path.isfile(destination))
-        self.assertEqual(self.error_args[1], [u"Download failed: Protocol \"\" is unknown"])
+        self.assertEqual(self.error_args[1], ["Download failed: Protocol \"\" is unknown"])
 
     def ssl_compare(self, name, url, error):
         destination = tempfile.mktemp()

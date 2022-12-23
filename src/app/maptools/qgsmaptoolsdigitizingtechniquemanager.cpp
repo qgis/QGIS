@@ -29,6 +29,7 @@
 #include <QAction>
 #include <QToolButton>
 #include <QMenu>
+#include <QActionGroup>
 
 QgsMapToolsDigitizingTechniqueManager::QgsMapToolsDigitizingTechniqueManager( QObject *parent )
   : QObject( parent )
@@ -40,6 +41,8 @@ QgsMapToolsDigitizingTechniqueManager::QgsMapToolsDigitizingTechniqueManager( QO
 
   mDigitizeModeToolButton = new QToolButton();
   mDigitizeModeToolButton->setPopupMode( QToolButton::MenuButtonPopup );
+
+  connect( QgisApp::instance()->mapCanvas(), &QgsMapCanvas::mapToolSet, this, &QgsMapToolsDigitizingTechniqueManager::mapToolSet );
 }
 
 void QgsMapToolsDigitizingTechniqueManager::setupCanvasTools()
@@ -47,7 +50,7 @@ void QgsMapToolsDigitizingTechniqueManager::setupCanvasTools()
   const QList< QgsMapToolCapture * > captureTools = QgisApp::instance()->captureTools();
   for ( QgsMapToolCapture *tool : captureTools )
   {
-    connect( tool->action(), &QAction::toggled, this, [this, tool]( bool checked ) {  enableDigitizingTechniqueActions( checked, tool->action() ); } );
+    setupTool( tool );
   }
 }
 
@@ -101,7 +104,7 @@ void QgsMapToolsDigitizingTechniqueManager::setupToolBars()
       break;
   }
 
-  QgisApp::instance()->mAdvancedDigitizeToolBar->insertWidget( QgisApp::instance()->mAdvancedDigitizeToolBar->actions().at( 0 ), mDigitizeModeToolButton );
+  QgisApp::instance()->mDigitizeToolBar->insertWidget( QgisApp::instance()->mDigitizeToolBar->actions().at( 3 ), mDigitizeModeToolButton );
 
   // Digitizing shape tools
   const QList<QgsMapToolShapeMetadata *> mapTools = QgsGui::mapToolShapeRegistry()->mapToolMetadatas();
@@ -224,6 +227,36 @@ void QgsMapToolsDigitizingTechniqueManager::setShapeTool( const QString &shapeTo
   }
 }
 
+void QgsMapToolsDigitizingTechniqueManager::mapToolSet( QgsMapTool *newTool, QgsMapTool * )
+{
+  if ( QgsMapToolCapture *captureTool = qobject_cast< QgsMapToolCapture *>( newTool ) )
+  {
+    if ( mInitializedTools.contains( captureTool ) )
+      return;
+
+    // this is a non-standard tool, e.g. a plugin tool. But still support setting the digitizing modes for those!
+    enableDigitizingTechniqueActions( true, captureTool->action() );
+  }
+  else
+  {
+    enableDigitizingTechniqueActions( false, nullptr );
+  }
+}
+
+void QgsMapToolsDigitizingTechniqueManager::setupTool( QgsMapToolCapture *tool )
+{
+  if ( tool->action() )
+  {
+    connect( tool->action(), &QAction::toggled, this, [this, tool]( bool checked ) {  enableDigitizingTechniqueActions( checked, tool->action() ); } );
+  }
+
+  mInitializedTools.insert( tool );
+  connect( tool, &QObject::destroyed, this, [ = ]
+  {
+    mInitializedTools.remove( tool );
+  } );
+}
+
 void QgsMapToolsDigitizingTechniqueManager::enableDigitizingTechniqueActions( bool enabled, QAction *triggeredFromToolAction )
 {
   QgsSettings settings;
@@ -241,10 +274,10 @@ void QgsMapToolsDigitizingTechniqueManager::enableDigitizingTechniqueActions( bo
     {
       if ( triggeredFromToolAction == tool->action() || ( !triggeredFromToolAction && QgisApp::instance()->mapCanvas()->mapTool() == tool ) )
       {
-        for ( Qgis::CaptureTechnique technique : mTechniqueActions.keys() )
+        for ( auto technique = mTechniqueActions.keyBegin(); technique != mTechniqueActions.keyEnd(); technique++ )
         {
-          if ( tool->supportsTechnique( technique ) )
-            supportedTechniques.insert( technique );
+          if ( tool->supportsTechnique( *technique ) )
+            supportedTechniques.insert( *technique );
         }
         break;
       }

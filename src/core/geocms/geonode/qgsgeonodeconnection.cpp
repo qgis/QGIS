@@ -19,30 +19,23 @@
 #include "qgsdatasourceuri.h"
 #include "qgsowsconnection.h"
 
-const QString QgsGeoNodeConnectionUtils::sPathGeoNodeConnection = QStringLiteral( "qgis/connections-geonode" );
-const QString QgsGeoNodeConnectionUtils::sPathGeoNodeConnectionDetails = QStringLiteral( "qgis/GeoNode" );
+const QString QgsGeoNodeConnectionUtils::sGeoNodeConnection = QStringLiteral( "GEONODE" );
 
 QgsGeoNodeConnection::QgsGeoNodeConnection( const QString &name )
   : mConnName( name )
 {
-  const QgsSettings settings;
-
-//  settings.Section
-  const QString key = settingsKey();
-  const QString credentialsKey = QgsGeoNodeConnectionUtils::pathGeoNodeConnectionDetails() + QStringLiteral( "/" ) + mConnName;
-
-  mUri.setParam( QStringLiteral( "url" ), settings.value( key + QStringLiteral( "/url" ), QString() ).toString() );
+  mUri.setParam( QStringLiteral( "url" ), QgsOwsConnection::settingsConnectionUrl.value( {QgsGeoNodeConnectionUtils::sGeoNodeConnection.toLower(), mConnName} ) );
 
   // Check for credentials and prepend to the connection info
-  const QString username = settings.value( credentialsKey + QStringLiteral( "/username" ), QString() ).toString();
-  const QString password = settings.value( credentialsKey + QStringLiteral( "/password" ), QString() ).toString();
+  const QString username = QgsOwsConnection::settingsConnectionUsername.value( {QgsGeoNodeConnectionUtils::sGeoNodeConnection, mConnName} );
+  const QString password = QgsOwsConnection::settingsConnectionPassword.value( {QgsGeoNodeConnectionUtils::sGeoNodeConnection, mConnName} );
   if ( !username.isEmpty() )
   {
     mUri.setUsername( username );
     mUri.setPassword( password );
   }
 
-  const QString authcfg = settings.value( credentialsKey + QStringLiteral( "/authcfg" ), QString() ).toString();
+  const QString authcfg = QgsOwsConnection::settingsConnectionAuthCfg.value( {QgsGeoNodeConnectionUtils::sGeoNodeConnection, mConnName} );
   if ( !authcfg.isEmpty() )
   {
     mUri.setAuthConfigId( authcfg );
@@ -73,24 +66,21 @@ void QgsGeoNodeConnection::setUri( const QgsDataSourceUri &uri )
 
 QgsDataSourceUri &QgsGeoNodeConnection::addWmsConnectionSettings( QgsDataSourceUri &uri ) const
 {
-  return QgsOwsConnection::addWmsWcsConnectionSettings( uri, settingsKey() + QStringLiteral( "/wms" ) );
+  QString detailedConnectionName = QStringLiteral( "%1/wms" ).arg( mConnName );
+  return QgsOwsConnection::addWmsWcsConnectionSettings( uri, QgsGeoNodeConnectionUtils::sGeoNodeConnection, detailedConnectionName );
 }
 
 QgsDataSourceUri &QgsGeoNodeConnection::addWfsConnectionSettings( QgsDataSourceUri &uri ) const
 {
-  return QgsOwsConnection::addWfsConnectionSettings( uri, settingsKey() + QStringLiteral( "/wfs" ) );
+  QString detailedConnectionName = QStringLiteral( "%1/wfs" ).arg( mConnName );
+  return QgsOwsConnection::addWfsConnectionSettings( uri, QgsGeoNodeConnectionUtils::sGeoNodeConnection, detailedConnectionName );
 }
 
 QgsDataSourceUri &QgsGeoNodeConnection::addWcsConnectionSettings( QgsDataSourceUri &uri ) const
 {
-  return QgsOwsConnection::addWmsWcsConnectionSettings( uri, settingsKey() + QStringLiteral( "/wcs" ) );
+  QString detailedConnectionName = QStringLiteral( "%1/wcs" ).arg( mConnName );
+  return QgsOwsConnection::addWmsWcsConnectionSettings( uri, QgsGeoNodeConnectionUtils::sGeoNodeConnection, detailedConnectionName );
 }
-
-QString QgsGeoNodeConnection::settingsKey() const
-{
-  return QgsGeoNodeConnectionUtils::pathGeoNodeConnection() + QStringLiteral( "/" ) + mConnName;
-}
-
 
 //
 // QgsGeoNodeConnectionUtils
@@ -107,15 +97,15 @@ QStringList QgsGeoNodeConnectionUtils::connectionList()
 
 void QgsGeoNodeConnectionUtils::deleteConnection( const QString &name )
 {
-  QgsOwsConnection::deleteConnection( QStringLiteral( "GEONODE" ), name );
+  QgsOwsConnection::deleteConnection( sGeoNodeConnection, name );
 }
 
 QString QgsGeoNodeConnectionUtils::pathGeoNodeConnection()
 {
-  return sPathGeoNodeConnection;
+  return QStringLiteral( "qgis/connections-%1" ).arg( sGeoNodeConnection.toLower() );
 }
 
 QString QgsGeoNodeConnectionUtils::pathGeoNodeConnectionDetails()
 {
-  return sPathGeoNodeConnectionDetails;
+  return QStringLiteral( "qgis/%1" ).arg( sGeoNodeConnection );
 }

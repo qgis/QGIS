@@ -36,7 +36,7 @@
 
 struct LPITEMIDLISTDeleter
 {
-  void operator()( LPITEMIDLIST pidl )
+  void operator()( LPITEMIDLIST pidl ) const
   {
     ILFree( pidl );
   }

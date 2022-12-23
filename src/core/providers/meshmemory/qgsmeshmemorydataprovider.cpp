@@ -20,7 +20,10 @@
 #include "qgsmeshdataprovidertemporalcapabilities.h"
 #include "qgsmeshlayerutils.h"
 #include "qgstriangularmesh.h"
+#include "qgsapplication.h"
+
 #include <cstring>
+#include <QIcon>
 
 #define TEXT_PROVIDER_KEY QStringLiteral( "mesh_memory" )
 #define TEXT_PROVIDER_DESCRIPTION QStringLiteral( "Mesh memory provider" )
@@ -69,13 +72,6 @@ QString QgsMeshMemoryDataProvider::providerKey()
 QString QgsMeshMemoryDataProvider::providerDescription()
 {
   return TEXT_PROVIDER_DESCRIPTION;
-}
-
-QgsMeshMemoryDataProvider *QgsMeshMemoryDataProvider::createProvider( const QString &uri,
-    const ProviderOptions &options,
-    QgsDataProvider::ReadFlags flags )
-{
-  return new QgsMeshMemoryDataProvider( uri, options, flags );
 }
 
 bool QgsMeshMemoryDataProvider::splitMeshSections( const QString &uri )
@@ -658,5 +654,25 @@ QgsRectangle QgsMeshMemoryDataProvider::calculateExtent() const
 }
 
 
+QgsMeshMemoryProviderMetadata::QgsMeshMemoryProviderMetadata()
+  : QgsProviderMetadata( QgsMeshMemoryDataProvider::providerKey(), QgsMeshMemoryDataProvider::providerDescription() )
+{
+
+}
+
+QIcon QgsMeshMemoryProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconMeshLayer.svg" ) );
+}
+
+QgsDataProvider *QgsMeshMemoryProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+{
+  return new QgsMeshMemoryDataProvider( uri, options, flags );
+}
+
+QList<QgsMapLayerType> QgsMeshMemoryProviderMetadata::supportedLayerTypes() const
+{
+  return { QgsMapLayerType::MeshLayer };
+}
 
 ///@endcond

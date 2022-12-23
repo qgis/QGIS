@@ -58,11 +58,17 @@ QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString &
     txtDatabase->setText( settings.value( key + QStringLiteral( "/database" ) ).toString() );
     txtHost->setText( settings.value( key + QStringLiteral( "/host" ) ).toString() );
     QString port = settings.value( key + QStringLiteral( "/port" ) ).toString();
-    if ( port.length() == 0 )
+
+    // User can set database without host and port, meaning he is using a service (tnsnames.ora)
+    // if he sets host, port has to be set also (and vice versa)
+    // https://github.com/qgis/QGIS/issues/38979
+    if ( port.length() == 0
+         && ( !txtHost->text().isEmpty() || txtDatabase->text().isEmpty() ) )
     {
       port = QStringLiteral( "1521" );
     }
     txtPort->setText( port );
+
     txtOptions->setText( settings.value( key + QStringLiteral( "/dboptions" ) ).toString() );
     txtWorkspace->setText( settings.value( key + QStringLiteral( "/dbworkspace" ) ).toString() );
     txtSchema->setText( settings.value( key + QStringLiteral( "/schema" ) ).toString() );
@@ -72,6 +78,7 @@ QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString &
     cb_useEstimatedMetadata->setChecked( settings.value( key + QStringLiteral( "/estimatedMetadata" ), false ).toBool() );
     cb_onlyExistingTypes->setChecked( settings.value( key + QStringLiteral( "/onlyExistingTypes" ), true ).toBool() );
     cb_includeGeoAttributes->setChecked( settings.value( key + QStringLiteral( "/includeGeoAttributes" ), false ).toBool() );
+    cb_projectsInDatabase->setChecked( settings.value( key + "/projectsInDatabase", false ).toBool() );
 
     if ( settings.value( key + QStringLiteral( "/saveUsername" ) ).toString() == QLatin1String( "true" ) )
     {
@@ -140,6 +147,9 @@ void QgsOracleNewConnection::accept()
     settings.sync();
   }
 
+  // This settings will be overridden by later saveConnections call on providerMetadata
+  // but there are still used when QgsOracleConn::connUri is called to generate uri
+  // so don't remove them
   baseKey += txtName->text();
   settings.setValue( baseKey + QStringLiteral( "/database" ), txtDatabase->text() );
   settings.setValue( baseKey + QStringLiteral( "/host" ), txtHost->text() );
@@ -153,6 +163,7 @@ void QgsOracleNewConnection::accept()
   settings.setValue( baseKey + QStringLiteral( "/estimatedMetadata" ), cb_useEstimatedMetadata->isChecked() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   settings.setValue( baseKey + QStringLiteral( "/onlyExistingTypes" ), cb_onlyExistingTypes->isChecked() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   settings.setValue( baseKey + QStringLiteral( "/includeGeoAttributes" ), cb_includeGeoAttributes->isChecked() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+  settings.setValue( baseKey + QStringLiteral( "/projectsInDatabase" ), cb_projectsInDatabase->isChecked() );
   settings.setValue( baseKey + QStringLiteral( "/saveUsername" ), mAuthSettings->storeUsernameIsChecked( ) ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   settings.setValue( baseKey + QStringLiteral( "/savePassword" ), mAuthSettings->storePasswordIsChecked( ) && !hasAuthConfigID ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   settings.setValue( baseKey + QStringLiteral( "/dboptions" ), txtOptions->text() );
@@ -160,11 +171,15 @@ void QgsOracleNewConnection::accept()
   settings.setValue( baseKey + QStringLiteral( "/schema" ), txtSchema->text() );
 
   QVariantMap configuration;
+  configuration.insert( "userTablesOnly", cb_userTablesOnly->isChecked() );
   configuration.insert( "geometryColumnsOnly", cb_geometryColumnsOnly->isChecked() );
   configuration.insert( "allowGeometrylessTables", cb_allowGeometrylessTables->isChecked() );
   configuration.insert( "onlyExistingTypes", cb_onlyExistingTypes->isChecked() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   configuration.insert( "saveUsername", mAuthSettings->storeUsernameIsChecked( ) ? "true" : "false" );
   configuration.insert( "savePassword", mAuthSettings->storePasswordIsChecked( ) && !hasAuthConfigID ? "true" : "false" );
+  configuration.insert( "includeGeoAttributes", cb_includeGeoAttributes->isChecked() );
+  configuration.insert( "schema", txtSchema->text() );
+  configuration.insert( "projectsInDatabase", cb_projectsInDatabase->isChecked() );
 
   QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "oracle" ) );
   QgsOracleProviderConnection *providerConnection =  static_cast<QgsOracleProviderConnection *>( providerMetadata->createConnection( txtName->text() ) );
@@ -193,7 +208,7 @@ void QgsOracleNewConnection::testConnection()
   {
     // Database successfully opened; we can now issue SQL commands.
     bar->pushMessage( tr( "Connection to %1 was successful." ).arg( txtName->text() ),
-                      Qgis::MessageLevel::Info );
+                      Qgis::MessageLevel::Success );
     // free connection resources
     QgsOracleConnPool::instance()->releaseConnection( conn );
   }

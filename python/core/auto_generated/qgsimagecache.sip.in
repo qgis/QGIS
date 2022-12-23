@@ -11,6 +11,7 @@
 
 
 
+
 class QgsImageCache : QgsAbstractContentCacheBase
 {
 %Docstring(signature="appended")
@@ -33,6 +34,15 @@ reuse without incurring the cost of resampling on every render.
     QgsImageCache( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsImageCache, with the specified ``parent`` object.
+%End
+
+    ~QgsImageCache();
+
+    long maximumSize() const;
+%Docstring
+Returns the maximum size of the cache, in bytes.
+
+.. versionadded:: 3.26
 %End
 
     QImage pathAsImage( const QString &path, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache /Out/, bool blocking = false, double targetDpi = 96, int frameNumber = -1);
@@ -95,6 +105,33 @@ be ``True`` from GUI based applications (like the main QGIS application) or cras
 use in external scripts or QGIS server.
 
 If the image could not be read or is not an animated format then -1 is returned
+
+.. versionadded:: 3.26
+%End
+
+    int nextFrameDelay( const QString &path, int currentFrame = 0, bool blocking = false );
+%Docstring
+For image formats that support animation, this function returns the number of milliseconds to wait
+until displaying the next frame in the animation. If the image format doesn't support animation, 0 is returned.
+
+``path`` may be a local file, remote (HTTP) url, or a base 64 encoded string (with a "base64:" prefix).
+
+If ``path`` is a remote file, then -1 may be returned while the image is in the process
+of being fetched.
+
+The ``blocking`` boolean forces to wait for loading before returning the frame delay. The content is loaded
+in the same thread to ensure provided the original size. WARNING: the ``blocking`` parameter must NEVER
+be ``True`` from GUI based applications (like the main QGIS application) or crashes will result. Only for
+use in external scripts or QGIS server.
+
+If the image could not be read or is not an animated format then -1 is returned.
+
+.. versionadded:: 3.26
+%End
+
+    void prepareAnimation( const QString &path );
+%Docstring
+Prepares for optimized retrieval of frames for the animation at the given ``path``.
 
 .. versionadded:: 3.26
 %End

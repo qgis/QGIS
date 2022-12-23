@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://gacruxa.deviantart.com/">
+      <name>Gacruxa</name>
+    </author>
+  </authors>
+  <license>
+    <informal>Creative commons Attribution 3.0 Unported</informal>
+    <year>2014</year>
+    <text href="http://creativecommons.org/licenses/by/3.0/"/>
+  </license>
+  <src>
+    <format>Photoshop gradient (ggr)</format>
+    <link href="http://gacruxa.deviantart.com/">deviantART page</link>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="cc3"/>
+  </distribute>
+</copying>

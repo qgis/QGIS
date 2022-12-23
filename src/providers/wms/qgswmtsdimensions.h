@@ -38,7 +38,7 @@ class QgsWmtsDimensions : public QDialog, private Ui::QgsWmtsDimensionsBase
     //! Constructor
     QgsWmtsDimensions( const QgsWmtsTileLayer &layer, QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
 
-    void selectedDimensions( QHash<QString, QString> &dims );
+    QHash<QString, QString> selectedDimensions() const;
 
 };
 

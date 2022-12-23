@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://www.unidata.ucar.edu/about/index.html">
+      <name>Unidata</name>
+    </author>
+  </authors>
+  <license>
+    <informal>LGPL</informal>
+    <year>2014</year>
+    <text href="https://www.unidata.ucar.edu/software/idv/current/docs/userguide/License.html"/>
+  </license>
+  <src>
+    <format>Text RGB values provided by DCL</format>
+    <link href="http://dennou-h.gfd-dennou.org/arch/dcl/dcl-5.4.8/src/env1/colormap/colormap_gallery.html">DCL data</link>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="LGPL"/>
+  </distribute>
+</copying>

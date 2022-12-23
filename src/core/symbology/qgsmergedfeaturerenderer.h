@@ -86,6 +86,7 @@ class CORE_EXPORT QgsMergedFeatureRenderer : public QgsFeatureRenderer
     QgsSymbolList symbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
     QgsSymbolList originalSymbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
     QSet< QString > legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
+    QString legendKeyToExpression( const QString &key, QgsVectorLayer *layer, bool &ok ) const override;
     QgsLegendSymbolList legendSymbolItems() const override;
     bool willRenderFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;

@@ -19,19 +19,16 @@
 #include <QSet>
 #include <QSettings>
 
-#include "qgsattributetabledelegate.h"
-#include "qgsattributetablefiltermodel.h"
 #include "qgsattributetablemodel.h"
 #include "qgsfeaturelistmodel.h"
 #include "qgsfeaturelistviewdelegate.h"
 #include "qgsfeaturelistview.h"
 #include "qgsfeatureselectionmodel.h"
 #include "qgslogger.h"
-#include "qgsmapcanvas.h"
-#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerselectionmanager.h"
 #include "qgsvectorlayercache.h"
+#include "qgsactionmenu.h"
 
 QgsFeatureListView::QgsFeatureListView( QWidget *parent )
   : QListView( parent )
@@ -129,6 +126,12 @@ void QgsFeatureListView::setCurrentFeatureEdited( bool state )
 
 void QgsFeatureListView::mousePressEvent( QMouseEvent *event )
 {
+  if ( event->button() != Qt::LeftButton )
+  {
+    QListView::mousePressEvent( event );
+    return;
+  }
+
   if ( mModel )
   {
     const QPoint pos = event->pos();
@@ -137,13 +140,13 @@ void QgsFeatureListView::mousePressEvent( QMouseEvent *event )
 
     if ( QgsFeatureListViewDelegate::EditElement == mItemDelegate->positionToElement( event->pos() ) )
     {
-
-      mEditSelectionDrag = true;
+      mDragMode = DragMode::MoveSelection;
       if ( index.isValid() )
         setEditSelection( mModel->mapToMaster( index ), QItemSelectionModel::ClearAndSelect );
     }
     else
     {
+      mDragMode = DragMode::ExpandSelection;
       mFeatureSelectionModel->enableSync( false );
       selectRow( index, true );
       repaintRequested();
@@ -251,17 +254,25 @@ void QgsFeatureListView::mouseMoveEvent( QMouseEvent *event )
   if ( mModel )
   {
     const QPoint pos = event->pos();
-
     const QModelIndex index = indexAt( pos );
 
-    if ( mEditSelectionDrag )
+    switch ( mDragMode )
     {
-      if ( index.isValid() )
-        setEditSelection( mModel->mapToMaster( index ), QItemSelectionModel::ClearAndSelect );
-    }
-    else
-    {
-      selectRow( index, false );
+      case QgsFeatureListView::DragMode::Inactive:
+        break;
+
+      case QgsFeatureListView::DragMode::ExpandSelection:
+      {
+        selectRow( index, false );
+        break;
+      }
+
+      case QgsFeatureListView::DragMode::MoveSelection:
+      {
+        if ( index.isValid() )
+          setEditSelection( mModel->mapToMaster( index ), QItemSelectionModel::ClearAndSelect );
+        break;
+      }
     }
   }
   else
@@ -272,17 +283,24 @@ void QgsFeatureListView::mouseMoveEvent( QMouseEvent *event )
 
 void QgsFeatureListView::mouseReleaseEvent( QMouseEvent *event )
 {
-  Q_UNUSED( event )
+  if ( event->button() != Qt::LeftButton )
+  {
+    QListView::mouseReleaseEvent( event );
+    return;
+  }
 
-  if ( mEditSelectionDrag )
+  switch ( mDragMode )
   {
-    mEditSelectionDrag = false;
+    case QgsFeatureListView::DragMode::ExpandSelection:
+      if ( mFeatureSelectionModel )
+        mFeatureSelectionModel->enableSync( true );
+      break;
+    case QgsFeatureListView::DragMode::Inactive:
+    case QgsFeatureListView::DragMode::MoveSelection:
+      break;
   }
-  else
-  {
-    if ( mFeatureSelectionModel )
-      mFeatureSelectionModel->enableSync( true );
-  }
+
+  mDragMode = DragMode::Inactive;
 }
 
 void QgsFeatureListView::keyPressEvent( QKeyEvent *event )

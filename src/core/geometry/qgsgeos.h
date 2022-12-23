@@ -23,11 +23,6 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsgeometry.h"
 #include <geos_c.h>
 
-#if defined(GEOS_VERSION_MAJOR) && (GEOS_VERSION_MAJOR<3)
-#define GEOSGeometry struct GEOSGeom_t
-#define GEOSCoordSequence struct GEOSCoordSeq_t
-#endif
-
 class QgsLineString;
 class QgsPolygon;
 class QgsGeometry;
@@ -52,25 +47,25 @@ namespace geos
      * Destroys the GEOS geometry \a geom, using the static QGIS
      * geos context.
      */
-    void CORE_EXPORT operator()( GEOSGeometry *geom );
+    void CORE_EXPORT operator()( GEOSGeometry *geom ) const;
 
     /**
      * Destroys the GEOS prepared geometry \a geom, using the static QGIS
      * geos context.
      */
-    void CORE_EXPORT operator()( const GEOSPreparedGeometry *geom );
+    void CORE_EXPORT operator()( const GEOSPreparedGeometry *geom ) const;
 
     /**
      * Destroys the GEOS buffer params \a params, using the static QGIS
      * geos context.
      */
-    void CORE_EXPORT operator()( GEOSBufferParams *params );
+    void CORE_EXPORT operator()( GEOSBufferParams *params ) const;
 
     /**
      * Destroys the GEOS coordinate sequence \a sequence, using the static QGIS
      * geos context.
      */
-    void CORE_EXPORT operator()( GEOSCoordSequence *sequence );
+    void CORE_EXPORT operator()( GEOSCoordSequence *sequence ) const;
   };
 
   /**
@@ -122,14 +117,15 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      */
     static QgsGeometry geometryFromGeos( const geos::unique_ptr &geos );
 
-#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=8 )
-
     /**
      * Repairs the geometry using GEOS make valid routine.
+     *
+     * The \a method and \a keepCollapsed arguments require builds based on GEOS 3.10 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.9 or earlier when the \a method is not Qgis::MakeValidMethod::Linework or the \a keepCollapsed option is set.
      * \since QGIS 3.20
      */
-    std::unique_ptr< QgsAbstractGeometry > makeValid( QString *errorMsg = nullptr ) const;
-#endif
+    std::unique_ptr< QgsAbstractGeometry > makeValid( Qgis::MakeValidMethod method = Qgis::MakeValidMethod::Linework, bool keepCollapsed = false, QString *errorMsg = nullptr ) const;
 
     /**
      * Adds a new island polygon to a multipolygon feature
@@ -142,8 +138,8 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     void geometryChanged() override;
     void prepareGeometry() override;
 
-    QgsAbstractGeometry *intersection( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
-    QgsAbstractGeometry *difference( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
+    QgsAbstractGeometry *intersection( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const override;
+    QgsAbstractGeometry *difference( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const override;
 
     /**
      * Performs a fast, non-robust intersection between the geometry and
@@ -163,14 +159,18 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      *
      * Curved geometries are not supported.
      *
+     * \param maxNodes Maximum nodes used
+     * \param errorMsg Error message returned by GEOS
+     * \param parameters can be used to specify parameters which control the subdivision results (since QGIS 3.28)
+     *
      * \since QGIS 3.0
      */
-    std::unique_ptr< QgsAbstractGeometry > subdivide( int maxNodes, QString *errorMsg = nullptr ) const;
+    std::unique_ptr< QgsAbstractGeometry > subdivide( int maxNodes, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
 
-    QgsAbstractGeometry *combine( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
-    QgsAbstractGeometry *combine( const QVector<QgsAbstractGeometry *> &geomList, QString *errorMsg ) const override;
-    QgsAbstractGeometry *combine( const QVector< QgsGeometry > &, QString *errorMsg = nullptr ) const override;
-    QgsAbstractGeometry *symDifference( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
+    QgsAbstractGeometry *combine( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const override;
+    QgsAbstractGeometry *combine( const QVector<QgsAbstractGeometry *> &geomList, QString *errorMsg, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const override;
+    QgsAbstractGeometry *combine( const QVector< QgsGeometry > &, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const override;
+    QgsAbstractGeometry *symDifference( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const override;
     QgsAbstractGeometry *buffer( double distance, int segments, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *buffer( double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *simplify( double tolerance, QString *errorMsg = nullptr ) const override;
@@ -181,6 +181,24 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     QgsAbstractGeometry *convexHull( QString *errorMsg = nullptr ) const override;
     double distance( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
     bool distanceWithin( const QgsAbstractGeometry *geom, double maxdistance, QString *errorMsg = nullptr ) const override;
+
+    /**
+     * Returns TRUE if the geometry contains the point at (\a x, \a y).
+     *
+     * This method is more efficient than creating a temporary QgsPoint object to test for containment.
+     *
+     * \since QGIS 3.26
+     */
+    bool contains( double x, double y, QString *errorMsg = nullptr ) const;
+
+    /**
+     * Returns the minimum distance from the geometry to the point at (\a x, \a y).
+     *
+     * This method is more efficient than creating a temporary QgsPoint object to test distance.
+     *
+     * \since QGIS 3.26
+     */
+    double distance( double x, double y, QString *errorMsg = nullptr ) const;
 
     /**
      * Returns the Hausdorff distance between this geometry and \a geom. This is basically a measure of how similar or dissimilar 2 geometries are.
@@ -481,6 +499,20 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     double lineLocatePoint( const QgsPoint &point, QString *errorMsg = nullptr ) const;
 
     /**
+     * Returns a distance representing the location along this linestring of the closest point
+     * on this linestring geometry to the point at (\a x, \a y). Ie, the returned value indicates
+     * how far along this linestring you need to traverse to get to the closest location
+     * where this linestring comes to the specified point.
+     *
+     * This method is more efficient than creating a temporary QgsPoint object to locate.
+     *
+     * \note only valid for linestring geometries
+     *
+     * \since QGIS 3.26
+     */
+    double lineLocatePoint( double x, double y, QString *errorMsg = nullptr ) const;
+
+    /**
      * Creates a GeometryCollection geometry containing possible polygons formed from the constituent
      * linework of a set of \a geometries. The input geometries must be fully noded (i.e. nodes exist
      * at every common intersection of the geometries). The easiest way to ensure this is to first
@@ -518,6 +550,29 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \since QGIS 3.0
      */
     QgsGeometry delaunayTriangulation( double tolerance = 0.0, bool edgesOnly = false, QString *errorMsg = nullptr ) const;
+
+    /**
+     * Returns a possibly concave geometry that encloses the input geometry.
+     *
+     * The result is a single polygon, line or point.
+     *
+     * It will not contain holes unless the optional \a allowHoles argument is specified as true.
+     *
+     * One can think of a concave hull as a geometry obtained by "shrink-wrapping" a set of geometries.
+     * This is different to the convex hull, which is more like wrapping a rubber band around the geometries.
+     * It is slower to compute than the convex hull but generally has a smaller area and represents a more natural boundary for the input geometry.
+     * The \a target_percent is the percentage of area of the convex hull the solution tries to approach.
+     *
+     * A \a target_percent of 1 gives the same result as the convex hull.
+     * A \a target_percent between 0 and 0.99 produces a result that should have a smaller area than the convex hull.
+     *
+     * This method requires a QGIS build based on GEOS 3.11 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.10 or earlier.
+     * \see convexHull()
+     * \since QGIS 3.28
+     */
+    QgsAbstractGeometry  *concaveHull( double targetPercent, bool allowHoles = false, QString *errorMsg = nullptr ) const;
 
     /**
      * Create a geometry from a GEOSGeometry
@@ -571,7 +626,15 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 
     //geos util functions
     void cacheGeos() const;
-    std::unique_ptr< QgsAbstractGeometry > overlay( const QgsAbstractGeometry *geom, Overlay op, QString *errorMsg = nullptr ) const;
+
+    /**
+     * Returns a geometry representing the overlay operation with \a geom.
+     * \param geom geometry to perform the operation
+     * \param errorMsg Error message returned by GEOS
+     * \param op Overlay Operation
+     * \param parameters can be used to specify parameters which control the overlay results (since QGIS 3.28)
+     */
+    std::unique_ptr< QgsAbstractGeometry > overlay( const QgsAbstractGeometry *geom, Overlay op, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
     bool relation( const QgsAbstractGeometry *geom, Relation r, QString *errorMsg = nullptr ) const;
     static GEOSCoordSequence *createCoordinateSequence( const QgsCurve *curve, double precision, bool forceClose = false );
     static std::unique_ptr< QgsLineString > sequenceToLinestring( const GEOSGeometry *geos, bool hasZ, bool hasM );
@@ -601,7 +664,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     static int lineContainedInLine( const GEOSGeometry *line1, const GEOSGeometry *line2 );
     static int pointContainedInLine( const GEOSGeometry *point, const GEOSGeometry *line );
     static int geomDigits( const GEOSGeometry *geom );
-    void subdivideRecursive( const GEOSGeometry *currentPart, int maxNodes, int depth, QgsGeometryCollection *parts, const QgsRectangle &clipRect ) const;
+    void subdivideRecursive( const GEOSGeometry *currentPart, int maxNodes, int depth, QgsGeometryCollection *parts, const QgsRectangle &clipRect, double gridSize = -1 ) const;
 };
 
 /// @cond PRIVATE

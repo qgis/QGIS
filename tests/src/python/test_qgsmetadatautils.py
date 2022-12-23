@@ -13,7 +13,8 @@ __copyright__ = 'Copyright 2021, The QGIS Project'
 from qgis.PyQt.QtCore import QDateTime
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
-    QgsMetadataUtils
+    QgsMetadataUtils,
+    Qgis
 )
 from qgis.testing import (start_app,
                           unittest,
@@ -51,6 +52,11 @@ class TestPyQgsMetadataUtils(unittest.TestCase):
         self.assertEqual(metadata.extent().spatialExtents()[0].bounds.yMinimum(), -29.177948)
         self.assertEqual(metadata.extent().spatialExtents()[0].bounds.yMaximum(), -9.373145)
         self.assertEqual(metadata.extent().spatialExtents()[0].extentCrs.authid(), 'EPSG:4283')
+
+        self.assertEqual(metadata.dateTime(Qgis.MetadataDateType.Created), QDateTime(2022, 11, 1, 0, 0))
+        self.assertEqual(metadata.dateTime(Qgis.MetadataDateType.Published), QDateTime(2016, 6, 28, 0, 0))
+        self.assertEqual(metadata.dateTime(Qgis.MetadataDateType.Revised), QDateTime(2022, 11, 5, 0, 0))
+        self.assertEqual(metadata.dateTime(Qgis.MetadataDateType.Superseded), QDateTime(2022, 11, 12, 0, 0))
 
         self.assertEqual(metadata.licenses(), ['This material is licensed under a CC4'])
         self.assertEqual(metadata.rights(), ['The State of Queensland (Department of Natural Resources and Mines)',

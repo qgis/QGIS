@@ -94,7 +94,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const Pr
     if ( gtype == QLatin1String( "point" ) ) mGeometryType = QgsWkbTypes::PointGeometry;
     else if ( gtype == QLatin1String( "line" ) ) mGeometryType = QgsWkbTypes::LineGeometry;
     else if ( gtype == QLatin1String( "polygon" ) ) mGeometryType = QgsWkbTypes::PolygonGeometry;
-    else if ( gtype == QLatin1String( "none " ) ) mGeometryType = QgsWkbTypes::NullGeometry;
+    else if ( gtype == QLatin1String( "none" ) ) mGeometryType = QgsWkbTypes::NullGeometry;
   }
 
   if ( mGeometryType != QgsWkbTypes::NullGeometry )
@@ -721,46 +721,8 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
 
       if ( couldBeTime[i] && !couldBeDateTime[i] )
       {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
         const QTime t = QTime::fromString( value );
         couldBeTime[i] = t.isValid();
-#else
-        // Accept 12:34, 12:34:56 or 12:34:56.789
-        // We do not use QTime::fromString() with Qt < 5.14 as it accepts
-        // strings like 01/03/2004 as valid times
-        couldBeTime[i] = value.length() >= 5 &&
-                         value[0] >= '0' && value[0] <= '2' &&
-                         value[1] >= '0' && value[1] <= '9' &&
-                         value[2] == ':' &&
-                         value[3] >= '0' && value[3] <= '5' &&
-                         value[4] >= '0' && value[4] <= '9';
-        if ( couldBeTime[i] && value.length() == 5 )
-        {
-          // ok
-        }
-        else if ( couldBeTime[i] && value.length() >= 8 )
-        {
-          couldBeTime[i] = value[5] == ':' &&
-                           value[6] >= '0' && value[6] <= '6' &&
-                           value[7] >= '0' && value[7] <= '9';
-          if ( couldBeTime[i] && value.length() == 8 )
-          {
-            // ok
-          }
-          else if ( couldBeTime[i] && value.length() >= 9 )
-          {
-            couldBeTime[i] = value[8] == '.';
-          }
-          else
-          {
-            couldBeTime[i] = false;
-          }
-        }
-        else
-        {
-          couldBeTime[i] = false;
-        }
-#endif
       }
     }
 
@@ -1458,6 +1420,11 @@ QgsProviderMetadata::ProviderCapabilities QgsDelimitedTextProviderMetadata::prov
   return FileBasedUris;
 }
 
+QList<QgsMapLayerType> QgsDelimitedTextProviderMetadata::supportedLayerTypes() const
+{
+  return { QgsMapLayerType::VectorLayer };
+}
+
 QgsDataProvider *QgsDelimitedTextProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
   return new QgsDelimitedTextProvider( uri, options, flags );
@@ -1467,6 +1434,11 @@ QgsDataProvider *QgsDelimitedTextProviderMetadata::createProvider( const QString
 QgsDelimitedTextProviderMetadata::QgsDelimitedTextProviderMetadata():
   QgsProviderMetadata( QgsDelimitedTextProvider::TEXT_PROVIDER_KEY, QgsDelimitedTextProvider::TEXT_PROVIDER_DESCRIPTION )
 {
+}
+
+QIcon QgsDelimitedTextProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconDelimitedText.svg" ) );
 }
 
 #ifndef HAVE_STATIC_PROVIDERS

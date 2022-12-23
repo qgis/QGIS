@@ -78,7 +78,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
       public:
         SetOption( const QString &docString, const QStringList &values, const QString &defaultValue, bool allowNone = false )
           : Option( docString, Set )
-          , values( qgis::listToSet( values ) )
+          , values( values.begin(), values.end() )
           , defaultValue( defaultValue )
           , allowNone( allowNone )
         {}
@@ -496,6 +496,9 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         //! Attributes to export (empty means all unless skipAttributeCreation is set)
         QgsAttributeList attributes;
 
+        //! Attributes export names
+        QStringList attributesExportNames;
+
         //! Symbology to export
         QgsVectorFileWriter::SymbologyExport symbologyExport = NoSymbology;
 
@@ -818,10 +821,10 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     static QString convertCodecNameForEncodingOption( const QString &codecName );
 
     //! Checks whether there were any errors in constructor
-    QgsVectorFileWriter::WriterError hasError();
+    QgsVectorFileWriter::WriterError hasError() const;
 
     //! Retrieves error message
-    QString errorMessage();
+    QString errorMessage() const;
 
     bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
@@ -834,7 +837,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     bool addFeatureWithStyle( QgsFeature &feature, QgsFeatureRenderer *renderer, QgsUnitTypes::DistanceUnit outputUnit = QgsUnitTypes::DistanceMeters );
 
     //! \note not available in Python bindings
-    QMap<int, int> attrIdxToOgrIdx() { return mAttrIdxToOgrIdx; } SIP_SKIP
+    QMap<int, int> attrIdxToOgrIdx() const { return mAttrIdxToOgrIdx; } SIP_SKIP
 
     //! Close opened shapefile for writing
     ~QgsVectorFileWriter() override;

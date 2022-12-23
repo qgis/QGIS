@@ -36,15 +36,15 @@
 #include "qgsexpressioncontextutils.h"
 #include <QSignalSpy>
 
-class TestQgsLayout: public QObject
+class TestQgsLayout: public QgsTest
 {
     Q_OBJECT
+  public:
+    TestQgsLayout() : QgsTest( QStringLiteral( "Layout Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
     void creation(); //test creation of QgsLayout
     void units();
     void name();
@@ -60,7 +60,9 @@ class TestQgsLayout: public QObject
     void layoutItemById();
     void undoRedoOccurred();
     void itemsOnPage(); //test fetching matching items on a set page
+#ifdef WITH_QTWEBKIT
     void shouldExportPage();
+#endif
     void pageIsEmpty();
     void clear();
     void georeference();
@@ -73,40 +75,17 @@ class TestQgsLayout: public QObject
     void atlasLayerRestoredFromTemplate();
     void overviewStackingLayerRestoredFromTemplate();
 
-  private:
-    QString mReport;
-
 };
 
 void TestQgsLayout::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-
-  mReport = QStringLiteral( "<h1>Layout Tests</h1>\n" );
 }
 
 void TestQgsLayout::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
   QgsApplication::exitQgis();
-}
-
-void TestQgsLayout::init()
-{
-
-}
-
-void TestQgsLayout::cleanup()
-{
-
 }
 
 void TestQgsLayout::creation()
@@ -678,6 +657,7 @@ void TestQgsLayout::itemsOnPage()
   QCOMPARE( labels.length(), 0 );
 }
 
+#ifdef WITH_QTWEBKIT
 void TestQgsLayout::shouldExportPage()
 {
   QgsProject proj;
@@ -749,6 +729,7 @@ void TestQgsLayout::shouldExportPage()
   QVERIFY( !l.pageCollection()->shouldExportPage( 0 ) );
   QVERIFY( !l.pageCollection()->shouldExportPage( 1 ) );
 }
+#endif
 
 void TestQgsLayout::pageIsEmpty()
 {

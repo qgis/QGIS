@@ -161,10 +161,6 @@ class CORE_EXPORT QgsMeshMemoryDataProvider final: public QgsMeshDataProvider
     static QString providerKey();
     //! Returns the memory provider description
     static QString providerDescription();
-    //! Provider factory
-    static QgsMeshMemoryDataProvider *createProvider( const QString &uri,
-        const QgsDataProvider::ProviderOptions &providerOptions,
-        QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
   private:
     QgsRectangle calculateExtent( ) const;
@@ -189,6 +185,17 @@ class CORE_EXPORT QgsMeshMemoryDataProvider final: public QgsMeshDataProvider
 
     bool mIsValid = false;
     QStringList mExtraDatasetUris;
+};
+
+class QgsMeshMemoryProviderMetadata final: public QgsProviderMetadata
+{
+    Q_OBJECT
+
+  public:
+    QgsMeshMemoryProviderMetadata();
+    QIcon icon() const override;
+    QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
+    QList< QgsMapLayerType > supportedLayerTypes() const override;
 };
 
 ///@endcond

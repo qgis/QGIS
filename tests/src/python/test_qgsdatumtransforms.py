@@ -92,7 +92,6 @@ class TestPyQgsDatumTransform(unittest.TestCase):
             self.assertEqual(ops[op2_index].grids[0].shortName, 'GDA94_GDA2020_conformal_and_distortion.gsb')
         else:
             self.assertEqual(ops[op2_index].grids[0].shortName, 'au_icsm_GDA94_GDA2020_conformal_and_distortion.tif')
-        self.assertEqual(ops[op2_index].grids[0].fullName, '')
         if QgsProjUtils.projVersionMajor() == 6:
             self.assertTrue(ops[op2_index].grids[0].packageName)
         self.assertIn('http', ops[op2_index].grids[0].url)
@@ -117,7 +116,6 @@ class TestPyQgsDatumTransform(unittest.TestCase):
             self.assertEqual(ops[op3_index].grids[0].shortName, 'GDA94_GDA2020_conformal.gsb')
         else:
             self.assertEqual(ops[op3_index].grids[0].shortName, 'au_icsm_GDA94_GDA2020_conformal.tif')
-        self.assertEqual(ops[op3_index].grids[0].fullName, '')
         if QgsProjUtils.projVersionMajor() == 6:
             self.assertTrue(ops[op3_index].grids[0].packageName)
         self.assertIn('http', ops[op3_index].grids[0].url)
@@ -142,7 +140,6 @@ class TestPyQgsDatumTransform(unittest.TestCase):
             self.assertEqual(ops[op4_index].grids[0].shortName, 'GDA94_GDA2020_conformal_cocos_island.gsb')
         else:
             self.assertEqual(ops[op4_index].grids[0].shortName, 'au_icsm_GDA94_GDA2020_conformal_cocos_island.tif')
-        self.assertEqual(ops[op4_index].grids[0].fullName, '')
         if QgsProjUtils.projVersionMajor() == 6:
             self.assertTrue(ops[op4_index].grids[0].packageName)
         self.assertIn('http', ops[op4_index].grids[0].url)
@@ -165,7 +162,6 @@ class TestPyQgsDatumTransform(unittest.TestCase):
             self.assertEqual(ops[op5_index].grids[0].shortName, 'GDA94_GDA2020_conformal_christmas_island.gsb')
         else:
             self.assertEqual(ops[op5_index].grids[0].shortName, 'au_icsm_GDA94_GDA2020_conformal_christmas_island.tif')
-        self.assertEqual(ops[op5_index].grids[0].fullName, '')
         if QgsProjUtils.projVersionMajor() == 6:
             self.assertTrue(ops[op5_index].grids[0].packageName)
         self.assertIn('http', ops[op5_index].grids[0].url)
@@ -201,7 +197,6 @@ class TestPyQgsDatumTransform(unittest.TestCase):
             self.assertEqual(ops[op2_index].grids[0].shortName, 'GDA94_GDA2020_conformal_and_distortion.gsb')
         else:
             self.assertEqual(ops[op2_index].grids[0].shortName, 'au_icsm_GDA94_GDA2020_conformal_and_distortion.tif')
-        self.assertEqual(ops[op2_index].grids[0].fullName, '')
         if QgsProjUtils.projVersionMajor() == 6:
             self.assertTrue(ops[op2_index].grids[0].packageName)
         self.assertIn('http', ops[op2_index].grids[0].url)
@@ -226,7 +221,6 @@ class TestPyQgsDatumTransform(unittest.TestCase):
             self.assertEqual(ops[op3_index].grids[0].shortName, 'GDA94_GDA2020_conformal.gsb')
         else:
             self.assertEqual(ops[op3_index].grids[0].shortName, 'au_icsm_GDA94_GDA2020_conformal.tif')
-        self.assertEqual(ops[op3_index].grids[0].fullName, '')
         if QgsProjUtils.projVersionMajor() == 6:
             self.assertTrue(ops[op3_index].grids[0].packageName)
         self.assertIn('http', ops[op3_index].grids[0].url)

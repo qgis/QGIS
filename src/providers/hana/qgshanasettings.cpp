@@ -20,7 +20,7 @@
 
 bool QgsHanaIdentifierType::isValid( uint i ) noexcept
 {
-  return ( i >= INSTANCE_NUMBER ) && ( i <= PORT_NUMBER );
+  return ( i >= InstanceNumber ) && ( i <= PortNumber );
 }
 
 QgsHanaIdentifierType::Value QgsHanaIdentifierType::fromInt( uint i )
@@ -38,7 +38,7 @@ QgsHanaSettings::QgsHanaSettings( const QString &name, bool autoLoad )
 
 QString QgsHanaSettings::port() const
 {
-  if ( QgsHanaIdentifierType::fromInt( mIdentifierType ) == QgsHanaIdentifierType::INSTANCE_NUMBER )
+  if ( QgsHanaIdentifierType::fromInt( mIdentifierType ) == QgsHanaIdentifierType::InstanceNumber )
   {
     if ( mMultitenant )
       return QString( "3" + mIdentifier + "13" );
@@ -64,12 +64,23 @@ void QgsHanaSettings::setKeyColumns( const QString &schemaName, const QString &o
 
 void QgsHanaSettings::setFromDataSourceUri( const QgsDataSourceUri &uri )
 {
-  mDriver = uri.driver();
-  mHost = uri.host();
-  mIdentifierType = QgsHanaIdentifierType::PORT_NUMBER;
-  mIdentifier = uri.port();
+  if ( uri.hasParam( QStringLiteral( "connectionType" ) ) )
+    mConnectionType = static_cast<QgsHanaConnectionType>( uri.param( QStringLiteral( "connectionType" ) ).toUInt() );
+  switch ( mConnectionType )
+  {
+    case QgsHanaConnectionType::Dsn:
+      mDsn = uri.param( QStringLiteral( "dsn" ) );
+      break;
+    case QgsHanaConnectionType::HostPort:
+      mDriver = uri.driver();
+      mHost = uri.host();
+      mIdentifierType = QgsHanaIdentifierType::PortNumber;
+      mIdentifier = uri.port();
+      mDatabase = uri.database();
+      break;
+  }
+
   mSchema = uri.schema();
-  mDatabase = uri.database();
   mUserName = uri.username();
   mPassword = uri.password();
 
@@ -92,6 +103,19 @@ void QgsHanaSettings::setFromDataSourceUri( const QgsDataSourceUri &uri )
   if ( uri.hasParam( QStringLiteral( "sslTrustStore" ) ) )
     mSslTrustStore = uri.param( QStringLiteral( "sslTrustStore" ) );
 
+  mProxyEnabled = false;
+  mProxyHttp = false;
+  mProxyHost = QString();
+  mProxyPort = 1080;
+  if ( uri.hasParam( QStringLiteral( "proxyEnabled" ) ) )
+    mProxyEnabled = QVariant( uri.param( QStringLiteral( "proxyEnabled" ) ) ).toBool();
+  if ( uri.hasParam( QStringLiteral( "proxyHttp" ) ) )
+    mProxyHttp = QVariant( uri.param( QStringLiteral( "proxyHttp" ) ) ).toBool();
+  if ( uri.hasParam( QStringLiteral( "proxyHost" ) ) )
+    mProxyHost = uri.param( QStringLiteral( "proxyHost" ) );
+  if ( uri.hasParam( QStringLiteral( "proxyPort" ) ) )
+    mProxyPort = QVariant( uri.param( QStringLiteral( "proxyPort" ) ) ).toUInt();
+
   mUserTablesOnly = true;
   mAllowGeometrylessTables = false;
   mSaveUserName = false;
@@ -113,8 +137,20 @@ void QgsHanaSettings::setFromDataSourceUri( const QgsDataSourceUri &uri )
 QgsDataSourceUri QgsHanaSettings::toDataSourceUri() const
 {
   QgsDataSourceUri uri;
-  uri.setConnection( mHost, port(), mDatabase, mUserName, mPassword );
-  uri.setDriver( mDriver );
+  uri.setParam( "connectionType", QString::number( static_cast<uint>( mConnectionType ) ) );
+  switch ( mConnectionType )
+  {
+    case QgsHanaConnectionType::Dsn:
+      uri.setParam( "dsn", mDsn );
+      uri.setUsername( mUserName );
+      uri.setPassword( mPassword );
+      break;
+    case QgsHanaConnectionType::HostPort:
+      uri.setConnection( mHost, port(), mDatabase, mUserName, mPassword );
+      uri.setDriver( mDriver );
+      break;
+  }
+
   uri.setSchema( mSchema );
 
   if ( mSslEnabled )
@@ -131,6 +167,20 @@ QgsDataSourceUri QgsHanaSettings::toDataSourceUri() const
       uri.setParam( QStringLiteral( "sslTrustStore" ), mSslTrustStore );
   }
 
+  if ( mProxyEnabled )
+  {
+    uri.setParam( QStringLiteral( "proxyEnabled" ), QStringLiteral( "true" ) );
+    if ( mProxyHttp )
+      uri.setParam( QStringLiteral( "proxyHttp" ), QStringLiteral( "true" ) );
+    uri.setParam( QStringLiteral( "proxyHost" ), mProxyHost );
+    uri.setParam( QStringLiteral( "proxyPort" ), QString::number( mProxyPort ) );
+    if ( !mProxyUsername.isEmpty() )
+    {
+      uri.setParam( QStringLiteral( "proxyUsername" ), mProxyUsername );
+      uri.setParam( QStringLiteral( "proxyPassword" ), mProxyPassword );
+    }
+  }
+
   return uri;
 }
 
@@ -138,12 +188,23 @@ void QgsHanaSettings::load()
 {
   QgsSettings settings;
   const QString key = path();
-  mDriver = settings.value( key + "/driver" ).toString();
-  mHost = settings.value( key + "/host" ).toString();
-  mIdentifierType = settings.value( key + "/identifierType" ).toUInt();
-  mIdentifier = settings.value( key + "/identifier" ).toString();
-  mMultitenant = settings.value( key + "/multitenant" ).toBool();
-  mDatabase = settings.value( key + "/database" ).toString();
+  mConnectionType = QgsHanaConnectionType::HostPort;
+  if ( settings.contains( key + "/connectionType" ) )
+    mConnectionType = static_cast<QgsHanaConnectionType>( settings.value( key + "/connectionType" ).toUInt() );
+  switch ( mConnectionType )
+  {
+    case QgsHanaConnectionType::Dsn:
+      mDsn = settings.value( key + "/dsn" ).toString();
+      break;
+    case QgsHanaConnectionType::HostPort:
+      mDriver = settings.value( key + "/driver" ).toString();
+      mHost = settings.value( key + "/host" ).toString();
+      mIdentifierType = settings.value( key + "/identifierType" ).toUInt();
+      mIdentifier = settings.value( key + "/identifier" ).toString();
+      mMultitenant = settings.value( key + "/multitenant" ).toBool();
+      mDatabase = settings.value( key + "/database" ).toString();
+      break;
+  }
   mSchema = settings.value( key + "/schema" ).toString();
   mAuthcfg = settings.value( key + "/authcfg" ).toString();
   mSaveUserName = settings.value( key + "/saveUsername", false ).toBool();
@@ -154,12 +215,22 @@ void QgsHanaSettings::load()
     mPassword = settings.value( key + "/password" ).toString();
   mUserTablesOnly = settings.value( key + "/userTablesOnly", true ).toBool();
   mAllowGeometrylessTables = settings.value( key + "/allowGeometrylessTables", false ).toBool();
+
+  // SSL parameters
   mSslEnabled = settings.value( key + "/sslEnabled", false ).toBool();
   mSslCryptoProvider = settings.value( key + "/sslCryptoProvider" ).toString();
   mSslKeyStore = settings.value( key + "/sslKeyStore" ).toString();
   mSslTrustStore = settings.value( key + "/sslTrustStore" ).toString();
   mSslValidateCertificate = settings.value( key + "/sslValidateCertificate", true ).toBool();
   mSslHostNameInCertificate = settings.value( key + "/sslHostNameInCertificate" ).toString();
+
+  // Proxy parameters
+  mProxyEnabled = settings.value( key + "/proxyEnabled", false ).toBool();
+  mProxyHttp = settings.value( key + "/proxyHttp", false ).toBool();
+  mProxyHost = settings.value( key + "/proxyHost" ).toString();
+  mProxyPort = settings.value( key + "/proxyPort" ).toUInt();
+  mProxyUsername = settings.value( key + "/proxyUsername" ).toString();
+  mProxyPassword = settings.value( key + "/proxyPassword" ).toString();
 
   const QString keysPath = key + "/keys";
   settings.beginGroup( keysPath );
@@ -188,12 +259,23 @@ void QgsHanaSettings::save()
 {
   const QString key( path() );
   QgsSettings settings;
-  settings.setValue( key + "/driver", mDriver );
-  settings.setValue( key + "/host", mHost );
-  settings.setValue( key + "/identifierType", mIdentifierType );
-  settings.setValue( key + "/identifier", mIdentifier );
-  settings.setValue( key + "/multitenant", mMultitenant );
-  settings.setValue( key + "/database", mDatabase );
+
+  settings.setValue( key + "/connectionType", static_cast<uint>( mConnectionType ) );
+  switch ( mConnectionType )
+  {
+    case QgsHanaConnectionType::Dsn:
+      settings.setValue( key + "/dsn", mDsn );
+      break;
+    case QgsHanaConnectionType::HostPort:
+      settings.setValue( key + "/driver", mDriver );
+      settings.setValue( key + "/host", mHost );
+      settings.setValue( key + "/identifierType", mIdentifierType );
+      settings.setValue( key + "/identifier", mIdentifier );
+      settings.setValue( key + "/multitenant", mMultitenant );
+      settings.setValue( key + "/database", mDatabase );
+      break;
+  }
+
   settings.setValue( key + "/schema", mSchema );
   settings.setValue( key + "/authcfg", mAuthcfg );
   settings.setValue( key + "/saveUsername", mSaveUserName );
@@ -208,6 +290,12 @@ void QgsHanaSettings::save()
   settings.setValue( key + "/sslTrustStore", mSslTrustStore );
   settings.setValue( key + "/sslValidateCertificate", mSslValidateCertificate );
   settings.setValue( key + "/sslHostNameInCertificate", mSslHostNameInCertificate );
+  settings.setValue( key + "/proxyEnabled", mProxyEnabled );
+  settings.setValue( key + "/proxyHttp", mProxyHttp );
+  settings.setValue( key + "/proxyHost", mProxyHost );
+  settings.setValue( key + "/proxyPort", mProxyPort );
+  settings.setValue( key + "/proxyUsername", mProxyUsername );
+  settings.setValue( key + "/proxyPassword", mProxyPassword );
 
   if ( !mKeyColumns.empty() )
   {
@@ -219,10 +307,9 @@ void QgsHanaSettings::save()
       const auto &schemaKeys = mKeyColumns[schemaName];
       if ( schemaKeys.empty() )
         continue;
-      const QStringList objectNames = schemaKeys.keys();
       settings.beginGroup( schemaName );
-      for ( const QString &objectName : objectNames )
-        settings.setValue( objectName, schemaKeys[objectName] );
+      for ( auto it = schemaKeys.constBegin(); it != schemaKeys.constEnd(); it++ )
+        settings.setValue( it.key(), it.value() );
       settings.endGroup();
     }
     settings.endGroup();
@@ -235,6 +322,8 @@ void QgsHanaSettings::removeConnection( const QString &name )
 {
   const QString key( getBaseKey() + name );
   QgsSettings settings;
+  settings.remove( key + "/connectionType" );
+  settings.remove( key + "/dsn" );
   settings.remove( key + "/driver" );
   settings.remove( key + "/host" );
   settings.remove( key + "/identifierType" );
@@ -255,6 +344,12 @@ void QgsHanaSettings::removeConnection( const QString &name )
   settings.remove( key + "/sslTrustStore" );
   settings.remove( key + "/sslValidateCertificate" );
   settings.remove( key + "/sslHostNameInCertificate" );
+  settings.remove( key + "/proxyEnabled" );
+  settings.remove( key + "/proxyHttp" );
+  settings.remove( key + "/proxyHost" );
+  settings.remove( key + "/proxyPort" );
+  settings.remove( key + "/proxyUsername" );
+  settings.remove( key + "/proxyPassword" );
   settings.remove( key + "/keys" );
   settings.remove( key );
   settings.sync();

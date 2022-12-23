@@ -29,12 +29,16 @@
 // read from QSettings and used in the provider connection
 const QStringList CONFIGURATION_PARAMETERS
 {
+  QStringLiteral( "userTablesOnly" ),
   QStringLiteral( "geometryColumnsOnly" ),
   QStringLiteral( "allowGeometrylessTables" ),
   QStringLiteral( "disableInvalidGeometryHandling" ),
   QStringLiteral( "onlyExistingTypes" ),
+  QStringLiteral( "includeGeoAttributes" ),
+  QStringLiteral( "projectsInDatabase" ),
   QStringLiteral( "saveUsername" ),
   QStringLiteral( "savePassword" ),
+  QStringLiteral( "schema" )
 };
 
 // read from uri and used in the provider connection
@@ -1365,15 +1369,22 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsOracleProviderConnection::
 
   QSqlQuery qry( *pconn.get() );
   std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+
+  QgsDatabaseQueryLogWrapper logWrapper { sql, uri(), providerKey(), QStringLiteral( "QgsAbstractDatabaseProviderConnection" ), QGS_QUERY_LOG_ORIGIN };
+
   if ( !qry.exec( sql ) )
   {
+    logWrapper.setError( qry.lastError().text() );
     throw QgsProviderConnectionException( QObject::tr( "SQL error: %1 returned %2" )
                                           .arg( qry.lastQuery(),
                                               qry.lastError().text() ) );
   }
 
   if ( feedback && feedback->isCanceled() )
+  {
+    logWrapper.setCanceled();
     return QgsAbstractDatabaseProviderConnection::QueryResult();
+  }
 
   if ( qry.isActive() )
   {
@@ -1625,7 +1636,8 @@ QStringList QgsOracleProviderConnection::schemas( ) const
   checkCapability( Capability::Schemas );
   QStringList schemas;
 
-  QList<QVariantList> users = executeSqlPrivate( QStringLiteral( "SELECT USERNAME FROM ALL_USERS" ) ).rows();
+  // get only non system schemas/users
+  QList<QVariantList> users = executeSqlPrivate( QStringLiteral( "SELECT USERNAME FROM ALL_USERS where ORACLE_MAINTAINED = 'N' AND USERNAME NOT IN ( 'PDBADMIN', 'HR' )" ) ).rows();
   for ( QVariantList userInfos : users )
     schemas << userInfos.at( 0 ).toString();
 

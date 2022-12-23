@@ -73,7 +73,7 @@ class FileSelectionPanel(BASE, WIDGET):
             filenames, selected_filter = QFileDialog.getOpenFileNames(self,
                                                                       self.tr('Select File'), path, self.tr('{} files').format(self.ext.upper()) + ' (*.' + self.ext + self.tr(');;All files (*.*)'))
             if filenames:
-                self.leText.setText(u';'.join(filenames))
+                self.leText.setText(';'.join(filenames))
                 settings.setValue('/Processing/LastInputPath',
                                   os.path.dirname(filenames[0]))
 

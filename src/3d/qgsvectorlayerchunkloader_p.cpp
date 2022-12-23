@@ -126,8 +126,25 @@ Qt3DCore::QEntity *QgsVectorLayerChunkLoader::createEntity( Qt3DCore::QEntity *p
     return new Qt3DCore::QEntity( parent );  // dummy entity
   }
 
+  if ( mHandler->featureCount() == 0 )
+  {
+    // an empty node, so we return no entity. This tags the node as having no data and effectively removes it.
+    return nullptr;
+  }
+
   Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent );
   mHandler->finalize( entity, mContext );
+
+  // fix the vertical range of the node from the estimated vertical range to the true range
+  if ( mHandler->zMinimum() != std::numeric_limits<float>::max() && mHandler->zMaximum() != std::numeric_limits<float>::lowest() )
+  {
+    QgsAABB box = mNode->bbox();
+    box.yMin = mHandler->zMinimum();
+    box.yMax = mHandler->zMaximum();
+    mNode->setExactBbox( box );
+    mNode->updateParentBoundingBoxesRecursively();
+  }
+
   return entity;
 }
 

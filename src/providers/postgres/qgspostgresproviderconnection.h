@@ -79,6 +79,10 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
     QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const override;
     QMultiMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary() override;
     SqlVectorLayerOptions sqlOptions( const QString &layerSource ) override;
+    QList<QgsLayerMetadataProviderResult> searchLayerMetadata( const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback ) const override;
+
+    static const QStringList CONFIGURATION_PARAMETERS;
+    static const QString SETTINGS_BASE_KEY;
 
   private:
 
@@ -87,6 +91,7 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
     void setDefaultCapabilities();
     void dropTablePrivate( const QString &schema, const QString &name ) const;
     void renameTablePrivate( const QString &schema, const QString &name, const QString &newName ) const;
+
 
 };
 

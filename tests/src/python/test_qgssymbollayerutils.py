@@ -39,7 +39,10 @@ from qgis.core import (
     QgsSymbolLayer,
     QgsProperty,
     QgsMapUnitScale,
-    Qgis
+    Qgis,
+    QgsSingleSymbolRenderer,
+    QgsAnimatedMarkerSymbolLayer,
+    QgsSimpleMarkerSymbolLayer
 )
 from qgis.testing import unittest, start_app
 
@@ -316,6 +319,11 @@ class PyQgsSymbolLayerUtils(unittest.TestCase):
         encode = QgsSymbolLayerUtils.encodeSldUom(QgsUnitTypes.RenderMapUnits)
         self.assertTupleEqual(encode, ('http://www.opengeospatial.org/se/units/metre', 0.001))
 
+        # meters at scale
+        encode = None
+        encode = QgsSymbolLayerUtils.encodeSldUom(QgsUnitTypes.RenderMetersInMapUnits)
+        self.assertTupleEqual(encode, ('http://www.opengeospatial.org/se/units/metre', 1.0))
+
     def testDecodeSldUom(self):
         """
         Test Decodes a SLD unit of measure string to a render unit
@@ -324,12 +332,12 @@ class PyQgsSymbolLayerUtils(unittest.TestCase):
         # meter
         decode = None
         decode = QgsSymbolLayerUtils.decodeSldUom("http://www.opengeospatial.org/se/units/metre")
-        self.assertEqual(decode, (QgsUnitTypes.RenderMapUnits, 1000.0))
+        self.assertEqual(decode, (QgsUnitTypes.RenderMetersInMapUnits, 1.0))
 
         # foot
         decode = None
         decode = QgsSymbolLayerUtils.decodeSldUom("http://www.opengeospatial.org/se/units/foot")
-        self.assertEqual(decode, (QgsUnitTypes.RenderMapUnits, 304.8))
+        self.assertEqual(decode, (QgsUnitTypes.RenderMetersInMapUnits, 0.3048))
 
         # pixel
         decode = None
@@ -606,6 +614,39 @@ class PyQgsSymbolLayerUtils(unittest.TestCase):
         self.assertEqual(fill.strokeWidthMapUnitScale(), QgsMapUnitScale(1, 2))
         self.assertEqual(fill.penJoinStyle(), Qt.MiterJoin)
         self.assertEqual(fill.strokeStyle(), Qt.DashDotDotLine)
+
+    def test_renderer_frame_rate(self):
+        # renderer without an animated symbol
+        marker_symbol = QgsMarkerSymbol.createSimple({})
+        renderer = QgsSingleSymbolRenderer(marker_symbol)
+        self.assertEqual(QgsSymbolLayerUtils.rendererFrameRate(renderer), -1)
+
+        # renderer with an animated symbol
+        marker_symbol = QgsMarkerSymbol()
+        animated_marker = QgsAnimatedMarkerSymbolLayer()
+        animated_marker.setFrameRate(30)
+        marker_symbol.appendSymbolLayer(animated_marker)
+        renderer = QgsSingleSymbolRenderer(marker_symbol)
+        self.assertEqual(QgsSymbolLayerUtils.rendererFrameRate(renderer), 30)
+
+        # renderer with two animated symbol layers
+        marker_symbol = QgsMarkerSymbol()
+        animated_marker = QgsAnimatedMarkerSymbolLayer()
+        animated_marker.setFrameRate(30)
+        marker_symbol.appendSymbolLayer(animated_marker)
+        animated_marker = QgsAnimatedMarkerSymbolLayer()
+        animated_marker.setFrameRate(60)
+        marker_symbol.appendSymbolLayer(animated_marker)
+        renderer = QgsSingleSymbolRenderer(marker_symbol)
+        self.assertEqual(QgsSymbolLayerUtils.rendererFrameRate(renderer), 60)
+
+        s = QgsMarkerSymbol()
+        renderer = QgsSingleSymbolRenderer(s.clone())
+        self.assertEqual(QgsSymbolLayerUtils.rendererFrameRate(renderer), -1)
+        s.animationSettings().setIsAnimated(True)
+        s.animationSettings().setFrameRate(30)
+        renderer = QgsSingleSymbolRenderer(s.clone())
+        self.assertEqual(QgsSymbolLayerUtils.rendererFrameRate(renderer), 30)
 
     def imageCheck(self, name, reference_image, image):
         self.report += "<h2>Render {}</h2>\n".format(name)

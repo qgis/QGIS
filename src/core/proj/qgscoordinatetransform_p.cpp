@@ -259,7 +259,16 @@ static void proj_logger( void *, int level, const char *message )
 #endif
   if ( level == PJ_LOG_ERROR )
   {
-    QgsDebugMsg( QString( message ) );
+    const QString messageString( message );
+    if ( messageString == QLatin1String( "push: Invalid latitude" ) )
+    {
+      // these messages tend to spam the console as they can be repeated 1000s of times
+      QgsDebugMsgLevel( messageString, 3 );
+    }
+    else
+    {
+      QgsDebugMsg( messageString );
+    }
   }
   else if ( level == PJ_LOG_DEBUG )
   {
@@ -301,11 +310,9 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
     // When networking is not enabled, proj_create() will check that all grids are
     // present, so proj_coordoperation_is_instantiable() is not necessary.
     if ( !transform
-#if PROJ_VERSION_MAJOR >= 7
          || (
            proj_context_is_network_enabled( context ) &&
            !proj_coordoperation_is_instantiable( context, transform.get() ) )
-#endif
        )
     {
       if ( sMissingGridUsedByContextHandler )

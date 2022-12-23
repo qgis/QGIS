@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="3_girls_reclining" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(61,116,85)" stop-opacity="1.0000"/>
+        <stop offset="10.00%" stop-color="rgb(61,116,85)" stop-opacity="1.0000"/>
+        <stop offset="20.00%" stop-color="rgb(130,172,133)" stop-opacity="1.0000"/>
+        <stop offset="30.00%" stop-color="rgb(200,229,181)" stop-opacity="1.0000"/>
+        <stop offset="40.00%" stop-color="rgb(222,234,194)" stop-opacity="1.0000"/>
+        <stop offset="50.00%" stop-color="rgb(244,239,207)" stop-opacity="1.0000"/>
+        <stop offset="60.00%" stop-color="rgb(205,229,216)" stop-opacity="1.0000"/>
+        <stop offset="70.00%" stop-color="rgb(166,219,225)" stop-opacity="1.0000"/>
+        <stop offset="80.00%" stop-color="rgb(190,202,223)" stop-opacity="1.0000"/>
+        <stop offset="90.00%" stop-color="rgb(213,186,221)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(213,186,221)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#3_girls_reclining)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:32:52 2012"/>
+  </metadata>
+</svg>

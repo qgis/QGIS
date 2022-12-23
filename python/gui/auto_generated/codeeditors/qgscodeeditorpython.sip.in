@@ -28,15 +28,20 @@ code autocompletion.
 %End
   public:
 
-    QgsCodeEditorPython( QWidget *parent /TransferThis/ = 0, const QList<QString> &filenames = QList<QString>() );
+    QgsCodeEditorPython( QWidget *parent /TransferThis/ = 0, const QList<QString> &filenames = QList<QString>(),
+                         QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor );
 %Docstring
 Construct a new Python editor.
 
 :param parent: The parent QWidget
 :param filenames: The list of apis files to load for the Python lexer
+:param mode: code editor mode (since QGIS 3.30)
 
 .. versionadded:: 2.6
 %End
+
+    virtual Qgis::ScriptLanguage language() const;
+
 
     void loadAPIs( const QList<QString> &filenames );
 %Docstring
@@ -47,9 +52,7 @@ Load APIs from one or more files
 
     bool loadScript( const QString &script );
 %Docstring
-Load a script file
-
-:param script: The script file to load
+Loads a ``script`` file.
 %End
 
   public slots:

@@ -16,6 +16,7 @@
 #include "qgspostgresproviderconnection.h"
 #include "qgspostgresconn.h"
 #include "qgspostgresconnpool.h"
+#include "qgspostgresprovidermetadatautils.h"
 #include "qgssettings.h"
 #include "qgspostgresprovider.h"
 #include "qgsexception.h"
@@ -32,13 +33,50 @@ extern "C"
 #include <libpq-fe.h>
 }
 
+// From configuration
+const QStringList QgsPostgresProviderConnection::CONFIGURATION_PARAMETERS =
+{
+  QStringLiteral( "publicOnly" ),
+  QStringLiteral( "geometryColumnsOnly" ),
+  QStringLiteral( "dontResolveType" ),
+  QStringLiteral( "allowGeometrylessTables" ),
+  QStringLiteral( "saveUsername" ),
+  QStringLiteral( "savePassword" ),
+  QStringLiteral( "estimatedMetadata" ),
+  QStringLiteral( "projectsInDatabase" ),
+  QStringLiteral( "metadataInDatabase" ),
+};
+
+const QString QgsPostgresProviderConnection::SETTINGS_BASE_KEY = QStringLiteral( "/PostgreSQL/connections/" );
+
+
 QgsPostgresProviderConnection::QgsPostgresProviderConnection( const QString &name )
   : QgsAbstractDatabaseProviderConnection( name )
 {
   mProviderKey = QStringLiteral( "postgres" );
   // Remove the sql and table empty parts
   const QRegularExpression removePartsRe { R"raw(\s*sql=\s*|\s*table=""\s*)raw" };
-  setUri( QgsPostgresConn::connUri( name ).uri().replace( removePartsRe, QString() ) );
+  setUri( QgsPostgresConn::connUri( name ).uri( false ).replace( removePartsRe, QString() ) );
+
+  QgsSettings settings;
+  settings.beginGroup( SETTINGS_BASE_KEY );
+  settings.beginGroup( name );
+
+  QVariantMap config;
+
+  for ( const QString &p : std::as_const( CONFIGURATION_PARAMETERS ) )
+  {
+    const QVariant val = settings.value( p );
+    if ( val.isValid() )
+    {
+      config.insert( p, val );
+    }
+  }
+
+  settings.endGroup();
+  settings.endGroup();
+
+  setConfiguration( config );
   setDefaultCapabilities();
 }
 
@@ -82,7 +120,9 @@ void QgsPostgresProviderConnection::setDefaultCapabilities()
   {
     GeometryColumnCapability::Z,
     GeometryColumnCapability::M,
-    GeometryColumnCapability::SinglePart,
+    GeometryColumnCapability::SinglePoint,
+    GeometryColumnCapability::SingleLineString,
+    GeometryColumnCapability::SinglePolygon,
     GeometryColumnCapability::Curves
   };
   mSqlLayerDefinitionCapabilities =
@@ -91,6 +131,18 @@ void QgsPostgresProviderConnection::setDefaultCapabilities()
     Qgis::SqlLayerDefinitionCapability::PrimaryKeys,
     Qgis::SqlLayerDefinitionCapability::GeometryColumn,
     Qgis::SqlLayerDefinitionCapability::UnstableFeatureIds,
+  };
+
+  // see https://www.postgresql.org/docs/current/ddl-system-columns.html
+  mIllegalFieldNames =
+  {
+    QStringLiteral( "tableoid" ),
+    QStringLiteral( "xmin" ),
+    QStringLiteral( "cmin" ),
+    QStringLiteral( "xmax" ),
+    QStringLiteral( "cmax" ),
+    QStringLiteral( "ctid" ),
+
   };
 }
 
@@ -211,7 +263,6 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection
 
 QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QString &sql, bool resolveTypes, QgsFeedback *feedback, std::shared_ptr<QgsPoolPostgresConn> pgconn ) const
 {
-  QStringList columnNames;
   return execSqlPrivate( sql, resolveTypes, feedback, pgconn ).rows();
 }
 
@@ -257,7 +308,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection
     }
 
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-    std::unique_ptr<QgsPostgresResult> res = std::make_unique<QgsPostgresResult>( conn->PQexec( sql ) );
+    std::unique_ptr<QgsPostgresResult> res = std::make_unique<QgsPostgresResult>( conn->LoggedPQexec( "QgsPostgresProviderConnection", sql ) );
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
     results.setQueryExecutionTime( std::chrono::duration_cast<std::chrono::milliseconds>( end - begin ).count() );
 
@@ -283,6 +334,11 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection
                    .arg( conn->PQstatus() )
                    .arg( err );
       }
+    }
+
+    if ( ! errCause.isEmpty() )
+    {
+      throw QgsProviderConnectionException( errCause );
     }
 
     const qlonglong numRows { res->PQntuples() };
@@ -693,12 +749,11 @@ QStringList QgsPostgresProviderConnection::schemas( ) const
 void QgsPostgresProviderConnection::store( const QString &name ) const
 {
   // TODO: move this to class configuration?
-  QString baseKey = QStringLiteral( "/PostgreSQL/connections/" );
   // delete the original entry first
   remove( name );
 
   QgsSettings settings;
-  settings.beginGroup( baseKey );
+  settings.beginGroup( SETTINGS_BASE_KEY );
   settings.beginGroup( name );
 
   // From URI
@@ -712,19 +767,7 @@ void QgsPostgresProviderConnection::store( const QString &name ) const
   settings.setValue( "authcfg", dsUri.authConfigId() );
   settings.setEnumValue( "sslmode", dsUri.sslMode() );
 
-  // From configuration
-  static const QStringList configurationParameters
-  {
-    QStringLiteral( "publicOnly" ),
-    QStringLiteral( "geometryColumnsOnly" ),
-    QStringLiteral( "dontResolveType" ),
-    QStringLiteral( "allowGeometrylessTables" ),
-    QStringLiteral( "saveUsername" ),
-    QStringLiteral( "savePassword" ),
-    QStringLiteral( "estimatedMetadata" ),
-    QStringLiteral( "projectsInDatabase" )
-  };
-  for ( const auto &p : configurationParameters )
+  for ( const auto &p : std::as_const( CONFIGURATION_PARAMETERS ) )
   {
     if ( configuration().contains( p ) )
     {
@@ -774,6 +817,11 @@ QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsPostgresProvider
   const QString trimmedTable { tUri.table().trimmed() };
   options.sql = trimmedTable.startsWith( '(' ) ? trimmedTable.mid( 1 ).chopped( 1 ) : QStringLiteral( "SELECT * FROM %1" ).arg( tUri.quotedTablename() );
   return options;
+}
+
+QList<QgsLayerMetadataProviderResult> QgsPostgresProviderConnection::searchLayerMetadata( const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback ) const
+{
+  return QgsPostgresProviderMetadataUtils::searchLayerMetadata( searchContext, uri(), searchString, geographicExtent, feedback );
 }
 
 QgsVectorLayer *QgsPostgresProviderConnection::createSqlVectorLayer( const SqlVectorLayerOptions &options ) const

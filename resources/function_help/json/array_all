@@ -2,7 +2,7 @@
   "name": "array_all",
   "type": "function",
   "groups": ["Arrays"],
-  "description": "Returns true if an array contains all the values of a given array.",
+  "description": "Returns TRUE if an array contains all the values of a given array.",
   "arguments": [{
     "arg": "array_a",
     "description": "an array"
@@ -12,10 +12,10 @@
   }],
   "examples": [{
     "expression": "array_all(array(1,2,3),array(2,3))",
-    "returns": "true"
+    "returns": "TRUE"
   }, {
     "expression": "array_all(array(1,2,3),array(1,2,4))",
-    "returns": "false"
+    "returns": "FALSE"
   }],
   "tags": ["array", "contains", "compare", "search"]
 }

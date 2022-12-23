@@ -236,8 +236,6 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
 
     QString mCurrentlyDisplayedPlugin;
 
-    QList<int> mCheckingOnStartIntervals;
-
     QgsMessageBar *msgBar = nullptr;
 
 #ifndef WITH_QTWEBKIT

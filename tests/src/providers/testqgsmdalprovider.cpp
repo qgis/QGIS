@@ -33,9 +33,13 @@
  * \ingroup UnitTests
  * This is a unit test for the gdal provider
  */
-class TestQgsMdalProvider : public QObject
+class TestQgsMdalProvider : public QgsTest
 {
     Q_OBJECT
+
+  public:
+
+    TestQgsMdalProvider() : QgsTest( QStringLiteral( "MDAL Provider Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -49,7 +53,6 @@ class TestQgsMdalProvider : public QObject
 
   private:
     QString mTestDataDir;
-    QString mReport;
 };
 
 //runs before all tests
@@ -60,21 +63,12 @@ void TestQgsMdalProvider::initTestCase()
   QgsApplication::initQgis();
 
   mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
-  mReport = QStringLiteral( "<h1>MDAL Provider Tests</h1>\n" );
 }
 
 //runs after all tests
 void TestQgsMdalProvider::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
 }
 
 void TestQgsMdalProvider::filters()

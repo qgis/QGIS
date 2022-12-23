@@ -66,6 +66,37 @@ bool QgsFontUtils::fontFamilyHasStyle( const QString &family, const QString &sty
   return false;
 }
 
+QString QgsFontUtils::resolveFontStyleName( const QFont &font )
+{
+  auto styleNameIsMatch = [&font]( const QString & candidate ) -> bool
+  {
+    // confirm that style name matches bold/italic flags
+    QFont testFont( font.family() );
+    testFont.setStyleName( candidate );
+    return testFont.italic() == font.italic() && testFont.weight() == font.weight();
+  };
+
+  // attempt 1
+  const QFontInfo fontInfo( font );
+  QString styleName = fontInfo.styleName();
+  if ( !styleName.isEmpty() )
+  {
+    if ( styleNameIsMatch( styleName ) )
+      return styleName;
+  }
+
+  // attempt 2
+  styleName = QFontDatabase().styleString( font );
+  if ( !styleName.isEmpty() )
+  {
+    if ( styleNameIsMatch( styleName ) )
+      return styleName;
+  }
+
+  // failed
+  return QString();
+}
+
 bool QgsFontUtils::fontFamilyMatchOnSystem( const QString &family, QString *chosen, bool *match )
 {
   const QFontDatabase fontDB;
@@ -325,6 +356,10 @@ QDomElement QgsFontUtils::toXmlElement( const QFont &font, QDomDocument &documen
   QDomElement fontElem = document.createElement( elementName );
   fontElem.setAttribute( QStringLiteral( "description" ), font.toString() );
   fontElem.setAttribute( QStringLiteral( "style" ), untranslateNamedStyle( font.styleName() ) );
+  fontElem.setAttribute( QStringLiteral( "bold" ), font.bold() ? QChar( '1' ) : QChar( '0' ) );
+  fontElem.setAttribute( QStringLiteral( "italic" ), font.italic() ? QChar( '1' ) : QChar( '0' ) );
+  fontElem.setAttribute( QStringLiteral( "underline" ), font.underline() ? QChar( '1' ) : QChar( '0' ) );
+  fontElem.setAttribute( QStringLiteral( "strikethrough" ), font.strikeOut() ? QChar( '1' ) : QChar( '0' ) );
   return fontElem;
 }
 
@@ -336,6 +371,24 @@ bool QgsFontUtils::setFromXmlElement( QFont &font, const QDomElement &element )
   }
 
   font.fromString( element.attribute( QStringLiteral( "description" ) ) );
+
+  if ( element.hasAttribute( QStringLiteral( "bold" ) ) && element.attribute( QStringLiteral( "bold" ) ) == QChar( '1' ) )
+  {
+    font.setBold( true );
+  }
+  if ( element.hasAttribute( QStringLiteral( "italic" ) ) )
+  {
+    font.setItalic( element.attribute( QStringLiteral( "italic" ) ) == QChar( '1' ) );
+  }
+  if ( element.hasAttribute( QStringLiteral( "underline" ) ) )
+  {
+    font.setUnderline( element.attribute( QStringLiteral( "underline" ) ) == QChar( '1' ) );
+  }
+  if ( element.hasAttribute( QStringLiteral( "strikethrough" ) ) )
+  {
+    font.setStrikeOut( element.attribute( QStringLiteral( "strikethrough" ) ) == QChar( '1' ) );
+  }
+
   if ( element.hasAttribute( QStringLiteral( "style" ) ) )
   {
     ( void )updateFontViaStyle( font, translateNamedStyle( element.attribute( QStringLiteral( "style" ) ) ) );

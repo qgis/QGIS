@@ -427,6 +427,15 @@ Returns a string name of the operating system QGIS is running on.
 .. versionadded:: 2.14
 %End
 
+    static int systemMemorySizeMb();
+%Docstring
+Returns the size of the system memory (RAM) in megabytes.
+
+This is only supported on some platforms, and will return -1 if not supported.
+
+.. versionadded:: 3.26
+%End
+
     static QString platform();
 %Docstring
 Returns the QGIS platform name, e.g., "desktop", "server", "qgis_process" or "external" (for external CLI scripts).
@@ -847,6 +856,13 @@ Returns the handler for recently used style items.
 .. versionadded:: 3.22
 %End
 
+    static QgsDatabaseQueryLog *databaseQueryLog() /KeepReference/;
+%Docstring
+Returns the database query log.
+
+.. versionadded:: 3.24
+%End
+
     static QgsStyleModel *defaultStyleModel();
 %Docstring
 Returns a shared :py:class:`QgsStyleModel` containing the default style library (see :py:func:`QgsStyle.defaultStyle()`).
@@ -854,6 +870,13 @@ Returns a shared :py:class:`QgsStyleModel` containing the default style library 
 Using this shared model instead of creating a new :py:class:`QgsStyleModel` improves performance.
 
 .. versionadded:: 3.10
+%End
+
+    static QgsFontManager *fontManager() /KeepReference/;
+%Docstring
+Returns the application font manager, which manages available fonts and font installation for the QGIS instance.
+
+.. versionadded:: 3.28
 %End
 
     static QgsMessageLog *messageLog();
@@ -951,6 +974,13 @@ Gets the registry of available scalebar renderers.
 Returns registry of available project storage implementations.
 
 .. versionadded:: 3.2
+%End
+
+    static QgsLayerMetadataProviderRegistry *layerMetadataProviderRegistry() /KeepReference/;
+%Docstring
+Returns registry of available layer metadata provider implementations.
+
+.. versionadded:: 3.28
 %End
 
     static QgsExternalStorageRegistry *externalStorageRegistry() /KeepReference/;

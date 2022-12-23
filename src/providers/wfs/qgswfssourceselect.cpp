@@ -36,6 +36,7 @@
 #include "qgsquerybuilder.h"
 #include "qgswfsguiutils.h"
 #include "qgswfssubsetstringeditor.h"
+#include "qgsguiutils.h"
 
 #include <QDomDocument>
 #include <QListWidgetItem>
@@ -391,6 +392,9 @@ void QgsWFSSourceSelect::oapifCollectionsReplyFinished()
 
     typedef QList< QStandardItem * > StandardItemList;
     mModel->appendRow( StandardItemList() << titleItem << nameItem << abstractItem << filterItem );
+
+    gbCRS->setEnabled( false );
+    labelCoordRefSys->setText( collection.mLayerMetadata.crs().authid() );
   }
 
   if ( !mOAPIFCollections->nextUrl().isEmpty() )
@@ -491,11 +495,15 @@ void QgsWFSSourceSelect::connectToServer()
     mCapabilities->requestCapabilities( synchronous, forceRefresh );
     QApplication::setOverrideCursor( Qt::WaitCursor );
   }
+
+  gbCRS->setEnabled( true );
 }
 
 
 void QgsWFSSourceSelect::addButtonClicked()
 {
+  QgsTemporaryCursorOverride cursorOverride( Qt::WaitCursor );
+
   //get selected entry in treeview
   QModelIndex currentIndex = treeView->selectionModel()->currentIndex();
   if ( !currentIndex.isValid() )
@@ -505,7 +513,9 @@ void QgsWFSSourceSelect::addButtonClicked()
 
   QgsWfsConnection connection( cmbConnections->currentText() );
 
-  QString pCrsString( labelCoordRefSys->text() );
+  QString pCrsString;
+  if ( gbCRS->isEnabled() )
+    pCrsString = labelCoordRefSys->text();
 
   //create layers that user selected from this WFS source
   QModelIndexList list = treeView->selectionModel()->selectedRows();
@@ -688,18 +698,21 @@ void QgsWFSSourceSelect::changeCRSFilter()
     {
       QSet<QString> crsNames( qgis::listToSet( *crsIterator ) );
 
-      if ( mProjectionSelector )
-      {
-        mProjectionSelector->setOgcWmsCrsFilter( crsNames );
-        QString preferredCRS = getPreferredCrs( crsNames ); //get preferred EPSG system
-        if ( !preferredCRS.isEmpty() )
-        {
-          QgsCoordinateReferenceSystem refSys = QgsCoordinateReferenceSystem::fromOgcWmsCrs( preferredCRS );
-          mProjectionSelector->setCrs( refSys );
+      // Delete and recreate mProjectionSelector as setOgcWmsCrsFilter()
+      // behavior is undefined after the dialog has been shown.
+      delete mProjectionSelector;
+      mProjectionSelector = new QgsProjectionSelectionDialog( this );
 
-          labelCoordRefSys->setText( preferredCRS );
-        }
+      mProjectionSelector->setOgcWmsCrsFilter( crsNames );
+      QString preferredCRS = getPreferredCrs( crsNames ); //get preferred EPSG system
+      if ( !preferredCRS.isEmpty() )
+      {
+        QgsCoordinateReferenceSystem refSys = QgsCoordinateReferenceSystem::fromOgcWmsCrs( preferredCRS );
+        mProjectionSelector->setCrs( refSys );
+
+        labelCoordRefSys->setText( preferredCRS );
       }
+
     }
   }
 }
@@ -771,7 +784,7 @@ QSize QgsWFSItemDelegate::sizeHint( const QStyleOptionViewItem &option, const QM
 {
   QVariant indexData;
   indexData = index.data( Qt::DisplayRole );
-  if ( indexData.isNull() )
+  if ( QgsVariantUtils::isNull( indexData ) )
   {
     return QSize();
   }

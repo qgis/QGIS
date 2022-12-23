@@ -23,6 +23,8 @@
 #include "qgssettingsentryenumflag.h"
 #include "qgsmaptoolcapture.h"
 #include "qgsmaptoolshapeabstract.h"
+#include "qgsmaptoolshapecircle2points.h"
+
 
 #include <QWidgetAction>
 
@@ -53,7 +55,7 @@ class APP_EXPORT QgsMapToolsDigitizingTechniqueManager : public QObject
     static const inline  QgsSettingsEntryEnumFlag<Qgis::CaptureTechnique> settingsDigitizingTechnique = QgsSettingsEntryEnumFlag<Qgis::CaptureTechnique>( QStringLiteral( "technique" ), QgsSettings::Prefix::QGIS_DIGITIZING, Qgis::CaptureTechnique::StraightSegments, QObject::tr( "Current digitizing technique" ), Qgis::SettingsOption::SaveFormerValue ) SIP_SKIP;
 
     static const inline QgsSettingsEntryString settingMapToolShapeDefaultForShape = QgsSettingsEntryString( QStringLiteral( "%1/default" ), QgsSettings::Prefix::QGIS_DIGITIZING_SHAPEMAPTOOLS, QString(), QObject::tr( "Default map tool for given shape category" ) ) SIP_SKIP;
-    static const inline QgsSettingsEntryString settingMapToolShapeCurrent = QgsSettingsEntryString( QStringLiteral( "current" ), QgsSettings::Prefix::QGIS_DIGITIZING_SHAPEMAPTOOLS, QString(), QObject::tr( "Current shape map tool" ) ) SIP_SKIP;
+    static const inline QgsSettingsEntryString settingMapToolShapeCurrent = QgsSettingsEntryString( QStringLiteral( "current" ), QgsSettings::Prefix::QGIS_DIGITIZING_SHAPEMAPTOOLS, QgsMapToolShapeCircle2PointsMetadata::TOOL_ID, QObject::tr( "Current shape map tool" ) ) SIP_SKIP;
 
     QgsMapToolsDigitizingTechniqueManager( QObject *parent );
     ~QgsMapToolsDigitizingTechniqueManager();
@@ -67,11 +69,16 @@ class APP_EXPORT QgsMapToolsDigitizingTechniqueManager : public QObject
   private slots:
     void setCaptureTechnique( Qgis::CaptureTechnique technique, bool alsoSetShapeTool = true );
     void setShapeTool( const QString &shapeToolId );
+    void mapToolSet( QgsMapTool *newTool, QgsMapTool * );
 
   private:
+    void setupTool( QgsMapToolCapture *tool );
+
     QMap<Qgis::CaptureTechnique, QAction *> mTechniqueActions;
     QHash<QString, QAction *> mShapeActions;
     QMap<QgsMapToolShapeAbstract::ShapeCategory, QToolButton *> mShapeCategoryButtons;
+
+    QSet< QgsMapTool * > mInitializedTools;
 
     QToolButton *mDigitizeModeToolButton = nullptr;
     QgsStreamDigitizingSettingsAction *mStreamDigitizingSettingsAction = nullptr;

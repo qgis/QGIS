@@ -17,16 +17,22 @@
 
 #include "qgscameracontroller.h"
 #include "qgslinevertexdata_p.h"
-#include "qgsabstractmaterialsettings.h"
 #include "qgslinematerial_p.h"
-#include "qgsphongmaterialsettings.h"
-
+#include "qgsvertexid.h"
 #include "qgslinestring.h"
 
 #include <Qt3DCore/QEntity>
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
 #include <Qt3DRender/QGeometry>
+#else
+#include <Qt3DCore/QAttribute>
+#include <Qt3DCore/QBuffer>
+#include <Qt3DCore/QGeometry>
+#endif
+
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DRender/QMaterial>
 

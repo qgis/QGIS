@@ -240,7 +240,8 @@ void QgsLayerTreeViewDefaultActions::checkAndAllParents()
 
 void QgsLayerTreeViewDefaultActions::addGroup()
 {
-  if ( !mView->selectedNodes( true ).empty() )
+  int nodeCount = mView->selectedNodes( true ).count();
+  if ( nodeCount > 1 || ( nodeCount == 1 && mView->currentLayer() ) )
   {
     groupSelected();
     return;

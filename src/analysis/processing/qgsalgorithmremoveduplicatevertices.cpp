@@ -31,7 +31,7 @@ QString QgsAlgorithmRemoveDuplicateVertices::displayName() const
 
 QStringList QgsAlgorithmRemoveDuplicateVertices::tags() const
 {
-  return QObject::tr( "points,valid,overlapping,vertex,nodes" ).split( ',' );
+  return QObject::tr( "points,valid,overlapping,vertex,nodes,invalid,error,repair" ).split( ',' );
 }
 
 QString QgsAlgorithmRemoveDuplicateVertices::group() const

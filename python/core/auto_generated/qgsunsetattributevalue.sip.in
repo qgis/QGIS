@@ -1,0 +1,73 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsunsetattributevalue.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsUnsetAttributeValue
+{
+%Docstring(signature="appended")
+Represents a default, "not-specified" value for a feature attribute.
+
+.. versionadded:: 3.28
+%End
+
+%TypeHeaderCode
+#include "qgsunsetattributevalue.h"
+%End
+  public:
+
+    QgsUnsetAttributeValue();
+%Docstring
+Constructor for a QgsUnsetAttributeValue.
+%End
+
+    explicit QgsUnsetAttributeValue( const QString &defaultValueClause );
+%Docstring
+Constructor for a QgsUnsetAttributeValue, with the specified original provider's default value clause.
+%End
+
+    QString defaultValueClause() const;
+%Docstring
+Returns the original data provider's default value clause.
+%End
+
+    bool operator==( const QgsUnsetAttributeValue & ) const;
+
+    bool operator!=( const QgsUnsetAttributeValue & ) const;
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str;
+    if ( !sipCpp->defaultValueClause().isEmpty() )
+      str = QStringLiteral( "<QgsUnsetAttributeValue: %1>" ).arg( sipCpp->defaultValueClause() );
+    else
+      str = QStringLiteral( "<QgsUnsetAttributeValue>" );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+    operator QVariant() const;
+
+};
+
+
+
+bool operator==( const QgsUnsetAttributeValue &value, const QString &other );
+
+bool operator!=( const QgsUnsetAttributeValue &value, const QString &other );
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsunsetattributevalue.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

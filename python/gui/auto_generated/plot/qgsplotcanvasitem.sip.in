@@ -1,0 +1,64 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/plot/qgsplotcanvasitem.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+%ModuleHeaderCode
+#include "qgsplotcanvasitem.h"
+%End
+
+class QgsPlotCanvasItem : QGraphicsItem
+{
+%Docstring(signature="appended")
+An abstract class for items that can be placed on a :py:class:`QgsPlotCanvas`.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsplotcanvasitem.h"
+%End
+%ConvertToSubClassCode
+    if ( dynamic_cast<QgsPlotCanvasItem *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsPlotCanvasItem;
+    else
+      sipType = nullptr;
+%End
+  protected:
+
+    QgsPlotCanvasItem( QgsPlotCanvas *canvas /TransferThis/ );
+%Docstring
+Constructor for QgsPlotCanvasItem for the specified ``canvas``.
+%End
+
+    ~QgsPlotCanvasItem();
+
+    virtual void paint( QPainter *painter ) = 0;
+%Docstring
+Paints the item. Must be implemented by derived classes.
+%End
+
+     virtual void paint( QPainter *painter,
+                const QStyleOptionGraphicsItem *option,
+                QWidget *widget = 0 );
+
+  protected:
+
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/plot/qgsplotcanvasitem.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

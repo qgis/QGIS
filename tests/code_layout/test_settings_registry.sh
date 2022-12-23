@@ -2,9 +2,9 @@
 
 set -e
 
-# GNU prefix command for mac os support (gsed, gsplit)
+# GNU prefix command for bsd/mac os support (gsed, gsplit)
 GP=
-if [[ "$OSTYPE" =~ darwin* ]]; then
+if [[ "$OSTYPE" == *bsd* ]] || [[ "$OSTYPE" =~ darwin* ]]; then
   GP=g
 fi
 
@@ -41,18 +41,43 @@ while read -r LINE; do
   fi
 
   if ( ! grep -E -q "addSettingsEntry. \&(\w+::)?${SETTING} " "${REG_FILE}" ); then
-    echo -e "ERROR: setting ${RED}${SETTING}${NC} defined in ${RED}${FILE}${NC} not added to the registry (${REG_FILE})"
-    RETURN_CODE=1
+    # check if the setting is not in a group
+    GROUP_LINE=$(git grep -E "QgsSettingsEntryGroup\([^()]*${SETTING}" ${FILE} | head -1)
+    if [[ -n "${GROUP_LINE}" ]]; then
+      GROUP_NAME=$(echo "${GROUP_LINE}" | cut -d: -f2 | ${GP}sed -r 's/^.*QgsSettingsEntryGroup +(\w+) *=.*$/\1/')
+      GROUP_COUNT_VAR_NAME="GROUP_COUNT_${MODULE}_${GROUP_NAME}"
+      if [[ -z "${!GROUP_COUNT_VAR_NAME}" ]]; then
+        declare "GROUP_COUNT_${MODULE}_${GROUP_NAME}"=1
+      else
+        declare "GROUP_COUNT_${MODULE}_${GROUP_NAME}=$(( ${!GROUP_COUNT_VAR_NAME} + 1 ))"
+      fi
+    else
+      echo -e "ERROR: setting ${RED}${SETTING}${NC} defined in ${RED}${FILE}${NC} not added to the registry (${REG_FILE})"
+      RETURN_CODE=1
+    fi
   fi
 
-done <<< $(git grep -E 'static +const +inline +QgsSettingsEntry[^ ]+ +\w+' src)
+done <<< $(git grep -E --perl-regex 'static +const( +inline)? +QgsSettingsEntry(?!Group)[^ ]+ +\w+' src)
 
 echo "*** Self-check"
 # check that the number of items in each registry corresponds to what was found (for safety on this script)
 for MODULE in "${MODULES[@]}"; do
   SUBFOLDER=$([[ ${MODULE} =~ (core|gui) ]] && echo "settings" || echo "")
   REG_FILE="src/${MODULE}/${SUBFOLDER}/qgssettingsregistry${MODULE}.cpp"
-  COUNT=$(grep --only-matching -c 'addSettingsEntry' "${REG_FILE}")
+  COUNT=$(${GP}grep --only-matching -c --perl-regex 'addSettingsEntry(?!Group)' "${REG_FILE}")
+  # also add the grouped settings
+  while read -u 3 -r GROUP_LINE; do
+    GROUP_NAME=$(echo "${GROUP_LINE}" | ${GP}sed -r 's/^.*addSettingsEntryGroup\( *(\&\w+::)?(\w+) *\).*$/\2/')
+    GROUP_COUNT_VAR_NAME="GROUP_COUNT_${MODULE}_${GROUP_NAME}"
+    if [[ -z "${!GROUP_COUNT_VAR_NAME}" ]]; then
+      if [[ ${RETURN_CODE} == 0 ]]; then
+        echo "Hmmm ${GROUP_COUNT_VAR_NAME} variable doesn't exist. Test might be broken if the code is compiling"
+        RETURN_CODE=1
+      fi
+    else
+      COUNT=$((COUNT+${!GROUP_COUNT_VAR_NAME}))
+    fi
+  done 3< <(git grep --only-matching -E 'addSettingsEntryGroup\( *(\&\w+::)?(\w+) *\)' ${REG_FILE})
   COUNT_VAR="COUNT_${MODULE}"
   if [[ ${COUNT} == "${!COUNT_VAR}" ]]; then
     echo "${MODULE}: OK: ${COUNT} settings"

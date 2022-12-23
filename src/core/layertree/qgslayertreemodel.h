@@ -370,6 +370,14 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     void legendInvalidateMapBasedData();
 
   protected:
+
+    /**
+     * Returns a temporary render context.
+     *
+     * \note Note available in Python bindings.
+     */
+    QgsRenderContext *createTemporaryRenderContext() const SIP_SKIP;
+
     //! Pointer to the root node of the layer tree. Not owned by the model
     QgsLayerTree *mRootNode = nullptr;
     //! Sets of flags for the model
@@ -471,8 +479,6 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
   private:
 
-    //! Returns a temporary render context
-    QgsRenderContext *createTemporaryRenderContext() const;
 
 };
 

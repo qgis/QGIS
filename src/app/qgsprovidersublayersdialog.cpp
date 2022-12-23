@@ -40,12 +40,13 @@ QVariant QgsProviderSublayerDialogModel::data( const QModelIndex &index, int rol
   if ( !index.isValid() )
     return QVariant();
 
-  if ( index.row() < 0 || index.row() >= rowCount( QModelIndex() ) )
+  QgsProviderSublayerModelNode *node = index2node( index );
+  if ( !node )
     return QVariant();
 
-  if ( index.row() < mSublayers.count() )
+  if ( QgsProviderSublayerModelSublayerNode *sublayerNode = dynamic_cast<QgsProviderSublayerModelSublayerNode *>( node ) )
   {
-    const QgsProviderSublayerDetails details = mSublayers.at( index.row() );
+    const QgsProviderSublayerDetails details = sublayerNode->sublayer();
 
     if ( details.type() == QgsMapLayerType::VectorLayer && details.wkbType() == QgsWkbTypes::Unknown && !mGeometryTypesResolved )
     {
@@ -80,6 +81,7 @@ QVariant QgsProviderSublayerDialogModel::data( const QModelIndex &index, int rol
       }
     }
   }
+
   return QgsProviderSublayerModel::data( index, role );
 }
 
@@ -143,6 +145,8 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
   mProxyModel->setSourceModel( mModel );
   mLayersTree->setModel( mProxyModel );
 
+  mLayersTree->expandAll();
+
   const QgsSettings settings;
   const bool addToGroup = settings.value( QStringLiteral( "/qgis/openSublayersInGroup" ), false ).toBool();
   mCbxAddToGroup->setChecked( addToGroup );
@@ -175,6 +179,7 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
       mModel->setSublayerDetails( res );
       mModel->setGeometryTypesResolved( true );
       mTask = nullptr;
+      mLayersTree->expandAll();
       selectAll();
     } );
     QgsApplication::taskManager()->addTask( mTask.data() );
@@ -185,9 +190,14 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
   connect( mLayersTree->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsProviderSublayersDialog::treeSelectionChanged );
   connect( mSearchLineEdit, &QgsFilterLineEdit::textChanged, mProxyModel, &QgsProviderSublayerProxyModel::setFilterString );
   connect( mCheckShowSystem, &QCheckBox::toggled, mProxyModel, &QgsProviderSublayerProxyModel::setIncludeSystemTables );
+  connect( mCheckShowEmpty, &QCheckBox::toggled, mProxyModel, &QgsProviderSublayerProxyModel::setIncludeEmptyLayers );
   connect( mLayersTree, &QTreeView::doubleClicked, this, [ = ]( const QModelIndex & index )
   {
-    mLayersTree->selectionModel()->select( QItemSelection( mLayersTree->model()->index( index.row(), 0, index.parent() ),
+    const QModelIndex left = mLayersTree->model()->index( index.row(), 0, index.parent() );
+    if ( !( left.flags() & Qt::ItemIsSelectable ) )
+      return;
+
+    mLayersTree->selectionModel()->select( QItemSelection( left,
                                            mLayersTree->model()->index( index.row(), mLayersTree->model()->columnCount() - 1, index.parent() ) ),
                                            QItemSelectionModel::ClearAndSelect );
     emit layersAdded( selectedLayers() );
@@ -336,15 +346,24 @@ void QgsProviderSublayersDialog::treeSelectionChanged( const QItemSelection &sel
 void QgsProviderSublayersDialog::selectAll()
 {
   mLayersTree->selectionModel()->clear();
-  for ( int row = 0; row < mProxyModel->rowCount(); ++row )
+
+  std::function< void( const QModelIndex & ) > selectAllInParent;
+
+  selectAllInParent = [this, &selectAllInParent]( const QModelIndex & parent )
   {
-    const QModelIndex index = mProxyModel->index( row, 0 );
-    if ( !mProxyModel->data( index, static_cast< int >( QgsProviderSublayerModel::Role::IsNonLayerItem ) ).toBool() )
+    for ( int row = 0; row < mProxyModel->rowCount( parent ); ++row )
     {
-      mLayersTree->selectionModel()->select( QItemSelection( mLayersTree->model()->index( index.row(), 0, index.parent() ),
-                                             mLayersTree->model()->index( index.row(), mLayersTree->model()->columnCount() - 1, index.parent() ) ),
-                                             QItemSelectionModel::Select );
+      const QModelIndex index = mProxyModel->index( row, 0, parent );
+      if ( !mProxyModel->data( index, static_cast< int >( QgsProviderSublayerModel::Role::IsNonLayerItem ) ).toBool() )
+      {
+        mLayersTree->selectionModel()->select( QItemSelection( mLayersTree->model()->index( index.row(), 0, index.parent() ),
+                                               mLayersTree->model()->index( index.row(), mLayersTree->model()->columnCount() - 1, index.parent() ) ),
+                                               QItemSelectionModel::Select );
+      }
+      selectAllInParent( index );
     }
-  }
+  };
+  selectAllInParent( QModelIndex() );
+
   mButtonBox->button( QDialogButtonBox::Ok )->setFocus();
 }

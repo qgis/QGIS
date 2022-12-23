@@ -180,14 +180,9 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
             'overlaps(buffer($geometry,1),geom_from_wkt( \'Polygon ((-75.1 76.1, -75.1 81.6, -68.8 81.6, -68.8 76.1, -75.1 76.1))\'))',
             'intersects(centroid($geometry),geom_from_wkt( \'Polygon ((-74.4 78.2, -74.4 79.1, -66.8 79.1, -66.8 78.2, -74.4 78.2))\'))',
             'intersects(point_on_surface($geometry),geom_from_wkt( \'Polygon ((-74.4 78.2, -74.4 79.1, -66.8 79.1, -66.8 78.2, -74.4 78.2))\'))',
-            '"dt" <= make_datetime(2020, 5, 4, 12, 13, 14)',
-            '"dt" < make_date(2020, 5, 4)',
             '"dt" = to_datetime(\'000www14ww13ww12www4ww5ww2020\',\'zzzwwwsswwmmwwhhwwwdwwMwwyyyy\')',
-            '"date" <= make_datetime(2020, 5, 4, 12, 13, 14)',
-            '"date" >= make_date(2020, 5, 4)',
             '"date" = to_date(\'www4ww5ww2020\',\'wwwdwwMwwyyyy\')',
-            '"time" >= make_time(12, 14, 14)',
-            '"time" = to_time(\'000www14ww13ww12www\',\'zzzwwwsswwmmwwhhwww\')'
+            '"time" = to_time(\'000www14ww13ww12www\',\'zzzwwwsswwmmwwhhwww\')',
         ])
         return filters
 
@@ -543,13 +538,18 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
     def testEncodeDecodeUri(self):
         """Test HANA encode/decode URI"""
         md = QgsProviderRegistry.instance().providerMetadata('hana')
+        self.maxDiff = None
         self.assertEqual(md.decodeUri(
+            "connectionType=0 dsn='HANADB1' "
             "driver='/usr/sap/hdbclient/libodbcHDB.so' dbname='qgis_tests' host=localhost port=30015 "
             "user='myuser' password='mypwd' srid=2016 table=\"public\".\"gis\" (geom) type=MultiPolygon key='id' "
             "sslEnabled='true' sslCryptoProvider='commoncrypto' sslValidateCertificate='false' "
             "sslHostNameInCertificate='hostname.domain.com' sslKeyStore='mykey.pem' "
-            "sslTrustStore='server_root.crt' "),
+            "sslTrustStore='server_root.crt' "
+            "proxyEnabled='true' proxyHttp='true' proxyHost='h' proxyPort=2 proxyUsername='u' proxyPassword='p' "),
             {
+                'connectionType': '0',
+                'dsn': 'HANADB1',
                 'driver': '/usr/sap/hdbclient/libodbcHDB.so',
                 'dbname': 'qgis_tests',
                 'host': 'localhost',
@@ -568,9 +568,17 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
                 'sslHostNameInCertificate': 'hostname.domain.com',
                 'sslKeyStore': 'mykey.pem',
                 'sslTrustStore': 'server_root.crt',
-                'selectatid': False})
+                'selectatid': False,
+                'proxyEnabled': 'true',
+                'proxyHttp': 'true',
+                'proxyHost': 'h',
+                'proxyPort': '2',
+                'proxyUsername': 'u',
+                'proxyPassword': 'p'})
 
-        self.assertEqual(md.encodeUri({'driver': '/usr/sap/hdbclient/libodbcHDB.so',
+        self.assertEqual(md.encodeUri({'connectionType': '0',
+                                       'dsn': 'HANADB1',
+                                       'driver': '/usr/sap/hdbclient/libodbcHDB.so',
                                        'dbname': 'qgis_tests',
                                        'host': 'localhost',
                                        'port': '30015',
@@ -588,13 +596,20 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
                                        'sslHostNameInCertificate': 'hostname.domain.com',
                                        'sslKeyStore': 'mykey.pem',
                                        'sslTrustStore': 'server_root.crt',
-                                       'selectatid': False}),
+                                       'selectatid': False,
+                                       'proxyEnabled': 'true',
+                                       'proxyHttp': 'false',
+                                       'proxyHost': 'h',
+                                       'proxyPort': '3',
+                                       'proxyUsername': 'u',
+                                       'proxyPassword': 'p'}),
                          "dbname='qgis_tests' driver='/usr/sap/hdbclient/libodbcHDB.so' user='myuser' password='mypwd' "
-                         "srid=2016 host='localhost' key='id' port='30015' selectatid='false' "
-                         "sslCryptoProvider='commoncrypto' sslEnabled='true' "
+                         "key='id' srid=2016 connectionType='0' dsn='HANADB1' host='localhost' port='30015' "
+                         "proxyEnabled='true' proxyHost='h' proxyHttp='false' proxyPassword='p' proxyPort='3' "
+                         "proxyUsername='u' selectatid='false' sslCryptoProvider='commoncrypto' sslEnabled='true' "
                          "sslHostNameInCertificate='hostname.domain.com' sslKeyStore='mykey.pem' "
-                         "sslTrustStore='server_root.crt' sslValidateCertificate='false' "
-                         "type='MultiPolygon' table=\"public\".\"gis\" (geom)")
+                         "sslTrustStore='server_root.crt' sslValidateCertificate='false' type='MultiPolygon' "
+                         "table=\"public\".\"gis\" (geom)")
 
 
 if __name__ == '__main__':

@@ -85,7 +85,8 @@ void QgsLayerTreeViewIndicatorProvider::onWillRemoveChildren( QgsLayerTreeNode *
     else if ( QgsLayerTree::isLayer( childNode ) )
     {
       QgsLayerTreeLayer *childLayerNode = QgsLayerTree::toLayer( childNode );
-      if ( QgsLayerTreeUtils::countMapLayerInTree( mLayerTreeView->layerTreeModel()->rootGroup(), childLayerNode->layer() ) == 1 )
+      if ( childLayerNode->layer() &&
+           QgsLayerTreeUtils::countMapLayerInTree( mLayerTreeView->layerTreeModel()->rootGroup(), childLayerNode->layer() ) == 1 )
         disconnectSignals( childLayerNode->layer() );
     }
   }

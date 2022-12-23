@@ -644,6 +644,7 @@ or layer with temporary data (as temporary mesh layer dataset)
       FlagDontResolveLayers,
       FlagTrustLayerMetadata,
       FlagReadExtentFromXml,
+      FlagForceReadOnly,
     };
     typedef QFlags<QgsMapLayer::ReadFlag> ReadFlags;
 
@@ -981,7 +982,21 @@ Export the properties of this layer as SLD style in a QDomDocument
                  during the execution of writeSymbology
 %End
 
-    virtual QString saveDefaultStyle( bool &resultFlag /Out/ );
+    virtual QString saveDefaultStyle( bool &resultFlag /Out/, StyleCategories categories );
+%Docstring
+Save the properties of this layer as the default style
+(either as a .qml file on disk or as a
+record in the users style table in their personal qgis.db)
+
+:param categories: the style categories to be saved (since QGIS 3.26)
+
+:return: - a QString with any status messages
+         - resultFlag: a reference to a flag that will be set to ``False`` if we did not manage to save the default style.
+
+.. seealso:: :py:func:`loadNamedStyle`
+%End
+
+ virtual QString saveDefaultStyle( bool &resultFlag /Out/ ) /Deprecated/;
 %Docstring
 Save the properties of this layer as the default style
 (either as a .qml file on disk or as a
@@ -992,6 +1007,8 @@ record in the users style table in their personal qgis.db)
          - resultFlag: a reference to a flag that will be set to ``False`` if we did not manage to save the default style.
 
 .. seealso:: :py:func:`loadNamedStyle`
+
+.. deprecated:: QGIS 3.26
 %End
 
     virtual QString saveNamedStyle( const QString &uri, bool &resultFlag /Out/, StyleCategories categories = AllStyleCategories );
@@ -1491,6 +1508,33 @@ Set placeholder image for legend. If the string is empty, a generated legend wil
 .. versionadded:: 3.22
 %End
 
+    QString mapTipTemplate() const;
+%Docstring
+The mapTip is a pretty, html representation for feature information.
+
+It may also contain embedded expressions.
+
+.. note::
+
+   this method was only available for vector layers since QGIS 3.0
+
+.. versionadded:: 3.30
+%End
+
+    void setMapTipTemplate( const QString &mapTipTemplate );
+%Docstring
+The mapTip is a pretty, html representation for feature information.
+
+It may also contain embedded expressions.
+
+.. note::
+
+   this method was only available for vector layers since QGIS 3.0
+
+.. versionadded:: 3.30
+%End
+
+
   public slots:
 
     void setMinimumScale( double scale );
@@ -1829,6 +1873,17 @@ Emitted when edited changes have been successfully written to the data provider.
 Emitted when modifications has been done on layer
 
 .. versionadded:: 3.22
+%End
+
+    void mapTipTemplateChanged();
+%Docstring
+Emitted when the map tip template changes
+
+.. note::
+
+   this method was only available for vector layers since QGIS 3.0
+
+.. versionadded:: 3.30
 %End
 
   protected:

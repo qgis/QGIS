@@ -160,43 +160,43 @@ class Context(object):
         if self.debug:
             # fix_print_with_import
             print("site (%d) at %f %f" % (s.sitenum, s.x, s.y))
-        elif(self.triangulate):
+        elif self.triangulate:
             pass
         elif self.plot:
             self.circle(s.x, s.y, None)  # No radius?
-        elif(self.doPrint):
+        elif self.doPrint:
             # fix_print_with_import
             print("s %f %f" % (s.x, s.y))
 
     def outVertex(self, s):
         self.vertices.append((s.x, s.y))
-        if(self.debug):
+        if self.debug:
             # fix_print_with_import
             print("vertex(%d) at %f %f" % (s.sitenum, s.x, s.y))
-        elif(self.triangulate):
+        elif self.triangulate:
             pass
-        elif(self.doPrint and not self.plot):
+        elif self.doPrint and not self.plot:
             # fix_print_with_import
             print("v %f %f" % (s.x, s.y))
 
     def outTriple(self, s1, s2, s3):
         self.triangles.append((s1.sitenum, s2.sitenum, s3.sitenum))
-        if(self.debug):
+        if self.debug:
             # fix_print_with_import
             print("circle through left=%d right=%d bottom=%d" % (s1.sitenum, s2.sitenum, s3.sitenum))
-        elif(self.triangulate and self.doPrint and not self.plot):
+        elif self.triangulate and self.doPrint and not self.plot:
             # fix_print_with_import
             print("%d %d %d" % (s1.sitenum, s2.sitenum, s3.sitenum))
 
     def outBisector(self, edge):
         self.lines.append((edge.a, edge.b, edge.c))
-        if(self.debug):
+        if self.debug:
             # fix_print_with_import
             print("line(%d) %gx+%gy=%g, bisecting %d %d" % (edge.edgenum, edge.a, edge.b, edge.c, edge.reg[0].sitenum, edge.reg[1].sitenum))
-        elif(self.triangulate):
-            if(self.plot):
+        elif self.triangulate:
+            if self.plot:
                 self.line(edge.reg[0].x, edge.reg[0].y, edge.reg[1].x, edge.reg[1].y)
-        elif(self.doPrint and not self.plot):
+        elif self.doPrint and not self.plot:
             # fix_print_with_import
             print("l %f %f %f" % (edge.a, edge.b, edge.c))
 
@@ -214,10 +214,10 @@ class Context(object):
         self.polygons[edge.reg[0].sitenum].append((edge.edgenum, sitenumL, sitenumR))
         self.polygons[edge.reg[1].sitenum].append((edge.edgenum, sitenumL, sitenumR))
         self.edges.append((edge.edgenum, sitenumL, sitenumR))
-        if(not self.triangulate):
+        if not self.triangulate:
             if self.plot:
                 self.clip_line(edge)
-            elif(self.doPrint):
+            elif self.doPrint:
                 # fix_print_with_import
                 print("e %d %d %d" % (edge.edgenum, sitenumL, sitenumR))
 

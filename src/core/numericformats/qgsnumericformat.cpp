@@ -47,7 +47,7 @@ QgsNumericFormatContext::QgsNumericFormatContext()
 
 int QgsNumericFormat::sortKey()
 {
-  return 100;
+  return DEFAULT_SORT_KEY;
 }
 
 double QgsNumericFormat::suggestSampleValue() const
@@ -72,4 +72,3 @@ bool QgsNumericFormat::operator!=( const QgsNumericFormat &other ) const
 {
   return !operator==( other );
 }
-

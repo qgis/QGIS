@@ -64,7 +64,7 @@ class DlgCreateConstraint(QDialog, Ui_Dialog):
 
     def getConstraint(self):
         constr = TableConstraint(self.table)
-        constr.name = u""
+        constr.name = ""
         constr.type = TableConstraint.TypePrimaryKey if self.radPrimaryKey.isChecked() else TableConstraint.TypeUnique
         constr.columns = []
         column = self.cboColumn.currentText()

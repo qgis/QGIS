@@ -36,8 +36,6 @@
 #include "qgis_core.h"
 #include "qgsgeometry.h"
 #include "qgsgeos.h"
-#include "qgspallabeling.h"
-#include "qgslabelingenginesettings.h"
 #include <QList>
 #include <iostream>
 #include <ctime>
@@ -48,6 +46,7 @@
 // TODO ${MAJOR} ${MINOR} etc instead of 0.2
 
 class QgsAbstractLabelProvider;
+class QgsRenderContext;
 
 namespace pal
 {
@@ -105,11 +104,10 @@ namespace pal
        * \param defaultPriority layer's prioriry (0 is the best, 1 the worst)
        * \param active is the layer is active (currently displayed)
        * \param toLabel the layer will be labeled only if toLablel is TRUE
-       * \param displayAll if TRUE, all features will be labelled even though overlaps occur
        *
        * \throws PalException::LayerExists
        */
-      Layer *addLayer( QgsAbstractLabelProvider *provider, const QString &layerName, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, bool displayAll = false );
+      Layer *addLayer( QgsAbstractLabelProvider *provider, const QString &layerName, Qgis::LabelPlacement arrangement, double defaultPriority, bool active, bool toLabel );
 
       /**
        * \brief remove a layer
@@ -196,14 +194,14 @@ namespace pal
        *
        * \see setPlacementVersion()
        */
-      QgsLabelingEngineSettings::PlacementEngineVersion placementVersion() const;
+      Qgis::LabelPlacementEngineVersion placementVersion() const;
 
       /**
        * Sets the placement engine \a version, which dictates how the label placement problem is solved.
        *
        * \see placementVersion()
        */
-      void setPlacementVersion( QgsLabelingEngineSettings::PlacementEngineVersion placementVersion );
+      void setPlacementVersion( Qgis::LabelPlacementEngineVersion placementVersion );
 
       /**
        * Returns the global candidates limit for point features, or 0 if no global limit is in effect.
@@ -279,7 +277,7 @@ namespace pal
       int mGlobalCandidatesLimitLine = 0;
       int mGlobalCandidatesLimitPolygon = 0;
 
-      QgsLabelingEngineSettings::PlacementEngineVersion mPlacementVersion = QgsLabelingEngineSettings::PlacementEngineVersion2;
+      Qgis::LabelPlacementEngineVersion mPlacementVersion = Qgis::LabelPlacementEngineVersion::Version2;
 
       //! Callback that may be called from PAL to check whether the job has not been canceled in meanwhile
       FnIsCanceled fnIsCanceled = nullptr;
@@ -327,13 +325,13 @@ namespace pal
        * Returns the minimum number of iterations used for POPMUSIC_TABU, POPMUSIC_CHAIN and POPMUSIC_TABU_CHAIN.
        * \see getMaxIt()
        */
-      int getMinIt();
+      int getMinIt() const;
 
       /**
        * Returns the maximum number of iterations allowed for POPMUSIC_TABU, POPMUSIC_CHAIN and POPMUSIC_TABU_CHAIN.
        * \see getMinIt()
        */
-      int getMaxIt();
+      int getMaxIt() const;
 
   };
 

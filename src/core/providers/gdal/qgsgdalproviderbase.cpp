@@ -30,6 +30,7 @@
 #include <mutex>
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
+#include <QFileInfo>
 
 QgsGdalProviderBase::QgsGdalProviderBase()
 {
@@ -173,6 +174,14 @@ Qgis::DataType QgsGdalProviderBase::dataTypeFromGdal( const GDALDataType gdalDat
       return Qgis::DataType::CFloat32;
     case GDT_CFloat64:
       return Qgis::DataType::CFloat64;
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,5,0)
+    case GDT_Int64:
+    case GDT_UInt64:
+      // Lossy conversion
+      // NOTE: remove conversion from/to double in qgsgdalprovider.cpp if using
+      // a native Qgis data type for Int64/UInt64 (look for GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,5,0))
+      return Qgis::DataType::Float64;
+#endif
     case GDT_Unknown:
     case GDT_TypeCount:
       return Qgis::DataType::UnknownDataType;
@@ -180,46 +189,46 @@ Qgis::DataType QgsGdalProviderBase::dataTypeFromGdal( const GDALDataType gdalDat
   return Qgis::DataType::UnknownDataType;
 }
 
-int QgsGdalProviderBase::colorInterpretationFromGdal( const GDALColorInterp gdalColorInterpretation ) const
+Qgis::RasterColorInterpretation QgsGdalProviderBase::colorInterpretationFromGdal( const GDALColorInterp gdalColorInterpretation ) const
 {
   switch ( gdalColorInterpretation )
   {
     case GCI_GrayIndex:
-      return QgsRaster::GrayIndex;
+      return Qgis::RasterColorInterpretation::GrayIndex;
     case GCI_PaletteIndex:
-      return QgsRaster::PaletteIndex;
+      return Qgis::RasterColorInterpretation::PaletteIndex;
     case GCI_RedBand:
-      return QgsRaster::RedBand;
+      return Qgis::RasterColorInterpretation::RedBand;
     case GCI_GreenBand:
-      return QgsRaster::GreenBand;
+      return Qgis::RasterColorInterpretation::GreenBand;
     case GCI_BlueBand:
-      return QgsRaster::BlueBand;
+      return Qgis::RasterColorInterpretation::BlueBand;
     case GCI_AlphaBand:
-      return QgsRaster::AlphaBand;
+      return Qgis::RasterColorInterpretation::AlphaBand;
     case GCI_HueBand:
-      return QgsRaster::HueBand;
+      return Qgis::RasterColorInterpretation::HueBand;
     case GCI_SaturationBand:
-      return QgsRaster::SaturationBand;
+      return Qgis::RasterColorInterpretation::SaturationBand;
     case GCI_LightnessBand:
-      return QgsRaster::LightnessBand;
+      return Qgis::RasterColorInterpretation::LightnessBand;
     case GCI_CyanBand:
-      return QgsRaster::CyanBand;
+      return Qgis::RasterColorInterpretation::CyanBand;
     case GCI_MagentaBand:
-      return QgsRaster::MagentaBand;
+      return Qgis::RasterColorInterpretation::MagentaBand;
     case GCI_YellowBand:
-      return QgsRaster::YellowBand;
+      return Qgis::RasterColorInterpretation::YellowBand;
     case GCI_BlackBand:
-      return QgsRaster::BlackBand;
+      return Qgis::RasterColorInterpretation::BlackBand;
     case GCI_YCbCr_YBand:
-      return QgsRaster::YCbCr_YBand;
+      return Qgis::RasterColorInterpretation::YCbCr_YBand;
     case GCI_YCbCr_CbBand:
-      return QgsRaster::YCbCr_CbBand;
+      return Qgis::RasterColorInterpretation::YCbCr_CbBand;
     case GCI_YCbCr_CrBand:
-      return QgsRaster::YCbCr_CrBand;
+      return Qgis::RasterColorInterpretation::YCbCr_CrBand;
     case GCI_Undefined:
-      return QgsRaster::UndefinedColorInterpretation;
+      return Qgis::RasterColorInterpretation::Undefined;
   }
-  return QgsRaster::UndefinedColorInterpretation;
+  return Qgis::RasterColorInterpretation::Undefined;
 }
 
 void QgsGdalProviderBase::registerGdalDrivers()
@@ -276,13 +285,59 @@ GDALDatasetH QgsGdalProviderBase::gdalOpen( const QString &uri, unsigned int nOp
     CPLSetThreadLocalConfigOption( "OGR_GPKG_FOREIGN_KEY_CHECK", "NO" );
   }
 
-  GDALDatasetH hDS = GDALOpenEx( encodeGdalUri( parts ).toUtf8().constData(), nOpenFlags, nullptr, papszOpenOptions, nullptr );
+  QString gdalUri = encodeGdalUri( parts );
+  GDALDatasetH hDS = GDALOpenEx( gdalUri.toUtf8().constData(), nOpenFlags, nullptr, papszOpenOptions, nullptr );
+
+  if ( !hDS )
+  {
+    const QString vsiPrefix = parts.value( QStringLiteral( "vsiPrefix" ) ).toString();
+    const QString vsiSuffix = parts.value( QStringLiteral( "vsiSuffix" ) ).toString();
+    if ( vsiSuffix.isEmpty() && ( vsiPrefix == QLatin1String( "/vsizip/" )
+                                  || vsiPrefix == QLatin1String( "/vsigzip/" )
+                                  || vsiPrefix == QLatin1String( "/vsitar/" ) ) )
+    {
+      // in the case that a direct path to a vsi supported archive was specified BUT
+      // no file suffix was given, see if there's only one valid file we could read anyway and
+      // passthrough directly to this
+      char **papszSiblingFiles = VSIReadDirRecursive( gdalUri.toUtf8().constData( ) );
+      if ( papszSiblingFiles )
+      {
+        bool foundMultipleCandidates = false;
+        QString filename;
+        for ( int i = 0; papszSiblingFiles[i]; i++ )
+        {
+          const QString tmpPath = papszSiblingFiles[i];
+          const QString suffix = QFileInfo( tmpPath ).completeSuffix();
+          if ( suffix.endsWith( QLatin1String( "aux.xml" ), Qt::CaseInsensitive ) )
+            continue;
+
+          if ( !filename.isEmpty() )
+          {
+            foundMultipleCandidates = true;
+            break;
+          }
+          filename = tmpPath;
+        }
+        CSLDestroy( papszSiblingFiles );
+
+        if ( !foundMultipleCandidates )
+        {
+          parts.insert( QStringLiteral( "vsiSuffix" ), filename );
+          // try again with suffix
+          gdalUri = encodeGdalUri( parts );
+          hDS = GDALOpenEx( gdalUri.toUtf8().constData(), nOpenFlags, nullptr, papszOpenOptions, nullptr );
+        }
+      }
+    }
+  }
+
   CSLDestroy( papszOpenOptions );
 
   if ( modify_OGR_GPKG_FOREIGN_KEY_CHECK )
   {
     CPLSetThreadLocalConfigOption( "OGR_GPKG_FOREIGN_KEY_CHECK", nullptr );
   }
+
   return hDS;
 }
 
@@ -411,7 +466,12 @@ QString QgsGdalProviderBase::encodeGdalUri( const QVariantMap &parts )
   const QString layerName = parts.value( QStringLiteral( "layerName" ) ).toString();
   const QString authcfg = parts.value( QStringLiteral( "authcfg" ) ).toString();
 
-  QString uri = vsiPrefix + path + vsiSuffix;
+  QString uri = vsiPrefix + path;
+  if ( !vsiSuffix.isEmpty() && !vsiSuffix.startsWith( '/' ) )
+    uri += '/' + vsiSuffix;
+  else
+    uri += vsiSuffix;
+
   if ( !layerName.isEmpty() && uri.endsWith( QLatin1String( "gpkg" ) ) )
     uri = QStringLiteral( "GPKG:%1:%2" ).arg( uri, layerName );
   else if ( !layerName.isEmpty() )

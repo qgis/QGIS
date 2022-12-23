@@ -1,7 +1,0 @@
-Majority Filter
-grid_filter
-QgsProcessingParameterRasterLayer|INPUT|Grid|None|False
-QgsProcessingParameterEnum|MODE|Search Mode|[0] Square;[1] Circle
-QgsProcessingParameterNumber|RADIUS|Radius|QgsProcessingParameterNumber.Integer|1|False|1.0|None
-QgsProcessingParameterNumber|THRESHOLD|Threshold [Percent]|QgsProcessingParameterNumber.Integer|0|False|0.0|None
-QgsProcessingParameterRasterDestination|RESULT|Filtered Grid

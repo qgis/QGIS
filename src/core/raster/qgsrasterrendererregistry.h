@@ -24,7 +24,7 @@
 
 
 #include "qgis_core.h"
-#include "qgsrasterlayer.h" //for DrawingStyle enum
+#include "qgis.h"
 #include <QHash>
 #include <QString>
 
@@ -33,6 +33,8 @@ class QgsRasterInterface;
 class QgsRasterLayer;
 class QgsRasterRenderer;
 class QgsRasterRendererWidget;
+class QgsRasterDataProvider;
+class QgsRectangle;
 
 typedef QgsRasterRenderer *( *QgsRasterRendererCreateFunc )( const QDomElement &, QgsRasterInterface *input );
 typedef QgsRasterRendererWidget *( *QgsRasterRendererWidgetCreateFunc )( QgsRasterLayer *, const QgsRectangle &extent );
@@ -82,7 +84,7 @@ class CORE_EXPORT QgsRasterRendererRegistry
      * Creates a default renderer for a raster drawing style (considering user options such as default contrast enhancement).
      * Caller takes ownership.
     */
-    QgsRasterRenderer *defaultRendererForDrawingStyle( QgsRaster::DrawingStyle drawingStyle, QgsRasterDataProvider *provider ) const;
+    QgsRasterRenderer *defaultRendererForDrawingStyle( Qgis::RasterDrawingStyle drawingStyle, QgsRasterDataProvider *provider ) const;
 
   private:
     QHash< QString, QgsRasterRendererRegistryEntry > mEntries;

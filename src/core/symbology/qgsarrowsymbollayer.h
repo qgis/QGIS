@@ -52,6 +52,7 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
     bool hasDataDefinedProperties() const override;
     bool usesMapUnits() const override;
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
 
     //! Gets current arrow width
     double arrowWidth() const { return mArrowWidth; }

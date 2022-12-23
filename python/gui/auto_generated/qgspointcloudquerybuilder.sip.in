@@ -1,0 +1,59 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgspointcloudquerybuilder.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+class QgsPointCloudQueryBuilder : QgsSubsetStringEditorInterface
+{
+%Docstring(signature="appended")
+Query Builder for layers.
+
+The query builder allows interactive creation of an expression for limiting the
+points displayed in a point cloud layer. The point attributes are displayed and
+value ranges can be viewed to aid in constructing the expression.
+A test function checks that the typed expression is valid.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudquerybuilder.h"
+%End
+  public:
+
+    QgsPointCloudQueryBuilder( QgsPointCloudLayer *layer, QWidget *parent /TransferThis/ = 0,
+                               Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+%Docstring
+This constructor is used when the query builder is called from the
+layer properties dialog
+
+:param layer: existing point cloud layer
+:param parent: Parent widget
+:param fl: dialog flags
+%End
+
+    virtual void showEvent( QShowEvent *event );
+
+
+    virtual QString subsetString() const;
+    virtual void setSubsetString( const QString &subsetString );
+
+
+  public slots:
+    virtual void accept();
+
+    virtual void reject();
+
+
+};
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgspointcloudquerybuilder.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

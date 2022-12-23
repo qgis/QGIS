@@ -85,7 +85,9 @@ bool QgsVectorLayerJoinBuffer::addJoin( const QgsVectorLayerJoinInfo &joinInfo )
     connectJoinedLayer( vl );
   }
 
+  locker.unlock();
   mLayer->updateFields();
+  locker.relock();
 
   //cache joined layer to virtual memory if specified by user
   if ( joinInfo.isUsingMemoryCache() )
@@ -622,7 +624,7 @@ bool QgsVectorLayerJoinBuffer::addFeatures( QgsFeatureList &features, QgsFeature
             if ( field.name() == info.joinFieldName() )
               continue;
 
-            if ( !joinFeature.attribute( field.name() ).isNull() )
+            if ( !QgsVariantUtils::isNull( joinFeature.attribute( field.name() ) ) )
             {
               notNullFields = true;
               break;

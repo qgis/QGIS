@@ -1,6 +1,0 @@
-Water Retention Capacity
-sim_hydrology
-QgsProcessingParameterFeatureSource|SHAPES|Plot Holes|-1|None|False
-QgsProcessingParameterRasterLayer|DEM|DEM|None|False
-QgsProcessingParameterVectorDestination|OUTPUT|Final Parameters
-QgsProcessingParameterRasterDestination|RETENTION|Water Retention Capacity

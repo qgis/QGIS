@@ -1350,9 +1350,7 @@ void QgsLayoutItem::preparePainter( QPainter *painter )
 
   painter->setRenderHint( QPainter::Antialiasing, shouldDrawAntialiased() );
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
   painter->setRenderHint( QPainter::LosslessImageRendering, mLayout && mLayout->renderContext().testFlag( QgsLayoutRenderContext::FlagLosslessImageRendering ) );
-#endif
 }
 
 bool QgsLayoutItem::shouldDrawAntialiased() const

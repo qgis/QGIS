@@ -60,8 +60,23 @@ QgsProcessingHelpEditorWidget::QgsProcessingHelpEditorWidget( QWidget *parent )
   {
     if ( !mCurrentName.isEmpty() )
     {
-      mHelpContent[ mCurrentName] = mTextEdit->toPlainText();
-      updateHtmlView();
+      if ( mEditStackedWidget->currentWidget() == mPagePlainText )
+      {
+        mHelpContent[ mCurrentName] = mTextEdit->toPlainText();
+        updateHtmlView();
+      }
+    }
+  } );
+
+  connect( mRichTextEdit, &QgsRichTextEditor::textChanged, this, [ = ]
+  {
+    if ( !mCurrentName.isEmpty() )
+    {
+      if ( mEditStackedWidget->currentWidget() == mPageRichEdit )
+      {
+        mHelpContent[ mCurrentName] = mRichTextEdit->toHtml();
+        updateHtmlView();
+      }
     }
   } );
 }
@@ -80,9 +95,10 @@ void QgsProcessingHelpEditorWidget::setAlgorithm( const QgsProcessingAlgorithm *
     mHelpContent = model->helpContent();
   }
 
+  mEditStackedWidget->setCurrentWidget( mPageRichEdit );
   if ( mHelpContent.contains( ALGORITHM_DESCRIPTION ) )
   {
-    mTextEdit->setText( mHelpContent.value( ALGORITHM_CREATOR ).toString() );
+    mRichTextEdit->setText( mHelpContent.value( ALGORITHM_DESCRIPTION ).toString() );
   }
 
   mElementTree->addTopLevelItem( new QgsProcessingHelpEditorTreeItem( ALGORITHM_DESCRIPTION, tr( "Algorithm description" ) ) );
@@ -120,9 +136,7 @@ void QgsProcessingHelpEditorWidget::setAlgorithm( const QgsProcessingAlgorithm *
 
 QVariantMap QgsProcessingHelpEditorWidget::helpContent()
 {
-  if ( !mCurrentName.isEmpty() )
-    mHelpContent[ mCurrentName] = mTextEdit->toPlainText();
-
+  storeCurrentValue();
   return mHelpContent;
 }
 
@@ -135,27 +149,43 @@ void QgsProcessingHelpEditorWidget::changeItem( QTreeWidgetItem *, QTreeWidgetIt
 {
   if ( QgsProcessingHelpEditorTreeItem *item = dynamic_cast< QgsProcessingHelpEditorTreeItem *>( mElementTree->currentItem() ) )
   {
-    if ( !mCurrentName.isEmpty() )
-    {
-      mHelpContent[ mCurrentName] = mTextEdit->toPlainText();
-    }
+    storeCurrentValue();
 
     const QString name = item->name;
     if ( !name.isEmpty() )
     {
       mTextEdit->setEnabled( true );
+      mRichTextEdit->setEnabled( true );
+
       updateHtmlView();
       mCurrentName = name;
-      if ( mHelpContent.contains( name ) )
-        mTextEdit->setText( mHelpContent[name].toString() );
+
+      const bool useRichTextEdit = name == ALGORITHM_EXAMPLES || name == ALGORITHM_DESCRIPTION;
+      if ( useRichTextEdit )
+      {
+        mEditStackedWidget->setCurrentWidget( mPageRichEdit );
+        if ( mHelpContent.contains( name ) )
+          mRichTextEdit->setText( mHelpContent.value( name ).toString() );
+        else
+          mRichTextEdit->setText( QString() );
+      }
       else
-        mTextEdit->clear();
+      {
+        mEditStackedWidget->setCurrentWidget( mPagePlainText );
+        if ( mHelpContent.contains( name ) )
+          mTextEdit->setText( mHelpContent.value( name ).toString() );
+        else
+          mTextEdit->clear();
+      }
     }
     else
     {
       mCurrentName.clear();
       mTextEdit->clear();
+      mRichTextEdit->setText( QString() );
       mTextEdit->setEnabled( false );
+      mRichTextEdit->setEnabled( false );
+      mEditStackedWidget->setCurrentWidget( mPagePlainText );
       updateHtmlView();
     }
   }
@@ -169,17 +199,14 @@ QString QgsProcessingHelpEditorWidget::formattedHelp() const
   return QgsProcessingUtils::formatHelpMapAsHtml( mHelpContent, mAlgorithm.get() );
 }
 
-QString QgsProcessingHelpEditorWidget::helpComponent( const QString &name ) const
+void QgsProcessingHelpEditorWidget::storeCurrentValue()
 {
-  if ( mHelpContent.contains( name ) )
+  if ( !mCurrentName.isEmpty() )
   {
-    QString component = mHelpContent.value( name ).toString();
-    component.replace( '\n', QStringLiteral( "<br>" ) );
-    return component;
-  }
-  else
-  {
-    return QString();
+    if ( mEditStackedWidget->currentWidget() == mPagePlainText )
+      mHelpContent[ mCurrentName] = mTextEdit->toPlainText();
+    else
+      mHelpContent[ mCurrentName] = mRichTextEdit->toHtml();
   }
 }
 

@@ -1,5 +1,0 @@
-Polygon Parts to Separate Polygons
-shapes_polygons
-QgsProcessingParameterFeatureSource|POLYGONS|Polygons|2|None|False
-QgsProcessingParameterBoolean|LAKES         |Ignore Lakes|True
-QgsProcessingParameterVectorDestination|PARTS|Polygon Parts

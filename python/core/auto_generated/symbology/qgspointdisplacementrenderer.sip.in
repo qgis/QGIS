@@ -176,7 +176,7 @@ Creates a QgsPointDisplacementRenderer from an existing renderer.
   private:
     QgsPointDisplacementRenderer( const QgsPointDisplacementRenderer & );
     QgsPointDisplacementRenderer &operator=( const QgsPointDisplacementRenderer & );
-    virtual void drawGroup( QPointF centerPoint, QgsRenderContext &context, const QgsPointDistanceRenderer::ClusteredGroup &group );
+    virtual void drawGroup( QPointF centerPoint, QgsRenderContext &context, const QgsPointDistanceRenderer::ClusteredGroup &group ) const;
 
 };
 

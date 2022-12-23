@@ -42,7 +42,7 @@ class TestQgsSettings(unittest.TestCase):
     def tearDown(self):
         settings_file = self.settings.fileName()
         settings_default_file = self.settings.globalSettingsPath()
-        del(self.settings)
+        del self.settings
         try:
             os.unlink(settings_file)
         except:

@@ -107,6 +107,22 @@ Sets whether the instance is valid
 .. versionadded:: 3.22
 %End
 
+    bool alwaysLoadReferenceTimeFromSource() const;
+%Docstring
+Returns whether the time proporties are automatically reloaded from provider when project is opened or layer is reloaded
+
+.. versionadded:: 3.28
+%End
+
+    void setAlwaysLoadReferenceTimeFromSource( bool autoReloadFromProvider );
+%Docstring
+Sets whether the time proporties are automatically reloaded from provider when project is opened or layer is reloaded
+
+:param autoReloadFromProvider: whether the time proporties is automatically reloaded
+
+.. versionadded:: 3.28
+%End
+
 };
 
 /************************************************************************

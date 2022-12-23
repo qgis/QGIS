@@ -38,6 +38,7 @@
 #include "qgsauthmanager.h"
 #include "qgsauthtrustedcasdialog.h"
 #include "qgslogger.h"
+#include "qgsvariantutils.h"
 
 QgsAuthAuthoritiesEditor::QgsAuthAuthoritiesEditor( QWidget *parent )
   : QWidget( parent )
@@ -77,14 +78,14 @@ QgsAuthAuthoritiesEditor::QgsAuthAuthoritiesEditor( QWidget *parent )
     connect( btnViewRefresh, &QAbstractButton::clicked, this, &QgsAuthAuthoritiesEditor::refreshCaCertsView );
 
     const QVariant cafileval = QgsApplication::authManager()->authSetting( QStringLiteral( "cafile" ) );
-    if ( !cafileval.isNull() )
+    if ( !QgsVariantUtils::isNull( cafileval ) )
     {
       leCaFile->setText( cafileval.toString() );
     }
 
     btnGroupByOrg->setChecked( false );
     const QVariant sortbyval = QgsApplication::authManager()->authSetting( QStringLiteral( "casortby" ), QVariant( false ) );
-    if ( !sortbyval.isNull() )
+    if ( !QgsVariantUtils::isNull( sortbyval ) )
       btnGroupByOrg->setChecked( sortbyval.toBool() );
 
     mDefaultTrustPolicy = QgsApplication::authManager()->defaultCertTrustPolicy();

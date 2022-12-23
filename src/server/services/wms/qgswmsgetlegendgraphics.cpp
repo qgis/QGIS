@@ -22,14 +22,13 @@
 #include "qgslegendrenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeaturecounter.h"
-#include "qgssymbollayerutils.h"
-#include "qgsmaplayerlegend.h"
 
 #include "qgswmsutils.h"
 #include "qgswmsrequest.h"
 #include "qgswmsserviceexception.h"
 #include "qgswmsgetlegendgraphics.h"
 #include "qgswmsrenderer.h"
+#include "qgsserverprojectutils.h"
 
 #include <QImage>
 #include <QJsonObject>
@@ -77,15 +76,20 @@ namespace QgsWms
     {
       switch ( parseImageFormat( parameters.formatAsString() ) )
       {
-        case PNG:
-        case PNG8:
-        case PNG16:
-        case PNG1:
+        case ImageOutputFormat::PNG:
+        case ImageOutputFormat::PNG8:
+        case ImageOutputFormat::PNG16:
+        case ImageOutputFormat::PNG1:
           format = QgsWmsParameters::Format::PNG;
           imageContentType = "image/png";
           imageSaveFormat = "PNG";
           break;
-        default:
+        case ImageOutputFormat::Unknown:
+          break;
+
+        // not possible
+        case QgsWms::ImageOutputFormat::JPEG:
+        case QgsWms::ImageOutputFormat::WEBP:
           break;
       }
     }
@@ -115,7 +119,8 @@ namespace QgsWms
     QgsRenderer renderer( context );
 
     // retrieve legend settings and model
-    std::unique_ptr<QgsLayerTree> tree( layerTree( context ) );
+    bool addLegendGroups = QgsServerProjectUtils::wmsAddLegendGroupsLegendGraphic( *project ) || parameters.addLayerGroups();
+    std::unique_ptr<QgsLayerTree> tree( addLegendGroups ? layerTreeWithGroups( context, QgsProject::instance()->layerTreeRoot() ) : layerTree( context ) );
     const std::unique_ptr<QgsLayerTreeModel> model( legendModel( context, *tree.get() ) );
 
     // rendering
@@ -338,6 +343,40 @@ namespace QgsWms
     for ( QgsVectorLayerFeatureCounter *counter : counters )
     {
       counter->waitForFinished();
+    }
+
+    return tree.release();
+  }
+
+  QgsLayerTree *layerTreeWithGroups( const QgsWmsRenderContext &context, QgsLayerTree *projectRoot )
+  {
+    if ( !projectRoot )
+    {
+      return 0;
+    }
+
+    std::unique_ptr<QgsLayerTree> tree( new QgsLayerTree() );
+
+    QgsWmsParameters wmsParams = context.parameters();
+    QStringList layerNicknames = wmsParams.allLayersNickname();
+    for ( int i = 0; i < layerNicknames.size(); ++i )
+    {
+      QString nickname = layerNicknames.at( i );
+
+      //single layer
+      QgsMapLayer *layer = context.layer( nickname );
+      if ( layer )
+      {
+        tree->addLayer( layer );
+      }
+      else //nickname refers to a group
+      {
+        QgsLayerTreeGroup *group = projectRoot->findGroup( nickname );
+        if ( group )
+        {
+          tree->insertChildNode( i, group->clone() );
+        }
+      }
     }
 
     return tree.release();

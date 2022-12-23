@@ -37,7 +37,7 @@
  * \note This class is not a part of public API
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsLayoutLegendWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutLegendWidgetBase
+class GUI_EXPORT QgsLayoutLegendWidget: public QgsLayoutItemBaseWidget, public QgsExpressionContextGenerator, private Ui::QgsLayoutLegendWidgetBase
 {
     Q_OBJECT
 
@@ -45,14 +45,14 @@ class GUI_EXPORT QgsLayoutLegendWidget: public QgsLayoutItemBaseWidget, private 
     //! constructor
     explicit QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMapCanvas *mapCanvas );
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
-
+    void setDesignerInterface( QgsLayoutDesignerInterface *iface ) override;
     //! Updates the legend layers and groups
     void updateLegend();
 
     //! Returns the legend item associated to this widget
     QgsLayoutItemLegend *legend() { return mLegend; }
     void setReportTypeString( const QString &string ) override;
-
+    QgsExpressionContext createExpressionContext() const override;
   public slots:
     //! Reset a layer node to the default settings
     void resetLayerNodeToDefaults();
@@ -87,10 +87,8 @@ class GUI_EXPORT QgsLayoutLegendWidget: public QgsLayoutItemBaseWidget, private 
     void mLayerSpaceSpinBox_valueChanged( double d );
     void mSymbolSpaceSpinBox_valueChanged( double d );
     void mIconLabelSpaceSpinBox_valueChanged( double d );
-    void mFontColorButton_colorChanged( const QColor &newFontColor );
     void mBoxSpaceSpinBox_valueChanged( double d );
     void mColumnSpaceSpinBox_valueChanged( double d );
-    void mLineSpacingSpinBox_valueChanged( double d );
     void mCheckBoxAutoUpdate_stateChanged( int state, bool userTriggered = true );
     void composerMapChanged( QgsLayoutItem *item );
     void mCheckboxResizeContents_toggled( bool checked );

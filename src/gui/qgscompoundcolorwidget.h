@@ -16,11 +16,12 @@
 #ifndef QGSCOMPOUNDCOLORWIDGET_H
 #define QGSCOMPOUNDCOLORWIDGET_H
 
-#include "qgsguiutils.h"
 #include "qgis_sip.h"
 #include "qgspanelwidget.h"
 #include "ui_qgscompoundcolorwidget.h"
 #include "qgis_gui.h"
+
+class QgsScreenHelper;
 
 /**
  * \ingroup gui
@@ -176,6 +177,8 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
   private:
 
     static QScreen *findScreenAt( QPoint pos );
+
+    QgsScreenHelper *mScreenHelper = nullptr;
 
     bool mAllowAlpha = true;
 

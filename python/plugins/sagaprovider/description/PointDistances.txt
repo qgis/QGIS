@@ -1,9 +1,0 @@
-Point Distances
-shapes_points
-QgsProcessingParameterFeatureSource|POINTS|Points|0|None|False
-QgsProcessingParameterField|ID_POINTS|Identifier|None|POINTS|-1|False|False
-QgsProcessingParameterFeatureSource|NEAR|Near Points|0|None|True
-QgsProcessingParameterField|ID_NEAR|Identifier|None|NEAR|-1|False|True
-QgsProcessingParameterEnum|FORMAT|Output Format|[0] complete input times near points matrix;[1] each pair with a single record|False|1
-QgsProcessingParameterNumber|MAX_DIST|Maximum Distance|QgsProcessingParameterNumber.Double|0.000000|False|0.000000|None
-QgsProcessingParameterVectorDestination|DISTANCES|Distances|5|None|False

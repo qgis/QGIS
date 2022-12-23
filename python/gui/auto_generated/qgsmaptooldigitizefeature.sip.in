@@ -52,6 +52,9 @@ Change the layer edited by the map tool
     virtual void deactivate();
 
 
+    virtual void keyPressEvent( QKeyEvent *e );
+
+
   signals:
 
     void digitizingCompleted( const QgsFeature &feature );
@@ -65,6 +68,13 @@ Emitted whenever the digitizing has been successfully completed
 %Docstring
 Emitted whenever the digitizing has been ended without digitizing
 any feature
+%End
+
+    void digitizingCanceled();
+%Docstring
+Emitted when the digitizing process was interrupted by the user.
+
+.. versionadded:: 3.28
 %End
 
   protected:

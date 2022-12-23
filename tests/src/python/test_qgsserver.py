@@ -49,6 +49,7 @@ from utilities import unitTestDataPath
 import osgeo.gdal  # NOQA
 import tempfile
 import base64
+from shutil import copytree
 
 
 start_app()
@@ -77,7 +78,10 @@ class QgsServerTestBase(unittest.TestCase):
         for diff in difflib.unified_diff([l.decode('utf8') for l in expected_lines], [l.decode('utf8') for l in response_lines]):
             diffs.append(diff)
 
-        self.assertEqual(len(expected_lines), len(response_lines), "Expected and response have different number of lines!\n{}\n{}".format(msg, '\n'.join(diffs)))
+        self.assertEqual(
+            len(expected_lines),
+            len(response_lines),
+            "Expected and response have different number of lines!\n{}\n{}\nWe got :\n{}".format(msg, '\n'.join(diffs), '\n'.join([i.decode("utf-8") for i in response_lines])))
         for expected_line in expected_lines:
             expected_line = expected_line.strip()
             response_line = response_lines[line_no - 1].strip()
@@ -109,14 +113,47 @@ class QgsServerTestBase(unittest.TestCase):
                 self.assertEqual(expected_values, response_values, msg=msg + "\nXML attribute values differ at line {0}: {1} != {2}".format(line_no, expected_values, response_values))
             line_no += 1
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         """Create the server instance"""
         self.fontFamily = QgsFontUtils.standardTestFontFamily()
         QgsFontUtils.loadStandardTestFonts(['All'])
 
-        self.testdata_path = unitTestDataPath('qgis_server') + '/'
+        self.temporary_dir = tempfile.TemporaryDirectory()
+        self.temporary_path = self.temporary_dir.name
 
-        d = unitTestDataPath('qgis_server_accesscontrol') + '/'
+        # Copy all testdata to the temporary directory
+        copytree(unitTestDataPath('qgis_server'), os.path.join(self.temporary_path, 'qgis_server'))
+        copytree(unitTestDataPath('qgis_server_accesscontrol'), os.path.join(self.temporary_path, 'qgis_server_accesscontrol'))
+
+        for f in [
+            'empty_spatial_layer.dbf',
+            'empty_spatial_layer.prj',
+            'empty_spatial_layer.qpj',
+            'empty_spatial_layer.shp',
+            'empty_spatial_layer.shx',
+            'france_parts.dbf',
+            'france_parts.prj',
+            'france_parts.qpj',
+            'france_parts.shp',
+            'france_parts.shp.xml',
+            'france_parts.shx',
+            'landsat.tif',
+            'points.dbf',
+            'points.prj',
+            'points.shp',
+            'points.shx',
+            'requires_warped_vrt.tif',
+        ]:
+            os.symlink(
+                unitTestDataPath(f),
+                os.path.join(self.temporary_path, f)
+            )
+
+        self.testdata_path = os.path.join(self.temporary_path, 'qgis_server') + '/'
+
+        d = os.path.join(self.temporary_path, 'qgis_server_accesscontrol')
+
         self.projectPath = os.path.join(d, "project.qgs")
         self.projectAnnotationPath = os.path.join(d, "project_with_annotations.qgs")
         self.projectStatePath = os.path.join(d, "project_state.qgs")
@@ -136,14 +173,17 @@ class QgsServerTestBase(unittest.TestCase):
         # Disable landing page API to test standard legacy XML responses in case of errors
         os.environ["QGIS_SERVER_DISABLED_APIS"] = "Landing Page"
 
-    def tearDown(self):
+    @classmethod
+    def tearDownClass(self):
         """Cleanup env"""
 
-        super().tearDown()
+        super().tearDownClass()
         try:
             del os.environ["QGIS_SERVER_DISABLED_APIS"]
         except KeyError:
             pass
+
+        self.temporary_dir.cleanup()
 
     def strip_version_xmlns(self, text):
         """Order of attributes is random, strip version and xmlns"""
@@ -303,7 +343,7 @@ class QgsServerTestBase(unittest.TestCase):
     def _assertBlack(self, color: QColor):
         self.assertEqual(color.red(), 0)
         self.assertEqual(color.green(), 0)
-        self.assertEqual(color.blue(), 255)
+        self.assertEqual(color.blue(), 0)
 
     def _assertWhite(self, color: QColor):
         self.assertEqual(color.red(), 255)
@@ -377,8 +417,8 @@ class TestQgsServer(QgsServerTestBase):
         request = QgsBufferServerRequest('http://somesite.com/somepath', QgsServerRequest.GetMethod, headers)
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response)
-        self.assertEqual(bytes(response.body()), b'<ServerException>Project file error. For OWS services: please provide a SERVICE and a MAP parameter pointing to a valid QGIS project file</ServerException>\n')
-        self.assertEqual(response.headers(), {'Content-Length': '156', 'Content-Type': 'text/xml; charset=utf-8'})
+        self.assertEqual(bytes(response.body()), b'<?xml version="1.0" encoding="UTF-8"?>\n<ServerException>Project file error. For OWS services: please provide a SERVICE and a MAP parameter pointing to a valid QGIS project file</ServerException>\n')
+        self.assertEqual(response.headers(), {'Content-Length': '195', 'Content-Type': 'text/xml; charset=utf-8'})
         self.assertEqual(response.statusCode(), 500)
 
     def test_requestHandlerProject(self):
@@ -387,8 +427,8 @@ class TestQgsServer(QgsServerTestBase):
         request = QgsBufferServerRequest('http://somesite.com/somepath', QgsServerRequest.GetMethod, headers)
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response, None)
-        self.assertEqual(bytes(response.body()), b'<ServerException>Project file error. For OWS services: please provide a SERVICE and a MAP parameter pointing to a valid QGIS project file</ServerException>\n')
-        self.assertEqual(response.headers(), {'Content-Length': '156', 'Content-Type': 'text/xml; charset=utf-8'})
+        self.assertEqual(bytes(response.body()), b'<?xml version="1.0" encoding="UTF-8"?>\n<ServerException>Project file error. For OWS services: please provide a SERVICE and a MAP parameter pointing to a valid QGIS project file</ServerException>\n')
+        self.assertEqual(response.headers(), {'Content-Length': '195', 'Content-Type': 'text/xml; charset=utf-8'})
         self.assertEqual(response.statusCode(), 500)
 
     def test_api(self):
@@ -397,9 +437,9 @@ class TestQgsServer(QgsServerTestBase):
         # Test as a whole
         header, body = self._execute_request("")
         response = self.strip_version_xmlns(header + body)
-        expected = self.strip_version_xmlns(b'Content-Length: 156\nContent-Type: text/xml; charset=utf-8\n\n<ServerException>Project file error. For OWS services: please provide a SERVICE and a MAP parameter pointing to a valid QGIS project file</ServerException>\n')
+        expected = self.strip_version_xmlns(b'Content-Length: 195\nContent-Type: text/xml; charset=utf-8\n\n<?xml version="1.0" encoding="UTF-8"?>\n<ServerException>Project file error. For OWS services: please provide a SERVICE and a MAP parameter pointing to a valid QGIS project file</ServerException>\n')
         self.assertEqual(response, expected)
-        expected = b'Content-Length: 156\nContent-Type: text/xml; charset=utf-8\n\n'
+        expected = b'Content-Length: 195\nContent-Type: text/xml; charset=utf-8\n\n'
         self.assertEqual(header, expected)
 
         # Test response when project is specified but without service
@@ -407,13 +447,13 @@ class TestQgsServer(QgsServerTestBase):
         qs = '?MAP=%s' % (urllib.parse.quote(project))
         header, body = self._execute_request(qs)
         response = self.strip_version_xmlns(header + body)
-        expected = self.strip_version_xmlns(b'Content-Length: 326\nContent-Type: text/xml; charset=utf-8\n\n<ServiceExceptionReport  >\n <ServiceException code="Service configuration error">Service unknown or unsupported. Current supported services (case-sensitive): WMS WFS WCS WMTS SampleService, or use a WFS3 (OGC API Features) endpoint</ServiceException>\n</ServiceExceptionReport>\n')
+        expected = self.strip_version_xmlns(b'Content-Length: 365\nContent-Type: text/xml; charset=utf-8\n\n<?xml version="1.0" encoding="UTF-8"?>\n<ServiceExceptionReport  >\n <ServiceException code="Service configuration error">Service unknown or unsupported. Current supported services (case-sensitive): WMS WFS WCS WMTS SampleService, or use a WFS3 (OGC API Features) endpoint</ServiceException>\n</ServiceExceptionReport>\n')
         self.assertEqual(response, expected)
-        expected = b'Content-Length: 326\nContent-Type: text/xml; charset=utf-8\n\n'
+        expected = b'Content-Length: 365\nContent-Type: text/xml; charset=utf-8\n\n'
         self.assertEqual(header, expected)
 
         # Test body
-        expected = self.strip_version_xmlns(b'<ServiceExceptionReport  >\n <ServiceException code="Service configuration error">Service unknown or unsupported. Current supported services (case-sensitive): WMS WFS WCS WMTS SampleService, or use a WFS3 (OGC API Features) endpoint</ServiceException>\n</ServiceExceptionReport>\n')
+        expected = self.strip_version_xmlns(b'<?xml version="1.0" encoding="UTF-8"?>\n<ServiceExceptionReport  >\n <ServiceException code="Service configuration error">Service unknown or unsupported. Current supported services (case-sensitive): WMS WFS WCS WMTS SampleService, or use a WFS3 (OGC API Features) endpoint</ServiceException>\n</ServiceExceptionReport>\n')
         self.assertEqual(self.strip_version_xmlns(body), expected)
 
     # WCS tests

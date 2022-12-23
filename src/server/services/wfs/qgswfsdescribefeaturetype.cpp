@@ -236,7 +236,8 @@ namespace QgsWfs
 
       //xsd:element
       QDomElement attElem = doc.createElement( QStringLiteral( "element" )/*xsd:element*/ );
-      attElem.setAttribute( QStringLiteral( "name" ), attributeName.replace( ' ', '_' ).replace( cleanTagNameRegExp, QString() ) );
+      const thread_local QRegularExpression sCleanTagNameRegExp( QStringLiteral( "[^\\w\\.-_]" ), QRegularExpression::PatternOption::UseUnicodePropertiesOption );
+      attElem.setAttribute( QStringLiteral( "name" ), attributeName.replace( ' ', '_' ).replace( sCleanTagNameRegExp, QString() ) );
       const QVariant::Type attributeType = field.type();
       if ( attributeType == QVariant::Int )
       {
@@ -285,12 +286,18 @@ namespace QgsWfs
       const QgsEditorWidgetSetup setup = field.editorWidgetSetup();
       if ( setup.type() ==  QStringLiteral( "DateTime" ) )
       {
+        // Get editor widget setup config
         const QVariantMap config = setup.config();
-        const QString fieldFormat = config.value( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( field.type() ) ).toString();
-        if ( fieldFormat == QLatin1String( "yyyy-MM-dd" ) )
-          attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "date" ) );
-        else if ( fieldFormat == QLatin1String( "HH:mm:ss" ) )
+        // Get field format from editor widget setup config
+        const QString fieldFormat = config.value(
+                                      QStringLiteral( "field_format" ),
+                                      QgsDateTimeFieldFormatter::defaultFormat( field.type() )
+                                    ).toString();
+        // Define type from field format
+        if ( fieldFormat == QgsDateTimeFieldFormatter::TIME_FORMAT ) // const TIME_FORMAT
           attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "time" ) );
+        else if ( fieldFormat == QLatin1String( "yyyy-MM-dd" ) ) // QgsDateTimeFieldFormatter provide a local date format
+          attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "date" ) );
         else
           attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "dateTime" ) );
       }

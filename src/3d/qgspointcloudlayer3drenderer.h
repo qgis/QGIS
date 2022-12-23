@@ -20,7 +20,7 @@
 #include "qgis_sip.h"
 
 #include "qgs3drendererregistry.h"
-#include "qgsabstract3drenderer.h"
+#include "qgsabstractpointcloud3drenderer.h"
 #include "qgsmaplayerref.h"
 #include "qgsfeedback.h"
 #include <QObject>
@@ -111,6 +111,8 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
       switch ( type )
       {
         case QgsPointCloudAttribute::UChar:
+          value = *reinterpret_cast< const unsigned char * >( data + offset );
+          return;
         case QgsPointCloudAttribute::Char:
           value = *( data + offset );
           return;
@@ -225,7 +227,7 @@ class _3D_EXPORT QgsPointCloudLayer3DRendererMetadata : public Qgs3DRendererAbst
  *
  * \since QGIS 3.18
  */
-class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstract3DRenderer
+class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstractPointCloud3DRenderer
 {
   public:
     //! Takes ownership of the symbol object
@@ -295,12 +297,14 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstract3DRenderer
      */
     void setPointRenderingBudget( int budget );
 
+    bool convertFrom2DRenderer( QgsPointCloudRenderer *renderer ) override;
+
   private:
     QgsMapLayerRef mLayerRef; //!< Layer used to extract mesh data from
     std::unique_ptr< QgsPointCloud3DSymbol > mSymbol;
-    double mMaximumScreenError = 1.0;
+    double mMaximumScreenError = 3.0;
     bool mShowBoundingBoxes = false;
-    int mPointBudget = 1000000;
+    int mPointBudget = 5000000;
 
   private:
 #ifdef SIP_RUN

@@ -1,6 +1,6 @@
 /***************************************************************************
     qgspostgresdataitems.cpp
-    ---------------------
+  --------------------
     begin                : October 2011
     copyright            : (C) 2011 by Martin Dobias
     email                : wonder dot sk at gmail dot com
@@ -29,12 +29,14 @@
 #include "qgsvectorlayerexporter.h"
 #include "qgsprojectitem.h"
 #include "qgsfieldsitem.h"
+#include "qgsproviderregistry.h"
 #include <QMessageBox>
 #include <climits>
+#include <qgsabstractdatabaseproviderconnection.h>
 
 bool QgsPostgresUtils::deleteLayer( const QString &uri, QString &errCause )
 {
-  QgsDebugMsgLevel( "deleting layer " + uri, 2 );
+  QgsDebugMsg( "deleting layer " + uri );
 
   QgsDataSourceUri dsUri( uri );
   QString schemaName = dsUri.schema();
@@ -48,7 +50,7 @@ bool QgsPostgresUtils::deleteLayer( const QString &uri, QString &errCause )
   }
   schemaTableName += QgsPostgresConn::quotedIdentifier( tableName );
 
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri, false );
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed" );
@@ -58,12 +60,12 @@ bool QgsPostgresUtils::deleteLayer( const QString &uri, QString &errCause )
   // handle deletion of views
   QString sqlViewCheck = QStringLiteral( "SELECT relkind FROM pg_class WHERE oid=regclass(%1)::oid" )
                          .arg( QgsPostgresConn::quotedValue( schemaTableName ) );
-  QgsPostgresResult resViewCheck( conn->PQexec( sqlViewCheck ) );
+  QgsPostgresResult resViewCheck( conn->LoggedPQexec( "QgsPostgresUtils", sqlViewCheck ) );
   QString type = resViewCheck.PQgetvalue( 0, 0 );
   if ( type == QLatin1String( "v" ) || type == QLatin1String( "m" ) )
   {
     QString sql = QStringLiteral( "DROP %1VIEW %2" ).arg( type == QLatin1String( "m" ) ? QStringLiteral( "MATERIALIZED " ) : QString(), schemaTableName );
-    QgsPostgresResult result( conn->PQexec( sql ) );
+    QgsPostgresResult result( conn->LoggedPQexec( "QgsPostgresUtils", sql ) );
     if ( result.PQresultStatus() != PGRES_COMMAND_OK )
     {
       errCause = QObject::tr( "Unable to delete view %1: \n%2" )
@@ -85,7 +87,7 @@ bool QgsPostgresUtils::deleteLayer( const QString &uri, QString &errCause )
                          "AND f_table_schema=%1 AND f_table_name=%2" )
                 .arg( QgsPostgresConn::quotedValue( schemaName ),
                       QgsPostgresConn::quotedValue( tableName ) );
-  QgsPostgresResult result( conn->PQexec( sql ) );
+  QgsPostgresResult result( conn->LoggedPQexec( "QgsPostgresUtils", sql ) );
   if ( result.PQresultStatus() != PGRES_TUPLES_OK )
   {
     errCause = QObject::tr( "Unable to delete layer %1: \n%2" )
@@ -113,7 +115,7 @@ bool QgsPostgresUtils::deleteLayer( const QString &uri, QString &errCause )
                 QgsPostgresConn::quotedValue( tableName ) );
   }
 
-  result = conn->PQexec( sql );
+  result = conn->LoggedPQexec( "QgsPostgresUtils", sql );
   if ( result.PQresultStatus() != PGRES_TUPLES_OK )
   {
     errCause = QObject::tr( "Unable to delete layer %1: \n%2" )
@@ -129,14 +131,14 @@ bool QgsPostgresUtils::deleteLayer( const QString &uri, QString &errCause )
 
 bool QgsPostgresUtils::deleteSchema( const QString &schema, const QgsDataSourceUri &uri, QString &errCause, bool cascade )
 {
-  QgsDebugMsgLevel( "deleting schema " + schema, 2 );
+  QgsDebugMsg( "deleting schema " + schema );
 
   if ( schema.isEmpty() )
     return false;
 
   QString schemaName = QgsPostgresConn::quotedIdentifier( schema );
 
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo( false ), false );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri, false );
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed" );
@@ -147,7 +149,7 @@ bool QgsPostgresUtils::deleteSchema( const QString &schema, const QgsDataSourceU
   QString sql = QStringLiteral( "DROP SCHEMA %1 %2" )
                 .arg( schemaName, cascade ? QStringLiteral( "CASCADE" ) : QString() );
 
-  QgsPostgresResult result( conn->PQexec( sql ) );
+  QgsPostgresResult result( conn->LoggedPQexec( "QgsPostgresUtils", sql ) );
   if ( result.PQresultStatus() != PGRES_COMMAND_OK )
   {
     errCause = QObject::tr( "Unable to delete schema %1: \n%2" )
@@ -261,8 +263,18 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData *data, const QString &toSc
 
     if ( srcLayer->isValid() )
     {
-      uri.setDataSource( QString(), u.name,  srcLayer->geometryType() != QgsWkbTypes::NullGeometry ? QStringLiteral( "geom" ) : QString() );
-      QgsDebugMsgLevel( "URI " + uri.uri( false ), 2 );
+
+      // Try to get source col from uri
+      QString geomColumn { QStringLiteral( "geom" ) };
+
+      if ( ! srcLayer->dataProvider()->uri().geometryColumn().isEmpty() )
+      {
+        geomColumn = srcLayer->dataProvider()->uri().geometryColumn();
+      }
+
+      uri.setDataSource( QString(), u.name,  srcLayer->geometryType() != QgsWkbTypes::NullGeometry ? geomColumn : QString() );
+
+      QgsDebugMsg( "URI " + uri.uri( false ) );
 
       if ( !toSchema.isNull() )
       {
@@ -365,7 +377,7 @@ QString QgsPGLayerItem::createUri()
   if ( uri.wkbType() != QgsWkbTypes::NoGeometry && mLayerProperty.srids.at( 0 ) != std::numeric_limits<int>::min() )
     uri.setSrid( QString::number( mLayerProperty.srids.at( 0 ) ) );
 
-  QgsDebugMsgLevel( QStringLiteral( "layer uri: %1" ).arg( uri.uri( false ) ), 2 );
+  QgsDebugMsg( QStringLiteral( "layer uri: %1" ).arg( uri.uri( false ) ) );
   return uri.uri( false );
 }
 
@@ -406,6 +418,35 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
 
   const bool dontResolveType = QgsPostgresConn::dontResolveType( mConnectionName );
   const bool estimatedMetadata = QgsPostgresConn::useEstimatedMetadata( mConnectionName );
+  const bool allowMetadataInDatabase = QgsPostgresConn::allowMetadataInDatabase( mConnectionName );
+  // Retrieve metadata for layer items
+  QMap<QString, QgsLayerMetadata> layerMetadata;
+  if ( allowMetadataInDatabase )
+  {
+    QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( "postgres" ) };
+    if ( md )
+    {
+      try
+      {
+        QgsAbstractDatabaseProviderConnection *dbConn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( mConnectionName ) ) };
+        if ( dbConn )
+        {
+          const QList<QgsLayerMetadataProviderResult> results { dbConn->searchLayerMetadata( QgsMetadataSearchContext() ) };
+          for ( const QgsLayerMetadataProviderResult &result : std::as_const( results ) )
+          {
+            const QgsDataSourceUri resUri { result.uri( ) };
+            layerMetadata.insert( QStringLiteral( "%1.%2" ).arg( resUri.schema(), resUri.table() ), static_cast<QgsLayerMetadata>( result ) );
+          }
+        }
+
+      }
+      catch ( const QgsProviderConnectionException & )
+      {
+        // ignore
+      }
+    }
+  }
+
   const auto constLayerProperties = layerProperties;
   for ( QgsPostgresLayerProperty layerProperty : constLayerProperties )
   {
@@ -419,7 +460,7 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
     {
       if ( dontResolveType )
       {
-        QgsDebugMsgLevel( QStringLiteral( "skipping column %1.%2 without type constraint" ).arg( layerProperty.schemaName ).arg( layerProperty.tableName ), 2 );
+        QgsDebugMsgLevel( QStringLiteral( "skipping column %1.%2 without type constraint" ).arg( layerProperty.schemaName, layerProperty.tableName ), 2 );
         continue;
       }
       // If the table is empty there is no way we can retrieve layer types, let's make a copy and restore it
@@ -436,7 +477,18 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
       QgsDataItem *layerItem = nullptr;
       layerItem = createLayer( layerProperty.at( i ) );
       if ( layerItem )
+      {
         items.append( layerItem );
+        // Attach metadata
+        const QString mdKey { QStringLiteral( "%1.%2" ).arg( layerProperty.at( i ).schemaName, layerProperty.at( i ).tableName ) };
+        if ( allowMetadataInDatabase && layerMetadata.contains( mdKey ) )
+        {
+          if ( QgsLayerItem *lItem = static_cast<QgsLayerItem *>( layerItem ) )
+          {
+            lItem->setLayerMetadata( layerMetadata.value( mdKey ) );
+          }
+        }
+      }
     }
   }
 

@@ -338,7 +338,7 @@ Draws a symbol layer preview to a QPicture
 .. versionadded:: 2.9
 %End
 
-    static QIcon symbolLayerPreviewIcon( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid );
+    static QIcon symbolLayerPreviewIcon( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid, QgsMapLayer *mapLayer = 0 );
 %Docstring
 Draws a symbol layer preview to an icon.
 
@@ -347,6 +347,7 @@ Draws a symbol layer preview to an icon.
 :param size: target size of preview icon
 :param scale: map unit scale for preview
 :param parentSymbolType: since QGIS 3.22, can be used to specify the parent symbol type so that geometry generator preview icons are correctly calculated
+:param mapLayer: since QGIS 3.28, can be used to specify the associated map layer so that layer related expressions are correctly calculated
 
 :return: icon containing symbol layer preview
 
@@ -962,7 +963,16 @@ Converts a set of symbol layer id to a set of pointers to actual symbol layers c
 .. versionadded:: 3.12
 %End
 
-    static QgsSymbol *restrictedSizeSymbol( const QgsSymbol *s, double minSize, double maxSize, QgsRenderContext *context, double &width, double &height );
+    static double rendererFrameRate( const QgsFeatureRenderer *renderer );
+%Docstring
+Calculates the frame rate (in frames per second) at which the given ``renderer`` must be redrawn.
+
+Returns -1 if the ``renderer`` is not animated.
+
+.. versionadded:: 3.26
+%End
+
+    static QgsSymbol *restrictedSizeSymbol( const QgsSymbol *s, double minSize, double maxSize, QgsRenderContext *context, double &width, double &height, bool *ok = 0 );
 %Docstring
 Creates a new symbol with size restricted to min/max size if original size is out of min/max range
 
@@ -971,9 +981,13 @@ Creates a new symbol with size restricted to min/max size if original size is ou
 :param maxSize: the maximum size in mm
 :param context: the render context
 :param width: expected width, can be changed by the function
-:param height: expected height, can be changed by this function
+:param height: expected height, can be changed by the function
+:param ok: if not None, ok is set to false if it's not possible to compute a restricted symbol (if geometry generators
+           are involved for instance)
 
-:return: 0 if size is within minSize/maxSize range. New symbol if size was out of min/max range. Caller takes ownership
+:return: None if size is within minSize/maxSize range or if it's not possible to compute a
+         restricted size symbol. New symbol if size was out of min/max range.
+         Caller takes ownership
 %End
 
     static QgsStringMap evaluatePropertiesMap( const QMap<QString, QgsProperty> &propertiesMap, const QgsExpressionContext &context );
@@ -985,8 +999,6 @@ Evaluates a map of properties using the given ``context`` and returns a variant 
 
 
 };
-
-
 
 
 

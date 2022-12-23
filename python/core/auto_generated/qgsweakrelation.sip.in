@@ -1,0 +1,420 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsweakrelation.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+class QgsWeakRelation
+{
+%Docstring(signature="appended")
+The :py:class:`QgsWeakRelation` class represent a :py:class:`QgsRelation` with possibly
+unresolved layers or unmatched fields.
+
+This class is used to store relation information attached to a
+layer style, a method to attempt relation resolution is also
+implemented and can be used to create a :py:class:`QgsRelation` after the
+dependent layers are loaded and available.
+
+In constrast to :py:class:`QgsRelation`, :py:class:`QgsWeakRelation` can be used to encapsulate
+information about a relationship which does not currently exist in a QGIS project.
+E.g. it can be used to represent a relationship which exists in a database
+backend (but not within a QGIS project). Accordingly, some properties
+available in :py:class:`QgsWeakRelation` are included for informational purposes only,
+and cannot be translated to :py:class:`QgsRelations` or respected in QGIS relationships.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsweakrelation.h"
+%End
+  public:
+
+    enum WeakRelationType
+    {
+      Referencing,
+      Referenced
+    };
+
+    QgsWeakRelation();
+%Docstring
+Default constructor for an invalid relation.
+%End
+
+    QgsWeakRelation( const QString &relationId,
+                     const QString &relationName,
+                     const Qgis::RelationshipStrength strength,
+                     const QString &referencingLayerId,
+                     const QString &referencingLayerName,
+                     const QString &referencingLayerSource,
+                     const QString &referencingLayerProviderKey,
+                     const QString &referencedLayerId,
+                     const QString &referencedLayerName,
+                     const QString &referencedLayerSource,
+                     const QString &referencedLayerProviderKey
+                   );
+%Docstring
+Creates a QgsWeakRelation.
+
+.. versionadded:: 3.30
+%End
+
+    QList< QgsRelation > resolvedRelations( const QgsProject *project ) const;
+%Docstring
+Resolves a weak relation in the given ``project`` returning a list of possibly invalid :py:class:`QgsRelations`
+and without performing any kind of validity check.
+
+.. note::
+
+   Client code should never assume that the returned relations are valid and the
+   layer components are not NULL.
+%End
+
+    QString id() const;
+%Docstring
+Returns the relationship's ID.
+
+.. versionadded:: 3.28
+%End
+
+    QString name() const;
+%Docstring
+Returns the relationship's name.
+
+.. versionadded:: 3.28
+%End
+
+
+    QString referencingLayerSource() const;
+%Docstring
+Returns the source URI for the referencing (or "child" / "right") layer.
+
+.. versionadded:: 3.28
+%End
+
+    QString referencingLayerProvider() const;
+%Docstring
+Returns the provider ID for the referencing (or "child" / "right") layer.
+
+.. versionadded:: 3.28
+%End
+
+    QString referencingLayerName() const;
+%Docstring
+Returns the layer name of the referencing (or "child" / "right") layer.
+
+.. note::
+
+   the layer name refers to the layer name used in the datasource, not in any associated
+   :py:class:`QgsVectorLayer`.
+
+.. versionadded:: 3.28
+%End
+
+
+    QString referencedLayerSource() const;
+%Docstring
+Returns the source URI for the referenced (or "parent" / "left") layer.
+
+.. versionadded:: 3.28
+%End
+
+    QString referencedLayerProvider() const;
+%Docstring
+Returns the provider ID for the referenced (or "parent" / "left") layer.
+
+.. versionadded:: 3.28
+%End
+
+    QString referencedLayerName() const;
+%Docstring
+Returns the layer name of the referenced (or "parent" / "left") layer.
+
+.. note::
+
+   the layer name refers to the layer name used in the datasource, not in any associated
+   :py:class:`QgsVectorLayer`.
+
+.. versionadded:: 3.28
+%End
+
+
+
+    QString mappingTableSource() const;
+%Docstring
+Returns the source URI for the mapping table, which forms the middle table in many-to-many relationships.
+
+.. versionadded:: 3.28
+%End
+
+    QString mappingTableProvider() const;
+%Docstring
+Returns the provider ID for the mapping table, which forms the middle table in many-to-many relationships.
+
+.. versionadded:: 3.28
+%End
+
+    QString mappingTableName() const;
+%Docstring
+Returns the layer name of the mapping table, which forms the middle table in many-to-many relationships.
+
+.. note::
+
+   the layer name refers to the layer name used in the datasource, not in any associated
+   :py:class:`QgsVectorLayer`.
+
+.. versionadded:: 3.28
+%End
+
+    QStringList referencingLayerFields() const;
+%Docstring
+Returns the list of fields from the :py:func:`~QgsWeakRelation.referencingLayer` involved in the relationship.
+
+.. versionadded:: 3.28
+%End
+
+    void setReferencingLayerFields( const QStringList &fields );
+%Docstring
+Sets the list of ``fields`` from the :py:func:`~QgsWeakRelation.referencingLayer` involved in the relationship.
+
+.. versionadded:: 3.28
+%End
+
+    QStringList mappingReferencingLayerFields() const;
+%Docstring
+Returns the list of fields from the :py:func:`~QgsWeakRelation.mappingTable` involved in the relationship.
+
+These fields will be matched to the :py:func:`~QgsWeakRelation.referencingLayerFields` in many-to-many joins.
+
+.. versionadded:: 3.28
+%End
+
+    void setMappingReferencingLayerFields( const QStringList &fields );
+%Docstring
+Sets the list of ``fields`` from the :py:func:`~QgsWeakRelation.mappingTable` involved in the relationship.
+
+These fields will be matched to the :py:func:`~QgsWeakRelation.referencingLayerFields` in many-to-many joins.
+
+.. versionadded:: 3.28
+%End
+
+    QStringList referencedLayerFields() const;
+%Docstring
+Returns the list of fields from the :py:func:`~QgsWeakRelation.referencedLayer` involved in the relationship.
+
+.. versionadded:: 3.28
+%End
+
+    void setReferencedLayerFields( const QStringList &fields );
+%Docstring
+Sets the list of ``fields`` from the :py:func:`~QgsWeakRelation.referencedLayer` involved in the relationship.
+
+.. versionadded:: 3.28
+%End
+
+    QStringList mappingReferencedLayerFields() const;
+%Docstring
+Returns the list of fields from the :py:func:`~QgsWeakRelation.mappingTable` involved in the relationship.
+
+These fields will be matched to the :py:func:`~QgsWeakRelation.referencedLayerFields` in many-to-many joins.
+
+.. versionadded:: 3.28
+%End
+
+    void setMappingReferencedLayerFields( const QStringList &fields );
+%Docstring
+Sets the list of ``fields`` from the :py:func:`~QgsWeakRelation.mappingTable` involved in the relationship.
+
+These fields will be matched to the :py:func:`~QgsWeakRelation.referencedLayerFields` in many-to-many joins.
+
+.. versionadded:: 3.28
+%End
+
+    Qgis::RelationshipStrength strength() const;
+%Docstring
+Returns the strength of the relation.
+%End
+
+    Qgis::RelationshipCardinality cardinality() const;
+%Docstring
+Returns the relationship's cardinality.
+
+.. seealso:: :py:func:`setCardinality`
+
+.. versionadded:: 3.28
+%End
+
+    void setCardinality( Qgis::RelationshipCardinality cardinality );
+%Docstring
+Sets the relationship's ``cardinality``.
+
+.. seealso:: :py:func:`cardinality`
+
+.. versionadded:: 3.28
+%End
+
+    QString forwardPathLabel() const;
+%Docstring
+Returns the label of the forward path for the relationship.
+
+The forward and backward path labels are free-form, user-friendly strings
+which can be used to generate descriptions of the relationship between features
+from the right and left tables.
+
+E.g. when the left table contains buildings and the right table contains
+furniture, the forward path label could be "contains" and the backward path
+label could be "is located within". A client could then generate a
+user friendly description string such as "fire hose 1234 is located within building 15a".
+
+.. seealso:: :py:func:`setForwardPathLabel`
+
+.. seealso:: :py:func:`backwardPathLabel`
+
+.. versionadded:: 3.28
+%End
+
+    QString backwardPathLabel() const;
+%Docstring
+Returns the label of the backward path for the relationship.
+
+The forward and backward path labels are free-form, user-friendly strings
+which can be used to generate descriptions of the relationship between features
+from the right and left tables.
+
+E.g. when the left table contains buildings and the right table contains
+furniture, the forward path label could be "contains" and the backward path
+label could be "is located within". A client could then generate a
+user friendly description string such as "fire hose 1234 is located within building 15a".
+
+.. seealso:: :py:func:`setBackwardPathLabel`
+
+.. seealso:: :py:func:`forwardPathLabel`
+
+.. versionadded:: 3.28
+%End
+
+    void setForwardPathLabel( const QString &label );
+%Docstring
+Sets the ``label`` of the forward path for the relationship.
+
+The forward and backward path labels are free-form, user-friendly strings
+which can be used to generate descriptions of the relationship between features
+from the right and left tables.
+
+E.g. when the left table contains buildings and the right table contains
+furniture, the forward path label could be "contains" and the backward path
+label could be "is located within". A client could then generate a
+user friendly description string such as "fire hose 1234 is located within building 15a".
+
+.. seealso:: :py:func:`forwardPathLabel`
+
+.. seealso:: :py:func:`setBackwardPathLabel`
+
+.. versionadded:: 3.28
+%End
+
+    void setBackwardPathLabel( const QString &label );
+%Docstring
+Sets the ``label`` of the backward path for the relationship.
+
+The forward and backward path labels are free-form, user-friendly strings
+which can be used to generate descriptions of the relationship between features
+from the right and left tables.
+
+E.g. when the left table contains buildings and the right table contains
+furniture, the forward path label could be "contains" and the backward path
+label could be "is located within". A client could then generate a
+user friendly description string such as "fire hose 1234 is located within building 15a".
+
+.. seealso:: :py:func:`backwardPathLabel`
+
+.. seealso:: :py:func:`setForwardPathLabel`
+
+.. versionadded:: 3.28
+%End
+
+    QString relatedTableType() const;
+%Docstring
+Returns the type string of the related table.
+
+This a free-form string representing the type of related features, where the
+exact interpretation is format dependent. For instance, table types from GeoPackage
+relationships will directly reflect the categories from the GeoPackage related
+tables extension (i.e. "media", "simple attributes", "features", "attributes" and "tiles").
+
+.. seealso:: :py:func:`setRelatedTableType`
+
+.. versionadded:: 3.28
+%End
+
+    void setRelatedTableType( const QString &type );
+%Docstring
+Sets the ``type`` string of the related table.
+
+This a free-form string representing the type of related features, where the
+exact interpretation is format dependent. For instance, table types from GeoPackage
+relationships will directly reflect the categories from the GeoPackage related
+tables extension (i.e. "media", "simple attributes", "features", "attributes" and "tiles").
+
+.. seealso:: :py:func:`relatedTableType`
+
+.. versionadded:: 3.28
+%End
+
+    static QgsWeakRelation readXml( const QgsVectorLayer *layer, WeakRelationType type, const QDomNode &node, const QgsPathResolver resolver );
+%Docstring
+Returns a weak relation for the given layer.
+
+:param layer: the layer of the weak relation
+:param type: determines if the layer is referencing or referenced
+:param node: the QDomNode
+:param resolver: the path resolver
+
+.. versionadded:: 3.16
+%End
+
+    static void writeXml( const QgsVectorLayer *layer, WeakRelationType type, const QgsRelation &relation, QDomNode &node, QDomDocument &doc );
+%Docstring
+Writes a weak relation infoto an XML structure. Used for saving .qgs projects
+
+:param layer: the layer which we save the weak relation for
+:param type: determines if the layer is referencing or referenced
+:param relation: the relation to save as a weak relation
+:param node: The parent node in which the relation will be created
+:param doc: The document in which the relation will be saved
+
+.. versionadded:: 3.16
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+
+    QString leftIdentifier;
+    if ( !sipCpp->referencedLayer().source.isEmpty() )
+      leftIdentifier = sipCpp->referencedLayer().source;
+
+    QString rightIdentifier;
+    if ( !sipCpp->referencingLayer().source.isEmpty() )
+      rightIdentifier = sipCpp->referencingLayer().source;
+
+    QString str;
+    if ( leftIdentifier.isEmpty() && rightIdentifier.isEmpty() )
+      str = QStringLiteral( "<QgsWeakRelation: %1>" ).arg( sipCpp->id() );
+    else
+      str = QStringLiteral( "<QgsWeakRelation: %1 - %2 -> %3>" ).arg( sipCpp->id(), leftIdentifier, rightIdentifier );
+
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsweakrelation.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

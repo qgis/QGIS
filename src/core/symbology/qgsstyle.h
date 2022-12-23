@@ -163,9 +163,9 @@ class CORE_EXPORT QgsStyle : public QObject
   public:
 
     /**
-     * Constructor for QgsStyle.
+     * Constructor for QgsStyle, with the specified \a parent object.
      */
-    QgsStyle();
+    QgsStyle( QObject *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsStyle() override;
 
     /**
@@ -186,6 +186,44 @@ class CORE_EXPORT QgsStyle : public QObject
       LegendPatchShapeEntity, //!< Legend patch shape (since QGIS 3.14)
       Symbol3DEntity, //!< 3D symbol entity (since QGIS 3.14)
     };
+
+    /**
+     * Returns the name of the style.
+     *
+     * \see setName()
+     * \since QGIS 3.26
+     */
+    QString name() const;
+
+    /**
+     * Sets the \a name of the style.
+     *
+     * \see name()
+     * \since QGIS 3.26
+     */
+    void setName( const QString &name );
+
+    /**
+     * Returns TRUE if the style is considered a read-only library.
+     *
+     * \note This flag is used to control GUI operations, and does not prevent calling functions
+     * which mutate the style directly via the API.
+     *
+     * \see setReadOnly()
+     * \since QGIS 3.26
+     */
+    bool isReadOnly() const;
+
+    /**
+     * Sets whether the style is considered a read-only library.
+     *
+     * \note This flag is used to control GUI operations, and does not prevent calling functions
+     * which mutate the style directly via the API.
+     *
+     * \see isReadOnly()
+     * \since QGIS 3.26
+     */
+    void setReadOnly( bool readOnly );
 
     /**
      * Adds an \a entity to the style, with the specified \a name. Ownership is not transferred.
@@ -740,6 +778,13 @@ class CORE_EXPORT QgsStyle : public QObject
     QgsTextFormat defaultTextFormat( QgsStyle::TextFormatContext context = QgsStyle::TextFormatContext::Labeling ) const;
 
     /**
+     * Returns the default text format to use for new text based objects for the specified \a project, in the specified \a context.
+     *
+     * \since QGIS 3.26
+     */
+    static QgsTextFormat defaultTextFormatForProject( QgsProject *project,  QgsStyle::TextFormatContext context = QgsStyle::TextFormatContext::Labeling );
+
+    /**
      * Adds a 3d \a symbol to the database.
      *
      * \param name is the name of the 3d symbol
@@ -801,18 +846,59 @@ class CORE_EXPORT QgsStyle : public QObject
      *
      *  This function will load an on-disk database and populate styles.
      *  \param filename location of the database to load styles from
-     *  \returns returns the success state of the database being loaded
+     *  \returns TRUE if the database was successfully loaded. If FALSE is
+     *  returned then a detailed error message can be retrieved via errorString().
+     *
+     *  \see errorString()
      */
     bool load( const QString &filename );
 
-    //! Saves style into a file (will use current filename if empty string is passed)
-    bool save( QString filename = QString() );
+    /**
+     * Saves style into a file.
+     *
+     * The current fileName() will be used if no explicit \a filename is specified.
+     *
+     *  \returns TRUE if the style was successfully saved. If FALSE is
+     *  returned then a detailed error message can be retrieved via errorString().
+     *
+     * \see fileName()
+     * \see load()
+     * \see errorString()
+     *
+     * \deprecated This function has no effect.
+     */
+    Q_DECL_DEPRECATED bool save( const QString &filename = QString() ) SIP_DEPRECATED;
 
-    //! Returns last error from load/save operation
-    QString errorString() { return mErrorString; }
+    /**
+     * Returns the last error from a load() operation.
+     *
+     * \see load()
+     */
+    QString errorString() const { return mErrorString; }
 
-    //! Returns current file name of the style
-    QString fileName() { return mFileName; }
+    /**
+     * Returns the current file name of the style database.
+     *
+     * The filename will always represent the actual source of the style - e.g. the .db file
+     * for styles associated with a database, or the original source .xml file for styles
+     * directly loaded from a .xml export.
+     *
+     * \see setFileName()
+     */
+    QString fileName() const { return mFileName; }
+
+    /**
+     * Sets the current file name of the style database.
+     *
+     * The filename should always represent the actual source of the style - e.g. the .db file
+     * for styles associated with a database, or the original source .xml file for styles
+     * directly loaded from a .xml export.
+     *
+     * Calling load() automatically sets the filename to the .db file path.
+     *
+     * \since QGIS 3.26
+     */
+    void setFileName( const QString &filename );
 
     /**
      * Returns the names of the symbols which have a matching 'substring' in its definition
@@ -886,7 +972,31 @@ class CORE_EXPORT QgsStyle : public QObject
      */
     static bool isXmlStyleFile( const QString &path );
 
+  public slots:
+#ifndef SIP_RUN
+
+    /**
+     * Triggers emission of the rebuildIconPreviews() signal.
+     *
+     * \note Not available in Python bindings.
+     *
+     * \since QGIS 3.26
+     */
+    void triggerIconRebuild();
+#endif
+
   signals:
+
+    /**
+     * Emitted just before the style object is destroyed.
+     *
+     * Emitted in the destructor when the style is about to be deleted,
+     * but it is still in a perfectly valid state: the last chance for
+     * other pieces of code for some cleanup if they use the style.
+     *
+     * \since QGIS 3.26
+     */
+    void aboutToBeDestroyed();
 
     /**
      * Emitted every time a new symbol has been added to the database.
@@ -1076,7 +1186,17 @@ class CORE_EXPORT QgsStyle : public QObject
      */
     void labelSettingsChanged( const QString &name );
 
+    /**
+     * Emitted whenever icon previews for entities in the style must be rebuilt.
+     *
+     * \since QGIS 3.26
+     */
+    void rebuildIconPreviews();
+
   private:
+
+    QString mName;
+    bool mReadOnly = false;
 
     QgsSymbolMap mSymbols;
     QgsVectorColorRampMap mColorRamps;

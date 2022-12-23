@@ -57,7 +57,7 @@ class TestPyQgsExternalStorageBase():
         cls.auth_config.setConfig('username', "qgis")
         cls.auth_config.setConfig('password', "myPasswd!")
         cls.auth_config.setName('test_basic_auth_config')
-        assert(cls.authm.storeAuthenticationConfig(cls.auth_config)[0])
+        assert cls.authm.storeAuthenticationConfig(cls.auth_config)[0]
         assert cls.auth_config.isValid()
 
         cls.registry = QgsApplication.instance().externalStorageRegistry()

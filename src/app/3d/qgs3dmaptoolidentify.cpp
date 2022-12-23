@@ -96,7 +96,7 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
 
   const QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( event->pos(), canvas->windowSize(), canvas->cameraController()->camera() );
 
-  QMap<QgsPointCloudLayer *, QVector<IndexedPointCloudNode>> layerChunks;
+  QHash<QgsPointCloudLayer *, QVector<IndexedPointCloudNode>> layerChunks;
   for ( QgsMapLayer *layer : canvas->map()->layers() )
   {
     if ( QgsPointCloudLayer *pc = qobject_cast<QgsPointCloudLayer *>( layer ) )
@@ -113,8 +113,9 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
     }
   }
 
-  for ( QgsPointCloudLayer *layer : layerChunks.keys() )
+  for ( auto it = layerChunks.constBegin(); it != layerChunks.constEnd(); ++it )
   {
+    QgsPointCloudLayer *layer = it.key();
     // transform ray
     const QgsVector3D originMapCoords = canvas->map()->worldToMapCoordinates( ray.origin() );
     const QgsVector3D pointMapCoords = canvas->map()->worldToMapCoordinates( ray.origin() + ray.origin().length() * ray.direction().normalized() );
@@ -148,7 +149,7 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
     const QgsPointCloudAttributeCollection attributeCollection = index->attributes();
     QgsPointCloudRequest request;
     request.setAttributes( attributeCollection );
-    for ( const IndexedPointCloudNode &n : layerChunks[layer] )
+    for ( const IndexedPointCloudNode &n : it.value() )
     {
       if ( !index->hasNode( n ) )
         continue;

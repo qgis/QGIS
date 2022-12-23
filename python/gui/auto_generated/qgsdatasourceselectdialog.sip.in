@@ -65,6 +65,15 @@ Sets a description label
 .. versionadded:: 3.8
 %End
 
+    void expandPath( const QString &path );
+%Docstring
+Expands out a file ``path`` in the view.
+
+The ``path`` must correspond to a valid directory existing on the file system.
+
+.. versionadded:: 3.28
+%End
+
     QgsMimeDataUtils::Uri uri() const;
 %Docstring
 Returns the (possibly invalid) uri of the selected data source
@@ -165,6 +174,15 @@ Sets a description label
    the description will be displayed at the bottom of the dialog
 
 .. versionadded:: 3.8
+%End
+
+    void expandPath( const QString &path );
+%Docstring
+Expands out a file ``path`` in the view.
+
+The ``path`` must correspond to a valid directory existing on the file system.
+
+.. versionadded:: 3.28
 %End
 
     QgsMimeDataUtils::Uri uri() const;

@@ -19,6 +19,7 @@
 #include "qgsserverexception.h"
 #include "qgsnetworkcontentfetcher.h"
 #include "qgsmessagelog.h"
+#include "qgsvariantutils.h"
 #include <QObject>
 #include <QUrl>
 #include <QNetworkReply>
@@ -358,7 +359,7 @@ QString QgsServerParameterDefinition::loadUrl( bool &ok ) const
   }
 
   const QVariant status = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
-  if ( !status.isNull() && status.toInt() >= 400 )
+  if ( status.isValid() && status.toInt() >= 400 )
   {
     ok = false;
     if ( reply->error() != QNetworkReply::NoError )
@@ -605,7 +606,7 @@ QMap<QString, QString> QgsServerParameters::toMap() const
 
   for ( const auto &parameter : mParameters.toStdMap() )
   {
-    if ( parameter.second.mValue.isNull() )
+    if ( QgsVariantUtils::isNull( parameter.second.mValue ) )
       continue;
 
     if ( parameter.second.mName == QgsServerParameter::VERSION_SERVICE )

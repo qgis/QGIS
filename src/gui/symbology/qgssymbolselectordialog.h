@@ -28,6 +28,7 @@
 
 #include <QStandardItemModel>
 #include <QDialogButtonBox>
+#include <QPointer>
 #include "qgis_gui.h"
 
 class QgsStyle;
@@ -256,7 +257,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
     QgsStyle *mStyle = nullptr;
     QgsSymbol *mSymbol = nullptr;
     QMenu *mAdvancedMenu = nullptr;
-    QgsVectorLayer *mVectorLayer = nullptr;
+    QPointer< QgsVectorLayer > mVectorLayer;
 
     QStandardItemModel *mSymbolLayersModel = nullptr;
     QWidget *mPresentWidget = nullptr;

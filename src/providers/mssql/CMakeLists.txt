@@ -8,6 +8,7 @@ set(MSSQL_SRCS
   qgsmssqlexpressioncompiler.cpp
   qgsmssqlfeatureiterator.cpp
   qgsmssqlgeomcolumntypethread.cpp
+  qgsmssqlsqlquerybuilder.cpp
   qgsmssqltransaction.cpp
   qgsmssqldatabase.cpp
 )

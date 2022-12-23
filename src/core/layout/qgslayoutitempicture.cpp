@@ -487,6 +487,7 @@ void QgsLayoutItemPicture::loadPictureUsingCache( const QString &path )
   if ( path.isEmpty() )
   {
     mImage = QImage();
+    mSVG.load( QByteArray() );
     return;
   }
 
@@ -542,7 +543,6 @@ void QgsLayoutItemPicture::updateNorthArrowRotation( double rotation )
 
 void QgsLayoutItemPicture::loadPicture( const QVariant &data )
 {
-  const Format origFormat = mMode;
   mIsMissingImage = false;
   QVariant imageData( data );
   mEvaluatedPath = data.toString();
@@ -583,14 +583,14 @@ void QgsLayoutItemPicture::loadPicture( const QVariant &data )
   {
     //trying to load an invalid file or bad expression, show cross picture
     mIsMissingImage = true;
-    if ( origFormat == FormatRaster )
+    if ( mOriginalMode == FormatRaster )
     {
       const QString badFile( QStringLiteral( ":/images/composer/missing_image.png" ) );
       QImageReader imageReader( badFile );
       if ( imageReader.read( &mImage ) )
         mMode = FormatRaster;
     }
-    else
+    else if ( mOriginalMode == FormatSVG )
     {
       const QString badFile( QStringLiteral( ":/images/composer/missing_image.svg" ) );
       mSVG.load( badFile );
@@ -767,6 +767,7 @@ void QgsLayoutItemPicture::refreshDataDefinedProperty( const QgsLayoutObject::Da
 
 void QgsLayoutItemPicture::setPicturePath( const QString &path, Format format )
 {
+  mOriginalMode = format;
   mMode = format;
   mSourcePath = path;
   refreshPicture();
@@ -796,7 +797,7 @@ bool QgsLayoutItemPicture::writePropertiesToElement( QDomElement &elem, QDomDocu
   elem.setAttribute( QStringLiteral( "svgFillColor" ), QgsSymbolLayerUtils::encodeColor( mSvgFillColor ) );
   elem.setAttribute( QStringLiteral( "svgBorderColor" ), QgsSymbolLayerUtils::encodeColor( mSvgStrokeColor ) );
   elem.setAttribute( QStringLiteral( "svgBorderWidth" ), QString::number( mSvgStrokeWidth ) );
-  elem.setAttribute( QStringLiteral( "mode" ), mMode );
+  elem.setAttribute( QStringLiteral( "mode" ), mOriginalMode );
 
   //rotation
   elem.setAttribute( QStringLiteral( "pictureRotation" ), QString::number( mPictureRotation ) );
@@ -824,7 +825,8 @@ bool QgsLayoutItemPicture::readPropertiesFromElement( const QDomElement &itemEle
   mSvgFillColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "svgFillColor" ), QgsSymbolLayerUtils::encodeColor( QColor( 255, 255, 255 ) ) ) );
   mSvgStrokeColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "svgBorderColor" ), QgsSymbolLayerUtils::encodeColor( QColor( 0, 0, 0 ) ) ) );
   mSvgStrokeWidth = itemElem.attribute( QStringLiteral( "svgBorderWidth" ), QStringLiteral( "0.2" ) ).toDouble();
-  mMode = static_cast< Format >( itemElem.attribute( QStringLiteral( "mode" ), QString::number( FormatUnknown ) ).toInt() );
+  mOriginalMode = static_cast< Format >( itemElem.attribute( QStringLiteral( "mode" ), QString::number( FormatUnknown ) ).toInt() );
+  mMode = mOriginalMode;
 
   const QDomNodeList composerItemList = itemElem.elementsByTagName( QStringLiteral( "ComposerItem" ) );
   if ( !composerItemList.isEmpty() )
@@ -929,9 +931,10 @@ void QgsLayoutItemPicture::setSvgStrokeWidth( double width )
 
 void QgsLayoutItemPicture::setMode( QgsLayoutItemPicture::Format mode )
 {
-  if ( mMode == mode )
+  if ( mOriginalMode == mode )
     return;
 
+  mOriginalMode = mode;
   mMode = mode;
   refreshPicture();
 }

@@ -56,10 +56,8 @@ class QgsGeoPackageItemGuiProvider : public QObject, public QgsDataItemGuiProvid
     void createDatabase( const QPointer< QgsGeoPackageRootItem > &item );
 
   protected slots:
-    void vacuum( const QString &path, const QString &name, QgsDataItemGuiContext context );
     void renameVectorLayer( const QString &uri, const QString &key, const QStringList &tableNames,
                             const QPointer< QgsDataItem > &item, QgsDataItemGuiContext context );
-    void deleteGpkg( const QString &itemPath, const QString &name, QPointer<QgsDataItem> parent, QgsDataItemGuiContext context );
 };
 
 ///@endcond

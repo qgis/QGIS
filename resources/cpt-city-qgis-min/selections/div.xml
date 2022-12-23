@@ -2,10 +2,10 @@
 <selection cadence="low">
   <name short="div">Diverging</name>
   <synopsis>
-    Palettes for diverging, signed or anomaly data 
+    Palettes for diverging, signed or anomoly data 
   </synopsis>
   <description>
-    Palettes for diverging, signed or anomaly data. 
+    Palettes for diverging, signed or anomoly data. 
   </description>
   <seealsocollects>
     <collect dir="km">Kenneth Moreland</collect>
@@ -39,8 +39,8 @@
     <gradient file="xmas_22" dir="ma/xmas"/>
     <gradient file="ha_14" dir="ma/postcard"/>
     <gradient file="departure" dir="mjf"/>
-    <gradient file="Split_02" dir="nd/vermilion"/>
-    <gradient file="Tertiary_01" dir="nd/vermilion"/>
+    <gradient file="Split_02" dir="nd/vermillion"/>
+    <gradient file="Tertiary_01" dir="nd/vermillion"/>
     <gradient file="Analogous_12b" dir="nd/turanj"/>
     <gradient file="Primary_3" dir="nd/red"/>
     <gradient file="occ100" dir="occ/2"/>
