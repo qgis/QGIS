@@ -150,6 +150,7 @@ The development version
 
     enum class SettingsType
       {
+      Custom,
       Variant,
       String,
       StringList,

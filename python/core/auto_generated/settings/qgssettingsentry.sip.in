@@ -23,7 +23,7 @@ Creates a group of setting which have a common definition of base key
 #include "qgssettingsentry.h"
 %End
   public:
-    QgsSettingsEntryGroup( const QList<const QgsSettingsEntryBase *> settings );
+    QgsSettingsEntryGroup( QList<const QgsSettingsEntryBase *> settings );
 %Docstring
 Constructor
 %End
@@ -101,6 +101,8 @@ to validate set values and provide more accurate settings description for the gu
       sipType = sipType_QgsSettingsEntryDouble;
     else if ( dynamic_cast< QgsSettingsEntryColor * >( sipCpp ) )
       sipType = sipType_QgsSettingsEntryColor;
+    else if ( dynamic_cast< QgsSettingsEntryBase * >( sipCpp ) )
+      sipType = sipType_QgsSettingsEntryBase;
     else
       sipType = NULL;
 %End
@@ -113,7 +115,6 @@ Transforms a dynamic key part string to list
 .. versionadded:: 3.26
 %End
 
-
     QgsSettingsEntryBase( const QString &key,
                           const QString &section,
                           const QVariant &defaultValue = QVariant(),
@@ -124,6 +125,21 @@ Constructor for QgsSettingsEntryBase.
 
 The ``key`` argument specifies the key of the settings.
 The ``section`` argument specifies the section.
+The ``defaultValue`` argument specifies the default value for the settings entry.
+The ``description`` argument specifies a description for the settings entry.
+The ``options`` argument specifies the options for the settings entry.
+%End
+
+    QgsSettingsEntryBase( const QString &key,
+                          QgsSettingsTreeElement *parentTreeElement,
+                          const QVariant &defaultValue = QVariant(),
+                          const QString &description = QString(),
+                          Qgis::SettingsOptions options = Qgis::SettingsOptions() );
+%Docstring
+Constructor for QgsSettingsEntryBase.
+
+The ``key`` argument specifies the key of the settings.
+The ``parent`` argument specifies the parent in the tree of settings.
 The ``defaultValue`` argument specifies the default value for the settings entry.
 The ``description`` argument specifies a description for the settings entry.
 The ``options`` argument specifies the options for the settings entry.
@@ -282,7 +298,7 @@ Returns settings value with an optional default value override
 Returns settings default value.
 %End
 
-    virtual Qgis::SettingsType settingsType() const = 0;
+    virtual Qgis::SettingsType settingsType() const;
 %Docstring
 Returns the settings entry type.
 %End
@@ -308,20 +324,28 @@ Returns the current value (or default) if there is no former value.
 .. versionadded:: 3.26
 %End
 
-    bool migrateFromKey( const QString &oldKey, const QString &oldSection = QString(), const QString &dynamicKeyPart = QString() ) const;
+    bool copyValueFromKey( const QString &key, const QStringList &dynamicKeyPartList = QStringList(), bool deleteOldKey = false ) const;
 %Docstring
-Check if the settings does not exist and try to set it from a given ``oldKey`` and ``oldSection``
+Checks if the settings does not exist and try to set it from a given ``oldKey``.
+\arg dynamicKeyPartList is the optional dynamic key part to determine the key. It must be the same for origin and destination keys.
+If ``deleteOldKey``, the setting with the old key will be removed
+
+:return: ``True`` if the key exists and the setting value could be copied
 
 .. versionadded:: 3.30
 %End
 
-    bool migrateFromKey( const QString &oldKey, const QString &oldSection, const QStringList &dynamicKeyPartList ) const;
+    void copyValueToKey( const QString &key, const QStringList &dynamicKeyPartList = QStringList() ) const;
 %Docstring
-Check if the settings does not exist and try to set it from a given ``oldKey``
+Copies the settings to the given ``key``
+\arg dynamicKeyPartList is the optional dynamic key part to determine the key. It must be the same for origin and destination keys.
 
-.. note::
+.. versionadded:: 3.30
+%End
 
-   The old key must contain its section (the section from the current setting will not be prepended)
+    QgsSettingsTreeElement *parent() const;
+%Docstring
+Returns the parent tree element
 
 .. versionadded:: 3.30
 %End
@@ -359,6 +383,21 @@ Base abstract class for settings entry which are passed by reference
   public:
 
     QgsSettingsEntryByReference( const QString &key,
+                                 QgsSettingsTreeElement *parent,
+                                 const T &defaultValue,
+                                 const QString &description = QString(),
+                                 Qgis::SettingsOptions options = Qgis::SettingsOptions() );
+%Docstring
+Constructor for QgsSettingsEntryByReference.
+
+The ``key`` argument specifies the key of the settings.
+The ``parent`` argument specifies the parent in the tree of settings.
+The ``defaultValue`` argument specifies the default value for the settings entry.
+The ``description`` argument specifies a description for the settings entry.
+The ``options`` arguments specifies the options for the settings entry.
+%End
+
+    QgsSettingsEntryByReference( const QString &key,
                                  const QString &section,
                                  const T &defaultValue,
                                  const QString &description = QString(),
@@ -367,6 +406,7 @@ Base abstract class for settings entry which are passed by reference
 Constructor for QgsSettingsEntryByReference.
 
 The ``key`` argument specifies the key of the settings.
+The ``section`` argument specifies the section.
 The ``defaultValue`` argument specifies the default value for the settings entry.
 The ``description`` argument specifies a description for the settings entry.
 The ``options`` arguments specifies the options for the settings entry.
@@ -492,6 +532,17 @@ Base abstract class for settings entry which are passed by value
 %End
   public:
 
+    QgsSettingsEntryByValue( const QString &key, QgsSettingsTreeElement *parent, QVariant defaultValue, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions() );
+%Docstring
+Constructor for QgsSettingsEntryByValue.
+
+The ``key`` argument specifies the key of the settings.
+The ``parent`` argument specifies the parent in the tree of settings.
+The ``section`` argument specifies the section.
+The ``defaultValue`` argument specifies the default value for the settings entry.
+The ``description`` argument specifies a description for the settings entry.
+The ``options`` arguments specifies the options for the settings entry.
+%End
 
     QgsSettingsEntryByValue( const QString &key, const QString &section, QVariant defaultValue, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions() );
 %Docstring

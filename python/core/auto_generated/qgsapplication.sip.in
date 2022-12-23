@@ -9,6 +9,7 @@
 
 
 
+
 class QgsApplication : QApplication
 {
 %Docstring(signature="appended")
@@ -1088,6 +1089,7 @@ Emits the signal to collect all the strings of .qgs to be included in ts file
 
 .. versionadded:: 3.4
 %End
+
 
 
 %If (ANDROID)

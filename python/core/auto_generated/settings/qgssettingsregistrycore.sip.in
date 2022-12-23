@@ -10,6 +10,7 @@
 
 
 
+
 class QgsSettingsRegistryCore : QgsSettingsRegistry
 {
 %Docstring(signature="appended")
@@ -31,6 +32,10 @@ Constructor for QgsSettingsRegistryCore.
 
     virtual ~QgsSettingsRegistryCore();
 
+
+    void migrateOldSettings();
+
+    void backwardCompatibility();
 
 };
 
