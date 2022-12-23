@@ -5658,6 +5658,13 @@ class TestQgsExpression: public QObject
       QVERIFY( exp.prepare( &context ) );
       QVERIFY( !exp.hasEvalError() );
       QCOMPARE( exp.evaluate( &context ).toString(), QStringLiteral( "Raster" ) );
+
+      // complex expression
+      exp = QgsExpression( QStringLiteral( "with_variable('layer', load_layer('%1', 'gdal'), layer_property(@layer, 'type') || layer_property(@layer, 'type'))" ).arg( rasterFileName ) );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( !exp.hasEvalError() );
+      QCOMPARE( exp.evaluate( &context ).toString(), QStringLiteral( "RasterRaster" ) );
+
     }
 
 };
