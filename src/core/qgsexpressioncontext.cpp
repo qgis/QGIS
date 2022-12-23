@@ -339,6 +339,7 @@ QgsExpressionContext &QgsExpressionContext::operator=( QgsExpressionContext &&ot
   return *this;
 }
 
+// cppcheck-suppress operatorEqVarError
 QgsExpressionContext &QgsExpressionContext::operator=( const QgsExpressionContext &other )
 {
   if ( &other == this )
