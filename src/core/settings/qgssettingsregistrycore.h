@@ -18,15 +18,13 @@
 #define QGSSETTINGSREGISTRYCORE_H
 
 #include "qgis_core.h"
-#include "qgis_sip.h"
 #include "qgssettingsregistry.h"
 #include "qgssettingsentry.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsentryenumflag.h"
 
 #include "qgis.h"
-#include "qgsgeometry.h"
-#include "qgsmaplayerproxymodel.h"
+
 
 /**
  * \ingroup core
@@ -49,6 +47,11 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
      * Destructor for QgsSettingsRegistryCore.
      */
     virtual ~QgsSettingsRegistryCore();
+
+
+    void migrateOldSettings();
+
+    void backwardCompatibility();
 
 #ifndef SIP_RUN
     //! Settings entry digitizing stream tolerance
@@ -177,7 +180,6 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     //! Settings entry enable WMS tile prefetching.
     static const inline QgsSettingsEntryBool settingsEnableWMSTilePrefetching = QgsSettingsEntryBool( QStringLiteral( "enable_wms_tile_prefetch" ), QgsSettings::Prefix::WMS, false, QStringLiteral( "Whether to include WMS layers when rendering tiles adjacent to the visible map area" ) );
 #endif
-
 };
 
 #endif // QGSSETTINGSREGISTRYCORE_H
