@@ -30,6 +30,7 @@
 #include "qgsgpsconnection.h"
 #include "qgsbabelformatregistry.h"
 #include "qgsgpslogger.h"
+#include "qgsvectortileconnection.h"
 
 
 QgsSettingsRegistryCore::QgsSettingsRegistryCore()

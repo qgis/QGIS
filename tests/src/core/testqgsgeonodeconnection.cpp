@@ -88,11 +88,11 @@ void TestQgsGeoNodeConnection::initTestCase()
   QgsSettings settings;
 
   // Testing real server, demo.geonode.org. Need to be changed later.
-  QgsOwsConnection::settingsConnectionUrl.setValue( mDemoGeoNodeURL, {QgsGeoNodeConnectionUtils::sGeoNodeConnection.toLower(), mDemoGeoNodeName} );
+  QgsOwsConnection::settingsConnectionUrl->setValue( mDemoGeoNodeURL, {QgsGeoNodeConnectionUtils::sGeoNodeConnection.toLower(), mDemoGeoNodeName} );
   // Testing real server, staging.geonode.kartoza.com. Need to be changed later.
-  QgsOwsConnection::settingsConnectionUrl.setValue( mKartozaGeoNodeQGISServerURL, {QgsGeoNodeConnectionUtils::sGeoNodeConnection.toLower(), mKartozaGeoNodeQGISServerName} );
+  QgsOwsConnection::settingsConnectionUrl->setValue( mKartozaGeoNodeQGISServerURL, {QgsGeoNodeConnectionUtils::sGeoNodeConnection.toLower(), mKartozaGeoNodeQGISServerName} );
   // Testing real server, staginggs.geonode.kartoza.com. Need to be changed later.
-  QgsOwsConnection::settingsConnectionUrl.setValue( mKartozaGeoNodeGeoServerURL, {QgsGeoNodeConnectionUtils::sGeoNodeConnection.toLower(), mKartozaGeoNodeGeoServerName} );
+  QgsOwsConnection::settingsConnectionUrl->setValue( mKartozaGeoNodeGeoServerURL, {QgsGeoNodeConnectionUtils::sGeoNodeConnection.toLower(), mKartozaGeoNodeGeoServerName} );
 }
 
 // Test the creation of geonode connection
@@ -110,7 +110,7 @@ void TestQgsGeoNodeConnection::testCreation()
   QVERIFY( !connectionList.contains( mGeoNodeConnectionName ) );
 
   // Add new GeoNode Connection
-  QgsOwsConnection::settingsConnectionUrl.setValue( mGeoNodeConnectionURL, {QgsGeoNodeConnectionUtils::sGeoNodeConnection.toLower(), mGeoNodeConnectionName} );
+  QgsOwsConnection::settingsConnectionUrl->setValue( mGeoNodeConnectionURL, {QgsGeoNodeConnectionUtils::sGeoNodeConnection.toLower(), mGeoNodeConnectionName} );
 
   const QStringList newConnectionList = QgsGeoNodeConnectionUtils::connectionList();
   const int newNumberOfConnection = newConnectionList.count();

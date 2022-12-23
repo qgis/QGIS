@@ -982,9 +982,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   //
   QString currentLocale = QLocale().name();
   lblSystemLocale->setText( tr( "Detected active locale on your system: %1" ).arg( currentLocale ) );
-  QString userLocale = QgsApplication::settingsLocaleUserLocale.value();
-  bool showGroupSeparator = QgsApplication::settingsLocaleShowGroupSeparator.value();
-  QString globalLocale = QgsApplication::settingsLocaleGlobalLocale.value();
+  QString userLocale = QgsApplication::settingsLocaleUserLocale->value();
+  bool showGroupSeparator = QgsApplication::settingsLocaleShowGroupSeparator->value();
+  QString globalLocale = QgsApplication::settingsLocaleGlobalLocale->value();
   const QStringList language18nList( i18nList() );
   for ( const auto &l : language18nList )
   {
@@ -1011,7 +1011,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   cboTranslation->setCurrentIndex( cboTranslation->findData( userLocale ) );
   cboGlobalLocale->setCurrentIndex( cboGlobalLocale->findData( globalLocale ) );
-  grpLocale->setChecked( QgsApplication::settingsLocaleOverrideFlag.value() );
+  grpLocale->setChecked( QgsApplication::settingsLocaleOverrideFlag->value() );
   cbShowGroupSeparator->setChecked( showGroupSeparator );
 
 
@@ -1809,12 +1809,12 @@ void QgsOptions::saveOptions()
   //
   // Locale settings
   //
-  QgsApplication::settingsLocaleUserLocale.setValue( cboTranslation->currentData().toString() );
-  QgsApplication::settingsLocaleOverrideFlag.setValue( grpLocale->isChecked() );
-  QgsApplication::settingsLocaleGlobalLocale.setValue( cboGlobalLocale->currentData( ).toString() );
+  QgsApplication::settingsLocaleUserLocale->setValue( cboTranslation->currentData().toString() );
+  QgsApplication::settingsLocaleOverrideFlag->setValue( grpLocale->isChecked() );
+  QgsApplication::settingsLocaleGlobalLocale->setValue( cboGlobalLocale->currentData( ).toString() );
 
   // Number settings
-  QgsApplication::settingsLocaleShowGroupSeparator.setValue( cbShowGroupSeparator->isChecked( ) );
+  QgsApplication::settingsLocaleShowGroupSeparator->setValue( cbShowGroupSeparator->isChecked( ) );
 
   QgsLocalDefaultSettings::setBearingFormat( mBearingFormat.get() );
   QgsLocalDefaultSettings::setGeographicCoordinateFormat( mCoordinateFormat.get() );

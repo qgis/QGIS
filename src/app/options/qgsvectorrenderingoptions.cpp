@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsabstractgeometry.h"
 #include "qgsvectorrenderingoptions.h"
 #include "qgssettings.h"
 #include "qgsapplication.h"
