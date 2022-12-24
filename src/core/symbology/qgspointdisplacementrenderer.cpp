@@ -202,7 +202,6 @@ QgsFeatureRenderer *QgsPointDisplacementRenderer::create( QDomElement &symbology
   r->setPlacement( static_cast< Placement >( symbologyElem.attribute( QStringLiteral( "placement" ), QStringLiteral( "0" ) ).toInt() ) );
   r->setCircleWidth( symbologyElem.attribute( QStringLiteral( "circleWidth" ), QStringLiteral( "0.4" ) ).toDouble() );
   r->setCircleColor( QgsSymbolLayerUtils::decodeColor( symbologyElem.attribute( QStringLiteral( "circleColor" ), QString() ) ) );
-  r->setLabelColor( QgsSymbolLayerUtils::decodeColor( symbologyElem.attribute( QStringLiteral( "labelColor" ), QString() ) ) );
   r->setCircleRadiusAddition( symbologyElem.attribute( QStringLiteral( "circleRadiusAddition" ), QStringLiteral( "0.0" ) ).toDouble() );
   r->setLabelDistanceFactor( symbologyElem.attribute( QStringLiteral( "labelDistanceFactor" ), QStringLiteral( "0.5" ) ).toDouble() );
   r->setMinimumLabelScale( symbologyElem.attribute( QStringLiteral( "maxLabelScaleDenominator" ), QStringLiteral( "-1" ) ).toDouble() );
