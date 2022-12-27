@@ -131,6 +131,9 @@ void QgsAnnotationLayer::reset()
   setOpacity( 1.0 );
   setCrs( QgsCoordinateReferenceSystem() );
   setTransformContext( QgsCoordinateTransformContext() );
+
+  undoStackStyles()->clear();
+
   clear();
 }
 
