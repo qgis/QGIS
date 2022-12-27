@@ -151,6 +151,7 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         self.assertEqual(len(layer.items()), 0)
         self.assertEqual(layer.opacity(), 1.0)
         self.assertFalse(layer.crs().isValid())
+        self.assertEqual(layer.undoStackStyles().count(), 0)
 
     def testExtent(self):
         layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
