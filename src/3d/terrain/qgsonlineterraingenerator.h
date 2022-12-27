@@ -75,7 +75,6 @@ class _3D_EXPORT QgsOnlineTerrainGenerator : public QgsTerrainGenerator
 
     void updateGenerator();
 
-    QgsRectangle mExtent;
     QgsCoordinateReferenceSystem mCrs;
     QgsCoordinateTransformContext mTransformContext;
 

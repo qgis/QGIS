@@ -308,6 +308,7 @@ void Qgs3DMapConfigWidget::apply()
       {
         QgsDemTerrainGenerator *demTerrainGen = new QgsDemTerrainGenerator;
         demTerrainGen->setCrs( mMap->crs(), QgsProject::instance()->transformContext() );
+        demTerrainGen->setExtent( mMap->extent() );
         demTerrainGen->setLayer( demLayer );
         demTerrainGen->setResolution( spinTerrainResolution->value() );
         demTerrainGen->setSkirtHeight( spinTerrainSkirtHeight->value() );

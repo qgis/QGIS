@@ -158,7 +158,7 @@ QgsVectorLayerChunkLoaderFactory::QgsVectorLayerChunkLoaderFactory( const Qgs3DM
   , mSymbol( symbol->clone() )
   , mLeafLevel( leafLevel )
 {
-  QgsAABB rootBbox = Qgs3DUtils::layerToWorldExtent( vl->extent(), zMin, zMax, vl->crs(), map.origin(), map.crs(), map.transformContext() );
+  QgsAABB rootBbox = Qgs3DUtils::mapToWorldExtent( map.extent(), zMin, zMax, map.origin() );
   // add small padding to avoid clipping of point features located at the edge of the bounding box
   rootBbox.xMin -= 1.0;
   rootBbox.xMax += 1.0;
@@ -167,6 +167,7 @@ QgsVectorLayerChunkLoaderFactory::QgsVectorLayerChunkLoaderFactory( const Qgs3DM
   rootBbox.zMin -= 1.0;
   rootBbox.zMax += 1.0;
   setupQuadtree( rootBbox, -1, leafLevel );  // negative root error means that the node does not contain anything
+  mExtent = map.extent();
 }
 
 QgsChunkLoader *QgsVectorLayerChunkLoaderFactory::createChunkLoader( QgsChunkNode *node ) const
