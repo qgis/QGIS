@@ -143,6 +143,8 @@ void QgsAnnotationItemPropertiesWidget::onChanged()
 
     mLayer->replaceItem( mMapLayerConfigWidgetContext.annotationId(), newItem.release() );
   }
+
+  emit widgetChanged();
 }
 
 void QgsAnnotationItemPropertiesWidget::onLayerPropertyChanged()
