@@ -35,6 +35,7 @@ QgsPointCloud3DRenderContext::QgsPointCloud3DRenderContext( const Qgs3DMapSettin
   , mCoordinateTransform( coordinateTransform )
   , mFeedback( new QgsFeedback )
 {
+  updateExtent();
 }
 
 void QgsPointCloud3DRenderContext::setAttributes( const QgsPointCloudAttributeCollection &attributes )
@@ -63,6 +64,7 @@ QSet<int> QgsPointCloud3DRenderContext::getFilteredOutValues() const
 void QgsPointCloud3DRenderContext::setCoordinateTransform( const QgsCoordinateTransform &coordinateTransform )
 {
   mCoordinateTransform = coordinateTransform;
+  updateExtent();
 }
 
 bool QgsPointCloud3DRenderContext::isCanceled() const
@@ -73,6 +75,28 @@ bool QgsPointCloud3DRenderContext::isCanceled() const
 void QgsPointCloud3DRenderContext::cancelRendering() const
 {
   mFeedback->cancel();
+}
+
+void QgsPointCloud3DRenderContext::updateExtent()
+{
+  if ( map().extent().isEmpty() )
+  {
+    // an empty extent means no filter, so let's pass it without transformation
+    mExtent = QgsRectangle();
+  }
+  else
+  {
+    try
+    {
+      mExtent = mCoordinateTransform.transformBoundingBox( map().extent(), Qgis::TransformDirection::Reverse );
+    }
+    catch ( const QgsCsException & )
+    {
+      // bad luck, can't reproject for some reason. Let's use an empty extent to skip filtering.
+      QgsDebugMsg( QStringLiteral( "Transformation of extent failed!" ) );
+      mExtent = QgsRectangle();
+    }
+  }
 }
 // ---------
 

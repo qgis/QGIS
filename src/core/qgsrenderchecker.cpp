@@ -446,7 +446,7 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
   const QString diffImageFileName = QFileInfo( mDiffImageFile ).fileName();
   const QString myImagesString = QString(
                                    "<tr>"
-                                   "<td colspan=2>Compare actual and expected result</td>"
+                                   "<td colspan=2>Compare expected and actual result</td>"
                                    "<td>Difference (all blue is good, any red is bad)</td>"
                                    "</tr>\n<tr>"
                                    "<td colspan=2 id=\"td-%1-%7\"></td>\n"
@@ -500,7 +500,7 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
 
       const QString diffSizeImagesString = QString(
                                              "<tr>"
-                                             "<td colspan=3>Compare actual and expected result</td>"
+                                             "<td colspan=3>Compare expected and actual result</td>"
                                              "</tr>\n<tr>"
                                              "<td align=center><img src=\"%1\"></td>\n"
                                              "<td align=center><img width=%3 height=%4 src=\"%2\"></td>\n"

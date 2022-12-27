@@ -28,6 +28,7 @@
 //
 
 #include "qgschunkqueuejob_p.h"
+#include "qgsrectangle.h"
 
 #define SIP_NO_FILE
 
@@ -109,6 +110,7 @@ class _3D_EXPORT QgsQuadtreeChunkLoaderFactory : public QgsChunkLoaderFactory
     float mRootError;
     //! maximum allowed depth of quad tree
     int mMaxLevel;
+    QgsRectangle mExtent;
 
 };
 

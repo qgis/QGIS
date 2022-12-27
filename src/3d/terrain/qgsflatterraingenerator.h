@@ -20,7 +20,6 @@
 
 #include "qgsterraingenerator.h"
 #include "qgsterraintileloader_p.h"
-#include "qgsrectangle.h"
 #include <Qt3DExtras/QPlaneGeometry>
 
 #define SIP_NO_FILE
@@ -76,7 +75,6 @@ class _3D_EXPORT QgsFlatTerrainGenerator : public QgsTerrainGenerator
 
     void updateTilingScheme();
 
-    QgsRectangle mExtent;
     QgsCoordinateReferenceSystem mCrs;
 };
 

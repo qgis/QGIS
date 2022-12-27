@@ -14,8 +14,9 @@
  ***************************************************************************/
 
 #include "qgschunkloader_p.h"
-
 #include "qgschunknode_p.h"
+#include "qgs3dutils.h"
+
 #include <QVector>
 ///@cond PRIVATE
 
@@ -60,7 +61,11 @@ QVector<QgsChunkNode *> QgsQuadtreeChunkLoaderFactory::createChildren( QgsChunkN
     const float chZMax = dy ? bbox.zMax : zc;
     const float chYMin = bbox.yMin;
     const float chYMax = bbox.yMax;
-    children << new QgsChunkNode( childId, QgsAABB( chXMin, chYMin, chZMin, chXMax, chYMax, chZMax ), childError, node );
+    const QgsAABB childBbox = QgsAABB( chXMin, chYMin, chZMin, chXMax, chYMax, chZMax );
+    const QgsPointXY center = mExtent.center();
+    QgsRectangle childRect = Qgs3DUtils::worldToMapExtent( childBbox, QgsVector3D( center.x(), center.y(), 0 ) );
+    if ( mExtent.intersects( childRect ) )
+      children << new QgsChunkNode( childId, childBbox, childError, node );
   }
   return children;
 }

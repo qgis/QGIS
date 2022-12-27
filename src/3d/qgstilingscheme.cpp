@@ -20,6 +20,7 @@
 
 QgsTilingScheme::QgsTilingScheme( const QgsRectangle &fullExtent, const QgsCoordinateReferenceSystem &crs )
   : mCrs( crs )
+  , mFullExtent( fullExtent )
 {
   mMapOrigin = QgsPointXY( fullExtent.xMinimum(), fullExtent.yMinimum() );
   mBaseTileSide = std::max( fullExtent.width(), fullExtent.height() );
