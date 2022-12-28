@@ -1227,8 +1227,6 @@ void TestQgs3DRendering::testBillboardRendering()
 
 void TestQgs3DRendering::testEpsg4978LineRendering()
 {
-  const QgsRectangle fullExtent( 0, 0, 1000, 1000 );
-
   QgsProject p;
 
   QgsCoordinateReferenceSystem newCrs( QStringLiteral( "EPSG:4978" ) );
@@ -1243,6 +1241,8 @@ void TestQgs3DRendering::testEpsg4978LineRendering()
   matSettings.setAmbient( Qt::red );
   lineSymbol->setMaterialSettings( matSettings.clone() );
   layerLines->setRenderer3D( new QgsVectorLayer3DRenderer( lineSymbol ) );
+
+  const QgsRectangle fullExtent = layerLines->extent();
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( p.crs() );
@@ -1308,7 +1308,7 @@ void TestQgs3DRendering::testFilteredFlatTerrain()
   Qgs3DUtils::captureSceneImage( engine, scene );
 
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
-  renderCheck( "flat_terrain_filtered_1", img, 40 );
+  QVERIFY( renderCheck( "flat_terrain_filtered_1", img, 40 ) );
 
   // Now set the extent to have height > width and redo
   fullExtent = mLayerDtm->extent();
@@ -1353,7 +1353,7 @@ void TestQgs3DRendering::testFilteredDemTerrain()
   Qgs3DUtils::captureSceneImage( engine, scene );
 
   QImage img1 = Qgs3DUtils::captureSceneImage( engine, scene );
-  renderCheck( "dem_terrain_filtered_1", img1, 40 );
+  QVERIFY( renderCheck( "dem_terrain_filtered_1", img1, 40 ) );
 
   // Now set the extent to have height > width and redo
   fullExtent = mLayerDtm->extent();
