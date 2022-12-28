@@ -8,8 +8,8 @@
 
 
 
-typedef QList<QgsConditionalStyle> QgsConditionalStyles;
 
+typedef QList<QgsConditionalStyle> QgsConditionalStyles;
 
 class QgsConditionalLayerStyles : QObject
 {
@@ -45,23 +45,11 @@ Each row will check be checked against each rule.
 .. versionadded:: 2.12
 %End
 
-    QgsConditionalStyles constraintStyles() const;
+    QgsConditionalStyle constraintFailureStyles( QgsFieldConstraints::ConstraintStrength strength );
 %Docstring
-Returns a list of row styles associated with layer constraints.
+Returns a style associated to a constraint failure.
 
-.. seealso:: :py:func:`setConstraintStyles`
-
-.. versionadded:: 3.30
-%End
-
-    void setConstraintStyles( const QgsConditionalStyles &styles );
-%Docstring
-Sets the conditional ``styles`` for fields constraint.
-
-The field name is inserted into a @value variable to conduct
-expressionchecks.
-
-.. seealso:: :py:func:`constraintStyles`
+:param strength: the type of constraint
 
 .. versionadded:: 3.30
 %End
@@ -70,7 +58,7 @@ expressionchecks.
 %Docstring
 Set the conditional ``styles`` for a field, with the specified ``fieldName``.
 
-The field value is inserted into a @value variable to conduct
+The field value is inserted into a 'value' variable to conduct
 expression checks.
 
 .. seealso:: :py:func:`fieldStyles`

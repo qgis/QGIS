@@ -16,6 +16,8 @@
 #define QGSCONDITIONALSTYLE_H
 
 #include "qgis_core.h"
+#include "qgsfield.h"
+
 #include <QObject>
 #include <QFont>
 #include <QColor>
@@ -31,7 +33,6 @@ class QgsExpressionContext;
 class QgsSymbol;
 
 typedef QList<QgsConditionalStyle> QgsConditionalStyles;
-
 
 /**
  * \ingroup core
@@ -66,28 +67,16 @@ class CORE_EXPORT QgsConditionalLayerStyles : public QObject
     void setRowStyles( const QgsConditionalStyles &styles );
 
     /**
-     * Returns a list of row styles associated with layer constraints.
-     *
-     * \see setConstraintStyles()
+     * Returns a style associated to a constraint failure.
+     * \param strength the type of constraint
      * \since QGIS 3.30
      */
-    QgsConditionalStyles constraintStyles() const;
-
-    /**
-     * Sets the conditional \a styles for fields constraint.
-     *
-     * The field name is inserted into a @value variable to conduct
-     * expressionchecks.
-     *
-     * \see constraintStyles()
-     * \since QGIS 3.30
-     */
-    void setConstraintStyles( const QgsConditionalStyles &styles );
+    QgsConditionalStyle constraintFailureStyles( QgsFieldConstraints::ConstraintStrength strength );
 
     /**
      * Set the conditional \a styles for a field, with the specified \a fieldName.
      *
-     * The field value is inserted into a @value variable to conduct
+     * The field value is inserted into a 'value' variable to conduct
      * expression checks.
      *
      * \see fieldStyles()
@@ -133,7 +122,8 @@ class CORE_EXPORT QgsConditionalLayerStyles : public QObject
   private:
     QHash<QString, QgsConditionalStyles> mFieldStyles;
     QgsConditionalStyles mRowStyles;
-    QgsConditionalStyles mConstraintStyles;
+    std::unique_ptr<QgsConditionalStyle> mHardConstraintFailureStyle;
+    std::unique_ptr<QgsConditionalStyle> mSoftConstraintFailureStyle;
 };
 
 /**

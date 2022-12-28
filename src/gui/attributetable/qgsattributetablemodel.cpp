@@ -529,6 +529,7 @@ void QgsAttributeTableModel::fieldConditionalStyleChanged( const QString &fieldN
   if ( fieldName.isNull() )
   {
     mRowStylesMap.clear();
+    mConstraintStylesMap.clear();
     emit dataChanged( index( 0, 0 ), index( rowCount() - 1, columnCount() - 1 ) );
     return;
   }
@@ -772,8 +773,31 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
       }
       const QgsConditionalStyle rowstyle = QgsConditionalStyle::compressStyles( styles );
 
-      styles = QgsConditionalStyle::matchingConditionalStyles( mLayer->conditionalStyles()->constraintStyles(), field.name(),  mExpressionContext );
-      const QgsConditionalStyle constraintstyle = QgsConditionalStyle::compressStyles( styles );
+      QgsConditionalStyle constraintstyle;
+      if ( QgsVectorLayerUtils::attributeHasConstraints( mLayer, fieldId ) )
+      {
+        if ( mConstraintStylesMap.contains( mFeat.id() ) &&
+             mConstraintStylesMap[mFeat.id()].contains( fieldId ) )
+        {
+          constraintstyle = mConstraintStylesMap[mFeat.id()][fieldId];
+        }
+        else
+        {
+          QStringList errors;
+          if ( !QgsVectorLayerUtils::validateAttribute( mLayer, mFeat, fieldId, errors, QgsFieldConstraints::ConstraintStrengthHard ) )
+          {
+            constraintstyle = mLayer->conditionalStyles()->constraintFailureStyles( QgsFieldConstraints::ConstraintStrengthHard );
+          }
+          else
+          {
+            if ( !QgsVectorLayerUtils::validateAttribute( mLayer, mFeat, fieldId, errors, QgsFieldConstraints::ConstraintStrengthSoft ) )
+            {
+              constraintstyle = mLayer->conditionalStyles()->constraintFailureStyles( QgsFieldConstraints::ConstraintStrengthSoft );
+            }
+          }
+          mConstraintStylesMap[mFeat.id()].insert( fieldId, constraintstyle );
+        }
+      }
 
       styles = mLayer->conditionalStyles()->fieldStyles( field.name() );
       styles = QgsConditionalStyle::matchingConditionalStyles( styles, val,  mExpressionContext );
@@ -821,6 +845,7 @@ bool QgsAttributeTableModel::setData( const QModelIndex &index, const QVariant &
     return false;
 
   mRowStylesMap.remove( mFeat.id() );
+  mConstraintStylesMap.remove( mFeat.id() );
 
   if ( !mLayer->isModified() )
     return false;
