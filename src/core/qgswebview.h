@@ -22,8 +22,8 @@
 #include <QWidget>
 
 #ifdef WITH_QTWEBKIT
+#include <QScreen>
 #include <QWebView>
-#include <QDesktopWidget>
 
 #include "qgis_core.h"
 
@@ -39,11 +39,11 @@ class CORE_EXPORT QgsWebView : public QWebView
     explicit QgsWebView( QWidget *parent = nullptr )
       : QWebView( parent )
     {
-      const QDesktopWidget desktop;
+      const QScreen *currentScreen = this->screen();
       // Apply zoom factor for HiDPI screens
-      if ( desktop.logicalDpiX() > 96 )
+      if ( currentScreen->logicalDotsPerInchX() > 96 )
       {
-        setZoomFactor( desktop.logicalDpiX() / 96 );
+        setZoomFactor( currentScreen->logicalDotsPerInchX() / 96 );
       }
     }
 };
