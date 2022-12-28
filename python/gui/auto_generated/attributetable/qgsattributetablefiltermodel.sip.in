@@ -24,7 +24,8 @@ class QgsAttributeTableFilterModel: QSortFilterProxyModel, QgsFeatureModel
       ShowSelected,
       ShowVisible,
       ShowFilteredList,
-      ShowEdited
+      ShowEdited,
+      ShowInvalid,
     };
 
     enum ColumnType
