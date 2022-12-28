@@ -37,7 +37,6 @@
 #include "qgsmaplayerdependency.h"
 #include "qgslayermetadata.h"
 #include "qgsmaplayerserverproperties.h"
-#include "qgsmaplayerstyle.h"
 #include "qgsreadwritecontext.h"
 #include "qgsdataprovider.h"
 #include "qgis.h"
@@ -52,6 +51,7 @@ class QgsProject;
 class QgsStyleEntityVisitorInterface;
 class QgsMapLayerTemporalProperties;
 class QgsMapLayerElevationProperties;
+class QgsSldExportContext;
 
 class QDomDocument;
 class QKeyEvent;
@@ -1099,6 +1099,16 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual void exportSldStyle( QDomDocument &doc, QString &errorMsg ) const;
 
     /**
+     * Export the properties of this layer as SLD style in a QDomDocument
+     * \param doc the target QDomDocument
+     * \param errorMsg this QString will be initialized on error
+     *                 during the execution of writeSymbology
+     * \param exportContext SLD export context
+     * \since QGIS 3.30
+     */
+    virtual void exportSldStyleV2( QDomDocument &doc, QString &errorMsg, const QgsSldExportContext &exportContext ) const;
+
+    /**
      * Save the properties of this layer as the default style
      * (either as a .qml file on disk or as a
      * record in the users style table in their personal qgis.db)
@@ -1146,8 +1156,22 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * the SLD file could not be generated
      * \returns a string with any status or error messages
      * \see loadSldStyle()
+     * \see saveSldStyleV2()
      */
     virtual QString saveSldStyle( const QString &uri, bool &resultFlag ) const;
+
+    /**
+     * Saves the properties of this layer to an SLD format file.
+     * \param uri uri of destination for exported SLD file.
+     * \param resultFlag a reference to a flag that will be set to FALSE if
+     *        the SLD file could not be generated
+     * \param exportContext SLD export context
+     * \returns a string with any status or error messages
+     *
+     * \see loadSldStyle()
+     * \since QGIS 3.30
+     */
+    virtual QString saveSldStyleV2( const QString &uri, bool &resultFlag, const QgsSldExportContext &exportContext ) const;
 
     /**
      * Attempts to style the layer using the formatting from an SLD type file.

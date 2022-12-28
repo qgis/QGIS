@@ -35,6 +35,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsreadwritecontext.h"
 #include "qgsrectangle.h"
+#include "qgssldexportcontext.h"
 #include "qgsvectorlayer.h"
 #include "qgsxmlutils.h"
 #include "qgsstringutils.h"
@@ -1757,6 +1758,11 @@ QString QgsMapLayer::saveNamedStyle( const QString &uri, bool &resultFlag, Style
 
 void QgsMapLayer::exportSldStyle( QDomDocument &doc, QString &errorMsg ) const
 {
+  return exportSldStyleV2( doc, errorMsg, QgsSldExportContext() );
+}
+
+void QgsMapLayer::exportSldStyleV2( QDomDocument &doc, QString &errorMsg, const QgsSldExportContext &exportContext ) const
+{
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   QDomDocument myDocument = QDomDocument();
@@ -1807,6 +1813,12 @@ void QgsMapLayer::exportSldStyle( QDomDocument &doc, QString &errorMsg ) const
   }
 
   QVariantMap props;
+
+  QVariant context;
+  context.setValue( exportContext );
+
+  props[ QStringLiteral( "SldExportContext" ) ] = context;
+
   if ( hasScaleBasedVisibility() )
   {
     props[ QStringLiteral( "scaleMinDenom" ) ] = QString::number( mMinScale );
@@ -1836,18 +1848,16 @@ void QgsMapLayer::exportSldStyle( QDomDocument &doc, QString &errorMsg ) const
 
 QString QgsMapLayer::saveSldStyle( const QString &uri, bool &resultFlag ) const
 {
+  return saveSldStyleV2( uri, resultFlag, QgsSldExportContext() );
+}
+
+QString QgsMapLayer::saveSldStyleV2( const QString &uri, bool &resultFlag, const QgsSldExportContext &exportContext ) const
+{
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   const QgsMapLayer *mlayer = qobject_cast<const QgsMapLayer *>( this );
 
-  QString errorMsg;
-  QDomDocument myDocument;
-  mlayer->exportSldStyle( myDocument, errorMsg );
-  if ( !errorMsg.isNull() )
-  {
-    resultFlag = false;
-    return errorMsg;
-  }
+
   // check if the uri is a file or ends with .sld,
   // which indicates that it should become one
   QString filename;
@@ -1885,6 +1895,20 @@ QString QgsMapLayer::saveSldStyle( const QString &uri, bool &resultFlag ) const
     // now construct the file name for our .sld style file
     const QString myFileName = myFileInfo.path() + QDir::separator() + myFileInfo.completeBaseName() + ".sld";
 
+    QString errorMsg;
+    QDomDocument myDocument;
+
+    QgsSldExportContext context { exportContext };
+    context.setExportFilePath( myFileName );
+
+    mlayer->exportSldStyleV2( myDocument, errorMsg, context );
+
+    if ( !errorMsg.isNull() )
+    {
+      resultFlag = false;
+      return errorMsg;
+    }
+
     QFile myFile( myFileName );
     if ( myFile.open( QFile::WriteOnly | QFile::Truncate ) )
     {
@@ -1899,6 +1923,7 @@ QString QgsMapLayer::saveSldStyle( const QString &uri, bool &resultFlag ) const
 
   resultFlag = false;
   return tr( "ERROR: Failed to created SLD style file as %1. Check file permissions and retry." ).arg( filename );
+
 }
 
 QString QgsMapLayer::loadSldStyle( const QString &uri, bool &resultFlag )

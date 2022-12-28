@@ -498,6 +498,7 @@ set(QGIS_CORE_SRCS
   qgsshapegenerator.cpp
   qgssimplifymethod.cpp
   qgssingleitemmodel.cpp
+  qgssldexportcontext.cpp
   qgssnappingutils.cpp
   qgsspatialindex.cpp
   qgsspatialindexkdbush.cpp
@@ -1177,6 +1178,7 @@ set(QGIS_CORE_HDRS
   qgsshapegenerator.h
   qgssimplifymethod.h
   qgssingleitemmodel.h
+  qgssldexportcontext.h
   qgssnappingconfig.h
   qgssnappingutils.h
   qgsspatialindex.h

@@ -161,6 +161,22 @@ The development version
       Color
     };
 
+    enum class SldExportOption
+    {
+      NoOptions,
+      Svg,
+    };
+    typedef QFlags<Qgis::SldExportOption> SldExportOptions;
+
+
+    enum class SldExportVendorExtension
+    {
+      NoVendorExtension,
+      GeoServerVendorExtension,
+      DeegreeVendorExtension,
+    };
+
+
     enum class SettingsOption
     {
       SaveFormerValue,

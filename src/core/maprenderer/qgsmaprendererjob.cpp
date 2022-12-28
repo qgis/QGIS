@@ -41,6 +41,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgsmaplayertemporalproperties.h"
 #include "qgsmaplayerelevationproperties.h"
+#include "qgsmaplayerstyle.h"
 #include "qgsvectorlayerrenderer.h"
 #include "qgsrendereditemresults.h"
 #include "qgsmaskpaintdevice.h"
