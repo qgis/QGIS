@@ -1220,11 +1220,8 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
 
         # get the third rule
         rule = root.elementsByTagName('se:Rule').item(2).toElement()
-        filter = rule.elementsByTagName('Filter').item(0).toElement()
-        filter = filter.firstChild().toElement()
-        self.assertEqual("ogc:Or", filter.nodeName())
-        self.assertEqual(1, filter.elementsByTagName('ogc:PropertyIsEqualTo').size())
-        self.assertEqual(1, filter.elementsByTagName('ogc:PropertyIsNull').size())
+        filter = rule.elementsByTagName('ElseFilter').item(0).toElement()
+        self.assertEqual("se:ElseFilter", filter.nodeName())
 
     def assertScaleDenominator(self, root, expectedMinScale, expectedMaxScale, index=0):
         rule = root.elementsByTagName('se:Rule').item(index).toElement()
