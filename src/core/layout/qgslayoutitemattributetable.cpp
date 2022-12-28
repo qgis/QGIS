@@ -575,9 +575,16 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
 
         if ( mUseConditionalStyling )
         {
-          QList<QgsConditionalStyle> styles = conditionalStyles->fieldStyles( layer->fields().at( idx ).name() );
+          const QString fieldName = layer->fields().at( idx ).name();
+
+          QList<QgsConditionalStyle> styles = conditionalStyles->constraintStyles();
+          styles = QgsConditionalStyle::matchingConditionalStyles( styles, fieldName, context );
+          const QgsConditionalStyle constraintStyle = QgsConditionalStyle::compressStyles( styles );
+
+          styles = conditionalStyles->fieldStyles( fieldName );
           styles = QgsConditionalStyle::matchingConditionalStyles( styles, val, context );
           styles.insert( 0, rowStyle );
+          styles.insert( 0, constraintStyle );
           style = QgsConditionalStyle::compressStyles( styles );
         }
 

@@ -34,8 +34,9 @@ QgsFieldConditionalFormatWidget::QgsFieldConditionalFormatWidget( QWidget *paren
   setupUi( this );
   setPanelTitle( tr( "Conditional Styles" ) );
   connect( mFieldCombo, &QgsFieldComboBox::fieldChanged, this, &QgsFieldConditionalFormatWidget::fieldChanged );
-  connect( fieldRadio, &QAbstractButton::clicked, this, &QgsFieldConditionalFormatWidget::reloadStyles );
-  connect( rowRadio, &QAbstractButton::clicked, this, &QgsFieldConditionalFormatWidget::reloadStyles );
+  connect( fieldRadio, &QAbstractButton::clicked, this, &QgsFieldConditionalFormatWidget::typeChanged );
+  connect( rowRadio, &QAbstractButton::clicked, this, &QgsFieldConditionalFormatWidget::typeChanged );
+  connect( constraintRadio, &QAbstractButton::clicked, this, &QgsFieldConditionalFormatWidget::typeChanged );
   connect( mNewButton, &QAbstractButton::clicked, this, &QgsFieldConditionalFormatWidget::addNewRule );
   connect( listView, &QAbstractItemView::clicked, this, &QgsFieldConditionalFormatWidget::ruleClicked );
   mModel = new QStandardItemModel( listView );
@@ -142,16 +143,47 @@ QList<QgsConditionalStyle> QgsFieldConditionalFormatWidget::getStyles()
   {
     styles = mLayer->conditionalStyles()->fieldStyles( mFieldCombo->currentField() );
   }
-  if ( rowRadio->isChecked() )
+  else if ( rowRadio->isChecked() )
   {
     styles = mLayer->conditionalStyles()->rowStyles();
   }
+  else if ( constraintRadio->isChecked() )
+  {
+    styles = mLayer->conditionalStyles()->constraintStyles();
+  }
+
   return styles;
 }
 
 void QgsFieldConditionalFormatWidget::addNewRule()
 {
-  editStyle( -1, QgsConditionalStyle() );
+  if ( constraintRadio->isChecked() )
+  {
+    // Add default constraint styles
+    QgsConditionalStyles styles;
+
+    QgsConditionalStyle invalidHardConstraint;
+    invalidHardConstraint.setName( tr( "Hard constraint failure" ) );
+    invalidHardConstraint.setRule( QStringLiteral( "is_attribute_valid(@value, strength:='hard') = false" ) );
+    invalidHardConstraint.setBackgroundColor( QColor( 255, 152, 0 ) );
+    invalidHardConstraint.setTextColor( QColor( 0, 0, 0 ) );
+    styles << invalidHardConstraint;
+
+    QgsConditionalStyle invalidSoftConstraint;
+    invalidHardConstraint.setName( tr( "Soft constraint failure" ) );
+    invalidSoftConstraint.setRule( QStringLiteral( "is_attribute_valid(@value, strength:='hard') = true and is_attribute_valid(@value, strength:='soft') = false" ) );
+    invalidSoftConstraint.setBackgroundColor( QColor( 255, 191, 12 ) );
+    invalidSoftConstraint.setTextColor( QColor( 0, 0, 0 ) );
+    styles << invalidSoftConstraint;
+
+    mLayer->conditionalStyles()->setConstraintStyles( styles );
+
+    reloadStyles();
+  }
+  else
+  {
+    editStyle( -1, QgsConditionalStyle() );
+  }
 }
 
 void QgsFieldConditionalFormatWidget::reset()
@@ -185,6 +217,20 @@ QList<QgsConditionalStyle> QgsFieldConditionalFormatWidget::defaultPresets()
   style.setTextColor( QColor( 251, 154, 153 ) );
   styles.append( style );
   return styles;
+}
+
+void QgsFieldConditionalFormatWidget::typeChanged()
+{
+  if ( constraintRadio->isChecked() )
+  {
+    mNewButton->setText( tr( "Add Constraint Rules" ) );
+  }
+  else
+  {
+    mNewButton->setText( tr( "New Rule" ) );
+  }
+
+  reloadStyles();
 }
 
 void QgsFieldConditionalFormatWidget::reloadStyles()

@@ -770,11 +770,15 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
         styles = QgsConditionalStyle::matchingConditionalStyles( mLayer->conditionalStyles()->rowStyles(), QVariant(),  mExpressionContext );
         mRowStylesMap.insert( mFeat.id(), styles );
       }
-
       const QgsConditionalStyle rowstyle = QgsConditionalStyle::compressStyles( styles );
+
+      styles = QgsConditionalStyle::matchingConditionalStyles( mLayer->conditionalStyles()->constraintStyles(), field.name(),  mExpressionContext );
+      const QgsConditionalStyle constraintstyle = QgsConditionalStyle::compressStyles( styles );
+
       styles = mLayer->conditionalStyles()->fieldStyles( field.name() );
       styles = QgsConditionalStyle::matchingConditionalStyles( styles, val,  mExpressionContext );
       styles.insert( 0, rowstyle );
+      styles.insert( 0, constraintstyle );
       const QgsConditionalStyle style = QgsConditionalStyle::compressStyles( styles );
 
       if ( style.isValid() )
