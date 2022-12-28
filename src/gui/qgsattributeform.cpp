@@ -24,12 +24,14 @@
 #include "qgsattributeeditorrelation.h"
 #include "qgsattributeeditorqmlelement.h"
 #include "qgsattributeeditorhtmlelement.h"
+#include "qgsattributeeditortextelement.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgui.h"
 #include "qgsproject.h"
 #include "qgspythonrunner.h"
 #include "qgsrelationwidgetwrapper.h"
+#include "qgstextwidgetwrapper.h"
 #include "qgsvectordataprovider.h"
 #include "qgsattributeformeditorwidget.h"
 #include "qgsmessagebar.h"
@@ -2489,6 +2491,24 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       newWidgetInfo.labelOnTop = true;
       newWidgetInfo.showLabel = widgetDef->showLabel();
       mNeedsGeometry |= htmlWrapper->needsGeometry();
+      break;
+    }
+
+    case QgsAttributeEditorElement::AeTypeTextElement:
+    {
+      const QgsAttributeEditorTextElement *elementDef = static_cast<const QgsAttributeEditorTextElement *>( widgetDef );
+
+      QgsTextWidgetWrapper *textWrapper = new QgsTextWidgetWrapper( mLayer, nullptr, this );
+      context.setAttributeFormMode( mMode );
+      textWrapper->setText( elementDef->text() );
+      textWrapper->reinitWidget();
+      mWidgets.append( textWrapper );
+
+      newWidgetInfo.widget = textWrapper->widget();
+      newWidgetInfo.labelText = elementDef->name();
+      newWidgetInfo.labelOnTop = false;
+      newWidgetInfo.showLabel = widgetDef->showLabel();
+      mNeedsGeometry |= textWrapper->needsGeometry();
       break;
     }
 

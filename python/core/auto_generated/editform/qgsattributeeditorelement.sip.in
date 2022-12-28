@@ -69,7 +69,8 @@ layer.
       AeTypeInvalid,
       AeTypeQmlElement,
       AeTypeHtmlElement,
-      AeTypeAction
+      AeTypeAction,
+      AeTypeTextElement,
     };
 
     QgsAttributeEditorElement( AttributeEditorType type, const QString &name, QgsAttributeEditorElement *parent = 0 );

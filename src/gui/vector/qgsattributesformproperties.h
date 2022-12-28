@@ -92,6 +92,11 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
       QString htmlCode;
     };
 
+    struct TextElementEditorConfiguration
+    {
+      QString text;
+    };
+
     /**
      * \ingroup gui
      * \class DnDTreeItemData
@@ -107,7 +112,8 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
           QmlWidget,
           HtmlWidget,
           WidgetType, //!< In the widget tree, the type of widget
-          Action //!< Layer action
+          Action, //!< Layer action
+          TextWidget, //!< Text widget type, \since QGIS 3.30
         };
 
         //do we need that
@@ -215,6 +221,9 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
         QColor backgroundColor() const;
         void setBackgroundColor( const QColor &backgroundColor );
 
+        TextElementEditorConfiguration textElementEditorConfiguration() const;
+        void setTextElementEditorConfiguration( const TextElementEditorConfiguration &textElementEditorConfiguration );
+
       private:
         Type mType = Field;
         QString mName;
@@ -226,6 +235,7 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
         RelationEditorConfiguration mRelationEditorConfiguration;
         QmlElementEditorConfiguration mQmlElementEditorConfiguration;
         HtmlElementEditorConfiguration mHtmlElementEditorConfiguration;
+        TextElementEditorConfiguration mTextElementEditorConfiguration;
         QColor mBackgroundColor;
         bool mCollapsed = false;
         QgsOptionalExpression mCollapsedExpression;

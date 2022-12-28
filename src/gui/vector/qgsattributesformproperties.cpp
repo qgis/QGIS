@@ -15,6 +15,7 @@
 
 #include "qgsactionmanager.h"
 #include "qgsaddtaborgroup.h"
+#include "qgsattributeeditortextelement.h"
 #include "qgsattributesformproperties.h"
 #include "qgsattributetypedialog.h"
 #include "qgsattributeformcontaineredit.h"
@@ -33,6 +34,7 @@
 #include "qgsattributeeditorqmlelement.h"
 #include "qgsattributeeditorhtmlelement.h"
 #include "qgssettingsregistrycore.h"
+#include "qgstextwidgetwrapper.h"
 
 
 QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent )
@@ -168,6 +170,11 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
   auto itemDataHtml { DnDTreeItemData( DnDTreeItemData::HtmlWidget, QStringLiteral( "HtmlWidget" ), tr( "HTML Widget" ) ) };
   itemDataHtml.setShowLabel( true );
   mAvailableWidgetsTree->addItem( catitem, itemDataHtml );
+
+  auto itemDataText { DnDTreeItemData( DnDTreeItemData::TextWidget, QStringLiteral( "TextWidget" ), tr( "Text Widget" ) ) };
+  itemDataText.setShowLabel( true );
+  mAvailableWidgetsTree->addItem( catitem, itemDataText );
+
   catitem ->setExpanded( true );
 }
 
@@ -522,6 +529,19 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
       break;
     }
 
+    case QgsAttributeEditorElement::AeTypeTextElement:
+    {
+      const QgsAttributeEditorTextElement *textElementEditor = static_cast<const QgsAttributeEditorTextElement *>( widgetDef );
+      DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::TextWidget, widgetDef->name(), widgetDef->name() );
+      itemData.setShowLabel( widgetDef->showLabel() );
+      TextElementEditorConfiguration textEdConfig;
+      textEdConfig.text = textElementEditor->text();
+      itemData.setTextElementEditorConfiguration( textEdConfig );
+      itemData.setLabelStyle( widgetDef->labelStyle() );
+      newWidget = tree->addItem( parent, itemData );
+      break;
+    }
+
     case QgsAttributeEditorElement::AeTypeInvalid:
     {
       QgsDebugMsg( QStringLiteral( "Not loading invalid attribute editor type..." ) );
@@ -604,6 +624,7 @@ void QgsAttributesFormProperties::loadAttributeSpecificEditor( QgsAttributesDnDT
       }
       case DnDTreeItemData::QmlWidget:
       case DnDTreeItemData::HtmlWidget:
+      case DnDTreeItemData::TextWidget:
       {
         if ( layout != QgsEditFormConfig::EditorLayout::TabLayout )
         {
@@ -770,6 +791,14 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
     {
       QgsAttributeEditorHtmlElement *element = new QgsAttributeEditorHtmlElement( item->text( 0 ), parent );
       element->setHtmlCode( itemData.htmlElementEditorConfiguration().htmlCode );
+      widgetDef = element;
+      break;
+    }
+
+    case DnDTreeItemData::TextWidget:
+    {
+      QgsAttributeEditorTextElement *element = new QgsAttributeEditorTextElement( item->text( 0 ), parent );
+      element->setText( itemData.textElementEditorConfiguration().text );
       widgetDef = element;
       break;
     }
@@ -1037,6 +1066,7 @@ QTreeWidgetItem *QgsAttributesDnDTree::addItem( QTreeWidgetItem *parent, QgsAttr
     case QgsAttributesFormProperties::DnDTreeItemData::Relation:
     case QgsAttributesFormProperties::DnDTreeItemData::QmlWidget:
     case QgsAttributesFormProperties::DnDTreeItemData::HtmlWidget:
+    case QgsAttributesFormProperties::DnDTreeItemData::TextWidget:
       newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled );
       break;
 
@@ -1133,6 +1163,12 @@ bool QgsAttributesDnDTree::dropMimeData( QTreeWidgetItem *parent, int index, con
       {
         onItemDoubleClicked( newItem, 0 );
       }
+
+      if ( itemElement.type() == QgsAttributesFormProperties::DnDTreeItemData::TextWidget )
+      {
+        onItemDoubleClicked( newItem, 0 );
+      }
+
       clearSelection();
       newItem->setSelected( true );
     }
@@ -1461,8 +1497,89 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
         item->setData( 0, QgsAttributesFormProperties::DnDTreeRole, itemData );
         item->setText( 0, title->text() );
       }
+      break;
     }
-    break;
+
+    case QgsAttributesFormProperties::DnDTreeItemData::TextWidget:
+    {
+      if ( mType == QgsAttributesDnDTree::Type::Drag )
+        return;
+      QDialog dlg;
+      dlg.setWindowTitle( tr( "Configure Text Widget" ) );
+
+      QVBoxLayout *mainLayout = new QVBoxLayout();
+      QHBoxLayout *textLayout = new QHBoxLayout();
+      QVBoxLayout *layout = new QVBoxLayout();
+      mainLayout->addLayout( textLayout );
+      textLayout->addLayout( layout );
+      dlg.setLayout( mainLayout );
+      layout->addWidget( baseWidget );
+
+      QLineEdit *title = new QLineEdit( itemData.name() );
+
+      //htmlCode
+      QgsCodeEditorExpression *text = new QgsCodeEditorExpression( );
+      text->setSizePolicy( QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Expanding );
+      text->setText( itemData.textElementEditorConfiguration().text );
+
+      QgsTextWidgetWrapper *textWrapper = new QgsTextWidgetWrapper( mLayer, nullptr, this );
+      QgsFeature previewFeature;
+      mLayer->getFeatures().nextFeature( previewFeature );
+
+      //update preview on text change
+      connect( text, &QgsCodeEditorExpression::textChanged, this, [ = ]
+      {
+        textWrapper->setText( text->text( ) );
+        textWrapper->reinitWidget();
+        textWrapper->setFeature( previewFeature );
+      } );
+
+      QgsFieldExpressionWidget *expressionWidget = new QgsFieldExpressionWidget;
+      expressionWidget->setLayer( mLayer );
+      QToolButton *addExpressionButton = new QToolButton();
+      addExpressionButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyAdd.svg" ) ) );
+
+      connect( addExpressionButton, &QAbstractButton::clicked, this, [ = ]
+      {
+        text->insertText( expressionWidget->expression().prepend( QStringLiteral( "[% " ) ).append( QStringLiteral( " %]" ) ) );
+      } );
+
+      layout->addWidget( new QLabel( tr( "Title" ) ) );
+      layout->addWidget( title );
+      QGroupBox *expressionWidgetBox = new QGroupBox( tr( "Text" ) );
+      layout->addWidget( expressionWidgetBox );
+      expressionWidgetBox->setLayout( new QHBoxLayout );
+      expressionWidgetBox->layout()->addWidget( expressionWidget );
+      expressionWidgetBox->layout()->addWidget( addExpressionButton );
+      layout->addWidget( text );
+      QScrollArea *textPreviewBox = new QgsScrollArea();
+      textPreviewBox->setLayout( new QGridLayout );
+      textPreviewBox->setMinimumWidth( 400 );
+      textPreviewBox->layout()->addWidget( textWrapper->widget() );
+      //emit to load preview for the first time
+      emit text->textChanged();
+      textLayout->addWidget( textPreviewBox );
+
+      QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+
+      connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
+      connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
+
+      mainLayout->addWidget( buttonBox );
+
+      if ( dlg.exec() )
+      {
+        QgsAttributesFormProperties::TextElementEditorConfiguration textEdCfg;
+        textEdCfg.text = text->text();
+        itemData.setName( title->text() );
+        itemData.setTextElementEditorConfiguration( textEdCfg );
+        itemData.setShowLabel( showLabelCheckbox->isChecked() );
+
+        item->setData( 0, QgsAttributesFormProperties::DnDTreeRole, itemData );
+        item->setText( 0, title->text() );
+      }
+      break;
+    }
   }
 }
 
@@ -1615,4 +1732,14 @@ QColor QgsAttributesFormProperties::DnDTreeItemData::backgroundColor() const
 void QgsAttributesFormProperties::DnDTreeItemData::setBackgroundColor( const QColor &backgroundColor )
 {
   mBackgroundColor = backgroundColor;
+}
+
+QgsAttributesFormProperties::TextElementEditorConfiguration QgsAttributesFormProperties::DnDTreeItemData::textElementEditorConfiguration() const
+{
+  return mTextElementEditorConfiguration;
+}
+
+void QgsAttributesFormProperties::DnDTreeItemData::setTextElementEditorConfiguration( const QgsAttributesFormProperties::TextElementEditorConfiguration &textElementEditorConfiguration )
+{
+  mTextElementEditorConfiguration = textElementEditorConfiguration;
 }
