@@ -17,6 +17,7 @@
 #include "qgshtmlwidgetwrapper.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgswebframe.h"
+#include "qgsvaluerelationfieldformatter.h"
 #include "qgsattributeform.h"
 #include <QScreen>
 
@@ -43,8 +44,13 @@ QWidget *QgsHtmlWidgetWrapper::createWidget( QWidget *parent )
     {
       if ( attributeChanged )
       {
-        mFormFeature.setAttribute( attribute, newValue );
-        setHtmlContext();
+        const QRegularExpression expRe { QStringLiteral( R"re(expression.evaluate\s*\(\s*"(.*)"\))re" ), QRegularExpression::PatternOption::MultilineOption | QRegularExpression::PatternOption::DotMatchesEverythingOption };
+        const QRegularExpressionMatch match { expRe.match( mHtmlCode ) };
+        if ( match.hasMatch() && QgsValueRelationFieldFormatter::expressionRequiresFormScope( match.captured( 1 ) ) )
+        {
+          mFormFeature.setAttribute( attribute, newValue );
+          setHtmlContext();
+        }
       }
     } );
   }
