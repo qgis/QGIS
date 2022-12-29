@@ -221,7 +221,16 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
         QColor backgroundColor() const;
         void setBackgroundColor( const QColor &backgroundColor );
 
+        /**
+         * Returns the editor configuration for text element.
+         * \since QGIS 3.30
+         */
         TextElementEditorConfiguration textElementEditorConfiguration() const;
+
+        /**
+         * Sets the editor configuration for text element to \a textElementEditorConfiguration.
+         * \since QGIS 3.30
+         */
         void setTextElementEditorConfiguration( const TextElementEditorConfiguration &textElementEditorConfiguration );
 
       private:
