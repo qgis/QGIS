@@ -1249,9 +1249,9 @@ void TestQgs3DRendering::testEpsg4978LineRendering()
   map->setExtent( fullExtent );
   map->setLayers( QList<QgsMapLayer *>() << layerLines );
 
-  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-  flatTerrain->setCrs( map->crs() );
-  map->setTerrainGenerator( flatTerrain );
+//  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+//  flatTerrain->setCrs( map->crs() );
+//  map->setTerrainGenerator( flatTerrain );
 
   QgsOffscreen3DEngine engine;
   Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
