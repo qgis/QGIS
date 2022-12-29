@@ -727,6 +727,7 @@ QgsLayerTreeModel TestQgsLegendRenderer::testGroupIndentSetup()
 void TestQgsLegendRenderer::testGroupIndentDefault()
 {
   QgsLayerTreeModel legendModel = testGroupIndentSetup();
+  QgsLegendSettings settings;
   settings.rstyle( QgsLegendStyle::Group ).setIndent( 10 );
   settings.rstyle( QgsLegendStyle::Subgroup ).setIndent( 5 );
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
@@ -738,6 +739,7 @@ void TestQgsLegendRenderer::testGroupIndentDefault()
 void TestQgsLegendRenderer::testGroupIndentRT()
 {
   QgsLayerTreeModel legendModel = testGroupIndentSetup();
+  QgsLegendSettings settings;
   settings.rstyle( QgsLegendStyle::Group ).setIndent( 10 );
   settings.rstyle( QgsLegendStyle::Subgroup ).setIndent( 5 );
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
@@ -752,6 +754,7 @@ void TestQgsLegendRenderer::testGroupIndentRT()
 void TestQgsLegendRenderer::testGroupIndentRS()
 {
   QgsLayerTreeModel legendModel = testGroupIndentSetup();
+  QgsLegendSettings settings;
   settings.rstyle( QgsLegendStyle::Group ).setIndent( 10 );
   settings.rstyle( QgsLegendStyle::Subgroup ).setIndent( 5 );
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
@@ -767,6 +770,7 @@ void TestQgsLegendRenderer::testGroupIndentRS()
 void TestQgsLegendRenderer::testGroupIndentRSRT()
 {
   QgsLayerTreeModel legendModel = testGroupIndentSetup();
+  QgsLegendSettings settings;
   settings.rstyle( QgsLegendStyle::Group ).setIndent( 10 );
   settings.rstyle( QgsLegendStyle::Subgroup ).setIndent( 5 );
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
