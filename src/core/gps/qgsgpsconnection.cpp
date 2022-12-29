@@ -18,7 +18,6 @@
 #include "qgsgpsconnection.h"
 #include <QIODevice>
 
-
 QgsGpsConnection::QgsGpsConnection( QIODevice *dev )
   : QObject( nullptr )
   , mSource( dev )
@@ -96,8 +95,11 @@ void QgsGpsConnection::onStateChanged( const QgsGpsInformation &info )
   if ( info.isValid() )
   {
     const QgsPoint oldPosition = mLastLocation;
+    const QDateTime oldDateTime = mLastDateTime;
+    mLastDateTime = info.utcDateTime;
     mLastLocation = QgsPoint( info.longitude, info.latitude, info.elevation );
-    if ( mLastLocation != oldPosition )
+    // if ( mLastLocation != oldPosition )
+    if ( mLastDateTime != oldDateTime )
     {
       emit positionChanged( mLastLocation );
     }
