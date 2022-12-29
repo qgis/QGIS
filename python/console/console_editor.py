@@ -122,9 +122,6 @@ class Editor(QgsCodeEditorPython):
         self.syntaxCheckScut = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_4), self)
         self.syntaxCheckScut.setContext(Qt.WidgetShortcut)
         self.syntaxCheckScut.activated.connect(self.syntaxCheck)
-        self.toggleCommentScut = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_Colon), self)
-        self.toggleCommentScut.setContext(Qt.WidgetShortcut)
-        self.toggleCommentScut.activated.connect(self.toggleComment)
         self.modificationChanged.connect(self.parent.modified)
         self.modificationAttempted.connect(self.fileReadOnly)
 
@@ -516,7 +513,8 @@ class Editor(QgsCodeEditorPython):
             if re.match(ptrn, txt):
                 self.insert(' import')
                 self.setCursorPosition(line, pos + 7)
-        QsciScintilla.keyPressEvent(self, e)
+        QgsCodeEditorPython.keyPressEvent(self, e)
+
 
     def focusInEvent(self, e):
         pathfile = self.parent.path

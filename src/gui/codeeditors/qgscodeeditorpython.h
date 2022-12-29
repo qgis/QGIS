@@ -95,6 +95,13 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
 
     void initializeLexer() override;
 
+    /**
+     * Override QgsCodeEdito::keyPressEvent to provide custom shortcuts
+     *
+     * \since QGIS 3.30
+     */
+    virtual void keyPressEvent( QKeyEvent *event ) override;
+
   protected slots:
 
     /**

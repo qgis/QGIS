@@ -75,6 +75,8 @@ Toggle comment for the selected text.
 
     virtual void initializeLexer();
 
+    virtual void keyPressEvent( QKeyEvent *event );
+
 
   protected slots:
 

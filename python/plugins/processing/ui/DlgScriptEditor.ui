@@ -253,9 +253,6 @@
    <property name="text">
     <string>Toggle Comment</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+:</string>
-   </property>
   </action>
  </widget>
  <customwidgets>

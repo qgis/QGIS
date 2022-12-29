@@ -29,6 +29,7 @@
 #include <QTextStream>
 #include <Qsci/qscilexerpython.h>
 #include <QDesktopServices>
+#include <QKeyEvent>
 
 QgsCodeEditorPython::QgsCodeEditorPython( QWidget *parent, const QList<QString> &filenames, Mode mode )
   : QgsCodeEditor( parent,
@@ -183,6 +184,19 @@ void QgsCodeEditorPython::initializeLexer()
   setIndentationGuides( true );
 
   runPostLexerConfigurationTasks();
+}
+
+void QgsCodeEditorPython::keyPressEvent(QKeyEvent *event)
+{
+  bool ctrl = event->modifiers() & Qt::ControlModifier;
+
+  if(ctrl && event->key() == Qt::Key_Colon)
+  {
+    event->accept();
+    toggleComment();
+    return;
+  }
+  return QgsCodeEditor::keyPressEvent(event);
 }
 
 void QgsCodeEditorPython::autoComplete()
