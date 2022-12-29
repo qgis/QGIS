@@ -113,7 +113,6 @@ QgsSettingsEntryBase::QgsSettingsEntryBase( const QString &key, QgsSettingsTreeE
   , mPluginName()
   , mOptions( options )
 {
-  QgsDebugMsg( QString( "constructor with parent for %1" ).arg( key ) );
   mKey = QDir::cleanPath( QStringLiteral( "%1/%2" ).arg( parentTreeElement ? parentTreeElement->completeKey() : QString(), key ) );
 
   if ( parentTreeElement )

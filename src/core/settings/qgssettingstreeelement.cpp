@@ -22,19 +22,11 @@
 
 QgsSettingsTreeElement::~QgsSettingsTreeElement()
 {
-  QgsDebugMsg( QString( "deleting %1" ).arg( mCompleteKey ) );
   if ( mType != Type::Root )
     mParent->unregisterChildElement( this );
 
   qDeleteAll( mChildrenElements );
-
-
-  QgsDebugMsg( QString( "removing settings for %1" ).arg( mCompleteKey ) );
-
   qDeleteAll( mChildrenSettings );
-
-  QgsDebugMsg( QString( "deleting done for %1" ).arg( mCompleteKey ) );
-
 }
 
 QgsSettingsTreeElement *QgsSettingsTreeElement::createRootElement()
@@ -92,7 +84,6 @@ QgsSettingsEntryBase *QgsSettingsTreeElement::childSetting( const QString &key )
   QList<QgsSettingsEntryBase *>::iterator it = mChildrenSettings.begin();
   for ( ; it != mChildrenSettings.end(); ++it )
   {
-    QgsDebugMsg( ( *it )->key() + " vs " + testCompleteKey );
     if ( ( *it )->key() == testCompleteKey )
       return *it;
   }
@@ -117,8 +108,6 @@ void QgsSettingsTreeElement::registerChildElement( QgsSettingsTreeElement *eleme
 
 void QgsSettingsTreeElement::unregisterChildSetting( QgsSettingsEntryBase *setting, bool deleteSettingValues, const QStringList &parentsNamedItems )
 {
-  QgsDebugMsg( QString( "unregister child setting %1 in %2" ).arg( setting->key(), mCompleteKey ) );
-
   if ( deleteSettingValues )
     setting->remove( parentsNamedItems );
 
@@ -127,8 +116,6 @@ void QgsSettingsTreeElement::unregisterChildSetting( QgsSettingsEntryBase *setti
 
 void QgsSettingsTreeElement::unregisterChildElement( QgsSettingsTreeElement *element )
 {
-  QgsDebugMsg( QString( "unregister child element %1 in %2" ).arg( element->key(), mCompleteKey ) );
-
   mChildrenElements.removeAll( element );
 }
 
