@@ -1465,6 +1465,13 @@ The development version
       CustomCrs,
     };
 
+    enum class SettingsLocation
+    {
+      Any,
+      Global,
+      Local,
+    };
+
     enum class ScriptLanguage
     {
       Css,

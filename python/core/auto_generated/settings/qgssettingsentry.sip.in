@@ -205,6 +205,17 @@ Returns ``True`` if the settings is contained in the underlying QSettings.
 The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
 %End
 
+    Qgis::SettingsLocation location( const QStringList &dynamicKeyPartList ) const;
+%Docstring
+Returns the location of the setting if it exists
+
+.. note::
+
+   it will return Qgis.SettingsLocation.Any if the key doesn't exist
+
+.. versionadded:: 3.30
+%End
+
     void remove( const QString &dynamicKeyPart = QString() ) const;
 %Docstring
 Removes the settings from the underlying QSettings.
@@ -419,17 +430,16 @@ The ``options`` arguments specifies the options for the settings entry.
 %Docstring
 Returns settings value.
 
-The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
-The ``defaultValueOverride`` argument if valid is used instead of the normal default value.
+\arg dynamicKeyPart specifies the dynamic part of the settings key.
 %End
 
     T value( const QStringList &dynamicKeyPartList )  const;
 %Docstring
 Returns settings value.
 
-The ``dynamicKeyPartList`` argument specifies the list of dynamic parts of the settings key.
-The ``defaultValueOverride`` argument if valid is used instead of the normal default value.
+\arg dynamicKeyPartList specifies the list of dynamic parts of the settings key.
 %End
+
 
     T valueWithDefaultOverride( const T &defaultValueOverride, const QString &dynamicKeyPart = QString() ) const;
 %Docstring

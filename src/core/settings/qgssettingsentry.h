@@ -235,6 +235,13 @@ class CORE_EXPORT QgsSettingsEntryBase
     bool exists( const QStringList &dynamicKeyPartList ) const;
 
     /**
+     * Returns the location of the setting if it exists
+     * \note it will return Qgis::SettingsLocation::Any if the key doesn't exist
+     * \since QGIS 3.30
+     */
+    Qgis::SettingsLocation location( const QStringList &dynamicKeyPartList ) const;
+
+    /**
      * Removes the settings from the underlying QSettings.
      *
      * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
@@ -436,18 +443,17 @@ class QgsSettingsEntryByReference : public QgsSettingsEntryBase
     /**
      * Returns settings value.
      *
-     * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
-     * The \a defaultValueOverride argument if valid is used instead of the normal default value.
+     * \arg dynamicKeyPart specifies the dynamic part of the settings key.
      */
     T value( const QString &dynamicKeyPart = QString() ) const { return this->convertFromVariant( valueAsVariant( dynamicKeyPart ) );}
 
     /**
      * Returns settings value.
      *
-     * The \a dynamicKeyPartList argument specifies the list of dynamic parts of the settings key.
-     * The \a defaultValueOverride argument if valid is used instead of the normal default value.
+     * \arg dynamicKeyPartList specifies the list of dynamic parts of the settings key.
      */
     T value( const QStringList &dynamicKeyPartList )  const { return this->convertFromVariant( valueAsVariant( dynamicKeyPartList ) );}
+
 
     //! Returns the settings value with a \a defaultValueOverride and with an optional \a dynamicKeyPart
     T valueWithDefaultOverride( const T &defaultValueOverride, const QString &dynamicKeyPart = QString() ) const { return this->convertFromVariant( valueAsVariantWithDefaultOverride( defaultValueOverride, dynamicKeyPart ) );}

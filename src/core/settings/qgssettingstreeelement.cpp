@@ -146,38 +146,44 @@ QgsSettingsTreeNamedListElement::~QgsSettingsTreeNamedListElement()
     delete mSelectedItemSetting;
 }
 
-const QStringList QgsSettingsTreeNamedListElement::items( const QStringList &parentItems ) const
+
+QStringList QgsSettingsTreeNamedListElement::items( const QStringList &parentNamedItems ) const
 {
-  if ( namedElementsCount() - 1 != parentItems.count() )
-    throw QgsSettingsException( QObject::tr( "The number of given parent named items (%1) doesn't match with the number of named items in the key (%2)." ).arg( parentItems.count(),  namedElementsCount() ) );
+  return items( Qgis::SettingsLocation::Any, parentNamedItems );
+}
+
+QStringList QgsSettingsTreeNamedListElement::items( Qgis::SettingsLocation location, const QStringList &parentNamedItems ) const
+{
+  if ( namedElementsCount() - 1 != parentNamedItems.count() )
+    throw QgsSettingsException( QObject::tr( "The number of given parent named items (%1) doesn't match with the number of named items in the key (%2)." ).arg( parentNamedItems.count(),  namedElementsCount() ) );
 
   QgsSettings settings;
-  switch ( parentItems.count() )
+  switch ( parentNamedItems.count() )
   {
     case 0:
       settings.beginGroup( completeKey() );
       break;
     case 1:
-      settings.beginGroup( completeKey().arg( parentItems[0] ) );
+      settings.beginGroup( completeKey().arg( parentNamedItems[0] ) );
       break;
     case 2:
-      settings.beginGroup( completeKey().arg( parentItems[0], parentItems[1] ) );
+      settings.beginGroup( completeKey().arg( parentNamedItems[0], parentNamedItems[1] ) );
       break;
     case 3:
-      settings.beginGroup( completeKey().arg( parentItems[0], parentItems[1], parentItems[2] ) );
+      settings.beginGroup( completeKey().arg( parentNamedItems[0], parentNamedItems[1], parentNamedItems[2] ) );
       break;
     case 4:
-      settings.beginGroup( completeKey().arg( parentItems[0], parentItems[1], parentItems[2], parentItems[3] ) );
+      settings.beginGroup( completeKey().arg( parentNamedItems[0], parentNamedItems[1], parentNamedItems[2], parentNamedItems[3] ) );
       break;
     case 5:
-      settings.beginGroup( completeKey().arg( parentItems[0], parentItems[1], parentItems[2], parentItems[3], parentItems[4] ) );
+      settings.beginGroup( completeKey().arg( parentNamedItems[0], parentNamedItems[1], parentNamedItems[2], parentNamedItems[3], parentNamedItems[4] ) );
       break;
     default:
       throw QgsSettingsException( QObject::tr( "Current implementation of QgsSettingsTreeNamedListElement::items doesn't handle more than 5 parent named items" ) );
       break;
   }
 
-  return settings.childGroups();
+  return settings.childGroups( location );
 }
 
 void QgsSettingsTreeNamedListElement::setSelectedItem( const QString &item, const QStringList &parentsNamedItems )

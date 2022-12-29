@@ -18,6 +18,7 @@
 
 #include <QObject>
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgssettingsregistry.h"
@@ -185,7 +186,13 @@ class CORE_EXPORT QgsSettingsTreeNamedListElement : public QgsSettingsTreeElemen
      *  Returns the list of items
     * \arg parentsNamedItems the list of named items in the parent named list (if any)
     */
-    const QStringList items( const QStringList &parentsNamedItems = QStringList() ) const SIP_THROW( QgsSettingsException );
+    QStringList items( const QStringList &parentsNamedItems = QStringList() ) const SIP_THROW( QgsSettingsException );
+
+    /**
+     *  Returns the list of items
+    * \arg parentsNamedItems the list of named items in the parent named list (if any)
+    */
+    QStringList items( Qgis::SettingsLocation location, const QStringList &parentsNamedItems = QStringList() ) const SIP_THROW( QgsSettingsException );
 
 
     /**

@@ -2528,6 +2528,19 @@ class CORE_EXPORT Qgis
     Q_ENUM( CoordinateDisplayType )
 
     /**
+     * Settings Location
+     *
+     * \since QGIS 3.30
+     */
+    enum class SettingsLocation : int
+    {
+      Any, //!< From any lcoation
+      Global, //!< Global settings only
+      Local, //!< Local settings only
+    };
+    Q_ENUM( SettingsLocation )
+
+    /**
      * Scripting languages.
      *
      * \since QGIS 3.30

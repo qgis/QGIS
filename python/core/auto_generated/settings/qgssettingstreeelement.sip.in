@@ -180,7 +180,13 @@ the named list element is used to store a group of settings under a dynamicly na
   public:
     virtual ~QgsSettingsTreeNamedListElement();
 
-    const QStringList items( const QStringList &parentsNamedItems = QStringList() ) const throw( QgsSettingsException );
+    QStringList items( const QStringList &parentsNamedItems = QStringList() ) const throw( QgsSettingsException );
+%Docstring
+Returns the list of items
+\arg parentsNamedItems the list of named items in the parent named list (if any)
+%End
+
+    QStringList items( Qgis::SettingsLocation location, const QStringList &parentsNamedItems = QStringList() ) const throw( QgsSettingsException );
 %Docstring
 Returns the list of items
 \arg parentsNamedItems the list of named items in the parent named list (if any)

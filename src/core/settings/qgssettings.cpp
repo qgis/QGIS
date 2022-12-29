@@ -158,24 +158,32 @@ QStringList QgsSettings::childKeys() const
   return keys;
 }
 
-QStringList QgsSettings::childGroups() const
+QStringList QgsSettings::childGroups( Qgis::SettingsLocation location ) const
 {
-  QStringList keys = mUserSettings->childGroups();
-  if ( mGlobalSettings )
+  switch ( location )
   {
-    const QStringList constChildGroups = mGlobalSettings->childGroups();
-    std::copy_if( constChildGroups.constBegin(), constChildGroups.constEnd(), std::back_inserter( keys ), [&keys]( const QString & key ) {return !keys.contains( key );} );
+    case Qgis::SettingsLocation::Any:
+    {
+      QStringList keys = mUserSettings->childGroups();
+      if ( mGlobalSettings )
+      {
+        const QStringList constChildGroups = mGlobalSettings->childGroups();
+        std::copy_if( constChildGroups.constBegin(), constChildGroups.constEnd(), std::back_inserter( keys ), [&keys]( const QString & key ) {return !keys.contains( key );} );
+      }
+      return keys;
+    }
+
+    case Qgis::SettingsLocation::Local:
+      return mUserSettings->childGroups();
+
+    case Qgis::SettingsLocation::Global:
+      return  mGlobalSettings ? mGlobalSettings->childGroups() : QStringList();
   }
-  return keys;
+
 }
 QStringList QgsSettings::globalChildGroups() const
 {
-  QStringList keys;
-  if ( mGlobalSettings )
-  {
-    keys = mGlobalSettings->childGroups();
-  }
-  return keys;
+  return childGroups( Qgis::SettingsLocation::Global );
 }
 
 QString QgsSettings::globalSettingsPath()
@@ -299,6 +307,17 @@ void QgsSettings::setArrayIndex( int i )
   {
     mUserSettings->setArrayIndex( i );
   }
+}
+
+Qgis::SettingsLocation QgsSettings::location( const QString &key ) const
+{
+  if ( mGlobalSettings && mGlobalSettings->contains( key ) )
+    return Qgis::SettingsLocation::Global;
+
+  if ( mUserSettings->contains( key ) )
+    return Qgis::SettingsLocation::Local;
+
+  return Qgis::SettingsLocation::Any;
 }
 
 void QgsSettings::setValue( const QString &key, const QVariant &value, const QgsSettings::Section section )
