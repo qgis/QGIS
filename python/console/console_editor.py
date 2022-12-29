@@ -515,7 +515,6 @@ class Editor(QgsCodeEditorPython):
                 self.setCursorPosition(line, pos + 7)
         QgsCodeEditorPython.keyPressEvent(self, e)
 
-
     def focusInEvent(self, e):
         pathfile = self.parent.path
         if pathfile:
