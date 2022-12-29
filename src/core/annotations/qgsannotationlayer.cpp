@@ -491,7 +491,7 @@ bool QgsAnnotationLayer::writeItems( QDomNode &node, QDomDocument &doc, QString 
     ( *it )->writeXml( itemElement, doc, context );
     itemsElement.appendChild( itemElement );
   }
-  node.appendChild(itemsElement);
+  node.appendChild( itemsElement );
 
   return true;
 }

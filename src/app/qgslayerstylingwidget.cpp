@@ -743,7 +743,7 @@ void QgsLayerStylingWidget::setAnnotationItem( QgsAnnotationLayer *layer, const 
   mContext.setAnnotationId( itemId );
   if ( layer )
     setLayer( layer );
-  mStackedWidget->setCurrentIndex(1);
+  mStackedWidget->setCurrentIndex( 1 );
 
   if ( QgsMapLayerConfigWidget *configWidget = qobject_cast< QgsMapLayerConfigWidget * >( mWidgetStack->mainPanel() ) )
   {
