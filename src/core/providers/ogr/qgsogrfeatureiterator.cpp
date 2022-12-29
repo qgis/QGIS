@@ -22,14 +22,12 @@
 #include "qgsogrutils.h"
 #include "qgsapplication.h"
 #include "qgsgeometry.h"
-#include "qgslogger.h"
-#include "qgsmessagelog.h"
-#include "qgssettings.h"
 #include "qgsexception.h"
 #include "qgswkbtypes.h"
 #include "qgsogrtransaction.h"
 #include "qgssymbol.h"
 #include "qgsgeometryengine.h"
+#include "qgsdbquerylog.h"
 
 #include <QTextCodec>
 #include <QFile>
@@ -279,6 +277,34 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
     std::sort( mRequestAttributes.begin(), mRequestAttributes.end() );
   }
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+  // Install query logger
+  // Note: this logger won't track insert/update/delete operations,
+  //       in order to do that the callback would need to be installed
+  //       in the provider's dataset, but because the provider life-cycle
+  //       is significantly longer than this iterator it wouldn't be possible
+  //       to install the callback at a later time if the provider was created
+  //       when the logger was disabled.
+  //       There is currently no API to connect the change of state of the
+  //       logger to the data provider.
+  if ( QgsApplication::databaseQueryLog()->enabled() )
+  {
+    GDALDatasetSetQueryLoggerFunc( mConn->ds, [ ]( const char *pszSQL, const char *pszError, int64_t lNumRecords, int64_t lExecutionTimeMilliseconds, void *pQueryLoggerArg )
+    {
+      QgsDatabaseQueryLogEntry entry;
+      entry.initiatorClass = QStringLiteral( "QgsOgrFeatureIterator" );
+      entry.origin = QGS_QUERY_LOG_ORIGIN;
+      entry.provider = QStringLiteral( "ogr" );
+      entry.uri = *reinterpret_cast<QString *>( pQueryLoggerArg );
+      entry.query = QString( pszSQL );
+      entry.error = QString( pszError );
+      entry.startedTime = QDateTime::currentMSecsSinceEpoch() - lExecutionTimeMilliseconds;
+      entry.fetchedRows = lNumRecords;
+      QgsApplication::databaseQueryLog()->log( entry );
+      QgsApplication::databaseQueryLog()->finished( entry );
+    }, reinterpret_cast<void *>( &mConn->path ) );
+  }
+#endif
   //start with first feature
   rewind();
 
