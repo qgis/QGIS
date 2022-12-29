@@ -117,6 +117,7 @@ class TestQgsGpsLogger(unittest.TestCase):
         spy = QSignalSpy(logger.stateChanged)
 
         gps_connection.send_message('$GPRMC,084111.185,A,6938.6531,N,01856.8527,E,0.16,2.00,220120,,,A*6E')
+        gps_connection.send_message("$GPGGA,084112.185,6939.6532,N,01856.8526,E,1,04,1.4,35.0,M,29.4,M,,0000*63")
         self.assertEqual(len(spy), 1)
 
         # not enough vertices for these types yet:
@@ -138,7 +139,8 @@ class TestQgsGpsLogger(unittest.TestCase):
         self.assertEqual(res.asWkt(4), 'PointZ (18.9475 69.6442 0)')
 
         # make elevation available
-        gps_connection.send_message("$GPGGA,084112.185,6939.6532,N,01856.8526,E,1,04,1.4,35.0,M,29.4,M,,0000*63")
+        # gps_connection.send_message("$GPGGA,084112.185,6939.6532,N,01856.8526,E,1,04,1.4,35.0,M,29.4,M,,0000*63")
+        gps_connection.send_message("$GPGGA,084112.185,6939.6532,N,01866.8526,E,1,04,1.4,35.0,M,29.4,M,,0000*63")
         res, err = logger.currentGeometry(QgsWkbTypes.PointZ)
         self.assertFalse(err)
         self.assertEqual(res.asWkt(4), 'PointZ (18.9475 69.6609 35)')
@@ -162,7 +164,8 @@ class TestQgsGpsLogger(unittest.TestCase):
         res, err = logger.currentGeometry(QgsWkbTypes.PolygonZ)
         self.assertTrue(err)
 
-        gps_connection.send_message("$GPGGA,084112.185,6939.6532,N,01866.8526,E,1,04,1.4,35.0,M,29.4,M,,0000*63")
+        # gps_connection.send_message("$GPGGA,084112.185,6939.6532,N,01866.8526,E,1,04,1.4,35.0,M,29.4,M,,0000*63")
+        gps_connection.send_message("$GPGGA,084113.185,6940.6532,N,01866.8526,E,1,04,1.4,35.0,M,29.4,M,,0000*63")
 
         res, err = logger.currentGeometry(QgsWkbTypes.PointZ)
         self.assertFalse(err)
@@ -211,6 +214,7 @@ class TestQgsGpsLogger(unittest.TestCase):
         points_layer.startEditing()
 
         gps_connection.send_message('$GPRMC,084111.185,A,6938.6531,N,01856.8527,E,0.16,2.00,220120,,,A*6E')
+        gps_connection.send_message('$GPRMC,084113.185,A,6938.9152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
         self.assertEqual(len(spy), 1)
 
         self.assertEqual(points_layer.featureCount(), 1)
@@ -220,8 +224,8 @@ class TestQgsGpsLogger(unittest.TestCase):
         self.assertEqual(f.attributes(), [exp, None, None])
         self.assertEqual(f.geometry().asWkt(-3), 'PointZ (-1297000 21436000 0)')
 
-        gps_connection.send_message(
-            '$GPRMC,084113.185,A,6938.9152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
+        # gps_connection.send_message('$GPRMC,084113.185,A,6938.9152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
+        gps_connection.send_message('$GPRMC,084117.185,A,6939.3152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
         self.assertEqual(len(spy), 2)
 
         self.assertEqual(points_layer.featureCount(), 2)
@@ -236,8 +240,8 @@ class TestQgsGpsLogger(unittest.TestCase):
         self.assertEqual(f.attributes(), [exp, 0.004368333651276768, 2.0])
         self.assertEqual(f.geometry().asWkt(-3), 'PointZ (-1297000 21435000 0)')
 
-        gps_connection.send_message(
-            '$GPRMC,084117.185,A,6939.3152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
+        # gps_connection.send_message('$GPRMC,084117.185,A,6939.3152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
+        gps_connection.send_message('$GPRMC,084118.185,A,6939.1152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
         self.assertEqual(len(spy), 3)
 
         self.assertEqual(points_layer.featureCount(), 3)
@@ -259,8 +263,8 @@ class TestQgsGpsLogger(unittest.TestCase):
         # stop recording distance
         logger.setDestinationField(Qgis.GpsInformationComponent.TrackDistanceSinceLastPoint, None)
 
-        gps_connection.send_message(
-            '$GPRMC,084118.185,A,6939.1152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
+        # gps_connection.send_message('$GPRMC,084118.185,A,6939.1152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
+        gps_connection.send_message('$GPRMC,084119.185,A,6939.3152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
         self.assertEqual(len(spy), 4)
 
         self.assertEqual(points_layer.featureCount(), 4)
@@ -286,8 +290,8 @@ class TestQgsGpsLogger(unittest.TestCase):
         # stop recording time since previous
         logger.setDestinationField(Qgis.GpsInformationComponent.TrackTimeSinceLastPoint, None)
 
-        gps_connection.send_message(
-            '$GPRMC,084119.185,A,6939.3152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
+        # gps_connection.send_message('$GPRMC,084119.185,A,6939.3152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
+        gps_connection.send_message('$GPRMC,084120.185,A,6939.4152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
         self.assertEqual(len(spy), 5)
 
         self.assertEqual(points_layer.featureCount(), 5)
@@ -317,8 +321,8 @@ class TestQgsGpsLogger(unittest.TestCase):
         # stop recording timestamp
         logger.setDestinationField(Qgis.GpsInformationComponent.Timestamp, None)
 
-        gps_connection.send_message(
-            '$GPRMC,084120.185,A,6939.4152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
+        # gps_connection.send_message('$GPRMC,084120.185,A,6939.4152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
+        gps_connection.send_message('$GPRMC,084129.185,A,6940.4152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
         self.assertEqual(len(spy), 6)
 
         self.assertEqual(points_layer.featureCount(), 6)
@@ -355,8 +359,8 @@ class TestQgsGpsLogger(unittest.TestCase):
         logger.setWriteToEditBuffer(False)
         self.assertFalse(logger.writeToEditBuffer())
 
-        gps_connection.send_message(
-            '$GPRMC,084129.185,A,6939.4152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
+        # gps_connection.send_message('$GPRMC,084129.185,A,6939.4152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
+        gps_connection.send_message('$GPRMC,084130.185,A,6941.4152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
         self.assertEqual(points_layer.dataProvider().featureCount(), 1)
 
     def test_point_recording_no_z(self):
@@ -379,6 +383,7 @@ class TestQgsGpsLogger(unittest.TestCase):
         points_layer.startEditing()
 
         gps_connection.send_message('$GPRMC,084111.185,A,6938.6531,N,01856.8527,E,0.16,2.00,220120,,,A*6E')
+        gps_connection.send_message('$GPRMC,084112.185,A,6939.6531,N,01856.8527,E,0.16,2.00,220120,,,A*6E')
         self.assertEqual(len(spy), 1)
 
         self.assertEqual(points_layer.featureCount(), 1)
@@ -407,6 +412,7 @@ class TestQgsGpsLogger(unittest.TestCase):
         points_layer.startEditing()
 
         gps_connection.send_message('$GPRMC,084111.185,A,6938.6531,N,01856.8527,E,0.16,2.00,220120,,,A*6E')
+        gps_connection.send_message('$GPRMC,084113.185,A,6938.9152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
         self.assertEqual(len(spy), 1)
 
         self.assertEqual(logger.lastMValue(), 1579682471185.0)
@@ -417,8 +423,8 @@ class TestQgsGpsLogger(unittest.TestCase):
         exp.setOffsetFromUtc(3000)
         self.assertEqual(f.geometry().asWkt(-3), 'PointM (-1297000 21436000 1579682471000)')
 
-        gps_connection.send_message(
-            '$GPRMC,084113.185,A,6938.9152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
+        # gps_connection.send_message('$GPRMC,084113.185,A,6938.9152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
+        gps_connection.send_message('$GPRMC,084117.185,A,6939.3152,N,01856.8526,E,0.05,Z2.00,220120,,,A*6C')
         self.assertEqual(len(spy), 2)
         self.assertEqual(logger.lastMValue(), 1579682473185.)
 
@@ -428,8 +434,8 @@ class TestQgsGpsLogger(unittest.TestCase):
         f = next(features)
         self.assertEqual(f.geometry().asWkt(-3), 'PointM (-1297000 21435000 1579682473000)')
 
-        gps_connection.send_message(
-            '$GPRMC,084117.185,A,6939.3152,N,01856.8526,E,0.05,Z2.00,220120,,,A*6C')
+        # gps_connection.send_message('$GPRMC,084117.185,A,6939.3152,N,01856.8526,E,0.05,Z2.00,220120,,,A*6C')
+        gps_connection.send_message('$GPRMC,084118.185,A,6940.3152,N,01856.8526,E,0.05,Z2.00,220120,,,A*6C')
         self.assertEqual(len(spy), 3)
         self.assertEqual(logger.lastMValue(), 1579682477185.0)
 
@@ -461,6 +467,7 @@ class TestQgsGpsLogger(unittest.TestCase):
         points_layer.startEditing()
 
         gps_connection.send_message('$GPRMC,084111.185,A,6938.6531,N,01856.8527,E,0.16,2.00,220120,,,A*6E')
+        gps_connection.send_message("$GPGGA,084112.185,6938.9152,N,01856.8526,E,1,04,1.4,3335.0,M,29.4,M,,0000*63")
         self.assertEqual(len(spy), 1)
         self.assertEqual(logger.lastMValue(), 0)
 
@@ -470,7 +477,8 @@ class TestQgsGpsLogger(unittest.TestCase):
         exp.setOffsetFromUtc(3000)
         self.assertEqual(f.geometry().asWkt(-3), 'PointZM (-1297000 21436000 0 0)')
 
-        gps_connection.send_message("$GPGGA,084112.185,6938.9152,N,01856.8526,E,1,04,1.4,3335.0,M,29.4,M,,0000*63")
+        # gps_connection.send_message("$GPGGA,084112.185,6938.9152,N,01856.8526,E,1,04,1.4,3335.0,M,29.4,M,,0000*63")
+        gps_connection.send_message("$GPGGA,084113.185,6939.9152,N,01856.8526,E,1,04,1.4,3335.0,M,29.4,M,,0000*63")
         self.assertEqual(len(spy), 2)
         self.assertEqual(logger.lastMValue(), 3335.0)
 
@@ -501,17 +509,18 @@ class TestQgsGpsLogger(unittest.TestCase):
         line_layer.startEditing()
 
         gps_connection.send_message('$GPRMC,084111.185,A,6938.6531,N,01856.8527,E,0.16,2.00,220120,,,A*6E')
+        gps_connection.send_message('$GPRMC,084113.185,A,6938.9152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
         self.assertEqual(len(spy), 1)
 
         # should be no features until track is ended
         self.assertEqual(line_layer.featureCount(), 0)
 
-        gps_connection.send_message(
-            '$GPRMC,084113.185,A,6938.9152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
+        # gps_connection.send_message('$GPRMC,084113.185,A,6938.9152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
+        gps_connection.send_message('$GPRMC,084118.185,A,6938.9152,N,01857.8526,E,0.05,2.00,220120,,,A*6C')
         self.assertEqual(len(spy), 2)
 
-        gps_connection.send_message(
-            '$GPRMC,084118.185,A,6938.9152,N,01857.8526,E,0.05,2.00,220120,,,A*6C')
+        # gps_connection.send_message('$GPRMC,084118.185,A,6938.9152,N,01857.8526,E,0.05,2.00,220120,,,A*6C')
+        gps_connection.send_message('$GPRMC,084129.185,A,6939.4152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
         self.assertEqual(len(spy), 3)
 
         self.assertEqual(line_layer.featureCount(), 0)
@@ -537,10 +546,10 @@ class TestQgsGpsLogger(unittest.TestCase):
         logger.setWriteToEditBuffer(False)
         self.assertFalse(logger.writeToEditBuffer())
 
-        gps_connection.send_message(
-            '$GPRMC,084129.185,A,6939.4152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
-        gps_connection.send_message(
-            '$GPRMC,084129.185,A,6939.4152,N,01956.8526,E,0.05,2.00,220120,,,A*6C')
+        # gps_connection.send_message('$GPRMC,084129.185,A,6939.4152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
+        gps_connection.send_message('$GPRMC,084129.185,A,6939.4152,N,01956.8526,E,0.05,2.00,220120,,,A*6C')
+        # gps_connection.send_message('$GPRMC,084129.185,A,6939.4152,N,01956.8526,E,0.05,2.00,220120,,,A*6C')
+        gps_connection.send_message('$GPRMC,084130.185,A,6940.4152,N,01956.8526,E,0.05,2.00,220120,,,A*6C')
         logger.endCurrentTrack()
         self.assertEqual(line_layer.dataProvider().featureCount(), 1)
 
@@ -563,17 +572,18 @@ class TestQgsGpsLogger(unittest.TestCase):
         line_layer.startEditing()
 
         gps_connection.send_message('$GPRMC,084111.185,A,6938.6531,N,01856.8527,E,0.16,2.00,220120,,,A*6E')
+        gps_connection.send_message('$GPRMC,084113.185,A,6938.9152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
         self.assertEqual(len(spy), 1)
 
         # should be no features until track is ended
         self.assertEqual(line_layer.featureCount(), 0)
 
-        gps_connection.send_message(
-            '$GPRMC,084113.185,A,6938.9152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
+        # gps_connection.send_message('$GPRMC,084113.185,A,6938.9152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
+        gps_connection.send_message('$GPRMC,084118.185,A,6938.9152,N,01857.8526,E,0.05,2.00,220120,,,A*6C')
         self.assertEqual(len(spy), 2)
 
-        gps_connection.send_message(
-            '$GPRMC,084118.185,A,6938.9152,N,01857.8526,E,0.05,2.00,220120,,,A*6C')
+        # gps_connection.send_message('$GPRMC,084118.185,A,6938.9152,N,01857.8526,E,0.05,2.00,220120,,,A*6C')
+        gps_connection.send_message('$GPRMC,084119.185,A,6939.9152,N,01857.8526,E,0.05,2.00,220120,,,A*6C')
         self.assertEqual(len(spy), 3)
 
         self.assertEqual(line_layer.featureCount(), 0)
@@ -612,17 +622,18 @@ class TestQgsGpsLogger(unittest.TestCase):
         line_layer.startEditing()
 
         gps_connection.send_message('$GPRMC,084111.185,A,6938.6531,N,01856.8527,E,0.16,2.00,220120,,,A*6E')
+        gps_connection.send_message('$GPRMC,084113.185,A,6938.9152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
         self.assertEqual(len(spy), 1)
 
         # should be no features until track is ended
         self.assertEqual(line_layer.featureCount(), 0)
 
-        gps_connection.send_message(
-            '$GPRMC,084113.185,A,6938.9152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
+        # gps_connection.send_message('$GPRMC,084113.185,A,6938.9152,N,01856.8526,E,0.05,2.00,220120,,,A*6C')
+        gps_connection.send_message('$GPRMC,084118.185,A,6938.9152,N,01857.8526,E,0.05,2.00,220120,,,A*6C')
         self.assertEqual(len(spy), 2)
 
-        gps_connection.send_message(
-            '$GPRMC,084118.185,A,6938.9152,N,01857.8526,E,0.05,2.00,220120,,,A*6C')
+        # gps_connection.send_message('$GPRMC,084118.185,A,6938.9152,N,01857.8526,E,0.05,2.00,220120,,,A*6C')
+        gps_connection.send_message('$GPRMC,084119.185,A,6939.9152,N,01857.8526,E,0.05,2.00,220120,,,A*6C')
         self.assertEqual(len(spy), 3)
 
         self.assertEqual(line_layer.featureCount(), 0)
