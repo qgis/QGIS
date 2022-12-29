@@ -377,34 +377,8 @@ bool QgsAnnotationLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
     return false;
   }
 
-  qDeleteAll( mItems );
-  mItems.clear();
-  mSpatialIndex = std::make_unique< QgsAnnotationLayerSpatialIndex >();
-  mNonIndexedItems.clear();
-
-  const QDomNodeList itemsElements = layerNode.toElement().elementsByTagName( QStringLiteral( "items" ) );
-  if ( itemsElements.size() == 0 )
-    return false;
-
-  const QDomNodeList items = itemsElements.at( 0 ).childNodes();
-  for ( int i = 0; i < items.size(); ++i )
-  {
-    const QDomElement itemElement = items.at( i ).toElement();
-    const QString id = itemElement.attribute( QStringLiteral( "id" ) );
-    const QString type = itemElement.attribute( QStringLiteral( "type" ) );
-    std::unique_ptr< QgsAnnotationItem > item( QgsApplication::annotationItemRegistry()->createItem( type ) );
-    if ( item )
-    {
-      item->readXml( itemElement, context );
-      if ( item->flags() & Qgis::AnnotationItemFlag::ScaleDependentBoundingBox )
-        mNonIndexedItems.insert( id );
-      else
-        mSpatialIndex->insert( id, item->boundingBox() );
-      mItems.insert( id, item.release() );
-    }
-  }
-
   QString errorMsg;
+  readItems( layerNode, errorMsg, context );
   readSymbology( layerNode, errorMsg, context );
 
   triggerRepaint();
@@ -427,19 +401,10 @@ bool QgsAnnotationLayer::writeXml( QDomNode &layer_node, QDomDocument &doc, cons
 
   mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( QgsMapLayerType::AnnotationLayer ) );
 
-  QDomElement itemsElement = doc.createElement( QStringLiteral( "items" ) );
-  for ( auto it = mItems.constBegin(); it != mItems.constEnd(); ++it )
-  {
-    QDomElement itemElement = doc.createElement( QStringLiteral( "item" ) );
-    itemElement.setAttribute( QStringLiteral( "type" ), ( *it )->type() );
-    itemElement.setAttribute( QStringLiteral( "id" ), it.key() );
-    ( *it )->writeXml( itemElement, doc, context );
-    itemsElement.appendChild( itemElement );
-  }
-  mapLayerNode.appendChild( itemsElement );
+  QString errorMsg;
+  writeItems( layer_node, doc, errorMsg, context );
 
   // renderer specific settings
-  QString errorMsg;
   return writeSymbology( layer_node, doc, errorMsg, context );
 }
 
@@ -510,6 +475,77 @@ bool QgsAnnotationLayer::readSymbology( const QDomNode &node, QString &, QgsRead
   }
 
   return true;
+}
+
+bool QgsAnnotationLayer::writeItems( QDomNode &node, QDomDocument &doc, QString &, const QgsReadWriteContext &context, QgsMapLayer::StyleCategories ) const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  QDomElement itemsElement = doc.createElement( QStringLiteral( "items" ) );
+
+  for ( auto it = mItems.constBegin(); it != mItems.constEnd(); ++it )
+  {
+    QDomElement itemElement = doc.createElement( QStringLiteral( "item" ) );
+    itemElement.setAttribute( QStringLiteral( "type" ), ( *it )->type() );
+    itemElement.setAttribute( QStringLiteral( "id" ), it.key() );
+    ( *it )->writeXml( itemElement, doc, context );
+    itemsElement.appendChild( itemElement );
+  }
+  node.appendChild(itemsElement);
+
+  return true;
+}
+
+bool QgsAnnotationLayer::readItems( const QDomNode &node, QString &, QgsReadWriteContext &context, QgsMapLayer::StyleCategories )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  qDeleteAll( mItems );
+  mItems.clear();
+  mSpatialIndex = std::make_unique< QgsAnnotationLayerSpatialIndex >();
+  mNonIndexedItems.clear();
+
+  const QDomNodeList itemsElements = node.toElement().elementsByTagName( QStringLiteral( "items" ) );
+  if ( itemsElements.size() == 0 )
+    return false;
+
+  const QDomNodeList items = itemsElements.at( 0 ).childNodes();
+  for ( int i = 0; i < items.size(); ++i )
+  {
+    const QDomElement itemElement = items.at( i ).toElement();
+    const QString id = itemElement.attribute( QStringLiteral( "id" ) );
+    const QString type = itemElement.attribute( QStringLiteral( "type" ) );
+    std::unique_ptr< QgsAnnotationItem > item( QgsApplication::annotationItemRegistry()->createItem( type ) );
+    if ( item )
+    {
+      item->readXml( itemElement, context );
+      if ( item->flags() & Qgis::AnnotationItemFlag::ScaleDependentBoundingBox )
+        mNonIndexedItems.insert( id );
+      else
+        mSpatialIndex->insert( id, item->boundingBox() );
+      mItems.insert( id, item.release() );
+    }
+  }
+
+  return true;
+}
+
+bool QgsAnnotationLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  writeItems( node, doc, errorMessage, context, categories );
+
+  return writeSymbology( node, doc, errorMessage, context, categories );
+}
+
+bool QgsAnnotationLayer::readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  readItems( node, errorMessage, context, categories );
+
+  return readSymbology( node, errorMessage, context, categories );
 }
 
 bool QgsAnnotationLayer::isEditable() const
