@@ -153,7 +153,7 @@ QgsVectorTileProviderConnection::Data QgsVectorTileProviderConnection::connectio
 
   QgsVectorTileProviderConnection::Data conn;
   conn.url = settingsUrl->value( name );
-  conn.zMin = settingsZzmin->value( name );
+  conn.zMin = settingsZmin->value( name );
   conn.zMax = settingsZmax->value( name );
   conn.authCfg = settingsAuthcfg->value( name );
   conn.username = settingsUsername->value( name );
@@ -162,15 +162,6 @@ QgsVectorTileProviderConnection::Data QgsVectorTileProviderConnection::connectio
 
   if ( settingsHeaders->exists( name ) )
     conn.httpHeaders = QgsHttpHeaders( settingsHeaders->value( name ) );
-  else
-  {
-    // TODO QGIS 4 (or before) remove compatibility import
-    QgsSettings settings;
-    settings.beginGroup( "qgis/connections-vector-tile/" + name );
-    Q_NOWARN_DEPRECATED_PUSH
-    conn.httpHeaders = QgsHttpHeaders( settings );
-    Q_NOWARN_DEPRECATED_POP
-  }
 
   if ( settingsServiceType->exists( name ) &&  settingsServiceType->value( name ) == QLatin1String( "arcgis" ) )
     conn.serviceType = ArcgisVectorTileService;
@@ -186,7 +177,7 @@ void QgsVectorTileProviderConnection::deleteConnection( const QString &name )
 void QgsVectorTileProviderConnection::addConnection( const QString &name, QgsVectorTileProviderConnection::Data conn )
 {
   settingsUrl->setValue( conn.url, name );
-  settingsZzmin->setValue( conn.zMin, name );
+  settingsZmin->setValue( conn.zMin, name );
   settingsZmax->setValue( conn.zMax, name );
   settingsAuthcfg->setValue( conn.authCfg, name );
   settingsUsername->setValue( conn.username, name );

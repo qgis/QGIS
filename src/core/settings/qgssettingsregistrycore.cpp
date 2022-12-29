@@ -15,6 +15,8 @@
 
 #include "qgssettingsregistrycore.h"
 
+
+#include "qgis.h"
 #include "qgsapplication.h"
 #include "qgsgeometryoptions.h"
 #include "qgslayout.h"
@@ -141,63 +143,87 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   // for backward compatibility, old keys are recreated when the registry gets deleted
 
   // connections settings - added in 3.30
-  const QStringList connectionsList = {QStringLiteral( "WMS" ), QStringLiteral( "WFS" ), QStringLiteral( "WCS" ), QStringLiteral( "GEONODE" )};
-  for ( const QString &connection : connectionsList )
+  const QStringList services = {QStringLiteral( "WMS" ), QStringLiteral( "WFS" ), QStringLiteral( "WCS" ), QStringLiteral( "GeoNode" )};
+  for ( const QString &service : services )
   {
     QgsSettings settings;
-    settings.beginGroup( QStringLiteral( "qgis/connections-%1" ).arg( connection.toLower() ) );
-    const QStringList services = settings.childGroups();
-    if ( services.count() == 0 )
+    settings.beginGroup( QStringLiteral( "qgis/connections-%1" ).arg( service.toLower() ) );
+    const QStringList connections = settings.childGroups();
+    if ( connections.count() == 0 )
       continue;
-    for ( const QString &service : services )
+    for ( const QString &connection : connections )
     {
-      QgsOwsConnection::settingsConnectionUrl->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/url" ), {connection.toLower(), service}, true );
-      QgsOwsConnection::settingsConnectionVersion->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/version" ), {connection.toLower(), service}, true );
-      QgsOwsConnection::settingsConnectionIgnoreGetMapURI->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/ignoreGetMapURI" ), {connection.toLower(), service}, true );
-      QgsOwsConnection::settingsConnectionIgnoreGetFeatureInfoURI->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/ignoreGetFeatureInfoURI" ), {connection.toLower(), service}, true );
-      QgsOwsConnection::settingsConnectionSmoothPixmapTransform->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/smoothPixmapTransform" ), {connection.toLower(), service}, true );
-      QgsOwsConnection::settingsConnectionReportedLayerExtents->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/reportedLayerExtents" ), {connection.toLower(), service}, true );
-      QgsOwsConnection::settingsConnectionDpiMode->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/dpiMode" ), {connection.toLower(), service}, true );
-      QgsOwsConnection::settingsConnectionTilePixelRatio->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/tilePixelRatio" ), {connection.toLower(), service}, true );
-      QgsOwsConnection::settingsConnectionMaxNumFeatures->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/maxnumfeatures" ), {connection.toLower(), service}, true );
-      QgsOwsConnection::settingsConnectionPagesize->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/pagesize" ), {connection.toLower(), service}, true );
-      QgsOwsConnection::settingsConnectionPagingEnabled->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/pagingenabled" ), {connection.toLower(), service}, true );
-      QgsOwsConnection::settingsConnectionPreferCoordinatesForWfsT11->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/preferCoordinatesForWfsT11" ), {connection.toLower(), service}, true );
-      QgsOwsConnection::settingsConnectionIgnoreAxisOrientation->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/ignoreAxisOrientation" ), {connection.toLower(), service}, true );
-      QgsOwsConnection::settingsConnectionInvertAxisOrientation->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/invertAxisOrientation" ), {connection.toLower(), service}, true );
+      QgsOwsConnection::settingsUrl->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/url" ), {service.toLower(), connection}, true );
+      QgsOwsConnection::settingsVersion->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/version" ), {service.toLower(), connection}, true );
+      QgsOwsConnection::settingsIgnoreGetMapURI->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/ignoreGetMapURI" ), {service.toLower(), connection}, true );
+      QgsOwsConnection::settingsIgnoreGetFeatureInfoURI->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/ignoreGetFeatureInfoURI" ), {service.toLower(), connection}, true );
+      QgsOwsConnection::settingsSmoothPixmapTransform->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/smoothPixmapTransform" ), {service.toLower(), connection}, true );
+      QgsOwsConnection::settingsReportedLayerExtents->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/reportedLayerExtents" ), {service.toLower(), connection}, true );
+      QgsOwsConnection::settingsDpiMode->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/dpiMode" ), {service.toLower(), connection}, true );
+      QgsOwsConnection::settingsTilePixelRatio->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/tilePixelRatio" ), {service.toLower(), connection}, true );
+      QgsOwsConnection::settingsMaxNumFeatures->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/maxnumfeatures" ), {service.toLower(), connection}, true );
+      QgsOwsConnection::settingsPagesize->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/pagesize" ), {service.toLower(), connection}, true );
+      QgsOwsConnection::settingsPagingEnabled->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/pagingenabled" ), {service.toLower(), connection}, true );
+      QgsOwsConnection::settingsPreferCoordinatesForWfsT11->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/preferCoordinatesForWfsT11" ), {service.toLower(), connection}, true );
+      QgsOwsConnection::settingsIgnoreAxisOrientation->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/ignoreAxisOrientation" ), {service.toLower(), connection}, true );
+      QgsOwsConnection::settingsInvertAxisOrientation->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/invertAxisOrientation" ), {service.toLower(), connection}, true );
 
       Q_NOWARN_DEPRECATED_PUSH
       settings.beginGroup( service );
-      QgsOwsConnection::settingsConnectionHeaders->setValue( QgsHttpHeaders( settings ).headers(), {connection.toLower(), service} );
+      QgsOwsConnection::settingsHeaders->setValue( QgsHttpHeaders( settings ).headers(), {service.toLower(), connection} );
       settings.endGroup();
       Q_NOWARN_DEPRECATED_POP
 
-      QgsOwsConnection::settingsConnectionUsername->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/username" ), {connection.toLower(), service}, true );
-      QgsOwsConnection::settingsConnectionPassword->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/password" ), {connection.toLower(), service}, true );
-      QgsOwsConnection::settingsConnectionAuthCfg->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/authcfg" ), {connection.toLower(), service}, true );
+      QgsOwsConnection::settingsUsername->copyValueFromKey( QStringLiteral( "qgis/connections/%1/%2/username" ), {service, connection}, true );
+      QgsOwsConnection::settingsPassword->copyValueFromKey( QStringLiteral( "qgis/connections/%1/%2/password" ), {service, connection}, true );
+      QgsOwsConnection::settingsAuthCfg->copyValueFromKey( QStringLiteral( "qgis/connections/%1/%2/authcfg" ), {service, connection}, true );
     }
     if ( settings.contains( QStringLiteral( "selected" ) ) )
-      QgsOwsConnection::sTreeConnectionServices->setSelectedItem( settings.value( QStringLiteral( "selected" ) ).toString(), {connection.toLower()} );
+      QgsOwsConnection::sTreeOwsConnections->setSelectedItem( settings.value( QStringLiteral( "selected" ) ).toString(), {service.toLower()} );
   }
 
   // Vector tile - added in 3.30
   {
     QgsSettings settings;
     settings.beginGroup( QStringLiteral( "qgis/connections-vector-tile" ) );
-    const QStringList services = settings.childGroups();
-    for ( const QString &service : services )
+    const QStringList connections = settings.childGroups();
+    for ( const QString &connection : connections )
     {
-      QgsVectorTileProviderConnection::settingsUrl->copyValueFromKey( QStringLiteral( "qgis/connections-vector-tile/%1/url" ), {service} );
-      QgsVectorTileProviderConnection::settingsZzmin->copyValueFromKey( QStringLiteral( "qgis/connections-vector-tile/%1/zmin" ), {service} );
-      QgsVectorTileProviderConnection::settingsZmax->copyValueFromKey( QStringLiteral( "qgis/connections-vector-tile/%1/zmax" ), {service} );
-      QgsVectorTileProviderConnection::settingsAuthcfg->copyValueFromKey( QStringLiteral( "qgis/connections-vector-tile/%1/authcfg" ), {service} );
-      QgsVectorTileProviderConnection::settingsUsername->copyValueFromKey( QStringLiteral( "qgis/connections-vector-tile/%1/username" ), {service} );
-      QgsVectorTileProviderConnection::settingsPassword->copyValueFromKey( QStringLiteral( "qgis/connections-vector-tile/%1/password" ), {service} );
-      QgsVectorTileProviderConnection::settingsStyleUrl->copyValueFromKey( QStringLiteral( "qgis/connections-vector-tile/%1/styleUrl" ), {service} );
-      QgsVectorTileProviderConnection::settingsServiceType->copyValueFromKey( QStringLiteral( "qgis/connections-vector-tile/%1/serviceType" ), {service} );
+      QgsVectorTileProviderConnection::settingsUrl->copyValueFromKey( QStringLiteral( "qgis/connections-vector-tile/%1/url" ), {connection}, true );
+      QgsVectorTileProviderConnection::settingsZmin->copyValueFromKey( QStringLiteral( "qgis/connections-vector-tile/%1/zmin" ), {connection}, true );
+      QgsVectorTileProviderConnection::settingsZmax->copyValueFromKey( QStringLiteral( "qgis/connections-vector-tile/%1/zmax" ), {connection}, true );
+      QgsVectorTileProviderConnection::settingsAuthcfg->copyValueFromKey( QStringLiteral( "qgis/connections-vector-tile/%1/authcfg" ), {connection}, true );
+      QgsVectorTileProviderConnection::settingsUsername->copyValueFromKey( QStringLiteral( "qgis/connections-vector-tile/%1/username" ), {connection}, true );
+      QgsVectorTileProviderConnection::settingsPassword->copyValueFromKey( QStringLiteral( "qgis/connections-vector-tile/%1/password" ), {connection}, true );
+      QgsVectorTileProviderConnection::settingsStyleUrl->copyValueFromKey( QStringLiteral( "qgis/connections-vector-tile/%1/styleUrl" ), {connection}, true );
+      QgsVectorTileProviderConnection::settingsServiceType->copyValueFromKey( QStringLiteral( "qgis/connections-vector-tile/%1/serviceType" ), {connection}, true );
       Q_NOWARN_DEPRECATED_PUSH
-      settings.beginGroup( service );
-      QgsVectorTileProviderConnection::settingsHeaders->setValue( QgsHttpHeaders( settings ).headers(), service );
+      settings.beginGroup( connection );
+      QgsVectorTileProviderConnection::settingsHeaders->setValue( QgsHttpHeaders( settings ).headers(), connection );
+      settings.endGroup();
+      Q_NOWARN_DEPRECATED_POP
+    }
+  }
+
+  // xyz - added in 3.30
+  {
+    QgsSettings settings;
+    settings.beginGroup( QStringLiteral( "qgis/connections-xyz" ) );
+    const QStringList connections = settings.childGroups();
+    for ( const QString &connection : connections )
+    {
+      QgsXyzConnectionSettings::settingsUrl->copyValueFromKey( QStringLiteral( "qgis/connections-xyz/%1/url" ), {connection}, true );
+      QgsXyzConnectionSettings::settingsZmin->copyValueFromKey( QStringLiteral( "qgis/connections-xyz/%1/zmin" ), {connection}, true );
+      QgsXyzConnectionSettings::settingsZmax->copyValueFromKey( QStringLiteral( "qgis/connections-xyz/%1/zmax" ), {connection}, true );
+      QgsXyzConnectionSettings::settingsAuthcfg->copyValueFromKey( QStringLiteral( "qgis/connections-xyz/%1/authcfg" ), {connection}, true );
+      QgsXyzConnectionSettings::settingsUsername->copyValueFromKey( QStringLiteral( "qgis/connections-xyz/%1/username" ), {connection}, true );
+      QgsXyzConnectionSettings::settingsPassword->copyValueFromKey( QStringLiteral( "qgis/connections-xyz/%1/password" ), {connection}, true );
+      QgsXyzConnectionSettings::settingsTilePixelRatio->copyValueFromKey( QStringLiteral( "qgis/connections-xyz/%1/tilePixelRatio" ), {connection}, true );
+      QgsXyzConnectionSettings::settingsHidden->copyValueFromKey( QStringLiteral( "qgis/connections-xyz/%1/hidden" ), {connection}, true );
+      QgsXyzConnectionSettings::settingsInterpretation->copyValueFromKey( QStringLiteral( "qgis/connections-xyz/%1/interpretation" ), {connection}, true );
+      Q_NOWARN_DEPRECATED_PUSH
+      settings.beginGroup( connection );
+      QgsXyzConnectionSettings::settingsHeaders->setValue( QgsHttpHeaders( settings ).headers(), connection );
       settings.endGroup();
       Q_NOWARN_DEPRECATED_POP
     }
@@ -226,44 +252,45 @@ void QgsSettingsRegistryCore::backwardCompatibility()
 {
   // OWS connections settings - added in 3.30
   {
-    const QStringList connectionsList = {QStringLiteral( "WMS" ), QStringLiteral( "WFS" ), QStringLiteral( "WCS" ), QStringLiteral( "GEONODE" )};
-    for ( const QString &connection : connectionsList )
+    const QStringList services = {QStringLiteral( "WMS" ), QStringLiteral( "WFS" ), QStringLiteral( "WCS" ), QStringLiteral( "GeoNode" )};
+    for ( const QString &service : services )
     {
-      const QStringList services = QgsOwsConnection::sTreeConnectionServices->items( {connection.toLower()} );
-      if ( services.count() == 0 )
+      const QStringList connections = QgsOwsConnection::sTreeOwsConnections->items( {service.toLower()} );
+      if ( connections.count() == 0 )
         continue;
       QgsSettings settings;
-      settings.beginGroup( QStringLiteral( "qgis/connections-%1" ).arg( connection.toLower() ) );
-      for ( const QString &service : services )
+      settings.beginGroup( QStringLiteral( "qgis/connections-%1" ).arg( service.toLower() ) );
+      for ( const QString &connection : connections )
       {
-        QgsOwsConnection::settingsConnectionUrl->copyValueToKey( QStringLiteral( "qgis/connections-%1/%2/url" ), {connection.toLower(), service} );
-        QgsOwsConnection::settingsConnectionVersion->copyValueToKey( QStringLiteral( "qgis/connections-%1/%2/version" ), {connection.toLower(), service} );
-        QgsOwsConnection::settingsConnectionIgnoreGetMapURI->copyValueToKey( QStringLiteral( "qgis/connections-%1/%2/ignoreGetMapURI" ), {connection.toLower(), service} );
-        QgsOwsConnection::settingsConnectionIgnoreGetFeatureInfoURI->copyValueToKey( QStringLiteral( "qgis/connections-%1/%2/ignoreGetFeatureInfoURI" ), {connection.toLower(), service} );
-        QgsOwsConnection::settingsConnectionSmoothPixmapTransform->copyValueToKey( QStringLiteral( "qgis/connections-%1/%2/smoothPixmapTransform" ), {connection.toLower(), service} );
-        QgsOwsConnection::settingsConnectionReportedLayerExtents->copyValueToKey( QStringLiteral( "qgis/connections-%1/%2/reportedLayerExtents" ), {connection.toLower(), service} );
-        QgsOwsConnection::settingsConnectionDpiMode->copyValueToKey( QStringLiteral( "qgis/connections-%1/%2/dpiMode" ), {connection.toLower(), service} );
-        QgsOwsConnection::settingsConnectionTilePixelRatio->copyValueToKey( QStringLiteral( "qgis/connections-%1/%2/tilePixelRatio" ), {connection.toLower(), service} );
-        QgsOwsConnection::settingsConnectionMaxNumFeatures->copyValueToKey( QStringLiteral( "qgis/connections-%1/%2/maxnumfeatures" ), {connection.toLower(), service} );
-        QgsOwsConnection::settingsConnectionPagesize->copyValueToKey( QStringLiteral( "qgis/connections-%1/%2/pagesize" ), {connection.toLower(), service} );
-        QgsOwsConnection::settingsConnectionPagingEnabled->copyValueToKey( QStringLiteral( "qgis/connections-%1/%2/pagingenabled" ), {connection.toLower(), service} );
-        QgsOwsConnection::settingsConnectionPreferCoordinatesForWfsT11->copyValueToKey( QStringLiteral( "qgis/connections-%1/%2/preferCoordinatesForWfsT11" ), {connection.toLower(), service} );
-        QgsOwsConnection::settingsConnectionIgnoreAxisOrientation->copyValueToKey( QStringLiteral( "qgis/connections-%1/%2/ignoreAxisOrientation" ), {connection.toLower(), service} );
-        QgsOwsConnection::settingsConnectionInvertAxisOrientation->copyValueToKey( QStringLiteral( "qgis/connections-%1/%2/invertAxisOrientation" ), {connection.toLower(), service} );
+        QgsOwsConnection::settingsUrl->copyValueToKey( QStringLiteral( "qgis/connections-%1/%2/url" ), {service.toLower(), connection} );
+        QgsOwsConnection::settingsVersion->copyValueToKey( QStringLiteral( "qgis/connections-%1/%2/version" ), {service.toLower(), connection} );
+        QgsOwsConnection::settingsIgnoreGetMapURI->copyValueToKey( QStringLiteral( "qgis/connections-%1/%2/ignoreGetMapURI" ), {service.toLower(), connection} );
+        QgsOwsConnection::settingsIgnoreGetFeatureInfoURI->copyValueToKey( QStringLiteral( "qgis/connections-%1/%2/ignoreGetFeatureInfoURI" ), {service.toLower(), connection} );
+        QgsOwsConnection::settingsSmoothPixmapTransform->copyValueToKey( QStringLiteral( "qgis/connections-%1/%2/smoothPixmapTransform" ), {service.toLower(), connection} );
+        QgsOwsConnection::settingsReportedLayerExtents->copyValueToKey( QStringLiteral( "qgis/connections-%1/%2/reportedLayerExtents" ), {service.toLower(), connection} );
+        QgsOwsConnection::settingsDpiMode->copyValueToKey( QStringLiteral( "qgis/connections-%1/%2/dpiMode" ), {service.toLower(), connection} );
+        QgsOwsConnection::settingsTilePixelRatio->copyValueToKey( QStringLiteral( "qgis/connections-%1/%2/tilePixelRatio" ), {service.toLower(), connection} );
+        QgsOwsConnection::settingsMaxNumFeatures->copyValueToKey( QStringLiteral( "qgis/connections-%1/%2/maxnumfeatures" ), {service.toLower(), connection} );
+        QgsOwsConnection::settingsPagesize->copyValueToKey( QStringLiteral( "qgis/connections-%1/%2/pagesize" ), {service.toLower(), connection} );
+        QgsOwsConnection::settingsPagingEnabled->copyValueToKey( QStringLiteral( "qgis/connections-%1/%2/pagingenabled" ), {service.toLower(), connection} );
+        QgsOwsConnection::settingsPreferCoordinatesForWfsT11->copyValueToKey( QStringLiteral( "qgis/connections-%1/%2/preferCoordinatesForWfsT11" ), {service.toLower(), connection} );
+        QgsOwsConnection::settingsIgnoreAxisOrientation->copyValueToKey( QStringLiteral( "qgis/connections-%1/%2/ignoreAxisOrientation" ), {service.toLower(), connection} );
+        QgsOwsConnection::settingsInvertAxisOrientation->copyValueToKey( QStringLiteral( "qgis/connections-%1/%2/invertAxisOrientation" ), {service.toLower(), connection} );
 
         Q_NOWARN_DEPRECATED_PUSH
         settings.beginGroup( service );
-        QgsHttpHeaders( QgsOwsConnection::settingsConnectionHeaders->value( {connection.toLower(), service} ) ).updateSettings( settings );
+        if ( QgsOwsConnection::settingsHeaders->exists( connection ) )
+          QgsHttpHeaders( QgsOwsConnection::settingsHeaders->value( {service.toLower(), service} ) ).updateSettings( settings );
         settings.endGroup();
         Q_NOWARN_DEPRECATED_POP
 
-        QgsOwsConnection::settingsConnectionUsername->copyValueToKey( QStringLiteral( "qgis/connections-%1/%2/username" ), {connection.toLower(), service} );
-        QgsOwsConnection::settingsConnectionPassword->copyValueToKey( QStringLiteral( "qgis/connections-%1/%2/password" ), {connection.toLower(), service} );
-        QgsOwsConnection::settingsConnectionAuthCfg->copyValueToKey( QStringLiteral( "qgis/connections-%1/%2/authcfg" ), {connection.toLower(), service} );
-      }
+        QgsOwsConnection::settingsUsername->copyValueToKey( QStringLiteral( "qgis/connections/%1/%2/username" ), {service, connection} );
+        QgsOwsConnection::settingsPassword->copyValueToKey( QStringLiteral( "qgis/connections/%1/%2/password" ), {service, connection} );
+        QgsOwsConnection::settingsAuthCfg->copyValueToKey( QStringLiteral( "qgis/connections/%1/%2/authcfg" ), {service, connection} );
 
-      if ( settings.contains( QStringLiteral( "selected" ) ) )
-        QgsOwsConnection::sTreeConnectionServices->setSelectedItem( settings.value( QStringLiteral( "selected" ) ).toString(), {connection.toLower()} );
+        if ( settings.contains( QStringLiteral( "selected" ) ) )
+          QgsOwsConnection::sTreeOwsConnections->setSelectedItem( settings.value( QStringLiteral( "selected" ) ).toString(), {service.toLower()} );
+      }
     }
   }
 
@@ -272,23 +299,49 @@ void QgsSettingsRegistryCore::backwardCompatibility()
     QgsSettings settings;
     settings.beginGroup( QStringLiteral( "qgis/connections-vector-tile" ) );
 
-    const QStringList services = QgsVectorTileProviderConnection::sTreeConnectionVectorTile->items();
-    for ( const QString &service : services )
+    const QStringList connections = QgsVectorTileProviderConnection::sTreeConnectionVectorTile->items();
+    for ( const QString &connection : connections )
     {
       // do not overwrite already set setting
-      if ( QgsVectorTileProviderConnection::settingsUrl->exists( service ) )
+      if ( QgsVectorTileProviderConnection::settingsUrl->exists( connection ) )
         continue;
-      QgsVectorTileProviderConnection::settingsUrl->copyValueToKey( QStringLiteral( "qgis/connections-vector-tile/%1/url" ), {service} );
-      QgsVectorTileProviderConnection::settingsZzmin->copyValueToKey( QStringLiteral( "qgis/connections-vector-tile/%1/zmin" ), {service} );
-      QgsVectorTileProviderConnection::settingsZmax->copyValueToKey( QStringLiteral( "qgis/connections-vector-tile/%1/zmax" ), {service} );
-      QgsVectorTileProviderConnection::settingsAuthcfg->copyValueToKey( QStringLiteral( "qgis/connections-vector-tile/%1/authcfg" ), {service} );
-      QgsVectorTileProviderConnection::settingsUsername->copyValueToKey( QStringLiteral( "qgis/connections-vector-tile/%1/username" ), {service} );
-      QgsVectorTileProviderConnection::settingsPassword->copyValueToKey( QStringLiteral( "qgis/connections-vector-tile/%1/password" ), {service} );
-      QgsVectorTileProviderConnection::settingsStyleUrl->copyValueToKey( QStringLiteral( "qgis/connections-vector-tile/%1/styleUrl" ), {service} );
-      QgsVectorTileProviderConnection::settingsServiceType->copyValueToKey( QStringLiteral( "qgis/connections-vector-tile/%1/serviceType" ), {service} );
+      QgsVectorTileProviderConnection::settingsUrl->copyValueToKey( QStringLiteral( "qgis/connections-vector-tile/%1/url" ), {connection} );
+      QgsVectorTileProviderConnection::settingsZmin->copyValueToKey( QStringLiteral( "qgis/connections-vector-tile/%1/zmin" ), {connection} );
+      QgsVectorTileProviderConnection::settingsZmax->copyValueToKey( QStringLiteral( "qgis/connections-vector-tile/%1/zmax" ), {connection} );
+      QgsVectorTileProviderConnection::settingsAuthcfg->copyValueToKey( QStringLiteral( "qgis/connections-vector-tile/%1/authcfg" ), {connection} );
+      QgsVectorTileProviderConnection::settingsUsername->copyValueToKey( QStringLiteral( "qgis/connections-vector-tile/%1/username" ), {connection} );
+      QgsVectorTileProviderConnection::settingsPassword->copyValueToKey( QStringLiteral( "qgis/connections-vector-tile/%1/password" ), {connection} );
+      QgsVectorTileProviderConnection::settingsStyleUrl->copyValueToKey( QStringLiteral( "qgis/connections-vector-tile/%1/styleUrl" ), {connection} );
+      QgsVectorTileProviderConnection::settingsServiceType->copyValueToKey( QStringLiteral( "qgis/connections-vector-tile/%1/serviceType" ), {connection} );
       Q_NOWARN_DEPRECATED_PUSH
-      settings.beginGroup( service );
-      QgsHttpHeaders( QgsVectorTileProviderConnection::settingsHeaders->value( service ) ).updateSettings( settings );
+      settings.beginGroup( connection );
+      if ( QgsVectorTileProviderConnection::settingsHeaders->exists( connection ) )
+        QgsHttpHeaders( QgsVectorTileProviderConnection::settingsHeaders->value( connection ) ).updateSettings( settings );
+      settings.endGroup();
+      Q_NOWARN_DEPRECATED_POP
+    }
+  }
+
+  // xyz - added in 3.30
+  {
+    QgsSettings settings;
+    settings.beginGroup( QStringLiteral( "qgis/connections-xyz" ) );
+    const QStringList connections = QgsXyzConnectionSettings::sTreeXyzConnections->items();
+    for ( const QString &connection : connections )
+    {
+      QgsXyzConnectionSettings::settingsUrl->copyValueToKey( QStringLiteral( "qgis/connections-xyz/%1/url" ), {connection} );
+      QgsXyzConnectionSettings::settingsZmin->copyValueToKey( QStringLiteral( "qgis/connections-xyz/%1/zmin" ), {connection} );
+      QgsXyzConnectionSettings::settingsZmax->copyValueToKey( QStringLiteral( "qgis/connections-xyz/%1/zmax" ), {connection} );
+      QgsXyzConnectionSettings::settingsAuthcfg->copyValueToKey( QStringLiteral( "qgis/connections-xyz/%1/authcfg" ), {connection} );
+      QgsXyzConnectionSettings::settingsUsername->copyValueToKey( QStringLiteral( "qgis/connections-xyz/%1/username" ), {connection} );
+      QgsXyzConnectionSettings::settingsPassword->copyValueToKey( QStringLiteral( "qgis/connections-xyz/%1/password" ), {connection} );
+      QgsXyzConnectionSettings::settingsTilePixelRatio->copyValueToKey( QStringLiteral( "qgis/connections-xyz/%1/tilePixelRatio" ), {connection} );
+      QgsXyzConnectionSettings::settingsHidden->copyValueToKey( QStringLiteral( "qgis/connections-xyz/%1/hidden" ), {connection} );
+      QgsXyzConnectionSettings::settingsInterpretation->copyValueToKey( QStringLiteral( "qgis/connections-xyz/%1/interpretation" ), {connection} );
+      Q_NOWARN_DEPRECATED_PUSH
+      settings.beginGroup( connection );
+      if ( QgsXyzConnectionSettings::settingsHeaders->exists( connection ) )
+        QgsHttpHeaders( QgsXyzConnectionSettings::settingsHeaders->value( connection ) ).updateSettings( settings );
       settings.endGroup();
       Q_NOWARN_DEPRECATED_POP
     }

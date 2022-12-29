@@ -36,7 +36,7 @@ class CORE_EXPORT QgsVectorTileProviderConnection : public QgsAbstractProviderCo
     static inline QgsSettingsTreeNamedListElement *sTreeConnectionVectorTile = QgsSettings::sTtreeConnections->createNamedListElement( QStringLiteral( "vector-tile" ), QgsSettingsTreeNamedListElement::Option::NamedListSelectedItemSetting );
 
     static inline QgsSettingsEntryString *settingsUrl = new QgsSettingsEntryString( QStringLiteral( "url" ), sTreeConnectionVectorTile );
-    static inline QgsSettingsEntryInteger *settingsZzmin = new QgsSettingsEntryInteger( QStringLiteral( "zmin" ), sTreeConnectionVectorTile, -1 );
+    static inline QgsSettingsEntryInteger *settingsZmin = new QgsSettingsEntryInteger( QStringLiteral( "zmin" ), sTreeConnectionVectorTile, -1 );
     static inline QgsSettingsEntryInteger *settingsZmax = new QgsSettingsEntryInteger( QStringLiteral( "zmax" ), sTreeConnectionVectorTile, -1 );
     static inline QgsSettingsEntryString *settingsAuthcfg = new QgsSettingsEntryString( QStringLiteral( "authcfg" ), sTreeConnectionVectorTile );
     static inline QgsSettingsEntryString *settingsUsername = new QgsSettingsEntryString( QStringLiteral( "username" ), sTreeConnectionVectorTile );

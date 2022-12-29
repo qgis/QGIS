@@ -38,13 +38,13 @@ QgsOwsConnection::QgsOwsConnection( const QString &service, const QString &connN
 {
   QgsDebugMsgLevel( "theConnName = " + connName, 4 );
 
-  const QString url = settingsConnectionUrl->value( {mService.toLower(), mConnName} );
+  const QString url = settingsUrl->value( {mService.toLower(), mConnName} );
   mConnectionInfo = url;
   mUri.setParam( QStringLiteral( "url" ), url );
 
   // Check for credentials and prepend to the connection info
-  const QString username = settingsConnectionUsername->value( {mService, mConnName} );
-  const QString password = settingsConnectionPassword->value( {mService, mConnName} );
+  const QString username = settingsUsername->value( {mService, mConnName} );
+  const QString password = settingsPassword->value( {mService, mConnName} );
   if ( !username.isEmpty() )
   {
     // check for a password, if none prompt to get it
@@ -52,14 +52,14 @@ QgsOwsConnection::QgsOwsConnection( const QString &service, const QString &connN
     mUri.setPassword( password );
   }
 
-  const QString authcfg = settingsConnectionAuthCfg->value( {mService, mConnName} );
+  const QString authcfg = settingsAuthCfg->value( {mService, mConnName} );
   if ( !authcfg.isEmpty() )
   {
     mUri.setAuthConfigId( authcfg );
   }
   mConnectionInfo.append( ",authcfg=" + authcfg );
 
-  QgsHttpHeaders httpHeaders( settingsConnectionHeaders->value( {mService.toLower(), mConnName} ) );
+  QgsHttpHeaders httpHeaders( settingsHeaders->value( {mService.toLower(), mConnName} ) );
   mUri.setHttpHeaders( httpHeaders );
   const QString referer = httpHeaders[QgsHttpHeaders::KEY_REFERER].toString();
   if ( !referer.isEmpty() )
@@ -143,31 +143,31 @@ QgsDataSourceUri &QgsOwsConnection::addWmsWcsConnectionSettings( QgsDataSourceUr
 {
   addCommonConnectionSettings( uri, service, connName );
 
-  settingsConnectionHeaders->setValue( uri.httpHeaders().headers(), {service.toLower(), connName} );
+  settingsHeaders->setValue( uri.httpHeaders().headers(), {service.toLower(), connName} );
 
-  if ( settingsConnectionIgnoreGetMapURI->value( {service.toLower(), connName} ) )
+  if ( settingsIgnoreGetMapURI->value( {service.toLower(), connName} ) )
   {
     uri.setParam( QStringLiteral( "IgnoreGetMapUrl" ), QStringLiteral( "1" ) );
   }
-  if ( settingsConnectionIgnoreGetFeatureInfoURI->value( {service.toLower(), connName} ) )
+  if ( settingsIgnoreGetFeatureInfoURI->value( {service.toLower(), connName} ) )
   {
     uri.setParam( QStringLiteral( "IgnoreGetFeatureInfoUrl" ), QStringLiteral( "1" ) );
   }
-  if ( settingsConnectionSmoothPixmapTransform->value( {service.toLower(), connName} ) )
+  if ( settingsSmoothPixmapTransform->value( {service.toLower(), connName} ) )
   {
     uri.setParam( QStringLiteral( "SmoothPixmapTransform" ), QStringLiteral( "1" ) );
   }
-  if ( settingsConnectionReportedLayerExtents->value( {service.toLower(), connName} ) )
+  if ( settingsReportedLayerExtents->value( {service.toLower(), connName} ) )
   {
     uri.setParam( QStringLiteral( "IgnoreReportedLayerExtents" ), QStringLiteral( "1" ) );
   }
-  if ( settingsConnectionDpiMode->exists( {service.toLower(), connName} ) )
+  if ( settingsDpiMode->exists( {service.toLower(), connName} ) )
   {
-    uri.setParam( QStringLiteral( "dpiMode" ), QString::number( static_cast<int>( settingsConnectionDpiMode->value( {service.toLower(), connName} ) ) ) );
+    uri.setParam( QStringLiteral( "dpiMode" ), QString::number( static_cast<int>( settingsDpiMode->value( {service.toLower(), connName} ) ) ) );
   }
-  if ( settingsConnectionTilePixelRatio->exists( {service.toLower(), connName} ) )
+  if ( settingsTilePixelRatio->exists( {service.toLower(), connName} ) )
   {
-    uri.setParam( QStringLiteral( "tilePixelRatio" ), QString::number( static_cast<int>( settingsConnectionTilePixelRatio->value( {service.toLower(), connName} ) ) ) );
+    uri.setParam( QStringLiteral( "tilePixelRatio" ), QString::number( static_cast<int>( settingsTilePixelRatio->value( {service.toLower(), connName} ) ) ) );
   }
 
   return uri;
@@ -199,13 +199,13 @@ QgsDataSourceUri &QgsOwsConnection::addWfsConnectionSettings( QgsDataSourceUri &
 {
   addCommonConnectionSettings( uri, service, connName );
 
-  const QString version = settingsConnectionVersion->value( {service.toLower(), connName} );
+  const QString version = settingsVersion->value( {service.toLower(), connName} );
   if ( !version.isEmpty() )
   {
     uri.setParam( QStringLiteral( "version" ), version );
   }
 
-  const QString maxnumFeatures = settingsConnectionMaxNumFeatures->value( {service.toLower(), connName} );
+  const QString maxnumFeatures = settingsMaxNumFeatures->value( {service.toLower(), connName} );
   if ( !maxnumFeatures.isEmpty() )
   {
     uri.setParam( QStringLiteral( "maxNumFeatures" ), maxnumFeatures );
@@ -250,11 +250,11 @@ void QgsOwsConnection::addCommonConnectionSettings( QgsDataSourceUri &uri, const
 void QgsOwsConnection::addCommonConnectionSettings( QgsDataSourceUri &uri, const QString &service, const QString &connectionName )
 {
 
-  if ( settingsConnectionIgnoreAxisOrientation->value( {service.toLower(), connectionName} ) )
+  if ( settingsIgnoreAxisOrientation->value( {service.toLower(), connectionName} ) )
   {
     uri.setParam( QStringLiteral( "IgnoreAxisOrientation" ), QStringLiteral( "1" ) );
   }
-  if ( settingsConnectionInvertAxisOrientation->value( {service.toLower(), connectionName} ) )
+  if ( settingsInvertAxisOrientation->value( {service.toLower(), connectionName} ) )
   {
     uri.setParam( QStringLiteral( "InvertAxisOrientation" ), QStringLiteral( "1" ) );
   }
@@ -262,5 +262,5 @@ void QgsOwsConnection::addCommonConnectionSettings( QgsDataSourceUri &uri, const
 
 void QgsOwsConnection::deleteConnection( const QString &service, const QString &name )
 {
-  sTreeConnectionServices->deleteItem( service.toLower(), {name} );
+  sTreeOwsConnections->deleteItem( service.toLower(), {name} );
 }

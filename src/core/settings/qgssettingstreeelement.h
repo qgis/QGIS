@@ -47,11 +47,12 @@ class CORE_EXPORT QgsSettingsTreeElement
     Q_GADGET
 
   public:
+    //! Type of tree element
     enum class Type
     {
-      Root,
-      Normal,
-      NamedList,
+      Root, //!< Root Element
+      Standard, //!< Normal Element
+      NamedList, //! Named List Element
     };
     Q_ENUM( Type )
 
@@ -134,7 +135,6 @@ class CORE_EXPORT QgsSettingsTreeElement
     //! Registers a child elements
     void registerChildElement( QgsSettingsTreeElement *element ) SIP_THROW( QgsSettingsException );
 
-    void init( QgsSettingsTreeElement *parent, const QString &key );
     Type mType = Type::Root;
 
 
@@ -148,6 +148,8 @@ class CORE_EXPORT QgsSettingsTreeElement
 
     QgsSettingsTreeElement( const QgsSettingsTreeElement &other ) = default SIP_FORCE;
 
+    //! itilaize the tree element
+    void init( QgsSettingsTreeElement *parent, const QString &key );
 
     friend class QgsSettingsTreeNamedListElement;
 
@@ -214,6 +216,7 @@ class CORE_EXPORT QgsSettingsTreeNamedListElement : public QgsSettingsTreeElemen
      */
     void deleteItem( const QString &item, const QStringList &parentsNamedItems = QStringList() ) SIP_THROW( QgsSettingsException );
 
+    //! Returns the setting used to store the selected item
     QgsSettingsEntryString *selectedItemSetting() const {return mSelectedItemSetting;}
 
   protected:
@@ -231,8 +234,12 @@ class CORE_EXPORT QgsSettingsTreeNamedListElement : public QgsSettingsTreeElemen
 
     QgsSettingsTreeNamedListElement( const QgsSettingsTreeNamedListElement &other ) = default SIP_FORCE;
 
+    //! Returns the key with named items placeholders filled with args
+    QString completeKeyWithNamedItems( const QString &key, const QStringList &namedItems ) const;
+
     QgsSettingsTreeElement::Options mOptions;
     QgsSettingsEntryString *mSelectedItemSetting = nullptr;
+    QString mItemsCompleteKey;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsSettingsTreeElement::Options )

@@ -194,7 +194,9 @@ void QgsNewArcGisRestConnectionDialog::accept()
 
   settings.setValue( credentialsKey + "/authcfg", mAuthSettings->configId() );
 
+  Q_NOWARN_DEPRECATED_PUSH
   mHttpHeaders->updateSettings( settings, key );
+  Q_NOWARN_DEPRECATED_POP
 
   settings.setValue( mBaseKey + "/selected", txtName->text() );
 

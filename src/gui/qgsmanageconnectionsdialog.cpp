@@ -24,6 +24,8 @@
 #include "qgsmanageconnectionsdialog.h"
 #include "qgshttpheaders.h"
 #include "qgsowsconnection.h"
+#include "qgsvectortileconnection.h"
+
 
 QgsManageConnectionsDialog::QgsManageConnectionsDialog( QWidget *parent, Mode mode, Type type, const QString &fileName )
   : QDialog( parent )
@@ -240,17 +242,18 @@ bool QgsManageConnectionsDialog::populateConnections()
   // Export mode. Populate connections list from settings
   if ( mDialogMode == Export )
   {
+    QStringList connections;
     QgsSettings settings;
     switch ( mConnectionType )
     {
       case WMS:
-        settings.beginGroup( QStringLiteral( "/qgis/connections-wms" ) );
+        connections = QgsOwsConnection::sTreeOwsConnections->items( {QStringLiteral( "wms" )} );
         break;
       case WFS:
-        settings.beginGroup( QStringLiteral( "/qgis/connections-wfs" ) );
+        connections = QgsOwsConnection::sTreeOwsConnections->items( {QStringLiteral( "wfs" )} );
         break;
       case WCS:
-        settings.beginGroup( QStringLiteral( "/qgis/connections-wcs" ) );
+        connections = QgsOwsConnection::sTreeOwsConnections->items( {QStringLiteral( "wcs" )} );
         break;
       case PostGIS:
         settings.beginGroup( QStringLiteral( "/PostgreSQL/connections" ) );
@@ -265,10 +268,10 @@ bool QgsManageConnectionsDialog::populateConnections()
         settings.beginGroup( QStringLiteral( "/HANA/connections" ) );
         break;
       case GeoNode:
-        settings.beginGroup( QStringLiteral( "/qgis/connections-geonode" ) );
+        connections = QgsOwsConnection::sTreeOwsConnections->items( {QStringLiteral( "geonode" )} );
         break;
       case XyzTiles:
-        settings.beginGroup( QStringLiteral( "/qgis/connections-xyz" ) );
+        connections = QgsOwsConnection::sTreeOwsConnections->items( {QStringLiteral( "xyz" )} );
         break;
       case ArcgisMapServer:
         settings.beginGroup( QStringLiteral( "/qgis/connections-arcgismapserver" ) );
@@ -277,19 +280,22 @@ bool QgsManageConnectionsDialog::populateConnections()
         settings.beginGroup( QStringLiteral( "/qgis/connections-arcgisfeatureserver" ) );
         break;
       case VectorTile:
-        settings.beginGroup( QStringLiteral( "/qgis/connections-vector-tile" ) );
+        connections = QgsVectorTileProviderConnection::sTreeConnectionVectorTile->items();
         break;
     }
-    QStringList keys = settings.childGroups();
-    QStringList::Iterator it = keys.begin();
-    while ( it != keys.end() )
+    if ( !settings.group().isEmpty() )
     {
-      QListWidgetItem *item = new QListWidgetItem();
-      item->setText( *it );
-      listConnections->addItem( item );
-      ++it;
+      QStringList keys = settings.childGroups();
+      QStringList::Iterator it = keys.begin();
+      while ( it != keys.end() )
+      {
+        QListWidgetItem *item = new QListWidgetItem();
+        item->setText( *it );
+        listConnections->addItem( item );
+        ++it;
+      }
+      settings.endGroup();
     }
-    settings.endGroup();
   }
   // Import mode. Populate connections list from file
   else
@@ -443,31 +449,28 @@ QDomDocument QgsManageConnectionsDialog::saveOWSConnections( const QStringList &
   root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
   doc.appendChild( root );
 
-  const QgsSettings settings;
   QString path;
   for ( int i = 0; i < connections.count(); ++i )
   {
-    path = "/qgis/connections-" + service.toLower() + '/';
     QDomElement el = doc.createElement( service.toLower() );
     el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
-    el.setAttribute( QStringLiteral( "url" ), settings.value( path + connections[ i ] + "/url" ).toString() );
+    el.setAttribute( QStringLiteral( "url" ), QgsOwsConnection::settingsUrl->value( {service.toLower(), connections[i] } ) );
 
     if ( service == QLatin1String( "WMS" ) )
     {
-      el.setAttribute( QStringLiteral( "ignoreGetMapURI" ), settings.value( path + connections[i] + "/ignoreGetMapURI", false ).toBool() ? "true" : "false" );
-      el.setAttribute( QStringLiteral( "ignoreGetFeatureInfoURI" ), settings.value( path + connections[i] + "/ignoreGetFeatureInfoURI", false ).toBool() ? "true" : "false" );
-      el.setAttribute( QStringLiteral( "ignoreAxisOrientation" ), settings.value( path + connections[i] + "/ignoreAxisOrientation", false ).toBool() ? "true" : "false" );
-      el.setAttribute( QStringLiteral( "invertAxisOrientation" ), settings.value( path + connections[i] + "/invertAxisOrientation", false ).toBool() ? "true" : "false" );
-      el.setAttribute( QStringLiteral( "smoothPixmapTransform" ), settings.value( path + connections[i] + "/smoothPixmapTransform", false ).toBool() ? "true" : "false" );
-      el.setAttribute( QStringLiteral( "dpiMode" ), settings.value( path + connections[i] + "/dpiMode", "7" ).toInt() );
+      el.setAttribute( QStringLiteral( "ignoreGetMapURI" ), QgsOwsConnection::settingsIgnoreGetMapURI->value( {service.toLower(), connections[i] } ) );
+      el.setAttribute( QStringLiteral( "ignoreGetFeatureInfoURI" ), QgsOwsConnection::settingsIgnoreGetFeatureInfoURI->value( {service.toLower(), connections[i] } ) );
+      el.setAttribute( QStringLiteral( "ignoreAxisOrientation" ), QgsOwsConnection::settingsIgnoreAxisOrientation->value( {service.toLower(), connections[i] } ) );
+      el.setAttribute( QStringLiteral( "invertAxisOrientation" ), QgsOwsConnection::settingsInvertAxisOrientation->value( {service.toLower(), connections[i] } ) );
+      el.setAttribute( QStringLiteral( "smoothPixmapTransform" ), QgsOwsConnection::settingsSmoothPixmapTransform->value( {service.toLower(), connections[i] } ) );
+      el.setAttribute( QStringLiteral( "dpiMode" ), static_cast<int>( QgsOwsConnection::settingsDpiMode->value( {service.toLower(), connections[i] } ) ) );
 
-      QgsHttpHeaders httpHeader( path + connections[ i ] );
+      QgsHttpHeaders httpHeader( QgsOwsConnection::settingsHeaders->value( {service.toLower(), connections[i] } ) );
       httpHeader.updateDomElement( el );
     }
 
-    path = "/qgis/" + service.toUpper() + '/';
-    el.setAttribute( QStringLiteral( "username" ), settings.value( path + connections[ i ] + "/username" ).toString() );
-    el.setAttribute( QStringLiteral( "password" ), settings.value( path + connections[ i ] + "/password" ).toString() );
+    el.setAttribute( QStringLiteral( "username" ), QgsOwsConnection::settingsUsername->value( {service.toLower(), connections[i] } ) );
+    el.setAttribute( QStringLiteral( "password" ), QgsOwsConnection::settingsPassword->value( {service.toLower(), connections[i] } ) );
     root.appendChild( el );
   }
 
@@ -481,25 +484,20 @@ QDomDocument QgsManageConnectionsDialog::saveWfsConnections( const QStringList &
   root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.1" ) );
   doc.appendChild( root );
 
-  const QgsSettings settings;
-  QString path;
   for ( int i = 0; i < connections.count(); ++i )
   {
-    path = QStringLiteral( "/qgis/connections-wfs/" );
     QDomElement el = doc.createElement( QStringLiteral( "wfs" ) );
     el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
-    el.setAttribute( QStringLiteral( "url" ), settings.value( path + connections[ i ] + "/url" ).toString() );
+    el.setAttribute( QStringLiteral( "url" ), QgsOwsConnection::settingsUrl->value( {QStringLiteral( "wfs" ), connections[i] } ) );
 
-    el.setAttribute( QStringLiteral( "version" ), settings.value( path + connections[ i ] + "/version" ).toString() );
-    el.setAttribute( QStringLiteral( "maxnumfeatures" ), settings.value( path + connections[ i ] + "/maxnumfeatures" ).toString() );
-    el.setAttribute( QStringLiteral( "pagesize" ), settings.value( path + connections[ i ] + "/pagesize" ).toString() );
-    el.setAttribute( QStringLiteral( "pagingenabled" ), settings.value( path + connections[ i ] + "/pagingenabled", false ).toString() );
-    el.setAttribute( QStringLiteral( "ignoreAxisOrientation" ), settings.value( path + connections[ i ] + "/ignoreAxisOrientation", false ).toString() );
-    el.setAttribute( QStringLiteral( "invertAxisOrientation" ), settings.value( path + connections[ i ] + "/invertAxisOrientation", false ).toString() );
-
-    path = QStringLiteral( "/qgis/WFS/" );
-    el.setAttribute( QStringLiteral( "username" ), settings.value( path + connections[ i ] + "/username" ).toString() );
-    el.setAttribute( QStringLiteral( "password" ), settings.value( path + connections[ i ] + "/password" ).toString() );
+    el.setAttribute( QStringLiteral( "version" ), QgsOwsConnection::settingsVersion->value( {QStringLiteral( "wfs" ), connections[i] } ) );
+    el.setAttribute( QStringLiteral( "maxnumfeatures" ), QgsOwsConnection::settingsMaxNumFeatures->value( {QStringLiteral( "wfs" ), connections[i] } ) );
+    el.setAttribute( QStringLiteral( "pagesize" ), QgsOwsConnection::settingsPagesize->value( {QStringLiteral( "wfs" ), connections[i] } ) );
+    el.setAttribute( QStringLiteral( "pagingenabled" ), QgsOwsConnection::settingsPagingEnabled->value( {QStringLiteral( "wfs" ), connections[i] } ) );
+    el.setAttribute( QStringLiteral( "ignoreAxisOrientation" ), QgsOwsConnection::settingsIgnoreAxisOrientation->value( {QStringLiteral( "wfs" ), connections[i] } ) );
+    el.setAttribute( QStringLiteral( "invertAxisOrientation" ), QgsOwsConnection::settingsInvertAxisOrientation->value( {QStringLiteral( "wfs" ), connections[i] } ) );
+    el.setAttribute( QStringLiteral( "username" ), QgsOwsConnection::settingsUsername->value( {QStringLiteral( "wfs" ), connections[i] } ) );
+    el.setAttribute( QStringLiteral( "password" ), QgsOwsConnection::settingsPassword->value( {QStringLiteral( "wfs" ), connections[i] } ) );
     root.appendChild( el );
   }
 
@@ -694,18 +692,13 @@ QDomDocument QgsManageConnectionsDialog::saveGeonodeConnections( const QStringLi
   root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
   doc.appendChild( root );
 
-  const QgsSettings settings;
-  QString path;
   for ( int i = 0; i < connections.count(); ++i )
   {
-    path = QStringLiteral( "/qgis/connections-geonode/" );
     QDomElement el = doc.createElement( QStringLiteral( "geonode" ) );
     el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
-    el.setAttribute( QStringLiteral( "url" ), settings.value( path + connections[ i ] + "/url" ).toString() );
-
-    path = QStringLiteral( "/qgis/GeoNode/" );
-    el.setAttribute( QStringLiteral( "username" ), settings.value( path + connections[ i ] + "/username" ).toString() );
-    el.setAttribute( QStringLiteral( "password" ), settings.value( path + connections[ i ] + "/password" ).toString() );
+    el.setAttribute( QStringLiteral( "url" ), QgsOwsConnection::settingsUrl->value( {QStringLiteral( "geonode" ), connections[i] } ) );
+    el.setAttribute( QStringLiteral( "username" ), QgsOwsConnection::settingsUsername->value( {QStringLiteral( "geonode" ), connections[i] } ) );
+    el.setAttribute( QStringLiteral( "password" ), QgsOwsConnection::settingsPassword->value( {QStringLiteral( "geonode" ), connections[i] } ) );
     root.appendChild( el );
   }
 
@@ -719,23 +712,21 @@ QDomDocument QgsManageConnectionsDialog::saveXyzTilesConnections( const QStringL
   root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
   doc.appendChild( root );
 
-  const QgsSettings settings;
-  QString path;
   for ( int i = 0; i < connections.count(); ++i )
   {
-    path = "qgis/connections-xyz/" + connections[ i ];
+
     QDomElement el = doc.createElement( QStringLiteral( "xyztiles" ) );
 
     el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
-    el.setAttribute( QStringLiteral( "url" ), settings.value( path + "/url" ).toString() );
-    el.setAttribute( QStringLiteral( "zmin" ), settings.value( path + "/zmin", -1 ).toInt() );
-    el.setAttribute( QStringLiteral( "zmax" ), settings.value( path + "/zmax", -1 ).toInt() );
-    el.setAttribute( QStringLiteral( "authcfg" ), settings.value( path + "/authcfg" ).toString() );
-    el.setAttribute( QStringLiteral( "username" ), settings.value( path + "/username" ).toString() );
-    el.setAttribute( QStringLiteral( "password" ), settings.value( path + "/password" ).toString() );
-    el.setAttribute( QStringLiteral( "tilePixelRatio" ), settings.value( path + "/tilePixelRatio", 0 ).toDouble() );
+    el.setAttribute( QStringLiteral( "url" ), QgsXyzConnectionSettings::settingsUrl->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "zmin" ), QgsXyzConnectionSettings::settingsZmin->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "zmax" ), QgsXyzConnectionSettings::settingsZmax->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "authcfg" ), QgsXyzConnectionSettings::settingsAuthcfg->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "username" ), QgsXyzConnectionSettings::settingsUsername->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "password" ), QgsXyzConnectionSettings::settingsPassword->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "tilePixelRatio" ), QgsXyzConnectionSettings::settingsTilePixelRatio->value( connections[ i ] ) );
 
-    QgsHttpHeaders httpHeader( path );
+    QgsHttpHeaders httpHeader( QgsXyzConnectionSettings::settingsHeaders->value( connections[ i ] ) );
     httpHeader.updateDomElement( el );
 
     root.appendChild( el );
@@ -780,24 +771,22 @@ QDomDocument QgsManageConnectionsDialog::saveVectorTileConnections( const QStrin
   root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
   doc.appendChild( root );
 
-  const QgsSettings settings;
   QString path;
   for ( int i = 0; i < connections.count(); ++i )
   {
-    path = "qgis/connections-vector-tile/" + connections[ i ];
     QDomElement el = doc.createElement( QStringLiteral( "vectortile" ) );
 
     el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
-    el.setAttribute( QStringLiteral( "url" ), settings.value( path + "/url" ).toString() );
-    el.setAttribute( QStringLiteral( "zmin" ), settings.value( path + "/zmin", -1 ).toInt() );
-    el.setAttribute( QStringLiteral( "zmax" ), settings.value( path + "/zmax", -1 ).toInt() );
-    el.setAttribute( QStringLiteral( "serviceType" ), settings.value( path + "/serviceType", QString() ).toString() );
-    el.setAttribute( QStringLiteral( "authcfg" ), settings.value( path + "/authcfg" ).toString() );
-    el.setAttribute( QStringLiteral( "username" ), settings.value( path + "/username" ).toString() );
-    el.setAttribute( QStringLiteral( "password" ), settings.value( path + "/password" ).toString() );
-    el.setAttribute( QStringLiteral( "styleUrl" ), settings.value( path + "/styleUrl" ).toString() );
+    el.setAttribute( QStringLiteral( "url" ), QgsVectorTileProviderConnection::settingsUrl->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "zmin" ), QgsVectorTileProviderConnection::settingsZmin->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "zmax" ), QgsVectorTileProviderConnection::settingsZmax->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "serviceType" ), QgsVectorTileProviderConnection::settingsServiceType->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "authcfg" ), QgsVectorTileProviderConnection::settingsAuthcfg->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "username" ), QgsVectorTileProviderConnection::settingsUsername->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "password" ), QgsVectorTileProviderConnection::settingsPassword->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "styleUrl" ), QgsVectorTileProviderConnection::settingsStyleUrl->value( connections[ i ] ) );
 
-    QgsHttpHeaders httpHeader( path );
+    QgsHttpHeaders httpHeader( QgsVectorTileProviderConnection::settingsHeaders->value( connections[ i ] ) );
     httpHeader.updateDomElement( el );
 
     root.appendChild( el );
@@ -832,7 +821,7 @@ void QgsManageConnectionsDialog::loadOWSConnections( const QDomDocument &doc, co
     }
 
     // check for duplicates
-    if ( QgsOwsConnection::settingsConnectionUrl->exists( {service.toLower(), connectionName} ) && prompt )
+    if ( QgsOwsConnection::settingsUrl->exists( {service.toLower(), connectionName} ) && prompt )
     {
       const int res = QMessageBox::warning( this,
                                             tr( "Loading Connections" ),
@@ -861,28 +850,28 @@ void QgsManageConnectionsDialog::loadOWSConnections( const QDomDocument &doc, co
       }
     }
 
-    if ( QgsOwsConnection::settingsConnectionUrl->exists( {service.toLower(), connectionName} ) && !overwrite )
+    if ( QgsOwsConnection::settingsUrl->exists( {service.toLower(), connectionName} ) && !overwrite )
     {
       child = child.nextSiblingElement();
       continue;
     }
 
     // no dups detected or overwrite is allowed
-    QgsOwsConnection::settingsConnectionUrl->setValue( child.attribute( QStringLiteral( "url" ) ), {service.toLower(), connectionName} );
-    QgsOwsConnection::settingsConnectionIgnoreGetMapURI->setValue( child.attribute( QStringLiteral( "ignoreGetMapURI" ) ) == QLatin1String( "true" ), {service.toLower(), connectionName} );
-    QgsOwsConnection::settingsConnectionIgnoreGetFeatureInfoURI->setValue( child.attribute( QStringLiteral( "ignoreGetFeatureInfoURI" ) ) == QLatin1String( "true" ), {service.toLower(), connectionName} );
-    QgsOwsConnection::settingsConnectionIgnoreAxisOrientation->setValue( child.attribute( QStringLiteral( "ignoreAxisOrientation" ) ) == QLatin1String( "true" ), {service.toLower(), connectionName} );
-    QgsOwsConnection::settingsConnectionInvertAxisOrientation->setValue( child.attribute( QStringLiteral( "invertAxisOrientation" ) ) == QLatin1String( "true" ), {service.toLower(), connectionName} );
-    QgsOwsConnection::settingsConnectionSmoothPixmapTransform->setValue( child.attribute( QStringLiteral( "smoothPixmapTransform" ) ) == QLatin1String( "true" ), {service.toLower(), connectionName} );
-    QgsOwsConnection::settingsConnectionDpiMode->setValue( static_cast<Qgis::DpiMode>( child.attribute( QStringLiteral( "dpiMode" ), QStringLiteral( "7" ) ).toInt() ), {service.toLower(), connectionName} );
+    QgsOwsConnection::settingsUrl->setValue( child.attribute( QStringLiteral( "url" ) ), {service.toLower(), connectionName} );
+    QgsOwsConnection::settingsIgnoreGetMapURI->setValue( child.attribute( QStringLiteral( "ignoreGetMapURI" ) ) == QLatin1String( "true" ), {service.toLower(), connectionName} );
+    QgsOwsConnection::settingsIgnoreGetFeatureInfoURI->setValue( child.attribute( QStringLiteral( "ignoreGetFeatureInfoURI" ) ) == QLatin1String( "true" ), {service.toLower(), connectionName} );
+    QgsOwsConnection::settingsIgnoreAxisOrientation->setValue( child.attribute( QStringLiteral( "ignoreAxisOrientation" ) ) == QLatin1String( "true" ), {service.toLower(), connectionName} );
+    QgsOwsConnection::settingsInvertAxisOrientation->setValue( child.attribute( QStringLiteral( "invertAxisOrientation" ) ) == QLatin1String( "true" ), {service.toLower(), connectionName} );
+    QgsOwsConnection::settingsSmoothPixmapTransform->setValue( child.attribute( QStringLiteral( "smoothPixmapTransform" ) ) == QLatin1String( "true" ), {service.toLower(), connectionName} );
+    QgsOwsConnection::settingsDpiMode->setValue( static_cast<Qgis::DpiMode>( child.attribute( QStringLiteral( "dpiMode" ), QStringLiteral( "7" ) ).toInt() ), {service.toLower(), connectionName} );
 
     QgsHttpHeaders httpHeader( child );
-    QgsOwsConnection::settingsConnectionHeaders->setValue( httpHeader.headers(), {service.toLower(), connectionName} );
+    QgsOwsConnection::settingsHeaders->setValue( httpHeader.headers(), {service.toLower(), connectionName} );
 
     if ( !child.attribute( QStringLiteral( "username" ) ).isEmpty() )
     {
-      QgsOwsConnection::settingsConnectionUsername->setValue( child.attribute( QStringLiteral( "username" ) ), {service.toUpper(), connectionName} );
-      QgsOwsConnection::settingsConnectionPassword->setValue( child.attribute( QStringLiteral( "password" ) ), {service.toUpper(), connectionName} );
+      QgsOwsConnection::settingsUsername->setValue( child.attribute( QStringLiteral( "username" ) ), {service.toUpper(), connectionName} );
+      QgsOwsConnection::settingsPassword->setValue( child.attribute( QStringLiteral( "password" ) ), {service.toUpper(), connectionName} );
     }
     child = child.nextSiblingElement();
   }
@@ -899,10 +888,8 @@ void QgsManageConnectionsDialog::loadWfsConnections( const QDomDocument &doc, co
   }
 
   QString connectionName;
-  QgsSettings settings;
-  settings.beginGroup( QStringLiteral( "/qgis/connections-wfs" ) );
-  QStringList keys = settings.childGroups();
-  settings.endGroup();
+  QStringList keys =  QgsOwsConnection::sTreeOwsConnections->items( {QStringLiteral( "geonode" ) } );
+
   QDomElement child = root.firstChildElement();
   bool prompt = true;
   bool overwrite = true;
@@ -960,23 +947,19 @@ void QgsManageConnectionsDialog::loadWfsConnections( const QDomDocument &doc, co
     }
 
     // no dups detected or overwrite is allowed
-    settings.beginGroup( QStringLiteral( "/qgis/connections-wfs" ) );
-    settings.setValue( QString( '/' + connectionName + "/url" ), child.attribute( QStringLiteral( "url" ) ) );
 
-    settings.setValue( QString( '/' + connectionName + "/version" ), child.attribute( QStringLiteral( "version" ) ) );
-    settings.setValue( QString( '/' + connectionName + "/maxnumfeatures" ), child.attribute( QStringLiteral( "maxnumfeatures" ) ) );
-    settings.setValue( QString( '/' + connectionName + "/pagesize" ), child.attribute( QStringLiteral( "pagesize" ) ) );
-    settings.setValue( QString( '/' + connectionName + "/pagingenabled" ), child.attribute( QStringLiteral( "pagingenabled" ) ) );
-    settings.setValue( QString( '/' + connectionName + "/ignoreAxisOrientation" ), child.attribute( QStringLiteral( "ignoreAxisOrientation" ) ) );
-    settings.setValue( QString( '/' + connectionName + "/invertAxisOrientation" ), child.attribute( QStringLiteral( "invertAxisOrientation" ) ) );
-    settings.endGroup();
+    QgsOwsConnection::settingsUrl->setValue( child.attribute( QStringLiteral( "url" ) ), {QStringLiteral( "wfs" ), connectionName} );
+    QgsOwsConnection::settingsVersion->setValue( child.attribute( QStringLiteral( "version" ) ), {QStringLiteral( "wfs" ), connectionName} );
+    QgsOwsConnection::settingsMaxNumFeatures->setValue( child.attribute( QStringLiteral( "maxnumfeatures" ) ), {QStringLiteral( "wfs" ), connectionName} );
+    QgsOwsConnection::settingsPagesize->setValue( child.attribute( QStringLiteral( "pagesize" ) ), {QStringLiteral( "wfs" ), connectionName} );
+    QgsOwsConnection::settingsPagingEnabled->setValue( child.attribute( QStringLiteral( "pagingenabled" ) ).toInt(), {QStringLiteral( "wfs" ), connectionName} );
+    QgsOwsConnection::settingsIgnoreAxisOrientation->setValue( child.attribute( QStringLiteral( "ignoreAxisOrientation" ) ).toInt(), {QStringLiteral( "wfs" ), connectionName} );
+    QgsOwsConnection::settingsInvertAxisOrientation->setValue( child.attribute( QStringLiteral( "invertAxisOrientation" ) ).toInt(), {QStringLiteral( "wfs" ), connectionName} );
 
     if ( !child.attribute( QStringLiteral( "username" ) ).isEmpty() )
     {
-      settings.beginGroup( "/qgis/WFS/" + connectionName );
-      settings.setValue( QStringLiteral( "/username" ), child.attribute( QStringLiteral( "username" ) ) );
-      settings.setValue( QStringLiteral( "/password" ), child.attribute( QStringLiteral( "password" ) ) );
-      settings.endGroup();
+      QgsOwsConnection::settingsUsername->setValue( child.attribute( QStringLiteral( "username" ) ), {QStringLiteral( "wfs" ), connectionName} );
+      QgsOwsConnection::settingsPassword->setValue( child.attribute( QStringLiteral( "password" ) ), {QStringLiteral( "wfs" ), connectionName} );
     }
     child = child.nextSiblingElement();
   }
@@ -1381,10 +1364,7 @@ void QgsManageConnectionsDialog::loadGeonodeConnections( const QDomDocument &doc
   }
 
   QString connectionName;
-  QgsSettings settings;
-  settings.beginGroup( QStringLiteral( "/qgis/connections-geonode" ) );
-  QStringList keys = settings.childGroups();
-  settings.endGroup();
+  QStringList keys = QgsOwsConnection::sTreeOwsConnections->items( {QStringLiteral( "geonode" )} );
   QDomElement child = root.firstChildElement();
   bool prompt = true;
   bool overwrite = true;
@@ -1442,16 +1422,12 @@ void QgsManageConnectionsDialog::loadGeonodeConnections( const QDomDocument &doc
     }
 
     // no dups detected or overwrite is allowed
-    settings.beginGroup( QStringLiteral( "/qgis/connections-geonode" ) );
-    settings.setValue( QString( '/' + connectionName + "/url" ), child.attribute( QStringLiteral( "url" ) ) );
-    settings.endGroup();
+    QgsOwsConnection::settingsUrl->setValue( child.attribute( QStringLiteral( "url" ) ), {QStringLiteral( "geonode" ), connectionName} );
 
     if ( !child.attribute( QStringLiteral( "username" ) ).isEmpty() )
     {
-      settings.beginGroup( "/qgis/GeoNode/" + connectionName );
-      settings.setValue( QStringLiteral( "/username" ), child.attribute( QStringLiteral( "username" ) ) );
-      settings.setValue( QStringLiteral( "/password" ), child.attribute( QStringLiteral( "password" ) ) );
-      settings.endGroup();
+      QgsOwsConnection::settingsUsername->setValue( child.attribute( QStringLiteral( "username" ) ), {QStringLiteral( "geonode" ), connectionName} );
+      QgsOwsConnection::settingsPassword->setValue( child.attribute( QStringLiteral( "password" ) ), {QStringLiteral( "geonode" ), connectionName} );
     }
     child = child.nextSiblingElement();
   }
@@ -1468,10 +1444,7 @@ void QgsManageConnectionsDialog::loadXyzTilesConnections( const QDomDocument &do
   }
 
   QString connectionName;
-  QgsSettings settings;
-  settings.beginGroup( QStringLiteral( "/qgis/connections-xyz" ) );
-  QStringList keys = settings.childGroups();
-  settings.endGroup();
+  QStringList keys = QgsXyzConnectionSettings::sTreeXyzConnections->items();
   QDomElement child = root.firstChildElement();
   bool prompt = true;
   bool overwrite = true;
@@ -1528,19 +1501,17 @@ void QgsManageConnectionsDialog::loadXyzTilesConnections( const QDomDocument &do
       keys << connectionName;
     }
 
-    settings.beginGroup( "qgis/connections-xyz/" + connectionName );
-    settings.setValue( QStringLiteral( "url" ), child.attribute( QStringLiteral( "url" ) ) );
-    settings.setValue( QStringLiteral( "zmin" ), child.attribute( QStringLiteral( "zmin" ) ) );
-    settings.setValue( QStringLiteral( "zmax" ), child.attribute( QStringLiteral( "zmax" ) ) );
-    settings.setValue( QStringLiteral( "authcfg" ), child.attribute( QStringLiteral( "authcfg" ) ) );
-    settings.setValue( QStringLiteral( "username" ), child.attribute( QStringLiteral( "username" ) ) );
-    settings.setValue( QStringLiteral( "password" ), child.attribute( QStringLiteral( "password" ) ) );
-    settings.setValue( QStringLiteral( "tilePixelRatio" ), child.attribute( QStringLiteral( "tilePixelRatio" ) ) );
+
+    QgsXyzConnectionSettings::settingsUrl->setValue( child.attribute( QStringLiteral( "url" ) ), connectionName );
+    QgsXyzConnectionSettings::settingsZmin->setValue( child.attribute( QStringLiteral( "zmin" ) ).toInt(), connectionName );
+    QgsXyzConnectionSettings::settingsZmax->setValue( child.attribute( QStringLiteral( "zmax" ) ).toInt(), connectionName );
+    QgsXyzConnectionSettings::settingsAuthcfg->setValue( child.attribute( QStringLiteral( "authcfg" ) ), connectionName );
+    QgsXyzConnectionSettings::settingsUsername->setValue( child.attribute( QStringLiteral( "username" ) ), connectionName );
+    QgsXyzConnectionSettings::settingsPassword->setValue( child.attribute( QStringLiteral( "password" ) ), connectionName );
+    QgsXyzConnectionSettings::settingsTilePixelRatio->setValue( child.attribute( QStringLiteral( "tilePixelRatio" ) ).toInt(), connectionName );
 
     QgsHttpHeaders httpHeader( child );
-    httpHeader.updateSettings( settings );
-
-    settings.endGroup();
+    QgsXyzConnectionSettings::settingsHeaders->setValue( httpHeader.headers(), connectionName );
 
     child = child.nextSiblingElement();
   }
@@ -1622,7 +1593,9 @@ void QgsManageConnectionsDialog::loadArcgisConnections( const QDomDocument &doc,
     settings.setValue( QString( '/' + connectionName + "/url" ), child.attribute( QStringLiteral( "url" ) ) );
 
     QgsHttpHeaders httpHeader( child );
+    Q_NOWARN_DEPRECATED_PUSH
     httpHeader.updateSettings( settings, QString( '/' + connectionName ) );
+    Q_NOWARN_DEPRECATED_POP
 
     settings.endGroup();
 
@@ -1707,20 +1680,17 @@ void QgsManageConnectionsDialog::loadVectorTileConnections( const QDomDocument &
       keys << connectionName;
     }
 
-    settings.beginGroup( "qgis/connections-vector-tile/" + connectionName );
-    settings.setValue( QStringLiteral( "url" ), child.attribute( QStringLiteral( "url" ) ) );
-    settings.setValue( QStringLiteral( "zmin" ), child.attribute( QStringLiteral( "zmin" ) ) );
-    settings.setValue( QStringLiteral( "zmax" ), child.attribute( QStringLiteral( "zmax" ) ) );
-    settings.setValue( QStringLiteral( "serviceType" ), child.attribute( QStringLiteral( "serviceType" ) ) );
-    settings.setValue( QStringLiteral( "authcfg" ), child.attribute( QStringLiteral( "authcfg" ) ) );
-    settings.setValue( QStringLiteral( "username" ), child.attribute( QStringLiteral( "username" ) ) );
-    settings.setValue( QStringLiteral( "password" ), child.attribute( QStringLiteral( "password" ) ) );
-    settings.setValue( QStringLiteral( "styleUrl" ), child.attribute( QStringLiteral( "styleUrl" ) ) );
+    QgsVectorTileProviderConnection::settingsUrl->setValue( child.attribute( QStringLiteral( "url" ) ), connectionName );
+    QgsVectorTileProviderConnection::settingsZmin->setValue( child.attribute( QStringLiteral( "zmin" ) ).toInt(), connectionName );
+    QgsVectorTileProviderConnection::settingsZmax->setValue( child.attribute( QStringLiteral( "zmax" ) ).toInt(), connectionName );
+    QgsVectorTileProviderConnection::settingsServiceType->setValue( child.attribute( QStringLiteral( "serviceType" ) ), connectionName );
+    QgsVectorTileProviderConnection::settingsAuthcfg->setValue( child.attribute( QStringLiteral( "authcfg" ) ), connectionName );
+    QgsVectorTileProviderConnection::settingsUsername->setValue( child.attribute( QStringLiteral( "username" ) ), connectionName );
+    QgsVectorTileProviderConnection::settingsPassword->setValue( child.attribute( QStringLiteral( "password" ) ), connectionName );
+    QgsVectorTileProviderConnection::settingsStyleUrl->setValue( child.attribute( QStringLiteral( "styleUrl" ) ), connectionName );
 
     QgsHttpHeaders httpHeader( child );
-    httpHeader.updateSettings( settings );
-
-    settings.endGroup();
+    QgsVectorTileProviderConnection::settingsHeaders->setValue( httpHeader.headers(), connectionName );
 
     child = child.nextSiblingElement();
   }

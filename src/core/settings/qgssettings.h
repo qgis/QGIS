@@ -81,7 +81,13 @@ class CORE_EXPORT QgsSettings : public QObject
     };
 
 #ifndef SIP_RUN
+
+    /**
+     * Returns the tree root element for the settings
+     * \since QGIS 3.30
+     */
     static QgsSettingsTreeElement *treeRoot();
+
     static inline QgsSettingsTreeElement *sTtreeConnections = treeRoot()->createChildElement( QStringLiteral( "connections" ) );
     static inline QgsSettingsTreeElement *sTreeLocale = treeRoot()->createChildElement( QStringLiteral( "locale" ) );
     static inline QgsSettingsTreeElement *sTreeGps = treeRoot()->createChildElement( QStringLiteral( "gps" ) );

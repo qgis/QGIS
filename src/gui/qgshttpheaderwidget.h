@@ -65,7 +65,7 @@ class GUI_EXPORT QgsHttpHeaderWidget : public QWidget, private Ui::QgsHttpHeader
      * \param settings
      * \param key
      */
-    void updateSettings( QgsSettings &settings, const QString &key ) const;
+    Q_DECL_DEPRECATED void updateSettings( QgsSettings &settings, const QString &key ) const SIP_DEPRECATED;
 
   private slots:
 

@@ -47,7 +47,7 @@ fill the inner header map from the settings defined at ``key``
 :param key:
 %End
 
-    void updateSettings( QgsSettings &settings, const QString &key ) const;
+ void updateSettings( QgsSettings &settings, const QString &key ) const /Deprecated/;
 %Docstring
 update the ``settings`` with the http headers present in the inner map.
 

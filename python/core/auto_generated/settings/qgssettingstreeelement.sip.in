@@ -38,7 +38,7 @@ to automatically register a settings entry on its creation when a parent is prov
     enum class Type
     {
       Root,
-      Normal,
+      Standard,
       NamedList,
     };
 
@@ -140,7 +140,6 @@ Returns the number of named elements in the complete key
 Registers a child elements
 %End
 
-    void init( QgsSettingsTreeElement *parent, const QString &key );
 
 
   private:
@@ -213,6 +212,9 @@ Deletes a named entry from the named list element
 %End
 
     QgsSettingsEntryString *selectedItemSetting() const;
+%Docstring
+Returns the setting used to store the selected item
+%End
 
   protected:
     void initNamedList( const QgsSettingsTreeElement::Options &options );

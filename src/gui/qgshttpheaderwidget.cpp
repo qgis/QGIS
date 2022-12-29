@@ -124,6 +124,8 @@ void QgsHttpHeaderWidget::setFromSettings( const QgsSettings &settings, const QS
 
 void QgsHttpHeaderWidget::updateSettings( QgsSettings &settings, const QString &key ) const
 {
+  Q_NOWARN_DEPRECATED_PUSH
   QgsHttpHeaders h = httpHeaders();
   h.updateSettings( settings, key );
+  Q_NOWARN_DEPRECATED_POP
 }

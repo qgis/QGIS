@@ -48,11 +48,6 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
      */
     virtual ~QgsSettingsRegistryCore();
 
-
-    void migrateOldSettings();
-
-    void backwardCompatibility();
-
 #ifndef SIP_RUN
     //! Settings entry digitizing stream tolerance
     static const inline QgsSettingsEntryInteger settingsDigitizingStreamTolerance = QgsSettingsEntryInteger( QStringLiteral( "stream_tolerance" ), QgsSettings::Prefix::QGIS_DIGITIZING, 2 );
@@ -179,6 +174,11 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
 
     //! Settings entry enable WMS tile prefetching.
     static const inline QgsSettingsEntryBool settingsEnableWMSTilePrefetching = QgsSettingsEntryBool( QStringLiteral( "enable_wms_tile_prefetch" ), QgsSettings::Prefix::WMS, false, QStringLiteral( "Whether to include WMS layers when rendering tiles adjacent to the visible map area" ) );
+
+  private:
+    void migrateOldSettings();
+    void backwardCompatibility();
+
 #endif
 };
 

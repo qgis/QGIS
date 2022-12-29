@@ -110,7 +110,6 @@ QgsSettingsEntryBase::QgsSettingsEntryBase( const QString &key, QgsSettingsTreeE
   : mParentTreeElement( parentTreeElement )
   , mDefaultValue( defaultValue )
   , mDescription( description )
-  , mPluginName()
   , mOptions( options )
 {
   mKey = QDir::cleanPath( QStringLiteral( "%1/%2" ).arg( parentTreeElement ? parentTreeElement->completeKey() : QString(), key ) );
@@ -141,12 +140,6 @@ QString QgsSettingsEntryBase::key( const QStringList &dynamicKeyPartList ) const
 QString QgsSettingsEntryBase::completeKeyPrivate( const QString &key, const QStringList &dynamicKeyPartList ) const
 {
   QString completeKey = key;
-  if ( !mPluginName.isEmpty() )
-  {
-    if ( !completeKey.startsWith( '/' ) )
-      completeKey.prepend( '/' );
-    completeKey.prepend( mPluginName );
-  }
 
   if ( dynamicKeyPartList.isEmpty() )
   {

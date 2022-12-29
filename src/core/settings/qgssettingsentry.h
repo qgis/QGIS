@@ -153,7 +153,6 @@ class CORE_EXPORT QgsSettingsEntryBase
       : mKey( QStringLiteral( "%1/%2" ).arg( section, key ) )
       , mDefaultValue( defaultValue )
       , mDescription( description )
-      , mPluginName()
       , mOptions( options )
     {}
 
@@ -383,7 +382,6 @@ class CORE_EXPORT QgsSettingsEntryBase
     QString mKey;
     QVariant mDefaultValue;
     QString mDescription;
-    QString mPluginName;
     Qgis::SettingsOptions mOptions;
 };
 

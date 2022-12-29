@@ -32,11 +32,6 @@ Constructor for QgsSettingsRegistryCore.
 
     virtual ~QgsSettingsRegistryCore();
 
-
-    void migrateOldSettings();
-
-    void backwardCompatibility();
-
 };
 
 /************************************************************************

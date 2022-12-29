@@ -37,18 +37,18 @@ class TestQgsSettingsEntry(unittest.TestCase):
             QgsSettingsTreeElement()
 
         root = QgsSettings.createPluginTreeElement(self.pluginName)
-        self.assertEqual(root.type(), QgsSettingsTreeElement.Type.Normal)
+        self.assertEqual(root.type(), QgsSettingsTreeElement.Type.Standard)
         pluginsElement = root.parent()
-        self.assertEqual(pluginsElement.type(), QgsSettingsTreeElement.Type.Normal)
+        self.assertEqual(pluginsElement.type(), QgsSettingsTreeElement.Type.Standard)
         self.assertEqual(pluginsElement.parent().type(), QgsSettingsTreeElement.Type.Root)
         self.assertEqual(pluginsElement.parent().parent(), None)
 
     def test_parent(self):
         root = QgsSettings.createPluginTreeElement(self.pluginName)
-        self.assertEqual(root.type(), QgsSettingsTreeElement.Type.Normal)
+        self.assertEqual(root.type(), QgsSettingsTreeElement.Type.Standard)
 
         l1 = root.createChildElement("test-parent-level-1")
-        self.assertEqual(l1.type(), QgsSettingsTreeElement.Type.Normal)
+        self.assertEqual(l1.type(), QgsSettingsTreeElement.Type.Standard)
         self.assertEqual(l1.key(), "test-parent-level-1")
         self.assertEqual(l1.completeKey(), f"/plugins/{self.pluginName}/test-parent-level-1/")
         self.assertEqual(l1.parent(), root)
@@ -56,7 +56,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(root.childrenSettings(), [])
 
         l1a = l1.createChildElement("level-a")
-        self.assertEqual(l1a.type(), QgsSettingsTreeElement.Type.Normal)
+        self.assertEqual(l1a.type(), QgsSettingsTreeElement.Type.Standard)
         self.assertEqual(l1a.key(), "level-a")
         self.assertEqual(l1a.completeKey(), f"/plugins/{self.pluginName}/test-parent-level-1/level-a/")
         self.assertEqual(l1a.parent(), l1)
@@ -93,6 +93,10 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(nl2.childrenElements(), [])
         self.assertEqual(len(nl2.childrenSettings()), 0)  # the setting for the current selection
         self.assertEqual(nl2.selectedItemSetting().key(), f"/plugins/{self.pluginName}/level-1/my_list/items/%1/my_nested_list/selected")
+        selected_key = f"/plugins/{self.pluginName}/level-1/my_list/items/item1/my_nested_list/selected"
+        self.assertEqual(QgsSettings().value(selected_key), None)
+        nl2.setSelectedItem("xxx", ["item1"])
+        self.assertEqual(QgsSettings().value(selected_key), "xxx")
 
         # list with settings
         setting = QgsSettingsEntryString("mysetting-inlist", nl2)
@@ -101,6 +105,12 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(nl2.childrenElements(), [])
         self.assertEqual(len(nl2.childrenSettings()), 1)
         self.assertEqual(nl2.childrenSettings()[0], setting)
+        setting.setValue("xxx", ["item1", "item2"])
+        self.assertEqual(QgsSettings().value(setting.key(['item1', 'item2'])), "xxx")
+        with self.assertRaises(QgsSettingsException):
+            nl2.deleteItem("item2")
+        nl2.deleteItem("item2", ["item1"])
+        self.assertEqual(QgsSettings().value(setting.key(['item1', 'item2'])), None)
 
     def test_registration(self):
         proot = QgsSettings.createPluginTreeElement(self.pluginName)
