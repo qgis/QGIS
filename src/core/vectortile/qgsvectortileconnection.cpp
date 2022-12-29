@@ -195,13 +195,6 @@ void QgsVectorTileProviderConnection::addConnection( const QString &name, QgsVec
 
   settingsHeaders->setValue( conn.httpHeaders.headers(), name );
 
-
-  // TODO QGIS 4 (or before) remove compatibility import
-  QgsSettings settings;
-  settings.beginGroup( "qgis/connections-vector-tile/" + name );
-  Q_NOWARN_DEPRECATED_PUSH
-  conn.httpHeaders.updateSettings( settings );
-  Q_NOWARN_DEPRECATED_POP
   switch ( conn.serviceType )
   {
     case Generic:

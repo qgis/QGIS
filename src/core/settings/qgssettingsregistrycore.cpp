@@ -187,14 +187,14 @@ void QgsSettingsRegistryCore::migrateOldSettings()
     const QStringList services = settings.childGroups();
     for ( const QString &service : services )
     {
-      QgsVectorTileProviderConnection::settingsUrl->copyValueFromKey( QStringLiteral( "connections-vector-tile/%1/url" ), {service} );
-      QgsVectorTileProviderConnection::settingsZzmin->copyValueFromKey( QStringLiteral( "connections-vector-tile/%1/zmin" ), {service} );
-      QgsVectorTileProviderConnection::settingsZmax->copyValueFromKey( QStringLiteral( "connections-vector-tile/%1/zmax" ), {service} );
-      QgsVectorTileProviderConnection::settingsAuthcfg->copyValueFromKey( QStringLiteral( "connections-vector-tile/%1/authcfg" ), {service} );
-      QgsVectorTileProviderConnection::settingsUsername->copyValueFromKey( QStringLiteral( "connections-vector-tile/%1/username" ), {service} );
-      QgsVectorTileProviderConnection::settingsPassword->copyValueFromKey( QStringLiteral( "connections-vector-tile/%1/password" ), {service} );
-      QgsVectorTileProviderConnection::settingsStyleUrl->copyValueFromKey( QStringLiteral( "connections-vector-tile/%1/styleUrl" ), {service} );
-      QgsVectorTileProviderConnection::settingsServiceType->copyValueFromKey( QStringLiteral( "connections-vector-tile/%1/serviceType" ), {service} );
+      QgsVectorTileProviderConnection::settingsUrl->copyValueFromKey( QStringLiteral( "qgis/connections-vector-tile/%1/url" ), {service} );
+      QgsVectorTileProviderConnection::settingsZzmin->copyValueFromKey( QStringLiteral( "qgis/connections-vector-tile/%1/zmin" ), {service} );
+      QgsVectorTileProviderConnection::settingsZmax->copyValueFromKey( QStringLiteral( "qgis/connections-vector-tile/%1/zmax" ), {service} );
+      QgsVectorTileProviderConnection::settingsAuthcfg->copyValueFromKey( QStringLiteral( "qgis/connections-vector-tile/%1/authcfg" ), {service} );
+      QgsVectorTileProviderConnection::settingsUsername->copyValueFromKey( QStringLiteral( "qgis/connections-vector-tile/%1/username" ), {service} );
+      QgsVectorTileProviderConnection::settingsPassword->copyValueFromKey( QStringLiteral( "qgis/connections-vector-tile/%1/password" ), {service} );
+      QgsVectorTileProviderConnection::settingsStyleUrl->copyValueFromKey( QStringLiteral( "qgis/connections-vector-tile/%1/styleUrl" ), {service} );
+      QgsVectorTileProviderConnection::settingsServiceType->copyValueFromKey( QStringLiteral( "qgis/connections-vector-tile/%1/serviceType" ), {service} );
       Q_NOWARN_DEPRECATED_PUSH
       settings.beginGroup( service );
       QgsVectorTileProviderConnection::settingsHeaders->setValue( QgsHttpHeaders( settings ).headers(), service );
@@ -202,7 +202,6 @@ void QgsSettingsRegistryCore::migrateOldSettings()
       Q_NOWARN_DEPRECATED_POP
     }
   }
-
 
   // babel devices settings - added in 3.30
   {
@@ -279,14 +278,14 @@ void QgsSettingsRegistryCore::backwardCompatibility()
       // do not overwrite already set setting
       if ( QgsVectorTileProviderConnection::settingsUrl->exists( service ) )
         continue;
-      QgsVectorTileProviderConnection::settingsUrl->copyValueToKey( QStringLiteral( "connections-vector-tile/%1/url" ), {service} );
-      QgsVectorTileProviderConnection::settingsZzmin->copyValueToKey( QStringLiteral( "connections-vector-tile/%1/zmin" ), {service} );
-      QgsVectorTileProviderConnection::settingsZmax->copyValueToKey( QStringLiteral( "connections-vector-tile/%1/zmax" ), {service} );
-      QgsVectorTileProviderConnection::settingsAuthcfg->copyValueToKey( QStringLiteral( "connections-vector-tile/%1/authcfg" ), {service} );
-      QgsVectorTileProviderConnection::settingsUsername->copyValueToKey( QStringLiteral( "connections-vector-tile/%1/username" ), {service} );
-      QgsVectorTileProviderConnection::settingsPassword->copyValueToKey( QStringLiteral( "connections-vector-tile/%1/password" ), {service} );
-      QgsVectorTileProviderConnection::settingsStyleUrl->copyValueToKey( QStringLiteral( "connections-vector-tile/%1/styleUrl" ), {service} );
-      QgsVectorTileProviderConnection::settingsServiceType->copyValueToKey( QStringLiteral( "connections-vector-tile/%1/serviceType" ), {service} );
+      QgsVectorTileProviderConnection::settingsUrl->copyValueToKey( QStringLiteral( "qgis/connections-vector-tile/%1/url" ), {service} );
+      QgsVectorTileProviderConnection::settingsZzmin->copyValueToKey( QStringLiteral( "qgis/connections-vector-tile/%1/zmin" ), {service} );
+      QgsVectorTileProviderConnection::settingsZmax->copyValueToKey( QStringLiteral( "qgis/connections-vector-tile/%1/zmax" ), {service} );
+      QgsVectorTileProviderConnection::settingsAuthcfg->copyValueToKey( QStringLiteral( "qgis/connections-vector-tile/%1/authcfg" ), {service} );
+      QgsVectorTileProviderConnection::settingsUsername->copyValueToKey( QStringLiteral( "qgis/connections-vector-tile/%1/username" ), {service} );
+      QgsVectorTileProviderConnection::settingsPassword->copyValueToKey( QStringLiteral( "qgis/connections-vector-tile/%1/password" ), {service} );
+      QgsVectorTileProviderConnection::settingsStyleUrl->copyValueToKey( QStringLiteral( "qgis/connections-vector-tile/%1/styleUrl" ), {service} );
+      QgsVectorTileProviderConnection::settingsServiceType->copyValueToKey( QStringLiteral( "qgis/connections-vector-tile/%1/serviceType" ), {service} );
       Q_NOWARN_DEPRECATED_PUSH
       settings.beginGroup( service );
       QgsHttpHeaders( QgsVectorTileProviderConnection::settingsHeaders->value( service ) ).updateSettings( settings );
