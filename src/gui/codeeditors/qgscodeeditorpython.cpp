@@ -45,7 +45,7 @@ QgsCodeEditorPython::QgsCodeEditorPython( QWidget *parent, const QList<QString> 
 
   setCaretWidth( 2 );
 
-  QgsCodeEditorPython::initializeLexer();
+  initializeLexer();
 }
 
 Qgis::ScriptLanguage QgsCodeEditorPython::language() const
@@ -342,9 +342,9 @@ const char *QgsQsciLexerPython::keywords( int set ) const
 {
   if ( set == 1 )
   {
-    return "True False and as assert break class continue def del elif else except exec "
+    return "True False and as assert break class continue def del elif else except "
            "finally for from global if import in is lambda None not or pass "
-           "print raise return try while with yield";
+           "raise return try while with yield async await nonlocal";
   }
 
   return QsciLexerPython::keywords( set );
