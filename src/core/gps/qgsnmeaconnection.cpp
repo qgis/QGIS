@@ -68,7 +68,7 @@ void QgsNmeaConnection::parseData()
     //append new data to the remaining results from last parseData() call
     mStringBuffer.append( mSource->read( numBytes ) );
     processStringBuffer();
-    emit stateChanged( mLastGPSInformation );
+    // emit stateChanged( mLastGPSInformation );
   }
 }
 
@@ -193,7 +193,14 @@ void QgsNmeaConnection::processGgaSentence( const char *data, int len )
     {
       latitude = -latitude;
     }
-
+    // Check if already processed by RMC
+    if ( mLastGPSInformation.longitude != nmea_ndeg2degree( longitude ) || mLastGPSInformation.latitude != nmea_ndeg2degree( latitude ) )
+    {
+      if ( mLastGPSInformation.status == 'A' || mLastGPSInformation.status == 'V'  )
+      {
+        emit stateChanged( mLastGPSInformation );
+      }
+    }
     mLastGPSInformation.longitude = nmea_ndeg2degree( longitude );
     mLastGPSInformation.latitude = nmea_ndeg2degree( latitude );
     mLastGPSInformation.elevation = result.elv;
@@ -277,6 +284,14 @@ void QgsNmeaConnection::processRmcSentence( const char *data, int len )
     if ( result.ns == 'S' )
     {
       latitude = -latitude;
+    }
+    //  Check if already processed by GGA
+    if ( mLastGPSInformation.longitude != nmea_ndeg2degree( longitude ) || mLastGPSInformation.latitude != nmea_ndeg2degree( latitude ) )
+    {
+      if ( mLastGPSInformation.status == 'A' || mLastGPSInformation.status == 'V'  )
+      {
+        emit stateChanged( mLastGPSInformation );
+      }
     }
     mLastGPSInformation.longitude = nmea_ndeg2degree( longitude );
     mLastGPSInformation.latitude = nmea_ndeg2degree( latitude );
@@ -441,6 +456,8 @@ void QgsNmeaConnection::processVtgSentence( const char *data, int len )
   if ( nmea_parse_GPVTG( data, len, &result ) )
   {
     mLastGPSInformation.speed = result.spk;
+    if ( !std::isnan( result.dir ) )
+      mLastGPSInformation.direction = result.dir;
   }
 }
 
