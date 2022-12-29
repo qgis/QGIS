@@ -325,6 +325,7 @@
 %Include auto_generated/editorwidgets/qgsrelationwidgetwrapper.sip
 %Include auto_generated/editorwidgets/qgssearchwidgettoolbutton.sip
 %Include auto_generated/editorwidgets/qgsspinbox.sip
+%Include auto_generated/editorwidgets/qgstextwidgetwrapper.sip
 %Include auto_generated/editorwidgets/qgsvaluemapsearchwidgetwrapper.sip
 %Include auto_generated/editorwidgets/qgsvaluerelationsearchwidgetwrapper.sip
 %Include auto_generated/effects/qgseffectdrawmodecombobox.sip
