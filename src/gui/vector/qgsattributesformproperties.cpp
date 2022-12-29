@@ -1517,8 +1517,7 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
 
       QLineEdit *title = new QLineEdit( itemData.name() );
 
-      //htmlCode
-      QgsCodeEditorExpression *text = new QgsCodeEditorExpression( );
+      QgsCodeEditorHTML *text = new QgsCodeEditorHTML( );
       text->setSizePolicy( QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Expanding );
       text->setText( itemData.textElementEditorConfiguration().text );
 
