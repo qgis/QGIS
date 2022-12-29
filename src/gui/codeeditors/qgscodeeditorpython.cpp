@@ -242,6 +242,92 @@ void QgsCodeEditorPython::searchSelectedTextInPyQGISDocs()
   QDesktopServices::openUrl( QUrl( QStringLiteral( "https://qgis.org/pyqgis/%1/search.html?q=%2" ).arg( version, text ) ) );
 }
 
+void QgsCodeEditorPython::toggleComment()
+{
+  if ( isReadOnly() )
+  {
+    return;
+  }
+
+  beginUndoAction();
+  int startLine, startPos, endLine, endPos;
+  if ( hasSelectedText() )
+    getSelection(&startLine, &startPos, &endLine, &endPos);
+  else
+  {
+    getCursorPosition(&startLine, &startPos);
+    endLine = startLine;
+    endPos = startPos;
+  }
+
+  // Check comment state and minimum indentation for each selected line  
+  bool allEmpty = true;
+  bool allCommented = true;
+  int minIndentation = -1;
+  for ( int line=startLine; line<=endLine; line++ )
+  {
+    auto stripped = text(line).trimmed();
+    if ( !stripped.isEmpty() )
+    {
+      allEmpty = false;
+      if ( !stripped.startsWith("#") )
+      {
+        allCommented=false;
+      }
+      if ( minIndentation == -1 || minIndentation > indentation(line) )
+      {
+        minIndentation = indentation(line);
+      }
+    }
+  }
+
+  // Special case, only empty lines
+  if ( allEmpty )
+  {
+    return;
+  }
+
+  // Selection shift to keep the same selected text after a # is added/removed
+  int delta = 0;
+
+  for ( int line=startLine; line<=endLine; line++ )
+  {
+    auto stripped = text(line).trimmed();
+
+    // Empty line
+    if ( stripped.isEmpty() )
+    {
+      continue;
+    }
+
+    if ( !allCommented )
+    {
+      insertAt("# ", line, minIndentation);
+      delta = -2;
+    }
+    else
+    {
+      if ( !stripped.startsWith("#") )
+      {
+        continue;
+      }
+      if ( stripped.startsWith("# ") )
+      {
+        delta = 2;
+      }
+      else
+      {
+        delta = 1;
+      }
+      setSelection(line, indentation(line), line, indentation(line) + delta);
+      removeSelectedText();
+    }
+  }
+
+  endUndoAction();
+  setSelection(startLine, startPos - delta, endLine, endPos - delta);
+}
+
 ///@cond PRIVATE
 //
 // QgsQsciLexerPython

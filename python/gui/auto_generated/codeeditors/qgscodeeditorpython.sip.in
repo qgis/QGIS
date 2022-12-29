@@ -64,6 +64,13 @@ Searches the selected text in the official PyQGIS online documentation.
 .. versionadded:: 3.16
 %End
 
+    void toggleComment();
+%Docstring
+Toggle comment for the selected text.
+
+.. versionadded:: 3.30
+%End
+
   protected:
 
     virtual void initializeLexer();

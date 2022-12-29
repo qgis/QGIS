@@ -84,6 +84,13 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
      */
     void searchSelectedTextInPyQGISDocs();
 
+    /**
+     * Toggle comment for the selected text.
+     *
+     * \since QGIS 3.30
+     */
+    void toggleComment();
+
   protected:
 
     void initializeLexer() override;
