@@ -195,6 +195,9 @@ class CORE_EXPORT QgsGpsConnection : public QObject
 
     //! Last recorded valid location
     QgsPoint mLastLocation;
+
+   //! Last recorded valid utcDateTime
+    QDateTime mLastDateTime;
 };
 
 #endif // QGSGPSCONNECTION_H
