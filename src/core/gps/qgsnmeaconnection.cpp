@@ -196,7 +196,7 @@ void QgsNmeaConnection::processGgaSentence( const char *data, int len )
     // Check if already processed by RMC
     if ( mLastGPSInformation.longitude != nmea_ndeg2degree( longitude ) || mLastGPSInformation.latitude != nmea_ndeg2degree( latitude ) )
     {
-      if ( mLastGPSInformation.status == 'A' || mLastGPSInformation.status == 'V'  )
+      if ( mLastGPSInformation.status == 'A' || mLastGPSInformation.status == 'V' )
       {
         emit stateChanged( mLastGPSInformation );
       }
@@ -288,7 +288,7 @@ void QgsNmeaConnection::processRmcSentence( const char *data, int len )
     //  Check if already processed by GGA
     if ( mLastGPSInformation.longitude != nmea_ndeg2degree( longitude ) || mLastGPSInformation.latitude != nmea_ndeg2degree( latitude ) )
     {
-      if ( mLastGPSInformation.status == 'A' || mLastGPSInformation.status == 'V'  )
+      if ( mLastGPSInformation.status == 'A' || mLastGPSInformation.status == 'V' )
       {
         emit stateChanged( mLastGPSInformation );
       }
