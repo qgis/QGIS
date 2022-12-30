@@ -143,7 +143,7 @@ QgsDataSourceUri &QgsOwsConnection::addWmsWcsConnectionSettings( QgsDataSourceUr
 {
   addCommonConnectionSettings( uri, service, connName );
 
-  settingsHeaders->setValue( uri.httpHeaders().headers(), {service.toLower(), connName} );
+  uri.setHttpHeaders( QgsHttpHeaders( settingsHeaders->value( {service.toLower(), connName} ) ) );
 
   if ( settingsIgnoreGetMapURI->value( {service.toLower(), connName} ) )
   {

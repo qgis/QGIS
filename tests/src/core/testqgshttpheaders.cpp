@@ -143,11 +143,8 @@ void TestQgsHttpheaders::updateSettings()
 
 void TestQgsHttpheaders::createQgsOwsConnection()
 {
-  QgsSettings settings;
-  settings.setValue( QString( QgsSettings::Prefix::QGIS ) + "/connections-service/name/" + QgsHttpHeaders::PATH_PREFIX + QgsHttpHeaders::KEY_REFERER,
-                     "http://test.com" );
-  settings.setValue( QString( QgsSettings::Prefix::QGIS ) + "/connections-service/name/" + QgsHttpHeaders::PATH_PREFIX + "other_http_header",
-                     "value" );
+  QgsHttpHeaders h( QVariantMap( { { QgsHttpHeaders::KEY_REFERER, "http://test.com"}, {"other_http_header", "value"}} ) );
+  QgsOwsConnection::settingsHeaders->setValue( h.headers(), {"service", "name"} );
 
   QgsOwsConnection ows( "service", "name" );
   QCOMPARE( ows.connectionInfo(), ",authcfg=,referer=http://test.com" );
