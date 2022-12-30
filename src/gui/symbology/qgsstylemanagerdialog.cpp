@@ -2161,7 +2161,7 @@ bool QgsStyleManagerDialog::editSymbol3D()
 
 void QgsStyleManagerDialog::addStyleDatabase( bool createNew )
 {
-  QString initialFolder = QgsStyleManagerDialog::settingLastStyleDatabaseFolder.value();
+  QString initialFolder = QgsStyleManagerDialog::settingLastStyleDatabaseFolder->value();
   if ( initialFolder.isEmpty() )
     initialFolder = QDir::homePath();
 
@@ -2178,7 +2178,7 @@ void QgsStyleManagerDialog::addStyleDatabase( bool createNew )
                            tr( "Style databases" ) + " (*.db *.xml)" );
   if ( ! databasePath.isEmpty() )
   {
-    QgsStyleManagerDialog::settingLastStyleDatabaseFolder.setValue( QFileInfo( databasePath ).path() );
+    QgsStyleManagerDialog::settingLastStyleDatabaseFolder->setValue( QFileInfo( databasePath ).path() );
 
     if ( createNew )
     {

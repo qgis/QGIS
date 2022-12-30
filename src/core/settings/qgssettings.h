@@ -88,6 +88,7 @@ class CORE_EXPORT QgsSettings : public QObject
      */
     static QgsSettingsTreeElement *treeRoot();
 
+    static inline QgsSettingsTreeElement *sTtreeApp = treeRoot()->createChildElement( QStringLiteral( "app" ) );
     static inline QgsSettingsTreeElement *sTtreeConnections = treeRoot()->createChildElement( QStringLiteral( "connections" ) );
     static inline QgsSettingsTreeElement *sTreeLocale = treeRoot()->createChildElement( QStringLiteral( "locale" ) );
     static inline QgsSettingsTreeElement *sTreeGps = treeRoot()->createChildElement( QStringLiteral( "gps" ) );
@@ -136,7 +137,6 @@ class CORE_EXPORT QgsSettings : public QObject
         static const inline char *SVG = "svg";
         static const inline char *ELEVATION_PROFILE = "elevation-profile";
         static const inline char *CORE_LAYERTREE = "core/layer-tree";
-        static const inline char *STYLE_MANAGER = "app/style-manager";
         static const inline char *FONTS = "fonts";
         static const inline char *WMS = "wms";
     };
