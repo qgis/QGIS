@@ -8,22 +8,22 @@
     "description": "an attribute name"
   },{
     "arg": "feature",
-    "description": "a feature; if not set, the feature attached to the expression context will be used",
+    "description": "A feature. If not set, the feature attached to the expression context will be used.",
     "optional": true
   },{
     "arg": "layer",
-    "description": "a vector layer; if not set, the layer attached to the expression context will be used",
+    "description": "A vector layer. If not set, the layer attached to the expression context will be used.",
     "optional": true
   },{
     "arg": "strength",
-    "description": "set to 'hard' or 'soft' to narrow down to a specific constraint type; if not set, the function will return FALSE if either a hard or a soft constraint fails",
+    "description": "Set to 'hard' or 'soft' to narrow down to a specific constraint type. If not set, the function will return FALSE if either a hard or a soft constraint fails.",
     "optional": true
   }],
   "examples": [{
     "expression": "is_attribute_valid('HECTARES')",
     "returns": "TRUE"
   }, {
-    "expression": "is_attribute_valid('HOUSES',get_feature('my_layer','FID',10), 'my_layer')",
+    "expression": "is_attribute_valid('HOUSES',get_feature('my_layer', 'FID', 10), 'my_layer')",
     "returns": "FALSE"
   }],
   "tags": ["constraints", "hard", "soft"]
