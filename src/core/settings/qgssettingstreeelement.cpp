@@ -143,8 +143,7 @@ void QgsSettingsTreeNamedListElement::initNamedList( const QgsSettingsTreeElemen
 
 QgsSettingsTreeNamedListElement::~QgsSettingsTreeNamedListElement()
 {
-  if ( mSelectedItemSetting )
-    delete mSelectedItemSetting;
+  delete mSelectedItemSetting;
 }
 
 
