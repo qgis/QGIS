@@ -31,6 +31,14 @@ to automatically register a settings entry on its creation when a parent is prov
 %TypeHeaderCode
 #include "qgssettingstreeelement.h"
 %End
+%ConvertToSubClassCode
+    if ( dynamic_cast< QgsSettingsTreeNamedListElement * >( sipCpp ) )
+      sipType = sipType_QgsSettingsTreeNamedListElement;
+    else if ( dynamic_cast< QgsSettingsTreeElement * >( sipCpp ) )
+      sipType = sipType_QgsSettingsTreeElement;
+    else
+      sipType = NULL;
+%End
   public:
     static const QMetaObject staticMetaObject;
 
@@ -135,6 +143,14 @@ Returns the complete key of the element (including its parents)
     int namedElementsCount() const;
 %Docstring
 Returns the number of named elements in the complete key
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    const QMetaEnum metaEnum = QMetaEnum::fromType<QgsSettingsTreeElement::Type>();
+
+    QString str = QStringLiteral( "<QgsSettingsTreeElement (%1): %2>" ).arg( metaEnum.valueToKey( static_cast<int>( sipCpp->type() ) ), sipCpp->key() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
   protected:

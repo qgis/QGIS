@@ -44,6 +44,18 @@ class QgsSettingsEntryString;
  */
 class CORE_EXPORT QgsSettingsTreeElement
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast< QgsSettingsTreeNamedListElement * >( sipCpp ) )
+      sipType = sipType_QgsSettingsTreeNamedListElement;
+    else if ( dynamic_cast< QgsSettingsTreeElement * >( sipCpp ) )
+      sipType = sipType_QgsSettingsTreeElement;
+    else
+      sipType = NULL;
+    SIP_END
+#endif
+
     Q_GADGET
 
   public:
@@ -130,6 +142,16 @@ class CORE_EXPORT QgsSettingsTreeElement
 
     //! Returns the number of named elements in the complete key
     int namedElementsCount() const {return mNamedElementsCount;}
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    const QMetaEnum metaEnum = QMetaEnum::fromType<QgsSettingsTreeElement::Type>();
+
+    QString str = QStringLiteral( "<QgsSettingsTreeElement (%1): %2>" ).arg( metaEnum.valueToKey( static_cast<int>( sipCpp->type() ) ), sipCpp->key() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
   protected:
     //! Registers a child elements
