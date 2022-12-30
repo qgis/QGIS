@@ -1025,7 +1025,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * (either as a .qml file on disk or as a
      * record in the users style table in their personal qgis.db)
      * \returns a QString with the style file name
-     * \see also loadNamedStyle() and saveNamedStyle();
+     * \see loadNamedStyle()
+     * \see saveNamedStyle()
      */
     virtual QString styleURI() const;
 
@@ -1036,7 +1037,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param resultFlag a reference to a flag that will be set to FALSE if
      * we did not manage to load the default style.
      * \returns a QString with any status messages
-     * \see also loadNamedStyle();
+     * \see loadNamedStyle()
      */
     virtual QString loadDefaultStyle( bool &resultFlag SIP_OUT );
 
@@ -1053,7 +1054,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * we did not manage to load the default style.
      * \param categories the style categories to be loaded.
      * \returns a QString with any status messages
-     * \see also loadDefaultStyle ();
+     * \see loadDefaultStyle()
      */
     virtual QString loadNamedStyle( const QString &uri, bool &resultFlag SIP_OUT, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
 
@@ -1116,7 +1117,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * we did not manage to save the default style.
      * \param categories the style categories to be saved (since QGIS 3.26)
      * \returns a QString with any status messages
-     * \see loadNamedStyle() and \see saveNamedStyle()
+     * \see loadNamedStyle()
+     * \see saveNamedStyle()
      */
     virtual QString saveDefaultStyle( bool &resultFlag SIP_OUT, StyleCategories categories );
 
@@ -1127,7 +1129,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param resultFlag a reference to a flag that will be set to FALSE if
      * we did not manage to save the default style.
      * \returns a QString with any status messages
-     * \see loadNamedStyle() and \see saveNamedStyle()
+     * \see loadNamedStyle()
+     * \see saveNamedStyle()
      * \deprecated since QGIS 3.26
      */
     Q_DECL_DEPRECATED virtual QString saveDefaultStyle( bool &resultFlag SIP_OUT ) SIP_DEPRECATED;

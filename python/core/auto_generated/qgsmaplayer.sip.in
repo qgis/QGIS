@@ -899,7 +899,9 @@ record in the users style table in their personal qgis.db)
 
 :return: a QString with the style file name
 
-.. seealso:: :py:func:`also`
+.. seealso:: :py:func:`loadNamedStyle`
+
+.. seealso:: :py:func:`saveNamedStyle`
 %End
 
     virtual QString loadDefaultStyle( bool &resultFlag /Out/ );
@@ -912,7 +914,7 @@ record in the users style table in their personal qgis.db)
 :return: - a QString with any status messages
          - resultFlag: a reference to a flag that will be set to ``False`` if we did not manage to load the default style.
 
-.. seealso:: :py:func:`also`
+.. seealso:: :py:func:`loadNamedStyle`
 %End
 
     virtual QString loadNamedStyle( const QString &uri, bool &resultFlag /Out/, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
@@ -931,7 +933,7 @@ record in the users style table in their personal qgis.db)
 :return: - a QString with any status messages
          - resultFlag: a reference to a flag that will be set to ``False`` if we did not manage to load the default style.
 
-.. seealso:: :py:func:`also`
+.. seealso:: :py:func:`loadDefaultStyle`
 %End
 
     virtual bool loadNamedStyleFromDatabase( const QString &db, const QString &uri, QString &qml /Out/ );
@@ -1006,6 +1008,8 @@ record in the users style table in their personal qgis.db)
          - resultFlag: a reference to a flag that will be set to ``False`` if we did not manage to save the default style.
 
 .. seealso:: :py:func:`loadNamedStyle`
+
+.. seealso:: :py:func:`saveNamedStyle`
 %End
 
  virtual QString saveDefaultStyle( bool &resultFlag /Out/ ) /Deprecated/;
@@ -1019,6 +1023,8 @@ record in the users style table in their personal qgis.db)
          - resultFlag: a reference to a flag that will be set to ``False`` if we did not manage to save the default style.
 
 .. seealso:: :py:func:`loadNamedStyle`
+
+.. seealso:: :py:func:`saveNamedStyle`
 
 .. deprecated:: QGIS 3.26
 %End
