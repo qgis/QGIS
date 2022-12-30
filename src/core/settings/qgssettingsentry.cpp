@@ -309,7 +309,7 @@ QVariant QgsSettingsEntryBase::formerValueAsVariant( const QStringList &dynamicK
 }
 
 
-bool QgsSettingsEntryBase::copyValueFromKey( const QString &key, const QStringList &dynamicKeyPartList, bool deleteOldKey ) const
+bool QgsSettingsEntryBase::copyValueFromKey( const QString &key, const QStringList &dynamicKeyPartList, bool removeSettingAtKey ) const
 {
   if ( exists( dynamicKeyPartList ) )
     return false;
@@ -322,7 +322,7 @@ bool QgsSettingsEntryBase::copyValueFromKey( const QString &key, const QStringLi
   {
     QVariant oldValue = settings.value( oldCompleteKey, mDefaultValue );
     setVariantValuePrivate( oldValue, dynamicKeyPartList );
-    if ( deleteOldKey )
+    if ( removeSettingAtKey )
       settings.remove( oldCompleteKey );
     return true;
   }

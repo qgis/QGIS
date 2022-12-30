@@ -81,8 +81,9 @@ Returns the type of element
     void registerChildSetting( QgsSettingsEntryBase *setting, const QString &key ) throw( QgsSettingsException );
 %Docstring
 Registers a child setting
-\arg setting the setting to register
-\arg key the key of the setting (not the complete key from its parents)
+
+:param setting: the setting to register
+:param key: the key of the setting (not the complete key from its parents)
 
 .. note::
 
@@ -96,8 +97,9 @@ Registers a child setting
     void unregisterChildSetting( QgsSettingsEntryBase *setting, bool deleteSettingValues = false, const QStringList &parentsNamedItems = QStringList() );
 %Docstring
 Unregisters the child setting
-\arg deleteSettingValues if ``True``, the values of the settings will also be deleted
-\arg parentsNamedItems the list of named items in the parent named list (if any)
+
+:param deleteSettingValues: if ``True``, the values of the settings will also be deleted
+:param parentsNamedItems: the list of named items in the parent named list (if any)
 %End
 
     void unregisterChildElement( QgsSettingsTreeElement *element );
@@ -201,33 +203,38 @@ the named list element is used to store a group of settings under a dynamically 
     QStringList items( const QStringList &parentsNamedItems = QStringList() ) const throw( QgsSettingsException );
 %Docstring
 Returns the list of items
-\arg parentsNamedItems the list of named items in the parent named list (if any)
+
+:param parentsNamedItems: the list of named items in the parent named list (if any)
 %End
 
     QStringList items( Qgis::SettingsLocation location, const QStringList &parentsNamedItems = QStringList() ) const throw( QgsSettingsException );
 %Docstring
 Returns the list of items
-\arg parentsNamedItems the list of named items in the parent named list (if any)
+
+:param parentsNamedItems: the list of named items in the parent named list (if any)
 %End
 
 
     void setSelectedItem( const QString &item, const QStringList &parentsNamedItems = QStringList() ) throw( QgsSettingsException );
 %Docstring
 Sets the selected named entry from the named list element
-\arg parentsNamedItems the list of named items in the parent named list (if any)
+
+:param parentsNamedItems: the list of named items in the parent named list (if any)
 %End
 
     QString selectedItem( const QStringList &parentsNamedItems = QStringList() ) throw( QgsSettingsException );
 %Docstring
 Returns the selected named entry from the named list element
-\arg parentsNamedItems the list of named items in the parent named list (if any)
+
+:param parentsNamedItems: the list of named items in the parent named list (if any)
 %End
 
     void deleteItem( const QString &item, const QStringList &parentsNamedItems = QStringList() ) throw( QgsSettingsException );
 %Docstring
 Deletes a named entry from the named list element
-\arg entry the entry to delete
-\arg parentsNamedItems the list of named items in the parent named list (if any)
+
+:param entry: the entry to delete
+:param parentsNamedItems: the list of named items in the parent named list (if any)
 %End
 
     QgsSettingsEntryString *selectedItemSetting() const;

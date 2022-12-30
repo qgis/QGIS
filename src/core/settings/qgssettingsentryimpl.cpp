@@ -159,16 +159,14 @@ bool QgsSettingsEntryDouble::checkValue( double value ) const
   if ( value < mMinValue )
   {
     QgsDebugMsg( QObject::tr( "Can't set value for setting. Value '%1' is less than minimum value '%2'." )
-                 .arg( QString::number( value ) )
-                 .arg( QString::number( mMinValue ) ) );
+                 .arg( QString::number( value ), QString::number( mMinValue ) ) );
     return false;
   }
 
   if ( value > mMaxValue )
   {
     QgsDebugMsg( QObject::tr( "Can't set value for setting. Value '%1' is greather than maximum value '%2'." )
-                 .arg( QString::number( value ) )
-                 .arg( QString::number( mMaxValue ) ) );
+                 .arg( QString::number( value ), QString::number( mMaxValue ) ) );
     return false;
   }
 
@@ -226,6 +224,17 @@ Qgis::SettingsType QgsSettingsEntryColor::settingsType() const
   return Qgis::SettingsType::Color;
 }
 
+bool QgsSettingsEntryColor::checkValue( const QColor &value ) const
+{
+  if ( !mAllowAlpha && value.alpha() != 255 )
+  {
+    QgsDebugMsg( QObject::tr( "Settings %1 doesn't allow transparency and the given color has transparency." ).arg( definitionKey() ) );
+    return false;
+  }
+
+  return true;
+}
+
 QVariantMap QgsSettingsEntryVariantMap::convertFromVariant( const QVariant &value ) const
 {
   return value.value<QVariantMap>();
@@ -235,3 +244,4 @@ Qgis::SettingsType QgsSettingsEntryVariantMap::settingsType() const
 {
   return Qgis::SettingsType::VariantMap;
 }
+

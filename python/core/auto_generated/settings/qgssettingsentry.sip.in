@@ -335,11 +335,12 @@ Returns the current value (or default) if there is no former value.
 .. versionadded:: 3.26
 %End
 
-    bool copyValueFromKey( const QString &key, const QStringList &dynamicKeyPartList = QStringList(), bool deleteOldKey = false ) const;
+    bool copyValueFromKey( const QString &key, const QStringList &dynamicKeyPartList = QStringList(), bool removeSettingAtKey = false ) const;
 %Docstring
 Checks if the settings does not exist and tries to set it from a given ``oldKey``.
-\arg dynamicKeyPartList is the optional dynamic key part to determine the key. It must be the same for origin and destination keys.
-If ``deleteOldKey``, the setting with the old key will be removed
+
+:param dynamicKeyPartList: is the optional dynamic key part to determine the key. It must be the same for origin and destination keys.
+:param removeSettingAtKey: if ``True``, the setting at the old key will be removed
 
 :return: ``True`` if the key exists and the setting value could be copied
 
@@ -349,7 +350,8 @@ If ``deleteOldKey``, the setting with the old key will be removed
     void copyValueToKey( const QString &key, const QStringList &dynamicKeyPartList = QStringList() ) const;
 %Docstring
 Copies the settings to the given ``key``
-\arg dynamicKeyPartList is the optional dynamic key part to determine the key. It must be the same for origin and destination keys.
+
+:param dynamicKeyPartList: is the optional dynamic key part to determine the key. It must be the same for origin and destination keys.
 
 .. versionadded:: 3.30
 %End
@@ -430,14 +432,14 @@ The ``options`` arguments specifies the options for the settings entry.
 %Docstring
 Returns settings value.
 
-\arg dynamicKeyPart specifies the dynamic part of the settings key.
+:param dynamicKeyPart: specifies the dynamic part of the settings key.
 %End
 
     T value( const QStringList &dynamicKeyPartList )  const;
 %Docstring
 Returns settings value.
 
-\arg dynamicKeyPartList specifies the list of dynamic parts of the settings key.
+:param dynamicKeyPartList: specifies the list of dynamic parts of the settings key.
 %End
 
 

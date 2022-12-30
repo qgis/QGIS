@@ -101,8 +101,8 @@ class CORE_EXPORT QgsSettingsTreeElement
 
     /**
      * Registers a child setting
-     * \arg setting the setting to register
-     * \arg key the key of the setting (not the complete key from its parents)
+     * \param setting the setting to register
+     * \param key the key of the setting (not the complete key from its parents)
      * \note Ownership of the setting is transferred
      * \note This is automatically done when calling the setting's constructor with the parent argument
      */
@@ -110,8 +110,8 @@ class CORE_EXPORT QgsSettingsTreeElement
 
     /**
      * Unregisters the child setting
-     * \arg deleteSettingValues if TRUE, the values of the settings will also be deleted
-     * \arg parentsNamedItems the list of named items in the parent named list (if any)
+     * \param deleteSettingValues if TRUE, the values of the settings will also be deleted
+     * \param parentsNamedItems the list of named items in the parent named list (if any)
      */
     void unregisterChildSetting( QgsSettingsEntryBase *setting, bool deleteSettingValues = false, const QStringList &parentsNamedItems = QStringList() );
 
@@ -208,33 +208,33 @@ class CORE_EXPORT QgsSettingsTreeNamedListElement : public QgsSettingsTreeElemen
 
     /**
      *  Returns the list of items
-    * \arg parentsNamedItems the list of named items in the parent named list (if any)
+    * \param parentsNamedItems the list of named items in the parent named list (if any)
     */
     QStringList items( const QStringList &parentsNamedItems = QStringList() ) const SIP_THROW( QgsSettingsException );
 
     /**
      *  Returns the list of items
-    * \arg parentsNamedItems the list of named items in the parent named list (if any)
+    * \param parentsNamedItems the list of named items in the parent named list (if any)
     */
     QStringList items( Qgis::SettingsLocation location, const QStringList &parentsNamedItems = QStringList() ) const SIP_THROW( QgsSettingsException );
 
 
     /**
      * Sets the selected named entry from the named list element
-    * \arg parentsNamedItems the list of named items in the parent named list (if any)
+    * \param parentsNamedItems the list of named items in the parent named list (if any)
      */
     void setSelectedItem( const QString &item, const QStringList &parentsNamedItems = QStringList() ) SIP_THROW( QgsSettingsException );
 
     /**
      * Returns the selected named entry from the named list element
-    * \arg parentsNamedItems the list of named items in the parent named list (if any)
+    * \param parentsNamedItems the list of named items in the parent named list (if any)
      */
     QString selectedItem( const QStringList &parentsNamedItems = QStringList() ) SIP_THROW( QgsSettingsException );
 
     /**
      * Deletes a named entry from the named list element
-     * \arg entry the entry to delete
-    * \arg parentsNamedItems the list of named items in the parent named list (if any)
+     * \param entry the entry to delete
+    * \param parentsNamedItems the list of named items in the parent named list (if any)
      */
     void deleteItem( const QString &item, const QStringList &parentsNamedItems = QStringList() ) SIP_THROW( QgsSettingsException );
 

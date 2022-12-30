@@ -344,16 +344,16 @@ class CORE_EXPORT QgsSettingsEntryBase
 
     /**
      * Checks if the settings does not exist and tries to set it from a given \a oldKey.
-     * \arg dynamicKeyPartList is the optional dynamic key part to determine the key. It must be the same for origin and destination keys.
-     * If \a deleteOldKey, the setting with the old key will be removed
+     * \param dynamicKeyPartList is the optional dynamic key part to determine the key. It must be the same for origin and destination keys.
+     * \param removeSettingAtKey if TRUE, the setting at the old key will be removed
      * \returns TRUE if the key exists and the setting value could be copied
      * \since QGIS 3.30
      */
-    bool copyValueFromKey( const QString &key, const QStringList &dynamicKeyPartList = QStringList(), bool deleteOldKey = false ) const;
+    bool copyValueFromKey( const QString &key, const QStringList &dynamicKeyPartList = QStringList(), bool removeSettingAtKey = false ) const;
 
     /**
      * Copies the settings to the given \a key
-     * \arg dynamicKeyPartList is the optional dynamic key part to determine the key. It must be the same for origin and destination keys.
+     * \param dynamicKeyPartList is the optional dynamic key part to determine the key. It must be the same for origin and destination keys.
      * \since QGIS 3.30
      */
     void copyValueToKey( const QString &key, const QStringList &dynamicKeyPartList = QStringList() ) const;
@@ -441,14 +441,14 @@ class QgsSettingsEntryByReference : public QgsSettingsEntryBase
     /**
      * Returns settings value.
      *
-     * \arg dynamicKeyPart specifies the dynamic part of the settings key.
+     * \param dynamicKeyPart specifies the dynamic part of the settings key.
      */
     T value( const QString &dynamicKeyPart = QString() ) const { return this->convertFromVariant( valueAsVariant( dynamicKeyPart ) );}
 
     /**
      * Returns settings value.
      *
-     * \arg dynamicKeyPartList specifies the list of dynamic parts of the settings key.
+     * \param dynamicKeyPartList specifies the list of dynamic parts of the settings key.
      */
     T value( const QStringList &dynamicKeyPartList )  const { return this->convertFromVariant( valueAsVariant( dynamicKeyPartList ) );}
 

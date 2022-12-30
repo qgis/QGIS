@@ -37,11 +37,11 @@ typedef QgsSettingsEntryByReference<QVariant> QgsSettingsEntryByReferenceQVarian
 %Docstring
 Constructor for QgsSettingsEntryVariant.
 
-The ``key`` argument specifies the final part of the settings key.
-The ``section`` argument specifies the section.
-The ``defaultValue`` argument specifies the default value for the settings entry.
-The ``description`` argument specifies a description for the settings entry.
-The ``options`` argument specifies the options for the settings entry.
+:param key: specifies the final part of the settings key.
+:param section: specifies the section.
+:param defaultValue: specifies the default value for the settings entry.
+:param description: specifies a description for the settings entry.
+:param options: specifies the options for the settings entry.
 
 .. versionadded:: 3.30
 %End
@@ -55,11 +55,11 @@ The ``options`` argument specifies the options for the settings entry.
 %Docstring
 Constructor for QgsSettingsEntryVariant.
 
-The ``key`` argument specifies the final part of the settings key.
-The ``parent`` argument specifies the parent in the tree of settings.
-The ``defaultValue`` argument specifies the default value for the settings entry.
-The ``description`` argument specifies a description for the settings entry.
-The ``options`` argument specifies the options for the settings entry.
+:param key: specifies the final part of the settings key.
+:param parent: specifies the parent in the tree of settings.
+:param defaultValue: specifies the default value for the settings entry.
+:param description: specifies a description for the settings entry.
+:param options: specifies the options for the settings entry.
 
 .. versionadded:: 3.30
 %End
@@ -74,11 +74,11 @@ The ``options`` argument specifies the options for the settings entry.
 Constructor for QgsSettingsEntryVariant.
 This constructor is intended to be used from plugins.
 
-The ``key`` argument specifies the key of the settings.
-The ``pluginName`` argument is inserted in the key after the section.
-The ``defaultValue`` argument specifies the default value for the settings entry.
-The ``description`` argument specifies a description for the settings entry.
-The ``options`` arguments specifies the options for the settings entry.
+:param key: specifies the key of the settings.
+:param pluginName: is inserted in the key after the section.
+:param defaultValue: specifies the default value for the settings entry.
+:param description: specifies a description for the settings entry.
+:param optionss: specifies the options for the settings entry.
 %End
 %MethodCode
     sipCpp = new sipQgsSettingsEntryVariant( QgsSettingsEntryVariant( *a0, QgsSettings::createPluginTreeElement( *a1 ), *a2, *a3, *a4 ) );
@@ -120,13 +120,13 @@ typedef QgsSettingsEntryByReference<QString> QgsSettingsEntryByReferenceQStringB
 %Docstring
 Constructor for QgsSettingsEntryString.
 
-The ``key`` argument specifies the final part of the settings key.
-The ``parent`` argument specifies the parent in the tree of settings.
-The ``defaultValue`` argument specifies the default value for the settings entry.
-The ``description`` argument specifies a description for the settings entry.
-The ``options`` arguments specifies the options for the settings entry.
-The ``minLength`` argument specifies the minimal length of the string value. 0 means no limit.
-The ``maxLength`` argument specifies the maximal length of the string value. -1 means no limit.
+:param key: specifies the final part of the settings key.
+:param parent: specifies the parent in the tree of settings.
+:param defaultValue: specifies the default value for the settings entry.
+:param description: specifies a description for the settings entry.
+:param optionss: specifies the options for the settings entry.
+:param minLength: specifies the minimal length of the string value. 0 means no limit.
+:param maxLength: specifies the maximal length of the string value. -1 means no limit.
 %End
 
   private:
@@ -140,13 +140,13 @@ The ``maxLength`` argument specifies the maximal length of the string value. -1 
 %Docstring
 Constructor for QgsSettingsEntryString.
 
-The ``key`` argument specifies the final part of the settings key.
-The ``section`` argument specifies the section.
-The ``defaultValue`` argument specifies the default value for the settings entry.
-The ``description`` argument specifies a description for the settings entry.
-The ``options`` arguments specifies the options for the settings entry.
-The ``minLength`` argument specifies the minimal length of the string value. 0 means no limit.
-The ``maxLength`` argument specifies the maximal length of the string value. -1 means no limit.
+:param key: specifies the final part of the settings key.
+:param section: specifies the section.
+:param defaultValue: specifies the default value for the settings entry.
+:param description: specifies a description for the settings entry.
+:param optionss: specifies the options for the settings entry.
+:param minLength: specifies the minimal length of the string value. 0 means no limit.
+:param maxLength: specifies the maximal length of the string value. -1 means no limit.
 %End
   public:
 
@@ -161,11 +161,11 @@ The ``maxLength`` argument specifies the maximal length of the string value. -1 
 Constructor for QgsSettingsEntryString.
 This constructor is intended to be used from plugins.
 
-The ``key`` argument specifies the key of the settings.
-The ``pluginName`` argument is inserted in the key after the section.
-The ``defaultValue`` argument specifies the default value for the settings entry.
-The ``description`` argument specifies a description for the settings entry.
-The ``options`` arguments specifies the options for the settings entry.
+:param key: specifies the key of the settings.
+:param pluginName: is inserted in the key after the section.
+:param defaultValue: specifies the default value for the settings entry.
+:param description: specifies a description for the settings entry.
+:param optionss: specifies the options for the settings entry.
 %End
 %MethodCode
     sipCpp = new sipQgsSettingsEntryString( QgsSettingsEntryString( *a0, QgsSettings::createPluginTreeElement( *a1 ), *a2, *a3, *a4 ) );
@@ -232,11 +232,11 @@ typedef QgsSettingsEntryByReference<QStringList> QgsSettingsEntryByReferenceQStr
 %Docstring
 Constructor for QgsSettingsEntryStringList.
 
-The ``key`` argument specifies the final part of the settings key.
-The ``parent`` argument specifies the parent in the tree of settings.
-The ``defaultValue`` argument specifies the default value for the settings entry.
-The ``description`` argument specifies a description for the settings entry.
-The ``options`` arguments specifies the options for the settings entry.
+:param key: specifies the final part of the settings key.
+:param parent: specifies the parent in the tree of settings.
+:param defaultValue: specifies the default value for the settings entry.
+:param description: specifies a description for the settings entry.
+:param optionss: specifies the options for the settings entry.
 %End
 
   private:
@@ -248,11 +248,11 @@ The ``options`` arguments specifies the options for the settings entry.
 %Docstring
 Constructor for QgsSettingsEntryStringList.
 
-The ``key`` argument specifies the final part of the settings key.
-The ``section`` argument specifies the section.
-The ``defaultValue`` argument specifies the default value for the settings entry.
-The ``description`` argument specifies a description for the settings entry.
-The ``options`` arguments specifies the options for the settings entry.
+:param key: specifies the final part of the settings key.
+:param section: specifies the section.
+:param defaultValue: specifies the default value for the settings entry.
+:param description: specifies a description for the settings entry.
+:param optionss: specifies the options for the settings entry.
 %End
   public:
 
@@ -266,11 +266,11 @@ The ``options`` arguments specifies the options for the settings entry.
 Constructor for QgsSettingsEntryStringList.
 This constructor is intended to be used from plugins.
 
-The ``key`` argument specifies the key of the settings.
-The ``pluginName`` argument is inserted in the key after the section.
-The ``defaultValue`` argument specifies the default value for the settings entry.
-The ``description`` argument specifies a description for the settings entry.
-The ``options`` arguments specifies the options for the settings entry.
+:param key: specifies the key of the settings.
+:param pluginName: is inserted in the key after the section.
+:param defaultValue: specifies the default value for the settings entry.
+:param description: specifies a description for the settings entry.
+:param optionss: specifies the options for the settings entry.
 %End
 %MethodCode
     sipCpp = new sipQgsSettingsEntryStringList( QgsSettingsEntryStringList( *a0, QgsSettings::createPluginTreeElement( *a1 ), *a2, *a3, *a4 ) );
@@ -311,11 +311,11 @@ typedef QgsSettingsEntryByValue<bool> QgsSettingsEntryByValueboolBase;
 %Docstring
 Constructor for QgsSettingsEntryBool.
 
-The ``key`` argument specifies the final part of the settings key.
-The ``parent`` argument specifies the parent in the tree of settings.
-The ``defaultValue`` argument specifies the default value for the settings entry.
-The ``description`` argument specifies a description for the settings entry.
-The ``options`` arguments specifies the options for the settings entry.
+:param key: specifies the final part of the settings key.
+:param parent: specifies the parent in the tree of settings.
+:param defaultValue: specifies the default value for the settings entry.
+:param description: specifies a description for the settings entry.
+:param optionss: specifies the options for the settings entry.
 %End
 
   private:
@@ -327,11 +327,11 @@ The ``options`` arguments specifies the options for the settings entry.
 %Docstring
 Constructor for QgsSettingsEntryBool.
 
-The ``key`` argument specifies the final part of the settings key.
-The ``section`` argument specifies the section.
-The ``defaultValue`` argument specifies the default value for the settings entry.
-The ``description`` argument specifies a description for the settings entry.
-The ``options`` arguments specifies the options for the settings entry.
+:param key: specifies the final part of the settings key.
+:param section: specifies the section.
+:param defaultValue: specifies the default value for the settings entry.
+:param description: specifies a description for the settings entry.
+:param optionss: specifies the options for the settings entry.
 %End
   public:
 
@@ -344,11 +344,11 @@ The ``options`` arguments specifies the options for the settings entry.
 Constructor for QgsSettingsEntryBool.
 This constructor is intended to be used from plugins.
 
-The ``key`` argument specifies the key of the settings.
-The ``pluginName`` argument is inserted in the key after the section.
-The ``defaultValue`` argument specifies the default value for the settings entry.
-The ``description`` argument specifies a description for the settings entry.
-The ``options`` arguments specifies the options for the settings entry.
+:param key: specifies the key of the settings.
+:param pluginName: is inserted in the key after the section.
+:param defaultValue: specifies the default value for the settings entry.
+:param description: specifies a description for the settings entry.
+:param optionss: specifies the options for the settings entry.
 %End
 %MethodCode
     sipCpp = new sipQgsSettingsEntryBool( QgsSettingsEntryBool( *a0, QgsSettings::createPluginTreeElement( *a1 ), a2, *a3, *a4 ) );
@@ -392,13 +392,13 @@ typedef QgsSettingsEntryByValue<qlonglong> QgsSettingsEntryByValueqlonglongBase;
 %Docstring
 Constructor for QgsSettingsEntryInteger.
 
-The ``key`` argument specifies the final part of the settings key.
-The ``parent`` argument specifies the parent in the tree of settings.
-The ``defaultValue`` argument specifies the default value for the settings entry.
-The ``description`` argument specifies a description for the settings entry.
-The ``options`` arguments specifies the options for the settings entry.
-The ``minValue`` argument specifies the minimal value.
-The ``maxValue`` argument specifies the maximal value.
+:param key: specifies the final part of the settings key.
+:param parent: specifies the parent in the tree of settings.
+:param defaultValue: specifies the default value for the settings entry.
+:param description: specifies a description for the settings entry.
+:param optionss: specifies the options for the settings entry.
+:param minValue: specifies the minimal value.
+:param maxValue: specifies the maximal value.
 %End
 
   private:
@@ -412,14 +412,14 @@ The ``maxValue`` argument specifies the maximal value.
 %Docstring
 Constructor for QgsSettingsEntryInteger.
 
-The ``parent`` argument specifies the parent in the tree of settings.
-The ``key`` argument specifies the final part of the settings key.
-The ``section`` argument specifies the section.
-The ``defaultValue`` argument specifies the default value for the settings entry.
-The ``description`` argument specifies a description for the settings entry.
-The ``options`` arguments specifies the options for the settings entry.
-The ``minValue`` argument specifies the minimal value.
-The ``maxValue`` argument specifies the maximal value.
+:param parent: specifies the parent in the tree of settings.
+:param key: specifies the final part of the settings key.
+:param section: specifies the section.
+:param defaultValue: specifies the default value for the settings entry.
+:param description: specifies a description for the settings entry.
+:param optionss: specifies the options for the settings entry.
+:param minValue: specifies the minimal value.
+:param maxValue: specifies the maximal value.
 %End
   public:
 
@@ -434,13 +434,13 @@ The ``maxValue`` argument specifies the maximal value.
 Constructor for QgsSettingsEntryInteger.
 This constructor is intended to be used from plugins.
 
-The ``key`` argument specifies the key of the settings.
-The ``pluginName`` argument is used to define the key of the setting
-The ``defaultValue`` argument specifies the default value for the settings entry.
-The ``description`` argument specifies a description for the settings entry.
-The ``options`` arguments specifies the options for the settings entry.
-The ``minValue`` argument specifies the minimal value.
-The ``maxValue`` argument specifies the maximal value.
+:param key: specifies the key of the settings.
+:param pluginName: is used to define the key of the setting
+:param defaultValue: specifies the default value for the settings entry.
+:param description: specifies a description for the settings entry.
+:param optionss: specifies the options for the settings entry.
+:param minValue: specifies the minimal value.
+:param maxValue: specifies the maximal value.
 %End
 %MethodCode
     sipCpp = new sipQgsSettingsEntryInteger( QgsSettingsEntryInteger( *a0, QgsSettings::createPluginTreeElement( *a1 ), a2, *a3, *a4, a5, a6 ) );
@@ -510,16 +510,16 @@ typedef QgsSettingsEntryByValue<double> QgsSettingsEntryByValuedoubleBase;
 %Docstring
 Constructor for QgsSettingsEntryDouble.
 
-The ``parent`` argument specifies the parent in the tree of settings.
-The ``key`` argument specifies the final part of the settings key.
-The ``section`` argument specifies the section.
-The ``defaultValue`` argument specifies the default value for the settings entry.
-The ``description`` argument specifies a description for the settings entry.
-The ``options`` arguments specifies the options for the settings entry.
-The ``minValue`` argument specifies the minimal value.
-The ``maxValue`` argument specifies the maximal value.
-The ``displayDecimals`` specifies an hint for the gui about how much decimals to show
-for example for a QDoubleSpinBox.
+:param parent: specifies the parent in the tree of settings.
+:param key: specifies the final part of the settings key.
+:param section: specifies the section.
+:param defaultValue: specifies the default value for the settings entry.
+:param description: specifies a description for the settings entry.
+:param optionss: specifies the options for the settings entry.
+:param minValue: specifies the minimal value.
+:param maxValue: specifies the maximal value.
+                 The ``displayDecimals`` specifies an hint for the gui about how much decimals to show
+                 for example for a QDoubleSpinBox.
 %End
 
   private:
@@ -534,16 +534,16 @@ for example for a QDoubleSpinBox.
 %Docstring
 Constructor for QgsSettingsEntryDouble.
 
-The ``parent`` argument specifies the parent in the tree of settings.
-The ``key`` argument specifies the final part of the settings key.
-The ``section`` argument specifies the section.
-The ``defaultValue`` argument specifies the default value for the settings entry.
-The ``description`` argument specifies a description for the settings entry.
-The ``options`` arguments specifies the options for the settings entry.
-The ``minValue`` argument specifies the minimal value.
-The ``maxValue`` argument specifies the maximal value.
-The ``displayDecimals`` specifies an hint for the gui about how much decimals to show
-for example for a QDoubleSpinBox.
+:param parent: specifies the parent in the tree of settings.
+:param key: specifies the final part of the settings key.
+:param section: specifies the section.
+:param defaultValue: specifies the default value for the settings entry.
+:param description: specifies a description for the settings entry.
+:param optionss: specifies the options for the settings entry.
+:param minValue: specifies the minimal value.
+:param maxValue: specifies the maximal value.
+                 The ``displayDecimals`` specifies an hint for the gui about how much decimals to show
+                 for example for a QDoubleSpinBox.
 %End
   public:
 
@@ -559,14 +559,14 @@ for example for a QDoubleSpinBox.
 Constructor for QgsSettingsEntryDouble.
 This constructor is intended to be used from plugins.
 
-The ``key`` argument specifies the key of the settings.
-The ``pluginName`` argument is used to define the key of the setting
-The ``defaultValue`` argument specifies the default value for the settings entry.
-The ``options`` arguments specifies the options for the settings entry.
-The ``description`` argument specifies a description for the settings entry.
-The ``minValue`` argument specifies the minimal value.
-The ``maxValue`` argument specifies the maximal value.
-The ``displayDecimals`` specifies an hint for the gui about how much decimals to show
+:param key: specifies the key of the settings.
+:param pluginName: is used to define the key of the setting
+:param defaultValue: specifies the default value for the settings entry.
+:param optionss: specifies the options for the settings entry.
+:param description: specifies a description for the settings entry.
+:param minValue: specifies the minimal value.
+:param maxValue: specifies the maximal value.
+                 The ``displayDecimals`` specifies an hint for the gui about how much decimals to show
 %End
 %MethodCode
     sipCpp = new sipQgsSettingsEntryDouble( QgsSettingsEntryDouble( *a0, QgsSettings::createPluginTreeElement( *a1 ), a2, *a3, *a4, a5, a6, a7 ) );
@@ -643,15 +643,17 @@ typedef QgsSettingsEntryByReference<QColor> QgsSettingsEntryByReferenceQColorBas
                            QgsSettingsTreeElement *parent,
                            const QColor &defaultValue = QColor(),
                            const QString &description = QString(),
-                           Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException );
+                           Qgis::SettingsOptions options = Qgis::SettingsOptions(),
+                           bool allowAlpha = true ) throw( QgsSettingsException );
 %Docstring
 Constructor for QgsSettingsEntryColor.
 
-The ``key`` argument specifies the final part of the settings key.
-The ``parent`` argument specifies the parent in the tree of settings.
-The ``defaultValue`` argument specifies the default value for the settings entry.
-The ``description`` argument specifies a description for the settings entry.
-The ``options`` arguments specifies the options for the settings entry.
+:param key: specifies the final part of the settings key.
+:param parent: specifies the parent in the tree of settings.
+:param defaultValue: specifies the default value for the settings entry.
+:param description: specifies a description for the settings entry.
+:param options: specifies the options for the settings entry.
+:param allowAlpha: specifies if the color can have transparency.
 %End
 
   private:
@@ -659,15 +661,17 @@ The ``options`` arguments specifies the options for the settings entry.
                            const QString &section,
                            const QColor &defaultValue = QColor(),
                            const QString &description = QString(),
-                           Qgis::SettingsOptions options = Qgis::SettingsOptions() );
+                           Qgis::SettingsOptions options = Qgis::SettingsOptions(),
+                           bool allowAlpha = true );
 %Docstring
 Constructor for QgsSettingsEntryColor.
 
-The ``key`` argument specifies the final part of the settings key.
-The ``section`` argument specifies the section.
-The ``defaultValue`` argument specifies the default value for the settings entry.
-The ``description`` argument specifies a description for the settings entry.
-The ``options`` arguments specifies the options for the settings entry.
+:param key: specifies the final part of the settings key.
+:param section: specifies the section.
+:param defaultValue: specifies the default value for the settings entry.
+:param description: specifies a description for the settings entry.
+:param optionss: specifies the options for the settings entry.
+:param allowAlpha: specifies if the color can have transparency.
 %End
   public:
 
@@ -675,25 +679,35 @@ The ``options`` arguments specifies the options for the settings entry.
                            const QString &pluginName,
                            const QColor &defaultValue = QColor(),
                            const QString &description = QString(),
-                           Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException ) /Transfer/;
+                           Qgis::SettingsOptions options = Qgis::SettingsOptions(),
+                           bool allowAlpha = true ) throw( QgsSettingsException ) /Transfer/;
 %Docstring
 Constructor for QgsSettingsEntryColor.
 This constructor is intended to be used from plugins.
 
-The ``key`` argument specifies the key of the settings.
-The ``pluginName`` argument is inserted in the key after the section.
-The ``defaultValue`` argument specifies the default value for the settings entry.
-The ``description`` argument specifies a description for the settings entry.
-The ``options`` arguments specifies the options for the settings entry.
+:param key: specifies the key of the settings.
+:param pluginName: is inserted in the key after the section.
+:param defaultValue: specifies the default value for the settings entry.
+:param description: specifies a description for the settings entry.
+:param optionss: specifies the options for the settings entry.
 %End
 %MethodCode
-    sipCpp = new sipQgsSettingsEntryColor( QgsSettingsEntryColor( *a0, QgsSettings::createPluginTreeElement( *a1 ), *a2, *a3, *a4 ) );
+    sipCpp = new sipQgsSettingsEntryColor( QgsSettingsEntryColor( *a0, QgsSettings::createPluginTreeElement( *a1 ), *a2, *a3, *a4, a5 ) );
 %End
 
     virtual Qgis::SettingsType settingsType() const;
 
+    bool allowAlpha() const;
+%Docstring
+Returns ``True`` if transparency is allowed for the color
+
+.. versionadded:: 3.30
+%End
+
   private:
     virtual QColor convertFromVariant( const QVariant &value ) const;
+
+    virtual bool checkValue( const QColor &value ) const;
 
 };
 
@@ -725,11 +739,11 @@ typedef QgsSettingsEntryByReference<QVariantMap> QgsSettingsEntryByReferenceQVar
 %Docstring
 Constructor for QgsSettingsEntryVariantMap.
 
-The ``key`` argument specifies the final part of the settings key.
-The ``parent`` argument specifies the parent in the tree of settings.
-The ``defaultValue`` argument specifies the default value for the settings entry.
-The ``description`` argument specifies a description for the settings entry.
-The ``options`` arguments specifies the options for the settings entry.
+:param key: specifies the final part of the settings key.
+:param parent: specifies the parent in the tree of settings.
+:param defaultValue: specifies the default value for the settings entry.
+:param description: specifies a description for the settings entry.
+:param optionss: specifies the options for the settings entry.
 %End
 
   private:
@@ -741,12 +755,12 @@ The ``options`` arguments specifies the options for the settings entry.
 %Docstring
 Constructor for QgsSettingsEntryVariantMap.
 
-The ``parent`` argument specifies the parent in the tree of settings.
-The ``key`` argument specifies the final part of the settings key.
-The ``section`` argument specifies the section.
-The ``defaultValue`` argument specifies the default value for the settings entry.
-The ``description`` argument specifies a description for the settings entry.
-The ``options`` arguments specifies the options for the settings entry.
+:param parent: specifies the parent in the tree of settings.
+:param key: specifies the final part of the settings key.
+:param section: specifies the section.
+:param defaultValue: specifies the default value for the settings entry.
+:param description: specifies a description for the settings entry.
+:param optionss: specifies the options for the settings entry.
 %End
   public:
 
@@ -759,11 +773,11 @@ The ``options`` arguments specifies the options for the settings entry.
 Constructor for :py:class:`QgsSettingsEntryStringMap`.
 This constructor is intended to be used from plugins.
 
-The ``key`` argument specifies the key of the settings.
-The ``pluginName`` argument is inserted in the key after the section.
-The ``defaultValue`` argument specifies the default value for the settings entry.
-The ``description`` argument specifies a description for the settings entry.
-The ``options`` arguments specifies the options for the settings entry.
+:param key: specifies the key of the settings.
+:param pluginName: is inserted in the key after the section.
+:param defaultValue: specifies the default value for the settings entry.
+:param description: specifies a description for the settings entry.
+:param optionss: specifies the options for the settings entry.
 %End
 %MethodCode
     sipCpp = new sipQgsSettingsEntryVariantMap( QgsSettingsEntryVariantMap( *a0, QgsSettings::createPluginTreeElement( *a1 ), *a2, *a3, *a4 ) );

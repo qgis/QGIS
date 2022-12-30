@@ -11,7 +11,7 @@ the Free Software Foundation; either version 2 of the License, or
 """
 
 from qgis import core as qgis_core
-from qgis.core import Qgis, QgsSettings, QgsSettingsEntryVariant, QgsSettingsEntryString, QgsSettingsEntryStringList, QgsSettingsEntryBool, QgsSettingsEntryInteger, QgsSettingsEntryDouble, QgsSettingsEntryEnumFlag, QgsUnitTypes, QgsMapLayerProxyModel, QgsSettingsEntryVariantMap, QgsSettingsEntryGroup
+from qgis.core import Qgis, QgsSettings, QgsSettingsEntryVariant, QgsSettingsEntryString, QgsSettingsEntryStringList, QgsSettingsEntryBool, QgsSettingsEntryInteger, QgsSettingsEntryDouble, QgsSettingsEntryColor, QgsSettingsEntryEnumFlag, QgsUnitTypes, QgsMapLayerProxyModel, QgsSettingsEntryVariantMap, QgsSettingsEntryGroup
 from qgis.testing import start_app, unittest
 
 from qgis.PyQt.QtCore import Qt
@@ -333,6 +333,23 @@ class TestQgsSettingsEntry(unittest.TestCase):
 
         # Settings type
         self.assertEqual(settingsEntryDouble.settingsType(), Qgis.SettingsType.Double)
+
+    def test_settings_entry_color(self):
+        settingsKey = "color"
+        settingsKeyComplete = f"plugins/{self.pluginName}/{settingsKey}"
+
+        # Make sure settings does not exists
+        QgsSettings().remove(settingsKeyComplete)
+
+        defaultValue = QColor(Qt.darkGreen)
+        settingsEntry = QgsSettingsEntryColor(settingsKey, self.pluginName, defaultValue, None, Qgis.SettingsOptions(), False)
+
+        # Check default value
+        self.assertEqual(settingsEntry.defaultValue(), defaultValue)
+
+        # Check alpha option
+        self.assertTrue(settingsEntry.setValue(QColor(Qt.yellow)))
+        self.assertFalse(settingsEntry.setValue(QColor(100, 100, 100, 100)))
 
     def test_settings_entry_enum(self):
         settingsKey = "settingsEntryEnum/enumValue"

@@ -34,11 +34,11 @@ class CORE_EXPORT QgsSettingsEntryVariant : public QgsSettingsEntryByReference<Q
     /**
      * Constructor for QgsSettingsEntryVariant.
      *
-     * The \a key argument specifies the final part of the settings key.
-     * The \a section argument specifies the section.
-     * The \a defaultValue argument specifies the default value for the settings entry.
-     * The \a description argument specifies a description for the settings entry.
-     * The \a options argument specifies the options for the settings entry.
+     * \param key specifies the final part of the settings key.
+     * \param section specifies the section.
+     * \param defaultValue specifies the default value for the settings entry.
+     * \param description specifies a description for the settings entry.
+     * \param options specifies the options for the settings entry.
      * \since QGIS 3.30
      */
     QgsSettingsEntryVariant( const QString &key,
@@ -52,11 +52,11 @@ class CORE_EXPORT QgsSettingsEntryVariant : public QgsSettingsEntryByReference<Q
     /**
      * Constructor for QgsSettingsEntryVariant.
      *
-     * The \a key argument specifies the final part of the settings key.
-     * The \a parent argument specifies the parent in the tree of settings.
-     * The \a defaultValue argument specifies the default value for the settings entry.
-     * The \a description argument specifies a description for the settings entry.
-     * The \a options argument specifies the options for the settings entry.
+     * \param key specifies the final part of the settings key.
+     * \param parent specifies the parent in the tree of settings.
+     * \param defaultValue specifies the default value for the settings entry.
+     * \param description specifies a description for the settings entry.
+     * \param options specifies the options for the settings entry.
      * \since QGIS 3.30
      */
     QgsSettingsEntryVariant( const QString &key,
@@ -73,11 +73,11 @@ class CORE_EXPORT QgsSettingsEntryVariant : public QgsSettingsEntryByReference<Q
      * Constructor for QgsSettingsEntryVariant.
      * This constructor is intended to be used from plugins.
      *
-     * The \a key argument specifies the key of the settings.
-     * The \a pluginName argument is inserted in the key after the section.
-     * The \a defaultValue argument specifies the default value for the settings entry.
-     * The \a description argument specifies a description for the settings entry.
-     * The \a options arguments specifies the options for the settings entry.
+     * \param key specifies the key of the settings.
+     * \param pluginName is inserted in the key after the section.
+     * \param defaultValue specifies the default value for the settings entry.
+     * \param description specifies a description for the settings entry.
+     * \param optionss specifies the options for the settings entry.
      */
     QgsSettingsEntryVariant( const QString &key,
                              const QString &pluginName,
@@ -110,13 +110,13 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntryByReference<QS
     /**
      * Constructor for QgsSettingsEntryString.
      *
-     * The \a key argument specifies the final part of the settings key.
-     * The \a parent argument specifies the parent in the tree of settings.
-     * The \a defaultValue argument specifies the default value for the settings entry.
-     * The \a description argument specifies a description for the settings entry.
-     * The \a options arguments specifies the options for the settings entry.
-     * The \a minLength argument specifies the minimal length of the string value. 0 means no limit.
-     * The \a maxLength argument specifies the maximal length of the string value. -1 means no limit.
+     * \param key specifies the final part of the settings key.
+     * \param parent specifies the parent in the tree of settings.
+     * \param defaultValue specifies the default value for the settings entry.
+     * \param description specifies a description for the settings entry.
+     * \param optionss specifies the options for the settings entry.
+     * \param minLength specifies the minimal length of the string value. 0 means no limit.
+     * \param maxLength specifies the maximal length of the string value. -1 means no limit.
      */
     QgsSettingsEntryString( const QString &key,
                             QgsSettingsTreeElement *parent,
@@ -133,13 +133,13 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntryByReference<QS
     /**
      * Constructor for QgsSettingsEntryString.
      *
-     * The \a key argument specifies the final part of the settings key.
-     * The \a section argument specifies the section.
-     * The \a defaultValue argument specifies the default value for the settings entry.
-     * The \a description argument specifies a description for the settings entry.
-     * The \a options arguments specifies the options for the settings entry.
-     * The \a minLength argument specifies the minimal length of the string value. 0 means no limit.
-     * The \a maxLength argument specifies the maximal length of the string value. -1 means no limit.
+     * \param key specifies the final part of the settings key.
+     * \param section specifies the section.
+     * \param defaultValue specifies the default value for the settings entry.
+     * \param description specifies a description for the settings entry.
+     * \param optionss specifies the options for the settings entry.
+     * \param minLength specifies the minimal length of the string value. 0 means no limit.
+     * \param maxLength specifies the maximal length of the string value. -1 means no limit.
      */
     QgsSettingsEntryString( const QString &key,
                             const QString &section,
@@ -159,11 +159,11 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntryByReference<QS
      * Constructor for QgsSettingsEntryString.
      * This constructor is intended to be used from plugins.
      *
-     * The \a key argument specifies the key of the settings.
-     * The \a pluginName argument is inserted in the key after the section.
-     * The \a defaultValue argument specifies the default value for the settings entry.
-     * The \a description argument specifies a description for the settings entry.
-     * The \a options arguments specifies the options for the settings entry.
+     * \param key specifies the key of the settings.
+     * \param pluginName is inserted in the key after the section.
+     * \param defaultValue specifies the default value for the settings entry.
+     * \param description specifies a description for the settings entry.
+     * \param optionss specifies the options for the settings entry.
      */
     QgsSettingsEntryString( const QString &key,
                             const QString &pluginName,
@@ -227,11 +227,11 @@ class CORE_EXPORT QgsSettingsEntryStringList : public QgsSettingsEntryByReferenc
     /**
      * Constructor for QgsSettingsEntryStringList.
      *
-     * The \a key argument specifies the final part of the settings key.
-     * The \a parent argument specifies the parent in the tree of settings.
-     * The \a defaultValue argument specifies the default value for the settings entry.
-     * The \a description argument specifies a description for the settings entry.
-     * The \a options arguments specifies the options for the settings entry.
+     * \param key specifies the final part of the settings key.
+     * \param parent specifies the parent in the tree of settings.
+     * \param defaultValue specifies the default value for the settings entry.
+     * \param description specifies a description for the settings entry.
+     * \param optionss specifies the options for the settings entry.
      */
     QgsSettingsEntryStringList( const QString &key,
                                 QgsSettingsTreeElement *parent,
@@ -244,11 +244,11 @@ class CORE_EXPORT QgsSettingsEntryStringList : public QgsSettingsEntryByReferenc
     /**
      * Constructor for QgsSettingsEntryStringList.
      *
-     * The \a key argument specifies the final part of the settings key.
-     * The \a section argument specifies the section.
-     * The \a defaultValue argument specifies the default value for the settings entry.
-     * The \a description argument specifies a description for the settings entry.
-     * The \a options arguments specifies the options for the settings entry.
+     * \param key specifies the final part of the settings key.
+     * \param section specifies the section.
+     * \param defaultValue specifies the default value for the settings entry.
+     * \param description specifies a description for the settings entry.
+     * \param optionss specifies the options for the settings entry.
      */
     QgsSettingsEntryStringList( const QString &key,
                                 const QString &section,
@@ -265,11 +265,11 @@ class CORE_EXPORT QgsSettingsEntryStringList : public QgsSettingsEntryByReferenc
      * Constructor for QgsSettingsEntryStringList.
      * This constructor is intended to be used from plugins.
      *
-     * The \a key argument specifies the key of the settings.
-     * The \a pluginName argument is inserted in the key after the section.
-     * The \a defaultValue argument specifies the default value for the settings entry.
-     * The \a description argument specifies a description for the settings entry.
-     * The \a options arguments specifies the options for the settings entry.
+     * \param key specifies the key of the settings.
+     * \param pluginName is inserted in the key after the section.
+     * \param defaultValue specifies the default value for the settings entry.
+     * \param description specifies a description for the settings entry.
+     * \param optionss specifies the options for the settings entry.
      */
     QgsSettingsEntryStringList( const QString &key,
                                 const QString &pluginName,
@@ -303,11 +303,11 @@ class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntryByValue<bool>
     /**
      * Constructor for QgsSettingsEntryBool.
      *
-     * The \a key argument specifies the final part of the settings key.
-     * The \a parent argument specifies the parent in the tree of settings.
-     * The \a defaultValue argument specifies the default value for the settings entry.
-     * The \a description argument specifies a description for the settings entry.
-     * The \a options arguments specifies the options for the settings entry.
+     * \param key specifies the final part of the settings key.
+     * \param parent specifies the parent in the tree of settings.
+     * \param defaultValue specifies the default value for the settings entry.
+     * \param description specifies a description for the settings entry.
+     * \param optionss specifies the options for the settings entry.
      */
     QgsSettingsEntryBool( const QString &key,
                           QgsSettingsTreeElement *parent,
@@ -320,11 +320,11 @@ class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntryByValue<bool>
     /**
      * Constructor for QgsSettingsEntryBool.
      *
-     * The \a key argument specifies the final part of the settings key.
-     * The \a section argument specifies the section.
-     * The \a defaultValue argument specifies the default value for the settings entry.
-     * The \a description argument specifies a description for the settings entry.
-     * The \a options arguments specifies the options for the settings entry.
+     * \param key specifies the final part of the settings key.
+     * \param section specifies the section.
+     * \param defaultValue specifies the default value for the settings entry.
+     * \param description specifies a description for the settings entry.
+     * \param optionss specifies the options for the settings entry.
      */
     QgsSettingsEntryBool( const QString &key,
                           const QString &section,
@@ -340,11 +340,11 @@ class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntryByValue<bool>
      * Constructor for QgsSettingsEntryBool.
      * This constructor is intended to be used from plugins.
      *
-     * The \a key argument specifies the key of the settings.
-     * The \a pluginName argument is inserted in the key after the section.
-     * The \a defaultValue argument specifies the default value for the settings entry.
-     * The \a description argument specifies a description for the settings entry.
-     * The \a options arguments specifies the options for the settings entry.
+     * \param key specifies the key of the settings.
+     * \param pluginName is inserted in the key after the section.
+     * \param defaultValue specifies the default value for the settings entry.
+     * \param description specifies a description for the settings entry.
+     * \param optionss specifies the options for the settings entry.
      */
     QgsSettingsEntryBool( const QString &key,
                           const QString &pluginName,
@@ -378,13 +378,13 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryByValue<qlong
     /**
      * Constructor for QgsSettingsEntryInteger.
      *
-     * The \a key argument specifies the final part of the settings key.
-     * The \a parent argument specifies the parent in the tree of settings.
-     * The \a defaultValue argument specifies the default value for the settings entry.
-     * The \a description argument specifies a description for the settings entry.
-     * The \a options arguments specifies the options for the settings entry.
-     * The \a minValue argument specifies the minimal value.
-     * The \a maxValue argument specifies the maximal value.
+     * \param key specifies the final part of the settings key.
+     * \param parent specifies the parent in the tree of settings.
+     * \param defaultValue specifies the default value for the settings entry.
+     * \param description specifies a description for the settings entry.
+     * \param optionss specifies the options for the settings entry.
+     * \param minValue specifies the minimal value.
+     * \param maxValue specifies the maximal value.
      */
     QgsSettingsEntryInteger( const QString &key,
                              QgsSettingsTreeElement *parent,
@@ -401,14 +401,14 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryByValue<qlong
     /**
      * Constructor for QgsSettingsEntryInteger.
      *
-     * The \a parent argument specifies the parent in the tree of settings.
-     * The \a key argument specifies the final part of the settings key.
-     * The \a section argument specifies the section.
-     * The \a defaultValue argument specifies the default value for the settings entry.
-     * The \a description argument specifies a description for the settings entry.
-     * The \a options arguments specifies the options for the settings entry.
-     * The \a minValue argument specifies the minimal value.
-     * The \a maxValue argument specifies the maximal value.
+     * \param parent specifies the parent in the tree of settings.
+     * \param key specifies the final part of the settings key.
+     * \param section specifies the section.
+     * \param defaultValue specifies the default value for the settings entry.
+     * \param description specifies a description for the settings entry.
+     * \param optionss specifies the options for the settings entry.
+     * \param minValue specifies the minimal value.
+     * \param maxValue specifies the maximal value.
      */
     QgsSettingsEntryInteger( const QString &key,
                              const QString &section,
@@ -428,13 +428,13 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryByValue<qlong
      * Constructor for QgsSettingsEntryInteger.
      * This constructor is intended to be used from plugins.
      *
-     * The \a key argument specifies the key of the settings.
-     * The \a pluginName argument is used to define the key of the setting
-     * The \a defaultValue argument specifies the default value for the settings entry.
-     * The \a description argument specifies a description for the settings entry.
-     * The \a options arguments specifies the options for the settings entry.
-     * The \a minValue argument specifies the minimal value.
-     * The \a maxValue argument specifies the maximal value.
+     * \param key specifies the key of the settings.
+     * \param pluginName is used to define the key of the setting
+     * \param defaultValue specifies the default value for the settings entry.
+     * \param description specifies a description for the settings entry.
+     * \param optionss specifies the options for the settings entry.
+     * \param minValue specifies the minimal value.
+     * \param maxValue specifies the maximal value.
      */
     QgsSettingsEntryInteger( const QString &key,
                              const QString &pluginName,
@@ -497,14 +497,14 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntryByValue<double
     /**
      * Constructor for QgsSettingsEntryDouble.
      *
-     * The \a parent argument specifies the parent in the tree of settings.
-     * The \a key argument specifies the final part of the settings key.
-     * The \a section argument specifies the section.
-     * The \a defaultValue argument specifies the default value for the settings entry.
-     * The \a description argument specifies a description for the settings entry.
-     * The \a options arguments specifies the options for the settings entry.
-     * The \a minValue argument specifies the minimal value.
-     * The \a maxValue argument specifies the maximal value.
+     * \param parent specifies the parent in the tree of settings.
+     * \param key specifies the final part of the settings key.
+     * \param section specifies the section.
+     * \param defaultValue specifies the default value for the settings entry.
+     * \param description specifies a description for the settings entry.
+     * \param optionss specifies the options for the settings entry.
+     * \param minValue specifies the minimal value.
+     * \param maxValue specifies the maximal value.
      * The \a displayDecimals specifies an hint for the gui about how much decimals to show
      * for example for a QDoubleSpinBox.
      */
@@ -525,14 +525,14 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntryByValue<double
     /**
      * Constructor for QgsSettingsEntryDouble.
      *
-     * The \a parent argument specifies the parent in the tree of settings.
-     * The \a key argument specifies the final part of the settings key.
-     * The \a section argument specifies the section.
-     * The \a defaultValue argument specifies the default value for the settings entry.
-     * The \a description argument specifies a description for the settings entry.
-     * The \a options arguments specifies the options for the settings entry.
-     * The \a minValue argument specifies the minimal value.
-     * The \a maxValue argument specifies the maximal value.
+     * \param parent specifies the parent in the tree of settings.
+     * \param key specifies the final part of the settings key.
+     * \param section specifies the section.
+     * \param defaultValue specifies the default value for the settings entry.
+     * \param description specifies a description for the settings entry.
+     * \param optionss specifies the options for the settings entry.
+     * \param minValue specifies the minimal value.
+     * \param maxValue specifies the maximal value.
      * The \a displayDecimals specifies an hint for the gui about how much decimals to show
      * for example for a QDoubleSpinBox.
      */
@@ -556,13 +556,13 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntryByValue<double
      * Constructor for QgsSettingsEntryDouble.
      * This constructor is intended to be used from plugins.
      *
-     * The \a key argument specifies the key of the settings.
-     * The \a pluginName argument is used to define the key of the setting
-     * The \a defaultValue argument specifies the default value for the settings entry.
-     * The \a options arguments specifies the options for the settings entry.
-     * The \a description argument specifies a description for the settings entry.
-     * The \a minValue argument specifies the minimal value.
-     * The \a maxValue argument specifies the maximal value.
+     * \param key specifies the key of the settings.
+     * \param pluginName is used to define the key of the setting
+     * \param defaultValue specifies the default value for the settings entry.
+     * \param optionss specifies the options for the settings entry.
+     * \param description specifies a description for the settings entry.
+     * \param minValue specifies the minimal value.
+     * \param maxValue specifies the maximal value.
      * The \a displayDecimals specifies an hint for the gui about how much decimals to show
      */
     QgsSettingsEntryDouble( const QString &key,
@@ -643,35 +643,41 @@ class CORE_EXPORT QgsSettingsEntryColor : public QgsSettingsEntryByReference<QCo
     /**
      * Constructor for QgsSettingsEntryColor.
      *
-     * The \a key argument specifies the final part of the settings key.
-     * The \a parent argument specifies the parent in the tree of settings.
-     * The \a defaultValue argument specifies the default value for the settings entry.
-     * The \a description argument specifies a description for the settings entry.
-     * The \a options arguments specifies the options for the settings entry.
+     * \param key specifies the final part of the settings key.
+     * \param parent specifies the parent in the tree of settings.
+     * \param defaultValue specifies the default value for the settings entry.
+     * \param description specifies a description for the settings entry.
+     * \param options specifies the options for the settings entry.
+     * \param allowAlpha specifies if the color can have transparency.
      */
     QgsSettingsEntryColor( const QString &key,
                            QgsSettingsTreeElement *parent,
                            const QColor &defaultValue = QColor(),
                            const QString &description = QString(),
-                           Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_THROW( QgsSettingsException )
+                           Qgis::SettingsOptions options = Qgis::SettingsOptions(),
+                           bool allowAlpha = true ) SIP_THROW( QgsSettingsException )
       : QgsSettingsEntryByReference( key, parent, defaultValue, description, options )
+      , mAllowAlpha( allowAlpha )
     {}
 
     /**
      * Constructor for QgsSettingsEntryColor.
      *
-     * The \a key argument specifies the final part of the settings key.
-     * The \a section argument specifies the section.
-     * The \a defaultValue argument specifies the default value for the settings entry.
-     * The \a description argument specifies a description for the settings entry.
-     * The \a options arguments specifies the options for the settings entry.
+     * \param key specifies the final part of the settings key.
+     * \param section specifies the section.
+     * \param defaultValue specifies the default value for the settings entry.
+     * \param description specifies a description for the settings entry.
+     * \param optionss specifies the options for the settings entry.
+     * \param allowAlpha specifies if the color can have transparency.
      */
     QgsSettingsEntryColor( const QString &key,
                            const QString &section,
                            const QColor &defaultValue = QColor(),
                            const QString &description = QString(),
-                           Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_MAKE_PRIVATE
+                           Qgis::SettingsOptions options = Qgis::SettingsOptions(),
+                           bool allowAlpha = true ) SIP_MAKE_PRIVATE
   : QgsSettingsEntryByReference( key, section, defaultValue, description, options )
+    , mAllowAlpha( allowAlpha )
     {}
 
 #ifdef SIP_RUN
@@ -680,27 +686,35 @@ class CORE_EXPORT QgsSettingsEntryColor : public QgsSettingsEntryByReference<QCo
      * Constructor for QgsSettingsEntryColor.
      * This constructor is intended to be used from plugins.
      *
-     * The \a key argument specifies the key of the settings.
-     * The \a pluginName argument is inserted in the key after the section.
-     * The \a defaultValue argument specifies the default value for the settings entry.
-     * The \a description argument specifies a description for the settings entry.
-     * The \a options arguments specifies the options for the settings entry.
+     * \param key specifies the key of the settings.
+     * \param pluginName is inserted in the key after the section.
+     * \param defaultValue specifies the default value for the settings entry.
+     * \param description specifies a description for the settings entry.
+     * \param optionss specifies the options for the settings entry.
      */
     QgsSettingsEntryColor( const QString &key,
                            const QString &pluginName,
                            const QColor &defaultValue = QColor(),
                            const QString &description = QString(),
-                           Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER;
+                           Qgis::SettingsOptions options = Qgis::SettingsOptions(),
+                           bool allowAlpha = true ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER;
     % MethodCode
-    sipCpp = new sipQgsSettingsEntryColor( QgsSettingsEntryColor( *a0, QgsSettings::createPluginTreeElement( *a1 ), *a2, *a3, *a4 ) );
+    sipCpp = new sipQgsSettingsEntryColor( QgsSettingsEntryColor( *a0, QgsSettings::createPluginTreeElement( *a1 ), *a2, *a3, *a4, a5 ) );
     % End
 #endif
 
     virtual Qgis::SettingsType settingsType() const override;
 
+    /**
+     * Returns TRUE if transparency is allowed for the color
+     * \since QGIS 3.30
+     */
+    bool allowAlpha() const {return mAllowAlpha;}
+
   private:
     QColor convertFromVariant( const QVariant &value ) const override SIP_FORCE;
-
+    bool checkValue( const QColor &value ) const override SIP_FORCE;
+    bool mAllowAlpha = true;
 };
 
 /**
@@ -718,11 +732,11 @@ class CORE_EXPORT QgsSettingsEntryVariantMap : public QgsSettingsEntryByReferenc
     /**
      * Constructor for QgsSettingsEntryVariantMap.
      *
-     * The \a key argument specifies the final part of the settings key.
-     * The \a parent argument specifies the parent in the tree of settings.
-     * The \a defaultValue argument specifies the default value for the settings entry.
-     * The \a description argument specifies a description for the settings entry.
-     * The \a options arguments specifies the options for the settings entry.
+     * \param key specifies the final part of the settings key.
+     * \param parent specifies the parent in the tree of settings.
+     * \param defaultValue specifies the default value for the settings entry.
+     * \param description specifies a description for the settings entry.
+     * \param optionss specifies the options for the settings entry.
      */
     QgsSettingsEntryVariantMap( const QString &key,
                                 QgsSettingsTreeElement *parent,
@@ -736,12 +750,12 @@ class CORE_EXPORT QgsSettingsEntryVariantMap : public QgsSettingsEntryByReferenc
     /**
      * Constructor for QgsSettingsEntryVariantMap.
      *
-     * The \a parent argument specifies the parent in the tree of settings.
-     * The \a key argument specifies the final part of the settings key.
-     * The \a section argument specifies the section.
-     * The \a defaultValue argument specifies the default value for the settings entry.
-     * The \a description argument specifies a description for the settings entry.
-     * The \a options arguments specifies the options for the settings entry.
+     * \param parent specifies the parent in the tree of settings.
+     * \param key specifies the final part of the settings key.
+     * \param section specifies the section.
+     * \param defaultValue specifies the default value for the settings entry.
+     * \param description specifies a description for the settings entry.
+     * \param optionss specifies the options for the settings entry.
      */
     QgsSettingsEntryVariantMap( const QString &key,
                                 const QString &section,
@@ -758,11 +772,11 @@ class CORE_EXPORT QgsSettingsEntryVariantMap : public QgsSettingsEntryByReferenc
      * Constructor for QgsSettingsEntryStringMap.
      * This constructor is intended to be used from plugins.
      *
-     * The \a key argument specifies the key of the settings.
-     * The \a pluginName argument is inserted in the key after the section.
-     * The \a defaultValue argument specifies the default value for the settings entry.
-     * The \a description argument specifies a description for the settings entry.
-     * The \a options arguments specifies the options for the settings entry.
+     * \param key specifies the key of the settings.
+     * \param pluginName is inserted in the key after the section.
+     * \param defaultValue specifies the default value for the settings entry.
+     * \param description specifies a description for the settings entry.
+     * \param optionss specifies the options for the settings entry.
      */
     QgsSettingsEntryVariantMap( const QString &key,
                                 const QString &pluginName,
