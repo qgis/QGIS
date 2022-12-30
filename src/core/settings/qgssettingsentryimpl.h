@@ -711,6 +711,20 @@ class CORE_EXPORT QgsSettingsEntryColor : public QgsSettingsEntryByReference<QCo
      */
     bool allowAlpha() const {return mAllowAlpha;}
 
+    /**
+     * Copies the value from the given keys if they exist.
+     * \returns TRUE if the keys exist and the settings values could be copied
+     * \since QGIS 3.30
+     */
+    bool copyValueFromKeys( const QString &redKey, const QString &greenKey, const QString &blueKey, const QString &alphaKey = QString() ) const SIP_SKIP;
+
+    /**
+     * Copies the settings to the given keys
+     * \since QGIS 3.30
+     */
+    void copyValueToKeys( const QString &redKey, const QString &greenKey, const QString &blueKey, const QString &alphaKey = QString() ) const SIP_SKIP;
+
+
   private:
     QColor convertFromVariant( const QVariant &value ) const override SIP_FORCE;
     bool checkValue( const QColor &value ) const override SIP_FORCE;

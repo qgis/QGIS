@@ -67,10 +67,6 @@ QgsSettingsRegistryCore::QgsSettingsRegistryCore()
 
   addSettingsEntry( &settingsDigitizingStreamTolerance );
   addSettingsEntry( &settingsDigitizingLineWidth );
-  addSettingsEntry( &settingsDigitizingLineColorRed );
-  addSettingsEntry( &settingsDigitizingLineColorGreen );
-  addSettingsEntry( &settingsDigitizingLineColorBlue );
-  addSettingsEntry( &settingsDigitizingLineColorAlpha );
   addSettingsEntry( &settingsDigitizingLineColorAlphaScale );
   addSettingsEntry( &settingsDigitizingFillColorRed );
   addSettingsEntry( &settingsDigitizingFillColorGreen );
@@ -141,6 +137,9 @@ void QgsSettingsRegistryCore::migrateOldSettings()
 {
   // copy values from old keys to new keys and delete the old ones
   // for backward compatibility, old keys are recreated when the registry gets deleted
+
+  // single settings - added in 3.30
+  settingsDigitizingLineColor->copyValueFromKeys( QStringLiteral( "qgis/digitizing/line_color_red" ), QStringLiteral( "qgis/digitizing/line_color_green" ), QStringLiteral( "qgis/digitizing/line_color_blue" ), QStringLiteral( "qgis/digitizing/line_color_alpha" ) );
 
   // connections settings - added in 3.30
   const QStringList services = {QStringLiteral( "WMS" ), QStringLiteral( "WFS" ), QStringLiteral( "WCS" ), QStringLiteral( "GeoNode" )};
@@ -251,6 +250,9 @@ void QgsSettingsRegistryCore::migrateOldSettings()
 // TODO QGIS 4.0: Remove
 void QgsSettingsRegistryCore::backwardCompatibility()
 {
+  // single settings - added in 3.30
+  settingsDigitizingLineColor->copyValueToKeys( QStringLiteral( "qgis/digitizing/line_color_red" ), QStringLiteral( "qgis/digitizing/line_color_green" ), QStringLiteral( "qgis/digitizing/line_color_blue" ), QStringLiteral( "qgis/digitizing/line_color_alpha" ) );
+
   // OWS connections settings - added in 3.30
   {
     const QStringList services = {QStringLiteral( "WMS" ), QStringLiteral( "WFS" ), QStringLiteral( "WCS" ), QStringLiteral( "GeoNode" )};

@@ -22,6 +22,7 @@
 #include "qgssettingsentry.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsentryenumflag.h"
+#include "qgssettings.h"
 
 #include "qgis.h"
 
@@ -55,17 +56,8 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     //! Settings entry digitizing line width
     static const inline QgsSettingsEntryInteger settingsDigitizingLineWidth = QgsSettingsEntryInteger( QStringLiteral( "line_width" ), QgsSettings::Prefix::QGIS_DIGITIZING, 1 );
 
-    //! Settings entry digitizing line color red
-    static const inline QgsSettingsEntryInteger settingsDigitizingLineColorRed = QgsSettingsEntryInteger( QStringLiteral( "line_color_red" ), QgsSettings::Prefix::QGIS_DIGITIZING, 255 );
-
-    //! Settings entry digitizing line color green
-    static const inline QgsSettingsEntryInteger settingsDigitizingLineColorGreen = QgsSettingsEntryInteger( QStringLiteral( "line_color_green" ), QgsSettings::Prefix::QGIS_DIGITIZING, 0 );
-
-    //! Settings entry digitizing line color blue
-    static const inline QgsSettingsEntryInteger settingsDigitizingLineColorBlue = QgsSettingsEntryInteger( QStringLiteral( "line_color_blue" ), QgsSettings::Prefix::QGIS_DIGITIZING, 0 );
-
-    //! Settings entry digitizing line color alpha
-    static const inline QgsSettingsEntryInteger settingsDigitizingLineColorAlpha = QgsSettingsEntryInteger( QStringLiteral( "line_color_alpha" ), QgsSettings::Prefix::QGIS_DIGITIZING, 200 );
+    //! Settings entry digitizing line color
+    static inline QgsSettingsEntryColor *settingsDigitizingLineColor = new QgsSettingsEntryColor( QStringLiteral( "line_color" ), QgsSettings::sTreeDigitizing, QColor( 255, 0, 0, 200 ) );
 
     //! Settings entry digitizing line color alpha scale
     static const inline QgsSettingsEntryDouble settingsDigitizingLineColorAlphaScale = QgsSettingsEntryDouble( QStringLiteral( "line_color_alpha_scale" ), QgsSettings::Prefix::QGIS_DIGITIZING, 0.75 );

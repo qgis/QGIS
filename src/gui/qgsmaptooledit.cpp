@@ -47,10 +47,7 @@ double QgsMapToolEdit::defaultMValue()
 
 QColor QgsMapToolEdit::digitizingStrokeColor()
 {
-  return QColor( QgsSettingsRegistryCore::settingsDigitizingLineColorRed.value(),
-                 QgsSettingsRegistryCore::settingsDigitizingLineColorGreen.value(),
-                 QgsSettingsRegistryCore::settingsDigitizingLineColorBlue.value(),
-                 QgsSettingsRegistryCore::settingsDigitizingLineColorAlpha.value() );
+  return QgsSettingsRegistryCore::settingsDigitizingLineColor->value();
 }
 
 int QgsMapToolEdit::digitizingStrokeWidth()
@@ -146,16 +143,13 @@ QgsMapToolEdit::TopologicalResult QgsMapToolEdit::addTopologicalPoints( const QV
 QgsGeometryRubberBand *QgsMapToolEdit::createGeometryRubberBand( QgsWkbTypes::GeometryType geometryType, bool alternativeBand ) const
 {
   QgsGeometryRubberBand *rb = new QgsGeometryRubberBand( mCanvas, geometryType );
-  QColor color( QgsSettingsRegistryCore::settingsDigitizingLineColorRed.value(),
-                QgsSettingsRegistryCore::settingsDigitizingLineColorGreen.value(),
-                QgsSettingsRegistryCore::settingsDigitizingLineColorBlue.value() );
-  double myAlpha = QgsSettingsRegistryCore::settingsDigitizingLineColorAlpha.value() / 255.0;
+  QColor color = QgsSettingsRegistryCore::settingsDigitizingLineColor->value();
   if ( alternativeBand )
   {
-    myAlpha = myAlpha * QgsSettingsRegistryCore::settingsDigitizingLineColorAlphaScale.value();
+    double alpha = color.alpha() / 255.0 * QgsSettingsRegistryCore::settingsDigitizingLineColorAlphaScale.value();
     rb->setLineStyle( Qt::DotLine );
+    color.setAlphaF( alpha );
   }
-  color.setAlphaF( myAlpha );
   rb->setStrokeColor( color );
   rb->setFillColor( color );
   rb->setStrokeWidth( digitizingStrokeWidth() );

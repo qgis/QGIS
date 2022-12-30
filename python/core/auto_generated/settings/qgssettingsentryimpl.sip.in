@@ -704,6 +704,9 @@ Returns ``True`` if transparency is allowed for the color
 .. versionadded:: 3.30
 %End
 
+
+
+
   private:
     virtual QColor convertFromVariant( const QVariant &value ) const;
 

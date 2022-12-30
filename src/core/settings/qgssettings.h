@@ -90,6 +90,7 @@ class CORE_EXPORT QgsSettings : public QObject
 
     static inline QgsSettingsTreeElement *sTreeApp = treeRoot()->createChildElement( QStringLiteral( "app" ) );
     static inline QgsSettingsTreeElement *sTreeConnections = treeRoot()->createChildElement( QStringLiteral( "connections" ) );
+    static inline QgsSettingsTreeElement *sTreeDigitizing = treeRoot()->createChildElement( QStringLiteral( "digitizing" ) );
     static inline QgsSettingsTreeElement *sTreeLocale = treeRoot()->createChildElement( QStringLiteral( "locale" ) );
     static inline QgsSettingsTreeElement *sTreeGps = treeRoot()->createChildElement( QStringLiteral( "gps" ) );
     static inline QgsSettingsTreeElement *sTreeQgis = treeRoot()->createChildElement( QStringLiteral( "qgis" ) );
