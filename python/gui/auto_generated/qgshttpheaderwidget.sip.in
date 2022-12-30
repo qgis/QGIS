@@ -55,6 +55,9 @@ update the ``settings`` with the http headers present in the inner map.
 
 :param settings:
 :param key:
+
+.. deprecated:: QGIS 3.30
+   use a variant map for settinds directly
 %End
 
 };

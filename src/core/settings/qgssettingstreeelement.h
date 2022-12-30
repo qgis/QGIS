@@ -69,7 +69,7 @@ class CORE_EXPORT QgsSettingsTreeElement
     virtual ~QgsSettingsTreeElement();
 
     /**
-     * Creates a tree root elemenet
+     * Creates a tree root element
      * \note This is not available in Python bindings. Use QgsSettings.createPluginTreeElement instead.
      */
     static QgsSettingsTreeElement *createRootElement() SIP_SKIP;
@@ -106,7 +106,7 @@ class CORE_EXPORT QgsSettingsTreeElement
     //! Unregisters the child tree \a element
     void unregisterChildElement( QgsSettingsTreeElement *element );
 
-    // Returns the children elements
+    //! Returns the children elements
     QList<QgsSettingsTreeElement *> childrenElements() const {return mChildrenElements;}
 
     //! Returns the existing child element if it exists at the given \a key
@@ -171,7 +171,7 @@ class CORE_EXPORT QgsSettingsTreeElement
  * \class QgsSettingsTreeNamedListElement
  * \brief QgsSettingsTreeNamedListElement is a named list tree element for the settings registry
  * to help organizing and introspecting the registry.
- * the named list element is used to store a group of settings under a dynamicly named key.
+ * the named list element is used to store a group of settings under a dynamicaly named key.
  *
  * \see QgsSettingsTreeElement
  * \see QgsSettingsEntryBase

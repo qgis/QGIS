@@ -449,7 +449,6 @@ QDomDocument QgsManageConnectionsDialog::saveOWSConnections( const QStringList &
   root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
   doc.appendChild( root );
 
-  QString path;
   for ( int i = 0; i < connections.count(); ++i )
   {
     QDomElement el = doc.createElement( service.toLower() );
@@ -771,7 +770,6 @@ QDomDocument QgsManageConnectionsDialog::saveVectorTileConnections( const QStrin
   root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
   doc.appendChild( root );
 
-  QString path;
   for ( int i = 0; i < connections.count(); ++i )
   {
     QDomElement el = doc.createElement( QStringLiteral( "vectortile" ) );

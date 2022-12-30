@@ -33,6 +33,7 @@
 /**
  * \ingroup core
  * \brief Connections settingss for XYZ
+ * \since QGIS 3.30
  */
 class CORE_EXPORT QgsXyzConnectionSettings SIP_SKIP
 {

@@ -64,6 +64,7 @@ class GUI_EXPORT QgsHttpHeaderWidget : public QWidget, private Ui::QgsHttpHeader
      * \see QgsHttpHeaders::updateSettings( QgsSettings &settings, const QString &key ) const
      * \param settings
      * \param key
+     * \deprecated since QGIS 3.30 use a variant map for settinds directly
      */
     Q_DECL_DEPRECATED void updateSettings( QgsSettings &settings, const QString &key ) const SIP_DEPRECATED;
 

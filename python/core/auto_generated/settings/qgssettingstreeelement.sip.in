@@ -98,6 +98,9 @@ Unregisters the child tree ``element``
 %End
 
     QList<QgsSettingsTreeElement *> childrenElements() const;
+%Docstring
+Returns the children elements
+%End
 
     QgsSettingsTreeElement *childElement( const QString &key );
 %Docstring
@@ -162,7 +165,7 @@ class QgsSettingsTreeNamedListElement : QgsSettingsTreeElement
 %Docstring(signature="appended")
 :py:class:`QgsSettingsTreeNamedListElement` is a named list tree element for the settings registry
 to help organizing and introspecting the registry.
-the named list element is used to store a group of settings under a dynamicly named key.
+the named list element is used to store a group of settings under a dynamicaly named key.
 
 .. seealso:: :py:class:`QgsSettingsTreeElement`
 
