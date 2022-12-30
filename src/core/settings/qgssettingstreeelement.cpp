@@ -137,7 +137,7 @@ void QgsSettingsTreeNamedListElement::initNamedList( const QgsSettingsTreeElemen
   }
 
   mNamedElementsCount = mParent->namedElementsCount() + 1;
-  mItemsCompleteKey.append( QStringLiteral( "items/" ) );
+  mItemsCompleteKey = QStringLiteral( "%1items/" ).arg( mCompleteKey );
   mCompleteKey.append( QStringLiteral( "items/%%1/" ).arg( mNamedElementsCount ) );
 }
 
