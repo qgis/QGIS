@@ -37,7 +37,14 @@ Default constructor
 :return: build a new ``:py:class:`QgsHttpHeaders``` according to data in the UI
 %End
 
-    void setFromSettings( const QgsSettings &settings, const QString &key );
+    void setHeaders( const QgsHttpHeaders &headers );
+%Docstring
+Sets the widget from the headers
+
+.. versionadded:: 3.30
+%End
+
+ void setFromSettings( const QgsSettings &settings, const QString &key ) /Deprecated/;
 %Docstring
 fill the inner header map from the settings defined at ``key``
 
@@ -45,6 +52,9 @@ fill the inner header map from the settings defined at ``key``
 
 :param settings:
 :param key:
+
+.. deprecated:: QGIS 3.30
+   use setFromHeaders instead
 %End
 
  void updateSettings( QgsSettings &settings, const QString &key ) const /Deprecated/;

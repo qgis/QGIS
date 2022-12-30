@@ -94,11 +94,9 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
     // populate the dialog with the information stored for the connection
     // populate the fields with the stored setting parameters
 
-    const QgsSettings settings;
-
     txtName->setText( connectionName );
     txtUrl->setText( QgsOwsConnection::settingsUrl->value( {mServiceName.toLower(), connectionName} ) );
-    mHttpHeaders->setFromSettings( settings, QStringLiteral( "qgis/connections-%1/%2" ).arg( mServiceName.toLower(), connectionName ) );
+    mHttpHeaders->setHeaders( QgsHttpHeaders( QgsOwsConnection::settingsHeaders->value( {mServiceName.toLower(), connectionName} ) ) );
 
     updateServiceSpecificSettings();
 
@@ -327,7 +325,7 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
   // Enable/disable these items per WFS versions
   wfsVersionCurrentIndexChanged( versionIdx );
 
-  mHttpHeaders->setFromSettings( QgsSettings(), QStringLiteral( "qgis/connections-%1/%2" ).arg( mServiceName.toLower(), mOriginalConnName ) );
+  mHttpHeaders->setHeaders( QgsHttpHeaders( QgsOwsConnection::settingsHeaders->value( {mServiceName.toLower(), mOriginalConnName} ) ) );
 
   txtMaxNumFeatures->setText( QgsOwsConnection::settingsMaxNumFeatures->value( detailsParameters ) );
 

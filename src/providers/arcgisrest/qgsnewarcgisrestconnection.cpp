@@ -63,7 +63,9 @@ QgsNewArcGisRestConnectionDialog::QgsNewArcGisRestConnectionDialog( QWidget *par
     const QString credentialsKey = "qgis/" + mCredentialsBaseKey + '/' + connectionName;
     txtName->setText( connectionName );
     txtUrl->setText( settings.value( key + "/url" ).toString() );
+    Q_NOWARN_DEPRECATED_PUSH
     mHttpHeaders->setFromSettings( settings, key );
+    Q_NOWARN_DEPRECATED_POP
 
     // portal
     mContentEndPointLineEdit->setText( settings.value( key + "/content_endpoint" ).toString() );

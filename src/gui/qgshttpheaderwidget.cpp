@@ -102,7 +102,11 @@ void QgsHttpHeaderWidget::setFromSettings( const QgsSettings &settings, const QS
   // load headers from settings
   QgsHttpHeaders headers;
   headers.setFromSettings( settings, key );
+  setHeaders( headers );
+}
 
+void QgsHttpHeaderWidget::setHeaders( const QgsHttpHeaders &headers )
+{
   // clean table
   for ( int i = tblwdgQueryPairs->rowCount(); i > 0; i-- )
     tblwdgQueryPairs->removeRow( i - 1 );
