@@ -460,6 +460,15 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
     mCameraPose.setCenterPoint( mCameraBeforeDrag->viewCenter() + shiftVector );
     updateCameraFromPose();
   }
+  else if ( hasLeftButton && hasShift && hasCtrl )
+  {
+    // change the camera elevation, similar to pageUp/pageDown
+    QgsVector3D center = mCameraPose.centerPoint();
+    double tElev = mMousePos.y() - mouse->y();
+    center.set( center.x(), center.y() + tElev * 0.5, center.z() );
+    mCameraPose.setCenterPoint( center );
+    updateCameraFromPose();
+  }
   else if ( hasRightButton && !hasShift && !hasCtrl )
   {
     if ( !mDepthBufferIsReady )
