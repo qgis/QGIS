@@ -7,7 +7,7 @@ QgsSettingsTreeElement.Type.__doc__ = 'Type of tree element\n\n' + '* ``Root``: 
 # --
 QgsSettingsTreeElement.Type.baseClass = QgsSettingsTreeElement
 # monkey patching scoped based enum
-QgsSettingsTreeElement.Option.NamedListSelectedItemSetting.__doc__ = ""
+QgsSettingsTreeElement.Option.NamedListSelectedItemSetting.__doc__ = "Creates a setting to store which is the current item"
 QgsSettingsTreeElement.Option.__doc__ = 'Options for named list elements\n\n' + '* ``NamedListSelectedItemSetting``: ' + QgsSettingsTreeElement.Option.NamedListSelectedItemSetting.__doc__
 # --
 QgsSettingsTreeElement.Option.baseClass = QgsSettingsTreeElement

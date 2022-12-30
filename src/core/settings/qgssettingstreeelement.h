@@ -71,7 +71,7 @@ class CORE_EXPORT QgsSettingsTreeElement
     //! Options for named list elements
     enum class Option
     {
-      NamedListSelectedItemSetting,
+      NamedListSelectedItemSetting, //!< Creates a setting to store which is the current item
     };
 
     Q_ENUM( Option )
@@ -91,7 +91,7 @@ class CORE_EXPORT QgsSettingsTreeElement
 
     /**
      * Creates a named list tree element.
-     * This is useful to register group of settings for several named items (for instance credentials for several named services)
+     * This is useful to register groups of settings for several named items (for instance credentials for several named services)
      */
     QgsSettingsTreeNamedListElement *createNamedListElement( const QString &key, const QgsSettingsTreeElement::Options &options = QgsSettingsTreeElement::Options() ) SIP_THROW( QgsSettingsException ) SIP_KEEPREFERENCE;
 

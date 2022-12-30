@@ -337,7 +337,7 @@ Returns the current value (or default) if there is no former value.
 
     bool copyValueFromKey( const QString &key, const QStringList &dynamicKeyPartList = QStringList(), bool deleteOldKey = false ) const;
 %Docstring
-Checks if the settings does not exist and try to set it from a given ``oldKey``.
+Checks if the settings does not exist and tries to set it from a given ``oldKey``.
 \arg dynamicKeyPartList is the optional dynamic key part to determine the key. It must be the same for origin and destination keys.
 If ``deleteOldKey``, the setting with the old key will be removed
 

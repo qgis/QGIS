@@ -38,7 +38,7 @@
 class CORE_EXPORT QgsXyzConnectionSettings SIP_SKIP
 {
   public:
-    static inline QgsSettingsTreeNamedListElement *sTreeXyzConnections = QgsSettings::sTtreeConnections->createNamedListElement( QStringLiteral( "xyz" ), QgsSettingsTreeElement::Option::NamedListSelectedItemSetting );
+    static inline QgsSettingsTreeNamedListElement *sTreeXyzConnections = QgsSettings::sTreeConnections->createNamedListElement( QStringLiteral( "xyz" ), QgsSettingsTreeElement::Option::NamedListSelectedItemSetting );
 
     static inline QgsSettingsEntryString *settingsUrl = new QgsSettingsEntryString( QStringLiteral( "url" ), sTreeXyzConnections, QString() ) ;
     static inline QgsSettingsEntryVariantMap *settingsHeaders = new QgsSettingsEntryVariantMap( QStringLiteral( "http-header" ), sTreeXyzConnections ) ;
@@ -65,7 +65,7 @@ class CORE_EXPORT QgsOwsConnection : public QObject
   public:
 
 #ifndef SIP_RUN
-    static inline QgsSettingsTreeNamedListElement *sTtreeOwsServices = QgsSettings::sTtreeConnections->createNamedListElement( QStringLiteral( "ows" ) );
+    static inline QgsSettingsTreeNamedListElement *sTtreeOwsServices = QgsSettings::sTreeConnections->createNamedListElement( QStringLiteral( "ows" ) );
     static inline QgsSettingsTreeNamedListElement *sTreeOwsConnections = sTtreeOwsServices->createNamedListElement( QStringLiteral( "connections" ) );
 
     static inline QgsSettingsEntryString *settingsUrl = new QgsSettingsEntryString( QStringLiteral( "url" ), sTreeOwsConnections, QString() ) ;

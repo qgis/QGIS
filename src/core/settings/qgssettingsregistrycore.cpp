@@ -139,7 +139,7 @@ QgsSettingsRegistryCore::~QgsSettingsRegistryCore()
 
 void QgsSettingsRegistryCore::migrateOldSettings()
 {
-  // the logic is to copy value from old key to new keys and delete the old ones
+  // copy values from old keys to new keys and delete the old ones
   // for backward compatibility, old keys are recreated when the registry gets deleted
 
   // connections settings - added in 3.30
@@ -248,6 +248,7 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   }
 }
 
+// TODO QGIS 4.0: Remove
 void QgsSettingsRegistryCore::backwardCompatibility()
 {
   // OWS connections settings - added in 3.30

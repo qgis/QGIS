@@ -69,8 +69,8 @@ QgsSettingsTreeNamedListElement *QgsSettingsTreeElement::createNamedListElement(
 
 QgsSettingsTreeElement *QgsSettingsTreeElement::childElement( const QString &key )
 {
-  QList<QgsSettingsTreeElement *>::iterator it = mChildrenElements.begin();
-  for ( ; it != mChildrenElements.end(); ++it )
+  QList<QgsSettingsTreeElement *>::const_iterator it = mChildrenElements.constBegin();
+  for ( ; it != mChildrenElements.constEnd(); ++it )
   {
     if ( ( *it )->key() == key )
       return *it;
@@ -81,8 +81,8 @@ QgsSettingsTreeElement *QgsSettingsTreeElement::childElement( const QString &key
 QgsSettingsEntryBase *QgsSettingsTreeElement::childSetting( const QString &key )
 {
   const QString testCompleteKey = QStringLiteral( "%1%2" ).arg( mCompleteKey, key );
-  QList<QgsSettingsEntryBase *>::iterator it = mChildrenSettings.begin();
-  for ( ; it != mChildrenSettings.end(); ++it )
+  QList<QgsSettingsEntryBase *>::const_iterator it = mChildrenSettings.constBegin();
+  for ( ; it != mChildrenSettings.constEnd(); ++it )
   {
     if ( ( *it )->definitionKey() == testCompleteKey )
       return *it;

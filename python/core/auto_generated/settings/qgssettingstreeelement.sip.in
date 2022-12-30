@@ -69,7 +69,7 @@ Creates a normal tree element
     QgsSettingsTreeNamedListElement *createNamedListElement( const QString &key, const QgsSettingsTreeElement::Options &options = QgsSettingsTreeElement::Options() ) throw( QgsSettingsException ) /KeepReference/;
 %Docstring
 Creates a named list tree element.
-This is useful to register group of settings for several named items (for instance credentials for several named services)
+This is useful to register groups of settings for several named items (for instance credentials for several named services)
 %End
 
 

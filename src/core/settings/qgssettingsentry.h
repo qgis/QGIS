@@ -343,7 +343,7 @@ class CORE_EXPORT QgsSettingsEntryBase
     QVariant formerValueAsVariant( const QStringList &dynamicKeyPartList ) const;
 
     /**
-     * Checks if the settings does not exist and try to set it from a given \a oldKey.
+     * Checks if the settings does not exist and tries to set it from a given \a oldKey.
      * \arg dynamicKeyPartList is the optional dynamic key part to determine the key. It must be the same for origin and destination keys.
      * If \a deleteOldKey, the setting with the old key will be removed
      * \returns TRUE if the key exists and the setting value could be copied
