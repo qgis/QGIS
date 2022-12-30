@@ -98,6 +98,7 @@ Registers a child setting
 %Docstring
 Unregisters the child setting
 
+:param setting: the setting to unregister
 :param deleteSettingValues: if ``True``, the values of the settings will also be deleted
 :param parentsNamedItems: the list of named items in the parent named list (if any)
 %End
@@ -211,29 +212,31 @@ Returns the list of items
 %Docstring
 Returns the list of items
 
+:param location: can be used to restrict the origin of the setting (local or global)
 :param parentsNamedItems: the list of named items in the parent named list (if any)
 %End
 
 
     void setSelectedItem( const QString &item, const QStringList &parentsNamedItems = QStringList() ) throw( QgsSettingsException );
 %Docstring
-Sets the selected named entry from the named list element
+Sets the selected named item from the named list element
 
+:param item: the item to set as selected
 :param parentsNamedItems: the list of named items in the parent named list (if any)
 %End
 
     QString selectedItem( const QStringList &parentsNamedItems = QStringList() ) throw( QgsSettingsException );
 %Docstring
-Returns the selected named entry from the named list element
+Returns the selected named item from the named list element
 
 :param parentsNamedItems: the list of named items in the parent named list (if any)
 %End
 
     void deleteItem( const QString &item, const QStringList &parentsNamedItems = QStringList() ) throw( QgsSettingsException );
 %Docstring
-Deletes a named entry from the named list element
+Deletes a named item from the named list element
 
-:param entry: the entry to delete
+:param item: the item to delete
 :param parentsNamedItems: the list of named items in the parent named list (if any)
 %End
 
