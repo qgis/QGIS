@@ -193,7 +193,7 @@ class CORE_EXPORT QgsSettingsTreeElement
  * \class QgsSettingsTreeNamedListElement
  * \brief QgsSettingsTreeNamedListElement is a named list tree element for the settings registry
  * to help organizing and introspecting the registry.
- * the named list element is used to store a group of settings under a dynamicaly named key.
+ * the named list element is used to store a group of settings under a dynamically named key.
  *
  * \see QgsSettingsTreeElement
  * \see QgsSettingsEntryBase
