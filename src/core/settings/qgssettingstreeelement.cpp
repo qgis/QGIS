@@ -84,7 +84,7 @@ QgsSettingsEntryBase *QgsSettingsTreeElement::childSetting( const QString &key )
   QList<QgsSettingsEntryBase *>::iterator it = mChildrenSettings.begin();
   for ( ; it != mChildrenSettings.end(); ++it )
   {
-    if ( ( *it )->key() == testCompleteKey )
+    if ( ( *it )->definitionKey() == testCompleteKey )
       return *it;
   }
   return nullptr;

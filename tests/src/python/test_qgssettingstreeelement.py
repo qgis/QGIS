@@ -92,7 +92,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(nl2.namedElementsCount(), 2)
         self.assertEqual(nl2.childrenElements(), [])
         self.assertEqual(len(nl2.childrenSettings()), 0)  # the setting for the current selection
-        self.assertEqual(nl2.selectedItemSetting().key(), f"/plugins/{self.pluginName}/level-1/my_list/items/%1/my_nested_list/selected")
+        self.assertEqual(nl2.selectedItemSetting().definitionKey(), f"/plugins/{self.pluginName}/level-1/my_list/items/%1/my_nested_list/selected")
         selected_key = f"/plugins/{self.pluginName}/level-1/my_list/items/item1/my_nested_list/selected"
         self.assertEqual(QgsSettings().value(selected_key), None)
         nl2.setSelectedItem("xxx", ["item1"])
@@ -100,7 +100,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
 
         # list with settings
         setting = QgsSettingsEntryString("mysetting-inlist", nl2)
-        self.assertEqual(setting.key(), f"/plugins/{self.pluginName}/level-1/my_list/items/%1/my_nested_list/items/%2/mysetting-inlist")
+        self.assertEqual(setting.definitionKey(), f"/plugins/{self.pluginName}/level-1/my_list/items/%1/my_nested_list/items/%2/mysetting-inlist")
         self.assertEqual(setting.key(['item1', 'item2']), f"/plugins/{self.pluginName}/level-1/my_list/items/item1/my_nested_list/items/item2/mysetting-inlist")
         self.assertEqual(nl2.childrenElements(), [])
         self.assertEqual(len(nl2.childrenSettings()), 1)
