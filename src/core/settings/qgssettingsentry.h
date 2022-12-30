@@ -343,16 +343,18 @@ class CORE_EXPORT QgsSettingsEntryBase
     QVariant formerValueAsVariant( const QStringList &dynamicKeyPartList ) const;
 
     /**
-     * Copies the value from a given \a key if it exists.
+     * Copies the value from a given key if it exists.
+     * \param key the key to copy the setting value from.
      * \param dynamicKeyPartList is the optional dynamic key part to determine the key. It must be the same for origin and destination keys.
-     * \param removeSettingAtKey if TRUE, the setting at the old key will be removed
-     * \returns TRUE if the key exists and the setting value could be copied
+     * \param removeSettingAtKey if TRUE, the setting at the old key will be removed.
+     * \returns TRUE if the key exists and the setting value could be copied.
      * \since QGIS 3.30
      */
     bool copyValueFromKey( const QString &key, const QStringList &dynamicKeyPartList = QStringList(), bool removeSettingAtKey = false ) const;
 
     /**
-     * Copies the settings to the given \a key
+     * Copies the settings to the given key.
+     * \param key the key to copy the setting value to.
      * \param dynamicKeyPartList is the optional dynamic key part to determine the key. It must be the same for origin and destination keys.
      * \since QGIS 3.30
      */
