@@ -19,7 +19,9 @@
  ***************************************************************************/
 
 #include "qgshttpheaders.h"
-#include "qgsdatasourceuri.h"
+#include "qgssettings.h"
+
+
 #include <QDir>
 #include <QNetworkRequest>
 #include <QUrlQuery>

@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsHttpHeaders
 {
 %Docstring(signature="appended")
@@ -65,7 +67,7 @@ Constructor from a QDomElement ``element``
 
     QVariantMap headers() const;
 %Docstring
-reeturn the headers as a variant map
+Returns the headers as a variant map
 
 .. versionadded:: 3.30
 %End

@@ -2215,10 +2215,10 @@ Qgis.CoordinateDisplayType.__doc__ = 'Formats for displaying coordinates\n\n.. v
 # --
 Qgis.CoordinateDisplayType.baseClass = Qgis
 # monkey patching scoped based enum
-Qgis.SettingsLocation.Any.__doc__ = "From any lcoation"
-Qgis.SettingsLocation.Global.__doc__ = "Global settings only"
-Qgis.SettingsLocation.Local.__doc__ = "Local settings only"
-Qgis.SettingsLocation.__doc__ = 'Settings Location\n\n.. versionadded:: 3.30\n\n' + '* ``Any``: ' + Qgis.SettingsLocation.Any.__doc__ + '\n' + '* ``Global``: ' + Qgis.SettingsLocation.Global.__doc__ + '\n' + '* ``Local``: ' + Qgis.SettingsLocation.Local.__doc__
+Qgis.SettingsLocation.Any.__doc__ = "From any location"
+Qgis.SettingsLocation.Global.__doc__ = "Global settings are stored in `global_settings.ini`"
+Qgis.SettingsLocation.Local.__doc__ = "Local settings are stored in the user profile"
+Qgis.SettingsLocation.__doc__ = 'The setting location describes where a setting is stored.\n\n.. versionadded:: 3.30\n\n' + '* ``Any``: ' + Qgis.SettingsLocation.Any.__doc__ + '\n' + '* ``Global``: ' + Qgis.SettingsLocation.Global.__doc__ + '\n' + '* ``Local``: ' + Qgis.SettingsLocation.Local.__doc__
 # --
 Qgis.SettingsLocation.baseClass = Qgis
 # monkey patching scoped based enum

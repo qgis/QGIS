@@ -2528,15 +2528,15 @@ class CORE_EXPORT Qgis
     Q_ENUM( CoordinateDisplayType )
 
     /**
-     * Settings Location
+     * The setting location describes where a setting is stored.
      *
      * \since QGIS 3.30
      */
     enum class SettingsLocation : int
     {
-      Any, //!< From any lcoation
-      Global, //!< Global settings only
-      Local, //!< Local settings only
+      Any, //!< From any location
+      Global, //!< Global settings are stored in `global_settings.ini`
+      Local, //!< Local settings are stored in the user profile
     };
     Q_ENUM( SettingsLocation )
 

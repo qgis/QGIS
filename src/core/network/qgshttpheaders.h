@@ -22,14 +22,16 @@
 #define QGSHTTPHEADERS_H
 
 #include <QMap>
+#include <QVariant>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgssettingsentry.h"
-#include "qgssettingsentryimpl.h"
+
 
 class QNetworkRequest;
 class QUrlQuery;
 class QDomElement;
+class QgsSettings;
 
 /**
  * \ingroup core
@@ -88,7 +90,7 @@ class CORE_EXPORT QgsHttpHeaders
     virtual ~QgsHttpHeaders();
 
     /**
-     * \brief reeturn the headers as a variant map
+     * \brief Returns the headers as a variant map
      * \since QGIS 3.30
      */
     QVariantMap headers() const {return mHeaders;}
