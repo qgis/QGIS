@@ -68,8 +68,7 @@ void QgsSettings::unregisterPluginTreeElement( const QString &pluginName )
 {
   //QgsDebugMsg( "unregister plugin tree element" );
   QgsSettingsTreeElement *pluginTreeElement = sTreePlugins->childElement( pluginName );
-  if ( pluginTreeElement )
-    delete pluginTreeElement;
+  delete pluginTreeElement;
 }
 
 QgsSettings::QgsSettings( const QString &organization, const QString &application, QObject *parent )
