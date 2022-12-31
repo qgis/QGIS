@@ -703,16 +703,7 @@ void TestQgsLegendRenderer::testGroupIndentSetup()
 {
   QgsMarkerSymbol *sym = new QgsMarkerSymbol();
   sym->setColor( Qt::red );
-  sym->setSize( sym->size() * 6 );
-  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
-  QVERIFY( catRenderer );
-  catRenderer->updateCategorySymbol( 0, sym );
-
-  QgsLayerTreeModel legendModel( mRoot );
-  QgsLegendSettings settings;
-
   QgsLayerTreeGroup *grp2 = mRoot->addGroup( QStringLiteral( "Subgroup" ) );
-  sym->setSize( sym->size() / 6 );
   grp2->setCustomProperty( QStringLiteral( "legend/title-style" ), QLatin1String( "subgroup" ) );
   for ( int i = 1; i <= 4; ++i )
   {
@@ -727,6 +718,12 @@ void TestQgsLegendRenderer::testGroupIndentSetup()
 void TestQgsLegendRenderer::testGroupIndentDefault()
 {
   testGroupIndentSetup();
+  QgsMarkerSymbol *sym = new QgsMarkerSymbol();
+  sym->setColor( Qt::red );
+  sym->setSize( sym->size() * 6 );
+  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
+  QVERIFY( catRenderer );
+  catRenderer->updateCategorySymbol( 0, sym );
   QgsLayerTreeModel legendModel( mRoot );
   QgsLegendSettings settings;
   settings.rstyle( QgsLegendStyle::Group ).setIndent( 10 );
@@ -740,6 +737,12 @@ void TestQgsLegendRenderer::testGroupIndentDefault()
 void TestQgsLegendRenderer::testGroupIndentRT()
 {
   testGroupIndentSetup();
+  QgsMarkerSymbol *sym = new QgsMarkerSymbol();
+  sym->setColor( Qt::red );
+  sym->setSize( sym->size() * 6 );
+  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
+  QVERIFY( catRenderer );
+  catRenderer->updateCategorySymbol( 0, sym );
   QgsLayerTreeModel legendModel( mRoot );
   QgsLegendSettings settings;
   settings.rstyle( QgsLegendStyle::Group ).setIndent( 10 );
@@ -756,6 +759,12 @@ void TestQgsLegendRenderer::testGroupIndentRT()
 void TestQgsLegendRenderer::testGroupIndentRS()
 {
   testGroupIndentSetup();
+  QgsMarkerSymbol *sym = new QgsMarkerSymbol();
+  sym->setColor( Qt::red );
+  sym->setSize( sym->size() * 6 );
+  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
+  QVERIFY( catRenderer );
+  catRenderer->updateCategorySymbol( 0, sym );
   QgsLayerTreeModel legendModel( mRoot );
   QgsLegendSettings settings;
   settings.rstyle( QgsLegendStyle::Group ).setIndent( 10 );
@@ -773,6 +782,12 @@ void TestQgsLegendRenderer::testGroupIndentRS()
 void TestQgsLegendRenderer::testGroupIndentRSRT()
 {
   testGroupIndentSetup();
+  QgsMarkerSymbol *sym = new QgsMarkerSymbol();
+  sym->setColor( Qt::red );
+  sym->setSize( sym->size() * 6 );
+  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
+  QVERIFY( catRenderer );
+  catRenderer->updateCategorySymbol( 0, sym );
   QgsLayerTreeModel legendModel( mRoot );
   QgsLegendSettings settings;
   settings.rstyle( QgsLegendStyle::Group ).setIndent( 10 );
