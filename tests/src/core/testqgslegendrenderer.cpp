@@ -168,6 +168,7 @@ class TestQgsLegendRenderer : public QgsTest
     void testRightAlignTextRightAlignSymbol();
 
     void testGroupHeadingSpacing();
+    void testGroupIndentSetup();
     void testGroupIndentDefault();
     void testGroupIndentRS();
     void testGroupIndentRT();
@@ -698,7 +699,7 @@ void TestQgsLegendRenderer::testGroupHeadingSpacing()
   QVERIFY( _verifyImage( res, QStringLiteral( "legend_group_heading_spacing" ) ) );
 }
 
-QgsLayerTreeModel TestQgsLegendRenderer::testGroupIndentSetup()
+void TestQgsLegendRenderer::testGroupIndentSetup()
 {
   QgsMarkerSymbol *sym = new QgsMarkerSymbol();
   sym->setColor( Qt::red );
@@ -720,13 +721,13 @@ QgsLayerTreeModel TestQgsLegendRenderer::testGroupIndentSetup()
     vl->setRenderer( new QgsSingleSymbolRenderer( sym->clone() ) );
     grp2->addLayer( vl );
   }
-  return legendModel;
 }
 
 
 void TestQgsLegendRenderer::testGroupIndentDefault()
 {
-  QgsLayerTreeModel legendModel = testGroupIndentSetup();
+  testGroupIndentSetup();
+  QgsLayerTreeModel legendModel( mRoot );
   QgsLegendSettings settings;
   settings.rstyle( QgsLegendStyle::Group ).setIndent( 10 );
   settings.rstyle( QgsLegendStyle::Subgroup ).setIndent( 5 );
@@ -738,7 +739,8 @@ void TestQgsLegendRenderer::testGroupIndentDefault()
 
 void TestQgsLegendRenderer::testGroupIndentRT()
 {
-  QgsLayerTreeModel legendModel = testGroupIndentSetup();
+  testGroupIndentSetup();
+  QgsLayerTreeModel legendModel( mRoot );
   QgsLegendSettings settings;
   settings.rstyle( QgsLegendStyle::Group ).setIndent( 10 );
   settings.rstyle( QgsLegendStyle::Subgroup ).setIndent( 5 );
@@ -747,13 +749,14 @@ void TestQgsLegendRenderer::testGroupIndentRT()
   settings.rstyle( QgsLegendStyle::Subgroup ).setAlignment( Qt::AlignRight );
   settings.rstyle( QgsLegendStyle::SymbolLabel ).setAlignment( Qt::AlignRight );
 
-  res = _renderLegend( &legendModel, settings );
+  QImage res = _renderLegend( &legendModel, settings );
   QVERIFY( _verifyImage( res, QStringLiteral( "legend_group_indent_right_align_text" ) ) );
 }
 
 void TestQgsLegendRenderer::testGroupIndentRS()
 {
-  QgsLayerTreeModel legendModel = testGroupIndentSetup();
+  testGroupIndentSetup();
+  QgsLayerTreeModel legendModel( mRoot );
   QgsLegendSettings settings;
   settings.rstyle( QgsLegendStyle::Group ).setIndent( 10 );
   settings.rstyle( QgsLegendStyle::Subgroup ).setIndent( 5 );
@@ -763,13 +766,14 @@ void TestQgsLegendRenderer::testGroupIndentRS()
   settings.rstyle( QgsLegendStyle::SymbolLabel ).setAlignment( Qt::AlignLeft );
   settings.setSymbolAlignment( Qt::AlignRight );
 
-  res = _renderLegend( &legendModel, settings );
+  QImage res = _renderLegend( &legendModel, settings );
   QVERIFY( _verifyImage( res, QStringLiteral( "legend_group_indent_right_align_symbol" ) ) );
 }
 
 void TestQgsLegendRenderer::testGroupIndentRSRT()
 {
-  QgsLayerTreeModel legendModel = testGroupIndentSetup();
+  testGroupIndentSetup();
+  QgsLayerTreeModel legendModel( mRoot );
   QgsLegendSettings settings;
   settings.rstyle( QgsLegendStyle::Group ).setIndent( 10 );
   settings.rstyle( QgsLegendStyle::Subgroup ).setIndent( 5 );
@@ -779,7 +783,7 @@ void TestQgsLegendRenderer::testGroupIndentRSRT()
   settings.rstyle( QgsLegendStyle::SymbolLabel ).setAlignment( Qt::AlignRight );
   settings.setSymbolAlignment( Qt::AlignRight );
 
-  res = _renderLegend( &legendModel, settings );
+  QImage res = _renderLegend( &legendModel, settings );
   QVERIFY( _verifyImage( res, QStringLiteral( "legend_group_indent_right_align_symbol_right_align_text" ) ) );
 }
 
