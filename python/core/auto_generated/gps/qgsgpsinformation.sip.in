@@ -50,6 +50,8 @@ Encapsulates information relating to a GPS position fix.
 
     double hvacc;
 
+    QTime utcTime;
+
     QDateTime utcDateTime;
 
     QChar fixMode;

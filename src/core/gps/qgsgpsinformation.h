@@ -130,6 +130,12 @@ class CORE_EXPORT QgsGpsInformation
 #endif
 
     /**
+     * The time at which this position was reported, in UTC time.
+     * \since QGIS 3.30
+     */
+    QTime utcTime;
+
+    /**
      * The date and time at which this position was reported, in UTC time.
      */
     QDateTime utcDateTime;
