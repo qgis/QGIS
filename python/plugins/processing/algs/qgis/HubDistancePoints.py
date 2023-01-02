@@ -100,6 +100,10 @@ class HubDistancePoints(QgisAlgorithm):
         hub_source = self.parameterAsSource(parameters, self.HUBS, context)
         if hub_source is None:
             raise QgsProcessingException(self.invalidSourceError(parameters, self.HUBS))
+        if hub_source.featureCount() <= 0:
+            raise QgsProcessingException(
+                self.tr('Input "destination hubs layer" has no features, at least 1 feature is required')
+            )
 
         fieldName = self.parameterAsString(parameters, self.FIELD, context)
 
