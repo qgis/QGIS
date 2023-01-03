@@ -188,9 +188,9 @@ void QgsCodeEditorPython::initializeLexer()
 
 void QgsCodeEditorPython::keyPressEvent(QKeyEvent *event)
 {
-  bool ctrl = event->modifiers() & Qt::ControlModifier;
+  const bool ctrlModifier = event->modifiers() & Qt::ControlModifier;
 
-  if(ctrl && event->key() == Qt::Key_Colon)
+  if ( ctrlModifier && event->key() == Qt::Key_Colon )
   {
     event->accept();
     toggleComment();
@@ -266,7 +266,9 @@ void QgsCodeEditorPython::toggleComment()
   beginUndoAction();
   int startLine, startPos, endLine, endPos;
   if ( hasSelectedText() )
+  {
     getSelection(&startLine, &startPos, &endLine, &endPos);
+  }
   else
   {
     getCursorPosition(&startLine, &startPos);
@@ -278,19 +280,19 @@ void QgsCodeEditorPython::toggleComment()
   bool allEmpty = true;
   bool allCommented = true;
   int minIndentation = -1;
-  for ( int line=startLine; line<=endLine; line++ )
+  for ( int line = startLine; line <= endLine; line++ )
   {
-    auto stripped = text(line).trimmed();
+    const QString stripped = text( line ).trimmed();
     if ( !stripped.isEmpty() )
     {
       allEmpty = false;
-      if ( !stripped.startsWith("#") )
+      if ( !stripped.startsWith( '#' ) )
       {
-        allCommented=false;
+        allCommented = false;
       }
-      if ( minIndentation == -1 || minIndentation > indentation(line) )
+      if ( minIndentation == -1 || minIndentation > indentation( line ) )
       {
-        minIndentation = indentation(line);
+        minIndentation = indentation( line );
       }
     }
   }
@@ -304,9 +306,9 @@ void QgsCodeEditorPython::toggleComment()
   // Selection shift to keep the same selected text after a # is added/removed
   int delta = 0;
 
-  for ( int line=startLine; line<=endLine; line++ )
+  for ( int line = startLine; line <= endLine; line++ )
   {
-    auto stripped = text(line).trimmed();
+    const QString stripped = text( line ).trimmed();
 
     // Empty line
     if ( stripped.isEmpty() )
@@ -316,16 +318,16 @@ void QgsCodeEditorPython::toggleComment()
 
     if ( !allCommented )
     {
-      insertAt("# ", line, minIndentation);
+      insertAt( QStringLiteral( "# " ), line, minIndentation );
       delta = -2;
     }
     else
     {
-      if ( !stripped.startsWith("#") )
+      if ( !stripped.startsWith( '#' ) )
       {
         continue;
       }
-      if ( stripped.startsWith("# ") )
+      if ( stripped.startsWith( QLatin1String( "# " ) ) )
       {
         delta = 2;
       }
@@ -333,13 +335,13 @@ void QgsCodeEditorPython::toggleComment()
       {
         delta = 1;
       }
-      setSelection(line, indentation(line), line, indentation(line) + delta);
+      setSelection( line, indentation( line ), line, indentation( line ) + delta );
       removeSelectedText();
     }
   }
 
   endUndoAction();
-  setSelection(startLine, startPos - delta, endLine, endPos - delta);
+  setSelection( startLine, startPos - delta, endLine, endPos - delta );
 }
 
 ///@cond PRIVATE
