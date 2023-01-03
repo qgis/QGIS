@@ -122,7 +122,7 @@ QgsTerrainGenerator *QgsMeshTerrainGenerator::clone() const
 
 QgsTerrainGenerator::Type QgsMeshTerrainGenerator::type() const {return QgsTerrainGenerator::Mesh;}
 
-QgsRectangle QgsMeshTerrainGenerator::extent() const
+QgsRectangle QgsMeshTerrainGenerator::rootChunkExtent() const
 {
   return mTriangularMesh.extent();
 }

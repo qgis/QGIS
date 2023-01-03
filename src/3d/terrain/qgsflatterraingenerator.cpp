@@ -108,7 +108,7 @@ QgsTerrainGenerator::Type QgsFlatTerrainGenerator::type() const
   return QgsTerrainGenerator::Flat;
 }
 
-QgsRectangle QgsFlatTerrainGenerator::extent() const
+QgsRectangle QgsFlatTerrainGenerator::rootChunkExtent() const
 {
   return mTerrainTilingScheme.tileToExtent( 0, 0, 0 );
 }

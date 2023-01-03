@@ -24,11 +24,12 @@ QgsQuadtreeChunkLoaderFactory::QgsQuadtreeChunkLoaderFactory() = default;
 
 QgsQuadtreeChunkLoaderFactory::~QgsQuadtreeChunkLoaderFactory() = default;
 
-void QgsQuadtreeChunkLoaderFactory::setupQuadtree( const QgsAABB &rootBbox, float rootError, int maxLevel )
+void QgsQuadtreeChunkLoaderFactory::setupQuadtree( const QgsAABB &rootBbox, float rootError, int maxLevel, const QgsAABB &clippingBbox )
 {
   mRootBbox = rootBbox;
   mRootError = rootError;
   mMaxLevel = maxLevel;
+  mClippingBbox = clippingBbox;
 }
 
 QgsChunkNode *QgsQuadtreeChunkLoaderFactory::createRootNode() const
@@ -62,9 +63,7 @@ QVector<QgsChunkNode *> QgsQuadtreeChunkLoaderFactory::createChildren( QgsChunkN
     const float chYMin = bbox.yMin;
     const float chYMax = bbox.yMax;
     const QgsAABB childBbox = QgsAABB( chXMin, chYMin, chZMin, chXMax, chYMax, chZMax );
-    const QgsPointXY center = mExtent.center();
-    QgsRectangle childRect = Qgs3DUtils::worldToMapExtent( childBbox, QgsVector3D( center.x(), center.y(), 0 ) );
-    if ( mExtent.intersects( childRect ) )
+    if ( mClippingBbox.isEmpty() || childBbox.intersects( mClippingBbox ) )
       children << new QgsChunkNode( childId, childBbox, childError, node );
   }
   return children;
