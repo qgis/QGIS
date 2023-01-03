@@ -153,6 +153,7 @@ void QgsDemTerrainTileLoader::onHeightMapReady( int jobId, const QByteArray &hei
 
 QgsDemHeightMapGenerator::QgsDemHeightMapGenerator( QgsRasterLayer *dtm, const QgsTilingScheme &tilingScheme, int resolution, const QgsCoordinateTransformContext &transformContext )
   : mDtm( dtm )
+  , mDtmExtent( dtm ? dtm->extent() : QgsRectangle() )
   , mClonedProvider( dtm ? qgis::down_cast<QgsRasterDataProvider *>( dtm->dataProvider()->clone() ) : nullptr )
   , mTilingScheme( tilingScheme )
   , mResolution( resolution )
@@ -312,11 +313,10 @@ float QgsDemHeightMapGenerator::heightAt( double x, double y )
 
   // TODO: this is quite a primitive implementation: better to use heightmaps currently in use
   int res = 1024;
-  QgsRectangle rect = mDtm->extent();
-  lazyLoadDtmCoarseData( res, rect );
+  lazyLoadDtmCoarseData( res, mDtmExtent );
 
-  int cellX = ( int )( ( x - rect.xMinimum() ) / rect.width() * res + .5f );
-  int cellY = ( int )( ( rect.yMaximum() - y ) / rect.height() * res + .5f );
+  int cellX = ( int )( ( x - mDtmExtent.xMinimum() ) / mDtmExtent.width() * res + .5f );
+  int cellY = ( int )( ( mDtmExtent.yMaximum() - y ) / mDtmExtent.height() * res + .5f );
   cellX = std::clamp( cellX, 0, res - 1 );
   cellY = std::clamp( cellY, 0, res - 1 );
 
