@@ -563,7 +563,7 @@ void TestQgsVertexTool::testMovePointAddingZ()
   QCOMPARE( mLayerPointZ->featureCount(), ( long )2 );
   QCOMPARE( mLayerPointZ->undoStack()->index(), 2 );
 
-  // And snap on a point whith Z
+  // And snap on a point with Z
   QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
   cfg.setMode( Qgis::SnappingMode::AllLayers );
   cfg.setTolerance( 10 );
