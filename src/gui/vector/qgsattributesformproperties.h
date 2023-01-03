@@ -342,7 +342,7 @@ QDataStream &operator>> ( QDataStream &stream, QgsAttributesFormProperties::DnDT
  *
  * Graphical representation for the attribute editor drag and drop editor
  */
-class GUI_EXPORT QgsAttributesDnDTree : public QTreeWidget
+class GUI_EXPORT QgsAttributesDnDTree : public QTreeWidget, private QgsExpressionContextGenerator
 {
     Q_OBJECT
 
@@ -391,6 +391,10 @@ class GUI_EXPORT QgsAttributesDnDTree : public QTreeWidget
   private:
     QgsVectorLayer *mLayer = nullptr;
     Type mType = QgsAttributesDnDTree::Type::Drag;
+
+    // QgsExpressionContextGenerator interface
+  public:
+    QgsExpressionContext createExpressionContext() const override;
 };
 
 
