@@ -28,6 +28,7 @@ from qgis.core import (QgsField,
                        QgsDistanceArea,
                        QgsFeature,
                        QgsFeatureRequest,
+                       QgsFeatureSource,
                        QgsSpatialIndex,
                        QgsWkbTypes,
                        QgsUnitTypes,
@@ -100,7 +101,7 @@ class HubDistancePoints(QgisAlgorithm):
         hub_source = self.parameterAsSource(parameters, self.HUBS, context)
         if hub_source is None:
             raise QgsProcessingException(self.invalidSourceError(parameters, self.HUBS))
-        if hub_source.featureCount() <= 0:
+        if hub_source.hasFeatures() == QgsFeatureSource.FeatureAvailability.NoFeaturesAvailable:
             raise QgsProcessingException(
                 self.tr('Input "destination hubs layer" has no features, at least 1 feature is required')
             )
