@@ -621,11 +621,12 @@ void Qgs3DMapScene::createTerrainDeferred()
 {
   if ( mMap.terrainRenderingEnabled() && mMap.terrainGenerator() )
   {
-    double tile0width = mMap.terrainGenerator()->extent().width();
+    double tile0width = mMap.terrainGenerator()->rootChunkExtent().width();
     int maxZoomLevel = Qgs3DUtils::maxZoomLevel( tile0width, mMap.mapTileResolution(), mMap.maxTerrainGroundError() );
     QgsAABB rootBbox = mMap.terrainGenerator()->rootChunkBbox( mMap );
     float rootError = mMap.terrainGenerator()->rootChunkError( mMap );
-    mMap.terrainGenerator()->setupQuadtree( rootBbox, rootError, maxZoomLevel );
+    const QgsAABB clippingBbox = Qgs3DUtils::mapToWorldExtent( mMap.extent(), rootBbox.zMin, rootBbox.zMax, mMap.origin() );
+    mMap.terrainGenerator()->setupQuadtree( rootBbox, rootError, maxZoomLevel, clippingBbox );
 
     mTerrain = new QgsTerrainEntity( mMap );
     mTerrain->setParent( this );
@@ -1237,7 +1238,7 @@ QgsRectangle Qgs3DMapScene::sceneExtent()
   {
     if ( QgsTerrainGenerator *terrainGenerator = mMap.terrainGenerator() )
     {
-      QgsRectangle terrainExtent = terrainGenerator->extent();
+      QgsRectangle terrainExtent = terrainGenerator->rootChunkExtent();
       QgsCoordinateTransform terrainToMapTransform( terrainGenerator->crs(), mMap.crs(), QgsProject::instance() );
       terrainToMapTransform.setBallparkTransformsAreAppropriate( true );
       terrainExtent = terrainToMapTransform.transformBoundingBox( terrainExtent );

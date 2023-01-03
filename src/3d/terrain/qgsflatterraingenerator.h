@@ -60,7 +60,7 @@ class _3D_EXPORT QgsFlatTerrainGenerator : public QgsTerrainGenerator
 
     QgsTerrainGenerator *clone() const override SIP_FACTORY;
     Type type() const override;
-    QgsRectangle extent() const override;
+    QgsRectangle rootChunkExtent() const override;
     void setExtent( const QgsRectangle &extent ) override;
     void rootChunkHeightRange( float &hMin, float &hMax ) const override;
     void writeXml( QDomElement &elem ) const override;
