@@ -59,7 +59,6 @@ set(QGIS_APP_SRCS
   qgsmapcanvasdockwidget.cpp
   qgsmapsavedialog.cpp
   qgsprojectlistitemdelegate.cpp
-  qgsprovidersublayersdialog.cpp
   qgspuzzlewidget.cpp
   qgsversionmigration.cpp
   qgsrasterattributetableapputils.cpp
