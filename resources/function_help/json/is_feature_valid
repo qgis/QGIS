@@ -5,11 +5,11 @@
   "description": "Returns TRUE if a feature meets all field constraints.",
   "arguments": [{
     "arg": "feature",
-    "description": "A feature. If not set, the feature attached to the expression context will be used.",
+    "description": "A feature. If not set, the current feature will be used.",
     "optional": true
   },{
     "arg": "layer",
-    "description": "A vector layer. If not set, the layer attached to the expression context will be used.",
+    "description": "A vector layer. If not set, the current layer will be used.",
     "optional": true
   },{
     "arg": "strength",
@@ -18,10 +18,10 @@
   }],
   "examples": [{
     "expression": "is_feature_valid(strength:='hard')",
-    "returns": "TRUE"
+    "returns": "TRUE if all fields from the current feature meet their hard constraints."
   }, {
     "expression": "is_feature_valid(get_feature('my_layer', 'FID', 10), 'my_layer')",
-    "returns": "FALSE"
+    "returns": "FALSE if all fields from feature with \"FID\"=10 in 'my_layer' fails to meet all constraints."
   }],
   "tags": ["constraints", "hard", "soft"]
 }
