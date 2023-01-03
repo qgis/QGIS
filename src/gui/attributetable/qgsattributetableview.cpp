@@ -549,3 +549,10 @@ void QgsAttributeTableView::scrollToFeature( const QgsFeatureId &fid, int col )
 
   selectionModel()->setCurrentIndex( index, QItemSelectionModel::SelectCurrent );
 }
+
+void QgsAttributeTableView::closeCurrentEditor()
+{
+  QWidget *editor = indexWidget( currentIndex() );
+  commitData( editor );
+  closeEditor( editor, QAbstractItemDelegate::NoHint );
+}

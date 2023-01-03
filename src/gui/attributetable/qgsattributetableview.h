@@ -104,6 +104,12 @@ class GUI_EXPORT QgsAttributeTableView : public QgsTableView
      */
     void scrollToFeature( const QgsFeatureId &fid, int column = -1 );
 
+    /**
+     * Closes the editor delegate for the current item, committing its changes to the model.
+     *
+     * \since QGIS 3.30
+     */
+    void closeCurrentEditor();
   protected:
 
     /**

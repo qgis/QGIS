@@ -16,17 +16,98 @@
 #ifndef QGSVALUERELATIONWIDGETWRAPPER_H
 #define QGSVALUERELATIONWIDGETWRAPPER_H
 
+#include <QTableWidget>
+
 #include "qgseditorwidgetwrapper.h"
 #include "qgsvaluerelationfieldformatter.h"
 #include "qgis_gui.h"
 
-class QTableWidget;
 class QComboBox;
 class QLineEdit;
+class QgsValueRelationWidgetFactory;
+class QgsFilterLineEdit;
 
 SIP_NO_FILE
 
-class QgsValueRelationWidgetFactory;
+///@cond PRIVATE
+
+/**
+ * \brief The QgsFilteredTableWidget class
+ *
+ * This is a helper widget for QgsValueRelationWidgetWrapper
+ * This widget is a QTableWidget showing checkable items, with an optional QgsFilterLineEdit on top that allows filtering the table's items
+ */
+class QgsFilteredTableWidget : public QWidget
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * \brief QgsFilteredTableWidget constructor
+     * \param parent
+     * \param showSearch Whether the search QgsFilterLineEdit should be visible or not
+     */
+    QgsFilteredTableWidget( QWidget *parent, bool showSearch );
+
+    bool eventFilter( QObject *watched, QEvent *event ) override;
+
+    /**
+     * Returns the list of selected (checked) items
+     */
+    QStringList selection() const;
+
+    /**
+     * Updates the check state of the table's items. Items whose DisplayRole is contained in \a checked are checked, the rest are unchecked
+     */
+    void checkItems( const QStringList &checked );
+
+    /**
+     * Populate the table using \a cache
+     */
+    void populate( QgsValueRelationFieldFormatter::ValueRelationCache cache );
+
+    /**
+     * Sets all items to be partially checked
+     */
+    void setIndeterminateState();
+
+    /**
+     * Set all table items to \a enabled.
+     */
+    void setEnabledTable( const bool enabled );
+
+    /**
+     * Sets the number of columns of the table
+     */
+    void setColumnCount( const int count );
+
+    /**
+     * Returns the number of rows of the table
+     */
+    int rowCount() const { return mTableWidget->rowCount(); }
+
+  signals:
+
+    /**
+     * Emitted when an \a item is changed by the user
+     */
+    void itemChanged( QTableWidgetItem *item );
+
+  private:
+    void filterStringChanged( const QString &filterString );
+    void itemChanged_p( QTableWidgetItem *item );
+    QTableWidgetItem *item( const int row, const int column ) const { return mTableWidget->item( row, column ); }
+
+    int mColumnCount = 1;
+    QgsFilterLineEdit *mSearchWidget = nullptr;
+    QTableWidget *mTableWidget = nullptr;
+    bool mEnabledTable = true;
+    QVector<QPair<QgsValueRelationFieldFormatter::ValueRelationItem, Qt::CheckState>> mCache;
+    friend class TestQgsValueRelationWidgetWrapper;
+};
+
+///@endcond
 
 /**
  * \ingroup gui
@@ -126,7 +207,7 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
     void populate( );
 
     QComboBox *mComboBox = nullptr;
-    QTableWidget *mTableWidget = nullptr;
+    QgsFilteredTableWidget *mTableWidget = nullptr;
     QLineEdit *mLineEdit = nullptr;
 
     QgsValueRelationFieldFormatter::ValueRelationCache mCache;
