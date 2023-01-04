@@ -182,6 +182,15 @@ void QgsNmeaConnection::processGgaSentence( const char *data, int len )
   nmeaGPGGA result;
   if ( nmea_parse_GPGGA( data, len, &result ) )
   {
+    const QTime time( result.utc.hour, result.utc.min, result.utc.sec, result.utc.msec );
+    // Check if already processed by RMC
+    if ( time.isValid() )
+    {
+      if ( mLastGPSInformation.utcTime != time )
+      {
+        emit stateChanged( mLastGPSInformation );
+      }
+    }
     //update mLastGPSInformation
     double longitude = result.lon;
     if ( result.ew == 'W' )
@@ -193,20 +202,11 @@ void QgsNmeaConnection::processGgaSentence( const char *data, int len )
     {
       latitude = -latitude;
     }
-    // Check if already processed by RMC
-    if ( mLastGPSInformation.longitude != nmea_ndeg2degree( longitude ) || mLastGPSInformation.latitude != nmea_ndeg2degree( latitude ) )
-    {
-      if ( mLastGPSInformation.status == 'A' || mLastGPSInformation.status == 'V' )
-      {
-        emit stateChanged( mLastGPSInformation );
-      }
-    }
     mLastGPSInformation.longitude = nmea_ndeg2degree( longitude );
     mLastGPSInformation.latitude = nmea_ndeg2degree( latitude );
     mLastGPSInformation.elevation = result.elv;
     mLastGPSInformation.elevation_diff = result.diff;
 
-    const QTime time( result.utc.hour, result.utc.min, result.utc.sec, result.utc.msec );
     if ( time.isValid() )
     {
       mLastGPSInformation.utcTime = time;
@@ -288,6 +288,15 @@ void QgsNmeaConnection::processRmcSentence( const char *data, int len )
   nmeaGPRMC result;
   if ( nmea_parse_GPRMC( data, len, &result ) )
   {
+    const QTime time( result.utc.hour, result.utc.min, result.utc.sec, result.utc.msec );
+    //  Check if already processed by GGA
+    if ( time.isValid() )
+    {
+      if ( mLastGPSInformation.utcTime != time )
+      {
+        emit stateChanged( mLastGPSInformation );
+      }
+    }
     double longitude = result.lon;
     if ( result.ew == 'W' )
     {
@@ -298,14 +307,6 @@ void QgsNmeaConnection::processRmcSentence( const char *data, int len )
     {
       latitude = -latitude;
     }
-    //  Check if already processed by GGA
-    if ( mLastGPSInformation.longitude != nmea_ndeg2degree( longitude ) || mLastGPSInformation.latitude != nmea_ndeg2degree( latitude ) )
-    {
-      if ( mLastGPSInformation.status == 'A' || mLastGPSInformation.status == 'V' )
-      {
-        emit stateChanged( mLastGPSInformation );
-      }
-    }
     mLastGPSInformation.longitude = nmea_ndeg2degree( longitude );
     mLastGPSInformation.latitude = nmea_ndeg2degree( latitude );
     mLastGPSInformation.speed = KNOTS_TO_KMH * result.speed;
@@ -314,7 +315,6 @@ void QgsNmeaConnection::processRmcSentence( const char *data, int len )
     mLastGPSInformation.status = result.status;  // A,V
 
     const QDate date( result.utc.year + 1900, result.utc.mon + 1, result.utc.day );
-    const QTime time( result.utc.hour, result.utc.min, result.utc.sec, result.utc.msec );
     if ( date.isValid() && time.isValid() )
     {
       mLastGPSInformation.utcTime = time;
