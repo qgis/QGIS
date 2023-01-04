@@ -459,7 +459,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
   if ( mFilterToAtlasIntersection )
   {
     if ( mMap )
-      atlasGeomtry = mMap->atlasGeometry( layer->crs() );
+      atlasGeometry = mMap->atlasGeometry( layer->crs() );
     else
       atlasGeometry = mLayout->reportContext().currentGeometry( layer->crs() );
     if ( !atlasGeometry.isNull() )
