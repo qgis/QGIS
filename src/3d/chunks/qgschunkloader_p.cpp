@@ -15,7 +15,6 @@
 
 #include "qgschunkloader_p.h"
 #include "qgschunknode_p.h"
-#include "qgs3dutils.h"
 
 #include <QVector>
 ///@cond PRIVATE

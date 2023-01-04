@@ -123,6 +123,7 @@ class _3D_EXPORT QgsTerrainGenerator : public QgsQuadtreeChunkLoaderFactory
 
     QgsTilingScheme mTerrainTilingScheme;   //!< Tiling scheme of the terrain
     QgsTerrainEntity *mTerrain = nullptr;
+    QgsRectangle mExtent;
 
     bool mIsValid = true;
 
