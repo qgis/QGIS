@@ -458,7 +458,10 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
   std::unique_ptr< QgsGeometryEngine > atlasGeometryEngine;
   if ( mFilterToAtlasIntersection )
   {
-    atlasGeometry = mLayout->reportContext().currentGeometry( layer->crs() );
+    if ( mMap )
+      atlasGeomtry = mMap->atlasGeometry( layer->crs() );
+    else
+      atlasGeometry = mLayout->reportContext().currentGeometry( layer->crs() );
     if ( !atlasGeometry.isNull() )
     {
       if ( selectionRect.isNull() )
