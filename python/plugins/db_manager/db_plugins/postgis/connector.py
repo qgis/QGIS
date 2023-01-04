@@ -247,14 +247,13 @@ class PostGisDBConnector(DBConnector):
         # self.user = uri.username() or os.environ.get('USER')
         # self.passwd = uri.password()
         self.host = uri.host()
-
         md = QgsProviderRegistry.instance().providerMetadata(connection.providerName())
         # QgsAbstractDatabaseProviderConnection instance
         self.core_connection = md.findConnection(connection.connectionName())
         if self.core_connection is None:
             self.core_connection = md.createConnection(uri.uri(), {})
 
-        c = self._execute(None, "SELECT current_user,current_database()")
+        c = self._execute(None, u"SELECT current_user,current_database()")
         self.user, self.dbname = self._fetchone(c)
         self._close_cursor(c)
 
@@ -297,21 +296,21 @@ class PostGisDBConnector(DBConnector):
 
     def _checkSpatial(self):
         """ check whether postgis_version is present in catalog """
-        c = self._execute(None, "SELECT COUNT(*) FROM pg_proc WHERE proname = 'postgis_version'")
+        c = self._execute(None, u"SELECT COUNT(*) FROM pg_proc WHERE proname = 'postgis_version'")
         self.has_spatial = self._fetchone(c)[0] > 0
         self._close_cursor(c)
         return self.has_spatial
 
     def _checkRaster(self):
         """ check whether postgis_version is present in catalog """
-        c = self._execute(None, "SELECT COUNT(*) FROM pg_proc WHERE proname = 'postgis_raster_lib_version'")
+        c = self._execute(None, u"SELECT COUNT(*) FROM pg_proc WHERE proname = 'postgis_raster_lib_version'")
         self.has_raster = self._fetchone(c)[0] > 0
         self._close_cursor(c)
         return self.has_raster
 
     def _checkGeometryColumnsTable(self):
         c = self._execute(None,
-                          "SELECT relkind = 'v' OR relkind = 'm' FROM pg_class WHERE relname = 'geometry_columns' AND relkind IN ('v', 'r', 'm', 'p')")
+                          u"SELECT relkind = 'v' OR relkind = 'm' FROM pg_class WHERE relname = 'geometry_columns' AND relkind IN ('v', 'r', 'm', 'p')")
         res = self._fetchone(c)
         self._close_cursor(c)
         self.has_geometry_columns = (res is not None and len(res) != 0)
@@ -327,7 +326,7 @@ class PostGisDBConnector(DBConnector):
 
     def _checkRasterColumnsTable(self):
         c = self._execute(None,
-                          "SELECT relkind = 'v' OR relkind = 'm' FROM pg_class WHERE relname = 'raster_columns' AND relkind IN ('v', 'r', 'm', 'p')")
+                          u"SELECT relkind = 'v' OR relkind = 'm' FROM pg_class WHERE relname = 'raster_columns' AND relkind IN ('v', 'r', 'm', 'p')")
         res = self._fetchone(c)
         self._close_cursor(c)
         self.has_raster_columns = (res is not None and len(res) != 0)
@@ -347,7 +346,7 @@ class PostGisDBConnector(DBConnector):
             self.feedback.cancel()
 
     def getInfo(self):
-        c = self._execute(None, "SELECT version()")
+        c = self._execute(None, u"SELECT version()")
         res = self._fetchone(c)
         self._close_cursor(c)
         return res
@@ -365,7 +364,7 @@ class PostGisDBConnector(DBConnector):
 
         try:
             c = self._execute(None,
-                              "SELECT postgis_lib_version(), postgis_geos_version(), postgis_proj_version(), postgis_scripts_installed(), postgis_scripts_released()")
+                              u"SELECT postgis_lib_version(), postgis_geos_version(), postgis_proj_version(), postgis_scripts_installed(), postgis_scripts_released()")
         except DbError:
             return
         res = self._fetchone(c)
@@ -396,10 +395,18 @@ class PostGisDBConnector(DBConnector):
             "date", "time", "timestamp",  # date/time
             "boolean"  # bool
         ]
-
+        
+    def getDatabaseInfo(self):
+        """ db privileges: (can create schemas, can create temp. tables) """
+        sql = u"SELECT pg_catalog.shobj_description( d.oid, 'pg_database') AS description from pg_catalog.pg_database d where  datname = current_database()"
+        c = self._execute(None, sql)
+        res = self._fetchone(c)
+        self._close_cursor(c)
+        return res
+        
     def getDatabasePrivileges(self):
         """ db privileges: (can create schemas, can create temp. tables) """
-        sql = "SELECT has_database_privilege(current_database(), 'CREATE'), has_database_privilege(current_database(), 'TEMP')"
+        sql = u"SELECT has_database_privilege(current_database(), 'CREATE'), has_database_privilege(current_database(), 'TEMP')"
         c = self._execute(None, sql)
         res = self._fetchone(c)
         self._close_cursor(c)
@@ -408,7 +415,7 @@ class PostGisDBConnector(DBConnector):
     def getSchemaPrivileges(self, schema):
         """ schema privileges: (can create new objects, can access objects in schema) """
         schema = 'current_schema()' if schema is None else self.quoteString(schema)
-        sql = "SELECT has_schema_privilege(%(s)s, 'CREATE'), has_schema_privilege(%(s)s, 'USAGE')" % {'s': schema}
+        sql = u"SELECT has_schema_privilege(%(s)s, 'CREATE'), has_schema_privilege(%(s)s, 'USAGE')" % {'s': schema}
         c = self._execute(None, sql)
         res = self._fetchone(c)
         self._close_cursor(c)
@@ -423,7 +430,7 @@ class PostGisDBConnector(DBConnector):
             return
 
         t = self.quoteId(table)
-        sql = """SELECT has_table_privilege(%(t)s, 'SELECT'), has_table_privilege(%(t)s, 'INSERT'),
+        sql = u"""SELECT has_table_privilege(%(t)s, 'SELECT'), has_table_privilege(%(t)s, 'INSERT'),
                                 has_table_privilege(%(t)s, 'UPDATE'), has_table_privilege(%(t)s, 'DELETE')""" % {
             't': self.quoteString(t)}
         c = self._execute(None, sql)
@@ -433,7 +440,7 @@ class PostGisDBConnector(DBConnector):
 
     def getSchemas(self):
         """ get list of schemas in tuples: (oid, name, owner, perms) """
-        sql = "SELECT oid, nspname, pg_get_userbyid(nspowner), nspacl, pg_catalog.obj_description(oid) FROM pg_namespace WHERE nspname !~ '^pg_' AND nspname != 'information_schema' ORDER BY nspname"
+        sql = u"SELECT oid, nspname, pg_get_userbyid(nspowner), nspacl, pg_catalog.obj_description(oid) FROM pg_namespace WHERE nspname !~ '^pg_' AND nspname != 'information_schema' ORDER BY nspname"
 
         c = self._execute(None, sql)
         res = self._fetchall(c)
@@ -472,12 +479,12 @@ class PostGisDBConnector(DBConnector):
                       "raster_columns", "raster_overviews"]
 
         if schema:
-            schema_where = " AND nspname = %s " % self.quoteString(schema)
+            schema_where = u" AND nspname = %s " % self.quoteString(schema)
         else:
-            schema_where = " AND (nspname != 'information_schema' AND nspname !~ 'pg_') "
+            schema_where = u" AND (nspname != 'information_schema' AND nspname !~ 'pg_') "
 
         # get all tables and views
-        sql = """SELECT
+        sql = u"""SELECT
                                                 cla.relname, nsp.nspname, cla.relkind,
                                                 pg_get_userbyid(relowner), reltuples, relpages,
                                                 pg_catalog.obj_description(cla.oid)
@@ -516,24 +523,24 @@ class PostGisDBConnector(DBConnector):
             return []
 
         if schema:
-            schema_where = " AND nspname = %s " % self.quoteString(schema)
+            schema_where = u" AND nspname = %s " % self.quoteString(schema)
         else:
-            schema_where = " AND (nspname != 'information_schema' AND nspname !~ 'pg_') "
+            schema_where = u" AND (nspname != 'information_schema' AND nspname !~ 'pg_') "
 
-        geometry_column_from = ""
-        geometry_fields_select = """att.attname,
+        geometry_column_from = u""
+        geometry_fields_select = u"""att.attname,
                                                 textin(regtypeout(att.atttypid::regtype)),
                                                 NULL, NULL"""
         if self.has_geometry_columns and self.has_geometry_columns_access:
-            geometry_column_from = """LEFT OUTER JOIN geometry_columns AS geo ON
+            geometry_column_from = u"""LEFT OUTER JOIN geometry_columns AS geo ON
                                                 cla.relname = geo.f_table_name AND nsp.nspname = f_table_schema AND
                                                 lower(att.attname) = lower(f_geometry_column)"""
-            geometry_fields_select = """CASE WHEN geo.f_geometry_column IS NOT NULL THEN geo.f_geometry_column ELSE att.attname END,
+            geometry_fields_select = u"""CASE WHEN geo.f_geometry_column IS NOT NULL THEN geo.f_geometry_column ELSE att.attname END,
                                                 CASE WHEN geo.type IS NOT NULL THEN geo.type ELSE textin(regtypeout(att.atttypid::regtype)) END,
                                                 geo.coord_dimension, geo.srid"""
 
         # discovery of all tables and whether they contain a geometry column
-        sql = """SELECT
+        sql = u"""SELECT
                                                 cla.relname, nsp.nspname, cla.relkind,
                                                 pg_get_userbyid(relowner), cla.reltuples, cla.relpages,
                                                 pg_catalog.obj_description(cla.oid),
@@ -587,17 +594,17 @@ class PostGisDBConnector(DBConnector):
             return []
 
         if schema:
-            schema_where = " AND nspname = %s " % self.quoteString(schema)
+            schema_where = u" AND nspname = %s " % self.quoteString(schema)
         else:
-            schema_where = " AND (nspname != 'information_schema' AND nspname !~ 'pg_') "
+            schema_where = u" AND (nspname != 'information_schema' AND nspname !~ 'pg_') "
 
-        raster_column_from = ""
-        raster_fields_select = """att.attname, NULL, NULL, NULL, NULL, NULL"""
+        raster_column_from = u""
+        raster_fields_select = u"""att.attname, NULL, NULL, NULL, NULL, NULL"""
         if self.has_raster_columns and self.has_raster_columns_access:
-            raster_column_from = """LEFT OUTER JOIN raster_columns AS rast ON
+            raster_column_from = u"""LEFT OUTER JOIN raster_columns AS rast ON
                                                 cla.relname = rast.r_table_name AND nsp.nspname = r_table_schema AND
                                                 lower(att.attname) = lower(r_raster_column)"""
-            raster_fields_select = """CASE WHEN rast.r_raster_column IS NOT NULL THEN rast.r_raster_column ELSE att.attname END,
+            raster_fields_select = u"""CASE WHEN rast.r_raster_column IS NOT NULL THEN rast.r_raster_column ELSE att.attname END,
                                                 rast.pixel_types,
                                                 rast.scale_x,
                                                 rast.scale_y,
@@ -605,7 +612,7 @@ class PostGisDBConnector(DBConnector):
                                                 rast.srid"""
 
         # discovery of all tables and whether they contain a raster column
-        sql = """SELECT
+        sql = u"""SELECT
                                                 cla.relname, nsp.nspname, cla.relkind,
                                                 pg_get_userbyid(relowner), cla.reltuples, cla.relpages,
                                                 pg_catalog.obj_description(cla.oid),
@@ -637,7 +644,7 @@ class PostGisDBConnector(DBConnector):
         return items
 
     def getTableRowCount(self, table):
-        c = self._execute(None, "SELECT COUNT(*) FROM %s" % self.quoteId(table))
+        c = self._execute(None, u"SELECT COUNT(*) FROM %s" % self.quoteId(table))
         res = self._fetchone(c)[0]
         self._close_cursor(c)
         return res
@@ -646,12 +653,12 @@ class PostGisDBConnector(DBConnector):
         """ return list of columns in table """
 
         schema, tablename = self.getSchemaTableName(table)
-        schema_where = " AND nspname=%s " % self.quoteString(schema) if schema is not None else ""
+        schema_where = u" AND nspname=%s " % self.quoteString(schema) if schema is not None else ""
 
         version_number = int(self.getInfo()[0].split(' ')[1].split('.')[0])
         ad_col_name = 'adsrc' if version_number < 12 else 'adbin'
 
-        sql = """SELECT a.attnum AS ordinal_position,
+        sql = u"""SELECT a.attnum AS ordinal_position,
                                 a.attname AS column_name,
                                 t.typname AS data_type,
                                 a.attlen AS char_max_len,
@@ -677,9 +684,9 @@ class PostGisDBConnector(DBConnector):
     def getTableIndexes(self, table):
         """ get info about table's indexes. ignore primary key constraint index, they get listed in constraints """
         schema, tablename = self.getSchemaTableName(table)
-        schema_where = " AND nspname=%s " % self.quoteString(schema) if schema is not None else ""
+        schema_where = u" AND nspname=%s " % self.quoteString(schema) if schema is not None else ""
 
-        sql = """SELECT idxcls.relname, indkey, indisunique = 't'
+        sql = u"""SELECT idxcls.relname, indkey, indisunique = 't'
                                                 FROM pg_index JOIN pg_class ON pg_index.indrelid=pg_class.oid
                                                 JOIN pg_class AS idxcls ON pg_index.indexrelid=idxcls.oid
                                                 JOIN pg_namespace nsp ON pg_class.relnamespace = nsp.oid
@@ -694,7 +701,7 @@ class PostGisDBConnector(DBConnector):
     def getTableConstraints(self, table):
 
         schema, tablename = self.getSchemaTableName(table)
-        schema_where = " AND nspname=%s " % self.quoteString(schema) if schema is not None else ""
+        schema_where = u" AND nspname=%s " % self.quoteString(schema) if schema is not None else ""
 
         version_number = int(self.getInfo()[0].split(' ')[1].split('.')[0])
         con_col_name = 'consrc' if version_number < 12 else 'conbin'
@@ -702,7 +709,7 @@ class PostGisDBConnector(DBConnector):
         # In the query below, we exclude rows where pg_constraint.contype whose values are equal to 't'
         # because 't' describes a CONSTRAINT TRIGGER, which is not really a constraint in the traditional
         # sense, but a special type of trigger, and an extension to the SQL standard.
-        sql = """SELECT c.conname, c.contype, c.condeferrable, c.condeferred, array_to_string(c.conkey, ' '), c.%s,
+        sql = u"""SELECT c.conname, c.contype, c.condeferrable, c.condeferred, array_to_string(c.conkey, ' '), c.%s,
                          t2.relname, c.confupdtype, c.confdeltype, c.confmatchtype, array_to_string(c.confkey, ' ') FROM pg_constraint c
                   LEFT JOIN pg_class t ON c.conrelid = t.oid
                         LEFT JOIN pg_class t2 ON c.confrelid = t2.oid
@@ -717,9 +724,9 @@ class PostGisDBConnector(DBConnector):
     def getTableTriggers(self, table):
 
         schema, tablename = self.getSchemaTableName(table)
-        schema_where = " AND nspname=%s " % self.quoteString(schema) if schema is not None else ""
+        schema_where = u" AND nspname=%s " % self.quoteString(schema) if schema is not None else ""
 
-        sql = """SELECT tgname, proname, tgtype, tgenabled NOT IN ('f', 'D')  FROM pg_trigger trig
+        sql = u"""SELECT tgname, proname, tgtype, tgenabled NOT IN ('f', 'D')  FROM pg_trigger trig
                           LEFT JOIN pg_class t ON trig.tgrelid = t.oid
                                                         LEFT JOIN pg_proc p ON trig.tgfoid = p.oid
                                                         JOIN pg_namespace nsp ON t.relnamespace = nsp.oid
@@ -738,20 +745,20 @@ class PostGisDBConnector(DBConnector):
     def enableTableTrigger(self, trigger, enable, table):
         """ enable or disable one trigger on table """
         trigger = self.quoteId(trigger) if trigger is not None else "ALL"
-        sql = "ALTER TABLE %s %s TRIGGER %s" % (self.quoteId(table), "ENABLE" if enable else "DISABLE", trigger)
+        sql = u"ALTER TABLE %s %s TRIGGER %s" % (self.quoteId(table), "ENABLE" if enable else "DISABLE", trigger)
         self._execute_and_commit(sql)
 
     def deleteTableTrigger(self, trigger, table):
         """Deletes trigger on table """
-        sql = "DROP TRIGGER %s ON %s" % (self.quoteId(trigger), self.quoteId(table))
+        sql = u"DROP TRIGGER %s ON %s" % (self.quoteId(trigger), self.quoteId(table))
         self._execute_and_commit(sql)
 
     def getTableRules(self, table):
 
         schema, tablename = self.getSchemaTableName(table)
-        schema_where = " AND schemaname=%s " % self.quoteString(schema) if schema is not None else ""
+        schema_where = u" AND schemaname=%s " % self.quoteString(schema) if schema is not None else ""
 
-        sql = """SELECT rulename, definition FROM pg_rules
+        sql = u"""SELECT rulename, definition FROM pg_rules
                                         WHERE tablename=%s %s """ % (self.quoteString(tablename), schema_where)
 
         c = self._execute(None, sql)
@@ -761,13 +768,13 @@ class PostGisDBConnector(DBConnector):
 
     def deleteTableRule(self, rule, table):
         """Deletes rule on table """
-        sql = "DROP RULE %s ON %s" % (self.quoteId(rule), self.quoteId(table))
+        sql = u"DROP RULE %s ON %s" % (self.quoteId(rule), self.quoteId(table))
         self._execute_and_commit(sql)
 
     def getTableExtent(self, table, geom):
         """ find out table extent """
-        subquery = "SELECT st_extent(%s) AS extent FROM %s" % (self.quoteId(geom), self.quoteId(table))
-        sql = "SELECT st_xmin(extent), st_ymin(extent), st_xmax(extent), st_ymax(extent) FROM (%s) AS subquery" % subquery
+        subquery = u"SELECT st_extent(%s) AS extent FROM %s" % (self.quoteId(geom), self.quoteId(table))
+        sql = u"SELECT st_xmin(extent), st_ymin(extent), st_xmax(extent), st_ymax(extent) FROM (%s) AS subquery" % subquery
 
         c = self._execute(None, sql)
         res = self._fetchone(c)
@@ -780,7 +787,7 @@ class PostGisDBConnector(DBConnector):
             return
 
         schema, tablename = self.getSchemaTableName(table)
-        schema_part = "%s," % self.quoteString(schema) if schema is not None else ""
+        schema_part = u"%s," % self.quoteString(schema) if schema is not None else ""
 
         pgis_versions = self.getSpatialInfo()[0].split('.')
         pgis_major_version = int(pgis_versions[0])
@@ -790,10 +797,10 @@ class PostGisDBConnector(DBConnector):
             pgis_old = True
         elif pgis_major_version == 2 and pgis_minor_version < 1:
             pgis_old = True
-        subquery = "SELECT %s(%s%s,%s) AS extent" % (
+        subquery = u"SELECT %s(%s%s,%s) AS extent" % (
             'st_estimated_extent' if pgis_old else 'st_estimatedextent',
             schema_part, self.quoteString(tablename), self.quoteString(geom))
-        sql = """SELECT st_xmin(extent), st_ymin(extent), st_xmax(extent), st_ymax(extent) FROM (%s) AS subquery """ % subquery
+        sql = u"""SELECT st_xmin(extent), st_ymin(extent), st_xmax(extent), st_ymax(extent) FROM (%s) AS subquery """ % subquery
 
         try:
             c = self._execute(None, sql)
@@ -807,9 +814,9 @@ class PostGisDBConnector(DBConnector):
         """ returns definition of the view """
 
         schema, tablename = self.getSchemaTableName(view)
-        schema_where = " AND nspname=%s " % self.quoteString(schema) if schema is not None else ""
+        schema_where = u" AND nspname=%s " % self.quoteString(schema) if schema is not None else ""
 
-        sql = """SELECT pg_get_viewdef(c.oid) FROM pg_class c
+        sql = u"""SELECT pg_get_viewdef(c.oid) FROM pg_class c
                                                 JOIN pg_namespace nsp ON c.relnamespace = nsp.oid
                         WHERE relname=%s %s AND (relkind='v' OR relkind='m') """ % (
             self.quoteString(tablename), schema_where)
@@ -859,7 +866,7 @@ class PostGisDBConnector(DBConnector):
     def isVectorTable(self, table):
         if self.has_geometry_columns and self.has_geometry_columns_access:
             schema, tablename = self.getSchemaTableName(table)
-            sql = "SELECT count(*) FROM geometry_columns WHERE f_table_schema = %s AND f_table_name = %s" % (
+            sql = u"SELECT count(*) FROM geometry_columns WHERE f_table_schema = %s AND f_table_name = %s" % (
                 self.quoteString(schema), self.quoteString(tablename))
 
             c = self._execute(None, sql)
@@ -872,7 +879,7 @@ class PostGisDBConnector(DBConnector):
     def isRasterTable(self, table):
         if self.has_raster_columns and self.has_raster_columns_access:
             schema, tablename = self.getSchemaTableName(table)
-            sql = "SELECT count(*) FROM raster_columns WHERE r_table_schema = %s AND r_table_name = %s" % (
+            sql = u"SELECT count(*) FROM raster_columns WHERE r_table_schema = %s AND r_table_name = %s" % (
                 self.quoteString(schema), self.quoteString(tablename))
 
             c = self._execute(None, sql)
@@ -891,9 +898,9 @@ class PostGisDBConnector(DBConnector):
             return False
 
         sql = "CREATE TABLE %s (" % self.quoteId(table)
-        sql += ", ".join(field_defs)
+        sql += u", ".join(field_defs)
         if pkey is not None and pkey != "":
-            sql += ", PRIMARY KEY (%s)" % self.quoteId(pkey)
+            sql += u", PRIMARY KEY (%s)" % self.quoteId(pkey)
         sql += ")"
 
         self._execute_and_commit(sql)
@@ -902,19 +909,19 @@ class PostGisDBConnector(DBConnector):
     def deleteTable(self, table):
         """Deletes table and its reference in either geometry_columns or raster_columns """
         schema, tablename = self.getSchemaTableName(table)
-        schema_part = "%s, " % self.quoteString(schema) if schema is not None else ""
+        schema_part = u"%s, " % self.quoteString(schema) if schema is not None else ""
         if self.isVectorTable(table):
-            sql = "SELECT DropGeometryTable(%s%s)" % (schema_part, self.quoteString(tablename))
+            sql = u"SELECT DropGeometryTable(%s%s)" % (schema_part, self.quoteString(tablename))
         elif self.isRasterTable(table):
             # Fix #8521: delete raster table and references from raster_columns table
-            sql = "DROP TABLE %s" % self.quoteId(table)
+            sql = u"DROP TABLE %s" % self.quoteId(table)
         else:
-            sql = "DROP TABLE %s" % self.quoteId(table)
+            sql = u"DROP TABLE %s" % self.quoteId(table)
         self._execute_and_commit(sql)
 
     def emptyTable(self, table):
         """Deletes all rows from table """
-        sql = "TRUNCATE %s" % self.quoteId(table)
+        sql = u"TRUNCATE %s" % self.quoteId(table)
         self._execute_and_commit(sql)
 
     def renameTable(self, table, new_table):
@@ -923,13 +930,13 @@ class PostGisDBConnector(DBConnector):
         if new_table == tablename:
             return
 
-        sql = "ALTER TABLE %s RENAME  TO %s" % (self.quoteId(table), self.quoteId(new_table))
+        sql = u"ALTER TABLE %s RENAME  TO %s" % (self.quoteId(table), self.quoteId(new_table))
         self._executeSql(sql)
 
         # update geometry_columns if PostGIS is enabled
         if self.has_geometry_columns and not self.is_geometry_columns_view:
-            schema_where = " AND f_table_schema=%s " % self.quoteString(schema) if schema is not None else ""
-            sql = "UPDATE geometry_columns SET f_table_name=%s WHERE f_table_name=%s %s" % (
+            schema_where = u" AND f_table_schema=%s " % self.quoteString(schema) if schema is not None else ""
+            sql = u"UPDATE geometry_columns SET f_table_name=%s WHERE f_table_name=%s %s" % (
                 self.quoteString(new_table), self.quoteString(tablename), schema_where)
             self._executeSql(sql)
 
@@ -970,14 +977,14 @@ class PostGisDBConnector(DBConnector):
 
         c = self._get_cursor()
 
-        sql = "ALTER TABLE %s SET SCHEMA %s" % (self.quoteId(table), self.quoteId(new_schema))
+        sql = u"ALTER TABLE %s SET SCHEMA %s" % (self.quoteId(table), self.quoteId(new_schema))
         self._execute(c, sql)
 
         # update geometry_columns if PostGIS is enabled
         if self.has_geometry_columns and not self.is_geometry_columns_view:
             schema, tablename = self.getSchemaTableName(table)
-            schema_where = " AND f_table_schema=%s " % self.quoteString(schema) if schema is not None else ""
-            sql = "UPDATE geometry_columns SET f_table_schema=%s WHERE f_table_name=%s %s" % (
+            schema_where = u" AND f_table_schema=%s " % self.quoteString(schema) if schema is not None else ""
+            sql = u"UPDATE geometry_columns SET f_table_schema=%s WHERE f_table_name=%s %s" % (
                 self.quoteString(new_schema), self.quoteString(tablename), schema_where)
             self._execute(c, sql)
 
@@ -993,37 +1000,37 @@ class PostGisDBConnector(DBConnector):
             return self.moveTableToSchema(table, new_schema)
 
         c = self._get_cursor()
-        t = "__new_table__"
+        t = u"__new_table__"
 
-        sql = "ALTER TABLE %s RENAME  TO %s" % (self.quoteId(table), self.quoteId(t))
+        sql = u"ALTER TABLE %s RENAME  TO %s" % (self.quoteId(table), self.quoteId(t))
         self._execute(c, sql)
 
-        sql = "ALTER TABLE %s SET SCHEMA %s" % (self.quoteId((schema, t)), self.quoteId(new_schema))
+        sql = u"ALTER TABLE %s SET SCHEMA %s" % (self.quoteId((schema, t)), self.quoteId(new_schema))
         self._execute(c, sql)
 
-        sql = "ALTER TABLE %s RENAME  TO %s" % (self.quoteId((new_schema, t)), self.quoteId(table))
+        sql = u"ALTER TABLE %s RENAME  TO %s" % (self.quoteId((new_schema, t)), self.quoteId(table))
         self._execute(c, sql)
 
         # update geometry_columns if PostGIS is enabled
         if self.has_geometry_columns and not self.is_geometry_columns_view:
             schema, tablename = self.getSchemaTableName(table)
-            schema_where = " f_table_schema=%s AND " % self.quoteString(schema) if schema is not None else ""
-            schema_part = " f_table_schema=%s, " % self.quoteString(new_schema) if schema is not None else ""
-            sql = "UPDATE geometry_columns SET %s f_table_name=%s WHERE %s f_table_name=%s" % (
+            schema_where = u" f_table_schema=%s AND " % self.quoteString(schema) if schema is not None else ""
+            schema_part = u" f_table_schema=%s, " % self.quoteString(new_schema) if schema is not None else ""
+            sql = u"UPDATE geometry_columns SET %s f_table_name=%s WHERE %s f_table_name=%s" % (
                 schema_part, self.quoteString(new_table), schema_where, self.quoteString(tablename))
             self._execute(c, sql)
 
         self._commit()
 
     def createView(self, view, query):
-        sql = "CREATE VIEW %s AS %s" % (self.quoteId(view), query)
+        sql = u"CREATE VIEW %s AS %s" % (self.quoteId(view), query)
         self._execute_and_commit(sql)
 
     def createSpatialView(self, view, query):
         self.createView(view, query)
 
     def deleteView(self, view, isMaterialized=False):
-        sql = "DROP %s VIEW %s" % ('MATERIALIZED' if isMaterialized else '', self.quoteId(view))
+        sql = u"DROP %s VIEW %s" % ('MATERIALIZED' if isMaterialized else '', self.quoteId(view))
         self._execute_and_commit(sql)
 
     def renameView(self, view, new_name):
@@ -1032,17 +1039,17 @@ class PostGisDBConnector(DBConnector):
 
     def createSchema(self, schema):
         """Creates a new empty schema in database """
-        sql = "CREATE SCHEMA %s" % self.quoteId(schema)
+        sql = u"CREATE SCHEMA %s" % self.quoteId(schema)
         self._execute_and_commit(sql)
 
     def deleteSchema(self, schema):
         """Drops (empty) schema from database """
-        sql = "DROP SCHEMA %s" % self.quoteId(schema)
+        sql = u"DROP SCHEMA %s" % self.quoteId(schema)
         self._execute_and_commit(sql)
 
     def renamesSchema(self, schema, new_schema):
         """Renames a schema in database """
-        sql = "ALTER SCHEMA %s RENAME  TO %s" % (self.quoteId(schema), self.quoteId(new_schema))
+        sql = u"ALTER SCHEMA %s RENAME  TO %s" % (self.quoteId(schema), self.quoteId(new_schema))
         self._execute_and_commit(sql)
 
     def runVacuum(self):
@@ -1051,19 +1058,19 @@ class PostGisDBConnector(DBConnector):
 
     def runVacuumAnalyze(self, table):
         """Runs vacuum analyze on a table """
-        sql = "VACUUM ANALYZE %s" % self.quoteId(table)
+        sql = u"VACUUM ANALYZE %s" % self.quoteId(table)
         self._execute(None, sql)
         self._commit()
 
     def runRefreshMaterializedView(self, table):
         """Runs refresh materialized view on a table """
-        sql = "REFRESH MATERIALIZED VIEW %s" % self.quoteId(table)
+        sql = u"REFRESH MATERIALIZED VIEW %s" % self.quoteId(table)
         self._execute(None, sql)
         self._commit()
 
     def addTableColumn(self, table, field_def):
         """Adds a column to table """
-        sql = "ALTER TABLE %s ADD %s" % (self.quoteId(table), field_def)
+        sql = u"ALTER TABLE %s ADD %s" % (self.quoteId(table), field_def)
         self._execute_and_commit(sql)
 
     def deleteTableColumn(self, table, column):
@@ -1071,11 +1078,11 @@ class PostGisDBConnector(DBConnector):
         if self.isGeometryColumn(table, column):
             # use PostGIS function to delete geometry column correctly
             schema, tablename = self.getSchemaTableName(table)
-            schema_part = "%s, " % self.quoteString(schema) if schema else ""
-            sql = "SELECT DropGeometryColumn(%s%s, %s)" % (
+            schema_part = u"%s, " % self.quoteString(schema) if schema else ""
+            sql = u"SELECT DropGeometryColumn(%s%s, %s)" % (
                 schema_part, self.quoteString(tablename), self.quoteString(column))
         else:
-            sql = "ALTER TABLE %s DROP %s" % (self.quoteId(table), self.quoteId(column))
+            sql = u"ALTER TABLE %s DROP %s" % (self.quoteId(table), self.quoteId(column))
         self._execute_and_commit(sql)
 
     def updateTableColumn(self, table, column, new_name=None, data_type=None, not_null=None, default=None, comment=None, test=None):
@@ -1087,32 +1094,32 @@ class PostGisDBConnector(DBConnector):
         # update column definition
         col_actions = []
         if data_type is not None:
-            col_actions.append("TYPE %s" % data_type)
+            col_actions.append(u"TYPE %s" % data_type)
         if not_null is not None:
-            col_actions.append("SET NOT NULL" if not_null else "DROP NOT NULL")
+            col_actions.append(u"SET NOT NULL" if not_null else u"DROP NOT NULL")
         if default is not None:
             if default and default != '':
-                col_actions.append("SET DEFAULT %s" % default)
+                col_actions.append(u"SET DEFAULT %s" % default)
             else:
-                col_actions.append("DROP DEFAULT")
+                col_actions.append(u"DROP DEFAULT")
         if len(col_actions) > 0:
-            sql = "ALTER TABLE %s" % self.quoteId(table)
-            alter_col_str = "ALTER %s" % self.quoteId(column)
+            sql = u"ALTER TABLE %s" % self.quoteId(table)
+            alter_col_str = u"ALTER %s" % self.quoteId(column)
             for a in col_actions:
-                sql += " %s %s," % (alter_col_str, a)
+                sql += u" %s %s," % (alter_col_str, a)
             self._execute(c, sql[:-1])
 
         # Renames the column
         if new_name is not None and new_name != column:
-            sql = "ALTER TABLE %s RENAME  %s TO %s" % (
+            sql = u"ALTER TABLE %s RENAME  %s TO %s" % (
                 self.quoteId(table), self.quoteId(column), self.quoteId(new_name))
             self._execute(c, sql)
 
             # update geometry_columns if PostGIS is enabled
             if self.has_geometry_columns and not self.is_geometry_columns_view:
                 schema, tablename = self.getSchemaTableName(table)
-                schema_where = " f_table_schema=%s AND " % self.quoteString(schema) if schema is not None else ""
-                sql = "UPDATE geometry_columns SET f_geometry_column=%s WHERE %s f_table_name=%s AND f_geometry_column=%s" % (
+                schema_where = u" f_table_schema=%s AND " % self.quoteString(schema) if schema is not None else ""
+                sql = u"UPDATE geometry_columns SET f_geometry_column=%s WHERE %s f_table_name=%s AND f_geometry_column=%s" % (
                     self.quoteString(new_name), schema_where, self.quoteString(tablename), self.quoteString(column))
                 self._execute(c, sql)
 
@@ -1120,7 +1127,7 @@ class PostGisDBConnector(DBConnector):
         if comment is not None:
             schema, tablename = self.getSchemaTableName(table)
             column_name = new_name if new_name is not None and new_name != column else column
-            sql = "COMMENT ON COLUMN %s.%s.%s IS '%s'" % (schema, tablename, column_name, comment)
+            sql = u"COMMENT ON COLUMN %s.%s.%s IS '%s'" % (schema, tablename, column_name, comment)
             self._execute(c, sql)
 
         self._commit()
@@ -1145,9 +1152,9 @@ class PostGisDBConnector(DBConnector):
     def isGeometryColumn(self, table, column):
 
         schema, tablename = self.getSchemaTableName(table)
-        schema_where = " f_table_schema=%s AND " % self.quoteString(schema) if schema is not None else ""
+        schema_where = u" f_table_schema=%s AND " % self.quoteString(schema) if schema is not None else ""
 
-        sql = "SELECT count(*) > 0 FROM geometry_columns WHERE %s f_table_name=%s AND f_geometry_column=%s" % (
+        sql = u"SELECT count(*) > 0 FROM geometry_columns WHERE %s f_table_name=%s AND f_geometry_column=%s" % (
             schema_where, self.quoteString(tablename), self.quoteString(column))
 
         c = self._execute(None, sql)
@@ -1157,9 +1164,9 @@ class PostGisDBConnector(DBConnector):
 
     def addGeometryColumn(self, table, geom_column='geom', geom_type='POINT', srid=-1, dim=2):
         schema, tablename = self.getSchemaTableName(table)
-        schema_part = "%s, " % self.quoteString(schema) if schema else ""
+        schema_part = u"%s, " % self.quoteString(schema) if schema else ""
 
-        sql = "SELECT AddGeometryColumn(%s%s, %s, %d, %s, %d)" % (
+        sql = u"SELECT AddGeometryColumn(%s%s, %s, %d, %s, %d)" % (
             schema_part, self.quoteString(tablename), self.quoteString(geom_column), srid, self.quoteString(geom_type), dim)
         self._execute_and_commit(sql)
 
@@ -1168,38 +1175,38 @@ class PostGisDBConnector(DBConnector):
 
     def addTableUniqueConstraint(self, table, column):
         """Adds a unique constraint to a table """
-        sql = "ALTER TABLE %s ADD UNIQUE (%s)" % (self.quoteId(table), self.quoteId(column))
+        sql = u"ALTER TABLE %s ADD UNIQUE (%s)" % (self.quoteId(table), self.quoteId(column))
         self._execute_and_commit(sql)
 
     def deleteTableConstraint(self, table, constraint):
         """Deletes constraint in a table """
-        sql = "ALTER TABLE %s DROP CONSTRAINT %s" % (self.quoteId(table), self.quoteId(constraint))
+        sql = u"ALTER TABLE %s DROP CONSTRAINT %s" % (self.quoteId(table), self.quoteId(constraint))
         self._execute_and_commit(sql)
 
     def addTablePrimaryKey(self, table, column):
         """Adds a primery key (with one column) to a table """
-        sql = "ALTER TABLE %s ADD PRIMARY KEY (%s)" % (self.quoteId(table), self.quoteId(column))
+        sql = u"ALTER TABLE %s ADD PRIMARY KEY (%s)" % (self.quoteId(table), self.quoteId(column))
         self._execute_and_commit(sql)
 
     def createTableIndex(self, table, name, column):
         """Creates index on one column using default options """
-        sql = "CREATE INDEX %s ON %s (%s)" % (self.quoteId(name), self.quoteId(table), self.quoteId(column))
+        sql = u"CREATE INDEX %s ON %s (%s)" % (self.quoteId(name), self.quoteId(table), self.quoteId(column))
         self._execute_and_commit(sql)
 
     def deleteTableIndex(self, table, name):
         schema, tablename = self.getSchemaTableName(table)
-        sql = "DROP INDEX %s" % self.quoteId((schema, name))
+        sql = u"DROP INDEX %s" % self.quoteId((schema, name))
         self._execute_and_commit(sql)
 
     def createSpatialIndex(self, table, geom_column='geom'):
         schema, tablename = self.getSchemaTableName(table)
-        idx_name = self.quoteId("sidx_%s_%s" % (tablename, geom_column))
-        sql = "CREATE INDEX %s ON %s USING GIST(%s)" % (idx_name, self.quoteId(table), self.quoteId(geom_column))
+        idx_name = self.quoteId(u"sidx_%s_%s" % (tablename, geom_column))
+        sql = u"CREATE INDEX %s ON %s USING GIST(%s)" % (idx_name, self.quoteId(table), self.quoteId(geom_column))
         self._execute_and_commit(sql)
 
     def deleteSpatialIndex(self, table, geom_column='geom'):
         schema, tablename = self.getSchemaTableName(table)
-        idx_name = self.quoteId("sidx_%s_%s" % (tablename, geom_column))
+        idx_name = self.quoteId(u"sidx_%s_%s" % (tablename, geom_column))
         return self.deleteTableIndex(table, idx_name)
 
     def execution_error_types(self):
@@ -1240,7 +1247,7 @@ class PostGisDBConnector(DBConnector):
         sql_dict = getSqlDictionary()
 
         # get schemas, tables and field names
-        sql = """SELECT nspname FROM pg_namespace WHERE nspname !~ '^pg_' AND nspname != 'information_schema'
+        sql = u"""SELECT nspname FROM pg_namespace WHERE nspname !~ '^pg_' AND nspname != 'information_schema'
 UNION SELECT relname FROM pg_class WHERE relkind IN ('v', 'r', 'm', 'p')
 UNION SELECT attname FROM pg_attribute WHERE attnum > 0"""
         c = self._execute(None, sql)
