@@ -937,7 +937,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
     void previewRefreshed();
     
     /**
-     * Returns the current geometry in the provided crs.
+     * Returns the current geometry ( from the source layer or overriden ) in the provided crs.
      *
      * \since QGIS 3.30
      */ 
@@ -1191,8 +1191,6 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
     void createStagedRenderJob( const QgsRectangle &extent, const QSizeF size, double dpi );
 
     QPolygonF calculateVisibleExtentPolygon( bool includeClipping ) const;
-
-    QgsGeometry atlasGeometry( const QgsCoordinateReferenceSystem crs ) const;
 
     friend class QgsLayoutItemMapGrid;
     friend class QgsLayoutItemMapOverview;
