@@ -1844,8 +1844,23 @@ bool QgsSymbolLayerUtils::needLinePatternFill( QDomElement &element )
 
 bool QgsSymbolLayerUtils::needPointPatternFill( QDomElement &element )
 {
-  Q_UNUSED( element )
-  return false;
+  const QDomElement fillElem = element.firstChildElement( QStringLiteral( "Fill" ) );
+  if ( fillElem.isNull() )
+    return false;
+
+  const QDomElement graphicFillElem = fillElem.firstChildElement( QStringLiteral( "GraphicFill" ) );
+  if ( graphicFillElem.isNull() )
+    return false;
+
+  const QDomElement graphicElem = graphicFillElem.firstChildElement( QStringLiteral( "Graphic" ) );
+  if ( graphicElem.isNull() )
+    return false;
+
+  const QDomElement markElem = graphicElem.firstChildElement( QStringLiteral( "Mark" ) );
+  if ( markElem.isNull() )
+    return false;
+
+  return true;
 }
 
 bool QgsSymbolLayerUtils::needSvgFill( QDomElement &element )
