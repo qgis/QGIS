@@ -234,11 +234,11 @@ class CORE_EXPORT QgsSettingsEntryBase
     bool exists( const QStringList &dynamicKeyPartList ) const;
 
     /**
-     * Returns the location of the setting if it exists
-     * \note it will return Qgis::SettingsLocation::Any if the key doesn't exist
+     * Returns the origin of the setting if it exists
+     * \note it will return Qgis::SettingsOrigin::Any if the key doesn't exist
      * \since QGIS 3.30
      */
-    Qgis::SettingsLocation location( const QStringList &dynamicKeyPartList ) const;
+    Qgis::SettingsOrigin origin( const QStringList &dynamicKeyPartList ) const;
 
     /**
      * Removes the settings from the underlying QSettings.

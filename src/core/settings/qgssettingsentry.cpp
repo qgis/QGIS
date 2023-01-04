@@ -200,9 +200,9 @@ bool QgsSettingsEntryBase::exists( const QStringList &dynamicKeyPartList ) const
   return QgsSettings().contains( key( dynamicKeyPartList ) );
 }
 
-Qgis::SettingsLocation QgsSettingsEntryBase::location( const QStringList &dynamicKeyPartList ) const
+Qgis::SettingsOrigin QgsSettingsEntryBase::origin( const QStringList &dynamicKeyPartList ) const
 {
-  return QgsSettings().location( key( dynamicKeyPartList ) );
+  return QgsSettings().origin( key( dynamicKeyPartList ) );
 }
 
 void QgsSettingsEntryBase::remove( const QString &dynamicKeyPart ) const

@@ -205,13 +205,13 @@ Returns ``True`` if the settings is contained in the underlying QSettings.
 The ``dynamicKeyParts`` argument specifies the list of dynamic parts of the settings key.
 %End
 
-    Qgis::SettingsLocation location( const QStringList &dynamicKeyPartList ) const;
+    Qgis::SettingsOrigin origin( const QStringList &dynamicKeyPartList ) const;
 %Docstring
-Returns the location of the setting if it exists
+Returns the origin of the setting if it exists
 
 .. note::
 
-   it will return Qgis.SettingsLocation.Any if the key doesn't exist
+   it will return Qgis.SettingsOrigin.Any if the key doesn't exist
 
 .. versionadded:: 3.30
 %End

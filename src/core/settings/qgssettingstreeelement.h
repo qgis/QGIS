@@ -215,10 +215,10 @@ class CORE_EXPORT QgsSettingsTreeNamedListElement : public QgsSettingsTreeElemen
 
     /**
      *  Returns the list of items
-     * \param location can be used to restrict the origin of the setting (local or global)
+     * \param origin can be used to restrict the origin of the setting (local or global)
      * \param parentsNamedItems the list of named items in the parent named list (if any)
     */
-    QStringList items( Qgis::SettingsLocation location, const QStringList &parentsNamedItems = QStringList() ) const SIP_THROW( QgsSettingsException );
+    QStringList items( Qgis::SettingsOrigin origin, const QStringList &parentsNamedItems = QStringList() ) const SIP_THROW( QgsSettingsException );
 
 
     /**

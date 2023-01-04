@@ -1465,7 +1465,7 @@ The development version
       CustomCrs,
     };
 
-    enum class SettingsLocation
+    enum class SettingsOrigin
     {
       Any,
       Global,

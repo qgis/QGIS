@@ -222,8 +222,8 @@ class TestQgsSettings(unittest.TestCase):
 
         self.settings.beginGroup('testqgissettings')
         self.assertEqual(sorted(['bar', 'foo']), sorted(self.settings.childGroups()))
-        self.assertEqual(['foo'], self.settings.childGroups(Qgis.SettingsLocation.Global))
-        self.assertEqual(['bar'], self.settings.childGroups(Qgis.SettingsLocation.Local))
+        self.assertEqual(['foo'], self.settings.childGroups(Qgis.SettingsOrigin.Global))
+        self.assertEqual(['bar'], self.settings.childGroups(Qgis.SettingsOrigin.Local))
         self.settings.endGroup()
 
         self.globalsettings.remove('testqgissettings/foo')
@@ -233,19 +233,19 @@ class TestQgsSettings(unittest.TestCase):
         self.assertEqual([], self.settings.globalChildGroups())
         self.settings.endGroup()
 
-    def test_location(self):
+    def test_origin(self):
         self.assertEqual(self.settings.allKeys(), [])
         self.assertEqual(self.globalsettings.allKeys(), [])
 
         self.addToDefaults('testqgissettings/global/setting', 'qgis')
         self.settings.setValue('testqgissettings/local/setting', 'rocks')
 
-        self.assertEqual(self.settings.location('testqgissettings/global/setting'), Qgis.SettingsLocation.Global)
-        self.assertEqual(self.settings.location('testqgissettings/local/setting'), Qgis.SettingsLocation.Local)
-        self.assertEqual(self.settings.location('undefined-key'), Qgis.SettingsLocation.Any)
+        self.assertEqual(self.settings.origin('testqgissettings/global/setting'), Qgis.SettingsOrigin.Global)
+        self.assertEqual(self.settings.origin('testqgissettings/local/setting'), Qgis.SettingsOrigin.Local)
+        self.assertEqual(self.settings.origin('undefined-key'), Qgis.SettingsOrigin.Any)
 
         self.settings.setValue('testqgissettings/global/setting', 'rocks')
-        self.assertEqual(self.settings.location('testqgissettings/global/setting'), Qgis.SettingsLocation.Local)
+        self.assertEqual(self.settings.origin('testqgissettings/global/setting'), Qgis.SettingsOrigin.Local)
 
     def test_group_section(self):
         # Test group by using Section

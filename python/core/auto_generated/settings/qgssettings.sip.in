@@ -191,7 +191,7 @@ Returns a list of all keys, including subkeys, that can be read using the QSetti
 %Docstring
 Returns a list of all top-level keys that can be read using the QSettings object.
 %End
-    QStringList childGroups( Qgis::SettingsLocation location = Qgis::SettingsLocation::Any ) const;
+    QStringList childGroups( Qgis::SettingsOrigin origin = Qgis::SettingsOrigin::Any ) const;
 %Docstring
 Returns a list of all key top-level groups that contain keys that can be read using the QSettings object.
 %End
@@ -232,13 +232,13 @@ Sets the current array index to i. Calls to functions such as :py:func:`~QgsSett
 :py:func:`~QgsSettings.remove`, and :py:func:`~QgsSettings.contains` will operate on the array entry at that index.
 %End
 
-    Qgis::SettingsLocation location( const QString &key ) const;
+    Qgis::SettingsOrigin origin( const QString &key ) const;
 %Docstring
-Returns the location of the setting if it exists at the given ``key``
+Returns the origin of the setting if it exists at the given ``key``
 
 .. note::
 
-   it will return Qgis.SettingsLocation.Any if the key doesn't exist
+   it will return Qgis.SettingsOrigin.Any if the key doesn't exist
 
 .. versionadded:: 3.30
 %End

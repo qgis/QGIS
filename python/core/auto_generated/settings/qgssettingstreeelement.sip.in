@@ -208,11 +208,11 @@ Returns the list of items
 :param parentsNamedItems: the list of named items in the parent named list (if any)
 %End
 
-    QStringList items( Qgis::SettingsLocation location, const QStringList &parentsNamedItems = QStringList() ) const throw( QgsSettingsException );
+    QStringList items( Qgis::SettingsOrigin origin, const QStringList &parentsNamedItems = QStringList() ) const throw( QgsSettingsException );
 %Docstring
 Returns the list of items
 
-:param location: can be used to restrict the origin of the setting (local or global)
+:param origin: can be used to restrict the origin of the setting (local or global)
 :param parentsNamedItems: the list of named items in the parent named list (if any)
 %End
 

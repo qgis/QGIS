@@ -2215,12 +2215,12 @@ Qgis.CoordinateDisplayType.__doc__ = 'Formats for displaying coordinates\n\n.. v
 # --
 Qgis.CoordinateDisplayType.baseClass = Qgis
 # monkey patching scoped based enum
-Qgis.SettingsLocation.Any.__doc__ = "From any location"
-Qgis.SettingsLocation.Global.__doc__ = "Global settings are stored in `global_settings.ini`"
-Qgis.SettingsLocation.Local.__doc__ = "Local settings are stored in the user profile"
-Qgis.SettingsLocation.__doc__ = 'The setting location describes where a setting is stored.\n\n.. versionadded:: 3.30\n\n' + '* ``Any``: ' + Qgis.SettingsLocation.Any.__doc__ + '\n' + '* ``Global``: ' + Qgis.SettingsLocation.Global.__doc__ + '\n' + '* ``Local``: ' + Qgis.SettingsLocation.Local.__doc__
+Qgis.SettingsOrigin.Any.__doc__ = "From any origin"
+Qgis.SettingsOrigin.Global.__doc__ = "Global settings are stored in `global_settings.ini`"
+Qgis.SettingsOrigin.Local.__doc__ = "Local settings are stored in the user profile"
+Qgis.SettingsOrigin.__doc__ = 'The setting origin describes where a setting is stored.\n\n.. versionadded:: 3.30\n\n' + '* ``Any``: ' + Qgis.SettingsOrigin.Any.__doc__ + '\n' + '* ``Global``: ' + Qgis.SettingsOrigin.Global.__doc__ + '\n' + '* ``Local``: ' + Qgis.SettingsOrigin.Local.__doc__
 # --
-Qgis.SettingsLocation.baseClass = Qgis
+Qgis.SettingsOrigin.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.ScriptLanguage.Css.__doc__ = "CSS"
 Qgis.ScriptLanguage.QgisExpression.__doc__ = "QGIS expressions"

@@ -157,11 +157,11 @@ QStringList QgsSettings::childKeys() const
   return keys;
 }
 
-QStringList QgsSettings::childGroups( Qgis::SettingsLocation location ) const
+QStringList QgsSettings::childGroups( Qgis::SettingsOrigin origin ) const
 {
-  switch ( location )
+  switch ( origin )
   {
-    case Qgis::SettingsLocation::Any:
+    case Qgis::SettingsOrigin::Any:
     {
       QStringList keys = mUserSettings->childGroups();
       if ( mGlobalSettings )
@@ -172,17 +172,17 @@ QStringList QgsSettings::childGroups( Qgis::SettingsLocation location ) const
       return keys;
     }
 
-    case Qgis::SettingsLocation::Local:
+    case Qgis::SettingsOrigin::Local:
       return mUserSettings->childGroups();
 
-    case Qgis::SettingsLocation::Global:
+    case Qgis::SettingsOrigin::Global:
       return  mGlobalSettings ? mGlobalSettings->childGroups() : QStringList();
   }
 
 }
 QStringList QgsSettings::globalChildGroups() const
 {
-  return childGroups( Qgis::SettingsLocation::Global );
+  return childGroups( Qgis::SettingsOrigin::Global );
 }
 
 QString QgsSettings::globalSettingsPath()
@@ -308,15 +308,15 @@ void QgsSettings::setArrayIndex( int i )
   }
 }
 
-Qgis::SettingsLocation QgsSettings::location( const QString &key ) const
+Qgis::SettingsOrigin QgsSettings::origin( const QString &key ) const
 {
   if ( mGlobalSettings && mGlobalSettings->contains( key ) )
-    return Qgis::SettingsLocation::Global;
+    return Qgis::SettingsOrigin::Global;
 
   if ( mUserSettings->contains( key ) )
-    return Qgis::SettingsLocation::Local;
+    return Qgis::SettingsOrigin::Local;
 
-  return Qgis::SettingsLocation::Any;
+  return Qgis::SettingsOrigin::Any;
 }
 
 void QgsSettings::setValue( const QString &key, const QVariant &value, const QgsSettings::Section section )

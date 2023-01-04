@@ -50,7 +50,7 @@ QStringList QgsXyzConnectionUtils::connectionList()
   QStringList list = QgsXyzConnectionSettings::sTreeXyzConnections->items();
   for ( const QString &connection : std::as_const( list ) )
   {
-    if ( QgsXyzConnectionSettings::settingsUrl->location( {connection} ) == Qgis::SettingsLocation::Global )
+    if ( QgsXyzConnectionSettings::settingsUrl->origin( {connection} ) == Qgis::SettingsOrigin::Global )
       if ( QgsXyzConnectionSettings::settingsHidden->value( connection ) )
         list.removeOne( connection );
   }
@@ -78,7 +78,7 @@ QgsXyzConnection QgsXyzConnectionUtils::connection( const QString &name )
 
 void QgsXyzConnectionUtils::deleteConnection( const QString &name )
 {
-  if ( QgsXyzConnectionSettings::settingsUrl->location( {name} ) == Qgis::SettingsLocation::Global )
+  if ( QgsXyzConnectionSettings::settingsUrl->origin( {name} ) == Qgis::SettingsOrigin::Global )
   {
     QgsXyzConnectionSettings::settingsHidden->setValue( true, name );
   }
@@ -100,7 +100,7 @@ void QgsXyzConnectionUtils::addConnection( const QgsXyzConnection &conn )
   QgsXyzConnectionSettings::settingsTilePixelRatio->setValue( conn.tilePixelRatio, conn.name );
   QgsXyzConnectionSettings::settingsInterpretation->setValue( conn.interpretation, conn.name );
 
-  if ( QgsXyzConnectionSettings::settingsUrl->location( {conn.name} ) == Qgis::SettingsLocation::Global )
+  if ( QgsXyzConnectionSettings::settingsUrl->origin( {conn.name} ) == Qgis::SettingsOrigin::Global )
     QgsXyzConnectionSettings::settingsHidden->setValue( false, conn.name );
 }
 

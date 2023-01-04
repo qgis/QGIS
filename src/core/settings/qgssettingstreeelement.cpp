@@ -149,10 +149,10 @@ QgsSettingsTreeNamedListElement::~QgsSettingsTreeNamedListElement()
 
 QStringList QgsSettingsTreeNamedListElement::items( const QStringList &parentNamedItems ) const
 {
-  return items( Qgis::SettingsLocation::Any, parentNamedItems );
+  return items( Qgis::SettingsOrigin::Any, parentNamedItems );
 }
 
-QStringList QgsSettingsTreeNamedListElement::items( Qgis::SettingsLocation location, const QStringList &parentNamedItems ) const
+QStringList QgsSettingsTreeNamedListElement::items( Qgis::SettingsOrigin origin, const QStringList &parentNamedItems ) const
 {
   if ( namedElementsCount() - 1 != parentNamedItems.count() )
     throw QgsSettingsException( QObject::tr( "The number of given parent named items (%1) doesn't match with the number of named items in the key (%2)." ).arg( parentNamedItems.count(),  namedElementsCount() ) );
@@ -161,7 +161,7 @@ QStringList QgsSettingsTreeNamedListElement::items( Qgis::SettingsLocation locat
   const QString completeKeyParam = completeKeyWithNamedItems( mItemsCompleteKey, parentNamedItems );
   QgsSettings settings;
   settings.beginGroup( completeKeyParam );
-  return settings.childGroups( location );
+  return settings.childGroups( origin );
 }
 
 void QgsSettingsTreeNamedListElement::setSelectedItem( const QString &item, const QStringList &parentsNamedItems )

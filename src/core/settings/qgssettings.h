@@ -240,7 +240,7 @@ class CORE_EXPORT QgsSettings : public QObject
     //! Returns a list of all top-level keys that can be read using the QSettings object.
     QStringList childKeys() const;
     //! Returns a list of all key top-level groups that contain keys that can be read using the QSettings object.
-    QStringList childGroups( Qgis::SettingsLocation location = Qgis::SettingsLocation::Any ) const;
+    QStringList childGroups( Qgis::SettingsOrigin origin = Qgis::SettingsOrigin::Any ) const;
     //! Returns a list of all key top-level groups (same as childGroups) but only for groups defined in global settings.
     QStringList globalChildGroups() const;
     //! Returns the path to the Global Settings QSettings storage file
@@ -266,11 +266,11 @@ class CORE_EXPORT QgsSettings : public QObject
     void setArrayIndex( int i );
 
     /**
-     * Returns the location of the setting if it exists at the given \a key
-     * \note it will return Qgis::SettingsLocation::Any if the key doesn't exist
+     * Returns the origin of the setting if it exists at the given \a key
+     * \note it will return Qgis::SettingsOrigin::Any if the key doesn't exist
      * \since QGIS 3.30
      */
-    Qgis::SettingsLocation location( const QString &key ) const;
+    Qgis::SettingsOrigin origin( const QString &key ) const;
 
     /**
      * Sets the value of setting key to value. If the key already exists, the previous value is overwritten.
