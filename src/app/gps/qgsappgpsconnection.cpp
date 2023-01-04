@@ -178,11 +178,18 @@ void QgsAppGpsConnection::disconnectGps()
 
 void QgsAppGpsConnection::onTimeOut()
 {
-  disconnectGps();
+  std::unique_ptr< QgsGpsConnection > oldConnection( mConnection );  emit disconnected();
+  mConnection = nullptr;
+
+  emit disconnected();
+  emit statusChanged( Qgis::GpsConnectionStatus::Disconnected );
+  emit fixStatusChanged( Qgis::GpsFixStatus::NoData );
   emit connectionTimedOut();
 
   QgisApp::instance()->statusBarIface()->clearMessage();
   showGpsConnectFailureWarning( tr( "TIMEOUT - Failed to connect to GPS device." ) );
+
+  QgsApplication::gpsConnectionRegistry()->unregisterConnection( oldConnection.get() );
 }
 
 void QgsAppGpsConnection::onConnected( QgsGpsConnection *conn )
