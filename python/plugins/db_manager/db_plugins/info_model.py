@@ -33,19 +33,25 @@ class DatabaseInfo(object):
 
     def __del__(self):
         self.db = None
-
+        
+    def databaseInfo(self):
+        info = self.db.connector.getDatabaseInfo()
+        tbl = [
+            (QApplication.translate("DBManagerPlugin", "Database description: "), info[0]),
+        ]
+        return HtmlTable(tbl)
+        
     def generalInfo(self):
         info = self.db.connector.getInfo()
         tbl = [
-            (QApplication.translate("DBManagerPlugin", "Server version: "), info[0])
+            (QApplication.translate("DBManagerPlugin", "Server version: "), info[0]),
         ]
         return HtmlTable(tbl)
 
     def connectionDetails(self):
         tbl = [
             (QApplication.translate("DBManagerPlugin", "Host:"), self.db.connector.host),
-            (QApplication.translate("DBManagerPlugin", "User:"), self.db.connector.user)
-        ]
+            (QApplication.translate("DBManagerPlugin", "User:"), self.db.connector.user)        ]
         return HtmlTable(tbl)
 
     def spatialInfo(self):
@@ -91,12 +97,18 @@ class DatabaseInfo(object):
         else:
             ret.append(HtmlSection(QApplication.translate("DBManagerPlugin", 'Connection details'), conn_details))
 
-        # database information
+        # general information
         general_info = self.generalInfo()
         if general_info is None:
             pass
         else:
             ret.append(HtmlSection(QApplication.translate("DBManagerPlugin", 'General info'), general_info))
+        # database information
+        database_info = self.databaseInfo()
+        if database_info is None:
+            pass
+        else:
+            ret.append(HtmlSection(QApplication.translate("DBManagerPlugin", 'Database informations'), database_info))
 
         # has spatial enabled?
         spatial_info = self.spatialInfo()
@@ -242,8 +254,8 @@ class TableInfo(object):
         # add table contents
         for con in self.table.constraints():
             # get the fields the constraint is defined on
-            cols = [p[1].name if p[1] is not None else "??? (#%d)" % p[0] for p in iter(list(con.fields().items()))]
-            tbl.append((con.name, con.type2String(), '\n'.join(cols)))
+            cols = [p[1].name if p[1] is not None else u"??? (#%d)" % p[0] for p in iter(list(con.fields().items()))]
+            tbl.append((con.name, con.type2String(), u'\n'.join(cols)))
 
         return HtmlTable(tbl, {"class": "header"})
 
@@ -261,8 +273,8 @@ class TableInfo(object):
         # add table contents
         for idx in self.table.indexes():
             # get the fields the index is defined on
-            cols = [p[1].name if p[1] is not None else "??? (#%d)" % p[0] for p in iter(list(idx.fields().items()))]
-            tbl.append((idx.name, '\n'.join(cols)))
+            cols = [p[1].name if p[1] is not None else u"??? (#%d)" % p[0] for p in iter(list(idx.fields().items()))]
+            tbl.append((idx.name, u'\n'.join(cols)))
 
         return HtmlTable(tbl, {"class": "header"})
 
@@ -279,8 +291,8 @@ class TableInfo(object):
 
         # add table contents
         for trig in self.table.triggers():
-            name = '%(name)s (<a href="action:trigger/%(name)s/%(action)s">%(action)s</a>)' % {"name": trig.name,
-                                                                                               "action": "delete"}
+            name = u'%(name)s (<a href="action:trigger/%(name)s/%(action)s">%(action)s</a>)' % {"name": trig.name,
+                                                                                                "action": "delete"}
             tbl.append((name, trig.function.replace('<', '&lt;')))
 
         return HtmlTable(tbl, {"class": "header"})
@@ -385,7 +397,7 @@ class VectorTableInfo(TableInfo):
         sr_info = self.table.database().connector.getSpatialRefInfo(srid) if srid != -1 else QApplication.translate(
             "DBManagerPlugin", "Undefined")
         if sr_info:
-            tbl.append((QApplication.translate("DBManagerPlugin", "Spatial ref:"), "%s (%d)" % (sr_info, srid)))
+            tbl.append((QApplication.translate("DBManagerPlugin", "Spatial ref:"), u"%s (%d)" % (sr_info, srid)))
 
         # estimated extent
         if not self.table.isView:
@@ -450,7 +462,7 @@ class RasterTableInfo(TableInfo):
         sr_info = self.table.database().connector.getSpatialRefInfo(srid) if srid != -1 else QApplication.translate(
             "DBManagerPlugin", "Undefined")
         if sr_info:
-            tbl.append((QApplication.translate("DBManagerPlugin", "Spatial ref:"), "%s (%d)" % (sr_info, srid)))
+            tbl.append((QApplication.translate("DBManagerPlugin", "Spatial ref:"), u"%s (%d)" % (sr_info, srid)))
 
         # extent
         if self.table.extent is not None and self.table.extent[0] is not None:
