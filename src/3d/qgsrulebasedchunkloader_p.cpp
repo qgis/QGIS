@@ -168,7 +168,6 @@ QgsRuleBasedChunkLoaderFactory::QgsRuleBasedChunkLoaderFactory( const Qgs3DMapSe
 {
   const QgsAABB rootBbox = Qgs3DUtils::mapToWorldExtent( map.extent(), zMin, zMax, map.origin() );
   setupQuadtree( rootBbox, -1, leafLevel );  // negative root error means that the node does not contain anything
-  mExtent = map.extent();
 }
 
 QgsRuleBasedChunkLoaderFactory::~QgsRuleBasedChunkLoaderFactory() = default;

@@ -193,7 +193,7 @@ static QByteArray _readDtmData( QgsRasterDataProvider *provider, const QgsRectan
     block->convert( Qgis::DataType::Float32 ); // currently we expect just floats
 
     // set noData outside our clippingExtent
-    QRect subRect = QgsRasterBlock::subRect( extent, block->width(), block->height(), clippingExtent );
+    const QRect subRect = QgsRasterBlock::subRect( extent, block->width(), block->height(), clippingExtent );
     if ( !block->hasNoDataValue() )
     {
       // QgsRasterBlock::setIsNoDataExcept() misbehaves without a defined no data value

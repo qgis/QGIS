@@ -167,7 +167,6 @@ QgsVectorLayerChunkLoaderFactory::QgsVectorLayerChunkLoaderFactory( const Qgs3DM
   rootBbox.zMin -= 1.0;
   rootBbox.zMax += 1.0;
   setupQuadtree( rootBbox, -1, leafLevel );  // negative root error means that the node does not contain anything
-  mExtent = map.extent();
 }
 
 QgsChunkLoader *QgsVectorLayerChunkLoaderFactory::createChunkLoader( QgsChunkNode *node ) const
