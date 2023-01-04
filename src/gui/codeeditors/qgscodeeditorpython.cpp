@@ -46,7 +46,7 @@ QgsCodeEditorPython::QgsCodeEditorPython( QWidget *parent, const QList<QString> 
 
   setCaretWidth( 2 );
 
-  initializeLexer();
+  QgsCodeEditorPython::initializeLexer();
 }
 
 Qgis::ScriptLanguage QgsCodeEditorPython::language() const
@@ -186,7 +186,7 @@ void QgsCodeEditorPython::initializeLexer()
   runPostLexerConfigurationTasks();
 }
 
-void QgsCodeEditorPython::keyPressEvent(QKeyEvent *event)
+void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
 {
   const bool ctrlModifier = event->modifiers() & Qt::ControlModifier;
 
@@ -196,7 +196,7 @@ void QgsCodeEditorPython::keyPressEvent(QKeyEvent *event)
     toggleComment();
     return;
   }
-  return QgsCodeEditor::keyPressEvent(event);
+  return QgsCodeEditor::keyPressEvent( event );
 }
 
 void QgsCodeEditorPython::autoComplete()
@@ -267,16 +267,16 @@ void QgsCodeEditorPython::toggleComment()
   int startLine, startPos, endLine, endPos;
   if ( hasSelectedText() )
   {
-    getSelection(&startLine, &startPos, &endLine, &endPos);
+    getSelection( &startLine, &startPos, &endLine, &endPos );
   }
   else
   {
-    getCursorPosition(&startLine, &startPos);
+    getCursorPosition( &startLine, &startPos );
     endLine = startLine;
     endPos = startPos;
   }
 
-  // Check comment state and minimum indentation for each selected line  
+  // Check comment state and minimum indentation for each selected line
   bool allEmpty = true;
   bool allCommented = true;
   int minIndentation = -1;
