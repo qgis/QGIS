@@ -69,6 +69,7 @@ void QgsQtLocationConnection::parseData()
       mLastGPSInformation.speed = mInfo.attribute( QGeoPositionInfo::GroundSpeed ) * 3.6; // m/s to km/h
       mLastGPSInformation.direction = mInfo.attribute( QGeoPositionInfo::Direction );
       mLastGPSInformation.utcDateTime = mInfo.timestamp();
+      mLastGPSInformation.utcTime = mInfo.timestamp().time();
       mLastGPSInformation.fixType = mInfo.coordinate().type() + 1;
       switch ( mInfo.coordinate().type() )
       {

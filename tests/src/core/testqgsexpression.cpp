@@ -180,6 +180,8 @@ class TestQgsExpression: public QObject
       f4.setAttribute( QStringLiteral( "col2" ), "test4" );
       f4.setAttribute( QStringLiteral( "datef" ), QDate( 2022, 9, 23 ) );
       mMemoryLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 << f4 );
+      mMemoryLayer->setConstraintExpression( 0, QStringLiteral( "col1 > 10" ), QStringLiteral( "col0 is not null" ) );
+      mMemoryLayer->setFieldConstraint( 0, QgsFieldConstraints::ConstraintExpression, QgsFieldConstraints::ConstraintStrengthHard );
       QgsProject::instance()->addMapLayer( mMemoryLayer );
 
       // test layer for aggregates
@@ -2838,6 +2840,54 @@ class TestQgsExpression: public QObject
       QTest::newRow( "no layer num_selected" ) << "num_selected()" << ( QgsFeatureIds() << 4 << 2 ) << QgsFeature() << noLayer << QVariant( QVariant::LongLong );
       QTest::newRow( "is_selected with params" ) << "is_selected('test', get_feature('test', 'col1', 10))" << ( QgsFeatureIds() << 4 << 2 ) << QgsFeature() << noLayer << QVariant( QVariant::Bool );
       QTest::newRow( "num_selected with params" ) << "num_selected('test')" << ( QgsFeatureIds() << 4 << 2 ) << QgsFeature() << noLayer << QVariant( 2 );
+    }
+
+    void constraintsValidity()
+    {
+      QFETCH( QString, expression );
+      QFETCH( QgsFeature, feature );
+      QFETCH( QgsVectorLayer *, layer );
+      QFETCH( QVariant, result );
+
+      QgsExpressionContext context;
+      if ( layer )
+        context.appendScope( QgsExpressionContextUtils::layerScope( layer ) );
+
+      context.setFeature( feature );
+
+      QgsExpression exp( expression );
+      QCOMPARE( exp.parserErrorString(), QString() );
+      exp.prepare( &context );
+      QVariant res = exp.evaluate( &context );
+      QCOMPARE( res, result );
+    }
+
+    void constraintsValidity_data()
+    {
+      QTest::addColumn<QString>( "expression" );
+      QTest::addColumn<QgsFeature>( "feature" );
+      QTest::addColumn<QgsVectorLayer *>( "layer" );
+      QTest::addColumn<QVariant>( "result" );
+
+      QgsFeature firstFeature = mMemoryLayer->getFeature( 1 ); // hard constraint failure on col1
+      QgsFeature secondFeature = mMemoryLayer->getFeature( 2 ); // all constraints valid
+      QgsVectorLayer *noLayer = nullptr;
+
+      QTest::newRow( "is_feature_valid hard failure" ) << "is_feature_valid()" << firstFeature << mMemoryLayer << QVariant( false );
+      QTest::newRow( "is_feature_valid hard constraint failure" ) << "is_feature_valid(strength:='hard')" << firstFeature << mMemoryLayer << QVariant( false );
+      QTest::newRow( "is_feature_valid soft constraint valid" ) << "is_feature_valid(strength:='soft')" << firstFeature << mMemoryLayer << QVariant( true );
+      QTest::newRow( "is_feature_valid valid" ) << "is_feature_valid()" << secondFeature << mMemoryLayer << QVariant( true );
+      QTest::newRow( "is_feature_valid hard constraint valid" ) << "is_feature_valid(strength:='hard')" << secondFeature << mMemoryLayer << QVariant( true );
+      QTest::newRow( "is_feature_valid soft constraint valid" ) << "is_feature_valid(strength:='soft')" << secondFeature << mMemoryLayer << QVariant( true );
+      QTest::newRow( "is_attribute_valid failure" ) << "is_attribute_valid('col1')" << firstFeature << mMemoryLayer << QVariant( false );
+      QTest::newRow( "is_attribute_valid hard constraint failure" ) << "is_attribute_valid('col1',strength:='hard')" << firstFeature << mMemoryLayer << QVariant( false );
+      QTest::newRow( "is_attribute_valid soft constraint valid" ) << "is_attribute_valid('col1',strength:='soft')" << firstFeature << mMemoryLayer << QVariant( true );
+      QTest::newRow( "is_attribute_valid valid" ) << "is_attribute_valid('col1')" << secondFeature << mMemoryLayer << QVariant( true );
+      QTest::newRow( "is_attribute_valid hard constraint valid" ) << "is_attribute_valid('col1',strength:='hard')" << secondFeature << mMemoryLayer << QVariant( true );
+      QTest::newRow( "is_attribute_valid soft constraint valid" ) << "is_attribute_valid('col1',strength:='soft')" << secondFeature << mMemoryLayer << QVariant( true );
+      QTest::newRow( "is_feature_valid no layer" ) << "is_feature_valid()" << secondFeature << noLayer << QVariant();
+      QTest::newRow( "is_attribute_valid no layer" ) << "is_attribute_valid('col1')" << secondFeature << noLayer << QVariant();
+      QTest::newRow( "is_attribute_valid wrong attribute name" ) << "is_attribute_valid('WRONG_NAME')" << secondFeature << mMemoryLayer << QVariant();
     }
 
     void layerAggregates()

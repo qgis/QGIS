@@ -131,7 +131,7 @@ QgsLayerTreeGroupPropertiesWidgetFactory::QgsLayerTreeGroupPropertiesWidgetFacto
   : QObject( parent )
 {
   setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/symbology.svg" ) ) );
-  setTitle( tr( "Group" ) );
+  setTitle( tr( "Symbology" ) );
 }
 
 QgsMapLayerConfigWidget *QgsLayerTreeGroupPropertiesWidgetFactory::createWidget( QgsMapLayer *, QgsMapCanvas *canvas, bool, QWidget *parent ) const

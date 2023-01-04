@@ -20,6 +20,7 @@
 #include <QCheckBox>
 #include <QPointer>
 
+#include "qgsgui.h"
 #include "ui_qgsprovidersublayersdialogbase.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsprovidersublayermodel.h"
@@ -28,17 +29,30 @@ class QgsProviderSublayerModel;
 class QgsProviderSublayerProxyModel;
 class QgsProviderSublayerTask;
 
-class QgsProviderSublayerDialogModel : public QgsProviderSublayerModel
+/**
+ * \ingroup gui
+ *
+ * \brief A model for representing the sublayers present in a URI for the QgsProviderSublayersDialog.
+ *
+ * \since QGIS 3.30
+ */
+class GUI_EXPORT QgsProviderSublayerDialogModel : public QgsProviderSublayerModel
 {
     Q_OBJECT
 
   public:
 
+    /**
+     * Constructor.
+     */
     QgsProviderSublayerDialogModel( QObject *parent = nullptr );
 
     QVariant data( const QModelIndex &index, int role ) const override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
+    /**
+     * Sets whether geometry types are resolved.
+     */
     void setGeometryTypesResolved( bool resolved );
 
   private:
@@ -48,11 +62,21 @@ class QgsProviderSublayerDialogModel : public QgsProviderSublayerModel
 
 };
 
-class QgsProviderSublayersDialog : public QDialog, private Ui::QgsProviderSublayersDialogBase
+/**
+ * \ingroup gui
+ *
+ * \brief Dialog for selecting provider sublayers.
+ *
+ * \since QGIS 3.30
+ */
+class GUI_EXPORT QgsProviderSublayersDialog : public QDialog, private Ui::QgsProviderSublayersDialogBase
 {
     Q_OBJECT
   public:
 
+    /**
+     * Constructor.
+     */
     QgsProviderSublayersDialog( const QString &uri,
                                 const QString &filePath,
                                 const QList< QgsProviderSublayerDetails> initialDetails = QList< QgsProviderSublayerDetails>(),
@@ -60,12 +84,26 @@ class QgsProviderSublayersDialog : public QDialog, private Ui::QgsProviderSublay
                                 QWidget *parent SIP_TRANSFERTHIS = nullptr,
                                 Qt::WindowFlags fl = Qt::WindowFlags() );
 
+    /**
+     * Set list of non-layer items (e.g. embedded QGIS project items).
+     */
     void setNonLayerItems( const QList< QgsProviderSublayerModel::NonLayerItem > &items );
 
     ~QgsProviderSublayersDialog() override;
 
+    /**
+     * Returns the list of selected layers.
+     */
     QList< QgsProviderSublayerDetails > selectedLayers() const;
+
+    /**
+     * Returns the list of selected non-layer items (e.g. embedded QGIS project items).
+     */
     QList< QgsProviderSublayerModel::NonLayerItem > selectedNonLayerItems() const;
+
+    /**
+     * Returns an appropriate name for the layer group.
+     */
     QString groupName() const;
 
   signals:

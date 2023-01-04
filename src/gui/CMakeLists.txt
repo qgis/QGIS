@@ -630,6 +630,7 @@ set(QGIS_GUI_SRCS
   qgsprovidersourcewidget.cpp
   qgsprovidersourcewidgetprovider.cpp
   qgsprovidersourcewidgetproviderregistry.cpp
+  qgsprovidersublayersdialog.cpp
   qgsprojectstorageguiregistry.cpp
   qgsproviderconnectioncombobox.cpp
   qgsproxystyle.cpp
@@ -897,6 +898,7 @@ set(QGIS_GUI_HDRS
   qgsprovidersourcewidget.h
   qgsprovidersourcewidgetprovider.h
   qgsprovidersourcewidgetproviderregistry.h
+  qgsprovidersublayersdialog.h
   qgsproxystyle.h
   qgsquerybuilder.h
   qgsqueryresultwidget.h
@@ -1489,6 +1491,9 @@ set(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgstemporalcontrollerwidgetbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprocessingtinmeshdatawidgetbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionpreviewbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprovidersublayersdialogbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsdatumtransformdialogbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscoordinateoperationwidgetbase.h
 )
 
 if(ENABLE_MODELTEST)

@@ -124,16 +124,6 @@ void TestQgsNmeaConnection::testBasic()
   QCOMPARE( info.elevation, 0 );
   QVERIFY( std::isnan( info.direction ) );
 
-  info = connection.push( QStringLiteral( "$GPRMC,084111.185,A,6938.6531,N,01856.8527,E,0.16,2.00,220120,,,A*6E" ) );
-  QVERIFY( info.isValid() );
-  QVERIFY( info.satInfoComplete );
-  QCOMPARE( info.bestFixStatus( constellation ), Qgis::GpsFixStatus::NoData );
-  QCOMPARE( info.qualityDescription(), QStringLiteral( "Autonomous" ) );
-  QGSCOMPARENEAR( info.latitude, 69.6442183333, 0.00001 );
-  QGSCOMPARENEAR( info.longitude, 18.947545, 0.00001 );
-  QCOMPARE( info.elevation, 0 );
-  QGSCOMPARENEAR( info.direction, 2.0000000000, 0.0001 );
-
   info = connection.push( QStringLiteral( "$GPGGA,084112.185,6938.6532,N,01856.8526,E,1,04,1.4,35.0,M,29.4,M,,0000*63" ) );
   QVERIFY( info.isValid() );
   QVERIFY( info.satInfoComplete );
@@ -142,7 +132,28 @@ void TestQgsNmeaConnection::testBasic()
   QGSCOMPARENEAR( info.latitude, 69.6442183333, 0.00001 );
   QGSCOMPARENEAR( info.longitude, 18.947545, 0.00001 );
   QCOMPARE( info.elevation, 35 );
+  // At this stage, we have no direction information, waiting for an GPRMC sentence
+  QCOMPARE( info.direction, std::numeric_limits<double>::quiet_NaN() );
+  // At this stage, having only received an GPGGA sentence, the date remains unknown
+  QCOMPARE( info.utcDateTime, QDateTime() );
+  QCOMPARE( info.utcTime, QTime( 8, 41, 12, 185 ) );
+
+  info = connection.push( QStringLiteral( "$GPRMC,084111.185,A,6938.6531,N,01856.8527,E,0.16,2.00,220120,,,A*6E" ) );
+  QVERIFY( info.isValid() );
+  QVERIFY( info.satInfoComplete );
+  QCOMPARE( info.bestFixStatus( constellation ), Qgis::GpsFixStatus::NoData );
+  QCOMPARE( info.qualityDescription(), QStringLiteral( "Autonomous" ) );
+  QGSCOMPARENEAR( info.latitude, 69.6442183333, 0.00001 );
+  QGSCOMPARENEAR( info.longitude, 18.947545, 0.00001 );
+  QCOMPARE( info.elevation, 35 );
   QGSCOMPARENEAR( info.direction, 2.0000000000, 0.0001 );
+  // The (optional) GPRMC sentence came in, we now have a date and a time value.
+  QDateTime dateTime;
+  dateTime.setTimeSpec( Qt::UTC );
+  dateTime.setDate( QDate( 2020, 1, 22 ) );
+  dateTime.setTime( QTime( 8, 41, 11, 185 ) );
+  QCOMPARE( info.utcDateTime, dateTime );
+  QCOMPARE( info.utcTime, dateTime.time() );
 
   info = connection.push( QStringLiteral( "$GPGSA,A,3,07,05,16,26,,,,,,,,,3.4,1.4,3.1*33" ) );
   QVERIFY( info.isValid() );

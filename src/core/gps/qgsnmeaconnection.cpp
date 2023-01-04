@@ -206,6 +206,19 @@ void QgsNmeaConnection::processGgaSentence( const char *data, int len )
     mLastGPSInformation.elevation = result.elv;
     mLastGPSInformation.elevation_diff = result.diff;
 
+    const QTime time( result.utc.hour, result.utc.min, result.utc.sec, result.utc.msec );
+    if ( time.isValid() )
+    {
+      mLastGPSInformation.utcTime = time;
+      if ( mLastGPSInformation.utcDateTime.isValid() )
+      {
+        mLastGPSInformation.utcDateTime.setTimeSpec( Qt::UTC );
+        mLastGPSInformation.utcDateTime.setTime( time );
+      }
+      QgsDebugMsgLevel( QStringLiteral( "utc time:" ), 2 );
+      QgsDebugMsgLevel( mLastGPSInformation.utcTime.toString(), 2 );
+    }
+
     mLastGPSInformation.quality = result.sig;
     if ( result.sig >= 0 && result.sig <= 8 )
     {
@@ -300,17 +313,17 @@ void QgsNmeaConnection::processRmcSentence( const char *data, int len )
       mLastGPSInformation.direction = result.direction;
     mLastGPSInformation.status = result.status;  // A,V
 
-    //date and time
     const QDate date( result.utc.year + 1900, result.utc.mon + 1, result.utc.day );
-    const QTime time( result.utc.hour, result.utc.min, result.utc.sec, result.utc.msec ); // added msec part
+    const QTime time( result.utc.hour, result.utc.min, result.utc.sec, result.utc.msec );
     if ( date.isValid() && time.isValid() )
     {
+      mLastGPSInformation.utcTime = time;
       mLastGPSInformation.utcDateTime.setTimeSpec( Qt::UTC );
       mLastGPSInformation.utcDateTime.setDate( date );
       mLastGPSInformation.utcDateTime.setTime( time );
-      QgsDebugMsgLevel( QStringLiteral( "utc time:" ), 2 );
+      QgsDebugMsgLevel( QStringLiteral( "utc date/time:" ), 2 );
       QgsDebugMsgLevel( mLastGPSInformation.utcDateTime.toString(), 2 );
-      QgsDebugMsgLevel( QStringLiteral( "local time:" ), 2 );
+      QgsDebugMsgLevel( QStringLiteral( "local date/time:" ), 2 );
       QgsDebugMsgLevel( mLastGPSInformation.utcDateTime.toLocalTime().toString(), 2 );
     }
 

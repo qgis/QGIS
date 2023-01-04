@@ -529,8 +529,6 @@ Returns the field map associated with the feature.
 %Docstring
 Insert a value into attribute, by field ``name``.
 
-Returns ``False`` if field ``name`` could not be matched.
-
 Field map must be associated using :py:func:`~QgsFeature.setFields` before this method can be used.
 
 Calling this method will automatically set the feature as valid (see :py:func:`~QgsFeature.isValid`).
@@ -552,7 +550,7 @@ Alternatively, in Python it is possible to directly set a field's value via the 
 :param name: The name of the field to set
 :param value: The value to set
 
-:raises KeyError: if the attribute name could not be converted to an index
+:raises KeyError: if the attribute name could not could not be matched.
 
 .. seealso:: :py:func:`setFields`
 %End
@@ -605,7 +603,7 @@ Alternatively, in Python it is possible to directly `del` an attribute via its n
 
 :param name: The name of the field to clear
 
-:raises KeyError: if attribute name could not be converted to index
+:raises KeyError: if attribute name could not be matched.
 
 .. seealso:: :py:func:`setFields`
 %End

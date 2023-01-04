@@ -15,10 +15,10 @@
  ***************************************************************************/
 
 #include "qgshtmlwidgetwrapper.h"
-#include "qgsmessagelog.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgsapplication.h"
 #include "qgswebframe.h"
+#include "qgsvaluerelationfieldformatter.h"
+#include "qgsattributeform.h"
 #include <QScreen>
 
 QgsHtmlWidgetWrapper::QgsHtmlWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent )
@@ -34,6 +34,27 @@ bool QgsHtmlWidgetWrapper::valid() const
 
 QWidget *QgsHtmlWidgetWrapper::createWidget( QWidget *parent )
 {
+
+  QgsAttributeForm *form = qobject_cast<QgsAttributeForm *>( parent );
+
+  if ( form )
+  {
+    mFormFeature = form->feature();
+    connect( form, &QgsAttributeForm::widgetValueChanged, this, [ = ]( const QString & attribute, const QVariant & newValue, bool attributeChanged )
+    {
+      if ( attributeChanged )
+      {
+        const QRegularExpression expRe { QStringLiteral( R"re(expression.evaluate\s*\(\s*"(.*)"\))re" ), QRegularExpression::PatternOption::MultilineOption | QRegularExpression::PatternOption::DotMatchesEverythingOption };
+        const QRegularExpressionMatch match { expRe.match( mHtmlCode ) };
+        if ( match.hasMatch() && QgsValueRelationFieldFormatter::expressionRequiresFormScope( match.captured( 1 ) ) )
+        {
+          mFormFeature.setAttribute( attribute, newValue );
+          setHtmlContext();
+        }
+      }
+    } );
+  }
+
   return new QgsWebView( parent );
 }
 
@@ -110,11 +131,12 @@ void QgsHtmlWidgetWrapper::setHtmlContext( )
 
   const QgsAttributeEditorContext attributecontext = context();
   QgsExpressionContext expressionContext = layer()->createExpressionContext();
-  expressionContext << QgsExpressionContextUtils::formScope( mFeature, attributecontext.attributeFormModeString() );
+  expressionContext << QgsExpressionContextUtils::formScope( mFormFeature, attributecontext.attributeFormModeString() );
   if ( attributecontext.parentFormFeature().isValid() )
   {
     expressionContext << QgsExpressionContextUtils::parentFormScope( attributecontext.parentFormFeature() );
   }
+
   expressionContext.setFeature( mFeature );
 
   HtmlExpression *htmlExpression = new HtmlExpression();
@@ -143,6 +165,7 @@ void QgsHtmlWidgetWrapper::setFeature( const QgsFeature &feature )
     return;
 
   mFeature = feature;
+  mFormFeature = feature;
   setHtmlContext();
 }
 

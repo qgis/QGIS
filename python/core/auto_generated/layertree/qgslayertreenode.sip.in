@@ -53,7 +53,11 @@ Custom properties that have already been used within QGIS:
 - "legend/..." - properties for legend appearance customization
 - "expandedLegendNodes" - list of layer's legend nodes' rules in expanded state
 
-.. seealso:: :py:func:`also`
+.. seealso:: :py:class:`QgsLayerTree`
+
+.. seealso:: :py:class:`QgsLayerTreeLayer`
+
+.. seealso:: :py:class:`QgsLayerTreeGroup`
 
 .. versionadded:: 2.4
 %End

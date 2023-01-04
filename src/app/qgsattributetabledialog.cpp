@@ -857,10 +857,11 @@ void QgsAttributeTableDialog::mActionToggleEditing_toggled( bool )
   if ( !mLayer )
     return;
 
-  //this has to be done, because in case only one cell has been changed and is still enabled, the change
-  //would not be added to the mEditBuffer. By disabling, it looses focus and the change will be stored.
-  if ( mLayer->isEditable() && mMainView->tableView()->indexWidget( mMainView->tableView()->currentIndex() ) )
-    mMainView->tableView()->indexWidget( mMainView->tableView()->currentIndex() )->setEnabled( false );
+  if ( mLayer->isEditable() )
+  {
+    // commit changes in the currently active cell
+    mMainView->tableView()->closeCurrentEditor();
+  }
 
   if ( !QgisApp::instance()->toggleEditing( mLayer ) )
   {

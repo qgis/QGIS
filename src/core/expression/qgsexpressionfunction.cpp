@@ -48,6 +48,7 @@
 #include "qgsmessagelog.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerutils.h"
 #include "qgsrasterbandstats.h"
 #include "qgscolorramp.h"
 #include "qgsfieldformatterregistry.h"
@@ -1890,6 +1891,145 @@ static QVariant fcnMapToHtmlDefinitionList( const QVariantList &values, const Qg
   return table.arg( rows );
 }
 
+static QVariant fcnValidateFeature( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QVariant layer;
+  if ( values.size() < 1 || QgsVariantUtils::isNull( values.at( 0 ) ) )
+  {
+    layer = context->variable( QStringLiteral( "layer" ) );
+  }
+  else
+  {
+    //first node is layer id or name
+    QgsExpressionNode *node = QgsExpressionUtils::getNode( values.at( 0 ), parent );
+    ENSURE_NO_EVAL_ERROR
+    layer = node->eval( parent, context );
+    ENSURE_NO_EVAL_ERROR
+  }
+
+  QgsFeature feature;
+  if ( values.size() < 2 || QgsVariantUtils::isNull( values.at( 1 ) ) )
+  {
+    feature = context->feature();
+  }
+  else
+  {
+    feature = QgsExpressionUtils::getFeature( values.at( 1 ), parent );
+  }
+
+  QgsFieldConstraints::ConstraintStrength constraintStrength = QgsFieldConstraints::ConstraintStrengthNotSet;
+  const QString strength = QgsExpressionUtils::getStringValue( values.at( 2 ), parent ).toLower();
+  if ( strength == QStringLiteral( "hard" ) )
+  {
+    constraintStrength = QgsFieldConstraints::ConstraintStrengthHard;
+  }
+  else if ( strength == QStringLiteral( "soft" ) )
+  {
+    constraintStrength = QgsFieldConstraints::ConstraintStrengthSoft;
+  }
+
+  bool foundLayer = false;
+  const QVariant res = QgsExpressionUtils::runMapLayerFunctionThreadSafe( layer, context, parent, [parent, feature, constraintStrength]( QgsMapLayer * mapLayer ) -> QVariant
+  {
+    QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( mapLayer );
+    if ( !layer )
+    {
+      parent->setEvalErrorString( QObject::tr( "No layer provided to conduct constraints checks" ) );
+      return QVariant();
+    }
+
+    const QgsFields fields = layer->fields();
+    bool valid = true;
+    for ( int i = 0; i < fields.size(); i++ )
+    {
+      QStringList errors;
+      valid = QgsVectorLayerUtils::validateAttribute( layer, feature, i, errors, constraintStrength );
+      if ( !valid )
+      {
+        break;
+      }
+    }
+
+    return valid;
+  }, foundLayer );
+
+  if ( !foundLayer )
+  {
+    parent->setEvalErrorString( QObject::tr( "No layer provided to conduct constraints checks" ) );
+    return QVariant();
+  }
+
+  return res;
+}
+
+static QVariant fcnValidateAttribute( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QVariant layer;
+  if ( values.size() < 2 || QgsVariantUtils::isNull( values.at( 1 ) ) )
+  {
+    layer = context->variable( QStringLiteral( "layer" ) );
+  }
+  else
+  {
+    //first node is layer id or name
+    QgsExpressionNode *node = QgsExpressionUtils::getNode( values.at( 1 ), parent );
+    ENSURE_NO_EVAL_ERROR
+    layer = node->eval( parent, context );
+    ENSURE_NO_EVAL_ERROR
+  }
+
+  QgsFeature feature;
+  if ( values.size() < 3 || QgsVariantUtils::isNull( values.at( 2 ) ) )
+  {
+    feature = context->feature();
+  }
+  else
+  {
+    feature = QgsExpressionUtils::getFeature( values.at( 2 ), parent );
+  }
+
+  QgsFieldConstraints::ConstraintStrength constraintStrength = QgsFieldConstraints::ConstraintStrengthNotSet;
+  const QString strength = QgsExpressionUtils::getStringValue( values.at( 3 ), parent ).toLower();
+  if ( strength == QStringLiteral( "hard" ) )
+  {
+    constraintStrength = QgsFieldConstraints::ConstraintStrengthHard;
+  }
+  else if ( strength == QStringLiteral( "soft" ) )
+  {
+    constraintStrength = QgsFieldConstraints::ConstraintStrengthSoft;
+  }
+
+  const QString attributeName = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+
+  bool foundLayer = false;
+  const QVariant res = QgsExpressionUtils::runMapLayerFunctionThreadSafe( layer, context, parent, [parent, feature, attributeName, constraintStrength]( QgsMapLayer * mapLayer ) -> QVariant
+  {
+    QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( mapLayer );
+    if ( !layer )
+    {
+      return QVariant();
+    }
+
+    const int fieldIndex = layer->fields().indexFromName( attributeName );
+    if ( fieldIndex == -1 )
+    {
+      parent->setEvalErrorString( QObject::tr( "The attribute name did not match any field for the given feature" ) );
+      return QVariant();
+    }
+
+    QStringList errors;
+    bool valid = QgsVectorLayerUtils::validateAttribute( layer, feature, fieldIndex, errors, constraintStrength );
+    return valid;
+  }, foundLayer );
+
+  if ( !foundLayer )
+  {
+    parent->setEvalErrorString( QObject::tr( "No layer provided to conduct constraints checks" ) );
+    return QVariant();
+  }
+
+  return res;
+}
 
 static QVariant fcnAttributes( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
@@ -8606,6 +8746,23 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         fcnRepresentAttributes, QStringLiteral( "Record and Attributes" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES );
     representAttributesFunc->setIsStatic( false );
     functions << representAttributesFunc;
+
+    QgsStaticExpressionFunction *validateFeature = new QgsStaticExpressionFunction( QStringLiteral( "is_feature_valid" ),
+        QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ), true )
+        << QgsExpressionFunction::Parameter( QStringLiteral( "feature" ), true )
+        << QgsExpressionFunction::Parameter( QStringLiteral( "strength" ), true ),
+        fcnValidateFeature, QStringLiteral( "Record and Attributes" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES );
+    validateFeature->setIsStatic( false );
+    functions << validateFeature;
+
+    QgsStaticExpressionFunction *validateAttribute = new QgsStaticExpressionFunction( QStringLiteral( "is_attribute_valid" ),
+        QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "attribute" ), false )
+        << QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ), true )
+        << QgsExpressionFunction::Parameter( QStringLiteral( "feature" ), true )
+        << QgsExpressionFunction::Parameter( QStringLiteral( "strength" ), true ),
+        fcnValidateAttribute, QStringLiteral( "Record and Attributes" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES );
+    validateAttribute->setIsStatic( false );
+    functions << validateAttribute;
 
     QgsStaticExpressionFunction *maptipFunc = new QgsStaticExpressionFunction(
       QStringLiteral( "maptip" ),
