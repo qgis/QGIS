@@ -862,6 +862,13 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
      * \since QGIS 3.16
      */
     QgsLayoutItemMapItemClipPathSettings *itemClippingSettings() { return mItemClippingSettings; }
+    
+    /**
+     * Returns the current geometry ( from the source layer or overriden ) in the provided crs.
+     *
+     * \since QGIS 3.30
+     */ 
+    QgsGeometry atlasGeometry( const QgsCoordinateReferenceSystem crs ) const;
 
   protected:
 
@@ -935,13 +942,6 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
      * \since QGIS 3.20
      */
     void previewRefreshed();
-    
-    /**
-     * Returns the current geometry ( from the source layer or overriden ) in the provided crs.
-     *
-     * \since QGIS 3.30
-     */ 
-    QgsGeometry atlasGeometry( const QgsCoordinateReferenceSystem crs ) const;
 
   public slots:
 
