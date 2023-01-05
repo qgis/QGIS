@@ -769,12 +769,12 @@ void QgsNetworkAccessManager::syncCookies( const QList<QNetworkCookie> &cookies 
 
 int QgsNetworkAccessManager::timeout()
 {
-  return settingsNetworkTimeout.value();
+  return settingsNetworkTimeout->value();
 }
 
 void QgsNetworkAccessManager::setTimeout( const int time )
 {
-  settingsNetworkTimeout.setValue( time );
+  settingsNetworkTimeout->setValue( time );
 }
 
 QgsNetworkReplyContent QgsNetworkAccessManager::blockingGet( QNetworkRequest &request, const QString &authCfg, bool forceRefresh, QgsFeedback *feedback )

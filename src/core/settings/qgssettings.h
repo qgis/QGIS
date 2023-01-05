@@ -88,14 +88,29 @@ class CORE_EXPORT QgsSettings : public QObject
      */
     static QgsSettingsTreeElement *treeRoot();
 
+    // only create first level here
     static inline QgsSettingsTreeElement *sTreeApp = treeRoot()->createChildElement( QStringLiteral( "app" ) );
     static inline QgsSettingsTreeElement *sTreeConnections = treeRoot()->createChildElement( QStringLiteral( "connections" ) );
-    static inline QgsSettingsTreeElement *sTreeDigitizing = treeRoot()->createChildElement( QStringLiteral( "digitizing" ) );
-    static inline QgsSettingsTreeElement *sTreeLocale = treeRoot()->createChildElement( QStringLiteral( "locale" ) );
+    static inline QgsSettingsTreeElement *sTreeCore = treeRoot()->createChildElement( QStringLiteral( "core" ) );
+    static inline QgsSettingsTreeElement *sTreeElevationProfile = treeRoot()->createChildElement( QStringLiteral( "elevation-profile" ) );
+    static inline QgsSettingsTreeElement *sTreeFonts = treeRoot()->createChildElement( QStringLiteral( "fonts" ) );
+    static inline QgsSettingsTreeElement *sTreeGeometryValidation = treeRoot()->createChildElement( QStringLiteral( "geometry_validation" ) );
     static inline QgsSettingsTreeElement *sTreeGps = treeRoot()->createChildElement( QStringLiteral( "gps" ) );
+    static inline QgsSettingsTreeElement *sTreeGui = treeRoot()->createChildElement( QStringLiteral( "gui" ) );
+    static inline QgsSettingsTreeElement *sTreeLayerTree = treeRoot()->createChildElement( QStringLiteral( "layer-tree" ) );
+    static inline QgsSettingsTreeElement *sTreeLayout = treeRoot()->createChildElement( QStringLiteral( "layout" ) );
+    static inline QgsSettingsTreeElement *sTreeLocale = treeRoot()->createChildElement( QStringLiteral( "locale" ) );
+    static inline QgsSettingsTreeElement *sTreeMap = treeRoot()->createChildElement( QStringLiteral( "map" ) );
+    static inline QgsSettingsTreeElement *sTreeNetwork = treeRoot()->createChildElement( QStringLiteral( "network" ) );
     static inline QgsSettingsTreeElement *sTreeQgis = treeRoot()->createChildElement( QStringLiteral( "qgis" ) );
     static inline QgsSettingsTreeElement *sTreePlugins = treeRoot()->createChildElement( QStringLiteral( "plugins" ) );
+    static inline QgsSettingsTreeElement *sTreeProcessing = treeRoot()->createChildElement( QStringLiteral( "processing" ) );
     static inline QgsSettingsTreeElement *sTreeSvg = treeRoot()->createChildElement( QStringLiteral( "svg" ) );
+    static inline QgsSettingsTreeElement *sTreeWms = treeRoot()->createChildElement( QStringLiteral( "wms" ) );
+
+    // sub levels
+    static inline QgsSettingsTreeElement *sTreeDigitizing = sTreeQgis->createChildElement( QStringLiteral( "digitizing" ) );
+
 #endif
 
     /**
@@ -110,36 +125,6 @@ class CORE_EXPORT QgsSettings : public QObject
      * \since QGIS 3.30
      */
     static void unregisterPluginTreeElement( const QString &pluginName );
-
-
-    /**
-     * \ingroup core
-     * \brief Prefixes for the settings keys
-     * \since QGIS 3.26
-     */
-    class Prefix SIP_SKIP
-    {
-      public:
-        static const inline char *APP_GEOREFERENCER = "app/georeferencer";
-        static const inline char *CORE = "core";
-        static const inline char *CORE_LAYOUT = "core/Layout";
-        static const inline char *GEOMETRYVALIDATION = "geometry_validation";
-        static const inline char *GPS = "gps";
-        static const inline char *GUI_QGIS = "gui/qgis";
-        static const inline char *LOCALE = "locale";
-        static const inline char *MAP = "Map";
-        static const inline char *PLUGINS = "plugins";
-        static const inline char *PROCESSING_CONFIGURATION = "Processing/Configuration";
-        static const inline char *QGIS = "qgis";
-        static const inline char *QGIS_DIGITIZING = "qgis/digitizing";
-        static const inline char *QGIS_DIGITIZING_SHAPEMAPTOOLS = "qgis/digitizing/shape-map-tools";
-        static const inline char *QGIS_NETWORKANDPROXY = "qgis/networkAndProxy";
-        static const inline char *SVG = "svg";
-        static const inline char *ELEVATION_PROFILE = "elevation-profile";
-        static const inline char *CORE_LAYERTREE = "core/layer-tree";
-        static const inline char *FONTS = "fonts";
-        static const inline char *WMS = "wms";
-    };
 
     /**
      * Constructs a QgsSettings object for accessing settings of the application

@@ -68,13 +68,13 @@ void TestQgsMapToolEdit::cleanup()
 
 void TestQgsMapToolEdit::checkDefaultZValue()
 {
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.remove();
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->remove();
 
   QgsMapToolEdit *tool = new QgsMapToolEdit( mCanvas );
   QCOMPARE( tool->defaultZValue(), Qgis::DEFAULT_Z_COORDINATE );
 
   const double z_value_for_test = Qgis::DEFAULT_Z_COORDINATE + 1;
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( z_value_for_test );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( z_value_for_test );
 
   QCOMPARE( tool->defaultZValue(), z_value_for_test );
 }

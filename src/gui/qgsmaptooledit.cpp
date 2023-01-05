@@ -36,12 +36,12 @@ QgsMapToolEdit::QgsMapToolEdit( QgsMapCanvas *canvas )
 
 double QgsMapToolEdit::defaultZValue()
 {
-  return QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.value();
+  return QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->value();
 }
 
 double QgsMapToolEdit::defaultMValue()
 {
-  return QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.value();
+  return QgsSettingsRegistryCore::settingsDigitizingDefaultMValue->value();
 
 }
 
@@ -52,15 +52,15 @@ QColor QgsMapToolEdit::digitizingStrokeColor()
 
 int QgsMapToolEdit::digitizingStrokeWidth()
 {
-  return QgsSettingsRegistryCore::settingsDigitizingLineWidth.value();
+  return QgsSettingsRegistryCore::settingsDigitizingLineWidth->value();
 }
 
 QColor QgsMapToolEdit::digitizingFillColor()
 {
-  return QColor( QgsSettingsRegistryCore::settingsDigitizingFillColorRed.value(),
-                 QgsSettingsRegistryCore::settingsDigitizingFillColorGreen.value(),
-                 QgsSettingsRegistryCore::settingsDigitizingFillColorBlue.value(),
-                 QgsSettingsRegistryCore::settingsDigitizingFillColorAlpha.value() );
+  return QColor( QgsSettingsRegistryCore::settingsDigitizingFillColorRed->value(),
+                 QgsSettingsRegistryCore::settingsDigitizingFillColorGreen->value(),
+                 QgsSettingsRegistryCore::settingsDigitizingFillColorBlue->value(),
+                 QgsSettingsRegistryCore::settingsDigitizingFillColorAlpha->value() );
 }
 
 
@@ -72,7 +72,7 @@ QgsRubberBand *QgsMapToolEdit::createRubberBand( QgsWkbTypes::GeometryType geome
   QColor color = digitizingStrokeColor();
   if ( alternativeBand )
   {
-    const double alphaScale = QgsSettingsRegistryCore::settingsDigitizingLineColorAlphaScale.value();
+    const double alphaScale = QgsSettingsRegistryCore::settingsDigitizingLineColorAlphaScale->value();
     color.setAlphaF( color.alphaF() * alphaScale );
     rb->setLineStyle( Qt::DotLine );
   }
@@ -146,7 +146,7 @@ QgsGeometryRubberBand *QgsMapToolEdit::createGeometryRubberBand( QgsWkbTypes::Ge
   QColor color = QgsSettingsRegistryCore::settingsDigitizingLineColor->value();
   if ( alternativeBand )
   {
-    double alpha = color.alpha() / 255.0 * QgsSettingsRegistryCore::settingsDigitizingLineColorAlphaScale.value();
+    double alpha = color.alpha() / 255.0 * QgsSettingsRegistryCore::settingsDigitizingLineColorAlphaScale->value();
     rb->setLineStyle( Qt::DotLine );
     color.setAlphaF( alpha );
   }

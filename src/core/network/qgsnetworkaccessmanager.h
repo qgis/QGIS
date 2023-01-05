@@ -664,7 +664,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 
 #ifndef SIP_RUN
     //! Settings entry network timeout
-    static const inline QgsSettingsEntryInteger settingsNetworkTimeout = QgsSettingsEntryInteger( QStringLiteral( "networkTimeout" ), QgsSettings::Prefix::QGIS_NETWORKANDPROXY, 60000, QObject::tr( "Network timeout" ) );
+    static inline QgsSettingsEntryInteger *settingsNetworkTimeout = new QgsSettingsEntryInteger( QStringLiteral( "network-timeout" ), QgsSettings::sTreeNetwork, 60000, QObject::tr( "Network timeout" ) );
 #endif
 
     /**

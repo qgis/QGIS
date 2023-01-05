@@ -18,7 +18,6 @@
 #define QGSSETTINGSREGISTRYGUI_H
 
 #include "qgis_gui.h"
-#include "qgis_sip.h"
 #include "qgssettingsregistry.h"
 #include "qgssettingsentryimpl.h"
 
@@ -46,10 +45,10 @@ class GUI_EXPORT QgsSettingsRegistryGui : public QgsSettingsRegistry
 
 #ifndef SIP_RUN
     //! Settings entry respect screen dpi
-    static const inline QgsSettingsEntryBool settingsRespectScreenDPI = QgsSettingsEntryBool( QStringLiteral( "respect_screen_dpi" ), QgsSettings::Prefix::GUI_QGIS, false );
+    static inline QgsSettingsEntryBool *settingsRespectScreenDPI = new QgsSettingsEntryBool( QStringLiteral( "respect-screen-dpi" ), QgsSettings::sTreeGui, false );
 
     //! Check for plugin updates automatically on startup
-    static const inline QgsSettingsEntryBool settingsAutomaticallyCheckForPluginUpdates = QgsSettingsEntryBool( QStringLiteral( "automatically-check-for-updates" ), QgsSettings::Prefix::PLUGINS, true, QStringLiteral( "Automatically check for plugin updates on startup" ) );
+    static inline QgsSettingsEntryBool *settingsAutomaticallyCheckForPluginUpdates = new QgsSettingsEntryBool( QStringLiteral( "automatically-check-for-updates" ), QgsSettings::sTreePlugins, true, QStringLiteral( "Automatically check for plugin updates on startup" ) );
 
 #endif
 

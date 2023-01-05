@@ -84,7 +84,7 @@ class TestQgsMapToolEllipse : public QObject
     const double M = 222.0;
     const int WKT_PRECISION = 2;
 
-    unsigned int segments( ) { return QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg.value() * 12; }
+    unsigned int segments( ) { return QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg->value() * 12; }
 };
 
 
@@ -322,8 +322,8 @@ void TestQgsMapToolEllipse::testEllipse_data()
   QTest::addColumn<qlonglong>( "featureCount" );
   QTest::addColumn<long>( "featureCountExpected" );
 
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( Z );
-  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( M );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( Z );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue->setValue( M );
 
   QgsFeatureId newFid;
   QgsFeature f;
@@ -353,8 +353,8 @@ void TestQgsMapToolEllipse::testEllipse_data()
     }
   }
 
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
-  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue->setValue( 0 );
 }
 
 void TestQgsMapToolEllipse::testEllipse()

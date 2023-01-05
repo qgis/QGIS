@@ -235,7 +235,7 @@ bool QgsSettingsEntryColor::checkValue( const QColor &value ) const
   return true;
 }
 
-bool QgsSettingsEntryColor::copyValueFromKeys( const QString &redKey, const QString &greenKey, const QString &blueKey, const QString &alphaKey ) const
+bool QgsSettingsEntryColor::copyValueFromKeys( const QString &redKey, const QString &greenKey, const QString &blueKey, const QString &alphaKey, bool removeSettingAtKey ) const
 {
   QgsSettings settings;
   if ( settings.contains( redKey ) && settings.contains( greenKey ) && settings.contains( blueKey ) && ( alphaKey.isNull() || settings.contains( alphaKey ) ) )
@@ -245,6 +245,14 @@ bool QgsSettingsEntryColor::copyValueFromKeys( const QString &redKey, const QStr
       oldValue = QColor( settings.value( redKey ).toInt(), settings.value( greenKey ).toInt(), settings.value( blueKey ).toInt() );
     else
       oldValue = QColor( settings.value( redKey ).toInt(), settings.value( greenKey ).toInt(), settings.value( blueKey ).toInt(), settings.value( alphaKey ).toInt() );
+
+    if ( removeSettingAtKey )
+    {
+      settings.remove( redKey );
+      settings.remove( greenKey );
+      settings.remove( blueKey );
+      settings.remove( alphaKey );
+    }
 
     setVariantValuePrivate( oldValue );
     return true;

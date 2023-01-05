@@ -445,7 +445,7 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   settingsMenu->addAction( mActionHideDerivedAttributes );
   mActionHideDerivedAttributes->setChecked( mySettings.value( QStringLiteral( "Map/hideDerivedAttributes" ), false ).toBool() );
   settingsMenu->addAction( mActionHideNullValues );
-  mActionHideNullValues->setChecked( QgsIdentifyResultsDialog::settingHideNullValues.value() );
+  mActionHideNullValues->setChecked( QgsIdentifyResultsDialog::settingHideNullValues->value() );
 
 }
 
@@ -710,7 +710,7 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
       continue;
     }
 
-    if ( QgsVariantUtils::isNull( attrs.at( i ) ) && QgsIdentifyResultsDialog::settingHideNullValues.value() )
+    if ( QgsVariantUtils::isNull( attrs.at( i ) ) && QgsIdentifyResultsDialog::settingHideNullValues->value() )
     {
       continue;
     }
@@ -2426,7 +2426,7 @@ void QgsIdentifyResultsDialog::mActionHideDerivedAttributes_toggled( bool checke
 
 void QgsIdentifyResultsDialog::mActionHideNullValues_toggled( bool checked )
 {
-  QgsIdentifyResultsDialog::settingHideNullValues.setValue( checked );
+  QgsIdentifyResultsDialog::settingHideNullValues->setValue( checked );
 }
 
 void QgsIdentifyResultsDialog::mExpandNewAction_triggered( bool checked )

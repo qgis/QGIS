@@ -325,7 +325,7 @@ QgsVertexTool::~QgsVertexTool()
 
 void QgsVertexTool::activate()
 {
-  if ( QgisApp::instance() && QgsVertexEditor::settingAutoPopupVertexEditorDock.value() )
+  if ( QgisApp::instance() && QgsVertexEditor::settingAutoPopupVertexEditorDock->value() )
   {
     showVertexEditor();  //#spellok
   }
@@ -1530,7 +1530,7 @@ void QgsVertexTool::updateVertexEditor( QgsVectorLayer *layer, QgsFeatureId fid 
   updateLockedFeatureVertices();
 
   // make sure the vertex editor is alive and visible
-  if ( QgsVertexEditor::settingAutoPopupVertexEditorDock.value() )
+  if ( QgsVertexEditor::settingAutoPopupVertexEditorDock->value() )
     showVertexEditor();  //#spellok
 
   if ( QgsVertexEditor *editor = vertexEditor() )
@@ -1579,7 +1579,7 @@ void QgsVertexTool::cleanupVertexEditor()
   if ( QgsVertexEditor *editor = vertexEditor() )
   {
     cleanupLockedFeature();
-    if ( QgsVertexEditor::settingAutoPopupVertexEditorDock.value() )
+    if ( QgsVertexEditor::settingAutoPopupVertexEditorDock->value() )
     {
       editor->setUserVisible( false );
     }
@@ -2958,7 +2958,7 @@ void QgsVertexTool::GeometryValidation::start( QgsGeometry &geom, QgsVertexTool 
   tool = t;
   layer = l;
   Qgis::GeometryValidationEngine method = Qgis::GeometryValidationEngine::QgisInternal;
-  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries.value() == 2 )
+  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries->value() == 2 )
     method = Qgis::GeometryValidationEngine::Geos;
 
   validator = new QgsGeometryValidator( geom, nullptr, method );
@@ -3007,7 +3007,7 @@ void QgsVertexTool::GeometryValidation::cleanup()
 
 void QgsVertexTool::validateGeometry( QgsVectorLayer *layer, QgsFeatureId featureId )
 {
-  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries.value() == 0 )
+  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries->value() == 0 )
     return;
 
   QPair<QgsVectorLayer *, QgsFeatureId> id( layer, featureId );

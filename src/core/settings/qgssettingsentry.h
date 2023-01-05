@@ -345,12 +345,21 @@ class CORE_EXPORT QgsSettingsEntryBase
     /**
      * Copies the value from a given key if it exists.
      * \param key the key to copy the setting value from.
+     * \param removeSettingAtKey if TRUE, the setting at the old key will be removed.
+     * \returns TRUE if the key exists and the setting value could be copied.
+     * \since QGIS 3.30
+     */
+    bool copyValueFromKey( const QString &key, bool removeSettingAtKey = false ) const {return copyValueFromKey( key, {}, removeSettingAtKey );}
+
+    /**
+     * Copies the value from a given key if it exists.
+     * \param key the key to copy the setting value from.
      * \param dynamicKeyPartList is the optional dynamic key part to determine the key. It must be the same for origin and destination keys.
      * \param removeSettingAtKey if TRUE, the setting at the old key will be removed.
      * \returns TRUE if the key exists and the setting value could be copied.
      * \since QGIS 3.30
      */
-    bool copyValueFromKey( const QString &key, const QStringList &dynamicKeyPartList = QStringList(), bool removeSettingAtKey = false ) const;
+    bool copyValueFromKey( const QString &key, const QStringList &dynamicKeyPartList, bool removeSettingAtKey = false ) const;
 
     /**
      * Copies the settings to the given key.

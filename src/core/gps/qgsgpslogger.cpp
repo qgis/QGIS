@@ -205,15 +205,15 @@ void QgsGpsLogger::updateGpsSettings()
   int acquisitionInterval = 0;
   if ( QgsGpsConnection::settingsGpsTimeStampSpecification.exists() )
   {
-    acquisitionInterval = static_cast< int >( QgsGpsConnection::settingGpsAcquisitionInterval.value() );
-    mDistanceThreshold = QgsGpsConnection::settingGpsDistanceThreshold.value();
-    mApplyLeapSettings = QgsGpsConnection::settingGpsApplyLeapSecondsCorrection.value();
-    mLeapSeconds = static_cast< int >( QgsGpsConnection::settingGpsLeapSeconds.value() );
+    acquisitionInterval = static_cast< int >( QgsGpsConnection::settingGpsAcquisitionInterval->value() );
+    mDistanceThreshold = QgsGpsConnection::settingGpsDistanceThreshold->value();
+    mApplyLeapSettings = QgsGpsConnection::settingGpsApplyLeapSecondsCorrection->value();
+    mLeapSeconds = static_cast< int >( QgsGpsConnection::settingGpsLeapSeconds->value() );
     mTimeStampSpec = QgsGpsConnection::settingsGpsTimeStampSpecification.value();
-    mTimeZone = QgsGpsConnection::settingsGpsTimeStampTimeZone.value();
-    mOffsetFromUtc = static_cast< int >( QgsGpsConnection::settingsGpsTimeStampOffsetFromUtc.value() );
+    mTimeZone = QgsGpsConnection::settingsGpsTimeStampTimeZone->value();
+    mOffsetFromUtc = static_cast< int >( QgsGpsConnection::settingsGpsTimeStampOffsetFromUtc->value() );
 
-    mStoreAttributeInMValues = settingsGpsStoreAttributeInMValues.value();
+    mStoreAttributeInMValues = settingsGpsStoreAttributeInMValues->value();
     mMValueComponent = settingsGpsMValueComponent.value();
   }
   else

@@ -152,7 +152,7 @@ void QgsGpsCanvasBridge::updateBearingAppearance()
 
   QDomDocument doc;
   QDomElement elem;
-  QString bearingLineSymbolXml = QgsGpsCanvasBridge::settingBearingLineSymbol.value();
+  QString bearingLineSymbolXml = QgsGpsCanvasBridge::settingBearingLineSymbol->value();
   if ( bearingLineSymbolXml.isEmpty() )
   {
     QgsSettings settings;
@@ -178,9 +178,9 @@ void QgsGpsCanvasBridge::gpsSettingsChanged()
   QgsSettings settings;
   if ( QgsGpsConnection::settingsGpsConnectionType.exists() )
   {
-    mBearingFromTravelDirection = QgsGpsConnection::settingGpsBearingFromTravelDirection.value();
-    mMapExtentMultiplier = static_cast< int >( QgsGpsCanvasBridge::settingMapExtentRecenteringThreshold.value() );
-    mMapRotateInterval = static_cast< int >( QgsGpsCanvasBridge::settingMapRotateInterval.value() );
+    mBearingFromTravelDirection = QgsGpsConnection::settingGpsBearingFromTravelDirection->value();
+    mMapExtentMultiplier = static_cast< int >( QgsGpsCanvasBridge::settingMapExtentRecenteringThreshold->value() );
+    mMapRotateInterval = static_cast< int >( QgsGpsCanvasBridge::settingMapRotateInterval->value() );
   }
   else
   {

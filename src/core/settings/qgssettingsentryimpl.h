@@ -713,7 +713,7 @@ class CORE_EXPORT QgsSettingsEntryColor : public QgsSettingsEntryByReference<QCo
      * \returns TRUE if the keys exist and the settings values could be copied
      * \since QGIS 3.30
      */
-    bool copyValueFromKeys( const QString &redKey, const QString &greenKey, const QString &blueKey, const QString &alphaKey = QString() ) const SIP_SKIP;
+    bool copyValueFromKeys( const QString &redKey, const QString &greenKey, const QString &blueKey, const QString &alphaKey = QString(), bool removeSettingAtKey = false ) const SIP_SKIP;
 
     /**
      * Copies the settings to the given keys

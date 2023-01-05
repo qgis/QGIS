@@ -371,10 +371,10 @@ QgsVertexEditorWidget::QgsVertexEditorWidget( QgsMapCanvas *canvas )
   mWidgetMenu = new QMenu( this );
   QAction *autoPopupAction = new QAction( tr( "Auto-open Table" ), this );
   autoPopupAction->setCheckable( true );
-  autoPopupAction->setChecked( QgsVertexEditor::settingAutoPopupVertexEditorDock.value() );
+  autoPopupAction->setChecked( QgsVertexEditor::settingAutoPopupVertexEditorDock->value() );
   connect( autoPopupAction, &QAction::toggled, this, [ = ]( bool checked )
   {
-    QgsVertexEditor::settingAutoPopupVertexEditorDock.setValue( checked );
+    QgsVertexEditor::settingAutoPopupVertexEditorDock->setValue( checked );
   } );
   mWidgetMenu->addAction( autoPopupAction );
 }

@@ -144,7 +144,7 @@ class APP_EXPORT QgsVertexEditor : public QgsDockWidget
     Q_OBJECT
   public:
 
-    static const inline QgsSettingsEntryBool settingAutoPopupVertexEditorDock = QgsSettingsEntryBool( QStringLiteral( "auto_popup_vertex_editor_dock" ), QgsSettings::Prefix::QGIS_DIGITIZING, true, QStringLiteral( "Whether the auto-popup behavior of the vertex editor dock should be enabled" ) );
+    static inline QgsSettingsEntryBool *settingAutoPopupVertexEditorDock = new QgsSettingsEntryBool( QStringLiteral( "auto_popup_vertex_editor_dock" ), QgsSettings::sTreeDigitizing, true, QStringLiteral( "Whether the auto-popup behavior of the vertex editor dock should be enabled" ) );
 
     QgsVertexEditor( QgsMapCanvas *canvas );
 

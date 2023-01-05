@@ -1246,7 +1246,7 @@ void QgsMapRendererJob::composeSecondPass( std::vector<LayerRenderJob> &secondPa
 
 void QgsMapRendererJob::logRenderingTime( const std::vector< LayerRenderJob > &jobs, const std::vector< LayerRenderJob > &secondPassJobs, const LabelRenderJob &labelJob )
 {
-  if ( !settingsLogCanvasRefreshEvent.value() )
+  if ( !settingsLogCanvasRefreshEvent->value() )
     return;
 
   QMultiMap<int, QString> elapsed;

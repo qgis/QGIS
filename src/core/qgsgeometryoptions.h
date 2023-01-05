@@ -134,7 +134,7 @@ class CORE_EXPORT QgsGeometryOptions : public QObject
 
 #ifndef SIP_RUN
     //! Settings entry search path for templates
-    static const inline QgsSettingsEntryString settingsGeometryValidationDefaultChecks = QgsSettingsEntryString( QStringLiteral( "default_checks" ), QgsSettings::Prefix::GEOMETRYVALIDATION, QString() );
+    static inline QgsSettingsEntryString *settingsGeometryValidationDefaultChecks = new QgsSettingsEntryString( QStringLiteral( "default_checks" ), QgsSettings::sTreeGeometryValidation, QString() );
 #endif
 
   signals:

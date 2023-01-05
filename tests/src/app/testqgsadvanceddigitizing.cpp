@@ -86,8 +86,8 @@ void TestQgsAdvancedDigitizing::initTestCase()
   mCanvas = new QgsMapCanvas();
   setCanvasCrs( QStringLiteral( "EPSG:3950" ) );
 
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 33 );
-  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 66 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 33 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue->setValue( 66 );
 
   // make test layers
   QList<QgsMapLayer *> layers;
@@ -152,8 +152,8 @@ void TestQgsAdvancedDigitizing::initTestCase()
 
 void TestQgsAdvancedDigitizing::cleanupTestCase()
 {
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
-  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue->setValue( 0 );
 
   delete mAdvancedDigitizingDockWidget;
   delete mCaptureTool;

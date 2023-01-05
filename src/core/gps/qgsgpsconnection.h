@@ -72,43 +72,43 @@ class CORE_EXPORT QgsGpsConnection : public QObject
     };
 
     //! Settings entry GPS connection type
-    static const inline QgsSettingsEntryEnumFlag<Qgis::GpsConnectionType> settingsGpsConnectionType = QgsSettingsEntryEnumFlag<Qgis::GpsConnectionType>( QStringLiteral( "gps-connection-type" ), QgsSettings::Prefix::GPS, Qgis::GpsConnectionType::Automatic, QStringLiteral( "GPS connection type" ) ) SIP_SKIP;
+    static const inline QgsSettingsEntryEnumFlag<Qgis::GpsConnectionType> settingsGpsConnectionType = QgsSettingsEntryEnumFlag<Qgis::GpsConnectionType>( QStringLiteral( "gps-connection-type" ), QgsSettings::sTreeGps, Qgis::GpsConnectionType::Automatic, QStringLiteral( "GPS connection type" ) ) SIP_SKIP;
 
     //! Settings entry GPSD host name
-    static const inline QgsSettingsEntryString settingsGpsdHostName = QgsSettingsEntryString( QStringLiteral( "gpsd-host-name" ), QgsSettings::Prefix::GPS, QString(), QStringLiteral( "GPSD connection host name" ) ) SIP_SKIP;
+    static inline QgsSettingsEntryString *settingsGpsdHostName = new QgsSettingsEntryString( QStringLiteral( "gpsd-host-name" ), QgsSettings::sTreeGps, QString(), QStringLiteral( "GPSD connection host name" ) ) SIP_SKIP;
 
     //! Settings entry GPSD port number
-    static const inline QgsSettingsEntryInteger settingsGpsdPortNumber = QgsSettingsEntryInteger( QStringLiteral( "gpsd-port" ), QgsSettings::Prefix::GPS, 2947, QStringLiteral( "GPSD port number" ) ) SIP_SKIP;
+    static inline QgsSettingsEntryInteger *settingsGpsdPortNumber = new QgsSettingsEntryInteger( QStringLiteral( "gpsd-port" ), QgsSettings::sTreeGps, 2947, QStringLiteral( "GPSD port number" ) ) SIP_SKIP;
 
     //! Settings entry GPSD device name
-    static const inline QgsSettingsEntryString settingsGpsdDeviceName = QgsSettingsEntryString( QStringLiteral( "gpsd-device-name" ), QgsSettings::Prefix::GPS, QString(), QStringLiteral( "GPSD connection device name" ) ) SIP_SKIP;
+    static inline QgsSettingsEntryString *settingsGpsdDeviceName = new QgsSettingsEntryString( QStringLiteral( "gpsd-device-name" ), QgsSettings::sTreeGps, QString(), QStringLiteral( "GPSD connection device name" ) ) SIP_SKIP;
 
     //! Settings entry GPS serial device name
-    static const inline QgsSettingsEntryString settingsGpsSerialDevice = QgsSettingsEntryString( QStringLiteral( "gpsd-serial-device" ), QgsSettings::Prefix::GPS, QString(), QStringLiteral( "GPS serial device name" ) ) SIP_SKIP;
+    static inline QgsSettingsEntryString *settingsGpsSerialDevice = new QgsSettingsEntryString( QStringLiteral( "gpsd-serial-device" ), QgsSettings::sTreeGps, QString(), QStringLiteral( "GPS serial device name" ) ) SIP_SKIP;
 
     //! Settings entry GPS track point acquisition interval
-    static const inline QgsSettingsEntryInteger settingGpsAcquisitionInterval = QgsSettingsEntryInteger( QStringLiteral( "acquisition-interval" ), QgsSettings::Prefix::GPS, 0, QStringLiteral( "GPS track point acquisition interval" ) ) SIP_SKIP;
+    static inline QgsSettingsEntryInteger *settingGpsAcquisitionInterval = new QgsSettingsEntryInteger( QStringLiteral( "acquisition-interval" ), QgsSettings::sTreeGps, 0, QStringLiteral( "GPS track point acquisition interval" ) ) SIP_SKIP;
 
     //! Settings entry GPS track point distance threshold
-    static const inline QgsSettingsEntryDouble settingGpsDistanceThreshold = QgsSettingsEntryDouble( QStringLiteral( "distance-threshold" ), QgsSettings::Prefix::GPS, 0, QStringLiteral( "GPS track point distance threshold" ) ) SIP_SKIP;
+    static inline QgsSettingsEntryDouble *settingGpsDistanceThreshold = new QgsSettingsEntryDouble( QStringLiteral( "distance-threshold" ), QgsSettings::sTreeGps, 0, QStringLiteral( "GPS track point distance threshold" ) ) SIP_SKIP;
 
     //! Settings entry GPS calculate bearing from travel direction
-    static const inline QgsSettingsEntryBool settingGpsBearingFromTravelDirection = QgsSettingsEntryBool( QStringLiteral( "calculate-bearing-from-travel" ), QgsSettings::Prefix::GPS, false, QStringLiteral( "Calculate GPS bearing from travel direction" ) ) SIP_SKIP;
+    static inline QgsSettingsEntryBool *settingGpsBearingFromTravelDirection = new QgsSettingsEntryBool( QStringLiteral( "calculate-bearing-from-travel" ), QgsSettings::sTreeGps, false, QStringLiteral( "Calculate GPS bearing from travel direction" ) ) SIP_SKIP;
 
     //! Settings entry GPS apply leap seconds correction
-    static const inline QgsSettingsEntryBool settingGpsApplyLeapSecondsCorrection = QgsSettingsEntryBool( QStringLiteral( "apply-leap-seconds-correction" ), QgsSettings::Prefix::GPS, true, QStringLiteral( "Whether leap seconds corrections should be applied to GPS timestamps" ) ) SIP_SKIP;
+    static inline QgsSettingsEntryBool *settingGpsApplyLeapSecondsCorrection = new QgsSettingsEntryBool( QStringLiteral( "apply-leap-seconds-correction" ), QgsSettings::sTreeGps, true, QStringLiteral( "Whether leap seconds corrections should be applied to GPS timestamps" ) ) SIP_SKIP;
 
     //! Settings entry GPS leap seconds correction amount (in seconds)
-    static const inline QgsSettingsEntryInteger settingGpsLeapSeconds = QgsSettingsEntryInteger( QStringLiteral( "leap-seconds" ), QgsSettings::Prefix::GPS, 18, QStringLiteral( "Leap seconds correction amount (in seconds)" ) ) SIP_SKIP;
+    static inline QgsSettingsEntryInteger *settingGpsLeapSeconds = new QgsSettingsEntryInteger( QStringLiteral( "leap-seconds" ), QgsSettings::sTreeGps, 18, QStringLiteral( "Leap seconds correction amount (in seconds)" ) ) SIP_SKIP;
 
     //! Settings entry time specification for GPS time stamps
-    static const inline QgsSettingsEntryEnumFlag<Qt::TimeSpec> settingsGpsTimeStampSpecification = QgsSettingsEntryEnumFlag<Qt::TimeSpec>( QStringLiteral( "timestamp-time-spec" ), QgsSettings::Prefix::GPS, Qt::TimeSpec::LocalTime, QStringLiteral( "GPS time stamp specification" ) ) SIP_SKIP;
+    static const inline QgsSettingsEntryEnumFlag<Qt::TimeSpec> settingsGpsTimeStampSpecification = QgsSettingsEntryEnumFlag<Qt::TimeSpec>( QStringLiteral( "timestamp-time-spec" ), QgsSettings::sTreeGps, Qt::TimeSpec::LocalTime, QStringLiteral( "GPS time stamp specification" ) ) SIP_SKIP;
 
     //! Settings entry GPS time stamp time zone
-    static const inline QgsSettingsEntryString settingsGpsTimeStampTimeZone = QgsSettingsEntryString( QStringLiteral( "timestamp-time-zone" ), QgsSettings::Prefix::GPS, QString(), QStringLiteral( "GPS time stamp time zone" ) ) SIP_SKIP;
+    static inline QgsSettingsEntryString *settingsGpsTimeStampTimeZone = new QgsSettingsEntryString( QStringLiteral( "timestamp-time-zone" ), QgsSettings::sTreeGps, QString(), QStringLiteral( "GPS time stamp time zone" ) ) SIP_SKIP;
 
     //! Settings entry GPS time offset from UTC in seconds
-    static const inline QgsSettingsEntryInteger settingsGpsTimeStampOffsetFromUtc = QgsSettingsEntryInteger( QStringLiteral( "timestamp-offset-from-utc" ), QgsSettings::Prefix::GPS, 0, QStringLiteral( "GPS time stamp offset from UTC (in seconds)" ) ) SIP_SKIP;
+    static inline QgsSettingsEntryInteger *settingsGpsTimeStampOffsetFromUtc = new QgsSettingsEntryInteger( QStringLiteral( "timestamp-offset-from-utc" ), QgsSettings::sTreeGps, 0, QStringLiteral( "GPS time stamp offset from UTC (in seconds)" ) ) SIP_SKIP;
 
     /**
      * Constructor

@@ -397,7 +397,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   modeChanged();
   updateToleranceDecimals();
 
-  enableSnapping( QgsSettingsRegistryCore::settingsDigitizingDefaultSnapEnabled.value() );
+  enableSnapping( QgsSettingsRegistryCore::settingsDigitizingDefaultSnapEnabled->value() );
 
   restoreGeometry( QgsSettings().value( QStringLiteral( "/Windows/SnappingWidget/geometry" ) ).toByteArray() );
 }

@@ -2380,7 +2380,7 @@ int QgsWmsProvider::capabilities() const
     }
   }
 
-  bool enablePrefetch = QgsSettingsRegistryCore::settingsEnableWMSTilePrefetching.value();
+  bool enablePrefetch = QgsSettingsRegistryCore::settingsEnableWMSTilePrefetching->value();
   if ( mSettings.mXyz || enablePrefetch )
   {
     capability |= Capability::Prefetch;

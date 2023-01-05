@@ -81,8 +81,6 @@ Unregisters the tree element for the given plugin
 .. versionadded:: 3.30
 %End
 
-
-
     explicit QgsSettings( const QString &organization,
                           const QString &application = QString(), QObject *parent = 0 );
 %Docstring

@@ -42,7 +42,7 @@ class CORE_EXPORT QgsVectorTileProviderConnection : public QgsAbstractProviderCo
     static inline QgsSettingsEntryString *settingsUsername = new QgsSettingsEntryString( QStringLiteral( "username" ), sTreeConnectionVectorTile );
     static inline QgsSettingsEntryString *settingsPassword = new QgsSettingsEntryString( QStringLiteral( "password" ), sTreeConnectionVectorTile );
     static inline QgsSettingsEntryString *settingsStyleUrl = new QgsSettingsEntryString( QStringLiteral( "styleUrl" ), sTreeConnectionVectorTile );
-    static inline QgsSettingsEntryString *settingsServiceType = new QgsSettingsEntryString( QStringLiteral( "serviceType" ), sTreeConnectionVectorTile );
+    static inline QgsSettingsEntryString *settingsServiceType = new QgsSettingsEntryString( QStringLiteral( "service-type" ), sTreeConnectionVectorTile );
     static inline QgsSettingsEntryVariantMap *settingsHeaders = new QgsSettingsEntryVariantMap( QStringLiteral( "http-header" ), sTreeConnectionVectorTile );
 #endif
 

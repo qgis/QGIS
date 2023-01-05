@@ -216,21 +216,17 @@ QgsDataSourceUri &QgsOwsConnection::addWfsConnectionSettings( QgsDataSourceUri &
 
 QStringList QgsOwsConnection::connectionList( const QString &service )
 {
-  QgsSettings settings;
-  settings.beginGroup( QString( "%1/connections-%2" ).arg( QgsSettings::Prefix::QGIS, service.toLower() ) );
-  return settings.childGroups();
+  return QgsOwsConnection::sTtreeOwsServices->items( {service.toLower()} );
 }
 
 QString QgsOwsConnection::selectedConnection( const QString &service )
 {
-  const QgsSettings settings;
-  return settings.value( QString( "%1/connections-%2/selected" ).arg( QgsSettings::Prefix::QGIS, service.toLower() ) ).toString();
+  return QgsOwsConnection::sTtreeOwsServices->selectedItem( {service.toLower()} );
 }
 
 void QgsOwsConnection::setSelectedConnection( const QString &service, const QString &name )
 {
-  QgsSettings settings;
-  settings.setValue( QString( "%1/connections-%2/selected" ).arg( QgsSettings::Prefix::QGIS, service.toLower() ), name );
+  QgsOwsConnection::sTtreeOwsServices->setSelectedItem( name, {service.toLower()} );
 }
 
 void QgsOwsConnection::addCommonConnectionSettings( QgsDataSourceUri &uri, const QString &key )

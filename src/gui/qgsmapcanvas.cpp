@@ -880,7 +880,7 @@ void QgsMapCanvas::rendererJobFinished()
     QPainter p( &img );
     emit renderComplete( &p );
 
-    if ( QgsMapRendererJob::settingsLogCanvasRefreshEvent.value() )
+    if ( QgsMapRendererJob::settingsLogCanvasRefreshEvent->value() )
     {
       QString logMsg = tr( "Canvas refresh: %1 ms" ).arg( mJob->renderingTime() );
       QgsMessageLog::logMessage( logMsg, tr( "Rendering" ) );
@@ -1229,7 +1229,7 @@ void QgsMapCanvas::updateDevicePixelFromScreen()
 {
   mSettings.setDevicePixelRatio( devicePixelRatio() );
   // TODO: QGIS 4 -> always respect screen dpi
-  if ( QgsSettingsRegistryGui::settingsRespectScreenDPI.value() )
+  if ( QgsSettingsRegistryGui::settingsRespectScreenDPI->value() )
   {
     if ( window()->windowHandle() )
     {

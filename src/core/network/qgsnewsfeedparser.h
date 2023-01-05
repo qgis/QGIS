@@ -113,13 +113,13 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
 
 #ifndef SIP_RUN
     //! Settings entry last fetch time
-    static const inline QgsSettingsEntryInteger settingsFeedLastFetchTime = QgsSettingsEntryInteger( QStringLiteral( "%1/lastFetchTime" ), QgsSettings::Prefix::CORE, 0, QObject::tr( "Feed last fetch time" ), Qgis::SettingsOptions(), 0 );
+    static inline QgsSettingsEntryInteger *settingsFeedLastFetchTime = new QgsSettingsEntryInteger( QStringLiteral( "%1/lastFetchTime" ), QgsSettings::sTreeCore, 0, QObject::tr( "Feed last fetch time" ), Qgis::SettingsOptions(), 0 );
     //! Settings entry feed language
-    static const inline QgsSettingsEntryString settingsFeedLanguage = QgsSettingsEntryString( QStringLiteral( "%1/lang" ), QgsSettings::Prefix::CORE, QString(), QObject::tr( "Feed language" ) );
+    static inline QgsSettingsEntryString *settingsFeedLanguage = new QgsSettingsEntryString( QStringLiteral( "%1/lang" ), QgsSettings::sTreeCore, QString(), QObject::tr( "Feed language" ) );
     //! Settings entry feed latitude
-    static const inline QgsSettingsEntryDouble settingsFeedLatitude = QgsSettingsEntryDouble( QStringLiteral( "%1/latitude" ), QgsSettings::Prefix::CORE, 0.0, QObject::tr( "Feed latitude" ) );
+    static inline QgsSettingsEntryDouble *settingsFeedLatitude = new QgsSettingsEntryDouble( QStringLiteral( "%1/latitude" ), QgsSettings::sTreeCore, 0.0, QObject::tr( "Feed latitude" ) );
     //! Settings entry feed longitude
-    static const inline QgsSettingsEntryDouble settingsFeedLongitude = QgsSettingsEntryDouble( QStringLiteral( "%1/longitude" ), QgsSettings::Prefix::CORE, 0.0, QObject::tr( "Feed longitude" ) );
+    static inline QgsSettingsEntryDouble *settingsFeedLongitude = new QgsSettingsEntryDouble( QStringLiteral( "%1/longitude" ), QgsSettings::sTreeCore, 0.0, QObject::tr( "Feed longitude" ) );
 #endif
 
   public slots:

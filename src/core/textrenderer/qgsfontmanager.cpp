@@ -30,7 +30,7 @@
 QgsFontManager::QgsFontManager( QObject *parent )
   : QObject( parent )
 {
-  const QStringList replacements = settingsFontFamilyReplacements.value();
+  const QStringList replacements = settingsFontFamilyReplacements->value();
   for ( const QString &replacement : replacements )
   {
     const thread_local QRegularExpression rxReplacement( QStringLiteral( "(.*?):(.*)" ) );
@@ -91,7 +91,7 @@ void QgsFontManager::storeFamilyReplacements()
   QStringList replacements;
   for ( auto it = mFamilyReplacements.constBegin(); it != mFamilyReplacements.constEnd(); ++it )
     replacements << QStringLiteral( "%1:%2" ).arg( it.key(), it.value() );
-  settingsFontFamilyReplacements.setValue( replacements );
+  settingsFontFamilyReplacements->setValue( replacements );
 }
 
 void QgsFontManager::installUserFonts()
@@ -138,7 +138,7 @@ void QgsFontManager::installFontsFromDirectory( const QString &dir )
 bool QgsFontManager::tryToDownloadFontFamily( const QString &family, QString &matchedFamily )
 {
   matchedFamily.clear();
-  if ( !settingsDownloadMissingFonts.value() )
+  if ( !settingsDownloadMissingFonts->value() )
     return false;
 
   QgsReadWriteLocker locker( mReplacementLock, QgsReadWriteLocker::Read );

@@ -147,9 +147,9 @@ void TestQgsMapToolAddFeatureLineZM::testZM()
   mCanvas->setCurrentLayer( mLayerLineZM );
 
   // test with default M value = 333
-  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 333 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue->setValue( 333 );
   // test with default Z value = 123
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 123 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 123 );
 
 
   QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
@@ -166,9 +166,9 @@ void TestQgsMapToolAddFeatureLineZM::testZM()
   mLayerLineZM->undoStack()->undo();
 
   // test with default M value = 222
-  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 222 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue->setValue( 222 );
   // test with default z value = 456
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 456 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 456 );
 
   oldFids = utils.existingFeatureIds();
   utils.mouseClick( 4, 0, Qt::LeftButton );

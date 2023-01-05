@@ -241,7 +241,7 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils *pythonUtils )
   connect( buttonInstallFromZip, &QPushButton::clicked, this, &QgsPluginManager::buttonInstallFromZip_clicked );
 
   // Initialize the "Settings" tab widgets
-  if ( QgsSettingsRegistryGui::settingsAutomaticallyCheckForPluginUpdates.value() )
+  if ( QgsSettingsRegistryGui::settingsAutomaticallyCheckForPluginUpdates->value() )
   {
     ckbCheckUpdates->setChecked( true );
   }
@@ -1288,7 +1288,7 @@ void QgsPluginManager::reject()
     // get the QgsSettings group from the installer
     QString settingsGroup;
     QgsPythonRunner::eval( QStringLiteral( "pyplugin_installer.instance().exportSettingsGroup()" ), settingsGroup );
-    QgsSettingsRegistryGui::settingsAutomaticallyCheckForPluginUpdates.setValue( ckbCheckUpdates->isChecked() );
+    QgsSettingsRegistryGui::settingsAutomaticallyCheckForPluginUpdates->setValue( ckbCheckUpdates->isChecked() );
     QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().onManagerClose()" ) );
   }
 #endif

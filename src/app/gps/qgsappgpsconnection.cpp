@@ -85,10 +85,10 @@ void QgsAppGpsConnection::connectGps()
   if ( QgsGpsConnection::settingsGpsConnectionType.exists() )
   {
     connectionType = QgsGpsConnection::settingsGpsConnectionType.value();
-    gpsdHost = QgsGpsConnection::settingsGpsdHostName.value();
-    gpsdPort = static_cast< int >( QgsGpsConnection::settingsGpsdPortNumber.value() );
-    gpsdDevice = QgsGpsConnection::settingsGpsdDeviceName.value();
-    serialDevice = QgsGpsConnection::settingsGpsSerialDevice.value();
+    gpsdHost = QgsGpsConnection::settingsGpsdHostName->value();
+    gpsdPort = static_cast< int >( QgsGpsConnection::settingsGpsdPortNumber->value() );
+    gpsdDevice = QgsGpsConnection::settingsGpsdDeviceName->value();
+    serialDevice = QgsGpsConnection::settingsGpsSerialDevice->value();
   }
   else
   {
@@ -127,7 +127,7 @@ void QgsAppGpsConnection::connectGps()
       port = QStringLiteral( "internalGPS" );
       break;
     case Qgis::GpsConnectionType::Serial:
-      port = QgsGpsConnection::settingsGpsSerialDevice.value();
+      port = QgsGpsConnection::settingsGpsSerialDevice->value();
       if ( port.isEmpty() )
       {
         QgisApp::instance()->statusBarIface()->clearMessage();

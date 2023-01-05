@@ -99,7 +99,7 @@ void TestQgsMapToolCircularString::resetMapTool( QgsMapToolShapeMetadata *metada
 
 void TestQgsMapToolCircularString::testAddCircularStringCurvePoint()
 {
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 333 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 333 );
   mLayer->startEditing();
 
   mMapTool->setCurrentCaptureTechnique( Qgis::CaptureTechnique::CircularString );
@@ -118,12 +118,12 @@ void TestQgsMapToolCircularString::testAddCircularStringCurvePoint()
   QCOMPARE( f.geometry().asWkt(), wkt );
 
   mLayer->rollBack();
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 0 );
 }
 
 void TestQgsMapToolCircularString::testAddCircularStringRadius()
 {
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 111 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 111 );
   mLayer->startEditing();
 
   QgsMapToolShapeCircularStringRadiusMetadata md;
@@ -143,12 +143,12 @@ void TestQgsMapToolCircularString::testAddCircularStringRadius()
   QCOMPARE( f.geometry().asWkt(), wkt );
 
   mLayer->rollBack();
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 0 );
 }
 
 void TestQgsMapToolCircularString::testAddCircularStringRadiusWithDeletedVertex()
 {
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 111 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 111 );
   mLayer->startEditing();
 
   QgsMapToolShapeCircularStringRadiusMetadata md;
@@ -172,12 +172,12 @@ void TestQgsMapToolCircularString::testAddCircularStringRadiusWithDeletedVertex(
   QCOMPARE( f.geometry().asWkt(), wkt );
 
   mLayer->rollBack();
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 0 );
 }
 
 void TestQgsMapToolCircularString::testAddCircularStringAfterClassicDigitizing()
 {
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 333 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 333 );
   mLayer->startEditing();
 
   mMapTool->setCurrentCaptureTechnique( Qgis::CaptureTechnique::StraightSegments );
@@ -209,7 +209,7 @@ void TestQgsMapToolCircularString::testAddCircularStringAfterClassicDigitizing()
   QCOMPARE( f.geometry().asWkt(), wkt );
 
   mLayer->rollBack();
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 0 );
 }
 QGSTEST_MAIN( TestQgsMapToolCircularString )
 #include "testqgsmaptoolcircularstring.moc"

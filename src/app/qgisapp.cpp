@@ -10745,8 +10745,8 @@ bool QgisApp::toggleEditingVectorLayer( QgsVectorLayer *vlayer, bool allowCancel
 
     QgsProject::instance()->startEditing( vlayer );
 
-    QString markerType = QgsSettingsRegistryCore::settingsDigitizingMarkerStyle.value();
-    bool markSelectedOnly = QgsSettingsRegistryCore::settingsDigitizingMarkerOnlyForSelected.value();
+    QString markerType = QgsSettingsRegistryCore::settingsDigitizingMarkerStyle->value();
+    bool markSelectedOnly = QgsSettingsRegistryCore::settingsDigitizingMarkerOnlyForSelected->value();
 
     // redraw only if markers will be drawn
     if ( ( !markSelectedOnly || vlayer->selectedFeatureCount() > 0 ) &&

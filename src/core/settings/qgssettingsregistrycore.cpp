@@ -17,110 +17,19 @@
 
 
 #include "qgis.h"
-#include "qgsapplication.h"
-#include "qgsgeometryoptions.h"
+
+#include "qgsbabelformatregistry.h"
 #include "qgslayout.h"
-#include "qgslocalizeddatapathregistry.h"
 #include "qgslocator.h"
-#include "qgsmaprendererjob.h"
 #include "qgsnetworkaccessmanager.h"
-#include "qgsnewsfeedparser.h"
 #include "qgsowsconnection.h"
 #include "qgsprocessing.h"
-#include "qgsogrdbconnection.h"
-#include "qgsfontmanager.h"
-#include "qgsgpsconnection.h"
-#include "qgsbabelformatregistry.h"
-#include "qgsgpslogger.h"
 #include "qgsvectortileconnection.h"
 
 
 QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   : QgsSettingsRegistry()
 {
-  addSettingsEntry( &QgsLayout::settingsSearchPathForTemplates );
-
-  addSettingsEntry( &QgsNetworkAccessManager::settingsNetworkTimeout );
-
-  addSettingsEntry( &QgsNewsFeedParser::settingsFeedLastFetchTime );
-  addSettingsEntry( &QgsNewsFeedParser::settingsFeedLanguage );
-  addSettingsEntry( &QgsNewsFeedParser::settingsFeedLatitude );
-  addSettingsEntry( &QgsNewsFeedParser::settingsFeedLongitude );
-
-  addSettingsEntry( &QgsProcessing::settingsPreferFilenameAsLayerName );
-  addSettingsEntry( &QgsProcessing::settingsTempPath );
-  addSettingsEntry( &QgsProcessing::settingsDefaultOutputVectorLayerExt );
-  addSettingsEntry( &QgsProcessing::settingsDefaultOutputRasterLayerExt );
-
-  addSettingsEntry( &QgsGeometryOptions::settingsGeometryValidationDefaultChecks );
-
-  addSettingsEntry( &QgsLocalizedDataPathRegistry::settingsLocalizedDataPaths );
-
-  addSettingsEntry( &QgsMapRendererJob::settingsLogCanvasRefreshEvent );
-
-  addSettingsEntry( &QgsOgrDbConnection::settingsOgrConnectionSelected );
-  addSettingsEntry( &QgsOgrDbConnection::settingsOgrConnectionPath );
-
-  addSettingsEntry( &settingsDigitizingStreamTolerance );
-  addSettingsEntry( &settingsDigitizingLineWidth );
-  addSettingsEntry( &settingsDigitizingLineColorAlphaScale );
-  addSettingsEntry( &settingsDigitizingFillColorRed );
-  addSettingsEntry( &settingsDigitizingFillColorGreen );
-  addSettingsEntry( &settingsDigitizingFillColorBlue );
-  addSettingsEntry( &settingsDigitizingFillColorAlpha );
-  addSettingsEntry( &settingsDigitizingLineGhost );
-  addSettingsEntry( &settingsDigitizingDefaultZValue );
-  addSettingsEntry( &settingsDigitizingDefaultMValue );
-  addSettingsEntry( &settingsDigitizingDefaultSnapEnabled );
-  addSettingsEntry( &settingsDigitizingDefaultSnapMode );
-  addSettingsEntry( &settingsDigitizingDefaultSnapType );
-  addSettingsEntry( &settingsDigitizingDefaultSnappingTolerance );
-  addSettingsEntry( &settingsDigitizingDefaultSnappingToleranceUnit );
-  addSettingsEntry( &settingsDigitizingSearchRadiusVertexEdit );
-  addSettingsEntry( &settingsDigitizingSearchRadiusVertexEditUnit );
-  addSettingsEntry( &settingsDigitizingSnapColor );
-  addSettingsEntry( &settingsDigitizingSnapTooltip );
-  addSettingsEntry( &settingsDigitizingSnapInvisibleFeature );
-  addSettingsEntry( &settingsDigitizingMarkerOnlyForSelected );
-  addSettingsEntry( &settingsDigitizingMarkerStyle );
-  addSettingsEntry( &settingsDigitizingMarkerSizeMm );
-  addSettingsEntry( &settingsDigitizingReuseLastValues );
-  addSettingsEntry( &settingsDigitizingDisableEnterAttributeValuesDialog );
-  addSettingsEntry( &settingsDigitizingValidateGeometries );
-  addSettingsEntry( &settingsDigitizingOffsetJoinStyle );
-  addSettingsEntry( &settingsDigitizingOffsetQuadSeg );
-  addSettingsEntry( &settingsDigitizingOffsetMiterLimit );
-  addSettingsEntry( &settingsDigitizingConvertToCurve );
-  addSettingsEntry( &settingsDigitizingConvertToCurveAngleTolerance );
-  addSettingsEntry( &settingsDigitizingConvertToCurveDistanceTolerance );
-  addSettingsEntry( &settingsDigitizingOffsetCapStyle );
-  addSettingsEntry( &settingsDigitizingOffsetShowAdvanced );
-  addSettingsEntry( &settingsDigitizingTracingMaxFeatureCount );
-  addSettingsEntry( &settingsGpsBabelPath );
-  addSettingsEntry( &settingsLayerTreeShowFeatureCountForNewLayers );
-  addSettingsEntry( &settingsEnableWMSTilePrefetching );
-
-
-  addSettingsEntry( &QgsFontManager::settingsFontFamilyReplacements );
-  addSettingsEntry( &QgsFontManager::settingsDownloadMissingFonts );
-
-  addSettingsEntry( &QgsGpsConnection::settingsGpsConnectionType );
-  addSettingsEntry( &QgsGpsConnection::settingsGpsdHostName );
-  addSettingsEntry( &QgsGpsConnection::settingsGpsdPortNumber );
-  addSettingsEntry( &QgsGpsConnection::settingsGpsdDeviceName );
-  addSettingsEntry( &QgsGpsConnection::settingsGpsSerialDevice );
-  addSettingsEntry( &QgsGpsConnection::settingGpsAcquisitionInterval );
-  addSettingsEntry( &QgsGpsConnection::settingGpsDistanceThreshold );
-  addSettingsEntry( &QgsGpsConnection::settingGpsBearingFromTravelDirection );
-  addSettingsEntry( &QgsGpsConnection::settingGpsApplyLeapSecondsCorrection );
-  addSettingsEntry( &QgsGpsConnection::settingGpsLeapSeconds );
-  addSettingsEntry( &QgsGpsConnection::settingsGpsTimeStampSpecification );
-  addSettingsEntry( &QgsGpsConnection::settingsGpsTimeStampTimeZone );
-  addSettingsEntry( &QgsGpsConnection::settingsGpsTimeStampOffsetFromUtc );
-
-  addSettingsEntry( &QgsGpsLogger::settingsGpsStoreAttributeInMValues );
-  addSettingsEntry( &QgsGpsLogger::settingsGpsMValueComponent );
-
   migrateOldSettings();
 }
 
@@ -136,6 +45,16 @@ void QgsSettingsRegistryCore::migrateOldSettings()
 
   // single settings - added in 3.30
   settingsDigitizingLineColor->copyValueFromKeys( QStringLiteral( "qgis/digitizing/line_color_red" ), QStringLiteral( "qgis/digitizing/line_color_green" ), QStringLiteral( "qgis/digitizing/line_color_blue" ), QStringLiteral( "qgis/digitizing/line_color_alpha" ) );
+  QgsLayout::settingsSearchPathForTemplates->copyValueFromKey( QStringLiteral( "core/Layout/searchPathsForTemplates" ) );
+
+  QgsProcessing::settingsPreferFilenameAsLayerName->copyValueFromKey( QStringLiteral( "Processing/Configuration/PREFER_FILENAME_AS_LAYER_NAME" ) );
+  QgsProcessing::settingsTempPath->copyValueFromKey( QStringLiteral( "Processing/Configuration/TEMP_PATH2" ) );
+  QgsProcessing::settingsDefaultOutputVectorLayerExt->copyValueFromKey( QStringLiteral( "Processing/Configuration/DefaultOutputVectorLayerExt" ) );
+  QgsProcessing::settingsDefaultOutputRasterLayerExt->copyValueFromKey( QStringLiteral( "Processing/Configuration/DefaultOutputRasterLayerExt" ) );
+
+  QgsNetworkAccessManager::settingsNetworkTimeout->copyValueFromKey( QStringLiteral( "qgis/networkAndProxy/networkTimeout" ) );
+
+  settingsLayerTreeShowFeatureCountForNewLayers->copyValueFromKey( QStringLiteral( "core/layer-tree/show_feature_count_for_new_layers" ) );
 
   // locator filters - added in 3.30
   {
@@ -261,6 +180,18 @@ void QgsSettingsRegistryCore::backwardCompatibility()
 {
   // single settings - added in 3.30
   settingsDigitizingLineColor->copyValueToKeys( QStringLiteral( "qgis/digitizing/line_color_red" ), QStringLiteral( "qgis/digitizing/line_color_green" ), QStringLiteral( "qgis/digitizing/line_color_blue" ), QStringLiteral( "qgis/digitizing/line_color_alpha" ) );
+  QgsLayout::settingsSearchPathForTemplates->copyValueToKey( QStringLiteral( "core/Layout/searchPathsForTemplates" ) );
+
+  QgsProcessing::settingsPreferFilenameAsLayerName->copyValueToKey( QStringLiteral( "Processing/Configuration/PREFER_FILENAME_AS_LAYER_NAME" ) );
+  QgsProcessing::settingsTempPath->copyValueToKey( QStringLiteral( "Processing/Configuration/TEMP_PATH2" ) );
+  QgsProcessing::settingsDefaultOutputVectorLayerExt->copyValueToKey( QStringLiteral( "Processing/Configuration/DefaultOutputVectorLayerExt" ) );
+  QgsProcessing::settingsDefaultOutputRasterLayerExt->copyValueToKey( QStringLiteral( "Processing/Configuration/DefaultOutputRasterLayerExt" ) );
+
+  QgsNetworkAccessManager::settingsNetworkTimeout->copyValueToKey( QStringLiteral( "qgis/networkAndProxy/networkTimeout" ) );
+
+  settingsLayerTreeShowFeatureCountForNewLayers->copyValueToKey( QStringLiteral( "core/layer-tree/show_feature_count_for_new_layers" ) );
+
+
 
   // locator filters - added in 3.30
   {

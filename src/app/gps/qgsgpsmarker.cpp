@@ -68,7 +68,7 @@ void QgsGpsMarker::setGpsPosition( const QgsPointXY &point )
 void QgsGpsMarker::setMarkerRotation( double rotation )
 {
   QgsMarkerSymbol *renderedMarker = qgis::down_cast< QgsMarkerSymbol *>( symbol() );
-  if ( !settingRotateLocationMarker.value( ) )
+  if ( !settingRotateLocationMarker->value( ) )
   {
     renderedMarker->setAngle( mMarkerSymbol->angle() );
   }
@@ -81,7 +81,7 @@ void QgsGpsMarker::setMarkerRotation( double rotation )
 
 void QgsGpsMarker::updateMarkerSymbol()
 {
-  const QString defaultSymbol = QgsGpsMarker::settingLocationMarkerSymbol.value();
+  const QString defaultSymbol = QgsGpsMarker::settingLocationMarkerSymbol->value();
   QDomDocument symbolDoc;
   symbolDoc.setContent( defaultSymbol );
   const QDomElement markerElement = symbolDoc.documentElement();

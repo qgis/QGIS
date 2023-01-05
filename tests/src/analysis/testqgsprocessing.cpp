@@ -2675,11 +2675,11 @@ void TestQgsProcessing::parameters()
   context2.layersToLoadOnCompletion().values().at( 0 ).setOutputLayerName( rl.get() );
   QCOMPARE( rl->name(), QStringLiteral( "landsat" ) );
   // unless setting prohibits it...
-  QgsProcessing::settingsPreferFilenameAsLayerName.setValue( false );
+  QgsProcessing::settingsPreferFilenameAsLayerName->setValue( false );
   context2.layersToLoadOnCompletion().values().at( 0 ).setOutputLayerName( rl.get() );
   QCOMPARE( rl->name(), QStringLiteral( "my_dest" ) );
   // if layer has a layername, we should use that instead of the base file name...
-  QgsProcessing::settingsPreferFilenameAsLayerName.setValue( true );
+  QgsProcessing::settingsPreferFilenameAsLayerName->setValue( true );
   vl = std::make_unique< QgsVectorLayer >( QStringLiteral( TEST_DATA_DIR ) + "/points_gpkg.gpkg|layername=points_small", QString() );
   context2.layersToLoadOnCompletion().values().at( 0 ).setOutputLayerName( vl.get() );
   QCOMPARE( vl->name(), QStringLiteral( "points_small" ) );
@@ -11048,7 +11048,7 @@ void TestQgsProcessing::tempUtils()
 
   const QgsSettings settings;
   const QString alternative_tempFolder1 = tempDirPath + QStringLiteral( "/alternative_temp_test_one" );
-  QgsProcessing::settingsTempPath.setValue( alternative_tempFolder1 );
+  QgsProcessing::settingsTempPath->setValue( alternative_tempFolder1 );
   // check folder and if it's constant with alternative temp folder 1
   tempFolder = QgsProcessingUtils::tempFolder();
   QCOMPARE( tempFolder.left( alternative_tempFolder1.length() ), alternative_tempFolder1 );
@@ -11060,7 +11060,7 @@ void TestQgsProcessing::tempUtils()
   QVERIFY( alternativeTempFile1.startsWith( alternative_tempFolder1 ) );
   // change temp folder in the settings again
   const QString alternative_tempFolder2 =  tempDirPath + QStringLiteral( "/alternative_temp_test_two" );
-  QgsProcessing::settingsTempPath.setValue( alternative_tempFolder2 );
+  QgsProcessing::settingsTempPath->setValue( alternative_tempFolder2 );
   // check folder and if it's constant constant with alternative temp folder 2
   tempFolder = QgsProcessingUtils::tempFolder();
   QCOMPARE( tempFolder.left( alternative_tempFolder2.length() ), alternative_tempFolder2 );
@@ -11070,7 +11070,7 @@ void TestQgsProcessing::tempUtils()
   QVERIFY( alternativeTempFile2.endsWith( "alternative_temptest.txt" ) );
   QVERIFY( alternativeTempFile2.startsWith( tempFolder ) );
   QVERIFY( alternativeTempFile2.startsWith( alternative_tempFolder2 ) );
-  QgsProcessing::settingsTempPath.setValue( QString() );
+  QgsProcessing::settingsTempPath->setValue( QString() );
 
 }
 
@@ -11539,8 +11539,8 @@ void TestQgsProcessing::defaultExtensionsForProvider()
   QCOMPARE( context.preferredRasterFormat(), QStringLiteral( "tif" ) );
 
   // unless the user has set a default format, which IS supported by that provider
-  QgsProcessing::settingsDefaultOutputVectorLayerExt.setValue( QgsVectorFileWriter::supportedFormatExtensions().indexOf( QLatin1String( "tab" ) ) );
-  QgsProcessing::settingsDefaultOutputRasterLayerExt.setValue( QgsRasterFileWriter::supportedFormatExtensions().indexOf( QLatin1String( "sdat" ) ) );
+  QgsProcessing::settingsDefaultOutputVectorLayerExt->setValue( QgsVectorFileWriter::supportedFormatExtensions().indexOf( QLatin1String( "tab" ) ) );
+  QgsProcessing::settingsDefaultOutputRasterLayerExt->setValue( QgsRasterFileWriter::supportedFormatExtensions().indexOf( QLatin1String( "sdat" ) ) );
 
   QCOMPARE( provider.defaultVectorFileExtension( true ), QStringLiteral( "tab" ) );
   QCOMPARE( provider.defaultRasterFileExtension(), QStringLiteral( "sdat" ) );
@@ -11551,8 +11551,8 @@ void TestQgsProcessing::defaultExtensionsForProvider()
   QCOMPARE( context2.preferredRasterFormat(), QStringLiteral( "sdat" ) );
 
   // but if default is not supported by provider, we use a supported format
-  QgsProcessing::settingsDefaultOutputVectorLayerExt.setValue( QgsVectorFileWriter::supportedFormatExtensions().indexOf( QLatin1String( "gpkg" ) ) );
-  QgsProcessing::settingsDefaultOutputRasterLayerExt.setValue( QgsRasterFileWriter::supportedFormatExtensions().indexOf( QLatin1String( "ecw" ) ) );
+  QgsProcessing::settingsDefaultOutputVectorLayerExt->setValue( QgsVectorFileWriter::supportedFormatExtensions().indexOf( QLatin1String( "gpkg" ) ) );
+  QgsProcessing::settingsDefaultOutputRasterLayerExt->setValue( QgsRasterFileWriter::supportedFormatExtensions().indexOf( QLatin1String( "ecw" ) ) );
   QCOMPARE( provider.defaultVectorFileExtension( true ), QStringLiteral( "mif" ) );
   QCOMPARE( provider.defaultRasterFileExtension(), QStringLiteral( "mig" ) );
 }

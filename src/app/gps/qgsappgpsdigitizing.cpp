@@ -430,7 +430,7 @@ void QgsAppGpsDigitizing::updateTrackAppearance()
 
   QDomDocument doc;
   QDomElement elem;
-  const QString trackLineSymbolXml = QgsAppGpsDigitizing::settingTrackLineSymbol.value();
+  const QString trackLineSymbolXml = QgsAppGpsDigitizing::settingTrackLineSymbol->value();
   if ( !trackLineSymbolXml.isEmpty() )
   {
     doc.setContent( trackLineSymbolXml );

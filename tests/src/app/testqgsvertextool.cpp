@@ -379,7 +379,7 @@ void TestQgsVertexTool::testTopologicalEditingMoveVertexZ()
 
 void TestQgsVertexTool::testTopologicalEditingMoveVertexOnSegmentZ()
 {
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 333 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 333 );
 
   const bool topologicalEditing = QgsProject::instance()->topologicalEditing();
   QgsProject::instance()->setTopologicalEditing( true );
@@ -406,7 +406,7 @@ void TestQgsVertexTool::testTopologicalEditingMoveVertexOnSegmentZ()
 
 void TestQgsVertexTool::testTopologicalEditingMoveVertexOnIntersectionZ()
 {
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 333 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 333 );
 
   const bool topologicalEditing = QgsProject::instance()->topologicalEditing();
   QgsProject::instance()->setTopologicalEditing( true );

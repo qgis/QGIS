@@ -39,14 +39,14 @@ class CORE_EXPORT QgsBabelFormatRegistry
 
 #ifndef SIP_RUN
 
-    static inline QgsSettingsTreeNamedListElement *sTreeBabelDevices = QgsSettings::sTreeGps->createNamedListElement( QStringLiteral( "babelDevices" ) );
+    static inline QgsSettingsTreeNamedListElement *sTreeBabelDevices = QgsSettings::sTreeGps->createNamedListElement( QStringLiteral( "babel-devices" ) );
 
-    static inline QgsSettingsEntryString *settingsBabelWptDownload = new QgsSettingsEntryString( QStringLiteral( "babelDevices/%1/wptdownload" ), sTreeBabelDevices );
-    static inline QgsSettingsEntryString *settingsBabelWptUpload = new QgsSettingsEntryString( QStringLiteral( "babelDevices/%1/wptupload" ), sTreeBabelDevices );
-    static inline QgsSettingsEntryString *settingsBabelRteDownload = new QgsSettingsEntryString( QStringLiteral( "babelDevices/%1/rtedownload" ), sTreeBabelDevices );
-    static inline QgsSettingsEntryString *settingsBabelRteUpload = new QgsSettingsEntryString( QStringLiteral( "babelDevices/%1/rteupload" ), sTreeBabelDevices );
-    static inline QgsSettingsEntryString *settingsBabelTrkDownload = new QgsSettingsEntryString( QStringLiteral( "babelDevices/%1/trkdownload" ), sTreeBabelDevices );
-    static inline QgsSettingsEntryString *settingsBabelTrkUpload = new QgsSettingsEntryString( QStringLiteral( "babelDevices/%1/trkupload" ), sTreeBabelDevices );
+    static inline QgsSettingsEntryString *settingsBabelWptDownload = new QgsSettingsEntryString( QStringLiteral( "wptdownload" ), sTreeBabelDevices );
+    static inline QgsSettingsEntryString *settingsBabelWptUpload = new QgsSettingsEntryString( QStringLiteral( "wptupload" ), sTreeBabelDevices );
+    static inline QgsSettingsEntryString *settingsBabelRteDownload = new QgsSettingsEntryString( QStringLiteral( "rtedownload" ), sTreeBabelDevices );
+    static inline QgsSettingsEntryString *settingsBabelRteUpload = new QgsSettingsEntryString( QStringLiteral( "rteupload" ), sTreeBabelDevices );
+    static inline QgsSettingsEntryString *settingsBabelTrkDownload = new QgsSettingsEntryString( QStringLiteral( "trkdownload" ), sTreeBabelDevices );
+    static inline QgsSettingsEntryString *settingsBabelTrkUpload = new QgsSettingsEntryString( QStringLiteral( "trkupload" ), sTreeBabelDevices );
 #endif
 
     /**

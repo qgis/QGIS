@@ -1036,7 +1036,7 @@ QString QgsProcessingUtils::tempFolder()
   static QString sFolder;
   static QMutex sMutex;
   QMutexLocker locker( &sMutex );
-  const QString basePath = QgsProcessing::settingsTempPath.value();
+  const QString basePath = QgsProcessing::settingsTempPath->value();
   if ( basePath.isEmpty() )
   {
     // default setting -- automatically create a temp folder
@@ -1304,7 +1304,7 @@ QgsFields QgsProcessingUtils::indicesToFields( const QList<int> &indices, const 
 
 QString QgsProcessingUtils::defaultVectorExtension()
 {
-  const int setting = QgsProcessing::settingsDefaultOutputVectorLayerExt.value();
+  const int setting = QgsProcessing::settingsDefaultOutputVectorLayerExt->value();
   if ( setting == -1 )
     return QStringLiteral( "gpkg" );
   return QgsVectorFileWriter::supportedFormatExtensions().value( setting, QStringLiteral( "gpkg" ) );
@@ -1312,7 +1312,7 @@ QString QgsProcessingUtils::defaultVectorExtension()
 
 QString QgsProcessingUtils::defaultRasterExtension()
 {
-  const int setting = QgsProcessing::settingsDefaultOutputRasterLayerExt.value();
+  const int setting = QgsProcessing::settingsDefaultOutputRasterLayerExt->value();
   if ( setting == -1 )
     return QStringLiteral( "tif" );
   return QgsRasterFileWriter::supportedFormatExtensions().value( setting, QStringLiteral( "tif" ) );

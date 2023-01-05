@@ -172,7 +172,7 @@ QgsFeatureAction::AddFeatureResult QgsFeatureAction::addFeature( const QgsAttrib
   if ( !mLayer || !mLayer->isEditable() )
     return AddFeatureResult::LayerStateError;
 
-  const bool reuseAllLastValues = QgsSettingsRegistryCore::settingsDigitizingReuseLastValues.value();
+  const bool reuseAllLastValues = QgsSettingsRegistryCore::settingsDigitizingReuseLastValues->value();
   QgsDebugMsgLevel( QStringLiteral( "reuseAllLastValues: %1" ).arg( reuseAllLastValues ), 2 );
 
   const QgsFields fields = mLayer->fields();
@@ -205,7 +205,7 @@ QgsFeatureAction::AddFeatureResult QgsFeatureAction::addFeature( const QgsAttrib
 
   //show the dialog to enter attribute values
   //only show if enabled in settings
-  bool isDisabledAttributeValuesDlg = QgsSettingsRegistryCore::settingsDigitizingDisableEnterAttributeValuesDialog.value();
+  bool isDisabledAttributeValuesDlg = QgsSettingsRegistryCore::settingsDigitizingDisableEnterAttributeValuesDialog->value();
 
   // override application-wide setting if layer is non-spatial -- BECAUSE it's bad UX if
   // it appears that nothing happens when you click the add row button for a non-spatial layer. Unlike

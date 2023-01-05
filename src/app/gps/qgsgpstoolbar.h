@@ -38,7 +38,7 @@ class QgsGpsToolBar : public QToolBar
 
   public:
 
-    static const inline QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponents> settingShowInToolbar = QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponents>( QStringLiteral( "show-in-toolbar" ), QgsSettings::Prefix::GPS, Qgis::GpsInformationComponent::Location, QStringLiteral( "GPS information components to show in GPS toolbar" ) );
+    static const inline QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponents> settingShowInToolbar = QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponents>( QStringLiteral( "show-in-toolbar" ), QgsSettings::sTreeGps, Qgis::GpsInformationComponent::Location, QStringLiteral( "GPS information components to show in GPS toolbar" ) );
 
     QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *canvas, QWidget *parent = nullptr );
 

@@ -87,7 +87,7 @@ QgsGpsDeviceOptionsWidget::QgsGpsDeviceOptionsWidget( QWidget *parent )
 
   mGpsBabelFileWidget->setStorageMode( QgsFileWidget::GetFile );
   mGpsBabelFileWidget->setDialogTitle( tr( "Select GPSBabel Executable" ) );
-  mGpsBabelFileWidget->setFilePath( QgsSettingsRegistryCore::settingsGpsBabelPath.value() );
+  mGpsBabelFileWidget->setFilePath( QgsSettingsRegistryCore::settingsGpsBabelPath->value() );
 }
 
 void QgsGpsDeviceOptionsWidget::apply()
@@ -111,7 +111,7 @@ void QgsGpsDeviceOptionsWidget::apply()
   }
   settings.setValue( QStringLiteral( "babelDeviceList" ), deviceNames, QgsSettings::Gps );
 
-  QgsSettingsRegistryCore::settingsGpsBabelPath.setValue( mGpsBabelFileWidget->filePath() );
+  QgsSettingsRegistryCore::settingsGpsBabelPath->setValue( mGpsBabelFileWidget->filePath() );
 
   QgsApplication::gpsBabelFormatRegistry()->reloadFromSettings();
 }

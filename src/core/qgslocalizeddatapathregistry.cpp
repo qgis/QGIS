@@ -105,10 +105,10 @@ void QgsLocalizedDataPathRegistry::unregisterPath( const QString &path )
 
 void QgsLocalizedDataPathRegistry::readFromSettings()
 {
-  setPaths( settingsLocalizedDataPaths.value() );
+  setPaths( settingsLocalizedDataPaths->value() );
 }
 
 void QgsLocalizedDataPathRegistry::writeToSettings() const
 {
-  settingsLocalizedDataPaths.setValue( paths() );
+  settingsLocalizedDataPaths->setValue( paths() );
 }
