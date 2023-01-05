@@ -28,7 +28,6 @@ from qgis.core import (QgsField,
                        QgsDistanceArea,
                        QgsFeature,
                        QgsFeatureRequest,
-                       QgsFeatureSource,
                        QgsSpatialIndex,
                        QgsWkbTypes,
                        QgsUnitTypes,
@@ -101,10 +100,6 @@ class HubDistancePoints(QgisAlgorithm):
         hub_source = self.parameterAsSource(parameters, self.HUBS, context)
         if hub_source is None:
             raise QgsProcessingException(self.invalidSourceError(parameters, self.HUBS))
-        if hub_source.hasFeatures() == QgsFeatureSource.FeatureAvailability.NoFeaturesAvailable:
-            raise QgsProcessingException(
-                self.tr('Input "destination hubs layer" has no features, at least 1 feature is required')
-            )
 
         fieldName = self.parameterAsString(parameters, self.FIELD, context)
 
@@ -139,6 +134,9 @@ class HubDistancePoints(QgisAlgorithm):
             src = f.geometry().boundingBox().center()
 
             neighbors = index.nearestNeighbor(src, 1)
+            if len(neighbors) == 0:
+                continue
+
             ft = next(hub_source.getFeatures(QgsFeatureRequest().setFilterFid(neighbors[0]).setSubsetOfAttributes([fieldName], hub_source.fields()).setDestinationCrs(point_source.sourceCrs(), context.transformContext())))
             closest = ft.geometry().boundingBox().center()
             hubDist = distance.measureLine(src, closest)
