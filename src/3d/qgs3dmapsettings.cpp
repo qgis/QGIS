@@ -501,6 +501,9 @@ void Qgs3DMapSettings::resolveReferences( const QgsProject &project )
 
 void Qgs3DMapSettings::setExtent( const QgsRectangle &extent )
 {
+  if ( extent == mExtent )
+    return;
+
   mExtent = extent;
   const QgsPointXY center = mExtent.center();
   setOrigin( QgsVector3D( center.x(), center.y(), 0 ) );
@@ -522,6 +525,7 @@ void Qgs3DMapSettings::setExtent( const QgsRectangle &extent )
     }
     mTerrainGenerator->setExtent( terrainExtent );
   }
+  emit extentChanged();
 }
 
 QgsVector3D Qgs3DMapSettings::mapToWorldCoordinates( const QgsVector3D &mapCoords ) const
@@ -1028,6 +1032,7 @@ void Qgs3DMapSettings::connectChangedSignalsToSettingsChanged()
   connect( this, &Qgs3DMapSettings::fpsCounterEnabledChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::axisSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::ambientOcclusionSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::extentChanged, this, &Qgs3DMapSettings::settingsChanged );
 }
 
 

@@ -886,6 +886,13 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void debugOverlayEnabledChanged( bool debugOverlayEnabled );
 
+    /**
+     * Emitted when the 3d view's 2d extent has changed
+     * \since QGIS 3.30
+     * \see setExtent()
+     */
+    void extentChanged();
+
   private:
 #ifdef SIP_RUN
     Qgs3DMapSettings &operator=( const Qgs3DMapSettings & );

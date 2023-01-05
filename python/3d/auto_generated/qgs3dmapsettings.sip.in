@@ -930,6 +930,15 @@ Emitted when the debug overaly is enabled or disabled
 .. versionadded:: 3.26
 %End
 
+    void extentChanged();
+%Docstring
+Emitted when the 3d view's 2d extent has changed
+
+.. versionadded:: 3.30
+
+.. seealso:: :py:func:`setExtent`
+%End
+
   private:
     Qgs3DMapSettings &operator=( const Qgs3DMapSettings & );
 };
