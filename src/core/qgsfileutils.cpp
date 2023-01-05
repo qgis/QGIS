@@ -529,3 +529,23 @@ QStringList QgsFileUtils::splitPathToComponents( const QString &input )
   std::reverse( result.begin(), result.end() );
   return result;
 }
+
+QString QgsFileUtils::uniquePath( const QString &path )
+{
+  if ( ! QFileInfo::exists( path ) )
+  {
+    return path;
+  }
+
+  QFileInfo info { path };
+  const QString suffix { info.completeSuffix() };
+  const QString pathPattern { QString( suffix.length() > 0 ? path.chopped( suffix.length() + 1 ) : path ).append( QStringLiteral( "_%1." ) ).append( suffix ) };
+  int i { 1 };
+  QString uniquePath { pathPattern.arg( i ) };
+  while ( QFileInfo::exists( uniquePath ) )
+  {
+    ++i;
+    uniquePath = pathPattern.arg( i );
+  }
+  return uniquePath;
+}

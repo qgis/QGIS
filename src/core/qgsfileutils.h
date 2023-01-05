@@ -224,6 +224,19 @@ class CORE_EXPORT QgsFileUtils
      * \since QGIS 3.28
      */
     static QStringList splitPathToComponents( const QString &path );
+
+    /**
+     * Creates a unique file path name from a desired path by appending "_<n>" (where "<n>" is an integer number) before the file suffix.
+     *
+     * E.g. if "/path/my_image.png" already exists "/path/my_image_1.png" (and "_2", "_3" etc.) will be checked until a file path that does not already exist is found.
+     *
+     * \param path the desired path.
+     * \return the unmodified path if path is already unique or the new path with "_<n>" (where "<n>" is an integer number) appended to the file name before the suffix.
+     * \note This function does not make any check on path validity and write permissions.
+     * \since QGIS 3.30
+     */
+    static QString uniquePath( const QString &path );
+
 };
 
 #endif // QGSFILEUTILS_H
