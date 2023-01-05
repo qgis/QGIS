@@ -125,7 +125,6 @@ class CORE_EXPORT QgsSettings : public QObject
         static const inline char *CORE_LAYOUT = "core/Layout";
         static const inline char *GEOMETRYVALIDATION = "geometry_validation";
         static const inline char *GPS = "gps";
-        static const inline char *GUI_LOCATORFILTERS = "gui/locator_filters";
         static const inline char *GUI_QGIS = "gui/qgis";
         static const inline char *LOCALE = "locale";
         static const inline char *MAP = "Map";

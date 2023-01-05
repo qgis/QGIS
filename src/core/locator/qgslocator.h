@@ -154,12 +154,14 @@ class CORE_EXPORT QgsLocator : public QObject
     QStringList completionList() const {return mAutocompletionList;}
 
 #ifndef SIP_RUN
+    static inline QgsSettingsTreeNamedListElement *sTreeLocatorFilters = QgsSettings::sTreeQgis->createNamedListElement( QStringLiteral( "locator-filters" ) );
+
     //! Settings entry locator filter enabled
-    static const inline QgsSettingsEntryBool settingsLocatorFilterEnabled = QgsSettingsEntryBool( QStringLiteral( "enabled_%1" ), QgsSettings::Prefix::GUI_LOCATORFILTERS, true, QObject::tr( "Locator filter enabled" ) );
+    static inline QgsSettingsEntryBool *settingsLocatorFilterEnabled = new QgsSettingsEntryBool( QStringLiteral( "enabled" ), sTreeLocatorFilters, true, QObject::tr( "Locator filter enabled" ) );
     //! Settings entry locator filter default value
-    static const inline QgsSettingsEntryBool settingsLocatorFilterDefault = QgsSettingsEntryBool( QStringLiteral( "default_%1" ), QgsSettings::Prefix::GUI_LOCATORFILTERS, false, QObject::tr( "Locator filter default value" ) );
+    static inline QgsSettingsEntryBool *settingsLocatorFilterDefault = new QgsSettingsEntryBool( QStringLiteral( "default" ), sTreeLocatorFilters, false, QObject::tr( "Locator filter default value" ) );
     //! Settings entry locator filter prefix
-    static const inline QgsSettingsEntryString settingsLocatorFilterPrefix = QgsSettingsEntryString( QStringLiteral( "prefix_%1" ), QgsSettings::Prefix::GUI_LOCATORFILTERS, QString(), QObject::tr( "Locator filter prefix" ) );
+    static inline QgsSettingsEntryString *settingsLocatorFilterPrefix = new QgsSettingsEntryString( QStringLiteral( "prefix" ), sTreeLocatorFilters, QString(), QObject::tr( "Locator filter prefix" ) );
 #endif
 
   signals:

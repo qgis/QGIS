@@ -40,10 +40,6 @@ QgsSettingsRegistryCore::QgsSettingsRegistryCore()
 {
   addSettingsEntry( &QgsLayout::settingsSearchPathForTemplates );
 
-  addSettingsEntry( &QgsLocator::settingsLocatorFilterEnabled );
-  addSettingsEntry( &QgsLocator::settingsLocatorFilterDefault );
-  addSettingsEntry( &QgsLocator::settingsLocatorFilterPrefix );
-
   addSettingsEntry( &QgsNetworkAccessManager::settingsNetworkTimeout );
 
   addSettingsEntry( &QgsNewsFeedParser::settingsFeedLastFetchTime );
@@ -140,6 +136,19 @@ void QgsSettingsRegistryCore::migrateOldSettings()
 
   // single settings - added in 3.30
   settingsDigitizingLineColor->copyValueFromKeys( QStringLiteral( "qgis/digitizing/line_color_red" ), QStringLiteral( "qgis/digitizing/line_color_green" ), QStringLiteral( "qgis/digitizing/line_color_blue" ), QStringLiteral( "qgis/digitizing/line_color_alpha" ) );
+
+  // locator filters - added in 3.30
+  {
+    QgsSettings settings;
+    settings.beginGroup( QStringLiteral( "gui/locator_filters" ) );
+    const QStringList filters = settings.childGroups();
+    for ( const QString &filter : filters )
+    {
+      QgsLocator::settingsLocatorFilterEnabled->copyValueFromKey( QStringLiteral( "gui/locator_filters/enabled_%1" ), {filter}, true );
+      QgsLocator::settingsLocatorFilterDefault->copyValueFromKey( QStringLiteral( "gui/locator_filters/default_%1" ), {filter}, true );
+      QgsLocator::settingsLocatorFilterPrefix->copyValueFromKey( QStringLiteral( "gui/locator_filters/prefix_%1" ), {filter}, true );
+    }
+  }
 
   // connections settings - added in 3.30
   const QStringList services = {QStringLiteral( "WMS" ), QStringLiteral( "WFS" ), QStringLiteral( "WCS" ), QStringLiteral( "GeoNode" )};
@@ -253,6 +262,17 @@ void QgsSettingsRegistryCore::backwardCompatibility()
   // single settings - added in 3.30
   settingsDigitizingLineColor->copyValueToKeys( QStringLiteral( "qgis/digitizing/line_color_red" ), QStringLiteral( "qgis/digitizing/line_color_green" ), QStringLiteral( "qgis/digitizing/line_color_blue" ), QStringLiteral( "qgis/digitizing/line_color_alpha" ) );
 
+  // locator filters - added in 3.30
+  {
+    const QStringList filters = QgsLocator::sTreeLocatorFilters->items();
+    for ( const QString &filter : filters )
+    {
+      QgsLocator::settingsLocatorFilterEnabled->copyValueToKey( QStringLiteral( "gui/locator_filters/enabled_%1" ), {filter} );
+      QgsLocator::settingsLocatorFilterDefault->copyValueToKey( QStringLiteral( "gui/locator_filters/default_%1" ), {filter} );
+      QgsLocator::settingsLocatorFilterPrefix->copyValueToKey( QStringLiteral( "gui/locator_filters/prefix_%1" ), {filter} );
+    }
+  }
+
   // OWS connections settings - added in 3.30
   {
     const QStringList services = {QStringLiteral( "WMS" ), QStringLiteral( "WFS" ), QStringLiteral( "WCS" ), QStringLiteral( "GeoNode" )};
@@ -306,8 +326,6 @@ void QgsSettingsRegistryCore::backwardCompatibility()
     for ( const QString &connection : connections )
     {
       // do not overwrite already set setting
-      if ( QgsVectorTileProviderConnection::settingsUrl->exists( connection ) )
-        continue;
       QgsVectorTileProviderConnection::settingsUrl->copyValueToKey( QStringLiteral( "qgis/connections-vector-tile/%1/url" ), {connection} );
       QgsVectorTileProviderConnection::settingsZmin->copyValueToKey( QStringLiteral( "qgis/connections-vector-tile/%1/zmin" ), {connection} );
       QgsVectorTileProviderConnection::settingsZmax->copyValueToKey( QStringLiteral( "qgis/connections-vector-tile/%1/zmax" ), {connection} );
