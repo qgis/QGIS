@@ -44,7 +44,7 @@ class DatabaseInfo(object):
     def generalInfo(self):
         info = self.db.connector.getInfo()
         tbl = [
-            (QApplication.translate("DBManagerPlugin", "Server version: "), info[0]),
+            (QApplication.translate("DBManagerPlugin", "Server version: "), info[0])
         ]
         return HtmlTable(tbl)
 
@@ -398,7 +398,7 @@ class VectorTableInfo(TableInfo):
         sr_info = self.table.database().connector.getSpatialRefInfo(srid) if srid != -1 else QApplication.translate(
             "DBManagerPlugin", "Undefined")
         if sr_info:
-            tbl.append((QApplication.translate("DBManagerPlugin", "Spatial ref:"), u"%s (%d)" % (sr_info, srid)))
+            tbl.append((QApplication.translate("DBManagerPlugin", "Spatial ref:"), "%s (%d)" % (sr_info, srid)))
 
         # estimated extent
         if not self.table.isView:
@@ -463,7 +463,7 @@ class RasterTableInfo(TableInfo):
         sr_info = self.table.database().connector.getSpatialRefInfo(srid) if srid != -1 else QApplication.translate(
             "DBManagerPlugin", "Undefined")
         if sr_info:
-            tbl.append((QApplication.translate("DBManagerPlugin", "Spatial ref:"), u"%s (%d)" % (sr_info, srid)))
+            tbl.append((QApplication.translate("DBManagerPlugin", "Spatial ref:"), "%s (%d)" % (sr_info, srid)))
 
         # extent
         if self.table.extent is not None and self.table.extent[0] is not None:
