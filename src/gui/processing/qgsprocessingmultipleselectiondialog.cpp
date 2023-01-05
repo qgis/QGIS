@@ -212,11 +212,11 @@ QList< int> QgsProcessingMultipleSelectionPanelWidget::existingMapLayerFromMimeD
         // try to match project layers to current layers
         if ( mModel->item( i )->data( Qt::UserRole ) == layer->id() )
         {
-          indexes.append(i);
+          indexes.append( i );
         }
         else if ( mModel->item( i )->data( Qt::UserRole ) == layer->source() )
         {
-          indexes.append(i);
+          indexes.append( i );
         }
       }
     }
@@ -343,7 +343,7 @@ QgsProcessingMultipleInputPanelWidget::QgsProcessingMultipleInputPanelWidget( co
   QPushButton *addFileButton = new QPushButton( tr( "Add File(s)…" ) );
   connect( addFileButton, &QPushButton::clicked, this, &QgsProcessingMultipleInputPanelWidget::addFiles );
   buttonBox()->addButton( addFileButton, QDialogButtonBox::ActionRole );
-  
+
   QPushButton *addDirButton = new QPushButton( tr( "Add Directory…" ) );
   connect( addDirButton, &QPushButton::clicked, this, &QgsProcessingMultipleInputPanelWidget::addDirectory );
   buttonBox()->addButton( addDirButton, QDialogButtonBox::ActionRole );
@@ -432,11 +432,11 @@ QList< int> QgsProcessingMultipleInputPanelWidget::existingMapLayerFromMimeData(
         // try to match project layers to current layers
         if ( mModel->item( i )->data( Qt::UserRole ) == layer->id() )
         {
-          indexes.append(i);
+          indexes.append( i );
         }
         else if ( mModel->item( i )->data( Qt::UserRole ) == layer->source() )
         {
-          indexes.append(i);
+          indexes.append( i );
         }
       }
     }

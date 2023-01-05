@@ -125,10 +125,10 @@ class GUI_EXPORT QgsProcessingMultipleSelectionPanelWidget : public QgsPanelWidg
     //! Value formatter
     std::function< QString( const QVariant & )> mValueFormatter;
 
-    void dragEnterEvent( QDragEnterEvent *event ) override;
-    void dragLeaveEvent( QDragLeaveEvent *event ) override;
-    void dropEvent( QDropEvent *event ) override;
-    //void paintEvent( QPaintEvent *e ) override;
+    void dragEnterEvent( QDragEnterEvent *event ) override SIP_SKIP;
+    void dragLeaveEvent( QDragLeaveEvent *event ) override SIP_SKIP;
+    void dropEvent( QDropEvent *event ) override SIP_SKIP;
+
   private slots:
 
     void selectAll( bool checked );
@@ -257,10 +257,10 @@ class GUI_EXPORT QgsProcessingMultipleInputPanelWidget : public QgsProcessingMul
     void addFiles();
     void addDirectory();
 
-    protected:
-    void dragEnterEvent( QDragEnterEvent *event ) override;
-    void dragLeaveEvent( QDragLeaveEvent *event ) override;
-    void dropEvent( QDropEvent *event ) override;
+  protected:
+    void dragEnterEvent( QDragEnterEvent *event ) override SIP_SKIP;
+    void dragLeaveEvent( QDragLeaveEvent *event ) override SIP_SKIP;
+    void dropEvent( QDropEvent *event ) override SIP_SKIP;
 
   private:
     bool mDragActive = false;
