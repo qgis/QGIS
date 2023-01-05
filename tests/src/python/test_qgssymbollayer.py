@@ -813,7 +813,6 @@ class TestQgsSymbolLayer(unittest.TestCase):
         self.assertEqual(mSymbolLayer.subSymbol().color(), QColor(250, 150, 200))
         self.assertEqual(mSymbolLayer.color(), QColor(250, 150, 200))
 
-    @unittest.expectedFailure
     def testQgsPointPatternFillSymbolLayerSld(self):
         """
         Create a new style from a .sld file and match test
