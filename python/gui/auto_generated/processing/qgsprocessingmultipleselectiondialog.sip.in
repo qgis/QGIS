@@ -103,6 +103,8 @@ Adds a new option to the widget.
 Returns pointer to the list view
 %End
 
+
+
 };
 
 
@@ -205,6 +207,8 @@ Constructor for QgsProcessingMultipleInputPanelWidget.
 Sets the project associated with the widget.
 %End
 
+
+  protected: 
 };
 
 
