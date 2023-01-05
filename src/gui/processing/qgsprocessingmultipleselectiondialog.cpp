@@ -210,11 +210,8 @@ QList< int> QgsProcessingMultipleSelectionPanelWidget::existingMapLayerFromMimeD
       for ( int i = 0; i < mModel->rowCount(); ++i )
       {
         // try to match project layers to current layers
-        if ( mModel->item( i )->data( Qt::UserRole ) == layer->id() )
-        {
-          indexes.append( i );
-        }
-        else if ( mModel->item( i )->data( Qt::UserRole ) == layer->source() )
+        QString userRole = mModel->item( i )->data( Qt::UserRole ).toString();
+        if ( userRole == layer->id() || userRole == layer->source() )
         {
           indexes.append( i );
         }
@@ -430,11 +427,8 @@ QList< int> QgsProcessingMultipleInputPanelWidget::existingMapLayerFromMimeData(
       for ( int i = 0; i < mModel->rowCount(); ++i )
       {
         // try to match project layers to current layers
-        if ( mModel->item( i )->data( Qt::UserRole ) == layer->id() )
-        {
-          indexes.append( i );
-        }
-        else if ( mModel->item( i )->data( Qt::UserRole ) == layer->source() )
+        QString userRole = mModel->item( i )->data( Qt::UserRole ).toString();
+        if ( userRole == layer->id() || userRole == layer->source() )
         {
           indexes.append( i );
         }

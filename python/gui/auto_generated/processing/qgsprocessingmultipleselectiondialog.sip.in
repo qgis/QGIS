@@ -208,7 +208,7 @@ Sets the project associated with the widget.
 %End
 
 
-  protected: 
+  protected:
 };
 
 
