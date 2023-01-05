@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>442</width>
-    <height>321</height>
+    <width>410</width>
+    <height>367</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -28,6 +28,9 @@
    </property>
    <item>
     <widget class="QgsCollapsibleGroupBox" name="mShadingGroupBox">
+     <property name="toolTip">
+      <string/>
+     </property>
      <property name="title">
       <string>Global Map Shading</string>
      </property>
@@ -35,17 +38,72 @@
       <bool>true</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
+      <item row="1" column="0">
        <widget class="QLabel" name="label_3">
         <property name="text">
          <string>Method to combine different sources</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
+      <item row="1" column="1">
        <widget class="QComboBox" name="mCombineMethodCombo"/>
       </item>
-      <item row="1" column="0" colspan="2">
+      <item row="3" column="0" colspan="2">
+       <widget class="QgsCollapsibleGroupBox" name="mHillshadingGroupBox">
+        <property name="title">
+         <string>Hillshading</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_6">
+         <item row="0" column="0">
+          <widget class="QLabel" name="mHillshadingZFactorLabel">
+           <property name="text">
+            <string>Z Factor</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="mHillshadingMultidirLabel">
+           <property name="text">
+            <string>Multidirectional</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QgsDoubleSpinBox" name="mHillshadingZFactorSpinBox">
+           <property name="toolTip">
+            <string>Vertical exageration for hillshading</string>
+           </property>
+           <property name="maximum">
+            <double>9999999999999999455752309870428160.000000000000000</double>
+           </property>
+           <property name="value">
+            <double>1.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QCheckBox" name="mHillshadingMultidirCheckBox">
+           <property name="toolTip">
+            <string>Used multidirectionnal lights instead of the specified azimuth for hillshading.</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="tristate">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0" colspan="2">
+          <widget class="QgsDirectionalLightWidget" name="mDirectionalLightWidget" native="true"/>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="2">
        <widget class="QgsCollapsibleGroupBox" name="mEdlGroupBox">
         <property name="title">
          <string>Eye-Dome Lighting</string>
@@ -100,53 +158,14 @@
         </layout>
        </widget>
       </item>
-      <item row="2" column="0" colspan="2">
-       <widget class="QgsCollapsibleGroupBox" name="mHillshadingGroupBox">
-        <property name="title">
-         <string>Hillshading</string>
+      <item row="0" column="0" colspan="2">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Apply shading on the canvas following elevation of Point Cloud layers, Mesh layers and Raster layers if they represents elevation surface.</string>
         </property>
-        <property name="checkable">
+        <property name="wordWrap">
          <bool>true</bool>
         </property>
-        <layout class="QGridLayout" name="gridLayout_6">
-         <item row="0" column="0">
-          <widget class="QLabel" name="mHillshadingZFactorLabel">
-           <property name="text">
-            <string>Z Factor</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="mHillshadingMultidirLabel">
-           <property name="text">
-            <string>Multidirectional</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QDoubleSpinBox" name="mHillshadingZFactorSpinBox">
-           <property name="maximum">
-            <double>9999999999999999455752309870428160.000000000000000</double>
-           </property>
-           <property name="value">
-            <double>1.000000000000000</double>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QCheckBox" name="mHillshadingMultidirCheckBox">
-           <property name="text">
-            <string/>
-           </property>
-           <property name="tristate">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0" colspan="2">
-          <widget class="QgsDirectionalLightWidget" name="mDirectionalLightWidget" native="true"/>
-         </item>
-        </layout>
        </widget>
       </item>
      </layout>

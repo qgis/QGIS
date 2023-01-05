@@ -36,6 +36,9 @@
    </item>
    <item>
     <widget class="QgsDoubleSpinBox" name="mAzimuthSpinBox">
+     <property name="toolTip">
+      <string>Azimuth is the horizontal angle from the north of the directional light.</string>
+     </property>
      <property name="suffix">
       <string notr="true">°</string>
      </property>
@@ -54,6 +57,9 @@
     <widget class="QDial" name="mDialAzimuth">
      <property name="maximum">
       <number>3599</number>
+     </property>
+     <property name="value">
+      <number>1350</number>
      </property>
      <property name="invertedAppearance">
       <bool>false</bool>
@@ -74,6 +80,9 @@
    </item>
    <item>
     <widget class="QLabel" name="label_2">
+     <property name="toolTip">
+      <string/>
+     </property>
      <property name="text">
       <string>Altitude</string>
      </property>
@@ -81,6 +90,9 @@
    </item>
    <item>
     <widget class="QgsDoubleSpinBox" name="mAltitudeSpinBox">
+     <property name="toolTip">
+      <string>Altitude is the vertical angle from the horizontal plan of the directional light.</string>
+     </property>
      <property name="suffix">
       <string notr="true">°</string>
      </property>

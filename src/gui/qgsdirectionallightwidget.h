@@ -51,6 +51,8 @@ class GUI_EXPORT QgsDirectionalLightWidget : public QWidget, private Ui::QgsDire
     //! Returns the \a altitude value (degree)
     double altitude() const;
 
+    //! Sets whether the azimut can be changed, for example, when using multidirectional light
+    void setEnableAzimuth( bool enable );
 
   signals:
     void directionChanged();

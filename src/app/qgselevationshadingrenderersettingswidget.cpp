@@ -36,11 +36,15 @@ QgsElevationShadingRendererSettingsWidget::QgsElevationShadingRendererSettingsWi
 
   connect( mCombineMethodCombo,  qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsElevationShadingRendererSettingsWidget::onChanged );
 
+  mEdlDistanceSpinBox->setClearValue( 0.5 );
+  mEdlStrengthSpinBox->setClearValue( 1000 );
   connect( mEdlGroupBox, &QGroupBox::toggled, this, &QgsElevationShadingRendererSettingsWidget::onChanged );
   connect( mEdlStrengthSpinBox,  qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsElevationShadingRendererSettingsWidget::onChanged );
   connect( mEdlDistanceSpinBox,  qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsElevationShadingRendererSettingsWidget::onChanged );
+  connect( mEdlDistanceUnit, &QgsUnitSelectionWidget::changed, this, &QgsElevationShadingRendererSettingsWidget::onChanged );
 
   connect( mHillshadingGroupBox, &QGroupBox::toggled, this, &QgsElevationShadingRendererSettingsWidget::onChanged );
+  mHillshadingZFactorSpinBox->setClearValue( 1.0 );
   connect( mHillshadingZFactorSpinBox,  qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsElevationShadingRendererSettingsWidget::onChanged );
   connect( mHillshadingMultidirCheckBox, &QCheckBox::toggled, this, &QgsElevationShadingRendererSettingsWidget::onChanged );
 
@@ -91,11 +95,14 @@ void QgsElevationShadingRendererSettingsWidget::syncToProject()
 
   mDirectionalLightWidget->setAltitude( shadingRenderer.lightAltitude() );
   mDirectionalLightWidget->setAzimuth( shadingRenderer.lightAzimuth() );
+  mDirectionalLightWidget->setEnableAzimuth( !mHillshadingMultidirCheckBox->isChecked() );
   mBlockUpdates = false;
 }
 
 void QgsElevationShadingRendererSettingsWidget::onChanged()
 {
+  mDirectionalLightWidget->setEnableAzimuth( !mHillshadingMultidirCheckBox->isChecked() );
+
   if ( !mBlockUpdates )
     emit widgetChanged();
 }

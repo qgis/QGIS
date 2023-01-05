@@ -24,6 +24,9 @@ QgsDirectionalLightWidget::QgsDirectionalLightWidget( QWidget *parent ) :
 {
   setupUi( this );
 
+  mAzimuthSpinBox->setClearValue( 315.0 );
+  mAltitudeSpinBox->setClearValue( 45.0 );
+
   connect( mAzimuthSpinBox,  qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value )
   {
     whileBlocking( mDialAzimuth )->setValue( static_cast<int>( value * 10 + 1800 ) % 3600 );
@@ -71,4 +74,10 @@ void QgsDirectionalLightWidget::setAltitude( double altitude )
 double QgsDirectionalLightWidget::altitude() const
 {
   return mAltitudeSpinBox->value();
+}
+
+void QgsDirectionalLightWidget::setEnableAzimuth( bool enable )
+{
+  mAzimuthSpinBox->setEnabled( enable );
+  mDialAzimuth->setEnabled( enable );
 }
