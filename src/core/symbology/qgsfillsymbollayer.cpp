@@ -4229,7 +4229,7 @@ QgsPointPatternFillSymbolLayer *QgsPointPatternFillSymbolLayer::clone() const
 
 void QgsPointPatternFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
 {
-  for ( int symboLayerIdx = 0; symboLayerIdx < mMarkerSymbol->symbolLayerCount(); symboLayerIdx++ )
+  for ( int symbolLayerIdx = 0; symbolLayerIdx < mMarkerSymbol->symbolLayerCount(); symbolLayerIdx++ )
   {
     QDomElement symbolizerElem = doc.createElement( QStringLiteral( "se:PolygonSymbolizer" ) );
     if ( !props.value( QStringLiteral( "uom" ), QString() ).toString().isEmpty() )
@@ -4245,7 +4245,7 @@ void QgsPointPatternFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &elem
     QDomElement graphicFillElem = doc.createElement( QStringLiteral( "se:GraphicFill" ) );
     fillElem.appendChild( graphicFillElem );
 
-    QgsSymbolLayer *layer = mMarkerSymbol->symbolLayer( symboLayerIdx );
+    QgsSymbolLayer *layer = mMarkerSymbol->symbolLayer( symbolLayerIdx );
 
     // Converts to GeoServer "graphic-margin": symbol size must be subtracted from distance and then divided by 2
     const double markerSize { mMarkerSymbol->size() };
