@@ -182,7 +182,8 @@ Qgis.SettingsType.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.SldExportOption.NoOptions.__doc__ = "Default SLD export"
 Qgis.SldExportOption.Svg.__doc__ = "Export complex styles to separate SVG files for better compatibility with OGC servers"
-Qgis.SldExportOption.__doc__ = 'SLD export options\n\n.. versionadded:: 3.30\n\n' + '* ``NoOptions``: ' + Qgis.SldExportOption.NoOptions.__doc__ + '\n' + '* ``Svg``: ' + Qgis.SldExportOption.Svg.__doc__
+Qgis.SldExportOption.Png.__doc__ = "Export complex styles to separate PNG files for better compatibility with OGC servers"
+Qgis.SldExportOption.__doc__ = 'SLD export options\n\n.. versionadded:: 3.30\n\n' + '* ``NoOptions``: ' + Qgis.SldExportOption.NoOptions.__doc__ + '\n' + '* ``Svg``: ' + Qgis.SldExportOption.Svg.__doc__ + '\n' + '* ``Png``: ' + Qgis.SldExportOption.Png.__doc__
 # --
 Qgis.SldExportOption.baseClass = Qgis
 Qgis.SldExportOptions.baseClass = Qgis
