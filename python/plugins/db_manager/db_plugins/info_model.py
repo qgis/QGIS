@@ -293,7 +293,7 @@ class TableInfo(object):
         # add table contents
         for trig in self.table.triggers():
             name = '%(name)s (<a href="action:trigger/%(name)s/%(action)s">%(action)s</a>)' % {"name": trig.name,
-                                                                                                "action": "delete"}
+                                                                                               "action": "delete"}
             tbl.append((name, trig.function.replace('<', '&lt;')))
 
         return HtmlTable(tbl, {"class": "header"})
