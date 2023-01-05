@@ -51,7 +51,8 @@ class DatabaseInfo(object):
     def connectionDetails(self):
         tbl = [
             (QApplication.translate("DBManagerPlugin", "Host:"), self.db.connector.host),
-            (QApplication.translate("DBManagerPlugin", "User:"), self.db.connector.user)        ]
+            (QApplication.translate("DBManagerPlugin", "User:"), self.db.connector.user),
+        ]
         return HtmlTable(tbl)
 
     def spatialInfo(self):
