@@ -496,7 +496,6 @@ void TestQgsLayoutItem::dataDefinedPosition()
   QCOMPARE( item->scenePos().x(), 140.0 ); //mm
   QCOMPARE( item->scenePos().y(), 40.0 ); //mm
 
-  QgsLayout l( &proj );
   QgsLayoutItemPage *page1 = new QgsLayoutItemPage( &l );
   page1->setPageSize( "A4" );
   l.pageCollection()->addPage( page1 );
@@ -512,9 +511,9 @@ void TestQgsLayoutItem::dataDefinedPosition()
   QCOMPARE( item->positionWithUnits().y(), 13.0 );
   QCOMPARE( item->positionWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
 
-  items = l.pageCollection()->itemsOnPage( 2 );
+  QList<QgsLayoutItem *> items = l.pageCollection()->itemsOnPage( 2 );
   QCOMPARE( items.length(), 2 );
-  QCOMPARE( item.page(), 2 );
+  QCOMPARE( item->page(), 2 );
 
   l.pageCollection()->deletePage( 2 );
   l.pageCollection()->deletePage( 1 );
