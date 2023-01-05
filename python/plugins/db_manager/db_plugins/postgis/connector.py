@@ -398,7 +398,7 @@ class PostGisDBConnector(DBConnector):
         
     def getDatabaseInfo(self):
         """ db privileges: (can create schemas, can create temp. tables) """
-        sql = u"SELECT pg_catalog.shobj_description( d.oid, 'pg_database') AS description from pg_catalog.pg_database d where  datname = current_database()"
+        sql = "SELECT pg_catalog.shobj_description(d.oid, 'pg_database') AS description from pg_catalog.pg_database d where datname = current_database()"
         c = self._execute(None, sql)
         res = self._fetchone(c)
         self._close_cursor(c)
