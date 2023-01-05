@@ -71,23 +71,23 @@ std::unique_ptr<QgsElevationMap> QgsElevationMap::fromRasterBlock( QgsRasterBloc
   return elevMap;
 }
 
-QgsElevationMap &QgsElevationMap::operator=(const QgsElevationMap &other)
+QgsElevationMap &QgsElevationMap::operator=( const QgsElevationMap &other )
 {
-    mPainter.reset();
-    mElevationImage = other.mElevationImage;
-    return *this;
+  mPainter.reset();
+  mElevationImage = other.mElevationImage;
+  return *this;
 }
 
 void QgsElevationMap::applyEyeDomeLighting( QImage &img, int distance, float strength, float rendererScale ) const
 {
-    const int imgWidth = img.width(), imgHeight = img.height();
+  const int imgWidth = img.width(), imgHeight = img.height();
   QRgb *imgPtr = reinterpret_cast<QRgb *>( img.bits() );
   const QRgb *elevPtr = reinterpret_cast<const QRgb *>( mElevationImage.constBits() );
 
   const int neighbours[] = { -1, 0, 1, 0, 0, -1, 0, 1 };
-  for ( int i = distance; i < imgWidth - distance; ++i )
+  for ( int i = 0; i < imgWidth; ++i )
   {
-    for ( int j = distance; j < imgHeight - distance; ++j )
+    for ( int j = 0; j < imgHeight; ++j )
     {
       qgssize index = j * static_cast<qgssize>( imgWidth ) + i;
       float factor = 0.0f;
@@ -96,13 +96,31 @@ void QgsElevationMap::applyEyeDomeLighting( QImage &img, int distance, float str
         continue;
       for ( int k = 0; k < 4; ++k )
       {
-        int iNeighbour = i + distance * neighbours[2 * k];
-        int jNeighbour = j + distance * neighbours[2 * k + 1];
+        float borderFactor = 1.0f;
+        int iNeighbour = std::clamp( i + distance * neighbours[2 * k], 0, imgWidth - 1 );
+        int jNeighbour = std::clamp( j + distance * neighbours[2 * k + 1], 0, imgHeight - 1 );
         qgssize neighbourIndex = jNeighbour * static_cast<qgssize>( imgWidth ) + iNeighbour;
         if ( isNoData( elevPtr[ index ] ) )
           continue;
+
+        if ( neighbours[2 * k] != 0 && std::abs( iNeighbour - i ) < distance )
+        {
+          if ( i > iNeighbour )
+            borderFactor = static_cast<double>( distance ) /  i  ;
+          else if ( i < iNeighbour )
+            borderFactor = static_cast<double>( distance ) / ( imgWidth - i - 1 )  ;
+        }
+
+        if ( neighbours[2 * k + 1] != 0 && std::abs( jNeighbour - j ) < distance )
+        {
+          if ( j > jNeighbour )
+            borderFactor = static_cast<double>( distance ) /  j  ;
+          else if ( j < jNeighbour )
+            borderFactor = static_cast<double>( distance ) / ( imgHeight - j - 1 )  ;
+        }
+
         float neighbourDepth = decodeElevation( elevPtr[ neighbourIndex ] );
-        factor += std::max<float>( 0, -( centerDepth - neighbourDepth ) );
+        factor += std::max<float>( 0, -( centerDepth - neighbourDepth ) * borderFactor );
       }
       float shade = exp( -factor * strength / rendererScale );
 
