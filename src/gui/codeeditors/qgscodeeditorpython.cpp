@@ -245,6 +245,49 @@ bool QgsCodeEditorPython::loadScript( const QString &script )
   return true;
 }
 
+bool QgsCodeEditorPython::isCursorInsideString() const
+{
+  int line, index;
+  getCursorPosition(&line, &index);
+  auto postion = positionFromLineIndex(line, index);
+  auto style = SendScintilla(QsciScintillaBase::SCI_GETSTYLEAT, postion);
+  return style == QsciLexerPython::Comment
+        || style == QsciLexerPython::DoubleQuotedString 
+        || style == QsciLexerPython::SingleQuotedString 
+        || style == QsciLexerPython::TripleSingleQuotedString 
+        || style == QsciLexerPython::TripleDoubleQuotedString 
+        || style == QsciLexerPython::CommentBlock
+        || style == QsciLexerPython::UnclosedString 
+        || style == QsciLexerPython::DoubleQuotedFString 
+        || style == QsciLexerPython::SingleQuotedFString 
+        || style == QsciLexerPython::TripleSingleQuotedFString 
+        || style == QsciLexerPython::TripleDoubleQuotedFString;
+}
+
+QString QgsCodeEditorPython::characterBeforeCursor() const
+{
+  int line, index;
+  getCursorPosition(&line, &index);
+  auto position = positionFromLineIndex(line, index);
+  if ( position <= 0 )
+  {
+    return "";
+  } 
+  return text(position - 1, position);
+}
+
+QString QgsCodeEditorPython::characterAfterCursor() const
+{
+  int line, index;
+  getCursorPosition(&line, &index);
+  auto position = positionFromLineIndex(line, index);
+  if ( position >= length() )
+  {
+    return "";
+  }
+  return text(position, position + 1);
+}
+
 void QgsCodeEditorPython::searchSelectedTextInPyQGISDocs()
 {
   if ( !hasSelectedText() )

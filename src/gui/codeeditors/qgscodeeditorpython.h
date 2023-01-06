@@ -75,6 +75,21 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
      */
     bool loadScript( const QString &script );
 
+    /**
+     * Check whether the current cursor position is inside a string or comment
+     */
+    bool isCursorInsideString() const;
+
+    /**
+     * Returns the character before the cursor, or an empty string if cursor is set at start
+     */
+    QString characterBeforeCursor() const;
+
+    /**
+     * Returns the character after the cursor, or an empty string if the cursot is set at end
+     */
+    QString characterAfterCursor() const;
+
   public slots:
 
     /**
