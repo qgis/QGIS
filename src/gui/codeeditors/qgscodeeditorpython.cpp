@@ -31,13 +31,16 @@
 #include <QDesktopServices>
 #include <QKeyEvent>
 
-namespace {
-    const QMap<QString, QString> PAIRS = {
+namespace
+{
+  const QMap<QString, QString> PAIRS =
+  {
     {"(", ")"},
     {"[", "]"},
     {"{", "}"},
     {"'", "'"},
-    {"\"", "\""}};
+    {"\"", "\""}
+  };
 }
 
 QgsCodeEditorPython::QgsCodeEditorPython( QWidget *parent, const QList<QString> &filenames, Mode mode )
@@ -200,7 +203,7 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
   // If editor is readOnly, use the default implementation
   if ( isReadOnly() )
   {
-    return QgsCodeEditor::keyPressEvent(event);
+    return QgsCodeEditor::keyPressEvent( event );
   }
 
   const bool ctrlModifier = event->modifiers() & Qt::ControlModifier;
@@ -214,12 +217,12 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
   }
 
   // Update calltips when cursor position changes with left and right keys
-  if ( event->key() == Qt::Key_Left  || 
-    event->key() == Qt::Key_Right || 
-    event->key() == Qt::Key_Up || 
-    event->key() == Qt::Key_Down )
+  if ( event->key() == Qt::Key_Left  ||
+       event->key() == Qt::Key_Right ||
+       event->key() == Qt::Key_Up ||
+       event->key() == Qt::Key_Down )
   {
-    QgsCodeEditor::keyPressEvent(event);
+    QgsCodeEditor::keyPressEvent( event );
     callTip();
     return;
   }
@@ -231,76 +234,77 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
   auto eText = event->text();
 
   int line, column;
-  getCursorPosition(&line, &column);
-  
+  getCursorPosition( &line, &column );
+
   if ( !hasSelectedText() )
   {
     // When backspace is pressed inside an opening/closing pair, remove both characters
     if ( event->key() == Qt::Key_Backspace )
     {
-      if ( PAIRS[prevChar]==nextChar ) 
+      if ( PAIRS[prevChar] == nextChar )
       {
-        setSelection(line, column-1 , line, column+1);
+        setSelection( line, column - 1, line, column + 1 );
         removeSelectedText();
         event->accept();
       }
       else
       {
-        QgsCodeEditor::keyPressEvent(event);
+        QgsCodeEditor::keyPressEvent( event );
       }
 
-    // Update calltips (cursor postion has changed)
-    callTip();
-    return;
+      // Update calltips (cursor postion has changed)
+      callTip();
+      return;
     }
 
     // When closing character is entered inside an opening/closing pair, shift the cursor
-    else if ( PAIRS.values().contains(eText)  && nextChar == eText )
+    else if ( PAIRS.values().contains( eText )  && nextChar == eText )
     {
-      setCursorPosition(line, column+1);
+      setCursorPosition( line, column + 1 );
       event->accept();
 
       // Will hide calltips when a closing parenthesis is entered
       callTip();
-      return; 
+      return;
     }
 
     // Else, if not inside a string or comment and an opening character
     // is entered, also insert the closing character
-    else if ( !isCursorInsideString() && PAIRS.contains(eText) )
+    else if ( !isCursorInsideString() && PAIRS.contains( eText ) )
     {
       // Check if user is not entering triple quotes
-      if ( !((eText == "\"" || eText == "'") && prevChar == eText) )
+      if ( !( ( eText == "\"" || eText == "'" ) && prevChar == eText ) )
       {
-        QgsCodeEditor::keyPressEvent(event);
-        insert(PAIRS[eText]);
+        QgsCodeEditor::keyPressEvent( event );
+        insert( PAIRS[eText] );
         event->accept();
         return;
       }
     }
   }
 
+
   // If some text is selected and user presses an opening character
   // surround the selection with the opening-closing pair
-  else if ( PAIRS.contains(eText) )
+  else if ( PAIRS.contains( eText ) )
   {
     int startLine, startPos, endLine, endPos;
-    getSelection(&startLine, &startPos, &endLine, &endPos);
+    getSelection( &startLine, &startPos, &endLine, &endPos );
 
     // Special case for Multi line quotes (insert triple quotes)
-    if ( startLine != endLine && (eText == "\"" || eText == "'") )
+    if ( startLine != endLine && ( eText == "\"" || eText == "'" ) )
     {
       replaceSelectedText(
-          QString("%1%1%1%2%3%3%3").arg(eText).arg(selectedText()).arg(PAIRS[eText])
+        QString( "%1%1%1%2%3%3%3" ).arg( eText ).arg( selectedText() ).arg( PAIRS[eText] )
       );
-      setSelection(startLine, startPos+3, endLine, endPos+3);
+      setSelection( startLine, startPos + 3, endLine, endPos + 3 );
     }
     else
     {
       replaceSelectedText(
-          QString("%1%2%3").arg(eText).arg(selectedText()).arg(PAIRS[eText])
+        QString( "%1%2%3" ).arg( eText ).arg( selectedText() ).arg( PAIRS[eText] )
       );
-      setSelection(startLine, startPos+1, endLine, endPos+1);
+      setSelection( startLine, startPos + 1, endLine, endPos + 1 );
     }
     event->accept();
     return;
@@ -359,44 +363,44 @@ bool QgsCodeEditorPython::loadScript( const QString &script )
 bool QgsCodeEditorPython::isCursorInsideString() const
 {
   int line, index;
-  getCursorPosition(&line, &index);
-  auto postion = positionFromLineIndex(line, index);
-  auto style = SendScintilla(QsciScintillaBase::SCI_GETSTYLEAT, postion);
+  getCursorPosition( &line, &index );
+  auto postion = positionFromLineIndex( line, index );
+  auto style = SendScintilla( QsciScintillaBase::SCI_GETSTYLEAT, postion );
   return style == QsciLexerPython::Comment
-        || style == QsciLexerPython::DoubleQuotedString 
-        || style == QsciLexerPython::SingleQuotedString 
-        || style == QsciLexerPython::TripleSingleQuotedString 
-        || style == QsciLexerPython::TripleDoubleQuotedString 
-        || style == QsciLexerPython::CommentBlock
-        || style == QsciLexerPython::UnclosedString 
-        || style == QsciLexerPython::DoubleQuotedFString 
-        || style == QsciLexerPython::SingleQuotedFString 
-        || style == QsciLexerPython::TripleSingleQuotedFString 
-        || style == QsciLexerPython::TripleDoubleQuotedFString;
+         || style == QsciLexerPython::DoubleQuotedString
+         || style == QsciLexerPython::SingleQuotedString
+         || style == QsciLexerPython::TripleSingleQuotedString
+         || style == QsciLexerPython::TripleDoubleQuotedString
+         || style == QsciLexerPython::CommentBlock
+         || style == QsciLexerPython::UnclosedString
+         || style == QsciLexerPython::DoubleQuotedFString
+         || style == QsciLexerPython::SingleQuotedFString
+         || style == QsciLexerPython::TripleSingleQuotedFString
+         || style == QsciLexerPython::TripleDoubleQuotedFString;
 }
 
 QString QgsCodeEditorPython::characterBeforeCursor() const
 {
   int line, index;
-  getCursorPosition(&line, &index);
-  auto position = positionFromLineIndex(line, index);
+  getCursorPosition( &line, &index );
+  auto position = positionFromLineIndex( line, index );
   if ( position <= 0 )
   {
     return "";
-  } 
-  return text(position - 1, position);
+  }
+  return text( position - 1, position );
 }
 
 QString QgsCodeEditorPython::characterAfterCursor() const
 {
   int line, index;
-  getCursorPosition(&line, &index);
-  auto position = positionFromLineIndex(line, index);
+  getCursorPosition( &line, &index );
+  auto position = positionFromLineIndex( line, index );
   if ( position >= length() )
   {
     return "";
   }
-  return text(position, position + 1);
+  return text( position, position + 1 );
 }
 
 void QgsCodeEditorPython::searchSelectedTextInPyQGISDocs()
