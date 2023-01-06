@@ -213,6 +213,18 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
     return;
   }
 
+  // Update calltips when cursor position changes with left and right keys
+  if ( event->key() == Qt::Key_Left  || 
+    event->key() == Qt::Key_Right || 
+    event->key() == Qt::Key_Up || 
+    event->key() == Qt::Key_Down )
+  {
+    QgsCodeEditor::keyPressEvent(event);
+    callTip();
+    return;
+  }
+
+
   // Handle closing and opening
   auto prevChar = characterBeforeCursor();
   auto nextChar = characterAfterCursor();
@@ -231,16 +243,26 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
         setSelection(line, column-1 , line, column+1);
         removeSelectedText();
         event->accept();
-        return;
       }
+      else
+      {
+        QgsCodeEditor::keyPressEvent(event);
+      }
+
+    // Update calltips (cursor postion has changed)
+    callTip();
+    return;
     }
 
-    // When closing character is entered inside an opening/closing pair, just shift the cursor
+    // When closing character is entered inside an opening/closing pair, shift the cursor
     else if ( PAIRS.values().contains(eText)  && nextChar == eText )
     {
       setCursorPosition(line, column+1);
       event->accept();
-      return;
+
+      // Will hide calltips when a closing parenthesis is entered
+      callTip();
+      return; 
     }
 
     // Else, if not inside a string or comment and an opening character
@@ -250,8 +272,8 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
       // Check if user is not entering triple quotes
       if ( !((eText == "\"" || eText == "'") && prevChar == eText) )
       {
-        insert(eText+PAIRS[eText]);
-        setCursorPosition(line, column+1);
+        QgsCodeEditor::keyPressEvent(event);
+        insert(PAIRS[eText]);
         event->accept();
         return;
       }
