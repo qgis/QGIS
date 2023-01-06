@@ -456,7 +456,7 @@ void QgsProcessingMultipleInputPanelWidget::dragEnterEvent( QDragEnterEvent *eve
 
 void QgsProcessingMultipleInputPanelWidget::dragLeaveEvent( QDragLeaveEvent *event )
 {
-  QWidget::dragLeaveEvent( event );
+  // QWidget::dragLeaveEvent( event ); // might not be needed
   if ( mDragActive )
   {
     event->accept();
