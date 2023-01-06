@@ -77,21 +77,21 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
 
     /**
      * Check whether the current cursor position is inside a string or comment
-     * 
+     *
      * \since QGIS 3.30
      */
     bool isCursorInsideString() const;
 
     /**
      * Returns the character before the cursor, or an empty string if cursor is set at start
-     * 
+     *
      * \since QGIS 3.30
      */
     QString characterBeforeCursor() const;
 
     /**
      * Returns the character after the cursor, or an empty string if the cursot is set at end
-     * 
+     *
      * \since QGIS 3.30
      */
     QString characterAfterCursor() const;

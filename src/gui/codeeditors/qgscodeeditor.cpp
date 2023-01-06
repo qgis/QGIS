@@ -170,7 +170,7 @@ void QgsCodeEditor::focusOutEvent( QFocusEvent *event )
 // but only is the auto-completion suggestion list isn't displayed
 void QgsCodeEditor::keyPressEvent( QKeyEvent *event )
 {
-  if( isListActive() )
+  if ( isListActive() )
   {
     QsciScintilla::keyPressEvent( event );
     return;
@@ -209,7 +209,7 @@ void QgsCodeEditor::keyPressEvent( QKeyEvent *event )
   }
 
   QsciScintilla::keyPressEvent( event );
-  
+
 }
 
 void QgsCodeEditor::contextMenuEvent( QContextMenuEvent *event )
