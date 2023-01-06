@@ -29,6 +29,7 @@
 #include <QTextStream>
 #include <Qsci/qscilexerpython.h>
 #include <QDesktopServices>
+#include <QKeyEvent>
 
 QgsCodeEditorPython::QgsCodeEditorPython( QWidget *parent, const QList<QString> &filenames, Mode mode )
   : QgsCodeEditor( parent,
@@ -185,6 +186,19 @@ void QgsCodeEditorPython::initializeLexer()
   runPostLexerConfigurationTasks();
 }
 
+void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
+{
+  const bool ctrlModifier = event->modifiers() & Qt::ControlModifier;
+
+  if ( ctrlModifier && event->key() == Qt::Key_Colon )
+  {
+    event->accept();
+    toggleComment();
+    return;
+  }
+  return QgsCodeEditor::keyPressEvent( event );
+}
+
 void QgsCodeEditorPython::autoComplete()
 {
   switch ( autoCompletionSource() )
@@ -242,6 +256,94 @@ void QgsCodeEditorPython::searchSelectedTextInPyQGISDocs()
   QDesktopServices::openUrl( QUrl( QStringLiteral( "https://qgis.org/pyqgis/%1/search.html?q=%2" ).arg( version, text ) ) );
 }
 
+void QgsCodeEditorPython::toggleComment()
+{
+  if ( isReadOnly() )
+  {
+    return;
+  }
+
+  beginUndoAction();
+  int startLine, startPos, endLine, endPos;
+  if ( hasSelectedText() )
+  {
+    getSelection( &startLine, &startPos, &endLine, &endPos );
+  }
+  else
+  {
+    getCursorPosition( &startLine, &startPos );
+    endLine = startLine;
+    endPos = startPos;
+  }
+
+  // Check comment state and minimum indentation for each selected line
+  bool allEmpty = true;
+  bool allCommented = true;
+  int minIndentation = -1;
+  for ( int line = startLine; line <= endLine; line++ )
+  {
+    const QString stripped = text( line ).trimmed();
+    if ( !stripped.isEmpty() )
+    {
+      allEmpty = false;
+      if ( !stripped.startsWith( '#' ) )
+      {
+        allCommented = false;
+      }
+      if ( minIndentation == -1 || minIndentation > indentation( line ) )
+      {
+        minIndentation = indentation( line );
+      }
+    }
+  }
+
+  // Special case, only empty lines
+  if ( allEmpty )
+  {
+    return;
+  }
+
+  // Selection shift to keep the same selected text after a # is added/removed
+  int delta = 0;
+
+  for ( int line = startLine; line <= endLine; line++ )
+  {
+    const QString stripped = text( line ).trimmed();
+
+    // Empty line
+    if ( stripped.isEmpty() )
+    {
+      continue;
+    }
+
+    if ( !allCommented )
+    {
+      insertAt( QStringLiteral( "# " ), line, minIndentation );
+      delta = -2;
+    }
+    else
+    {
+      if ( !stripped.startsWith( '#' ) )
+      {
+        continue;
+      }
+      if ( stripped.startsWith( QLatin1String( "# " ) ) )
+      {
+        delta = 2;
+      }
+      else
+      {
+        delta = 1;
+      }
+      setSelection( line, indentation( line ), line, indentation( line ) + delta );
+      removeSelectedText();
+    }
+  }
+
+  endUndoAction();
+  setSelection( startLine, startPos - delta, endLine, endPos - delta );
+}
+
 ///@cond PRIVATE
 //
 // QgsQsciLexerPython
@@ -256,9 +358,9 @@ const char *QgsQsciLexerPython::keywords( int set ) const
 {
   if ( set == 1 )
   {
-    return "True False and as assert break class continue def del elif else except exec "
+    return "True False and as assert break class continue def del elif else except "
            "finally for from global if import in is lambda None not or pass "
-           "print raise return try while with yield";
+           "raise return try while with yield async await nonlocal";
   }
 
   return QsciLexerPython::keywords( set );

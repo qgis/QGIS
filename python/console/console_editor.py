@@ -122,12 +122,6 @@ class Editor(QgsCodeEditorPython):
         self.syntaxCheckScut = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_4), self)
         self.syntaxCheckScut.setContext(Qt.WidgetShortcut)
         self.syntaxCheckScut.activated.connect(self.syntaxCheck)
-        self.commentScut = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_3), self)
-        self.commentScut.setContext(Qt.WidgetShortcut)
-        self.commentScut.activated.connect(self.parent.pc.commentCode)
-        self.uncommentScut = QShortcut(QKeySequence(Qt.SHIFT + Qt.CTRL + Qt.Key_3), self)
-        self.uncommentScut.setContext(Qt.WidgetShortcut)
-        self.uncommentScut.activated.connect(self.parent.pc.uncommentCode)
         self.modificationChanged.connect(self.parent.modified)
         self.modificationAttempted.connect(self.fileReadOnly)
 
@@ -178,11 +172,8 @@ class Editor(QgsCodeEditorPython):
             self.selectAll, QKeySequence.SelectAll)
         menu.addSeparator()
         menu.addAction(QgsApplication.getThemeIcon("console/iconCommentEditorConsole.svg"),
-                       QCoreApplication.translate("PythonConsole", "Comment"),
-                       self.parent.pc.commentCode, 'Ctrl+3')
-        menu.addAction(QgsApplication.getThemeIcon("console/iconUncommentEditorConsole.svg"),
-                       QCoreApplication.translate("PythonConsole", "Uncomment"),
-                       self.parent.pc.uncommentCode, 'Shift+Ctrl+3')
+                       QCoreApplication.translate("PythonConsole", "Toggle Comment"),
+                       self.toggleComment, 'Ctrl+:')
         menu.addSeparator()
         gist_menu = QMenu(self)
         gist_menu.setTitle(QCoreApplication.translate("PythonConsole", "Share on GitHub"))
@@ -337,31 +328,6 @@ class Editor(QgsCodeEditorPython):
             self.closeFindWidget()
         else:
             self.openFindWidget()
-
-    def commentEditorCode(self, commentCheck):
-        self.beginUndoAction()
-        if self.hasSelectedText():
-            startLine, _, endLine, _ = self.getSelection()
-            for line in range(startLine, endLine + 1):
-                if commentCheck:
-                    self.insertAt('#', line, 0)
-                else:
-                    if not self.text(line).strip().startswith('#'):
-                        continue
-                    self.setSelection(line, self.indentation(line),
-                                      line, self.indentation(line) + 1)
-                    self.removeSelectedText()
-        else:
-            line, pos = self.getCursorPosition()
-            if commentCheck:
-                self.insertAt('#', line, 0)
-            else:
-                if not self.text(line).strip().startswith('#'):
-                    return
-                self.setSelection(line, self.indentation(line),
-                                  line, self.indentation(line) + 1)
-                self.removeSelectedText()
-        self.endUndoAction()
 
     def createTempFile(self):
         import tempfile
@@ -547,7 +513,7 @@ class Editor(QgsCodeEditorPython):
             if re.match(ptrn, txt):
                 self.insert(' import')
                 self.setCursorPosition(line, pos + 7)
-        QsciScintilla.keyPressEvent(self, e)
+        QgsCodeEditorPython.keyPressEvent(self, e)
 
     def focusInEvent(self, e):
         pathfile = self.parent.path
@@ -560,7 +526,6 @@ class Editor(QgsCodeEditorPython):
         if pathfile and self.lastModified != QFileInfo(pathfile).lastModified():
             self.beginUndoAction()
             self.selectAll()
-            # fileReplaced = self.selectedText()
             self.removeSelectedText()
             file = open(pathfile, "r")
             fileLines = file.readlines()
@@ -658,7 +623,6 @@ class EditorTab(QWidget):
         if overwrite:
             try:
                 permis = os.stat(path).st_mode
-                # self.newEditor.lastModified = QFileInfo(path).lastModified()
                 os.chmod(path, permis)
             except:
                 raise
