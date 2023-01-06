@@ -31,6 +31,15 @@
 #include <QDesktopServices>
 #include <QKeyEvent>
 
+namespace {
+    const QMap<QString, QString> PAIRS = {
+    {"(", ")"},
+    {"[", "]"},
+    {"{", "}"},
+    {"'", "'"},
+    {"\"", "\""}};
+}
+
 QgsCodeEditorPython::QgsCodeEditorPython( QWidget *parent, const QList<QString> &filenames, Mode mode )
   : QgsCodeEditor( parent,
                    QString(),
@@ -188,14 +197,94 @@ void QgsCodeEditorPython::initializeLexer()
 
 void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
 {
+  // If editor is readOnly, use the default implementation
+  if ( isReadOnly() )
+  {
+    return QgsCodeEditor::keyPressEvent(event);
+  }
+
   const bool ctrlModifier = event->modifiers() & Qt::ControlModifier;
 
+  // Toggle comment when user presses  Ctrl+:
   if ( ctrlModifier && event->key() == Qt::Key_Colon )
   {
     event->accept();
     toggleComment();
     return;
   }
+
+  // Handle closing and opening
+  auto prevChar = characterBeforeCursor();
+  auto nextChar = characterAfterCursor();
+  auto eText = event->text();
+
+  int line, column;
+  getCursorPosition(&line, &column);
+  
+  if ( !hasSelectedText() )
+  {
+    // When backspace is pressed inside an opening/closing pair, remove both characters
+    if ( event->key() == Qt::Key_Backspace )
+    {
+      if ( PAIRS[prevChar]==nextChar ) 
+      {
+        setSelection(line, column-1 , line, column+1);
+        removeSelectedText();
+        event->accept();
+        return;
+      }
+    }
+
+    // When closing character is entered inside an opening/closing pair, just shift the cursor
+    else if ( PAIRS.values().contains(eText)  && nextChar == eText )
+    {
+      setCursorPosition(line, column+1);
+      event->accept();
+      return;
+    }
+
+    // Else, if not inside a string or comment and an opening character
+    // is entered, also insert the closing character
+    else if ( !isCursorInsideString() && PAIRS.contains(eText) )
+    {
+      // Check if user is not entering triple quotes
+      if ( !((eText == "\"" || eText == "'") && prevChar == eText) )
+      {
+        insert(eText+PAIRS[eText]);
+        setCursorPosition(line, column+1);
+        event->accept();
+        return;
+      }
+    }
+  }
+
+  // If some text is selected and user presses an opening character
+  // surround the selection with the opening-closing pair
+  else if ( PAIRS.contains(eText) )
+  {
+    int startLine, startPos, endLine, endPos;
+    getSelection(&startLine, &startPos, &endLine, &endPos);
+
+    // Special case for Multi line quotes (insert triple quotes)
+    if ( startLine != endLine && (eText == "\"" || eText == "'") )
+    {
+      replaceSelectedText(
+          QString("%1%1%1%2%3%3%3").arg(eText).arg(selectedText()).arg(PAIRS[eText])
+      );
+      setSelection(startLine, startPos+3, endLine, endPos+3);
+    }
+    else
+    {
+      replaceSelectedText(
+          QString("%1%2%3").arg(eText).arg(selectedText()).arg(PAIRS[eText])
+      );
+      setSelection(startLine, startPos+1, endLine, endPos+1);
+    }
+    event->accept();
+    return;
+  }
+
+  // Let QgsCodeEditor handle the keyboard event
   return QgsCodeEditor::keyPressEvent( event );
 }
 
