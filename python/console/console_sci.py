@@ -199,98 +199,23 @@ class ShellScintilla(QgsCodeEditorPython):
         # update the live history
         self.updateSoftHistory()
 
-        startLine, startPos, endLine, endPos = self.getSelection()
-
-        # handle invalid cursor position and multiline selections
-        if startLine < endLine:
-            # allow copying and selecting
-            if e.modifiers() & (Qt.ControlModifier | Qt.MetaModifier):
-                if e.key() == Qt.Key_C:
-                    # only catch and return from Ctrl-C here if there's a selection
-                    if self.hasSelectedText():
-                        QsciScintilla.keyPressEvent(self, e)
-                        return
-                elif e.key() == Qt.Key_A:
-                    QsciScintilla.keyPressEvent(self, e)
-                    return
-                else:
-                    return
-            # allow selection
-            if e.modifiers() & Qt.ShiftModifier:
-                if e.key() in (Qt.Key_Left, Qt.Key_Right, Qt.Key_Home, Qt.Key_End):
-                    QsciScintilla.keyPressEvent(self, e)
-                return
-            # all other keystrokes get sent to the input line
-            self.moveCursorToEnd()
-
+        # keyboard interrupt
         if e.modifiers() & (
                 Qt.ControlModifier | Qt.MetaModifier) and e.key() == Qt.Key_C and not self.hasSelectedText():
-            # keyboard interrupt
             sys.stdout.fire_keyboard_interrupt = True
             return
 
-        line, index = self.getCursorPosition()
-        cmd = self.text(line)
-        hasSelectedText = self.hasSelectedText()
+        autoImport = self.settings.value("pythonConsole/autoInsertionImport", True, type=bool)
+        # Automatically insert "import" after "from xxx "
+        if e.text() == ' ' and autoImport:
+            line, index = self.getCursorPosition()
+            cmd = self.text(line)
+            ptrn = r'^[ \t]*from [\w.]+$'
+            if re.match(ptrn, cmd):
+                self.insert(' import')
+                self.setCursorPosition(line, index + 7)
 
-        if e.key() in (Qt.Key_Return, Qt.Key_Enter) and not self.isListActive():
-            self.entered()
-
-        elif e.key() in (Qt.Key_Left, Qt.Key_Home):
-            QsciScintilla.keyPressEvent(self, e)
-
-        elif e.key() in (Qt.Key_Backspace, Qt.Key_Delete):
-            QsciScintilla.keyPressEvent(self, e)
-            self.recolor()
-
-        elif (e.modifiers() & (Qt.ControlModifier | Qt.MetaModifier) and e.key() == Qt.Key_V) or \
-                (e.modifiers() & Qt.ShiftModifier and e.key() == Qt.Key_Insert):
-            self.paste()
-            e.accept()
-
-        elif e.key() == Qt.Key_Down and not self.isListActive():
-            self.showPreviousCommand()
-
-        elif e.key() == Qt.Key_Up and not self.isListActive():
-            self.showNextCommand()
-
-        # TODO: press event for auto-completion file directory
-        else:
-            t = e.text()
-            self.autoCloseBracket = self.settings.value("pythonConsole/autoCloseBracket", False,
-                                                        type=bool)
-            self.autoImport = self.settings.value("pythonConsole/autoInsertionImport", True,
-                                                  type=bool)
-            # Close bracket automatically
-            if t in self.opening and self.autoCloseBracket:
-                i = self.opening.index(t)
-                if self.hasSelectedText() and startPos != 0:
-                    selText = self.selectedText()
-                    self.removeSelectedText()
-                    self.insert(self.opening[i] + selText + self.closing[i])
-                    self.setCursorPosition(endLine, endPos + 2)
-                    return
-                elif t == '(' and (re.match(r'^[ \t]*def \w+$', cmd)
-                                   or re.match(r'^[ \t]*class \w+$', cmd)):
-                    self.insert('):')
-                else:
-                    self.insert(self.closing[i])
-            # FIXES #8392 (automatically removes the redundant char
-            # when autoclosing brackets option is enabled)
-            elif t in [')', ']', '}'] and self.autoCloseBracket:
-                try:
-                    if cmd[index - 1] in self.opening and t == cmd[index]:
-                        self.setCursorPosition(line, index + 1)
-                        self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
-                except IndexError:
-                    pass
-            elif t == ' ' and self.autoImport:
-                ptrn = r'^[ \t]*from [\w.]+$'
-                if re.match(ptrn, cmd):
-                    self.insert(' import')
-                    self.setCursorPosition(line, index + 7)
-            QsciScintilla.keyPressEvent(self, e)
-
+        QgsCodeEditorPython.keyPressEvent(self, e)
         self.updatePrompt()
 
     def populateContextMenu(self, menu):
@@ -314,7 +239,7 @@ class ShellScintilla(QgsCodeEditorPython):
             self.insertFromDropPaste(stringSel)
             e.accept()
         else:
-            QsciScintilla.mousePressEvent(self, e)
+            QgsCodeEditorPython.mousePressEvent(self, e)
 
     def paste(self):
         """
@@ -340,7 +265,7 @@ class ShellScintilla(QgsCodeEditorPython):
             e.setDropAction(Qt.CopyAction)
             e.accept()
         else:
-            QsciScintilla.dropEvent(self, e)
+            QgsCodeEditorPython.dropEvent(self, e)
 
     def insertFromDropPaste(self, textDP):
         pasteList = textDP.splitlines()
