@@ -170,7 +170,13 @@ void QgsCodeEditor::focusOutEvent( QFocusEvent *event )
 // but only is the auto-completion suggestion list isn't displayed
 void QgsCodeEditor::keyPressEvent( QKeyEvent *event )
 {
-  if ( event->key() == Qt::Key_Escape && !isListActive() )
+  if( isListActive() )
+  {
+    QsciScintilla::keyPressEvent( event );
+    return;
+  }
+
+  if ( event->key() == Qt::Key_Escape )
   {
     // Shortcut QScintilla and redirect the event to the QWidget handler
     QWidget::keyPressEvent( event ); // clazy:exclude=skipped-base-method
@@ -188,34 +194,22 @@ void QgsCodeEditor::keyPressEvent( QKeyEvent *event )
         return;
 
       case Qt::Key_Down:
-
-        if ( !isListActive() )
-        {
-          showPreviousCommand();
-          updatePrompt();
-          return;
-        }
-        break;
+        showPreviousCommand();
+        updatePrompt();
+        return;
 
       case Qt::Key_Up:
-
-        if ( !isListActive() )
-        {
-          showNextCommand();
-          updatePrompt();
-          return;
-        }
-        break;
+        showNextCommand();
+        updatePrompt();
+        return;
 
       default:
         break;
     }
-    QsciScintilla::keyPressEvent( event );
   }
-  else
-  {
-    QsciScintilla::keyPressEvent( event );
-  }
+
+  QsciScintilla::keyPressEvent( event );
+  
 }
 
 void QgsCodeEditor::contextMenuEvent( QContextMenuEvent *event )
