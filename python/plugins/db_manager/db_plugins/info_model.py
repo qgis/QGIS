@@ -106,10 +106,8 @@ class DatabaseInfo(object):
             ret.append(HtmlSection(QApplication.translate("DBManagerPlugin", 'General info'), general_info))
         # database information
         database_info = self.databaseInfo()
-        if database_info is None:
-            pass
-        else:
-            ret.append(HtmlSection(QApplication.translate("DBManagerPlugin", 'Database informations'), database_info))
+        if database_info is not None:
+            ret.append(HtmlSection(QApplication.translate("DBManagerPlugin", 'Database information'), database_info))
 
         # has spatial enabled?
         spatial_info = self.spatialInfo()
