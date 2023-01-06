@@ -471,44 +471,12 @@ class Editor(QgsCodeEditorPython):
 
     def keyPressEvent(self, e):
         t = e.text()
-        startLine, _, endLine, endPos = self.getSelection()
         line, pos = self.getCursorPosition()
-        self.autoCloseBracket = self.settings.value("pythonConsole/autoCloseBracket", False, type=bool)
         self.autoImport = self.settings.value("pythonConsole/autoInsertionImport", True, type=bool)
         txt = self.text(line)[:pos]
-        # Close bracket automatically
-        if t in self.opening and self.autoCloseBracket:
-            self.beginUndoAction()
-            i = self.opening.index(t)
-            if self.hasSelectedText():
-                selText = self.selectedText()
-                self.removeSelectedText()
-                if startLine == endLine:
-                    self.insert(self.opening[i] + selText + self.closing[i])
-                    self.setCursorPosition(endLine, endPos + 2)
-                    self.endUndoAction()
-                    return
-                elif startLine < endLine and self.opening[i] in ("'", '"'):
-                    self.insert("'''" + selText + "'''")
-                    self.setCursorPosition(endLine, endPos + 3)
-                    self.endUndoAction()
-                    return
-            elif t == '(' and (re.match(r'^[ \t]*def \w+$', txt) or re.match(r'^[ \t]*class \w+$', txt)):
-                self.insert('):')
-            else:
-                self.insert(self.closing[i])
-            self.endUndoAction()
-        # FIXES #8392 (automatically removes the redundant char
-        # when autoclosing brackets option is enabled)
-        elif t in [')', ']', '}'] and self.autoCloseBracket:
-            txt = self.text(line)
-            try:
-                if txt[pos - 1] in self.opening and t == txt[pos]:
-                    self.setCursorPosition(line, pos + 1)
-                    self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
-            except IndexError:
-                pass
-        elif t == ' ' and self.autoImport:
+
+        # Automatically insert "import" after "from xxx "
+        if t == ' ' and self.autoImport:
             ptrn = r'^[ \t]*from [\w.]+$'
             if re.match(ptrn, txt):
                 self.insert(' import')
