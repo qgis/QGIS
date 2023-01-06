@@ -376,7 +376,6 @@ Depends:
  libqgispython{QGIS_ABI},
  libsqlite3-mod-spatialite,
  python3-dateutil,
- python3-httplib2,
  python3-jinja2,
  python3-markupsafe,
  python3-owslib,
