@@ -41,6 +41,9 @@ namespace
     {"'", "'"},
     {"\"", "\""}
   };
+
+  // Only used for selected text
+  const QStringList SINGLE_CHARS = {"`", "*"};
 }
 
 QgsCodeEditorPython::QgsCodeEditorPython( QWidget *parent, const QList<QString> &filenames, Mode mode )
@@ -306,6 +309,17 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
       );
       setSelection( startLine, startPos + 1, endLine, endPos + 1 );
     }
+    event->accept();
+    return;
+  }
+  else if ( SINGLE_CHARS.contains( eText ) )
+  {
+    int startLine, startPos, endLine, endPos;
+    getSelection( &startLine, &startPos, &endLine, &endPos );
+    replaceSelectedText(
+      QString( "%1%2%1" ).arg( eText ).arg( selectedText() )
+    );
+    setSelection( startLine, startPos + 1, endLine, endPos + 1 );
     event->accept();
     return;
   }
