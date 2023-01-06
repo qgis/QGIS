@@ -842,6 +842,13 @@ This represents the current layer tree group and index where newly added map lay
 .. versionadded:: 3.10
 %End
 
+    virtual QgsUserProfileManager *userProfileManager() = 0;
+%Docstring
+Returns a reference to the user profile manager
+
+.. versionadded:: 3.30
+%End
+
   public slots: // TODO: do these functions really need to be slots?
 
 

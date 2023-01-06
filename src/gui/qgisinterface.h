@@ -70,6 +70,7 @@ class QgsDevToolWidgetFactory;
 class QgsGpsConnection;
 class QgsApplicationExitBlockerInterface;
 class QgsAbstractMapToolHandler;
+class QgsUserProfileManager;
 
 /**
  * \ingroup gui
@@ -742,6 +743,12 @@ class GUI_EXPORT QgisInterface : public QObject
      * \since QGIS 3.10
      */
     virtual QgsLayerTreeRegistryBridge::InsertionPoint layerTreeInsertionPoint() = 0;
+
+    /**
+     * Returns a reference to the user profile manager
+     * \since QGIS 3.30
+    */
+    virtual QgsUserProfileManager *userProfileManager() = 0;
 
   public slots: // TODO: do these functions really need to be slots?
 

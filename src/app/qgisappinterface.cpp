@@ -903,3 +903,8 @@ QList<QgsMapDecoration *> QgisAppInterface::activeDecorations()
   return qgis->activeDecorations();
 }
 
+QgsUserProfileManager *QgisAppInterface::userProfileManager()
+{
+  return qgis->userProfileManager();
+}
+
