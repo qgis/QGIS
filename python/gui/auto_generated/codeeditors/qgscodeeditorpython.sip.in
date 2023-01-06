@@ -58,17 +58,23 @@ Loads a ``script`` file.
     bool isCursorInsideString() const;
 %Docstring
 Check whether the current cursor position is inside a string or comment
+
+.. versionadded:: 3.30
 %End
 
     QString characterBeforeCursor() const;
 %Docstring
 Returns the character before the cursor, or an empty string if cursor is set at start
+
+.. versionadded:: 3.30
 %End
 
 
     QString characterAfterCursor() const;
 %Docstring
 Returns the character after the cursor, or an empty string if cursor is set at end
+
+.. versionadded:: 3.30
 %End
 
 
