@@ -27,6 +27,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsgeometryoptions.h"
 #include "qgsabstractgeometry.h"
+#include "qgssettingsregistrycore.h"
 
 #include <limits>
 
@@ -88,16 +89,16 @@ bool QgsVectorLayerEditUtils::moveVertex( const QgsPoint &p, QgsFeatureId atFeat
   QgsGeometry geometry = f.geometry();
 
   // If original point is not 3D but destination yes, check if it can be promoted
-  if ( p.is3D() && !geometry.vertexAt( atVertex ).is3D() && QgsWkbTypes::hasZ( mLayer->wkbType() ) )
+  if ( p.is3D() && !geometry.constGet()->is3D() && QgsWkbTypes::hasZ( mLayer->wkbType() ) )
   {
-    if ( !geometry.get()->addZValue( std::numeric_limits<double>::quiet_NaN() ) )
+    if ( !geometry.get()->addZValue( QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.value() ) )
       return false;
   }
 
   // If original point has not M-value but destination yes, check if it can be promoted
-  if ( p.isMeasure() && !geometry.vertexAt( atVertex ).isMeasure() && QgsWkbTypes::hasM( mLayer->wkbType() ) )
+  if ( p.isMeasure() && !geometry.constGet()->isMeasure() && QgsWkbTypes::hasM( mLayer->wkbType() ) )
   {
-    if ( !geometry.get()->addMValue( std::numeric_limits<double>::quiet_NaN() ) )
+    if ( !geometry.get()->addMValue( QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.value() ) )
       return false;
   }
 

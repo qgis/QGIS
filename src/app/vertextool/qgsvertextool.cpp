@@ -2190,9 +2190,9 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
   QgsAbstractGeometry *geomTmp = geom.constGet()->clone();
 
   // If moving point is not 3D but destination yes, check if it can be promoted
-  if ( layerPoint.is3D() && !geom.vertexAt( dragVertexId ).is3D() && QgsWkbTypes::hasZ( dragLayer->wkbType() ) )
+  if ( layerPoint.is3D() && !geomTmp->is3D() && QgsWkbTypes::hasZ( dragLayer->wkbType() ) )
   {
-    if ( !geomTmp->addZValue( std::numeric_limits<double>::quiet_NaN() ) )
+    if ( !geomTmp->addZValue( defaultZValue() ) )
     {
       QgsDebugMsg( QStringLiteral( "add Z value to vertex failed!" ) );
       return;
@@ -2200,9 +2200,9 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
   }
 
   // If moving point has not M-value but destination yes, check if it can be promoted
-  if ( layerPoint.isMeasure() && !geom.vertexAt( dragVertexId ).isMeasure() && QgsWkbTypes::hasM( dragLayer->wkbType() ) )
+  if ( layerPoint.isMeasure() && !geomTmp->isMeasure() && QgsWkbTypes::hasM( dragLayer->wkbType() ) )
   {
-    if ( !geomTmp->addMValue( std::numeric_limits<double>::quiet_NaN() ) )
+    if ( !geomTmp->addMValue( defaultMValue() ) )
     {
       QgsDebugMsg( QStringLiteral( "add M value to vertex failed!" ) );
       return;
