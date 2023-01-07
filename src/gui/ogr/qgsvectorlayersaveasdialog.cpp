@@ -32,6 +32,7 @@
 #include <QTextCodec>
 #include <QSpinBox>
 #include <QRegularExpression>
+#include <limits>
 #include "gdal.h"
 #include "qgsdatums.h"
 #include "qgsiconutils.h"
@@ -246,6 +247,7 @@ QList<QPair<QLabel *, QWidget *> > QgsVectorLayerSaveAsDialog::createControls( c
         {
           QSpinBox *sb = new QSpinBox();
           sb->setObjectName( it.key() );
+          sb->setMaximum( std::numeric_limits<int>::max() ); // the default is 99
           sb->setValue( opt->defaultValue );
           control = sb;
         }
