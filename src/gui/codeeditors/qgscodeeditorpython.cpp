@@ -260,7 +260,7 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
     }
 
     // When closing character is entered inside an opening/closing pair, shift the cursor
-    else if ( PAIRS.values().contains( eText )  && nextChar == eText )
+    else if ( PAIRS.key( eText ) != ""  && nextChar == eText )
     {
       setCursorPosition( line, column + 1 );
       event->accept();
