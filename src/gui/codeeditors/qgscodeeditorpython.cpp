@@ -231,9 +231,9 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
 
 
   // Handle closing and opening
-  auto prevChar = characterBeforeCursor();
-  auto nextChar = characterAfterCursor();
-  auto eText = event->text();
+  const QString prevChar = characterBeforeCursor();
+  const QString nextChar = characterAfterCursor();
+  const QString eText = event->text();
 
   int line, column;
   getCursorPosition( &line, &column );
@@ -254,7 +254,7 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
         QgsCodeEditor::keyPressEvent( event );
       }
 
-      // Update calltips (cursor postion has changed)
+      // Update calltips (cursor position has changed)
       callTip();
       return;
     }
@@ -377,8 +377,8 @@ bool QgsCodeEditorPython::isCursorInsideString() const
 {
   int line, index;
   getCursorPosition( &line, &index );
-  auto postion = positionFromLineIndex( line, index );
-  auto style = SendScintilla( QsciScintillaBase::SCI_GETSTYLEAT, postion );
+  int position = positionFromLineIndex( line, index );
+  long style = SendScintilla( QsciScintillaBase::SCI_GETSTYLEAT, position );
   return style == QsciLexerPython::Comment
          || style == QsciLexerPython::DoubleQuotedString
          || style == QsciLexerPython::SingleQuotedString
@@ -396,7 +396,7 @@ QString QgsCodeEditorPython::characterBeforeCursor() const
 {
   int line, index;
   getCursorPosition( &line, &index );
-  auto position = positionFromLineIndex( line, index );
+  int position = positionFromLineIndex( line, index );
   if ( position <= 0 )
   {
     return "";
@@ -408,7 +408,7 @@ QString QgsCodeEditorPython::characterAfterCursor() const
 {
   int line, index;
   getCursorPosition( &line, &index );
-  auto position = positionFromLineIndex( line, index );
+  int position = positionFromLineIndex( line, index );
   if ( position >= length() )
   {
     return "";
