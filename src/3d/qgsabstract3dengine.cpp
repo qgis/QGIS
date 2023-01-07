@@ -30,12 +30,10 @@ void QgsAbstract3DEngine::requestCaptureImage()
 {
   Qt3DRender::QRenderCaptureReply *captureReply;
   captureReply = mFrameGraph->renderCapture()->requestCapture();
-  // We need to change render policy to RenderPolicy::Always, since otherwise render capture node won't work
-  this->renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::RenderPolicy::Always );
+
   connect( captureReply, &Qt3DRender::QRenderCaptureReply::completed, this, [ = ]
   {
     emit imageCaptured( captureReply->image() );
-    this->renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::RenderPolicy::OnDemand );
     captureReply->deleteLater();
   } );
 }
@@ -44,12 +42,10 @@ void QgsAbstract3DEngine::requestDepthBufferCapture()
 {
   Qt3DRender::QRenderCaptureReply *captureReply;
   captureReply = mFrameGraph->depthRenderCapture()->requestCapture();
-  // We need to change render policy to RenderPolicy::Always, since otherwise render capture node won't work
-  this->renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::RenderPolicy::Always );
+
   connect( captureReply, &Qt3DRender::QRenderCaptureReply::completed, this, [ = ]
   {
     emit depthBufferCaptured( captureReply->image() );
-    this->renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::RenderPolicy::OnDemand );
     captureReply->deleteLater();
   } );
 }
