@@ -208,7 +208,6 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
   {
     return QgsCodeEditor::keyPressEvent( event );
   }
-
   const bool ctrlModifier = event->modifiers() & Qt::ControlModifier;
 
   // Toggle comment when user presses  Ctrl+:
@@ -244,7 +243,7 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
     // When backspace is pressed inside an opening/closing pair, remove both characters
     if ( event->key() == Qt::Key_Backspace )
     {
-      if ( PAIRS[prevChar] == nextChar )
+      if ( PAIRS.contains( prevChar ) && PAIRS[prevChar] == nextChar )
       {
         setSelection( line, column - 1, line, column + 1 );
         removeSelectedText();
