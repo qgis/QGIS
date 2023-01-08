@@ -202,7 +202,8 @@ class ConsoleOptionsWidget(QWidget, Ui_SettingsDialogPythonConsole):
             settings.setValue("pythonConsole/autoCompleteSource", 'fromDocAPI')
 
         settings.setValue("pythonConsole/enableObjectInsp", self.enableObjectInspector.isChecked())
-        settings.setValue("pythonConsole/autoInsertionImport", self.autoInsertionImport.isChecked())
+        settings.setValue("pythonConsole/autoCloseBracket", self.autoCloseBracket.isChecked())
+        settings.setValue("pythonConsole/autoInsertImport", self.autoInsertImport.isChecked())
 
     def restoreSettings(self):
         settings = QgsSettings()
@@ -225,7 +226,8 @@ class ConsoleOptionsWidget(QWidget, Ui_SettingsDialogPythonConsole):
         self.groupBoxAutoCompletion.setChecked(settings.value("pythonConsole/autoCompleteEnabled", True, type=bool))
 
         self.enableObjectInspector.setChecked(settings.value("pythonConsole/enableObjectInsp", False, type=bool))
-        self.autoInsertionImport.setChecked(settings.value("pythonConsole/autoInsertionImport", True, type=bool))
+        self.autoCloseBracket.setChecked(settings.value("pythonConsole/autoCloseBracket", False, type=bool))
+        self.autoInsertImport.setChecked(settings.value("pythonConsole/autoInsertImport", False, type=bool))
 
         if settings.value("pythonConsole/autoCompleteSource") == 'fromDoc':
             self.autoCompFromDoc.setChecked(True)
