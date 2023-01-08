@@ -494,6 +494,7 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
                            sFormat == QLatin1String( "XLSX" ) ||
                            sFormat == QLatin1String( "ODS" ) ||
                            sFormat == QLatin1String( "FileGDB" ) ||
+                           sFormat == QLatin1String( "OpenFileGDB" ) ||
                            sFormat == QLatin1String( "SQLite" ) ||
                            sFormat == QLatin1String( "SpatiaLite" ) );
 
