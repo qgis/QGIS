@@ -924,6 +924,57 @@ class QgsVectorFileWriterMetadataContainer
       QMap<QString, QgsVectorFileWriter::Option *> datasetOptions;
       QMap<QString, QgsVectorFileWriter::Option *> layerOptions;
 
+      // Arrow
+      datasetOptions.clear();
+      layerOptions.clear();
+
+      layerOptions.insert( QStringLiteral( "COMPRESSION" ), new QgsVectorFileWriter::SetOption(
+                             QObject::tr( "Compression method." ),
+                             QStringList()
+                             << QStringLiteral( "UNCOMPRESSED" )
+                             << QStringLiteral( "ZSTD" )
+                             << QStringLiteral( "LZ4" ),
+                             QStringLiteral( "LZ4" ), // Default value
+                             false // Allow None
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "GEOMETRY_ENCODING" ), new QgsVectorFileWriter::SetOption(
+                             QObject::tr( "Geometry encoding." ),
+                             QStringList()
+                             << QStringLiteral( "GEOARROW" )
+                             << QStringLiteral( "WKB" )
+                             << QStringLiteral( "WKT" ),
+                             QStringLiteral( "GEOARROW" ), // Default value
+                             false // Allow None
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "BATCH_SIZE" ), new QgsVectorFileWriter::IntOption(
+                             QObject::tr( "Maximum number of rows per batch." ),
+                             65536 // Default value
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "FID" ), new QgsVectorFileWriter::StringOption(
+                             QObject::tr( "Name for the feature identifier column" ),
+                             QString()  // Default value
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "GEOMETRY_NAME" ), new QgsVectorFileWriter::StringOption(
+                             QObject::tr( "Name for the geometry column" ),
+                             QStringLiteral( "geometry" )  // Default value
+                           ) );
+
+      driverMetadata.insert( QStringLiteral( "Arrow" ),
+                             QgsVectorFileWriter::MetaData(
+                               QStringLiteral( "(Geo)Arrow" ),
+                               QObject::tr( "(Geo)Arrow" ),
+                               QStringLiteral( "*.arrow *.feather *.arrows *.ipc" ),
+                               QStringLiteral( "arrow" ),
+                               datasetOptions,
+                               layerOptions,
+                               QStringLiteral( "UTF-8" )
+                             )
+                           );
+
       // Arc/Info ASCII Coverage
       datasetOptions.clear();
       layerOptions.clear();
@@ -2173,6 +2224,65 @@ class QgsVectorFileWriterMetadataContainer
                                QObject::tr( "Open Document Spreadsheet [ODS]" ),
                                QStringLiteral( "*.ods" ),
                                QStringLiteral( "ods" ),
+                               datasetOptions,
+                               layerOptions,
+                               QStringLiteral( "UTF-8" )
+                             )
+                           );
+
+      // Parquet
+      datasetOptions.clear();
+      layerOptions.clear();
+
+      layerOptions.insert( QStringLiteral( "COMPRESSION" ), new QgsVectorFileWriter::SetOption(
+                             QObject::tr( "Compression method." ),
+                             QStringList()
+                             << QStringLiteral( "UNCOMPRESSED" )
+                             << QStringLiteral( "SNAPPY" ),
+                             QStringLiteral( "SNAPPY" ), // Default value
+                             false // Allow None
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "GEOMETRY_ENCODING" ), new QgsVectorFileWriter::SetOption(
+                             QObject::tr( "Geometry encoding." ),
+                             QStringList()
+                             << QStringLiteral( "WKB" )
+                             << QStringLiteral( "WKT" )
+                             << QStringLiteral( "GEOARROW" ),
+                             QStringLiteral( "WKB" ), // Default value
+                             false // Allow None
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "ROW_GROUP_SIZE" ), new QgsVectorFileWriter::IntOption(
+                             QObject::tr( "Maximum number of rows per group." ),
+                             65536 // Default value
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "FID" ), new QgsVectorFileWriter::StringOption(
+                             QObject::tr( "Name for the feature identifier column" ),
+                             QString()  // Default value
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "GEOMETRY_NAME" ), new QgsVectorFileWriter::StringOption(
+                             QObject::tr( "Name for the geometry column" ),
+                             QStringLiteral( "geometry" )  // Default value
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "EDGES" ), new QgsVectorFileWriter::SetOption(
+                             QObject::tr( "Name of the coordinate system for the edges." ),
+                             QStringList()
+                             << QStringLiteral( "PLANAR" )
+                             << QStringLiteral( "SPHERICAL" ),
+                             QStringLiteral( "PLANAR" ), // Default value
+                             false // Allow None
+                           ) );
+
+      driverMetadata.insert( QStringLiteral( "Parquet" ),
+                             QgsVectorFileWriter::MetaData(
+                               QStringLiteral( "(Geo)Parquet" ),
+                               QObject::tr( "(Geo)Parquet" ),
+                               QStringLiteral( "*.parquet" ),
+                               QStringLiteral( "parquet" ),
                                datasetOptions,
                                layerOptions,
                                QStringLiteral( "UTF-8" )
