@@ -2114,7 +2114,82 @@ class QgsVectorFileWriterMetadataContainer
                              )
                            );
 
-      // ESRI FileGDB
+      // ESRI OpenFileGDB
+      datasetOptions.clear();
+      layerOptions.clear();
+
+      layerOptions.insert( QStringLiteral( "FEATURE_DATASET" ), new QgsVectorFileWriter::StringOption(
+                             QObject::tr( "When this option is set, the new layer will be created inside the named "
+                                          "FeatureDataset folder. If the folder does not already exist, it will be created." ),
+                             QString()  // Default value
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "LAYER_ALIAS" ), new QgsVectorFileWriter::StringOption(
+                             QObject::tr( "Set layer name alias." ),
+                             QString()  // Default value
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "GEOMETRY_NAME" ), new QgsVectorFileWriter::StringOption(
+                             QObject::tr( "Set name of geometry column in new layer. Defaults to 'SHAPE'." ),
+                             QStringLiteral( "SHAPE" )  // Default value
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "GEOMETRY_NULLABLE" ), new QgsVectorFileWriter::BoolOption(
+                             QObject::tr( "Whether the values of the geometry column can be NULL. Can be set to NO so that geometry is required. Default to 'YES'." ),
+                             true  // Default value
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "FID" ), new QgsVectorFileWriter::StringOption(
+                             QObject::tr( "Name of the OID column to create. Defaults to 'OBJECTID'." ),
+                             QStringLiteral( "OBJECTID" )  // Default value
+                           ) );
+
+      // TODO missing options -- requires double option type
+      // XYTOLERANCE
+      // ZTOLERANCE
+      // MTOLERANCE
+      // XORIGIN
+      // YORIGIN
+      // ZORIGIN
+      // MORIGIN
+      // XYSCALE
+      // ZSCALE
+      // ZORIGIN
+
+      layerOptions.insert( QStringLiteral( "COLUMN_TYPES" ), new QgsVectorFileWriter::StringOption(
+                             QObject::tr( "A list of strings of format field_name=fgdb_field_type (separated by comma) to force the FileGDB column type of fields to be created." ),
+                             QString( )  // Default value
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "DOCUMENTATION" ), new QgsVectorFileWriter::StringOption(
+                             QObject::tr( "XML documentation for the layer." ),
+                             QString( )  // Default value
+                           ) );
+      layerOptions.insert( QStringLiteral( "CONFIGURATION_KEYWORD" ), new QgsVectorFileWriter::SetOption(
+                             QObject::tr( "Customize how data is stored. By default text in UTF-8 and data up to 1TB." ),
+      {QStringLiteral( "DEFAULTS" ), QStringLiteral( "MAX_FILE_SIZE_4GB" ), QStringLiteral( "MAX_FILE_SIZE_256TB" )},
+      QStringLiteral( "DEFAULTS" ), // Default value
+      false // Allow None
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "CREATE_SHAPE_AREA_AND_LENGTH_FIELDS" ), new QgsVectorFileWriter::BoolOption(
+                             QObject::tr( " Defaults to NO (through CreateLayer() API). When this option is set, a Shape_Area and Shape_Length special fields will be created for polygonal layers (Shape_Length only for linear layers). These fields will automatically be populated with the feature’s area or length whenever a new feature is added to the dataset or an existing feature is amended. When using ogr2ogr with a source layer that has Shape_Area/Shape_Length special fields, and this option is not explicitly specified, it will be automatically set, so that the resulting FileGeodatabase has those fields properly tagged." ),
+                             false  // Default value
+                           ) );
+
+      driverMetadata.insert( QStringLiteral( "OpenFileGDB" ),
+                             QgsVectorFileWriter::MetaData(
+                               QStringLiteral( "ESRI File Geodatabase" ),
+                               QObject::tr( "ESRI File Geodatabase" ),
+                               QStringLiteral( "*.gdb" ),
+                               QStringLiteral( "gdb" ),
+                               datasetOptions,
+                               layerOptions,
+                               QStringLiteral( "UTF-8" )
+                             )
+                           );
+
+      // ESRI FileGDB (using ESRI FileGDB API SDK)
       datasetOptions.clear();
       layerOptions.clear();
 
