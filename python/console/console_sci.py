@@ -205,16 +205,6 @@ class ShellScintilla(QgsCodeEditorPython):
             sys.stdout.fire_keyboard_interrupt = True
             return
 
-        autoImport = self.settings.value("pythonConsole/autoInsertionImport", True, type=bool)
-        # Automatically insert "import" after "from xxx "
-        if e.text() == ' ' and autoImport:
-            line, index = self.getCursorPosition()
-            cmd = self.text(line)
-            ptrn = r'^[ \t]*from [\w.]+$'
-            if re.match(ptrn, cmd):
-                self.insert(' import')
-                self.setCursorPosition(line, index + 7)
-
         QgsCodeEditorPython.keyPressEvent(self, e)
         self.updatePrompt()
 

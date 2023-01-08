@@ -469,20 +469,6 @@ class Editor(QgsCodeEditorPython):
 
         return True
 
-    def keyPressEvent(self, e):
-        t = e.text()
-        line, pos = self.getCursorPosition()
-        self.autoImport = self.settings.value("pythonConsole/autoInsertionImport", True, type=bool)
-        txt = self.text(line)[:pos]
-
-        # Automatically insert "import" after "from xxx "
-        if t == ' ' and self.autoImport:
-            ptrn = r'^[ \t]*from [\w.]+$'
-            if re.match(ptrn, txt):
-                self.insert(' import')
-                self.setCursorPosition(line, pos + 7)
-        QgsCodeEditorPython.keyPressEvent(self, e)
-
     def focusInEvent(self, e):
         pathfile = self.parent.path
         if pathfile:

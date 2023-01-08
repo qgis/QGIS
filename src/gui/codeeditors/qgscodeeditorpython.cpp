@@ -218,6 +218,11 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
     return;
   }
 
+  const QgsSettings settings;
+
+  bool autoCloseBracket = settings.value( QStringLiteral( "/pythonConsole/autoCloseBracket" ), false ).toBool();
+  bool autoInsertImport = settings.value( QStringLiteral( "/pythonConsole/autoInsertImport" ), false ).toBool();
+
   // Update calltips when cursor position changes with left and right keys
   if ( event->key() == Qt::Key_Left  ||
        event->key() == Qt::Key_Right ||
@@ -229,99 +234,120 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
     return;
   }
 
-
-  // Handle closing and opening
-  const QString prevChar = characterBeforeCursor();
-  const QString nextChar = characterAfterCursor();
+  // Get entered text and cursor position
   const QString eText = event->text();
-
   int line, column;
   getCursorPosition( &line, &column );
 
-  if ( !hasSelectedText() )
+  // If some text is selected and user presses an opening character
+  // surround the selection with the opening-closing pair
+  if ( hasSelectedText() )
   {
-    // When backspace is pressed inside an opening/closing pair, remove both characters
-    if ( event->key() == Qt::Key_Backspace )
+    if ( PAIRS.contains( eText ) )
     {
-      if ( PAIRS.contains( prevChar ) && PAIRS[prevChar] == nextChar )
+      int startLine, startPos, endLine, endPos;
+      getSelection( &startLine, &startPos, &endLine, &endPos );
+
+      // Special case for Multi line quotes (insert triple quotes)
+      if ( startLine != endLine && ( eText == "\"" || eText == "'" ) )
       {
-        setSelection( line, column - 1, line, column + 1 );
-        removeSelectedText();
-        event->accept();
+        replaceSelectedText(
+          QString( "%1%1%1%2%3%3%3" ).arg( eText ).arg( selectedText() ).arg( PAIRS[eText] )
+        );
+        setSelection( startLine, startPos + 3, endLine, endPos + 3 );
       }
       else
       {
-        QgsCodeEditor::keyPressEvent( event );
+        replaceSelectedText(
+          QString( "%1%2%3" ).arg( eText ).arg( selectedText() ).arg( PAIRS[eText] )
+        );
+        setSelection( startLine, startPos + 1, endLine, endPos + 1 );
       }
-
-      // Update calltips (cursor position has changed)
-      callTip();
-      return;
-    }
-
-    // When closing character is entered inside an opening/closing pair, shift the cursor
-    else if ( PAIRS.key( eText ) != ""  && nextChar == eText )
-    {
-      setCursorPosition( line, column + 1 );
       event->accept();
-
-      // Will hide calltips when a closing parenthesis is entered
-      callTip();
       return;
     }
-
-    // Else, if not inside a string or comment and an opening character
-    // is entered, also insert the closing character
-    else if ( !isCursorInsideString() && PAIRS.contains( eText ) )
+    else if ( SINGLE_CHARS.contains( eText ) )
     {
-      // Check if user is not entering triple quotes
-      if ( !( ( eText == "\"" || eText == "'" ) && prevChar == eText ) )
-      {
-        QgsCodeEditor::keyPressEvent( event );
-        insert( PAIRS[eText] );
-        event->accept();
-        return;
-      }
-    }
-  }
-
-
-  // If some text is selected and user presses an opening character
-  // surround the selection with the opening-closing pair
-  else if ( PAIRS.contains( eText ) )
-  {
-    int startLine, startPos, endLine, endPos;
-    getSelection( &startLine, &startPos, &endLine, &endPos );
-
-    // Special case for Multi line quotes (insert triple quotes)
-    if ( startLine != endLine && ( eText == "\"" || eText == "'" ) )
-    {
+      int startLine, startPos, endLine, endPos;
+      getSelection( &startLine, &startPos, &endLine, &endPos );
       replaceSelectedText(
-        QString( "%1%1%1%2%3%3%3" ).arg( eText ).arg( selectedText() ).arg( PAIRS[eText] )
-      );
-      setSelection( startLine, startPos + 3, endLine, endPos + 3 );
-    }
-    else
-    {
-      replaceSelectedText(
-        QString( "%1%2%3" ).arg( eText ).arg( selectedText() ).arg( PAIRS[eText] )
+        QString( "%1%2%1" ).arg( eText ).arg( selectedText() )
       );
       setSelection( startLine, startPos + 1, endLine, endPos + 1 );
+      event->accept();
+      return;
     }
-    event->accept();
-    return;
   }
-  else if ( SINGLE_CHARS.contains( eText ) )
+
+  // No selected text
+  else
   {
-    int startLine, startPos, endLine, endPos;
-    getSelection( &startLine, &startPos, &endLine, &endPos );
-    replaceSelectedText(
-      QString( "%1%2%1" ).arg( eText ).arg( selectedText() )
-    );
-    setSelection( startLine, startPos + 1, endLine, endPos + 1 );
-    event->accept();
-    return;
+    // Automatically insert "import" after "from xxx " if option is enabled
+    if ( autoInsertImport && eText == " " )
+    {
+      const QString txt = text( line );
+      const QRegularExpression re( QStringLiteral( "^from [\\w.]+$" ) );
+      if ( re.match( txt.trimmed() ).hasMatch() )
+      {
+        insert( QStringLiteral( " import" ) );
+        setCursorPosition( line, column + 7 );
+        return QgsCodeEditor::keyPressEvent( event );
+      }
+    }
+
+    // Handle automatic bracket insertion/deletion if option is enabled
+    else if ( autoCloseBracket )
+    {
+      const QString prevChar = characterBeforeCursor();
+      const QString nextChar = characterAfterCursor();
+
+      // When backspace is pressed inside an opening/closing pair, remove both characters
+      if ( event->key() == Qt::Key_Backspace )
+      {
+        if ( PAIRS.contains( prevChar ) && PAIRS[prevChar] == nextChar )
+        {
+          setSelection( line, column - 1, line, column + 1 );
+          removeSelectedText();
+          event->accept();
+        }
+        else
+        {
+          QgsCodeEditor::keyPressEvent( event );
+        }
+
+        // Update calltips (cursor position has changed)
+        callTip();
+        return;
+      }
+
+      // When closing character is entered inside an opening/closing pair, shift the cursor
+      else if ( PAIRS.key( eText ) != ""  && nextChar == eText )
+      {
+        setCursorPosition( line, column + 1 );
+        event->accept();
+
+        // Will hide calltips when a closing parenthesis is entered
+        callTip();
+        return;
+      }
+
+      // Else, if not inside a string or comment and an opening character
+      // is entered, also insert the closing character
+      else if ( !isCursorInsideString() && PAIRS.contains( eText ) )
+      {
+        // Check if user is not entering triple quotes
+        if ( !( ( eText == "\"" || eText == "'" ) && prevChar == eText ) )
+        {
+          QgsCodeEditor::keyPressEvent( event );
+          insert( PAIRS[eText] );
+          event->accept();
+          return;
+        }
+      }
+    }
   }
+
+
 
   // Let QgsCodeEditor handle the keyboard event
   return QgsCodeEditor::keyPressEvent( event );
