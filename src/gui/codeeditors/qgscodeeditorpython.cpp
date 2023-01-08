@@ -378,18 +378,36 @@ bool QgsCodeEditorPython::isCursorInsideString() const
   int line, index;
   getCursorPosition( &line, &index );
   int position = positionFromLineIndex( line, index );
-  long style = SendScintilla( QsciScintillaBase::SCI_GETSTYLEAT, position );
-  return style == QsciLexerPython::Comment
-         || style == QsciLexerPython::DoubleQuotedString
-         || style == QsciLexerPython::SingleQuotedString
-         || style == QsciLexerPython::TripleSingleQuotedString
-         || style == QsciLexerPython::TripleDoubleQuotedString
-         || style == QsciLexerPython::CommentBlock
-         || style == QsciLexerPython::UnclosedString
-         || style == QsciLexerPython::DoubleQuotedFString
-         || style == QsciLexerPython::SingleQuotedFString
-         || style == QsciLexerPython::TripleSingleQuotedFString
-         || style == QsciLexerPython::TripleDoubleQuotedFString;
+
+  // Special case: cursor at the end of the document. Style will always be Default,
+  // so  we have to  check the style of the previous character.
+  // It it is an unclosed string (triple string, unclosed, or comment),
+  // consider cursor is inside a string.
+  if ( position >= length() && position > 0 )
+  {
+    long style = SendScintilla( QsciScintillaBase::SCI_GETSTYLEAT, position - 1 );
+    return style == QsciLexerPython::Comment
+           || style == QsciLexerPython::TripleSingleQuotedString
+           || style == QsciLexerPython::TripleDoubleQuotedString
+           || style == QsciLexerPython::TripleSingleQuotedFString
+           || style == QsciLexerPython::TripleDoubleQuotedFString
+           || style == QsciLexerPython::UnclosedString;
+  }
+  else
+  {
+    long style = SendScintilla( QsciScintillaBase::SCI_GETSTYLEAT, position );
+    return style == QsciLexerPython::Comment
+           || style == QsciLexerPython::DoubleQuotedString
+           || style == QsciLexerPython::SingleQuotedString
+           || style == QsciLexerPython::TripleSingleQuotedString
+           || style == QsciLexerPython::TripleDoubleQuotedString
+           || style == QsciLexerPython::CommentBlock
+           || style == QsciLexerPython::UnclosedString
+           || style == QsciLexerPython::DoubleQuotedFString
+           || style == QsciLexerPython::SingleQuotedFString
+           || style == QsciLexerPython::TripleSingleQuotedFString
+           || style == QsciLexerPython::TripleDoubleQuotedFString;
+  }
 }
 
 QString QgsCodeEditorPython::characterBeforeCursor() const
