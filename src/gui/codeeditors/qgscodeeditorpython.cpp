@@ -333,7 +333,7 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
 
       // Else, if not inside a string or comment and an opening character
       // is entered, also insert the closing character
-      else if ( !isCursorInsideString() && PAIRS.contains( eText ) )
+      else if ( !isCursorInsideStringLiteralOrComment() && PAIRS.contains( eText ) )
       {
         // Check if user is not entering triple quotes
         if ( !( ( eText == "\"" || eText == "'" ) && prevChar == eText ) )
@@ -399,7 +399,7 @@ bool QgsCodeEditorPython::loadScript( const QString &script )
   return true;
 }
 
-bool QgsCodeEditorPython::isCursorInsideString() const
+bool QgsCodeEditorPython::isCursorInsideStringLiteralOrComment() const
 {
   int line, index;
   getCursorPosition( &line, &index );

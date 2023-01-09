@@ -55,14 +55,14 @@ Load APIs from one or more files
 Loads a ``script`` file.
 %End
 
-    bool isCursorInsideString() const;
+    bool isCursorInsideStringLiteralOrComment() const;
 %Docstring
 Check whether the current cursor position is inside a string or comment
 
 .. versionadded:: 3.30
 %End
 
-    QString characterBeforeCursor() const;
+    QString characterBeforeCursor( ) const;
 %Docstring
 Returns the character before the cursor, or an empty string if cursor is set at start
 
