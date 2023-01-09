@@ -844,6 +844,11 @@ void QgsFillSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSize
   stopRender( context );
 }
 
+QImage QgsFillSymbolLayer::toTiledPattern() const
+{
+  return QImage();
+}
+
 void QgsFillSymbolLayer::_renderPolygon( QPainter *p, const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context )
 {
   if ( !p )

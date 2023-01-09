@@ -1758,6 +1758,7 @@ QString QgsMapLayer::saveNamedStyle( const QString &uri, bool &resultFlag, Style
 
 void QgsMapLayer::exportSldStyle( QDomDocument &doc, QString &errorMsg ) const
 {
+
   return exportSldStyleV2( doc, errorMsg, QgsSldExportContext() );
 }
 
@@ -1848,15 +1849,18 @@ void QgsMapLayer::exportSldStyleV2( QDomDocument &doc, QString &errorMsg, const 
 
 QString QgsMapLayer::saveSldStyle( const QString &uri, bool &resultFlag ) const
 {
-  return saveSldStyleV2( uri, resultFlag, QgsSldExportContext() );
+  QgsSldExportContext context;
+  context.setExportFilePath( uri );
+  return saveSldStyleV2( resultFlag, context );
 }
 
-QString QgsMapLayer::saveSldStyleV2( const QString &uri, bool &resultFlag, const QgsSldExportContext &exportContext ) const
+QString QgsMapLayer::saveSldStyleV2( bool &resultFlag, const QgsSldExportContext &exportContext ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   const QgsMapLayer *mlayer = qobject_cast<const QgsMapLayer *>( this );
 
+  const QString uri { exportContext.exportFilePath() };
 
   // check if the uri is a file or ends with .sld,
   // which indicates that it should become one
