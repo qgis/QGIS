@@ -232,18 +232,6 @@ void QgsProcessingMultipleSelectionPanelWidget::dragEnterEvent( QDragEnterEvent 
     // dragged an acceptable layer, phew
     event->setDropAction( Qt::CopyAction );
     event->accept();
-    mDragActive = true;
-    update();
-  }
-}
-
-void QgsProcessingMultipleSelectionPanelWidget::dragLeaveEvent( QDragLeaveEvent *event )
-{
-  QWidget::dragLeaveEvent( event );
-  if ( mDragActive )
-  {
-    event->accept();
-    mDragActive = false;
     update();
   }
 }
@@ -267,7 +255,6 @@ void QgsProcessingMultipleSelectionPanelWidget::dropEvent( QDropEvent *event )
     }
     emit selectionChanged();
   }
-  mDragActive = false;
   update();
 }
 
@@ -449,18 +436,6 @@ void QgsProcessingMultipleInputPanelWidget::dragEnterEvent( QDragEnterEvent *eve
     // dragged an acceptable layer, phew
     event->setDropAction( Qt::CopyAction );
     event->accept();
-    mDragActive = true;
-    update();
-  }
-}
-
-void QgsProcessingMultipleInputPanelWidget::dragLeaveEvent( QDragLeaveEvent *event )
-{
-  // QWidget::dragLeaveEvent( event ); // might not be needed
-  if ( mDragActive )
-  {
-    event->accept();
-    mDragActive = false;
     update();
   }
 }
@@ -484,7 +459,6 @@ void QgsProcessingMultipleInputPanelWidget::dropEvent( QDropEvent *event )
     }
     emit selectionChanged();
   }
-  mDragActive = false;
   update();
 }
 

@@ -126,7 +126,6 @@ class GUI_EXPORT QgsProcessingMultipleSelectionPanelWidget : public QgsPanelWidg
     std::function< QString( const QVariant & )> mValueFormatter;
 
     void dragEnterEvent( QDragEnterEvent *event ) override SIP_SKIP;
-    void dragLeaveEvent( QDragLeaveEvent *event ) override SIP_SKIP;
     void dropEvent( QDropEvent *event ) override SIP_SKIP;
 
   private slots:
@@ -145,7 +144,6 @@ class GUI_EXPORT QgsProcessingMultipleSelectionPanelWidget : public QgsPanelWidg
     void populateList( const QVariantList &availableOptions, const QVariantList &selectedOptions );
 
     friend class TestProcessingGui;
-    bool mDragActive = false;
 
     /**
      * Returns a map layer, compatible with the filters set for the combo box, from
@@ -259,7 +257,6 @@ class GUI_EXPORT QgsProcessingMultipleInputPanelWidget : public QgsProcessingMul
 
   protected:
     void dragEnterEvent( QDragEnterEvent *event ) override SIP_SKIP;
-    void dragLeaveEvent( QDragLeaveEvent *event ) override SIP_SKIP;
     void dropEvent( QDropEvent *event ) override SIP_SKIP;
 
   private:
