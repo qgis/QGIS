@@ -80,7 +80,7 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
      *
      * \since QGIS 3.30
      */
-    bool isCursorInsideString() const;
+    bool isCursorInsideStringLiteralOrComment() const;
 
     /**
      * Returns the character before the cursor, or an empty string if cursor is set at start

@@ -285,9 +285,9 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
     // Automatically insert "import" after "from xxx " if option is enabled
     if ( autoInsertImport && eText == " " )
     {
-      const QString txt = text( line );
-      const QRegularExpression re( QStringLiteral( "^from [\\w.]+$" ) );
-      if ( re.match( txt.trimmed() ).hasMatch() )
+      const QString lineText = text( line );
+      const thread_local QRegularExpression re( QStringLiteral( "^from [\\w.]+$" ) );
+      if ( re.match( lineText.trimmed() ).hasMatch() )
       {
         insert( QStringLiteral( " import" ) );
         setCursorPosition( line, column + 7 );
@@ -443,7 +443,7 @@ QString QgsCodeEditorPython::characterBeforeCursor() const
   int position = positionFromLineIndex( line, index );
   if ( position <= 0 )
   {
-    return "";
+    return QString();
   }
   return text( position - 1, position );
 }
@@ -455,7 +455,7 @@ QString QgsCodeEditorPython::characterAfterCursor() const
   int position = positionFromLineIndex( line, index );
   if ( position >= length() )
   {
-    return "";
+    return QString();
   }
   return text( position, position + 1 );
 }
