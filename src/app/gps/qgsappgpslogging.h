@@ -34,8 +34,8 @@ class APP_EXPORT QgsAppGpsLogging: public QObject
 
   public:
 
-    static inline QgsSettingsEntryString *settingLastLogFolder = new QgsSettingsEntryString( QStringLiteral( "last-log-folder" ), QgsSettings::sTreeGps, QString(), QStringLiteral( "Last used folder for GPS log files" ) );
-    static inline QgsSettingsEntryString *settingLastGpkgLog = new QgsSettingsEntryString( QStringLiteral( "last-gpkg-log" ), QgsSettings::sTreeGps, QString(), QStringLiteral( "Last used Geopackage/Spatialite file for logging GPS locations" ) );
+    static const inline QgsSettingsEntryString *settingLastLogFolder = new QgsSettingsEntryString( QStringLiteral( "last-log-folder" ), QgsSettings::sTreeGps, QString(), QStringLiteral( "Last used folder for GPS log files" ) );
+    static const inline QgsSettingsEntryString *settingLastGpkgLog = new QgsSettingsEntryString( QStringLiteral( "last-gpkg-log" ), QgsSettings::sTreeGps, QString(), QStringLiteral( "Last used Geopackage/Spatialite file for logging GPS locations" ) );
 
     QgsAppGpsLogging( QgsAppGpsConnection *connection, QObject *parent = nullptr );
     ~QgsAppGpsLogging() override;

@@ -106,7 +106,7 @@ class CORE_EXPORT QgsSettingsTreeElement
      * \note Ownership of the setting is transferred
      * \note This is automatically done when calling the setting's constructor with the parent argument
      */
-    void registerChildSetting( QgsSettingsEntryBase *setting, const QString &key ) SIP_THROW( QgsSettingsException );
+    void registerChildSetting( const QgsSettingsEntryBase *setting, const QString &key ) SIP_THROW( QgsSettingsException );
 
     /**
      * Unregisters the child setting
@@ -114,7 +114,7 @@ class CORE_EXPORT QgsSettingsTreeElement
      * \param deleteSettingValues if TRUE, the values of the settings will also be deleted
      * \param parentsNamedItems the list of named items in the parent named list (if any)
      */
-    void unregisterChildSetting( QgsSettingsEntryBase *setting, bool deleteSettingValues = false, const QStringList &parentsNamedItems = QStringList() );
+    void unregisterChildSetting( const QgsSettingsEntryBase *setting, bool deleteSettingValues = false, const QStringList &parentsNamedItems = QStringList() );
 
     //! Unregisters the child tree \a element
     void unregisterChildElement( QgsSettingsTreeElement *element );
@@ -126,11 +126,10 @@ class CORE_EXPORT QgsSettingsTreeElement
     QgsSettingsTreeElement *childElement( const QString &key );
 
     //! Returns the children settings
-    QList<const QgsSettingsEntryBase *> childrenSettings() const {return reinterpret_cast<QList<const QgsSettingsEntryBase *> const &>( mChildrenSettings );}
-    // This is not working with SIP, no idea why it tries to make a list of const
+    QList<const QgsSettingsEntryBase *> childrenSettings() const {return mChildrenSettings;}
 
     //! Returns the existing child settings if it exists at the given \a key
-    QgsSettingsEntryBase *childSetting( const QString &key );
+    const QgsSettingsEntryBase *childSetting( const QString &key );
 
     //! Returns the parent of the element or nullptr if it does not exists
     QgsSettingsTreeElement *parent() const {return mParent;}
@@ -179,7 +178,7 @@ class CORE_EXPORT QgsSettingsTreeElement
     QgsSettingsTreeElement *childElementAtKey( const QString &key );
 
     QList<QgsSettingsTreeElement *> mChildrenElements;
-    QList<QgsSettingsEntryBase *> mChildrenSettings;
+    QList<const QgsSettingsEntryBase *> mChildrenSettings;
     QgsSettingsTreeElement *mParent = nullptr;
 
     QString mKey;
@@ -242,7 +241,7 @@ class CORE_EXPORT QgsSettingsTreeNamedListElement : public QgsSettingsTreeElemen
     void deleteItem( const QString &item, const QStringList &parentsNamedItems = QStringList() ) SIP_THROW( QgsSettingsException );
 
     //! Returns the setting used to store the selected item
-    QgsSettingsEntryString *selectedItemSetting() const {return mSelectedItemSetting;}
+    const QgsSettingsEntryString *selectedItemSetting() const {return mSelectedItemSetting;}
 
   protected:
     //! Init the elements with the specific \a options
@@ -263,7 +262,7 @@ class CORE_EXPORT QgsSettingsTreeNamedListElement : public QgsSettingsTreeElemen
     QString completeKeyWithNamedItems( const QString &key, const QStringList &namedItems ) const;
 
     QgsSettingsTreeElement::Options mOptions;
-    QgsSettingsEntryString *mSelectedItemSetting = nullptr;
+    const QgsSettingsEntryString *mSelectedItemSetting = nullptr;
     QString mItemsCompleteKey;
 };
 

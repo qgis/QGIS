@@ -35,15 +35,15 @@ class CORE_EXPORT QgsVectorTileProviderConnection : public QgsAbstractProviderCo
 
     static inline QgsSettingsTreeNamedListElement *sTreeConnectionVectorTile = QgsSettings::sTreeConnections->createNamedListElement( QStringLiteral( "vector-tile" ), QgsSettingsTreeNamedListElement::Option::NamedListSelectedItemSetting );
 
-    static inline QgsSettingsEntryString *settingsUrl = new QgsSettingsEntryString( QStringLiteral( "url" ), sTreeConnectionVectorTile );
-    static inline QgsSettingsEntryInteger *settingsZmin = new QgsSettingsEntryInteger( QStringLiteral( "zmin" ), sTreeConnectionVectorTile, -1 );
-    static inline QgsSettingsEntryInteger *settingsZmax = new QgsSettingsEntryInteger( QStringLiteral( "zmax" ), sTreeConnectionVectorTile, -1 );
-    static inline QgsSettingsEntryString *settingsAuthcfg = new QgsSettingsEntryString( QStringLiteral( "authcfg" ), sTreeConnectionVectorTile );
-    static inline QgsSettingsEntryString *settingsUsername = new QgsSettingsEntryString( QStringLiteral( "username" ), sTreeConnectionVectorTile );
-    static inline QgsSettingsEntryString *settingsPassword = new QgsSettingsEntryString( QStringLiteral( "password" ), sTreeConnectionVectorTile );
-    static inline QgsSettingsEntryString *settingsStyleUrl = new QgsSettingsEntryString( QStringLiteral( "styleUrl" ), sTreeConnectionVectorTile );
-    static inline QgsSettingsEntryString *settingsServiceType = new QgsSettingsEntryString( QStringLiteral( "service-type" ), sTreeConnectionVectorTile );
-    static inline QgsSettingsEntryVariantMap *settingsHeaders = new QgsSettingsEntryVariantMap( QStringLiteral( "http-header" ), sTreeConnectionVectorTile );
+    static const inline QgsSettingsEntryString *settingsUrl = new QgsSettingsEntryString( QStringLiteral( "url" ), sTreeConnectionVectorTile );
+    static const inline QgsSettingsEntryInteger *settingsZmin = new QgsSettingsEntryInteger( QStringLiteral( "zmin" ), sTreeConnectionVectorTile, -1 );
+    static const inline QgsSettingsEntryInteger *settingsZmax = new QgsSettingsEntryInteger( QStringLiteral( "zmax" ), sTreeConnectionVectorTile, -1 );
+    static const inline QgsSettingsEntryString *settingsAuthcfg = new QgsSettingsEntryString( QStringLiteral( "authcfg" ), sTreeConnectionVectorTile );
+    static const inline QgsSettingsEntryString *settingsUsername = new QgsSettingsEntryString( QStringLiteral( "username" ), sTreeConnectionVectorTile );
+    static const inline QgsSettingsEntryString *settingsPassword = new QgsSettingsEntryString( QStringLiteral( "password" ), sTreeConnectionVectorTile );
+    static const inline QgsSettingsEntryString *settingsStyleUrl = new QgsSettingsEntryString( QStringLiteral( "styleUrl" ), sTreeConnectionVectorTile );
+    static const inline QgsSettingsEntryString *settingsServiceType = new QgsSettingsEntryString( QStringLiteral( "service-type" ), sTreeConnectionVectorTile );
+    static const inline QgsSettingsEntryVariantMap *settingsHeaders = new QgsSettingsEntryVariantMap( QStringLiteral( "http-header" ), sTreeConnectionVectorTile );
 #endif
 
     QgsVectorTileProviderConnection( const QString &name );

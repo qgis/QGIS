@@ -41,12 +41,12 @@ class CORE_EXPORT QgsBabelFormatRegistry
 
     static inline QgsSettingsTreeNamedListElement *sTreeBabelDevices = QgsSettings::sTreeGps->createNamedListElement( QStringLiteral( "babel-devices" ) );
 
-    static inline QgsSettingsEntryString *settingsBabelWptDownload = new QgsSettingsEntryString( QStringLiteral( "wptdownload" ), sTreeBabelDevices );
-    static inline QgsSettingsEntryString *settingsBabelWptUpload = new QgsSettingsEntryString( QStringLiteral( "wptupload" ), sTreeBabelDevices );
-    static inline QgsSettingsEntryString *settingsBabelRteDownload = new QgsSettingsEntryString( QStringLiteral( "rtedownload" ), sTreeBabelDevices );
-    static inline QgsSettingsEntryString *settingsBabelRteUpload = new QgsSettingsEntryString( QStringLiteral( "rteupload" ), sTreeBabelDevices );
-    static inline QgsSettingsEntryString *settingsBabelTrkDownload = new QgsSettingsEntryString( QStringLiteral( "trkdownload" ), sTreeBabelDevices );
-    static inline QgsSettingsEntryString *settingsBabelTrkUpload = new QgsSettingsEntryString( QStringLiteral( "trkupload" ), sTreeBabelDevices );
+    static const inline QgsSettingsEntryString *settingsBabelWptDownload = new QgsSettingsEntryString( QStringLiteral( "wptdownload" ), sTreeBabelDevices );
+    static const inline QgsSettingsEntryString *settingsBabelWptUpload = new QgsSettingsEntryString( QStringLiteral( "wptupload" ), sTreeBabelDevices );
+    static const inline QgsSettingsEntryString *settingsBabelRteDownload = new QgsSettingsEntryString( QStringLiteral( "rtedownload" ), sTreeBabelDevices );
+    static const inline QgsSettingsEntryString *settingsBabelRteUpload = new QgsSettingsEntryString( QStringLiteral( "rteupload" ), sTreeBabelDevices );
+    static const inline QgsSettingsEntryString *settingsBabelTrkDownload = new QgsSettingsEntryString( QStringLiteral( "trkdownload" ), sTreeBabelDevices );
+    static const inline QgsSettingsEntryString *settingsBabelTrkUpload = new QgsSettingsEntryString( QStringLiteral( "trkupload" ), sTreeBabelDevices );
 #endif
 
     /**

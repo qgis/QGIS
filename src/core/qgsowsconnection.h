@@ -40,17 +40,17 @@ class CORE_EXPORT QgsXyzConnectionSettings SIP_SKIP
   public:
     static inline QgsSettingsTreeNamedListElement *sTreeXyzConnections = QgsSettings::sTreeConnections->createNamedListElement( QStringLiteral( "xyz" ), QgsSettingsTreeElement::Option::NamedListSelectedItemSetting );
 
-    static inline QgsSettingsEntryString *settingsUrl = new QgsSettingsEntryString( QStringLiteral( "url" ), sTreeXyzConnections, QString() ) ;
-    static inline QgsSettingsEntryVariantMap *settingsHeaders = new QgsSettingsEntryVariantMap( QStringLiteral( "http-header" ), sTreeXyzConnections ) ;
-    static inline QgsSettingsEntryInteger *settingsZmin = new QgsSettingsEntryInteger( QStringLiteral( "zmin" ), sTreeXyzConnections, -1 );
-    static inline QgsSettingsEntryInteger *settingsZmax = new QgsSettingsEntryInteger( QStringLiteral( "zmax" ), sTreeXyzConnections, -1 );
-    static inline QgsSettingsEntryDouble *settingsTilePixelRatio = new QgsSettingsEntryDouble( QStringLiteral( "tile-pixel-ratio" ), sTreeXyzConnections, 0, QStringLiteral( "0 = unknown (not scaled), 1.0 = 256x256, 2.0 = 512x512" ) ) ;
-    static inline QgsSettingsEntryBool *settingsHidden = new QgsSettingsEntryBool( QStringLiteral( "hidden" ), sTreeXyzConnections, false ) ;
-    static inline QgsSettingsEntryString *settingsInterpretation = new QgsSettingsEntryString( QStringLiteral( "interpretation" ), sTreeXyzConnections, QString() ) ;
+    static const inline QgsSettingsEntryString *settingsUrl = new QgsSettingsEntryString( QStringLiteral( "url" ), sTreeXyzConnections, QString() ) ;
+    static const inline QgsSettingsEntryVariantMap *settingsHeaders = new QgsSettingsEntryVariantMap( QStringLiteral( "http-header" ), sTreeXyzConnections ) ;
+    static const inline QgsSettingsEntryInteger *settingsZmin = new QgsSettingsEntryInteger( QStringLiteral( "zmin" ), sTreeXyzConnections, -1 );
+    static const inline QgsSettingsEntryInteger *settingsZmax = new QgsSettingsEntryInteger( QStringLiteral( "zmax" ), sTreeXyzConnections, -1 );
+    static const inline QgsSettingsEntryDouble *settingsTilePixelRatio = new QgsSettingsEntryDouble( QStringLiteral( "tile-pixel-ratio" ), sTreeXyzConnections, 0, QStringLiteral( "0 = unknown (not scaled), 1.0 = 256x256, 2.0 = 512x512" ) ) ;
+    static const inline QgsSettingsEntryBool *settingsHidden = new QgsSettingsEntryBool( QStringLiteral( "hidden" ), sTreeXyzConnections, false ) ;
+    static const inline QgsSettingsEntryString *settingsInterpretation = new QgsSettingsEntryString( QStringLiteral( "interpretation" ), sTreeXyzConnections, QString() ) ;
 
-    static inline QgsSettingsEntryString *settingsUsername = new QgsSettingsEntryString( QStringLiteral( "username" ), sTreeXyzConnections ) ;
-    static inline QgsSettingsEntryString *settingsPassword = new QgsSettingsEntryString( QStringLiteral( "password" ), sTreeXyzConnections ) ;
-    static inline QgsSettingsEntryString *settingsAuthcfg = new QgsSettingsEntryString( QStringLiteral( "authcfg" ), sTreeXyzConnections ) ;
+    static const inline QgsSettingsEntryString *settingsUsername = new QgsSettingsEntryString( QStringLiteral( "username" ), sTreeXyzConnections ) ;
+    static const inline QgsSettingsEntryString *settingsPassword = new QgsSettingsEntryString( QStringLiteral( "password" ), sTreeXyzConnections ) ;
+    static const inline QgsSettingsEntryString *settingsAuthcfg = new QgsSettingsEntryString( QStringLiteral( "authcfg" ), sTreeXyzConnections ) ;
 };
 
 
@@ -68,24 +68,24 @@ class CORE_EXPORT QgsOwsConnection : public QObject
     static inline QgsSettingsTreeNamedListElement *sTtreeOwsServices = QgsSettings::sTreeConnections->createNamedListElement( QStringLiteral( "ows" ) );
     static inline QgsSettingsTreeNamedListElement *sTreeOwsConnections = sTtreeOwsServices->createNamedListElement( QStringLiteral( "connections" ) );
 
-    static inline QgsSettingsEntryString *settingsUrl = new QgsSettingsEntryString( QStringLiteral( "url" ), sTreeOwsConnections, QString() ) ;
-    static inline QgsSettingsEntryVariantMap *settingsHeaders = new QgsSettingsEntryVariantMap( QStringLiteral( "http-header" ), sTreeOwsConnections ) ;
-    static inline QgsSettingsEntryString *settingsVersion = new QgsSettingsEntryString( QStringLiteral( "version" ), sTreeOwsConnections, QString() ) ;
-    static inline QgsSettingsEntryBool *settingsIgnoreGetMapURI = new QgsSettingsEntryBool( QStringLiteral( "ignore-get-map-uri" ), sTreeOwsConnections, false ) ;
-    static inline QgsSettingsEntryBool *settingsIgnoreGetFeatureInfoURI = new QgsSettingsEntryBool( QStringLiteral( "ignore-get-feature-info-uri" ), sTreeOwsConnections, false ) ;
-    static inline QgsSettingsEntryBool *settingsSmoothPixmapTransform = new QgsSettingsEntryBool( QStringLiteral( "smooth-pixmap-transform" ), sTreeOwsConnections, false ) ;
-    static inline QgsSettingsEntryBool *settingsReportedLayerExtents = new QgsSettingsEntryBool( QStringLiteral( "reported-layer-extents" ), sTreeOwsConnections, false ) ;
-    static inline QgsSettingsEntryEnumFlag<Qgis::DpiMode> *settingsDpiMode = new QgsSettingsEntryEnumFlag<Qgis::DpiMode>( QStringLiteral( "dpi-mode" ), sTreeOwsConnections, Qgis::DpiMode::All, QString(), Qgis::SettingsOption::SaveEnumFlagAsInt ) ;
-    static inline QgsSettingsEntryEnumFlag<Qgis::TilePixelRatio> *settingsTilePixelRatio = new QgsSettingsEntryEnumFlag<Qgis::TilePixelRatio>( QStringLiteral( "tile-pixel-ratio" ), sTreeOwsConnections, Qgis::TilePixelRatio::Undefined, QString(), Qgis::SettingsOption::SaveEnumFlagAsInt ) ;
-    static inline QgsSettingsEntryString *settingsMaxNumFeatures = new QgsSettingsEntryString( QStringLiteral( "max-num-features" ), sTreeOwsConnections ) ;
-    static inline QgsSettingsEntryString *settingsPagesize = new QgsSettingsEntryString( QStringLiteral( "page-size" ), sTreeOwsConnections ) ;
-    static inline QgsSettingsEntryBool *settingsPagingEnabled = new QgsSettingsEntryBool( QStringLiteral( "paging-enabled" ), sTreeOwsConnections, true ) ;
-    static inline QgsSettingsEntryBool *settingsPreferCoordinatesForWfsT11 = new QgsSettingsEntryBool( QStringLiteral( "prefer-coordinates-for-wfs-T11" ), sTreeOwsConnections, false ) ;
-    static inline QgsSettingsEntryBool *settingsIgnoreAxisOrientation = new QgsSettingsEntryBool( QStringLiteral( "ignore-axis-orientation" ), sTreeOwsConnections, false ) ;
-    static inline QgsSettingsEntryBool *settingsInvertAxisOrientation = new QgsSettingsEntryBool( QStringLiteral( "invert-axis-orientation" ), sTreeOwsConnections, false ) ;
-    static inline QgsSettingsEntryString *settingsUsername = new QgsSettingsEntryString( QStringLiteral( "username" ), sTreeOwsConnections ) ;
-    static inline QgsSettingsEntryString *settingsPassword = new QgsSettingsEntryString( QStringLiteral( "password" ), sTreeOwsConnections ) ;
-    static inline QgsSettingsEntryString *settingsAuthCfg = new QgsSettingsEntryString( QStringLiteral( "authcfg" ), sTreeOwsConnections ) ;
+    static const inline QgsSettingsEntryString *settingsUrl = new QgsSettingsEntryString( QStringLiteral( "url" ), sTreeOwsConnections, QString() ) ;
+    static const inline QgsSettingsEntryVariantMap *settingsHeaders = new QgsSettingsEntryVariantMap( QStringLiteral( "http-header" ), sTreeOwsConnections ) ;
+    static const inline QgsSettingsEntryString *settingsVersion = new QgsSettingsEntryString( QStringLiteral( "version" ), sTreeOwsConnections, QString() ) ;
+    static const inline QgsSettingsEntryBool *settingsIgnoreGetMapURI = new QgsSettingsEntryBool( QStringLiteral( "ignore-get-map-uri" ), sTreeOwsConnections, false ) ;
+    static const inline QgsSettingsEntryBool *settingsIgnoreGetFeatureInfoURI = new QgsSettingsEntryBool( QStringLiteral( "ignore-get-feature-info-uri" ), sTreeOwsConnections, false ) ;
+    static const inline QgsSettingsEntryBool *settingsSmoothPixmapTransform = new QgsSettingsEntryBool( QStringLiteral( "smooth-pixmap-transform" ), sTreeOwsConnections, false ) ;
+    static const inline QgsSettingsEntryBool *settingsReportedLayerExtents = new QgsSettingsEntryBool( QStringLiteral( "reported-layer-extents" ), sTreeOwsConnections, false ) ;
+    static const inline QgsSettingsEntryEnumFlag<Qgis::DpiMode> *settingsDpiMode = new QgsSettingsEntryEnumFlag<Qgis::DpiMode>( QStringLiteral( "dpi-mode" ), sTreeOwsConnections, Qgis::DpiMode::All, QString(), Qgis::SettingsOption::SaveEnumFlagAsInt ) ;
+    static const inline QgsSettingsEntryEnumFlag<Qgis::TilePixelRatio> *settingsTilePixelRatio = new QgsSettingsEntryEnumFlag<Qgis::TilePixelRatio>( QStringLiteral( "tile-pixel-ratio" ), sTreeOwsConnections, Qgis::TilePixelRatio::Undefined, QString(), Qgis::SettingsOption::SaveEnumFlagAsInt ) ;
+    static const inline QgsSettingsEntryString *settingsMaxNumFeatures = new QgsSettingsEntryString( QStringLiteral( "max-num-features" ), sTreeOwsConnections ) ;
+    static const inline QgsSettingsEntryString *settingsPagesize = new QgsSettingsEntryString( QStringLiteral( "page-size" ), sTreeOwsConnections ) ;
+    static const inline QgsSettingsEntryBool *settingsPagingEnabled = new QgsSettingsEntryBool( QStringLiteral( "paging-enabled" ), sTreeOwsConnections, true ) ;
+    static const inline QgsSettingsEntryBool *settingsPreferCoordinatesForWfsT11 = new QgsSettingsEntryBool( QStringLiteral( "prefer-coordinates-for-wfs-T11" ), sTreeOwsConnections, false ) ;
+    static const inline QgsSettingsEntryBool *settingsIgnoreAxisOrientation = new QgsSettingsEntryBool( QStringLiteral( "ignore-axis-orientation" ), sTreeOwsConnections, false ) ;
+    static const inline QgsSettingsEntryBool *settingsInvertAxisOrientation = new QgsSettingsEntryBool( QStringLiteral( "invert-axis-orientation" ), sTreeOwsConnections, false ) ;
+    static const inline QgsSettingsEntryString *settingsUsername = new QgsSettingsEntryString( QStringLiteral( "username" ), sTreeOwsConnections ) ;
+    static const inline QgsSettingsEntryString *settingsPassword = new QgsSettingsEntryString( QStringLiteral( "password" ), sTreeOwsConnections ) ;
+    static const inline QgsSettingsEntryString *settingsAuthCfg = new QgsSettingsEntryString( QStringLiteral( "authcfg" ), sTreeOwsConnections ) ;
 
 #endif
 

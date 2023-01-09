@@ -78,7 +78,7 @@ This is useful to register groups of settings for several named items (for insta
 Returns the type of element
 %End
 
-    void registerChildSetting( QgsSettingsEntryBase *setting, const QString &key ) throw( QgsSettingsException );
+    void registerChildSetting( const QgsSettingsEntryBase *setting, const QString &key ) throw( QgsSettingsException );
 %Docstring
 Registers a child setting
 
@@ -94,7 +94,7 @@ Registers a child setting
    This is automatically done when calling the setting's constructor with the parent argument
 %End
 
-    void unregisterChildSetting( QgsSettingsEntryBase *setting, bool deleteSettingValues = false, const QStringList &parentsNamedItems = QStringList() );
+    void unregisterChildSetting( const QgsSettingsEntryBase *setting, bool deleteSettingValues = false, const QStringList &parentsNamedItems = QStringList() );
 %Docstring
 Unregisters the child setting
 
@@ -123,7 +123,7 @@ Returns the existing child element if it exists at the given ``key``
 Returns the children settings
 %End
 
-    QgsSettingsEntryBase *childSetting( const QString &key );
+    const QgsSettingsEntryBase *childSetting( const QString &key );
 %Docstring
 Returns the existing child settings if it exists at the given ``key``
 %End
@@ -240,7 +240,7 @@ Deletes a named item from the named list element
 :param parentsNamedItems: the list of named items in the parent named list (if any)
 %End
 
-    QgsSettingsEntryString *selectedItemSetting() const;
+    const QgsSettingsEntryString *selectedItemSetting() const;
 %Docstring
 Returns the setting used to store the selected item
 %End

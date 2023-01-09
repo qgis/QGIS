@@ -40,12 +40,13 @@ QgsSettingsTreeElement *QgsSettingsTreeElement::createRootElement()
 
 QgsSettingsTreeElement *QgsSettingsTreeElement::createChildElement( const QString &key )
 {
-  if ( childElement( key ) )
-    throw QgsSettingsException( QObject::tr( "Settings tree element '%1' already holds a child tree element with key '%2'." ).arg( this->key(), key ) );
+  QgsSettingsTreeElement *te = childElement( key );
+  if ( te )
+    return te;
   if ( childSetting( key ) )
     throw QgsSettingsException( QObject::tr( "Settings tree element '%1' already holds a child setting with key '%2'." ).arg( this->key(), key ) );
 
-  QgsSettingsTreeElement *te = new QgsSettingsTreeElement();
+  te = new QgsSettingsTreeElement();
   te->mType = Type::Standard;
   te->init( this, key );
   registerChildElement( te );
@@ -54,10 +55,16 @@ QgsSettingsTreeElement *QgsSettingsTreeElement::createChildElement( const QStrin
 
 QgsSettingsTreeNamedListElement *QgsSettingsTreeElement::createNamedListElement( const QString &key, const QgsSettingsTreeElement::Options &options )
 {
-  if ( childElement( key ) )
-    throw QgsSettingsException( QObject::tr( "Settings tree element '%1' already holds a child tree element with key '%2'." ).arg( this->key(), key ) );
+  QgsSettingsTreeElement *nte = childElement( key );
+  if ( nte )
+  {
+    if ( nte->type() == Type::NamedList )
+      return dynamic_cast<QgsSettingsTreeNamedListElement *>( nte );
+    else
+      throw QgsSettingsException( QObject::tr( "Settings tree element '%1' already holds a child element with key '%2', but it is not a named list.." ).arg( this->key(), key ) );
+  }
   if ( childSetting( key ) )
-    throw QgsSettingsException( QObject::tr( "Settings tree element '%1' already holds a child setting with key '%2'." ).arg( this->key(), key ) );
+    throw QgsException( QObject::tr( "Settings tree element '%1' already holds a child setting with key '%2'." ).arg( this->key(), key ) );
 
   QgsSettingsTreeNamedListElement *te = new QgsSettingsTreeNamedListElement();
   te->mType = Type::NamedList;
@@ -66,6 +73,7 @@ QgsSettingsTreeNamedListElement *QgsSettingsTreeElement::createNamedListElement(
   registerChildElement( te );
   return te;
 }
+
 
 QgsSettingsTreeElement *QgsSettingsTreeElement::childElement( const QString &key )
 {
@@ -78,10 +86,10 @@ QgsSettingsTreeElement *QgsSettingsTreeElement::childElement( const QString &key
   return nullptr;
 }
 
-QgsSettingsEntryBase *QgsSettingsTreeElement::childSetting( const QString &key )
+const QgsSettingsEntryBase *QgsSettingsTreeElement::childSetting( const QString &key )
 {
   const QString testCompleteKey = QStringLiteral( "%1%2" ).arg( mCompleteKey, key );
-  QList<QgsSettingsEntryBase *>::const_iterator it = mChildrenSettings.constBegin();
+  QList<const QgsSettingsEntryBase *>::const_iterator it = mChildrenSettings.constBegin();
   for ( ; it != mChildrenSettings.constEnd(); ++it )
   {
     if ( ( *it )->definitionKey() == testCompleteKey )
@@ -90,7 +98,7 @@ QgsSettingsEntryBase *QgsSettingsTreeElement::childSetting( const QString &key )
   return nullptr;
 }
 
-void QgsSettingsTreeElement::registerChildSetting( QgsSettingsEntryBase *setting, const QString &key )
+void QgsSettingsTreeElement::registerChildSetting( const QgsSettingsEntryBase *setting, const QString &key )
 {
   if ( childElement( key ) )
     throw QgsSettingsException( QObject::tr( "Settings tree element '%1' already holds a child tree element with key '%2'." ).arg( this->key(), key ) );
@@ -106,7 +114,7 @@ void QgsSettingsTreeElement::registerChildElement( QgsSettingsTreeElement *eleme
   mChildrenElements.append( element );
 }
 
-void QgsSettingsTreeElement::unregisterChildSetting( QgsSettingsEntryBase *setting, bool deleteSettingValues, const QStringList &parentsNamedItems )
+void QgsSettingsTreeElement::unregisterChildSetting( const QgsSettingsEntryBase *setting, bool deleteSettingValues, const QStringList &parentsNamedItems )
 {
   if ( deleteSettingValues )
     setting->remove( parentsNamedItems );

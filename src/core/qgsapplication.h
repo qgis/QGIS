@@ -1044,15 +1044,15 @@ class CORE_EXPORT QgsApplication : public QApplication
 
 #ifndef SIP_RUN
     //! Settings entry locale user locale
-    static inline QgsSettingsEntryString *settingsLocaleUserLocale = new QgsSettingsEntryString( QStringLiteral( "userLocale" ), QgsSettings::sTreeLocale, QString() );
+    static const inline QgsSettingsEntryString *settingsLocaleUserLocale = new QgsSettingsEntryString( QStringLiteral( "userLocale" ), QgsSettings::sTreeLocale, QString() );
     //! Settings entry locale override flag
-    static inline QgsSettingsEntryBool *settingsLocaleOverrideFlag = new QgsSettingsEntryBool( QStringLiteral( "overrideFlag" ), QgsSettings::sTreeLocale, false );
+    static const inline QgsSettingsEntryBool *settingsLocaleOverrideFlag = new QgsSettingsEntryBool( QStringLiteral( "overrideFlag" ), QgsSettings::sTreeLocale, false );
     //! Settings entry locale global locale
-    static inline QgsSettingsEntryString *settingsLocaleGlobalLocale = new QgsSettingsEntryString( QStringLiteral( "globalLocale" ), QgsSettings::sTreeLocale, QString() );
+    static const inline QgsSettingsEntryString *settingsLocaleGlobalLocale = new QgsSettingsEntryString( QStringLiteral( "globalLocale" ), QgsSettings::sTreeLocale, QString() );
     //! Settings entry locale show group separator
-    static inline QgsSettingsEntryBool *settingsLocaleShowGroupSeparator = new QgsSettingsEntryBool( QStringLiteral( "showGroupSeparator" ), QgsSettings::sTreeLocale, false );
+    static const inline QgsSettingsEntryBool *settingsLocaleShowGroupSeparator = new QgsSettingsEntryBool( QStringLiteral( "showGroupSeparator" ), QgsSettings::sTreeLocale, false );
     //! Settings entry search path for SVG
-    static inline QgsSettingsEntryStringList *settingsSearchPathsForSVG = new QgsSettingsEntryStringList( QStringLiteral( "searchPathsForSVG" ), QgsSettings::sTreeSvg, QStringList() );
+    static const inline QgsSettingsEntryStringList *settingsSearchPathsForSVG = new QgsSettingsEntryStringList( QStringLiteral( "searchPathsForSVG" ), QgsSettings::sTreeSvg, QStringList() );
 #endif
 
 #ifdef SIP_RUN

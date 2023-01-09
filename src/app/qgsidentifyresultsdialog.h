@@ -134,7 +134,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     ~QgsIdentifyResultsDialog() override;
 
-    static inline QgsSettingsEntryBool *settingHideNullValues = new QgsSettingsEntryBool( QStringLiteral( "hide-null-values" ), QgsSettings::sTreeMap, false, QStringLiteral( "Whether to hide attributes with NULL values in the identify feature result" ) );
+    static const inline QgsSettingsEntryBool *settingHideNullValues = new QgsSettingsEntryBool( QStringLiteral( "hide-null-values" ), QgsSettings::sTreeMap, false, QStringLiteral( "Whether to hide attributes with NULL values in the identify feature result" ) );
 
     //! Adds feature from vector layer
     void addFeature( QgsVectorLayer *layer,
