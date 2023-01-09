@@ -221,6 +221,7 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
   const QgsSettings settings;
 
   bool autoCloseBracket = settings.value( QStringLiteral( "/pythonConsole/autoCloseBracket" ), true ).toBool();
+  bool autoSurround = settings.value( QStringLiteral( "/pythonConsole/autoSurround" ), true ).toBool();
   bool autoInsertImport = settings.value( QStringLiteral( "/pythonConsole/autoInsertImport" ), false ).toBool();
 
   // Update calltips when cursor position changes with left and right keys
@@ -241,7 +242,7 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
 
   // If some text is selected and user presses an opening character
   // surround the selection with the opening-closing pair
-  if ( hasSelectedText() )
+  if ( hasSelectedText() && autoSurround )
   {
     if ( PAIRS.contains( eText ) )
     {
