@@ -124,7 +124,7 @@ void QgsLayoutToPdfAlgorithm::initAlgorithm( const QVariantMap & )
 
 QgsProcessingAlgorithm::Flags QgsLayoutToPdfAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | FlagNoThreading;
+  return QgsProcessingAlgorithm::flags() | FlagNoThreading | FlagRequiresProject;
 }
 
 QgsLayoutToPdfAlgorithm *QgsLayoutToPdfAlgorithm::createInstance() const
