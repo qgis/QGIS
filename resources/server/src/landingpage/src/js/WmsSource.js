@@ -101,6 +101,11 @@ var WmsSource = WMS.Source.extend({
     }
     return result
   },
+  onRemove: function () {
+    if (this._overlay) {
+      delete this._overlay;
+    }
+  }
 })
 
 export default {
