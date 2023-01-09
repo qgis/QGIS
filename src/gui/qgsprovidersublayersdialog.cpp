@@ -111,21 +111,26 @@ void QgsProviderSublayerDialogModel::setGeometryTypesResolved( bool resolved )
   emit dataChanged( index( 0, 0 ), index( rowCount( QModelIndex() ), columnCount() ) );
 }
 
-QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, const QString &filePath, const QList<QgsProviderSublayerDetails> initialDetails, const QList<QgsMapLayerType> &acceptableTypes, QWidget *parent, Qt::WindowFlags fl )
+QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, const QString &providerKey, const QString &filePathIn, const QList<QgsProviderSublayerDetails> initialDetails, const QList<QgsMapLayerType> &acceptableTypes, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
 {
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
 
-  const QFileInfo fileInfo( filePath );
-  mFilePath = ( fileInfo.isFile() || fileInfo.isDir() ) && fileInfo.exists() ? filePath : QString();
-  const QString fileName = !mFilePath.isEmpty() ? QgsProviderUtils::suggestLayerNameFromFilePath( mFilePath ) : QString();
+  const QFileInfo fileInfo( filePathIn );
+  const QString filePath = ( fileInfo.isFile() || fileInfo.isDir() ) && fileInfo.exists() ? filePathIn : QString();
+  const QString fileName = !filePath.isEmpty() ? QgsProviderUtils::suggestLayerNameFromFilePath( filePath ) : QString();
+
+  if ( !fileName.isEmpty() )
+  {
+    setGroupName( fileName );
+  }
 
   setWindowTitle( fileName.isEmpty() ? tr( "Select Items to Add" ) : QStringLiteral( "%1 | %2" ).arg( tr( "Select Items to Add" ), fileName ) );
 
   mLblFilePath->setText( QStringLiteral( "<a href=\"%1\">%2</a>" )
-                         .arg( QUrl::fromLocalFile( mFilePath ).toString(), QDir::toNativeSeparators( QFileInfo( mFilePath ).canonicalFilePath() ) ) );
-  mLblFilePath->setVisible( !mFilePath.isEmpty() );
+                         .arg( QUrl::fromLocalFile( filePath ).toString(), QDir::toNativeSeparators( QFileInfo( filePath ).canonicalFilePath() ) ) );
+  mLblFilePath->setVisible( !filePath.isEmpty() );
   mLblFilePath->setWordWrap( true );
   mLblFilePath->setTextInteractionFlags( Qt::TextBrowserInteraction );
   connect( mLblFilePath, &QLabel::linkActivated, this, [ = ]( const QString & link )
@@ -149,6 +154,7 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
   const QgsSettings settings;
   const bool addToGroup = settings.value( QStringLiteral( "/qgis/openSublayersInGroup" ), false ).toBool();
   mCbxAddToGroup->setChecked( addToGroup );
+  mCbxAddToGroup->setVisible( !fileName.isEmpty() );
 
   // resize columns
   const QByteArray ba = settings.value( "/Windows/SubLayers/headerState" ).toByteArray();
@@ -166,7 +172,7 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
   if ( QgsProviderUtils::sublayerDetailsAreIncomplete( initialDetails ) )
   {
     // initial details are incomplete, so fire up a task in the background to fully populate the model...
-    mTask = new QgsProviderSublayerTask( uri, true );
+    mTask = new QgsProviderSublayerTask( uri, providerKey, true );
     connect( mTask.data(), &QgsProviderSublayerTask::taskCompleted, this, [ = ]
     {
       QList< QgsProviderSublayerDetails > res = mTask->results();
@@ -262,19 +268,23 @@ QList<QgsProviderSublayerModel::NonLayerItem> QgsProviderSublayersDialog::select
   return selectedItems;
 }
 
+void QgsProviderSublayersDialog::setGroupName( const QString &groupNameIn )
+{
+  mGroupName = groupNameIn;
+  const QgsSettings settings;
+  if ( settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() )
+  {
+    mGroupName = QgsMapLayer::formatLayerName( mGroupName );
+  }
+
+  mCbxAddToGroup->setVisible( !mGroupName.isEmpty() );
+}
+
 QString QgsProviderSublayersDialog::groupName() const
 {
   if ( !mCbxAddToGroup->isChecked() )
     return QString();
-
-  QString res = QgsProviderUtils::suggestLayerNameFromFilePath( mFilePath );
-
-  const QgsSettings settings;
-  if ( settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() )
-  {
-    res = QgsMapLayer::formatLayerName( res );
-  }
-  return res;
+  return mGroupName;
 }
 
 void QgsProviderSublayersDialog::treeSelectionChanged( const QItemSelection &selected, const QItemSelection & )

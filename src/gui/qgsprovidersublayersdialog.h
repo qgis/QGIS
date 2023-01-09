@@ -78,6 +78,7 @@ class GUI_EXPORT QgsProviderSublayersDialog : public QDialog, private Ui::QgsPro
      * Constructor.
      */
     QgsProviderSublayersDialog( const QString &uri,
+                                const QString &providerKey,
                                 const QString &filePath,
                                 const QList< QgsProviderSublayerDetails> initialDetails = QList< QgsProviderSublayerDetails>(),
                                 const QList< QgsMapLayerType > &acceptableTypes = QList< QgsMapLayerType >(),
@@ -106,6 +107,11 @@ class GUI_EXPORT QgsProviderSublayersDialog : public QDialog, private Ui::QgsPro
      */
     QString groupName() const;
 
+    /**
+     * Sets an appropriate name for the layer group.
+     */
+    void setGroupName( const QString &groupNameIn );
+
   signals:
 
     /**
@@ -122,7 +128,7 @@ class GUI_EXPORT QgsProviderSublayersDialog : public QDialog, private Ui::QgsPro
     QgsProviderSublayerDialogModel *mModel = nullptr;
     QgsProviderSublayerProxyModel *mProxyModel = nullptr;
     QPointer< QgsProviderSublayerTask > mTask;
-    QString mFilePath;
+    QString mGroupName;
     bool mBlockSelectionChanges = false;
 
 };

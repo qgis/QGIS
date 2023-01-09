@@ -29,6 +29,9 @@ class QgsWfsCapabilities : public QgsWfsRequest
   public:
     explicit QgsWfsCapabilities( const QString &uri, const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions() );
 
+    //! returns request URL
+    QUrl requestUrl() const;
+
     //! start network connection to get capabilities
     bool requestCapabilities( bool synchronous, bool forceRefresh );
 
@@ -110,6 +113,9 @@ class QgsWfsCapabilities : public QgsWfsRequest
       QString addPrefixIfNeeded( const QString &name ) const;
       QString getNamespaceForTypename( const QString &name ) const;
       QString getNamespaceParameterValue( const QString &WFSVersion, const QString &typeName ) const;
+
+      //! Returns whether the server supports IsPoint, IsCurve and IsSurface functions
+      bool supportsGeometryTypeFilters() const;
     };
 
     //! Application level error

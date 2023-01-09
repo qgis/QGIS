@@ -324,7 +324,7 @@ QList< QgsMapLayer * > QgsAppLayerHandling::addOgrVectorLayers( const QStringLis
           case SublayerHandling::AskUser:
           {
             // prompt user for sublayers
-            QgsProviderSublayersDialog dlg( uri, path, sublayers, {QgsMapLayerType::VectorLayer}, QgisApp::instance() );
+            QgsProviderSublayersDialog dlg( uri, QString(), path, sublayers, {QgsMapLayerType::VectorLayer}, QgisApp::instance() );
 
             if ( dlg.exec() )
               sublayers = dlg.selectedLayers();
@@ -534,7 +534,7 @@ bool QgsAppLayerHandling::askUserForZipItemLayers( const QString &path, const QL
       case SublayerHandling::AskUser:
       {
         // prompt user for sublayers
-        QgsProviderSublayersDialog dlg( path, path, sublayers, acceptableTypes, QgisApp::instance() );
+        QgsProviderSublayersDialog dlg( path, QString(), path, sublayers, acceptableTypes, QgisApp::instance() );
 
         if ( dlg.exec() )
           sublayers = dlg.selectedLayers();
@@ -728,8 +728,11 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addSublayers( const QList<QgsProviderS
     }
     else
     {
-      if ( layerName != baseName && !layerName.isEmpty() && !baseName.isEmpty() )
+      if ( layerName != baseName && !layerName.isEmpty() && !baseName.isEmpty() &&
+           !layerName.startsWith( baseName ) )
+      {
         layer->setName( QStringLiteral( "%1 — %2" ).arg( baseName, layerName ) );
+      }
       else if ( !layerName.isEmpty() )
         layer->setName( layerName );
       else if ( !baseName.isEmpty() )
@@ -936,7 +939,7 @@ QList< QgsMapLayer * > QgsAppLayerHandling::openLayer( const QString &fileName, 
         case SublayerHandling::AskUser:
         {
           // prompt user for sublayers
-          QgsProviderSublayersDialog dlg( fileName, fileName, sublayers, {}, QgisApp::instance() );
+          QgsProviderSublayersDialog dlg( fileName, QString(), fileName, sublayers, {}, QgisApp::instance() );
           dlg.setNonLayerItems( nonLayerItems );
 
           if ( dlg.exec() )
@@ -1337,15 +1340,16 @@ T *QgsAppLayerHandling::addLayerPrivate( QgsMapLayerType type, const QString &ur
   // Not all providers implement decodeUri(), so use original uri if uriElements is empty
   const QString updatedUri = uriElements.isEmpty() ? uri : QgsProviderRegistry::instance()->encodeUri( providerKey, uriElements );
 
-  const bool canQuerySublayers = QgsProviderRegistry::instance()->providerMetadata( providerKey ) &&
-                                 ( QgsProviderRegistry::instance()->providerMetadata( providerKey )->capabilities() & QgsProviderMetadata::QuerySublayers );
+  QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( providerKey );
+  const bool canQuerySublayers = providerMetadata &&
+                                 ( providerMetadata->capabilities() & QgsProviderMetadata::QuerySublayers );
 
   T *result = nullptr;
   if ( canQuerySublayers )
   {
     // query sublayers
-    QList< QgsProviderSublayerDetails > sublayers = QgsProviderRegistry::instance()->providerMetadata( providerKey ) ?
-        QgsProviderRegistry::instance()->providerMetadata( providerKey )->querySublayers( updatedUri, Qgis::SublayerQueryFlag::IncludeSystemTables )
+    QList< QgsProviderSublayerDetails > sublayers = providerMetadata ?
+        providerMetadata->querySublayers( updatedUri, Qgis::SublayerQueryFlag::IncludeSystemTables )
         : QgsProviderRegistry::instance()->querySublayers( updatedUri );
 
     // filter out non-matching sublayers
@@ -1372,7 +1376,10 @@ T *QgsAppLayerHandling::addLayerPrivate( QgsMapLayerType type, const QString &ur
       {
         case SublayerHandling::AskUser:
         {
-          QgsProviderSublayersDialog dlg( updatedUri, path, sublayers, {type}, QgisApp::instance() );
+          QgsProviderSublayersDialog dlg( updatedUri, providerKey, path, sublayers, {type}, QgisApp::instance() );
+          QString groupName = providerMetadata->suggestGroupNameForUri( uri );
+          if ( !groupName.isEmpty() )
+            dlg.setGroupName( groupName );
           if ( dlg.exec() )
           {
             const QList< QgsProviderSublayerDetails > selectedLayers = dlg.selectedLayers();
