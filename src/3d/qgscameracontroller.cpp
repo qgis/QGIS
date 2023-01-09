@@ -293,8 +293,6 @@ void QgsCameraController::moveCameraPositionBy( const QVector3D &posDiff )
 
 void QgsCameraController::onPositionChanged( Qt3DInput::QMouseEvent *mouse )
 {
-  mIsInZoomInState = false;
-  mCumulatedWheelY = 0;
   switch ( mCameraNavigationMode )
   {
     case TerrainBasedNavigation:
