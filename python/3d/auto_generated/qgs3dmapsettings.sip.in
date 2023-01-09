@@ -934,9 +934,9 @@ Emitted when the debug overaly is enabled or disabled
 %Docstring
 Emitted when the 3d view's 2d extent has changed
 
-.. versionadded:: 3.30
-
 .. seealso:: :py:func:`setExtent`
+
+.. versionadded:: 3.30
 %End
 
   private:

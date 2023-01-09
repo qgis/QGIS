@@ -888,8 +888,8 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
 
     /**
      * Emitted when the 3d view's 2d extent has changed
-     * \since QGIS 3.30
      * \see setExtent()
+     * \since QGIS 3.30
      */
     void extentChanged();
 
