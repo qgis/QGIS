@@ -90,7 +90,14 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
+            <item row="1" column="0">
+           <widget class="QCheckBox" name="autoSurround">
+            <property name="text">
+             <string>Automatically surround selection when typing quotes or brackets</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
            <widget class="QCheckBox" name="autoInsertImport">
             <property name="text">
              <string>Automatic insertion of the 'import' string on 'from xxx'</string>
@@ -464,6 +471,7 @@
   <tabstop>autoCompFromAPI</tabstop>
   <tabstop>autoCompFromDocAPI</tabstop>
   <tabstop>autoCloseBracket</tabstop>
+  <tabstop>autoSurround</tabstop>
   <tabstop>autoInsertImport</tabstop>
   <tabstop>enableObjectInspector</tabstop>
   <tabstop>autoSaveScript</tabstop>

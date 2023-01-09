@@ -203,6 +203,7 @@ class ConsoleOptionsWidget(QWidget, Ui_SettingsDialogPythonConsole):
 
         settings.setValue("pythonConsole/enableObjectInsp", self.enableObjectInspector.isChecked())
         settings.setValue("pythonConsole/autoCloseBracket", self.autoCloseBracket.isChecked())
+        settings.setValue("pythonConsole/autoSurround", self.autoSurround.isChecked())
         settings.setValue("pythonConsole/autoInsertImport", self.autoInsertImport.isChecked())
 
     def restoreSettings(self):
@@ -227,6 +228,7 @@ class ConsoleOptionsWidget(QWidget, Ui_SettingsDialogPythonConsole):
 
         self.enableObjectInspector.setChecked(settings.value("pythonConsole/enableObjectInsp", False, type=bool))
         self.autoCloseBracket.setChecked(settings.value("pythonConsole/autoCloseBracket", True, type=bool))
+        self.autoSurround.setChecked(settings.value("pythonConsole/autoSurround", True, type=bool))
         self.autoInsertImport.setChecked(settings.value("pythonConsole/autoInsertImport", False, type=bool))
 
         if settings.value("pythonConsole/autoCompleteSource") == 'fromDoc':
