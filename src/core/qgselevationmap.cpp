@@ -100,9 +100,44 @@ void QgsElevationMap::applyEyeDomeLighting( QImage &img, int distance, float str
         int iNeighbour = std::clamp( i + distance * neighbours[2 * k], 0, imgWidth - 1 );
         int jNeighbour = std::clamp( j + distance * neighbours[2 * k + 1], 0, imgHeight - 1 );
         qgssize neighbourIndex = jNeighbour * static_cast<qgssize>( imgWidth ) + iNeighbour;
-        if ( isNoData( elevPtr[ index ] ) )
-          continue;
 
+        // neighbour is no data, we try to reach one pixel closer that is not no data
+        // and calculate a factor to take account of the reduction of the distance
+        if ( isNoData( elevPtr[ neighbourIndex ] ) )
+        {
+          if ( neighbours[2 * k] != 0 )
+          {
+            int corrI = iNeighbour;
+            int inc = neighbours[2 * k];
+            while ( corrI != i && isNoData( elevPtr[ neighbourIndex ] ) )
+            {
+              corrI -= inc;
+              neighbourIndex = jNeighbour * static_cast<qgssize>( imgWidth ) + corrI;
+            }
+            if ( corrI == i )
+              continue;
+
+            borderFactor = static_cast<double>( distance ) / std::abs( i - corrI )   ;
+          }
+
+          if ( neighbours[2 * k + 1] != 0 )
+          {
+            int corrJ = jNeighbour;
+            int inc = neighbours[2 * k + 1];
+            while ( corrJ != j && isNoData( elevPtr[ neighbourIndex ] ) )
+            {
+              corrJ -= inc;
+              neighbourIndex = corrJ * static_cast<qgssize>( imgWidth ) + iNeighbour;
+            }
+            if ( corrJ == j )
+              continue;
+
+            borderFactor = static_cast<double>( distance ) / std::abs( j - corrJ )   ;
+          }
+        }
+
+        // neighbour is outside the extent (right or left), we take the pixel on border
+        // and calculate a factor to take account of the reduction of the distance
         if ( neighbours[2 * k] != 0 && std::abs( iNeighbour - i ) < distance )
         {
           if ( i > iNeighbour )
@@ -110,7 +145,6 @@ void QgsElevationMap::applyEyeDomeLighting( QImage &img, int distance, float str
           else if ( i < iNeighbour )
             borderFactor = static_cast<double>( distance ) / ( imgWidth - i - 1 )  ;
         }
-
         if ( neighbours[2 * k + 1] != 0 && std::abs( jNeighbour - j ) < distance )
         {
           if ( j > jNeighbour )
