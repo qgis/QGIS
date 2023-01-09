@@ -1499,8 +1499,6 @@ void QgsApplication::exitQgis()
     delete sAuthManager;
 
   //Ensure that all remaining deleteLater QObjects are actually deleted before we exit.
-  //This isn't strictly necessary (since we're exiting anyway) but doing so prevents a lot of
-  //LeakSanitiser noise which hides real issues
   QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
 
   //delete all registered functions from expression engine (see above comment)
@@ -1509,6 +1507,13 @@ void QgsApplication::exitQgis()
   // avoid creating instance just to delete it!
   if ( QgsProject::sProject )
     delete QgsProject::instance();
+
+  //Ensure that providers/layers which called deleteLater on objects as part of their cleanup
+  //result in fully deleted objects before we do the provider registry cleanup.
+  //E.g. the QgsOgrConnPool instance has deleteLater calls when unrefing layers, so clearing
+  //the project above has not yet fully cleaned up OGR objects, which we MUST do before
+  //cleaning up the provider
+  QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
 
   // avoid creating instance just to delete it!
   if ( QgsProviderRegistry::exists() )
