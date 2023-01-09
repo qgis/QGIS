@@ -156,6 +156,22 @@ QVariantMap QgsProcessingContext::exportToMap() const
 
 QStringList QgsProcessingContext::asQgisProcessArguments( QgsProcessingContext::ProcessArgumentFlags flags ) const
 {
+  auto escapeIfNeeded = []( const QString & input ) -> QString
+  {
+    // play it safe and escape everything UNLESS it's purely alphanumeric characters (and a very select scattering of other common characters!)
+    const thread_local QRegularExpression nonAlphaNumericRx( QStringLiteral( "[^a-zA-Z0-9.\\-/_]" ) );
+    if ( nonAlphaNumericRx.match( input ).hasMatch() )
+    {
+      QString escaped = input;
+      escaped.replace( '\'', QLatin1String( "'\\''" ) );
+      return QStringLiteral( "'%1'" ).arg( escaped );
+    }
+    else
+    {
+      return input;
+    }
+  };
+
   QStringList res;
   if ( mDistanceUnit != QgsUnitTypes::DistanceUnknownUnit )
     res << QStringLiteral( "--distance_units=%1" ).arg( QgsUnitTypes::encodeUnit( mDistanceUnit ) );
@@ -166,7 +182,7 @@ QStringList QgsProcessingContext::asQgisProcessArguments( QgsProcessingContext::
 
   if ( mProject && flags & ProcessArgumentFlag::IncludeProjectPath )
   {
-    res << QStringLiteral( "--project_path=%1" ).arg( mProject->fileName() );
+    res << QStringLiteral( "--project_path=%1" ).arg( escapeIfNeeded( mProject->fileName() ) );
   }
 
   return res;
