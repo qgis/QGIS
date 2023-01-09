@@ -17,7 +17,6 @@
  ***************************************************************************/
 #include "qgslogger.h"
 #include "qgsvectorlayersaveasdialog.h"
-#include "qgsprojectionselectiondialog.h"
 #include "qgsvectordataprovider.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgseditorwidgetfactory.h"
@@ -25,8 +24,8 @@
 #include "qgssettings.h"
 #include "qgsmapcanvas.h"
 #include "qgsgui.h"
-#include "qgsapplication.h"
 #include "qgsmaplayerutils.h"
+#include "qgshelp.h"
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QTextCodec>
