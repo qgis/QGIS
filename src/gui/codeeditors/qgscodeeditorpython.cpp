@@ -220,7 +220,7 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
 
   const QgsSettings settings;
 
-  bool autoCloseBracket = settings.value( QStringLiteral( "/pythonConsole/autoCloseBracket" ), false ).toBool();
+  bool autoCloseBracket = settings.value( QStringLiteral( "/pythonConsole/autoCloseBracket" ), true ).toBool();
   bool autoInsertImport = settings.value( QStringLiteral( "/pythonConsole/autoInsertImport" ), false ).toBool();
 
   // Update calltips when cursor position changes with left and right keys
