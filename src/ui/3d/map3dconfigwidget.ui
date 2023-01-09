@@ -205,7 +205,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QScrollArea" name="scrollAreaGeneral">
+            <widget class="QgsScrollArea" name="scrollAreaGeneral">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
