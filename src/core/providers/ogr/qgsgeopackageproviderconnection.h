@@ -19,7 +19,6 @@
 
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsogrproviderconnection.h"
-#include "qgsogrutils.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE

@@ -24,6 +24,7 @@
 #include <QStringList>
 
 #include "qgsabstractproviderconnection.h"
+#include "qgshttpheaders.h"
 
 class CORE_EXPORT QgsVectorTileProviderConnection : public QgsAbstractProviderConnection
 {

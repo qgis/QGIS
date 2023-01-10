@@ -17,17 +17,11 @@
 #include <sqlite3.h>
 
 #include "qgsgeopackageproviderconnection.h"
-#include "qgsogrdbconnection.h"
 #include "qgssettings.h"
-#include "qgsogrprovider.h"
 #include "qgsmessagelog.h"
-#include "qgsproviderregistry.h"
-#include "qgsprovidermetadata.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 #include "qgsfeedback.h"
-#include "qgsogrutils.h"
-#include "qgsfielddomain.h"
 #include "qgscoordinatetransform.h"
 
 #include <QTextCodec>
@@ -354,6 +348,12 @@ void QgsGeoPackageProviderConnection::setDefaultCapabilities()
   {
     Qgis::SqlLayerDefinitionCapability::SubsetStringFilter,
   };
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+  mCapabilities |= Capability::AddRelationship;
+  mCapabilities |= Capability::UpdateRelationship;
+  mCapabilities |= Capability::DeleteRelationship;
+#endif
 }
 
 QString QgsGeoPackageProviderConnection::primaryKeyColumnName( const QString &table ) const
