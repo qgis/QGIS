@@ -87,7 +87,7 @@ if __name__ == '__main__':
     # print api_files.__repr__()
     # print pap_file.__repr__()
 
-    app = QApplication(sys.argv, False)  # just start a non-gui console app
+    app = QApplication(sys.argv)
     api_lexer = QsciLexerPython()
     prepap = PrepareAPIs(api_lexer, api_files, pap_file)
     prepap.prepareAPI()
