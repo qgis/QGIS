@@ -891,6 +891,16 @@ int main( int argc, char *argv[] )
   // Initialize the application and the translation stuff
   /////////////////////////////////////////////////////////////////////
 
+
+#if defined(Q_OS_WIN)
+  // FIXES #29021
+  // Prevent Qt from treating the AltGr key as  Ctrl+Alt on Windows,
+  // which causes shortcuts to be fired instead of entering some characters (eg "}", "|")
+  // on some keyboard layouts
+  qputenv( "QT_QPA_PLATFORM", "windows:altgr" );
+#endif
+
+
 #if defined(Q_OS_UNIX) && !defined(Q_OS_MAC) && !defined(ANDROID)
   bool myUseGuiFlag = nullptr != getenv( "DISPLAY" );
 #else
