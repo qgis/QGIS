@@ -1379,6 +1379,46 @@ QVariantMap QgsProcessingUtils::removePointerValuesFromMap( const QVariantMap &m
   return res;
 }
 
+QVariantMap QgsProcessingUtils::preprocessQgisProcessParameters( const QVariantMap &parameters, bool &ok, QString &error )
+{
+  QVariantMap output;
+  ok = true;
+  for ( auto it = parameters.constBegin(); it != parameters.constEnd(); ++it )
+  {
+    if ( it.value().type() == QVariant::Map )
+    {
+      const QVariantMap value = it.value().toMap();
+      if ( value.value( QStringLiteral( "type" ) ).toString() == QLatin1String( "data_defined" ) )
+      {
+        const QString expression = value.value( QStringLiteral( "expression" ) ).toString();
+        const QString field = value.value( QStringLiteral( "field" ) ).toString();
+        if ( !expression.isEmpty() )
+        {
+          output.insert( it.key(), QgsProperty::fromExpression( expression ) );
+        }
+        else if ( !field.isEmpty() )
+        {
+          output.insert( it.key(), QgsProperty::fromField( field ) );
+        }
+        else
+        {
+          ok = false;
+          error = QObject::tr( "Invalid data defined parameter for %1, requires 'expression' or 'field' values." ).arg( it.key() );
+        }
+      }
+      else
+      {
+        output.insert( it.key(), it.value() );
+      }
+    }
+    else
+    {
+      output.insert( it.key(), it.value() );
+    }
+  }
+  return output;
+}
+
 //
 // QgsProcessingFeatureSource
 //
