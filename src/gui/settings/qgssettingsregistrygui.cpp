@@ -19,6 +19,10 @@
 #include "qgssettingsregistrycore.h"
 #include "qgsstylemanagerdialog.h"
 
+const QgsSettingsEntryBool *QgsSettingsRegistryGui::settingsRespectScreenDPI = new QgsSettingsEntryBool( QStringLiteral( "respect-screen-dpi" ), QgsSettings::sTreeGui, false );
+
+const QgsSettingsEntryBool *QgsSettingsRegistryGui::settingsAutomaticallyCheckForPluginUpdates = new QgsSettingsEntryBool( QStringLiteral( "automatically-check-for-updates" ), QgsSettings::sTreePlugins, true, QStringLiteral( "Automatically check for plugin updates on startup" ) );
+
 QgsSettingsRegistryGui::QgsSettingsRegistryGui()
   : QgsSettingsRegistry()
 {

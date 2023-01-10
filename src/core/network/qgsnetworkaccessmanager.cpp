@@ -41,6 +41,8 @@
 #include <QStandardPaths>
 #include <QUuid>
 
+const QgsSettingsEntryInteger *QgsNetworkAccessManager::settingsNetworkTimeout = new QgsSettingsEntryInteger( QStringLiteral( "network-timeout" ), QgsSettings::sTreeNetwork, 60000, QObject::tr( "Network timeout" ) );
+
 #ifndef QT_NO_SSL
 #include <QSslConfiguration>
 #endif

@@ -45,10 +45,10 @@ class GUI_EXPORT QgsSettingsRegistryGui : public QgsSettingsRegistry
 
 #ifndef SIP_RUN
     //! Settings entry respect screen dpi
-    static const inline QgsSettingsEntryBool *settingsRespectScreenDPI = new QgsSettingsEntryBool( QStringLiteral( "respect-screen-dpi" ), QgsSettings::sTreeGui, false );
+    static const QgsSettingsEntryBool *settingsRespectScreenDPI;
 
     //! Check for plugin updates automatically on startup
-    static const inline QgsSettingsEntryBool *settingsAutomaticallyCheckForPluginUpdates = new QgsSettingsEntryBool( QStringLiteral( "automatically-check-for-updates" ), QgsSettings::sTreePlugins, true, QStringLiteral( "Automatically check for plugin updates on startup" ) );
+    static const QgsSettingsEntryBool *settingsAutomaticallyCheckForPluginUpdates;
 
 #endif
 

@@ -112,13 +112,13 @@ class CORE_EXPORT QgsProcessing
     static inline QgsSettingsTreeElement *sTreeConfiguration = QgsSettings::sTreeQgis->createChildElement( QStringLiteral( "configuration" ) );
 
     //! Settings entry prefer filename as layer name
-    static const inline QgsSettingsEntryBool *settingsPreferFilenameAsLayerName = new QgsSettingsEntryBool( QStringLiteral( "prefer-filename-as-layer-name" ), sTreeConfiguration, true, QObject::tr( "Prefer filename as layer name" ) );
+    static const QgsSettingsEntryBool *settingsPreferFilenameAsLayerName;
     //! Settings entry temp path
-    static const inline QgsSettingsEntryString *settingsTempPath = new QgsSettingsEntryString( QStringLiteral( "temp-path" ), sTreeConfiguration, QString() );
+    static const QgsSettingsEntryString *settingsTempPath;
     //! Settings entry default output vector layer ext
-    static const inline QgsSettingsEntryInteger *settingsDefaultOutputVectorLayerExt = new QgsSettingsEntryInteger( QStringLiteral( "default-output-vector-layer-ext" ), sTreeConfiguration, -1 );
+    static const QgsSettingsEntryInteger *settingsDefaultOutputVectorLayerExt;
     //! Settings entry default output raster layer ext
-    static const inline QgsSettingsEntryInteger *settingsDefaultOutputRasterLayerExt = new QgsSettingsEntryInteger( QStringLiteral( "default-output-raster-layer-ext" ), sTreeConfiguration, -1 );
+    static const QgsSettingsEntryInteger *settingsDefaultOutputRasterLayerExt;
 #endif
 };
 

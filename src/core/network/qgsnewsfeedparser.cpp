@@ -28,6 +28,14 @@
 #include <QDir>
 #include <QRegularExpression>
 
+const QgsSettingsEntryInteger *QgsNewsFeedParser::settingsFeedLastFetchTime = new QgsSettingsEntryInteger( QStringLiteral( "%1/lastFetchTime" ), QgsSettings::sTreeCore, 0, QObject::tr( "Feed last fetch time" ), Qgis::SettingsOptions(), 0 );
+
+const QgsSettingsEntryString *QgsNewsFeedParser::settingsFeedLanguage = new QgsSettingsEntryString( QStringLiteral( "%1/lang" ), QgsSettings::sTreeCore, QString(), QObject::tr( "Feed language" ) );
+
+const QgsSettingsEntryDouble *QgsNewsFeedParser::settingsFeedLatitude = new QgsSettingsEntryDouble( QStringLiteral( "%1/latitude" ), QgsSettings::sTreeCore, 0.0, QObject::tr( "Feed latitude" ) );
+
+const QgsSettingsEntryDouble *QgsNewsFeedParser::settingsFeedLongitude = new QgsSettingsEntryDouble( QStringLiteral( "%1/longitude" ), QgsSettings::sTreeCore, 0.0, QObject::tr( "Feed longitude" ) );
+
 QgsNewsFeedParser::QgsNewsFeedParser( const QUrl &feedUrl, const QString &authcfg, QObject *parent )
   : QObject( parent )
   , mBaseUrl( feedUrl.toString() )

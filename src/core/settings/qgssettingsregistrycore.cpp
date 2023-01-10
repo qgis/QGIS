@@ -27,6 +27,72 @@
 #include "qgsvectortileconnection.h"
 
 
+const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingStreamTolerance = new QgsSettingsEntryInteger( QStringLiteral( "stream_tolerance" ), QgsSettings::sTreeDigitizing, 2 );
+
+const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingLineWidth = new QgsSettingsEntryInteger( QStringLiteral( "line_width" ), QgsSettings::sTreeDigitizing, 1 );
+
+const QgsSettingsEntryColor *QgsSettingsRegistryCore::settingsDigitizingLineColor = new QgsSettingsEntryColor( QStringLiteral( "line_color" ), QgsSettings::sTreeDigitizing, QColor( 255, 0, 0, 200 ) );
+
+const QgsSettingsEntryDouble *QgsSettingsRegistryCore::settingsDigitizingLineColorAlphaScale = new QgsSettingsEntryDouble( QStringLiteral( "line_color_alpha_scale" ), QgsSettings::sTreeDigitizing, 0.75 );
+
+const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingFillColorRed = new QgsSettingsEntryInteger( QStringLiteral( "fill_color_red" ), QgsSettings::sTreeDigitizing, 255 );
+
+const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingFillColorGreen = new QgsSettingsEntryInteger( QStringLiteral( "fill_color_green" ), QgsSettings::sTreeDigitizing, 0 );
+
+const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingFillColorBlue = new QgsSettingsEntryInteger( QStringLiteral( "fill_color_blue" ), QgsSettings::sTreeDigitizing, 0 );
+
+const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingFillColorAlpha = new QgsSettingsEntryInteger( QStringLiteral( "fill_color_alpha" ), QgsSettings::sTreeDigitizing, 30 );
+
+const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsDigitizingLineGhost = new QgsSettingsEntryBool( QStringLiteral( "line_ghost" ), QgsSettings::sTreeDigitizing, false );
+
+const QgsSettingsEntryDouble *QgsSettingsRegistryCore::settingsDigitizingDefaultZValue = new QgsSettingsEntryDouble( QStringLiteral( "default_z_value" ), QgsSettings::sTreeDigitizing, Qgis::DEFAULT_Z_COORDINATE );
+
+const QgsSettingsEntryDouble *QgsSettingsRegistryCore::settingsDigitizingDefaultMValue = new QgsSettingsEntryDouble( QStringLiteral( "default_m_value" ), QgsSettings::sTreeDigitizing, Qgis::DEFAULT_M_COORDINATE );
+
+const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsDigitizingDefaultSnapEnabled = new QgsSettingsEntryBool( QStringLiteral( "default_snap_enabled" ), QgsSettings::sTreeDigitizing,  false );
+
+const QgsSettingsEntryDouble *QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingTolerance = new QgsSettingsEntryDouble( QStringLiteral( "default_snapping_tolerance" ), QgsSettings::sTreeDigitizing, Qgis::DEFAULT_SNAP_TOLERANCE );
+
+const QgsSettingsEntryDouble *QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEdit = new QgsSettingsEntryDouble( QStringLiteral( "search_radius_vertex_edit" ), QgsSettings::sTreeDigitizing, 10 );
+
+const QgsSettingsEntryColor *QgsSettingsRegistryCore::settingsDigitizingSnapColor = new QgsSettingsEntryColor( QStringLiteral( "snap_color" ), QgsSettings::sTreeDigitizing, QColor( Qt::magenta ) );
+
+const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsDigitizingSnapTooltip = new QgsSettingsEntryBool( QStringLiteral( "snap_tooltip" ), QgsSettings::sTreeDigitizing, false );
+
+const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsDigitizingSnapInvisibleFeature = new QgsSettingsEntryBool( QStringLiteral( "snap_invisible_feature" ), QgsSettings::sTreeDigitizing, false );
+
+const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsDigitizingMarkerOnlyForSelected = new QgsSettingsEntryBool( QStringLiteral( "marker_only_for_selected" ), QgsSettings::sTreeDigitizing, true );
+
+const QgsSettingsEntryString *QgsSettingsRegistryCore::settingsDigitizingMarkerStyle = new QgsSettingsEntryString( QStringLiteral( "marker_style" ), QgsSettings::sTreeDigitizing, "Cross" );
+
+const QgsSettingsEntryDouble *QgsSettingsRegistryCore::settingsDigitizingMarkerSizeMm = new QgsSettingsEntryDouble( QStringLiteral( "marker_size_mm" ), QgsSettings::sTreeDigitizing, 2.0 );
+
+const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsDigitizingReuseLastValues = new QgsSettingsEntryBool( QStringLiteral( "reuseLastValues" ), QgsSettings::sTreeDigitizing, false );
+
+const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsDigitizingDisableEnterAttributeValuesDialog = new QgsSettingsEntryBool( QStringLiteral( "disable_enter_attribute_values_dialog" ), QgsSettings::sTreeDigitizing, false );
+
+const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingValidateGeometries = new QgsSettingsEntryInteger( QStringLiteral( "validate_geometries" ), QgsSettings::sTreeDigitizing, 1 );
+
+const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg = new QgsSettingsEntryInteger( QStringLiteral( "offset_quad_seg" ), QgsSettings::sTreeDigitizing, 8 );
+
+const QgsSettingsEntryDouble *QgsSettingsRegistryCore::settingsDigitizingOffsetMiterLimit = new QgsSettingsEntryDouble( QStringLiteral( "offset_miter_limit" ), QgsSettings::sTreeDigitizing, 5.0 );
+
+const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsDigitizingConvertToCurve = new QgsSettingsEntryBool( QStringLiteral( "convert_to_curve" ), QgsSettings::sTreeDigitizing, false );
+
+const QgsSettingsEntryDouble *QgsSettingsRegistryCore::settingsDigitizingConvertToCurveAngleTolerance = new QgsSettingsEntryDouble( QStringLiteral( "convert_to_curve_angle_tolerance" ), QgsSettings::sTreeDigitizing, 1e-6 );
+
+const QgsSettingsEntryDouble *QgsSettingsRegistryCore::settingsDigitizingConvertToCurveDistanceTolerance = new QgsSettingsEntryDouble( QStringLiteral( "convert_to_curve_distance_tolerance" ), QgsSettings::sTreeDigitizing, 1e-6 );
+
+const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsDigitizingOffsetShowAdvanced = new QgsSettingsEntryBool( QStringLiteral( "offset_show_advanced" ), QgsSettings::sTreeDigitizing, false );
+
+const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingTracingMaxFeatureCount = new QgsSettingsEntryInteger( QStringLiteral( "tracing_max_feature_count" ), QgsSettings::sTreeDigitizing, 10000 );
+
+const QgsSettingsEntryString *QgsSettingsRegistryCore::settingsGpsBabelPath = new QgsSettingsEntryString( QStringLiteral( "gpsbabelPath" ), QgsSettings::sTreeGps, QStringLiteral( "gpsbabel" ) );
+
+const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsLayerTreeShowFeatureCountForNewLayers = new QgsSettingsEntryBool( QStringLiteral( "show-feature-count-for-new-layers" ), QgsSettings::sTreeLayerTree, false, QStringLiteral( "If true, feature counts will be shown in the layer tree for all newly added layers." ) );
+
+const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsEnableWMSTilePrefetching = new QgsSettingsEntryBool( QStringLiteral( "enable_wms_tile_prefetch" ), QgsSettings::sTreeWms, false, QStringLiteral( "Whether to include WMS layers when rendering tiles adjacent to the visible map area" ) );
+
 QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   : QgsSettingsRegistry()
 {

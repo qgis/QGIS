@@ -61,6 +61,8 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 
+const QgsSettingsEntryString *QgsStyleManagerDialog::settingLastStyleDatabaseFolder = new QgsSettingsEntryString( QStringLiteral( "last-style-database-folder" ), sTtreeStyleManager, QString(), QStringLiteral( "Last used folder for style databases" ) );
+
 //
 // QgsCheckableStyleModel
 //

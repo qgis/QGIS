@@ -47,6 +47,8 @@
 #include "qgsmaskpaintdevice.h"
 #include "qgsrasterrenderer.h"
 
+const QgsSettingsEntryBool *QgsMapRendererJob::settingsLogCanvasRefreshEvent = new QgsSettingsEntryBool( QStringLiteral( "logCanvasRefreshEvent" ), QgsSettings::sTreeMap, false );
+
 ///@cond PRIVATE
 
 const QString QgsMapRendererJob::LABEL_CACHE_ID = QStringLiteral( "_labels_" );

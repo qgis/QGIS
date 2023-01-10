@@ -28,8 +28,8 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
 
   public:
 
-    static const inline QgsSettingsEntryString *settingLastDestinationFolder = new QgsSettingsEntryString( QStringLiteral( "last-destination-folder" ), QgsGeoreferencerMainWindow::sTreeGeoreferencer, QString(), QObject::tr( "Last used folder for georeferencer destination files" ) );
-    static const inline QgsSettingsEntryString *settingLastPdfFolder = new QgsSettingsEntryString( QStringLiteral( "last-pdf-folder" ), QgsGeoreferencerMainWindow::sTreeGeoreferencer, QString(), QObject::tr( "Last used folder for georeferencer PDF report files" ) );
+    static const QgsSettingsEntryString *settingLastDestinationFolder;
+    static const QgsSettingsEntryString *settingLastPdfFolder;
 
     QgsTransformSettingsDialog( QgsMapLayerType type, const QString &source, const QString &output, QWidget *parent = nullptr );
 

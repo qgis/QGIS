@@ -27,6 +27,7 @@ from incoming GPS location points.
 %End
   public:
 
+    static const QgsSettingsEntryBool *settingsGpsStoreAttributeInMValues;
 
 
     QgsGpsLogger( QgsGpsConnection *connection, QObject *parent /TransferThis/ = 0 );

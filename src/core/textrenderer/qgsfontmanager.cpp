@@ -27,6 +27,10 @@
 #include <QTemporaryFile>
 #include <QTemporaryDir>
 
+const QgsSettingsEntryStringList *QgsFontManager::settingsFontFamilyReplacements = new QgsSettingsEntryStringList( QStringLiteral( "fontFamilyReplacements" ), QgsSettings::sTreeFonts, QStringList(), QStringLiteral( "Automatic font family replacements" ) );
+
+const QgsSettingsEntryBool *QgsFontManager::settingsDownloadMissingFonts = new QgsSettingsEntryBool( QStringLiteral( "downloadMissingFonts" ), QgsSettings::sTreeFonts, true, QStringLiteral( "Automatically download missing fonts whenever possible" ) );
+
 QgsFontManager::QgsFontManager( QObject *parent )
   : QObject( parent )
 {

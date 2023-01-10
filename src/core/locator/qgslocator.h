@@ -157,11 +157,11 @@ class CORE_EXPORT QgsLocator : public QObject
     static inline QgsSettingsTreeNamedListElement *sTreeLocatorFilters = QgsSettings::sTreeQgis->createNamedListElement( QStringLiteral( "locator-filters" ) );
 
     //! Settings entry locator filter enabled
-    static const inline QgsSettingsEntryBool *settingsLocatorFilterEnabled = new QgsSettingsEntryBool( QStringLiteral( "enabled" ), sTreeLocatorFilters, true, QObject::tr( "Locator filter enabled" ) );
+    static const QgsSettingsEntryBool *settingsLocatorFilterEnabled;
     //! Settings entry locator filter default value
-    static const inline QgsSettingsEntryBool *settingsLocatorFilterDefault = new QgsSettingsEntryBool( QStringLiteral( "default" ), sTreeLocatorFilters, false, QObject::tr( "Locator filter default value" ) );
+    static const QgsSettingsEntryBool *settingsLocatorFilterDefault;
     //! Settings entry locator filter prefix
-    static const inline QgsSettingsEntryString *settingsLocatorFilterPrefix = new QgsSettingsEntryString( QStringLiteral( "prefix" ), sTreeLocatorFilters, QString(), QObject::tr( "Locator filter prefix" ) );
+    static const QgsSettingsEntryString *settingsLocatorFilterPrefix;
 #endif
 
   signals:

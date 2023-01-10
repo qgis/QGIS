@@ -21,6 +21,18 @@
 #include <QString>
 #include <QRegularExpression>
 
+const QgsSettingsEntryString *QgsBabelFormatRegistry::settingsBabelWptDownload = new QgsSettingsEntryString( QStringLiteral( "wptdownload" ), sTreeBabelDevices );
+
+const QgsSettingsEntryString *QgsBabelFormatRegistry::settingsBabelWptUpload = new QgsSettingsEntryString( QStringLiteral( "wptupload" ), sTreeBabelDevices );
+
+const QgsSettingsEntryString *QgsBabelFormatRegistry::settingsBabelRteDownload = new QgsSettingsEntryString( QStringLiteral( "rtedownload" ), sTreeBabelDevices );
+
+const QgsSettingsEntryString *QgsBabelFormatRegistry::settingsBabelRteUpload = new QgsSettingsEntryString( QStringLiteral( "rteupload" ), sTreeBabelDevices );
+
+const QgsSettingsEntryString *QgsBabelFormatRegistry::settingsBabelTrkDownload = new QgsSettingsEntryString( QStringLiteral( "trkdownload" ), sTreeBabelDevices );
+
+const QgsSettingsEntryString *QgsBabelFormatRegistry::settingsBabelTrkUpload = new QgsSettingsEntryString( QStringLiteral( "trkupload" ), sTreeBabelDevices );
+
 QgsBabelFormatRegistry::QgsBabelFormatRegistry()
 {
   //

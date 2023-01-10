@@ -55,8 +55,8 @@ class QgsElevationProfileWidget : public QWidget
     Q_OBJECT
   public:
 
-    static const inline QgsSettingsEntryDouble *settingTolerance = new QgsSettingsEntryDouble( QStringLiteral( "tolerance" ), QgsSettings::sTreeElevationProfile, 0.1, QStringLiteral( "Tolerance distance for elevation profile plots" ), Qgis::SettingsOptions(), 0 );
-    static const inline QgsSettingsEntryBool *settingShowLayerTree = new QgsSettingsEntryBool( QStringLiteral( "show-layer-tree" ), QgsSettings::sTreeElevationProfile, true, QStringLiteral( "Whether the layer tree should be shown for elevation profile plots" ) );
+    static const QgsSettingsEntryDouble *settingTolerance;
+    static const QgsSettingsEntryBool *settingShowLayerTree;
 
     QgsElevationProfileWidget( const QString &name );
     ~QgsElevationProfileWidget();

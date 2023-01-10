@@ -53,7 +53,7 @@ class CORE_EXPORT QgsGpsLogger : public QObject
   public:
 
     //! Settings entry for whether storing GPS attributes as geometry M values should be enabled
-    static const inline QgsSettingsEntryBool *settingsGpsStoreAttributeInMValues = new QgsSettingsEntryBool( QStringLiteral( "store-attribute-in-m-values" ), QgsSettings::sTreeGps, false, QStringLiteral( "Whether GPS attributes should be stored in geometry m values" ) ) SIP_SKIP;
+    static const QgsSettingsEntryBool *settingsGpsStoreAttributeInMValues;
 
     //! Settings entry dictating which GPS attribute should be stored in geometry M values
     static const inline QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponent> settingsGpsMValueComponent = QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponent>( QStringLiteral( "m-value-attribute" ), QgsSettings::sTreeGps, Qgis::GpsInformationComponent::Timestamp, QStringLiteral( "Which GPS attribute should be stored in geometry m values" ) ) SIP_SKIP;

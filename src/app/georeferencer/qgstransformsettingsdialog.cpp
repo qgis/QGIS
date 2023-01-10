@@ -27,6 +27,10 @@
 #include "qgsproviderregistry.h"
 #include "qgsvectorfilewriter.h"
 
+const QgsSettingsEntryString *QgsTransformSettingsDialog::settingLastDestinationFolder = new QgsSettingsEntryString( QStringLiteral( "last-destination-folder" ), QgsGeoreferencerMainWindow::sTreeGeoreferencer, QString(), QObject::tr( "Last used folder for georeferencer destination files" ) );
+
+const QgsSettingsEntryString *QgsTransformSettingsDialog::settingLastPdfFolder = new QgsSettingsEntryString( QStringLiteral( "last-pdf-folder" ), QgsGeoreferencerMainWindow::sTreeGeoreferencer, QString(), QObject::tr( "Last used folder for georeferencer PDF report files" ) );
+
 QgsTransformSettingsDialog::QgsTransformSettingsDialog( QgsMapLayerType type, const QString &source, const QString &output, QWidget *parent )
   : QDialog( parent )
   , mType( type )

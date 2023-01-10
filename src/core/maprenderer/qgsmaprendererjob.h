@@ -453,7 +453,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
 
 #ifndef SIP_RUN
     //! Settings entry log canvas refresh event
-    static const inline QgsSettingsEntryBool *settingsLogCanvasRefreshEvent = new QgsSettingsEntryBool( QStringLiteral( "logCanvasRefreshEvent" ), QgsSettings::sTreeMap, false );
+    static const QgsSettingsEntryBool *settingsLogCanvasRefreshEvent;
 #endif
 
   signals:

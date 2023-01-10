@@ -16,6 +16,10 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsogrdbconnection.h"
+const QgsSettingsEntryString *QgsOgrDbConnection::settingsOgrConnectionPath = new QgsSettingsEntryString( QStringLiteral( "providers/ogr/%1/connections/%2/path" ), QString(), QString() );
+
+const QgsSettingsEntryString *QgsOgrDbConnection::settingsOgrConnectionSelected = new QgsSettingsEntryString( QStringLiteral( "providers/ogr/%1/connections/selected" ), QString() );
+
 ///@cond PRIVATE
 
 #include "qgis.h"

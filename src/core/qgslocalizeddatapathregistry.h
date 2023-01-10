@@ -68,7 +68,7 @@ class CORE_EXPORT QgsLocalizedDataPathRegistry
 
 #ifndef SIP_RUN
     //! Settings entry localized data paths
-    static const inline QgsSettingsEntryStringList *settingsLocalizedDataPaths = new QgsSettingsEntryStringList( QStringLiteral( "localized_data_paths" ), QgsSettings::sTreeQgis, QStringList() );
+    static const QgsSettingsEntryStringList *settingsLocalizedDataPaths;
 #endif
 
   private:

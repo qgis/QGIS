@@ -19,6 +19,8 @@
 
 #include "qgsxmlutils.h"
 
+const QgsSettingsEntryString *QgsGeometryOptions::settingsGeometryValidationDefaultChecks = new QgsSettingsEntryString( QStringLiteral( "default_checks" ), QgsSettings::sTreeGeometryValidation, QString() );
+
 QgsGeometryOptions::QgsGeometryOptions()
 {
   mGeometryChecks = settingsGeometryValidationDefaultChecks->value().split( ',' ) ;
