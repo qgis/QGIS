@@ -132,6 +132,11 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
     QList<QString> mAPISFilesList;
     QString mPapFile;
 
+    static const QMap<QString, QString> sCompletionPairs;
+
+    // Only used for selected text
+    static const QStringList sCompletionSingleCharacters;
+
 };
 
 #endif
