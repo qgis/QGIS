@@ -272,3 +272,15 @@ QList<QString> QgsHttpHeaders::keys() const
 {
   return mHeaders.keys();
 }
+
+
+void QgsHttpHeaders::insert( const QString &key, const QVariant &val )
+{
+  QString k2 = key;
+
+  if ( k2.startsWith( QgsHttpHeaders::PARAM_PREFIX ) )
+  {
+    k2 = k2.right( k2.length() - QgsHttpHeaders::PARAM_PREFIX.length() );
+  }
+  mHeaders.insert( k2, val );
+}
