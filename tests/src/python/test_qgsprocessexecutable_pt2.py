@@ -306,6 +306,19 @@ class TestQgsProcessExecutablePt2(unittest.TestCase):
         self.assertEqual(rc, 1)
 
     def testDynamicParameters(self):
+        output_file = self.TMP_DIR + '/dynamic_out2.shp'
+
+        rc, output, err = self.run_process(
+            ['run', 'native:buffer', '--INPUT=' + TEST_DATA_DIR + '/points.shp', '--OUTPUT=' + output_file, '--DISTANCE=field:fid', '--json'])
+        self.assertFalse(self._strip_ignorable_errors(err))
+
+        self.assertEqual(rc, 0)
+
+        res = json.loads(output)
+        self.assertEqual(res['algorithm_details']['id'], 'native:buffer')
+        self.assertEqual(res['inputs']['DISTANCE'], 'field:fid')
+
+    def testDynamicParametersJson(self):
         output_file = self.TMP_DIR + '/dynamic_out.shp'
 
         params = {

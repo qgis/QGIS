@@ -2692,12 +2692,10 @@ QString QgsProcessingParameterDefinition::valueAsStringPrivate( const QVariant &
         return QString();
       case QgsProperty::StaticProperty:
         return valueAsString( prop.staticValue(), context, ok );
-
-      // these are not supported for serialization
       case QgsProperty::FieldBasedProperty:
+        return QStringLiteral( "field:%1" ).arg( prop.field() );
       case QgsProperty::ExpressionBasedProperty:
-        QgsDebugMsg( QStringLiteral( "could not convert expression/field based property to string" ) );
-        return QString();
+        return QStringLiteral( "expression:%1" ).arg( prop.expressionString() );
     }
   }
 

@@ -396,6 +396,14 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       params.insert( "p2", QStringLiteral( "thisisa'test" ) );
       QCOMPARE( asQgisProcessCommand( params, context, ok ), QStringLiteral( "qgis_process run test --distance_units=meters --p1=a --p2='thisisa'\\''test'" ) );
       QVERIFY( ok );
+
+      addParameter( new QgsProcessingParameterString( "dd_field", QString(), true ) );
+      addParameter( new QgsProcessingParameterString( "dd_expression", QString(), true ) );
+
+      params.insert( "dd_field", QgsProperty::fromField( QStringLiteral( "my field" ) ) );
+      params.insert( "dd_expression", QgsProperty::fromExpression( QStringLiteral( "\"some field\" * 200" ) ) );
+      QCOMPARE( asQgisProcessCommand( params, context, ok ), QStringLiteral( "qgis_process run test --distance_units=meters --p1=a --p2='thisisa'\\''test' --dd_field='field:my field' --dd_expression='expression:\"some field\" * 200'" ) );
+      QVERIFY( ok );
     }
 
     void runAsAsJsonMapChecks()
@@ -11679,6 +11687,8 @@ void TestQgsProcessing::preprocessParameters()
   inputs.insert( QStringLiteral( "string" ), QStringLiteral( "a string" ) );
   inputs.insert( QStringLiteral( "data defined field" ), QVariantMap( {{QStringLiteral( "type" ), QStringLiteral( "data_defined" )}, {QStringLiteral( "field" ), QStringLiteral( "DEPTH_FIELD" ) }} ) );
   inputs.insert( QStringLiteral( "data defined expression" ), QVariantMap( {{QStringLiteral( "type" ), QStringLiteral( "data_defined" )}, {QStringLiteral( "expression" ), QStringLiteral( "A_FIELD * 200" ) }} ) );
+  inputs.insert( QStringLiteral( "data defined field using string" ), QStringLiteral( "field:MY FIELD" ) );
+  inputs.insert( QStringLiteral( "data defined expression using string" ), QStringLiteral( "expression:SOME_FIELD * 2" ) );
   inputs.insert( QStringLiteral( "invalid" ), QVariantMap( {{QStringLiteral( "type" ), QStringLiteral( "data_defined" )}} ) );
 
   bool ok = false;
@@ -11697,8 +11707,12 @@ void TestQgsProcessing::preprocessParameters()
   QCOMPARE( outputs.value( QStringLiteral( "string" ) ).toString(), QStringLiteral( "a string" ) );
   QCOMPARE( outputs.value( QStringLiteral( "data defined field" ) ).value< QgsProperty >().propertyType(), QgsProperty::FieldBasedProperty );
   QCOMPARE( outputs.value( QStringLiteral( "data defined field" ) ).value< QgsProperty >().field(), QStringLiteral( "DEPTH_FIELD" ) );
+  QCOMPARE( outputs.value( QStringLiteral( "data defined field using string" ) ).value< QgsProperty >().propertyType(), QgsProperty::FieldBasedProperty );
+  QCOMPARE( outputs.value( QStringLiteral( "data defined field using string" ) ).value< QgsProperty >().field(), QStringLiteral( "MY FIELD" ) );
   QCOMPARE( outputs.value( QStringLiteral( "data defined expression" ) ).value< QgsProperty >().propertyType(), QgsProperty::ExpressionBasedProperty );
   QCOMPARE( outputs.value( QStringLiteral( "data defined expression" ) ).value< QgsProperty >().expressionString(), QStringLiteral( "A_FIELD * 200" ) );
+  QCOMPARE( outputs.value( QStringLiteral( "data defined expression using string" ) ).value< QgsProperty >().propertyType(), QgsProperty::ExpressionBasedProperty );
+  QCOMPARE( outputs.value( QStringLiteral( "data defined expression using string" ) ).value< QgsProperty >().expressionString(), QStringLiteral( "SOME_FIELD * 2" ) );
 
   // test round trip of data defined parameters
   const QgsProcessingAlgorithm *bufferAlg = QgsApplication::processingRegistry()->algorithmById( "native:buffer" );
