@@ -305,6 +305,28 @@ class TestQgsProcessExecutablePt2(unittest.TestCase):
 
         self.assertEqual(rc, 1)
 
+    def testDynamicParameters(self):
+        output_file = self.TMP_DIR + '/dynamic_out.shp'
+
+        params = {
+            'inputs':
+                {
+                    'INPUT': TEST_DATA_DIR + '/points.shp',
+                    'DISTANCE': {'type': 'data_defined', 'field': 'fid'},
+                    'OUTPUT': output_file
+                }
+        }
+
+        rc, output, err = self.run_process_stdin(
+            ['run', 'native:buffer', '-'], json.dumps(params))
+        self.assertFalse(self._strip_ignorable_errors(err))
+
+        self.assertEqual(rc, 0)
+
+        res = json.loads(output)
+        self.assertEqual(res['algorithm_details']['id'], 'native:buffer')
+        self.assertEqual(res['inputs']['DISTANCE'], {'field': 'fid', 'type': 'data_defined'})
+
 
 if __name__ == '__main__':
     # look for qgis bin path
