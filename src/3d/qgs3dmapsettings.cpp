@@ -349,10 +349,10 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elem.appendChild( elemOrigin );
 
   QDomElement elemExtent = doc.createElement( QStringLiteral( "extent" ) );
-  elemExtent.setAttribute( QStringLiteral( "xMin" ), QString::number( mExtent.xMinimum() ) );
-  elemExtent.setAttribute( QStringLiteral( "yMin" ), QString::number( mExtent.yMinimum() ) );
-  elemExtent.setAttribute( QStringLiteral( "xMax" ), QString::number( mExtent.xMaximum() ) );
-  elemExtent.setAttribute( QStringLiteral( "yMax" ), QString::number( mExtent.yMaximum() ) );
+  elemExtent.setAttribute( QStringLiteral( "xMin" ), mExtent.xMinimum() );
+  elemExtent.setAttribute( QStringLiteral( "yMin" ), mExtent.yMinimum() );
+  elemExtent.setAttribute( QStringLiteral( "xMax" ), mExtent.xMaximum() );
+  elemExtent.setAttribute( QStringLiteral( "yMax" ), mExtent.yMaximum() );
   elem.appendChild( elemExtent );
 
   QDomElement elemCamera = doc.createElement( QStringLiteral( "camera" ) );
