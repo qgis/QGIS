@@ -47,6 +47,7 @@
 %Include auto_generated/qgsdataitemguiprovider.sip
 %Include auto_generated/qgsdataitemguiproviderregistry.sip
 %Include auto_generated/qgsdatasourceselectdialog.sip
+%Include auto_generated/qgsdbrelationshipwidget.sip
 %Include auto_generated/qgsnewdatabasetablenamewidget.sip
 %Include auto_generated/qgsdetaileditemdata.sip
 %Include auto_generated/qgsdetaileditemdelegate.sip
