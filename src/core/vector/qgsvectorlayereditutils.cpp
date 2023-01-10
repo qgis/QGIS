@@ -27,6 +27,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsgeometryoptions.h"
 #include "qgsabstractgeometry.h"
+#include "qgssettingsregistrycore.h"
 
 #include <limits>
 
@@ -87,12 +88,25 @@ bool QgsVectorLayerEditUtils::moveVertex( const QgsPoint &p, QgsFeatureId atFeat
 
   QgsGeometry geometry = f.geometry();
 
-  geometry.moveVertex( p, atVertex );
+  // If original point is not 3D but destination yes, check if it can be promoted
+  if ( p.is3D() && !geometry.constGet()->is3D() && QgsWkbTypes::hasZ( mLayer->wkbType() ) )
+  {
+    if ( !geometry.get()->addZValue( QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.value() ) )
+      return false;
+  }
 
-  mLayer->changeGeometry( atFeatureId, geometry );
-  return true;
+  // If original point has not M-value but destination yes, check if it can be promoted
+  if ( p.isMeasure() && !geometry.constGet()->isMeasure() && QgsWkbTypes::hasM( mLayer->wkbType() ) )
+  {
+    if ( !geometry.get()->addMValue( QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.value() ) )
+      return false;
+  }
+
+  if ( !geometry.moveVertex( p, atVertex ) )
+    return false;
+
+  return mLayer->changeGeometry( atFeatureId, geometry );
 }
-
 
 Qgis::VectorEditResult QgsVectorLayerEditUtils::deleteVertex( QgsFeatureId featureId, int vertex )
 {

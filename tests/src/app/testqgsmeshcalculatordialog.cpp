@@ -51,7 +51,7 @@ TestQgsMeshCalculatorDialog::TestQgsMeshCalculatorDialog() = default;
 //runs before all tests
 void TestQgsMeshCalculatorDialog::initTestCase()
 {
-  qDebug() << "TestQgisAppClipboard::initTestCase()";
+  qDebug() << "TestQgsMeshCalculatorDialog::initTestCase()";
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::initQgis();

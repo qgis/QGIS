@@ -52,7 +52,7 @@ TestQgsFieldCalculator::TestQgsFieldCalculator() = default;
 //runs before all tests
 void TestQgsFieldCalculator::initTestCase()
 {
-  qDebug() << "TestQgisAppClipboard::initTestCase()";
+  qDebug() << "TestQgsFieldCalculator::initTestCase()";
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::initQgis();

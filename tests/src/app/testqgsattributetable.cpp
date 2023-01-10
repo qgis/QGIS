@@ -77,7 +77,7 @@ TestQgsAttributeTable::TestQgsAttributeTable() = default;
 //runs before all tests
 void TestQgsAttributeTable::initTestCase()
 {
-  qDebug() << "TestQgisAppClipboard::initTestCase()";
+  qDebug() << "TestQgsAttributeTable::initTestCase()";
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::initQgis();

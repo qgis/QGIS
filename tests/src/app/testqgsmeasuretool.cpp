@@ -57,7 +57,7 @@ TestQgsMeasureTool::TestQgsMeasureTool() = default;
 //runs before all tests
 void TestQgsMeasureTool::initTestCase()
 {
-  qDebug() << "TestQgisAppClipboard::initTestCase()";
+  qDebug() << "TestQgsMeasureTool::initTestCase()";
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::initQgis();

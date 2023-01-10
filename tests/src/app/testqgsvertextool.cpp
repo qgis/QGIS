@@ -70,6 +70,7 @@ class TestQgsVertexTool : public QObject
     void testTopologicalEditingMoveVertexOnIntersectionZ();
     void testMoveVertex();
     void testMoveEdge();
+    void testMovePointAddingZ();
     void testAddVertex();
     void testAddVertexAtEndpoint();
     void testAddVertexDoubleClick();
@@ -157,6 +158,7 @@ class TestQgsVertexTool : public QObject
     QgsVectorLayer *mLayerPolygon = nullptr;
     QgsVectorLayer *mLayerMultiPolygon = nullptr;
     QgsVectorLayer *mLayerPoint = nullptr;
+    QgsVectorLayer *mLayerPointZ = nullptr;
     QgsVectorLayer *mLayerLineZ = nullptr;
     QgsVectorLayer *mLayerCompoundCurve = nullptr;
     QgsVectorLayer *mLayerLineReprojected = nullptr;
@@ -169,6 +171,7 @@ class TestQgsVertexTool : public QObject
     QgsFeatureId mFidPolygonF1 = 0;
     QgsFeatureId mFidMultiPolygonF1 = 0;
     QgsFeatureId mFidPointF1 = 0;
+    QgsFeatureId mFidPointZF1 = 0;
     QgsFeatureId mFidCompoundCurveF1 = 0;
     QgsFeatureId mFidCompoundCurveF2 = 0;
 };
@@ -179,7 +182,7 @@ TestQgsVertexTool::TestQgsVertexTool() = default;
 //runs before all tests
 void TestQgsVertexTool::initTestCase()
 {
-  qDebug() << "TestQgisAppClipboard::initTestCase()";
+  qDebug() << "TestQgsVertexTool::initTestCase()";
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::initQgis();
@@ -209,11 +212,13 @@ void TestQgsVertexTool::initTestCase()
   QVERIFY( mLayerMultiPolygon->isValid() );
   mLayerPoint = new QgsVectorLayer( QStringLiteral( "Point?crs=EPSG:27700" ), QStringLiteral( "layer point" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayerPoint->isValid() );
+  mLayerPointZ = new QgsVectorLayer( QStringLiteral( "PointZ?crs=EPSG:27700" ), QStringLiteral( "layer pointz" ), QStringLiteral( "memory" ) );
+  QVERIFY( mLayerPointZ->isValid() );
   mLayerLineZ = new QgsVectorLayer( QStringLiteral( "LineStringZ?crs=EPSG:27700" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayerLineZ->isValid() );
   mLayerCompoundCurve = new QgsVectorLayer( QStringLiteral( "CompoundCurve?crs=27700" ), QStringLiteral( "layer compound curve" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayerCompoundCurve->isValid() );
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerMultiLine << mLayerPolygon << mLayerMultiPolygon << mLayerPoint << mLayerLineZ << mLayerCompoundCurve );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerMultiLine << mLayerPolygon << mLayerMultiPolygon << mLayerPoint << mLayerPointZ << mLayerLineZ << mLayerCompoundCurve );
 
   QgsFeature lineF1;
   lineF1.setGeometry( QgsGeometry::fromWkt( "LineString (2 1, 1 1, 1 3)" ) );
@@ -235,6 +240,9 @@ void TestQgsVertexTool::initTestCase()
 
   QgsFeature pointF1;
   pointF1.setGeometry( QgsGeometry::fromWkt( "Point (2 3)" ) );
+
+  QgsFeature pointZF1;
+  pointZF1.setGeometry( QgsGeometry::fromWkt( "PointZ (20 25 4)" ) );
 
   QgsFeature linez1, linez2, linez3;
   linez1.setGeometry( QgsGeometry::fromWkt( "LineStringZ (5 5 1, 6 6 1, 7 5 1)" ) );
@@ -276,6 +284,11 @@ void TestQgsVertexTool::initTestCase()
   mFidPointF1 = pointF1.id();
   QCOMPARE( mLayerPoint->featureCount(), ( long )1 );
 
+  mLayerPointZ->startEditing();
+  mLayerPointZ->addFeature( pointZF1 );
+  mFidPointZF1 = pointZF1.id();
+  QCOMPARE( mLayerPointZ->featureCount(), ( long )1 );
+
   mLayerLineZ->startEditing();
   mLayerLineZ->addFeature( linez1 );
   mLayerLineZ->addFeature( linez2 );
@@ -298,6 +311,7 @@ void TestQgsVertexTool::initTestCase()
   QCOMPARE( mLayerPolygon->undoStack()->index(), 1 );
   QCOMPARE( mLayerMultiPolygon->undoStack()->index(), 1 );
   QCOMPARE( mLayerPoint->undoStack()->index(), 1 );
+  QCOMPARE( mLayerPointZ->undoStack()->index(), 1 );
   // except for layerLineZ
   QCOMPARE( mLayerLineZ->undoStack()->index(), 3 );
   QCOMPARE( mLayerCompoundCurve->undoStack()->index(), 2 );
@@ -310,7 +324,7 @@ void TestQgsVertexTool::initTestCase()
   QCOMPARE( mCanvas->mapSettings().outputSize(), QSize( 512, 512 ) );
   QCOMPARE( mCanvas->mapSettings().visibleExtent(), QgsRectangle( 0, 0, 8, 8 ) );
 
-  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerMultiLine << mLayerLineReprojected << mLayerPolygon << mLayerMultiPolygon << mLayerPoint << mLayerLineZ << mLayerCompoundCurve );
+  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerMultiLine << mLayerLineReprojected << mLayerPolygon << mLayerMultiPolygon << mLayerPoint << mLayerPointZ << mLayerLineZ << mLayerCompoundCurve );
 
   QgsMapCanvasSnappingUtils *snappingUtils = new QgsMapCanvasSnappingUtils( mCanvas, this );
   mCanvas->setSnappingUtils( snappingUtils );
@@ -321,6 +335,7 @@ void TestQgsVertexTool::initTestCase()
   snappingUtils->locatorForLayer( mLayerPolygon )->init();
   snappingUtils->locatorForLayer( mLayerMultiPolygon )->init();
   snappingUtils->locatorForLayer( mLayerPoint )->init();
+  snappingUtils->locatorForLayer( mLayerPointZ )->init();
   snappingUtils->locatorForLayer( mLayerLineZ )->init();
   snappingUtils->locatorForLayer( mLayerCompoundCurve )->init();
 
@@ -527,6 +542,45 @@ void TestQgsVertexTool::testMoveEdge()
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
   QCOMPARE( mLayerPolygon->undoStack()->index(), 1 );
   QCOMPARE( mLayerPoint->undoStack()->index(), 1 );
+}
+
+void TestQgsVertexTool::testMovePointAddingZ()
+{
+  mouseClick( 20, 25, Qt::LeftButton );
+  mouseClick( 25, 20, Qt::LeftButton );
+
+  QCOMPARE( mLayerPointZ->undoStack()->index(), 2 );
+  QCOMPARE( mLayerPointZ->getFeature( mFidPointZF1 ).geometry(), QgsGeometry::fromWkt( "POINTZ(25 20 4)" ) );
+
+  mLayerPointZ->undoStack()->undo();
+  QCOMPARE( mLayerPointZ->undoStack()->index(), 1 );
+  QCOMPARE( mLayerPointZ->getFeature( mFidPointZF1 ).geometry(), QgsGeometry::fromWkt( "POINTZ(20 25 4)" ) );
+
+  // Add a point whitout Z
+  QgsFeature pointZF2;
+  pointZF2.setGeometry( QgsGeometry::fromWkt( "Point (30 35)" ) );
+  mLayerPointZ->addFeature( pointZF2 );
+  QCOMPARE( mLayerPointZ->featureCount(), ( long )2 );
+  QCOMPARE( mLayerPointZ->undoStack()->index(), 2 );
+
+  // And snap on a point with Z
+  QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
+  cfg.setMode( Qgis::SnappingMode::AllLayers );
+  cfg.setTolerance( 10 );
+  cfg.setTypeFlag( static_cast<Qgis::SnappingTypes>( Qgis::SnappingType::Vertex | Qgis::SnappingType::Segment ) );
+  cfg.setIntersectionSnapping( true );
+  cfg.setEnabled( true );
+  mCanvas->snappingUtils()->setConfig( cfg );
+
+  mouseClick( 30, 35, Qt::LeftButton );
+  mouseClick( 20, 25, Qt::LeftButton, Qt::KeyboardModifier(), true );
+
+  QCOMPARE( mLayerPointZ->undoStack()->index(), 3 );
+  QCOMPARE( mLayerPointZ->getFeature( pointZF2.id() ).geometry(), QgsGeometry::fromWkt( "POINTZ(20 25 4)" ) );
+
+  mLayerPointZ->undoStack()->undo();
+  mLayerPointZ->undoStack()->undo();
+  QCOMPARE( mLayerPointZ->undoStack()->index(), 1 );
 }
 
 void TestQgsVertexTool::testAddVertex()

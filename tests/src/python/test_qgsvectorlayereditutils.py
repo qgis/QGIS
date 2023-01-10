@@ -16,8 +16,6 @@ __copyright__ = 'Copyright 2022, The QGIS Project'
 import qgis  # NOQA
 
 from qgis.PyQt.QtCore import (
-    QDate,
-    QDateTime,
     QVariant,
     Qt,
     QDateTime,
@@ -31,11 +29,9 @@ from qgis.core import (Qgis,
                        QgsFeature,
                        QgsGeometry,
                        QgsLineString,
-                       QgsPolygon,
                        QgsPoint,
                        QgsPointXY,
                        QgsVectorLayer,
-                       QgsVectorLayerTools,
                        QgsVectorLayerEditUtils)
 
 
@@ -271,6 +267,158 @@ class TestQgsVectorLayerEditUtils(unittest.TestCase):
             layer.getFeature(2).geometry().asWkt(),
             "Polygon ((2 2, 6 2, 6 6, 2 6, 2 2))"
         )
+
+    def testMoveVertex(self):
+        layer = QgsVectorLayer("Point", "point", "memory")
+        self.assertTrue(layer.startEditing())
+        self.assertTrue(layer.isValid())
+
+        pr = layer.dataProvider()
+        f1 = QgsFeature(layer.fields(), 1)
+        f1.setGeometry(QgsGeometry.fromWkt('Point(0 0)'))
+        self.assertTrue(pr.addFeatures([f1]))
+        self.assertEqual(layer.featureCount(), 1)
+
+        vle = QgsVectorLayerEditUtils(layer)
+
+        self.assertTrue(vle.moveVertex(1, 2, f1.id(), 0))
+        f1 = layer.getFeature(1)
+
+        self.assertEqual(f1.geometry().constGet().x(), 1)
+        self.assertEqual(f1.geometry().constGet().y(), 2)
+
+        self.assertTrue(vle.moveVertexV2(QgsPoint(3, 4, 5, 6), f1.id(), 0))
+        f1 = layer.getFeature(1)
+
+        self.assertEqual(f1.geometry().constGet().x(), 3)
+        self.assertEqual(f1.geometry().constGet().y(), 4)
+        self.assertFalse(f1.geometry().constGet().is3D())
+        self.assertFalse(f1.geometry().constGet().isMeasure())
+
+    def testMoveVertexPointZ(self):
+        layer = QgsVectorLayer("PointZ", "pointZ", "memory")
+        self.assertTrue(layer.startEditing())
+        self.assertTrue(layer.isValid())
+
+        pr = layer.dataProvider()
+        f1 = QgsFeature(layer.fields(), 1)
+        f1.setGeometry(QgsGeometry.fromWkt('PointZ(0 0 0)'))
+        self.assertTrue(pr.addFeatures([f1]))
+        self.assertEqual(layer.featureCount(), 1)
+
+        vle = QgsVectorLayerEditUtils(layer)
+
+        self.assertTrue(vle.moveVertex(1, 2, f1.id(), 0))
+        f1 = layer.getFeature(1)
+
+        self.assertEqual(f1.geometry().constGet().x(), 1)
+        self.assertEqual(f1.geometry().constGet().y(), 2)
+        self.assertEqual(f1.geometry().constGet().z(), 0)
+
+        self.assertTrue(vle.moveVertexV2(QgsPoint(3, 4, 5, 6), f1.id(), 0))
+        f1 = layer.getFeature(1)
+
+        self.assertEqual(f1.geometry().constGet().x(), 3)
+        self.assertEqual(f1.geometry().constGet().y(), 4)
+        self.assertEqual(f1.geometry().constGet().z(), 5)
+        self.assertTrue(f1.geometry().constGet().is3D())
+        self.assertFalse(f1.geometry().constGet().isMeasure())
+
+        # Add a non-Z point and check that Z get added on move
+        f2 = QgsFeature(layer.fields(), 2)
+        f2.setGeometry(QgsGeometry.fromWkt('Point(0 0)'))
+        self.assertTrue(pr.addFeatures([f2]))
+        self.assertEqual(layer.featureCount(), 2)
+
+        self.assertFalse(f2.geometry().constGet().is3D())
+        self.assertTrue(vle.moveVertexV2(QgsPoint(3, 4, 5, 6), f2.id(), 0))
+        f2 = layer.getFeature(2)
+        self.assertEqual(f2.geometry().constGet().x(), 3)
+        self.assertEqual(f2.geometry().constGet().y(), 4)
+        self.assertEqual(f2.geometry().constGet().z(), 5)
+        self.assertTrue(f2.geometry().constGet().is3D())
+        self.assertFalse(f2.geometry().constGet().isMeasure())
+
+    def testMoveVertexPointM(self):
+        layer = QgsVectorLayer("PointM", "pointM", "memory")
+        self.assertTrue(layer.startEditing())
+        self.assertTrue(layer.isValid())
+
+        pr = layer.dataProvider()
+        f1 = QgsFeature(layer.fields(), 1)
+        f1.setGeometry(QgsGeometry.fromWkt('PointM(0 0 0)'))
+        self.assertTrue(pr.addFeatures([f1]))
+        self.assertEqual(layer.featureCount(), 1)
+
+        vle = QgsVectorLayerEditUtils(layer)
+
+        self.assertTrue(vle.moveVertexV2(QgsPoint(3, 4, 5, 6), f1.id(), 0))
+        f1 = layer.getFeature(1)
+
+        self.assertEqual(f1.geometry().constGet().x(), 3)
+        self.assertEqual(f1.geometry().constGet().y(), 4)
+        self.assertEqual(f1.geometry().constGet().m(), 6)
+        self.assertFalse(f1.geometry().constGet().is3D())
+        self.assertTrue(f1.geometry().constGet().isMeasure())
+
+        # Add a non-M point and check that M get added on move
+        f2 = QgsFeature(layer.fields(), 2)
+        f2.setGeometry(QgsGeometry.fromWkt('Point(0 0)'))
+        self.assertTrue(pr.addFeatures([f2]))
+        self.assertEqual(layer.featureCount(), 2)
+
+        self.assertFalse(f2.geometry().constGet().isMeasure())
+
+        self.assertTrue(vle.moveVertexV2(QgsPoint(3, 4, 5, 6), f2.id(), 0))
+        f2 = layer.getFeature(2)
+
+        self.assertTrue(f2.geometry().constGet().isMeasure())
+        self.assertFalse(f2.geometry().constGet().is3D())
+        self.assertEqual(f2.geometry().constGet().x(), 3)
+        self.assertEqual(f2.geometry().constGet().y(), 4)
+        self.assertEqual(f2.geometry().constGet().m(), 6)
+
+    def testMoveVertexPointZM(self):
+        layer = QgsVectorLayer("PointZM", "pointZM", "memory")
+        self.assertTrue(layer.startEditing())
+        self.assertTrue(layer.isValid())
+
+        pr = layer.dataProvider()
+        f1 = QgsFeature(layer.fields(), 1)
+        f1.setGeometry(QgsGeometry.fromWkt('PointZM(0 0 0 0)'))
+        self.assertTrue(pr.addFeatures([f1]))
+        self.assertEqual(layer.featureCount(), 1)
+
+        vle = QgsVectorLayerEditUtils(layer)
+
+        self.assertTrue(vle.moveVertexV2(QgsPoint(3, 4, 5, 6), f1.id(), 0))
+        f1 = layer.getFeature(1)
+
+        self.assertEqual(f1.geometry().constGet().x(), 3)
+        self.assertEqual(f1.geometry().constGet().y(), 4)
+        self.assertEqual(f1.geometry().constGet().z(), 5)
+        self.assertEqual(f1.geometry().constGet().m(), 6)
+        self.assertTrue(f1.geometry().constGet().is3D())
+        self.assertTrue(f1.geometry().constGet().isMeasure())
+
+        # Add a non-ZM point and check that Z and M get added on move
+        f2 = QgsFeature(layer.fields(), 2)
+        f2.setGeometry(QgsGeometry.fromWkt('Point(0 0)'))
+        self.assertTrue(pr.addFeatures([f2]))
+        self.assertEqual(layer.featureCount(), 2)
+
+        self.assertFalse(f2.geometry().constGet().isMeasure())
+        self.assertFalse(f2.geometry().constGet().is3D())
+
+        self.assertTrue(vle.moveVertexV2(QgsPoint(3, 4, 5, 6), f2.id(), 0))
+        f2 = layer.getFeature(2)
+        self.assertTrue(f2.geometry().constGet().isMeasure())
+        self.assertTrue(f2.geometry().constGet().is3D())
+
+        self.assertEqual(f2.geometry().constGet().x(), 3)
+        self.assertEqual(f2.geometry().constGet().y(), 4)
+        self.assertEqual(f2.geometry().constGet().z(), 5)
+        self.assertEqual(f2.geometry().constGet().m(), 6)
 
 
 if __name__ == '__main__':

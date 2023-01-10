@@ -64,7 +64,7 @@ TestQgsGeoreferencer::TestQgsGeoreferencer() = default;
 //runs before all tests
 void TestQgsGeoreferencer::initTestCase()
 {
-  qDebug() << "TestQgisAppClipboard::initTestCase()";
+  qDebug() << "TestQgsGeoreferencer::initTestCase()";
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::initQgis();
