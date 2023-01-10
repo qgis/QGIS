@@ -18,6 +18,7 @@
 
 #include <QToolBar>
 #include <QPointer>
+#include <QElapsedTimer>
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgssettingsentryenumflag.h"
@@ -89,6 +90,9 @@ class QgsGpsToolBar : public QToolBar
     bool mEnableAddVertexButton = true;
 
     QgsMapLayerProxyModel *mDestinationLayerModel = nullptr;
+
+    bool mIsFirstSizeChange = true;
+    QElapsedTimer mLastLabelSizeChangeTimer;
 };
 
 #endif // QGSGPSTOOLBAR_H

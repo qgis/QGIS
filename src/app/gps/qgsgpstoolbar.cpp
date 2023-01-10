@@ -301,6 +301,33 @@ void QgsGpsToolBar::updateLocationLabel()
     }
 
     mInformationButton->setText( parts.join( ' ' ) );
+
+    //ensure the label is big (and small) enough
+    const int width = mInformationButton->fontMetrics().boundingRect( mInformationButton->text() ).width() + 16;
+    bool allowResize = false;
+    if ( mIsFirstSizeChange )
+    {
+      allowResize = true;
+    }
+    else if ( mInformationButton->minimumWidth() < width )
+    {
+      // always immediately grow to fit
+      allowResize = true;
+    }
+    else if ( ( mInformationButton->minimumWidth() - width ) > mInformationButton->fontMetrics().averageCharWidth() * 2 )
+    {
+      // only allow shrinking when a sufficient time has expired since we last resized.
+      // this avoids extraneous shrinking/growing resulting in distracting UI changes
+      allowResize = mLastLabelSizeChangeTimer.hasExpired( 5000 );
+    }
+
+    if ( allowResize )
+    {
+      mInformationButton->setMinimumWidth( width );
+      mInformationButton->setMaximumWidth( width );
+      mLastLabelSizeChangeTimer.restart();
+      mIsFirstSizeChange = false;
+    }
   }
 
   adjustSize();
