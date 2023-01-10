@@ -386,6 +386,8 @@ QList<QgsLegendRenderer::LegendComponentGroup> QgsLegendRenderer::createComponen
         case QgsLegendStyle::Group:
             symbolIndent += mSettings.style( layerStyle ).indent( );
             break;
+        default:
+            break;
       }
       for ( int j = 0; j < legendNodes.count(); j++ )
       {
