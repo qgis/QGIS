@@ -159,21 +159,19 @@ void QgsAppGpsConnection::connectGps()
 
 void QgsAppGpsConnection::disconnectGps()
 {
-  if ( mConnection )
-  {
-    // we don't actually delete the connection until everything has had time to respond to the cleanup signals
-    std::unique_ptr< QgsGpsConnection > oldConnection( mConnection );
-    mConnection = nullptr;
+  // we don't actually delete the connection until everything has had time to respond to the cleanup signals
+  std::unique_ptr< QgsGpsConnection > oldConnection( mConnection );
+  mConnection = nullptr;
 
-    emit disconnected();
-    emit statusChanged( Qgis::GpsConnectionStatus::Disconnected );
-    emit fixStatusChanged( Qgis::GpsFixStatus::NoData );
+  emit disconnected();
+  emit statusChanged( Qgis::GpsConnectionStatus::Disconnected );
+  emit fixStatusChanged( Qgis::GpsFixStatus::NoData );
 
-    QgisApp::instance()->statusBarIface()->clearMessage();
-    showStatusBarMessage( tr( "Disconnected from GPS device." ) );
+  QgisApp::instance()->statusBarIface()->clearMessage();
+  showStatusBarMessage( tr( "Disconnected from GPS device." ) );
 
+  if ( oldConnection )
     QgsApplication::gpsConnectionRegistry()->unregisterConnection( oldConnection.get() );
-  }
 }
 
 void QgsAppGpsConnection::onTimeOut()
@@ -248,3 +246,4 @@ void QgsAppGpsConnection::showMessage( Qgis::MessageLevel level, const QString &
   mConnectionMessageItem = QgisApp::instance()->messageBar()->createMessage( QString(), message );
   QgisApp::instance()->messageBar()->pushWidget( mConnectionMessageItem, level, QgsMessageBar::defaultMessageTimeout( level ) );
 }
+
