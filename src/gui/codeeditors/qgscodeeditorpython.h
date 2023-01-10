@@ -76,7 +76,7 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
     bool loadScript( const QString &script );
 
     /**
-     * Check whether the current cursor position is inside a string or comment
+     * Check whether the current cursor position is inside a string literal or a comment
      *
      * \since QGIS 3.30
      */
