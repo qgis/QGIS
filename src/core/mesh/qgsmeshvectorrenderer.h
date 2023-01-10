@@ -32,6 +32,7 @@
 
 class QgsRenderContext;
 class QgsInterpolatedLineColor;
+class QgsMeshLayerRendererFeedback;
 ///@cond PRIVATE
 
 
@@ -49,17 +50,18 @@ class QgsMeshVectorRenderer
     virtual void draw() = 0;
 
     //! Vector renderer factory. The returned renderer type depend on the settings
-    static QgsMeshVectorRenderer *makeVectorRenderer( const QgsTriangularMesh &m,
-        const QgsMeshDataBlock &datasetVectorValues,
-        const QgsMeshDataBlock &scalarActiveFaceFlagValues,
-        const QVector<double> &datasetValuesMag,
-        double datasetMagMaximumValue,
-        double datasetMagMinimumValue,
-        QgsMeshDatasetGroupMetadata::DataType dataType,
-        const QgsMeshRendererVectorSettings &settings,
-        QgsRenderContext &context,
-        const QgsRectangle &layerExtent,
-        QSize size );
+    static QgsMeshVectorRenderer *makeVectorRenderer(const QgsTriangularMesh &m,
+      const QgsMeshDataBlock &datasetVectorValues,
+      const QgsMeshDataBlock &scalarActiveFaceFlagValues,
+      const QVector<double> &datasetValuesMag,
+      double datasetMagMaximumValue,
+      double datasetMagMinimumValue,
+      QgsMeshDatasetGroupMetadata::DataType dataType,
+      const QgsMeshRendererVectorSettings &settings,
+      QgsRenderContext &context,
+      const QgsRectangle &layerExtent,
+      QgsMeshLayerRendererFeedback *feedBack,
+      const QSize &size );
 };
 
 /**

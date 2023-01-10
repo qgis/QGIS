@@ -466,18 +466,18 @@ void QgsMeshVectorArrowRenderer::drawVectorArrow( const QgsPointXY &lineStart, d
 
 QgsMeshVectorRenderer::~QgsMeshVectorRenderer() = default;
 
-QgsMeshVectorRenderer *QgsMeshVectorRenderer::makeVectorRenderer(
-  const QgsTriangularMesh &m,
-  const QgsMeshDataBlock &datasetVectorValues,
-  const QgsMeshDataBlock &scalarActiveFaceFlagValues,
-  const QVector<double> &datasetValuesMag,
-  double datasetMagMaximumValue,
-  double datasetMagMinimumValue,
-  QgsMeshDatasetGroupMetadata::DataType dataType,
-  const QgsMeshRendererVectorSettings &settings,
-  QgsRenderContext &context,
-  const QgsRectangle &layerExtent,
-  QSize size )
+QgsMeshVectorRenderer *QgsMeshVectorRenderer::makeVectorRenderer( const QgsTriangularMesh &m,
+    const QgsMeshDataBlock &datasetVectorValues,
+    const QgsMeshDataBlock &scalarActiveFaceFlagValues,
+    const QVector<double> &datasetValuesMag,
+    double datasetMagMaximumValue,
+    double datasetMagMinimumValue,
+    QgsMeshDatasetGroupMetadata::DataType dataType,
+    const QgsMeshRendererVectorSettings &settings,
+    QgsRenderContext &context,
+    const QgsRectangle &layerExtent,
+    QgsMeshLayerRendererFeedback *feedBack,
+    const QSize &size )
 {
   QgsMeshVectorRenderer *renderer = nullptr;
 
@@ -500,10 +500,12 @@ QgsMeshVectorRenderer *QgsMeshVectorRenderer::makeVectorRenderer(
         m,
         datasetVectorValues,
         scalarActiveFaceFlagValues,
+        datasetValuesMag,
         dataType == QgsMeshDatasetGroupMetadata::DataType::DataOnVertices,
         settings,
         context,
         layerExtent,
+        feedBack,
         datasetMagMaximumValue );
       break;
     case QgsMeshRendererVectorSettings::Traces:
