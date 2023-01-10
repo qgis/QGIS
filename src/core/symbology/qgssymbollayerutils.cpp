@@ -42,6 +42,7 @@
 #include "qgsfillsymbol.h"
 #include "qgssymbollayerreference.h"
 #include "qgsmarkersymbollayer.h"
+#include "qmath.h"
 
 #include <QColor>
 #include <QFont>
@@ -5095,4 +5096,119 @@ QgsStringMap QgsSymbolLayerUtils::evaluatePropertiesMap( const QMap<QString, Qgs
     properties.insert( paramIt.key(), paramIt.value().valueAsString( context ) );
   }
   return properties;
+}
+
+QSize QgsSymbolLayerUtils::tileSize( int width, int height, double &angleRad, const QSize maxSize )
+{
+
+  const QSize maxSizeActual { ! maxSize.isValid() ? QSize( width * 10, height * 10 ) : maxSize };
+
+  struct rationalTangent
+  {
+    int a;
+    int b;
+    double angle;
+  };
+
+  static const QList<rationalTangent> rationalTangents
+  {
+    { 1, 10, qDegreesToRadians( 5.71059 ) },
+    { 1, 5, qDegreesToRadians( 11.3099 ) },
+    { 1, 4, qDegreesToRadians( 14.0362 ) },
+    { 1, 4, qDegreesToRadians( 18.4349 ) },
+    { 1, 2, qDegreesToRadians( 26.5651 ) },
+    { 2, 3, qDegreesToRadians( 33.6901 ) },
+    { 1, 1, qDegreesToRadians( 45.0 ) },
+    { 3, 2, qDegreesToRadians( 56.3099 ) },
+    { 2, 1, qDegreesToRadians( 63.4349 ) },
+    { 3, 1, qDegreesToRadians( 71.5651 ) },
+    { 4, 1, qDegreesToRadians( 75.9638 ) },
+    { 10, 1, qDegreesToRadians( 84.2894 ) },
+  };
+
+  // TODO: clean angleRad
+
+
+  if ( qgsDoubleNear( angleRad, 0 ) )
+  {
+    angleRad = 0;
+    return QSize( width, height );
+  }
+
+  if ( qgsDoubleNear( angleRad, M_PI_2 ) )
+  {
+    angleRad = M_PI_2;
+    return QSize( height, width );
+  }
+
+  int rTanIdx = 0;
+
+  for ( int idx = 0; idx < rationalTangents.count(); ++idx )
+  {
+    const auto item = rationalTangents.at( idx );
+    if ( qgsDoubleNear( item.angle, angleRad ) || item.angle > angleRad )
+    {
+      angleRad = item.angle;
+      rTanIdx = idx;
+      break;
+    }
+  }
+
+  bool asc { true };
+  int increment { 1 };
+  bool endTouched { false };
+  bool startTouched { false };
+
+  while ( !( startTouched && endTouched ) && rTanIdx >= 0 && rTanIdx < rationalTangents.count() )
+  {
+
+    rationalTangent bTan { rationalTangents.at( rTanIdx ) };
+    angleRad = bTan.angle;
+    const double k { bTan.b *height *width / std::cos( angleRad ) };
+    const int hcfH = std::gcd( bTan.a * height, bTan.b * width );
+    const int hcfW = std::gcd( bTan.b * height, bTan.a * width );
+    const double W1 = k / hcfW;
+    const double H1 = k / hcfH;
+
+    qDebug() << "TO TILE" << rTanIdx << qRadiansToDegrees( angleRad ) << angleRad << W1 << H1 << "K:" << k << hcfW << hcfH << bTan.a << bTan.b;
+
+    return QSize( W1, H1 );
+
+    if ( W1 <= maxSizeActual.width() && H1 <= maxSizeActual.height() )
+    {
+      return QSize( W1, H1 );
+    }
+    else
+    {
+      if ( rTanIdx == 0 )
+      {
+        startTouched = true;
+        rTanIdx = rTanIdx + increment;
+        continue;
+      }
+      else if ( rTanIdx == rationalTangents.count() - 1 )
+      {
+        endTouched = true;
+        rTanIdx = rTanIdx - increment;
+        continue;
+      }
+
+      if ( startTouched )
+      {
+        rTanIdx += 1;
+      }
+      else if ( endTouched )
+      {
+        rTanIdx -= 1;
+      }
+      else
+      {
+        rTanIdx = asc ? rTanIdx + increment : rTanIdx - increment;
+        asc = ! asc;
+        increment += 1;
+      }
+    }
+  }
+
+  return QSize( );
 }

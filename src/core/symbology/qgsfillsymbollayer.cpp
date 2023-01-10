@@ -4409,37 +4409,26 @@ void QgsPointPatternFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &elem
 
 QImage QgsPointPatternFillSymbolLayer::toTiledPattern() const
 {
-  const double angleRads { qDegreesToRadians( mAngle ) };
-  double distanceXPx = QgsSymbolLayerUtils::rescaleUom( mDistanceX, mDistanceXUnit, {} );
-  double distanceYPx = QgsSymbolLayerUtils::rescaleUom( mDistanceY, mDistanceYUnit, {} );
+
+  double angleRads { qDegreesToRadians( mAngle ) };
+
+  int distanceXPx { static_cast<int>( QgsSymbolLayerUtils::rescaleUom( mDistanceX, mDistanceXUnit, {} ) ) };
+  int distanceYPx { static_cast<int>( QgsSymbolLayerUtils::rescaleUom( mDistanceY, mDistanceYUnit, {} ) ) };
 
   QSize size { static_cast<int>( distanceXPx ), static_cast<int>( distanceYPx ) };
 
+
   if ( mAngle != 0 )
   {
-    // adjust tile size to generate a tile with seamless edges
-    // from https://graphicdesign.stackexchange.com/questions/17132/how-to-create-a-pattern-or-tiles-from-rotated-elements
-    const double Hh = distanceYPx / std::cos( angleRads );
-    const double Hw = distanceXPx / std::sin( angleRads );
-    const double Wh = distanceYPx / std::sin( angleRads );
-    const double Ww = distanceXPx / std::cos( angleRads );
-    const double Qh = Hh / Hw; // Reduced fraction
-    const double Qw = Wh / Ww; // Reduced fraction
-    const double Pw = Wh * Qw / Ww;
-    const double Ph = Hh * Qh / Hw;
-    const double W1 = Pw * Ww;
-    const double H1 = Ph * Hw;
-
-    //size.setWidth( static_cast<int>(  distanceXPx / std::cos( angleRads ) ) );
-    //size.setHeight( static_cast<int>( distanceYPx / std::sin( angleRads ) ) );
-    size.setWidth( std::round( W1 ) );
-    size.setHeight( std::round( H1 ) );
+    size = QgsSymbolLayerUtils::tileSize( distanceXPx, distanceYPx, angleRads );
   }
 
+  /*
   if ( size.isEmpty() || size.width() > 512 || size.height() > 512 )
   {
     return QImage( );
   }
+  */
 
   QPixmap pixmap( size );
   pixmap.fill( Qt::transparent );
@@ -4454,10 +4443,13 @@ QImage QgsPointPatternFillSymbolLayer::toTiledPattern() const
   QgsSymbolRenderContext symbolContext( renderContext, QgsUnitTypes::RenderUnit::RenderPixels, 1.0, false, Qgis::SymbolRenderHints() );
 
   std::unique_ptr< QgsPointPatternFillSymbolLayer > layerClone( clone() );
+
+  // !!!!!!!
+  layerClone->setAngle( qRadiansToDegrees( angleRads ) );
+
   layerClone->drawPreviewIcon( symbolContext, pixmap.size() );
   painter.end();
   return pixmap.toImage();
-  return QImage();
 }
 
 QgsSymbolLayer *QgsPointPatternFillSymbolLayer::createFromSld( QDomElement &element )
