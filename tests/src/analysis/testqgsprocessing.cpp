@@ -6107,6 +6107,10 @@ void TestQgsProcessing::parameterString()
   QCOMPARE( def->valueAsJsonObject( "uri='complex' username=\"complex\"", context ), QVariant( QStringLiteral( "uri='complex' username=\"complex\"" ) ) );
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "c:\\test\\new data\\test.dat" ), context ), QVariant( QStringLiteral( "c:\\test\\new data\\test.dat" ) ) );
 
+  QCOMPARE( def->valueAsJsonObject( QVariant::fromValue( QgsProperty::fromValue( QStringLiteral( "test" ) ) ), context ), QVariant( QStringLiteral( "test" ) ) );
+  QCOMPARE( def->valueAsJsonObject( QVariant::fromValue( QgsProperty::fromField( QStringLiteral( "a field" ) ) ), context ), QVariantMap( {{QStringLiteral( "type" ), QStringLiteral( "data_defined" )}, {QStringLiteral( "field" ), QStringLiteral( "a field" ) }} ) );
+  QCOMPARE( def->valueAsJsonObject( QVariant::fromValue( QgsProperty::fromExpression( QStringLiteral( "\"a field\" * 2" ) ) ), context ), QVariantMap( {{QStringLiteral( "type" ), QStringLiteral( "data_defined" )}, {QStringLiteral( "expression" ),  QStringLiteral( "\"a field\" * 2" ) }} ) );
+
   bool ok = false;
   QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
   QVERIFY( ok );
@@ -11703,6 +11707,32 @@ void TestQgsProcessing::preprocessParameters()
   QCOMPARE( outputs.value( QStringLiteral( "data defined field" ) ).value< QgsProperty >().field(), QStringLiteral( "DEPTH_FIELD" ) );
   QCOMPARE( outputs.value( QStringLiteral( "data defined expression" ) ).value< QgsProperty >().propertyType(), QgsProperty::ExpressionBasedProperty );
   QCOMPARE( outputs.value( QStringLiteral( "data defined expression" ) ).value< QgsProperty >().expressionString(), QStringLiteral( "A_FIELD * 200" ) );
+
+  // test round trip of data defined parameters
+  const QgsProcessingAlgorithm *bufferAlg = QgsApplication::processingRegistry()->algorithmById( "native:buffer" );
+  QVERIFY( bufferAlg );
+
+  inputs.clear();
+  inputs.insert( QStringLiteral( "DISTANCE" ), QgsProperty::fromField( QStringLiteral( "DEPTH_FIELD" ) ) );
+
+  QgsProcessingContext context;
+  QVariantMap exportedParams = bufferAlg->asMap( inputs, context );
+  outputs = QgsProcessingUtils::preprocessQgisProcessParameters( inputs, ok, error );
+  QVERIFY( ok );
+  QVERIFY( error.isEmpty() );
+
+  QCOMPARE( outputs.value( QStringLiteral( "DISTANCE" ) ).value< QgsProperty >().propertyType(), QgsProperty::FieldBasedProperty );
+  QCOMPARE( outputs.value( QStringLiteral( "DISTANCE" ) ).value< QgsProperty >().field(), QStringLiteral( "DEPTH_FIELD" ) );
+
+  inputs.insert( QStringLiteral( "DISTANCE" ), QgsProperty::fromExpression( QStringLiteral( "A_FIELD * 200" ) ) );
+
+  exportedParams = bufferAlg->asMap( inputs, context );
+  outputs = QgsProcessingUtils::preprocessQgisProcessParameters( inputs, ok, error );
+  QVERIFY( ok );
+  QVERIFY( error.isEmpty() );
+
+  QCOMPARE( outputs.value( QStringLiteral( "DISTANCE" ) ).value< QgsProperty >().propertyType(), QgsProperty::ExpressionBasedProperty );
+  QCOMPARE( outputs.value( QStringLiteral( "DISTANCE" ) ).value< QgsProperty >().expressionString(), QStringLiteral( "A_FIELD * 200" ) );
 }
 
 QGSTEST_MAIN( TestQgsProcessing )
