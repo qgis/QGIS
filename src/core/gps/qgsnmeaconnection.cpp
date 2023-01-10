@@ -435,10 +435,6 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
         }
       }
 
-      if ( currentSatellite.sig > 0 )
-      {
-        satelliteInfo.inUse = 1; // check where used ???? (+=1)
-      }
       if ( !idAlreadyPresent && currentSatellite.azimuth > 0 && currentSatellite.elv > 0 )
       {
         mLastGPSInformation.satellitesInView.append( satelliteInfo );
@@ -454,6 +450,8 @@ void QgsNmeaConnection::processVtgSentence( const char *data, int len )
   if ( nmea_parse_GPVTG( data, len, &result ) )
   {
     mLastGPSInformation.speed = result.spk;
+    if ( !std::isnan( result.dir ) )
+      mLastGPSInformation.direction = result.dir;
   }
 }
 
