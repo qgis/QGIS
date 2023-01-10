@@ -799,6 +799,7 @@ class TestQgsProcessing: public QObject
     void sourceTypeToString_data();
     void sourceTypeToString();
     void formatHelp();
+    void preprocessParameters();
 
   private:
 
@@ -11667,6 +11668,34 @@ void TestQgsProcessing::formatHelp()
   QCOMPARE( QgsProcessingUtils::formatHelpMapAsHtml( help, &a ), QStringLiteral( "<html><body><p></p>\n<h2>Examples</h2>\n<p>aabbcc</p><br></body></html>" ) );
 }
 
+void TestQgsProcessing::preprocessParameters()
+{
+  QVariantMap inputs;
+  inputs.insert( QStringLiteral( "int" ), 5 );
+  inputs.insert( QStringLiteral( "string" ), QStringLiteral( "a string" ) );
+  inputs.insert( QStringLiteral( "data defined field" ), QVariantMap( {{QStringLiteral( "type" ), QStringLiteral( "data_defined" )}, {QStringLiteral( "field" ), QStringLiteral( "DEPTH_FIELD" ) }} ) );
+  inputs.insert( QStringLiteral( "data defined expression" ), QVariantMap( {{QStringLiteral( "type" ), QStringLiteral( "data_defined" )}, {QStringLiteral( "expression" ), QStringLiteral( "A_FIELD * 200" ) }} ) );
+  inputs.insert( QStringLiteral( "invalid" ), QVariantMap( {{QStringLiteral( "type" ), QStringLiteral( "data_defined" )}} ) );
+
+  bool ok = false;
+  QString error;
+  QVariantMap outputs = QgsProcessingUtils::preprocessQgisProcessParameters( inputs, ok, error );
+  QVERIFY( !ok );
+  QVERIFY( !error.isEmpty() );
+
+  inputs.remove( QStringLiteral( "invalid" ) );
+  error.clear();
+  outputs = QgsProcessingUtils::preprocessQgisProcessParameters( inputs, ok, error );
+  QVERIFY( ok );
+  QVERIFY( error.isEmpty() );
+
+  QCOMPARE( outputs.value( QStringLiteral( "int" ) ).toInt(), 5 );
+  QCOMPARE( outputs.value( QStringLiteral( "string" ) ).toString(), QStringLiteral( "a string" ) );
+  QCOMPARE( outputs.value( QStringLiteral( "data defined field" ) ).value< QgsProperty >().propertyType(), QgsProperty::FieldBasedProperty );
+  QCOMPARE( outputs.value( QStringLiteral( "data defined field" ) ).value< QgsProperty >().field(), QStringLiteral( "DEPTH_FIELD" ) );
+  QCOMPARE( outputs.value( QStringLiteral( "data defined expression" ) ).value< QgsProperty >().propertyType(), QgsProperty::ExpressionBasedProperty );
+  QCOMPARE( outputs.value( QStringLiteral( "data defined expression" ) ).value< QgsProperty >().expressionString(), QStringLiteral( "A_FIELD * 200" ) );
+}
 
 QGSTEST_MAIN( TestQgsProcessing )
 #include "testqgsprocessing.moc"

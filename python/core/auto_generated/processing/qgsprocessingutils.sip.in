@@ -498,6 +498,15 @@ appropriate string values where possible.
 .. versionadded:: 3.26
 %End
 
+    static QVariantMap preprocessQgisProcessParameters( const QVariantMap &parameters, bool &ok, QString &error );
+%Docstring
+Pre-processes a set of ``parameter`` values for the qgis_process command.
+
+In particular, this function upgrades encoded data defined values to :py:class:`QgsProperty` objects.
+
+.. versionadded:: 3.30
+%End
+
 };
 
 class QgsProcessingFeatureSource : QgsFeatureSource
