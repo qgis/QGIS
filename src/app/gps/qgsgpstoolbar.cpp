@@ -178,8 +178,7 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
         mAddTrackVertexAction->setEnabled( mEnableAddVertexButton );
         break;
     }
-    // this is necessary to ensure that the toolbar in floating mode correctly resizes to fit the label!
-    setFixedWidth( sizeHint().width() );
+    adjustSize();
   } );
 
   connect( QgsProject::instance()->gpsSettings(), &QgsProjectGpsSettings::destinationLayerChanged,
@@ -188,8 +187,7 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
   connect( QgsProject::instance()->gpsSettings(), &QgsProjectGpsSettings::automaticallyAddTrackVerticesChanged, this, [ = ]( bool enabled ) { setAddVertexButtonEnabled( !enabled ); } );
   setAddVertexButtonEnabled( !QgsProject::instance()->gpsSettings()->automaticallyAddTrackVertices() );
 
-  // this is necessary to ensure that the toolbar in floating mode correctly resizes to fit the label!
-  setFixedWidth( sizeHint().width() );
+  adjustSize();
 }
 
 void QgsGpsToolBar::setGpsDigitizing( QgsAppGpsDigitizing *digitizing )
@@ -305,8 +303,7 @@ void QgsGpsToolBar::updateLocationLabel()
     mInformationButton->setText( parts.join( ' ' ) );
   }
 
-  // this is necessary to ensure that the toolbar in floating mode correctly resizes to fit the label!
-  setFixedWidth( sizeHint().width() );
+  adjustSize();
 }
 
 void QgsGpsToolBar::destinationLayerChanged( QgsVectorLayer *vlayer )
@@ -473,5 +470,14 @@ void QgsGpsToolBar::createLocationWidget()
   mInformationButton->setPopupMode( QToolButton::ToolButtonPopupMode::InstantPopup );
 
   insertWidget( mSettingsMenuAction, mInformationButton );
+}
+
+void QgsGpsToolBar::adjustSize()
+{
+  // this is necessary to ensure that the toolbar in floating mode correctly resizes to fit the label!
+  if ( isFloating() )
+    setFixedWidth( sizeHint().width() );
+  else
+    setFixedWidth( QWIDGETSIZE_MAX );
 }
 

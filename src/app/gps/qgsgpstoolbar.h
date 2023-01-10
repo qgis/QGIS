@@ -65,6 +65,7 @@ class QgsGpsToolBar : public QToolBar
   private:
 
     void createLocationWidget();
+    void adjustSize();
 
     QgsAppGpsConnection *mConnection = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
