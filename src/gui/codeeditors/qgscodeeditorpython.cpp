@@ -116,7 +116,7 @@ void QgsCodeEditorPython::initializeLexer()
   pyLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::TripleSingleQuote ), QsciLexerPython::TripleSingleQuotedString );
   pyLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::TripleDoubleQuote ), QsciLexerPython::TripleDoubleQuotedString );
 
-  QsciAPIs *apis = new QsciAPIs( pyLexer );
+  std::unique_ptr< QsciAPIs > apis = std::make_unique< QsciAPIs >( pyLexer );
 
   const QgsSettings settings;
 
@@ -146,7 +146,6 @@ void QgsCodeEditorPython::initializeLexer()
         }
       }
       apis->prepare();
-      pyLexer->setAPIs( apis );
     }
   }
   else if ( mAPISFilesList.length() == 1 && mAPISFilesList[0].right( 3 ) == QLatin1String( "pap" ) )
@@ -161,7 +160,7 @@ void QgsCodeEditorPython::initializeLexer()
   }
   else
   {
-    for ( const QString &path : mAPISFilesList )
+    for ( const QString &path : std::as_const( mAPISFilesList ) )
     {
       if ( !QFileInfo::exists( path ) )
       {
@@ -173,8 +172,10 @@ void QgsCodeEditorPython::initializeLexer()
       }
     }
     apis->prepare();
-    pyLexer->setAPIs( apis );
   }
+  if ( apis )
+    pyLexer->setAPIs( apis.release() );
+
   setLexer( pyLexer );
 
   const int threshold = settings.value( QStringLiteral( "pythonConsole/autoCompThreshold" ), 2 ).toInt();
