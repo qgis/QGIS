@@ -60,6 +60,7 @@
 #include "qgsmessageoutput.h"
 #include "qgsrelationshipsitem.h"
 #include "qgsprovidersqlquerybuilder.h"
+#include "qgsdbrelationshipwidget.h"
 
 #include <QFileInfo>
 #include <QMenu>
@@ -1989,6 +1990,40 @@ void QgsFieldDomainItemGuiProvider::populateContextMenu( QgsDataItem *item, QMen
     if ( md )
     {
       std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
+
+      if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::AddRelationship ) )
+      {
+        QAction *createRelationshipAction = new QAction( tr( "New Relationship…" ), menu );
+
+        QPointer< QgsDataItem > itemWeakPointer( item );
+
+        connect( createRelationshipAction, &QAction::triggered, this, [ = ]
+        {
+          std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
+          QgsDbRelationDialog dialog( conn.release(), QgisApp::instance() );
+          dialog.setWindowTitle( tr( "New Relationship" ) );
+          if ( dialog.exec() )
+          {
+            QgsWeakRelation relation = dialog.relationship();
+            std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
+            try
+            {
+              conn->addRelationship( relation );
+              notify( QObject::tr( "New Relationship Created" ), QObject::tr( "Relationship '%1' was created successfully." ).arg( relation.name() ), context, Qgis::MessageLevel::Success );
+              if ( itemWeakPointer )
+              {
+                itemWeakPointer->refresh();
+              }
+            }
+            catch ( QgsProviderConnectionException &ex )
+            {
+              notify( QObject::tr( "Relationship Creation Error" ), QObject::tr( "Error creating new relationship '%1': %2" ).arg( relation.name(), ex.what() ), context, Qgis::MessageLevel::Critical );
+            }
+          }
+        } );
+
+        menu->addAction( createRelationshipAction );
+      }
 
       if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::AddFieldDomain ) )
       {
