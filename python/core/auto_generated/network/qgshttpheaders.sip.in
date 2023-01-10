@@ -149,6 +149,14 @@ Returns a cleansed ``key``
     QVariant &operator[]( const QString &key );
 
 
+    void insert( const QString &key, const QVariant &value );
+%Docstring
+insert a ``key`` with the specific ``value``
+
+:param key: a key to add
+:param value: a value to add for the key
+%End
+
     QList<QString> keys() const;
 %Docstring
 
