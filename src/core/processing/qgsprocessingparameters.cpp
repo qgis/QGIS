@@ -2499,7 +2499,6 @@ QVariant QgsProcessingParameterDefinition::valueAsJsonObjectPrivate( const QVari
         break;
     }
 
-
     if ( value.userType() == QMetaType::type( "QgsProperty" ) )
     {
       const QgsProperty prop = value.value< QgsProperty >();
@@ -2509,12 +2508,10 @@ QVariant QgsProcessingParameterDefinition::valueAsJsonObjectPrivate( const QVari
           return QVariant();
         case QgsProperty::StaticProperty:
           return valueAsJsonObject( prop.staticValue(), context );
-
-        // these are not supported for serialization
         case QgsProperty::FieldBasedProperty:
+          return QVariantMap( {{QStringLiteral( "type" ), QStringLiteral( "data_defined" )}, {QStringLiteral( "field" ), prop.field() }} );
         case QgsProperty::ExpressionBasedProperty:
-          QgsDebugMsg( QStringLiteral( "could not convert expression/field based property to JSON object" ) );
-          return QVariant();
+          return QVariantMap( {{QStringLiteral( "type" ), QStringLiteral( "data_defined" )}, {QStringLiteral( "expression" ), prop.expressionString() }} );
       }
     }
 
