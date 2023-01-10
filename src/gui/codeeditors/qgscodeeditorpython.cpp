@@ -31,20 +31,15 @@
 #include <QDesktopServices>
 #include <QKeyEvent>
 
-namespace
+const QMap<QString, QString> QgsCodeEditorPython::sCompletionPairs
 {
-  const QMap<QString, QString> PAIRS =
-  {
-    {"(", ")"},
-    {"[", "]"},
-    {"{", "}"},
-    {"'", "'"},
-    {"\"", "\""}
-  };
-
-  // Only used for selected text
-  const QStringList SINGLE_CHARS = {"`", "*"};
-}
+  {"(", ")"},
+  {"[", "]"},
+  {"{", "}"},
+  {"'", "'"},
+  {"\"", "\""}
+};
+const QStringList QgsCodeEditorPython::sCompletionSingleCharacters{"`", "*"};
 
 QgsCodeEditorPython::QgsCodeEditorPython( QWidget *parent, const QList<QString> &filenames, Mode mode )
   : QgsCodeEditor( parent,
@@ -245,7 +240,7 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
   // surround the selection with the opening-closing pair
   if ( hasSelectedText() && autoSurround )
   {
-    if ( PAIRS.contains( eText ) )
+    if ( sCompletionPairs.contains( eText ) )
     {
       int startLine, startPos, endLine, endPos;
       getSelection( &startLine, &startPos, &endLine, &endPos );
@@ -254,26 +249,26 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
       if ( startLine != endLine && ( eText == "\"" || eText == "'" ) )
       {
         replaceSelectedText(
-          QString( "%1%1%1%2%3%3%3" ).arg( eText ).arg( selectedText() ).arg( PAIRS[eText] )
+          QString( "%1%1%1%2%3%3%3" ).arg( eText, selectedText(), sCompletionPairs[eText] )
         );
         setSelection( startLine, startPos + 3, endLine, endPos + 3 );
       }
       else
       {
         replaceSelectedText(
-          QString( "%1%2%3" ).arg( eText ).arg( selectedText() ).arg( PAIRS[eText] )
+          QString( "%1%2%3" ).arg( eText, selectedText(), sCompletionPairs[eText] )
         );
         setSelection( startLine, startPos + 1, endLine, endPos + 1 );
       }
       event->accept();
       return;
     }
-    else if ( SINGLE_CHARS.contains( eText ) )
+    else if ( sCompletionSingleCharacters.contains( eText ) )
     {
       int startLine, startPos, endLine, endPos;
       getSelection( &startLine, &startPos, &endLine, &endPos );
       replaceSelectedText(
-        QString( "%1%2%1" ).arg( eText ).arg( selectedText() )
+        QString( "%1%2%1" ).arg( eText, selectedText() )
       );
       setSelection( startLine, startPos + 1, endLine, endPos + 1 );
       event->accept();
@@ -306,7 +301,7 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
       // When backspace is pressed inside an opening/closing pair, remove both characters
       if ( event->key() == Qt::Key_Backspace )
       {
-        if ( PAIRS.contains( prevChar ) && PAIRS[prevChar] == nextChar )
+        if ( sCompletionPairs.contains( prevChar ) && sCompletionPairs[prevChar] == nextChar )
         {
           setSelection( line, column - 1, line, column + 1 );
           removeSelectedText();
@@ -323,7 +318,7 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
       }
 
       // When closing character is entered inside an opening/closing pair, shift the cursor
-      else if ( PAIRS.key( eText ) != ""  && nextChar == eText )
+      else if ( sCompletionPairs.key( eText ) != ""  && nextChar == eText )
       {
         setCursorPosition( line, column + 1 );
         event->accept();
@@ -335,21 +330,19 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
 
       // Else, if not inside a string or comment and an opening character
       // is entered, also insert the closing character
-      else if ( !isCursorInsideStringLiteralOrComment() && PAIRS.contains( eText ) )
+      else if ( !isCursorInsideStringLiteralOrComment() && sCompletionPairs.contains( eText ) )
       {
         // Check if user is not entering triple quotes
         if ( !( ( eText == "\"" || eText == "'" ) && prevChar == eText ) )
         {
           QgsCodeEditor::keyPressEvent( event );
-          insert( PAIRS[eText] );
+          insert( sCompletionPairs[eText] );
           event->accept();
           return;
         }
       }
     }
   }
-
-
 
   // Let QgsCodeEditor handle the keyboard event
   return QgsCodeEditor::keyPressEvent( event );
