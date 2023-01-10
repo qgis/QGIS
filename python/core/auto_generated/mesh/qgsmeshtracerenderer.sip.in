@@ -91,6 +91,7 @@ Sets the minimum tail length
 Sets the visual persistence of the tail
 %End
 
+
 };
 
 /************************************************************************

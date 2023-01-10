@@ -28,6 +28,7 @@
 #include "qgsmeshlayer.h"
 #include "qgsmeshvectorrenderer.h"
 #include "qgsmaptopixel.h"
+#include "qgsrendercontext.h"
 
 class QgsMeshLayerInterpolator;
 class QgsMeshLayerRendererFeedback;
@@ -269,6 +270,9 @@ class QgsMeshStreamField
     //! Sets if the size of the field has to be minimized of all the mesh is in the device
     void setMinimizeFieldSize( bool minimizeFieldSize );
 
+    //! Assignment operator
+    QgsMeshStreamField &operator=( const QgsMeshStreamField &other );
+
   protected:
     virtual void initImage();
     QPointF fieldToDevice( const QPoint &pixel ) const;
@@ -298,8 +302,7 @@ class QgsMeshStreamField
     QImage mTraceImage;
 
     QgsMapToPixel mMapToFieldPixel;
-    QgsRectangle mOutputExtent;
-    QSize mFullOutpuSize;
+    QgsRectangle mOutputExtent = QgsRectangle();
     QgsInterpolatedLineColor mVectorColoring;
 
     /*the direction for a pixel is defined with a char value
@@ -316,7 +319,7 @@ class QgsMeshStreamField
      *     d=incX + 2 + (incY+1)*3
      */
     QVector<char> mDirectionField;
-    const QgsRenderContext &mRenderContext;
+    QgsRenderContext mRenderContext;
 
   private:
     int mPixelFillingCount = 0;
@@ -480,6 +483,8 @@ class QgsMeshParticleTracesField: public QgsMeshStreamField
 
     //! Sets the color of the particles, overwrite the color provided by vector settings
     void setParticlesColor( const QColor &c );
+
+    QgsMeshParticleTracesField &operator=( const QgsMeshParticleTracesField &other );
 
   private:
     QPoint direction( QPoint position ) const;
@@ -659,6 +664,7 @@ class CORE_EXPORT QgsMeshVectorTraceAnimationGenerator
 
     //! Assignment operator
     QgsMeshVectorTraceAnimationGenerator &operator=( const QgsMeshVectorTraceAnimationGenerator &other );
+
   private:
     std::unique_ptr<QgsMeshParticleTracesField> mParticleField;
     const QgsRenderContext &mRendererContext;
