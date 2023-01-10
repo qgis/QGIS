@@ -997,10 +997,10 @@ Evaluates a map of properties using the given ``context`` and returns a variant 
 .. versionadded:: 3.18
 %End
 
-    static QSize tileSize( int width, int height, double &angleRad /In,Out/, const QSize maxSize = QSize() );
+    static QSize tileSize( int width, int height, double &angleRad /In,Out/ );
 %Docstring
 Calculate the minimum size in pixels of a symbol tile given the symbol ``width`` and ``height`` and the grid rotation ``angle`` in radians.
-The method makes approximations in order to generate the smallest possible tile.
+The method makes approximations and can modify ``angle`` in order to generate the smallest possible tile.
 
 .. versionadded:: 3.30
 %End

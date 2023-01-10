@@ -2642,14 +2642,15 @@ void QgsLinePatternFillSymbolLayer::stopFeatureRender( const QgsFeature &, QgsRe
 
 QImage QgsLinePatternFillSymbolLayer::toTiledPattern() const
 {
-  const double lineAngleRads { qDegreesToRadians( mLineAngle ) };
-  double distancePx = QgsSymbolLayerUtils::rescaleUom( mDistance, mDistanceUnit, {} );
-  // adjust tile size to generate a tile with seamless edges
-  const QSize size { static_cast<int>( distancePx / std::cos( lineAngleRads ) ), static_cast<int>( distancePx / std::sin( lineAngleRads ) ) };
 
-  if ( size.isEmpty() || size.width() > 512 || size.height() > 512 )
+  double lineAngleRads { qDegreesToRadians( mLineAngle ) };
+  double distancePx { QgsSymbolLayerUtils::rescaleUom( mDistance, mDistanceUnit, {} ) };
+
+  QSize size { static_cast<int>( distancePx ), static_cast<int>( distancePx ) };
+
+  if ( ! qgsDoubleNear( lineAngleRads,  0 ) )
   {
-    return QImage( );
+    size = QSize( static_cast<int>( distancePx / std::sin( lineAngleRads ) ), static_cast<int>( distancePx / std::cos( lineAngleRads ) ) );
   }
 
   QPixmap pixmap( size );
@@ -4417,18 +4418,10 @@ QImage QgsPointPatternFillSymbolLayer::toTiledPattern() const
 
   QSize size { static_cast<int>( distanceXPx ), static_cast<int>( distanceYPx ) };
 
-
-  if ( mAngle != 0 )
+  if ( ! qgsDoubleNear( angleRads,  0 ) )
   {
     size = QgsSymbolLayerUtils::tileSize( distanceXPx, distanceYPx, angleRads );
   }
-
-  /*
-  if ( size.isEmpty() || size.width() > 512 || size.height() > 512 )
-  {
-    return QImage( );
-  }
-  */
 
   QPixmap pixmap( size );
   pixmap.fill( Qt::transparent );
@@ -4444,7 +4437,6 @@ QImage QgsPointPatternFillSymbolLayer::toTiledPattern() const
 
   std::unique_ptr< QgsPointPatternFillSymbolLayer > layerClone( clone() );
 
-  // !!!!!!!
   layerClone->setAngle( qRadiansToDegrees( angleRads ) );
 
   layerClone->drawPreviewIcon( symbolContext, pixmap.size() );

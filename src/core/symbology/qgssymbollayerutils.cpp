@@ -5098,10 +5098,8 @@ QgsStringMap QgsSymbolLayerUtils::evaluatePropertiesMap( const QMap<QString, Qgs
   return properties;
 }
 
-QSize QgsSymbolLayerUtils::tileSize( int width, int height, double &angleRad, const QSize maxSize )
+QSize QgsSymbolLayerUtils::tileSize( int width, int height, double &angleRad )
 {
-
-  const QSize maxSizeActual { ! maxSize.isValid() ? QSize( width * 10, height * 10 ) : maxSize };
 
   struct rationalTangent
   {
@@ -5154,61 +5152,14 @@ QSize QgsSymbolLayerUtils::tileSize( int width, int height, double &angleRad, co
     }
   }
 
-  bool asc { true };
-  int increment { 1 };
-  bool endTouched { false };
-  bool startTouched { false };
+  const rationalTangent bTan { rationalTangents.at( rTanIdx ) };
+  angleRad = bTan.angle;
+  const double k { bTan.b *height *width / std::cos( angleRad ) };
+  const int hcfH { std::gcd( bTan.a * height, bTan.b * width ) };
+  const int hcfW { std::gcd( bTan.b * height, bTan.a * width ) };
+  const int W1 { static_cast<int>( std::round( k / hcfW ) ) };
+  const int H1 { static_cast<int>( std::round( k / hcfH ) ) };
 
-  while ( !( startTouched && endTouched ) && rTanIdx >= 0 && rTanIdx < rationalTangents.count() )
-  {
+  return QSize( W1, H1 );
 
-    rationalTangent bTan { rationalTangents.at( rTanIdx ) };
-    angleRad = bTan.angle;
-    const double k { bTan.b *height *width / std::cos( angleRad ) };
-    const int hcfH = std::gcd( bTan.a * height, bTan.b * width );
-    const int hcfW = std::gcd( bTan.b * height, bTan.a * width );
-    const double W1 = k / hcfW;
-    const double H1 = k / hcfH;
-
-    qDebug() << "TO TILE" << rTanIdx << qRadiansToDegrees( angleRad ) << angleRad << W1 << H1 << "K:" << k << hcfW << hcfH << bTan.a << bTan.b;
-
-    return QSize( W1, H1 );
-
-    if ( W1 <= maxSizeActual.width() && H1 <= maxSizeActual.height() )
-    {
-      return QSize( W1, H1 );
-    }
-    else
-    {
-      if ( rTanIdx == 0 )
-      {
-        startTouched = true;
-        rTanIdx = rTanIdx + increment;
-        continue;
-      }
-      else if ( rTanIdx == rationalTangents.count() - 1 )
-      {
-        endTouched = true;
-        rTanIdx = rTanIdx - increment;
-        continue;
-      }
-
-      if ( startTouched )
-      {
-        rTanIdx += 1;
-      }
-      else if ( endTouched )
-      {
-        rTanIdx -= 1;
-      }
-      else
-      {
-        rTanIdx = asc ? rTanIdx + increment : rTanIdx - increment;
-        asc = ! asc;
-        increment += 1;
-      }
-    }
-  }
-
-  return QSize( );
 }
