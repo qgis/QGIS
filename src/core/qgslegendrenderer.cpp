@@ -380,13 +380,14 @@ QList<QgsLegendRenderer::LegendComponentGroup> QgsLegendRenderer::createComponen
 
       bool groupIsLayerGroup = true;
       double symbolIndent = indent;
-      if ( layerStyle == QgsLegendStyle::Subgroup )
-      {
-        symbolIndent += mSettings.style( QgsLegendStyle::Subgroup ).indent( );
-      }
-      else if ( layerStyle == QgsLegendStyle::Group )
-      {
-        symbolIndent += mSettings.style( QgsLegendStyle::Group ).indent( );
+     switch( layerStyle )
+     {
+        case QgsLegendStyle::Subgroup:
+        case QgsLegendStyle::Group:
+            symbolIndent += mSettings.style( layerStyle ).indent( );
+            break;
+         case ...:
+            break;
       }
       for ( int j = 0; j < legendNodes.count(); j++ )
       {
