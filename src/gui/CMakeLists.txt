@@ -485,6 +485,7 @@ set(QGIS_GUI_SRCS
   qgsdataitemguiproviderregistry.cpp
   qgsdatumtransformdialog.cpp
   qgsdatasourceselectdialog.cpp
+  qgsdbrelationshipwidget.cpp
   qgsdetaileditemdata.cpp
   qgsdetaileditemdelegate.cpp
   qgsdetaileditemwidget.cpp
@@ -747,6 +748,7 @@ set(QGIS_GUI_HDRS
   qgsdataitemguiproviderregistry.h
   qgsdatasourcemanagerdialog.h
   qgsdatasourceselectdialog.h
+  qgsdbrelationshipwidget.h
   qgsnewdatabasetablenamewidget.h
   qgsdatumtransformdialog.h
   qgsdetaileditemdata.h
