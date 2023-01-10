@@ -1114,7 +1114,7 @@ int QgsProcessingExec::execute( const QString &inputId, const QVariantMap &input
     std::cout << "----------------\n\n";
   }
   QVariantMap inputsJson;
-  for ( auto it = params.constBegin(); it != params.constEnd(); ++it )
+  for ( auto it = inputs.constBegin(); it != inputs.constEnd(); ++it )
   {
     if ( !useJson )
       std::cout << it.key().toLocal8Bit().constData() << ":\t" << it.value().toString().toLocal8Bit().constData() << '\n';
