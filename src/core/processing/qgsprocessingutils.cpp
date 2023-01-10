@@ -1411,6 +1411,23 @@ QVariantMap QgsProcessingUtils::preprocessQgisProcessParameters( const QVariantM
         output.insert( it.key(), it.value() );
       }
     }
+    else if ( it.value().type() == QVariant::String )
+    {
+      const QString stringValue = it.value().toString();
+
+      if ( stringValue.startsWith( QLatin1String( "field:" ) ) )
+      {
+        output.insert( it.key(), QgsProperty::fromField( stringValue.mid( 6 ) ) );
+      }
+      else if ( stringValue.startsWith( QLatin1String( "expression:" ) ) )
+      {
+        output.insert( it.key(), QgsProperty::fromExpression( stringValue.mid( 11 ) ) );
+      }
+      else
+      {
+        output.insert( it.key(), it.value() );
+      }
+    }
     else
     {
       output.insert( it.key(), it.value() );
