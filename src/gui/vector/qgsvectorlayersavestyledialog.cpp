@@ -22,6 +22,7 @@
 #include "qgshelp.h"
 #include "qgsgui.h"
 #include "qgsmaplayerstylecategoriesmodel.h"
+#include "qgsmaplayerstylemanager.h"
 
 QgsVectorLayerSaveStyleDialog::QgsVectorLayerSaveStyleDialog( QgsVectorLayer *layer, QWidget *parent )
   : QDialog( parent )

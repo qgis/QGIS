@@ -24,13 +24,10 @@
 #include "qgsoptionsdialogbase.h"
 #include "ui_qgsvectorlayerpropertiesbase.h"
 #include "qgsguiutils.h"
-#include "qgshelp.h"
-#include "qgsmaplayerstylemanager.h"
 #include "qgsmaplayerserverproperties.h"
 #include "qgsvectorlayerjoininfo.h"
-#include "qgslayertree.h"
-#include "qgslayertreemodel.h"
 #include "qgslayertreefilterproxymodel.h"
+#include "qgsmaplayerstyle.h"
 
 class QgsMapLayer;
 
