@@ -58,6 +58,19 @@ QgsDbRelationWidget::QgsDbRelationWidget( QgsAbstractDatabaseProviderConnection 
       mStrengthCombo->addItem( QgsRelation::strengthToDisplayString( strength ), QVariant::fromValue( strength ) );
   }
 
+  const Qgis::RelationshipCapabilities capabilities = mConnection->supportedRelationshipCapabilities();
+  if ( !( capabilities & Qgis::RelationshipCapability::ForwardPathLabel ) )
+  {
+    mForwardLabelLineEdit->hide();
+    mForwardLabel->hide();
+  }
+
+  if ( !( capabilities & Qgis::RelationshipCapability::BackwardPathLabel ) )
+  {
+    mBackwardLabelLineEdit->hide();
+    mReverseLabel->hide();
+  }
+
   const QStringList relatedTableTypes = mConnection->relatedTableTypes();
   mRelatedTableTypeCombo->addItems( relatedTableTypes );
 
