@@ -68,6 +68,7 @@ class TestQgsNmeaConnection : public QgsTest
     void initTestCase();
     void cleanupTestCase();
     void testBasic();
+    void testVtg();
     void testFixStatus();
     void testFixStatusAcrossConstellations();
     void testConstellation();
@@ -205,6 +206,33 @@ void TestQgsNmeaConnection::testBasic()
   QGSCOMPARENEAR( info.longitude, 18.947545, 0.00001 );
   QCOMPARE( info.elevation, 34 );
   QGSCOMPARENEAR( info.direction, 2.0000000000, 0.0001 );
+}
+
+void TestQgsNmeaConnection::testVtg()
+{
+  ReplayNmeaConnection connection;
+
+  QSignalSpy statusSpy( &connection, &QgsGpsConnection::fixStatusChanged );
+
+  // try initially with no direction
+  QgsGpsInformation info = connection.push( QStringLiteral( "$GPVTG,,T,,M,0.003,N,0.005,K,D*20" ) );
+  QVERIFY( info.isValid() );
+  QVERIFY( std::isnan( info.direction ) );
+  QCOMPARE( info.speed, 0.005 );
+  info = connection.push( QStringLiteral( "$GPVTG,224.592,T,224.492,M,0.003,N,0.006,K,D*20" ) );
+  QVERIFY( info.isValid() );
+  // must be direction to true north, not magnetic north
+  QCOMPARE( info.direction, 224.592 );
+  QCOMPARE( info.speed, 0.006 );
+  info = connection.push( QStringLiteral( "$GNVTG,139.969,T,139.969,M,0.007,N,0.013,K,D*3D" ) );
+  QVERIFY( info.isValid() );
+  QCOMPARE( info.direction, 139.969 );
+  QCOMPARE( info.speed, 0.013 );
+  // direction should not be overwritten with nan
+  info = connection.push( QStringLiteral( "$GPVTG,,T,,M,0.003,N,0.005,K,D*20" ) );
+  QVERIFY( info.isValid() );
+  QCOMPARE( info.direction, 139.969 );
+  QCOMPARE( info.speed, 0.005 );
 }
 
 void TestQgsNmeaConnection::testFixStatus()
