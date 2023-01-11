@@ -76,7 +76,7 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );
 
   protected slots:
-    void optionsStackedWidget_CurrentChanged( int index ) override SIP_SKIP;
+    void optionsStackedWidget_CurrentChanged( int index ) final;
 
   private slots:
 
