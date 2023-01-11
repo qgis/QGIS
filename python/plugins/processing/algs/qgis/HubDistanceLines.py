@@ -136,6 +136,9 @@ class HubDistanceLines(QgisAlgorithm):
             src = f.geometry().boundingBox().center()
 
             neighbors = index.nearestNeighbor(src, 1)
+            if len(neighbors) == 0:
+                continue
+
             ft = next(hub_source.getFeatures(QgsFeatureRequest().setFilterFid(neighbors[0]).setSubsetOfAttributes([fieldName], hub_source.fields()).setDestinationCrs(point_source.sourceCrs(), context.transformContext())))
             closest = ft.geometry().boundingBox().center()
             hubDist = distance.measureLine(src, closest)
