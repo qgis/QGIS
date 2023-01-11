@@ -91,14 +91,14 @@ bool QgsVectorLayerEditUtils::moveVertex( const QgsPoint &p, QgsFeatureId atFeat
   // If original point is not 3D but destination yes, check if it can be promoted
   if ( p.is3D() && !geometry.constGet()->is3D() && QgsWkbTypes::hasZ( mLayer->wkbType() ) )
   {
-    if ( !geometry.get()->addZValue( QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.value() ) )
+    if ( !geometry.get()->addZValue( QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->value() ) )
       return false;
   }
 
   // If original point has not M-value but destination yes, check if it can be promoted
   if ( p.isMeasure() && !geometry.constGet()->isMeasure() && QgsWkbTypes::hasM( mLayer->wkbType() ) )
   {
-    if ( !geometry.get()->addMValue( QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.value() ) )
+    if ( !geometry.get()->addMValue( QgsSettingsRegistryCore::settingsDigitizingDefaultMValue->value() ) )
       return false;
   }
 
