@@ -542,41 +542,49 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::splitParts( const QgsPoin
   QgsFeature feat;
   while ( fit.nextFeature( feat ) )
   {
-    QVector<QgsGeometry> newGeometries;
-    QgsPointSequence topologyTestPoints;
     QgsGeometry featureGeom = feat.geometry();
-    splitFunctionReturn = featureGeom.splitGeometry( splitLine, newGeometries, topologicalEditing, topologyTestPoints, false );
 
-    if ( splitFunctionReturn == Qgis::GeometryOperationResult::Success && !newGeometries.isEmpty() )
+    const QVector<QgsGeometry> geomCollection = featureGeom.asGeometryCollection();
+    QVector<QgsGeometry> resultCollection;
+    for ( QgsGeometry part : geomCollection )
     {
-      QgsGeometry newGeom( newGeometries.at( 0 ) );
-      newGeom.convertToMultiType();
+      QVector<QgsGeometry> newGeometries;
+      QgsPointSequence topologyTestPoints;
+      splitFunctionReturn = part.splitGeometry( splitLine, newGeometries, topologicalEditing, topologyTestPoints, false );
 
-      for ( int i = 1; i < newGeometries.size(); ++i )
+      if ( splitFunctionReturn == Qgis::GeometryOperationResult::Success && !newGeometries.isEmpty() )
       {
-        QgsGeometry part = newGeometries.at( i );
-        part.convertToSingleType();
-        newGeom.addPart( part );
-      }
-
-      mLayer->changeGeometry( feat.id(), newGeom );
-
-      if ( topologicalEditing )
-      {
-        QgsPointSequence::const_iterator topol_it = topologyTestPoints.constBegin();
-        for ( ; topol_it != topologyTestPoints.constEnd(); ++topol_it )
+        for ( int i = 0; i < newGeometries.size(); ++i )
         {
-          addTopologicalPoints( *topol_it );
+          resultCollection.append( newGeometries.at( i ).asGeometryCollection() );
         }
-      }
-      ++numberOfSplitParts;
-    }
-    else if ( splitFunctionReturn != Qgis::GeometryOperationResult::Success && splitFunctionReturn != Qgis::GeometryOperationResult::NothingHappened )
-    {
-      returnCode = splitFunctionReturn;
-    }
-  }
 
+        if ( topologicalEditing )
+        {
+          QgsPointSequence::const_iterator topol_it = topologyTestPoints.constBegin();
+          for ( ; topol_it != topologyTestPoints.constEnd(); ++topol_it )
+          {
+            addTopologicalPoints( *topol_it );
+          }
+        }
+
+        ++numberOfSplitParts;
+      }
+      else if ( splitFunctionReturn == Qgis::GeometryOperationResult::NothingHappened )
+      {
+        // Add part as is
+        resultCollection.append( part );
+      }
+      else if ( splitFunctionReturn != Qgis::GeometryOperationResult::Success )
+      {
+        return splitFunctionReturn;
+      }
+    }
+
+    QgsGeometry newGeom = QgsGeometry::collectGeometry( resultCollection );
+    mLayer->changeGeometry( feat.id(), newGeom ) ;
+
+  }
   if ( numberOfSplitParts == 0 && mLayer->selectedFeatureCount() > 0  && returnCode == Qgis::GeometryOperationResult::Success )
   {
     //There is a selection but no feature has been split.
