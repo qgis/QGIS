@@ -1329,9 +1329,8 @@ void QgsVectorLayerProperties::saveMultipleStylesAs()
               while ( QFile::exists( safePath ) )
               {
                 const QFileInfo fi { filePath };
-                safePath = QString( filePath ).replace( '.' + fi.completeSuffix(), QStringLiteral( "_%1.%2" )
-                                                        .arg( QString::number( i ) )
-                                                        .arg( fi.completeSuffix() ) );
+                safePath = QString( filePath ).replace( '.' + fi.completeSuffix(),
+                                                        QStringLiteral( "_%1.%2" ).arg( QString::number( i ), fi.completeSuffix() ) );
                 i++;
               }
             }
@@ -1356,8 +1355,7 @@ void QgsVectorLayerProperties::saveMultipleStylesAs()
           case DB:
           {
             QString infoWindowTitle = QObject::tr( "Save style '%1' to DB (%2)" )
-                                      .arg( styleName )
-                                      .arg( mLayer->providerType() );
+                                      .arg( styleName, mLayer->providerType() );
             QString msgError;
 
             QgsVectorLayerSaveStyleDialog::SaveToDbSettings dbSettings = dlg.saveToDbSettings();
@@ -1375,7 +1373,7 @@ void QgsVectorLayerProperties::saveMultipleStylesAs()
               int i = 1;
               while ( names.contains( name ) )
               {
-                name = QStringLiteral( "%1 %2" ).arg( name ).arg( QString::number( i ) );
+                name = QStringLiteral( "%1 %2" ).arg( name, QString::number( i ) );
                 i++;
               }
             }
@@ -1891,7 +1889,7 @@ void QgsVectorLayerProperties::addWmsDimensionInfoToTreeWidget( const QgsMapLaye
 
   QTreeWidgetItem *childWmsDimensionDefaultValue = new QTreeWidgetItem();
   childWmsDimensionDefaultValue->setText( 0, tr( "Default display" ) );
-  childWmsDimensionDefaultValue->setText( 1, QgsMapLayerServerProperties::wmsDimensionDefaultDisplayLabels()[wmsDim.defaultDisplayType] );
+  childWmsDimensionDefaultValue->setText( 1, QgsMapLayerServerProperties::wmsDimensionDefaultDisplayLabels().value( wmsDim.defaultDisplayType ) );
   childWmsDimensionDefaultValue->setFlags( Qt::ItemIsEnabled );
   wmsDimensionItem->addChild( childWmsDimensionDefaultValue );
 
