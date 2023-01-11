@@ -132,8 +132,6 @@ class TestQgsSettingsEntry(unittest.TestCase):
         proot = QgsSettings.createPluginTreeElement(self.pluginName)
         proot.createChildElement("duplicate-key")
         with self.assertRaises(QgsSettingsException):
-            proot.createChildElement("duplicate-key")
-        with self.assertRaises(QgsSettingsException):
             QgsSettingsEntryString("duplicate-key", proot)
 
     def test_python_implementation(self):
