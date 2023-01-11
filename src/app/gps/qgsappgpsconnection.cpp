@@ -82,9 +82,9 @@ void QgsAppGpsConnection::connectGps()
   int gpsdPort = 0;
   QString gpsdDevice;
   QString serialDevice;
-  if ( QgsGpsConnection::settingsGpsConnectionType.exists() )
+  if ( QgsGpsConnection::settingsGpsConnectionType->exists() )
   {
-    connectionType = QgsGpsConnection::settingsGpsConnectionType.value();
+    connectionType = QgsGpsConnection::settingsGpsConnectionType->value();
     gpsdHost = QgsGpsConnection::settingsGpsdHostName->value();
     gpsdPort = static_cast< int >( QgsGpsConnection::settingsGpsdPortNumber->value() );
     gpsdDevice = QgsGpsConnection::settingsGpsdDeviceName->value();

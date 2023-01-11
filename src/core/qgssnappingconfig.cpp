@@ -190,10 +190,10 @@ void QgsSnappingConfig::reset()
 {
   // get defaults values. They are both used for standard and advanced configuration (per layer)
   const bool enabled = QgsSettingsRegistryCore::settingsDigitizingDefaultSnapEnabled->value();
-  const Qgis::SnappingMode mode = QgsSettingsRegistryCore::settingsDigitizingDefaultSnapMode.value();
-  const Qgis::SnappingType type = QgsSettingsRegistryCore::settingsDigitizingDefaultSnapType.value();
+  const Qgis::SnappingMode mode = QgsSettingsRegistryCore::settingsDigitizingDefaultSnapMode->value();
+  const Qgis::SnappingType type = QgsSettingsRegistryCore::settingsDigitizingDefaultSnapType->value();
   const double tolerance = QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingTolerance->value();
-  const QgsTolerance::UnitType units = QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingToleranceUnit.value();
+  const QgsTolerance::UnitType units = QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingToleranceUnit->value();
 
   // assign main (standard) config
   mEnabled = enabled;
@@ -592,9 +592,9 @@ bool QgsSnappingConfig::addLayers( const QList<QgsMapLayer *> &layers )
 {
   bool changed = false;
   const bool enabled = QgsSettingsRegistryCore::settingsDigitizingDefaultSnapEnabled->valueWithDefaultOverride( true );
-  const Qgis::SnappingTypes type = QgsSettingsRegistryCore::settingsDigitizingDefaultSnapType.value();
+  const Qgis::SnappingTypes type = QgsSettingsRegistryCore::settingsDigitizingDefaultSnapType->value();
   const double tolerance = QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingTolerance->value();
-  const QgsTolerance::UnitType units = QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingToleranceUnit.value();
+  const QgsTolerance::UnitType units = QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingToleranceUnit->value();
 
   const auto constLayers = layers;
   for ( QgsMapLayer *ml : constLayers )

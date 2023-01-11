@@ -160,9 +160,9 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
   Qt::TimeSpec timeSpec = Qt::TimeSpec::LocalTime;
   QString timeZone;
   int offsetFromUtc = 0;
-  if ( QgsGpsConnection::settingsGpsConnectionType.exists() )
+  if ( QgsGpsConnection::settingsGpsConnectionType->exists() )
   {
-    connectionType = QgsGpsConnection::settingsGpsConnectionType.value();
+    connectionType = QgsGpsConnection::settingsGpsConnectionType->value();
     gpsdHost = QgsGpsConnection::settingsGpsdHostName->value();
     gpsdPort = static_cast< int >( QgsGpsConnection::settingsGpsdPortNumber->value() );
     gpsdDevice = QgsGpsConnection::settingsGpsdDeviceName->value();
@@ -174,13 +174,13 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
 
     applyLeapSeconds = QgsGpsConnection::settingGpsApplyLeapSecondsCorrection->value();
     leapSeconds = static_cast< int >( QgsGpsConnection::settingGpsLeapSeconds->value() );
-    timeSpec = QgsGpsConnection::settingsGpsTimeStampSpecification.value();
+    timeSpec = QgsGpsConnection::settingsGpsTimeStampSpecification->value();
     timeZone = QgsGpsConnection::settingsGpsTimeStampTimeZone->value();
     offsetFromUtc = static_cast< int >( QgsGpsConnection::settingsGpsTimeStampOffsetFromUtc->value() );
 
     if ( QgsGpsLogger::settingsGpsStoreAttributeInMValues->value() )
     {
-      mComboMValueAttribute->setCurrentIndex( mComboMValueAttribute->findData( QVariant::fromValue( QgsGpsLogger::settingsGpsMValueComponent.value() ) ) );
+      mComboMValueAttribute->setCurrentIndex( mComboMValueAttribute->findData( QVariant::fromValue( QgsGpsLogger::settingsGpsMValueComponent->value() ) ) );
     }
   }
   else
@@ -342,19 +342,19 @@ void QgsGpsOptionsWidget::apply()
 
   if ( mRadAutodetect->isChecked() )
   {
-    QgsGpsConnection::settingsGpsConnectionType.setValue( Qgis::GpsConnectionType::Automatic );
+    QgsGpsConnection::settingsGpsConnectionType->setValue( Qgis::GpsConnectionType::Automatic );
   }
   else if ( mRadInternal->isChecked() )
   {
-    QgsGpsConnection::settingsGpsConnectionType.setValue( Qgis::GpsConnectionType::Internal );
+    QgsGpsConnection::settingsGpsConnectionType->setValue( Qgis::GpsConnectionType::Internal );
   }
   else if ( mRadSerialDevice->isChecked() )
   {
-    QgsGpsConnection::settingsGpsConnectionType.setValue( Qgis::GpsConnectionType::Serial );
+    QgsGpsConnection::settingsGpsConnectionType->setValue( Qgis::GpsConnectionType::Serial );
   }
   else
   {
-    QgsGpsConnection::settingsGpsConnectionType.setValue( Qgis::GpsConnectionType::Gpsd );
+    QgsGpsConnection::settingsGpsConnectionType->setValue( Qgis::GpsConnectionType::Gpsd );
   }
 
   QgsGpsConnection::settingsGpsdHostName->setValue( mGpsdHost->text() );
@@ -368,7 +368,7 @@ void QgsGpsOptionsWidget::apply()
   QgsGpsCanvasBridge::settingMapExtentRecenteringThreshold->setValue( mSpinMapExtentMultiplier->value() );
   QgsGpsCanvasBridge::settingMapRotateInterval->setValue( mSpinMapRotateInterval->value() );
 
-  QgsGpsConnection::settingsGpsTimeStampSpecification.setValue( static_cast< Qt::TimeSpec >( mCboTimestampFormat->currentData( ).toInt() ) );
+  QgsGpsConnection::settingsGpsTimeStampSpecification->setValue( static_cast< Qt::TimeSpec >( mCboTimestampFormat->currentData( ).toInt() ) );
   QgsGpsConnection::settingsGpsTimeStampTimeZone->setValue( mCboTimeZones->currentText() );
   QgsGpsConnection::settingGpsApplyLeapSecondsCorrection->setValue( mCbxLeapSeconds->isChecked() );
   QgsGpsConnection::settingGpsLeapSeconds->setValue( mLeapSeconds->value() );
@@ -381,7 +381,7 @@ void QgsGpsOptionsWidget::apply()
   else
   {
     QgsGpsLogger::settingsGpsStoreAttributeInMValues->setValue( true );
-    QgsGpsLogger::settingsGpsMValueComponent.setValue( mComboMValueAttribute->currentData().value< Qgis::GpsInformationComponent >() );
+    QgsGpsLogger::settingsGpsMValueComponent->setValue( mComboMValueAttribute->currentData().value< Qgis::GpsInformationComponent >() );
   }
 }
 

@@ -56,7 +56,7 @@ class CORE_EXPORT QgsGpsLogger : public QObject
     static const QgsSettingsEntryBool *settingsGpsStoreAttributeInMValues;
 
     //! Settings entry dictating which GPS attribute should be stored in geometry M values
-    static const inline QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponent> settingsGpsMValueComponent = QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponent>( QStringLiteral( "m-value-attribute" ), QgsSettings::sTreeGps, Qgis::GpsInformationComponent::Timestamp, QStringLiteral( "Which GPS attribute should be stored in geometry m values" ) ) SIP_SKIP;
+    static const inline QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponent> *settingsGpsMValueComponent = new QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponent>( QStringLiteral( "m-value-attribute" ), QgsSettings::sTreeGps, Qgis::GpsInformationComponent::Timestamp, QStringLiteral( "Which GPS attribute should be stored in geometry m values" ) ) SIP_SKIP;
 
     /**
      * Constructor for QgsGpsLogger with the specified \a parent object.

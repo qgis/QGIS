@@ -188,7 +188,7 @@ void QgsGpsCanvasBridge::gpsSettingsChanged()
   updateBearingAppearance();
 
   QgsSettings settings;
-  if ( QgsGpsConnection::settingsGpsConnectionType.exists() )
+  if ( QgsGpsConnection::settingsGpsConnectionType->exists() )
   {
     mBearingFromTravelDirection = QgsGpsConnection::settingGpsBearingFromTravelDirection->value();
     mMapExtentMultiplier = static_cast< int >( QgsGpsCanvasBridge::settingMapExtentRecenteringThreshold->value() );

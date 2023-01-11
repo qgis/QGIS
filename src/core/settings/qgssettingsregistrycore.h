@@ -87,22 +87,22 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     static const QgsSettingsEntryBool *settingsDigitizingDefaultSnapEnabled;
 
     //! Settings entry digitizing default snap type
-    static const inline QgsSettingsEntryEnumFlag<Qgis::SnappingMode> settingsDigitizingDefaultSnapMode = QgsSettingsEntryEnumFlag<Qgis::SnappingMode>( QStringLiteral( "default_snap_mode" ), QgsSettings::sTreeDigitizing, Qgis::SnappingMode::AllLayers );
+    static const inline QgsSettingsEntryEnumFlag<Qgis::SnappingMode> *settingsDigitizingDefaultSnapMode = new QgsSettingsEntryEnumFlag<Qgis::SnappingMode>( QStringLiteral( "default_snap_mode" ), QgsSettings::sTreeDigitizing, Qgis::SnappingMode::AllLayers );
 
     //! Settings entry digitizing default snap type
-    static const inline QgsSettingsEntryEnumFlag<Qgis::SnappingType> settingsDigitizingDefaultSnapType = QgsSettingsEntryEnumFlag<Qgis::SnappingType>( QStringLiteral( "default_snap_type" ), QgsSettings::sTreeDigitizing, Qgis::SnappingType::Vertex );
+    static const inline QgsSettingsEntryEnumFlag<Qgis::SnappingType> *settingsDigitizingDefaultSnapType = new QgsSettingsEntryEnumFlag<Qgis::SnappingType>( QStringLiteral( "default_snap_type" ), QgsSettings::sTreeDigitizing, Qgis::SnappingType::Vertex );
 
     //! Settings entry digitizing default snapping tolerance
     static const QgsSettingsEntryDouble *settingsDigitizingDefaultSnappingTolerance;
 
     //! Settings entry digitizing default snapping tolerance unit
-    static const inline QgsSettingsEntryEnumFlag<QgsTolerance::UnitType> settingsDigitizingDefaultSnappingToleranceUnit = QgsSettingsEntryEnumFlag<QgsTolerance::UnitType>( QStringLiteral( "default_snapping_tolerance_unit" ), QgsSettings::sTreeDigitizing, Qgis::DEFAULT_SNAP_UNITS );
+    static const inline QgsSettingsEntryEnumFlag<QgsTolerance::UnitType> *settingsDigitizingDefaultSnappingToleranceUnit = new QgsSettingsEntryEnumFlag<QgsTolerance::UnitType>( QStringLiteral( "default_snapping_tolerance_unit" ), QgsSettings::sTreeDigitizing, Qgis::DEFAULT_SNAP_UNITS );
 
     //! Settings entry digitizing search radius vertex edit
     static const QgsSettingsEntryDouble *settingsDigitizingSearchRadiusVertexEdit;
 
     //! Settings entry digitizing search radius vertex edit unit
-    static const inline QgsSettingsEntryEnumFlag<QgsTolerance::UnitType> settingsDigitizingSearchRadiusVertexEditUnit = QgsSettingsEntryEnumFlag<QgsTolerance::UnitType>( QStringLiteral( "search_radius_vertex_edit_unit" ), QgsSettings::sTreeDigitizing, QgsTolerance::Pixels );
+    static const inline QgsSettingsEntryEnumFlag<QgsTolerance::UnitType> *settingsDigitizingSearchRadiusVertexEditUnit = new QgsSettingsEntryEnumFlag<QgsTolerance::UnitType>( QStringLiteral( "search_radius_vertex_edit_unit" ), QgsSettings::sTreeDigitizing, QgsTolerance::Pixels );
 
     //! Settings entry digitizing snap color
     static const QgsSettingsEntryColor *settingsDigitizingSnapColor;
@@ -132,7 +132,7 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     static const QgsSettingsEntryInteger *settingsDigitizingValidateGeometries;
 
     //! Settings entry digitizing offset join style
-    static const inline QgsSettingsEntryEnumFlag<Qgis::JoinStyle> settingsDigitizingOffsetJoinStyle = QgsSettingsEntryEnumFlag<Qgis::JoinStyle>( QStringLiteral( "offset_join_style" ), QgsSettings::sTreeDigitizing, Qgis::JoinStyle::Round );
+    static const inline QgsSettingsEntryEnumFlag<Qgis::JoinStyle> *settingsDigitizingOffsetJoinStyle = new QgsSettingsEntryEnumFlag<Qgis::JoinStyle>( QStringLiteral( "offset_join_style" ), QgsSettings::sTreeDigitizing, Qgis::JoinStyle::Round );
 
     //! Settings entry digitizing offset quad seg
     static const QgsSettingsEntryInteger *settingsDigitizingOffsetQuadSeg;
@@ -150,7 +150,7 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     static const QgsSettingsEntryDouble *settingsDigitizingConvertToCurveDistanceTolerance;
 
     //! Settings entry digitizing offset cap style
-    static const inline QgsSettingsEntryEnumFlag<Qgis::EndCapStyle> settingsDigitizingOffsetCapStyle = QgsSettingsEntryEnumFlag<Qgis::EndCapStyle>( QStringLiteral( "offset_cap_style" ), QgsSettings::sTreeDigitizing,  Qgis::EndCapStyle::Round );
+    static const inline QgsSettingsEntryEnumFlag<Qgis::EndCapStyle> *settingsDigitizingOffsetCapStyle = new QgsSettingsEntryEnumFlag<Qgis::EndCapStyle>( QStringLiteral( "offset_cap_style" ), QgsSettings::sTreeDigitizing,  Qgis::EndCapStyle::Round );
 
     //! Settings entry digitizing offset show advanced
     static const QgsSettingsEntryBool *settingsDigitizingOffsetShowAdvanced;
