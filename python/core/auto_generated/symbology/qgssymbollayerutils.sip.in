@@ -1002,6 +1002,10 @@ Evaluates a map of properties using the given ``context`` and returns a variant 
 Calculate the minimum size in pixels of a symbol tile given the symbol ``width`` and ``height`` and the grid rotation ``angle`` in radians.
 The method makes approximations and can modify ``angle`` in order to generate the smallest possible tile.
 
+.. note::
+
+   Angle must be >= 0 and < 2 * PI
+
 .. versionadded:: 3.30
 %End
 

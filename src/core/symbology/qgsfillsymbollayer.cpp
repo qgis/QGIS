@@ -409,7 +409,7 @@ void QgsSimpleFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
   const QgsSldExportContext context { props.value( QStringLiteral( "SldExportContext" ), QVariant::fromValue( QgsSldExportContext() ) ).value< QgsSldExportContext >() };
 
 
-  // Export to PNG (TODO: SVG)
+  // Export to PNG
   bool exportOk { false };
   if ( ! context.exportFilePath().isEmpty() && context.exportOptions().testFlag( Qgis::SldExportOption::Png ) && mBrush.style() != Qt::NoBrush )
   {
@@ -2648,7 +2648,7 @@ QImage QgsLinePatternFillSymbolLayer::toTiledPattern() const
 
   QSize size { static_cast<int>( distancePx ), static_cast<int>( distancePx ) };
 
-  if ( ! qgsDoubleNear( lineAngleRads,  0 ) )
+  if ( static_cast<int>( mLineAngle ) % 90 != 0 )
   {
     size = QSize( static_cast<int>( distancePx / std::sin( lineAngleRads ) ), static_cast<int>( distancePx / std::cos( lineAngleRads ) ) );
   }
@@ -4416,12 +4416,7 @@ QImage QgsPointPatternFillSymbolLayer::toTiledPattern() const
   int distanceXPx { static_cast<int>( QgsSymbolLayerUtils::rescaleUom( mDistanceX, mDistanceXUnit, {} ) ) };
   int distanceYPx { static_cast<int>( QgsSymbolLayerUtils::rescaleUom( mDistanceY, mDistanceYUnit, {} ) ) };
 
-  QSize size { static_cast<int>( distanceXPx ), static_cast<int>( distanceYPx ) };
-
-  if ( ! qgsDoubleNear( angleRads,  0 ) )
-  {
-    size = QgsSymbolLayerUtils::tileSize( distanceXPx, distanceYPx, angleRads );
-  }
+  const QSize size { QgsSymbolLayerUtils::tileSize( distanceXPx, distanceYPx, angleRads ) };
 
   QPixmap pixmap( size );
   pixmap.fill( Qt::transparent );

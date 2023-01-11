@@ -900,6 +900,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
     /**
      * Calculate the minimum size in pixels of a symbol tile given the symbol \a width and \a height and the grid rotation \a angle in radians.
      * The method makes approximations and can modify \a angle in order to generate the smallest possible tile.
+     * \note Angle must be >= 0 and < 2 * PI
      * \since QGIS 3.30
      */
     static QSize tileSize( int width, int height, double &angleRad SIP_INOUT );
