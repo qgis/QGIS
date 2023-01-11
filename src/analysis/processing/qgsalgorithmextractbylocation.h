@@ -52,18 +52,16 @@ class QgsLocationBasedAlgorithm : public QgsProcessingAlgorithm
     QStringList predicateOptionsList() const;
     void process( const QgsProcessingContext &context, QgsFeatureSource *targetSource, QgsFeatureSource *intersectSource, const QList<int> &selectedPredicates, const std::function< void( const QgsFeature & )> &handleFeatureFunction, bool onlyRequireTargetIds, QgsProcessingFeedback *feedback, const QgsFeatureIds &skipTargetFeatureIds = QgsFeatureIds() );
 
-
-  private:
-
-    friend class QgsSelectByLocationAlgorithm;
-    friend class QgsExtractByLocationAlgorithm;
-
-    void processByIteratingOverTargetSource( const QgsProcessingContext &context, QgsFeatureSource *targetSource, QgsFeatureSource *intersectSource, const QList<int> &selectedPredicates, const std::function< void( const QgsFeature & )> &handleFeatureFunction, bool onlyRequireTargetIds, QgsProcessingFeedback *feedback, const QgsFeatureIds &skipTargetFeatureIds );
-    void processByIteratingOverIntersectSource( const QgsProcessingContext &context, QgsFeatureSource *targetSource, QgsFeatureSource *intersectSource, const QList<int> &selectedPredicates, const std::function< void( const QgsFeature & )> &handleFeatureFunction, bool onlyRequireTargetIds, QgsProcessingFeedback *feedback, const QgsFeatureIds &skipTargetFeatureIds );
+  protected:
 
     QgsCoordinateReferenceSystem mTargetCrs;
     long long mTargetFeatureCount = 0;
     long long mIntersectFeatureCount = 0;
+
+  private:
+
+    void processByIteratingOverTargetSource( const QgsProcessingContext &context, QgsFeatureSource *targetSource, QgsFeatureSource *intersectSource, const QList<int> &selectedPredicates, const std::function< void( const QgsFeature & )> &handleFeatureFunction, bool onlyRequireTargetIds, QgsProcessingFeedback *feedback, const QgsFeatureIds &skipTargetFeatureIds );
+    void processByIteratingOverIntersectSource( const QgsProcessingContext &context, QgsFeatureSource *targetSource, QgsFeatureSource *intersectSource, const QList<int> &selectedPredicates, const std::function< void( const QgsFeature & )> &handleFeatureFunction, bool onlyRequireTargetIds, QgsProcessingFeedback *feedback, const QgsFeatureIds &skipTargetFeatureIds );
 
 };
 
