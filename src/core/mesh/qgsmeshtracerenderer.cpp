@@ -308,7 +308,9 @@ void QgsMeshStreamField::updateSize( const QgsRenderContext &renderContext )
   }
 
   QgsRectangle fieldInterestZoneInDeviceCoordinates = QgsMeshLayerUtils::boundingBoxToScreenRectangle( deviceMapToPixel, interestZoneExtent );
-  mFieldTopLeftInDeviceCoordinates = QPoint( int( fieldInterestZoneInDeviceCoordinates.xMinimum() + 0.5 ), int( fieldInterestZoneInDeviceCoordinates.yMinimum() + 0.5 ) );
+  mFieldTopLeftInDeviceCoordinates =
+    QPoint( static_cast<int>( fieldInterestZoneInDeviceCoordinates.xMinimum() + 0.5 ),
+            static_cast<int>( fieldInterestZoneInDeviceCoordinates.yMinimum() + 0.5 ) );
   int fieldWidthInDeviceCoordinate = int( fieldInterestZoneInDeviceCoordinates.width() );
   int fieldHeightInDeviceCoordinate = int ( fieldInterestZoneInDeviceCoordinates.height() );
 
@@ -1396,7 +1398,7 @@ void QgsMeshParticleTracesField::drawParticleTrace( const QgsMeshTraceParticle &
 
   double dw;
   if ( pixelCount > 1 )
-    dw = ( iniWidth ) / ( pixelCount );
+    dw = ( static_cast<double>( iniWidth ) ) / ( pixelCount );
   else
     dw = 0;
 
