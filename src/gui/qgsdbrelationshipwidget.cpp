@@ -16,6 +16,7 @@
 #include "qgsdbrelationshipwidget.h"
 #include "qgsgui.h"
 #include "qgsdatabasetablemodel.h"
+#include "qgsproviderregistry.h"
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QSortFilterProxyModel>
@@ -111,12 +112,26 @@ QgsDbRelationWidget::QgsDbRelationWidget( QgsAbstractDatabaseProviderConnection 
 
 void QgsDbRelationWidget::setRelationship( const QgsWeakRelation &relationship )
 {
-  mNameEdit->setText( relationship.name() );
+  mRelation = relationship;
+  mNameEdit->setText( mRelation.name() );
+  mStrengthCombo->setCurrentIndex( mStrengthCombo->findData( QVariant::fromValue( mRelation.strength() ) ) );
+
+  QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( mConnection->providerKey(), mRelation.referencedLayerSource() );
+  mLeftTableCombo->setCurrentText( parts.value( QStringLiteral( "layerName" ) ).toString() );
+  parts = QgsProviderRegistry::instance()->decodeUri( mConnection->providerKey(), mRelation.referencingLayerSource() );
+  mRightTableCombo->setCurrentText( parts.value( QStringLiteral( "layerName" ) ).toString() );
+
+  mCardinalityCombo->setCurrentIndex( mCardinalityCombo->findData( QVariant::fromValue( mRelation.cardinality() ) ) );
+  mLeftFieldsCombo->setCurrentText( mRelation.referencedLayerFields().value( 0 ) );
+  mRightFieldsCombo->setCurrentText( mRelation.referencingLayerFields().value( 0 ) );
+  mForwardLabelLineEdit->setText( mRelation.forwardPathLabel() );
+  mBackwardLabelLineEdit->setText( mRelation.backwardPathLabel() );
+  mRelatedTableTypeCombo->setCurrentText( mRelation.relatedTableType() );
 }
 
 QgsWeakRelation QgsDbRelationWidget::relationship() const
 {
-  QgsWeakRelation result( mNameEdit->text(),
+  QgsWeakRelation result( mRelation.id().isEmpty() ? mNameEdit->text() : mRelation.id(),
                           mNameEdit->text(),
                           mStrengthCombo->currentData().value< Qgis::RelationshipStrength >(),
                           QString(),
@@ -133,6 +148,10 @@ QgsWeakRelation QgsDbRelationWidget::relationship() const
   result.setReferencingLayerFields( { mRightFieldsCombo->currentText() } );
   result.setForwardPathLabel( mForwardLabelLineEdit->text() );
   result.setBackwardPathLabel( mBackwardLabelLineEdit->text() );
+
+  result.setMappingTable( mRelation.mappingTable() );
+  result.setMappingReferencedLayerFields( mRelation.mappingReferencedLayerFields() );
+  result.setMappingReferencingLayerFields( mRelation.mappingReferencingLayerFields() );
 
   if ( mRelatedTableTypeCombo->currentIndex() >= 0 )
     result.setRelatedTableType( mRelatedTableTypeCombo->currentText() );

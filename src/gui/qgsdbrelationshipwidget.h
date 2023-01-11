@@ -82,6 +82,7 @@ class GUI_EXPORT QgsDbRelationWidget : public QWidget, private Ui_QgsDbRelations
     QgsAbstractDatabaseProviderConnection *mConnection = nullptr;
     QgsDatabaseTableModel *mTableModel = nullptr;
     QSortFilterProxyModel *mProxyModel = nullptr;
+    QgsWeakRelation mRelation;
 
 };
 
