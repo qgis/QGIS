@@ -570,7 +570,10 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::splitParts( const QgsPoin
 
         ++numberOfSplitParts;
       }
-      else if ( splitFunctionReturn == Qgis::GeometryOperationResult::NothingHappened )
+      // Note: For multilinestring layers, when the split line does not intersect the feature part,
+      // QgsGeometry::splitGeometry returns InvalidBaseGeometry instead of NothingHappened
+      else if ( splitFunctionReturn == Qgis::GeometryOperationResult::NothingHappened ||
+                splitFunctionReturn == Qgis::GeometryOperationResult::InvalidBaseGeometry )
       {
         // Add part as is
         resultCollection.append( part );
