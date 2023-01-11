@@ -2295,7 +2295,41 @@ void QgsRelationshipItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
       if ( QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( providerKey ) )
       {
         std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
+        if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::UpdateRelationship ) )
+        {
+          QAction *editRelationshipAction = new QAction( tr( "Edit Relationship…" ), menu );
 
+          QPointer< QgsDataItem > itemWeakPointer( item );
+
+          connect( editRelationshipAction, &QAction::triggered, this, [ = ]
+          {
+            std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
+
+            QgsDbRelationDialog dialog( conn.release(), QgisApp::instance() );
+            dialog.setWindowTitle( tr( "Edit Relationship" ) );
+            dialog.setRelationship( relation );
+            if ( dialog.exec() )
+            {
+              QgsWeakRelation relation = dialog.relationship();
+              std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
+              try
+              {
+                conn->updateRelationship( relation );
+                notify( QObject::tr( "Relationship Updated" ), QObject::tr( "Relationship '%1' was updated successfully." ).arg( relation.name() ), context, Qgis::MessageLevel::Success );
+                if ( itemWeakPointer )
+                {
+                  itemWeakPointer->refresh();
+                }
+              }
+              catch ( QgsProviderConnectionException &ex )
+              {
+                notify( QObject::tr( "Relationship Update Error" ), QObject::tr( "Error updating relationship '%1': %2" ).arg( relation.name(), ex.what() ), context, Qgis::MessageLevel::Critical );
+              }
+            }
+          } );
+
+          menu->addAction( editRelationshipAction );
+        }
         if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::DeleteRelationship ) )
         {
           QAction *deleteRelationshipAction = new QAction( tr( "Delete Relationship…" ), menu );
