@@ -2000,6 +2000,13 @@ void QgsFieldDomainItemGuiProvider::populateContextMenu( QgsDataItem *item, QMen
         connect( createRelationshipAction, &QAction::triggered, this, [ = ]
         {
           std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
+
+          if ( conn->tables().isEmpty() )
+          {
+            notify( QString(), QObject::tr( "Relationships cannot be created in an empty database" ), context, Qgis::MessageLevel::Warning );
+            return;
+          }
+
           QgsDbRelationDialog dialog( conn.release(), QgisApp::instance() );
           dialog.setWindowTitle( tr( "New Relationship" ) );
           if ( dialog.exec() )
