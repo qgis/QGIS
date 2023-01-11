@@ -1260,7 +1260,7 @@ bool QgsRuleBasedRendererModel::dropMimeData( const QMimeData *data,
     QDomElement ruleElem = rootElem.firstChildElement( QStringLiteral( "rule" ) );
     if ( rootElem.attribute( QStringLiteral( "type" ) ) == QLatin1String( "labeling" ) )
       _labeling2rendererRules( ruleElem );
-    QgsRuleBasedRenderer::Rule *rule = QgsRuleBasedRenderer::Rule::create( ruleElem, symbolMap );
+    QgsRuleBasedRenderer::Rule *rule = QgsRuleBasedRenderer::Rule::create( ruleElem, symbolMap )->clone();
 
     insertRule( parent, row + rows, rule );
 
