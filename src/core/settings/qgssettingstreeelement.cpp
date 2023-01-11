@@ -64,7 +64,7 @@ QgsSettingsTreeNamedListElement *QgsSettingsTreeElement::createNamedListElement(
       throw QgsSettingsException( QObject::tr( "Settings tree element '%1' already holds a child element with key '%2', but it is not a named list.." ).arg( this->key(), key ) );
   }
   if ( childSetting( key ) )
-    throw QgsException( QObject::tr( "Settings tree element '%1' already holds a child setting with key '%2'." ).arg( this->key(), key ) );
+    throw QgsSettingsException( QObject::tr( "Settings tree element '%1' already holds a child setting with key '%2'." ).arg( this->key(), key ) );
 
   QgsSettingsTreeNamedListElement *te = new QgsSettingsTreeNamedListElement();
   te->mType = Type::NamedList;
