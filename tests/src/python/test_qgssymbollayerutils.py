@@ -672,22 +672,22 @@ class PyQgsSymbolLayerUtils(unittest.TestCase):
             [10, 10, math.pi / 4, 10 * math.sqrt(2), 10 * math.sqrt(2), math.pi / 4],
             [10, 20, math.pi / 2, 20, 10, math.pi / 2],
             [10, 20, math.pi / 4, 20 * math.sqrt(2), 20 * math.sqrt(2), math.pi / 4],
-            [10, 20, math.pi / 6, 36, 72, 0.5880031703261417], # Angle approx
+            [10, 20, math.pi / 6, 36, 72, 0.5880031703261417],  # Angle approx
 
             # Second quadrant
-            [10, 20, math.pi / 2 + math.pi / 6, 72, 36, math.pi / 2 + 0.5880031703261417], # Angle approx
+            [10, 20, math.pi / 2 + math.pi / 6, 72, 36, math.pi / 2 + 0.5880031703261417],  # Angle approx
             [10, 10, math.pi / 2 + math.pi / 4, 10 * math.sqrt(2), 10 * math.sqrt(2), math.pi / 2 + math.pi / 4],
             [10, 20, math.pi / 2 + math.pi / 2, 10, 20, math.pi / 2 + math.pi / 2],
             [10, 20, math.pi / 2 + math.pi / 4, 20 * math.sqrt(2), 20 * math.sqrt(2), math.pi / 2 + math.pi / 4],
 
             # Third quadrant
-            [10, 20, math.pi + math.pi / 6, 36, 72, math.pi + 0.5880031703261417], # Angle approx
+            [10, 20, math.pi + math.pi / 6, 36, 72, math.pi + 0.5880031703261417],  # Angle approx
             [10, 10, math.pi + math.pi / 4, 10 * math.sqrt(2), 10 * math.sqrt(2), math.pi + math.pi / 4],
             [10, 20, math.pi + math.pi / 2, 20, 10, math.pi + math.pi / 2],
             [10, 20, math.pi + math.pi / 4, 20 * math.sqrt(2), 20 * math.sqrt(2), math.pi + math.pi / 4],
 
             # Fourth quadrant
-            [10, 20, math.pi + math.pi / 2 + math.pi / 6, 72, 36, math.pi + math.pi / 2 + 0.5880031703261417], # Angle approx
+            [10, 20, math.pi + math.pi / 2 + math.pi / 6, 72, 36, math.pi + math.pi / 2 + 0.5880031703261417],  # Angle approx
             [10, 10, math.pi + math.pi / 2 + math.pi / 4, 10 * math.sqrt(2), 10 * math.sqrt(2), math.pi + math.pi / 2 + math.pi / 4],
             [10, 20, math.pi + math.pi / 2 + math.pi / 4, 20 * math.sqrt(2), 20 * math.sqrt(2), math.pi + math.pi / 2 + math.pi / 4],
         ]
