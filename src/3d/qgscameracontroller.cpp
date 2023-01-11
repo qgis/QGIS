@@ -19,6 +19,8 @@
 #include "qgsvector3d.h"
 #include "qgssettings.h"
 #include "qgs3dutils.h"
+#include "qgswindow3dengine.h"
+#include "qgs3dmapscene.h"
 
 #include "qgis.h"
 
@@ -68,6 +70,10 @@ QgsCameraController::QgsCameraController( Qt3DCore::QNode *parent )
   mFpsNavTimer->setInterval( 10 );
   connect( mFpsNavTimer, &QTimer::timeout, this, &QgsCameraController::applyFlyModeKeyMovements );
   mFpsNavTimer->start();
+
+  Qgs3DMapScene *scene = qobject_cast< Qgs3DMapScene * >( parent );
+  if ( scene )
+    mWindowEngine = qobject_cast<QgsWindow3DEngine *>( scene->engine() );
 }
 
 void QgsCameraController::setCameraNavigationMode( QgsCameraController::NavigationMode navigationMode )
@@ -485,17 +491,19 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
 
     float dist = ( mCameraBeforeDrag->position() - mDragPoint ).length();
 
+    const int yOffset = mWindowEngine->window()->mapToGlobal( QPoint( 0, 0 ) ).y();
+    const int screenHeight = mWindowEngine->window()->screen()->size().height();
     // Applies smoothing
     if ( mMousePos.y() > mDragButtonClickPos.y() ) // zoom in
     {
-      double f = ( double )( mMousePos.y() - mDragButtonClickPos.y() ) / ( double )( mViewport.height() - mDragButtonClickPos.y() );
+      double f = ( double )( mMousePos.y() - mDragButtonClickPos.y() ) / ( double )( screenHeight - mDragButtonClickPos.y() - yOffset );
       f = std::max( 0.0, std::min( 1.0, f ) );
       f = 1 - ( std::expm1( -2 * f ) ) / ( std::expm1( -2 ) );
       dist = dist * f;
     }
     else // zoom out
     {
-      double f = 1 - ( double )( mMousePos.y() ) / ( double )( mDragButtonClickPos.y() );
+      double f = 1 - ( double )( mMousePos.y() + yOffset ) / ( double )( mDragButtonClickPos.y() + yOffset );
       f = std::max( 0.0, std::min( 1.0, f ) );
       f = ( std::expm1( 2 * f ) ) / ( std::expm1( 2 ) );
       dist = dist + 2 * dist * f;

@@ -49,6 +49,7 @@ class QDomElement;
 class QgsCameraPose;
 class QgsTerrainEntity;
 class QgsVector3D;
+class QgsWindow3DEngine;
 
 #define SIP_NO_FILE
 
@@ -287,8 +288,10 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
   private:
     //! Camera that is being controlled
     Qt3DRender::QCamera *mCamera = nullptr;
+
     //! used for computation of translation when dragging mouse
     QRect mViewport;
+    QgsWindow3DEngine *mWindowEngine = nullptr;
     //! height of terrain when mouse button was last pressed - for camera control
     float mLastPressedHeight = 0;
 
