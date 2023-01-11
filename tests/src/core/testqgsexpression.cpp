@@ -2342,6 +2342,7 @@ class TestQgsExpression: public QObject
     void eval_feature_id()
     {
       QgsFeature f( 100 );
+      f.setValid( true );
       // older form
       QgsExpression exp( QStringLiteral( "$id * 2" ) );
       QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( f, QgsFields() );
@@ -2352,11 +2353,16 @@ class TestQgsExpression: public QObject
       QgsExpression exp2( QStringLiteral( "@id * 2" ) );
       v = exp.evaluate( &context );
       QCOMPARE( v.toInt(), 200 );
+
+      QgsExpression exp3( QStringLiteral( "feature_id(@feature)" ) );
+      v = exp3.evaluate( &context );
+      QCOMPARE( v.toInt(), 100 );
     }
 
     void eval_current_feature()
     {
       QgsFeature f( 100 );
+      f.setValid( true );
       // older form
       QgsExpression exp( QStringLiteral( "$currentfeature" ) );
       QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( f, QgsFields() );
@@ -2364,11 +2370,19 @@ class TestQgsExpression: public QObject
       QgsFeature evalFeature = v.value<QgsFeature>();
       QCOMPARE( evalFeature.id(), f.id() );
 
+      QgsExpression expId( QStringLiteral( "feature_id($currentfeature)" ) );
+      v = expId.evaluate( &context );
+      QCOMPARE( v.toInt(), f.id() );
+
       // newer form
       QgsExpression exp2( QStringLiteral( "@feature" ) );
       v = exp2.evaluate( &context );
       evalFeature = v.value<QgsFeature>();
       QCOMPARE( evalFeature.id(), f.id() );
+
+      QgsExpression exp2Id( QStringLiteral( "feature_id(@feature)" ) );
+      v = exp2Id.evaluate( &context );
+      QCOMPARE( v.toInt(), f.id() );
     }
 
     void eval_current_geometry()
@@ -2521,6 +2535,10 @@ class TestQgsExpression: public QObject
       {
         QgsFeature feat = res.value<QgsFeature>();
         QCOMPARE( feat.id(), static_cast<QgsFeatureId>( featureId ) );
+
+        QgsExpression featureIdExp( QStringLiteral( "feature_id(%1)" ).arg( string ) );
+        const QVariant idRes = featureIdExp.evaluate();
+        QCOMPARE( idRes.toInt(), featureId );
       }
     }
 
