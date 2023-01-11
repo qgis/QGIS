@@ -1990,48 +1990,6 @@ void QgsFieldDomainItemGuiProvider::populateContextMenu( QgsDataItem *item, QMen
     if ( md )
     {
       std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
-
-      if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::AddRelationship ) )
-      {
-        QAction *createRelationshipAction = new QAction( tr( "New Relationship…" ), menu );
-
-        QPointer< QgsDataItem > itemWeakPointer( item );
-
-        connect( createRelationshipAction, &QAction::triggered, this, [ = ]
-        {
-          std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
-
-          if ( conn->tables().isEmpty() )
-          {
-            notify( QString(), QObject::tr( "Relationships cannot be created in an empty database" ), context, Qgis::MessageLevel::Warning );
-            return;
-          }
-
-          QgsDbRelationDialog dialog( conn.release(), QgisApp::instance() );
-          dialog.setWindowTitle( tr( "New Relationship" ) );
-          if ( dialog.exec() )
-          {
-            QgsWeakRelation relation = dialog.relationship();
-            std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
-            try
-            {
-              conn->addRelationship( relation );
-              notify( QObject::tr( "New Relationship Created" ), QObject::tr( "Relationship '%1' was created successfully." ).arg( relation.name() ), context, Qgis::MessageLevel::Success );
-              if ( itemWeakPointer )
-              {
-                itemWeakPointer->refresh();
-              }
-            }
-            catch ( QgsProviderConnectionException &ex )
-            {
-              notify( QObject::tr( "Relationship Creation Error" ), QObject::tr( "Error creating new relationship '%1': %2" ).arg( relation.name(), ex.what() ), context, Qgis::MessageLevel::Critical );
-            }
-          }
-        } );
-
-        menu->addAction( createRelationshipAction );
-      }
-
       if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::AddFieldDomain ) )
       {
         QMenu *createFieldDomainMenu = new QMenu( tr( "New Field Domain" ), menu );
@@ -2333,7 +2291,7 @@ void QgsRelationshipItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
       const QString connectionUri = relationshipsItem->connectionUri();
       const QgsWeakRelation relation = relationshipItem->relation();
 
-      // Check if relationship mis supported
+      // Check if relationship operations are supported
       if ( QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( providerKey ) )
       {
         std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
@@ -2369,6 +2327,76 @@ void QgsRelationshipItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
           menu->addAction( deleteRelationshipAction );
         }
+      }
+    }
+  }
+  else if ( qobject_cast< QgsRelationshipsItem * >( item )
+            || qobject_cast< QgsGeoPackageCollectionItem * >( item )
+            || qobject_cast< QgsFileDataCollectionItem * >( item ) )
+  {
+    QString providerKey;
+    QString connectionUri;
+    if ( QgsRelationshipsItem *relationshipsItem = qobject_cast< QgsRelationshipsItem * >( item ) )
+    {
+      providerKey = relationshipsItem->providerKey();
+      connectionUri = relationshipsItem->connectionUri();
+    }
+    else if ( QgsGeoPackageCollectionItem *gpkgItem = qobject_cast< QgsGeoPackageCollectionItem * >( item ) )
+    {
+      providerKey = QStringLiteral( "ogr" );
+      connectionUri = gpkgItem->path().remove( QStringLiteral( "gpkg:/" ) );
+    }
+    else if ( QgsFileDataCollectionItem *fileItem = qobject_cast< QgsFileDataCollectionItem * >( item ) )
+    {
+      providerKey = QStringLiteral( "ogr" );
+      connectionUri = fileItem->path();
+    }
+
+    // Check if relationship creation is supported
+    QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
+    if ( md )
+    {
+      std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
+
+      if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::AddRelationship ) )
+      {
+        QAction *createRelationshipAction = new QAction( tr( "New Relationship…" ), menu );
+
+        QPointer< QgsDataItem > itemWeakPointer( item );
+
+        connect( createRelationshipAction, &QAction::triggered, this, [ = ]
+        {
+          std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
+
+          if ( conn->tables().isEmpty() )
+          {
+            notify( QString(), QObject::tr( "Relationships cannot be created in an empty database" ), context, Qgis::MessageLevel::Warning );
+            return;
+          }
+
+          QgsDbRelationDialog dialog( conn.release(), QgisApp::instance() );
+          dialog.setWindowTitle( tr( "New Relationship" ) );
+          if ( dialog.exec() )
+          {
+            QgsWeakRelation relation = dialog.relationship();
+            std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
+            try
+            {
+              conn->addRelationship( relation );
+              notify( QObject::tr( "New Relationship Created" ), QObject::tr( "Relationship '%1' was created successfully." ).arg( relation.name() ), context, Qgis::MessageLevel::Success );
+              if ( itemWeakPointer )
+              {
+                itemWeakPointer->refresh();
+              }
+            }
+            catch ( QgsProviderConnectionException &ex )
+            {
+              notify( QObject::tr( "Relationship Creation Error" ), QObject::tr( "Error creating new relationship '%1': %2" ).arg( relation.name(), ex.what() ), context, Qgis::MessageLevel::Critical );
+            }
+          }
+        } );
+
+        menu->addAction( createRelationshipAction );
       }
     }
   }
