@@ -72,6 +72,7 @@ class GUI_EXPORT QgsAttributeActionPropertiesDialog: public QDialog, private Ui:
     void showHelp();
 
   private:
+    void populateActionTypes();
     void init( const QSet<QString> &actionScopes );
 
     QgsVectorLayer *mLayer = nullptr;
