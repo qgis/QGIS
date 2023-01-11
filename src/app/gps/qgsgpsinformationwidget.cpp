@@ -82,22 +82,23 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsAppGpsConnection *connectio
   //
   mPlot = new QwtPlot( mpHistogramWidget );
   mPlot->setAutoReplot( false );   // plot on demand
-  //mpPlot->setTitle(QObject::tr("Signal Status"));
-  //mpPlot->insertLegend(new QwtLegend(), QwtPlot::BottomLegend);
+  //mPlot->setTitle(QObject::tr("Signal Status"));
+  //mPlot->insertLegend(new QwtLegend(), QwtPlot::BottomLegend);
   // Set axis titles
-  //mpPlot->setAxisTitle(QwtPlot::xBottom, QObject::tr("Satellite"));
-  //mpPlot->setAxisTitle(QwtPlot::yLeft, QObject::tr("Value"));
+  //mPlot->setAxisTitle(QwtPlot::xBottom, QObject::tr("Satellite"));
+  //mPlot->setAxisTitle(QwtPlot::yLeft, QObject::tr("Value"));
   mPlot->setAxisScale( QwtPlot::xBottom, 0, 20 );
-  mPlot->setAxisScale( QwtPlot::yLeft, 0, 100 );  // max is 50dB SNR, I believe - SLM
+  mPlot->setAxisScale( QwtPlot::yLeft, 0, 60 );  // max is 50dB SNR, I believe - SLM
   // add a grid
-  //QwtPlotGrid * mypGrid = new QwtPlotGrid();
-  //mypGrid->attach( mpPlot );
+  QwtPlotGrid *mGrid = new QwtPlotGrid();
+  mGrid->enableX( false );
+  mGrid->attach( mPlot );
   //display satellites first
   mCurve = new QwtPlotCurve();
   mCurve->setRenderHint( QwtPlotItem::RenderAntialiased );
   mCurve->setPen( QPen( Qt::blue ) );
   mCurve->setBrush( QBrush( Qt::blue ) );
-  mPlot->enableAxis( QwtPlot::yLeft, false );
+  mPlot->enableAxis( QwtPlot::yLeft, true );
   mPlot->enableAxis( QwtPlot::xBottom, false );
   mCurve->attach( mPlot );
   //ensure all children get removed
@@ -493,7 +494,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     if ( std::isfinite( info.speed ) )
     {
       mTxtSpeed->setEnabled( true );
-      mTxtSpeed->setText( tr( "%1 km/h" ).arg( info.speed, 0, 'f', 1 ) );
+      mTxtSpeed->setText( tr( "%1 km/h" ).arg( info.speed, 0, 'f', 3 ) );
     }
     else
     {
@@ -503,16 +504,16 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     if ( std::isfinite( info.direction ) )
     {
       mTxtDirection->setEnabled( true );
-      mTxtDirection->setText( QString::number( info.direction, 'f', 1 ) + QStringLiteral( "°" ) );
+      mTxtDirection->setText( QString::number( info.direction, 'f', 3 ) + QStringLiteral( "°" ) );
     }
     else
     {
       mTxtDirection->setEnabled( false );
       mTxtDirection->setText( tr( "Not available" ) );
     }
-    mTxtHdop->setText( QString::number( info.hdop, 'f', 1 ) );
-    mTxtVdop->setText( QString::number( info.vdop, 'f', 1 ) );
-    mTxtPdop->setText( QString::number( info.pdop, 'f', 1 ) );
+    mTxtHdop->setText( QString::number( info.hdop, 'f', 3 ) );
+    mTxtVdop->setText( QString::number( info.vdop, 'f', 3 ) );
+    mTxtPdop->setText( QString::number( info.pdop, 'f', 3 ) );
     if ( std::isfinite( info.hacc ) )
     {
       mTxtHacc->setEnabled( true );
@@ -581,4 +582,3 @@ void QgsGpsInformationWidget::showStatusBarMessage( const QString &msg )
 {
   QgisApp::instance()->statusBarIface()->showMessage( msg );
 }
-
