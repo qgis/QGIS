@@ -894,9 +894,9 @@ int main( int argc, char *argv[] )
 
 #if defined(Q_OS_WIN)
   // FIXES #29021
-  // Prevent Qt from treating the AltGr key as  Ctrl+Alt on Windows,
-  // which causes shortcuts to be fired instead of entering some characters (eg "}", "|")
-  // on some keyboard layouts
+  // Prevent Qt from treating the AltGr key as  Ctrl+Alt on Windows, which causes shortcuts to be fired
+  // instead of entering some characters (eg "}", "|") on some keyboard layouts
+  // See https://doc.qt.io/qt-6/qguiapplication.html#platform-specific-arguments
   qputenv( "QT_QPA_PLATFORM", "windows:altgr" );
 #endif
 
