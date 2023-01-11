@@ -127,6 +127,7 @@ void QgsDbRelationWidget::setRelationship( const QgsWeakRelation &relationship )
 {
   mRelation = relationship;
   mNameEdit->setText( mRelation.name() );
+  mNameEdit->setEnabled( false );
   mStrengthCombo->setCurrentIndex( mStrengthCombo->findData( QVariant::fromValue( mRelation.strength() ) ) );
 
   QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( mConnection->providerKey(), mRelation.referencedLayerSource() );
@@ -145,7 +146,7 @@ void QgsDbRelationWidget::setRelationship( const QgsWeakRelation &relationship )
 QgsWeakRelation QgsDbRelationWidget::relationship() const
 {
   QgsWeakRelation result( mRelation.id().isEmpty() ? mNameEdit->text() : mRelation.id(),
-                          mNameEdit->text(),
+                          mRelation.name().isEmpty() ? mNameEdit->text() : mRelation.name(),
                           mStrengthCombo->currentData().value< Qgis::RelationshipStrength >(),
                           QString(),
                           QString(),
