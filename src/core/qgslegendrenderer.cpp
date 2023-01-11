@@ -338,7 +338,7 @@ QList<QgsLegendRenderer::LegendComponentGroup> QgsLegendRenderer::createComponen
     else if ( QgsLayerTree::isLayer( node ) )
     {
       QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
-
+      QgsLegendStyle::Style layerStyle = nodeLegendStyle( nodeLayer );
       bool allowColumnSplit = false;
       switch ( nodeLayer->legendSplitBehavior() )
       {
@@ -356,7 +356,7 @@ QList<QgsLegendRenderer::LegendComponentGroup> QgsLegendRenderer::createComponen
       LegendComponentGroup group;
       group.placeColumnBreakBeforeGroup = nodeLayer->customProperty( QStringLiteral( "legend/column-break" ) ).toInt();
 
-      if ( nodeLegendStyle( nodeLayer ) != QgsLegendStyle::Hidden )
+      if ( layerStyle != QgsLegendStyle::Hidden )
       {
         LegendComponent component;
         component.item = node;
@@ -379,7 +379,16 @@ QList<QgsLegendRenderer::LegendComponentGroup> QgsLegendRenderer::createComponen
       layerGroups.reserve( legendNodes.count() );
 
       bool groupIsLayerGroup = true;
-
+      double symbolIndent = indent;
+      switch ( layerStyle )
+      {
+        case QgsLegendStyle::Subgroup:
+        case QgsLegendStyle::Group:
+          symbolIndent += mSettings.style( layerStyle ).indent( );
+          break;
+        default:
+          break;
+      }
       for ( int j = 0; j < legendNodes.count(); j++ )
       {
         QgsLayerTreeModelLegendNode *legendNode = legendNodes.at( j );
@@ -412,7 +421,7 @@ QList<QgsLegendRenderer::LegendComponentGroup> QgsLegendRenderer::createComponen
             group.size.rheight() += mSettings.style( QgsLegendStyle::Symbol ).margin( QgsLegendStyle::Top );
           }
           group.size.rheight() += symbolComponent.size.height();
-          symbolComponent.indent = indent;
+          symbolComponent.indent = symbolIndent;
           group.components.append( symbolComponent );
         }
         else
@@ -428,7 +437,7 @@ QList<QgsLegendRenderer::LegendComponentGroup> QgsLegendRenderer::createComponen
           }
           LegendComponentGroup symbolGroup;
           symbolGroup.placeColumnBreakBeforeGroup = forceBreak;
-          symbolComponent.indent = indent;
+          symbolComponent.indent = symbolIndent;
           symbolGroup.components.append( symbolComponent );
           symbolGroup.size.rwidth() = symbolComponent.size.width();
           symbolGroup.size.rheight() = symbolComponent.size.height();
