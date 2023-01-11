@@ -2323,6 +2323,57 @@ QString QgsRelationshipItemGuiProvider::name()
   return QStringLiteral( "relationship_item" );
 }
 
+void QgsRelationshipItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext context )
+{
+  if ( QgsRelationshipItem *relationshipItem = qobject_cast< QgsRelationshipItem * >( item ) )
+  {
+    if ( QgsRelationshipsItem *relationshipsItem = qobject_cast< QgsRelationshipsItem * >( relationshipItem->parent() ) )
+    {
+      const QString providerKey = relationshipsItem->providerKey();
+      const QString connectionUri = relationshipsItem->connectionUri();
+      const QgsWeakRelation relation = relationshipItem->relation();
+
+      // Check if relationship mis supported
+      if ( QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( providerKey ) )
+      {
+        std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
+
+        if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::DeleteRelationship ) )
+        {
+          QAction *deleteRelationshipAction = new QAction( tr( "Delete Relationship…" ), menu );
+
+          QPointer< QgsDataItem > itemWeakPointer( item );
+
+          connect( deleteRelationshipAction, &QAction::triggered, this, [ = ]
+          {
+            if ( QMessageBox::question( nullptr, tr( "Delete Relationship" ),
+                                        tr( "Are you sure you want to delete the %1 relationship?" ).arg( relation.name() ),
+                                        QMessageBox::Yes | QMessageBox::No ) == QMessageBox::Yes )
+            {
+              std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
+              try
+              {
+                conn->deleteRelationship( relation );
+                notify( QObject::tr( "Relationship Deleted" ), QObject::tr( "Relationship '%1' was deleted successfully." ).arg( relation.name() ), context, Qgis::MessageLevel::Success );
+                if ( itemWeakPointer )
+                {
+                  itemWeakPointer->parent()->refresh();
+                }
+              }
+              catch ( QgsProviderConnectionException &ex )
+              {
+                notify( QObject::tr( "Relationship Deletion Error" ), QObject::tr( "Error deleting relationship '%1': %2" ).arg( relation.name(), ex.what() ), context, Qgis::MessageLevel::Critical );
+              }
+            }
+          } );
+
+          menu->addAction( deleteRelationshipAction );
+        }
+      }
+    }
+  }
+}
+
 QWidget *QgsRelationshipItemGuiProvider::createParamWidget( QgsDataItem *item, QgsDataItemGuiContext )
 {
   if ( QgsRelationshipItem *relationshipItem = qobject_cast< QgsRelationshipItem * >( item ) )
