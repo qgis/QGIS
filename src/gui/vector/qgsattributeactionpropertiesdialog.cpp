@@ -36,14 +36,7 @@ QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( Qgis::At
 {
   setupUi( this );
 
-  mActionType->addItem( tr( "Generic" ), static_cast< int>( Qgis::AttributeActionType::Generic ) );
-  mActionType->addItem( tr( "Python" ), static_cast< int>( Qgis::AttributeActionType::GenericPython ) );
-  mActionType->addItem( tr( "Mac" ), static_cast< int>( Qgis::AttributeActionType::Mac ) );
-  mActionType->addItem( tr( "Windows" ), static_cast< int>( Qgis::AttributeActionType::Windows ) );
-  mActionType->addItem( tr( "Unix" ), static_cast< int>( Qgis::AttributeActionType::Unix ) );
-  mActionType->addItem( tr( "Open URL" ), static_cast< int>( Qgis::AttributeActionType::OpenUrl ) );
-  mActionType->addItem( tr( "Submit URL (urlencoded or JSON)" ), static_cast< int>( Qgis::AttributeActionType::SubmitUrlEncoded ) );
-  mActionType->addItem( tr( "Submit URL (multipart)" ), static_cast< int>( Qgis::AttributeActionType::SubmitUrlMultipart ) );
+  populateActionTypes();
 
   mActionType->setCurrentIndex( mActionType->findData( static_cast< int >( type ) ) );
   mActionName->setText( description );
@@ -63,6 +56,8 @@ QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( QgsVecto
   , mLayer( layer )
 {
   setupUi( this );
+
+  populateActionTypes();
 
   QSet<QString> defaultActionScopes;
   defaultActionScopes << QStringLiteral( "Canvas" )
@@ -246,4 +241,16 @@ void QgsAttributeActionPropertiesDialog::init( const QSet<QString> &actionScopes
 void QgsAttributeActionPropertiesDialog::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#actions-properties" ) );
+}
+
+void QgsAttributeActionPropertiesDialog::populateActionTypes()
+{
+  mActionType->addItem( tr( "Generic" ), static_cast< int>( Qgis::AttributeActionType::Generic ) );
+  mActionType->addItem( tr( "Python" ), static_cast< int>( Qgis::AttributeActionType::GenericPython ) );
+  mActionType->addItem( tr( "Mac" ), static_cast< int>( Qgis::AttributeActionType::Mac ) );
+  mActionType->addItem( tr( "Windows" ), static_cast< int>( Qgis::AttributeActionType::Windows ) );
+  mActionType->addItem( tr( "Unix" ), static_cast< int>( Qgis::AttributeActionType::Unix ) );
+  mActionType->addItem( tr( "Open URL" ), static_cast< int>( Qgis::AttributeActionType::OpenUrl ) );
+  mActionType->addItem( tr( "Submit URL (urlencoded or JSON)" ), static_cast< int>( Qgis::AttributeActionType::SubmitUrlEncoded ) );
+  mActionType->addItem( tr( "Submit URL (multipart)" ), static_cast< int>( Qgis::AttributeActionType::SubmitUrlMultipart ) );
 }
