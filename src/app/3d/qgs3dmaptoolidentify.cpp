@@ -38,6 +38,7 @@
 #include "qgs3dmapscenepickhandler.h"
 #include "qgs3dutils.h"
 #include "qgscameracontroller.h"
+#include "qgswindow3dengine.h"
 
 class Qgs3DMapToolIdentifyPickHandler : public Qgs3DMapScenePickHandler
 {
@@ -125,8 +126,8 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
     const QVector3D rayOriginMapCoords( originMapCoords.x(), originMapCoords.y(), originMapCoords.z() );
     const QVector3D rayDirectionMapCoords( directionMapCoords.x(), directionMapCoords.y(), directionMapCoords.z() );
 
-    const QRect rect = canvas->cameraController()->viewport();
-    const int screenSizePx = std::max( rect.width(), rect.height() ); // TODO: is this correct? (see _sceneState)
+    const QSize size = canvas->engine()->size();
+    const int screenSizePx = std::max( size.width(), size.height() ); // TODO: is this correct? (see sceneState_)
     QgsPointCloudLayer3DRenderer *renderer = dynamic_cast<QgsPointCloudLayer3DRenderer *>( layer->renderer3D() );
     const QgsPointCloud3DSymbol *symbol = renderer->symbol();
     // Symbol can be null in case of no rendering enabled

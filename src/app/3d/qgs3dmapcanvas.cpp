@@ -73,7 +73,6 @@ Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
   connect( mSplitter, &QSplitter::splitterMoved, this, [&]( int, int )
   {
     QRect viewportRect( QPoint( 0, 0 ), mContainer->size() );
-    mScene->cameraController()->setViewport( viewportRect );
     mEngine->setSize( viewportRect.size() );
   } );
 
@@ -81,8 +80,6 @@ Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
   {
     QSize widgetSize = size();
     QRect viewportRect( QPoint( 0, 0 ), QSize( widgetSize.width() - newSize.width(), widgetSize.height() ) );
-    if ( mScene && mScene->cameraController() )
-      mScene->cameraController()->setViewport( viewportRect );
     mEngine->setSize( viewportRect.size() );
   } );
 
@@ -109,8 +106,6 @@ void Qgs3DMapCanvas::resizeEvent( QResizeEvent *ev )
     return;
 
   QRect viewportRect( QPoint( 0, 0 ), mContainer->size() );
-  mScene->cameraController()->setViewport( viewportRect );
-
   mEngine->setSize( viewportRect.size() );
 }
 
@@ -137,8 +132,6 @@ void Qgs3DMapCanvas::setMap( Qgs3DMapSettings *map )
 
   delete mMap;
   mMap = map;
-
-  mScene->cameraController()->setViewport( viewportRect );
 
   resetView();
 

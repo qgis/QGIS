@@ -32,8 +32,9 @@
 
 #include "qgslogger.h"
 
-QgsCameraController::QgsCameraController( Qt3DCore::QNode *parent )
-  : Qt3DCore::QEntity( parent )
+QgsCameraController::QgsCameraController( Qgs3DMapScene *scene )
+  : Qt3DCore::QEntity( scene )
+  , mScene( scene )
   , mCameraBeforeRotation( new Qt3DRender::QCamera )
   , mCameraBeforeDrag( new Qt3DRender::QCamera )
   , mCameraBeforeZoom( new Qt3DRender::QCamera )
@@ -70,10 +71,12 @@ QgsCameraController::QgsCameraController( Qt3DCore::QNode *parent )
   mFpsNavTimer->setInterval( 10 );
   connect( mFpsNavTimer, &QTimer::timeout, this, &QgsCameraController::applyFlyModeKeyMovements );
   mFpsNavTimer->start();
+}
 
-  Qgs3DMapScene *scene = qobject_cast< Qgs3DMapScene * >( parent );
-  if ( scene )
-    mWindowEngine = qobject_cast<QgsWindow3DEngine *>( scene->engine() );
+QWindow *QgsCameraController::window() const
+{
+  QgsWindow3DEngine *windowEngine = qobject_cast<QgsWindow3DEngine *>( mScene->engine() );
+  return windowEngine ? windowEngine->window() : nullptr;
 }
 
 void QgsCameraController::setCameraNavigationMode( QgsCameraController::NavigationMode navigationMode )
@@ -119,15 +122,6 @@ void QgsCameraController::setCamera( Qt3DRender::QCamera *camera )
   // TODO: set camera's parent if not set already?
   // TODO: registerDestructionHelper (?)
   emit cameraChanged();
-}
-
-void QgsCameraController::setViewport( QRect viewport )
-{
-  if ( mViewport == viewport )
-    return;
-
-  mViewport = viewport;
-  emit viewportChanged();
 }
 
 void QgsCameraController::rotateCamera( float diffPitch, float diffYaw )
@@ -321,7 +315,7 @@ bool QgsCameraController::screenPointToWorldPos( QPoint position, Qt3DRender::QC
   }
   else
   {
-    worldPosition = Qgs3DUtils::screenPointToWorldPos( position, depth, mViewport.size(), cameraBefore );
+    worldPosition = Qgs3DUtils::screenPointToWorldPos( position, depth, mScene->engine()->size(), cameraBefore );
     if ( !std::isfinite( worldPosition.x() ) || !std::isfinite( worldPosition.y() ) || !std::isfinite( worldPosition.z() ) )
     {
       QgsDebugMsgLevel( QStringLiteral( "screenPointToWorldPos: position is NaN or Inf. This should not happen." ), 2 );
@@ -356,7 +350,7 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
   {
     // rotate/tilt using mouse (camera moves as it rotates around the clicked point)
 
-    double scale = std::max( mViewport.width(), mViewport.height() );
+    double scale = std::max( mScene->engine()->size().width(), mScene->engine()->size().height() );
     float pitchDiff = 180 * ( mouse->y() - mMiddleButtonClickPos.y() ) / scale;
     float yawDiff = -180 * ( mouse->x() - mMiddleButtonClickPos.x() ) / scale;
 
@@ -393,7 +387,7 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
 
     // Second transformation : Shift camera position back
     {
-      QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( QPoint( mMiddleButtonClickPos.x(), mMiddleButtonClickPos.y() ), mViewport.size(), mCamera );
+      QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( QPoint( mMiddleButtonClickPos.x(), mMiddleButtonClickPos.y() ), mScene->engine()->size(), mCamera );
 
       QVector3D clickedPositionWorld = ray.origin() + mRotationDistanceFromCenter * ray.direction();
 
@@ -436,7 +430,7 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
 
     QVector3D cameraBeforeDragPos = mCameraBeforeDrag->position();
 
-    QVector3D moveToPosition = Qgs3DUtils::screenPointToWorldPos( mMousePos, mDragDepth, mViewport.size(), mCameraBeforeDrag.get() );
+    QVector3D moveToPosition = Qgs3DUtils::screenPointToWorldPos( mMousePos, mDragDepth, mScene->engine()->size(), mCameraBeforeDrag.get() );
     QVector3D cameraBeforeToMoveToPos = ( moveToPosition - mCameraBeforeDrag->position() ).normalized();
     QVector3D cameraBeforeToDragPointPos = ( mDragPoint - mCameraBeforeDrag->position() ).normalized();
 
@@ -491,8 +485,15 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
 
     float dist = ( mCameraBeforeDrag->position() - mDragPoint ).length();
 
-    const int yOffset = mWindowEngine->window()->mapToGlobal( QPoint( 0, 0 ) ).y();
-    const int screenHeight = mWindowEngine->window()->screen()->size().height();
+    int yOffset = 0;
+    int screenHeight = mScene->engine()->size().height();
+    QWindow *win = window();
+    if ( win )
+    {
+      yOffset = win->mapToGlobal( QPoint( 0, 0 ) ).y();
+      screenHeight = win->screen()->size().height();
+    }
+
     // Applies smoothing
     if ( mMousePos.y() > mDragButtonClickPos.y() ) // zoom in
     {
@@ -522,7 +523,7 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
 
     // Second transformation : Shift camera position back
     {
-      QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( QPoint( mDragButtonClickPos.x(), mDragButtonClickPos.y() ), mViewport.size(), mCamera );
+      QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( QPoint( mDragButtonClickPos.x(), mDragButtonClickPos.y() ), mScene->engine()->size(), mCamera );
       QVector3D clickedPositionWorld = ray.origin() + dist * ray.direction();
 
       QVector3D shiftVector = clickedPositionWorld - mCamera->viewCenter();
@@ -582,7 +583,7 @@ void QgsCameraController::handleTerrainNavigationWheelZoom()
 
   // Second transformation : Shift camera position back
   {
-    QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( QPoint( mMousePos.x(), mMousePos.y() ), mViewport.size(), mCamera );
+    QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( QPoint( mMousePos.x(), mMousePos.y() ), mScene->engine()->size(), mCamera );
     QVector3D clickedPositionWorld = ray.origin() + dist * ray.direction();
 
     QVector3D shiftVector = clickedPositionWorld - mCamera->viewCenter();
@@ -971,7 +972,7 @@ void QgsCameraController::onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent
     mIgnoreNextMouseMove = true;
 
     // reset cursor back to center of map widget
-    emit setCursorPosition( QPoint( mViewport.width() / 2, mViewport.height() / 2 ) );
+    emit setCursorPosition( QPoint( mScene->engine()->size().width() / 2, mScene->engine()->size().height() / 2 ) );
   }
 }
 

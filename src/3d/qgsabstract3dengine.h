@@ -135,6 +135,12 @@ class _3D_EXPORT QgsAbstract3DEngine : public QObject
      *  \since QGIS 3.24
      */
     void depthBufferCaptured( const QImage &image );
+
+    /**
+     *  Emitted after a call to setSize()
+     *  \since QGIS 3.30
+     */
+    void sizeChanged();
   protected:
     QgsShadowRenderingFrameGraph *mFrameGraph = nullptr;
 };

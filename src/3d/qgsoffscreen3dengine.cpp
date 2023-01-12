@@ -120,6 +120,7 @@ void QgsOffscreen3DEngine::setSize( QSize s )
 
   mFrameGraph->setSize( mSize );
   mCamera->setAspectRatio( float( mSize.width() ) / float( mSize.height() ) );
+  emit sizeChanged();
 }
 
 void QgsOffscreen3DEngine::setClearColor( const QColor &color )
