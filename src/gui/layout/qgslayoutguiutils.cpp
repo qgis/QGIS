@@ -32,6 +32,7 @@
 #include "qgslayoutpicturewidget.h"
 #include "qgslayoutitempicture.h"
 #include "qgslayoutitemlabel.h"
+#include "qgslayoutitemelevationprofile.h"
 #include "qgslayoutlabelwidget.h"
 #include "qgslayoutitemlegend.h"
 #include "qgslayoutitemscalebar.h"
@@ -518,4 +519,37 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
     return f;
   } );
   registry->addLayoutItemGuiMetadata( manualTableItemMetadata.release() );
+
+
+  // elevation profile item
+
+  auto elevationProfileItemMetadata = std::make_unique< QgsLayoutItemGuiMetadata >( QgsLayoutItemRegistry::LayoutElevationProfile, QObject::tr( "Elevation Profile" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionLabel.svg" ) ),
+                                      [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
+  {
+    return nullptr; //return new QgsLayoutLabelWidget( qobject_cast< QgsLayoutItemLabel * >( item ) );
+  }, createRubberBand );
+  elevationProfileItemMetadata->setItemCreationFunction( [ = ]( QgsLayout * layout )->QgsLayoutItem *
+  {
+    std::unique_ptr< QgsLayoutItemElevationProfile > profileItem = std::make_unique< QgsLayoutItemElevationProfile >( layout );
+
+#if 0
+    //set default table fonts from settings
+    QgsSettings settings;
+    const QString defaultFontString = settings.value( QStringLiteral( "LayoutDesigner/defaultFont" ), QVariant(), QgsSettings::Gui ).toString();
+    if ( !defaultFontString.isEmpty() )
+    {
+      QgsTextFormat format;
+      QFont f = format.font();
+      f.setFamily( defaultFontString );
+      format.setFont( f );
+      tableMultiFrame->setContentTextFormat( format );
+      f.setBold( true );
+      format.setFont( f );
+      tableMultiFrame->setHeaderTextFormat( format );
+    }
+#endif
+    return profileItem.release();
+  } );
+  registry->addLayoutItemGuiMetadata( elevationProfileItemMetadata.release() );
+
 }

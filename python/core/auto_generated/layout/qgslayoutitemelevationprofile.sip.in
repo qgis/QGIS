@@ -38,11 +38,6 @@ The caller takes responsibility for deleting the returned object.
     virtual QIcon icon() const;
 
 
-  public slots:
-
-    virtual void refresh();
-
-
   protected:
     virtual void draw( QgsLayoutItemRenderContext &context );
 
