@@ -8,43 +8,29 @@ on:
       - queued_ltr_backports
   pull_request:
 
+env:
+  DOXYGEN_VERSION: 1.9.6
+
 jobs:
   documentation_checks:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Set up Python 3.7
+      - name: Set up Python 3.10
         uses: actions/setup-python@v4
         with:
-          python-version: 3.7
-      - name: Install Requirements
+          python-version: '3.10' 
+      - name: Install Doxygen
         run: |
-          sudo apt install -y \
-              doxygen \
-              cpanminus \
-              libyaml-tiny-perl \
-              libio-socket-ssl-perl \
-              libhttp-date-perl \
-              libgetopt-long-descriptive-perl \
-              libmoo-perl \
-              libnamespace-clean-perl \
-              libpath-tiny-perl \
-              libpod-constants-perl \
-              libscalar-list-utils-perl \
-              libsort-key-perl \
-              libstrictures-perl \
-              libstring-escape-perl \
-              libtry-tiny-perl \
-              expect
-            cpanm --notest App::Licensecheck
-          python -m pip install --upgrade pip
-          pip install autopep8 nose2 mock termcolor
+          wget https://www.doxygen.nl/files/doxygen-${DOXYGEN_VERSION}.linux.bin.tar.gz
+          tar -xzf doxygen-${DOXYGEN_VERSION}.linux.bin.tar.gz
       - name: Make
         run: |
-         mkdir build
-         cd build
-         cmake -DWITH_SERVER=ON -DUSE_CCACHE=OFF -DWITH_CORE=OFF -DWITH_APIDOC=ON -DWITH_ASTYLE=ON -DENABLE_TESTS=ON -DWITH_DOT=NO -DWERROR=ON ..
+          mkdir build
+          cd build
+          cmake -DUSE_CCACHE=OFF -DWITH_CORE=OFF -DWITH_APIDOC=ON -DWITH_ASTYLE=ON -DENABLE_TESTS=ON \
+                -DWITH_DOT=NO -DWERROR=ON -DDOXYGEN_EXECUTABLE=../doxygen-${DOXYGEN_VERSION}/bin/doxygen ..
           make -j3 apidoc
       - name: Run Tests
         run: cd build && ctest -V -R PyQgsDocCoverage
