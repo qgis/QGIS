@@ -50,6 +50,7 @@ class QgsCameraPose;
 class QgsTerrainEntity;
 class QgsVector3D;
 class QgsWindow3DEngine;
+class Qgs3DMapScene;
 
 #define SIP_NO_FILE
 
@@ -63,7 +64,6 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
 {
     Q_OBJECT
     Q_PROPERTY( Qt3DRender::QCamera *camera READ camera WRITE setCamera NOTIFY cameraChanged )
-    Q_PROPERTY( QRect viewport READ viewport WRITE setViewport NOTIFY viewportChanged )
   public:
 
     //! The navigation mode used by the camera
@@ -85,12 +85,10 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
 
   public:
     //! Constructs the camera controller with optional parent node that will take ownership
-    QgsCameraController( Qt3DCore::QNode *parent = nullptr );
+    QgsCameraController( Qgs3DMapScene *scene );
 
     //! Returns camera that is being controlled
     Qt3DRender::QCamera *camera() const { return mCamera; }
-    //! Returns viewport rectangle
-    QRect viewport() const { return mViewport; }
 
     /**
      * Returns the navigation mode used by the camera controller.
@@ -131,8 +129,7 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
 
     //! Assigns camera that should be controlled by this class. Called internally from 3D scene.
     void setCamera( Qt3DRender::QCamera *camera );
-    //! Sets viewport rectangle. Called internally from 3D canvas. Allows conversion of mouse coordinates.
-    void setViewport( QRect viewport );
+
     //! Called internally from 3D scene when a new frame is generated. Updates camera according to keyboard/mouse input
     void frameTriggered( float dt );
 
@@ -227,12 +224,13 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     void rotateCamera( float diffPitch, float diffYaw );
     void updateCameraFromPose();
     void moveCameraPositionBy( const QVector3D &posDiff );
+    //! Returns a pointer to the scene's engine's window or nullptr if engine is QgsOffscreen3DEngine
+    QWindow *window() const;
 
   signals:
     //! Emitted when camera has been updated
     void cameraChanged();
-    //! Emitted when viewport rectangle has been updated
-    void viewportChanged();
+
     //! Emitted when the navigation mode is changed using the hotkey ctrl + ~
     void navigationModeChanged( QgsCameraController::NavigationMode mode );
 
@@ -286,12 +284,12 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     bool screenPointToWorldPos( QPoint position, Qt3DRender::QCamera *cameraBefore, double &depth, QVector3D &worldPosition );
 
   private:
+    //! The 3d scene the controller uses
+    Qgs3DMapScene *mScene = nullptr;
+
     //! Camera that is being controlled
     Qt3DRender::QCamera *mCamera = nullptr;
 
-    //! used for computation of translation when dragging mouse
-    QRect mViewport;
-    QgsWindow3DEngine *mWindowEngine = nullptr;
     //! height of terrain when mouse button was last pressed - for camera control
     float mLastPressedHeight = 0;
 
