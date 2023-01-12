@@ -357,7 +357,7 @@ void QgsLayoutItemElevationProfile::refreshDataDefinedProperty( DataDefinedPrope
     double value = mPlot->margins().bottom();
 
     bool ok = false;
-    value = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MarginLeft, context, value, &ok );
+    value = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MarginBottom, context, value, &ok );
 
     if ( !ok )
     {
