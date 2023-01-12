@@ -179,7 +179,6 @@ class GUI_EXPORT QgsManhattanLineCalloutWidget : public QgsSimpleLineCalloutWidg
 #include "ui_widget_curvedlinecallout.h"
 
 class QgsCurvedLineCallout;
-///@cond PRIVATE
 
 class GUI_EXPORT QgsCurvedLineCalloutWidget : public QgsCalloutWidget, private Ui::WidgetCurvedLineCallout
 {
