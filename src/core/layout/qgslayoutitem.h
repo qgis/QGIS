@@ -314,6 +314,10 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       UndoElevationProfileElevationFormat, //!< Change elevation profile elevation axis number format
       UndoElevationProfileElevationFont, //!< Change elevation profile elevation axis number font
       UndoElevationProfileElevationLabels, //!< Change elevation profile elevation axis label interval
+      UndoElevationProfileMinimumDistance, //!< Change elevation profile minimum distance
+      UndoElevationProfileMaximumDistance, //!< Change elevation profile maximum distance
+      UndoElevationProfileMinimumElevation, //!< Change elevation profile minimum elevation
+      UndoElevationProfileMaximumElevation, //!< Change elevation profile maximum elevation
 
       UndoCustomCommand, //!< Base id for plugin based item undo commands
     };

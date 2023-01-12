@@ -39,6 +39,52 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   mItemPropertiesWidget = new QgsLayoutItemPropertiesWidget( this, profile );
   mainLayout->addWidget( mItemPropertiesWidget );
 
+  mSpinMinDistance->setClearValue( 0 );
+  connect( mSpinMinDistance, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [ = ]( double value )
+  {
+    if ( !mProfile || mBlockChanges )
+      return;
+
+    mProfile->beginCommand( tr( "Change Profile Chart Minimum Distance" ), QgsLayoutItem::UndoElevationProfileMinimumDistance );
+    mProfile->plot()->setXMinimum( value );
+    mProfile->update();
+    mProfile->endCommand();
+  } );
+
+  connect( mSpinMaxDistance, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [ = ]( double value )
+  {
+    if ( !mProfile || mBlockChanges )
+      return;
+
+    mProfile->beginCommand( tr( "Change Profile Chart Maximum Distance" ), QgsLayoutItem::UndoElevationProfileMaximumDistance );
+    mProfile->plot()->setXMaximum( value );
+    mProfile->update();
+    mProfile->endCommand();
+  } );
+
+  mSpinMinElevation->setClearValue( 0 );
+  connect( mSpinMinElevation, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [ = ]( double value )
+  {
+    if ( !mProfile || mBlockChanges )
+      return;
+
+    mProfile->beginCommand( tr( "Change Profile Chart Minimum Elevation" ), QgsLayoutItem::UndoElevationProfileMinimumElevation );
+    mProfile->plot()->setYMinimum( value );
+    mProfile->update();
+    mProfile->endCommand();
+  } );
+
+  connect( mSpinMaxElevation, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [ = ]( double value )
+  {
+    if ( !mProfile || mBlockChanges )
+      return;
+
+    mProfile->beginCommand( tr( "Change Profile Chart Maximum Elevation" ), QgsLayoutItem::UndoElevationProfileMaximumElevation );
+    mProfile->plot()->setYMaximum( value );
+    mProfile->update();
+    mProfile->endCommand();
+  } );
+
   mDistanceAxisMajorLinesSymbolButton->setSymbolType( Qgis::SymbolType::Line );
   connect( mDistanceAxisMajorLinesSymbolButton, &QgsSymbolButton::changed, this, [ = ]
   {
@@ -240,6 +286,10 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->update();
   } );
 
+  registerDataDefinedButton( mDDBtnMinDistance, QgsLayoutObject::ElevationProfileMinimumDistance );
+  registerDataDefinedButton( mDDBtnMaxDistance, QgsLayoutObject::ElevationProfileMaximumDistance );
+  registerDataDefinedButton( mDDBtnMinElevation, QgsLayoutObject::ElevationProfileMinimumElevation );
+  registerDataDefinedButton( mDDBtnMaxElevation, QgsLayoutObject::ElevationProfileMaximumElevation );
   registerDataDefinedButton( mDDBtnDistanceMajorInterval, QgsLayoutObject::ElevationProfileDistanceMajorInterval );
   registerDataDefinedButton( mDDBtnDistanceMinorInterval, QgsLayoutObject::ElevationProfileDistanceMinorInterval );
   registerDataDefinedButton( mDDBtnDistanceLabelInterval, QgsLayoutObject::ElevationProfileDistanceLabelInterval );
@@ -326,6 +376,11 @@ void QgsLayoutElevationProfileWidget::setGuiElementValues()
 {
   mBlockChanges++;
 
+  mSpinMinDistance->setValue( mProfile->plot()->xMinimum() );
+  mSpinMaxDistance->setValue( mProfile->plot()->xMaximum() );
+  mSpinMinElevation->setValue( mProfile->plot()->yMinimum() );
+  mSpinMaxElevation->setValue( mProfile->plot()->yMaximum() );
+
   if ( mProfile->plot()->xAxis().gridMajorSymbol() )
     mDistanceAxisMajorLinesSymbolButton->setSymbol( mProfile->plot()->xAxis().gridMajorSymbol()->clone() );
   if ( mProfile->plot()->xAxis().gridMinorSymbol() )
@@ -351,6 +406,10 @@ void QgsLayoutElevationProfileWidget::setGuiElementValues()
   if ( mProfile->plot()->chartBorderSymbol() )
     mChartBorderSymbolButton->setSymbol( mProfile->plot()->chartBorderSymbol()->clone() );
 
+  updateDataDefinedButton( mDDBtnMinDistance );
+  updateDataDefinedButton( mDDBtnMaxDistance );
+  updateDataDefinedButton( mDDBtnMinElevation );
+  updateDataDefinedButton( mDDBtnMaxElevation );
   updateDataDefinedButton( mDDBtnDistanceMajorInterval );
   updateDataDefinedButton( mDDBtnDistanceMinorInterval );
   updateDataDefinedButton( mDDBtnDistanceLabelInterval );

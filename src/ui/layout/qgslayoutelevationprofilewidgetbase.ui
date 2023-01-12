@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>385</width>
+    <width>506</width>
     <height>705</height>
    </rect>
   </property>
@@ -61,17 +61,128 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>383</width>
-        <height>681</height>
+        <width>490</width>
+        <height>834</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
+       <item>
+        <widget class="QgsCollapsibleGroupBoxBasic" name="groupChartRanges">
+         <property name="title">
+          <string>Chart Ranges</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_4" columnstretch="1,2,0">
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_20">
+            <property name="text">
+             <string>Minimum elevation</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QgsDoubleSpinBox" name="mSpinMinElevation">
+            <property name="decimals">
+             <number>6</number>
+            </property>
+            <property name="minimum">
+             <double>-999999999.000000000000000</double>
+            </property>
+            <property name="maximum">
+             <double>999999999.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QgsDoubleSpinBox" name="mSpinMinDistance">
+            <property name="decimals">
+             <number>6</number>
+            </property>
+            <property name="maximum">
+             <double>999999999.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QgsDoubleSpinBox" name="mSpinMaxDistance">
+            <property name="decimals">
+             <number>6</number>
+            </property>
+            <property name="maximum">
+             <double>999999999.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_18">
+            <property name="text">
+             <string>Minimum distance</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QgsDoubleSpinBox" name="mSpinMaxElevation">
+            <property name="decimals">
+             <number>6</number>
+            </property>
+            <property name="minimum">
+             <double>-999999999.000000000000000</double>
+            </property>
+            <property name="maximum">
+             <double>999999999.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_21">
+            <property name="text">
+             <string>Maximum elevation</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_19">
+            <property name="text">
+             <string>Maximum distance</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QgsPropertyOverrideButton" name="mDDBtnMinDistance">
+            <property name="text">
+             <string>…</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QgsPropertyOverrideButton" name="mDDBtnMaxDistance">
+            <property name="text">
+             <string>…</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2">
+           <widget class="QgsPropertyOverrideButton" name="mDDBtnMinElevation">
+            <property name="text">
+             <string>…</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="2">
+           <widget class="QgsPropertyOverrideButton" name="mDDBtnMaxElevation">
+            <property name="text">
+             <string>…</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupDistanceAxis">
          <property name="title">
           <string>Distance Axis</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1,0,0">
+         <layout class="QGridLayout" name="gridLayout_2" columnstretch="1,0,2,0">
           <item row="6" column="2" colspan="2">
            <widget class="QgsFontButton" name="mDistanceAxisLabelFontButton">
             <property name="sizePolicy">
@@ -235,7 +346,7 @@
          <property name="title">
           <string>Elevation Axis</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout_3" columnstretch="0,1,0,0">
+         <layout class="QGridLayout" name="gridLayout_3" columnstretch="1,0,2,0">
           <item row="0" column="2">
            <widget class="QgsDoubleSpinBox" name="mElevationAxisMajorIntervalSpin">
             <property name="decimals">
@@ -399,7 +510,7 @@
          <property name="title">
           <string>Chart Area</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout">
+         <layout class="QGridLayout" name="gridLayout" columnstretch="1,2">
           <item row="0" column="0">
            <widget class="QLabel" name="label_2">
             <property name="text">

@@ -198,6 +198,10 @@ A base class for objects which belong to a layout.
       ElevationProfileElevationMajorInterval,
       ElevationProfileElevationMinorInterval,
       ElevationProfileElevationLabelInterval,
+      ElevationProfileMinimumDistance,
+      ElevationProfileMaximumDistance,
+      ElevationProfileMinimumElevation,
+      ElevationProfileMaximumElevation,
     };
 
     enum PropertyValueType

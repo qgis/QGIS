@@ -226,6 +226,10 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
       ElevationProfileElevationMajorInterval, //!< Major grid line interval for elevation profile elevation axis (since QGIS 3.30)
       ElevationProfileElevationMinorInterval, //!< Minor grid line interval for elevation profile elevation axis (since QGIS 3.30)
       ElevationProfileElevationLabelInterval, //!< Label interval for elevation profile elevation axis (since QGIS 3.30)
+      ElevationProfileMinimumDistance, //!< Minimum distance value for elevation profile (since QGIS 3.30)
+      ElevationProfileMaximumDistance, //!< Maximum distance value for elevation profile (since QGIS 3.30)
+      ElevationProfileMinimumElevation, //!< Minimum elevation value for elevation profile (since QGIS 3.30)
+      ElevationProfileMaximumElevation, //!< Maximum elevation value for elevation profile (since QGIS 3.30)
     };
 
     /**
