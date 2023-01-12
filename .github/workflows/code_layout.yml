@@ -21,10 +21,12 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.10' 
-      - name: Install Doxygen
+      - name: Install requirements
         run: |
           wget https://www.doxygen.nl/files/doxygen-${DOXYGEN_VERSION}.linux.bin.tar.gz
           tar -xzf doxygen-${DOXYGEN_VERSION}.linux.bin.tar.gz
+          python -m pip install --upgrade pip
+          pip install autopep8 nose2 mock termcolor
       - name: Make
         run: |
           mkdir build
