@@ -18,8 +18,6 @@
 
 #include "qgis_3d.h"
 
-#include <QPointer>
-#include <QRect>
 #include <Qt3DCore/QEntity>
 #include <Qt3DInput/QMouseEvent>
 #include <QImage>
@@ -27,10 +25,8 @@
 namespace Qt3DInput
 {
   class QKeyEvent;
-  class QKeyboardDevice;
   class QKeyboardHandler;
   class QMouseEvent;
-  class QMouseDevice;
   class QMouseHandler;
   class QWheelEvent;
 }
@@ -38,7 +34,6 @@ namespace Qt3DInput
 namespace Qt3DRender
 {
   class QCamera;
-  class QPickEvent;
 }
 
 #include "qgscamerapose.h"
@@ -306,10 +301,6 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     std::unique_ptr< Qt3DRender::QCamera > mCameraBeforeZoom;
     bool mZoomPointCalculated = false;
     QVector3D mZoomPoint;
-
-    //! Delegates mouse events to the attached MouseHandler objects
-    Qt3DInput::QMouseDevice *mMouseDevice = nullptr;
-    Qt3DInput::QKeyboardDevice *mKeyboardDevice = nullptr;
 
     Qt3DInput::QMouseHandler *mMouseHandler = nullptr;
     Qt3DInput::QKeyboardHandler *mKeyboardHandler = nullptr;
