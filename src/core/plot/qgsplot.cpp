@@ -29,12 +29,12 @@
 
 QgsPlot::~QgsPlot() = default;
 
-bool QgsPlot::writeXml( QDomElement &, QDomDocument &, QgsReadWriteContext & ) const
+bool QgsPlot::writeXml( QDomElement &, QDomDocument &, const QgsReadWriteContext & ) const
 {
   return true;
 }
 
-bool QgsPlot::readXml( const QDomElement &, QgsReadWriteContext & )
+bool QgsPlot::readXml( const QDomElement &, const QgsReadWriteContext & )
 {
   return true;
 }
@@ -59,7 +59,7 @@ QgsPlotAxis::QgsPlotAxis()
 
 QgsPlotAxis::~QgsPlotAxis() = default;
 
-bool QgsPlotAxis::writeXml( QDomElement &element, QDomDocument &document, QgsReadWriteContext &context ) const
+bool QgsPlotAxis::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
   element.setAttribute( QStringLiteral( "gridIntervalMinor" ), qgsDoubleToString( mGridIntervalMinor ) );
   element.setAttribute( QStringLiteral( "gridIntervalMajor" ), qgsDoubleToString( mGridIntervalMajor ) );
@@ -83,7 +83,7 @@ bool QgsPlotAxis::writeXml( QDomElement &element, QDomDocument &document, QgsRea
   return true;
 }
 
-bool QgsPlotAxis::readXml( const QDomElement &element, QgsReadWriteContext &context )
+bool QgsPlotAxis::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   mGridIntervalMinor = element.attribute( QStringLiteral( "gridIntervalMinor" ) ).toDouble();
   mGridIntervalMajor = element.attribute( QStringLiteral( "gridIntervalMajor" ) ).toDouble();
@@ -159,7 +159,7 @@ Qgs2DPlot::Qgs2DPlot()
   mChartBorderSymbol = std::make_unique< QgsFillSymbol>( QgsSymbolLayerList( { chartBorder.release() } ) );
 }
 
-bool Qgs2DPlot::writeXml( QDomElement &element, QDomDocument &document, QgsReadWriteContext &context ) const
+bool Qgs2DPlot::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
   QgsPlot::writeXml( element, document, context );
 
@@ -187,7 +187,7 @@ bool Qgs2DPlot::writeXml( QDomElement &element, QDomDocument &document, QgsReadW
   return true;
 }
 
-bool Qgs2DPlot::readXml( const QDomElement &element, QgsReadWriteContext &context )
+bool Qgs2DPlot::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   QgsPlot::readXml( element, context );
 

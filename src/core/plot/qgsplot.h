@@ -54,12 +54,12 @@ class CORE_EXPORT QgsPlot
     /**
      * Writes the plot's properties into an XML \a element.
      */
-    virtual bool writeXml( QDomElement &element, QDomDocument &document, QgsReadWriteContext &context ) const;
+    virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
     /**
      * Reads the plot's properties from an XML \a element.
      */
-    virtual bool readXml( const QDomElement &element, QgsReadWriteContext &context );
+    virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 
   private:
 
@@ -89,12 +89,12 @@ class CORE_EXPORT QgsPlotAxis
     /**
      * Writes the axis' properties into an XML \a element.
      */
-    bool writeXml( QDomElement &element, QDomDocument &document, QgsReadWriteContext &context ) const;
+    bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
     /**
      * Reads the axis' properties from an XML \a element.
      */
-    bool readXml( const QDomElement &element, QgsReadWriteContext &context );
+    bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 
     /**
      * Returns the interval of minor grid lines for the axis.
@@ -247,8 +247,8 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
     //! Qgs2DPlot cannot be copied
     Qgs2DPlot &operator=( const Qgs2DPlot &other ) = delete;
 
-    bool writeXml( QDomElement &element, QDomDocument &document, QgsReadWriteContext &context ) const override;
-    bool readXml( const QDomElement &element, QgsReadWriteContext &context ) override;
+    bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
+    bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
 
     /**
      * Renders the plot.
