@@ -1473,21 +1473,13 @@ void QgsHanaProvider::readSrsInformation( QgsHanaConnection &conn )
       return;
   }
 
-  QgsRectangle ext;
   bool isRoundEarth = false;
-  QString sql = QStringLiteral( "SELECT MIN_X, MIN_Y, MAX_X, MAX_Y, ROUND_EARTH FROM SYS.ST_SPATIAL_REFERENCE_SYSTEMS "
+  QString sql = QStringLiteral( "SELECT ROUND_EARTH FROM SYS.ST_SPATIAL_REFERENCE_SYSTEMS "
                                 "WHERE SRS_ID = ?" );
   QgsHanaResultSetRef rs = conn.executeQuery( sql, { mSrid } );
   if ( rs->next() )
-  {
-    ext.setXMinimum( rs->getDouble( 1 ) );
-    ext.setYMinimum( rs->getDouble( 2 ) );
-    ext.setXMaximum( rs->getDouble( 3 ) );
-    ext.setYMaximum( rs->getDouble( 4 ) );
-    isRoundEarth = ( rs->getString( 5 ) == QLatin1String( "TRUE" ) );
-  }
+    isRoundEarth = ( rs->getString( 1 ) == QLatin1String( "TRUE" ) );
   rs->close();
-  mSrsExtent = ext;
 
   if ( isRoundEarth )
   {
