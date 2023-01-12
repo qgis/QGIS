@@ -58,6 +58,10 @@ void QgsLayoutObject::initPropertyDefinitions()
     { QgsLayoutObject::ExcludeFromExports, QgsPropertyDefinition( "dataDefinedExcludeExports", QObject::tr( "Exclude item from exports" ), QgsPropertyDefinition::Boolean ) },
     { QgsLayoutObject::FrameColor, QgsPropertyDefinition( "dataDefinedFrameColor", QObject::tr( "Frame color" ), QgsPropertyDefinition::ColorWithAlpha ) },
     { QgsLayoutObject::BackgroundColor, QgsPropertyDefinition( "dataDefinedBackgroundColor", QObject::tr( "Background color" ), QgsPropertyDefinition::ColorWithAlpha ) },
+    { QgsLayoutObject::MarginLeft, QgsPropertyDefinition( "dataDefinedMarginLeft", QObject::tr( "Left margin" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::MarginTop, QgsPropertyDefinition( "dataDefinedMarginTop", QObject::tr( "Top margin" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::MarginRight, QgsPropertyDefinition( "dataDefinedMarginRight", QObject::tr( "Right margin" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::MarginBottom, QgsPropertyDefinition( "dataDefinedMarginBottom", QObject::tr( "Bottom margin" ), QgsPropertyDefinition::DoublePositive ) },
     { QgsLayoutObject::MapRotation, QgsPropertyDefinition( "dataDefinedMapRotation", QObject::tr( "Map rotation" ), QgsPropertyDefinition::Rotation ) },
     { QgsLayoutObject::MapScale, QgsPropertyDefinition( "dataDefinedMapScale", QObject::tr( "Map scale" ), QgsPropertyDefinition::DoublePositive ) },
     { QgsLayoutObject::MapXMin, QgsPropertyDefinition( "dataDefinedMapXMin", QObject::tr( "Extent minimum X" ), QgsPropertyDefinition::Double ) },
@@ -215,6 +219,10 @@ bool QgsLayoutObject::propertyAssociatesWithParentMultiframe( QgsLayoutObject::D
     case QgsLayoutObject::ElevationProfileMaximumDistance:
     case QgsLayoutObject::ElevationProfileMinimumElevation:
     case QgsLayoutObject::ElevationProfileMaximumElevation:
+    case QgsLayoutObject::MarginLeft:
+    case QgsLayoutObject::MarginRight:
+    case QgsLayoutObject::MarginTop:
+    case QgsLayoutObject::MarginBottom:
       return false;
   }
   return false;

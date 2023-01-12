@@ -286,6 +286,62 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->update();
   } );
 
+  mSpinLeftMargin->setClearValue( 0 );
+  connect( mSpinLeftMargin, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [ = ]( double value )
+  {
+    if ( !mProfile || mBlockChanges )
+      return;
+
+    mProfile->beginCommand( tr( "Change Profile Chart Left Margin" ), QgsLayoutItem::UndoMarginLeft );
+    QgsMargins margins = mProfile->plot()->margins();
+    margins.setLeft( value );
+    mProfile->plot()->setMargins( margins );
+    mProfile->update();
+    mProfile->endCommand();
+  } );
+
+  mSpinRightMargin->setClearValue( 0 );
+  connect( mSpinRightMargin, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [ = ]( double value )
+  {
+    if ( !mProfile || mBlockChanges )
+      return;
+
+    mProfile->beginCommand( tr( "Change Profile Chart Right Margin" ), QgsLayoutItem::UndoMarginRight );
+    QgsMargins margins = mProfile->plot()->margins();
+    margins.setRight( value );
+    mProfile->plot()->setMargins( margins );
+    mProfile->update();
+    mProfile->endCommand();
+  } );
+
+  mSpinTopMargin->setClearValue( 0 );
+  connect( mSpinTopMargin, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [ = ]( double value )
+  {
+    if ( !mProfile || mBlockChanges )
+      return;
+
+    mProfile->beginCommand( tr( "Change Profile Chart Top Margin" ), QgsLayoutItem::UndoMarginTop );
+    QgsMargins margins = mProfile->plot()->margins();
+    margins.setTop( value );
+    mProfile->plot()->setMargins( margins );
+    mProfile->update();
+    mProfile->endCommand();
+  } );
+
+  mSpinBottomMargin->setClearValue( 0 );
+  connect( mSpinBottomMargin, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [ = ]( double value )
+  {
+    if ( !mProfile || mBlockChanges )
+      return;
+
+    mProfile->beginCommand( tr( "Change Profile Chart Bottom Margin" ), QgsLayoutItem::UndoMarginBottom );
+    QgsMargins margins = mProfile->plot()->margins();
+    margins.setBottom( value );
+    mProfile->plot()->setMargins( margins );
+    mProfile->update();
+    mProfile->endCommand();
+  } );
+
   registerDataDefinedButton( mDDBtnMinDistance, QgsLayoutObject::ElevationProfileMinimumDistance );
   registerDataDefinedButton( mDDBtnMaxDistance, QgsLayoutObject::ElevationProfileMaximumDistance );
   registerDataDefinedButton( mDDBtnMinElevation, QgsLayoutObject::ElevationProfileMinimumElevation );
@@ -296,6 +352,10 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   registerDataDefinedButton( mDDBtnElevationMajorInterval, QgsLayoutObject::ElevationProfileElevationMajorInterval );
   registerDataDefinedButton( mDDBtnElevationMinorInterval, QgsLayoutObject::ElevationProfileElevationMinorInterval );
   registerDataDefinedButton( mDDBtnElevationLabelInterval, QgsLayoutObject::ElevationProfileElevationLabelInterval );
+  registerDataDefinedButton( mDDBtnLeftMargin, QgsLayoutObject::MarginLeft );
+  registerDataDefinedButton( mDDBtnRightMargin, QgsLayoutObject::MarginRight );
+  registerDataDefinedButton( mDDBtnTopMargin, QgsLayoutObject::MarginTop );
+  registerDataDefinedButton( mDDBtnBottomMargin, QgsLayoutObject::MarginBottom );
 
   setGuiElementValues();
 
@@ -406,6 +466,11 @@ void QgsLayoutElevationProfileWidget::setGuiElementValues()
   if ( mProfile->plot()->chartBorderSymbol() )
     mChartBorderSymbolButton->setSymbol( mProfile->plot()->chartBorderSymbol()->clone() );
 
+  mSpinLeftMargin->setValue( mProfile->plot()->margins().left() );
+  mSpinRightMargin->setValue( mProfile->plot()->margins().right() );
+  mSpinTopMargin->setValue( mProfile->plot()->margins().top() );
+  mSpinBottomMargin->setValue( mProfile->plot()->margins().bottom() );
+
   updateDataDefinedButton( mDDBtnMinDistance );
   updateDataDefinedButton( mDDBtnMaxDistance );
   updateDataDefinedButton( mDDBtnMinElevation );
@@ -416,6 +481,10 @@ void QgsLayoutElevationProfileWidget::setGuiElementValues()
   updateDataDefinedButton( mDDBtnElevationMajorInterval );
   updateDataDefinedButton( mDDBtnElevationMinorInterval );
   updateDataDefinedButton( mDDBtnElevationLabelInterval );
+  updateDataDefinedButton( mDDBtnLeftMargin );
+  updateDataDefinedButton( mDDBtnRightMargin );
+  updateDataDefinedButton( mDDBtnTopMargin );
+  updateDataDefinedButton( mDDBtnBottomMargin );
 
   mBlockChanges--;
 }
