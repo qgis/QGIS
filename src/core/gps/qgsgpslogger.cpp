@@ -23,6 +23,8 @@
 #include <QTimer>
 #include <QTimeZone>
 
+const QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponent> *QgsGpsLogger::settingsGpsMValueComponent = new QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponent>( QStringLiteral( "m-value-attribute" ), QgsSettings::sTreeGps, Qgis::GpsInformationComponent::Timestamp, QStringLiteral( "Which GPS attribute should be stored in geometry m values" ) ) SIP_SKIP;
+
 const QgsSettingsEntryBool *QgsGpsLogger::settingsGpsStoreAttributeInMValues = new QgsSettingsEntryBool( QStringLiteral( "store-attribute-in-m-values" ), QgsSettings::sTreeGps, false, QStringLiteral( "Whether GPS attributes should be stored in geometry m values" ) ) SIP_SKIP;
 
 QgsGpsLogger::QgsGpsLogger( QgsGpsConnection *connection, QObject *parent )

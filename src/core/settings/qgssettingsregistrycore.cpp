@@ -27,6 +27,18 @@
 #include "qgsvectortileconnection.h"
 
 
+const QgsSettingsEntryEnumFlag<Qgis::SnappingMode> *QgsSettingsRegistryCore::settingsDigitizingDefaultSnapMode = new QgsSettingsEntryEnumFlag<Qgis::SnappingMode>( QStringLiteral( "default_snap_mode" ), QgsSettings::sTreeDigitizing, Qgis::SnappingMode::AllLayers );
+
+const QgsSettingsEntryEnumFlag<Qgis::SnappingType> *QgsSettingsRegistryCore::settingsDigitizingDefaultSnapType = new QgsSettingsEntryEnumFlag<Qgis::SnappingType>( QStringLiteral( "default_snap_type" ), QgsSettings::sTreeDigitizing, Qgis::SnappingType::Vertex );
+
+const QgsSettingsEntryEnumFlag<QgsTolerance::UnitType> *QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingToleranceUnit = new QgsSettingsEntryEnumFlag<QgsTolerance::UnitType>( QStringLiteral( "default_snapping_tolerance_unit" ), QgsSettings::sTreeDigitizing, Qgis::DEFAULT_SNAP_UNITS );
+
+const QgsSettingsEntryEnumFlag<QgsTolerance::UnitType> *QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEditUnit = new QgsSettingsEntryEnumFlag<QgsTolerance::UnitType>( QStringLiteral( "search_radius_vertex_edit_unit" ), QgsSettings::sTreeDigitizing, QgsTolerance::Pixels );
+
+const QgsSettingsEntryEnumFlag<Qgis::JoinStyle> *QgsSettingsRegistryCore::settingsDigitizingOffsetJoinStyle = new QgsSettingsEntryEnumFlag<Qgis::JoinStyle>( QStringLiteral( "offset_join_style" ), QgsSettings::sTreeDigitizing, Qgis::JoinStyle::Round );
+
+const QgsSettingsEntryEnumFlag<Qgis::EndCapStyle> *QgsSettingsRegistryCore::settingsDigitizingOffsetCapStyle = new QgsSettingsEntryEnumFlag<Qgis::EndCapStyle>( QStringLiteral( "offset_cap_style" ), QgsSettings::sTreeDigitizing,  Qgis::EndCapStyle::Round );
+
 const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingStreamTolerance = new QgsSettingsEntryInteger( QStringLiteral( "stream_tolerance" ), QgsSettings::sTreeDigitizing, 2 );
 
 const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingLineWidth = new QgsSettingsEntryInteger( QStringLiteral( "line_width" ), QgsSettings::sTreeDigitizing, 1 );

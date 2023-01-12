@@ -72,7 +72,7 @@ class CORE_EXPORT QgsGpsConnection : public QObject
     };
 
     //! Settings entry GPS connection type
-    static const inline QgsSettingsEntryEnumFlag<Qgis::GpsConnectionType> *settingsGpsConnectionType = new QgsSettingsEntryEnumFlag<Qgis::GpsConnectionType>( QStringLiteral( "gps-connection-type" ), QgsSettings::sTreeGps, Qgis::GpsConnectionType::Automatic, QStringLiteral( "GPS connection type" ) ) SIP_SKIP;
+    static const QgsSettingsEntryEnumFlag<Qgis::GpsConnectionType> *settingsGpsConnectionType;
 
     //! Settings entry GPSD host name
     static const QgsSettingsEntryString *settingsGpsdHostName;
@@ -102,7 +102,7 @@ class CORE_EXPORT QgsGpsConnection : public QObject
     static const QgsSettingsEntryInteger *settingGpsLeapSeconds;
 
     //! Settings entry time specification for GPS time stamps
-    static const inline QgsSettingsEntryEnumFlag<Qt::TimeSpec> *settingsGpsTimeStampSpecification = new QgsSettingsEntryEnumFlag<Qt::TimeSpec>( QStringLiteral( "timestamp-time-spec" ), QgsSettings::sTreeGps, Qt::TimeSpec::LocalTime, QStringLiteral( "GPS time stamp specification" ) ) SIP_SKIP;
+    static const QgsSettingsEntryEnumFlag<Qt::TimeSpec> *settingsGpsTimeStampSpecification;
 
     //! Settings entry GPS time stamp time zone
     static const QgsSettingsEntryString *settingsGpsTimeStampTimeZone;
