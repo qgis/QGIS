@@ -104,7 +104,6 @@ class ANALYSIS_EXPORT QgsBatchGeocodeAlgorithm : public QgsProcessingFeatureBase
 
 };
 
-///@endcond PRIVATE
 
 #endif // QGSALGORITHMBATCHGEOCODE_H
 
