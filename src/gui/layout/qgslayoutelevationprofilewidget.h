@@ -54,6 +54,8 @@ class GUI_EXPORT QgsLayoutElevationProfileWidget: public QgsLayoutItemBaseWidget
 
   private:
 
+    int mBlockChanges = 0;
+
     QPointer< QgsLayoutItemElevationProfile > mProfile = nullptr;
 
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;

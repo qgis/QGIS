@@ -251,6 +251,18 @@ Base class for graphical items within a :py:class:`QgsLayout`.
       UndoArrowHeadWidth,
       UndoArrowHeadFillColor,
       UndoArrowHeadStrokeColor,
+      UndoElevationProfileChartBackground,
+      UndoElevationProfileChartBorder,
+      UndoElevationProfileDistanceMajorGridlines,
+      UndoElevationProfileDistanceMinorGridlines,
+      UndoElevationProfileDistanceFormat,
+      UndoElevationProfileDistanceFont,
+      UndoElevationProfileDistanceLabels,
+      UndoElevationProfileElevationMajorGridlines,
+      UndoElevationProfileElevationMinorGridlines,
+      UndoElevationProfileElevationFormat,
+      UndoElevationProfileElevationFont,
+      UndoElevationProfileElevationLabels,
 
       UndoCustomCommand,
     };

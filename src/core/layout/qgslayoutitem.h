@@ -302,6 +302,18 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       UndoArrowHeadWidth, //!< Arrow head width
       UndoArrowHeadFillColor, //!< Arrow head fill color
       UndoArrowHeadStrokeColor, //!< Arrow head stroke color
+      UndoElevationProfileChartBackground, //!< Change elevation profile chart background
+      UndoElevationProfileChartBorder, //!< Change elevation profile chart border
+      UndoElevationProfileDistanceMajorGridlines, //!< Change elevation profile distance axis major gridlines
+      UndoElevationProfileDistanceMinorGridlines, //!< Change elevation profile distance axis minor gridlines
+      UndoElevationProfileDistanceFormat, //!< Change elevation profile distance axis number format
+      UndoElevationProfileDistanceFont, //!< Change elevation profile distance axis number font
+      UndoElevationProfileDistanceLabels, //!< Change elevation profile distance axis label interval
+      UndoElevationProfileElevationMajorGridlines, //!< Change elevation profile elevation axis major gridlines
+      UndoElevationProfileElevationMinorGridlines, //!< Change elevation profile elevation axis minor gridlines
+      UndoElevationProfileElevationFormat, //!< Change elevation profile elevation axis number format
+      UndoElevationProfileElevationFont, //!< Change elevation profile elevation axis number font
+      UndoElevationProfileElevationLabels, //!< Change elevation profile elevation axis label interval
 
       UndoCustomCommand, //!< Base id for plugin based item undo commands
     };

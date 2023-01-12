@@ -192,6 +192,12 @@ A base class for objects which belong to a layout.
       MapCrs,
       StartDateTime,
       EndDateTime,
+      ElevationProfileDistanceMajorInterval,
+      ElevationProfileDistanceMinorInterval,
+      ElevationProfileDistanceLabelInterval,
+      ElevationProfileElevationMajorInterval,
+      ElevationProfileElevationMinorInterval,
+      ElevationProfileElevationLabelInterval,
     };
 
     enum PropertyValueType
