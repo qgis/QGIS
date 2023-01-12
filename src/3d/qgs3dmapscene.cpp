@@ -628,8 +628,6 @@ void Qgs3DMapScene::createTerrainDeferred()
     mTerrain->setParent( this );
     mTerrain->setShowBoundingBoxes( mMap.showTerrainBoundingBoxes() );
 
-    mCameraController->setTerrainEntity( mTerrain );
-
     mChunkEntities << mTerrain;
 
     connect( mTerrain, &QgsChunkedEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::totalPendingJobsCountChanged );
@@ -638,7 +636,6 @@ void Qgs3DMapScene::createTerrainDeferred()
   else
   {
     mTerrain = nullptr;
-    mCameraController->setTerrainEntity( mTerrain );
   }
 
   // make sure that renderers for layers are re-created as well

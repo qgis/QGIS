@@ -47,7 +47,6 @@ class QDomDocument;
 class QDomElement;
 
 class QgsCameraPose;
-class QgsTerrainEntity;
 class QgsVector3D;
 class QgsWindow3DEngine;
 class Qgs3DMapScene;
@@ -118,13 +117,6 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
      * \since QGIS 3.18
      */
     void setVerticalAxisInversion( QgsCameraController::VerticalAxisInversion inversion );
-
-    /**
-     * Connects to object picker attached to terrain entity. Called internally from 3D scene.
-     * This allows camera controller understand how far from the camera is the terrain under mouse cursor.
-     * Also it allows adjustment of camera's view center to a point on terrain.
-     */
-    void setTerrainEntity( QgsTerrainEntity *te );
 
     //! Called internally from 3D scene when a new frame is generated. Updates camera according to keyboard/mouse input
     void frameTriggered( float dt );
@@ -260,7 +252,6 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     void onMouseReleased( Qt3DInput::QMouseEvent *mouse );
     void onKeyPressed( Qt3DInput::QKeyEvent *event );
     void onKeyReleased( Qt3DInput::QKeyEvent *event );
-    void onPickerMousePressed( Qt3DRender::QPickEvent *pick );
     void applyFlyModeKeyMovements();
 
   private:
@@ -285,11 +276,6 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
 
     //! Camera that is being controlled
     Qt3DRender::QCamera *mCamera = nullptr;
-
-    //! height of terrain when mouse button was last pressed - for camera control
-    float mLastPressedHeight = 0;
-
-    QPointer<QgsTerrainEntity> mTerrainEntity;
 
     //! Keeps definition of the camera's position and towards where it is looking
     QgsCameraPose mCameraPose;

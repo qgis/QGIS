@@ -104,14 +104,6 @@ void QgsCameraController::setVerticalAxisInversion( QgsCameraController::Vertica
   mVerticalAxisInversion = inversion;
 }
 
-void QgsCameraController::setTerrainEntity( QgsTerrainEntity *te )
-{
-  mTerrainEntity = te;
-  // object picker for terrain for correct map panning
-  if ( mTerrainEntity )
-    connect( te->terrainPicker(), &Qt3DRender::QObjectPicker::pressed, this, &QgsCameraController::onPickerMousePressed );
-}
-
 void QgsCameraController::rotateCamera( float diffPitch, float diffYaw )
 {
   const float pitch = mCameraPose.pitchAngle();
@@ -157,8 +149,9 @@ void QgsCameraController::resetView( float distance )
 void QgsCameraController::setViewFromTop( float worldX, float worldY, float distance, float yaw )
 {
   QgsCameraPose camPose;
-  if ( mTerrainEntity )
-    camPose.setCenterPoint( QgsVector3D( worldX, mTerrainEntity->terrainElevationOffset(), worldY ) );
+  QgsTerrainEntity *terrain = mScene->terrainEntity();
+  if ( terrain )
+    camPose.setCenterPoint( QgsVector3D( worldX, terrain->terrainElevationOffset(), worldY ) );
   else
     camPose.setCenterPoint( QgsVector3D( worldX, 0.0f, worldY ) );
   camPose.setDistanceFromCenterPoint( distance );
@@ -971,12 +964,6 @@ void QgsCameraController::onKeyReleased( Qt3DInput::QKeyEvent *event )
 
   mDepressedKeys.remove( event->key() );
 }
-
-void QgsCameraController::onPickerMousePressed( Qt3DRender::QPickEvent *pick )
-{
-  mLastPressedHeight = pick->worldIntersection().y();
-}
-
 
 void QgsCameraController::tiltUpAroundViewCenter( float deltaPitch )
 {
