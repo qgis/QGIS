@@ -22,6 +22,8 @@
 
 #include <QFileInfo>
 
+///@cond PRIVATE
+
 const QgsSettingsEntryString *QgsVectorTileProviderConnection::settingsUrl = new QgsSettingsEntryString( QStringLiteral( "url" ), sTreeConnectionVectorTile );
 const QgsSettingsEntryInteger *QgsVectorTileProviderConnection::settingsZmin = new QgsSettingsEntryInteger( QStringLiteral( "zmin" ), sTreeConnectionVectorTile, -1 );
 const QgsSettingsEntryInteger *QgsVectorTileProviderConnection::settingsZmax = new QgsSettingsEntryInteger( QStringLiteral( "zmax" ), sTreeConnectionVectorTile, -1 );
@@ -32,7 +34,6 @@ const QgsSettingsEntryString *QgsVectorTileProviderConnection::settingsStyleUrl 
 const QgsSettingsEntryString *QgsVectorTileProviderConnection::settingsServiceType = new QgsSettingsEntryString( QStringLiteral( "service-type" ), sTreeConnectionVectorTile );
 const QgsSettingsEntryVariantMap *QgsVectorTileProviderConnection::settingsHeaders = new QgsSettingsEntryVariantMap( QStringLiteral( "http-header" ), sTreeConnectionVectorTile );
 
-///@cond PRIVATE
 
 QString QgsVectorTileProviderConnection::encodedUri( const QgsVectorTileProviderConnection::Data &conn )
 {
