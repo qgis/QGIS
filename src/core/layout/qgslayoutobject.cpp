@@ -115,6 +115,10 @@ void QgsLayoutObject::initPropertyDefinitions()
     { QgsLayoutObject::ElevationProfileElevationMajorInterval, QgsPropertyDefinition( "dataDefinedElevationProfileElevationMajorInterval", QObject::tr( "Major grid line interval" ), QgsPropertyDefinition::DoublePositive ) },
     { QgsLayoutObject::ElevationProfileElevationMinorInterval, QgsPropertyDefinition( "dataDefinedElevationProfileElevationMinorInterval", QObject::tr( "Minor grid line interval" ), QgsPropertyDefinition::DoublePositive ) },
     { QgsLayoutObject::ElevationProfileElevationLabelInterval, QgsPropertyDefinition( "dataDefinedElevationProfileElevationLabelInterval", QObject::tr( "Label interval" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::ElevationProfileMinimumDistance, QgsPropertyDefinition( "dataDefinedElevationProfileMinimumDistance", QObject::tr( "Minimum distance" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::ElevationProfileMaximumDistance, QgsPropertyDefinition( "dataDefinedElevationProfileMaximumDistance", QObject::tr( "Maximum distance" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::ElevationProfileMinimumElevation, QgsPropertyDefinition( "dataDefinedElevationProfileMinimumElevation", QObject::tr( "Minimum elevation" ), QgsPropertyDefinition::Double ) },
+    { QgsLayoutObject::ElevationProfileMaximumElevation, QgsPropertyDefinition( "dataDefinedElevationProfileMaximumElevation", QObject::tr( "Maximum elevation" ), QgsPropertyDefinition::Double ) },
   };
 }
 
@@ -207,6 +211,10 @@ bool QgsLayoutObject::propertyAssociatesWithParentMultiframe( QgsLayoutObject::D
     case QgsLayoutObject::ElevationProfileElevationMajorInterval:
     case QgsLayoutObject::ElevationProfileElevationMinorInterval:
     case QgsLayoutObject::ElevationProfileElevationLabelInterval:
+    case QgsLayoutObject::ElevationProfileMinimumDistance:
+    case QgsLayoutObject::ElevationProfileMaximumDistance:
+    case QgsLayoutObject::ElevationProfileMinimumElevation:
+    case QgsLayoutObject::ElevationProfileMaximumElevation:
       return false;
   }
   return false;

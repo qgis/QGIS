@@ -263,6 +263,10 @@ Base class for graphical items within a :py:class:`QgsLayout`.
       UndoElevationProfileElevationFormat,
       UndoElevationProfileElevationFont,
       UndoElevationProfileElevationLabels,
+      UndoElevationProfileMinimumDistance,
+      UndoElevationProfileMaximumDistance,
+      UndoElevationProfileMinimumElevation,
+      UndoElevationProfileMaximumElevation,
 
       UndoCustomCommand,
     };

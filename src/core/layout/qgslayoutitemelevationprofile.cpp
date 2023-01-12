@@ -85,6 +85,86 @@ void QgsLayoutItemElevationProfile::refreshDataDefinedProperty( DataDefinedPrope
 
   bool forceUpdate = false;
 
+  if ( ( property == QgsLayoutObject::ElevationProfileMinimumDistance || property == QgsLayoutObject::AllProperties )
+       && ( mDataDefinedProperties.isActive( QgsLayoutObject::ElevationProfileMinimumDistance ) ) )
+  {
+    double value = mPlot->xMinimum();
+
+    bool ok = false;
+    value = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ElevationProfileMinimumDistance, context, value, &ok );
+
+    if ( !ok )
+    {
+      QgsMessageLog::logMessage( tr( "Elevation profile minimum distance expression eval error" ) );
+    }
+    else
+    {
+      mPlot->setXMinimum( value );
+    }
+
+    forceUpdate = true;
+  }
+
+  if ( ( property == QgsLayoutObject::ElevationProfileMaximumDistance || property == QgsLayoutObject::AllProperties )
+       && ( mDataDefinedProperties.isActive( QgsLayoutObject::ElevationProfileMaximumDistance ) ) )
+  {
+    double value = mPlot->xMaximum();
+
+    bool ok = false;
+    value = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ElevationProfileMaximumDistance, context, value, &ok );
+
+    if ( !ok )
+    {
+      QgsMessageLog::logMessage( tr( "Elevation profile maximum distance expression eval error" ) );
+    }
+    else
+    {
+      mPlot->setXMaximum( value );
+    }
+
+    forceUpdate = true;
+  }
+
+  if ( ( property == QgsLayoutObject::ElevationProfileMinimumElevation || property == QgsLayoutObject::AllProperties )
+       && ( mDataDefinedProperties.isActive( QgsLayoutObject::ElevationProfileMinimumElevation ) ) )
+  {
+    double value = mPlot->yMinimum();
+
+    bool ok = false;
+    value = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ElevationProfileMinimumElevation, context, value, &ok );
+
+    if ( !ok )
+    {
+      QgsMessageLog::logMessage( tr( "Elevation profile minimum elevation expression eval error" ) );
+    }
+    else
+    {
+      mPlot->setYMinimum( value );
+    }
+
+    forceUpdate = true;
+  }
+
+  if ( ( property == QgsLayoutObject::ElevationProfileMaximumElevation || property == QgsLayoutObject::AllProperties )
+       && ( mDataDefinedProperties.isActive( QgsLayoutObject::ElevationProfileMaximumElevation ) ) )
+  {
+    double value = mPlot->yMaximum();
+
+    bool ok = false;
+    value = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ElevationProfileMaximumElevation, context, value, &ok );
+
+    if ( !ok )
+    {
+      QgsMessageLog::logMessage( tr( "Elevation profile maximum elevation expression eval error" ) );
+    }
+    else
+    {
+      mPlot->setYMaximum( value );
+    }
+
+    forceUpdate = true;
+  }
+
   if ( ( property == QgsLayoutObject::ElevationProfileDistanceMajorInterval || property == QgsLayoutObject::AllProperties )
        && ( mDataDefinedProperties.isActive( QgsLayoutObject::ElevationProfileDistanceMajorInterval ) ) )
   {
