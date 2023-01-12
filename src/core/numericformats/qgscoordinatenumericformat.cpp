@@ -22,7 +22,10 @@
 #include <locale>
 #include <iomanip>
 
-struct formatter : std::numpunct<wchar_t>
+///@cond PRIVATE
+typedef std::numpunct<wchar_t> numpunct_wchar_t;
+
+struct formatter : numpunct_wchar_t
 {
   formatter( QChar thousands, bool showThousands, QChar decimal )
     : mThousands( thousands.unicode() )
@@ -37,7 +40,7 @@ struct formatter : std::numpunct<wchar_t>
   wchar_t mDecimal;
   bool mShowThousands = true;
 };
-
+///@endcond
 
 QgsGeographicCoordinateNumericFormat::QgsGeographicCoordinateNumericFormat()
 {
