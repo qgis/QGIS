@@ -63,7 +63,6 @@ class Qgs3DMapScene;
 class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
 {
     Q_OBJECT
-    Q_PROPERTY( Qt3DRender::QCamera *camera READ camera WRITE setCamera NOTIFY cameraChanged )
   public:
 
     //! The navigation mode used by the camera
@@ -126,9 +125,6 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
      * Also it allows adjustment of camera's view center to a point on terrain.
      */
     void setTerrainEntity( QgsTerrainEntity *te );
-
-    //! Assigns camera that should be controlled by this class. Called internally from 3D scene.
-    void setCamera( Qt3DRender::QCamera *camera );
 
     //! Called internally from 3D scene when a new frame is generated. Updates camera according to keyboard/mouse input
     void frameTriggered( float dt );

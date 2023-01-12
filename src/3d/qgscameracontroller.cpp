@@ -35,6 +35,7 @@
 QgsCameraController::QgsCameraController( Qgs3DMapScene *scene )
   : Qt3DCore::QEntity( scene )
   , mScene( scene )
+  , mCamera( scene->engine()->camera() )
   , mCameraBeforeRotation( new Qt3DRender::QCamera )
   , mCameraBeforeDrag( new Qt3DRender::QCamera )
   , mCameraBeforeZoom( new Qt3DRender::QCamera )
@@ -109,19 +110,6 @@ void QgsCameraController::setTerrainEntity( QgsTerrainEntity *te )
   // object picker for terrain for correct map panning
   if ( mTerrainEntity )
     connect( te->terrainPicker(), &Qt3DRender::QObjectPicker::pressed, this, &QgsCameraController::onPickerMousePressed );
-}
-
-void QgsCameraController::setCamera( Qt3DRender::QCamera *camera )
-{
-  if ( mCamera == camera )
-    return;
-  mCamera = camera;
-
-  mCameraPose.updateCamera( mCamera ); // initial setup
-
-  // TODO: set camera's parent if not set already?
-  // TODO: registerDestructionHelper (?)
-  emit cameraChanged();
 }
 
 void QgsCameraController::rotateCamera( float diffPitch, float diffYaw )
