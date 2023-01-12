@@ -285,6 +285,95 @@ void QgsLayoutItemElevationProfile::refreshDataDefinedProperty( DataDefinedPrope
     forceUpdate = true;
   }
 
+  if ( ( property == QgsLayoutObject::MarginLeft || property == QgsLayoutObject::AllProperties )
+       && ( mDataDefinedProperties.isActive( QgsLayoutObject::MarginLeft ) ) )
+  {
+    double value = mPlot->margins().left();
+
+    bool ok = false;
+    value = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MarginLeft, context, value, &ok );
+
+    if ( !ok )
+    {
+      QgsMessageLog::logMessage( tr( "Elevation profile left margin expression eval error" ) );
+    }
+    else
+    {
+      QgsMargins margins = mPlot->margins();
+      margins.setLeft( value );
+      mPlot->setMargins( margins );
+    }
+
+    forceUpdate = true;
+  }
+
+  if ( ( property == QgsLayoutObject::MarginRight || property == QgsLayoutObject::AllProperties )
+       && ( mDataDefinedProperties.isActive( QgsLayoutObject::MarginRight ) ) )
+  {
+    double value = mPlot->margins().right();
+
+    bool ok = false;
+    value = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MarginRight, context, value, &ok );
+
+    if ( !ok )
+    {
+      QgsMessageLog::logMessage( tr( "Elevation profile right margin expression eval error" ) );
+    }
+    else
+    {
+      QgsMargins margins = mPlot->margins();
+      margins.setRight( value );
+      mPlot->setMargins( margins );
+    }
+
+    forceUpdate = true;
+  }
+
+  if ( ( property == QgsLayoutObject::MarginTop || property == QgsLayoutObject::AllProperties )
+       && ( mDataDefinedProperties.isActive( QgsLayoutObject::MarginTop ) ) )
+  {
+    double value = mPlot->margins().top();
+
+    bool ok = false;
+    value = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MarginTop, context, value, &ok );
+
+    if ( !ok )
+    {
+      QgsMessageLog::logMessage( tr( "Elevation profile top margin expression eval error" ) );
+    }
+    else
+    {
+      QgsMargins margins = mPlot->margins();
+      margins.setTop( value );
+      mPlot->setMargins( margins );
+    }
+
+    forceUpdate = true;
+  }
+
+  if ( ( property == QgsLayoutObject::MarginBottom || property == QgsLayoutObject::AllProperties )
+       && ( mDataDefinedProperties.isActive( QgsLayoutObject::MarginBottom ) ) )
+  {
+    double value = mPlot->margins().bottom();
+
+    bool ok = false;
+    value = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MarginLeft, context, value, &ok );
+
+    if ( !ok )
+    {
+      QgsMessageLog::logMessage( tr( "Elevation profile bottom margin expression eval error" ) );
+    }
+    else
+    {
+      QgsMargins margins = mPlot->margins();
+      margins.setBottom( value );
+      mPlot->setMargins( margins );
+    }
+
+    forceUpdate = true;
+  }
+
+
   if ( forceUpdate )
   {
     refreshItemSize();

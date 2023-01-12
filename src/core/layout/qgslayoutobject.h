@@ -163,6 +163,10 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
       ExcludeFromExports, //!< Exclude item from exports
       FrameColor, //!< Item frame color
       BackgroundColor, //!< Item background color
+      MarginLeft, //!< Left margin (since QGIS 3.30)
+      MarginTop, //!< Top margin (since QGIS 3.30)
+      MarginRight, //!< Right margin (since QGIS 3.30)
+      MarginBottom, //!< Bottom margin (since QGIS 3.30)
       //composer map
       MapRotation, //!< Map rotation
       MapScale, //!< Map scale

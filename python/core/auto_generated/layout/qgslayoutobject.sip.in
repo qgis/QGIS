@@ -135,6 +135,10 @@ A base class for objects which belong to a layout.
       ExcludeFromExports,
       FrameColor,
       BackgroundColor,
+      MarginLeft,
+      MarginTop,
+      MarginRight,
+      MarginBottom,
       //composer map
       MapRotation,
       MapScale,

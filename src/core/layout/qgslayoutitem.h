@@ -231,6 +231,10 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       UndoStrokeWidth, //!< Stroke width adjustment
       UndoBackgroundColor, //!< Background color adjustment
       UndoOpacity, //!< Opacity adjustment
+      UndoMarginLeft, //!< Left margin (since QGIS 3.30)
+      UndoMarginTop, //!< Top margin (since QGIS 3.30)
+      UndoMarginBottom, //!< Bottom margin (since QGIS 3.30)
+      UndoMarginRight, //!< Right margin (since QGIS 3.30)
       UndoSetId, //!< Change item ID
       UndoRotation, //!< Rotation adjustment
       UndoShapeStyle, //!< Shape symbol style
