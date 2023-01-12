@@ -114,7 +114,6 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
 
   // Camera controlling
   mCameraController = new QgsCameraController( this ); // attaches to the scene
-  mCameraController->setCamera( mEngine->camera() );
   mCameraController->resetView( 1000 );
 
   addCameraViewCenterEntity( mEngine->camera() );
