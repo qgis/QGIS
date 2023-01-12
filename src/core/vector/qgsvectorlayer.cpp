@@ -6337,6 +6337,120 @@ void QgsVectorLayer::setAllowCommit( bool allowCommit )
   emit allowCommitChanged();
 }
 
+bool QgsVectorLayer::mergeSelectedFeatures( const QgsAttributes &mergeAttributes, QgsGeometry unionGeometry, QString &errorMessage )
+{
+  errorMessage.clear();
+
+  if ( selectedFeatureIds().size() < 2 )
+  {
+    errorMessage = tr( "Not enough features selected, the merge tool requires at least two selected features" );
+    return false;
+  }
+
+  QgsAttributeMap newAttributes;
+  QgsFeatureId mergeFeatureId = FID_NULL;
+  for ( int i = 0; i < mergeAttributes.count(); ++i )
+  {
+    QVariant val = mergeAttributes.at( i );
+
+    bool isDefaultValue = fields().fieldOrigin( i ) == QgsFields::OriginProvider &&
+                          dataProvider() &&
+                          dataProvider()->defaultValueClause( fields().fieldOriginIndex( i ) ) == val;
+
+    // Check if features can merged into an existing one
+    if ( mergeFeatureId == FID_NULL )
+    {
+      bool isPrimaryKey =  fields().fieldOrigin( i ) == QgsFields::OriginProvider &&
+                           dataProvider() &&
+                           dataProvider()->pkAttributeIndexes().contains( fields().fieldOriginIndex( i ) );
+
+      if ( isPrimaryKey && !isDefaultValue )
+      {
+        QgsFeatureRequest request;
+        request.setFlags( QgsFeatureRequest::Flag::NoGeometry );
+        // Handle multi pks
+        if ( dataProvider()->pkAttributeIndexes().count() > 1 && dataProvider()->pkAttributeIndexes().count() <= mergeAttributes.count() )
+        {
+          const auto pkIdxList { dataProvider()->pkAttributeIndexes() };
+          QStringList conditions;
+          QStringList fieldNames;
+          for ( const int &pkIdx : std::as_const( pkIdxList ) )
+          {
+            const QgsField pkField { fields().field( pkIdx ) };
+            conditions.push_back( QgsExpression::createFieldEqualityExpression( pkField.name(), mergeAttributes.at( pkIdx ), pkField.type( ) ) );
+            fieldNames.push_back( pkField.name() );
+          }
+          request.setSubsetOfAttributes( fieldNames, fields( ) );
+          request.setFilterExpression( conditions.join( QStringLiteral( " AND " ) ) );
+        }
+        else  // single pk
+        {
+          const QgsField pkField { fields().field( i ) };
+          request.setSubsetOfAttributes( QStringList() << pkField.name(), fields( ) );
+          request.setFilterExpression( QgsExpression::createFieldEqualityExpression( pkField.name(), val, pkField.type( ) ) );
+        }
+
+        QgsFeature f;
+        QgsFeatureIterator featureIterator = getFeatures( request );
+        if ( featureIterator.nextFeature( f ) )
+        {
+          mergeFeatureId = f.id( );
+        }
+      }
+    }
+
+    // convert to destination data type
+    QString errorMessageConvertCompatible;
+    if ( !isDefaultValue && !fields().at( i ).convertCompatible( val, &errorMessageConvertCompatible ) )
+    {
+      if ( errorMessage.isEmpty() )
+        errorMessage = tr( "Could not store value '%1' in field of type %2: %3" ).arg( mergeAttributes.at( i ).toString(), fields().at( i ).typeName(), errorMessageConvertCompatible );
+    }
+    newAttributes[ i ] = val;
+  }
+
+  beginEditCommand( tr( "Merged features" ) );
+
+  QgsFeatureIds featureIdsAfter = selectedFeatureIds();
+
+  QgsFeature mergeFeature;
+  if ( mergeFeatureId == FID_NULL )
+  {
+    // Create new feature
+    mergeFeature = QgsVectorLayerUtils::createFeature( this, unionGeometry, newAttributes );
+  }
+  else
+  {
+    // Merge into existing feature
+    featureIdsAfter.remove( mergeFeatureId );
+  }
+
+  // Delete other features
+  QgsFeatureIds::const_iterator feature_it = featureIdsAfter.constBegin();
+  for ( ; feature_it != featureIdsAfter.constEnd(); ++feature_it )
+  {
+    deleteFeature( *feature_it );
+  }
+
+  if ( mergeFeatureId == FID_NULL )
+  {
+    // Add the new feature
+    addFeature( mergeFeature );
+  }
+  else
+  {
+    // Modify merge feature
+    changeGeometry( mergeFeatureId, unionGeometry );
+    changeAttributeValues( mergeFeatureId, newAttributes );
+  }
+
+  endEditCommand();
+
+  triggerRepaint();
+
+  return true;
+}
+
 QgsGeometryOptions *QgsVectorLayer::geometryOptions() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
