@@ -365,14 +365,41 @@ void QgsMapToolRotateFeature::updateRubberband( double rotation )
     mRotation = rotation;
 
     mStPoint = toCanvasCoordinates( mStartPointMapCoords );
-    const double offsetX = mStPoint.x() - mRubberBand->x();
-    const double offsetY = mStPoint.y() - mRubberBand->y();
 
     if ( mRubberBand )
     {
-      mRubberBand->setTransform( QTransform().translate( offsetX, offsetY ).rotate( mRotation ).translate( -1 * offsetX, -1 * offsetY ) );
+      QgsVectorLayer *vlayer = currentVectorLayer();
+
+      // When MapCanvas crs == layer crs, fast rubberband rotation
+      if ( vlayer->crs() == canvas()->mapSettings().destinationCrs() )
+      {
+        const double offsetX = mStPoint.x() - mRubberBand->x();
+        const double offsetY = mStPoint.y() - mRubberBand->y();
+        mRubberBand->setTransform( QTransform().translate( offsetX, offsetY ).rotate( mRotation ).translate( -1 * offsetX, -1 * offsetY ) );
+        mRubberBand->update();
+      }
+
+      // Else, recreate the rubber band from the rotated geometries
+      else
+      {
+        mRubberBand->reset( vlayer->geometryType() );
+        const QgsPointXY anchorPoint = toLayerCoordinates( vlayer, mStartPointMapCoords );
+        QgsFeatureRequest request;
+        request.setFilterFids( mRotatedFeatures ).setNoAttributes();
+        QgsFeatureIterator fi = vlayer->getFeatures( request );
+        QgsFeature f;
+        while ( fi.nextFeature( f ) )
+        {
+          QgsGeometry geom = f.geometry();
+          geom.rotate( mRotation, anchorPoint );
+          mRubberBand->addGeometry( geom, vlayer, false );
+        }
+        mRubberBand->updatePosition();
+      }
+
       mRubberBand->update();
     }
+
   }
 }
 

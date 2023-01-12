@@ -49,18 +49,49 @@ void QgsMapToolMoveFeature::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( mRubberBand )
   {
-    const QgsPointXY pointCanvasCoords = e->mapPoint();
-    const double offsetX = pointCanvasCoords.x() - mStartPointMapCoords.x();
-    const double offsetY = pointCanvasCoords.y() - mStartPointMapCoords.y();
-    mRubberBand->setTranslationOffset( offsetX, offsetY );
+    QgsVectorLayer *vlayer = currentVectorLayer();
+
+    // When MapCanvas crs == layer crs, fast rubberband translation
+    if ( vlayer->crs() == canvas()->mapSettings().destinationCrs() )
+    {
+      const QgsPointXY pointCanvasCoords = e->mapPoint();
+      const double offsetX = pointCanvasCoords.x() - mStartPointMapCoords.x();
+      const double offsetY = pointCanvasCoords.y() - mStartPointMapCoords.y();
+      mRubberBand->setTranslationOffset( offsetX, offsetY );
+    }
+
+    // Else, recreate the rubber band from the translated geometries
+    else
+    {
+      const QgsPointXY startPointLayerCoords = toLayerCoordinates( ( QgsMapLayer * )vlayer, mStartPointMapCoords );
+      const QgsPointXY stopPointLayerCoords = toLayerCoordinates( ( QgsMapLayer * )vlayer, e->mapPoint() );
+
+      const double dx = stopPointLayerCoords.x() - startPointLayerCoords.x();
+      const double dy = stopPointLayerCoords.y() - startPointLayerCoords.y();
+
+      QgsFeatureRequest request;
+      request.setFilterFids( mMovedFeatures ).setNoAttributes();
+      QgsFeatureIterator fi = vlayer->getFeatures( request );
+      QgsFeature f;
+      mRubberBand->reset( vlayer->geometryType() );
+      while ( fi.nextFeature( f ) )
+      {
+        if ( !f.hasGeometry() )
+          continue;
+
+        QgsGeometry geom = f.geometry();
+        if ( geom.translate( dx, dy ) != Qgis::GeometryOperationResult::Success )
+          continue;
+
+        mRubberBand->addGeometry( geom, vlayer, false );
+      }
+    }
+
     mRubberBand->updatePosition();
     mRubberBand->update();
-    mSnapIndicator->setMatch( e->mapPointMatch() );
   }
-  else
-  {
-    mSnapIndicator->setMatch( e->mapPointMatch() );
-  }
+
+  mSnapIndicator->setMatch( e->mapPointMatch() );
 }
 
 void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
