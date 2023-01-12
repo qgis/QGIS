@@ -14,10 +14,8 @@
  ***************************************************************************/
 
 #include "qgscameracontroller.h"
-#include "qgsraycastingutils_p.h"
 #include "qgsterrainentity_p.h"
 #include "qgsvector3d.h"
-#include "qgssettings.h"
 #include "qgs3dutils.h"
 #include "qgswindow3dengine.h"
 #include "qgs3dmapscene.h"
@@ -26,8 +24,6 @@
 
 #include <QDomDocument>
 #include <Qt3DRender/QCamera>
-#include <Qt3DRender/QObjectPicker>
-#include <Qt3DRender/QPickEvent>
 #include <Qt3DInput>
 
 #include "qgslogger.h"
@@ -39,12 +35,10 @@ QgsCameraController::QgsCameraController( Qgs3DMapScene *scene )
   , mCameraBeforeRotation( new Qt3DRender::QCamera )
   , mCameraBeforeDrag( new Qt3DRender::QCamera )
   , mCameraBeforeZoom( new Qt3DRender::QCamera )
-  , mMouseDevice( new Qt3DInput::QMouseDevice() )
-  , mKeyboardDevice( new Qt3DInput::QKeyboardDevice() )
   , mMouseHandler( new Qt3DInput::QMouseHandler )
   , mKeyboardHandler( new Qt3DInput::QKeyboardHandler )
 {
-  mMouseHandler->setSourceDevice( mMouseDevice );
+  mMouseHandler->setSourceDevice( new Qt3DInput::QMouseDevice() );
   connect( mMouseHandler, &Qt3DInput::QMouseHandler::positionChanged,
            this, &QgsCameraController::onPositionChanged );
   connect( mMouseHandler, &Qt3DInput::QMouseHandler::wheel,
@@ -55,7 +49,7 @@ QgsCameraController::QgsCameraController( Qgs3DMapScene *scene )
            this, &QgsCameraController::onMouseReleased );
   addComponent( mMouseHandler );
 
-  mKeyboardHandler->setSourceDevice( mKeyboardDevice );
+  mKeyboardHandler->setSourceDevice( new Qt3DInput::QKeyboardDevice() );
   connect( mKeyboardHandler, &Qt3DInput::QKeyboardHandler::pressed,
            this, &QgsCameraController::onKeyPressed );
   connect( mKeyboardHandler, &Qt3DInput::QKeyboardHandler::released,
