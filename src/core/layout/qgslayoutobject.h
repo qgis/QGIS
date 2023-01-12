@@ -51,6 +51,8 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
 #include "qgslayoutframe.h"
 #include "qgslayoutitemshape.h"
 #include "qgslayoutitempage.h"
+#include "qgslayoutitemmarker.h"
+#include "qgslayoutitemelevationprofile.h"
 #endif
 
 #ifdef SIP_RUN
@@ -110,6 +112,14 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
         case QGraphicsItem::UserType + 111:
           sipType = sipType_QgsLayoutFrame;
           *sipCppRet = static_cast<QgsLayoutFrame *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 117:
+          sipType = sipType_QgsLayoutItemMarker;
+          *sipCppRet = static_cast<QgsLayoutItemMarker *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 118:
+          sipType = sipType_QgsLayoutItemElevationProfile;
+          *sipCppRet = static_cast<QgsLayoutItemElevationProfile *>( sipCpp );
           break;
 
         // did you read that comment above? NO? Go read it now. You're about to break stuff.

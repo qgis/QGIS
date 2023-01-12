@@ -1,0 +1,62 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layout/qgslayoutitemelevationprofile.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsLayoutItemElevationProfile: QgsLayoutItem
+{
+%Docstring(signature="appended")
+A layout item subclass for elevation profile plots.
+
+.. versionadded:: 3.30
+%End
+
+%TypeHeaderCode
+#include "qgslayoutitemelevationprofile.h"
+%End
+  public:
+
+    QgsLayoutItemElevationProfile( QgsLayout *layout );
+%Docstring
+Constructor for QgsLayoutItemElevationProfile, with the specified parent ``layout``.
+%End
+
+    static QgsLayoutItemElevationProfile *create( QgsLayout *layout ) /Factory/;
+%Docstring
+Returns a new elevation profile item for the specified ``layout``.
+
+The caller takes responsibility for deleting the returned object.
+%End
+
+    virtual int type() const;
+
+    virtual QIcon icon() const;
+
+
+  public slots:
+
+    virtual void refresh();
+
+
+  protected:
+    virtual void draw( QgsLayoutItemRenderContext &context );
+
+    virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layout/qgslayoutitemelevationprofile.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

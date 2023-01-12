@@ -401,6 +401,7 @@
 %Include auto_generated/layout/qgslayoutguidecollection.sip
 %Include auto_generated/layout/qgslayoutitem.sip
 %Include auto_generated/layout/qgslayoutitemattributetable.sip
+%Include auto_generated/layout/qgslayoutitemelevationprofile.sip
 %Include auto_generated/layout/qgslayoutitemgroup.sip
 %Include auto_generated/layout/qgslayoutitemhtml.sip
 %Include auto_generated/layout/qgslayoutitemlabel.sip
