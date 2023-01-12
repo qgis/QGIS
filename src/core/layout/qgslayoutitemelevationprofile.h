@@ -46,10 +46,6 @@ class CORE_EXPORT QgsLayoutItemElevationProfile: public QgsLayoutItem
     int type() const override;
     QIcon icon() const override;
 
-  public slots:
-
-    void refresh() override;
-
   protected:
     void draw( QgsLayoutItemRenderContext &context ) override;
     bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
