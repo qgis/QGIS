@@ -15,7 +15,6 @@
 
 #include "qgslayoutguiutils.h"
 #include "qgsgui.h"
-#include "qgslayout.h"
 #include "qgslayoutitemguiregistry.h"
 #include "qgslayoutitemregistry.h"
 #include "qgslayoutviewrubberband.h"
@@ -45,6 +44,7 @@
 #include "qgslayoutattributetablewidget.h"
 #include "qgslayoutitemmanualtable.h"
 #include "qgslayoutmanualtablewidget.h"
+#include "qgslayoutelevationprofilewidget.h"
 #include "qgsmapcanvas.h"
 
 /**
@@ -526,7 +526,7 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
   auto elevationProfileItemMetadata = std::make_unique< QgsLayoutItemGuiMetadata >( QgsLayoutItemRegistry::LayoutElevationProfile, QObject::tr( "Elevation Profile" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionLabel.svg" ) ),
                                       [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
   {
-    return nullptr; //return new QgsLayoutLabelWidget( qobject_cast< QgsLayoutItemLabel * >( item ) );
+    return new QgsLayoutElevationProfileWidget( qobject_cast< QgsLayoutItemElevationProfile * >( item ) );
   }, createRubberBand );
   elevationProfileItemMetadata->setItemCreationFunction( [ = ]( QgsLayout * layout )->QgsLayoutItem *
   {
