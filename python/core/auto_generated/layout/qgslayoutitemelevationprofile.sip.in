@@ -8,6 +8,7 @@
 
 
 
+
 class QgsLayoutItemElevationProfile: QgsLayoutItem
 {
 %Docstring(signature="appended")
@@ -26,6 +27,8 @@ A layout item subclass for elevation profile plots.
 Constructor for QgsLayoutItemElevationProfile, with the specified parent ``layout``.
 %End
 
+    ~QgsLayoutItemElevationProfile();
+
     static QgsLayoutItemElevationProfile *create( QgsLayout *layout ) /Factory/;
 %Docstring
 Returns a new elevation profile item for the specified ``layout``.
@@ -37,6 +40,11 @@ The caller takes responsibility for deleting the returned object.
 
     virtual QIcon icon() const;
 
+    virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
+
+
+
+    Qgs2DPlot *plot();
 
   protected:
     virtual void draw( QgsLayoutItemRenderContext &context );

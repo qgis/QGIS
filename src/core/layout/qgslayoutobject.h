@@ -220,6 +220,12 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
       MapCrs, //!< Map CRS
       StartDateTime, //!< Temporal range's start DateTime
       EndDateTime, //!< Temporal range's end DateTime
+      ElevationProfileDistanceMajorInterval, //!< Major grid line interval for elevation profile distance axis (since QGIS 3.30)
+      ElevationProfileDistanceMinorInterval, //!< Minor grid line interval for elevation profile distance axis (since QGIS 3.30)
+      ElevationProfileDistanceLabelInterval, //!< Label interval for elevation profile distance axis (since QGIS 3.30)
+      ElevationProfileElevationMajorInterval, //!< Major grid line interval for elevation profile elevation axis (since QGIS 3.30)
+      ElevationProfileElevationMinorInterval, //!< Minor grid line interval for elevation profile elevation axis (since QGIS 3.30)
+      ElevationProfileElevationLabelInterval, //!< Label interval for elevation profile elevation axis (since QGIS 3.30)
     };
 
     /**

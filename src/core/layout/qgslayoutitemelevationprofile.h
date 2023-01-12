@@ -20,6 +20,9 @@
 #include "qgis_core.h"
 #include "qgslayoutitem.h"
 
+class QgsLayoutItemElevationProfilePlot;
+class Qgs2DPlot;
+
 /**
  * \ingroup core
  * \brief A layout item subclass for elevation profile plots.
@@ -36,6 +39,8 @@ class CORE_EXPORT QgsLayoutItemElevationProfile: public QgsLayoutItem
      */
     QgsLayoutItemElevationProfile( QgsLayout *layout );
 
+    ~QgsLayoutItemElevationProfile() override;
+
     /**
      * Returns a new elevation profile item for the specified \a layout.
      *
@@ -45,6 +50,11 @@ class CORE_EXPORT QgsLayoutItemElevationProfile: public QgsLayoutItem
 
     int type() const override;
     QIcon icon() const override;
+    void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties ) override;
+
+
+    Qgs2DPlot *plot();
+    const Qgs2DPlot *plot() const SIP_SKIP;
 
   protected:
     void draw( QgsLayoutItemRenderContext &context ) override;
@@ -52,6 +62,8 @@ class CORE_EXPORT QgsLayoutItemElevationProfile: public QgsLayoutItem
     bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) override;
 
   private:
+
+    std::unique_ptr< QgsLayoutItemElevationProfilePlot > mPlot;
 
 };
 

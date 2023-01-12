@@ -109,6 +109,12 @@ void QgsLayoutObject::initPropertyDefinitions()
     { QgsLayoutObject::ScalebarHeight, QgsPropertyDefinition( "dataDefinedScalebarHeight", QObject::tr( "Scalebar height in mm" ), QgsPropertyDefinition::DoublePositive ) },
     { QgsLayoutObject::ScalebarSubdivisionHeight, QgsPropertyDefinition( "dataDefinedScalebarSubdivisionHeight", QObject::tr( "Subdivision height in mm" ), QgsPropertyDefinition::DoublePositive ) },
     { QgsLayoutObject::ScalebarRightSegmentSubdivisions, QgsPropertyDefinition( "dataDefinedScalebarRightSegmentSubdivisions", QObject::tr( "Number of subdivisions in segments to the right of 0" ), QgsPropertyDefinition::IntegerPositive ) },
+    { QgsLayoutObject::ElevationProfileDistanceMajorInterval, QgsPropertyDefinition( "dataDefinedElevationProfileDistanceMajorInterval", QObject::tr( "Major grid line interval" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::ElevationProfileDistanceMinorInterval, QgsPropertyDefinition( "dataDefinedElevationProfileDistanceMinorInterval", QObject::tr( "Minor grid line interval" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::ElevationProfileDistanceLabelInterval, QgsPropertyDefinition( "dataDefinedElevationProfileDistanceLabelInterval", QObject::tr( "Label interval" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::ElevationProfileElevationMajorInterval, QgsPropertyDefinition( "dataDefinedElevationProfileElevationMajorInterval", QObject::tr( "Major grid line interval" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::ElevationProfileElevationMinorInterval, QgsPropertyDefinition( "dataDefinedElevationProfileElevationMinorInterval", QObject::tr( "Minor grid line interval" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::ElevationProfileElevationLabelInterval, QgsPropertyDefinition( "dataDefinedElevationProfileElevationLabelInterval", QObject::tr( "Label interval" ), QgsPropertyDefinition::DoublePositive ) },
   };
 }
 
@@ -195,6 +201,12 @@ bool QgsLayoutObject::propertyAssociatesWithParentMultiframe( QgsLayoutObject::D
     case QgsLayoutObject::MapCrs:
     case QgsLayoutObject::StartDateTime:
     case QgsLayoutObject::EndDateTime:
+    case QgsLayoutObject::ElevationProfileDistanceMajorInterval:
+    case QgsLayoutObject::ElevationProfileDistanceMinorInterval:
+    case QgsLayoutObject::ElevationProfileDistanceLabelInterval:
+    case QgsLayoutObject::ElevationProfileElevationMajorInterval:
+    case QgsLayoutObject::ElevationProfileElevationMinorInterval:
+    case QgsLayoutObject::ElevationProfileElevationLabelInterval:
       return false;
   }
   return false;
