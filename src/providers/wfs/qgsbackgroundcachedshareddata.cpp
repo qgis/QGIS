@@ -227,8 +227,8 @@ bool QgsBackgroundCachedSharedData::createCache()
     return false;
   }
   const QString vsimemFilename = QStringLiteral( "/vsimem/qgis_cache_template_%1/features.sqlite" ).arg( reinterpret_cast< quintptr >( this ), QT_POINTER_SIZE * 2, 16, QLatin1Char( '0' ) );
-  mCacheTablename = CPLGetBasename( vsimemFilename.toStdString().c_str() );
-  VSIUnlink( vsimemFilename.toStdString().c_str() );
+  mCacheTablename = CPLGetBasename( vsimemFilename.toLocal8Bit().constData() );
+  VSIUnlink( vsimemFilename.toUtf8().constData() );
   const char *apszOptions[] = { "INIT_WITH_EPSG=NO", "SPATIALITE=YES", nullptr };
   GDALDatasetH hDS = GDALCreate( hDrv, vsimemFilename.toUtf8().constData(), 0, 0, 0, GDT_Unknown, const_cast<char **>( apszOptions ) );
   if ( !hDS )
@@ -240,9 +240,9 @@ bool QgsBackgroundCachedSharedData::createCache()
 
   // Copy the temporary database back to disk
   vsi_l_offset nLength = 0;
-  GByte *pabyData = VSIGetMemFileBuffer( vsimemFilename.toStdString().c_str(), &nLength, TRUE );
+  GByte *pabyData = VSIGetMemFileBuffer( vsimemFilename.toUtf8().constData(), &nLength, TRUE );
   Q_ASSERT( !QFile::exists( mCacheDbname ) );
-  VSILFILE *fp = VSIFOpenL( mCacheDbname.toStdString().c_str(), "wb" );
+  VSILFILE *fp = VSIFOpenL( mCacheDbname.toUtf8().constData(), "wb" );
   if ( fp )
   {
     VSIFWriteL( pabyData, 1, nLength, fp );
