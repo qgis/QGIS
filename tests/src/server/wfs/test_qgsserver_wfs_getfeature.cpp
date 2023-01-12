@@ -88,21 +88,26 @@ void TestQgsServerWfsGetFeature::nullValueProperty()
   wfsLayers << vl->id();
   project.writeEntry( "WFSLayers", "/", wfsLayers );
 
-  // build response
-  QgsServerRequest request;
-  request.setParameter( "VERSION", "1.0.0" );
-  request.setParameter( "TYPENAME", "vl" );
+  //
+  // GML2
+  //
 
-  QgsBufferServerResponse response;
-  QgsWfs::writeGetFeature( &interface, &project, "", request, response );
+  // build response
+  QgsServerRequest gml2Request;
+  gml2Request.setParameter( "VERSION", "1.0.0" );
+  gml2Request.setParameter( "TYPENAME", "vl" );
+  gml2Request.setParameter( "OUTPUTFORMAT", "gml2" );
+
+  QgsBufferServerResponse gml2Response;
+  QgsWfs::writeGetFeature( &interface, &project, "", gml2Request, gml2Response );
 
   // check response
-  QDomDocument xml;
-  xml.setContent( response.body() );
+  QDomDocument gml2Xml;
+  gml2Xml.setContent( gml2Response.body() );
 
-  const QDomElement elem = xml.documentElement();
-  const QDomNode featureNode = elem.elementsByTagName( "gml:featureMember" ).at( 0 ).firstChild();
-  const QDomNodeList childs = featureNode.childNodes();
+  const QDomElement gml2Elem = gml2Xml.documentElement();
+  const QDomNode gml2FeatureNode = gml2Elem.elementsByTagName( "gml:featureMember" ).at( 0 ).firstChild();
+  const QDomNodeList gml2Childs = gml2FeatureNode.childNodes();
 
   // attributes for fields name1 and name2 are NULL (QVariant()) for the
   // feature f, so it's not added in the resulting document. This way, the XML
@@ -110,7 +115,36 @@ void TestQgsServerWfsGetFeature::nullValueProperty()
   //   - <gml:boundedBy>
   //   - <qgs:geometry>
   //   - <qgs:name0>0</qgs:name0>
-  QCOMPARE( childs.count(), 3 );
+  QCOMPARE( gml2Childs.count(), 3 );
+
+  //
+  // GML3
+  //
+
+  // build response
+  QgsServerRequest gml3Request;
+  gml3Request.setParameter( "VERSION", "1.0.0" );
+  gml3Request.setParameter( "TYPENAME", "vl" );
+  gml3Request.setParameter( "OUTPUTFORMAT", "gml3" );
+
+  QgsBufferServerResponse gml3Response;
+  QgsWfs::writeGetFeature( &interface, &project, "", gml3Request, gml3Response );
+
+  // check response
+  QDomDocument gml3Xml;
+  gml3Xml.setContent( gml3Response.body() );
+
+  const QDomElement gml3Elem = gml3Xml.documentElement();
+  const QDomNode gml3FeatureNode = gml3Elem.elementsByTagName( "gml:featureMember" ).at( 0 ).firstChild();
+  const QDomNodeList gml3Childs = gml3FeatureNode.childNodes();
+
+  // attributes for fields name1 and name2 are NULL (QVariant()) for the
+  // feature f, so it's not added in the resulting document. This way, the XML
+  // only contains 3 childs:
+  //   - <gml:boundedBy>
+  //   - <qgs:geometry>
+  //   - <qgs:name0>0</qgs:name0>
+  QCOMPARE( gml3Childs.count(), 3 );
 }
 
 QGSTEST_MAIN( TestQgsServerWfsGetFeature )
