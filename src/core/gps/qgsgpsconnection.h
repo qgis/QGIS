@@ -71,6 +71,7 @@ class CORE_EXPORT QgsGpsConnection : public QObject
       GPSDataReceived
     };
 
+#ifndef SIP_RUN
     //! Settings entry GPS connection type
     static const QgsSettingsEntryEnumFlag<Qgis::GpsConnectionType> *settingsGpsConnectionType;
 
@@ -109,6 +110,7 @@ class CORE_EXPORT QgsGpsConnection : public QObject
 
     //! Settings entry GPS time offset from UTC in seconds
     static const QgsSettingsEntryInteger *settingsGpsTimeStampOffsetFromUtc;
+#endif
 
     /**
      * Constructor

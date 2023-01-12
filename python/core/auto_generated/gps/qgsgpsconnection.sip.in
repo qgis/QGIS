@@ -45,29 +45,6 @@ Abstract base class for connection to a GPS device
     };
 
 
-    static const QgsSettingsEntryString *settingsGpsdHostName;
-
-    static const QgsSettingsEntryInteger *settingsGpsdPortNumber;
-
-    static const QgsSettingsEntryString *settingsGpsdDeviceName;
-
-    static const QgsSettingsEntryString *settingsGpsSerialDevice;
-
-    static const QgsSettingsEntryInteger *settingGpsAcquisitionInterval;
-
-    static const QgsSettingsEntryDouble *settingGpsDistanceThreshold;
-
-    static const QgsSettingsEntryBool *settingGpsBearingFromTravelDirection;
-
-    static const QgsSettingsEntryBool *settingGpsApplyLeapSecondsCorrection;
-
-    static const QgsSettingsEntryInteger *settingGpsLeapSeconds;
-
-
-    static const QgsSettingsEntryString *settingsGpsTimeStampTimeZone;
-
-    static const QgsSettingsEntryInteger *settingsGpsTimeStampOffsetFromUtc;
-
     QgsGpsConnection( QIODevice *dev /Transfer/ );
 %Docstring
 Constructor

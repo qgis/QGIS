@@ -52,11 +52,13 @@ class CORE_EXPORT QgsGpsLogger : public QObject
 
   public:
 
+#ifndef SIP_RUN
     //! Settings entry for whether storing GPS attributes as geometry M values should be enabled
     static const QgsSettingsEntryBool *settingsGpsStoreAttributeInMValues;
 
     //! Settings entry dictating which GPS attribute should be stored in geometry M values
     static const QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponent> *settingsGpsMValueComponent;
+#endif
 
     /**
      * Constructor for QgsGpsLogger with the specified \a parent object.
