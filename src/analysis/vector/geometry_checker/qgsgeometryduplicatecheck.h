@@ -29,6 +29,7 @@
 class ANALYSIS_EXPORT QgsGeometryDuplicateCheckError : public QgsGeometryCheckError
 {
   public:
+    //! Constructor
     QgsGeometryDuplicateCheckError( const QgsGeometryCheck *check,
                                     const QgsGeometryCheckerUtils::LayerFeature &layerFeature,
                                     const QgsPointXY &errorLocation,
