@@ -283,7 +283,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Sets the short name of the layer
      *  used by QGIS Server to identify the layer.
-     * \returns the layer short name
      * \see shortName()
      */
     void setShortName( const QString &shortName ) { mShortName = shortName; }
@@ -313,7 +312,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Sets the abstract of the layer
      *  used by QGIS Server in GetCapabilities request.
-     * \returns the layer abstract
      * \see abstract()
      */
     void setAbstract( const QString &abstract ) { mAbstract = abstract; }
@@ -329,7 +327,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Sets the keyword list of the layer
      *  used by QGIS Server in GetCapabilities request.
-     * \returns the layer keyword list
      * \see keywordList()
      */
     void setKeywordList( const QString &keywords ) { mKeywordList = keywords; }
@@ -348,7 +345,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Sets the DataUrl of the layer
      *  used by QGIS Server in GetCapabilities request.
      *  DataUrl is a a link to the underlying data represented by a particular layer.
-     * \returns the layer DataUrl
      * \see dataUrl()
      */
     void setDataUrl( const QString &dataUrl ) { mDataUrl = dataUrl; }
@@ -366,7 +362,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Sets the DataUrl format of the layer
      *  used by QGIS Server in GetCapabilities request.
      *  DataUrl is a a link to the underlying data represented by a particular layer.
-     * \returns the layer DataUrl format
      * \see dataUrlFormat()
      */
     void setDataUrlFormat( const QString &dataUrlFormat ) { mDataUrlFormat = dataUrlFormat; }
@@ -386,7 +381,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Sets the attribution of the layer
      *  used by QGIS Server in GetCapabilities request.
      *  Attribution indicates the provider of a layer or collection of layers.
-     * \returns the layer attribution
      * \see attribution()
      */
     void setAttribution( const QString &attrib ) { mAttribution = attrib; }
@@ -404,7 +398,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Sets the attribution URL of the layer
      *  used by QGIS Server in GetCapabilities request.
      *  Attribution indicates the provider of a layer or collection of layers.
-     * \returns the layer attribution URL
      * \see attributionUrl()
      */
     void setAttributionUrl( const QString &attribUrl ) { mAttributionUrl = attribUrl; }
@@ -458,7 +451,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *  used by QGIS Server in GetCapabilities request
      *  MetadataUrlType indicates the standard to which the metadata complies.
      *  Since QGIS 3.22, it edits the first metadata URL type.
-     * \returns the layer metadata type
      * \see serverProperties()
      * \deprecated since QGIS 3.22
      */

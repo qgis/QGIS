@@ -146,8 +146,6 @@ Add a few example servers to the list.
     virtual void populateLayerList();
 %Docstring
 Populate the layer list.
-
-:return: ``False`` if the layers could not be retrieved or parsed
 %End
 
 

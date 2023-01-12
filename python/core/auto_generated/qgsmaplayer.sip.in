@@ -217,8 +217,6 @@ Returns the layer's data provider, it may be ``None``.
 Sets the short name of the layer
 used by QGIS Server to identify the layer.
 
-:return: the layer short name
-
 .. seealso:: :py:func:`shortName`
 %End
 
@@ -253,8 +251,6 @@ used by QGIS Server in GetCapabilities request.
 Sets the abstract of the layer
 used by QGIS Server in GetCapabilities request.
 
-:return: the layer abstract
-
 .. seealso:: :py:func:`abstract`
 %End
 
@@ -272,8 +268,6 @@ used by QGIS Server in GetCapabilities request.
 %Docstring
 Sets the keyword list of the layer
 used by QGIS Server in GetCapabilities request.
-
-:return: the layer keyword list
 
 .. seealso:: :py:func:`keywordList`
 %End
@@ -295,8 +289,6 @@ Sets the DataUrl of the layer
 used by QGIS Server in GetCapabilities request.
 DataUrl is a a link to the underlying data represented by a particular layer.
 
-:return: the layer DataUrl
-
 .. seealso:: :py:func:`dataUrl`
 %End
 
@@ -316,8 +308,6 @@ DataUrl is a a link to the underlying data represented by a particular layer.
 Sets the DataUrl format of the layer
 used by QGIS Server in GetCapabilities request.
 DataUrl is a a link to the underlying data represented by a particular layer.
-
-:return: the layer DataUrl format
 
 .. seealso:: :py:func:`dataUrlFormat`
 %End
@@ -340,8 +330,6 @@ Sets the attribution of the layer
 used by QGIS Server in GetCapabilities request.
 Attribution indicates the provider of a layer or collection of layers.
 
-:return: the layer attribution
-
 .. seealso:: :py:func:`attribution`
 %End
 
@@ -361,8 +349,6 @@ Attribution indicates the provider of a layer or collection of layers.
 Sets the attribution URL of the layer
 used by QGIS Server in GetCapabilities request.
 Attribution indicates the provider of a layer or collection of layers.
-
-:return: the layer attribution URL
 
 .. seealso:: :py:func:`attributionUrl`
 %End
@@ -417,8 +403,6 @@ Set the metadata type of the layer
 used by QGIS Server in GetCapabilities request
 MetadataUrlType indicates the standard to which the metadata complies.
 Since QGIS 3.22, it edits the first metadata URL type.
-
-:return: the layer metadata type
 
 .. seealso:: :py:func:`serverProperties`
 

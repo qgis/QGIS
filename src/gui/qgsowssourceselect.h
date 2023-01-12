@@ -136,8 +136,6 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
 
     /**
      * \brief Populate the layer list.
-     *
-     * \returns FALSE if the layers could not be retrieved or parsed
      */
     virtual void populateLayerList();
 
