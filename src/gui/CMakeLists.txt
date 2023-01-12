@@ -261,6 +261,7 @@ set(QGIS_GUI_SRCS
   layout/qgslayoutattributetablewidget.cpp
   layout/qgslayoutcombobox.cpp
   layout/qgslayoutcustomdrophandler.cpp
+  layout/qgslayoutelevationprofilewidget.cpp
   layout/qgslayoutguidewidget.cpp
   layout/qgslayouthtmlwidget.cpp
   layout/qgslayoutimageexportoptionsdialog.cpp
@@ -1143,6 +1144,7 @@ set(QGIS_GUI_HDRS
   layout/qgslayoutcombobox.h
   layout/qgslayoutcustomdrophandler.h
   layout/qgslayoutdesignerinterface.h
+  layout/qgslayoutelevationprofilewidget.h
   layout/qgslayoutguidewidget.h
   layout/qgslayouthtmlwidget.h
   layout/qgslayoutimageexportoptionsdialog.h
