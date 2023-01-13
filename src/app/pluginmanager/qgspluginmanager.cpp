@@ -48,8 +48,7 @@
 #include "qgslogger.h"
 #include "qgspluginitemdelegate.h"
 #include "qgssettings.h"
-#include "qgsgui.h"
-#include "qgssettingsregistrygui.h"
+#include "qgshelp.h"
 #ifdef WITH_BINDINGS
 #include "qgspythonutils.h"
 #endif
@@ -64,6 +63,14 @@
 #include <dlfcn.h>
 #endif
 #endif
+
+const QgsSettingsEntryBool *QgsPluginManager::settingsAutomaticallyCheckForPluginUpdates = new QgsSettingsEntryBool( QStringLiteral( "automatically-check-for-updates" ), sTreePluginManager, true, QStringLiteral( "Automatically check for plugin updates on startup" ) );
+const QgsSettingsEntryBool *QgsPluginManager::settingsAllowExperimental = new QgsSettingsEntryBool( QStringLiteral( "allow-experimental" ), sTreePluginManager, false, QStringLiteral( "Allow experimental plugins." ) );
+const QgsSettingsEntryBool *QgsPluginManager::settingsAllowDeprecated = new QgsSettingsEntryBool( QStringLiteral( "allow-deprecated" ), sTreePluginManager, false, QStringLiteral( "Allow deprecated plugins." ) );
+const QgsSettingsEntryVariant *QgsPluginManager::settingsCheckOnStartLastDate = new QgsSettingsEntryVariant( QStringLiteral( "check-on-start-last-date" ), sTreePluginManager, QVariant( QVariant::Date ), QStringLiteral( "Date last time the check was performed." ) );
+const QgsSettingsEntryStringList *QgsPluginManager::settingsSeenPlugins = new QgsSettingsEntryStringList( QStringLiteral( "seen-plugins" ), sTreePluginManager, {}, QStringLiteral( "Date last time the check was performed." ) );
+const QgsSettingsEntryString *QgsPluginManager::settingsLastZipDirectory = new QgsSettingsEntryString( QStringLiteral( "last-zip-directory" ), sTreeUi, QString(), QStringLiteral( "Last ZIP directory." ) );
+const QgsSettingsEntryBool *QgsPluginManager::settingsShowInstallFromZipWarning = new QgsSettingsEntryBool( QStringLiteral( "show-install-from-zip-warning" ), QgsPluginManager::sTreeUi, true );
 
 
 QgsPluginManager::QgsPluginManager( QWidget *parent, bool pluginsAreEnabled, Qt::WindowFlags fl )
@@ -181,17 +188,12 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils *pythonUtils )
 {
   mPythonUtils = pythonUtils;
 
-  // get the QgsSettings group from the installer
-  QString settingsGroup;
-  QgsPythonRunner::eval( QStringLiteral( "pyplugin_installer.instance().exportSettingsGroup()" ), settingsGroup );
-  const QgsSettings settings;
-
   // Now enable Python support:
   // Show and preset widgets only suitable when Python support active
   mOptionsListWidget->item( PLUGMAN_TAB_INSTALL_FROM_ZIP )->setHidden( false );
   buttonUpgradeAll->show();
   buttonInstall->show();
-  buttonInstallExperimental->setVisible( settings.value( settingsGroup + "/allowExperimental", false ).toBool() );
+  buttonInstallExperimental->setVisible( settingsAllowExperimental->value() );
   buttonUninstall->show();
   frameSettings->setHidden( false );
   labelNoPython->setHidden( true );
@@ -235,23 +237,23 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils *pythonUtils )
   connect( actionSortByDateUpdated, &QAction::triggered, mModelProxy, &QgsPluginSortFilterProxyModel::sortPluginsByDateUpdated );
 
   // Initialize the "Install from ZIP" tab widgets
-  mZipFileWidget->setDefaultRoot( settings.value( settingsGroup + "/lastZipDirectory", "." ).toString() );
+  mZipFileWidget->setDefaultRoot( settingsLastZipDirectory->value() );
   mZipFileWidget->setFilter( tr( "Plugin packages (*.zip *.ZIP)" ) );
   connect( mZipFileWidget, &QgsFileWidget::fileChanged, this, &QgsPluginManager::mZipFileWidget_fileChanged );
   connect( buttonInstallFromZip, &QPushButton::clicked, this, &QgsPluginManager::buttonInstallFromZip_clicked );
 
   // Initialize the "Settings" tab widgets
-  if ( QgsSettingsRegistryGui::settingsAutomaticallyCheckForPluginUpdates->value() )
+  if ( settingsAutomaticallyCheckForPluginUpdates->value() )
   {
     ckbCheckUpdates->setChecked( true );
   }
 
-  if ( settings.value( settingsGroup + "/allowExperimental", false ).toBool() )
+  if ( settingsAllowExperimental->value() )
   {
     ckbExperimental->setChecked( true );
   }
 
-  if ( settings.value( settingsGroup + "/allowDeprecated", false ).toBool() )
+  if ( settingsAllowDeprecated->value() )
   {
     ckbDeprecated->setChecked( true );
   }
@@ -1131,11 +1133,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
   }
 
   // Enable/disable buttons
-
-  const QgsSettings settings;
-  QString settingsGroup;
-  QgsPythonRunner::eval( QStringLiteral( "pyplugin_installer.instance().exportSettingsGroup()" ), settingsGroup );
-  const bool expAllowed = settings.value( settingsGroup + "/allowExperimental", false ).toBool();
+  const bool expAllowed = settingsAllowExperimental->value();
 
   const bool installEnabled = metadata->value( QStringLiteral( "pythonic" ) ).toUpper() == QLatin1String( "TRUE" ) && metadata->value( QStringLiteral( "status" ) ) != QLatin1String( "orphan" ) && metadata->value( QStringLiteral( "status" ) ) != QLatin1String( "none available" );
   const bool installExpEnabled = metadata->value( QStringLiteral( "pythonic" ) ).toUpper() == QLatin1String( "TRUE" ) && metadata->value( QStringLiteral( "status_exp" ) ) != QLatin1String( "orphan" ) && metadata->value( QStringLiteral( "status_exp" ) ) != QLatin1String( "none available" );
@@ -1285,10 +1283,7 @@ void QgsPluginManager::reject()
 #ifdef WITH_BINDINGS
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
-    // get the QgsSettings group from the installer
-    QString settingsGroup;
-    QgsPythonRunner::eval( QStringLiteral( "pyplugin_installer.instance().exportSettingsGroup()" ), settingsGroup );
-    QgsSettingsRegistryGui::settingsAutomaticallyCheckForPluginUpdates->setValue( ckbCheckUpdates->isChecked() );
+    settingsAutomaticallyCheckForPluginUpdates->setValue( ckbCheckUpdates->isChecked() );
     QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().onManagerClose()" ) );
   }
 #endif
@@ -1511,8 +1506,7 @@ void QgsPluginManager::mZipFileWidget_fileChanged( const QString &filePath )
 
 void QgsPluginManager::buttonInstallFromZip_clicked()
 {
-  QgsSettings settings;
-  const bool showInstallFromZipWarning = settings.value( QStringLiteral( "UI/showInstallFromZipWarning" ), true ).toBool();
+  const bool showInstallFromZipWarning = settingsShowInstallFromZipWarning->value();
 
   QMessageBox msgbox;
   if ( showInstallFromZipWarning )
@@ -1526,7 +1520,7 @@ void QgsPluginManager::buttonInstallFromZip_clicked()
     QCheckBox *cb = new QCheckBox( tr( "Don't show this again." ) );
     msgbox.setCheckBox( cb );
     msgbox.exec();
-    settings.setValue( QStringLiteral( "UI/showInstallFromZipWarning" ), !msgbox.checkBox()->isChecked() );
+    settingsShowInstallFromZipWarning->setValue( !msgbox.checkBox()->isChecked() );
   }
 
   if ( !showInstallFromZipWarning || msgbox.result() == QMessageBox::Yes )
@@ -1621,20 +1615,14 @@ void QgsPluginManager::buttonDeleteRep_clicked()
 
 void QgsPluginManager::ckbExperimental_toggled( bool state )
 {
-  QString settingsGroup;
-  QgsPythonRunner::eval( QStringLiteral( "pyplugin_installer.instance().exportSettingsGroup()" ), settingsGroup );
-  QgsSettings settings;
-  settings.setValue( settingsGroup + "/allowExperimental", QVariant( state ) );
+  settingsAllowExperimental->setValue( state );
   QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.installer_data.plugins.rebuild()" ) );
   QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().exportPluginsToManager()" ) );
 }
 
 void QgsPluginManager::ckbDeprecated_toggled( bool state )
 {
-  QString settingsGroup;
-  QgsPythonRunner::eval( QStringLiteral( "pyplugin_installer.instance().exportSettingsGroup()" ), settingsGroup );
-  QgsSettings settings;
-  settings.setValue( settingsGroup + "/allowDeprecated", QVariant( state ) );
+  settingsAllowDeprecated->setValue( state );
   QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.installer_data.plugins.rebuild()" ) );
   QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().exportPluginsToManager()" ) );
 }

@@ -89,6 +89,22 @@ class CORE_EXPORT QgsSettingsEntryVariant : public QgsSettingsEntryByReference<Q
     % End
 #endif
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT value( SIP_PYOBJECT type = 0 ) const;
+    % MethodCode
+    typedef PyObject *( *pyqt5_from_qvariant_by_type )( QVariant &value, PyObject *type );
+    QVariant value;
+
+    // QSettings has an internal mutex so release the GIL to avoid the possibility of deadlocks.
+    value = sipCpp->value();
+
+    pyqt5_from_qvariant_by_type f = ( pyqt5_from_qvariant_by_type ) sipImportSymbol( "pyqt5_from_qvariant_by_type" );
+    sipRes = f( value, a0 );
+
+    sipIsErr = !sipRes;
+    % End
+#endif
+
 
     virtual Qgis::SettingsType settingsType() const override;
 

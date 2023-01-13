@@ -84,6 +84,20 @@ This constructor is intended to be used from plugins.
     sipCpp = new sipQgsSettingsEntryVariant( QgsSettingsEntryVariant( *a0, QgsSettings::createPluginTreeElement( *a1 ), *a2, *a3, *a4 ) );
 %End
 
+    SIP_PYOBJECT value( SIP_PYOBJECT type = 0 ) const;
+%MethodCode
+    typedef PyObject *( *pyqt5_from_qvariant_by_type )( QVariant &value, PyObject *type );
+    QVariant value;
+
+    // QSettings has an internal mutex so release the GIL to avoid the possibility of deadlocks.
+    value = sipCpp->value();
+
+    pyqt5_from_qvariant_by_type f = ( pyqt5_from_qvariant_by_type ) sipImportSymbol( "pyqt5_from_qvariant_by_type" );
+    sipRes = f( value, a0 );
+
+    sipIsErr = !sipRes;
+%End
+
 
     virtual Qgis::SettingsType settingsType() const;
 

@@ -19,8 +19,9 @@
 #define QGSSETTINGSREGISTRYAPP_H
 
 #include "qgisapp.h"
-#include "qgis_sip.h"
 #include "qgssettingsregistry.h"
+
+class QgsSettingsEntryBool;
 
 
 class APP_EXPORT QgsSettingsRegistryApp : public QgsSettingsRegistry

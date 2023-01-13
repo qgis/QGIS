@@ -26,12 +26,14 @@
 #include "ui_qgspluginmanagerbase.h"
 #include "qgsoptionsdialogbase.h"
 #include "qgsguiutils.h"
-#include "qgshelp.h"
 #include "qgis.h"
 
 class QgsPluginSortFilterProxyModel;
 class QgsPythonUtils;
 class QgsMessageBar;
+class QgsSettingsEntryBool;
+class QgsSettingsEntryVariant;
+class QgsSettingsEntryStringList;
 
 const int PLUGMAN_TAB_ALL = 0;
 const int PLUGMAN_TAB_INSTALLED = 1;
@@ -49,6 +51,19 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
 {
     Q_OBJECT
   public:
+
+    static inline QgsSettingsTreeElement *sTreePluginManager = QgsSettings::sTreePlugins->createChildElement( QStringLiteral( "_plugin_manager" ) );
+
+    static const QgsSettingsEntryBool *settingsAutomaticallyCheckForPluginUpdates;
+    static const QgsSettingsEntryBool *settingsAllowExperimental;
+    static const QgsSettingsEntryBool *settingsAllowDeprecated;
+    static const QgsSettingsEntryVariant *settingsCheckOnStartLastDate;
+    static const QgsSettingsEntryStringList *settingsSeenPlugins;
+
+    static inline QgsSettingsTreeElement *sTreeUi = sTreePluginManager->createChildElement( QStringLiteral( "UI" ) );
+    static const QgsSettingsEntryString *settingsLastZipDirectory;
+    static const QgsSettingsEntryBool *settingsShowInstallFromZipWarning;
+
     //! Constructor; set pluginsAreEnabled to false in --noplugins mode
     QgsPluginManager( QWidget *parent = nullptr, bool pluginsAreEnabled = true, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 

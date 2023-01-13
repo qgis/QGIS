@@ -105,7 +105,6 @@ mPlugins = dict of dicts {id : {
 
 translatableAttributes = ["name", "description", "about", "tags"]
 
-settingsGroup = "app/plugin_installer"
 reposGroup = "app/plugin_repositories"
 
 officialRepo = (QCoreApplication.translate("QgsPluginInstaller", "QGIS Official Plugin Repository"), "https://plugins.qgis.org/plugins/plugins.xml")
@@ -230,23 +229,22 @@ class Repositories(QObject):
 
     def checkingOnStart(self) -> bool:
         """ return true if checking for news and updates is enabled """
-        return QgsGui.settingsRegistryGui().settingsEntry('plugins/automatically-check-for-updates').value()
+        return QgsSettings.createPluginTreeElement("_plugin_manager").childSetting('automatically-check-for-updates').value()
 
     def setCheckingOnStart(self, state: bool):
         """ set state of checking for news and updates """
-        QgsGui.settingsRegistryGui().settingsEntry('plugins/automatically-check-for-updates').setValue(state)
+        QgsSettings.createPluginTreeElement("_plugin_manager").childSetting('automatically-check-for-updates').setValue(state)
 
     def saveCheckingOnStartLastDate(self):
         """ set today's date as the day of last checking  """
-        settings = QgsSettings()
-        settings.setValue(settingsGroup + "/checkOnStartLastDate", QDate.currentDate())
+        QgsSettings.createPluginTreeElement("_plugin_manager").childSetting('check-on-start-last-date').setValue(QDate.currentDate())
 
     def timeForChecking(self) -> bool:
         """ determine whether it's the time for checking for news and updates now """
         settings = QgsSettings()
         try:
             # QgsSettings may contain ivalid value...
-            interval = settings.value(settingsGroup + "/checkOnStartLastDate", type=QDate).daysTo(QDate.currentDate())
+            interval = QgsSettings.createPluginTreeElement("_plugin_manager").childSetting('check-on-start-last-date').value(type=QDate).daysTo(QDate.currentDate())
         except:
             interval = 0
         if interval >= Repositories.CHECK_ON_START_INTERVAL:
@@ -713,9 +711,8 @@ class Plugins(QObject):
         self.mPlugins = {}
         for i in list(self.localCache.keys()):
             self.mPlugins[i] = self.localCache[i].copy()
-        settings = QgsSettings()
-        allowExperimental = settings.value(settingsGroup + "/allowExperimental", False, type=bool)
-        allowDeprecated = settings.value(settingsGroup + "/allowDeprecated", False, type=bool)
+        allowExperimental = QgsSettings.createPluginTreeElement("_plugin_manager").childSetting("allow-experimental").value()
+        allowDeprecated = QgsSettings.createPluginTreeElement("_plugin_manager").childSetting("allow-deprecated").value()
         for i in list(self.repoCache.values()):
             for j in i:
                 plugin = j.copy()  # do not update repoCache elements!
@@ -811,22 +808,21 @@ class Plugins(QObject):
     # ----------------------------------------- #
     def markNews(self):
         """ mark all new plugins as new """
-        settings = QgsSettings()
-        seenPlugins = settings.value(settingsGroup + '/seen_plugins', list(self.mPlugins.keys()), type=str)
+        seenPlugins = QgsSettings.createPluginTreeElement("_plugin_manager").childSetting("seen-plugins").valueWithDefaultOverride(list(self.mPlugins.keys()))
         if len(seenPlugins) > 0:
-            for i in list(self.mPlugins.keys()):
-                if seenPlugins.count(i) == 0 and self.mPlugins[i]["status"] == "not installed":
-                    self.mPlugins[i]["status"] = "new"
+            for plugin in list(self.mPlugins.keys()):
+                if seenPlugins.count(plugin) == 0 and self.mPlugins[i]["status"] == "not installed":
+                    self.mPlugins[plugin]["status"] = "new"
 
     # ----------------------------------------- #
     def updateSeenPluginsList(self):
         """ update the list of all seen plugins """
-        settings = QgsSettings()
-        seenPlugins = settings.value(settingsGroup + '/seen_plugins', list(self.mPlugins.keys()), type=str)
-        for i in list(self.mPlugins.keys()):
-            if seenPlugins.count(i) == 0:
-                seenPlugins += [i]
-        settings.setValue(settingsGroup + '/seen_plugins', seenPlugins)
+        setting = QgsSettings.createPluginTreeElement("_plugin_manager").childSetting("seen-plugins")
+        seenPlugins = setting.valueWithDefaultOverride(list(self.mPlugins.keys()))
+        for plugin in list(self.mPlugins.keys()):
+            if seenPlugins.count(plugin) == 0:
+                seenPlugins += [plugin]
+        setting.setValue(seenPlugins)
 
     # ----------------------------------------- #
     def isThereAnythingNew(self):
