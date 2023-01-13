@@ -302,7 +302,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   connect( mSetCurveTimer, &QTimer::timeout, this, &QgsElevationProfileWidget::updatePlot );
 
   // initially populate layer tree with project layers
-  populateInitialLayers();
+  mLayerTreeView->populateInitialLayers( QgsProject::instance() );
 
   updateCanvasLayers();
 }
@@ -371,29 +371,6 @@ void QgsElevationProfileWidget::setMainCanvas( QgsMapCanvas *canvas )
 void QgsElevationProfileWidget::cancelJobs()
 {
   mCanvas->cancelJobs();
-}
-
-void QgsElevationProfileWidget::populateInitialLayers()
-{
-  const QList< QgsMapLayer * > layers = QgsProject::instance()->layers< QgsMapLayer * >().toList();
-
-  // sort layers so that types which are more likely to obscure others are rendered below
-  // e.g. vector features should be drawn above raster DEMS, or the DEM line may completely obscure
-  // the vector feature
-  QList< QgsMapLayer * > sortedLayers = QgsMapLayerUtils::sortLayersByType( layers,
-  {
-    QgsMapLayerType::RasterLayer,
-    QgsMapLayerType::MeshLayer,
-    QgsMapLayerType::VectorLayer,
-    QgsMapLayerType::PointCloudLayer
-  } );
-
-  std::reverse( sortedLayers.begin(), sortedLayers.end() );
-  for ( QgsMapLayer *layer : std::as_const( sortedLayers ) )
-  {
-    QgsLayerTreeLayer *node = mLayerTree->addLayer( layer );
-    node->setItemVisibilityChecked( layer->elevationProperties() && layer->elevationProperties()->showByDefaultInElevationProfilePlots() );
-  }
 }
 
 void QgsElevationProfileWidget::updateCanvasLayers()
