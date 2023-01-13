@@ -18,7 +18,9 @@
 #include "qgslayoutitemelevationprofile.h"
 #include "qgslayoutitemregistry.h"
 #include "qgsplot.h"
+#include "qgslayout.h"
 #include "qgsmessagelog.h"
+#include "qgsmaplayerlistutils_p.h"
 
 ///@cond PRIVATE
 class QgsLayoutItemElevationProfilePlot : public Qgs2DPlot
@@ -379,6 +381,19 @@ const Qgs2DPlot *QgsLayoutItemElevationProfile::plot() const
   return mPlot.get();
 }
 
+QList<QgsMapLayer *> QgsLayoutItemElevationProfile::layers() const
+{
+  return _qgis_listRefToRaw( mLayers );
+}
+
+void QgsLayoutItemElevationProfile::setLayers( const QList<QgsMapLayer *> &layers )
+{
+  if ( layers == _qgis_listRefToRaw( mLayers ) )
+    return;
+
+  mLayers = _qgis_listRawToRef( layers );
+}
+
 void QgsLayoutItemElevationProfile::draw( QgsLayoutItemRenderContext &context )
 {
   // size must be in pixels, not layout units
@@ -388,9 +403,26 @@ void QgsLayoutItemElevationProfile::draw( QgsLayoutItemRenderContext &context )
 
 bool QgsLayoutItemElevationProfile::writePropertiesToElement( QDomElement &layoutProfileElem, QDomDocument &doc, const QgsReadWriteContext &rwContext ) const
 {
-  QDomElement plotElement = doc.createElement( QStringLiteral( "plot" ) );
-  mPlot->writeXml( plotElement, doc, rwContext );
-  layoutProfileElem.appendChild( plotElement );
+  {
+    QDomElement plotElement = doc.createElement( QStringLiteral( "plot" ) );
+    mPlot->writeXml( plotElement, doc, rwContext );
+    layoutProfileElem.appendChild( plotElement );
+  }
+
+  {
+    QDomElement layersElement = doc.createElement( QStringLiteral( "layers" ) );
+    for ( const QgsMapLayerRef &layer : mLayers )
+    {
+      QDomElement layerElement = doc.createElement( QStringLiteral( "layer" ) );
+      layerElement.setAttribute( QStringLiteral( "id" ), layer.layerId );
+      layerElement.setAttribute( QStringLiteral( "name" ), layer.name );
+      layerElement.setAttribute( QStringLiteral( "source" ), layer.source );
+      layerElement.setAttribute( QStringLiteral( "provider" ), layer.provider );
+      layersElement.appendChild( layerElement );
+    }
+    layoutProfileElem.appendChild( layersElement );
+  }
+
   return true;
 }
 
@@ -401,6 +433,26 @@ bool QgsLayoutItemElevationProfile::readPropertiesFromElement( const QDomElement
   {
     mPlot->readXml( plotElement, context );
   }
+
+  {
+    mLayers.clear();
+    const QDomElement layersElement = itemElem.firstChildElement( QStringLiteral( "layers" ) );
+    QDomElement layerElement = layersElement.firstChildElement( QStringLiteral( "layer" ) );
+    while ( !layerElement.isNull() )
+    {
+      const QString layerId = layerElement.attribute( QStringLiteral( "id" ) );
+      const QString layerName = layerElement.attribute( QStringLiteral( "name" ) );
+      const QString layerSource = layerElement.attribute( QStringLiteral( "source" ) );
+      const QString layerProvider = layerElement.attribute( QStringLiteral( "provider" ) );
+
+      QgsMapLayerRef ref = QgsMapLayerRef( layerId, layerName, layerSource, layerProvider );
+      ref.resolveWeakly( mLayout->project() );
+      mLayers.append( ref );
+
+      layerElement = layerElement.nextSiblingElement( QStringLiteral( "layer" ) );
+    }
+  }
+
   return true;
 }
 
