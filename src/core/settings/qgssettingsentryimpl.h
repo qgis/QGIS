@@ -90,7 +90,14 @@ class CORE_EXPORT QgsSettingsEntryVariant : public QgsSettingsEntryByReference<Q
 #endif
 
 #ifdef SIP_RUN
-    SIP_PYOBJECT value( SIP_PYOBJECT type = 0 ) const;
+
+    /**
+     * Returns settings value.
+     *
+     * \param type is the Python type of the value to be returned
+     */
+
+    SIP_PYOBJECT valueAs( SIP_PYOBJECT type ) const;
     % MethodCode
     typedef PyObject *( *pyqt5_from_qvariant_by_type )( QVariant &value, PyObject *type );
     QVariant value;

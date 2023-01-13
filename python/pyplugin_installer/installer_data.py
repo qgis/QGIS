@@ -244,7 +244,7 @@ class Repositories(QObject):
         settings = QgsSettings()
         try:
             # QgsSettings may contain ivalid value...
-            interval = QgsSettings.createPluginTreeElement("_plugin_manager").childSetting('check-on-start-last-date').value(type=QDate).daysTo(QDate.currentDate())
+            interval = QgsSettings.createPluginTreeElement("_plugin_manager").childSetting('check-on-start-last-date').valueAs(type=QDate).daysTo(QDate.currentDate())
         except:
             interval = 0
         if interval >= Repositories.CHECK_ON_START_INTERVAL:
