@@ -731,7 +731,6 @@ void Qgs3DMapSettings::setTerrainGenerator( QgsTerrainGenerator *gen )
 {
   if ( mTerrainGenerator )
   {
-    disconnect( mTerrainGenerator.get(), &QgsTerrainGenerator::extentChanged, this, &Qgs3DMapSettings::terrainGeneratorChanged );
     disconnect( mTerrainGenerator.get(), &QgsTerrainGenerator::terrainChanged, this, &Qgs3DMapSettings::terrainGeneratorChanged );
   }
 
@@ -751,7 +750,6 @@ void Qgs3DMapSettings::setTerrainGenerator( QgsTerrainGenerator *gen )
   }
   gen->setExtent( terrainExtent );
   mTerrainGenerator.reset( gen );
-  connect( mTerrainGenerator.get(), &QgsTerrainGenerator::extentChanged, this, &Qgs3DMapSettings::terrainGeneratorChanged );
   connect( mTerrainGenerator.get(), &QgsTerrainGenerator::terrainChanged, this, &Qgs3DMapSettings::terrainGeneratorChanged );
 
   emit terrainGeneratorChanged();

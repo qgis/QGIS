@@ -104,8 +104,6 @@ void QgsOnlineTerrainGenerator::setExtent( const QgsRectangle &extent )
 
   mExtent = extent;
   updateGenerator();
-
-  emit extentChanged();
 }
 
 void QgsOnlineTerrainGenerator::updateGenerator()

@@ -142,8 +142,6 @@ void QgsFlatTerrainGenerator::setExtent( const QgsRectangle &extent )
 
   mExtent = extent;
   updateTilingScheme();
-
-  emit extentChanged();
 }
 
 void QgsFlatTerrainGenerator::updateTilingScheme()
