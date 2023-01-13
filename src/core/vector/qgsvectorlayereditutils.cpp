@@ -486,8 +486,6 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::splitParts( const QgsPoin
 
   double xMin, yMin, xMax, yMax;
   QgsRectangle bBox; //bounding box of the split line
-  Qgis::GeometryOperationResult returnCode = Qgis::GeometryOperationResult::Success;
-  Qgis::GeometryOperationResult splitFunctionReturn; //return code of QgsGeometry::splitGeometry
   int numberOfSplitParts = 0;
 
   QgsFeatureIterator fit;
@@ -546,11 +544,13 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::splitParts( const QgsPoin
 
     const QVector<QgsGeometry> geomCollection = featureGeom.asGeometryCollection();
     QVector<QgsGeometry> resultCollection;
+    QgsPointSequence topologyTestPoints;
     for ( QgsGeometry part : geomCollection )
     {
       QVector<QgsGeometry> newGeometries;
-      QgsPointSequence topologyTestPoints;
-      splitFunctionReturn = part.splitGeometry( splitLine, newGeometries, topologicalEditing, topologyTestPoints, false );
+      QgsPointSequence partTopologyTestPoints;
+
+      const Qgis::GeometryOperationResult splitFunctionReturn = part.splitGeometry( splitLine, newGeometries, topologicalEditing, partTopologyTestPoints, false );
 
       if ( splitFunctionReturn == Qgis::GeometryOperationResult::Success && !newGeometries.isEmpty() )
       {
@@ -559,14 +559,7 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::splitParts( const QgsPoin
           resultCollection.append( newGeometries.at( i ).asGeometryCollection() );
         }
 
-        if ( topologicalEditing )
-        {
-          QgsPointSequence::const_iterator topol_it = topologyTestPoints.constBegin();
-          for ( ; topol_it != topologyTestPoints.constEnd(); ++topol_it )
-          {
-            addTopologicalPoints( *topol_it );
-          }
-        }
+        topologyTestPoints.append( partTopologyTestPoints );
 
         ++numberOfSplitParts;
       }
@@ -587,15 +580,24 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::splitParts( const QgsPoin
     QgsGeometry newGeom = QgsGeometry::collectGeometry( resultCollection );
     mLayer->changeGeometry( feat.id(), newGeom ) ;
 
+    if ( topologicalEditing )
+    {
+      QgsPointSequence::const_iterator topol_it = topologyTestPoints.constBegin();
+      for ( ; topol_it != topologyTestPoints.constEnd(); ++topol_it )
+      {
+        addTopologicalPoints( *topol_it );
+      }
+    }
+
   }
-  if ( numberOfSplitParts == 0 && mLayer->selectedFeatureCount() > 0  && returnCode == Qgis::GeometryOperationResult::Success )
+  if ( numberOfSplitParts == 0 && mLayer->selectedFeatureCount() > 0 )
   {
     //There is a selection but no feature has been split.
     //Maybe user forgot that only the selected features are split
-    returnCode = Qgis::GeometryOperationResult::NothingHappened;
+    return Qgis::GeometryOperationResult::NothingHappened;
   }
 
-  return returnCode;
+  return Qgis::GeometryOperationResult::Success;
 }
 
 
