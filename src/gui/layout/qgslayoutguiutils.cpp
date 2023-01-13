@@ -46,6 +46,7 @@
 #include "qgslayoutmanualtablewidget.h"
 #include "qgslayoutelevationprofilewidget.h"
 #include "qgsmapcanvas.h"
+#include "qgsplot.h"
 
 /**
  * Attempts to find the best guess at a map item to link \a referenceItem to,
@@ -532,22 +533,23 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
   {
     std::unique_ptr< QgsLayoutItemElevationProfile > profileItem = std::make_unique< QgsLayoutItemElevationProfile >( layout );
 
-#if 0
-    //set default table fonts from settings
+    //set default fonts from settings
     QgsSettings settings;
     const QString defaultFontString = settings.value( QStringLiteral( "LayoutDesigner/defaultFont" ), QVariant(), QgsSettings::Gui ).toString();
     if ( !defaultFontString.isEmpty() )
     {
-      QgsTextFormat format;
+      QgsTextFormat format = profileItem->plot()->xAxis().textFormat();
       QFont f = format.font();
       f.setFamily( defaultFontString );
       format.setFont( f );
-      tableMultiFrame->setContentTextFormat( format );
-      f.setBold( true );
+      profileItem->plot()->xAxis().setTextFormat( format );
+
+      format = profileItem->plot()->yAxis().textFormat();
+      f = format.font();
+      f.setFamily( defaultFontString );
       format.setFont( f );
-      tableMultiFrame->setHeaderTextFormat( format );
+      profileItem->plot()->yAxis().setTextFormat( format );
     }
-#endif
     return profileItem.release();
   } );
   registry->addLayoutItemGuiMetadata( elevationProfileItemMetadata.release() );
