@@ -25,10 +25,15 @@
 #include "qgsvectorlayer.h"
 #include "qgsnumericformatselectorwidget.h"
 #include "qgslayout.h"
+#include "qgslayertree.h"
+#include "qgslayertreeregistrybridge.h"
+#include "qgselevationprofilelayertreeview.h"
 
 QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemElevationProfile *profile )
   : QgsLayoutItemBaseWidget( nullptr, profile )
   , mProfile( profile )
+  , mLayerTree( new QgsLayerTree() )
+  , mLayerTreeBridge( new QgsLayerTreeRegistryBridge( mLayerTree.get(), mProfile->layout() ? mProfile->layout()->project() : QgsProject::instance(), this ) )
 {
   Q_ASSERT( mProfile );
 
@@ -38,6 +43,9 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   //add widget for general composer item properties
   mItemPropertiesWidget = new QgsLayoutItemPropertiesWidget( this, profile );
   mainLayout->addWidget( mItemPropertiesWidget );
+
+  connect( mLayerTree.get(), &QgsLayerTree::layerOrderChanged, this, &QgsLayoutElevationProfileWidget::updateItemLayers );
+  connect( mLayerTree.get(), &QgsLayerTreeGroup::visibilityChanged, this, &QgsLayoutElevationProfileWidget::updateItemLayers );
 
   mSpinMinDistance->setClearValue( 0 );
   connect( mSpinMinDistance, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [ = ]( double value )
@@ -363,6 +371,15 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   registerDataDefinedButton( mDDBtnTopMargin, QgsLayoutObject::MarginTop );
   registerDataDefinedButton( mDDBtnBottomMargin, QgsLayoutObject::MarginBottom );
 
+  mLayerTreeView = new QgsElevationProfileLayerTreeView( mLayerTree.get() );
+
+  QVBoxLayout *vl = new QVBoxLayout();
+  vl->setContentsMargins( 0, 0, 0, 0 );
+  vl->addWidget( mLayerTreeView );
+  mTreeViewContainer->setLayout( vl );
+
+  mLayerTreeView->populateInitialLayers( mProfile->layout() && mProfile->layout()->project() ? mProfile->layout()->project() : QgsProject::instance() );
+
   setGuiElementValues();
 
   mDistanceAxisMajorLinesSymbolButton->registerExpressionContextGenerator( mProfile );
@@ -496,4 +513,22 @@ void QgsLayoutElevationProfileWidget::setGuiElementValues()
   updateDataDefinedButton( mDDBtnBottomMargin );
 
   mBlockChanges--;
+}
+
+void QgsLayoutElevationProfileWidget::updateItemLayers()
+{
+  if ( mBlockChanges )
+    return;
+
+  QList<QgsMapLayer *> layers;
+  const QList< QgsMapLayer * > layerOrder = mLayerTree->layerOrder();
+  layers.reserve( layerOrder.size() );
+  for ( QgsMapLayer *layer : layerOrder )
+  {
+    if ( mLayerTree->findLayer( layer )->isVisible() )
+      layers << layer;
+  }
+
+  mProfile->setLayers( layers );
+  mProfile->update();
 }

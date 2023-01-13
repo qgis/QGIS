@@ -28,6 +28,8 @@
 #include <functional>
 #include <QPointer>
 
+class QgsElevationProfileLayerTreeView;
+
 /**
  * \ingroup gui
  * \brief A widget for layout elevation profile item settings.
@@ -51,6 +53,7 @@ class GUI_EXPORT QgsLayoutElevationProfileWidget: public QgsLayoutItemBaseWidget
   private slots:
 
     void setGuiElementValues();
+    void updateItemLayers();
 
   private:
 
@@ -59,6 +62,10 @@ class GUI_EXPORT QgsLayoutElevationProfileWidget: public QgsLayoutItemBaseWidget
     QPointer< QgsLayoutItemElevationProfile > mProfile = nullptr;
 
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
+
+    std::unique_ptr< QgsLayerTree > mLayerTree;
+    QgsLayerTreeRegistryBridge *mLayerTreeBridge = nullptr;
+    QgsElevationProfileLayerTreeView *mLayerTreeView = nullptr;
 };
 
 #endif //QGSLAYOUTELEVATIONPROFILEWIDGET_H

@@ -60,12 +60,31 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-285</y>
+        <y>0</y>
         <width>490</width>
-        <height>966</height>
+        <height>1267</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
+       <item>
+        <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
+         <property name="title">
+          <string>Layers</string>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QWidget" name="mTreeViewContainer" native="true">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>250</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupChartRanges">
          <property name="title">
