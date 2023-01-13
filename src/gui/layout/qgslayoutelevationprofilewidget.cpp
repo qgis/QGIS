@@ -378,7 +378,9 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   vl->addWidget( mLayerTreeView );
   mTreeViewContainer->setLayout( vl );
 
+  mBlockChanges++;
   mLayerTreeView->populateInitialLayers( mProfile->layout() && mProfile->layout()->project() ? mProfile->layout()->project() : QgsProject::instance() );
+  mBlockChanges--;
 
   setGuiElementValues();
 
@@ -496,6 +498,12 @@ void QgsLayoutElevationProfileWidget::setGuiElementValues()
   mSpinRightMargin->setValue( mProfile->plot()->margins().right() );
   mSpinTopMargin->setValue( mProfile->plot()->margins().top() );
   mSpinBottomMargin->setValue( mProfile->plot()->margins().bottom() );
+
+  const QList<QgsLayerTreeLayer *>  layers = mLayerTree->findLayers();
+  for ( QgsLayerTreeLayer *layer : layers )
+  {
+    layer->setItemVisibilityChecked( mProfile->layers().contains( layer->layer() ) );
+  }
 
   updateDataDefinedButton( mDDBtnMinDistance );
   updateDataDefinedButton( mDDBtnMaxDistance );
