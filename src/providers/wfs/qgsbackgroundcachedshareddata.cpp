@@ -227,7 +227,7 @@ bool QgsBackgroundCachedSharedData::createCache()
     return false;
   }
   const QString vsimemFilename = QStringLiteral( "/vsimem/qgis_cache_template_%1/features.sqlite" ).arg( reinterpret_cast< quintptr >( this ), QT_POINTER_SIZE * 2, 16, QLatin1Char( '0' ) );
-  mCacheTablename = CPLGetBasename( vsimemFilename.toLocal8Bit().constData() );
+  mCacheTablename = CPLGetBasename( vsimemFilename.toUtf8().constData() );
   VSIUnlink( vsimemFilename.toUtf8().constData() );
   const char *apszOptions[] = { "INIT_WITH_EPSG=NO", "SPATIALITE=YES", nullptr };
   GDALDatasetH hDS = GDALCreate( hDrv, vsimemFilename.toUtf8().constData(), 0, 0, 0, GDT_Unknown, const_cast<char **>( apszOptions ) );
