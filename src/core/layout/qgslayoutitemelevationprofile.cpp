@@ -31,7 +31,8 @@ class QgsLayoutItemElevationProfilePlot : public Qgs2DPlot
 
     void renderContent( QgsRenderContext &rc, const QRectF &plotArea ) override
     {
-
+      Q_UNUSED( rc );
+      Q_UNUSED( plotArea )
     }
 
   private:
