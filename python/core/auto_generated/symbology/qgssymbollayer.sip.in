@@ -1313,9 +1313,12 @@ The ``rings`` argument optionally specifies a list of polygon rings to render as
     void setAngle( double angle );
     double angle() const;
 
-    virtual QImage toTiledPattern( ) const;
+    virtual QImage toTiledPatternImage( ) const;
 %Docstring
-Renders the symbol layer to an image that can be used as a seamless pattern fill.
+Renders the symbol layer to an image that can be used as a seamless pattern fill
+for polygons, this method is used by SLD export to generate image tiles for
+ExternalGraphic polygon fills.
+
 The default implementation returns a null image.
 
 :return: the tile image (not necessarily a square) or a null image if not implemented.

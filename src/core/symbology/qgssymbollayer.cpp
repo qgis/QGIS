@@ -844,7 +844,7 @@ void QgsFillSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSize
   stopRender( context );
 }
 
-QImage QgsFillSymbolLayer::toTiledPattern() const
+QImage QgsFillSymbolLayer::toTiledPatternImage() const
 {
   return QImage();
 }

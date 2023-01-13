@@ -413,7 +413,7 @@ void QgsSimpleFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
   bool exportOk { false };
   if ( ! context.exportFilePath().isEmpty() && context.exportOptions().testFlag( Qgis::SldExportOption::Png ) && mBrush.style() != Qt::NoBrush )
   {
-    const QImage image { toTiledPattern( ) };
+    const QImage image { toTiledPatternImage( ) };
     if ( ! image.isNull() )
     {
       QDomElement graphicFillElem = doc.createElement( QStringLiteral( "se:GraphicFill" ) );
@@ -570,10 +570,8 @@ Qt::BrushStyle QgsSimpleFillSymbolLayer::dxfBrushStyle() const
   return mBrushStyle;
 }
 
-QImage QgsSimpleFillSymbolLayer::toTiledPattern( ) const
+QImage QgsSimpleFillSymbolLayer::toTiledPatternImage( ) const
 {
-  // TODO: calculate size, e.g. for solid brush a 1x1 image is sufficient
-  //       for other brush styles must be calculated.
   QPixmap pixmap( QSize( 32, 32 ) );
   pixmap.fill( Qt::transparent );
   QPainter painter;
@@ -2640,7 +2638,7 @@ void QgsLinePatternFillSymbolLayer::stopFeatureRender( const QgsFeature &, QgsRe
   // deliberately don't pass this on to subsymbol here
 }
 
-QImage QgsLinePatternFillSymbolLayer::toTiledPattern() const
+QImage QgsLinePatternFillSymbolLayer::toTiledPatternImage() const
 {
 
   double lineAngleRads { qDegreesToRadians( mLineAngle ) };
@@ -3413,7 +3411,7 @@ void QgsLinePatternFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &eleme
   bool exportOk { false };
   if ( ! context.exportFilePath().isEmpty() && context.exportOptions().testFlag( Qgis::SldExportOption::Png ) )
   {
-    const QImage image { toTiledPattern( ) };
+    const QImage image { toTiledPatternImage() };
     if ( ! image.isNull() )
     {
       const QFileInfo info { context.exportFilePath() };
@@ -4361,7 +4359,7 @@ void QgsPointPatternFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &elem
     bool exportOk { false };
     if ( ! context.exportFilePath().isEmpty() && context.exportOptions().testFlag( Qgis::SldExportOption::Png ) )
     {
-      const QImage image { toTiledPattern( ) };
+      const QImage image { toTiledPatternImage( ) };
       if ( ! image.isNull() )
       {
         QDomElement graphicElem = doc.createElement( QStringLiteral( "se:Graphic" ) );
@@ -4408,7 +4406,7 @@ void QgsPointPatternFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &elem
   }
 }
 
-QImage QgsPointPatternFillSymbolLayer::toTiledPattern() const
+QImage QgsPointPatternFillSymbolLayer::toTiledPatternImage() const
 {
 
   double angleRads { qDegreesToRadians( mAngle ) };
@@ -4472,92 +4470,102 @@ QgsSymbolLayer *QgsPointPatternFillSymbolLayer::createFromSld( QDomElement &elem
   std::unique_ptr< QgsPointPatternFillSymbolLayer > pointPatternFillSl = std::make_unique< QgsPointPatternFillSymbolLayer >();
   pointPatternFillSl->setSubSymbol( marker.release() );
 
+  auto distanceParser = [ & ]( const QStringList & values )
+  {
+
+    // This may not be correct in all cases, TODO: check "uom"
+    pointPatternFillSl->setDistanceXUnit( QgsUnitTypes::RenderUnit::RenderPixels );
+    pointPatternFillSl->setDistanceYUnit( QgsUnitTypes::RenderUnit::RenderPixels );
+
+    switch ( values.count( ) )
+    {
+      case 1: // top-right-bottom-left (single value for all four margins)
+      {
+        bool ok;
+        const double v { values.at( 0 ).toDouble( &ok ) };
+        if ( ok )
+        {
+          pointPatternFillSl->setDistanceX( v * 2 + markerSize );
+          pointPatternFillSl->setDistanceY( v * 2 + markerSize );
+        }
+        break;
+      }
+      case 2: // top-bottom,right-left (two values, top and bottom sharing the same value)
+      {
+        bool ok;
+        const double vX { values.at( 1 ).toDouble( &ok ) };
+        if ( ok )
+        {
+          pointPatternFillSl->setDistanceX( vX * 2 + markerSize );
+        }
+        const double vY { values.at( 0 ).toDouble( &ok ) };
+        if ( ok )
+        {
+          pointPatternFillSl->setDistanceY( vY * 2 + markerSize );
+        }
+        break;
+      }
+      case 3: // top,right-left,bottom (three values, with right and left sharing the same value)
+      {
+        bool ok;
+        const double vX { values.at( 1 ).toDouble( &ok ) };
+        if ( ok )
+        {
+          pointPatternFillSl->setDistanceX( vX * 2 + markerSize );
+        }
+        const double vYt { values.at( 0 ).toDouble( &ok ) };
+        if ( ok )
+        {
+          const double vYb { values.at( 2 ).toDouble( &ok ) };
+          if ( ok )
+          {
+            pointPatternFillSl->setDistanceY( ( vYt + vYb ) + markerSize );
+          }
+        }
+        break;
+      }
+      case 4: // top,right,bottom,left (one explicit value per margin)
+      {
+        bool ok;
+        const double vYt { values.at( 0 ).toDouble( &ok ) };
+        if ( ok )
+        {
+          const double vYb { values.at( 2 ).toDouble( &ok ) };
+          if ( ok )
+          {
+            pointPatternFillSl->setDistanceY( ( vYt + vYb ) + markerSize );
+          }
+        }
+        const double vXr { values.at( 1 ).toDouble( &ok ) };
+        if ( ok )
+        {
+          const double vXl { values.at( 3 ).toDouble( &ok ) };
+          if ( ok )
+          {
+            pointPatternFillSl->setDistanceX( ( vXr + vXl ) + markerSize );
+          }
+        }
+        break;
+      }
+      default:
+        break;
+    }
+  };
+
   // Set distance X and Y from vendor options
   QgsStringMap vendorOptions = QgsSymbolLayerUtils::getVendorOptionList( element );
   for ( QgsStringMap::iterator it = vendorOptions.begin(); it != vendorOptions.end(); ++it )
   {
-    if ( it.key() == QLatin1String( "graphic-margin" ) )
+    // Legacy
+    if ( it.key() == QLatin1String( "distance" ) )
     {
+      distanceParser( it.value().split( ',' ) );
+    }
+    // GeoServer
+    else if ( it.key() == QLatin1String( "graphic-margin" ) )
+    {
+      distanceParser( it.value().split( ' ' ) );
 
-      // This may not be correct in all cases, TODO: check "uom"
-      pointPatternFillSl->setDistanceXUnit( QgsUnitTypes::RenderUnit::RenderPixels );
-      pointPatternFillSl->setDistanceYUnit( QgsUnitTypes::RenderUnit::RenderPixels );
-
-      const QStringList values = it.value().split( ' ' );
-
-      switch ( values.count( ) )
-      {
-        case 1: // top-right-bottom-left (single value for all four margins)
-        {
-          bool ok;
-          const double v { values.at( 0 ).toDouble( &ok ) };
-          if ( ok )
-          {
-            pointPatternFillSl->setDistanceX( v * 2 + markerSize );
-            pointPatternFillSl->setDistanceY( v * 2 + markerSize );
-          }
-          break;
-        }
-        case 2: // top-bottom,right-left (two values, top and bottom sharing the same value)
-        {
-          bool ok;
-          const double vX { values.at( 1 ).toDouble( &ok ) };
-          if ( ok )
-          {
-            pointPatternFillSl->setDistanceX( vX * 2 + markerSize );
-          }
-          const double vY { values.at( 0 ).toDouble( &ok ) };
-          if ( ok )
-          {
-            pointPatternFillSl->setDistanceY( vY * 2 + markerSize );
-          }
-          break;
-        }
-        case 3: // top,right-left,bottom (three values, with right and left sharing the same value)
-        {
-          bool ok;
-          const double vX { values.at( 1 ).toDouble( &ok ) };
-          if ( ok )
-          {
-            pointPatternFillSl->setDistanceX( vX * 2 + markerSize );
-          }
-          const double vYt { values.at( 0 ).toDouble( &ok ) };
-          if ( ok )
-          {
-            const double vYb { values.at( 2 ).toDouble( &ok ) };
-            if ( ok )
-            {
-              pointPatternFillSl->setDistanceY( ( vYt + vYb ) + markerSize );
-            }
-          }
-          break;
-        }
-        case 4: // top,right,bottom,left (one explicit value per margin)
-        {
-          bool ok;
-          const double vYt { values.at( 0 ).toDouble( &ok ) };
-          if ( ok )
-          {
-            const double vYb { values.at( 2 ).toDouble( &ok ) };
-            if ( ok )
-            {
-              pointPatternFillSl->setDistanceY( ( vYt + vYb ) + markerSize );
-            }
-          }
-          const double vXr { values.at( 1 ).toDouble( &ok ) };
-          if ( ok )
-          {
-            const double vXl { values.at( 3 ).toDouble( &ok ) };
-            if ( ok )
-            {
-              pointPatternFillSl->setDistanceX( ( vXr + vXl ) + markerSize );
-            }
-          }
-          break;
-        }
-        default:
-          break;
-      }
     }
   }
   return pointPatternFillSl.release();
