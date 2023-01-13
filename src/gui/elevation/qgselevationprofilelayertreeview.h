@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgselevationprofilelayertreemodel.h
+                          qgselevationprofilelayertreeview.h
                           ---------------
     begin                : April 2022
     copyright            : (C) 2022 by Nyall Dawson
@@ -15,21 +15,34 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSELEVATIONPROFILELAYERTREEMODEL_H
-#define QGSELEVATIONPROFILELAYERTREEMODEL_H
+#ifndef QGSELEVATIONPROFILELAYERTREEVIEW_H
+#define QGSELEVATIONPROFILELAYERTREEVIEW_H
 
 #include "qgsconfig.h"
 #include "qgslayertreemodel.h"
+#include "qgis_gui.h"
 
 #include <QSortFilterProxyModel>
+#include <QTreeView>
+
+#define SIP_NO_FILE
+
+
+class QgsLayerTree;
+class QgsElevationProfileLayerTreeModel;
+class QgsElevationProfileLayerTreeProxyModel;
+class QgsMapLayer;
+
 
 /**
- * \ingroup app
+ * \ingroup gui
  * \brief A layer tree model subclass for elevation profiles.
  *
- * \since QGIS 3.26
+ * \note Not available in Python bindings
+ *
+ * \since QGIS 3.30
  */
-class QgsElevationProfileLayerTreeModel : public QgsLayerTreeModel
+class GUI_EXPORT QgsElevationProfileLayerTreeModel : public QgsLayerTreeModel
 {
 
     Q_OBJECT
@@ -57,9 +70,11 @@ class QgsElevationProfileLayerTreeModel : public QgsLayerTreeModel
  * \ingroup gui
  * \brief A proxy model for elevation profiles.
  *
- * \since QGIS 3.26
+ * \note Not available in Python bindings
+ *
+ * \since QGIS 3.30
  */
-class QgsElevationProfileLayerTreeProxyModel : public QSortFilterProxyModel
+class GUI_EXPORT QgsElevationProfileLayerTreeProxyModel : public QSortFilterProxyModel
 {
 
     Q_OBJECT
@@ -81,4 +96,43 @@ class QgsElevationProfileLayerTreeProxyModel : public QSortFilterProxyModel
 
 };
 
-#endif // QGSELEVATIONPROFILELAYERTREEMODEL_H
+/**
+ * \ingroup gui
+ * \brief A layer tree view for elevation profiles.
+ *
+ * \note Not available in Python bindings
+ *
+ * \since QGIS 3.30
+ */
+class GUI_EXPORT QgsElevationProfileLayerTreeView : public QTreeView
+{
+
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Construct a new tree view with given layer tree (root node must not be NULLPTR).
+     * The root node is not transferred by the view.
+     */
+    explicit QgsElevationProfileLayerTreeView( QgsLayerTree *rootNode, QWidget *parent = nullptr );
+
+    /**
+     * Converts a view \a index to a map layer.
+     */
+    QgsMapLayer *indexToLayer( const QModelIndex &index );
+
+  protected:
+
+    void resizeEvent( QResizeEvent *event ) override;
+
+  private:
+
+    QgsElevationProfileLayerTreeModel *mModel = nullptr;
+    QgsElevationProfileLayerTreeProxyModel *mProxyModel = nullptr;
+    QgsLayerTree *mLayerTree = nullptr;
+
+};
+
+
+#endif // QGSELEVATIONPROFILELAYERTREEVIEW_H
