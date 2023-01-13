@@ -504,6 +504,7 @@ void QgsLayoutElevationProfileWidget::setGuiElementValues()
   {
     layer->setItemVisibilityChecked( mProfile->layers().contains( layer->layer() ) );
   }
+  mLayerTree->reorderGroupLayers( mProfile->layers() );
 
   updateDataDefinedButton( mDDBtnMinDistance );
   updateDataDefinedButton( mDDBtnMaxDistance );
