@@ -247,17 +247,17 @@ QgsDataSourceUri &QgsOwsConnection::addWfsConnectionSettings( QgsDataSourceUri &
 
 QStringList QgsOwsConnection::connectionList( const QString &service )
 {
-  return QgsOwsConnection::sTtreeOwsServices->items( {service.toLower()} );
+  return QgsOwsConnection::sTreeOwsConnections->items( {service.toLower()} );
 }
 
 QString QgsOwsConnection::selectedConnection( const QString &service )
 {
-  return QgsOwsConnection::sTtreeOwsServices->selectedItem( {service.toLower()} );
+  return QgsOwsConnection::sTreeOwsConnections->selectedItem( {service.toLower()} );
 }
 
 void QgsOwsConnection::setSelectedConnection( const QString &service, const QString &name )
 {
-  QgsOwsConnection::sTtreeOwsServices->setSelectedItem( name, {service.toLower()} );
+  QgsOwsConnection::sTreeOwsConnections->setSelectedItem( name, {service.toLower()} );
 }
 
 void QgsOwsConnection::addCommonConnectionSettings( QgsDataSourceUri &uri, const QString &key )
