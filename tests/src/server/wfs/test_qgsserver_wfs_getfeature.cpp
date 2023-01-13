@@ -107,15 +107,15 @@ void TestQgsServerWfsGetFeature::nullValueProperty()
 
   const QDomElement gml2Elem = gml2Xml.documentElement();
   const QDomNode gml2FeatureNode = gml2Elem.elementsByTagName( "gml:featureMember" ).at( 0 ).firstChild();
-  const QDomNodeList gml2Childs = gml2FeatureNode.childNodes();
+  const QDomNodeList gml2Children = gml2FeatureNode.childNodes();
 
   // attributes for fields name1 and name2 are NULL (QVariant()) for the
   // feature f, so it's not added in the resulting document. This way, the XML
-  // only contains 3 childs:
+  // only contains 3 children:
   //   - <gml:boundedBy>
   //   - <qgs:geometry>
   //   - <qgs:name0>0</qgs:name0>
-  QCOMPARE( gml2Childs.count(), 3 );
+  QCOMPARE( gml2Children.count(), 3 );
 
   //
   // GML3
@@ -136,15 +136,15 @@ void TestQgsServerWfsGetFeature::nullValueProperty()
 
   const QDomElement gml3Elem = gml3Xml.documentElement();
   const QDomNode gml3FeatureNode = gml3Elem.elementsByTagName( "gml:featureMember" ).at( 0 ).firstChild();
-  const QDomNodeList gml3Childs = gml3FeatureNode.childNodes();
+  const QDomNodeList gml3Children = gml3FeatureNode.childNodes();
 
   // attributes for fields name1 and name2 are NULL (QVariant()) for the
   // feature f, so it's not added in the resulting document. This way, the XML
-  // only contains 3 childs:
+  // only contains 3 children:
   //   - <gml:boundedBy>
   //   - <qgs:geometry>
   //   - <qgs:name0>0</qgs:name0>
-  QCOMPARE( gml3Childs.count(), 3 );
+  QCOMPARE( gml3Children.count(), 3 );
 }
 
 QGSTEST_MAIN( TestQgsServerWfsGetFeature )
