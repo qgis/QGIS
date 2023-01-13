@@ -23,6 +23,7 @@
 #include "qgsgeometry.h"
 #include "qobjectuniqueptr.h"
 #include "qgssettingsentryimpl.h"
+#include "qgselevationprofilelayertreeview.h"
 
 #include <QWidgetAction>
 #include <QElapsedTimer>
@@ -42,13 +43,24 @@ class QgsPlotToolZoom;
 class QgsPlotToolXAxisZoom;
 class QgsDoubleSpinBox;
 class QgsElevationProfileWidgetSettingsAction;
-class QgsElevationProfileLayerTreeView;
 class QgsLayerTree;
 class QgsLayerTreeRegistryBridge;
 class QgsElevationProfileToolIdentify;
 class QgsElevationProfileToolMeasure;
 class QLabel;
 class QgsProfilePoint;
+
+class QgsAppElevationProfileLayerTreeView : public QgsElevationProfileLayerTreeView
+{
+    Q_OBJECT
+  public:
+
+    explicit QgsAppElevationProfileLayerTreeView( QgsLayerTree *rootNode, QWidget *parent = nullptr );
+
+  protected:
+
+    void contextMenuEvent( QContextMenuEvent *event ) override;
+};
 
 class QgsElevationProfileWidget : public QWidget
 {

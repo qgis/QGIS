@@ -229,6 +229,7 @@ set(QGIS_GUI_SRCS
   editorwidgets/qgsvaluerelationwidgetfactory.cpp
 
   elevation/qgselevationprofilecanvas.cpp
+  elevation/qgselevationprofilelayertreeview.cpp
 
   history/qgshistoryprovider.cpp
   history/qgshistoryproviderregistry.cpp
@@ -1106,6 +1107,7 @@ set(QGIS_GUI_HDRS
   effects/qgspainteffectwidget.h
 
   elevation/qgselevationprofilecanvas.h
+  elevation/qgselevationprofilelayertreeview.h
 
   history/qgshistoryprovider.h
   history/qgshistoryproviderregistry.h

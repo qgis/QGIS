@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgselevationprofilelayertreemodel.cpp
+                          qgselevationprofilelayertreeview.cpp
                           -----------------
     begin                : April 2022
     copyright            : (C) 2022 by Nyall Dawson
@@ -16,7 +16,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgselevationprofilelayertreemodel.h"
+#include "qgselevationprofilelayertreeview.h"
+#include "qgslayertreenode.h"
+#include "qgslayertree.h"
 #include "qgslayertreenode.h"
 #include "qgslayertree.h"
 #include "qgssymbollayerutils.h"
@@ -28,7 +30,11 @@
 #include "qgsmarkersymbol.h"
 #include "qgsfillsymbol.h"
 
+#include <QHeaderView>
+#include <QContextMenuEvent>
+#include <QMenu>
 #include <QMimeData>
+
 
 QgsElevationProfileLayerTreeModel::QgsElevationProfileLayerTreeModel( QgsLayerTree *rootNode, QObject *parent )
   : QgsLayerTreeModel( rootNode, parent )
@@ -323,4 +329,49 @@ bool QgsElevationProfileLayerTreeProxyModel::filterAcceptsRow( int sourceRow, co
   {
     return false;
   }
+}
+
+
+QgsElevationProfileLayerTreeView::QgsElevationProfileLayerTreeView( QgsLayerTree *rootNode, QWidget *parent )
+  : QTreeView( parent )
+  , mLayerTree( rootNode )
+{
+  mModel = new QgsElevationProfileLayerTreeModel( rootNode, this );
+  mProxyModel = new QgsElevationProfileLayerTreeProxyModel( mModel, this );
+
+  setHeaderHidden( true );
+
+  setDragEnabled( true );
+  setAcceptDrops( true );
+  setDropIndicatorShown( true );
+  setExpandsOnDoubleClick( false );
+
+  // Ensure legend graphics are scrollable
+  header()->setStretchLastSection( false );
+  header()->setSectionResizeMode( QHeaderView::ResizeToContents );
+
+  // If vertically scrolling by item, legend graphics can get clipped
+  setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+
+  setDefaultDropAction( Qt::MoveAction );
+
+  setModel( mProxyModel );
+}
+
+QgsMapLayer *QgsElevationProfileLayerTreeView::indexToLayer( const QModelIndex &index )
+{
+  if ( QgsLayerTreeNode *node = mModel->index2node( mProxyModel->mapToSource( index ) ) )
+  {
+    if ( QgsLayerTreeLayer *layerTreeLayerNode =  mLayerTree->toLayer( node ) )
+    {
+      return layerTreeLayerNode->layer();
+    }
+  }
+  return nullptr;
+}
+
+void QgsElevationProfileLayerTreeView::resizeEvent( QResizeEvent *event )
+{
+  header()->setMinimumSectionSize( viewport()->width() );
+  QTreeView::resizeEvent( event );
 }

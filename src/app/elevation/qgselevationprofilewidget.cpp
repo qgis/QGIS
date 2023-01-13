@@ -80,7 +80,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
 
   mPanTool = new QgsPlotToolPan( mCanvas );
 
-  mLayerTreeView = new QgsElevationProfileLayerTreeView( mLayerTree.get() );
+  mLayerTreeView = new QgsAppElevationProfileLayerTreeView( mLayerTree.get() );
 
   connect( mLayerTreeView, &QAbstractItemView::doubleClicked, this, [ = ]( const QModelIndex & index )
   {
@@ -764,4 +764,32 @@ QgsElevationProfileWidgetSettingsAction::QgsElevationProfileWidgetSettingsAction
   QWidget *w = new QWidget();
   w->setLayout( gLayout );
   setDefaultWidget( w );
+}
+
+QgsAppElevationProfileLayerTreeView::QgsAppElevationProfileLayerTreeView( QgsLayerTree *rootNode, QWidget *parent )
+  : QgsElevationProfileLayerTreeView( rootNode, parent )
+{
+
+}
+
+void QgsAppElevationProfileLayerTreeView::contextMenuEvent( QContextMenuEvent *event )
+{
+  const QModelIndex index = indexAt( event->pos() );
+  if ( !index.isValid() )
+    setCurrentIndex( QModelIndex() );
+
+  if ( QgsMapLayer *layer = indexToLayer( index ) )
+  {
+    QMenu *menu = new QMenu();
+
+    QAction *propertiesAction = new QAction( tr( "Properties…" ), menu );
+    connect( propertiesAction, &QAction::triggered, this, [layer]
+    {
+      QgisApp::instance()->showLayerProperties( layer, QStringLiteral( "mOptsPage_Elevation" ) );
+    } );
+    menu->addAction( propertiesAction );
+
+    menu->exec( mapToGlobal( event->pos() ) );
+    delete menu;
+  }
 }
