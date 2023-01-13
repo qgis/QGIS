@@ -62,17 +62,8 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     //! Settings entry digitizing line color alpha scale
     static const QgsSettingsEntryDouble *settingsDigitizingLineColorAlphaScale;
 
-    //! Settings entry digitizing fill color red
-    static const QgsSettingsEntryInteger *settingsDigitizingFillColorRed;
-
-    //! Settings entry digitizing fill color green
-    static const QgsSettingsEntryInteger *settingsDigitizingFillColorGreen;
-
-    //! Settings entry digitizing fill color blue
-    static const QgsSettingsEntryInteger *settingsDigitizingFillColorBlue;
-
-    //! Settings entry digitizing fill color alpha
-    static const QgsSettingsEntryInteger *settingsDigitizingFillColorAlpha;
+    //! Settings entry digitizing fill color
+    static const QgsSettingsEntryColor *settingsDigitizingFillColor;
 
     //! Settings entry digitizing line ghost
     static const QgsSettingsEntryBool *settingsDigitizingLineGhost;

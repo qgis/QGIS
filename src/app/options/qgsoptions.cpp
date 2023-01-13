@@ -1022,10 +1022,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mLineColorToolButton->setContext( QStringLiteral( "gui" ) );
   mLineColorToolButton->setDefaultColor( QColor( 255, 0, 0, 200 ) );
 
-  mFillColorToolButton->setColor( QColor( QgsSettingsRegistryCore::settingsDigitizingFillColorRed->value(),
-                                          QgsSettingsRegistryCore::settingsDigitizingFillColorGreen->value(),
-                                          QgsSettingsRegistryCore::settingsDigitizingFillColorBlue->value(),
-                                          QgsSettingsRegistryCore::settingsDigitizingFillColorAlpha->value() ) );
+  mFillColorToolButton->setColor( QgsSettingsRegistryCore::settingsDigitizingFillColor->value() );
   mFillColorToolButton->setAllowOpacity( true );
   mFillColorToolButton->setContext( QStringLiteral( "gui" ) );
   mFillColorToolButton->setDefaultColor( QColor( 255, 0, 0, 30 ) );
@@ -1693,10 +1690,7 @@ void QgsOptions::saveOptions()
   QgsSettingsRegistryCore::settingsDigitizingLineColor->setValue( digitizingColor );
 
   digitizingColor = mFillColorToolButton->color();
-  QgsSettingsRegistryCore::settingsDigitizingFillColorRed->setValue( digitizingColor.red() );
-  QgsSettingsRegistryCore::settingsDigitizingFillColorGreen->setValue( digitizingColor.green() );
-  QgsSettingsRegistryCore::settingsDigitizingFillColorBlue->setValue( digitizingColor.blue() );
-  QgsSettingsRegistryCore::settingsDigitizingFillColorAlpha->setValue( digitizingColor.alpha() );
+  QgsSettingsRegistryCore::settingsDigitizingFillColor->setValue( digitizingColor );
 
   QgsSettingsRegistryCore::settingsDigitizingLineGhost->setValue( mLineGhostCheckBox->isChecked() );
 

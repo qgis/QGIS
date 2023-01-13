@@ -43,17 +43,11 @@ const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingStream
 
 const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingLineWidth = new QgsSettingsEntryInteger( QStringLiteral( "line_width" ), QgsSettings::sTreeDigitizing, 1 );
 
-const QgsSettingsEntryColor *QgsSettingsRegistryCore::settingsDigitizingLineColor = new QgsSettingsEntryColor( QStringLiteral( "line_color" ), QgsSettings::sTreeDigitizing, QColor( 255, 0, 0, 200 ) );
+const QgsSettingsEntryColor *QgsSettingsRegistryCore::settingsDigitizingLineColor = new QgsSettingsEntryColor( QStringLiteral( "line-color" ), QgsSettings::sTreeDigitizing, QColor( 255, 0, 0, 200 ) );
 
 const QgsSettingsEntryDouble *QgsSettingsRegistryCore::settingsDigitizingLineColorAlphaScale = new QgsSettingsEntryDouble( QStringLiteral( "line_color_alpha_scale" ), QgsSettings::sTreeDigitizing, 0.75 );
 
-const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingFillColorRed = new QgsSettingsEntryInteger( QStringLiteral( "fill_color_red" ), QgsSettings::sTreeDigitizing, 255 );
-
-const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingFillColorGreen = new QgsSettingsEntryInteger( QStringLiteral( "fill_color_green" ), QgsSettings::sTreeDigitizing, 0 );
-
-const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingFillColorBlue = new QgsSettingsEntryInteger( QStringLiteral( "fill_color_blue" ), QgsSettings::sTreeDigitizing, 0 );
-
-const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingFillColorAlpha = new QgsSettingsEntryInteger( QStringLiteral( "fill_color_alpha" ), QgsSettings::sTreeDigitizing, 30 );
+const QgsSettingsEntryColor *QgsSettingsRegistryCore::settingsDigitizingFillColor = new QgsSettingsEntryColor( QStringLiteral( "fill-color" ), QgsSettings::sTreeDigitizing, QColor( 255, 0, 0, 30 ) );
 
 const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsDigitizingLineGhost = new QgsSettingsEntryBool( QStringLiteral( "line_ghost" ), QgsSettings::sTreeDigitizing, false );
 
@@ -123,6 +117,7 @@ void QgsSettingsRegistryCore::migrateOldSettings()
 
   // single settings - added in 3.30
   settingsDigitizingLineColor->copyValueFromKeys( QStringLiteral( "qgis/digitizing/line_color_red" ), QStringLiteral( "qgis/digitizing/line_color_green" ), QStringLiteral( "qgis/digitizing/line_color_blue" ), QStringLiteral( "qgis/digitizing/line_color_alpha" ) );
+  settingsDigitizingFillColor->copyValueFromKeys( QStringLiteral( "qgis/digitizing/fill_color_red" ), QStringLiteral( "qgis/digitizing/fill_color_green" ), QStringLiteral( "qgis/digitizing/fill_color_blue" ), QStringLiteral( "qgis/digitizing/fill_color_alpha" ) );
   QgsLayout::settingsSearchPathForTemplates->copyValueFromKey( QStringLiteral( "core/Layout/searchPathsForTemplates" ) );
 
   QgsProcessing::settingsPreferFilenameAsLayerName->copyValueFromKey( QStringLiteral( "Processing/Configuration/PREFER_FILENAME_AS_LAYER_NAME" ) );
@@ -258,6 +253,7 @@ void QgsSettingsRegistryCore::backwardCompatibility()
 {
   // single settings - added in 3.30
   settingsDigitizingLineColor->copyValueToKeys( QStringLiteral( "qgis/digitizing/line_color_red" ), QStringLiteral( "qgis/digitizing/line_color_green" ), QStringLiteral( "qgis/digitizing/line_color_blue" ), QStringLiteral( "qgis/digitizing/line_color_alpha" ) );
+  settingsDigitizingFillColor->copyValueToKeys( QStringLiteral( "qgis/digitizing/fill_color_red" ), QStringLiteral( "qgis/digitizing/fill_color_green" ), QStringLiteral( "qgis/digitizing/fill_color_blue" ), QStringLiteral( "qgis/digitizing/fill_color_alpha" ) );
   QgsLayout::settingsSearchPathForTemplates->copyValueToKey( QStringLiteral( "core/Layout/searchPathsForTemplates" ) );
 
   QgsProcessing::settingsPreferFilenameAsLayerName->copyValueToKey( QStringLiteral( "Processing/Configuration/PREFER_FILENAME_AS_LAYER_NAME" ) );

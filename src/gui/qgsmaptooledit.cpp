@@ -57,10 +57,7 @@ int QgsMapToolEdit::digitizingStrokeWidth()
 
 QColor QgsMapToolEdit::digitizingFillColor()
 {
-  return QColor( QgsSettingsRegistryCore::settingsDigitizingFillColorRed->value(),
-                 QgsSettingsRegistryCore::settingsDigitizingFillColorGreen->value(),
-                 QgsSettingsRegistryCore::settingsDigitizingFillColorBlue->value(),
-                 QgsSettingsRegistryCore::settingsDigitizingFillColorAlpha->value() );
+  return QgsSettingsRegistryCore::settingsDigitizingFillColor->value();
 }
 
 
