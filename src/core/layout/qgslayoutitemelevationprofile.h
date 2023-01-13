@@ -52,8 +52,16 @@ class CORE_EXPORT QgsLayoutItemElevationProfile: public QgsLayoutItem
     QIcon icon() const override;
     void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties ) override;
 
-
+    /**
+     * Returns a reference to the elevation plot object, which can be used to
+     * set plot appearance and properties.
+     */
     Qgs2DPlot *plot();
+
+    /**
+     * Returns a reference to the elevation plot object, which can be used to
+     * set plot appearance and properties.
+     */
     const Qgs2DPlot *plot() const SIP_SKIP;
 
   protected:
