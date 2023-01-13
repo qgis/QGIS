@@ -303,7 +303,8 @@ void QgsMapToolRotateFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       mRotatedFeatures << cf.id(); //todo: take the closest feature, not the first one...
 
       mRubberBand = createRubberBand( vlayer->geometryType() );
-      mRubberBand->setToGeometry( cf.geometry(), vlayer );
+      mGeom = cf.geometry();
+      mRubberBand->setToGeometry( mGeom, vlayer );
     }
     else
     {
@@ -313,12 +314,13 @@ void QgsMapToolRotateFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
       QgsFeature feat;
       QgsFeatureIterator it = vlayer->getSelectedFeatures();
+      QVector <QgsGeometry> selectedGeometries;
       while ( it.nextFeature( feat ) )
       {
-        mRubberBand->addGeometry( feat.geometry(), vlayer, false );
+        selectedGeometries << feat.geometry();
       }
-      mRubberBand->updatePosition();
-      mRubberBand->update();
+      mGeom = QgsGeometry::collectGeometry( selectedGeometries );
+      mRubberBand->setToGeometry( mGeom, vlayer );
     }
 
     mRubberBand->show();
@@ -363,7 +365,6 @@ void QgsMapToolRotateFeature::updateRubberband( double rotation )
   if ( mRotationActive )
   {
     mRotation = rotation;
-
     mStPoint = toCanvasCoordinates( mStartPointMapCoords );
 
     if ( mRubberBand )
@@ -378,28 +379,15 @@ void QgsMapToolRotateFeature::updateRubberband( double rotation )
         mRubberBand->setTransform( QTransform().translate( offsetX, offsetY ).rotate( mRotation ).translate( -1 * offsetX, -1 * offsetY ) );
         mRubberBand->update();
       }
-
       // Else, recreate the rubber band from the rotated geometries
       else
       {
-        mRubberBand->reset( vlayer->geometryType() );
         const QgsPointXY anchorPoint = toLayerCoordinates( vlayer, mStartPointMapCoords );
-        QgsFeatureRequest request;
-        request.setFilterFids( mRotatedFeatures ).setNoAttributes();
-        QgsFeatureIterator fi = vlayer->getFeatures( request );
-        QgsFeature f;
-        while ( fi.nextFeature( f ) )
-        {
-          QgsGeometry geom = f.geometry();
-          geom.rotate( mRotation, anchorPoint );
-          mRubberBand->addGeometry( geom, vlayer, false );
-        }
-        mRubberBand->updatePosition();
+        QgsGeometry geom = mGeom;
+        geom.rotate( mRotation, anchorPoint );
+        mRubberBand->setToGeometry( geom, vlayer );
       }
-
-      mRubberBand->update();
     }
-
   }
 }
 
@@ -487,6 +475,7 @@ void QgsMapToolRotateFeature::deleteRubberband()
 {
   delete mRubberBand;
   mRubberBand = nullptr;
+  mGeom  = QgsGeometry();
 }
 
 void QgsMapToolRotateFeature::deactivate()
