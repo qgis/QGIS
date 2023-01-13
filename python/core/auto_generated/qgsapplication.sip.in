@@ -445,6 +445,21 @@ Returns the QGIS platform name, e.g., "desktop", "server", "qgis_process" or "ex
 .. versionadded:: 2.14
 %End
 
+
+    static QString applicationFullName();
+%Docstring
+Returns the QGIS application full name.
+
+It can be defined by the environment variable QGIS_APPLICATION_FULL_NAME or the /qgis/application_full_name
+in the QGIS config file.
+
+By default it is equal to :py:func:`~QgsApplication.applicationName`+' '+:py:func:`~QgsApplication.platform`
+
+.. seealso:: :py:func:`platform`
+
+.. versionadded:: 3.30
+%End
+
     static QString locale();
 %Docstring
 Returns the QGIS locale.

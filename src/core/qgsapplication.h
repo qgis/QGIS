@@ -474,6 +474,20 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static QString platform();
 
+
+    /**
+     * Returns the QGIS application full name.
+     *
+     * It can be defined by the environment variable QGIS_APPLICATION_FULL_NAME or the /qgis/application_full_name
+     * in the QGIS config file.
+     *
+     * By default it is equal to applicationName()+' '+platform()
+     *
+     * \see platform()
+     * \since QGIS 3.30
+     */
+    static QString applicationFullName();
+
     /**
      * Returns the QGIS locale.
      * \since QGIS 3.0
