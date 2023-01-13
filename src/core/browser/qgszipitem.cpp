@@ -228,7 +228,7 @@ QStringList QgsZipItem::getZipFileList()
 
   // get list of files inside zip file
   QgsDebugMsgLevel( QStringLiteral( "Open file %1 with gdal vsi" ).arg( mVsiPrefix + mFilePath ), 3 );
-  char **papszSiblingFiles = VSIReadDirRecursive( QString( mVsiPrefix + mFilePath ).toLocal8Bit().constData() );
+  char **papszSiblingFiles = VSIReadDirRecursive( QString( mVsiPrefix + mFilePath ).toUtf8().constData() );
   if ( papszSiblingFiles )
   {
     for ( int i = 0; papszSiblingFiles[i]; i++ )

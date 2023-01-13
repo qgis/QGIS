@@ -583,7 +583,7 @@ void TestQgsRasterLayer::buildExternalOverviews()
 
   // Check that the overview is Deflate compressed
   const QString ovrFilename( myTempPath + "landsat.tif.ovr" );
-  GDALDatasetH hDS = GDALOpen( ovrFilename.toLocal8Bit().constData(), GA_ReadOnly );
+  GDALDatasetH hDS = GDALOpen( ovrFilename.toUtf8().constData(), GA_ReadOnly );
   QVERIFY( hDS );
   const char *pszCompression = GDALGetMetadataItem( hDS, "COMPRESSION", "IMAGE_STRUCTURE" );
   QVERIFY( pszCompression && EQUAL( pszCompression, "DEFLATE" ) );
