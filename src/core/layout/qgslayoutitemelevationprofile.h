@@ -19,6 +19,7 @@
 
 #include "qgis_core.h"
 #include "qgslayoutitem.h"
+#include "qgsmaplayerref.h"
 
 class QgsLayoutItemElevationProfilePlot;
 class Qgs2DPlot;
@@ -64,6 +65,20 @@ class CORE_EXPORT QgsLayoutItemElevationProfile: public QgsLayoutItem
      */
     const Qgs2DPlot *plot() const SIP_SKIP;
 
+    /**
+     * Returns the list of map layers participating in the elevation profile.
+     *
+     * \see setLayers()
+     */
+    QList< QgsMapLayer * > layers() const;
+
+    /**
+     * Sets the list of map \a layers participating in the elevation profile.
+     *
+     * \see layers()
+     */
+    void setLayers( const QList< QgsMapLayer * > &layers );
+
   protected:
     void draw( QgsLayoutItemRenderContext &context ) override;
     bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
@@ -72,6 +87,8 @@ class CORE_EXPORT QgsLayoutItemElevationProfile: public QgsLayoutItem
   private:
 
     std::unique_ptr< QgsLayoutItemElevationProfilePlot > mPlot;
+
+    QList< QgsMapLayerRef > mLayers;
 
 };
 

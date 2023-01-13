@@ -50,6 +50,20 @@ set plot appearance and properties.
 %End
 
 
+    QList< QgsMapLayer * > layers() const;
+%Docstring
+Returns the list of map layers participating in the elevation profile.
+
+.. seealso:: :py:func:`setLayers`
+%End
+
+    void setLayers( const QList< QgsMapLayer * > &layers );
+%Docstring
+Sets the list of map ``layers`` participating in the elevation profile.
+
+.. seealso:: :py:func:`layers`
+%End
+
   protected:
     virtual void draw( QgsLayoutItemRenderContext &context );
 
