@@ -363,7 +363,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     /**
      * Returns the item's icon.
      */
-    virtual QIcon icon() const { return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItem.svg" ) ); }
+    virtual QIcon icon() const;
 
     /**
      * Returns the item identification string. This is a unique random string set for the item

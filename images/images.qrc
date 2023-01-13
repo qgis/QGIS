@@ -974,6 +974,7 @@
         <file>themes/default/gpsicons/mActionReset.svg</file>
         <file>themes/default/gpsicons/mActionAddTrackPoint.svg</file>
         <file>themes/default/gpsicons/mIconGpsDestinationLayer.svg</file>
+        <file>themes/default/mLayoutItemElevationProfile.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>
