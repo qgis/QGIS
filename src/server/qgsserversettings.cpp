@@ -379,6 +379,16 @@ void QgsServerSettings::initSettings()
                                          };
   mSettings[ sAllowedExtraSqlTokens.envVar ] = sAllowedExtraSqlTokens;
 
+  const Setting sApplicationName = { QgsServerSettingsEnv::QGIS_SERVER_APPLICATION_NAME,
+                                     QgsServerSettingsEnv::DEFAULT_VALUE,
+                                     QStringLiteral( "The QGIS Server application name" ),
+                                     QStringLiteral( "/qgis/application_full_name" ),
+                                     QVariant::String,
+                                     QVariant( QgsApplication::applicationFullName() ),
+                                     QVariant()
+                                   };
+  mSettings[ sApplicationName.envVar ] = sApplicationName;
+
 }
 
 void QgsServerSettings::load()
@@ -693,4 +703,9 @@ QStringList QgsServerSettings::allowedExtraSqlTokens() const
     return QStringList();
   }
   return strVal.split( ',' );
+}
+
+QString QgsServerSettings::applicationName() const
+{
+  return value( QgsServerSettingsEnv::QGIS_SERVER_APPLICATION_NAME ).toString().trimmed();
 }
