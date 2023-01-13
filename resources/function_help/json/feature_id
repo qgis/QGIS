@@ -2,7 +2,7 @@
   "name": "feature_id",
   "type": "function",
   "groups": ["Record and Attributes"],
-  "description": "Returns a feature's unique ID.",
+  "description": "Returns a feature's unique ID, or NULL if the feature is not valid.",
   "arguments": [{
     "arg": "feature",
     "description": "a feature object"
