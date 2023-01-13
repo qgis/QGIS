@@ -43,8 +43,12 @@ The caller takes responsibility for deleting the returned object.
     virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
 
 
-
     Qgs2DPlot *plot();
+%Docstring
+Returns a reference to the elevation plot object, which can be used to
+set plot appearance and properties.
+%End
+
 
   protected:
     virtual void draw( QgsLayoutItemRenderContext &context );
