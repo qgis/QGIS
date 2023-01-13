@@ -259,6 +259,26 @@ QList<QgsLayerTreeLayer *> QgsLayerTreeGroup::findLayers() const
   return list;
 }
 
+void QgsLayerTreeGroup::reorderGroupLayers( const QList<QgsMapLayer *> &order )
+{
+  const QList< QgsLayerTreeLayer * > childLayers = findLayers();
+  int targetIndex = 0;
+  for ( QgsMapLayer *targetLayer : order )
+  {
+    for ( QgsLayerTreeLayer *layerNode : childLayers )
+    {
+      if ( layerNode->layer() == targetLayer )
+      {
+        QgsLayerTreeLayer *cloned = layerNode->clone();
+        insertChildNode( targetIndex, cloned );
+        removeChildNode( layerNode );
+        targetIndex++;
+        break;
+      }
+    }
+  }
+}
+
 QList<QgsMapLayer *> QgsLayerTreeGroup::layerOrderRespectingGroupLayers() const
 {
   QList<QgsMapLayer *> list;

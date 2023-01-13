@@ -145,6 +145,19 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
      */
     QList<QgsLayerTreeLayer *> findLayers() const;
 
+    /**
+     * Reorders layers in the group to match the order specified by \a order.
+     *
+     * Only layers which are direct children of this group will be reordered, other
+     * layers will be ignored.
+     *
+     * \note This method does not recursively reorder child groups.
+     * \note Matching layers will be moved to the start of the group, with any existing
+     * non-matching layers and group nodes moved to sit after the re-ordered matching layers.
+     *
+     * \since QGIS 3.30
+     */
+    void reorderGroupLayers( const QList< QgsMapLayer * > &order );
 
     /**
      * Returns an ordered list of map layers in the group, ignoring any layers which
