@@ -523,7 +523,7 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
 
   // elevation profile item
 
-  auto elevationProfileItemMetadata = std::make_unique< QgsLayoutItemGuiMetadata >( QgsLayoutItemRegistry::LayoutElevationProfile, QObject::tr( "Elevation Profile" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionLabel.svg" ) ),
+  auto elevationProfileItemMetadata = std::make_unique< QgsLayoutItemGuiMetadata >( QgsLayoutItemRegistry::LayoutElevationProfile, QObject::tr( "Elevation Profile" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionElevationProfile.svg" ) ),
                                       [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
   {
     return new QgsLayoutElevationProfileWidget( qobject_cast< QgsLayoutItemElevationProfile * >( item ) );
