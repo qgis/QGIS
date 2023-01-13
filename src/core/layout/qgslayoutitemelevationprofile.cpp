@@ -76,7 +76,7 @@ int QgsLayoutItemElevationProfile::type() const
 
 QIcon QgsLayoutItemElevationProfile::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemLabel.svg" ) );
+  return QgsApplication::getThemeIcon( QStringLiteral( "mLayoutItemElevationProfile.svg" ) );
 }
 
 void QgsLayoutItemElevationProfile::refreshDataDefinedProperty( DataDefinedProperty property )

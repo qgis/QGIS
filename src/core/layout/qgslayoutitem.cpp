@@ -126,6 +126,11 @@ int QgsLayoutItem::type() const
   return QgsLayoutItemRegistry::LayoutItem;
 }
 
+QIcon QgsLayoutItem::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItem.svg" ) );
+}
+
 QgsLayoutItem::Flags QgsLayoutItem::itemFlags() const
 {
   return QgsLayoutItem::Flags();
