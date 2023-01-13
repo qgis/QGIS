@@ -132,8 +132,6 @@ void QgsDemTerrainGenerator::setExtent( const QgsRectangle &extent )
   // no need to have an mExtent larger than the actual layer's extent
   mExtent = extent.intersect( layerExtent );
   updateGenerator();
-
-  emit extentChanged();
 }
 
 void QgsDemTerrainGenerator::updateGenerator()

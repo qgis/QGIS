@@ -113,9 +113,6 @@ class _3D_EXPORT QgsTerrainGenerator : public QgsQuadtreeChunkLoaderFactory
 
   signals:
 
-    //! Emitted when the terrain extent has changed
-    void extentChanged();
-
     //! Emitted when the terrain changed (for example, raster DEM or mesh have data changed)
     void terrainChanged();
 
