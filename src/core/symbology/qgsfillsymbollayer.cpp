@@ -399,10 +399,6 @@ void QgsSimpleFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
     symbolizerElem.setAttribute( QStringLiteral( "uom" ), props.value( QStringLiteral( "uom" ), QString() ).toString() );
   element.appendChild( symbolizerElem );
 
-  // <Fill>
-  QDomElement fillElem = doc.createElement( QStringLiteral( "se:Fill" ) );
-  symbolizerElem.appendChild( fillElem );
-
   // <Geometry>
   QgsSymbolLayerUtils::createGeometryElement( doc, symbolizerElem, props.value( QStringLiteral( "geom" ), QString() ).toString() );
 
@@ -416,6 +412,9 @@ void QgsSimpleFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
     const QImage image { toTiledPatternImage( ) };
     if ( ! image.isNull() )
     {
+      // <Fill>
+      QDomElement fillElem = doc.createElement( QStringLiteral( "se:Fill" ) );
+      symbolizerElem.appendChild( fillElem );
       QDomElement graphicFillElem = doc.createElement( QStringLiteral( "se:GraphicFill" ) );
       fillElem.appendChild( graphicFillElem );
       QDomElement graphicElem = doc.createElement( QStringLiteral( "se:Graphic" ) );
@@ -444,6 +443,9 @@ void QgsSimpleFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
       {
         color.setAlphaF( color.alphaF() * alpha );
       }
+      // <Fill>
+      QDomElement fillElem = doc.createElement( QStringLiteral( "se:Fill" ) );
+      symbolizerElem.appendChild( fillElem );
       QgsSymbolLayerUtils::fillToSld( doc, fillElem, mBrushStyle, color );
     }
 
