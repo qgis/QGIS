@@ -40,11 +40,19 @@ from qgis.testing import start_app, unittest
 start_app()
 
 
-def createEmptyPolygonLayer():
-    layer = QgsVectorLayer("Polygon",
-                           "polygon", "memory")
+def createEmptyLayer(geomType):
+    layer = QgsVectorLayer(geomType,
+                           geomType.lower(), "memory")
     assert layer.isValid()
     return layer
+
+
+def createEmptyPolygonLayer():
+    return createEmptyLayer("Polygon")
+
+
+def createEmptyMultiPolygonLayer():
+    return createEmptyLayer("MultiPolygon")
 
 
 class TestQgsVectorLayerEditUtils(unittest.TestCase):
@@ -419,6 +427,57 @@ class TestQgsVectorLayerEditUtils(unittest.TestCase):
         self.assertEqual(f2.geometry().constGet().y(), 4)
         self.assertEqual(f2.geometry().constGet().z(), 5)
         self.assertEqual(f2.geometry().constGet().m(), 6)
+
+    def testSplitParts(self):
+        layer = createEmptyMultiPolygonLayer()
+        self.assertTrue(layer.startEditing())
+
+        pr = layer.dataProvider()
+
+        # Add three MultiPolygon features
+        # Each feature is composed of two squares side by side
+        # Each feature is on a separate row to form a 3*2 grid
+        f = QgsFeature(layer.fields(), 1)
+        f.setGeometry(QgsGeometry.fromWkt('MULTIPOLYGON(((0 0, 4 0, 4 4, 0 4, 0 0)), ((6 0, 10 0, 10 4, 6 4, 6 0)))'))
+        assert pr.addFeatures([f])
+
+        f = QgsFeature(layer.fields(), 2)
+        f.setGeometry(QgsGeometry.fromWkt('MULTIPOLYGON(((0 6, 4 6, 4 10, 0 10, 0 6)), ((6 6, 10 6, 10 10, 6 10, 6 6)))'))
+        assert pr.addFeatures([f])
+
+        f = QgsFeature(layer.fields(), 3)
+        f.setGeometry(QgsGeometry.fromWkt('MULTIPOLYGON(((0 12, 4 12, 4 16, 0 16, 0 12)), ((6 12, 10 12, 10 16, 6 16, 6 12)))'))
+        assert pr.addFeatures([f])
+
+        self.assertEqual(layer.featureCount(), 3)
+
+        vle = QgsVectorLayerEditUtils(layer)
+
+        # Split the first feature with a horizontal line that crosses both its parts
+        # After this operation, the first feature has 4 parts, the other two are unchanged
+        result = vle.splitParts([QgsPointXY(0, 2), QgsPointXY(10, 2)], False)
+        self.assertEqual(result, Qgis.GeometryOperationResult.Success)
+
+        # Split all three features with a vertical Line
+        # After this operation, the first feature has 6 parts, the other two have 6 parts
+        result = vle.splitParts([QgsPointXY(2, 0), QgsPointXY(2, 16)], False)
+        self.assertEqual(result, Qgis.GeometryOperationResult.Success)
+
+        layer.commitChanges()
+
+        self.assertEqual(
+            layer.getFeature(1).geometry().asWkt(),
+            'MultiPolygon (((2 0, 2 2, 4 2, 4 0, 2 0)),((2 2, 2 0, 0 0, 0 2, 2 2)),((2 2, 2 4, 4 4, 4 2, 2 2)),((2 4, 2 2, 0 2, 0 4, 2 4)),((6 2, 10 2, 10 0, 6 0, 6 2)),((10 2, 6 2, 6 4, 10 4, 10 2)))'
+        )
+        self.assertEqual(
+            layer.getFeature(2).geometry().asWkt(),
+            'MultiPolygon (((2 6, 2 10, 4 10, 4 6, 2 6)),((2 10, 2 6, 0 6, 0 10, 2 10)),((6 6, 10 6, 10 10, 6 10, 6 6)))'
+        )
+
+        self.assertEqual(
+            layer.getFeature(3).geometry().asWkt(),
+            'MultiPolygon (((2 12, 2 16, 4 16, 4 12, 2 12)),((2 16, 2 12, 0 12, 0 16, 2 16)),((6 12, 10 12, 10 16, 6 16, 6 12)))'
+        )
 
 
 if __name__ == '__main__':
