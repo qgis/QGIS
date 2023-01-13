@@ -89,7 +89,6 @@ class QgsElevationProfileWidget : public QWidget
     void toggleDockModeRequested( bool docked );
 
   private slots:
-    void populateInitialLayers();
     void updateCanvasLayers();
     void onTotalPendingJobsCountChanged( int count );
     void setProfileCurve( const QgsGeometry &curve, bool resetView );

@@ -19,8 +19,6 @@
 #include "qgselevationprofilelayertreeview.h"
 #include "qgslayertreenode.h"
 #include "qgslayertree.h"
-#include "qgslayertreenode.h"
-#include "qgslayertree.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvectorlayerelevationproperties.h"
 #include "qgsmeshlayerelevationproperties.h"
@@ -29,6 +27,7 @@
 #include "qgssinglesymbolrenderer.h"
 #include "qgsmarkersymbol.h"
 #include "qgsfillsymbol.h"
+#include "qgsmaplayerutils.h"
 
 #include <QHeaderView>
 #include <QContextMenuEvent>
@@ -368,6 +367,29 @@ QgsMapLayer *QgsElevationProfileLayerTreeView::indexToLayer( const QModelIndex &
     }
   }
   return nullptr;
+}
+
+void QgsElevationProfileLayerTreeView::populateInitialLayers( QgsProject *project )
+{
+  const QList< QgsMapLayer * > layers = project->layers< QgsMapLayer * >().toList();
+
+  // sort layers so that types which are more likely to obscure others are rendered below
+  // e.g. vector features should be drawn above raster DEMS, or the DEM line may completely obscure
+  // the vector feature
+  QList< QgsMapLayer * > sortedLayers = QgsMapLayerUtils::sortLayersByType( layers,
+  {
+    QgsMapLayerType::RasterLayer,
+    QgsMapLayerType::MeshLayer,
+    QgsMapLayerType::VectorLayer,
+    QgsMapLayerType::PointCloudLayer
+  } );
+
+  std::reverse( sortedLayers.begin(), sortedLayers.end() );
+  for ( QgsMapLayer *layer : std::as_const( sortedLayers ) )
+  {
+    QgsLayerTreeLayer *node = mLayerTree->addLayer( layer );
+    node->setItemVisibilityChecked( layer->elevationProperties() && layer->elevationProperties()->showByDefaultInElevationProfilePlots() );
+  }
 }
 
 void QgsElevationProfileLayerTreeView::resizeEvent( QResizeEvent *event )

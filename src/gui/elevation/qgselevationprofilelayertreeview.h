@@ -122,6 +122,11 @@ class GUI_EXPORT QgsElevationProfileLayerTreeView : public QTreeView
      */
     QgsMapLayer *indexToLayer( const QModelIndex &index );
 
+    /**
+     * Initially populates the tree view using layers from a \a project.
+     */
+    void populateInitialLayers( QgsProject *project );
+
   protected:
 
     void resizeEvent( QResizeEvent *event ) override;
