@@ -855,6 +855,7 @@ set(QGIS_CORE_SRCS
 
   settings/qgssettings.cpp
   settings/qgssettingsentry.cpp
+  settings/qgssettingsentrygroup.cpp
   settings/qgssettingsentryimpl.cpp
   settings/qgssettingsregistry.cpp
   settings/qgssettingsregistrycore.cpp
@@ -1856,6 +1857,7 @@ set(QGIS_CORE_HDRS
 
   settings/qgssettings.h
   settings/qgssettingsentry.h
+  settings/qgssettingsentrygroup.h
   settings/qgssettingsentryenumflag.h
   settings/qgssettingsentryimpl.h
   settings/qgssettingsregistry.h

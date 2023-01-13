@@ -22,7 +22,6 @@
 #include "qgssettingsentry.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsentryenumflag.h"
-#include "qgssettings.h"
 
 #include "qgis.h"
 

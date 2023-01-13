@@ -66,11 +66,13 @@ Returns the list of registered child QgsSettingsRegistry.
 Adds ``settingsEntry`` to the registry.
 %End
 
-    void addSettingsEntryGroup( const QgsSettingsEntryGroup *settingsGroup );
+ void addSettingsEntryGroup( const QgsSettingsEntryGroup *settingsGroup ) /Deprecated/;
 %Docstring
 Adds a group of setting to the registry
 
 .. versionadded:: 3.26
+
+.. deprecated:: QGIS 3.30
 %End
 
 };

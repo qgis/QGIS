@@ -14,17 +14,9 @@
  ***************************************************************************/
 
 #include "qgssettingsregistry.h"
-
-#include "qgslayout.h"
-#include "qgslocator.h"
-#include "qgsnetworkaccessmanager.h"
-#include "qgsnewsfeedparser.h"
-#include "qgsprocessing.h"
-#include "qgsapplication.h"
-#include "qgsgeometryoptions.h"
-#include "qgslocalizeddatapathregistry.h"
-#include "qgsmaprendererjob.h"
-
+#include "qgssettingsentry.h"
+#include "qgssettingsentrygroup.h"
+#include "qgslogger.h"
 
 QgsSettingsRegistry::QgsSettingsRegistry()
   : mSettingsEntriesMap()

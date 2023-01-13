@@ -17,7 +17,9 @@
 #ifndef QGSSETTINGSREGISTRY_H
 #define QGSSETTINGSREGISTRY_H
 
+#include "qgis.h"
 #include "qgis_core.h"
+#include "qgis_sip.h"
 
 #include <QMap>
 
@@ -83,14 +85,17 @@ class CORE_EXPORT QgsSettingsRegistry
     /**
      * Adds a group of setting to the registry
      * \since QGIS 3.26
+     * \deprecated since QGIS 3.30
      */
-    void addSettingsEntryGroup( const QgsSettingsEntryGroup *settingsGroup );
+    Q_DECL_DEPRECATED void addSettingsEntryGroup( const QgsSettingsEntryGroup *settingsGroup ) SIP_DEPRECATED;
 
   private:
 
     QMap<QString, const QgsSettingsEntryBase *> mSettingsEntriesMap;
 
+    Q_NOWARN_DEPRECATED_PUSH
     QMap<const QgsSettingsEntryBase *, const QgsSettingsEntryGroup *> mSettingsEntriesGroupMap;
+    Q_NOWARN_DEPRECATED_POP
 
     QList<const QgsSettingsRegistry *> mSettingsRegistryChildList;
 

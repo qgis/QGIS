@@ -1,0 +1,83 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/settings/qgssettingsentrygroup.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsSettingsEntryGroup /Deprecated/
+{
+%Docstring(signature="appended")
+Creates a group of setting which have a common definition of base key
+
+.. deprecated:: QGIS 3.30
+   use :py:class:`QgsSettingsTreeElement` instead
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgssettingsentrygroup.h"
+%End
+  public:
+    QgsSettingsEntryGroup( QList<const QgsSettingsEntryBase *> settings );
+%Docstring
+Constructor
+%End
+%MethodCode
+    sipCpp = new QgsSettingsEntryGroup( *a0, false );
+    sipIsErr = sipCpp->isValid() ? 0 : 1;
+    if ( sipIsErr )
+      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Settings do not share the same base definition key for this group. This will lead to unpredictable results." ).toUtf8().constData() );
+%End
+
+
+    bool isValid() const;
+%Docstring
+Returns if the group is valid (if settings share the same base key)
+%End
+
+    QString baseKey( const QStringList &dynamicKeyPartList = QStringList() ) const;
+%Docstring
+Returns the base key for the given ``dynamicKeyPartList``
+%End
+
+    const QList<const QgsSettingsEntryBase *> settings() const;
+%Docstring
+Returns all the settings
+%End
+
+    void removeAllSettingsAtBaseKey( const QStringList &dynamicKeyPartList = QStringList() ) const;
+%Docstring
+Removes all the settings at the base key for the given ``dynamicKeyPartList``
+This means it might remove more settings than the ones registered in the group, use with caution
+%End
+
+    void removeAllChildrenSettings( const QString &dynamicKeyPart = QString() ) const;
+%Docstring
+Removes all the settings from this group
+The ``dynamicKeyPart`` argument specifies the dynamic part of the settings key.
+%End
+
+    void removeAllChildrenSettings( const QStringList &dynamicKeyPartList ) const;
+%Docstring
+Removes all the settings from this group
+The ``dynamicKeyPartList`` argument specifies the dynamic part of the settings key.
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/settings/qgssettingsentrygroup.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

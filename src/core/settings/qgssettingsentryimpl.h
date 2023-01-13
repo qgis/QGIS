@@ -102,7 +102,6 @@ class CORE_EXPORT QgsSettingsEntryVariant : public QgsSettingsEntryByReference<Q
     typedef PyObject *( *pyqt5_from_qvariant_by_type )( QVariant &value, PyObject *type );
     QVariant value;
 
-    // QSettings has an internal mutex so release the GIL to avoid the possibility of deadlocks.
     value = sipCpp->value();
 
     pyqt5_from_qvariant_by_type f = ( pyqt5_from_qvariant_by_type ) sipImportSymbol( "pyqt5_from_qvariant_by_type" );
