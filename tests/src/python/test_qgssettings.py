@@ -245,7 +245,7 @@ class TestQgsSettings(unittest.TestCase):
         self.assertEqual(self.settings.origin('undefined-key'), Qgis.SettingsOrigin.Any)
 
         self.settings.setValue('testqgissettings/global/setting', 'rocks')
-        self.assertEqual(self.settings.origin('testqgissettings/global/setting'), Qgis.SettingsOrigin.Local)
+        self.assertEqual(self.settings.origin('testqgissettings/global/setting'), Qgis.SettingsOrigin.Global)
 
     def test_group_section(self):
         # Test group by using Section

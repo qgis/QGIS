@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgssettings.h"
 #include "qgsgeonodeconnection.h"
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"

@@ -811,7 +811,7 @@ class Plugins(QObject):
         seenPlugins = QgsSettings.createPluginTreeElement("_plugin_manager").childSetting("seen-plugins").valueWithDefaultOverride(list(self.mPlugins.keys()))
         if len(seenPlugins) > 0:
             for plugin in list(self.mPlugins.keys()):
-                if seenPlugins.count(plugin) == 0 and self.mPlugins[i]["status"] == "not installed":
+                if seenPlugins.count(plugin) == 0 and self.mPlugins[plugin]["status"] == "not installed":
                     self.mPlugins[plugin]["status"] = "new"
 
     # ----------------------------------------- #

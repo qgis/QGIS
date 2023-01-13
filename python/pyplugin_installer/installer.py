@@ -661,6 +661,7 @@ class QgsPluginInstaller(QObject):
                 plugins.getAllInstalled()
                 plugins.rebuild()
 
+                settings = QgsSettings()
                 if settings.contains('/PythonPlugins/' + pluginName):  # Plugin was available?
                     if settings.value('/PythonPlugins/' + pluginName, False, bool):  # Plugin was also active?
                         reloadPlugin(pluginName)  # unloadPlugin + loadPlugin + startPlugin
