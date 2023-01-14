@@ -256,6 +256,20 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      */
     void setExtraColumns( int extraColumns );
 
+    /**
+     * Returns whether the attribute table will add a visual feedback to cells when an attribute
+     * constraint is not met.
+     * \since QGIS 3.30
+     */
+    bool showValidityState() const { return mShowValidityState; }
+
+    /**
+     * Sets whether the attribute table will add a visual feedback to cells when an attribute constraint
+     * is not met.
+     * \since QGIS 3.30
+     */
+    void setShowValidityState( const bool &show ) { mShowValidityState = show; }
+
   public slots:
 
     /**
@@ -402,6 +416,8 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
     //! TRUE if triggered by afterRollback()
     bool mIsCleaningUpAfterRollback = false;
+
+    bool mShowValidityState = false;
 
     friend class TestQgsAttributeTable;
 

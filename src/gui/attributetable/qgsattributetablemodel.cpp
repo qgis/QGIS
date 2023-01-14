@@ -774,7 +774,7 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
       const QgsConditionalStyle rowstyle = QgsConditionalStyle::compressStyles( styles );
 
       QgsConditionalStyle constraintstyle;
-      if ( QgsVectorLayerUtils::attributeHasConstraints( mLayer, fieldId ) )
+      if ( mShowValidityState && QgsVectorLayerUtils::attributeHasConstraints( mLayer, fieldId ) )
       {
         if ( mConstraintStylesMap.contains( mFeat.id() ) &&
              mConstraintStylesMap[mFeat.id()].contains( fieldId ) )

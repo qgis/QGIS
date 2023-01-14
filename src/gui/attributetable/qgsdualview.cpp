@@ -328,6 +328,7 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
       break;
 
     case QgsAttributeTableFilterModel::ShowInvalid:
+      mMasterModel->setShowValidityState( false );
       break;
   }
 
@@ -368,6 +369,7 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
 
     case QgsAttributeTableFilterModel::ShowInvalid:
     {
+      mMasterModel->setShowValidityState( true );
       const QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
       filterFeatures( QStringLiteral( "is_feature_valid() = false" ), context );
       connect( mFilterModel, &QgsAttributeTableFilterModel::featuresFiltered, this, &QgsDualView::filterChanged );
