@@ -122,8 +122,6 @@ class CORE_EXPORT QgsConditionalLayerStyles : public QObject
   private:
     QHash<QString, QgsConditionalStyles> mFieldStyles;
     QgsConditionalStyles mRowStyles;
-    std::unique_ptr<QgsConditionalStyle> mHardConstraintFailureStyle;
-    std::unique_ptr<QgsConditionalStyle> mSoftConstraintFailureStyle;
 };
 
 /**

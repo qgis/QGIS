@@ -22,7 +22,6 @@
 #include "qgslayoututils.h"
 #include "qgsfeatureiterator.h"
 #include "qgsvectorlayer.h"
-#include "qgsvectorlayerutils.h"
 #include "qgslayoutframe.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
@@ -576,27 +575,9 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
 
         if ( mUseConditionalStyling )
         {
-          QgsConditionalStyle constraintstyle;
-          if ( QgsVectorLayerUtils::attributeHasConstraints( layer, idx ) )
-          {
-            QStringList errors;
-            if ( !QgsVectorLayerUtils::validateAttribute( layer, f, idx, errors, QgsFieldConstraints::ConstraintStrengthHard ) )
-            {
-              constraintstyle = layer->conditionalStyles()->constraintFailureStyles( QgsFieldConstraints::ConstraintStrengthHard );
-            }
-            else
-            {
-              if ( !QgsVectorLayerUtils::validateAttribute( layer, f, idx, errors, QgsFieldConstraints::ConstraintStrengthSoft ) )
-              {
-                constraintstyle = layer->conditionalStyles()->constraintFailureStyles( QgsFieldConstraints::ConstraintStrengthSoft );
-              }
-            }
-          }
-
           QList<QgsConditionalStyle> styles = conditionalStyles->fieldStyles( layer->fields().at( idx ).name() );
           styles = QgsConditionalStyle::matchingConditionalStyles( styles, val, context );
           styles.insert( 0, rowStyle );
-          styles.insert( 0, constraintstyle );
           style = QgsConditionalStyle::compressStyles( styles );
         }
 

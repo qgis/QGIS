@@ -31,22 +31,20 @@ QgsConditionalStyle QgsConditionalLayerStyles::constraintFailureStyles( QgsField
   switch ( strength )
   {
     case QgsFieldConstraints::ConstraintStrengthHard:
-      if ( !mHardConstraintFailureStyle )
-      {
-        mHardConstraintFailureStyle = std::make_unique<QgsConditionalStyle>();
-        mHardConstraintFailureStyle->setBackgroundColor( QColor( 255, 152, 0 ) );
-        mHardConstraintFailureStyle->setTextColor( QColor( 0, 0, 0 ) );
-      }
-      return *mHardConstraintFailureStyle.get();
+    {
+      QgsConditionalStyle hardConstraintFailureStyle;
+      hardConstraintFailureStyle.setBackgroundColor( QColor( 255, 152, 0 ) );
+      hardConstraintFailureStyle.setTextColor( QColor( 0, 0, 0 ) );
+      return hardConstraintFailureStyle;
+    }
 
     case QgsFieldConstraints::ConstraintStrengthSoft:
-      if ( !mSoftConstraintFailureStyle )
-      {
-        mSoftConstraintFailureStyle = std::make_unique<QgsConditionalStyle>();
-        mSoftConstraintFailureStyle->setBackgroundColor( QColor( 255, 191, 12 ) );
-        mSoftConstraintFailureStyle->setTextColor( QColor( 0, 0, 0 ) );
-      }
-      return *mSoftConstraintFailureStyle.get();
+    {
+      QgsConditionalStyle softConstraintFailureStyle;
+      softConstraintFailureStyle.setBackgroundColor( QColor( 255, 191, 12 ) );
+      softConstraintFailureStyle.setTextColor( QColor( 0, 0, 0 ) );
+      return softConstraintFailureStyle;
+    }
 
     case QgsFieldConstraints::ConstraintStrengthNotSet:
       return QgsConditionalStyle();

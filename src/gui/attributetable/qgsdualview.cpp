@@ -366,9 +366,17 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
       connect( masterModel()->layer(), &QgsVectorLayer::layerModified, this, &QgsDualView::updateEditedAddedFeatures );
       break;
 
+    case QgsAttributeTableFilterModel::ShowInvalid:
+    {
+      const QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
+      filterFeatures( QStringLiteral( "is_feature_valid() = false" ), context );
+      connect( mFilterModel, &QgsAttributeTableFilterModel::featuresFiltered, this, &QgsDualView::filterChanged );
+      connect( mFilterModel, &QgsAttributeTableFilterModel::filterError, this, &QgsDualView::filterError );
+      break;
+    }
+
     case QgsAttributeTableFilterModel::ShowAll:
     case QgsAttributeTableFilterModel::ShowFilteredList:
-    case QgsAttributeTableFilterModel::ShowInvalid:
     {
       const QString filterExpression = filterMode == QgsAttributeTableFilterModel::ShowFilteredList ? mFilterModel->filterExpression() : QString();
       if ( !filterExpression.isEmpty() )

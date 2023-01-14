@@ -49,7 +49,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
       ShowVisible,      //!< Show only visible features (depends on the map canvas)
       ShowFilteredList, //!< Show only features whose ids are on the filter list. {\see setFilteredFeatures}
       ShowEdited,       //!< Show only features which have unsaved changes
-      ShowInvalid,      //!< Show only features not respecting constraints
+      ShowInvalid,      //!< Show only features not respecting constraints (since QGIS 3.30)
     };
     Q_ENUM( FilterMode )
 
