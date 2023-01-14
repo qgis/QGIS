@@ -750,9 +750,9 @@ void Qgs3DMapScene::onLayersChanged()
 
 void Qgs3DMapScene::updateTemporal()
 {
-  for ( auto it = mLayerEntities.keyBegin(); it != mLayerEntities.keyEnd(); it++ )
+  const QList<QgsMapLayer * > layers = mLayerEntities.keys();
+  for ( QgsMapLayer *layer : layers )
   {
-    QgsMapLayer *layer = *it;
     if ( layer->temporalProperties()->isActive() )
     {
       removeLayerEntity( layer );
