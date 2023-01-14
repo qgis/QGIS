@@ -330,7 +330,7 @@ class TestQgsVectorLayerEditUtils(unittest.TestCase):
             layer.getFeature(3).geometry().asWkt(),
             'MultiPolygon (((2 12, 2 16, 4 16, 4 12, 2 12)),((2 16, 2 12, 0 12, 0 16, 2 16)),((6 12, 10 12, 10 16, 6 16, 6 12)))'
         )
-        
+
 
 if __name__ == '__main__':
     unittest.main()
