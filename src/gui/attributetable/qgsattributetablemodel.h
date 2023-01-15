@@ -337,10 +337,15 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
     QgsFields mFields;
     QgsAttributeList mAttributes;
-    QVector<QgsEditorWidgetFactory *> mWidgetFactories;
-    QVector<QgsFieldFormatter *> mFieldFormatters;
-    QVector<QVariant> mAttributeWidgetCaches;
-    QVector<QVariantMap> mWidgetConfigs;
+
+    struct WidgetData
+    {
+      QgsFieldFormatter *fieldFormatter = nullptr;
+      QVariant cache;
+      QVariantMap config;
+      bool loaded = false;
+    };
+    mutable QVector<WidgetData> mWidgetDatas;
 
     QHash<QgsFeatureId, int> mIdRowMap;
     QHash<int, QgsFeatureId> mRowIdMap;
@@ -349,9 +354,14 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     mutable QgsExpressionContext mExpressionContext;
 
     /**
+     * Returns widget information for \a column index
+     */
+    const WidgetData &getWidgetData( int column ) const;
+
+    /**
       * Gets mFieldCount, mAttributes
       */
-    virtual void loadAttributes();
+    void loadAttributes();
 
     /**
      * Load feature fid into local cache (mFeat)

@@ -251,10 +251,8 @@ void QgsAttributeTableModel::featureAdded( QgsFeatureId fid )
     {
       if ( cache.sortFieldIndex >= 0 )
       {
-        QgsFieldFormatter *fieldFormatter = mFieldFormatters.at( cache.sortFieldIndex );
-        const QVariant &widgetCache = mAttributeWidgetCaches.at( cache.sortFieldIndex );
-        const QVariantMap &widgetConfig = mWidgetConfigs.at( cache.sortFieldIndex );
-        const QVariant sortValue = fieldFormatter->sortValue( mLayer, cache.sortFieldIndex, widgetConfig, widgetCache, mFeat.attribute( cache.sortFieldIndex ) );
+        const WidgetData &widgetData = getWidgetData( cache.sortFieldIndex );
+        const QVariant sortValue = widgetData.fieldFormatter->sortValue( mLayer, cache.sortFieldIndex, widgetData.config, widgetData.cache, mFeat.attribute( cache.sortFieldIndex ) );
         cache.sortCache.insert( mFeat.id(), sortValue );
       }
       else if ( cache.sortCacheExpression.isValid() )
@@ -315,19 +313,16 @@ void QgsAttributeTableModel::layerDeleted()
   mLayer = nullptr;
   removeRows( 0, rowCount() );
 
-  mAttributeWidgetCaches.clear();
   mAttributes.clear();
-  mWidgetFactories.clear();
-  mWidgetConfigs.clear();
-  mFieldFormatters.clear();
+  mWidgetDatas.clear();
 }
 
 void QgsAttributeTableModel::fieldFormatterRemoved( QgsFieldFormatter *fieldFormatter )
 {
-  for ( int i = 0; i < mFieldFormatters.size(); ++i )
+  for ( WidgetData &widgetData : mWidgetDatas )
   {
-    if ( mFieldFormatters.at( i ) == fieldFormatter )
-      mFieldFormatters[i] = QgsApplication::fieldFormatterRegistry()->fallbackFieldFormatter();
+    if ( widgetData.fieldFormatter == fieldFormatter )
+      widgetData.fieldFormatter = QgsApplication::fieldFormatterRegistry()->fallbackFieldFormatter();
   }
 }
 
@@ -355,10 +350,8 @@ void QgsAttributeTableModel::attributeValueChanged( QgsFeatureId fid, int idx, c
       }
       else
       {
-        QgsFieldFormatter *fieldFormatter = mFieldFormatters.at( cache.sortFieldIndex );
-        const QVariant &widgetCache = mAttributeWidgetCaches.at( cache.sortFieldIndex );
-        const QVariantMap &widgetConfig = mWidgetConfigs.at( cache.sortFieldIndex );
-        const QVariant sortValue = fieldFormatter->representValue( mLayer, cache.sortFieldIndex, widgetConfig, widgetCache, value );
+        const WidgetData &widgetData = getWidgetData( cache.sortFieldIndex );
+        const QVariant sortValue = widgetData.fieldFormatter->representValue( mLayer, cache.sortFieldIndex, widgetData.config, widgetData.cache, value );
         cache.sortCache.insert( fid, sortValue );
       }
     }
@@ -422,22 +415,10 @@ void QgsAttributeTableModel::loadAttributes()
 
   QgsAttributeList attributes;
 
-  mWidgetFactories.clear();
-  mAttributeWidgetCaches.clear();
-  mWidgetConfigs.clear();
-  mFieldFormatters.clear();
+  mWidgetDatas.clear();
 
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( mLayer, fields[idx].name() );
-    QgsEditorWidgetFactory *widgetFactory = QgsGui::editorWidgetRegistry()->factory( setup.type() );
-    QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
-
-    mWidgetFactories.append( widgetFactory );
-    mWidgetConfigs.append( setup.config() );
-    mAttributeWidgetCaches.append( fieldFormatter->createCache( mLayer, idx, setup.config() ) );
-    mFieldFormatters.append( fieldFormatter );
-
     attributes << idx;
   }
 
@@ -454,6 +435,7 @@ void QgsAttributeTableModel::loadAttributes()
 
   mFieldCount = attributes.size();
   mAttributes = attributes;
+  mWidgetDatas.resize( mFieldCount );
 
   for ( SortCache &cache : mSortCaches )
   {
@@ -716,7 +698,8 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
 
   if ( role == Qt::TextAlignmentRole )
   {
-    return static_cast<Qt::Alignment::Int>( mFieldFormatters.at( index.column() )->alignmentFlag( mLayer, fieldId, mWidgetConfigs.at( index.column() ) ) | Qt::AlignVCenter );
+    const WidgetData &widgetData = getWidgetData( index.column() );
+    return static_cast<Qt::Alignment::Int>( widgetData.fieldFormatter->alignmentFlag( mLayer, fieldId, widgetData.config ) | Qt::AlignVCenter );
   }
 
   if ( mFeat.id() != rowId || !mFeat.isValid() )
@@ -733,18 +716,14 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
   switch ( role )
   {
     case Qt::DisplayRole:
-      return mFieldFormatters.at( index.column() )->representValue( mLayer,
-             fieldId,
-             mWidgetConfigs.at( index.column() ),
-             mAttributeWidgetCaches.at( index.column() ),
-             val );
+    {
+      const WidgetData &widgetData = getWidgetData( index.column() );
+      return widgetData.fieldFormatter->representValue( mLayer, fieldId, widgetData.config, widgetData.cache, val );
+    }
     case Qt::ToolTipRole:
     {
-      QString tooltip = mFieldFormatters.at( index.column() )->representValue( mLayer,
-                        fieldId,
-                        mWidgetConfigs.at( index.column() ),
-                        mAttributeWidgetCaches.at( index.column() ),
-                        val );
+      const WidgetData &widgetData = getWidgetData( index.column() );
+      QString tooltip = widgetData.fieldFormatter->representValue( mLayer, fieldId, widgetData.config, widgetData.cache, val );
       if ( val.type() == QVariant::String && QgsStringUtils::isUrl( val.toString() ) )
       {
         tooltip = tr( "%1 (Ctrl+click to open)" ).arg( tooltip );
@@ -976,9 +955,7 @@ void QgsAttributeTableModel::prefetchSortData( const QString &expressionString, 
     return;
   }
 
-  QgsFieldFormatter *fieldFormatter = nullptr;
-  QVariant widgetCache;
-  QVariantMap widgetConfig;
+  WidgetData widgetData;
 
   if ( cache.sortCacheExpression.isField() )
   {
@@ -1001,9 +978,7 @@ void QgsAttributeTableModel::prefetchSortData( const QString &expressionString, 
   {
     cache.sortCacheAttributes.append( cache.sortFieldIndex );
 
-    widgetCache = mAttributeWidgetCaches.at( cache.sortFieldIndex );
-    widgetConfig = mWidgetConfigs.at( cache.sortFieldIndex );
-    fieldFormatter = mFieldFormatters.at( cache.sortFieldIndex );
+    widgetData = getWidgetData( cache.sortFieldIndex );
   }
 
   const QgsFeatureRequest request = QgsFeatureRequest( mFeatureRequest )
@@ -1022,7 +997,7 @@ void QgsAttributeTableModel::prefetchSortData( const QString &expressionString, 
     }
     else
     {
-      const QVariant sortValue = fieldFormatter->sortValue( mLayer, cache.sortFieldIndex, widgetConfig, widgetCache, f.attribute( cache.sortFieldIndex ) );
+      const QVariant sortValue = widgetData.fieldFormatter->sortValue( mLayer, cache.sortFieldIndex, widgetData.config, widgetData.cache, f.attribute( cache.sortFieldIndex ) );
       cache.sortCache.insert( f.id(), sortValue );
     }
   }
@@ -1055,4 +1030,22 @@ void QgsAttributeTableModel::setRequest( const QgsFeatureRequest &request )
 const QgsFeatureRequest &QgsAttributeTableModel::request() const
 {
   return mFeatureRequest;
+}
+
+const QgsAttributeTableModel::WidgetData &QgsAttributeTableModel::getWidgetData( int column ) const
+{
+  Q_ASSERT( column >= 0 && column < mAttributes.size() );
+
+  WidgetData &widgetData = mWidgetDatas[ column ];
+  if ( !widgetData.loaded )
+  {
+    const int idx = fieldIdx( column );
+    const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( mLayer, mFields[ idx ].name() );
+    widgetData.fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
+    widgetData.config = setup.config();
+    widgetData.cache = widgetData.fieldFormatter->createCache( mLayer, idx, setup.config() );
+    widgetData.loaded = true;
+  }
+
+  return widgetData;
 }
