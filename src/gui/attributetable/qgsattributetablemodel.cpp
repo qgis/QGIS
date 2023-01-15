@@ -515,7 +515,7 @@ void QgsAttributeTableModel::loadLayer()
     }
 
     emit finished();
-    connect( mLayerCache, &QgsVectorLayerCache::invalidated, this, &QgsAttributeTableModel::loadLayer, Qt::UniqueConnection );
+    connect( mLayerCache, &QgsVectorLayerCache::invalidated, this, &QgsAttributeTableModel::loadLayer, static_cast<Qt::ConnectionType>( Qt::UniqueConnection | Qt::QueuedConnection ) );
   }
 
   endResetModel();
