@@ -341,7 +341,6 @@ Returns a reference to the plot's y axis.
 %End
 
 
-
     QgsFillSymbol *chartBackgroundSymbol();
 %Docstring
 Returns the fill symbol used to render the background of the chart.
@@ -390,6 +389,58 @@ Sets the ``margins`` of the plot area (in millimeters)
 
   private:
     Qgs2DPlot( const Qgs2DPlot &other );
+};
+
+class QgsPlotDefaultSettings
+{
+%Docstring(signature="appended")
+Manages default settings for plot objects
+
+.. warning::
+
+   This class is not considered stable API, and may change in future!
+
+.. versionadded:: 3.30
+%End
+
+%TypeHeaderCode
+#include "qgsplot.h"
+%End
+  public:
+
+    static QgsNumericFormat *axisLabelNumericFormat() /Factory/;
+%Docstring
+Returns the default numeric format to use for plot axis labels.
+%End
+
+    static QgsLineSymbol *axisGridMajorSymbol() /Factory/;
+%Docstring
+Returns the default line symbol to use for axis major grid lines.
+
+.. seealso:: :py:func:`axisGridMinorSymbol`
+%End
+
+    static QgsLineSymbol *axisGridMinorSymbol() /Factory/;
+%Docstring
+Returns the default line symbol to use for axis minor grid lines.
+
+.. seealso:: :py:func:`axisGridMajorSymbol`
+%End
+
+    static QgsFillSymbol *chartFillSymbol() /Factory/;
+%Docstring
+Returns the default fill symbol to use for the chart area background fill.
+
+.. seealso:: :py:func:`chartBorderSymbol`
+%End
+
+    static QgsFillSymbol *chartBorderSymbol() /Factory/;
+%Docstring
+Returns the default fill symbol to use for the chart area border.
+
+.. seealso:: :py:func:`chartFillSymbol`
+%End
+
 };
 
 /************************************************************************

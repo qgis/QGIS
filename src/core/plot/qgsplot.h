@@ -374,7 +374,6 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
      */
     QgsPlotAxis &yAxis() { return mYAxis; }
 
-
     /**
      * Returns a reference to the plot's y axis.
      *
@@ -448,6 +447,53 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
 
     QgsPlotAxis mXAxis;
     QgsPlotAxis mYAxis;
+};
+
+/**
+ * \brief Manages default settings for plot objects
+ *
+ * \warning This class is not considered stable API, and may change in future!
+ *
+ * \ingroup core
+ * \since QGIS 3.30
+ */
+class CORE_EXPORT QgsPlotDefaultSettings
+{
+  public:
+
+    /**
+     * Returns the default numeric format to use for plot axis labels.
+     */
+    static QgsNumericFormat *axisLabelNumericFormat() SIP_FACTORY;
+
+    /**
+     * Returns the default line symbol to use for axis major grid lines.
+     *
+     * \see axisGridMinorSymbol()
+     */
+    static QgsLineSymbol *axisGridMajorSymbol() SIP_FACTORY;
+
+    /**
+     * Returns the default line symbol to use for axis minor grid lines.
+     *
+     * \see axisGridMajorSymbol()
+     */
+    static QgsLineSymbol *axisGridMinorSymbol() SIP_FACTORY;
+
+    /**
+     * Returns the default fill symbol to use for the chart area background fill.
+     *
+     * \see chartBorderSymbol()
+     */
+    static QgsFillSymbol *chartFillSymbol() SIP_FACTORY;
+
+    /**
+     * Returns the default fill symbol to use for the chart area border.
+     *
+     * \see chartFillSymbol()
+     */
+    static QgsFillSymbol *chartBorderSymbol() SIP_FACTORY;
+
 };
 
 #endif // QGSPLOT_H
