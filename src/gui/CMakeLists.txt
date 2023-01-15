@@ -214,6 +214,7 @@ set(QGIS_GUI_SRCS
   editorwidgets/qgstexteditsearchwidgetwrapper.cpp
   editorwidgets/qgstexteditwrapper.cpp
   editorwidgets/qgstexteditwidgetfactory.cpp
+  editorwidgets/qgstextwidgetwrapper.cpp
   editorwidgets/qgsuniquevaluesconfigdlg.cpp
   editorwidgets/qgsuniquevaluewidgetwrapper.cpp
   editorwidgets/qgsuniquevaluewidgetfactory.cpp
@@ -1086,6 +1087,7 @@ set(QGIS_GUI_HDRS
   editorwidgets/qgstexteditsearchwidgetwrapper.h
   editorwidgets/qgstexteditwidgetfactory.h
   editorwidgets/qgstexteditwrapper.h
+  editorwidgets/qgstextwidgetwrapper.h
   editorwidgets/qgsuniquevaluesconfigdlg.h
   editorwidgets/qgsuniquevaluewidgetfactory.h
   editorwidgets/qgsuniquevaluewidgetwrapper.h

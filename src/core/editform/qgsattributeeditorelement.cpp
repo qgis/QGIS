@@ -22,6 +22,7 @@
 #include "qgsattributeeditorhtmlelement.h"
 #include "qgsattributeeditorqmlelement.h"
 #include "qgsattributeeditorrelation.h"
+#include "qgsattributeeditortextelement.h"
 #include "qgssymbollayerutils.h"
 #include "qgsfontutils.h"
 
@@ -84,6 +85,10 @@ QgsAttributeEditorElement *QgsAttributeEditorElement::create( const QDomElement 
   else if ( element.tagName() == QLatin1String( "attributeEditorHtmlElement" ) )
   {
     newElement = new QgsAttributeEditorHtmlElement( element.attribute( QStringLiteral( "name" ) ), parent );
+  }
+  else if ( element.tagName() == QLatin1String( "attributeEditorTextElement" ) )
+  {
+    newElement = new QgsAttributeEditorTextElement( element.attribute( QStringLiteral( "name" ) ), parent );
   }
   else if ( element.tagName() == QLatin1String( "attributeEditorAction" ) )
   {
