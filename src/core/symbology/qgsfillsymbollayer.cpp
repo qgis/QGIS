@@ -2569,7 +2569,7 @@ void QgsSVGFillSymbolLayer::setParameters( const QMap<QString, QgsProperty> &par
 QgsLinePatternFillSymbolLayer::QgsLinePatternFillSymbolLayer()
   : QgsImageFillSymbolLayer()
 {
-  setSubSymbol( new QgsLineSymbol() );
+  mFillLineSymbol = std::make_unique<QgsLineSymbol>( );
   QgsImageFillSymbolLayer::setSubSymbol( nullptr ); //no stroke
 }
 
@@ -3571,7 +3571,7 @@ QgsSymbolLayer *QgsLinePatternFillSymbolLayer::createFromSld( QDomElement &eleme
 QgsPointPatternFillSymbolLayer::QgsPointPatternFillSymbolLayer()
   : QgsImageFillSymbolLayer()
 {
-  setSubSymbol( new QgsMarkerSymbol() );
+  mMarkerSymbol = std::make_unique<QgsMarkerSymbol>();
   QgsImageFillSymbolLayer::setSubSymbol( nullptr ); //no stroke
 }
 
