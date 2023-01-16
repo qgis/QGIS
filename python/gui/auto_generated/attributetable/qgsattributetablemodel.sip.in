@@ -257,7 +257,7 @@ constraint is not met.
 .. versionadded:: 3.30
 %End
 
-    void setShowValidityState( const bool &show );
+    void setShowValidityState( bool show );
 %Docstring
 Sets whether the attribute table will add a visual feedback to cells when an attribute constraint
 is not met.

@@ -268,7 +268,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * is not met.
      * \since QGIS 3.30
      */
-    void setShowValidityState( const bool &show ) { mShowValidityState = show; }
+    void setShowValidityState( bool show ) { mShowValidityState = show; }
 
   public slots:
 
