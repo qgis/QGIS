@@ -50,6 +50,7 @@ class QgsMasterLayoutInterface;
 class QgsLayoutGuideWidget;
 class QgsScreenHelper;
 class QgsConfigureShortcutsDialog;
+class QgsShortcutsManager;
 
 class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
 {
