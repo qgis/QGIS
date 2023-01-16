@@ -24,7 +24,7 @@
 #include "qgis_sip.h"
 #include <QPointer>
 #include "qgsprocessingcontext.h"
-#include "processing/models/qgsprocessingmodelchildparametersource.h"
+#include "qgsprocessingmodelchildparametersource.h"
 
 class QgsProcessingParameterDefinition;
 class QgsAbstractProcessingParameterWidgetWrapper;

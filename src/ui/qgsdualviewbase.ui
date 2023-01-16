@@ -399,12 +399,12 @@
   <customwidget>
    <class>QgsAttributeTableView</class>
    <extends>QTableView</extends>
-   <header>attributetable/qgsattributetableview.h</header>
+   <header>qgsattributetableview.h</header>
   </customwidget>
   <customwidget>
    <class>QgsFeatureListView</class>
    <extends>QListView</extends>
-   <header>attributetable/qgsfeaturelistview.h</header>
+   <header>qgsfeaturelistview.h</header>
   </customwidget>
   <customwidget>
    <class>QgsPanelWidgetStack</class>
