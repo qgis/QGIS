@@ -145,7 +145,7 @@ Qgs2DPlot::Qgs2DPlot()
   : mMargins( 2, 2, 2, 2 )
 {
   // setup default style
-  mChartBackgroundSymbol.reset( QgsPlotDefaultSettings::chartFillSymbol() );
+  mChartBackgroundSymbol.reset( QgsPlotDefaultSettings::chartBackgroundSymbol() );
   mChartBorderSymbol.reset( QgsPlotDefaultSettings::chartBorderSymbol() );
 }
 
@@ -600,7 +600,7 @@ QgsLineSymbol *QgsPlotDefaultSettings::axisGridMinorSymbol()
   return new QgsLineSymbol( QgsSymbolLayerList( { gridMinor.release() } ) );
 }
 
-QgsFillSymbol *QgsPlotDefaultSettings::chartFillSymbol()
+QgsFillSymbol *QgsPlotDefaultSettings::chartBackgroundSymbol()
 {
   std::unique_ptr< QgsSimpleFillSymbolLayer > chartFill = std::make_unique< QgsSimpleFillSymbolLayer >( QColor( 255, 255, 255 ) );
   return new QgsFillSymbol( QgsSymbolLayerList( { chartFill.release() } ) );
