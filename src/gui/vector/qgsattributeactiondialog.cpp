@@ -247,7 +247,7 @@ QString QgsAttributeActionDialog::textForType( Qgis::AttributeActionType type )
     case Qgis::AttributeActionType::GenericPython:
       return tr( "Python" );
     case Qgis::AttributeActionType::Mac:
-      return tr( "Mac" );
+      return tr( "macOS" );
     case Qgis::AttributeActionType::Windows:
       return tr( "Windows" );
     case Qgis::AttributeActionType::Unix:

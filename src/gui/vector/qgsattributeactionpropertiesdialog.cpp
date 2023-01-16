@@ -247,7 +247,7 @@ void QgsAttributeActionPropertiesDialog::populateActionTypes()
 {
   mActionType->addItem( tr( "Generic" ), static_cast< int>( Qgis::AttributeActionType::Generic ) );
   mActionType->addItem( tr( "Python" ), static_cast< int>( Qgis::AttributeActionType::GenericPython ) );
-  mActionType->addItem( tr( "Mac" ), static_cast< int>( Qgis::AttributeActionType::Mac ) );
+  mActionType->addItem( tr( "macOS" ), static_cast< int>( Qgis::AttributeActionType::Mac ) );
   mActionType->addItem( tr( "Windows" ), static_cast< int>( Qgis::AttributeActionType::Windows ) );
   mActionType->addItem( tr( "Unix" ), static_cast< int>( Qgis::AttributeActionType::Unix ) );
   mActionType->addItem( tr( "Open URL" ), static_cast< int>( Qgis::AttributeActionType::OpenUrl ) );
