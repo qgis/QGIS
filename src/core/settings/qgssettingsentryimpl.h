@@ -45,8 +45,8 @@ class CORE_EXPORT QgsSettingsEntryVariant : public QgsSettingsEntryByReference<Q
                              QgsSettingsTreeElement *parent,
                              const QVariant &defaultValue = QVariant(),
                              const QString &description = QString(),
-                             Qgis::SettingsOptions options = Qgis::SettingsOptions() )
-      : QgsSettingsEntryByReference( key, parent, defaultValue, description, options ) SIP_THROW( QgsSettingsException )
+                             Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER
+  : QgsSettingsEntryByReference( key, parent, defaultValue, description, options )
     {}
 
     /**
@@ -63,7 +63,7 @@ class CORE_EXPORT QgsSettingsEntryVariant : public QgsSettingsEntryByReference<Q
                              const QString &section,
                              const QVariant &defaultValue = QVariant(),
                              const QString &description = QString(),
-                             Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_MAKE_PRIVATE
+                             Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER SIP_MAKE_PRIVATE
   : QgsSettingsEntryByReference( key, section, defaultValue, description, options )
     {}
 
@@ -146,10 +146,10 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntryByReference<QS
                             const QString &description = QString(),
                             Qgis::SettingsOptions options = Qgis::SettingsOptions(),
                             int minLength = 0,
-                            int maxLength = -1 ) SIP_THROW( QgsSettingsException )
-      : QgsSettingsEntryByReference<QString>( key, parent, defaultValue, description, options )
-      , mMinLength( minLength )
-      , mMaxLength( maxLength )
+                            int maxLength = -1 ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER
+  : QgsSettingsEntryByReference<QString>( key, parent, defaultValue, description, options )
+    , mMinLength( minLength )
+    , mMaxLength( maxLength )
     {}
 
     /**
@@ -169,8 +169,8 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntryByReference<QS
                             const QString &description = QString(),
                             Qgis::SettingsOptions options = Qgis::SettingsOptions(),
                             int minLength = 0,
-                            int maxLength = -1 ) SIP_MAKE_PRIVATE
-  : QgsSettingsEntryByReference<QString>( key, section, defaultValue, description, options ) SIP_MAKE_PRIVATE
+                            int maxLength = -1 ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER SIP_MAKE_PRIVATE
+  : QgsSettingsEntryByReference<QString>( key, section, defaultValue, description, options )
     , mMinLength( minLength )
     , mMaxLength( maxLength )
     {}
@@ -259,8 +259,8 @@ class CORE_EXPORT QgsSettingsEntryStringList : public QgsSettingsEntryByReferenc
                                 QgsSettingsTreeElement *parent,
                                 const QStringList &defaultValue = QStringList(),
                                 const QString &description = QString(),
-                                Qgis::SettingsOptions options = Qgis::SettingsOptions() )
-      : QgsSettingsEntryByReference( key, parent, defaultValue, description, options ) SIP_THROW( QgsSettingsException )
+                                Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER
+  : QgsSettingsEntryByReference( key, parent, defaultValue, description, options )
     {}
 
     /**
@@ -276,7 +276,7 @@ class CORE_EXPORT QgsSettingsEntryStringList : public QgsSettingsEntryByReferenc
                                 const QString &section,
                                 const QStringList &defaultValue = QStringList(),
                                 const QString &description = QString(),
-                                Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_MAKE_PRIVATE
+                                Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER SIP_MAKE_PRIVATE
   : QgsSettingsEntryByReference( key, section, defaultValue, description, options )
     {}
 
@@ -335,8 +335,8 @@ class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntryByValue<bool>
                           QgsSettingsTreeElement *parent,
                           bool defaultValue = false,
                           const QString &description = QString(),
-                          Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_THROW( QgsSettingsException )
-      : QgsSettingsEntryByValue( key, parent, defaultValue, description, options )
+                          Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER
+  : QgsSettingsEntryByValue( key, parent, defaultValue, description, options )
     {}
 
     /**
@@ -352,7 +352,7 @@ class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntryByValue<bool>
                           const QString &section,
                           bool defaultValue = false,
                           const QString &description = QString(),
-                          Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_MAKE_PRIVATE
+                          Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER SIP_MAKE_PRIVATE
   : QgsSettingsEntryByValue( key, section, defaultValue, description, options )
     {}
 
@@ -414,10 +414,10 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryByValue<qlong
                              const QString &description = QString(),
                              Qgis::SettingsOptions options = Qgis::SettingsOptions(),
                              qlonglong minValue = std::numeric_limits<qlonglong>::min(),
-                             qlonglong maxValue = std::numeric_limits<qlonglong>::max() ) SIP_THROW( QgsSettingsException )
-      : QgsSettingsEntryByValue( key, parent, defaultValue, description, options )
-      , mMinValue( minValue )
-      , mMaxValue( maxValue )
+                             qlonglong maxValue = std::numeric_limits<qlonglong>::max() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER
+  : QgsSettingsEntryByValue( key, parent, defaultValue, description, options )
+    , mMinValue( minValue )
+    , mMaxValue( maxValue )
     { }
 
     /**
@@ -437,7 +437,7 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryByValue<qlong
                              const QString &description = QString(),
                              Qgis::SettingsOptions options = Qgis::SettingsOptions(),
                              qlonglong minValue = std::numeric_limits<qlonglong>::min(),
-                             qlonglong maxValue = std::numeric_limits<qlonglong>::max() ) SIP_MAKE_PRIVATE
+                             qlonglong maxValue = std::numeric_limits<qlonglong>::max() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER SIP_MAKE_PRIVATE
   : QgsSettingsEntryByValue( key, section, defaultValue, description, options )
     , mMinValue( minValue )
     , mMaxValue( maxValue )
@@ -535,11 +535,11 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntryByValue<double
                             Qgis::SettingsOptions options = Qgis::SettingsOptions(),
                             double minValue = std::numeric_limits<double>::lowest(),
                             double maxValue = std::numeric_limits<double>::max(),
-                            int displayDecimals = 1 ) SIP_THROW( QgsSettingsException )
-      : QgsSettingsEntryByValue( key, parent, defaultValue, description, options )
-      , mMinValue( minValue )
-      , mMaxValue( maxValue )
-      , mDisplayHintDecimals( displayDecimals )
+                            int displayDecimals = 1 ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER
+  : QgsSettingsEntryByValue( key, parent, defaultValue, description, options )
+    , mMinValue( minValue )
+    , mMaxValue( maxValue )
+    , mDisplayHintDecimals( displayDecimals )
     {}
 
     /**
@@ -562,7 +562,7 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntryByValue<double
                             Qgis::SettingsOptions options = Qgis::SettingsOptions(),
                             double minValue = std::numeric_limits<double>::lowest(),
                             double maxValue = std::numeric_limits<double>::max(),
-                            int displayDecimals = 1 ) SIP_MAKE_PRIVATE
+                            int displayDecimals = 1 ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER SIP_MAKE_PRIVATE
   : QgsSettingsEntryByValue( key, section, defaultValue, description, options )
     , mMinValue( minValue )
     , mMaxValue( maxValue )
@@ -674,9 +674,9 @@ class CORE_EXPORT QgsSettingsEntryColor : public QgsSettingsEntryByReference<QCo
                            const QColor &defaultValue = QColor(),
                            const QString &description = QString(),
                            Qgis::SettingsOptions options = Qgis::SettingsOptions(),
-                           bool allowAlpha = true ) SIP_THROW( QgsSettingsException )
-      : QgsSettingsEntryByReference( key, parent, defaultValue, description, options )
-      , mAllowAlpha( allowAlpha )
+                           bool allowAlpha = true ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER
+  : QgsSettingsEntryByReference( key, parent, defaultValue, description, options )
+    , mAllowAlpha( allowAlpha )
     {}
 
     /**
@@ -694,7 +694,7 @@ class CORE_EXPORT QgsSettingsEntryColor : public QgsSettingsEntryByReference<QCo
                            const QColor &defaultValue = QColor(),
                            const QString &description = QString(),
                            Qgis::SettingsOptions options = Qgis::SettingsOptions(),
-                           bool allowAlpha = true ) SIP_MAKE_PRIVATE
+                           bool allowAlpha = true ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER SIP_MAKE_PRIVATE
   : QgsSettingsEntryByReference( key, section, defaultValue, description, options )
     , mAllowAlpha( allowAlpha )
     {}
@@ -775,8 +775,8 @@ class CORE_EXPORT QgsSettingsEntryVariantMap : public QgsSettingsEntryByReferenc
                                 QgsSettingsTreeElement *parent,
                                 const QVariantMap &defaultValue = QVariantMap(),
                                 const QString &description = QString(),
-                                Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_THROW( QgsSettingsException )
-      : QgsSettingsEntryByReference( key, parent, defaultValue, description, options )
+                                Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER
+  : QgsSettingsEntryByReference( key, parent, defaultValue, description, options )
     {
     }
 
@@ -793,7 +793,7 @@ class CORE_EXPORT QgsSettingsEntryVariantMap : public QgsSettingsEntryByReferenc
                                 const QString &section,
                                 const QVariantMap &defaultValue = QVariantMap(),
                                 const QString &description = QString(),
-                                Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_MAKE_PRIVATE
+                                Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER SIP_MAKE_PRIVATE
   : QgsSettingsEntryByReference( key, section, defaultValue, description, options )
     {
     }
