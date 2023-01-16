@@ -102,6 +102,17 @@ void QgsMeasureTool::deactivate()
   mDialog->hide();
   mRubberBand->hide();
   mRubberBandPoints->hide();
+
+  // Deactivating the tool does not reset the measure.
+  // Remove the last temporary point as to not duplicate it when
+  // the tool is re activated
+  int nbTempVertices = mRubberBand->numberOfVertices();
+  int nbVertices = mRubberBandPoints->numberOfVertices();
+  if ( nbTempVertices > nbVertices )
+  {
+    mRubberBand->removeLastPoint();
+  }
+
   QgsMapTool::deactivate();
 }
 
