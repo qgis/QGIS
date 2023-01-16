@@ -175,6 +175,8 @@ void QgsNmeaConnection::processStringBuffer()
     }
     mStringBuffer.remove( 0, endSentenceIndex + 2 );
   }
+  QgsDebugMsg( mStringBuffer );
+  QgsDebugMsg( QStringLiteral( "source size %1 " ).arg( mSource->size() ) );
 }
 
 void QgsNmeaConnection::processGgaSentence( const char *data, int len )
