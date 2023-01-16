@@ -1,5 +1,6 @@
 if(NOT MSVC)
   add_subdirectory(wms)
+  add_subdirectory(wfs)
 endif()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}
