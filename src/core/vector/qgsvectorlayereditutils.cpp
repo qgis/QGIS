@@ -472,8 +472,6 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::splitParts( const QgsPoin
 
   double xMin, yMin, xMax, yMax;
   QgsRectangle bBox; //bounding box of the split line
-  Qgis::GeometryOperationResult returnCode = Qgis::GeometryOperationResult::Success;
-  Qgis::GeometryOperationResult splitFunctionReturn; //return code of QgsGeometry::splitGeometry
   int numberOfSplitParts = 0;
 
   QgsFeatureIterator fit;
@@ -528,49 +526,64 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::splitParts( const QgsPoin
   QgsFeature feat;
   while ( fit.nextFeature( feat ) )
   {
-    QVector<QgsGeometry> newGeometries;
-    QgsPointSequence topologyTestPoints;
     QgsGeometry featureGeom = feat.geometry();
-    splitFunctionReturn = featureGeom.splitGeometry( splitLine, newGeometries, topologicalEditing, topologyTestPoints, false );
 
-    if ( splitFunctionReturn == Qgis::GeometryOperationResult::Success && !newGeometries.isEmpty() )
+    const QVector<QgsGeometry> geomCollection = featureGeom.asGeometryCollection();
+    QVector<QgsGeometry> resultCollection;
+    QgsPointSequence topologyTestPoints;
+    for ( QgsGeometry part : geomCollection )
     {
-      QgsGeometry newGeom( newGeometries.at( 0 ) );
-      newGeom.convertToMultiType();
+      QVector<QgsGeometry> newGeometries;
+      QgsPointSequence partTopologyTestPoints;
 
-      for ( int i = 1; i < newGeometries.size(); ++i )
+      const Qgis::GeometryOperationResult splitFunctionReturn = part.splitGeometry( splitLine, newGeometries, topologicalEditing, partTopologyTestPoints, false );
+
+      if ( splitFunctionReturn == Qgis::GeometryOperationResult::Success && !newGeometries.isEmpty() )
       {
-        QgsGeometry part = newGeometries.at( i );
-        part.convertToSingleType();
-        newGeom.addPart( part );
-      }
-
-      mLayer->changeGeometry( feat.id(), newGeom );
-
-      if ( topologicalEditing )
-      {
-        QgsPointSequence::const_iterator topol_it = topologyTestPoints.constBegin();
-        for ( ; topol_it != topologyTestPoints.constEnd(); ++topol_it )
+        for ( int i = 0; i < newGeometries.size(); ++i )
         {
-          addTopologicalPoints( *topol_it );
+          resultCollection.append( newGeometries.at( i ).asGeometryCollection() );
         }
-      }
-      ++numberOfSplitParts;
-    }
-    else if ( splitFunctionReturn != Qgis::GeometryOperationResult::Success && splitFunctionReturn != Qgis::GeometryOperationResult::NothingHappened )
-    {
-      returnCode = splitFunctionReturn;
-    }
-  }
 
-  if ( numberOfSplitParts == 0 && mLayer->selectedFeatureCount() > 0  && returnCode == Qgis::GeometryOperationResult::Success )
+        topologyTestPoints.append( partTopologyTestPoints );
+
+        ++numberOfSplitParts;
+      }
+      // Note: For multilinestring layers, when the split line does not intersect the feature part,
+      // QgsGeometry::splitGeometry returns InvalidBaseGeometry instead of NothingHappened
+      else if ( splitFunctionReturn == Qgis::GeometryOperationResult::NothingHappened ||
+                splitFunctionReturn == Qgis::GeometryOperationResult::InvalidBaseGeometry )
+      {
+        // Add part as is
+        resultCollection.append( part );
+      }
+      else if ( splitFunctionReturn != Qgis::GeometryOperationResult::Success )
+      {
+        return splitFunctionReturn;
+      }
+    }
+
+    QgsGeometry newGeom = QgsGeometry::collectGeometry( resultCollection );
+    mLayer->changeGeometry( feat.id(), newGeom ) ;
+
+    if ( topologicalEditing )
+    {
+      QgsPointSequence::const_iterator topol_it = topologyTestPoints.constBegin();
+      for ( ; topol_it != topologyTestPoints.constEnd(); ++topol_it )
+      {
+        addTopologicalPoints( *topol_it );
+      }
+    }
+
+  }
+  if ( numberOfSplitParts == 0 && mLayer->selectedFeatureCount() > 0 )
   {
     //There is a selection but no feature has been split.
     //Maybe user forgot that only the selected features are split
-    returnCode = Qgis::GeometryOperationResult::NothingHappened;
+    return Qgis::GeometryOperationResult::NothingHappened;
   }
 
-  return returnCode;
+  return Qgis::GeometryOperationResult::Success;
 }
 
 
