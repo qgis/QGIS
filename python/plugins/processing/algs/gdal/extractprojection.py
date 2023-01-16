@@ -100,7 +100,14 @@ class ExtractProjection(GdalAlgorithm):
         raster = None
         rasterDS = None
 
-        outFileName = os.path.splitext(str(rasterPath))[0]
+        inFileName = os.path.splitext(str(rasterPath))
+        outFileName = inFileName[0]
+        # this is not a good idea as it won't work with an extension like .jpeg
+        # outFileExt = '.' + inFileName[1][1:4:2] + 'w'
+        if (len(inFileName[1]) < 4):
+            outFileExt = '.wld'
+        else:
+            outFileExt = inFileName[1][0:2] + inFileName[1][-1] + 'w'
 
         results = {}
         if crs != '' and createPrj:
@@ -116,7 +123,7 @@ class ExtractProjection(GdalAlgorithm):
         else:
             results[self.PRJ_FILE] = None
 
-        with open(outFileName + '.wld', 'wt') as wld:
+        with open(outFileName + outFileExt, 'wt') as wld:
             wld.write('%0.8f\n' % geotransform[1])
             wld.write('%0.8f\n' % geotransform[4])
             wld.write('%0.8f\n' % geotransform[2])
@@ -127,6 +134,6 @@ class ExtractProjection(GdalAlgorithm):
             wld.write('%0.8f\n' % (geotransform[3]
                                    + 0.5 * geotransform[4]
                                    + 0.5 * geotransform[5]))
-        results[self.WORLD_FILE] = outFileName + '.wld'
+        results[self.WORLD_FILE] = outFileName + outFileExt
 
         return results
