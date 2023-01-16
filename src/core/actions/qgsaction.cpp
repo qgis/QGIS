@@ -411,7 +411,7 @@ QString QgsAction::html() const
     }
     case Qgis::AttributeActionType::Mac:
     {
-      typeText = QObject::tr( "Mac" );
+      typeText = QObject::tr( "macOS" );
       break;
     }
     case Qgis::AttributeActionType::Windows:
