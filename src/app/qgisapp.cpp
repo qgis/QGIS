@@ -9742,7 +9742,7 @@ void QgisApp::mergeSelectedFeatures()
           fieldNames.push_back( pkField.name() );
         }
         request.setSubsetOfAttributes( fieldNames, vl->fields( ) );
-        request.setFilterExpression( conditions.join( QStringLiteral( " AND " ) ) );
+        request.setFilterExpression( conditions.join( QLatin1String( " AND " ) ) );
       }
       else  // single pk
       {
@@ -13396,7 +13396,7 @@ bool QgisApp::checkUnsavedRasterAttributeTableEdits( const QList<QgsMapLayer *> 
 
       switch ( QMessageBox::question( nullptr,
                                       tr( "Save Raster Attribute Table" ),
-                                      tr( "Do you want to save the changes to the attribute tables (bands: %1) associated with layer '%2'?" ).arg( dirtyBands.join( QStringLiteral( ", " ) ), rasterLayer->name() ),
+                                      tr( "Do you want to save the changes to the attribute tables (bands: %1) associated with layer '%2'?" ).arg( dirtyBands.join( QLatin1String( ", " ) ), rasterLayer->name() ),
                                       buttons ) )
       {
 

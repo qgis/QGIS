@@ -79,7 +79,7 @@ QString QgsWFSProvider::buildFilterByGeometryType( const QgsWfsCapabilities::Cap
 
   QDomDocument doc;
   QDomElement filterElem =
-    ( caps.version.startsWith( QStringLiteral( "2.0" ) ) ) ?
+    ( caps.version.startsWith( QLatin1String( "2.0" ) ) ) ?
     doc.createElementNS( QStringLiteral( "http://www.opengis.net/fes/2.0" ), QStringLiteral( "fes:Filter" ) ) :
     doc.createElementNS( QStringLiteral( "http://www.opengis.net/ogc" ), QStringLiteral( "ogc:Filter" ) ) ;
   doc.appendChild( filterElem );
@@ -115,7 +115,7 @@ QString QgsWFSProvider::buildIsNullGeometryFilter( const QgsWfsCapabilities::Cap
 
   QDomDocument doc;
   QDomElement filterElem =
-    ( caps.version.startsWith( QStringLiteral( "2.0" ) ) ) ?
+    ( caps.version.startsWith( QLatin1String( "2.0" ) ) ) ?
     doc.createElementNS( QStringLiteral( "http://www.opengis.net/fes/2.0" ), QStringLiteral( "fes:Filter" ) ) :
     doc.createElementNS( QStringLiteral( "http://www.opengis.net/ogc" ), QStringLiteral( "ogc:Filter" ) ) ;
   doc.appendChild( filterElem );
@@ -135,7 +135,7 @@ QString QgsWFSProvider::buildGeometryCollectionFilter( const QgsWfsCapabilities:
 {
   QDomDocument doc;
   QDomElement filterElem =
-    ( caps.version.startsWith( QStringLiteral( "2.0" ) ) ) ?
+    ( caps.version.startsWith( QLatin1String( "2.0" ) ) ) ?
     doc.createElementNS( QStringLiteral( "http://www.opengis.net/fes/2.0" ), QStringLiteral( "fes:Filter" ) ) :
     doc.createElementNS( QStringLiteral( "http://www.opengis.net/ogc" ), QStringLiteral( "ogc:Filter" ) ) ;
   doc.appendChild( filterElem );

@@ -133,7 +133,7 @@ QgsDataSourceUri &QgsOwsConnection::addWmsWcsConnectionSettings( QgsDataSourceUr
     uri.setParam( QStringLiteral( "dpiMode" ), dpiMode );
   }
   const QString tilePixelRatio = settings.value( settingsKey + QStringLiteral( "/tilePixelRatio" ), "0" ).toString();
-  if ( tilePixelRatio != QStringLiteral( "0" ) )
+  if ( tilePixelRatio != QLatin1String( "0" ) )
   {
     uri.setParam( QStringLiteral( "tilePixelRatio" ), tilePixelRatio );
   }

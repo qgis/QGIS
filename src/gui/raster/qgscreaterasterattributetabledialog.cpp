@@ -64,7 +64,7 @@ QgsCreateRasterAttributeTableDialog::QgsCreateRasterAttributeTableDialog( QgsRas
 
   if ( ! existingRatsInfo.isEmpty() )
   {
-    mCreateInfoLabel->setText( mCreateInfoLabel->text().append( QStringLiteral( "<br><ul><li>" ) + existingRatsInfo.join( QStringLiteral( "</li><li>" ) ) ).append( QStringLiteral( "</ul>" ) ) );
+    mCreateInfoLabel->setText( mCreateInfoLabel->text().append( QStringLiteral( "<br><ul><li>" ) + existingRatsInfo.join( QLatin1String( "</li><li>" ) ) ).append( QStringLiteral( "</ul>" ) ) );
     mCreateInfoLabel->adjustSize();
     mCreateInfoLabel->show();
   }

@@ -617,7 +617,7 @@ QgsLayerTreeLayer *QgsLayerTreeUtils::insertLayerAtOptimalPlacement( QgsLayerTre
 
         case QgsMapLayerType::RasterLayer:
         {
-          if ( layer->dataProvider() && layer->dataProvider()->name() == QStringLiteral( "gdal" ) )
+          if ( layer->dataProvider() && layer->dataProvider()->name() == QLatin1String( "gdal" ) )
           {
             // Assume non-gdal raster layers are most likely to be base maps (e.g. XYZ raster)
             // Admittedly a gross assumption, but better than nothing
@@ -672,7 +672,7 @@ QgsLayerTreeLayer *QgsLayerTreeUtils::insertLayerAtOptimalPlacement( QgsLayerTre
 
     case QgsMapLayerType::RasterLayer:
     {
-      if ( layer->dataProvider() && layer->dataProvider()->name() == QStringLiteral( "gdal" ) )
+      if ( layer->dataProvider() && layer->dataProvider()->name() == QLatin1String( "gdal" ) )
       {
         index = rasterIndex;
       }
