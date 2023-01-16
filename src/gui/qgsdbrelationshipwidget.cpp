@@ -98,26 +98,21 @@ QgsDbRelationWidget::QgsDbRelationWidget( QgsAbstractDatabaseProviderConnection 
     mRightFieldsCombo->setFields( mConnection->fields( QString(), mRightTableCombo->currentText() ) );
     emit validityChanged( isValid() );
   } );
-  connect( mCardinalityCombo, qOverload< int >( &QComboBox::currentIndexChanged ), this, [ = ]( int )
+
+  for ( QComboBox *combo :
+        {
+          mCardinalityCombo,
+          qobject_cast< QComboBox *>( mLeftFieldsCombo ),
+          qobject_cast< QComboBox *>( mRightFieldsCombo ),
+          mStrengthCombo,
+          mRelatedTableTypeCombo
+        } )
   {
-    emit validityChanged( isValid() );
-  } );
-  connect( mLeftFieldsCombo, qOverload< int >( &QComboBox::currentIndexChanged ), this, [ = ]( int )
-  {
-    emit validityChanged( isValid() );
-  } );
-  connect( mRightFieldsCombo, qOverload< int >( &QComboBox::currentIndexChanged ), this, [ = ]( int )
-  {
-    emit validityChanged( isValid() );
-  } );
-  connect( mStrengthCombo, qOverload< int >( &QComboBox::currentIndexChanged ), this, [ = ]( int )
-  {
-    emit validityChanged( isValid() );
-  } );
-  connect( mRelatedTableTypeCombo, qOverload< int >( &QComboBox::currentIndexChanged ), this, [ = ]( int )
-  {
-    emit validityChanged( isValid() );
-  } );
+    connect( combo, qOverload< int >( &QComboBox::currentIndexChanged ), this, [ = ]( int )
+    {
+      emit validityChanged( isValid() );
+    } );
+  }
 
   mLeftFieldsCombo->setFields( mConnection->fields( QString(), mLeftTableCombo->currentText() ) );
   mRightFieldsCombo->setFields( mConnection->fields( QString(), mRightTableCombo->currentText() ) );
