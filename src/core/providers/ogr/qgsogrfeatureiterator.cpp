@@ -628,7 +628,13 @@ bool QgsOgrFeatureIterator::readFeature( const gdal::ogr_feature_unique_ptr &fet
   QVariant *attributeData = attributes.data();
   if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
   {
-    const int requestedAttributeTotal = std::min( mRequestAttributes.size(), fieldCount );
+    int requestedAttributeTotal = std::min( mRequestAttributes.size(), fieldCount );
+    if ( fieldCount < requestedAttributeTotal )
+    {
+      QgsDebugMsg( "Feature iterator of " + mSource->mLayerName + ": trying to read more fields than available" );
+      requestedAttributeTotal = fieldCount;
+    }
+
     if ( requestedAttributeTotal > 0 )
     {
       const int *requestAttribute = mRequestAttributes.constData();
