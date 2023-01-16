@@ -116,7 +116,7 @@
   <customwidget>
    <class>QgsColorRampShaderWidget</class>
    <extends>QWidget</extends>
-   <header>raster/qgscolorrampshaderwidget.h</header>
+   <header>qgscolorrampshaderwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
