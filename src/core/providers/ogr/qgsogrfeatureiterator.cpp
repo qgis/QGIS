@@ -628,7 +628,7 @@ bool QgsOgrFeatureIterator::readFeature( const gdal::ogr_feature_unique_ptr &fet
   QVariant *attributeData = attributes.data();
   if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
   {
-    const int requestedAttributeTotal = mRequestAttributes.size();
+    const int requestedAttributeTotal = qMin( mRequestAttributes.size(), fieldCount );
     if ( requestedAttributeTotal > 0 )
     {
       const int *requestAttribute = mRequestAttributes.constData();
