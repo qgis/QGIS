@@ -21,7 +21,7 @@
 
 #include <QWidget>
 #include <QDialog>
-#include "processing/models/qgsprocessingmodelgroupbox.h"
+#include "qgsprocessingmodelgroupbox.h"
 #include "qgis_gui.h"
 
 #define SIP_NO_FILE

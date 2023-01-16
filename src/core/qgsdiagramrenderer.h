@@ -30,7 +30,7 @@
 #include "qgsproperty.h"
 #include "qgspropertycollection.h"
 
-#include "diagram/qgsdiagram.h"
+#include "qgsdiagram.h"
 #include "qgsreadwritecontext.h"
 #include "qgsmapunitscale.h"
 

@@ -2278,7 +2278,7 @@
   <customwidget>
    <class>QgsEffectStackCompactWidget</class>
    <extends>QWidget</extends>
-   <header>effects/qgseffectstackpropertieswidget.h</header>
+   <header>qgseffectstackpropertieswidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

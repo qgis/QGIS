@@ -1189,6 +1189,7 @@ set(QGIS_CORE_HDRS
   qgssourcecache.h
   qgsspatialiteutils.h
   qgssqlexpressioncompiler.h
+  qgssqliteexpressioncompiler.h
   qgssqliteutils.h
   qgssqlstatement.h
   qgsstatisticalsummary.h
@@ -1309,6 +1310,8 @@ set(QGIS_CORE_HDRS
   diagram/qgstextdiagram.h
 
   dxf/qgsdxfexport.h
+  dxf/qgsdxfpaintdevice.h
+  dxf/qgsdxfpaintengine.h
 
   editform/qgseditformconfig.h
   editform/qgsattributeeditoraction.h
@@ -1816,6 +1819,7 @@ set(QGIS_CORE_HDRS
   symbology/qgsmapinfosymbolconverter.h
   symbology/qgsmarkersymbol.h
   symbology/qgsmarkersymbollayer.h
+  symbology/qgsmasksymbollayer.h
   symbology/qgsmergedfeaturerenderer.h
   symbology/qgsnullsymbolrenderer.h
   symbology/qgspointclusterrenderer.h

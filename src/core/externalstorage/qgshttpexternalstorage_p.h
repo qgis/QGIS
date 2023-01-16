@@ -20,7 +20,7 @@
 #include "qgis_sip.h"
 #include "qgstaskmanager.h"
 
-#include "externalstorage/qgsexternalstorage.h"
+#include "qgsexternalstorage.h"
 
 #include <QPointer>
 #include <QUrl>

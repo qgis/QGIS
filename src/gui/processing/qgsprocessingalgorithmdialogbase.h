@@ -20,8 +20,8 @@
 #include "qgis_gui.h"
 #include "ui_qgsprocessingalgorithmdialogbase.h"
 #include "ui_qgsprocessingalgorithmprogressdialogbase.h"
-#include "processing/qgsprocessingcontext.h"
-#include "processing/qgsprocessingfeedback.h"
+#include "qgsprocessingcontext.h"
+#include "qgsprocessingfeedback.h"
 #include "qgsprocessingwidgetwrapper.h"
 
 ///@cond NOT_STABLE
