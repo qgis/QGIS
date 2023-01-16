@@ -96,6 +96,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->update();
     mProfile->endCommand();
   } );
+  mDistanceAxisMajorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMajorSymbol() );
 
   mDistanceAxisMinorLinesSymbolButton->setSymbolType( Qgis::SymbolType::Line );
   connect( mDistanceAxisMinorLinesSymbolButton, &QgsSymbolButton::changed, this, [ = ]
@@ -108,6 +109,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->update();
     mProfile->endCommand();
   } );
+  mDistanceAxisMinorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMinorSymbol() );
 
   connect( mDistanceAxisMajorIntervalSpin, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [ = ]( double value )
   {
@@ -153,6 +155,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->update();
     mProfile->endCommand();
   } );
+  mElevationAxisMajorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMajorSymbol() );
 
   mElevationAxisMinorLinesSymbolButton->setSymbolType( Qgis::SymbolType::Line );
   connect( mElevationAxisMinorLinesSymbolButton, &QgsSymbolButton::changed, this, [ = ]
@@ -165,6 +168,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->update();
     mProfile->endCommand();
   } );
+  mElevationAxisMinorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMinorSymbol() );
 
   connect( mElevationAxisLabelIntervalSpin, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [ = ]( double value )
   {
@@ -210,6 +214,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->update();
     mProfile->endCommand();
   } );
+  mChartBackgroundSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::chartBackgroundSymbol() );
 
   mChartBorderSymbolButton->setSymbolType( Qgis::SymbolType::Fill );
   connect( mChartBorderSymbolButton, &QgsSymbolButton::changed, this, [ = ]
@@ -222,6 +227,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->update();
     mProfile->endCommand();
   } );
+  mChartBorderSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::chartBorderSymbol() );
 
   connect( mDistanceAxisLabelFormatButton, &QPushButton::clicked, this, [ = ]
   {

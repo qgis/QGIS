@@ -485,12 +485,12 @@ class CORE_EXPORT QgsPlotDefaultSettings
      *
      * \see chartBorderSymbol()
      */
-    static QgsFillSymbol *chartFillSymbol() SIP_FACTORY;
+    static QgsFillSymbol *chartBackgroundSymbol() SIP_FACTORY;
 
     /**
      * Returns the default fill symbol to use for the chart area border.
      *
-     * \see chartFillSymbol()
+     * \see chartBackgroundSymbol()
      */
     static QgsFillSymbol *chartBorderSymbol() SIP_FACTORY;
 

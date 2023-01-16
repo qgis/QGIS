@@ -427,7 +427,7 @@ Returns the default line symbol to use for axis minor grid lines.
 .. seealso:: :py:func:`axisGridMajorSymbol`
 %End
 
-    static QgsFillSymbol *chartFillSymbol() /Factory/;
+    static QgsFillSymbol *chartBackgroundSymbol() /Factory/;
 %Docstring
 Returns the default fill symbol to use for the chart area background fill.
 
@@ -438,7 +438,7 @@ Returns the default fill symbol to use for the chart area background fill.
 %Docstring
 Returns the default fill symbol to use for the chart area border.
 
-.. seealso:: :py:func:`chartFillSymbol`
+.. seealso:: :py:func:`chartBackgroundSymbol`
 %End
 
 };
