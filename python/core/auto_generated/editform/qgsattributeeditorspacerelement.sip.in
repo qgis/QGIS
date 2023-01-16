@@ -1,0 +1,43 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/editform/qgsattributeeditorspacerelement.h                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+class QgsAttributeEditorSpacerElement : QgsAttributeEditorElement
+{
+%Docstring(signature="appended")
+An attribute editor widget that will represent a spacer.
+
+.. versionadded:: 3.30
+%End
+
+%TypeHeaderCode
+#include "qgsattributeeditorspacerelement.h"
+%End
+  public:
+
+    QgsAttributeEditorSpacerElement( const QString &name, QgsAttributeEditorElement *parent );
+%Docstring
+Creates a new element which represents a spacer
+
+:param name: The name of the widget
+:param parent: The parent (used as container)
+%End
+
+    virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const /Factory/;
+
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/editform/qgsattributeeditorspacerelement.h                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

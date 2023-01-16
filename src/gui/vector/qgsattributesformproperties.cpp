@@ -15,6 +15,7 @@
 
 #include "qgsactionmanager.h"
 #include "qgsaddtaborgroup.h"
+#include "qgsattributeeditorspacerelement.h"
 #include "qgsattributeeditortextelement.h"
 #include "qgsattributesformproperties.h"
 #include "qgsattributetypedialog.h"
@@ -174,6 +175,10 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
   auto itemDataText { DnDTreeItemData( DnDTreeItemData::TextWidget, QStringLiteral( "TextWidget" ), tr( "Text Widget" ) ) };
   itemDataText.setShowLabel( true );
   mAvailableWidgetsTree->addItem( catitem, itemDataText );
+
+  auto itemDataSpacer { DnDTreeItemData( DnDTreeItemData::SpacerWidget, QStringLiteral( "SpacerWidget" ), tr( "Spacer Widget" ) ) };
+  itemDataSpacer.setShowLabel( false );
+  mAvailableWidgetsTree->addItem( catitem, itemDataSpacer );
 
   catitem ->setExpanded( true );
 }
@@ -542,6 +547,17 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
       break;
     }
 
+    case QgsAttributeEditorElement::AeTypeSpacerElement:
+    {
+      DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::SpacerWidget, widgetDef->name(), widgetDef->name() );
+      itemData.setShowLabel( widgetDef->showLabel() );
+      SpacerElementEditorConfiguration spacerEdConfig;
+      itemData.setSpacerElementEditorConfiguration( spacerEdConfig );
+      itemData.setLabelStyle( widgetDef->labelStyle() );
+      newWidget = tree->addItem( parent, itemData );
+      break;
+    }
+
     case QgsAttributeEditorElement::AeTypeInvalid:
     {
       QgsDebugMsg( QStringLiteral( "Not loading invalid attribute editor type..." ) );
@@ -625,6 +641,7 @@ void QgsAttributesFormProperties::loadAttributeSpecificEditor( QgsAttributesDnDT
       case DnDTreeItemData::QmlWidget:
       case DnDTreeItemData::HtmlWidget:
       case DnDTreeItemData::TextWidget:
+      case DnDTreeItemData::SpacerWidget:
       {
         if ( layout != QgsEditFormConfig::EditorLayout::TabLayout )
         {
@@ -799,6 +816,13 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
     {
       QgsAttributeEditorTextElement *element = new QgsAttributeEditorTextElement( item->text( 0 ), parent );
       element->setText( itemData.textElementEditorConfiguration().text );
+      widgetDef = element;
+      break;
+    }
+
+    case DnDTreeItemData::SpacerWidget:
+    {
+      QgsAttributeEditorSpacerElement *element = new QgsAttributeEditorSpacerElement( item->text( 0 ), parent );
       widgetDef = element;
       break;
     }
@@ -1067,6 +1091,7 @@ QTreeWidgetItem *QgsAttributesDnDTree::addItem( QTreeWidgetItem *parent, QgsAttr
     case QgsAttributesFormProperties::DnDTreeItemData::QmlWidget:
     case QgsAttributesFormProperties::DnDTreeItemData::HtmlWidget:
     case QgsAttributesFormProperties::DnDTreeItemData::TextWidget:
+    case QgsAttributesFormProperties::DnDTreeItemData::SpacerWidget:
       newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled );
       break;
 
@@ -1169,6 +1194,11 @@ bool QgsAttributesDnDTree::dropMimeData( QTreeWidgetItem *parent, int index, con
         onItemDoubleClicked( newItem, 0 );
       }
 
+      if ( itemElement.type() == QgsAttributesFormProperties::DnDTreeItemData::SpacerWidget )
+      {
+        onItemDoubleClicked( newItem, 0 );
+      }
+
       clearSelection();
       newItem->setSelected( true );
     }
@@ -1253,6 +1283,7 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
     case QgsAttributesFormProperties::DnDTreeItemData::WidgetType:
     case QgsAttributesFormProperties::DnDTreeItemData::Relation:
     case QgsAttributesFormProperties::DnDTreeItemData::Field:
+    case QgsAttributesFormProperties::DnDTreeItemData::SpacerWidget:
       break;
 
     case QgsAttributesFormProperties::DnDTreeItemData::QmlWidget:
@@ -1735,6 +1766,16 @@ QgsAttributesFormProperties::HtmlElementEditorConfiguration QgsAttributesFormPro
 void QgsAttributesFormProperties::DnDTreeItemData::setHtmlElementEditorConfiguration( QgsAttributesFormProperties::HtmlElementEditorConfiguration htmlElementEditorConfiguration )
 {
   mHtmlElementEditorConfiguration = htmlElementEditorConfiguration;
+}
+
+QgsAttributesFormProperties::SpacerElementEditorConfiguration QgsAttributesFormProperties::DnDTreeItemData::spacerElementEditorConfiguration() const
+{
+  return mSpacerElementEditorConfiguration;
+}
+
+void QgsAttributesFormProperties::DnDTreeItemData::setSpacerElementEditorConfiguration( SpacerElementEditorConfiguration spacerElementEditorConfiguration )
+{
+  mSpacerElementEditorConfiguration = spacerElementEditorConfiguration;
 }
 
 QColor QgsAttributesFormProperties::DnDTreeItemData::backgroundColor() const

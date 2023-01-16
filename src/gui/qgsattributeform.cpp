@@ -48,6 +48,7 @@
 #include "qgsactionwidgetwrapper.h"
 #include "qgsqmlwidgetwrapper.h"
 #include "qgshtmlwidgetwrapper.h"
+#include "qgsspacerwidgetwrapper.h"
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeaturerequest.h"
@@ -2509,6 +2510,18 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       newWidgetInfo.labelOnTop = false;
       newWidgetInfo.showLabel = widgetDef->showLabel();
       mNeedsGeometry |= textWrapper->needsGeometry();
+      break;
+    }
+
+    case QgsAttributeEditorElement::AeTypeSpacerElement:
+    {
+      QgsSpacerWidgetWrapper *spacerWrapper = new QgsSpacerWidgetWrapper( mLayer, nullptr, this );
+      context.setAttributeFormMode( mMode );
+      mWidgets.append( spacerWrapper );
+
+      newWidgetInfo.widget = spacerWrapper->widget();
+      newWidgetInfo.labelOnTop = false;
+      newWidgetInfo.showLabel = false;
       break;
     }
 

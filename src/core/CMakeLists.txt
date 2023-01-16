@@ -141,6 +141,7 @@ set(QGIS_CORE_SRCS
   editform/qgsattributeeditorhtmlelement.cpp
   editform/qgsattributeeditortextelement.cpp
   editform/qgsattributeeditorqmlelement.cpp
+  editform/qgsattributeeditorspacerelement.cpp
 
   effects/qgsblureffect.cpp
   effects/qgscoloreffect.cpp
@@ -1319,6 +1320,7 @@ set(QGIS_CORE_HDRS
   editform/qgsattributeeditorhtmlelement.h
   editform/qgsattributeeditortextelement.h
   editform/qgsattributeeditorqmlelement.h
+  editform/qgsattributeeditorspacerelement.h
 
   elevation/qgsabstractprofilegenerator.h
   elevation/qgsabstractprofilesurfacegenerator.h
