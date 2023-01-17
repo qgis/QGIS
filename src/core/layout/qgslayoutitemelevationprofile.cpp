@@ -44,21 +44,6 @@ QgsLayoutItemElevationProfile::QgsLayoutItemElevationProfile( QgsLayout *layout 
   : QgsLayoutItem( layout )
   , mPlot( std::make_unique< QgsLayoutItemElevationProfilePlot >() )
 {
-
-  //get default layout font from settings
-  const QgsSettings settings;
-  const QString defaultFontString = settings.value( QStringLiteral( "LayoutDesigner/defaultFont" ), QVariant(), QgsSettings::Gui ).toString();
-  if ( !defaultFontString.isEmpty() )
-  {
-//    QFont f = mFormat.font();
-//   f.setFamily( defaultFontString );
-    //  mFormat.setFont( f );
-  }
-
-  //default to a 10 point font size
-  //mFormat.setSize( 10 );
-  //mFormat.setSizeUnit( QgsUnitTypes::RenderPoints );
-
   //default to no background
   setBackgroundEnabled( false );
 }
