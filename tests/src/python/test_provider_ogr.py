@@ -284,6 +284,59 @@ class PyQgsOGRProvider(unittest.TestCase):
         os.unlink(datasource)
         self.assertFalse(os.path.exists(datasource))
 
+    def test_request_invalid_attributes(self):
+        """
+        Test asking for invalid attributes in feature request
+        """
+        points_layer = QgsVectorLayer(os.path.join(unitTestDataPath(), 'points.shp'), 'points')
+        self.assertTrue(points_layer.isValid())
+
+        req = QgsFeatureRequest()
+        req.setSubsetOfAttributes([8, 0, 3, 7, 9, 10, 11, 13, 14])
+
+        features = list(points_layer.dataProvider().getFeatures(req))
+        self.assertCountEqual([f.attributes() for f in features],
+                              [['Jet', None, None, 2, None, None],
+                               ['Biplane', None, None, 3, None, None],
+                               ['Jet', None, None, 1, None, None],
+                               ['Jet', None, None, 1, None, None],
+                               ['Jet', None, None, 1, None, None],
+                               ['Biplane', None, None, 3, None, None],
+                               ['Biplane', None, None, 3, None, None],
+                               ['Biplane', None, None, 3, None, None],
+                               ['Biplane', None, None, 3, None, None],
+                               ['B52', None, None, 2, None, None],
+                               ['B52', None, None, 1, None, None],
+                               ['B52', None, None, 2, None, None],
+                               ['B52', None, None, 2, None, None],
+                               ['Jet', None, None, 2, None, None],
+                               ['Jet', None, None, 1, None, None],
+                               ['Jet', None, None, 1, None, None],
+                               ['Jet', None, None, 3, None, None]])
+
+        req = QgsFeatureRequest()
+        req.setSubsetOfAttributes(['nope', 'Class', 'Pilots', 'nope2'], points_layer.dataProvider().fields())
+
+        features = list(points_layer.dataProvider().getFeatures(req))
+        self.assertCountEqual([f.attributes() for f in features],
+                              [['Jet', None, None, 2, None, None],
+                               ['Biplane', None, None, 3, None, None],
+                               ['Jet', None, None, 1, None, None],
+                               ['Jet', None, None, 1, None, None],
+                               ['Jet', None, None, 1, None, None],
+                               ['Biplane', None, None, 3, None, None],
+                               ['Biplane', None, None, 3, None, None],
+                               ['Biplane', None, None, 3, None, None],
+                               ['Biplane', None, None, 3, None, None],
+                               ['B52', None, None, 2, None, None],
+                               ['B52', None, None, 1, None, None],
+                               ['B52', None, None, 2, None, None],
+                               ['B52', None, None, 2, None, None],
+                               ['Jet', None, None, 2, None, None],
+                               ['Jet', None, None, 1, None, None],
+                               ['Jet', None, None, 1, None, None],
+                               ['Jet', None, None, 3, None, None]])
+
     def testGdb(self):
         """ Test opening a GDB database layer"""
         gdb_path = os.path.join(unitTestDataPath(), 'test_gdb.gdb')
