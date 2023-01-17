@@ -43,6 +43,7 @@ class GUI_EXPORT QgsLayoutElevationProfileWidget: public QgsLayoutItemBaseWidget
   public:
     //! constructor
     explicit QgsLayoutElevationProfileWidget( QgsLayoutItemElevationProfile *profile );
+    ~QgsLayoutElevationProfileWidget() override;
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
     QgsExpressionContext createExpressionContext() const override;
 
