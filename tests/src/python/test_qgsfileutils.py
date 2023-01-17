@@ -330,6 +330,11 @@ class TestQgsFileUtils(unittest.TestCase):
         self.assertEqual(QgsFileUtils.uniquePath(os.path.join(temp_path, 'test.txt')), os.path.join(temp_path, 'test_3.txt'))
         self.assertEqual(QgsFileUtils.uniquePath(os.path.join(temp_path, 'test_1.txt')), os.path.join(temp_path, 'test_1.txt'))
 
+        with open(os.path.join(temp_path, 'test'), 'w+') as f:
+            f.close()
+
+        self.assertEqual(QgsFileUtils.uniquePath(os.path.join(temp_path, 'test')), os.path.join(temp_path, 'test_2'))
+
 
 if __name__ == '__main__':
     unittest.main()
