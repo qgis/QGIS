@@ -13,8 +13,6 @@ the Free Software Foundation; either version 2 of the License, or
 from qgis.core import QgsSettingsException, QgsSettings, QgsSettingsTreeElement, QgsSettingsEntryString, QgsSettingsEntryEnumFlag, QgsUnitTypes
 from qgis.testing import start_app, unittest
 
-from qgis.PyQt import sip
-
 
 __author__ = 'Denis Rouzaud'
 __date__ = '19/12/2022'
