@@ -26,8 +26,6 @@
 #include "qgsconfig.h"
 #include "qgssettingsentryimpl.h"
 #include "qgstranslationcontext.h"
-#include "qgssettingstreeelement.h"
-
 
 class QgsSettingsRegistryCore;
 class Qgs3DRendererRegistry;

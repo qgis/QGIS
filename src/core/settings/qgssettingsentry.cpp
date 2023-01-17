@@ -20,7 +20,7 @@
 #include <QDir>
 
 
-QgsSettingsEntryBase::QgsSettingsEntryBase( const QString &key, QgsSettingsTreeElement *parentTreeElement, const QVariant &defaultValue, const QString &description, Qgis::SettingsOptions options )
+QgsSettingsEntryBase::QgsSettingsEntryBase( const QString &key, QgsSettingsTreeNode *parentTreeElement, const QVariant &defaultValue, const QString &description, Qgis::SettingsOptions options )
   : mParentTreeElement( parentTreeElement )
   , mDefaultValue( defaultValue )
   , mDescription( description )

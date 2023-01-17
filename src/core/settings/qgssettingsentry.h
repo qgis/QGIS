@@ -25,7 +25,7 @@
 #include "qgis_sip.h"
 #include "qgssettings.h"
 
-class QgsSettingsTreeElement;
+class QgsSettingsTreeNode;
 
 
 /**
@@ -105,7 +105,7 @@ class CORE_EXPORT QgsSettingsEntryBase
      * \throws QgsSettingsException if the number of given parent named items doesn't match the complete key definition
      */
     QgsSettingsEntryBase( const QString &key,
-                          QgsSettingsTreeElement *parentTreeElement,
+                          QgsSettingsTreeNode *parentTreeElement,
                           const QVariant &defaultValue = QVariant(),
                           const QString &description = QString(),
                           Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_THROW( QgsSettingsException );
@@ -312,7 +312,7 @@ class CORE_EXPORT QgsSettingsEntryBase
     * Returns the parent tree element
     * \since QGIS 3.30
     */
-    QgsSettingsTreeElement *parent() const {return mParentTreeElement;}
+    QgsSettingsTreeNode *parent() const {return mParentTreeElement;}
 
   protected:
 
@@ -328,7 +328,7 @@ class CORE_EXPORT QgsSettingsEntryBase
 
     QString completeKeyPrivate( const QString &key, const QStringList &dynamicKeyPartList ) const;
 
-    QgsSettingsTreeElement *mParentTreeElement = nullptr;
+    QgsSettingsTreeNode *mParentTreeElement = nullptr;
     QString mKey;
     QVariant mDefaultValue;
     QString mDescription;
@@ -362,7 +362,7 @@ class QgsSettingsEntryByReference : public QgsSettingsEntryBase
      * \throws QgsSettingsException if the number of given parent named items doesn't match the complete key definition
      */
     QgsSettingsEntryByReference( const QString &key,
-                                 QgsSettingsTreeElement *parent,
+                                 QgsSettingsTreeNode *parent,
                                  const T &defaultValue,
                                  const QString &description = QString(),
                                  Qgis::SettingsOptions options = Qgis::SettingsOptions() )
@@ -525,7 +525,7 @@ class QgsSettingsEntryByValue : public QgsSettingsEntryBase
      * \arg optionss specifies the options for the settings entry.
      * \throws QgsSettingsException if the number of given parent named items doesn't match the complete key definition
      */
-    QgsSettingsEntryByValue( const QString &key, QgsSettingsTreeElement *parent, QVariant defaultValue, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions() )
+    QgsSettingsEntryByValue( const QString &key, QgsSettingsTreeNode *parent, QVariant defaultValue, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions() )
       : QgsSettingsEntryBase( key, parent, defaultValue, description, options )
     {}
 

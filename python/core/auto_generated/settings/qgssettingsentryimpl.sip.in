@@ -30,7 +30,7 @@ typedef QgsSettingsEntryByReference<QVariant> QgsSettingsEntryByReferenceQVarian
 
 
     QgsSettingsEntryVariant( const QString &key,
-                             QgsSettingsTreeElement *parent,
+                             QgsSettingsTreeNode *parent,
                              const QVariant &defaultValue = QVariant(),
                              const QString &description = QString(),
                              Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException ) /Transfer/;
@@ -131,7 +131,7 @@ typedef QgsSettingsEntryByReference<QString> QgsSettingsEntryByReferenceQStringB
   public:
 
     QgsSettingsEntryString( const QString &key,
-                            QgsSettingsTreeElement *parent,
+                            QgsSettingsTreeNode *parent,
                             const QString &defaultValue = QString(),
                             const QString &description = QString(),
                             Qgis::SettingsOptions options = Qgis::SettingsOptions(),
@@ -245,7 +245,7 @@ typedef QgsSettingsEntryByReference<QStringList> QgsSettingsEntryByReferenceQStr
   public:
 
     QgsSettingsEntryStringList( const QString &key,
-                                QgsSettingsTreeElement *parent,
+                                QgsSettingsTreeNode *parent,
                                 const QStringList &defaultValue = QStringList(),
                                 const QString &description = QString(),
                                 Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException ) /Transfer/;
@@ -324,7 +324,7 @@ typedef QgsSettingsEntryByValue<bool> QgsSettingsEntryByValueboolBase;
   public:
 
     QgsSettingsEntryBool( const QString &key,
-                          QgsSettingsTreeElement *parent,
+                          QgsSettingsTreeNode *parent,
                           bool defaultValue = false,
                           const QString &description = QString(),
                           Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException ) /Transfer/;
@@ -403,7 +403,7 @@ typedef QgsSettingsEntryByValue<qlonglong> QgsSettingsEntryByValueqlonglongBase;
   public:
 
     QgsSettingsEntryInteger( const QString &key,
-                             QgsSettingsTreeElement *parent,
+                             QgsSettingsTreeNode *parent,
                              qlonglong defaultValue = 0,
                              const QString &description = QString(),
                              Qgis::SettingsOptions options = Qgis::SettingsOptions(),
@@ -519,7 +519,7 @@ typedef QgsSettingsEntryByValue<double> QgsSettingsEntryByValuedoubleBase;
   public:
 
     QgsSettingsEntryDouble( const QString &key,
-                            QgsSettingsTreeElement *parent,
+                            QgsSettingsTreeNode *parent,
                             double defaultValue = 0.0,
                             const QString &description = QString(),
                             Qgis::SettingsOptions options = Qgis::SettingsOptions(),
@@ -657,7 +657,7 @@ typedef QgsSettingsEntryByReference<QColor> QgsSettingsEntryByReferenceQColorBas
   public:
 
     QgsSettingsEntryColor( const QString &key,
-                           QgsSettingsTreeElement *parent,
+                           QgsSettingsTreeNode *parent,
                            const QColor &defaultValue = QColor(),
                            const QString &description = QString(),
                            Qgis::SettingsOptions options = Qgis::SettingsOptions(),
@@ -752,7 +752,7 @@ typedef QgsSettingsEntryByReference<QVariantMap> QgsSettingsEntryByReferenceQVar
 
 
     QgsSettingsEntryVariantMap( const QString &key,
-                                QgsSettingsTreeElement *parent,
+                                QgsSettingsTreeNode *parent,
                                 const QVariantMap &defaultValue = QVariantMap(),
                                 const QString &description = QString(),
                                 Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException ) /Transfer/;

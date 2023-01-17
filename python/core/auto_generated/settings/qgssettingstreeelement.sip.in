@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/settings/qgssettingstreeelement.h                           *
+ * src/core/settings/qgssettingstreenode.h                           *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -11,10 +11,10 @@
 
 
 
-class QgsSettingsTreeElement
+class QgsSettingsTreeNode
 {
 %Docstring(signature="appended")
-:py:class:`QgsSettingsTreeElement` is a tree element for the settings registry
+:py:class:`QgsSettingsTreeNode` is a tree element for the settings registry
 to help organizing and introspecting the registry.
 It is either a root element, a normal element or
 a named list (to store a group of settings under a dynamic named key).
@@ -29,13 +29,13 @@ to automatically register a settings entry on its creation when a parent is prov
 %End
 
 %TypeHeaderCode
-#include "qgssettingstreeelement.h"
+#include "qgssettingstreenode.h"
 %End
 %ConvertToSubClassCode
-    if ( dynamic_cast< QgsSettingsTreeNamedListElement * >( sipCpp ) )
-      sipType = sipType_QgsSettingsTreeNamedListElement;
-    else if ( dynamic_cast< QgsSettingsTreeElement * >( sipCpp ) )
-      sipType = sipType_QgsSettingsTreeElement;
+    if ( dynamic_cast< QgsSettingsTreeNamedListNode * >( sipCpp ) )
+      sipType = sipType_QgsSettingsTreeNamedListNode;
+    else if ( dynamic_cast< QgsSettingsTreeNode * >( sipCpp ) )
+      sipType = sipType_QgsSettingsTreeNode;
     else
       sipType = NULL;
 %End
@@ -55,13 +55,13 @@ to automatically register a settings entry on its creation when a parent is prov
       NamedListSelectedItemSetting,
     };
 
-    typedef QFlags<QgsSettingsTreeElement::Option> Options;
+    typedef QFlags<QgsSettingsTreeNode::Option> Options;
 
 
-    virtual ~QgsSettingsTreeElement();
+    virtual ~QgsSettingsTreeNode();
 
 
-    QgsSettingsTreeElement *createChildElement( const QString &key ) throw( QgsSettingsException ) /KeepReference/;
+    QgsSettingsTreeNode *createChildElement( const QString &key ) throw( QgsSettingsException ) /KeepReference/;
 %Docstring
 Creates a normal tree element
 It will return the existing child element if it exists at the given key
@@ -69,7 +69,7 @@ It will return the existing child element if it exists at the given key
 :raises QgsSettingsException: if a setting exists with the same key
 %End
 
-    QgsSettingsTreeNamedListElement *createNamedListElement( const QString &key, const QgsSettingsTreeElement::Options &options = QgsSettingsTreeElement::Options() ) throw( QgsSettingsException ) /KeepReference/;
+    QgsSettingsTreeNamedListNode *createNamedListElement( const QString &key, const QgsSettingsTreeNode::Options &options = QgsSettingsTreeNode::Options() ) throw( QgsSettingsException ) /KeepReference/;
 %Docstring
 Creates a named list tree element.
 This is useful to register groups of settings for several named items (for instance credentials for several named services)
@@ -108,17 +108,17 @@ Unregisters the child setting
 :param parentsNamedItems: the list of named items in the parent named list (if any)
 %End
 
-    void unregisterChildElement( QgsSettingsTreeElement *element );
+    void unregisterChildElement( QgsSettingsTreeNode *element );
 %Docstring
 Unregisters the child tree ``element``
 %End
 
-    QList<QgsSettingsTreeElement *> childrenElements() const;
+    QList<QgsSettingsTreeNode *> childrenElements() const;
 %Docstring
 Returns the children elements
 %End
 
-    QgsSettingsTreeElement *childElement( const QString &key );
+    QgsSettingsTreeNode *childElement( const QString &key );
 %Docstring
 Returns the existing child element if it exists at the given ``key``
 %End
@@ -133,7 +133,7 @@ Returns the children settings
 Returns the existing child settings if it exists at the given ``key``
 %End
 
-    QgsSettingsTreeElement *parent() const;
+    QgsSettingsTreeNode *parent() const;
 %Docstring
 Returns the parent of the element or None if it does not exists
 %End
@@ -155,14 +155,14 @@ Returns the number of named elements in the complete key
 
     SIP_PYOBJECT __repr__();
 %MethodCode
-    const QMetaEnum metaEnum = QMetaEnum::fromType<QgsSettingsTreeElement::Type>();
+    const QMetaEnum metaEnum = QMetaEnum::fromType<QgsSettingsTreeNode::Type>();
 
-    QString str = QStringLiteral( "<QgsSettingsTreeElement (%1): %2>" ).arg( metaEnum.valueToKey( static_cast<int>( sipCpp->type() ) ), sipCpp->key() );
+    QString str = QStringLiteral( "<QgsSettingsTreeNode (%1): %2>" ).arg( metaEnum.valueToKey( static_cast<int>( sipCpp->type() ) ), sipCpp->key() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
   protected:
-    void registerChildElement( QgsSettingsTreeElement *element );
+    void registerChildElement( QgsSettingsTreeNode *element );
 %Docstring
 Registers a child elements
 %End
@@ -170,7 +170,7 @@ Registers a child elements
 
 
   private:
-    QgsSettingsTreeElement();
+    QgsSettingsTreeNode();
 %Docstring
 
 .. note::
@@ -179,19 +179,19 @@ Registers a child elements
 
 .. seealso:: :py:func:`QgsSettings.createPluginTreeElement`
 %End
-    QgsSettingsTreeElement( const QgsSettingsTreeElement &other );
+    QgsSettingsTreeNode( const QgsSettingsTreeNode &other );
 };
 
 
 
-class QgsSettingsTreeNamedListElement : QgsSettingsTreeElement
+class QgsSettingsTreeNamedListNode : QgsSettingsTreeNode
 {
 %Docstring(signature="appended")
-:py:class:`QgsSettingsTreeNamedListElement` is a named list tree element for the settings registry
+:py:class:`QgsSettingsTreeNamedListNode` is a named list tree element for the settings registry
 to help organizing and introspecting the registry.
 the named list element is used to store a group of settings under a dynamically named key.
 
-.. seealso:: :py:class:`QgsSettingsTreeElement`
+.. seealso:: :py:class:`QgsSettingsTreeNode`
 
 .. seealso:: :py:class:`QgsSettingsEntryBase`
 
@@ -201,10 +201,10 @@ the named list element is used to store a group of settings under a dynamically 
 %End
 
 %TypeHeaderCode
-#include "qgssettingstreeelement.h"
+#include "qgssettingstreenode.h"
 %End
   public:
-    virtual ~QgsSettingsTreeNamedListElement();
+    virtual ~QgsSettingsTreeNamedListNode();
 
     QStringList items( const QStringList &parentsNamedItems = QStringList() ) const throw( QgsSettingsException );
 %Docstring
@@ -261,13 +261,13 @@ Returns the setting used to store the selected item
 %End
 
   protected:
-    void initNamedList( const QgsSettingsTreeElement::Options &options );
+    void initNamedList( const QgsSettingsTreeNode::Options &options );
 %Docstring
 Init the elements with the specific ``options``
 %End
 
   private:
-    QgsSettingsTreeNamedListElement();
+    QgsSettingsTreeNamedListNode();
 %Docstring
 
 .. note::
@@ -276,16 +276,16 @@ Init the elements with the specific ``options``
 
 .. seealso:: :py:func:`QgsSettings.createPluginTreeElement`
 %End
-    QgsSettingsTreeNamedListElement( const QgsSettingsTreeNamedListElement &other );
+    QgsSettingsTreeNamedListNode( const QgsSettingsTreeNamedListNode &other );
 };
 
-QFlags<QgsSettingsTreeElement::Option> operator|(QgsSettingsTreeElement::Option f1, QFlags<QgsSettingsTreeElement::Option> f2);
+QFlags<QgsSettingsTreeNode::Option> operator|(QgsSettingsTreeNode::Option f1, QFlags<QgsSettingsTreeNode::Option> f2);
 
 
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/settings/qgssettingstreeelement.h                           *
+ * src/core/settings/qgssettingstreenode.h                           *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

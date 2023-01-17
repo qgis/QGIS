@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgssettingstreeelement.cpp
+  qgssettingstreenode.cpp
   --------------------------------------
   Date                 : December 2022
   Copyright            : (C) 2022 by Denis Rouzaud
@@ -13,14 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgssettingstreeelement.h"
+#include "qgssettingstreenode.h"
 #include "qgssettingsentryimpl.h"
 #include "qgsexception.h"
 
 #include <QDir>
 
 
-QgsSettingsTreeElement::~QgsSettingsTreeElement()
+QgsSettingsTreeNode::~QgsSettingsTreeNode()
 {
   if ( mType != Type::Root )
     mParent->unregisterChildElement( this );
@@ -29,44 +29,44 @@ QgsSettingsTreeElement::~QgsSettingsTreeElement()
   qDeleteAll( mChildrenSettings );
 }
 
-QgsSettingsTreeElement *QgsSettingsTreeElement::createRootElement()
+QgsSettingsTreeNode *QgsSettingsTreeNode::createRootElement()
 {
-  QgsSettingsTreeElement *te = new QgsSettingsTreeElement();
+  QgsSettingsTreeNode *te = new QgsSettingsTreeNode();
   te->mType = Type::Root;
   te->mKey = QString();
   te->mCompleteKey = QStringLiteral( "/" );
   return te;
 }
 
-QgsSettingsTreeElement *QgsSettingsTreeElement::createChildElement( const QString &key )
+QgsSettingsTreeNode *QgsSettingsTreeNode::createChildElement( const QString &key )
 {
-  QgsSettingsTreeElement *te = childElement( key );
+  QgsSettingsTreeNode *te = childElement( key );
   if ( te )
     return te;
   if ( childSetting( key ) )
     throw QgsSettingsException( QObject::tr( "Settings tree element '%1' already holds a child setting with key '%2'." ).arg( this->key(), key ) );
 
-  te = new QgsSettingsTreeElement();
+  te = new QgsSettingsTreeNode();
   te->mType = Type::Standard;
   te->init( this, key );
   registerChildElement( te );
   return te;
 }
 
-QgsSettingsTreeNamedListElement *QgsSettingsTreeElement::createNamedListElement( const QString &key, const QgsSettingsTreeElement::Options &options )
+QgsSettingsTreeNamedListNode *QgsSettingsTreeNode::createNamedListElement( const QString &key, const QgsSettingsTreeNode::Options &options )
 {
-  QgsSettingsTreeElement *nte = childElement( key );
+  QgsSettingsTreeNode *nte = childElement( key );
   if ( nte )
   {
     if ( nte->type() == Type::NamedList )
-      return dynamic_cast<QgsSettingsTreeNamedListElement *>( nte );
+      return dynamic_cast<QgsSettingsTreeNamedListNode *>( nte );
     else
       throw QgsSettingsException( QObject::tr( "Settings tree element '%1' already holds a child element with key '%2', but it is not a named list.." ).arg( this->key(), key ) );
   }
   if ( childSetting( key ) )
     throw QgsSettingsException( QObject::tr( "Settings tree element '%1' already holds a child setting with key '%2'." ).arg( this->key(), key ) );
 
-  QgsSettingsTreeNamedListElement *te = new QgsSettingsTreeNamedListElement();
+  QgsSettingsTreeNamedListNode *te = new QgsSettingsTreeNamedListNode();
   te->mType = Type::NamedList;
   te->init( this, key );
   te->initNamedList( options );
@@ -75,9 +75,9 @@ QgsSettingsTreeNamedListElement *QgsSettingsTreeElement::createNamedListElement(
 }
 
 
-QgsSettingsTreeElement *QgsSettingsTreeElement::childElement( const QString &key )
+QgsSettingsTreeNode *QgsSettingsTreeNode::childElement( const QString &key )
 {
-  QList<QgsSettingsTreeElement *>::const_iterator it = mChildrenElements.constBegin();
+  QList<QgsSettingsTreeNode *>::const_iterator it = mChildrenElements.constBegin();
   for ( ; it != mChildrenElements.constEnd(); ++it )
   {
     if ( ( *it )->key() == key )
@@ -86,7 +86,7 @@ QgsSettingsTreeElement *QgsSettingsTreeElement::childElement( const QString &key
   return nullptr;
 }
 
-const QgsSettingsEntryBase *QgsSettingsTreeElement::childSetting( const QString &key )
+const QgsSettingsEntryBase *QgsSettingsTreeNode::childSetting( const QString &key )
 {
   const QString testCompleteKey = QStringLiteral( "%1%2" ).arg( mCompleteKey, key );
   QList<const QgsSettingsEntryBase *>::const_iterator it = mChildrenSettings.constBegin();
@@ -98,7 +98,7 @@ const QgsSettingsEntryBase *QgsSettingsTreeElement::childSetting( const QString 
   return nullptr;
 }
 
-void QgsSettingsTreeElement::registerChildSetting( const QgsSettingsEntryBase *setting, const QString &key )
+void QgsSettingsTreeNode::registerChildSetting( const QgsSettingsEntryBase *setting, const QString &key )
 {
   if ( childElement( key ) )
     throw QgsSettingsException( QObject::tr( "Settings tree element '%1' already holds a child tree element with key '%2'." ).arg( this->key(), key ) );
@@ -109,12 +109,12 @@ void QgsSettingsTreeElement::registerChildSetting( const QgsSettingsEntryBase *s
 }
 
 
-void QgsSettingsTreeElement::registerChildElement( QgsSettingsTreeElement *element )
+void QgsSettingsTreeNode::registerChildElement( QgsSettingsTreeNode *element )
 {
   mChildrenElements.append( element );
 }
 
-void QgsSettingsTreeElement::unregisterChildSetting( const QgsSettingsEntryBase *setting, bool deleteSettingValues, const QStringList &parentsNamedItems )
+void QgsSettingsTreeNode::unregisterChildSetting( const QgsSettingsEntryBase *setting, bool deleteSettingValues, const QStringList &parentsNamedItems )
 {
   if ( deleteSettingValues )
     setting->remove( parentsNamedItems );
@@ -122,12 +122,12 @@ void QgsSettingsTreeElement::unregisterChildSetting( const QgsSettingsEntryBase 
   mChildrenSettings.removeAll( setting );
 }
 
-void QgsSettingsTreeElement::unregisterChildElement( QgsSettingsTreeElement *element )
+void QgsSettingsTreeNode::unregisterChildElement( QgsSettingsTreeNode *element )
 {
   mChildrenElements.removeAll( element );
 }
 
-void QgsSettingsTreeElement::init( QgsSettingsTreeElement *parent, const QString &key )
+void QgsSettingsTreeNode::init( QgsSettingsTreeNode *parent, const QString &key )
 {
   mParent = parent;
   mKey = key;
@@ -135,7 +135,7 @@ void QgsSettingsTreeElement::init( QgsSettingsTreeElement *parent, const QString
 }
 
 
-void QgsSettingsTreeNamedListElement::initNamedList( const QgsSettingsTreeElement::Options &options )
+void QgsSettingsTreeNamedListNode::initNamedList( const QgsSettingsTreeNode::Options &options )
 {
   mOptions = options;
   if ( options.testFlag( Option::NamedListSelectedItemSetting ) )
@@ -149,18 +149,18 @@ void QgsSettingsTreeNamedListElement::initNamedList( const QgsSettingsTreeElemen
   mCompleteKey.append( QStringLiteral( "items/%%1/" ).arg( mNamedElementsCount ) );
 }
 
-QgsSettingsTreeNamedListElement::~QgsSettingsTreeNamedListElement()
+QgsSettingsTreeNamedListNode::~QgsSettingsTreeNamedListNode()
 {
   delete mSelectedItemSetting;
 }
 
 
-QStringList QgsSettingsTreeNamedListElement::items( const QStringList &parentsNamedItems ) const
+QStringList QgsSettingsTreeNamedListNode::items( const QStringList &parentsNamedItems ) const
 {
   return items( Qgis::SettingsOrigin::Any, parentsNamedItems );
 }
 
-QStringList QgsSettingsTreeNamedListElement::items( Qgis::SettingsOrigin origin, const QStringList &parentsNamedItems ) const
+QStringList QgsSettingsTreeNamedListNode::items( Qgis::SettingsOrigin origin, const QStringList &parentsNamedItems ) const
 {
   if ( namedElementsCount() - 1 != parentsNamedItems.count() )
     throw QgsSettingsException( QObject::tr( "The number of given parent named items (%1) for the element '%2' doesn't match with the number of named items in the key (%3)." ).arg( QString::number( parentsNamedItems.count() ), mCompleteKey, QString::number( namedElementsCount() ) ) );
@@ -172,7 +172,7 @@ QStringList QgsSettingsTreeNamedListElement::items( Qgis::SettingsOrigin origin,
   return settings.childGroups( origin );
 }
 
-void QgsSettingsTreeNamedListElement::setSelectedItem( const QString &item, const QStringList &parentsNamedItems )
+void QgsSettingsTreeNamedListNode::setSelectedItem( const QString &item, const QStringList &parentsNamedItems )
 {
   if ( namedElementsCount() - 1 != parentsNamedItems.count() )
     throw QgsSettingsException( QObject::tr( "The number of given parent named items (%1) for the element '%2' doesn't match with the number of named items in the key (%3)." ).arg( QString::number( parentsNamedItems.count() ), mCompleteKey, QString::number( namedElementsCount() ) ) );
@@ -182,7 +182,7 @@ void QgsSettingsTreeNamedListElement::setSelectedItem( const QString &item, cons
   mSelectedItemSetting->setValue( item, parentsNamedItems );
 }
 
-QString QgsSettingsTreeNamedListElement::selectedItem( const QStringList &parentsNamedItems )
+QString QgsSettingsTreeNamedListNode::selectedItem( const QStringList &parentsNamedItems )
 {
   if ( namedElementsCount() - 1 != parentsNamedItems.count() )
     throw QgsSettingsException( QObject::tr( "The number of given parent named items (%1) for the element '%2' doesn't match with the number of named items in the key (%3)." ).arg( QString::number( parentsNamedItems.count() ), mCompleteKey, QString::number( namedElementsCount() ) ) );
@@ -192,7 +192,7 @@ QString QgsSettingsTreeNamedListElement::selectedItem( const QStringList &parent
   return mSelectedItemSetting->value( parentsNamedItems );
 }
 
-void QgsSettingsTreeNamedListElement::deleteItem( const QString &item, const QStringList &parentsNamedItems )
+void QgsSettingsTreeNamedListNode::deleteItem( const QString &item, const QStringList &parentsNamedItems )
 {
   if ( namedElementsCount() - 1 != parentsNamedItems.count() )
     throw QgsSettingsException( QObject::tr( "The number of given parent named items (%1) doesn't match with the number of named items in the key (%2)." ).arg( parentsNamedItems.count(), namedElementsCount() ) );
@@ -205,7 +205,7 @@ void QgsSettingsTreeNamedListElement::deleteItem( const QString &item, const QSt
   QgsSettings().remove( key );
 }
 
-QString QgsSettingsTreeNamedListElement::completeKeyWithNamedItems( const QString &key, const QStringList &namedItems ) const
+QString QgsSettingsTreeNamedListNode::completeKeyWithNamedItems( const QString &key, const QStringList &namedItems ) const
 {
   switch ( namedItems.count() )
   {
@@ -222,7 +222,7 @@ QString QgsSettingsTreeNamedListElement::completeKeyWithNamedItems( const QStrin
     case 5:
       return key.arg( namedItems[0], namedItems[1], namedItems[2], namedItems[3], namedItems[4] );
     default:
-      throw QgsSettingsException( QObject::tr( "Current implementation of QgsSettingsTreeNamedListElement::items doesn't handle more than 5 parent named items" ) );
+      throw QgsSettingsException( QObject::tr( "Current implementation of QgsSettingsTreeNamedListNode::items doesn't handle more than 5 parent named items" ) );
       break;
   }
 }

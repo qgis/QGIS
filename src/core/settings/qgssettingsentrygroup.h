@@ -33,7 +33,7 @@ class QgsSettingsEntryBase;
  * \brief Creates a group of setting which have a common definition of base key
  *
  * \since QGIS 3.26
- * \deprecated since QGIS 3.30 use QgsSettingsTreeElement instead
+ * \deprecated since QGIS 3.30 use QgsSettingsTreeNode instead
  */
 class CORE_DEPRECATED_EXPORT QgsSettingsEntryGroup SIP_DEPRECATED
 {

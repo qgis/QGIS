@@ -23,7 +23,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgslogger.h"
-#include "qgssettingstreeelement.h"
+#include "qgssettingstreenode.h"
 
 /**
  * \ingroup core
@@ -86,30 +86,30 @@ class CORE_EXPORT QgsSettings : public QObject
      * Returns the tree root element for the settings
      * \since QGIS 3.30
      */
-    static QgsSettingsTreeElement *treeRoot();
+    static QgsSettingsTreeNode *treeRoot();
 
     // only create first level here
-    static inline QgsSettingsTreeElement *sTreeApp = treeRoot()->createChildElement( QStringLiteral( "app" ) );
-    static inline QgsSettingsTreeElement *sTreeConnections = treeRoot()->createChildElement( QStringLiteral( "connections" ) );
-    static inline QgsSettingsTreeElement *sTreeCore = treeRoot()->createChildElement( QStringLiteral( "core" ) );
-    static inline QgsSettingsTreeElement *sTreeElevationProfile = treeRoot()->createChildElement( QStringLiteral( "elevation-profile" ) );
-    static inline QgsSettingsTreeElement *sTreeFonts = treeRoot()->createChildElement( QStringLiteral( "fonts" ) );
-    static inline QgsSettingsTreeElement *sTreeGeometryValidation = treeRoot()->createChildElement( QStringLiteral( "geometry_validation" ) );
-    static inline QgsSettingsTreeElement *sTreeGps = treeRoot()->createChildElement( QStringLiteral( "gps" ) );
-    static inline QgsSettingsTreeElement *sTreeGui = treeRoot()->createChildElement( QStringLiteral( "gui" ) );
-    static inline QgsSettingsTreeElement *sTreeLayerTree = treeRoot()->createChildElement( QStringLiteral( "layer-tree" ) );
-    static inline QgsSettingsTreeElement *sTreeLayout = treeRoot()->createChildElement( QStringLiteral( "layout" ) );
-    static inline QgsSettingsTreeElement *sTreeLocale = treeRoot()->createChildElement( QStringLiteral( "locale" ) );
-    static inline QgsSettingsTreeElement *sTreeMap = treeRoot()->createChildElement( QStringLiteral( "map" ) );
-    static inline QgsSettingsTreeElement *sTreeNetwork = treeRoot()->createChildElement( QStringLiteral( "network" ) );
-    static inline QgsSettingsTreeElement *sTreeQgis = treeRoot()->createChildElement( QStringLiteral( "qgis" ) );
-    static inline QgsSettingsTreeElement *sTreePlugins = treeRoot()->createChildElement( QStringLiteral( "plugins" ) );
-    static inline QgsSettingsTreeElement *sTreeProcessing = treeRoot()->createChildElement( QStringLiteral( "processing" ) );
-    static inline QgsSettingsTreeElement *sTreeSvg = treeRoot()->createChildElement( QStringLiteral( "svg" ) );
-    static inline QgsSettingsTreeElement *sTreeWms = treeRoot()->createChildElement( QStringLiteral( "wms" ) );
+    static inline QgsSettingsTreeNode *sTreeApp = treeRoot()->createChildElement( QStringLiteral( "app" ) );
+    static inline QgsSettingsTreeNode *sTreeConnections = treeRoot()->createChildElement( QStringLiteral( "connections" ) );
+    static inline QgsSettingsTreeNode *sTreeCore = treeRoot()->createChildElement( QStringLiteral( "core" ) );
+    static inline QgsSettingsTreeNode *sTreeElevationProfile = treeRoot()->createChildElement( QStringLiteral( "elevation-profile" ) );
+    static inline QgsSettingsTreeNode *sTreeFonts = treeRoot()->createChildElement( QStringLiteral( "fonts" ) );
+    static inline QgsSettingsTreeNode *sTreeGeometryValidation = treeRoot()->createChildElement( QStringLiteral( "geometry_validation" ) );
+    static inline QgsSettingsTreeNode *sTreeGps = treeRoot()->createChildElement( QStringLiteral( "gps" ) );
+    static inline QgsSettingsTreeNode *sTreeGui = treeRoot()->createChildElement( QStringLiteral( "gui" ) );
+    static inline QgsSettingsTreeNode *sTreeLayerTree = treeRoot()->createChildElement( QStringLiteral( "layer-tree" ) );
+    static inline QgsSettingsTreeNode *sTreeLayout = treeRoot()->createChildElement( QStringLiteral( "layout" ) );
+    static inline QgsSettingsTreeNode *sTreeLocale = treeRoot()->createChildElement( QStringLiteral( "locale" ) );
+    static inline QgsSettingsTreeNode *sTreeMap = treeRoot()->createChildElement( QStringLiteral( "map" ) );
+    static inline QgsSettingsTreeNode *sTreeNetwork = treeRoot()->createChildElement( QStringLiteral( "network" ) );
+    static inline QgsSettingsTreeNode *sTreeQgis = treeRoot()->createChildElement( QStringLiteral( "qgis" ) );
+    static inline QgsSettingsTreeNode *sTreePlugins = treeRoot()->createChildElement( QStringLiteral( "plugins" ) );
+    static inline QgsSettingsTreeNode *sTreeProcessing = treeRoot()->createChildElement( QStringLiteral( "processing" ) );
+    static inline QgsSettingsTreeNode *sTreeSvg = treeRoot()->createChildElement( QStringLiteral( "svg" ) );
+    static inline QgsSettingsTreeNode *sTreeWms = treeRoot()->createChildElement( QStringLiteral( "wms" ) );
 
     // sub levels
-    static inline QgsSettingsTreeElement *sTreeDigitizing = sTreeQgis->createChildElement( QStringLiteral( "digitizing" ) );
+    static inline QgsSettingsTreeNode *sTreeDigitizing = sTreeQgis->createChildElement( QStringLiteral( "digitizing" ) );
 
 #endif
 
@@ -117,7 +117,7 @@ class CORE_EXPORT QgsSettings : public QObject
      * Creates a settings tree element for the given \a pluginName
      * \since QGIS 3.30
      */
-    static QgsSettingsTreeElement *createPluginTreeElement( const QString &pluginName );
+    static QgsSettingsTreeNode *createPluginTreeElement( const QString &pluginName );
 
 
     /**

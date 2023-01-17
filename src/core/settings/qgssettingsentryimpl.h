@@ -42,7 +42,7 @@ class CORE_EXPORT QgsSettingsEntryVariant : public QgsSettingsEntryByReference<Q
      * \since QGIS 3.30
      */
     QgsSettingsEntryVariant( const QString &key,
-                             QgsSettingsTreeElement *parent,
+                             QgsSettingsTreeNode *parent,
                              const QVariant &defaultValue = QVariant(),
                              const QString &description = QString(),
                              Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER
@@ -141,7 +141,7 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntryByReference<QS
      * \param maxLength specifies the maximal length of the string value. -1 means no limit.
      */
     QgsSettingsEntryString( const QString &key,
-                            QgsSettingsTreeElement *parent,
+                            QgsSettingsTreeNode *parent,
                             const QString &defaultValue = QString(),
                             const QString &description = QString(),
                             Qgis::SettingsOptions options = Qgis::SettingsOptions(),
@@ -256,7 +256,7 @@ class CORE_EXPORT QgsSettingsEntryStringList : public QgsSettingsEntryByReferenc
      * \param options specifies the options for the settings entry.
      */
     QgsSettingsEntryStringList( const QString &key,
-                                QgsSettingsTreeElement *parent,
+                                QgsSettingsTreeNode *parent,
                                 const QStringList &defaultValue = QStringList(),
                                 const QString &description = QString(),
                                 Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER
@@ -332,7 +332,7 @@ class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntryByValue<bool>
      * \param options specifies the options for the settings entry.
      */
     QgsSettingsEntryBool( const QString &key,
-                          QgsSettingsTreeElement *parent,
+                          QgsSettingsTreeNode *parent,
                           bool defaultValue = false,
                           const QString &description = QString(),
                           Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER
@@ -409,7 +409,7 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryByValue<qlong
      * \param maxValue specifies the maximal value.
      */
     QgsSettingsEntryInteger( const QString &key,
-                             QgsSettingsTreeElement *parent,
+                             QgsSettingsTreeNode *parent,
                              qlonglong defaultValue = 0,
                              const QString &description = QString(),
                              Qgis::SettingsOptions options = Qgis::SettingsOptions(),
@@ -529,7 +529,7 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntryByValue<double
      * for example for a QDoubleSpinBox.
      */
     QgsSettingsEntryDouble( const QString &key,
-                            QgsSettingsTreeElement *parent,
+                            QgsSettingsTreeNode *parent,
                             double defaultValue = 0.0,
                             const QString &description = QString(),
                             Qgis::SettingsOptions options = Qgis::SettingsOptions(),
@@ -670,7 +670,7 @@ class CORE_EXPORT QgsSettingsEntryColor : public QgsSettingsEntryByReference<QCo
      * \param allowAlpha specifies if the color can have transparency.
      */
     QgsSettingsEntryColor( const QString &key,
-                           QgsSettingsTreeElement *parent,
+                           QgsSettingsTreeNode *parent,
                            const QColor &defaultValue = QColor(),
                            const QString &description = QString(),
                            Qgis::SettingsOptions options = Qgis::SettingsOptions(),
@@ -772,7 +772,7 @@ class CORE_EXPORT QgsSettingsEntryVariantMap : public QgsSettingsEntryByReferenc
      * \param options specifies the options for the settings entry.
      */
     QgsSettingsEntryVariantMap( const QString &key,
-                                QgsSettingsTreeElement *parent,
+                                QgsSettingsTreeNode *parent,
                                 const QVariantMap &defaultValue = QVariantMap(),
                                 const QString &description = QString(),
                                 Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER

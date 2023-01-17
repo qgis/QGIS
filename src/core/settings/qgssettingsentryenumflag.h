@@ -46,7 +46,7 @@ class QgsSettingsEntryEnumFlag : public QgsSettingsEntryByValue<T>
      * \note The enum needs to be declared with Q_ENUM, and flags with Q_FLAG (not Q_FLAGS).
      * \note for Python bindings, a custom implementation is achieved in Python directly
      */
-    QgsSettingsEntryEnumFlag( const QString &key, QgsSettingsTreeElement *parent, T defaultValue, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions() )
+    QgsSettingsEntryEnumFlag( const QString &key, QgsSettingsTreeNode *parent, T defaultValue, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions() )
       : QgsSettingsEntryByValue<T>( key,
                                     parent,
                                     QMetaEnum::fromType<T>().isFlag() ? qgsFlagValueToKeys( defaultValue ) : qgsEnumValueToKey( defaultValue ),

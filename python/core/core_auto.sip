@@ -706,7 +706,6 @@
 %Include auto_generated/settings/qgssettingsentryimpl.sip
 %Include auto_generated/settings/qgssettingsregistry.sip
 %Include auto_generated/settings/qgssettingsregistrycore.sip
-%Include auto_generated/settings/qgssettingstreeelement.sip
 %Include auto_generated/validity/qgsabstractvaliditycheck.sip
 %Include auto_generated/validity/qgsvaliditycheckcontext.sip
 %Include auto_generated/validity/qgsvaliditycheckregistry.sip

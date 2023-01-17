@@ -39,7 +39,7 @@ class CORE_EXPORT QgsBabelFormatRegistry
 
 #ifndef SIP_RUN
 
-    static inline QgsSettingsTreeNamedListElement *sTreeBabelDevices = QgsSettings::sTreeGps->createNamedListElement( QStringLiteral( "babel-devices" ) );
+    static inline QgsSettingsTreeNamedListNode *sTreeBabelDevices = QgsSettings::sTreeGps->createNamedListElement( QStringLiteral( "babel-devices" ) );
 
     static const QgsSettingsEntryString *settingsBabelWptDownload;
     static const QgsSettingsEntryString *settingsBabelWptUpload;

@@ -72,7 +72,7 @@ Constructor for QgsSettingsEntryBase.
 %End
 
     QgsSettingsEntryBase( const QString &key,
-                          QgsSettingsTreeElement *parentTreeElement,
+                          QgsSettingsTreeNode *parentTreeElement,
                           const QVariant &defaultValue = QVariant(),
                           const QString &description = QString(),
                           Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException );
@@ -313,7 +313,7 @@ Copies the settings to the given key.
 .. versionadded:: 3.30
 %End
 
-    QgsSettingsTreeElement *parent() const;
+    QgsSettingsTreeNode *parent() const;
 %Docstring
 Returns the parent tree element
 
@@ -353,7 +353,7 @@ Base abstract class for settings entry which are passed by reference
   public:
 
     QgsSettingsEntryByReference( const QString &key,
-                                 QgsSettingsTreeElement *parent,
+                                 QgsSettingsTreeNode *parent,
                                  const T &defaultValue,
                                  const QString &description = QString(),
                                  Qgis::SettingsOptions options = Qgis::SettingsOptions() );
@@ -503,7 +503,7 @@ Base abstract class for settings entry which are passed by value
 %End
   public:
 
-    QgsSettingsEntryByValue( const QString &key, QgsSettingsTreeElement *parent, QVariant defaultValue, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions() );
+    QgsSettingsEntryByValue( const QString &key, QgsSettingsTreeNode *parent, QVariant defaultValue, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions() );
 %Docstring
 Constructor for QgsSettingsEntryByValue.
 
