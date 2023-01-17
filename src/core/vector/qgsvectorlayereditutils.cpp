@@ -752,7 +752,7 @@ bool QgsVectorLayerEditUtils::mergeFeatures( const QgsFeatureIds &mergeFeatureId
             fieldNames.push_back( pkField.name() );
           }
           request.setSubsetOfAttributes( fieldNames, mLayer->fields( ) );
-          request.setFilterExpression( conditions.join( QStringLiteral( " AND " ) ) );
+          request.setFilterExpression( conditions.join( QLatin1String( " AND " ) ) );
         }
         else  // single pk
         {
