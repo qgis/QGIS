@@ -126,6 +126,11 @@ ignore this tolerance if it is not appropriate for the particular source.
 .. seealso:: :py:func:`setTolerance`
 %End
 
+    QgsProfileRequest profileRequest() const;
+%Docstring
+Returns the profile request used to generate the elevation profile.
+%End
+
   protected:
     virtual void draw( QgsLayoutItemRenderContext &context );
 

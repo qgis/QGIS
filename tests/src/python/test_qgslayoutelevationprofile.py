@@ -44,7 +44,9 @@ from qgis.core import (QgsPrintLayout,
                        QgsRasterLayer,
                        QgsApplication,
                        QgsGeometry,
-                       QgsCoordinateReferenceSystem)
+                       QgsCoordinateReferenceSystem,
+                       QgsExpressionContextUtils,
+                       QgsFlatTerrainProvider)
 from qgis.testing import (start_app,
                           unittest
                           )
@@ -149,6 +151,34 @@ class TestQgsLayoutItemElevationProfile(unittest.TestCase, LayoutItemTestCase):
             self.assertEqual(profile2.crs(), QgsCoordinateReferenceSystem('EPSG:3857'))
             self.assertEqual(profile2.tolerance(), 101)
             self.assertEqual(profile2.profileCurve().asWkt(), 'LineString (0 0, 10 10)')
+
+    def test_request(self):
+        """
+        Test generating a request for the item
+        """
+        project = QgsProject()
+        layout = QgsPrintLayout(project)
+        profile = QgsLayoutItemElevationProfile(layout)
+        layout.addLayoutItem(profile)
+        project.layoutManager().addLayout(layout)
+
+        curve = QgsGeometry.fromWkt('LineString(0 0, 10 10)')
+        profile.setProfileCurve(curve.constGet().clone())
+        profile.setCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+        profile.setTolerance(101)
+
+        QgsExpressionContextUtils.setLayoutItemVariable(profile, 'my_var', 202)
+
+        req = profile.profileRequest()
+        self.assertEqual(req.tolerance(), 101)
+        self.assertEqual(req.profileCurve().asWkt(), 'LineString (0 0, 10 10)')
+        self.assertEqual(req.crs(), QgsCoordinateReferenceSystem('EPSG:3857'))
+        self.assertEqual(req.expressionContext().variable('my_var'), '202')
+
+        project.elevationProperties().setTerrainProvider(QgsFlatTerrainProvider())
+
+        req = profile.profileRequest()
+        self.assertIsInstance(req.terrainProvider(), QgsFlatTerrainProvider)
 
 
 if __name__ == '__main__':
