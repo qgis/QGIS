@@ -418,6 +418,8 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   }
 }
 
+QgsLayoutElevationProfileWidget::~QgsLayoutElevationProfileWidget() = default;
+
 void QgsLayoutElevationProfileWidget::setMasterLayout( QgsMasterLayoutInterface *masterLayout )
 {
   if ( mItemPropertiesWidget )
