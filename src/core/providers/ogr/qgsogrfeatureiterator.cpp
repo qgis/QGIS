@@ -609,6 +609,9 @@ bool QgsOgrFeatureIterator::readFeature( const gdal::ogr_feature_unique_ptr &fet
       for ( int i = 0; i < requestedAttributeTotal; ++i )
       {
         const int idx = requestAttribute[i];
+        if ( idx >= fieldCount )
+          continue;
+
         attributeData[idx] = getFeatureAttribute( fet.get(), idx );
       }
     }
