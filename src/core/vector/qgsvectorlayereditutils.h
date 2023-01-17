@@ -270,7 +270,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
 
     /**
      * Merge features into a single one.
-     * \param mergeFeaturesIds id list of features to merge
+     * \param mergeFeatureIds id list of features to merge
      * \param mergeAttributes are the resulting attributes in the merged feature
      * \param unionGeometry is the resulting geometry of the merged feature
      * \param errorMessage will be set to a descriptive error message if any occurs
