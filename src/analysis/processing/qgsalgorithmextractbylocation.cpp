@@ -445,6 +445,11 @@ QVariantMap QgsSelectByLocationAlgorithm::processAlgorithm( const QVariantMap &p
   {
     selectedIds.insert( feature.id() );
   };
+
+  mTargetCrs = selectLayer->sourceCrs();
+  mTargetFeatureCount = selectLayer->featureCount();
+  mIntersectFeatureCount = intersectSource->featureCount();
+
   switch ( method )
   {
     case Qgis::SelectBehavior::IntersectSelection:
@@ -452,11 +457,8 @@ QVariantMap QgsSelectByLocationAlgorithm::processAlgorithm( const QVariantMap &p
     {
       // When subsetting or removing we only need to check already selected features
       std::unique_ptr< QgsVectorLayerSelectedFeatureSource > selectLayerSelected( new QgsVectorLayerSelectedFeatureSource( selectLayer ) );
-
       mTargetCrs = selectLayerSelected->sourceCrs();
       mTargetFeatureCount = selectLayerSelected->featureCount();
-      mIntersectFeatureCount = intersectSource->featureCount();
-
       process( context, selectLayerSelected.get(), intersectSource.get(), selectedPredicates, addToSelection, true, feedback );
       break;
     }
