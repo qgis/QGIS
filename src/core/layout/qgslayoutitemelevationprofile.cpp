@@ -25,6 +25,12 @@
 #include "qgsprofilerequest.h"
 #include "qgsprojectelevationproperties.h"
 #include "qgsterrainprovider.h"
+#include "qgsprofilerenderer.h"
+#include "qgslayoututils.h"
+
+#include <QTimer>
+
+#define CACHE_SIZE_LIMIT 5000
 
 ///@cond PRIVATE
 class QgsLayoutItemElevationProfilePlot : public Qgs2DPlot
@@ -35,13 +41,24 @@ class QgsLayoutItemElevationProfilePlot : public Qgs2DPlot
     {
     }
 
+    void setRenderer( QgsProfilePlotRenderer *renderer )
+    {
+      mRenderer = renderer;
+    }
+
     void renderContent( QgsRenderContext &rc, const QRectF &plotArea ) override
     {
-      Q_UNUSED( rc );
-      Q_UNUSED( plotArea )
+      if ( mRenderer )
+      {
+        rc.painter()->translate( plotArea.left(), plotArea.top() );
+        mRenderer->render( rc, plotArea.width(), plotArea.height(), xMinimum(), xMaximum(), yMinimum(), yMaximum() );
+        rc.painter()->translate( -plotArea.left(), -plotArea.top() );
+      }
     }
 
   private:
+
+    QgsProfilePlotRenderer *mRenderer = nullptr;
 
 };
 ///@endcond PRIVATE
@@ -50,11 +67,36 @@ QgsLayoutItemElevationProfile::QgsLayoutItemElevationProfile( QgsLayout *layout 
   : QgsLayoutItem( layout )
   , mPlot( std::make_unique< QgsLayoutItemElevationProfilePlot >() )
 {
+  mBackgroundUpdateTimer = new QTimer( this );
+  mBackgroundUpdateTimer->setSingleShot( true );
+  connect( mBackgroundUpdateTimer, &QTimer::timeout, this, &QgsLayoutItemElevationProfile::recreateCachedImageInBackground );
+
+  setCacheMode( QGraphicsItem::NoCache );
+
+  if ( mLayout )
+  {
+    connect( mLayout, &QgsLayout::refreshed, this, &QgsLayoutItemElevationProfile::invalidateCache );
+  }
+
+  connect( this, &QgsLayoutItem::sizePositionChanged, this, [ = ]
+  {
+    invalidateCache();
+  } );
+
   //default to no background
   setBackgroundEnabled( false );
 }
 
-QgsLayoutItemElevationProfile::~QgsLayoutItemElevationProfile() = default;
+QgsLayoutItemElevationProfile::~QgsLayoutItemElevationProfile()
+{
+  if ( mRenderJob )
+  {
+    disconnect( mRenderJob.get(), &QgsProfilePlotRenderer::generationFinished, this, &QgsLayoutItemElevationProfile::profileGenerationFinished );
+    emit backgroundTaskCountChanged( 0 );
+    mRenderJob->cancelGeneration(); // blocks
+    mPainter->end();
+  }
+}
 
 QgsLayoutItemElevationProfile *QgsLayoutItemElevationProfile::create( QgsLayout *layout )
 {
@@ -385,14 +427,20 @@ void QgsLayoutItemElevationProfile::refreshDataDefinedProperty( DataDefinedPrope
     forceUpdate = true;
   }
 
-
   if ( forceUpdate )
   {
+    mCacheInvalidated = true;
+
     refreshItemSize();
     update();
   }
 
   QgsLayoutItem::refreshDataDefinedProperty( property );
+}
+
+QgsLayoutItem::Flags QgsLayoutItemElevationProfile::itemFlags() const
+{
+  return QgsLayoutItem::FlagOverridesPaint;
 }
 
 Qgs2DPlot *QgsLayoutItemElevationProfile::plot()
@@ -416,11 +464,13 @@ void QgsLayoutItemElevationProfile::setLayers( const QList<QgsMapLayer *> &layer
     return;
 
   mLayers = _qgis_listRawToRef( layers );
+  invalidateCache();
 }
 
 void QgsLayoutItemElevationProfile::setProfileCurve( QgsCurve *curve )
 {
   mCurve.reset( curve );
+  invalidateCache();
 }
 
 QgsCurve *QgsLayoutItemElevationProfile::profileCurve() const
@@ -434,6 +484,7 @@ void QgsLayoutItemElevationProfile::setCrs( const QgsCoordinateReferenceSystem &
     return;
 
   mCrs = crs;
+  invalidateCache();
 }
 
 QgsCoordinateReferenceSystem QgsLayoutItemElevationProfile::crs() const
@@ -447,6 +498,7 @@ void QgsLayoutItemElevationProfile::setTolerance( double tolerance )
     return;
 
   mTolerance = tolerance;
+  invalidateCache();
 }
 
 double QgsLayoutItemElevationProfile::tolerance() const
@@ -475,11 +527,165 @@ QgsProfileRequest QgsLayoutItemElevationProfile::profileRequest() const
   return req;
 }
 
-void QgsLayoutItemElevationProfile::draw( QgsLayoutItemRenderContext &context )
+void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget * )
 {
-  // size must be in pixels, not layout units
-  mPlot->setSize( rect().size() * context.renderContext().scaleFactor() );
-  mPlot->render( context.renderContext() );
+  if ( !mLayout || !painter || !painter->device() || !mUpdatesEnabled )
+  {
+    return;
+  }
+  if ( !shouldDrawItem() )
+  {
+    return;
+  }
+
+  QRectF thisPaintRect = rect();
+  if ( qgsDoubleNear( thisPaintRect.width(), 0.0 ) || qgsDoubleNear( thisPaintRect.height(), 0 ) )
+    return;
+
+  if ( mLayout->renderContext().isPreviewRender() )
+  {
+    QgsRenderContext rc = QgsLayoutUtils::createRenderContextForLayout( mLayout, painter );
+    rc.setExpressionContext( createExpressionContext() );
+
+    QgsScopedQPainterState painterState( painter );
+    painter->setClipRect( thisPaintRect );
+    if ( !mCacheFinalImage || mCacheFinalImage->isNull() )
+    {
+      // No initial render available - so draw some preview text alerting user
+      painter->setBrush( QBrush( QColor( 125, 125, 125, 125 ) ) );
+      painter->drawRect( thisPaintRect );
+      painter->setBrush( Qt::NoBrush );
+      QFont messageFont;
+      messageFont.setPointSize( 12 );
+      painter->setFont( messageFont );
+      painter->setPen( QColor( 255, 255, 255, 255 ) );
+      painter->drawText( thisPaintRect, Qt::AlignCenter | Qt::AlignHCenter, tr( "Rendering profile" ) );
+      if ( mRenderJob && mCacheInvalidated && !mDrawingPreview )
+      {
+        // current job was invalidated - start a new one
+        mPreviewScaleFactor = QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle, painter );
+        mBackgroundUpdateTimer->start( 1 );
+      }
+      else if ( !mRenderJob && !mDrawingPreview )
+      {
+        // this is the profiles's very first paint - trigger a cache update
+        mPreviewScaleFactor = QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle, painter );
+        mBackgroundUpdateTimer->start( 1 );
+      }
+    }
+    else
+    {
+      if ( mCacheInvalidated && !mDrawingPreview )
+      {
+        // cache was invalidated - trigger a background update
+        mPreviewScaleFactor = QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle, painter );
+        mBackgroundUpdateTimer->start( 1 );
+      }
+
+      //Background color is already included in cached image, so no need to draw
+
+      double imagePixelWidth = mCacheFinalImage->width(); //how many pixels of the image are for the map extent?
+      double scale = rect().width() / imagePixelWidth;
+
+      QgsScopedQPainterState rotatedPainterState( painter );
+
+      painter->scale( scale, scale );
+      painter->drawImage( 0, 0, *mCacheFinalImage );
+    }
+
+    painter->setClipRect( thisPaintRect, Qt::NoClip );
+
+    if ( frameEnabled() )
+    {
+      QgsLayoutItem::drawFrame( rc );
+    }
+  }
+  else
+  {
+    if ( mDrawing )
+      return;
+
+    mDrawing = true;
+    QPaintDevice *paintDevice = painter->device();
+    if ( !paintDevice )
+      return;
+
+    QSizeF layoutSize = mLayout->convertToLayoutUnits( sizeWithUnits() );
+
+    if ( mLayout && mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagLosslessImageRendering )
+      painter->setRenderHint( QPainter::LosslessImageRendering, true );
+
+    QgsRenderContext rc = QgsLayoutUtils::createRenderContextForLayout( mLayout, painter );
+    rc.setExpressionContext( createExpressionContext() );
+
+    // Fill with background color
+    if ( hasBackground() )
+    {
+      QgsLayoutItem::drawBackground( rc );
+    }
+
+    QgsScopedQPainterState painterState( painter );
+
+    if ( !qgsDoubleNear( layoutSize.width(), 0.0 ) && !qgsDoubleNear( layoutSize.height(), 0.0 ) )
+    {
+      QgsScopedQPainterState stagedPainterState( painter );
+      double dotsPerMM = paintDevice->logicalDpiX() / 25.4;
+      layoutSize *= dotsPerMM; // output size will be in dots (pixels)
+      painter->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
+
+      QList< QgsAbstractProfileSource * > sources;
+      for ( const QgsMapLayerRef &layer : std::as_const( mLayers ) )
+      {
+        if ( QgsAbstractProfileSource *source = dynamic_cast< QgsAbstractProfileSource * >( layer.get() ) )
+          sources.append( source );
+      }
+
+      QgsProfilePlotRenderer renderer( sources, profileRequest() );
+
+      // TODO
+      // we should be able to call renderer.start()/renderer.waitForFinished() here and
+      // benefit from parallel source generation. BUT
+      // for some reason the QtConcurrent::map call in start() never triggers
+      // the actual background thread execution.
+      // So for now just generate the results one by one
+      renderer.generateSynchronously();
+      mPlot->setRenderer( &renderer );
+
+      // size must be in pixels, not layout units
+      mPlot->setSize( layoutSize );
+
+      mPlot->render( rc );
+
+      mPlot->setRenderer( nullptr );
+
+      painter->setClipRect( thisPaintRect, Qt::NoClip );
+    }
+
+    if ( frameEnabled() )
+    {
+      QgsLayoutItem::drawFrame( rc );
+    }
+    mDrawing = false;
+  }
+}
+
+void QgsLayoutItemElevationProfile::refresh()
+{
+  QgsLayoutItem::refresh();
+  invalidateCache();
+}
+
+void QgsLayoutItemElevationProfile::invalidateCache()
+{
+  if ( mDrawing )
+    return;
+
+  mCacheInvalidated = true;
+  update();
+}
+
+void QgsLayoutItemElevationProfile::draw( QgsLayoutItemRenderContext & )
+{
 }
 
 bool QgsLayoutItemElevationProfile::writePropertiesToElement( QDomElement &layoutProfileElem, QDomDocument &doc, const QgsReadWriteContext &rwContext ) const
@@ -568,5 +774,108 @@ bool QgsLayoutItemElevationProfile::readPropertiesFromElement( const QDomElement
   }
 
   return true;
+}
+
+void QgsLayoutItemElevationProfile::recreateCachedImageInBackground()
+{
+  if ( mRenderJob )
+  {
+    disconnect( mRenderJob.get(), &QgsProfilePlotRenderer::generationFinished, this, &QgsLayoutItemElevationProfile::profileGenerationFinished );
+    QgsProfilePlotRenderer *oldJob = mRenderJob.release();
+    QPainter *oldPainter = mPainter.release();
+    QImage *oldImage = mCacheRenderingImage.release();
+    connect( oldJob, &QgsProfilePlotRenderer::generationFinished, this, [oldPainter, oldJob, oldImage]
+    {
+      oldJob->deleteLater();
+      delete oldPainter;
+      delete oldImage;
+    } );
+    oldJob->cancelGenerationWithoutBlocking();
+  }
+  else
+  {
+    mCacheRenderingImage.reset( nullptr );
+    emit backgroundTaskCountChanged( 1 );
+  }
+
+  Q_ASSERT( !mRenderJob );
+  Q_ASSERT( !mPainter );
+  Q_ASSERT( !mCacheRenderingImage );
+
+  const QSizeF layoutSize = mLayout->convertToLayoutUnits( sizeWithUnits() );
+  double widthLayoutUnits = layoutSize.width();
+  double heightLayoutUnits = layoutSize.height();
+
+  int w = static_cast< int >( std::round( widthLayoutUnits * mPreviewScaleFactor ) );
+  int h = static_cast< int >( std::round( heightLayoutUnits * mPreviewScaleFactor ) );
+
+  // limit size of image for better performance
+  if ( w > 5000 || h > 5000 )
+  {
+    if ( w > h )
+    {
+      w = 5000;
+      h = static_cast< int>( std::round( w * heightLayoutUnits / widthLayoutUnits ) );
+    }
+    else
+    {
+      h = 5000;
+      w = static_cast< int >( std::round( h * widthLayoutUnits / heightLayoutUnits ) );
+    }
+  }
+
+  if ( w <= 0 || h <= 0 )
+    return;
+
+  mCacheRenderingImage.reset( new QImage( w, h, QImage::Format_ARGB32 ) );
+
+  // set DPI of the image
+  mCacheRenderingImage->setDotsPerMeterX( static_cast< int >( std::round( 1000 * w / widthLayoutUnits ) ) );
+  mCacheRenderingImage->setDotsPerMeterY( static_cast< int >( std::round( 1000 * h / heightLayoutUnits ) ) );
+
+  //start with empty fill to avoid artifacts
+  mCacheRenderingImage->fill( Qt::transparent );
+  if ( hasBackground() )
+  {
+    //Initially fill image with specified background color
+    mCacheRenderingImage->fill( backgroundColor().rgba() );
+  }
+
+  mCacheInvalidated = false;
+  mPainter.reset( new QPainter( mCacheRenderingImage.get() ) );
+
+  QList< QgsAbstractProfileSource * > sources;
+  for ( const QgsMapLayerRef &layer : std::as_const( mLayers ) )
+  {
+    if ( QgsAbstractProfileSource *source = dynamic_cast< QgsAbstractProfileSource * >( layer.get() ) )
+      sources.append( source );
+  }
+
+  mRenderJob = std::make_unique< QgsProfilePlotRenderer >( sources, profileRequest() );
+  connect( mRenderJob.get(), &QgsProfilePlotRenderer::generationFinished, this, &QgsLayoutItemElevationProfile::profileGenerationFinished );
+  mRenderJob->startGeneration();
+
+  mDrawingPreview = false;
+}
+
+void QgsLayoutItemElevationProfile::profileGenerationFinished()
+{
+  mPlot->setRenderer( mRenderJob.get() );
+
+  QgsRenderContext rc = QgsLayoutUtils::createRenderContextForLayout( mLayout, mPainter.get() );
+
+  // size must be in pixels, not layout units
+  mPlot->setSize( mCacheRenderingImage->size() );
+
+  mPlot->render( rc );
+
+  mPlot->setRenderer( nullptr );
+
+  mPainter->end();
+  mRenderJob.reset( nullptr );
+  mPainter.reset( nullptr );
+  mCacheFinalImage = std::move( mCacheRenderingImage );
+  emit backgroundTaskCountChanged( 0 );
+  update();
 }
 

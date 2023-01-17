@@ -98,6 +98,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
 
     mProfile->beginCommand( tr( "Change Profile Chart Minimum Distance" ), QgsLayoutItem::UndoElevationProfileMinimumDistance );
     mProfile->plot()->setXMinimum( value );
+    mProfile->invalidateCache();
     mProfile->update();
     mProfile->endCommand();
   } );
@@ -109,6 +110,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
 
     mProfile->beginCommand( tr( "Change Profile Chart Maximum Distance" ), QgsLayoutItem::UndoElevationProfileMaximumDistance );
     mProfile->plot()->setXMaximum( value );
+    mProfile->invalidateCache();
     mProfile->update();
     mProfile->endCommand();
   } );
@@ -121,6 +123,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
 
     mProfile->beginCommand( tr( "Change Profile Chart Minimum Elevation" ), QgsLayoutItem::UndoElevationProfileMinimumElevation );
     mProfile->plot()->setYMinimum( value );
+    mProfile->invalidateCache();
     mProfile->update();
     mProfile->endCommand();
   } );
@@ -132,6 +135,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
 
     mProfile->beginCommand( tr( "Change Profile Chart Maximum Elevation" ), QgsLayoutItem::UndoElevationProfileMaximumElevation );
     mProfile->plot()->setYMaximum( value );
+    mProfile->invalidateCache();
     mProfile->update();
     mProfile->endCommand();
   } );
@@ -144,6 +148,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
 
     mProfile->beginCommand( tr( "Change Profile Chart Distance Major Gridlines" ), QgsLayoutItem::UndoElevationProfileDistanceMajorGridlines );
     mProfile->plot()->xAxis().setGridMajorSymbol( mDistanceAxisMajorLinesSymbolButton->clonedSymbol<QgsLineSymbol>() );
+    mProfile->invalidateCache();
     mProfile->update();
     mProfile->endCommand();
   } );
@@ -157,6 +162,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
 
     mProfile->beginCommand( tr( "Change Profile Chart Distance Minor Gridlines" ), QgsLayoutItem::UndoElevationProfileDistanceMinorGridlines );
     mProfile->plot()->xAxis().setGridMinorSymbol( mDistanceAxisMinorLinesSymbolButton->clonedSymbol<QgsLineSymbol>() );
+    mProfile->invalidateCache();
     mProfile->update();
     mProfile->endCommand();
   } );
@@ -169,6 +175,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
 
     mProfile->beginCommand( tr( "Change Profile Chart Distance Major Gridlines" ), QgsLayoutItem::UndoElevationProfileDistanceMajorGridlines );
     mProfile->plot()->xAxis().setGridIntervalMajor( value );
+    mProfile->invalidateCache();
     mProfile->update();
     mProfile->endCommand();
   } );
@@ -180,6 +187,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
 
     mProfile->beginCommand( tr( "Change Profile Chart Distance Minor Gridlines" ), QgsLayoutItem::UndoElevationProfileDistanceMinorGridlines );
     mProfile->plot()->xAxis().setGridIntervalMinor( value );
+    mProfile->invalidateCache();
     mProfile->update();
     mProfile->endCommand();
   } );
@@ -191,6 +199,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
 
     mProfile->beginCommand( tr( "Change Profile Chart Distance Label" ), QgsLayoutItem::UndoElevationProfileDistanceLabels );
     mProfile->plot()->xAxis().setLabelInterval( value );
+    mProfile->invalidateCache();
     mProfile->update();
     mProfile->endCommand();
   } );
@@ -203,6 +212,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
 
     mProfile->beginCommand( tr( "Change Profile Chart Elevation Major Gridlines" ), QgsLayoutItem::UndoElevationProfileElevationMajorGridlines );
     mProfile->plot()->yAxis().setGridMajorSymbol( mElevationAxisMajorLinesSymbolButton->clonedSymbol<QgsLineSymbol>() );
+    mProfile->invalidateCache();
     mProfile->update();
     mProfile->endCommand();
   } );
@@ -216,6 +226,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
 
     mProfile->beginCommand( tr( "Change Profile Chart Elevation Minor Gridlines" ), QgsLayoutItem::UndoElevationProfileElevationMinorGridlines );
     mProfile->plot()->yAxis().setGridMinorSymbol( mElevationAxisMinorLinesSymbolButton->clonedSymbol<QgsLineSymbol>() );
+    mProfile->invalidateCache();
     mProfile->update();
     mProfile->endCommand();
   } );
@@ -228,6 +239,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
 
     mProfile->beginCommand( tr( "Change Profile Chart Elevation Label" ), QgsLayoutItem::UndoElevationProfileElevationLabels );
     mProfile->plot()->yAxis().setLabelInterval( value );
+    mProfile->invalidateCache();
     mProfile->update();
     mProfile->endCommand();
   } );
@@ -239,6 +251,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
 
     mProfile->beginCommand( tr( "Change Profile Chart Elevation Major Gridlines" ), QgsLayoutItem::UndoElevationProfileElevationMajorGridlines );
     mProfile->plot()->yAxis().setGridIntervalMajor( value );
+    mProfile->invalidateCache();
     mProfile->update();
     mProfile->endCommand();
   } );
@@ -250,6 +263,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
 
     mProfile->beginCommand( tr( "Change Profile Chart Distance Minor Gridlines" ), QgsLayoutItem::UndoElevationProfileElevationMinorGridlines );
     mProfile->plot()->yAxis().setGridIntervalMinor( value );
+    mProfile->invalidateCache();
     mProfile->update();
     mProfile->endCommand();
   } );
@@ -262,6 +276,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
 
     mProfile->beginCommand( tr( "Change Profile Chart Background" ), QgsLayoutItem::UndoElevationProfileChartBackground );
     mProfile->plot()->setChartBackgroundSymbol( mChartBackgroundSymbolButton->clonedSymbol<QgsFillSymbol>() );
+    mProfile->invalidateCache();
     mProfile->update();
     mProfile->endCommand();
   } );
@@ -275,6 +290,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
 
     mProfile->beginCommand( tr( "Change Profile Chart Border" ), QgsLayoutItem::UndoElevationProfileChartBorder );
     mProfile->plot()->setChartBorderSymbol( mChartBorderSymbolButton->clonedSymbol<QgsFillSymbol>() );
+    mProfile->invalidateCache();
     mProfile->update();
     mProfile->endCommand();
   } );
@@ -292,6 +308,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     {
       mProfile->beginCommand( tr( "Change Profile Chart Distance Format" ), QgsLayoutItem::UndoElevationProfileDistanceFormat );
       mProfile->plot()->xAxis().setNumericFormat( widget->format() );
+      mProfile->invalidateCache();
       mProfile->endCommand();
       mProfile->update();
     } );
@@ -310,6 +327,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     {
       mProfile->beginCommand( tr( "Change Profile Chart Elevation Format" ), QgsLayoutItem::UndoElevationProfileElevationFormat );
       mProfile->plot()->yAxis().setNumericFormat( widget->format() );
+      mProfile->invalidateCache();
       mProfile->endCommand();
       mProfile->update();
     } );
@@ -328,6 +346,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
 
     mProfile->beginCommand( tr( "Change Profile Chart Distance Font" ), QgsLayoutItem::UndoElevationProfileDistanceFont );
     mProfile->plot()->xAxis().setTextFormat( mDistanceAxisLabelFontButton->textFormat() );
+    mProfile->invalidateCache();
     mProfile->endCommand();
     mProfile->update();
   } );
@@ -339,6 +358,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
 
     mProfile->beginCommand( tr( "Change Profile Chart Elevation Font" ), QgsLayoutItem::UndoElevationProfileElevationFont );
     mProfile->plot()->yAxis().setTextFormat( mElevationAxisLabelFontButton->textFormat() );
+    mProfile->invalidateCache();
     mProfile->endCommand();
     mProfile->update();
   } );
@@ -353,6 +373,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     QgsMargins margins = mProfile->plot()->margins();
     margins.setLeft( value );
     mProfile->plot()->setMargins( margins );
+    mProfile->invalidateCache();
     mProfile->update();
     mProfile->endCommand();
   } );
@@ -367,6 +388,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     QgsMargins margins = mProfile->plot()->margins();
     margins.setRight( value );
     mProfile->plot()->setMargins( margins );
+    mProfile->invalidateCache();
     mProfile->update();
     mProfile->endCommand();
   } );
@@ -381,6 +403,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     QgsMargins margins = mProfile->plot()->margins();
     margins.setTop( value );
     mProfile->plot()->setMargins( margins );
+    mProfile->invalidateCache();
     mProfile->update();
     mProfile->endCommand();
   } );
@@ -395,6 +418,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     QgsMargins margins = mProfile->plot()->margins();
     margins.setBottom( value );
     mProfile->plot()->setMargins( margins );
+    mProfile->invalidateCache();
     mProfile->update();
     mProfile->endCommand();
   } );
