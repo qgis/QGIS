@@ -32,6 +32,7 @@
 #include "qgspostgresconnpool.h"
 #include "qgsvariantutils.h"
 #include "qgsdbquerylog.h"
+#include "qgsapplication.h"
 
 #include <QApplication>
 #include <QStringList>
@@ -449,8 +450,11 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
 
   if ( mPostgresqlVersion >= 90000 )
   {
-    LoggedPQexecNR( "QgsPostgresConn", QStringLiteral( "SET application_name='QGIS'" ) );
-    LoggedPQexecNR( "QgsPostgresConn", QStringLiteral( "SET extra_float_digits=3" ) );
+    // Quoting floating point values and application name for PostgreSQL connection in 1 request
+    LoggedPQexecNR(
+      "QgsPostgresConn",
+      QStringLiteral( "SET extra_float_digits=3; SET application_name=%1" ).arg( quotedValue( QgsApplication::applicationFullName() ) )
+    );
   }
 
   PQsetNoticeProcessor( mConn, noticeProcessor, nullptr );

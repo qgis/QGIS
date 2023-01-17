@@ -181,6 +181,7 @@ Q_GLOBAL_STATIC( QString, sAuthDbDirPath )
 Q_GLOBAL_STATIC( QString, sUserName )
 Q_GLOBAL_STATIC( QString, sUserFullName )
 Q_GLOBAL_STATIC_WITH_ARGS( QString, sPlatformName, ( "external" ) )
+Q_GLOBAL_STATIC( QString, sApplicationFullName )
 Q_GLOBAL_STATIC( QString, sTranslation )
 
 Q_GLOBAL_STATIC( QTemporaryDir, sIconCacheDir )
@@ -1373,6 +1374,25 @@ int QgsApplication::systemMemorySizeMb()
 QString QgsApplication::platform()
 {
   return *sPlatformName();
+}
+
+QString QgsApplication::applicationFullName()
+{
+  if ( !sApplicationFullName()->isEmpty() )
+    return *sApplicationFullName();
+
+  //use environment variables
+  *sApplicationFullName() = qgetenv( "QGIS_APPLICATION_FULL_NAME" );
+  if ( !sApplicationFullName()->isEmpty() )
+    return *sApplicationFullName();
+
+  //last resort
+  QgsSettings settings;
+  *sApplicationFullName() = settings.value(
+                              QStringLiteral( "/qgis/application_full_name" ),
+                              QStringLiteral( "%1 %2" ).arg( applicationName(), platform() )
+                            ).toString();
+  return *sApplicationFullName();
 }
 
 QString QgsApplication::locale()
