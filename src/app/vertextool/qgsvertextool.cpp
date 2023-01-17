@@ -2352,7 +2352,9 @@ void QgsVertexTool::addExtraVerticesToEdits( QgsVertexTool::VertexEdits &edits, 
       QgsDebugError( QStringLiteral( "[topo] move vertex failed!" ) );
       continue;
     }
-    layerEdits[topo.fid] = VertexEdit( topoGeom, point );
+
+    layerEdits[topo.fid].geom = topoGeom;
+    layerEdits[topo.fid].newPoints << topoGeom.vertexAt( topo.vertexId );
   }
 }
 
@@ -2381,12 +2383,15 @@ void QgsVertexTool::addExtraSegmentsToEdits( QgsVertexTool::VertexEdits &edits, 
     if ( QgsWkbTypes::hasZ( topo.layer->wkbType() ) )
       pt.addZValue( defaultZValue() );
 
-    if ( !topoGeom.insertVertex( pt, topo.vertexId + 1 ) )
+    const int vid = topo.vertexId + 1;
+    if ( !topoGeom.insertVertex( pt, vid ) )
     {
       QgsDebugError( QStringLiteral( "[topo] segment insert vertex failed!" ) );
       continue;
     }
-    layerEdits[topo.fid] = VertexEdit( topoGeom, pt );
+
+    layerEdits[topo.fid].geom = topoGeom;
+    layerEdits[topo.fid].newPoints << topoGeom.vertexAt( vid );
   }
 }
 

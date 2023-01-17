@@ -68,6 +68,7 @@ class TestQgsVertexTool : public QObject
     void testTopologicalEditingMoveVertexZ();
     void testTopologicalEditingMoveVertexOnSegmentZ();
     void testTopologicalEditingMoveVertexOnIntersectionZ();
+    void testTopologicalEditingMoveVerticesOnSegmentZ();
     void testMoveVertex();
     void testMoveEdge();
     void testMovePointAddingZ();
@@ -88,7 +89,6 @@ class TestQgsVertexTool : public QObject
     void testActiveLayerPriority();
     void testSelectedFeaturesPriority();
     void testVertexToolCompoundCurve();
-
 
   private:
     QPoint mapToScreen( double mapX, double mapY )
@@ -432,6 +432,59 @@ void TestQgsVertexTool::testTopologicalEditingMoveVertexOnIntersectionZ()
   mLayerLineZ->undoStack()->undo();
   cfg.setEnabled( false );
   mCanvas->snappingUtils()->setConfig( cfg );
+}
+
+void TestQgsVertexTool::testTopologicalEditingMoveVerticesOnSegmentZ()
+{
+  QCOMPARE( mLayerLineZ->undoStack()->index(), 3 );
+  QCOMPARE( mLayerLineZ->featureCount(), ( long ) 3 );
+
+  // Adds a temp feature
+  // The 2 vertices are parallel to the linez2
+  QgsFeature linez;
+  linez.setGeometry( QgsGeometry::fromWkt( "LineStringZ (5.5 8 5, 6.5 8 10)" ) );
+  mLayerLineZ->addFeature( linez );
+
+  QCOMPARE( mLayerLineZ->featureCount(), ( long ) 4 );
+
+  // Activates topological editing
+  const bool topologicalEditing = QgsProject::instance()->topologicalEditing();
+  QgsProject::instance()->setTopologicalEditing( true );
+
+  // And snapping
+  QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
+  cfg.setMode( Qgis::SnappingMode::AllLayers );
+  cfg.setTolerance( 10 );
+  cfg.setTypeFlag( static_cast<Qgis::SnappingTypes>( Qgis::SnappingType::Vertex | Qgis::SnappingType::Segment ) );
+  cfg.setEnabled( true );
+  mCanvas->snappingUtils()->setConfig( cfg );
+
+  // Selects the temp feature
+  mousePress( 5, 8.5, Qt::LeftButton );
+  mouseMove( 7, 7.5 );
+  mouseRelease( 7, 7.5, Qt::LeftButton );
+
+  // And moves on the linez2
+  mouseClick( 5.5, 8, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  mouseClick( 5.5, 7, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  // Verifies than the temp line has been moved and topological vertices added.
+  QCOMPARE( mLayerLineZ->getFeature( linez.id() ).geometry().asWkt(), QString( "LineStringZ (5.5 7 6.25, 6.5 7 10)" ) );
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF2 ).geometry().asWkt(), QString( "LineStringZ (5 7 5, 5.5 7 6.25, 6.5 7 10, 7 7 10)" ) );
+
+  // Undo changes
+  mLayerLineZ->deleteFeature( linez.id() );
+
+  QgsProject::instance()->setTopologicalEditing( topologicalEditing );
+  mLayerLineZ->undoStack()->undo();
+  mLayerLineZ->undoStack()->undo();
+  mLayerLineZ->undoStack()->undo();
+  mLayerLineZ->undoStack()->undo();
+  cfg.setEnabled( false );
+  mCanvas->snappingUtils()->setConfig( cfg );
+
+  QCOMPARE( mLayerLineZ->undoStack()->index(), 3 );
+  QCOMPARE( mLayerLineZ->featureCount(), ( long ) 3 );
 }
 
 void TestQgsVertexTool::testMoveVertex()
@@ -1270,6 +1323,7 @@ void TestQgsVertexTool::testActiveLayerPriority()
   const QgsFeatureId fidLineF1 = lineF1.id();
   QCOMPARE( layerLine2->featureCount(), ( long )1 );
   QgsProject::instance()->addMapLayer( layerLine2 );
+  QList<QgsMapLayer *> oldMapLayers = mCanvas->layers();
   mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerPolygon << mLayerPoint << mLayerCompoundCurve << layerLine2 );
 
   // make one layer active and check its vertex is used
@@ -1299,7 +1353,7 @@ void TestQgsVertexTool::testActiveLayerPriority()
   mCanvas->setCurrentLayer( nullptr );
 
   // get rid of the temporary layer
-  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerPolygon << mLayerPoint << mLayerCompoundCurve );
+  mCanvas->setLayers( oldMapLayers );
   QgsProject::instance()->removeMapLayer( layerLine2 );
 }
 
@@ -1466,7 +1520,6 @@ void TestQgsVertexTool::testSelectVerticesByPolygon()
   QCOMPARE( mLayerMultiPolygon->undoStack()->index(), 1 );
   QCOMPARE( mLayerMultiPolygon->getFeature( mFidMultiPolygonF1 ).geometry(), QgsGeometry::fromWkt( "MultiPolygon (((1 5, 2 5, 2 6.5, 2 8, 1 8, 1 6.5, 1 5),(1.25 5.5, 1.25 6, 1.75 6, 1.75 5.5, 1.25 5.5),(1.25 7, 1.75 7, 1.75 7.5, 1.25 7.5, 1.25 7)),((3 5, 3 6.5, 3 8, 4 8, 4 6.5, 4 5, 3 5),(3.25 5.5, 3.75 5.5, 3.75 6, 3.25 6, 3.25 5.5),(3.25 7, 3.75 7, 3.75 7.5, 3.25 7.5, 3.25 7)))" ) );
 }
-
 
 QGSTEST_MAIN( TestQgsVertexTool )
 #include "testqgsvertextool.moc"
