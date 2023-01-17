@@ -184,6 +184,14 @@ class CORE_EXPORT QgsVectorLayerUtils
     static QVariant createUniqueValueFromCache( const QgsVectorLayer *layer, int fieldIndex, const QSet<QVariant> &existingValues, const QVariant &seed = QVariant() );
 
     /**
+     * Returns TRUE if a feature attribute has active constraints.
+     * \param layer the vector layer from which field constraints will be checked for
+     * \param attributeIndex the attribute index
+     * \since QGIS 3.30
+     */
+    static bool attributeHasConstraints( const QgsVectorLayer *layer, int attributeIndex );
+
+    /**
      * Tests a feature attribute value to check whether it passes all constraints which are present on the corresponding field.
      * Returns TRUE if the attribute value is valid for the field. Any constraint failures will be reported in the errors argument.
      * If the strength or origin parameter is set then only constraints with a matching strength/origin will be checked.

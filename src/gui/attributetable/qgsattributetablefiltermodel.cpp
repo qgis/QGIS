@@ -313,7 +313,11 @@ bool QgsAttributeTableFilterModel::selectedOnTop()
 void QgsAttributeTableFilterModel::setFilteredFeatures( const QgsFeatureIds &ids )
 {
   mFilteredFeatures = ids;
-  setFilterMode( ShowFilteredList );
+  if ( mFilterMode != ShowFilteredList &&
+       mFilterMode != ShowInvalid )
+  {
+    setFilterMode( ShowFilteredList );
+  }
   invalidateFilter();
 }
 
@@ -337,6 +341,11 @@ void QgsAttributeTableFilterModel::setFilterMode( FilterMode filterMode )
     connectFilterModeConnections( filterMode );
     mFilterMode = filterMode;
     invalidate();
+
+    if ( mFilterMode == QgsAttributeTableFilterModel::ShowInvalid )
+    {
+      filterFeatures();
+    }
   }
 }
 
@@ -356,6 +365,7 @@ void QgsAttributeTableFilterModel::disconnectFilterModeConnections()
     case ShowSelected:
       break;
     case ShowFilteredList:
+    case ShowInvalid:
       disconnect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::startTimedFilterFeatures );
       disconnect( layer(), &QgsVectorLayer::attributeValueChanged, this, &QgsAttributeTableFilterModel::onAttributeValueChanged );
       disconnect( layer(), &QgsVectorLayer::geometryChanged, this, &QgsAttributeTableFilterModel::onGeometryChanged );
@@ -380,6 +390,7 @@ void QgsAttributeTableFilterModel::connectFilterModeConnections( QgsAttributeTab
     case ShowSelected:
       break;
     case ShowFilteredList:
+    case ShowInvalid:
       connect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::startTimedFilterFeatures );
       connect( layer(), &QgsVectorLayer::attributeValueChanged, this, &QgsAttributeTableFilterModel::onAttributeValueChanged );
       connect( layer(), &QgsVectorLayer::geometryChanged, this, &QgsAttributeTableFilterModel::onGeometryChanged );
@@ -396,6 +407,7 @@ bool QgsAttributeTableFilterModel::filterAcceptsRow( int sourceRow, const QModel
       return true;
 
     case ShowFilteredList:
+    case ShowInvalid:
       return mFilteredFeatures.contains( masterModel()->rowToId( sourceRow ) );
 
     case ShowSelected:
@@ -449,7 +461,7 @@ void QgsAttributeTableFilterModel::onAttributeValueChanged( QgsFeatureId fid, in
   Q_UNUSED( fid );
   Q_UNUSED( value );
 
-  if ( mFilterExpression.referencedAttributeIndexes( layer()->fields() ).contains( idx ) )
+  if ( mFilterMode == QgsAttributeTableFilterModel::ShowInvalid || mFilterExpression.referencedAttributeIndexes( layer()->fields() ).contains( idx ) )
   {
     startTimedFilterFeatures();
   }
@@ -457,7 +469,7 @@ void QgsAttributeTableFilterModel::onAttributeValueChanged( QgsFeatureId fid, in
 
 void QgsAttributeTableFilterModel::onGeometryChanged()
 {
-  if ( mFilterExpression.needsGeometry() )
+  if ( mFilterMode == QgsAttributeTableFilterModel::ShowInvalid || mFilterExpression.needsGeometry() )
   {
     startTimedFilterFeatures();
   }

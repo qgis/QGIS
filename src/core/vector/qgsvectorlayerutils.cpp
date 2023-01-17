@@ -367,6 +367,20 @@ QVariant QgsVectorLayerUtils::createUniqueValueFromCache( const QgsVectorLayer *
 
 }
 
+bool QgsVectorLayerUtils::attributeHasConstraints( const QgsVectorLayer *layer, int attributeIndex )
+{
+  if ( !layer )
+    return false;
+
+  if ( attributeIndex < 0 || attributeIndex >= layer->fields().count() )
+    return false;
+
+  const QgsFieldConstraints constraints = layer->fields().at( attributeIndex ).constraints();
+  return ( constraints.constraints() & QgsFieldConstraints::ConstraintNotNull ||
+           constraints.constraints() & QgsFieldConstraints::ConstraintUnique ||
+           constraints.constraints() & QgsFieldConstraints::ConstraintExpression );
+}
+
 bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer *layer, const QgsFeature &feature, int attributeIndex, QStringList &errors,
     QgsFieldConstraints::ConstraintStrength strength, QgsFieldConstraints::ConstraintOrigin origin )
 {

@@ -249,6 +249,22 @@ Empty extra columns to announce from this model.
 Any extra columns need to be implemented by proxy models in front of this model.
 %End
 
+    bool showValidityState() const;
+%Docstring
+Returns whether the attribute table will add a visual feedback to cells when an attribute
+constraint is not met.
+
+.. versionadded:: 3.30
+%End
+
+    void setShowValidityState( bool show );
+%Docstring
+Sets whether the attribute table will add a visual feedback to cells when an attribute constraint
+is not met.
+
+.. versionadded:: 3.30
+%End
+
   public slots:
 
     virtual void loadLayer();

@@ -110,6 +110,7 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QgsPanelWidget, privat
 
   private slots:
 
+    void typeChanged();
     void ruleClicked( const QModelIndex &index );
     void reloadStyles();
     void addNewRule();

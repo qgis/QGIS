@@ -326,6 +326,10 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
     case QgsAttributeTableFilterModel::ShowSelected:
       disconnect( masterModel()->layer(), &QgsVectorLayer::selectionChanged, this, &QgsDualView::updateSelectedFeatures );
       break;
+
+    case QgsAttributeTableFilterModel::ShowInvalid:
+      mMasterModel->setShowValidityState( false );
+      break;
   }
 
   QgsFeatureRequest r = mMasterModel->request();
@@ -363,6 +367,16 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
       connect( masterModel()->layer(), &QgsVectorLayer::layerModified, this, &QgsDualView::updateEditedAddedFeatures );
       break;
 
+    case QgsAttributeTableFilterModel::ShowInvalid:
+    {
+      mMasterModel->setShowValidityState( true );
+      const QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
+      filterFeatures( QStringLiteral( "is_feature_valid() = false" ), context );
+      connect( mFilterModel, &QgsAttributeTableFilterModel::featuresFiltered, this, &QgsDualView::filterChanged );
+      connect( mFilterModel, &QgsAttributeTableFilterModel::filterError, this, &QgsDualView::filterError );
+      break;
+    }
+
     case QgsAttributeTableFilterModel::ShowAll:
     case QgsAttributeTableFilterModel::ShowFilteredList:
     {
@@ -390,6 +404,7 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
     case QgsAttributeTableFilterModel::ShowAll:
     case QgsAttributeTableFilterModel::ShowEdited:
     case QgsAttributeTableFilterModel::ShowFilteredList:
+    case QgsAttributeTableFilterModel::ShowInvalid:
     case QgsAttributeTableFilterModel::ShowSelected:
       setBrowsingAutoPanScaleAllowed( true );
       break;
