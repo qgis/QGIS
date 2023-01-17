@@ -42,7 +42,9 @@ from qgis.core import (QgsPrintLayout,
                        QgsCategorizedSymbolRenderer,
                        QgsRendererCategory,
                        QgsRasterLayer,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsGeometry,
+                       QgsCoordinateReferenceSystem)
 from qgis.testing import (start_app,
                           unittest
                           )
@@ -103,6 +105,50 @@ class TestQgsLayoutItemElevationProfile(unittest.TestCase, LayoutItemTestCase):
             profile2 = [i for i in layout2.items() if isinstance(i, QgsLayoutItemElevationProfile)][0]
 
             self.assertEqual([m.id() for m in profile2.layers()], [layer2.id(), layer3.id()])
+
+    def test_settings(self):
+        project = QgsProject()
+        layout = QgsPrintLayout(project)
+        profile = QgsLayoutItemElevationProfile(layout)
+        layout.addLayoutItem(profile)
+        project.layoutManager().addLayout(layout)
+
+        # test that default settings are written/restored
+        with tempfile.TemporaryDirectory() as temp_dir:
+            self.assertTrue(project.write(os.path.join(temp_dir, 'p.qgs')))
+
+            p2 = QgsProject()
+            self.assertTrue(p2.read(os.path.join(temp_dir, 'p.qgs')))
+
+            layout2 = p2.layoutManager().printLayouts()[0]
+            profile2 = [i for i in layout2.items() if isinstance(i, QgsLayoutItemElevationProfile)][0]
+
+            self.assertFalse(profile2.crs().isValid())
+            self.assertEqual(profile2.tolerance(), 0)
+            self.assertIsNone(profile2.profileCurve())
+
+        curve = QgsGeometry.fromWkt('LineString(0 0, 10 10)')
+        profile.setProfileCurve(curve.constGet().clone())
+        self.assertEqual(profile.profileCurve().asWkt(), 'LineString (0 0, 10 10)')
+
+        profile.setCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+        self.assertEqual(profile.crs(), QgsCoordinateReferenceSystem('EPSG:3857'))
+        profile.setTolerance(101)
+        self.assertEqual(profile.tolerance(), 101)
+
+        # test that settings are written/restored
+        with tempfile.TemporaryDirectory() as temp_dir:
+            self.assertTrue(project.write(os.path.join(temp_dir, 'p.qgs')))
+
+            p2 = QgsProject()
+            self.assertTrue(p2.read(os.path.join(temp_dir, 'p.qgs')))
+
+            layout2 = p2.layoutManager().printLayouts()[0]
+            profile2 = [i for i in layout2.items() if isinstance(i, QgsLayoutItemElevationProfile)][0]
+
+            self.assertEqual(profile2.crs(), QgsCoordinateReferenceSystem('EPSG:3857'))
+            self.assertEqual(profile2.tolerance(), 101)
+            self.assertEqual(profile2.profileCurve().asWkt(), 'LineString (0 0, 10 10)')
 
 
 if __name__ == '__main__':
