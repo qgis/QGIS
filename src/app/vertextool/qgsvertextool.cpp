@@ -2240,7 +2240,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
   geom.set( geomTmp );
 
   VertexEdits edits; // dict { layer : { fid : geom } }
-  edits[dragLayer][dragFid] = geom;
+  edits[dragLayer][dragFid] = VertexEdit( geom, geomTmp->vertexAt( vid ) );
 
   addExtraVerticesToEdits( edits, mapPoint, dragLayer, layerPoint );
 
@@ -2255,35 +2255,46 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
 
   if ( QgsProject::instance()->topologicalEditing() )
   {
-    // topo editing: add vertex to existing segments when moving/adding a vertex to such segment.
-    // this requires that the snapping match is to a segment and the segment layer's CRS
-    // is the same (otherwise we would need to reproject the point and it will not be coincident)
-    const auto editKeys = edits.keys();
-    for ( QgsVectorLayer *layer : editKeys )
+    // layer we have to add topological point on
+    QSet<QgsVectorLayer *> targetLayers;
+
+    if ( mapPointMatch->layer() )
     {
-      const auto editGeom = edits[layer].values();
-      for ( QgsGeometry g : editGeom )
+      targetLayers << mapPointMatch->layer();
+    }
+    else
+    {
+      // Either we snap on intersection, and so we need to find back all the layers part of the intersection
+      // Either we snap on nothing but we avoid intersection so we need at least the current layer
+
+      // we add the current layer (the first edited one)
+      targetLayers << edits.constBegin().key();
+    }
+
+    // TODO Whatever we snap on a layer or not, we should add topo points on all the layers we can
+    // snap on according to snap config mode. IS it true ? check with Loic
+
+    // add topological points on layer part of the avoid intersection
+    if ( QgsProject::instance()->avoidIntersectionsMode() == Qgis::AvoidIntersectionsMode::AvoidIntersectionsLayers )
+    {
+      // TODO we could filter with pointlocator has edges if it's snap on intersection to avoid adding topo points
+      // everywhere
+      const QList<QgsVectorLayer *> layers = QgsProject::instance()->avoidIntersectionsLayers();
+      targetLayers.unite( QSet<QgsVectorLayer *>( layers.constBegin(), layers.constEnd() ) );
+    }
+
+    for ( auto itLayerEdits = edits.begin(); itLayerEdits != edits.end(); ++itLayerEdits )
+    {
+      for ( auto itFeatEdit = itLayerEdits->begin(); itFeatEdit != itLayerEdits->end(); ++itFeatEdit )
       {
-        QgsGeometry p = QgsGeometry::fromPointXY( QgsPointXY( layerPoint.x(), layerPoint.y() ) );
-        if ( ( ( mapPointMatch->hasEdge() || mapPointMatch->hasMiddleSegment() ) && mapPointMatch->layer() && layer->crs() == mapPointMatch->layer()->crs() )
-             || ( mapPointMatch->hasVertex() && !mapPointMatch->layer() && layer->crs() == mCanvas->mapSettings().destinationCrs() ) ) // also add topological points when snapped on intersection
-        {
-          if ( g.convertToType( Qgis::GeometryType::Point, true ).contains( p ) )
+        for ( QgsPoint point : itFeatEdit->newPoints )
+          for ( QgsVectorLayer *targetLayer : targetLayers )
           {
-            if ( !layerPoint.is3D() )
-              layerPoint.addZValue( defaultZValue() );
-            layer->addTopologicalPoints( layerPoint );
-            if ( mapPointMatch->layer() )
-              mapPointMatch->layer()->addTopologicalPoints( layerPoint );
+            if ( !point.is3D() )
+              point.addZValue( defaultZValue() );
+
+            targetLayer->addTopologicalPoints( point );
           }
-        }
-        if ( QgsProject::instance()->avoidIntersectionsMode() != Qgis::AvoidIntersectionsMode::AllowIntersections )
-        {
-          for ( QgsAbstractGeometry::vertex_iterator it = g.vertices_begin() ; it != g.vertices_end() ; it++ )
-          {
-            layer->addTopologicalPoints( *it );
-          }
-        }
       }
     }
   }
@@ -2318,10 +2329,10 @@ void QgsVertexTool::addExtraVerticesToEdits( QgsVertexTool::VertexEdits &edits, 
     const Vertex &topo = mDraggingExtraVertices[i];
     const QgsVector &offset = mDraggingExtraVerticesOffset[i];
 
-    QHash<QgsFeatureId, QgsGeometry> &layerEdits = edits[topo.layer];
+    QHash<QgsFeatureId, VertexEdit> &layerEdits = edits[topo.layer];
     QgsGeometry topoGeom;
     if ( layerEdits.contains( topo.fid ) )
-      topoGeom = QgsGeometry( edits[topo.layer][topo.fid] );
+      topoGeom = QgsGeometry( layerEdits[topo.fid].geom );
     else
       topoGeom = QgsGeometry( cachedGeometryForVertex( topo ) );
 
@@ -2341,7 +2352,7 @@ void QgsVertexTool::addExtraVerticesToEdits( QgsVertexTool::VertexEdits &edits, 
       QgsDebugError( QStringLiteral( "[topo] move vertex failed!" ) );
       continue;
     }
-    edits[topo.layer][topo.fid] = topoGeom;
+    layerEdits[topo.fid] = VertexEdit( topoGeom, point );
   }
 }
 
@@ -2353,10 +2364,10 @@ void QgsVertexTool::addExtraSegmentsToEdits( QgsVertexTool::VertexEdits &edits, 
   {
     const Vertex &topo = mDraggingExtraSegments[i];
 
-    QHash<QgsFeatureId, QgsGeometry> &layerEdits = edits[topo.layer];
+    QHash<QgsFeatureId, VertexEdit> &layerEdits = edits[topo.layer];
     QgsGeometry topoGeom;
     if ( layerEdits.contains( topo.fid ) )
-      topoGeom = QgsGeometry( edits[topo.layer][topo.fid] );
+      topoGeom = QgsGeometry( layerEdits[topo.fid].geom );
     else
       topoGeom = QgsGeometry( cachedGeometryForVertex( topo ) );
 
@@ -2375,37 +2386,35 @@ void QgsVertexTool::addExtraSegmentsToEdits( QgsVertexTool::VertexEdits &edits, 
       QgsDebugError( QStringLiteral( "[topo] segment insert vertex failed!" ) );
       continue;
     }
-    edits[topo.layer][topo.fid] = topoGeom;
+    layerEdits[topo.fid] = VertexEdit( topoGeom, pt );
   }
 }
 
 
 void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
 {
-  QHash<QgsVectorLayer *, QHash<QgsFeatureId, QgsGeometry> >::iterator it = edits.begin();
-  for ( ; it != edits.end(); ++it )
-  {
-    QgsVectorLayer *layer = it.key();
-    QHash<QgsFeatureId, QgsGeometry> &layerEdits = it.value();
-    layer->beginEditCommand( tr( "Moved vertex" ) );
-    QHash<QgsFeatureId, QgsGeometry>::iterator it2 = layerEdits.begin();
-    for ( ; it2 != layerEdits.end(); ++it2 )
-    {
-      QgsGeometry featGeom = it2.value();
-      layer->changeGeometry( it2.key(), featGeom );
-      edits[layer][it2.key()] = featGeom;
-    }
+  // TODO todo only if there is avoidIntersections involved (move the all avoidIntersections stuff
+  // in a dedicated method
 
-    if ( QgsVertexEditor *editor = vertexEditor() )
-      editor->updateEditor( mLockedFeature.get() );
+  // when avoiding intersection ignore modified features
+  QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures;
+  for ( auto itLayerEdits = edits.begin() ; itLayerEdits != edits.end(); ++itLayerEdits )
+  {
+    QgsVectorLayer *layer = itLayerEdits.key();
+    for ( auto itFeatEdit = itLayerEdits->begin() ; itFeatEdit != itLayerEdits->end(); ++itFeatEdit )
+    {
+      QSet<QgsFeatureId> id;
+      id.insert( itFeatEdit.key() );
+      ignoreFeatures.insert( layer, id );
+    }
   }
 
-  for ( it = edits.begin() ; it != edits.end(); ++it )
+  for ( auto itLayerEdits = edits.begin() ; itLayerEdits != edits.end(); ++itLayerEdits )
   {
-    QgsVectorLayer *layer = it.key();
-    QHash<QgsFeatureId, QgsGeometry> &layerEdits = it.value();
-    QHash<QgsFeatureId, QgsGeometry>::iterator it2 = layerEdits.begin();
-    for ( ; it2 != layerEdits.end(); ++it2 )
+    QgsVectorLayer *layer = itLayerEdits.key();
+    layer->beginEditCommand( tr( "Moved vertex" ) );
+
+    for ( auto itFeatEdit = itLayerEdits->begin() ; itFeatEdit != itLayerEdits->end(); ++itFeatEdit )
     {
       QList<QgsVectorLayer *>  avoidIntersectionsLayers;
       switch ( QgsProject::instance()->avoidIntersectionsMode() )
@@ -2419,13 +2428,9 @@ void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
         case Qgis::AvoidIntersectionsMode::AllowIntersections:
           break;
       }
-      QgsGeometry featGeom = it2.value();
+      QgsGeometry featGeom = itFeatEdit.value().geom;
       if ( avoidIntersectionsLayers.size() > 0 )
       {
-        QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures;
-        QSet<QgsFeatureId> id;
-        id.insert( it2.key() );
-        ignoreFeatures.insert( layer, id );
         int avoidIntersectionsReturn = featGeom.avoidIntersections( avoidIntersectionsLayers, ignoreFeatures );
         switch ( avoidIntersectionsReturn )
         {
@@ -2440,23 +2445,44 @@ void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
           default:
             break;
         }
+
         // if the geometry has been changed
         if ( avoidIntersectionsReturn != 1 && avoidIntersectionsReturn != 4 )
         {
-          layer->changeGeometry( it2.key(), featGeom );
-          edits[layer][it2.key()] = featGeom;
-        }
+          // first remove new points that are not part of the non-overlapping geometry anymore
+          for ( int i = itFeatEdit->newPoints.size() - 1; i >= 0; i-- )
+          {
+            const QgsPoint pt = itFeatEdit->newPoints.at( i );
+            auto it = featGeom.vertices_begin();
+            for ( ; it != featGeom.vertices_end(); ++it )
+            {
+              if ( *it == itFeatEdit->newPoints.at( i ) )
+                break;
+            }
 
+            if ( it == featGeom.vertices_end() )
+              itFeatEdit->newPoints.removeAt( i );
+          }
+
+          // then add the new points generated by avoidIntersections
+          QgsGeometry difference = featGeom.difference( itFeatEdit->geom );
+          for ( auto it = featGeom.vertices_begin(); it != featGeom.vertices_end(); ++it )
+            itFeatEdit->newPoints << *it;
+
+          itFeatEdit->geom = featGeom;
+        }
       }
 
+      layer->changeGeometry( itFeatEdit.key(), itFeatEdit->geom );
+
     }
+
     layer->endEditCommand();
     layer->triggerRepaint();
-
-    if ( QgsVertexEditor *editor = vertexEditor() )
-      editor->updateEditor( mLockedFeature.get() );
   }
 
+  if ( QgsVertexEditor *editor = vertexEditor() )
+    editor->updateEditor( mLockedFeature.get() );
 }
 
 
