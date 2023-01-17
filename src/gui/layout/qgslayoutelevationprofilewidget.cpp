@@ -385,14 +385,17 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
 
   if ( mProfile->layout() )
   {
-    connect( &mProfile->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mDistanceAxisMajorLinesSymbolButton, &QgsSymbolButton::setLayer );
-    connect( &mProfile->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mDistanceAxisMinorLinesSymbolButton, &QgsSymbolButton::setLayer );
-    connect( &mProfile->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mElevationAxisMajorLinesSymbolButton, &QgsSymbolButton::setLayer );
-    connect( &mProfile->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mElevationAxisMinorLinesSymbolButton, &QgsSymbolButton::setLayer );
-    connect( &mProfile->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mDistanceAxisLabelFontButton, &QgsFontButton::setLayer );
-    connect( &mProfile->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mElevationAxisLabelFontButton, &QgsFontButton::setLayer );
-    connect( &mProfile->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mChartBackgroundSymbolButton, &QgsSymbolButton::setLayer );
-    connect( &mProfile->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mChartBorderSymbolButton, &QgsSymbolButton::setLayer );
+    connect( &mProfile->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, this, [ = ]( QgsVectorLayer * layer )
+    {
+      mDistanceAxisMajorLinesSymbolButton->setLayer( layer );
+      mDistanceAxisMinorLinesSymbolButton->setLayer( layer );
+      mElevationAxisMajorLinesSymbolButton->setLayer( layer );
+      mElevationAxisMinorLinesSymbolButton->setLayer( layer );
+      mDistanceAxisLabelFontButton->setLayer( layer );
+      mElevationAxisLabelFontButton->setLayer( layer );
+      mChartBackgroundSymbolButton->setLayer( layer );
+      mChartBorderSymbolButton->setLayer( layer );
+    } );
   }
 }
 
