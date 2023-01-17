@@ -154,7 +154,7 @@ ELSE(WIN32)
         ## split off the name
         ## use regular expression to match wildcard equivalent "-l*<endchar>"
         ## with <endchar> is a space or a semicolon
-        STRING(REGEX MATCHALL "[-][l]([^ ;])+" 
+        STRING(REGEX MATCHALL " [-][l]([^ ;])+"
             GDAL_LIB_NAME_WITH_PREFIX 
             "${GDAL_CONFIG_LIBS}" )
         #      MESSAGE("DBG  GDAL_LIB_NAME_WITH_PREFIX=${GDAL_LIB_NAME_WITH_PREFIX}")
@@ -163,7 +163,7 @@ ELSE(WIN32)
         ## remove prefix -l because we need the pure name
       
         IF (GDAL_LIB_NAME_WITH_PREFIX)
-          STRING(REGEX REPLACE "[-][l]" "" GDAL_LIB_NAME ${GDAL_LIB_NAME_WITH_PREFIX} )
+          STRING(REGEX REPLACE " [-][l]" "" GDAL_LIB_NAME ${GDAL_LIB_NAME_WITH_PREFIX} )
         ENDIF (GDAL_LIB_NAME_WITH_PREFIX)
 
         IF (APPLE)
