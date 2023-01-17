@@ -41,12 +41,22 @@ class CORE_EXPORT QgsAttributeEditorSpacerElement : public QgsAttributeEditorEle
 
     QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const override SIP_FACTORY;
 
+    /**
+     * Returns TRUE if the spacer element will contain an horizontal line.
+     */
+    bool drawLine() const;
 
-    // QgsAttributeEditorElement interface
+    /**
+     * Sets a flag to define if the spacer element will contain an horizontal line.
+     * \param drawLine flag status
+     */
+    void setDrawLine( bool drawLine );
+
   private:
     void saveConfiguration( QDomElement &elem, QDomDocument &doc ) const override;
     void loadConfiguration( const QDomElement &element, const QString &layerId, const QgsReadWriteContext &context, const QgsFields &fields ) override;
     QString typeIdentifier() const override;
+    bool mDrawLine = false;
 };
 
 #endif // QGSATTRIBUTEEDITORSPACERELEMENT_H

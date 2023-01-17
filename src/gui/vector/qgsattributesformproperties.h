@@ -99,7 +99,7 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
 
     struct SpacerElementEditorConfiguration
     {
-      // TODO: not sure yet if we need config for this kind of element
+      bool drawLine;
     };
 
     /**

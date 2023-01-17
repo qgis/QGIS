@@ -549,11 +549,14 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
 
     case QgsAttributeEditorElement::AeTypeSpacerElement:
     {
+      const QgsAttributeEditorSpacerElement *spacerElementEditor = static_cast<const QgsAttributeEditorSpacerElement *>( widgetDef );
       DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::SpacerWidget, widgetDef->name(), widgetDef->name() );
       itemData.setShowLabel( widgetDef->showLabel() );
       SpacerElementEditorConfiguration spacerEdConfig;
+      spacerEdConfig.drawLine = spacerElementEditor->drawLine();
       itemData.setSpacerElementEditorConfiguration( spacerEdConfig );
       itemData.setLabelStyle( widgetDef->labelStyle() );
+      itemData.setShowLabel( false );
       newWidget = tree->addItem( parent, itemData );
       break;
     }
@@ -823,6 +826,7 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
     case DnDTreeItemData::SpacerWidget:
     {
       QgsAttributeEditorSpacerElement *element = new QgsAttributeEditorSpacerElement( item->text( 0 ), parent );
+      element->setDrawLine( itemData.spacerElementEditorConfiguration().drawLine );
       widgetDef = element;
       break;
     }
@@ -1283,7 +1287,6 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
     case QgsAttributesFormProperties::DnDTreeItemData::WidgetType:
     case QgsAttributesFormProperties::DnDTreeItemData::Relation:
     case QgsAttributesFormProperties::DnDTreeItemData::Field:
-    case QgsAttributesFormProperties::DnDTreeItemData::SpacerWidget:
       break;
 
     case QgsAttributesFormProperties::DnDTreeItemData::QmlWidget:
@@ -1609,6 +1612,48 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
         item->setData( 0, QgsAttributesFormProperties::DnDTreeRole, itemData );
         item->setText( 0, title->text() );
       }
+      break;
+    }
+
+    case QgsAttributesFormProperties::DnDTreeItemData::SpacerWidget:
+    {
+      if ( mType == QgsAttributesDnDTree::Type::Drag )
+        return;
+      QDialog dlg;
+      dlg.setWindowTitle( tr( "Configure Spacer Widget" ) );
+
+      QVBoxLayout *mainLayout = new QVBoxLayout();
+      mainLayout->addWidget( new QLabel( tr( "Title" ) ) );
+      QLineEdit *title = new QLineEdit( itemData.name() );
+      mainLayout->addWidget( title );
+
+      QHBoxLayout *cbLayout = new QHBoxLayout( );
+      mainLayout->addLayout( cbLayout );
+      dlg.setLayout( mainLayout );
+      QCheckBox *cb = new QCheckBox { &dlg };
+      cb->setChecked( itemData.spacerElementEditorConfiguration().drawLine );
+      cbLayout->addWidget( new QLabel( tr( "Draw horizontal line" ), &dlg ) );
+      cbLayout->addWidget( cb );
+
+
+      QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+
+      connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
+      connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
+
+      mainLayout->addWidget( buttonBox );
+
+      if ( dlg.exec() )
+      {
+        QgsAttributesFormProperties::SpacerElementEditorConfiguration spacerEdCfg;
+        spacerEdCfg.drawLine = cb->isChecked();
+        itemData.setSpacerElementEditorConfiguration( spacerEdCfg );
+        itemData.setShowLabel( false );
+        itemData.setName( title->text() );
+        item->setData( 0, QgsAttributesFormProperties::DnDTreeRole, itemData );
+        item->setText( 0, title->text() );
+      }
+
       break;
     }
   }

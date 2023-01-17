@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsspacerwidgetwrapper.h"
+#include "qframe.h"
 
 
 QgsSpacerWidgetWrapper::QgsSpacerWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent )
@@ -30,10 +31,22 @@ bool QgsSpacerWidgetWrapper::valid() const
 
 QWidget *QgsSpacerWidgetWrapper::createWidget( QWidget *parent )
 {
-  return new QWidget( parent );
+  QFrame *hFrame = new QFrame( parent );
+  hFrame->setFrameShape( mDrawLine ? QFrame::HLine : QFrame::NoFrame );
+  return hFrame;
 }
 
 void QgsSpacerWidgetWrapper::setFeature( const QgsFeature &feature )
 {
   Q_UNUSED( feature );
+}
+
+bool QgsSpacerWidgetWrapper::drawLine() const
+{
+  return mDrawLine;
+}
+
+void QgsSpacerWidgetWrapper::setDrawLine( bool drawLine )
+{
+  mDrawLine = drawLine;
 }

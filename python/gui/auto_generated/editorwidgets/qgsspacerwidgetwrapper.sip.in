@@ -29,9 +29,20 @@ Create a new widget wrapper
 :param parent: A parent widget for this widget wrapper and the created widget.
 %End
 
-  public:
     virtual bool valid() const;
 
+
+    bool drawLine() const;
+%Docstring
+Returns ``True`` if the spacer element will contain an horizontal line.
+%End
+
+    void setDrawLine( bool drawLine );
+%Docstring
+Sets a flag to define if the spacer element will contain an horizontal line.
+
+:param drawLine: flag status
+%End
 
   protected:
     virtual QWidget *createWidget( QWidget *parent );
@@ -39,6 +50,7 @@ Create a new widget wrapper
 
   public slots:
     virtual void setFeature( const QgsFeature &feature );
+
 
 };
 

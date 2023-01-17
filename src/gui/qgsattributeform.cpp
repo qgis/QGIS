@@ -15,6 +15,7 @@
 
 #include "qgsattributeform.h"
 
+#include "qgsattributeeditorspacerelement.h"
 #include "qgsattributeforminterface.h"
 #include "qgsattributeformlegacyinterface.h"
 #include "qgsattributeformrelationeditorwidget.h"
@@ -2515,7 +2516,9 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
     case QgsAttributeEditorElement::AeTypeSpacerElement:
     {
+      const QgsAttributeEditorSpacerElement *elementDef = static_cast<const QgsAttributeEditorSpacerElement *>( widgetDef );
       QgsSpacerWidgetWrapper *spacerWrapper = new QgsSpacerWidgetWrapper( mLayer, nullptr, this );
+      spacerWrapper->setDrawLine( elementDef->drawLine() );
       context.setAttributeFormMode( mMode );
       mWidgets.append( spacerWrapper );
 

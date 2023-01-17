@@ -31,6 +31,17 @@ Creates a new element which represents a spacer
     virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const /Factory/;
 
 
+    bool drawLine() const;
+%Docstring
+Returns ``True`` if the spacer element will contain an horizontal line.
+%End
+
+    void setDrawLine( bool drawLine );
+%Docstring
+Sets a flag to define if the spacer element will contain an horizontal line.
+
+:param drawLine: flag status
+%End
 
 };
 

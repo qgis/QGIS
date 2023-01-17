@@ -38,15 +38,28 @@ class GUI_EXPORT QgsSpacerWidgetWrapper : public QgsWidgetWrapper
      */
     explicit QgsSpacerWidgetWrapper( QgsVectorLayer *layer, QWidget *editor = nullptr, QWidget *parent = nullptr );
 
-    // QgsWidgetWrapper interface
-  public:
     bool valid() const override;
+
+    /**
+     * Returns TRUE if the spacer element will contain an horizontal line.
+     */
+    bool drawLine() const;
+
+    /**
+     * Sets a flag to define if the spacer element will contain an horizontal line.
+     * \param drawLine flag status
+     */
+    void setDrawLine( bool drawLine );
 
   protected:
     QWidget *createWidget( QWidget *parent ) override;
 
   public slots:
     void setFeature( const QgsFeature &feature ) override;
+
+  private:
+
+    bool mDrawLine = false;
 };
 
 #endif // QGSSPACERWIDGETWRAPPER_H
