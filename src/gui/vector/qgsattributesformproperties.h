@@ -224,7 +224,16 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
         HtmlElementEditorConfiguration htmlElementEditorConfiguration() const;
         void setHtmlElementEditorConfiguration( HtmlElementEditorConfiguration htmlElementEditorConfiguration );
 
+        /**
+         * Returns the spacer element configuration
+         * \since QGIS 3.30
+         */
         SpacerElementEditorConfiguration spacerElementEditorConfiguration() const;
+
+        /**
+         * Sets the the spacer element configuration to \a spacerElementEditorConfiguration
+         * \since QGIS 3.30
+         */
         void setSpacerElementEditorConfiguration( SpacerElementEditorConfiguration spacerElementEditorConfiguration );
 
         QColor backgroundColor() const;
