@@ -467,6 +467,7 @@ This constructor is intended to be used from plugins.
 
     virtual Qgis::SettingsType settingsType() const;
 
+
     void setMinValue( qlonglong minValue );
 %Docstring
 Set the minimum value.
