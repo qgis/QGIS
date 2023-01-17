@@ -55,27 +55,15 @@ Qgis::SettingsType QgsSettingsEntryString::settingsType() const
   return Qgis::SettingsType::String;
 }
 
-void QgsSettingsEntryString::setMinLength( int minLength )
-{
-  mMinLength = minLength;
-}
-
 int QgsSettingsEntryString::minLength() const
 {
   return mMinLength;
-}
-
-void QgsSettingsEntryString::setMaxLength( int maxLength )
-{
-  mMaxLength = maxLength;
 }
 
 int QgsSettingsEntryString::maxLength() const
 {
   return mMaxLength;
 }
-
-
 
 QStringList QgsSettingsEntryStringList::convertFromVariant( const QVariant &value ) const
 {
@@ -100,7 +88,7 @@ Qgis::SettingsType QgsSettingsEntryBool::settingsType() const
 }
 
 
-bool QgsSettingsEntryInteger::checkValue( qlonglong value ) const
+bool QgsSettingsEntryInteger::checkValue( int value ) const
 {
   if ( value < mMinValue )
   {
@@ -121,7 +109,7 @@ bool QgsSettingsEntryInteger::checkValue( qlonglong value ) const
   return true;
 }
 
-qlonglong QgsSettingsEntryInteger::convertFromVariant( const QVariant &value ) const
+int QgsSettingsEntryInteger::convertFromVariant( const QVariant &value ) const
 {
   return value.toLongLong();
 }
@@ -131,26 +119,15 @@ Qgis::SettingsType QgsSettingsEntryInteger::settingsType() const
   return Qgis::SettingsType::Integer;
 }
 
-void QgsSettingsEntryInteger::setMinValue( qlonglong minValue )
-{
-  mMinValue = minValue;
-}
-
-qlonglong QgsSettingsEntryInteger::minValue() const
-{
-  return mMinValue;
-}
-
-void QgsSettingsEntryInteger::setMaxValue( qlonglong maxValue )
-{
-  mMaxValue = maxValue;
-}
-
-qlonglong QgsSettingsEntryInteger::maxValue() const
+int QgsSettingsEntryInteger::maxValue() const
 {
   return mMaxValue;
 }
 
+int QgsSettingsEntryInteger::minValue() const
+{
+  return mMaxValue;
+}
 
 
 
@@ -183,19 +160,9 @@ Qgis::SettingsType QgsSettingsEntryDouble::settingsType() const
   return Qgis::SettingsType::Double;
 }
 
-void QgsSettingsEntryDouble::setMinValue( double minValue )
-{
-  mMinValue = minValue;
-}
-
 double QgsSettingsEntryDouble::minValue() const
 {
   return mMinValue;
-}
-
-void QgsSettingsEntryDouble::setMaxValue( double maxValue )
-{
-  mMaxValue = maxValue;
 }
 
 double QgsSettingsEntryDouble::maxValue() const

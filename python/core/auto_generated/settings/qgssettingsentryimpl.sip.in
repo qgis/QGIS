@@ -193,23 +193,9 @@ This constructor is intended to be used from plugins.
 
     virtual Qgis::SettingsType settingsType() const;
 
-    void setMinLength( int minLength );
-%Docstring
-Set the string minimum length.
-
-minLength The string minimum length.
-%End
-
     int minLength() const;
 %Docstring
 Returns the string minimum length.
-%End
-
-    void setMaxLength( int maxLength );
-%Docstring
-Set the string maximum length.
-
-maxLength The string maximum length.
 %End
 
     int maxLength() const;
@@ -384,9 +370,9 @@ This constructor is intended to be used from plugins.
 
 
 
-typedef QgsSettingsEntryByValue<qlonglong> QgsSettingsEntryByValueqlonglongBase;
+typedef QgsSettingsEntryByValue<int> QgsSettingsEntryByValueintBase;
 
-class QgsSettingsEntryInteger : QgsSettingsEntryByValueqlonglongBase
+class QgsSettingsEntryInteger : QgsSettingsEntryByValueintBase
 {
 %Docstring(signature="appended")
 
@@ -398,17 +384,17 @@ An integer settings entry.
 %TypeHeaderCode
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsentry.h"
-typedef QgsSettingsEntryByValue<qlonglong> QgsSettingsEntryByValueqlonglongBase;
+typedef QgsSettingsEntryByValue<int> QgsSettingsEntryByValueintBase;
 %End
   public:
 
     QgsSettingsEntryInteger( const QString &key,
                              QgsSettingsTreeNode *parent,
-                             qlonglong defaultValue = 0,
+                             int defaultValue = 0,
                              const QString &description = QString(),
                              Qgis::SettingsOptions options = Qgis::SettingsOptions(),
-                             qlonglong minValue = LLONG_MIN,
-                             qlonglong maxValue = LLONG_MAX ) throw( QgsSettingsException ) /Transfer/;
+                             int minValue = INT_MIN,
+                             int maxValue = INT_MAX ) throw( QgsSettingsException ) /Transfer/;
 %Docstring
 Constructor for QgsSettingsEntryInteger.
 
@@ -424,11 +410,11 @@ Constructor for QgsSettingsEntryInteger.
   private:
     QgsSettingsEntryInteger( const QString &key,
                              const QString &section,
-                             qlonglong defaultValue = 0,
+                             int defaultValue = 0,
                              const QString &description = QString(),
                              Qgis::SettingsOptions options = Qgis::SettingsOptions(),
-                             qlonglong minValue = LLONG_MIN,
-                             qlonglong maxValue = LLONG_MAX ) throw( QgsSettingsException ) /Transfer/;
+                             int minValue = INT_MIN,
+                             int maxValue = INT_MAX ) throw( QgsSettingsException ) /Transfer/;
 %Docstring
 Constructor for QgsSettingsEntryInteger.
 
@@ -444,11 +430,11 @@ Constructor for QgsSettingsEntryInteger.
 
     QgsSettingsEntryInteger( const QString &key,
                              const QString &pluginName,
-                             qlonglong defaultValue = 0,
+                             int defaultValue = 0,
                              const QString &description = QString(),
                              Qgis::SettingsOptions options = Qgis::SettingsOptions(),
-                             qlonglong minValue = LLONG_MIN,
-                             qlonglong maxValue = LLONG_MAX ) throw( QgsSettingsException ) /Transfer/;
+                             int minValue = INT_MIN,
+                             int maxValue = INT_MAX ) throw( QgsSettingsException ) /Transfer/;
 %Docstring
 Constructor for QgsSettingsEntryInteger.
 This constructor is intended to be used from plugins.
@@ -467,35 +453,20 @@ This constructor is intended to be used from plugins.
 
     virtual Qgis::SettingsType settingsType() const;
 
-
-    void setMinValue( qlonglong minValue );
-%Docstring
-Set the minimum value.
-
-minValue The minimum value.
-%End
-
-    qlonglong minValue() const;
+    int minValue() const;
 %Docstring
 Returns the minimum value.
 %End
 
-    void setMaxValue( qlonglong maxValue );
-%Docstring
-Set the maximum value.
-
-maxValue The maximum value.
-%End
-
-    qlonglong maxValue() const;
+    int maxValue() const;
 %Docstring
 Returns the maximum value.
 %End
 
   private:
-    virtual bool checkValue( qlonglong value ) const;
+    virtual bool checkValue( int value ) const;
 
-    virtual qlonglong convertFromVariant( const QVariant &value ) const;
+    virtual int convertFromVariant( const QVariant &value ) const;
 
 };
 
@@ -593,23 +564,9 @@ This constructor is intended to be used from plugins.
 
     virtual Qgis::SettingsType settingsType() const;
 
-    void setMinValue( double minValue );
-%Docstring
-Set the minimum value.
-
-minValue The minimum value.
-%End
-
     double minValue() const;
 %Docstring
 Returns the minimum value.
-%End
-
-    void setMaxValue( double maxValue );
-%Docstring
-Set the maximum value.
-
-maxValue The maximum value.
 %End
 
     double maxValue() const;

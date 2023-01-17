@@ -202,23 +202,9 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntryByReference<QS
     virtual Qgis::SettingsType settingsType() const override;
 
     /**
-     * Set the string minimum length.
-     *
-     * minLength The string minimum length.
-     */
-    void setMinLength( int minLength );
-
-    /**
      * Returns the string minimum length.
      */
     int minLength() const;
-
-    /**
-     * Set the string maximum length.
-     *
-     * maxLength The string maximum length.
-     */
-    void setMaxLength( int maxLength );
 
     /**
      * Returns the string maximum length. By -1 there is no limitation.
@@ -393,7 +379,7 @@ class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntryByValue<bool>
  * \brief An integer settings entry.
  * \since QGIS 3.20
  */
-class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryByValue<qlonglong>
+class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryByValue<int>
 {
   public:
 
@@ -410,11 +396,11 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryByValue<qlong
      */
     QgsSettingsEntryInteger( const QString &key,
                              QgsSettingsTreeNode *parent,
-                             qlonglong defaultValue = 0,
+                             int defaultValue = 0,
                              const QString &description = QString(),
                              Qgis::SettingsOptions options = Qgis::SettingsOptions(),
-                             qlonglong minValue = std::numeric_limits<qlonglong>::min(),
-                             qlonglong maxValue = std::numeric_limits<qlonglong>::max() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER
+                             int minValue = std::numeric_limits<int>::min(),
+                             int maxValue = std::numeric_limits<int>::max() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER
   : QgsSettingsEntryByValue( key, parent, defaultValue, description, options )
     , mMinValue( minValue )
     , mMaxValue( maxValue )
@@ -433,11 +419,11 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryByValue<qlong
      */
     QgsSettingsEntryInteger( const QString &key,
                              const QString &section,
-                             qlonglong defaultValue = 0,
+                             int defaultValue = 0,
                              const QString &description = QString(),
                              Qgis::SettingsOptions options = Qgis::SettingsOptions(),
-                             qlonglong minValue = std::numeric_limits<qlonglong>::min(),
-                             qlonglong maxValue = std::numeric_limits<qlonglong>::max() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER SIP_MAKE_PRIVATE
+                             int minValue = std::numeric_limits<int>::min(),
+                             int maxValue = std::numeric_limits<int>::max() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER SIP_MAKE_PRIVATE
   : QgsSettingsEntryByValue( key, section, defaultValue, description, options )
     , mMinValue( minValue )
     , mMaxValue( maxValue )
@@ -459,11 +445,11 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryByValue<qlong
      */
     QgsSettingsEntryInteger( const QString &key,
                              const QString &pluginName,
-                             qlonglong defaultValue = 0,
+                             int defaultValue = 0,
                              const QString &description = QString(),
                              Qgis::SettingsOptions options = Qgis::SettingsOptions(),
-                             qlonglong minValue = std::numeric_limits<qlonglong>::min(),
-                             qlonglong maxValue = std::numeric_limits<qlonglong>::max() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER;
+                             int minValue = std::numeric_limits<int>::min(),
+                             int maxValue = std::numeric_limits<int>::max() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER;
     % MethodCode
     sipCpp = new sipQgsSettingsEntryInteger( QgsSettingsEntryInteger( *a0, QgsSettings::createPluginTreeElement( *a1 ), a2, *a3, *a4, a5, a6 ) );
     % End
@@ -472,35 +458,20 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryByValue<qlong
     virtual Qgis::SettingsType settingsType() const override;
 
     /**
-     * Set the minimum value.
-     *
-     * minValue The minimum value.
-     */
-    void setMinValue( qlonglong minValue );
-
-    /**
      * Returns the minimum value.
      */
-    qlonglong minValue() const;
-
-    /**
-     * Set the maximum value.
-     *
-     * maxValue The maximum value.
-     */
-    void setMaxValue( qlonglong maxValue );
+    int minValue() const;
 
     /**
      * Returns the maximum value.
      */
-    qlonglong maxValue() const;
+    int maxValue() const;
 
   private:
-    bool checkValue( qlonglong value ) const override SIP_FORCE;
-    qlonglong convertFromVariant( const QVariant &value ) const override SIP_FORCE;
-    qlonglong mMinValue;
-    qlonglong mMaxValue;
-
+    bool checkValue( int value ) const override SIP_FORCE;
+    int convertFromVariant( const QVariant &value ) const override SIP_FORCE;
+    int mMinValue;
+    int mMaxValue;
 };
 
 
@@ -601,23 +572,9 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntryByValue<double
     virtual Qgis::SettingsType settingsType() const override;
 
     /**
-     * Set the minimum value.
-     *
-     * minValue The minimum value.
-     */
-    void setMinValue( double minValue );
-
-    /**
      * Returns the minimum value.
      */
     double minValue() const;
-
-    /**
-     * Set the maximum value.
-     *
-     * maxValue The maximum value.
-     */
-    void setMaxValue( double maxValue );
 
     /**
      * Returns the maximum value.
