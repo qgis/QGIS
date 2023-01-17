@@ -409,7 +409,7 @@ class CORE_EXPORT Qgis
     enum class BrowserItemCapability SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsDataItem, Capability ) : int
       {
       NoCapabilities = 0, //!< Item has no capabilities
-      SetCrs = 1 << 0, //!< Can set CRS on layer or group of layers. \deprecated since QGIS 3.6 -- no longer used by QGIS and will be removed in QGIS 4.0
+      SetCrs = 1 << 0, //!< Can set CRS on layer or group of layers. deprecated since QGIS 3.6 -- no longer used by QGIS and will be removed in QGIS 4.0
       Fertile = 1 << 1, //!< Can create children. Even items without this capability may have children, but cannot create them, it means that children are created by item ancestors.
       Fast = 1 << 2, //!< CreateChildren() is fast enough to be run in main thread when refreshing items, most root items (wms,wfs,wcs,postgres...) are considered fast because they are reading data only from QgsSettings
       Collapse = 1 << 3, //!< The collapse/expand status for this items children should be ignored in order to avoid undesired network connections (wms etc.)
