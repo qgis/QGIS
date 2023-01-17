@@ -1065,15 +1065,14 @@ Saves the properties of this layer to an SLD format file.
 .. seealso:: :py:func:`saveSldStyleV2`
 %End
 
-    virtual QString saveSldStyleV2( bool &resultFlag, const QgsSldExportContext &exportContext ) const;
+    virtual QString saveSldStyleV2( bool &resultFlag /Out/, const QgsSldExportContext &exportContext ) const;
 %Docstring
 Saves the properties of this layer to an SLD format file.
 
-:param resultFlag: a reference to a flag that will be set to ``False`` if
-                   the SLD file could not be generated
 :param exportContext: SLD export context
 
-:return: a string with any status or error messages
+:return: - a string with any status or error messages
+         - resultFlag: a reference to a flag that will be set to ``False`` if the SLD file could not be generated
 
 .. seealso:: :py:func:`loadSldStyle`
 

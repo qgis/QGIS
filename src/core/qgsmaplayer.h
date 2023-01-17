@@ -1174,7 +1174,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \see loadSldStyle()
      * \since QGIS 3.30
      */
-    virtual QString saveSldStyleV2( bool &resultFlag, const QgsSldExportContext &exportContext ) const;
+    virtual QString saveSldStyleV2( bool &resultFlag SIP_OUT, const QgsSldExportContext &exportContext ) const;
 
     /**
      * Attempts to style the layer using the formatting from an SLD type file.
