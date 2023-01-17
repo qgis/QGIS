@@ -2489,18 +2489,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     QgsStoredExpressionManager *storedExpressionManager() { return mStoredExpressionManager; }
 
-    /**
-     * Merge selected features into a single one.
-     * \param mergeAttributes are the resulting attributes in the merged feature
-     * \param unionGeometry is the resulting geometry of the merged feature
-     * \param errorMessage will be set to a descriptive error message if any occurs
-     *
-     * \returns TRUE if the merge was successful, or FALSE if the operation failed.
-     *
-     * \since QGIS 3.30
-     */
-    bool mergeSelectedFeatures( const QgsAttributes &mergeAttributes, QgsGeometry unionGeometry, QString &errorMessage );
-
   public slots:
 
     /**

@@ -15,6 +15,9 @@ __copyright__ = 'Copyright 2022, The QGIS Project'
 
 import qgis  # NOQA
 
+import tempfile
+import os
+
 from qgis.PyQt.QtCore import (
     QVariant,
     Qt,
@@ -27,12 +30,18 @@ from qgis.PyQt.QtCore import (
 
 from qgis.core import (Qgis,
                        QgsFeature,
+                       QgsField,
+                       QgsFields,
                        QgsGeometry,
                        QgsLineString,
                        QgsPoint,
                        QgsPointXY,
+                       QgsCoordinateReferenceSystem,
+                       QgsCoordinateTransformContext,
                        QgsVectorLayer,
-                       QgsVectorLayerEditUtils)
+                       QgsVectorLayerEditUtils,
+                       QgsVectorFileWriter,
+                       QgsWkbTypes)
 
 
 from qgis.testing import start_app, unittest
@@ -478,6 +487,99 @@ class TestQgsVectorLayerEditUtils(unittest.TestCase):
             layer.getFeature(3).geometry().asWkt(),
             'MultiPolygon (((2 12, 2 16, 4 16, 4 12, 2 12)),((2 16, 2 12, 0 12, 0 16, 2 16)),((6 12, 10 12, 10 16, 6 16, 6 12)))'
         )
+
+    def testMergeFeatures(self):
+        layer = createEmptyPolygonLayer()
+        self.assertTrue(layer.startEditing())
+        layer.addAttribute(QgsField('name', QVariant.String))
+        pr = layer.dataProvider()
+        f1 = QgsFeature(layer.fields(), 1)
+        f1.setGeometry(QgsGeometry.fromWkt('POLYGON((0 0, 5 0, 5 5, 0 5, 0 0))'))
+        f1.setAttribute('name', 'uno')
+        assert pr.addFeatures([f1])
+        self.assertEqual(layer.featureCount(), 1)
+
+        pr = layer.dataProvider()
+        f2 = QgsFeature(layer.fields(), 2)
+        f2.setGeometry(QgsGeometry.fromWkt('POLYGON((3 3, 8 3, 8 8, 3 8, 3 3))'))
+        f2.setAttribute('name', 'due')
+        assert pr.addFeatures([f2])
+        self.assertEqual(layer.featureCount(), 2)
+
+        featureIds = [f1.id(), f2.id()]
+
+        unionGeom = f1.geometry()
+        unionGeom = unionGeom.combine(f2.geometry())
+        self.assertFalse(unionGeom.isNull())
+
+        vle = QgsVectorLayerEditUtils(layer)
+        success, errorMessage = vle.mergeFeatures(featureIds, ['tre'], unionGeom)
+        self.assertFalse(errorMessage)
+        self.assertTrue(success)
+
+        layer.commitChanges()
+
+        self.assertEqual(layer.featureCount(), 1)
+        mergedFeature = next(layer.getFeatures())
+        self.assertEqual(
+            mergedFeature.geometry().asWkt(),
+            "Polygon ((5 0, 0 0, 0 5, 3 5, 3 8, 8 8, 8 3, 5 3, 5 0))"
+        )
+        self.assertEqual(mergedFeature.attribute('name'), 'tre')
+
+    def testMergeFeaturesIntoExisting(self):
+        tempgpkg = os.path.join(tempfile.mkdtemp(), 'testMergeFeaturesIntoExisting.gpkg')
+        fields = QgsFields()
+        fields.append(QgsField('name', QVariant.String))
+
+        crs = QgsCoordinateReferenceSystem('epsg:4326')
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.driverName = "GPKG"
+        QgsVectorFileWriter.create(
+            fileName=tempgpkg,
+            fields=fields,
+            geometryType=QgsWkbTypes.Polygon,
+            srs=crs,
+            transformContext=QgsCoordinateTransformContext(),
+            options=options)
+
+        layer = QgsVectorLayer(tempgpkg, 'my_layer', 'ogr')
+
+        self.assertTrue(layer.startEditing())
+        pr = layer.dataProvider()
+        f1 = QgsFeature(layer.fields(), 1)
+        f1.setGeometry(QgsGeometry.fromWkt('POLYGON((0 0, 5 0, 5 5, 0 5, 0 0))'))
+        f1.setAttribute('name', 'uno')
+        assert pr.addFeatures([f1])
+        self.assertEqual(layer.featureCount(), 1)
+
+        pr = layer.dataProvider()
+        f2 = QgsFeature(layer.fields(), 2)
+        f2.setGeometry(QgsGeometry.fromWkt('POLYGON((3 3, 8 3, 8 8, 3 8, 3 3))'))
+        f2.setAttribute('name', 'due')
+        assert pr.addFeatures([f2])
+        self.assertEqual(layer.featureCount(), 2)
+
+        featureIds = [f1.id(), f2.id()]
+
+        unionGeom = f1.geometry()
+        unionGeom = unionGeom.combine(f2.geometry())
+        self.assertFalse(unionGeom.isNull())
+
+        vle = QgsVectorLayerEditUtils(layer)
+        success, errorMessage = vle.mergeFeatures(featureIds, [2, 'tre'], unionGeom)
+        self.assertFalse(errorMessage)
+        self.assertTrue(success)
+
+        layer.commitChanges()
+
+        self.assertEqual(layer.featureCount(), 1)
+        mergedFeature = layer.getFeature(2)
+        self.assertEqual(
+            mergedFeature.geometry().asWkt(),
+            "Polygon ((5 0, 0 0, 0 5, 3 5, 3 8, 8 8, 8 3, 5 3, 5 0))"
+        )
+        self.assertEqual(mergedFeature.attribute('name'), 'tre')
 
 
 if __name__ == '__main__':

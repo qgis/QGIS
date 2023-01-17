@@ -2641,19 +2641,6 @@ Returns the manager of the stored expressions for this layer.
 .. versionadded:: 3.10
 %End
 
-    bool mergeSelectedFeatures( const QgsAttributes &mergeAttributes, QgsGeometry unionGeometry, QString &errorMessage );
-%Docstring
-Merge selected features into a single one.
-
-:param mergeAttributes: are the resulting attributes in the merged feature
-:param unionGeometry: is the resulting geometry of the merged feature
-:param errorMessage: will be set to a descriptive error message if any occurs
-
-:return: ``True`` if the merge was successful, or ``False`` if the operation failed.
-
-.. versionadded:: 3.30
-%End
-
   public slots:
 
     void select( QgsFeatureId featureId );

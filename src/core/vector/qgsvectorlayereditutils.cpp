@@ -735,6 +735,119 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPointXY &p )
   return addTopologicalPoints( QgsPoint( p ) );
 }
 
+bool QgsVectorLayerEditUtils::mergeFeatures( const QgsFeatureIds &mergeFeatureIds, const QgsAttributes &mergeAttributes, QgsGeometry unionGeometry, QString &errorMessage )
+{
+  errorMessage.clear();
+
+  if ( mergeFeatureIds.size() < 2 )
+  {
+    errorMessage = QObject::tr( "Not enough features to merge, the merge tool requires at least two features" );
+    return false;
+  }
+
+  QgsAttributeMap newAttributes;
+  QgsFeatureId mergeFeatureId = FID_NULL;
+  for ( int i = 0; i < mergeAttributes.count(); ++i )
+  {
+    QVariant val = mergeAttributes.at( i );
+
+    bool isDefaultValue = mLayer->fields().fieldOrigin( i ) == QgsFields::OriginProvider &&
+                          mLayer->dataProvider() &&
+                          mLayer->dataProvider()->defaultValueClause( mLayer->fields().fieldOriginIndex( i ) ) == val;
+
+    // Check if features can merged into an existing one
+    if ( mergeFeatureId == FID_NULL )
+    {
+      bool isPrimaryKey =  mLayer->fields().fieldOrigin( i ) == QgsFields::OriginProvider &&
+                           mLayer->dataProvider() &&
+                           mLayer->dataProvider()->pkAttributeIndexes().contains( mLayer->fields().fieldOriginIndex( i ) );
+
+      if ( isPrimaryKey && !isDefaultValue )
+      {
+        QgsFeatureRequest request;
+        request.setFlags( QgsFeatureRequest::Flag::NoGeometry );
+        // Handle multi pks
+        if ( mLayer->dataProvider()->pkAttributeIndexes().count() > 1 && mLayer->dataProvider()->pkAttributeIndexes().count() <= mergeAttributes.count() )
+        {
+          const auto pkIdxList { mLayer->dataProvider()->pkAttributeIndexes() };
+          QStringList conditions;
+          QStringList fieldNames;
+          for ( const int &pkIdx : std::as_const( pkIdxList ) )
+          {
+            const QgsField pkField { mLayer->fields().field( pkIdx ) };
+            conditions.push_back( QgsExpression::createFieldEqualityExpression( pkField.name(), mergeAttributes.at( pkIdx ), pkField.type( ) ) );
+            fieldNames.push_back( pkField.name() );
+          }
+          request.setSubsetOfAttributes( fieldNames, mLayer->fields( ) );
+          request.setFilterExpression( conditions.join( QStringLiteral( " AND " ) ) );
+        }
+        else  // single pk
+        {
+          const QgsField pkField { mLayer->fields().field( i ) };
+          request.setSubsetOfAttributes( QStringList() << pkField.name(), mLayer->fields( ) );
+          request.setFilterExpression( QgsExpression::createFieldEqualityExpression( pkField.name(), val, pkField.type( ) ) );
+        }
+
+        QgsFeature f;
+        QgsFeatureIterator featureIterator = mLayer->getFeatures( request );
+        if ( featureIterator.nextFeature( f ) )
+        {
+          mergeFeatureId = f.id( );
+        }
+      }
+    }
+
+    // convert to destination data type
+    QString errorMessageConvertCompatible;
+    if ( !isDefaultValue && !mLayer->fields().at( i ).convertCompatible( val, &errorMessageConvertCompatible ) )
+    {
+      if ( errorMessage.isEmpty() )
+        errorMessage = QObject::tr( "Could not store value '%1' in field of type %2: %3" ).arg( mergeAttributes.at( i ).toString(), mLayer->fields().at( i ).typeName(), errorMessageConvertCompatible );
+    }
+    newAttributes[ i ] = val;
+  }
+
+  mLayer->beginEditCommand( QObject::tr( "Merged features" ) );
+
+  QgsFeatureIds featureIdsToDelete = mergeFeatureIds;
+
+  QgsFeature mergeFeature;
+  if ( mergeFeatureId == FID_NULL )
+  {
+    // Create new feature
+    mergeFeature = QgsVectorLayerUtils::createFeature( mLayer, unionGeometry, newAttributes );
+  }
+  else
+  {
+    // Merge into existing feature
+    featureIdsToDelete.remove( mergeFeatureId );
+  }
+
+  // Delete other features
+  QgsFeatureIds::const_iterator feature_it = featureIdsToDelete.constBegin();
+  for ( ; feature_it != featureIdsToDelete.constEnd(); ++feature_it )
+  {
+    mLayer->deleteFeature( *feature_it );
+  }
+
+  if ( mergeFeatureId == FID_NULL )
+  {
+    // Add the new feature
+    mLayer->addFeature( mergeFeature );
+  }
+  else
+  {
+    // Modify merge feature
+    mLayer->changeGeometry( mergeFeatureId, unionGeometry );
+    mLayer->changeAttributeValues( mergeFeatureId, newAttributes );
+  }
+
+  mLayer->endEditCommand();
+
+  mLayer->triggerRepaint();
+
+  return true;
+}
 
 bool QgsVectorLayerEditUtils::boundingBoxFromPointList( const QgsPointSequence &list, double &xmin, double &ymin, double &xmax, double &ymax ) const
 {
