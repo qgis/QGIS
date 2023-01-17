@@ -23,6 +23,7 @@
 
 class QgsLayoutItemElevationProfilePlot;
 class Qgs2DPlot;
+class QgsProfileRequest;
 
 /**
  * \ingroup core
@@ -140,6 +141,11 @@ class CORE_EXPORT QgsLayoutItemElevationProfile: public QgsLayoutItem
      * \see setTolerance()
      */
     double tolerance() const;
+
+    /**
+     * Returns the profile request used to generate the elevation profile.
+     */
+    QgsProfileRequest profileRequest() const;
 
   protected:
     void draw( QgsLayoutItemRenderContext &context ) override;

@@ -22,6 +22,9 @@
 #include "qgsmessagelog.h"
 #include "qgsmaplayerlistutils_p.h"
 #include "qgscurve.h"
+#include "qgsprofilerequest.h"
+#include "qgsprojectelevationproperties.h"
+#include "qgsterrainprovider.h"
 
 ///@cond PRIVATE
 class QgsLayoutItemElevationProfilePlot : public Qgs2DPlot
@@ -429,6 +432,27 @@ void QgsLayoutItemElevationProfile::setTolerance( double tolerance )
 double QgsLayoutItemElevationProfile::tolerance() const
 {
   return mTolerance;
+}
+
+QgsProfileRequest QgsLayoutItemElevationProfile::profileRequest() const
+{
+  QgsProfileRequest req( mCurve ? mCurve.get()->clone() : nullptr );
+
+  req.setCrs( mCrs );
+  req.setTolerance( mTolerance );
+  req.setExpressionContext( createExpressionContext() );
+  if ( mLayout )
+  {
+    if ( QgsProject *project = mLayout->project() )
+    {
+      req.setTransformContext( project->transformContext() );
+      if ( QgsAbstractTerrainProvider *provider = project->elevationProperties()->terrainProvider() )
+      {
+        req.setTerrainProvider( provider->clone() );
+      }
+    }
+  }
+  return req;
 }
 
 void QgsLayoutItemElevationProfile::draw( QgsLayoutItemRenderContext &context )
