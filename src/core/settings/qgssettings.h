@@ -117,7 +117,7 @@ class CORE_EXPORT QgsSettings : public QObject
      * Creates a settings tree element for the given \a pluginName
      * \since QGIS 3.30
      */
-    static QgsSettingsTreeElement *createPluginTreeElement( const QString &pluginName ) SIP_THROW( QgsSettingsException );
+    static QgsSettingsTreeElement *createPluginTreeElement( const QString &pluginName );
 
 
     /**

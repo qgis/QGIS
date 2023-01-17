@@ -64,6 +64,9 @@ to automatically register a settings entry on its creation when a parent is prov
     QgsSettingsTreeElement *createChildElement( const QString &key ) throw( QgsSettingsException ) /KeepReference/;
 %Docstring
 Creates a normal tree element
+It will return the existing child element if it exists at the given key
+
+:raises QgsSettingsException: if a setting exists with the same key
 %End
 
     QgsSettingsTreeNamedListElement *createNamedListElement( const QString &key, const QgsSettingsTreeElement::Options &options = QgsSettingsTreeElement::Options() ) throw( QgsSettingsException ) /KeepReference/;
@@ -91,7 +94,9 @@ Registers a child setting
 
 .. note::
 
-   This is automatically done when calling the setting's constructor with the parent argument
+   The registration is automatically done when calling the setting's constructor with the parent argument signature
+
+:raises QgsSettingsException: if a setting exists with the same key
 %End
 
     void unregisterChildSetting( const QgsSettingsEntryBase *setting, bool deleteSettingValues = false, const QStringList &parentsNamedItems = QStringList() );
@@ -157,7 +162,7 @@ Returns the number of named elements in the complete key
 %End
 
   protected:
-    void registerChildElement( QgsSettingsTreeElement *element ) throw( QgsSettingsException );
+    void registerChildElement( QgsSettingsTreeElement *element );
 %Docstring
 Registers a child elements
 %End
@@ -206,6 +211,8 @@ the named list element is used to store a group of settings under a dynamically 
 Returns the list of items
 
 :param parentsNamedItems: the list of named items in the parent named list (if any)
+
+:raises QgsSettingsException: if the number of given parent named items doesn't match the complete key definition
 %End
 
     QStringList items( Qgis::SettingsOrigin origin, const QStringList &parentsNamedItems = QStringList() ) const throw( QgsSettingsException );
@@ -214,6 +221,8 @@ Returns the list of items
 
 :param origin: can be used to restrict the origin of the setting (local or global)
 :param parentsNamedItems: the list of named items in the parent named list (if any)
+
+:raises QgsSettingsException: if the number of given parent named items doesn't match the complete key definition
 %End
 
 
@@ -223,6 +232,8 @@ Sets the selected named item from the named list element
 
 :param item: the item to set as selected
 :param parentsNamedItems: the list of named items in the parent named list (if any)
+
+:raises QgsSettingsException: if the number of given parent named items doesn't match the complete key definition
 %End
 
     QString selectedItem( const QStringList &parentsNamedItems = QStringList() ) throw( QgsSettingsException );
@@ -230,6 +241,8 @@ Sets the selected named item from the named list element
 Returns the selected named item from the named list element
 
 :param parentsNamedItems: the list of named items in the parent named list (if any)
+
+:raises QgsSettingsException: if the number of given parent named items doesn't match the complete key definition
 %End
 
     void deleteItem( const QString &item, const QStringList &parentsNamedItems = QStringList() ) throw( QgsSettingsException );
@@ -238,6 +251,8 @@ Deletes a named item from the named list element
 
 :param item: the item to delete
 :param parentsNamedItems: the list of named items in the parent named list (if any)
+
+:raises QgsSettingsException: if the number of given parent named items doesn't match the complete key definition
 %End
 
     const QgsSettingsEntryString *selectedItemSetting() const;

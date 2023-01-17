@@ -86,7 +86,11 @@ class CORE_EXPORT QgsSettingsTreeElement
      */
     static QgsSettingsTreeElement *createRootElement() SIP_SKIP;
 
-    //! Creates a normal tree element
+    /**
+     * Creates a normal tree element
+     * It will return the existing child element if it exists at the given key
+     * \throws QgsSettingsException if a setting exists with the same key
+     */
     QgsSettingsTreeElement *createChildElement( const QString &key ) SIP_THROW( QgsSettingsException ) SIP_KEEPREFERENCE;
 
     /**
@@ -104,7 +108,8 @@ class CORE_EXPORT QgsSettingsTreeElement
      * \param setting the setting to register
      * \param key the key of the setting (not the complete key from its parents)
      * \note Ownership of the setting is transferred
-     * \note This is automatically done when calling the setting's constructor with the parent argument
+     * \note The registration is automatically done when calling the setting's constructor with the parent argument signature
+     * \throws QgsSettingsException if a setting exists with the same key
      */
     void registerChildSetting( const QgsSettingsEntryBase *setting, const QString &key ) SIP_THROW( QgsSettingsException );
 
@@ -155,7 +160,7 @@ class CORE_EXPORT QgsSettingsTreeElement
 
   protected:
     //! Registers a child elements
-    void registerChildElement( QgsSettingsTreeElement *element ) SIP_THROW( QgsSettingsException );
+    void registerChildElement( QgsSettingsTreeElement *element );
 
     Type mType = Type::Root;
 
@@ -209,6 +214,7 @@ class CORE_EXPORT QgsSettingsTreeNamedListElement : public QgsSettingsTreeElemen
     /**
      *  Returns the list of items
      * \param parentsNamedItems the list of named items in the parent named list (if any)
+     * \throws QgsSettingsException if the number of given parent named items doesn't match the complete key definition
     */
     QStringList items( const QStringList &parentsNamedItems = QStringList() ) const SIP_THROW( QgsSettingsException );
 
@@ -216,6 +222,7 @@ class CORE_EXPORT QgsSettingsTreeNamedListElement : public QgsSettingsTreeElemen
      *  Returns the list of items
      * \param origin can be used to restrict the origin of the setting (local or global)
      * \param parentsNamedItems the list of named items in the parent named list (if any)
+     * \throws QgsSettingsException if the number of given parent named items doesn't match the complete key definition
     */
     QStringList items( Qgis::SettingsOrigin origin, const QStringList &parentsNamedItems = QStringList() ) const SIP_THROW( QgsSettingsException );
 
@@ -224,12 +231,14 @@ class CORE_EXPORT QgsSettingsTreeNamedListElement : public QgsSettingsTreeElemen
      * Sets the selected named item from the named list element
      * \param item the item to set as selected
      * \param parentsNamedItems the list of named items in the parent named list (if any)
+     * \throws QgsSettingsException if the number of given parent named items doesn't match the complete key definition
      */
     void setSelectedItem( const QString &item, const QStringList &parentsNamedItems = QStringList() ) SIP_THROW( QgsSettingsException );
 
     /**
      * Returns the selected named item from the named list element
      * \param parentsNamedItems the list of named items in the parent named list (if any)
+     * \throws QgsSettingsException if the number of given parent named items doesn't match the complete key definition
      */
     QString selectedItem( const QStringList &parentsNamedItems = QStringList() ) SIP_THROW( QgsSettingsException );
 
@@ -237,6 +246,7 @@ class CORE_EXPORT QgsSettingsTreeNamedListElement : public QgsSettingsTreeElemen
      * Deletes a named item from the named list element
      * \param item the item to delete
      * \param parentsNamedItems the list of named items in the parent named list (if any)
+     * \throws QgsSettingsException if the number of given parent named items doesn't match the complete key definition
      */
     void deleteItem( const QString &item, const QStringList &parentsNamedItems = QStringList() ) SIP_THROW( QgsSettingsException );
 
