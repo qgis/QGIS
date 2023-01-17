@@ -690,11 +690,62 @@ class PyQgsSymbolLayerUtils(unittest.TestCase):
             [10, 20, math.pi + math.pi / 2 + math.pi / 6, 72, 36, math.pi + math.pi / 2 + 0.5880031703261417],  # Angle approx
             [10, 10, math.pi + math.pi / 2 + math.pi / 4, 10 * math.sqrt(2), 10 * math.sqrt(2), math.pi + math.pi / 2 + math.pi / 4],
             [10, 20, math.pi + math.pi / 2 + math.pi / 4, 20 * math.sqrt(2), 20 * math.sqrt(2), math.pi + math.pi / 2 + math.pi / 4],
+
+            # Test out of range angles > 2 PI
+
+            # First quadrant
+            [10, 10, math.pi * 2 + math.pi / 4, 10 * math.sqrt(2), 10 * math.sqrt(2), math.pi / 4],
+            [10, 20, math.pi * 2 + math.pi / 2, 20, 10, math.pi / 2],
+            [10, 20, math.pi * 2 + math.pi / 4, 20 * math.sqrt(2), 20 * math.sqrt(2), math.pi / 4],
+            [10, 20, math.pi * 2 + math.pi / 6, 36, 72, 0.5880031703261417],  # Angle approx
+
+            # Second quadrant
+            [10, 20, math.pi * 2 + math.pi / 2 + math.pi / 6, 72, 36, math.pi / 2 + 0.5880031703261417],  # Angle approx
+            [10, 10, math.pi * 2 + math.pi / 2 + math.pi / 4, 10 * math.sqrt(2), 10 * math.sqrt(2), math.pi / 2 + math.pi / 4],
+            [10, 20, math.pi * 2 + math.pi / 2 + math.pi / 2, 10, 20, math.pi / 2 + math.pi / 2],
+            [10, 20, math.pi * 2 + math.pi / 2 + math.pi / 4, 20 * math.sqrt(2), 20 * math.sqrt(2), math.pi / 2 + math.pi / 4],
+
+            # Third quadrant
+            [10, 20, math.pi * 2 + math.pi + math.pi / 6, 36, 72, math.pi + 0.5880031703261417],  # Angle approx
+            [10, 10, math.pi * 2 + math.pi + math.pi / 4, 10 * math.sqrt(2), 10 * math.sqrt(2), math.pi + math.pi / 4],
+            [10, 20, math.pi * 2 + math.pi + math.pi / 2, 20, 10, math.pi + math.pi / 2],
+            [10, 20, math.pi * 2 + math.pi + math.pi / 4, 20 * math.sqrt(2), 20 * math.sqrt(2), math.pi + math.pi / 4],
+
+            # Fourth quadrant
+            [10, 20, math.pi * 2 + math.pi + math.pi / 2 + math.pi / 6, 72, 36, math.pi + math.pi / 2 + 0.5880031703261417],  # Angle approx
+            [10, 10, math.pi * 2 + math.pi + math.pi / 2 + math.pi / 4, 10 * math.sqrt(2), 10 * math.sqrt(2), math.pi + math.pi / 2 + math.pi / 4],
+            [10, 20, math.pi * 2 + math.pi + math.pi / 2 + math.pi / 4, 20 * math.sqrt(2), 20 * math.sqrt(2), math.pi + math.pi / 2 + math.pi / 4],
+
+            # Test out of range angles < 0
+
+            # First quadrant
+            [10, 10, - math.pi * 2 + math.pi / 4, 10 * math.sqrt(2), 10 * math.sqrt(2), math.pi / 4],
+            [10, 20, - math.pi * 2 + math.pi / 2, 20, 10, math.pi / 2],
+            [10, 20, - math.pi * 2 + math.pi / 4, 20 * math.sqrt(2), 20 * math.sqrt(2), math.pi / 4],
+            [10, 20, - math.pi * 2 + math.pi / 6, 36, 72, 0.5880031703261417],  # Angle approx
+
+            # Second quadrant
+            [10, 20, - math.pi * 2 + math.pi / 2 + math.pi / 6, 72, 36, math.pi / 2 + 0.5880031703261417],  # Angle approx
+            [10, 10, - math.pi * 2 + math.pi / 2 + math.pi / 4, 10 * math.sqrt(2), 10 * math.sqrt(2), math.pi / 2 + math.pi / 4],
+            [10, 20, - math.pi * 2 + math.pi / 2 + math.pi / 2, 10, 20, math.pi / 2 + math.pi / 2],
+            [10, 20, - math.pi * 2 + math.pi / 2 + math.pi / 4, 20 * math.sqrt(2), 20 * math.sqrt(2), math.pi / 2 + math.pi / 4],
+
+            # Third quadrant
+            [10, 20, - math.pi * 2 + math.pi + math.pi / 6, 36, 72, math.pi + 0.5880031703261417],  # Angle approx
+            [10, 10, - math.pi * 2 + math.pi + math.pi / 4, 10 * math.sqrt(2), 10 * math.sqrt(2), math.pi + math.pi / 4],
+            [10, 20, - math.pi * 2 + math.pi + math.pi / 2, 20, 10, math.pi + math.pi / 2],
+            [10, 20, - math.pi * 2 + math.pi + math.pi / 4, 20 * math.sqrt(2), 20 * math.sqrt(2), math.pi + math.pi / 4],
+
+            # Fourth quadrant
+            [10, 20, - math.pi * 2 + math.pi + math.pi / 2 + math.pi / 6, 72, 36, math.pi + math.pi / 2 + 0.5880031703261417],  # Angle approx
+            [10, 10, - math.pi * 2 + math.pi + math.pi / 2 + math.pi / 4, 10 * math.sqrt(2), 10 * math.sqrt(2), math.pi + math.pi / 2 + math.pi / 4],
+            [10, 20, - math.pi * 2 + math.pi + math.pi / 2 + math.pi / 4, 20 * math.sqrt(2), 20 * math.sqrt(2), math.pi + math.pi / 2 + math.pi / 4],
+
         ]
 
         for width, height, angle, exp_width, exp_height, exp_angle in test_data:
             (res_size, res_angle) = QgsSymbolLayerUtils.tileSize(width, height, angle)
-            self.assertEqual(res_size.height(), int(exp_height))
+            self.assertEqual(res_size.height(), int(exp_height), angle)
             self.assertEqual(res_size.width(), int(exp_width))
             self.assertAlmostEqual(res_angle, exp_angle)
 

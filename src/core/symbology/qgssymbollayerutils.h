@@ -898,9 +898,12 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static QgsStringMap evaluatePropertiesMap( const QMap<QString, QgsProperty> &propertiesMap, const QgsExpressionContext &context );
 
     /**
-     * Calculate the minimum size in pixels of a symbol tile given the symbol \a width and \a height and the grid rotation \a angle in radians.
+     * Calculate the minimum size in pixels of a symbol tile given the symbol \a width and \a height and the symbol layer rotation \a angleRad in radians (counter clockwise).
      * The method makes approximations and can modify \a angle in order to generate the smallest possible tile.
-     * \note Angle must be >= 0 and < 2 * PI
+     * \param width marker width, including margins
+     * \param height marker height, including margins
+     * \param angleRad symbol layer rotation angle in radians (counter clockwise), it may be approximated by the method to minimize the tile size.
+     * \return the size of the tile
      * \since QGIS 3.30
      */
     static QSize tileSize( int width, int height, double &angleRad SIP_INOUT );

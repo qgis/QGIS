@@ -1242,7 +1242,7 @@ class CORE_EXPORT QgsFillSymbolLayer : public QgsSymbolLayer
     double angle() const { return mAngle; }
 
     /**
-     * Renders the symbol layer to an image that can be used as a seamless pattern fill
+     * Renders the symbol layer as an image that can be used as a seamless pattern fill
      * for polygons, this method is used by SLD export to generate image tiles for
      * ExternalGraphic polygon fills.
      *

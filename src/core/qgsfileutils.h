@@ -228,7 +228,7 @@ class CORE_EXPORT QgsFileUtils
     /**
      * Creates a unique file path name from a desired path by appending "_<n>" (where "<n>" is an integer number) before the file suffix.
      *
-     * E.g. if "/path/my_image.png" already exists "/path/my_image_1.png" (and "_2", "_3" etc.) will be checked until a file path that does not already exist is found.
+     * E.g. if "/path/my_image.png" already exists "/path/my_image_2.png" (and "_3", "_4" etc.) will be checked until a file path that does not already exist is found.
      *
      * \param path the desired path.
      * \return the unmodified path if path is already unique or the new path with "_<n>" (where "<n>" is an integer number) appended to the file name before the suffix.

@@ -1315,7 +1315,7 @@ The ``rings`` argument optionally specifies a list of polygon rings to render as
 
     virtual QImage toTiledPatternImage( ) const;
 %Docstring
-Renders the symbol layer to an image that can be used as a seamless pattern fill
+Renders the symbol layer as an image that can be used as a seamless pattern fill
 for polygons, this method is used by SLD export to generate image tiles for
 ExternalGraphic polygon fills.
 

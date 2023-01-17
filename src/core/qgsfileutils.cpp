@@ -540,7 +540,7 @@ QString QgsFileUtils::uniquePath( const QString &path )
   QFileInfo info { path };
   const QString suffix { info.completeSuffix() };
   const QString pathPattern { QString( suffix.length() > 0 ? path.chopped( suffix.length() + 1 ) : path ).append( QStringLiteral( "_%1." ) ).append( suffix ) };
-  int i { 1 };
+  int i { 2 };
   QString uniquePath { pathPattern.arg( i ) };
   while ( QFileInfo::exists( uniquePath ) )
   {

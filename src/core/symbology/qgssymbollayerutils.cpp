@@ -5101,8 +5101,12 @@ QgsStringMap QgsSymbolLayerUtils::evaluatePropertiesMap( const QMap<QString, Qgs
 QSize QgsSymbolLayerUtils::tileSize( int width, int height, double &angleRad )
 {
 
-  // Precondition
-  Q_ASSERT( angleRad >= 0 && angleRad < M_PI * 2 );
+  angleRad = std::fmod( angleRad, M_PI * 2 );
+
+  if ( angleRad < 0 )
+  {
+    angleRad += M_PI * 2;
+  }
 
   // tan with rational sin/cos
   struct rationalTangent
@@ -5257,13 +5261,13 @@ QSize QgsSymbolLayerUtils::tileSize( int width, int height, double &angleRad )
     }
   }
 
-  if ( qgsDoubleNear( angleRad, 0 ) )
+  if ( qgsDoubleNear( angleRad, 0, 10E-3 ) )
   {
     angleRad = 0;
     tileSize.setWidth( width );
     tileSize.setHeight( height );
   }
-  else if ( qgsDoubleNear( angleRad, M_PI_2 ) )
+  else if ( qgsDoubleNear( angleRad, M_PI_2, 10E-3 ) )
   {
     angleRad = M_PI_2;
     tileSize.setWidth( height );
@@ -5277,9 +5281,8 @@ QSize QgsSymbolLayerUtils::tileSize( int width, int height, double &angleRad )
     for ( int idx = 0; idx < rationalTangents.count(); ++idx )
     {
       const auto item = rationalTangents.at( idx );
-      if ( qgsDoubleNear( item.angle, angleRad ) || item.angle > angleRad )
+      if ( qgsDoubleNear( item.angle, angleRad, 10E-3 ) || item.angle > angleRad )
       {
-        angleRad = item.angle;
         rTanIdx = idx;
         break;
       }
