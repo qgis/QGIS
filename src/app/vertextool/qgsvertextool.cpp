@@ -2401,12 +2401,8 @@ void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
   for ( auto itLayerEdits = edits.begin() ; itLayerEdits != edits.end(); ++itLayerEdits )
   {
     QgsVectorLayer *layer = itLayerEdits.key();
-    for ( auto itFeatEdit = itLayerEdits->begin() ; itFeatEdit != itLayerEdits->end(); ++itFeatEdit )
-    {
-      QSet<QgsFeatureId> id;
-      id.insert( itFeatEdit.key() );
-      ignoreFeatures.insert( layer, id );
-    }
+    const QList<QgsFeatureId> ids = itLayerEdits->keys();
+    ignoreFeatures.insert( layer, QSet<QgsFeatureId>( ids.constBegin(), ids.constEnd() ) );
   }
 
   for ( auto itLayerEdits = edits.begin() ; itLayerEdits != edits.end(); ++itLayerEdits )
