@@ -29,15 +29,17 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
     since QGIS 3.20
     """
 
-    def __init__(self, key, parent, defaultValue, description=str(), options=Qgis.SettingsOptions()):
+    def __init__(self, key, pluginName, defaultValue, description=str(), options=Qgis.SettingsOptions()):
         """
         Constructor for PyQgsSettingsEntryEnumFlag.
 
         :param key: argument specifies the final part of the settings key.
-        :param parent: argument is either the plugin name or the settings tree parent element
+        :param pluginName: argument is either the plugin name or the settings tree parent element
         :param defaultValue: argument specifies the default value for the settings entry.
         :param description: argument specifies a description for the settings entry.
         """
+
+        # TODO QGIS 4: rename pluginName arg to parent
 
         self.options = options
         defaultValueStr = str()
@@ -51,8 +53,10 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
                 defaultValueStr = self.__metaEnum.valueToKey(defaultValue)
             self.__enumFlagClass = defaultValue.__class__
 
-        if type(parent) == str:
-            parent = QgsSettings.createPluginTreeElement(parent)
+        if type(pluginName) == str:
+            parent = QgsSettings.createPluginTreeElement(pluginName)
+        else:
+            parent = pluginName
         super().__init__(key, parent, defaultValueStr, description, options)
 
     def value(self, dynamicKeyPart=None):
