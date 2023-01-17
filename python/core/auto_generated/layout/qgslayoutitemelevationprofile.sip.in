@@ -64,6 +64,68 @@ Sets the list of map ``layers`` participating in the elevation profile.
 .. seealso:: :py:func:`layers`
 %End
 
+    void setProfileCurve( QgsCurve *curve /Transfer/ );
+%Docstring
+Sets the cross section profile ``curve``, which represents the line along which the profile should be generated.
+
+Ownership of ``curve`` is transferred to the item.
+
+The coordinate reference system of the ``curve`` is set via :py:func:`~QgsLayoutItemElevationProfile.setCrs`.
+
+.. seealso:: :py:func:`profileCurve`
+%End
+
+    QgsCurve *profileCurve() const;
+%Docstring
+Returns the cross section profile curve, which represents the line along which the profile should be generated.
+
+The coordinate reference system of the curve is retrieved via :py:func:`~QgsLayoutItemElevationProfile.crs`.
+
+.. seealso:: :py:func:`setProfileCurve`
+%End
+
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Sets the desired Coordinate Reference System (``crs``) for the profile.
+
+This also represents the CRS associated with the :py:func:`~QgsLayoutItemElevationProfile.profileCurve`.
+
+.. seealso:: :py:func:`crs`
+%End
+
+    QgsCoordinateReferenceSystem crs() const;
+%Docstring
+Returns the desired Coordinate Reference System for the profile.
+
+This also represents the CRS associated with the :py:func:`~QgsLayoutItemElevationProfile.profileCurve`.
+
+.. seealso:: :py:func:`setCrs`
+%End
+
+    void setTolerance( double tolerance );
+%Docstring
+Sets the tolerance of the request (in :py:func:`~QgsLayoutItemElevationProfile.crs` units).
+
+This value determines how far from the :py:func:`~QgsLayoutItemElevationProfile.profileCurve` is appropriate for inclusion of results. For instance,
+when a profile is generated for a point vector layer this tolerance distance will dictate how far from the
+actual profile curve a point can reside within to be included in the results. Other sources may completely
+ignore this tolerance if it is not appropriate for the particular source.
+
+.. seealso:: :py:func:`tolerance`
+%End
+
+    double tolerance() const;
+%Docstring
+Returns the tolerance of the request (in :py:func:`~QgsLayoutItemElevationProfile.crs` units).
+
+This value determines how far from the :py:func:`~QgsLayoutItemElevationProfile.profileCurve` is appropriate for inclusion of results. For instance,
+when a profile is generated for a point vector layer this tolerance distance will dictate how far from the
+actual profile curve a point can reside within to be included in the results. Other sources may completely
+ignore this tolerance if it is not appropriate for the particular source.
+
+.. seealso:: :py:func:`setTolerance`
+%End
+
   protected:
     virtual void draw( QgsLayoutItemRenderContext &context );
 
