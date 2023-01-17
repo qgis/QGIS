@@ -392,7 +392,7 @@ void Qgs3DMapCanvasWidget::setMainCanvas( QgsMapCanvas *canvas )
 
 void Qgs3DMapCanvasWidget::resetView()
 {
-  mCanvas->resetView( true );
+  mCanvas->resetView();
 }
 
 void Qgs3DMapCanvasWidget::configure()

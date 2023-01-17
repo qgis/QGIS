@@ -250,11 +250,13 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
 
 void Qgs3DMapScene::viewZoomFull()
 {
-  QgsRectangle extent = sceneExtent();
-  float side = std::max( extent.width(), extent.height() );
-  float a =  side / 2.0f / std::sin( qDegreesToRadians( cameraController()->camera()->fieldOfView() ) / 2.0f );
-  // Note: the 1.5 multiplication is to move the view upwards to look better
-  mCameraController->resetView( 1.5 * std::sqrt( a * a - side * side ) );  // assuming FOV being 45 degrees
+  const QgsDoubleRange yRange = elevationRange();
+  const QgsRectangle extent = sceneExtent();
+  const double side = std::max( extent.width(), extent.height() );
+  double d = side / 2 / std::tan( qDegreesToRadians( cameraController()->camera()->fieldOfView() / 2 ) );
+  d += yRange.upper();
+  mCameraController->resetView( ( float )d );
+  return;
 }
 
 void Qgs3DMapScene::setViewFrom2DExtent( const QgsRectangle &extent )
@@ -1219,35 +1221,34 @@ QVector<const QgsChunkNode *> Qgs3DMapScene::getLayerActiveChunkNodes( QgsMapLay
 
 QgsRectangle Qgs3DMapScene::sceneExtent()
 {
-  QgsRectangle extent;
-  extent.setMinimal();
+  return mMap.extent();
+}
+
+QgsDoubleRange Qgs3DMapScene::elevationRange() const
+{
+  double yMin = std::numeric_limits< double >::max();
+  double yMax = std::numeric_limits< double >::lowest();
+  if ( mMap.terrainRenderingEnabled() && mTerrain )
+  {
+    const QgsAABB bbox = mTerrain->rootNode()->bbox();
+    yMin = std::min( yMin, ( double )bbox.yMin );
+    yMax = std::max( yMax, ( double )bbox.yMax );
+  }
 
   for ( auto it = mLayerEntities.constBegin(); it != mLayerEntities.constEnd(); it++ )
   {
     QgsMapLayer *layer = it.key();
-    Qt3DCore::QEntity *layerEntity = it.value();
-    QgsChunkedEntity *c = qobject_cast<QgsChunkedEntity *>( layerEntity );
-    if ( !c )
-      continue;
-    QgsChunkNode *chunkNode = c->rootNode();
-    QgsAABB bbox = chunkNode->bbox();
-    QgsRectangle layerExtent = Qgs3DUtils::worldToLayerExtent( bbox, layer->crs(), mMap.origin(), mMap.crs(), mMap.transformContext() );
-    extent.combineExtentWith( layerExtent );
-  }
-
-  if ( mMap.terrainRenderingEnabled() )
-  {
-    if ( QgsTerrainGenerator *terrainGenerator = mMap.terrainGenerator() )
+    if ( layer->type() == QgsMapLayerType::PointCloudLayer )
     {
-      QgsRectangle terrainExtent = terrainGenerator->rootChunkExtent();
-      QgsCoordinateTransform terrainToMapTransform( terrainGenerator->crs(), mMap.crs(), QgsProject::instance() );
-      terrainToMapTransform.setBallparkTransformsAreAppropriate( true );
-      terrainExtent = terrainToMapTransform.transformBoundingBox( terrainExtent );
-      extent.combineExtentWith( terrainExtent );
+      QgsPointCloudLayer *pcl = qobject_cast< QgsPointCloudLayer *>( layer );
+      QgsDoubleRange zRange = pcl->elevationProperties()->calculateZRange( pcl );
+      yMin = std::min( yMin, zRange.lower() );
+      yMax = std::max( yMax, zRange.upper() );
     }
   }
-
-  return extent;
+  const QgsDoubleRange yRange( std::min( yMin, std::numeric_limits<double>::max() ),
+                               std::max( yMax, std::numeric_limits<double>::lowest() ) );
+  return yRange;
 }
 
 void Qgs3DMapScene::addCameraRotationCenterEntity( QgsCameraController *controller )
