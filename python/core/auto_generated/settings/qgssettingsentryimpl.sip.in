@@ -33,7 +33,7 @@ typedef QgsSettingsEntryByReference<QVariant> QgsSettingsEntryByReferenceQVarian
                              QgsSettingsTreeNode *parent,
                              const QVariant &defaultValue = QVariant(),
                              const QString &description = QString(),
-                             Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException ) /Transfer/;
+                             Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException );
 %Docstring
 Constructor for QgsSettingsEntryVariant.
 
@@ -51,7 +51,7 @@ Constructor for QgsSettingsEntryVariant.
                              const QString &section,
                              const QVariant &defaultValue = QVariant(),
                              const QString &description = QString(),
-                             Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException ) /Transfer/;
+                             Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException );
 %Docstring
 Constructor for QgsSettingsEntryVariant.
 
@@ -69,7 +69,7 @@ Constructor for QgsSettingsEntryVariant.
                              const QString &pluginName,
                              const QVariant &defaultValue = QVariant(),
                              const QString &description = QString(),
-                             Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException ) /Transfer/;
+                             Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException );
 %Docstring
 Constructor for QgsSettingsEntryVariant.
 This constructor is intended to be used from plugins.
@@ -136,7 +136,7 @@ typedef QgsSettingsEntryByReference<QString> QgsSettingsEntryByReferenceQStringB
                             const QString &description = QString(),
                             Qgis::SettingsOptions options = Qgis::SettingsOptions(),
                             int minLength = 0,
-                            int maxLength = -1 ) throw( QgsSettingsException ) /Transfer/;
+                            int maxLength = -1 ) throw( QgsSettingsException );
 %Docstring
 Constructor for QgsSettingsEntryString.
 
@@ -156,7 +156,7 @@ Constructor for QgsSettingsEntryString.
                             const QString &description = QString(),
                             Qgis::SettingsOptions options = Qgis::SettingsOptions(),
                             int minLength = 0,
-                            int maxLength = -1 ) throw( QgsSettingsException ) /Transfer/;
+                            int maxLength = -1 ) throw( QgsSettingsException );
 %Docstring
 Constructor for QgsSettingsEntryString.
 
@@ -176,7 +176,7 @@ Constructor for QgsSettingsEntryString.
                             const QString &description = QString(),
                             Qgis::SettingsOptions options = Qgis::SettingsOptions(),
                             int minLength = 0,
-                            int maxLength = -1 ) throw( QgsSettingsException ) /Transfer/;
+                            int maxLength = -1 ) throw( QgsSettingsException );
 %Docstring
 Constructor for QgsSettingsEntryString.
 This constructor is intended to be used from plugins.
@@ -234,7 +234,7 @@ typedef QgsSettingsEntryByReference<QStringList> QgsSettingsEntryByReferenceQStr
                                 QgsSettingsTreeNode *parent,
                                 const QStringList &defaultValue = QStringList(),
                                 const QString &description = QString(),
-                                Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException ) /Transfer/;
+                                Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException );
 %Docstring
 Constructor for QgsSettingsEntryStringList.
 
@@ -250,7 +250,7 @@ Constructor for QgsSettingsEntryStringList.
                                 const QString &section,
                                 const QStringList &defaultValue = QStringList(),
                                 const QString &description = QString(),
-                                Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException ) /Transfer/;
+                                Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException );
 %Docstring
 Constructor for QgsSettingsEntryStringList.
 
@@ -267,7 +267,7 @@ Constructor for QgsSettingsEntryStringList.
                                 const QString &pluginName,
                                 const QStringList &defaultValue = QStringList(),
                                 const QString &description = QString(),
-                                Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException ) /Transfer/;
+                                Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException );
 %Docstring
 Constructor for QgsSettingsEntryStringList.
 This constructor is intended to be used from plugins.
@@ -313,7 +313,7 @@ typedef QgsSettingsEntryByValue<bool> QgsSettingsEntryByValueboolBase;
                           QgsSettingsTreeNode *parent,
                           bool defaultValue = false,
                           const QString &description = QString(),
-                          Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException ) /Transfer/;
+                          Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException );
 %Docstring
 Constructor for QgsSettingsEntryBool.
 
@@ -329,7 +329,7 @@ Constructor for QgsSettingsEntryBool.
                           const QString &section,
                           bool defaultValue = false,
                           const QString &description = QString(),
-                          Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException ) /Transfer/;
+                          Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException );
 %Docstring
 Constructor for QgsSettingsEntryBool.
 
@@ -345,7 +345,7 @@ Constructor for QgsSettingsEntryBool.
                           const QString &pluginName,
                           bool defaultValue = false,
                           const QString &description = QString(),
-                          Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException ) /Transfer/;
+                          Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException );
 %Docstring
 Constructor for QgsSettingsEntryBool.
 This constructor is intended to be used from plugins.
@@ -394,7 +394,7 @@ typedef QgsSettingsEntryByValue<int> QgsSettingsEntryByValueintBase;
                              const QString &description = QString(),
                              Qgis::SettingsOptions options = Qgis::SettingsOptions(),
                              int minValue = INT_MIN,
-                             int maxValue = INT_MAX ) throw( QgsSettingsException ) /Transfer/;
+                             int maxValue = INT_MAX ) throw( QgsSettingsException );
 %Docstring
 Constructor for QgsSettingsEntryInteger.
 
@@ -414,7 +414,7 @@ Constructor for QgsSettingsEntryInteger.
                              const QString &description = QString(),
                              Qgis::SettingsOptions options = Qgis::SettingsOptions(),
                              int minValue = INT_MIN,
-                             int maxValue = INT_MAX ) throw( QgsSettingsException ) /Transfer/;
+                             int maxValue = INT_MAX ) throw( QgsSettingsException );
 %Docstring
 Constructor for QgsSettingsEntryInteger.
 
@@ -434,7 +434,7 @@ Constructor for QgsSettingsEntryInteger.
                              const QString &description = QString(),
                              Qgis::SettingsOptions options = Qgis::SettingsOptions(),
                              int minValue = INT_MIN,
-                             int maxValue = INT_MAX ) throw( QgsSettingsException ) /Transfer/;
+                             int maxValue = INT_MAX ) throw( QgsSettingsException );
 %Docstring
 Constructor for QgsSettingsEntryInteger.
 This constructor is intended to be used from plugins.
@@ -497,7 +497,7 @@ typedef QgsSettingsEntryByValue<double> QgsSettingsEntryByValuedoubleBase;
                             Qgis::SettingsOptions options = Qgis::SettingsOptions(),
                             double minValue = -DBL_MAX,
                             double maxValue = DBL_MAX,
-                            int displayDecimals = 1 ) throw( QgsSettingsException ) /Transfer/;
+                            int displayDecimals = 1 ) throw( QgsSettingsException );
 %Docstring
 Constructor for QgsSettingsEntryDouble.
 
@@ -520,7 +520,7 @@ Constructor for QgsSettingsEntryDouble.
                             Qgis::SettingsOptions options = Qgis::SettingsOptions(),
                             double minValue = -DBL_MAX,
                             double maxValue = DBL_MAX,
-                            int displayDecimals = 1 ) throw( QgsSettingsException ) /Transfer/;
+                            int displayDecimals = 1 ) throw( QgsSettingsException );
 %Docstring
 Constructor for QgsSettingsEntryDouble.
 
@@ -543,7 +543,7 @@ Constructor for QgsSettingsEntryDouble.
                             Qgis::SettingsOptions options = Qgis::SettingsOptions(),
                             double minValue = -DBL_MAX,
                             double maxValue = DBL_MAX,
-                            int displayDecimals = 1 ) throw( QgsSettingsException ) /Transfer/;
+                            int displayDecimals = 1 ) throw( QgsSettingsException );
 %Docstring
 Constructor for QgsSettingsEntryDouble.
 This constructor is intended to be used from plugins.
@@ -619,7 +619,7 @@ typedef QgsSettingsEntryByReference<QColor> QgsSettingsEntryByReferenceQColorBas
                            const QColor &defaultValue = QColor(),
                            const QString &description = QString(),
                            Qgis::SettingsOptions options = Qgis::SettingsOptions(),
-                           bool allowAlpha = true ) throw( QgsSettingsException ) /Transfer/;
+                           bool allowAlpha = true ) throw( QgsSettingsException );
 %Docstring
 Constructor for QgsSettingsEntryColor.
 
@@ -637,7 +637,7 @@ Constructor for QgsSettingsEntryColor.
                            const QColor &defaultValue = QColor(),
                            const QString &description = QString(),
                            Qgis::SettingsOptions options = Qgis::SettingsOptions(),
-                           bool allowAlpha = true ) throw( QgsSettingsException ) /Transfer/;
+                           bool allowAlpha = true ) throw( QgsSettingsException );
 %Docstring
 Constructor for QgsSettingsEntryColor.
 
@@ -655,7 +655,7 @@ Constructor for QgsSettingsEntryColor.
                            const QColor &defaultValue = QColor(),
                            const QString &description = QString(),
                            Qgis::SettingsOptions options = Qgis::SettingsOptions(),
-                           bool allowAlpha = true ) throw( QgsSettingsException ) /Transfer/;
+                           bool allowAlpha = true ) throw( QgsSettingsException );
 %Docstring
 Constructor for QgsSettingsEntryColor.
 This constructor is intended to be used from plugins.
@@ -713,7 +713,7 @@ typedef QgsSettingsEntryByReference<QVariantMap> QgsSettingsEntryByReferenceQVar
                                 QgsSettingsTreeNode *parent,
                                 const QVariantMap &defaultValue = QVariantMap(),
                                 const QString &description = QString(),
-                                Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException ) /Transfer/;
+                                Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException );
 %Docstring
 Constructor for QgsSettingsEntryVariantMap.
 
@@ -729,7 +729,7 @@ Constructor for QgsSettingsEntryVariantMap.
                                 const QString &section,
                                 const QVariantMap &defaultValue = QVariantMap(),
                                 const QString &description = QString(),
-                                Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException ) /Transfer/;
+                                Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException );
 %Docstring
 Constructor for QgsSettingsEntryVariantMap.
 
@@ -745,7 +745,7 @@ Constructor for QgsSettingsEntryVariantMap.
                                 const QString &pluginName,
                                 const QVariantMap &defaultValue = QVariantMap(),
                                 const QString &description = QString(),
-                                Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException ) /Transfer/;
+                                Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException );
 %Docstring
 Constructor for :py:class:`QgsSettingsEntryStringMap`.
 This constructor is intended to be used from plugins.
