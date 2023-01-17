@@ -42,6 +42,8 @@ The caller takes responsibility for deleting the returned object.
 
     virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
 
+    virtual QgsLayoutItem::Flags itemFlags() const;
+
 
     Qgs2DPlot *plot();
 %Docstring
@@ -130,6 +132,16 @@ ignore this tolerance if it is not appropriate for the particular source.
 %Docstring
 Returns the profile request used to generate the elevation profile.
 %End
+
+    virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
+
+
+  public slots:
+
+    virtual void refresh();
+
+    virtual void invalidateCache();
+
 
   protected:
     virtual void draw( QgsLayoutItemRenderContext &context );

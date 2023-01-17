@@ -24,6 +24,7 @@
 class QgsLayoutItemElevationProfilePlot;
 class Qgs2DPlot;
 class QgsProfileRequest;
+class QgsProfilePlotRenderer;
 
 /**
  * \ingroup core
@@ -53,6 +54,7 @@ class CORE_EXPORT QgsLayoutItemElevationProfile: public QgsLayoutItem
     int type() const override;
     QIcon icon() const override;
     void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties ) override;
+    QgsLayoutItem::Flags itemFlags() const override;
 
     /**
      * Returns a reference to the elevation plot object, which can be used to
@@ -147,11 +149,22 @@ class CORE_EXPORT QgsLayoutItemElevationProfile: public QgsLayoutItem
      */
     QgsProfileRequest profileRequest() const;
 
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
+
+  public slots:
+
+    void refresh() override;
+    void invalidateCache() override;
+
   protected:
     void draw( QgsLayoutItemRenderContext &context ) override;
     bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) override;
 
+  private slots:
+
+    void recreateCachedImageInBackground();
+    void profileGenerationFinished();
   private:
 
     std::unique_ptr< QgsLayoutItemElevationProfilePlot > mPlot;
@@ -162,6 +175,21 @@ class CORE_EXPORT QgsLayoutItemElevationProfile: public QgsLayoutItem
     std::unique_ptr< QgsCurve> mCurve;
 
     double mTolerance = 0;
+
+    // render job handling
+
+    // see note in QgsLayoutItemMap about these!
+    std::unique_ptr< QImage > mCacheFinalImage;
+    std::unique_ptr< QImage > mCacheRenderingImage;
+    bool mUpdatesEnabled = true;
+    bool mCacheInvalidated = true;
+    bool mDrawing = false;
+    bool mDrawingPreview = false;
+    QTimer *mBackgroundUpdateTimer = nullptr;
+    double mPreviewScaleFactor = 0;
+    std::unique_ptr< QPainter > mPainter;
+    std::unique_ptr< QgsProfilePlotRenderer > mRenderJob;
+    bool mPainterCancelWait = false;
 
 };
 

@@ -81,6 +81,31 @@ void QgsProfilePlotRenderer::startGeneration()
   mFutureWatcher.setFuture( mFuture );
 }
 
+void QgsProfilePlotRenderer::generateSynchronously()
+{
+  if ( isActive() )
+    return;
+
+  mStatus = Generating;
+
+  Q_ASSERT( mJobs.empty() );
+  mJobs.reserve( mGenerators.size() );
+
+  for ( const auto &it : mGenerators )
+  {
+    std::unique_ptr< ProfileJob > job = std::make_unique< ProfileJob >();
+    job->generator = it.get();
+    job->context = mContext;
+    it.get()->generateProfile( job->context );
+    job->results.reset( job->generator->takeResults() );
+    job->complete = true;
+    job->invalidatedResults.reset();
+    mJobs.emplace_back( std::move( job ) );
+  }
+
+  mStatus = Idle;
+}
+
 void QgsProfilePlotRenderer::cancelGeneration()
 {
   if ( !isActive() )

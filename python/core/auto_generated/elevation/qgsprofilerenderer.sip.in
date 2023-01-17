@@ -57,6 +57,19 @@ Start the generation job and immediately return.
 Does nothing if the generation is already in progress.
 %End
 
+    void generateSynchronously();
+%Docstring
+Generate the profile results synchronously in this thread. The function does not return until the generation
+is complete.
+
+This is an alternative to ordinary API (using :py:func:`~QgsProfilePlotRenderer.startGeneration` + waiting for :py:func:`~QgsProfilePlotRenderer.generationFinished` signal).
+Users are discouraged to use this method unless they have a strong reason for doing it.
+The synchronous generation blocks the main thread, making the application unresponsive.
+Also, it is not possible to cancel generation while it is in progress.
+
+.. versionadded:: 3.30
+%End
+
     void cancelGeneration();
 %Docstring
 Stop the generation job - does not return until the job has terminated.
