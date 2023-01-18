@@ -113,7 +113,7 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
 
 #ifndef SIP_RUN
     //! Settings entry last fetch time
-    static const QgsSettingsEntryInteger *settingsFeedLastFetchTime;
+    static const QgsSettingsEntryInteger64 *settingsFeedLastFetchTime;
     //! Settings entry feed language
     static const QgsSettingsEntryString *settingsFeedLanguage;
     //! Settings entry feed latitude

@@ -28,7 +28,7 @@
 #include <QDir>
 #include <QRegularExpression>
 
-const QgsSettingsEntryInteger *QgsNewsFeedParser::settingsFeedLastFetchTime = new QgsSettingsEntryInteger( QStringLiteral( "%1/lastFetchTime" ), QgsSettings::sTreeCore, 0, QObject::tr( "Feed last fetch time" ), Qgis::SettingsOptions(), 0 );
+const QgsSettingsEntryInteger64 *QgsNewsFeedParser::settingsFeedLastFetchTime = new QgsSettingsEntryInteger64( QStringLiteral( "%1/lastFetchTime" ), QgsSettings::sTreeCore, 0, QObject::tr( "Feed last fetch time" ), Qgis::SettingsOptions(), 0 );
 
 const QgsSettingsEntryString *QgsNewsFeedParser::settingsFeedLanguage = new QgsSettingsEntryString( QStringLiteral( "%1/lang" ), QgsSettings::sTreeCore, QString(), QObject::tr( "Feed language" ) );
 
