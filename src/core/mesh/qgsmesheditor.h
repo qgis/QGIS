@@ -116,7 +116,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
      * or the value -1 if the vertex is not existing for now in the mesh. The positions of new vertices are stored in \a newVertices
      * sorted by their positions in the face.
      *
-     * \since QGIS 3.28
+     * \since QGIS 3.30
      */
     bool faceCanBeAddedWithNewVertices( const QList<int> &verticesIndex, const QList<QgsMeshVertex> &newVertices ) const; SIP_SKIP
 
@@ -138,7 +138,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
      * or the value -1 if the vertex is not existing for now in the mesh. The positions of new vertices are stored in \a newVertices
      * sorted by their positions in the face.
      *
-     * \since QGIS 3.28
+     * \since QGIS 3.30
      */
     QgsMeshEditingError addFaceWithNewVertices( const QList<int> &vertexIndexes, const QList<QgsMeshVertex> &newVertices ); SIP_SKIP
 

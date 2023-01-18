@@ -517,7 +517,7 @@ QgsMeshVertexCirculator QgsTopologicalMesh::vertexCirculator( int vertexIndex ) 
   return QgsMeshVertexCirculator( *this, vertexIndex );
 }
 
-QSet<int> QgsTopologicalMesh::concernedFacesBy( const QList<int> faceIndexes ) const
+QSet<int> QgsTopologicalMesh::concernedFacesBy( const QList<int> &faceIndexes ) const
 {
   QSet<int> faces;
   for ( const int faceIndex : faceIndexes )
@@ -635,10 +635,10 @@ QList<int> QgsTopologicalMesh::freeVerticesIndexes() const
   return QList<int>( mFreeVertices.begin(), mFreeVertices.end() );
 }
 
-QgsMeshEditingError QgsTopologicalMesh::checkTopologyOfVerticesAsFace( const QVector<QgsMeshVertex> &vertices, int &direction )
+QgsMeshEditingError QgsTopologicalMesh::checkTopologyOfVerticesAsFace( const QVector<QgsMeshVertex> &vertices, bool &clockwise )
 {
   int size = vertices.size();
-  direction = 0;
+  int direction = 0;
   for ( int i = 0; i < size; ++i )
   {
     int iv0 =  i;
@@ -660,12 +660,20 @@ QgsMeshEditingError QgsTopologicalMesh::checkTopologyOfVerticesAsFace( const QVe
 
     double crossProd = crossProduct( v1, v0, v2 ); //if cross product>0, we have two edges clockwise
     if ( direction != 0 && crossProd * direction < 0 )   // We have a convex face or a (partially) flat face
+    {
+      clockwise = direction > 0;
       return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidFace, -1 );
+    }
     else if ( crossProd == 0 )
+    {
+      clockwise = direction > 0;
       return QgsMeshEditingError( Qgis::MeshEditingErrorType::FlatFace, -1 );
-    else if ( direction == 0 && crossProd != 0 )
+    }
+    else if ( direction == 0 )
       direction = crossProd / std::fabs( crossProd );
   }
+
+  clockwise = direction > 0;
 
   return QgsMeshEditingError( Qgis::MeshEditingErrorType::NoError, -1 );
 }
@@ -689,12 +697,12 @@ QgsMeshEditingError QgsTopologicalMesh::counterClockwiseFaces( QgsMeshFace &face
     vertices[i] = mesh->vertices.at( face[i] );
   }
 
-  int direction = 0;
-  QgsMeshEditingError error = QgsTopologicalMesh::checkTopologyOfVerticesAsFace( vertices, direction );
+  bool clockwise = false;
+  QgsMeshEditingError error = QgsTopologicalMesh::checkTopologyOfVerticesAsFace( vertices, clockwise );
   if ( error != QgsMeshEditingError() )
     return error;
 
-  if ( direction > 0 )// clockwise --> reverse the order of the index;
+  if ( clockwise > 0 )// clockwise --> reverse the order of the index;
   {
     for ( int i = 0; i < faceSize / 2; ++i )
     {
@@ -1806,7 +1814,7 @@ QList<int> QgsTopologicalMesh::facesAroundVertex( int vertexIndex ) const
   return circ.facesAround();
 }
 
-QgsMeshEditingError QgsTopologicalMesh::facesCanBeRemoved( const QList<int> facesIndexes )
+QgsMeshEditingError QgsTopologicalMesh::facesCanBeRemoved( const QList<int> &facesIndexes )
 {
   QSet<int> removedFaces( facesIndexes.begin(), facesIndexes.end() );
   QSet<int> concernedFaces = concernedFacesBy( facesIndexes );
@@ -1825,7 +1833,7 @@ QgsMeshEditingError QgsTopologicalMesh::facesCanBeRemoved( const QList<int> face
   return error;
 }
 
-QgsTopologicalMesh::Changes QgsTopologicalMesh::removeFaces( const QList<int> facesIndexesToRemove )
+QgsTopologicalMesh::Changes QgsTopologicalMesh::removeFaces( const QList<int> &facesIndexesToRemove )
 {
   Changes changes;
   changes.mFaceIndexesToRemove = facesIndexesToRemove;

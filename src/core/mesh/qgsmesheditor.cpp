@@ -325,6 +325,8 @@ bool QgsMeshEditor::faceCanBeAddedWithNewVertices( const QList<int> &verticesInd
     int index = face.at( i );
     if ( index == -1 )
     {
+      if ( newVertPos >= newVertices.count() )
+        return false;
       allVertices.append( newVertices.at( newVertPos++ ) );
       continue;
     }
@@ -733,10 +735,10 @@ QList<int> QgsMeshEditor::prepareFaceWithNewVertices( const QList<int> &face, co
   if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
     return face;
 
-  int direction = 0;
-  error = QgsTopologicalMesh::checkTopologyOfVerticesAsFace( vertices, direction );
+  bool clockwise = false;
+  error = QgsTopologicalMesh::checkTopologyOfVerticesAsFace( vertices, clockwise );
 
-  if ( direction > 0 && error.errorType == Qgis::MeshEditingErrorType::NoError )
+  if ( clockwise && error.errorType == Qgis::MeshEditingErrorType::NoError )
   {
 
     QList<int> newFace = face;
