@@ -80,6 +80,8 @@ class QgsElevationProfileWidget : public QWidget
 
     void setMainCanvas( QgsMapCanvas *canvas );
 
+    QgsElevationProfileCanvas *profileCanvas() { return mCanvas; }
+
     /**
      * Cancel any rendering job, in a blocking way. Used for application closing.
      */
