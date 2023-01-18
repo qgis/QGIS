@@ -568,7 +568,8 @@ void QgsMapToolEditMeshFrame::deactivate()
   deleteZValueWidget();
   qDeleteAll( mFreeVertexMarker );
   mFreeVertexMarker.clear();
-
+  mNewFaceCandidate.clear();
+  mNewVerticesForNewFaceCandidate.clear();
 }
 
 void QgsMapToolEditMeshFrame::clearAll()
@@ -818,7 +819,7 @@ void QgsMapToolEditMeshFrame::cadCanvasMoveEvent( QgsMapMouseEvent *e )
     case AddingNewFace:
       mNewFaceBand->movePoint( mapPoint );
       highLight( mapPoint );
-      if ( testNewVertexInFaceCanditate( mCurrentVertexIndex ) )
+      if ( testNewVertexInFaceCanditate( true, mCurrentVertexIndex, mapPoint ) )
         mNewFaceBand->setColor( mValidFaceColor );
       else
         mNewFaceBand->setColor( mInvalidFaceColor );
@@ -946,11 +947,6 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     case AddingNewFace:
       if ( e->button() == Qt::LeftButton ) //eventually add a vertex to the face
       {
-        if ( mDoubleClicks )
-        {
-          addVertex( mFirstClickPoint, e->mapPointMatch() );
-          highlightCloseVertex( mFirstClickPoint );
-        }
 
         if ( mCurrentVertexIndex != -1 )
         {
@@ -958,14 +954,32 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           const QgsPointXY currentPoint = mapVertexXY( mCurrentVertexIndex );
           cadDockWidget()->setPoints( QList<QgsPointXY>() << currentPoint << currentPoint );
         }
+        else
+        {
+          bool acceptPoint = true;
+          if ( ! mNewFaceCandidate.isEmpty() &&
+               mNewFaceCandidate.last() == -1 &&
+               !mNewVerticesForNewFaceCandidate.isEmpty() ) //avoid dupplicate new vertex
+          {
+            acceptPoint = mapPoint.distance( mNewVerticesForNewFaceCandidate.last() ) > tolerance;
+          }
+
+          if ( acceptPoint )
+          {
+            addVertexToFaceCanditate( mapPoint );
+            const QgsPointXY currentPoint( mapPoint );
+            cadDockWidget()->setPoints( QList<QgsPointXY>() << currentPoint << currentPoint );
+          }
+        }
       }
       else if ( e->button() == Qt::RightButton ) //if possible validate and add the face to the mesh
       {
-        if ( testNewVertexInFaceCanditate( -1 ) )
+        if ( testNewVertexInFaceCanditate( false, -1, QgsPointXY() ) )
         {
-          mCurrentEditor->addFace( mNewFaceCandidate.toVector() );
+          mCurrentEditor->addFaceWithNewVertices( mNewFaceCandidate, mNewVerticesForNewFaceCandidate );
           mNewFaceBand->reset( QgsWkbTypes::PolygonGeometry );
           mNewFaceCandidate.clear();
+          mNewVerticesForNewFaceCandidate.clear();
           mCurrentState = Digitizing;
         }
       }
@@ -1207,9 +1221,14 @@ void QgsMapToolEditMeshFrame::keyPressEvent( QKeyEvent *e )
       {
         mNewFaceBand->removePoint( -2, true );
         if ( !mNewFaceCandidate.isEmpty() )
+        {
+          if ( mNewFaceCandidate.last() == -1 && !mNewVerticesForNewFaceCandidate.isEmpty() )
+            mNewVerticesForNewFaceCandidate.removeLast();
           mNewFaceCandidate.removeLast();
+        }
         if ( mNewFaceCandidate.isEmpty() )
           mCurrentState = Digitizing;
+
         consumned = true;
       }
 
@@ -1217,6 +1236,7 @@ void QgsMapToolEditMeshFrame::keyPressEvent( QKeyEvent *e )
       {
         mNewFaceBand->reset( QgsWkbTypes::PolygonGeometry );
         mNewFaceCandidate.clear();
+        mNewVerticesForNewFaceCandidate.clear();
         mCurrentState = Digitizing;
         consumned = true;
       }
@@ -1407,7 +1427,11 @@ void QgsMapToolEditMeshFrame::setCurrentLayer( QgsMapLayer *layer )
   QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( layer );
 
   if ( mCurrentLayer == meshLayer && mCurrentEditor != nullptr )
+  {
+    activate();
+    updateFreeVertices();
     return;
+  }
 
   if ( mCurrentEditor )
     deactivate();
@@ -1541,12 +1565,35 @@ void QgsMapToolEditMeshFrame::addVertexToFaceCanditate( int vertexIndex )
   mNewFaceCandidate.append( vertexIndex );
 }
 
-bool QgsMapToolEditMeshFrame::testNewVertexInFaceCanditate( int vertexIndex )
+void QgsMapToolEditMeshFrame::addVertexToFaceCanditate( const QgsPointXY &vertexPosition )
 {
-  QgsMeshFace face = mNewFaceCandidate.toVector();
-  if ( vertexIndex != -1 && !face.empty() && vertexIndex != mNewFaceCandidate.last() )
-    face.append( vertexIndex );
-  return mCurrentEditor->faceCanBeAdded( face );
+  mNewFaceBand->movePoint( vertexPosition );
+  mNewFaceBand->addPoint( vertexPosition );
+  QgsMeshVertex vert = QgsMeshVertex( vertexPosition.x(), vertexPosition.y(), currentZValue() );
+  mNewVerticesForNewFaceCandidate.append( vert );
+  mNewFaceCandidate.append( -1 );
+}
+
+bool QgsMapToolEditMeshFrame::testNewVertexInFaceCanditate( bool testLast, int vertexIndex, const QgsPointXY &mapPoint ) const
+{
+  QList<int> faceToTest = mNewFaceCandidate;
+  QList<QgsMeshVertex> newVertices = mNewVerticesForNewFaceCandidate;
+
+  if ( testLast )
+  {
+    if ( vertexIndex != -1 &&
+         !mNewFaceCandidate.empty() &&
+         vertexIndex != mNewFaceCandidate.last() &&
+         vertexIndex != mNewFaceCandidate.first() )
+      faceToTest.append( vertexIndex );
+    else if ( vertexIndex == -1 )
+    {
+      faceToTest.append( -1 );
+      newVertices.append( QgsMeshVertex( mapPoint ) );
+    }
+  }
+
+  return mCurrentEditor->faceCanBeAddedWithNewVertices( faceToTest, newVertices );
 }
 
 
@@ -2577,6 +2624,7 @@ void QgsMapToolEditMeshFrame::clearCanvasHelpers()
   mFaceRubberBand->reset();
   mFaceVerticesBand->reset();
   mVertexBand->reset();
+  mNewFaceBand->reset();
 
   mSnapIndicator->setMatch( QgsPointLocator::Match() );
   mSelectFaceMarker->setVisible( false );

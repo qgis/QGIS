@@ -168,7 +168,7 @@ void TestQgsMapToolEditMesh::editMesh()
   // add a face
   tool.mouseMove( 1999, 2999 ); //move near a vertex
   tool.mouseMove( 2000 + offsetInMapUnits / sqrt( 2 ), 3000 + offsetInMapUnits / sqrt( 2 ) ); //move on the new face marker
-  tool.mouseClick( 2000 + offsetInMapUnits / sqrt( 2 ), 3000 + offsetInMapUnits / sqrt( 2 ), Qt::LeftButton );
+  tool.mouseClick( 2000 + offsetInMapUnits / sqrt( 4 ), 3000 + offsetInMapUnits / sqrt( 2 ), Qt::LeftButton );
   tool.mouseMove( 2499, 3501 ); //move near the new free vertex
   tool.mouseClick( 2501, 3499, Qt::LeftButton ); // click near the vertex
   tool.mouseMove( 2490, 2600 ); //move elsewhere
@@ -177,6 +177,37 @@ void TestQgsMapToolEditMesh::editMesh()
   tool.mouseClick( 5000, 5000, Qt::RightButton ); // valid the face
 
   QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 9 );
+
+  // add a face with new vertices
+  tool.mouseMove( 2500, 3500 ); //move near a vertex
+  tool.mouseMove( 2500, 3501 );
+  tool.mouseMove( 2500 + offsetInMapUnits / sqrt( 5 ), 3500 + 2 * offsetInMapUnits / sqrt( 5 ) ); //move on the new face marker
+  tool.mouseClick( 2500 + offsetInMapUnits / sqrt( 5 ), 3500 + 2 * offsetInMapUnits / sqrt( 5 ), Qt::LeftButton );
+  tool.mouseMove( 3000, 3000 ); //move to a new place outsite the mesh
+  tool.mouseClick( 3000, 3000, Qt::LeftButton );
+  tool.mouseMove( 3000, 3500 ); //move to a new place outsite the mesh (cross edge of new face: invalid)
+  tool.mouseClick( 3000, 3500, Qt::LeftButton );
+  tool.mouseMove( 2500, 2500 );
+  tool.mouseClick( 2500, 2500, Qt::LeftButton );// close the face
+  tool.mouseClick( 5000, 5000, Qt::RightButton ); // valid the fac
+  QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 9 ); //-> face not added
+  QCOMPARE( meshLayerQuadFlower->meshVertexCount(), 10 ); //-> vertices not added
+  tool.keyClick( Qt::Key_Backspace );
+  tool.keyClick( Qt::Key_Backspace );
+  tool.keyClick( Qt::Key_Backspace );
+  tool.mouseMove( 3000, 3500 );
+  tool.mouseClick( 3000, 3000, Qt::LeftButton );
+  tool.mouseMove( 2500, 2500 );
+  tool.mouseClick( 2500, 2500, Qt::LeftButton );
+  tool.mouseMove( 5000, 5000 );
+  tool.mouseClick( 5000, 5000, Qt::RightButton );
+  QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 10 );
+  QCOMPARE( meshLayerQuadFlower->meshVertexCount(), 11 );
+
+  meshLayerQuadFlower->undoStack()->undo();
+
+  QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 9 );
+  QCOMPARE( meshLayerQuadFlower->meshVertexCount(), 10 );
 
   // Remove vertex 7 and 9
   tool.mouseMove( 1500, 3250 );
