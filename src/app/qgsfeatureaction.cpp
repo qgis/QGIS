@@ -68,7 +68,11 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
   context.setFormMode( QgsAttributeEditorContext::StandaloneDialog );
 
   QgsAttributeDialog *dialog = new QgsAttributeDialog( mLayer, f, cloneFeature, parentWidget(), true, context );
+
+  //* Skip this code on windows, because the Qt::Tool flag prevents the maximize button to be shown
+#ifndef Q_OS_WIN
   dialog->setWindowFlags( dialog->windowFlags() | Qt::Tool );
+#endif
 
   dialog->setObjectName( QStringLiteral( "featureactiondlg:%1:%2" ).arg( mLayer->id() ).arg( f->id() ) );
 
