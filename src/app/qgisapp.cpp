@@ -288,6 +288,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgslayoutqptdrophandler.h"
 #include "qgslayoutimagedrophandler.h"
 #include "qgslayoutguiutils.h"
+#include "qgslayoutelevationprofilewidget.h"
 #include "qgslocatorwidget.h"
 #include "qgslocator.h"
 #include "qgsactionlocatorfilter.h"
@@ -13108,6 +13109,31 @@ void QgisApp::initLayouts()
   registerCustomLayoutDropHandler( mLayoutQptDropHandler );
   mLayoutImageDropHandler = new QgsLayoutImageDropHandler( this );
   registerCustomLayoutDropHandler( mLayoutImageDropHandler );
+
+  QgsLayoutElevationProfileWidget::sBuildCopyMenuFunction = [ = ]( QgsLayoutElevationProfileWidget * layoutWidget, QMenu * menu )
+  {
+    menu->clear();
+    const QList<QgsElevationProfileWidget *> elevationProfileWidgets = findChildren< QgsElevationProfileWidget * >();
+
+    if ( elevationProfileWidgets.empty() )
+    {
+      QAction *action = new QAction( tr( "No Elevation Profiles Found" ), menu );
+      action->setEnabled( false );
+      menu->addAction( action );
+    }
+    else
+    {
+      for ( QgsElevationProfileWidget *widget : elevationProfileWidgets )
+      {
+        QAction *action = new QAction( tr( "Copy From %1" ).arg( widget->canvasName() ), menu );
+        connect( action, &QAction::triggered, widget, [ = ]
+        {
+          layoutWidget->copySettingsFromProfileCanvas( widget->profileCanvas() );
+        } );
+        menu->addAction( action );
+      }
+    }
+  };
 }
 
 Qgs3DMapCanvasWidget *QgisApp::createNew3DMapCanvasDock( const QString &name, bool isDocked )

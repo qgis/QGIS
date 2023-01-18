@@ -28,6 +28,11 @@
 #include "qgslayertree.h"
 #include "qgslayertreeregistrybridge.h"
 #include "qgselevationprofilelayertreeview.h"
+#include "qgselevationprofilecanvas.h"
+#include "qgscurve.h"
+#include <QMenu>
+
+std::function< void( QgsLayoutElevationProfileWidget *, QMenu * ) > QgsLayoutElevationProfileWidget::sBuildCopyMenuFunction = []( QgsLayoutElevationProfileWidget *, QMenu * ) {};
 
 QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemElevationProfile *profile )
   : QgsLayoutItemBaseWidget( nullptr, profile )
@@ -39,6 +44,21 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
 
   setupUi( this );
   setPanelTitle( tr( "Elevation Profile Properties" ) );
+
+  mCopyFromDockMenu = new QMenu( this );
+  connect( mCopyFromDockMenu, &QMenu::aboutToShow, this, [ = ]
+  {
+    sBuildCopyMenuFunction( this, mCopyFromDockMenu );
+  } );
+
+  QToolButton *copyFromDockButton = new QToolButton();
+  copyFromDockButton->setAutoRaise( true );
+  copyFromDockButton->setToolTip( tr( "Copy From Profile" ) );
+  copyFromDockButton->setMenu( mCopyFromDockMenu );
+  copyFromDockButton->setPopupMode( QToolButton::InstantPopup );
+  copyFromDockButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionCopyProfileSettings.svg" ) ) );
+
+  mDockToolbar->addWidget( copyFromDockButton );
 
   //add widget for general composer item properties
   mItemPropertiesWidget = new QgsLayoutItemPropertiesWidget( this, profile );
@@ -429,6 +449,77 @@ void QgsLayoutElevationProfileWidget::setMasterLayout( QgsMasterLayoutInterface 
 QgsExpressionContext QgsLayoutElevationProfileWidget::createExpressionContext() const
 {
   return mProfile->createExpressionContext();
+}
+
+void QgsLayoutElevationProfileWidget::setDesignerInterface( QgsLayoutDesignerInterface *iface )
+{
+  mInterface = iface;
+  QgsLayoutItemBaseWidget::setDesignerInterface( iface );
+}
+
+void QgsLayoutElevationProfileWidget::copySettingsFromProfileCanvas( QgsElevationProfileCanvas *canvas )
+{
+  mBlockChanges++;
+
+  mProfile->setCrs( canvas->crs() );
+  mProfile->setTolerance( canvas->tolerance() );
+  if ( const QgsCurve *curve = canvas->profileCurve() )
+    mProfile->setProfileCurve( curve->clone() );
+
+  mSpinMinDistance->setValue( canvas->plot().xMinimum() );
+  mSpinMinDistance->setClearValue( canvas->plot().xMinimum() );
+  mProfile->plot()->setXMinimum( canvas->plot().xMinimum() );
+
+  mSpinMaxDistance->setValue( canvas->plot().xMaximum() );
+  mSpinMaxDistance->setClearValue( canvas->plot().xMaximum() );
+  mProfile->plot()->setXMaximum( canvas->plot().xMaximum() );
+
+  mDistanceAxisMajorIntervalSpin->setValue( canvas->plot().xAxis().gridIntervalMajor() );
+  mDistanceAxisMajorIntervalSpin->setClearValue( canvas->plot().xAxis().gridIntervalMajor() );
+  mProfile->plot()->xAxis().setGridIntervalMajor( canvas->plot().xAxis().gridIntervalMajor() );
+
+  mDistanceAxisMinorIntervalSpin->setValue( canvas->plot().xAxis().gridIntervalMinor() );
+  mDistanceAxisMinorIntervalSpin->setClearValue( canvas->plot().xAxis().gridIntervalMinor() );
+  mProfile->plot()->xAxis().setGridIntervalMinor( canvas->plot().xAxis().gridIntervalMinor() );
+
+  mDistanceAxisLabelIntervalSpin->setValue( canvas->plot().xAxis().labelInterval() );
+  mDistanceAxisLabelIntervalSpin->setClearValue( canvas->plot().xAxis().labelInterval() );
+  mProfile->plot()->xAxis().setLabelInterval( canvas->plot().xAxis().labelInterval() );
+
+  mSpinMinElevation->setValue( canvas->plot().xMinimum() );
+  mSpinMinElevation->setClearValue( canvas->plot().yMinimum() );
+  mProfile->plot()->setYMinimum( canvas->plot().yMinimum() );
+
+  mSpinMaxElevation->setValue( canvas->plot().yMaximum() );
+  mSpinMaxElevation->setClearValue( canvas->plot().yMaximum() );
+  mProfile->plot()->setYMaximum( canvas->plot().yMaximum() );
+
+  mElevationAxisMajorIntervalSpin->setValue( canvas->plot().yAxis().gridIntervalMajor() );
+  mElevationAxisMajorIntervalSpin->setClearValue( canvas->plot().yAxis().gridIntervalMajor() );
+  mProfile->plot()->yAxis().setGridIntervalMajor( canvas->plot().yAxis().gridIntervalMajor() );
+
+  mElevationAxisMinorIntervalSpin->setValue( canvas->plot().yAxis().gridIntervalMinor() );
+  mElevationAxisMinorIntervalSpin->setClearValue( canvas->plot().yAxis().gridIntervalMinor() );
+  mProfile->plot()->yAxis().setGridIntervalMinor( canvas->plot().yAxis().gridIntervalMinor() );
+
+  mElevationAxisLabelIntervalSpin->setValue( canvas->plot().yAxis().labelInterval() );
+  mElevationAxisLabelIntervalSpin->setClearValue( canvas->plot().yAxis().labelInterval() );
+  mProfile->plot()->yAxis().setLabelInterval( canvas->plot().yAxis().labelInterval() );
+
+  QList<QgsMapLayer *> canvasLayers = canvas->layers();
+  // canvas layers are in opposite direction to what the layout item requires
+  std::reverse( canvasLayers.begin(), canvasLayers.end() );
+  mProfile->setLayers( canvasLayers );
+  const QList<QgsLayerTreeLayer *> layers = mLayerTree->findLayers();
+  for ( QgsLayerTreeLayer *layer : layers )
+  {
+    layer->setItemVisibilityChecked( mProfile->layers().contains( layer->layer() ) );
+  }
+  mLayerTree->reorderGroupLayers( mProfile->layers() );
+
+  mProfile->invalidateCache();
+  mProfile->update();
+  mBlockChanges--;
 }
 
 bool QgsLayoutElevationProfileWidget::setNewItem( QgsLayoutItem *item )

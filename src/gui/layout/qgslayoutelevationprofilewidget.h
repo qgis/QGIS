@@ -29,6 +29,7 @@
 #include <QPointer>
 
 class QgsElevationProfileLayerTreeView;
+class QgsElevationProfileCanvas;
 
 /**
  * \ingroup gui
@@ -46,6 +47,14 @@ class GUI_EXPORT QgsLayoutElevationProfileWidget: public QgsLayoutItemBaseWidget
     ~QgsLayoutElevationProfileWidget() override;
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
     QgsExpressionContext createExpressionContext() const override;
+    void setDesignerInterface( QgsLayoutDesignerInterface *iface ) override;
+
+    /**
+     * Copies selected settings from a elevation profile \a canvas.
+     */
+    void copySettingsFromProfileCanvas( QgsElevationProfileCanvas *canvas );
+
+    static std::function< void( QgsLayoutElevationProfileWidget *, QMenu * ) > sBuildCopyMenuFunction;
 
   protected:
 
@@ -60,6 +69,8 @@ class GUI_EXPORT QgsLayoutElevationProfileWidget: public QgsLayoutItemBaseWidget
 
     int mBlockChanges = 0;
 
+    QgsLayoutDesignerInterface *mInterface = nullptr;
+
     QPointer< QgsLayoutItemElevationProfile > mProfile = nullptr;
 
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
@@ -67,6 +78,7 @@ class GUI_EXPORT QgsLayoutElevationProfileWidget: public QgsLayoutItemBaseWidget
     std::unique_ptr< QgsLayerTree > mLayerTree;
     QgsLayerTreeRegistryBridge *mLayerTreeBridge = nullptr;
     QgsElevationProfileLayerTreeView *mLayerTreeView = nullptr;
+    QMenu *mCopyFromDockMenu = nullptr;
 };
 
 #endif //QGSLAYOUTELEVATIONPROFILEWIDGET_H
