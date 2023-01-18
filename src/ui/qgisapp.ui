@@ -209,6 +209,7 @@
      <addaction name="mActionAddAfsLayer"/>
      <addaction name="mActionAddVectorTileLayer"/>
      <addaction name="mActionAddPointCloudLayer"/>
+     <addaction name="mActionAddGpsLayer"/>
     </widget>
     <widget class="QMenu" name="mMenuFilterTable">
      <property name="title">
@@ -3218,6 +3219,15 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    </property>
    <property name="text">
     <string>Add Point Cloud Layer...</string>
+   </property>
+  </action>
+  <action name="mActionAddGpsLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddGpsLayer.svg</normaloff>:/images/themes/default/mActionAddGpsLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add GPX Layer...</string>
    </property>
   </action>
   <action name="mActionStreamDigitize">
