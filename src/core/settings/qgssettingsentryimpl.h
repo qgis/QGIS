@@ -475,7 +475,7 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryByValue<int>
 };
 
 #ifndef SIP_RUN
-// not available in Python for now (no direct suport of 64 bits integers in Python)
+// not available in Python for now (no direct support of 64 bits integers in Python)
 
 /**
  * \class QgsSettingsEntryInteger64
