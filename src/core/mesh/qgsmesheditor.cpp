@@ -308,7 +308,10 @@ bool QgsMeshEditor::faceCanBeAdded( const QgsMeshFace &face ) const
 bool QgsMeshEditor::faceCanBeAddedWithNewVertices( const QList<int> &verticesIndex, const QList<QgsMeshVertex> &newVertices ) const
 {
   QgsMeshEditingError error;
-  QList<int> face = prepareFaceWithNewVertices( verticesIndex, newVertices, error );
+  const QList<int> face = prepareFaceWithNewVertices( verticesIndex, newVertices, error );
+
+  if ( face.isEmpty() )
+    return false;
 
   if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
     return false;
@@ -714,6 +717,8 @@ QList<int> QgsMeshEditor::prepareFaceWithNewVertices( const QList<int> &face, co
   {
     if ( face.at( i ) == -1 )
     {
+      if ( newVertexPos >= newVertices.count() )
+        return QList<int>();
       vertices[i] = newVertices.at( newVertexPos++ );
     }
     else if ( face.at( i ) >= 0 )
