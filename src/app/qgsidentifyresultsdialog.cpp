@@ -39,6 +39,7 @@
 #include <QScreen>
 #include <QFont>
 #include <QActionGroup>
+#include <QToolButton>
 
 //graph
 #include <qwt_plot.h>
