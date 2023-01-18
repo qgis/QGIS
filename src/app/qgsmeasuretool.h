@@ -99,6 +99,8 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
 
     //! Removes the last vertex from mRubberBand
     void undo();
+
+    friend class TestQgsMeasureTool;
 };
 
 #endif
