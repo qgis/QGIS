@@ -414,10 +414,7 @@ bool QgsLayoutItemElevationProfile::writePropertiesToElement( QDomElement &layou
     for ( const QgsMapLayerRef &layer : mLayers )
     {
       QDomElement layerElement = doc.createElement( QStringLiteral( "layer" ) );
-      layerElement.setAttribute( QStringLiteral( "id" ), layer.layerId );
-      layerElement.setAttribute( QStringLiteral( "name" ), layer.name );
-      layerElement.setAttribute( QStringLiteral( "source" ), layer.source );
-      layerElement.setAttribute( QStringLiteral( "provider" ), layer.provider );
+      layer.writeXml( layerElement, rwContext );
       layersElement.appendChild( layerElement );
     }
     layoutProfileElem.appendChild( layersElement );
@@ -440,12 +437,8 @@ bool QgsLayoutItemElevationProfile::readPropertiesFromElement( const QDomElement
     QDomElement layerElement = layersElement.firstChildElement( QStringLiteral( "layer" ) );
     while ( !layerElement.isNull() )
     {
-      const QString layerId = layerElement.attribute( QStringLiteral( "id" ) );
-      const QString layerName = layerElement.attribute( QStringLiteral( "name" ) );
-      const QString layerSource = layerElement.attribute( QStringLiteral( "source" ) );
-      const QString layerProvider = layerElement.attribute( QStringLiteral( "provider" ) );
-
-      QgsMapLayerRef ref = QgsMapLayerRef( layerId, layerName, layerSource, layerProvider );
+      QgsMapLayerRef ref;
+      ref.readXml( layerElement, context );
       ref.resolveWeakly( mLayout->project() );
       mLayers.append( ref );
 
