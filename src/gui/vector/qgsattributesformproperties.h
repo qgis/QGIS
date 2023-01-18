@@ -97,6 +97,11 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
       QString text;
     };
 
+    struct SpacerElementEditorConfiguration
+    {
+      bool drawLine = false;
+    };
+
     /**
      * \ingroup gui
      * \class DnDTreeItemData
@@ -114,6 +119,7 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
           WidgetType, //!< In the widget tree, the type of widget
           Action, //!< Layer action
           TextWidget, //!< Text widget type, \since QGIS 3.30
+          SpacerWidget, //!< Spacer widget type, \since QGIS 3.30
         };
 
         //do we need that
@@ -218,6 +224,18 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
         HtmlElementEditorConfiguration htmlElementEditorConfiguration() const;
         void setHtmlElementEditorConfiguration( HtmlElementEditorConfiguration htmlElementEditorConfiguration );
 
+        /**
+         * Returns the spacer element configuration
+         * \since QGIS 3.30
+         */
+        SpacerElementEditorConfiguration spacerElementEditorConfiguration() const;
+
+        /**
+         * Sets the the spacer element configuration to \a spacerElementEditorConfiguration
+         * \since QGIS 3.30
+         */
+        void setSpacerElementEditorConfiguration( SpacerElementEditorConfiguration spacerElementEditorConfiguration );
+
         QColor backgroundColor() const;
         void setBackgroundColor( const QColor &backgroundColor );
 
@@ -245,6 +263,7 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
         QmlElementEditorConfiguration mQmlElementEditorConfiguration;
         HtmlElementEditorConfiguration mHtmlElementEditorConfiguration;
         TextElementEditorConfiguration mTextElementEditorConfiguration;
+        SpacerElementEditorConfiguration mSpacerElementEditorConfiguration;
         QColor mBackgroundColor;
         bool mCollapsed = false;
         QgsOptionalExpression mCollapsedExpression;

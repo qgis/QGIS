@@ -110,6 +110,7 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
       AeTypeHtmlElement, //!< A HTML element
       AeTypeAction, //!< A layer action element (since QGIS 3.22)
       AeTypeTextElement, //!< A text element (since QGIS 3.30)
+      AeTypeSpacerElement, //!< A spacer element (since QGIS 3.30)
     };
 
     /**

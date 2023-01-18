@@ -15,6 +15,7 @@
 
 #include "qgsattributeform.h"
 
+#include "qgsattributeeditorspacerelement.h"
 #include "qgsattributeforminterface.h"
 #include "qgsattributeformlegacyinterface.h"
 #include "qgsattributeformrelationeditorwidget.h"
@@ -48,6 +49,7 @@
 #include "qgsactionwidgetwrapper.h"
 #include "qgsqmlwidgetwrapper.h"
 #include "qgshtmlwidgetwrapper.h"
+#include "qgsspacerwidgetwrapper.h"
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeaturerequest.h"
@@ -2509,6 +2511,20 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       newWidgetInfo.labelOnTop = false;
       newWidgetInfo.showLabel = widgetDef->showLabel();
       mNeedsGeometry |= textWrapper->needsGeometry();
+      break;
+    }
+
+    case QgsAttributeEditorElement::AeTypeSpacerElement:
+    {
+      const QgsAttributeEditorSpacerElement *elementDef = static_cast<const QgsAttributeEditorSpacerElement *>( widgetDef );
+      QgsSpacerWidgetWrapper *spacerWrapper = new QgsSpacerWidgetWrapper( mLayer, nullptr, this );
+      spacerWrapper->setDrawLine( elementDef->drawLine() );
+      context.setAttributeFormMode( mMode );
+      mWidgets.append( spacerWrapper );
+
+      newWidgetInfo.widget = spacerWrapper->widget();
+      newWidgetInfo.labelOnTop = false;
+      newWidgetInfo.showLabel = false;
       break;
     }
 

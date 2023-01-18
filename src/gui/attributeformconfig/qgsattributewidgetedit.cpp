@@ -53,6 +53,7 @@ QgsAttributeWidgetEdit::QgsAttributeWidgetEdit( QTreeWidgetItem *item, QWidget *
     case QgsAttributesFormProperties::DnDTreeItemData::QmlWidget:
     case QgsAttributesFormProperties::DnDTreeItemData::HtmlWidget:
     case QgsAttributesFormProperties::DnDTreeItemData::TextWidget:
+    case QgsAttributesFormProperties::DnDTreeItemData::SpacerWidget:
     case QgsAttributesFormProperties::DnDTreeItemData::WidgetType:
       mWidgetSpecificConfigGroupBox->hide();
       break;
@@ -87,6 +88,7 @@ void QgsAttributeWidgetEdit::updateItemData()
     case QgsAttributesFormProperties::DnDTreeItemData::QmlWidget:
     case QgsAttributesFormProperties::DnDTreeItemData::HtmlWidget:
     case QgsAttributesFormProperties::DnDTreeItemData::TextWidget:
+    case QgsAttributesFormProperties::DnDTreeItemData::SpacerWidget:
     case QgsAttributesFormProperties::DnDTreeItemData::WidgetType:
       break;
   }

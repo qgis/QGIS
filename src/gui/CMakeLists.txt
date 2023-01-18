@@ -209,6 +209,7 @@ set(QGIS_GUI_SRCS
   editorwidgets/qgsrelationreferencefactory.cpp
   editorwidgets/qgsrelationreferencesearchwidgetwrapper.cpp
   editorwidgets/qgsrelationreferencewidget.cpp
+  editorwidgets/qgsspacerwidgetwrapper.cpp
   editorwidgets/qgsrelationreferencewidgetwrapper.cpp
   editorwidgets/qgstexteditconfigdlg.cpp
   editorwidgets/qgstexteditsearchwidgetwrapper.cpp
@@ -1086,6 +1087,7 @@ set(QGIS_GUI_HDRS
   editorwidgets/qgsrelationreferencewidgetwrapper.h
   editorwidgets/qgsrelationwidgetwrapper.h
   editorwidgets/qgssearchwidgettoolbutton.h
+  editorwidgets/qgsspacerwidgetwrapper.h
   editorwidgets/qgsspinbox.h
   editorwidgets/qgstexteditconfigdlg.h
   editorwidgets/qgstexteditsearchwidgetwrapper.h
