@@ -508,7 +508,7 @@ Constructor for QgsSettingsEntryDouble.
 :param options: specifies the options for the settings entry.
 :param minValue: specifies the minimal value.
 :param maxValue: specifies the maximal value.
-:param displayDecimals: specifies an hint for the gui about how much decimals to show
+:param displayDecimals: specifies a hint for the gui about how much decimals to show
                         for example for a QDoubleSpinBox.
 %End
 
@@ -531,7 +531,7 @@ Constructor for QgsSettingsEntryDouble.
 :param options: specifies the options for the settings entry.
 :param minValue: specifies the minimal value.
 :param maxValue: specifies the maximal value.
-:param displayDecimals: specifies an hint for the gui about how much decimals to show
+:param displayDecimals: specifies a hint for the gui about how much decimals to show
                         for example for a QDoubleSpinBox.
 %End
   public:
@@ -555,7 +555,7 @@ This constructor is intended to be used from plugins.
 :param description: specifies a description for the settings entry.
 :param minValue: specifies the minimal value.
 :param maxValue: specifies the maximal value.
-:param displayDecimals: specifies an hint for the gui about how much decimals to show
+:param displayDecimals: specifies a hint for the gui about how much decimals to show
 %End
 %MethodCode
     sipCpp = new sipQgsSettingsEntryDouble( QgsSettingsEntryDouble( *a0, QgsSettings::createPluginTreeElement( *a1 ), a2, *a3, *a4, a5, a6, a7 ) );

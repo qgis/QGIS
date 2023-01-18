@@ -474,6 +474,85 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryByValue<int>
     int mMaxValue;
 };
 
+#ifndef SIP_RUN
+// not available in Python for now (no direct suport of 64 bits integers in Python)
+
+/**
+ * \class QgsSettingsEntryInteger64
+ * \ingroup core
+ *
+ * \brief A 64 bits integer (long long) settings entry.
+ * \since QGIS 3.30
+ */
+class CORE_EXPORT QgsSettingsEntryInteger64 : public QgsSettingsEntryByValue<qlonglong>
+{
+  public:
+
+    /**
+     * Constructor for QgsSettingsEntryInteger64.
+     *
+     * \param key specifies the final part of the settings key.
+     * \param parent specifies the parent in the tree of settings.
+     * \param defaultValue specifies the default value for the settings entry.
+     * \param description specifies a description for the settings entry.
+     * \param options specifies the options for the settings entry.
+     * \param minValue specifies the minimal value.
+     * \param maxValue specifies the maximal value.
+     */
+    QgsSettingsEntryInteger64( const QString &key,
+                               QgsSettingsTreeNode *parent,
+                               qlonglong defaultValue = 0,
+                               const QString &description = QString(),
+                               Qgis::SettingsOptions options = Qgis::SettingsOptions(),
+                               qlonglong minValue = std::numeric_limits<qlonglong>::min(),
+                               qlonglong maxValue = std::numeric_limits<qlonglong>::max() ) SIP_THROW( QgsSettingsException )
+      : QgsSettingsEntryByValue( key, parent, defaultValue, description, options )
+      , mMinValue( minValue )
+      , mMaxValue( maxValue )
+    { }
+
+    /**
+     * Constructor for QgsSettingsEntryInteger64.
+     *
+     * \param key specifies the final part of the settings key.
+     * \param section specifies the section.
+     * \param defaultValue specifies the default value for the settings entry.
+     * \param description specifies a description for the settings entry.
+     * \param options specifies the options for the settings entry.
+     * \param minValue specifies the minimal value.
+     * \param maxValue specifies the maximal value.
+     */
+    QgsSettingsEntryInteger64( const QString &key,
+                               const QString &section,
+                               qlonglong defaultValue = 0,
+                               const QString &description = QString(),
+                               Qgis::SettingsOptions options = Qgis::SettingsOptions(),
+                               qlonglong minValue = std::numeric_limits<qlonglong>::min(),
+                               qlonglong maxValue = std::numeric_limits<qlonglong>::max() )
+      : QgsSettingsEntryByValue( key, section, defaultValue, description, options )
+      , mMinValue( minValue )
+      , mMaxValue( maxValue )
+    { }
+
+    virtual Qgis::SettingsType settingsType() const override;
+
+    /**
+     * Returns the minimum value.
+     */
+    qlonglong minValue() const;
+
+    /**
+     * Returns the maximum value.
+     */
+    qlonglong maxValue() const;
+
+  private:
+    bool checkValue( qlonglong value ) const override;
+    qlonglong convertFromVariant( const QVariant &value ) const override;
+    qlonglong mMinValue;
+    qlonglong mMaxValue;
+};
+#endif
 
 /**
  * \class QgsSettingsEntryDouble
@@ -496,7 +575,7 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntryByValue<double
      * \param options specifies the options for the settings entry.
      * \param minValue specifies the minimal value.
      * \param maxValue specifies the maximal value.
-     * \param displayDecimals specifies an hint for the gui about how much decimals to show
+     * \param displayDecimals specifies a hint for the gui about how much decimals to show
      * for example for a QDoubleSpinBox.
      */
     QgsSettingsEntryDouble( const QString &key,
@@ -523,7 +602,7 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntryByValue<double
      * \param options specifies the options for the settings entry.
      * \param minValue specifies the minimal value.
      * \param maxValue specifies the maximal value.
-     * \param displayDecimals specifies an hint for the gui about how much decimals to show
+     * \param displayDecimals specifies a hint for the gui about how much decimals to show
      * for example for a QDoubleSpinBox.
      */
     QgsSettingsEntryDouble( const QString &key,
@@ -553,7 +632,7 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntryByValue<double
      * \param description specifies a description for the settings entry.
      * \param minValue specifies the minimal value.
      * \param maxValue specifies the maximal value.
-     * \param displayDecimals specifies an hint for the gui about how much decimals to show
+     * \param displayDecimals specifies a hint for the gui about how much decimals to show
      */
     QgsSettingsEntryDouble( const QString &key,
                             const QString &pluginName,

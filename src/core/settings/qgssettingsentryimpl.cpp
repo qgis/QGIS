@@ -129,6 +129,47 @@ int QgsSettingsEntryInteger::minValue() const
   return mMaxValue;
 }
 
+bool QgsSettingsEntryInteger64::checkValue( qlonglong value ) const
+{
+  if ( value < mMinValue )
+  {
+    QgsDebugMsg( QObject::tr( "Can't set value for setting. Value '%1' is less than minimum value '%2'." )
+                 .arg( QString::number( value ) )
+                 .arg( QString::number( mMinValue ) ) );
+    return false;
+  }
+
+  if ( value > mMaxValue )
+  {
+    QgsDebugMsg( QObject::tr( "Can't set value for setting. Value '%1' is greather than maximum value '%2'." )
+                 .arg( QString::number( value ) )
+                 .arg( QString::number( mMaxValue ) ) );
+    return false;
+  }
+
+  return true;
+}
+
+qlonglong QgsSettingsEntryInteger64::convertFromVariant( const QVariant &value ) const
+{
+  return value.toLongLong();
+}
+
+Qgis::SettingsType QgsSettingsEntryInteger64::settingsType() const
+{
+  return Qgis::SettingsType::Integer;
+}
+
+qlonglong QgsSettingsEntryInteger64::maxValue() const
+{
+  return mMaxValue;
+}
+
+qlonglong QgsSettingsEntryInteger64::minValue() const
+{
+  return mMaxValue;
+}
+
 
 
 bool QgsSettingsEntryDouble::checkValue( double value ) const
