@@ -294,6 +294,7 @@ void QgsMeasureTool::addPoint( const QgsPointXY &point )
   // Append point that we will be moving.
   mPoints.append( pnt );
 
+  mRubberBand->movePoint( point );
   mRubberBand->addPoint( point );
   mRubberBandPoints->addPoint( point );
   if ( ! mDone )    // Prevent the insertion of a new item in segments measure table
