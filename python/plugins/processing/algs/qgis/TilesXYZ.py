@@ -39,6 +39,7 @@ from qgis.core import (QgsProcessingException,
                        QgsProcessingParameterExtent,
                        QgsProcessingParameterColor,
                        QgsProcessingOutputFile,
+                       QgsProcessingParameterDefinition,
                        QgsProcessingParameterFileDestination,
                        QgsProcessingParameterFolderDestination,
                        QgsGeometry,
@@ -499,7 +500,8 @@ LEAFLET_TEMPLATE = '''
   <script>
       var map = L.map('map', {{ attributionControl: false }} ).setView([{centery}, {centerx}], {avgzoom});
       L.control.attribution( {{ prefix: false }} ).addTo( map );
-      L.tileLayer({tilesource}, {{
+      {osm}
+      var tilesource_layer = L.tileLayer({tilesource}, {{
         minZoom: {minzoom},
         maxZoom: {maxzoom},
         tms: {tms},
@@ -508,6 +510,14 @@ LEAFLET_TEMPLATE = '''
   </script>
 </body>
 </html>
+'''
+
+OSM_TEMPLATE = '''
+      var osm_layer = L.tileLayer('https://tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
+        minZoom: {minzoom},
+        maxZoom: {maxzoom},
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }}).addTo(map);
 '''
 
 
@@ -541,6 +551,9 @@ class TilesXYZAlgorithmDirectory(TilesXYZAlgorithmBase):
     OUTPUT_HTML = 'OUTPUT_HTML'
     TILE_WIDTH = 'TILE_WIDTH'
     TILE_HEIGHT = 'TILE_HEIGHT'
+    HTML_TITLE = 'HTML_TITLE'
+    HTML_ATTRIBUTION = 'HTML_ATTRIBUTION'
+    HTML_OSM = 'HTML_OSM'
 
     def initAlgorithm(self, config=None):
         super(TilesXYZAlgorithmDirectory, self).initAlgorithm()
@@ -565,6 +578,21 @@ class TilesXYZAlgorithmDirectory(TilesXYZAlgorithmBase):
                                                                 self.tr('Output html (Leaflet)'),
                                                                 self.tr('HTML files (*.html)'),
                                                                 optional=True))
+        html_title_param = QgsProcessingParameterString(self.HTML_TITLE,
+                                                        self.tr('Title (Leaflet html output)'),
+                                                        optional=True,
+                                                        defaultValue='')
+        html_attrib_param = QgsProcessingParameterString(self.HTML_ATTRIBUTION,
+                                                         self.tr('Attribution (Leaflet html output)'),
+                                                         optional=True,
+                                                         defaultValue='')
+        html_osm_param = QgsProcessingParameterBoolean(self.HTML_OSM,
+                                                       self.tr('Add OSM basemap (Leaflet html output)'),
+                                                       defaultValue=False,
+                                                       optional=True)
+        for param in (html_title_param, html_attrib_param, html_osm_param):
+            param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+            self.addParameter(param)
 
     def name(self):
         return 'tilesxyzdirectory'
@@ -582,6 +610,9 @@ class TilesXYZAlgorithmDirectory(TilesXYZAlgorithmBase):
         is_tms = self.parameterAsBoolean(parameters, self.TMS_CONVENTION, context)
         output_html = self.parameterAsString(parameters, self.OUTPUT_HTML, context)
         output_dir = self.parameterAsString(parameters, self.OUTPUT_DIRECTORY, context)
+        html_title = self.parameterAsString(parameters, self.HTML_TITLE, context)
+        html_attribution = self.parameterAsString(parameters, self.HTML_ATTRIBUTION, context)
+        is_osm = self.parameterAsBoolean(parameters, self.HTML_OSM, context)
         if not output_dir:
             raise QgsProcessingException(self.tr('You need to specify output directory.'))
 
@@ -593,7 +624,7 @@ class TilesXYZAlgorithmDirectory(TilesXYZAlgorithmBase):
         if output_html:
             output_dir_safe = urllib.parse.quote(output_dir.replace('\\', '/'))
             html_code = LEAFLET_TEMPLATE.format(
-                tilesetname="Leaflet Preview",
+                tilesetname=html_title if html_title else "Leaflet Preview",
                 centerx=self.wgs_extent[0] + (self.wgs_extent[2] - self.wgs_extent[0]) / 2,
                 centery=self.wgs_extent[1] + (self.wgs_extent[3] - self.wgs_extent[1]) / 2,
                 avgzoom=(self.max_zoom + self.min_zoom) / 2,
@@ -601,7 +632,11 @@ class TilesXYZAlgorithmDirectory(TilesXYZAlgorithmBase):
                 minzoom=self.min_zoom,
                 maxzoom=self.max_zoom,
                 tms='true' if is_tms else 'false',
-                attribution=self.tr('Created by QGIS algorithm:') + ' ' + self.displayName()
+                attribution=html_attribution if html_attribution else self.tr('Created by QGIS algorithm:') + ' ' + self.displayName(),
+                osm=OSM_TEMPLATE.format(
+                    minzoom=self.min_zoom,
+                    maxzoom=self.max_zoom
+                ) if is_osm else ''
             )
             with open(output_html, "w") as fh:
                 fh.write(html_code)
