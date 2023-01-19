@@ -142,7 +142,11 @@ QgsError QgsUserProfileManager::createUserProfile( const QString &name )
   const QDir folder( mRootProfilePath + QDir::separator() + name );
   if ( !folder.exists() )
   {
-    QDir().mkpath( folder.absolutePath() );
+    if ( !QDir().mkpath( folder.absolutePath() ) )
+    {
+      error.append( tr( "Cannot write '%1'" ).arg( folder.absolutePath() ) );
+      return error;
+    }
   }
 
   QFile qgisPrivateDbFile( folder.absolutePath() + QDir::separator() + "qgis.db" );
