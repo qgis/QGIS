@@ -1027,7 +1027,7 @@ class CurrentVertexZValueExpressionFunction: public QgsScopedExpressionFunction
       auto lambdaFunc = [vertexIndex]( QgsMapLayer * layer )->QVariant
       {
         QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( layer );
-        if ( !layer || !meshLayer->nativeMesh() || meshLayer->nativeMesh()->vertexCount() <= vertexIndex )
+        if ( !meshLayer || !meshLayer->nativeMesh() || meshLayer->nativeMesh()->vertexCount() <= vertexIndex )
           return QVariant();
 
         const QgsMeshVertex &vertex = meshLayer->nativeMesh()->vertex( vertexIndex );
@@ -1076,7 +1076,7 @@ class CurrentVertexXValueExpressionFunction: public QgsScopedExpressionFunction
       auto lambdaFunc = [vertexIndex]( QgsMapLayer * layer )->QVariant
       {
         QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( layer );
-        if ( !layer || !meshLayer->nativeMesh() || meshLayer->nativeMesh()->vertexCount() <= vertexIndex )
+        if ( !meshLayer || !meshLayer->nativeMesh() || meshLayer->nativeMesh()->vertexCount() <= vertexIndex )
           return QVariant();
 
         const QgsMeshVertex &vertex = meshLayer->nativeMesh()->vertex( vertexIndex );
@@ -1125,7 +1125,7 @@ class CurrentVertexYValueExpressionFunction: public QgsScopedExpressionFunction
       auto lambdaFunc = [vertexIndex]( QgsMapLayer * layer )->QVariant
       {
         QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( layer );
-        if ( !layer || !meshLayer->nativeMesh() || meshLayer->nativeMesh()->vertexCount() <= vertexIndex )
+        if ( !meshLayer || !meshLayer->nativeMesh() || meshLayer->nativeMesh()->vertexCount() <= vertexIndex )
           return QVariant();
 
         const QgsMeshVertex &vertex = meshLayer->nativeMesh()->vertex( vertexIndex );
@@ -1174,7 +1174,7 @@ class CurrentVertexExpressionFunction: public QgsScopedExpressionFunction
       auto lambdaFunc = [vertexIndex]( QgsMapLayer * layer )->QVariant
       {
         QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( layer );
-        if ( !layer || !meshLayer->nativeMesh() || meshLayer->nativeMesh()->vertexCount() <= vertexIndex )
+        if ( !meshLayer || !meshLayer->nativeMesh() || meshLayer->nativeMesh()->vertexCount() <= vertexIndex )
           return QVariant();
 
         const QgsMeshVertex &vertex = meshLayer->nativeMesh()->vertex( vertexIndex );
@@ -1261,7 +1261,7 @@ class CurrentFaceAreaExpressionFunction: public QgsScopedExpressionFunction
       auto lambdaFunc = [faceIndex, calc, areaUnit, useDistanceArea]( QgsMapLayer * layer )->QVariant
       {
         QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( layer );
-        if ( !layer || !meshLayer->nativeMesh() || meshLayer->nativeMesh()->faceCount() <= faceIndex )
+        if ( !meshLayer || !meshLayer->nativeMesh() || meshLayer->nativeMesh()->faceCount() <= faceIndex )
           return QVariant();
 
         const QgsMeshFace &face = meshLayer->nativeMesh()->face( faceIndex );
