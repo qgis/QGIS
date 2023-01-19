@@ -97,7 +97,7 @@ QgsHttpExternalStorageStoredContent::QgsHttpExternalStorageStoredContent( const 
   connect( mUploadTask, &QgsTask::taskCompleted, this, [ = ]
   {
     mUrl = storageUrl;
-    mStatus = Qgis::ContentStatus::Finished;
+    setStatus( Qgis::ContentStatus::Finished );
     emit stored();
   } );
 
@@ -114,7 +114,7 @@ QgsHttpExternalStorageStoredContent::QgsHttpExternalStorageStoredContent( const 
 
 void QgsHttpExternalStorageStoredContent::store()
 {
-  mStatus = Qgis::ContentStatus::Running;
+  setStatus( Qgis::ContentStatus::Running );
   QgsApplication::taskManager()->addTask( mUploadTask );
 }
 
@@ -127,7 +127,7 @@ void QgsHttpExternalStorageStoredContent::cancel()
   disconnect( mUploadTask, &QgsTask::taskTerminated, this, nullptr );
   connect( mUploadTask, &QgsTask::taskTerminated, this, [ = ]
   {
-    mStatus = Qgis::ContentStatus::Canceled;
+    setStatus( Qgis::ContentStatus::Canceled );
     emit canceled();
   } );
 
@@ -161,13 +161,13 @@ void QgsHttpExternalStorageFetchedContent::fetch()
   if ( !mFetchedContent )
     return;
 
-  mStatus = Qgis::ContentStatus::Running;
+  setStatus( Qgis::ContentStatus::Running );
   mFetchedContent->download();
 
   // could be already fetched/cached
   if ( mFetchedContent->status() == QgsFetchedContent::Finished )
   {
-    mStatus = Qgis::ContentStatus::Finished;
+    setStatus( Qgis::ContentStatus::Finished );
     emit fetched();
   }
 }
@@ -184,7 +184,7 @@ void QgsHttpExternalStorageFetchedContent::onFetched()
 
   if ( mFetchedContent->status() == QgsFetchedContent::Finished )
   {
-    mStatus = Qgis::ContentStatus::Finished;
+    setStatus( Qgis::ContentStatus::Finished );
     emit fetched();
   }
 }
