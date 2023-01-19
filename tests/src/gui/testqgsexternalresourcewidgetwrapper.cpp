@@ -94,11 +94,11 @@ class QgsTestExternalStorageFetchedContent
     {
       if ( mCached )
       {
-        mStatus = Qgis::ContentStatus::Finished;
+        setStatus( Qgis::ContentStatus::Finished );
         emit fetched();
       }
       else
-        mStatus = Qgis::ContentStatus::Running;
+        setStatus( Qgis::ContentStatus::Running );
     }
 
 
@@ -109,20 +109,20 @@ class QgsTestExternalStorageFetchedContent
 
     void emitFetched()
     {
-      mStatus = Qgis::ContentStatus::Finished;
+      setStatus( Qgis::ContentStatus::Finished );
       emit fetched();
     }
 
     void emitErrorOccurred()
     {
-      mStatus = Qgis::ContentStatus::Failed;
+      setStatus( Qgis::ContentStatus::Failed );
       mErrorString = QStringLiteral( "an error" );
       emit errorOccurred( mErrorString );
     }
 
     void cancel() override
     {
-      mStatus = Qgis::ContentStatus::Canceled;
+      setStatus( Qgis::ContentStatus::Canceled );
       emit canceled();
     }
 
@@ -147,25 +147,25 @@ class QgsTestExternalStorageStoredContent
 
     void store() override
     {
-      mStatus = Qgis::ContentStatus::Running;
+      setStatus( Qgis::ContentStatus::Running );
     }
 
     void emitStored()
     {
-      mStatus = Qgis::ContentStatus::Finished;
+      setStatus( Qgis::ContentStatus::Finished );
       emit stored();
     }
 
     void emitErrorOccurred()
     {
-      mStatus = Qgis::ContentStatus::Failed;
+      setStatus( Qgis::ContentStatus::Failed );
       mErrorString = "an error";
       emit errorOccurred( mErrorString );
     }
 
     void cancel() override
     {
-      mStatus = Qgis::ContentStatus::Canceled;
+      setStatus( Qgis::ContentStatus::Canceled );
       emit canceled();
     };
 

@@ -88,7 +88,7 @@ QgsWebDAVExternalStorageStoredContent::QgsWebDAVExternalStorageStoredContent( co
   connect( mUploadTask, &QgsTask::taskCompleted, this, [ = ]
   {
     mUrl = storageUrl;
-    mStatus = Qgis::ContentStatus::Finished;
+    setStatus( Qgis::ContentStatus::Finished );
     emit stored();
   } );
 
@@ -105,7 +105,7 @@ QgsWebDAVExternalStorageStoredContent::QgsWebDAVExternalStorageStoredContent( co
 
 void QgsWebDAVExternalStorageStoredContent::store()
 {
-  mStatus = Qgis::ContentStatus::Running;
+  setStatus( Qgis::ContentStatus::Running );
   QgsApplication::taskManager()->addTask( mUploadTask );
 }
 
@@ -118,7 +118,7 @@ void QgsWebDAVExternalStorageStoredContent::cancel()
   disconnect( mUploadTask, &QgsTask::taskTerminated, this, nullptr );
   connect( mUploadTask, &QgsTask::taskTerminated, this, [ = ]
   {
-    mStatus = Qgis::ContentStatus::Canceled;
+    setStatus( Qgis::ContentStatus::Canceled );
     emit canceled();
   } );
 
@@ -147,13 +147,13 @@ void QgsWebDAVExternalStorageFetchedContent::fetch()
   if ( !mFetchedContent )
     return;
 
-  mStatus = Qgis::ContentStatus::Running;
+  setStatus( Qgis::ContentStatus::Running );
   mFetchedContent->download();
 
   // could be already fetched/cached
   if ( mFetchedContent->status() == QgsFetchedContent::Finished )
   {
-    mStatus = Qgis::ContentStatus::Finished;
+    setStatus( Qgis::ContentStatus::Finished );
     emit fetched();
   }
 }
@@ -170,7 +170,7 @@ void QgsWebDAVExternalStorageFetchedContent::onFetched()
 
   if ( mFetchedContent->status() == QgsFetchedContent::Finished )
   {
-    mStatus = Qgis::ContentStatus::Finished;
+    setStatus( Qgis::ContentStatus::Finished );
     emit fetched();
   }
 }
