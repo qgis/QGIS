@@ -145,7 +145,7 @@ Inherited classes should call this method whenever they meet an error.
 
     void setStatus( Qgis::ContentStatus status );
 %Docstring
-Sets the external storage status
+Sets the external storage ``status``
 %End
 
 
