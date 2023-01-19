@@ -15664,12 +15664,29 @@ void QgisApp::keyPressEvent( QKeyEvent *e )
 
 void QgisApp::newProfile()
 {
-  QString text = QInputDialog::getText( this, tr( "New profile name" ), tr( "New profile name" ) );
-  if ( text.isEmpty() )
+  QgsNewNameDialog dlg( QString(), QString(), QStringList(), userProfileManager()->allProfiles(), Qt::CaseInsensitive, this );
+  dlg.setConflictingNameWarning( tr( "A profile with this name already exists" ) );
+  dlg.setOverwriteEnabled( false );
+  dlg.setHintString( tr( "New profile name" ) );
+  dlg.setWindowTitle( tr( "New profile name" ) );
+
+  // Prevent from entering slashes and backslashes
+  dlg.setRegularExpression( "[^/\\\\]+" );
+
+  if ( dlg.exec() != QDialog::Accepted )
     return;
 
-  userProfileManager()->createUserProfile( text );
-  userProfileManager()->loadUserProfile( text );
+  QString profileName = dlg.name();
+  QgsError error = userProfileManager()->createUserProfile( profileName );
+  if ( error.isEmpty() )
+  {
+    userProfileManager()->loadUserProfile( profileName );
+  }
+  else
+  {
+    QMessageBox::warning( this, tr( "New Profile" ), tr( "Cannot create folder '%1'" ).arg( profileName ) );
+    return;
+  }
 }
 
 void QgisApp::onTaskCompleteShowNotify( long taskId, int status )
