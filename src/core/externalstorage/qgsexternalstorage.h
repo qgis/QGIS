@@ -158,7 +158,7 @@ class CORE_EXPORT QgsExternalStorageContent : public QObject
     void reportError( const QString &errorMsg );
 
     /**
-     * Sets the external storage status
+     * Sets the external storage \a status
      */
     void setStatus( Qgis::ContentStatus status );
 
