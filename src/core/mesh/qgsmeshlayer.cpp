@@ -63,14 +63,6 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
   {
     flags |= QgsDataProvider::FlagLoadDefaultStyle;
   }
-  if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
-  {
-    flags |= QgsDataProvider::FlagTrustDataSource;
-  }
-  if ( mReadFlags & QgsMapLayer::FlagForceReadOnly )
-  {
-    flags |= QgsDataProvider::ForceReadOnly;
-  }
   setDataSourcePrivate( meshLayerPath, baseName, providerKey, providerOptions, flags );
   resetDatasetGroupTreeItem();
   setLegend( QgsMapLayerLegend::defaultMeshLegend( this ) );
@@ -1595,6 +1587,10 @@ bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &con
   if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
   {
     flags |= QgsDataProvider::FlagTrustDataSource;
+  }
+  if ( mReadFlags & QgsMapLayer::FlagForceReadOnly )
+  {
+    flags |= QgsDataProvider::ForceReadOnly;
   }
 
   const QDomElement elemExtraDatasets = layer_node.firstChildElement( QStringLiteral( "extra-datasets" ) );
