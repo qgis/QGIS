@@ -182,14 +182,14 @@ const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerS
   return entry ? entry->second.get() : nullptr;
 }
 
-QMap<QString, QDateTime> QgsConfigCache::projects() const
+QList<QgsProject *> QgsConfigCache::projects() const
 {
-  QMap<QString, QDateTime> projects;
+  QList<QgsProject *> projects;
 
   const auto constKeys {  mProjectCache.keys() };
   for ( const auto &path : std::as_const( constKeys ) )
   {
-    projects[path] = mProjectCache[path]->first;
+    projects << mProjectCache[path]->second.get();
   }
 
   return projects;

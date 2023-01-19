@@ -121,7 +121,7 @@ class SERVER_EXPORT QgsConfigCache : public QObject
      * Returns projects currently in cache.
      * \since QGIS 3.30
      */
-    QMap<QString, QDateTime> projects() const;
+    QList<QgsProject *> projects() const;
 
   public:
     //! Initialize from settings

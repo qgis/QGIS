@@ -68,7 +68,7 @@ Returns the name of the current strategy
 .. versionadded:: 3.26
 %End
 
-    QMap<QString, QDateTime> projects() const;
+    QList<QgsProject *> projects() const;
 %Docstring
 Returns projects currently in cache.
 
