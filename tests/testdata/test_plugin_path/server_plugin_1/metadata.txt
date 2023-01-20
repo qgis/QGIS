@@ -1,0 +1,16 @@
+[general]
+name=server_plugin_1
+qgisMinimumVersion=3
+description=Test
+version=version 0.0.1
+author=Paul Blottiere
+email=blottiere.paul@gmail.com
+server=True
+changelog=
+tags=
+tracker=
+homepage=
+repository=
+category=server
+experimental=True
+about=Test
