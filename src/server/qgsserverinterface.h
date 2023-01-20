@@ -177,6 +177,12 @@ class SERVER_EXPORT QgsServerInterface
      */
     virtual void reloadSettings() = 0;
 
+    /**
+     * Returns server plugins currently loaded.
+     * \since QGIS 3.30
+     */
+    virtual QStringList plugins() = 0;
+
   private:
 #ifdef SIP_RUN
     QgsServerInterface();

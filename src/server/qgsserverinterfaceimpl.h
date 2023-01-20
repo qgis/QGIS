@@ -89,6 +89,8 @@ class SERVER_EXPORT QgsServerInterfaceImpl : public QgsServerInterface
 
     void reloadSettings() override;
 
+    virtual QStringList plugins() override;
+
   private:
 
     QString mConfigFilePath;

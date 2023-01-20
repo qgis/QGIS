@@ -19,6 +19,7 @@
 
 #include "qgsserverinterfaceimpl.h"
 #include "qgsconfigcache.h"
+#include "qgsserverplugins.h"
 
 //! Constructor
 QgsServerInterfaceImpl::QgsServerInterfaceImpl( QgsCapabilitiesCache *capCache, QgsServiceRegistry *srvRegistry, QgsServerSettings *settings )
@@ -122,4 +123,9 @@ QgsServerSettings *QgsServerInterfaceImpl::serverSettings()
 void QgsServerInterfaceImpl::reloadSettings()
 {
   mServerSettings->load();
+}
+
+QStringList QgsServerInterfaceImpl::plugins()
+{
+  return QgsServerPlugins::serverPlugins();
 }
