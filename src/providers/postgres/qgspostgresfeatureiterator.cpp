@@ -506,10 +506,54 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
   bool castToGeometry = mSource->mSpatialColType == SctGeography ||
                         mSource->mSpatialColType == SctPcPatch;
 
-  QString whereClause = QStringLiteral( "%1%2 && %3" )
-                        .arg( QgsPostgresConn::quotedIdentifier( mSource->mBoundingBoxColumn ),
-                              castToGeometry ? "::geometry" : "",
-                              qBox );
+  QString whereClause;
+  if ( mSource->mSpatialColType == SctTopoGeometry &&
+       mSource->mTopoLayerInfo.layerLevel == 0 )
+  {
+    whereClause = QStringLiteral( R"SQL(
+      id(%1) in (
+        WITH elems AS (
+
+          SELECT n.node_id id, 1 typ
+          FROM %3.node n
+          WHERE %5 in (1,4) AND n.geom && %2
+
+            UNION ALL
+
+          SELECT edge_id, 2
+          FROM %3.edge
+          WHERE %5 in (2,4) AND geom && %2
+
+            UNION ALL
+
+          SELECT face_id, 3
+          FROM %3.face
+          WHERE %5 in (3,4) AND mbr && %2
+
+        )
+        select r.topogeo_id
+        FROM %3.relation r, elems e
+        WHERE r.layer_id = %4
+          AND r.element_type = e.typ
+          AND r.element_id = e.id
+      )
+    )SQL" )
+                  // Should we bother with mBoundingBoxColumn ?
+                  .arg(
+                    QgsPostgresConn::quotedIdentifier( mSource->mGeometryColumn ),
+                    qBox,
+                    QgsPostgresConn::quotedIdentifier( mSource->mTopoLayerInfo.topologyName )
+                  )
+                  .arg( mSource->mTopoLayerInfo.layerId )
+                  .arg( mSource->mTopoLayerInfo.featureType );
+  }
+  else
+  {
+    whereClause = QStringLiteral( "%1%2 && %3" )
+                  .arg( QgsPostgresConn::quotedIdentifier( mSource->mBoundingBoxColumn ),
+                        castToGeometry ? "::geometry" : "",
+                        qBox );
+  }
 
   // For geography type, using a && filter with the geography column cast as
   // geometry prevents the use of a spatial index. So for "small" filtering
@@ -1034,6 +1078,7 @@ QgsPostgresFeatureSource::QgsPostgresFeatureSource( const QgsPostgresProvider *p
   , mQuery( p->mQuery )
   , mCrs( p->crs() )
   , mShared( p->mShared )
+  , mTopoLayerInfo( p->mTopoLayerInfo )
 {
   if ( mSqlWhereClause.startsWith( QLatin1String( " WHERE " ) ) )
     mSqlWhereClause = mSqlWhereClause.mid( 7 );

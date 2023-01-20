@@ -432,6 +432,14 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
     {
       QString topologyName;
       long    layerId;
+      int     layerLevel;
+      enum TopoFeatureType
+      {
+        Puntal = 1,
+        Lineal = 2,
+        Polygonal = 3,
+        Mixed = 4
+      } featureType;
     };
 
     TopoLayerInfo mTopoLayerInfo;
