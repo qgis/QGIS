@@ -63,6 +63,8 @@ class QgsPostgresFeatureSource final: public QgsAbstractFeatureSource
      * connection has since been destroyed. */
     QgsPostgresConn *mTransactionConnection = nullptr;
 
+    QgsPostgresProvider::TopoLayerInfo mTopoLayerInfo;
+
     friend class QgsPostgresFeatureIterator;
     friend class QgsPostgresExpressionCompiler;
 };

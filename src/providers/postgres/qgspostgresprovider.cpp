@@ -2403,10 +2403,19 @@ QString QgsPostgresProvider::paramValue( const QString &fieldValue, const QStrin
 /* private */
 bool QgsPostgresProvider::getTopoLayerInfo()
 {
-  QString sql = QString( "SELECT t.name, l.layer_id "
-                         "FROM topology.layer l, topology.topology t "
-                         "WHERE l.topology_id = t.id AND l.schema_name=%1 "
-                         "AND l.table_name=%2 AND l.feature_column=%3" )
+  QString sql = QStringLiteral( R"SQL(
+    SELECT
+      t.name,
+      l.layer_id,
+      l.level,
+      l.feature_type
+    FROM topology.layer l
+    JOIN topology.topology t ON (
+      l.topology_id = t.id
+    )
+    WHERE l.schema_name=%1
+    AND l.table_name=%2 AND l.feature_column=%3
+  )SQL" )
                 .arg( quotedValue( mSchemaName ),
                       quotedValue( mTableName ),
                       quotedValue( mGeometryColumn ) );
@@ -2426,6 +2435,23 @@ bool QgsPostgresProvider::getTopoLayerInfo()
   }
   mTopoLayerInfo.topologyName = result.PQgetvalue( 0, 0 );
   mTopoLayerInfo.layerId = result.PQgetvalue( 0, 1 ).toLong();
+  mTopoLayerInfo.layerLevel = result.PQgetvalue( 0, 2 ).toInt();
+  switch ( result.PQgetvalue( 0, 3 ).toInt() )
+  {
+    case 1:
+      mTopoLayerInfo.featureType = TopoLayerInfo::Puntal;
+      break;
+    case 2:
+      mTopoLayerInfo.featureType = TopoLayerInfo::Lineal;
+      break;
+    case 3:
+      mTopoLayerInfo.featureType = TopoLayerInfo::Polygonal;
+      break;
+    case 4:
+    default:
+      mTopoLayerInfo.featureType = TopoLayerInfo::Mixed;
+      break;
+  }
   return true;
 }
 
