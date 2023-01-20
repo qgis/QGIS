@@ -143,6 +143,13 @@ Reloads the server settings re-reading the configuration.
 .. versionadded:: 3.28
 %End
 
+    virtual QStringList plugins() = 0;
+%Docstring
+Returns server plugins currently loaded.
+
+.. versionadded:: 3.30
+%End
+
   private:
     QgsServerInterface();
 };
