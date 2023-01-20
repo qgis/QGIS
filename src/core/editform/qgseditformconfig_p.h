@@ -64,6 +64,12 @@ class QgsEditFormConfigPrivate : public QSharedData
                                  QObject::tr( "Alias" ),
                                  QgsPropertyDefinition::String )
         },
+        {
+          QgsEditFormConfig::DataDefinedProperty::Editable,
+          QgsPropertyDefinition( "dataDefinedEditable",
+                                 QObject::tr( "Editable" ),
+                                 QgsPropertyDefinition::Boolean )
+        },
       };
       return sPropertyDefinitions;
     };

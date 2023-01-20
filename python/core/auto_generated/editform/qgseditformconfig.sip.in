@@ -75,6 +75,7 @@ Constructor for TabData
       NoProperty,
       AllProperties,
       Alias,
+      Editable,
     };
 
     QgsEditFormConfig( const QgsEditFormConfig &o );
