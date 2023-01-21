@@ -356,12 +356,13 @@ Stop a rendering process. Used to clean up the internal state of this rule
 :param context: The rendering context
 %End
 
-        static QgsRuleBasedRenderer::Rule *create( QDomElement &ruleElem, QgsSymbolMap &symbolMap ) /Factory/;
+        static QgsRuleBasedRenderer::Rule *create( QDomElement &ruleElem, QgsSymbolMap &symbolMap, bool reuseId = true ) /Factory/;
 %Docstring
 Create a rule from an XML definition
 
 :param ruleElem: The XML rule element
 :param symbolMap: Symbol map
+:param reuseId: ``True`` to create a copy of the symbol, ``False`` to create a disctinct rule. Default is ``True``
 
 :return: A new rule
 %End

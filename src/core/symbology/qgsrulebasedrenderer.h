@@ -383,10 +383,11 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          *
          * \param ruleElem  The XML rule element
          * \param symbolMap Symbol map
+         * \param reuseId TRUE to create a copy of the symbol, FALSE to create a disctinct rule. Default is TRUE
          *
          * \returns A new rule
          */
-        static QgsRuleBasedRenderer::Rule *create( QDomElement &ruleElem, QgsSymbolMap &symbolMap ) SIP_FACTORY;
+        static QgsRuleBasedRenderer::Rule *create( QDomElement &ruleElem, QgsSymbolMap &symbolMap, bool reuseId = true ) SIP_FACTORY;
 
         /**
          * Returns all children rules of this rule
