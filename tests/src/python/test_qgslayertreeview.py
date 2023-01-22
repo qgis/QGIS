@@ -411,7 +411,6 @@ class TestQgsLayerTreeView(unittest.TestCase):
             groupname + '-' + self.layer5.name(),
             groupname + '-' + self.layer4.name(),
         ])
-#*****************************************************************************#
 
     def testMoveNodeUp(self):
         """Move bottom node up 1 position, without updating selection index"""
@@ -485,8 +484,6 @@ class TestQgsLayerTreeView(unittest.TestCase):
         self.assertEqual(result, False)
         self.assertEqual(rootGroup.layerOrder(), [self.layer, self.layer2, self.layer3])
         
-
-#*****************************************************************************#
     def testAddGroupActionLayer(self):
         """Test add group action on single layer"""
 
