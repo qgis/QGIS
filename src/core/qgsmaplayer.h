@@ -1088,6 +1088,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param doc the target QDomDocument
      * \param errorMsg this QString will be initialized on error
      * during the execution of writeSymbology
+     * \see exportSldStyleV2()
      */
     virtual void exportSldStyle( QDomDocument &doc, QString &errorMsg ) const;
 
@@ -1157,7 +1158,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Saves the properties of this layer to an SLD format file.
-     * \param uri uri of destination for exported SLD file.
      * \param resultFlag a reference to a flag that will be set to FALSE if
      *        the SLD file could not be generated
      * \param exportContext SLD export context
@@ -1166,7 +1166,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \see loadSldStyle()
      * \since QGIS 3.30
      */
-    virtual QString saveSldStyleV2( const QString &uri, bool &resultFlag, const QgsSldExportContext &exportContext ) const;
+    virtual QString saveSldStyleV2( bool &resultFlag SIP_OUT, const QgsSldExportContext &exportContext ) const;
 
     /**
      * Attempts to style the layer using the formatting from an SLD type file.

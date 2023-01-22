@@ -21,6 +21,7 @@
 
 #include "qgsactionmanager.h"
 #include "qgsjoindialog.h"
+#include "qgssldexportcontext.h"
 #include "qgswmsdimensiondialog.h"
 #include "qgsapplication.h"
 #include "qgsattributeactiondialog.h"
@@ -1216,7 +1217,10 @@ void QgsVectorLayerProperties::saveStyleAs()
         if ( type == QML )
           errorMessage = mLayer->saveNamedStyle( filePath, defaultLoadedFlag, dlg.styleCategories() );
         else
-          errorMessage = mLayer->saveSldStyle( filePath, defaultLoadedFlag );
+        {
+          const QgsSldExportContext sldContext { dlg.sldExportOptions(), Qgis::SldExportVendorExtension::NoVendorExtension, filePath };
+          errorMessage = mLayer->saveSldStyleV2( defaultLoadedFlag, sldContext );
+        }
 
         //reset if the default style was loaded OK only
         if ( defaultLoadedFlag )

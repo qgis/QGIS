@@ -13,9 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsfileutils.h"
 #include "qgsfillsymbollayer.h"
 #include "qgslinesymbollayer.h"
 #include "qgsmarkersymbollayer.h"
+#include "qgssldexportcontext.h"
 #include "qgssymbollayerutils.h"
 #include "qgsdxfexport.h"
 #include "qgsexpression.h"
@@ -46,6 +48,7 @@
 #include <QSvgRenderer>
 #include <QDomDocument>
 #include <QDomElement>
+#include <QtMath>
 #include <random>
 
 #ifndef QT_NO_PRINTER
@@ -399,39 +402,69 @@ void QgsSimpleFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
   // <Geometry>
   QgsSymbolLayerUtils::createGeometryElement( doc, symbolizerElem, props.value( QStringLiteral( "geom" ), QString() ).toString() );
 
-  if ( mBrushStyle != Qt::NoBrush )
+  const QgsSldExportContext context { props.value( QStringLiteral( "SldExportContext" ), QVariant::fromValue( QgsSldExportContext() ) ).value< QgsSldExportContext >() };
+
+
+  // Export to PNG
+  bool exportOk { false };
+  if ( ! context.exportFilePath().isEmpty() && context.exportOptions().testFlag( Qgis::SldExportOption::Png ) && mBrush.style() != Qt::NoBrush )
   {
-    // <Fill>
-    QDomElement fillElem = doc.createElement( QStringLiteral( "se:Fill" ) );
-    symbolizerElem.appendChild( fillElem );
-
-    QColor color { mColor };
-
-    // Apply alpha from symbol
-    bool ok;
-    const double alpha { props.value( QStringLiteral( "alpha" ), QVariant() ).toDouble( &ok ) };
-    if ( ok )
+    const QImage image { toTiledPatternImage( ) };
+    if ( ! image.isNull() )
     {
-      color.setAlphaF( color.alphaF() * alpha );
+      // <Fill>
+      QDomElement fillElem = doc.createElement( QStringLiteral( "se:Fill" ) );
+      symbolizerElem.appendChild( fillElem );
+      QDomElement graphicFillElem = doc.createElement( QStringLiteral( "se:GraphicFill" ) );
+      fillElem.appendChild( graphicFillElem );
+      QDomElement graphicElem = doc.createElement( QStringLiteral( "se:Graphic" ) );
+      graphicFillElem.appendChild( graphicElem );
+      QgsRenderContext renderContext;
+      const QFileInfo info { context.exportFilePath() };
+      QString pngPath { info.completeSuffix().isEmpty() ? context.exportFilePath() : context.exportFilePath().chopped( info.completeSuffix().length() ).append( QStringLiteral( "png" ) ) };
+      pngPath = QgsFileUtils::uniquePath( pngPath );
+      image.save( pngPath );
+      QgsSymbolLayerUtils::externalGraphicToSld( doc, graphicElem, QFileInfo( pngPath ).fileName(), QStringLiteral( "image/png" ), QColor(), image.height() );
+      exportOk = true;
     }
-    QgsSymbolLayerUtils::fillToSld( doc, fillElem, mBrushStyle, color );
   }
 
-  if ( mStrokeStyle != Qt::NoPen )
+  if ( ! exportOk )
   {
-    // <Stroke>
-    QDomElement strokeElem = doc.createElement( QStringLiteral( "se:Stroke" ) );
-    symbolizerElem.appendChild( strokeElem );
-    double strokeWidth = QgsSymbolLayerUtils::rescaleUom( mStrokeWidth, mStrokeWidthUnit, props );
-    // Apply alpha from symbol
-    bool ok;
-    const double alpha { props.value( QStringLiteral( "alpha" ), QVariant() ).toDouble( &ok ) };
-    QColor strokeColor { mStrokeColor };
-    if ( ok )
+    if ( mBrushStyle != Qt::NoBrush )
     {
-      strokeColor.setAlphaF( strokeColor.alphaF() * alpha );
+
+      QColor color { mColor };
+
+      // Apply alpha from symbol
+      bool ok;
+      const double alpha { props.value( QStringLiteral( "alpha" ), QVariant() ).toDouble( &ok ) };
+      if ( ok )
+      {
+        color.setAlphaF( color.alphaF() * alpha );
+      }
+      // <Fill>
+      QDomElement fillElem = doc.createElement( QStringLiteral( "se:Fill" ) );
+      symbolizerElem.appendChild( fillElem );
+      QgsSymbolLayerUtils::fillToSld( doc, fillElem, mBrushStyle, color );
     }
-    QgsSymbolLayerUtils::lineToSld( doc, strokeElem, mStrokeStyle, strokeColor, strokeWidth, &mPenJoinStyle );
+
+    if ( mStrokeStyle != Qt::NoPen )
+    {
+      // <Stroke>
+      QDomElement strokeElem = doc.createElement( QStringLiteral( "se:Stroke" ) );
+      symbolizerElem.appendChild( strokeElem );
+      double strokeWidth = QgsSymbolLayerUtils::rescaleUom( mStrokeWidth, mStrokeWidthUnit, props );
+      // Apply alpha from symbol
+      bool ok;
+      const double alpha { props.value( QStringLiteral( "alpha" ), QVariant() ).toDouble( &ok ) };
+      QColor strokeColor { mStrokeColor };
+      if ( ok )
+      {
+        strokeColor.setAlphaF( strokeColor.alphaF() * alpha );
+      }
+      QgsSymbolLayerUtils::lineToSld( doc, strokeElem, mStrokeStyle, strokeColor, strokeWidth, &mPenJoinStyle );
+    }
   }
 
   // <se:Displacement>
@@ -537,6 +570,27 @@ QColor QgsSimpleFillSymbolLayer::dxfBrushColor( QgsSymbolRenderContext &context 
 Qt::BrushStyle QgsSimpleFillSymbolLayer::dxfBrushStyle() const
 {
   return mBrushStyle;
+}
+
+QImage QgsSimpleFillSymbolLayer::toTiledPatternImage( ) const
+{
+  QPixmap pixmap( QSize( 32, 32 ) );
+  pixmap.fill( Qt::transparent );
+  QPainter painter;
+  painter.begin( &pixmap );
+  painter.setRenderHint( QPainter::Antialiasing );
+  QgsRenderContext renderContext = QgsRenderContext::fromQPainter( &painter );
+  renderContext.setFlag( Qgis::RenderContextFlag::RenderMapTile );
+  renderContext.setFlag( Qgis::RenderContextFlag::RenderSymbolPreview );
+  renderContext.setFlag( Qgis::RenderContextFlag::HighQualityImageTransforms );
+  renderContext.setForceVectorOutput( true );
+  QgsSymbolRenderContext symbolContext( renderContext, QgsUnitTypes::RenderUnit::RenderPixels, 1.0, false, Qgis::SymbolRenderHints() );
+
+  std::unique_ptr< QgsSimpleFillSymbolLayer > layerClone( clone() );
+  layerClone->setStrokeStyle( Qt::PenStyle::NoPen );
+  layerClone->drawPreviewIcon( symbolContext, pixmap.size() );
+  painter.end();
+  return pixmap.toImage();
 }
 
 //QgsGradientFillSymbolLayer
@@ -2515,7 +2569,7 @@ void QgsSVGFillSymbolLayer::setParameters( const QMap<QString, QgsProperty> &par
 QgsLinePatternFillSymbolLayer::QgsLinePatternFillSymbolLayer()
   : QgsImageFillSymbolLayer()
 {
-  setSubSymbol( new QgsLineSymbol() );
+  mFillLineSymbol = std::make_unique<QgsLineSymbol>( );
   QgsImageFillSymbolLayer::setSubSymbol( nullptr ); //no stroke
 }
 
@@ -2584,6 +2638,39 @@ void QgsLinePatternFillSymbolLayer::startFeatureRender( const QgsFeature &, QgsR
 void QgsLinePatternFillSymbolLayer::stopFeatureRender( const QgsFeature &, QgsRenderContext & )
 {
   // deliberately don't pass this on to subsymbol here
+}
+
+QImage QgsLinePatternFillSymbolLayer::toTiledPatternImage() const
+{
+
+  double lineAngleRads { qDegreesToRadians( mLineAngle ) };
+  double distancePx { QgsSymbolLayerUtils::rescaleUom( mDistance, mDistanceUnit, {} ) };
+
+  QSize size { static_cast<int>( distancePx ), static_cast<int>( distancePx ) };
+
+  if ( static_cast<int>( mLineAngle ) % 90 != 0 )
+  {
+    size = QSize( static_cast<int>( distancePx / std::sin( lineAngleRads ) ), static_cast<int>( distancePx / std::cos( lineAngleRads ) ) );
+  }
+
+  QPixmap pixmap( size );
+  pixmap.fill( Qt::transparent );
+  QPainter painter;
+  painter.begin( &pixmap );
+  painter.setRenderHint( QPainter::Antialiasing );
+  QgsRenderContext renderContext = QgsRenderContext::fromQPainter( &painter );
+  renderContext.setFlag( Qgis::RenderContextFlag::RenderMapTile );
+  renderContext.setFlag( Qgis::RenderContextFlag::RenderSymbolPreview );
+  renderContext.setFlag( Qgis::RenderContextFlag::HighQualityImageTransforms );
+  renderContext.setForceVectorOutput( true );
+  QgsSymbolRenderContext symbolContext( renderContext, QgsUnitTypes::RenderUnit::RenderPixels, 1.0, false, Qgis::SymbolRenderHints() );
+
+  std::unique_ptr< QgsLinePatternFillSymbolLayer > layerClone( clone() );
+  layerClone->setOffset( 0 );
+  layerClone->drawPreviewIcon( symbolContext, pixmap.size() );
+  painter.end();
+  return pixmap.toImage();
+  return QImage();
 }
 
 double QgsLinePatternFillSymbolLayer::estimateMaxBleed( const QgsRenderContext & ) const
@@ -3320,31 +3407,52 @@ void QgsLinePatternFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &eleme
   QDomElement graphicElem = doc.createElement( QStringLiteral( "se:Graphic" ) );
   graphicFillElem.appendChild( graphicElem );
 
-  //line properties must be inside the graphic definition
-  QColor lineColor = mFillLineSymbol ? mFillLineSymbol->color() : QColor();
-  double lineWidth = mFillLineSymbol ? mFillLineSymbol->width() : 0.0;
-  lineWidth = QgsSymbolLayerUtils::rescaleUom( lineWidth, mLineWidthUnit,  props );
-  double distance = QgsSymbolLayerUtils::rescaleUom( mDistance, mDistanceUnit,  props );
-  QgsSymbolLayerUtils::wellKnownMarkerToSld( doc, graphicElem, QStringLiteral( "horline" ), QColor(), lineColor, Qt::SolidLine, lineWidth, distance );
+  const QgsSldExportContext context { props.value( QStringLiteral( "SldExportContext" ), QVariant::fromValue( QgsSldExportContext() ) ).value< QgsSldExportContext >() };
 
-  // <Rotation>
-  QString angleFunc;
-  bool ok;
-  double angle = props.value( QStringLiteral( "angle" ), QStringLiteral( "0" ) ).toDouble( &ok );
-  if ( !ok )
+  // Export to PNG (TODO: SVG)
+  bool exportOk { false };
+  if ( ! context.exportFilePath().isEmpty() && context.exportOptions().testFlag( Qgis::SldExportOption::Png ) )
   {
-    angleFunc = QStringLiteral( "%1 + %2" ).arg( props.value( QStringLiteral( "angle" ), QStringLiteral( "0" ) ).toString() ).arg( mLineAngle );
+    const QImage image { toTiledPatternImage() };
+    if ( ! image.isNull() )
+    {
+      const QFileInfo info { context.exportFilePath() };
+      QString pngPath { info.completeSuffix().isEmpty() ? context.exportFilePath() : context.exportFilePath().chopped( info.completeSuffix().length() ).append( QStringLiteral( "png" ) ) };
+      pngPath = QgsFileUtils::uniquePath( pngPath );
+      image.save( pngPath );
+      QgsSymbolLayerUtils::externalGraphicToSld( doc, graphicElem, QFileInfo( pngPath ).fileName(), QStringLiteral( "image/png" ), QColor(), image.height() );
+      exportOk = true;
+    }
   }
-  else if ( !qgsDoubleNear( angle + mLineAngle, 0.0 ) )
-  {
-    angleFunc = QString::number( angle + mLineAngle );
-  }
-  QgsSymbolLayerUtils::createRotationElement( doc, graphicElem, angleFunc );
 
-  // <se:Displacement>
-  QPointF lineOffset( std::sin( mLineAngle ) * mOffset, std::cos( mLineAngle ) * mOffset );
-  lineOffset = QgsSymbolLayerUtils::rescaleUom( lineOffset, mOffsetUnit, props );
-  QgsSymbolLayerUtils::createDisplacementElement( doc, graphicElem, lineOffset );
+  if ( ! exportOk )
+  {
+    //line properties must be inside the graphic definition
+    QColor lineColor = mFillLineSymbol ? mFillLineSymbol->color() : QColor();
+    double lineWidth = mFillLineSymbol ? mFillLineSymbol->width() : 0.0;
+    lineWidth = QgsSymbolLayerUtils::rescaleUom( lineWidth, mLineWidthUnit,  props );
+    double distance = QgsSymbolLayerUtils::rescaleUom( mDistance, mDistanceUnit,  props );
+    QgsSymbolLayerUtils::wellKnownMarkerToSld( doc, graphicElem, QStringLiteral( "horline" ), QColor(), lineColor, Qt::SolidLine, lineWidth, distance );
+
+    // <Rotation>
+    QString angleFunc;
+    bool ok;
+    double angle = props.value( QStringLiteral( "angle" ), QStringLiteral( "0" ) ).toDouble( &ok );
+    if ( !ok )
+    {
+      angleFunc = QStringLiteral( "%1 + %2" ).arg( props.value( QStringLiteral( "angle" ), QStringLiteral( "0" ) ).toString() ).arg( mLineAngle );
+    }
+    else if ( !qgsDoubleNear( angle + mLineAngle, 0.0 ) )
+    {
+      angleFunc = QString::number( angle + mLineAngle );
+    }
+    QgsSymbolLayerUtils::createRotationElement( doc, graphicElem, angleFunc );
+
+    // <se:Displacement>
+    QPointF lineOffset( std::sin( mLineAngle ) * mOffset, std::cos( mLineAngle ) * mOffset );
+    lineOffset = QgsSymbolLayerUtils::rescaleUom( lineOffset, mOffsetUnit, props );
+    QgsSymbolLayerUtils::createDisplacementElement( doc, graphicElem, lineOffset );
+  }
 }
 
 QString QgsLinePatternFillSymbolLayer::ogrFeatureStyleWidth( double widthScaleFactor ) const
@@ -3463,7 +3571,7 @@ QgsSymbolLayer *QgsLinePatternFillSymbolLayer::createFromSld( QDomElement &eleme
 QgsPointPatternFillSymbolLayer::QgsPointPatternFillSymbolLayer()
   : QgsImageFillSymbolLayer()
 {
-  setSubSymbol( new QgsMarkerSymbol() );
+  mMarkerSymbol = std::make_unique<QgsMarkerSymbol>();
   QgsImageFillSymbolLayer::setSubSymbol( nullptr ); //no stroke
 }
 
@@ -4247,34 +4355,88 @@ void QgsPointPatternFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &elem
 
     QgsSymbolLayer *layer = mMarkerSymbol->symbolLayer( symbolLayerIdx );
 
-    // Converts to GeoServer "graphic-margin": symbol size must be subtracted from distance and then divided by 2
-    const double markerSize { mMarkerSymbol->size() };
+    const QgsSldExportContext context { props.value( QStringLiteral( "SldExportContext" ), QVariant::fromValue( QgsSldExportContext() ) ).value< QgsSldExportContext >() };
 
-    // store distanceX, distanceY, displacementX, displacementY in a <VendorOption>
-    double dx  = QgsSymbolLayerUtils::rescaleUom( mDistanceX, mDistanceXUnit, props );
-    double dy  = QgsSymbolLayerUtils::rescaleUom( mDistanceY, mDistanceYUnit, props );
-    // From: https://docs.geoserver.org/stable/en/user/styling/sld/extensions/margins.html
-    //       top-bottom,right-left (two values, top and bottom sharing the same value)
-    const QString marginSpec = QString( "%1 %2" ).arg( qgsDoubleToString( ( dy - markerSize ) / 2, 2 ), qgsDoubleToString( ( dx - markerSize ) / 2, 2 ) );
-
-    QDomElement graphicMarginElem = QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "graphic-margin" ), marginSpec );
-    symbolizerElem.appendChild( graphicMarginElem );
-
-    if ( QgsMarkerSymbolLayer *markerLayer = dynamic_cast<QgsMarkerSymbolLayer *>( layer ) )
+    // Export to PNG (TODO: SVG)
+    bool exportOk { false };
+    if ( ! context.exportFilePath().isEmpty() && context.exportOptions().testFlag( Qgis::SldExportOption::Png ) )
     {
-      markerLayer->writeSldMarker( doc, graphicFillElem, props );
+      const QImage image { toTiledPatternImage( ) };
+      if ( ! image.isNull() )
+      {
+        QDomElement graphicElem = doc.createElement( QStringLiteral( "se:Graphic" ) );
+        graphicFillElem.appendChild( graphicElem );
+        const QFileInfo info { context.exportFilePath() };
+        QString pngPath { info.completeSuffix().isEmpty() ? context.exportFilePath() : context.exportFilePath().chopped( info.completeSuffix().length() ).append( QStringLiteral( "png" ) ) };
+        pngPath = QgsFileUtils::uniquePath( pngPath );
+        image.save( pngPath );
+        QgsSymbolLayerUtils::externalGraphicToSld( doc, graphicElem, QFileInfo( pngPath ).fileName(), QStringLiteral( "image/png" ), QColor(), image.height() );
+        exportOk = true;
+      }
     }
-    else if ( layer )
+
+    if ( ! exportOk )
     {
-      QString errorMsg = QStringLiteral( "QgsMarkerSymbolLayer expected, %1 found. Skip it." ).arg( layer->layerType() );
-      graphicFillElem.appendChild( doc.createComment( errorMsg ) );
-    }
-    else
-    {
-      QString errorMsg = QStringLiteral( "Missing point pattern symbol layer. Skip it." );
-      graphicFillElem.appendChild( doc.createComment( errorMsg ) );
+      // Converts to GeoServer "graphic-margin": symbol size must be subtracted from distance and then divided by 2
+      const double markerSize { mMarkerSymbol->size() };
+
+      // store distanceX, distanceY, displacementX, displacementY in a <VendorOption>
+      double dx  = QgsSymbolLayerUtils::rescaleUom( mDistanceX, mDistanceXUnit, props );
+      double dy  = QgsSymbolLayerUtils::rescaleUom( mDistanceY, mDistanceYUnit, props );
+      // From: https://docs.geoserver.org/stable/en/user/styling/sld/extensions/margins.html
+      //       top-bottom,right-left (two values, top and bottom sharing the same value)
+      const QString marginSpec = QString( "%1 %2" ).arg( qgsDoubleToString( ( dy - markerSize ) / 2, 2 ), qgsDoubleToString( ( dx - markerSize ) / 2, 2 ) );
+
+      QDomElement graphicMarginElem = QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "graphic-margin" ), marginSpec );
+      symbolizerElem.appendChild( graphicMarginElem );
+
+      if ( QgsMarkerSymbolLayer *markerLayer = dynamic_cast<QgsMarkerSymbolLayer *>( layer ) )
+      {
+        markerLayer->writeSldMarker( doc, graphicFillElem, props );
+      }
+      else if ( layer )
+      {
+        QString errorMsg = QStringLiteral( "QgsMarkerSymbolLayer expected, %1 found. Skip it." ).arg( layer->layerType() );
+        graphicFillElem.appendChild( doc.createComment( errorMsg ) );
+      }
+      else
+      {
+        QString errorMsg = QStringLiteral( "Missing point pattern symbol layer. Skip it." );
+        graphicFillElem.appendChild( doc.createComment( errorMsg ) );
+      }
     }
   }
+}
+
+QImage QgsPointPatternFillSymbolLayer::toTiledPatternImage() const
+{
+
+  double angleRads { qDegreesToRadians( mAngle ) };
+
+  int distanceXPx { static_cast<int>( QgsSymbolLayerUtils::rescaleUom( mDistanceX, mDistanceXUnit, {} ) ) };
+  int distanceYPx { static_cast<int>( QgsSymbolLayerUtils::rescaleUom( mDistanceY, mDistanceYUnit, {} ) ) };
+
+  const QSize size { QgsSymbolLayerUtils::tileSize( distanceXPx, distanceYPx, angleRads ) };
+
+  QPixmap pixmap( size );
+  pixmap.fill( Qt::transparent );
+  QPainter painter;
+  painter.begin( &pixmap );
+  painter.setRenderHint( QPainter::Antialiasing );
+  QgsRenderContext renderContext = QgsRenderContext::fromQPainter( &painter );
+  renderContext.setFlag( Qgis::RenderContextFlag::RenderMapTile );
+  renderContext.setFlag( Qgis::RenderContextFlag::RenderSymbolPreview );
+  renderContext.setFlag( Qgis::RenderContextFlag::HighQualityImageTransforms );
+  renderContext.setForceVectorOutput( true );
+  QgsSymbolRenderContext symbolContext( renderContext, QgsUnitTypes::RenderUnit::RenderPixels, 1.0, false, Qgis::SymbolRenderHints() );
+
+  std::unique_ptr< QgsPointPatternFillSymbolLayer > layerClone( clone() );
+
+  layerClone->setAngle( qRadiansToDegrees( angleRads ) );
+
+  layerClone->drawPreviewIcon( symbolContext, pixmap.size() );
+  painter.end();
+  return pixmap.toImage();
 }
 
 QgsSymbolLayer *QgsPointPatternFillSymbolLayer::createFromSld( QDomElement &element )
@@ -4310,92 +4472,102 @@ QgsSymbolLayer *QgsPointPatternFillSymbolLayer::createFromSld( QDomElement &elem
   std::unique_ptr< QgsPointPatternFillSymbolLayer > pointPatternFillSl = std::make_unique< QgsPointPatternFillSymbolLayer >();
   pointPatternFillSl->setSubSymbol( marker.release() );
 
+  auto distanceParser = [ & ]( const QStringList & values )
+  {
+
+    // This may not be correct in all cases, TODO: check "uom"
+    pointPatternFillSl->setDistanceXUnit( QgsUnitTypes::RenderUnit::RenderPixels );
+    pointPatternFillSl->setDistanceYUnit( QgsUnitTypes::RenderUnit::RenderPixels );
+
+    switch ( values.count( ) )
+    {
+      case 1: // top-right-bottom-left (single value for all four margins)
+      {
+        bool ok;
+        const double v { values.at( 0 ).toDouble( &ok ) };
+        if ( ok )
+        {
+          pointPatternFillSl->setDistanceX( v * 2 + markerSize );
+          pointPatternFillSl->setDistanceY( v * 2 + markerSize );
+        }
+        break;
+      }
+      case 2: // top-bottom,right-left (two values, top and bottom sharing the same value)
+      {
+        bool ok;
+        const double vX { values.at( 1 ).toDouble( &ok ) };
+        if ( ok )
+        {
+          pointPatternFillSl->setDistanceX( vX * 2 + markerSize );
+        }
+        const double vY { values.at( 0 ).toDouble( &ok ) };
+        if ( ok )
+        {
+          pointPatternFillSl->setDistanceY( vY * 2 + markerSize );
+        }
+        break;
+      }
+      case 3: // top,right-left,bottom (three values, with right and left sharing the same value)
+      {
+        bool ok;
+        const double vX { values.at( 1 ).toDouble( &ok ) };
+        if ( ok )
+        {
+          pointPatternFillSl->setDistanceX( vX * 2 + markerSize );
+        }
+        const double vYt { values.at( 0 ).toDouble( &ok ) };
+        if ( ok )
+        {
+          const double vYb { values.at( 2 ).toDouble( &ok ) };
+          if ( ok )
+          {
+            pointPatternFillSl->setDistanceY( ( vYt + vYb ) + markerSize );
+          }
+        }
+        break;
+      }
+      case 4: // top,right,bottom,left (one explicit value per margin)
+      {
+        bool ok;
+        const double vYt { values.at( 0 ).toDouble( &ok ) };
+        if ( ok )
+        {
+          const double vYb { values.at( 2 ).toDouble( &ok ) };
+          if ( ok )
+          {
+            pointPatternFillSl->setDistanceY( ( vYt + vYb ) + markerSize );
+          }
+        }
+        const double vXr { values.at( 1 ).toDouble( &ok ) };
+        if ( ok )
+        {
+          const double vXl { values.at( 3 ).toDouble( &ok ) };
+          if ( ok )
+          {
+            pointPatternFillSl->setDistanceX( ( vXr + vXl ) + markerSize );
+          }
+        }
+        break;
+      }
+      default:
+        break;
+    }
+  };
+
   // Set distance X and Y from vendor options
   QgsStringMap vendorOptions = QgsSymbolLayerUtils::getVendorOptionList( element );
   for ( QgsStringMap::iterator it = vendorOptions.begin(); it != vendorOptions.end(); ++it )
   {
-    if ( it.key() == QLatin1String( "graphic-margin" ) )
+    // Legacy
+    if ( it.key() == QLatin1String( "distance" ) )
     {
+      distanceParser( it.value().split( ',' ) );
+    }
+    // GeoServer
+    else if ( it.key() == QLatin1String( "graphic-margin" ) )
+    {
+      distanceParser( it.value().split( ' ' ) );
 
-      // This may not be correct in all cases, TODO: check "uom"
-      pointPatternFillSl->setDistanceXUnit( QgsUnitTypes::RenderUnit::RenderPixels );
-      pointPatternFillSl->setDistanceYUnit( QgsUnitTypes::RenderUnit::RenderPixels );
-
-      const QStringList values = it.value().split( ' ' );
-
-      switch ( values.count( ) )
-      {
-        case 1: // top-right-bottom-left (single value for all four margins)
-        {
-          bool ok;
-          const double v { values.at( 0 ).toDouble( &ok ) };
-          if ( ok )
-          {
-            pointPatternFillSl->setDistanceX( v * 2 + markerSize );
-            pointPatternFillSl->setDistanceY( v * 2 + markerSize );
-          }
-          break;
-        }
-        case 2: // top-bottom,right-left (two values, top and bottom sharing the same value)
-        {
-          bool ok;
-          const double vX { values.at( 1 ).toDouble( &ok ) };
-          if ( ok )
-          {
-            pointPatternFillSl->setDistanceX( vX * 2 + markerSize );
-          }
-          const double vY { values.at( 0 ).toDouble( &ok ) };
-          if ( ok )
-          {
-            pointPatternFillSl->setDistanceY( vY * 2 + markerSize );
-          }
-          break;
-        }
-        case 3: // top,right-left,bottom (three values, with right and left sharing the same value)
-        {
-          bool ok;
-          const double vX { values.at( 1 ).toDouble( &ok ) };
-          if ( ok )
-          {
-            pointPatternFillSl->setDistanceX( vX * 2 + markerSize );
-          }
-          const double vYt { values.at( 0 ).toDouble( &ok ) };
-          if ( ok )
-          {
-            const double vYb { values.at( 2 ).toDouble( &ok ) };
-            if ( ok )
-            {
-              pointPatternFillSl->setDistanceY( ( vYt + vYb ) + markerSize );
-            }
-          }
-          break;
-        }
-        case 4: // top,right,bottom,left (one explicit value per margin)
-        {
-          bool ok;
-          const double vYt { values.at( 0 ).toDouble( &ok ) };
-          if ( ok )
-          {
-            const double vYb { values.at( 2 ).toDouble( &ok ) };
-            if ( ok )
-            {
-              pointPatternFillSl->setDistanceY( ( vYt + vYb ) + markerSize );
-            }
-          }
-          const double vXr { values.at( 1 ).toDouble( &ok ) };
-          if ( ok )
-          {
-            const double vXl { values.at( 3 ).toDouble( &ok ) };
-            if ( ok )
-            {
-              pointPatternFillSl->setDistanceX( ( vXr + vXl ) + markerSize );
-            }
-          }
-          break;
-        }
-        default:
-          break;
-      }
     }
   }
   return pointPatternFillSl.release();

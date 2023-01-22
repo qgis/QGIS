@@ -1313,6 +1313,19 @@ The ``rings`` argument optionally specifies a list of polygon rings to render as
     void setAngle( double angle );
     double angle() const;
 
+    virtual QImage toTiledPatternImage( ) const;
+%Docstring
+Renders the symbol layer as an image that can be used as a seamless pattern fill
+for polygons, this method is used by SLD export to generate image tiles for
+ExternalGraphic polygon fills.
+
+The default implementation returns a null image.
+
+:return: the tile image (not necessarily a square) or a null image if not implemented.
+
+.. versionadded:: 3.30
+%End
+
   protected:
     QgsFillSymbolLayer( bool locked = false );
     void _renderPolygon( QPainter *p, const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );

@@ -966,6 +966,8 @@ Export the properties of this layer as SLD style in a QDomDocument
 :param doc: the target QDomDocument
 :param errorMsg: this QString will be initialized on error
                  during the execution of writeSymbology
+
+.. seealso:: :py:func:`exportSldStyleV2`
 %End
 
     virtual void exportSldStyleV2( QDomDocument &doc, QString &errorMsg, const QgsSldExportContext &exportContext ) const;
@@ -1047,16 +1049,14 @@ Saves the properties of this layer to an SLD format file.
 .. seealso:: :py:func:`saveSldStyleV2`
 %End
 
-    virtual QString saveSldStyleV2( const QString &uri, bool &resultFlag, const QgsSldExportContext &exportContext ) const;
+    virtual QString saveSldStyleV2( bool &resultFlag /Out/, const QgsSldExportContext &exportContext ) const;
 %Docstring
 Saves the properties of this layer to an SLD format file.
 
-:param uri: uri of destination for exported SLD file.
-:param resultFlag: a reference to a flag that will be set to ``False`` if
-                   the SLD file could not be generated
 :param exportContext: SLD export context
 
-:return: a string with any status or error messages
+:return: - a string with any status or error messages
+         - resultFlag: a reference to a flag that will be set to ``False`` if the SLD file could not be generated
 
 .. seealso:: :py:func:`loadSldStyle`
 

@@ -63,6 +63,12 @@ class GUI_EXPORT QgsVectorLayerSaveStyleDialog : public QDialog, private Ui::Qgs
 
     const QListWidget *stylesWidget( );
 
+    /**
+     * Returns the SLD export options.
+     * \since QGIS 3.30
+     */
+    Qgis::SldExportOptions sldExportOptions( ) const;
+
   public slots:
     void accept() override;
 

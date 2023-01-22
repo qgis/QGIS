@@ -186,6 +186,8 @@ Returns the map unit scale for the fill's offset.
 
     virtual Qt::BrushStyle dxfBrushStyle() const;
 
+    virtual QImage toTiledPatternImage( ) const;
+
 
   protected:
 
@@ -1547,6 +1549,8 @@ ownership of the returned object.
 
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 
+    virtual QImage toTiledPatternImage( ) const;
+
     virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
 
 
@@ -1841,6 +1845,8 @@ Caller takes ownership of the returned symbol layer.
     virtual QgsPointPatternFillSymbolLayer *clone() const /Factory/;
 
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
+
+    virtual QImage toTiledPatternImage( ) const;
 
     virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
 
