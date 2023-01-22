@@ -29,6 +29,7 @@ from qgis.gui import (
 from qgis.testing import start_app, unittest
 from utilities import (unitTestDataPath)
 from qgis.PyQt.QtCore import QStringListModel
+from qgis.PyQt.QtCore import QItemSelectionModel
 from qgis.PyQt.QtTest import QSignalSpy
 
 from qgis.PyQt.Qt import PYQT_VERSION_STR
@@ -414,7 +415,7 @@ class TestQgsLayerTreeView(unittest.TestCase):
 
     def testMoveNodeUp(self):
         """Move bottom node up 1 position, without updating selection index"""
-        
+
         view = QgsLayerTreeView()
         view.setModel(self.model)
         if USE_MODEL_TESTER:
@@ -429,10 +430,10 @@ class TestQgsLayerTreeView(unittest.TestCase):
         self.assertEqual(result, True)
         self.assertEqual(rootGroup.layerOrder(), [self.layer, self.layer3, self.layer2])
         self.assertEqual(view.selectionModel().currentIndex().row(), 2)
-        
+
     def testMoveNodeDown(self):
         """Move top node down 1 position, without updating selection index"""
-        
+
         view = QgsLayerTreeView()
         view.setModel(self.model)
         if USE_MODEL_TESTER:
@@ -451,7 +452,7 @@ class TestQgsLayerTreeView(unittest.TestCase):
     def testAttemptMoveTopItemUp(self):
         """Attempt to move the top node up, should return False and
         layer order should remain unchanged"""
-        
+
         view = QgsLayerTreeView()
         view.setModel(self.model)
         if USE_MODEL_TESTER:
@@ -465,11 +466,11 @@ class TestQgsLayerTreeView(unittest.TestCase):
         result = actions.moveUp(True)
         self.assertEqual(result, False)
         self.assertEqual(rootGroup.layerOrder(), [self.layer, self.layer2, self.layer3])
-        
+
     def testAttemptMoveBottomItemDown(self):
         """Attempt to move the bottom node down, should return False and
         layer order should remain unchanged"""
-        
+
         view = QgsLayerTreeView()
         view.setModel(self.model)
         if USE_MODEL_TESTER:
@@ -487,7 +488,7 @@ class TestQgsLayerTreeView(unittest.TestCase):
     def testMultipleNodesSelected(self):
         """Attempt move with multiple nodes selected, should return False and
         layer order should remain unchanged"""
-        
+
         view = QgsLayerTreeView()
         view.setModel(self.model)
         if USE_MODEL_TESTER:
@@ -503,12 +504,12 @@ class TestQgsLayerTreeView(unittest.TestCase):
         result = actions.moveDown(True)
         print(result == False)
         print(root.layerOrder() == [self.layer, self.layer2, self.layer3])
-    
+
     def testMoveNodeUpThroughGroup(self):
         """Move a layer node from last position in the layer tree,
         through a group, to first position in the layer tree, updating the
         selection index each time"""
-        
+
         view = QgsLayerTreeView()
         view.setModel(self.model)
         if USE_MODEL_TESTER:
@@ -549,12 +550,12 @@ class TestQgsLayerTreeView(unittest.TestCase):
         self.assertEqual(result, True)
         self.assertEqual(self.nodeOrder(rootGroup.children()), ['layer5',
                 'layer1', 'layer2', 'group', 'group-layer3', 'group-layer4'])
-                                
+
     def testMoveNodeDownThroughGroup(self):
         """Move a layer node from first position in the layer tree,
         through a group, to last position in the layer tree, updating the
         selection index each time"""
-        
+
         view = QgsLayerTreeView()
         view.setModel(self.model)
         if USE_MODEL_TESTER:
