@@ -483,7 +483,119 @@ class TestQgsLayerTreeView(unittest.TestCase):
         result = actions.moveDown(True)
         self.assertEqual(result, False)
         self.assertEqual(rootGroup.layerOrder(), [self.layer, self.layer2, self.layer3])
+  
+    def testMultipleNodesSelected(self):
+        """Attempt move with multiple nodes selected, should return False and
+        layer order should remain unchanged"""
         
+        view = QgsLayerTreeView()
+        view.setModel(self.model)
+        if USE_MODEL_TESTER:
+            proxy_tester = QAbstractItemModelTester(view.model())
+        actions = QgsLayerTreeViewDefaultActions(view)
+        root = self.project.layerTreeRoot()
+        print(root.layerOrder() == [self.layer, self.layer2, self.layer3])
+        nodeIndex1 = view.node2index(root.children()[0])
+        view.selectionModel().setCurrentIndex(nodeIndex1, QItemSelectionModel.Select)
+        nodeIndex2 = view.node2index(root.children()[1])
+        view.selectionModel().setCurrentIndex(nodeIndex2, QItemSelectionModel.Select)
+        print(view.selectionModel().selectedIndexes() == [nodeIndex1, nodeIndex2])
+        result = actions.moveDown(True)
+        print(result == False)
+        print(root.layerOrder() == [self.layer, self.layer2, self.layer3])
+    
+    def testMoveNodeUpThroughGroup(self):
+        """Move a layer node from last position in the layer tree,
+        through a group, to first position in the layer tree, updating the
+        selection index each time"""
+        
+        view = QgsLayerTreeView()
+        view.setModel(self.model)
+        if USE_MODEL_TESTER:
+            proxy_tester = QAbstractItemModelTester(view.model())
+        actions = QgsLayerTreeViewDefaultActions(view)
+        rootGroup = self.project.layerTreeRoot()
+        group = rootGroup.addGroup(self.groupname)
+        group.addLayer(self.layer3)
+        group.addLayer(self.layer4)
+        rootGroup.removeChildNode(rootGroup.children()[2])
+        rootGroup.addLayer(self.layer5)
+        self.assertEqual(self.nodeOrder(rootGroup.children()), ['layer1',
+                'layer2', 'group', 'group-layer3', 'group-layer4', 'layer5'])
+        nodeIndex = view.node2index(rootGroup.children()[3])
+        view.selectionModel().setCurrentIndex(nodeIndex, QItemSelectionModel.Select)
+        self.assertEqual(view.selectionModel().currentIndex().row(), 3)
+        result = actions.moveUp(True)
+        self.assertEqual(result, True)
+        self.assertEqual(self.nodeOrder(rootGroup.children()), ['layer1',
+                'layer2', 'group', 'group-layer3', 'group-layer4', 'group-layer5'])
+        result = actions.moveUp(True)
+        self.assertEqual(result, True)
+        self.assertEqual(self.nodeOrder(rootGroup.children()), ['layer1',
+                'layer2', 'group', 'group-layer3', 'group-layer5', 'group-layer4'])
+        result = actions.moveUp(True)
+        self.assertEqual(result, True)
+        self.assertEqual(self.nodeOrder(rootGroup.children()), ['layer1',
+                'layer2', 'group', 'group-layer5', 'group-layer3', 'group-layer4'])
+        result = actions.moveUp(True)
+        self.assertEqual(result, True)
+        self.assertEqual(self.nodeOrder(rootGroup.children()), ['layer1',
+                'layer2', 'layer5', 'group', 'group-layer3', 'group-layer4'])
+        result = actions.moveUp(True)
+        self.assertEqual(result, True)
+        self.assertEqual(self.nodeOrder(rootGroup.children()), ['layer1',
+                'layer5', 'layer2', 'group', 'group-layer3', 'group-layer4'])
+        result = actions.moveUp(True)
+        self.assertEqual(result, True)
+        self.assertEqual(self.nodeOrder(rootGroup.children()), ['layer5',
+                'layer1', 'layer2', 'group', 'group-layer3', 'group-layer4'])
+                                
+    def testMoveNodeDownThroughGroup(self):
+        """Move a layer node from first position in the layer tree,
+        through a group, to last position in the layer tree, updating the
+        selection index each time"""
+        
+        view = QgsLayerTreeView()
+        view.setModel(self.model)
+        if USE_MODEL_TESTER:
+            proxy_tester = QAbstractItemModelTester(view.model())
+        actions = QgsLayerTreeViewDefaultActions(view)
+        rootGroup = self.project.layerTreeRoot()
+        group = rootGroup.addGroup(self.groupname)
+        group.addLayer(self.layer3)
+        group.addLayer(self.layer4)
+        rootGroup.removeChildNode(rootGroup.children()[2])
+        rootGroup.addLayer(self.layer5)
+        self.assertEqual(self.nodeOrder(rootGroup.children()), ['layer1',
+                'layer2', 'group', 'group-layer3', 'group-layer4', 'layer5'])
+        nodeIndex = view.node2index(root.children()[0])
+        view.selectionModel().setCurrentIndex(nodeIndex, QItemSelectionModel.Select)
+        self.assertEqual(view.selectionModel().currentIndex().row(), 0)
+        result = actions.moveDown(True)
+        self.assertEqual(result, True)
+        self.assertEqual(self.nodeOrder(rootGroup.children()), ['layer2',
+                'layer1', 'group', 'group-layer3', 'group-layer4', 'layer5'])
+        result = actions.moveDown(True)
+        self.assertEqual(result, True)
+        self.assertEqual(self.nodeOrder(rootGroup.children()), ['layer2',
+                'group', 'group-layer1', 'group-layer3', 'group-layer4', 'layer5'])
+        result = actions.moveDown(True)
+        self.assertEqual(result, True)
+        self.assertEqual(self.nodeOrder(rootGroup.children()), ['layer2',
+                'group', 'group-layer3', 'group-layer1', 'group-layer4', 'layer5'])
+        result = actions.moveDown(True)
+        self.assertEqual(result, True)
+        self.assertEqual(self.nodeOrder(rootGroup.children()), ['layer2',
+                'group', 'group-layer3', 'group-layer4', 'group-layer1', 'layer5'])
+        result = actions.moveDown(True)
+        self.assertEqual(result, True)
+        self.assertEqual(self.nodeOrder(rootGroup.children()), ['layer2',
+                'group', 'group-layer3', 'group-layer4', 'layer1', 'layer5'])
+        result = actions.moveDown(True)
+        self.assertEqual(result, True)
+        self.assertEqual(self.nodeOrder(rootGroup.children()), ['layer2',
+                'group', 'group-layer3', 'group-layer4', 'layer5', 'layer1'])
+
     def testAddGroupActionLayer(self):
         """Test add group action on single layer"""
 
@@ -766,6 +878,6 @@ class TestQgsLayerTreeView(unittest.TestCase):
         tree_layer2_index = view.node2sourceIndex(node2)
         self.assertEqual(tree_layer2_index, view.node2sourceIndex(node2))
 
-'''
+
 if __name__ == '__main__':
     unittest.main()
