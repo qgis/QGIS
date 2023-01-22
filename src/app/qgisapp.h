@@ -2645,6 +2645,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *mFilterLegendByMapContentAction = nullptr;
     QAction *mFilterLegendToggleShowPrivateLayersAction = nullptr;
     QAction *mActionStyleDock = nullptr;
+    QAction *mActionMoveUp = nullptr;
+    QAction *mActionMoveDown = nullptr;
 
     QgsLegendFilterButton *mLegendExpressionFilterButton = nullptr;
 

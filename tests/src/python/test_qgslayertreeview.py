@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLayerTreeView.
-
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
@@ -412,7 +411,82 @@ class TestQgsLayerTreeView(unittest.TestCase):
             groupname + '-' + self.layer5.name(),
             groupname + '-' + self.layer4.name(),
         ])
+#*****************************************************************************#
 
+    def testMoveNodeUp(self):
+        """Move bottom node up 1 position, without updating selection index"""
+        
+        view = QgsLayerTreeView()
+        view.setModel(self.model)
+        if USE_MODEL_TESTER:
+            proxy_tester = QAbstractItemModelTester(view.model())
+        actions = QgsLayerTreeViewDefaultActions(view)
+        rootGroup = self.project.layerTreeRoot()
+        self.assertEqual(rootGroup.layerOrder(), [self.layer, self.layer2, self.layer3])
+        nodeIndex = view.node2index(rootGroup.children()[2])
+        view.selectionModel().setCurrentIndex(nodeIndex, QItemSelectionModel.Select)
+        self.assertEqual(view.selectionModel().currentIndex().row(), 2)
+        result = actions.moveUp(False)
+        self.assertEqual(result, True)
+        self.assertEqual(rootGroup.layerOrder(), [self.layer, self.layer3, self.layer2])
+        self.assertEqual(view.selectionModel().currentIndex().row(), 2)
+        
+    def testMoveNodeDown(self):
+        """Move top node down 1 position, without updating selection index"""
+        
+        view = QgsLayerTreeView()
+        view.setModel(self.model)
+        if USE_MODEL_TESTER:
+            proxy_tester = QAbstractItemModelTester(view.model())
+        actions = QgsLayerTreeViewDefaultActions(view)
+        rootGroup = self.project.layerTreeRoot()
+        self.assertEqual(rootGroup.layerOrder(), [self.layer, self.layer2, self.layer3])
+        nodeIndex = view.node2index(rootGroup.children()[0])
+        view.selectionModel().setCurrentIndex(nodeIndex, QItemSelectionModel.Select)
+        self.assertEqual(view.selectionModel().currentIndex().row(), 0)
+        result = actions.moveDown(False)
+        self.assertEqual(result, True)
+        self.assertEqual(rootGroup.layerOrder(), [self.layer2, self.layer, self.layer3])
+        self.assertEqual(view.selectionModel().currentIndex().row(), 0)
+
+    def testAttemptMoveTopItemUp(self):
+        """Attempt to move the top node up, should return False and
+        layer order should remain unchanged"""
+        
+        view = QgsLayerTreeView()
+        view.setModel(self.model)
+        if USE_MODEL_TESTER:
+            proxy_tester = QAbstractItemModelTester(view.model())
+        actions = QgsLayerTreeViewDefaultActions(view)
+        rootGroup = self.project.layerTreeRoot()
+        self.assertEqual(rootGroup.layerOrder(), [self.layer, self.layer2, self.layer3])
+        nodeIndex = view.node2index(rootGroup.children()[0])
+        view.selectionModel().setCurrentIndex(nodeIndex, QItemSelectionModel.Select)
+        self.assertEqual(view.selectionModel().currentIndex().row(), 0)
+        result = actions.moveUp(True)
+        self.assertEqual(result, False)
+        self.assertEqual(rootGroup.layerOrder(), [self.layer, self.layer2, self.layer3])
+        
+    def testAttemptMoveBottomItemDown(self):
+        """Attempt to move the bottom node down, should return False and
+        layer order should remain unchanged"""
+        
+        view = QgsLayerTreeView()
+        view.setModel(self.model)
+        if USE_MODEL_TESTER:
+            proxy_tester = QAbstractItemModelTester(view.model())
+        actions = QgsLayerTreeViewDefaultActions(view)
+        rootGroup = self.project.layerTreeRoot()
+        self.assertEqual(rootGroup.layerOrder(), [self.layer, self.layer2, self.layer3])
+        nodeIndex = view.node2index(rootGroup.children()[2])
+        view.selectionModel().setCurrentIndex(nodeIndex, QItemSelectionModel.Select)
+        self.assertEqual(view.selectionModel().currentIndex().row(), 2)
+        result = actions.moveDown(True)
+        self.assertEqual(result, False)
+        self.assertEqual(rootGroup.layerOrder(), [self.layer, self.layer2, self.layer3])
+        
+
+#*****************************************************************************#
     def testAddGroupActionLayer(self):
         """Test add group action on single layer"""
 
@@ -695,6 +769,6 @@ class TestQgsLayerTreeView(unittest.TestCase):
         tree_layer2_index = view.node2sourceIndex(node2)
         self.assertEqual(tree_layer2_index, view.node2sourceIndex(node2))
 
-
+'''
 if __name__ == '__main__':
     unittest.main()

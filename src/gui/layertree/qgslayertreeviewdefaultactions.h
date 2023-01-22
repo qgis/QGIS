@@ -98,6 +98,8 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
      * \since QGIS 3.14
      */
     QAction *actionMoveToBottom( QObject *parent = nullptr ) SIP_FACTORY;
+    QAction *actionMoveUp( QObject *parent = nullptr ) SIP_FACTORY;
+    QAction *actionMoveDown( QObject *parent = nullptr ) SIP_FACTORY;
     QAction *actionGroupSelected( QObject *parent = nullptr ) SIP_FACTORY;
 
     /**
@@ -129,6 +131,18 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
   public slots:
     void showInOverview();
     void addGroup();
+
+    /**
+     * Moves selected layer / group node up one position the layer panel
+     * or, if the node above is a group or sub-group, to the bottom of that group.
+     */
+    bool moveUp( bool updateSelection );
+
+    /**
+     * Moves selected layer / group node down one position the layer panel
+     * or, if the node below is a group or sub-group, to the top of that group.
+     */
+    bool moveDown( bool updateSelection );
 
   protected slots:
     void removeGroupOrLayer();
@@ -178,6 +192,7 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
      * \since QGIS 3.14
      */
     void moveToBottom();
+
     void groupSelected();
 
     /**

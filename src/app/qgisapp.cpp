@@ -4835,6 +4835,18 @@ void QgisApp::initLayerTreeView()
   actionCollapseAll->setToolTip( tr( "Collapse All" ) );
   connect( actionCollapseAll, &QAction::triggered, mLayerTreeView, &QgsLayerTreeView::collapseAllNodes );
 
+  // move up / move down tool buttons
+  mActionMoveUp = new QAction( tr( "Move Up" ), this );
+  mActionMoveUp->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionArrowUp.svg" ) ) );
+  mActionMoveUp->setToolTip( tr( "Move Up" ) );
+  mActionMoveUp->setShortcut( QStringLiteral( "Alt+Up" ) );
+  connect( mActionMoveUp, &QAction::triggered, this, [this](){ mLayerTreeView->defaultActions()->moveUp( true ); } );
+  mActionMoveDown = new QAction( tr( "Move Down" ), this );
+  mActionMoveDown->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionArrowDown.svg" ) ) );
+  mActionMoveDown->setToolTip( tr( "Move Down" ) );
+  mActionMoveDown->setShortcut( QStringLiteral( "Alt+Down" ) );
+  connect( mActionMoveDown, &QAction::triggered, this, [this](){ mLayerTreeView->defaultActions()->moveDown( true ); } );
+
   QToolBar *toolbar = new QToolBar();
   toolbar->setIconSize( iconSize( true ) );
   toolbar->addAction( mActionStyleDock );
@@ -4844,6 +4856,8 @@ void QgisApp::initLayerTreeView()
   toolbar->addWidget( mLegendExpressionFilterButton );
   toolbar->addAction( actionExpandAll );
   toolbar->addAction( actionCollapseAll );
+  toolbar->addAction( mActionMoveUp );
+  toolbar->addAction( mActionMoveDown );
   toolbar->addAction( mActionRemoveLayer );
 
   QVBoxLayout *vboxLayout = new QVBoxLayout;
@@ -14593,7 +14607,6 @@ void QgisApp::legendLayerSelectionChanged()
       mLegendExpressionFilterButton->setChecked( exprEnabled );
     }
   }
-
   // remove action - check for required layers
   bool removeEnabled = true;
   for ( QgsLayerTreeLayer *nodeLayer : selectedLayers )
@@ -14605,6 +14618,11 @@ void QgisApp::legendLayerSelectionChanged()
     }
   }
   mActionRemoveLayer->setEnabled( removeEnabled );
+
+  // disable move up action if multiple nodes selected or selected node is top item of layer tree
+  mActionMoveUp->setEnabled( mLayerTreeView && mLayerTreeView->selectedNodes().count() == 1 && ( mLayerTreeView->selectedNodes()[0]->parent()->parent() || mLayerTreeView->node2index( mLayerTreeView->selectedNodes()[0] ).row() > 0 ) );
+  // disable move down action if multiple nodes selected or selected node is bottom item of layer tree
+  mActionMoveDown->setEnabled( mLayerTreeView && mLayerTreeView->selectedNodes().count() == 1 && ( mLayerTreeView->selectedNodes()[0]->parent()->parent() || mLayerTreeView->node2index( mLayerTreeView->selectedNodes()[0] ).row() < mLayerTreeView->currentNode()->parent()->children().count()-1 ) );
 }
 
 void QgisApp::layerEditStateChanged()

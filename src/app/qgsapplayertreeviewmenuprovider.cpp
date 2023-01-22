@@ -131,6 +131,16 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         menu->addAction( actions->actionMoveToBottom( menu ) );
       }
 
+      if ( mView->selectedNodes().count() == 1 && ( mView->currentNode()->parent()->parent() || idx.row() > 0 ) )
+      {
+        menu->addAction( actions->actionMoveUp( menu ) );
+      }
+
+      if ( mView->selectedNodes().count() == 1 && ( mView->currentNode()->parent()->parent() || idx.row() < mView->currentNode()->parent()->children().count()-1 ) )
+      {
+        menu->addAction( actions->actionMoveDown( menu ) );
+      }
+
       menu->addSeparator();
 
       if ( !mView->selectedNodes( true ).empty() )
@@ -322,6 +332,16 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       if ( !( mView->selectedNodes( true ).count() == 1 && idx.row() == idx.model()->rowCount() - 1 ) )
       {
         menu->addAction( actions->actionMoveToBottom( menu ) );
+      }
+
+      if ( mView->selectedNodes().count() == 1 && ( mView->currentNode()->parent()->parent() || idx.row() > 0 ) )
+      {
+        menu->addAction( actions->actionMoveUp( menu ) );
+      }
+
+      if ( mView->selectedNodes().count() == 1 && ( mView->currentNode()->parent()->parent() || mView->node2index( mView->currentNode() ).row() < mView->currentNode()->parent()->children().count()-1 ) )
+      {
+        menu->addAction( actions->actionMoveDown( menu ) );
       }
 
       QAction *checkAll = actions->actionCheckAndAllParents( menu );

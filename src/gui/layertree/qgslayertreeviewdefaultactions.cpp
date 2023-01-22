@@ -156,6 +156,20 @@ QAction *QgsLayerTreeViewDefaultActions::actionMoveToBottom( QObject *parent )
   return a;
 }
 
+QAction *QgsLayerTreeViewDefaultActions::actionMoveUp( QObject *parent )
+{
+  QAction *a = new QAction( tr( "Move &Up" ), parent );
+  connect( a, &QAction::triggered, this, [this]() { this->moveUp( false ); } );
+  return a;
+}
+
+QAction *QgsLayerTreeViewDefaultActions::actionMoveDown( QObject *parent )
+{
+  QAction *a = new QAction( tr( "Move &Down" ), parent );
+  connect( a, &QAction::triggered, this, [this]() { this->moveDown( false ); } );
+  return a;
+}
+
 QAction *QgsLayerTreeViewDefaultActions::actionGroupSelected( QObject *parent )
 {
   QAction *a = new QAction( tr( "&Group Selected" ), parent );
@@ -508,6 +522,104 @@ void QgsLayerTreeViewDefaultActions::moveToBottom()
   }
 }
 
+bool QgsLayerTreeViewDefaultActions::moveUp( bool updateSelection )
+{
+  const QList<QgsLayerTreeNode *> selectedNodes = mView->selectedNodes();
+  if ( selectedNodes.empty() )
+    return false;
+  QgsLayerTreeNode *node = selectedNodes.front();
+  if ( node->parent() && mView->selectedNodes().count() == 1 )
+  {
+    int row = mView->node2index( node ).row();
+    QgsLayerTreeNode *parentNode = node->parent();
+    QgsLayerTreeNode *clonedNode = node->clone();
+    // current node is not the first item of tree
+    if ( parentNode->parent() || row > 0 )
+    {
+      // first row of a group or sub-group
+      if ( row == 0 )
+      {
+        if ( QgsLayerTree::isGroup( parentNode->parent() ) )
+        {
+          QgsLayerTree::toGroup( parentNode->parent() )->insertChildNode( mView->node2index( parentNode ).row(), clonedNode );
+          if ( updateSelection )
+            mView->selectionModel()->setCurrentIndex( mView->node2index( parentNode->parent()->children()[mView->node2index( parentNode ).row()-1] ), QItemSelectionModel::Select );
+        }
+      }
+      // node has direct siblings above
+      else
+      {
+        QgsLayerTreeNode *siblingAbove = parentNode->children()[row-1];
+        if ( QgsLayerTree::isGroup( siblingAbove ) )
+        {
+          // if sibling above is a group, insert cloned node into that group at bottom position
+          QgsLayerTree::toGroup( siblingAbove )->insertChildNode( siblingAbove->children().count(), clonedNode );
+          if ( updateSelection )
+            mView->selectionModel()->setCurrentIndex( mView->node2index( siblingAbove->children()[siblingAbove->children().count()-1] ), QItemSelectionModel::Select );
+        }
+        else
+        {
+          QgsLayerTree::toGroup( parentNode )->insertChildNode( row-1, clonedNode );
+          if ( updateSelection )
+            mView->selectionModel()->setCurrentIndex( mView->node2index( parentNode->children()[row-1] ), QItemSelectionModel::Select );
+        }
+      }
+      QgsLayerTree::toGroup( parentNode )->removeChildNode( node );
+      return true;
+    }
+    return false;
+  }
+  return false;
+}
+
+bool QgsLayerTreeViewDefaultActions::moveDown( bool updateSelection )
+{
+  const QList<QgsLayerTreeNode *> selectedNodes = mView->selectedNodes();
+  if ( selectedNodes.empty() )
+      return false;
+  QgsLayerTreeNode *node = selectedNodes.front();
+  if ( node->parent() && mView->selectedNodes().count() == 1 )
+  {  
+    int row = mView->node2index( node ).row();
+    QgsLayerTreeNode *parentNode = node->parent();
+    QgsLayerTreeNode *clonedNode = node->clone();
+    if ( parentNode->parent() || mView->node2index( node ).row() < parentNode->children().count()-1 )
+    {
+      if ( mView->node2index( node ).row() < parentNode->children().count()-1 )
+      {
+        QgsLayerTreeNode *siblingBelow = parentNode->children()[row+1];
+        // if sibling below is a group, insert cloned node into that group at index 0
+        if ( QgsLayerTree::isGroup( siblingBelow ) )
+        {
+          QgsLayerTree::toGroup( siblingBelow )->insertChildNode( 0, clonedNode );
+          if ( updateSelection )
+            mView->selectionModel()->setCurrentIndex( mView->node2index( siblingBelow->children()[0] ), QItemSelectionModel::Select );
+        }
+        // if sibling below is not a group, insert cloned node into parent at index below current node
+        else
+        {
+          QgsLayerTree::toGroup( parentNode )->insertChildNode( row+2, clonedNode );
+          if ( updateSelection )
+            mView->selectionModel()->setCurrentIndex( mView->node2index( parentNode->children()[row+2] ), QItemSelectionModel::Select );
+        }
+      }
+      // node is last child of its parent
+      else
+      {
+        if ( parentNode->parent() )
+        {
+          QgsLayerTree::toGroup( parentNode->parent() )->insertChildNode( mView->node2index( parentNode ).row()+1, clonedNode );
+          if ( updateSelection )
+            mView->selectionModel()->setCurrentIndex( mView->node2index( parentNode->parent()->children()[mView->node2index(parentNode).row()+1] ), QItemSelectionModel::Select );
+        }
+      }
+      QgsLayerTree::toGroup( parentNode )->removeChildNode( node );
+      return true;
+    }
+    return false;
+  }
+  return false;
+}
 
 void QgsLayerTreeViewDefaultActions::groupSelected()
 {
