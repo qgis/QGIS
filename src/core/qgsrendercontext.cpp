@@ -705,9 +705,9 @@ QgsElevationMap *QgsRenderContext::elevationMap() const
   return mElevationMap;
 }
 
-void QgsRenderContext::setElevationMap( QgsElevationMap *newElevationMap )
+void QgsRenderContext::setElevationMap(QgsElevationMap *map )
 {
-  mElevationMap = newElevationMap;
+  mElevationMap = map;
 }
 
 void QgsRenderContext::addSymbolLayerClipPath( const QgsSymbolLayer *symbolLayer, QPainterPath path )

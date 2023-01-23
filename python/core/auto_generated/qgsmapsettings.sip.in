@@ -987,9 +987,9 @@ Returns the shading renderer used to render shading on the entire map
 .. versionadded:: 3.30
 %End
 
-    void setElevationShadingRenderer( const QgsElevationShadingRenderer &elevationShadingRenderer );
+    void setElevationShadingRenderer( const QgsElevationShadingRenderer &renderer );
 %Docstring
-Sets the shading renderer used to render shading on the entire map
+Sets the shading ``renderer`` used to render shading on the entire map
 
 .. seealso:: :py:func:`elevationShadingRenderer`
 

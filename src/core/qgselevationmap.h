@@ -43,13 +43,6 @@ class CORE_EXPORT QgsElevationMap
 {
   public:
 
-    //! Methods used to select the elevation when two elevation maps are combined
-    enum class CombineMethod
-    {
-      HighestElevation, //!< Keep the highest elevation if it is not null
-      NewerElevation, //!< Keep the new elevation regardless of its value if it is not null
-    };
-
     //! Default constructor
     QgsElevationMap() = default;
 
@@ -57,8 +50,10 @@ class CORE_EXPORT QgsElevationMap
     explicit QgsElevationMap( const QSize &size );
 
     /**
-     * Constructs an elevation map from an existing raw elevation \a image
+     * Constructs an elevation map from an existing raw elevation \a image.
+     * The image must have ARGB32 format and obtained by the rawElevationImage() method.
      *
+     * \see rawElevationImage()
      * \since QGIS 3.30
      */
     explicit QgsElevationMap( const QImage &image );
@@ -67,7 +62,7 @@ class CORE_EXPORT QgsElevationMap
     QgsElevationMap( const QgsElevationMap &other );
 
     /**
-     * Applies eye dome lighting effect to the given image. The effect makes
+     * Applies eye dome lighting effect to the given \a image. The effect makes
      * angled surfaces darker and adds silhouettes in case of larger differences
      * of elevations between neighboring pixels.
      *
@@ -81,10 +76,10 @@ class CORE_EXPORT QgsElevationMap
      * to set this to the map's scale denominator to get similarly looking results
      * at different map scales.
      */
-    void applyEyeDomeLighting( QImage &img, int distance, float strength, float rendererScale ) const;
+    void applyEyeDomeLighting( QImage &image, int distance, float strength, float rendererScale ) const;
 
     /**
-     * Applies hill shading effect to the given image.
+     * Applies hill shading effect to the given \a image.
      *
      * If the \a multidirectinal parameter is TRUE, the algorithm will considered a
      * multi horizontal directional light to apply the shading.
@@ -101,7 +96,7 @@ class CORE_EXPORT QgsElevationMap
      *
      * \since QGIS 3.30
      */
-    void applyHillshading( QImage &img, bool multiDirectional, double altitude, double azimuth, double zFactor, double cellSizeX, double cellSizeY ) const;
+    void applyHillshading( QImage &image, bool multiDirectional, double altitude, double azimuth, double zFactor, double cellSizeX, double cellSizeY ) const;
 
     //! Returns raw elevation image with elevations encoded as color values
     QImage rawElevationImage() const { return mElevationImage; }
@@ -118,7 +113,7 @@ class CORE_EXPORT QgsElevationMap
      *
      * \since QGIS 3.30
      */
-    void combine( const QgsElevationMap &otherElevationMap, CombineMethod method );
+    void combine( const QgsElevationMap &otherElevationMap, Qgis::ElevationMapCombineMethod method );
 
     /**
      * Fills the elevation map with values contains in a raster \a block starting from position

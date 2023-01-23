@@ -32,12 +32,6 @@ in meters.
 %End
   public:
 
-    enum class CombineMethod
-    {
-      HighestElevation,
-      NewerElevation,
-    };
-
     QgsElevationMap();
 %Docstring
 Default constructor
@@ -50,7 +44,10 @@ Constructs an elevation map with the given width and height
 
     explicit QgsElevationMap( const QImage &image );
 %Docstring
-Constructs an elevation map from an existing raw elevation ``image``
+Constructs an elevation map from an existing raw elevation ``image``.
+The image must have ARGB32 format and obtained by the :py:func:`~QgsElevationMap.rawElevationImage` method.
+
+.. seealso:: :py:func:`rawElevationImage`
 
 .. versionadded:: 3.30
 %End
@@ -60,9 +57,9 @@ Constructs an elevation map from an existing raw elevation ``image``
 Copy constructor
 %End
 
-    void applyEyeDomeLighting( QImage &img, int distance, float strength, float rendererScale ) const;
+    void applyEyeDomeLighting( QImage &image, int distance, float strength, float rendererScale ) const;
 %Docstring
-Applies eye dome lighting effect to the given image. The effect makes
+Applies eye dome lighting effect to the given ``image``. The effect makes
 angled surfaces darker and adds silhouettes in case of larger differences
 of elevations between neighboring pixels.
 
@@ -77,9 +74,9 @@ to set this to the map's scale denominator to get similarly looking results
 at different map scales.
 %End
 
-    void applyHillshading( QImage &img, bool multiDirectional, double altitude, double azimuth, double zFactor, double cellSizeX, double cellSizeY ) const;
+    void applyHillshading( QImage &image, bool multiDirectional, double altitude, double azimuth, double zFactor, double cellSizeX, double cellSizeY ) const;
 %Docstring
-Applies hill shading effect to the given image.
+Applies hill shading effect to the given ``image``.
 
 If the ``multidirectinal`` parameter is ``True``, the algorithm will considered a
 multi horizontal directional light to apply the shading.
@@ -107,7 +104,7 @@ Returns raw elevation image with elevations encoded as color values
 Returns painter to the underlying QImage with elevations
 %End
 
-    void combine( const QgsElevationMap &otherElevationMap, CombineMethod method );
+    void combine( const QgsElevationMap &otherElevationMap, Qgis::ElevationMapCombineMethod method );
 %Docstring
 Combines this elevation map with ``otherElevationMap``.
 This elevation map keeps its size and takes elevation values of otherElevationMap that

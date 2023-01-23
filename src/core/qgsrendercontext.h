@@ -1061,14 +1061,14 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     QgsElevationMap *elevationMap() const;
 
     /**
-     * Sets the destination elevation map for the render operation. Ownership of the elevation map
+     * Sets the destination elevation \a map for the render operation. Ownership of the elevation map
      * is not transferred and the QgsElevationMap destination must stay alive for the duration
      * of any rendering operations.
      *
      * \see elevationMap()
      * \since QGIS 3.30
      */
-    void setElevationMap( QgsElevationMap *newElevationMap );
+    void setElevationMap( QgsElevationMap *map );
 
   private:
 

@@ -88,16 +88,16 @@ effect is apply from the source elevation.
 .. seealso:: :py:func:`eyeDomeLightingDistance`
 %End
 
-    const QgsUnitTypes::RenderUnit &eyeDomeLightingDistanceUnit() const;
+    QgsUnitTypes::RenderUnit eyeDomeLightingDistanceUnit() const;
 %Docstring
 Returns the unit of the distance of the eye dome lighting method returned by :py:func:`~QgsElevationShadingRenderer.eyeDomeLightingDistance`.
 
 .. seealso:: :py:func:`setEyeDomeLightingDistanceUnit`
 %End
 
-    void setEyeDomeLightingDistanceUnit( const QgsUnitTypes::RenderUnit &newEyeDomeLightingDistanceUnit );
+    void setEyeDomeLightingDistanceUnit(QgsUnitTypes::RenderUnit unit );
 %Docstring
-Sets the unit of the distance of the eye dome lighting method set by :py:func:`~QgsElevationShadingRenderer.setEyeDomeLightingDistance`.
+Sets the ``unit`` of the distance of the eye dome lighting method set by :py:func:`~QgsElevationShadingRenderer.setEyeDomeLightingDistance`.
 
 .. seealso:: :py:func:`eyeDomeLightingDistanceUnit`
 %End
@@ -178,16 +178,16 @@ Writes configuration on a DOM element
 Reads configuration from a DOM element
 %End
 
-    QgsElevationMap::CombineMethod combinedElevationMethod() const;
+    Qgis::ElevationMapCombineMethod combinedElevationMethod() const;
 %Docstring
 Returns the method used when conbining different elevation sources.
 
 .. seealso:: :py:func:`setCombinedElevationMethod`
 %End
 
-    void setCombinedElevationMethod( QgsElevationMap::CombineMethod newCombinedElevationMethod );
+    void setCombinedElevationMethod( Qgis::ElevationMapCombineMethod method );
 %Docstring
-Sets the method used when conbining different elevation sources.
+Sets the ``method`` used when conbining different elevation sources.
 
 .. seealso:: :py:func:`combinedElevationMethod`
 %End

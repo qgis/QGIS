@@ -131,7 +131,7 @@ void QgsElevationShadingRenderer::readXml( const QDomElement &element, const Qgs
     mIsActive = element.attribute( QStringLiteral( "is-active" ) ).toInt() == 1;
 
   if ( element.hasAttribute( QStringLiteral( "combined-method" ) ) )
-    mCombinedElevationMethod = static_cast<QgsElevationMap::CombineMethod>( element.attribute( QStringLiteral( "combined-method" ) ).toInt() );
+    mCombinedElevationMethod = static_cast<Qgis::ElevationMapCombineMethod>( element.attribute( QStringLiteral( "combined-method" ) ).toInt() );
 
   if ( element.hasAttribute( QStringLiteral( "edl-is-active" ) ) )
     mRenderEdl = element.attribute( QStringLiteral( "edl-is-active" ) ).toInt() == 1;
@@ -161,22 +161,22 @@ void QgsElevationShadingRenderer::readXml( const QDomElement &element, const Qgs
     mLightAzimuth = element.attribute( QStringLiteral( "light-azimuth" ) ).toDouble();
 }
 
-QgsElevationMap::CombineMethod QgsElevationShadingRenderer::combinedElevationMethod() const
+Qgis::ElevationMapCombineMethod QgsElevationShadingRenderer::combinedElevationMethod() const
 {
   return mCombinedElevationMethod;
 }
 
-void QgsElevationShadingRenderer::setCombinedElevationMethod( QgsElevationMap::CombineMethod newCombinedElevationMethod )
+void QgsElevationShadingRenderer::setCombinedElevationMethod( Qgis::ElevationMapCombineMethod newCombinedElevationMethod )
 {
   mCombinedElevationMethod = newCombinedElevationMethod;
 }
 
-const QgsUnitTypes::RenderUnit &QgsElevationShadingRenderer::eyeDomeLightingDistanceUnit() const
+QgsUnitTypes::RenderUnit QgsElevationShadingRenderer::eyeDomeLightingDistanceUnit() const
 {
   return mEyeDomeLightingDistanceUnit;
 }
 
-void QgsElevationShadingRenderer::setEyeDomeLightingDistanceUnit( const QgsUnitTypes::RenderUnit &newEyeDomeLightingDistanceUnit )
+void QgsElevationShadingRenderer::setEyeDomeLightingDistanceUnit( QgsUnitTypes::RenderUnit newEyeDomeLightingDistanceUnit )
 {
   mEyeDomeLightingDistanceUnit = newEyeDomeLightingDistanceUnit;
 }

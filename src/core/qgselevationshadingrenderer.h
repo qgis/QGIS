@@ -102,14 +102,14 @@ class CORE_EXPORT QgsElevationShadingRenderer
      *
      * \see setEyeDomeLightingDistanceUnit()
      */
-    const QgsUnitTypes::RenderUnit &eyeDomeLightingDistanceUnit() const;
+    QgsUnitTypes::RenderUnit eyeDomeLightingDistanceUnit() const;
 
     /**
-     * Sets the unit of the distance of the eye dome lighting method set by setEyeDomeLightingDistance().
+     * Sets the \a unit of the distance of the eye dome lighting method set by setEyeDomeLightingDistance().
      *
      * \see eyeDomeLightingDistanceUnit()
      */
-    void setEyeDomeLightingDistanceUnit( const QgsUnitTypes::RenderUnit &newEyeDomeLightingDistanceUnit );
+    void setEyeDomeLightingDistanceUnit(QgsUnitTypes::RenderUnit unit );
 
     //! Sets active the hillshading
     void setActiveHillshading( bool active );
@@ -184,19 +184,19 @@ class CORE_EXPORT QgsElevationShadingRenderer
      *
      * \see setCombinedElevationMethod()
      */
-    QgsElevationMap::CombineMethod combinedElevationMethod() const;
+    Qgis::ElevationMapCombineMethod combinedElevationMethod() const;
 
     /**
-     * Sets the method used when conbining different elevation sources.
+     * Sets the \a method used when conbining different elevation sources.
      *
      * \see combinedElevationMethod()
      */
-    void setCombinedElevationMethod( QgsElevationMap::CombineMethod newCombinedElevationMethod );
+    void setCombinedElevationMethod( Qgis::ElevationMapCombineMethod method );
 
   private:
     bool mIsActive = false;
 
-    QgsElevationMap::CombineMethod mCombinedElevationMethod = QgsElevationMap::CombineMethod::HighestElevation;
+    Qgis::ElevationMapCombineMethod mCombinedElevationMethod = Qgis::ElevationMapCombineMethod::HighestElevation;
 
     bool mRenderEdl = true;
     double mEyeDomeLightingStrength = 1000.0;

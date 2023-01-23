@@ -37,8 +37,10 @@ QgsElevationMap::QgsElevationMap( const QImage &image )
 {}
 
 QgsElevationMap::QgsElevationMap( const QgsElevationMap &other )
-  :   mElevationImage( other.mElevationImage )
-{}
+  : mElevationImage( other.mElevationImage )
+{
+  mPainter.reset();
+}
 
 QRgb QgsElevationMap::encodeElevation( float z )
 {
@@ -329,7 +331,7 @@ QPainter *QgsElevationMap::painter() const
 
 }
 
-void QgsElevationMap::combine( const QgsElevationMap &otherElevationMap, CombineMethod method )
+void QgsElevationMap::combine( const QgsElevationMap &otherElevationMap, Qgis::ElevationMapCombineMethod method )
 {
   if ( otherElevationMap.mElevationImage.size() != mElevationImage.size() )
   {
@@ -352,7 +354,7 @@ void QgsElevationMap::combine( const QgsElevationMap &otherElevationMap, Combine
       {
         switch ( method )
         {
-          case CombineMethod::HighestElevation:
+          case Qgis::ElevationMapCombineMethod::HighestElevation:
           {
             double elev = decodeElevation( elevPtr[index] );
             double otherElev = decodeElevation( otherElevPtr[index] );
@@ -360,7 +362,7 @@ void QgsElevationMap::combine( const QgsElevationMap &otherElevationMap, Combine
               elevPtr[index] = otherElevPtr[index];
           }
           break;
-          case CombineMethod::NewerElevation:
+          case Qgis::ElevationMapCombineMethod::NewerElevation:
             elevPtr[index] = otherElevPtr[index];
             break;
         }

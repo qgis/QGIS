@@ -93,7 +93,7 @@ class LayerRenderJob
      *
      * \since QGIS 3.30
      */
-    QgsElevationMap *elevationMap;
+    QgsElevationMap *elevationMap = nullptr;
 
     //! TRUE when img has been initialized (filled with transparent pixels)
     bool imageInitialized = false;

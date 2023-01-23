@@ -1175,7 +1175,7 @@ void TestQgsMapRendererJob::testMapShading()
   img = renderJob->renderedImage();
   QVERIFY( imageCheck( QStringLiteral( "render_shading_3" ), img ) );
 
-  shadingRenderer.setCombinedElevationMethod( QgsElevationMap::CombineMethod::NewerElevation );
+  shadingRenderer.setCombinedElevationMethod( Qgis::ElevationMapCombineMethod::NewerElevation );
   shadingRenderer.setActiveHillshading( false );
   shadingRenderer.setActiveEyeDomeLighting( true );
   mapSettings.setElevationShadingRenderer( shadingRenderer );

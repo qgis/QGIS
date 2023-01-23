@@ -25,8 +25,8 @@ QgsElevationShadingRendererSettingsWidget::QgsElevationShadingRendererSettingsWi
 {
   setupUi( this );
 
-  mCombineMethodCombo->addItem( tr( "Highest Elevation" ), static_cast<int>( QgsElevationMap::CombineMethod::HighestElevation ) );
-  mCombineMethodCombo->addItem( tr( "Based on Layer's Order" ), static_cast<int>( QgsElevationMap::CombineMethod::NewerElevation ) );
+  mCombineMethodCombo->addItem( tr( "Highest Elevation" ), QVariant::fromValue( Qgis::ElevationMapCombineMethod::HighestElevation ) );
+  mCombineMethodCombo->addItem( tr( "Based on Layer's Order" ),  QVariant::fromValue( Qgis::ElevationMapCombineMethod::NewerElevation ) );
 
   syncToProject();
 
@@ -56,7 +56,7 @@ void QgsElevationShadingRendererSettingsWidget::apply()
   QgsElevationShadingRenderer shadingRenderer;
 
   shadingRenderer.setActive( mShadingGroupBox->isChecked() );
-  shadingRenderer.setCombinedElevationMethod( static_cast<QgsElevationMap::CombineMethod>( mCombineMethodCombo->currentData().toInt() ) );
+  shadingRenderer.setCombinedElevationMethod( mCombineMethodCombo->currentData().value<Qgis::ElevationMapCombineMethod>() );
   shadingRenderer.setActiveEyeDomeLighting( mEdlGroupBox->isChecked() );
   shadingRenderer.setEyeDomeLightingStrength( mEdlStrengthSpinBox->value() );
   shadingRenderer.setEyeDomeLightingDistance( mEdlDistanceSpinBox->value() );
@@ -77,7 +77,7 @@ void QgsElevationShadingRendererSettingsWidget::syncToProject()
   QgsElevationShadingRenderer shadingRenderer = QgsProject::instance()->elevationShadingRenderer();
   mShadingGroupBox->setChecked( shadingRenderer.isActive() );
   mCombineMethodCombo->setCurrentIndex(
-    mCombineMethodCombo->findData( static_cast<int>( shadingRenderer.combinedElevationMethod() ) ) );
+    mCombineMethodCombo->findData( QVariant::fromValue( shadingRenderer.combinedElevationMethod() ) ) );
   mEdlGroupBox->setChecked( shadingRenderer.isActiveEyeDomeLighting() );
   mEdlStrengthSpinBox->setValue( shadingRenderer.eyeDomeLightingStrength() );
   mEdlDistanceSpinBox->setValue( shadingRenderer.eyeDomeLightingDistance() );
