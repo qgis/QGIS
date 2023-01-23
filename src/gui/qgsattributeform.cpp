@@ -1809,7 +1809,7 @@ void QgsAttributeForm::init()
             if ( mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).hasProperty( QgsEditFormConfig::DataDefinedProperty::Alias ) )
             {
               const QgsProperty property { mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).property( QgsEditFormConfig::DataDefinedProperty::Alias ) };
-              if ( property.isActive() && ! property.expressionString().isEmpty() )
+              if ( property.isActive() )
               {
                 mLabelDataDefinedProperties[ label ] = property;
               }
@@ -1817,7 +1817,7 @@ void QgsAttributeForm::init()
             if ( mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).hasProperty( QgsEditFormConfig::DataDefinedProperty::Editable ) )
             {
               const QgsProperty property { mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).property( QgsEditFormConfig::DataDefinedProperty::Editable ) };
-              if ( property.isActive() && ! property.expressionString().isEmpty() )
+              if ( property.isActive() )
               {
                 mEditableDataDefinedProperties[ widgetInfo.widget ] = property;
               }
@@ -1900,7 +1900,7 @@ void QgsAttributeForm::init()
       if ( mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).hasProperty( QgsEditFormConfig::DataDefinedProperty::Alias ) )
       {
         const QgsProperty property { mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).property( QgsEditFormConfig::DataDefinedProperty::Alias ) };
-        if ( property.isActive() && ! property.expressionString().isEmpty() )
+        if ( property.isActive() )
         {
           mLabelDataDefinedProperties[ label ] = property;
         }
@@ -1922,7 +1922,7 @@ void QgsAttributeForm::init()
         if ( mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).hasProperty( QgsEditFormConfig::DataDefinedProperty::Editable ) )
         {
           const QgsProperty property { mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).property( QgsEditFormConfig::DataDefinedProperty::Editable ) };
-          if ( property.isActive() && ! property.expressionString().isEmpty() )
+          if ( property.isActive() )
           {
             mEditableDataDefinedProperties[ formWidget ] = property;
           }
@@ -2439,7 +2439,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
               if ( mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).hasProperty( QgsEditFormConfig::DataDefinedProperty::Alias ) )
               {
                 const QgsProperty property { mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).property( QgsEditFormConfig::DataDefinedProperty::Alias ) };
-                if ( property.isActive() && ! property.expressionString().isEmpty() )
+                if ( property.isActive() )
                 {
                   mLabelDataDefinedProperties[ mypLabel ] = property;
                 }
@@ -2447,7 +2447,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
               if ( mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).hasProperty( QgsEditFormConfig::DataDefinedProperty::Editable ) )
               {
                 const QgsProperty property { mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).property( QgsEditFormConfig::DataDefinedProperty::Editable ) };
-                if ( property.isActive() && ! property.expressionString().isEmpty() )
+                if ( property.isActive() )
                 {
                   mEditableDataDefinedProperties[ widgetInfo.widget ] = property;
                 }

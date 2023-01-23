@@ -75,6 +75,7 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
   mExpressionWidget->setLayer( mLayer );
 
   mEditableExpressionButton->registerExpressionContextGenerator( this );
+  mEditableExpressionButton->init( QgsEditFormConfig::DataDefinedProperty::Editable, mDataDefinedProperties.property( QgsEditFormConfig::DataDefinedProperty::Editable ), vl->editFormConfig().propertyDefinitions(), vl );
   mEditableExpressionButton->registerLinkedWidget( isFieldEditableCheckBox );
   connect( mEditableExpressionButton, &QgsPropertyOverrideButton::changed, this, [ = ]
   {
@@ -82,6 +83,7 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
   } );
 
   mAliasExpressionButton->registerExpressionContextGenerator( this );
+  mAliasExpressionButton->init( QgsEditFormConfig::DataDefinedProperty::Alias, mDataDefinedProperties.property( QgsEditFormConfig::DataDefinedProperty::Alias ), vl->editFormConfig().propertyDefinitions(), vl );
   connect( mAliasExpressionButton, &QgsPropertyOverrideButton::changed, this, [ = ]
   {
     mDataDefinedProperties.setProperty( QgsEditFormConfig::DataDefinedProperty::Alias, mAliasExpressionButton->toProperty() );
