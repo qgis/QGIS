@@ -511,9 +511,26 @@ void QgsColorWheel::createImages( const QSizeF size )
 
 void QgsColorWheel::resizeEvent( QResizeEvent *event )
 {
+  QgsColorWidget::resizeEvent( event );
+#ifdef Q_OS_WIN
+  // For some reason the first reported size than that of the parent widget, leading to a cut-off color wheel
+  if ( event->size().width() > parentWidget()->size().width() )
+  {
+    QSize newSize(
+      std::min( event->size().width(), parentWidget()->size().width() - 2 ),
+      std::min( event->size().height(), parentWidget()->size().height() - 2 )
+    );
+    resize( newSize );
+    createImages( newSize );
+  }
+  else
+  {
+    createImages( event->size() );
+  }
+#else
   //recreate images for new size
   createImages( event->size() );
-  QgsColorWidget::resizeEvent( event );
+#endif
 }
 
 void QgsColorWheel::setColorFromPos( const QPointF pos )
