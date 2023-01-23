@@ -26,6 +26,33 @@
 #include "qgsserverresponse.h"
 
 #include <QBuffer>
+#include <QThread>
+
+/**
+ * \ingroup server
+ * \class QgsSocketMonitoringThread
+ * \brief Thread used to monitor the fcgi socket
+ * \since QGIS 3.36
+ */
+class QgsSocketMonitoringThread: public QThread
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * \brief QgsSocketMonitoringThread
+     * \param  isResponseFinished
+     * \param  feedback
+     */
+    QgsSocketMonitoringThread( bool *isResponseFinished, QgsFeedback *feedback );
+    void run( );
+
+  private:
+    bool *mIsResponseFinished = nullptr;
+    QgsFeedback *mFeedback = nullptr;
+    int mIpcFd = -1;
+};
 
 /**
  * \ingroup server
@@ -76,6 +103,12 @@ class SERVER_EXPORT QgsFcgiServerResponse: public QgsServerResponse
      */
     void setDefaultHeaders();
 
+    /**
+     * Returns socket feedback if any
+     * \since QGIS 3.36
+     */
+    QgsFeedback *feedback() const override { return mFeedback.get(); }
+
   private:
     QMap<QString, QString> mHeaders;
     QBuffer mBuffer;
@@ -83,6 +116,9 @@ class SERVER_EXPORT QgsFcgiServerResponse: public QgsServerResponse
     bool mHeadersSent = false;
     QgsServerRequest::Method mMethod;
     int mStatusCode = 0;
+
+    std::unique_ptr<QgsSocketMonitoringThread> mSocketMonitoringThread;
+    std::unique_ptr<QgsFeedback> mFeedback;
 };
 
 #endif
