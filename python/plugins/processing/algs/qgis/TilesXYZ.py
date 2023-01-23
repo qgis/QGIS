@@ -579,15 +579,15 @@ class TilesXYZAlgorithmDirectory(TilesXYZAlgorithmBase):
                                                                 self.tr('HTML files (*.html)'),
                                                                 optional=True))
         html_title_param = QgsProcessingParameterString(self.HTML_TITLE,
-                                                        self.tr('Title (Leaflet html output)'),
+                                                        self.tr('Leaflet HTML output title'),
                                                         optional=True,
                                                         defaultValue='')
         html_attrib_param = QgsProcessingParameterString(self.HTML_ATTRIBUTION,
-                                                         self.tr('Attribution (Leaflet html output)'),
+                                                         self.tr('Leaflet HTML output attribution'),
                                                          optional=True,
                                                          defaultValue='')
         html_osm_param = QgsProcessingParameterBoolean(self.HTML_OSM,
-                                                       self.tr('Add OSM basemap (Leaflet html output)'),
+                                                       self.tr('Include OpenStreetMap basemap in Leaflet HTML output'),
                                                        defaultValue=False,
                                                        optional=True)
         for param in (html_title_param, html_attrib_param, html_osm_param):
