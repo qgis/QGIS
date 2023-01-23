@@ -23,6 +23,10 @@
 #include <QTimer>
 #include <QTimeZone>
 
+const QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponent> *QgsGpsLogger::settingsGpsMValueComponent = new QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponent>( QStringLiteral( "m-value-attribute" ), QgsSettings::sTreeGps, Qgis::GpsInformationComponent::Timestamp, QStringLiteral( "Which GPS attribute should be stored in geometry m values" ) ) SIP_SKIP;
+
+const QgsSettingsEntryBool *QgsGpsLogger::settingsGpsStoreAttributeInMValues = new QgsSettingsEntryBool( QStringLiteral( "store-attribute-in-m-values" ), QgsSettings::sTreeGps, false, QStringLiteral( "Whether GPS attributes should be stored in geometry m values" ) ) SIP_SKIP;
+
 QgsGpsLogger::QgsGpsLogger( QgsGpsConnection *connection, QObject *parent )
   : QObject( parent )
   , mWgs84CRS( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) )
@@ -203,18 +207,18 @@ void QgsGpsLogger::resetTrack()
 void QgsGpsLogger::updateGpsSettings()
 {
   int acquisitionInterval = 0;
-  if ( QgsGpsConnection::settingsGpsTimeStampSpecification.exists() )
+  if ( QgsGpsConnection::settingsGpsTimeStampSpecification->exists() )
   {
-    acquisitionInterval = static_cast< int >( QgsGpsConnection::settingGpsAcquisitionInterval.value() );
-    mDistanceThreshold = QgsGpsConnection::settingGpsDistanceThreshold.value();
-    mApplyLeapSettings = QgsGpsConnection::settingGpsApplyLeapSecondsCorrection.value();
-    mLeapSeconds = static_cast< int >( QgsGpsConnection::settingGpsLeapSeconds.value() );
-    mTimeStampSpec = QgsGpsConnection::settingsGpsTimeStampSpecification.value();
-    mTimeZone = QgsGpsConnection::settingsGpsTimeStampTimeZone.value();
-    mOffsetFromUtc = static_cast< int >( QgsGpsConnection::settingsGpsTimeStampOffsetFromUtc.value() );
+    acquisitionInterval = static_cast< int >( QgsGpsConnection::settingGpsAcquisitionInterval->value() );
+    mDistanceThreshold = QgsGpsConnection::settingGpsDistanceThreshold->value();
+    mApplyLeapSettings = QgsGpsConnection::settingGpsApplyLeapSecondsCorrection->value();
+    mLeapSeconds = static_cast< int >( QgsGpsConnection::settingGpsLeapSeconds->value() );
+    mTimeStampSpec = QgsGpsConnection::settingsGpsTimeStampSpecification->value();
+    mTimeZone = QgsGpsConnection::settingsGpsTimeStampTimeZone->value();
+    mOffsetFromUtc = static_cast< int >( QgsGpsConnection::settingsGpsTimeStampOffsetFromUtc->value() );
 
-    mStoreAttributeInMValues = settingsGpsStoreAttributeInMValues.value();
-    mMValueComponent = settingsGpsMValueComponent.value();
+    mStoreAttributeInMValues = settingsGpsStoreAttributeInMValues->value();
+    mMValueComponent = settingsGpsMValueComponent->value();
   }
   else
   {

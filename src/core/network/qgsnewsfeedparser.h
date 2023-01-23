@@ -113,13 +113,13 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
 
 #ifndef SIP_RUN
     //! Settings entry last fetch time
-    static const inline QgsSettingsEntryInteger settingsFeedLastFetchTime = QgsSettingsEntryInteger( QStringLiteral( "%1/lastFetchTime" ), QgsSettings::Prefix::CORE, 0, QObject::tr( "Feed last fetch time" ), Qgis::SettingsOptions(), 0 );
+    static const QgsSettingsEntryInteger64 *settingsFeedLastFetchTime;
     //! Settings entry feed language
-    static const inline QgsSettingsEntryString settingsFeedLanguage = QgsSettingsEntryString( QStringLiteral( "%1/lang" ), QgsSettings::Prefix::CORE, QString(), QObject::tr( "Feed language" ) );
+    static const QgsSettingsEntryString *settingsFeedLanguage;
     //! Settings entry feed latitude
-    static const inline QgsSettingsEntryDouble settingsFeedLatitude = QgsSettingsEntryDouble( QStringLiteral( "%1/latitude" ), QgsSettings::Prefix::CORE, 0.0, QObject::tr( "Feed latitude" ) );
+    static const QgsSettingsEntryDouble *settingsFeedLatitude;
     //! Settings entry feed longitude
-    static const inline QgsSettingsEntryDouble settingsFeedLongitude = QgsSettingsEntryDouble( QStringLiteral( "%1/longitude" ), QgsSettings::Prefix::CORE, 0.0, QObject::tr( "Feed longitude" ) );
+    static const QgsSettingsEntryDouble *settingsFeedLongitude;
 #endif
 
   public slots:

@@ -1105,6 +1105,7 @@ Emits the signal to collect all the strings of .qgs to be included in ts file
 %End
 
 
+
 %If (ANDROID)
     //dummy method to workaround sip generation issue
     bool x11EventFilter( XEvent *event );

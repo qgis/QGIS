@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsHttpHeaders
 {
 %Docstring(signature="appended")
@@ -24,7 +26,7 @@ This class implements simple http header management.
   public:
 
 
-    QgsHttpHeaders( const QMap<QString, QVariant> &headers );
+    QgsHttpHeaders( const QVariantMap &headers );
 %Docstring
 Constructor from map
 
@@ -36,12 +38,15 @@ Constructor from map
 default constructor
 %End
 
-    QgsHttpHeaders( const QgsSettings &settings, const QString &key = QString() );
+ QgsHttpHeaders( const QgsSettings &settings, const QString &key = QString() ) /Deprecated/;
 %Docstring
 Constructor from :py:class:`QgsSettings` ``settings`` object and root ``key``
 
 :param settings:
 :param key:
+
+.. deprecated:: QGIS 3.30
+   use a variant map settings and the default constructor instead
 %End
 
     QgsHttpHeaders( const QString &key );
@@ -60,7 +65,14 @@ Constructor from a QDomElement ``element``
 
     virtual ~QgsHttpHeaders();
 
-    bool updateSettings( QgsSettings &settings, const QString &key = QString() ) const;
+    QVariantMap headers() const;
+%Docstring
+Returns the headers as a variant map
+
+.. versionadded:: 3.30
+%End
+
+ bool updateSettings( QgsSettings &settings, const QString &key = QString() ) const /Deprecated/;
 %Docstring
 Updates the ``settings`` by adding all the http headers in the path "key/PATH_PREFIX/"
 
@@ -70,6 +82,9 @@ KEY_REFERER value will be available at path "key/PATH_PREFIX/KEY_REFERER" and pa
 :param key: sub group path
 
 :return: ``True`` if the update succeed
+
+.. deprecated:: QGIS 3.30
+   directly use a variant setting instead
 %End
 
     bool updateNetworkRequest( QNetworkRequest &request ) const;

@@ -48,7 +48,7 @@ from qgis.gui import QgsMessageBar, QgsPasswordLineEdit, QgsHelp
 from qgis.utils import (iface, startPlugin, unloadPlugin, loadPlugin, OverrideCursor,
                         reloadPlugin, updateAvailablePlugins, plugins_metadata_parser)
 from .installer_data import (repositories, plugins, officialRepo,
-                             settingsGroup, reposGroup, removeDir)
+                             reposGroup, removeDir)
 from .qgsplugininstallerinstallingdialog import QgsPluginInstallerInstallingDialog
 from .qgsplugininstallerpluginerrordialog import QgsPluginInstallerPluginErrorDialog
 from .qgsplugininstallerfetchingdialog import QgsPluginInstallerFetchingDialog
@@ -293,7 +293,8 @@ class QgsPluginInstaller(QObject):
     # ----------------------------------------- #
     def exportSettingsGroup(self):
         """ Return QgsSettings settingsGroup value """
-        return settingsGroup
+        # todo QGIS 4 remove
+        return "plugins/_plugin_manager"
 
     # ----------------------------------------- #
     def upgradeAllUpgradeable(self):
@@ -577,9 +578,7 @@ class QgsPluginInstaller(QObject):
         if not os.path.isfile(filePath):
             return
 
-        settings = QgsSettings()
-        settings.setValue(settingsGroup + '/lastZipDirectory',
-                          QFileInfo(filePath).absoluteDir().absolutePath())
+        QgsSettings.createPluginTreeElement("_plugin_manager").childSetting("last-zip-directory").setValue(QFileInfo(filePath).absoluteDir().absolutePath())
 
         pluginName = None
         with zipfile.ZipFile(filePath, 'r') as zf:
@@ -662,6 +661,7 @@ class QgsPluginInstaller(QObject):
                 plugins.getAllInstalled()
                 plugins.rebuild()
 
+                settings = QgsSettings()
                 if settings.contains('/PythonPlugins/' + pluginName):  # Plugin was available?
                     if settings.value('/PythonPlugins/' + pluginName, False, bool):  # Plugin was also active?
                         reloadPlugin(pluginName)  # unloadPlugin + loadPlugin + startPlugin

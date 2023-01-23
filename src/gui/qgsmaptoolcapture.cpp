@@ -320,7 +320,7 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
   resetRubberBand();
 
   // Curves de-approximation
-  if ( QgsSettingsRegistryCore::settingsDigitizingConvertToCurve.value() )
+  if ( QgsSettingsRegistryCore::settingsDigitizingConvertToCurve->value() )
   {
     // If the tool and the layer support curves
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer() );
@@ -328,8 +328,8 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
     {
       const QgsGeometry linear = QgsGeometry( mCaptureCurve.segmentize() );
       const QgsGeometry curved = linear.convertToCurves(
-                                   QgsSettingsRegistryCore::settingsDigitizingConvertToCurveAngleTolerance.value(),
-                                   QgsSettingsRegistryCore::settingsDigitizingConvertToCurveDistanceTolerance.value()
+                                   QgsSettingsRegistryCore::settingsDigitizingConvertToCurveAngleTolerance->value(),
+                                   QgsSettingsRegistryCore::settingsDigitizingConvertToCurveDistanceTolerance->value()
                                  );
       if ( QgsWkbTypes::flatType( curved.wkbType() ) != QgsWkbTypes::CompoundCurve )
       {
@@ -363,7 +363,7 @@ QgsMapToolCaptureRubberBand *QgsMapToolCapture::createCurveRubberBand() const
   rb->setStrokeWidth( digitizingStrokeWidth() );
   QColor color = digitizingStrokeColor();
 
-  const double alphaScale = QgsSettingsRegistryCore::settingsDigitizingLineColorAlphaScale.value();
+  const double alphaScale = QgsSettingsRegistryCore::settingsDigitizingLineColorAlphaScale->value();
   color.setAlphaF( color.alphaF() * alphaScale );
   rb->setLineStyle( Qt::DotLine );
   rb->setStrokeColor( color );
@@ -428,7 +428,7 @@ void QgsMapToolCapture::setCurrentCaptureTechnique( Qgis::CaptureTechnique techn
       break;
     case Qgis::CaptureTechnique::Streaming:
       mLineDigitizingType = QgsWkbTypes::LineString;
-      mStreamingToleranceInPixels = QgsSettingsRegistryCore::settingsDigitizingStreamTolerance.value();
+      mStreamingToleranceInPixels = QgsSettingsRegistryCore::settingsDigitizingStreamTolerance->value();
       break;
     case Qgis::CaptureTechnique::Shape:
       mLineDigitizingType = QgsWkbTypes::LineString;
@@ -1019,7 +1019,7 @@ void QgsMapToolCapture::closePolygon()
 
 void QgsMapToolCapture::validateGeometry()
 {
-  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries.value() == 0
+  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries->value() == 0
        || !( capabilities() & ValidateGeometries )
      )
     return;
@@ -1063,7 +1063,7 @@ void QgsMapToolCapture::validateGeometry()
     return;
 
   Qgis::GeometryValidationEngine method = Qgis::GeometryValidationEngine::QgisInternal;
-  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries.value() == 2 )
+  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries->value() == 2 )
     method = Qgis::GeometryValidationEngine::Geos;
   mValidator = new QgsGeometryValidator( geom, nullptr, method );
   connect( mValidator, &QgsGeometryValidator::errorFound, this, &QgsMapToolCapture::addError );

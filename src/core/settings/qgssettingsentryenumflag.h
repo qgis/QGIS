@@ -39,6 +39,31 @@ class QgsSettingsEntryEnumFlag : public QgsSettingsEntryByValue<T>
      * Constructor for QgsSettingsEntryEnumFlagBase.
      *
      * The \a key argument specifies the final part of the settings key.
+     * The \a parent argument specifies the parent in the tree of settings.
+     * The \a defaultValue argument specifies the default value for the settings entry.
+     * The \a description argument specifies a description for the settings entry.
+     *
+     * \note The enum needs to be declared with Q_ENUM, and flags with Q_FLAG (not Q_FLAGS).
+     * \note for Python bindings, a custom implementation is achieved in Python directly
+     */
+    QgsSettingsEntryEnumFlag( const QString &key, QgsSettingsTreeNode *parent, T defaultValue, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions() )
+      : QgsSettingsEntryByValue<T>( key,
+                                    parent,
+                                    QMetaEnum::fromType<T>().isFlag() ? qgsFlagValueToKeys( defaultValue ) : qgsEnumValueToKey( defaultValue ),
+                                    description,
+                                    options )
+    {
+      mMetaEnum = QMetaEnum::fromType<T>();
+      Q_ASSERT( mMetaEnum.isValid() );
+      if ( !mMetaEnum.isValid() )
+        QgsDebugMsg( QStringLiteral( "Invalid metaenum. Enum/Flag probably misses Q_ENUM/Q_FLAG declaration. Settings key: '%1'" ).arg( this->key() ) );
+    }
+
+    /**
+     * Constructor for QgsSettingsEntryEnumFlagBase.
+     *
+     * The \a parent argument specifies the parent in the tree of settings.
+     * The \a key argument specifies the final part of the settings key.
      * The \a section argument specifies the section.
      * The \a defaultValue argument specifies the default value for the settings entry.
      * The \a description argument specifies a description for the settings entry.

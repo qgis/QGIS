@@ -150,6 +150,7 @@ The development version
 
     enum class SettingsType
       {
+      Custom,
       Variant,
       String,
       StringList,
@@ -1463,6 +1464,13 @@ The development version
       MapCrs,
       MapGeographic,
       CustomCrs,
+    };
+
+    enum class SettingsOrigin
+    {
+      Any,
+      Global,
+      Local,
     };
 
     enum class ScriptLanguage

@@ -105,8 +105,6 @@ QgsArcGisRestSourceSelect::QgsArcGisRestSourceSelect( QWidget *parent, Qt::Windo
   lineFilter->setShowClearButton( true );
   lineFilter->setShowSearchIcon( true );
 
-  const QgsSettings settings;
-
   mImageEncodingGroup = new QButtonGroup( this );
 }
 

@@ -10,6 +10,7 @@
 
 
 
+
 class QgsSettingsRegistryCore : QgsSettingsRegistry
 {
 %Docstring(signature="appended")
@@ -30,7 +31,6 @@ Constructor for QgsSettingsRegistryCore.
 %End
 
     virtual ~QgsSettingsRegistryCore();
-
 
 };
 

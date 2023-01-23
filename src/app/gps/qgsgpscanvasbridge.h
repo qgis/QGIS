@@ -41,12 +41,12 @@ class APP_EXPORT QgsGpsCanvasBridge : public QObject, public QgsMapCanvasInterac
 
   public:
 
-    static const inline QgsSettingsEntryBool settingShowBearingLine = QgsSettingsEntryBool( QStringLiteral( "show-bearing-line" ), QgsSettings::Prefix::GPS, false, QStringLiteral( "Whether the GPS bearing line symbol should be shown" ) );
-    static const inline QgsSettingsEntryString settingBearingLineSymbol = QgsSettingsEntryString( QStringLiteral( "bearing-line-symbol" ), QgsSettings::Prefix::GPS, QString(), QStringLiteral( "Line symbol to use for GPS bearing line" ), Qgis::SettingsOptions(), 0 );
-    static const inline QgsSettingsEntryInteger settingMapExtentRecenteringThreshold = QgsSettingsEntryInteger( QStringLiteral( "map-recentering-threshold" ), QgsSettings::Prefix::GPS, 50, QStringLiteral( "Threshold for GPS automatic map centering" ) );
-    static const inline QgsSettingsEntryEnumFlag<Qgis::MapRecenteringMode> settingMapCenteringMode = QgsSettingsEntryEnumFlag<Qgis::MapRecenteringMode>( QStringLiteral( "map-recentering" ), QgsSettings::Prefix::GPS, Qgis::MapRecenteringMode::WhenOutsideVisibleExtent, QStringLiteral( "Automatic GPS based map recentering mode" ) );
-    static const inline QgsSettingsEntryBool settingRotateMap = QgsSettingsEntryBool( QStringLiteral( "auto-map-rotate" ), QgsSettings::Prefix::GPS, false, QStringLiteral( "Whether to automatically rotate the map to match GPS bearing" ) );
-    static const inline QgsSettingsEntryInteger settingMapRotateInterval = QgsSettingsEntryInteger( QStringLiteral( "map-rotate-interval" ), QgsSettings::Prefix::GPS, 0, QStringLiteral( "Interval for GPS automatic map rotation" ) );
+    static const QgsSettingsEntryBool *settingShowBearingLine;
+    static const QgsSettingsEntryString *settingBearingLineSymbol;
+    static const QgsSettingsEntryInteger *settingMapExtentRecenteringThreshold;
+    static const QgsSettingsEntryEnumFlag<Qgis::MapRecenteringMode> *settingMapCenteringMode;
+    static const QgsSettingsEntryBool *settingRotateMap;
+    static const QgsSettingsEntryInteger *settingMapRotateInterval;
 
     QgsGpsCanvasBridge( QgsAppGpsConnection *connection, QgsMapCanvas *canvas, QObject *parent = nullptr );
     ~QgsGpsCanvasBridge() override;

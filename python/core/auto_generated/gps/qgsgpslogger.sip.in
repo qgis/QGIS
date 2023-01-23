@@ -28,7 +28,6 @@ from incoming GPS location points.
   public:
 
 
-
     QgsGpsLogger( QgsGpsConnection *connection, QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsGpsLogger with the specified ``parent`` object.

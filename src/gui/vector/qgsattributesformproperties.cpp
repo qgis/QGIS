@@ -203,7 +203,7 @@ void QgsAttributesFormProperties::initFormLayoutTree()
 
 void QgsAttributesFormProperties::initSuppressCombo()
 {
-  if ( QgsSettingsRegistryCore::settingsDigitizingDisableEnterAttributeValuesDialog.value() )
+  if ( QgsSettingsRegistryCore::settingsDigitizingDisableEnterAttributeValuesDialog->value() )
   {
     mFormSuppressCmbBx->addItem( tr( "Hide Form on Add Feature (global settings)" ) );
   }

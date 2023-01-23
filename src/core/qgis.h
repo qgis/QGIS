@@ -229,6 +229,7 @@ class CORE_EXPORT Qgis
      */
     enum class SettingsType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSettingsEntryBase, SettingsType ) : int
       {
+      Custom, //!< Custom implementation
       Variant, //!< Generic variant
       String, //!< String
       StringList, //!< List of strings
@@ -2526,6 +2527,19 @@ class CORE_EXPORT Qgis
       CustomCrs, //!< Custom CRS
     };
     Q_ENUM( CoordinateDisplayType )
+
+    /**
+     * The setting origin describes where a setting is stored.
+     *
+     * \since QGIS 3.30
+     */
+    enum class SettingsOrigin : int
+    {
+      Any, //!< From any origin
+      Global, //!< Global settings are stored in `global_settings.ini`
+      Local, //!< Local settings are stored in the user profile
+    };
+    Q_ENUM( SettingsOrigin )
 
     /**
      * Scripting languages.

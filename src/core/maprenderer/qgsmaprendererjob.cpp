@@ -47,6 +47,8 @@
 #include "qgsmaskpaintdevice.h"
 #include "qgsrasterrenderer.h"
 
+const QgsSettingsEntryBool *QgsMapRendererJob::settingsLogCanvasRefreshEvent = new QgsSettingsEntryBool( QStringLiteral( "logCanvasRefreshEvent" ), QgsSettings::sTreeMap, false );
+
 ///@cond PRIVATE
 
 const QString QgsMapRendererJob::LABEL_CACHE_ID = QStringLiteral( "_labels_" );
@@ -1246,7 +1248,7 @@ void QgsMapRendererJob::composeSecondPass( std::vector<LayerRenderJob> &secondPa
 
 void QgsMapRendererJob::logRenderingTime( const std::vector< LayerRenderJob > &jobs, const std::vector< LayerRenderJob > &secondPassJobs, const LabelRenderJob &labelJob )
 {
-  if ( !settingsLogCanvasRefreshEvent.value() )
+  if ( !settingsLogCanvasRefreshEvent->value() )
     return;
 
   QMultiMap<int, QString> elapsed;

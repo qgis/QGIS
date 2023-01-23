@@ -154,12 +154,14 @@ class CORE_EXPORT QgsLocator : public QObject
     QStringList completionList() const {return mAutocompletionList;}
 
 #ifndef SIP_RUN
+    static inline QgsSettingsTreeNamedListNode *sTreeLocatorFilters = QgsSettings::treeRoot()->createNamedListElement( QStringLiteral( "locator-filters" ) );
+
     //! Settings entry locator filter enabled
-    static const inline QgsSettingsEntryBool settingsLocatorFilterEnabled = QgsSettingsEntryBool( QStringLiteral( "enabled_%1" ), QgsSettings::Prefix::GUI_LOCATORFILTERS, true, QObject::tr( "Locator filter enabled" ) );
+    static const QgsSettingsEntryBool *settingsLocatorFilterEnabled;
     //! Settings entry locator filter default value
-    static const inline QgsSettingsEntryBool settingsLocatorFilterDefault = QgsSettingsEntryBool( QStringLiteral( "default_%1" ), QgsSettings::Prefix::GUI_LOCATORFILTERS, false, QObject::tr( "Locator filter default value" ) );
+    static const QgsSettingsEntryBool *settingsLocatorFilterDefault;
     //! Settings entry locator filter prefix
-    static const inline QgsSettingsEntryString settingsLocatorFilterPrefix = QgsSettingsEntryString( QStringLiteral( "prefix_%1" ), QgsSettings::Prefix::GUI_LOCATORFILTERS, QString(), QObject::tr( "Locator filter prefix" ) );
+    static const QgsSettingsEntryString *settingsLocatorFilterPrefix;
 #endif
 
   signals:

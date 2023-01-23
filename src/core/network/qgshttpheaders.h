@@ -22,13 +22,16 @@
 #define QGSHTTPHEADERS_H
 
 #include <QMap>
+#include <QVariant>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgssettingsentry.h"
+
 
 class QNetworkRequest;
 class QUrlQuery;
 class QDomElement;
+class QgsSettings;
 
 /**
  * \ingroup core
@@ -56,7 +59,7 @@ class CORE_EXPORT QgsHttpHeaders
      * \brief Constructor from map
      * \param headers
      */
-    QgsHttpHeaders( const QMap<QString, QVariant> &headers );
+    QgsHttpHeaders( const QVariantMap &headers );
 
     /**
      * \brief default constructor
@@ -67,8 +70,9 @@ class CORE_EXPORT QgsHttpHeaders
      * \brief Constructor from QgsSettings \a settings object and root \a key
      * \param settings
      * \param key
+     * \deprecated since QGIS 3.30 use a variant map settings and the default constructor instead
      */
-    QgsHttpHeaders( const QgsSettings &settings, const QString &key = QString() );
+    Q_DECL_DEPRECATED QgsHttpHeaders( const QgsSettings &settings, const QString &key = QString() ) SIP_DEPRECATED;
 
     /**
      * \brief Constructor from default QgsSettings object and root \a key
@@ -86,6 +90,12 @@ class CORE_EXPORT QgsHttpHeaders
     virtual ~QgsHttpHeaders();
 
     /**
+     * \brief Returns the headers as a variant map
+     * \since QGIS 3.30
+     */
+    QVariantMap headers() const {return mHeaders;}
+
+    /**
      * \brief Updates the \a settings by adding all the http headers in the path "key/PATH_PREFIX/"
      *
      * KEY_REFERER value will be available at path "key/PATH_PREFIX/KEY_REFERER" and path "key/KEY_REFERER" (for backward compatibility)
@@ -93,8 +103,9 @@ class CORE_EXPORT QgsHttpHeaders
      * \param settings
      * \param key sub group path
      * \return TRUE if the update succeed
+     * \deprecated since QGIS 3.30 directly use a variant setting instead
      */
-    bool updateSettings( QgsSettings &settings, const QString &key = QString() ) const;
+    Q_DECL_DEPRECATED bool updateSettings( QgsSettings &settings, const QString &key = QString() ) const SIP_DEPRECATED;
 
     /**
      * \brief Updates a \a request by adding all the HTTP headers

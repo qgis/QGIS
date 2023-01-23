@@ -492,7 +492,7 @@ bool QgsTracer::initGraph()
     std::unique_ptr< QgsFeatureRenderer > renderer;
     std::unique_ptr<QgsRenderContext> ctx;
 
-    bool enableInvisibleFeature = QgsSettingsRegistryCore::settingsDigitizingSnapInvisibleFeature.value();
+    bool enableInvisibleFeature = QgsSettingsRegistryCore::settingsDigitizingSnapInvisibleFeature->value();
     if ( !enableInvisibleFeature && mRenderContext && vl->renderer() )
     {
       renderer.reset( vl->renderer()->clone() );

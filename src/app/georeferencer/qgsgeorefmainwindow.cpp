@@ -70,6 +70,22 @@
 #include "qgsvectorwarper.h"
 #include "qgsscreenhelper.h"
 
+const QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod> *QgsGeoreferencerMainWindow::settingResamplingMethod = new QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod>( QStringLiteral( "resampling-method" ), sTreeGeoreferencer, QgsImageWarper::ResamplingMethod::NearestNeighbour, QObject::tr( "Last used georeferencer resampling method" ) );
+
+const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingCompressionMethod = new QgsSettingsEntryString( QStringLiteral( "compression-method" ), sTreeGeoreferencer, QStringLiteral( "NONE" ), QObject::tr( "Last used georeferencer compression method" ) );
+
+const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingUseZeroForTransparent = new QgsSettingsEntryBool( QStringLiteral( "use-zero-for-transparent" ), sTreeGeoreferencer, false, QObject::tr( "Last used georeferencer use-zero-as-transparent option" ) );
+
+const QgsSettingsEntryEnumFlag<QgsGcpTransformerInterface::TransformMethod> *QgsGeoreferencerMainWindow::settingTransformMethod = new QgsSettingsEntryEnumFlag<QgsGcpTransformerInterface::TransformMethod>( QStringLiteral( "transform-method" ), sTreeGeoreferencer, QgsGcpTransformerInterface::TransformMethod::Linear, QObject::tr( "Last used georeferencer transform method" ) );
+
+const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingSaveGcps = new QgsSettingsEntryBool( QStringLiteral( "save-gcp-points" ), sTreeGeoreferencer, false, QObject::tr( "Whether georeferencer should automatically save .points files" ) );
+
+const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingLoadInProject = new QgsSettingsEntryBool( QStringLiteral( "load-result-in-project" ), sTreeGeoreferencer, true, QObject::tr( "Whether georeferencer should automatically load results into the current project" ) );
+
+const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingLastSourceFolder = new QgsSettingsEntryString( QStringLiteral( "last-source-folder" ), sTreeGeoreferencer, QString(), QObject::tr( "Last used folder for georeferencer source files" ) );
+
+const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingLastRasterFileFilter = new QgsSettingsEntryString( QStringLiteral( "last-raster-file-filter" ), sTreeGeoreferencer, QString(), QObject::tr( "Last used raster file filter for georeferencer source files" ) );
+
 QgsGeorefDockWidget::QgsGeorefDockWidget( const QString &title, QWidget *parent, Qt::WindowFlags flags )
   : QgsDockWidget( title, parent, flags )
 {
@@ -220,7 +236,7 @@ void QgsGeoreferencerMainWindow::openLayer( QgsMapLayerType layerType, const QSt
   QString uri;
   if ( fileName.isEmpty() )
   {
-    QString dir = settingLastSourceFolder.value();
+    QString dir = settingLastSourceFolder->value();
     if ( dir.isEmpty() )
       dir = QDir::homePath();
 
@@ -230,7 +246,7 @@ void QgsGeoreferencerMainWindow::openLayer( QgsMapLayerType layerType, const QSt
 
       case QgsMapLayerType::RasterLayer:
       {
-        QString lastUsedFilter = settingLastRasterFileFilter.value();
+        QString lastUsedFilter = settingLastRasterFileFilter->value();
         if ( lastUsedFilter.isEmpty() )
           lastUsedFilter = otherFiles;
 
@@ -243,7 +259,7 @@ void QgsGeoreferencerMainWindow::openLayer( QgsMapLayerType layerType, const QSt
 
         provider = QStringLiteral( "gdal" );
         uri = mFileName;
-        settingLastRasterFileFilter.setValue( lastUsedFilter );
+        settingLastRasterFileFilter->setValue( lastUsedFilter );
         break;
       }
 
@@ -319,7 +335,7 @@ void QgsGeoreferencerMainWindow::openLayer( QgsMapLayerType layerType, const QSt
   }
 
   QFileInfo fileInfo( mFileName );
-  settingLastSourceFolder.setValue( fileInfo.path() );
+  settingLastSourceFolder->setValue( fileInfo.path() );
 
   mGeorefTransform.setMethod( mTransformMethod );
 
@@ -1357,12 +1373,12 @@ void QgsGeoreferencerMainWindow::readSettings()
   restoreState( s.value( QStringLiteral( "/Plugin-GeoReferencer/uistate" ) ).toByteArray() );
 
   // warp options
-  mResamplingMethod = settingResamplingMethod.value();
-  mCompressionMethod = settingCompressionMethod.value();
-  mUseZeroForTrans = settingUseZeroForTransparent.value();
-  mTransformMethod = settingTransformMethod.value();
-  mSaveGcp = settingSaveGcps.value();
-  mLoadInQgis = settingLoadInProject.value();
+  mResamplingMethod = settingResamplingMethod->value();
+  mCompressionMethod = settingCompressionMethod->value();
+  mUseZeroForTrans = settingUseZeroForTransparent->value();
+  mTransformMethod = settingTransformMethod->value();
+  mSaveGcp = settingSaveGcps->value();
+  mLoadInQgis = settingLoadInProject->value();
 }
 
 void QgsGeoreferencerMainWindow::writeSettings()
@@ -1372,12 +1388,12 @@ void QgsGeoreferencerMainWindow::writeSettings()
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/size" ), size() );
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/uistate" ), saveState() );
 
-  settingTransformMethod.setValue( mTransformMethod );
-  settingResamplingMethod.setValue( mResamplingMethod );
-  settingCompressionMethod.setValue( mCompressionMethod );
-  settingUseZeroForTransparent.setValue( mUseZeroForTrans );
-  settingSaveGcps.setValue( mSaveGcp );
-  settingLoadInProject.setValue( mLoadInQgis );
+  settingTransformMethod->setValue( mTransformMethod );
+  settingResamplingMethod->setValue( mResamplingMethod );
+  settingCompressionMethod->setValue( mCompressionMethod );
+  settingUseZeroForTransparent->setValue( mUseZeroForTrans );
+  settingSaveGcps->setValue( mSaveGcp );
+  settingLoadInProject->setValue( mLoadInQgis );
 }
 
 bool QgsGeoreferencerMainWindow::loadGCPs( QString &error )

@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsOwsConnection : QObject
 {
 %Docstring(signature="appended")
@@ -21,11 +23,6 @@ Connections management
 %End
   public:
 
-
-
-
-    const QgsSettingsEntryGroup settingsServiceConnectionDetailsGroup;
-    const QgsSettingsEntryGroup settingsServiceConnectionCredentialsGroup;
 
     QgsOwsConnection( const QString &service, const QString &connName );
 %Docstring

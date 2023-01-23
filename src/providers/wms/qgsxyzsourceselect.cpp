@@ -21,6 +21,7 @@
 #include "qgsxyzsourceselect.h"
 #include "qgsxyzconnection.h"
 #include "qgsxyzconnectiondialog.h"
+#include "qgsowsconnection.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -125,7 +126,7 @@ void QgsXyzSourceSelect::populateConnectionList()
 
 void QgsXyzSourceSelect::setConnectionListPosition()
 {
-  const QString toSelect = QgsXyzConnectionUtils::selectedConnection();
+  const QString toSelect = QgsXyzConnectionSettings::sTreeXyzConnections->selectedItem();
 
   cmbConnections->setCurrentIndex( cmbConnections->findText( toSelect ) );
 
@@ -142,7 +143,7 @@ void QgsXyzSourceSelect::setConnectionListPosition()
 
 void QgsXyzSourceSelect::cmbConnections_currentTextChanged( const QString &text )
 {
-  QgsXyzConnectionUtils::setSelectedConnection( text );
+  QgsXyzConnectionSettings::sTreeXyzConnections->setSelectedItem( text );
   emit enableButtons( !text.isEmpty() );
 }
 

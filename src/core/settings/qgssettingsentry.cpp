@@ -17,92 +17,27 @@
 #include "qgslogger.h"
 
 #include <QRegularExpression>
+#include <QDir>
 
 
-
-
-QgsSettingsEntryGroup::QgsSettingsEntryGroup( const QList<const QgsSettingsEntryBase *> settings, bool fatalErrorIfInvalid )
-  : mSettings( settings )
+QgsSettingsEntryBase::QgsSettingsEntryBase( const QString &key, QgsSettingsTreeNode *parentTreeElement, const QVariant &defaultValue, const QString &description, Qgis::SettingsOptions options )
+  : mParentTreeElement( parentTreeElement )
+  , mDefaultValue( defaultValue )
+  , mDescription( description )
+  , mOptions( options )
 {
-  for ( const auto *setting : std::as_const( mSettings ) )
+  mKey = QDir::cleanPath( QStringLiteral( "%1/%2" ).arg( parentTreeElement ? parentTreeElement->completeKey() : QString(), key ) );
+
+  if ( parentTreeElement )
   {
-    QString otherBaseKey = setting->definitionKey();
-    otherBaseKey = otherBaseKey.left( otherBaseKey.lastIndexOf( QLatin1Char( '/' ) ) );
-    if ( mDefinitionBaseKey.isEmpty() )
-    {
-      mDefinitionBaseKey = otherBaseKey;
-    }
-    else
-    {
-      if ( mDefinitionBaseKey != otherBaseKey )
-      {
-        QgsDebugMsg( "Settings do not share the same base definition key for this group. This will lead to unpredictable results." );
-        if ( fatalErrorIfInvalid )
-          Q_ASSERT( false );
-        mIsValid = false;
-      }
-    }
+    parentTreeElement->registerChildSetting( this, key );
   }
 }
 
-QString QgsSettingsEntryGroup::baseKey( const QStringList &dynamicKeyPartList ) const
+QgsSettingsEntryBase::~QgsSettingsEntryBase()
 {
-  QString key = mDefinitionBaseKey;
-
-  if ( dynamicKeyPartList.isEmpty() )
-  {
-    if ( hasDynamicKey() )
-      QgsDebugMsg( QStringLiteral( "Settings group '%1' have a dynamic key but the dynamic key part was not provided" ).arg( key ) );
-
-    return key;
-  }
-  else
-  {
-    if ( !hasDynamicKey() )
-    {
-      QgsDebugMsg( QStringLiteral( "Settings group '%1' don't have a dynamic key, the provided dynamic key part will be ignored" ).arg( key ) );
-      return key;
-    }
-
-    for ( int i = 0; i < dynamicKeyPartList.size(); i++ )
-    {
-      key.replace( QStringLiteral( "%" ).append( QString::number( i + 1 ) ), dynamicKeyPartList.at( i ) );
-    }
-  }
-
-  return key;
-}
-
-void QgsSettingsEntryGroup::removeAllSettingsAtBaseKey( const QStringList &dynamicKeyPartList ) const
-{
-  QString key = baseKey( dynamicKeyPartList );
-  // https://regex101.com/r/kICr42/1
-  const thread_local QRegularExpression regularExpression( QStringLiteral( "^(\\/?(qgis\\/?)?)?$" ) );
-  if ( key.contains( regularExpression ) )
-  {
-    QgsDebugMsg( QStringLiteral( "Preventing mass removal of settings at key %1" ).arg( key ) );
-    return;
-  }
-
-  QgsSettings settings;
-  settings.remove( key );
-}
-
-void QgsSettingsEntryGroup::removeAllChildrenSettings( const QString &dynamicKeyPart ) const
-{
-  removeAllChildrenSettings( QgsSettingsEntryBase::dynamicKeyPartToList( dynamicKeyPart ) );
-}
-
-void QgsSettingsEntryGroup::removeAllChildrenSettings( const QStringList &dynamicKeyPartList ) const
-{
-  for ( const auto *setting : mSettings )
-    setting->remove( dynamicKeyPartList );
-}
-
-bool QgsSettingsEntryGroup::hasDynamicKey() const
-{
-  const thread_local QRegularExpression regularExpression( QStringLiteral( "%\\d+" ) );
-  return mDefinitionBaseKey.contains( regularExpression );
+  if ( mParentTreeElement )
+    mParentTreeElement->unregisterChildSetting( this );
 }
 
 
@@ -119,12 +54,6 @@ QString QgsSettingsEntryBase::key( const QStringList &dynamicKeyPartList ) const
 QString QgsSettingsEntryBase::completeKeyPrivate( const QString &key, const QStringList &dynamicKeyPartList ) const
 {
   QString completeKey = key;
-  if ( !mPluginName.isEmpty() )
-  {
-    if ( !completeKey.startsWith( '/' ) )
-      completeKey.prepend( '/' );
-    completeKey.prepend( mPluginName );
-  }
 
   if ( dynamicKeyPartList.isEmpty() )
   {
@@ -183,6 +112,11 @@ bool QgsSettingsEntryBase::exists( const QString &dynamicKeyPart ) const
 bool QgsSettingsEntryBase::exists( const QStringList &dynamicKeyPartList ) const
 {
   return QgsSettings().contains( key( dynamicKeyPartList ) );
+}
+
+Qgis::SettingsOrigin QgsSettingsEntryBase::origin( const QStringList &dynamicKeyPartList ) const
+{
+  return QgsSettings().origin( key( dynamicKeyPartList ) );
 }
 
 void QgsSettingsEntryBase::remove( const QString &dynamicKeyPart ) const
@@ -288,31 +222,40 @@ QVariant QgsSettingsEntryBase::formerValueAsVariant( const QStringList &dynamicK
   return QgsSettings().value( formerValuekey( dynamicKeyPartList ), defaultValueOverride );
 }
 
-bool QgsSettingsEntryBase::migrateFromKey( const QString &oldKey, const QString &oldSection, const QString &dynamicKeyPart ) const
-{
-  return migrateFromKey( oldKey, oldSection, dynamicKeyPartToList( dynamicKeyPart ) );
-}
 
-bool QgsSettingsEntryBase::migrateFromKey( const QString &oldKey, const QString &oldSection, const QStringList &dynamicKeyPartList ) const
+bool QgsSettingsEntryBase::copyValueFromKey( const QString &key, const QStringList &dynamicKeyPartList, bool removeSettingAtKey ) const
 {
   if ( exists( dynamicKeyPartList ) )
     return false;
 
-  const QString oldCompleteKey = completeKeyPrivate( QStringLiteral( "%1/%2" ).arg( oldSection, oldKey ), dynamicKeyPartList );
+  QgsSettings settings;
 
-  if ( QgsSettings().contains( oldCompleteKey ) )
+  const QString oldCompleteKey = completeKeyPrivate( key, dynamicKeyPartList );
+
+  if ( settings.contains( oldCompleteKey ) )
   {
-    QVariant oldValue = QgsSettings().value( oldCompleteKey, mDefaultValue );
-    setVariantValuePrivate( oldValue );
+    QVariant oldValue = settings.value( oldCompleteKey, mDefaultValue );
+    setVariantValuePrivate( oldValue, dynamicKeyPartList );
+    if ( removeSettingAtKey )
+      settings.remove( oldCompleteKey );
     return true;
   }
   return false;
+}
+
+void QgsSettingsEntryBase::copyValueToKey( const QString &key, const QStringList &dynamicKeyPartList ) const
+{
+  QgsSettings settings;
+  const QString completeKey = completeKeyPrivate( key, dynamicKeyPartList );
+  QgsSettings().setValue( completeKey, valueAsVariant( dynamicKeyPartList ) );
 }
 
 QString QgsSettingsEntryBase::formerValuekey( const QStringList &dynamicKeyPartList ) const
 {
   return key( dynamicKeyPartList ) + QStringLiteral( "_formervalue" );
 }
+
+
 
 
 

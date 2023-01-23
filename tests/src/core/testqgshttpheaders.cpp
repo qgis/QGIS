@@ -87,6 +87,8 @@ void TestQgsHttpheaders::setFromSettings( const QString &keyBase )
   settings.setValue( keyBase + QgsHttpHeaders::PATH_PREFIX + "key1", "value1" );
   settings.setValue( keyBase + QgsHttpHeaders::PATH_PREFIX + QgsHttpHeaders::KEY_REFERER, "valueHH_R" );
 
+  Q_NOWARN_DEPRECATED_PUSH
+
   QgsHttpHeaders h( settings, keyBase );
   QVERIFY( ! h.keys().contains( outOfHeaderKey ) );
   QVERIFY( h.keys().contains( QStringLiteral( "key1" ) ) );
@@ -98,6 +100,8 @@ void TestQgsHttpheaders::setFromSettings( const QString &keyBase )
   QgsHttpHeaders h2( settings, keyBase );
   QVERIFY( h2.keys().contains( QgsHttpHeaders::KEY_REFERER ) );
   QCOMPARE( h2 [QgsHttpHeaders::KEY_REFERER].toString(), QStringLiteral( "value_R" ) );
+
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void TestQgsHttpheaders::updateSettings()
@@ -105,6 +109,8 @@ void TestQgsHttpheaders::updateSettings()
   QgsSettings settings;
   QString keyBase = QStringLiteral( "qgis/mytest2/" );
   settings.remove( keyBase ); // cleanup
+
+  Q_NOWARN_DEPRECATED_PUSH
 
   QgsHttpHeaders h( QVariantMap( { {QStringLiteral( "key1" ), "value1"}} ) );
   h.updateSettings( settings, keyBase );
@@ -130,16 +136,15 @@ void TestQgsHttpheaders::updateSettings()
   QCOMPARE( settings.value( keyBase + QgsHttpHeaders::PATH_PREFIX + QgsHttpHeaders::KEY_REFERER ).toString(), "http://gg.com" );
   QVERIFY( settings.contains( keyBase + QgsHttpHeaders::KEY_REFERER ) );
   QCOMPARE( settings.value( keyBase + QgsHttpHeaders::KEY_REFERER ).toString(), "http://gg.com" );
+
+  Q_NOWARN_DEPRECATED_POP
 }
 
 
 void TestQgsHttpheaders::createQgsOwsConnection()
 {
-  QgsSettings settings;
-  settings.setValue( QString( QgsSettings::Prefix::QGIS ) + "/connections-service/name/" + QgsHttpHeaders::PATH_PREFIX + QgsHttpHeaders::KEY_REFERER,
-                     "http://test.com" );
-  settings.setValue( QString( QgsSettings::Prefix::QGIS ) + "/connections-service/name/" + QgsHttpHeaders::PATH_PREFIX + "other_http_header",
-                     "value" );
+  QgsHttpHeaders h( QVariantMap( { { QgsHttpHeaders::KEY_REFERER, "http://test.com"}, {"other_http_header", "value"}} ) );
+  QgsOwsConnection::settingsHeaders->setValue( h.headers(), {"service", "name"} );
 
   QgsOwsConnection ows( "service", "name" );
   QCOMPARE( ows.connectionInfo(), ",authcfg=,referer=http://test.com" );

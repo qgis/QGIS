@@ -31,6 +31,11 @@
 #include <QMenu>
 #include <QActionGroup>
 
+const QgsSettingsEntryEnumFlag<Qgis::CaptureTechnique> *QgsMapToolsDigitizingTechniqueManager::settingsDigitizingTechnique = new QgsSettingsEntryEnumFlag<Qgis::CaptureTechnique>( QStringLiteral( "technique" ), QgsSettings::sTreeDigitizing, Qgis::CaptureTechnique::StraightSegments, QObject::tr( "Current digitizing technique" ), Qgis::SettingsOption::SaveFormerValue ) SIP_SKIP;
+
+const QgsSettingsEntryString *QgsMapToolsDigitizingTechniqueManager::settingMapToolShapeDefaultForShape = new QgsSettingsEntryString( QStringLiteral( "%1/default" ), sTreeShapeMapTools, QString(), QObject::tr( "Default map tool for given shape category" ) ) SIP_SKIP;
+const QgsSettingsEntryString *QgsMapToolsDigitizingTechniqueManager::settingMapToolShapeCurrent = new QgsSettingsEntryString( QStringLiteral( "current" ), sTreeShapeMapTools, QgsMapToolShapeCircle2PointsMetadata::TOOL_ID, QObject::tr( "Current shape map tool" ) ) SIP_SKIP;
+
 QgsMapToolsDigitizingTechniqueManager::QgsMapToolsDigitizingTechniqueManager( QObject *parent )
   : QObject( parent )
 {
@@ -76,7 +81,7 @@ void QgsMapToolsDigitizingTechniqueManager::setupToolBars()
     }
     else
     {
-      Qgis::CaptureTechnique formerTechnique = settingsDigitizingTechnique.formerValue();
+      Qgis::CaptureTechnique formerTechnique = settingsDigitizingTechnique->formerValue();
       setCaptureTechnique( formerTechnique );
     }
   } );
@@ -87,7 +92,7 @@ void QgsMapToolsDigitizingTechniqueManager::setupToolBars()
 
   mDigitizeModeToolButton->setMenu( digitizeMenu );
 
-  const Qgis::CaptureTechnique technique = settingsDigitizingTechnique.value();
+  const Qgis::CaptureTechnique technique = settingsDigitizingTechnique->value();
   switch ( technique )
   {
     case Qgis::CaptureTechnique::StraightSegments:
@@ -132,12 +137,12 @@ void QgsMapToolsDigitizingTechniqueManager::setupToolBars()
     action->setCheckable( true );
     action->setData( metadata->id() );
     shapeMenu->addAction( action );
-    QString defaultToolId = settingMapToolShapeDefaultForShape.value( qgsEnumValueToKey( metadata->category() ) );
+    QString defaultToolId = settingMapToolShapeDefaultForShape->value( qgsEnumValueToKey( metadata->category() ) );
     if ( defaultToolId.isEmpty() )
     {
       // if no default tool for category, take the first one
       defaultToolId = metadata->id();
-      settingMapToolShapeDefaultForShape.setValue( metadata->id(), qgsEnumValueToKey( metadata->category() ) );
+      settingMapToolShapeDefaultForShape->setValue( metadata->id(), qgsEnumValueToKey( metadata->category() ) );
     }
     if ( defaultToolId == metadata->id() )
       shapeButton->setDefaultAction( action );
@@ -153,7 +158,7 @@ QgsMapToolsDigitizingTechniqueManager::~QgsMapToolsDigitizingTechniqueManager()
 
 void QgsMapToolsDigitizingTechniqueManager::setCaptureTechnique( Qgis::CaptureTechnique technique, bool alsoSetShapeTool )
 {
-  settingsDigitizingTechnique.setValue( technique );
+  settingsDigitizingTechnique->setValue( technique );
 
   mTechniqueActions.value( technique )->setChecked( true );
 
@@ -185,7 +190,7 @@ void QgsMapToolsDigitizingTechniqueManager::setCaptureTechnique( Qgis::CaptureTe
 
   if ( technique == Qgis::CaptureTechnique::Shape && alsoSetShapeTool )
   {
-    setShapeTool( settingMapToolShapeCurrent.value() );
+    setShapeTool( settingMapToolShapeCurrent->value() );
   }
   else if ( technique != Qgis::CaptureTechnique::Shape )
   {
@@ -203,8 +208,8 @@ void QgsMapToolsDigitizingTechniqueManager::setShapeTool( const QString &shapeTo
   const QgsMapToolShapeMetadata *md = QgsGui::mapToolShapeRegistry()->mapToolMetadata( shapeToolId );
   if ( md )
   {
-    settingMapToolShapeDefaultForShape.setValue( md->id(), qgsEnumValueToKey( md->category() ) );
-    settingMapToolShapeCurrent.setValue( md->id() );
+    settingMapToolShapeDefaultForShape->setValue( md->id(), qgsEnumValueToKey( md->category() ) );
+    settingMapToolShapeCurrent->setValue( md->id() );
     QToolButton *bt = mShapeCategoryButtons.value( md->category() );
     action = mShapeActions.value( md->id() );
     if ( bt && action )
@@ -264,8 +269,8 @@ void QgsMapToolsDigitizingTechniqueManager::enableDigitizingTechniqueActions( bo
   // QgisApp::captureTools returns all registered capture tools + the eventual current capture tool
   const QList< QgsMapToolCapture * > tools = QgisApp::instance()->captureTools();
 
-  const Qgis::CaptureTechnique currentTechnique = settingsDigitizingTechnique.value();
-  const QString currentShapeToolId = settingMapToolShapeCurrent.value();
+  const Qgis::CaptureTechnique currentTechnique = settingsDigitizingTechnique->value();
+  const QString currentShapeToolId = settingMapToolShapeCurrent->value();
 
   QSet< Qgis::CaptureTechnique > supportedTechniques;
   if ( enabled )
@@ -305,7 +310,7 @@ void QgsMapToolsDigitizingTechniqueManager::enableDigitizingTechniqueActions( bo
       tool->setCurrentCaptureTechnique( currentTechnique );
       if ( currentTechnique == Qgis::CaptureTechnique::Shape )
       {
-        QgsMapToolShapeMetadata *md = QgsGui::mapToolShapeRegistry()->mapToolMetadata( settingMapToolShapeCurrent.value() );
+        QgsMapToolShapeMetadata *md = QgsGui::mapToolShapeRegistry()->mapToolMetadata( settingMapToolShapeCurrent->value() );
         tool->setCurrentShapeMapTool( md );
       }
     }
@@ -329,14 +334,14 @@ QgsStreamDigitizingSettingsAction::QgsStreamDigitizingSettingsAction( QWidget *p
   mStreamToleranceSpinBox->setWrapping( false );
   mStreamToleranceSpinBox->setSingleStep( 1 );
   mStreamToleranceSpinBox->setClearValue( 2 );
-  mStreamToleranceSpinBox->setValue( QgsSettingsRegistryCore::settingsDigitizingStreamTolerance.value() );
+  mStreamToleranceSpinBox->setValue( QgsSettingsRegistryCore::settingsDigitizingStreamTolerance->value() );
 
   QLabel *label = new QLabel( tr( "Streaming Tolerance" ) );
   gLayout->addWidget( label, 1, 0 );
   gLayout->addWidget( mStreamToleranceSpinBox, 1, 1 );
   connect( mStreamToleranceSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ), this, [ = ]( int value )
   {
-    QgsSettingsRegistryCore::settingsDigitizingStreamTolerance.setValue( value );
+    QgsSettingsRegistryCore::settingsDigitizingStreamTolerance->setValue( value );
   } );
 
   QWidget *w = new QWidget( parent );

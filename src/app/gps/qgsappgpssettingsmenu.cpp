@@ -66,12 +66,12 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
   Qgis::MapRecenteringMode mapCenteringMode = Qgis::MapRecenteringMode::WhenOutsideVisibleExtent;
   bool rotateMap = false;
 
-  if ( QgsGpsCanvasBridge::settingShowBearingLine.exists( ) )
+  if ( QgsGpsCanvasBridge::settingShowBearingLine->exists( ) )
   {
-    showLocationMarker = QgsGpsMarker::settingShowLocationMarker.value();
-    showBearingLine = QgsGpsCanvasBridge::settingShowBearingLine.value();
-    mapCenteringMode = QgsGpsCanvasBridge::settingMapCenteringMode.value();
-    rotateMap = QgsGpsCanvasBridge::settingRotateMap.value();
+    showLocationMarker = QgsGpsMarker::settingShowLocationMarker->value();
+    showBearingLine = QgsGpsCanvasBridge::settingShowBearingLine->value();
+    mapCenteringMode = QgsGpsCanvasBridge::settingMapCenteringMode->value();
+    rotateMap = QgsGpsCanvasBridge::settingRotateMap->value();
   }
   else
   {
@@ -102,7 +102,7 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
   connect( mShowLocationMarkerAction, &QAction::toggled, this, [ = ]( bool checked )
   {
     emit locationMarkerToggled( checked );
-    QgsGpsMarker::settingShowLocationMarker.setValue( checked );
+    QgsGpsMarker::settingShowLocationMarker->setValue( checked );
   } );
   addAction( mShowLocationMarkerAction );
 
@@ -113,7 +113,7 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
   connect( mShowBearingLineAction, &QAction::toggled, this, [ = ]( bool checked )
   {
     emit bearingLineToggled( checked );
-    QgsGpsCanvasBridge::settingShowBearingLine.setValue( checked );
+    QgsGpsCanvasBridge::settingShowBearingLine->setValue( checked );
   } );
 
   addAction( mShowBearingLineAction );
@@ -124,7 +124,7 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
   mRotateMapAction->setChecked( rotateMap );
   connect( mRotateMapAction, &QAction::toggled, this, [ = ]( bool checked )
   {
-    QgsGpsCanvasBridge::settingRotateMap.setValue( checked );
+    QgsGpsCanvasBridge::settingRotateMap->setValue( checked );
     emit rotateMapToggled( checked );
   } );
 
@@ -153,7 +153,7 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
   {
     if ( checked )
     {
-      QgsGpsCanvasBridge::settingMapCenteringMode.setValue( Qgis::MapRecenteringMode::Always );
+      QgsGpsCanvasBridge::settingMapCenteringMode->setValue( Qgis::MapRecenteringMode::Always );
       emit mapCenteringModeChanged( Qgis::MapRecenteringMode::Always );
     }
   } );
@@ -162,7 +162,7 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
   {
     if ( checked )
     {
-      QgsGpsCanvasBridge::settingMapCenteringMode.setValue( Qgis::MapRecenteringMode::WhenOutsideVisibleExtent );
+      QgsGpsCanvasBridge::settingMapCenteringMode->setValue( Qgis::MapRecenteringMode::WhenOutsideVisibleExtent );
       emit mapCenteringModeChanged( Qgis::MapRecenteringMode::WhenOutsideVisibleExtent );
     }
   } );
@@ -171,7 +171,7 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
   {
     if ( checked )
     {
-      QgsGpsCanvasBridge::settingMapCenteringMode.setValue( Qgis::MapRecenteringMode::Never );
+      QgsGpsCanvasBridge::settingMapCenteringMode->setValue( Qgis::MapRecenteringMode::Never );
       emit mapCenteringModeChanged( Qgis::MapRecenteringMode::Never );
     }
   } );
@@ -227,7 +227,7 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
   {
     if ( checked )
     {
-      const QString lastGpkgLog = QgsAppGpsLogging::settingLastGpkgLog.value();
+      const QString lastGpkgLog = QgsAppGpsLogging::settingLastGpkgLog->value();
       const QString initialPath = lastGpkgLog.isEmpty() ? QDir::homePath() : lastGpkgLog;
 
       QString selectedFilter;
@@ -242,7 +242,7 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
       }
 
       fileName = QgsFileUtils::addExtensionFromFilter( fileName, selectedFilter );
-      QgsAppGpsLogging::settingLastGpkgLog.setValue( fileName );
+      QgsAppGpsLogging::settingLastGpkgLog->setValue( fileName );
 
       emit gpkgLogDestinationChanged( fileName );
     }
@@ -259,7 +259,7 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
   {
     if ( checked )
     {
-      const QString lastLogFolder = QgsAppGpsLogging::settingLastLogFolder.value();
+      const QString lastLogFolder = QgsAppGpsLogging::settingLastLogFolder->value();
       const QString initialFolder = lastLogFolder.isEmpty() ? QDir::homePath() : lastLogFolder;
 
       QString fileName = QFileDialog::getSaveFileName( this, tr( "GPS Log File" ), initialFolder, tr( "NMEA files" ) + " (*.nmea)" );
@@ -271,7 +271,7 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
       }
 
       fileName = QgsFileUtils::ensureFileNameHasExtension( fileName, { QStringLiteral( "nmea" ) } );
-      QgsAppGpsLogging::settingLastLogFolder.setValue( QFileInfo( fileName ).absolutePath() );
+      QgsAppGpsLogging::settingLastLogFolder->setValue( QFileInfo( fileName ).absolutePath() );
 
       emit nmeaLogFileChanged( fileName );
       emit enableNmeaLog( true );

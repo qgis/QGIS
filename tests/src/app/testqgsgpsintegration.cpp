@@ -90,7 +90,7 @@ void TestQgsGpsIntegration::initTestCase()
       QStringLiteral( "vl4" ),
       QStringLiteral( "memory" ) );
 
-  QgsSettingsRegistryCore::settingsDigitizingDisableEnterAttributeValuesDialog.setValue( true );
+  QgsSettingsRegistryCore::settingsDigitizingDisableEnterAttributeValuesDialog->setValue( true );
 
   const QString tempPath = QDir::tempPath() + QStringLiteral( "/gps_timestamp.gpkg" );
   QFile::copy( TEST_DATA_DIR + QStringLiteral( "/gps_timestamp.gpkg" ), tempPath );

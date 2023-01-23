@@ -33,6 +33,9 @@
 #include <QLabel>
 #include <QToolButton>
 
+const QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponents> *QgsGpsToolBar::settingShowInToolbar = new QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponents>( QStringLiteral( "show-in-toolbar" ), QgsSettings::sTreeGps, Qgis::GpsInformationComponent::Location, QStringLiteral( "GPS information components to show in GPS toolbar" ) );
+
+
 QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *canvas, QWidget *parent )
   : QToolBar( parent )
   , mConnection( connection )
@@ -226,7 +229,7 @@ void QgsGpsToolBar::updateLocationLabel()
 
     const QgsGpsInformation information = mConnection->lastInformation();
 
-    const Qgis::GpsInformationComponents visibleComponents = settingShowInToolbar.value();
+    const Qgis::GpsInformationComponents visibleComponents = settingShowInToolbar->value();
 
     QStringList parts;
     for ( Qgis::GpsInformationComponent component :
@@ -456,7 +459,7 @@ void QgsGpsToolBar::createLocationWidget()
 
   QMenu *locationMenu = new QMenu( mInformationButton );
 
-  const Qgis::GpsInformationComponents visibleComponents = settingShowInToolbar.value();
+  const Qgis::GpsInformationComponents visibleComponents = settingShowInToolbar->value();
 
   for ( const auto &it : std::vector< std::pair< Qgis::GpsInformationComponent, QString> >
 {
@@ -479,14 +482,14 @@ void QgsGpsToolBar::createLocationWidget()
 
     connect( showComponentAction, &QAction::toggled, this, [ = ]( bool checked )
     {
-      const Qgis::GpsInformationComponents currentVisibleComponents = settingShowInToolbar.value();
+      const Qgis::GpsInformationComponents currentVisibleComponents = settingShowInToolbar->value();
       if ( checked )
       {
-        settingShowInToolbar.setValue( currentVisibleComponents | component );
+        settingShowInToolbar->setValue( currentVisibleComponents | component );
       }
       else
       {
-        settingShowInToolbar.setValue( currentVisibleComponents & ~( static_cast< int >( component ) ) );
+        settingShowInToolbar->setValue( currentVisibleComponents & ~( static_cast< int >( component ) ) );
       }
       updateLocationLabel();
     } );

@@ -23,6 +23,10 @@
 #include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
 
+const QgsSettingsEntryString *QgsAppGpsLogging::settingLastLogFolder = new QgsSettingsEntryString( QStringLiteral( "last-log-folder" ), QgsSettings::sTreeGps, QString(), QStringLiteral( "Last used folder for GPS log files" ) );
+
+const QgsSettingsEntryString *QgsAppGpsLogging::settingLastGpkgLog = new QgsSettingsEntryString( QStringLiteral( "last-gpkg-log" ), QgsSettings::sTreeGps, QString(), QStringLiteral( "Last used Geopackage/Spatialite file for logging GPS locations" ) );
+
 const std::vector< std::tuple< Qgis::GpsInformationComponent, std::tuple< QVariant::Type, QString >>> QgsAppGpsLogging::sPointFields
 {
   { Qgis::GpsInformationComponent::Timestamp, { QVariant::DateTime, QStringLiteral( "timestamp" )}},
@@ -334,7 +338,7 @@ bool QgsAppGpsLogging::createOrUpdateLogDatabase()
 
       const Qgis::VectorExportResult result = ogrMetadata->createEmptyLayer( mGpkgLogFile,
                                               pointFields,
-                                              QgsGpsLogger::settingsGpsStoreAttributeInMValues.value() ? QgsWkbTypes::PointZM : QgsWkbTypes::PointZ,
+                                              QgsGpsLogger::settingsGpsStoreAttributeInMValues->value() ? QgsWkbTypes::PointZM : QgsWkbTypes::PointZ,
                                               QgsCoordinateReferenceSystem( "EPSG:4326" ),
                                               false, unusedMap, error, &options );
       if ( result != Qgis::VectorExportResult::Success )
@@ -374,7 +378,7 @@ bool QgsAppGpsLogging::createOrUpdateLogDatabase()
 
       const Qgis::VectorExportResult result = ogrMetadata->createEmptyLayer( mGpkgLogFile,
                                               tracksFields,
-                                              QgsGpsLogger::settingsGpsStoreAttributeInMValues.value() ? QgsWkbTypes::LineStringZM : QgsWkbTypes::LineStringZ,
+                                              QgsGpsLogger::settingsGpsStoreAttributeInMValues->value() ? QgsWkbTypes::LineStringZM : QgsWkbTypes::LineStringZ,
                                               QgsCoordinateReferenceSystem( "EPSG:4326" ),
                                               false, unusedMap, error, &options );
       if ( result != Qgis::VectorExportResult::Success )

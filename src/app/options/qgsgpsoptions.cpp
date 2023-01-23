@@ -65,7 +65,7 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
   mBearingLineStyleButton->setSymbolType( Qgis::SymbolType::Line );
   mTrackLineStyleButton->setSymbolType( Qgis::SymbolType::Line );
 
-  const QString defaultSymbol = QgsGpsMarker::settingLocationMarkerSymbol.value();
+  const QString defaultSymbol = QgsGpsMarker::settingLocationMarkerSymbol->value();
   QDomDocument symbolDoc;
   symbolDoc.setContent( defaultSymbol );
   const QDomElement markerElement = symbolDoc.documentElement();
@@ -77,7 +77,7 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
   QgsSettings settings;
   QDomDocument doc;
   QDomElement elem;
-  QString bearingLineSymbolXml = QgsGpsCanvasBridge::settingBearingLineSymbol.value();
+  QString bearingLineSymbolXml = QgsGpsCanvasBridge::settingBearingLineSymbol->value();
   if ( bearingLineSymbolXml.isEmpty() )
   {
     bearingLineSymbolXml = settings.value( QStringLiteral( "bearingLineSymbol" ), QVariant(), QgsSettings::Gps ).toString();
@@ -92,7 +92,7 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
       mBearingLineStyleButton->setSymbol( bearingSymbol.release() );
   }
 
-  const QString trackLineSymbolXml = QgsAppGpsDigitizing::settingTrackLineSymbol.value();
+  const QString trackLineSymbolXml = QgsAppGpsDigitizing::settingTrackLineSymbol->value();
   if ( !trackLineSymbolXml.isEmpty() )
   {
     doc.setContent( trackLineSymbolXml );
@@ -102,7 +102,7 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
       mTrackLineStyleButton->setSymbol( trackLineSymbol.release() );
   }
 
-  mCheckRotateLocationMarker->setChecked( QgsGpsMarker::settingRotateLocationMarker.value() );
+  mCheckRotateLocationMarker->setChecked( QgsGpsMarker::settingRotateLocationMarker->value() );
 
   mSpinGpsdPort->setValue( 2947 );
   mSpinGpsdPort->setClearValue( 2947 );
@@ -160,27 +160,27 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
   Qt::TimeSpec timeSpec = Qt::TimeSpec::LocalTime;
   QString timeZone;
   int offsetFromUtc = 0;
-  if ( QgsGpsConnection::settingsGpsConnectionType.exists() )
+  if ( QgsGpsConnection::settingsGpsConnectionType->exists() )
   {
-    connectionType = QgsGpsConnection::settingsGpsConnectionType.value();
-    gpsdHost = QgsGpsConnection::settingsGpsdHostName.value();
-    gpsdPort = static_cast< int >( QgsGpsConnection::settingsGpsdPortNumber.value() );
-    gpsdDevice = QgsGpsConnection::settingsGpsdDeviceName.value();
-    acquisitionInterval = static_cast< int >( QgsGpsConnection::settingGpsAcquisitionInterval.value() );
-    distanceThreshold = QgsGpsConnection::settingGpsDistanceThreshold.value();
-    bearingFromTravelDirection = QgsGpsConnection::settingGpsBearingFromTravelDirection.value();
-    recenteringThreshold = static_cast< int >( QgsGpsCanvasBridge::settingMapExtentRecenteringThreshold.value() );
-    rotateInterval = static_cast< int >( QgsGpsCanvasBridge::settingMapRotateInterval.value() );
+    connectionType = QgsGpsConnection::settingsGpsConnectionType->value();
+    gpsdHost = QgsGpsConnection::settingsGpsdHostName->value();
+    gpsdPort = static_cast< int >( QgsGpsConnection::settingsGpsdPortNumber->value() );
+    gpsdDevice = QgsGpsConnection::settingsGpsdDeviceName->value();
+    acquisitionInterval = static_cast< int >( QgsGpsConnection::settingGpsAcquisitionInterval->value() );
+    distanceThreshold = QgsGpsConnection::settingGpsDistanceThreshold->value();
+    bearingFromTravelDirection = QgsGpsConnection::settingGpsBearingFromTravelDirection->value();
+    recenteringThreshold = static_cast< int >( QgsGpsCanvasBridge::settingMapExtentRecenteringThreshold->value() );
+    rotateInterval = static_cast< int >( QgsGpsCanvasBridge::settingMapRotateInterval->value() );
 
-    applyLeapSeconds = QgsGpsConnection::settingGpsApplyLeapSecondsCorrection.value();
-    leapSeconds = static_cast< int >( QgsGpsConnection::settingGpsLeapSeconds.value() );
-    timeSpec = QgsGpsConnection::settingsGpsTimeStampSpecification.value();
-    timeZone = QgsGpsConnection::settingsGpsTimeStampTimeZone.value();
-    offsetFromUtc = static_cast< int >( QgsGpsConnection::settingsGpsTimeStampOffsetFromUtc.value() );
+    applyLeapSeconds = QgsGpsConnection::settingGpsApplyLeapSecondsCorrection->value();
+    leapSeconds = static_cast< int >( QgsGpsConnection::settingGpsLeapSeconds->value() );
+    timeSpec = QgsGpsConnection::settingsGpsTimeStampSpecification->value();
+    timeZone = QgsGpsConnection::settingsGpsTimeStampTimeZone->value();
+    offsetFromUtc = static_cast< int >( QgsGpsConnection::settingsGpsTimeStampOffsetFromUtc->value() );
 
-    if ( QgsGpsLogger::settingsGpsStoreAttributeInMValues.value() )
+    if ( QgsGpsLogger::settingsGpsStoreAttributeInMValues->value() )
     {
-      mComboMValueAttribute->setCurrentIndex( mComboMValueAttribute->findData( QVariant::fromValue( QgsGpsLogger::settingsGpsMValueComponent.value() ) ) );
+      mComboMValueAttribute->setCurrentIndex( mComboMValueAttribute->findData( QVariant::fromValue( QgsGpsLogger::settingsGpsMValueComponent->value() ) ) );
     }
   }
   else
@@ -318,16 +318,16 @@ void QgsGpsOptionsWidget::apply()
     QDomDocument doc;
     QDomElement elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "location-marker-symbol" ), markerSymbol, doc, QgsReadWriteContext() );
     doc.appendChild( elem );
-    QgsGpsMarker::settingLocationMarkerSymbol.setValue( doc.toString( 0 ) );
+    QgsGpsMarker::settingLocationMarkerSymbol->setValue( doc.toString( 0 ) );
   }
-  QgsGpsMarker::settingRotateLocationMarker.setValue( mCheckRotateLocationMarker->isChecked() );
+  QgsGpsMarker::settingRotateLocationMarker->setValue( mCheckRotateLocationMarker->isChecked() );
 
   if ( QgsSymbol *lineSymbol = mBearingLineStyleButton->symbol() )
   {
     QDomDocument doc;
     const QDomElement elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "gps-bearing-symbol" ), lineSymbol, doc, QgsReadWriteContext() );
     doc.appendChild( elem );
-    QgsGpsCanvasBridge::settingBearingLineSymbol.setValue( doc.toString( 0 ) );
+    QgsGpsCanvasBridge::settingBearingLineSymbol->setValue( doc.toString( 0 ) );
   }
 
   if ( QgsSymbol *lineSymbol = mTrackLineStyleButton->symbol() )
@@ -335,53 +335,53 @@ void QgsGpsOptionsWidget::apply()
     QDomDocument doc;
     const QDomElement elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "gps-track-symbol" ), lineSymbol, doc, QgsReadWriteContext() );
     doc.appendChild( elem );
-    QgsAppGpsDigitizing::settingTrackLineSymbol.setValue( doc.toString( 0 ) );
+    QgsAppGpsDigitizing::settingTrackLineSymbol->setValue( doc.toString( 0 ) );
   }
 
-  QgsGpsConnection::settingsGpsSerialDevice.setValue( mCboDevices->currentData().toString() );
+  QgsGpsConnection::settingsGpsSerialDevice->setValue( mCboDevices->currentData().toString() );
 
   if ( mRadAutodetect->isChecked() )
   {
-    QgsGpsConnection::settingsGpsConnectionType.setValue( Qgis::GpsConnectionType::Automatic );
+    QgsGpsConnection::settingsGpsConnectionType->setValue( Qgis::GpsConnectionType::Automatic );
   }
   else if ( mRadInternal->isChecked() )
   {
-    QgsGpsConnection::settingsGpsConnectionType.setValue( Qgis::GpsConnectionType::Internal );
+    QgsGpsConnection::settingsGpsConnectionType->setValue( Qgis::GpsConnectionType::Internal );
   }
   else if ( mRadSerialDevice->isChecked() )
   {
-    QgsGpsConnection::settingsGpsConnectionType.setValue( Qgis::GpsConnectionType::Serial );
+    QgsGpsConnection::settingsGpsConnectionType->setValue( Qgis::GpsConnectionType::Serial );
   }
   else
   {
-    QgsGpsConnection::settingsGpsConnectionType.setValue( Qgis::GpsConnectionType::Gpsd );
+    QgsGpsConnection::settingsGpsConnectionType->setValue( Qgis::GpsConnectionType::Gpsd );
   }
 
-  QgsGpsConnection::settingsGpsdHostName.setValue( mGpsdHost->text() );
-  QgsGpsConnection::settingsGpsdPortNumber.setValue( mSpinGpsdPort->value() );
-  QgsGpsConnection::settingsGpsdDeviceName.setValue( mGpsdDevice->text() );
+  QgsGpsConnection::settingsGpsdHostName->setValue( mGpsdHost->text() );
+  QgsGpsConnection::settingsGpsdPortNumber->setValue( mSpinGpsdPort->value() );
+  QgsGpsConnection::settingsGpsdDeviceName->setValue( mGpsdDevice->text() );
 
-  QgsGpsConnection::settingGpsAcquisitionInterval.setValue( mCboAcquisitionInterval->currentText().toInt() );
-  QgsGpsConnection::settingGpsDistanceThreshold.setValue( mCboDistanceThreshold->currentText().toDouble() );
-  QgsGpsConnection::settingGpsBearingFromTravelDirection.setValue( mTravelBearingCheckBox->isChecked() );
+  QgsGpsConnection::settingGpsAcquisitionInterval->setValue( mCboAcquisitionInterval->currentText().toInt() );
+  QgsGpsConnection::settingGpsDistanceThreshold->setValue( mCboDistanceThreshold->currentText().toDouble() );
+  QgsGpsConnection::settingGpsBearingFromTravelDirection->setValue( mTravelBearingCheckBox->isChecked() );
 
-  QgsGpsCanvasBridge::settingMapExtentRecenteringThreshold.setValue( mSpinMapExtentMultiplier->value() );
-  QgsGpsCanvasBridge::settingMapRotateInterval.setValue( mSpinMapRotateInterval->value() );
+  QgsGpsCanvasBridge::settingMapExtentRecenteringThreshold->setValue( mSpinMapExtentMultiplier->value() );
+  QgsGpsCanvasBridge::settingMapRotateInterval->setValue( mSpinMapRotateInterval->value() );
 
-  QgsGpsConnection::settingsGpsTimeStampSpecification.setValue( static_cast< Qt::TimeSpec >( mCboTimestampFormat->currentData( ).toInt() ) );
-  QgsGpsConnection::settingsGpsTimeStampTimeZone.setValue( mCboTimeZones->currentText() );
-  QgsGpsConnection::settingGpsApplyLeapSecondsCorrection.setValue( mCbxLeapSeconds->isChecked() );
-  QgsGpsConnection::settingGpsLeapSeconds.setValue( mLeapSeconds->value() );
-  QgsGpsConnection::settingsGpsTimeStampOffsetFromUtc.setValue( mOffsetFromUtc->value() );
+  QgsGpsConnection::settingsGpsTimeStampSpecification->setValue( static_cast< Qt::TimeSpec >( mCboTimestampFormat->currentData( ).toInt() ) );
+  QgsGpsConnection::settingsGpsTimeStampTimeZone->setValue( mCboTimeZones->currentText() );
+  QgsGpsConnection::settingGpsApplyLeapSecondsCorrection->setValue( mCbxLeapSeconds->isChecked() );
+  QgsGpsConnection::settingGpsLeapSeconds->setValue( mLeapSeconds->value() );
+  QgsGpsConnection::settingsGpsTimeStampOffsetFromUtc->setValue( mOffsetFromUtc->value() );
 
   if ( !mComboMValueAttribute->currentData().isValid() )
   {
-    QgsGpsLogger::settingsGpsStoreAttributeInMValues.setValue( false );
+    QgsGpsLogger::settingsGpsStoreAttributeInMValues->setValue( false );
   }
   else
   {
-    QgsGpsLogger::settingsGpsStoreAttributeInMValues.setValue( true );
-    QgsGpsLogger::settingsGpsMValueComponent.setValue( mComboMValueAttribute->currentData().value< Qgis::GpsInformationComponent >() );
+    QgsGpsLogger::settingsGpsStoreAttributeInMValues->setValue( true );
+    QgsGpsLogger::settingsGpsMValueComponent->setValue( mComboMValueAttribute->currentData().value< Qgis::GpsInformationComponent >() );
   }
 }
 
@@ -399,9 +399,9 @@ void QgsGpsOptionsWidget::refreshDevices()
 
   // remember the last device used
   QString serialDevice;
-  if ( QgsGpsConnection::settingsGpsSerialDevice.exists() )
+  if ( QgsGpsConnection::settingsGpsSerialDevice->exists() )
   {
-    serialDevice = QgsGpsConnection::settingsGpsSerialDevice.value();
+    serialDevice = QgsGpsConnection::settingsGpsSerialDevice->value();
   }
   else
   {

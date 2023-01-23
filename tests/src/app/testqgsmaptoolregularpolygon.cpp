@@ -103,7 +103,7 @@ void TestQgsMapToolRegularPolygon::resetMapTool( QgsMapToolShapeMetadata *metada
 
 void TestQgsMapToolRegularPolygon::testRegularPolygonFrom2Points()
 {
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 333 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 333 );
   mLayer->startEditing();
 
   QgsMapToolShapeRegularPolygon2PointsMetadata md;
@@ -122,11 +122,11 @@ void TestQgsMapToolRegularPolygon::testRegularPolygonFrom2Points()
   QCOMPARE( f.geometry().asWkt( 0 ), wkt );
 
   mLayer->rollBack();
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 0 );
 }
 void TestQgsMapToolRegularPolygon::testRegularPolygonFrom2PointsWithDeletedVertex()
 {
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 333 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 333 );
   mLayer->startEditing();
 
   QgsMapToolShapeRegularPolygon2PointsMetadata md;
@@ -147,13 +147,13 @@ void TestQgsMapToolRegularPolygon::testRegularPolygonFrom2PointsWithDeletedVerte
   QCOMPARE( f.geometry().asWkt( 0 ), wkt );
 
   mLayer->rollBack();
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 0 );
 }
 
 
 void TestQgsMapToolRegularPolygon::testRegularPolygonFromCenterAndPoint()
 {
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 222 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 222 );
   mLayer->startEditing();
 
   QgsMapToolShapeRegularPolygonCenterPointMetadata md;
@@ -172,11 +172,11 @@ void TestQgsMapToolRegularPolygon::testRegularPolygonFromCenterAndPoint()
   QCOMPARE( f.geometry().asWkt( 0 ), wkt );
 
   mLayer->rollBack();
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 0 );
 }
 void TestQgsMapToolRegularPolygon::testRegularPolygonFromCenterAndPointWithDeletedVertex()
 {
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 222 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 222 );
   mLayer->startEditing();
 
   QgsMapToolShapeRegularPolygonCenterPointMetadata md;
@@ -197,13 +197,13 @@ void TestQgsMapToolRegularPolygon::testRegularPolygonFromCenterAndPointWithDelet
   QCOMPARE( f.geometry().asWkt( 0 ), wkt );
 
   mLayer->rollBack();
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 0 );
 }
 
 
 void TestQgsMapToolRegularPolygon::testRegularPolygonFromCenterAndCroner()
 {
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 111 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 111 );
   mLayer->startEditing();
 
   QgsMapToolShapeRegularPolygonCenterCornerMetadata md;
@@ -222,11 +222,11 @@ void TestQgsMapToolRegularPolygon::testRegularPolygonFromCenterAndCroner()
   QCOMPARE( f.geometry().asWkt( 0 ), wkt );
 
   mLayer->rollBack();
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 0 );
 }
 void TestQgsMapToolRegularPolygon::testRegularPolygonFromCenterAndCronerWithDeletedVertex()
 {
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 111 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 111 );
   mLayer->startEditing();
 
   QgsMapToolShapeRegularPolygonCenterCornerMetadata md;
@@ -247,7 +247,7 @@ void TestQgsMapToolRegularPolygon::testRegularPolygonFromCenterAndCronerWithDele
   QCOMPARE( f.geometry().asWkt( 0 ), wkt );
 
   mLayer->rollBack();
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 0 );
 }
 
 

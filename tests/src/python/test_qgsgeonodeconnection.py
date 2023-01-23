@@ -33,20 +33,20 @@ class TestQgsGeoNodeConnection(unittest.TestCase):
 
         # setup a fake connection
         settings = QgsSettings()
-        key = QgsGeoNodeConnectionUtils.pathGeoNodeConnection() + '/test/'
+        key = f'/connections/ows/items/{QgsGeoNodeConnectionUtils.sGeoNodeConnection.lower()}/connections/items/test/'
 
-        settings.setValue(key + 'wms/referer', 'my_ref')
-        settings.setValue(key + 'wms/ignoreGetMapURI', True)
-        settings.setValue(key + 'wms/ignoreGetFeatureInfoURI', True)
-        settings.setValue(key + 'wms/smoothPixmapTransform', True)
-        settings.setValue(key + 'wms/dpiMode', 4)
-        settings.setValue(key + 'wms/ignoreAxisOrientation', True)
-        settings.setValue(key + 'wms/invertAxisOrientation', True)
+        settings.setValue(key + 'wms/http-header', {'referer': 'my_ref'})
+        settings.setValue(key + 'wms/ignore-get-map-uri', True)
+        settings.setValue(key + 'wms/ignore-get-feature-info-uri', True)
+        settings.setValue(key + 'wms/smooth-pixmap-transform', True)
+        settings.setValue(key + 'wms/dpi-mode', 4)
+        settings.setValue(key + 'wms/ignore-axis-orientation', True)
+        settings.setValue(key + 'wms/invert-axis-orientation', True)
 
         settings.setValue(key + 'wfs/version', '1.1.0')
-        settings.setValue(key + 'wfs/maxnumfeatures', '47')
-        settings.setValue(key + 'wfs/ignoreAxisOrientation', True)
-        settings.setValue(key + 'wfs/invertAxisOrientation', True)
+        settings.setValue(key + 'wfs/max-num-features', '47')
+        settings.setValue(key + 'wfs/ignore-axis-orientation', True)
+        settings.setValue(key + 'wfs/invert-axis-orientation', True)
 
     def testWmsConnection(self):
         """

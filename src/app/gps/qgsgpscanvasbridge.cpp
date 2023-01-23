@@ -29,6 +29,18 @@
 #include "qgsprojectdisplaysettings.h"
 #include "qgsbearingnumericformat.h"
 
+const QgsSettingsEntryBool *QgsGpsCanvasBridge::settingShowBearingLine = new QgsSettingsEntryBool( QStringLiteral( "show-bearing-line" ), QgsSettings::sTreeGps, false, QStringLiteral( "Whether the GPS bearing line symbol should be shown" ) );
+
+const QgsSettingsEntryString *QgsGpsCanvasBridge::settingBearingLineSymbol = new QgsSettingsEntryString( QStringLiteral( "bearing-line-symbol" ), QgsSettings::sTreeGps, QString(), QStringLiteral( "Line symbol to use for GPS bearing line" ), Qgis::SettingsOptions(), 0 );
+
+const QgsSettingsEntryInteger *QgsGpsCanvasBridge::settingMapExtentRecenteringThreshold = new QgsSettingsEntryInteger( QStringLiteral( "map-recentering-threshold" ), QgsSettings::sTreeGps, 50, QStringLiteral( "Threshold for GPS automatic map centering" ) );
+
+const QgsSettingsEntryEnumFlag<Qgis::MapRecenteringMode> *QgsGpsCanvasBridge::settingMapCenteringMode = new QgsSettingsEntryEnumFlag<Qgis::MapRecenteringMode>( QStringLiteral( "map-recentering" ), QgsSettings::sTreeGps, Qgis::MapRecenteringMode::WhenOutsideVisibleExtent, QStringLiteral( "Automatic GPS based map recentering mode" ) );
+
+const QgsSettingsEntryBool *QgsGpsCanvasBridge::settingRotateMap = new QgsSettingsEntryBool( QStringLiteral( "auto-map-rotate" ), QgsSettings::sTreeGps, false, QStringLiteral( "Whether to automatically rotate the map to match GPS bearing" ) );
+
+const QgsSettingsEntryInteger *QgsGpsCanvasBridge::settingMapRotateInterval = new QgsSettingsEntryInteger( QStringLiteral( "map-rotate-interval" ), QgsSettings::sTreeGps, 0, QStringLiteral( "Interval for GPS automatic map rotation" ) );
+
 QgsGpsCanvasBridge::QgsGpsCanvasBridge( QgsAppGpsConnection *connection, QgsMapCanvas *canvas, QObject *parent )
   : QObject( parent )
   , mConnection( connection )
@@ -152,7 +164,7 @@ void QgsGpsCanvasBridge::updateBearingAppearance()
 
   QDomDocument doc;
   QDomElement elem;
-  QString bearingLineSymbolXml = QgsGpsCanvasBridge::settingBearingLineSymbol.value();
+  QString bearingLineSymbolXml = QgsGpsCanvasBridge::settingBearingLineSymbol->value();
   if ( bearingLineSymbolXml.isEmpty() )
   {
     QgsSettings settings;
@@ -176,11 +188,11 @@ void QgsGpsCanvasBridge::gpsSettingsChanged()
   updateBearingAppearance();
 
   QgsSettings settings;
-  if ( QgsGpsConnection::settingsGpsConnectionType.exists() )
+  if ( QgsGpsConnection::settingsGpsConnectionType->exists() )
   {
-    mBearingFromTravelDirection = QgsGpsConnection::settingGpsBearingFromTravelDirection.value();
-    mMapExtentMultiplier = static_cast< int >( QgsGpsCanvasBridge::settingMapExtentRecenteringThreshold.value() );
-    mMapRotateInterval = static_cast< int >( QgsGpsCanvasBridge::settingMapRotateInterval.value() );
+    mBearingFromTravelDirection = QgsGpsConnection::settingGpsBearingFromTravelDirection->value();
+    mMapExtentMultiplier = static_cast< int >( QgsGpsCanvasBridge::settingMapExtentRecenteringThreshold->value() );
+    mMapRotateInterval = static_cast< int >( QgsGpsCanvasBridge::settingMapRotateInterval->value() );
   }
   else
   {

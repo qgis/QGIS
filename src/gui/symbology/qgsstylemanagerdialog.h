@@ -74,11 +74,13 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
   public:
 #ifndef SIP_RUN
 
+    static inline QgsSettingsTreeNode *sTtreeStyleManager = QgsSettings::sTreeApp->createChildElement( QStringLiteral( "style-manager" ) );
+
     /**
      * Last used folder for generic style database actions.
      * \since QGIS 3.26
      */
-    static const inline QgsSettingsEntryString settingLastStyleDatabaseFolder = QgsSettingsEntryString( QStringLiteral( "last-style-database-folder" ), QgsSettings::Prefix::STYLE_MANAGER, QString(), QStringLiteral( "Last used folder for style databases" ) );
+    static const QgsSettingsEntryString *settingLastStyleDatabaseFolder;
 #endif
 
     /**

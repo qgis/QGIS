@@ -16,6 +16,10 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsogrdbconnection.h"
+const QgsSettingsEntryString *QgsOgrDbConnection::settingsOgrConnectionPath = new QgsSettingsEntryString( QStringLiteral( "providers/ogr/%1/connections/%2/path" ), QString(), QString() );
+
+const QgsSettingsEntryString *QgsOgrDbConnection::settingsOgrConnectionSelected = new QgsSettingsEntryString( QStringLiteral( "providers/ogr/%1/connections/selected" ), QString() );
+
 ///@cond PRIVATE
 
 #include "qgis.h"
@@ -29,7 +33,7 @@ QgsOgrDbConnection::QgsOgrDbConnection( const QString &connName, const QString &
   : mConnName( connName )
 {
   mSettingsKey = settingsKey;
-  mPath = settingsOgrConnectionPath.value( {settingsKey, mConnName} );
+  mPath = settingsOgrConnectionPath->value( {settingsKey, mConnName} );
 }
 
 QgsDataSourceUri QgsOgrDbConnection::uri()
@@ -46,7 +50,7 @@ void QgsOgrDbConnection::setPath( const QString &path )
 
 void QgsOgrDbConnection::save( )
 {
-  settingsOgrConnectionPath.setValue( mPath, {mSettingsKey, mConnName} );
+  settingsOgrConnectionPath->setValue( mPath, {mSettingsKey, mConnName} );
 }
 
 bool QgsOgrDbConnection::allowProjectsInDatabase()
@@ -63,12 +67,12 @@ const QStringList QgsOgrDbConnection::connectionList( const QString &driverName 
 
 QString QgsOgrDbConnection::selectedConnection( const QString &driverName )
 {
-  return settingsOgrConnectionSelected.value( driverName );
+  return settingsOgrConnectionSelected->value( driverName );
 }
 
 void QgsOgrDbConnection::setSelectedConnection( const QString &connName, const QString &driverName )
 {
-  settingsOgrConnectionSelected.setValue( connName, {driverName} );
+  settingsOgrConnectionSelected->setValue( connName, {driverName} );
 }
 
 void QgsOgrDbConnection::deleteConnection( const QString &connName )

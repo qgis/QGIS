@@ -56,6 +56,10 @@
 #include <QSplitter>
 #include <QShortcut>
 
+const QgsSettingsEntryDouble *QgsElevationProfileWidget::settingTolerance = new QgsSettingsEntryDouble( QStringLiteral( "tolerance" ), QgsSettings::sTreeElevationProfile, 0.1, QStringLiteral( "Tolerance distance for elevation profile plots" ), Qgis::SettingsOptions(), 0 );
+
+const QgsSettingsEntryBool *QgsElevationProfileWidget::settingShowLayerTree = new QgsSettingsEntryBool( QStringLiteral( "show-layer-tree" ), QgsSettings::sTreeElevationProfile, true, QStringLiteral( "Whether the layer tree should be shown for elevation profile plots" ) );
+
 QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   : QWidget( nullptr )
   , mCanvasName( name )
@@ -101,11 +105,11 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   showLayerTree->setCheckable( true );
   connect( showLayerTree, &QAction::toggled, this, [ = ]( bool checked )
   {
-    settingShowLayerTree.setValue( checked );
+    settingShowLayerTree->setValue( checked );
     mLayerTreeView->setVisible( checked );
   } );
-  showLayerTree->setChecked( settingShowLayerTree.value() );
-  mLayerTreeView->setVisible( settingShowLayerTree.value() );
+  showLayerTree->setChecked( settingShowLayerTree->value() );
+  mLayerTreeView->setVisible( settingShowLayerTree->value() );
   toolBar->addAction( showLayerTree );
   toolBar->addSeparator();
 
@@ -233,10 +237,10 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
 
   mSettingsAction = new QgsElevationProfileWidgetSettingsAction( mOptionsMenu );
 
-  mSettingsAction->toleranceSpinBox()->setValue( settingTolerance.value() );
+  mSettingsAction->toleranceSpinBox()->setValue( settingTolerance->value() );
   connect( mSettingsAction->toleranceSpinBox(), qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [ = ]( double value )
   {
-    settingTolerance.setValue( value );
+    settingTolerance->setValue( value );
     createOrUpdateRubberBands();
     scheduleUpdate();
   } );
@@ -726,8 +730,8 @@ QgsElevationProfileWidgetSettingsAction::QgsElevationProfileWidgetSettingsAction
   gLayout->setContentsMargins( 3, 2, 3, 2 );
 
   mToleranceWidget = new QgsDoubleSpinBox();
-  mToleranceWidget->setClearValue( QgsElevationProfileWidget::settingTolerance.defaultValue() );
-  mToleranceWidget->setValue( QgsElevationProfileWidget::settingTolerance.defaultValue() );
+  mToleranceWidget->setClearValue( QgsElevationProfileWidget::settingTolerance->defaultValue() );
+  mToleranceWidget->setValue( QgsElevationProfileWidget::settingTolerance->defaultValue() );
   mToleranceWidget->setKeyboardTracking( false );
   mToleranceWidget->setMaximumWidth( QFontMetrics( mToleranceWidget->font() ).horizontalAdvance( '0' ) * 50 );
   mToleranceWidget->setDecimals( 2 );
