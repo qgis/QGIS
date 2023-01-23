@@ -33,8 +33,9 @@ class QgsSettingsEntryGroup;
  * list of child QgsSettingsRegistry and a list of child QgsSettingsRegistry
  *
  * \since QGIS 3.20
+ * \deprecated since QGIS 3.30 use QgsSettings::treeRoot() instead
  */
-class CORE_EXPORT QgsSettingsRegistry
+class CORE_DEPRECATED_EXPORT QgsSettingsRegistry
 {
   public:
 

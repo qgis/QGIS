@@ -18,14 +18,15 @@
 #ifndef QGSSETTINGSREGISTRYAPP_H
 #define QGSSETTINGSREGISTRYAPP_H
 
-#include "qgisapp.h"
 #include "qgssettingsregistry.h"
 
 class QgsSettingsEntryBool;
 
-
+Q_NOWARN_DEPRECATED_PUSH
 class APP_EXPORT QgsSettingsRegistryApp : public QgsSettingsRegistry
 {
+    Q_NOWARN_DEPRECATED_POP
+    // TODO QGIS 4 do not inherit QgsSettingsRegistry
   public:
     QgsSettingsRegistryApp();
     ~QgsSettingsRegistryApp();

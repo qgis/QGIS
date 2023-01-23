@@ -18,6 +18,9 @@ class QgsSettingsRegistry
 list of child :py:class:`QgsSettingsRegistry` and a list of child :py:class:`QgsSettingsRegistry`
 
 .. versionadded:: 3.20
+
+.. deprecated:: QGIS 3.30
+   use :py:func:`QgsSettings.treeRoot()` instead
 %End
 
 %TypeHeaderCode
