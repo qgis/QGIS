@@ -43,7 +43,7 @@ class CORE_EXPORT QgsElevationMap
 {
   public:
 
-    //! Methods used to select the elevation when two elevation map are combined
+    //! Methods used to select the elevation when two elevation maps are combined
     enum class CombineMethod
     {
       HighestElevation, //!< Keep the highest elevation if it is not null

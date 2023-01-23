@@ -1150,7 +1150,7 @@ void TestQgsMapRendererJob::testMapShading()
   shadingRenderer.setActive( true );
   shadingRenderer.setActiveHillshading( true );
   shadingRenderer.setActiveEyeDomeLighting( false );
-  mapSettings.setShadingRenderer( shadingRenderer );
+  mapSettings.setElevationShadingRenderer( shadingRenderer );
   std::unique_ptr<QgsMapRendererSequentialJob> renderJob( new QgsMapRendererSequentialJob( mapSettings ) );
   renderJob->start();
   renderJob->waitForFinished();
@@ -1159,7 +1159,7 @@ void TestQgsMapRendererJob::testMapShading()
 
   shadingRenderer.setLightAltitude( 20 );
   shadingRenderer.setLightAzimuth( 60 );
-  mapSettings.setShadingRenderer( shadingRenderer );
+  mapSettings.setElevationShadingRenderer( shadingRenderer );
   renderJob.reset( new QgsMapRendererSequentialJob( mapSettings ) );
   renderJob->start();
   renderJob->waitForFinished();
@@ -1168,7 +1168,7 @@ void TestQgsMapRendererJob::testMapShading()
 
   shadingRenderer.setHillshadingMultidirectional( true );
   shadingRenderer.setHillshadingZFactor( 5 );
-  mapSettings.setShadingRenderer( shadingRenderer );
+  mapSettings.setElevationShadingRenderer( shadingRenderer );
   renderJob.reset( new QgsMapRendererSequentialJob( mapSettings ) );
   renderJob->start();
   renderJob->waitForFinished();
@@ -1178,7 +1178,7 @@ void TestQgsMapRendererJob::testMapShading()
   shadingRenderer.setCombinedElevationMethod( QgsElevationMap::CombineMethod::NewerElevation );
   shadingRenderer.setActiveHillshading( false );
   shadingRenderer.setActiveEyeDomeLighting( true );
-  mapSettings.setShadingRenderer( shadingRenderer );
+  mapSettings.setElevationShadingRenderer( shadingRenderer );
   renderJob.reset( new QgsMapRendererSequentialJob( mapSettings ) );
   renderJob->start();
   renderJob->waitForFinished();
@@ -1187,7 +1187,7 @@ void TestQgsMapRendererJob::testMapShading()
 
   shadingRenderer.setEyeDomeLightingDistance( 10 );
   shadingRenderer.setEyeDomeLightingStrength( 4000 );
-  mapSettings.setShadingRenderer( shadingRenderer );
+  mapSettings.setElevationShadingRenderer( shadingRenderer );
   renderJob.reset( new QgsMapRendererSequentialJob( mapSettings ) );
   renderJob->start();
   renderJob->waitForFinished();

@@ -872,7 +872,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * \since QGIS 3.30
      *
      */
-    const QgsElevationShadingRenderer &shadingRenderer() const;
+    const QgsElevationShadingRenderer &elevationShadingRenderer() const;
 
     /**
      * Sets the shading renderer used to render shading on the entire map
@@ -881,7 +881,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * \since QGIS 3.30
      *
      */
-    void setShadingRenderer( const QgsElevationShadingRenderer &shadingRenderer );
+    void setElevationShadingRenderer( const QgsElevationShadingRenderer &elevationShadingRenderer );
 
   protected:
 

@@ -1246,12 +1246,12 @@ void QgsMapCanvas::updateDevicePixelFromScreen()
   refresh();
 }
 
-void QgsMapCanvas::onMapShadingChanged()
+void QgsMapCanvas::onElevationShadingRendererChanged()
 {
   if ( !mProject )
     return;
-  bool wasDesactivated = !mSettings.shadingRenderer().isActive();
-  mSettings.setShadingRenderer( mProject->elevationShadingRenderer() );
+  bool wasDesactivated = !mSettings.elevationShadingRenderer().isActive();
+  mSettings.setElevationShadingRenderer( mProject->elevationShadingRenderer() );
   if ( wasDesactivated )
     mCache->clear();
   refresh();
@@ -2751,12 +2751,12 @@ void QgsMapCanvas::unsetMapTool( QgsMapTool *tool )
 void QgsMapCanvas::setProject( QgsProject *project )
 {
   if ( mProject )
-    disconnect( mProject, &QgsProject::elevationShadingRendererChanged, this, &QgsMapCanvas::onMapShadingChanged );
+    disconnect( mProject, &QgsProject::elevationShadingRendererChanged, this, &QgsMapCanvas::onElevationShadingRendererChanged );
 
   mProject = project;
 
   if ( mProject )
-    connect( mProject, &QgsProject::elevationShadingRendererChanged, this, &QgsMapCanvas::onMapShadingChanged );
+    connect( mProject, &QgsProject::elevationShadingRendererChanged, this, &QgsMapCanvas::onElevationShadingRendererChanged );
 }
 
 void QgsMapCanvas::setCanvasColor( const QColor &color )

@@ -566,7 +566,7 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
       job.opacity = ml->opacity();
     }
 
-    const QgsElevationShadingRenderer shadingRenderer = mSettings.shadingRenderer();
+    const QgsElevationShadingRenderer shadingRenderer = mSettings.elevationShadingRenderer();
 
     // if we can use the cache, let's do it and avoid rendering!
     if ( !mSettings.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput )
@@ -1131,7 +1131,7 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings &settings,
   image.setDotsPerMeterY( static_cast<int>( settings.outputDpi() * 39.37 ) );
   image.fill( settings.backgroundColor().rgba() );
 
-  const QgsElevationShadingRenderer mapShadingRenderer = settings.shadingRenderer();
+  const QgsElevationShadingRenderer mapShadingRenderer = settings.elevationShadingRenderer();
   std::unique_ptr<QgsElevationMap> mainElevationMap;
   if ( mapShadingRenderer.isActive() )
     mainElevationMap.reset( new QgsElevationMap( settings.outputSize() ) );

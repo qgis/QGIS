@@ -1498,7 +1498,7 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
   if ( mLayout )
   {
     jobMapSettings.setEllipsoid( mLayout->project()->ellipsoid() );
-    jobMapSettings.setShadingRenderer( mLayout->project()->elevationShadingRenderer() );
+    jobMapSettings.setElevationShadingRenderer( mLayout->project()->elevationShadingRenderer() );
   }
 
   if ( includeLayerSettings )

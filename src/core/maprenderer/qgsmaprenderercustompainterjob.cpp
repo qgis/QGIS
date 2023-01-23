@@ -301,7 +301,7 @@ void QgsMapRendererCustomPainterJob::doRender()
   QElapsedTimer renderTime;
   renderTime.start();
 
-  const QgsElevationShadingRenderer mapShadingRenderer = mSettings.shadingRenderer();
+  const QgsElevationShadingRenderer mapShadingRenderer = mSettings.elevationShadingRenderer();
   std::unique_ptr<QgsElevationMap> mainElevationMap;
   if ( mapShadingRenderer.isActive() )
     mainElevationMap.reset( new QgsElevationMap( mSettings.outputSize() ) );

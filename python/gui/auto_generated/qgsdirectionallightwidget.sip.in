@@ -48,6 +48,10 @@ Sets the ``altitude`` value (degree)
 Returns the ``altitude`` value (degree)
 %End
 
+    void setEnableAzimuth( bool enable );
+%Docstring
+Sets whether the azimut can be changed, for example, when using multidirectional light
+%End
 
   signals:
     void directionChanged();
