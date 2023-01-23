@@ -242,7 +242,6 @@ class CORE_EXPORT QgsPointCloudRenderContext
     int mZOffset = 0;
     double mZValueScale = 1.0;
     double mZValueFixedOffset = 0;
-    QgsElevationMap *mElevationMap = nullptr;
 
     QgsFeedback *mFeedback = nullptr;
 };
