@@ -25,6 +25,7 @@
 #include "qgsowsconnection.h"
 #include "qgsprocessing.h"
 #include "qgsvectortileconnection.h"
+#include "qgsgpsdetector.h"
 
 
 const QgsSettingsEntryEnumFlag<Qgis::SnappingMode> *QgsSettingsRegistryCore::settingsDigitizingDefaultSnapMode = new QgsSettingsEntryEnumFlag<Qgis::SnappingMode>( QStringLiteral( "default_snap_mode" ), QgsSettings::sTreeDigitizing, Qgis::SnappingMode::AllLayers );
@@ -128,6 +129,11 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   QgsNetworkAccessManager::settingsNetworkTimeout->copyValueFromKey( QStringLiteral( "qgis/networkAndProxy/networkTimeout" ) );
 
   settingsLayerTreeShowFeatureCountForNewLayers->copyValueFromKey( QStringLiteral( "core/layer-tree/show_feature_count_for_new_layers" ) );
+
+  QgsGpsDetector::settingsGpsStopBits->copyValueFromKey( QStringLiteral( "core/gps/stop_bits" ) );
+  QgsGpsDetector::settingsGpsFlowControl->copyValueFromKey( QStringLiteral( "core/gps/flow_control" ) );
+  QgsGpsDetector::settingsGpsDataBits->copyValueFromKey( QStringLiteral( "core/gps/data_bits" ) );
+  QgsGpsDetector::settingsGpsParity->copyValueFromKey( QStringLiteral( "core/gps/parity" ) );
 
   // locator filters - added in 3.30
   {
@@ -265,7 +271,10 @@ void QgsSettingsRegistryCore::backwardCompatibility()
 
   settingsLayerTreeShowFeatureCountForNewLayers->copyValueToKey( QStringLiteral( "core/layer-tree/show_feature_count_for_new_layers" ) );
 
-
+  QgsGpsDetector::settingsGpsStopBits->copyValueToKey( QStringLiteral( "core/gps/stop_bits" ) );
+  QgsGpsDetector::settingsGpsFlowControl->copyValueToKey( QStringLiteral( "core/gps/flow_control" ) );
+  QgsGpsDetector::settingsGpsDataBits->copyValueToKey( QStringLiteral( "core/gps/data_bits" ) );
+  QgsGpsDetector::settingsGpsParity->copyValueToKey( QStringLiteral( "core/gps/parity" ) );
 
   // locator filters - added in 3.30
   {

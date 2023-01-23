@@ -11,6 +11,7 @@
 
 
 
+
 class QgsGpsDetector : QObject
 {
 %Docstring(signature="appended")
@@ -22,6 +23,8 @@ Class to detect the GPS port
 %End
   public:
     QgsGpsDetector( const QString &portName );
+
+
     ~QgsGpsDetector();
 
     static QList< QPair<QString, QString> > availablePorts();

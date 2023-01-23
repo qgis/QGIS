@@ -21,6 +21,15 @@
 #include "qgsnmeaconnection.h"
 #include "qgsgpsdconnection.h"
 #include "qgssettings.h"
+#include "qgssettingsentryenumflag.h"
+
+
+const QgsSettingsEntryEnumFlag<QSerialPort::FlowControl> *QgsGpsDetector::settingsGpsFlowControl = new QgsSettingsEntryEnumFlag<QSerialPort::FlowControl>( QStringLiteral( "flow-control" ), QgsSettings::sTreeGps, QSerialPort::NoFlowControl );
+const QgsSettingsEntryEnumFlag<QSerialPort::StopBits> *QgsGpsDetector::settingsGpsStopBits = new QgsSettingsEntryEnumFlag<QSerialPort::StopBits>( QStringLiteral( "stop-bits" ), QgsSettings::sTreeGps, QSerialPort::OneStop );
+const QgsSettingsEntryEnumFlag<QSerialPort::DataBits> *QgsGpsDetector::settingsGpsDataBits = new QgsSettingsEntryEnumFlag<QSerialPort::DataBits>( QStringLiteral( "data-bits" ), QgsSettings::sTreeGps, QSerialPort::Data8 );
+const QgsSettingsEntryEnumFlag<QSerialPort::Parity> *QgsGpsDetector::settingsGpsParity = new QgsSettingsEntryEnumFlag<QSerialPort::Parity>( QStringLiteral( "parity" ), QgsSettings::sTreeGps, QSerialPort::NoParity );
+
+
 
 #if defined(QT_POSITIONING_LIB)
 #include "qgsqtlocationconnection.h"
@@ -123,10 +132,10 @@ void QgsGpsDetector::advance()
 
       serial->setBaudRate( mBaudList[ mBaudIndex ] );
 
-      serial->setFlowControl( settings.enumValue( QStringLiteral( "gps/flow_control" ), QSerialPort::NoFlowControl, QgsSettings::Core ) );
-      serial->setParity( settings.enumValue( QStringLiteral( "gps/parity" ), QSerialPort::NoParity, QgsSettings::Core ) );
-      serial->setDataBits( settings.enumValue( QStringLiteral( "gps/data_bits" ), QSerialPort::Data8, QgsSettings::Core ) );
-      serial->setStopBits( settings.enumValue( QStringLiteral( "gps/stop_bits" ), QSerialPort::OneStop, QgsSettings::Core ) );
+      serial->setFlowControl( QgsGpsDetector::settingsGpsFlowControl->value() );
+      serial->setParity( QgsGpsDetector::settingsGpsParity->value() );
+      serial->setDataBits( QgsGpsDetector::settingsGpsDataBits->value() );
+      serial->setStopBits( QgsGpsDetector::settingsGpsStopBits->value() );
 
       if ( serial->open( QIODevice::ReadOnly ) )
       {
