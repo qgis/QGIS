@@ -1007,7 +1007,13 @@ namespace QgsWms
     mapSettings.setLayers( layers );
 
     // rendering step for layers
-    painter.reset( layersRendering( mapSettings, *image ) );
+    QPainter *renderedPainter = layersRendering( mapSettings, *image );
+    if ( !renderedPainter ) // job has been canceled
+    {
+      return nullptr;
+    }
+
+    painter.reset( renderedPainter );
 
     // rendering step for annotations
     annotationsRendering( painter.get(), mapSettings );
@@ -3154,7 +3160,8 @@ namespace QgsWms
     filters.addProvider( mContext.accessControl() );
 #endif
     QgsMapRendererJobProxy renderJob( mContext.settings().parallelRendering(), mContext.settings().maxThreads(), &filters );
-    renderJob.render( mapSettings, &image );
+
+    renderJob.render( mapSettings, &image, mContext.socketFeedback() );
     painter = renderJob.takePainter();
 
     if ( !renderJob.errors().isEmpty() )
@@ -3547,8 +3554,12 @@ namespace QgsWms
 
     QgsRenderContext renderContext = QgsRenderContext::fromQPainter( painter );
     renderContext.setFlag( Qgis::RenderContextFlag::RenderBlocking );
+    renderContext.setFeedback( mContext.socketFeedback() );
+
     for ( QgsAnnotation *annotation : annotations )
     {
+      if ( mContext.socketFeedback() && mContext.socketFeedback()->isCanceled() )
+        break;
       if ( !annotation || !annotation->isVisible() )
         continue;
 

@@ -53,8 +53,10 @@ namespace QgsWms
        * Sequential or parallel map rendering.
        * \param mapSettings Passed to MapRendererJob
        * \param image The resulting image
+       * \param feedback socket feedback
+       * \since QGIS 3.34
        */
-      void render( const QgsMapSettings &mapSettings, QImage *image );
+      void render( const QgsMapSettings &mapSettings, QImage *image, const QgsFeedback *feedback );
 
       /**
        * Takes ownership of the painter used for rendering.

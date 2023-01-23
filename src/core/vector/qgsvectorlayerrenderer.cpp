@@ -43,6 +43,7 @@
 
 #include <QPicture>
 #include <QTimer>
+#include <QThread>
 
 QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
@@ -245,6 +246,10 @@ bool QgsVectorLayerRenderer::render()
   bool res = true;
   for ( const std::unique_ptr< QgsFeatureRenderer > &renderer : mRenderers )
   {
+    if ( mFeedback->isCanceled() || !res )
+    {
+      break;
+    }
     res = renderInternal( renderer.get() ) && res;
   }
 
@@ -455,6 +460,7 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer )
 
 void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeatureIterator &fit )
 {
+  QgsDebugMsgLevel( QStringLiteral( "%1 started drawing of vector layer." ).arg( layerId() ), 1 ); // TODO to remove
   const bool isMainRenderer = renderer == mRenderer;
 
   QgsExpressionContextScope *symbolScope = QgsExpressionContextUtils::updateSymbolScope( nullptr, new QgsExpressionContextScope() );
@@ -471,14 +477,17 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeat
   if ( mSelectionSymbol && isMainRenderer )
     mSelectionSymbol->startRender( context, mFields );
 
+  ulong cpt = 0; // TODO to remove
   QgsFeature fet;
   while ( fit.nextFeature( fet ) )
   {
+    QThread::msleep( 50L ); // TODO to remove
     try
     {
+      cpt++; // TODO to remove
       if ( context.renderingStopped() )
       {
-        QgsDebugMsgLevel( QStringLiteral( "Drawing of vector layer %1 canceled." ).arg( layerId() ), 2 );
+        QgsDebugMsgLevel( QStringLiteral( "Drawing of vector layer %1 canceled." ).arg( layerId() ), 1 ); // TODO to remove
         break;
       }
 
@@ -571,6 +580,10 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeat
     }
   }
 
+  if ( context.renderingStopped() ) // TODO to remove
+  {
+    QgsDebugMsgLevel( QStringLiteral( "%1 WAS canceled. cpt: %2" ).arg( layerId() ).arg( cpt ), 1 );
+  }
   delete context.expressionContext().popScope();
 
   if ( mSelectionSymbol && isMainRenderer )

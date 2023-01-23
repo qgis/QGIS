@@ -270,6 +270,18 @@ namespace QgsWms
        */
       bool isExternalLayer( const QString &name ) const;
 
+      /**
+       * Sets the response feedback.
+       * \since QGIS 3.34
+       */
+      void setSocketFeedback( QgsFeedback *feedback );
+
+      /**
+       * Returns the response feedback if any
+       * \since QGIS 3.34
+       */
+      QgsFeedback *socketFeedback() const;
+
     private:
       void initNicknameLayers();
       void initRestrictedLayers();
@@ -306,6 +318,8 @@ namespace QgsWms
 
       // list for external layers
       QList<QgsMapLayer *> mExternalLayers;
+
+      QgsFeedback *mSocketFeedback = nullptr;
   };
 };
 
