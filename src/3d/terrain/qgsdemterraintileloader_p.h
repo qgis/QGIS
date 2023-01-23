@@ -110,9 +110,6 @@ class QgsDemHeightMapGenerator : public QObject
     void onFutureFinished();
 
   private:
-    //! raster used to build terrain
-    QgsRasterLayer *mDtm = nullptr;
-
     //! dtm raster layer's extent in layer crs
     const QgsRectangle mDtmExtent;
 
