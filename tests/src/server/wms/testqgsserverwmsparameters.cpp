@@ -224,4 +224,4 @@ void TestQgsServerWmsParameters::prefixed_layers()
 }
 
 QGSTEST_MAIN( TestQgsServerWmsParameters )
-#include "test_qgsserver_wms_parameters.moc"
+#include "testqgsserverwmsparameters.moc"

@@ -37,7 +37,7 @@ endif()
 # Tests:
 
 set(TESTS
-  test_qgsserver_wfs_getfeature.cpp
+  testqgsserverwfsgetfeature.cpp
 )
 
 foreach(TESTSRC ${TESTS})

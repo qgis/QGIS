@@ -15,7 +15,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}
 # Tests:
 
 set(TESTS
-  test_qgsserver_interface.cpp
+  testqgsserverinterface.cpp
   testqgsserverquerystringparameter.cpp
 )
 

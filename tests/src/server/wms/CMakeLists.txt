@@ -43,12 +43,12 @@ endif()
 # Tests:
 
 set(TESTS
-  test_qgsserver_wms_dxf.cpp
-  test_qgsserver_wms_request.cpp
-  test_qgsserver_wms_restorer.cpp
-  test_qgsserver_wms_exceptions.cpp
-  test_qgsserver_wms_parameters.cpp
-  test_qgsserver_wms_vector_tile.cpp
+  testqgsserverwmsdxf.cpp
+  testqgsserverwmsrequest.cpp
+  testqgsserverwmsrestorer.cpp
+  testqgsserverwmsexceptions.cpp
+  testqgsserverwmsparameters.cpp
+  testqgsserverwmsvectortile.cpp
 )
 
 foreach(TESTSRC ${TESTS})

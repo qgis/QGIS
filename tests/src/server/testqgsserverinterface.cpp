@@ -1,6 +1,6 @@
 /***************************************************************************
 
-   test_qgsserver_interface.cpp
+   testqgsserverinterface.cpp
      --------------------------------------
     Date                 : Jan 20 2023
     Copyright            : (C) 2023 by Paul Blottiere
@@ -86,4 +86,4 @@ void TestQgsServerInterface::testPluginsList()
 
 
 QGSTEST_MAIN( TestQgsServerInterface )
-#include "test_qgsserver_interface.moc"
+#include "testqgsserverinterface.moc"

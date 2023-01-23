@@ -98,4 +98,4 @@ void TestQgsServerWmsRestorer::restorer_layer()
 }
 
 QGSTEST_MAIN( TestQgsServerWmsRestorer )
-#include "test_qgsserver_wms_restorer.moc"
+#include "testqgsserverwmsrestorer.moc"

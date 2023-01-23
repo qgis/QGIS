@@ -143,4 +143,4 @@ void TestQgsServerWmsDxf::use_title_as_layername_false()
 }
 
 QGSTEST_MAIN( TestQgsServerWmsDxf )
-#include "test_qgsserver_wms_dxf.moc"
+#include "testqgsserverwmsdxf.moc"

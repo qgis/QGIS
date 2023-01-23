@@ -148,4 +148,4 @@ void TestQgsServerWfsGetFeature::nullValueProperty()
 }
 
 QGSTEST_MAIN( TestQgsServerWfsGetFeature )
-#include "test_qgsserver_wfs_getfeature.moc"
+#include "testqgsserverwfsgetfeature.moc"

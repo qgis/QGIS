@@ -99,4 +99,4 @@ void TestQgsServerWmsVectorTile::opacity()
 }
 
 QGSTEST_MAIN( TestQgsServerWmsVectorTile )
-#include "test_qgsserver_wms_vector_tile.moc"
+#include "testqgsserverwmsvectortile.moc"

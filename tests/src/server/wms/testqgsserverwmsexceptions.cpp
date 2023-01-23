@@ -73,4 +73,4 @@ void TestQgsServerWmsExceptions::exception_message()
 }
 
 QGSTEST_MAIN( TestQgsServerWmsExceptions )
-#include "test_qgsserver_wms_exceptions.moc"
+#include "testqgsserverwmsexceptions.moc"

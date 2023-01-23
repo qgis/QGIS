@@ -85,4 +85,4 @@ void TestQgsServerWmsRequest::update()
 }
 
 QGSTEST_MAIN( TestQgsServerWmsRequest )
-#include "test_qgsserver_wms_request.moc"
+#include "testqgsserverwmsrequest.moc"
