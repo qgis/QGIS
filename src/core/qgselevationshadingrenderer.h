@@ -109,7 +109,7 @@ class CORE_EXPORT QgsElevationShadingRenderer
      *
      * \see eyeDomeLightingDistanceUnit()
      */
-    void setEyeDomeLightingDistanceUnit(QgsUnitTypes::RenderUnit unit );
+    void setEyeDomeLightingDistanceUnit( QgsUnitTypes::RenderUnit unit );
 
     //! Sets active the hillshading
     void setActiveHillshading( bool active );

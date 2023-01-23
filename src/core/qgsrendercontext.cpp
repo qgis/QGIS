@@ -705,7 +705,7 @@ QgsElevationMap *QgsRenderContext::elevationMap() const
   return mElevationMap;
 }
 
-void QgsRenderContext::setElevationMap(QgsElevationMap *map )
+void QgsRenderContext::setElevationMap( QgsElevationMap *map )
 {
   mElevationMap = map;
 }
