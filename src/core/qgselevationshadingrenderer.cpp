@@ -207,7 +207,7 @@ void QgsElevationShadingRenderer::renderEdl( const QgsElevationMap &elevation, Q
   double distanceDouble = context.convertToPainterUnits( mEyeDomeLightingDistance, mEyeDomeLightingDistanceUnit );
   int distance = static_cast<int>( std::round( distanceDouble ) );
 
-  elevation.applyEyeDomeLighting( image, distance, strength, context.rendererScale() );
+  elevation.applyEyeDomeLighting( image, distance, static_cast<float>( strength ), static_cast<float>( context.rendererScale() ) );
 }
 
 void QgsElevationShadingRenderer::renderHillshading( const QgsElevationMap &elevation, QImage &image, const QgsRenderContext &context ) const
