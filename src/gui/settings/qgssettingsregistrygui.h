@@ -31,8 +31,11 @@ class QgsSettingsEntryBool;
  *
  * \since QGIS 3.22
  */
+Q_NOWARN_DEPRECATED_PUSH
 class GUI_EXPORT QgsSettingsRegistryGui : public QgsSettingsRegistry
 {
+    Q_NOWARN_UNREACHABLE_POP
+    // TODO QGIS 4 do not inherit QgsSettingsRegistry
   public:
 
     /**
