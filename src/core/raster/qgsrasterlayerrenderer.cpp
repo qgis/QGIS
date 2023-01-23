@@ -424,12 +424,12 @@ void QgsRasterLayerRenderer::drawElevationMap()
     else
       dpiScalefactor = 1.0;
 
-    qgssize outputWidh = mRasterViewPort->mWidth / dpiScalefactor;
-    qgssize outputHeight = mRasterViewPort->mHeight / dpiScalefactor;
+    int outputWidth = static_cast<int>( static_cast<double>( mRasterViewPort->mWidth )  / dpiScalefactor ) ;
+    int outputHeight =  static_cast<int>( static_cast<double>( mRasterViewPort->mHeight ) / dpiScalefactor );
 
     QSize viewSize = renderContext()->deviceOutputSize();
-    qgssize viewWidth = viewSize.width() / dpiScalefactor;
-    qgssize viewHeight = viewSize.height() / dpiScalefactor;
+    int viewWidth =  static_cast<int>( viewSize.width() / dpiScalefactor );
+    int viewHeight =  static_cast<int>( viewSize.height() / dpiScalefactor );
 
     bool canRenderElevation = false;
     std::unique_ptr<QgsRasterBlock> elevationBlock;
@@ -439,7 +439,7 @@ void QgsRasterLayerRenderer::drawElevationMap()
         dataProvider->block(
           mElevationBand,
           mRasterViewPort->mDrawnExtent,
-          outputWidh,
+          outputWidth,
           outputHeight,
           mFeedback ) );
       canRenderElevation = true;
@@ -460,8 +460,8 @@ void QgsRasterLayerRenderer::drawElevationMap()
         viewExtentInLayerCoordinate = dataProvider->extent();
       }
 
-      double xLayerResol = viewExtentInLayerCoordinate.width() / viewWidth;
-      double yLayerResol = viewExtentInLayerCoordinate.height() / viewHeight;
+      double xLayerResol = viewExtentInLayerCoordinate.width() / static_cast<double>( viewWidth );
+      double yLayerResol = viewExtentInLayerCoordinate.height() / static_cast<double>( viewHeight );
 
       double overSampling = 1;
       if ( mPipe->resampleFilter() )
@@ -499,7 +499,7 @@ void QgsRasterLayerRenderer::drawElevationMap()
 
 
       elevationBlock.reset( new QgsRasterBlock( dataType,
-                            outputWidh,
+                            outputWidth,
                             outputHeight ) );
 
       elevationBlock->setNoDataValue( dataProvider->sourceNoDataValue( mElevationBand ) );
@@ -527,7 +527,7 @@ void QgsRasterLayerRenderer::drawElevationMap()
     if ( canRenderElevation )
     {
       QPoint topLeft;
-      if ( renderContext()->mapToPixel().mapRotation() )
+      if ( renderContext()->mapToPixel().mapRotation() != 0 )
       {
         // Now rendering elevation on the elevation map, we need to take care of rotation:
         // again a resampling but this time with a geotransform.
@@ -551,8 +551,8 @@ void QgsRasterLayerRenderer::drawElevationMap()
         for ( const QgsPointXY &corner : std::as_const( corners ) )
         {
           const QgsPointXY dpt = mtp.transform( corner );
-          int x = static_cast<int>( dpt.x() + 0.5 );
-          int y = static_cast<int>( dpt.y() + 0.5 );
+          int x = static_cast<int>( std::round( dpt.x() ) );
+          int y = static_cast<int>( std::round( dpt.y() ) );
 
           if ( x < left )
             left = x;

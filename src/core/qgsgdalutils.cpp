@@ -245,7 +245,7 @@ gdal::dataset_unique_ptr QgsGdalUtils::blockToSingleBandMemoryDataset( double ro
   return hDstDS;
 }
 
-static bool _resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH hDstDS, GDALResampleAlg resampleAlg, char **papszOptions )
+static bool resampleSingleBandRasterStatic( GDALDatasetH hSrcDS, GDALDatasetH hDstDS, GDALResampleAlg resampleAlg, char **papszOptions )
 {
   gdal::warp_options_unique_ptr psWarpOptions( GDALCreateWarpOptions() );
   psWarpOptions->hSrcDS = hSrcDS;
@@ -287,7 +287,7 @@ bool QgsGdalUtils::resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH h
   if ( pszCoordinateOperation != nullptr )
     papszOptions = CSLSetNameValue( papszOptions, "COORDINATE_OPERATION", pszCoordinateOperation );
 
-  bool result = _resampleSingleBandRaster( hSrcDS, hDstDS, resampleAlg, papszOptions );
+  bool result = resampleSingleBandRasterStatic( hSrcDS, hDstDS, resampleAlg, papszOptions );
   CSLDestroy( papszOptions );
   return result;
 }
@@ -303,7 +303,7 @@ bool QgsGdalUtils::resampleSingleBandRaster( GDALDatasetH hSrcDS,
   papszOptions = CSLSetNameValue( papszOptions, "SRC_SRS", sourceCrs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ).toUtf8().constData() );
   papszOptions = CSLSetNameValue( papszOptions, "DST_SRS", destinationCrs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ).toUtf8().constData() );
 
-  bool result = _resampleSingleBandRaster( hSrcDS, hDstDS, resampleAlg, papszOptions );
+  bool result = resampleSingleBandRasterStatic( hSrcDS, hDstDS, resampleAlg, papszOptions );
   CSLDestroy( papszOptions );
   return result;
 }

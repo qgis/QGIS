@@ -50,7 +50,7 @@ QRgb QgsElevationMap::encodeElevation( float z )
 float QgsElevationMap::decodeElevation( QRgb colorRaw )
 {
   unsigned int zScaled = colorRaw & 0xffffff;
-  return ( ( double ) zScaled ) / ELEVATION_SCALE - ELEVATION_OFFSET;
+  return ( ( float ) zScaled ) / ELEVATION_SCALE - ELEVATION_OFFSET;
 }
 
 std::unique_ptr<QgsElevationMap> QgsElevationMap::fromRasterBlock( QgsRasterBlock *block )
@@ -64,7 +64,7 @@ std::unique_ptr<QgsElevationMap> QgsElevationMap::fromRasterBlock( QgsRasterBloc
       bool isNoData;
       double value = block->valueAndNoData( row, col, isNoData );
       if ( !isNoData )
-        *dataPtr = encodeElevation( value );
+        *dataPtr = encodeElevation( static_cast<float>( value ) );
       ++dataPtr;
     }
   }
@@ -94,7 +94,7 @@ void QgsElevationMap::applyEyeDomeLighting( QImage &img, int distance, float str
       float centerDepth = decodeElevation( elevPtr[ index ] );
       if ( isNoData( elevPtr[ index ] ) )
         continue;
-      for ( int k = 0; k < 4; ++k )
+      for ( qgssize k = 0; k < 4; ++k )
       {
         float borderFactor = 1.0f;
         int iNeighbour = std::clamp( i + distance * neighbours[2 * k], 0, imgWidth - 1 );
@@ -117,7 +117,7 @@ void QgsElevationMap::applyEyeDomeLighting( QImage &img, int distance, float str
             if ( corrI == i )
               continue;
 
-            borderFactor = static_cast<double>( distance ) / std::abs( i - corrI )   ;
+            borderFactor = static_cast<float>( distance ) / static_cast<float>( std::abs( i - corrI ) )   ;
           }
 
           if ( neighbours[2 * k + 1] != 0 )
@@ -132,7 +132,7 @@ void QgsElevationMap::applyEyeDomeLighting( QImage &img, int distance, float str
             if ( corrJ == j )
               continue;
 
-            borderFactor = static_cast<double>( distance ) / std::abs( j - corrJ )   ;
+            borderFactor = static_cast<float>( distance ) / static_cast<float>( std::abs( j - corrJ ) )   ;
           }
         }
 
@@ -141,25 +141,28 @@ void QgsElevationMap::applyEyeDomeLighting( QImage &img, int distance, float str
         if ( neighbours[2 * k] != 0 && std::abs( iNeighbour - i ) < distance )
         {
           if ( i > iNeighbour )
-            borderFactor = static_cast<double>( distance ) /  i  ;
+            borderFactor = static_cast<float>( distance ) /  static_cast<float>( i )  ;
           else if ( i < iNeighbour )
-            borderFactor = static_cast<double>( distance ) / ( imgWidth - i - 1 )  ;
+            borderFactor = static_cast<float>( distance ) / static_cast<float>( ( imgWidth - i - 1 ) )  ;
         }
         if ( neighbours[2 * k + 1] != 0 && std::abs( jNeighbour - j ) < distance )
         {
           if ( j > jNeighbour )
-            borderFactor = static_cast<double>( distance ) /  j  ;
+            borderFactor = static_cast<float>( distance ) /  static_cast<float>( j )  ;
           else if ( j < jNeighbour )
-            borderFactor = static_cast<double>( distance ) / ( imgHeight - j - 1 )  ;
+            borderFactor = static_cast<float>( distance ) / static_cast<float>( imgHeight - j - 1 )  ;
         }
 
         float neighbourDepth = decodeElevation( elevPtr[ neighbourIndex ] );
         factor += std::max<float>( 0, -( centerDepth - neighbourDepth ) * borderFactor );
       }
-      float shade = exp( -factor * strength / rendererScale );
+      float shade = expf( -factor * strength / rendererScale );
 
       QRgb c = imgPtr[ index ];
-      imgPtr[ index ] = qRgba( qRed( c ) * shade, qGreen( c ) * shade, qBlue( c ) * shade, qAlpha( c ) );
+      imgPtr[ index ] = qRgba( static_cast<int>( static_cast<float>( qRed( c ) ) * shade ),
+                               static_cast<int>( static_cast<float>( qGreen( c ) )  * shade ),
+                               static_cast<int>( static_cast<float>( qBlue( c ) ) * shade )
+                               , qAlpha( c ) );
     }
   }
 }
@@ -188,7 +191,7 @@ void QgsElevationMap::applyHillshading( QImage &img, bool multiDirectional, doub
 
   auto colRowToIndex = [&]( int c, int r )->qgssize
   {
-    return  static_cast<qgssize>( r * imgWidth + c );
+    return  static_cast<qgssize>( r ) * imgWidth + c ;
   };
 
   float noData = noDataValue();
@@ -306,7 +309,10 @@ void QgsElevationMap::applyHillshading( QImage &img, bool multiDirectional, doub
         }
 
         QRgb c = imgPtr[ centerIndex ];
-        imgPtr[ centerIndex ] = qRgba( qRed( c ) * shade, qGreen( c ) * shade, qBlue( c ) * shade, qAlpha( c ) );
+        imgPtr[ centerIndex ] = qRgba( static_cast<int>( static_cast<float>( qRed( c ) ) * shade ),
+                                       static_cast<int>( static_cast<float>( qGreen( c ) )  * shade ),
+                                       static_cast<int>( static_cast<float>( qBlue( c ) ) * shade )
+                                       , qAlpha( c ) );
       }
     }
   }
@@ -341,7 +347,7 @@ void QgsElevationMap::combine( const QgsElevationMap &otherElevationMap, Combine
   {
     for ( int col = 0; col < width; ++col )
     {
-      qgssize index = static_cast<qgssize>( col + row * width );
+      qgssize index = col  + static_cast<qgssize>( row ) * width ;
       if ( !isNoData( otherElevPtr[index] ) )
       {
         switch ( method )
@@ -390,11 +396,11 @@ void QgsElevationMap::fillWithRasterBlock( QgsRasterBlock *block, int top, int l
 
       bool isNoData = true;
       double value = block->valueAndNoData( ( row - top ), ( col - left ), isNoData );
-      qgssize index = static_cast<qgssize>( col + row * widthMap );
+      qgssize index =  col + static_cast<qgssize>( row ) * widthMap;
       if ( isNoData )
         dataPtr[index] = 0;
       else
-        dataPtr[index] = encodeElevation( value * zScale + offset );
+        dataPtr[index] = encodeElevation( static_cast<float>( value * zScale  + offset ) );
     }
   }
 }
