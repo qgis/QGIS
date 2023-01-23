@@ -95,7 +95,7 @@ Returns the unit of the distance of the eye dome lighting method returned by :py
 .. seealso:: :py:func:`setEyeDomeLightingDistanceUnit`
 %End
 
-    void setEyeDomeLightingDistanceUnit(QgsUnitTypes::RenderUnit unit );
+    void setEyeDomeLightingDistanceUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
 Sets the ``unit`` of the distance of the eye dome lighting method set by :py:func:`~QgsElevationShadingRenderer.setEyeDomeLightingDistance`.
 
