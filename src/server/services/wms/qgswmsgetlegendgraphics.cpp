@@ -51,6 +51,7 @@ namespace QgsWms
     context.setFlag( QgsWmsRenderContext::UseScaleDenominator );
     context.setFlag( QgsWmsRenderContext::UseSrcWidthHeight );
     context.setParameters( parameters );
+    context.setSocketFeedback( response.feedback() );
 
     // get the requested output format
     QgsWmsParameters::Format format = parameters.format();

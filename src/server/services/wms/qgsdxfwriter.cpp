@@ -32,6 +32,7 @@ namespace QgsWms
     context.setFlag( QgsWmsRenderContext::UseFilter );
     context.setFlag( QgsWmsRenderContext::SetAccessControl );
     context.setParameters( request.wmsParameters() );
+    context.setSocketFeedback( response.feedback() );
 
     // Write output
     QgsRenderer renderer( context );

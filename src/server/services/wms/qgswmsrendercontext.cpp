@@ -853,3 +853,13 @@ QgsAccessControl *QgsWmsRenderContext::accessControl() const
   return mInterface->accessControls();
 }
 #endif
+
+void QgsWmsRenderContext::setSocketFeedback( QgsFeedback *feedback )
+{
+  mSocketFeedback = feedback;
+}
+
+QgsFeedback *QgsWmsRenderContext::socketFeedback() const
+{
+  return mSocketFeedback;
+}

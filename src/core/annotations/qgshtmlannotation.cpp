@@ -89,7 +89,7 @@ void QgsHtmlAnnotation::setHtmlSource( const QString &htmlSource )
 
 void QgsHtmlAnnotation::renderAnnotation( QgsRenderContext &context, QSizeF size ) const
 {
-  if ( !context.painter() )
+  if ( !context.painter() || ( context.feedback() && context.feedback()->isCanceled() ) )
   {
     return;
   }
