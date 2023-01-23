@@ -38,7 +38,7 @@ class QgsElevationShadingRendererSettingsWidget : public QgsMapLayerConfigWidget
 };
 
 
-class GUI_EXPORT QgsElevationShadingRendererSettingsWidgetFactory : public QObject, public QgsMapLayerConfigWidgetFactory
+class QgsElevationShadingRendererSettingsWidgetFactory : public QObject, public QgsMapLayerConfigWidgetFactory
 {
     Q_OBJECT
   public:
