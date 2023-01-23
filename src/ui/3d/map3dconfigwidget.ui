@@ -239,7 +239,6 @@
                  <property name="title">
                   <string>Extent</string>
                  </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_8"/>
                 </widget>
                </item>
                <item>
