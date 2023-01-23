@@ -45,6 +45,7 @@
 
 #include <QPicture>
 #include <QTimer>
+#include <QThread>
 
 QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
@@ -261,6 +262,10 @@ bool QgsVectorLayerRenderer::render()
   int rendererIndex = 0;
   for ( const std::unique_ptr< QgsFeatureRenderer > &renderer : mRenderers )
   {
+    if ( mFeedback->isCanceled() || !res )
+    {
+      break;
+    }
     res = renderInternal( renderer.get(), rendererIndex++ ) && res;
   }
 

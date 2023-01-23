@@ -52,7 +52,7 @@ void QgsTextAnnotation::setDocument( const QTextDocument *doc )
 void QgsTextAnnotation::renderAnnotation( QgsRenderContext &context, QSizeF size ) const
 {
   QPainter *painter = context.painter();
-  if ( !mDocument )
+  if ( !mDocument || ! painter || ( context.feedback() && context.feedback()->isCanceled() ) )
   {
     return;
   }

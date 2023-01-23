@@ -140,7 +140,7 @@ QgsFillSymbol *QgsAnnotation::fillSymbol() const
 void QgsAnnotation::render( QgsRenderContext &context ) const
 {
   QPainter *painter = context.painter();
-  if ( !painter )
+  if ( !painter || ( context.feedback() && context.feedback()->isCanceled() ) )
   {
     return;
   }
