@@ -180,12 +180,12 @@ void QgsFetchedContent::taskCompleted()
       const QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
       if ( extension.isEmpty() && !contentType.isEmpty() )
       {
-        QList<QMimeType> mimeTypes = QMimeDatabase().allMimeTypes();
+        const QList<QMimeType> mimeTypes = QMimeDatabase().allMimeTypes();
         auto it = std::find_if( mimeTypes.constBegin(), mimeTypes.constEnd(), [ = ]( QMimeType mimeType )
         {
           return mimeType.name() == contentType;
         } );
-        if ( it != mimeTypes.end() )
+        if ( it != mimeTypes.constEnd() )
         {
           extension = ( *it ).preferredSuffix();
         }
