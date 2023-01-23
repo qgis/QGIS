@@ -982,7 +982,7 @@ Defaults to -1 if the map is not associated with an animation.
 %Docstring
 Returns the shading renderer used to render shading on the entire map
 
-.. seealso:: :py:func:`setShadingRenderer`
+.. seealso:: :py:func:`setElevationShadingRenderer`
 
 .. versionadded:: 3.30
 %End
@@ -991,7 +991,7 @@ Returns the shading renderer used to render shading on the entire map
 %Docstring
 Sets the shading renderer used to render shading on the entire map
 
-.. seealso:: :py:func:`setShadingRenderer`
+.. seealso:: :py:func:`elevationShadingRenderer`
 
 .. versionadded:: 3.30
 %End

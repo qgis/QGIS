@@ -66,7 +66,7 @@ bool QgsElevationShadingRenderer::isActiveHillshading() const
   return mRenderHillshading;
 }
 
-double QgsElevationShadingRenderer::hillShadingZFactor() const
+double QgsElevationShadingRenderer::hillshadingZFactor() const
 {
   return mHillshadingZFactor;
 }

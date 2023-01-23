@@ -33,6 +33,7 @@ class QgsReadWriteContext;
  * \brief This class can render elevation shading on an image with different methods (eye dome lighting, hillshading, ...).
  *
  * An instance of this class supports the following settings:
+ *
  * - activate/deactivate elevation shading
  * - activate/deactivate a particular shading method
  * - parameters of each shading method
@@ -121,7 +122,7 @@ class CORE_EXPORT QgsElevationShadingRenderer
      *
      * \see setHillshadingZFactor()
      */
-    double hillShadingZFactor() const;
+    double hillshadingZFactor() const;
 
     /**
      * Sets the z factor used by the hill shading method.

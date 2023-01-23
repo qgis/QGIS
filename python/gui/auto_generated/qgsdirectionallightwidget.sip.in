@@ -24,7 +24,7 @@ The user can choose azimuth and altitude values.
   public:
     explicit QgsDirectionalLightWidget( QWidget *parent = 0 );
 %Docstring
-Contructor
+Constructor
 %End
     ~QgsDirectionalLightWidget();
 
@@ -55,6 +55,9 @@ Sets whether the azimut can be changed, for example, when using multidirectional
 
   signals:
     void directionChanged();
+%Docstring
+Emitted when the direction is changed
+%End
 };
 
 /************************************************************************

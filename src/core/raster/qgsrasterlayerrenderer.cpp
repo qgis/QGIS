@@ -483,7 +483,7 @@ void QgsRasterLayerRenderer::drawElevationMap()
 
       Qgis::DataType dataType = dataProvider->dataType( mElevationBand );
 
-      // we need extra pixels on border to avoid effect border whith resampling (at least 2 pixels band for cubic alg)
+      // we need extra pixels on border to avoid effect border with resampling (at least 2 pixels band for cubic alg)
       int sourceWidth = viewWidth + 4;
       int sourceHeight = viewHeight + 4;
       viewExtentInLayerCoordinate = QgsRectangle(

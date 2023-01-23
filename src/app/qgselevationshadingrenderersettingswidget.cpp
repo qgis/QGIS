@@ -91,7 +91,7 @@ void QgsElevationShadingRendererSettingsWidget::syncToProject()
   mEdlDistanceUnit->setUnit( shadingRenderer.eyeDomeLightingDistanceUnit() );
   mHillshadingGroupBox->setChecked( shadingRenderer.isActiveHillshading() );
   mHillshadingMultidirCheckBox->setChecked( shadingRenderer.isHillshadingMultidirectional() );
-  mHillshadingZFactorSpinBox->setValue( shadingRenderer.hillShadingZFactor() );
+  mHillshadingZFactorSpinBox->setValue( shadingRenderer.hillshadingZFactor() );
 
   mDirectionalLightWidget->setAltitude( shadingRenderer.lightAltitude() );
   mDirectionalLightWidget->setAzimuth( shadingRenderer.lightAzimuth() );

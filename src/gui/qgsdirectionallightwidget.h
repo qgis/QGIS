@@ -35,7 +35,7 @@ class GUI_EXPORT QgsDirectionalLightWidget : public QWidget, private Ui::QgsDire
     Q_OBJECT
 
   public:
-    //! Contructor
+    //! Constructor
     explicit QgsDirectionalLightWidget( QWidget *parent = nullptr );
     ~QgsDirectionalLightWidget();
 
@@ -55,6 +55,7 @@ class GUI_EXPORT QgsDirectionalLightWidget : public QWidget, private Ui::QgsDire
     void setEnableAzimuth( bool enable );
 
   signals:
+    //! Emitted when the direction is changed
     void directionChanged();
   private:
 

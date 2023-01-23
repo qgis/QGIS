@@ -1250,9 +1250,9 @@ void QgsMapCanvas::onElevationShadingRendererChanged()
 {
   if ( !mProject )
     return;
-  bool wasDesactivated = !mSettings.elevationShadingRenderer().isActive();
+  bool wasDeactivated = !mSettings.elevationShadingRenderer().isActive();
   mSettings.setElevationShadingRenderer( mProject->elevationShadingRenderer() );
-  if ( wasDesactivated )
+  if ( wasDeactivated )
     mCache->clear();
   refresh();
 }

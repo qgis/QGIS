@@ -77,8 +77,8 @@ class CORE_EXPORT QgsGdalUtils
      * Resamples a single band raster to the destination dataset with different resolution and different CRS.
      * Ideally the source dataset should cover the whole area or the destination dataset.
      *
-     * \note If possible, it is preferable to use the overload method win paramater \a pszCoordinateOperation.
-     *       But if it is not possible otr it fails to obtain the Proj coordinate operation string,
+     * \note If possible, it is preferable to use the overload method with parameter \a pszCoordinateOperation.
+     *       But if it is not possible or it fails to obtain the Proj coordinate operation string,
      *       this function is an alternative.
      *
      * \returns TRUE on success
