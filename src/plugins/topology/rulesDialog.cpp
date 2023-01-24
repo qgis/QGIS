@@ -15,6 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <set>
+
 #include <QDebug>
 #include <QTableWidgetItem>
 
@@ -50,9 +52,15 @@ rulesDialog::rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterf
 
   connect( mAddTestButton, &QAbstractButton::clicked, this, &rulesDialog::addRule );
   connect( mAddTestButton, &QAbstractButton::clicked, mRulesTable, &QTableView::resizeColumnsToContents );
-  // attempt to add new test when OK clicked
-  //connect( buttonBox, SIGNAL( accepted() ), this, SLOT( addTest() ) );
+
+  connect( mRulesTable->selectionModel(), &QItemSelectionModel::selectionChanged, this, [ = ]()
+  {
+    bool enabled = !mRulesTable->selectionModel()->selectedIndexes().isEmpty();
+    mDeleteTestButton->setEnabled( enabled );
+  } );
+  mDeleteTestButton->setEnabled( !mRulesTable->selectionModel()->selectedIndexes().isEmpty() );
   connect( mDeleteTestButton, &QAbstractButton::clicked, this, &rulesDialog::deleteTest );
+
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &rulesDialog::showHelp );
 
   connect( mLayer1Box, &QComboBox::currentTextChanged, this, &rulesDialog::updateRuleItems );
@@ -258,9 +266,17 @@ void rulesDialog::addRule()
 
 void rulesDialog::deleteTest()
 {
-  const int row = mRulesTable->currentRow();
-  if ( 0 <= row && row < mRulesTable->rowCount() )
+  std::set<int, std::greater<int>> selectedRows;
+  QModelIndexList selectedIndexes = mRulesTable->selectionModel()->selectedRows();
+  for ( QModelIndex index : selectedIndexes )
+  {
+    selectedRows.insert( index.row() );
+  }
+
+  for ( int row : selectedRows )
+  {
     mRulesTable->removeRow( row );
+  }
 }
 
 void rulesDialog::updateRuleItems( const QString &layerName )
@@ -312,7 +328,6 @@ void rulesDialog::initGui()
   for ( int i = 0; i < layerList.size(); ++i )
   {
     QgsVectorLayer *v1 = ( QgsVectorLayer * )QgsProject::instance()->mapLayer( layerList[i] );
-    qDebug() << "layerid = " + layerList[i];
 
     // add layer name to the layer combo boxes
     if ( v1->type() == QgsMapLayerType::VectorLayer )

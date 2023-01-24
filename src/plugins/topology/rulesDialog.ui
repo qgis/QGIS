@@ -127,8 +127,8 @@
     <layout class="QHBoxLayout" name="horizontalLayout_5">
      <item>
       <widget class="QPushButton" name="mDeleteTestButton">
-       <property name="text">
-        <string>Delete Selected Rule</string>
+       <property name="toolTip">
+        <string>Delete selected rules</string>
        </property>
       </widget>
      </item>
