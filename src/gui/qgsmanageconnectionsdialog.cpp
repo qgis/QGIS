@@ -271,7 +271,7 @@ bool QgsManageConnectionsDialog::populateConnections()
         connections = QgsOwsConnection::sTreeOwsConnections->items( {QStringLiteral( "geonode" )} );
         break;
       case XyzTiles:
-        connections = QgsOwsConnection::sTreeOwsConnections->items( {QStringLiteral( "xyz" )} );
+        connections = QgsXyzConnectionSettings::sTreeXyzConnections->items();
         break;
       case ArcgisMapServer:
         settings.beginGroup( QStringLiteral( "/qgis/connections-arcgismapserver" ) );
