@@ -455,11 +455,11 @@ if(WITH_CORE)
   endif()
 
   # Use Qt5SerialPort optionally for GPS
-  set (WITH_QT5SERIALPORT TRUE CACHE BOOL "Determines whether Qt5SerialPort should be tried for GPS positioning")
-  if (WITH_QT5SERIALPORT)
+  set (WITH_QTSERIALPORT TRUE CACHE BOOL "Determines whether Qt5SerialPort should be tried for GPS positioning")
+  if (WITH_QTSERIALPORT)
       find_package(${QT_VERSION_BASE} COMPONENTS SerialPort REQUIRED)
       # following variable is used in qgsconfig.h
-      set (HAVE_QT5SERIALPORT TRUE)
+      set (HAVE_QTSERIALPORT TRUE)
   endif()
 
   find_package(${QT_VERSION_BASE} COMPONENTS Core Gui Widgets Network Xml Svg Concurrent Test Sql Positioning REQUIRED)
