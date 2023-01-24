@@ -306,6 +306,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       UndoArrowHeadWidth, //!< Arrow head width
       UndoArrowHeadFillColor, //!< Arrow head fill color
       UndoArrowHeadStrokeColor, //!< Arrow head stroke color
+      UndoElevationProfileTolerance, //!< Change elevation profile distance tolerance
       UndoElevationProfileChartBackground, //!< Change elevation profile chart background
       UndoElevationProfileChartBorder, //!< Change elevation profile chart border
       UndoElevationProfileDistanceMajorGridlines, //!< Change elevation profile distance axis major gridlines
