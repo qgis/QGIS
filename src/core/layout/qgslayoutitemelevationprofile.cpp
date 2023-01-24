@@ -77,6 +77,26 @@ void QgsLayoutItemElevationProfile::refreshDataDefinedProperty( DataDefinedPrope
 
   bool forceUpdate = false;
 
+  if ( ( property == QgsLayoutObject::ElevationProfileTolerance || property == QgsLayoutObject::AllProperties )
+       && ( mDataDefinedProperties.isActive( QgsLayoutObject::ElevationProfileTolerance ) ) )
+  {
+    double value = mTolerance;
+
+    bool ok = false;
+    value = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ElevationProfileTolerance, context, value, &ok );
+
+    if ( !ok )
+    {
+      QgsMessageLog::logMessage( tr( "Elevation profile tolerance expression eval error" ) );
+    }
+    else
+    {
+      mTolerance = value;
+    }
+
+    forceUpdate = true;
+  }
+
   if ( ( property == QgsLayoutObject::ElevationProfileMinimumDistance || property == QgsLayoutObject::AllProperties )
        && ( mDataDefinedProperties.isActive( QgsLayoutObject::ElevationProfileMinimumDistance ) ) )
   {
