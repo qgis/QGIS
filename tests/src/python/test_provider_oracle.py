@@ -1168,6 +1168,48 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(exporter.errorCount(), 0)
         self.assertEqual(exporter.errorCode(), 0)
 
+    def testDetectedGeomType(self):
+        """
+        Test detected geom type when no one is required
+        """
+
+        testdata = [
+            ("POINT", 2, "SDO_GEOMETRY( 2001,5698,SDO_POINT_TYPE(1, 2, NULL), NULL, NULL)", QgsWkbTypes.Point),
+            ("POINTZ", 3, "SDO_GEOMETRY( 3001,5698,SDO_POINT_TYPE(1, 2, 3), NULL, NULL)", QgsWkbTypes.Point25D),
+            # there is difference between line and curve so everything is a compoundcurve to cover both
+            # https://docs.oracle.com/database/121/SPATL/sdo_geometry-object-type.htm
+            ("LINE", 2, "SDO_GEOMETRY( 2002,5698,NULL, SDO_ELEM_INFO_ARRAY(1,2,1), SDO_ORDINATE_ARRAY(1,2,3,4,5,6))", QgsWkbTypes.CompoundCurve),
+            ("LINEZ", 3, "SDO_GEOMETRY(3002,5698,NULL, SDO_ELEM_INFO_ARRAY(1,2,1), SDO_ORDINATE_ARRAY(1,2,3,4,5,6,7,8,9))", QgsWkbTypes.CompoundCurveZ),
+            ("CURVE", 2, "SDO_GEOMETRY(2002,5698,NULL, SDO_ELEM_INFO_ARRAY(1, 2, 2), SDO_ORDINATE_ARRAY(1, 2, 5, 4, 7, 2.2, 10, .1, 13, 4))", QgsWkbTypes.CompoundCurve),
+            ("CURVEZ", 3, "SDO_GEOMETRY(3002,5698,NULL, SDO_ELEM_INFO_ARRAY(1, 2, 2), SDO_ORDINATE_ARRAY(1, 2, 1, 5, 4, 2, 7, 2.2, 3, 10, 0.1, 4, 13, 4, 5))", QgsWkbTypes.CompoundCurveZ),
+            ("POLYGON", 2, "SDO_GEOMETRY(2003,5698,NULL, SDO_ELEM_INFO_ARRAY(1,1003,1), SDO_ORDINATE_ARRAY(1, 2, 11, 2, 11, 22, 1, 22, 1, 2))", QgsWkbTypes.Polygon),
+            ("POLYGONZ", 3, "SDO_GEOMETRY(3003,5698,NULL, SDO_ELEM_INFO_ARRAY(1,1003,1), SDO_ORDINATE_ARRAY(1, 2, 3, 11, 2, 13, 11, 22, 15, 1, 22, 7, 1, 2, 3))", QgsWkbTypes.Polygon25D),
+
+            ("MULTIPOINT", 2, "SDO_GEOMETRY( 2005,5698,NULL, sdo_elem_info_array (1,1,1, 3,1,1), sdo_ordinate_array (1,2, 3,4))", QgsWkbTypes.MultiPoint),
+            ("MULTIPOINTZ", 3, "SDO_GEOMETRY( 3005,5698,NULL, sdo_elem_info_array (1,1,2), sdo_ordinate_array (1,2,3, 4,5,6))", QgsWkbTypes.MultiPoint25D),
+            # there is difference between line and curve so everything is a compoundcurve to cover both
+            # https://docs.oracle.com/database/121/SPATL/sdo_geometry-object-type.htm
+            ("MULTILINE", 2, "SDO_GEOMETRY(2006,5698,NULL, SDO_ELEM_INFO_ARRAY(1,2,1, 5,2,1), SDO_ORDINATE_ARRAY(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))", QgsWkbTypes.MultiCurve),
+            ("MULTILINEZ", 3, "SDO_GEOMETRY(3006,5698,NULL, SDO_ELEM_INFO_ARRAY(1,2,1, 7,2,1), SDO_ORDINATE_ARRAY(1, 2, 11, 3, 4, -11, 5, 6, 9, 7, 8, 1, 9, 10, -3))", QgsWkbTypes.MultiCurveZ),
+            ("MULTICURVE", 2, "SDO_GEOMETRY(2006,5698,NULL, SDO_ELEM_INFO_ARRAY(1,2,2, 11,2,2), SDO_ORDINATE_ARRAY(1, 2, 5, 4, 7, 2.2, 10, .1, 13, 4, -11, -3, 5, 7, 10, -1))", QgsWkbTypes.MultiCurve),
+            ("MULTICURVEZ", 3, "SDO_GEOMETRY(3006,5698,NULL, SDO_ELEM_INFO_ARRAY(1,2,2, 16,2,2), SDO_ORDINATE_ARRAY(1, 2, 1, 5, 4, 2, 7, 2.2, 3, 10, .1, 4, 13, 4, 5, -11, -3, 6, 5, 7, 8, 10, -1, 9))", QgsWkbTypes.MultiCurveZ),
+            ("MULTIPOLYGON", 2, "SDO_GEOMETRY(2007,5698,NULL, SDO_ELEM_INFO_ARRAY(1,1003,1, 11,1003,1, 21,2003,1, 29,2003,1), SDO_ORDINATE_ARRAY(1, 2, 11, 2, 11, 22, 1, 22, 1, 2, 1, 2, 11, 2, 11, 22, 1, 22, 1, 2, 5, 6, 8, 9, 8, 6, 5, 6, 3, 4, 5, 6, 3, 6, 3, 4))", QgsWkbTypes.MultiPolygon),
+            ("MULTIPOLYGONZ", 3, "SDO_GEOMETRY(3007,5698,NULL, SDO_ELEM_INFO_ARRAY(1,1003,1, 16,1003,1, 31,2003,1), SDO_ORDINATE_ARRAY(1, 2, 3, 11, 2, 13, 11, 22, 15, 1, 22, 7, 1, 2, 3, 1, 2, 3, 11, 2, 13, 11, 22, 15, 1, 22, 7, 1, 2, 3, 5, 6, 1, 8, 9, -1, 8, 6, 2, 5, 6, 1))", QgsWkbTypes.MultiPolygon25D)
+        ]
+
+        for name, dim, geom, wkb_type in testdata:
+            # We choose SRID=5698 (see https://docs.oracle.com/database/121/SPATL/three-dimensional-coordinate-reference-system-support.htm#SPATL626)
+            # to get Oracle valid geometries because it support 3D and arcs (arcs are not supported in geodetic projection)
+            self.createTable('DETECT_{}'.format(name), dim, 5698)
+            self.execSQLCommand('INSERT INTO "QGIS"."DETECT_{}" ("pk", GEOM) SELECT 1, {} from dual'.format(name, geom))
+
+            layer = QgsVectorLayer(
+                self.dbconn + ' sslmode=disable key=\'pk\' srid=3857 table="QGIS"."DETECT_{}" (GEOM) sql='.format(name), 'test{}'.format(name), 'oracle')
+            self.assertTrue(layer.isValid())
+            self.assertEqual(layer.wkbType(), wkb_type)
+
+            self.execSQLCommand('DROP TABLE "QGIS"."DETECT_{}"'.format(name))
+
 
 if __name__ == '__main__':
     unittest.main()
