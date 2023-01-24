@@ -291,7 +291,10 @@ QWidget *QgsValueRelationWidgetWrapper::createWidget( QWidget *parent )
   }
   else
   {
-    return new QComboBox( parent );
+    QComboBox *combo = new QComboBox( parent );
+    combo->setMinimumContentsLength( 1 );
+    combo->setSizeAdjustPolicy( QComboBox::SizeAdjustPolicy::AdjustToMinimumContentsLengthWithIcon );
+    return combo;
   }
 }
 
