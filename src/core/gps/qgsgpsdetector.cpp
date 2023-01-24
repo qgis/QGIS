@@ -23,13 +23,6 @@
 #include "qgssettings.h"
 #include "qgssettingsentryenumflag.h"
 
-#if defined( HAVE_QTSERIALPORT )
-const QgsSettingsEntryEnumFlag<QSerialPort::FlowControl> *QgsGpsDetector::settingsGpsFlowControl = new QgsSettingsEntryEnumFlag<QSerialPort::FlowControl>( QStringLiteral( "flow-control" ), QgsSettings::sTreeGps, QSerialPort::NoFlowControl );
-const QgsSettingsEntryEnumFlag<QSerialPort::StopBits> *QgsGpsDetector::settingsGpsStopBits = new QgsSettingsEntryEnumFlag<QSerialPort::StopBits>( QStringLiteral( "stop-bits" ), QgsSettings::sTreeGps, QSerialPort::OneStop );
-const QgsSettingsEntryEnumFlag<QSerialPort::DataBits> *QgsGpsDetector::settingsGpsDataBits = new QgsSettingsEntryEnumFlag<QSerialPort::DataBits>( QStringLiteral( "data-bits" ), QgsSettings::sTreeGps, QSerialPort::Data8 );
-const QgsSettingsEntryEnumFlag<QSerialPort::Parity> *QgsGpsDetector::settingsGpsParity = new QgsSettingsEntryEnumFlag<QSerialPort::Parity>( QStringLiteral( "parity" ), QgsSettings::sTreeGps, QSerialPort::NoParity );
-#endif
-
 
 #if defined(QT_POSITIONING_LIB)
 #include "qgsqtlocationconnection.h"
@@ -42,6 +35,11 @@ const QgsSettingsEntryEnumFlag<QSerialPort::Parity> *QgsGpsDetector::settingsGps
 #if defined( HAVE_QTSERIALPORT )
 #include <QSerialPortInfo>
 #include <QSerialPort>
+
+const QgsSettingsEntryEnumFlag<QSerialPort::FlowControl> *QgsGpsDetector::settingsGpsFlowControl = new QgsSettingsEntryEnumFlag<QSerialPort::FlowControl>( QStringLiteral( "flow-control" ), QgsSettings::sTreeGps, QSerialPort::NoFlowControl );
+const QgsSettingsEntryEnumFlag<QSerialPort::StopBits> *QgsGpsDetector::settingsGpsStopBits = new QgsSettingsEntryEnumFlag<QSerialPort::StopBits>( QStringLiteral( "stop-bits" ), QgsSettings::sTreeGps, QSerialPort::OneStop );
+const QgsSettingsEntryEnumFlag<QSerialPort::DataBits> *QgsGpsDetector::settingsGpsDataBits = new QgsSettingsEntryEnumFlag<QSerialPort::DataBits>( QStringLiteral( "data-bits" ), QgsSettings::sTreeGps, QSerialPort::Data8 );
+const QgsSettingsEntryEnumFlag<QSerialPort::Parity> *QgsGpsDetector::settingsGpsParity = new QgsSettingsEntryEnumFlag<QSerialPort::Parity>( QStringLiteral( "parity" ), QgsSettings::sTreeGps, QSerialPort::NoParity );
 #endif
 
 QList< QPair<QString, QString> > QgsGpsDetector::availablePorts()
