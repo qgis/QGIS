@@ -13140,7 +13140,20 @@ Qgs3DMapCanvasWidget *QgisApp::createNew3DMapCanvasDock( const QString &name, bo
 
 QgsElevationProfileWidget *QgisApp::createNewElevationProfile()
 {
-  QgsElevationProfileWidget *widget = new QgsElevationProfileWidget( tr( "Elevation Profile" ) );
+  const QList<QgsElevationProfileWidget *> elevationProfileWidgets = findChildren< QgsElevationProfileWidget * >();
+  const int existingProfileCount = elevationProfileWidgets.size();
+
+  QString title;
+  if ( existingProfileCount == 0 )
+  {
+    title = tr( "Elevation Profile" );
+  }
+  else
+  {
+    title = tr( "Elevation Profile (%1)" ).arg( existingProfileCount + 1 );
+  }
+
+  QgsElevationProfileWidget *widget = new QgsElevationProfileWidget( title );
   widget->setMainCanvas( mMapCanvas );
   return widget;
 }
