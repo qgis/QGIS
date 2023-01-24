@@ -42,7 +42,9 @@ It can also be used to display a picture or a web page.
     {
       NoContent,
       Image,
-      Web
+      Web,
+      Audio,
+      Video,
     };
 
     explicit QgsExternalResourceWidget( QWidget *parent /TransferThis/ = 0 );
