@@ -130,10 +130,12 @@ void QgsSettingsRegistryCore::migrateOldSettings()
 
   settingsLayerTreeShowFeatureCountForNewLayers->copyValueFromKey( QStringLiteral( "core/layer-tree/show_feature_count_for_new_layers" ) );
 
+#if defined( HAVE_QTSERIALPORT )
   QgsGpsDetector::settingsGpsStopBits->copyValueFromKey( QStringLiteral( "core/gps/stop_bits" ) );
   QgsGpsDetector::settingsGpsFlowControl->copyValueFromKey( QStringLiteral( "core/gps/flow_control" ) );
   QgsGpsDetector::settingsGpsDataBits->copyValueFromKey( QStringLiteral( "core/gps/data_bits" ) );
   QgsGpsDetector::settingsGpsParity->copyValueFromKey( QStringLiteral( "core/gps/parity" ) );
+#endif
 
   // locator filters - added in 3.30
   {
@@ -271,10 +273,12 @@ void QgsSettingsRegistryCore::backwardCompatibility()
 
   settingsLayerTreeShowFeatureCountForNewLayers->copyValueToKey( QStringLiteral( "core/layer-tree/show_feature_count_for_new_layers" ) );
 
+#if defined( HAVE_QTSERIALPORT )
   QgsGpsDetector::settingsGpsStopBits->copyValueToKey( QStringLiteral( "core/gps/stop_bits" ) );
   QgsGpsDetector::settingsGpsFlowControl->copyValueToKey( QStringLiteral( "core/gps/flow_control" ) );
   QgsGpsDetector::settingsGpsDataBits->copyValueToKey( QStringLiteral( "core/gps/data_bits" ) );
   QgsGpsDetector::settingsGpsParity->copyValueToKey( QStringLiteral( "core/gps/parity" ) );
+#endif
 
   // locator filters - added in 3.30
   {
