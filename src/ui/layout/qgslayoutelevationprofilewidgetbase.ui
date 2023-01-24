@@ -62,6 +62,7 @@
      <property name="floatable">
       <bool>false</bool>
      </property>
+     <addaction name="mActionRefresh"/>
     </widget>
    </item>
    <item>
@@ -729,6 +730,18 @@
     </widget>
    </item>
   </layout>
+  <action name="mActionRefresh">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionRefresh.svg</normaloff>:/images/themes/default/mActionRefresh.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Refresh Elevation Profile</string>
+   </property>
+   <property name="toolTip">
+    <string>Refresh Elevation Profile</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -768,6 +781,8 @@
  <tabstops>
   <tabstop>scrollArea</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../../images/images.qrc"/>
+ </resources>
  <connections/>
 </ui>

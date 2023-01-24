@@ -51,6 +51,16 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     sBuildCopyMenuFunction( this, mCopyFromDockMenu );
   } );
 
+  connect( mActionRefresh, &QAction::triggered, this, [ = ]
+  {
+    if ( !mProfile )
+    {
+      return;
+    }
+    mProfile->invalidateCache();
+    mProfile->refresh();
+  } );
+
   QToolButton *copyFromDockButton = new QToolButton();
   copyFromDockButton->setAutoRaise( true );
   copyFromDockButton->setToolTip( tr( "Copy From Profile" ) );
