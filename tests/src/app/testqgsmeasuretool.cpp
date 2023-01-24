@@ -377,7 +377,6 @@ void TestQgsMeasureTool::degreeDecimalPlaces()
 
 void TestQgsMeasureTool::testToolDesactivationNoExtraPoint()
 {
-
   // set project CRS and ellipsoid
   const QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:3111" ) );
   mCanvas->setDestinationCrs( srs );
@@ -406,7 +405,6 @@ void TestQgsMeasureTool::testToolDesactivationNoExtraPoint()
 
   mCanvas->setMapTool( tool.get() );
 
-
   // Click on two points, then move the cursor
   clickCanvas( 50, 50 );
   clickCanvas( 50, 100 );
@@ -426,13 +424,7 @@ void TestQgsMeasureTool::testToolDesactivationNoExtraPoint()
   // Check if both rubberbands still have the right number of vertices
   QCOMPARE( tool->mRubberBandPoints->numberOfVertices(), 2 );
   QCOMPARE( tool->mRubberBand->numberOfVertices(), tool->mRubberBandPoints->numberOfVertices() + 1 );
-
-
-
 }
-
-
-
 
 QGSTEST_MAIN( TestQgsMeasureTool )
 #include "testqgsmeasuretool.moc"
