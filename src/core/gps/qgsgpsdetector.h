@@ -21,7 +21,9 @@
 #include <QObject>
 #include <QList>
 #include <QPair>
+#if defined( HAVE_QT5SERIALPORT )
 #include <QSerialPort>
+#endif
 #include <memory>
 
 #include "qgis_core.h"
@@ -45,10 +47,12 @@ class CORE_EXPORT QgsGpsDetector : public QObject
   public:
     QgsGpsDetector( const QString &portName );
 
+#if defined( HAVE_QT5SERIALPORT )
     static const QgsSettingsEntryEnumFlag<QSerialPort::StopBits> *settingsGpsStopBits SIP_SKIP;
     static const QgsSettingsEntryEnumFlag<QSerialPort::DataBits> *settingsGpsDataBits SIP_SKIP;
     static const QgsSettingsEntryEnumFlag<QSerialPort::Parity> *settingsGpsParity SIP_SKIP;
     static const QgsSettingsEntryEnumFlag<QSerialPort::FlowControl> *settingsGpsFlowControl SIP_SKIP;
+#endif
 
     ~QgsGpsDetector() override;
 
