@@ -22,7 +22,6 @@
 
 #include "qgssettings.h"
 #include "qgsvariantutils.h"
-#include "qgslogger.h"
 
 Q_GLOBAL_STATIC( QString, sGlobalSettingsPath )
 
@@ -179,7 +178,9 @@ QStringList QgsSettings::childGroups( Qgis::SettingsOrigin origin ) const
       return  mGlobalSettings ? mGlobalSettings->childGroups() : QStringList();
   }
 
+  BUILTIN_UNREACHABLE
 }
+
 QStringList QgsSettings::globalChildGroups() const
 {
   return childGroups( Qgis::SettingsOrigin::Global );
