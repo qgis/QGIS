@@ -23,7 +23,7 @@
 #include "qgssettings.h"
 #include "qgssettingsentryenumflag.h"
 
-#if defined( HAVE_QT5SERIALPORT )
+#if defined( HAVE_QTSERIALPORT )
 const QgsSettingsEntryEnumFlag<QSerialPort::FlowControl> *QgsGpsDetector::settingsGpsFlowControl = new QgsSettingsEntryEnumFlag<QSerialPort::FlowControl>( QStringLiteral( "flow-control" ), QgsSettings::sTreeGps, QSerialPort::NoFlowControl );
 const QgsSettingsEntryEnumFlag<QSerialPort::StopBits> *QgsGpsDetector::settingsGpsStopBits = new QgsSettingsEntryEnumFlag<QSerialPort::StopBits>( QStringLiteral( "stop-bits" ), QgsSettings::sTreeGps, QSerialPort::OneStop );
 const QgsSettingsEntryEnumFlag<QSerialPort::DataBits> *QgsGpsDetector::settingsGpsDataBits = new QgsSettingsEntryEnumFlag<QSerialPort::DataBits>( QStringLiteral( "data-bits" ), QgsSettings::sTreeGps, QSerialPort::Data8 );
@@ -39,7 +39,7 @@ const QgsSettingsEntryEnumFlag<QSerialPort::Parity> *QgsGpsDetector::settingsGps
 #include <QFileInfo>
 #include <QTimer>
 
-#if defined( HAVE_QT5SERIALPORT )
+#if defined( HAVE_QTSERIALPORT )
 #include <QSerialPortInfo>
 #include <QSerialPort>
 #endif
@@ -57,7 +57,7 @@ QList< QPair<QString, QString> > QgsGpsDetector::availablePorts()
   devs << QPair<QString, QString>( QStringLiteral( "localhost:2947:" ), tr( "local gpsd" ) );
 
   // try serial ports
-#if defined( HAVE_QT5SERIALPORT )
+#if defined( HAVE_QTSERIALPORT )
   for ( const QSerialPortInfo &p : QSerialPortInfo::availablePorts() )
   {
     devs << QPair<QString, QString>( p.portName(), tr( "%1: %2" ).arg( p.portName(), p.description() ) );
@@ -69,7 +69,7 @@ QList< QPair<QString, QString> > QgsGpsDetector::availablePorts()
 
 QgsGpsDetector::QgsGpsDetector( const QString &portName )
 {
-#if defined( HAVE_QT5SERIALPORT )
+#if defined( HAVE_QTSERIALPORT )
   mBaudList << QSerialPort::Baud4800 << QSerialPort::Baud9600 << QSerialPort::Baud38400 << QSerialPort::Baud57600 << QSerialPort::Baud115200;  //add 57600 for SXBlueII GPS unit
 #endif
 
@@ -127,7 +127,7 @@ void QgsGpsDetector::advance()
     }
     else
     {
-#if defined( HAVE_QT5SERIALPORT )
+#if defined( HAVE_QTSERIALPORT )
       std::unique_ptr< QSerialPort > serial = std::make_unique< QSerialPort >( mPortList.at( mPortIndex ).first );
 
       serial->setBaudRate( mBaudList[ mBaudIndex ] );
