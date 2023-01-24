@@ -119,7 +119,7 @@ void QgsCodeEditorPython::initializeLexer()
   {
     if ( settings.value( QStringLiteral( "pythonConsole/preloadAPI" ), true ).toBool() )
     {
-      mPapFile = QgsApplication::pkgDataPath() + QStringLiteral( "/python/qsci_apis/pyqgis.pap" );
+      mPapFile = QgsApplication::pkgDataPath() + QStringLiteral( "/python/qsci_apis/PyQGIS.pap" );
       apis->loadPrepared( mPapFile );
     }
     else if ( settings.value( QStringLiteral( "pythonConsole/usePreparedAPIFile" ), false ).toBool() )

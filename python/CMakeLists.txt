@@ -233,7 +233,7 @@ if (WITH_3D)
 
   file(GLOB_RECURSE sip_files_3d 3d/*.sip 3d/*.sip.in)
   set(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_3d})
-  set(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -g -o -a ${CMAKE_BINARY_DIR}/python/qgis.qgis3d.api)
+  set(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -g -o -a ${CMAKE_BINARY_DIR}/python/qgis.3d.api)
   if((${SIP_VERSION_STR} VERSION_EQUAL 4.19.11) OR (${SIP_VERSION_STR} VERSION_GREATER 4.19.11))
     set(SIP_EXTRA_OPTIONS ${SIP_EXTRA_OPTIONS} -n ${PYQT_SIP_IMPORT})
   endif()
@@ -312,36 +312,43 @@ if(WITH_ANALYSIS)
 endif()
 
 if(WITH_QSCIAPI)
-  # wait until after python module builds for api files to be available
-  set(QGIS_PYTHON_API_FILE "${CMAKE_BINARY_DIR}/python/qsci_apis/PyQGIS.api")
+  set(APIS_SRC_DIR "${CMAKE_SOURCE_DIR}/python/qsci_apis")
+  set(APIS_OUT_DIR "${CMAKE_BINARY_DIR}/python/qsci_apis")
 
-  add_custom_target(qsci-api ALL
-    DEPENDS python_module_qgis__gui python_module_qgis__core python_module_qgis__analysis)
+  # wait until after python module builds for api files to be available
+  set(QGIS_PYTHON_API_FILE "${APIS_OUT_DIR}/PyQGIS.api")
+  set(QGIS_PYTHON_PAP_FILE "${APIS_OUT_DIR}/PyQGIS.pap")
+
+  set(api_modules)
+  set(api_files)
+  foreach(module ${PY_MODULES})
+    set(api_modules ${api_modules} python_module_qgis__${module})
+    if(NOT SIP_BUILD_EXECUTABLE)
+      set(api_files ${api_files} "${CMAKE_BINARY_DIR}/python/qgis.${module}.api")
+    else()
+      set(api_files ${api_files} "${CMAKE_BINARY_DIR}/python/${module}/build/QGIS.api")
+    endif()
+  endforeach()
 
   # run update/concatenate command
-  add_custom_command(TARGET qsci-api
-    POST_BUILD
-    COMMAND "${CMAKE_COMMAND}" -P "${CMAKE_SOURCE_DIR}/cmake/QsciAPI.cmake"
+  add_custom_command(
+    OUTPUT "${QGIS_PYTHON_API_FILE}"
+    DEPENDS ${api_modules}
+    COMMAND "${CMAKE_COMMAND}" -D "APIS=${api_files}" -P "${CMAKE_SOURCE_DIR}/cmake/QsciAPI.cmake"
     WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
     COMMENT "Generating pyqgis api file" VERBATIM)
 
-  install(FILES ${QGIS_PYTHON_API_FILE} DESTINATION "${QGIS_DATA_DIR}/python/qsci_apis")
-
-  # create target for generating console auto-completion *.pap binary file
-  # takes too long to build (> 1 minute) for targets to have ALL property
-  set(APIS_SRC_DIR "${CMAKE_SOURCE_DIR}/python/qsci_apis")
-  set(APIS_BIN_DIR "${CMAKE_BINARY_DIR}/python/qsci_apis")
-
   # generate a .pap file to be immediately installed in QGIS source tree (the default .pap)
-  add_custom_target(qsci-pap-src
-    DEPENDS qsci-api ${QGIS_PYTHON_API_FILE})
-
-  set(PAP_NAME "pyqgis.pap")
-  add_custom_command(TARGET qsci-pap-src
-    POST_BUILD
-    COMMAND ${Python_EXECUTABLE} "${APIS_SRC_DIR}/generate_console_pap.py" "${APIS_SRC_DIR}/${PAP_NAME}" "${APIS_SRC_DIR}" "${APIS_BIN_DIR}"
+  add_custom_command(
+    OUTPUT "${QGIS_PYTHON_PAP_FILE}"
+    DEPENDS "${QGIS_PYTHON_API_FILE}"
+    COMMAND ${Python_EXECUTABLE} "${APIS_SRC_DIR}/generate_console_pap.py" -platform offscreen "${QGIS_PYTHON_PAP_FILE}" "${APIS_SRC_DIR}" "${APIS_OUT_DIR}"
     WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
-    COMMENT "Generating ${PAP_NAME} for console auto-completion (MAY TAKE > 1 MINUTE!)" VERBATIM)
+    COMMENT "Generating pap file for console auto-completion" VERBATIM)
+
+  add_custom_target(pyqgis-pap ALL DEPENDS ${QGIS_PYTHON_API_FILE} ${QGIS_PYTHON_PAP_FILE})
+
+  install(FILES ${QGIS_PYTHON_API_FILE} ${QGIS_PYTHON_PAP_FILE} DESTINATION "${QGIS_DATA_DIR}/python/qsci_apis")
 endif()
 
 if(WITH_CUSTOM_WIDGETS)
