@@ -104,6 +104,14 @@ void QgsExternalResourceWidgetWrapper::updateProperties( const QgsFeature &featu
         {
           dvc = QgsExternalResourceWidget::Image;
         }
+        else if ( dvcString.compare( QLatin1String( "audio" ), Qt::CaseInsensitive ) == 0 )
+        {
+          dvc = QgsExternalResourceWidget::Audio;
+        }
+        else if ( dvcString.compare( QLatin1String( "video" ), Qt::CaseInsensitive ) == 0 )
+        {
+          dvc = QgsExternalResourceWidget::Video;
+        }
         else if ( dvcString.compare( QLatin1String( "web" ), Qt::CaseInsensitive ) == 0 )
         {
           dvc = QgsExternalResourceWidget::Web;
