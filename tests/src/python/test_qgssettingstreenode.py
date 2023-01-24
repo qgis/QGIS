@@ -122,8 +122,11 @@ class TestQgsSettingsEntry(unittest.TestCase):
         l1 = proot.createChildElement("level-1")
         s1 = QgsSettingsEntryString("my-setting-1", l1)
         l2 = l1.createChildElement("level-2")
+        self.assertEqual(len(l2.childrenSettings()), 0)
         s2 = QgsSettingsEntryString("my-setting-2", l2)
+        self.assertEqual(len(l2.childrenSettings()), 1)
         l2.unregisterChildSetting(s2)
+        self.assertEqual(len(l2.childrenSettings()), 0)
         QgsSettings.unregisterPluginTreeElement(self.pluginName)
 
     def test_duplicated_key(self):
