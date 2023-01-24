@@ -333,6 +333,9 @@ void checkDock::runTests( ValidateType type )
     if ( mTest->testCanceled() )
       break;
 
+    if ( mTestTable->item( i, 0 )->checkState() != Qt::Checked )
+      continue;
+
     const QString testName = mTestTable->item( i, 0 )->text();
     const QString layer1Str = mTestTable->item( i, 3 )->text();
     const QString layer2Str = mTestTable->item( i, 4 )->text();

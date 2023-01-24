@@ -75,14 +75,11 @@ void rulesDialog::setHorizontalHeaderItems()
 
 void rulesDialog::readTest( int index, QgsProject *project )
 {
-  QString testName;
-  QString layer1Id;
-  QString layer2Id;
   const QString postfix = QString::number( index );
-
-  testName = project->readEntry( QStringLiteral( "Topol" ), "/testname_" + postfix, QString() );
-  layer1Id = project->readEntry( QStringLiteral( "Topol" ), "/layer1_" + postfix, QString() );
-  layer2Id = project->readEntry( QStringLiteral( "Topol" ), "/layer2_" + postfix, QString() );
+  const bool testEnabled = project->readBoolEntry( QStringLiteral( "Topol" ), "/testenabled_" + postfix, true );
+  const QString testName = project->readEntry( QStringLiteral( "Topol" ), "/testname_" + postfix, QString() );
+  const QString layer1Id = project->readEntry( QStringLiteral( "Topol" ), "/layer1_" + postfix, QString() );
+  const QString layer2Id = project->readEntry( QStringLiteral( "Topol" ), "/layer2_" + postfix, QString() );
 
   QgsVectorLayer *l1 = nullptr;
   if ( !( QgsVectorLayer * )project->mapLayers().contains( layer1Id ) )
@@ -115,6 +112,7 @@ void rulesDialog::readTest( int index, QgsProject *project )
   QTableWidgetItem *newItem = nullptr;
   newItem = new QTableWidgetItem( testName );
   newItem->setFlags( newItem->flags() & ~Qt::ItemIsEditable );
+  newItem->setCheckState( testEnabled ? Qt::Checked : Qt::Unchecked );
   mRulesTable->setItem( row, 0, newItem );
 
   newItem = new QTableWidgetItem( layer1Name );
@@ -216,15 +214,14 @@ void rulesDialog::addRule()
 
   QTableWidgetItem *newItem = nullptr;
   newItem = new QTableWidgetItem( test );
+  newItem->setFlags( newItem->flags() & ~Qt::ItemIsEditable );
+  newItem->setCheckState( Qt::Checked );
   mRulesTable->setItem( row, 0, newItem );
   newItem = new QTableWidgetItem( layer1 );
+  newItem->setFlags( newItem->flags() & ~Qt::ItemIsEditable );
   mRulesTable->setItem( row, 1, newItem );
-
-  if ( mTestConfMap[test].useSecondLayer )
-    newItem = new QTableWidgetItem( layer2 );
-  else
-    newItem = new QTableWidgetItem( tr( "No layer" ) );
-
+  newItem = new QTableWidgetItem( mTestConfMap[test].useSecondLayer ? layer2 : tr( "No layer" ) );
+  newItem->setFlags( newItem->flags() & ~Qt::ItemIsEditable );
   mRulesTable->setItem( row, 2, newItem );
 
   QString layer1ID, layer2ID;
@@ -248,6 +245,7 @@ void rulesDialog::addRule()
   QgsProject *project = QgsProject::instance();
 
   project->writeEntry( QStringLiteral( "Topol" ), QStringLiteral( "/testCount" ), row + 1 );
+  project->writeEntry( QStringLiteral( "Topol" ), "/testenabled_" + postfix, true );
   project->writeEntry( QStringLiteral( "Topol" ), "/testname_" + postfix, test );
   project->writeEntry( QStringLiteral( "Topol" ), "/layer1_" + postfix, layer1ID );
   project->writeEntry( QStringLiteral( "Topol" ), "/layer2_" + postfix, layer2ID );
