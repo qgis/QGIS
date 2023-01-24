@@ -20,7 +20,8 @@
 #include "qgsvectorlayer.h"
 #include <qlogging.h>
 
-DockModel::DockModel( ErrorList &errorList, QObject *parent = nullptr ) : mErrorlist( errorList )
+DockModel::DockModel( ErrorList &errorList, QObject *parent = nullptr )
+  : mErrorlist( errorList )
 {
   Q_UNUSED( parent )
   mHeader << QObject::tr( "Error" ) << QObject::tr( "Layer" ) << QObject::tr( "Feature ID" );
@@ -131,4 +132,26 @@ void DockModel::reload( const QModelIndex &index1, const QModelIndex &index2 )
 
 {
   emit dataChanged( index1, index2 );
+}
+
+DockFilterModel::DockFilterModel( ErrorList &errorList, QObject *parent = nullptr )
+  : mDockModel( new DockModel( errorList, parent ) )
+{
+  setSourceModel( mDockModel );
+  setFilterKeyColumn( 0 );
+}
+
+DockFilterModel::~DockFilterModel()
+{
+  mDockModel->deleteLater();
+}
+
+void DockFilterModel::reload( const QModelIndex &index1, const QModelIndex &index2 )
+{
+  mDockModel->reload( index1, index2 );
+}
+
+void DockFilterModel::resetModel()
+{
+  mDockModel->resetModel();
 }

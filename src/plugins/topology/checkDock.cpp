@@ -36,6 +36,7 @@
 #include "qgisinterface.h"
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
+#include "qgsstringutils.h"
 
 #include "topolTest.h"
 #include "rulesDialog.h"
@@ -55,7 +56,8 @@ checkDock::checkDock( QgisInterface *qIface, QWidget *parent )
   mFixButton->hide();
   mFixBox->hide();
 
-  mErrorListModel = new DockModel( mErrorList, parent );
+  mErrorListModel = new DockFilterModel( mErrorList, parent );
+  mErrorListModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
   mErrorTableView->setModel( mErrorListModel );
   mErrorTableView->setSelectionBehavior( QAbstractItemView::SelectRows );
   mErrorTableView->verticalHeader()->setDefaultSectionSize( 20 );
@@ -95,6 +97,8 @@ checkDock::checkDock( QgisInterface *qIface, QWidget *parent )
   connect( qgsInterface, &QgisInterface::newProjectCreated, mConfigureDialog, &rulesDialog::clearRules );
   connect( qgsInterface, &QgisInterface::newProjectCreated, this, &checkDock::deleteErrors );
 
+  updateFilterComboBox();
+  connect( mFilterComboBox, &QComboBox::currentTextChanged, this, &checkDock::filterErrors );
 }
 
 checkDock::~checkDock()
@@ -128,6 +132,11 @@ void checkDock::clearVertexMarkers()
   }
 }
 
+void checkDock::filterErrors()
+{
+  mErrorListModel->setFilterFixedString( mFilterComboBox->currentIndex() > 0 ? mFilterComboBox->currentText() : QString() );
+}
+
 void checkDock::updateRubberBands( bool visible )
 {
   if ( !visible )
@@ -146,6 +155,9 @@ void checkDock::updateRubberBands( bool visible )
 void checkDock::deleteErrors()
 {
   qDeleteAll( mErrorList );
+
+  mErrorNames.clear();
+  updateFilterComboBox();
 
   mErrorList.clear();
   mErrorListModel->resetModel();
@@ -387,12 +399,33 @@ void checkDock::runTests( ValidateType type )
     }
     mErrorList << errors;
   }
+
+  for ( TopolError *error : mErrorList )
+  {
+    if ( !mErrorNames.contains( error->name() ) )
+    {
+      mErrorNames << error->name();
+    }
+  }
+  updateFilterComboBox();
+
   mToggleRubberband->setChecked( true );
   mErrorListModel->resetModel();
 }
 
+void checkDock::updateFilterComboBox()
+{
+  mFilterComboBox->clear();
+  mFilterComboBox->addItem( tr( "All Errors" ) );
+  for ( const QString &name : mErrorNames )
+  {
+    mFilterComboBox->addItem( QgsStringUtils::capitalize( name, Qgis::Capitalization::TitleCase ) );
+  }
+}
+
 void checkDock::validate( ValidateType type )
 {
+  mErrorNames.clear();
   mErrorList.clear();
 
   qDeleteAll( mRbErrorMarkers );
