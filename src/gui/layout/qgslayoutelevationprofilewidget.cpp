@@ -67,6 +67,19 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   connect( mLayerTree.get(), &QgsLayerTree::layerOrderChanged, this, &QgsLayoutElevationProfileWidget::updateItemLayers );
   connect( mLayerTree.get(), &QgsLayerTreeGroup::visibilityChanged, this, &QgsLayoutElevationProfileWidget::updateItemLayers );
 
+  mSpinTolerance->setClearValue( 0 );
+  connect( mSpinTolerance, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [ = ]( double value )
+  {
+    if ( !mProfile || mBlockChanges )
+      return;
+
+    mProfile->beginCommand( tr( "Change Profile Tolerance Distance" ), QgsLayoutItem::UndoElevationProfileTolerance );
+    mProfile->setTolerance( value );
+    mProfile->invalidateCache();
+    mProfile->update();
+    mProfile->endCommand();
+  } );
+
   mSpinMinDistance->setClearValue( 0 );
   connect( mSpinMinDistance, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [ = ]( double value )
   {
@@ -376,6 +389,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->endCommand();
   } );
 
+  registerDataDefinedButton( mDDBtnTolerance, QgsLayoutObject::ElevationProfileTolerance );
   registerDataDefinedButton( mDDBtnMinDistance, QgsLayoutObject::ElevationProfileMinimumDistance );
   registerDataDefinedButton( mDDBtnMaxDistance, QgsLayoutObject::ElevationProfileMaximumDistance );
   registerDataDefinedButton( mDDBtnMinElevation, QgsLayoutObject::ElevationProfileMinimumElevation );
@@ -462,7 +476,10 @@ void QgsLayoutElevationProfileWidget::copySettingsFromProfileCanvas( QgsElevatio
   mBlockChanges++;
 
   mProfile->setCrs( canvas->crs() );
+
+  mSpinTolerance->setValue( canvas->tolerance() );
   mProfile->setTolerance( canvas->tolerance() );
+
   if ( const QgsCurve *curve = canvas->profileCurve() )
     mProfile->setProfileCurve( curve->clone() );
 
@@ -557,6 +574,8 @@ void QgsLayoutElevationProfileWidget::setGuiElementValues()
 {
   mBlockChanges++;
 
+  mSpinTolerance->setValue( mProfile->tolerance() );
+
   mSpinMinDistance->setValue( mProfile->plot()->xMinimum() );
   mSpinMaxDistance->setValue( mProfile->plot()->xMaximum() );
   mSpinMinElevation->setValue( mProfile->plot()->yMinimum() );
@@ -599,6 +618,7 @@ void QgsLayoutElevationProfileWidget::setGuiElementValues()
   }
   mLayerTree->reorderGroupLayers( mProfile->layers() );
 
+  updateDataDefinedButton( mDDBtnTolerance );
   updateDataDefinedButton( mDDBtnMinDistance );
   updateDataDefinedButton( mDDBtnMaxDistance );
   updateDataDefinedButton( mDDBtnMinElevation );

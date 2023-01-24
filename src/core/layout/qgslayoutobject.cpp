@@ -15,15 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QPainter>
-
-#include "qgslayout.h"
-#include "qgslayoutrendercontext.h"
-#include "qgslayoutreportcontext.h"
 #include "qgslayoutobject.h"
-#include "qgsfeedback.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgslayout.h"
 
+#include <QPainter>
 
 QgsPropertiesDefinition QgsLayoutObject::sPropertyDefinitions;
 
@@ -113,6 +109,7 @@ void QgsLayoutObject::initPropertyDefinitions()
     { QgsLayoutObject::ScalebarHeight, QgsPropertyDefinition( "dataDefinedScalebarHeight", QObject::tr( "Scalebar height in mm" ), QgsPropertyDefinition::DoublePositive ) },
     { QgsLayoutObject::ScalebarSubdivisionHeight, QgsPropertyDefinition( "dataDefinedScalebarSubdivisionHeight", QObject::tr( "Subdivision height in mm" ), QgsPropertyDefinition::DoublePositive ) },
     { QgsLayoutObject::ScalebarRightSegmentSubdivisions, QgsPropertyDefinition( "dataDefinedScalebarRightSegmentSubdivisions", QObject::tr( "Number of subdivisions in segments to the right of 0" ), QgsPropertyDefinition::IntegerPositive ) },
+    { QgsLayoutObject::ElevationProfileTolerance, QgsPropertyDefinition( "dataDefinedElevationProfileTolerance", QObject::tr( "Tolerance" ), QgsPropertyDefinition::DoublePositive ) },
     { QgsLayoutObject::ElevationProfileDistanceMajorInterval, QgsPropertyDefinition( "dataDefinedElevationProfileDistanceMajorInterval", QObject::tr( "Major grid line interval for elevation axis" ), QgsPropertyDefinition::DoublePositive ) },
     { QgsLayoutObject::ElevationProfileDistanceMinorInterval, QgsPropertyDefinition( "dataDefinedElevationProfileDistanceMinorInterval", QObject::tr( "Minor grid line interval for elevation axis" ), QgsPropertyDefinition::DoublePositive ) },
     { QgsLayoutObject::ElevationProfileDistanceLabelInterval, QgsPropertyDefinition( "dataDefinedElevationProfileDistanceLabelInterval", QObject::tr( "Label interval for elevation axis" ), QgsPropertyDefinition::DoublePositive ) },
@@ -209,6 +206,7 @@ bool QgsLayoutObject::propertyAssociatesWithParentMultiframe( QgsLayoutObject::D
     case QgsLayoutObject::MapCrs:
     case QgsLayoutObject::StartDateTime:
     case QgsLayoutObject::EndDateTime:
+    case QgsLayoutObject::ElevationProfileTolerance:
     case QgsLayoutObject::ElevationProfileDistanceMajorInterval:
     case QgsLayoutObject::ElevationProfileDistanceMinorInterval:
     case QgsLayoutObject::ElevationProfileDistanceLabelInterval:

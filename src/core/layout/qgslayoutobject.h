@@ -224,6 +224,7 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
       MapCrs, //!< Map CRS
       StartDateTime, //!< Temporal range's start DateTime
       EndDateTime, //!< Temporal range's end DateTime
+      ElevationProfileTolerance, //!< Tolerance distance for elevation profiles (since QGIS 3.30)
       ElevationProfileDistanceMajorInterval, //!< Major grid line interval for elevation profile distance axis (since QGIS 3.30)
       ElevationProfileDistanceMinorInterval, //!< Minor grid line interval for elevation profile distance axis (since QGIS 3.30)
       ElevationProfileDistanceLabelInterval, //!< Label interval for elevation profile distance axis (since QGIS 3.30)

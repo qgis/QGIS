@@ -78,7 +78,7 @@
         <x>0</x>
         <y>0</y>
         <width>548</width>
-        <height>1267</height>
+        <height>1345</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -101,6 +101,39 @@
               <width>0</width>
               <height>250</height>
              </size>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QgsCollapsibleGroupBoxBasic" name="groupChartRanges_2">
+         <property name="title">
+          <string>Profile Settings</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_5" columnstretch="1,2,0">
+          <item row="0" column="1">
+           <widget class="QgsDoubleSpinBox" name="mSpinTolerance">
+            <property name="decimals">
+             <number>6</number>
+            </property>
+            <property name="maximum">
+             <double>999999999.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QgsPropertyOverrideButton" name="mDDBtnTolerance">
+            <property name="text">
+             <string>…</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_27">
+            <property name="text">
+             <string>Tolerance</string>
             </property>
            </widget>
           </item>

@@ -196,6 +196,7 @@ A base class for objects which belong to a layout.
       MapCrs,
       StartDateTime,
       EndDateTime,
+      ElevationProfileTolerance,
       ElevationProfileDistanceMajorInterval,
       ElevationProfileDistanceMinorInterval,
       ElevationProfileDistanceLabelInterval,
