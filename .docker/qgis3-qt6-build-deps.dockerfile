@@ -39,6 +39,7 @@ RUN dnf -y --refresh install \
     qt6-qtbase-devel \
     qt6-qtdeclarative-devel \
     qt6-qttools-static \
+    qt6-qtserialport \
     qt6-qtsvg-devel \
     qt6-qtpositioning-devel \
     qt6-qtdeclarative-devel \
