@@ -6,55 +6,51 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>398</width>
-    <height>68</height>
+    <width>172</width>
+    <height>82</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string notr="true"/>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout">
-   <item>
-    <spacer name="horizontalSpacer">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+  <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,1" columnstretch="0,1,0,0,0" columnminimumwidth="0,0,0,0,0">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="toolTip">
+      <string/>
      </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>40</width>
-       <height>20</height>
-      </size>
+     <property name="text">
+      <string>Altitude</string>
      </property>
-    </spacer>
+    </widget>
    </item>
-   <item>
+   <item row="0" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
       <string>Azimuth</string>
      </property>
     </widget>
    </item>
-   <item>
-    <widget class="QgsDoubleSpinBox" name="mAzimuthSpinBox">
-     <property name="toolTip">
-      <string>Azimuth is the horizontal angle from the north of the directional light.</string>
-     </property>
-     <property name="suffix">
-      <string notr="true">°</string>
-     </property>
-     <property name="decimals">
-      <number>1</number>
-     </property>
-     <property name="maximum">
-      <double>359.899999999999977</double>
-     </property>
-     <property name="value">
-      <double>315.000000000000000</double>
-     </property>
-    </widget>
-   </item>
-   <item>
+   <item row="0" column="2">
     <widget class="QDial" name="mDialAzimuth">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="maximum">
       <number>3599</number>
      </property>
@@ -78,17 +74,26 @@
      </property>
     </widget>
    </item>
-   <item>
-    <widget class="QLabel" name="label_2">
+   <item row="0" column="1">
+    <widget class="QgsDoubleSpinBox" name="mAzimuthSpinBox">
      <property name="toolTip">
-      <string/>
+      <string>Azimuth is the horizontal angle from the north of the directional light.</string>
      </property>
-     <property name="text">
-      <string>Altitude</string>
+     <property name="suffix">
+      <string notr="true">°</string>
+     </property>
+     <property name="decimals">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <double>359.899999999999977</double>
+     </property>
+     <property name="value">
+      <double>315.000000000000000</double>
      </property>
     </widget>
    </item>
-   <item>
+   <item row="1" column="1">
     <widget class="QgsDoubleSpinBox" name="mAltitudeSpinBox">
      <property name="toolTip">
       <string>Altitude is the vertical angle from the horizontal plan of the directional light.</string>
@@ -107,34 +112,28 @@
      </property>
     </widget>
    </item>
-   <item>
-    <widget class="QSlider" name="mAltitudeSlider">
-     <property name="maximum">
-      <number>900</number>
+   <item row="1" column="2">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="rightMargin">
+      <number>0</number>
      </property>
-     <property name="value">
-      <number>450</number>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="invertedControls">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <spacer name="horizontalSpacer_2">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>40</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
+     <item>
+      <widget class="QSlider" name="mAltitudeSlider">
+       <property name="maximum">
+        <number>900</number>
+       </property>
+       <property name="value">
+        <number>450</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="invertedControls">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

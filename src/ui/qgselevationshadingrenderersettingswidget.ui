@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>410</width>
-    <height>367</height>
+    <width>312</width>
+    <height>377</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -38,17 +38,10 @@
       <bool>true</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>Method to combine different sources</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QComboBox" name="mCombineMethodCombo"/>
-      </item>
-      <item row="3" column="0" colspan="2">
+      <property name="sizeConstraint">
+       <enum>QLayout::SetMinimumSize</enum>
+      </property>
+      <item row="4" column="0" colspan="2">
        <widget class="QgsCollapsibleGroupBox" name="mHillshadingGroupBox">
         <property name="title">
          <string>Hillshading</string>
@@ -56,7 +49,10 @@
         <property name="checkable">
          <bool>true</bool>
         </property>
-        <layout class="QGridLayout" name="gridLayout_6">
+        <layout class="QGridLayout" name="gridLayout_6" rowstretch="0,0,0">
+         <property name="sizeConstraint">
+          <enum>QLayout::SetMinimumSize</enum>
+         </property>
          <item row="0" column="0">
           <widget class="QLabel" name="mHillshadingZFactorLabel">
            <property name="text">
@@ -103,7 +99,24 @@
         </layout>
        </widget>
       </item>
-      <item row="2" column="0" colspan="2">
+      <item row="0" column="0" colspan="2">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Apply shading on the canvas following elevation of Point Cloud layers, Mesh layers and Raster layers if they represents elevation surface.</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Method to combine </string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" colspan="2">
        <widget class="QgsCollapsibleGroupBox" name="mEdlGroupBox">
         <property name="title">
          <string>Eye-Dome Lighting</string>
@@ -158,15 +171,8 @@
         </layout>
        </widget>
       </item>
-      <item row="0" column="0" colspan="2">
-       <widget class="QLabel" name="label_4">
-        <property name="text">
-         <string>Apply shading on the canvas following elevation of Point Cloud layers, Mesh layers and Raster layers if they represents elevation surface.</string>
-        </property>
-        <property name="wordWrap">
-         <bool>true</bool>
-        </property>
-       </widget>
+      <item row="1" column="1">
+       <widget class="QComboBox" name="mCombineMethodCombo"/>
       </item>
      </layout>
     </widget>
