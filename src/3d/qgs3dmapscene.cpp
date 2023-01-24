@@ -253,9 +253,9 @@ void Qgs3DMapScene::viewZoomFull()
   const QgsDoubleRange yRange = elevationRange();
   const QgsRectangle extent = sceneExtent();
   const double side = std::max( extent.width(), extent.height() );
-  double d = side / 2 / std::tan( qDegreesToRadians( cameraController()->camera()->fieldOfView() / 2 ) );
+  double d = side / 2 / std::tan( cameraController()->camera()->fieldOfView() / 2 * M_PI / 180 );
   d += yRange.upper();
-  mCameraController->resetView( ( float )d );
+  mCameraController->resetView( static_cast< float >( d ) );
   return;
 }
 
@@ -1231,8 +1231,8 @@ QgsDoubleRange Qgs3DMapScene::elevationRange() const
   if ( mMap.terrainRenderingEnabled() && mTerrain )
   {
     const QgsAABB bbox = mTerrain->rootNode()->bbox();
-    yMin = std::min( yMin, ( double )bbox.yMin );
-    yMax = std::max( yMax, ( double )bbox.yMax );
+    yMin = std::min( yMin, static_cast< double >( bbox.yMin ) );
+    yMax = std::max( yMax, static_cast< double >( bbox.yMax ) );
   }
 
   for ( auto it = mLayerEntities.constBegin(); it != mLayerEntities.constEnd(); it++ )
