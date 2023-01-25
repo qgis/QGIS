@@ -1427,6 +1427,16 @@ double QgsGdalProvider::sample( const QgsPointXY &point, int band, bool *ok, con
   const GDALDataType dataType {GDALGetRasterDataType( hBand )};
   switch ( dataType )
   {
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+    case GDT_Int8:
+    {
+      int8_t tempVal{0};
+      err = GDALRasterIO( hBand, GF_Read, col, row, 1, 1,
+                          &tempVal, 1, 1, dataType, 0, 0 );
+      value = static_cast<double>( tempVal );
+      break;
+    }
+#endif
     case GDT_Byte:
     {
       unsigned char tempVal{0};
@@ -3312,6 +3322,9 @@ void QgsGdalProvider::initBaseDataset()
         case GDT_Unknown:
         case GDT_TypeCount:
           break;
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+        case GDT_Int8:
+#endif
         case GDT_Byte:
         case GDT_UInt16:
         case GDT_Int16:
@@ -3335,6 +3348,12 @@ void QgsGdalProvider::initBaseDataset()
       }
     }
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+    if ( myGdalDataType == GDT_Int8 )
+    {
+      myGdalDataType = GDT_Int16;
+    }
+#endif
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,5,0)
     if ( myGdalDataType == GDT_Int64 || myGdalDataType == GDT_UInt64 )
     {
@@ -3410,6 +3429,10 @@ bool QgsGdalProvider::write( void *data, int band, int width, int height, int xO
     return false;
   }
   GDALDataType gdalDataType = GDALGetRasterDataType( rasterBand );
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+  if ( gdalDataType == GDT_Int8 )
+    gdalDataType = GDT_Int16;
+#endif
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,5,0)
   if ( gdalDataType == GDT_Int64 || gdalDataType == GDT_UInt64 )
     gdalDataType = GDT_Float64;
