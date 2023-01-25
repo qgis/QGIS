@@ -18,6 +18,7 @@
 #ifndef QGSSETTINGSREGISTRYAPP_H
 #define QGSSETTINGSREGISTRYAPP_H
 
+#include "qgis_app.h"
 #include "qgssettingsregistry.h"
 
 class QgsSettingsEntryBool;
