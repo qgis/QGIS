@@ -210,7 +210,7 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
     gpsdDevice = settings.value( QStringLiteral( "gpsdDevice" ), QVariant(), QgsSettings::Gps ).toString();
 
     acquisitionInterval = settings.value( QStringLiteral( "acquisitionInterval" ), 0, QgsSettings::Gps ).toInt();
-    distanceThreshold = settings.value( QStringLiteral( "distanceThreshold" ), 0, QgsSettings::Gps ).toDouble();
+    distanceThreshold = QgsGpsLogger::settingsDistanceThreshold->value();
 
     bearingFromTravelDirection = settings.value( QStringLiteral( "calculateBearingFromTravel" ), "false", QgsSettings::Gps ).toBool();
 
