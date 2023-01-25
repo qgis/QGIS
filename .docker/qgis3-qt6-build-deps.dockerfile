@@ -43,6 +43,7 @@ RUN dnf -y --refresh install \
     qt6-qtpositioning-devel \
     qt6-qtdeclarative-devel \
     qt6-qt5compat-devel \
+    qt6-qtmultimedia-devel \
     spatialindex-devel \
     sqlite-devel \
     unzip \

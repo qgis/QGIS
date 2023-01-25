@@ -37,6 +37,8 @@ RUN  apt-get update \
     libqt5concurrent5 \
     libqt5keychain1 \
     libqt5positioning5 \
+    libqt5multimedia5 \
+    libqt5multimediawidgets5 \
     libqt5qml5 \
     libqt5quick5 \
     libqt5quickcontrols2-5 \
@@ -68,6 +70,7 @@ RUN  apt-get update \
     python3-pyqt5.qtsvg \
     python3-pyqt5.qtwebkit \
     python3-pyqt5.qtpositioning \
+    python3-pyqt5.qtmultimedia \
     python3-sip \
     python3-termcolor \
     python3-yaml \
@@ -208,6 +211,7 @@ RUN  apt-get update \
     qtbase5-dev \
     qtdeclarative5-dev-tools \
     qtpositioning5-dev \
+    qtmultimedia5-dev \
     qttools5-dev \
     qttools5-dev-tools \
     qtbase5-private-dev \
