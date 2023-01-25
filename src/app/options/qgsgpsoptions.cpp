@@ -217,7 +217,7 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
     recenteringThreshold = settings.value( QStringLiteral( "mapExtentMultiplier" ), "50", QgsSettings::Gps ).toInt();
     rotateInterval = settings.value( QStringLiteral( "rotateMapInterval" ), 0, QgsSettings::Gps ).toInt();
 
-    applyLeapSeconds = settings.value( QStringLiteral( "applyLeapSeconds" ), true, QgsSettings::Gps ).toBool();
+    applyLeapSeconds = QgsGpsLogger::settingsApplyLeapSeconds->value();
     leapSeconds = QgsGpsLogger::settingsLeapSecondsCorrection->value();
 
     switch ( QgsGpsLogger::settingsTimeStampFormat->value() )
