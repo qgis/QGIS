@@ -46,7 +46,6 @@
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgssettingsentry.h"
-#include "qgssettingsregistrycore.h"
 #include "qgsapplication.h"
 #include "qgsguiutils.h"
 
@@ -329,17 +328,6 @@ QTreeWidgetItem *QgsSettingsTree::createItem( const QString &text,
 
   const QString completeSettingsPath = mSettings->group().isEmpty() ? text : mSettings->group() + '/' + text;
   item->setData( ColumnSettings, PathRole, completeSettingsPath );
-
-  // If settings registered add description
-  if ( !isGroup )
-  {
-    const QgsSettingsEntryBase *settingsEntry = QgsApplication::settingsRegistryCore()->settingsEntry( completeSettingsPath, true );
-    if ( settingsEntry )
-    {
-      item->setText( ColumnDescription, settingsEntry->description() );
-      item->setToolTip( ColumnDescription, settingsEntry->description() );
-    }
-  }
 
   const QString key = itemKey( item );
   QgsDebugMsgLevel( key, 4 );
