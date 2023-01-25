@@ -406,6 +406,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
   public:
 
+    static const QgsSettingsEntryDouble *settingsSimplifyMaxScale SIP_SKIP;
     static const QgsSettingsEntryDouble *settingsSimplifyDrawingTol SIP_SKIP;
     static const QgsSettingsEntryEnumFlag<QgsVectorSimplifyMethod::SimplifyAlgorithm> *settingsSimplifyAlgorithm SIP_SKIP;
     static const QgsSettingsEntryEnumFlag<QgsVectorSimplifyMethod::SimplifyHints> *settingsSimplifyDrawingHints SIP_SKIP;

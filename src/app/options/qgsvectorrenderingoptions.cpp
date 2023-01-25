@@ -20,6 +20,7 @@
 #include "qgssettingsregistrycore.h"
 #include "qgsguiutils.h"
 #include "qgsvectorsimplifymethod.h"
+#include "qgsvectorlayer.h"
 
 #include <QThread>
 //
@@ -59,7 +60,7 @@ QgsVectorRenderingOptionsWidget::QgsVectorRenderingOptionsWidget( QWidget *paren
   QStringList myScalesList = Qgis::defaultProjectScales().split( ',' );
   myScalesList.append( QStringLiteral( "1:1" ) );
   mSimplifyMaximumScaleComboBox->updateScales( myScalesList );
-  mSimplifyMaximumScaleComboBox->setScale( settings.value( QStringLiteral( "/qgis/simplifyMaxScale" ), 1 ).toFloat() );
+  mSimplifyMaximumScaleComboBox->setScale( QgsVectorLayer::settingsSimplifyMaxScale->value() );
 
   // Default local simplification algorithm
   mSimplifyAlgorithmComboBox->addItem( tr( "Distance" ), static_cast<int>( QgsVectorSimplifyMethod::Distance ) );
@@ -84,7 +85,7 @@ void QgsVectorRenderingOptionsWidget::apply()
   settings.setEnumValue( QStringLiteral( "/qgis/simplifyAlgorithm" ), ( QgsVectorSimplifyMethod::SimplifyHints )mSimplifyAlgorithmComboBox->currentData().toInt() );
   QgsVectorLayer::settingsSimplifyDrawingTol.setValue( mSimplifyDrawingSpinBox->value() );
   settings.setValue( QStringLiteral( "/qgis/simplifyLocal" ), !mSimplifyDrawingAtProvider->isChecked() );
-  settings.setValue( QStringLiteral( "/qgis/simplifyMaxScale" ), mSimplifyMaximumScaleComboBox->scale() );
+  QgsVectorLayer::settingsSimplifyMaxScale->setValue( mSimplifyMaximumScaleComboBox->scale() );
 
   //curve segmentation
   QgsAbstractGeometry::SegmentationToleranceType segmentationType = ( QgsAbstractGeometry::SegmentationToleranceType )mToleranceTypeComboBox->currentData().toInt();
