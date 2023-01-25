@@ -102,7 +102,7 @@
       <item row="0" column="0" colspan="2">
        <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>Apply shading on the canvas following elevation of Point Cloud layers, Mesh layers and Raster layers if they represents elevation surface.</string>
+         <string>Apply shading on the canvas following elevation of point cloud layers, mesh layers and raster layers if they represent elevation surface.</string>
         </property>
         <property name="wordWrap">
          <bool>true</bool>
