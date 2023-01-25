@@ -108,9 +108,11 @@
 #include <optional>
 
 #include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
 
-const QgsSettingsEntryEnumFlag<QgsVectorSimplifyMethod::SimplifyHint> *class QgsVectorLayerJoinInfo; ::settingsSimplifyDrawingHints = QgsSettingsEntryEnumFlag<QgsVectorSimplifyMethod::SimplifyHint>( QStringLiteral( "simplifyDrawingHints" ), QgsSettings::sTreeQgis, QgsVectorSimplifyMethod::SimplifyHint::NoSimplification );
-const QgsSettingsEntryEnumFlag<QgsVectorSimplifyMethod::SimplifyAlgorithm> *class QgsVectorLayerJoinInfo; ::settingsSimplifyAlgorithm = QgsSettingsEntryEnumFlag<QgsVectorSimplifyMethod::SimplifyAlgorithm>( QStringLiteral( "simplifyAlgorithm" ), QgsSettings::sTreeQgis, QgsVectorSimplifyMethod::SimplifyAlgorithm::Distance );
+const QgsSettingsEntryDouble *QgsVectorLayer::settingsSimplifyDrawingTol = new QgsSettingsEntryDouble( QStringLiteral( "simplifyDrawingTol" ), QgsSettings::sTreeQgis, Qgis::DEFAULT_MAPTOPIXEL_THRESHOLD );
+const QgsSettingsEntryEnumFlag<QgsVectorSimplifyMethod::SimplifyHints> *QgsVectorLayer::settingsSimplifyDrawingHints = new QgsSettingsEntryEnumFlag<QgsVectorSimplifyMethod::SimplifyHints>( QStringLiteral( "simplifyDrawingHints" ), QgsSettings::sTreeQgis, QgsVectorSimplifyMethod::SimplifyHint::NoSimplification );
+const QgsSettingsEntryEnumFlag<QgsVectorSimplifyMethod::SimplifyAlgorithm> *QgsVectorLayer::settingsSimplifyAlgorithm = new QgsSettingsEntryEnumFlag<QgsVectorSimplifyMethod::SimplifyAlgorithm>( QStringLiteral( "simplifyAlgorithm" ), QgsSettings::sTreeQgis, QgsVectorSimplifyMethod::SimplifyAlgorithm::Distance );
 
 
 #ifdef TESTPROVIDERLIB
@@ -231,9 +233,9 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
 
   // Default simplify drawing settings
   QgsSettings settings;
-  mSimplifyMethod.setSimplifyHints( QgsVectorLayer::settingsSimplifyDrawingHints.valueWithDefaultOverride( mSimplifyMethod.simplifyHints() ) );
-  mSimplifyMethod.setSimplifyAlgorithm( QgsVectorLayer::settingsSimplifyAlgorithm.valueWithDefaultOverride( mSimplifyMethod.simplifyAlgorithm() ) );
-  mSimplifyMethod.setThreshold( settings.value( QStringLiteral( "qgis/simplifyDrawingTol" ), mSimplifyMethod.threshold() ).toFloat() );
+  mSimplifyMethod.setSimplifyHints( QgsVectorLayer::settingsSimplifyDrawingHints->valueWithDefaultOverride( mSimplifyMethod.simplifyHints() ) );
+  mSimplifyMethod.setSimplifyAlgorithm( QgsVectorLayer::settingsSimplifyAlgorithm->valueWithDefaultOverride( mSimplifyMethod.simplifyAlgorithm() ) );
+  mSimplifyMethod.setThreshold( QgsVectorLayer::settingsSimplifyDrawingTol->valueWithDefaultOverride( mSimplifyMethod.threshold() ) );
   mSimplifyMethod.setForceLocalOptimization( settings.value( QStringLiteral( "qgis/simplifyLocal" ), mSimplifyMethod.forceLocalOptimization() ).toBool() );
   mSimplifyMethod.setMaximumScale( settings.value( QStringLiteral( "qgis/simplifyMaxScale" ), mSimplifyMethod.maximumScale() ).toFloat() );
 

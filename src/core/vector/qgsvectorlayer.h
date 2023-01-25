@@ -86,6 +86,8 @@ class QgsVectorLayerElevationProperties;
 template<class T>
 class QgsSettingsEntryEnumFlag<T>;
 #endif
+class QgsSettingsEntryDouble;
+
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
@@ -404,9 +406,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
   public:
 
+    static const QgsSettingsEntryDouble *settingsSimplifyDrawingTol SIP_SKIP;
     static const QgsSettingsEntryEnumFlag<QgsVectorSimplifyMethod::SimplifyAlgorithm> *settingsSimplifyAlgorithm SIP_SKIP;
-
-    static const QgsSettingsEntryEnumFlag<QgsVectorSimplifyMethod::SimplifyHint> *settingsSimplifyDrawingHints SIP_SKIP;
+    static const QgsSettingsEntryEnumFlag<QgsVectorSimplifyMethod::SimplifyHints> *settingsSimplifyDrawingHints SIP_SKIP;
 
     /**
      * Setting options for loading vector layers.

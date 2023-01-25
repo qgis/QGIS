@@ -35,7 +35,7 @@ QgsVectorRenderingOptionsWidget::QgsVectorRenderingOptionsWidget( QWidget *paren
 
   // Default simplify drawing configuration
   mSimplifyDrawingGroupBox->setChecked( settings.enumValue( QStringLiteral( "/qgis/simplifyDrawingHints" ), QgsVectorSimplifyMethod::GeometrySimplification ) != QgsVectorSimplifyMethod::NoSimplification );
-  mSimplifyDrawingSpinBox->setValue( settings.value( QStringLiteral( "/qgis/simplifyDrawingTol" ), Qgis::DEFAULT_MAPTOPIXEL_THRESHOLD ).toFloat() );
+  mSimplifyDrawingSpinBox->setValue( QgsVectorLayer::settingsSimplifyDrawingTol.value() );
   mSimplifyDrawingAtProvider->setChecked( !settings.value( QStringLiteral( "/qgis/simplifyLocal" ), true ).toBool() );
 
   //segmentation tolerance type
@@ -65,7 +65,7 @@ QgsVectorRenderingOptionsWidget::QgsVectorRenderingOptionsWidget( QWidget *paren
   mSimplifyAlgorithmComboBox->addItem( tr( "Distance" ), static_cast<int>( QgsVectorSimplifyMethod::Distance ) );
   mSimplifyAlgorithmComboBox->addItem( tr( "SnapToGrid" ), static_cast<int>( QgsVectorSimplifyMethod::SnapToGrid ) );
   mSimplifyAlgorithmComboBox->addItem( tr( "Visvalingam" ), static_cast<int>( QgsVectorSimplifyMethod::Visvalingam ) );
-  mSimplifyAlgorithmComboBox->setCurrentIndex( mSimplifyAlgorithmComboBox->findData( QgsVectorLayer::settingsSimplifyAlgorithm.valueWithDefaultOverride(mSimplifyMethod.simplifyAlgorithm()) ) );
+  mSimplifyAlgorithmComboBox->setCurrentIndex( mSimplifyAlgorithmComboBox->findData( QgsVectorLayer::settingsSimplifyAlgorithm.valueWithDefaultOverride( mSimplifyMethod.simplifyAlgorithm() ) ) );
 
 }
 
@@ -82,7 +82,7 @@ void QgsVectorRenderingOptionsWidget::apply()
   }
   settings.setEnumValue( QStringLiteral( "/qgis/simplifyDrawingHints" ), simplifyHints );
   settings.setEnumValue( QStringLiteral( "/qgis/simplifyAlgorithm" ), ( QgsVectorSimplifyMethod::SimplifyHints )mSimplifyAlgorithmComboBox->currentData().toInt() );
-  settings.setValue( QStringLiteral( "/qgis/simplifyDrawingTol" ), mSimplifyDrawingSpinBox->value() );
+  QgsVectorLayer::settingsSimplifyDrawingTol.setValue( mSimplifyDrawingSpinBox->value() );
   settings.setValue( QStringLiteral( "/qgis/simplifyLocal" ), !mSimplifyDrawingAtProvider->isChecked() );
   settings.setValue( QStringLiteral( "/qgis/simplifyMaxScale" ), mSimplifyMaximumScaleComboBox->scale() );
 
