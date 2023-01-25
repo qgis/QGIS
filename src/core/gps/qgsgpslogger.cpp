@@ -25,6 +25,8 @@
 
 #include "qgssettingsentryimpl.h"
 const QgsSettingsEntryDouble *QgsGpsLogger::settingsDistanceThreshold = new QgsSettingsEntryDouble( QStringLiteral( "distanceThreshold" ), QgsSettings::sTreeGps, 0 );
+const QgsSettingsEntryInteger *QgsGpsLogger::settingsAcquisitionInterval = new QgsSettingsEntryInteger( QStringLiteral( "acquisitionInterval" ), QgsSettings::sTreeGps, 0 );
+
 
 
 const QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponent> *QgsGpsLogger::settingsGpsMValueComponent = new QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponent>( QStringLiteral( "m-value-attribute" ), QgsSettings::sTreeGps, Qgis::GpsInformationComponent::Timestamp, QStringLiteral( "Which GPS attribute should be stored in geometry m values" ) ) SIP_SKIP;
@@ -229,7 +231,7 @@ void QgsGpsLogger::updateGpsSettings()
     // legacy settings
     QgsSettings settings;
 
-    acquisitionInterval = settings.value( QStringLiteral( "acquisitionInterval" ), 0, QgsSettings::Gps ).toInt();
+    acquisitionInterval = QgsGpsLogger::settingsAcquisitionInterval->value();
     mDistanceThreshold = QgsGpsLogger::settingsDistanceThreshold->value();
     mApplyLeapSettings = settings.value( QStringLiteral( "applyLeapSeconds" ), true, QgsSettings::Gps ).toBool();
     mLeapSeconds = settings.value( QStringLiteral( "leapSecondsCorrection" ), 18, QgsSettings::Gps ).toInt();
