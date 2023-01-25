@@ -25,7 +25,6 @@
 #include "qgsowsconnection.h"
 #include "qgsprocessing.h"
 #include "qgsvectortileconnection.h"
-#include "qgsgpslogger.h"
 #include "qgsgpsdetector.h"
 
 

@@ -32,16 +32,13 @@
 #include "info.h"
 
 class QgsSettingsEntryBool;
-
 class QgsSettingsEntryString;
-
 class QgsSettingsEntryInteger;
-
 class QgsSettingsEntryDouble;
-
 class QgsGpsConnection;
-class QTimer;
 class QgsGpsInformation;
+
+class QTimer;
 
 
 /**

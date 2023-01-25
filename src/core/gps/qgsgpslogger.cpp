@@ -24,15 +24,12 @@
 #include <QTimeZone>
 
 #include "qgssettingsentryimpl.h"
+
 const QgsSettingsEntryDouble *QgsGpsLogger::settingsDistanceThreshold = new QgsSettingsEntryDouble( QStringLiteral( "distanceThreshold" ), QgsSettings::sTreeGps, 0 );
 const QgsSettingsEntryBool *QgsGpsLogger::settingsApplyLeapSeconds = new QgsSettingsEntryBool( QStringLiteral( "applyLeapSeconds" ), QgsSettings::sTreeGps, true );
-
 const QgsSettingsEntryString *QgsGpsLogger::settingsTimestampTimeZone = new QgsSettingsEntryString( QStringLiteral( "timestampTimeZone" ), QgsSettings::sTreeGps, QString() );
-
 const QgsSettingsEntryInteger *QgsGpsLogger::settingsTimeStampFormat = new QgsSettingsEntryInteger( QStringLiteral( "timeStampFormat" ), QgsSettings::sTreeGps, Qt::LocalTime );
-
 const QgsSettingsEntryInteger *QgsGpsLogger::settingsLeapSecondsCorrection = new QgsSettingsEntryInteger( QStringLiteral( "leapSecondsCorrection" ), QgsSettings::sTreeGps, 18 );
-
 const QgsSettingsEntryInteger *QgsGpsLogger::settingsAcquisitionInterval = new QgsSettingsEntryInteger( QStringLiteral( "acquisitionInterval" ), QgsSettings::sTreeGps, 0 );
 
 
