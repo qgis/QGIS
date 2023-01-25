@@ -339,6 +339,8 @@ Provider to display vector data in a GRASS GIS layer.
 %End
   public:
 
+
+
     struct LayerOptions
     {
 

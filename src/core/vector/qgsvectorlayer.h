@@ -18,7 +18,6 @@
 #ifndef QGSVECTORLAYER_H
 #define QGSVECTORLAYER_H
 
-
 #include "qgis_core.h"
 #include <QMap>
 #include <QSet>
@@ -43,8 +42,6 @@
 #include "qgsexpressioncontextscopegenerator.h"
 #include "qgsexpressioncontext.h"
 #include "qgsabstractprofilesource.h"
-
-class QgsSettingsEntryEnumFlag;
 
 class QPainter;
 class QImage;
@@ -84,6 +81,11 @@ class QgsStyleEntityVisitorInterface;
 class QgsVectorLayerTemporalProperties;
 class QgsFeatureRendererGenerator;
 class QgsVectorLayerElevationProperties;
+
+#ifndef SIP_RUN
+template<class T>
+class QgsSettingsEntryEnumFlag<T>;
+#endif
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
