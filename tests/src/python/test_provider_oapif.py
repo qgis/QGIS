@@ -146,6 +146,7 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
 
         items = {
             "type": "FeatureCollection",
+            "numberMatched": 5,
             "features": [
                 {"type": "Feature", "id": "feat.1",
                  "properties": {"pk": 1, "cnt": 100, "name": "Orange", "name2": "oranGe", "num_char": "1", "dt": "2020-05-03 12:13:14", "date": "2020-05-03", "time": "12:13:14"},
@@ -164,6 +165,10 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
                  "geometry": {"type": "Point", "coordinates": [-71.123, 78.23]}}
             ]
         }
+
+        # limit 1 for getting count
+        with open(sanitize(endpoint, '/collections/mycollection/items?limit=1&' + ACCEPT_ITEMS), 'wb') as f:
+            f.write(json.dumps(items).encode('UTF-8'))
 
         # first items
         with open(sanitize(endpoint, '/collections/mycollection/items?limit=10&' + ACCEPT_ITEMS), 'wb') as f:

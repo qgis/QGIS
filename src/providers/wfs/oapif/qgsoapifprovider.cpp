@@ -214,28 +214,54 @@ QgsWkbTypes::Type QgsOapifProvider::wkbType() const
 
 long long QgsOapifProvider::featureCount() const
 {
-  if ( mUpdateFeatureCountAtNextFeatureCountRequest )
+  // If no filter is set use the fast way of retrieving the feature count
+  if ( mSubsetString.isEmpty() )
   {
-    mUpdateFeatureCountAtNextFeatureCountRequest = false;
+    QString url = mShared->mItemsUrl;
+    url += QStringLiteral( "?limit=1" );
+    url = mShared->appendExtraQueryParameters( url );
 
-    QgsFeature f;
-    QgsFeatureRequest request;
-    request.setNoAttributes();
-    auto iter = getFeatures( request );
-    long long count = 0;
-    bool countExact = true;
-    while ( iter.nextFeature( f ) )
+
+    if ( !mShared->mServerFilter.isEmpty() )
     {
-      if ( count == 1000 ) // to avoid too long processing time
-      {
-        countExact = false;
-        break;
-      }
-      count ++;
+      url += QStringLiteral( "&" );
+      url += mShared->mServerFilter;
     }
 
-    mShared->setFeatureCount( count, countExact );
+    QgsOapifItemsRequest itemsRequest( mShared->mURI.uri(), url );
+    if ( !itemsRequest.request( true, false ) )
+      return -1;
+    if ( itemsRequest.errorCode() != QgsBaseNetworkRequest::NoError )
+      return -1;
+
+    mShared->setFeatureCount( itemsRequest.numberMatched(), true );
   }
+  else // Otherwise the slow way until server side filtering is implemented
+  {
+    if ( mUpdateFeatureCountAtNextFeatureCountRequest )
+    {
+      mUpdateFeatureCountAtNextFeatureCountRequest = false;
+
+      QgsFeature f;
+      QgsFeatureRequest request;
+      request.setNoAttributes();
+      auto iter = getFeatures( request );
+      long long count = 0;
+      bool countExact = true;
+      while ( iter.nextFeature( f ) )
+      {
+        if ( count == 1000 ) // to avoid too long processing time
+        {
+          countExact = false;
+          break;
+        }
+        count ++;
+      }
+
+      mShared->setFeatureCount( count, countExact );
+    }
+  }
+
   return mShared->getFeatureCount();
 }
 
