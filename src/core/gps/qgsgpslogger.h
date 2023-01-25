@@ -31,6 +31,8 @@
 #include <QDateTime>
 #include "info.h"
 
+class QgsSettingsEntryString;
+
 class QgsSettingsEntryInteger;
 
 class QgsSettingsEntryDouble;
@@ -55,6 +57,8 @@ class CORE_EXPORT QgsGpsLogger : public QObject
     Q_OBJECT
 
   public:
+
+    static const QgsSettingsEntryString *settingsTimestampTimeZone SIP_SKIP;
 
     static const QgsSettingsEntryInteger *settingsTimeStampFormat SIP_SKIP;
 

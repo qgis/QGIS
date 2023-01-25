@@ -234,7 +234,7 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
         timeSpec = Qt::TimeSpec::TimeZone;
         break;
     }
-    timeZone = settings.value( QStringLiteral( "timestampTimeZone" ), QVariant(), QgsSettings::Gps ).toString();
+    timeZone = QgsGpsLogger::settingsTimestampTimeZone->value();
   }
 
   mOffsetFromUtc->setValue( offsetFromUtc );
