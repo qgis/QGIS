@@ -402,6 +402,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
   public:
 
+    static const QgsSettingsEntryEnumFlag<QgsVectorSimplifyMethod::SimplifyAlgorithm> *settingsSimplifyAlgorithm SIP_SKIP;
+
     static const QgsSettingsEntryEnumFlag<QgsVectorSimplifyMethod::SimplifyHint> *settingsSimplifyDrawingHints SIP_SKIP;
 
     /**
