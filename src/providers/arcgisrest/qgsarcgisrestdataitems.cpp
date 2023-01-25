@@ -19,6 +19,7 @@
 #include "qgsarcgisrestquery.h"
 #include "qgsarcgisportalutils.h"
 #include "qgsdataprovider.h"
+#include "qgsafsprovider.h"
 
 #ifdef HAVE_GUI
 #include "qgsarcgisrestsourceselect.h"
@@ -28,7 +29,6 @@
 #include <QCoreApplication>
 #include <QSettings>
 #include <QUrl>
-#include "qgssettings.h"
 
 
 //
@@ -188,10 +188,8 @@ QgsArcGisRestConnectionItem::QgsArcGisRestConnectionItem( QgsDataItem *parent, c
   mIconName = QStringLiteral( "mIconConnect.svg" );
   mCapabilities |= Qgis::BrowserItemCapability::Collapse;
 
-  const QgsSettings settings;
-  const QString key = QStringLiteral( "qgis/connections-arcgisfeatureserver/" ) + mConnName;
-  mPortalContentEndpoint = settings.value( key + "/content_endpoint" ).toString();
-  mPortalCommunityEndpoint = settings.value( key + "/community_endpoint" ).toString();
+  mPortalContentEndpoint = QgsArcGisConnectionSettings::settingsContentEndpoint->value( connectionName );
+  mPortalCommunityEndpoint = QgsArcGisConnectionSettings::settingsCommunityEndpoint->value( connectionName );
 }
 
 QVector<QgsDataItem *> QgsArcGisRestConnectionItem::createChildren()
@@ -627,38 +625,6 @@ bool QgsArcGisRestParentLayerItem::equal( const QgsDataItem *other )
 
 QgsArcGisRestDataItemProvider::QgsArcGisRestDataItemProvider()
 {
-  // migrate legacy map services by moving them to feature server group
-
-  QgsSettings settings;
-  settings.beginGroup( QStringLiteral( "qgis/connections-arcgismapserver" ) );
-  const QStringList legacyServices = settings.childGroups();
-  settings.endGroup();
-  settings.beginGroup( QStringLiteral( "qgis/connections-arcgisfeatureserver" ) );
-  QStringList existingServices = settings.childGroups();
-  settings.endGroup();
-  for ( const QString &legacyService : legacyServices )
-  {
-    QString newName = legacyService;
-    int i = 1;
-    while ( existingServices.contains( newName ) )
-    {
-      i ++;
-      newName = QStringLiteral( "%1 (%2)" ).arg( legacyService ).arg( i );
-    }
-
-    settings.beginGroup( QStringLiteral( "qgis/connections-arcgismapserver/%1" ).arg( legacyService ) );
-    const QStringList keys = settings.childKeys();
-    settings.endGroup();
-    for ( const QString &key : keys )
-    {
-      const QString oldKey = QStringLiteral( "qgis/connections-arcgismapserver/%1/%2" ).arg( legacyService, key );
-      const QString newKey = QStringLiteral( "qgis/connections-arcgisfeatureserver/%1/%2" ).arg( newName, key );
-      settings.setValue( newKey, settings.value( oldKey ) );
-    }
-
-    settings.remove( QStringLiteral( "qgis/connections-arcgismapserver/%1" ).arg( legacyService ) );
-    existingServices.append( newName );
-  }
 }
 
 QString QgsArcGisRestDataItemProvider::name()

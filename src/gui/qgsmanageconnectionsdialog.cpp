@@ -140,10 +140,8 @@ void QgsManageConnectionsDialog::doExportImport()
         doc = saveXyzTilesConnections( items );
         break;
       case ArcgisMapServer:
-        doc = saveArcgisConnections( items, QStringLiteral( "ARCGISMAPSERVER" ) );
-        break;
       case ArcgisFeatureServer:
-        doc = saveArcgisConnections( items, QStringLiteral( "ARCGISFEATURESERVER" ) );
+        doc = saveArcgisConnections( items );
         break;
       case VectorTile:
         doc = saveVectorTileConnections( items );
@@ -274,10 +272,8 @@ bool QgsManageConnectionsDialog::populateConnections()
         connections = QgsXyzConnectionSettings::sTreeXyzConnections->items();
         break;
       case ArcgisMapServer:
-        settings.beginGroup( QStringLiteral( "/qgis/connections-arcgismapserver" ) );
-        break;
       case ArcgisFeatureServer:
-        settings.beginGroup( QStringLiteral( "/qgis/connections-arcgisfeatureserver" ) );
+        connections = QgsArcGisConnectionSettings::sTreeConnectionArcgis->items();
         break;
       case VectorTile:
         connections = QgsVectorTileProviderConnection::sTreeConnectionVectorTile->items();
@@ -734,29 +730,26 @@ QDomDocument QgsManageConnectionsDialog::saveXyzTilesConnections( const QStringL
   return doc;
 }
 
-QDomDocument QgsManageConnectionsDialog::saveArcgisConnections( const QStringList &connections, const QString &service )
+QDomDocument QgsManageConnectionsDialog::saveArcgisConnections( const QStringList &connections )
 {
   QDomDocument doc( QStringLiteral( "connections" ) );
-  QDomElement root = doc.createElement( "qgs" + service.toUpper() + "Connections" );
+  QDomElement root = doc.createElement( "qgsARCGISFEATURESERVERConnections" );
   root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
   doc.appendChild( root );
 
-  const QgsSettings settings;
-  QString path;
-  for ( int i = 0; i < connections.count(); ++i )
+  for ( const QString &connection : connections )
   {
-    path = "/qgis/connections-" + service.toLower() + '/';
-    QDomElement el = doc.createElement( service.toLower() );
-    el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
-    el.setAttribute( QStringLiteral( "url" ), settings.value( path + connections[ i ] + "/url" ).toString() );
+    QDomElement el = doc.createElement( QStringLiteral( "arcgisfeatureserver" ) );
+    el.setAttribute( QStringLiteral( "name" ), connection );
+    el.setAttribute( QStringLiteral( "url" ), QgsArcGisConnectionSettings::settingsUrl->value( connection ) );
 
-    QgsHttpHeaders httpHeader( path + connections[ i ] );
+    QgsHttpHeaders httpHeader( QgsArcGisConnectionSettings::settingsHeaders->value( connection ) );
     httpHeader.updateDomElement( el );
 
-    path = "/qgis/" + service.toUpper() + '/';
-    el.setAttribute( QStringLiteral( "username" ), settings.value( path + connections[ i ] + "/username" ).toString() );
-    el.setAttribute( QStringLiteral( "password" ), settings.value( path + connections[ i ] + "/password" ).toString() );
-    el.setAttribute( QStringLiteral( "authcfg" ), settings.value( path + connections[ i ] + "/authcfg" ).toString() );
+    el.setAttribute( QStringLiteral( "username" ), QgsArcGisConnectionSettings::settingsUsername->value( connection ) );
+    el.setAttribute( QStringLiteral( "password" ), QgsArcGisConnectionSettings::settingsPassword->value( connection ) );
+    el.setAttribute( QStringLiteral( "authcfg" ), QgsArcGisConnectionSettings::settingsAuthcfg->value( connection ) );
+
     root.appendChild( el );
   }
 
@@ -1526,10 +1519,7 @@ void QgsManageConnectionsDialog::loadArcgisConnections( const QDomDocument &doc,
   }
 
   QString connectionName;
-  QgsSettings settings;
-  settings.beginGroup( "/qgis/connections-" + service.toLower() );
-  QStringList keys = settings.childGroups();
-  settings.endGroup();
+  QStringList keys  = QgsArcGisConnectionSettings::sTreeConnectionArcgis->items();
   QDomElement child = root.firstChildElement();
   bool prompt = true;
   bool overwrite = true;
@@ -1587,21 +1577,14 @@ void QgsManageConnectionsDialog::loadArcgisConnections( const QDomDocument &doc,
     }
 
     // no dups detected or overwrite is allowed
-    settings.beginGroup( "/qgis/connections-" + service.toLower() );
-    settings.setValue( QString( '/' + connectionName + "/url" ), child.attribute( QStringLiteral( "url" ) ) );
+    QgsArcGisConnectionSettings::settingsUrl->setValue( child.attribute( QStringLiteral( "url" ) ), connectionName );
 
-    QgsHttpHeaders httpHeader( child );
-    Q_NOWARN_DEPRECATED_PUSH
-    httpHeader.updateSettings( settings, QString( '/' + connectionName ) );
-    Q_NOWARN_DEPRECATED_POP
+    QgsArcGisConnectionSettings::settingsHeaders->setValue( QgsHttpHeaders( child ).headers(), connectionName );
 
-    settings.endGroup();
 
-    settings.beginGroup( "/qgis/" + service.toUpper() + '/' + connectionName );
-    settings.setValue( QStringLiteral( "/username" ), child.attribute( QStringLiteral( "username" ) ) );
-    settings.setValue( QStringLiteral( "/password" ), child.attribute( QStringLiteral( "password" ) ) );
-    settings.setValue( QStringLiteral( "/authcfg" ), child.attribute( QStringLiteral( "authcfg" ) ) );
-    settings.endGroup();
+    QgsArcGisConnectionSettings::settingsUsername->setValue( child.attribute( QStringLiteral( "username" ) ), connectionName );
+    QgsArcGisConnectionSettings::settingsPassword->setValue( child.attribute( QStringLiteral( "password" ) ), connectionName );
+    QgsArcGisConnectionSettings::settingsAuthcfg->setValue( child.attribute( QStringLiteral( "authcfg" ) ), connectionName );
 
     child = child.nextSiblingElement();
   }

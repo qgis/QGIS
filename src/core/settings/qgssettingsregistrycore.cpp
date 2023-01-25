@@ -237,6 +237,33 @@ void QgsSettingsRegistryCore::migrateOldSettings()
     }
   }
 
+  // arcgis - added in 3.30
+  {
+    // arcgismapserver entries are not used anymore (even in 3.28, only arcgisfeature server is used)
+    const QStringList serviceKeys = {QStringLiteral( "qgis/connections-arcgisfeatureserver" ), QStringLiteral( "qgis/connections-arcgismapserver" )};
+    QgsSettings settings;
+    for ( const QString &serviceKey : serviceKeys )
+    {
+      settings.beginGroup( serviceKey );
+      const QStringList connections = settings.childGroups();
+      for ( const QString &connection : connections )
+      {
+        QgsArcGisConnectionSettings::settingsUrl->copyValueFromKey( QStringLiteral( "qgis/connections-arcgisfeatureserver/%1/url" ), {connection}, true );
+        QgsArcGisConnectionSettings::settingsAuthcfg->copyValueFromKey( QStringLiteral( "qgis/ARCGISFEATURESERVER/%1/authcfg" ), {connection}, true );
+        QgsArcGisConnectionSettings::settingsUsername->copyValueFromKey( QStringLiteral( "qgis/ARCGISFEATURESERVER/%1/username" ), {connection}, true );
+        QgsArcGisConnectionSettings::settingsPassword->copyValueFromKey( QStringLiteral( "qgis/ARCGISFEATURESERVER/%1/password" ), {connection}, true );
+        QgsArcGisConnectionSettings::settingsContentEndpoint->copyValueFromKey( QStringLiteral( "qgis/connections-arcgisfeatureserver/%1/content_endpoint" ), {connection}, true );
+        QgsArcGisConnectionSettings::settingsCommunityEndpoint->copyValueFromKey( QStringLiteral( "qgis/connections-arcgisfeatureserver/%1/community_endpoint" ), {connection}, true );
+        Q_NOWARN_DEPRECATED_PUSH
+        settings.beginGroup( connection );
+        QgsArcGisConnectionSettings::settingsHeaders->setValue( QgsHttpHeaders( settings ).headers(), connection );
+        settings.endGroup();
+        Q_NOWARN_DEPRECATED_POP
+      }
+      settings.remove( serviceKey );
+    }
+  }
+
   // babel devices settings - added in 3.30
   {
     if ( QgsBabelFormatRegistry::sTreeBabelDevices->items().count() == 0 )
@@ -381,6 +408,30 @@ void QgsSettingsRegistryCore::backwardCompatibility()
       settings.beginGroup( connection );
       if ( QgsXyzConnectionSettings::settingsHeaders->exists( connection ) )
         QgsHttpHeaders( QgsXyzConnectionSettings::settingsHeaders->value( connection ) ).updateSettings( settings );
+      settings.endGroup();
+      Q_NOWARN_DEPRECATED_POP
+    }
+  }
+
+  // Arcgis - added in 3.30
+  {
+    QgsSettings settings;
+    settings.beginGroup( QStringLiteral( "qgis/connections-arcgisfeatureserver" ) );
+
+    const QStringList connections = QgsArcGisConnectionSettings::sTreeConnectionArcgis->items();
+    for ( const QString &connection : connections )
+    {
+      // do not overwrite already set setting
+      QgsArcGisConnectionSettings::settingsUrl->copyValueToKey( QStringLiteral( "qgis/connections-arcgisfeatureserver/%1/url" ), {connection} );
+      QgsArcGisConnectionSettings::settingsAuthcfg->copyValueToKey( QStringLiteral( "qgis/ARCGISFEATURESERVER/%1/authcfg" ), {connection} );
+      QgsArcGisConnectionSettings::settingsUsername->copyValueToKey( QStringLiteral( "qgis/ARCGISFEATURESERVER/%1/username" ), {connection} );
+      QgsArcGisConnectionSettings::settingsPassword->copyValueToKey( QStringLiteral( "qgis/ARCGISFEATURESERVER/%1/password" ), {connection} );
+      QgsArcGisConnectionSettings::settingsContentEndpoint->copyValueToKey( QStringLiteral( "qgis/connections-arcgisfeatureserver/%1/content_endpoint" ), {connection} );
+      QgsArcGisConnectionSettings::settingsCommunityEndpoint->copyValueToKey( QStringLiteral( "qgis/connections-arcgisfeatureserver/%1/community_endpoint" ), {connection} );
+      Q_NOWARN_DEPRECATED_PUSH
+      settings.beginGroup( connection );
+      if ( QgsArcGisConnectionSettings::settingsHeaders->exists( connection ) )
+        QgsHttpHeaders( QgsArcGisConnectionSettings::settingsHeaders->value( connection ) ).updateSettings( settings );
       settings.endGroup();
       Q_NOWARN_DEPRECATED_POP
     }
