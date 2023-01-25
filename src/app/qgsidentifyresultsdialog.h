@@ -18,6 +18,7 @@
 #ifndef QGSIDENTIFYRESULTSDIALOG_H
 #define QGSIDENTIFYRESULTSDIALOG_H
 
+#include "qgis_app.h"
 #include "ui_qgsidentifyresultsbase.h"
 #include "qgshelp.h"
 #include "qgsfeature.h"
@@ -34,9 +35,9 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QUrl>
-#include "qgis_app.h"
 
 class QCloseEvent;
+class QToolButton;
 class QTreeWidgetItem;
 class QAction;
 class QMenu;
