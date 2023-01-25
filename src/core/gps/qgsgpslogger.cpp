@@ -25,6 +25,8 @@
 
 #include "qgssettingsentryimpl.h"
 const QgsSettingsEntryDouble *QgsGpsLogger::settingsDistanceThreshold = new QgsSettingsEntryDouble( QStringLiteral( "distanceThreshold" ), QgsSettings::sTreeGps, 0 );
+const QgsSettingsEntryInteger *QgsGpsLogger::settingsTimeStampFormat = new QgsSettingsEntryInteger( QStringLiteral( "timeStampFormat" ), QgsSettings::sTreeGps, Qt::LocalTime );
+
 const QgsSettingsEntryInteger *QgsGpsLogger::settingsLeapSecondsCorrection = new QgsSettingsEntryInteger( QStringLiteral( "leapSecondsCorrection" ), QgsSettings::sTreeGps, 18 );
 
 const QgsSettingsEntryInteger *QgsGpsLogger::settingsAcquisitionInterval = new QgsSettingsEntryInteger( QStringLiteral( "acquisitionInterval" ), QgsSettings::sTreeGps, 0 );
@@ -238,7 +240,7 @@ void QgsGpsLogger::updateGpsSettings()
     mApplyLeapSettings = settings.value( QStringLiteral( "applyLeapSeconds" ), true, QgsSettings::Gps ).toBool();
     mLeapSeconds = QgsGpsLogger::settingsLeapSecondsCorrection->value();
 
-    switch ( settings.value( QStringLiteral( "timeStampFormat" ), Qt::LocalTime, QgsSettings::Gps ).toInt() )
+    switch ( QgsGpsLogger::settingsTimeStampFormat->value() )
     {
       case 0:
         mTimeStampSpec = Qt::TimeSpec::LocalTime;

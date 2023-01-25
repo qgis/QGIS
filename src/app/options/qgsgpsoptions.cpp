@@ -220,7 +220,7 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
     applyLeapSeconds = settings.value( QStringLiteral( "applyLeapSeconds" ), true, QgsSettings::Gps ).toBool();
     leapSeconds = QgsGpsLogger::settingsLeapSecondsCorrection->value();
 
-    switch ( settings.value( QStringLiteral( "timeStampFormat" ), Qt::LocalTime, QgsSettings::Gps ).toInt() )
+    switch ( QgsGpsLogger::settingsTimeStampFormat->value() )
     {
       case 0:
         timeSpec = Qt::TimeSpec::LocalTime;

@@ -56,6 +56,8 @@ class CORE_EXPORT QgsGpsLogger : public QObject
 
   public:
 
+    static const QgsSettingsEntryInteger *settingsTimeStampFormat SIP_SKIP;
+
     static const QgsSettingsEntryInteger *settingsLeapSecondsCorrection SIP_SKIP;
 
     static const QgsSettingsEntryInteger *settingsAcquisitionInterval SIP_SKIP;
