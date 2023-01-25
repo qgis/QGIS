@@ -144,7 +144,6 @@ class QgsNominatimGeocoder;
 class QgsDataSourceManagerDialog;
 class QgsBrowserGuiModel;
 class QgsBrowserModel;
-class QgsGeoCmsProviderRegistry;
 class QgsLayoutCustomDropHandler;
 class QgsProxyProgressTask;
 class QgsNetworkRequestParameters;

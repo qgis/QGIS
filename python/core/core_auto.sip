@@ -314,8 +314,6 @@
 %Include auto_generated/fieldformatter/qgsrelationreferencefieldformatter.sip
 %Include auto_generated/fieldformatter/qgsvaluemapfieldformatter.sip
 %Include auto_generated/fieldformatter/qgsvaluerelationfieldformatter.sip
-%Include auto_generated/geocms/geonode/qgsgeonodeconnection.sip
-%Include auto_generated/geocms/geonode/qgsgeonoderequest.sip
 %Include auto_generated/geocoding/qgsabstractgeocoderlocatorfilter.sip
 %Include auto_generated/geocoding/qgsgeocoder.sip
 %Include auto_generated/geocoding/qgsgeocodercontext.sip

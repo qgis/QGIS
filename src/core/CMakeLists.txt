@@ -852,9 +852,6 @@ set(QGIS_CORE_SRCS
   fieldformatter/qgsvaluemapfieldformatter.cpp
   fieldformatter/qgsvaluerelationfieldformatter.cpp
 
-  geocms/geonode/qgsgeonodeconnection.cpp
-  geocms/geonode/qgsgeonoderequest.cpp
-
   settings/qgssettings.cpp
   settings/qgssettingsentry.cpp
   settings/qgssettingsentrygroup.cpp
@@ -1363,9 +1360,6 @@ set(QGIS_CORE_HDRS
   fieldformatter/qgsrelationreferencefieldformatter.h
   fieldformatter/qgsvaluemapfieldformatter.h
   fieldformatter/qgsvaluerelationfieldformatter.h
-
-  geocms/geonode/qgsgeonodeconnection.h
-  geocms/geonode/qgsgeonoderequest.h
 
   geocoding/qgsabstractgeocoderlocatorfilter.h
   geocoding/qgsgeocoder.h
@@ -2189,8 +2183,6 @@ target_include_directories(qgis_core PUBLIC
   externalstorage
   fieldformatter
   geometry
-  geocms
-  geocms/geonode
   geocoding
   gps
   labeling
