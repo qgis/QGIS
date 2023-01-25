@@ -309,8 +309,8 @@ void QgsMeshStreamField::updateSize( const QgsRenderContext &renderContext )
 
   QgsRectangle fieldInterestZoneInDeviceCoordinates = QgsMeshLayerUtils::boundingBoxToScreenRectangle( deviceMapToPixel, interestZoneExtent );
   mFieldTopLeftInDeviceCoordinates =
-    QPoint( static_cast<int>( fieldInterestZoneInDeviceCoordinates.xMinimum() + 0.5 ),
-            static_cast<int>( fieldInterestZoneInDeviceCoordinates.yMinimum() + 0.5 ) );
+    QPoint( static_cast<int>( std::round( fieldInterestZoneInDeviceCoordinates.xMinimum() ) ),
+            static_cast<int>( std::round( fieldInterestZoneInDeviceCoordinates.yMinimum() ) ) );
   int fieldWidthInDeviceCoordinate = int( fieldInterestZoneInDeviceCoordinates.width() );
   int fieldHeightInDeviceCoordinate = int ( fieldInterestZoneInDeviceCoordinates.height() );
 
@@ -346,7 +346,8 @@ void QgsMeshStreamField::updateSize( const QgsRenderContext &renderContext )
 
   double mapUnitPerFieldPixel;
   if ( interestZoneExtent.width() > 0 )
-    mapUnitPerFieldPixel = deviceMapToPixel.mapUnitsPerPixel() * mFieldResolution * mFieldSize.width() / ( fieldWidthInDeviceCoordinate / mFieldResolution ) ;
+    mapUnitPerFieldPixel = deviceMapToPixel.mapUnitsPerPixel() * mFieldResolution * mFieldSize.width() /
+                           ( fieldWidthInDeviceCoordinate / static_cast<double>( mFieldResolution ) ) ;
   else
     mapUnitPerFieldPixel = 1e-8;
 
@@ -471,7 +472,7 @@ void QgsMeshStreamField::addTrace( QPoint startPixel )
   FieldData data;
   data.time = 1;
 
-  while ( mRenderContext.feedback() && !mRenderContext.feedback()->isCanceled() )
+  while ( true )
   {
     QgsPointXY mapPosition = positionToMapCoordinates( currentPixel, QgsPointXY( x1, y1 ) );
     vector = mVectorValueInterpolator->vectorValue( mapPosition ) ;
@@ -592,7 +593,7 @@ void QgsMeshStreamField::addTrace( QPoint startPixel )
       double dy = y2 - y1;
       double dl = sqrt( dx * dx + dy * dy );
 
-      data.time += dl / Vu ; //adimensional time step : this the time needed to go to the border of the pixel
+      data.time += static_cast<float>( dl / Vu ) ; //adimensional time step : this the time needed to go to the border of the pixel
       if ( data.time > 10000 ) //Guard to prevent that the particle never leave the pixel
       {
         addPixelToChunkTrace( currentPixel, data, chunkTrace );
@@ -617,6 +618,12 @@ void QgsMeshStreamField::addTrace( QPoint startPixel )
       setChunkTrace( chunkTrace );
       break;
     }
+
+    if ( mRenderContext.feedback() && mRenderContext.feedback()->isCanceled() )
+      break;
+
+    if ( mRenderContext.renderingStopped() )
+      break;
   }
 
   drawTrace( startPixel );
@@ -655,7 +662,7 @@ bool QgsMeshStreamField::addPixelToChunkTrace( QPoint &pixel,
 void QgsMeshStreamlinesField::initField()
 {
   mField = QVector<bool>( mFieldSize.width() * mFieldSize.height(), false );
-  mDirectionField = QVector<char>( mFieldSize.width() * mFieldSize.height(), static_cast<char>( int( 0 ) ) );
+  mDirectionField = QVector<unsigned char>( mFieldSize.width() * mFieldSize.height(), static_cast<unsigned char>( int( 0 ) ) );
   initImage();
 }
 
@@ -716,16 +723,16 @@ void QgsMeshStreamField::clearChunkTrace( std::list<QPair<QPoint, QgsMeshStreamF
   chunkTrace.erase( chunkTrace.begin(), one_before_end );
 }
 
-void QgsMeshStreamField::simplifyChunkTrace( std::list<QPair<QPoint, FieldData> > &shunkTrace )
+void QgsMeshStreamField::simplifyChunkTrace( std::list<QPair<QPoint, FieldData> > &chunkTrace )
 {
-  if ( shunkTrace.size() != 3 )
+  if ( chunkTrace.size() != 3 )
     return;
 
-  auto ip3 = shunkTrace.begin();
+  auto ip3 = chunkTrace.begin();
   auto ip1 = ip3++;
   auto ip2 = ip3++;
 
-  while ( ip3 != shunkTrace.end() && ip2 != shunkTrace.end() )
+  while ( ip3 != chunkTrace.end() && ip2 != chunkTrace.end() )
   {
     QPoint v1 = ( *ip1 ).first - ( *ip2 ).first;
     QPoint v2 = ( *ip2 ).first - ( *ip3 ).first;
@@ -735,7 +742,7 @@ void QgsMeshStreamField::simplifyChunkTrace( std::list<QPair<QPoint, FieldData> 
       ( *ip3 ).second.time += ( ( *ip2 ).second.time ) / 2;
       ( *ip1 ).second.directionX += ( *ip2 ).second.directionX;
       ( *ip1 ).second.directionY += ( *ip2 ).second.directionY;
-      shunkTrace.erase( ip2 );
+      chunkTrace.erase( ip2 );
     }
     ip1 = ip3++;
     ip2 = ip3++;
@@ -807,7 +814,7 @@ void QgsMeshStreamlinesField::storeInField( const QPair<QPoint, FieldData> pixel
   {
     mField[j * mFieldSize.width() + i] = true;
     int d = pixelData.second.directionX + 2 + ( pixelData.second.directionY + 1 ) * 3;
-    mDirectionField[j * mFieldSize.width() + i] = static_cast<char>( d );
+    mDirectionField[j * mFieldSize.width() + i] = static_cast<unsigned char>( d );
   }
 }
 
@@ -834,8 +841,8 @@ void QgsMeshStreamlinesField::drawTrace( const QPoint &start ) const
   QPoint curPt = pt1;
   int fieldWidth = mFieldSize.width();
   QSet<QgsPointXY> path;
-  char dir = 0;
-  char prevDir = mDirectionField.at( pt1.y() * fieldWidth  + pt1.x() );
+  unsigned char dir = 0;
+  unsigned char prevDir = mDirectionField.at( pt1.y() * fieldWidth  + pt1.x() );
 
   QVector<double> xPoly;
   QVector<double> yPoly;
@@ -1192,7 +1199,8 @@ void QgsMeshParticleTracesField::moveParticles()
     else
     {
       p.remainingTime = spentTime - mTimeStep;
-      while ( int( p.tail.size() ) > mMinTailLength && p.tail.size() > countAdded * mTailFactor )
+      while ( static_cast<int>( p.tail.size() )  >  mMinTailLength &&
+              static_cast<double>( p.tail.size() ) > ( static_cast<double>( countAdded ) * mTailFactor ) )
         p.tail.erase( p.tail.begin() );
       drawParticleTrace( p );
     }
@@ -1243,15 +1251,15 @@ void QgsMeshParticleTracesField::storeInField( const QPair<QPoint, QgsMeshStream
   {
     mTimeField[j * mFieldSize.width() + i] = pixelData.second.time;
     int d = pixelData.second.directionX + 2 + ( pixelData.second.directionY + 1 ) * 3;
-    mDirectionField[j * mFieldSize.width() + i] = static_cast<char>( d );
-    mMagnitudeField[j * mFieldSize.width() + i] = pixelData.second.magnitude;
+    mDirectionField[j * mFieldSize.width() + i] = static_cast<unsigned char>( d );
+    mMagnitudeField[j * mFieldSize.width() + i] = static_cast<float>( pixelData.second.magnitude );
   }
 }
 
 void QgsMeshParticleTracesField::initField()
 {
   mTimeField = QVector<float>( mFieldSize.width() * mFieldSize.height(), -1 );
-  mDirectionField = QVector<char>( mFieldSize.width() * mFieldSize.height(), static_cast<char>( int( 0 ) ) );
+  mDirectionField = QVector<unsigned char>( mFieldSize.width() * mFieldSize.height(), static_cast<unsigned char>( int( 0 ) ) );
   mMagnitudeField = QVector<float>( mFieldSize.width() * mFieldSize.height(), 0 );
   initImage();
   mStumpImage = QImage( mFieldSize * mFieldResolution, QImage::Format_ARGB32 );
@@ -1398,7 +1406,7 @@ void QgsMeshParticleTracesField::drawParticleTrace( const QgsMeshTraceParticle &
 
   double dw;
   if ( pixelCount > 1 )
-    dw = ( static_cast<double>( iniWidth ) ) / ( pixelCount );
+    dw = iniWidth   / static_cast<double>( pixelCount );
   else
     dw = 0;
 
@@ -1596,7 +1604,7 @@ QgsMeshVectorTraceAnimationGenerator &QgsMeshVectorTraceAnimationGenerator::oper
 
 void QgsMeshVectorTraceAnimationGenerator::updateFieldParameter()
 {
-  double fieldTimeStep = mVpixMax / mFPS;
+  double fieldTimeStep = mVpixMax / static_cast<double>( mFPS );
   double fieldLifeTime = mParticleLifeTime * mFPS * fieldTimeStep;
   mParticleField->setTimeStep( fieldTimeStep );
   mParticleField->setParticlesLifeTime( fieldLifeTime );

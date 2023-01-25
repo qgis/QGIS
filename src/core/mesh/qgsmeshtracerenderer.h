@@ -318,7 +318,7 @@ class QgsMeshStreamField
      *     and the direction is defined by :
      *     d=incX + 2 + (incY+1)*3
      */
-    QVector<char> mDirectionField;
+    QVector<unsigned char> mDirectionField;
     QgsRenderContext mRenderContext;
 
   private:
