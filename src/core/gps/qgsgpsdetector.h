@@ -18,6 +18,8 @@
 #ifndef QGSGPSDETECTOR_H
 #define QGSGPSDETECTOR_H
 
+#include "qgsconfig.h"
+
 #include <QObject>
 #include <QList>
 #include <QPair>
