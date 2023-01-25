@@ -44,6 +44,8 @@
 #include "qgsexpressioncontext.h"
 #include "qgsabstractprofilesource.h"
 
+class QgsSettingsEntryEnumFlag;
+
 class QPainter;
 class QImage;
 
@@ -399,6 +401,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     Q_PROPERTY( bool supportsEditing READ supportsEditing NOTIFY supportsEditingChanged )
 
   public:
+
+    static const QgsSettingsEntryEnumFlag<QgsVectorSimplifyMethod::SimplifyHint> *settingsSimplifyDrawingHints SIP_SKIP;
 
     /**
      * Setting options for loading vector layers.
