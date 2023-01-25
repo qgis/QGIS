@@ -90,6 +90,7 @@ The development version
       {
       UnknownDataType,
       Byte,
+      Int8,
       UInt16,
       Int16,
       UInt32,

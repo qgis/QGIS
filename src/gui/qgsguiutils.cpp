@@ -304,6 +304,7 @@ namespace QgsGuiUtils
       case Qgis::DataType::Int32:
       case Qgis::DataType::UInt32:
       case Qgis::DataType::Byte:
+      case Qgis::DataType::Int8:
       case Qgis::DataType::CInt16:
       case Qgis::DataType::CInt32:
       case Qgis::DataType::ARGB32:

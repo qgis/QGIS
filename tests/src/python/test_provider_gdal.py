@@ -285,7 +285,7 @@ class PyQgsGdalProvider(unittest.TestCase):
 
         raster_layer = QgsRasterLayer(tmpfile, 'test')
         self.assertTrue(raster_layer.isValid())
-        self.assertEqual(raster_layer.dataProvider().dataType(1), Qgis.Int16)
+        self.assertEqual(raster_layer.dataProvider().dataType(1), Qgis.Int8)
 
         extent = raster_layer.extent()
         block = raster_layer.dataProvider().block(1, extent, 2, 2)

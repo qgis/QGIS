@@ -749,6 +749,7 @@ QString QgsColorRampShaderWidget::createLabel( QTreeWidgetItem *currentItem, int
     Qgis::DataType dataType { mRasterDataProvider ? mRasterDataProvider->dataType( mBand ) : Qgis::DataType::Float64 };
     switch ( dataType )
     {
+      case Qgis::DataType::Int8:
       case Qgis::DataType::Int16:
       case Qgis::DataType::UInt16:
       case Qgis::DataType::Int32:

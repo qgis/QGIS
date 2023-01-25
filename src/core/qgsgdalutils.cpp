@@ -460,6 +460,13 @@ GDALDataType QgsGdalUtils::gdalDataTypeFromQgisDataType( Qgis::DataType dataType
     case Qgis::DataType::Byte:
       return GDALDataType::GDT_Byte;
       break;
+    case Qgis::DataType::Int8:
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+      return GDALDataType::GDT_Int8;
+#else
+      return GDALDataType::GDT_Unknown;
+#endif
+      break;
     case Qgis::DataType::UInt16:
       return GDALDataType::GDT_UInt16;
       break;

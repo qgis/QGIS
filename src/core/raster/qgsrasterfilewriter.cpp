@@ -923,6 +923,7 @@ void QgsRasterFileWriter::createVRT( int xSize, int ySize, const QgsCoordinateRe
 
   QMap<Qgis::DataType, QString> dataTypes;
   dataTypes.insert( Qgis::DataType::Byte, QStringLiteral( "Byte" ) );
+  dataTypes.insert( Qgis::DataType::Int8, QStringLiteral( "Int8" ) );
   dataTypes.insert( Qgis::DataType::UInt16, QStringLiteral( "UInt16" ) );
   dataTypes.insert( Qgis::DataType::Int16, QStringLiteral( "Int16" ) );
   dataTypes.insert( Qgis::DataType::UInt32, QStringLiteral( "Int32" ) );

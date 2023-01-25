@@ -99,6 +99,7 @@ QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer *lyr, QWidget
       cboHistoBand->addItem( mRasterLayer->bandName( myIteratorInt ) );
       const Qgis::DataType mySrcDataType = mRasterLayer->dataProvider()->sourceDataType( myIteratorInt );
       if ( !( mySrcDataType == Qgis::DataType::Byte ||
+              mySrcDataType == Qgis::DataType::Int8 ||
               mySrcDataType == Qgis::DataType::Int16 || mySrcDataType == Qgis::DataType::Int32 ||
               mySrcDataType == Qgis::DataType::UInt16 || mySrcDataType == Qgis::DataType::UInt32 ) )
         isInt = false;
