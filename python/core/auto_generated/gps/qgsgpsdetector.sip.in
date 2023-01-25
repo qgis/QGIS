@@ -12,6 +12,7 @@
 
 
 
+
 class QgsGpsDetector : QObject
 {
 %Docstring(signature="appended")
