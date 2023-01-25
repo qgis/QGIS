@@ -218,7 +218,7 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
     rotateInterval = settings.value( QStringLiteral( "rotateMapInterval" ), 0, QgsSettings::Gps ).toInt();
 
     applyLeapSeconds = settings.value( QStringLiteral( "applyLeapSeconds" ), true, QgsSettings::Gps ).toBool();
-    leapSeconds = settings.value( QStringLiteral( "leapSecondsCorrection" ), 18, QgsSettings::Gps ).toInt();
+    leapSeconds = QgsGpsLogger::settingsLeapSecondsCorrection->value();
 
     switch ( settings.value( QStringLiteral( "timeStampFormat" ), Qt::LocalTime, QgsSettings::Gps ).toInt() )
     {
