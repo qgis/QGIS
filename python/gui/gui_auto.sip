@@ -138,6 +138,7 @@
 %Include auto_generated/qgsmaptoolidentifyfeature.sip
 %Include auto_generated/qgsmaptoolpan.sip
 %Include auto_generated/qgsmaptoolzoom.sip
+%Include auto_generated/qgsmediawidget.sip
 %Include auto_generated/qgsmenuheader.sip
 %Include auto_generated/qgsmessagebar.sip
 %Include auto_generated/qgsmessagebaritem.sip

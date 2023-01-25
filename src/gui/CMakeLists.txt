@@ -592,6 +592,7 @@ set(QGIS_GUI_SRCS
   qgsmaptoolzoom.cpp
   qgsmaplayerconfigwidget.cpp
   qgsmaterialsettingswidget.cpp
+  qgsmediawidget.cpp
   qgsmenuheader.cpp
   qgsmessagebar.cpp
   qgsmessagebaritem.cpp
@@ -857,6 +858,7 @@ set(QGIS_GUI_HDRS
   qgsmaptoolzoom.h
   qgsmaskingwidget.h
   qgsmaterialsettingswidget.h
+  qgsmediawidget.h
   qgsmenuheader.h
   qgsmessagebar.h
   qgsmessagebaritem.h
@@ -1406,7 +1408,7 @@ set(QGIS_GUI_PRIVATE_HDRS
   attributetable/qgsfeaturefilterwidget_p.h
 )
 
-find_package(${QT_VERSION_BASE} COMPONENTS Qml QuickWidgets UiTools REQUIRED)
+find_package(${QT_VERSION_BASE} COMPONENTS Multimedia MultimediaWidgets Qml QuickWidgets UiTools REQUIRED)
 
 if(${QT_VERSION_BASE}Qml_FOUND)
   add_definitions(-DWITH_QML)
@@ -1688,6 +1690,8 @@ target_link_libraries(qgis_gui
   ${QWT_LIBRARY}
   ${QSCINTILLA_LIBRARY}
   ${QT_VERSION_BASE}::QuickWidgets
+  ${QT_VERSION_BASE}::Multimedia
+  ${QT_VERSION_BASE}::MultimediaWidgets
 )
 
 if (BUILD_WITH_QT6)
