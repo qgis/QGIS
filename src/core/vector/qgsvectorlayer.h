@@ -84,9 +84,10 @@ class QgsVectorLayerElevationProperties;
 
 #ifndef SIP_RUN
 template<class T>
-class QgsSettingsEntryEnumFlag<T>;
+class QgsSettingsEntryEnumFlag;
 #endif
 class QgsSettingsEntryDouble;
+class QgsSettingsEntryBool;
 
 
 typedef QList<int> QgsAttributeList;
@@ -405,6 +406,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     Q_PROPERTY( bool supportsEditing READ supportsEditing NOTIFY supportsEditingChanged )
 
   public:
+
+    static const QgsSettingsEntryBool *settingsSimplifyLocal SIP_SKIP;
 
     static const QgsSettingsEntryDouble *settingsSimplifyMaxScale SIP_SKIP;
     static const QgsSettingsEntryDouble *settingsSimplifyDrawingTol SIP_SKIP;

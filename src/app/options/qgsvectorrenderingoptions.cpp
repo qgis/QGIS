@@ -36,8 +36,8 @@ QgsVectorRenderingOptionsWidget::QgsVectorRenderingOptionsWidget( QWidget *paren
 
   // Default simplify drawing configuration
   mSimplifyDrawingGroupBox->setChecked( settings.enumValue( QStringLiteral( "/qgis/simplifyDrawingHints" ), QgsVectorSimplifyMethod::GeometrySimplification ) != QgsVectorSimplifyMethod::NoSimplification );
-  mSimplifyDrawingSpinBox->setValue( QgsVectorLayer::settingsSimplifyDrawingTol.value() );
-  mSimplifyDrawingAtProvider->setChecked( !settings.value( QStringLiteral( "/qgis/simplifyLocal" ), true ).toBool() );
+  mSimplifyDrawingSpinBox->setValue( QgsVectorLayer::settingsSimplifyDrawingTol->value() );
+  mSimplifyDrawingAtProvider->setChecked( !QgsVectorLayer::settingsSimplifyLocal->value() );
 
   //segmentation tolerance type
   mToleranceTypeComboBox->addItem( tr( "Maximum Angle" ), QgsAbstractGeometry::MaximumAngle );
@@ -84,7 +84,7 @@ void QgsVectorRenderingOptionsWidget::apply()
   settings.setEnumValue( QStringLiteral( "/qgis/simplifyDrawingHints" ), simplifyHints );
   settings.setEnumValue( QStringLiteral( "/qgis/simplifyAlgorithm" ), ( QgsVectorSimplifyMethod::SimplifyHints )mSimplifyAlgorithmComboBox->currentData().toInt() );
   QgsVectorLayer::settingsSimplifyDrawingTol.setValue( mSimplifyDrawingSpinBox->value() );
-  settings.setValue( QStringLiteral( "/qgis/simplifyLocal" ), !mSimplifyDrawingAtProvider->isChecked() );
+  QgsVectorLayer::settingsSimplifyLocal->setValue( !mSimplifyDrawingAtProvider->isChecked() );
   QgsVectorLayer::settingsSimplifyMaxScale->setValue( mSimplifyMaximumScaleComboBox->scale() );
 
   //curve segmentation
