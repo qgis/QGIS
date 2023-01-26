@@ -93,7 +93,7 @@ QgsMediaWidget::QgsMediaWidget( QWidget *parent )
   } );
   connect( mPositionSlider, &QAbstractSlider::sliderReleased, this, [ = ]()
   {
-    mMediaPlayer.setPosition( static_cast<qint64>( mPositionSlider->value() * 1000 ) );
+    mMediaPlayer.setPosition( static_cast<qint64>( mPositionSlider->value() ) * 1000 );
   } );
 }
 
