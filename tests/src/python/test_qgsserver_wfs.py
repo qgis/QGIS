@@ -615,6 +615,13 @@ class TestQgsServerWFS(QgsServerTestBase):
         self.wfs_request_compare("DescribeFeatureType", '1.1.0', "TYPENAME=does_not_exist&",
                                  'wfs_describeFeatureType_1_1_0_typename_wrong', project_file=project_file)
 
+    def test_describeFeatureTypeGeoJson(self):
+        """Test DescribeFeatureType with GeoJSON format with TYPENAME filters
+        """
+        project_file = "test_project_wms_grouped_layers.qgs"
+        self.wfs_request_compare("DescribeFeatureType", '1.1.0', "TYPENAME=as_areas&OUTPUTFORMAT=GEOJSON",
+                                 'wfs_describeFeatureType_1_1_0_typename_as_areas_geojson', project_file=project_file)
+
     def test_GetFeature_with_cdata(self):
         """ Test GetFeature with CDATA."""
         self.wfs_request_compare(
