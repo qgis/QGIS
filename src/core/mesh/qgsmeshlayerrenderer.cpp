@@ -236,6 +236,7 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
     mVectorDatasetMagMaximum = cache->mVectorDatasetMagMaximum;
     mVectorDatasetGroupMagMinimum = cache->mVectorDatasetMagMinimum;
     mVectorDatasetGroupMagMaximum = cache->mVectorDatasetMagMaximum;
+    mVectorActiveFaceFlagValues = cache->mVectorActiveFaceFlagValues;
     mVectorDataType = cache->mVectorDataType;
     return;
   }
@@ -269,6 +270,9 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
       else
         mVectorDatasetValuesMag = QVector<double>( count, std::numeric_limits<double>::quiet_NaN() );
 
+      // populate face active flag
+      mVectorActiveFaceFlagValues = layer->areFacesActive( datasetIndex, 0, mNativeMesh.faces.count() );
+
       const QgsMeshDatasetMetadata datasetMetadata = layer->datasetMetadata( datasetIndex );
       mVectorDatasetMagMinimum = datasetMetadata.minimum();
       mVectorDatasetMagMaximum = datasetMetadata.maximum();
@@ -284,6 +288,7 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
   cache->mVectorDatasetMagMaximum = mVectorDatasetMagMaximum;
   cache->mVectorDatasetGroupMagMinimum = mVectorDatasetMagMinimum;
   cache->mVectorDatasetGroupMagMaximum = mVectorDatasetMagMaximum;
+  cache->mVectorActiveFaceFlagValues = mVectorActiveFaceFlagValues;
   cache->mVectorDataType = mVectorDataType;
   cache->mVectorAveragingMethod.reset( mRendererSettings.averagingMethod() ? mRendererSettings.averagingMethod()->clone() : nullptr );
 }
@@ -585,7 +590,7 @@ void QgsMeshLayerRenderer::renderVectorDataset()
   std::unique_ptr<QgsMeshVectorRenderer> renderer( QgsMeshVectorRenderer::makeVectorRenderer(
         mTriangularMesh,
         mVectorDatasetValues,
-        mScalarActiveFaceFlagValues,
+        mVectorActiveFaceFlagValues,
         mVectorDatasetValuesMag,
         mVectorDatasetMagMaximum,
         mVectorDatasetMagMinimum,
@@ -593,6 +598,7 @@ void QgsMeshLayerRenderer::renderVectorDataset()
         mRendererSettings.vectorSettings( groupIndex ),
         *renderContext(),
         mLayerExtent,
+        mFeedback.get(),
         mOutputSize ) );
 
   if ( renderer )
