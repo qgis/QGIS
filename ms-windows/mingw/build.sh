@@ -81,6 +81,7 @@ mkdir -p "$BUILDDIR"
     -DUSE_CCACHE=ON \
     -DCMAKE_BUILD_TYPE=$buildtype \
     -DNATIVE_CRSSYNC_BIN="$CRSSYNC_BIN" \
+    -DNATIVE_Python_EXECUTABLE=python3 \
     -DBUILD_TESTING=OFF \
     -DENABLE_TESTS=OFF \
     -DQGIS_BIN_SUBDIR=bin \
