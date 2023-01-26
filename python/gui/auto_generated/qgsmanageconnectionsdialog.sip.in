@@ -31,7 +31,6 @@ class QgsManageConnectionsDialog : QDialog
       WCS,
       Oracle,
       HANA,
-      GeoNode,
       XyzTiles,
       ArcgisMapServer,
       ArcgisFeatureServer,

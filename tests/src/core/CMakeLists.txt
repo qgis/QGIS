@@ -70,7 +70,6 @@ set(TESTS
  testqgsgdalutils.cpp
  testqgsgenericspatialindex.cpp
  testqgsgeometryimport.cpp
- testqgsgeonodeconnection.cpp
  testqgsgeopdfexport.cpp
  testqgsgml.cpp
  testqgsgradients.cpp

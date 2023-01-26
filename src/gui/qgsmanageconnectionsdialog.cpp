@@ -133,9 +133,6 @@ void QgsManageConnectionsDialog::doExportImport()
       case HANA:
         doc = saveHanaConnections( items );
         break;
-      case GeoNode:
-        doc = saveGeonodeConnections( items );
-        break;
       case XyzTiles:
         doc = saveXyzTilesConnections( items );
         break;
@@ -213,9 +210,6 @@ void QgsManageConnectionsDialog::doExportImport()
       case HANA:
         loadHanaConnections( doc, items );
         break;
-      case GeoNode:
-        loadGeonodeConnections( doc, items );
-        break;
       case XyzTiles:
         loadXyzTilesConnections( doc, items );
         break;
@@ -266,9 +260,6 @@ bool QgsManageConnectionsDialog::populateConnections()
         break;
       case HANA:
         settings.beginGroup( QStringLiteral( "/HANA/connections" ) );
-        break;
-      case GeoNode:
-        connections = QgsOwsConnection::sTreeOwsConnections->items( {QStringLiteral( "geonode" )} );
         break;
       case XyzTiles:
         connections = QgsXyzConnectionSettings::sTreeXyzConnections->items();
@@ -385,14 +376,6 @@ bool QgsManageConnectionsDialog::populateConnections()
         {
           QMessageBox::warning( this, tr( "Loading Connections" ),
                                 tr( "The file is not a HANA connections exchange file." ) );
-          return false;
-        }
-        break;
-      case GeoNode:
-        if ( root.tagName() != QLatin1String( "qgsGeoNodeConnections" ) )
-        {
-          QMessageBox::information( this, tr( "Loading Connections" ),
-                                    tr( "The file is not a GeoNode connections exchange file." ) );
           return false;
         }
         break;
@@ -678,26 +661,6 @@ QDomDocument QgsManageConnectionsDialog::saveHanaConnections( const QStringList 
     el.setAttribute( QStringLiteral( "sslValidateCertificate" ), settings.value( path + "/sslValidateCertificate", QStringLiteral( "false" ) ).toString() );
     el.setAttribute( QStringLiteral( "sslHostNameInCertificate" ), settings.value( path + "/sslHostNameInCertificate", QString() ).toString() );
 
-    root.appendChild( el );
-  }
-
-  return doc;
-}
-
-QDomDocument QgsManageConnectionsDialog::saveGeonodeConnections( const QStringList &connections )
-{
-  QDomDocument doc( QStringLiteral( "connections" ) );
-  QDomElement root = doc.createElement( QStringLiteral( "qgsGeoNodeConnections" ) );
-  root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
-  doc.appendChild( root );
-
-  for ( int i = 0; i < connections.count(); ++i )
-  {
-    QDomElement el = doc.createElement( QStringLiteral( "geonode" ) );
-    el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
-    el.setAttribute( QStringLiteral( "url" ), QgsOwsConnection::settingsUrl->value( {QStringLiteral( "geonode" ), connections[i] } ) );
-    el.setAttribute( QStringLiteral( "username" ), QgsOwsConnection::settingsUsername->value( {QStringLiteral( "geonode" ), connections[i] } ) );
-    el.setAttribute( QStringLiteral( "password" ), QgsOwsConnection::settingsPassword->value( {QStringLiteral( "geonode" ), connections[i] } ) );
     root.appendChild( el );
   }
 
@@ -1347,86 +1310,6 @@ void QgsManageConnectionsDialog::loadHanaConnections( const QDomDocument &doc, c
 
     settings.endGroup();
 
-    child = child.nextSiblingElement();
-  }
-}
-
-void QgsManageConnectionsDialog::loadGeonodeConnections( const QDomDocument &doc, const QStringList &items )
-{
-  const QDomElement root = doc.documentElement();
-  if ( root.tagName() != QLatin1String( "qgsGeoNodeConnections" ) )
-  {
-    QMessageBox::information( this, tr( "Loading Connections" ),
-                              tr( "The file is not a GeoNode connections exchange file." ) );
-    return;
-  }
-
-  QString connectionName;
-  QStringList keys = QgsOwsConnection::sTreeOwsConnections->items( {QStringLiteral( "geonode" )} );
-  QDomElement child = root.firstChildElement();
-  bool prompt = true;
-  bool overwrite = true;
-
-  while ( !child.isNull() )
-  {
-    connectionName = child.attribute( QStringLiteral( "name" ) );
-    if ( !items.contains( connectionName ) )
-    {
-      child = child.nextSiblingElement();
-      continue;
-    }
-
-    // check for duplicates
-    if ( keys.contains( connectionName ) && prompt )
-    {
-      const int res = QMessageBox::warning( this,
-                                            tr( "Loading Connections" ),
-                                            tr( "Connection with name '%1' already exists. Overwrite?" )
-                                            .arg( connectionName ),
-                                            QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
-
-      switch ( res )
-      {
-        case QMessageBox::Cancel:
-          return;
-        case QMessageBox::No:
-          child = child.nextSiblingElement();
-          continue;
-        case QMessageBox::Yes:
-          overwrite = true;
-          break;
-        case QMessageBox::YesToAll:
-          prompt = false;
-          overwrite = true;
-          break;
-        case QMessageBox::NoToAll:
-          prompt = false;
-          overwrite = false;
-          break;
-      }
-    }
-
-    if ( keys.contains( connectionName ) )
-    {
-      if ( !overwrite )
-      {
-        child = child.nextSiblingElement();
-        continue;
-      }
-    }
-    else
-    {
-      keys << connectionName;
-    }
-
-    // no dups detected or overwrite is allowed
-    QgsOwsConnection::settingsUrl->setValue( child.attribute( QStringLiteral( "url" ) ), {QStringLiteral( "geonode" ), connectionName} );
-
-    if ( !child.attribute( QStringLiteral( "username" ) ).isEmpty() )
-    {
-      QgsOwsConnection::settingsUsername->setValue( child.attribute( QStringLiteral( "username" ) ), {QStringLiteral( "geonode" ), connectionName} );
-      QgsOwsConnection::settingsPassword->setValue( child.attribute( QStringLiteral( "password" ) ), {QStringLiteral( "geonode" ), connectionName} );
-    }
     child = child.nextSiblingElement();
   }
 }

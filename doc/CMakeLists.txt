@@ -65,8 +65,6 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/expression
       ${CMAKE_SOURCE_DIR}/src/core/externalstorage
       ${CMAKE_SOURCE_DIR}/src/core/fieldformatter
-      ${CMAKE_SOURCE_DIR}/src/core/geocms
-      ${CMAKE_SOURCE_DIR}/src/core/geocms/geonode
       ${CMAKE_SOURCE_DIR}/src/core/geocoding
       ${CMAKE_SOURCE_DIR}/src/core/geometry
       ${CMAKE_SOURCE_DIR}/src/core/gps

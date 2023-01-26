@@ -11,7 +11,6 @@ usr/lib/qgis/plugins/libauthmethod_pkipaths.so
 usr/lib/qgis/plugins/libprovider_arcgisfeatureserver.so
 usr/lib/qgis/plugins/libprovider_arcgismapserver.so
 usr/lib/qgis/plugins/libprovider_delimitedtext.so
-usr/lib/qgis/plugins/libprovider_geonode.so
 usr/lib/qgis/plugins/libprovider_gpx.so
 usr/lib/qgis/plugins/libprovider_hana.so
 usr/lib/qgis/plugins/libprovider_mdal.so

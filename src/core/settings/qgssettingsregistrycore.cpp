@@ -151,7 +151,7 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   }
 
   // connections settings - added in 3.30
-  const QStringList services = {QStringLiteral( "WMS" ), QStringLiteral( "WFS" ), QStringLiteral( "WCS" ), QStringLiteral( "GeoNode" )};
+  const QStringList services = {QStringLiteral( "WMS" ), QStringLiteral( "WFS" ), QStringLiteral( "WCS" )};
   for ( const QString &service : services )
   {
     QgsSettings settings;
@@ -293,7 +293,7 @@ void QgsSettingsRegistryCore::backwardCompatibility()
 
   // OWS connections settings - added in 3.30
   {
-    const QStringList services = {QStringLiteral( "WMS" ), QStringLiteral( "WFS" ), QStringLiteral( "WCS" ), QStringLiteral( "GeoNode" )};
+    const QStringList services = {QStringLiteral( "WMS" ), QStringLiteral( "WFS" ), QStringLiteral( "WCS" )};
     for ( const QString &service : services )
     {
       const QStringList connections = QgsOwsConnection::sTreeOwsConnections->items( {service.toLower()} );

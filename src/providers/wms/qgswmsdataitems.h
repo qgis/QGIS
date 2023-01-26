@@ -20,7 +20,6 @@
 #include "qgsdataitemprovider.h"
 #include "qgsdatasourceuri.h"
 #include "qgswmsprovider.h"
-#include "qgsgeonodeconnection.h"
 #include "qgsconnectionsitem.h"
 
 class QgsWmsCapabilitiesDownload;
@@ -193,8 +192,6 @@ class QgsWmsDataItemProvider : public QgsDataItemProvider
     int capabilities() const override { return QgsDataProvider::Net; }
 
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
-
-    QVector<QgsDataItem *> createDataItems( const QString &path, QgsDataItem *parentItem ) override;
 };
 
 
@@ -230,8 +227,6 @@ class QgsXyzTileDataItemProvider : public QgsDataItemProvider
     int capabilities() const override;
 
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
-
-    QVector<QgsDataItem *> createDataItems( const QString &path, QgsDataItem *parentItem ) override;
 };
 
 
