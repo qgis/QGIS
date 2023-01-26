@@ -88,7 +88,7 @@
     </layout>
    </item>
    <item>
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="label1">
      <property name="text">
       <string>Current Rules</string>
      </property>
