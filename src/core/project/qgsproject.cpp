@@ -1027,6 +1027,7 @@ void QgsProject::clear()
   mCustomVariables.clear();
   mCrs = QgsCoordinateReferenceSystem();
   mMetadata = QgsProjectMetadata();
+  mElevationShadingRenderer = QgsElevationShadingRenderer();
   if ( !mSettings.value( QStringLiteral( "projects/anonymize_new_projects" ), false, QgsSettings::Core ).toBool() )
   {
     mMetadata.setCreationDateTime( QDateTime::currentDateTime() );
@@ -1811,6 +1812,15 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
     emit missingDatumTransforms( datumErrors );
   }
   emit transformContextChanged();
+
+  // map shading
+  const QDomNode elevationShadingNode = doc->documentElement().namedItem( QStringLiteral( "elevation-shading-renderer" ) );
+  if ( !elevationShadingNode.isNull() )
+  {
+    mElevationShadingRenderer.readXml( elevationShadingNode.toElement(), context );
+  }
+  emit elevationShadingRendererChanged();
+
 
   //add variables defined in project file - do this early in the reading cycle, as other components
   //(e.g. layouts) may depend on these variables
@@ -2758,6 +2768,10 @@ bool QgsProject::writeProjectFile( const QString &filename )
   QDomElement srsNode = doc->createElement( QStringLiteral( "projectCrs" ) );
   mCrs.writeXml( srsNode, *doc );
   qgisNode.appendChild( srsNode );
+
+  QDomElement elevationShadingNode = doc->createElement( QStringLiteral( "elevation-shading-renderer" ) );
+  mElevationShadingRenderer.writeXml( elevationShadingNode, context );
+  qgisNode.appendChild( elevationShadingNode );
 
   // write layer tree - make sure it is without embedded subgroups
   QgsLayerTreeNode *clonedRoot = mRootGroup->clone();
@@ -4405,6 +4419,12 @@ QgsPropertiesDefinition &QgsProject::dataDefinedServerPropertyDefinitions()
   return sPropertyDefinitions;
 }
 
+void QgsProject::setElevationShadingRenderer( const QgsElevationShadingRenderer &elevationShadingRenderer )
+{
+  mElevationShadingRenderer = elevationShadingRenderer;
+  emit elevationShadingRendererChanged();
+}
+
 const QgsAuxiliaryStorage *QgsProject::auxiliaryStorage() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -4676,6 +4696,11 @@ bool QgsProject::accept( QgsStyleEntityVisitorInterface *visitor ) const
     return false;
 
   return true;
+}
+
+QgsElevationShadingRenderer QgsProject::elevationShadingRenderer() const
+{
+  return mElevationShadingRenderer;
 }
 
 void QgsProject::loadProjectFlags( const QDomDocument *doc )

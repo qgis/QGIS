@@ -54,6 +54,7 @@
 %Include auto_generated/qgsdetaileditemwidget.sip
 %Include auto_generated/qgsdial.sip
 %Include auto_generated/qgsdialog.sip
+%Include auto_generated/qgsdirectionallightwidget.sip
 %Include auto_generated/qgsdockwidget.sip
 %Include auto_generated/qgsdoublevalidator.sip
 %Include auto_generated/qgsencodingfiledialog.sip

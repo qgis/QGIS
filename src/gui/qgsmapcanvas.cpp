@@ -1246,6 +1246,17 @@ void QgsMapCanvas::updateDevicePixelFromScreen()
   refresh();
 }
 
+void QgsMapCanvas::onElevationShadingRendererChanged()
+{
+  if ( !mProject )
+    return;
+  bool wasDeactivated = !mSettings.elevationShadingRenderer().isActive();
+  mSettings.setElevationShadingRenderer( mProject->elevationShadingRenderer() );
+  if ( wasDeactivated )
+    mCache->clear();
+  refresh();
+}
+
 void QgsMapCanvas::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
 {
   if ( temporalRange() == dateTimeRange )
@@ -2739,7 +2750,13 @@ void QgsMapCanvas::unsetMapTool( QgsMapTool *tool )
 
 void QgsMapCanvas::setProject( QgsProject *project )
 {
+  if ( mProject )
+    disconnect( mProject, &QgsProject::elevationShadingRendererChanged, this, &QgsMapCanvas::onElevationShadingRendererChanged );
+
   mProject = project;
+
+  if ( mProject )
+    connect( mProject, &QgsProject::elevationShadingRendererChanged, this, &QgsMapCanvas::onElevationShadingRendererChanged );
 }
 
 void QgsMapCanvas::setCanvasColor( const QColor &color )

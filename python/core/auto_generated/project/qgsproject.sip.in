@@ -1605,6 +1605,20 @@ should be canceled.
 .. versionadded:: 3.10
 %End
 
+    QgsElevationShadingRenderer elevationShadingRenderer() const;
+%Docstring
+Returns the elevation shading renderer used for map shading
+
+.. versionadded:: 3.30
+%End
+
+    void setElevationShadingRenderer( const QgsElevationShadingRenderer &elevationShadingRenderer );
+%Docstring
+Sets the elevation shading renderer used for global map shading
+
+.. versionadded:: 3.30
+%End
+
     SIP_PYOBJECT __repr__();
 %MethodCode
     QString str = QStringLiteral( "<QgsProject: '%1'%2>" ).arg( sipCpp->fileName(),
@@ -2033,6 +2047,13 @@ Emitted when the list of custom project map scales changes.
 
 .. deprecated::
    Use :py:func:`~QgsProject.viewSettings` instead
+%End
+
+    void elevationShadingRendererChanged();
+%Docstring
+Emitted when the map shading renderer changes
+
+.. versionadded:: 3.30
 %End
 
   public slots:

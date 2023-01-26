@@ -2465,3 +2465,9 @@ QgsRaster.IdentifyFormatFeature.__doc__ = "WMS GML/JSON -> feature"
 Qgis.RasterIdentifyFormat.__doc__ = 'Raster identify formats.\n\n.. note::\n\n   Prior to QGIS 3.30 this was available as :py:class:`QgsRaster`.IdentifyFormat\n\n.. versionadded:: 3.30\n\n' + '* ``IdentifyFormatUndefined``: ' + Qgis.RasterIdentifyFormat.Undefined.__doc__ + '\n' + '* ``IdentifyFormatValue``: ' + Qgis.RasterIdentifyFormat.Value.__doc__ + '\n' + '* ``IdentifyFormatText``: ' + Qgis.RasterIdentifyFormat.Text.__doc__ + '\n' + '* ``IdentifyFormatHtml``: ' + Qgis.RasterIdentifyFormat.Html.__doc__ + '\n' + '* ``IdentifyFormatFeature``: ' + Qgis.RasterIdentifyFormat.Feature.__doc__
 # --
 Qgis.RasterIdentifyFormat.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ElevationMapCombineMethod.HighestElevation.__doc__ = "Keep the highest elevation if it is not null"
+Qgis.ElevationMapCombineMethod.NewerElevation.__doc__ = "Keep the new elevation regardless of its value if it is not null"
+Qgis.ElevationMapCombineMethod.__doc__ = 'Methods used to select the elevation when two elevation maps are combined\n\n.. versionadded:: 3.30\n\n' + '* ``HighestElevation``: ' + Qgis.ElevationMapCombineMethod.HighestElevation.__doc__ + '\n' + '* ``NewerElevation``: ' + Qgis.ElevationMapCombineMethod.NewerElevation.__doc__
+# --
+Qgis.ElevationMapCombineMethod.baseClass = Qgis

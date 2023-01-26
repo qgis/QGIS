@@ -2790,6 +2790,18 @@ class CORE_EXPORT Qgis
     Q_ENUM( RasterIdentifyFormat )
 
     /**
+     * Methods used to select the elevation when two elevation maps are combined
+     *
+     * \since QGIS 3.30
+     */
+    enum class ElevationMapCombineMethod : int
+    {
+      HighestElevation, //!< Keep the highest elevation if it is not null
+      NewerElevation, //!< Keep the new elevation regardless of its value if it is not null
+    };
+    Q_ENUM( ElevationMapCombineMethod )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */

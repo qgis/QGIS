@@ -377,6 +377,7 @@ set(QGIS_CORE_SRCS
   qgsdiagramrenderer.cpp
   qgsdistancearea.cpp
   qgselevationmap.cpp
+  qgselevationshadingrenderer.cpp
   qgselevationutils.cpp
   qgserror.cpp
   qgseventtracing.cpp
@@ -1041,6 +1042,7 @@ set(QGIS_CORE_HDRS
   qgsdistancearea.h
   qgseditorwidgetsetup.h
   qgselevationmap.h
+  qgselevationshadingrenderer.h
   qgselevationutils.h
   qgserror.h
   qgseventtracing.h

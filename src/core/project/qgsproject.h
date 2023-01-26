@@ -53,6 +53,7 @@
 #include "qgssettings.h"
 #include "qgspropertycollection.h"
 #include "qgsvectorlayereditbuffergroup.h"
+#include "qgselevationshadingrenderer.h"
 
 #include "qgsrelationmanager.h"
 #include "qgsmapthemecollection.h"
@@ -1634,6 +1635,20 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
+    /**
+     * Returns the elevation shading renderer used for map shading
+     *
+     * \since QGIS 3.30
+     */
+    QgsElevationShadingRenderer elevationShadingRenderer() const;
+
+    /**
+     * Sets the elevation shading renderer used for global map shading
+     *
+     * \since QGIS 3.30
+     */
+    void setElevationShadingRenderer( const QgsElevationShadingRenderer &elevationShadingRenderer );
+
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
@@ -2015,6 +2030,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     Q_DECL_DEPRECATED void mapScalesChanged() SIP_DEPRECATED;
 
+    /**
+     * Emitted when the map shading renderer changes
+     *
+     * \since QGIS 3.30
+     */
+    void elevationShadingRendererChanged();
+
   public slots:
 
     /**
@@ -2332,6 +2354,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     mutable std::unique_ptr< QgsExpressionContextScope > mProjectScope;
 
     int mBlockSnappingUpdates = 0;
+
+    QgsElevationShadingRenderer mElevationShadingRenderer;
 
     friend class QgsApplication;
 

@@ -30,6 +30,7 @@ set(QGIS_APP_SRCS
   qgsdevtoolspanelwidget.cpp
   qgsdiscoverrelationsdialog.cpp
   qgsdxfexportdialog.cpp
+  qgselevationshadingrenderersettingswidget.cpp
   qgsformannotationdialog.cpp
   qgsguivectorlayertools.cpp
   qgshtmlannotationdialog.cpp

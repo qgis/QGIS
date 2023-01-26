@@ -468,6 +468,8 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
       panel->setMapLayerConfigWidgetContext( mContext );
       connect( panel, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
       mWidgetStack->setMainPanel( panel );
+      mBlockAutoApply = false;
+      return;
     }
   }
 

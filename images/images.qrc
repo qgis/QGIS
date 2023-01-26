@@ -966,6 +966,7 @@
         <file>themes/default/mActionNewFileGeodatabase.svg</file>
         <file>themes/default/mIconBrowserRelations.svg</file>
         <file>themes/default/mActionIdentifyByMouseOver.svg</file>
+        <file>themes/default/mShadingRenderer.svg</file>
         <file>themes/default/gpsicons/mIconGpsConnect.svg</file>
         <file>themes/default/gpsicons/mIconGpsDisconnect.svg</file>
         <file>themes/default/gpsicons/mActionRecenter.svg</file>

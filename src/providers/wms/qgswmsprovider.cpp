@@ -1142,45 +1142,6 @@ QImage *QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, in
   return image;
 }
 
-static GDALResampleAlg getGDALResamplingAlg( QgsRasterDataProvider::ResamplingMethod method )
-{
-  GDALResampleAlg eResampleAlg = GRA_NearestNeighbour;
-  switch ( method )
-  {
-    case QgsRasterDataProvider::ResamplingMethod::Nearest:
-    case QgsRasterDataProvider::ResamplingMethod::Gauss: // Gauss not available in GDALResampleAlg
-      eResampleAlg = GRA_NearestNeighbour;
-      break;
-
-    case QgsRasterDataProvider::ResamplingMethod::Bilinear:
-      eResampleAlg = GRA_Bilinear;
-      break;
-
-    case QgsRasterDataProvider::ResamplingMethod::Cubic:
-      eResampleAlg = GRA_Cubic;
-      break;
-
-    case QgsRasterDataProvider::ResamplingMethod::CubicSpline:
-      eResampleAlg = GRA_CubicSpline;
-      break;
-
-    case QgsRasterDataProvider::ResamplingMethod::Lanczos:
-      eResampleAlg = GRA_Lanczos;
-      break;
-
-    case QgsRasterDataProvider::ResamplingMethod::Average:
-      eResampleAlg = GRA_Average;
-      break;
-
-    case QgsRasterDataProvider::ResamplingMethod::Mode:
-      eResampleAlg = GRA_Mode;
-      break;
-  }
-
-  return eResampleAlg;
-}
-
-
 bool QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int pixelWidth, int pixelHeight, void *block, QgsRasterBlockFeedback *feedback )
 {
   Q_UNUSED( bandNo )
@@ -1232,9 +1193,9 @@ bool QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int
 
         GDALResampleAlg alg;
         if ( resamplingFactor < 1 || qgsDoubleNear( resamplingFactor, 1.0 ) )
-          alg = getGDALResamplingAlg( mZoomedInResamplingMethod );
+          alg = QgsGdalUtils::gdalResamplingAlgorithm( mZoomedInResamplingMethod );
         else
-          alg = getGDALResamplingAlg( mZoomedOutResamplingMethod );
+          alg = QgsGdalUtils::gdalResamplingAlgorithm( mZoomedOutResamplingMethod );
 
         gdal::dataset_unique_ptr gdalDsInput = QgsGdalUtils::blockToSingleBandMemoryDataset( image->width(), image->height(), effectiveExtent, data.data(), GDT_Float32 );
         gdal::dataset_unique_ptr gdalDsOutput = QgsGdalUtils::blockToSingleBandMemoryDataset( pixelWidth, pixelHeight, viewExtent, block, GDT_Float32 );
