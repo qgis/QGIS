@@ -17,7 +17,6 @@
 
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
-#include "qgssettings.h"
 #include "qgshttpheaders.h"
 
 #include <QFileInfo>
@@ -150,11 +149,7 @@ QString QgsVectorTileProviderConnection::encodedLayerUri( const QgsVectorTilePro
 
 QStringList QgsVectorTileProviderConnection::connectionList()
 {
-  QgsSettings settings;
-  settings.beginGroup( QStringLiteral( "qgis/connections-vector-tile" ) );
-  QStringList connList = settings.childGroups();
-
-  return connList;
+   return QgsVectorTileProviderConnection::sTreeConnectionVectorTile->items();
 }
 
 QgsVectorTileProviderConnection::Data QgsVectorTileProviderConnection::connection( const QString &name )
