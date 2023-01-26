@@ -36,6 +36,7 @@ Sample usage of the :py:class:`QgsRasterLayer` class:
 %End
   public:
 
+
     static const double SAMPLE_SIZE;
 
     static const QgsContrastEnhancement::ContrastEnhancementAlgorithm SINGLE_BAND_ENHANCEMENT_ALGORITHM;

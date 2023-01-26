@@ -58,6 +58,7 @@ email                : tim at linfiniti.com
 #include "qgsrasterlayerelevationproperties.h"
 #include "qgsrasterlayerprofilegenerator.h"
 #include "qgsthreadingutils.h"
+#include "qgssettingsentryimpl.h"
 
 #include <cmath>
 #include <cstdio>
@@ -82,6 +83,9 @@ email                : tim at linfiniti.com
 #include <QRegularExpression>
 #include <QSlider>
 #include <QUrl>
+
+const QgsSettingsEntryDouble *QgsRasterLayer::settingsRasterDefaultOversampling = new QgsSettingsEntryDouble( QStringLiteral( "default-oversampling" ), QgsSettings::sTreeRaster, 2.0 );
+const QgsSettingsEntryBool *QgsRasterLayer::settingsRasterDefaultEarlyResampling = new QgsSettingsEntryBool( QStringLiteral( "default-early-resampling" ), QgsSettings::sTreeRaster, false );
 
 #define ERR(message) QGS_ERROR_MESSAGE(message,"Raster layer")
 
@@ -939,12 +943,12 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
       mDataProvider->setZoomedOutResamplingMethod( QgsRasterDataProvider::ResamplingMethod::Bilinear );
     }
 
-    const double maxOversampling = settings.value( QStringLiteral( "/Raster/defaultOversampling" ), 2.0 ).toDouble();
+    const double maxOversampling = QgsRasterLayer::settingsRasterDefaultOversampling->value();
     resampleFilter->setMaxOversampling( maxOversampling );
     mDataProvider->setMaxOversampling( maxOversampling );
 
     if ( ( mDataProvider->providerCapabilities() & QgsRasterDataProvider::ProviderHintCanPerformProviderResampling ) &&
-         settings.value( QStringLiteral( "/Raster/defaultEarlyResampling" ), false ).toBool() )
+         QgsRasterLayer::settingsRasterDefaultEarlyResampling->value() )
     {
       setResamplingStage( Qgis::RasterResamplingStage::Provider );
     }

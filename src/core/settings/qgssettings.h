@@ -105,6 +105,7 @@ class CORE_EXPORT QgsSettings : public QObject
     static inline QgsSettingsTreeNode *sTreeQgis = treeRoot()->createChildElement( QStringLiteral( "qgis" ) );
     static inline QgsSettingsTreeNode *sTreePlugins = treeRoot()->createChildElement( QStringLiteral( "plugins" ) );
     static inline QgsSettingsTreeNode *sTreeProcessing = treeRoot()->createChildElement( QStringLiteral( "processing" ) );
+    static inline QgsSettingsTreeNode *sTreeRaster = treeRoot()->createChildElement( QStringLiteral( "raster" ) );
     static inline QgsSettingsTreeNode *sTreeSvg = treeRoot()->createChildElement( QStringLiteral( "svg" ) );
     static inline QgsSettingsTreeNode *sTreeWms = treeRoot()->createChildElement( QStringLiteral( "wms" ) );
 
