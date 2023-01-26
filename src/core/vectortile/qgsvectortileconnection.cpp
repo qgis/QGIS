@@ -149,7 +149,7 @@ QString QgsVectorTileProviderConnection::encodedLayerUri( const QgsVectorTilePro
 
 QStringList QgsVectorTileProviderConnection::connectionList()
 {
-   return QgsVectorTileProviderConnection::sTreeConnectionVectorTile->items();
+  return QgsVectorTileProviderConnection::sTreeConnectionVectorTile->items();
 }
 
 QgsVectorTileProviderConnection::Data QgsVectorTileProviderConnection::connection( const QString &name )
