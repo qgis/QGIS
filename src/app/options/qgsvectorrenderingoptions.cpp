@@ -66,8 +66,7 @@ QgsVectorRenderingOptionsWidget::QgsVectorRenderingOptionsWidget( QWidget *paren
   mSimplifyAlgorithmComboBox->addItem( tr( "Distance" ), static_cast<int>( QgsVectorSimplifyMethod::Distance ) );
   mSimplifyAlgorithmComboBox->addItem( tr( "SnapToGrid" ), static_cast<int>( QgsVectorSimplifyMethod::SnapToGrid ) );
   mSimplifyAlgorithmComboBox->addItem( tr( "Visvalingam" ), static_cast<int>( QgsVectorSimplifyMethod::Visvalingam ) );
-  mSimplifyAlgorithmComboBox->setCurrentIndex( mSimplifyAlgorithmComboBox->findData( QgsVectorLayer::settingsSimplifyAlgorithm.valueWithDefaultOverride( mSimplifyMethod.simplifyAlgorithm() ) ) );
-
+  mSimplifyAlgorithmComboBox->setCurrentIndex( mSimplifyAlgorithmComboBox->findData( QgsVectorLayer::settingsSimplifyAlgorithm->value() ) );
 }
 
 void QgsVectorRenderingOptionsWidget::apply()
@@ -83,7 +82,7 @@ void QgsVectorRenderingOptionsWidget::apply()
   }
   settings.setEnumValue( QStringLiteral( "/qgis/simplifyDrawingHints" ), simplifyHints );
   settings.setEnumValue( QStringLiteral( "/qgis/simplifyAlgorithm" ), ( QgsVectorSimplifyMethod::SimplifyHints )mSimplifyAlgorithmComboBox->currentData().toInt() );
-  QgsVectorLayer::settingsSimplifyDrawingTol.setValue( mSimplifyDrawingSpinBox->value() );
+  QgsVectorLayer::settingsSimplifyDrawingTol->setValue( mSimplifyDrawingSpinBox->value() );
   QgsVectorLayer::settingsSimplifyLocal->setValue( !mSimplifyDrawingAtProvider->isChecked() );
   QgsVectorLayer::settingsSimplifyMaxScale->setValue( mSimplifyMaximumScaleComboBox->scale() );
 
