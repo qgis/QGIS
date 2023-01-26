@@ -17,10 +17,9 @@
 #include "qgsvectorrenderingoptions.h"
 #include "qgssettings.h"
 #include "qgsapplication.h"
-#include "qgssettingsregistrycore.h"
-#include "qgsguiutils.h"
 #include "qgsvectorsimplifymethod.h"
 #include "qgsvectorlayer.h"
+#include "qgssettingsentryenumflag.h"
 
 #include <QThread>
 //
