@@ -540,15 +540,14 @@ void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOption
       painter->setFont( messageFont );
       painter->setPen( QColor( 255, 255, 255, 255 ) );
       painter->drawText( thisPaintRect, Qt::AlignCenter | Qt::AlignHCenter, tr( "Rendering profile" ) );
-      if ( mRenderJob && mCacheInvalidated && !mDrawingPreview )
+
+      if (
+        ( mRenderJob && mCacheInvalidated && !mDrawingPreview ) // current job was invalidated - start a new one
+        ||
+        ( !mRenderJob && !mDrawingPreview ) // this is the profiles's very first paint - trigger a cache update
+      )
       {
-        // current job was invalidated - start a new one
-        mPreviewScaleFactor = QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle, painter );
-        mBackgroundUpdateTimer->start( 1 );
-      }
-      else if ( !mRenderJob && !mDrawingPreview )
-      {
-        // this is the profiles's very first paint - trigger a cache update
+
         mPreviewScaleFactor = QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle, painter );
         mBackgroundUpdateTimer->start( 1 );
       }
