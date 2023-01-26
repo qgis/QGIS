@@ -19,7 +19,6 @@
 #include "qgsarcgisrestquery.h"
 #include "qgsarcgisportalutils.h"
 #include "qgsdataprovider.h"
-#include "qgsafsprovider.h"
 
 #ifdef HAVE_GUI
 #include "qgsarcgisrestsourceselect.h"
@@ -47,7 +46,7 @@ QVector<QgsDataItem *> QgsArcGisRestRootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;
 
-  const QStringList connectionList = QgsOwsConnection::connectionList( QStringLiteral( "ARCGISFEATURESERVER" ) );
+  const QStringList connectionList = QgsArcGisConnectionSettings::sTreeConnectionArcgis->items();
   for ( const QString &connName : connectionList )
   {
     const QString path = QStringLiteral( "afs:/" ) + connName;
@@ -194,16 +193,15 @@ QgsArcGisRestConnectionItem::QgsArcGisRestConnectionItem( QgsDataItem *parent, c
 
 QVector<QgsDataItem *> QgsArcGisRestConnectionItem::createChildren()
 {
-  const QgsOwsConnection connection( QStringLiteral( "ARCGISFEATURESERVER" ), mConnName );
-  const QString url = connection.uri().param( QStringLiteral( "url" ) );
-  const QString authcfg = connection.uri().authConfigId();
+  const QString url = QgsArcGisConnectionSettings::settingsUrl->value( mConnName );
+  const QString authcfg = QgsArcGisConnectionSettings::settingsAuthcfg->value( mConnName );
 
-  QgsHttpHeaders headers = connection.uri().httpHeaders();
+  QgsHttpHeaders headers( QgsArcGisConnectionSettings::settingsHeaders->value() );
 
   QVector<QgsDataItem *> items;
   if ( !mPortalCommunityEndpoint.isEmpty() && !mPortalContentEndpoint.isEmpty() )
   {
-    items << new QgsArcGisPortalGroupsItem( this, QStringLiteral( "groups" ), authcfg, connection.uri().httpHeaders(), mPortalCommunityEndpoint, mPortalContentEndpoint );
+    items << new QgsArcGisPortalGroupsItem( this, QStringLiteral( "groups" ), authcfg, headers, mPortalCommunityEndpoint, mPortalContentEndpoint );
     items << new QgsArcGisRestServicesItem( this, url, QStringLiteral( "services" ), authcfg, headers );
   }
   else
@@ -238,8 +236,7 @@ bool QgsArcGisRestConnectionItem::equal( const QgsDataItem *other )
 
 QString QgsArcGisRestConnectionItem::url() const
 {
-  const QgsOwsConnection connection( QStringLiteral( "ARCGISFEATURESERVER" ), mConnName );
-  return connection.uri().param( QStringLiteral( "url" ) );
+  return QgsArcGisConnectionSettings::settingsUrl->value( mConnName );
 }
 
 
@@ -648,7 +645,7 @@ QgsDataItem *QgsArcGisRestDataItemProvider::createDataItem( const QString &path,
   if ( path.startsWith( QLatin1String( "afs:/" ) ) )
   {
     const QString connectionName = path.split( '/' ).last();
-    if ( QgsOwsConnection::connectionList( QStringLiteral( "arcgisfeatureserver" ) ).contains( connectionName ) )
+    if ( QgsArcGisConnectionSettings::sTreeConnectionArcgis->items().contains( connectionName ) )
     {
       return new QgsArcGisRestConnectionItem( parentItem, QStringLiteral( "ArcGisFeatureServer" ), path, connectionName );
     }
