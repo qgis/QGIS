@@ -267,8 +267,8 @@ void rulesDialog::addRule()
 void rulesDialog::deleteTest()
 {
   std::set<int, std::greater<int>> selectedRows;
-  QModelIndexList selectedIndexes = mRulesTable->selectionModel()->selectedRows();
-  for ( QModelIndex index : selectedIndexes )
+  const QModelIndexList selectedIndexes = mRulesTable->selectionModel()->selectedRows();
+  for ( const QModelIndex index : selectedIndexes )
   {
     selectedRows.insert( index.row() );
   }

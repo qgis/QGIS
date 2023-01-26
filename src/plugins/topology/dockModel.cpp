@@ -135,15 +135,11 @@ void DockModel::reload( const QModelIndex &index1, const QModelIndex &index2 )
 }
 
 DockFilterModel::DockFilterModel( ErrorList &errorList, QObject *parent = nullptr )
-  : mDockModel( new DockModel( errorList, parent ) )
+  : QSortFilterProxyModel( parent )
+  , mDockModel( new DockModel( errorList, parent ) )
 {
   setSourceModel( mDockModel );
   setFilterKeyColumn( 0 );
-}
-
-DockFilterModel::~DockFilterModel()
-{
-  mDockModel->deleteLater();
 }
 
 void DockFilterModel::reload( const QModelIndex &index1, const QModelIndex &index2 )

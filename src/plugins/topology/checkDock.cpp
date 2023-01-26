@@ -400,7 +400,7 @@ void checkDock::runTests( ValidateType type )
     mErrorList << errors;
   }
 
-  for ( TopolError *error : mErrorList )
+  for ( TopolError *error : std::as_const( mErrorList ) )
   {
     if ( !mErrorNames.contains( error->name() ) )
     {

@@ -109,7 +109,7 @@ class DockFilterModel : public QSortFilterProxyModel
      */
     DockFilterModel( ErrorList &errorList, QObject *parent );
 
-    ~DockFilterModel();
+    ~DockFilterModel() = default;
 
     /**
      * Reloads the model data between indices
