@@ -32,8 +32,22 @@ QgsXyzSourceWidget::QgsXyzSourceWidget( QWidget *parent )
   mSpinZMax->setClearValue( 18 );
 
   connect( mEditUrl, &QLineEdit::textChanged, this, &QgsXyzSourceWidget::validate );
+  connect( mEditUrl, &QLineEdit::textChanged, this, &QgsProviderSourceWidget::changed );
+
+  connect( mCheckBoxZMin, &QCheckBox::toggled, this, &QgsProviderSourceWidget::changed );
+  connect( mSpinZMin, qOverload< int >( &QSpinBox::valueChanged ), this, &QgsProviderSourceWidget::changed );
+  connect( mCheckBoxZMax, &QCheckBox::toggled, this, &QgsProviderSourceWidget::changed );
+  connect( mSpinZMax, qOverload< int >( &QSpinBox::valueChanged ), this, &QgsProviderSourceWidget::changed );
+  connect( mAuthSettings, &QgsAuthSettingsWidget::configIdChanged, this, &QgsProviderSourceWidget::changed );
+  connect( mAuthSettings, &QgsAuthSettingsWidget::usernameChanged, this, &QgsProviderSourceWidget::changed );
+  connect( mAuthSettings, &QgsAuthSettingsWidget::passwordChanged, this, &QgsProviderSourceWidget::changed );
+  connect( mEditReferer, &QLineEdit::textChanged, this, &QgsProviderSourceWidget::changed );
+  connect( mComboTileResolution, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsProviderSourceWidget::changed );
+
   mInterpretationCombo = new QgsWmsInterpretationComboBox( this );
   mInterpretationLayout->addWidget( mInterpretationCombo );
+
+  connect( mInterpretationCombo, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsProviderSourceWidget::changed );
 }
 
 void QgsXyzSourceWidget::setSourceUri( const QString &uri )
