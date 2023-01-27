@@ -348,11 +348,11 @@ int QgsVirtualRasterProvider::capabilities() const
 
 QgsRasterIdentifyResult QgsVirtualRasterProvider::identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int dpi )
 {
-  auto result = QgsRasterDataProvider::identify( point, format, boundingBox, width, height, dpi );
+  QgsRasterIdentifyResult result = QgsRasterDataProvider::identify( point, format, boundingBox, width, height, dpi );
 
   // Checking the value returned by QgsRasterDataProvider::identify
   // If it is NoData value, replace it with QVariant()
-  auto bandValues = result.results();
+  QMap<int, QVariant> bandValues = result.results();
   if ( !QgsVariantUtils::isNull( bandValues[1] )
        && bandValues[1].toDouble() == mSrcNoDataValue[0] )
   {
