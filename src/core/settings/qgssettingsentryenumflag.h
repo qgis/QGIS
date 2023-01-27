@@ -85,30 +85,37 @@ class QgsSettingsEntryEnumFlag : public QgsSettingsEntryByValue<T>
     }
 
     /**
-     * Returns settings default value.
+     *  Converts the variant value to the enum/flag value
      */
     T convertFromVariant( const QVariant &value ) const override
     {
-      if ( !mMetaEnum.isValid() )
+      if ( value.type() == QVariant::String )
       {
-        QgsDebugMsg( QStringLiteral( "Invalid metaenum. Enum/Flag probably misses Q_ENUM/Q_FLAG declaration. Settings key: '%1'" ).arg( this->key() ) );
-        return T();
-      }
+        if ( !mMetaEnum.isValid() )
+        {
+          QgsDebugMsg( QStringLiteral( "Invalid metaenum. Enum/Flag probably misses Q_ENUM/Q_FLAG declaration. Settings key: '%1'" ).arg( this->key() ) );
+          return T();
+        }
 
-      bool ok = false;
-      T enumFlagValue;
-      if ( !mMetaEnum.isFlag() )
-        enumFlagValue = qgsEnumKeyToValue( value.toString(), mDefaultValue, true, &ok );
+        bool ok = false;
+        T enumFlagValue;
+        if ( !mMetaEnum.isFlag() )
+          enumFlagValue = qgsEnumKeyToValue( value.toString(), mDefaultValue, true, &ok );
+        else
+          enumFlagValue = qgsFlagKeysToValue( value.toString(), mDefaultValue, true, &ok );
+
+        if ( !ok )
+        {
+          QgsDebugMsg( QStringLiteral( "Invalid enum/flag key/s '%1' for settings key '%2'" ).arg( value.toString(), this->key() ) );
+          return T();
+        }
+
+        return enumFlagValue;
+      }
       else
-        enumFlagValue = qgsFlagKeysToValue( value.toString(), mDefaultValue, true, &ok );
-
-      if ( !ok )
       {
-        QgsDebugMsg( QStringLiteral( "Invalid enum/flag key/s '%1' for settings key '%2'" ).arg( value.toString(), this->key() ) );
-        return T();
+        return value.value<T>();
       }
-
-      return enumFlagValue;
     }
 
     /**
