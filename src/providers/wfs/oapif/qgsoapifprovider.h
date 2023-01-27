@@ -212,7 +212,7 @@ class QgsOapifSharedData final: public QObject, public QgsBackgroundCachedShared
 
     bool hasServerSideFilter() const override { return false; }
 
-    bool supportsFastFeatureCount() const override { return mURI.filter().isEmpty(); }
+    bool supportsFastFeatureCount() const override { return false; }
 
     QgsRectangle getExtentFromSingleFeatureRequest() const override { return QgsRectangle(); }
 

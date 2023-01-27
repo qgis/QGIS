@@ -214,13 +214,12 @@ QgsWkbTypes::Type QgsOapifProvider::wkbType() const
 
 long long QgsOapifProvider::featureCount() const
 {
-  // If no filter is set use the fast way of retrieving the feature count
+  // If no filter is set try the fast way of retrieving the feature count
   if ( mSubsetString.isEmpty() )
   {
     QString url = mShared->mItemsUrl;
     url += QStringLiteral( "?limit=1" );
     url = mShared->appendExtraQueryParameters( url );
-
 
     if ( !mShared->mServerFilter.isEmpty() )
     {
@@ -234,32 +233,36 @@ long long QgsOapifProvider::featureCount() const
     if ( itemsRequest.errorCode() != QgsBaseNetworkRequest::NoError )
       return -1;
 
-    mShared->setFeatureCount( itemsRequest.numberMatched(), true );
-  }
-  else // Otherwise the slow way until server side filtering is implemented
-  {
-    if ( mUpdateFeatureCountAtNextFeatureCountRequest )
+    const long long featureCount = itemsRequest.numberMatched();
+    if ( featureCount >= 0 )
     {
-      mUpdateFeatureCountAtNextFeatureCountRequest = false;
-
-      QgsFeature f;
-      QgsFeatureRequest request;
-      request.setNoAttributes();
-      auto iter = getFeatures( request );
-      long long count = 0;
-      bool countExact = true;
-      while ( iter.nextFeature( f ) )
-      {
-        if ( count == 1000 ) // to avoid too long processing time
-        {
-          countExact = false;
-          break;
-        }
-        count ++;
-      }
-
-      mShared->setFeatureCount( count, countExact );
+      mShared->setFeatureCount( featureCount, true );
+      return featureCount;
     }
+  }
+
+  // Retry the slow way by active filter or numberMatched parameter not sent from server
+  if ( mUpdateFeatureCountAtNextFeatureCountRequest )
+  {
+    mUpdateFeatureCountAtNextFeatureCountRequest = false;
+
+    QgsFeature f;
+    QgsFeatureRequest request;
+    request.setNoAttributes();
+    auto iter = getFeatures( request );
+    long long count = 0;
+    bool countExact = true;
+    while ( iter.nextFeature( f ) )
+    {
+      if ( count == 1000 ) // to avoid too long processing time
+      {
+        countExact = false;
+        break;
+      }
+      count ++;
+    }
+
+    mShared->setFeatureCount( count, countExact );
   }
 
   return mShared->getFeatureCount();
