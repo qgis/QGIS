@@ -210,7 +210,7 @@ QString QgsVectorTileProviderConnection::selectedConnection()
 
 void QgsVectorTileProviderConnection::setSelectedConnection( const QString &name )
 {
-  sTreeConnectionVectorTile->selectedItem( {name} );
+  sTreeConnectionVectorTile->setSelectedItem( name );
 }
 
 
