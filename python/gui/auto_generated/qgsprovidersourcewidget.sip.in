@@ -65,6 +65,13 @@ If ``isValid`` is ``False`` then the widget is not valid, and any dialog using t
 being accepted.
 %End
 
+    void changed();
+%Docstring
+Emitted whenever the configuration of the widget changes.
+
+.. versionadded:: 3.30
+%End
+
 };
 /************************************************************************
  * This file has been generated automatically from                      *
