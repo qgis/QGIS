@@ -11,6 +11,7 @@
 
 
 
+
 class QgsGpsLogger : QObject
 {
 %Docstring(signature="appended")
@@ -26,6 +27,12 @@ from incoming GPS location points.
 #include "qgsgpslogger.h"
 %End
   public:
+
+
+
+
+
+
 
 
     QgsGpsLogger( QgsGpsConnection *connection, QObject *parent /TransferThis/ = 0 );

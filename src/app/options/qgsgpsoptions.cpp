@@ -209,18 +209,18 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
     gpsdPort = settings.value( QStringLiteral( "gpsdPort" ), 2947, QgsSettings::Gps ).toInt();
     gpsdDevice = settings.value( QStringLiteral( "gpsdDevice" ), QVariant(), QgsSettings::Gps ).toString();
 
-    acquisitionInterval = settings.value( QStringLiteral( "acquisitionInterval" ), 0, QgsSettings::Gps ).toInt();
-    distanceThreshold = settings.value( QStringLiteral( "distanceThreshold" ), 0, QgsSettings::Gps ).toDouble();
+    acquisitionInterval = QgsGpsLogger::settingsAcquisitionInterval->value();
+    distanceThreshold = QgsGpsLogger::settingsDistanceThreshold->value();
 
     bearingFromTravelDirection = settings.value( QStringLiteral( "calculateBearingFromTravel" ), "false", QgsSettings::Gps ).toBool();
 
     recenteringThreshold = settings.value( QStringLiteral( "mapExtentMultiplier" ), "50", QgsSettings::Gps ).toInt();
     rotateInterval = settings.value( QStringLiteral( "rotateMapInterval" ), 0, QgsSettings::Gps ).toInt();
 
-    applyLeapSeconds = settings.value( QStringLiteral( "applyLeapSeconds" ), true, QgsSettings::Gps ).toBool();
-    leapSeconds = settings.value( QStringLiteral( "leapSecondsCorrection" ), 18, QgsSettings::Gps ).toInt();
+    applyLeapSeconds = QgsGpsLogger::settingsApplyLeapSeconds->value();
+    leapSeconds = QgsGpsLogger::settingsLeapSecondsCorrection->value();
 
-    switch ( settings.value( QStringLiteral( "timeStampFormat" ), Qt::LocalTime, QgsSettings::Gps ).toInt() )
+    switch ( QgsGpsLogger::settingsTimeStampFormat->value() )
     {
       case 0:
         timeSpec = Qt::TimeSpec::LocalTime;
@@ -234,7 +234,7 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
         timeSpec = Qt::TimeSpec::TimeZone;
         break;
     }
-    timeZone = settings.value( QStringLiteral( "timestampTimeZone" ), QVariant(), QgsSettings::Gps ).toString();
+    timeZone = QgsGpsLogger::settingsTimestampTimeZone->value();
   }
 
   mOffsetFromUtc->setValue( offsetFromUtc );

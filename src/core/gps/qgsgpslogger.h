@@ -31,9 +31,14 @@
 #include <QDateTime>
 #include "info.h"
 
+class QgsSettingsEntryBool;
+class QgsSettingsEntryString;
+class QgsSettingsEntryInteger;
+class QgsSettingsEntryDouble;
 class QgsGpsConnection;
-class QTimer;
 class QgsGpsInformation;
+
+class QTimer;
 
 
 /**
@@ -51,6 +56,18 @@ class CORE_EXPORT QgsGpsLogger : public QObject
     Q_OBJECT
 
   public:
+
+    static const QgsSettingsEntryBool *settingsApplyLeapSeconds SIP_SKIP;
+
+    static const QgsSettingsEntryString *settingsTimestampTimeZone SIP_SKIP;
+
+    static const QgsSettingsEntryInteger *settingsTimeStampFormat SIP_SKIP;
+
+    static const QgsSettingsEntryInteger *settingsLeapSecondsCorrection SIP_SKIP;
+
+    static const QgsSettingsEntryInteger *settingsAcquisitionInterval SIP_SKIP;
+
+    static const QgsSettingsEntryDouble *settingsDistanceThreshold SIP_SKIP;
 
 #ifndef SIP_RUN
     //! Settings entry for whether storing GPS attributes as geometry M values should be enabled
