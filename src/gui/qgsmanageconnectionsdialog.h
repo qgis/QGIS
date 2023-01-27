@@ -49,7 +49,7 @@ class GUI_EXPORT QgsManageConnectionsDialog : public QDialog, private Ui::QgsMan
       Oracle,
       HANA,
       XyzTiles,
-      ArcgisMapServer,
+      ArcgisMapServer, // TODO QGIS 4: remove
       ArcgisFeatureServer,
       VectorTile
     };
@@ -75,7 +75,7 @@ class GUI_EXPORT QgsManageConnectionsDialog : public QDialog, private Ui::QgsMan
     QDomDocument saveOracleConnections( const QStringList &connections );
     QDomDocument saveHanaConnections( const QStringList &connections );
     QDomDocument saveXyzTilesConnections( const QStringList &connections );
-    QDomDocument saveArcgisConnections( const QStringList &connections, const QString &service );
+    QDomDocument saveArcgisConnections( const QStringList &connections );
     QDomDocument saveVectorTileConnections( const QStringList &connections );
 
     void loadOWSConnections( const QDomDocument &doc, const QStringList &items, const QString &service );

@@ -44,6 +44,15 @@ const QgsSettingsEntryString *QgsXyzConnectionSettings::settingsPassword = new Q
 const QgsSettingsEntryString *QgsXyzConnectionSettings::settingsAuthcfg = new QgsSettingsEntryString( QStringLiteral( "authcfg" ), sTreeXyzConnections ) ;
 
 
+const QgsSettingsEntryString *QgsArcGisConnectionSettings::settingsUrl = new QgsSettingsEntryString( QStringLiteral( "url" ), sTreeConnectionArcgis );
+const QgsSettingsEntryString *QgsArcGisConnectionSettings::settingsAuthcfg = new QgsSettingsEntryString( QStringLiteral( "authcfg" ), sTreeConnectionArcgis );
+const QgsSettingsEntryString *QgsArcGisConnectionSettings::settingsUsername = new QgsSettingsEntryString( QStringLiteral( "username" ), sTreeConnectionArcgis );
+const QgsSettingsEntryString *QgsArcGisConnectionSettings::settingsPassword = new QgsSettingsEntryString( QStringLiteral( "password" ), sTreeConnectionArcgis );
+const QgsSettingsEntryVariantMap *QgsArcGisConnectionSettings::settingsHeaders = new QgsSettingsEntryVariantMap( QStringLiteral( "http-header" ), sTreeConnectionArcgis );
+const QgsSettingsEntryString *QgsArcGisConnectionSettings::settingsContentEndpoint = new QgsSettingsEntryString( QStringLiteral( "content-endpoint" ), sTreeConnectionArcgis );
+const QgsSettingsEntryString *QgsArcGisConnectionSettings::settingsCommunityEndpoint = new QgsSettingsEntryString( QStringLiteral( "community-endpoint" ), sTreeConnectionArcgis );
+
+
 const QgsSettingsEntryString *QgsOwsConnection::settingsUrl = new QgsSettingsEntryString( QStringLiteral( "url" ), sTreeOwsConnections, QString() ) ;
 const QgsSettingsEntryVariantMap *QgsOwsConnection::settingsHeaders = new QgsSettingsEntryVariantMap( QStringLiteral( "http-header" ), sTreeOwsConnections ) ;
 const QgsSettingsEntryString *QgsOwsConnection::settingsVersion = new QgsSettingsEntryString( QStringLiteral( "version" ), sTreeOwsConnections, QString() ) ;

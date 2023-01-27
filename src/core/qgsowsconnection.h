@@ -30,6 +30,8 @@
 #include <QStringList>
 #include <QPushButton>
 
+
+
 /**
  * \ingroup core
  * \brief Connections settingss for XYZ
@@ -51,6 +53,26 @@ class CORE_EXPORT QgsXyzConnectionSettings SIP_SKIP
     static const QgsSettingsEntryString *settingsUsername;
     static const QgsSettingsEntryString *settingsPassword;
     static const QgsSettingsEntryString *settingsAuthcfg;
+};
+
+
+/**
+ * \ingroup core
+ * \brief Connections settingss for Arcgis
+ * \since QGIS 3.30
+ */
+class CORE_EXPORT QgsArcGisConnectionSettings SIP_SKIP
+{
+  public:
+    static inline QgsSettingsTreeNamedListNode *sTreeConnectionArcgis = QgsSettings::sTreeConnections->createNamedListElement( QStringLiteral( "arcgisfeatureserver" ), QgsSettingsTreeNamedListNode::Option::NamedListSelectedItemSetting );
+
+    static const QgsSettingsEntryString *settingsUrl;
+    static const QgsSettingsEntryString *settingsAuthcfg;
+    static const QgsSettingsEntryString *settingsUsername;
+    static const QgsSettingsEntryString *settingsPassword;
+    static const QgsSettingsEntryVariantMap *settingsHeaders;
+    static const QgsSettingsEntryString *settingsContentEndpoint;
+    static const QgsSettingsEntryString *settingsCommunityEndpoint;
 };
 
 

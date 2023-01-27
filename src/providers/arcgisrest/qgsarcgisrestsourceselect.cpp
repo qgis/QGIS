@@ -17,7 +17,6 @@
 
 #include "qgsarcgisrestsourceselect.h"
 #include "qgsowsconnection.h"
-#include "qgsprojectionselectiondialog.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsproject.h"
 #include "qgscoordinatereferencesystem.h"
@@ -25,7 +24,6 @@
 #include "qgslogger.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgsexception.h"
-#include "qgssettings.h"
 #include "qgsmapcanvas.h"
 #include "qgshelp.h"
 #include "qgsgui.h"
@@ -195,7 +193,7 @@ void QgsArcGisRestSourceSelect::showEvent( QShowEvent * )
 
 void QgsArcGisRestSourceSelect::populateConnectionList()
 {
-  const QStringList conns = QgsOwsConnection::connectionList( QStringLiteral( "ARCGISFEATURESERVER" ) );
+  const QStringList conns = QgsArcGisConnectionSettings::sTreeConnectionArcgis->items();
   cmbConnections->clear();
   for ( const QString &item : conns )
   {
@@ -207,7 +205,7 @@ void QgsArcGisRestSourceSelect::populateConnectionList()
   btnSave->setEnabled( connectionsAvailable );
 
   //set last used connection
-  const QString selectedConnection = QgsOwsConnection::selectedConnection( QStringLiteral( "ARCGISFEATURESERVER" ) );
+  const QString selectedConnection = QgsArcGisConnectionSettings::sTreeConnectionArcgis->selectedItem();
   const int index = cmbConnections->findText( selectedConnection );
   if ( index != -1 )
   {
@@ -222,7 +220,7 @@ void QgsArcGisRestSourceSelect::refresh()
 
 void QgsArcGisRestSourceSelect::addEntryToServerList()
 {
-  QgsNewArcGisRestConnectionDialog nc( nullptr, QStringLiteral( "qgis/connections-arcgisfeatureserver/" ), QString() );
+  QgsNewArcGisRestConnectionDialog nc( nullptr, QString() );
   nc.setWindowTitle( tr( "Create a New ArcGIS REST Server Connection" ) );
 
   if ( nc.exec() )
@@ -234,7 +232,7 @@ void QgsArcGisRestSourceSelect::addEntryToServerList()
 
 void QgsArcGisRestSourceSelect::modifyEntryOfServerList()
 {
-  QgsNewArcGisRestConnectionDialog nc( nullptr, QStringLiteral( "qgis/connections-arcgisfeatureserver/" ), cmbConnections->currentText() );
+  QgsNewArcGisRestConnectionDialog nc( nullptr, cmbConnections->currentText() );
   nc.setWindowTitle( tr( "Modify ArcGIS REST Server Connection" ) );
 
   if ( nc.exec() )
@@ -252,7 +250,7 @@ void QgsArcGisRestSourceSelect::deleteEntryOfServerList()
   const QMessageBox::StandardButton result = QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No );
   if ( result == QMessageBox::Yes )
   {
-    QgsOwsConnection::deleteConnection( QStringLiteral( "ARCGISFEATURESERVER" ), selectedConnection );
+    QgsArcGisConnectionSettings::sTreeConnectionArcgis->deleteItem( selectedConnection );
     cmbConnections->removeItem( cmbConnections->currentIndex() );
     emit connectionsChanged();
     const bool connectionsAvailable = cmbConnections->count() > 0;
@@ -271,7 +269,6 @@ void QgsArcGisRestSourceSelect::connectToServer()
   btnConnect->setEnabled( false );
 
   mConnectedService = cmbConnections->currentText();
-  const QgsOwsConnection connection( QStringLiteral( "ARCGISFEATURESERVER" ), mConnectedService );
 
   // find index of corresponding node
   if ( mBrowserModel && mProxyModel )
@@ -300,8 +297,6 @@ void QgsArcGisRestSourceSelect::addButtonClicked()
   {
     return;
   }
-
-  const QgsOwsConnection connection( QStringLiteral( "ARCGISFEATURESERVER" ), cmbConnections->currentText() );
 
   const QgsCoordinateReferenceSystem pCrs( labelCoordRefSys->text() );
   // prepare canvas extent info for layers with "cache features" option not set
@@ -410,7 +405,7 @@ void QgsArcGisRestSourceSelect::updateImageEncodings()
 void QgsArcGisRestSourceSelect::cmbConnections_activated( int index )
 {
   Q_UNUSED( index )
-  QgsOwsConnection::setSelectedConnection( QStringLiteral( "ARCGISFEATURESERVER" ), cmbConnections->currentText() );
+  QgsArcGisConnectionSettings::sTreeConnectionArcgis->setSelectedItem( cmbConnections->currentText() );
 }
 
 void QgsArcGisRestSourceSelect::treeWidgetCurrentRowChanged( const QModelIndex &current, const QModelIndex &previous )
