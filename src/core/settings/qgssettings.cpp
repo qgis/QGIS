@@ -50,24 +50,23 @@ void QgsSettings::init()
 QgsSettingsTreeNode *QgsSettings::treeRoot()
 {
   // this must be defined in cpp code so we are sure only one instance is around
-  static QgsSettingsTreeNode *sTreeRoot = QgsSettingsTreeNode::createRootElement();
+  static QgsSettingsTreeNode *sTreeRoot = QgsSettingsTreeNode::createRootNode();
   return sTreeRoot;
 }
 
-QgsSettingsTreeNode *QgsSettings::createPluginTreeElement( const QString &pluginName )
+QgsSettingsTreeNode *QgsSettings::createPluginTreeNode( const QString &pluginName )
 {
-  QgsSettingsTreeNode *te = sTreePlugins->childElement( pluginName );
+  QgsSettingsTreeNode *te = sTreePlugins->childNode( pluginName );
   if ( te )
     return te;
   else
-    return sTreePlugins->createChildElement( pluginName );
+    return sTreePlugins->createChildNode( pluginName );
 }
 
-void QgsSettings::unregisterPluginTreeElement( const QString &pluginName )
+void QgsSettings::unregisterPluginTreeNode( const QString &pluginName )
 {
-  //QgsDebugMsg( "unregister plugin tree element" );
-  QgsSettingsTreeNode *pluginTreeElement = sTreePlugins->childElement( pluginName );
-  delete pluginTreeElement;
+  QgsSettingsTreeNode *pluginTreeNode = sTreePlugins->childNode( pluginName );
+  delete pluginTreeNode;
 }
 
 QgsSettings::QgsSettings( const QString &organization, const QString &application, QObject *parent )

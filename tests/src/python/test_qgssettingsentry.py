@@ -101,7 +101,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
             self.assertEqual(settings_entry.key(), settings_key_complete)
 
     def test_with_parent_element(self):
-        root = QgsSettings.createPluginTreeElement(self.pluginName)
+        root = QgsSettings.createPluginTreeNode(self.pluginName)
         setting = QgsSettingsEntryInteger("my_setting", root)
         self.assertEqual(setting.key(), f"/plugins/{self.pluginName}/my_setting")
 

@@ -74,7 +74,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
   public:
 #ifndef SIP_RUN
 
-    static inline QgsSettingsTreeNode *sTtreeStyleManager = QgsSettings::sTreeApp->createChildElement( QStringLiteral( "style-manager" ) );
+    static inline QgsSettingsTreeNode *sTtreeStyleManager = QgsSettings::sTreeApp->createChildNode( QStringLiteral( "style-manager" ) );
 
     /**
      * Last used folder for generic style database actions.

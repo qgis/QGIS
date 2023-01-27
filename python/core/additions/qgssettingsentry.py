@@ -54,7 +54,7 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
             self.__enumFlagClass = defaultValue.__class__
 
         if type(pluginName) == str:
-            parent = QgsSettings.createPluginTreeElement(pluginName)
+            parent = QgsSettings.createPluginTreeNode(pluginName)
         else:
             parent = pluginName
         super().__init__(key, parent, defaultValueStr, description, options)

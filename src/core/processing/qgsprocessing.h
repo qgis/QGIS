@@ -109,7 +109,7 @@ class CORE_EXPORT QgsProcessing
     static const QString TEMPORARY_OUTPUT;
 
 #ifndef SIP_RUN
-    static inline QgsSettingsTreeNode *sTreeConfiguration = QgsSettings::sTreeQgis->createChildElement( QStringLiteral( "configuration" ) );
+    static inline QgsSettingsTreeNode *sTreeConfiguration = QgsSettings::sTreeQgis->createChildNode( QStringLiteral( "configuration" ) );
 
     //! Settings entry prefer filename as layer name
     static const QgsSettingsEntryBool *settingsPreferFilenameAsLayerName;

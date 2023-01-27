@@ -229,22 +229,22 @@ class Repositories(QObject):
 
     def checkingOnStart(self) -> bool:
         """ return true if checking for news and updates is enabled """
-        return QgsSettings.createPluginTreeElement("_plugin_manager").childSetting('automatically-check-for-updates').value()
+        return QgsSettings.createPluginTreeNode("_plugin_manager").childSetting('automatically-check-for-updates').value()
 
     def setCheckingOnStart(self, state: bool):
         """ set state of checking for news and updates """
-        QgsSettings.createPluginTreeElement("_plugin_manager").childSetting('automatically-check-for-updates').setValue(state)
+        QgsSettings.createPluginTreeNode("_plugin_manager").childSetting('automatically-check-for-updates').setValue(state)
 
     def saveCheckingOnStartLastDate(self):
         """ set today's date as the day of last checking  """
-        QgsSettings.createPluginTreeElement("_plugin_manager").childSetting('check-on-start-last-date').setValue(QDate.currentDate())
+        QgsSettings.createPluginTreeNode("_plugin_manager").childSetting('check-on-start-last-date').setValue(QDate.currentDate())
 
     def timeForChecking(self) -> bool:
         """ determine whether it's the time for checking for news and updates now """
         settings = QgsSettings()
         try:
             # QgsSettings may contain ivalid value...
-            interval = QgsSettings.createPluginTreeElement("_plugin_manager").childSetting('check-on-start-last-date').valueAs(type=QDate).daysTo(QDate.currentDate())
+            interval = QgsSettings.createPluginTreeNode("_plugin_manager").childSetting('check-on-start-last-date').valueAs(type=QDate).daysTo(QDate.currentDate())
         except:
             interval = 0
         if interval >= Repositories.CHECK_ON_START_INTERVAL:
@@ -711,8 +711,8 @@ class Plugins(QObject):
         self.mPlugins = {}
         for i in list(self.localCache.keys()):
             self.mPlugins[i] = self.localCache[i].copy()
-        allowExperimental = QgsSettings.createPluginTreeElement("_plugin_manager").childSetting("allow-experimental").value()
-        allowDeprecated = QgsSettings.createPluginTreeElement("_plugin_manager").childSetting("allow-deprecated").value()
+        allowExperimental = QgsSettings.createPluginTreeNode("_plugin_manager").childSetting("allow-experimental").value()
+        allowDeprecated = QgsSettings.createPluginTreeNode("_plugin_manager").childSetting("allow-deprecated").value()
         for i in list(self.repoCache.values()):
             for j in i:
                 plugin = j.copy()  # do not update repoCache elements!
@@ -808,7 +808,7 @@ class Plugins(QObject):
     # ----------------------------------------- #
     def markNews(self):
         """ mark all new plugins as new """
-        seenPlugins = QgsSettings.createPluginTreeElement("_plugin_manager").childSetting("seen-plugins").valueWithDefaultOverride(list(self.mPlugins.keys()))
+        seenPlugins = QgsSettings.createPluginTreeNode("_plugin_manager").childSetting("seen-plugins").valueWithDefaultOverride(list(self.mPlugins.keys()))
         if len(seenPlugins) > 0:
             for plugin in list(self.mPlugins.keys()):
                 if seenPlugins.count(plugin) == 0 and self.mPlugins[plugin]["status"] == "not installed":
@@ -817,7 +817,7 @@ class Plugins(QObject):
     # ----------------------------------------- #
     def updateSeenPluginsList(self):
         """ update the list of all seen plugins """
-        setting = QgsSettings.createPluginTreeElement("_plugin_manager").childSetting("seen-plugins")
+        setting = QgsSettings.createPluginTreeNode("_plugin_manager").childSetting("seen-plugins")
         seenPlugins = setting.valueWithDefaultOverride(list(self.mPlugins.keys()))
         for plugin in list(self.mPlugins.keys()):
             if seenPlugins.count(plugin) == 0:
