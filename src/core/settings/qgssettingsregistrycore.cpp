@@ -26,6 +26,7 @@
 #include "qgsprocessing.h"
 #include "qgsvectortileconnection.h"
 #include "qgsgpsdetector.h"
+#include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 
 const QgsSettingsEntryEnumFlag<Qgis::SnappingMode> *QgsSettingsRegistryCore::settingsDigitizingDefaultSnapMode = new QgsSettingsEntryEnumFlag<Qgis::SnappingMode>( QStringLiteral( "default_snap_mode" ), QgsSettings::sTreeDigitizing, Qgis::SnappingMode::AllLayers );
@@ -136,6 +137,9 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   QgsGpsDetector::settingsGpsDataBits->copyValueFromKey( QStringLiteral( "core/gps/data_bits" ) );
   QgsGpsDetector::settingsGpsParity->copyValueFromKey( QStringLiteral( "core/gps/parity" ) );
 #endif
+
+  QgsRasterLayer::settingsRasterDefaultOversampling->copyValueFromKey( QStringLiteral( "Raster/defaultOversampling" ), true );
+  QgsRasterLayer::settingsRasterDefaultEarlyResampling->copyValueFromKey( QStringLiteral( "Raster/defaultEarlyResampling" ), true );
 
   // locator filters - added in 3.30
   {
@@ -279,6 +283,10 @@ void QgsSettingsRegistryCore::backwardCompatibility()
   QgsGpsDetector::settingsGpsDataBits->copyValueToKey( QStringLiteral( "core/gps/data_bits" ) );
   QgsGpsDetector::settingsGpsParity->copyValueToKey( QStringLiteral( "core/gps/parity" ) );
 #endif
+
+  QgsRasterLayer::settingsRasterDefaultOversampling->copyValueToKey( QStringLiteral( "Raster/defaultOversampling" ) );
+  QgsRasterLayer::settingsRasterDefaultEarlyResampling->copyValueToKey( QStringLiteral( "Raster/defaultEarlyResampling" ) );
+
 
   // locator filters - added in 3.30
   {

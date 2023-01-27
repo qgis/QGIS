@@ -48,6 +48,8 @@ class QgsRasterResampleFilter;
 class QgsBrightnessContrastFilter;
 class QgsHueSaturationFilter;
 class QgsRasterLayerElevationProperties;
+class QgsSettingsEntryBool;
+class QgsSettingsEntryDouble;
 
 class QImage;
 class QPixmap;
@@ -77,6 +79,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
     Q_OBJECT
 
   public:
+
+    static const QgsSettingsEntryBool *settingsRasterDefaultEarlyResampling SIP_SKIP;
+    static const QgsSettingsEntryDouble *settingsRasterDefaultOversampling SIP_SKIP;
 
     //! \brief Default sample size (number of pixels) for estimated statistics/histogram calculation
     static const double SAMPLE_SIZE;
