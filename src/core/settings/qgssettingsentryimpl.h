@@ -85,7 +85,7 @@ class CORE_EXPORT QgsSettingsEntryVariant : public QgsSettingsEntryByReference<Q
                              const QString &description = QString(),
                              Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER;
     % MethodCode
-    sipCpp = new sipQgsSettingsEntryVariant( QgsSettingsEntryVariant( *a0, QgsSettings::createPluginTreeElement( *a1 ), *a2, *a3, *a4 ) );
+    sipCpp = new sipQgsSettingsEntryVariant( QgsSettingsEntryVariant( *a0, QgsSettings::createPluginTreeNode( *a1 ), *a2, *a3, *a4 ) );
     % End
 #endif
 
@@ -195,7 +195,7 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntryByReference<QS
                             int minLength = 0,
                             int maxLength = -1 ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER;
     % MethodCode
-    sipCpp = new sipQgsSettingsEntryString( QgsSettingsEntryString( *a0, QgsSettings::createPluginTreeElement( *a1 ), *a2, *a3, *a4 ) );
+    sipCpp = new sipQgsSettingsEntryString( QgsSettingsEntryString( *a0, QgsSettings::createPluginTreeNode( *a1 ), *a2, *a3, *a4 ) );
     % End
 #endif
 
@@ -285,7 +285,7 @@ class CORE_EXPORT QgsSettingsEntryStringList : public QgsSettingsEntryByReferenc
                                 const QString &description = QString(),
                                 Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER;
     % MethodCode
-    sipCpp = new sipQgsSettingsEntryStringList( QgsSettingsEntryStringList( *a0, QgsSettings::createPluginTreeElement( *a1 ), *a2, *a3, *a4 ) );
+    sipCpp = new sipQgsSettingsEntryStringList( QgsSettingsEntryStringList( *a0, QgsSettings::createPluginTreeNode( *a1 ), *a2, *a3, *a4 ) );
     % End
 #endif
 
@@ -360,7 +360,7 @@ class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntryByValue<bool>
                           const QString &description = QString(),
                           Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER;
     % MethodCode
-    sipCpp = new sipQgsSettingsEntryBool( QgsSettingsEntryBool( *a0, QgsSettings::createPluginTreeElement( *a1 ), a2, *a3, *a4 ) );
+    sipCpp = new sipQgsSettingsEntryBool( QgsSettingsEntryBool( *a0, QgsSettings::createPluginTreeNode( *a1 ), a2, *a3, *a4 ) );
     % End
 #endif
 
@@ -451,7 +451,7 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryByValue<int>
                              int minValue = std::numeric_limits<int>::min(),
                              int maxValue = std::numeric_limits<int>::max() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER;
     % MethodCode
-    sipCpp = new sipQgsSettingsEntryInteger( QgsSettingsEntryInteger( *a0, QgsSettings::createPluginTreeElement( *a1 ), a2, *a3, *a4, a5, a6 ) );
+    sipCpp = new sipQgsSettingsEntryInteger( QgsSettingsEntryInteger( *a0, QgsSettings::createPluginTreeNode( *a1 ), a2, *a3, *a4, a5, a6 ) );
     % End
 #endif
 
@@ -643,7 +643,7 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntryByValue<double
                             double maxValue = std::numeric_limits<double>::max(),
                             int displayDecimals = 1 ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER;
     % MethodCode
-    sipCpp = new sipQgsSettingsEntryDouble( QgsSettingsEntryDouble( *a0, QgsSettings::createPluginTreeElement( *a1 ), a2, *a3, *a4, a5, a6, a7 ) );
+    sipCpp = new sipQgsSettingsEntryDouble( QgsSettingsEntryDouble( *a0, QgsSettings::createPluginTreeNode( *a1 ), a2, *a3, *a4, a5, a6, a7 ) );
     % End
 #endif
 
@@ -754,7 +754,7 @@ class CORE_EXPORT QgsSettingsEntryColor : public QgsSettingsEntryByReference<QCo
                            Qgis::SettingsOptions options = Qgis::SettingsOptions(),
                            bool allowAlpha = true ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER;
     % MethodCode
-    sipCpp = new sipQgsSettingsEntryColor( QgsSettingsEntryColor( *a0, QgsSettings::createPluginTreeElement( *a1 ), *a2, *a3, *a4, a5 ) );
+    sipCpp = new sipQgsSettingsEntryColor( QgsSettingsEntryColor( *a0, QgsSettings::createPluginTreeNode( *a1 ), *a2, *a3, *a4, a5 ) );
     % End
 #endif
 
@@ -852,7 +852,7 @@ class CORE_EXPORT QgsSettingsEntryVariantMap : public QgsSettingsEntryByReferenc
                                 const QString &description = QString(),
                                 Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER;
     % MethodCode
-    sipCpp = new sipQgsSettingsEntryVariantMap( QgsSettingsEntryVariantMap( *a0, QgsSettings::createPluginTreeElement( *a1 ), *a2, *a3, *a4 ) );
+    sipCpp = new sipQgsSettingsEntryVariantMap( QgsSettingsEntryVariantMap( *a0, QgsSettings::createPluginTreeNode( *a1 ), *a2, *a3, *a4 ) );
     % End
 #endif
 

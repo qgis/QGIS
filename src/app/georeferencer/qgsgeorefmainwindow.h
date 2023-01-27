@@ -62,7 +62,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     Q_OBJECT
 
   public:
-    static inline QgsSettingsTreeNode *sTreeGeoreferencer = QgsSettings::sTreeApp->createChildElement( QStringLiteral( "georeferencer" ) );
+    static inline QgsSettingsTreeNode *sTreeGeoreferencer = QgsSettings::sTreeApp->createChildNode( QStringLiteral( "georeferencer" ) );
 
     static const QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod> *settingResamplingMethod;
     static const QgsSettingsEntryString *settingCompressionMethod;

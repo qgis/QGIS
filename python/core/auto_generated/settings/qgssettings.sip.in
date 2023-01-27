@@ -66,17 +66,17 @@ static bool setGlobalSettingsPath( QString path );
     };
 
 
-    static QgsSettingsTreeNode *createPluginTreeElement( const QString &pluginName );
+    static QgsSettingsTreeNode *createPluginTreeNode( const QString &pluginName );
 %Docstring
-Creates a settings tree element for the given ``pluginName``
+Creates a settings tree node for the given ``pluginName``
 
 .. versionadded:: 3.30
 %End
 
 
-    static void unregisterPluginTreeElement( const QString &pluginName );
+    static void unregisterPluginTreeNode( const QString &pluginName );
 %Docstring
-Unregisters the tree element for the given plugin
+Unregisters the tree node for the given plugin
 
 .. versionadded:: 3.30
 %End

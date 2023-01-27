@@ -40,7 +40,7 @@
 class CORE_EXPORT QgsXyzConnectionSettings SIP_SKIP
 {
   public:
-    static inline QgsSettingsTreeNamedListNode *sTreeXyzConnections = QgsSettings::sTreeConnections->createNamedListElement( QStringLiteral( "xyz" ), QgsSettingsTreeNode::Option::NamedListSelectedItemSetting );
+    static inline QgsSettingsTreeNamedListNode *sTreeXyzConnections = QgsSettings::sTreeConnections->createNamedListNode( QStringLiteral( "xyz" ), QgsSettingsTreeNode::Option::NamedListSelectedItemSetting );
 
     static const QgsSettingsEntryString *settingsUrl;
     static const QgsSettingsEntryVariantMap *settingsHeaders;
@@ -64,7 +64,7 @@ class CORE_EXPORT QgsXyzConnectionSettings SIP_SKIP
 class CORE_EXPORT QgsArcGisConnectionSettings SIP_SKIP
 {
   public:
-    static inline QgsSettingsTreeNamedListNode *sTreeConnectionArcgis = QgsSettings::sTreeConnections->createNamedListElement( QStringLiteral( "arcgisfeatureserver" ), QgsSettingsTreeNamedListNode::Option::NamedListSelectedItemSetting );
+    static inline QgsSettingsTreeNamedListNode *sTreeConnectionArcgis = QgsSettings::sTreeConnections->createNamedListNode( QStringLiteral( "arcgisfeatureserver" ), QgsSettingsTreeNamedListNode::Option::NamedListSelectedItemSetting );
 
     static const QgsSettingsEntryString *settingsUrl;
     static const QgsSettingsEntryString *settingsAuthcfg;
@@ -87,8 +87,8 @@ class CORE_EXPORT QgsOwsConnection : public QObject
   public:
 
 #ifndef SIP_RUN
-    static inline QgsSettingsTreeNamedListNode *sTtreeOwsServices = QgsSettings::sTreeConnections->createNamedListElement( QStringLiteral( "ows" ) );
-    static inline QgsSettingsTreeNamedListNode *sTreeOwsConnections = sTtreeOwsServices->createNamedListElement( QStringLiteral( "connections" ) );
+    static inline QgsSettingsTreeNamedListNode *sTtreeOwsServices = QgsSettings::sTreeConnections->createNamedListNode( QStringLiteral( "ows" ) );
+    static inline QgsSettingsTreeNamedListNode *sTreeOwsConnections = sTtreeOwsServices->createNamedListNode( QStringLiteral( "connections" ) );
 
     static const QgsSettingsEntryString *settingsUrl;
     static const QgsSettingsEntryVariantMap *settingsHeaders;

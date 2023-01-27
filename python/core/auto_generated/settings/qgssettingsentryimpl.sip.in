@@ -81,7 +81,7 @@ This constructor is intended to be used from plugins.
 :param options: specifies the options for the settings entry.
 %End
 %MethodCode
-    sipCpp = new sipQgsSettingsEntryVariant( QgsSettingsEntryVariant( *a0, QgsSettings::createPluginTreeElement( *a1 ), *a2, *a3, *a4 ) );
+    sipCpp = new sipQgsSettingsEntryVariant( QgsSettingsEntryVariant( *a0, QgsSettings::createPluginTreeNode( *a1 ), *a2, *a3, *a4 ) );
 %End
 
 
@@ -188,7 +188,7 @@ This constructor is intended to be used from plugins.
 :param options: specifies the options for the settings entry.
 %End
 %MethodCode
-    sipCpp = new sipQgsSettingsEntryString( QgsSettingsEntryString( *a0, QgsSettings::createPluginTreeElement( *a1 ), *a2, *a3, *a4 ) );
+    sipCpp = new sipQgsSettingsEntryString( QgsSettingsEntryString( *a0, QgsSettings::createPluginTreeNode( *a1 ), *a2, *a3, *a4 ) );
 %End
 
     virtual Qgis::SettingsType settingsType() const;
@@ -279,7 +279,7 @@ This constructor is intended to be used from plugins.
 :param options: specifies the options for the settings entry.
 %End
 %MethodCode
-    sipCpp = new sipQgsSettingsEntryStringList( QgsSettingsEntryStringList( *a0, QgsSettings::createPluginTreeElement( *a1 ), *a2, *a3, *a4 ) );
+    sipCpp = new sipQgsSettingsEntryStringList( QgsSettingsEntryStringList( *a0, QgsSettings::createPluginTreeNode( *a1 ), *a2, *a3, *a4 ) );
 %End
 
     virtual Qgis::SettingsType settingsType() const;
@@ -357,7 +357,7 @@ This constructor is intended to be used from plugins.
 :param options: specifies the options for the settings entry.
 %End
 %MethodCode
-    sipCpp = new sipQgsSettingsEntryBool( QgsSettingsEntryBool( *a0, QgsSettings::createPluginTreeElement( *a1 ), a2, *a3, *a4 ) );
+    sipCpp = new sipQgsSettingsEntryBool( QgsSettingsEntryBool( *a0, QgsSettings::createPluginTreeNode( *a1 ), a2, *a3, *a4 ) );
 %End
 
 
@@ -448,7 +448,7 @@ This constructor is intended to be used from plugins.
 :param maxValue: specifies the maximal value.
 %End
 %MethodCode
-    sipCpp = new sipQgsSettingsEntryInteger( QgsSettingsEntryInteger( *a0, QgsSettings::createPluginTreeElement( *a1 ), a2, *a3, *a4, a5, a6 ) );
+    sipCpp = new sipQgsSettingsEntryInteger( QgsSettingsEntryInteger( *a0, QgsSettings::createPluginTreeNode( *a1 ), a2, *a3, *a4, a5, a6 ) );
 %End
 
     virtual Qgis::SettingsType settingsType() const;
@@ -558,7 +558,7 @@ This constructor is intended to be used from plugins.
 :param displayDecimals: specifies a hint for the gui about how much decimals to show
 %End
 %MethodCode
-    sipCpp = new sipQgsSettingsEntryDouble( QgsSettingsEntryDouble( *a0, QgsSettings::createPluginTreeElement( *a1 ), a2, *a3, *a4, a5, a6, a7 ) );
+    sipCpp = new sipQgsSettingsEntryDouble( QgsSettingsEntryDouble( *a0, QgsSettings::createPluginTreeNode( *a1 ), a2, *a3, *a4, a5, a6, a7 ) );
 %End
 
 
@@ -667,7 +667,7 @@ This constructor is intended to be used from plugins.
 :param options: specifies the options for the settings entry.
 %End
 %MethodCode
-    sipCpp = new sipQgsSettingsEntryColor( QgsSettingsEntryColor( *a0, QgsSettings::createPluginTreeElement( *a1 ), *a2, *a3, *a4, a5 ) );
+    sipCpp = new sipQgsSettingsEntryColor( QgsSettingsEntryColor( *a0, QgsSettings::createPluginTreeNode( *a1 ), *a2, *a3, *a4, a5 ) );
 %End
 
     virtual Qgis::SettingsType settingsType() const;
@@ -757,7 +757,7 @@ This constructor is intended to be used from plugins.
 :param options: specifies the options for the settings entry.
 %End
 %MethodCode
-    sipCpp = new sipQgsSettingsEntryVariantMap( QgsSettingsEntryVariantMap( *a0, QgsSettings::createPluginTreeElement( *a1 ), *a2, *a3, *a4 ) );
+    sipCpp = new sipQgsSettingsEntryVariantMap( QgsSettingsEntryVariantMap( *a0, QgsSettings::createPluginTreeNode( *a1 ), *a2, *a3, *a4 ) );
 %End
 
     virtual Qgis::SettingsType settingsType() const;

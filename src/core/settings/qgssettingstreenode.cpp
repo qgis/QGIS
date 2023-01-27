@@ -23,13 +23,13 @@
 QgsSettingsTreeNode::~QgsSettingsTreeNode()
 {
   if ( mType != Type::Root )
-    mParent->unregisterChildElement( this );
+    mParent->unregisterChildNode( this );
 
-  qDeleteAll( mChildrenElements );
+  qDeleteAll( mChildrenNodes );
   qDeleteAll( mChildrenSettings );
 }
 
-QgsSettingsTreeNode *QgsSettingsTreeNode::createRootElement()
+QgsSettingsTreeNode *QgsSettingsTreeNode::createRootNode()
 {
   QgsSettingsTreeNode *te = new QgsSettingsTreeNode();
   te->mType = Type::Root;
@@ -38,47 +38,47 @@ QgsSettingsTreeNode *QgsSettingsTreeNode::createRootElement()
   return te;
 }
 
-QgsSettingsTreeNode *QgsSettingsTreeNode::createChildElement( const QString &key )
+QgsSettingsTreeNode *QgsSettingsTreeNode::createChildNode( const QString &key )
 {
-  QgsSettingsTreeNode *te = childElement( key );
+  QgsSettingsTreeNode *te = childNode( key );
   if ( te )
     return te;
   if ( childSetting( key ) )
-    throw QgsSettingsException( QObject::tr( "Settings tree element '%1' already holds a child setting with key '%2'." ).arg( this->key(), key ) );
+    throw QgsSettingsException( QObject::tr( "Settings tree node '%1' already holds a child setting with key '%2'." ).arg( this->key(), key ) );
 
   te = new QgsSettingsTreeNode();
   te->mType = Type::Standard;
   te->init( this, key );
-  registerChildElement( te );
+  registerChildNode( te );
   return te;
 }
 
-QgsSettingsTreeNamedListNode *QgsSettingsTreeNode::createNamedListElement( const QString &key, const QgsSettingsTreeNode::Options &options )
+QgsSettingsTreeNamedListNode *QgsSettingsTreeNode::createNamedListNode( const QString &key, const QgsSettingsTreeNode::Options &options )
 {
-  QgsSettingsTreeNode *nte = childElement( key );
+  QgsSettingsTreeNode *nte = childNode( key );
   if ( nte )
   {
     if ( nte->type() == Type::NamedList )
       return dynamic_cast<QgsSettingsTreeNamedListNode *>( nte );
     else
-      throw QgsSettingsException( QObject::tr( "Settings tree element '%1' already holds a child element with key '%2', but it is not a named list.." ).arg( this->key(), key ) );
+      throw QgsSettingsException( QObject::tr( "Settings tree node '%1' already holds a child node with key '%2', but it is not a named list.." ).arg( this->key(), key ) );
   }
   if ( childSetting( key ) )
-    throw QgsSettingsException( QObject::tr( "Settings tree element '%1' already holds a child setting with key '%2'." ).arg( this->key(), key ) );
+    throw QgsSettingsException( QObject::tr( "Settings tree node '%1' already holds a child setting with key '%2'." ).arg( this->key(), key ) );
 
   QgsSettingsTreeNamedListNode *te = new QgsSettingsTreeNamedListNode();
   te->mType = Type::NamedList;
   te->init( this, key );
   te->initNamedList( options );
-  registerChildElement( te );
+  registerChildNode( te );
   return te;
 }
 
 
-QgsSettingsTreeNode *QgsSettingsTreeNode::childElement( const QString &key )
+QgsSettingsTreeNode *QgsSettingsTreeNode::childNode( const QString &key )
 {
-  QList<QgsSettingsTreeNode *>::const_iterator it = mChildrenElements.constBegin();
-  for ( ; it != mChildrenElements.constEnd(); ++it )
+  QList<QgsSettingsTreeNode *>::const_iterator it = mChildrenNodes.constBegin();
+  for ( ; it != mChildrenNodes.constEnd(); ++it )
   {
     if ( ( *it )->key() == key )
       return *it;
@@ -100,18 +100,18 @@ const QgsSettingsEntryBase *QgsSettingsTreeNode::childSetting( const QString &ke
 
 void QgsSettingsTreeNode::registerChildSetting( const QgsSettingsEntryBase *setting, const QString &key )
 {
-  if ( childElement( key ) )
-    throw QgsSettingsException( QObject::tr( "Settings tree element '%1' already holds a child tree element with key '%2'." ).arg( this->key(), key ) );
+  if ( childNode( key ) )
+    throw QgsSettingsException( QObject::tr( "Settings tree node '%1' already holds a child tree node with key '%2'." ).arg( this->key(), key ) );
   if ( childSetting( key ) )
-    throw QgsSettingsException( QObject::tr( "Settings tree element '%1' already holds a child setting with key '%2'." ).arg( this->key(), key ) );
+    throw QgsSettingsException( QObject::tr( "Settings tree node '%1' already holds a child setting with key '%2'." ).arg( this->key(), key ) );
 
   mChildrenSettings.append( setting );
 }
 
 
-void QgsSettingsTreeNode::registerChildElement( QgsSettingsTreeNode *element )
+void QgsSettingsTreeNode::registerChildNode( QgsSettingsTreeNode *node )
 {
-  mChildrenElements.append( element );
+  mChildrenNodes.append( node );
 }
 
 void QgsSettingsTreeNode::unregisterChildSetting( const QgsSettingsEntryBase *setting, bool deleteSettingValues, const QStringList &parentsNamedItems )
@@ -122,9 +122,9 @@ void QgsSettingsTreeNode::unregisterChildSetting( const QgsSettingsEntryBase *se
   mChildrenSettings.removeAll( setting );
 }
 
-void QgsSettingsTreeNode::unregisterChildElement( QgsSettingsTreeNode *element )
+void QgsSettingsTreeNode::unregisterChildNode( QgsSettingsTreeNode *node )
 {
-  mChildrenElements.removeAll( element );
+  mChildrenNodes.removeAll( node );
 }
 
 void QgsSettingsTreeNode::init( QgsSettingsTreeNode *parent, const QString &key )
@@ -144,9 +144,9 @@ void QgsSettingsTreeNamedListNode::initNamedList( const QgsSettingsTreeNode::Opt
     mSelectedItemSetting = new QgsSettingsEntryString( QStringLiteral( "%1/selected" ).arg( mCompleteKey ), nullptr );
   }
 
-  mNamedElementsCount = mParent->namedElementsCount() + 1;
+  mNamedNodesCount = mParent->namedNodesCount() + 1;
   mItemsCompleteKey = QStringLiteral( "%1items/" ).arg( mCompleteKey );
-  mCompleteKey.append( QStringLiteral( "items/%%1/" ).arg( mNamedElementsCount ) );
+  mCompleteKey.append( QStringLiteral( "items/%%1/" ).arg( mNamedNodesCount ) );
 }
 
 QgsSettingsTreeNamedListNode::~QgsSettingsTreeNamedListNode()
@@ -162,8 +162,8 @@ QStringList QgsSettingsTreeNamedListNode::items( const QStringList &parentsNamed
 
 QStringList QgsSettingsTreeNamedListNode::items( Qgis::SettingsOrigin origin, const QStringList &parentsNamedItems ) const
 {
-  if ( namedElementsCount() - 1 != parentsNamedItems.count() )
-    throw QgsSettingsException( QObject::tr( "The number of given parent named items (%1) for the element '%2' doesn't match with the number of named items in the key (%3)." ).arg( QString::number( parentsNamedItems.count() ), mCompleteKey, QString::number( namedElementsCount() ) ) );
+  if ( namedNodesCount() - 1 != parentsNamedItems.count() )
+    throw QgsSettingsException( QObject::tr( "The number of given parent named items (%1) for the node '%2' doesn't match with the number of named items in the key (%3)." ).arg( QString::number( parentsNamedItems.count() ), mCompleteKey, QString::number( namedNodesCount() ) ) );
 
 
   const QString completeKeyParam = completeKeyWithNamedItems( mItemsCompleteKey, parentsNamedItems );
@@ -174,30 +174,30 @@ QStringList QgsSettingsTreeNamedListNode::items( Qgis::SettingsOrigin origin, co
 
 void QgsSettingsTreeNamedListNode::setSelectedItem( const QString &item, const QStringList &parentsNamedItems )
 {
-  if ( namedElementsCount() - 1 != parentsNamedItems.count() )
-    throw QgsSettingsException( QObject::tr( "The number of given parent named items (%1) for the element '%2' doesn't match with the number of named items in the key (%3)." ).arg( QString::number( parentsNamedItems.count() ), mCompleteKey, QString::number( namedElementsCount() ) ) );
+  if ( namedNodesCount() - 1 != parentsNamedItems.count() )
+    throw QgsSettingsException( QObject::tr( "The number of given parent named items (%1) for the node '%2' doesn't match with the number of named items in the key (%3)." ).arg( QString::number( parentsNamedItems.count() ), mCompleteKey, QString::number( namedNodesCount() ) ) );
   if ( !mOptions.testFlag( Option::NamedListSelectedItemSetting ) )
-    throw QgsSettingsException( QObject::tr( "The named list element '%1' has no option to set the current selected entry." ).arg( mCompleteKey ) );
+    throw QgsSettingsException( QObject::tr( "The named list node '%1' has no option to set the current selected entry." ).arg( mCompleteKey ) );
 
   mSelectedItemSetting->setValue( item, parentsNamedItems );
 }
 
 QString QgsSettingsTreeNamedListNode::selectedItem( const QStringList &parentsNamedItems )
 {
-  if ( namedElementsCount() - 1 != parentsNamedItems.count() )
-    throw QgsSettingsException( QObject::tr( "The number of given parent named items (%1) for the element '%2' doesn't match with the number of named items in the key (%3)." ).arg( QString::number( parentsNamedItems.count() ), mCompleteKey, QString::number( namedElementsCount() ) ) );
+  if ( namedNodesCount() - 1 != parentsNamedItems.count() )
+    throw QgsSettingsException( QObject::tr( "The number of given parent named items (%1) for the node '%2' doesn't match with the number of named items in the key (%3)." ).arg( QString::number( parentsNamedItems.count() ), mCompleteKey, QString::number( namedNodesCount() ) ) );
   if ( !mOptions.testFlag( Option::NamedListSelectedItemSetting ) )
-    throw QgsSettingsException( QObject::tr( "The named list element '%1' has no option to set the current selected entry." ).arg( mCompleteKey ) );
+    throw QgsSettingsException( QObject::tr( "The named list node '%1' has no option to set the current selected entry." ).arg( mCompleteKey ) );
 
   return mSelectedItemSetting->value( parentsNamedItems );
 }
 
 void QgsSettingsTreeNamedListNode::deleteItem( const QString &item, const QStringList &parentsNamedItems )
 {
-  if ( namedElementsCount() - 1 != parentsNamedItems.count() )
-    throw QgsSettingsException( QObject::tr( "The number of given parent named items (%1) doesn't match with the number of named items in the key (%2)." ).arg( parentsNamedItems.count(), namedElementsCount() ) );
+  if ( namedNodesCount() - 1 != parentsNamedItems.count() )
+    throw QgsSettingsException( QObject::tr( "The number of given parent named items (%1) doesn't match with the number of named items in the key (%2)." ).arg( parentsNamedItems.count(), namedNodesCount() ) );
   if ( !mOptions.testFlag( Option::NamedListSelectedItemSetting ) )
-    throw QgsSettingsException( QObject::tr( "The  named list element has no option to set the current selected entry." ) );
+    throw QgsSettingsException( QObject::tr( "The  named list node has no option to set the current selected entry." ) );
 
   QStringList args = parentsNamedItems;
   args << item;

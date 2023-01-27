@@ -14,11 +14,11 @@
 class QgsSettingsTreeNode
 {
 %Docstring(signature="appended")
-:py:class:`QgsSettingsTreeNode` is a tree element for the settings registry
+:py:class:`QgsSettingsTreeNode` is a tree node for the settings registry
 to help organizing and introspecting the registry.
-It is either a root element, a normal element or
+It is either a root node, a normal node or
 a named list (to store a group of settings under a dynamic named key).
-The root element holds a pointer to a registry (might be null)
+The root node holds a pointer to a registry (might be null)
 to automatically register a settings entry on its creation when a parent is provided.
 
 .. seealso:: :py:class:`QgsSettingsEntryBase`
@@ -61,24 +61,24 @@ to automatically register a settings entry on its creation when a parent is prov
     virtual ~QgsSettingsTreeNode();
 
 
-    QgsSettingsTreeNode *createChildElement( const QString &key ) throw( QgsSettingsException ) /KeepReference/;
+    QgsSettingsTreeNode *createChildNode( const QString &key ) throw( QgsSettingsException ) /KeepReference/;
 %Docstring
-Creates a normal tree element
-It will return the existing child element if it exists at the given key
+Creates a normal tree node
+It will return the existing child node if it exists at the given key
 
 :raises QgsSettingsException: if a setting exists with the same key
 %End
 
-    QgsSettingsTreeNamedListNode *createNamedListElement( const QString &key, const QgsSettingsTreeNode::Options &options = QgsSettingsTreeNode::Options() ) throw( QgsSettingsException ) /KeepReference/;
+    QgsSettingsTreeNamedListNode *createNamedListNode( const QString &key, const QgsSettingsTreeNode::Options &options = QgsSettingsTreeNode::Options() ) throw( QgsSettingsException ) /KeepReference/;
 %Docstring
-Creates a named list tree element.
+Creates a named list tree node.
 This is useful to register groups of settings for several named items (for instance credentials for several named services)
 %End
 
 
     Type type() const;
 %Docstring
-Returns the type of element
+Returns the type of node
 %End
 
     void registerChildSetting( const QgsSettingsEntryBase *setting, const QString &key ) throw( QgsSettingsException );
@@ -108,19 +108,19 @@ Unregisters the child setting
 :param parentsNamedItems: the list of named items in the parent named list (if any)
 %End
 
-    void unregisterChildElement( QgsSettingsTreeNode *element );
+    void unregisterChildNode( QgsSettingsTreeNode *node );
 %Docstring
-Unregisters the child tree ``element``
+Unregisters the child tree ``node``
 %End
 
-    QList<QgsSettingsTreeNode *> childrenElements() const;
+    QList<QgsSettingsTreeNode *> childrenNodes() const;
 %Docstring
-Returns the children elements
+Returns the children nodes
 %End
 
-    QgsSettingsTreeNode *childElement( const QString &key );
+    QgsSettingsTreeNode *childNode( const QString &key );
 %Docstring
-Returns the existing child element if it exists at the given ``key``
+Returns the existing child node if it exists at the given ``key``
 %End
 
     QList<const QgsSettingsEntryBase *> childrenSettings() const;
@@ -135,22 +135,22 @@ Returns the existing child settings if it exists at the given ``key``
 
     QgsSettingsTreeNode *parent() const;
 %Docstring
-Returns the parent of the element or None if it does not exists
+Returns the parent of the node or None if it does not exists
 %End
 
     QString key() const;
 %Docstring
-Returns the key of the element (without its parents)
+Returns the key of the node (without its parents)
 %End
 
     QString completeKey() const;
 %Docstring
-Returns the complete key of the element (including its parents)
+Returns the complete key of the node (including its parents)
 %End
 
-    int namedElementsCount() const;
+    int namedNodesCount() const;
 %Docstring
-Returns the number of named elements in the complete key
+Returns the number of named nodes in the complete key
 %End
 
     SIP_PYOBJECT __repr__();
@@ -162,9 +162,9 @@ Returns the number of named elements in the complete key
 %End
 
   protected:
-    void registerChildElement( QgsSettingsTreeNode *element );
+    void registerChildNode( QgsSettingsTreeNode *node );
 %Docstring
-Registers a child elements
+Registers a child nodes
 %End
 
 
@@ -175,9 +175,9 @@ Registers a child elements
 
 .. note::
 
-   This is not available in Python bindings. Use method createElement on an existing tree element.
+   This is not available in Python bindings. Use method createNode on an existing tree node.
 
-.. seealso:: :py:func:`QgsSettings.createPluginTreeElement`
+.. seealso:: :py:func:`QgsSettings.createPluginTreeNode`
 %End
     QgsSettingsTreeNode( const QgsSettingsTreeNode &other );
 };
@@ -187,9 +187,9 @@ Registers a child elements
 class QgsSettingsTreeNamedListNode : QgsSettingsTreeNode
 {
 %Docstring(signature="appended")
-:py:class:`QgsSettingsTreeNamedListNode` is a named list tree element for the settings registry
+:py:class:`QgsSettingsTreeNamedListNode` is a named list tree node for the settings registry
 to help organizing and introspecting the registry.
-the named list element is used to store a group of settings under a dynamically named key.
+the named list node is used to store a group of settings under a dynamically named key.
 
 .. seealso:: :py:class:`QgsSettingsTreeNode`
 
@@ -228,7 +228,7 @@ Returns the list of items
 
     void setSelectedItem( const QString &item, const QStringList &parentsNamedItems = QStringList() ) throw( QgsSettingsException );
 %Docstring
-Sets the selected named item from the named list element
+Sets the selected named item from the named list node
 
 :param item: the item to set as selected
 :param parentsNamedItems: the list of named items in the parent named list (if any)
@@ -238,7 +238,7 @@ Sets the selected named item from the named list element
 
     QString selectedItem( const QStringList &parentsNamedItems = QStringList() ) throw( QgsSettingsException );
 %Docstring
-Returns the selected named item from the named list element
+Returns the selected named item from the named list node
 
 :param parentsNamedItems: the list of named items in the parent named list (if any)
 
@@ -247,7 +247,7 @@ Returns the selected named item from the named list element
 
     void deleteItem( const QString &item, const QStringList &parentsNamedItems = QStringList() ) throw( QgsSettingsException );
 %Docstring
-Deletes a named item from the named list element
+Deletes a named item from the named list node
 
 :param item: the item to delete
 :param parentsNamedItems: the list of named items in the parent named list (if any)
@@ -263,7 +263,7 @@ Returns the setting used to store the selected item
   protected:
     void initNamedList( const QgsSettingsTreeNode::Options &options );
 %Docstring
-Init the elements with the specific ``options``
+Init the nodes with the specific ``options``
 %End
 
   private:
@@ -272,9 +272,9 @@ Init the elements with the specific ``options``
 
 .. note::
 
-   This is not available in Python bindings. Use method createNamedListElement on an existing tree element.
+   This is not available in Python bindings. Use method createNamedListNode on an existing tree node.
 
-.. seealso:: :py:func:`QgsSettings.createPluginTreeElement`
+.. seealso:: :py:func:`QgsSettings.createPluginTreeNode`
 %End
     QgsSettingsTreeNamedListNode( const QgsSettingsTreeNamedListNode &other );
 };
