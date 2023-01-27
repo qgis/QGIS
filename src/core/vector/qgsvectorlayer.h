@@ -18,7 +18,6 @@
 #ifndef QGSVECTORLAYER_H
 #define QGSVECTORLAYER_H
 
-
 #include "qgis_core.h"
 #include <QMap>
 #include <QSet>
@@ -82,6 +81,14 @@ class QgsStyleEntityVisitorInterface;
 class QgsVectorLayerTemporalProperties;
 class QgsFeatureRendererGenerator;
 class QgsVectorLayerElevationProperties;
+
+#ifndef SIP_RUN
+template<class T>
+class QgsSettingsEntryEnumFlag;
+#endif
+class QgsSettingsEntryDouble;
+class QgsSettingsEntryBool;
+
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
@@ -399,6 +406,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     Q_PROPERTY( bool supportsEditing READ supportsEditing NOTIFY supportsEditingChanged )
 
   public:
+
+    static const QgsSettingsEntryBool *settingsSimplifyLocal SIP_SKIP;
+
+    static const QgsSettingsEntryDouble *settingsSimplifyMaxScale SIP_SKIP;
+    static const QgsSettingsEntryDouble *settingsSimplifyDrawingTol SIP_SKIP;
+    static const QgsSettingsEntryEnumFlag<QgsVectorSimplifyMethod::SimplifyAlgorithm> *settingsSimplifyAlgorithm SIP_SKIP;
+    static const QgsSettingsEntryEnumFlag<QgsVectorSimplifyMethod::SimplifyHints> *settingsSimplifyDrawingHints SIP_SKIP;
 
     /**
      * Setting options for loading vector layers.

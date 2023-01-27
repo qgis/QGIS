@@ -405,10 +405,10 @@ class QgsSettingsEntryByReference : public QgsSettingsEntryBase
 
 
     //! Returns the settings value with a \a defaultValueOverride and with an optional \a dynamicKeyPart
-    T valueWithDefaultOverride( const T &defaultValueOverride, const QString &dynamicKeyPart = QString() ) const { return this->convertFromVariant( valueAsVariantWithDefaultOverride( defaultValueOverride, dynamicKeyPart ) );}
+    inline T valueWithDefaultOverride( const T &defaultValueOverride, const QString &dynamicKeyPart = QString() ) const { return this->convertFromVariant( valueAsVariantWithDefaultOverride( QVariant::fromValue( defaultValueOverride ), dynamicKeyPart ) );}
 
     //! Returns the settings value with a \a defaultValueOverride for the \a dynamicKeyPartList
-    T valueWithDefaultOverride( const T &defaultValueOverride, const QStringList &dynamicKeyPartList ) const { return this->convertFromVariant( valueAsVariantWithDefaultOverride( defaultValueOverride, dynamicKeyPartList ) );}
+    inline T valueWithDefaultOverride( const T &defaultValueOverride, const QStringList &dynamicKeyPartList ) const { return this->convertFromVariant( valueAsVariantWithDefaultOverride( QVariant::fromValue( defaultValueOverride ), dynamicKeyPartList ) );}
 
     /**
      * Returns the settings value for the \a dynamicKeyPart and  with a \a defaultValueOverride
@@ -561,10 +561,10 @@ class QgsSettingsEntryByValue : public QgsSettingsEntryBase
     T value( const QStringList &dynamicKeyPartList )  const { return this->convertFromVariant( valueAsVariant( dynamicKeyPartList ) );}
 
     //! Returns the settings value with a \a defaultValueOverride and with an optional \a dynamicKeyPart
-    T valueWithDefaultOverride( T defaultValueOverride, const QString &dynamicKeyPart = QString() ) const { return this->convertFromVariant( valueAsVariantWithDefaultOverride( defaultValueOverride, dynamicKeyPart ) );}
+    inline T valueWithDefaultOverride( T defaultValueOverride, const QString &dynamicKeyPart = QString() ) const { return this->convertFromVariant( valueAsVariantWithDefaultOverride( QVariant::fromValue( defaultValueOverride ), dynamicKeyPart ) );}
 
     //! Returns the settings value with a \a defaultValueOverride for the \a dynamicKeyPartList
-    T valueWithDefaultOverride( T defaultValueOverride, const QStringList &dynamicKeyPartList ) const { return this->convertFromVariant( valueAsVariantWithDefaultOverride( defaultValueOverride, dynamicKeyPartList ) );}
+    inline T valueWithDefaultOverride( T defaultValueOverride, const QStringList &dynamicKeyPartList ) const { return this->convertFromVariant( valueAsVariantWithDefaultOverride( QVariant::fromValue( defaultValueOverride ), dynamicKeyPartList ) );}
 
     /**
      * Returns the settings value for the \a dynamicKeyPart and  with a \a defaultValueOverride
