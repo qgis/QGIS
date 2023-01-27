@@ -48,6 +48,7 @@ class GUI_EXPORT QgsLayoutElevationProfileWidget: public QgsLayoutItemBaseWidget
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
     QgsExpressionContext createExpressionContext() const override;
     void setDesignerInterface( QgsLayoutDesignerInterface *iface ) override;
+    void setReportTypeString( const QString &string ) override;
 
     /**
      * Copies selected settings from a elevation profile \a canvas.
@@ -64,6 +65,8 @@ class GUI_EXPORT QgsLayoutElevationProfileWidget: public QgsLayoutItemBaseWidget
 
     void setGuiElementValues();
     void updateItemLayers();
+    void layoutAtlasToggled( bool atlasEnabled );
+    void atlasLayerChanged( QgsVectorLayer *layer );
 
   private:
 
