@@ -21,6 +21,8 @@
 #include "qgsabstractdatasourcewidget.h"
 #include "ui_qgstilesourceselectbase.h"
 
+class QgsXyzSourceWidget;
+
 /*!
  * \brief   Dialog to create connections to XYZ servers.
  *
@@ -60,6 +62,9 @@ class QgsXyzSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsTi
     void populateConnectionList();
     void setConnectionListPosition();
     void showHelp();
+
+    QgsXyzSourceWidget *mSourceWidget = nullptr;
+    int mBlockChanges = 0;
 };
 
 #endif // QGSXYZSOURCESELECT_H
