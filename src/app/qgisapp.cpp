@@ -10425,7 +10425,7 @@ void QgisApp::mergeSelectedFeatures()
       QgsFeatureRequest request;
       request.setFlags( QgsFeatureRequest::Flag::NoGeometry );
       // Handle multi pks
-      if ( vl->dataProvider()->pkAttributeIndexes().count() > 1 && vl->dataProvider()->pkAttributeIndexes().count() <= attrs.count() )
+      if ( vl->dataProvider() && vl->dataProvider()->pkAttributeIndexes().count() > 1 && vl->dataProvider()->pkAttributeIndexes().count() <= attrs.count() )
       {
         const auto pkIdxList { vl->dataProvider()->pkAttributeIndexes() };
         QStringList conditions;
