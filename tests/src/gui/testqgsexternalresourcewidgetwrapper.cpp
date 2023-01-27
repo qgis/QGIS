@@ -22,6 +22,7 @@
 #include "qgsexternalstorage.h"
 #include "qgsexternalstorageregistry.h"
 #include "qgspixmaplabel.h"
+#include "qgsmediawidget.h"
 #include "qgsmessagebar.h"
 #include "qgsexternalstoragefilewidget.h"
 
@@ -336,6 +337,8 @@ void TestQgsExternalResourceWidgetWrapper::testLoadExternalDocument_data()
   QTest::addColumn<int>( "documentType" );
 
   QTest::newRow( "image" ) << static_cast<int>( QgsExternalResourceWidget::Image );
+  QTest::newRow( "audio" ) << static_cast<int>( QgsExternalResourceWidget::Audio );
+  QTest::newRow( "video" ) << static_cast<int>( QgsExternalResourceWidget::Video );
 #ifdef WITH_QTWEBKIT
   QTest::newRow( "webview" ) << static_cast<int>( QgsExternalResourceWidget::Web );
 #endif
@@ -377,6 +380,14 @@ void TestQgsExternalResourceWidgetWrapper::testLoadExternalDocument()
 #else
     QVERIFY( ww.mQgsWidget->mPixmapLabel->pixmap( Qt::ReturnByValue ).isNull() );
 #endif
+  }
+  else if ( documentType == QgsExternalResourceWidget::Audio )
+  {
+    QVERIFY( ww.mQgsWidget->mMediaWidget->isVisible() );
+  }
+  else if ( documentType == QgsExternalResourceWidget::Video )
+  {
+    QVERIFY( ww.mQgsWidget->mMediaWidget->isVisible() );
   }
 #ifdef WITH_QTWEBKIT
   else if ( documentType == QgsExternalResourceWidget::Web )
@@ -524,6 +535,8 @@ void TestQgsExternalResourceWidgetWrapper::testLoadNullExternalDocument_data()
   QTest::addColumn<int>( "documentType" );
 
   QTest::newRow( "image" ) << static_cast<int>( QgsExternalResourceWidget::Image );
+  QTest::newRow( "audio" ) << static_cast<int>( QgsExternalResourceWidget::Audio );
+  QTest::newRow( "video" ) << static_cast<int>( QgsExternalResourceWidget::Video );
 #ifdef WITH_QTWEBKIT
   QTest::newRow( "webview" ) << static_cast<int>( QgsExternalResourceWidget::Web );
 #endif
@@ -563,6 +576,14 @@ void TestQgsExternalResourceWidgetWrapper::testLoadNullExternalDocument()
 #else
     QVERIFY( ww.mQgsWidget->mPixmapLabel->pixmap( Qt::ReturnByValue ).isNull() );
 #endif
+  }
+  else if ( documentType == QgsExternalResourceWidget::Audio )
+  {
+    QVERIFY( ww.mQgsWidget->mMediaWidget->isVisible() );
+  }
+  else if ( documentType == QgsExternalResourceWidget::Video )
+  {
+    QVERIFY( ww.mQgsWidget->mMediaWidget->isVisible() );
   }
 #ifdef WITH_QTWEBKIT
   else if ( documentType == QgsExternalResourceWidget::Web )
@@ -613,6 +634,8 @@ void TestQgsExternalResourceWidgetWrapper::testStoreExternalDocument_data()
   QTest::addColumn<int>( "documentType" );
 
   QTest::newRow( "image" ) << static_cast<int>( QgsExternalResourceWidget::Image );
+  QTest::newRow( "audio" ) << static_cast<int>( QgsExternalResourceWidget::Audio );
+  QTest::newRow( "video" ) << static_cast<int>( QgsExternalResourceWidget::Video );
 #ifdef WITH_QTWEBKIT
   QTest::newRow( "webview" ) << static_cast<int>( QgsExternalResourceWidget::Web );
 #endif
@@ -663,6 +686,14 @@ void TestQgsExternalResourceWidgetWrapper::testStoreExternalDocument()
     QVERIFY( ww.mQgsWidget->mPixmapLabel->pixmap( Qt::ReturnByValue ).isNull() );
 #endif
   }
+  else if ( documentType == QgsExternalResourceWidget::Audio )
+  {
+    QVERIFY( ww.mQgsWidget->mMediaWidget->isVisible() );
+  }
+  else if ( documentType == QgsExternalResourceWidget::Video )
+  {
+    QVERIFY( ww.mQgsWidget->mMediaWidget->isVisible() );
+  }
 #ifdef WITH_QTWEBKIT
   else if ( documentType == QgsExternalResourceWidget::Web )
   {
@@ -707,6 +738,8 @@ void TestQgsExternalResourceWidgetWrapper::testStoreExternalDocumentError_data()
   QTest::addColumn<int>( "documentType" );
 
   QTest::newRow( "image" ) << static_cast<int>( QgsExternalResourceWidget::Image );
+  QTest::newRow( "audio" ) << static_cast<int>( QgsExternalResourceWidget::Audio );
+  QTest::newRow( "video" ) << static_cast<int>( QgsExternalResourceWidget::Video );
 #ifdef WITH_QTWEBKIT
   QTest::newRow( "webview" ) << static_cast<int>( QgsExternalResourceWidget::Web );
 #endif
@@ -755,6 +788,14 @@ void TestQgsExternalResourceWidgetWrapper::testStoreExternalDocumentError()
 #else
     QVERIFY( ww.mQgsWidget->mPixmapLabel->pixmap( Qt::ReturnByValue ).isNull() );
 #endif
+  }
+  else if ( documentType == QgsExternalResourceWidget::Audio )
+  {
+    QVERIFY( ww.mQgsWidget->mMediaWidget->isVisible() );
+  }
+  else if ( documentType == QgsExternalResourceWidget::Video )
+  {
+    QVERIFY( ww.mQgsWidget->mMediaWidget->isVisible() );
   }
 #ifdef WITH_QTWEBKIT
   else if ( documentType == QgsExternalResourceWidget::Web )
@@ -818,6 +859,8 @@ void TestQgsExternalResourceWidgetWrapper::testStoreExternalDocumentCancel_data(
   QTest::addColumn<int>( "documentType" );
 
   QTest::newRow( "image" ) << static_cast<int>( QgsExternalResourceWidget::Image );
+  QTest::newRow( "audio" ) << static_cast<int>( QgsExternalResourceWidget::Audio );
+  QTest::newRow( "video" ) << static_cast<int>( QgsExternalResourceWidget::Video );
 #ifdef WITH_QTWEBKIT
   QTest::newRow( "webview" ) << static_cast<int>( QgsExternalResourceWidget::Web );
 #endif
@@ -866,6 +909,14 @@ void TestQgsExternalResourceWidgetWrapper::testStoreExternalDocumentCancel()
 #else
     QVERIFY( ww.mQgsWidget->mPixmapLabel->pixmap( Qt::ReturnByValue ).isNull() );
 #endif
+  }
+  else if ( documentType == QgsExternalResourceWidget::Audio )
+  {
+    QVERIFY( ww.mQgsWidget->mMediaWidget->isVisible() );
+  }
+  else if ( documentType == QgsExternalResourceWidget::Video )
+  {
+    QVERIFY( ww.mQgsWidget->mMediaWidget->isVisible() );
   }
 #ifdef WITH_QTWEBKIT
   else if ( documentType == QgsExternalResourceWidget::Web )
@@ -931,6 +982,8 @@ void TestQgsExternalResourceWidgetWrapper::testStoreExternalDocumentNoExpression
   QTest::addColumn<int>( "documentType" );
 
   QTest::newRow( "image" ) << static_cast<int>( QgsExternalResourceWidget::Image );
+  QTest::newRow( "audio" ) << static_cast<int>( QgsExternalResourceWidget::Audio );
+  QTest::newRow( "video" ) << static_cast<int>( QgsExternalResourceWidget::Video );
 #ifdef WITH_QTWEBKIT
   QTest::newRow( "webview" ) << static_cast<int>( QgsExternalResourceWidget::Web );
 #endif
@@ -978,6 +1031,14 @@ void TestQgsExternalResourceWidgetWrapper::testStoreExternalDocumentNoExpression
     QVERIFY( ww.mQgsWidget->mPixmapLabel->pixmap( Qt::ReturnByValue ).isNull() );
 #endif
   }
+  else if ( documentType == QgsExternalResourceWidget::Audio )
+  {
+    QVERIFY( ww.mQgsWidget->mMediaWidget->isVisible() );
+  }
+  else if ( documentType == QgsExternalResourceWidget::Video )
+  {
+    QVERIFY( ww.mQgsWidget->mMediaWidget->isVisible() );
+  }
 #ifdef WITH_QTWEBKIT
   else if ( documentType == QgsExternalResourceWidget::Web )
   {
@@ -1020,6 +1081,8 @@ void TestQgsExternalResourceWidgetWrapper::testChangeValueBeforeLoaded_data()
   QTest::addColumn<int>( "documentType" );
 
   QTest::newRow( "image" ) << static_cast<int>( QgsExternalResourceWidget::Image );
+  QTest::newRow( "audio" ) << static_cast<int>( QgsExternalResourceWidget::Audio );
+  QTest::newRow( "video" ) << static_cast<int>( QgsExternalResourceWidget::Video );
 #ifdef WITH_QTWEBKIT
   QTest::newRow( "webview" ) << static_cast<int>( QgsExternalResourceWidget::Web );
 #endif
@@ -1062,6 +1125,14 @@ void TestQgsExternalResourceWidgetWrapper::testChangeValueBeforeLoaded()
 #else
     QVERIFY( ww.mQgsWidget->mPixmapLabel->pixmap( Qt::ReturnByValue ).isNull() );
 #endif
+  }
+  else if ( documentType == QgsExternalResourceWidget::Audio )
+  {
+    QVERIFY( ww.mQgsWidget->mMediaWidget->isVisible() );
+  }
+  else if ( documentType == QgsExternalResourceWidget::Video )
+  {
+    QVERIFY( ww.mQgsWidget->mMediaWidget->isVisible() );
   }
 #ifdef WITH_QTWEBKIT
   else if ( documentType == QgsExternalResourceWidget::Web )
@@ -1197,6 +1268,8 @@ void TestQgsExternalResourceWidgetWrapper::testChangeValueToNullBeforeLoaded_dat
   QTest::addColumn<int>( "documentType" );
 
   QTest::newRow( "image" ) << static_cast<int>( QgsExternalResourceWidget::Image );
+  QTest::newRow( "audio" ) << static_cast<int>( QgsExternalResourceWidget::Audio );
+  QTest::newRow( "video" ) << static_cast<int>( QgsExternalResourceWidget::Video );
 #ifdef WITH_QTWEBKIT
   QTest::newRow( "webview" ) << static_cast<int>( QgsExternalResourceWidget::Web );
 #endif
@@ -1239,6 +1312,14 @@ void TestQgsExternalResourceWidgetWrapper::testChangeValueToNullBeforeLoaded()
 #else
     QVERIFY( ww.mQgsWidget->mPixmapLabel->pixmap( Qt::ReturnByValue ).isNull() );
 #endif
+  }
+  else if ( documentType == QgsExternalResourceWidget::Audio )
+  {
+    QVERIFY( ww.mQgsWidget->mMediaWidget->isVisible() );
+  }
+  else if ( documentType == QgsExternalResourceWidget::Video )
+  {
+    QVERIFY( ww.mQgsWidget->mMediaWidget->isVisible() );
   }
 #ifdef WITH_QTWEBKIT
   else if ( documentType == QgsExternalResourceWidget::Web )

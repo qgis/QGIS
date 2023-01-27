@@ -7,10 +7,20 @@
     <x>0</x>
     <y>0</y>
     <width>558</width>
-    <height>166</height>
+    <height>259</height>
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="3" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Help</set>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="0">
     <widget class="QGroupBox" name="mConnectionsGroupBox">
      <property name="title">
@@ -95,14 +105,16 @@
      </layout>
     </widget>
    </item>
-   <item row="3" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+   <item row="1" column="0">
+    <widget class="QGroupBox" name="mConnectionDetailsGroupBox">
+     <property name="title">
+      <string>Connection Details</string>
      </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Help</set>
-     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QWidget" name="mSourceContainerWidget" native="true"/>
+      </item>
+     </layout>
     </widget>
    </item>
    <item row="2" column="0">

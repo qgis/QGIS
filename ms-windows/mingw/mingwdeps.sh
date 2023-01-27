@@ -77,6 +77,7 @@ dnf install -y --nogpgcheck \
   proj-devel \
   python-devel \
   python-qt5 \
+  python3-qscintilla-qt5 \
   qt5-linguist \
   qt5-qtbase-devel \
   sqlite-devel \

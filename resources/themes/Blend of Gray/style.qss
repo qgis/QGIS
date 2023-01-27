@@ -1027,6 +1027,10 @@ QSlider::handle:horizontal:focus, QSlider::handle:vertical:focus {
     border: 1px solid @focus;
 }
 
+QVideoWidget QWidget {
+    background-color: #000000 !important;
+}
+
 /* ==================================================================================== */
 /* QGIS-SPECIFIC TWEAKS                                                                 */
 /* ==================================================================================== */

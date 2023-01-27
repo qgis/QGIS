@@ -120,7 +120,9 @@ void QgsSettingsRegistry::removeSubRegistry( const QgsSettingsRegistry *settings
   mSettingsRegistryChildList.removeAll( settingsRegistry );
 }
 
+Q_NOWARN_DEPRECATED_PUSH
 QList<const QgsSettingsRegistry *> QgsSettingsRegistry::subRegistries() const
 {
   return mSettingsRegistryChildList;
 }
+Q_NOWARN_DEPRECATED_POP

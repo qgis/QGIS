@@ -22,6 +22,7 @@
 #include "qgsxyzconnection.h"
 #include "qgsxyzconnectiondialog.h"
 #include "qgsowsconnection.h"
+#include "qgsxyzsourcewidget.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -34,6 +35,23 @@ QgsXyzSourceSelect::QgsXyzSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
 
   setWindowTitle( tr( "Add XYZ Layer" ) );
   mConnectionsGroupBox->setTitle( tr( "XYZ Connections" ) );
+
+  mSourceWidget = new QgsXyzSourceWidget();
+  QHBoxLayout *hlayout = new QHBoxLayout();
+  hlayout->setContentsMargins( 0, 0, 0, 0 );
+  hlayout->addWidget( mSourceWidget );
+  mSourceContainerWidget->setLayout( hlayout );
+
+  connect( mSourceWidget, &QgsProviderSourceWidget::validChanged, this, &QgsXyzSourceSelect::enableButtons );
+  connect( mSourceWidget, &QgsProviderSourceWidget::changed, this, [this]
+  {
+    if ( mBlockChanges )
+      return;
+
+    mBlockChanges++;
+    cmbConnections->setCurrentIndex( cmbConnections->findData( QStringLiteral( "~~custom~~" ) ) );
+    mBlockChanges--;
+  } );
 
   QgsGui::enableAutoGeometryRestore( this );
 
@@ -50,10 +68,19 @@ QgsXyzSourceSelect::QgsXyzSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
 
 void QgsXyzSourceSelect::btnNew_clicked()
 {
+  const bool isCustom = cmbConnections->currentData().toString() == QLatin1String( "~~custom~~" );
+
   QgsXyzConnectionDialog nc( this );
+  if ( isCustom )
+  {
+    // when creating a new connection, default to the current connection parameters
+    nc.sourceWidget()->setSourceUri( mSourceWidget->sourceUri() );
+  }
   if ( nc.exec() )
   {
     QgsXyzConnectionUtils::addConnection( nc.connection() );
+
+    QgsXyzConnectionSettings::sTreeXyzConnections->setSelectedItem( nc.connection().name );
     populateConnectionList();
     emit connectionsChanged();
   }
@@ -106,20 +133,19 @@ void QgsXyzSourceSelect::btnLoad_clicked()
 
 void QgsXyzSourceSelect::addButtonClicked()
 {
-  emit addRasterLayer( QgsXyzConnectionUtils::connection( cmbConnections->currentText() ).encodedUri(), cmbConnections->currentText(), QStringLiteral( "wms" ) );
+  const bool isCustom = cmbConnections->currentData().toString() == QLatin1String( "~~custom~~" );
+  emit addRasterLayer( mSourceWidget->sourceUri(), isCustom ? tr( "XYZ Layer" ) : cmbConnections->currentText(), QStringLiteral( "wms" ) );
 }
 
 void QgsXyzSourceSelect::populateConnectionList()
 {
   cmbConnections->blockSignals( true );
   cmbConnections->clear();
+  cmbConnections->addItem( tr( "Custom" ), QStringLiteral( "~~custom~~" ) );
   cmbConnections->addItems( QgsXyzConnectionUtils::connectionList() );
   cmbConnections->blockSignals( false );
 
-  btnEdit->setDisabled( cmbConnections->count() == 0 );
-  btnDelete->setDisabled( cmbConnections->count() == 0 );
-  btnSave->setDisabled( cmbConnections->count() == 0 );
-  cmbConnections->setDisabled( cmbConnections->count() == 0 );
+  btnSave->setDisabled( cmbConnections->count() == 1 );
 
   setConnectionListPosition();
 }
@@ -138,13 +164,32 @@ void QgsXyzSourceSelect::setConnectionListPosition()
       cmbConnections->setCurrentIndex( cmbConnections->count() - 1 );
   }
 
-  emit enableButtons( !cmbConnections->currentText().isEmpty() );
+  const bool isCustom = cmbConnections->currentData().toString() == QLatin1String( "~~custom~~" );
+  btnEdit->setDisabled( isCustom );
+  btnDelete->setDisabled( isCustom );
 }
 
 void QgsXyzSourceSelect::cmbConnections_currentTextChanged( const QString &text )
 {
   QgsXyzConnectionSettings::sTreeXyzConnections->setSelectedItem( text );
-  emit enableButtons( !text.isEmpty() );
+
+  const bool isCustom = cmbConnections->currentData().toString() == QLatin1String( "~~custom~~" );
+  btnEdit->setDisabled( isCustom );
+  btnDelete->setDisabled( isCustom );
+
+  if ( !mBlockChanges )
+  {
+    mBlockChanges++;
+    if ( isCustom )
+    {
+      mSourceWidget->setSourceUri( QString() );
+    }
+    else
+    {
+      mSourceWidget->setSourceUri( QgsXyzConnectionUtils::connection( cmbConnections->currentText() ).encodedUri() );
+    }
+    mBlockChanges--;
+  }
 }
 
 void QgsXyzSourceSelect::showHelp()

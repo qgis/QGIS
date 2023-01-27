@@ -27,7 +27,7 @@
 #include "qgsvectortileconnection.h"
 #include "qgsgpsdetector.h"
 #include "qgsrasterlayer.h"
-
+#include "qgsvectorlayer.h"
 
 const QgsSettingsEntryEnumFlag<Qgis::SnappingMode> *QgsSettingsRegistryCore::settingsDigitizingDefaultSnapMode = new QgsSettingsEntryEnumFlag<Qgis::SnappingMode>( QStringLiteral( "default_snap_mode" ), QgsSettings::sTreeDigitizing, Qgis::SnappingMode::AllLayers );
 

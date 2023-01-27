@@ -14,6 +14,7 @@
 
 
 
+
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
 
@@ -338,6 +339,8 @@ Provider to display vector data in a GRASS GIS layer.
 #include "qgsvectorlayer.h"
 %End
   public:
+
+
 
     struct LayerOptions
     {

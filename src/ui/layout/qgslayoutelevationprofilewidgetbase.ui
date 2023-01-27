@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>506</width>
-    <height>705</height>
+    <width>564</width>
+    <height>749</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -17,9 +17,9 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Label Options</string>
+   <string>Elevation Profile Options</string>
   </property>
-  <layout class="QVBoxLayout" name="_2">
+  <layout class="QVBoxLayout" name="verticalLayout_2">
    <property name="spacing">
     <number>0</number>
    </property>
@@ -36,7 +36,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="mLabel">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
        <horstretch>0</horstretch>
@@ -52,7 +52,24 @@
     </widget>
    </item>
    <item>
+    <widget class="QToolBar" name="mDockToolbar">
+     <property name="iconSize">
+      <size>
+       <width>16</width>
+       <height>16</height>
+      </size>
+     </property>
+     <property name="floatable">
+      <bool>false</bool>
+     </property>
+     <addaction name="mActionRefresh"/>
+    </widget>
+   </item>
+   <item>
     <widget class="QgsScrollArea" name="scrollArea">
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
      <property name="widgetResizable">
       <bool>true</bool>
      </property>
@@ -61,9 +78,15 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>490</width>
-        <height>1267</height>
+        <width>548</width>
+        <height>1345</height>
        </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
        <item>
@@ -79,6 +102,39 @@
               <width>0</width>
               <height>250</height>
              </size>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QgsCollapsibleGroupBoxBasic" name="groupChartRanges_2">
+         <property name="title">
+          <string>Profile Settings</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_5" columnstretch="1,2,0">
+          <item row="0" column="1">
+           <widget class="QgsDoubleSpinBox" name="mSpinTolerance">
+            <property name="decimals">
+             <number>6</number>
+            </property>
+            <property name="maximum">
+             <double>999999999.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QgsPropertyOverrideButton" name="mDDBtnTolerance">
+            <property name="text">
+             <string>…</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_27">
+            <property name="text">
+             <string>Tolerance</string>
             </property>
            </widget>
           </item>
@@ -674,6 +730,18 @@
     </widget>
    </item>
   </layout>
+  <action name="mActionRefresh">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionRefresh.svg</normaloff>:/images/themes/default/mActionRefresh.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Refresh Elevation Profile</string>
+   </property>
+   <property name="toolTip">
+    <string>Refresh Elevation Profile</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -689,9 +757,14 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsFontButton</class>
+   <class>QgsPropertyOverrideButton</class>
    <extends>QToolButton</extends>
-   <header>qgsfontbutton.h</header>
+   <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSymbolButton</class>
+   <extends>QToolButton</extends>
+   <header>qgssymbolbutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
@@ -700,19 +773,16 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsSymbolButton</class>
+   <class>QgsFontButton</class>
    <extends>QToolButton</extends>
-   <header>qgssymbolbutton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
+   <header>qgsfontbutton.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../../images/images.qrc"/>
+ </resources>
  <connections/>
 </ui>
