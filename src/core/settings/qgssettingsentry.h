@@ -405,18 +405,18 @@ class QgsSettingsEntryByReference : public QgsSettingsEntryBase
 
 
     //! Returns the settings value with a \a defaultValueOverride and with an optional \a dynamicKeyPart
-    inline T valueWithDefaultOverride( const T &defaultValueOverride, const QString &dynamicKeyPart = QString() ) const 
+    inline T valueWithDefaultOverride( const T &defaultValueOverride, const QString &dynamicKeyPart = QString() ) const
     {
-      if( this->exists( dynamicKeyPart )
+      if ( this->exists( dynamicKeyPart ) )
         return this->value( dynamicKeyPart );
       else
         return defaultValueOverride;
     }
 
     //! Returns the settings value with a \a defaultValueOverride for the \a dynamicKeyPartList
-    inline T valueWithDefaultOverride( const T &defaultValueOverride, const QStringList &dynamicKeyPartList ) const 
+    inline T valueWithDefaultOverride( const T &defaultValueOverride, const QStringList &dynamicKeyPartList ) const
     {
-      if( this->exists( dynamicKeyPartList )
+      if ( this->exists( dynamicKeyPartList ) )
         return this->value( dynamicKeyPartList );
       else
         return defaultValueOverride;
@@ -575,16 +575,16 @@ class QgsSettingsEntryByValue : public QgsSettingsEntryBase
     //! Returns the settings value with a \a defaultValueOverride and with an optional \a dynamicKeyPart
     inline T valueWithDefaultOverride( T defaultValueOverride, const QString &dynamicKeyPart = QString() ) const
     {
-      if( this->exists( dynamicKeyPart )
+      if ( this->exists( dynamicKeyPart ) )
         return this->value( dynamicKeyPart );
       else
         return defaultValueOverride;
     }
- 
+
     //! Returns the settings value with a \a defaultValueOverride for the \a dynamicKeyPartList
-    inline T valueWithDefaultOverride( T defaultValueOverride, const QStringList &dynamicKeyPartList ) const 
+    inline T valueWithDefaultOverride( T defaultValueOverride, const QStringList &dynamicKeyPartList ) const
     {
-      if( this->exists( dynamicKeyPartList )
+      if ( this->exists( dynamicKeyPartList ) )
         return this->value( dynamicKeyPartList );
       else
         return defaultValueOverride;
