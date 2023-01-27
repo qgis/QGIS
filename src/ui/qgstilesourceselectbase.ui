@@ -106,7 +106,7 @@
     </widget>
    </item>
    <item row="1" column="0">
-    <widget class="QGroupBox" name="groupBox">
+    <widget class="QGroupBox" name="mConnectionDetailsGroupBox">
      <property name="title">
       <string>Connection Details</string>
      </property>
