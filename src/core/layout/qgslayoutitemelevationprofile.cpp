@@ -27,6 +27,7 @@
 #include "qgsterrainprovider.h"
 #include "qgsprofilerenderer.h"
 #include "qgslayoututils.h"
+#include "qgsvectorlayer.h"
 
 #include <QTimer>
 
@@ -506,6 +507,11 @@ double QgsLayoutItemElevationProfile::tolerance() const
   return mTolerance;
 }
 
+void QgsLayoutItemElevationProfile::setAtlasDriven( bool enabled )
+{
+  mAtlasDriven = enabled;
+}
+
 QgsProfileRequest QgsLayoutItemElevationProfile::profileRequest() const
 {
   QgsProfileRequest req( mCurve ? mCurve.get()->clone() : nullptr );
@@ -670,6 +676,21 @@ void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOption
 
 void QgsLayoutItemElevationProfile::refresh()
 {
+  if ( mAtlasDriven && mLayout && mLayout->reportContext().layer() )
+  {
+    if ( QgsVectorLayer *layer = mLayout->reportContext().layer() )
+    {
+      mCrs = layer->crs();
+    }
+    const QgsGeometry curveGeom( mLayout->reportContext().currentGeometry( mCrs ) );
+    if ( const QgsAbstractGeometry *geom = curveGeom.constGet() )
+    {
+      if ( const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( geom->simplifiedTypeRef() ) )
+      {
+        mCurve.reset( curve->clone() );
+      }
+    }
+  }
   QgsLayoutItem::refresh();
   invalidateCache();
 }
@@ -696,6 +717,7 @@ bool QgsLayoutItemElevationProfile::writePropertiesToElement( QDomElement &layou
   }
 
   layoutProfileElem.setAttribute( QStringLiteral( "tolerance" ), mTolerance );
+  layoutProfileElem.setAttribute( QStringLiteral( "atlasDriven" ), mAtlasDriven ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   if ( mCrs.isValid() )
   {
     QDomElement crsElem = doc.createElement( QStringLiteral( "crs" ) );
@@ -756,6 +778,7 @@ bool QgsLayoutItemElevationProfile::readPropertiesFromElement( const QDomElement
   }
 
   mTolerance = itemElem.attribute( QStringLiteral( "tolerance" ) ).toDouble();
+  mAtlasDriven = static_cast< bool >( itemElem.attribute( QStringLiteral( "atlasDriven" ), QStringLiteral( "0" ) ).toInt() );
 
   {
     mLayers.clear();

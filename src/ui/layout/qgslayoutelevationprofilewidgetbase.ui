@@ -79,7 +79,7 @@
         <x>0</x>
         <y>0</y>
         <width>548</width>
-        <height>1345</height>
+        <height>1375</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -111,10 +111,10 @@
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupChartRanges_2">
          <property name="title">
-          <string>Profile Settings</string>
+          <string>Profile Curve</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_5" columnstretch="1,2,0">
-          <item row="0" column="1">
+          <item row="1" column="1">
            <widget class="QgsDoubleSpinBox" name="mSpinTolerance">
             <property name="decimals">
              <number>6</number>
@@ -124,17 +124,24 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="2">
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_27">
+            <property name="text">
+             <string>Tolerance</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
            <widget class="QgsPropertyOverrideButton" name="mDDBtnTolerance">
             <property name="text">
              <string>…</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_27">
+          <item row="0" column="0" colspan="3">
+           <widget class="QCheckBox" name="mCheckControlledByAtlas">
             <property name="text">
-             <string>Tolerance</string>
+             <string>Controlled by atlas</string>
             </property>
            </widget>
           </item>
@@ -746,15 +753,21 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header location="global">qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsPropertyOverrideButton</class>
@@ -767,12 +780,6 @@
    <header>qgssymbolbutton.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header location="global">qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsFontButton</class>
    <extends>QToolButton</extends>
    <header>qgsfontbutton.h</header>
@@ -782,6 +789,7 @@
   <tabstop>scrollArea</tabstop>
  </tabstops>
  <resources>
+  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>

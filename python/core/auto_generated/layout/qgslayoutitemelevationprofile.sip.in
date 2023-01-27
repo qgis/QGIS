@@ -128,6 +128,20 @@ ignore this tolerance if it is not appropriate for the particular source.
 .. seealso:: :py:func:`setTolerance`
 %End
 
+    bool atlasDriven() const;
+%Docstring
+Returns whether the profile curve is set to follow the current atlas feature.
+
+.. seealso:: :py:func:`setAtlasDriven`
+%End
+
+    void setAtlasDriven( bool enabled );
+%Docstring
+Sets whether the profile curve will follow the current atlas feature.
+
+.. seealso:: :py:func:`atlasDriven`
+%End
+
     QgsProfileRequest profileRequest() const;
 %Docstring
 Returns the profile request used to generate the elevation profile.

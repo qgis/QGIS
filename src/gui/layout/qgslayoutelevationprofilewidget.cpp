@@ -30,6 +30,7 @@
 #include "qgselevationprofilelayertreeview.h"
 #include "qgselevationprofilecanvas.h"
 #include "qgscurve.h"
+#include "qgslayoutatlas.h"
 #include <QMenu>
 
 std::function< void( QgsLayoutElevationProfileWidget *, QMenu * ) > QgsLayoutElevationProfileWidget::sBuildCopyMenuFunction = []( QgsLayoutElevationProfileWidget *, QMenu * ) {};
@@ -85,6 +86,18 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
 
     mProfile->beginCommand( tr( "Change Profile Tolerance Distance" ), QgsLayoutItem::UndoElevationProfileTolerance );
     mProfile->setTolerance( value );
+    mProfile->invalidateCache();
+    mProfile->update();
+    mProfile->endCommand();
+  } );
+
+  connect( mCheckControlledByAtlas, &QCheckBox::toggled, this, [ = ]
+  {
+    if ( !mProfile || mBlockChanges )
+      return;
+
+    mProfile->beginCommand( tr( "Change Profile Atlas Control" ) );
+    mProfile->setAtlasDriven( mCheckControlledByAtlas->isChecked() );
     mProfile->invalidateCache();
     mProfile->update();
     mProfile->endCommand();
@@ -483,6 +496,15 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
       mChartBackgroundSymbolButton->setLayer( layer );
       mChartBorderSymbolButton->setLayer( layer );
     } );
+
+    connect( &mProfile->layout()->reportContext(), &QgsLayoutReportContext::layerChanged,
+             this, &QgsLayoutElevationProfileWidget::atlasLayerChanged );
+  }
+
+  if ( QgsLayoutAtlas *atlas = layoutAtlas() )
+  {
+    connect( atlas, &QgsLayoutAtlas::toggled, this, &QgsLayoutElevationProfileWidget::layoutAtlasToggled );
+    layoutAtlasToggled( atlas->enabled() );
   }
 }
 
@@ -503,6 +525,11 @@ void QgsLayoutElevationProfileWidget::setDesignerInterface( QgsLayoutDesignerInt
 {
   mInterface = iface;
   QgsLayoutItemBaseWidget::setDesignerInterface( iface );
+}
+
+void QgsLayoutElevationProfileWidget::setReportTypeString( const QString &string )
+{
+  mCheckControlledByAtlas->setText( tr( "Controlled by %1" ).arg( string == tr( "atlas" ) ? tr( "Atlas" ) : tr( "Report" ) ) );
 }
 
 void QgsLayoutElevationProfileWidget::copySettingsFromProfileCanvas( QgsElevationProfileCanvas *canvas )
@@ -609,6 +636,7 @@ void QgsLayoutElevationProfileWidget::setGuiElementValues()
   mBlockChanges++;
 
   mSpinTolerance->setValue( mProfile->tolerance() );
+  mCheckControlledByAtlas->setChecked( mProfile->atlasDriven() );
 
   mSpinMinDistance->setValue( mProfile->plot()->xMinimum() );
   mSpinMaxDistance->setValue( mProfile->plot()->xMaximum() );
@@ -687,4 +715,34 @@ void QgsLayoutElevationProfileWidget::updateItemLayers()
 
   mProfile->setLayers( layers );
   mProfile->update();
+}
+
+void QgsLayoutElevationProfileWidget::layoutAtlasToggled( bool atlasEnabled )
+{
+  if ( atlasEnabled &&
+       mProfile && mProfile->layout() && mProfile->layout()->reportContext().layer()
+       && mProfile->layout()->reportContext().layer()->geometryType() == QgsWkbTypes::LineGeometry )
+  {
+    mCheckControlledByAtlas->setEnabled( true );
+  }
+  else
+  {
+    mCheckControlledByAtlas->setEnabled( false );
+    mCheckControlledByAtlas->setChecked( false );
+  }
+}
+
+void QgsLayoutElevationProfileWidget::atlasLayerChanged( QgsVectorLayer *layer )
+{
+  if ( !layer || layer->geometryType() != QgsWkbTypes::LineGeometry )
+  {
+    //non-line layer, disable atlas control
+    mCheckControlledByAtlas->setChecked( false );
+    mCheckControlledByAtlas->setEnabled( false );
+    return;
+  }
+  else
+  {
+    mCheckControlledByAtlas->setEnabled( true );
+  }
 }

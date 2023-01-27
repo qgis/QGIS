@@ -145,6 +145,20 @@ class CORE_EXPORT QgsLayoutItemElevationProfile: public QgsLayoutItem
     double tolerance() const;
 
     /**
+     * Returns whether the profile curve is set to follow the current atlas feature.
+
+     * \see setAtlasDriven()
+     */
+    bool atlasDriven() const { return mAtlasDriven; }
+
+    /**
+     * Sets whether the profile curve will follow the current atlas feature.
+     *
+     * \see atlasDriven()
+     */
+    void setAtlasDriven( bool enabled );
+
+    /**
      * Returns the profile request used to generate the elevation profile.
      */
     QgsProfileRequest profileRequest() const;
@@ -173,6 +187,7 @@ class CORE_EXPORT QgsLayoutItemElevationProfile: public QgsLayoutItem
 
     QgsCoordinateReferenceSystem mCrs;
     std::unique_ptr< QgsCurve> mCurve;
+    bool mAtlasDriven = false;
 
     double mTolerance = 0;
 
@@ -190,6 +205,7 @@ class CORE_EXPORT QgsLayoutItemElevationProfile: public QgsLayoutItem
     std::unique_ptr< QPainter > mPainter;
     std::unique_ptr< QgsProfilePlotRenderer > mRenderJob;
     bool mPainterCancelWait = false;
+
 
 };
 
