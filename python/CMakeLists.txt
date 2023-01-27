@@ -351,9 +351,9 @@ if(WITH_QSCIAPI)
     WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
     COMMENT "Generating pap file for console auto-completion" VERBATIM)
 
-  add_custom_target(pyqgis-pap ALL DEPENDS ${QGIS_PYTHON_API_FILE} ${QGIS_PYTHON_PAP_FILE})
+  ADD_QGIS_RESOURCES("${APIS_OUT_DIR}" "python/qsci_apis" DEST_DATA_FILES "PyQGIS.api;PyQGIS.pap")
 
-  install(FILES ${QGIS_PYTHON_API_FILE} ${QGIS_PYTHON_PAP_FILE} DESTINATION "${QGIS_DATA_DIR}/python/qsci_apis")
+  add_custom_target(pyqgis-pap ALL DEPENDS ${QGIS_PYTHON_API_FILE} ${QGIS_PYTHON_PAP_FILE} ${DEST_DATA_FILES})
 endif()
 
 if(WITH_CUSTOM_WIDGETS)
