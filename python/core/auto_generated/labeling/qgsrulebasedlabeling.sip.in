@@ -233,13 +233,13 @@ clone this rule, return new instance
 %End
 
 
-        static QgsRuleBasedLabeling::Rule *create( const QDomElement &ruleElem, const QgsReadWriteContext &context, bool reuseId = true  ) /Factory/;
+        static QgsRuleBasedLabeling::Rule *create( const QDomElement &ruleElem, const QgsReadWriteContext &context, bool reuseId = true ) /Factory/;
 %Docstring
 Create a rule from an XML definition
 
 :param ruleElem: The XML rule element
 :param context: reading context
-:param reuseId: set to ``True`` to create an exact copy of the original symbol or ``False`` to create a new rule with the same parameters as the original but a new unique ruleKey(). (Since QGIS 3.30)
+:param reuseId: set to ``True`` to create an exact copy of the original symbol or ``False`` to create a new rule with the same parameters as the original but a new unique :py:func:`~Rule.ruleKey`. (Since QGIS 3.30)
 
 :return: A new rule
 %End
