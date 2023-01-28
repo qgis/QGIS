@@ -446,8 +446,8 @@ Checks if ``element`` contains an ExternalGraphic element with format "image/svg
 
     static bool hasExternalGraphicV2( QDomElement &element, const QString format = QString() );
 %Docstring
-Checks if ``element`` contains an ExternalGraphic element with optionally specified ``format``.
-@return ``True`` if the ExternalGraphic format is found with the optionally specified format.
+Checks if ``element`` contains an ExternalGraphic element, if the optional ``format`` is specified it will also be checked.
+@return ``True`` if the ExternalGraphic element is found and the optionally specified format matches.
 
 .. versionadded:: 3.30
 %End
