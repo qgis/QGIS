@@ -362,7 +362,7 @@ Create a rule from an XML definition
 
 :param ruleElem: The XML rule element
 :param symbolMap: Symbol map
-:param reuseId: ``True`` to create a copy of the symbol, ``False`` to create a disctinct rule. Default is ``True``
+:param reuseId: set to ``True`` to create an exact copy of the original symbol or ``False`` to create a new rule with the same parameters as the original but a new unique ruleKey(). (Since QGIS 3.30)
 
 :return: A new rule
 %End
