@@ -297,7 +297,7 @@ void TestQgsVirtualRasterProvider::testBlockReading()
   // read the top left portion of the raster, its pixel size is 3x3
   QgsRectangle blockExtent( -3, 3, 0, 6 );
   int blockPixelWidth = 3, blockPixelHeight = 3;
-  QgsRasterBlock block = layer->dataProvider()->block( 1, blockExtent, blockPixelWidth, blockPixelHeight, nullptr );
+  QgsRasterBlock *block = layer->dataProvider()->block( 1, blockExtent, blockPixelWidth, blockPixelHeight, nullptr );
 
   // validation 1: the block's nodata value equals providers'nodata value
   QVERIFY( layer->dataProvider()->sourceHasNoDataValue( 1 ) );
