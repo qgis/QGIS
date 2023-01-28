@@ -39,6 +39,7 @@
 #include "qgsfontmanager.h"
 #include "qgsvariantutils.h"
 
+#include <cmath>
 #include <QTextCodec>
 #include <QUuid>
 #include <cpl_error.h>
@@ -103,6 +104,29 @@ void gdal::GDALWarpOptionsDeleter::operator()( GDALWarpOptions *options ) const
   GDALDestroyWarpOptions( options );
 }
 
+static void setQTTimeZoneFromOGRTZFlag( QDateTime &dt, int nTZFlag )
+{
+  // Take into account time zone
+  if ( nTZFlag == 0 )
+  {
+    // unknown time zone
+  }
+  else if ( nTZFlag == 1 )
+  {
+    dt.setTimeSpec( Qt::LocalTime );
+  }
+  else if ( nTZFlag == 100 )
+  {
+    dt.setTimeSpec( Qt::UTC );
+  }
+  else
+  {
+    // TZFlag = 101 ==> UTC+00:15
+    // TZFlag = 99 ==> UTC-00:15
+    dt.setOffsetFromUtc( ( nTZFlag - 100 ) * 15 * 60 );
+  }
+}
+
 QVariant QgsOgrUtils::OGRFieldtoVariant( const OGRField *value, OGRFieldType type )
 {
   if ( !value || OGR_RawField_IsUnset( value ) || OGR_RawField_IsNull( value ) )
@@ -130,15 +154,17 @@ QVariant QgsOgrUtils::OGRFieldtoVariant( const OGRField *value, OGRFieldType typ
     {
       float secondsPart = 0;
       float millisecondPart = std::modf( value->Date.Second, &secondsPart );
-      return QTime( value->Date.Hour, value->Date.Minute, static_cast< int >( secondsPart ), static_cast< int >( 1000 * millisecondPart ) );
+      return QTime( value->Date.Hour, value->Date.Minute, static_cast< int >( secondsPart ), static_cast< int >( std::round( 1000 * millisecondPart ) ) );
     }
 
     case OFTDateTime:
     {
       float secondsPart = 0;
       float millisecondPart = std::modf( value->Date.Second, &secondsPart );
-      return QDateTime( QDate( value->Date.Year, value->Date.Month, value->Date.Day ),
-                        QTime( value->Date.Hour, value->Date.Minute, static_cast< int >( secondsPart ), static_cast< int >( 1000 * millisecondPart ) ) );
+      QDateTime dt = QDateTime( QDate( value->Date.Year, value->Date.Month, value->Date.Day ),
+                                QTime( value->Date.Hour, value->Date.Minute, static_cast< int >( secondsPart ), static_cast< int >( std::round( 1000 * millisecondPart ) ) ) );
+      setQTTimeZoneFromOGRTZFlag( dt, value->Date.TZFlag );
+      return dt;
     }
 
     case OFTBinary:
@@ -186,6 +212,13 @@ QVariant QgsOgrUtils::OGRFieldtoVariant( const OGRField *value, OGRFieldType typ
   return QVariant();
 }
 
+int QgsOgrUtils::OGRTZFlagFromQt( const QDateTime &datetime )
+{
+  if ( datetime.timeSpec() == Qt::LocalTime )
+    return 1;
+  return 100 + datetime.offsetFromUtc() / ( 60 * 15 );
+}
+
 std::unique_ptr< OGRField > QgsOgrUtils::variantToOGRField( const QVariant &value )
 {
   std::unique_ptr< OGRField > res = std::make_unique< OGRField >();
@@ -225,20 +258,22 @@ std::unique_ptr< OGRField > QgsOgrUtils::variantToOGRField( const QVariant &valu
       const QTime time = value.toTime();
       res->Date.Hour = time.hour();
       res->Date.Minute = time.minute();
-      res->Date.Second = time.second() + static_cast< double >( time.msec() ) / 1000;
+      res->Date.Second = static_cast<float>( time.second() + static_cast< double >( time.msec() ) / 1000 );
       res->Date.TZFlag = 0;
       break;
     }
     case QVariant::DateTime:
     {
-      const QDateTime dateTime = value.toDateTime();
-      res->Date.Day = dateTime.date().day();
-      res->Date.Month = dateTime.date().month();
-      res->Date.Year = dateTime.date().year();
-      res->Date.Hour = dateTime.time().hour();
-      res->Date.Minute = dateTime.time().minute();
-      res->Date.Second = dateTime.time().second() + static_cast< double >( dateTime.time().msec() ) / 1000;
-      res->Date.TZFlag = 0;
+      const QDateTime dt = value.toDateTime();
+      const QDate date = dt.date();
+      res->Date.Day = date.day();
+      res->Date.Month = date.month();
+      res->Date.Year = static_cast<GInt16>( date.year() );
+      const QTime time = dt.time();
+      res->Date.Hour = time.hour();
+      res->Date.Minute = time.minute();
+      res->Date.Second = static_cast<float>( time.second() + static_cast< double >( time.msec() ) / 1000 );
+      res->Date.TZFlag = OGRTZFlagFromQt( dt );
       break;
     }
 
@@ -417,10 +452,14 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
         if ( field.type() == QVariant::Date )
           value = QDate( year, month, day );
         else if ( field.type() == QVariant::Time )
-          value = QTime( hour, minute, static_cast< int >( secondsPart ), static_cast< int >( 1000 * millisecondPart ) );
+          value = QTime( hour, minute, static_cast< int >( secondsPart ), static_cast< int >( std::round( 1000 * millisecondPart ) ) );
         else
-          value = QDateTime( QDate( year, month, day ),
-                             QTime( hour, minute, static_cast< int >( secondsPart ), static_cast< int >( 1000 * millisecondPart ) ) );
+        {
+          QDateTime dt = QDateTime( QDate( year, month, day ),
+                                    QTime( hour, minute, static_cast< int >( secondsPart ), static_cast< int >( std::round( 1000 * millisecondPart ) ) ) );
+          setQTTimeZoneFromOGRTZFlag( dt, tzf );
+          value = dt;
+        }
       }
       break;
 
