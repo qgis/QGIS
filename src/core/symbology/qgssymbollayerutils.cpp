@@ -1628,6 +1628,8 @@ QgsSymbolLayer *QgsSymbolLayerUtils::createFillLayerFromSld( QDomElement &elemen
     l = QgsApplication::symbolLayerRegistry()->createSymbolLayerFromSld( QStringLiteral( "PointPatternFill" ), element );
   else if ( needSvgFill( element ) )
     l = QgsApplication::symbolLayerRegistry()->createSymbolLayerFromSld( QStringLiteral( "SVGFill" ), element );
+  else if ( needRasterImageFill( element ) )
+    l = QgsApplication::symbolLayerRegistry()->createSymbolLayerFromSld( QStringLiteral( "RasterFill" ), element );
   else
     l = QgsApplication::symbolLayerRegistry()->createSymbolLayerFromSld( QStringLiteral( "SimpleFill" ), element );
 
@@ -1678,6 +1680,11 @@ QgsSymbolLayer *QgsSymbolLayerUtils::createMarkerLayerFromSld( QDomElement &elem
 
 bool QgsSymbolLayerUtils::hasExternalGraphic( QDomElement &element )
 {
+  return hasExternalGraphicV2( element, QStringLiteral( "image/svg+xml" ) );
+}
+
+bool QgsSymbolLayerUtils::hasExternalGraphicV2( QDomElement &element, const QString format )
+{
   const QDomElement graphicElem = element.firstChildElement( QStringLiteral( "Graphic" ) );
   if ( graphicElem.isNull() )
     return false;
@@ -1691,10 +1698,10 @@ bool QgsSymbolLayerUtils::hasExternalGraphic( QDomElement &element )
   if ( formatElem.isNull() )
     return false;
 
-  const QString format = formatElem.firstChild().nodeValue();
-  if ( format != QLatin1String( "image/svg+xml" ) )
+  const QString elementFormat = formatElem.firstChild().nodeValue();
+  if ( ! format.isEmpty() && elementFormat != format )
   {
-    QgsDebugMsg( "unsupported External Graphic format found: " + format );
+    QgsDebugMsgLevel( "unsupported External Graphic format found: " + elementFormat, 4 );
     return false;
   }
 
@@ -1774,7 +1781,7 @@ bool QgsSymbolLayerUtils::needFontMarker( QDomElement &element )
 
 bool QgsSymbolLayerUtils::needSvgMarker( QDomElement &element )
 {
-  return hasExternalGraphic( element );
+  return hasExternalGraphicV2( element, QStringLiteral( "image/svg+xml" ) );
 }
 
 bool QgsSymbolLayerUtils::needEllipseMarker( QDomElement &element )
@@ -1874,7 +1881,20 @@ bool QgsSymbolLayerUtils::needSvgFill( QDomElement &element )
   if ( graphicFillElem.isNull() )
     return false;
 
-  return hasExternalGraphic( graphicFillElem );
+  return hasExternalGraphicV2( graphicFillElem, QStringLiteral( "image/svg+xml" ) );
+}
+
+bool QgsSymbolLayerUtils::needRasterImageFill( QDomElement &element )
+{
+  const QDomElement fillElem = element.firstChildElement( QStringLiteral( "Fill" ) );
+  if ( fillElem.isNull() )
+    return false;
+
+  QDomElement graphicFillElem = fillElem.firstChildElement( QStringLiteral( "GraphicFill" ) );
+  if ( graphicFillElem.isNull() )
+    return false;
+
+  return hasExternalGraphicV2( graphicFillElem, QStringLiteral( "image/png" ) ) || hasExternalGraphicV2( graphicFillElem, QStringLiteral( "image/jpeg" ) ) || hasExternalGraphicV2( graphicFillElem, QStringLiteral( "image/gif" ) );
 }
 
 

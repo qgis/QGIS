@@ -437,7 +437,21 @@ Creates a symbol layer list from a DOM ``element``.
 %Docstring
 Converts a polygon symbolizer ``element`` to a list of marker symbol layers.
 %End
+
     static bool hasExternalGraphic( QDomElement &element );
+%Docstring
+Checks if ``element`` contains an ExternalGraphic element with format "image/svg+xml"
+@return ``True`` if the ExternalGraphic with format "image/svg+xml" is found .
+%End
+
+    static bool hasExternalGraphicV2( QDomElement &element, const QString format = QString() );
+%Docstring
+Checks if ``element`` contains an ExternalGraphic element with optionally specified ``format``.
+@return ``True`` if the ExternalGraphic format is found with the optionally specified format.
+
+.. versionadded:: 3.30
+%End
+
     static bool hasWellKnownMark( QDomElement &element );
 
     static bool needFontMarker( QDomElement &element );
@@ -447,6 +461,14 @@ Converts a polygon symbolizer ``element`` to a list of marker symbol layers.
     static bool needLinePatternFill( QDomElement &element );
     static bool needPointPatternFill( QDomElement &element );
     static bool needSvgFill( QDomElement &element );
+
+    static bool needRasterImageFill( QDomElement &element );
+%Docstring
+Checks if ``element`` contains a graphic fill with a raster image of type PNG, JPEG or GIF.
+@return ``True`` if element contains a graphic fill with a raster image.
+
+.. versionadded:: 3.30
+%End
 
     static void fillToSld( QDomDocument &doc, QDomElement &element,
                            Qt::BrushStyle brushStyle, const QColor &color = QColor() );

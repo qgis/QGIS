@@ -422,7 +422,20 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * Converts a polygon symbolizer \a element to a list of marker symbol layers.
      */
     static bool convertPolygonSymbolizerToPointMarker( QDomElement &element, QList<QgsSymbolLayer *> &layerList );
+
+    /**
+     * Checks if \a element contains an ExternalGraphic element with format "image/svg+xml"
+     * @return TRUE if the ExternalGraphic with format "image/svg+xml" is found .
+     */
     static bool hasExternalGraphic( QDomElement &element );
+
+    /**
+     * Checks if \a element contains an ExternalGraphic element with optionally specified \a format.
+     * @return TRUE if the ExternalGraphic format is found with the optionally specified format.
+     * \since QGIS 3.30
+     */
+    static bool hasExternalGraphicV2( QDomElement &element, const QString format = QString() );
+
     static bool hasWellKnownMark( QDomElement &element );
 
     static bool needFontMarker( QDomElement &element );
@@ -432,6 +445,13 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static bool needLinePatternFill( QDomElement &element );
     static bool needPointPatternFill( QDomElement &element );
     static bool needSvgFill( QDomElement &element );
+
+    /**
+     * Checks if \a element contains a graphic fill with a raster image of type PNG, JPEG or GIF.
+     * @return TRUE if element contains a graphic fill with a raster image.
+     * \since QGIS 3.30
+     */
+    static bool needRasterImageFill( QDomElement &element );
 
     static void fillToSld( QDomDocument &doc, QDomElement &element,
                            Qt::BrushStyle brushStyle, const QColor &color = QColor() );
