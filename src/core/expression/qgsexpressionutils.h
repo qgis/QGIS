@@ -220,7 +220,7 @@ class CORE_EXPORT QgsExpressionUtils
     static double getDoubleValue( const QVariant &value, QgsExpression *parent )
     {
       bool ok;
-      const double x = getDoubleInternal( value, &ok );
+      const double converted = getDoubleInternal( value, &ok );
       if ( !ok || std::isnan( x ) || !std::isfinite( x ) )
       {
         parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to double" ).arg( value.toString() ) );
@@ -232,10 +232,9 @@ class CORE_EXPORT QgsExpressionUtils
     static double getDoubleInternal( const QVariant &value, bool *validation )
     {
       const double converted = value.toDouble( validation );
-      if ( *validation == false )
+      if ( validation && *validation == false )
       {
-        const double localeDouble = QLocale().toDouble( value.toString(), validation );
-        return localeDouble;
+        return QLocale().toDouble( value.toString(), validation );
       }
       return converted;
     }
@@ -243,7 +242,7 @@ class CORE_EXPORT QgsExpressionUtils
     static qlonglong getIntValue( const QVariant &value, QgsExpression *parent )
     {
       bool ok;
-      if ( value.userType() == QVariant::String )
+      if ( value.type() == QVariant::String )
       {
         const double doubleValue = getDoubleInternal( value, &ok );
         if ( ok )
@@ -253,7 +252,7 @@ class CORE_EXPORT QgsExpressionUtils
       }
       else
       {
-        const qlonglong x = value.toLongLong( &ok );
+        const qlonglong converted = value.toLongLong( &ok );
         if ( ok )
         {
           return x;

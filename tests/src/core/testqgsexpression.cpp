@@ -5029,6 +5029,27 @@ class TestQgsExpression: public QObject
       QCOMPARE( exp.evaluate( &context ).toInt(), 20 );
     }
 
+    void testExpressionLocalizedStringToInt()
+    {
+      QgsExpressionContext context;
+
+      QLocale::setDefault( QLocale::Italian );
+      QgsExpression exp( QStringLiteral( "toint('3.2')" ) );
+      QVERIFY( exp.prepare( &context ) );
+      QCOMPARE( exp.evaluate( &context ), QVariant( 3 ) );
+      exp( QStringLiteral( "toint('3,2')" ) );
+      QVERIFY( exp.prepare( &context ) );
+      QCOMPARE( exp.evaluate( &context ), QVariant( 3 ) );
+
+      QLocale::setDefault( QLocale::English );
+      exp( QStringLiteral( "toint('3.2')" ) );
+      QVERIFY( exp.prepare( &context ) );
+      QCOMPARE( exp.evaluate( &context ), QVariant( 3 ) );
+      exp( QStringLiteral( "toint('3,2')" ) );
+      QVERIFY( exp.prepare( &context ) );
+      QCOMPARE( exp.evaluate( &context ), QVariant() );
+    }
+
     void testExpressionUtilsToLocalizedString()
     {
       const QVariant t_int( 12346 );
