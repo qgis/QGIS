@@ -207,6 +207,13 @@ class CORE_EXPORT QgsOgrUtils
     static std::unique_ptr<OGRField> variantToOGRField( const QVariant &value );
 
     /**
+     * Gets the value of OGRField::Date::TZFlag from the timezone of a QDateTime.
+     *
+     * \since QGIS 3.30
+     */
+    static int OGRTZFlagFromQt( const QDateTime &datetime );
+
+    /**
      * Reads an OGR feature and converts it to a QgsFeature.
      * \param ogrFet OGR feature handle
      * \param fields fields collection corresponding to feature
