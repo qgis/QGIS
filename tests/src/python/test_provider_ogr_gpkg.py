@@ -2185,7 +2185,8 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
 
         self.assertTrue(vl.startEditing())
 
-        for f in vl.getFeatures():
+        features = [f for f in vl.getFeatures()]
+        for f in features:
             self.assertTrue(vl.changeAttributeValue(1, 1, 'new value'))
 
         # Test that QGIS sees the new changes
