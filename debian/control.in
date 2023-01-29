@@ -29,6 +29,7 @@ Build-Depends:
  libqt5svg5-dev,
  libqt5webkit5-dev,
  libqt5xmlpatterns5-dev,
+ qtmultimedia5-dev,
  libqwt-qt5-dev,
  libspatialindex-dev,
  libspatialite-dev,
