@@ -139,6 +139,8 @@ Returns whether the profile curve is set to follow the current atlas feature.
 %Docstring
 Sets whether the profile curve will follow the current atlas feature.
 
+This requires an active layout atlas or report, using a line geometry type coverage layer.
+
 .. seealso:: :py:func:`atlasDriven`
 %End
 

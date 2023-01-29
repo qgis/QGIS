@@ -154,6 +154,8 @@ class CORE_EXPORT QgsLayoutItemElevationProfile: public QgsLayoutItem
     /**
      * Sets whether the profile curve will follow the current atlas feature.
      *
+     * This requires an active layout atlas or report, using a line geometry type coverage layer.
+     *
      * \see atlasDriven()
      */
     void setAtlasDriven( bool enabled );
