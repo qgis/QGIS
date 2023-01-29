@@ -29,7 +29,6 @@ import qgis  # NOQA
 from osgeo import ogr
 import os
 
-from packaging.version import Version
 from qgis.PyQt.Qt import PYQT_VERSION_STR
 from qgis.PyQt.QtCore import Qt, QObject, QDir, QFile, QIODevice, QPointF, QSize, QTemporaryDir
 from qgis.PyQt.QtXml import QDomDocument
@@ -89,11 +88,7 @@ start_app()
 
 TEST_DATA_DIR = unitTestDataPath()
 
-if Version(PYQT_VERSION_STR) < Version('5.7'):
-    from qgis.PyQt.QtCore import pyqtWrapperType
-    EXPECTED_TYPE = pyqtWrapperType
-else:
-    EXPECTED_TYPE = type(QObject)
+EXPECTED_TYPE = type(QObject)
 
 
 class TestQgsSymbolLayer(unittest.TestCase):
