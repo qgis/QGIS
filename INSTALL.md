@@ -192,10 +192,10 @@ See [debian-ubuntu](https://qgis.org/en/site/forusers/alldownloads.html#debian-u
 currently supported distributions (plain xenial's GDAL for instance is too old
 and we build with GDAL2 from ubuntugis).
 
-To build [QGIS server landing page/catalog webapp](https://docs.qgis.org/latest/en/docs/server_manual/services.html#qgis-server-catalog) additional dependencies are required:
+To build [QGIS server landing page/catalog webapp](https://docs.qgis.org/latest/en/docs/server_manual/catalog.html) additional dependencies are required:
 
-Node.js (current LTS recommended): https://nodejs.org/en/download/<br>
-Yarn Package Manager: https://yarnpkg.com/getting-started/install
+* Node.js (current LTS recommended): https://nodejs.org/en/download/
+* Yarn Package Manager: https://yarnpkg.com/getting-started/install
 
 Additionally, the cmake flag `WITH_SERVER_LANDINGPAGE_WEBAPP` needs to be turned on.
 
