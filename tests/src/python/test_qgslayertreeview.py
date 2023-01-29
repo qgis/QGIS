@@ -14,7 +14,7 @@ import qgis  # NOQA
 
 import os
 
-from distutils.version import StrictVersion
+from packaging.version import Version
 
 from qgis.core import (
     QgsLayerTreeModel,
@@ -37,7 +37,7 @@ from qgis.PyQt.Qt import PYQT_VERSION_STR
 USE_MODEL_TESTER = False
 
 
-if StrictVersion(PYQT_VERSION_STR) >= StrictVersion('5.11'):
+if Version(PYQT_VERSION_STR) >= Version('5.11'):
     from qgis.PyQt.QtTest import QAbstractItemModelTester
     USE_MODEL_TESTER = True
 
