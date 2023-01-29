@@ -86,6 +86,7 @@ class CORE_EXPORT QgsRasterBlock
       switch ( dataType )
       {
         case Qgis::DataType::Byte:
+        case Qgis::DataType::Int8:
           return 1;
 
         case Qgis::DataType::UInt16:
@@ -110,9 +111,10 @@ class CORE_EXPORT QgsRasterBlock
         case Qgis::DataType::ARGB32_Premultiplied:
           return 4;
 
-        default:
-          return 0;
+        case Qgis::DataType::UnknownDataType:
+          break;
       }
+      return 0;
     }
 
     /**
@@ -748,6 +750,8 @@ inline double QgsRasterBlock::readValue( void *data, Qgis::DataType type, qgssiz
   {
     case Qgis::DataType::Byte:
       return static_cast< double >( ( static_cast< quint8 * >( data ) )[index] );
+    case Qgis::DataType::Int8:
+      return static_cast< double >( ( static_cast< qint8 * >( data ) )[index] );
     case Qgis::DataType::UInt16:
       return static_cast< double >( ( static_cast< quint16 * >( data ) )[index] );
     case Qgis::DataType::Int16:
@@ -760,7 +764,13 @@ inline double QgsRasterBlock::readValue( void *data, Qgis::DataType type, qgssiz
       return static_cast< double >( ( static_cast< float * >( data ) )[index] );
     case Qgis::DataType::Float64:
       return static_cast< double >( ( static_cast< double * >( data ) )[index] );
-    default:
+    case Qgis::DataType::CInt16:
+    case Qgis::DataType::CInt32:
+    case Qgis::DataType::CFloat32:
+    case Qgis::DataType::CFloat64:
+    case Qgis::DataType::ARGB32:
+    case Qgis::DataType::ARGB32_Premultiplied:
+    case Qgis::DataType::UnknownDataType:
       QgsDebugMsg( QStringLiteral( "Data type %1 is not supported" ).arg( qgsEnumValueToKey< Qgis::DataType >( type ) ) );
       break;
   }
@@ -776,6 +786,9 @@ inline void QgsRasterBlock::writeValue( void *data, Qgis::DataType type, qgssize
   {
     case Qgis::DataType::Byte:
       ( static_cast< quint8 * >( data ) )[index] = static_cast< quint8 >( value );
+      break;
+    case Qgis::DataType::Int8:
+      ( static_cast< qint8 * >( data ) )[index] = static_cast< qint8 >( value );
       break;
     case Qgis::DataType::UInt16:
       ( static_cast< quint16 * >( data ) )[index] = static_cast< quint16 >( value );
@@ -795,7 +808,13 @@ inline void QgsRasterBlock::writeValue( void *data, Qgis::DataType type, qgssize
     case Qgis::DataType::Float64:
       ( static_cast< double * >( data ) )[index] = value;
       break;
-    default:
+    case Qgis::DataType::CInt16:
+    case Qgis::DataType::CInt32:
+    case Qgis::DataType::CFloat32:
+    case Qgis::DataType::CFloat64:
+    case Qgis::DataType::ARGB32:
+    case Qgis::DataType::ARGB32_Premultiplied:
+    case Qgis::DataType::UnknownDataType:
       QgsDebugMsg( QStringLiteral( "Data type %1 is not supported" ).arg( qgsEnumValueToKey< Qgis::DataType >( type ) ) );
       break;
   }

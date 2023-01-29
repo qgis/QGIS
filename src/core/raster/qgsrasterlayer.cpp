@@ -435,6 +435,9 @@ QString QgsRasterLayer::htmlMetadata() const
     case Qgis::DataType::Byte:
       myMetadata += tr( "Byte - Eight bit unsigned integer" );
       break;
+    case Qgis::DataType::Int8:
+      myMetadata += tr( "Int8 - Eight bit signed integer" );
+      break;
     case Qgis::DataType::UInt16:
       myMetadata += tr( "UInt16 - Sixteen bit unsigned integer " );
       break;
@@ -1200,6 +1203,12 @@ void QgsRasterLayer::computeMinMax( int band,
         {
           myRasterBandStats.minimumValue = 0;
           myRasterBandStats.maximumValue = 255;
+          break;
+        }
+        case Qgis::DataType::Int8:
+        {
+          myRasterBandStats.minimumValue = std::numeric_limits<int8_t>::lowest();
+          myRasterBandStats.maximumValue = std::numeric_limits<int8_t>::max();
           break;
         }
         case Qgis::DataType::UInt16:

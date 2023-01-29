@@ -129,6 +129,7 @@ class CORE_EXPORT Qgis
       {
       UnknownDataType = 0, //!< Unknown or unspecified type
       Byte = 1, //!< Eight bit unsigned integer (quint8)
+      Int8 = 14, //!< Eight bit signed integer (qint8) (added in QGIS 3.30)
       UInt16 = 2, //!< Sixteen bit unsigned integer (quint16)
       Int16 = 3, //!< Sixteen bit signed integer (qint16)
       UInt32 = 4, //!< Thirty two bit unsigned integer (quint32)
