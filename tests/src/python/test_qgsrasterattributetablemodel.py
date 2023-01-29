@@ -18,7 +18,6 @@ __copyright__ = 'Copyright 2022, The QGIS Project'
 import qgis  # NOQA
 
 import os
-from distutils.version import StrictVersion
 from qgis.PyQt.QtCore import QVariant, QModelIndex
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.Qt import Qt, PYQT_VERSION_STR
