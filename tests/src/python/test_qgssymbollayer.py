@@ -23,11 +23,9 @@ __date__ = 'October 2012'
 __copyright__ = '(C) 2012, Massimo Endrighi'
 
 import os
-from distutils.version import StrictVersion
 
 import qgis  # NOQA
 from osgeo import ogr
-from qgis.PyQt.Qt import PYQT_VERSION_STR
 from qgis.PyQt.QtCore import Qt, QObject, QDir, QFile, QIODevice, QPointF, QSize, QTemporaryDir
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.PyQt.QtXml import QDomDocument
@@ -75,7 +73,6 @@ from qgis.core import (QgsCentroidFillSymbolLayer,
                        QgsRendererCategory,
                        )
 from qgis.testing import start_app, unittest
-
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
@@ -84,11 +81,7 @@ start_app()
 
 TEST_DATA_DIR = unitTestDataPath()
 
-if StrictVersion(PYQT_VERSION_STR) < StrictVersion('5.7'):
-    from qgis.PyQt.QtCore import pyqtWrapperType
-    EXPECTED_TYPE = pyqtWrapperType
-else:
-    EXPECTED_TYPE = type(QObject)
+EXPECTED_TYPE = type(QObject)
 
 
 class TestQgsSymbolLayer(unittest.TestCase):
