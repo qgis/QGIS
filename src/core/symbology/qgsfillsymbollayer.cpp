@@ -4416,6 +4416,20 @@ QImage QgsPointPatternFillSymbolLayer::toTiledPatternImage() const
   int distanceXPx { static_cast<int>( QgsSymbolLayerUtils::rescaleUom( mDistanceX, mDistanceXUnit, {} ) ) };
   int distanceYPx { static_cast<int>( QgsSymbolLayerUtils::rescaleUom( mDistanceY, mDistanceYUnit, {} ) ) };
 
+  const int displacementXPx { static_cast<int>( QgsSymbolLayerUtils::rescaleUom( mDisplacementX, mDisplacementXUnit, {} ) ) };
+  const int displacementYPx { static_cast<int>( QgsSymbolLayerUtils::rescaleUom( mDisplacementY, mDisplacementYUnit, {} ) ) };
+
+  // Consider displacement, double the distance.
+  if ( displacementXPx != 0 )
+  {
+    distanceXPx *= 2;
+  }
+
+  if ( displacementYPx != 0 )
+  {
+    distanceYPx *= 2;
+  }
+
   const QSize size { QgsSymbolLayerUtils::tileSize( distanceXPx, distanceYPx, angleRads ) };
 
   QPixmap pixmap( size );
@@ -4433,6 +4447,10 @@ QImage QgsPointPatternFillSymbolLayer::toTiledPatternImage() const
   std::unique_ptr< QgsPointPatternFillSymbolLayer > layerClone( clone() );
 
   layerClone->setAngle( qRadiansToDegrees( angleRads ) );
+
+  // No way we can export a random pattern, disable it.
+  layerClone->setMaximumRandomDeviationX( 0 );
+  layerClone->setMaximumRandomDeviationY( 0 );
 
   layerClone->drawPreviewIcon( symbolContext, pixmap.size() );
   painter.end();
