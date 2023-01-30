@@ -34,6 +34,7 @@
 #include "qgsquickmapcanvasmap.h"
 #include "qgsquickmapsettings.h"
 #include "qgsquickmaptransform.h"
+#include "qgsquickelevationprofilecanvas.h"
 #include "qgsquickplugin.h"
 #include "qgsquickutils.h"
 
@@ -65,6 +66,7 @@ void QgsQuickPlugin::registerTypes( const char *uri )
   qmlRegisterType< QgsQuickMapCanvasMap >( uri, 0, 1, "MapCanvasMap" );
   qmlRegisterType< QgsQuickMapSettings >( uri, 0, 1, "MapSettings" );
   qmlRegisterType< QgsQuickMapTransform >( uri, 0, 1, "MapTransform" );
+  qmlRegisterType< QgsQuickElevationProfileCanvas >( uri, 0, 1, "ElevationProfileCanvas" );
   qmlRegisterType< QgsVectorLayer >( uri, 0, 1, "VectorLayer" );
 
   qmlRegisterSingletonType< QgsQuickUtils >( uri, 0, 1, "Utils", buildUtilsSingleton );

@@ -2,6 +2,7 @@
 # sources
 set(QGIS_QUICK_GUI_MOC_HDRS
   qgsquickcoordinatetransformer.h
+  qgsquickelevationprofilecanvas.h
   qgsquickmapcanvasmap.h
   qgsquickmapsettings.h
   qgsquickmaptransform.h
@@ -10,6 +11,7 @@ set(QGIS_QUICK_GUI_MOC_HDRS
 
 set(QGIS_QUICK_GUI_SRC
   qgsquickcoordinatetransformer.cpp
+  qgsquickelevationprofilecanvas.cpp
   qgsquickmapcanvasmap.cpp
   qgsquickmapsettings.cpp
   qgsquickmaptransform.cpp
