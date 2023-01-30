@@ -696,5 +696,5 @@ void QgsMeasureDialog::reject()
 
 void QgsMeasureDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#measuring" ) );
+  QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#sec-measure" ) );
 }

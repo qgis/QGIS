@@ -115,7 +115,7 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
 
 void QgsDecorationNorthArrowDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#north-arrow" ) );
+  QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#northarrow-decoration" ) );
 }
 
 void QgsDecorationNorthArrowDialog::buttonBox_accepted()
