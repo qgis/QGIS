@@ -123,7 +123,10 @@ bool QgsAbstractGeoPdfExporter::finalize( const QList<ComponentLayerDetail> &com
 
 QString QgsAbstractGeoPdfExporter::generateTemporaryFilepath( const QString &filename ) const
 {
-  return mTemporaryDir.filePath( filename );
+  QString cleanedFileName = filename;
+  cleanedFileName.replace( '\\', '_' );
+  cleanedFileName.replace( '/', '_' );
+  return mTemporaryDir.filePath( cleanedFileName );
 }
 
 bool QgsAbstractGeoPdfExporter::compositionModeSupported( QPainter::CompositionMode mode )
