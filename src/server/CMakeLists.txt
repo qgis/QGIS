@@ -84,16 +84,12 @@ if (WITH_SERVER_PLUGINS)
   )
 endif()
 
-
-include_directories(
-)
-
 add_library(qgis_server SHARED ${QGIS_SERVER_SRCS} ${QGIS_SERVER_HDRS})
 
 # require c++17
 target_compile_features(qgis_server PRIVATE cxx_std_17)
 
-target_include_directories(qgis_server SYSTEM PRIVATE
+target_include_directories(qgis_server SYSTEM PUBLIC
   ${FCGI_INCLUDE_DIR}
 )
 

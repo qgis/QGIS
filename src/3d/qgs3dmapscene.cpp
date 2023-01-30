@@ -125,6 +125,7 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   // create terrain entity
 
   createTerrainDeferred();
+  connect( &map, &Qgs3DMapSettings::extentChanged, this, &Qgs3DMapScene::createTerrain );
   connect( &map, &Qgs3DMapSettings::terrainGeneratorChanged, this, &Qgs3DMapScene::createTerrain );
   connect( &map, &Qgs3DMapSettings::terrainVerticalScaleChanged, this, &Qgs3DMapScene::createTerrain );
   connect( &map, &Qgs3DMapSettings::mapTileResolutionChanged, this, &Qgs3DMapScene::createTerrain );
@@ -249,11 +250,13 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
 
 void Qgs3DMapScene::viewZoomFull()
 {
-  QgsRectangle extent = sceneExtent();
-  float side = std::max( extent.width(), extent.height() );
-  float a =  side / 2.0f / std::sin( qDegreesToRadians( cameraController()->camera()->fieldOfView() ) / 2.0f );
-  // Note: the 1.5 multiplication is to move the view upwards to look better
-  mCameraController->resetView( 1.5 * std::sqrt( a * a - side * side ) );  // assuming FOV being 45 degrees
+  const QgsDoubleRange yRange = elevationRange();
+  const QgsRectangle extent = sceneExtent();
+  const double side = std::max( extent.width(), extent.height() );
+  double d = side / 2 / std::tan( cameraController()->camera()->fieldOfView() / 2 * M_PI / 180 );
+  d += yRange.upper();
+  mCameraController->resetView( static_cast< float >( d ) );
+  return;
 }
 
 void Qgs3DMapScene::setViewFrom2DExtent( const QgsRectangle &extent )
@@ -328,7 +331,7 @@ void Qgs3DMapScene::registerPickHandler( Qgs3DMapScenePickHandler *pickHandler )
   if ( mPickHandlers.isEmpty() )
   {
     // we need to add object pickers
-    for ( Qt3DCore::QEntity *entity : mLayerEntities.values() )
+    for ( Qt3DCore::QEntity *entity : mLayerEntities )
     {
       if ( QgsChunkedEntity *chunkedEntity = qobject_cast<QgsChunkedEntity *>( entity ) )
         chunkedEntity->setPickingEnabled( true );
@@ -345,7 +348,7 @@ void Qgs3DMapScene::unregisterPickHandler( Qgs3DMapScenePickHandler *pickHandler
   if ( mPickHandlers.isEmpty() )
   {
     // we need to remove pickers
-    for ( Qt3DCore::QEntity *entity : mLayerEntities.values() )
+    for ( Qt3DCore::QEntity *entity : mLayerEntities )
     {
       if ( QgsChunkedEntity *chunkedEntity = qobject_cast<QgsChunkedEntity *>( entity ) )
         chunkedEntity->setPickingEnabled( false );
@@ -621,11 +624,12 @@ void Qgs3DMapScene::createTerrainDeferred()
 {
   if ( mMap.terrainRenderingEnabled() && mMap.terrainGenerator() )
   {
-    double tile0width = mMap.terrainGenerator()->extent().width();
+    double tile0width = mMap.terrainGenerator()->rootChunkExtent().width();
     int maxZoomLevel = Qgs3DUtils::maxZoomLevel( tile0width, mMap.mapTileResolution(), mMap.maxTerrainGroundError() );
     QgsAABB rootBbox = mMap.terrainGenerator()->rootChunkBbox( mMap );
     float rootError = mMap.terrainGenerator()->rootChunkError( mMap );
-    mMap.terrainGenerator()->setupQuadtree( rootBbox, rootError, maxZoomLevel );
+    const QgsAABB clippingBbox = Qgs3DUtils::mapToWorldExtent( mMap.extent(), rootBbox.zMin, rootBbox.zMax, mMap.origin() );
+    mMap.terrainGenerator()->setupQuadtree( rootBbox, rootError, maxZoomLevel, clippingBbox );
 
     mTerrain = new QgsTerrainEntity( mMap );
     mTerrain->setParent( this );
@@ -750,7 +754,8 @@ void Qgs3DMapScene::onLayersChanged()
 
 void Qgs3DMapScene::updateTemporal()
 {
-  for ( auto layer : mLayerEntities.keys() )
+  const QList<QgsMapLayer * > layers = mLayerEntities.keys();
+  for ( QgsMapLayer *layer : layers )
   {
     if ( layer->temporalProperties()->isActive() )
     {
@@ -1216,34 +1221,34 @@ QVector<const QgsChunkNode *> Qgs3DMapScene::getLayerActiveChunkNodes( QgsMapLay
 
 QgsRectangle Qgs3DMapScene::sceneExtent()
 {
-  QgsRectangle extent;
-  extent.setMinimal();
+  return mMap.extent();
+}
 
-  for ( QgsMapLayer *layer : mLayerEntities.keys() )
+QgsDoubleRange Qgs3DMapScene::elevationRange() const
+{
+  double yMin = std::numeric_limits< double >::max();
+  double yMax = std::numeric_limits< double >::lowest();
+  if ( mMap.terrainRenderingEnabled() && mTerrain )
   {
-    Qt3DCore::QEntity *layerEntity = mLayerEntities[ layer ];
-    QgsChunkedEntity *c = qobject_cast<QgsChunkedEntity *>( layerEntity );
-    if ( !c )
-      continue;
-    QgsChunkNode *chunkNode = c->rootNode();
-    QgsAABB bbox = chunkNode->bbox();
-    QgsRectangle layerExtent = Qgs3DUtils::worldToLayerExtent( bbox, layer->crs(), mMap.origin(), mMap.crs(), mMap.transformContext() );
-    extent.combineExtentWith( layerExtent );
+    const QgsAABB bbox = mTerrain->rootNode()->bbox();
+    yMin = std::min( yMin, static_cast< double >( bbox.yMin ) );
+    yMax = std::max( yMax, static_cast< double >( bbox.yMax ) );
   }
 
-  if ( mMap.terrainRenderingEnabled() )
+  for ( auto it = mLayerEntities.constBegin(); it != mLayerEntities.constEnd(); it++ )
   {
-    if ( QgsTerrainGenerator *terrainGenerator = mMap.terrainGenerator() )
+    QgsMapLayer *layer = it.key();
+    if ( layer->type() == QgsMapLayerType::PointCloudLayer )
     {
-      QgsRectangle terrainExtent = terrainGenerator->extent();
-      QgsCoordinateTransform terrainToMapTransform( terrainGenerator->crs(), mMap.crs(), QgsProject::instance() );
-      terrainToMapTransform.setBallparkTransformsAreAppropriate( true );
-      terrainExtent = terrainToMapTransform.transformBoundingBox( terrainExtent );
-      extent.combineExtentWith( terrainExtent );
+      QgsPointCloudLayer *pcl = qobject_cast< QgsPointCloudLayer *>( layer );
+      QgsDoubleRange zRange = pcl->elevationProperties()->calculateZRange( pcl );
+      yMin = std::min( yMin, zRange.lower() );
+      yMax = std::max( yMax, zRange.upper() );
     }
   }
-
-  return extent;
+  const QgsDoubleRange yRange( std::min( yMin, std::numeric_limits<double>::max() ),
+                               std::max( yMax, std::numeric_limits<double>::lowest() ) );
+  return yRange;
 }
 
 void Qgs3DMapScene::addCameraRotationCenterEntity( QgsCameraController *controller )

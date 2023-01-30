@@ -143,8 +143,19 @@ class CORE_EXPORT QgsRasterFileWriter
     void setMaxTileWidth( int w ) { mMaxTileWidth = w; }
     int maxTileWidth() const { return mMaxTileWidth; }
 
-    QgsRaster::RasterBuildPyramids buildPyramidsFlag() const { return mBuildPyramidsFlag; }
-    void setBuildPyramidsFlag( QgsRaster::RasterBuildPyramids f ) { mBuildPyramidsFlag = f; }
+    /**
+     * Returns the pyramid building option.
+     *
+     * \see setBuildPyramidsFlag()
+     */
+    Qgis::RasterBuildPyramidOption buildPyramidsFlag() const { return mBuildPyramidsFlag; }
+
+    /**
+     * Sets the pyramid building option.
+     *
+     * \see buildPyramidsFlag()
+     */
+    void setBuildPyramidsFlag( Qgis::RasterBuildPyramidOption f ) { mBuildPyramidsFlag = f; }
 
     QList< int > pyramidsList() const { return mPyramidsList; }
     void setPyramidsList( const QList< int > &list ) { mPyramidsList = list; }
@@ -152,8 +163,19 @@ class CORE_EXPORT QgsRasterFileWriter
     QString pyramidsResampling() const { return mPyramidsResampling; }
     void setPyramidsResampling( const QString &str ) { mPyramidsResampling = str; }
 
-    QgsRaster::RasterPyramidsFormat pyramidsFormat() const { return mPyramidsFormat; }
-    void setPyramidsFormat( QgsRaster::RasterPyramidsFormat f ) { mPyramidsFormat = f; }
+    /**
+     * Returns the raster pyramid format.
+     *
+     * \see setPyramidsFormat()
+     */
+    Qgis::RasterPyramidFormat pyramidsFormat() const { return mPyramidsFormat; }
+
+    /**
+     * Sets the raster pyramid format.
+     *
+     * \see pyramidsFormat()
+     */
+    void setPyramidsFormat( Qgis::RasterPyramidFormat f ) { mPyramidsFormat = f; }
 
     void setMaxTileHeight( int h ) { mMaxTileHeight = h; }
     int maxTileHeight() const { return mMaxTileHeight; }
@@ -308,8 +330,8 @@ class CORE_EXPORT QgsRasterFileWriter
 
     QList< int > mPyramidsList;
     QString mPyramidsResampling = QStringLiteral( "AVERAGE" );
-    QgsRaster::RasterBuildPyramids mBuildPyramidsFlag = QgsRaster::PyramidsFlagNo;
-    QgsRaster::RasterPyramidsFormat mPyramidsFormat = QgsRaster::PyramidsGTiff;
+    Qgis::RasterBuildPyramidOption mBuildPyramidsFlag = Qgis::RasterBuildPyramidOption::No;
+    Qgis::RasterPyramidFormat mPyramidsFormat = Qgis::RasterPyramidFormat::GeoTiff;
     QStringList mPyramidsConfigOptions;
 
     QDomDocument mVRTDocument;

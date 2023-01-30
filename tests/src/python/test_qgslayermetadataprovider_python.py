@@ -122,8 +122,9 @@ class TestPythonLayerMetadataProvider(unittest.TestCase):
 
         super().setUp()
         srcpath = os.path.join(TEST_DATA_DIR, 'provider')
-        shutil.copy(os.path.join(srcpath, 'geopackage.gpkg'), temp_path)
         self.conn = os.path.join(temp_path, 'geopackage.gpkg')
+        # Create a truncated file so that we get an exception later
+        open(self.conn, "wb").write(open(os.path.join(srcpath, 'geopackage.gpkg'), "rb").read(8192))
 
         shutil.copy(os.path.join(srcpath, 'spatialite.db'), temp_path)
         self.conn_sl = os.path.join(temp_path, 'spatialite.db')

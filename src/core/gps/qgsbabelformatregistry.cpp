@@ -18,9 +18,20 @@
 #include "qgsbabelformatregistry.h"
 #include "qgsbabelformat.h"
 #include "qgsbabelgpsdevice.h"
-#include "qgssettings.h"
 #include <QString>
 #include <QRegularExpression>
+
+const QgsSettingsEntryString *QgsBabelFormatRegistry::settingsBabelWptDownload = new QgsSettingsEntryString( QStringLiteral( "wptdownload" ), sTreeBabelDevices );
+
+const QgsSettingsEntryString *QgsBabelFormatRegistry::settingsBabelWptUpload = new QgsSettingsEntryString( QStringLiteral( "wptupload" ), sTreeBabelDevices );
+
+const QgsSettingsEntryString *QgsBabelFormatRegistry::settingsBabelRteDownload = new QgsSettingsEntryString( QStringLiteral( "rtedownload" ), sTreeBabelDevices );
+
+const QgsSettingsEntryString *QgsBabelFormatRegistry::settingsBabelRteUpload = new QgsSettingsEntryString( QStringLiteral( "rteupload" ), sTreeBabelDevices );
+
+const QgsSettingsEntryString *QgsBabelFormatRegistry::settingsBabelTrkDownload = new QgsSettingsEntryString( QStringLiteral( "trkdownload" ), sTreeBabelDevices );
+
+const QgsSettingsEntryString *QgsBabelFormatRegistry::settingsBabelTrkUpload = new QgsSettingsEntryString( QStringLiteral( "trkupload" ), sTreeBabelDevices );
 
 QgsBabelFormatRegistry::QgsBabelFormatRegistry()
 {
@@ -265,44 +276,14 @@ void QgsBabelFormatRegistry::reloadFromSettings()
                                  QStringLiteral( "%babel -t -i garmin -o gpx %in %out" ),
                                  QStringLiteral( "%babel -t -i gpx -o garmin %in %out" ) );
 
-  QgsSettings settings;
-
-  bool useOldPath = false;
-  QStringList deviceNames = settings.value( QStringLiteral( "babelDeviceList" ), QVariant(), QgsSettings::Gps ).toStringList();
-  if ( deviceNames.empty() ) // migrate old settings
+  for ( const QString &device : sTreeBabelDevices->items() )
   {
-    useOldPath = true;
-    deviceNames = settings.value( QStringLiteral( "Plugin-GPS/devicelist" ) ).toStringList();
-  }
-
-  for ( const QString &device : std::as_const( deviceNames ) )
-  {
-    QString baseKey;
-    QgsSettings::Section section = QgsSettings::Gps;
-    if ( !useOldPath )
-      baseKey = QStringLiteral( "babelDevices/%1" ).arg( device );
-    else
-    {
-      baseKey = QStringLiteral( "/Plugin-GPS/devices/%1" ).arg( device );
-      section = QgsSettings::NoSection;
-    }
-
-    const QString wptDownload = settings.value( QStringLiteral( "%1/wptdownload" ).arg( baseKey ), QVariant(), section ).toString();
-    const QString wptUpload = settings.value( QStringLiteral( "%1/wptupload" ).arg( baseKey ), QVariant(), section ).toString();
-    const QString rteDownload = settings.value( QStringLiteral( "%1/rtedownload" ).arg( baseKey ), QVariant(), section ).toString();
-    const QString rteUpload = settings.value( QStringLiteral( "%1/rteupload" ).arg( baseKey ), QVariant(), section ).toString();
-    const QString trkDownload = settings.value( QStringLiteral( "%1/trkdownload" ).arg( baseKey ), QVariant(), section ).toString();
-    const QString trkUpload = settings.value( QStringLiteral( "%1/trkupload" ).arg( baseKey ), QVariant(), section ).toString();
-
     // don't leak memory if there's already a device with this name...
     delete mDevices.value( device );
 
-    mDevices[device] = new QgsBabelGpsDeviceFormat( wptDownload,
-        wptUpload,
-        rteDownload,
-        rteUpload,
-        trkDownload,
-        trkUpload );
+    mDevices[device] = new QgsBabelGpsDeviceFormat( settingsBabelWptDownload->value( device ), settingsBabelWptUpload->value( device ),
+        settingsBabelRteDownload->value( device ), settingsBabelRteUpload->value( device ),
+        settingsBabelTrkDownload->value( device ), settingsBabelTrkUpload->value( device ) );
   }
 }
 

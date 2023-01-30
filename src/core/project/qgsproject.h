@@ -53,6 +53,7 @@
 #include "qgssettings.h"
 #include "qgspropertycollection.h"
 #include "qgsvectorlayereditbuffergroup.h"
+#include "qgselevationshadingrenderer.h"
 
 #include "qgsrelationmanager.h"
 #include "qgsmapthemecollection.h"
@@ -86,6 +87,7 @@ class QgsAttributeEditorContainer;
 class QgsPropertyCollection;
 class QgsMapViewsManager;
 class QgsProjectElevationProperties;
+class QgsProjectGpsSettings;
 
 /**
  * \ingroup core
@@ -862,7 +864,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsProjectElevationProperties *elevationProperties();
 
     /**
-     * Returns the project's display settings, which settings and properties relating
+     * Returns the project's display settings, which contains settings and properties relating
      * to how a QgsProject should display values such as map coordinates and bearings.
      * \note not available in Python bindings
      * \since QGIS 3.12
@@ -870,11 +872,26 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     const QgsProjectDisplaySettings *displaySettings() const SIP_SKIP;
 
     /**
-     * Returns the project's display settings, which settings and properties relating
+     * Returns the project's display settings, which contains settings and properties relating
      * to how a QgsProject should display values such as map coordinates and bearings.
      * \since QGIS 3.12
      */
     QgsProjectDisplaySettings *displaySettings();
+
+    /**
+     * Returns the project's GPS settings, which contains settings and properties relating
+     * to how a QgsProject should interact with a GPS device.
+     * \note not available in Python bindings
+     * \since QGIS 3.30
+     */
+    const QgsProjectGpsSettings *gpsSettings() const SIP_SKIP;
+
+    /**
+     * Returns the project's GPS settings, which contains settings and properties relating
+     * to how a QgsProject should interact with a GPS device.
+     * \since QGIS 3.30
+     */
+    QgsProjectGpsSettings *gpsSettings();
 
     /**
      * Returns pointer to the root (invisible) node of the project's layer tree
@@ -1618,6 +1635,20 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
+    /**
+     * Returns the elevation shading renderer used for map shading
+     *
+     * \since QGIS 3.30
+     */
+    QgsElevationShadingRenderer elevationShadingRenderer() const;
+
+    /**
+     * Sets the elevation shading renderer used for global map shading
+     *
+     * \since QGIS 3.30
+     */
+    void setElevationShadingRenderer( const QgsElevationShadingRenderer &elevationShadingRenderer );
+
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
@@ -1999,6 +2030,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     Q_DECL_DEPRECATED void mapScalesChanged() SIP_DEPRECATED;
 
+    /**
+     * Emitted when the map shading renderer changes
+     *
+     * \since QGIS 3.30
+     */
+    void elevationShadingRendererChanged();
+
   public slots:
 
     /**
@@ -2248,6 +2286,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     QgsProjectDisplaySettings *mDisplaySettings = nullptr;
 
+    QgsProjectGpsSettings *mGpsSettings = nullptr;
+
     QgsLayerTree *mRootGroup = nullptr;
 
     QgsLayerTreeRegistryBridge *mLayerTreeRegistryBridge = nullptr;
@@ -2314,6 +2354,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     mutable std::unique_ptr< QgsExpressionContextScope > mProjectScope;
 
     int mBlockSnappingUpdates = 0;
+
+    QgsElevationShadingRenderer mElevationShadingRenderer;
 
     friend class QgsApplication;
 

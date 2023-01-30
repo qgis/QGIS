@@ -45,11 +45,13 @@ class CORE_EXPORT QgsMemoryProviderUtils
      * \param fields fields for layer
      * \param geometryType optional layer geometry type
      * \param crs optional layer CRS for layers with geometry
+     * \param loadDefaultStyle optional load default style toggle
      */
     static QgsVectorLayer *createMemoryLayer( const QString &name,
         const QgsFields &fields,
         QgsWkbTypes::Type geometryType = QgsWkbTypes::NoGeometry,
-        const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() ) SIP_FACTORY;
+        const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
+        bool loadDefaultStyle = true ) SIP_FACTORY;
 };
 
 #endif // QGSMEMORYPROVIDERUTILS_H

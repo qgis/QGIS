@@ -31,8 +31,8 @@
 
 QgsEptPointCloudBlockRequest::QgsEptPointCloudBlockRequest( const IndexedPointCloudNode &node, const QString &uri, const QString &dataType,
     const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes,
-    const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filterExpression )
-  : QgsPointCloudBlockRequest( node, uri, attributes, requestedAttributes, scale, offset, filterExpression ),
+    const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filterExpression, const QgsRectangle &filterRect )
+  : QgsPointCloudBlockRequest( node, uri, attributes, requestedAttributes, scale, offset, filterExpression, filterRect ),
     mDataType( dataType )
 {
   QNetworkRequest nr( mUri );
@@ -53,15 +53,15 @@ void QgsEptPointCloudBlockRequest::blockFinishedLoading()
       mBlock = nullptr;
       if ( mDataType == QLatin1String( "binary" ) )
       {
-        mBlock = QgsEptDecoder::decompressBinary( mTileDownloadManagerReply->data(), mAttributes, mRequestedAttributes, mScale, mOffset, mFilterExpression );
+        mBlock = QgsEptDecoder::decompressBinary( mTileDownloadManagerReply->data(), mAttributes, mRequestedAttributes, mScale, mOffset, mFilterExpression, mFilterRect );
       }
       else if ( mDataType == QLatin1String( "zstandard" ) )
       {
-        mBlock = QgsEptDecoder::decompressZStandard( mTileDownloadManagerReply->data(), mAttributes, mRequestedAttributes, mScale, mOffset, mFilterExpression );
+        mBlock = QgsEptDecoder::decompressZStandard( mTileDownloadManagerReply->data(), mAttributes, mRequestedAttributes, mScale, mOffset, mFilterExpression, mFilterRect );
       }
       else if ( mDataType == QLatin1String( "laszip" ) )
       {
-        mBlock = QgsLazDecoder::decompressLaz( mTileDownloadManagerReply->data(), mRequestedAttributes, mFilterExpression );
+        mBlock = QgsLazDecoder::decompressLaz( mTileDownloadManagerReply->data(), mRequestedAttributes, mFilterExpression, mFilterRect );
       }
       else
       {

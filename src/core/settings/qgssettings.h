@@ -23,6 +23,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgslogger.h"
+#include "qgssettingstreenode.h"
 
 /**
  * \ingroup core
@@ -79,36 +80,52 @@ class CORE_EXPORT QgsSettings : public QObject
       Gps, //!< GPS section, since QGIS 3.22
     };
 
+#ifndef SIP_RUN
+
     /**
-     * \ingroup core
-     * \brief Prefixes for the settings keys
-     * \since QGIS 3.26
+     * Returns the tree root node for the settings
+     * \since QGIS 3.30
      */
-    class Prefix SIP_SKIP
-    {
-      public:
-        static const inline char *APP_GEOREFERENCER = "app/georeferencer";
-        static const inline char *CORE = "core";
-        static const inline char *CORE_LAYOUT = "core/Layout";
-        static const inline char *GEOMETRYVALIDATION = "geometry_validation";
-        static const inline char *GPS = "gps";
-        static const inline char *GUI_LOCATORFILTERS = "gui/locator_filters";
-        static const inline char *GUI_QGIS = "gui/qgis";
-        static const inline char *LOCALE = "locale";
-        static const inline char *MAP = "Map";
-        static const inline char *PLUGINS = "plugins";
-        static const inline char *PROCESSING_CONFIGURATION = "Processing/Configuration";
-        static const inline char *QGIS = "qgis";
-        static const inline char *QGIS_DIGITIZING = "qgis/digitizing";
-        static const inline char *QGIS_DIGITIZING_SHAPEMAPTOOLS = "qgis/digitizing/shape-map-tools";
-        static const inline char *QGIS_NETWORKANDPROXY = "qgis/networkAndProxy";
-        static const inline char *SVG = "svg";
-        static const inline char *ELEVATION_PROFILE = "elevation-profile";
-        static const inline char *CORE_LAYERTREE = "core/layer-tree";
-        static const inline char *STYLE_MANAGER = "app/style-manager";
-        static const inline char *FONTS = "fonts";
-        static const inline char *WMS = "wms";
-    };
+    static QgsSettingsTreeNode *treeRoot();
+
+    // only create first level here
+    static inline QgsSettingsTreeNode *sTreeApp = treeRoot()->createChildNode( QStringLiteral( "app" ) );
+    static inline QgsSettingsTreeNode *sTreeConnections = treeRoot()->createChildNode( QStringLiteral( "connections" ) );
+    static inline QgsSettingsTreeNode *sTreeCore = treeRoot()->createChildNode( QStringLiteral( "core" ) );
+    static inline QgsSettingsTreeNode *sTreeElevationProfile = treeRoot()->createChildNode( QStringLiteral( "elevation-profile" ) );
+    static inline QgsSettingsTreeNode *sTreeFonts = treeRoot()->createChildNode( QStringLiteral( "fonts" ) );
+    static inline QgsSettingsTreeNode *sTreeGeometryValidation = treeRoot()->createChildNode( QStringLiteral( "geometry_validation" ) );
+    static inline QgsSettingsTreeNode *sTreeGps = treeRoot()->createChildNode( QStringLiteral( "gps" ) );
+    static inline QgsSettingsTreeNode *sTreeGui = treeRoot()->createChildNode( QStringLiteral( "gui" ) );
+    static inline QgsSettingsTreeNode *sTreeLayerTree = treeRoot()->createChildNode( QStringLiteral( "layer-tree" ) );
+    static inline QgsSettingsTreeNode *sTreeLayout = treeRoot()->createChildNode( QStringLiteral( "layout" ) );
+    static inline QgsSettingsTreeNode *sTreeLocale = treeRoot()->createChildNode( QStringLiteral( "locale" ) );
+    static inline QgsSettingsTreeNode *sTreeMap = treeRoot()->createChildNode( QStringLiteral( "map" ) );
+    static inline QgsSettingsTreeNode *sTreeNetwork = treeRoot()->createChildNode( QStringLiteral( "network" ) );
+    static inline QgsSettingsTreeNode *sTreeQgis = treeRoot()->createChildNode( QStringLiteral( "qgis" ) );
+    static inline QgsSettingsTreeNode *sTreePlugins = treeRoot()->createChildNode( QStringLiteral( "plugins" ) );
+    static inline QgsSettingsTreeNode *sTreeProcessing = treeRoot()->createChildNode( QStringLiteral( "processing" ) );
+    static inline QgsSettingsTreeNode *sTreeRaster = treeRoot()->createChildNode( QStringLiteral( "raster" ) );
+    static inline QgsSettingsTreeNode *sTreeSvg = treeRoot()->createChildNode( QStringLiteral( "svg" ) );
+    static inline QgsSettingsTreeNode *sTreeWms = treeRoot()->createChildNode( QStringLiteral( "wms" ) );
+
+    // sub levels
+    static inline QgsSettingsTreeNode *sTreeDigitizing = sTreeQgis->createChildNode( QStringLiteral( "digitizing" ) );
+
+#endif
+
+    /**
+     * Creates a settings tree node for the given \a pluginName
+     * \since QGIS 3.30
+     */
+    static QgsSettingsTreeNode *createPluginTreeNode( const QString &pluginName );
+
+
+    /**
+     * Unregisters the tree node for the given plugin
+     * \since QGIS 3.30
+     */
+    static void unregisterPluginTreeNode( const QString &pluginName );
 
     /**
      * Constructs a QgsSettings object for accessing settings of the application
@@ -208,7 +225,7 @@ class CORE_EXPORT QgsSettings : public QObject
     //! Returns a list of all top-level keys that can be read using the QSettings object.
     QStringList childKeys() const;
     //! Returns a list of all key top-level groups that contain keys that can be read using the QSettings object.
-    QStringList childGroups() const;
+    QStringList childGroups( Qgis::SettingsOrigin origin = Qgis::SettingsOrigin::Any ) const;
     //! Returns a list of all key top-level groups (same as childGroups) but only for groups defined in global settings.
     QStringList globalChildGroups() const;
     //! Returns the path to the Global Settings QSettings storage file
@@ -232,6 +249,13 @@ class CORE_EXPORT QgsSettings : public QObject
      * remove(), and contains() will operate on the array entry at that index.
      */
     void setArrayIndex( int i );
+
+    /**
+     * Returns the origin of the setting if it exists at the given \a key
+     * \note it will return Qgis::SettingsOrigin::Any if the key doesn't exist
+     * \since QGIS 3.30
+     */
+    Qgis::SettingsOrigin origin( const QString &key ) const;
 
     /**
      * Sets the value of setting key to value. If the key already exists, the previous value is overwritten.
@@ -267,6 +291,7 @@ class CORE_EXPORT QgsSettings : public QObject
     sipIsErr = !sipRes;
     % End
 #endif
+
 
 #ifndef SIP_RUN
 

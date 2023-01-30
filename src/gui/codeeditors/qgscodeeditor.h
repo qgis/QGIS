@@ -19,6 +19,8 @@
 
 #include <QString>
 #include "qgscodeeditorcolorscheme.h"
+#include "qgis.h"
+
 // qscintilla includes
 #include <Qsci/qsciapis.h>
 #include "qgis_sip.h"
@@ -28,6 +30,55 @@
 
 
 SIP_IF_MODULE( HAVE_QSCI_SIP )
+
+/**
+ * \ingroup gui
+ * \brief An interface for code interpreters.
+ * \since QGIS 3.30
+ */
+class GUI_EXPORT QgsCodeInterpreter
+{
+  public:
+
+    virtual ~QgsCodeInterpreter();
+
+    /**
+     * Executes a \a command in the interpreter.
+     *
+     * Returns an interpreter specific state value.
+     */
+    int exec( const QString &command );
+
+    /**
+     * Returns the current interpreter state.
+     *
+     * The actual interpretation of the returned values depend on
+     * the interpreter subclass.
+     */
+    virtual int currentState() const { return mState; }
+
+    /**
+     * Returns the interactive prompt string to use for the
+     * interpreter, given a \a state.
+     */
+    virtual QString promptForState( int state ) const = 0;
+
+  protected:
+
+    /**
+     * Pure virtual method for executing commands in the interpreter.
+     *
+     * Subclasses must implement this method. It will be called internally
+     * whenever the public exec() method is called.
+     */
+    virtual int execCommandImpl( const QString &command ) = 0;
+
+  private:
+
+    int mState = 0;
+
+};
+
 
 
 class QWidget;
@@ -43,6 +94,19 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     Q_OBJECT
 
   public:
+
+    /**
+     * Code editor modes.
+     *
+     * \since QGIS 3.30
+     */
+    enum class Mode
+    {
+      ScriptEditor, //!< Standard mode, allows for display and edit of entire scripts
+      OutputDisplay, //!< Read only mode for display of command outputs
+      CommandInput, //!< Command input mode
+    };
+    Q_ENUM( Mode )
 
     /**
      * Margin roles.
@@ -86,15 +150,30 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      * \param folding FALSE: Enable folding for code editor (deprecated, use \a flags instead)
      * \param margin FALSE: Enable margin for code editor (deprecated)
      * \param flags flags controlling behavior of code editor (since QGIS 3.28)
+     * \param mode code editor mode (since QGIS 3.30)
      * \since QGIS 2.6
      */
-    QgsCodeEditor( QWidget * parent SIP_TRANSFERTHIS = nullptr, const QString & title = QString(), bool folding = false, bool margin = false, QgsCodeEditor::Flags flags = QgsCodeEditor::Flags() );
+    QgsCodeEditor( QWidget * parent SIP_TRANSFERTHIS = nullptr, const QString & title = QString(), bool folding = false, bool margin = false, QgsCodeEditor::Flags flags = QgsCodeEditor::Flags(), QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor );
 
     /**
      * Set the widget title
      * \param title widget title
      */
     void setTitle( const QString & title );
+
+    /**
+     * Returns the associated scripting language.
+     *
+     * \since QGIS 3.30
+     */
+    virtual Qgis::ScriptLanguage language() const;
+
+    /**
+     * Returns a user-friendly, translated name of the specified script \a language.
+     *
+     * \since QGIS 3.30
+     */
+    static QString languageToString( Qgis::ScriptLanguage language );
 
     /**
      * Set margin visible state
@@ -216,13 +295,65 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     void clearWarnings();
 
     /**
+     * Returns the code editor mode.
+     *
+     * \since QGIS 3.30
+     */
+    QgsCodeEditor::Mode mode() const { return mMode; }
+
+    /**
      * Returns TRUE if the cursor is on the last line of the document.
      *
      * \since QGIS 3.28
      */
     bool isCursorOnLastLine() const;
 
+    /**
+     * Sets the file path to use for recording and retrieving previously
+     * executed commands.
+     *
+     * \note Applies to code editors in the QgsCodeEditor::Mode::CommandInput mode only.
+     *
+     * \since QGIS 3.30
+     */
+    void setHistoryFilePath( const QString &path );
+
+    /**
+     * Returns the list of commands previously executed in the editor.
+     *
+     * \note Applies to code editors in the QgsCodeEditor::Mode::CommandInput mode only.
+     *
+     * \since QGIS 3.30
+     */
+    QStringList history() const;
+
+    /**
+     * Returns the attached code interpreter, or NULLPTR if not set.
+     *
+     * \see setInterpreter()
+     * \since QGIS 3.30
+     */
+    QgsCodeInterpreter *interpreter() const;
+
+    /**
+     * Sets an attached code interpreter for executing commands when the editor
+     * is in the QgsCodeEditor::Mode::CommandInput mode.
+     *
+     * \see interpreter()
+     * \since QGIS 3.30
+     */
+    void setInterpreter( QgsCodeInterpreter *newInterpreter );
+
   public slots:
+
+    /**
+     * Runs a command in the editor.
+     *
+     * An interpreter() must be set.
+     *
+     * \since QGIS 3.30
+     */
+    void runCommand( const QString &command );
 
     /**
      * Moves the cursor to the start of the document and scrolls to ensure
@@ -240,12 +371,91 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      */
     virtual void moveCursorToEnd();
 
+    /**
+     * Shows the previous command from the session in the editor.
+     *
+     * \note Applies to code editors in the QgsCodeEditor::Mode::CommandInput mode only.
+     *
+     * \since QGIS 3.30
+     */
+    void showPreviousCommand();
+
+    /**
+     * Shows the next command from the session in the editor.
+     *
+     * \note Applies to code editors in the QgsCodeEditor::Mode::CommandInput mode only.
+     *
+     * \since QGIS 3.30
+     */
+    void showNextCommand();
+
+    /**
+     * Shows the command history dialog.
+
+     * \note Applies to code editors in the QgsCodeEditor::Mode::CommandInput mode only.
+     *
+     * \since QGIS 3.30
+     */
+    void showHistory();
+
+    /**
+     * Removes the command at the specified \a index from the history of the code editor.
+     *
+     * \since QGIS 3.30
+     */
+    void removeHistoryCommand( int index );
+
+    /**
+     * Clears the history of commands run in the current session.
+     *
+     * \note Applies to code editors in the QgsCodeEditor::Mode::CommandInput mode only.
+     *
+     * \since QGIS 3.30
+     */
+    void clearSessionHistory();
+
+    /**
+     * Clears the entire persistent history of commands run in the editor.
+     *
+     * \note Applies to code editors in the QgsCodeEditor::Mode::CommandInput mode only.
+     *
+     * \since QGIS 3.30
+     */
+    void clearPersistentHistory();
+
+    /**
+     * Stores the commands executed in the editor to the persistent history file.
+     *
+     * \since QGIS 3.30
+     */
+    bool writeHistoryFile();
+
+  signals:
+
+    /**
+     * Emitted when the history of commands run in the current session is cleared.
+     *
+     * \since QGIS 3.30
+     */
+    void sessionHistoryCleared();
+
+    /**
+     * Emitted when the persistent history of commands run in the editor is cleared.
+     *
+     * \since QGIS 3.30
+     */
+    void persistentHistoryCleared();
+
   protected:
 
-    bool isFixedPitch( const QFont & font );
+    /**
+     * Returns TRUE if a \a font is a fixed pitch font.
+     */
+    static bool isFixedPitch( const QFont &font );
 
-    void focusOutEvent( QFocusEvent * event ) override;
-    void keyPressEvent( QKeyEvent * event ) override;
+    void focusOutEvent( QFocusEvent *event ) override;
+    void keyPressEvent( QKeyEvent *event ) override;
+    void contextMenuEvent( QContextMenuEvent *event ) override;
 
     /**
      * Called when the dialect specific code lexer needs to be initialized (or reinitialized).
@@ -277,14 +487,45 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      */
     void runPostLexerConfigurationTasks();
 
+    /**
+     * Updates the soft history by storing the current editor text in the history.
+     *
+     * \since QGIS 3.30
+     */
+    void updateSoftHistory();
+
+    /**
+     * Triggers an update of the interactive prompt part of the editor.
+     *
+     * \note Applies to code editors in the QgsCodeEditor::Mode::CommandInput mode only.
+     *
+     * \since QGIS 3.30
+     */
+    void updatePrompt();
+
+    /**
+     * Called when the context \a menu for the widget is about to be shown, after it
+     * has been fully populated with the standard actions created by the base class.
+     *
+     * This method provides an opportunity for subclasses to add additional non-standard
+     * actions to the context menu.
+     *
+     * \since QGIS 3.30
+     */
+    virtual void populateContextMenu( QMenu *menu );
+
   private:
 
     void setSciWidget();
     void updateFolding();
+    bool readHistoryFile();
+    void syncSoftHistory();
+    void updateHistory( const QStringList &commands, bool skipSoftHistory = false );
 
     QString mWidgetTitle;
     bool mMargin = false;
     QgsCodeEditor::Flags mFlags;
+    QgsCodeEditor::Mode mMode = QgsCodeEditor::Mode::ScriptEditor;
 
     bool mUseDefaultSettings = true;
     // used if above is false, inplace of values taken from QSettings:
@@ -295,6 +536,14 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     int mFontSize = 0;
 
     QVector< int > mWarningLines;
+
+    // for use in command input mode
+    QStringList mHistory;
+    QStringList mSoftHistory;
+    int mSoftHistoryIndex = 0;
+    QString mHistoryFilePath;
+
+    QgsCodeInterpreter *mInterpreter = nullptr;
 
     static QMap< QgsCodeEditorColorScheme::ColorRole, QString > sColorRoleToSettingsKey;
 

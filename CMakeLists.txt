@@ -17,7 +17,7 @@ set(CMAKE_LINK_DEPENDS_NO_SHARED ON)
 #############################################################
 # Project and version
 set(CPACK_PACKAGE_VERSION_MAJOR "3")
-set(CPACK_PACKAGE_VERSION_MINOR "27")
+set(CPACK_PACKAGE_VERSION_MINOR "29")
 set(CPACK_PACKAGE_VERSION_PATCH "0")
 set(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 set(RELEASE_NAME "Master")
@@ -137,7 +137,7 @@ if(WITH_CORE)
 
   set (WITH_GUI TRUE CACHE BOOL "Determines whether QGIS GUI library (and everything built on top of it) should be built")
 
-  set (WITH_OAUTH2_PLUGIN TRUE CACHE BOOL "Build OAuth2 authentication method plugin")
+  set (WITH_OAUTH2_PLUGIN TRUE CACHE BOOL "Determines whether OAuth2 authentication method plugin should be built")
   if(WITH_OAUTH2_PLUGIN)
     set(HAVE_OAUTH2_PLUGIN TRUE)
   endif()
@@ -176,16 +176,16 @@ if(WITH_CORE)
   mark_as_advanced (NATIVE_CRSSYNC_BIN)
 
   # try to configure and build python bindings by default
-  set (WITH_BINDINGS TRUE CACHE BOOL "Determines whether python bindings should be built")
+  set (WITH_BINDINGS TRUE CACHE BOOL "Determines whether Python bindings should be built")
   if (WITH_BINDINGS)
     # By default bindings will be installed only to QGIS directory
     # Someone might want to install it to python site-packages directory
     # as otherwise user has to use PYTHONPATH environment variable to add
     # QGIS bindings to package search path
-    set (BINDINGS_GLOBAL_INSTALL FALSE CACHE BOOL "Install bindings to global python directory? (might need root)")
+    set (BINDINGS_GLOBAL_INSTALL FALSE CACHE BOOL "Install bindings to global Python directory? (might need root)")
     set (SIP_GLOBAL_INSTALL FALSE CACHE BOOL "Install sip source files to system sip directory? (might need root)")
     set (WITH_STAGED_PLUGINS TRUE CACHE BOOL "Stage-install core Python plugins to run from build directory? (utilities and console are always staged)")
-    set (WITH_PY_COMPILE FALSE CACHE BOOL "Determines whether Python modules in staged or installed locations are byte-compiled")
+    set (WITH_PY_COMPILE FALSE CACHE BOOL "Determines whether Python modules in staged or installed locations should be byte-compiled")
     # concatenate QScintilla2 API files
     if (WITH_GUI)
       set (WITH_QSCIAPI TRUE CACHE BOOL "Whether to generate PyQGIS QScintilla2 API file. (For devs) run 'make qsci-pap-src' in between QGIS build and install to regenerate .pap file in source tree for console auto-completion.")
@@ -201,9 +201,9 @@ if(WITH_CORE)
 
     set (SERVER_SKIP_ECW FALSE CACHE BOOL "Determines whether QGIS server should disable ECW (ECW in server apps requires a special license)")
 
-    set (WITH_SERVER_PLUGINS ${WITH_BINDINGS} CACHE BOOL "Determines whether QGIS server support for python plugins should be built")
+    set (WITH_SERVER_PLUGINS ${WITH_BINDINGS} CACHE BOOL "Determines whether QGIS server support for Python plugins should be built")
     if(WITH_SERVER_PLUGINS AND NOT WITH_BINDINGS)
-      message(FATAL_ERROR "Server plugins are not supported without python bindings. Enable WITH_BINDINGS or disable WITH_SERVER_PLUGINS")
+      message(FATAL_ERROR "Server plugins are not supported without Python bindings. Enable WITH_BINDINGS or disable WITH_SERVER_PLUGINS")
     endif()
     if(WITH_SERVER_PLUGINS)
       set(HAVE_SERVER_PYTHON_PLUGINS TRUE)
@@ -243,7 +243,7 @@ if(WITH_CORE)
   endif()
 
   # try to configure and build MDAL support
-  set (WITH_INTERNAL_MDAL TRUE CACHE BOOL "Determines whether MDAL should be built from internal copy")
+  set (WITH_INTERNAL_MDAL TRUE CACHE BOOL "Determines whether MDAL should be built from internal copy (recommended)")
   if (NOT WITH_INTERNAL_MDAL)
     set (MDAL_PREFIX "" CACHE PATH "Path to MDAL base directory")
   endif()
@@ -356,9 +356,6 @@ if(WITH_CORE)
   find_package(GDAL)
   find_package(Expat REQUIRED)
   find_package(Spatialindex REQUIRED)
-  if (WITH_GUI)
-    find_package(Qwt REQUIRED)
-  endif()
   find_package(LibZip REQUIRED)
 
   find_package(Sqlite3)
@@ -411,7 +408,7 @@ if(WITH_CORE)
     message(STATUS "Qt WebKit support DISABLED.")
   endif()
 
-  set (WITH_INTERNAL_LAZPERF TRUE CACHE BOOL "Determines whether LazPerf should be built from internal copy")
+  set (WITH_INTERNAL_LAZPERF TRUE CACHE BOOL "Determines whether LazPerf should be built from internal copy (recommended)")
   if (WITH_EPT OR WITH_COPC)
     if (NOT WITH_INTERNAL_LAZPERF)
       find_package(LazPerf) # for decompression of point clouds
@@ -441,32 +438,33 @@ if(WITH_CORE)
   #############################################################
   # search for Qt
 
-  set (BUILD_WITH_QT6 FALSE CACHE BOOL "Enable (broken, experimental) Qt6 support")
+  set (BUILD_WITH_QT6 FALSE CACHE BOOL "Enable (experimental) Qt6 support")
   if (BUILD_WITH_QT6)
     set(QT_MIN_VERSION 6.0.0)
     set(QT_VERSION_BASE "Qt6")
+    set(QT_VERSION_BASE_LOWER "qt6")
+    set(CMAKE_CXX_STANDARD 17)
+    set(CMAKE_CXX_STANDARD_REQUIRED ON)
   else()
     set(QT_MIN_VERSION 5.14.0)
     set(QT_VERSION_BASE "Qt5")
+    set(QT_VERSION_BASE_LOWER "qt5")
     set(HAS_KDE_QT5_PDF_TRANSFORM_FIX FALSE CACHE BOOL "Using KDE's Qt 5.15 fork with the PDF brush transform fix")
     set(HAS_KDE_QT5_SMALL_CAPS_FIX FALSE CACHE BOOL "Using KDE's Qt 5.15 fork with the QFont::SmallCaps fix")
     set(HAS_KDE_QT5_FONT_STRETCH_FIX FALSE CACHE BOOL "Using KDE's Qt 5.15 fork with the QFont stretch fix")
   endif()
 
   # Use Qt5SerialPort optionally for GPS
-  set (WITH_QT5SERIALPORT TRUE CACHE BOOL "Determines whether Qt5SerialPort should be tried for GPS positioning")
-  if (WITH_QT5SERIALPORT)
+  set (WITH_QTSERIALPORT TRUE CACHE BOOL "Determines whether Qt5SerialPort should be tried for GPS positioning")
+  if (WITH_QTSERIALPORT)
       find_package(${QT_VERSION_BASE} COMPONENTS SerialPort REQUIRED)
       # following variable is used in qgsconfig.h
-      set (HAVE_QT5SERIALPORT TRUE)
+      set (HAVE_QTSERIALPORT TRUE)
   endif()
 
-  find_package(${QT_VERSION_BASE} COMPONENTS Core Gui Widgets Network Xml Svg Concurrent Test UiTools Sql REQUIRED)
+  find_package(${QT_VERSION_BASE} COMPONENTS Core Gui Widgets Network Xml Svg Concurrent Test Sql Positioning REQUIRED)
   if (BUILD_WITH_QT6)
     find_package(${QT_VERSION_BASE} COMPONENTS Core5Compat REQUIRED)
-  else()
-    # TODO only available starting from Qt 6.2
-    find_package(${QT_VERSION_BASE} COMPONENTS Positioning)
   endif()
   if (NOT IOS)
     find_package(${QT_VERSION_BASE} COMPONENTS PrintSupport REQUIRED)
@@ -510,6 +508,7 @@ if(WITH_CORE)
   # search for QScintilla2 (C++ lib)
   if (WITH_GUI)
     find_package(QScintilla REQUIRED)
+    find_package(Qwt REQUIRED)
   endif()
 
   # Password helper
@@ -543,7 +542,7 @@ endif()
 set(CMAKE_AUTOMOC ON)
 
 # build our version of astyle
-set (WITH_ASTYLE FALSE CACHE BOOL "If you plan to contribute you should reindent with scripts/prepare_commit.sh (using 'our' astyle)")
+set (WITH_ASTYLE FALSE CACHE BOOL "Deprecated. Should be OFF. If you plan to contribute you should reindent with scripts/prepare_commit.sh (using 'our' astyle)")
 
 # QML
 set(QML_IMPORT_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" CACHE PATH "QML directory for QML autocomplete")
@@ -692,6 +691,8 @@ if (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
 else()
   set(QGISDEBUG FALSE)
 endif()
+
+set (AGGRESSIVE_SAFE_MODE FALSE CACHE BOOL "Forces a aggressive safe mode where issues like unsafe thread access will resort in fatal exceptions")
 
 if(MSVC)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /utf-8 /std:c++17")
@@ -852,7 +853,6 @@ if (WITH_CORE)
 
   if (ANDROID)
     set (DEFAULT_PLUGIN_SUBDIR  lib)
-    set (DEFAULT_DATA_SUBDIR    files/share)
     string(REPLACE "<CMAKE_SHARED_LIBRARY_SONAME_CXX_FLAG><TARGET_SONAME>" "" CMAKE_CXX_CREATE_SHARED_MODULE "${CMAKE_CXX_CREATE_SHARED_MODULE}")
   endif()
 
@@ -884,7 +884,7 @@ if (WITH_CORE)
   if (WITH_CLAZY)
     set(CMAKE_CXX_BASE_FLAGS "${CMAKE_CXX_FLAGS}")
     #  qcolor-from-literal crashes clang with clazy 1.11
-    set(CLAZY_BASE_CHECKS "connect-3arg-lambda,lambda-unique-connection,empty-qstringliteral,fully-qualified-moc-types,lowercase-qml-type-name,qfileinfo-exists,qmap-with-pointer-key,unused-non-trivial-variable,overridden-signal,qdeleteall,qstring-left,skipped-base-method,isempty-vs-count,missing-qobject-macro")
+    set(CLAZY_BASE_CHECKS "connect-3arg-lambda,lambda-unique-connection,empty-qstringliteral,fully-qualified-moc-types,lowercase-qml-type-name,qfileinfo-exists,qmap-with-pointer-key,unused-non-trivial-variable,overridden-signal,qdeleteall,qstring-left,skipped-base-method,isempty-vs-count,missing-qobject-macro,container-anti-pattern")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_BASE_FLAGS} -Xclang -plugin-arg-clazy -Xclang ${CLAZY_BASE_CHECKS}")
 
     if (WERROR AND NOT ${QGISDEBUG})
@@ -972,15 +972,29 @@ message("-- Found Python executable: ${Python_EXECUTABLE} (version ${Python_VERS
 message("-- Python library: ${Python_LIBRARIES}")
 message("-- Python site-packages: ${Python_SITEARCH}")
 
-if (WITH_CORE AND WITH_BINDINGS AND NOT BUILD_WITH_QT6)
+if (WITH_CORE AND WITH_BINDINGS)
   set(PYTHON_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/python)
   set (QGIS_PYTHON_OUTPUT_DIRECTORY ${PYTHON_OUTPUT_DIRECTORY}/qgis)
 
   # python support: check for interpreter, sip, pyqt5
   find_package(SIP REQUIRED)
-  find_package(PyQt5 REQUIRED)
-  set(PYQT_SIP_FLAGS ${PYQT5_SIP_FLAGS})
-  set(PYQT_SIP_DIR ${PYQT5_SIP_DIR})
+  if(BUILD_WITH_QT6)
+    find_package(PyQt6 REQUIRED)
+    set(PYQT_FOUND ${PYQT6_FOUND})
+    set(PYQT_SIP_FLAGS ${PYQT6_SIP_FLAGS})
+    set(PYQT_SIP_DIR ${PYQT6_SIP_DIR})
+    set(PYQT_SIP_IMPORT ${PYQT6_SIP_IMPORT})
+    set(PYQT_VERSION_STR ${PYQT6_VERSION_STR})
+    set(PYQT_MOD_DIR ${PYQT6_MOD_DIR})
+  else()
+    find_package(PyQt5 REQUIRED)
+    set(PYQT_FOUND ${PYQT5_FOUND})
+    set(PYQT_SIP_FLAGS ${PYQT5_SIP_FLAGS})
+    set(PYQT_SIP_DIR ${PYQT5_SIP_DIR})
+    set(PYQT_SIP_IMPORT ${PYQT5_SIP_IMPORT})
+    set(PYQT_VERSION_STR ${PYQT5_VERSION_STR})
+    set(PYQT_MOD_DIR ${PYQT5_MOD_DIR})
+  endif()
   separate_arguments(PYQT_SIP_FLAGS) # convert space separated values to a list
 
   find_package(Qsci REQUIRED)
@@ -989,14 +1003,14 @@ if (WITH_CORE AND WITH_BINDINGS AND NOT BUILD_WITH_QT6)
   include(SIPMacros)
 
   set(SIP_INCLUDES ${PYQT_SIP_DIR} ${CMAKE_SOURCE_DIR}/python)
-  set(SIP_CONCAT_PARTS 20)
+  set(SIP_CONCAT_PARTS 22)
 
   if (NOT BINDINGS_GLOBAL_INSTALL)
     set(Python_SITEARCH ${QGIS_DATA_DIR}/python)
   endif()
 
   if (WITH_CUSTOM_WIDGETS)
-    set(PYUIC_WIDGET_PLUGIN_DIRECTORY ${PYQT5_MOD_DIR}/uic/widget-plugins/)
+    set(PYUIC_WIDGET_PLUGIN_DIRECTORY ${PYQT_MOD_DIR}/uic/widget-plugins/)
   endif()
 endif()
 

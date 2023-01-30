@@ -901,6 +901,14 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     QgsRectangle bounds() const;
 
+    /**
+     * Returns the crs as OGC URI (format: http://www.opengis.net/def/crs/OGC/1.3/CRS84)
+     * Returns an empty string on failure.
+     *
+     * \since QGIS 3.30
+     */
+    QString toOgcUri() const;
+
     // Mutators -----------------------------------
 
     /**

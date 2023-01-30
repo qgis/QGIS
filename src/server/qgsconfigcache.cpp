@@ -182,6 +182,19 @@ const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerS
   return entry ? entry->second.get() : nullptr;
 }
 
+QList<QgsProject *> QgsConfigCache::projects() const
+{
+  QList<QgsProject *> projects;
+
+  const auto constKeys {  mProjectCache.keys() };
+  for ( const auto &path : std::as_const( constKeys ) )
+  {
+    projects << mProjectCache[path]->second.get();
+  }
+
+  return projects;
+}
+
 QDomDocument *QgsConfigCache::xmlDocument( const QString &filePath )
 {
   //first open file

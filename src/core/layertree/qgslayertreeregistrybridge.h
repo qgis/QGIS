@@ -21,6 +21,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgis.h"
 
 class QgsLayerTreeGroup;
 class QgsLayerTreeNode;
@@ -84,6 +85,18 @@ class CORE_EXPORT QgsLayerTreeRegistryBridge : public QObject
      */
     void setLayerInsertionPoint( const InsertionPoint &insertionPoint );
 
+    /**
+     * Sets the insertion \a method used to add layers to the tree
+     * \since QGIS 3.30
+     */
+    void setLayerInsertionMethod( Qgis::LayerTreeInsertionMethod method ) { mInsertionMethod = method; }
+
+    /**
+     * Returns the insertion method used to add layers to the tree
+     * \since QGIS 3.30
+     */
+    Qgis::LayerTreeInsertionMethod layerInsertionMethod() const { return mInsertionMethod; }
+
   signals:
 
     /**
@@ -110,6 +123,7 @@ class CORE_EXPORT QgsLayerTreeRegistryBridge : public QObject
     bool mNewLayersVisible;
 
     InsertionPoint mInsertionPoint;
+    Qgis::LayerTreeInsertionMethod mInsertionMethod = Qgis::LayerTreeInsertionMethod::AboveInsertionPoint;
 };
 
 #endif // QGSLAYERTREEREGISTRYBRIDGE_H

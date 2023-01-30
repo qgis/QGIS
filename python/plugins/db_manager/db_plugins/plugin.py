@@ -160,7 +160,7 @@ class DBPlugin(QObject):
             md.deleteConnection(self.connectionName())
         except (AttributeError, QgsProviderConnectionException):
             settings = QgsSettings()
-            settings.beginGroup(u"/%s/%s" % (self.connectionSettingsKey(), self.connectionName()))
+            settings.beginGroup("/%s/%s" % (self.connectionSettingsKey(), self.connectionName()))
             settings.remove("")
 
         self.deleted.emit()
@@ -329,11 +329,11 @@ class Database(DbItemObject):
                     q = 1
                     while "_subq_%d_" % q in sql:
                         q += 1
-                    sql = u"SELECT %s AS _uid_,* FROM (%s\n) AS _subq_%d_" % (uniqueFct, sql, q)
+                    sql = "SELECT %s AS _uid_,* FROM (%s\n) AS _subq_%d_" % (uniqueFct, sql, q)
                     uniqueCol = "_uid_"
 
         uri = self.uri()
-        uri.setDataSource("", u"(%s\n)" % sql, geomCol, filter, uniqueCol)
+        uri.setDataSource("", "(%s\n)" % sql, geomCol, filter, uniqueCol)
         if avoidSelectById:
             uri.disableSelectAtId(True)
         provider = self.dbplugin().providerName()
@@ -348,7 +348,7 @@ class Database(DbItemObject):
     def registerSubPluginActions(self, mainWindow):
         # load plugins!
         try:
-            exec(u"from .%s.plugins import load" % self.dbplugin().typeName(), globals())
+            exec("from .%s.plugins import load" % self.dbplugin().typeName(), globals())
         except ImportError:
             pass
         else:
@@ -760,7 +760,7 @@ class Table(DbItemObject):
 
     def mimeUri(self):
         layerType = "raster" if self.type == Table.RasterType else "vector"
-        return u"%s:%s:%s:%s" % (layerType, self.database().dbplugin().providerName(), self.name, self.uri().uri(False))
+        return "%s:%s:%s:%s" % (layerType, self.database().dbplugin().providerName(), self.name, self.uri().uri(False))
 
     def toMapLayer(self, geometryType=None, crs=None):
         provider = self.database().dbplugin().providerName()
@@ -1234,8 +1234,8 @@ class TableField(TableSubItemObject):
 
     def type2String(self):
         if self.modifier is None or self.modifier == -1:
-            return u"%s" % self.dataType
-        return u"%s (%s)" % (self.dataType, self.modifier)
+            return "%s" % self.dataType
+        return "%s (%s)" % (self.dataType, self.modifier)
 
     def default2String(self):
         if not self.hasDefault:
@@ -1250,9 +1250,9 @@ class TableField(TableSubItemObject):
         name = quoteIdFunc(self.name)
         not_null = "NOT NULL" if self.notNull else ""
 
-        txt = u"%s %s %s" % (name, self.type2String(), not_null)
+        txt = "%s %s %s" % (name, self.type2String(), not_null)
         if self.hasDefault:
-            txt += u" DEFAULT %s" % self.default2String()
+            txt += " DEFAULT %s" % self.default2String()
         return txt
 
     def getComment(self):
@@ -1370,7 +1370,7 @@ class TableTrigger(TableSubItemObject):
         self.name = self.function = None
 
     def type2String(self):
-        trig_type = u''
+        trig_type = ''
         trig_type += "Before " if self.type & TableTrigger.TypeBefore else "After "
         if self.type & TableTrigger.TypeInsert:
             trig_type += "INSERT "

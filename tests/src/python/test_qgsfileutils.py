@@ -20,6 +20,7 @@ from qgis.core import (
     Qgis,
     QgsFileUtils
 )
+from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.testing import unittest
 from utilities import unitTestDataPath
 
@@ -310,6 +311,29 @@ class TestQgsFileUtils(unittest.TestCase):
         self.assertEqual(QgsFileUtils.splitPathToComponents('/'), ["/"])
         self.assertEqual(QgsFileUtils.splitPathToComponents(''), [])
         self.assertEqual(QgsFileUtils.splitPathToComponents('c:/home/user'), ["c:", "home", "user"])
+
+    def testUniquePath(self):
+        temp_dir = QTemporaryDir()
+        temp_path = temp_dir.path()
+
+        with open(os.path.join(temp_path, 'test.txt'), 'w+') as f:
+            f.close()
+
+        self.assertEqual(QgsFileUtils.uniquePath(os.path.join(temp_path, 'my_test.txt')), os.path.join(temp_path, 'my_test.txt'))
+
+        self.assertEqual(QgsFileUtils.uniquePath(os.path.join(temp_path, 'test.txt')), os.path.join(temp_path, 'test_2.txt'))
+
+        with open(os.path.join(temp_path, 'test_2.txt'), 'w+') as f:
+            f.close()
+
+        self.assertEqual(QgsFileUtils.uniquePath(os.path.join(temp_path, 'test_2.txt')), os.path.join(temp_path, 'test_2_2.txt'))
+        self.assertEqual(QgsFileUtils.uniquePath(os.path.join(temp_path, 'test.txt')), os.path.join(temp_path, 'test_3.txt'))
+        self.assertEqual(QgsFileUtils.uniquePath(os.path.join(temp_path, 'test_1.txt')), os.path.join(temp_path, 'test_1.txt'))
+
+        with open(os.path.join(temp_path, 'test'), 'w+') as f:
+            f.close()
+
+        self.assertEqual(QgsFileUtils.uniquePath(os.path.join(temp_path, 'test')), os.path.join(temp_path, 'test_2'))
 
 
 if __name__ == '__main__':

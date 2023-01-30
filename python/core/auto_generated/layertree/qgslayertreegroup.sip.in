@@ -128,6 +128,24 @@ Find layer node representing the map layer specified by its ID. Searches recursi
 Find all layer nodes. Searches recursively the whole sub-tree.
 %End
 
+    void reorderGroupLayers( const QList< QgsMapLayer * > &order );
+%Docstring
+Reorders layers in the group to match the order specified by ``order``.
+
+Only layers which are direct children of this group will be reordered, other
+layers will be ignored.
+
+.. note::
+
+   This method does not recursively reorder child groups.
+
+.. note::
+
+   Matching layers will be moved to the start of the group, with any existing
+   non-matching layers and group nodes moved to sit after the re-ordered matching layers.
+
+.. versionadded:: 3.30
+%End
 
 
     QStringList findLayerIds() const;

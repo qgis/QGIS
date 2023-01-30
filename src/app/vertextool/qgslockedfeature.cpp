@@ -123,7 +123,7 @@ void QgsLockedFeature::geometryChanged( QgsFeatureId fid, const QgsGeometry &geo
 
 void QgsLockedFeature::validateGeometry( QgsGeometry *g )
 {
-  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries.value() == 0 )
+  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries->value() == 0 )
     return;
 
   if ( !g )
@@ -148,7 +148,7 @@ void QgsLockedFeature::validateGeometry( QgsGeometry *g )
   }
 
   Qgis::GeometryValidationEngine method = Qgis::GeometryValidationEngine::QgisInternal;
-  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries.value() == 2 )
+  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries->value() == 2 )
     method = Qgis::GeometryValidationEngine::Geos;
   mValidator = new QgsGeometryValidator( *g, nullptr, method );
   connect( mValidator, &QgsGeometryValidator::errorFound, this, &QgsLockedFeature::addError );

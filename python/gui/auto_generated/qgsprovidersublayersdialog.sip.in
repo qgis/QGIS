@@ -1,0 +1,111 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsprovidersublayersdialog.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsProviderSublayerDialogModel : QgsProviderSublayerModel
+{
+%Docstring(signature="appended")
+
+A model for representing the sublayers present in a URI for the :py:class:`QgsProviderSublayersDialog`.
+
+.. versionadded:: 3.30
+%End
+
+%TypeHeaderCode
+#include "qgsprovidersublayersdialog.h"
+%End
+  public:
+
+    QgsProviderSublayerDialogModel( QObject *parent = 0 );
+%Docstring
+Constructor.
+%End
+
+    virtual QVariant data( const QModelIndex &index, int role ) const;
+
+    virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+
+
+    void setGeometryTypesResolved( bool resolved );
+%Docstring
+Sets whether geometry types are resolved.
+%End
+
+};
+
+class QgsProviderSublayersDialog : QDialog
+{
+%Docstring(signature="appended")
+
+Dialog for selecting provider sublayers.
+
+.. versionadded:: 3.30
+%End
+
+%TypeHeaderCode
+#include "qgsprovidersublayersdialog.h"
+%End
+  public:
+
+    QgsProviderSublayersDialog( const QString &uri,
+                                const QString &providerKey,
+                                const QString &filePath,
+                                const QList< QgsProviderSublayerDetails> initialDetails = QList< QgsProviderSublayerDetails>(),
+                                const QList< QgsMapLayerType > &acceptableTypes = QList< QgsMapLayerType >(),
+                                QWidget *parent /TransferThis/ = 0,
+                                Qt::WindowFlags fl = Qt::WindowFlags() );
+%Docstring
+Constructor.
+%End
+
+    void setNonLayerItems( const QList< QgsProviderSublayerModel::NonLayerItem > &items );
+%Docstring
+Set list of non-layer items (e.g. embedded QGIS project items).
+%End
+
+    ~QgsProviderSublayersDialog();
+
+    QList< QgsProviderSublayerDetails > selectedLayers() const;
+%Docstring
+Returns the list of selected layers.
+%End
+
+    QList< QgsProviderSublayerModel::NonLayerItem > selectedNonLayerItems() const;
+%Docstring
+Returns the list of selected non-layer items (e.g. embedded QGIS project items).
+%End
+
+    QString groupName() const;
+%Docstring
+Returns an appropriate name for the layer group.
+%End
+
+    void setGroupName( const QString &groupNameIn );
+%Docstring
+Sets an appropriate name for the layer group.
+%End
+
+  signals:
+
+    void layersAdded( const QList< QgsProviderSublayerDetails > &layers );
+%Docstring
+Emitted when sublayers selected from the dialog should be added to the project.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsprovidersublayersdialog.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

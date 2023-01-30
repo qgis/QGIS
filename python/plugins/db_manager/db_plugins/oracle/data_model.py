@@ -48,39 +48,39 @@ class ORTableDataModel(TableDataModel):
         self._createCursor()
 
     def _createCursor(self):
-        fields_txt = u", ".join(self.fields)
+        fields_txt = ", ".join(self.fields)
         table_txt = self.db.quoteId(
             (self.table.schemaName(), self.table.name))
 
         self.cursor = self.db._get_cursor()
-        sql = u"SELECT {0} FROM {1}".format(fields_txt, table_txt)
+        sql = "SELECT {0} FROM {1}".format(fields_txt, table_txt)
 
         self.db._execute(self.cursor, sql)
 
     def _sanitizeTableField(self, field):
         # get fields, ignore geometry columns
-        if field.dataType.upper() == u"SDO_GEOMETRY":
-            return (u"CASE WHEN {0} IS NULL THEN NULL ELSE 'GEOMETRY'"
-                    u"END AS {0}".format(
+        if field.dataType.upper() == "SDO_GEOMETRY":
+            return ("CASE WHEN {0} IS NULL THEN NULL ELSE 'GEOMETRY'"
+                    "END AS {0}".format(
                         self.db.quoteId(field.name)))
-        if field.dataType.upper() == u"DATE":
-            return u"CAST({} AS VARCHAR2(8))".format(
+        if field.dataType.upper() == "DATE":
+            return "CAST({} AS VARCHAR2(8))".format(
                 self.db.quoteId(field.name))
-        if u"TIMESTAMP" in field.dataType.upper():
-            return u"TO_CHAR({}, 'YYYY-MM-DD HH:MI:SS.FF')".format(
+        if "TIMESTAMP" in field.dataType.upper():
+            return "TO_CHAR({}, 'YYYY-MM-DD HH:MI:SS.FF')".format(
                 self.db.quoteId(field.name))
-        if field.dataType.upper() == u"NUMBER":
+        if field.dataType.upper() == "NUMBER":
             if not field.charMaxLen:
-                return u"CAST({} AS VARCHAR2(135))".format(
+                return "CAST({} AS VARCHAR2(135))".format(
                     self.db.quoteId(field.name))
             elif field.modifier:
                 nbChars = 2 + int(field.charMaxLen) + \
                     int(field.modifier)
-                return u"CAST({} AS VARCHAR2({}))".format(
+                return "CAST({} AS VARCHAR2({}))".format(
                     self.db.quoteId(field.name),
                     str(nbChars))
 
-        return u"CAST({0} As VARCHAR2({1}))".format(
+        return "CAST({0} As VARCHAR2({1}))".format(
             self.db.quoteId(field.name), field.charMaxLen)
 
     def _deleteCursor(self):

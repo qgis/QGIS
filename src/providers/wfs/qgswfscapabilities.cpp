@@ -41,7 +41,7 @@ QgsWfsCapabilities::QgsWfsCapabilities( const QString &uri, const QgsDataProvide
   connect( this, &QgsWfsRequest::downloadFinished, this, &QgsWfsCapabilities::capabilitiesReplyFinished, Qt::DirectConnection );
 }
 
-bool QgsWfsCapabilities::requestCapabilities( bool synchronous, bool forceRefresh )
+QUrl QgsWfsCapabilities::requestUrl() const
 {
   QUrl url( mUri.baseURL( ) );
   QUrlQuery query( url );
@@ -55,7 +55,12 @@ bool QgsWfsCapabilities::requestCapabilities( bool synchronous, bool forceRefres
     query.addQueryItem( QStringLiteral( "VERSION" ), version );
 
   url.setQuery( query );
-  if ( !sendGET( url, QString(), synchronous, forceRefresh ) )
+  return url;
+}
+
+bool QgsWfsCapabilities::requestCapabilities( bool synchronous, bool forceRefresh )
+{
+  if ( !sendGET( requestUrl(), QString(), synchronous, forceRefresh ) )
   {
     emit gotCapabilities();
     return false;
@@ -117,6 +122,36 @@ QString QgsWfsCapabilities::Capabilities::getNamespaceParameterValue( const QStr
            namespaces + ")";
   }
   return QString();
+}
+
+bool QgsWfsCapabilities::Capabilities::supportsGeometryTypeFilters() const
+{
+  // Detect servers, such as Deegree, that expose additional filter functions
+  // to test if a geometry is a (multi)point, (multi)curve or (multi)surface
+  // This can be used to figure out which geometry types are present in layers
+  // that describe a generic geometry type.
+  bool hasIsPoint = false;
+  bool hasIsCurve = false;
+  bool hasIsSurface = false;
+  for ( const auto &function : functionList )
+  {
+    if ( function.minArgs == 1 && function.maxArgs == 1 )
+    {
+      if ( function.name == QLatin1String( "IsPoint" ) )
+      {
+        hasIsPoint = true;
+      }
+      else if ( function.name == QLatin1String( "IsCurve" ) )
+      {
+        hasIsCurve = true;
+      }
+      else if ( function.name == QLatin1String( "IsSurface" ) )
+      {
+        hasIsSurface = true;
+      }
+    }
+  }
+  return hasIsPoint && hasIsCurve && hasIsSurface;
 }
 
 class CPLXMLTreeUniquePointer

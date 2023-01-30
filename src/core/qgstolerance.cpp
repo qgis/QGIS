@@ -72,8 +72,8 @@ double QgsTolerance::toleranceInMapUnits( double tolerance, QgsMapLayer *layer, 
 
 double QgsTolerance::vertexSearchRadius( const QgsMapSettings &mapSettings )
 {
-  const double tolerance = QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEdit.value();
-  UnitType units = QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEditUnit.value();
+  const double tolerance = QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEdit->value();
+  UnitType units = QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEditUnit->value();
   if ( units == LayerUnits )
     units = ProjectUnits;
   return toleranceInProjectUnits( tolerance, nullptr, mapSettings, units );
@@ -81,15 +81,15 @@ double QgsTolerance::vertexSearchRadius( const QgsMapSettings &mapSettings )
 
 double QgsTolerance::vertexSearchRadius( QgsMapLayer *layer, const QgsMapSettings &mapSettings )
 {
-  const double tolerance = QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEdit.value();
-  const UnitType units = QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEditUnit.value();
+  const double tolerance = QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEdit->value();
+  const UnitType units = QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEditUnit->value();
   return toleranceInMapUnits( tolerance, layer, mapSettings, units );
 }
 
 double QgsTolerance::defaultTolerance( QgsMapLayer *layer, const QgsMapSettings &mapSettings )
 {
-  const double tolerance = QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingTolerance.value();
-  const UnitType units = QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingToleranceUnit.value();
+  const double tolerance = QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingTolerance->value();
+  const UnitType units = QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingToleranceUnit->value();
   return toleranceInMapUnits( tolerance, layer, mapSettings, units );
 }
 

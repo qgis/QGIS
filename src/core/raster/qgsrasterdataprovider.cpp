@@ -18,12 +18,9 @@
 #include "qgsproviderregistry.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasteridentifyresult.h"
-#include "qgsprovidermetadata.h"
-#include "qgsrasterprojector.h"
 #include "qgslogger.h"
-#include "qgsmessagelog.h"
-#include "qgsapplication.h"
 #include "qgspoint.h"
+#include "qgsthreadingutils.h"
 
 #include <QTime>
 #include <QMap>
@@ -38,6 +35,8 @@
 
 void QgsRasterDataProvider::setUseSourceNoDataValue( int bandNo, bool use )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mUseSrcNoDataValue.size() < bandNo )
   {
     for ( int i = mUseSrcNoDataValue.size(); i < bandNo; i++ )
@@ -50,6 +49,8 @@ void QgsRasterDataProvider::setUseSourceNoDataValue( int bandNo, bool use )
 
 QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &boundingBox, int width, int height, QgsRasterBlockFeedback *feedback )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsDebugMsgLevel( QStringLiteral( "bandNo = %1 width = %2 height = %3" ).arg( bandNo ).arg( width ).arg( height ), 4 );
   QgsDebugMsgLevel( QStringLiteral( "boundingBox = %1" ).arg( boundingBox.toString() ), 4 );
 
@@ -249,29 +250,30 @@ QgsRasterDataProvider::QgsRasterDataProvider( const QString &uri, const Provider
 
 QgsRasterDataProvider::ProviderCapabilities QgsRasterDataProvider::providerCapabilities() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return QgsRasterDataProvider::NoProviderCapabilities;
 }
 
-int QgsRasterDataProvider::colorInterpretation( int bandNo ) const
+Qgis::RasterColorInterpretation QgsRasterDataProvider::colorInterpretation( int bandNo ) const
 {
-  Q_UNUSED( bandNo )
-  return QgsRaster::UndefinedColorInterpretation;
-}
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-//
-//Random Static convenience function
-//
-/////////////////////////////////////////////////////////
+  Q_UNUSED( bandNo )
+  return Qgis::RasterColorInterpretation::Undefined;
+}
 
 // TODO
 // (WMS) IdentifyFormatFeature is not consistent with QgsRaster::IdentifyFormatValue.
 // IdentifyFormatHtml: better error reporting
-QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
+QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPointXY &point, Qgis::RasterIdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
   QMap<int, QVariant> results;
 
-  if ( format != QgsRaster::IdentifyFormatValue || !( capabilities() & IdentifyValue ) )
+  if ( format != Qgis::RasterIdentifyFormat::Value || !( capabilities() & IdentifyValue ) )
   {
     QgsDebugMsg( QStringLiteral( "Format not supported" ) );
     return QgsRasterIdentifyResult( ERR( tr( "Format not supported" ) ) );
@@ -284,7 +286,7 @@ QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPointXY &point
     {
       results.insert( bandNo, QVariant() );
     }
-    return QgsRasterIdentifyResult( QgsRaster::IdentifyFormatValue, results );
+    return QgsRasterIdentifyResult( Qgis::RasterIdentifyFormat::Value, results );
   }
 
   QgsRectangle finalExtent = boundingBox;
@@ -313,31 +315,32 @@ QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPointXY &point
   const double yMin = yMax - yres;
   const QgsRectangle pixelExtent( xMin, yMin, xMax, yMax );
 
-  for ( int i = 1; i <= bandCount(); i++ )
+  for ( int bandNumber = 1; bandNumber <= bandCount(); bandNumber++ )
   {
-    std::unique_ptr< QgsRasterBlock > bandBlock( block( i, pixelExtent, 1, 1 ) );
+    std::unique_ptr< QgsRasterBlock > bandBlock( block( bandNumber, pixelExtent, 1, 1 ) );
 
     if ( bandBlock )
     {
       const double value = bandBlock->value( 0 );
-
-      results.insert( i, value );
+      results.insert( bandNumber, value );
     }
     else
     {
-      results.insert( i, QVariant() );
+      results.insert( bandNumber, QVariant() );
     }
   }
-  return QgsRasterIdentifyResult( QgsRaster::IdentifyFormatValue, results );
+  return QgsRasterIdentifyResult( Qgis::RasterIdentifyFormat::Value, results );
 }
 
 double QgsRasterDataProvider::sample( const QgsPointXY &point, int band,
                                       bool *ok, const QgsRectangle &boundingBox, int width, int height, int dpi )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( ok )
     *ok = false;
 
-  const auto res = identify( point, QgsRaster::IdentifyFormatValue, boundingBox, width, height, dpi );
+  const auto res = identify( point, Qgis::RasterIdentifyFormat::Value, boundingBox, width, height, dpi );
   const QVariant value = res.results().value( band );
 
   if ( !value.isValid() )
@@ -351,11 +354,15 @@ double QgsRasterDataProvider::sample( const QgsPointXY &point, int band,
 
 QString QgsRasterDataProvider::lastErrorFormat()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return QStringLiteral( "text/plain" );
 }
 
 bool QgsRasterDataProvider::writeBlock( QgsRasterBlock *block, int band, int xOffset, int yOffset )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( !block )
     return false;
   if ( !isEditable() )
@@ -379,12 +386,16 @@ QList<QPair<QString, QString> > QgsRasterDataProvider::pyramidResamplingMethods(
 
 bool QgsRasterDataProvider::hasPyramids()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const QList<QgsRasterPyramid> pyramidList = buildPyramidList();
   return std::any_of( pyramidList.constBegin(), pyramidList.constEnd(), []( QgsRasterPyramid pyramid ) { return pyramid.getExists(); } );
 }
 
 void QgsRasterDataProvider::setUserNoDataValue( int bandNo, const QgsRasterRangeList &noData )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( bandNo >= mUserNoDataValue.size() )
   {
     for ( int i = mUserNoDataValue.size(); i < bandNo; i++ )
@@ -411,11 +422,15 @@ void QgsRasterDataProvider::setUserNoDataValue( int bandNo, const QgsRasterRange
 
 QgsRasterDataProviderTemporalCapabilities *QgsRasterDataProvider::temporalCapabilities()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mTemporalCapabilities.get();
 }
 
 const QgsRasterDataProviderTemporalCapabilities *QgsRasterDataProvider::temporalCapabilities() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mTemporalCapabilities.get();
 }
 
@@ -443,78 +458,91 @@ QgsRasterDataProvider *QgsRasterDataProvider::create( const QString &providerKey
   return ret;
 }
 
-QString QgsRasterDataProvider::identifyFormatName( QgsRaster::IdentifyFormat format )
+QString QgsRasterDataProvider::identifyFormatName( Qgis::RasterIdentifyFormat format )
 {
   switch ( format )
   {
-    case QgsRaster::IdentifyFormatValue:
+    case Qgis::RasterIdentifyFormat::Value:
       return QStringLiteral( "Value" );
-    case QgsRaster::IdentifyFormatText:
+    case Qgis::RasterIdentifyFormat::Text:
       return QStringLiteral( "Text" );
-    case QgsRaster::IdentifyFormatHtml:
+    case Qgis::RasterIdentifyFormat::Html:
       return QStringLiteral( "Html" );
-    case QgsRaster::IdentifyFormatFeature:
+    case Qgis::RasterIdentifyFormat::Feature:
       return QStringLiteral( "Feature" );
-    default:
-      return QStringLiteral( "Undefined" );
+    case Qgis::RasterIdentifyFormat::Undefined:
+      break;
   }
+  return QStringLiteral( "Undefined" );
 }
 
-QString QgsRasterDataProvider::identifyFormatLabel( QgsRaster::IdentifyFormat format )
+QString QgsRasterDataProvider::identifyFormatLabel( Qgis::RasterIdentifyFormat format )
 {
   switch ( format )
   {
-    case QgsRaster::IdentifyFormatValue:
+    case Qgis::RasterIdentifyFormat::Value:
       return tr( "Value" );
-    case QgsRaster::IdentifyFormatText:
+    case Qgis::RasterIdentifyFormat::Text:
       return tr( "Text" );
-    case QgsRaster::IdentifyFormatHtml:
+    case Qgis::RasterIdentifyFormat::Html:
       return tr( "Html" );
-    case QgsRaster::IdentifyFormatFeature:
+    case Qgis::RasterIdentifyFormat::Feature:
       return tr( "Feature" );
-    default:
-      return QStringLiteral( "Undefined" );
+    case Qgis::RasterIdentifyFormat::Undefined:
+      break;
   }
+  return QStringLiteral( "Undefined" );
 }
 
-QgsRaster::IdentifyFormat QgsRasterDataProvider::identifyFormatFromName( const QString &formatName )
+Qgis::RasterIdentifyFormat QgsRasterDataProvider::identifyFormatFromName( const QString &formatName )
 {
-  if ( formatName == QLatin1String( "Value" ) ) return QgsRaster::IdentifyFormatValue;
-  if ( formatName == QLatin1String( "Text" ) ) return QgsRaster::IdentifyFormatText;
-  if ( formatName == QLatin1String( "Html" ) ) return QgsRaster::IdentifyFormatHtml;
-  if ( formatName == QLatin1String( "Feature" ) ) return QgsRaster::IdentifyFormatFeature;
-  return QgsRaster::IdentifyFormatUndefined;
+  if ( formatName == QLatin1String( "Value" ) )
+    return Qgis::RasterIdentifyFormat::Value;
+  if ( formatName == QLatin1String( "Text" ) )
+    return Qgis::RasterIdentifyFormat::Text;
+  if ( formatName == QLatin1String( "Html" ) )
+    return Qgis::RasterIdentifyFormat::Html;
+  if ( formatName == QLatin1String( "Feature" ) )
+    return Qgis::RasterIdentifyFormat::Feature;
+  return Qgis::RasterIdentifyFormat::Undefined;
 }
 
-QgsRasterInterface::Capability QgsRasterDataProvider::identifyFormatToCapability( QgsRaster::IdentifyFormat format )
+QgsRasterInterface::Capability QgsRasterDataProvider::identifyFormatToCapability( Qgis::RasterIdentifyFormat format )
 {
   switch ( format )
   {
-    case QgsRaster::IdentifyFormatValue:
+    case Qgis::RasterIdentifyFormat::Value:
       return IdentifyValue;
-    case QgsRaster::IdentifyFormatText:
+    case Qgis::RasterIdentifyFormat::Text:
       return IdentifyText;
-    case QgsRaster::IdentifyFormatHtml:
+    case Qgis::RasterIdentifyFormat::Html:
       return IdentifyHtml;
-    case QgsRaster::IdentifyFormatFeature:
+    case Qgis::RasterIdentifyFormat::Feature:
       return IdentifyFeature;
-    default:
-      return NoCapabilities;
+    case Qgis::RasterIdentifyFormat::Undefined:
+      break;
   }
+  return NoCapabilities;
 }
 
 QList<double> QgsRasterDataProvider::nativeResolutions() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return QList< double >();
 }
 
 bool QgsRasterDataProvider::ignoreExtents() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return false;
 }
 
 QgsPoint QgsRasterDataProvider::transformCoordinates( const QgsPoint &point, QgsRasterDataProvider::TransformType type )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   Q_UNUSED( point )
   Q_UNUSED( type )
   return QgsPoint();
@@ -522,12 +550,16 @@ QgsPoint QgsRasterDataProvider::transformCoordinates( const QgsPoint &point, Qgs
 
 bool QgsRasterDataProvider::userNoDataValuesContains( int bandNo, double value ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const QgsRasterRangeList rangeList = mUserNoDataValue.value( bandNo - 1 );
   return QgsRasterRange::contains( value, rangeList );
 }
 
 void QgsRasterDataProvider::copyBaseSettings( const QgsRasterDataProvider &other )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   mDpi = other.mDpi;
   mSrcNoDataValue = other.mSrcNoDataValue;
   mSrcHasNoDataValue = other.mSrcHasNoDataValue;
@@ -581,6 +613,8 @@ static QgsRasterDataProvider::ResamplingMethod resamplingMethodFromString( const
 
 void QgsRasterDataProvider::readXml( const QDomElement &filterElem )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( filterElem.isNull() )
   {
     return;
@@ -623,6 +657,8 @@ static QString resamplingMethodToString( QgsRasterDataProvider::ResamplingMethod
 
 void QgsRasterDataProvider::writeXml( QDomDocument &doc, QDomElement &parentElem ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QDomElement providerElement = doc.createElement( QStringLiteral( "provider" ) );
   parentElem.appendChild( providerElement );
 
@@ -642,8 +678,100 @@ void QgsRasterDataProvider::writeXml( QDomDocument &doc, QDomElement &parentElem
                                   QString::number( mMaxOversampling ) );
 }
 
+QgsRasterAttributeTable *QgsRasterDataProvider::attributeTable( int bandNumber ) const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  try
+  {
+    return mAttributeTables.at( bandNumber ).get();
+  }
+  catch ( std::out_of_range const & )
+  {
+    return nullptr;
+  }
+}
+
+void QgsRasterDataProvider::setAttributeTable( int bandNumber, QgsRasterAttributeTable *attributeTable )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( attributeTable )
+  {
+    mAttributeTables[ bandNumber ] = std::unique_ptr<QgsRasterAttributeTable>( attributeTable );
+  }
+  else
+  {
+    removeAttributeTable( bandNumber );
+  }
+}
+
+void QgsRasterDataProvider::removeAttributeTable( int bandNumber )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( mAttributeTables.find( bandNumber ) != std::end( mAttributeTables ) )
+  {
+    mAttributeTables.erase( bandNumber );
+  }
+}
+
+bool QgsRasterDataProvider::writeFileBasedAttributeTable( int bandNumber, const QString &path, QString *errorMessage ) const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  QgsRasterAttributeTable *rat { attributeTable( bandNumber ) };
+  if ( ! rat )
+  {
+    if ( errorMessage )
+    {
+      *errorMessage = QObject::tr( "Raster has no Raster Attribute Table for band %1" ).arg( bandNumber );
+    }
+    return false;
+  }
+
+  return rat->writeToFile( path, errorMessage );
+}
+
+bool QgsRasterDataProvider::readNativeAttributeTable( QString *errorMessage )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( errorMessage )
+  {
+    *errorMessage = QObject::tr( "Raster data provider has no native Raster Attribute Table support." );
+  }
+  return false;
+}
+
+bool QgsRasterDataProvider::readFileBasedAttributeTable( int bandNumber, const QString &path, QString *errorMessage )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  std::unique_ptr<QgsRasterAttributeTable> rat = std::make_unique<QgsRasterAttributeTable>();
+  if ( rat->readFromFile( path, errorMessage ) )
+  {
+    setAttributeTable( bandNumber, rat.release() );
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+bool QgsRasterDataProvider::writeNativeAttributeTable( QString *errorMessage )  //#spellok
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  Q_UNUSED( errorMessage );
+  return false;
+}
+
 QString QgsRasterDataProvider::colorInterpretationName( int bandNo ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return colorName( colorInterpretation( bandNo ) );
 }
 

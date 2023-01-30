@@ -538,13 +538,18 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
     def testEncodeDecodeUri(self):
         """Test HANA encode/decode URI"""
         md = QgsProviderRegistry.instance().providerMetadata('hana')
+        self.maxDiff = None
         self.assertEqual(md.decodeUri(
+            "connectionType=0 dsn='HANADB1' "
             "driver='/usr/sap/hdbclient/libodbcHDB.so' dbname='qgis_tests' host=localhost port=30015 "
             "user='myuser' password='mypwd' srid=2016 table=\"public\".\"gis\" (geom) type=MultiPolygon key='id' "
             "sslEnabled='true' sslCryptoProvider='commoncrypto' sslValidateCertificate='false' "
             "sslHostNameInCertificate='hostname.domain.com' sslKeyStore='mykey.pem' "
-            "sslTrustStore='server_root.crt' "),
+            "sslTrustStore='server_root.crt' "
+            "proxyEnabled='true' proxyHttp='true' proxyHost='h' proxyPort=2 proxyUsername='u' proxyPassword='p' "),
             {
+                'connectionType': '0',
+                'dsn': 'HANADB1',
                 'driver': '/usr/sap/hdbclient/libodbcHDB.so',
                 'dbname': 'qgis_tests',
                 'host': 'localhost',
@@ -563,9 +568,17 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
                 'sslHostNameInCertificate': 'hostname.domain.com',
                 'sslKeyStore': 'mykey.pem',
                 'sslTrustStore': 'server_root.crt',
-                'selectatid': False})
+                'selectatid': False,
+                'proxyEnabled': 'true',
+                'proxyHttp': 'true',
+                'proxyHost': 'h',
+                'proxyPort': '2',
+                'proxyUsername': 'u',
+                'proxyPassword': 'p'})
 
-        self.assertEqual(md.encodeUri({'driver': '/usr/sap/hdbclient/libodbcHDB.so',
+        self.assertEqual(md.encodeUri({'connectionType': '0',
+                                       'dsn': 'HANADB1',
+                                       'driver': '/usr/sap/hdbclient/libodbcHDB.so',
                                        'dbname': 'qgis_tests',
                                        'host': 'localhost',
                                        'port': '30015',
@@ -583,13 +596,20 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
                                        'sslHostNameInCertificate': 'hostname.domain.com',
                                        'sslKeyStore': 'mykey.pem',
                                        'sslTrustStore': 'server_root.crt',
-                                       'selectatid': False}),
+                                       'selectatid': False,
+                                       'proxyEnabled': 'true',
+                                       'proxyHttp': 'false',
+                                       'proxyHost': 'h',
+                                       'proxyPort': '3',
+                                       'proxyUsername': 'u',
+                                       'proxyPassword': 'p'}),
                          "dbname='qgis_tests' driver='/usr/sap/hdbclient/libodbcHDB.so' user='myuser' password='mypwd' "
-                         "srid=2016 host='localhost' key='id' port='30015' selectatid='false' "
-                         "sslCryptoProvider='commoncrypto' sslEnabled='true' "
+                         "key='id' srid=2016 connectionType='0' dsn='HANADB1' host='localhost' port='30015' "
+                         "proxyEnabled='true' proxyHost='h' proxyHttp='false' proxyPassword='p' proxyPort='3' "
+                         "proxyUsername='u' selectatid='false' sslCryptoProvider='commoncrypto' sslEnabled='true' "
                          "sslHostNameInCertificate='hostname.domain.com' sslKeyStore='mykey.pem' "
-                         "sslTrustStore='server_root.crt' sslValidateCertificate='false' "
-                         "type='MultiPolygon' table=\"public\".\"gis\" (geom)")
+                         "sslTrustStore='server_root.crt' sslValidateCertificate='false' type='MultiPolygon' "
+                         "table=\"public\".\"gis\" (geom)")
 
 
 if __name__ == '__main__':

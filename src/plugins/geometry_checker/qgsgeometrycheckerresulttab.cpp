@@ -89,7 +89,7 @@ QgsGeometryCheckerResultTab::QgsGeometryCheckerResultTab( QgisInterface *iface, 
   connect( ui.pushButtonExport, &QAbstractButton::clicked, this, &QgsGeometryCheckerResultTab::exportErrors );
 
   bool allLayersEditable = true;
-  for ( const QgsFeaturePool *featurePool : mChecker->featurePools().values() )
+  for ( const QgsFeaturePool *featurePool : mChecker->featurePools() )
   {
     if ( ( featurePool->layer()->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeGeometries ) == 0 )
     {
@@ -453,10 +453,11 @@ void QgsGeometryCheckerResultTab::openAttributeTable()
   {
     return;
   }
-  for ( const QString &layerId : ids.keys() )
+  for ( auto it = ids.constBegin(); it != ids.constEnd(); it++ )
   {
+    const QString layerId = it.key();
     QStringList expr;
-    for ( QgsFeatureId id : ids[layerId] )
+    for ( QgsFeatureId id : it.value() )
     {
       expr.append( QStringLiteral( "$id = %1 " ).arg( id ) );
     }
@@ -536,9 +537,9 @@ void QgsGeometryCheckerResultTab::fixErrors( bool prompt )
     ui.progressBarFixErrors->setVisible( false );
     unsetCursor();
   }
-  for ( const QString &layerId : mChecker->featurePools().keys() )
+  for ( const QgsFeaturePool *featurePool : mChecker->featurePools() )
   {
-    mChecker->featurePools()[layerId]->layer()->triggerRepaint();
+    featurePool->layer()->triggerRepaint();
   }
 
   if ( mStatistics.itemCount() > 0 )
@@ -629,9 +630,10 @@ void QgsGeometryCheckerResultTab::storeDefaultResolutionMethod( int id ) const
 void QgsGeometryCheckerResultTab::checkRemovedLayer( const QStringList &ids )
 {
   bool requiredLayersRemoved = false;
-  for ( const QString &layerId : mChecker->featurePools().keys() )
+  const QMap<QString, QgsFeaturePool *> &featurePools = mChecker->featurePools();
+  for ( auto it = featurePools.constBegin(); it != featurePools.constEnd(); it++ )
   {
-    if ( ids.contains( layerId ) )
+    if ( ids.contains( it.key() ) )
     {
       if ( isEnabled() )
         requiredLayersRemoved = true;

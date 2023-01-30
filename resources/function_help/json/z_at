@@ -1,0 +1,18 @@
+{
+  "name": "z_at",
+  "type": "function",
+  "groups": ["GeometryGroup"],
+  "description": "Retrieves a z coordinate of the geometry, or NULL if the geometry has no z value.",
+  "arguments": [{
+    "arg": "geometry",
+    "description": "geometry object"
+  }, {
+    "arg": "vertex",
+    "description": "index of the vertex of the geometry (indices start at 0; negative values apply from the last index, starting at -1)"
+  }],
+  "examples": [{
+    "expression": "z_at(geom_from_wkt('LineStringZ(0 0 0, 10 10 5, 10 10 0)'), 1)",
+    "returns": "5"
+  }],
+  "tags": ["retrieves", "coordinate", "3D"]
+}

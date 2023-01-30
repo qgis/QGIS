@@ -2,7 +2,7 @@
   "name": "$z",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Returns the z value of the current point feature if it is 3D. If the feature is a multipoint feature, then the z value of the first point will be returned.",
+  "description": "Returns the z value of the current point feature if it is 3D. If the feature is a multipoint feature, then the z value of the first point will be returned. <b>WARNING: This function is deprecated. It is recommended to use the replacement z() function with @geometry variable instead.</b>",
   "examples": [{
     "expression": "$z",
     "returns": "123"

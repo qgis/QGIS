@@ -299,6 +299,47 @@ class TestQgsProcessExecutablePt2(unittest.TestCase):
         self.assertIn('OUTPUT:	abc:def', output)
         self.assertEqual(rc, 0)
 
+    def testLoadLayer(self):
+        rc, output, err = self.run_process(['run', '--no-python', 'native:raiseexception', '--MESSAGE=CONFIRMED', '--CONDITION=layer_property(load_layer(\'{}\',\'ogr\'),\'feature_count\')>10'.format(TEST_DATA_DIR + '/points.shp')])
+        self.assertIn('CONFIRMED', self._strip_ignorable_errors(err))
+
+        self.assertEqual(rc, 1)
+
+    def testDynamicParameters(self):
+        output_file = self.TMP_DIR + '/dynamic_out2.shp'
+
+        rc, output, err = self.run_process(
+            ['run', 'native:buffer', '--INPUT=' + TEST_DATA_DIR + '/points.shp', '--OUTPUT=' + output_file, '--DISTANCE=field:fid', '--json'])
+        self.assertFalse(self._strip_ignorable_errors(err))
+
+        self.assertEqual(rc, 0)
+
+        res = json.loads(output)
+        self.assertEqual(res['algorithm_details']['id'], 'native:buffer')
+        self.assertEqual(res['inputs']['DISTANCE'], 'field:fid')
+
+    def testDynamicParametersJson(self):
+        output_file = self.TMP_DIR + '/dynamic_out.shp'
+
+        params = {
+            'inputs':
+                {
+                    'INPUT': TEST_DATA_DIR + '/points.shp',
+                    'DISTANCE': {'type': 'data_defined', 'field': 'fid'},
+                    'OUTPUT': output_file
+                }
+        }
+
+        rc, output, err = self.run_process_stdin(
+            ['run', 'native:buffer', '-'], json.dumps(params))
+        self.assertFalse(self._strip_ignorable_errors(err))
+
+        self.assertEqual(rc, 0)
+
+        res = json.loads(output)
+        self.assertEqual(res['algorithm_details']['id'], 'native:buffer')
+        self.assertEqual(res['inputs']['DISTANCE'], {'field': 'fid', 'type': 'data_defined'})
+
 
 if __name__ == '__main__':
     # look for qgis bin path

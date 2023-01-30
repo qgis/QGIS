@@ -26,9 +26,11 @@ class QValidator;
 
 class QgsMapCanvas;
 
-#include <QWidget>
 #include "qgis_app.h"
 #include "qgspointxy.h"
+
+#include <QWidget>
+#include <QElapsedTimer>
 
 class APP_EXPORT QgsStatusBarCoordinatesWidget : public QWidget
 {
@@ -86,6 +88,9 @@ class APP_EXPORT QgsStatusBarCoordinatesWidget : public QWidget
     unsigned int mMousePrecisionDecimalPlaces;
 
     QgsPointXY mLastCoordinate;
+
+    bool mIsFirstSizeChange = true;
+    QElapsedTimer mLastSizeChangeTimer;
 
 };
 

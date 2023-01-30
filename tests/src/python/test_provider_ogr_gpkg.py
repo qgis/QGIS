@@ -149,6 +149,9 @@ class TestPyQgsOGRProviderGpkgConformance(unittest.TestCase, ProviderTestCase):
     def treat_time_as_string(self):
         return True
 
+    def treat_datetime_tz_as_utc(self):
+        return True
+
     def uncompiledFilters(self):
         return set(['cnt = 10 ^ 2',
                     '"name" ~ \'[OP]ra[gne]+\'',
@@ -374,7 +377,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         f = None
         ds = None
 
-        vl = QgsVectorLayer(u'{}'.format(tmpfile), u'test', u'ogr')
+        vl = QgsVectorLayer('{}'.format(tmpfile), 'test', 'ogr')
         self.assertTrue(vl.startEditing())
         self.assertTrue(vl.changeGeometry(1, QgsGeometry.fromWkt('Point (3 50)')))
 
@@ -451,7 +454,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
             print('Too old GDAL trunk version. Please update')
             return
 
-        vl = QgsVectorLayer(u'{}'.format(tmpfile), u'test', u'ogr')
+        vl = QgsVectorLayer('{}'.format(tmpfile), 'test', 'ogr')
 
         # Test moving a geometry that touches the bbox
         self.assertTrue(vl.startEditing())
@@ -759,7 +762,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         f = None
         ds = None
 
-        vl = QgsVectorLayer(u'{}'.format(tmpfile), u'test', u'ogr')
+        vl = QgsVectorLayer('{}'.format(tmpfile), 'test', 'ogr')
 
         # Test that we are using default delete mode and not WAL
         self.assertEqual(TestPyQgsOGRProviderGpkg._getJournalMode(tmpfile), 'delete')
@@ -785,7 +788,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         srcfile = os.path.join(srcpath, 'geopackage.gpkg')
 
         last_modified = QFileInfo(srcfile).lastModified()
-        vl = QgsVectorLayer(u'{}'.format(srcfile) + "|layername=geopackage", u'test', u'ogr')
+        vl = QgsVectorLayer('{}'.format(srcfile) + "|layername=geopackage", 'test', 'ogr')
         self.assertEqual(TestPyQgsOGRProviderGpkg._getJournalMode(srcfile), 'delete')
         del vl
         self.assertEqual(last_modified, QFileInfo(srcfile).lastModified())
@@ -793,7 +796,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         shutil.copy(os.path.join(srcpath, 'geopackage.gpkg'), self.basetestpath)
         tmpfile = os.path.join(self.basetestpath, 'geopackage.gpkg')
 
-        vl = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=geopackage", u'test', u'ogr')
+        vl = QgsVectorLayer('{}'.format(tmpfile) + "|layername=geopackage", 'test', 'ogr')
 
         self.assertEqual(TestPyQgsOGRProviderGpkg._getJournalMode(tmpfile), 'delete')
 
@@ -933,8 +936,8 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         f = None
         ds = None
 
-        vl1 = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=layer1", u'layer1', u'ogr')
-        vl2 = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=layer2", u'layer2', u'ogr')
+        vl1 = QgsVectorLayer('{}'.format(tmpfile) + "|layername=layer1", 'layer1', 'ogr')
+        vl2 = QgsVectorLayer('{}'.format(tmpfile) + "|layername=layer2", 'layer2', 'ogr')
 
         # Edit vl1, vl2 multiple times
         self.assertTrue(vl1.startEditing())
@@ -962,8 +965,8 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         vl2 = None
 
         # Check everything is as expected after re-opening
-        vl1 = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=layer1", u'layer1', u'ogr')
-        vl2 = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=layer2", u'layer2', u'ogr')
+        vl1 = QgsVectorLayer('{}'.format(tmpfile) + "|layername=layer1", 'layer1', 'ogr')
+        vl2 = QgsVectorLayer('{}'.format(tmpfile) + "|layername=layer2", 'layer2', 'ogr')
 
         got = [feat for feat in vl1.getFeatures()][0]
         got_geom = got.geometry()
@@ -991,7 +994,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         lyr.CreateFeature(f)
         f = None
 
-        vl1 = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=layer1", u'layer1', u'ogr')
+        vl1 = QgsVectorLayer('{}'.format(tmpfile) + "|layername=layer1", 'layer1', 'ogr')
         p = QgsProject()
         p.addMapLayer(vl1)
         request = QgsFeatureRequest().setSubsetOfAttributes([0])
@@ -1006,7 +1009,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         f.SetGeometry(ogr.CreateGeometryFromWkt('LineString(0 0, 1 1)'))
         lyr.CreateFeature(f)
         f = None
-        vl2 = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=layer1", u'layer2', u'ogr')
+        vl2 = QgsVectorLayer('{}'.format(tmpfile) + "|layername=layer1", 'layer2', 'ogr')
         p.addMapLayer(vl2)
 
         features = [f for f in vl1.getFeatures(request)]
@@ -1039,7 +1042,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         lyr.CreateFeature(f)
         f = None
 
-        vl = QgsVectorLayer(u'{}'.format(tmpfile), u'layer', u'ogr')
+        vl = QgsVectorLayer('{}'.format(tmpfile), 'layer', 'ogr')
         self.assertEqual(1, vl.dataProvider().subLayerCount())
         self.assertEqual(vl.dataProvider().subLayers(),
                          [QgsDataProvider.SUBLAYER_SEPARATOR.join(['0', 'layer1:', '1', 'Point', 'geom:', ''])])
@@ -1060,7 +1063,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         vl_tab = []
         for i in range(70):
             layername = 'layer%d' % i
-            vl = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + layername, layername, u'ogr')
+            vl = QgsVectorLayer('{}'.format(tmpfile) + "|layername=" + layername, layername, 'ogr')
             self.assertTrue(vl.isValid())
             vl_tab += [vl]
 
@@ -1083,14 +1086,14 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
 
         # Re-open an already opened layers. We should get a new handle
         layername = 'layer%d' % 0
-        vl_extra0 = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + layername, layername, u'ogr')
+        vl_extra0 = QgsVectorLayer('{}'.format(tmpfile) + "|layername=" + layername, layername, 'ogr')
         self.assertTrue(vl_extra0.isValid())
         countNew = count_opened_filedescriptors(tmpfile)
         if countNew > 0:
             self.assertLessEqual(countNew, 4)  # for some reason we get 4 and not 3
 
         layername = 'layer%d' % 1
-        vl_extra1 = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + layername, layername, u'ogr')
+        vl_extra1 = QgsVectorLayer('{}'.format(tmpfile) + "|layername=" + layername, layername, 'ogr')
         self.assertTrue(vl_extra1.isValid())
         countNew2 = count_opened_filedescriptors(tmpfile)
         self.assertEqual(countNew2, countNew)
@@ -1103,7 +1106,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         ds.CreateLayer('test', geom_type=ogr.wkbPoint)
         ds = None
 
-        vl = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+        vl = QgsVectorLayer('{}'.format(tmpfile) + "|layername=" + "test", 'test', 'ogr')
 
         self.assertTrue(vl.extent().isNull())
 
@@ -1112,7 +1115,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         ds.CreateLayer('test2', geom_type=ogr.wkbPoint)
         ds = None
 
-        vl2 = QgsVectorLayer(u'{}'.format(tmpfile), 'test', u'ogr')
+        vl2 = QgsVectorLayer('{}'.format(tmpfile), 'test', 'ogr')
         self.assertEqual(2, vl2.dataProvider().subLayerCount())
         vl2.subLayers()
         self.assertEqual(vl2.dataProvider().subLayers(),
@@ -1127,7 +1130,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         lyr.CreateField(ogr.FieldDefn('str_field', ogr.OFTString))
         ds = None
 
-        vl = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+        vl = QgsVectorLayer('{}'.format(tmpfile) + "|layername=" + "test", 'test', 'ogr')
         f = QgsFeature()
         f.setAttributes([1234567890123, None])
         f2 = QgsFeature()
@@ -1186,7 +1189,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         lyr.CreateField(ogr.FieldDefn('str_field', ogr.OFTString))
         ds = None
 
-        layer = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+        layer = QgsVectorLayer('{}'.format(tmpfile) + "|layername=" + "test", 'test', 'ogr')
 
         # Check that pk field has unique constraint
         fields = layer.fields()
@@ -1216,7 +1219,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         ds = None
 
         # Split features
-        layer = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+        layer = QgsVectorLayer('{}'.format(tmpfile) + "|layername=" + "test", 'test', 'ogr')
         self.assertTrue(layer.isValid())
         self.assertTrue(layer.isSpatial())
         self.assertEqual([f for f in layer.getFeatures()][0].geometry().asWkt(), 'Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))')
@@ -1225,7 +1228,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertTrue(layer.commitChanges())
         self.assertEqual(layer.featureCount(), 2)
 
-        layer = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+        layer = QgsVectorLayer('{}'.format(tmpfile) + "|layername=" + "test", 'test', 'ogr')
         self.assertEqual(layer.featureCount(), 2)
         g, g2 = [f.geometry() for f in layer.getFeatures()]
         g.normalize()
@@ -1249,7 +1252,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         ds = None
 
         # Split features
-        layer = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+        layer = QgsVectorLayer('{}'.format(tmpfile) + "|layername=" + "test", 'test', 'ogr')
         self.assertTrue(layer.isValid())
         self.assertTrue(layer.isSpatial())
         self.assertEqual([f for f in layer.getFeatures()][0].geometry().asWkt(), 'Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))')
@@ -1257,7 +1260,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertEqual(layer.splitFeatures([QgsPointXY(0.5, 0), QgsPointXY(0.5, 1)], 0), 0)
         self.assertFalse(layer.commitChanges())
 
-        layer = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+        layer = QgsVectorLayer('{}'.format(tmpfile) + "|layername=" + "test", 'test', 'ogr')
         self.assertEqual(layer.featureCount(), 1)
         g = [f.geometry() for f in layer.getFeatures()][0]
         self.assertEqual(g.asWkt(), 'Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))')
@@ -1279,7 +1282,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         ds = None
 
         # Split features
-        layer = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+        layer = QgsVectorLayer('{}'.format(tmpfile) + "|layername=" + "test", 'test', 'ogr')
         self.assertTrue(layer.isValid())
         self.assertTrue(layer.isSpatial())
         self.assertEqual([f for f in layer.getFeatures()][0].geometry().asWkt(), 'MultiPolygon (((0 0, 0 1, 1 1, 1 0, 0 0)))')
@@ -1288,7 +1291,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertTrue(layer.commitChanges())
         self.assertEqual(layer.featureCount(), 2)
 
-        layer = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+        layer = QgsVectorLayer('{}'.format(tmpfile) + "|layername=" + "test", 'test', 'ogr')
         self.assertEqual(layer.featureCount(), 2)
         g, g2 = [f.geometry() for f in layer.getFeatures()]
         g.normalize()
@@ -1305,7 +1308,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         f = None
         ds = None
 
-        vl = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+        vl = QgsVectorLayer('{}'.format(tmpfile) + "|layername=" + "test", 'test', 'ogr')
         self.assertTrue(vl.isValid())
         self.assertTrue(vl.dataProvider().capabilities() & QgsVectorDataProvider.CreateAttributeIndex)
         self.assertFalse(vl.dataProvider().createAttributeIndex(-1))
@@ -1352,7 +1355,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         f = None
         ds = None
 
-        vl = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+        vl = QgsVectorLayer('{}'.format(tmpfile) + "|layername=" + "test", 'test', 'ogr')
         self.assertTrue(vl.isValid())
         self.assertTrue(vl.dataProvider().capabilities() & QgsVectorDataProvider.CreateSpatialIndex)
         self.assertTrue(vl.dataProvider().createSpatialIndex())
@@ -1442,7 +1445,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         f = None
         ds = None
 
-        vl = QgsVectorLayer(u'{}'.format(tmpfile) + "|geometrytype=Point|layername=" + "test", 'test', u'ogr')
+        vl = QgsVectorLayer('{}'.format(tmpfile) + "|geometrytype=Point|layername=" + "test", 'test', 'ogr')
         self.assertTrue(vl.isValid())
         request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
         features = [f for f in vl.getFeatures(request)]
@@ -1457,7 +1460,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         lyr.CreateField(ogr.FieldDefn('a', ogr.OFTInteger))
         ds = None
 
-        vl = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+        vl = QgsVectorLayer('{}'.format(tmpfile) + "|layername=" + "test", 'test', 'ogr')
         self.assertTrue(vl.isValid())
 
         vl.startEditing()
@@ -1491,7 +1494,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         ds = None
 
         os.environ['QGIS_GPKG_FC_THRESHOLD'] = '1'
-        vl = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+        vl = QgsVectorLayer('{}'.format(tmpfile) + "|layername=" + "test", 'test', 'ogr')
         self.assertTrue(vl.isValid())
         fc = vl.featureCount()
         del os.environ['QGIS_GPKG_FC_THRESHOLD']
@@ -1603,9 +1606,9 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         lyr.CreateFeature(f)
         ds = None
 
-        vl1 = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "lyr1", 'test', u'ogr')
+        vl1 = QgsVectorLayer('{}'.format(tmpfile) + "|layername=" + "lyr1", 'test', 'ogr')
         self.assertTrue(vl1.isValid())
-        vl2 = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "lyr2", 'test', u'ogr')
+        vl2 = QgsVectorLayer('{}'.format(tmpfile) + "|layername=" + "lyr2", 'test', 'ogr')
         self.assertTrue(vl2.isValid())
 
         # prepare a project with transactions enabled
@@ -1621,7 +1624,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertEqual(len([f for f in vl1.getFeatures(QgsFeatureRequest())]), 0)
 
         # But not if opened from another connection
-        vl1_external = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "lyr1", 'test', u'ogr')
+        vl1_external = QgsVectorLayer('{}'.format(tmpfile) + "|layername=" + "lyr1", 'test', 'ogr')
         self.assertTrue(vl1_external.isValid())
         self.assertEqual(len([f for f in vl1_external.getFeatures(QgsFeatureRequest())]), 1)
         del vl1_external
@@ -1651,7 +1654,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         del vl1
         del vl2
 
-        vl2_external = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "lyr2", 'test', u'ogr')
+        vl2_external = QgsVectorLayer('{}'.format(tmpfile) + "|layername=" + "lyr2", 'test', 'ogr')
         self.assertTrue(vl2_external.isValid())
         self.assertEqual(len([f for f in vl2_external.getFeatures(QgsFeatureRequest())]), 1)
         del vl2_external
@@ -1746,7 +1749,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(0 0)'))
         lyr.CreateFeature(f)
         f = None
-        vl1 = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "layer1", 'test', u'ogr')
+        vl1 = QgsVectorLayer('{}'.format(tmpfile) + "|layername=" + "layer1", 'test', 'ogr')
         self.assertTrue(vl1.isValid())
         self.assertEqual(vl1.metadata().title(), 'my title')
         self.assertEqual(vl1.metadata().abstract(), 'my desc')
@@ -2185,7 +2188,8 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
 
         self.assertTrue(vl.startEditing())
 
-        for f in vl.getFeatures():
+        features = [f for f in vl.getFeatures()]
+        for f in features:
             self.assertTrue(vl.changeAttributeValue(1, 1, 'new value'))
 
         # Test that QGIS sees the new changes
@@ -2315,7 +2319,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         ds.ExecuteSQL('INSERT INTO test2 (fid, geom, v, v_unique) VALUES (1, NULL, -1, 123)')
         ds = None
 
-        vl = QgsVectorLayer(u'{}'.format(tmpfile), 'test', u'ogr')
+        vl = QgsVectorLayer('{}'.format(tmpfile), 'test', 'ogr')
         self.assertTrue(vl.isValid())
 
         features = [f for f in vl.getFeatures()]
@@ -2365,7 +2369,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         ds.ExecuteSQL(wrong_trigger)
         ds = None
 
-        vl = QgsVectorLayer(u'{}'.format(tmpfile), 'test', u'ogr')
+        vl = QgsVectorLayer('{}'.format(tmpfile), 'test', 'ogr')
         self.assertTrue(vl.isValid())
         del vl
 
@@ -2394,14 +2398,14 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         f = None
         ds = None
 
-        vl = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+        vl = QgsVectorLayer('{}'.format(tmpfile) + "|layername=" + "test", 'test', 'ogr')
         self.assertTrue(vl.isValid())
 
         self.assertTrue(vl.startEditing())
         self.assertTrue(vl.changeGeometry(1, QgsGeometry.fromWkt('Point (0 0)')))
         self.assertFalse(vl.commitChanges())
 
-        vl = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+        vl = QgsVectorLayer('{}'.format(tmpfile) + "|layername=" + "test", 'test', 'ogr')
         self.assertTrue(vl.isValid())
 
         g = [f.geometry() for f in vl.getFeatures()][0]
@@ -2595,6 +2599,34 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
             ok, err = metadata.createDatabase(database_path)
             self.assertFalse(ok)
             self.assertTrue(err)
+
+    def testDateTimeTimeZoneMilliseconds(self):
+
+        tmpfile = os.path.join(self.basetestpath, 'testDateTimeTimeZoneMilliseconds.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbMultiPolygon)
+        lyr.CreateField(ogr.FieldDefn('dt', ogr.OFTDateTime))
+        ds = None
+
+        vl = QgsVectorLayer(tmpfile, 'test', 'ogr')
+
+        f = QgsFeature(vl.fields())
+        dt = QDateTime(QDate(2023, 1, 28), QTime(12, 34, 56, 789), Qt.OffsetFromUTC, 1 * 3600 + 30 * 60)
+        f.setAttribute(1, dt)
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.addFeatures([f]))
+        self.assertTrue(vl.commitChanges())
+
+        got = [feat for feat in vl.getFeatures()]
+        self.assertEqual(got[0]["dt"], dt)
+
+        self.assertTrue(vl.startEditing())
+        new_dt = QDateTime(QDate(2023, 1, 27), QTime(12, 34, 56, 987), Qt.OffsetFromUTC, 2 * 3600 + 30 * 60)
+        self.assertTrue(vl.changeAttributeValue(1, 1, new_dt))
+        self.assertTrue(vl.commitChanges())
+
+        got = [feat for feat in vl.getFeatures()]
+        self.assertEqual(got[0]["dt"], new_dt)
 
 
 if __name__ == '__main__':

@@ -15,6 +15,7 @@ import os
 
 from qgis.gui import (
     QgsAttributeTableModel,
+    QgsEditorWidgetFactory,
     QgsGui
 )
 from qgis.core import (
@@ -31,9 +32,12 @@ from qgis.core import (
     QgsField,
     QgsFields,
     QgsWkbTypes,
+    QgsFeatureRequest
 )
-from qgis.PyQt.QtCore import Qt, QTemporaryDir, QVariant
+from qgis.PyQt.QtCore import Qt, QTemporaryDir, QVariant, QSortFilterProxyModel
 from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtTest import QSignalSpy
+
 from qgis.testing import (start_app,
                           unittest
                           )
@@ -47,9 +51,30 @@ class TestQgsAttributeTableModel(unittest.TestCase):
     def setUpClass(cls):
         QgsGui.editorWidgetRegistry().initEditors()
 
+        # to track down whether or not we have created widget regarding the field
+        class TestEditorWidgetFactory(QgsEditorWidgetFactory):
+
+            def __init__(self):
+                super().__init__("test")
+                self.widgetLoaded = 0
+
+            def create(self, vl, fieldIdx, editor, parent):
+                return None
+
+            def configWidget(self, vl, fieldIdx, parent):
+                return None
+
+            def fieldScore(self, vl, fieldIdx):
+                self.widgetLoaded += 1
+                return 0
+
+        cls.testWidgetFactory = TestEditorWidgetFactory()
+        QgsGui.editorWidgetRegistry().registerWidget("testWidget", cls.testWidgetFactory)
+
     def setUp(self):
         self.layer = self.createLayer()
         self.cache = QgsVectorLayerCache(self.layer, 100)
+        self.testWidgetFactory.widgetLoaded = 0
         self.am = QgsAttributeTableModel(self.cache)
         self.am.loadLayer()
 
@@ -116,7 +141,19 @@ class TestQgsAttributeTableModel(unittest.TestCase):
 
         # change attribute value for a feature and commit
         self.layer.startEditing()
+
+        spy = QSignalSpy(self.am.dataChanged)
+
         self.layer.changeAttributeValue(fid, field_idx, new_value)
+
+        # ensure that dataChanged signal was raised
+        self.assertEqual(len(spy), 1)
+        self.assertEqual(spy[-1][0].row(), model_index.row())
+        self.assertEqual(spy[-1][0].column(), field_idx)
+        self.assertEqual(spy[-1][1].row(), model_index.row())
+        self.assertEqual(spy[-1][1].column(), field_idx)
+        self.assertEqual(spy[-1][2], [Qt.DisplayRole])
+
         self.layer.commitChanges()
 
         # check the feature in layer is good
@@ -126,6 +163,51 @@ class TestQgsAttributeTableModel(unittest.TestCase):
         # get the same feature from model and layer
         model_index = self.am.idToIndex(fid)
         feature_model = self.am.feature(model_index)
+
+        # check that index from layer and model are sync
+        self.assertEqual(feature.attribute(field_idx), feature_model.attribute(field_idx))
+
+    def testEditWithFilter(self):
+        fid = 2
+        field_idx = 1
+        new_value = 334
+
+        # get the same feature from model and layer
+        feature = self.layer.getFeature(fid)
+        am = QgsAttributeTableModel(self.cache)
+        am.setRequest(QgsFeatureRequest().setFilterFid(fid))
+        am.loadLayer()
+
+        model_index = am.idToIndex(fid)
+        feature_model = am.feature(model_index)
+
+        # check that feature from layer and model are sync
+        self.assertEqual(feature.attribute(field_idx), feature_model.attribute(field_idx))
+
+        # change attribute value for a feature and commit
+        self.layer.startEditing()
+
+        spy = QSignalSpy(am.dataChanged)
+
+        self.layer.changeAttributeValue(fid, field_idx, new_value)
+
+        # ensure that dataChanged signal was raised
+        self.assertEqual(len(spy), 1)
+        self.assertEqual(spy[-1][0].row(), model_index.row())
+        self.assertEqual(spy[-1][0].column(), field_idx)
+        self.assertEqual(spy[-1][1].row(), model_index.row())
+        self.assertEqual(spy[-1][1].column(), field_idx)
+        self.assertEqual(spy[-1][2], [Qt.DisplayRole])
+
+        self.layer.commitChanges()
+
+        # check the feature in layer is good
+        feature = self.layer.getFeature(fid)
+        self.assertEqual(feature.attribute(field_idx), new_value)
+
+        # get the same feature from model and layer
+        model_index = am.idToIndex(fid)
+        feature_model = am.feature(model_index)
 
         # check that index from layer and model are sync
         self.assertEqual(feature.attribute(field_idx), feature_model.attribute(field_idx))
@@ -220,6 +302,111 @@ class TestQgsAttributeTableModel(unittest.TestCase):
         self.assertTrue(vl.rollBack())
         self.assertEqual(len([f for f in vl.getFeatures()]), 1)
         self.assertEqual(am.rowCount(), 1)
+
+    def testColumnLazyLoading(self):
+        """
+        Test that widget are loaded only when column is needed
+        and that models handles correctly extra columns
+        """
+
+        twf = self.testWidgetFactory
+        self.assertEqual(twf.widgetLoaded, 0)
+
+        # to track down if column have been inserted or removed
+        colsInserted = 0
+        colsRemoved = 0
+
+        def onColsInserted(parent, first, last):
+            nonlocal colsInserted
+            colsInserted = last - first + 1
+
+        def onColsRemoved(parent, first, last):
+            nonlocal colsRemoved
+            colsRemoved = last - first + 1
+
+        self.am.columnsInserted.connect(onColsInserted)
+        self.am.columnsRemoved.connect(onColsRemoved)
+
+        # to check our extra column is working
+        class TestFilterModel(QSortFilterProxyModel):
+
+            def __init__(self):
+                super().__init__()
+
+            def data(self, index, role):
+                if role == Qt.DisplayRole and self.sourceModel().extraColumns() > 0 and index.column() > 1:
+                    return f"extra_{index.column()}"
+
+                return super().data(index, role)
+
+        fm = TestFilterModel()
+        fm.setSourceModel(self.am)
+
+        self.assertEqual(fm.data(fm.index(2, 0), Qt.DisplayRole), "test")
+        self.assertEqual(fm.data(fm.index(2, 1), Qt.DisplayRole), "2")
+        self.assertEqual(fm.data(fm.index(2, 2), Qt.DisplayRole), None)
+
+        # 2 columns have been loaded since we call data
+        self.assertEqual(twf.widgetLoaded, 2)
+        twf.widgetLoaded = 0
+
+        # only one column inserted, no widget loaded
+        self.am.setExtraColumns(1)
+        self.assertEqual(twf.widgetLoaded, 0)
+        self.assertEqual(colsInserted, 1)
+        colsInserted = 0
+        self.assertEqual(colsRemoved, 0)
+
+        self.assertEqual(fm.data(fm.index(2, 0), Qt.DisplayRole), "test")
+        self.assertEqual(fm.data(fm.index(2, 1), Qt.DisplayRole), "2")
+        self.assertEqual(fm.data(fm.index(2, 2), Qt.DisplayRole), "extra_2")
+
+        self.assertEqual(twf.widgetLoaded, 0)
+
+        # only one column removed, no widget loaded
+        self.am.setExtraColumns(0)
+        self.assertEqual(twf.widgetLoaded, 0)
+        self.assertEqual(colsInserted, 0)
+        self.assertEqual(colsRemoved, 1)
+        colsRemoved = 0
+
+        self.assertEqual(fm.data(fm.index(2, 0), Qt.DisplayRole), "test")
+        self.assertEqual(fm.data(fm.index(2, 1), Qt.DisplayRole), "2")
+        self.assertEqual(fm.data(fm.index(2, 2), Qt.DisplayRole), None)
+
+        self.assertEqual(twf.widgetLoaded, 0)
+
+        # nothing has changed, nothing should happened
+        self.am.loadLayer()
+        self.assertEqual(twf.widgetLoaded, 0)
+        self.assertEqual(colsInserted, 0)
+        self.assertEqual(colsRemoved, 0)
+
+        # add field, widget will be reloaded when data will be called
+        self.layer.addExpressionField("'newfield_' || \"fldtxt\"", QgsField("newfield", QVariant.String))
+        self.assertEqual(twf.widgetLoaded, 0)
+        self.assertEqual(colsInserted, 1)
+        self.assertEqual(colsRemoved, 0)
+        colsInserted = 0
+        twf.widgetLoaded = 0
+
+        self.assertEqual(fm.data(fm.index(2, 0), Qt.DisplayRole), "test")
+        self.assertEqual(fm.data(fm.index(2, 1), Qt.DisplayRole), "2")
+        self.assertEqual(fm.data(fm.index(2, 2), Qt.DisplayRole), "newfield_test")
+        twf.widgetLoaded = 0
+
+        # remove field, widget will be reloaded again
+        self.layer.removeExpressionField(2)
+        self.assertEqual(twf.widgetLoaded, 0)
+        self.assertEqual(colsInserted, 0)
+        self.assertEqual(colsRemoved, 1)
+        colsRemoved = 0
+
+        self.assertEqual(fm.data(fm.index(2, 0), Qt.DisplayRole), "test")
+        self.assertEqual(fm.data(fm.index(2, 1), Qt.DisplayRole), "2")
+        self.assertEqual(fm.data(fm.index(2, 2), Qt.DisplayRole), None)
+        self.assertEqual(twf.widgetLoaded, 2)
+        twf.widgetLoaded = 0
 
 
 if __name__ == '__main__':

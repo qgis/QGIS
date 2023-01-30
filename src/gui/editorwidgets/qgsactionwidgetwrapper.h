@@ -16,8 +16,8 @@
 #ifndef QGSACTIONWIDGETWRAPPER_H
 #define QGSACTIONWIDGETWRAPPER_H
 
-#include <qgswidgetwrapper.h>
-#include <qgsaction.h>
+#include "qgswidgetwrapper.h"
+#include "qgsaction.h"
 #include "qgis_sip.h"
 #include "qgis_gui.h"
 

@@ -182,7 +182,7 @@ void TestQgsMapToolAddFeatureLineM::testM()
   mCanvas->setCurrentLayer( mLayerLineM );
 
   // test with default M value = 333
-  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 333 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue->setValue( 333 );
 
   QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
   utils.mouseClick( 4, 0, Qt::LeftButton );
@@ -198,7 +198,7 @@ void TestQgsMapToolAddFeatureLineM::testM()
   mLayerLine->undoStack()->undo();
 
   // test with default M value = 222
-  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 222 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue->setValue( 222 );
 
   oldFids = utils.existingFeatureIds();
   utils.mouseClick( 4, 0, Qt::LeftButton );
@@ -223,7 +223,7 @@ void TestQgsMapToolAddFeatureLineM::testTopologicalEditingM()
   mCanvas->setCurrentLayer( mLayerTopoM );
 
   // test with default M value = 333
-  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 333 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue->setValue( 333 );
 
   QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
 

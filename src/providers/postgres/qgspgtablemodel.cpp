@@ -423,14 +423,23 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
     if ( isRaster )
     {
       // GDAL/PG connection string
+      QStandardItem *pkItem = itemFromIndex( index.sibling( index.row(), DbtmPkCol ) );
+      const QSet<QString> s1( qgis::listToSet( pkItem->data( Qt::UserRole + 2 ).toStringList() ) );
+      QStringList cols;
+      cols.reserve( s1.size() );
+      for ( const QString &col : std::as_const( s1 ) )
+      {
+        cols << QgsPostgresConn::quotedIdentifier( col );
+      }
       const QString schemaName = index.sibling( index.row(), DbtmSchema ).data( Qt::DisplayRole ).toString();
       const QString tableName = index.sibling( index.row(), DbtmTable ).data( Qt::DisplayRole ).toString();
       const QString geomColumnName = index.sibling( index.row(), DbtmGeomCol ).data( Qt::DisplayRole ).toString();
-      QString connString  { QStringLiteral( "PG:  %1 mode=2 schema='%2' column='%3' table='%4'" )
-                            .arg( connInfo )
-                            .arg( schemaName )
-                            .arg( geomColumnName )
-                            .arg( tableName ) };
+      QString connString { QStringLiteral( "PG: %1 mode=2 %2schema='%3' column='%4' table='%5'" )
+                           .arg( connInfo,
+                                 cols.isEmpty() ? QString() : QStringLiteral( "key='%1' " ).arg( cols.join( ',' ) ),
+                                 schemaName,
+                                 geomColumnName,
+                                 tableName ) };
       const QString sql { index.sibling( index.row(), DbtmSql ).data( Qt::DisplayRole ).toString() };
       if ( ! sql.isEmpty() )
       {

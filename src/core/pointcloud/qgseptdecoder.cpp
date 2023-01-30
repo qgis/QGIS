@@ -16,30 +16,20 @@
  ***************************************************************************/
 
 #include "qgseptdecoder.h"
-#include "qgseptpointcloudindex.h"
 #include "qgslazdecoder.h"
 #include "qgspointcloudattribute.h"
 #include "qgsvector3d.h"
-#include "qgsconfig.h"
-#include "qgslogger.h"
+#include "qgspointcloudexpression.h"
+#include "qgsrectangle.h"
 
 #include <QFile>
-#include <QDir>
-#include <iostream>
-#include <memory>
-#include <cstring>
-#include <QElapsedTimer>
-#include <QTemporaryFile>
-#include <string>
 
 #include <zstd.h>
-
-#include "lazperf/las.hpp"
 
 
 ///@cond PRIVATE
 
-QgsPointCloudBlock *_decompressBinary( const QByteArray &dataUncompressed, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression )
+QgsPointCloudBlock *decompressBinary_( const QByteArray &dataUncompressed, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect )
 {
   const std::size_t pointRecordSize = attributes.pointRecordSize( );
   const std::size_t requestedPointRecordSize = requestedAttributes.pointRecordSize();
@@ -99,13 +89,27 @@ QgsPointCloudBlock *_decompressBinary( const QByteArray &dataUncompressed, const
     return block.release();
   }
 
+  int xAttributeOffset, yAttributeOffset;
+  const QgsPointCloudAttribute *attributeX = nullptr;
+  const QgsPointCloudAttribute *attributeY = nullptr;
+  const bool hasFilterRect = !filterRect.isEmpty();
+  if ( hasFilterRect )
+  {
+    attributeX = requestedAttributes.find( QLatin1String( "X" ), xAttributeOffset );
+    attributeY = requestedAttributes.find( QLatin1String( "Y" ), yAttributeOffset );
+    filterRect.setXMinimum( ( filterRect.xMinimum() - offset.x() ) / scale.x() );
+    filterRect.setXMaximum( ( filterRect.xMaximum() - offset.x() ) / scale.x() );
+    filterRect.setYMinimum( ( filterRect.yMinimum() - offset.y() ) / scale.y() );
+    filterRect.setYMaximum( ( filterRect.yMaximum() - offset.y() ) / scale.y() );
+  }
+
   // now loop through points
   size_t outputOffset = 0;
   for ( int i = 0; i < count; ++i )
   {
     for ( const AttributeData &attribute : attributeData )
     {
-      _lazSerialize( destinationBuffer, outputOffset,
+      lazSerialize_( destinationBuffer, outputOffset,
                      attribute.requestedType, s,
                      attribute.inputType, attribute.inputSize, i * pointRecordSize + attribute.inputOffset );
 
@@ -113,23 +117,33 @@ QgsPointCloudBlock *_decompressBinary( const QByteArray &dataUncompressed, const
     }
 
     // check if point needs to be filtered out
-    if ( filterIsValid )
+    bool skipThisPoint = false;
+    if ( hasFilterRect && attributeX && attributeY )
+    {
+      const double x = attributeX->convertValueToDouble( destinationBuffer + outputOffset - requestedPointRecordSize + xAttributeOffset );
+      const double y = attributeY->convertValueToDouble( destinationBuffer + outputOffset - requestedPointRecordSize + yAttributeOffset );
+      if ( !filterRect.contains( x, y ) )
+        skipThisPoint = true;
+    }
+    if ( !skipThisPoint && filterIsValid )
     {
       // we're always evaluating the last written point in the buffer
       double eval = filterExpression.evaluate( i - skippedPoints );
       if ( !eval || std::isnan( eval ) )
-      {
-        // if the point is filtered out, rewind the offset so the next point is written over it
-        outputOffset -= requestedPointRecordSize;
-        ++skippedPoints;
-      }
+        skipThisPoint = true;
+    }
+    if ( skipThisPoint )
+    {
+      // if the point is filtered out, rewind the offset so the next point is written over it
+      outputOffset -= requestedPointRecordSize;
+      ++skippedPoints;
     }
   }
   block->setPointCount( count - skippedPoints );
   return block.release();
 }
 
-QgsPointCloudBlock *QgsEptDecoder::decompressBinary( const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression )
+QgsPointCloudBlock *QgsEptDecoder::decompressBinary( const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect )
 {
   if ( ! QFile::exists( filename ) )
     return nullptr;
@@ -140,12 +154,12 @@ QgsPointCloudBlock *QgsEptDecoder::decompressBinary( const QString &filename, co
     return nullptr;
 
   const QByteArray dataUncompressed = f.read( f.size() );
-  return _decompressBinary( dataUncompressed, attributes, requestedAttributes, scale, offset, filterExpression );
+  return decompressBinary_( dataUncompressed, attributes, requestedAttributes, scale, offset, filterExpression, filterRect );
 }
 
-QgsPointCloudBlock *QgsEptDecoder::decompressBinary( const QByteArray &data, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression )
+QgsPointCloudBlock *QgsEptDecoder::decompressBinary( const QByteArray &data, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect )
 {
-  return _decompressBinary( data, attributes, requestedAttributes, scale, offset, filterExpression );
+  return decompressBinary_( data, attributes, requestedAttributes, scale, offset, filterExpression, filterRect );
 }
 
 /* *************************************************************************************** */
@@ -178,7 +192,7 @@ QByteArray decompressZtdStream( const QByteArray &dataCompressed )
   return dataUncompressed;
 }
 
-QgsPointCloudBlock *QgsEptDecoder::decompressZStandard( const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression )
+QgsPointCloudBlock *QgsEptDecoder::decompressZStandard( const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect )
 {
   if ( ! QFile::exists( filename ) )
     return nullptr;
@@ -190,13 +204,13 @@ QgsPointCloudBlock *QgsEptDecoder::decompressZStandard( const QString &filename,
 
   const QByteArray dataCompressed = f.readAll();
   const QByteArray dataUncompressed = decompressZtdStream( dataCompressed );
-  return _decompressBinary( dataUncompressed, attributes, requestedAttributes, scale, offset, filterExpression );
+  return decompressBinary_( dataUncompressed, attributes, requestedAttributes, scale, offset, filterExpression, filterRect );
 }
 
-QgsPointCloudBlock *QgsEptDecoder::decompressZStandard( const QByteArray &data, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression )
+QgsPointCloudBlock *QgsEptDecoder::decompressZStandard( const QByteArray &data, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect )
 {
   const QByteArray dataUncompressed = decompressZtdStream( data );
-  return _decompressBinary( dataUncompressed, attributes, requestedAttributes, scale, offset, filterExpression );
+  return decompressBinary_( dataUncompressed, attributes, requestedAttributes, scale, offset, filterExpression, filterRect );
 }
 
 /* *************************************************************************************** */

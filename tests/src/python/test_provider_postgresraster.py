@@ -109,10 +109,6 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
         self.assertEqual(value, gdal_rl.dataProvider().block(
             band, self.rl.extent(), 6, 5).data().toHex())
 
-    @classmethod
-    def tearDownClass(cls):
-        """Run after all tests"""
-
     def testExtent(self):
         extent = self.rl.extent()
         self.assertEqual(extent, QgsRectangle(
@@ -554,6 +550,15 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
         rl_r2 = _6x6_block_data(rl, extent_2)
         r2_r2 = _6x6_block_data(rl2, extent_2)
         self.assertEqual(rl_r2, r2_r2)
+
+    def testView(self):
+        """Test issue GH #50841"""
+
+        rl = QgsRasterLayer(
+            self.dbconn + " key=\'rid\' srid=3035 sslmode=disable table={table} schema={schema}".format(
+                table='raster_tiled_3035_view', schema='public'), 'pg_layer', 'postgresraster')
+
+        self.assertTrue(rl.isValid())
 
 
 if __name__ == '__main__':

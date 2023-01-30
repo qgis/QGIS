@@ -25,6 +25,7 @@
 #include "qgsapplication.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsproviderutils.h"
+#include "qgsthreadingutils.h"
 
 #include <QFileInfo>
 #include <QIcon>
@@ -56,46 +57,65 @@ QgsEptProvider::~QgsEptProvider() = default;
 
 QgsCoordinateReferenceSystem QgsEptProvider::crs() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mIndex->crs();
 }
 
 QgsRectangle QgsEptProvider::extent() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mIndex->extent();
 }
 
 QgsPointCloudAttributeCollection QgsEptProvider::attributes() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mIndex->attributes();
 }
 
 bool QgsEptProvider::isValid() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mIndex->isValid();
 }
 
 QString QgsEptProvider::name() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return QStringLiteral( "ept" );
 }
 
 QString QgsEptProvider::description() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return QStringLiteral( "Point Clouds EPT" );
 }
 
 QgsPointCloudIndex *QgsEptProvider::index() const
 {
+  // BAD! 2D rendering of point clouds is NOT thread safe
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
+
   return mIndex.get();
 }
 
 qint64 QgsEptProvider::pointCount() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mIndex->pointCount();
 }
 
 void QgsEptProvider::loadIndex( )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mIndex->isValid() )
     return;
 
@@ -104,11 +124,15 @@ void QgsEptProvider::loadIndex( )
 
 QVariantMap QgsEptProvider::originalMetadata() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mIndex->originalMetadata();
 }
 
 void QgsEptProvider::generateIndex()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   //no-op, index is always generated
 }
 

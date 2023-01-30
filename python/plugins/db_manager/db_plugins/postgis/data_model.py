@@ -43,22 +43,22 @@ class PGTableDataModel(TableDataModel):
         self._createCursor()
 
     def _createCursor(self):
-        fields_txt = u", ".join(self.fields)
+        fields_txt = ", ".join(self.fields)
         table_txt = self.db.quoteId((self.table.schemaName(), self.table.name))
 
         self.cursor = self.db._get_cursor()
-        sql = u"SELECT %s FROM %s" % (fields_txt, table_txt)
+        sql = "SELECT %s FROM %s" % (fields_txt, table_txt)
         self.db._execute(self.cursor, sql)
 
     def _sanitizeTableField(self, field):
         # get fields, ignore geometry columns
         if field.dataType.lower() == "geometry":
-            return u"CASE WHEN %(fld)s IS NULL THEN NULL ELSE GeometryType(%(fld)s) END AS %(fld)s" % {
+            return "CASE WHEN %(fld)s IS NULL THEN NULL ELSE GeometryType(%(fld)s) END AS %(fld)s" % {
                 'fld': self.db.quoteId(field.name)}
         elif field.dataType.lower() == "raster":
-            return u"CASE WHEN %(fld)s IS NULL THEN NULL ELSE 'RASTER' END AS %(fld)s" % {
+            return "CASE WHEN %(fld)s IS NULL THEN NULL ELSE 'RASTER' END AS %(fld)s" % {
                 'fld': self.db.quoteId(field.name)}
-        return u"%s::text" % self.db.quoteId(field.name)
+        return "%s::text" % self.db.quoteId(field.name)
 
     def _deleteCursor(self):
         self.db._close_cursor(self.cursor)

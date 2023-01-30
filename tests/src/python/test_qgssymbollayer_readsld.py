@@ -25,13 +25,16 @@ import qgis  # NOQA
 
 import os
 from qgis.PyQt.QtXml import QDomDocument
+from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.testing import start_app, unittest
-from qgis.core import (QgsVectorLayer,
+from qgis.core import (Qgis,
+                       QgsVectorLayer,
                        QgsFeature,
                        QgsGeometry,
                        QgsUnitTypes,
                        QgsPointXY,
                        QgsSvgMarkerSymbolLayer,
+                       QgsSymbol,
                        QgsEllipseSymbolLayer,
                        QgsSimpleFillSymbolLayer,
                        QgsSVGFillSymbolLayer,
@@ -465,6 +468,105 @@ class TestQgsSymbolLayerReadSld(unittest.TestCase):
         self.assertEqual(settings.xOffset, 1)
         self.assertEqual(settings.yOffset, 0)
         self.assertEqual(settings.offsetUnits, QgsUnitTypes.RenderPixels)
+
+    def test_read_circle(self):
+        """Test wellknown name circle polygon fill"""
+
+        sld = """<?xml version="1.0" encoding="UTF-8"?>
+            <StyledLayerDescriptor xmlns="http://www.opengis.net/sld" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ogc="http://www.opengis.net/ogc" version="1.1.0" xsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd" xmlns:se="http://www.opengis.net/se">
+            <NamedLayer>
+                <se:Name>Single symbol fill</se:Name>
+                <UserStyle>
+                <se:Name>Single symbol fill</se:Name>
+                <se:FeatureTypeStyle>
+                    <se:Rule>
+                    <se:Name>Single symbol</se:Name>
+                    <se:PolygonSymbolizer>
+                        <se:Fill>
+                        <se:GraphicFill>
+                            <se:Graphic>
+                            <se:Mark>
+                                <se:WellKnownName>circle</se:WellKnownName>
+                                <se:Fill>
+                                <se:SvgParameter name="fill">#db1e2a</se:SvgParameter>
+                                </se:Fill>
+                                <se:Stroke>
+                                <se:SvgParameter name="stroke">#801119</se:SvgParameter>
+                                <se:SvgParameter name="stroke-width">1.5</se:SvgParameter>
+                                </se:Stroke>
+                            </se:Mark>
+                            <se:Size>14</se:Size>
+                            </se:Graphic>
+                        </se:GraphicFill>
+                        </se:Fill>
+                        <sld:VendorOption name="graphic-margin">{}</sld:VendorOption>
+                    </se:PolygonSymbolizer>
+                    <se:PolygonSymbolizer>
+                        <se:Stroke>
+                            <se:SvgParameter name="stroke">#ff0000</se:SvgParameter>
+                            <se:SvgParameter name="stroke-width">2</se:SvgParameter>
+                            <se:SvgParameter name="stroke-linejoin">bevel</se:SvgParameter>
+                        </se:Stroke>
+                    </se:PolygonSymbolizer>
+                    </se:Rule>
+                </se:FeatureTypeStyle>
+                </UserStyle>
+            </NamedLayer>
+            </StyledLayerDescriptor>
+        """
+
+        tmp_dir = QTemporaryDir()
+        tmp_path = tmp_dir.path()
+        sld_path = os.path.join(tmp_path, 'circle_fill.sld')
+
+        layer = createLayerWithOnePolygon()
+
+        def _check_layer(layer, yMargin=10, xMargin=15):
+            """
+            - QgsFillSymbol
+              - layers
+                - QgsPointPatternFillSymbolLayer
+                  - subSymbol: QgsMarkerSymbol
+                    - layers
+                       - QgsSimpleMarkerSymbolLayer (shape)
+            """
+            layer.loadSldStyle(sld_path)
+            point_pattern_fill_symbol_layer = layer.renderer().symbol().symbolLayers()[0]
+            marker = point_pattern_fill_symbol_layer.subSymbol()
+            self.assertEqual(marker.type(), QgsSymbol.SymbolType.Marker)
+            marker_symbol = marker.symbolLayers()[0]
+            self.assertEqual(marker_symbol.strokeColor().name(), '#801119')
+            self.assertEqual(marker_symbol.strokeWidth(), 1.5)
+            self.assertEqual(marker_symbol.shape(), Qgis.MarkerShape.Circle)
+            self.assertEqual(marker_symbol.size(), 14)
+            self.assertEqual(point_pattern_fill_symbol_layer.distanceXUnit(), QgsUnitTypes.RenderUnit.RenderPixels)
+            self.assertEqual(point_pattern_fill_symbol_layer.distanceYUnit(), QgsUnitTypes.RenderUnit.RenderPixels)
+            self.assertEqual(point_pattern_fill_symbol_layer.distanceX(), xMargin * 2 + marker_symbol.size())
+            self.assertEqual(point_pattern_fill_symbol_layer.distanceY(), yMargin * 2 + marker_symbol.size())
+
+        with open(sld_path, 'w+') as f:
+            f.write(sld.format('25'))
+        _check_layer(layer, 25, 25)
+
+        # From: https://docs.geoserver.org/stable/en/user/styling/sld/extensions/margins.html
+        # top,right,bottom,left (one explicit value per margin)
+        # top,right-left,bottom (three values, with right and left sharing the same value)
+        # top-bottom,right-left (two values, top and bottom sharing the same value)
+        # top-right-bottom-left (single value for all four margins)
+
+        for margin in ('10 15', '10 15 10', '10 15 10 15'):
+            with open(sld_path, 'w+') as f:
+                f.write(sld.format(margin))
+            _check_layer(layer)
+
+        # Round trip
+        dom = QDomDocument()
+        root = dom.createElement("FakeRoot")
+        dom.appendChild(root)
+        result = layer.saveSldStyle(sld_path)
+        self.assertTrue(result)
+
+        _check_layer(layer)
 
 
 if __name__ == '__main__':

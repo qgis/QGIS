@@ -23,13 +23,9 @@
 
 #include <ctime>
 
-#include "ui_qgsattributetabledialog.h"
-#include "qgssearchwidgetwrapper.h"
-#include "qgsdockwidget.h"
 #include "qgis_app.h"
-#include "qgsstoredexpressionmanager.h"
+#include "ui_qgsattributetabledialog.h"
 
-class QDialogButtonBox;
 class QPushButton;
 class QLineEdit;
 class QComboBox;

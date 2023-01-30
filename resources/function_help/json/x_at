@@ -1,0 +1,18 @@
+{
+  "name": "x_at",
+  "type": "function",
+  "groups": ["GeometryGroup"],
+  "description": "Retrieves a x coordinate of the geometry.",
+  "arguments": [{
+    "arg": "geometry",
+    "description": "geometry object"
+  }, {
+    "arg": "vertex",
+    "description": "index of the vertex of the geometry (indices start at 0; negative values apply from the last index, starting at -1)"
+  }],
+  "examples": [{
+    "expression": "x_at( geom_from_wkt( 'POINT(4 5)' ), 0 )",
+    "returns": "4"
+  }],
+  "tags": ["retrieves", "coordinate"]
+}

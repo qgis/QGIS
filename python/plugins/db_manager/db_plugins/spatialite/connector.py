@@ -100,7 +100,7 @@ class SpatiaLiteDBConnector(DBConnector):
     def _checkGeometryColumnsTable(self):
         try:
             c = self._get_cursor()
-            self._execute(c, u"SELECT CheckSpatialMetaData()")
+            self._execute(c, "SELECT CheckSpatialMetaData()")
             v = c.fetchone()[0]
             self.has_geometry_columns = v == 1 or v == 3
             self.has_spatialite4 = v == 3
@@ -113,14 +113,14 @@ class SpatiaLiteDBConnector(DBConnector):
 
     def _checkRasterTables(self):
         c = self._get_cursor()
-        sql = u"SELECT count(*) = 3 FROM sqlite_master WHERE name IN ('layer_params', 'layer_statistics', 'raster_pyramids')"
+        sql = "SELECT count(*) = 3 FROM sqlite_master WHERE name IN ('layer_params', 'layer_statistics', 'raster_pyramids')"
         self._execute(c, sql)
         ret = c.fetchone()
         return ret and ret[0]
 
     def getInfo(self):
         c = self._get_cursor()
-        self._execute(c, u"SELECT sqlite_version()")
+        self._execute(c, "SELECT sqlite_version()")
         return c.fetchone()
 
     def getSpatialInfo(self):
@@ -134,7 +134,7 @@ class SpatiaLiteDBConnector(DBConnector):
 
         c = self._get_cursor()
         try:
-            self._execute(c, u"SELECT spatialite_version(), geos_version(), proj4_version()")
+            self._execute(c, "SELECT spatialite_version(), geos_version(), proj4_version()")
         except DbError:
             return
 
@@ -197,7 +197,7 @@ class SpatiaLiteDBConnector(DBConnector):
 
         if self.has_geometry_columns:
             # get the R*Tree tables
-            sql = u"SELECT f_table_name, f_geometry_column FROM geometry_columns WHERE spatial_index_enabled = 1"
+            sql = "SELECT f_table_name, f_geometry_column FROM geometry_columns WHERE spatial_index_enabled = 1"
             self._execute(c, sql)
             for idx_item in c.fetchall():
                 sys_tables.append('idx_%s_%s' % idx_item)
@@ -205,7 +205,7 @@ class SpatiaLiteDBConnector(DBConnector):
                 sys_tables.append('idx_%s_%s_parent' % idx_item)
                 sys_tables.append('idx_%s_%s_rowid' % idx_item)
 
-        sql = u"SELECT name, type = 'view' FROM sqlite_master WHERE type IN ('table', 'view')"
+        sql = "SELECT name, type = 'view' FROM sqlite_master WHERE type IN ('table', 'view')"
         self._execute(c, sql)
 
         for tbl in c.fetchall():
@@ -256,7 +256,7 @@ class SpatiaLiteDBConnector(DBConnector):
                 cols = "g.type,g.coord_dimension"
 
             # get geometry info from geometry_columns if exists
-            sql = u"""SELECT m.name, m.type = 'view', g.f_table_name, g.f_geometry_column, %s, g.srid
+            sql = """SELECT m.name, m.type = 'view', g.f_table_name, g.f_geometry_column, %s, g.srid
                                                 FROM sqlite_master AS m JOIN geometry_columns AS g ON upper(m.name) = upper(g.f_table_name)
                                                 WHERE m.type in ('table', 'view')
                                                 ORDER BY m.name, g.f_geometry_column""" % cols
@@ -294,7 +294,7 @@ class SpatiaLiteDBConnector(DBConnector):
         c = self._get_cursor()
 
         # get geometry info from geometry_columns if exists
-        sql = u"""SELECT r.table_name||'_rasters', m.type = 'view', r.table_name, r.geometry_column, g.srid
+        sql = """SELECT r.table_name||'_rasters', m.type = 'view', r.table_name, r.geometry_column, g.srid
                                                 FROM sqlite_master AS m JOIN geometry_columns AS g ON upper(m.name) = upper(g.f_table_name)
                                                 JOIN layer_params AS r ON upper(REPLACE(m.name, '_metadata', '')) = upper(r.table_name)
                                                 WHERE m.type in ('table', 'view') AND upper(m.name) = upper(r.table_name||'_metadata')
@@ -312,21 +312,21 @@ class SpatiaLiteDBConnector(DBConnector):
 
     def getTableRowCount(self, table):
         c = self._get_cursor()
-        self._execute(c, u"SELECT COUNT(*) FROM %s" % self.quoteId(table))
+        self._execute(c, "SELECT COUNT(*) FROM %s" % self.quoteId(table))
         ret = c.fetchone()
         return ret[0] if ret is not None else None
 
     def getTableFields(self, table):
         """ return list of columns in table """
         c = self._get_cursor()
-        sql = u"PRAGMA table_info(%s)" % (self.quoteId(table))
+        sql = "PRAGMA table_info(%s)" % (self.quoteId(table))
         self._execute(c, sql)
         return c.fetchall()
 
     def getTableIndexes(self, table):
         """ get info about table's indexes """
         c = self._get_cursor()
-        sql = u"PRAGMA index_list(%s)" % (self.quoteId(table))
+        sql = "PRAGMA index_list(%s)" % (self.quoteId(table))
         self._execute(c, sql)
         indexes = c.fetchall()
 
@@ -339,7 +339,7 @@ class SpatiaLiteDBConnector(DBConnector):
                 num, name, unique = idx
             if len(idx) == 5:
                 num, name, unique, createdby, partial = idx
-            sql = u"PRAGMA index_info(%s)" % (self.quoteId(name))
+            sql = "PRAGMA index_info(%s)" % (self.quoteId(name))
             self._execute(c, sql)
 
             idx = [num, name, unique]
@@ -358,14 +358,14 @@ class SpatiaLiteDBConnector(DBConnector):
     def getTableTriggers(self, table):
         c = self._get_cursor()
         schema, tablename = self.getSchemaTableName(table)
-        sql = u"SELECT name, sql FROM sqlite_master WHERE tbl_name = %s AND type = 'trigger'" % (
+        sql = "SELECT name, sql FROM sqlite_master WHERE tbl_name = %s AND type = 'trigger'" % (
             self.quoteString(tablename))
         self._execute(c, sql)
         return c.fetchall()
 
     def deleteTableTrigger(self, trigger, table=None):
         """Deletes trigger """
-        sql = u"DROP TRIGGER %s" % self.quoteId(trigger)
+        sql = "DROP TRIGGER %s" % self.quoteId(trigger)
         self._execute_and_commit(sql)
 
     def getTableExtent(self, table, geom):
@@ -375,9 +375,9 @@ class SpatiaLiteDBConnector(DBConnector):
 
         if self.isRasterTable(table):
             tablename = tablename.replace('_rasters', '_metadata')
-            geom = u'geometry'
+            geom = 'geometry'
 
-        sql = u"""SELECT Min(MbrMinX(%(geom)s)), Min(MbrMinY(%(geom)s)), Max(MbrMaxX(%(geom)s)), Max(MbrMaxY(%(geom)s))
+        sql = """SELECT Min(MbrMinX(%(geom)s)), Min(MbrMinY(%(geom)s)), Max(MbrMaxX(%(geom)s)), Max(MbrMaxY(%(geom)s))
                                                 FROM %(table)s """ % {'geom': self.quoteId(geom),
                                                                       'table': self.quoteId(tablename)}
         self._execute(c, sql)
@@ -386,13 +386,13 @@ class SpatiaLiteDBConnector(DBConnector):
     def getViewDefinition(self, view):
         """ returns definition of the view """
         schema, tablename = self.getSchemaTableName(view)
-        sql = u"SELECT sql FROM sqlite_master WHERE type = 'view' AND name = %s" % self.quoteString(tablename)
+        sql = "SELECT sql FROM sqlite_master WHERE type = 'view' AND name = %s" % self.quoteString(tablename)
         c = self._execute(None, sql)
         ret = c.fetchone()
         return ret[0] if ret is not None else None
 
     def getSpatialRefInfo(self, srid):
-        sql = u"SELECT ref_sys_name FROM spatial_ref_sys WHERE srid = %s" % self.quoteString(srid)
+        sql = "SELECT ref_sys_name FROM spatial_ref_sys WHERE srid = %s" % self.quoteString(srid)
         c = self._execute(None, sql)
         ret = c.fetchone()
         return ret[0] if ret is not None else None
@@ -400,7 +400,7 @@ class SpatiaLiteDBConnector(DBConnector):
     def isVectorTable(self, table):
         if self.has_geometry_columns:
             schema, tablename = self.getSchemaTableName(table)
-            sql = u"SELECT count(*) FROM geometry_columns WHERE upper(f_table_name) = upper(%s)" % self.quoteString(
+            sql = "SELECT count(*) FROM geometry_columns WHERE upper(f_table_name) = upper(%s)" % self.quoteString(
                 tablename)
             c = self._execute(None, sql)
             ret = c.fetchone()
@@ -413,7 +413,7 @@ class SpatiaLiteDBConnector(DBConnector):
             if not tablename.endswith("_rasters"):
                 return False
 
-            sql = u"""SELECT count(*)
+            sql = """SELECT count(*)
                                         FROM layer_params AS r JOIN geometry_columns AS g
                                                 ON upper(r.table_name||'_metadata') = upper(g.f_table_name)
                                         WHERE upper(r.table_name) = upper(REPLACE(%s, '_rasters', ''))""" % self.quoteString(
@@ -433,9 +433,9 @@ class SpatiaLiteDBConnector(DBConnector):
             return False
 
         sql = "CREATE TABLE %s (" % self.quoteId(table)
-        sql += u", ".join(field_defs)
+        sql += ", ".join(field_defs)
         if pkey is not None and pkey != "":
-            sql += u", PRIMARY KEY (%s)" % self.quoteId(pkey)
+            sql += ", PRIMARY KEY (%s)" % self.quoteId(pkey)
         sql += ")"
 
         self._execute_and_commit(sql)
@@ -447,10 +447,10 @@ class SpatiaLiteDBConnector(DBConnector):
             return False
 
         c = self._get_cursor()
-        sql = u"DROP TABLE %s" % self.quoteId(table)
+        sql = "DROP TABLE %s" % self.quoteId(table)
         self._execute(c, sql)
         schema, tablename = self.getSchemaTableName(table)
-        sql = u"DELETE FROM geometry_columns WHERE upper(f_table_name) = upper(%s)" % self.quoteString(tablename)
+        sql = "DELETE FROM geometry_columns WHERE upper(f_table_name) = upper(%s)" % self.quoteString(tablename)
         self._execute(c, sql)
         self._commit()
 
@@ -461,7 +461,7 @@ class SpatiaLiteDBConnector(DBConnector):
         if self.isRasterTable(table):
             return False
 
-        sql = u"DELETE FROM %s" % self.quoteId(table)
+        sql = "DELETE FROM %s" % self.quoteId(table)
         self._execute_and_commit(sql)
 
     def renameTable(self, table, new_table):
@@ -475,12 +475,12 @@ class SpatiaLiteDBConnector(DBConnector):
 
         c = self._get_cursor()
 
-        sql = u"ALTER TABLE %s RENAME TO %s" % (self.quoteId(table), self.quoteId(new_table))
+        sql = "ALTER TABLE %s RENAME TO %s" % (self.quoteId(table), self.quoteId(new_table))
         self._execute(c, sql)
 
         # update geometry_columns
         if self.has_geometry_columns:
-            sql = u"UPDATE geometry_columns SET f_table_name = %s WHERE upper(f_table_name) = upper(%s)" % (
+            sql = "UPDATE geometry_columns SET f_table_name = %s WHERE upper(f_table_name) = upper(%s)" % (
                 self.quoteString(new_table), self.quoteString(tablename))
             self._execute(c, sql)
 
@@ -491,18 +491,18 @@ class SpatiaLiteDBConnector(DBConnector):
         return self.renameTable(table, new_table)
 
     def createView(self, view, query):
-        sql = u"CREATE VIEW %s AS %s" % (self.quoteId(view), query)
+        sql = "CREATE VIEW %s AS %s" % (self.quoteId(view), query)
         self._execute_and_commit(sql)
 
     def deleteView(self, view):
         c = self._get_cursor()
 
-        sql = u"DROP VIEW %s" % self.quoteId(view)
+        sql = "DROP VIEW %s" % self.quoteId(view)
         self._execute(c, sql)
 
         # update geometry_columns
         if self.has_geometry_columns:
-            sql = u"DELETE FROM geometry_columns WHERE f_table_name = %s" % self.quoteString(view)
+            sql = "DELETE FROM geometry_columns WHERE f_table_name = %s" % self.quoteString(view)
             self._execute(c, sql)
 
         self._commit()
@@ -515,7 +515,7 @@ class SpatiaLiteDBConnector(DBConnector):
 
         self.createView(view, query)
         # get type info about the view
-        sql = u"PRAGMA table_info(%s)" % self.quoteString(view)
+        sql = "PRAGMA table_info(%s)" % self.quoteString(view)
         c = self._execute(None, sql)
         geom_col = None
         for r in c.fetchall():
@@ -527,7 +527,7 @@ class SpatiaLiteDBConnector(DBConnector):
             return
 
         # get geometry type and srid
-        sql = u"SELECT geometrytype(%s), srid(%s) FROM %s LIMIT 1" % (self.quoteId(geom_col), self.quoteId(geom_col), self.quoteId(view))
+        sql = "SELECT geometrytype(%s), srid(%s) FROM %s LIMIT 1" % (self.quoteId(geom_col), self.quoteId(geom_col), self.quoteId(view))
         c = self._execute(None, sql)
         r = c.fetchone()
         if r is None:
@@ -548,7 +548,7 @@ class SpatiaLiteDBConnector(DBConnector):
         if 'M' in gdim:
             wkbType += 2000
 
-        sql = u"""INSERT INTO geometry_columns (f_table_name, f_geometry_column, geometry_type, coord_dimension, srid, spatial_index_enabled)
+        sql = """INSERT INTO geometry_columns (f_table_name, f_geometry_column, geometry_type, coord_dimension, srid, spatial_index_enabled)
                                         VALUES (%s, %s, %s, %s, %s, 0)""" % (self.quoteId(view), self.quoteId(geom_col), wkbType, len(gdim), gsrid)
         self._execute_and_commit(sql)
 
@@ -562,13 +562,13 @@ class SpatiaLiteDBConnector(DBConnector):
 
     def addTableColumn(self, table, field_def):
         """Adds a column to table """
-        sql = u"ALTER TABLE %s ADD %s" % (self.quoteId(table), field_def)
+        sql = "ALTER TABLE %s ADD %s" % (self.quoteId(table), field_def)
         self._execute(None, sql)
 
-        sql = u"SELECT InvalidateLayerStatistics(%s)" % (self.quoteId(table))
+        sql = "SELECT InvalidateLayerStatistics(%s)" % (self.quoteId(table))
         self._execute(None, sql)
 
-        sql = u"SELECT UpdateLayerStatistics(%s)" % (self.quoteId(table))
+        sql = "SELECT UpdateLayerStatistics(%s)" % (self.quoteId(table))
         self._execute(None, sql)
 
         self._commit()
@@ -581,7 +581,7 @@ class SpatiaLiteDBConnector(DBConnector):
 
         # delete geometry column correctly
         schema, tablename = self.getSchemaTableName(table)
-        sql = u"SELECT DiscardGeometryColumn(%s, %s)" % (self.quoteString(tablename), self.quoteString(column))
+        sql = "SELECT DiscardGeometryColumn(%s, %s)" % (self.quoteString(tablename), self.quoteString(column))
         self._execute_and_commit(sql)
 
     def updateTableColumn(self, table, column, new_name, new_data_type=None, new_not_null=None, new_default=None, comment=None):
@@ -607,7 +607,7 @@ class SpatiaLiteDBConnector(DBConnector):
 
         c = self._get_cursor()
         schema, tablename = self.getSchemaTableName(table)
-        sql = u"SELECT count(*) > 0 FROM geometry_columns WHERE upper(f_table_name) = upper(%s) AND upper(f_geometry_column) = upper(%s)" % (
+        sql = "SELECT count(*) > 0 FROM geometry_columns WHERE upper(f_table_name) = upper(%s) AND upper(f_geometry_column) = upper(%s)" % (
             self.quoteString(tablename), self.quoteString(column))
         self._execute(c, sql)
         return c.fetchone()[0] == 't'
@@ -615,7 +615,7 @@ class SpatiaLiteDBConnector(DBConnector):
     def addGeometryColumn(self, table, geom_column='geometry', geom_type='POINT', srid=-1, dim=2):
 
         schema, tablename = self.getSchemaTableName(table)
-        sql = u"SELECT AddGeometryColumn(%s, %s, %d, %s, %s)" % (
+        sql = "SELECT AddGeometryColumn(%s, %s, %d, %s, %s)" % (
             self.quoteString(tablename), self.quoteString(geom_column), srid, self.quoteString(geom_type), dim)
         self._execute_and_commit(sql)
 
@@ -632,19 +632,19 @@ class SpatiaLiteDBConnector(DBConnector):
 
     def addTablePrimaryKey(self, table, column):
         """Adds a primery key (with one column) to a table """
-        sql = u"ALTER TABLE %s ADD PRIMARY KEY (%s)" % (self.quoteId(table), self.quoteId(column))
+        sql = "ALTER TABLE %s ADD PRIMARY KEY (%s)" % (self.quoteId(table), self.quoteId(column))
         self._execute_and_commit(sql)
 
     def createTableIndex(self, table, name, column, unique=False):
         """Creates index on one column using default options """
-        unique_str = u"UNIQUE" if unique else ""
-        sql = u"CREATE %s INDEX %s ON %s (%s)" % (
+        unique_str = "UNIQUE" if unique else ""
+        sql = "CREATE %s INDEX %s ON %s (%s)" % (
             unique_str, self.quoteId(name), self.quoteId(table), self.quoteId(column))
         self._execute_and_commit(sql)
 
     def deleteTableIndex(self, table, name):
         schema, tablename = self.getSchemaTableName(table)
-        sql = u"DROP INDEX %s" % self.quoteId((schema, name))
+        sql = "DROP INDEX %s" % self.quoteId((schema, name))
         self._execute_and_commit(sql)
 
     def createSpatialIndex(self, table, geom_column='geometry'):
@@ -652,7 +652,7 @@ class SpatiaLiteDBConnector(DBConnector):
             return False
 
         schema, tablename = self.getSchemaTableName(table)
-        sql = u"SELECT CreateSpatialIndex(%s, %s)" % (self.quoteString(tablename), self.quoteString(geom_column))
+        sql = "SELECT CreateSpatialIndex(%s, %s)" % (self.quoteString(tablename), self.quoteString(geom_column))
         self._execute_and_commit(sql)
 
     def deleteSpatialIndex(self, table, geom_column='geometry'):
@@ -661,13 +661,13 @@ class SpatiaLiteDBConnector(DBConnector):
 
         schema, tablename = self.getSchemaTableName(table)
         try:
-            sql = u"SELECT DiscardSpatialIndex(%s, %s)" % (self.quoteString(tablename), self.quoteString(geom_column))
+            sql = "SELECT DiscardSpatialIndex(%s, %s)" % (self.quoteString(tablename), self.quoteString(geom_column))
             self._execute_and_commit(sql)
         except DbError:
-            sql = u"SELECT DeleteSpatialIndex(%s, %s)" % (self.quoteString(tablename), self.quoteString(geom_column))
+            sql = "SELECT DeleteSpatialIndex(%s, %s)" % (self.quoteString(tablename), self.quoteString(geom_column))
             self._execute_and_commit(sql)
             # delete the index table
-            idx_table_name = u"idx_%s_%s" % (tablename, geom_column)
+            idx_table_name = "idx_%s_%s" % (tablename, geom_column)
             self.deleteTable(idx_table_name)
 
     def hasSpatialIndex(self, table, geom_column='geometry'):
@@ -675,7 +675,7 @@ class SpatiaLiteDBConnector(DBConnector):
             return False
         c = self._get_cursor()
         schema, tablename = self.getSchemaTableName(table)
-        sql = u"SELECT spatial_index_enabled FROM geometry_columns WHERE upper(f_table_name) = upper(%s) AND upper(f_geometry_column) = upper(%s)" % (
+        sql = "SELECT spatial_index_enabled FROM geometry_columns WHERE upper(f_table_name) = upper(%s) AND upper(f_geometry_column) = upper(%s)" % (
             self.quoteString(tablename), self.quoteString(geom_column))
         self._execute(c, sql)
         row = c.fetchone()

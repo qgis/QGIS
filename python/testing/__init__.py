@@ -552,7 +552,9 @@ def start_app(cleanup=True):
         # no need to mess with it here.
         QGISAPP = QgsApplication(argvb, myGuiFlag)
 
-        os.environ['QGIS_CUSTOM_CONFIG_PATH'] = tempfile.mkdtemp('', 'QGIS-PythonTestConfigPath')
+        tmpdir = tempfile.mkdtemp('', 'QGIS-PythonTestConfigPath-')
+        os.environ['QGIS_CUSTOM_CONFIG_PATH'] = tmpdir
+
         QGISAPP.initQgis()
         print(QGISAPP.showSettings())
 
@@ -563,10 +565,12 @@ def start_app(cleanup=True):
 
         if cleanup:
             import atexit
+            import shutil
 
             @atexit.register
             def exitQgis():
                 QGISAPP.exitQgis()
+                shutil.rmtree(tmpdir)
 
     return QGISAPP
 

@@ -141,6 +141,7 @@ bool QgsRasterBlock::typeIsNumeric( Qgis::DataType dataType )
   switch ( dataType )
   {
     case Qgis::DataType::Byte:
+    case Qgis::DataType::Int8:
     case Qgis::DataType::UInt16:
     case Qgis::DataType::Int16:
     case Qgis::DataType::UInt32:
@@ -171,6 +172,7 @@ bool QgsRasterBlock::typeIsColor( Qgis::DataType dataType )
 
     case Qgis::DataType::UnknownDataType:
     case Qgis::DataType::Byte:
+    case Qgis::DataType::Int8:
     case Qgis::DataType::UInt16:
     case Qgis::DataType::Int16:
     case Qgis::DataType::UInt32:
@@ -193,6 +195,7 @@ Qgis::DataType QgsRasterBlock::typeWithNoDataValue( Qgis::DataType dataType, dou
   switch ( dataType )
   {
     case Qgis::DataType::Byte:
+    case Qgis::DataType::Int8:
       *noDataValue = -32768.0;
       newDataType = Qgis::DataType::Int16;
       break;
@@ -211,7 +214,13 @@ Qgis::DataType QgsRasterBlock::typeWithNoDataValue( Qgis::DataType dataType, dou
       *noDataValue = std::numeric_limits<double>::max() * -1.0;
       newDataType = Qgis::DataType::Float64;
       break;
-    default:
+    case Qgis::DataType::CInt16:
+    case Qgis::DataType::CInt32:
+    case Qgis::DataType::CFloat32:
+    case Qgis::DataType::CFloat64:
+    case Qgis::DataType::ARGB32:
+    case Qgis::DataType::ARGB32_Premultiplied:
+    case Qgis::DataType::UnknownDataType:
       QgsDebugMsg( QStringLiteral( "Unknown data type %1" ).arg( static_cast< int >( dataType ) ) );
       return Qgis::DataType::UnknownDataType;
   }
@@ -708,6 +717,12 @@ QByteArray QgsRasterBlock::valueBytes( Qgis::DataType dataType, double value )
       uc = static_cast< quint8 >( value );
       memcpy( data, &uc, size );
       break;
+    case Qgis::DataType::Int8:
+    {
+      const qint8 myint8 = static_cast< qint8 >( value );
+      memcpy( data, &myint8, size );
+      break;
+    }
     case Qgis::DataType::UInt16:
       us = static_cast< quint16 >( value );
       memcpy( data, &us, size );
@@ -732,7 +747,13 @@ QByteArray QgsRasterBlock::valueBytes( Qgis::DataType dataType, double value )
       d = static_cast< double >( value );
       memcpy( data, &d, size );
       break;
-    default:
+    case Qgis::DataType::CInt16:
+    case Qgis::DataType::CInt32:
+    case Qgis::DataType::CFloat32:
+    case Qgis::DataType::CFloat64:
+    case Qgis::DataType::ARGB32:
+    case Qgis::DataType::ARGB32_Premultiplied:
+    case Qgis::DataType::UnknownDataType:
       QgsDebugMsg( QStringLiteral( "Data type is not supported" ) );
   }
   return ba;

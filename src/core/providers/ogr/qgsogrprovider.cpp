@@ -1475,24 +1475,31 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
           break;
 
         case OFTTime:
-          OGR_F_SetFieldDateTime( feature.get(), ogrAttributeId,
-                                  0, 0, 0,
-                                  attrVal.toTime().hour(),
-                                  attrVal.toTime().minute(),
-                                  attrVal.toTime().second(),
-                                  0 );
+        {
+          const QTime time = attrVal.toTime();
+          OGR_F_SetFieldDateTimeEx( feature.get(), ogrAttributeId,
+                                    0, 0, 0,
+                                    time.hour(),
+                                    time.minute(),
+                                    static_cast<float>( time.second() + static_cast< double >( time.msec() ) / 1000 ),
+                                    0 );
           break;
-
+        }
         case OFTDateTime:
-          OGR_F_SetFieldDateTime( feature.get(), ogrAttributeId,
-                                  attrVal.toDateTime().date().year(),
-                                  attrVal.toDateTime().date().month(),
-                                  attrVal.toDateTime().date().day(),
-                                  attrVal.toDateTime().time().hour(),
-                                  attrVal.toDateTime().time().minute(),
-                                  attrVal.toDateTime().time().second(),
-                                  0 );
+        {
+          const QDateTime dt =  attrVal.toDateTime();
+          const QDate date = dt.date();
+          const QTime time = dt.time();
+          OGR_F_SetFieldDateTimeEx( feature.get(), ogrAttributeId,
+                                    date.year(),
+                                    date.month(),
+                                    date.day(),
+                                    time.hour(),
+                                    time.minute(),
+                                    static_cast<float>( time.second() + static_cast< double >( time.msec() ) / 1000 ),
+                                    QgsOgrUtils::OGRTZFlagFromQt( dt ) );
           break;
+        }
 
         case OFTString:
         {
@@ -2264,23 +2271,31 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
                                     0 );
             break;
           case OFTTime:
-            OGR_F_SetFieldDateTime( of.get(), f,
-                                    0, 0, 0,
-                                    it2->toTime().hour(),
-                                    it2->toTime().minute(),
-                                    it2->toTime().second(),
-                                    0 );
+          {
+            const QTime time = it2->toTime();
+            OGR_F_SetFieldDateTimeEx( of.get(), f,
+                                      0, 0, 0,
+                                      time.hour(),
+                                      time.minute(),
+                                      static_cast<float>( time.second() + static_cast< double >( time.msec() ) / 1000 ),
+                                      0 );
             break;
+          }
           case OFTDateTime:
-            OGR_F_SetFieldDateTime( of.get(), f,
-                                    it2->toDateTime().date().year(),
-                                    it2->toDateTime().date().month(),
-                                    it2->toDateTime().date().day(),
-                                    it2->toDateTime().time().hour(),
-                                    it2->toDateTime().time().minute(),
-                                    it2->toDateTime().time().second(),
-                                    0 );
+          {
+            const QDateTime dt = it2->toDateTime();
+            const QDate date = dt.date();
+            const QTime time = dt.time();
+            OGR_F_SetFieldDateTimeEx( of.get(), f,
+                                      date.year(),
+                                      date.month(),
+                                      date.day(),
+                                      time.hour(),
+                                      time.minute(),
+                                      static_cast<float>( time.second() + static_cast< double >( time.msec() ) / 1000 ),
+                                      QgsOgrUtils::OGRTZFlagFromQt( dt ) );
             break;
+          }
           case OFTString:
           {
             QString stringValue;
@@ -2848,7 +2863,12 @@ void QgsOgrProvider::computeCapabilities()
       ability |= TransactionSupport;
     }
 
-    if ( GDALGetMetadataItem( mOgrLayer->driver(), GDAL_DCAP_FEATURE_STYLES, nullptr ) != nullptr )
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+    if ( GDALGetMetadataItem( mOgrLayer->driver(), GDAL_DCAP_FEATURE_STYLES_READ, nullptr ) != nullptr )
+#else
+    // GDAL KML driver doesn't support reading feature style, skip metadata check until GDAL can separate reading/writing capability
+    if ( mGDALDriverName != QLatin1String( "KML" ) && GDALGetMetadataItem( mOgrLayer->driver(), GDAL_DCAP_FEATURE_STYLES, nullptr ) != nullptr )
+#endif
     {
       ability |= FeatureSymbology;
       ability |= CreateRenderer;

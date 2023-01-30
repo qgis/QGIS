@@ -56,7 +56,7 @@ class APP_EXPORT QgsAppLayerHandling
      * \note This may trigger a dialog asking users to select from available sublayers in the datasource,
      * depending on the contents of the datasource and the user's current QGIS settings.
      */
-    static QgsVectorLayer *addVectorLayer( const QString &uri, const QString &baseName, const QString &provider = QLatin1String( "ogr" ) );
+    static QgsVectorLayer *addVectorLayer( const QString &uri, const QString &baseName, const QString &provider = QLatin1String( "ogr" ), bool addToLegend = true );
 
     /**
      * Adds a list of vector layers from a list of layer \a uris supported by the OGR provider.
@@ -77,7 +77,7 @@ class APP_EXPORT QgsAppLayerHandling
      * \note This may trigger a dialog asking users to select from available sublayers in the datasource,
      * depending on the contents of the datasource and the user's current QGIS settings.
      */
-    static QgsRasterLayer *addRasterLayer( QString const &uri, const QString &baseName, const QString &provider = QLatin1String( "gdal" ) );
+    static QgsRasterLayer *addRasterLayer( QString const &uri, const QString &baseName, const QString &provider = QLatin1String( "gdal" ), bool addToLegend = true );
 
     /**
      * Adds a list of raster layers from a list of layer \a uris supported by the GDAL provider.
@@ -98,7 +98,7 @@ class APP_EXPORT QgsAppLayerHandling
      * \note This may trigger a dialog asking users to select from available sublayers in the datasource,
      * depending on the contents of the datasource and the user's current QGIS settings.
      */
-    static QgsMeshLayer *addMeshLayer( const QString &uri, const QString &baseName, const QString &provider );
+    static QgsMeshLayer *addMeshLayer( const QString &uri, const QString &baseName, const QString &provider, bool addToLegend = true );
 
     /**
      * Adds a point cloud layer from a given \a uri and \a provider.
@@ -111,14 +111,15 @@ class APP_EXPORT QgsAppLayerHandling
     static QgsPointCloudLayer *addPointCloudLayer( const QString &uri,
         const QString &baseName,
         const QString &provider,
-        bool showWarningOnInvalid = true );
+        bool showWarningOnInvalid = true,
+        bool addToLegend = true );
 
     /**
      * Adds a plugin layer from a given \a uri and \a provider.
      *
      * The \a baseName parameter will be used as the layer name (and shown in the map legend).
      */
-    static QgsPluginLayer *addPluginLayer( const QString &uri, const QString &baseName, const QString &providerKey );
+    static QgsPluginLayer *addPluginLayer( const QString &uri, const QString &baseName, const QString &providerKey, bool addToLegend = true );
 
     /**
      * Adds a vector tile layer from a given \a uri.
@@ -128,7 +129,7 @@ class APP_EXPORT QgsAppLayerHandling
      * If \a showWarningOnInvalid layers is TRUE then a user facing warning will be raised
      * if the \a uri does not result in a valid vector tile layer.
      */
-    static QgsVectorTileLayer *addVectorTileLayer( const QString &uri, const QString &baseName, bool showWarningOnInvalid = true );
+    static QgsVectorTileLayer *addVectorTileLayer( const QString &uri, const QString &baseName, bool showWarningOnInvalid = true, bool addToLegend = true );
 
     /**
      * Post processes an entire group of added \a layers.
@@ -139,6 +140,8 @@ class APP_EXPORT QgsAppLayerHandling
      */
     static void postProcessAddedLayers( const QList< QgsMapLayer * > &layers );
 
+    static void addSortedLayersToLegend( QList< QgsMapLayer * > &layers );
+
     /**
      * Open a map layer from a file.
      *
@@ -147,10 +150,10 @@ class APP_EXPORT QgsAppLayerHandling
      *
      * \returns a list of added map layers if the file is successfully opened
      */
-    static QList< QgsMapLayer * > openLayer( const QString &fileName, bool &ok, bool allowInteractive = false, bool suppressBulkLayerPostProcessing = false );
+    static QList< QgsMapLayer * > openLayer( const QString &fileName, bool &ok, bool allowInteractive = false, bool suppressBulkLayerPostProcessing = false, bool addToLegend = true );
 
     //! Add a 'pre-made' map layer to the project
-    static void addMapLayer( QgsMapLayer *mapLayer );
+    static void addMapLayer( QgsMapLayer *mapLayer, bool addToLegend = true );
 
     static void openLayerDefinition( const QString &filename );
 
@@ -216,7 +219,7 @@ class APP_EXPORT QgsAppLayerHandling
 
   private:
 
-    template<typename T> static T *addLayerPrivate( QgsMapLayerType type, const QString &uri, const QString &baseName, const QString &providerKey, bool guiWarnings = true );
+    template<typename T> static T *addLayerPrivate( QgsMapLayerType type, const QString &uri, const QString &baseName, const QString &providerKey, bool guiWarnings = true, bool addToLegend = true );
 
     /**
      * Post processes a single added \a layer, applying any default behavior which should
@@ -236,7 +239,7 @@ class APP_EXPORT QgsAppLayerHandling
 
     static SublayerHandling shouldAskUserForSublayers( const QList< QgsProviderSublayerDetails > &layers, bool hasNonLayerItems = false );
 
-    static QList< QgsMapLayer * > addSublayers( const QList< QgsProviderSublayerDetails> &layers, const QString &baseName, const QString &groupName );
+    static QList< QgsMapLayer * > addSublayers( const QList< QgsProviderSublayerDetails> &layers, const QString &baseName, const QString &groupName, bool addToLegend = true );
 
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAppLayerHandling::DependencyFlags );

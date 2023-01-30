@@ -502,6 +502,15 @@ class CORE_EXPORT QgsProcessingUtils
      */
     static QVariantMap removePointerValuesFromMap( const QVariantMap &map );
 
+    /**
+     * Pre-processes a set of \a parameter values for the qgis_process command.
+     *
+     * In particular, this function upgrades encoded data defined values to QgsProperty objects.
+     *
+     * \since QGIS 3.30
+     */
+    static QVariantMap preprocessQgisProcessParameters( const QVariantMap &parameters, bool &ok, QString &error );
+
   private:
     static bool canUseLayer( const QgsRasterLayer *layer );
     static bool canUseLayer( const QgsMeshLayer *layer );

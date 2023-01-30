@@ -21,8 +21,7 @@
 #include <QPainter>
 
 QgsLegendSettings::QgsLegendSettings()
-  : mFontColor( QColor( 0, 0, 0 ) )
-  , mSymbolSize( 7, 4 )
+  : mSymbolSize( 7, 4 )
   , mWmsLegendSize( 50, 25 )
   , mRasterStrokeColor( Qt::black )
 {
@@ -32,12 +31,88 @@ QgsLegendSettings::QgsLegendSettings()
   rstyle( QgsLegendStyle::Symbol ).setMargin( QgsLegendStyle::Top, 2.5 );
   rstyle( QgsLegendStyle::SymbolLabel ).setMargin( QgsLegendStyle::Top, 2 );
   rstyle( QgsLegendStyle::SymbolLabel ).setMargin( QgsLegendStyle::Left, 2 );
-  rstyle( QgsLegendStyle::Title ).rfont().setPointSizeF( 16.0 );
-  rstyle( QgsLegendStyle::Group ).rfont().setPointSizeF( 14.0 );
-  rstyle( QgsLegendStyle::Subgroup ).rfont().setPointSizeF( 12.0 );
-  rstyle( QgsLegendStyle::SymbolLabel ).rfont().setPointSizeF( 12.0 );
   rstyle( QgsLegendStyle::Group ).setIndent( 0.0 );
   rstyle( QgsLegendStyle::Subgroup ).setIndent( 0.0 );
+
+  QgsTextFormat f = rstyle( QgsLegendStyle::Title ).textFormat();
+  f.setSize( 16.0 );
+  f.setSizeUnit( QgsUnitTypes::RenderPoints );
+  // these default line heights are not ideal, but needed to maintain api
+  f.setLineHeight( 1.1 );
+  f.setLineHeightUnit( QgsUnitTypes::RenderPercentage );
+  rstyle( QgsLegendStyle::Title ).setTextFormat( f );
+
+  f = rstyle( QgsLegendStyle::Group ).textFormat();
+  f.setSize( 14.0 );
+  f.setSizeUnit( QgsUnitTypes::RenderPoints );
+  f.setLineHeight( 1.1 );
+  f.setLineHeightUnit( QgsUnitTypes::RenderPercentage );
+  rstyle( QgsLegendStyle::Group ).setTextFormat( f );
+
+  f = rstyle( QgsLegendStyle::Subgroup ).textFormat();
+  f.setSize( 12.0 );
+  f.setSizeUnit( QgsUnitTypes::RenderPoints );
+  f.setLineHeight( 1.1 );
+  f.setLineHeightUnit( QgsUnitTypes::RenderPercentage );
+  rstyle( QgsLegendStyle::Subgroup ).setTextFormat( f );
+
+  f = rstyle( QgsLegendStyle::SymbolLabel ).textFormat();
+  f.setSize( 12.0 );
+  f.setSizeUnit( QgsUnitTypes::RenderPoints );
+  f.setLineHeight( 1.1 );
+  f.setLineHeightUnit( QgsUnitTypes::RenderPercentage );
+  rstyle( QgsLegendStyle::SymbolLabel ).setTextFormat( f );
+}
+
+QColor QgsLegendSettings::fontColor() const
+{
+  return style( QgsLegendStyle::SymbolLabel ).textFormat().color();
+}
+
+void QgsLegendSettings::setFontColor( const QColor &c )
+{
+  rstyle( QgsLegendStyle::Title ).textFormat().setColor( c );
+  rstyle( QgsLegendStyle::Group ).textFormat().setColor( c );
+  rstyle( QgsLegendStyle::Subgroup ).textFormat().setColor( c );
+  rstyle( QgsLegendStyle::SymbolLabel ).textFormat().setColor( c );
+}
+
+QColor QgsLegendSettings::layerFontColor() const
+{
+  return style( QgsLegendStyle::Subgroup ).textFormat().color();
+}
+
+void QgsLegendSettings::setLayerFontColor( const QColor &fontColor )
+{
+  rstyle( QgsLegendStyle::Group ).textFormat().setColor( fontColor );
+  rstyle( QgsLegendStyle::Subgroup ).textFormat().setColor( fontColor );
+}
+
+void QgsLegendSettings::setLineSpacing( double s ) SIP_DEPRECATED
+{
+  // line spacing *was* a fixed amount (in mm) added between each line of text.
+  mLineSpacing = s;
+
+  QgsTextFormat f = rstyle( QgsLegendStyle::Title ).textFormat();
+  // assume font sizes in points, since that was what we always had from before this method was deprecated
+  f.setLineHeight( f.size() * 0.352778 + s );
+  f.setLineHeightUnit( QgsUnitTypes::RenderMillimeters );
+  rstyle( QgsLegendStyle::Title ).setTextFormat( f );
+
+  f = rstyle( QgsLegendStyle::Group ).textFormat();
+  f.setLineHeight( f.size() * 0.352778 + s );
+  f.setLineHeightUnit( QgsUnitTypes::RenderMillimeters );
+  rstyle( QgsLegendStyle::Group ).setTextFormat( f );
+
+  f = rstyle( QgsLegendStyle::Subgroup ).textFormat();
+  f.setLineHeight( f.size() * 0.352778 + s );
+  f.setLineHeightUnit( QgsUnitTypes::RenderMillimeters );
+  rstyle( QgsLegendStyle::Subgroup ).setTextFormat( f );
+
+  f = rstyle( QgsLegendStyle::SymbolLabel ).textFormat();
+  f.setLineHeight( f.size() * 0.352778 + s );
+  f.setLineHeightUnit( QgsUnitTypes::RenderMillimeters );
+  rstyle( QgsLegendStyle::SymbolLabel ).setTextFormat( f );
 }
 
 double QgsLegendSettings::mmPerMapUnit() const

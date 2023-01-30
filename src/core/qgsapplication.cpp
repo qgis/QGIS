@@ -83,6 +83,7 @@
 #include "qgsunsetattributevalue.h"
 #include "qgscolorrampimpl.h"
 #include "qgsinterval.h"
+#include "qgsgpsconnection.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
@@ -113,6 +114,16 @@
 #include <QScreen>
 #include <QAuthenticator>
 #include <QRecursiveMutex>
+
+const QgsSettingsEntryString *QgsApplication::settingsLocaleUserLocale = new QgsSettingsEntryString( QStringLiteral( "userLocale" ), QgsSettings::sTreeLocale, QString() );
+
+const QgsSettingsEntryBool *QgsApplication::settingsLocaleOverrideFlag = new QgsSettingsEntryBool( QStringLiteral( "overrideFlag" ), QgsSettings::sTreeLocale, false );
+
+const QgsSettingsEntryString *QgsApplication::settingsLocaleGlobalLocale = new QgsSettingsEntryString( QStringLiteral( "globalLocale" ), QgsSettings::sTreeLocale, QString() );
+
+const QgsSettingsEntryBool *QgsApplication::settingsLocaleShowGroupSeparator = new QgsSettingsEntryBool( QStringLiteral( "showGroupSeparator" ), QgsSettings::sTreeLocale, false );
+
+const QgsSettingsEntryStringList *QgsApplication::settingsSearchPathsForSVG = new QgsSettingsEntryStringList( QStringLiteral( "searchPathsForSVG" ), QgsSettings::sTreeSvg, QStringList() );
 
 #ifndef Q_OS_WIN
 #include <netinet/in.h>
@@ -180,6 +191,7 @@ Q_GLOBAL_STATIC( QString, sAuthDbDirPath )
 Q_GLOBAL_STATIC( QString, sUserName )
 Q_GLOBAL_STATIC( QString, sUserFullName )
 Q_GLOBAL_STATIC_WITH_ARGS( QString, sPlatformName, ( "external" ) )
+Q_GLOBAL_STATIC( QString, sApplicationFullName )
 Q_GLOBAL_STATIC( QString, sTranslation )
 
 Q_GLOBAL_STATIC( QTemporaryDir, sIconCacheDir )
@@ -279,6 +291,7 @@ void QgsApplication::init( QString profileFolder )
     qRegisterMetaType<QgsFeatureStoreList>( "QgsFeatureStoreList" );
     qRegisterMetaType<Qgis::MessageLevel>( "Qgis::MessageLevel" );
     qRegisterMetaType<Qgis::BrowserItemState>( "Qgis::BrowserItemState" );
+    qRegisterMetaType<Qgis::GpsFixStatus>( "Qgis::GpsFixStatus" );
     qRegisterMetaType<QgsReferencedRectangle>( "QgsReferencedRectangle" );
     qRegisterMetaType<QgsReferencedPointXY>( "QgsReferencedPointXY" );
     qRegisterMetaType<QgsReferencedGeometry>( "QgsReferencedGeometry" );
@@ -293,6 +306,7 @@ void QgsApplication::init( QString profileFolder )
     qRegisterMetaType<QgsInterval>( "QgsInterval" );
     qRegisterMetaType<QgsRectangle>( "QgsRectangle" );
     qRegisterMetaType<QgsPointXY>( "QgsPointXY" );
+    qRegisterMetaType<QgsPoint>( "QgsPoint" );
     qRegisterMetaType<QgsDatumTransform::GridDetails>( "QgsDatumTransform::GridDetails" );
     qRegisterMetaType<QgsDatumTransform::TransformDetails>( "QgsDatumTransform::TransformDetails" );
     qRegisterMetaType<QgsNewsFeedParser::Entry>( "QgsNewsFeedParser::Entry" );
@@ -323,6 +337,7 @@ void QgsApplication::init( QString profileFolder )
     qRegisterMetaType<QMap<QNetworkRequest::KnownHeaders, QVariant>>( "QMap<QNetworkRequest::KnownHeaders,QVariant>" );
     qRegisterMetaType<QList<QNetworkReply::RawHeaderPair>>( "QList<QNetworkReply::RawHeaderPair>" );
     qRegisterMetaType< QAuthenticator * >( "QAuthenticator*" );
+    qRegisterMetaType< QgsGpsInformation >( "QgsGpsInformation" );
   } );
 
   ( void ) resolvePkgPath();
@@ -1167,7 +1182,7 @@ QString QgsApplication::srsDatabaseFilePath()
 
 void QgsApplication::setSvgPaths( const QStringList &svgPaths )
 {
-  settingsSearchPathsForSVG.setValue( svgPaths );
+  settingsSearchPathsForSVG->setValue( svgPaths );
   members()->mSvgPathCacheValid = false;
 }
 
@@ -1186,7 +1201,7 @@ QStringList QgsApplication::svgPaths()
     locker.changeMode( QgsReadWriteLocker::Write );
     //local directories to search when looking for an SVG with a given basename
     //defined by user in options dialog
-    const QStringList pathList = settingsSearchPathsForSVG.value();
+    const QStringList pathList = settingsSearchPathsForSVG->value();
 
     // maintain user set order while stripping duplicates
     QStringList paths;
@@ -1210,7 +1225,7 @@ QStringList QgsApplication::layoutTemplatePaths()
 {
   //local directories to search when looking for an template with a given basename
   //defined by user in options dialog
-  return QgsLayout::settingsSearchPathForTemplates.value();
+  return QgsLayout::settingsSearchPathForTemplates->value();
 }
 
 QMap<QString, QString> QgsApplication::systemEnvVars()
@@ -1371,11 +1386,30 @@ QString QgsApplication::platform()
   return *sPlatformName();
 }
 
+QString QgsApplication::applicationFullName()
+{
+  if ( !sApplicationFullName()->isEmpty() )
+    return *sApplicationFullName();
+
+  //use environment variables
+  *sApplicationFullName() = qgetenv( "QGIS_APPLICATION_FULL_NAME" );
+  if ( !sApplicationFullName()->isEmpty() )
+    return *sApplicationFullName();
+
+  //last resort
+  QgsSettings settings;
+  *sApplicationFullName() = settings.value(
+                              QStringLiteral( "/qgis/application_full_name" ),
+                              QStringLiteral( "%1 %2" ).arg( applicationName(), platform() )
+                            ).toString();
+  return *sApplicationFullName();
+}
+
 QString QgsApplication::locale()
 {
-  if ( settingsLocaleOverrideFlag.value() )
+  if ( settingsLocaleOverrideFlag->value() )
   {
-    QString locale = settingsLocaleUserLocale.value();
+    QString locale = settingsLocaleUserLocale->value();
     // don't differentiate en_US and en_GB
     if ( locale.startsWith( QLatin1String( "en" ), Qt::CaseInsensitive ) )
     {
@@ -1495,8 +1529,6 @@ void QgsApplication::exitQgis()
     delete sAuthManager;
 
   //Ensure that all remaining deleteLater QObjects are actually deleted before we exit.
-  //This isn't strictly necessary (since we're exiting anyway) but doing so prevents a lot of
-  //LeakSanitiser noise which hides real issues
   QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
 
   //delete all registered functions from expression engine (see above comment)
@@ -1505,6 +1537,13 @@ void QgsApplication::exitQgis()
   // avoid creating instance just to delete it!
   if ( QgsProject::sProject )
     delete QgsProject::instance();
+
+  //Ensure that providers/layers which called deleteLater on objects as part of their cleanup
+  //result in fully deleted objects before we do the provider registry cleanup.
+  //E.g. the QgsOgrConnPool instance has deleteLater calls when unrefing layers, so clearing
+  //the project above has not yet fully cleaned up OGR objects, which we MUST do before
+  //cleaning up the provider
+  QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
 
   // avoid creating instance just to delete it!
   if ( QgsProviderRegistry::exists() )

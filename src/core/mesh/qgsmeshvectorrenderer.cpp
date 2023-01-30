@@ -477,7 +477,8 @@ QgsMeshVectorRenderer *QgsMeshVectorRenderer::makeVectorRenderer(
   const QgsMeshRendererVectorSettings &settings,
   QgsRenderContext &context,
   const QgsRectangle &layerExtent,
-  QSize size )
+  QgsMeshLayerRendererFeedback *feedBack,
+  const QSize &size )
 {
   QgsMeshVectorRenderer *renderer = nullptr;
 
@@ -500,10 +501,12 @@ QgsMeshVectorRenderer *QgsMeshVectorRenderer::makeVectorRenderer(
         m,
         datasetVectorValues,
         scalarActiveFaceFlagValues,
+        datasetValuesMag,
         dataType == QgsMeshDatasetGroupMetadata::DataType::DataOnVertices,
         settings,
         context,
         layerExtent,
+        feedBack,
         datasetMagMaximumValue );
       break;
     case QgsMeshRendererVectorSettings::Traces:

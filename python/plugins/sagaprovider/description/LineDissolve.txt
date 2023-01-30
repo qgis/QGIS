@@ -1,8 +1,0 @@
-Line Dissolve
-shapes_lines
-QgsProcessingParameterFeatureSource|LINES|Lines|-1|None|False
-QgsProcessingParameterField|FIELD_1|1. Attribute|None|LINES|-1|False|False
-QgsProcessingParameterField|FIELD_2|2. Attribute|None|LINES|-1|False|False
-QgsProcessingParameterField|FIELD_3|3. Attribute|None|LINES|-1|False|False
-QgsProcessingParameterEnum|ALL|Dissolve...|[0] lines with same attribute value(s);[1] all lines
-QgsProcessingParameterVectorDestination|DISSOLVED|Dissolved Lines

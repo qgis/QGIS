@@ -14,16 +14,9 @@
  ***************************************************************************/
 
 #include "qgssettingsregistry.h"
-
-#include "qgslayout.h"
-#include "qgslocator.h"
-#include "qgsnetworkaccessmanager.h"
-#include "qgsnewsfeedparser.h"
-#include "qgsprocessing.h"
-#include "qgsapplication.h"
-#include "qgsgeometryoptions.h"
-#include "qgslocalizeddatapathregistry.h"
-#include "qgsmaprendererjob.h"
+#include "qgssettingsentry.h"
+#include "qgssettingsentrygroup.h"
+#include "qgslogger.h"
 
 QgsSettingsRegistry::QgsSettingsRegistry()
   : mSettingsEntriesMap()
@@ -127,7 +120,9 @@ void QgsSettingsRegistry::removeSubRegistry( const QgsSettingsRegistry *settings
   mSettingsRegistryChildList.removeAll( settingsRegistry );
 }
 
+Q_NOWARN_DEPRECATED_PUSH
 QList<const QgsSettingsRegistry *> QgsSettingsRegistry::subRegistries() const
 {
   return mSettingsRegistryChildList;
 }
+Q_NOWARN_DEPRECATED_POP

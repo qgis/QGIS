@@ -45,20 +45,10 @@
 #endif
 
 #ifdef WIN32
-// Open files in binary mode
 #include <fcntl.h> /*  _O_BINARY */
 #include <windows.h>
 #include <dbghelp.h>
 #include <time.h>
-#ifdef MSVC
-#undef _fmode
-int _fmode = _O_BINARY;
-#else
-// Only do this if we are not building on windows with msvc.
-// Recommended method for doing this with msvc is with a call to _set_fmode
-// which is the first thing we do in main().
-// Similarly, with MinGW set _fmode in main().
-#endif  //_MSC_VER
 #else
 #include <getopt.h>
 #endif
@@ -901,6 +891,16 @@ int main( int argc, char *argv[] )
   // Initialize the application and the translation stuff
   /////////////////////////////////////////////////////////////////////
 
+
+#if defined(Q_OS_WIN)
+  // FIXES #29021
+  // Prevent Qt from treating the AltGr key as  Ctrl+Alt on Windows, which causes shortcuts to be fired
+  // instead of entering some characters (eg "}", "|") on some keyboard layouts
+  // See https://doc.qt.io/qt-6/qguiapplication.html#platform-specific-arguments
+  qputenv( "QT_QPA_PLATFORM", "windows:altgr" );
+#endif
+
+
 #if defined(Q_OS_UNIX) && !defined(Q_OS_MAC) && !defined(ANDROID)
   bool myUseGuiFlag = nullptr != getenv( "DISPLAY" );
 #else
@@ -1018,16 +1018,16 @@ int main( int argc, char *argv[] )
   {
     /* Translation file for QGIS.
     */
-    QString myUserTranslation = QgsApplication::settingsLocaleUserLocale.value();
-    QString myGlobalLocale = QgsApplication::settingsLocaleGlobalLocale.value();
+    QString myUserTranslation = QgsApplication::settingsLocaleUserLocale->value();
+    QString myGlobalLocale = QgsApplication::settingsLocaleGlobalLocale->value();
     bool myShowGroupSeparatorFlag = false; // Default to false
-    bool myLocaleOverrideFlag = QgsApplication::settingsLocaleOverrideFlag.value();
+    bool myLocaleOverrideFlag = QgsApplication::settingsLocaleOverrideFlag->value();
 
     // Override Show Group Separator if the global override flag is set
     if ( myLocaleOverrideFlag )
     {
       // Default to false again
-      myShowGroupSeparatorFlag = QgsApplication::settingsLocaleShowGroupSeparator.value();
+      myShowGroupSeparatorFlag = QgsApplication::settingsLocaleShowGroupSeparator->value();
     }
 
     //
@@ -1041,7 +1041,7 @@ int main( int argc, char *argv[] )
     //
     if ( !translationCode.isNull() && !translationCode.isEmpty() )
     {
-      QgsApplication::settingsLocaleUserLocale.setValue( translationCode );
+      QgsApplication::settingsLocaleUserLocale->setValue( translationCode );
     }
     else
     {
@@ -1050,7 +1050,7 @@ int main( int argc, char *argv[] )
         translationCode = QLocale().name();
         //setting the locale/userLocale when the --lang= option is not set will allow third party
         //plugins to always use the same locale as the QGIS, otherwise they can be out of sync
-        QgsApplication::settingsLocaleUserLocale.setValue( translationCode );
+        QgsApplication::settingsLocaleUserLocale->setValue( translationCode );
       }
       else
       {

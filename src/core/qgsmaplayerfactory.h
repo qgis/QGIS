@@ -73,6 +73,20 @@ class CORE_EXPORT QgsMapLayerFactory
 
       //! Set to TRUE if the default layer style should be loaded
       bool loadDefaultStyle = true;
+
+      /**
+       * Controls whether the stored styles will be all loaded.
+       *
+       * If TRUE and the layer's provider supports style stored in the
+       * data source all the available styles will be loaded in addition
+       * to the default one.
+       *
+       * If FALSE (the default), the layer's provider will only load
+       * the default style.
+       *
+       * \since QGIS 3.30
+       */
+      bool loadAllStoredStyles = false;
     };
 
     /**

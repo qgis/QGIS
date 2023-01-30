@@ -34,7 +34,7 @@ from qgis.core import (
     QgsVectorLayerUtils,
     NULL
 )
-from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant
+from qgis.PyQt.QtCore import Qt, QDate, QTime, QDateTime, QVariant
 from qgis.PyQt.QtTest import QSignalSpy
 
 from utilities import compareWkt
@@ -473,9 +473,14 @@ class ProviderTestCase(FeatureSourceTestCase):
                              set(['2021-05-04 13:13:14', '2020-05-04 12:14:14', '2020-05-04 12:13:14',
                                   '2020-05-03 12:13:14', NULL]))
         else:
-            self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('dt'))),
-                             set([QDateTime(2021, 5, 4, 13, 13, 14), QDateTime(2020, 5, 4, 12, 14, 14),
-                                  QDateTime(2020, 5, 4, 12, 13, 14), QDateTime(2020, 5, 3, 12, 13, 14), NULL]))
+            if self.treat_datetime_tz_as_utc():
+                self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('dt'))),
+                                 set([QDateTime(2021, 5, 4, 13, 13, 14, 0, Qt.UTC), QDateTime(2020, 5, 4, 12, 14, 14, 0, Qt.UTC),
+                                      QDateTime(2020, 5, 4, 12, 13, 14, 0, Qt.UTC), QDateTime(2020, 5, 3, 12, 13, 14, 0, Qt.UTC), NULL]))
+            else:
+                self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('dt'))),
+                                 set([QDateTime(2021, 5, 4, 13, 13, 14), QDateTime(2020, 5, 4, 12, 14, 14),
+                                      QDateTime(2020, 5, 4, 12, 13, 14), QDateTime(2020, 5, 3, 12, 13, 14), NULL]))
 
         if self.treat_date_as_string():
             self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('date'))),
@@ -516,7 +521,7 @@ class ProviderTestCase(FeatureSourceTestCase):
         self.assertEqual(len(result), 2)
         self.assertTrue(result.issubset(set(['Pear', 'Orange', 'Apple'])))
 
-        assert set([u'Apple', u'Honey', u'Orange', u'Pear', NULL]) == set(
+        assert set(['Apple', 'Honey', 'Orange', 'Pear', NULL]) == set(
             self.source.uniqueValues(field_index)), 'Got {}'.format(set(self.source.uniqueValues(field_index)))
 
         if self.source.supportsSubsetString():

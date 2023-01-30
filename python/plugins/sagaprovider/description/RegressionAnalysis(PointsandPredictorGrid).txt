@@ -1,9 +1,0 @@
-Regression Analysis (Points and Predictor Grid)
-statistics_regression
-QgsProcessingParameterRasterLayer|PREDICTOR|Predictor|None|False
-QgsProcessingParameterFeatureSource|POINTS|Points|-1|None|False
-QgsProcessingParameterFeatureSource|ATTRIBUTE|Dependent Variable|5|None|False
-QgsProcessingParameterRasterDestination|REGRESSION|Regression
-QgsProcessingParameterVectorDestination|RESIDUAL|Residuals
-QgsProcessingParameterEnum|RESAMPLING|Resampling|[0] Nearest Neighbour;[1] Bilinear Interpolation;[2] Bicubic Spline Interpolation;[3] B-Spline Interpolation|False|3
-QgsProcessingParameterEnum|METHOD|Regression Function|[0] Y = a + b * X (linear);[1] Y = a + b / X;[2] Y = a / (b - X);[3] Y = a * X^b (power);[4] Y = a e^(b * X) (exponential);[5] Y = a + b * ln(X) (logarithmic)|False|0

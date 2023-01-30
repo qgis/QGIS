@@ -172,6 +172,13 @@ class GUI_EXPORT QgsHighlight : public QgsMapCanvasItem
 
     void updatePosition() override;
 
+    /**
+     * Applies the default style from the user settings to the highlight.
+     *
+     * \since QGIS 3.30
+     */
+    void applyDefaultStyle();
+
   protected:
     void paint( QPainter *p ) override;
 
@@ -210,6 +217,12 @@ class GUI_EXPORT QgsHighlight : public QgsMapCanvasItem
     double mBuffer = 0; // line / stroke buffer in pixels
     double mMinWidth = 0; // line / stroke minimum width in pixels
     QgsRenderContext mRenderContext;
+
+    // we don't want to make PointSymbol public for now, so just grant access selectively via a friend
+    friend class QgsMapToolAddFeature;
+    friend class QgsUpdateGpsDetailsAction;
+    double mPointSizeRadiusMM = 1.5;
+    PointSymbol mPointSymbol = PointSymbol::Square;
 };
 
 #endif

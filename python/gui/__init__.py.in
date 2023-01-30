@@ -39,3 +39,38 @@ QgsMapToolCapture.Streaming.__doc__ = "Streaming points digitizing mode (points 
 QgsMapToolCapture.Shape = Qgis.CaptureTechnique.Shape
 QgsMapToolCapture.Shape.is_monkey_patched = True
 QgsMapToolCapture.Shape.__doc__ = "Digitize shapes."
+
+QgsActionMenu.ActionType = Qgis.ActionType
+# monkey patching scoped based enum
+QgsActionMenu.Invalid = Qgis.ActionType.Invalid
+QgsActionMenu.Invalid.is_monkey_patched = True
+QgsActionMenu.Invalid.__doc__ = "Invalid"
+QgsActionMenu.MapLayerAction = Qgis.ActionType.MapLayerAction
+QgsActionMenu.MapLayerAction.is_monkey_patched = True
+QgsActionMenu.MapLayerAction.__doc__ = "Standard actions (defined by core or plugins), corresponds to QgsMapLayerAction class."
+QgsActionMenu.AttributeAction = Qgis.ActionType.AttributeAction
+QgsActionMenu.AttributeAction.is_monkey_patched = True
+QgsActionMenu.AttributeAction.__doc__ = "Custom actions (manually defined in layer properties), corresponds to QgsAction class."
+
+QgsMapLayerAction.Target = Qgis.MapLayerActionTarget
+# monkey patching scoped based enum
+QgsMapLayerAction.Layer = Qgis.MapLayerActionTarget.Layer
+QgsMapLayerAction.Layer.is_monkey_patched = True
+QgsMapLayerAction.Layer.__doc__ = "Action targets a complete layer"
+QgsMapLayerAction.SingleFeature = Qgis.MapLayerActionTarget.SingleFeature
+QgsMapLayerAction.SingleFeature.is_monkey_patched = True
+QgsMapLayerAction.SingleFeature.__doc__ = "Action targets a single feature from a layer"
+QgsMapLayerAction.MultipleFeatures = Qgis.MapLayerActionTarget.MultipleFeatures
+QgsMapLayerAction.MultipleFeatures.is_monkey_patched = True
+QgsMapLayerAction.MultipleFeatures.__doc__ = "Action targets multiple features from a layer"
+QgsMapLayerAction.AllActions = Qgis.MapLayerActionTarget.AllActions
+QgsMapLayerAction.AllActions.is_monkey_patched = True
+QgsMapLayerAction.AllActions.__doc__ = ""
+QgsMapLayerAction.Targets = Qgis.MapLayerActionTargets
+
+QgsMapLayerAction.Flag = Qgis.MapLayerActionFlag
+# monkey patching scoped based enum
+QgsMapLayerAction.EnabledOnlyWhenEditable = Qgis.MapLayerActionFlag.EnabledOnlyWhenEditable
+QgsMapLayerAction.EnabledOnlyWhenEditable.is_monkey_patched = True
+QgsMapLayerAction.EnabledOnlyWhenEditable.__doc__ = "Action should be shown only for editable layers"
+QgsMapLayerAction.Flags = Qgis.MapLayerActionFlags

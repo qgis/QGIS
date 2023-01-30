@@ -417,8 +417,8 @@ class TestQgsServer(QgsServerTestBase):
         request = QgsBufferServerRequest('http://somesite.com/somepath', QgsServerRequest.GetMethod, headers)
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response)
-        self.assertEqual(bytes(response.body()), b'<ServerException>Project file error. For OWS services: please provide a SERVICE and a MAP parameter pointing to a valid QGIS project file</ServerException>\n')
-        self.assertEqual(response.headers(), {'Content-Length': '156', 'Content-Type': 'text/xml; charset=utf-8'})
+        self.assertEqual(bytes(response.body()), b'<?xml version="1.0" encoding="UTF-8"?>\n<ServerException>Project file error. For OWS services: please provide a SERVICE and a MAP parameter pointing to a valid QGIS project file</ServerException>\n')
+        self.assertEqual(response.headers(), {'Content-Length': '195', 'Content-Type': 'text/xml; charset=utf-8'})
         self.assertEqual(response.statusCode(), 500)
 
     def test_requestHandlerProject(self):
@@ -427,8 +427,8 @@ class TestQgsServer(QgsServerTestBase):
         request = QgsBufferServerRequest('http://somesite.com/somepath', QgsServerRequest.GetMethod, headers)
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response, None)
-        self.assertEqual(bytes(response.body()), b'<ServerException>Project file error. For OWS services: please provide a SERVICE and a MAP parameter pointing to a valid QGIS project file</ServerException>\n')
-        self.assertEqual(response.headers(), {'Content-Length': '156', 'Content-Type': 'text/xml; charset=utf-8'})
+        self.assertEqual(bytes(response.body()), b'<?xml version="1.0" encoding="UTF-8"?>\n<ServerException>Project file error. For OWS services: please provide a SERVICE and a MAP parameter pointing to a valid QGIS project file</ServerException>\n')
+        self.assertEqual(response.headers(), {'Content-Length': '195', 'Content-Type': 'text/xml; charset=utf-8'})
         self.assertEqual(response.statusCode(), 500)
 
     def test_api(self):
@@ -437,9 +437,9 @@ class TestQgsServer(QgsServerTestBase):
         # Test as a whole
         header, body = self._execute_request("")
         response = self.strip_version_xmlns(header + body)
-        expected = self.strip_version_xmlns(b'Content-Length: 156\nContent-Type: text/xml; charset=utf-8\n\n<ServerException>Project file error. For OWS services: please provide a SERVICE and a MAP parameter pointing to a valid QGIS project file</ServerException>\n')
+        expected = self.strip_version_xmlns(b'Content-Length: 195\nContent-Type: text/xml; charset=utf-8\n\n<?xml version="1.0" encoding="UTF-8"?>\n<ServerException>Project file error. For OWS services: please provide a SERVICE and a MAP parameter pointing to a valid QGIS project file</ServerException>\n')
         self.assertEqual(response, expected)
-        expected = b'Content-Length: 156\nContent-Type: text/xml; charset=utf-8\n\n'
+        expected = b'Content-Length: 195\nContent-Type: text/xml; charset=utf-8\n\n'
         self.assertEqual(header, expected)
 
         # Test response when project is specified but without service
@@ -447,13 +447,13 @@ class TestQgsServer(QgsServerTestBase):
         qs = '?MAP=%s' % (urllib.parse.quote(project))
         header, body = self._execute_request(qs)
         response = self.strip_version_xmlns(header + body)
-        expected = self.strip_version_xmlns(b'Content-Length: 326\nContent-Type: text/xml; charset=utf-8\n\n<ServiceExceptionReport  >\n <ServiceException code="Service configuration error">Service unknown or unsupported. Current supported services (case-sensitive): WMS WFS WCS WMTS SampleService, or use a WFS3 (OGC API Features) endpoint</ServiceException>\n</ServiceExceptionReport>\n')
+        expected = self.strip_version_xmlns(b'Content-Length: 365\nContent-Type: text/xml; charset=utf-8\n\n<?xml version="1.0" encoding="UTF-8"?>\n<ServiceExceptionReport  >\n <ServiceException code="Service configuration error">Service unknown or unsupported. Current supported services (case-sensitive): WMS WFS WCS WMTS SampleService, or use a WFS3 (OGC API Features) endpoint</ServiceException>\n</ServiceExceptionReport>\n')
         self.assertEqual(response, expected)
-        expected = b'Content-Length: 326\nContent-Type: text/xml; charset=utf-8\n\n'
+        expected = b'Content-Length: 365\nContent-Type: text/xml; charset=utf-8\n\n'
         self.assertEqual(header, expected)
 
         # Test body
-        expected = self.strip_version_xmlns(b'<ServiceExceptionReport  >\n <ServiceException code="Service configuration error">Service unknown or unsupported. Current supported services (case-sensitive): WMS WFS WCS WMTS SampleService, or use a WFS3 (OGC API Features) endpoint</ServiceException>\n</ServiceExceptionReport>\n')
+        expected = self.strip_version_xmlns(b'<?xml version="1.0" encoding="UTF-8"?>\n<ServiceExceptionReport  >\n <ServiceException code="Service configuration error">Service unknown or unsupported. Current supported services (case-sensitive): WMS WFS WCS WMTS SampleService, or use a WFS3 (OGC API Features) endpoint</ServiceException>\n</ServiceExceptionReport>\n')
         self.assertEqual(self.strip_version_xmlns(body), expected)
 
     # WCS tests

@@ -162,8 +162,9 @@ QgsPointCloudBlock *QgsCopcPointCloudIndex::nodeData( const IndexedPointCloudNod
     QgsDebugMsg( QStringLiteral( "Could not read file %1" ).arg( mFileName ) );
     return nullptr;
   }
+  QgsRectangle filterRect = request.filterRect();
 
-  return QgsLazDecoder::decompressCopc( rawBlockData, *mLazInfo.get(), pointCount, requestAttributes, filterExpression );
+  return QgsLazDecoder::decompressCopc( rawBlockData, *mLazInfo.get(), pointCount, requestAttributes, filterExpression, filterRect );
 }
 
 QgsPointCloudBlockRequest *QgsCopcPointCloudIndex::asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )

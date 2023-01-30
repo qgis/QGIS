@@ -191,7 +191,7 @@ class QgsServerLandingPageTest(QgsServerAPITestBase):
             request.setHeader('Accept', 'application/json')
             response = QgsBufferServerResponse()
             self.server.handleRequest(request, response)
-            self.assertEqual(bytes(response.body()), b'<ServerException>Project file error. For OWS services: please provide a SERVICE and a MAP parameter pointing to a valid QGIS project file</ServerException>\n')
+            self.assertEqual(bytes(response.body()), b'<?xml version="1.0" encoding="UTF-8"?>\n<ServerException>Project file error. For OWS services: please provide a SERVICE and a MAP parameter pointing to a valid QGIS project file</ServerException>\n')
 
         _test_error('http://server.qgis.org/index.json')
         _test_error('http://server.qgis.org/index.html')

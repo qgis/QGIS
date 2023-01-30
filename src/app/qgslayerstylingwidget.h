@@ -41,6 +41,7 @@ class QgsRendererRasterPropertiesWidget;
 class QgsRendererMeshPropertiesWidget;
 class QgsUndoWidget;
 class QgsRasterHistogramWidget;
+class QgsRasterAttributeTableWidget;
 class QgsMapLayerStyleManagerWidget;
 class QgsVectorLayer3DRendererWidget;
 class QgsMeshLayer3DRendererWidget;
@@ -98,6 +99,7 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
       RasterHistogram,
       History,
       Symbology3D,
+      RasterAttributeTables, //!< Raster attribute tables, since QGIS 3.30
     };
 
     QgsLayerStylingWidget( QgsMapCanvas *canvas, QgsMessageBar *messageBar, const QList<const QgsMapLayerConfigWidgetFactory *> &pages, QWidget *parent = nullptr );
@@ -172,6 +174,7 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
     QgsMeshLayer3DRendererWidget *mMesh3DWidget = nullptr;
 #endif
     QgsRendererRasterPropertiesWidget *mRasterStyleWidget = nullptr;
+    QgsRasterAttributeTableWidget *mRasterAttributeTableWidget = nullptr;
     QgsRendererMeshPropertiesWidget *mMeshStyleWidget = nullptr;
     QgsVectorTileBasicRendererWidget *mVectorTileStyleWidget = nullptr;
     QgsVectorTileBasicLabelingWidget *mVectorTileLabelingWidget = nullptr;

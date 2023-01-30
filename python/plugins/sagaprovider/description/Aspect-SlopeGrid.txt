@@ -1,6 +1,0 @@
-Aspect-Slope Grid
-grid_visualisation
-QgsProcessingParameterRasterLayer|ASPECT|Aspect|None|False
-QgsProcessingParameterRasterLayer|SLOPE|Slope|None|False
-QgsProcessingParameterRasterDestination|ASPECT_SLOPE|Aspect-Slope
-QgsProcessingParameterFeatureSource|LUT|Lookup Table|5|None|True

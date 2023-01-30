@@ -1241,6 +1241,18 @@ class CORE_EXPORT QgsFillSymbolLayer : public QgsSymbolLayer
     void setAngle( double angle ) { mAngle = angle; }
     double angle() const { return mAngle; }
 
+    /**
+     * Renders the symbol layer as an image that can be used as a seamless pattern fill
+     * for polygons, this method is used by SLD export to generate image tiles for
+     * ExternalGraphic polygon fills.
+     *
+     * The default implementation returns a null image.
+     *
+     * \return the tile image (not necessarily a square) or a null image if not implemented.
+     * \since QGIS 3.30
+     */
+    virtual QImage toTiledPatternImage( ) const;
+
   protected:
     QgsFillSymbolLayer( bool locked = false );
     //! Default method to render polygon

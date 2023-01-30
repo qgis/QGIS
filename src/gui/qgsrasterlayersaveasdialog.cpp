@@ -22,14 +22,11 @@
 #include "qgsrasterformatsaveoptionswidget.h"
 #include "qgsrasterrenderer.h"
 #include "qgsrastertransparency.h"
-#include "qgsprojectionselectiondialog.h"
 #include "qgssettings.h"
 #include "qgsrasterfilewriter.h"
 #include "qgsvectorlayer.h"
-#include "cpl_string.h"
 #include "qgsproject.h"
 #include <gdal.h>
-#include "qgsmessagelog.h"
 #include "qgsgui.h"
 #include "qgsdoublevalidator.h"
 #include "qgsdatums.h"
@@ -903,14 +900,14 @@ QList<int> QgsRasterLayerSaveAsDialog::pyramidsList() const
   return mPyramidsGroupBox->isChecked() ? mPyramidsOptionsWidget->overviewList() : QList<int>();
 }
 
-QgsRaster::RasterBuildPyramids QgsRasterLayerSaveAsDialog::buildPyramidsFlag() const
+Qgis::RasterBuildPyramidOption QgsRasterLayerSaveAsDialog::buildPyramidsFlag() const
 {
   if ( ! mPyramidsGroupBox->isChecked() )
-    return QgsRaster::PyramidsFlagNo;
+    return Qgis::RasterBuildPyramidOption::No;
   else if ( mPyramidsUseExistingCheckBox->isChecked() )
-    return QgsRaster::PyramidsCopyExisting;
+    return Qgis::RasterBuildPyramidOption::CopyExisting;
   else
-    return QgsRaster::PyramidsFlagYes;
+    return Qgis::RasterBuildPyramidOption::Yes;
 }
 
 bool QgsRasterLayerSaveAsDialog::validate() const

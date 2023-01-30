@@ -135,7 +135,7 @@ class TestQgsFields(unittest.TestCase):
         with self.assertRaises(ValueError) as cm:
             self.assertFalse(vl.fields()[0].convertCompatible(QDate(2020, 6, 30)))
         self.assertEqual(str(cm.exception),
-                         'Value could not be converted to field type int: Could not convert value "2020-06-30" to target type')
+                         'Value could not be converted to field type int: Could not convert value "2020-06-30" to target type "integer"')
 
         # Not valid: overflow
         with self.assertRaises(ValueError) as cm:
@@ -151,11 +151,11 @@ class TestQgsFields(unittest.TestCase):
         with self.assertRaises(ValueError) as cm:
             self.assertFalse(vl.fields()[0].convertCompatible('QGIS Rocks!'))
         self.assertEqual(str(cm.exception),
-                         'Value could not be converted to field type QDate: Could not convert value "QGIS Rocks!" to target type')
+                         'Value could not be converted to field type QDate: Could not convert value "QGIS Rocks!" to target type "date"')
         with self.assertRaises(ValueError) as cm:
             self.assertFalse(vl.fields()[0].convertCompatible(123))
         self.assertEqual(str(cm.exception),
-                         'Value could not be converted to field type QDate: Could not convert value "123" to target type')
+                         'Value could not be converted to field type QDate: Could not convert value "123" to target type "date"')
 
         # Strings can store almost anything
         vl = QgsVectorLayer('Point?crs=epsg:4326&field=text:string(30)', 'test', 'memory')
@@ -183,11 +183,11 @@ class TestQgsFields(unittest.TestCase):
         with self.assertRaises(ValueError) as cm:
             self.assertFalse(vl.fields()[0].convertCompatible('QGIS Rocks!'))
         self.assertEqual(str(cm.exception),
-                         'Value could not be converted to field type double: Could not convert value "QGIS Rocks!" to target type')
+                         'Value could not be converted to field type double: Could not convert value "QGIS Rocks!" to target type "double"')
         with self.assertRaises(ValueError) as cm:
             self.assertFalse(vl.fields()[0].convertCompatible(QDate(2020, 6, 30)))
         self.assertEqual(str(cm.exception),
-                         'Value could not be converted to field type double: Could not convert value "2020-06-30" to target type')
+                         'Value could not be converted to field type double: Could not convert value "2020-06-30" to target type "double"')
 
 
 if __name__ == '__main__':

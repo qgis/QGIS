@@ -190,6 +190,58 @@ Sets whether the format has overline ``enabled``.
 .. seealso:: :py:func:`overline`
 %End
 
+    bool hasVerticalAlignmentSet() const;
+%Docstring
+Returns ``True`` if the format has an explicit vertical alignment set.
+
+If ``False`` is returned then the vertical alignment will be inherited.
+
+.. seealso:: :py:func:`setHasVerticalAlignmentSet`
+
+.. seealso:: :py:func:`verticalAlignment`
+
+.. versionadded:: 3.30
+%End
+
+    void setHasVerticalAlignmentSet( bool set );
+%Docstring
+Sets whether the format has an explicit vertical alignment ``set``.
+
+If ``set`` is ``False`` then the vertical alignment will be inherited.
+
+.. seealso:: :py:func:`hasVerticalAlignmentSet`
+
+.. seealso:: :py:func:`setVerticalAlignment`
+
+.. versionadded:: 3.30
+%End
+
+    Qgis::TextCharacterVerticalAlignment verticalAlignment() const;
+%Docstring
+Returns the format vertical alignment.
+
+This property is only respected if :py:func:`~QgsTextCharacterFormat.hasVerticalAlignmentSet` is ``True``.
+
+.. seealso:: :py:func:`hasVerticalAlignmentSet`
+
+.. seealso:: :py:func:`setVerticalAlignment`
+
+.. versionadded:: 3.30
+%End
+
+    void setVerticalAlignment( Qgis::TextCharacterVerticalAlignment alignment );
+%Docstring
+Sets the format vertical ``alignment``.
+
+This property is only respected if :py:func:`~QgsTextCharacterFormat.hasVerticalAlignmentSet` is ``True``.
+
+.. seealso:: :py:func:`hasVerticalAlignmentSet`
+
+.. seealso:: :py:func:`verticalAlignment`
+
+.. versionadded:: 3.30
+%End
+
     void updateFontForFormat( QFont &font, const QgsRenderContext &context, double scaleFactor = 1.0 ) const;
 %Docstring
 Updates the specified ``font`` in place, applying character formatting options which

@@ -880,7 +880,7 @@ void QgsMapCanvas::rendererJobFinished()
     QPainter p( &img );
     emit renderComplete( &p );
 
-    if ( QgsMapRendererJob::settingsLogCanvasRefreshEvent.value() )
+    if ( QgsMapRendererJob::settingsLogCanvasRefreshEvent->value() )
     {
       QString logMsg = tr( "Canvas refresh: %1 ms" ).arg( mJob->renderingTime() );
       QgsMessageLog::logMessage( logMsg, tr( "Rendering" ) );
@@ -1229,7 +1229,7 @@ void QgsMapCanvas::updateDevicePixelFromScreen()
 {
   mSettings.setDevicePixelRatio( devicePixelRatio() );
   // TODO: QGIS 4 -> always respect screen dpi
-  if ( QgsSettingsRegistryGui::settingsRespectScreenDPI.value() )
+  if ( QgsSettingsRegistryGui::settingsRespectScreenDPI->value() )
   {
     if ( window()->windowHandle() )
     {
@@ -1243,6 +1243,17 @@ void QgsMapCanvas::updateDevicePixelFromScreen()
     mSettings.setOutputDpi( window()->windowHandle()->screen()->logicalDotsPerInch() );
     mSettings.setDpiTarget( window()->windowHandle()->screen()->logicalDotsPerInch() );
   }
+  refresh();
+}
+
+void QgsMapCanvas::onElevationShadingRendererChanged()
+{
+  if ( !mProject )
+    return;
+  bool wasDeactivated = !mSettings.elevationShadingRenderer().isActive();
+  mSettings.setElevationShadingRenderer( mProject->elevationShadingRenderer() );
+  if ( mCache && wasDeactivated )
+    mCache->clear();
   refresh();
 }
 
@@ -2739,7 +2750,13 @@ void QgsMapCanvas::unsetMapTool( QgsMapTool *tool )
 
 void QgsMapCanvas::setProject( QgsProject *project )
 {
+  if ( mProject )
+    disconnect( mProject, &QgsProject::elevationShadingRendererChanged, this, &QgsMapCanvas::onElevationShadingRendererChanged );
+
   mProject = project;
+
+  if ( mProject )
+    connect( mProject, &QgsProject::elevationShadingRendererChanged, this, &QgsMapCanvas::onElevationShadingRendererChanged );
 }
 
 void QgsMapCanvas::setCanvasColor( const QColor &color )
@@ -3464,6 +3481,11 @@ void QgsMapCanvas::startPreviewJob( int number )
   context.maxRenderingTimeMs = MAXIMUM_LAYER_PREVIEW_TIME_MS;
   for ( QgsMapLayer *layer : layers )
   {
+    if ( layer->customProperty( QStringLiteral( "rendering/noPreviewJobs" ), false ).toBool() )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "Layer %1 not rendered because it is explicitly blocked from preview jobs" ).arg( layer->id() ), 3 );
+      continue;
+    }
     context.lastRenderingTimeMs = mLastLayerRenderTime.value( layer->id(), 0 );
     QgsDataProvider *provider = layer->dataProvider();
     if ( provider && !provider->renderInPreview( context ) )
@@ -3528,8 +3550,9 @@ int QgsMapCanvas::nextZoomLevel( const QList<double> &resolutions, bool zoomIn )
 {
   int resolutionLevel = -1;
   double currentResolution = mapUnitsPerPixel();
+  int nResolutions = resolutions.size();
 
-  for ( int i = 0, n = resolutions.size(); i < n; ++i )
+  for ( int i = 0; i < nResolutions; ++i )
   {
     if ( qgsDoubleNear( resolutions[i], currentResolution, 0.0001 ) )
     {
@@ -3541,8 +3564,24 @@ int QgsMapCanvas::nextZoomLevel( const QList<double> &resolutions, bool zoomIn )
       resolutionLevel = zoomIn ? ( i - 1 ) : i;
       break;
     }
+    resolutionLevel = zoomIn ? i : i + 1;
   }
-  return ( resolutionLevel < 0 || resolutionLevel >= resolutions.size() ) ? -1 : resolutionLevel;
+
+  if ( resolutionLevel < 0 || resolutionLevel >= nResolutions )
+  {
+    return -1;
+  }
+  if ( zoomIn && resolutionLevel == nResolutions - 1 && resolutions[nResolutions - 1] < currentResolution / mWheelZoomFactor )
+  {
+    // Avoid jumping straight to last resolution when zoomed far out and zooming in
+    return -1;
+  }
+  if ( !zoomIn && resolutionLevel == 0 && resolutions[0] > mWheelZoomFactor * currentResolution )
+  {
+    // Avoid jumping straight to first resolution when zoomed far in and zooming out
+    return -1;
+  }
+  return resolutionLevel;
 }
 
 double QgsMapCanvas::zoomInFactor() const

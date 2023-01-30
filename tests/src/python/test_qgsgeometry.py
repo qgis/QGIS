@@ -2867,6 +2867,85 @@ class TestQgsGeometry(unittest.TestCase):
         assert compareWkt(expWkt, wkt), "testConvertToMultiType failed: mismatch Expected:\n%s\nGot:\n%s\n" % (
             expWkt, wkt)
 
+    def testConvertToCurvedMultiType(self):
+        """ Test converting geometries to multi curve type """
+        point = QgsGeometry.fromWkt('Point (1 2)')
+        assert point.convertToCurvedMultiType()
+        expWkt = 'MultiPoint ((1 2))'
+        wkt = point.asWkt()
+        assert compareWkt(expWkt, wkt), "testConvertToCurvedMultiType failed: mismatch Expected:\n%s\nGot:\n%s\n" % (
+            expWkt, wkt)
+        # test conversion of MultiPoint
+        assert point.convertToCurvedMultiType()
+        assert compareWkt(expWkt, wkt), "testConvertToCurvedMultiType failed: mismatch Expected:\n%s\nGot:\n%s\n" % (
+            expWkt, wkt)
+
+        multipoint = QgsGeometry.fromWkt('MultiPoint ((1 2))')
+        assert multipoint.convertToCurvedMultiType()
+        expWkt = 'MultiPoint ((1 2))'
+        wkt = multipoint.asWkt()
+        assert compareWkt(expWkt, wkt), "testConvertToCurvedMultiType failed: mismatch Expected:\n%s\nGot:\n%s\n" % (
+            expWkt, wkt)
+        # test conversion of MultiPoint
+        assert multipoint.convertToCurvedMultiType()
+        assert compareWkt(expWkt, wkt), "testConvertToCurvedMultiType failed: mismatch Expected:\n%s\nGot:\n%s\n" % (
+            expWkt, wkt)
+
+        line = QgsGeometry.fromWkt('LineString (1 0, 2 0)')
+        assert line.convertToCurvedMultiType()
+        expWkt = 'MultiCurve (LineString (1 0, 2 0))'
+        wkt = line.asWkt()
+        assert compareWkt(expWkt, wkt), "testConvertToCurvedMultiType failed: mismatch Expected:\n%s\nGot:\n%s\n" % (
+            expWkt, wkt)
+        # test conversion of MultiCurve
+        assert line.convertToCurvedMultiType()
+        assert compareWkt(expWkt, wkt), "testConvertToCurvedMultiType failed: mismatch Expected:\n%s\nGot:\n%s\n" % (
+            expWkt, wkt)
+
+        circular = QgsGeometry.fromWkt('CircularString (0 0, 1 1, 2 0)')
+        assert circular.convertToCurvedMultiType()
+        expWkt = 'MultiCurve (CircularString (0 0, 1 1, 2 0))'
+        wkt = circular.asWkt()
+        assert compareWkt(expWkt, wkt), "testConvertToCurvedMultiType failed: mismatch Expected:\n%s\nGot:\n%s\n" % (
+            expWkt, wkt)
+        # test conversion of MultiCurve
+        assert circular.convertToCurvedMultiType()
+        assert compareWkt(expWkt, wkt), "testConvertToCurvedMultiType failed: mismatch Expected:\n%s\nGot:\n%s\n" % (
+            expWkt, wkt)
+
+        multiline = QgsGeometry.fromWkt('MultiLineString ((1 0, 2 0))')
+        assert multiline.convertToCurvedMultiType()
+        expWkt = 'MultiCurve (LineString (1 0, 2 0))'
+        wkt = multiline.asWkt()
+        assert compareWkt(expWkt, wkt), "testConvertToCurvedMultiType failed: mismatch Expected:\n%s\nGot:\n%s\n" % (
+            expWkt, wkt)
+        # test conversion of MultiCurve
+        assert multiline.convertToCurvedMultiType()
+        assert compareWkt(expWkt, wkt), "testConvertToCurvedMultiType failed: mismatch Expected:\n%s\nGot:\n%s\n" % (
+            expWkt, wkt)
+
+        poly = QgsGeometry.fromWkt('Polygon ((1 0, 2 0, 2 1, 1 1, 1 0))')
+        assert poly.convertToCurvedMultiType()
+        expWkt = 'MultiSurface (Polygon((1 0, 2 0, 2 1, 1 1, 1 0)))'
+        wkt = poly.asWkt()
+        assert compareWkt(expWkt, wkt), "testConvertToCurvedMultiType failed: mismatch Expected:\n%s\nGot:\n%s\n" % (
+            expWkt, wkt)
+        # test conversion of MultiSurface
+        assert poly.convertToCurvedMultiType()
+        assert compareWkt(expWkt, wkt), "testConvertToCurvedMultiType failed: mismatch Expected:\n%s\nGot:\n%s\n" % (
+            expWkt, wkt)
+
+        multipoly = QgsGeometry.fromWkt('MultiPolygon (((1 0, 2 0, 2 1, 1 1, 1 0)))')
+        assert multipoly.convertToCurvedMultiType()
+        expWkt = 'MultiSurface ( Polygon((1 0, 2 0, 2 1, 1 1, 1 0)))'
+        wkt = multipoly.asWkt()
+        assert compareWkt(expWkt, wkt), "testConvertToCurvedMultiType failed: mismatch Expected:\n%s\nGot:\n%s\n" % (
+            expWkt, wkt)
+        # test conversion of MultiSurface
+        assert multipoly.convertToCurvedMultiType()
+        assert compareWkt(expWkt, wkt), "testConvertToCurvedMultiType failed: mismatch Expected:\n%s\nGot:\n%s\n" % (
+            expWkt, wkt)
+
     def testConvertToSingleType(self):
         """ Test converting geometries to single type """
         point = QgsGeometry.fromWkt('MultiPoint ((1 2),(2 3))')
@@ -6345,6 +6424,11 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertEqual(coerce_to_wkt('MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))',
                                        QgsWkbTypes.MultiLineString),
                          ['MultiLineString ((1 1, 1 2, 2 2, 1 1),(3 3, 4 3, 4 4, 3 3))'])
+
+        # Straight to curve
+        self.assertEqual(coerce_to_wkt('LineString (0 0,1 1)',
+                                       QgsWkbTypes.MultiCurve),
+                         ['MultiCurve (LineString (0 0, 1 1))'])
 
     def testTriangularWaves(self):
         """Test triangular waves"""

@@ -186,6 +186,8 @@ Returns the map unit scale for the fill's offset.
 
     virtual Qt::BrushStyle dxfBrushStyle() const;
 
+    virtual QImage toTiledPatternImage( ) const;
+
 
   protected:
 
@@ -941,6 +943,14 @@ Creates a new QgsRasterFillSymbolLayer from a ``properties`` map. The caller tak
 ownership of the returned object.
 %End
 
+    static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
+%Docstring
+Creates a new QgsRasterFillSymbolLayer from a SLD ``element``. The caller takes
+ownership of the returned object.
+
+.. versionadded:: 3.30
+%End
+
     static void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
 %Docstring
 Turns relative paths in properties map to absolute when reading and vice versa when writing.
@@ -1547,6 +1557,8 @@ ownership of the returned object.
 
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 
+    virtual QImage toTiledPatternImage( ) const;
+
     virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
 
 
@@ -1841,6 +1853,8 @@ Caller takes ownership of the returned symbol layer.
     virtual QgsPointPatternFillSymbolLayer *clone() const /Factory/;
 
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
+
+    virtual QImage toTiledPatternImage( ) const;
 
     virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
 

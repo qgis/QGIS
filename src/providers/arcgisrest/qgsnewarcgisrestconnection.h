@@ -39,7 +39,6 @@ class QgsNewArcGisRestConnectionDialog : public QDialog, private Ui::QgsNewArcGi
      * Constructor for QgsNewArcGisRestConnectionDialog.
      */
     QgsNewArcGisRestConnectionDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr,
-                                      const QString &baseKey = "qgis/connections-wms/",
                                       const QString &connectionName = QString(),
                                       Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
@@ -77,9 +76,6 @@ class QgsNewArcGisRestConnectionDialog : public QDialog, private Ui::QgsNewArcGi
     QUrl urlTrimmed() const SIP_SKIP;
 
   private:
-
-    QString mBaseKey;
-    QString mCredentialsBaseKey;
     QString mOriginalConnName; //store initial name to delete entry in case of rename
     void showHelp();
 

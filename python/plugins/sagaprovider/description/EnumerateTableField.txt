@@ -1,5 +1,0 @@
-Enumerate Table Field
-table_tools
-QgsProcessingParameterFeatureSource|INPUT|Input|5|None|False
-QgsProcessingParameterField|FIELD|Attribute|None|INPUT|-1|False|True
-QgsProcessingParameterVectorDestination|OUTPUT|Output

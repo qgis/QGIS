@@ -332,7 +332,6 @@ void QgsProcessingMultipleInputPanelWidget::addDirectory()
   }
 
   QDirIterator it( dir, nameFilters, QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot, QDirIterator::Subdirectories );
-  QStringList files;
   while ( it.hasNext() )
   {
     const QString fullPath = it.next();

@@ -371,13 +371,32 @@ void QgsStatusBarCoordinatesWidget::showExtent()
 
 void QgsStatusBarCoordinatesWidget::ensureCoordinatesVisible()
 {
-
   //ensure the label is big (and small) enough
   const int width = std::max( mLineEdit->fontMetrics().boundingRect( mLineEdit->text() ).width() + 16, mMinimumWidth );
-  if ( mLineEdit->minimumWidth() < width || ( mLineEdit->minimumWidth() - width ) > mTwoCharSize )
+
+  bool allowResize = false;
+  if ( mIsFirstSizeChange )
+  {
+    allowResize = true;
+  }
+  else if ( mLineEdit->minimumWidth() < width )
+  {
+    // always immediately grow to fit
+    allowResize = true;
+  }
+  else if ( ( mLineEdit->minimumWidth() - width ) > mTwoCharSize )
+  {
+    // only allow shrinking when a sufficient time has expired since we last resized.
+    // this avoids extraneous shrinking/growing resulting in distracting UI changes
+    allowResize = mLastSizeChangeTimer.hasExpired( 2000 );
+  }
+
+  if ( allowResize )
   {
     mLineEdit->setMinimumWidth( width );
     mLineEdit->setMaximumWidth( width );
+    mLastSizeChangeTimer.restart();
+    mIsFirstSizeChange = false;
   }
 }
 

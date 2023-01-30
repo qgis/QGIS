@@ -4141,7 +4141,6 @@ void QgsProcessingFieldPanelWidget::setValue( const QVariant &value )
 void QgsProcessingFieldPanelWidget::showDialog()
 {
   QVariantList availableOptions;
-  QStringList fieldNames;
   availableOptions.reserve( mFields.size() );
   for ( const QgsField &field : std::as_const( mFields ) )
   {
@@ -6405,7 +6404,6 @@ void QgsProcessingRasterBandPanelWidget::setValue( const QVariant &value )
 void QgsProcessingRasterBandPanelWidget::showDialog()
 {
   QVariantList availableOptions;
-  QStringList fieldNames;
   availableOptions.reserve( mBands.size() );
   for ( int band : std::as_const( mBands ) )
   {

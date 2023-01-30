@@ -1737,8 +1737,6 @@ bool QgsPostgresProvider::determinePrimaryKey()
     res = connectionRO()->LoggedPQexec( "QgsPostgresProvider", sql );
     QgsDebugMsgLevel( QStringLiteral( "Got %1 rows." ).arg( res.PQntuples() ), 2 );
 
-    QStringList log;
-
     // no primary or unique indices found
     if ( res.PQntuples() == 0 )
     {
@@ -2405,10 +2403,19 @@ QString QgsPostgresProvider::paramValue( const QString &fieldValue, const QStrin
 /* private */
 bool QgsPostgresProvider::getTopoLayerInfo()
 {
-  QString sql = QString( "SELECT t.name, l.layer_id "
-                         "FROM topology.layer l, topology.topology t "
-                         "WHERE l.topology_id = t.id AND l.schema_name=%1 "
-                         "AND l.table_name=%2 AND l.feature_column=%3" )
+  QString sql = QStringLiteral( R"SQL(
+    SELECT
+      t.name,
+      l.layer_id,
+      l.level,
+      l.feature_type
+    FROM topology.layer l
+    JOIN topology.topology t ON (
+      l.topology_id = t.id
+    )
+    WHERE l.schema_name=%1
+    AND l.table_name=%2 AND l.feature_column=%3
+  )SQL" )
                 .arg( quotedValue( mSchemaName ),
                       quotedValue( mTableName ),
                       quotedValue( mGeometryColumn ) );
@@ -2428,6 +2435,23 @@ bool QgsPostgresProvider::getTopoLayerInfo()
   }
   mTopoLayerInfo.topologyName = result.PQgetvalue( 0, 0 );
   mTopoLayerInfo.layerId = result.PQgetvalue( 0, 1 ).toLong();
+  mTopoLayerInfo.layerLevel = result.PQgetvalue( 0, 2 ).toInt();
+  switch ( result.PQgetvalue( 0, 3 ).toInt() )
+  {
+    case 1:
+      mTopoLayerInfo.featureType = TopoLayerInfo::Puntal;
+      break;
+    case 2:
+      mTopoLayerInfo.featureType = TopoLayerInfo::Lineal;
+      break;
+    case 3:
+      mTopoLayerInfo.featureType = TopoLayerInfo::Polygonal;
+      break;
+    case 4:
+    default:
+      mTopoLayerInfo.featureType = TopoLayerInfo::Mixed;
+      break;
+  }
   return true;
 }
 
@@ -5547,7 +5571,7 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
                                 " WHERE f_table_catalog=%1"
                                 " AND f_table_schema=%2"
                                 " AND f_table_name=%3"
-                                " AND f_geometry_column=%4"
+                                " AND f_geometry_column %4"
                                 " AND (type=%5 OR type IS NULL)"
                                 " AND styleName=%6" )
                        .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
@@ -5580,7 +5604,7 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
           .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
           .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
           .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
-          .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn().isEmpty() ? QStringLiteral( "IS NULL" ) : QStringLiteral( "=%1" ).arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) ) ) )
+          .arg( dsUri.geometryColumn().isEmpty() ? QStringLiteral( "IS NULL" ) : QStringLiteral( "=%1" ).arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) ) )
           .arg( QgsPostgresConn::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) )
           // Must be the final .arg replacement - see above
           .arg( QgsPostgresConn::quotedValue( qmlStyle ),
@@ -5619,6 +5643,12 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
 
 QString QgsPostgresProviderMetadata::loadStyle( const QString &uri, QString &errCause )
 {
+  QString styleName;
+  return loadStoredStyle( uri, styleName, errCause );
+}
+
+QString QgsPostgresProviderMetadata::loadStoredStyle( const QString &uri, QString &styleName, QString &errCause )
+{
   QgsDataSourceUri dsUri( uri );
   QString selectQmlQuery;
 
@@ -5655,7 +5685,7 @@ QString QgsPostgresProviderMetadata::loadStyle( const QString &uri, QString &err
   // support layer_styles without type column < 3.14
   if ( !columnExists( *conn, QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
   {
-    selectQmlQuery = QString( "SELECT styleQML"
+    selectQmlQuery = QString( "SELECT styleName, styleQML"
                               " FROM layer_styles"
                               " WHERE f_table_catalog=%1"
                               " AND f_table_schema=%2"
@@ -5670,7 +5700,7 @@ QString QgsPostgresProviderMetadata::loadStyle( const QString &uri, QString &err
   }
   else
   {
-    selectQmlQuery = QString( "SELECT styleQML"
+    selectQmlQuery = QString( "SELECT styleName, styleQML"
                               " FROM layer_styles"
                               " WHERE f_table_catalog=%1"
                               " AND f_table_schema=%2"
@@ -5688,7 +5718,8 @@ QString QgsPostgresProviderMetadata::loadStyle( const QString &uri, QString &err
 
   QgsPostgresResult result( conn->LoggedPQexec( QStringLiteral( "QgsPostgresProviderMetadata" ), selectQmlQuery ) );
 
-  QString style = result.PQntuples() == 1 ? result.PQgetvalue( 0, 0 ) : QString();
+  styleName = result.PQntuples() == 1 ? result.PQgetvalue( 0, 0 ) : QString();
+  QString style = result.PQntuples() == 1 ? result.PQgetvalue( 0, 1 ) : QString();
   conn->unref();
 
   QgsPostgresUtils::restoreInvalidXmlChars( style );

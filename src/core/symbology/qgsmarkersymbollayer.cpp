@@ -18,7 +18,6 @@
 
 #include "qgsdxfexport.h"
 #include "qgsdxfpaintdevice.h"
-#include "qgsexpression.h"
 #include "qgsfontutils.h"
 #include "qgsimagecache.h"
 #include "qgsimageoperation.h"
@@ -1416,16 +1415,25 @@ void QgsSimpleMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement 
 
   // <Rotation>
   QString angleFunc;
-  bool ok;
-  const double angle = props.value( QStringLiteral( "angle" ), QStringLiteral( "0" ) ).toDouble( &ok );
-  if ( !ok )
+
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::PropertyAngle ) )
   {
-    angleFunc = QStringLiteral( "%1 + %2" ).arg( props.value( QStringLiteral( "angle" ), QStringLiteral( "0" ) ).toString() ).arg( mAngle );
+    angleFunc = mDataDefinedProperties.property( QgsSymbolLayer::Property::PropertyAngle ).asExpression();
   }
-  else if ( !qgsDoubleNear( angle + mAngle, 0.0 ) )
+  else
   {
-    angleFunc = QString::number( angle + mAngle );
+    bool ok;
+    const double angle = props.value( QStringLiteral( "angle" ), QStringLiteral( "0" ) ).toDouble( &ok );
+    if ( !ok )
+    {
+      angleFunc = QStringLiteral( "%1 + %2" ).arg( props.value( QStringLiteral( "angle" ), QStringLiteral( "0" ) ).toString() ).arg( mAngle );
+    }
+    else if ( !qgsDoubleNear( angle + mAngle, 0.0 ) )
+    {
+      angleFunc = QString::number( angle + mAngle );
+    }
   }
+
   QgsSymbolLayerUtils::createRotationElement( doc, graphicElem, angleFunc );
 
   // <Displacement>

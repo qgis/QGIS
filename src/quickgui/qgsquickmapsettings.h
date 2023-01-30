@@ -23,11 +23,9 @@
 #include "qgscoordinatetransformcontext.h"
 #include "qgsmaplayer.h"
 #include "qgsmapsettings.h"
-#include "qgsmapthemecollection.h"
 #include "qgspoint.h"
 #include "qgsrectangle.h"
-
-class QgsProject;
+#include "qgsproject.h"
 
 /**
  * \ingroup quick

@@ -40,6 +40,7 @@ class QgsMapLayerRenderer;
 class QgsMapRendererCache;
 class QgsFeatureFilterProvider;
 class QgsRenderedItemResults;
+class QgsElevationMap;
 
 #ifndef SIP_RUN
 /// @cond PRIVATE
@@ -85,6 +86,15 @@ class LayerRenderJob
      */
     QImage *img = nullptr;
 
+    /**
+     * Pointer to destination elevation map.
+     *
+     * May be nullptr if it is not necessary
+     *
+     * \since QGIS 3.30
+     */
+    QgsElevationMap *elevationMap = nullptr;
+
     //! TRUE when img has been initialized (filled with transparent pixels)
     bool imageInitialized = false;
 
@@ -98,6 +108,9 @@ class LayerRenderJob
 
     //! If TRUE, img already contains cached image from previous rendering
     bool cached = false;
+
+    //! Whether layer should be rendered above labels
+    bool renderAboveLabels = false;
 
     QgsWeakMapLayerPointer layer;
 
@@ -448,9 +461,16 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
      */
     static const QString LABEL_PREVIEW_CACHE_ID SIP_SKIP;
 
+    /**
+     * QgsMapRendererCache prefix string for cached elevation map image.
+     * \note not available in Python bindings
+     * \since QGIS 3.30
+     */
+    static const QString ELEVATION_MAP_CACHE_PREFIX SIP_SKIP;
+
 #ifndef SIP_RUN
     //! Settings entry log canvas refresh event
-    static const inline QgsSettingsEntryBool settingsLogCanvasRefreshEvent = QgsSettingsEntryBool( QStringLiteral( "logCanvasRefreshEvent" ), QgsSettings::Prefix::MAP, false );
+    static const QgsSettingsEntryBool *settingsLogCanvasRefreshEvent;
 #endif
 
   signals:
@@ -569,6 +589,9 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
     //! \note not available in Python bindings
     static QImage layerImageToBeComposed( const QgsMapSettings &settings, const LayerRenderJob &job, const QgsMapRendererCache *cache ) SIP_SKIP;
 
+    //! \note not available in Python bindings
+    static QgsElevationMap layerElevationToBeComposed( const QgsMapSettings &settings, const LayerRenderJob &job, const QgsMapRendererCache *cache ) SIP_SKIP;
+
     /**
      * Compose second pass images into first pass images.
      * First pass jobs pointed to by the second pass jobs must still exist.
@@ -622,6 +645,9 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
 
     //! Convenient method to allocate a new image and stack an error if not enough memory is available
     QImage *allocateImage( QString layerId );
+
+    //! Convenient method to allocate a new elevation map and stack an error if not enough memory is available
+    QgsElevationMap *allocateElevationMap( QString layerId );
 
     //! Convenient method to allocate a new image and a new QPainter on this image
     QPainter *allocateImageAndPainter( QString layerId, QImage *&image, const QgsRenderContext *context );

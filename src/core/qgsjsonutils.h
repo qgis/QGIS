@@ -241,6 +241,17 @@ class CORE_EXPORT QgsJsonExporter
      */
     json exportFeaturesToJsonObject( const QgsFeatureList &features ) const SIP_SKIP;
 
+    /**
+     * Set the destination CRS for feature geometry transformation to \a destinationCrs, this defaults to EPSG:4326
+     * and it is only effective when the automatic geometry transformation is active (it is by default).
+     *
+     * \see setTransformGeometries()
+     * \see  setSourceCrs()
+     *
+     * \since QGIS 3.30
+     */
+    void setDestinationCrs( const QgsCoordinateReferenceSystem &destinationCrs );
+
   private:
 
     //! Maximum number of decimal places for geometry coordinates
@@ -274,6 +285,8 @@ class CORE_EXPORT QgsJsonExporter
     bool mAttributeDisplayName = false;
 
     bool mTransformGeometries = true;
+
+    QgsCoordinateReferenceSystem mDestinationCrs;
 };
 
 /**

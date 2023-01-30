@@ -2309,6 +2309,23 @@ not change the geometry.
 :return: ``True`` in case of success and ``False`` else
 %End
 
+    bool convertToCurvedMultiType();
+%Docstring
+Converts a geometry into a multitype geometry of curve kind (when there
+is a corresponding curve type).
+e.g. a polygon into a multisurface geometry with one polygon,
+a multipolygon into a multisurface, a linestring into a multicurve
+geometry with one linestring, or a multilinestring into a multicurve.
+If it is already a multipart curve geometry, it will return ``True`` and
+not change the geometry. It will also return ``True`` and do nothing if
+the current geometry is a multipoint or a geometry collection. A single
+point will be transformed to a multipoint.
+
+:return: ``True`` in case of success and ``False`` else
+
+.. versionadded:: 3.30
+%End
+
     bool convertToSingleType();
 %Docstring
 Converts multi type geometry into single type geometry
@@ -2343,6 +2360,7 @@ Modifies geometry to avoid intersections with the layers specified in project pr
          1 if geometry is not of polygon type,
          2 if avoid intersection would change the geometry type,
          3 at least one geometry intersected is invalid. The algorithm may not work and return the same geometry as the input. You must fix your intersecting geometries.
+         4 if the geometry is not intersected by one of the geometries present in the provided layers.
 
 .. versionadded:: 1.5
 %End

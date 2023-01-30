@@ -99,6 +99,8 @@ QString QgsExpressionNode::NodeList::cleanNamedNodeName( const QString &name )
     cleaned = QStringLiteral( "geometry1" );
   else if ( cleaned == QLatin1String( "geometry b" ) )
     cleaned = QStringLiteral( "geometry2" );
+  else if ( cleaned == QLatin1String( "i" ) )
+    cleaned = QStringLiteral( "vertex" );
 
   return cleaned;
 }
@@ -295,7 +297,7 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
         ENSURE_NO_EVAL_ERROR
         QDateTime datetime2 = QgsExpressionUtils::getDateTimeValue( vR, parent );
         ENSURE_NO_EVAL_ERROR
-        return datetime1 - datetime2;
+        return QgsInterval( datetime1 - datetime2 );
       }
       else
       {

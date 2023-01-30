@@ -139,6 +139,16 @@ QgsPointCloudLayerChunkLoaderFactory::QgsPointCloudLayerChunkLoaderFactory( cons
   , mPointBudget( pointBudget )
 {
   mSymbol.reset( symbol );
+
+  try
+  {
+    mExtent = mCoordinateTransform.transformBoundingBox( mMap.extent(), Qgis::TransformDirection::Reverse );
+  }
+  catch ( const QgsCsException & )
+  {
+    // bad luck, can't reproject for some reason
+    QgsDebugMsg( QStringLiteral( "Transformation of extent failed." ) );
+  }
 }
 
 QgsChunkLoader *QgsPointCloudLayerChunkLoaderFactory::createChunkLoader( QgsChunkNode *node ) const
@@ -181,6 +191,9 @@ QVector<QgsChunkNode *> QgsPointCloudLayerChunkLoaderFactory::createChildren( Qg
     const QgsChunkNodeId childId( nodeId.d + 1, nodeId.x * 2 + dx, nodeId.y * 2 + dy, nodeId.z * 2 + dz );
 
     if ( !mPointCloudIndex->hasNode( IndexedPointCloudNode( childId.d, childId.x, childId.y, childId.z ) ) )
+      continue;
+    if ( !mExtent.isEmpty() &&
+         !mPointCloudIndex->nodeMapExtent( IndexedPointCloudNode( childId.d, childId.x, childId.y, childId.z ) ).intersects( mExtent ) )
       continue;
 
     // the Y and Z coordinates below are intentionally flipped, because

@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
-#include "qgscoordinateformatter.h"
 #include "qgsdistancearea.h"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
@@ -989,15 +988,19 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
 
   QMap< QString, QString > attributes, derivedAttributes;
 
-  QgsRaster::IdentifyFormat format = QgsRasterDataProvider::identifyFormatFromName( layer->customProperty( QStringLiteral( "identify/format" ) ).toString() );
+  Qgis::RasterIdentifyFormat format = QgsRasterDataProvider::identifyFormatFromName( layer->customProperty( QStringLiteral( "identify/format" ) ).toString() );
 
   // check if the format is really supported otherwise use first supported format
   if ( !( QgsRasterDataProvider::identifyFormatToCapability( format ) & capabilities ) )
   {
-    if ( capabilities & QgsRasterInterface::IdentifyFeature ) format = QgsRaster::IdentifyFormatFeature;
-    else if ( capabilities & QgsRasterInterface::IdentifyValue ) format = QgsRaster::IdentifyFormatValue;
-    else if ( capabilities & QgsRasterInterface::IdentifyHtml ) format = QgsRaster::IdentifyFormatHtml;
-    else if ( capabilities & QgsRasterInterface::IdentifyText ) format = QgsRaster::IdentifyFormatText;
+    if ( capabilities & QgsRasterInterface::IdentifyFeature )
+      format = Qgis::RasterIdentifyFormat::Feature;
+    else if ( capabilities & QgsRasterInterface::IdentifyValue )
+      format = Qgis::RasterIdentifyFormat::Value;
+    else if ( capabilities & QgsRasterInterface::IdentifyHtml )
+      format = Qgis::RasterIdentifyFormat::Html;
+    else if ( capabilities & QgsRasterInterface::IdentifyText )
+      format = Qgis::RasterIdentifyFormat::Text;
     else return false;
   }
 
@@ -1055,7 +1058,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
   {
     QMap<int, QVariant> values = identifyResult.results();
     QgsGeometry geometry;
-    if ( format == QgsRaster::IdentifyFormatValue )
+    if ( format == Qgis::RasterIdentifyFormat::Value )
     {
       for ( auto it = values.constBegin(); it != values.constEnd(); ++it )
       {
@@ -1080,11 +1083,55 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
           }
         }
         attributes.insert( dprovider->generateBandName( it.key() ), valueString );
+
+        // Get raster attribute table attributes
+        if ( const QgsRasterAttributeTable *rat = layer->attributeTable( it.key() ) )
+        {
+          bool ok;
+          const double doubleValue { it.value().toDouble( &ok ) };
+          if ( ok )
+          {
+            const QVariantList row = rat->row( doubleValue );
+            if ( ! row.isEmpty() )
+            {
+              for ( int colIdx = 0; colIdx < std::min( rat->fields().count( ), row.count() ); ++colIdx )
+              {
+                const QgsRasterAttributeTable::Field ratField { rat->fields().at( colIdx ) };
+
+                // Skip value and color fields
+                if ( QgsRasterAttributeTable::valueAndColorFieldUsages().contains( ratField.usage ) )
+                {
+                  continue;
+                }
+
+                QString ratValue;
+                switch ( ratField.type )
+                {
+                  case QVariant::Type::Char:
+                  case QVariant::Type::Int:
+                  case QVariant::Type::UInt:
+                  case QVariant::Type::LongLong:
+                  case QVariant::Type::ULongLong:
+                    ratValue = QLocale().toString( row.at( colIdx ).toLongLong() );
+                    break;
+                  case QVariant::Type::Double:
+                    ratValue = QLocale().toString( row.at( colIdx ).toDouble( ) );
+                    break;
+                  default:
+                    ratValue = row.at( colIdx ).toString();
+                }
+                attributes.insert( ratField.name, ratValue );
+              }
+            }
+          }
+        }  // end RAT
+
       }
+
       QString label = layer->name();
       results->append( IdentifyResult( qobject_cast<QgsMapLayer *>( layer ), label, attributes, derivedAttributes ) );
     }
-    else if ( format == QgsRaster::IdentifyFormatFeature )
+    else if ( format == Qgis::RasterIdentifyFormat::Feature )
     {
       for ( auto it = values.constBegin(); it != values.constEnd(); ++it )
       {

@@ -39,6 +39,7 @@
 #include <QScreen>
 #include <QFont>
 #include <QActionGroup>
+#include <QToolButton>
 
 //graph
 #include <qwt_plot.h>
@@ -84,13 +85,16 @@
 #include "qgssettings.h"
 #include "qgsgui.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgsidentifymenu.h"
 #include "qgsjsonutils.h"
 #include "qgsjsoneditwidget.h"
 #include "qgspointcloudlayer.h"
 #include "qgscolorrampimpl.h"
+#include "qgsmaplayeraction.h"
 
 #include <nlohmann/json.hpp>
+
+const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingHideNullValues = new QgsSettingsEntryBool( QStringLiteral( "hide-null-values" ), QgsSettings::sTreeMap, false, QStringLiteral( "Whether to hide attributes with NULL values in the identify feature result" ) );
+
 
 QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent ) : QgsWebView( parent )
 {
@@ -445,7 +449,7 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   settingsMenu->addAction( mActionHideDerivedAttributes );
   mActionHideDerivedAttributes->setChecked( mySettings.value( QStringLiteral( "Map/hideDerivedAttributes" ), false ).toBool() );
   settingsMenu->addAction( mActionHideNullValues );
-  mActionHideNullValues->setChecked( QgsIdentifyResultsDialog::settingHideNullValues.value() );
+  mActionHideNullValues->setChecked( QgsIdentifyResultsDialog::settingHideNullValues->value() );
 
 }
 
@@ -466,11 +470,12 @@ void QgsIdentifyResultsDialog::initSelectionModes()
   mSelectModeButton = new QToolButton( mIdentifyToolbar );
   mSelectModeButton->setPopupMode( QToolButton::MenuButtonPopup );
   QList<QAction *> selectActions;
-  selectActions << mActionSelectFeatures << mActionSelectPolygon
+  selectActions << mActionSelectFeatures << mActionSelectFeaturesOnMouseOver << mActionSelectPolygon
                 << mActionSelectFreehand << mActionSelectRadius;
 
   QActionGroup *group = new QActionGroup( this );
   group->addAction( mActionSelectFeatures );
+  group->addAction( mActionSelectFeaturesOnMouseOver );
   group->addAction( mActionSelectPolygon );
   group->addAction( mActionSelectFreehand );
   group->addAction( mActionSelectRadius );
@@ -478,9 +483,11 @@ void QgsIdentifyResultsDialog::initSelectionModes()
   mSelectModeButton->addActions( selectActions );
   mSelectModeButton->setDefaultAction( mActionSelectFeatures );
 
+
   mIdentifyToolbar->addWidget( mSelectModeButton );
 
   connect( mActionSelectFeatures, &QAction::triggered, this, &QgsIdentifyResultsDialog::setSelectionMode );
+  connect( mActionSelectFeaturesOnMouseOver, &QAction::triggered, this, &QgsIdentifyResultsDialog::setSelectionMode );
   connect( mActionSelectPolygon, &QAction::triggered, this, &QgsIdentifyResultsDialog::setSelectionMode );
   connect( mActionSelectFreehand, &QAction::triggered, this, &QgsIdentifyResultsDialog::setSelectionMode );
   connect( mActionSelectRadius, &QAction::triggered, this, &QgsIdentifyResultsDialog::setSelectionMode );
@@ -640,7 +647,8 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
   }
 
   //get valid QgsMapLayerActions for this layer
-  const QList< QgsMapLayerAction * > registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer );
+  QgsMapLayerActionContext context = QgisApp::instance()->createMapLayerActionContext();
+  const QList< QgsMapLayerAction * > registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer, Qgis::MapLayerActionTarget::AllActions, context );
   const QList<QgsAction> actions = vlayer->actions()->actions( QStringLiteral( "Feature" ) );
 
   if ( ( !vlayer->fields().isEmpty() || !actions.isEmpty() || !registeredActions.isEmpty() ) && !QgsSettings().value( QStringLiteral( "/Map/hideDerivedAttributes" ), false ).toBool() )
@@ -706,7 +714,7 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
       continue;
     }
 
-    if ( QgsVariantUtils::isNull( attrs.at( i ) ) && QgsIdentifyResultsDialog::settingHideNullValues.value() )
+    if ( QgsVariantUtils::isNull( attrs.at( i ) ) && QgsIdentifyResultsDialog::settingHideNullValues->value() )
     {
       continue;
     }
@@ -919,7 +927,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
   QgsDebugMsg( QStringLiteral( "feature.isValid() = %1" ).arg( feature.isValid() ) );
   QTreeWidgetItem *layItem = layerItem( layer );
 
-  const QgsRaster::IdentifyFormat currentFormat = QgsRasterDataProvider::identifyFormatFromName( layer->customProperty( QStringLiteral( "identify/format" ) ).toString() );
+  const Qgis::RasterIdentifyFormat currentFormat = QgsRasterDataProvider::identifyFormatFromName( layer->customProperty( QStringLiteral( "identify/format" ) ).toString() );
 
   if ( !layItem )
   {
@@ -935,17 +943,17 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     // Add all supported formats, best first. HTML is considered the best because
     // it usually holds most information.
     const int capabilities = layer->dataProvider()->capabilities();
-    static const QList<QgsRaster::IdentifyFormat> formats
+    static const QList<Qgis::RasterIdentifyFormat> formats
     {
-      QgsRaster::IdentifyFormatHtml,
-      QgsRaster::IdentifyFormatFeature,
-      QgsRaster::IdentifyFormatText,
-      QgsRaster::IdentifyFormatValue };
+      Qgis::RasterIdentifyFormat::Html,
+      Qgis::RasterIdentifyFormat::Feature,
+      Qgis::RasterIdentifyFormat::Text,
+      Qgis::RasterIdentifyFormat::Value };
     for ( const auto &f : formats )
     {
       if ( !( QgsRasterDataProvider::identifyFormatToCapability( f ) & capabilities ) )
         continue;
-      formatCombo->addItem( QgsRasterDataProvider::identifyFormatLabel( f ), f );
+      formatCombo->addItem( QgsRasterDataProvider::identifyFormatLabel( f ), QVariant::fromValue( f ) );
       formatCombo->setItemData( formatCombo->count() - 1, QVariant::fromValue( qobject_cast<QObject *>( layer ) ), Qt::UserRole + 1 );
       if ( currentFormat == f )
         formatCombo->setCurrentIndex( formatCombo->count() - 1 );
@@ -1058,7 +1066,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     }
   }
 
-  if ( currentFormat == QgsRaster::IdentifyFormatHtml || currentFormat == QgsRaster::IdentifyFormatText )
+  if ( currentFormat == Qgis::RasterIdentifyFormat::Html || currentFormat == Qgis::RasterIdentifyFormat::Text )
   {
     QgsIdentifyResultsWebViewItem *attrItem = new QgsIdentifyResultsWebViewItem( lstResults );
 #ifdef WITH_QTWEBKIT
@@ -1069,7 +1077,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     // Adjust zoom: text is ok, but HTML seems rather big at least on Linux/KDE
     if ( horizontalDpi > 96 )
     {
-      attrItem->webView()->setZoomFactor( attrItem->webView()->zoomFactor() * ( currentFormat == QgsRaster::IdentifyFormatHtml ? 0.7 : 0.9 ) );
+      attrItem->webView()->setZoomFactor( attrItem->webView()->zoomFactor() * ( currentFormat == Qgis::RasterIdentifyFormat::Html ? 0.7 : 0.9 ) );
     }
     connect( attrItem->webView()->page(), &QWebPage::linkClicked, [ ]( const QUrl & url )
     {
@@ -1080,7 +1088,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     if ( !attributes.isEmpty() )
     {
       QString value { attributes.begin().value() };
-      if ( currentFormat ==  QgsRaster::IdentifyFormatText )
+      if ( currentFormat ==  Qgis::RasterIdentifyFormat::Text )
       {
         value = QgsStringUtils::insertLinks( value );
         value.prepend( QStringLiteral( "<pre style=\"font-family: monospace;\">" ) ).append( QStringLiteral( "</pre>" ) );
@@ -1579,7 +1587,8 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
   if ( featItem && featItem->data( 0, Qt::UserRole + 1 ).isValid() && vlayer )
   {
     //get valid QgsMapLayerActions for this layer
-    const QList< QgsMapLayerAction * > registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer );
+    QgsMapLayerActionContext context = QgisApp::instance()->createMapLayerActionContext();
+    const QList< QgsMapLayerAction * > registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer, Qgis::MapLayerActionTarget::AllActions, context );
 
     if ( !registeredActions.isEmpty() )
     {
@@ -1746,7 +1755,11 @@ void QgsIdentifyResultsDialog::doMapLayerAction( QTreeWidgetItem *item, QgsMapLa
     return;
 
   const QgsFeature feat = featItem->data( 0, FeatureRole ).value< QgsFeature >();
+  QgsMapLayerActionContext context = QgisApp::instance()->createMapLayerActionContext();
+  Q_NOWARN_DEPRECATED_PUSH
   action->triggerForFeature( layer, feat );
+  Q_NOWARN_DEPRECATED_POP
+  action->triggerForFeature( layer, feat, context );
 }
 
 QTreeWidgetItem *QgsIdentifyResultsDialog::featureItem( QTreeWidgetItem *item )
@@ -2148,7 +2161,7 @@ void QgsIdentifyResultsDialog::highlightFeature( QTreeWidgetItem *item )
     highlight->setWidth( 2 );
   }
 
-  QgsIdentifyMenu::styleHighlight( highlight );
+  highlight->applyDefaultStyle();
   highlight->show();
   mHighlights.insert( featItem, highlight );
 }
@@ -2400,6 +2413,13 @@ void QgsIdentifyResultsDialog::mActionAutoFeatureForm_toggled( bool checked )
 {
   QgsSettings settings;
   settings.setValue( QStringLiteral( "Map/identifyAutoFeatureForm" ), checked );
+  mActionSelectFeaturesOnMouseOver->setEnabled( ! checked );
+  if ( mSelectModeButton->defaultAction( ) == mActionSelectFeaturesOnMouseOver )
+  {
+    mSelectionMode = QgsMapToolSelectionHandler::SelectSimple;
+    mSelectModeButton->setDefaultAction( mActionSelectFeatures );
+    emit selectionModeChanged();
+  }
 }
 
 void QgsIdentifyResultsDialog::mActionHideDerivedAttributes_toggled( bool checked )
@@ -2410,7 +2430,7 @@ void QgsIdentifyResultsDialog::mActionHideDerivedAttributes_toggled( bool checke
 
 void QgsIdentifyResultsDialog::mActionHideNullValues_toggled( bool checked )
 {
-  QgsIdentifyResultsDialog::settingHideNullValues.setValue( checked );
+  QgsIdentifyResultsDialog::settingHideNullValues->setValue( checked );
 }
 
 void QgsIdentifyResultsDialog::mExpandNewAction_triggered( bool checked )
@@ -2471,8 +2491,8 @@ void QgsIdentifyResultsDialog::formatChanged( int index )
     return;
   }
 
-  const QgsRaster::IdentifyFormat format = static_cast<QgsRaster::IdentifyFormat>( combo->itemData( index, Qt::UserRole ).toInt() );
-  QgsDebugMsg( QStringLiteral( "format = %1" ).arg( format ) );
+  const Qgis::RasterIdentifyFormat format = combo->itemData( index, Qt::UserRole ).value< Qgis::RasterIdentifyFormat >();
+  QgsDebugMsg( QStringLiteral( "format = %1" ).arg( qgsEnumValueToKey( format ) ) );
   QgsRasterLayer *layer = qobject_cast<QgsRasterLayer *>( combo->itemData( index, Qt::UserRole + 1 ).value<QObject *>() );
   if ( !layer )
   {
@@ -2521,7 +2541,11 @@ void QgsIdentifyResultsDialog::formatChanged( int index )
 
 void QgsIdentifyResultsDialogMapLayerAction::execute()
 {
+  QgsMapLayerActionContext context = QgisApp::instance()->createMapLayerActionContext();
+  Q_NOWARN_DEPRECATED_PUSH
   mAction->triggerForFeature( mLayer, *mFeature );
+  Q_NOWARN_DEPRECATED_POP
+  mAction->triggerForFeature( mLayer, *mFeature, context );
 }
 
 void QgsIdentifyResultsDialog::showHelp()
@@ -2543,6 +2567,11 @@ void QgsIdentifyResultsDialog::setSelectionMode()
     mSelectModeButton->setDefaultAction( mActionSelectPolygon );
     mSelectionMode = QgsMapToolSelectionHandler::SelectPolygon;
   }
+  else if ( obj == mActionSelectFeaturesOnMouseOver )
+  {
+    mSelectModeButton->setDefaultAction( mActionSelectFeaturesOnMouseOver );
+    mSelectionMode = QgsMapToolSelectionHandler::SelectOnMouseOver;
+  }
   else if ( obj == mActionSelectFreehand )
   {
     mSelectModeButton->setDefaultAction( mActionSelectFreehand );
@@ -2555,7 +2584,10 @@ void QgsIdentifyResultsDialog::setSelectionMode()
   }
 
   if ( oldMode != mSelectionMode )
+  {
+    mActionAutoFeatureForm->setEnabled( mSelectionMode != QgsMapToolSelectionHandler::SelectOnMouseOver );
     emit selectionModeChanged();
+  }
 }
 
 QgsMapToolSelectionHandler::SelectionMode QgsIdentifyResultsDialog::selectionMode() const

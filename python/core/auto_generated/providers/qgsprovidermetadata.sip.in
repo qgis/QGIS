@@ -396,6 +396,16 @@ The optional ``feedback`` argument can be used to provide cancellation support f
 .. versionadded:: 3.22
 %End
 
+    virtual QString suggestGroupNameForUri( const QString &uri ) const;
+%Docstring
+Returns a name that can be used as a group name for sublayers retrieved from
+the specified ``uri``.
+
+The default implementation returns an empty string.
+
+.. versionadded:: 3.30
+%End
+
     virtual QgsDataProvider *createProvider( const QString &uri,
         const QgsDataProvider::ProviderOptions &options,
         QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) /Factory/;
@@ -609,6 +619,19 @@ Saves a layer style to provider.
 Loads a layer style defined by ``uri``
 
 .. versionadded:: 3.10
+%End
+
+    virtual QString loadStoredStyle( const QString &uri, QString &styleName, QString &errCause );
+%Docstring
+Loads a layer style from the provider storage, reporting its name.
+
+:param uri: data source uri
+:param styleName: the name of the style if available, empty otherwise
+:param errCause: report errors
+
+:return: the style QML (XML)
+
+.. versionadded:: 3.30
 %End
 
     virtual bool saveLayerMetadata( const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage /Out/ ) throw( QgsNotSupportedException );

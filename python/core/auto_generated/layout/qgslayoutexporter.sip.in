@@ -269,6 +269,7 @@ Constructor for PrintExportSettings
 
     };
 
+
     ExportResult print( QPrinter &printer, const QgsLayoutExporter::PrintExportSettings &settings );
 %Docstring
 Prints the layout to a ``printer``, using the specified export ``settings``.
@@ -287,7 +288,6 @@ Returns a result code indicating whether the export was successful or an
 error was encountered. If an error was obtained then ``error`` will be set
 to the error description.
 %End
-
 
     struct SvgExportSettings
     {
@@ -422,7 +422,6 @@ Subclasses can override this method to customize page file naming.
 %End
 
 };
-
 
 
 

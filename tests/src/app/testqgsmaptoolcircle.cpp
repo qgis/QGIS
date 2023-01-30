@@ -281,8 +281,8 @@ void TestQgsMapToolCircle::testCircle_data()
   QTest::addColumn<qlonglong>( "featureCount" );
   QTest::addColumn<long>( "featureCountExpected" );
 
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( Z );
-  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( M );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( Z );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue->setValue( M );
 
   QgsFeatureId newFid;
   QgsFeature f;
@@ -316,8 +316,8 @@ void TestQgsMapToolCircle::testCircle_data()
     }
   }
 
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
-  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue->setValue( 0 );
 }
 
 void TestQgsMapToolCircle::testCircle()

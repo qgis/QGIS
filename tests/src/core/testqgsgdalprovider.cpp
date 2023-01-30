@@ -313,7 +313,7 @@ void TestQgsGdalProvider::mask()
     QCOMPARE( rp->bandCount(), 4 );
     QCOMPARE( rp->dataType( 4 ), Qgis::DataType::Byte );
     QCOMPARE( rp->sourceDataType( 4 ), Qgis::DataType::Byte );
-    QCOMPARE( rp->colorInterpretation( 4 ), static_cast<int>( QgsRaster::AlphaBand ) );
+    QCOMPARE( rp->colorInterpretation( 4 ), Qgis::RasterColorInterpretation::AlphaBand );
     QCOMPARE( rp->bandScale( 4 ), 1.0 );
     QCOMPARE( rp->bandOffset( 4 ), 0.0 );
     const QgsRectangle rect( 0, 0, 162, 150 );

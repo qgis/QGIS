@@ -22,9 +22,9 @@ Portions of this file contain code from Eric4 APIsManager module.
 import sys
 import os
 
-from qgis.PyQt.Qsci import QsciLexerPython, QsciAPIs
-from qgis.PyQt.QtWidgets import QApplication
-from qgis.PyQt.QtCore import QObject
+from PyQt5.Qsci import QsciLexerPython, QsciAPIs
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtCore import QObject
 
 
 class PrepareAPIs(QObject):
@@ -70,12 +70,15 @@ class PrepareAPIs(QObject):
 
 
 if __name__ == '__main__':
-    if len(sys.argv) != 4:
-        print('Usage: python <script> <pap_file> <apis_src_dir> <api_bin_dir>')
+    app = QApplication(sys.argv)
+    args = app.arguments()
+
+    if len(args) != 4:
+        print(f'Usage: python {sys.argv[0]} [qt options] <pap_file> <apis_src_dir> <api_bin_dir>')
         sys.exit(1)
-    pap_file = sys.argv[1]
-    api_src_dir = sys.argv[2]
-    api_bin_dir = sys.argv[3]
+    pap_file = args[1]
+    api_src_dir = args[2]
+    api_bin_dir = args[3]
 
     api_files = [
         os.path.join(api_bin_dir, 'PyQGIS.api'),
@@ -84,10 +87,7 @@ if __name__ == '__main__':
         os.path.join(api_src_dir, 'OSGeo_GEOS-3.6.2.api'),
         os.path.join(api_src_dir, 'OSGeo_GDAL-OGR-2.2.3.api')
     ]
-    # print api_files.__repr__()
-    # print pap_file.__repr__()
 
-    app = QApplication(sys.argv, False)  # just start a non-gui console app
     api_lexer = QsciLexerPython()
     prepap = PrepareAPIs(api_lexer, api_files, pap_file)
     prepap.prepareAPI()

@@ -43,7 +43,7 @@ set(TESTS
   testqgsprojectproperties.cpp
   testqgsapplayoutvaliditychecks.cpp
   testqgsmeshcalculatordialog.cpp
-  testqgsgpsinformationwidget.cpp
+  testqgsgpsintegration.cpp
   testqgslabelpropertydialog.cpp
 )
 

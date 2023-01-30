@@ -43,6 +43,39 @@ QgsLayerMetadata QgsMetadataUtils::convertFromEsri( const QDomDocument &document
   if ( metadata.identifier().isEmpty()  && !title.isEmpty() )
     metadata.setIdentifier( title );
 
+  const QDomElement citationDatesElement = idCitation.firstChildElement( QStringLiteral( "date" ) ).toElement();
+  if ( !citationDatesElement.isNull() )
+  {
+    {
+      const QDomElement createDateElement = citationDatesElement.firstChildElement( QStringLiteral( "createDate" ) ).toElement();
+      if ( !createDateElement.isNull() )
+      {
+        metadata.setDateTime( Qgis::MetadataDateType::Created, QDateTime::fromString( createDateElement.text(), Qt::ISODate ) );
+      }
+    }
+    {
+      const QDomElement pubDateElement = citationDatesElement.firstChildElement( QStringLiteral( "pubDate" ) ).toElement();
+      if ( !pubDateElement.isNull() )
+      {
+        metadata.setDateTime( Qgis::MetadataDateType::Published, QDateTime::fromString( pubDateElement.text(), Qt::ISODate ) );
+      }
+    }
+    {
+      const QDomElement reviseDateElement = citationDatesElement.firstChildElement( QStringLiteral( "reviseDate" ) ).toElement();
+      if ( !reviseDateElement.isNull() )
+      {
+        metadata.setDateTime( Qgis::MetadataDateType::Revised, QDateTime::fromString( reviseDateElement.text(), Qt::ISODate ) );
+      }
+    }
+    {
+      const QDomElement supersededDateElement = citationDatesElement.firstChildElement( QStringLiteral( "supersDate" ) ).toElement();
+      if ( !supersededDateElement.isNull() )
+      {
+        metadata.setDateTime( Qgis::MetadataDateType::Superseded, QDateTime::fromString( supersededDateElement.text(), Qt::ISODate ) );
+      }
+    }
+  }
+
   // abstract
   const QDomElement idAbs = dataIdInfo.firstChildElement( QStringLiteral( "idAbs" ) );
   const QString abstractPlainText = QTextDocumentFragment::fromHtml( idAbs.text() ).toPlainText();

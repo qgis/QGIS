@@ -18,7 +18,7 @@
 #include "qgis.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshdataprovidertemporalcapabilities.h"
-#include "qgsrectangle.h"
+#include "qgsthreadingutils.h"
 
 QgsMeshDataProvider::QgsMeshDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options,
     QgsDataProvider::ReadFlags flags )
@@ -28,23 +28,34 @@ QgsMeshDataProvider::QgsMeshDataProvider( const QString &uri, const QgsDataProvi
 
 QgsMeshDataProviderTemporalCapabilities *QgsMeshDataProvider::temporalCapabilities()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mTemporalCapabilities.get();
 }
 
 const QgsMeshDataProviderTemporalCapabilities *QgsMeshDataProvider::temporalCapabilities() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mTemporalCapabilities.get();
 }
 
 void QgsMeshDataProvider::setTemporalUnit( QgsUnitTypes::TemporalUnit unit )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const QgsUnitTypes::TemporalUnit oldUnit = mTemporalCapabilities->temporalUnit();
   mTemporalCapabilities->setTemporalUnit( unit );
   if ( oldUnit != unit )
     reloadData();
 }
 
-QgsMeshDriverMetadata QgsMeshDataProvider::driverMetadata() const { return QgsMeshDriverMetadata();}
+QgsMeshDriverMetadata QgsMeshDataProvider::driverMetadata() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return QgsMeshDriverMetadata();
+}
 
 QgsMeshDatasetIndex QgsMeshDatasetSourceInterface::datasetIndexAtTime(
   const QDateTime &referenceTime,

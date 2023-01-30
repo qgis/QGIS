@@ -20,7 +20,6 @@
 #include <QToolButton>
 #include <QHBoxLayout>
 
-#include "qgssettings.h"
 #include "qgsactionmanager.h"
 #include "qgsattributetableview.h"
 #include "qgsattributetablemodel.h"
@@ -29,14 +28,12 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayercache.h"
 #include "qgsvectorlayerselectionmanager.h"
-#include "qgsvectordataprovider.h"
-#include "qgslogger.h"
-#include "qgsmapcanvas.h"
 #include "qgsfeatureselectionmodel.h"
 #include "qgsmaplayeractionregistry.h"
 #include "qgsfeatureiterator.h"
 #include "qgsstringutils.h"
 #include "qgsgui.h"
+#include "qgsmaplayeraction.h"
 
 QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
   : QgsTableView( parent )
@@ -251,7 +248,8 @@ QWidget *QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
       defaultAction = act;
   }
 
-  const auto mapLayerActions {QgsGui::mapLayerActionRegistry()->mapLayerActions( mFilterModel->layer(), QgsMapLayerAction::SingleFeature ) };
+  QgsMapLayerActionContext context;
+  const QList< QgsMapLayerAction * > mapLayerActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mFilterModel->layer(), Qgis::MapLayerActionTarget::SingleFeature, context );
   // next add any registered actions for this layer
   for ( QgsMapLayerAction *mapLayerAction : mapLayerActions )
   {
@@ -497,7 +495,11 @@ void QgsAttributeTableView::actionTriggered()
     QgsMapLayerAction *layerAction = qobject_cast<QgsMapLayerAction *>( object );
     if ( layerAction )
     {
+      QgsMapLayerActionContext context;
+      Q_NOWARN_DEPRECATED_PUSH
       layerAction->triggerForFeature( mFilterModel->layer(), f );
+      Q_NOWARN_DEPRECATED_POP
+      layerAction->triggerForFeature( mFilterModel->layer(), f, context );
     }
   }
 }
@@ -546,4 +548,11 @@ void QgsAttributeTableView::scrollToFeature( const QgsFeatureId &fid, int col )
     return;
 
   selectionModel()->setCurrentIndex( index, QItemSelectionModel::SelectCurrent );
+}
+
+void QgsAttributeTableView::closeCurrentEditor()
+{
+  QWidget *editor = indexWidget( currentIndex() );
+  commitData( editor );
+  closeEditor( editor, QAbstractItemDelegate::NoHint );
 }

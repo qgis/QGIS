@@ -60,6 +60,8 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     //! \note available in Python as constShader
     const QgsRasterShader *shader() const SIP_PYNAME( constShader ) { return mShader.get(); }
 
+    bool canCreateRasterAttributeTable( ) const override;
+
     /**
      * Creates a color ramp shader
      * \param colorRamp vector color ramp. Ownership is transferred to the shader.

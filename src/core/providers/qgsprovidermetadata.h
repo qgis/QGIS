@@ -458,6 +458,16 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
     virtual QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const;
 
     /**
+     * Returns a name that can be used as a group name for sublayers retrieved from
+     * the specified \a uri.
+     *
+     * The default implementation returns an empty string.
+     *
+     * \since QGIS 3.30
+    */
+    virtual QString suggestGroupNameForUri( const QString &uri ) const;
+
+    /**
      * Class factory to return a pointer to a newly created QgsDataProvider object
      *
      * \param uri the datasource uri
@@ -654,6 +664,16 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      * \since QGIS 3.10
      */
     virtual QString loadStyle( const QString &uri, QString &errCause );
+
+    /**
+     * Loads a layer style from the provider storage, reporting its name.
+     * \param uri data source uri
+     * \param styleName the name of the style if available, empty otherwise
+     * \param errCause report errors
+     * \returns the style QML (XML)
+     * \since QGIS 3.30
+     */
+    virtual QString loadStoredStyle( const QString &uri, QString &styleName, QString &errCause );
 
     /**
      * Saves \a metadata to the layer corresponding to the specified \a uri.

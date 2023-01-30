@@ -58,6 +58,7 @@ class Qgs3DMapExportSettings;
 class QgsShadowRenderingFrameGraph;
 class QgsPostprocessingEntity;
 class QgsChunkNode;
+class QgsDoubleRange;
 
 #define SIP_NO_FILE
 
@@ -142,6 +143,14 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
      * \since QGIS 3.20
      */
     QgsRectangle sceneExtent();
+
+    /**
+     * Returns the scene's elevation range
+     * \note Only terrain and point cloud layers are taken into account
+     *
+     * \since QGIS 3.30
+     */
+    QgsDoubleRange elevationRange() const;
 
     /**
      * Returns the 3D axis object

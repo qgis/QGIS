@@ -23,7 +23,35 @@
 
 QgsConditionalLayerStyles::QgsConditionalLayerStyles( QObject *parent )
   : QObject( parent )
-{}
+{
+}
+
+QgsConditionalStyle QgsConditionalLayerStyles::constraintFailureStyles( QgsFieldConstraints::ConstraintStrength strength )
+{
+  switch ( strength )
+  {
+    case QgsFieldConstraints::ConstraintStrengthHard:
+    {
+      QgsConditionalStyle hardConstraintFailureStyle;
+      hardConstraintFailureStyle.setBackgroundColor( QColor( 255, 152, 0 ) );
+      hardConstraintFailureStyle.setTextColor( QColor( 0, 0, 0 ) );
+      return hardConstraintFailureStyle;
+    }
+
+    case QgsFieldConstraints::ConstraintStrengthSoft:
+    {
+      QgsConditionalStyle softConstraintFailureStyle;
+      softConstraintFailureStyle.setBackgroundColor( QColor( 255, 191, 12 ) );
+      softConstraintFailureStyle.setTextColor( QColor( 0, 0, 0 ) );
+      return softConstraintFailureStyle;
+    }
+
+    case QgsFieldConstraints::ConstraintStrengthNotSet:
+      return QgsConditionalStyle();
+  }
+
+  return QgsConditionalStyle();
+}
 
 QgsConditionalStyles QgsConditionalLayerStyles::rowStyles() const
 {
@@ -56,13 +84,13 @@ QList<QgsConditionalStyle> QgsConditionalLayerStyles::fieldStyles( const QString
 bool QgsConditionalLayerStyles::writeXml( QDomNode &node, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   QDomElement stylesel = doc.createElement( QStringLiteral( "conditionalstyles" ) );
+
   QDomElement rowel = doc.createElement( QStringLiteral( "rowstyles" ) );
   const auto constMRowStyles = mRowStyles;
   for ( const QgsConditionalStyle &style : constMRowStyles )
   {
     style.writeXml( rowel, doc, context );
   }
-
   stylesel.appendChild( rowel );
 
   QDomElement fieldsel = doc.createElement( QStringLiteral( "fieldstyles" ) );
@@ -79,7 +107,6 @@ bool QgsConditionalLayerStyles::writeXml( QDomNode &node, QDomDocument &doc, con
     }
     fieldsel.appendChild( fieldel );
   }
-
   stylesel.appendChild( fieldsel );
 
   node.appendChild( stylesel );
@@ -100,9 +127,11 @@ bool QgsConditionalLayerStyles::rulesNeedGeometry() const
 
 bool QgsConditionalLayerStyles::readXml( const QDomNode &node, const QgsReadWriteContext &context )
 {
-  const QDomElement condel = node.firstChildElement( QStringLiteral( "conditionalstyles" ) );
   mRowStyles.clear();
   mFieldStyles.clear();
+
+  const QDomElement condel = node.firstChildElement( QStringLiteral( "conditionalstyles" ) );
+
   const QDomElement rowstylesel = condel.firstChildElement( QStringLiteral( "rowstyles" ) );
   QDomNodeList nodelist = rowstylesel.toElement().elementsByTagName( QStringLiteral( "style" ) );
   for ( int i = 0; i < nodelist.count(); i++ )

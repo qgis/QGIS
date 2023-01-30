@@ -1018,7 +1018,7 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
     }
 
     // See https://docs.microsoft.com/en-us/previous-versions/software-testing/cc441928(v=msdn.10)
-    const QString sampleFilter = QString( "(ABS(CAST((BINARY_CHECKSUM([%1])) as int)) % 100) = 42" ).arg( cols );
+    const QString sampleFilter = QString( "(ABS(CAST((BINARY_CHECKSUM(%1)) as int)) % 100) = 42" ).arg( cols );
 
     const QString statementSample = statement + ( mSqlWhereClause.isEmpty() ? " WHERE " : " AND " ) + sampleFilter;
 
@@ -2737,6 +2737,12 @@ bool QgsMssqlProviderMetadata::saveStyle( const QString &uri,
 
 QString QgsMssqlProviderMetadata::loadStyle( const QString &uri, QString &errCause )
 {
+  QString styleName;
+  return loadStoredStyle( uri, styleName, errCause );
+}
+
+QString QgsMssqlProviderMetadata::loadStoredStyle( const QString &uri, QString &styleName, QString &errCause )
+{
   errCause.clear();
   const QgsDataSourceUri dsUri( uri );
   // connect to database
@@ -2772,7 +2778,7 @@ QString QgsMssqlProviderMetadata::loadStyle( const QString &uri, QString &errCau
   query.clear();
   query.setForwardOnly( true );
 
-  const QString selectQmlQuery = QString( "SELECT top 1 styleQML"
+  const QString selectQmlQuery = QString( "SELECT top 1 styleName, styleQML"
                                           " FROM layer_styles"
                                           " WHERE f_table_catalog=%1"
                                           " AND f_table_schema=%2"
@@ -2794,7 +2800,8 @@ QString QgsMssqlProviderMetadata::loadStyle( const QString &uri, QString &errCau
   }
   if ( query.isActive() && query.next() )
   {
-    QString style = query.value( 0 ).toString();
+    styleName = query.value( 0 ).toString();
+    const QString style = query.value( 1 ).toString();
     return style;
   }
   return QString();

@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
 #include "qgscodeeditorjson.h"
 
 #include <QWidget>
@@ -34,6 +33,11 @@ QgsCodeEditorJson::QgsCodeEditorJson( QWidget *parent )
     setTitle( tr( "JSON Editor" ) );
   }
   QgsCodeEditorJson::initializeLexer();
+}
+
+Qgis::ScriptLanguage QgsCodeEditorJson::language() const
+{
+  return Qgis::ScriptLanguage::Json;
 }
 
 void QgsCodeEditorJson::initializeLexer()

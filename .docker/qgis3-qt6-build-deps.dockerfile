@@ -39,11 +39,16 @@ RUN dnf -y --refresh install \
     qt6-qtbase-devel \
     qt6-qtdeclarative-devel \
     qt6-qttools-static \
+    qt6-qtserialport-devel \
     qt6-qtsvg-devel \
+    qt6-qtpositioning-devel \
+    qt6-qtdeclarative-devel \
     qt6-qt5compat-devel \
+    qt6-qtmultimedia-devel \
     spatialindex-devel \
     sqlite-devel \
     unzip \
+    unixODBC-devel \
     xorg-x11-server-Xvfb \
     util-linux \
     wget \
@@ -94,4 +99,3 @@ RUN cd /usr/src \
   && qmake6 src/qscintilla.pro \
   && make -j4 \
   && make install
-

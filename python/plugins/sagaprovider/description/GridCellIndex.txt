@@ -1,5 +1,0 @@
-Grid Cell Index
-grid_tools
-QgsProcessingParameterRasterLayer|GRID|Input Grid|None|False
-QgsProcessingParameterEnum|ORDER|Index|[0] ascending;[1] descending|False|0
-QgsProcessingParameterRasterDestination|INDEX|Sorted Grid

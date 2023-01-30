@@ -900,7 +900,7 @@ void QgsLayerTreeModel::connectToLayer( QgsLayerTreeLayer *nodeLayer )
       if ( mAutoCollapseLegendNodesCount != -1 && rowCount( node2index( nodeLayer ) )  >= mAutoCollapseLegendNodesCount )
         nodeLayer->setExpanded( false );
 
-      if ( nodeLayer->layer()->type() == QgsMapLayerType::VectorLayer && QgsSettingsRegistryCore::settingsLayerTreeShowFeatureCountForNewLayers.value() )
+      if ( nodeLayer->layer()->type() == QgsMapLayerType::VectorLayer && QgsSettingsRegistryCore::settingsLayerTreeShowFeatureCountForNewLayers->value() )
       {
         nodeLayer->setCustomProperty( QStringLiteral( "showFeatureCount" ), true );
       }

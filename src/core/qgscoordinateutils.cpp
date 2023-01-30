@@ -136,10 +136,10 @@ QString QgsCoordinateUtils::formatCoordinateForProject( QgsProject *project, con
   {
     case Qgis::CoordinateOrder::Default:
     case Qgis::CoordinateOrder::XY:
-      return QStringLiteral( "%1%2%3" ).arg( formattedX, QgsCoordinateFormatter::separator(), formattedY );
+      return QStringLiteral( "%1%2 %3" ).arg( formattedX, QgsCoordinateFormatter::separator(), formattedY );
 
     case Qgis::CoordinateOrder::YX:
-      return QStringLiteral( "%1%2%3" ).arg( formattedY, QgsCoordinateFormatter::separator(), formattedX );
+      return QStringLiteral( "%1%2 %3" ).arg( formattedY, QgsCoordinateFormatter::separator(), formattedX );
   }
   BUILTIN_UNREACHABLE
 }

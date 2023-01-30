@@ -16,7 +16,7 @@
 #include "qgslayertreeregistrybridge.h"
 
 #include "qgslayertree.h"
-
+#include "qgslayertreeutils.h"
 #include "qgsproject.h"
 #include "qgslogger.h"
 
@@ -55,7 +55,16 @@ void QgsLayerTreeRegistryBridge::layersAdded( const QList<QgsMapLayer *> &layers
   QList<QgsLayerTreeNode *> nodes;
   for ( QgsMapLayer *layer : layers )
   {
-    QgsLayerTreeLayer *nodeLayer = new QgsLayerTreeLayer( layer );
+    QgsLayerTreeLayer *nodeLayer;
+    if ( mInsertionMethod == Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup )
+    {
+      nodeLayer = QgsLayerTreeUtils::insertLayerAtOptimalPlacement( mInsertionPoint.group, layer );
+    }
+    else
+    {
+      nodeLayer = new QgsLayerTreeLayer( layer );
+    }
+
     nodeLayer->setItemVisibilityChecked( mNewLayersVisible );
 
     nodes << nodeLayer;
@@ -69,8 +78,18 @@ void QgsLayerTreeRegistryBridge::layersAdded( const QList<QgsMapLayer *> &layers
     }
   }
 
-  // add new layers to the right place
-  mInsertionPoint.group->insertChildNodes( mInsertionPoint.position, nodes );
+  switch ( mInsertionMethod )
+  {
+    case Qgis::LayerTreeInsertionMethod::AboveInsertionPoint:
+      mInsertionPoint.group->insertChildNodes( mInsertionPoint.position, nodes );
+      break;
+    case Qgis::LayerTreeInsertionMethod::TopOfTree:
+      mRoot->insertChildNodes( 0, nodes );
+      break;
+    case Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup:
+    default:
+      break;
+  }
 
   // tell other components that layers have been added - this signal is used in QGIS to auto-select the first layer
   emit addedLayersToLayerTree( layers );

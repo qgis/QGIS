@@ -1,4 +1,0 @@
-Slope Length
-ta_hydrology
-QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
-QgsProcessingParameterRasterDestination|LENGTH|Slope Length

@@ -44,8 +44,6 @@ class QgsPointCloudRenderContext;
 
 #define SIP_NO_FILE
 
-///@endcond
-
 /**
  * \ingroup core
  *

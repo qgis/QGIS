@@ -19,6 +19,7 @@
 
 class QWebView;
 class QgsPixmapLabel;
+class QgsMediaWidget;
 class QgsMessageBar;
 class QgsExternalStorageFileWidget;
 class QgsExternalStorageFetchedContent;
@@ -74,7 +75,9 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
     {
       NoContent,
       Image,
-      Web
+      Web,
+      Audio, // since QGIS 3.30
+      Video, // since QGIS 3.30
     };
 
     /**
@@ -217,9 +220,11 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
 
     //! properties
     bool mFileWidgetVisible = true;
+
     DocumentViewerContent mDocumentViewerContent = NoContent;
     int mDocumentViewerHeight = 0;
     int mDocumentViewerWidth = 0;
+
     QgsFileWidget::RelativeStorage mRelativeStorage = QgsFileWidget::Absolute;
     QString mDefaultRoot; // configured default root path for QgsFileWidget::RelativeStorage::RelativeDefaultPath
 
@@ -230,6 +235,8 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
     //! This webview is used as a container to display the picture
     QWebView *mWebView = nullptr;
 #endif
+    QgsMediaWidget *mMediaWidget = nullptr;
+
     QLabel *mLoadingLabel = nullptr;
     QLabel *mErrorLabel = nullptr;
     QMovie *mLoadingMovie = nullptr;

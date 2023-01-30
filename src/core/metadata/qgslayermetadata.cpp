@@ -444,7 +444,6 @@ bool QgsLayerMetadata::contains( const QString &searchString ) const
   const QList<QStringList> keyVals { keywords().values() };
   for ( const QStringList &kws : std::as_const( keyVals ) )
   {
-    const QStringList constKws { kws };
     for ( const QString &kw : std::as_const( kws ) )
     {
       if ( kw.contains( searchString, Qt::CaseSensitivity::CaseInsensitive ) )
@@ -480,7 +479,6 @@ bool QgsLayerMetadata::matches( const QVector<QRegularExpression> &searchReList 
     const QList<QStringList> keyVals { keywords().values() };
     for ( const QStringList &kws : std::as_const( keyVals ) )
     {
-      const QStringList constKws { kws };
       for ( const QString &kw : std::as_const( kws ) )
       {
         if ( re.match( kw ).hasMatch() )

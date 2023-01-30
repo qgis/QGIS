@@ -28,7 +28,7 @@ class APP_EXPORT QgsMapToolShapeRegularPolygonAbstract: public QgsMapToolShapeAb
     Q_OBJECT
 
   public:
-    QgsMapToolShapeRegularPolygonAbstract(const QString &id, QgsMapToolCapture *parentTool);
+    QgsMapToolShapeRegularPolygonAbstract( const QString &id, QgsMapToolCapture *parentTool );
 
     void clean() override;
 

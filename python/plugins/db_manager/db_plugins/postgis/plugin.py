@@ -70,7 +70,7 @@ class PostGisDBPlugin(DBPlugin):
     def connect(self, parent=None):
         conn_name = self.connectionName()
         settings = QgsSettings()
-        settings.beginGroup(u"/%s/%s" % (self.connectionSettingsKey(), conn_name))
+        settings.beginGroup("/%s/%s" % (self.connectionSettingsKey(), conn_name))
 
         if not settings.contains("database"):  # non-existent entry?
             raise InvalidDataException(self.tr('There is no defined database connection "{0}".').format(conn_name))
@@ -228,7 +228,7 @@ class PGTable(Table):
             rule_name = parts[1]
             rule_action = parts[2]
 
-            msg = self.tr(u"Do you want to {0} rule {1}?").format(rule_action, rule_name)
+            msg = self.tr("Do you want to {0} rule {1}?").format(rule_action, rule_name)
 
             QApplication.restoreOverrideCursor()
 
@@ -345,12 +345,12 @@ class PGRasterTable(PGTable, RasterTable):
 
         if not uri:
             uri = self.database().uri()
-        service = (u'service=\'%s\'' % uri.service()) if uri.service() else ''
-        dbname = (u'dbname=\'%s\'' % uri.database()) if uri.database() else ''
-        host = (u'host=%s' % uri.host()) if uri.host() else ''
-        user = (u'user=%s' % uri.username()) if uri.username() else ''
-        passw = (u'password=%s' % uri.password()) if uri.password() else ''
-        port = (u'port=%s' % uri.port()) if uri.port() else ''
+        service = ('service=\'%s\'' % uri.service()) if uri.service() else ''
+        dbname = ('dbname=\'%s\'' % uri.database()) if uri.database() else ''
+        host = ('host=%s' % uri.host()) if uri.host() else ''
+        user = ('user=%s' % uri.username()) if uri.username() else ''
+        passw = ('password=%s' % uri.password()) if uri.password() else ''
+        port = ('port=%s' % uri.port()) if uri.port() else ''
 
         schema = self.schemaName() if self.schemaName() else 'public'
         table = '"%s"."%s"' % (schema, self.name)
@@ -359,23 +359,23 @@ class PGRasterTable(PGTable, RasterTable):
             # postgresraster provider *requires* a dbname
             connector = self.database().connector
             r = connector._execute(None, "SELECT current_database()")
-            dbname = (u'dbname=\'%s\'' % connector._fetchone(r)[0])
+            dbname = ('dbname=\'%s\'' % connector._fetchone(r)[0])
             connector._close_cursor(r)
 
         # Find first raster field
         col = ''
         for fld in self.fields():
             if fld.dataType == "raster":
-                col = u'column=\'%s\'' % fld.name
+                col = 'column=\'%s\'' % fld.name
                 break
 
-        uri = u'%s %s %s %s %s %s %s table=%s' % \
+        uri = '%s %s %s %s %s %s %s table=%s' % \
             (service, dbname, host, user, passw, port, col, table)
 
         return uri
 
     def mimeUri(self):
-        uri = u"raster:postgresraster:{}:{}".format(self.name, re.sub(":", r"\:", self.uri()))
+        uri = "raster:postgresraster:{}:{}".format(self.name, re.sub(":", r"\:", self.uri()))
         return uri
 
     def toMapLayer(self, geometryType=None, crs=None):

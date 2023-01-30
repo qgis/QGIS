@@ -89,12 +89,11 @@ void TestQgsLayout3DMap::testBasic()
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( mProject->crs() );
-  map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
+  map->setExtent( fullExtent );
   map->setLayers( QList<QgsMapLayer *>() << mLayerDtm );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( map->crs() );
-  flatTerrain->setExtent( fullExtent );
   map->setTerrainGenerator( flatTerrain );
 
   QgsCameraPose cam;
@@ -110,7 +109,12 @@ void TestQgsLayout3DMap::testBasic()
   map3dItem->setMapSettings( map );
   l.addLayoutItem( map3dItem );
 
-  QgsLayoutChecker checker( QStringLiteral( "composer3d_basic" ), &l );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  QgsLayoutChecker checker( QStringLiteral( "composer3d_basic_qt5" ), &l );
+#else
+  QgsLayoutChecker checker( QStringLiteral( "composer3d_basic_qt6" ), &l );
+#endif
+
   checker.setControlPathPrefix( QStringLiteral( "composer_3d" ) );
   const bool result = checker.testLayout( mReport, 0, 100 );
   QVERIFY( result );

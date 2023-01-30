@@ -209,6 +209,10 @@ QgsDataSourceUri::QgsDataSourceUri( const QString &u )
       {
         QgsDebugMsg( QStringLiteral( "gsslib ignored" ) );
       }
+      else if ( pname.startsWith( QgsHttpHeaders::PARAM_PREFIX ) )
+      {
+        mHttpHeaders.insert( pname, pval );
+      }
       else
       {
         QgsDebugMsgLevel( "parameter \"" + pname + "\":\"" + pval + "\" added", 4 );
@@ -873,8 +877,9 @@ bool QgsDataSourceUri::hasParam( const QString &key ) const
 QSet<QString> QgsDataSourceUri::parameterKeys() const
 {
   QSet<QString> paramKeys;
-  for ( const QString &key : mParams.keys() )
-    paramKeys.insert( key );
+  for ( auto it = mParams.constBegin(); it != mParams.constEnd(); it++ )
+    paramKeys.insert( it.key() );
+
   if ( !mHost.isEmpty() )
     paramKeys.insert( QLatin1String( "host" ) );
   if ( !mPort.isEmpty() )

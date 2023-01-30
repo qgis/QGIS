@@ -1,0 +1,18 @@
+*****
+Content-Type: application/json
+
+{
+   "nodes":[
+      {
+         "icon":"iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAU0lEQVQ4jWNgGAV0A4z4JJWVlf8j8+/evYtTPQs+Q474qaKI2Wxi+I/LMKyC2AxBGHYbq8uYcLmIVDBEDLp79y6jzabbJBlEUvTDLCHJhlFAfQAA+w0alQ045JsAAAAASUVORK5CYII=",
+         "title":"testlayer3",
+         "type":"layer"
+      },
+      {
+         "icon":"iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAP0lEQVQ4jWNgGAV0A4wE5P8Tqx6fQf/TljijCMyK2YtTDy6DMAwhZBgTHheRBIaOQYzQsCAakBr9xOgZBbQGAKb+C8EdAkkoAAAAAElFTkSuQmCC",
+         "title":"A test vector layer",
+         "type":"layer"
+      }
+   ],
+   "title":""
+}

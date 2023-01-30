@@ -7,14 +7,20 @@
     <x>0</x>
     <y>0</y>
     <width>464</width>
-    <height>729</height>
+    <height>851</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>4000</width>
+    <height>6000</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Create a New SAP HANA Connection</string>
@@ -36,53 +42,13 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <layout class="QGridLayout" name="grdConnectionSettings">
-        <item row="3" column="0">
-         <widget class="QLabel" name="lbIdentifier">
-          <property name="text">
-           <string>Identifier</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QLineEdit" name="txtName">
-          <property name="toolTip">
-           <string>Name of the new connection</string>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="0">
-         <widget class="QLabel" name="lblSchema">
-          <property name="text">
-           <string>&amp;Schema</string>
-          </property>
-          <property name="buddy">
-           <cstring>txtSchema</cstring>
-          </property>
-         </widget>
-        </item>
+       <layout class="QFormLayout" name="frmMain">
         <item row="1" column="0">
-         <widget class="QLabel" name="lblDriver">
+         <widget class="QLabel" name="lblConnectionType">
           <property name="text">
-           <string>Driver</string>
-          </property>
-          <property name="buddy">
-           <cstring>txtDriver</cstring>
+           <string>Connection Type</string>
           </property>
          </widget>
-        </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="lblHost">
-          <property name="text">
-           <string>Hos&amp;t</string>
-          </property>
-          <property name="buddy">
-           <cstring>txtHost</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="QLineEdit" name="txtHost"/>
         </item>
         <item row="0" column="0">
          <widget class="QLabel" name="lblName">
@@ -94,68 +60,125 @@
           </property>
          </widget>
         </item>
-        <item row="4" column="1">
-         <widget class="QFrame" name="frmMode">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>124</height>
-           </size>
+        <item row="0" column="1">
+         <widget class="QLineEdit" name="txtName">
+          <property name="toolTip">
+           <string>Name of the new connection</string>
           </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>124</height>
-           </size>
-          </property>
-          <property name="frameShape">
-           <enum>QFrame::NoFrame</enum>
-          </property>
-          <property name="frameShadow">
-           <enum>QFrame::Raised</enum>
-          </property>
-          <layout class="QVBoxLayout" name="verticalLayout_5">
-           <property name="spacing">
-            <number>1</number>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QComboBox" name="cmbConnectionType">
+          <item>
+           <property name="text">
+            <string>Host:Port</string>
            </property>
-           <property name="leftMargin">
-            <number>0</number>
+          </item>
+          <item>
+           <property name="text">
+            <string>Data Source Name (DSN)</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="Line" name="line_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QStackedWidget" name="swConnectionControls">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>1</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
+        <widget class="QWidget" name="pageHostPort">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>1</horstretch>
+           <verstretch>1</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="autoFillBackground">
+          <bool>false</bool>
+         </property>
+         <widget class="QWidget" name="layoutWidget">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>421</width>
+            <height>220</height>
+           </rect>
+          </property>
+          <layout class="QGridLayout" name="grdConnectionSettings" rowstretch="1,0,0,0,0">
+           <property name="sizeConstraint">
+            <enum>QLayout::SetNoConstraint</enum>
            </property>
            <property name="topMargin">
             <number>0</number>
            </property>
            <property name="rightMargin">
-            <number>0</number>
+            <number>1</number>
            </property>
-           <property name="bottomMargin">
-            <number>0</number>
+           <property name="horizontalSpacing">
+            <number>6</number>
            </property>
-           <item>
-            <widget class="QRadioButton" name="rbtnSingleContainer">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="text">
-              <string>Single container</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-             <attribute name="buttonGroup">
-              <string notr="true">buttonGroup</string>
-             </attribute>
-            </widget>
-           </item>
-           <item>
-            <widget class="QFrame" name="frmMultipleContainers">
+           <property name="verticalSpacing">
+            <number>4</number>
+           </property>
+           <item row="4" column="1">
+            <widget class="QFrame" name="frmMode">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
+               <verstretch>1</verstretch>
               </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>16777215</height>
+              </size>
              </property>
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -163,12 +186,9 @@
              <property name="frameShadow">
               <enum>QFrame::Raised</enum>
              </property>
-             <property name="lineWidth">
-              <number>0</number>
-             </property>
-             <layout class="QVBoxLayout" name="verticalLayout_6">
+             <layout class="QVBoxLayout" name="verticalLayout_5">
               <property name="spacing">
-               <number>2</number>
+               <number>1</number>
               </property>
               <property name="leftMargin">
                <number>0</number>
@@ -183,18 +203,18 @@
                <number>0</number>
               </property>
               <item>
-               <widget class="QRadioButton" name="rbtnMultipleContainers">
-                <property name="enabled">
-                 <bool>true</bool>
-                </property>
+               <widget class="QRadioButton" name="rbtnSingleContainer">
                 <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
                 </property>
                 <property name="text">
-                 <string>Multiple containers</string>
+                 <string>Single container</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
                 </property>
                 <attribute name="buttonGroup">
                  <string notr="true">buttonGroup</string>
@@ -202,12 +222,9 @@
                </widget>
               </item>
               <item>
-               <widget class="QFrame" name="frmMultitenantSettings">
-                <property name="enabled">
-                 <bool>true</bool>
-                </property>
+               <widget class="QFrame" name="frmMultipleContainers">
                 <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
@@ -216,17 +233,17 @@
                  <enum>QFrame::NoFrame</enum>
                 </property>
                 <property name="frameShadow">
-                 <enum>QFrame::Plain</enum>
+                 <enum>QFrame::Raised</enum>
                 </property>
-                <layout class="QFormLayout" name="formLayout">
-                 <property name="horizontalSpacing">
-                  <number>0</number>
-                 </property>
-                 <property name="verticalSpacing">
-                  <number>1</number>
+                <property name="lineWidth">
+                 <number>0</number>
+                </property>
+                <layout class="QVBoxLayout" name="verticalLayout_6">
+                 <property name="spacing">
+                  <number>2</number>
                  </property>
                  <property name="leftMargin">
-                  <number>20</number>
+                  <number>0</number>
                  </property>
                  <property name="topMargin">
                   <number>0</number>
@@ -237,39 +254,51 @@
                  <property name="bottomMargin">
                   <number>0</number>
                  </property>
-                 <item row="0" column="0" colspan="2">
-                  <widget class="QRadioButton" name="rbtnTenantDatabase">
+                 <item>
+                  <widget class="QRadioButton" name="rbtnMultipleContainers">
                    <property name="enabled">
                     <bool>true</bool>
                    </property>
-                   <property name="text">
-                    <string>Tenant database</string>
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
                    </property>
-                   <property name="checked">
-                    <bool>true</bool>
+                   <property name="text">
+                    <string>Multiple containers</string>
                    </property>
                    <attribute name="buttonGroup">
-                    <string notr="true">buttonGroup_2</string>
+                    <string notr="true">buttonGroup</string>
                    </attribute>
                   </widget>
                  </item>
-                 <item row="1" column="1">
-                  <widget class="QFrame" name="frame">
+                 <item>
+                  <widget class="QFrame" name="frmMultitenantSettings">
+                   <property name="enabled">
+                    <bool>true</bool>
+                   </property>
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
                    <property name="frameShape">
                     <enum>QFrame::NoFrame</enum>
                    </property>
                    <property name="frameShadow">
-                    <enum>QFrame::Raised</enum>
+                    <enum>QFrame::Plain</enum>
                    </property>
-                   <layout class="QFormLayout" name="formLayout_4">
+                   <layout class="QFormLayout" name="formLayout">
                     <property name="horizontalSpacing">
-                     <number>2</number>
+                     <number>0</number>
                     </property>
                     <property name="verticalSpacing">
-                     <number>2</number>
+                     <number>3</number>
                     </property>
                     <property name="leftMargin">
-                     <number>16</number>
+                     <number>20</number>
                     </property>
                     <property name="topMargin">
                      <number>0</number>
@@ -280,43 +309,89 @@
                     <property name="bottomMargin">
                      <number>0</number>
                     </property>
-                    <item row="0" column="0">
-                     <widget class="QLabel" name="lblTenantDatabaseName">
+                    <item row="0" column="0" colspan="2">
+                     <widget class="QRadioButton" name="rbtnTenantDatabase">
                       <property name="enabled">
                        <bool>true</bool>
                       </property>
                       <property name="text">
-                       <string>Name:</string>
+                       <string>Tenant database</string>
                       </property>
-                      <property name="buddy">
-                       <cstring>txtDriver</cstring>
+                      <property name="checked">
+                       <bool>true</bool>
                       </property>
+                      <attribute name="buttonGroup">
+                       <string notr="true">buttonGroup_2</string>
+                      </attribute>
                      </widget>
                     </item>
-                    <item row="0" column="1">
-                     <widget class="QLineEdit" name="txtTenantDatabaseName">
+                    <item row="1" column="1">
+                     <widget class="QFrame" name="frame">
+                      <property name="frameShape">
+                       <enum>QFrame::NoFrame</enum>
+                      </property>
+                      <property name="frameShadow">
+                       <enum>QFrame::Raised</enum>
+                      </property>
+                      <layout class="QFormLayout" name="formLayout_4">
+                       <property name="horizontalSpacing">
+                        <number>2</number>
+                       </property>
+                       <property name="verticalSpacing">
+                        <number>2</number>
+                       </property>
+                       <property name="leftMargin">
+                        <number>16</number>
+                       </property>
+                       <property name="topMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="rightMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="bottomMargin">
+                        <number>0</number>
+                       </property>
+                       <item row="0" column="0">
+                        <widget class="QLabel" name="lblTenantDatabaseName">
+                         <property name="enabled">
+                          <bool>true</bool>
+                         </property>
+                         <property name="text">
+                          <string>Name</string>
+                         </property>
+                         <property name="buddy">
+                          <cstring>txtDriver</cstring>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="1">
+                        <widget class="QLineEdit" name="txtTenantDatabaseName">
+                         <property name="enabled">
+                          <bool>true</bool>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </widget>
+                    </item>
+                    <item row="3" column="0" colspan="2">
+                     <widget class="QRadioButton" name="rbtnSystemDatabase">
                       <property name="enabled">
                        <bool>true</bool>
                       </property>
-                      <property name="alignment">
-                       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                      <property name="text">
+                       <string>System database</string>
                       </property>
+                      <attribute name="buttonGroup">
+                       <string notr="true">buttonGroup_2</string>
+                      </attribute>
                      </widget>
                     </item>
                    </layout>
-                  </widget>
-                 </item>
-                 <item row="3" column="0" colspan="2">
-                  <widget class="QRadioButton" name="rbtnSystemDatabase">
-                   <property name="enabled">
-                    <bool>true</bool>
-                   </property>
-                   <property name="text">
-                    <string>System database</string>
-                   </property>
-                   <attribute name="buttonGroup">
-                    <string notr="true">buttonGroup_2</string>
-                   </attribute>
                   </widget>
                  </item>
                 </layout>
@@ -325,108 +400,247 @@
              </layout>
             </widget>
            </item>
+           <item row="2" column="1">
+            <widget class="QLineEdit" name="txtHost">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="lblHost">
+             <property name="text">
+              <string>Hos&amp;t</string>
+             </property>
+             <property name="buddy">
+              <cstring>txtHost</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="lbIdentifier">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>1</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Identifier</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QLineEdit" name="txtDriver">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <widget class="QLabel" name="lblMode">
+             <property name="minimumSize">
+              <size>
+               <width>82</width>
+               <height>100</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Mode</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <layout class="QGridLayout" name="gridLayout" columnstretch="4,1,0" columnminimumwidth="100,20,0">
+             <item row="0" column="0">
+              <widget class="QComboBox" name="cmbIdentifierType">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>1</horstretch>
+                 <verstretch>1</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>400</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <item>
+                <property name="text">
+                 <string>Instance Number</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Port Number</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLineEdit" name="txtIdentifier">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>1</horstretch>
+                 <verstretch>1</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>120</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>00</string>
+               </property>
+               <property name="maxLength">
+                <number>5</number>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="2">
+              <spacer name="horizontalSpacer">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>80</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="lblDriver">
+             <property name="text">
+              <string>Driver</string>
+             </property>
+             <property name="buddy">
+              <cstring>txtDriver</cstring>
+             </property>
+            </widget>
+           </item>
           </layout>
          </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QLineEdit" name="txtDriver"/>
-        </item>
-        <item row="4" column="0">
-         <widget class="QLabel" name="lblMode">
-          <property name="minimumSize">
-           <size>
-            <width>82</width>
-            <height>100</height>
-           </size>
+        </widget>
+        <widget class="QWidget" name="pageDsn">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>1</verstretch>
+          </sizepolicy>
+         </property>
+         <widget class="QWidget" name="formLayoutWidget">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>421</width>
+            <height>58</height>
+           </rect>
           </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>100</height>
-           </size>
-          </property>
+          <layout class="QFormLayout" name="frmDsn">
+           <property name="topMargin">
+            <number>1</number>
+           </property>
+           <property name="rightMargin">
+            <number>1</number>
+           </property>
+           <item row="0" column="0">
+            <widget class="QLabel" name="lblDsn">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>DSN                        </string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QComboBox" name="cmbDsn"/>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </widget>
+      </item>
+      <item>
+       <widget class="Line" name="line_3">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLabel" name="lblSchema">
           <property name="text">
-           <string>Mode</string>
+           <string>&amp;Schema</string>
           </property>
-          <property name="alignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+          <property name="buddy">
+           <cstring>txtSchema</cstring>
           </property>
          </widget>
         </item>
-        <item row="5" column="1">
-         <widget class="QLineEdit" name="txtSchema"/>
-        </item>
-        <item row="3" column="1">
-         <widget class="QFrame" name="frmIdentifier">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>25</height>
-           </size>
+        <item>
+         <widget class="QLineEdit" name="txtSchema">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
           </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>25</height>
-           </size>
-          </property>
-          <property name="frameShadow">
-           <enum>QFrame::Raised</enum>
-          </property>
-          <widget class="QComboBox" name="cmbIdentifierType">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>0</y>
-             <width>151</width>
-             <height>25</height>
-            </rect>
-           </property>
-           <item>
-            <property name="text">
-             <string>Instance Number</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Port Number</string>
-            </property>
-           </item>
-          </widget>
-          <widget class="QLineEdit" name="txtIdentifier">
-           <property name="geometry">
-            <rect>
-             <x>160</x>
-             <y>0</y>
-             <width>51</width>
-             <height>25</height>
-            </rect>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>00</string>
-           </property>
-           <property name="maxLength">
-            <number>5</number>
-           </property>
-          </widget>
          </widget>
         </item>
        </layout>
       </item>
       <item>
-       <widget class="QTabWidget" name="tabWidget">
+       <widget class="QTabWidget" name="tabAdditionalSettings">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="autoFillBackground">
          <bool>false</bool>
         </property>
@@ -452,7 +666,7 @@
         </widget>
         <widget class="QWidget" name="tbpSSLSettings">
          <attribute name="title">
-          <string>SSL Settings</string>
+          <string>SSL</string>
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_4">
           <item>
@@ -528,6 +742,132 @@
           </item>
          </layout>
         </widget>
+        <widget class="QWidget" name="tbpProxySettings">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <attribute name="title">
+          <string>Proxy</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_7">
+          <item>
+           <widget class="QCheckBox" name="chkEnableProxy">
+            <property name="text">
+             <string>Enable proxy</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="Line" name="line_5">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QFormLayout" name="frmLayoutProxy">
+            <item row="0" column="0">
+             <widget class="QLabel" name="lblProxyType">
+              <property name="text">
+               <string>Type</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QComboBox" name="cmbProxyType">
+              <property name="currentIndex">
+               <number>1</number>
+              </property>
+              <item>
+               <property name="text">
+                <string>HTTP</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>SOCKS5</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="lblProxyHost">
+              <property name="text">
+               <string>Host</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLineEdit" name="txtProxyHost">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="lblProxyPort">
+              <property name="text">
+               <string>Port</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLineEdit" name="txtProxyPort">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="lblProxyUsername">
+              <property name="text">
+               <string>User name</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QLineEdit" name="txtProxyUsername">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="lblProxyPassword">
+              <property name="text">
+               <string>Password</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QLineEdit" name="txtProxyPassword">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="echoMode">
+               <enum>QLineEdit::Password</enum>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
        </widget>
       </item>
       <item>
@@ -564,6 +904,9 @@
        <spacer name="verticalSpacer">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Expanding</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
@@ -602,26 +945,25 @@
  </customwidgets>
  <tabstops>
   <tabstop>txtName</tabstop>
+  <tabstop>cmbConnectionType</tabstop>
   <tabstop>txtDriver</tabstop>
   <tabstop>txtHost</tabstop>
-  <tabstop>cmbIdentifierType</tabstop>
-  <tabstop>txtIdentifier</tabstop>
   <tabstop>rbtnSingleContainer</tabstop>
   <tabstop>rbtnMultipleContainers</tabstop>
   <tabstop>rbtnTenantDatabase</tabstop>
   <tabstop>txtTenantDatabaseName</tabstop>
   <tabstop>rbtnSystemDatabase</tabstop>
   <tabstop>txtSchema</tabstop>
-  <tabstop>tabWidget</tabstop>
+  <tabstop>tabAdditionalSettings</tabstop>
   <tabstop>btnConnect</tabstop>
   <tabstop>chkUserTablesOnly</tabstop>
   <tabstop>chkAllowGeometrylessTables</tabstop>
-  <tabstop>txtOverrideHostName</tabstop>
-  <tabstop>txtKeyStore</tabstop>
-  <tabstop>txtTrustStore</tabstop>
   <tabstop>chkValidateCertificate</tabstop>
   <tabstop>cbxCryptoProvider</tabstop>
   <tabstop>chkEnableSSL</tabstop>
+  <tabstop>txtKeyStore</tabstop>
+  <tabstop>txtOverrideHostName</tabstop>
+  <tabstop>txtTrustStore</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -659,7 +1001,7 @@
   </connection>
  </connections>
  <buttongroups>
-  <buttongroup name="buttonGroup_2"/>
   <buttongroup name="buttonGroup"/>
+  <buttongroup name="buttonGroup_2"/>
  </buttongroups>
 </ui>

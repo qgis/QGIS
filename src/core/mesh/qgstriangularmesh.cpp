@@ -254,6 +254,11 @@ bool QgsTriangularMesh::update( QgsMesh *nativeMesh, const QgsCoordinateTransfor
   return true;
 }
 
+bool QgsTriangularMesh::update( QgsMesh *nativeMesh )
+{
+  return update( nativeMesh, mCoordinateTransform );
+}
+
 void QgsTriangularMesh::finalizeTriangles()
 {
   mAverageTriangleSize = 0;

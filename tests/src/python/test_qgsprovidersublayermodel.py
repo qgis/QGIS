@@ -502,7 +502,16 @@ class TestQgsProviderSublayerModel(unittest.TestCase):
         layer2.setFeatureCount(-1)
         layer2.setWkbType(QgsWkbTypes.LineString)
 
-        model.setSublayerDetails([layer1, layer2])
+        layer3 = QgsProviderSublayerDetails()
+        layer3.setType(QgsMapLayerType.VectorLayer)
+        layer3.setName('yet another layer 3')
+        layer3.setDescription('an empty layer')
+        layer3.setProviderKey('ogr')
+        layer3.setUri('uri 3')
+        layer3.setFeatureCount(0)
+        layer3.setWkbType(QgsWkbTypes.Polygon)
+
+        model.setSublayerDetails([layer1, layer2, layer3])
 
         item1 = QgsProviderSublayerModel.NonLayerItem()
         item1.setUri('item uri 1')
@@ -512,7 +521,7 @@ class TestQgsProviderSublayerModel(unittest.TestCase):
 
         model.addNonLayerItem(item1)
 
-        self.assertEqual(proxy.rowCount(QModelIndex()), 3)
+        self.assertEqual(proxy.rowCount(QModelIndex()), 4)
 
         self.assertEqual(proxy.data(proxy.index(0, 0), Qt.DisplayRole), 'item name 1')
         self.assertEqual(proxy.data(proxy.index(0, 1), Qt.DisplayRole), 'item desc 1')
@@ -539,6 +548,15 @@ class TestQgsProviderSublayerModel(unittest.TestCase):
         self.assertEqual(proxy.data(proxy.index(2, 0), QgsProviderSublayerModel.Role.Description), 'description 1')
         self.assertEqual(proxy.data(proxy.index(2, 0), QgsProviderSublayerModel.Role.IsNonLayerItem), False)
 
+        self.assertEqual(proxy.data(proxy.index(3, 0), Qt.DisplayRole), 'yet another layer 3')
+        self.assertEqual(proxy.data(proxy.index(3, 1), Qt.DisplayRole), 'an empty layer - Polygon (0)')
+        self.assertEqual(proxy.data(proxy.index(3, 0), QgsProviderSublayerModel.Role.ProviderKey), 'ogr')
+        self.assertEqual(proxy.data(proxy.index(3, 0), QgsProviderSublayerModel.Role.LayerType), QgsMapLayerType.VectorLayer)
+        self.assertEqual(proxy.data(proxy.index(3, 0), QgsProviderSublayerModel.Role.Uri), 'uri 3')
+        self.assertEqual(proxy.data(proxy.index(3, 0), QgsProviderSublayerModel.Role.Name), 'yet another layer 3')
+        self.assertEqual(proxy.data(proxy.index(3, 0), QgsProviderSublayerModel.Role.Description), 'an empty layer')
+        self.assertEqual(proxy.data(proxy.index(3, 0), QgsProviderSublayerModel.Role.IsNonLayerItem), False)
+
         proxy.setFilterString(' 1')
         self.assertEqual(proxy.rowCount(QModelIndex()), 2)
         self.assertEqual(proxy.data(proxy.index(0, 0), Qt.DisplayRole), 'item name 1')
@@ -557,26 +575,42 @@ class TestQgsProviderSublayerModel(unittest.TestCase):
         self.assertEqual(proxy.rowCount(QModelIndex()), 1)
         self.assertEqual(proxy.data(proxy.index(0, 0), Qt.DisplayRole), 'another layer 2')
 
+        # should also allow filtering by the feature count as it appears in the description too but it's not in the description role
+        proxy.setFilterString('0')
+        self.assertEqual(proxy.rowCount(QModelIndex()), 1)
+        self.assertEqual(proxy.data(proxy.index(0, 0), Qt.DisplayRole), 'yet another layer 3')
+
         proxy.setFilterString('')
-        self.assertEqual(proxy.rowCount(QModelIndex()), 3)
+        self.assertEqual(proxy.rowCount(QModelIndex()), 4)
         self.assertEqual(proxy.data(proxy.index(0, 0), Qt.DisplayRole), 'item name 1')
         self.assertEqual(proxy.data(proxy.index(1, 0), Qt.DisplayRole), 'another layer 2')
         self.assertEqual(proxy.data(proxy.index(2, 0), Qt.DisplayRole), 'layer 1')
+        self.assertEqual(proxy.data(proxy.index(3, 0), Qt.DisplayRole), 'yet another layer 3')
 
         # add a system table
-        layer3 = QgsProviderSublayerDetails()
-        layer3.setType(QgsMapLayerType.VectorLayer)
-        layer3.setName('system table')
-        layer3.setFlags(Qgis.SublayerFlags(Qgis.SublayerFlag.SystemTable))
+        layer_system = QgsProviderSublayerDetails()
+        layer_system.setType(QgsMapLayerType.VectorLayer)
+        layer_system.setName('system table')
+        layer_system.setFlags(Qgis.SublayerFlags(Qgis.SublayerFlag.SystemTable))
 
-        model.setSublayerDetails([layer1, layer2, layer3])
+        model.setSublayerDetails([layer1, layer2, layer3, layer_system])
         # system tables should be hidden by default
-        self.assertEqual(proxy.rowCount(QModelIndex()), 3)
+        self.assertEqual(proxy.rowCount(QModelIndex()), 4)
         self.assertEqual(proxy.data(proxy.index(0, 0), Qt.DisplayRole), 'item name 1')
         self.assertEqual(proxy.data(proxy.index(1, 0), Qt.DisplayRole), 'another layer 2')
         self.assertEqual(proxy.data(proxy.index(2, 0), Qt.DisplayRole), 'layer 1')
+        self.assertEqual(proxy.data(proxy.index(3, 0), Qt.DisplayRole), 'yet another layer 3')
 
         proxy.setIncludeSystemTables(True)
+        self.assertEqual(proxy.rowCount(QModelIndex()), 5)
+        self.assertEqual(proxy.data(proxy.index(0, 0), Qt.DisplayRole), 'item name 1')
+        self.assertEqual(proxy.data(proxy.index(1, 0), Qt.DisplayRole), 'another layer 2')
+        self.assertEqual(proxy.data(proxy.index(2, 0), Qt.DisplayRole), 'layer 1')
+        self.assertEqual(proxy.data(proxy.index(3, 0), Qt.DisplayRole), 'system table')
+        self.assertEqual(proxy.data(proxy.index(4, 0), Qt.DisplayRole), 'yet another layer 3')
+
+        # hide empty vector layers
+        proxy.setIncludeEmptyLayers(False)
         self.assertEqual(proxy.rowCount(QModelIndex()), 4)
         self.assertEqual(proxy.data(proxy.index(0, 0), Qt.DisplayRole), 'item name 1')
         self.assertEqual(proxy.data(proxy.index(1, 0), Qt.DisplayRole), 'another layer 2')

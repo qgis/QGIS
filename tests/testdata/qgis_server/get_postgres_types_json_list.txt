@@ -1,6 +1,7 @@
 *****
 Content-Type: text/xml; charset=utf-8
 
+<?xml version="1.0" encoding="UTF-8"?>
 <GetFeatureInfoResponse>
  <BoundingBox maxy="0" maxx="0" miny="0" CRS="EPSG:3857" minx="0"/>
  <Layer name="json">

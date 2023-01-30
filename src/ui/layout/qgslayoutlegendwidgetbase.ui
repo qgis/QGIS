@@ -63,9 +63,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
-        <width>367</width>
-        <height>2191</height>
+        <y>-1282</y>
+        <width>359</width>
+        <height>2253</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -469,6 +469,20 @@
           <bool>true</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,0,0">
+          <item row="11" column="0">
+           <widget class="QLabel" name="label_20">
+            <property name="text">
+             <string>Alignment</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="label_22">
+            <property name="text">
+             <string>Font</string>
+            </property>
+           </widget>
+          </item>
           <item row="7" column="1" colspan="2">
            <widget class="QgsFontButton" name="mLayerFontButton">
             <property name="sizePolicy">
@@ -482,16 +496,10 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1" colspan="2">
-           <widget class="QgsFontButton" name="mTitleFontButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
+          <item row="6" column="0" colspan="3">
+           <widget class="QLabel" name="label_23">
             <property name="text">
-             <string>Title font</string>
+             <string>&lt;b&gt;Subgroup Headings&lt;/b&gt;</string>
             </property>
            </widget>
           </item>
@@ -502,59 +510,17 @@
             </property>
            </widget>
           </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="label_18_alignment">
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_29">
             <property name="text">
              <string>Alignment</string>
             </property>
            </widget>
           </item>
-          <item row="12" column="1" colspan="2">
-           <widget class="QgsColorButton" name="mFontColorButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>120</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>16777215</height>
-             </size>
-            </property>
+          <item row="5" column="0">
+           <widget class="QLabel" name="label_18_alignment">
             <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="10" column="0">
-           <widget class="QLabel" name="label_26">
-            <property name="text">
-             <string>Font</string>
-            </property>
-           </widget>
-          </item>
-          <item row="11" column="1" colspan="2">
-           <widget class="QgsAlignmentComboBox" name="mItemAlignCombo"/>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_28">
-            <property name="text">
-             <string>Font</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0" colspan="3">
-           <widget class="QLabel" name="label_27">
-            <property name="text">
-             <string>&lt;b&gt;Legend Title&lt;/b&gt;</string>
+             <string>Alignment</string>
             </property>
            </widget>
           </item>
@@ -565,65 +531,8 @@
             </property>
            </widget>
           </item>
-          <item row="10" column="1" colspan="2">
-           <widget class="QgsFontButton" name="mItemFontButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Item font</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1" colspan="2">
-           <widget class="QgsAlignmentComboBox" name="mTitleAlignCombo"/>
-          </item>
-          <item row="3" column="0" colspan="3">
-           <widget class="QLabel" name="label_21">
-            <property name="text">
-             <string>&lt;b&gt;Group Headings&lt;/b&gt;</string>
-            </property>
-           </widget>
-          </item>
-          <item row="11" column="0">
-           <widget class="QLabel" name="label_20">
-            <property name="text">
-             <string>Alignment</string>
-            </property>
-           </widget>
-          </item>
-          <item row="8" column="1" colspan="2">
-           <widget class="QgsAlignmentComboBox" name="mSubgroupAlignCombo"/>
-          </item>
-          <item row="7" column="0">
-           <widget class="QLabel" name="label_24">
-            <property name="text">
-             <string>Font</string>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="0" colspan="3">
-           <widget class="QLabel" name="label_23">
-            <property name="text">
-             <string>&lt;b&gt;Subgroup Headings&lt;/b&gt;</string>
-            </property>
-           </widget>
-          </item>
-          <item row="12" column="0">
-           <widget class="QLabel" name="label_16">
-            <property name="text">
-             <string>Font color</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="1" colspan="2">
-           <widget class="QgsAlignmentComboBox" name="mGroupAlignCombo"/>
-          </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="label_22">
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_28">
             <property name="text">
              <string>Font</string>
             </property>
@@ -642,10 +551,69 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_29">
+          <item row="10" column="1" colspan="2">
+           <widget class="QgsFontButton" name="mItemFontButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="text">
-             <string>Alignment</string>
+             <string>Item font</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="0">
+           <widget class="QLabel" name="label_24">
+            <property name="text">
+             <string>Font</string>
+            </property>
+           </widget>
+          </item>
+          <item row="10" column="0">
+           <widget class="QLabel" name="label_26">
+            <property name="text">
+             <string>Font</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1" colspan="2">
+           <widget class="QgsAlignmentComboBox" name="mGroupAlignCombo"/>
+          </item>
+          <item row="1" column="1" colspan="2">
+           <widget class="QgsFontButton" name="mTitleFontButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Title font</string>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="1" colspan="2">
+           <widget class="QgsAlignmentComboBox" name="mSubgroupAlignCombo"/>
+          </item>
+          <item row="2" column="1" colspan="2">
+           <widget class="QgsAlignmentComboBox" name="mTitleAlignCombo"/>
+          </item>
+          <item row="11" column="1" colspan="2">
+           <widget class="QgsAlignmentComboBox" name="mItemAlignCombo"/>
+          </item>
+          <item row="0" column="0" colspan="3">
+           <widget class="QLabel" name="label_27">
+            <property name="text">
+             <string>&lt;b&gt;Legend Title&lt;/b&gt;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="3">
+           <widget class="QLabel" name="label_21">
+            <property name="text">
+             <string>&lt;b&gt;Group Headings&lt;/b&gt;</string>
             </property>
            </widget>
           </item>
@@ -763,7 +731,7 @@
             <property name="suffix">
              <string> mm</string>
             </property>
-            <property name="showClearButton">
+            <property name="showClearButton" stdset="0">
              <bool>false</bool>
             </property>
            </widget>
@@ -783,7 +751,7 @@
             <property name="suffix">
              <string> mm</string>
             </property>
-            <property name="showClearButton">
+            <property name="showClearButton" stdset="0">
              <bool>false</bool>
             </property>
            </widget>
@@ -879,7 +847,7 @@
                <property name="singleStep">
                 <double>0.100000000000000</double>
                </property>
-               <property name="showClearButton">
+               <property name="showClearButton" stdset="0">
                 <bool>false</bool>
                </property>
               </widget>
@@ -957,7 +925,7 @@
             <property name="maximum">
              <double>9999.000000000000000</double>
             </property>
-            <property name="showClearButton">
+            <property name="showClearButton" stdset="0">
              <bool>false</bool>
             </property>
            </widget>
@@ -980,7 +948,7 @@
             <property name="maximum">
              <double>9999.000000000000000</double>
             </property>
-            <property name="showClearButton">
+            <property name="showClearButton" stdset="0">
              <bool>false</bool>
             </property>
            </widget>
@@ -1003,10 +971,30 @@
           <bool>true</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_5">
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_31s">
+          <item row="14" column="0">
+           <widget class="QLabel" name="label_34">
             <property name="text">
-             <string>&lt;b&gt;Legend Title&lt;/b&gt;</string>
+             <string>&lt;b&gt;Legend Items&lt;/b&gt;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="20" column="1">
+           <widget class="QgsDoubleSpinBox" name="mColumnSpaceSpinBox">
+            <property name="prefix">
+             <string/>
+            </property>
+            <property name="suffix">
+             <string> mm</string>
+            </property>
+           </widget>
+          </item>
+          <item row="15" column="1">
+           <widget class="QgsDoubleSpinBox" name="mSymbolSideSpaceSpinBox">
+            <property name="prefix">
+             <string/>
+            </property>
+            <property name="suffix">
+             <string> mm</string>
             </property>
            </widget>
           </item>
@@ -1020,90 +1008,6 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
-           <widget class="QgsDoubleSpinBox" name="mTitleSpaceBottomSpinBox">
-            <property name="toolTip">
-             <string>Space below title.</string>
-            </property>
-            <property name="suffix">
-             <string> mm</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_31">
-            <property name="text">
-             <string>&lt;b&gt;Groups&lt;/b&gt;</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_5">
-            <property name="toolTip">
-             <string>Space above text using group style.</string>
-            </property>
-            <property name="text">
-             <string>Above group</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QgsDoubleSpinBox" name="mGroupSpaceSpinBox">
-            <property name="prefix">
-             <string/>
-            </property>
-            <property name="suffix">
-             <string> mm</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="label_39">
-            <property name="toolTip">
-             <string>Additional space </string>
-            </property>
-            <property name="text">
-             <string>Indent of group items</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="1">
-           <widget class="QgsDoubleSpinBox" name="mGroupIndentSpinBox">
-            <property name="prefix">
-             <string/>
-            </property>
-            <property name="suffix">
-             <string> mm</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="label_35">
-            <property name="text">
-             <string>&lt;b&gt;Group Headings&lt;/b&gt;</string>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="0">
-           <widget class="QLabel" name="label_18">
-            <property name="toolTip">
-             <string>Space above text using group style.</string>
-            </property>
-            <property name="text">
-             <string>Below heading</string>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="1">
-           <widget class="QgsDoubleSpinBox" name="mSpaceBelowGroupHeadingSpinBox">
-            <property name="prefix">
-             <string/>
-            </property>
-            <property name="suffix">
-             <string> mm</string>
-            </property>
-           </widget>
-          </item>
           <item row="7" column="0">
            <widget class="QLabel" name="label_30">
             <property name="toolTip">
@@ -1114,8 +1018,15 @@
             </property>
            </widget>
           </item>
-          <item row="7" column="1">
-           <widget class="QgsDoubleSpinBox" name="mGroupSideSpinBox">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_31s">
+            <property name="text">
+             <string>&lt;b&gt;Legend Title&lt;/b&gt;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="16" column="1">
+           <widget class="QgsDoubleSpinBox" name="mSymbolSpaceSpinBox">
             <property name="prefix">
              <string/>
             </property>
@@ -1131,6 +1042,16 @@
             </property>
            </widget>
           </item>
+          <item row="12" column="1">
+           <widget class="QgsDoubleSpinBox" name="mSpaceBelowSubgroupHeadingSpinBox">
+            <property name="prefix">
+             <string/>
+            </property>
+            <property name="suffix">
+             <string> mm</string>
+            </property>
+           </widget>
+          </item>
           <item row="9" column="0">
            <widget class="QLabel" name="label_6">
             <property name="toolTip">
@@ -1141,8 +1062,8 @@
             </property>
            </widget>
           </item>
-          <item row="9" column="1">
-           <widget class="QgsDoubleSpinBox" name="mLayerSpaceSpinBox">
+          <item row="7" column="1">
+           <widget class="QgsDoubleSpinBox" name="mGroupSideSpinBox">
             <property name="prefix">
              <string/>
             </property>
@@ -1151,18 +1072,28 @@
             </property>
            </widget>
           </item>
-          <item row="10" column="0">
-           <widget class="QLabel" name="label_40">
+          <item row="15" column="0">
+           <widget class="QLabel" name="label_38">
             <property name="toolTip">
-             <string>Space above text using subgroup style.</string>
+             <string>Space above symbol and symbol label.</string>
             </property>
             <property name="text">
-             <string>Indent of subgroup items</string>
+             <string>Space before side of symbol</string>
             </property>
            </widget>
           </item>
-          <item row="10" column="1">
-           <widget class="QgsDoubleSpinBox" name="mSubgroupIndentSpinBox">
+          <item row="17" column="1">
+           <widget class="QgsDoubleSpinBox" name="mIconLabelSpaceSpinBox">
+            <property name="prefix">
+             <string/>
+            </property>
+            <property name="suffix">
+             <string> mm</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QgsDoubleSpinBox" name="mGroupIndentSpinBox">
             <property name="prefix">
              <string/>
             </property>
@@ -1178,18 +1109,25 @@
             </property>
            </widget>
           </item>
-          <item row="12" column="0">
-           <widget class="QLabel" name="label_19">
-            <property name="toolTip">
-             <string>Space above text using group style.</string>
+          <item row="6" column="1">
+           <widget class="QgsDoubleSpinBox" name="mSpaceBelowGroupHeadingSpinBox">
+            <property name="prefix">
+             <string/>
             </property>
-            <property name="text">
-             <string>Below heading</string>
+            <property name="suffix">
+             <string> mm</string>
             </property>
            </widget>
           </item>
-          <item row="12" column="1">
-           <widget class="QgsDoubleSpinBox" name="mSpaceBelowSubgroupHeadingSpinBox">
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_31">
+            <property name="text">
+             <string>&lt;b&gt;Groups&lt;/b&gt;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="19" column="1">
+           <widget class="QgsDoubleSpinBox" name="mBoxSpaceSpinBox">
             <property name="prefix">
              <string/>
             </property>
@@ -1218,45 +1156,28 @@
             </property>
            </widget>
           </item>
-          <item row="14" column="0">
-           <widget class="QLabel" name="label_34">
-            <property name="text">
-             <string>&lt;b&gt;Legend Items&lt;/b&gt;</string>
-            </property>
-           </widget>
-          </item>
-          <item row="15" column="0">
-           <widget class="QLabel" name="label_38">
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_5">
             <property name="toolTip">
-             <string>Space above symbol and symbol label.</string>
+             <string>Space above text using group style.</string>
             </property>
             <property name="text">
-             <string>Space before side of symbol</string>
+             <string>Above group</string>
             </property>
            </widget>
           </item>
-          <item row="15" column="1">
-           <widget class="QgsDoubleSpinBox" name="mSymbolSideSpaceSpinBox">
-            <property name="prefix">
-             <string/>
-            </property>
-            <property name="suffix">
-             <string> mm</string>
-            </property>
-           </widget>
-          </item>
-          <item row="16" column="0">
-           <widget class="QLabel" name="label_7">
+          <item row="6" column="0">
+           <widget class="QLabel" name="label_18">
             <property name="toolTip">
-             <string>Space above symbol and symbol label.</string>
+             <string>Space above text using group style.</string>
             </property>
             <property name="text">
-             <string>Space between symbols</string>
+             <string>Below heading</string>
             </property>
            </widget>
           </item>
-          <item row="16" column="1">
-           <widget class="QgsDoubleSpinBox" name="mSymbolSpaceSpinBox">
+          <item row="10" column="1">
+           <widget class="QgsDoubleSpinBox" name="mSubgroupIndentSpinBox">
             <property name="prefix">
              <string/>
             </property>
@@ -1275,13 +1196,50 @@
             </property>
            </widget>
           </item>
-          <item row="17" column="1">
-           <widget class="QgsDoubleSpinBox" name="mIconLabelSpaceSpinBox">
+          <item row="20" column="0">
+           <widget class="QLabel" name="label_12">
+            <property name="text">
+             <string>Column space</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QgsDoubleSpinBox" name="mTitleSpaceBottomSpinBox">
+            <property name="toolTip">
+             <string>Space below title.</string>
+            </property>
+            <property name="suffix">
+             <string> mm</string>
+            </property>
+           </widget>
+          </item>
+          <item row="9" column="1">
+           <widget class="QgsDoubleSpinBox" name="mLayerSpaceSpinBox">
             <property name="prefix">
              <string/>
             </property>
             <property name="suffix">
              <string> mm</string>
+            </property>
+           </widget>
+          </item>
+          <item row="16" column="0">
+           <widget class="QLabel" name="label_7">
+            <property name="toolTip">
+             <string>Space above symbol and symbol label.</string>
+            </property>
+            <property name="text">
+             <string>Space between symbols</string>
+            </property>
+           </widget>
+          </item>
+          <item row="12" column="0">
+           <widget class="QLabel" name="label_19">
+            <property name="toolTip">
+             <string>Space above text using group style.</string>
+            </property>
+            <property name="text">
+             <string>Below heading</string>
             </property>
            </widget>
           </item>
@@ -1299,47 +1257,40 @@
             </property>
            </widget>
           </item>
-          <item row="19" column="1">
-           <widget class="QgsDoubleSpinBox" name="mBoxSpaceSpinBox">
-            <property name="prefix">
-             <string/>
-            </property>
-            <property name="suffix">
-             <string> mm</string>
-            </property>
-           </widget>
-          </item>
-          <item row="20" column="0">
-           <widget class="QLabel" name="label_12">
+          <item row="5" column="0">
+           <widget class="QLabel" name="label_35">
             <property name="text">
-             <string>Column space</string>
+             <string>&lt;b&gt;Group Headings&lt;/b&gt;</string>
             </property>
            </widget>
           </item>
-          <item row="20" column="1">
-           <widget class="QgsDoubleSpinBox" name="mColumnSpaceSpinBox">
-            <property name="prefix">
-             <string/>
+          <item row="4" column="0">
+           <widget class="QLabel" name="label_39">
+            <property name="toolTip">
+             <string>Additional space </string>
             </property>
-            <property name="suffix">
-             <string> mm</string>
-            </property>
-           </widget>
-          </item>
-          <item row="21" column="0">
-           <widget class="QLabel" name="label_121">
             <property name="text">
-             <string>Line space</string>
+             <string>Indent of group items</string>
             </property>
            </widget>
           </item>
-          <item row="21" column="1">
-           <widget class="QgsDoubleSpinBox" name="mLineSpacingSpinBox">
+          <item row="3" column="1">
+           <widget class="QgsDoubleSpinBox" name="mGroupSpaceSpinBox">
             <property name="prefix">
              <string/>
             </property>
             <property name="suffix">
              <string> mm</string>
+            </property>
+           </widget>
+          </item>
+          <item row="10" column="0">
+           <widget class="QLabel" name="label_40">
+            <property name="toolTip">
+             <string>Space above text using subgroup style.</string>
+            </property>
+            <property name="text">
+             <string>Indent of subgroup items</string>
             </property>
            </widget>
           </item>
@@ -1365,19 +1316,9 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsFontButton</class>
    <extends>QToolButton</extends>
    <header>qgsfontbutton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsPropertyOverrideButton</class>
@@ -1409,11 +1350,6 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsFontButton</class>
-   <extends>QToolButton</extends>
-   <header>qgsfontbutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsAlignmentComboBox</class>
    <extends>QComboBox</extends>
    <header>qgsalignmentcombobox.h</header>
@@ -1422,11 +1358,6 @@
    <class>QgsLayerTreeView</class>
    <extends>QTreeView</extends>
    <header>qgslayertreeview.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsLayoutItemComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgslayoutitemcombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsLegendFilterButton</class>
@@ -1467,7 +1398,6 @@
   <tabstop>mSubgroupAlignCombo</tabstop>
   <tabstop>mItemFontButton</tabstop>
   <tabstop>mItemAlignCombo</tabstop>
-  <tabstop>mFontColorButton</tabstop>
   <tabstop>mColumnsColGroupBox</tabstop>
   <tabstop>mColumnCountSpinBox</tabstop>
   <tabstop>mColumnsDDBtn</tabstop>
@@ -1496,9 +1426,9 @@
   <tabstop>mIconLabelSpaceSpinBox</tabstop>
   <tabstop>mBoxSpaceSpinBox</tabstop>
   <tabstop>mColumnSpaceSpinBox</tabstop>
-  <tabstop>mLineSpacingSpinBox</tabstop>
  </tabstops>
  <resources>
+  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>

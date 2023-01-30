@@ -1968,7 +1968,6 @@ QStringList QgsProcessingParameters::parameterAsFields( const QgsProcessingParam
   if ( !definition )
     return QStringList();
 
-  const QStringList resultStringList;
   return parameterAsFields( definition, parameters.value( definition->name() ), context );
 }
 
@@ -2500,7 +2499,6 @@ QVariant QgsProcessingParameterDefinition::valueAsJsonObjectPrivate( const QVari
         break;
     }
 
-
     if ( value.userType() == QMetaType::type( "QgsProperty" ) )
     {
       const QgsProperty prop = value.value< QgsProperty >();
@@ -2510,12 +2508,10 @@ QVariant QgsProcessingParameterDefinition::valueAsJsonObjectPrivate( const QVari
           return QVariant();
         case QgsProperty::StaticProperty:
           return valueAsJsonObject( prop.staticValue(), context );
-
-        // these are not supported for serialization
         case QgsProperty::FieldBasedProperty:
+          return QVariantMap( {{QStringLiteral( "type" ), QStringLiteral( "data_defined" )}, {QStringLiteral( "field" ), prop.field() }} );
         case QgsProperty::ExpressionBasedProperty:
-          QgsDebugMsg( QStringLiteral( "could not convert expression/field based property to JSON object" ) );
-          return QVariant();
+          return QVariantMap( {{QStringLiteral( "type" ), QStringLiteral( "data_defined" )}, {QStringLiteral( "expression" ), prop.expressionString() }} );
       }
     }
 
@@ -2696,12 +2692,10 @@ QString QgsProcessingParameterDefinition::valueAsStringPrivate( const QVariant &
         return QString();
       case QgsProperty::StaticProperty:
         return valueAsString( prop.staticValue(), context, ok );
-
-      // these are not supported for serialization
       case QgsProperty::FieldBasedProperty:
+        return QStringLiteral( "field:%1" ).arg( prop.field() );
       case QgsProperty::ExpressionBasedProperty:
-        QgsDebugMsg( QStringLiteral( "could not convert expression/field based property to string" ) );
-        return QString();
+        return QStringLiteral( "expression:%1" ).arg( prop.expressionString() );
     }
   }
 
@@ -4335,7 +4329,6 @@ QString QgsProcessingParameterMultipleLayers::asPythonString( const QgsProcessin
 
 QString QgsProcessingParameterMultipleLayers::createFileFilter() const
 {
-  const QStringList exts;
   switch ( mLayerType )
   {
     case QgsProcessing::TypeFile:

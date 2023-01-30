@@ -23,6 +23,8 @@
 #include <sstream>
 #include <iomanip>
 
+///@cond PRIVATE
+
 struct formatter : std::numpunct<wchar_t>
 {
   formatter( QChar thousands, bool showThousands, QChar decimal )
@@ -38,6 +40,7 @@ struct formatter : std::numpunct<wchar_t>
   wchar_t mDecimal;
   bool mShowThousands = true;
 };
+///@endcond
 
 QgsFractionNumericFormat::QgsFractionNumericFormat()
 {

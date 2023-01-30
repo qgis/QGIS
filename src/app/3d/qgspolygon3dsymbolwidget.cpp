@@ -68,7 +68,7 @@ void QgsPolygon3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, Qgs
   chkAddBackFaces->setChecked( polygonSymbol->addBackFaces() );
   chkInvertNormals->setChecked( polygonSymbol->invertNormals() );
 
-  widgetMaterial->setSettings( polygonSymbol->material(), layer );
+  widgetMaterial->setSettings( polygonSymbol->materialSettings(), layer );
 
   btnHeightDD->init( QgsAbstract3DSymbol::PropertyHeight, polygonSymbol->dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );
   btnExtrusionDD->init( QgsAbstract3DSymbol::PropertyExtrusionHeight, polygonSymbol->dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );
@@ -89,7 +89,7 @@ QgsAbstract3DSymbol *QgsPolygon3DSymbolWidget::symbol()
   sym->setRenderedFacade( cboRenderedFacade->currentIndex() );
   sym->setAddBackFaces( chkAddBackFaces->isChecked() );
   sym->setInvertNormals( chkInvertNormals->isChecked() );
-  sym->setMaterial( widgetMaterial->settings() );
+  sym->setMaterialSettings( widgetMaterial->settings() );
 
   QgsPropertyCollection ddp;
   ddp.setProperty( QgsAbstract3DSymbol::PropertyHeight, btnHeightDD->toProperty() );

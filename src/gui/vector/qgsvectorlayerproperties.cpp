@@ -21,20 +21,15 @@
 
 #include "qgsactionmanager.h"
 #include "qgsjoindialog.h"
+#include "qgssldexportcontext.h"
 #include "qgswmsdimensiondialog.h"
 #include "qgsapplication.h"
 #include "qgsattributeactiondialog.h"
-#include "qgscoordinatetransform.h"
 #include "qgsdatumtransformdialog.h"
 #include "qgsdiagramproperties.h"
-#include "qgsdiagramrenderer.h"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgsfieldcalculator.h"
 #include "qgssourcefieldsproperties.h"
 #include "qgsattributesformproperties.h"
 #include "qgslabelingwidget.h"
-#include "qgsprojectionselectiondialog.h"
-#include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
 #include "qgsmaplayerstyleguiutils.h"
@@ -45,10 +40,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerjoininfo.h"
 #include "qgsvectorlayerproperties.h"
-#include "qgsconfig.h"
 #include "qgsvectordataprovider.h"
 #include "qgssubsetstringeditorproviderregistry.h"
-#include "qgssubsetstringeditorprovider.h"
 #include "qgssubsetstringeditorinterface.h"
 #include "qgsdatasourceuri.h"
 #include "qgsrenderer.h"
@@ -61,8 +54,6 @@
 #include "qgsnewauxiliarylayerdialog.h"
 #include "qgsnewauxiliaryfielddialog.h"
 #include "qgslabelinggui.h"
-#include "qgssymbollayer.h"
-#include "qgsgeometryoptions.h"
 #include "qgsvectorlayersavestyledialog.h"
 #include "qgsmaplayerloadstyledialog.h"
 #include "qgsmessagebar.h"
@@ -73,9 +64,8 @@
 #include "qgsprovidersourcewidgetproviderregistry.h"
 #include "qgsprovidersourcewidget.h"
 #include "qgsproviderregistry.h"
-
-#include "layertree/qgslayertreelayer.h"
-#include "qgslayertree.h"
+#include "qgsmaplayerstylemanager.h"
+#include "qgslayertreemodel.h"
 
 #include <QDesktopServices>
 #include <QMessageBox>
@@ -91,9 +81,6 @@
 #include <QMenu>
 #include <QUrl>
 #include <QRegularExpressionValidator>
-
-#include "qgsrendererpropertiesdialog.h"
-#include "qgsstyle.h"
 
 
 QgsVectorLayerProperties::QgsVectorLayerProperties(
@@ -454,6 +441,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mOptsPage_Actions->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#actions-properties" ) );
   mOptsPage_Display->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#display-properties" ) );
   mOptsPage_Rendering->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#rendering-properties" ) );
+  mOptsPage_Temporal->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#temporal-properties" ) );
   mOptsPage_Variables->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#variables-properties" ) );
   mOptsPage_Metadata->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#metadata-properties" ) );
   mOptsPage_DataDependencies->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#dependencies-properties" ) ) ;
@@ -1229,7 +1217,10 @@ void QgsVectorLayerProperties::saveStyleAs()
         if ( type == QML )
           errorMessage = mLayer->saveNamedStyle( filePath, defaultLoadedFlag, dlg.styleCategories() );
         else
-          errorMessage = mLayer->saveSldStyle( filePath, defaultLoadedFlag );
+        {
+          const QgsSldExportContext sldContext { dlg.sldExportOptions(), Qgis::SldExportVendorExtension::NoVendorExtension, filePath };
+          errorMessage = mLayer->saveSldStyleV2( defaultLoadedFlag, sldContext );
+        }
 
         //reset if the default style was loaded OK only
         if ( defaultLoadedFlag )
@@ -1342,9 +1333,8 @@ void QgsVectorLayerProperties::saveMultipleStylesAs()
               while ( QFile::exists( safePath ) )
               {
                 const QFileInfo fi { filePath };
-                safePath = QString( filePath ).replace( '.' + fi.completeSuffix(), QStringLiteral( "_%1.%2" )
-                                                        .arg( QString::number( i ) )
-                                                        .arg( fi.completeSuffix() ) );
+                safePath = QString( filePath ).replace( '.' + fi.completeSuffix(),
+                                                        QStringLiteral( "_%1.%2" ).arg( QString::number( i ), fi.completeSuffix() ) );
                 i++;
               }
             }
@@ -1369,8 +1359,7 @@ void QgsVectorLayerProperties::saveMultipleStylesAs()
           case DB:
           {
             QString infoWindowTitle = QObject::tr( "Save style '%1' to DB (%2)" )
-                                      .arg( styleName )
-                                      .arg( mLayer->providerType() );
+                                      .arg( styleName, mLayer->providerType() );
             QString msgError;
 
             QgsVectorLayerSaveStyleDialog::SaveToDbSettings dbSettings = dlg.saveToDbSettings();
@@ -1388,7 +1377,7 @@ void QgsVectorLayerProperties::saveMultipleStylesAs()
               int i = 1;
               while ( names.contains( name ) )
               {
-                name = QStringLiteral( "%1 %2" ).arg( name ).arg( QString::number( i ) );
+                name = QStringLiteral( "%1 %2" ).arg( name, QString::number( i ) );
                 i++;
               }
             }
@@ -1904,7 +1893,7 @@ void QgsVectorLayerProperties::addWmsDimensionInfoToTreeWidget( const QgsMapLaye
 
   QTreeWidgetItem *childWmsDimensionDefaultValue = new QTreeWidgetItem();
   childWmsDimensionDefaultValue->setText( 0, tr( "Default display" ) );
-  childWmsDimensionDefaultValue->setText( 1, QgsMapLayerServerProperties::wmsDimensionDefaultDisplayLabels()[wmsDim.defaultDisplayType] );
+  childWmsDimensionDefaultValue->setText( 1, QgsMapLayerServerProperties::wmsDimensionDefaultDisplayLabels().value( wmsDim.defaultDisplayType ) );
   childWmsDimensionDefaultValue->setFlags( Qt::ItemIsEnabled );
   wmsDimensionItem->addChild( childWmsDimensionDefaultValue );
 

@@ -90,9 +90,11 @@
 
 #cmakedefine QGISDEBUG
 
+#cmakedefine AGGRESSIVE_SAFE_MODE
+
 #cmakedefine HAVE_QUICK
 
-#cmakedefine HAVE_QT5SERIALPORT
+#cmakedefine HAVE_QTSERIALPORT
 
 #cmakedefine HAVE_STATIC_PROVIDERS
 

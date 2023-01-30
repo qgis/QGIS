@@ -29,7 +29,6 @@ import qgis  # NOQA
 from osgeo import ogr
 import os
 
-from distutils.version import StrictVersion
 from qgis.PyQt.Qt import PYQT_VERSION_STR
 from qgis.PyQt.QtCore import Qt, QObject, QDir, QFile, QIODevice, QPointF, QSize, QTemporaryDir
 from qgis.PyQt.QtXml import QDomDocument
@@ -89,11 +88,7 @@ start_app()
 
 TEST_DATA_DIR = unitTestDataPath()
 
-if StrictVersion(PYQT_VERSION_STR) < StrictVersion('5.7'):
-    from qgis.PyQt.QtCore import pyqtWrapperType
-    EXPECTED_TYPE = pyqtWrapperType
-else:
-    EXPECTED_TYPE = type(QObject)
+EXPECTED_TYPE = type(QObject)
 
 
 class TestQgsSymbolLayer(unittest.TestCase):
@@ -813,7 +808,6 @@ class TestQgsSymbolLayer(unittest.TestCase):
         self.assertEqual(mSymbolLayer.subSymbol().color(), QColor(250, 150, 200))
         self.assertEqual(mSymbolLayer.color(), QColor(250, 150, 200))
 
-    @unittest.expectedFailure
     def testQgsPointPatternFillSymbolLayerSld(self):
         """
         Create a new style from a .sld file and match test

@@ -265,6 +265,7 @@ QgsFeatureRenderer *QgsFeatureRenderer::loadSld( const QDomNode &node, QgsWkbTyp
       {
         // rule has filter or min/max scale denominator, use the RuleRenderer
         if ( ruleChildElem.localName() == QLatin1String( "Filter" ) ||
+             ruleChildElem.localName() == QLatin1String( "ElseFilter" ) ||
              ruleChildElem.localName() == QLatin1String( "MinScaleDenominator" ) ||
              ruleChildElem.localName() == QLatin1String( "MaxScaleDenominator" ) )
         {

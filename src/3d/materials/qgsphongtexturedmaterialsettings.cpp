@@ -93,7 +93,6 @@ void QgsPhongTexturedMaterialSettings::writeXml( QDomElement &elem, const QgsRea
   QgsAbstractMaterialSettings::writeXml( elem, context );
 }
 
-///@endcond
 Qt3DRender::QMaterial *QgsPhongTexturedMaterialSettings::toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const
 {
   switch ( technique )

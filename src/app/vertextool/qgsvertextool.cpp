@@ -325,7 +325,7 @@ QgsVertexTool::~QgsVertexTool()
 
 void QgsVertexTool::activate()
 {
-  if ( QgisApp::instance() && QgsVertexEditor::settingAutoPopupVertexEditorDock.value() )
+  if ( QgisApp::instance() && QgsVertexEditor::settingAutoPopupVertexEditorDock->value() )
   {
     showVertexEditor();  //#spellok
   }
@@ -1530,7 +1530,7 @@ void QgsVertexTool::updateVertexEditor( QgsVectorLayer *layer, QgsFeatureId fid 
   updateLockedFeatureVertices();
 
   // make sure the vertex editor is alive and visible
-  if ( QgsVertexEditor::settingAutoPopupVertexEditorDock.value() )
+  if ( QgsVertexEditor::settingAutoPopupVertexEditorDock->value() )
     showVertexEditor();  //#spellok
 
   if ( QgsVertexEditor *editor = vertexEditor() )
@@ -1579,7 +1579,7 @@ void QgsVertexTool::cleanupVertexEditor()
   if ( QgsVertexEditor *editor = vertexEditor() )
   {
     cleanupLockedFeature();
-    if ( QgsVertexEditor::settingAutoPopupVertexEditorDock.value() )
+    if ( QgsVertexEditor::settingAutoPopupVertexEditorDock->value() )
     {
       editor->setUserVisible( false );
     }
@@ -2189,6 +2189,26 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
 
   QgsAbstractGeometry *geomTmp = geom.constGet()->clone();
 
+  // If moving point is not 3D but destination yes, check if it can be promoted
+  if ( layerPoint.is3D() && !geomTmp->is3D() && QgsWkbTypes::hasZ( dragLayer->wkbType() ) )
+  {
+    if ( !geomTmp->addZValue( defaultZValue() ) )
+    {
+      QgsDebugMsg( QStringLiteral( "add Z value to vertex failed!" ) );
+      return;
+    }
+  }
+
+  // If moving point has not M-value but destination yes, check if it can be promoted
+  if ( layerPoint.isMeasure() && !geomTmp->isMeasure() && QgsWkbTypes::hasM( dragLayer->wkbType() ) )
+  {
+    if ( !geomTmp->addMValue( defaultMValue() ) )
+    {
+      QgsDebugMsg( QStringLiteral( "add M value to vertex failed!" ) );
+      return;
+    }
+  }
+
   // add/move vertex
   if ( addingVertex )
   {
@@ -2198,6 +2218,9 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
     QgsPoint pt( layerPoint );
     if ( QgsWkbTypes::hasZ( dragLayer->wkbType() ) && !pt.is3D() )
       pt.addZValue( defaultZValue() );
+
+    if ( QgsWkbTypes::hasM( dragLayer->wkbType() ) && !pt.isMeasure() )
+      pt.addMValue( defaultMValue() );
 
     if ( !geomTmp->insertVertex( vid, pt ) )
     {
@@ -2377,8 +2400,6 @@ void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
       editor->updateEditor( mLockedFeature.get() );
   }
 
-
-
   for ( it = edits.begin() ; it != edits.end(); ++it )
   {
     QgsVectorLayer *layer = it.key();
@@ -2399,7 +2420,6 @@ void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
           break;
       }
       QgsGeometry featGeom = it2.value();
-      layer->changeGeometry( it2.key(), featGeom );
       if ( avoidIntersectionsLayers.size() > 0 )
       {
         QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures;
@@ -2416,12 +2436,19 @@ void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
           case 3:
             emit messageEmitted( tr( "At least one geometry intersected is invalid. These geometries must be manually repaired." ), Qgis::MessageLevel::Warning );
             break;
+
           default:
             break;
         }
+        // if the geometry has been changed
+        if ( avoidIntersectionsReturn != 1 && avoidIntersectionsReturn != 4 )
+        {
+          layer->changeGeometry( it2.key(), featGeom );
+          edits[layer][it2.key()] = featGeom;
+        }
+
       }
-      layer->changeGeometry( it2.key(), featGeom );
-      edits[layer][it2.key()] = featGeom;
+
     }
     layer->endEditCommand();
     layer->triggerRepaint();
@@ -2931,7 +2958,7 @@ void QgsVertexTool::GeometryValidation::start( QgsGeometry &geom, QgsVertexTool 
   tool = t;
   layer = l;
   Qgis::GeometryValidationEngine method = Qgis::GeometryValidationEngine::QgisInternal;
-  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries.value() == 2 )
+  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries->value() == 2 )
     method = Qgis::GeometryValidationEngine::Geos;
 
   validator = new QgsGeometryValidator( geom, nullptr, method );
@@ -2980,7 +3007,7 @@ void QgsVertexTool::GeometryValidation::cleanup()
 
 void QgsVertexTool::validateGeometry( QgsVectorLayer *layer, QgsFeatureId featureId )
 {
-  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries.value() == 0 )
+  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries->value() == 0 )
     return;
 
   QPair<QgsVectorLayer *, QgsFeatureId> id( layer, featureId );

@@ -256,13 +256,21 @@ QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &optio
   if ( mServiceInfo.contains( QStringLiteral( "maxImageHeight" ) ) )
     mMaxImageHeight = mServiceInfo.value( QStringLiteral( "maxImageHeight" ) ).toInt();
 
-  const QVariantList subLayersList = mLayerInfo.value( QStringLiteral( "subLayers" ) ).toList();
-  mSubLayers.reserve( subLayersList.size() );
-  for ( const QVariant &sublayer : subLayersList )
+  QVariantList layerList = mServiceInfo["layers"].toList();
+  std::function<void( int )> includeChildSublayers = [&]( int layerId )
   {
-    mSubLayers.append( sublayer.toMap()[QStringLiteral( "id" )].toString() );
-    mSubLayerVisibilities.append( true );
-  }
+    if ( layerId < layerList.size() )
+    {
+      QVariantList subLayersList = layerList[layerId].toMap()["subLayerIds"].toList();
+      for ( const QVariant &sublayer : subLayersList )
+      {
+        mSubLayers.append( sublayer.toString() );
+        mSubLayerVisibilities.append( true );
+        includeChildSublayers( sublayer.toInt() );
+      }
+    }
+  };
+  includeChildSublayers( mLayerInfo[ QStringLiteral( "id" ) ].toInt() );
 
   mTimestamp = QDateTime::currentDateTime();
   mValid = true;
@@ -826,7 +834,7 @@ QgsImageFetcher *QgsAmsProvider::getLegendGraphicFetcher( const QgsMapSettings *
   return fetcher;
 }
 
-QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &extent, int width, int height, int dpi )
+QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPointXY &point, Qgis::RasterIdentifyFormat format, const QgsRectangle &extent, int width, int height, int dpi )
 {
   // http://resources.arcgis.com/en/help/rest/apiref/identify.html
   QgsDataSourceUri dataSource( dataSourceUri() );
@@ -847,7 +855,7 @@ QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPointXY &point, QgsRa
 
   QMap<int, QVariant> entries;
 
-  if ( format == QgsRaster::IdentifyFormatText )
+  if ( format == Qgis::RasterIdentifyFormat::Text )
   {
     for ( const QVariant &result : queryResults )
     {
@@ -861,7 +869,7 @@ QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPointXY &point, QgsRa
       entries.insert( entries.size(), valueStr );
     }
   }
-  else if ( format == QgsRaster::IdentifyFormatFeature )
+  else if ( format == Qgis::RasterIdentifyFormat::Feature )
   {
     for ( const QVariant &result : queryResults )
     {

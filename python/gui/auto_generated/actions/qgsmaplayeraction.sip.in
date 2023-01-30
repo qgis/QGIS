@@ -1,0 +1,192 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/actions/qgsmaplayeraction.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsMapLayerAction : QAction
+{
+%Docstring(signature="appended")
+An action which can run on map layers
+The class can be used in two manners:
+* by instantiating it and connecting to its signals to perform an action
+* by subclassing and reimplementing its method (only since QGIS 3.18.2)
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayeraction.h"
+%End
+  public:
+
+    QgsMapLayerAction( const QString &name, QObject *parent /TransferThis/, Qgis::MapLayerActionTargets targets = Qgis::MapLayerActionTarget::AllActions, const QIcon &icon = QIcon(), Qgis::MapLayerActionFlags flags = Qgis::MapLayerActionFlags() );
+%Docstring
+Creates a map layer action which can run on any layer
+
+.. note::
+
+   using AllActions as a target probably does not make a lot of sense. This default action was settled for API compatibility reasons.
+%End
+
+    QgsMapLayerAction( const QString &name, QObject *parent /TransferThis/, QgsMapLayer *layer, Qgis::MapLayerActionTargets targets = Qgis::MapLayerActionTarget::AllActions, const QIcon &icon = QIcon(), Qgis::MapLayerActionFlags flags = Qgis::MapLayerActionFlags() );
+%Docstring
+Creates a map layer action which can run only on a specific layer
+%End
+
+    QgsMapLayerAction( const QString &name, QObject *parent /TransferThis/, QgsMapLayerType layerType, Qgis::MapLayerActionTargets targets = Qgis::MapLayerActionTarget::AllActions, const QIcon &icon = QIcon(), Qgis::MapLayerActionFlags flags = Qgis::MapLayerActionFlags() );
+%Docstring
+Creates a map layer action which can run on a specific type of layer
+%End
+
+    ~QgsMapLayerAction();
+
+    Qgis::MapLayerActionFlags flags() const;
+%Docstring
+Layer behavior flags.
+
+.. versionadded:: 3.0
+%End
+
+ virtual bool canRunUsingLayer( QgsMapLayer *layer ) const /Deprecated/;
+%Docstring
+Returns ``True`` if the action can run using the specified layer.
+
+.. deprecated::
+   use the version with :py:class:`QgsMapLayerActionContext` instead.
+%End
+
+    virtual bool canRunUsingLayer( QgsMapLayer *layer, const QgsMapLayerActionContext &context ) const;
+%Docstring
+Returns ``True`` if the action can run using the specified layer.
+
+.. note::
+
+   Classes which implement this should return ``False`` to the deprecated :py:func:`~QgsMapLayerAction.canRunUsingLayer` method which does not accept a :py:class:`QgsMapLayerActionContext` argument.
+
+.. versionadded:: 3.30
+%End
+
+ virtual void triggerForFeatures( QgsMapLayer *layer, const QList<QgsFeature> &featureList ) /Deprecated/;
+%Docstring
+Triggers the action with the specified layer and list of feature.
+
+.. deprecated::
+   use the version with :py:class:`QgsMapLayerActionContext` instead.
+%End
+
+ virtual void triggerForFeature( QgsMapLayer *layer, const QgsFeature &feature ) /Deprecated/;
+%Docstring
+Triggers the action with the specified layer and feature.
+
+.. deprecated::
+   use the version with :py:class:`QgsMapLayerActionContext` instead.
+%End
+
+ virtual void triggerForLayer( QgsMapLayer *layer ) /Deprecated/;
+%Docstring
+Triggers the action with the specified layer.
+
+.. deprecated::
+   use the version with :py:class:`QgsMapLayerActionContext` instead.
+%End
+
+    virtual void triggerForFeatures( QgsMapLayer *layer, const QList<QgsFeature> &featureList, const QgsMapLayerActionContext &context );
+%Docstring
+Triggers the action with the specified layer and list of feature.
+
+.. versionadded:: 3.30
+%End
+
+    virtual void triggerForFeature( QgsMapLayer *layer, const QgsFeature &feature, const QgsMapLayerActionContext &context );
+%Docstring
+Triggers the action with the specified layer and feature.
+
+.. versionadded:: 3.30
+%End
+
+    virtual void triggerForLayer( QgsMapLayer *layer, const QgsMapLayerActionContext &context );
+%Docstring
+Triggers the action with the specified layer.
+
+.. versionadded:: 3.30
+%End
+
+    void setTargets( Qgis::MapLayerActionTargets targets );
+%Docstring
+Define the targets of the action
+%End
+    Qgis::MapLayerActionTargets targets() const;
+%Docstring
+Returns availibity of action
+%End
+
+    bool isEnabledOnlyWhenEditable() const;
+%Docstring
+Returns ``True`` if the action is only enabled for layers in editable mode.
+
+.. versionadded:: 3.0
+%End
+
+  signals:
+
+ void triggeredForFeatures( QgsMapLayer *layer, const QList<QgsFeature> &featureList ) /Deprecated/;
+%Docstring
+Triggered when action has been run for a specific list of features
+
+.. deprecated::
+   use the version with :py:class:`QgsMapLayerActionContext` instead.
+%End
+
+ void triggeredForFeature( QgsMapLayer *layer, const QgsFeature &feature ) /Deprecated/;
+%Docstring
+Triggered when action has been run for a specific feature
+
+.. deprecated::
+   use the version with :py:class:`QgsMapLayerActionContext` instead.
+%End
+
+ void triggeredForLayer( QgsMapLayer *layer ) /Deprecated/;
+%Docstring
+Triggered when action has been run for a specific layer
+
+.. deprecated::
+   use the version with :py:class:`QgsMapLayerActionContext` instead.
+%End
+
+    void triggeredForFeaturesV2( QgsMapLayer *layer, const QList<QgsFeature> &featureList, const QgsMapLayerActionContext &context );
+%Docstring
+Triggered when action has been run for a specific list of features
+
+.. versionadded:: 3.30
+%End
+
+    void triggeredForFeatureV2( QgsMapLayer *layer, const QgsFeature &feature, const QgsMapLayerActionContext &context );
+%Docstring
+Triggered when action has been run for a specific feature.
+
+.. versionadded:: 3.30
+%End
+
+    void triggeredForLayerV2( QgsMapLayer *layer, const QgsMapLayerActionContext &context );
+%Docstring
+Triggered when action has been run for a specific layer.
+
+.. versionadded:: 3.30
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/actions/qgsmaplayeraction.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

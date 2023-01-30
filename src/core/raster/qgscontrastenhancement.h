@@ -72,6 +72,8 @@ class CORE_EXPORT QgsContrastEnhancement
       {
         case Qgis::DataType::Byte:
           return std::numeric_limits<unsigned char>::max();
+        case Qgis::DataType::Int8:
+          return std::numeric_limits<int8_t>::max();
         case Qgis::DataType::UInt16:
           return std::numeric_limits<unsigned short>::max();
         case Qgis::DataType::Int16:
@@ -111,6 +113,8 @@ class CORE_EXPORT QgsContrastEnhancement
       {
         case Qgis::DataType::Byte:
           return std::numeric_limits<unsigned char>::min();
+        case Qgis::DataType::Int8:
+          return std::numeric_limits<int8_t>::min();
         case Qgis::DataType::UInt16:
           return std::numeric_limits<unsigned short>::min();
         case Qgis::DataType::Int16:

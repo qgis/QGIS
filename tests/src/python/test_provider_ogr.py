@@ -23,6 +23,7 @@ from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (
     NULL,
+    QgsCoordinateReferenceSystem,
     QgsAuthMethodConfig,
     QgsApplication,
     QgsCoordinateTransformContext,
@@ -54,7 +55,8 @@ from qgis.core import (
     QgsProviderMetadata,
     QgsRelation,
     QgsUnsetAttributeValue,
-    QgsFieldConstraints
+    QgsFieldConstraints,
+    QgsWeakRelation
 )
 
 from qgis.gui import (
@@ -281,6 +283,59 @@ class PyQgsOGRProvider(unittest.TestCase):
 
         os.unlink(datasource)
         self.assertFalse(os.path.exists(datasource))
+
+    def test_request_invalid_attributes(self):
+        """
+        Test asking for invalid attributes in feature request
+        """
+        points_layer = QgsVectorLayer(os.path.join(unitTestDataPath(), 'points.shp'), 'points')
+        self.assertTrue(points_layer.isValid())
+
+        req = QgsFeatureRequest()
+        req.setSubsetOfAttributes([8, 0, 3, 7, 9, 10, 11, 13, 14])
+
+        features = list(points_layer.dataProvider().getFeatures(req))
+        self.assertCountEqual([f.attributes() for f in features],
+                              [['Jet', None, None, 2, None, None],
+                               ['Biplane', None, None, 3, None, None],
+                               ['Jet', None, None, 1, None, None],
+                               ['Jet', None, None, 1, None, None],
+                               ['Jet', None, None, 1, None, None],
+                               ['Biplane', None, None, 3, None, None],
+                               ['Biplane', None, None, 3, None, None],
+                               ['Biplane', None, None, 3, None, None],
+                               ['Biplane', None, None, 3, None, None],
+                               ['B52', None, None, 2, None, None],
+                               ['B52', None, None, 1, None, None],
+                               ['B52', None, None, 2, None, None],
+                               ['B52', None, None, 2, None, None],
+                               ['Jet', None, None, 2, None, None],
+                               ['Jet', None, None, 1, None, None],
+                               ['Jet', None, None, 1, None, None],
+                               ['Jet', None, None, 3, None, None]])
+
+        req = QgsFeatureRequest()
+        req.setSubsetOfAttributes(['nope', 'Class', 'Pilots', 'nope2'], points_layer.dataProvider().fields())
+
+        features = list(points_layer.dataProvider().getFeatures(req))
+        self.assertCountEqual([f.attributes() for f in features],
+                              [['Jet', None, None, 2, None, None],
+                               ['Biplane', None, None, 3, None, None],
+                               ['Jet', None, None, 1, None, None],
+                               ['Jet', None, None, 1, None, None],
+                               ['Jet', None, None, 1, None, None],
+                               ['Biplane', None, None, 3, None, None],
+                               ['Biplane', None, None, 3, None, None],
+                               ['Biplane', None, None, 3, None, None],
+                               ['Biplane', None, None, 3, None, None],
+                               ['B52', None, None, 2, None, None],
+                               ['B52', None, None, 1, None, None],
+                               ['B52', None, None, 2, None, None],
+                               ['B52', None, None, 2, None, None],
+                               ['Jet', None, None, 2, None, None],
+                               ['Jet', None, None, 1, None, None],
+                               ['Jet', None, None, 1, None, None],
+                               ['Jet', None, None, 3, None, None]])
 
     def testGdb(self):
         """ Test opening a GDB database layer"""
@@ -2787,6 +2842,85 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(rel.strength(), QgsRelation.Composition)
         self.assertEqual(rel.fieldPairs(), {'REL_OBJECTID': 'OBJECTID'})
 
+    def test_provider_connection_tables(self):
+        """
+        Test retrieving tables via the connections API
+        """
+        metadata = QgsProviderRegistry.instance().providerMetadata('ogr')
+        # start with a connection which only supports one layer
+        conn = metadata.createConnection(TEST_DATA_DIR + '/' + 'relationships.gdb', {})
+        self.assertTrue(conn)
+
+        # don't want system tables included
+        self.assertCountEqual([t.tableName() for t in conn.tables()],
+                              ['table1', 'table2', 'table3', 'table4', 'table6', 'table7',
+                               'table8', 'table9', 'points', 'points__ATTACH',
+                               'composite_many_to_many', 'simple_attributed',
+                               'simple_many_to_many'])
+        # DO want system tables included
+        self.assertCountEqual([t.tableName() for t in conn.tables('',
+                                                                  QgsAbstractDatabaseProviderConnection.TableFlag.Aspatial | QgsAbstractDatabaseProviderConnection.TableFlag.Vector | QgsAbstractDatabaseProviderConnection.TableFlag.IncludeSystemTables)],
+                              ['table1', 'table2', 'table3', 'table4', 'table6', 'table7',
+                               'table8', 'table9', 'points', 'points__ATTACH',
+                               'composite_many_to_many', 'simple_attributed',
+                               'simple_many_to_many', 'GDB_DBTune', 'GDB_ItemRelationshipTypes',
+                               'GDB_ItemRelationships', 'GDB_ItemTypes', 'GDB_Items',
+                               'GDB_SpatialRefs', 'GDB_SystemCatalog'])
+
+    def test_provider_connection_illegal_fields(self):
+        """
+        Test retrieving illegal field names via the connections API
+        """
+        metadata = QgsProviderRegistry.instance().providerMetadata('ogr')
+        # start with a connection which only supports one layer
+        conn = metadata.createConnection(TEST_DATA_DIR + '/' + 'relationships.gdb', {})
+        self.assertTrue(conn)
+
+        self.assertEqual(conn.illegalFieldNames(),
+                         {'ALTER', 'NULL', 'UPDATE', 'LIKE', 'FROM', 'WHERE', 'INSERT', 'CREATE',
+                          'EXISTS', 'ORDER', 'DROP', 'TABLE', 'BETWEEN', 'SELECT', 'FOR', 'ADD',
+                          'IS', 'GROUP', 'COLUMN', 'DELETE', 'VALUES', 'IN', 'NOT', 'BY', 'OR',
+                          'INTO', 'AND', 'SET'})
+
+    def test_provider_related_table_types(self):
+        """
+        Test retrieving related table types
+        """
+        metadata = QgsProviderRegistry.instance().providerMetadata('ogr')
+        # GDB
+        conn = metadata.createConnection(TEST_DATA_DIR + '/' + 'relationships.gdb', {})
+        self.assertCountEqual(conn.relatedTableTypes(), ['media', 'features'])
+        # GPKG
+        conn = metadata.createConnection(TEST_DATA_DIR + '/' + 'domains.gpkg', {})
+        self.assertCountEqual(conn.relatedTableTypes(), ['media', 'features', 'simple_attributes', 'attributes', 'tiles'])
+        # other (not supported)
+        conn = metadata.createConnection(TEST_DATA_DIR + '/' + 'lines.shp', {})
+        self.assertEqual(conn.relatedTableTypes(), [])
+
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 6, 0), "GDAL 3.6 required")
+    def test_provider_relationship_capabilities(self):
+        """
+        Test retrieving relationship capabilities
+        """
+        metadata = QgsProviderRegistry.instance().providerMetadata('ogr')
+        # GDB
+        conn = metadata.createConnection(TEST_DATA_DIR + '/' + 'relationships.gdb', {})
+        self.assertCountEqual(conn.supportedRelationshipCardinalities(), [Qgis.RelationshipCardinality.OneToMany, Qgis.RelationshipCardinality.ManyToMany, Qgis.RelationshipCardinality.OneToOne])
+        self.assertCountEqual(conn.supportedRelationshipStrengths(), [Qgis.RelationshipStrength.Composition, Qgis.RelationshipStrength.Association])
+        self.assertEqual(conn.supportedRelationshipCapabilities(), Qgis.RelationshipCapabilities(Qgis.RelationshipCapability.ForwardPathLabel | Qgis.RelationshipCapability.BackwardPathLabel))
+
+        # GPKG
+        conn = metadata.createConnection(TEST_DATA_DIR + '/' + 'domains.gpkg', {})
+        self.assertCountEqual(conn.supportedRelationshipCardinalities(), [Qgis.RelationshipCardinality.ManyToMany])
+        self.assertCountEqual(conn.supportedRelationshipStrengths(), [Qgis.RelationshipStrength.Association])
+        self.assertEqual(conn.supportedRelationshipCapabilities(), Qgis.RelationshipCapabilities())
+
+        # other (not supported)
+        conn = metadata.createConnection(TEST_DATA_DIR + '/' + 'lines.shp', {})
+        self.assertCountEqual(conn.supportedRelationshipCardinalities(), [])
+        self.assertCountEqual(conn.supportedRelationshipStrengths(), [])
+        self.assertEqual(conn.supportedRelationshipCapabilities(), Qgis.RelationshipCapabilities())
+
     @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 6, 0), "GDAL 3.6 required")
     def test_provider_connection_relationships(self):
         """
@@ -2866,6 +3000,102 @@ class PyQgsOGRProvider(unittest.TestCase):
 
         relationships = conn.relationships('', 'table2')
         self.assertFalse(relationships)
+
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 6, 0), "GDAL 3.6 required")
+    def test_provider_connection_modify_relationship(self):
+        """
+        Test creating relationship via the connections API
+        """
+        metadata = QgsProviderRegistry.instance().providerMetadata('ogr')
+        with tempfile.TemporaryDirectory() as temp_dir:
+            tmpfile = os.path.join(temp_dir, 'test_gdb.gdb')
+
+            ok, err = metadata.createDatabase(tmpfile)
+            self.assertTrue(ok)
+            self.assertFalse(err)
+
+            conn = metadata.createConnection(tmpfile, {})
+            self.assertTrue(conn)
+
+            conn.createVectorTable('', 'child', QgsFields(), QgsWkbTypes.Point, QgsCoordinateReferenceSystem('EPSG:4326'), False, {})
+            layer = QgsVectorLayer(tmpfile + '|layername=child')
+            self.assertTrue(layer.isValid())
+
+            conn.createVectorTable('', 'parent', QgsFields(), QgsWkbTypes.Point, QgsCoordinateReferenceSystem('EPSG:4326'), False, {})
+            layer = QgsVectorLayer(tmpfile + '|layername=parent')
+            self.assertTrue(layer.isValid())
+            del layer
+
+            self.assertTrue(
+                conn.capabilities() & QgsAbstractDatabaseProviderConnection.AddRelationship)
+
+            relationships = conn.relationships()
+            self.assertFalse(relationships)
+
+            rel = QgsWeakRelation('id',
+                                  'rel_name',
+                                  Qgis.RelationshipStrength.Association,
+                                  'referencing_id',
+                                  'referencing_name',
+                                  tmpfile + '|layername=child',
+                                  'ogr',
+                                  'referenced_id',
+                                  'referenced_name',
+                                  tmpfile + '|layername=parent',
+                                  'ogr'
+                                  )
+            rel.setReferencedLayerFields(['fielda'])
+            rel.setReferencingLayerFields(['fieldb'])
+
+            conn.addRelationship(rel)
+            relationships = conn.relationships()
+            self.assertEqual(len(relationships), 1)
+
+            result = relationships[0]
+            self.assertEqual(result.name(), 'rel_name')
+            self.assertEqual(result.referencingLayerSource(), tmpfile + '|layername=child')
+            self.assertEqual(result.referencedLayerSource(), tmpfile + '|layername=parent')
+            self.assertEqual(result.referencingLayerFields(), ['fieldb'])
+            self.assertEqual(result.referencedLayerFields(), ['fielda'])
+
+            # update relationship
+            rel.setReferencedLayerFields(['fieldc'])
+            rel.setReferencingLayerFields(['fieldd'])
+
+            conn.updateRelationship(rel)
+            relationships = conn.relationships()
+            self.assertEqual(len(relationships), 1)
+
+            result = relationships[0]
+            self.assertEqual(result.name(), 'rel_name')
+            self.assertEqual(result.referencingLayerSource(), tmpfile + '|layername=child')
+            self.assertEqual(result.referencedLayerSource(), tmpfile + '|layername=parent')
+            self.assertEqual(result.referencingLayerFields(), ['fieldd'])
+            self.assertEqual(result.referencedLayerFields(), ['fieldc'])
+
+            # try updating non-existing relationship
+            rel2 = QgsWeakRelation('id',
+                                   'nope',
+                                   Qgis.RelationshipStrength.Association,
+                                   'referencing_id',
+                                   'referencing_name',
+                                   tmpfile + '|layername=child',
+                                   'ogr',
+                                   'referenced_id',
+                                   'referenced_name',
+                                   tmpfile + '|layername=parent',
+                                   'ogr'
+                                   )
+            with self.assertRaises(QgsProviderConnectionException):
+                conn.updateRelationship(rel2)
+
+            # delete
+            with self.assertRaises(QgsProviderConnectionException):
+                conn.deleteRelationship(rel2)
+
+            conn.deleteRelationship(rel)
+            relationships = conn.relationships()
+            self.assertFalse(relationships)
 
     def testUniqueGeometryType(self):
         """

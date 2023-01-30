@@ -14,6 +14,7 @@
 
 
 
+
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
 
@@ -143,8 +144,8 @@ attribute operators, “BBOX, Disjoint, Intersects, Touches, Crosses, Contains, 
 spatial binary operators and the QGIS local “geomFromWKT, geomFromGML”
 geometry constructor functions.
 
-OGC API - Features data provider (oapif)
-~~~~~~~~-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+OGC API Features data provider (oapif)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Used to access data provided by a OGC API - Features server.
 
@@ -339,6 +340,8 @@ Provider to display vector data in a GRASS GIS layer.
 %End
   public:
 
+
+
     struct LayerOptions
     {
 
@@ -371,6 +374,8 @@ Constructor for LayerOptions.
       bool skipCrsValidation;
 
       bool forceReadOnly;
+
+      bool loadAllStoredStyles;
     };
 
     struct DeleteContext
@@ -2571,24 +2576,6 @@ Sets the attribute table configuration object.
 This defines the appearance of the attribute table.
 %End
 
-    QString mapTipTemplate() const;
-%Docstring
-The mapTip is a pretty, html representation for feature information.
-
-It may also contain embedded expressions.
-
-.. versionadded:: 3.0
-%End
-
-    void setMapTipTemplate( const QString &mapTipTemplate );
-%Docstring
-The mapTip is a pretty, html representation for feature information.
-
-It may also contain embedded expressions.
-
-.. versionadded:: 3.0
-%End
-
     virtual QgsExpressionContext createExpressionContext() const ${SIP_FINAL};
 
 
@@ -2984,13 +2971,6 @@ to this signal and update the element accordingly.
 :param element: The XML element where you can add additional style information to.
 :param doc: The XML document that you can use to create new XML nodes.
 :param errorMessage: Write error messages into this string.
-%End
-
-    void mapTipTemplateChanged();
-%Docstring
-Emitted when the map tip changes
-
-.. versionadded:: 3.0
 %End
 
     void displayExpressionChanged();

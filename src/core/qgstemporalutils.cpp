@@ -99,6 +99,9 @@ bool QgsTemporalUtils::exportAnimation( const QgsMapSettings &mapSettings, const
   QgsTemporalNavigationObject navigator;
   navigator.setTemporalExtents( settings.animationRange );
   navigator.setFrameDuration( settings.frameDuration );
+  if ( settings.frameDuration.originalUnit() == QgsUnitTypes::TemporalIrregularStep )
+    navigator.setAvailableTemporalRanges( settings.availableTemporalRanges );
+
   QgsMapSettings ms = mapSettings;
   const QgsExpressionContext context = ms.expressionContext();
   ms.setFrameRate( settings.frameRate );

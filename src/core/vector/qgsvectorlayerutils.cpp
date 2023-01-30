@@ -331,7 +331,7 @@ QVariant QgsVectorLayerUtils::createUniqueValueFromCache( const QgsVectorLayer *
         {
           // no base seed - fetch first value from layer
           QgsFeatureRequest req;
-          base = existingValues.isEmpty() ? QString() : existingValues.values().first().toString();
+          base = existingValues.isEmpty() ? QString() : existingValues.constBegin()->toString();
         }
 
         // try variants like base_1, base_2, etc until a new value found
@@ -365,6 +365,20 @@ QVariant QgsVectorLayerUtils::createUniqueValueFromCache( const QgsVectorLayer *
 
   return QVariant();
 
+}
+
+bool QgsVectorLayerUtils::attributeHasConstraints( const QgsVectorLayer *layer, int attributeIndex )
+{
+  if ( !layer )
+    return false;
+
+  if ( attributeIndex < 0 || attributeIndex >= layer->fields().count() )
+    return false;
+
+  const QgsFieldConstraints constraints = layer->fields().at( attributeIndex ).constraints();
+  return ( constraints.constraints() & QgsFieldConstraints::ConstraintNotNull ||
+           constraints.constraints() & QgsFieldConstraints::ConstraintUnique ||
+           constraints.constraints() & QgsFieldConstraints::ConstraintExpression );
 }
 
 bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer *layer, const QgsFeature &feature, int attributeIndex, QStringList &errors,

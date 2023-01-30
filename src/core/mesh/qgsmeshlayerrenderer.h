@@ -69,6 +69,7 @@ struct CORE_NO_EXPORT QgsMeshLayerRendererCache
   // vector dataset
   QgsMeshDatasetIndex mActiveVectorDatasetIndex;
   QgsMeshDataBlock mVectorDatasetValues;
+  QgsMeshDataBlock mVectorActiveFaceFlagValues;
   QVector<double> mVectorDatasetValuesMag;
   double mVectorDatasetMagMinimum = std::numeric_limits<double>::quiet_NaN();
   double mVectorDatasetMagMaximum = std::numeric_limits<double>::quiet_NaN();
@@ -138,6 +139,7 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
 
     // copy of the vector dataset
     QgsMeshDataBlock mVectorDatasetValues;
+    QgsMeshDataBlock mVectorActiveFaceFlagValues;
     QVector<double> mVectorDatasetValuesMag;
     double mVectorDatasetMagMinimum = std::numeric_limits<double>::quiet_NaN();
     double mVectorDatasetMagMaximum = std::numeric_limits<double>::quiet_NaN();
@@ -152,6 +154,10 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
 
     // output screen size
     QSize mOutputSize;
+
+    double mElevationScale = 1.0;
+    double mElevationOffset = 0.0;
+    bool mRenderElevationMap = false;
 
   private:
 

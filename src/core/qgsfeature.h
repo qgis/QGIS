@@ -598,8 +598,6 @@ class CORE_EXPORT QgsFeature
     /**
      * Insert a value into attribute, by field \a name.
      *
-     * Returns FALSE if field \a name could not be matched.
-     *
      * Field map must be associated using setFields() before this method can be used.
      *
      * Calling this method will automatically set the feature as valid (see isValid()).
@@ -620,7 +618,7 @@ class CORE_EXPORT QgsFeature
      *
      * \param name The name of the field to set
      * \param value The value to set
-     *  \throws KeyError if the attribute name could not be converted to an index
+     * \throws KeyError if the attribute name could not could not be matched.
      * \see setFields()
      */
     void setAttribute( const QString &name, const QVariant &value / GetWrapper / );
@@ -685,7 +683,7 @@ class CORE_EXPORT QgsFeature
      * \endcode
      *
      * \param name The name of the field to clear
-     * \throws KeyError if attribute name could not be converted to index
+     * \throws KeyError if attribute name could not be matched.
      * \see setFields()
      */
     bool deleteAttribute( const QString &name );

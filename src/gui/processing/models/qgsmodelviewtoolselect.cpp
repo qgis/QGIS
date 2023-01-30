@@ -364,4 +364,3 @@ void QgsModelViewToolSelect::resetCache()
 {
   mHoverEnteredItems.clear();
 }
-///@endcond

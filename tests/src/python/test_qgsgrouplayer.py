@@ -30,6 +30,7 @@ from tempfile import TemporaryDirectory
 from qgis.core import (
     QgsFeature,
     QgsVectorLayer,
+    QgsRasterLayer,
     QgsProject,
     QgsCoordinateTransformContext,
     QgsGroupLayer,
@@ -39,7 +40,9 @@ from qgis.core import (
     QgsMultiRenderChecker,
     QgsDropShadowEffect,
     QgsEffectStack,
-    QgsDrawSourceEffect
+    QgsDrawSourceEffect,
+    QgsColorEffect,
+    QgsImageOperation
 )
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -284,6 +287,43 @@ class TestQgsGroupLayer(unittest.TestCase):
         renderchecker.setControlPathPrefix('group_layer')
         renderchecker.setControlName('expected_group_paint_effect')
         result = renderchecker.runTest('expected_group_paint_effect')
+        TestQgsGroupLayer.report += renderchecker.report()
+        self.assertTrue(result)
+
+    def test_render_magnification(self):
+        """
+        Test rendering layers with magnification
+        """
+        vl1 = QgsVectorLayer(TEST_DATA_DIR + '/points.shp')
+        self.assertTrue(vl1.isValid())
+        rl1 = QgsRasterLayer(TEST_DATA_DIR + '/raster_layer.tiff')
+        self.assertTrue(rl1.isValid())
+
+        options = QgsGroupLayer.LayerOptions(QgsCoordinateTransformContext())
+        group_layer = QgsGroupLayer('group', options)
+        group_layer.setChildLayers([rl1, vl1])
+
+        color_effect = QgsColorEffect()
+        color_effect.setGrayscaleMode(QgsImageOperation.GrayscaleAverage)
+
+        effect_stack = QgsEffectStack()
+        effect_stack.appendEffect(color_effect)
+        group_layer.setPaintEffect(effect_stack)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(600, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDpiTarget(192)
+        mapsettings.setMagnificationFactor(2)
+        mapsettings.setDestinationCrs(group_layer.crs())
+        mapsettings.setExtent(group_layer.extent())
+        mapsettings.setLayers([group_layer])
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlPathPrefix('group_layer')
+        renderchecker.setControlName('expected_group_magnification')
+        result = renderchecker.runTest('expected_group_magnification')
         TestQgsGroupLayer.report += renderchecker.report()
         self.assertTrue(result)
 

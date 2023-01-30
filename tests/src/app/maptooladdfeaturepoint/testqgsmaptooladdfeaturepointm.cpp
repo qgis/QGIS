@@ -117,7 +117,7 @@ void TestQgsMapToolAddFeaturePointM::testPointM()
   TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
   mCanvas->setCurrentLayer( mLayerPointM );
   // test with default M value = 333
-  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 333 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue->setValue( 333 );
 
   QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
 
@@ -132,7 +132,7 @@ void TestQgsMapToolAddFeaturePointM::testPointM()
   mLayerPointM->undoStack()->undo();
 
   // test with default M value = 123
-  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 123 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue->setValue( 123 );
 
   oldFids = utils.existingFeatureIds();
   utils.mouseClick( 6, 6, Qt::LeftButton, Qt::KeyboardModifiers(), true );

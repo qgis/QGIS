@@ -539,6 +539,36 @@ class TestQgsLayerTree(unittest.TestCase):
         self.assertEqual(p.layerTreeRoot().checkedLayers(), [layer, layer2, layer3, layer4])
         self.assertGreater(len(spy), spy_count)
 
+    def test_reorder_group_layers(self):
+        layer = QgsVectorLayer("Point?field=fldtxt:string",
+                               "layer1", "memory")
+        layer2 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer2", "memory")
+        layer3 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer3", "memory")
+        layer4 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer4", "memory")
+        group = QgsLayerTreeGroup()
+        group.addLayer(layer)
+        group.addLayer(layer2)
+        group.addLayer(layer3)
+        group.addLayer(layer4)
+
+        self.assertEqual([l.layer() for l in group.children()], [layer, layer2, layer3, layer4])
+
+        group.reorderGroupLayers([])
+        self.assertEqual([l.layer() for l in group.children()], [layer, layer2, layer3, layer4])
+
+        group.reorderGroupLayers([layer4, layer2])
+        self.assertEqual([l.layer() for l in group.children()], [layer4, layer2, layer, layer3])
+
+        group.reorderGroupLayers([layer3])
+        self.assertEqual([l.layer() for l in group.children()], [layer3, layer4, layer2, layer])
+
+        group.addChildNode(QgsLayerTreeGroup('test'))
+        group.reorderGroupLayers([layer, layer3])
+        self.assertEqual([l.layer() if isinstance(l, QgsLayerTreeLayer) else 'group' for l in group.children()], [layer, layer3, layer4, layer2, 'group'])
+
 
 if __name__ == '__main__':
     unittest.main()

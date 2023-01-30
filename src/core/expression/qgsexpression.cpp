@@ -826,6 +826,7 @@ void QgsExpression::initVariableHelp()
 
   // map canvas item variables
   sVariableHelpTexts()->insert( QStringLiteral( "canvas_cursor_point" ), QCoreApplication::translate( "variable_help", "Last cursor position on the canvas in the project's geographical coordinates." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "layer_cursor_point" ), QCoreApplication::translate( "variable_help", "Last cursor position on the canvas in the current layers's geographical coordinates." ) );
 
   // legend canvas item variables
   sVariableHelpTexts()->insert( QStringLiteral( "legend_title" ), QCoreApplication::translate( "variable_help", "Title of the legend." ) );

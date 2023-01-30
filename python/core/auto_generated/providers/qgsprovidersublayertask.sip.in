@@ -41,6 +41,14 @@ Constructor for QgsProviderSublayerTask, which retrieves sublayer details for th
 specified ``uri``.
 %End
 
+    QgsProviderSublayerTask( const QString &uri, const QString &providerKey, bool includeSystemTables = false );
+%Docstring
+Constructor for QgsProviderSublayerTask, which retrieves sublayer details for the
+specified ``uri``, restricted to a particular provider.
+
+.. versionadded:: 3.30
+%End
+
     ~QgsProviderSublayerTask();
 
     QList<QgsProviderSublayerDetails> results() const;

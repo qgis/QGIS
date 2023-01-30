@@ -330,43 +330,6 @@ class TestQgsPointCloudClassifiedRenderer(unittest.TestCase):
         TestQgsPointCloudClassifiedRenderer.report += renderchecker.report()
         self.assertTrue(result)
 
-    @unittest.skipIf('copc' not in QgsProviderRegistry.instance().providerList(), 'COPC provider not available')
-    def testRenderEyeDomeLighting(self):
-        layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/copc/extrabytes-dataset.copc.laz', 'test', 'copc')
-        self.assertTrue(layer.isValid())
-
-        # make sure that we are ready for rendering
-        while layer.statisticsCalculationState() == QgsPointCloudLayer.PointCloudStatisticsCalculationState.Calculating:
-            QgsApplication.processEvents()
-
-        # we don't have true CRS for the file, anything not lat/lon should be fine so that we get roughly correct scale
-        layer.setCrs(QgsCoordinateReferenceSystem("EPSG:3857"))
-
-        categories = QgsPointCloudRendererRegistry.classificationAttributeCategories(layer)
-        renderer = QgsPointCloudClassifiedRenderer('Classification', categories)
-        layer.setRenderer(renderer)
-
-        layer.renderer().setPointSize(1)
-        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
-        layer.renderer().setDrawOrder2d(QgsPointCloudRenderer.DrawOrder.BottomToTop)
-
-        layer.renderer().setEyeDomeLightingEnabled(True)
-
-        mapsettings = QgsMapSettings()
-        mapsettings.setOutputSize(QSize(400, 400))
-        mapsettings.setOutputDpi(96)
-        mapsettings.setDestinationCrs(layer.crs())
-        mapsettings.setExtent(layer.extent())
-        mapsettings.setLayers([layer])
-
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(mapsettings)
-        renderchecker.setControlPathPrefix('pointcloudrenderer')
-        renderchecker.setControlName('expected_eye_dome_lighting')
-        result = renderchecker.runTest('expected_eye_dome_lighting')
-        TestQgsPointCloudClassifiedRenderer.report += renderchecker.report()
-        self.assertTrue(result)
-
 
 if __name__ == '__main__':
     unittest.main()

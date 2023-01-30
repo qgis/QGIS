@@ -29,6 +29,7 @@ class QgsHanaDriver
 
   public:
     NS_ODBC::ConnectionRef createConnection();
+    QStringList dataSources();
     const QString &driver() const;
 
     static QgsHanaDriver *instance();

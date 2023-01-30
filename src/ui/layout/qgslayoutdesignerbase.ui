@@ -182,7 +182,7 @@
      <x>0</x>
      <y>0</y>
      <width>2180</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="mLayoutMenu">
@@ -387,6 +387,7 @@
      <string>Settings</string>
     </property>
     <addaction name="mActionOptions"/>
+    <addaction name="mActionKeyboardShortcuts"/>
    </widget>
    <addaction name="mLayoutMenu"/>
    <addaction name="menuEdit"/>
@@ -1573,6 +1574,15 @@
    </property>
    <property name="menuRole">
     <enum>QAction::PreferencesRole</enum>
+   </property>
+  </action>
+  <action name="mActionKeyboardShortcuts">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionKeyboardShortcuts.svg</normaloff>:/images/themes/default/mActionKeyboardShortcuts.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Keyboard Shortcuts...</string>
    </property>
   </action>
  </widget>

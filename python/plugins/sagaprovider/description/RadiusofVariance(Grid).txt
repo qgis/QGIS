@@ -1,7 +1,0 @@
-Radius of Variance (Grid)
-statistics_grid
-QgsProcessingParameterRasterLayer|INPUT|Grid|None|False
-QgsProcessingParameterNumber|VARIANCE|Standard Deviation|QgsProcessingParameterNumber.Double|1.0|False|0.0|None
-QgsProcessingParameterNumber|RADIUS|Maximum Search Radius (cells)|QgsProcessingParameterNumber.Integer|20|False|0.0|None
-QgsProcessingParameterEnum|OUTPUT|Type of Output|[0] Cells;[1] Map Units
-QgsProcessingParameterRasterDestination|RESULT|Variance Radius

@@ -10,9 +10,7 @@ ${DEFAULTDOCSTRINGSIGNATURE}
 %Import QtCore/QtCoremod.sip
 %Import QtGui/QtGuimod.sip
 %Import QtXml/QtXmlmod.sip
-
-%If (HAVE_QSCI_SIP)
-  %Import Qsci/qscimod5.sip
-%End
+%Import QtMultimedia/QtMultimediamod.sip
+%Import ${QSCI_SIP_MOD_NAME}
 
 %Include gui_auto.sip

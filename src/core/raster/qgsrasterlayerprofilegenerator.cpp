@@ -189,14 +189,13 @@ bool QgsRasterLayerProfileGenerator::generateProfile( const QgsProfileGeneration
                                          subRegionLeft,
                                          subRegionTop ) : transformedCurve->boundingBox();
 
-  if ( mRasterProvider->xSize() == 0 || mRasterProvider->ySize() == 0 )
+  const bool zeroXYSize = mRasterProvider->xSize() == 0 || mRasterProvider->ySize() == 0;
+  if ( zeroXYSize )
   {
-    // e.g. XYZ tile source -- this is a rough hack for https://github.com/qgis/QGIS/issues/48806, which results
-    // in pretty poor curves ;)
     const double curveLengthInPixels = sourceCurve->length() / context.mapUnitsPerDistancePixel();
     const double conversionFactor = curveLengthInPixels / transformedCurve->length();
-    subRegionWidth = 2 * conversionFactor * rasterSubRegion.width();
-    subRegionHeight = 2 * conversionFactor * rasterSubRegion.height();
+    subRegionWidth = rasterSubRegion.width() * conversionFactor;
+    subRegionHeight = rasterSubRegion.height() * conversionFactor;
   }
 
   // iterate over the raster blocks, throwing away any which don't intersect the profile curve
@@ -248,8 +247,17 @@ bool QgsRasterLayerProfileGenerator::generateProfile( const QgsProfileGeneration
         // convert point to a pixel and sample, if it's in this block
         if ( blockExtent.contains( *it ) )
         {
-          const int row = std::clamp( static_cast< int >( std::round( ( blockExtent.yMaximum() - it->y() ) / mRasterUnitsPerPixelY ) ), 0, blockRows - 1 );
-          const int col = std::clamp( static_cast< int >( std::round( ( it->x() - blockExtent.xMinimum() ) / mRasterUnitsPerPixelX ) ),  0, blockColumns - 1 );
+          int row, col;
+          if ( zeroXYSize )
+          {
+            row = std::clamp( static_cast< int >( std::round( ( blockExtent.yMaximum() - it->y() ) * blockRows / blockExtent.height() ) ), 0, blockRows - 1 );
+            col = std::clamp( static_cast< int >( std::round( ( it->x() - blockExtent.xMinimum() ) * blockColumns / blockExtent.width() ) ), 0, blockColumns - 1 );
+          }
+          else
+          {
+            row = std::clamp( static_cast< int >( std::round( ( blockExtent.yMaximum() - it->y() ) / mRasterUnitsPerPixelY ) ), 0, blockRows - 1 );
+            col = std::clamp( static_cast< int >( std::round( ( it->x() - blockExtent.xMinimum() ) / mRasterUnitsPerPixelX ) ),  0, blockColumns - 1 );
+          }
           double val = block->valueAndNoData( row, col, isNoData );
           if ( !isNoData )
           {

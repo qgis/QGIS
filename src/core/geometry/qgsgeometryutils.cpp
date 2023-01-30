@@ -1216,7 +1216,7 @@ QgsPointSequence QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateLi
   return points;
 }
 
-void QgsGeometryUtils::pointsToWKB( QgsWkbPtr &wkb, const QgsPointSequence &points, bool is3D, bool isMeasure )
+void QgsGeometryUtils::pointsToWKB( QgsWkbPtr &wkb, const QgsPointSequence &points, bool is3D, bool isMeasure, QgsAbstractGeometry::WkbFlags flags )
 {
   wkb << static_cast<quint32>( points.size() );
   for ( const QgsPoint &point : points )
@@ -1224,11 +1224,21 @@ void QgsGeometryUtils::pointsToWKB( QgsWkbPtr &wkb, const QgsPointSequence &poin
     wkb << point.x() << point.y();
     if ( is3D )
     {
-      wkb << point.z();
+      double z = point.z();
+      if ( flags & QgsAbstractGeometry::FlagExportNanAsDoubleMin
+           && std::isnan( z ) )
+        z = -std::numeric_limits<double>::max();
+
+      wkb << z;
     }
     if ( isMeasure )
     {
-      wkb << point.m();
+      double m = point.m();
+      if ( flags & QgsAbstractGeometry::FlagExportNanAsDoubleMin
+           && std::isnan( m ) )
+        m = -std::numeric_limits<double>::max();
+
+      wkb << m;
     }
   }
 }

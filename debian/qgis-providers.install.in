@@ -1,21 +1,21 @@
 usr/lib/qgis/crssync
-#!sid !kinetic#usr/lib/qgis/untwine
+#!sid !kinetic !lunar#usr/lib/qgis/untwine
+usr/lib/qgis/plugins/libauthmethod_apiheader.so
+usr/lib/qgis/plugins/libauthmethod_awss3.so
 usr/lib/qgis/plugins/libauthmethod_basic.so
 usr/lib/qgis/plugins/libauthmethod_esritoken.so
 usr/lib/qgis/plugins/libauthmethod_identcert.so
+usr/lib/qgis/plugins/libauthmethod_maptilerhmacsha256.so
 usr/lib/qgis/plugins/libauthmethod_pkcs12.so
 usr/lib/qgis/plugins/libauthmethod_pkipaths.so
-usr/lib/qgis/plugins/libauthmethod_apiheader.so
-usr/lib/qgis/plugins/libauthmethod_maptilerhmacsha256.so
 usr/lib/qgis/plugins/libprovider_arcgisfeatureserver.so
 usr/lib/qgis/plugins/libprovider_arcgismapserver.so
 usr/lib/qgis/plugins/libprovider_delimitedtext.so
-usr/lib/qgis/plugins/libprovider_geonode.so
 usr/lib/qgis/plugins/libprovider_gpx.so
 usr/lib/qgis/plugins/libprovider_hana.so
 usr/lib/qgis/plugins/libprovider_mdal.so
 usr/lib/qgis/plugins/libprovider_mssql.so
-#!sid !kinetic#usr/lib/qgis/plugins/libprovider_pdal.so
+#!sid !kinetic !lunar#usr/lib/qgis/plugins/libprovider_pdal.so
 usr/lib/qgis/plugins/libprovider_postgres.so
 usr/lib/qgis/plugins/libprovider_postgresraster.so
 usr/lib/qgis/plugins/libprovider_spatialite.so

@@ -26,7 +26,8 @@ Utility functions for use with the memory vector data provider.
     static QgsVectorLayer *createMemoryLayer( const QString &name,
         const QgsFields &fields,
         QgsWkbTypes::Type geometryType = QgsWkbTypes::NoGeometry,
-        const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() ) /Factory/;
+        const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
+        bool loadDefaultStyle = true ) /Factory/;
 %Docstring
 Creates a new memory layer using the specified parameters. The caller takes responsibility
 for deleting the newly created layer.
@@ -35,6 +36,7 @@ for deleting the newly created layer.
 :param fields: fields for layer
 :param geometryType: optional layer geometry type
 :param crs: optional layer CRS for layers with geometry
+:param loadDefaultStyle: optional load default style toggle
 %End
 };
 

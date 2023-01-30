@@ -1,6 +1,0 @@
-Resampling Filter
-grid_filter
-QgsProcessingParameterRasterLayer|GRID|Grid|None|False
-QgsProcessingParameterRasterDestination|LOPASS|Low Pass Filter
-QgsProcessingParameterRasterDestination|HIPASS|High Pass Filter
-QgsProcessingParameterNumber|SCALE|Scale Factor|QgsProcessingParameterNumber.Double|10.000000|False|1.000000|None

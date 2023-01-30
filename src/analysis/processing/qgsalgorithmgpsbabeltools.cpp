@@ -98,14 +98,12 @@ QgsConvertGpxFeatureTypeAlgorithm *QgsConvertGpxFeatureTypeAlgorithm::createInst
 
 QVariantMap QgsConvertGpxFeatureTypeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QStringList convertStrings;
-
   const QString inputPath = parameterAsString( parameters, QStringLiteral( "INPUT" ), context );
   const QString outputPath = parameterAsString( parameters, QStringLiteral( "OUTPUT" ), context );
 
   const ConversionType convertType = static_cast< ConversionType >( parameterAsEnum( parameters, QStringLiteral( "CONVERSION" ), context ) );
 
-  QString babelPath = QgsSettingsRegistryCore::settingsGpsBabelPath.value();
+  QString babelPath = QgsSettingsRegistryCore::settingsGpsBabelPath->value();
   if ( babelPath.isEmpty() )
     babelPath = QStringLiteral( "gpsbabel" );
 
@@ -314,14 +312,12 @@ QgsConvertGpsDataAlgorithm *QgsConvertGpsDataAlgorithm::createInstance() const
 
 QVariantMap QgsConvertGpsDataAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QStringList convertStrings;
-
   const QString inputPath = parameterAsString( parameters, QStringLiteral( "INPUT" ), context );
   const QString outputPath = parameterAsString( parameters, QStringLiteral( "OUTPUT" ), context );
 
   const Qgis::GpsFeatureType featureType = static_cast< Qgis::GpsFeatureType >( parameterAsEnum( parameters, QStringLiteral( "FEATURE_TYPE" ), context ) );
 
-  QString babelPath = QgsSettingsRegistryCore::settingsGpsBabelPath.value();
+  QString babelPath = QgsSettingsRegistryCore::settingsGpsBabelPath->value();
   if ( babelPath.isEmpty() )
     babelPath = QStringLiteral( "gpsbabel" );
 
@@ -540,7 +536,7 @@ QVariantMap QgsDownloadGpsDataAlgorithm::processAlgorithm( const QVariantMap &pa
   const QString outputPath = parameterAsString( parameters, QStringLiteral( "OUTPUT" ), context );
   const Qgis::GpsFeatureType featureType = static_cast< Qgis::GpsFeatureType >( parameterAsEnum( parameters, QStringLiteral( "FEATURE_TYPE" ), context ) );
 
-  QString babelPath = QgsSettingsRegistryCore::settingsGpsBabelPath.value();
+  QString babelPath = QgsSettingsRegistryCore::settingsGpsBabelPath->value();
   if ( babelPath.isEmpty() )
     babelPath = QStringLiteral( "gpsbabel" );
 
@@ -775,7 +771,7 @@ QVariantMap QgsUploadGpsDataAlgorithm::processAlgorithm( const QVariantMap &para
   const QString inputPath = parameterAsString( parameters, QStringLiteral( "INPUT" ), context );
   const Qgis::GpsFeatureType featureType = static_cast< Qgis::GpsFeatureType >( parameterAsEnum( parameters, QStringLiteral( "FEATURE_TYPE" ), context ) );
 
-  QString babelPath = QgsSettingsRegistryCore::settingsGpsBabelPath.value();
+  QString babelPath = QgsSettingsRegistryCore::settingsGpsBabelPath->value();
   if ( babelPath.isEmpty() )
     babelPath = QStringLiteral( "gpsbabel" );
 

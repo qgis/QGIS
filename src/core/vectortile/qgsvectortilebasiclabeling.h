@@ -164,7 +164,6 @@ class QgsVectorTileBasicLabelProvider : public QgsVectorTileLabelProvider
     QMap<QString, QgsFields> mPerLayerFields;
 };
 
-/// @endcond
 #endif
 
 

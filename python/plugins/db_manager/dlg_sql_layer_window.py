@@ -104,7 +104,7 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         self.aliasSubQuery = isinstance(db, PGDatabase)  # only PostgreSQL requires subqueries to be aliases
         self.setupUi(self)
         self.setWindowTitle(
-            u"%s - %s [%s]" % (self.windowTitle(), db.connection().connectionName(), db.connection().typeNameString()))
+            "%s - %s [%s]" % (self.windowTitle(), db.connection().connectionName(), db.connection().typeNameString()))
 
         self.defaultLayerName = self.tr('QueryLayer')
 
@@ -344,7 +344,7 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         index = 1
         while newLayerName in names:
             index += 1
-            newLayerName = u"%s_%d" % (layerName, index)
+            newLayerName = "%s_%d" % (layerName, index)
 
         # create the layer
         layer = self.db.toSqlLayer(query, geomFieldName, uniqueFieldName, newLayerName, layerType,
@@ -405,9 +405,9 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
                         break
                     aliasIndex += 1
 
-                sql = u"SELECT * FROM (%s\n) AS %s LIMIT 0" % (str(query), connector.quoteId(alias))
+                sql = "SELECT * FROM (%s\n) AS %s LIMIT 0" % (str(query), connector.quoteId(alias))
             else:
-                sql = u"SELECT * FROM (%s\n) WHERE 1=0" % str(query)
+                sql = "SELECT * FROM (%s\n) WHERE 1=0" % str(query)
 
             c = None
             try:
