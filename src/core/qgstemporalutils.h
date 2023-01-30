@@ -168,6 +168,19 @@ class CORE_EXPORT QgsTemporalUtils
       QList<QgsMapDecoration *> decorations;
 
       /**
+       * Contains the list of all available temporal ranges which have data available.
+       *
+       * The list can be a list of non-contiguous ranges (i.e. containing gaps)
+       * which together describe the complete range of times which contain data.
+       *
+       * This list is required whenever the QgsUnitTypes::TemporalIrregularStep interval is used
+       * for an animation.
+       *
+       * \since QGIS 3.30
+       */
+      QList<QgsDateTimeRange> availableTemporalRanges;
+
+      /**
        * Target animation frame rate in frames per second.
        *
        * \since QGIS 3.26
