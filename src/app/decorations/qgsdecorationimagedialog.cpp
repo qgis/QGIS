@@ -90,7 +90,7 @@ QgsDecorationImageDialog::QgsDecorationImageDialog( QgsDecorationImage &deco, QW
 
 void QgsDecorationImageDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#image" ) );
+  QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#image-decoration" ) );
 }
 
 void QgsDecorationImageDialog::buttonBox_accepted()
