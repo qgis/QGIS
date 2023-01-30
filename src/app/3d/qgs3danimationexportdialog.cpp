@@ -81,7 +81,7 @@ Qgs3DAnimationExportDialog::Qgs3DAnimationExportDialog(): QDialog( nullptr )
 
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [ = ]
   {
-    QgsHelp::openHelp( QStringLiteral( "introduction/qgis_gui.html#creating-an-animation" ) );
+    QgsHelp::openHelp( QStringLiteral( "map_views/3d_map_view.html#create-animation" ) );
   } );
 
   QgsGui::enableAutoGeometryRestore( this );
