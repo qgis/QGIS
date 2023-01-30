@@ -301,15 +301,26 @@ Qgis::VectorExportResult QgsOgrProvider::createEmptyLayer( const QString &uri,
   }
 
   QgsFields cleanedFields = fields;
-
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3, 6, 3)
+  // Temporary solution. Proper fix in https://github.com/OSGeo/gdal/pull/7147
   if ( driverName == QLatin1String( "OpenFileGDB" ) )
   {
-    const int objectIdIndex = cleanedFields.lookupField( QStringLiteral( "OBJECTID" ) );
+    QString fidColumn = QStringLiteral( "OBJECTID" );
+    for ( const QString &layerOption : layerOptions )
+    {
+      if ( layerOption.startsWith( QLatin1String( "FID=" ), Qt::CaseInsensitive ) )
+      {
+        fidColumn = layerOption.mid( strlen( "FID=" ) );
+        break;
+      }
+    }
+    const int objectIdIndex = cleanedFields.lookupField( fidColumn );
     if ( objectIdIndex >= 0 )
     {
       cleanedFields.remove( objectIdIndex );
     }
   }
+#endif
 
   QString newLayerName( layerName );
 
