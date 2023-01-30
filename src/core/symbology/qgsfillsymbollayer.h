@@ -896,6 +896,13 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
 
     /**
+     * Creates a new QgsRasterFillSymbolLayer from a SLD \a element. The caller takes
+     * ownership of the returned object.
+     * \since QGIS 3.30
+     */
+    static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
+
+    /**
      * Turns relative paths in properties map to absolute when reading and vice versa when writing.
      * Used internally when reading/writing symbols.
      * \since QGIS 3.0

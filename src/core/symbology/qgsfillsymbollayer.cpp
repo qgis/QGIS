@@ -4416,6 +4416,20 @@ QImage QgsPointPatternFillSymbolLayer::toTiledPatternImage() const
   int distanceXPx { static_cast<int>( QgsSymbolLayerUtils::rescaleUom( mDistanceX, mDistanceXUnit, {} ) ) };
   int distanceYPx { static_cast<int>( QgsSymbolLayerUtils::rescaleUom( mDistanceY, mDistanceYUnit, {} ) ) };
 
+  const int displacementXPx { static_cast<int>( QgsSymbolLayerUtils::rescaleUom( mDisplacementX, mDisplacementXUnit, {} ) ) };
+  const int displacementYPx { static_cast<int>( QgsSymbolLayerUtils::rescaleUom( mDisplacementY, mDisplacementYUnit, {} ) ) };
+
+  // Consider displacement, double the distance.
+  if ( displacementXPx != 0 )
+  {
+    distanceXPx *= 2;
+  }
+
+  if ( displacementYPx != 0 )
+  {
+    distanceYPx *= 2;
+  }
+
   const QSize size { QgsSymbolLayerUtils::tileSize( distanceXPx, distanceYPx, angleRads ) };
 
   QPixmap pixmap( size );
@@ -4433,6 +4447,10 @@ QImage QgsPointPatternFillSymbolLayer::toTiledPatternImage() const
   std::unique_ptr< QgsPointPatternFillSymbolLayer > layerClone( clone() );
 
   layerClone->setAngle( qRadiansToDegrees( angleRads ) );
+
+  // No way we can export a random pattern, disable it.
+  layerClone->setMaximumRandomDeviationX( 0 );
+  layerClone->setMaximumRandomDeviationY( 0 );
 
   layerClone->drawPreviewIcon( symbolContext, pixmap.size() );
   painter.end();
@@ -4471,14 +4489,12 @@ QgsSymbolLayer *QgsPointPatternFillSymbolLayer::createFromSld( QDomElement &elem
 
   std::unique_ptr< QgsPointPatternFillSymbolLayer > pointPatternFillSl = std::make_unique< QgsPointPatternFillSymbolLayer >();
   pointPatternFillSl->setSubSymbol( marker.release() );
+  // This may not be correct in all cases, TODO: check "uom"
+  pointPatternFillSl->setDistanceXUnit( QgsUnitTypes::RenderUnit::RenderPixels );
+  pointPatternFillSl->setDistanceYUnit( QgsUnitTypes::RenderUnit::RenderPixels );
 
   auto distanceParser = [ & ]( const QStringList & values )
   {
-
-    // This may not be correct in all cases, TODO: check "uom"
-    pointPatternFillSl->setDistanceXUnit( QgsUnitTypes::RenderUnit::RenderPixels );
-    pointPatternFillSl->setDistanceYUnit( QgsUnitTypes::RenderUnit::RenderPixels );
-
     switch ( values.count( ) )
     {
       case 1: // top-right-bottom-left (single value for all four margins)
@@ -4554,7 +4570,8 @@ QgsSymbolLayer *QgsPointPatternFillSymbolLayer::createFromSld( QDomElement &elem
     }
   };
 
-  // Set distance X and Y from vendor options
+  // Set distance X and Y from vendor options, or from Size if no vendor options are set
+  bool distanceFromVendorOption { false };
   QgsStringMap vendorOptions = QgsSymbolLayerUtils::getVendorOptionList( element );
   for ( QgsStringMap::iterator it = vendorOptions.begin(); it != vendorOptions.end(); ++it )
   {
@@ -4562,14 +4579,29 @@ QgsSymbolLayer *QgsPointPatternFillSymbolLayer::createFromSld( QDomElement &elem
     if ( it.key() == QLatin1String( "distance" ) )
     {
       distanceParser( it.value().split( ',' ) );
+      distanceFromVendorOption = true;
     }
     // GeoServer
     else if ( it.key() == QLatin1String( "graphic-margin" ) )
     {
       distanceParser( it.value().split( ' ' ) );
-
+      distanceFromVendorOption = true;
     }
   }
+
+  // Get distances from size
+  if ( ! distanceFromVendorOption && ! graphicFillElem.elementsByTagName( QStringLiteral( "Size" ) ).isEmpty() )
+  {
+    const QDomElement sizeElement { graphicFillElem.elementsByTagName( QStringLiteral( "Size" ) ).at( 0 ).toElement() };
+    bool ok;
+    const double size { sizeElement.text().toDouble( &ok ) };
+    if ( ok )
+    {
+      pointPatternFillSl->setDistanceX( size );
+      pointPatternFillSl->setDistanceY( size );
+    }
+  }
+
   return pointPatternFillSl.release();
 }
 
@@ -5070,6 +5102,38 @@ QgsSymbolLayer *QgsRasterFillSymbolLayer::create( const QVariantMap &properties 
   symbolLayer->restoreOldDataDefinedProperties( properties );
 
   return symbolLayer.release();
+}
+
+QgsSymbolLayer *QgsRasterFillSymbolLayer::createFromSld( QDomElement &element )
+{
+  QDomElement fillElem = element.firstChildElement( QStringLiteral( "Fill" ) );
+  if ( fillElem.isNull() )
+    return nullptr;
+
+  QDomElement graphicFillElem = fillElem.firstChildElement( QStringLiteral( "GraphicFill" ) );
+  if ( graphicFillElem.isNull() )
+    return nullptr;
+
+  QDomElement graphicElem = graphicFillElem.firstChildElement( QStringLiteral( "Graphic" ) );
+  if ( graphicElem.isNull() )
+    return nullptr;
+
+  QString path, mimeType;
+  double size;
+  QColor fillColor;
+
+  if ( !QgsSymbolLayerUtils::externalGraphicFromSld( graphicElem, path, mimeType, fillColor, size ) )
+    return nullptr;
+
+  // Try to correct the path, this is a wild guess but we have not access to the SLD path here.
+  if ( ! QFile::exists( path ) )
+  {
+    path = QgsProject::instance()->pathResolver().readPath( path );
+  }
+
+  std::unique_ptr< QgsRasterFillSymbolLayer> sl = std::make_unique< QgsRasterFillSymbolLayer>( path );
+
+  return sl.release();
 }
 
 void QgsRasterFillSymbolLayer::resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving )
