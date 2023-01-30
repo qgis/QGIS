@@ -74,7 +74,7 @@ class QgsSettingsEntryEnumFlag : public QgsSettingsEntryByValue<T>
     QgsSettingsEntryEnumFlag( const QString &key, const QString &section, T defaultValue, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions() )
       : QgsSettingsEntryByValue<T>( key,
                                     section,
-                                    QMetaEnum::fromType<T>().isFlag() ? qgsFlagValueToKeys( defaultValue ) : qgsEnumValueToKey( defaultValue ),
+                                    QVariant::fromValue( defaultValue ),
                                     description,
                                     options )
     {
@@ -83,6 +83,15 @@ class QgsSettingsEntryEnumFlag : public QgsSettingsEntryByValue<T>
       if ( !mMetaEnum.isValid() )
         QgsDebugMsg( QStringLiteral( "Invalid metaenum. Enum/Flag probably misses Q_ENUM/Q_FLAG declaration. Settings key: '%1'" ).arg( this->key() ) );
     }
+
+    QVariant convertToVariant( T value ) const override
+    {
+      if ( mMetaEnum.isFlag() )
+        return qgsFlagValueToKeys( value );
+      else
+        return qgsEnumValueToKey( value );
+    }
+
 
     /**
      * Returns settings default value.
