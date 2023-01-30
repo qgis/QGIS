@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsAnnotationItemEditOperation
 
 From build dir, run: ctest -R QgsAnnotationItemEditOperation -V

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLayoutItem.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -37,7 +36,7 @@ TEST_DATA_DIR = unitTestDataPath()
 start_app()
 
 
-class LayoutItemTestCase(object):
+class LayoutItemTestCase:
     '''
         This is a collection of generic tests for QgsLayoutItem subclasses.
         To make use of it, subclass it and set self.item_class to a QgsLayoutItem subclass you want to test.
