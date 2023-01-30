@@ -101,5 +101,5 @@ void QgsSvgAnnotationDialog::mButtonBox_clicked( QAbstractButton *button )
 
 void QgsSvgAnnotationDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#annotation-tools" ) );
+  QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#sec-annotations" ) );
 }

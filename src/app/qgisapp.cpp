@@ -15567,7 +15567,7 @@ void QgisApp::renameView()
   renameDlg.buttonBox()->addButton( QDialogButtonBox::Help );
   connect( renameDlg.buttonBox(), &QDialogButtonBox::helpRequested, this, [ = ]
   {
-    QgsHelp::openHelp( QStringLiteral( "introduction/qgis_gui.html#map-view" ) );
+    QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html" ) );
   } );
 
   if ( renameDlg.exec() || renameDlg.name().isEmpty() )

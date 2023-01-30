@@ -596,5 +596,5 @@ void QgsMapSaveDialog::updatePdfExportWarning()
 
 void QgsMapSaveDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/qgis_gui.html#exporting-the-map-view" ) );
+  QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#exportingmapcanvas" ) );
 }
