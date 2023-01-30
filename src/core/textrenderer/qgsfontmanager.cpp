@@ -245,6 +245,7 @@ QString QgsFontManager::urlForFontDownload( const QString &family, QString &matc
     QStringLiteral( "Arbutus" ),
     QStringLiteral( "Arbutus Slab" ),
     QStringLiteral( "Architects Daughter" ),
+    QStringLiteral( "Archivo" ),
     QStringLiteral( "Archivo Black" ),
     QStringLiteral( "Archivo Narrow" ),
     QStringLiteral( "Arimo" ),
