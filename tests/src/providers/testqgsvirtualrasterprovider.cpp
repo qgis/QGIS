@@ -323,13 +323,13 @@ void TestQgsVirtualRasterProvider::testIdentify()
 // pixel at row=0, col=0
   QgsPointXY r0c0Point( -2.5, 5.5 );
   QgsRectangle r0c0PixelExtent( -3, 5, -2, 6 );
-  QgsRasterIdentifyResult r0c0IdentifyResult = layer->dataProvider()->identify( r0c0Point, QgsRaster::IdentifyFormatValue, r0c0PixelExtent, 1, 1 );
+  QgsRasterIdentifyResult r0c0IdentifyResult = layer->dataProvider()->identify( r0c0Point, Qgis::RasterIdentifyFormat::Value, r0c0PixelExtent, 1, 1 );
   QCOMPARE( r0c0IdentifyResult.results()[1].toDouble(), 3 );
 
 // pixel at row=3, col=3
   QgsPointXY r3c3Point( -0.5, 3.5 );
   QgsRectangle r3c3PixelExtent( -1, 3, 0, 4 );
-  QgsRasterIdentifyResult r3c3IdentifyResult = layer->dataProvider()->identify( r3c3Point, QgsRaster::IdentifyFormatValue, r3c3PixelExtent, 1, 1 );
+  QgsRasterIdentifyResult r3c3IdentifyResult = layer->dataProvider()->identify( r3c3Point, Qgis::RasterIdentifyFormat::Value, r3c3PixelExtent, 1, 1 );
   QVERIFY( r3c3IdentifyResult.results()[1].isNull() );
 }
 

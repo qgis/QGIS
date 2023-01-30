@@ -346,7 +346,7 @@ int QgsVirtualRasterProvider::capabilities() const
   return capability;
 }
 
-QgsRasterIdentifyResult QgsVirtualRasterProvider::identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int dpi )
+QgsRasterIdentifyResult QgsVirtualRasterProvider::identify( const QgsPointXY &point, Qgis::RasterIdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int dpi )
 {
   QgsRasterIdentifyResult result = QgsRasterDataProvider::identify( point, format, boundingBox, width, height, dpi );
 

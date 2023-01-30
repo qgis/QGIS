@@ -16,6 +16,8 @@
 #define QGSVIRTUALRASTERPROVIDER_H
 
 #include <QObject>
+
+#include "qgis.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsprovidermetadata.h"
 #include "qgsrastercalculator.h"
@@ -64,7 +66,7 @@ class QgsVirtualRasterProvider : public QgsRasterDataProvider
     virtual QString lastErrorTitle() override;
     virtual QString lastError() override;
     int capabilities() const override;
-    QgsRasterIdentifyResult identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
+    QgsRasterIdentifyResult identify( const QgsPointXY &point, Qgis::RasterIdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
 
     static QString providerKey();
 
