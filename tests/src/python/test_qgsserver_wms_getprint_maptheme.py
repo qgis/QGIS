@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer WMS GetPrint map theme.
 
 From build dir, run: ctest -R PyQgsServerWMSGetPrintMapTheme -V

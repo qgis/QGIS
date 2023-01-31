@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLogger.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -40,7 +39,7 @@ class TestQgsLogger(unittest.TestCase):
             myLogger.warning('This is a warning')
             myLogger.critical('This is critical')
             # myLogger.fatal('Aaaargh...fatal');  #kills QGIS not testable
-            myFile = open(myFilename, 'rt')
+            myFile = open(myFilename)
             myText = myFile.readlines()
             myFile.close()
             myExpectedText = ['QGIS Logger Unit Test\n',

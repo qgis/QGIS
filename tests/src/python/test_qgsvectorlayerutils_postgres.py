@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsVectorLayerUtils in a Postgres database.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -36,7 +35,7 @@ class TestQgsVectorLayerUtilsPostgres(unittest.TestCase):
             dbconn = os.environ['QGIS_PGTEST_DB']
 
         # create a vector layer
-        pg_layer = QgsVectorLayer('{} table="qgis_test"."authors" sql='.format(dbconn), "authors", "postgres")
+        pg_layer = QgsVectorLayer(f'{dbconn} table="qgis_test"."authors" sql=', "authors", "postgres")
         self.assertTrue(pg_layer.isValid())
         # check the default clause
         default_clause = 'nextval(\'qgis_test.authors_pk_seq\'::regclass)'

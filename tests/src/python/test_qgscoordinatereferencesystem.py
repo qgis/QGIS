@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsCoordinateReferenceSystem.
 
 Note that most of the tests for this class are in the c++ test file!

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsRasterFileWriter.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -43,7 +42,7 @@ class TestQgsRasterFileWriter(unittest.TestCase):
     def write(self, theRasterName):
         print(theRasterName)
 
-        path = "%s/%s" % (self.testDataDir, theRasterName)
+        path = f"{self.testDataDir}/{theRasterName}"
         rasterLayer = QgsRasterLayer(path, "test")
         if not rasterLayer.isValid():
             return False

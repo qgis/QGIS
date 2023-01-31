@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for the remote PostgreSQL server.
 
 Note: The test makes sense if the network latency
@@ -12,7 +11,6 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
 """
-from builtins import next
 
 __author__ = 'Daryna Dyka'
 __date__ = '2021-06-13'
@@ -49,7 +47,7 @@ class TestPyQgsPostgresProviderLatency(unittest.TestCase):
         if delay_in_ms == 0:
             os.system('tc qdisc del dev eth0 root')
         else:
-            os.system('tc qdisc add dev eth0 root netem delay {}ms'.format(delay_in_ms))
+            os.system(f'tc qdisc add dev eth0 root netem delay {delay_in_ms}ms')
 
     def getDelay(self):
         self.assertTrue(self.con)
@@ -84,7 +82,7 @@ class TestPyQgsPostgresProviderLatency(unittest.TestCase):
             self.setDelay(0)
             delay_delta[delay_ms] = round(delay_get[delay_ms] / 2.0 - delay_set[delay_ms], 1)
 
-        self.assertTrue(False, '\nset: {}\nget: {}\nget/2 - set: {}'.format(delay_set, delay_get, delay_delta))
+        self.assertTrue(False, f'\nset: {delay_set}\nget: {delay_get}\nget/2 - set: {delay_delta}')
 
     def testSetDelayToDB(self):
         """Test Set delay to remote DB"""
@@ -92,7 +90,7 @@ class TestPyQgsPostgresProviderLatency(unittest.TestCase):
         self.setDelay(100)
         delay_get = self.getDelay() / 2
         self.setDelay(0)
-        self.assertTrue(delay_get > 90 and delay_get < 110, 'set delay to 100ms - unsuccessful (got: {}ms)'.format(delay_get))
+        self.assertTrue(delay_get > 90 and delay_get < 110, f'set delay to 100ms - unsuccessful (got: {delay_get}ms)')
 
     def testSaveChangedGeometryToDB(self):
         """Test Save geometries to remote DB"""

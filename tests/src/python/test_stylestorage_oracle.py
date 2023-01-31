@@ -1,4 +1,3 @@
-# coding=utf-8
 """"Style storage tests for Oracle
 
 .. note:: This program is free software; you can redistribute it and/or modify

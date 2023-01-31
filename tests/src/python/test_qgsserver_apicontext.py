@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServerApiContext class.
 
 From build dir, run: ctest -R PyQgsServerApiContext -V

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsRasterAttributeTable.
 
 From build dir, run:
@@ -9,7 +8,6 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-from builtins import str
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '20/08/2022'
@@ -575,9 +573,9 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
             classes.append(mc)
 
         renderer.setMultiValueClasses(classes)
-        self.assertEqual(["%s:%s:%s" % (c.values, c.label, c.color.name()) for c in renderer.multiValueClasses()], ['[0.0]:zero:#000000', '[1.0]:one:#010101', '[2.0]:two:#020202'])
-        self.assertEqual(["%s:%s:%s" % (c.values, c.label, c.color.name()) for c in QgsPalettedRasterRenderer.rasterAttributeTableToClassData(rat)], ['[0.0]:zero:#000000', '[1.0]:one:#010101', '[2.0]:two:#020202'])
-        self.assertEqual(["%s:%s:%s" % (c.values, c.label, c.color.name()) for c in raster.renderer().multiValueClasses()], ['[0.0]:zero:#000000', '[1.0]:one:#010101', '[2.0]:two:#020202'])
+        self.assertEqual([f"{c.values}:{c.label}:{c.color.name()}" for c in renderer.multiValueClasses()], ['[0.0]:zero:#000000', '[1.0]:one:#010101', '[2.0]:two:#020202'])
+        self.assertEqual([f"{c.values}:{c.label}:{c.color.name()}" for c in QgsPalettedRasterRenderer.rasterAttributeTableToClassData(rat)], ['[0.0]:zero:#000000', '[1.0]:one:#010101', '[2.0]:two:#020202'])
+        self.assertEqual([f"{c.values}:{c.label}:{c.color.name()}" for c in raster.renderer().multiValueClasses()], ['[0.0]:zero:#000000', '[1.0]:one:#010101', '[2.0]:two:#020202'])
 
     def testCreateFromPalettedRaster(self):
 

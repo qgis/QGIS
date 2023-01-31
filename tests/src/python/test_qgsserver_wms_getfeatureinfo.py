@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer GetFeatureInfo WMS.
 
 From build dir, run: ctest -R PyQgsServerWMSGetFeatureInfo -V
@@ -728,7 +727,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
             'FI_POINT_TOLERANCE': '2'
         }
 
-        req = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % (k, v) for k, v in req_params.items()]))
+        req = QgsBufferServerRequest('?' + '&'.join([f"{k}={v}" for k, v in req_params.items()]))
         res = QgsBufferServerResponse()
         self.server.handleRequest(req, res, project)
         j_body = json.loads(bytes(res.body()).decode())
@@ -736,14 +735,14 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
 
         vl1.setFlags(vl1.flags() & ~ QgsMapLayer.Identifiable)
 
-        req = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % (k, v) for k, v in req_params.items()]))
+        req = QgsBufferServerRequest('?' + '&'.join([f"{k}={v}" for k, v in req_params.items()]))
         res = QgsBufferServerResponse()
         self.server.handleRequest(req, res, project)
         j_body = json.loads(bytes(res.body()).decode())
         self.assertEqual(len(j_body['features']), 1)
 
         req_params['LAYERS'] = 'vl1,vl2'
-        req = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % (k, v) for k, v in req_params.items()]))
+        req = QgsBufferServerRequest('?' + '&'.join([f"{k}={v}" for k, v in req_params.items()]))
         res = QgsBufferServerResponse()
         self.server.handleRequest(req, res, project)
         j_body = json.loads(bytes(res.body()).decode())
@@ -751,7 +750,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
 
         req_params['LAYERS'] = 'wmsproject'
         req_params['QUERY_LAYERS'] = 'vl2'
-        req = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % (k, v) for k, v in req_params.items()]))
+        req = QgsBufferServerRequest('?' + '&'.join([f"{k}={v}" for k, v in req_params.items()]))
         res = QgsBufferServerResponse()
         self.server.handleRequest(req, res, project)
         j_body = json.loads(bytes(res.body()).decode())
@@ -759,7 +758,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
 
         req_params['LAYERS'] = 'vl2'
         req_params['QUERY_LAYERS'] = 'wmsproject'
-        req = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % (k, v) for k, v in req_params.items()]))
+        req = QgsBufferServerRequest('?' + '&'.join([f"{k}={v}" for k, v in req_params.items()]))
         res = QgsBufferServerResponse()
         self.server.handleRequest(req, res, project)
         j_body = json.loads(bytes(res.body()).decode())
@@ -987,21 +986,21 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
             'FILTER': 'layer4:"utf8nameè" != \'\'',
         }
 
-        req = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % (k, v) for k, v in req_params.items()]))
+        req = QgsBufferServerRequest('?' + '&'.join([f"{k}={v}" for k, v in req_params.items()]))
         res = QgsBufferServerResponse()
         self.server.handleRequest(req, res, project)
         j_body = json.loads(bytes(res.body()).decode())
         self.assertEqual(len(j_body['features']), 3)
 
         req_params['FILTER'] = 'layer4:"utf8nameè" = \'three èé↓\''
-        req = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % (k, v) for k, v in req_params.items()]))
+        req = QgsBufferServerRequest('?' + '&'.join([f"{k}={v}" for k, v in req_params.items()]))
         res = QgsBufferServerResponse()
         self.server.handleRequest(req, res, project)
         j_body = json.loads(bytes(res.body()).decode())
         self.assertEqual(len(j_body['features']), 1)
 
         req_params['FILTER'] = 'layer4:"utf8nameè" != \'three èé↓\''
-        req = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % (k, v) for k, v in req_params.items()]))
+        req = QgsBufferServerRequest('?' + '&'.join([f"{k}={v}" for k, v in req_params.items()]))
         res = QgsBufferServerResponse()
         self.server.handleRequest(req, res, project)
         j_body = json.loads(bytes(res.body()).decode())
@@ -1009,7 +1008,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
 
         # REPLACE filter
         req_params['FILTER'] = 'layer4:REPLACE ( "utf8nameè" , \'three\' , \'____\' ) != \'____ èé↓\''
-        req = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % (k, v) for k, v in req_params.items()]))
+        req = QgsBufferServerRequest('?' + '&'.join([f"{k}={v}" for k, v in req_params.items()]))
         res = QgsBufferServerResponse()
         self.server.handleRequest(req, res, project)
 
@@ -1018,7 +1017,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
         os.putenv('QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS', 'RePlAcE')
         self.server.serverInterface().reloadSettings()
 
-        req = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % (k, v) for k, v in req_params.items()]))
+        req = QgsBufferServerRequest('?' + '&'.join([f"{k}={v}" for k, v in req_params.items()]))
         res = QgsBufferServerResponse()
         self.server.handleRequest(req, res, project)
         j_body = json.loads(bytes(res.body()).decode())
@@ -1028,7 +1027,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
         self.server.serverInterface().reloadSettings()
 
         req_params['FILTER'] = 'layer4:REPLACE ( "utf8nameè" , \'three\' , \'____\' ) != \'____ èé↓\''
-        req = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % (k, v) for k, v in req_params.items()]))
+        req = QgsBufferServerRequest('?' + '&'.join([f"{k}={v}" for k, v in req_params.items()]))
         res = QgsBufferServerResponse()
         self.server.handleRequest(req, res, project)
 
@@ -1039,7 +1038,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
         self.server.serverInterface().reloadSettings()
         req_params['FILTER'] = 'layer4:LOWER ( REPLACE ( "utf8nameè" , \'three\' , \'THREE\' ) ) = \'three èé↓\''
 
-        req = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % (k, v) for k, v in req_params.items()]))
+        req = QgsBufferServerRequest('?' + '&'.join([f"{k}={v}" for k, v in req_params.items()]))
         res = QgsBufferServerResponse()
         self.server.handleRequest(req, res, project)
         j_body = json.loads(bytes(res.body()).decode())

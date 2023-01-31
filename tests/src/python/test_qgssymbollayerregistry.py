@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -21,7 +20,7 @@ start_app()
 
 class MySuperMarkerMetadata(QgsSymbolLayerAbstractMetadata):
     def __init__(self):
-        super(MySuperMarkerMetadata, self).__init__('MySuperMarker', 'My Super Marker', Qgis.SymbolType.Marker)
+        super().__init__('MySuperMarker', 'My Super Marker', Qgis.SymbolType.Marker)
 
     def createSymbolLayer(self, map: dict) -> QgsSymbolLayer:
         return QgsSimpleMarkerSymbolLayer()

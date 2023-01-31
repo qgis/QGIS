@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer WMS GetMap.
 
 From build dir, run: ctest -R PyQgsServerWMSGetMap -V
@@ -1042,7 +1041,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         filter_country = ("(<Filter><PropertyIsEqualTo><PropertyName>name"
                           "</PropertyName><Literal>eurasia</Literal>"
                           "</PropertyIsEqualTo></Filter>)")
-        filter = "{}{}".format(filter_hello, filter_country)
+        filter = f"{filter_hello}{filter_country}"
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",

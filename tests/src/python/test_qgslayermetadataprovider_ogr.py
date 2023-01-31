@@ -1,4 +1,3 @@
-# coding=utf-8
 """"Test for ogr layer metadata provider
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -33,7 +32,7 @@ class TestPostgresLayerMetadataProvider(unittest.TestCase, LayerMetadataProvider
 
     def getLayer(self) -> QgsVectorLayer:
 
-        return QgsVectorLayer('{}|layername=geopackage'.format(self.getConnectionUri()), "someData", 'ogr')
+        return QgsVectorLayer(f'{self.getConnectionUri()}|layername=geopackage', "someData", 'ogr')
 
     def getConnectionUri(self) -> str:
 
