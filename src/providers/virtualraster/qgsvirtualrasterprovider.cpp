@@ -350,16 +350,25 @@ QgsRasterIdentifyResult QgsVirtualRasterProvider::identify( const QgsPointXY &po
 {
   QgsRasterIdentifyResult result = QgsRasterDataProvider::identify( point, format, boundingBox, width, height, dpi );
 
-  // Checking the value returned by QgsRasterDataProvider::identify
-  // If it is NoData value, replace it with QVariant()
-  QMap<int, QVariant> bandValues = result.results();
-  if ( !QgsVariantUtils::isNull( bandValues[1] )
-       && bandValues[1].toDouble() == mSrcNoDataValue[0] )
+  if ( result.results().isEmpty() )
   {
-    bandValues[1] = QVariant();
+    return result;
+  }
+  else
+  {
+    // Checking the value returned by QgsRasterDataProvider::identify
+    // If it is NoData value, replace it with QVariant()
+    QMap<int, QVariant> bandValues = result.results();
+    if ( !QgsVariantUtils::isNull( bandValues[1] )
+         && bandValues[1].toDouble() == mSrcNoDataValue[0] )
+    {
+      bandValues[1] = QVariant();
+    }
+
+    return QgsRasterIdentifyResult( result.format(), bandValues );
   }
 
-  return QgsRasterIdentifyResult( result.format(), bandValues );
+
 }
 
 QString QgsVirtualRasterProvider::formulaString()
