@@ -310,7 +310,7 @@ Qgis::VectorExportResult QgsOgrProvider::createEmptyLayer( const QString &uri,
     {
       if ( layerOption.startsWith( QLatin1String( "FID=" ), Qt::CaseInsensitive ) )
       {
-        fidColumn = layerOption.mid( strlen( "FID=" ) );
+        fidColumn = layerOption.mid( static_cast<int>( strlen( "FID=" ) ) );
         break;
       }
     }
