@@ -104,6 +104,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
         root = QgsSettings.createPluginTreeNode(self.pluginName)
         setting = QgsSettingsEntryInteger("my_setting", root)
         self.assertEqual(setting.key(), f"/plugins/{self.pluginName}/my_setting")
+        self.assertEqual(setting.name(), 'my_setting')
 
     def test_settings_entry_base_default_value_override(self):
         settingsKey = "settingsEntryBase/defaultValueOverride/variantValue"
