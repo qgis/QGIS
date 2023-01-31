@@ -145,12 +145,17 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   {
     QgsSettings settings;
     settings.beginGroup( QStringLiteral( "gui/locator_filters" ) );
-    const QStringList filters = settings.childGroups();
-    for ( const QString &filter : filters )
+    const QStringList childKeys = settings.childKeys();
+    for ( const QString &childKey : childKeys )
     {
-      QgsLocator::settingsLocatorFilterEnabled->copyValueFromKey( QStringLiteral( "gui/locator_filters/enabled_%1" ), {filter}, true );
-      QgsLocator::settingsLocatorFilterDefault->copyValueFromKey( QStringLiteral( "gui/locator_filters/default_%1" ), {filter}, true );
-      QgsLocator::settingsLocatorFilterPrefix->copyValueFromKey( QStringLiteral( "gui/locator_filters/prefix_%1" ), {filter}, true );
+      if ( childKey.startsWith( QStringLiteral( "enabled" ) ) )
+      {
+        QString filter = childKey;
+        filter.remove( QStringLiteral( "enabled_" ) );
+        QgsLocator::settingsLocatorFilterEnabled->copyValueFromKey( QStringLiteral( "gui/locator_filters/enabled_%1" ), {filter}, true );
+        QgsLocator::settingsLocatorFilterDefault->copyValueFromKey( QStringLiteral( "gui/locator_filters/default_%1" ), {filter}, true );
+        QgsLocator::settingsLocatorFilterPrefix->copyValueFromKey( QStringLiteral( "gui/locator_filters/prefix_%1" ), {filter}, true );
+      }
     }
   }
 
