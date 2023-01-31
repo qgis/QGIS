@@ -32,9 +32,8 @@
 #include <QActionGroup>
 
 const QgsSettingsEntryEnumFlag<Qgis::CaptureTechnique> *QgsMapToolsDigitizingTechniqueManager::settingsDigitizingTechnique = new QgsSettingsEntryEnumFlag<Qgis::CaptureTechnique>( QStringLiteral( "technique" ), QgsSettings::sTreeDigitizing, Qgis::CaptureTechnique::StraightSegments, QObject::tr( "Current digitizing technique" ), Qgis::SettingsOption::SaveFormerValue ) SIP_SKIP;
-
-const QgsSettingsEntryString *QgsMapToolsDigitizingTechniqueManager::settingMapToolShapeDefaultForShape = new QgsSettingsEntryString( QStringLiteral( "%1/default" ), sTreeShapeMapTools, QString(), QObject::tr( "Default map tool for given shape category" ) ) SIP_SKIP;
 const QgsSettingsEntryString *QgsMapToolsDigitizingTechniqueManager::settingMapToolShapeCurrent = new QgsSettingsEntryString( QStringLiteral( "current" ), sTreeShapeMapTools, QgsMapToolShapeCircle2PointsMetadata::TOOL_ID, QObject::tr( "Current shape map tool" ) ) SIP_SKIP;
+const QgsSettingsEntryString *QgsMapToolsDigitizingTechniqueManager::settingMapToolShapeDefaultForCategory = new QgsSettingsEntryString( QStringLiteral( "default" ), sTreeShapeMapToolsCategories, QString(), QObject::tr( "Default map tool for given shape category" ) ) SIP_SKIP;
 
 QgsMapToolsDigitizingTechniqueManager::QgsMapToolsDigitizingTechniqueManager( QObject *parent )
   : QObject( parent )
@@ -137,12 +136,12 @@ void QgsMapToolsDigitizingTechniqueManager::setupToolBars()
     action->setCheckable( true );
     action->setData( metadata->id() );
     shapeMenu->addAction( action );
-    QString defaultToolId = settingMapToolShapeDefaultForShape->value( qgsEnumValueToKey( metadata->category() ) );
+    QString defaultToolId = settingMapToolShapeDefaultForCategory->value( qgsEnumValueToKey( metadata->category() ) );
     if ( defaultToolId.isEmpty() )
     {
       // if no default tool for category, take the first one
       defaultToolId = metadata->id();
-      settingMapToolShapeDefaultForShape->setValue( metadata->id(), qgsEnumValueToKey( metadata->category() ) );
+      settingMapToolShapeDefaultForCategory->setValue( metadata->id(), qgsEnumValueToKey( metadata->category() ) );
     }
     if ( defaultToolId == metadata->id() )
       shapeButton->setDefaultAction( action );
@@ -208,7 +207,7 @@ void QgsMapToolsDigitizingTechniqueManager::setShapeTool( const QString &shapeTo
   const QgsMapToolShapeMetadata *md = QgsGui::mapToolShapeRegistry()->mapToolMetadata( shapeToolId );
   if ( md )
   {
-    settingMapToolShapeDefaultForShape->setValue( md->id(), qgsEnumValueToKey( md->category() ) );
+    settingMapToolShapeDefaultForCategory->setValue( md->id(), qgsEnumValueToKey( md->category() ) );
     settingMapToolShapeCurrent->setValue( md->id() );
     QToolButton *bt = mShapeCategoryButtons.value( md->category() );
     action = mShapeActions.value( md->id() );

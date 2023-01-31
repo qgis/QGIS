@@ -54,9 +54,11 @@ class APP_EXPORT QgsMapToolsDigitizingTechniqueManager : public QObject
   public:
     static const QgsSettingsEntryEnumFlag<Qgis::CaptureTechnique> *settingsDigitizingTechnique;
 
+
     static inline QgsSettingsTreeNode *sTreeShapeMapTools = QgsSettings::sTreeDigitizing->createChildNode( QStringLiteral( "shape-map-tools" ) );
-    static const QgsSettingsEntryString *settingMapToolShapeDefaultForShape;
     static const QgsSettingsEntryString *settingMapToolShapeCurrent;
+    static inline QgsSettingsTreeNamedListNode *sTreeShapeMapToolsCategories = sTreeShapeMapTools->createNamedListNode( QStringLiteral( "categories" ) );
+    static const QgsSettingsEntryString *settingMapToolShapeDefaultForCategory;
 
     QgsMapToolsDigitizingTechniqueManager( QObject *parent );
     ~QgsMapToolsDigitizingTechniqueManager();
