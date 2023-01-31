@@ -270,6 +270,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
 
     /**
      * Merge features into a single one.
+     * \param targetFeatureId id of the target feature
      * \param mergeFeatureIds id list of features to merge
      * \param mergeAttributes are the resulting attributes in the merged feature
      * \param unionGeometry is the resulting geometry of the merged feature
@@ -279,7 +280,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      *
      * \since QGIS 3.30
      */
-    bool mergeFeatures( const QgsFeatureIds &mergeFeatureIds, const QgsAttributes &mergeAttributes, QgsGeometry unionGeometry, QString &errorMessage SIP_OUT );
+    bool mergeFeatures( const QgsFeatureId &targetFeatureId, const QgsFeatureIds &mergeFeatureIds, const QgsAttributes &mergeAttributes, const QgsGeometry &unionGeometry, QString &errorMessage SIP_OUT );
 
   private:
 

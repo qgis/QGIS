@@ -50,6 +50,18 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
     QgsAttributes mergedAttributes() const;
 
     /**
+     * Returns the id of the target feature.
+     * By default it is the first feature of the list. Otherwise the feature explicitly selected
+     * with buttons "Take attributes from selected feature" or "Take attributes from feature with
+     * the largest area".
+     *
+     * \returns The id of the target feature.
+     *
+     * \since QGIS 3.30
+     */
+    QgsFeatureId targetFeatureId() const;
+
+    /**
      * Returns a list of attribute indexes which should be skipped when merging (e.g., attributes
      * which have been set to "skip"
      */
@@ -102,6 +114,7 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
     void createRubberBandForFeature( QgsFeatureId featureId );
 
     QgsFeatureList mFeatureList;
+    QgsFeatureId mTargetFeatureId = FID_NULL;
     QgsVectorLayer *mVectorLayer = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
     //! Item that highlights the selected feature in the merge table

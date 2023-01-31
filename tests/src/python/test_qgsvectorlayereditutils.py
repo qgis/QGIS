@@ -493,13 +493,13 @@ class TestQgsVectorLayerEditUtils(unittest.TestCase):
         self.assertTrue(layer.startEditing())
         layer.addAttribute(QgsField('name', QVariant.String))
         pr = layer.dataProvider()
+
         f1 = QgsFeature(layer.fields(), 1)
         f1.setGeometry(QgsGeometry.fromWkt('POLYGON((0 0, 5 0, 5 5, 0 5, 0 0))'))
         f1.setAttribute('name', 'uno')
         assert pr.addFeatures([f1])
         self.assertEqual(layer.featureCount(), 1)
 
-        pr = layer.dataProvider()
         f2 = QgsFeature(layer.fields(), 2)
         f2.setGeometry(QgsGeometry.fromWkt('POLYGON((3 3, 8 3, 8 8, 3 8, 3 3))'))
         f2.setAttribute('name', 'due')
@@ -513,7 +513,7 @@ class TestQgsVectorLayerEditUtils(unittest.TestCase):
         self.assertFalse(unionGeom.isNull())
 
         vle = QgsVectorLayerEditUtils(layer)
-        success, errorMessage = vle.mergeFeatures(featureIds, ['tre'], unionGeom)
+        success, errorMessage = vle.mergeFeatures(f1.id(), featureIds, ['tre'], unionGeom)
         self.assertFalse(errorMessage)
         self.assertTrue(success)
 
@@ -544,16 +544,15 @@ class TestQgsVectorLayerEditUtils(unittest.TestCase):
             options=options)
 
         layer = QgsVectorLayer(tempgpkg, 'my_layer', 'ogr')
-
         self.assertTrue(layer.startEditing())
         pr = layer.dataProvider()
+
         f1 = QgsFeature(layer.fields(), 1)
         f1.setGeometry(QgsGeometry.fromWkt('POLYGON((0 0, 5 0, 5 5, 0 5, 0 0))'))
         f1.setAttribute('name', 'uno')
         assert pr.addFeatures([f1])
         self.assertEqual(layer.featureCount(), 1)
 
-        pr = layer.dataProvider()
         f2 = QgsFeature(layer.fields(), 2)
         f2.setGeometry(QgsGeometry.fromWkt('POLYGON((3 3, 8 3, 8 8, 3 8, 3 3))'))
         f2.setAttribute('name', 'due')
@@ -567,7 +566,7 @@ class TestQgsVectorLayerEditUtils(unittest.TestCase):
         self.assertFalse(unionGeom.isNull())
 
         vle = QgsVectorLayerEditUtils(layer)
-        success, errorMessage = vle.mergeFeatures(featureIds, [2, 'tre'], unionGeom)
+        success, errorMessage = vle.mergeFeatures(f2.id(), featureIds, [2, 'tre'], unionGeom)
         self.assertFalse(errorMessage)
         self.assertTrue(success)
 
