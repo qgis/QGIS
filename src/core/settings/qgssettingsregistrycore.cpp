@@ -29,71 +29,72 @@
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 
-const QgsSettingsEntryEnumFlag<Qgis::SnappingMode> *QgsSettingsRegistryCore::settingsDigitizingDefaultSnapMode = new QgsSettingsEntryEnumFlag<Qgis::SnappingMode>( QStringLiteral( "default_snap_mode" ), QgsSettings::sTreeDigitizing, Qgis::SnappingMode::AllLayers );
+const QgsSettingsEntryEnumFlag<Qgis::SnappingMode> *QgsSettingsRegistryCore::settingsDigitizingDefaultSnapMode = new QgsSettingsEntryEnumFlag<Qgis::SnappingMode>( QStringLiteral( "default-snap-mode" ), QgsSettings::sTreeDigitizing, Qgis::SnappingMode::AllLayers );
 
-const QgsSettingsEntryEnumFlag<Qgis::SnappingType> *QgsSettingsRegistryCore::settingsDigitizingDefaultSnapType = new QgsSettingsEntryEnumFlag<Qgis::SnappingType>( QStringLiteral( "default_snap_type" ), QgsSettings::sTreeDigitizing, Qgis::SnappingType::Vertex );
+const QgsSettingsEntryEnumFlag<Qgis::SnappingType> *QgsSettingsRegistryCore::settingsDigitizingDefaultSnapType = new QgsSettingsEntryEnumFlag<Qgis::SnappingType>( QStringLiteral( "default-snap-type" ), QgsSettings::sTreeDigitizing, Qgis::SnappingType::Vertex );
 
-const QgsSettingsEntryEnumFlag<QgsTolerance::UnitType> *QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingToleranceUnit = new QgsSettingsEntryEnumFlag<QgsTolerance::UnitType>( QStringLiteral( "default_snapping_tolerance_unit" ), QgsSettings::sTreeDigitizing, Qgis::DEFAULT_SNAP_UNITS );
+const QgsSettingsEntryEnumFlag<QgsTolerance::UnitType> *QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingToleranceUnit = new QgsSettingsEntryEnumFlag<QgsTolerance::UnitType>( QStringLiteral( "default-snapping-tolerance-unit" ), QgsSettings::sTreeDigitizing, Qgis::DEFAULT_SNAP_UNITS );
 
-const QgsSettingsEntryEnumFlag<QgsTolerance::UnitType> *QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEditUnit = new QgsSettingsEntryEnumFlag<QgsTolerance::UnitType>( QStringLiteral( "search_radius_vertex_edit_unit" ), QgsSettings::sTreeDigitizing, QgsTolerance::Pixels );
+const QgsSettingsEntryEnumFlag<QgsTolerance::UnitType> *QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEditUnit = new QgsSettingsEntryEnumFlag<QgsTolerance::UnitType>( QStringLiteral( "search-radius-vertex-edit-unit" ), QgsSettings::sTreeDigitizing, QgsTolerance::Pixels );
 
-const QgsSettingsEntryEnumFlag<Qgis::JoinStyle> *QgsSettingsRegistryCore::settingsDigitizingOffsetJoinStyle = new QgsSettingsEntryEnumFlag<Qgis::JoinStyle>( QStringLiteral( "offset_join_style" ), QgsSettings::sTreeDigitizing, Qgis::JoinStyle::Round );
+const QgsSettingsEntryEnumFlag<Qgis::JoinStyle> *QgsSettingsRegistryCore::settingsDigitizingOffsetJoinStyle = new QgsSettingsEntryEnumFlag<Qgis::JoinStyle>( QStringLiteral( "offset-join-style" ), QgsSettings::sTreeDigitizing, Qgis::JoinStyle::Round );
 
-const QgsSettingsEntryEnumFlag<Qgis::EndCapStyle> *QgsSettingsRegistryCore::settingsDigitizingOffsetCapStyle = new QgsSettingsEntryEnumFlag<Qgis::EndCapStyle>( QStringLiteral( "offset_cap_style" ), QgsSettings::sTreeDigitizing,  Qgis::EndCapStyle::Round );
+const QgsSettingsEntryEnumFlag<Qgis::EndCapStyle> *QgsSettingsRegistryCore::settingsDigitizingOffsetCapStyle = new QgsSettingsEntryEnumFlag<Qgis::EndCapStyle>( QStringLiteral( "offset-cap-style" ), QgsSettings::sTreeDigitizing,  Qgis::EndCapStyle::Round );
 
-const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingStreamTolerance = new QgsSettingsEntryInteger( QStringLiteral( "stream_tolerance" ), QgsSettings::sTreeDigitizing, 2 );
+const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingStreamTolerance = new QgsSettingsEntryInteger( QStringLiteral( "stream-tolerance" ), QgsSettings::sTreeDigitizing, 2 );
 
-const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingLineWidth = new QgsSettingsEntryInteger( QStringLiteral( "line_width" ), QgsSettings::sTreeDigitizing, 1 );
+const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingLineWidth = new QgsSettingsEntryInteger( QStringLiteral( "line-width" ), QgsSettings::sTreeDigitizing, 1 );
 
 const QgsSettingsEntryColor *QgsSettingsRegistryCore::settingsDigitizingLineColor = new QgsSettingsEntryColor( QStringLiteral( "line-color" ), QgsSettings::sTreeDigitizing, QColor( 255, 0, 0, 200 ) );
 
-const QgsSettingsEntryDouble *QgsSettingsRegistryCore::settingsDigitizingLineColorAlphaScale = new QgsSettingsEntryDouble( QStringLiteral( "line_color_alpha_scale" ), QgsSettings::sTreeDigitizing, 0.75 );
+const QgsSettingsEntryDouble *QgsSettingsRegistryCore::settingsDigitizingLineColorAlphaScale = new QgsSettingsEntryDouble( QStringLiteral( "line-color-alpha-scale" ), QgsSettings::sTreeDigitizing, 0.75 );
 
 const QgsSettingsEntryColor *QgsSettingsRegistryCore::settingsDigitizingFillColor = new QgsSettingsEntryColor( QStringLiteral( "fill-color" ), QgsSettings::sTreeDigitizing, QColor( 255, 0, 0, 30 ) );
 
-const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsDigitizingLineGhost = new QgsSettingsEntryBool( QStringLiteral( "line_ghost" ), QgsSettings::sTreeDigitizing, false );
+const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsDigitizingLineGhost = new QgsSettingsEntryBool( QStringLiteral( "line-ghost" ), QgsSettings::sTreeDigitizing, false );
 
-const QgsSettingsEntryDouble *QgsSettingsRegistryCore::settingsDigitizingDefaultZValue = new QgsSettingsEntryDouble( QStringLiteral( "default_z_value" ), QgsSettings::sTreeDigitizing, Qgis::DEFAULT_Z_COORDINATE );
+const QgsSettingsEntryDouble *QgsSettingsRegistryCore::settingsDigitizingDefaultZValue = new QgsSettingsEntryDouble( QStringLiteral( "default-z-value" ), QgsSettings::sTreeDigitizing, Qgis::DEFAULT_Z_COORDINATE );
 
-const QgsSettingsEntryDouble *QgsSettingsRegistryCore::settingsDigitizingDefaultMValue = new QgsSettingsEntryDouble( QStringLiteral( "default_m_value" ), QgsSettings::sTreeDigitizing, Qgis::DEFAULT_M_COORDINATE );
+const QgsSettingsEntryDouble *QgsSettingsRegistryCore::settingsDigitizingDefaultMValue = new QgsSettingsEntryDouble( QStringLiteral( "default-m-value" ), QgsSettings::sTreeDigitizing, Qgis::DEFAULT_M_COORDINATE );
 
-const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsDigitizingDefaultSnapEnabled = new QgsSettingsEntryBool( QStringLiteral( "default_snap_enabled" ), QgsSettings::sTreeDigitizing,  false );
+const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsDigitizingDefaultSnapEnabled = new QgsSettingsEntryBool( QStringLiteral( "default-snap-enabled" ), QgsSettings::sTreeDigitizing,  false );
 
-const QgsSettingsEntryDouble *QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingTolerance = new QgsSettingsEntryDouble( QStringLiteral( "default_snapping_tolerance" ), QgsSettings::sTreeDigitizing, Qgis::DEFAULT_SNAP_TOLERANCE );
+const QgsSettingsEntryDouble *QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingTolerance = new QgsSettingsEntryDouble( QStringLiteral( "default-snapping-tolerance" ), QgsSettings::sTreeDigitizing, Qgis::DEFAULT_SNAP_TOLERANCE );
 
-const QgsSettingsEntryDouble *QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEdit = new QgsSettingsEntryDouble( QStringLiteral( "search_radius_vertex_edit" ), QgsSettings::sTreeDigitizing, 10 );
+const QgsSettingsEntryDouble *QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEdit = new QgsSettingsEntryDouble( QStringLiteral( "search-radius-vertex-edit" ), QgsSettings::sTreeDigitizing, 10 );
 
-const QgsSettingsEntryColor *QgsSettingsRegistryCore::settingsDigitizingSnapColor = new QgsSettingsEntryColor( QStringLiteral( "snap_color" ), QgsSettings::sTreeDigitizing, QColor( Qt::magenta ) );
+const QgsSettingsEntryColor *QgsSettingsRegistryCore::settingsDigitizingSnapColor = new QgsSettingsEntryColor( QStringLiteral( "snap-color" ), QgsSettings::sTreeDigitizing, QColor( Qt::magenta ) );
 
-const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsDigitizingSnapTooltip = new QgsSettingsEntryBool( QStringLiteral( "snap_tooltip" ), QgsSettings::sTreeDigitizing, false );
+const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsDigitizingSnapTooltip = new QgsSettingsEntryBool( QStringLiteral( "snap-tooltip" ), QgsSettings::sTreeDigitizing, false );
 
-const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsDigitizingSnapInvisibleFeature = new QgsSettingsEntryBool( QStringLiteral( "snap_invisible_feature" ), QgsSettings::sTreeDigitizing, false );
+const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsDigitizingSnapInvisibleFeature = new QgsSettingsEntryBool( QStringLiteral( "snap-invisible-feature" ), QgsSettings::sTreeDigitizing, false );
 
-const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsDigitizingMarkerOnlyForSelected = new QgsSettingsEntryBool( QStringLiteral( "marker_only_for_selected" ), QgsSettings::sTreeDigitizing, true );
+const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsDigitizingMarkerOnlyForSelected = new QgsSettingsEntryBool( QStringLiteral( "marker-only-for-selected" ), QgsSettings::sTreeDigitizing, true );
 
-const QgsSettingsEntryString *QgsSettingsRegistryCore::settingsDigitizingMarkerStyle = new QgsSettingsEntryString( QStringLiteral( "marker_style" ), QgsSettings::sTreeDigitizing, "Cross" );
+const QgsSettingsEntryString *QgsSettingsRegistryCore::settingsDigitizingMarkerStyle = new QgsSettingsEntryString( QStringLiteral( "marker-style" ), QgsSettings::sTreeDigitizing, "Cross" );
 
-const QgsSettingsEntryDouble *QgsSettingsRegistryCore::settingsDigitizingMarkerSizeMm = new QgsSettingsEntryDouble( QStringLiteral( "marker_size_mm" ), QgsSettings::sTreeDigitizing, 2.0 );
+const QgsSettingsEntryDouble *QgsSettingsRegistryCore::settingsDigitizingMarkerSizeMm = new QgsSettingsEntryDouble( QStringLiteral( "marker-size-mm" ), QgsSettings::sTreeDigitizing, 2.0 );
 
-const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsDigitizingReuseLastValues = new QgsSettingsEntryBool( QStringLiteral( "reuseLastValues" ), QgsSettings::sTreeDigitizing, false );
+const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsDigitizingReuseLastValues = new QgsSettingsEntryBool( QStringLiteral( "reuse-last-values" ), QgsSettings::sTreeDigitizing, false );
 
-const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsDigitizingDisableEnterAttributeValuesDialog = new QgsSettingsEntryBool( QStringLiteral( "disable_enter_attribute_values_dialog" ), QgsSettings::sTreeDigitizing, false );
 
-const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingValidateGeometries = new QgsSettingsEntryInteger( QStringLiteral( "validate_geometries" ), QgsSettings::sTreeDigitizing, 1 );
+const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsDigitizingDisableEnterAttributeValuesDialog = new QgsSettingsEntryBool( QStringLiteral( "disable-enter-attribute-values-dialog" ), QgsSettings::sTreeDigitizing, false );
 
-const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg = new QgsSettingsEntryInteger( QStringLiteral( "offset_quad_seg" ), QgsSettings::sTreeDigitizing, 8 );
+const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingValidateGeometries = new QgsSettingsEntryInteger( QStringLiteral( "validate-geometries" ), QgsSettings::sTreeDigitizing, 1 );
 
-const QgsSettingsEntryDouble *QgsSettingsRegistryCore::settingsDigitizingOffsetMiterLimit = new QgsSettingsEntryDouble( QStringLiteral( "offset_miter_limit" ), QgsSettings::sTreeDigitizing, 5.0 );
+const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg = new QgsSettingsEntryInteger( QStringLiteral( "offset-quad-seg" ), QgsSettings::sTreeDigitizing, 8 );
 
-const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsDigitizingConvertToCurve = new QgsSettingsEntryBool( QStringLiteral( "convert_to_curve" ), QgsSettings::sTreeDigitizing, false );
+const QgsSettingsEntryDouble *QgsSettingsRegistryCore::settingsDigitizingOffsetMiterLimit = new QgsSettingsEntryDouble( QStringLiteral( "offset-miter-limit" ), QgsSettings::sTreeDigitizing, 5.0 );
 
-const QgsSettingsEntryDouble *QgsSettingsRegistryCore::settingsDigitizingConvertToCurveAngleTolerance = new QgsSettingsEntryDouble( QStringLiteral( "convert_to_curve_angle_tolerance" ), QgsSettings::sTreeDigitizing, 1e-6 );
+const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsDigitizingConvertToCurve = new QgsSettingsEntryBool( QStringLiteral( "convert-to-curve" ), QgsSettings::sTreeDigitizing, false );
 
-const QgsSettingsEntryDouble *QgsSettingsRegistryCore::settingsDigitizingConvertToCurveDistanceTolerance = new QgsSettingsEntryDouble( QStringLiteral( "convert_to_curve_distance_tolerance" ), QgsSettings::sTreeDigitizing, 1e-6 );
+const QgsSettingsEntryDouble *QgsSettingsRegistryCore::settingsDigitizingConvertToCurveAngleTolerance = new QgsSettingsEntryDouble( QStringLiteral( "convert-to-curve-angle-tolerance" ), QgsSettings::sTreeDigitizing, 1e-6 );
 
-const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsDigitizingOffsetShowAdvanced = new QgsSettingsEntryBool( QStringLiteral( "offset_show_advanced" ), QgsSettings::sTreeDigitizing, false );
+const QgsSettingsEntryDouble *QgsSettingsRegistryCore::settingsDigitizingConvertToCurveDistanceTolerance = new QgsSettingsEntryDouble( QStringLiteral( "convert-to-curve-distance-tolerance" ), QgsSettings::sTreeDigitizing, 1e-6 );
 
-const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingTracingMaxFeatureCount = new QgsSettingsEntryInteger( QStringLiteral( "tracing_max_feature_count" ), QgsSettings::sTreeDigitizing, 10000 );
+const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsDigitizingOffsetShowAdvanced = new QgsSettingsEntryBool( QStringLiteral( "offset-show-advanced" ), QgsSettings::sTreeDigitizing, false );
+
+const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingTracingMaxFeatureCount = new QgsSettingsEntryInteger( QStringLiteral( "tracing-max-feature-count" ), QgsSettings::sTreeDigitizing, 10000 );
 
 const QgsSettingsEntryString *QgsSettingsRegistryCore::settingsGpsBabelPath = new QgsSettingsEntryString( QStringLiteral( "gpsbabelPath" ), QgsSettings::sTreeGps, QStringLiteral( "gpsbabel" ) );
 
@@ -118,8 +119,6 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   // for backward compatibility, old keys are recreated when the registry gets deleted
 
   // single settings - added in 3.30
-  settingsDigitizingLineColor->copyValueFromKeys( QStringLiteral( "qgis/digitizing/line_color_red" ), QStringLiteral( "qgis/digitizing/line_color_green" ), QStringLiteral( "qgis/digitizing/line_color_blue" ), QStringLiteral( "qgis/digitizing/line_color_alpha" ) );
-  settingsDigitizingFillColor->copyValueFromKeys( QStringLiteral( "qgis/digitizing/fill_color_red" ), QStringLiteral( "qgis/digitizing/fill_color_green" ), QStringLiteral( "qgis/digitizing/fill_color_blue" ), QStringLiteral( "qgis/digitizing/fill_color_alpha" ) );
   QgsLayout::settingsSearchPathForTemplates->copyValueFromKey( QStringLiteral( "core/Layout/searchPathsForTemplates" ) );
 
   QgsProcessing::settingsPreferFilenameAsLayerName->copyValueFromKey( QStringLiteral( "Processing/Configuration/PREFER_FILENAME_AS_LAYER_NAME" ) );
@@ -140,6 +139,33 @@ void QgsSettingsRegistryCore::migrateOldSettings()
 
   QgsRasterLayer::settingsRasterDefaultOversampling->copyValueFromKey( QStringLiteral( "Raster/defaultOversampling" ), true );
   QgsRasterLayer::settingsRasterDefaultEarlyResampling->copyValueFromKey( QStringLiteral( "Raster/defaultEarlyResampling" ), true );
+
+  // digitizing settings - added in 3.30
+  {
+    settingsDigitizingLineColor->copyValueFromKeys( QStringLiteral( "qgis/digitizing/line_color_red" ), QStringLiteral( "qgis/digitizing/line_color_green" ), QStringLiteral( "qgis/digitizing/line_color_blue" ), QStringLiteral( "qgis/digitizing/line_color_alpha" ) );
+    settingsDigitizingFillColor->copyValueFromKeys( QStringLiteral( "qgis/digitizing/fill_color_red" ), QStringLiteral( "qgis/digitizing/fill_color_green" ), QStringLiteral( "qgis/digitizing/fill_color_blue" ), QStringLiteral( "qgis/digitizing/fill_color_alpha" ) );
+
+    const QList<const QgsSettingsEntryBase *> settings = QgsSettings::sTreeDigitizing->childrenSettings();
+    for ( const QgsSettingsEntryBase *setting : settings )
+    {
+      QString name = setting->name();
+      if (
+        name == settingsDigitizingStreamTolerance->name() ||
+        name == settingsDigitizingLineColor->name() ||
+        name == settingsDigitizingFillColor->name()
+      )
+        continue;
+      if ( name == settingsDigitizingReuseLastValues->name() )
+      {
+        name = QStringLiteral( "reuseLastValues" );
+      }
+      else
+      {
+        name.replace( '_', '-' );
+      }
+      setting->copyValueFromKey( QString( "qgis/digitizing/%1" ).arg( name ) );
+    }
+  }
 
   // locator filters - added in 3.30
   {
@@ -296,8 +322,6 @@ void QgsSettingsRegistryCore::migrateOldSettings()
 void QgsSettingsRegistryCore::backwardCompatibility()
 {
   // single settings - added in 3.30
-  settingsDigitizingLineColor->copyValueToKeys( QStringLiteral( "qgis/digitizing/line_color_red" ), QStringLiteral( "qgis/digitizing/line_color_green" ), QStringLiteral( "qgis/digitizing/line_color_blue" ), QStringLiteral( "qgis/digitizing/line_color_alpha" ) );
-  settingsDigitizingFillColor->copyValueToKeys( QStringLiteral( "qgis/digitizing/fill_color_red" ), QStringLiteral( "qgis/digitizing/fill_color_green" ), QStringLiteral( "qgis/digitizing/fill_color_blue" ), QStringLiteral( "qgis/digitizing/fill_color_alpha" ) );
   QgsLayout::settingsSearchPathForTemplates->copyValueToKey( QStringLiteral( "core/Layout/searchPathsForTemplates" ) );
 
   QgsProcessing::settingsPreferFilenameAsLayerName->copyValueToKey( QStringLiteral( "Processing/Configuration/PREFER_FILENAME_AS_LAYER_NAME" ) );
@@ -319,6 +343,32 @@ void QgsSettingsRegistryCore::backwardCompatibility()
   QgsRasterLayer::settingsRasterDefaultOversampling->copyValueToKey( QStringLiteral( "Raster/defaultOversampling" ) );
   QgsRasterLayer::settingsRasterDefaultEarlyResampling->copyValueToKey( QStringLiteral( "Raster/defaultEarlyResampling" ) );
 
+  // digitizing settings - added in 3.30
+  {
+    settingsDigitizingLineColor->copyValueToKeys( QStringLiteral( "qgis/digitizing/line_color_red" ), QStringLiteral( "qgis/digitizing/line_color_green" ), QStringLiteral( "qgis/digitizing/line_color_blue" ), QStringLiteral( "qgis/digitizing/line_color_alpha" ) );
+    settingsDigitizingFillColor->copyValueToKeys( QStringLiteral( "qgis/digitizing/fill_color_red" ), QStringLiteral( "qgis/digitizing/fill_color_green" ), QStringLiteral( "qgis/digitizing/fill_color_blue" ), QStringLiteral( "qgis/digitizing/fill_color_alpha" ) );
+
+    const QList<const QgsSettingsEntryBase *> settings = QgsSettings::sTreeDigitizing->childrenSettings();
+    for ( const QgsSettingsEntryBase *setting : settings )
+    {
+      QString name = setting->name();
+      if (
+        name == settingsDigitizingStreamTolerance->name() ||
+        name == settingsDigitizingLineColor->name() ||
+        name == settingsDigitizingFillColor->name()
+      )
+        continue;
+      if ( name == settingsDigitizingReuseLastValues->name() )
+      {
+        name = QStringLiteral( "reuseLastValues" );
+      }
+      else
+      {
+        name.replace( '_', '-' );
+      }
+      setting->copyValueToKey( QString( "qgis/digitizing/%1" ).arg( name ) );
+    }
+  }
 
   // locator filters - added in 3.30
   {

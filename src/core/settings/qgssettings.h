@@ -92,6 +92,7 @@ class CORE_EXPORT QgsSettings : public QObject
     static inline QgsSettingsTreeNode *sTreeApp = treeRoot()->createChildNode( QStringLiteral( "app" ) );
     static inline QgsSettingsTreeNode *sTreeConnections = treeRoot()->createChildNode( QStringLiteral( "connections" ) );
     static inline QgsSettingsTreeNode *sTreeCore = treeRoot()->createChildNode( QStringLiteral( "core" ) );
+    static inline QgsSettingsTreeNode *sTreeDigitizing = treeRoot()->createChildNode( QStringLiteral( "digitizing" ) );
     static inline QgsSettingsTreeNode *sTreeElevationProfile = treeRoot()->createChildNode( QStringLiteral( "elevation-profile" ) );
     static inline QgsSettingsTreeNode *sTreeFonts = treeRoot()->createChildNode( QStringLiteral( "fonts" ) );
     static inline QgsSettingsTreeNode *sTreeGeometryValidation = treeRoot()->createChildNode( QStringLiteral( "geometry_validation" ) );
@@ -108,9 +109,6 @@ class CORE_EXPORT QgsSettings : public QObject
     static inline QgsSettingsTreeNode *sTreeRaster = treeRoot()->createChildNode( QStringLiteral( "raster" ) );
     static inline QgsSettingsTreeNode *sTreeSvg = treeRoot()->createChildNode( QStringLiteral( "svg" ) );
     static inline QgsSettingsTreeNode *sTreeWms = treeRoot()->createChildNode( QStringLiteral( "wms" ) );
-
-    // sub levels
-    static inline QgsSettingsTreeNode *sTreeDigitizing = sTreeQgis->createChildNode( QStringLiteral( "digitizing" ) );
 
 #endif
 
