@@ -2322,6 +2322,7 @@ class TestQgsExpression: public QObject
 
       // newer form
       QgsExpression exp2( QStringLiteral( "@feature" ) );
+      QVERIFY( exp2.needsGeometry() );
       v = exp2.evaluate( &context );
       evalFeature = v.value<QgsFeature>();
       QCOMPARE( evalFeature.id(), f.id() );
@@ -2344,6 +2345,7 @@ class TestQgsExpression: public QObject
 
       // newer form
       QgsExpression exp2( QStringLiteral( "geom_to_wkt(@geometry)" ) );
+      QVERIFY( exp2.needsGeometry() );
       v = exp2.evaluate( &contextWithGeometry );
       QCOMPARE( v.toString(), QStringLiteral( "Point (1 2)" ) );
       v = exp2.evaluate( &contextWithNoGeometry );
