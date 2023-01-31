@@ -201,6 +201,11 @@ bool QgsStaticExpressionFunction::usesGeometry( const QgsExpressionNodeFunction 
     return mUsesGeometry;
 }
 
+void QgsStaticExpressionFunction::setUsesGeometryFunction( const std::function<bool ( const QgsExpressionNodeFunction * )> &usesGeometry )
+{
+  mUsesGeometryFunc = usesGeometry;
+}
+
 QSet<QString> QgsStaticExpressionFunction::referencedColumns( const QgsExpressionNodeFunction *node ) const
 {
   if ( mReferencedColumnsFunc )
@@ -8411,6 +8416,21 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
 
         const QgsExpressionContextScope *scope = context->activeScopeForVariable( varName );
         return scope ? scope->isStatic( varName ) : false;
+      }
+      return false;
+    }
+    );
+    varFunction->setUsesGeometryFunction(
+      []( const QgsExpressionNodeFunction * node ) -> bool
+    {
+      if ( node && node->args()->count() > 0 )
+      {
+        QgsExpressionNode *argNode = node->args()->at( 0 );
+        if ( QgsExpressionNodeLiteral *literal = dynamic_cast<QgsExpressionNodeLiteral *>( argNode ) )
+        {
+          if ( literal->value() == QLatin1String( "geometry" ) || literal->value() == QLatin1String( "feature" ) )
+            return true;
+        }
       }
       return false;
     }
