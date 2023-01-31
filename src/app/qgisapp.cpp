@@ -9619,7 +9619,7 @@ void QgisApp::mergeSelectedFeatures()
 
   QString errorMessage;
   QgsVectorLayerEditUtils vectorLayerEditUtils( vl );
-  bool success = vectorLayerEditUtils.mergeFeatures( vl->selectedFeatureIds(), d.mergedAttributes(), unionGeom, errorMessage );
+  bool success = vectorLayerEditUtils.mergeFeatures( d.targetFeatureId(), vl->selectedFeatureIds(), d.mergedAttributes(), unionGeom, errorMessage );
 
   if ( !success )
   {

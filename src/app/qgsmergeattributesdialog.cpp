@@ -108,6 +108,9 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &featur
       break;
   }
 
+  if ( ! mFeatureList.isEmpty() )
+    mTargetFeatureId = mFeatureList.first().id();
+
   connect( mSkipAllButton, &QAbstractButton::clicked, this, &QgsMergeAttributesDialog::setAllToSkip );
   connect( mTableWidget, &QTableWidget::cellChanged, this, &QgsMergeAttributesDialog::tableWidgetCellChanged );
 
@@ -465,6 +468,8 @@ void QgsMergeAttributesDialog::setAllAttributesFromFeature( QgsFeatureId feature
       currentComboBox->setCurrentIndex( currentComboBox->findData( QStringLiteral( "f%1" ).arg( FID_TO_STRING( featureId ) ) ) );
     }
   }
+
+  mTargetFeatureId = featureId;
 }
 
 QVariant QgsMergeAttributesDialog::calcStatistic( int col, QgsStatisticalSummary::Statistic stat )
@@ -666,12 +671,18 @@ void QgsMergeAttributesDialog::mRemoveFeatureFromSelectionButton_clicked()
         f_it != mFeatureList.end();
         ++f_it )
   {
+    if ( f_it->id() == mTargetFeatureId )
+      mTargetFeatureId = FID_NULL;
+
     if ( f_it->id() == featureId )
     {
       mFeatureList.erase( f_it );
       break;
     }
   }
+
+  if ( mTargetFeatureId == FID_NULL && !mFeatureList.isEmpty() )
+    mTargetFeatureId = mFeatureList.first().id();
 }
 
 void QgsMergeAttributesDialog::tableWidgetCellChanged( int row, int column )
@@ -743,6 +754,11 @@ QgsAttributes QgsMergeAttributesDialog::mergedAttributes() const
   }
 
   return results;
+}
+
+QgsFeatureId QgsMergeAttributesDialog::targetFeatureId() const
+{
+  return mTargetFeatureId;
 }
 
 QSet<int> QgsMergeAttributesDialog::skippedAttributeIndexes() const
