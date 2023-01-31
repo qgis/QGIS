@@ -60,9 +60,9 @@ class CORE_EXPORT QgsRasterIdentifyResult
     /**
      * Returns the identify results. Results are different for each format:
      *
-     * - QgsRaster::IdentifyFormatValue: a map of values for each band, where keys are band numbers (from 1).
-     * - QgsRaster::IdentifyFormatFeature: a map of WMS sublayer keys and lists of QgsFeatureStore values.
-     * - QgsRaster::IdentifyFormatHtml: a map of WMS sublayer keys and HTML strings.
+     * - Qgis::RasterIdentifyFormat::Value: a map of values for each band, where keys are band numbers (from 1).
+     * - Qgis::RasterIdentifyFormat::Feature: a map of WMS sublayer keys and lists of QgsFeatureStore values.
+     * - Qgis::RasterIdentifyFormat::Html: a map of WMS sublayer keys and HTML strings.
      */
     QMap<int, QVariant> results() const { return mResults; }
 
