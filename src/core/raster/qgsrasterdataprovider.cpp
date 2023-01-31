@@ -485,7 +485,7 @@ QString QgsRasterDataProvider::identifyFormatLabel( Qgis::RasterIdentifyFormat f
     case Qgis::RasterIdentifyFormat::Text:
       return tr( "Text" );
     case Qgis::RasterIdentifyFormat::Html:
-      return tr( "Html" );
+      return tr( "HTML" );
     case Qgis::RasterIdentifyFormat::Feature:
       return tr( "Feature" );
     case Qgis::RasterIdentifyFormat::Undefined:
