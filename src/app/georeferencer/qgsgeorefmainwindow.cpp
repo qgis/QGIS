@@ -2243,8 +2243,8 @@ bool QgsGeoreferencerMainWindow::validate()
     return false;
   }
 
-  if ( mCreateWorldFileOnly
-       && ( QgsGcpTransformerInterface::TransformMethod::Linear != mTransformMethod && QgsGcpTransformerInterface::TransformMethod::Helmert != mTransformMethod ) )
+  if ( mModifiedFileName.isEmpty() && ( !mCreateWorldFileOnly
+                                        || ( QgsGcpTransformerInterface::TransformMethod::Linear != mTransformMethod && QgsGcpTransformerInterface::TransformMethod::Helmert != mTransformMethod ) ) )
   {
     QMessageBox::information( this, tr( "Georeferencer" ), tr( "Please set output file name." ) );
     showTransformSettingsDialog();
