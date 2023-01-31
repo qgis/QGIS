@@ -113,6 +113,7 @@ BuildRequires:  qscintilla-qt5-devel
 
 # Qt5 stuff
 BuildRequires:  qt5-qtlocation-devel
+BuildRequires:  qt5-qtmultimedia-devel
 BuildRequires:  qt5-qtsvg-devel
 BuildRequires:  qt5-qttools-static
 BuildRequires:  qt5-qtwebkit-devel
