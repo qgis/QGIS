@@ -107,7 +107,7 @@ class CORE_EXPORT QgsSettingsEntryBase
      * \since QGIS 3.30
      */
     QgsSettingsEntryBase( const QString &name,
-                          QgsSettingsTreeNode *parentTreeElement,
+                          QgsSettingsTreeNode *parent,
                           const QVariant &defaultValue = QVariant(),
                           const QString &description = QString(),
                           Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_THROW( QgsSettingsException );

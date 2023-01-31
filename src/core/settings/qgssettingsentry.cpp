@@ -20,18 +20,18 @@
 #include <QDir>
 
 
-QgsSettingsEntryBase::QgsSettingsEntryBase( const QString &key, QgsSettingsTreeNode *parentTreeElement, const QVariant &defaultValue, const QString &description, Qgis::SettingsOptions options )
-  : mParentTreeElement( parentTreeElement )
+QgsSettingsEntryBase::QgsSettingsEntryBase( const QString &key, QgsSettingsTreeNode *parent, const QVariant &defaultValue, const QString &description, Qgis::SettingsOptions options )
+  : mParentTreeElement( parent )
   , mName( key )
   , mDefaultValue( defaultValue )
   , mDescription( description )
   , mOptions( options )
 {
-  mKey = QDir::cleanPath( QStringLiteral( "%1/%2" ).arg( parentTreeElement ? parentTreeElement->completeKey() : QString(), key ) );
+  mKey = QDir::cleanPath( QStringLiteral( "%1/%2" ).arg( parent ? parent->completeKey() : QString(), key ) );
 
-  if ( parentTreeElement )
+  if ( parent )
   {
-    parentTreeElement->registerChildSetting( this, key );
+    parent->registerChildSetting( this, key );
   }
 }
 
