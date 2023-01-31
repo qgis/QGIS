@@ -38,16 +38,18 @@ class QgsSettingsEntryEnumFlag : public QgsSettingsEntryByValue<T>
     /**
      * Constructor for QgsSettingsEntryEnumFlagBase.
      *
-     * The \a key argument specifies the final part of the settings key.
-     * The \a parent argument specifies the parent in the tree of settings.
-     * The \a defaultValue argument specifies the default value for the settings entry.
-     * The \a description argument specifies a description for the settings entry.
+     * \param name specifies the name of the setting.
+     * \param parent specifies the parent in the tree of settings.
+     * \param defaultValue specifies the default value for the settings entry.
+     * \param description specifies a description for the settings entry.
+     * \param options specifies the options for the settings entry.
      *
      * \note The enum needs to be declared with Q_ENUM, and flags with Q_FLAG (not Q_FLAGS).
      * \note for Python bindings, a custom implementation is achieved in Python directly
+     * \since QGIS 3.30
      */
-    QgsSettingsEntryEnumFlag( const QString &key, QgsSettingsTreeNode *parent, T defaultValue, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions() )
-      : QgsSettingsEntryByValue<T>( key,
+    QgsSettingsEntryEnumFlag( const QString &name, QgsSettingsTreeNode *parent, T defaultValue, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions() )
+      : QgsSettingsEntryByValue<T>( name,
                                     parent,
                                     QMetaEnum::fromType<T>().isFlag() ? qgsFlagValueToKeys( defaultValue ) : qgsEnumValueToKey( defaultValue ),
                                     description,
@@ -62,11 +64,11 @@ class QgsSettingsEntryEnumFlag : public QgsSettingsEntryByValue<T>
     /**
      * Constructor for QgsSettingsEntryEnumFlagBase.
      *
-     * The \a parent argument specifies the parent in the tree of settings.
-     * The \a key argument specifies the final part of the settings key.
-     * The \a section argument specifies the section.
-     * The \a defaultValue argument specifies the default value for the settings entry.
-     * The \a description argument specifies a description for the settings entry.
+     * \param key specifies the final part of the setting key.
+     * \param section specifies the section.
+     * \param defaultValue specifies the default value for the settings entry.
+     * \param description specifies a description for the settings entry.
+     * \param options specifies the options for the settings entry.
      *
      * \note The enum needs to be declared with Q_ENUM, and flags with Q_FLAG (not Q_FLAGS).
      * \note for Python bindings, a custom implementation is achieved in Python directly

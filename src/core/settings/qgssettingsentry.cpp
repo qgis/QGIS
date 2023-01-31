@@ -22,6 +22,7 @@
 
 QgsSettingsEntryBase::QgsSettingsEntryBase( const QString &key, QgsSettingsTreeNode *parentTreeElement, const QVariant &defaultValue, const QString &description, Qgis::SettingsOptions options )
   : mParentTreeElement( parentTreeElement )
+  , mName( key )
   , mDefaultValue( defaultValue )
   , mDescription( description )
   , mOptions( options )
