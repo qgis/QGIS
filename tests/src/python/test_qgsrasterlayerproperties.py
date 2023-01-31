@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsRasterLayerProperties.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -57,7 +56,7 @@ class TestQgsRasterLayerProperties(unittest.TestCase):
             COUNT = 0
 
             def __init__(self, title: str, icon: QIcon):
-                super(MyFactory, self).__init__(title, icon)
+                super().__init__(title, icon)
 
             def supportsLayer(self, layer):
                 return True

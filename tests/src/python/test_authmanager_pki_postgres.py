@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Tests for auth manager PKI access to postgres.
 

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     test_qgsblockingprocess.py
@@ -90,7 +88,7 @@ class TestQgsBlockingProcess(unittest.TestCase):
         temp_folder = tempfile.mkdtemp()
 
         script_file = os.path.join(temp_folder, 'crash_process.sh')
-        with open(script_file, 'wt') as f:
+        with open(script_file, 'w') as f:
             f.write('kill $$')
 
         os.chmod(script_file, 0o775)
@@ -145,7 +143,7 @@ class TestQgsBlockingProcess(unittest.TestCase):
         temp_folder = tempfile.mkdtemp()
 
         script_file = os.path.join(temp_folder, 'process_env.sh')
-        with open(script_file, 'wt') as f:
+        with open(script_file, 'w') as f:
             f.write('echo $my_var')
 
         os.chmod(script_file, 0o775)
@@ -188,7 +186,7 @@ class TestQgsBlockingProcess(unittest.TestCase):
         # test python changing path
 
         script_file = os.path.join(temp_folder, 'process_env_path.sh')
-        with open(script_file, 'wt') as f:
+        with open(script_file, 'w') as f:
             f.write('echo $PATH')
 
         prev_path_val = os.getenv('PATH')

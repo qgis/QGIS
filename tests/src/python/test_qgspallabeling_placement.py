@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsPalLabeling: base suite of render check tests
 
 Class is meant to be inherited by classes that test different labeling outputs
@@ -49,7 +48,7 @@ class TestPlacementBase(TestQgsPalLabeling):
 
     def setUp(self):
         """Run before each test."""
-        super(TestPlacementBase, self).setUp()
+        super().setUp()
         self.removeAllLayers()
         self.configTest('pal_placement', 'sp')
         self._TestImage = ''
@@ -75,7 +74,7 @@ class TestPlacementBase(TestQgsPalLabeling):
             ms = self._TestMapSettings  # per test settings
             settings_type = 'Test'
         if 'PAL_VERBOSE' in os.environ:
-            qDebug('MapSettings type: {0}'.format(settings_type))
+            qDebug(f'MapSettings type: {settings_type}')
             qDebug(mapSettingsString(ms))
 
         img = renderMapToImage(ms, parallel=False)

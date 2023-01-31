@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Test the QgsSettingsEntry classes
 
@@ -94,10 +93,10 @@ class TestQgsSettingsEntry(unittest.TestCase):
         }
         self.assertEqual(settings_types, list(hardcoded_types.keys()))
         for setting_type, default_value in hardcoded_types.items():
-            settings_key = "settings/key_{}".format(setting_type)
-            settings_key_complete = "/plugins/{}/{}".format(self.pluginName, settings_key)
+            settings_key = f"settings/key_{setting_type}"
+            settings_key_complete = f"/plugins/{self.pluginName}/{settings_key}"
             QgsSettings().remove(settings_key_complete)
-            settings_entry = eval('qgis_core.{}(settings_key, self.pluginName, default_value)'.format(setting_type))
+            settings_entry = eval(f'qgis_core.{setting_type}(settings_key, self.pluginName, default_value)')
             self.assertEqual(settings_entry.key(), settings_key_complete)
 
     def test_with_parent_element(self):
@@ -130,8 +129,8 @@ class TestQgsSettingsEntry(unittest.TestCase):
         settingsKeyDynamic = "settingsEntryBase/%1/variantValue"
         dynamicKeyPart1 = "first"
         dynamicKeyPart2 = "second"
-        settingsKeyComplete1 = "/plugins/{}/{}".format(self.pluginName, settingsKeyDynamic).replace("%1", dynamicKeyPart1)
-        settingsKeyComplete2 = "/plugins/{}/{}".format(self.pluginName, settingsKeyDynamic).replace("%1", dynamicKeyPart2)
+        settingsKeyComplete1 = f"/plugins/{self.pluginName}/{settingsKeyDynamic}".replace("%1", dynamicKeyPart1)
+        settingsKeyComplete2 = f"/plugins/{self.pluginName}/{settingsKeyDynamic}".replace("%1", dynamicKeyPart2)
 
         # Make sure settings does not exists
         QgsSettings().remove(settingsKeyComplete1)

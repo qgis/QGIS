@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsActionWidgetWrapper.
 
 From build dir, run: ctest -R PyQgsActionWidgetWrapper -V

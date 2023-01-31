@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsBookmarkManager.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -405,7 +404,7 @@ class TestQgsBookmarkManager(unittest.TestCase):
         manager = QgsBookmarkManager()
 
         tmpDir = QTemporaryDir()
-        tmpFile = "{}/bookmarks.xml".format(tmpDir.path())
+        tmpFile = f"{tmpDir.path()}/bookmarks.xml"
 
         manager.initialize(tmpFile)
 
@@ -441,7 +440,7 @@ class TestQgsBookmarkManager(unittest.TestCase):
         self.assertEqual(manager2.bookmarks(), [b, b2, b3])
 
         # but a manager with a different key should not...
-        tmpFile2 = "{}/bookmarks2.xml".format(tmpDir.path())
+        tmpFile2 = f"{tmpDir.path()}/bookmarks2.xml"
         manager3 = QgsBookmarkManager()
         manager3.initialize(tmpFile2)
         self.assertEqual(manager3.bookmarks(), [])
@@ -528,7 +527,7 @@ class TestQgsBookmarkManager(unittest.TestCase):
         manager3 = QgsBookmarkManager.createProjectBasedManager(p)
 
         tmpDir = QTemporaryDir()
-        tmpFile = "{}/bookmarks.xml".format(tmpDir.path())
+        tmpFile = f"{tmpDir.path()}/bookmarks.xml"
 
         # no managers
         self.assertTrue(QgsBookmarkManager.exportToFile(tmpFile, []))

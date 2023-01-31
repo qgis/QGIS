@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsSnappingUtils (complement to C++-based tests)
 
 .. note:: This program is free software; you can redistribute it and/or modify

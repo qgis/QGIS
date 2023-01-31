@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for the OGR/Shapefile provider.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -76,10 +75,10 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         cls.basetestfile = os.path.join(cls.basetestpath, 'shapefile.shp')
         cls.repackfile = os.path.join(cls.repackfilepath, 'shapefile.shp')
         cls.basetestpolyfile = os.path.join(cls.basetestpath, 'shapefile_poly.shp')
-        cls.vl = QgsVectorLayer('{}|layerid=0'.format(cls.basetestfile), 'test', 'ogr')
+        cls.vl = QgsVectorLayer(f'{cls.basetestfile}|layerid=0', 'test', 'ogr')
         assert cls.vl.isValid()
         cls.source = cls.vl.dataProvider()
-        cls.vl_poly = QgsVectorLayer('{}|layerid=0'.format(cls.basetestpolyfile), 'test', 'ogr')
+        cls.vl_poly = QgsVectorLayer(f'{cls.basetestpolyfile}|layerid=0', 'test', 'ogr')
         assert cls.vl_poly.isValid()
         cls.poly_provider = cls.vl_poly.dataProvider()
 
@@ -107,7 +106,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
             shutil.copy(os.path.join(srcpath, file), tmpdir)
         datasource = os.path.join(tmpdir, 'shapefile.shp')
 
-        vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
+        vl = QgsVectorLayer(f'{datasource}|layerid=0', 'test', 'ogr')
         return vl
 
     def getEditableLayer(self):
@@ -121,126 +120,126 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         QgsSettings().setValue('/qgis/compileExpressions', False)
 
     def uncompiledFilters(self):
-        filters = set(['name ILIKE \'QGIS\'',
-                       '"name" NOT LIKE \'Ap%\'',
-                       '"name" NOT ILIKE \'QGIS\'',
-                       '"name" NOT ILIKE \'pEAR\'',
-                       'name <> \'Apple\'',
-                       '"name" <> \'apple\'',
-                       '(name = \'Apple\') is not null',
-                       'name ILIKE \'aPple\'',
-                       'name ILIKE \'%pp%\'',
-                       'cnt = 1100 % 1000',
-                       '"name" || \' \' || "name" = \'Orange Orange\'',
-                       '"name" || \' \' || "cnt" = \'Orange 100\'',
-                       '\'x\' || "name" IS NOT NULL',
-                       '\'x\' || "name" IS NULL',
-                       'cnt = 10 ^ 2',
-                       '"name" ~ \'[OP]ra[gne]+\'',
-                       'false and NULL',
-                       'true and NULL',
-                       'NULL and false',
-                       'NULL and true',
-                       'NULL and NULL',
-                       'false or NULL',
-                       'true or NULL',
-                       'NULL or false',
-                       'NULL or true',
-                       'NULL or NULL',
-                       'not name = \'Apple\'',
-                       'not name = \'Apple\' or name = \'Apple\'',
-                       'not name = \'Apple\' or not name = \'Apple\'',
-                       'not name = \'Apple\' and pk = 4',
-                       'not name = \'Apple\' and not pk = 4',
-                       'num_char IN (2, 4, 5)',
-                       '-cnt > 0',
-                       '-cnt < 0',
-                       '-cnt - 1 = -101',
-                       '-(-cnt) = 100',
-                       '-(cnt) = -(100)',
-                       'sqrt(pk) >= 2',
-                       'radians(cnt) < 2',
-                       'degrees(pk) <= 200',
-                       'abs(cnt) <= 200',
-                       'cos(pk) < 0',
-                       'sin(pk) < 0',
-                       'tan(pk) < 0',
-                       'acos(-1) < pk',
-                       'asin(1) < pk',
-                       'atan(3.14) < pk',
-                       'atan2(3.14, pk) < 1',
-                       'exp(pk) < 10',
-                       'ln(pk) <= 1',
-                       'log(3, pk) <= 1',
-                       'log10(pk) < 0.5',
-                       'round(3.14) <= pk',
-                       'round(0.314,1) * 10 = pk',
-                       'floor(3.14) <= pk',
-                       'ceil(3.14) <= pk',
-                       'pk < pi()',
-                       'round(cnt / 66.67) <= 2',
-                       'floor(cnt / 66.67) <= 2',
-                       'ceil(cnt / 66.67) <= 2',
-                       'pk < pi() / 2',
-                       'pk = char(51)',
-                       'pk = coalesce(NULL,3,4)',
-                       'lower(name) = \'apple\'',
-                       'upper(name) = \'APPLE\'',
-                       'name = trim(\'   Apple   \')',
-                       'x($geometry) < -70',
-                       'y($geometry) > 70',
-                       'xmin($geometry) < -70',
-                       'ymin($geometry) > 70',
-                       'xmax($geometry) < -70',
-                       'ymax($geometry) > 70',
-                       'disjoint($geometry,geom_from_wkt( \'Polygon ((-72.2 66.1, -65.2 66.1, -65.2 72.0, -72.2 72.0, -72.2 66.1))\'))',
-                       'intersects($geometry,geom_from_wkt( \'Polygon ((-72.2 66.1, -65.2 66.1, -65.2 72.0, -72.2 72.0, -72.2 66.1))\'))',
-                       'contains(geom_from_wkt( \'Polygon ((-72.2 66.1, -65.2 66.1, -65.2 72.0, -72.2 72.0, -72.2 66.1))\'),$geometry)',
-                       'distance($geometry,geom_from_wkt( \'Point (-70 70)\')) > 7',
-                       'intersects($geometry,geom_from_gml( \'<gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-72.2,66.1 -65.2,66.1 -65.2,72.0 -72.2,72.0 -72.2,66.1</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>\'))',
-                       'x($geometry) < -70',
-                       'y($geometry) > 79',
-                       'xmin($geometry) < -70',
-                       'ymin($geometry) < 76',
-                       'xmax($geometry) > -68',
-                       'ymax($geometry) > 80',
-                       'area($geometry) > 10',
-                       'perimeter($geometry) < 12',
-                       'relate($geometry,geom_from_wkt( \'Polygon ((-68.2 82.1, -66.95 82.1, -66.95 79.05, -68.2 79.05, -68.2 82.1))\')) = \'FF2FF1212\'',
-                       'relate($geometry,geom_from_wkt( \'Polygon ((-68.2 82.1, -66.95 82.1, -66.95 79.05, -68.2 79.05, -68.2 82.1))\'), \'****F****\')',
-                       'crosses($geometry,geom_from_wkt( \'Linestring (-68.2 82.1, -66.95 82.1, -66.95 79.05)\'))',
-                       'overlaps($geometry,geom_from_wkt( \'Polygon ((-68.2 82.1, -66.95 82.1, -66.95 79.05, -68.2 79.05, -68.2 82.1))\'))',
-                       'within($geometry,geom_from_wkt( \'Polygon ((-75.1 76.1, -75.1 81.6, -68.8 81.6, -68.8 76.1, -75.1 76.1))\'))',
-                       'overlaps(translate($geometry,-1,-1),geom_from_wkt( \'Polygon ((-75.1 76.1, -75.1 81.6, -68.8 81.6, -68.8 76.1, -75.1 76.1))\'))',
-                       'overlaps(buffer($geometry,1),geom_from_wkt( \'Polygon ((-75.1 76.1, -75.1 81.6, -68.8 81.6, -68.8 76.1, -75.1 76.1))\'))',
-                       'intersects(centroid($geometry),geom_from_wkt( \'Polygon ((-74.4 78.2, -74.4 79.1, -66.8 79.1, -66.8 78.2, -74.4 78.2))\'))',
-                       'intersects(point_on_surface($geometry),geom_from_wkt( \'Polygon ((-74.4 78.2, -74.4 79.1, -66.8 79.1, -66.8 78.2, -74.4 78.2))\'))',
-                       '"dt" <= format_date(make_datetime(2020, 5, 4, 12, 13, 14), \'yyyy-MM-dd hh:mm:ss\')',
-                       '"dt" < format_date(make_date(2020, 5, 4), \'yyyy-MM-dd hh:mm:ss\')',
-                       '"dt" = format_date(to_datetime(\'000www14ww13ww12www4ww5ww2020\',\'zzzwwwsswwmmwwhhwwwdwwMwwyyyy\'),\'yyyy-MM-dd hh:mm:ss\')',
-                       """dt BETWEEN format_date(make_datetime(2020, 5, 3, 12, 13, 14),  'yyyy-MM-dd hh:mm:ss') AND format_date(make_datetime(2020, 5, 4, 12, 14, 14), 'yyyy-MM-dd hh:mm:ss')""",
-                       """dt NOT BETWEEN format_date(make_datetime(2020, 5, 3, 12, 13, 14), 'yyyy-MM-dd hh:mm:ss') AND format_date(make_datetime(2020, 5, 4, 12, 14, 14), 'yyyy-MM-dd hh:mm:ss')""",
-                       '"date" = to_date(\'www4ww5ww2020\',\'wwwdwwMwwyyyy\')',
-                       'to_time("time") >= make_time(12, 14, 14)',
-                       'to_time("time") = to_time(\'000www14ww13ww12www\',\'zzzwwwsswwmmwwhhwww\')',
-                       'to_datetime("dt", \'yyyy-MM-dd hh:mm:ss\') + make_interval(days:=1) <= make_datetime(2020, 5, 4, 12, 13, 14)',
-                       'to_datetime("dt", \'yyyy-MM-dd hh:mm:ss\') + make_interval(days:=0.01) <= make_datetime(2020, 5, 4, 12, 13, 14)',
-                       'cnt BETWEEN -200 AND 200'  # NoUnaryMinus
-                       ])
+        filters = {'name ILIKE \'QGIS\'',
+                   '"name" NOT LIKE \'Ap%\'',
+                   '"name" NOT ILIKE \'QGIS\'',
+                   '"name" NOT ILIKE \'pEAR\'',
+                   'name <> \'Apple\'',
+                   '"name" <> \'apple\'',
+                   '(name = \'Apple\') is not null',
+                   'name ILIKE \'aPple\'',
+                   'name ILIKE \'%pp%\'',
+                   'cnt = 1100 % 1000',
+                   '"name" || \' \' || "name" = \'Orange Orange\'',
+                   '"name" || \' \' || "cnt" = \'Orange 100\'',
+                   '\'x\' || "name" IS NOT NULL',
+                   '\'x\' || "name" IS NULL',
+                   'cnt = 10 ^ 2',
+                   '"name" ~ \'[OP]ra[gne]+\'',
+                   'false and NULL',
+                   'true and NULL',
+                   'NULL and false',
+                   'NULL and true',
+                   'NULL and NULL',
+                   'false or NULL',
+                   'true or NULL',
+                   'NULL or false',
+                   'NULL or true',
+                   'NULL or NULL',
+                   'not name = \'Apple\'',
+                   'not name = \'Apple\' or name = \'Apple\'',
+                   'not name = \'Apple\' or not name = \'Apple\'',
+                   'not name = \'Apple\' and pk = 4',
+                   'not name = \'Apple\' and not pk = 4',
+                   'num_char IN (2, 4, 5)',
+                   '-cnt > 0',
+                   '-cnt < 0',
+                   '-cnt - 1 = -101',
+                   '-(-cnt) = 100',
+                   '-(cnt) = -(100)',
+                   'sqrt(pk) >= 2',
+                   'radians(cnt) < 2',
+                   'degrees(pk) <= 200',
+                   'abs(cnt) <= 200',
+                   'cos(pk) < 0',
+                   'sin(pk) < 0',
+                   'tan(pk) < 0',
+                   'acos(-1) < pk',
+                   'asin(1) < pk',
+                   'atan(3.14) < pk',
+                   'atan2(3.14, pk) < 1',
+                   'exp(pk) < 10',
+                   'ln(pk) <= 1',
+                   'log(3, pk) <= 1',
+                   'log10(pk) < 0.5',
+                   'round(3.14) <= pk',
+                   'round(0.314,1) * 10 = pk',
+                   'floor(3.14) <= pk',
+                   'ceil(3.14) <= pk',
+                   'pk < pi()',
+                   'round(cnt / 66.67) <= 2',
+                   'floor(cnt / 66.67) <= 2',
+                   'ceil(cnt / 66.67) <= 2',
+                   'pk < pi() / 2',
+                   'pk = char(51)',
+                   'pk = coalesce(NULL,3,4)',
+                   'lower(name) = \'apple\'',
+                   'upper(name) = \'APPLE\'',
+                   'name = trim(\'   Apple   \')',
+                   'x($geometry) < -70',
+                   'y($geometry) > 70',
+                   'xmin($geometry) < -70',
+                   'ymin($geometry) > 70',
+                   'xmax($geometry) < -70',
+                   'ymax($geometry) > 70',
+                   'disjoint($geometry,geom_from_wkt( \'Polygon ((-72.2 66.1, -65.2 66.1, -65.2 72.0, -72.2 72.0, -72.2 66.1))\'))',
+                   'intersects($geometry,geom_from_wkt( \'Polygon ((-72.2 66.1, -65.2 66.1, -65.2 72.0, -72.2 72.0, -72.2 66.1))\'))',
+                   'contains(geom_from_wkt( \'Polygon ((-72.2 66.1, -65.2 66.1, -65.2 72.0, -72.2 72.0, -72.2 66.1))\'),$geometry)',
+                   'distance($geometry,geom_from_wkt( \'Point (-70 70)\')) > 7',
+                   'intersects($geometry,geom_from_gml( \'<gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-72.2,66.1 -65.2,66.1 -65.2,72.0 -72.2,72.0 -72.2,66.1</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>\'))',
+                   'x($geometry) < -70',
+                   'y($geometry) > 79',
+                   'xmin($geometry) < -70',
+                   'ymin($geometry) < 76',
+                   'xmax($geometry) > -68',
+                   'ymax($geometry) > 80',
+                   'area($geometry) > 10',
+                   'perimeter($geometry) < 12',
+                   'relate($geometry,geom_from_wkt( \'Polygon ((-68.2 82.1, -66.95 82.1, -66.95 79.05, -68.2 79.05, -68.2 82.1))\')) = \'FF2FF1212\'',
+                   'relate($geometry,geom_from_wkt( \'Polygon ((-68.2 82.1, -66.95 82.1, -66.95 79.05, -68.2 79.05, -68.2 82.1))\'), \'****F****\')',
+                   'crosses($geometry,geom_from_wkt( \'Linestring (-68.2 82.1, -66.95 82.1, -66.95 79.05)\'))',
+                   'overlaps($geometry,geom_from_wkt( \'Polygon ((-68.2 82.1, -66.95 82.1, -66.95 79.05, -68.2 79.05, -68.2 82.1))\'))',
+                   'within($geometry,geom_from_wkt( \'Polygon ((-75.1 76.1, -75.1 81.6, -68.8 81.6, -68.8 76.1, -75.1 76.1))\'))',
+                   'overlaps(translate($geometry,-1,-1),geom_from_wkt( \'Polygon ((-75.1 76.1, -75.1 81.6, -68.8 81.6, -68.8 76.1, -75.1 76.1))\'))',
+                   'overlaps(buffer($geometry,1),geom_from_wkt( \'Polygon ((-75.1 76.1, -75.1 81.6, -68.8 81.6, -68.8 76.1, -75.1 76.1))\'))',
+                   'intersects(centroid($geometry),geom_from_wkt( \'Polygon ((-74.4 78.2, -74.4 79.1, -66.8 79.1, -66.8 78.2, -74.4 78.2))\'))',
+                   'intersects(point_on_surface($geometry),geom_from_wkt( \'Polygon ((-74.4 78.2, -74.4 79.1, -66.8 79.1, -66.8 78.2, -74.4 78.2))\'))',
+                   '"dt" <= format_date(make_datetime(2020, 5, 4, 12, 13, 14), \'yyyy-MM-dd hh:mm:ss\')',
+                   '"dt" < format_date(make_date(2020, 5, 4), \'yyyy-MM-dd hh:mm:ss\')',
+                   '"dt" = format_date(to_datetime(\'000www14ww13ww12www4ww5ww2020\',\'zzzwwwsswwmmwwhhwwwdwwMwwyyyy\'),\'yyyy-MM-dd hh:mm:ss\')',
+                   """dt BETWEEN format_date(make_datetime(2020, 5, 3, 12, 13, 14),  'yyyy-MM-dd hh:mm:ss') AND format_date(make_datetime(2020, 5, 4, 12, 14, 14), 'yyyy-MM-dd hh:mm:ss')""",
+                   """dt NOT BETWEEN format_date(make_datetime(2020, 5, 3, 12, 13, 14), 'yyyy-MM-dd hh:mm:ss') AND format_date(make_datetime(2020, 5, 4, 12, 14, 14), 'yyyy-MM-dd hh:mm:ss')""",
+                   '"date" = to_date(\'www4ww5ww2020\',\'wwwdwwMwwyyyy\')',
+                   'to_time("time") >= make_time(12, 14, 14)',
+                   'to_time("time") = to_time(\'000www14ww13ww12www\',\'zzzwwwsswwmmwwhhwww\')',
+                   'to_datetime("dt", \'yyyy-MM-dd hh:mm:ss\') + make_interval(days:=1) <= make_datetime(2020, 5, 4, 12, 13, 14)',
+                   'to_datetime("dt", \'yyyy-MM-dd hh:mm:ss\') + make_interval(days:=0.01) <= make_datetime(2020, 5, 4, 12, 13, 14)',
+                   'cnt BETWEEN -200 AND 200'  # NoUnaryMinus
+                   }
         return filters
 
     def partiallyCompiledFilters(self):
-        return set(['name = \'Apple\'',
-                    'name = \'apple\'',
-                    '\"NaMe\" = \'Apple\'',
-                    'name LIKE \'Apple\'',
-                    'name LIKE \'aPple\'',
-                    'name LIKE \'Ap_le\'',
-                    'name LIKE \'Ap\\_le\'',
-                    '"name"="name2"'])
+        return {'name = \'Apple\'',
+                'name = \'apple\'',
+                '\"NaMe\" = \'Apple\'',
+                'name LIKE \'Apple\'',
+                'name LIKE \'aPple\'',
+                'name LIKE \'Ap_le\'',
+                'name LIKE \'Ap\\_le\'',
+                '"name"="name2"'}
 
     def testRepack(self):
-        vl = QgsVectorLayer('{}|layerid=0'.format(self.repackfile), 'test', 'ogr')
+        vl = QgsVectorLayer(f'{self.repackfile}|layerid=0', 'test', 'ogr')
 
         ids = [f.id() for f in vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk=1'))]
         vl.selectByIds(ids)
@@ -261,7 +260,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
             shutil.copy(os.path.join(srcpath, file), tmpdir)
         datasource = os.path.join(tmpdir, 'shapefile.shp')
 
-        vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
+        vl = QgsVectorLayer(f'{datasource}|layerid=0', 'test', 'ogr')
         caps = vl.dataProvider().capabilities()
         self.assertTrue(caps & QgsVectorDataProvider.AddFeatures)
         self.assertTrue(caps & QgsVectorDataProvider.DeleteFeatures)
@@ -364,7 +363,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
             shutil.copy(os.path.join(srcpath, file), tmpdir)
         datasource = os.path.join(tmpdir, 'shapefile.shp')
 
-        vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
+        vl = QgsVectorLayer(f'{datasource}|layerid=0', 'test', 'ogr')
 
         os.unlink(datasource)
 
@@ -396,8 +395,8 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
             shutil.copy(os.path.join(srcpath, file), tmpdir)
         datasource = os.path.join(tmpdir, 'shapefile.shp')
 
-        vl1 = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
-        vl2 = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
+        vl1 = QgsVectorLayer(f'{datasource}|layerid=0', 'test', 'ogr')
+        vl2 = QgsVectorLayer(f'{datasource}|layerid=0', 'test', 'ogr')
         self.assertTrue(vl1.startEditing())
         self.assertTrue(vl1.deleteAttributes([1]))
         self.assertTrue(vl1.commitChanges())
@@ -417,7 +416,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
             shutil.copy(os.path.join(srcpath, file), tmpdir)
         datasource = os.path.join(tmpdir, 'shapefile.shp')
 
-        vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
+        vl = QgsVectorLayer(f'{datasource}|layerid=0', 'test', 'ogr')
         provider = vl.dataProvider()
 
         # bad rename
@@ -445,7 +444,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         # close file and reopen, then recheck to confirm that changes were saved to file
         del vl
         vl = None
-        vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
+        vl = QgsVectorLayer(f'{datasource}|layerid=0', 'test', 'ogr')
         provider = vl.dataProvider()
         self.assertEqual(provider.fields().at(2).name(), 'newname2')
         self.assertEqual(provider.fields().at(3).name(), 'another')
@@ -463,11 +462,11 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
             shutil.copy(os.path.join(srcpath, file), tmpdir)
         datasource = os.path.join(tmpdir, 'shapefile.shp')
 
-        vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
+        vl = QgsVectorLayer(f'{datasource}|layerid=0', 'test', 'ogr')
         self.assertTrue(vl.dataProvider().changeGeometryValues({0: QgsGeometry()}))
         vl = None
 
-        vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
+        vl = QgsVectorLayer(f'{datasource}|layerid=0', 'test', 'ogr')
         fet = next(vl.getFeatures())
         self.assertFalse(fet.hasGeometry())
 
@@ -481,7 +480,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
             shutil.copy(os.path.join(srcpath, file), tmpdir)
         datasource = os.path.join(tmpdir, 'shapefile.shp')
 
-        vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
+        vl = QgsVectorLayer(f'{datasource}|layerid=0', 'test', 'ogr')
         feature_count = vl.featureCount()
         # Start an iterator that will open a new connection
         iterator = vl.getFeatures()
@@ -526,7 +525,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
             shutil.copy(os.path.join(srcpath, file), tmpdir)
         datasource = os.path.join(tmpdir, 'shapefile.shp')
 
-        vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
+        vl = QgsVectorLayer(f'{datasource}|layerid=0', 'test', 'ogr')
         feature_count = vl.featureCount()
         # Start an iterator that will open a new connection
         iterator = vl.getFeatures()
@@ -553,7 +552,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
             shutil.copy(os.path.join(srcpath, file), tmpdir)
         datasource = os.path.join(tmpdir, 'shapefile.shp')
 
-        vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
+        vl = QgsVectorLayer(f'{datasource}|layerid=0', 'test', 'ogr')
         feature_count = vl.featureCount()
 
         # Keep a file descriptor opened on the .dbf, .shp and .shx
@@ -597,7 +596,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         lyr.DeleteFeature(2)
         ds = None
 
-        vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
+        vl = QgsVectorLayer(f'{datasource}|layerid=0', 'test', 'ogr')
 
         self.assertTrue(vl.featureCount(), original_feature_count)
 
@@ -622,7 +621,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
 
     def testOpenWithFilter(self):
         file_path = os.path.join(TEST_DATA_DIR, 'provider', 'shapefile.shp')
-        uri = '{}|layerid=0|subset="name" = \'Apple\''.format(file_path)
+        uri = f'{file_path}|layerid=0|subset="name" = \'Apple\''
         options = QgsDataProvider.ProviderOptions()
         # ensure that no longer required ogr SQL layers are correctly cleaned up
         # we need to run this twice for the incorrect cleanup asserts to trip,
@@ -630,7 +629,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         # connection pool
         for i in range(2):
             vl = QgsVectorLayer(uri)
-            self.assertTrue(vl.isValid(), 'Layer not valid, iteration {}'.format(i + 1))
+            self.assertTrue(vl.isValid(), f'Layer not valid, iteration {i + 1}')
             self.assertEqual(vl.featureCount(), 1)
             f = next(vl.getFeatures())
             self.assertEqual(f['name'], 'Apple')
@@ -677,7 +676,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         if int(gdal.VersionInfo('VERSION_NUM')) >= GDAL_COMPUTE_VERSION(3, 1, 0):
             # correct autodetection of vsizip based shapefiles depends on GDAL 3.1
             file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'windows-1252.zip')
-            vl = QgsVectorLayer('/vsizip/{}'.format(file_path))
+            vl = QgsVectorLayer(f'/vsizip/{file_path}')
             self.assertTrue(vl.isValid())
             self.assertEqual(vl.dataProvider().encoding(), 'windows-1252')
             self.assertEqual(next(vl.getFeatures())[1], 'äöü')
@@ -701,7 +700,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
             shutil.copy(os.path.join(srcpath, file), tmpdir)
         datasource = os.path.join(tmpdir, 'shapefile.shp')
 
-        vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
+        vl = QgsVectorLayer(f'{datasource}|layerid=0', 'test', 'ogr')
         self.assertTrue(vl.isValid())
         self.assertTrue(vl.dataProvider().capabilities() & QgsVectorDataProvider.CreateAttributeIndex)
         self.assertFalse(vl.dataProvider().createAttributeIndex(-1))
@@ -716,7 +715,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
             shutil.copy(os.path.join(srcpath, file), tmpdir)
         datasource = os.path.join(tmpdir, 'shapefile.shp')
 
-        vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
+        vl = QgsVectorLayer(f'{datasource}|layerid=0', 'test', 'ogr')
         self.assertTrue(vl.isValid())
         self.assertTrue(vl.dataProvider().capabilities() & QgsVectorDataProvider.CreateSpatialIndex)
         self.assertTrue(vl.dataProvider().createSpatialIndex())
@@ -1090,11 +1089,11 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
     def testLayersOnSameOGRLayerWithAndWithoutFilter(self):
         """Test fix for https://github.com/qgis/QGIS/issues/43361"""
         file_path = os.path.join(TEST_DATA_DIR, 'provider', 'shapefile.shp')
-        uri = '{}|layerId=0|subset="name" = \'Apple\''.format(file_path)
+        uri = f'{file_path}|layerId=0|subset="name" = \'Apple\''
         options = QgsDataProvider.ProviderOptions()
         vl1 = QgsVectorLayer(uri, 'vl1', 'ogr')
         vl2 = QgsVectorLayer(uri, 'vl2', 'ogr')
-        vl3 = QgsVectorLayer('{}|layerId=0'.format(file_path), 'vl3', 'ogr')
+        vl3 = QgsVectorLayer(f'{file_path}|layerId=0', 'vl3', 'ogr')
         self.assertEqual(vl1.featureCount(), 1)
         vl1_extent = QgsGeometry.fromRect(vl1.extent())
         self.assertEqual(vl2.featureCount(), 1)
@@ -1104,12 +1103,12 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
 
         reference = QgsGeometry.fromRect(QgsRectangle(-68.2, 70.8, -68.2, 70.8))
         assert QgsGeometry.compare(vl1_extent.asPolygon()[0], reference.asPolygon()[0],
-                                   0.00001), 'Expected {}, got {}'.format(reference.asWkt(), vl1_extent.asWkt())
+                                   0.00001), f'Expected {reference.asWkt()}, got {vl1_extent.asWkt()}'
         assert QgsGeometry.compare(vl2_extent.asPolygon()[0], reference.asPolygon()[0],
-                                   0.00001), 'Expected {}, got {}'.format(reference.asWkt(), vl2_extent.asWkt())
+                                   0.00001), f'Expected {reference.asWkt()}, got {vl2_extent.asWkt()}'
         reference = QgsGeometry.fromRect(QgsRectangle(-71.123, 66.33, -65.32, 78.3))
         assert QgsGeometry.compare(vl3_extent.asPolygon()[0], reference.asPolygon()[0],
-                                   0.00001), 'Expected {}, got {}'.format(reference.asWkt(), vl3_extent.asWkt())
+                                   0.00001), f'Expected {reference.asWkt()}, got {vl3_extent.asWkt()}'
 
 
 if __name__ == '__main__':

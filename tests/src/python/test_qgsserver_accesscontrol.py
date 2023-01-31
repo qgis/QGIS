@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -53,7 +52,7 @@ class RestrictedAccessControl(QgsAccessControlFilter):
         """ Return an additional expression filter """
 
         if not self._active:
-            return super(RestrictedAccessControl, self).layerFilterExpression(layer)
+            return super().layerFilterExpression(layer)
 
         if layer.name() == "Hello":
             return "$id = 1"
@@ -66,7 +65,7 @@ class RestrictedAccessControl(QgsAccessControlFilter):
         """ Return an additional subset string (typically SQL) filter """
 
         if not self._active:
-            return super(RestrictedAccessControl, self).layerFilterSubsetString(layer)
+            return super().layerFilterSubsetString(layer)
 
         if layer.name() == "Hello_SubsetString":
             return "pk = 1"
@@ -81,7 +80,7 @@ class RestrictedAccessControl(QgsAccessControlFilter):
         """ Return the layer rights """
 
         if not self._active:
-            return super(RestrictedAccessControl, self).layerPermissions(layer)
+            return super().layerPermissions(layer)
 
         rh = self.serverInterface().requestHandler()
         rights = QgsAccessControlFilter.LayerPermissions()
@@ -102,7 +101,7 @@ class RestrictedAccessControl(QgsAccessControlFilter):
         """ Return the authorised layer attributes """
 
         if not self._active:
-            return super(RestrictedAccessControl, self).authorizedLayerAttributes(layer, attributes)
+            return super().authorizedLayerAttributes(layer, attributes)
 
         if "color" in attributes:  # spellok
             attributes.remove("color")  # spellok
@@ -112,7 +111,7 @@ class RestrictedAccessControl(QgsAccessControlFilter):
         """ Are we authorise to modify the following geometry """
 
         if not self._active:
-            return super(RestrictedAccessControl, self).allowToEdit(layer, feature)
+            return super().allowToEdit(layer, feature)
 
         return feature.attribute("color") in ["red", "yellow"]
 
@@ -133,7 +132,7 @@ class TestQgsServerAccessControl(QgsServerTestBase):
         rh = response.headers()
         rk = sorted(rh.keys())
         for k in rk:
-            headers.append(("%s: %s" % (k, rh[k])).encode('utf-8'))
+            headers.append((f"{k}: {rh[k]}").encode('utf-8'))
         return b"\n".join(headers) + b"\n\n", bytes(response.body())
 
     @classmethod
@@ -163,7 +162,7 @@ class TestQgsServerAccessControl(QgsServerTestBase):
                 del os.environ[k]
 
         self.projectPath = os.path.join(self.tmp_path, self.project_file())
-        self.assertTrue(os.path.isfile(self.projectPath), 'Could not find project file "{}"'.format(self.projectPath))
+        self.assertTrue(os.path.isfile(self.projectPath), f'Could not find project file "{self.projectPath}"')
 
     def tearDown(self):
         shutil.rmtree(self.tmp_path, True)
@@ -215,7 +214,7 @@ class TestQgsServerAccessControl(QgsServerTestBase):
         else:
             raise RuntimeError('Yeah, new format implemented')
 
-        temp_image = os.path.join(tempfile.gettempdir(), "%s_result.%s" % (control_image, extFile))
+        temp_image = os.path.join(tempfile.gettempdir(), f"{control_image}_result.{extFile}")
 
         with open(temp_image, "wb") as f:
             f.write(image)
@@ -273,5 +272,5 @@ class TestQgsServerAccessControl(QgsServerTestBase):
                 </ogc:PropertyIsEqualTo></ogc:Filter></wfs:Query></wfs:GetFeature>""".format(id=id, xml_ns=XML_NS)
             )
             self.assertTrue(
-                str(response).find("<qgs:color>{color}</qgs:color>".format(color=color)) != -1,
+                str(response).find(f"<qgs:color>{color}</qgs:color>") != -1,
                 "Wrong color in result\n%s" % response)

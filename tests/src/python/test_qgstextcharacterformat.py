@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsTextCharacterFormat.
 
 Run with: ctest -V -R QgsTextCharacterFormat

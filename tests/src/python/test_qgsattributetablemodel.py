@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for the attribute table model.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -273,10 +272,10 @@ class TestQgsAttributeTableModel(unittest.TestCase):
 
         err = QgsVectorLayerExporter.exportLayer(vl, tmpfile, "ogr", vl.crs(), False, options)
         self.assertEqual(err[0], QgsVectorLayerExporter.NoError,
-                         'unexpected import error {0}'.format(err))
+                         f'unexpected import error {err}')
 
         vl = QgsVectorLayer(
-            'dbname=\'{}\' table="test" () sql='.format(tmpfile), 'test', 'spatialite')
+            f'dbname=\'{tmpfile}\' table="test" () sql=', 'test', 'spatialite')
 
         self.assertTrue(vl.isValid())
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Test the QgsFileDownloader class
 
@@ -124,7 +123,7 @@ class TestQgsFileDownloader(unittest.TestCase):
     def ssl_compare(self, name, url, error):
         destination = tempfile.mktemp()
         self._make_download(url, destination)
-        msg = "Failed in %s: %s" % (name, url)
+        msg = f"Failed in {name}: {url}"
         self.assertTrue(self.exited_was_called)
         self.assertFalse(self.completed_was_called, msg)
         self.assertFalse(self.canceled_was_called, msg)
@@ -132,7 +131,7 @@ class TestQgsFileDownloader(unittest.TestCase):
         self.assertFalse(os.path.isfile(destination), msg)
         result = sorted(self.error_args[1])
         result = ';'.join(result)
-        self.assertTrue(result.startswith(error), msg + "expected:\n%s\nactual:\n%s\n" % (result, error))
+        self.assertTrue(result.startswith(error), msg + f"expected:\n{result}\nactual:\n{error}\n")
 
     @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'), 'Test with badssl.com unstable. Needs local server.')
     def test_sslExpired(self):

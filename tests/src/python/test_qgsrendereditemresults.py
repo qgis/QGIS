@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsRenderedItemDetails
 
 From build dir, run: ctest -R QgsRenderedItemDetails -V

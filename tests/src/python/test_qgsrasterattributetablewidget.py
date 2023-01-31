@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsRasterAttributeTableWidget.
 
 From build dir, run:
@@ -9,7 +8,6 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-from builtins import str
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '20/08/2022'

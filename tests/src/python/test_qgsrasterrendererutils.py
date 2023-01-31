@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsRasterRendererUtils.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -34,7 +33,7 @@ class TestQgsRasterRendererUtils(unittest.TestCase):
                  QgsColorRampShader.ColorRampItem(25.5, QColor(255, 200, 220, 10), 'my item 3')]
 
         tmp_dir = QTemporaryDir()
-        tmp_file = "{}/ramp.txt".format(tmp_dir.path())
+        tmp_file = f"{tmp_dir.path()}/ramp.txt"
 
         self.assertTrue(QgsRasterRendererUtils.saveColorMapFile(tmp_file, items, QgsColorRampShader.Interpolated))
         res, read_items, type, errors = QgsRasterRendererUtils.parseColorMapFile('')

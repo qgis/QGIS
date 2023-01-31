@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServerSettings.
 
 From build dir, run: ctest -R PyQgsServerSettings -V
@@ -183,7 +182,7 @@ class TestQgsServerSettings(unittest.TestCase):
     def test_options_path_conf0(self):
         env = "QGIS_OPTIONS_PATH"
         dpath = "conf0"
-        ini = "{0}.ini".format(os.path.join(self.testdata_path, dpath))
+        ini = f"{os.path.join(self.testdata_path, dpath)}.ini"
         QCoreApplication.setOrganizationName(dpath)
 
         # load settings
@@ -207,7 +206,7 @@ class TestQgsServerSettings(unittest.TestCase):
     def test_options_path_conf1(self):
         env = "QGIS_OPTIONS_PATH"
         dpath = "conf1"
-        ini = "{0}.ini".format(os.path.join(self.testdata_path, dpath))
+        ini = f"{os.path.join(self.testdata_path, dpath)}.ini"
         QCoreApplication.setOrganizationName(dpath)
 
         # load settings

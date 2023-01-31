@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS unit tests for QgsPalLabeling: label rendering output via QGIS Server
 
 From build dir, run: ctest -R PyQgsPalLabelingServer -V
@@ -89,7 +88,7 @@ class TestServerBase(TestQgsPalLabeling):
         # web server stays up across all tests
         # MAPSERV.fcgi_server_process().stop()
         # self.deleteCache()
-        super(TestServerBase, self).setUp()
+        super().setUp()
         self._TestImage = ''
         # ensure per test map settings stay encapsulated
         self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
@@ -129,7 +128,7 @@ class TestServerBase(TestQgsPalLabeling):
             'HEIGHT': str(osize.height()),
             'DPI': dpi,
             'MAP_RESOLUTION': dpi,
-            'FORMAT_OPTIONS': 'dpi:{0}'.format(dpi),
+            'FORMAT_OPTIONS': f'dpi:{dpi}',
             'TRANSPARENT': 'FALSE',
             'IgnoreGetMapUrl': '1'
         }
@@ -151,13 +150,13 @@ class TestServerBase(TestQgsPalLabeling):
             ms = self._TestMapSettings  # per test settings
             settings_type = 'Test'
         if 'PAL_VERBOSE' in os.environ:
-            qDebug('MapSettings type: {0}'.format(settings_type))
+            qDebug(f'MapSettings type: {settings_type}')
             qDebug(mapSettingsString(ms))
 
         res_m, self._TestImage, url = MAPSERV.get_map(self.get_request_params(), False)
         # print self._TestImage.__repr__()
         if 'PAL_VERBOSE' in os.environ:
-            qDebug('GetMap request:\n  {0}\n'.format(url))
+            qDebug(f'GetMap request:\n  {url}\n')
         self.saveControlImage(self._TestImage)
         self.assertTrue(res_m, 'Failed to retrieve/save image from test server')
         mismatch = 0
@@ -188,14 +187,14 @@ class TestServerBasePoint(TestServerBase):
 class TestServerPoint(TestServerBasePoint, TestPointBase):
 
     def setUp(self):
-        super(TestServerPoint, self).setUp()
+        super().setUp()
         self.configTest('pal_server', 'sp')
 
 
 class TestServerVsCanvasPoint(TestServerBasePoint, TestPointBase):
 
     def setUp(self):
-        super(TestServerVsCanvasPoint, self).setUp()
+        super().setUp()
         self.configTest('pal_canvas', 'sp')
 
 
@@ -211,14 +210,14 @@ class TestServerLine(TestServerBaseLine, TestLineBase):
 
     def setUp(self):
         """Run before each test."""
-        super(TestServerLine, self).setUp()
+        super().setUp()
         self.configTest('pal_server_line', 'sp')
 
 
 class TestServerVsCanvasLine(TestServerBaseLine, TestLineBase):
 
     def setUp(self):
-        super(TestServerVsCanvasLine, self).setUp()
+        super().setUp()
         self.configTest('pal_canvas_line', 'sp')
 
 

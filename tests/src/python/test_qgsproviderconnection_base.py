@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Base Unit tests for QgsAbastractProviderConnection API.
 
 Providers must implement a test based on TestPyQgsProviderConnectionBase
@@ -255,7 +254,7 @@ class TestPyQgsProviderConnectionBase():
 
                 # MSSQL literal syntax for UTF8 requires 'N' prefix
                 # Oracle date time definition needs some prefix
-                sql = "INSERT INTO %s (\"string_t\", \"long_t\", \"double_t\", \"integer_t\", \"date_t\", \"datetime_t\", \"time_t\") VALUES (%s'QGIS Rocks - \U0001f604', 666, 1.234, 1234, %s '2019-07-08', %s, '12:00:13.00')" % (
+                sql = "INSERT INTO {} (\"string_t\", \"long_t\", \"double_t\", \"integer_t\", \"date_t\", \"datetime_t\", \"time_t\") VALUES ({}'QGIS Rocks - \U0001f604', 666, 1.234, 1234, {} '2019-07-08', {}, '12:00:13.00')".format(
                     table, 'N' if self.providerKey == 'mssql' else '',
                     "DATE" if self.providerKey == 'oracle' else '',
                     "TIMESTAMP '2019-07-08 12:00:12'" if self.providerKey == 'oracle' else "'2019-07-08T12:00:12'"
@@ -320,7 +319,7 @@ class TestPyQgsProviderConnectionBase():
                 if self.providerKey != 'mssql':
                     self.assertIn(res, ([[QtCore.QTime(12, 0, 13)]], [['12:00:13.00']]))
 
-                sql = "DELETE FROM %s WHERE \"string_t\" = %s'QGIS Rocks - \U0001f604'" % (
+                sql = "DELETE FROM {} WHERE \"string_t\" = {}'QGIS Rocks - \U0001f604'".format(
                     table, 'N' if self.providerKey == 'mssql' else '')
                 res = conn.executeSql(sql)
                 self.assertEqual(res, [])

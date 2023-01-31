@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for the Oracle provider.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -121,7 +120,7 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         QgsSettings().setValue('/qgis/compileExpressions', False)
 
     def uncompiledFilters(self):
-        filters = set([
+        filters = {
             '(name = \'Apple\') is not null',
             '"name" || \' \' || "name" = \'Orange Orange\'',
             '"name" || \' \' || "cnt" = \'Orange 100\'',
@@ -181,7 +180,7 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
             '"date" = to_date(\'www4ww5ww2020\',\'wwwdwwMwwyyyy\')',
             'to_time("time") >= make_time(12, 14, 14)',
             'to_time("time") = to_time(\'000www14ww13ww12www\',\'zzzwwwsswwmmwwhhwww\')'
-        ])
+        }
         return filters
 
     def testAddFeatureWrongGeomType(self):
@@ -378,22 +377,22 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         if check_valid:
             self.assertTrue(self.conn)
             query = QSqlQuery(self.conn)
-            sql = """select p.GEOM.st_isvalid() from QGIS.{} p where "pk" = {}""".format(table, pk)
+            sql = f"""select p.GEOM.st_isvalid() from QGIS.{table} p where "pk" = {pk}"""
             res = query.exec_(sql)
             self.assertTrue(res, sql + ': ' + query.lastError().text())
             query.next()
             valid = query.value(0)
-            self.assertTrue(valid, "geometry '{}' inserted in database is not valid".format(wkt))
+            self.assertTrue(valid, f"geometry '{wkt}' inserted in database is not valid")
             query.finish()
 
         expected_wkt = wkt if wkt_ref is None else wkt_ref
         res_wkt = layer.getFeature(pk).geometry().asWkt()
-        self.assertTrue(compareWkt(res_wkt, expected_wkt, 0.00001), "\nactual   = {}\nexpected = {}".format(res_wkt, expected_wkt))
+        self.assertTrue(compareWkt(res_wkt, expected_wkt, 0.00001), f"\nactual   = {res_wkt}\nexpected = {expected_wkt}")
 
     def createTable(self, name, dims, srid):
-        self.execSQLCommand('DROP TABLE "QGIS"."{}"'.format(name), ignore_errors=True)
-        self.execSQLCommand("""DELETE FROM user_sdo_geom_metadata  where TABLE_NAME = '{}'""".format(name))
-        self.execSQLCommand("""CREATE TABLE QGIS.{} ("pk" INTEGER PRIMARY KEY, GEOM SDO_GEOMETRY)""".format(name))
+        self.execSQLCommand(f'DROP TABLE "QGIS"."{name}"', ignore_errors=True)
+        self.execSQLCommand(f"""DELETE FROM user_sdo_geom_metadata  where TABLE_NAME = '{name}'""")
+        self.execSQLCommand(f"""CREATE TABLE QGIS.{name} ("pk" INTEGER PRIMARY KEY, GEOM SDO_GEOMETRY)""")
         self.execSQLCommand("""INSERT INTO user_sdo_geom_metadata (TABLE_NAME, COLUMN_NAME, DIMINFO, SRID) VALUES ( '{}', 'GEOM', sdo_dim_array(sdo_dim_element('X',-50,50,0.005),sdo_dim_element('Y',-50,50,0.005){}),{})""".format(
             name, ",sdo_dim_element('Z',-50,50,0.005)" if dims > 2 else "", srid), ignore_errors=True)
         self.execSQLCommand("""CREATE INDEX {0}_spatial_idx ON QGIS.{0}(GEOM) INDEXTYPE IS MDSYS.SPATIAL_INDEX""".format(name))
@@ -1070,7 +1069,7 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         def countFeature(table_name):
             self.assertTrue(self.conn)
             query = QSqlQuery(self.conn)
-            res = query.exec_('SELECT count(*) FROM "QGIS"."{}"'.format(table_name))
+            res = query.exec_(f'SELECT count(*) FROM "QGIS"."{table_name}"')
             self.assertTrue(query.next())
             count = query.value(0)
             query.finish()
@@ -1200,15 +1199,15 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         for name, dim, geom, wkb_type in testdata:
             # We choose SRID=5698 (see https://docs.oracle.com/database/121/SPATL/three-dimensional-coordinate-reference-system-support.htm#SPATL626)
             # to get Oracle valid geometries because it support 3D and arcs (arcs are not supported in geodetic projection)
-            self.createTable('DETECT_{}'.format(name), dim, 5698)
-            self.execSQLCommand('INSERT INTO "QGIS"."DETECT_{}" ("pk", GEOM) SELECT 1, {} from dual'.format(name, geom))
+            self.createTable(f'DETECT_{name}', dim, 5698)
+            self.execSQLCommand(f'INSERT INTO "QGIS"."DETECT_{name}" ("pk", GEOM) SELECT 1, {geom} from dual')
 
             layer = QgsVectorLayer(
-                self.dbconn + ' sslmode=disable key=\'pk\' srid=3857 table="QGIS"."DETECT_{}" (GEOM) sql='.format(name), 'test{}'.format(name), 'oracle')
+                self.dbconn + f' sslmode=disable key=\'pk\' srid=3857 table="QGIS"."DETECT_{name}" (GEOM) sql=', f'test{name}', 'oracle')
             self.assertTrue(layer.isValid())
             self.assertEqual(layer.wkbType(), wkb_type)
 
-            self.execSQLCommand('DROP TABLE "QGIS"."DETECT_{}"'.format(name))
+            self.execSQLCommand(f'DROP TABLE "QGIS"."DETECT_{name}"')
 
 
 if __name__ == '__main__':

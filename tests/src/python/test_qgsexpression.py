@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsExpression.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -174,7 +173,7 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
     def testReferencedColumnsSet(self):
         QgsExpression.registerFunction(self.referenced_columns_set)
         exp = QgsExpression('referenced_columns_set()')
-        self.assertEqual(set(exp.referencedColumns()), set(['a', 'b']))
+        self.assertEqual(set(exp.referencedColumns()), {'a', 'b'})
 
     def testHandlesNull(self):
         context = QgsExpressionContext()

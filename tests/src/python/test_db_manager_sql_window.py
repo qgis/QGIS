@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for the DBManager SQL Window
 
 From build dir, run: ctest -R PyQgsDBManagerSQLWindow -V

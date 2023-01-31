@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsNetworkContentFetcherRegistry
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -7,8 +6,6 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from builtins import chr
-from builtins import str
 
 __author__ = 'Denis Rouzaud'
 __date__ = '27/04/2018'
