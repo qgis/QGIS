@@ -133,7 +133,7 @@ class CORE_EXPORT QgsSettingsEntryBase
     /**
      * Returns settings entry key.
      *
-     * \param dynamicKeyParts specifies the list of dynamic parts of the settings key.
+     * \param dynamicKeyPartList specifies the list of dynamic parts of the settings key.
      */
     QString key( const QStringList &dynamicKeyPartList ) const;
 
@@ -176,7 +176,7 @@ class CORE_EXPORT QgsSettingsEntryBase
     /**
      * Returns TRUE if the settings is contained in the underlying QSettings.
      *
-     * \param dynamicKeyParts specifies the list of dynamic parts of the settings key.
+     * \param dynamicKeyPartList specifies the list of dynamic parts of the settings key.
      */
     bool exists( const QStringList &dynamicKeyPartList ) const;
 
@@ -197,7 +197,7 @@ class CORE_EXPORT QgsSettingsEntryBase
     /**
      * Removes the settings from the underlying QSettings.
      *
-     * \param dynamicKeyParts specifies the list of dynamic parts of the settings key.
+     * \param dynamicKeyPartList specifies the list of dynamic parts of the settings key.
      */
     void remove( const QStringList &dynamicKeyPartList ) const;
 
@@ -220,7 +220,7 @@ class CORE_EXPORT QgsSettingsEntryBase
      * Set settings value.
      *
      * \param value specifies the value to set.
-     * \param dynamicKeyParts specifies the list of dynamic parts of the settings key.
+     * \param dynamicKeyPartList specifies the list of dynamic parts of the settings key.
      * \deprecated since QGIS 3.26 use setVariantValuePrivate or an implementation setValue instead
      */
     Q_DECL_DEPRECATED virtual bool setVariantValue( const QVariant &value, const QStringList &dynamicKeyPartList ) const SIP_DEPRECATED;
@@ -228,7 +228,7 @@ class CORE_EXPORT QgsSettingsEntryBase
     //! Returns settings value with \param dynamicKeyPart specifying the dynamic part of the settings key.
     QVariant valueAsVariant( const QString &dynamicKeyPart = QString() ) const;
 
-    //! Returns settings value with \param dynamicKeyPart specifying the dynamic part of the settings key.
+    //! Returns settings value with \param dynamicKeyPartList specifying the dynamic part of the settings key.
     QVariant valueAsVariant( const QStringList &dynamicKeyPartList ) const;
 
     /**
@@ -464,7 +464,7 @@ class QgsSettingsEntryByReference : public QgsSettingsEntryBase
      * Set settings value.
      *
      * \param value specifies the value to set.
-     * \param dynamicKeyParts specifies the list of dynamic parts of the settings key.
+     * \param dynamicKeyPartList specifies the list of dynamic parts of the settings key.
      */
     bool setValue( const T &value, const QStringList &dynamicKeyPartList ) const
     {
@@ -626,7 +626,7 @@ class QgsSettingsEntryByValue : public QgsSettingsEntryBase
      * Set settings value.
      *
      * \param value specifies the value to set.
-     * \param dynamicKeyParts specifies the list of dynamic parts of the settings key.
+     * \param dynamicKeyPartList specifies the list of dynamic parts of the settings key.
      */
     bool setValue( T value, const QStringList &dynamicKeyPartList ) const
     {

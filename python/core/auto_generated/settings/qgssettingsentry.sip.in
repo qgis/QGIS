@@ -110,7 +110,7 @@ Returns settings entry key.
 %Docstring
 Returns settings entry key.
 
-:param dynamicKeyParts: specifies the list of dynamic parts of the settings key.
+:param dynamicKeyPartList: specifies the list of dynamic parts of the settings key.
 %End
 
     bool keyIsValid( const QString &key ) const;
@@ -154,7 +154,7 @@ Returns ``True`` if the settings is contained in the underlying QSettings.
 %Docstring
 Returns ``True`` if the settings is contained in the underlying QSettings.
 
-:param dynamicKeyParts: specifies the list of dynamic parts of the settings key.
+:param dynamicKeyPartList: specifies the list of dynamic parts of the settings key.
 %End
 
     Qgis::SettingsOrigin origin( const QStringList &dynamicKeyPartList ) const;
@@ -179,7 +179,7 @@ Removes the settings from the underlying QSettings.
 %Docstring
 Removes the settings from the underlying QSettings.
 
-:param dynamicKeyParts: specifies the list of dynamic parts of the settings key.
+:param dynamicKeyPartList: specifies the list of dynamic parts of the settings key.
 %End
 
  QgsSettings::Section section() const;
@@ -206,7 +206,7 @@ Set settings value.
 Set settings value.
 
 :param value: specifies the value to set.
-:param dynamicKeyParts: specifies the list of dynamic parts of the settings key.
+:param dynamicKeyPartList: specifies the list of dynamic parts of the settings key.
 
 .. deprecated:: QGIS 3.26
    use setVariantValuePrivate or an implementation setValue instead
@@ -219,7 +219,7 @@ Returns settings value with:param dynamicKeyPart: specifying the dynamic part of
 
     QVariant valueAsVariant( const QStringList &dynamicKeyPartList ) const;
 %Docstring
-Returns settings value with:param dynamicKeyPart: specifying the dynamic part of the settings key.
+Returns settings value with:param dynamicKeyPartList: specifying the dynamic part of the settings key.
 %End
 
     QVariant valueAsVariantWithDefaultOverride( const QVariant &defaultValueOverride, const QString &dynamicKeyPart = QString() ) const;
@@ -450,7 +450,7 @@ Set settings value.
 Set settings value.
 
 :param value: specifies the value to set.
-:param dynamicKeyParts: specifies the list of dynamic parts of the settings key.
+:param dynamicKeyPartList: specifies the list of dynamic parts of the settings key.
 %End
 
     T defaultValue() const;
@@ -594,7 +594,7 @@ Set settings value.
 Set settings value.
 
 :param value: specifies the value to set.
-:param dynamicKeyParts: specifies the list of dynamic parts of the settings key.
+:param dynamicKeyPartList: specifies the list of dynamic parts of the settings key.
 %End
 
     T defaultValue() const;
