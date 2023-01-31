@@ -80,7 +80,7 @@ void QgsVectorRenderingOptionsWidget::apply()
     if ( mSimplifyDrawingSpinBox->value() > 1 ) simplifyHints |= QgsVectorSimplifyMethod::AntialiasingSimplification;
   }
   settings.setEnumValue( QStringLiteral( "/qgis/simplifyDrawingHints" ), simplifyHints );
-  settings.setEnumValue( QStringLiteral( "/qgis/simplifyAlgorithm" ), ( QgsVectorSimplifyMethod::SimplifyHints )mSimplifyAlgorithmComboBox->currentData().toInt() );
+  settings.setEnumValue( QStringLiteral( "/qgis/simplifyAlgorithm" ), static_cast<QgsVectorSimplifyMethod::SimplifyAlgorithm>( mSimplifyAlgorithmComboBox->currentData().toInt() ) );
   settings.setValue( QStringLiteral( "/qgis/simplifyDrawingTol" ), mSimplifyDrawingSpinBox->value() );
   settings.setValue( QStringLiteral( "/qgis/simplifyLocal" ), !mSimplifyDrawingAtProvider->isChecked() );
   settings.setValue( QStringLiteral( "/qgis/simplifyMaxScale" ), mSimplifyMaximumScaleComboBox->scale() );
