@@ -161,7 +161,7 @@ void QgsSettingsRegistryCore::migrateOldSettings()
       }
       else
       {
-        name.replace( '_', '-' );
+        name.replace( '-', '_' );
       }
       setting->copyValueFromKey( QString( "qgis/digitizing/%1" ).arg( name ) );
     }
@@ -353,7 +353,6 @@ void QgsSettingsRegistryCore::backwardCompatibility()
     {
       QString name = setting->name();
       if (
-        name == settingsDigitizingStreamTolerance->name() ||
         name == settingsDigitizingLineColor->name() ||
         name == settingsDigitizingFillColor->name()
       )
@@ -364,7 +363,7 @@ void QgsSettingsRegistryCore::backwardCompatibility()
       }
       else
       {
-        name.replace( '_', '-' );
+        name.replace( '-', '_' );
       }
       setting->copyValueToKey( QString( "qgis/digitizing/%1" ).arg( name ) );
     }

@@ -42,7 +42,6 @@ double QgsMapToolEdit::defaultZValue()
 double QgsMapToolEdit::defaultMValue()
 {
   return QgsSettingsRegistryCore::settingsDigitizingDefaultMValue->value();
-
 }
 
 QColor QgsMapToolEdit::digitizingStrokeColor()
@@ -63,7 +62,6 @@ QColor QgsMapToolEdit::digitizingFillColor()
 
 QgsRubberBand *QgsMapToolEdit::createRubberBand( QgsWkbTypes::GeometryType geometryType, bool alternativeBand )
 {
-  const QgsSettings settings;
   QgsRubberBand *rb = new QgsRubberBand( mCanvas, geometryType );
   rb->setWidth( digitizingStrokeWidth() );
   QColor color = digitizingStrokeColor();
