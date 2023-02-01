@@ -15,8 +15,6 @@
  ***************************************************************************/
 
 #include "qgslayoutexporter.h"
-#ifndef QT_NO_PRINTER
-
 #include "qgslayout.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutpagecollection.h"
@@ -29,6 +27,7 @@
 #include "qgslinestring.h"
 #include "qgsmessagelog.h"
 #include "qgslabelingresults.h"
+
 #include <QImageWriter>
 #include <QSize>
 #include <QSvgGenerator>
@@ -527,6 +526,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( QgsAbstractLay
 
 QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &filePath, const QgsLayoutExporter::PdfExportSettings &s )
 {
+#ifndef QT_NO_PRINTER
   if ( !mLayout || mLayout->pageCollection()->pageCount() == 0 )
     return PrintError;
 
@@ -713,10 +713,14 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
   }
   captureLabelingResults();
   return result;
+#else
+  return PrintError;
+#endif
 }
 
 QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( QgsAbstractLayoutIterator *iterator, const QString &fileName, const QgsLayoutExporter::PdfExportSettings &s, QString &error, QgsFeedback *feedback )
 {
+#ifndef QT_NO_PRINTER
   error.clear();
 
   if ( !iterator->beginRender() )
@@ -807,10 +811,14 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( QgsAbstractLayou
 
   iterator->endRender();
   return Success;
+#else
+  return PrintError;
+#endif
 }
 
 QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdfs( QgsAbstractLayoutIterator *iterator, const QString &baseFilePath, const QgsLayoutExporter::PdfExportSettings &settings, QString &error, QgsFeedback *feedback )
 {
+#ifndef QT_NO_PRINTER
   error.clear();
 
   if ( !iterator->beginRender() )
@@ -856,8 +864,12 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdfs( QgsAbstractLayo
 
   iterator->endRender();
   return Success;
+#else
+  return PrintError;
+#endif
 }
 
+#ifndef QT_NO_PRINTER
 QgsLayoutExporter::ExportResult QgsLayoutExporter::print( QPrinter &printer, const QgsLayoutExporter::PrintExportSettings &s )
 {
   if ( !mLayout )
@@ -977,6 +989,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::print( QgsAbstractLayoutItera
   iterator->endRender();
   return Success;
 }
+#endif // QT_NO_PRINTER
 
 QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &filePath, const QgsLayoutExporter::SvgExportSettings &s )
 {
@@ -1215,6 +1228,7 @@ QMap<QString, QgsLabelingResults *> QgsLayoutExporter::takeLabelingResults()
   return res;
 }
 
+#ifndef QT_NO_PRINTER
 void QgsLayoutExporter::preparePrintAsPdf( QgsLayout *layout, QPrinter &printer, const QString &filePath )
 {
   QFileInfo fi( filePath );
@@ -1342,6 +1356,7 @@ void QgsLayoutExporter::updatePrinterPageSize( QgsLayout *layout, QPrinter &prin
   printer.setFullPage( true );
   printer.setPageMargins( QMarginsF( 0, 0, 0, 0 ) );
 }
+#endif // QT_NO_PRINTER
 
 QgsLayoutExporter::ExportResult QgsLayoutExporter::renderToLayeredSvg( const SvgExportSettings &settings, double width, double height, int page, const QRectF &bounds, const QString &filename, unsigned int svgLayerId, const QString &layerName, QDomDocument &svg, QDomNode &svgDocRoot, bool includeMetadata ) const
 {
@@ -1617,8 +1632,8 @@ bool QgsLayoutExporter::georeferenceOutputPrivate( const QString &file, QgsLayou
 
   // important - we need to manually specify the DPI in advance, as GDAL will otherwise
   // assume a DPI of 150
-  CPLSetConfigOption( "GDAL_PDF_DPI", QString::number( dpi ).toLocal8Bit().constData() );
-  gdal::dataset_unique_ptr outputDS( GDALOpen( file.toLocal8Bit().constData(), GA_Update ) );
+  CPLSetConfigOption( "GDAL_PDF_DPI", QString::number( dpi ).toUtf8().constData() );
+  gdal::dataset_unique_ptr outputDS( GDALOpen( file.toUtf8().constData(), GA_Update ) );
   if ( outputDS )
   {
     if ( t )
@@ -2095,5 +2110,3 @@ bool QgsLayoutExporter::saveImage( const QImage &image, const QString &imageFile
   }
   return w.write( image );
 }
-
-#endif // ! QT_NO_PRINTER

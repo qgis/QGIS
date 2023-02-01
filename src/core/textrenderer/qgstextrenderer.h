@@ -85,11 +85,48 @@ class CORE_EXPORT QgsTextRenderer
      * as of QGIS 3.4.3 and the text format should be set using QgsRenderContext::setTextRenderFormat() instead.
      * \param vAlignment vertical alignment (since QGIS 3.16)
      * \param flags text rendering flags (since QGIS 3.24)
+     * \param mode text layout mode. Only Qgis::TextLayoutMode::Rectangle, Qgis::TextLayoutMode::RectangleCapHeightBased and Qgis::TextLayoutMode::RectangleAscentBased are accepted (since QGIS 3.30)
+     *
+     * \see drawDocument(), which is more efficient if the text document and metrics have already been calculated.
      */
     static void drawText( const QRectF &rect, double rotation, Qgis::TextHorizontalAlignment alignment, const QStringList &textLines,
                           QgsRenderContext &context, const QgsTextFormat &format,
                           bool drawAsOutlines = true, Qgis::TextVerticalAlignment vAlignment = Qgis::TextVerticalAlignment::Top,
-                          Qgis::TextRendererFlags flags = Qgis::TextRendererFlags() );
+                          Qgis::TextRendererFlags flags = Qgis::TextRendererFlags(),
+                          Qgis::TextLayoutMode mode = Qgis::TextLayoutMode::Rectangle );
+
+    /**
+     * Draws a text document within a rectangle using the specified settings.
+     *
+     * Calling this method is more efficient than calling drawText() if the text document and metrics have already
+     * been calculated.
+     *
+     * \warning Unlike drawText(), this method does not automatically update data defined properties in the text \a format. This
+     * is the caller's responsibility to do, and must be done prior to generating the text \a document and \a metrics.
+     *
+     * \param rect destination rectangle for text
+     * \param format base text format
+     * \param document text document to draw
+     * \param metrics precalculated text metrics
+     * \param context destination render context
+     * \param horizontalAlignment horizontal alignment
+     * \param verticalAlignment vertical alignment
+     * \param rotation text rotation
+     * \param mode text layout mode. Only Qgis::TextLayoutMode::Rectangle, Qgis::TextLayoutMode::RectangleCapHeightBased and Qgis::TextLayoutMode::RectangleAscentBased are accepted.
+     * \param flags text rendering flags
+     *
+     * \since QGIS 3.30
+     */
+    static void drawDocument( const QRectF &rect,
+                              const QgsTextFormat &format,
+                              const QgsTextDocument &document,
+                              const QgsTextDocumentMetrics &metrics,
+                              QgsRenderContext &context,
+                              Qgis::TextHorizontalAlignment horizontalAlignment = Qgis::TextHorizontalAlignment::Left,
+                              Qgis::TextVerticalAlignment verticalAlignment = Qgis::TextVerticalAlignment::Top,
+                              double rotation = 0,
+                              Qgis::TextLayoutMode mode = Qgis::TextLayoutMode::Rectangle,
+                              Qgis::TextRendererFlags flags = Qgis::TextRendererFlags() );
 
     /**
      * Draws text at a point origin using the specified settings.
@@ -238,6 +275,9 @@ class CORE_EXPORT QgsTextRenderer
       //! Index of block
       int blockIndex = 0;
 
+      //! Index of first fragment in block
+      int firstFragmentIndex = 0;
+
       //! Current origin point for painting (generally current painter rotation point)
       QPointF origin;
       //! Whether to translate the painter to supplied origin
@@ -336,6 +376,7 @@ class CORE_EXPORT QgsTextRenderer
     static void drawMask( QgsRenderContext &context,
                           const Component &component,
                           const QgsTextFormat &format,
+                          const QgsTextDocumentMetrics &metrics,
                           Qgis::TextLayoutMode mode );
 
     static void drawText( QgsRenderContext &context,

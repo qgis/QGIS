@@ -21,6 +21,7 @@
 #include "ui_qgsprojectelevationsettingswidgetbase.h"
 
 class QgsVectorLayer;
+class QgsElevationShadingRendererSettingsWidget;
 
 class QgsProjectElevationSettingsWidget : public QgsOptionsPageWidget, private Ui::QgsProjectElevationSettingsWidgetBase
 {
@@ -36,6 +37,9 @@ class QgsProjectElevationSettingsWidget : public QgsOptionsPageWidget, private U
   private slots:
 
     bool validate();
+
+  private:
+    QgsElevationShadingRendererSettingsWidget *mElevationShadingSettingsWidget = nullptr;
 
 };
 

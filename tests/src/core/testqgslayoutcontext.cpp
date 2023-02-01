@@ -121,7 +121,9 @@ void TestQgsLayoutContext::layer()
   l.reportContext().setLayer( layer );
   //test that expression context created for layout contains report context layer scope
   const QgsExpressionContext expContext  = l.createExpressionContext();
-  QCOMPARE( QgsExpressionUtils::getVectorLayer( expContext.variable( "layer" ), nullptr ), layer );
+  Q_NOWARN_DEPRECATED_PUSH
+  QCOMPARE( QgsExpressionUtils::getVectorLayer( expContext.variable( "layer" ), &expContext, nullptr ), layer );
+  Q_NOWARN_DEPRECATED_POP
 
   delete layer;
 }

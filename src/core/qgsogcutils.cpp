@@ -44,6 +44,7 @@
 #define GML32_NAMESPACE QStringLiteral( "http://www.opengis.net/gml/3.2" )
 #define OGC_NAMESPACE QStringLiteral( "http://www.opengis.net/ogc" )
 #define FES_NAMESPACE QStringLiteral( "http://www.opengis.net/fes/2.0" )
+#define SE_NAMESPACE QStringLiteral( "http://www.opengis.net/se" )
 
 QgsOgcUtilsExprToFilter::QgsOgcUtilsExprToFilter( QDomDocument &doc,
     QgsOgcUtils::GMLVersion gmlVersion,
@@ -1888,6 +1889,11 @@ QDomElement QgsOgcUtils::expressionToOgcExpression( const QgsExpression &exp, QD
                                     QStringLiteral( "geometry" ), QString(), false, false, errorMessage, requiresFilterElement );
 }
 
+QDomElement QgsOgcUtils::elseFilterExpression( QDomDocument &doc )
+{
+  return doc.createElementNS( SE_NAMESPACE, QStringLiteral( "se:ElseFilter" ) );
+}
+
 
 QDomElement QgsOgcUtils::expressionToOgcFilter( const QgsExpression &expression,
     QDomDocument &doc,
@@ -3484,6 +3490,11 @@ QgsExpressionNode *QgsOgcUtilsExpressionFromFilter::nodeLiteralFromOgcFilter( co
   }
 
   std::unique_ptr<QgsExpressionNode> root;
+  if ( !element.hasChildNodes() )
+  {
+    root.reset( new QgsExpressionNodeLiteral( QVariant( "" ) ) );
+    return root.release();
+  }
 
   // the literal content can have more children (e.g. CDATA section, text, ...)
   QDomNode childNode = element.firstChild();

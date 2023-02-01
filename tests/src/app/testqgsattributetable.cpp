@@ -67,6 +67,7 @@ class TestQgsAttributeTable : public QObject
     void testSortNumbers();
     void testStartMultiEditNoChanges();
     void testMultiEditMakeUncommittedChanges();
+    void testInvalidView();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -77,7 +78,7 @@ TestQgsAttributeTable::TestQgsAttributeTable() = default;
 //runs before all tests
 void TestQgsAttributeTable::initTestCase()
 {
-  qDebug() << "TestQgisAppClipboard::initTestCase()";
+  qDebug() << "TestQgsAttributeTable::initTestCase()";
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::initQgis();
@@ -788,6 +789,44 @@ void TestQgsAttributeTable::testOpenWithFilterExpression()
       Qt::Window,
       nullptr,
       filterExpression ) );
+
+  // feature id 2 is filtered out due not matching the provided filter expression
+  QCOMPARE( dlg->mMainView->filteredFeatures(), QgsFeatureIds() << 1 << 3 );
+}
+
+void TestQgsAttributeTable::testInvalidView()
+{
+  std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:4326&field=pk:int&field=col1:date" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QVERIFY( tempLayer->isValid() );
+
+  QgsPolylineXY line;
+  line << QgsPointXY( 0, 0 ) << QgsPointXY( 1, 1 );
+  QgsGeometry geometry = QgsGeometry::fromPolylineXY( line ) ;
+  QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
+  f1.setGeometry( geometry );
+  f1.setAttributes( QgsAttributes() << 1 << QDate( 2020, 1, 1 ) );
+  QgsFeature f2( tempLayer->dataProvider()->fields(), 2 );
+  f2.setGeometry( geometry );
+  f2.setAttributes( QgsAttributes() << 2 << QDate( 2020, 3, 1 ) );
+  QgsFeature f3( tempLayer->dataProvider()->fields(), 3 );
+  line.clear();
+  line << QgsPointXY( -3, -3 ) << QgsPointXY( -2, -2 );
+  geometry = QgsGeometry::fromPolylineXY( line );
+  f3.setGeometry( geometry );
+  f3.setAttributes( QgsAttributes() << 3 << QDate( 2020, 1, 1 ) );
+  QVERIFY( tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 ) );
+
+  const QString filterExpression = QStringLiteral( "col1 >= to_date('2020-02-03')" );
+  tempLayer->setConstraintExpression( 1, QStringLiteral( "col1 >= to_date('2020-02-03')" ) );
+  tempLayer->setFieldConstraint( 1, QgsFieldConstraints::ConstraintExpression, QgsFieldConstraints::ConstraintStrengthHard );
+
+  std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get(),
+      QgsAttributeTableFilterModel::ShowAll,
+      nullptr,
+      Qt::Window,
+      nullptr,
+      filterExpression ) );
+  dlg->mFeatureFilterWidget->filterInvalid();
 
   // feature id 2 is filtered out due not matching the provided filter expression
   QCOMPARE( dlg->mMainView->filteredFeatures(), QgsFeatureIds() << 1 << 3 );

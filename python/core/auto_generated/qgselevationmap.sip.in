@@ -31,26 +31,67 @@ in meters.
 #include "qgselevationmap.h"
 %End
   public:
+
+    QgsElevationMap();
+%Docstring
+Default constructor
+%End
+
     explicit QgsElevationMap( const QSize &size );
 %Docstring
 Constructs an elevation map with the given width and height
 %End
 
-    void applyEyeDomeLighting( QImage &img, int distance, float strength, float rendererScale );
+    explicit QgsElevationMap( const QImage &image );
 %Docstring
-Applies eye dome lighting effect to the given image. The effect makes
+Constructs an elevation map from an existing raw elevation ``image``.
+The image must have ARGB32 format and obtained by the :py:func:`~QgsElevationMap.rawElevationImage` method.
+
+.. seealso:: :py:func:`rawElevationImage`
+
+.. versionadded:: 3.30
+%End
+
+    QgsElevationMap( const QgsElevationMap &other );
+%Docstring
+Copy constructor
+%End
+
+    void applyEyeDomeLighting( QImage &image, int distance, float strength, float rendererScale ) const;
+%Docstring
+Applies eye dome lighting effect to the given ``image``. The effect makes
 angled surfaces darker and adds silhouettes in case of larger differences
 of elevations between neighboring pixels.
 
-The distance parameter tells how many pixels away from the original pixel
+The ``distance`` parameter tells how many pixels away from the original pixel
 to sample neighboring pixels. Normally distance of 2 pixels gives good results.
 
-The strength parameter adjusts how strong the added shading will be.
+The ``strength`` parameter adjusts how strong the added shading will be.
 Good default for this value seems to be 1000.
 
-The zScale parameter adjusts scale of elevation values. It is recommended
+The ``rendererScale`` parameter adjusts scale of elevation values. It is recommended
 to set this to the map's scale denominator to get similarly looking results
 at different map scales.
+%End
+
+    void applyHillshading( QImage &image, bool multiDirectional, double altitude, double azimuth, double zFactor, double cellSizeX, double cellSizeY ) const;
+%Docstring
+Applies hill shading effect to the given ``image``.
+
+If the ``multidirectinal`` parameter is ``True``, the algorithm will considered a
+multi horizontal directional light to apply the shading.
+
+The parameter ``altitude`` (could also be named zenith) is the vertical direction of the light.
+
+The parameter ``azimuth`` is the horizontal direction of the light considered if
+``multidirectional`` is ``False``.
+
+The parameter ``zFactor`` is the vertical exageration of the terrain.
+
+The parameters ``cellSizeX`` and ``cellSizeY`` are the sizes of the elevation map cells in unit consistent
+with the unit of the encoded elevation in this elevation map.
+
+.. versionadded:: 3.30
 %End
 
     QImage rawElevationImage() const;
@@ -63,6 +104,25 @@ Returns raw elevation image with elevations encoded as color values
 Returns painter to the underlying QImage with elevations
 %End
 
+    void combine( const QgsElevationMap &otherElevationMap, Qgis::ElevationMapCombineMethod method );
+%Docstring
+Combines this elevation map with ``otherElevationMap``.
+This elevation map keeps its size and takes elevation values of otherElevationMap that
+is not null for same row and column following the combine ``method``.
+The other elevation map can have a different size, only rows and columns contained in
+this elevation map will be considered.
+
+.. versionadded:: 3.30
+%End
+
+
+    bool isValid() const;
+%Docstring
+Returns whether the elevation map is valid.
+
+.. versionadded:: 3.30
+%End
+
     static QRgb encodeElevation( float z );
 %Docstring
 Converts elevation value to an actual color
@@ -73,8 +133,17 @@ Converts a color back to elevation value
 %End
 
 
-  private:
-    QgsElevationMap( const QgsElevationMap & );
+    bool isNoData( QRgb colorRaw ) const;
+%Docstring
+Returns whether the encoded value is a no data value
+%End
+
+    float noDataValue() const;
+%Docstring
+Returns the no data value for the elevation map
+%End
+
+
 };
 
 /************************************************************************

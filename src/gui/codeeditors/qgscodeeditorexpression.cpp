@@ -13,9 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
 #include "qgscodeeditorexpression.h"
-#include "qgssymbollayerutils.h"
+#include "qgsexpression.h"
 
 #include <QString>
 #include <QFont>
@@ -27,9 +26,13 @@ QgsCodeEditorExpression::QgsCodeEditorExpression( QWidget *parent )
   {
     setTitle( tr( "Expression Editor" ) );
   }
-  setFoldingVisible( false );
   setAutoCompletionCaseSensitivity( false );
   QgsCodeEditorExpression::initializeLexer(); // avoid cppcheck warning by explicitly specifying namespace
+}
+
+Qgis::ScriptLanguage QgsCodeEditorExpression::language() const
+{
+  return Qgis::ScriptLanguage::QgisExpression;
 }
 
 void QgsCodeEditorExpression::setExpressionContext( const QgsExpressionContext &context )

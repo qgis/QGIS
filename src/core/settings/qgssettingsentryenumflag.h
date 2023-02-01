@@ -38,17 +38,19 @@ class QgsSettingsEntryEnumFlag : public QgsSettingsEntryByValue<T>
     /**
      * Constructor for QgsSettingsEntryEnumFlagBase.
      *
-     * The \a key argument specifies the final part of the settings key.
-     * The \a section argument specifies the section.
-     * The \a defaultValue argument specifies the default value for the settings entry.
-     * The \a description argument specifies a description for the settings entry.
+     * \param name specifies the name of the setting.
+     * \param parent specifies the parent in the tree of settings.
+     * \param defaultValue specifies the default value for the settings entry.
+     * \param description specifies a description for the settings entry.
+     * \param options specifies the options for the settings entry.
      *
      * \note The enum needs to be declared with Q_ENUM, and flags with Q_FLAG (not Q_FLAGS).
      * \note for Python bindings, a custom implementation is achieved in Python directly
+     * \since QGIS 3.30
      */
-    QgsSettingsEntryEnumFlag( const QString &key, const QString &section, T defaultValue, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions() )
-      : QgsSettingsEntryByValue<T>( key,
-                                    section,
+    QgsSettingsEntryEnumFlag( const QString &name, QgsSettingsTreeNode *parent, T defaultValue, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions() )
+      : QgsSettingsEntryByValue<T>( name,
+                                    parent,
                                     QMetaEnum::fromType<T>().isFlag() ? qgsFlagValueToKeys( defaultValue ) : qgsEnumValueToKey( defaultValue ),
                                     description,
                                     options )
@@ -58,6 +60,40 @@ class QgsSettingsEntryEnumFlag : public QgsSettingsEntryByValue<T>
       if ( !mMetaEnum.isValid() )
         QgsDebugMsg( QStringLiteral( "Invalid metaenum. Enum/Flag probably misses Q_ENUM/Q_FLAG declaration. Settings key: '%1'" ).arg( this->key() ) );
     }
+
+    /**
+     * Constructor for QgsSettingsEntryEnumFlagBase.
+     *
+     * \param key specifies the final part of the setting key.
+     * \param section specifies the section.
+     * \param defaultValue specifies the default value for the settings entry.
+     * \param description specifies a description for the settings entry.
+     * \param options specifies the options for the settings entry.
+     *
+     * \note The enum needs to be declared with Q_ENUM, and flags with Q_FLAG (not Q_FLAGS).
+     * \note for Python bindings, a custom implementation is achieved in Python directly
+     */
+    QgsSettingsEntryEnumFlag( const QString &key, const QString &section, T defaultValue, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions() )
+      : QgsSettingsEntryByValue<T>( key,
+                                    section,
+                                    QVariant::fromValue( defaultValue ),
+                                    description,
+                                    options )
+    {
+      mMetaEnum = QMetaEnum::fromType<T>();
+      Q_ASSERT( mMetaEnum.isValid() );
+      if ( !mMetaEnum.isValid() )
+        QgsDebugMsg( QStringLiteral( "Invalid metaenum. Enum/Flag probably misses Q_ENUM/Q_FLAG declaration. Settings key: '%1'" ).arg( this->key() ) );
+    }
+
+    QVariant convertToVariant( T value ) const override
+    {
+      if ( mMetaEnum.isFlag() )
+        return qgsFlagValueToKeys( value );
+      else
+        return qgsEnumValueToKey( value );
+    }
+
 
     /**
      * Returns settings default value.

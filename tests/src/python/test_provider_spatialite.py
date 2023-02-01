@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsSpatialiteProvider
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -358,76 +357,76 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         QgsSettings().setValue('/qgis/compileExpressions', False)
 
     def uncompiledFilters(self):
-        return set(['cnt = 10 ^ 2',
-                    '"name" ~ \'[OP]ra[gne]+\'',
-                    'sqrt(pk) >= 2',
-                    'radians(cnt) < 2',
-                    'degrees(pk) <= 200',
-                    'cos(pk) < 0',
-                    'sin(pk) < 0',
-                    'tan(pk) < 0',
-                    'acos(-1) < pk',
-                    'asin(1) < pk',
-                    'atan(3.14) < pk',
-                    'atan2(3.14, pk) < 1',
-                    'exp(pk) < 10',
-                    'ln(pk) <= 1',
-                    'log(3, pk) <= 1',
-                    'log10(pk) < 0.5',
-                    'floor(3.14) <= pk',
-                    'ceil(3.14) <= pk',
-                    'pk < pi()',
-                    'floor(cnt / 66.67) <= 2',
-                    'ceil(cnt / 66.67) <= 2',
-                    'pk < pi() / 2',
-                    'x($geometry) < -70',
-                    'y($geometry) > 70',
-                    'xmin($geometry) < -70',
-                    'ymin($geometry) > 70',
-                    'xmax($geometry) < -70',
-                    'ymax($geometry) > 70',
-                    'disjoint($geometry,geom_from_wkt( \'Polygon ((-72.2 66.1, -65.2 66.1, -65.2 72.0, -72.2 72.0, -72.2 66.1))\'))',
-                    'intersects($geometry,geom_from_wkt( \'Polygon ((-72.2 66.1, -65.2 66.1, -65.2 72.0, -72.2 72.0, -72.2 66.1))\'))',
-                    'contains(geom_from_wkt( \'Polygon ((-72.2 66.1, -65.2 66.1, -65.2 72.0, -72.2 72.0, -72.2 66.1))\'),$geometry)',
-                    'distance($geometry,geom_from_wkt( \'Point (-70 70)\')) > 7',
-                    'intersects($geometry,geom_from_gml( \'<gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-72.2,66.1 -65.2,66.1 -65.2,72.0 -72.2,72.0 -72.2,66.1</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>\'))',
-                    'x($geometry) < -70',
-                    'y($geometry) > 79',
-                    'xmin($geometry) < -70',
-                    'ymin($geometry) < 76',
-                    'xmax($geometry) > -68',
-                    'ymax($geometry) > 80',
-                    'area($geometry) > 10',
-                    'perimeter($geometry) < 12',
-                    'relate($geometry,geom_from_wkt( \'Polygon ((-68.2 82.1, -66.95 82.1, -66.95 79.05, -68.2 79.05, -68.2 82.1))\')) = \'FF2FF1212\'',
-                    'relate($geometry,geom_from_wkt( \'Polygon ((-68.2 82.1, -66.95 82.1, -66.95 79.05, -68.2 79.05, -68.2 82.1))\'), \'****F****\')',
-                    'crosses($geometry,geom_from_wkt( \'Linestring (-68.2 82.1, -66.95 82.1, -66.95 79.05)\'))',
-                    'overlaps($geometry,geom_from_wkt( \'Polygon ((-68.2 82.1, -66.95 82.1, -66.95 79.05, -68.2 79.05, -68.2 82.1))\'))',
-                    'within($geometry,geom_from_wkt( \'Polygon ((-75.1 76.1, -75.1 81.6, -68.8 81.6, -68.8 76.1, -75.1 76.1))\'))',
-                    'overlaps(translate($geometry,-1,-1),geom_from_wkt( \'Polygon ((-75.1 76.1, -75.1 81.6, -68.8 81.6, -68.8 76.1, -75.1 76.1))\'))',
-                    'overlaps(buffer($geometry,1),geom_from_wkt( \'Polygon ((-75.1 76.1, -75.1 81.6, -68.8 81.6, -68.8 76.1, -75.1 76.1))\'))',
-                    'intersects(centroid($geometry),geom_from_wkt( \'Polygon ((-74.4 78.2, -74.4 79.1, -66.8 79.1, -66.8 78.2, -74.4 78.2))\'))',
-                    'intersects(point_on_surface($geometry),geom_from_wkt( \'Polygon ((-74.4 78.2, -74.4 79.1, -66.8 79.1, -66.8 78.2, -74.4 78.2))\'))',
-                    '"dt" = to_datetime(\'000www14ww13ww12www4ww5ww2020\',\'zzzwwwsswwmmwwhhwwwdwwMwwyyyy\')',
-                    '"dt" <= format_date(make_datetime(2020, 5, 4, 12, 13, 14), \'yyyy-MM-dd hh:mm:ss\')',
-                    '"dt" < format_date(make_date(2020, 5, 4), \'yyyy-MM-dd hh:mm:ss\')',
-                    '"dt" = format_date(to_datetime(\'000www14ww13ww12www4ww5ww2020\',\'zzzwwwsswwmmwwhhwwwdwwMwwyyyy\'),\'yyyy-MM-dd hh:mm:ss\')',
-                    'to_time("time") >= make_time(12, 14, 14)',
-                    'to_time("time") = to_time(\'000www14ww13ww12www\',\'zzzwwwsswwmmwwhhwww\')',
-                    '"date" = to_date(\'www4ww5ww2020\',\'wwwdwwMwwyyyy\')',
-                    'dt BETWEEN make_datetime(2020, 5, 3, 12, 13, 14) AND make_datetime(2020, 5, 4, 12, 14, 14)',
-                    'dt NOT BETWEEN make_datetime(2020, 5, 3, 12, 13, 14) AND make_datetime(2020, 5, 4, 12, 14, 14)',
-                    '"dt" <= make_datetime(2020, 5, 4, 12, 13, 14)',
-                    '"date" <= make_datetime(2020, 5, 4, 12, 13, 14)'
-                    ])
+        return {'cnt = 10 ^ 2',
+                '"name" ~ \'[OP]ra[gne]+\'',
+                'sqrt(pk) >= 2',
+                'radians(cnt) < 2',
+                'degrees(pk) <= 200',
+                'cos(pk) < 0',
+                'sin(pk) < 0',
+                'tan(pk) < 0',
+                'acos(-1) < pk',
+                'asin(1) < pk',
+                'atan(3.14) < pk',
+                'atan2(3.14, pk) < 1',
+                'exp(pk) < 10',
+                'ln(pk) <= 1',
+                'log(3, pk) <= 1',
+                'log10(pk) < 0.5',
+                'floor(3.14) <= pk',
+                'ceil(3.14) <= pk',
+                'pk < pi()',
+                'floor(cnt / 66.67) <= 2',
+                'ceil(cnt / 66.67) <= 2',
+                'pk < pi() / 2',
+                'x($geometry) < -70',
+                'y($geometry) > 70',
+                'xmin($geometry) < -70',
+                'ymin($geometry) > 70',
+                'xmax($geometry) < -70',
+                'ymax($geometry) > 70',
+                'disjoint($geometry,geom_from_wkt( \'Polygon ((-72.2 66.1, -65.2 66.1, -65.2 72.0, -72.2 72.0, -72.2 66.1))\'))',
+                'intersects($geometry,geom_from_wkt( \'Polygon ((-72.2 66.1, -65.2 66.1, -65.2 72.0, -72.2 72.0, -72.2 66.1))\'))',
+                'contains(geom_from_wkt( \'Polygon ((-72.2 66.1, -65.2 66.1, -65.2 72.0, -72.2 72.0, -72.2 66.1))\'),$geometry)',
+                'distance($geometry,geom_from_wkt( \'Point (-70 70)\')) > 7',
+                'intersects($geometry,geom_from_gml( \'<gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-72.2,66.1 -65.2,66.1 -65.2,72.0 -72.2,72.0 -72.2,66.1</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>\'))',
+                'x($geometry) < -70',
+                'y($geometry) > 79',
+                'xmin($geometry) < -70',
+                'ymin($geometry) < 76',
+                'xmax($geometry) > -68',
+                'ymax($geometry) > 80',
+                'area($geometry) > 10',
+                'perimeter($geometry) < 12',
+                'relate($geometry,geom_from_wkt( \'Polygon ((-68.2 82.1, -66.95 82.1, -66.95 79.05, -68.2 79.05, -68.2 82.1))\')) = \'FF2FF1212\'',
+                'relate($geometry,geom_from_wkt( \'Polygon ((-68.2 82.1, -66.95 82.1, -66.95 79.05, -68.2 79.05, -68.2 82.1))\'), \'****F****\')',
+                'crosses($geometry,geom_from_wkt( \'Linestring (-68.2 82.1, -66.95 82.1, -66.95 79.05)\'))',
+                'overlaps($geometry,geom_from_wkt( \'Polygon ((-68.2 82.1, -66.95 82.1, -66.95 79.05, -68.2 79.05, -68.2 82.1))\'))',
+                'within($geometry,geom_from_wkt( \'Polygon ((-75.1 76.1, -75.1 81.6, -68.8 81.6, -68.8 76.1, -75.1 76.1))\'))',
+                'overlaps(translate($geometry,-1,-1),geom_from_wkt( \'Polygon ((-75.1 76.1, -75.1 81.6, -68.8 81.6, -68.8 76.1, -75.1 76.1))\'))',
+                'overlaps(buffer($geometry,1),geom_from_wkt( \'Polygon ((-75.1 76.1, -75.1 81.6, -68.8 81.6, -68.8 76.1, -75.1 76.1))\'))',
+                'intersects(centroid($geometry),geom_from_wkt( \'Polygon ((-74.4 78.2, -74.4 79.1, -66.8 79.1, -66.8 78.2, -74.4 78.2))\'))',
+                'intersects(point_on_surface($geometry),geom_from_wkt( \'Polygon ((-74.4 78.2, -74.4 79.1, -66.8 79.1, -66.8 78.2, -74.4 78.2))\'))',
+                '"dt" = to_datetime(\'000www14ww13ww12www4ww5ww2020\',\'zzzwwwsswwmmwwhhwwwdwwMwwyyyy\')',
+                '"dt" <= format_date(make_datetime(2020, 5, 4, 12, 13, 14), \'yyyy-MM-dd hh:mm:ss\')',
+                '"dt" < format_date(make_date(2020, 5, 4), \'yyyy-MM-dd hh:mm:ss\')',
+                '"dt" = format_date(to_datetime(\'000www14ww13ww12www4ww5ww2020\',\'zzzwwwsswwmmwwhhwwwdwwMwwyyyy\'),\'yyyy-MM-dd hh:mm:ss\')',
+                'to_time("time") >= make_time(12, 14, 14)',
+                'to_time("time") = to_time(\'000www14ww13ww12www\',\'zzzwwwsswwmmwwhhwww\')',
+                '"date" = to_date(\'www4ww5ww2020\',\'wwwdwwMwwyyyy\')',
+                'dt BETWEEN make_datetime(2020, 5, 3, 12, 13, 14) AND make_datetime(2020, 5, 4, 12, 14, 14)',
+                'dt NOT BETWEEN make_datetime(2020, 5, 3, 12, 13, 14) AND make_datetime(2020, 5, 4, 12, 14, 14)',
+                '"dt" <= make_datetime(2020, 5, 4, 12, 13, 14)',
+                '"date" <= make_datetime(2020, 5, 4, 12, 13, 14)'
+                }
 
     def partiallyCompiledFilters(self):
-        return set(['"name" NOT LIKE \'Ap%\'',
-                    'name LIKE \'Apple\'',
-                    'name LIKE \'aPple\'',
-                    'name LIKE \'Ap_le\'',
-                    'name LIKE \'Ap\\_le\''
-                    ])
+        return {'"name" NOT LIKE \'Ap%\'',
+                'name LIKE \'Apple\'',
+                'name LIKE \'aPple\'',
+                'name LIKE \'Ap_le\'',
+                'name LIKE \'Ap\\_le\''
+                }
 
     def test_SplitFeature(self):
         """Create SpatiaLite database"""
@@ -558,7 +557,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.isValid())
         # The iterator will take one extra connection
         myiter = vl.getFeatures()
-        print((vl.featureCount()))
+        print(vl.featureCount())
         # Consume one feature but the iterator is still opened
         f = next(myiter)
         self.assertTrue(f.isValid())
@@ -815,7 +814,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.isValid())
 
         self.assertTrue(
-            vl.dataProvider().skipConstraintCheck(0, QgsFieldConstraints.ConstraintUnique, str("Autogenerate")))
+            vl.dataProvider().skipConstraintCheck(0, QgsFieldConstraints.ConstraintUnique, "Autogenerate"))
         self.assertFalse(vl.dataProvider().skipConstraintCheck(
             0, QgsFieldConstraints.ConstraintUnique, 123))
 
@@ -888,7 +887,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         res = [row for row in rs]
         self.assertEqual(len(res), 1)
         index_name = res[0][1]
-        rs = cur.execute("PRAGMA index_info({})".format(index_name))
+        rs = cur.execute(f"PRAGMA index_info({index_name})")
         res = [row for row in rs]
         self.assertEqual(len(res), 1)
         self.assertEqual(res[0][2], 'name')
@@ -902,12 +901,12 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         indexed_columns = []
         for row in res:
             index_name = row[1]
-            rs = cur.execute("PRAGMA index_info({})".format(index_name))
+            rs = cur.execute(f"PRAGMA index_info({index_name})")
             res = [row for row in rs]
             self.assertEqual(len(res), 1)
             indexed_columns.append(res[0][2])
 
-        self.assertEqual(set(indexed_columns), set(['name', 'number']))
+        self.assertEqual(set(indexed_columns), {'name', 'number'})
         con.close()
 
     def testSubsetStringRegexp(self):
@@ -976,7 +975,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         """Check that the provider URI decoding returns expected values"""
 
         filename = '/home/to/path/test.db'
-        uri = 'dbname=\'{}\' table="test" (geometry) key=testkey sql=1=1'.format(filename)
+        uri = f'dbname=\'{filename}\' table="test" (geometry) key=testkey sql=1=1'
         registry = QgsProviderRegistry.instance()
         components = registry.decodeUri('spatialite', uri)
         self.assertEqual(components['path'], filename)
@@ -997,7 +996,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
                  'geometryColumn': 'geometry',
                  'keyColumn': 'testkey'}
         uri = registry.encodeUri('spatialite', parts)
-        self.assertEqual(uri, 'dbname=\'{}\' key=\'testkey\' table="test" (geometry) sql=1=1'.format(filename))
+        self.assertEqual(uri, f'dbname=\'{filename}\' key=\'testkey\' table="test" (geometry) sql=1=1')
 
     def testPKNotInt(self):
         """ Check when primary key is not an integer """
@@ -1010,7 +1009,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
 
         # try the two different types of index creation
         for index_creation_method in ['CreateSpatialIndex', 'CreateMbrCache']:
-            table_name = "pk_is_string_{}".format(index_creation_method)
+            table_name = f"pk_is_string_{index_creation_method}"
 
             cur.execute("BEGIN")
             sql = "SELECT InitSpatialMetadata()"
@@ -1167,7 +1166,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertFalse(qml)
         self.assertTrue(errmsg)
 
-        qml, success = vl.loadNamedStyle('{}|layerid=0'.format(dbname))
+        qml, success = vl.loadNamedStyle(f'{dbname}|layerid=0')
         self.assertFalse(success)
 
         errorMsg = vl.saveStyleToDatabase("name", "description", False, "")
@@ -1275,7 +1274,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
             vl = QgsVectorLayer('dbname=\'{}\' table="{}" (geom) sql='.format(
                 dbname, sql), 'test', 'spatialite')
             self.assertTrue(
-                vl.isValid(), 'dbname: {} - sql: {}'.format(dbname, sql))
+                vl.isValid(), f'dbname: {dbname} - sql: {sql}')
             self.assertTrue(vl.featureCount() > 1)
             self.assertTrue(vl.isSpatial())
 
@@ -1332,9 +1331,9 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
                 self.assertTrue(f.isValid())
                 self.assertTrue(vl.getFeature(i - offset).isValid())
                 self.assertEqual(vl.getFeature(i - offset)
-                                 ['name'], 'name {id}'.format(id=i))
+                                 ['name'], f'name {i}')
                 self.assertEqual(f.id(), i - offset)
-                self.assertEqual(f['name'], 'name {id}'.format(id=i))
+                self.assertEqual(f['name'], f'name {i}')
                 self.assertEqual(f.geometry().asWkt(),
                                  'Point ({id} {id})'.format(id=i))
                 i += 1
@@ -1482,7 +1481,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
             res, features = provider.addFeatures([ft])
 
             layer = typeStr
-            uri = "dbname=%s table='%s' (geometry)" % (dbname, layer)
+            uri = f"dbname={dbname} table='{layer}' (geometry)"
             write_result, error_message = QgsVectorLayerExporter.exportLayer(ml,
                                                                              uri,
                                                                              'spatialite',
@@ -1818,6 +1817,55 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         it.nextFeature(feature)
 
         self.assertTrue(feature.isValid())
+
+    def testRegression50523(self):
+        """Test for issue GH #50523"""
+
+        con = spatialite_connect(self.dbname, isolation_level=None)
+        cur = con.cursor()
+        cur.execute("BEGIN")
+        sql = """CREATE TABLE table50523 (
+            _id INTEGER PRIMARY KEY AUTOINCREMENT,
+            atttext TEXT NOT NULL)"""
+
+        cur.execute(sql)
+        sql = "SELECT AddGeometryColumn('table50523', 'position', 25832, 'POLYGON', 'XY', 0)"
+        cur.execute(sql)
+        cur.execute("COMMIT")
+        con.close()
+
+        layer = QgsVectorLayer(
+            f'dbname=\'{self.dbname}\' table="table50523" (position) sql=', 'test', 'spatialite')
+
+        self.assertTrue(layer.isValid())
+
+        # Check NOT NULL constraint on atttext
+        field = layer.fields().at(1)
+        self.assertTrue(bool(field.constraints().constraints() & QgsFieldConstraints.ConstraintNotNull))
+
+        self.assertTrue(layer.startEditing())
+
+        f = QgsFeature(layer.fields())
+        g = QgsGeometry.fromWkt('polygon((0 0, 1 1, 1 0, 0 0))')
+        g.isGeosValid()
+        self.assertTrue(g.isGeosValid())
+        f.setGeometry(g)
+        f.fields()
+        f.fields().names()
+        f.setAttribute(1, QVariant(QVariant.String))
+        f.setAttribute(0, 'Autogenerate')
+        self.assertTrue(layer.addFeatures([f]))
+        self.assertFalse(layer.commitChanges())
+        self.assertTrue(layer.rollBack())
+
+        self.assertTrue(layer.startEditing())
+        f.setAttribute(1, 'some text')
+        self.assertTrue(layer.addFeatures([f]))
+        self.assertTrue(layer.commitChanges())
+
+        layer = QgsVectorLayer(
+            f'dbname=\'{self.dbname}\' table="table50523" (position) sql=', 'test', 'spatialite')
+        self.assertEqual(len([f for f in layer.getFeatures()]), 1)
 
 
 if __name__ == '__main__':

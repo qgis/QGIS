@@ -309,6 +309,7 @@ void QgsCompoundColorWidget::setAllowOpacity( const bool allowOpacity )
   mAllowAlpha = allowOpacity;
   mAlphaLabel->setVisible( allowOpacity );
   mAlphaSlider->setVisible( allowOpacity );
+  mColorText->setAllowOpacity( allowOpacity );
   if ( !allowOpacity )
   {
     mAlphaLayout->setContentsMargins( 0, 0, 0, 0 );

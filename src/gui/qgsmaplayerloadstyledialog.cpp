@@ -21,7 +21,7 @@
 #include "qgssettings.h"
 #include "qgsvectorlayerproperties.h"
 #include "qgsmaplayerstylecategoriesmodel.h"
-#include "qgsmessagebar.h"
+#include "qgshelp.h"
 #include "qgsapplication.h"
 #include "qgsgui.h"
 

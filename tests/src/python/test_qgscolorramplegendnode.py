@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsColorRampLegendNode.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -540,7 +539,7 @@ class TestQgsColorRampLegendNode(unittest.TestCase):
         self.assertTrue(self.imageCheck('color_ramp_legend_node_flipped_horizontal_draw', 'color_ramp_legend_node_flipped_horizontal_draw', image))
 
     def imageCheck(self, name, reference_image, image, size_tolerance=0):
-        TestQgsColorRampLegendNode.report += "<h2>Render {}</h2>\n".format(name)
+        TestQgsColorRampLegendNode.report += f"<h2>Render {name}</h2>\n"
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + name + ".png"
         image.save(file_name, "PNG")

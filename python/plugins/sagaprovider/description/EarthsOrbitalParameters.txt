@@ -1,6 +1,0 @@
-Earth's Orbital Parameters
-climate_tools
-QgsProcessingParameterFeatureSource|ORBPAR|Earth's Orbital Parameters|5|None|False
-QgsProcessingParameterNumber|START|Start [ka]|QgsProcessingParameterNumber.Integer|-200.000000|False|None|None
-QgsProcessingParameterNumber|STOP|Stop [ka]|QgsProcessingParameterNumber.Double|2.000000|False|None|None
-QgsProcessingParameterNumber|STEP|Step [ka]|QgsProcessingParameterNumber.Double|1.000000|False|0.001000|None

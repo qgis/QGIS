@@ -116,19 +116,13 @@ QList<int> QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( const Q
 
   QList<int> ret;
 
-  // if invalid or empty, return only the group 0
-  if ( !value.isValid() )
-    ret << 0;
-  else
+  if ( value.isValid() )
   {
     if ( value.type() == QVariant::List )
     {
       const QVariantList varList = value.toList();
-      if ( varList.isEmpty() )
-        ret << 0;
-      else
-        for ( const QVariant &v : varList )
-          ret << v.toInt();
+      for ( const QVariant &v : varList )
+        ret << v.toInt();
     }
     else
     {

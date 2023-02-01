@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Generic Unit tests for the GDAL provider.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -266,12 +265,48 @@ class PyQgsGdalProvider(unittest.TestCase):
         vrtfilename = os.path.join(tmp_dir.path(), 'out.vrt')
         ds = gdal.BuildVRT(vrtfilename, [tmpfilename])
         ds = None
-        assert 'OverviewList' in open(vrtfilename, 'rt').read()
+        assert 'OverviewList' in open(vrtfilename).read()
 
         raster_layer = QgsRasterLayer(vrtfilename, 'test')
         del raster_layer
 
-        assert 'OverviewList' not in open(vrtfilename, 'rt').read()
+        assert 'OverviewList' not in open(vrtfilename).read()
+
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 7, 0), "GDAL 3.7.0 required")
+    def testInt8(self):
+        """Test Int8 support"""
+
+        tmp_dir = QTemporaryDir()
+        tmpfile = os.path.join(tmp_dir.path(), 'testInt8.tif')
+        ds = gdal.GetDriverByName('GTiff').Create(tmpfile, 2, 2, 1, gdal.GDT_Int8)
+        ds.WriteRaster(0, 0, 2, 2, struct.pack('b' * 4, 1, 127, 0, -128))
+        ds = None
+
+        raster_layer = QgsRasterLayer(tmpfile, 'test')
+        self.assertTrue(raster_layer.isValid())
+        self.assertEqual(raster_layer.dataProvider().dataType(1), Qgis.Int8)
+
+        extent = raster_layer.extent()
+        block = raster_layer.dataProvider().block(1, extent, 2, 2)
+
+        full_content = [1, 127, 0, -128]
+        self.checkBlockContents(block, full_content)
+
+        pos = QgsPointXY(0, 0)
+        value_sample = raster_layer.dataProvider().sample(pos, 1)[0]
+        self.assertEqual(value_sample, full_content[0])
+
+        pos = QgsPointXY(1, 0)
+        value_sample = raster_layer.dataProvider().sample(pos, 1)[0]
+        self.assertEqual(value_sample, full_content[1])
+
+        pos = QgsPointXY(0, -1)
+        value_sample = raster_layer.dataProvider().sample(pos, 1)[0]
+        self.assertEqual(value_sample, full_content[2])
+
+        pos = QgsPointXY(1, -1)
+        value_sample = raster_layer.dataProvider().sample(pos, 1)[0]
+        self.assertEqual(value_sample, full_content[3])
 
 
 if __name__ == '__main__':

@@ -1,4 +1,0 @@
-Convert Lines to Polygons
-shapes_polygons
-QgsProcessingParameterFeatureSource|LINES|Lines|1|None|False
-QgsProcessingParameterVectorDestination|POLYGONS|Polygons

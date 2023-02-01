@@ -32,7 +32,7 @@
 #include <sys/time.h>
 #endif
 
-#ifdef MSVC
+#ifdef _MSC_VER
 #include <Windows.h>
 #include <ShlObj.h>
 #pragma comment(lib,"Shell32.lib")
@@ -280,7 +280,7 @@ QStringList QgsFileUtils::findFile( const QString &file, const QString &basePath
   return foundFiles;
 }
 
-#ifdef MSVC
+#ifdef _MSC_VER
 std::unique_ptr< wchar_t[] > pathToWChar( const QString &path )
 {
   const QString nativePath = QDir::toNativeSeparators( path );
@@ -294,8 +294,8 @@ std::unique_ptr< wchar_t[] > pathToWChar( const QString &path )
 
 Qgis::DriveType QgsFileUtils::driveType( const QString &path )
 {
-#ifdef MSVC
-  auto pathType = [ = ]( const QString & path ) -> DriveType
+#ifdef _MSC_VER
+  auto pathType = [ = ]( const QString & path ) -> Qgis::DriveType
   {
     std::unique_ptr< wchar_t[] > pathArray = pathToWChar( path );
     const UINT type = GetDriveTypeW( pathArray.get() );
@@ -323,7 +323,7 @@ Qgis::DriveType QgsFileUtils::driveType( const QString &path )
         return Qgis::DriveType::RamDisk;
     }
 
-    return Unknown;
+    return Qgis::DriveType::Unknown;
 
   };
 
@@ -334,11 +334,11 @@ Qgis::DriveType QgsFileUtils::driveType( const QString &path )
   {
     prevPath = currentPath;
     currentPath = QFileInfo( currentPath ).path();
-    const DriveType type = pathType( currentPath );
-    if ( type != Unknown && type != Invalid )
+    const Qgis::DriveType type = pathType( currentPath );
+    if ( type != Qgis::DriveType::Unknown && type != Qgis::DriveType::Invalid )
       return type;
   }
-  return Unknown;
+  return Qgis::DriveType::Unknown;
 
 #else
   ( void )path;
@@ -528,4 +528,24 @@ QStringList QgsFileUtils::splitPathToComponents( const QString &input )
 
   std::reverse( result.begin(), result.end() );
   return result;
+}
+
+QString QgsFileUtils::uniquePath( const QString &path )
+{
+  if ( ! QFileInfo::exists( path ) )
+  {
+    return path;
+  }
+
+  QFileInfo info { path };
+  const QString suffix { info.completeSuffix() };
+  const QString pathPattern { QString( suffix.isEmpty() ? path : path.chopped( suffix.length() + 1 ) ).append( suffix.isEmpty() ? QStringLiteral( "_%1" ) : QStringLiteral( "_%1." ) ).append( suffix ) };
+  int i { 2 };
+  QString uniquePath { pathPattern.arg( i ) };
+  while ( QFileInfo::exists( uniquePath ) )
+  {
+    ++i;
+    uniquePath = pathPattern.arg( i );
+  }
+  return uniquePath;
 }

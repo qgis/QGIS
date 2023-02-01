@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsAggregateCalculator.
 
 From build dir, run: ctest -R PyQgsAggregateCalculator -V
@@ -81,7 +80,7 @@ class TestQgsAggregateCalculator(unittest.TestCase):
         self.assertTrue(ok)
         expwkt = "MultiPoint ((0 0), (1 1), (2 2))"
         wkt = val.asWkt()
-        self.assertTrue(compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt))
+        self.assertTrue(compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n")
 
     def testNumeric(self):
         """ Test calculation of aggregates on numeric fields"""

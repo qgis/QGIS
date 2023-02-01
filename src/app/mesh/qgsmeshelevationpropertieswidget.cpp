@@ -55,6 +55,8 @@ QgsMeshElevationPropertiesWidget::QgsMeshElevationPropertiesWidget( QgsMeshLayer
 
     onChanged();
   } );
+
+  setProperty( "helpPage", QStringLiteral( "working_with_mesh/mesh_properties.html#elevation-properties" ) );
 }
 
 void QgsMeshElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )

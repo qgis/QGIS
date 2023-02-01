@@ -1,7 +1,11 @@
 QWidget
 {
-    color: @text;
     background: transparent;
+}
+
+QLabel, QCheckBox, QRadioButton, QMenu::item
+{
+    color: @text;
 }
 
 QWindow, QMainWindow, QMdiSubWindow, QDialog, QAbstractScrollArea, QFocusFrame, QWizardPage, QDockWidget, QDockWidgetGroupWindow, QTabWidget, QGroupBox
@@ -197,7 +201,6 @@ QLineEdit
     padding: 0.12em;
     border: 1px solid #111;
     background-color: #888;
-    color: #111;
     selection-background-color: @selection;
     selection-color: @text;
 }
@@ -1048,6 +1051,10 @@ QToolButton[autoRaise=false]:focus:!pressed {
 
 QSlider::handle:horizontal:focus, QSlider::handle:vertical:focus {
     border: 1px solid @focus;
+}
+
+QVideoWidget QWidget {
+    background-color: #000000 !important;
 }
 
 /* ==================================================================================== */

@@ -1,8 +1,0 @@
-Zonal Grid Statistics
-statistics_grid
-QgsProcessingParameterRasterLayer|ZONES|Zone Grid|None|False
-QgsProcessingParameterMultipleLayers|CATLIST|Categorial Grids|3|None|True
-QgsProcessingParameterMultipleLayers|STATLIST|Grids to analyze|3|None|True
-QgsProcessingParameterRasterLayer|ASPECT|Aspect|None|True
-QgsProcessingParameterBoolean|SHORTNAMES|Short Field Names|True
-QgsProcessingParameterVectorDestination|OUTTAB|Zonal Statistics|5

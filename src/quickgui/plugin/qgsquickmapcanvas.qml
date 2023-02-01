@@ -55,9 +55,6 @@ Item {
   //! This signal is emitted independently of double tap / click
   signal clicked(var point)
 
-  //! This signal is only emitted if there is no double tap/click coming after a short delay
-//  signal confirmedClicked(var point) // TODO: ideally get rid of this one
-
   //! Signal emitted when user holds pointer on map
   signal longPressed(var point)
 
@@ -103,6 +100,32 @@ Item {
     mapCanvasWrapper.refresh()
   }
 
+  /**
+   * Animates movement of map canvas from the current center to newPos.
+   *
+   * newPos needs to be in device pixels.
+   */
+  function moveTo( newPos )
+  {
+    freeze('moveTo')
+
+    let newPosMapCRS = mapCanvasWrapper.mapSettings.screenToCoordinate( newPos )
+    let oldPosMapCRS = mapCanvasWrapper.mapSettings.center
+
+    // Disable animation until initial position is set
+    jumpAnimator.enabled = false
+
+    jumpAnimator.px = oldPosMapCRS.x
+    jumpAnimator.py = oldPosMapCRS.y
+
+    jumpAnimator.enabled = true
+
+    jumpAnimator.px = newPosMapCRS.x
+    jumpAnimator.py = newPosMapCRS.y
+
+    unfreeze('moveTo')
+  }
+
   QgsQuick.MapCanvasMap {
     id: mapCanvasWrapper
 
@@ -112,6 +135,41 @@ Item {
     property var __freezecount: ({})
 
     freeze: false
+  }
+
+  Item {
+    id: jumpAnimator
+
+    property double px: 0
+    property double py: 0
+
+    Behavior on py {
+      SmoothedAnimation {
+        duration: 200
+        reversingMode: SmoothedAnimation.Immediate
+      }
+      enabled: jumpAnimator.enabled
+    }
+
+    Behavior on px {
+      SmoothedAnimation {
+        duration: 200
+        reversingMode: SmoothedAnimation.Immediate
+      }
+      enabled: jumpAnimator.enabled
+    }
+
+    onPxChanged: {
+      if ( enabled ) {
+        mapCanvasWrapper.mapSettings.center = QgsQuick.Utils.toQgsPoint( Qt.point( px, py ) )
+      }
+    }
+
+    onPyChanged: {
+      if ( enabled ) {
+        mapCanvasWrapper.mapSettings.center = QgsQuick.Utils.toQgsPoint( Qt.point( px, py ) )
+      }
+    }
   }
 
   // Mouse, stylus and other pointer devices handler
@@ -330,7 +388,7 @@ Item {
     target: null
     grabPermissions: PointerHandler.CanTakeOverFromHandlersOfDifferentType | PointerHandler.ApprovesTakeOverByItems
 
-    onWheel: {
+    onWheel: function( event ) {
       if (event.angleDelta.y > 0)
       {
         zoomIn(point.position)

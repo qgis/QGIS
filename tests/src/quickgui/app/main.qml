@@ -32,4 +32,14 @@ ApplicationWindow {
     mapSettings.project: __project
     mapSettings.layers: __layers
   }
+  
+  QgsQuick.ElevationProfileCanvas {
+    id: elevationProfileCanvas
+    
+    height: parent.height
+    width: parent.width
+    
+    project: __project
+    crs: mapCanvas.mapSettings.destinationCrs
+  }
 }

@@ -29,6 +29,7 @@
 #include "qgsrendererrasterpropertieswidget.h"
 #include "qgsrenderermeshpropertieswidget.h"
 #include "qgsrasterhistogramwidget.h"
+#include "qgsrasterattributetablewidget.h"
 #include "qgsrasterrenderer.h"
 #include "qgsrasterrendererwidget.h"
 #include "qgsmapcanvas.h"
@@ -235,6 +236,11 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
         mOptionsListWidget->addItem( histogramItem );
         histogramItem->setToolTip( tr( "Histogram" ) );
       }
+
+      QListWidgetItem *rasterAttributeTableItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/attributes.svg" ) ), QString() );
+      rasterAttributeTableItem->setToolTip( tr( "Raster Attribute Tables" ) );
+      rasterAttributeTableItem->setData( Qt::UserRole, RasterAttributeTables );
+      mOptionsListWidget->addItem( rasterAttributeTableItem );
       break;
     }
     case QgsMapLayerType::MeshLayer:
@@ -462,6 +468,8 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
       panel->setMapLayerConfigWidgetContext( mContext );
       connect( panel, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
       mWidgetStack->setMainPanel( panel );
+      mBlockAutoApply = false;
+      return;
     }
   }
 
@@ -618,6 +626,18 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
             }
             break;
           }
+          case 3: // Attribute Tables
+          {
+            if ( !mRasterAttributeTableWidget )
+            {
+              mRasterAttributeTableWidget = new QgsRasterAttributeTableWidget( mWidgetStack, rlayer );
+              mRasterAttributeTableWidget->setDockMode( true );
+            }
+
+            mWidgetStack->setMainPanel( mRasterAttributeTableWidget );
+
+            break;
+          }
           default:
             break;
         }
@@ -724,7 +744,10 @@ void QgsLayerStylingWidget::setAnnotationItem( QgsAnnotationLayer *layer, const 
 {
   mContext.setAnnotationId( itemId );
   if ( layer )
+  {
     setLayer( layer );
+    mStackedWidget->setCurrentIndex( mLayerPage );
+  }
 
   if ( QgsMapLayerConfigWidget *configWidget = qobject_cast< QgsMapLayerConfigWidget * >( mWidgetStack->mainPanel() ) )
   {

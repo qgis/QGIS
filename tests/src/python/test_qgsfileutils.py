@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsFileUtils.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -20,6 +19,7 @@ from qgis.core import (
     Qgis,
     QgsFileUtils
 )
+from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.testing import unittest
 from utilities import unitTestDataPath
 
@@ -122,7 +122,7 @@ class TestQgsFileUtils(unittest.TestCase):
 
         base_path = tempfile.mkdtemp()
         file = os.path.join(base_path, 'test.csv')
-        with open(file, 'wt') as f:
+        with open(file, 'w') as f:
             f.write('\n')
 
         self.assertEqual(QgsFileUtils.findClosestExistingPath(os.path.join(base_path, 'a file name.bmp')),
@@ -273,7 +273,7 @@ class TestQgsFileUtils(unittest.TestCase):
             shutil.copy(f'{unitTestDataPath()}/lines.{ext}', f'{base_path}/ll.{ext}')
 
         # file name clash
-        with open(f'{base_path}/yy.shp', 'wt') as f:
+        with open(f'{base_path}/yy.shp', 'w') as f:
             f.write('')
         res, error = QgsFileUtils.renameDataset(f'{base_path}/ll.shp', f'{base_path}/yy.shp',
                                                 Qgis.FileOperationFlags())
@@ -284,7 +284,7 @@ class TestQgsFileUtils(unittest.TestCase):
             self.assertTrue(os.path.exists(f'{base_path}/ll.{ext}'))
 
         # sidecar clash
-        with open(f'{base_path}/yyy.shx', 'wt') as f:
+        with open(f'{base_path}/yyy.shx', 'w') as f:
             f.write('')
         res, error = QgsFileUtils.renameDataset(f'{base_path}/ll.shp', f'{base_path}/yyy.shp')
         self.assertFalse(res)
@@ -310,6 +310,29 @@ class TestQgsFileUtils(unittest.TestCase):
         self.assertEqual(QgsFileUtils.splitPathToComponents('/'), ["/"])
         self.assertEqual(QgsFileUtils.splitPathToComponents(''), [])
         self.assertEqual(QgsFileUtils.splitPathToComponents('c:/home/user'), ["c:", "home", "user"])
+
+    def testUniquePath(self):
+        temp_dir = QTemporaryDir()
+        temp_path = temp_dir.path()
+
+        with open(os.path.join(temp_path, 'test.txt'), 'w+') as f:
+            f.close()
+
+        self.assertEqual(QgsFileUtils.uniquePath(os.path.join(temp_path, 'my_test.txt')), os.path.join(temp_path, 'my_test.txt'))
+
+        self.assertEqual(QgsFileUtils.uniquePath(os.path.join(temp_path, 'test.txt')), os.path.join(temp_path, 'test_2.txt'))
+
+        with open(os.path.join(temp_path, 'test_2.txt'), 'w+') as f:
+            f.close()
+
+        self.assertEqual(QgsFileUtils.uniquePath(os.path.join(temp_path, 'test_2.txt')), os.path.join(temp_path, 'test_2_2.txt'))
+        self.assertEqual(QgsFileUtils.uniquePath(os.path.join(temp_path, 'test.txt')), os.path.join(temp_path, 'test_3.txt'))
+        self.assertEqual(QgsFileUtils.uniquePath(os.path.join(temp_path, 'test_1.txt')), os.path.join(temp_path, 'test_1.txt'))
+
+        with open(os.path.join(temp_path, 'test'), 'w+') as f:
+            f.close()
+
+        self.assertEqual(QgsFileUtils.uniquePath(os.path.join(temp_path, 'test')), os.path.join(temp_path, 'test_2'))
 
 
 if __name__ == '__main__':

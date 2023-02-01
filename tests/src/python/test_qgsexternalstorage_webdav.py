@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for WebDAV external storage
 
 External storage backend must implement a test based on TestPyQgsExternalStorageBase
@@ -34,7 +33,7 @@ from qgis.testing import (
 )
 
 
-class TestPyQgsExternalStorageWebDAV(TestPyQgsExternalStorageBase, unittest.TestCase):
+class TestPyQgsExternalStorageWebDav(TestPyQgsExternalStorageBase, unittest.TestCase):
 
     storageType = "WebDAV"
     badUrl = "http://nothinghere/"

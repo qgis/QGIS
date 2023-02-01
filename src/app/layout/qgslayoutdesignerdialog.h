@@ -49,6 +49,8 @@ class QgsFeature;
 class QgsMasterLayoutInterface;
 class QgsLayoutGuideWidget;
 class QgsScreenHelper;
+class QgsConfigureShortcutsDialog;
+class QgsShortcutsManager;
 
 class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
 {
@@ -208,6 +210,12 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
      * May be NULLPTR if no export has been performed in the designer.
      */
     std::unique_ptr< QgsLayoutDesignerInterface::ExportResults > lastExportResults() const;
+
+    /**
+     * Returns the keyboard shortcuts manager
+     *
+     */
+    QgsShortcutsManager *shortcutsManager();
 
   public slots:
 
@@ -516,6 +524,10 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     void storeExportResults( QgsLayoutExporter::ExportResult result, QgsLayoutExporter *exporter = nullptr );
     std::unique_ptr< QgsLayoutDesignerInterface::ExportResults> mLastExportResults;
     QMap< QString, QgsLabelingResults *> mLastExportLabelingResults;
+
+    //! Shortcuts manager and dialog
+    QgsShortcutsManager *mShortcutsManager = nullptr;
+    QgsConfigureShortcutsDialog *mShortcutsDialog = nullptr;
 
     //! Save window state
     void saveWindowState();

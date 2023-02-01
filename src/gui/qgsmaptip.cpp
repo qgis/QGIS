@@ -17,6 +17,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaptool.h"
 #include "qgsvectorlayer.h"
+#include "qgsrasterlayer.h"
 #include "qgsexpression.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
@@ -81,53 +82,66 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
   QString tipText, lastTipText, tipHtml, bodyStyle, containerStyle,
           backgroundColor, strokeColor, textColor;
 
-  delete mWidget;
-  mWidget = new QWidget( pMapCanvas );
-  mWidget->setContentsMargins( MARGIN_VALUE, MARGIN_VALUE, MARGIN_VALUE, MARGIN_VALUE );
-  mWebView = new QgsWebView( mWidget );
+  if ( ! mWidget )
+  {
+    mWidget = new QWidget( pMapCanvas );
+    mWidget->setContentsMargins( MARGIN_VALUE, MARGIN_VALUE, MARGIN_VALUE, MARGIN_VALUE );
+    mWebView = new QgsWebView( mWidget );
 
 
 #if WITH_QTWEBKIT
-  mWebView->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );//Handle link clicks by yourself
-  mWebView->setContextMenuPolicy( Qt::NoContextMenu ); //No context menu is allowed if you don't need it
-  connect( mWebView, &QWebView::linkClicked, this, &QgsMapTip::onLinkClicked );
-  connect( mWebView, &QWebView::loadFinished, this, [ = ]( bool ) { resizeContent(); } );
+    mWebView->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );//Handle link clicks by yourself
+    mWebView->setContextMenuPolicy( Qt::NoContextMenu ); //No context menu is allowed if you don't need it
+    connect( mWebView, &QWebView::linkClicked, this, &QgsMapTip::onLinkClicked );
+    connect( mWebView, &QWebView::loadFinished, this, [ = ]( bool ) { resizeContent(); } );
 #endif
 
-  mWebView->page()->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
-  mWebView->page()->settings()->setAttribute( QWebSettings::JavascriptEnabled, true );
-  mWebView->page()->settings()->setAttribute( QWebSettings::LocalStorageEnabled, true );
+    mWebView->page()->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
+    mWebView->page()->settings()->setAttribute( QWebSettings::JavascriptEnabled, true );
+    mWebView->page()->settings()->setAttribute( QWebSettings::LocalStorageEnabled, true );
 
-  // Disable scrollbars, avoid random resizing issues
-  mWebView->page()->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
-  mWebView->page()->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
+    // Disable scrollbars, avoid random resizing issues
+    mWebView->page()->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
+    mWebView->page()->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
 
-  QHBoxLayout *layout = new QHBoxLayout;
-  layout->setContentsMargins( 0, 0, 0, 0 );
-  layout->addWidget( mWebView );
+    QHBoxLayout *layout = new QHBoxLayout;
+    layout->setContentsMargins( 0, 0, 0, 0 );
+    layout->addWidget( mWebView );
 
-  mWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-  mWidget->setLayout( layout );
+    mWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    mWidget->setLayout( layout );
 
-  // Assure the map tip is never larger than half the map canvas
-  const int MAX_WIDTH = pMapCanvas->geometry().width() / 2;
-  const int MAX_HEIGHT = pMapCanvas->geometry().height() / 2;
-  mWidget->setMaximumSize( MAX_WIDTH, MAX_HEIGHT );
+    // Assure the map tip is never larger than half the map canvas
+    const int MAX_WIDTH = pMapCanvas->geometry().width() / 2;
+    const int MAX_HEIGHT = pMapCanvas->geometry().height() / 2;
+    mWidget->setMaximumSize( MAX_WIDTH, MAX_HEIGHT );
 
-  // Start with 0 size,
-  // The content will automatically make it grow up to MaximumSize
-  mWidget->resize( 0, 0 );
+    // Start with 0 size,
+    // The content will automatically make it grow up to MaximumSize
+    mWidget->resize( 0, 0 );
 
-  backgroundColor = mWidget->palette().base().color().name();
-  strokeColor = mWidget->palette().shadow().color().name();
-  textColor = mWidget->palette().text().color().name();
-  mWidget->setStyleSheet( QString(
-                            ".QWidget{"
-                            "border: 1px solid %1;"
-                            "background-color: %2;}" ).arg(
-                            strokeColor, backgroundColor ) );
+    backgroundColor = mWidget->palette().base().color().name();
+    strokeColor = mWidget->palette().shadow().color().name();
+    textColor = mWidget->palette().text().color().name();
+    mWidget->setStyleSheet( QString(
+                              ".QWidget{"
+                              "border: 1px solid %1;"
+                              "background-color: %2;}" ).arg(
+                              strokeColor, backgroundColor ) );
+  }
 
-  tipText = fetchFeature( pLayer, mapPosition, pMapCanvas );
+  // Only supported layer types here:
+  switch ( pLayer->type() )
+  {
+    case QgsMapLayerType::VectorLayer:
+      tipText = fetchFeature( pLayer, mapPosition, pMapCanvas );
+      break;
+    case QgsMapLayerType::RasterLayer:
+      tipText = fetchRaster( pLayer, mapPosition, pMapCanvas );
+      break;
+    default:
+      break;
+  }
 
   mMapTipVisible = !tipText.isEmpty();
   if ( !mMapTipVisible )
@@ -172,11 +186,11 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
   }
 
   mWidget->move( pixelPosition.x() + cursorOffset, pixelPosition.y() );
-
   mWebView->setHtml( tipHtml );
   lastTipText = tipText;
 
   mWidget->show();
+
 }
 
 void QgsMapTip::resizeContent()
@@ -220,7 +234,8 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
   if ( !vlayer || !vlayer->isSpatial() )
     return QString();
 
-  if ( !layer->isInScaleRange( mapCanvas->mapSettings().scale() ) )
+  if ( !layer->isInScaleRange( mapCanvas->mapSettings().scale() ) ||
+       ( mapCanvas->mapSettings().isTemporal() && !layer->temporalProperties()->isVisibleInTemporalRange( mapCanvas->temporalRange() ) ) )
   {
     return QString();
   }
@@ -237,6 +252,7 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
 
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( vlayer ) );
   context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mapCanvas->mapSettings() ) );
+  context.appendScope( QgsExpressionContextUtils::mapLayerPositionScope( r.center() ) );
 
   const QString canvasFilter = QgsMapCanvasUtils::filterForLayer( mapCanvas, vlayer );
   if ( canvasFilter ==  QLatin1String( "FALSE" ) )
@@ -311,6 +327,38 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
     renderer->stopRender( renderCtx );
 
   return tipString;
+}
+
+QString QgsMapTip::fetchRaster( QgsMapLayer *layer, QgsPointXY &mapPosition, QgsMapCanvas *mapCanvas )
+{
+  QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
+  if ( !rlayer )
+    return QString();
+
+  if ( !layer->isInScaleRange( mapCanvas->mapSettings().scale() ) ||
+       ( mapCanvas->mapSettings().isTemporal() && !layer->temporalProperties()->isVisibleInTemporalRange( mapCanvas->temporalRange() ) ) )
+  {
+    return QString();
+  }
+
+  const QgsPointXY mappedPosition { mapCanvas->mapSettings().mapToLayerCoordinates( layer, mapPosition ) };
+
+  if ( ! layer->extent().contains( mappedPosition ) )
+  {
+    return QString( );
+  }
+
+  QString tipText { rlayer->mapTipTemplate() };
+
+  if ( ! tipText.isEmpty() )
+  {
+    QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
+    context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mapCanvas->mapSettings() ) );
+    context.appendScope( QgsExpressionContextUtils::mapLayerPositionScope( mappedPosition ) );
+    tipText = QgsExpression::replaceExpressionText( tipText, &context );
+  }
+
+  return tipText;
 }
 
 void QgsMapTip::applyFontSettings()

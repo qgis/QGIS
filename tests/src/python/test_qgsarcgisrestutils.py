@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsArcGisRestUtils
 
 From build dir, run: ctest -R QgsArcGisRestUtils -V
@@ -306,7 +305,7 @@ class TestQgsArcGisRestUtils(unittest.TestCase):
                                               'a_date_field': 1646352000000,
                                               'a_double_field': 5.5,
                                               'a_int_field': 5,
-                                              'a_string_field': 'my string value',
+                                              'a_string_field': 'my%20string%20value',
                                               'a_null_value': None},
                                'geometry': {'x': 1.0, 'y': 2.0}})
         # without geometry
@@ -316,7 +315,7 @@ class TestQgsArcGisRestUtils(unittest.TestCase):
                                               'a_date_field': 1646352000000,
                                               'a_double_field': 5.5,
                                               'a_int_field': 5,
-                                              'a_string_field': 'my string value',
+                                              'a_string_field': 'my%20string%20value',
                                               'a_null_value': None}})
         # without attributes
         context.setObjectIdFieldName('a_int_field')
@@ -324,6 +323,19 @@ class TestQgsArcGisRestUtils(unittest.TestCase):
         self.assertEqual(res, {'attributes': {
             'a_int_field': 5},
             'geometry': {'x': 1.0, 'y': 2.0}})
+
+        # with special characters
+
+        attributes[0] = 'aaa" , . - ; : ä ö ü è é à ? + &'
+        test_feature.setAttributes(attributes)
+        res = QgsArcGisRestUtils.featureToJson(test_feature, context, flags=QgsArcGisRestUtils.FeatureToJsonFlags(QgsArcGisRestUtils.FeatureToJsonFlag.IncludeNonObjectIdAttributes))
+        self.assertEqual(res, {'attributes': {'a_boolean_field': True,
+                                              'a_datetime_field': 1646395994000,
+                                              'a_date_field': 1646352000000,
+                                              'a_double_field': 5.5,
+                                              'a_int_field': 5,
+                                              'a_string_field': 'aaa%22%20%2C%20.%20-%20%3B%20%3A%20%C3%A4%20%C3%B6%20%C3%BC%20%C3%A8%20%C3%A9%20%C3%A0%20%3F%20%2B%20%26',
+                                              'a_null_value': None}})
 
     def test_field_to_json(self):
         field = QgsField('my name', QVariant.LongLong)

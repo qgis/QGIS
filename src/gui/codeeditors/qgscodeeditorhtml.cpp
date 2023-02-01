@@ -13,9 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
 #include "qgscodeeditorhtml.h"
-#include "qgssymbollayerutils.h"
 
 #include <QWidget>
 #include <QString>
@@ -24,14 +22,22 @@
 
 
 QgsCodeEditorHTML::QgsCodeEditorHTML( QWidget *parent )
-  : QgsCodeEditor( parent )
+  : QgsCodeEditor( parent,
+                   QString(),
+                   false,
+                   false,
+                   QgsCodeEditor::Flag::CodeFolding )
 {
   if ( !parent )
   {
     setTitle( tr( "HTML Editor" ) );
   }
-  setFoldingVisible( true );
   QgsCodeEditorHTML::initializeLexer();
+}
+
+Qgis::ScriptLanguage QgsCodeEditorHTML::language() const
+{
+  return Qgis::ScriptLanguage::Html;
 }
 
 void QgsCodeEditorHTML::initializeLexer()

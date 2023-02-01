@@ -19,6 +19,29 @@
 
 #include <QTextCharFormat>
 
+Qgis::TextCharacterVerticalAlignment convertTextCharFormatVAlign( const QTextCharFormat &format, bool &set )
+{
+  set = format.hasProperty( QTextFormat::TextVerticalAlignment );
+  switch ( format.verticalAlignment() )
+  {
+    case QTextCharFormat::AlignNormal:
+      return Qgis::TextCharacterVerticalAlignment::Normal;
+    case QTextCharFormat::AlignSuperScript:
+      return Qgis::TextCharacterVerticalAlignment::SuperScript;
+    case QTextCharFormat::AlignSubScript:
+      return Qgis::TextCharacterVerticalAlignment::SubScript;
+
+    // not yet supported
+    case QTextCharFormat::AlignMiddle:
+    case QTextCharFormat::AlignTop:
+    case QTextCharFormat::AlignBottom:
+    case QTextCharFormat::AlignBaseline:
+      set = false;
+      return Qgis::TextCharacterVerticalAlignment::Normal;
+  }
+  BUILTIN_UNREACHABLE
+}
+
 QgsTextCharacterFormat::QgsTextCharacterFormat( const QTextCharFormat &format )
   : mTextColor( format.hasProperty( QTextFormat::ForegroundBrush ) ? format.foreground().color() : QColor() )
   , mFontWeight( format.hasProperty( QTextFormat::FontWeight ) ? format.fontWeight() : -1 )
@@ -30,7 +53,7 @@ QgsTextCharacterFormat::QgsTextCharacterFormat( const QTextCharFormat &format )
   , mUnderline( format.hasProperty( QTextFormat::FontUnderline ) ? ( format.fontUnderline() ? BooleanValue::SetTrue : BooleanValue::SetFalse ) : BooleanValue::NotSet )
   , mOverline( format.hasProperty( QTextFormat::FontOverline ) ? ( format.fontOverline() ? BooleanValue::SetTrue : BooleanValue::SetFalse ) : BooleanValue::NotSet )
 {
-
+  mVerticalAlign = convertTextCharFormatVAlign( format, mHasVerticalAlignSet );
 }
 
 QColor QgsTextCharacterFormat::textColor() const

@@ -41,14 +41,19 @@
 #include "qgssymbollayerutils.h"
 #include "qgsmaplayertemporalproperties.h"
 #include "qgsmaplayerelevationproperties.h"
+#include "qgsmaplayerstyle.h"
 #include "qgsvectorlayerrenderer.h"
 #include "qgsrendereditemresults.h"
 #include "qgsmaskpaintdevice.h"
 #include "qgsrasterrenderer.h"
+#include "qgselevationmap.h"
+
+const QgsSettingsEntryBool *QgsMapRendererJob::settingsLogCanvasRefreshEvent = new QgsSettingsEntryBool( QStringLiteral( "logCanvasRefreshEvent" ), QgsSettings::sTreeMap, false );
 
 ///@cond PRIVATE
 
 const QString QgsMapRendererJob::LABEL_CACHE_ID = QStringLiteral( "_labels_" );
+const QString QgsMapRendererJob::ELEVATION_MAP_CACHE_PREFIX = QStringLiteral( "_elevation_map_" );
 const QString QgsMapRendererJob::LABEL_PREVIEW_CACHE_ID = QStringLiteral( "_preview_labels_" );
 
 LayerRenderJob &LayerRenderJob::operator=( LayerRenderJob &&other )
@@ -66,6 +71,7 @@ LayerRenderJob &LayerRenderJob::operator=( LayerRenderJob &&other )
   opacity = other.opacity;
   cached = other.cached;
   layer = other.layer;
+  renderAboveLabels = other.renderAboveLabels;
   completed = other.completed;
   renderingTime = other.renderingTime;
   estimatedRenderingTime = other.estimatedRenderingTime ;
@@ -91,6 +97,7 @@ LayerRenderJob::LayerRenderJob( LayerRenderJob &&other )
   , blendMode( other.blendMode )
   , opacity( other.opacity )
   , cached( other.cached )
+  , renderAboveLabels( other.renderAboveLabels )
   , layer( other.layer )
   , completed( other.completed )
   , renderingTime( other.renderingTime )
@@ -107,6 +114,9 @@ LayerRenderJob::LayerRenderJob( LayerRenderJob &&other )
 
   renderer = other.renderer;
   other.renderer = nullptr;
+
+  elevationMap = other.elevationMap;
+  other.elevationMap = nullptr;
 
   maskPaintDevice = std::move( other.maskPaintDevice );
 
@@ -398,6 +408,17 @@ QImage *QgsMapRendererJob::allocateImage( QString layerId )
   return image;
 }
 
+QgsElevationMap *QgsMapRendererJob::allocateElevationMap( QString layerId )
+{
+  std::unique_ptr<QgsElevationMap> elevationMap = std::make_unique<QgsElevationMap>( mSettings.deviceOutputSize() );
+  if ( !elevationMap->isValid() )
+  {
+    mErrors.append( Error( layerId, tr( "Insufficient memory for elevation map %1x%2" ).arg( mSettings.outputSize().width() ).arg( mSettings.outputSize().height() ) ) );
+    return nullptr;
+  }
+  return elevationMap.release();
+}
+
 QPainter *QgsMapRendererJob::allocateImageAndPainter( QString layerId, QImage *&image, const QgsRenderContext *context )
 {
   QPainter *painter = nullptr;
@@ -506,6 +527,7 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
     LayerRenderJob &job = layerJobs.back();
     job.layer = ml;
     job.layerId = ml->id();
+    job.renderAboveLabels = ml->customProperty( QStringLiteral( "rendering/renderAboveLabels" ) ).toBool();
     job.estimatedRenderingTime = mLayerRenderingTimeHints.value( ml->id(), 0 );
 
     job.setContext( std::make_unique< QgsRenderContext >( QgsRenderContext::fromMapSettings( mSettings ) ) );
@@ -546,6 +568,8 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
       job.opacity = ml->opacity();
     }
 
+    const QgsElevationShadingRenderer shadingRenderer = mSettings.elevationShadingRenderer();
+
     // if we can use the cache, let's do it and avoid rendering!
     if ( !mSettings.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput )
          && mCache && mCache->hasCacheImage( ml->id() ) )
@@ -553,6 +577,11 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
       job.cached = true;
       job.imageInitialized = true;
       job.img = new QImage( mCache->cacheImage( ml->id() ) );
+      if ( shadingRenderer.isActive() &&
+           ml->elevationProperties() &&
+           ml->elevationProperties()->hasElevation() &&
+           mCache->hasCacheImage( ELEVATION_MAP_CACHE_PREFIX + ml->id() ) )
+        job.elevationMap = new QgsElevationMap( mCache->cacheImage( ELEVATION_MAP_CACHE_PREFIX + ml->id() ) );
       job.img->setDevicePixelRatio( static_cast<qreal>( mSettings.devicePixelRatio() ) );
       job.renderer = nullptr;
       job.context()->setPainter( nullptr );
@@ -583,6 +612,14 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
         layerJobs.pop_back();
         continue;
       }
+    }
+
+    if ( shadingRenderer.isActive()
+         && ml->elevationProperties()
+         && ml->elevationProperties()->hasElevation() )
+    {
+      job.elevationMap = allocateElevationMap( ml->id() );
+      job.context()->setElevationMap( job.elevationMap );
     }
 
     job.renderingTime = layerTime.elapsed(); // include job preparation time in layer rendering time
@@ -846,6 +883,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
     job2.setContext( std::make_unique< QgsRenderContext >( *job.context() ) );
     // also assign layer to match initial job
     job2.layer = job.layer;
+    job2.renderAboveLabels = job.renderAboveLabels;
     job2.layerId = job.layerId;
 
     // associate first pass job with second pass job
@@ -975,6 +1013,30 @@ void QgsMapRendererJob::cleanupJobs( std::vector<LayerRenderJob> &jobs )
       job.img = nullptr;
     }
 
+    if ( job.elevationMap )
+    {
+      job.context()->setElevationMap( nullptr );
+      if ( mCache && !job.cached && job.completed && job.layer )
+      {
+        QgsDebugMsgLevel( QStringLiteral( "caching elevation map for %1" ).arg( job.layerId ), 2 );
+        mCache->setCacheImageWithParameters(
+          ELEVATION_MAP_CACHE_PREFIX + job.layerId,
+          job.elevationMap->rawElevationImage(),
+          mSettings.visibleExtent(),
+          mSettings.mapToPixel(),
+          QList< QgsMapLayer * >() << job.layer );
+        mCache->setCacheImageWithParameters(
+          ELEVATION_MAP_CACHE_PREFIX + job.layerId + QStringLiteral( "_preview" ),
+          job.elevationMap->rawElevationImage(),
+          mSettings.visibleExtent(),
+          mSettings.mapToPixel(),
+          QList< QgsMapLayer * >() << job.layer );
+      }
+
+      delete job.elevationMap;
+      job.elevationMap = nullptr;
+    }
+
     if ( job.picture )
     {
       delete job.context()->painter();
@@ -1071,6 +1133,11 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings &settings,
   image.setDotsPerMeterY( static_cast<int>( settings.outputDpi() * 39.37 ) );
   image.fill( settings.backgroundColor().rgba() );
 
+  const QgsElevationShadingRenderer mapShadingRenderer = settings.elevationShadingRenderer();
+  std::unique_ptr<QgsElevationMap> mainElevationMap;
+  if ( mapShadingRenderer.isActive() )
+    mainElevationMap.reset( new QgsElevationMap( settings.outputSize() ) );
+
   QPainter painter( &image );
 
 #if DEBUG_RENDERING
@@ -1078,7 +1145,7 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings &settings,
 #endif
   for ( const LayerRenderJob &job : jobs )
   {
-    if ( job.layer && job.layer->customProperty( QStringLiteral( "rendering/renderAboveLabels" ) ).toBool() )
+    if ( job.renderAboveLabels )
       continue; // skip layer for now, it will be rendered after labels
 
     QImage img = layerImageToBeComposed( settings, job, cache );
@@ -1088,12 +1155,25 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings &settings,
     painter.setCompositionMode( job.blendMode );
     painter.setOpacity( job.opacity );
 
+    if ( mainElevationMap )
+    {
+      QgsElevationMap layerElevationMap = layerElevationToBeComposed( settings, job, cache );
+      if ( layerElevationMap.isValid() )
+        mainElevationMap->combine( layerElevationMap, mapShadingRenderer.combinedElevationMethod() );
+    }
+
+
 #if DEBUG_RENDERING
     img.save( QString( "/tmp/final_%1.png" ).arg( i ) );
     i++;
 #endif
 
     painter.drawImage( 0, 0, img );
+  }
+
+  if ( mapShadingRenderer.isActive() &&  mainElevationMap )
+  {
+    mapShadingRenderer.renderShading( *mainElevationMap.get(), image, QgsRenderContext::fromMapSettings( settings ) );
   }
 
   // IMPORTANT - don't draw labelJob img before the label job is complete,
@@ -1119,7 +1199,7 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings &settings,
   // render any layers with the renderAboveLabels flag now
   for ( const LayerRenderJob &job : jobs )
   {
-    if ( !job.layer || !job.layer->customProperty( QStringLiteral( "rendering/renderAboveLabels" ) ).toBool() )
+    if ( !job.renderAboveLabels )
       continue;
 
     QImage img = layerImageToBeComposed( settings, job, cache );
@@ -1158,6 +1238,21 @@ QImage QgsMapRendererJob::layerImageToBeComposed(
     }
     else
       return QImage();
+  }
+}
+
+QgsElevationMap QgsMapRendererJob::layerElevationToBeComposed( const QgsMapSettings &settings, const LayerRenderJob &job, const QgsMapRendererCache *cache )
+{
+  if ( job.imageCanBeComposed() && job.elevationMap )
+  {
+    return *job.elevationMap;
+  }
+  else
+  {
+    if ( cache && cache->hasAnyCacheImage( ELEVATION_MAP_CACHE_PREFIX + job.layerId + QStringLiteral( "_preview" ) ) )
+      return QgsElevationMap( cache->transformedCacheImage( ELEVATION_MAP_CACHE_PREFIX + job.layerId + QStringLiteral( "_preview" ), settings.mapToPixel() ) );
+    else
+      return QgsElevationMap();
   }
 }
 
@@ -1241,7 +1336,7 @@ void QgsMapRendererJob::composeSecondPass( std::vector<LayerRenderJob> &secondPa
 
 void QgsMapRendererJob::logRenderingTime( const std::vector< LayerRenderJob > &jobs, const std::vector< LayerRenderJob > &secondPassJobs, const LabelRenderJob &labelJob )
 {
-  if ( !settingsLogCanvasRefreshEvent.value() )
+  if ( !settingsLogCanvasRefreshEvent->value() )
     return;
 
   QMultiMap<int, QString> elapsed;

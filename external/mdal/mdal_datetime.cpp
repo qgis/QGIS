@@ -143,6 +143,11 @@ bool MDAL::DateTime::operator==( const MDAL::DateTime &other ) const
   return ( mValid && other.mValid ) && ( mJulianTime == other.mJulianTime );
 }
 
+bool MDAL::DateTime::operator!=( const MDAL::DateTime &other ) const
+{
+  return ! operator==( other );
+}
+
 bool MDAL::DateTime::operator<( const MDAL::DateTime &other ) const
 {
   if ( !mValid && !other.mValid )

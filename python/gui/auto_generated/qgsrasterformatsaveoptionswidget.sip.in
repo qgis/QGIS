@@ -79,7 +79,7 @@ key=value pairs separated by spaces, e.g. "TILED=YES TFW=YES"
 Set widget look and feel
 %End
 
-    void setPyramidsFormat( QgsRaster::RasterPyramidsFormat format );
+    void setPyramidsFormat( Qgis::RasterPyramidFormat format );
 %Docstring
 Set pyramids format to use
 %End

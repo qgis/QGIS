@@ -976,6 +976,14 @@ projection in the WGS 84 CRS.
 .. versionadded:: 3.0
 %End
 
+    QString toOgcUri() const;
+%Docstring
+Returns the crs as OGC URI (format: http://www.opengis.net/def/crs/OGC/1.3/CRS84)
+Returns an empty string on failure.
+
+.. versionadded:: 3.30
+%End
+
 
     void updateDefinition();
 %Docstring

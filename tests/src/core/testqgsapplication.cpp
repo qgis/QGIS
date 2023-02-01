@@ -39,6 +39,7 @@ class TestQgsApplication: public QgsTest
     void accountName();
     void osName();
     void platformName();
+    void applicationFullName();
     void themeIcon();
 
   private:
@@ -50,9 +51,14 @@ class TestQgsApplication: public QgsTest
 
 void TestQgsApplication::initTestCase()
 {
-  //
   // Runs once before any tests are run
-  //
+
+
+  // Set up the QgsSettings environment
+  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
+  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
+  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::initQgis();
@@ -90,6 +96,12 @@ void TestQgsApplication::platformName()
 {
   // test will always be run under external platform
   QCOMPARE( QgsApplication::platform(), QString( "external" ) );
+}
+
+void TestQgsApplication::applicationFullName()
+{
+  // test will always be run under external platform
+  QCOMPARE( QgsApplication::applicationFullName(), QString( "QGIS-TEST external" ) );
 }
 
 void TestQgsApplication::themeIcon()

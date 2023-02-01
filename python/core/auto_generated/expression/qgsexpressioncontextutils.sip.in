@@ -200,6 +200,16 @@ a map tool capture like add feature.
 .. versionadded:: 3.0
 %End
 
+    static QgsExpressionContextScope *mapLayerPositionScope( const QgsPointXY &position ) /Factory/;
+%Docstring
+Sets the expression context variables which are available for expressions triggered by moving the mouse over a feature
+of the currently selected layer.
+
+:param position: map coordinates of the current pointer position in the CRS of the layer which triggered the action.
+
+.. versionadded:: 3.30
+%End
+
     static QgsExpressionContextScope *updateSymbolScope( const QgsSymbol *symbol, QgsExpressionContextScope *symbolScope = 0 );
 %Docstring
 Updates a symbol scope related to a :py:class:`QgsSymbol` to an expression context.
@@ -376,6 +386,7 @@ Creates a new scope which contains functions relating to mesh layer element ``el
 
       public:
 };
+
 
 
 /************************************************************************

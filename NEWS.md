@@ -1,5 +1,57 @@
 Change history for the QGIS Project
 
+# What's new in Version 3.28 'Firenze'?
+
+This release has following new features:
+
+- Temporal: Add temporal manager support for WMTS layers with TIME dimension
+- Map Tools: Allow selecting features in vector tile layers
+- User Interface: Exclusive window based UX for data source manager
+- User Interface: Add a Show in Attribute Table action to the right click menu of legend class symbols
+- User Interface: Add setting to hide NULL values on identify result
+- Symbology: Allow control over GPS location marker
+- Symbology: Added new ellipse marker shapes
+- Labelling: Add support for HTML bold/italic/font size and font family to labelling
+- Labelling: Add option to use absolute units for line height
+- Mesh: Add option to reload mesh layer temporal properties
+- 3D Features: Ambient Occlusion 3D Effect
+- Point Clouds: Point Cloud Layer Export
+- Point Clouds: Eye Dome Lighting for point clouds in 2D map canvas
+- Print Layouts: Add FORCE_RASTER and IMAGE_COMPRESSION parameters to PDF algorithms
+- Expressions: Add new variable form of current feature expression functions
+- Expressions: Add new shared_paths function
+- Expressions: Make_valid and geom_to_array functions
+- Expressions: Concave hull function
+- Data Management: Ask for confirmation when deleting features
+- Metadata and Metasearch: Layer metadata data provider search and storage
+- Processing: Fixed precision support for select processing tools
+- Processing: Improved "Make Valid" Algorithms
+- Processing: Default option to show feature count for vector outputs from processing
+- Processing: Add relations export option to package layers algorithm
+- Processing: Add "Offset" parameter to "Drape" algorithms
+- Application and Project Options: Modified project coordinate and bearing display settings
+- Application and Project Options: Add support for "user" fonts, and automatic downloading of freely licensed fonts
+- Browser: Implement relationship discovery for OGR layers, and show relationships in browser
+- Browser: Modified UX for Geopackage and ESRI File Geodatabase creation
+- Browser: Allow drag and drop of vector layers to non-GPKG OGR database datasets
+- Browser: Expose field domain management for non-gpkg OGR sources
+- Data Providers: Define session role for PostgreSQL connections
+- Data Providers: Automatically add related tables when adding layers from GDAL datasets with embedded relationship information
+- Data Providers: Add subset string (filter) support for arcgis REST layers
+- Data Providers: Abstract database provider for renaming fields
+- Data Providers: WFS performing binary spatial operations in expressions on server
+- Data Providers: Editing ArcGIS REST Layers
+- Data Providers: Load raster sublayers from vector tile styles automatically
+- Data Providers: Add WMS layers individually
+- Data Providers: Save projects to Oracle Database Provider
+- QGIS Server: QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS settings variable
+- QGIS Server: Open layers in a read only mode with QGIS Server
+- Plugins: Changes to plugin automatic updates behaviour
+- Programmability: Add temporal handling to maps in QGIS Quick
+- Programmability: Addition of py-args command line parameter
+-
+
+
 # What's new in Version 3.26 'Buenos Aires'?
 
 This release has following new features:

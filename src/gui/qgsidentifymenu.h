@@ -31,7 +31,7 @@ class CustomActionRegistry : public QgsMapLayerActionRegistry
     Q_OBJECT
 
   public:
-
+#include "qgsmaplayeractionregistry.h"
     CustomActionRegistry() = default;
     // remove all actions
     void clear() { mMapLayerActionList.clear(); }
@@ -177,9 +177,9 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
     /**
      * Applies style from the settings to the highlight
      *
-     * \since QGIS 3.8
+     * \deprecated Use QgsHighlight::applyDefaultStyle() instead.
      */
-    static void styleHighlight( QgsHighlight *highlight );
+    Q_DECL_DEPRECATED static void styleHighlight( QgsHighlight *highlight ) SIP_DEPRECATED;
 
   protected:
     void closeEvent( QCloseEvent *e ) override;

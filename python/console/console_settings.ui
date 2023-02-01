@@ -83,17 +83,24 @@
           <bool>true</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_11">
-          <item row="1" column="0">
-           <widget class="QCheckBox" name="autoInsertionImport">
-            <property name="text">
-             <string>Automatic insertion of the 'import' string on 'from xxx'</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
+            <item row="0" column="0">
            <widget class="QCheckBox" name="autoCloseBracket">
             <property name="text">
              <string>Automatic parentheses insertion</string>
+            </property>
+           </widget>
+          </item>
+            <item row="1" column="0">
+           <widget class="QCheckBox" name="autoSurround">
+            <property name="text">
+             <string>Automatically surround selection when typing quotes or brackets</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QCheckBox" name="autoInsertImport">
+            <property name="text">
+             <string>Automatic insertion of the 'import' string on 'from xxx'</string>
             </property>
            </widget>
           </item>
@@ -464,7 +471,8 @@
   <tabstop>autoCompFromAPI</tabstop>
   <tabstop>autoCompFromDocAPI</tabstop>
   <tabstop>autoCloseBracket</tabstop>
-  <tabstop>autoInsertionImport</tabstop>
+  <tabstop>autoSurround</tabstop>
+  <tabstop>autoInsertImport</tabstop>
   <tabstop>enableObjectInspector</tabstop>
   <tabstop>autoSaveScript</tabstop>
   <tabstop>preloadAPI</tabstop>

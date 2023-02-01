@@ -152,6 +152,10 @@ Qgis::DataType QgsGdalProviderBase::dataTypeFromGdal( const GDALDataType gdalDat
 {
   switch ( gdalDataType )
   {
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+    case GDT_Int8:
+      return Qgis::DataType::Int8;
+#endif
     case GDT_Byte:
       return Qgis::DataType::Byte;
     case GDT_UInt16:
@@ -189,46 +193,46 @@ Qgis::DataType QgsGdalProviderBase::dataTypeFromGdal( const GDALDataType gdalDat
   return Qgis::DataType::UnknownDataType;
 }
 
-int QgsGdalProviderBase::colorInterpretationFromGdal( const GDALColorInterp gdalColorInterpretation ) const
+Qgis::RasterColorInterpretation QgsGdalProviderBase::colorInterpretationFromGdal( const GDALColorInterp gdalColorInterpretation ) const
 {
   switch ( gdalColorInterpretation )
   {
     case GCI_GrayIndex:
-      return QgsRaster::GrayIndex;
+      return Qgis::RasterColorInterpretation::GrayIndex;
     case GCI_PaletteIndex:
-      return QgsRaster::PaletteIndex;
+      return Qgis::RasterColorInterpretation::PaletteIndex;
     case GCI_RedBand:
-      return QgsRaster::RedBand;
+      return Qgis::RasterColorInterpretation::RedBand;
     case GCI_GreenBand:
-      return QgsRaster::GreenBand;
+      return Qgis::RasterColorInterpretation::GreenBand;
     case GCI_BlueBand:
-      return QgsRaster::BlueBand;
+      return Qgis::RasterColorInterpretation::BlueBand;
     case GCI_AlphaBand:
-      return QgsRaster::AlphaBand;
+      return Qgis::RasterColorInterpretation::AlphaBand;
     case GCI_HueBand:
-      return QgsRaster::HueBand;
+      return Qgis::RasterColorInterpretation::HueBand;
     case GCI_SaturationBand:
-      return QgsRaster::SaturationBand;
+      return Qgis::RasterColorInterpretation::SaturationBand;
     case GCI_LightnessBand:
-      return QgsRaster::LightnessBand;
+      return Qgis::RasterColorInterpretation::LightnessBand;
     case GCI_CyanBand:
-      return QgsRaster::CyanBand;
+      return Qgis::RasterColorInterpretation::CyanBand;
     case GCI_MagentaBand:
-      return QgsRaster::MagentaBand;
+      return Qgis::RasterColorInterpretation::MagentaBand;
     case GCI_YellowBand:
-      return QgsRaster::YellowBand;
+      return Qgis::RasterColorInterpretation::YellowBand;
     case GCI_BlackBand:
-      return QgsRaster::BlackBand;
+      return Qgis::RasterColorInterpretation::BlackBand;
     case GCI_YCbCr_YBand:
-      return QgsRaster::YCbCr_YBand;
+      return Qgis::RasterColorInterpretation::YCbCr_YBand;
     case GCI_YCbCr_CbBand:
-      return QgsRaster::YCbCr_CbBand;
+      return Qgis::RasterColorInterpretation::YCbCr_CbBand;
     case GCI_YCbCr_CrBand:
-      return QgsRaster::YCbCr_CrBand;
+      return Qgis::RasterColorInterpretation::YCbCr_CrBand;
     case GCI_Undefined:
-      return QgsRaster::UndefinedColorInterpretation;
+      return Qgis::RasterColorInterpretation::Undefined;
   }
-  return QgsRaster::UndefinedColorInterpretation;
+  return Qgis::RasterColorInterpretation::Undefined;
 }
 
 void QgsGdalProviderBase::registerGdalDrivers()
@@ -337,6 +341,7 @@ GDALDatasetH QgsGdalProviderBase::gdalOpen( const QString &uri, unsigned int nOp
   {
     CPLSetThreadLocalConfigOption( "OGR_GPKG_FOREIGN_KEY_CHECK", nullptr );
   }
+
   return hDS;
 }
 

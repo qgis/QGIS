@@ -265,39 +265,7 @@
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
  </resources>
- <connections>
-  <connection>
-   <sender>mButtonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>QgsNewMemoryLayerDialogBase</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>349</x>
-     <y>400</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>387</x>
-     <y>304</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mButtonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>QgsNewMemoryLayerDialogBase</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>275</x>
-     <y>400</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>242</x>
-     <y>308</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

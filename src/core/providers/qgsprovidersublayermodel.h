@@ -415,6 +415,22 @@ class CORE_EXPORT QgsProviderSublayerProxyModel: public QSortFilterProxyModel
      */
     void setIncludeSystemTables( bool include );
 
+    /**
+     * Returns TRUE if empty tables will be shown in the model.
+     *
+     * \see setIncludeEmptyLayers()
+     * \since QGIS 3.28
+     */
+    bool includeEmptyLayers() const;
+
+    /**
+     * Sets whether empty tables will be shown in the model.
+     *
+     * \see includeEmptyLayers()
+     * \since QGIS 3.28
+     */
+    void setIncludeEmptyLayers( bool include );
+
   protected:
     bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
     bool lessThan( const QModelIndex &source_left, const QModelIndex &source_right ) const override;
@@ -423,6 +439,7 @@ class CORE_EXPORT QgsProviderSublayerProxyModel: public QSortFilterProxyModel
 
     QString mFilterString;
     bool mIncludeSystemTables = false;
+    bool mIncludeEmptyLayers = true;
 
 };
 

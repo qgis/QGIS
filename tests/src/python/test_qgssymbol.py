@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     test_qgssymbol.py
@@ -60,7 +58,8 @@ from qgis.core import (QgsGeometry,
                        Qgis,
                        QgsSymbolLayer,
                        QgsProperty,
-                       QgsRasterFillSymbolLayer
+                       QgsRasterFillSymbolLayer,
+                       QgsPoint
                        )
 
 from qgis.testing import unittest, start_app
@@ -719,6 +718,81 @@ class TestQgsSymbol(unittest.TestCase):
 
         return image
 
+    def test_render_line_nan_z(self):
+        geom = QgsGeometry.fromPolyline([
+            QgsPoint(10, 10, 0),
+            QgsPoint(20, 20, 0),
+            QgsPoint(30, 10, float("nan")),
+        ])
+
+        f = QgsFeature()
+        f.setGeometry(geom)
+
+        image = QImage(200, 200, QImage.Format_RGB32)
+
+        painter = QPainter()
+        ms = QgsMapSettings()
+        extent = geom.get().boundingBox()
+        # buffer extent by 10%
+        extent = extent.buffered((extent.height() + extent.width()) / 20.0)
+
+        ms.setExtent(extent)
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+
+        symbol = QgsLineSymbol.createSimple({'color': '#ffffff', 'line_width': '3'})
+
+        painter.begin(image)
+        try:
+            image.fill(QColor(0, 0, 0))
+            symbol.startRender(context)
+            symbol.renderFeature(f, context)
+            symbol.stopRender(context)
+        finally:
+            painter.end()
+
+        assert self.imageCheck('Linestring with nan z', 'linestring_nan_z', image)
+
+    def test_render_polygon_nan_z(self):
+        geom = QgsGeometry(QgsPolygon(QgsLineString([
+            QgsPoint(10, 10, 0),
+            QgsPoint(20, 20, 0),
+            QgsPoint(30, 10, float("nan")),
+            QgsPoint(10, 10, 0),
+        ])))
+
+        f = QgsFeature()
+        f.setGeometry(geom)
+
+        image = QImage(200, 200, QImage.Format_RGB32)
+
+        painter = QPainter()
+        ms = QgsMapSettings()
+        extent = geom.get().boundingBox()
+        # buffer extent by 10%
+        extent = extent.buffered((extent.height() + extent.width()) / 20.0)
+
+        ms.setExtent(extent)
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+
+        symbol = QgsFillSymbol.createSimple({'color': '#ffffff', 'outline_color': '#ffffff', 'outline_width': '3'})
+
+        painter.begin(image)
+        try:
+            image.fill(QColor(0, 0, 0))
+            symbol.startRender(context)
+            symbol.renderFeature(f, context)
+            symbol.stopRender(context)
+        finally:
+            painter.end()
+
+        assert self.imageCheck('Polygon with nan z', 'polygon_nan_z', image)
+
     def testGeometryCollectionRender(self):
         tests = [{'name': 'Marker',
                   'wkt': 'GeometryCollection (Point(1 2))',
@@ -780,7 +854,7 @@ class TestQgsSymbol(unittest.TestCase):
             self.assertTrue(self.imageCheck(test['name'], test['reference_image'], rendered_image, '_collection'), test['name'])
 
     def imageCheck(self, name, reference_image, image, extra=''):
-        self.report += "<h2>Render {}</h2>\n".format(name)
+        self.report += f"<h2>Render {name}</h2>\n"
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + 'symbol_' + name + extra + ".png"
         image.save(file_name, "PNG")
@@ -791,7 +865,7 @@ class TestQgsSymbol(unittest.TestCase):
         checker.setColorTolerance(2)
         result = checker.compareImages(name, 20)
         self.report += checker.report()
-        print((self.report))
+        print(self.report)
         return result
 
 
@@ -1060,7 +1134,7 @@ class TestQgsMarkerSymbol(unittest.TestCase):
         return image
 
     def imageCheck(self, name, reference_image, image):
-        self.report += "<h2>Render {}</h2>\n".format(name)
+        self.report += f"<h2>Render {name}</h2>\n"
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + 'symbol_' + name + ".png"
         image.save(file_name, "PNG")
@@ -1071,7 +1145,7 @@ class TestQgsMarkerSymbol(unittest.TestCase):
         checker.setColorTolerance(2)
         result = checker.compareImages(name, 20)
         self.report += checker.report()
-        print((self.report))
+        print(self.report)
         return result
 
 
@@ -1228,7 +1302,7 @@ class TestQgsFillSymbol(unittest.TestCase):
         return image
 
     def imageCheck(self, name, reference_image, image):
-        self.report += "<h2>Render {}</h2>\n".format(name)
+        self.report += f"<h2>Render {name}</h2>\n"
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + 'symbol_' + name + ".png"
         image.save(file_name, "PNG")
@@ -1239,7 +1313,7 @@ class TestQgsFillSymbol(unittest.TestCase):
         checker.setColorTolerance(2)
         result = checker.compareImages(name, 20)
         self.report += checker.report()
-        print((self.report))
+        print(self.report)
         return result
 
 

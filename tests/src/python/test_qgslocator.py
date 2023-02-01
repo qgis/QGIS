@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLocator.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -314,7 +313,7 @@ class TestQgsLocator(unittest.TestCase):
         l.deregisterFilter(filter_c)
 
         # filter with custom prefix
-        QgsSettings().setValue("locator_filters/prefix_test_custom", 'xyz', QgsSettings.Gui)
+        QgsSettings().setValue("locator-filters/items/test_custom/prefix", 'xyz')
         filter_c = test_filter('custom', 'abc')
         l.registerFilter(filter_c)
         self.assertEqual(filter_c.prefix(), 'abc')

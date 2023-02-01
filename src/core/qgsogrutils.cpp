@@ -21,7 +21,6 @@
 #include "qgslinestring.h"
 #include "qgsmultipoint.h"
 #include "qgsmultilinestring.h"
-#include "qgsogrprovider.h"
 #include "qgslinesymbollayer.h"
 #include "qgspolygon.h"
 #include "qgsmultipolygon.h"
@@ -38,7 +37,12 @@
 #include "qgsfielddomain.h"
 #include "qgsfontmanager.h"
 #include "qgsvariantutils.h"
+#include "qgsweakrelation.h"
+#include "qgsproviderregistry.h"
+#include "qgsprovidermetadata.h"
+#include "qgsogrproviderutils.h"
 
+#include <cmath>
 #include <QTextCodec>
 #include <QUuid>
 #include <cpl_error.h>
@@ -103,6 +107,36 @@ void gdal::GDALWarpOptionsDeleter::operator()( GDALWarpOptions *options ) const
   GDALDestroyWarpOptions( options );
 }
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+void gdal::GDALRelationshipDeleter::operator()( GDALRelationshipH relationship ) const
+{
+  GDALDestroyRelationship( relationship );
+}
+#endif
+
+static void setQTTimeZoneFromOGRTZFlag( QDateTime &dt, int nTZFlag )
+{
+  // Take into account time zone
+  if ( nTZFlag == 0 )
+  {
+    // unknown time zone
+  }
+  else if ( nTZFlag == 1 )
+  {
+    dt.setTimeSpec( Qt::LocalTime );
+  }
+  else if ( nTZFlag == 100 )
+  {
+    dt.setTimeSpec( Qt::UTC );
+  }
+  else
+  {
+    // TZFlag = 101 ==> UTC+00:15
+    // TZFlag = 99 ==> UTC-00:15
+    dt.setOffsetFromUtc( ( nTZFlag - 100 ) * 15 * 60 );
+  }
+}
+
 QVariant QgsOgrUtils::OGRFieldtoVariant( const OGRField *value, OGRFieldType type )
 {
   if ( !value || OGR_RawField_IsUnset( value ) || OGR_RawField_IsNull( value ) )
@@ -130,15 +164,17 @@ QVariant QgsOgrUtils::OGRFieldtoVariant( const OGRField *value, OGRFieldType typ
     {
       float secondsPart = 0;
       float millisecondPart = std::modf( value->Date.Second, &secondsPart );
-      return QTime( value->Date.Hour, value->Date.Minute, static_cast< int >( secondsPart ), static_cast< int >( 1000 * millisecondPart ) );
+      return QTime( value->Date.Hour, value->Date.Minute, static_cast< int >( secondsPart ), static_cast< int >( std::round( 1000 * millisecondPart ) ) );
     }
 
     case OFTDateTime:
     {
       float secondsPart = 0;
       float millisecondPart = std::modf( value->Date.Second, &secondsPart );
-      return QDateTime( QDate( value->Date.Year, value->Date.Month, value->Date.Day ),
-                        QTime( value->Date.Hour, value->Date.Minute, static_cast< int >( secondsPart ), static_cast< int >( 1000 * millisecondPart ) ) );
+      QDateTime dt = QDateTime( QDate( value->Date.Year, value->Date.Month, value->Date.Day ),
+                                QTime( value->Date.Hour, value->Date.Minute, static_cast< int >( secondsPart ), static_cast< int >( std::round( 1000 * millisecondPart ) ) ) );
+      setQTTimeZoneFromOGRTZFlag( dt, value->Date.TZFlag );
+      return dt;
     }
 
     case OFTBinary:
@@ -186,6 +222,13 @@ QVariant QgsOgrUtils::OGRFieldtoVariant( const OGRField *value, OGRFieldType typ
   return QVariant();
 }
 
+int QgsOgrUtils::OGRTZFlagFromQt( const QDateTime &datetime )
+{
+  if ( datetime.timeSpec() == Qt::LocalTime )
+    return 1;
+  return 100 + datetime.offsetFromUtc() / ( 60 * 15 );
+}
+
 std::unique_ptr< OGRField > QgsOgrUtils::variantToOGRField( const QVariant &value )
 {
   std::unique_ptr< OGRField > res = std::make_unique< OGRField >();
@@ -225,20 +268,22 @@ std::unique_ptr< OGRField > QgsOgrUtils::variantToOGRField( const QVariant &valu
       const QTime time = value.toTime();
       res->Date.Hour = time.hour();
       res->Date.Minute = time.minute();
-      res->Date.Second = time.second() + static_cast< double >( time.msec() ) / 1000;
+      res->Date.Second = static_cast<float>( time.second() + static_cast< double >( time.msec() ) / 1000 );
       res->Date.TZFlag = 0;
       break;
     }
     case QVariant::DateTime:
     {
-      const QDateTime dateTime = value.toDateTime();
-      res->Date.Day = dateTime.date().day();
-      res->Date.Month = dateTime.date().month();
-      res->Date.Year = dateTime.date().year();
-      res->Date.Hour = dateTime.time().hour();
-      res->Date.Minute = dateTime.time().minute();
-      res->Date.Second = dateTime.time().second() + static_cast< double >( dateTime.time().msec() ) / 1000;
-      res->Date.TZFlag = 0;
+      const QDateTime dt = value.toDateTime();
+      const QDate date = dt.date();
+      res->Date.Day = date.day();
+      res->Date.Month = date.month();
+      res->Date.Year = static_cast<GInt16>( date.year() );
+      const QTime time = dt.time();
+      res->Date.Hour = time.hour();
+      res->Date.Minute = time.minute();
+      res->Date.Second = static_cast<float>( time.second() + static_cast< double >( time.msec() ) / 1000 );
+      res->Date.TZFlag = OGRTZFlagFromQt( dt );
       break;
     }
 
@@ -417,10 +462,14 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
         if ( field.type() == QVariant::Date )
           value = QDate( year, month, day );
         else if ( field.type() == QVariant::Time )
-          value = QTime( hour, minute, static_cast< int >( secondsPart ), static_cast< int >( 1000 * millisecondPart ) );
+          value = QTime( hour, minute, static_cast< int >( secondsPart ), static_cast< int >( std::round( 1000 * millisecondPart ) ) );
         else
-          value = QDateTime( QDate( year, month, day ),
-                             QTime( hour, minute, static_cast< int >( secondsPart ), static_cast< int >( 1000 * millisecondPart ) ) );
+        {
+          QDateTime dt = QDateTime( QDate( year, month, day ),
+                                    QTime( hour, minute, static_cast< int >( secondsPart ), static_cast< int >( std::round( 1000 * millisecondPart ) ) ) );
+          setQTTimeZoneFromOGRTZFlag( dt, tzf );
+          value = dt;
+        }
       }
       break;
 
@@ -2199,4 +2248,288 @@ OGRFieldDomainH QgsOgrUtils::convertFieldDomain( const QgsFieldDomain *domain )
   return res;
 }
 
+#endif
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+QgsWeakRelation QgsOgrUtils::convertRelationship( GDALRelationshipH relationship, const QString &datasetUri )
+{
+  QgsProviderMetadata *ogrProviderMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) );
+  const QVariantMap datasetUriParts = ogrProviderMetadata->decodeUri( datasetUri );
+
+  const QString leftTableName( GDALRelationshipGetLeftTableName( relationship ) );
+
+  QVariantMap leftTableUriParts = datasetUriParts;
+  leftTableUriParts.insert( QStringLiteral( "layerName" ), leftTableName );
+  const QString leftTableSource = ogrProviderMetadata->encodeUri( leftTableUriParts );
+
+  const QString rightTableName( GDALRelationshipGetRightTableName( relationship ) );
+  QVariantMap rightTableUriParts = datasetUriParts;
+  rightTableUriParts.insert( QStringLiteral( "layerName" ), rightTableName );
+  const QString rightTableSource = ogrProviderMetadata->encodeUri( rightTableUriParts );
+
+  const QString mappingTableName( GDALRelationshipGetMappingTableName( relationship ) );
+  QString mappingTableSource;
+  if ( !mappingTableName.isEmpty() )
+  {
+    QVariantMap mappingTableUriParts = datasetUriParts;
+    mappingTableUriParts.insert( QStringLiteral( "layerName" ), mappingTableName );
+    mappingTableSource = ogrProviderMetadata->encodeUri( mappingTableUriParts );
+  }
+
+  const QString relationshipName( GDALRelationshipGetName( relationship ) );
+
+  char **cslLeftTableFieldNames = GDALRelationshipGetLeftTableFields( relationship );
+  const QStringList leftTableFieldNames = QgsOgrUtils::cStringListToQStringList( cslLeftTableFieldNames );
+  CSLDestroy( cslLeftTableFieldNames );
+
+  char **cslRightTableFieldNames = GDALRelationshipGetRightTableFields( relationship );
+  const QStringList rightTableFieldNames = QgsOgrUtils::cStringListToQStringList( cslRightTableFieldNames );
+  CSLDestroy( cslRightTableFieldNames );
+
+  char **cslLeftMappingTableFieldNames = GDALRelationshipGetLeftMappingTableFields( relationship );
+  const QStringList leftMappingTableFieldNames = QgsOgrUtils::cStringListToQStringList( cslLeftMappingTableFieldNames );
+  CSLDestroy( cslLeftMappingTableFieldNames );
+
+  char **cslRightMappingTableFieldNames = GDALRelationshipGetRightMappingTableFields( relationship );
+  const QStringList rightMappingTableFieldNames = QgsOgrUtils::cStringListToQStringList( cslRightMappingTableFieldNames );
+  CSLDestroy( cslRightMappingTableFieldNames );
+
+  const QString forwardPathLabel( GDALRelationshipGetForwardPathLabel( relationship ) );
+  const QString backwardPathLabel( GDALRelationshipGetBackwardPathLabel( relationship ) );
+  const QString relatedTableType( GDALRelationshipGetRelatedTableType( relationship ) );
+
+  const GDALRelationshipType relationshipType = GDALRelationshipGetType( relationship );
+  Qgis::RelationshipStrength strength = Qgis::RelationshipStrength::Association;
+  switch ( relationshipType )
+  {
+    case GRT_COMPOSITE:
+      strength = Qgis::RelationshipStrength::Composition;
+      break;
+
+    case GRT_ASSOCIATION:
+      strength = Qgis::RelationshipStrength::Association;
+      break;
+
+    case GRT_AGGREGATION:
+      QgsLogger::warning( "Aggregation relationships are not supported, treating as association instead" );
+      break;
+  }
+
+  const GDALRelationshipCardinality eCardinality = GDALRelationshipGetCardinality( relationship );
+  Qgis::RelationshipCardinality cardinality = Qgis::RelationshipCardinality::OneToOne;
+  switch ( eCardinality )
+  {
+    case GRC_ONE_TO_ONE:
+      cardinality = Qgis::RelationshipCardinality::OneToOne;
+      break;
+    case GRC_ONE_TO_MANY:
+      cardinality = Qgis::RelationshipCardinality::OneToMany;
+      break;
+    case GRC_MANY_TO_ONE:
+      cardinality = Qgis::RelationshipCardinality::ManyToOne;
+      break;
+    case GRC_MANY_TO_MANY:
+      cardinality = Qgis::RelationshipCardinality::ManyToMany;
+      break;
+  }
+
+  switch ( cardinality )
+  {
+    case Qgis::RelationshipCardinality::OneToOne:
+    case Qgis::RelationshipCardinality::OneToMany:
+    case Qgis::RelationshipCardinality::ManyToOne:
+    {
+      QgsWeakRelation rel( relationshipName,
+                           relationshipName,
+                           strength,
+                           QString(), QString(), rightTableSource, QStringLiteral( "ogr" ),
+                           QString(), QString(), leftTableSource, QStringLiteral( "ogr" ) );
+      rel.setCardinality( cardinality );
+      rel.setForwardPathLabel( forwardPathLabel );
+      rel.setBackwardPathLabel( backwardPathLabel );
+      rel.setRelatedTableType( relatedTableType );
+      rel.setReferencedLayerFields( leftTableFieldNames );
+      rel.setReferencingLayerFields( rightTableFieldNames );
+      return rel;
+    }
+
+    case Qgis::RelationshipCardinality::ManyToMany:
+    {
+      QgsWeakRelation rel( relationshipName,
+                           relationshipName,
+                           strength,
+                           QString(), QString(), rightTableSource, QStringLiteral( "ogr" ),
+                           QString(), QString(), leftTableSource, QStringLiteral( "ogr" ) );
+      rel.setCardinality( cardinality );
+      rel.setForwardPathLabel( forwardPathLabel );
+      rel.setBackwardPathLabel( backwardPathLabel );
+      rel.setRelatedTableType( relatedTableType );
+      rel.setMappingTable( QgsVectorLayerRef( QString(), QString(), mappingTableSource, QStringLiteral( "ogr" ) ) );
+      rel.setReferencedLayerFields( leftTableFieldNames );
+      rel.setMappingReferencedLayerFields( leftMappingTableFieldNames );
+      rel.setReferencingLayerFields( rightTableFieldNames );
+      rel.setMappingReferencingLayerFields( rightMappingTableFieldNames );
+      return rel;
+    }
+  }
+  return QgsWeakRelation();
+}
+
+gdal::relationship_unique_ptr QgsOgrUtils::convertRelationship( const QgsWeakRelation &relationship, QString &error )
+{
+  GDALRelationshipCardinality gCardinality = GDALRelationshipCardinality::GRC_ONE_TO_MANY;
+  switch ( relationship.cardinality() )
+  {
+    case Qgis::RelationshipCardinality::OneToOne:
+      gCardinality = GDALRelationshipCardinality::GRC_ONE_TO_ONE;
+      break;
+    case Qgis::RelationshipCardinality::OneToMany:
+      gCardinality = GDALRelationshipCardinality::GRC_ONE_TO_MANY;
+      break;
+    case Qgis::RelationshipCardinality::ManyToOne:
+      gCardinality = GDALRelationshipCardinality::GRC_MANY_TO_ONE;
+      break;
+    case Qgis::RelationshipCardinality::ManyToMany:
+      gCardinality = GDALRelationshipCardinality::GRC_MANY_TO_MANY;
+      break;
+  }
+
+  QgsProviderMetadata *ogrProviderMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) );
+
+  const QVariantMap leftParts = ogrProviderMetadata->decodeUri( relationship.referencedLayerSource() );
+  const QString leftTableName = leftParts.value( QStringLiteral( "layerName" ) ).toString();
+  if ( leftTableName.isEmpty() )
+  {
+    error = QObject::tr( "Parent table name was not set" );
+    return nullptr;
+  }
+
+  const QVariantMap rightParts = ogrProviderMetadata->decodeUri( relationship.referencingLayerSource() );
+  const QString rightTableName = rightParts.value( QStringLiteral( "layerName" ) ).toString();
+  if ( rightTableName.isEmpty() )
+  {
+    error = QObject::tr( "Child table name was not set" );
+    return nullptr;
+  }
+
+  if ( leftParts.value( QStringLiteral( "path" ) ).toString() != rightParts.value( QStringLiteral( "path" ) ).toString() )
+  {
+    error = QObject::tr( "Parent and child table must be from the same dataset" );
+    return nullptr;
+  }
+
+  QString mappingTableName;
+  if ( !relationship.mappingTableSource().isEmpty() )
+  {
+    const QVariantMap mappingParts = ogrProviderMetadata->decodeUri( relationship.mappingTableSource() );
+    mappingTableName = mappingParts.value( QStringLiteral( "layerName" ) ).toString();
+    if ( leftParts.value( QStringLiteral( "path" ) ).toString() != mappingParts.value( QStringLiteral( "path" ) ).toString() )
+    {
+      error = QObject::tr( "Parent and mapping table must be from the same dataset" );
+      return nullptr;
+    }
+  }
+
+  gdal::relationship_unique_ptr relationH( GDALRelationshipCreate( relationship.name().toLocal8Bit().constData(),
+      leftTableName.toLocal8Bit().constData(),
+      rightTableName.toLocal8Bit().constData(),
+      gCardinality ) );
+
+  // set left table fields
+  const QStringList leftFieldNames = relationship.referencedLayerFields();
+  int count = leftFieldNames.count();
+  char **lst = new char *[count + 1];
+  if ( count > 0 )
+  {
+    int pos = 0;
+    for ( const QString &string : leftFieldNames )
+    {
+      lst[pos] = CPLStrdup( string.toLocal8Bit().constData() );
+      pos++;
+    }
+  }
+  lst[count] = nullptr;
+  GDALRelationshipSetLeftTableFields( relationH.get(), lst );
+  CSLDestroy( lst );
+
+  // set right table fields
+  const QStringList rightFieldNames = relationship.referencingLayerFields();
+  count = rightFieldNames.count();
+  lst = new char *[count + 1];
+  if ( count > 0 )
+  {
+    int pos = 0;
+    for ( const QString &string : rightFieldNames )
+    {
+      lst[pos] = CPLStrdup( string.toLocal8Bit().constData() );
+      pos++;
+    }
+  }
+  lst[count] = nullptr;
+  GDALRelationshipSetRightTableFields( relationH.get(), lst );
+  CSLDestroy( lst );
+
+  if ( !mappingTableName.isEmpty() )
+  {
+    GDALRelationshipSetMappingTableName( relationH.get(), mappingTableName.toLocal8Bit().constData() );
+
+    // set left mapping table fields
+    const QStringList leftFieldNames = relationship.mappingReferencedLayerFields();
+    int count = leftFieldNames.count();
+    char **lst = new char *[count + 1];
+    if ( count > 0 )
+    {
+      int pos = 0;
+      for ( const QString &string : leftFieldNames )
+      {
+        lst[pos] = CPLStrdup( string.toLocal8Bit().constData() );
+        pos++;
+      }
+    }
+    lst[count] = nullptr;
+    GDALRelationshipSetLeftMappingTableFields( relationH.get(), lst );
+    CSLDestroy( lst );
+
+    // set right table fields
+    const QStringList rightFieldNames = relationship.mappingReferencingLayerFields();
+    count = rightFieldNames.count();
+    lst = new char *[count + 1];
+    if ( count > 0 )
+    {
+      int pos = 0;
+      for ( const QString &string : rightFieldNames )
+      {
+        lst[pos] = CPLStrdup( string.toLocal8Bit().constData() );
+        pos++;
+      }
+    }
+    lst[count] = nullptr;
+    GDALRelationshipSetRightMappingTableFields( relationH.get(), lst );
+    CSLDestroy( lst );
+  }
+
+  // set type
+  switch ( relationship.strength() )
+  {
+    case Qgis::RelationshipStrength::Association:
+      GDALRelationshipSetType( relationH.get(), GDALRelationshipType::GRT_ASSOCIATION );
+      break;
+
+    case Qgis::RelationshipStrength::Composition:
+      GDALRelationshipSetType( relationH.get(), GDALRelationshipType::GRT_COMPOSITE );
+      break;
+  }
+
+  // set labels
+  if ( !relationship.forwardPathLabel().isEmpty() )
+    GDALRelationshipSetForwardPathLabel( relationH.get(), relationship.forwardPathLabel().toLocal8Bit().constData() );
+  if ( !relationship.backwardPathLabel().isEmpty() )
+    GDALRelationshipSetBackwardPathLabel( relationH.get(), relationship.backwardPathLabel().toLocal8Bit().constData() );
+
+  // set table type
+  if ( !relationship.relatedTableType().isEmpty() )
+    GDALRelationshipSetRelatedTableType( relationH.get(), relationship.relatedTableType().toLocal8Bit().constData() );
+
+  return relationH;
+}
 #endif

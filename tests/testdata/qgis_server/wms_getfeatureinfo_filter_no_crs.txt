@@ -1,6 +1,7 @@
 Content-Length: 577
 Content-Type: text/xml; charset=utf-8
 
+<?xml version="1.0" encoding="UTF-8"?>
 <GetFeatureInfoResponse>
  <BoundingBox maxy="44.90143568" maxx="8.20354699" miny="44.90143568" CRS="EPSG:4326" minx="8.20354699"/>
  <Layer name="testlayer èé">

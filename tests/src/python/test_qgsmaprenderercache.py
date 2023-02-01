@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsMapRendererCache.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -235,7 +234,7 @@ class TestQgsMapRendererCache(unittest.TestCase):
         cache.setCacheImage('no depends', im, [])
         self.assertEqual(cache.dependentLayers('no depends'), [])
         cache.setCacheImage('depends', im, [layer1, layer2])
-        self.assertEqual(set(cache.dependentLayers('depends')), set([layer1, layer2]))
+        self.assertEqual(set(cache.dependentLayers('depends')), {layer1, layer2})
 
     def testLayerRemoval(self):
         """test that cached image is cleared when a dependent layer is removed"""

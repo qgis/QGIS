@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsNetworkAccessManager.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -55,7 +54,7 @@ class TestQgsNetworkAccessManager(unittest.TestCase):
         cls.port = cls.httpd.server_address[1]
 
         cls.httpd_thread = threading.Thread(target=cls.httpd.serve_forever)
-        cls.httpd_thread.setDaemon(True)
+        cls.httpd_thread.daemon = True
         cls.httpd_thread.start()
 
     def test_request_preprocessor(self):

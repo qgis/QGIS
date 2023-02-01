@@ -69,7 +69,9 @@ class QgsMapLayer;
  * - "legend/..." - properties for legend appearance customization
  * - "expandedLegendNodes" - list of layer's legend nodes' rules in expanded state
  *
- * \see also QgsLayerTree, QgsLayerTreeLayer, QgsLayerTreeGroup
+ * \see QgsLayerTree
+ * \see QgsLayerTreeLayer
+ * \see QgsLayerTreeGroup
  * \since QGIS 2.4
  */
 class CORE_EXPORT QgsLayerTreeNode : public QObject

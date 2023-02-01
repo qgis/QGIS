@@ -27,7 +27,7 @@ class FixUiimport(fixer_base.BaseFix):
             while not hasattr(imp, 'value'):
                 imp = imp.children[0]
             if imp.value.startswith("ui_"):
-                imp.value = u"." + imp.value
+                imp.value = "." + imp.value
                 imp.changed()
         else:
             first = imp

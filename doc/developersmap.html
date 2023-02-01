@@ -3,15 +3,15 @@
 <head>
   <title>Developers Map</title>
   <meta charset="UTF-8">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css"
-  integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+  integrity="sha384-o/2yZuJZWGJ4s/adjxVW71R+EO/LyCwdQfP5UWSgX/w87iiTXuvDZaejd3TsN7mf"
   crossorigin="" />
   <style type="text/css">
   body {  padding: 0; margin: 0;  }
   html, body, #developers-map {  height: 100%;  }
   </style>
-  <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"
-  integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA=="
+  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+  integrity="sha384-okbbMvvx/qfQkmiQKfd5VifbKZ/W8p1qIsWvE1ROPUfHWsDcC8/BnHohF7vPg2T6"
   crossorigin="">
   </script>
   <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
@@ -20,7 +20,7 @@
 <body>
   <div id="developers-map"></div>
   <script>
-  var developersMapTiles = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+  var developersMapTiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZooom: 18,
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
   });
@@ -41,7 +41,8 @@
                         "Core committer" : "Core contributor" ));
       }
     });
-    var map = L.map('developers-map').fitBounds(geojson.getBounds());
+    var map = L.map('developers-map', { attributionControl: false }).fitBounds(geojson.getBounds());
+    L.control.attribution( { prefix: false } ).addTo( map );
     developersMapTiles.addTo(map);
     geojson.addTo(map);
      setTimeout(function() {

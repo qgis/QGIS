@@ -19,7 +19,6 @@
 #include "qgslogger.h"
 #include "qgsdialog.h"
 #include "qgsrasterlayer.h"
-#include "qgsproviderregistry.h"
 #include "qgsrasterdataprovider.h"
 #include "qgssettings.h"
 #include "qgsgdalutils.h"
@@ -29,6 +28,7 @@
 #include <QTextEdit>
 #include <QMouseEvent>
 #include <QMenu>
+#include <QFileInfo>
 
 
 QMap< QString, QStringList > QgsRasterFormatSaveOptionsWidget::sBuiltinProfiles;
@@ -106,7 +106,7 @@ QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget *par
   updateControls();
   updateProfiles();
 
-  QgsDebugMsg( QStringLiteral( "done" ) );
+  QgsDebugMsgLevel( QStringLiteral( "done" ), 3 );
 }
 
 void QgsRasterFormatSaveOptionsWidget::setFormat( const QString &format )
@@ -303,7 +303,7 @@ QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool report
   const QStringList createOptions = options();
   QString message;
 
-  QgsDebugMsg( QStringLiteral( "layer: [%1] file: [%2] format: [%3]" ).arg( mRasterLayer ? mRasterLayer->id() : "none", mRasterFileName, mFormat ) );
+  QgsDebugMsgLevel( QStringLiteral( "layer: [%1] file: [%2] format: [%3]" ).arg( mRasterLayer ? mRasterLayer->id() : "none", mRasterFileName, mFormat ), 2 );
   // if no rasterLayer is defined, but we have a raster fileName, then create a temp. rasterLayer to validate options
   // ideally we should keep it for future access, but this is trickier
   QgsRasterLayer *rasterLayer = mRasterLayer;
@@ -320,7 +320,7 @@ QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool report
   {
     if ( rasterLayer && rasterLayer->dataProvider() )
     {
-      QgsDebugMsg( QStringLiteral( "calling validate pyramids on layer's data provider" ) );
+      QgsDebugMsgLevel( QStringLiteral( "calling validate pyramids on layer's data provider" ), 2 );
       message = rasterLayer->dataProvider()->validatePyramidsConfigOptions( mPyramidsFormat, createOptions, mFormat );
     }
     else
@@ -332,7 +332,7 @@ QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool report
   {
     if ( rasterLayer && rasterLayer->dataProvider() )
     {
-      QgsDebugMsg( QStringLiteral( "calling validate on layer's data provider" ) );
+      QgsDebugMsgLevel( QStringLiteral( "calling validate on layer's data provider" ), 2 );
       message = rasterLayer->dataProvider()->validateCreationOptions( createOptions, mFormat );
     }
     else
@@ -601,7 +601,7 @@ void QgsRasterFormatSaveOptionsWidget::showEvent( QShowEvent *event )
 {
   Q_UNUSED( event )
   mOptionsTable->horizontalHeader()->resizeSection( 0, mOptionsTable->width() - 115 );
-  QgsDebugMsg( QStringLiteral( "done" ) );
+  QgsDebugMsgLevel( QStringLiteral( "done" ), 3 );
 }
 
 void QgsRasterFormatSaveOptionsWidget::setOptions( const QString &options )

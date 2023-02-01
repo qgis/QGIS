@@ -150,6 +150,7 @@ if (MSVC)
   target_link_libraries(qgis_native shell32)
   target_link_libraries(qgis_native ${QT_VERSION_BASE}::Widgets ${QT_QTMAIN_LIBRARY})
   target_link_libraries(qgis_native ${QT_VERSION_BASE}::WinExtras)
+
 endif()
 # install
 

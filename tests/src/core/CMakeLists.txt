@@ -12,6 +12,10 @@ if(HAVE_OPENCL)
     include_directories(SYSTEM ${OpenCL_INCLUDE_DIRS})
 endif()
 
+if (WITH_PDAL)
+    include_directories(SYSTEM "${PDAL_INCLUDE_DIR}")
+endif()
+
 #############################################################
 # Tests:
 
@@ -66,7 +70,6 @@ set(TESTS
  testqgsgdalutils.cpp
  testqgsgenericspatialindex.cpp
  testqgsgeometryimport.cpp
- testqgsgeonodeconnection.cpp
  testqgsgeopdfexport.cpp
  testqgsgml.cpp
  testqgsgradients.cpp
@@ -128,6 +131,7 @@ set(TESTS
  testqgsnetworkaccessmanager.cpp
  testqgsnetworkcontentfetcher.cpp
  testqgsnewsfeedparser.cpp
+ testqgsnmeaconnection.cpp
  testqgsofflineediting.cpp
  testqgsogcutils.cpp
  testqgsogrprovider.cpp

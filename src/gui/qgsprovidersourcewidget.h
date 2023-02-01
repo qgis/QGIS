@@ -78,6 +78,13 @@ class GUI_EXPORT QgsProviderSourceWidget : public QWidget
      */
     void validChanged( bool isValid );
 
+    /**
+     * Emitted whenever the configuration of the widget changes.
+     *
+     * \since QGIS 3.30
+     */
+    void changed();
+
   private:
     QgsMapCanvas *mMapCanvas = nullptr;
 

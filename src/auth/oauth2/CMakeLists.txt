@@ -80,8 +80,12 @@ if (WITH_GUI)
   )
 
   set(AUTH_OAUTH2_UIS gui/qgsauthoauth2edit.ui)
-
-  QT5_WRAP_UI(AUTH_OAUTH2_UIS_H ${AUTH_OAUTH2_UIS})
+  if (BUILD_WITH_QT6)
+    QT6_WRAP_UI(AUTH_OAUTH2_UIS_H ${AUTH_OAUTH2_UIS})
+  else()
+    QT5_WRAP_UI(AUTH_OAUTH2_UIS_H ${AUTH_OAUTH2_UIS})
+  endif()
+  
 endif()
 
 ############################################################

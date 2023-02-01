@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS unit tests for QgsPalLabeling: label rendering output via layout
 
 From build dir, run: ctest -R PyQgsPalLabelingLayout -V
@@ -98,7 +97,7 @@ class TestLayoutBase(TestQgsPalLabeling):
 
     def setUp(self):
         """Run before each test."""
-        super(TestLayoutBase, self).setUp()
+        super().setUp()
         self._TestImage = ''
         # ensure per test map settings stay encapsulated
         self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
@@ -263,16 +262,16 @@ class TestLayoutBase(TestQgsPalLabeling):
         else:
             return False, ''
 
-        qDebug("_get_layout_pdf_image call: {0}".format(' '.join(call)))
+        qDebug("_get_layout_pdf_image call: {}".format(' '.join(call)))
         res = False
         try:
             subprocess.check_call(call)
             res = True
         except subprocess.CalledProcessError as e:
             qDebug("_get_layout_pdf_image failed!\n"
-                   "cmd: {0}\n"
-                   "returncode: {1}\n"
-                   "message: {2}".format(e.cmd, e.returncode, e.message))
+                   "cmd: {}\n"
+                   "returncode: {}\n"
+                   "message: {}".format(e.cmd, e.returncode, e.message))
 
         if not res:
             os.unlink(filepath)
@@ -302,7 +301,7 @@ class TestLayoutBase(TestQgsPalLabeling):
             ms = self._TestMapSettings  # per test settings
             settings_type = 'Test'
         if 'PAL_VERBOSE' in os.environ:
-            qDebug('MapSettings type: {0}'.format(settings_type))
+            qDebug(f'MapSettings type: {settings_type}')
             qDebug(mapSettingsString(ms))
 
         res_m, self._TestImage = self.get_layout_output(self._TestKind)
@@ -336,7 +335,7 @@ class TestLayoutImagePoint(TestLayoutPointBase, TestPointBase):
 
     def setUp(self):
         """Run before each test."""
-        super(TestLayoutImagePoint, self).setUp()
+        super().setUp()
         self._TestKind = OutputKind.Img
         self.configTest('pal_composer', 'sp_img')
 
@@ -345,7 +344,7 @@ class TestLayoutImageVsCanvasPoint(TestLayoutPointBase, TestPointBase):
 
     def setUp(self):
         """Run before each test."""
-        super(TestLayoutImageVsCanvasPoint, self).setUp()
+        super().setUp()
         self._TestKind = OutputKind.Img
         self.configTest('pal_canvas', 'sp')
 
@@ -354,7 +353,7 @@ class TestLayoutSvgPoint(TestLayoutPointBase, TestPointBase):
 
     def setUp(self):
         """Run before each test."""
-        super(TestLayoutSvgPoint, self).setUp()
+        super().setUp()
         self._TestKind = OutputKind.Svg
         self.configTest('pal_composer', 'sp_svg')
 
@@ -367,7 +366,7 @@ class TestLayoutSvgVsLayoutPoint(TestLayoutPointBase, TestPointBase):
 
     def setUp(self):
         """Run before each test."""
-        super(TestLayoutSvgVsLayoutPoint, self).setUp()
+        super().setUp()
         self._TestKind = OutputKind.Svg
         self.configTest('pal_composer', 'sp_img')
         self._ColorTol = 4
@@ -377,7 +376,7 @@ class TestLayoutPdfPoint(TestLayoutPointBase, TestPointBase):
 
     def setUp(self):
         """Run before each test."""
-        super(TestLayoutPdfPoint, self).setUp()
+        super().setUp()
         self._TestKind = OutputKind.Pdf
         self.configTest('pal_composer', 'sp_pdf')
 
@@ -390,7 +389,7 @@ class TestLayoutPdfVsLayoutPoint(TestLayoutPointBase, TestPointBase):
 
     def setUp(self):
         """Run before each test."""
-        super(TestLayoutPdfVsLayoutPoint, self).setUp()
+        super().setUp()
         self._TestKind = OutputKind.Pdf
         self.configTest('pal_composer', 'sp_img')
         self._Mismatch = 50
@@ -409,7 +408,7 @@ class TestLayoutImageLine(TestLayoutLineBase, TestLineBase):
 
     def setUp(self):
         """Run before each test."""
-        super(TestLayoutImageLine, self).setUp()
+        super().setUp()
         self._TestKind = OutputKind.Img
         self.configTest('pal_composer_line', 'sp_img')
 
@@ -418,7 +417,7 @@ class TestLayoutImageVsCanvasLine(TestLayoutLineBase, TestLineBase):
 
     def setUp(self):
         """Run before each test."""
-        super(TestLayoutImageVsCanvasLine, self).setUp()
+        super().setUp()
         self._TestKind = OutputKind.Img
         self.configTest('pal_canvas_line', 'sp')
 
@@ -427,7 +426,7 @@ class TestLayoutSvgLine(TestLayoutLineBase, TestLineBase):
 
     def setUp(self):
         """Run before each test."""
-        super(TestLayoutSvgLine, self).setUp()
+        super().setUp()
         self._TestKind = OutputKind.Svg
         self.configTest('pal_composer_line', 'sp_svg')
 
@@ -440,7 +439,7 @@ class TestLayoutSvgVsLayoutLine(TestLayoutLineBase, TestLineBase):
 
     def setUp(self):
         """Run before each test."""
-        super(TestLayoutSvgVsLayoutLine, self).setUp()
+        super().setUp()
         self._TestKind = OutputKind.Svg
         self.configTest('pal_composer_line', 'sp_img')
         self._ColorTol = 4
@@ -450,7 +449,7 @@ class TestLayoutPdfLine(TestLayoutLineBase, TestLineBase):
 
     def setUp(self):
         """Run before each test."""
-        super(TestLayoutPdfLine, self).setUp()
+        super().setUp()
         self._TestKind = OutputKind.Pdf
         self.configTest('pal_composer_line', 'sp_pdf')
 
@@ -463,7 +462,7 @@ class TestLayoutPdfVsLayoutLine(TestLayoutLineBase, TestLineBase):
 
     def setUp(self):
         """Run before each test."""
-        super(TestLayoutPdfVsLayoutLine, self).setUp()
+        super().setUp()
         self._TestKind = OutputKind.Pdf
         self.configTest('pal_composer_line', 'sp_img')
         self._Mismatch = 50

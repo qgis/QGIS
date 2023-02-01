@@ -2377,6 +2377,23 @@ class CORE_EXPORT QgsGeometry
     bool convertToMultiType();
 
     /**
+     * Converts a geometry into a multitype geometry of curve kind (when there
+     * is a corresponding curve type).
+     * e.g. a polygon into a multisurface geometry with one polygon,
+     * a multipolygon into a multisurface, a linestring into a multicurve
+     * geometry with one linestring, or a multilinestring into a multicurve.
+     * If it is already a multipart curve geometry, it will return TRUE and
+     * not change the geometry. It will also return TRUE and do nothing if
+     * the current geometry is a multipoint or a geometry collection. A single
+     * point will be transformed to a multipoint.
+     *
+     * \returns TRUE in case of success and FALSE else
+     *
+     * \since QGIS 3.30
+     */
+    bool convertToCurvedMultiType();
+
+    /**
      * Converts multi type geometry into single type geometry
      * e.g. a multipolygon into a polygon geometry. Only the first part of the
      * multi geometry will be retained.
@@ -2406,6 +2423,7 @@ class CORE_EXPORT QgsGeometry
      *          1 if geometry is not of polygon type,
      *          2 if avoid intersection would change the geometry type,
      *          3 at least one geometry intersected is invalid. The algorithm may not work and return the same geometry as the input. You must fix your intersecting geometries.
+     *          4 if the geometry is not intersected by one of the geometries present in the provided layers.
      * \since QGIS 1.5
      */
     int avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers,

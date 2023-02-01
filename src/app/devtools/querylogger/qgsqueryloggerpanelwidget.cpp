@@ -82,7 +82,7 @@ QgsDatabaseQueryLoggerTreeView::QgsDatabaseQueryLoggerTreeView( QgsAppQueryLogge
       mLogger->removeRequestRows( rowsToTrim );
     }
 
-    if ( mAutoScroll )
+    if ( mAutoScroll && isVisible() )
       scrollToBottom();
   } );
 
@@ -192,14 +192,4 @@ QgsDatabaseQueryLoggerPanelWidget::QgsDatabaseQueryLoggerPanelWidget( QgsAppQuer
 
     fout << json;
   } );
-
-
-  QMenu *settingsMenu = new QMenu( this );
-  QToolButton *settingsButton = new QToolButton();
-  settingsButton->setAutoRaise( true );
-  settingsButton->setToolTip( tr( "Settings" ) );
-  settingsButton->setMenu( settingsMenu );
-  settingsButton->setPopupMode( QToolButton::InstantPopup );
-  settingsButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) ) );
-  mToolbar->addWidget( settingsButton );
 }

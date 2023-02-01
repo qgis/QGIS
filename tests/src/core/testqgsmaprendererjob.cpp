@@ -49,6 +49,12 @@
 #include "qgsrasterlayertemporalproperties.h"
 #include "qgslinesymbol.h"
 #include "qgslabelsink.h"
+#include "qgspointcloudlayer.h"
+#include "qgspointcloudattributebyramprenderer.h"
+#include "qgsmeshlayer.h"
+#include "qgsfillsymbol.h"
+#include "qgsrasterlayerelevationproperties.h"
+#include "qgsrasterresamplefilter.h"
 
 //qgs unit test utility class
 #include "qgsmultirenderchecker.h"
@@ -97,6 +103,8 @@ class TestQgsMapRendererJob : public QgsTest
     void skipSymbolRendering();
 
     void customNullPainterJob();
+
+    void testMapShading();
 
   private:
     bool imageCheck( const QString &type, const QImage &image, int mismatchCount = 0 );
@@ -1073,6 +1081,118 @@ void TestQgsMapRendererJob::customNullPainterJob()
   renderJob.waitForFinished();
 
   QCOMPARE( labelSink->drawnCount, 17 );
+}
+
+void TestQgsMapRendererJob::testMapShading()
+{
+  std::unique_ptr< QgsPointCloudLayer > pointCloudLayer =
+    std::make_unique< QgsPointCloudLayer >(
+      TEST_DATA_DIR +
+      QStringLiteral( "/point_clouds/ept/lone-star-laszip/ept.json" ),
+      QStringLiteral( "point-cloud" ),
+      QStringLiteral( "ept" ) );
+  QVERIFY( pointCloudLayer->isValid() );
+
+  std::unique_ptr<QgsPointCloudAttributeByRampRenderer> pointCloudRenderer( new QgsPointCloudAttributeByRampRenderer );
+  pointCloudRenderer->setDrawOrder2d( Qgis::PointCloudDrawOrder::BottomToTop );
+  pointCloudLayer->setRenderer( pointCloudRenderer.release() );
+
+  std::unique_ptr< QgsRasterLayer > rasterLayer =
+    std::make_unique< QgsRasterLayer >(
+      TEST_DATA_DIR +
+      QStringLiteral( "/raster/raster_shading.tif" ),
+      QStringLiteral( "raster" ),
+      QStringLiteral( "gdal" ) );
+  QVERIFY( rasterLayer->isValid() );
+  static_cast<QgsRasterLayerElevationProperties *>( rasterLayer->elevationProperties() )->setEnabled( true );
+  rasterLayer->dataProvider()->enableProviderResampling( true );
+  rasterLayer->dataProvider()->setZoomedOutResamplingMethod( QgsRasterDataProvider::ResamplingMethod::Cubic );
+
+  std::unique_ptr< QgsMeshLayer > meshLayer =
+    std::make_unique< QgsMeshLayer >(
+      TEST_DATA_DIR +
+      QStringLiteral( "/mesh/mesh_shading.nc" ),
+      QStringLiteral( "mesh" ),
+      QStringLiteral( "mdal" ) );
+  QVERIFY( meshLayer->isValid() );
+
+  std::unique_ptr< QgsVectorLayer > vectorLayer =
+    std::make_unique< QgsVectorLayer >(
+      QStringLiteral( "Polygon?crs=%1&field=id:integer&field=name:string(20)&index=no" )
+      .arg( pointCloudLayer->crs().toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) ),
+      QStringLiteral( "vector-layer" ),
+      QStringLiteral( "memory" ) );
+  QVERIFY( vectorLayer->isValid() );
+
+  QgsFeature ft0( vectorLayer->fields() );
+  QgsGeometry geom = QgsGeometry::fromWkt( QStringLiteral( "Polygon ((515336.29208192101214081 4918401.81226893234997988, 515336.29208192101214081 4918321.69825699832290411, 515439.75482995307538658 4918321.26983982231467962, 515441.89691583369858563 4918402.02647752035409212, 515336.29208192101214081 4918401.81226893234997988))" ) );
+  ft0.setGeometry( geom );
+  vectorLayer->startEditing();
+  vectorLayer->addFeature( ft0 );
+  vectorLayer->commitChanges();
+  QVERIFY( vectorLayer->featureCount() == 1 );
+  std::unique_ptr<QgsFillSymbol> fill( static_cast< QgsFillSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PolygonGeometry ) ) ) ;
+  fill->setColor( QColor( 255, 0, 255 ) );
+  vectorLayer->setRenderer( new QgsSingleSymbolRenderer( fill.release() ) );
+
+  QgsMapSettings mapSettings;
+  mapSettings.setDestinationCrs( pointCloudLayer->crs() );
+  mapSettings.setExtent( pointCloudLayer->extent() );
+  mapSettings.setOutputSize( QSize( 512, 512 ) );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setLayers( QList< QgsMapLayer * >()
+                         << pointCloudLayer.get()
+                         << rasterLayer.get()
+                         << vectorLayer.get()
+                         << meshLayer.get() );
+
+  QgsElevationShadingRenderer shadingRenderer;
+  shadingRenderer.setActive( true );
+  shadingRenderer.setActiveHillshading( true );
+  shadingRenderer.setActiveEyeDomeLighting( false );
+  mapSettings.setElevationShadingRenderer( shadingRenderer );
+  std::unique_ptr<QgsMapRendererSequentialJob> renderJob( new QgsMapRendererSequentialJob( mapSettings ) );
+  renderJob->start();
+  renderJob->waitForFinished();
+  QImage img = renderJob->renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "render_shading_1" ), img ) );
+
+  shadingRenderer.setLightAltitude( 20 );
+  shadingRenderer.setLightAzimuth( 60 );
+  mapSettings.setElevationShadingRenderer( shadingRenderer );
+  renderJob.reset( new QgsMapRendererSequentialJob( mapSettings ) );
+  renderJob->start();
+  renderJob->waitForFinished();
+  img = renderJob->renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "render_shading_2" ), img ) );
+
+  shadingRenderer.setHillshadingMultidirectional( true );
+  shadingRenderer.setHillshadingZFactor( 5 );
+  mapSettings.setElevationShadingRenderer( shadingRenderer );
+  renderJob.reset( new QgsMapRendererSequentialJob( mapSettings ) );
+  renderJob->start();
+  renderJob->waitForFinished();
+  img = renderJob->renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "render_shading_3" ), img ) );
+
+  shadingRenderer.setCombinedElevationMethod( Qgis::ElevationMapCombineMethod::NewerElevation );
+  shadingRenderer.setActiveHillshading( false );
+  shadingRenderer.setActiveEyeDomeLighting( true );
+  mapSettings.setElevationShadingRenderer( shadingRenderer );
+  renderJob.reset( new QgsMapRendererSequentialJob( mapSettings ) );
+  renderJob->start();
+  renderJob->waitForFinished();
+  img = renderJob->renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "render_shading_4" ), img ) );
+
+  shadingRenderer.setEyeDomeLightingDistance( 10 );
+  shadingRenderer.setEyeDomeLightingStrength( 4000 );
+  mapSettings.setElevationShadingRenderer( shadingRenderer );
+  renderJob.reset( new QgsMapRendererSequentialJob( mapSettings ) );
+  renderJob->start();
+  renderJob->waitForFinished();
+  img = renderJob->renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "render_shading_5" ), img ) );
 }
 
 bool TestQgsMapRendererJob::imageCheck( const QString &testName, const QImage &image, int mismatchCount )

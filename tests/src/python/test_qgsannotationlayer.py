@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsAnnotationLayer.
 
 From build dir, run: ctest -R PyQgsAnnotationLayer -V
@@ -44,7 +43,8 @@ from qgis.core import (QgsMapSettings,
                        QgsAnnotationItemEditOperationMoveNode,
                        QgsVertexId,
                        QgsPointXY,
-                       Qgis
+                       Qgis,
+                       QgsLayerNotesUtils
                        )
 from qgis.testing import start_app, unittest
 
@@ -151,6 +151,7 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         self.assertEqual(len(layer.items()), 0)
         self.assertEqual(layer.opacity(), 1.0)
         self.assertFalse(layer.crs().isValid())
+        self.assertEqual(layer.undoStackStyles().count(), 0)
 
     def testExtent(self):
         layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
@@ -198,6 +199,9 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         self.assertTrue(layer.isValid())
 
         layer.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        layer.setScaleBasedVisibility(True)
+        QgsLayerNotesUtils.setLayerNotes(layer, 'test layer notes')
+
         polygon_item_id = layer.addItem(QgsAnnotationPolygonItem(
             QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)]))))
         linestring_item_id = layer.addItem(
@@ -210,6 +214,8 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         layer2 = QgsAnnotationLayer('test2', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
         self.assertTrue(layer2.readLayerXml(elem, QgsReadWriteContext()))
         self.assertEqual(layer2.crs().authid(), 'EPSG:4326')
+        self.assertTrue(layer2.hasScaleBasedVisibility())
+        self.assertEqual(QgsLayerNotesUtils.layerNotes(layer2), 'test layer notes')
 
         self.assertEqual(len(layer2.items()), 3)
         self.assertIsInstance(layer2.items()[polygon_item_id], QgsAnnotationPolygonItem)
@@ -248,7 +254,7 @@ class TestQgsAnnotationLayer(unittest.TestCase):
 
         # save project to xml
         tmpDir = QTemporaryDir()
-        tmpFile = "{}/project.qgs".format(tmpDir.path())
+        tmpFile = f"{tmpDir.path()}/project.qgs"
         self.assertTrue(p.write(tmpFile))
 
         # test that annotation layer is cleared with project
@@ -603,7 +609,7 @@ class TestQgsAnnotationLayer(unittest.TestCase):
                                                                                                             result))
 
     def imageCheck(self, name, reference_image, image):
-        TestQgsAnnotationLayer.report += "<h2>Render {}</h2>\n".format(name)
+        TestQgsAnnotationLayer.report += f"<h2>Render {name}</h2>\n"
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + 'patch_' + name + ".png"
         image.save(file_name, "PNG")

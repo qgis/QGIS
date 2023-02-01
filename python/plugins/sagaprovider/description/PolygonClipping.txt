@@ -1,6 +1,0 @@
-Polygon Clipping
-shapes_polygons
-QgsProcessingParameterFeatureSource|CLIP|Clip features|2|None|False
-QgsProcessingParameterFeatureSource|S_INPUT|Input features|-1|None|False
-QgsProcessingParameterVectorDestination|S_OUTPUT|Output features
-Hardcoded|-MULTIPLE 0

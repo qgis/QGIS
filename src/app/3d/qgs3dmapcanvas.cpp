@@ -73,7 +73,6 @@ Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
   connect( mSplitter, &QSplitter::splitterMoved, this, [&]( int, int )
   {
     QRect viewportRect( QPoint( 0, 0 ), mContainer->size() );
-    mScene->cameraController()->setViewport( viewportRect );
     mEngine->setSize( viewportRect.size() );
   } );
 
@@ -81,8 +80,6 @@ Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
   {
     QSize widgetSize = size();
     QRect viewportRect( QPoint( 0, 0 ), QSize( widgetSize.width() - newSize.width(), widgetSize.height() ) );
-    if ( mScene && mScene->cameraController() )
-      mScene->cameraController()->setViewport( viewportRect );
     mEngine->setSize( viewportRect.size() );
   } );
 
@@ -109,8 +106,6 @@ void Qgs3DMapCanvas::resizeEvent( QResizeEvent *ev )
     return;
 
   QRect viewportRect( QPoint( 0, 0 ), mContainer->size() );
-  mScene->cameraController()->setViewport( viewportRect );
-
   mEngine->setSize( viewportRect.size() );
 }
 
@@ -138,8 +133,6 @@ void Qgs3DMapCanvas::setMap( Qgs3DMapSettings *map )
   delete mMap;
   mMap = map;
 
-  mScene->cameraController()->setViewport( viewportRect );
-
   resetView();
 
   // Connect the camera to the navigation widget.
@@ -163,53 +156,8 @@ QgsCameraController *Qgs3DMapCanvas::cameraController()
   return mScene ? mScene->cameraController() : nullptr;
 }
 
-void Qgs3DMapCanvas::resetView( bool resetExtent )
+void Qgs3DMapCanvas::resetView()
 {
-  if ( resetExtent )
-  {
-    if ( map()->terrainRenderingEnabled()
-         && map()->terrainGenerator()
-         && ( map()->terrainGenerator()->type() == QgsTerrainGenerator::Flat ||
-              map()->terrainGenerator()->type() == QgsTerrainGenerator::Online ) )
-    {
-      const QgsReferencedRectangle extent = QgsProject::instance()->viewSettings()->fullExtent();
-      QgsCoordinateTransform ct( extent.crs(), map()->crs(), QgsProject::instance()->transformContext() );
-      ct.setBallparkTransformsAreAppropriate( true );
-      QgsRectangle rect;
-      try
-      {
-        rect = ct.transformBoundingBox( extent );
-      }
-      catch ( QgsCsException & )
-      {
-        rect = extent;
-      }
-      map()->terrainGenerator()->setExtent( rect );
-
-      const QgsRectangle te = mScene->sceneExtent();
-      const QgsPointXY center = te.center();
-      map()->setOrigin( QgsVector3D( center.x(), center.y(), 0 ) );
-    }
-    if ( !map()->terrainRenderingEnabled() || !map()->terrainGenerator() )
-    {
-      const QgsReferencedRectangle extent = QgsProject::instance()->viewSettings()->fullExtent();
-      QgsCoordinateTransform ct( extent.crs(), map()->crs(), QgsProject::instance()->transformContext() );
-      ct.setBallparkTransformsAreAppropriate( true );
-      QgsRectangle rect;
-      try
-      {
-        rect = ct.transformBoundingBox( extent );
-      }
-      catch ( QgsCsException & )
-      {
-        rect = extent;
-      }
-
-      const QgsPointXY center = rect.center();
-      map()->setOrigin( QgsVector3D( center.x(), center.y(), 0 ) );
-    }
-  }
-
   mScene->viewZoomFull();
 }
 

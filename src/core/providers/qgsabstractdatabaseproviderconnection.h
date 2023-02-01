@@ -65,6 +65,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       View = 1 << 4,              //!< View table
       MaterializedView = 1 << 5,  //!< Materialized view table
       Foreign = 1 << 6,           //!< Foreign data wrapper
+      IncludeSystemTables = 1 << 7, //!< Include system tables (since QGIS 3.30)
     };
 
     Q_ENUM( TableFlag )
@@ -508,6 +509,9 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       AddFieldDomain = 1 << 25,                       //!< Can add new field domains to the database via addFieldDomain() (since QGIS 3.26)
       RenameField = 1 << 26,                          //!< Can rename existing fields via renameField() (since QGIS 3.28)
       RetrieveRelationships = 1 << 27,                //!< Can retrieve relationships from the database (since QGIS 3.28)
+      AddRelationship = 1 << 28,                      //!< Can add new relationships to the database via addRelationship() (since QGIS 3.30)
+      UpdateRelationship = 1 << 29,                   //!< Can update existing relationships in the database via updateRelationship() (since QGIS 3.30)
+      DeleteRelationship = 1 << 30,                   //!< Can delete existing relationships from the database via deleteRelationship() (since QGIS 3.30)
     };
     Q_ENUM( Capability )
     Q_DECLARE_FLAGS( Capabilities, Capability )
@@ -836,6 +840,14 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual QMultiMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary();
 
     /**
+     * Returns a list of field names which are considered illegal by the connection and
+     * should not be used when creating or altering fields.
+     *
+     * \since QGIS 3.30
+     */
+    virtual QSet< QString > illegalFieldNames() const;
+
+    /**
      * Returns a list of field domain names present on the provider.
      *
      * This is supported on providers with the Capability::ListFieldDomains capability only.
@@ -893,6 +905,115 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual void addFieldDomain( const QgsFieldDomain &domain, const QString &schema ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
+     * Returns a list of relationship cardinalities which are supported by the provider.
+     *
+     * \since QGIS 3.30
+     */
+#ifndef SIP_RUN
+    virtual QList< Qgis::RelationshipCardinality > supportedRelationshipCardinalities() const;
+#else
+    SIP_PYOBJECT supportedRelationshipCardinalities() const SIP_TYPEHINT( List[Qgis.RelationshipCardinality] );
+    % MethodCode
+    // adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
+
+    const QList< Qgis::RelationshipCardinality > cppRes = sipCpp->supportedRelationshipCardinalities();
+
+    PyObject *l = PyList_New( cppRes.size() );
+
+    if ( !l )
+      sipIsErr = 1;
+    else
+    {
+      for ( int i = 0; i < cppRes.size(); ++i )
+      {
+        PyObject *eobj = sipConvertFromEnum( static_cast<int>( cppRes.at( i ) ),
+                                             sipType_Qgis_RelationshipCardinality );
+
+        if ( !eobj )
+        {
+          sipIsErr = 1;
+        }
+
+        PyList_SetItem( l, i, eobj );
+      }
+
+      if ( !sipIsErr )
+      {
+        sipRes = l;
+      }
+      else
+      {
+        Py_DECREF( l );
+      }
+    }
+    % End
+#endif
+
+    /**
+     * Returns a list of relationship strengths which are supported by the provider.
+     *
+     * \since QGIS 3.30
+     */
+#ifndef SIP_RUN
+    virtual QList< Qgis::RelationshipStrength > supportedRelationshipStrengths() const;
+#else
+    SIP_PYOBJECT supportedRelationshipStrengths() const SIP_TYPEHINT( List[Qgis.RelationshipStrength] );
+    % MethodCode
+    // adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
+
+    const QList< Qgis::RelationshipStrength > cppRes = sipCpp->supportedRelationshipStrengths();
+
+    PyObject *l = PyList_New( cppRes.size() );
+
+    if ( !l )
+      sipIsErr = 1;
+    else
+    {
+      for ( int i = 0; i < cppRes.size(); ++i )
+      {
+        PyObject *eobj = sipConvertFromEnum( static_cast<int>( cppRes.at( i ) ),
+                                             sipType_Qgis_RelationshipStrength );
+
+        if ( !eobj )
+        {
+          sipIsErr = 1;
+        }
+
+        PyList_SetItem( l, i, eobj );
+      }
+
+      if ( !sipIsErr )
+      {
+        sipRes = l;
+      }
+      else
+      {
+        Py_DECREF( l );
+      }
+    }
+    % End
+#endif
+
+    /**
+     * Returns the relationship capabilities supported by the provider.
+     *
+     * \since QGIS 3.30
+     */
+    virtual Qgis::RelationshipCapabilities supportedRelationshipCapabilities() const;
+
+    /**
+     * Returns a list of the related table types supported by the database format.
+     *
+     * The related table type is a free-form string representing the type of related features, where the
+     * exact interpretation is format dependent. For instance, table types from GeoPackage
+     * relationships will directly reflect the categories from the GeoPackage related
+     * tables extension (i.e. "media", "simple attributes", "features", "attributes" and "tiles").
+     *
+     * \since QGIS 3.30
+     */
+    virtual QStringList relatedTableTypes() const;
+
+    /**
      * Returns a list of relationships detected in the database.
      *
      * This is supported on providers with the Capability::RetrieveRelationships capability only.
@@ -905,6 +1026,30 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \since QGIS 3.28
      */
     virtual QList< QgsWeakRelation > relationships( const QString &schema = QString(), const QString &tableName = QString() ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Adds a new field \a relationship to the database.
+     *
+     * \throws QgsProviderConnectionException if any errors are encountered.
+     * \since QGIS 3.30
+     */
+    virtual void addRelationship( const QgsWeakRelation &relationship ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Updates an existing \a relationship in the database.
+     *
+     * \throws QgsProviderConnectionException if any errors are encountered.
+     * \since QGIS 3.30
+     */
+    virtual void updateRelationship( const QgsWeakRelation &relationship ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Deletes an existing \a relationship in the database.
+     *
+     * \throws QgsProviderConnectionException if any errors are encountered.
+     * \since QGIS 3.30
+     */
+    virtual void deleteRelationship( const QgsWeakRelation &relationship ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Returns a SQL query builder for the connection, which provides an interface for provider-specific creation of SQL queries.
@@ -953,6 +1098,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     GeometryColumnCapabilities mGeometryColumnCapabilities = GeometryColumnCapabilities() SIP_SKIP;
     Qgis::SqlLayerDefinitionCapabilities mSqlLayerDefinitionCapabilities = Qgis::SqlLayerDefinitionCapabilities() SIP_SKIP;
     QString mProviderKey;
+    QSet<QString> mIllegalFieldNames SIP_SKIP;
 
 };
 

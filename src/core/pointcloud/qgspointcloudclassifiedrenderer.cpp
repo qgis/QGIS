@@ -80,7 +80,7 @@ void QgsPointCloudClassifiedRenderer::renderBlock( const QgsPointCloudBlock *blo
     return;
   const QgsPointCloudAttribute::DataType attributeType = attribute->type();
 
-  const bool renderElevation = context.elevationMap();
+  const bool renderElevation = context.renderContext().elevationMap();
   const QgsDoubleRange zRange = context.renderContext().zRange();
   const bool considerZ = !zRange.isInfinite() || renderElevation;
 

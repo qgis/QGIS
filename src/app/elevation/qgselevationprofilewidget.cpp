@@ -56,6 +56,10 @@
 #include <QSplitter>
 #include <QShortcut>
 
+const QgsSettingsEntryDouble *QgsElevationProfileWidget::settingTolerance = new QgsSettingsEntryDouble( QStringLiteral( "tolerance" ), QgsSettings::sTreeElevationProfile, 0.1, QStringLiteral( "Tolerance distance for elevation profile plots" ), Qgis::SettingsOptions(), 0 );
+
+const QgsSettingsEntryBool *QgsElevationProfileWidget::settingShowLayerTree = new QgsSettingsEntryBool( QStringLiteral( "show-layer-tree" ), QgsSettings::sTreeElevationProfile, true, QStringLiteral( "Whether the layer tree should be shown for elevation profile plots" ) );
+
 QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   : QWidget( nullptr )
   , mCanvasName( name )
@@ -80,7 +84,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
 
   mPanTool = new QgsPlotToolPan( mCanvas );
 
-  mLayerTreeView = new QgsElevationProfileLayerTreeView( mLayerTree.get() );
+  mLayerTreeView = new QgsAppElevationProfileLayerTreeView( mLayerTree.get() );
 
   connect( mLayerTreeView, &QAbstractItemView::doubleClicked, this, [ = ]( const QModelIndex & index )
   {
@@ -101,11 +105,11 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   showLayerTree->setCheckable( true );
   connect( showLayerTree, &QAction::toggled, this, [ = ]( bool checked )
   {
-    settingShowLayerTree.setValue( checked );
+    settingShowLayerTree->setValue( checked );
     mLayerTreeView->setVisible( checked );
   } );
-  showLayerTree->setChecked( settingShowLayerTree.value() );
-  mLayerTreeView->setVisible( settingShowLayerTree.value() );
+  showLayerTree->setChecked( settingShowLayerTree->value() );
+  mLayerTreeView->setVisible( settingShowLayerTree->value() );
   toolBar->addAction( showLayerTree );
   toolBar->addSeparator();
 
@@ -233,10 +237,10 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
 
   mSettingsAction = new QgsElevationProfileWidgetSettingsAction( mOptionsMenu );
 
-  mSettingsAction->toleranceSpinBox()->setValue( settingTolerance.value() );
+  mSettingsAction->toleranceSpinBox()->setValue( settingTolerance->value() );
   connect( mSettingsAction->toleranceSpinBox(), qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [ = ]( double value )
   {
-    settingTolerance.setValue( value );
+    settingTolerance->setValue( value );
     createOrUpdateRubberBands();
     scheduleUpdate();
   } );
@@ -302,7 +306,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   connect( mSetCurveTimer, &QTimer::timeout, this, &QgsElevationProfileWidget::updatePlot );
 
   // initially populate layer tree with project layers
-  populateInitialLayers();
+  mLayerTreeView->populateInitialLayers( QgsProject::instance() );
 
   updateCanvasLayers();
 }
@@ -371,29 +375,6 @@ void QgsElevationProfileWidget::setMainCanvas( QgsMapCanvas *canvas )
 void QgsElevationProfileWidget::cancelJobs()
 {
   mCanvas->cancelJobs();
-}
-
-void QgsElevationProfileWidget::populateInitialLayers()
-{
-  const QList< QgsMapLayer * > layers = QgsProject::instance()->layers< QgsMapLayer * >().toList();
-
-  // sort layers so that types which are more likely to obscure others are rendered below
-  // e.g. vector features should be drawn above raster DEMS, or the DEM line may completely obscure
-  // the vector feature
-  QList< QgsMapLayer * > sortedLayers = QgsMapLayerUtils::sortLayersByType( layers,
-  {
-    QgsMapLayerType::RasterLayer,
-    QgsMapLayerType::MeshLayer,
-    QgsMapLayerType::VectorLayer,
-    QgsMapLayerType::PointCloudLayer
-  } );
-
-  std::reverse( sortedLayers.begin(), sortedLayers.end() );
-  for ( QgsMapLayer *layer : std::as_const( sortedLayers ) )
-  {
-    QgsLayerTreeLayer *node = mLayerTree->addLayer( layer );
-    node->setItemVisibilityChecked( layer->elevationProperties() && layer->elevationProperties()->showByDefaultInElevationProfilePlots() );
-  }
 }
 
 void QgsElevationProfileWidget::updateCanvasLayers()
@@ -749,8 +730,8 @@ QgsElevationProfileWidgetSettingsAction::QgsElevationProfileWidgetSettingsAction
   gLayout->setContentsMargins( 3, 2, 3, 2 );
 
   mToleranceWidget = new QgsDoubleSpinBox();
-  mToleranceWidget->setClearValue( QgsElevationProfileWidget::settingTolerance.defaultValue() );
-  mToleranceWidget->setValue( QgsElevationProfileWidget::settingTolerance.defaultValue() );
+  mToleranceWidget->setClearValue( QgsElevationProfileWidget::settingTolerance->defaultValue() );
+  mToleranceWidget->setValue( QgsElevationProfileWidget::settingTolerance->defaultValue() );
   mToleranceWidget->setKeyboardTracking( false );
   mToleranceWidget->setMaximumWidth( QFontMetrics( mToleranceWidget->font() ).horizontalAdvance( '0' ) * 50 );
   mToleranceWidget->setDecimals( 2 );
@@ -764,4 +745,32 @@ QgsElevationProfileWidgetSettingsAction::QgsElevationProfileWidgetSettingsAction
   QWidget *w = new QWidget();
   w->setLayout( gLayout );
   setDefaultWidget( w );
+}
+
+QgsAppElevationProfileLayerTreeView::QgsAppElevationProfileLayerTreeView( QgsLayerTree *rootNode, QWidget *parent )
+  : QgsElevationProfileLayerTreeView( rootNode, parent )
+{
+
+}
+
+void QgsAppElevationProfileLayerTreeView::contextMenuEvent( QContextMenuEvent *event )
+{
+  const QModelIndex index = indexAt( event->pos() );
+  if ( !index.isValid() )
+    setCurrentIndex( QModelIndex() );
+
+  if ( QgsMapLayer *layer = indexToLayer( index ) )
+  {
+    QMenu *menu = new QMenu();
+
+    QAction *propertiesAction = new QAction( tr( "Properties…" ), menu );
+    connect( propertiesAction, &QAction::triggered, this, [layer]
+    {
+      QgisApp::instance()->showLayerProperties( layer, QStringLiteral( "mOptsPage_Elevation" ) );
+    } );
+    menu->addAction( propertiesAction );
+
+    menu->exec( mapToGlobal( event->pos() ) );
+    delete menu;
+  }
 }

@@ -39,6 +39,7 @@ class TestQgsHtmlWidgetWrapper : public QObject
 #ifdef WITH_QTWEBKIT
     void testExpressionEvaluate_data();
     void testExpressionEvaluate();
+    void testExpressionNewLine();
 #endif
 };
 
@@ -73,6 +74,7 @@ void TestQgsHtmlWidgetWrapper::testExpressionEvaluate_data()
   QTest::newRow( "with-geometry" ) << "geom_to_wkt($geometry)" << true << "The text is 'Point (0.5 0.5)'";
   QTest::newRow( "without-geometry" ) << "2+pk" << false << "The text is '3'";
   QTest::newRow( "aggregate newline" ) << "concat('a', \n'b')" << false << "The text is 'ab'";
+  QTest::newRow( "form value" ) << "current_value('pk') + 2" << false << "The text is '3'";
 }
 
 void TestQgsHtmlWidgetWrapper::testExpressionEvaluate()
@@ -102,6 +104,20 @@ void TestQgsHtmlWidgetWrapper::testExpressionEvaluate()
   QCOMPARE( webView->page()->mainFrame()->toPlainText(), expectedText );
 
   QgsProject::instance()->removeMapLayer( &layer );
+}
+
+void TestQgsHtmlWidgetWrapper::testExpressionNewLine()
+{
+  QgsHtmlWidgetWrapper *htmlWrapper = new QgsHtmlWidgetWrapper( nullptr, nullptr, nullptr );
+  const QString html { QStringLiteral( R"html(First line<br>
+Second line)html" ) };
+  htmlWrapper->setHtmlCode( html );
+
+  QgsWebView *webView = qobject_cast<QgsWebView *>( htmlWrapper->widget() );
+  Q_ASSERT( webView );
+  Q_ASSERT( ! htmlWrapper->needsGeometry() );
+  QCOMPARE( webView->page()->mainFrame()->toPlainText(), R"(First line
+Second line)" );
 }
 
 #endif

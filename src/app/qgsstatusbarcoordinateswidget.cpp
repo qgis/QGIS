@@ -85,6 +85,12 @@ QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
   // When you feel dizzy
   mDizzyTimer = new QTimer( this );
   connect( mDizzyTimer, &QTimer::timeout, this, &QgsStatusBarCoordinatesWidget::dizzy );
+
+  connect( QgsProject::instance()->displaySettings(), &QgsProjectDisplaySettings::coordinateCrsChanged, this, &QgsStatusBarCoordinatesWidget::coordinateDisplaySettingsChanged );
+  connect( QgsProject::instance()->displaySettings(), &QgsProjectDisplaySettings::geographicCoordinateFormatChanged, this, &QgsStatusBarCoordinatesWidget::coordinateDisplaySettingsChanged );
+  connect( QgsProject::instance()->displaySettings(), &QgsProjectDisplaySettings::coordinateTypeChanged, this, &QgsStatusBarCoordinatesWidget::coordinateDisplaySettingsChanged );
+
+  coordinateDisplaySettingsChanged();
 }
 
 void QgsStatusBarCoordinatesWidget::setMapCanvas( QgsMapCanvas *mapCanvas )
@@ -110,7 +116,6 @@ void QgsStatusBarCoordinatesWidget::setMouseCoordinatesPrecision( unsigned int p
 {
   mMousePrecisionDecimalPlaces = precision;
 }
-
 
 void QgsStatusBarCoordinatesWidget::validateCoordinates()
 {
@@ -189,7 +194,7 @@ void QgsStatusBarCoordinatesWidget::validateCoordinates()
   if ( !xOk || !yOk )
     return;
 
-  const Qgis::CoordinateOrder projectAxisOrder = qgsEnumKeyToValue( QgsProject::instance()->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/CoordinateOrder" ) ), Qgis::CoordinateOrder::Default );
+  const Qgis::CoordinateOrder projectAxisOrder = QgsProject::instance()->displaySettings()->coordinateAxisOrder();
 
   const Qgis::CoordinateOrder coordinateOrder = projectAxisOrder == Qgis::CoordinateOrder::Default ? QgsCoordinateReferenceSystemUtils::defaultCoordinateOrderForCrs( mMapCanvas->mapSettings().destinationCrs() ) : projectAxisOrder;
   // we may need to flip coordinates depending on crs axis ordering
@@ -346,17 +351,9 @@ void QgsStatusBarCoordinatesWidget::refreshMapCanvas()
 
 void QgsStatusBarCoordinatesWidget::showMouseCoordinates( const QgsPointXY &p )
 {
-  if ( !mMapCanvas || mToggleExtentsViewButton->isChecked() )
-  {
-    return;
-  }
-
-  mLineEdit->setText( QgsCoordinateUtils::formatCoordinateForProject( QgsProject::instance(), p, mMapCanvas->mapSettings().destinationCrs(),
-                      mMousePrecisionDecimalPlaces ) );
-
-  ensureCoordinatesVisible();
+  mLastCoordinate = p;
+  updateCoordinateDisplay();
 }
-
 
 void QgsStatusBarCoordinatesWidget::showExtent()
 {
@@ -374,12 +371,77 @@ void QgsStatusBarCoordinatesWidget::showExtent()
 
 void QgsStatusBarCoordinatesWidget::ensureCoordinatesVisible()
 {
-
   //ensure the label is big (and small) enough
   const int width = std::max( mLineEdit->fontMetrics().boundingRect( mLineEdit->text() ).width() + 16, mMinimumWidth );
-  if ( mLineEdit->minimumWidth() < width || ( mLineEdit->minimumWidth() - width ) > mTwoCharSize )
+
+  bool allowResize = false;
+  if ( mIsFirstSizeChange )
+  {
+    allowResize = true;
+  }
+  else if ( mLineEdit->minimumWidth() < width )
+  {
+    // always immediately grow to fit
+    allowResize = true;
+  }
+  else if ( ( mLineEdit->minimumWidth() - width ) > mTwoCharSize )
+  {
+    // only allow shrinking when a sufficient time has expired since we last resized.
+    // this avoids extraneous shrinking/growing resulting in distracting UI changes
+    allowResize = mLastSizeChangeTimer.hasExpired( 2000 );
+  }
+
+  if ( allowResize )
   {
     mLineEdit->setMinimumWidth( width );
     mLineEdit->setMaximumWidth( width );
+    mLastSizeChangeTimer.restart();
+    mIsFirstSizeChange = false;
   }
+}
+
+void QgsStatusBarCoordinatesWidget::updateCoordinateDisplay()
+{
+  if ( mToggleExtentsViewButton->isChecked() )
+  {
+    return;
+  }
+
+  if ( mLastCoordinate.isEmpty() )
+    mLineEdit->clear();
+  else
+    mLineEdit->setText( QgsCoordinateUtils::formatCoordinateForProject( QgsProject::instance(), mLastCoordinate, mMapCanvas->mapSettings().destinationCrs(),
+                        static_cast< int >( mMousePrecisionDecimalPlaces ) ) );
+
+  ensureCoordinatesVisible();
+}
+
+void QgsStatusBarCoordinatesWidget::coordinateDisplaySettingsChanged()
+{
+  const QgsCoordinateReferenceSystem coordinateCrs = QgsProject::instance()->displaySettings()->coordinateCrs();
+
+  const Qgis::CoordinateOrder projectOrder = QgsProject::instance()->displaySettings()->coordinateAxisOrder();
+  const Qgis::CoordinateOrder order = projectOrder == Qgis::CoordinateOrder::Default
+                                      ? QgsCoordinateReferenceSystemUtils::defaultCoordinateOrderForCrs( coordinateCrs )
+                                      : projectOrder;
+
+  switch ( order )
+  {
+    case Qgis::CoordinateOrder::XY:
+      if ( coordinateCrs.isGeographic() )
+        mLineEdit->setToolTip( tr( "Current map coordinate (Longitude, Latitude)" ) );
+      else
+        mLineEdit->setToolTip( tr( "Current map coordinate (Easting, Northing)" ) );
+      break;
+    case Qgis::CoordinateOrder::YX:
+      if ( coordinateCrs.isGeographic() )
+        mLineEdit->setToolTip( tr( "Current map coordinate (Latitude, Longitude)" ) );
+      else
+        mLineEdit->setToolTip( tr( "Current map coordinate (Northing, Easting)" ) );
+      break;
+    case Qgis::CoordinateOrder::Default:
+      break;
+  }
+
+  updateCoordinateDisplay();
 }

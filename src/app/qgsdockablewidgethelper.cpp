@@ -89,7 +89,6 @@ void QgsDockableWidgetHelper::writeXml( QDomElement &viewDom )
   viewDom.setAttribute( QStringLiteral( "area" ), mDockArea );
   viewDom.setAttribute( QStringLiteral( "uuid" ), mUuid );
 
-  QStringList tabifiedDocks;
   if ( mDock )
   {
     const QList<QDockWidget * > tabSiblings = mOwnerWindow->tabifiedDockWidgets( mDock );
@@ -241,7 +240,10 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
   else
   {
     // going from dock -> window
-    mDialog = new QDialog( mOwnerWindow, Qt::Window );
+    // note -- we explicitly DO NOT set the parent for the dialog, as we want these treated as
+    // proper top level windows and have their own taskbar entries. See https://github.com/qgis/QGIS/issues/49286
+    mDialog = new QDialog( nullptr, Qt::Window );
+    mDialog->setStyleSheet( QgisApp::instance()->styleSheet() );
 
     mDialog->setWindowTitle( mWindowTitle );
     QVBoxLayout *vl = new QVBoxLayout();

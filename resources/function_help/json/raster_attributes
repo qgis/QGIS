@@ -1,0 +1,21 @@
+{
+  "name": "raster_attributes",
+  "type": "function",
+  "groups": ["Rasters"],
+  "description": "Returns a map with the fields names as keys and the raster attribute table values as values from the attribute table entry that matches the given raster value.",
+  "arguments": [{
+    "arg": "layer",
+    "description": "the name or id of a raster layer"
+  }, {
+    "arg": "band",
+    "description": "the band number for the associated attribute table lookup."
+  }, {
+    "arg": "value",
+    "description": "raster value"
+  }],
+  "examples": [{
+    "expression": "raster_attributes('vegetation', 1, raster_value('vegetation', 1, make_point(1,1)))",
+    "returns": "{'class': 'Vegetated', 'subclass': 'Trees'}"
+  }],
+  "tags": ["provider", "point", "raster", "found", "attributes"]
+}

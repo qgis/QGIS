@@ -15,54 +15,38 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgssettingsregistrycore.h"
 #include "qgssettingsregistryapp.h"
-#include "qgsapplication.h"
-
-#include "qgsmaptoolsdigitizingtechniquemanager.h"
 #include "qgsidentifyresultsdialog.h"
-#include "georeferencer/qgsgeorefmainwindow.h"
-#include "georeferencer/qgstransformsettingsdialog.h"
-#include "vertextool/qgsvertexeditor.h"
-#include "elevation/qgselevationprofilewidget.h"
-#include "qgsgpsinformationwidget.h"
-#include "qgsgpsmarker.h"
+#include "qgspluginmanager.h"
+
 
 QgsSettingsRegistryApp::QgsSettingsRegistryApp()
   : QgsSettingsRegistry()
 {
-  addSettingsEntry( &QgsMapToolsDigitizingTechniqueManager::settingsDigitizingTechnique );
-  addSettingsEntry( &QgsMapToolsDigitizingTechniqueManager::settingMapToolShapeDefaultForShape );
-  addSettingsEntry( &QgsMapToolsDigitizingTechniqueManager::settingMapToolShapeCurrent );
+  // copy values from old keys to new keys and delete the old ones
+  // for backward compatibility, old keys are recreated when the registry gets deleted
 
-  addSettingsEntry( &QgsGeoreferencerMainWindow::settingResamplingMethod );
-  addSettingsEntry( &QgsGeoreferencerMainWindow::settingCompressionMethod );
-  addSettingsEntry( &QgsGeoreferencerMainWindow::settingUseZeroForTransparent );
-  addSettingsEntry( &QgsGeoreferencerMainWindow::settingTransformMethod );
-  addSettingsEntry( &QgsGeoreferencerMainWindow::settingSaveGcps );
-  addSettingsEntry( &QgsGeoreferencerMainWindow::settingLoadInProject );
-  addSettingsEntry( &QgsGeoreferencerMainWindow::settingLastSourceFolder );
-  addSettingsEntry( &QgsGeoreferencerMainWindow::settingLastRasterFileFilter );
-
-  addSettingsEntry( &QgsTransformSettingsDialog::settingLastDestinationFolder );
-  addSettingsEntry( &QgsTransformSettingsDialog::settingLastPdfFolder );
-
-  addSettingsEntry( &QgsVertexEditor::settingAutoPopupVertexEditorDock );
-
-  addSettingsEntry( &QgsElevationProfileWidget::settingTolerance );
-  addSettingsEntry( &QgsElevationProfileWidget::settingShowLayerTree );
-
-  addSettingsEntry( &QgsIdentifyResultsDialog::settingHideNullValues );
-
-  addSettingsEntry( &QgsGpsInformationWidget::settingLastLogFolder );
-
-  addSettingsEntry( &QgsGpsMarker::settingLocationMarkerSymbol );
-  addSettingsEntry( &QgsGpsMarker::settingRotateLocationMarker );
-
-  QgsApplication::settingsRegistryCore()->addSubRegistry( this );
+  // single settings - added in 3.30
+  QgsIdentifyResultsDialog::settingHideNullValues->copyValueFromKey( QStringLiteral( "Map/hideNullValues" ), true );
+  QgsPluginManager::settingsAutomaticallyCheckForPluginUpdates->copyValueFromKey( QStringLiteral( "plugins/automatically-check-for-updates" ), true );
+  QgsPluginManager::settingsAllowExperimental->copyValueFromKey( QStringLiteral( "app/plugin_installer/allowExperimental" ), true );
+  QgsPluginManager::settingsAllowDeprecated->copyValueFromKey( QStringLiteral( "app/plugin_installer/allowDeprecated" ), true );
+  QgsPluginManager::settingsCheckOnStartLastDate->copyValueFromKey( QStringLiteral( "app/plugin_installer/checkOnStartLastDate" ), true );
+  QgsPluginManager::settingsSeenPlugins->copyValueFromKey( QStringLiteral( "app/plugin_installer/seen_plugins" ), true );
+  QgsPluginManager::settingsLastZipDirectory->copyValueFromKey( QStringLiteral( "app/plugin_installer/lastZipDirectory" ), true );
+  QgsPluginManager::settingsShowInstallFromZipWarning->copyValueFromKey( QStringLiteral( "app/plugin_installer/showInstallFromZipWarning" ), true );
 }
 
 QgsSettingsRegistryApp::~QgsSettingsRegistryApp()
 {
-  QgsApplication::settingsRegistryCore()->removeSubRegistry( this );
+  // TODO QGIS 4.0: Remove
+  // backward compatibility for settings
+  QgsIdentifyResultsDialog::settingHideNullValues->copyValueToKey( QStringLiteral( "Map/hideNullValues" ) );
+  QgsPluginManager::settingsAutomaticallyCheckForPluginUpdates->copyValueToKey( QStringLiteral( "plugins/automatically-check-for-updates" ) );
+  QgsPluginManager::settingsAllowExperimental->copyValueToKey( QStringLiteral( "app/plugin_installer/allowExperimental" ) );
+  QgsPluginManager::settingsAllowDeprecated->copyValueToKey( QStringLiteral( "app/plugin_installer/allowDeprecated" ) );
+  QgsPluginManager::settingsCheckOnStartLastDate->copyValueFromKey( QStringLiteral( "app/plugin_installer/checkOnStartLastDate" ), true );
+  QgsPluginManager::settingsSeenPlugins->copyValueFromKey( QStringLiteral( "app/plugin_installer/seen_plugins" ), true );
+  QgsPluginManager::settingsLastZipDirectory->copyValueFromKey( QStringLiteral( "app/plugin_installer/lastZipDirectory" ), true );
+  QgsPluginManager::settingsShowInstallFromZipWarning->copyValueFromKey( QStringLiteral( "app/plugin_installer/showInstallFromZipWarning" ), true );
 }

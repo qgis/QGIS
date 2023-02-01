@@ -21,7 +21,6 @@
 #include "qgis_core.h"
 #include "qgsmapsettings.h"
 
-#include "qgslabelingenginesettings.h"
 #include "qgslabeling.h"
 #include "qgsfeedback.h"
 #include "qgslabelobstaclesettings.h"
@@ -29,6 +28,7 @@
 class QgsLabelingEngine;
 class QgsLabelingResults;
 class QgsLabelFeature;
+class QgsLabelingEngineSettings;
 
 namespace pal
 {
@@ -86,7 +86,7 @@ class CORE_EXPORT QgsAbstractLabelProvider
      *
      * The default behavior is to draw nothing for these labels.
      *
-     * \note This method is only used if the QgsLabelingEngineSettings::DrawUnplacedLabels flag
+     * \note This method is only used if the Qgis::Qgis::LabelingFlag::DrawUnplacedLabels flag
      * is set on the labeling engine.
      *
      * \since QGIS 3.10
@@ -449,6 +449,10 @@ class CORE_EXPORT QgsLabelingEngine
     std::unique_ptr< pal::Problem > mProblem;
     QList<pal::LabelPosition *> mUnlabeled;
     QList<pal::LabelPosition *> mLabels;
+
+  private:
+
+    QStringList mLayerRenderingOrderIds;
 
 };
 

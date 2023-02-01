@@ -1,7 +1,20 @@
 set(QGIS_GUI_SRCS
+  actions/qgsactionmenu.cpp
+  actions/qgsmaplayeraction.cpp
+  actions/qgsmaplayeractioncontext.cpp
+  actions/qgsmaplayeractioncontextgenerator.cpp
+  actions/qgsmaplayeractionregistry.cpp
+
+  raster/qgscreaterasterattributetabledialog.cpp
+  raster/qgsloadrasterattributetabledialog.cpp
+  raster/qgsrasterattributetablewidget.cpp
+  raster/qgsrasterattributetabledialog.cpp
+  raster/qgsrasterattributetableaddcolumndialog.cpp
+  raster/qgsrasterattributetableaddrowdialog.cpp
   raster/qgscolorrampshaderwidget.cpp
   raster/qgsmultibandcolorrendererwidget.cpp
   raster/qgspalettedrendererwidget.cpp
+  raster/qgsrasterattributetablemodel.cpp
   raster/qgsrasterbandcombobox.cpp
   raster/qgsrastercontourrendererwidget.cpp
   raster/qgsrasterhistogramwidget.cpp
@@ -128,10 +141,12 @@ set(QGIS_GUI_SRCS
   codeeditors/qgscodeeditorcolorscheme.cpp
   codeeditors/qgscodeeditorcolorschemeregistry.cpp
   codeeditors/qgscodeeditorcss.cpp
+  codeeditors/qgscodeeditorhistorydialog.cpp
   codeeditors/qgscodeeditorhtml.cpp
   codeeditors/qgscodeeditorjs.cpp
   codeeditors/qgscodeeditorjson.cpp
   codeeditors/qgscodeeditorpython.cpp
+  codeeditors/qgscodeeditorr.cpp
   codeeditors/qgscodeeditorsql.cpp
   codeeditors/qgscodeeditorexpression.cpp
 
@@ -194,11 +209,13 @@ set(QGIS_GUI_SRCS
   editorwidgets/qgsrelationreferencefactory.cpp
   editorwidgets/qgsrelationreferencesearchwidgetwrapper.cpp
   editorwidgets/qgsrelationreferencewidget.cpp
+  editorwidgets/qgsspacerwidgetwrapper.cpp
   editorwidgets/qgsrelationreferencewidgetwrapper.cpp
   editorwidgets/qgstexteditconfigdlg.cpp
   editorwidgets/qgstexteditsearchwidgetwrapper.cpp
   editorwidgets/qgstexteditwrapper.cpp
   editorwidgets/qgstexteditwidgetfactory.cpp
+  editorwidgets/qgstextwidgetwrapper.cpp
   editorwidgets/qgsuniquevaluesconfigdlg.cpp
   editorwidgets/qgsuniquevaluewidgetwrapper.cpp
   editorwidgets/qgsuniquevaluewidgetfactory.cpp
@@ -214,6 +231,7 @@ set(QGIS_GUI_SRCS
   editorwidgets/qgsvaluerelationwidgetfactory.cpp
 
   elevation/qgselevationprofilecanvas.cpp
+  elevation/qgselevationprofilelayertreeview.cpp
 
   history/qgshistoryprovider.cpp
   history/qgshistoryproviderregistry.cpp
@@ -244,6 +262,7 @@ set(QGIS_GUI_SRCS
   layout/qgslayoutattributetablewidget.cpp
   layout/qgslayoutcombobox.cpp
   layout/qgslayoutcustomdrophandler.cpp
+  layout/qgslayoutelevationprofilewidget.cpp
   layout/qgslayoutguidewidget.cpp
   layout/qgslayouthtmlwidget.cpp
   layout/qgslayoutimageexportoptionsdialog.cpp
@@ -420,7 +439,6 @@ set(QGIS_GUI_SRCS
   qgisinterface.cpp
   qgs3dsymbolwidget.cpp
   qgsabstractmaptoolhandler.cpp
-  qgsactionmenu.cpp
   qgsaddattrdialog.cpp
   qgsaddtaborgroup.cpp
   qgsadvanceddigitizingcanvasitem.cpp
@@ -470,11 +488,13 @@ set(QGIS_GUI_SRCS
   qgsdataitemguiproviderregistry.cpp
   qgsdatumtransformdialog.cpp
   qgsdatasourceselectdialog.cpp
+  qgsdbrelationshipwidget.cpp
   qgsdetaileditemdata.cpp
   qgsdetaileditemdelegate.cpp
   qgsdetaileditemwidget.cpp
   qgsdial.cpp
   qgsdialog.cpp
+  qgsdirectionallightwidget.cpp
   qgsdoublevalidator.cpp
   qgsdockwidget.cpp
   qgsencodingfiledialog.cpp
@@ -549,7 +569,6 @@ set(QGIS_GUI_SRCS
   qgsmapcanvassnappingutils.cpp
   qgsmapcanvastracer.cpp
   qgsmapcanvasutils.cpp
-  qgsmaplayeractionregistry.cpp
   qgsmaplayercombobox.cpp
   qgsmaplayerconfigwidgetfactory.cpp
   qgsmaplayerloadstyledialog.cpp
@@ -574,6 +593,7 @@ set(QGIS_GUI_SRCS
   qgsmaptoolzoom.cpp
   qgsmaplayerconfigwidget.cpp
   qgsmaterialsettingswidget.cpp
+  qgsmediawidget.cpp
   qgsmenuheader.cpp
   qgsmessagebar.cpp
   qgsmessagebaritem.cpp
@@ -617,6 +637,7 @@ set(QGIS_GUI_SRCS
   qgsprovidersourcewidget.cpp
   qgsprovidersourcewidgetprovider.cpp
   qgsprovidersourcewidgetproviderregistry.cpp
+  qgsprovidersublayersdialog.cpp
   qgsprojectstorageguiregistry.cpp
   qgsproviderconnectioncombobox.cpp
   qgsproxystyle.cpp
@@ -684,7 +705,6 @@ set(QGIS_GUI_HDRS
   qgs3dsymbolwidget.h
   qgsabstractdatasourcewidget.h
   qgsabstractmaptoolhandler.h
-  qgsactionmenu.h
   qgsaddattrdialog.h
   qgsaddtaborgroup.h
   qgsadvanceddigitizingdockwidget.h
@@ -733,6 +753,7 @@ set(QGIS_GUI_HDRS
   qgsdataitemguiproviderregistry.h
   qgsdatasourcemanagerdialog.h
   qgsdatasourceselectdialog.h
+  qgsdbrelationshipwidget.h
   qgsnewdatabasetablenamewidget.h
   qgsdatumtransformdialog.h
   qgsdetaileditemdata.h
@@ -740,6 +761,7 @@ set(QGIS_GUI_HDRS
   qgsdetaileditemwidget.h
   qgsdial.h
   qgsdialog.h
+  qgsdirectionallightwidget.h
   qgsdockwidget.h
   qgsdoublevalidator.h
   qgsencodingfiledialog.h
@@ -814,7 +836,6 @@ set(QGIS_GUI_HDRS
   qgsmapcanvassnappingutils.h
   qgsmapcanvastracer.h
   qgsmapcanvasutils.h
-  qgsmaplayeractionregistry.h
   qgsmaplayercombobox.h
   qgsmaplayerconfigwidget.h
   qgsmaplayerconfigwidgetfactory.h
@@ -839,6 +860,7 @@ set(QGIS_GUI_HDRS
   qgsmaptoolzoom.h
   qgsmaskingwidget.h
   qgsmaterialsettingswidget.h
+  qgsmediawidget.h
   qgsmenuheader.h
   qgsmessagebar.h
   qgsmessagebaritem.h
@@ -886,6 +908,7 @@ set(QGIS_GUI_HDRS
   qgsprovidersourcewidget.h
   qgsprovidersourcewidgetprovider.h
   qgsprovidersourcewidgetproviderregistry.h
+  qgsprovidersublayersdialog.h
   qgsproxystyle.h
   qgsquerybuilder.h
   qgsqueryresultwidget.h
@@ -942,6 +965,12 @@ set(QGIS_GUI_HDRS
   qgsvscrollarea.h
   qgswindowmanagerinterface.h
 
+  actions/qgsactionmenu.h
+  actions/qgsmaplayeraction.h
+  actions/qgsmaplayeractioncontext.h
+  actions/qgsmaplayeractioncontextgenerator.h
+  actions/qgsmaplayeractionregistry.h
+
   annotations/qgsannotationitemcommonpropertieswidget.h
   annotations/qgsannotationitemguiregistry.h
   annotations/qgsannotationitemwidget.h
@@ -997,10 +1026,12 @@ set(QGIS_GUI_HDRS
   codeeditors/qgscodeeditorcolorschemeregistry.h
   codeeditors/qgscodeeditorcss.h
   codeeditors/qgscodeeditorexpression.h
+  codeeditors/qgscodeeditorhistorydialog.h
   codeeditors/qgscodeeditorhtml.h
   codeeditors/qgscodeeditorjs.h
   codeeditors/qgscodeeditorjson.h
   codeeditors/qgscodeeditorpython.h
+  codeeditors/qgscodeeditorr.h
   codeeditors/qgscodeeditorsql.h
 
   devtools/qgsdevtoolwidget.h
@@ -1060,11 +1091,13 @@ set(QGIS_GUI_HDRS
   editorwidgets/qgsrelationreferencewidgetwrapper.h
   editorwidgets/qgsrelationwidgetwrapper.h
   editorwidgets/qgssearchwidgettoolbutton.h
+  editorwidgets/qgsspacerwidgetwrapper.h
   editorwidgets/qgsspinbox.h
   editorwidgets/qgstexteditconfigdlg.h
   editorwidgets/qgstexteditsearchwidgetwrapper.h
   editorwidgets/qgstexteditwidgetfactory.h
   editorwidgets/qgstexteditwrapper.h
+  editorwidgets/qgstextwidgetwrapper.h
   editorwidgets/qgsuniquevaluesconfigdlg.h
   editorwidgets/qgsuniquevaluewidgetfactory.h
   editorwidgets/qgsuniquevaluewidgetwrapper.h
@@ -1085,6 +1118,7 @@ set(QGIS_GUI_HDRS
   effects/qgspainteffectwidget.h
 
   elevation/qgselevationprofilecanvas.h
+  elevation/qgselevationprofilelayertreeview.h
 
   history/qgshistoryprovider.h
   history/qgshistoryproviderregistry.h
@@ -1116,6 +1150,7 @@ set(QGIS_GUI_HDRS
   layout/qgslayoutcombobox.h
   layout/qgslayoutcustomdrophandler.h
   layout/qgslayoutdesignerinterface.h
+  layout/qgslayoutelevationprofilewidget.h
   layout/qgslayoutguidewidget.h
   layout/qgslayouthtmlwidget.h
   layout/qgslayoutimageexportoptionsdialog.h
@@ -1274,10 +1309,17 @@ set(QGIS_GUI_HDRS
   providers/ogr/qgsogritemguiprovider.h
   providers/ogr/qgsogrsourceselect.h
 
+  raster/qgsrasterattributetablewidget.h
+  raster/qgscreaterasterattributetabledialog.h
+  raster/qgsloadrasterattributetabledialog.h
+  raster/qgsrasterattributetabledialog.h
+  raster/qgsrasterattributetableaddcolumndialog.h
+  raster/qgsrasterattributetableaddrowdialog.h
   raster/qgscolorrampshaderwidget.h
   raster/qgshillshaderendererwidget.h
   raster/qgsmultibandcolorrendererwidget.h
   raster/qgspalettedrendererwidget.h
+  raster/qgsrasterattributetablemodel.h
   raster/qgsrasterbandcombobox.h
   raster/qgsrastercontourrendererwidget.h
   raster/qgsrasterhistogramwidget.h
@@ -1368,11 +1410,7 @@ set(QGIS_GUI_PRIVATE_HDRS
   attributetable/qgsfeaturefilterwidget_p.h
 )
 
-if (BUILD_WITH_QT6)
-  find_package(Qt6 COMPONENTS Qml QuickWidgets REQUIRED)
-else()
-  find_package(Qt5 COMPONENTS Qml QuickWidgets REQUIRED)
-endif()
+find_package(${QT_VERSION_BASE} COMPONENTS Multimedia MultimediaWidgets Qml QuickWidgets UiTools REQUIRED)
 
 if(${QT_VERSION_BASE}Qml_FOUND)
   add_definitions(-DWITH_QML)
@@ -1439,6 +1477,12 @@ set(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsquerybuilderbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgspointcloudquerybuilderbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsqueryresultwidgetbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrasterattributetablewidgetbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrasterattributetabledialogbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrasterattributetableaddrowdialogbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscreaterasterattributetabledialogbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsloadrasterattributetabledialogbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrasterattributetableaddcolumndialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssqlcomposerdialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssublayersdialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgstablewidgetuibase.h
@@ -1461,6 +1505,9 @@ set(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgstemporalcontrollerwidgetbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprocessingtinmeshdatawidgetbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionpreviewbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprovidersublayersdialogbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsdatumtransformdialogbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscoordinateoperationwidgetbase.h
 )
 
 if(ENABLE_MODELTEST)
@@ -1535,6 +1582,7 @@ endif()
 
 target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/src/gui/actions
   ${CMAKE_SOURCE_DIR}/src/gui/annotations
   ${CMAKE_SOURCE_DIR}/src/gui/attributeformconfig
   ${CMAKE_SOURCE_DIR}/src/gui/symbology
@@ -1644,6 +1692,8 @@ target_link_libraries(qgis_gui
   ${QWT_LIBRARY}
   ${QSCINTILLA_LIBRARY}
   ${QT_VERSION_BASE}::QuickWidgets
+  ${QT_VERSION_BASE}::Multimedia
+  ${QT_VERSION_BASE}::MultimediaWidgets
 )
 
 if (BUILD_WITH_QT6)

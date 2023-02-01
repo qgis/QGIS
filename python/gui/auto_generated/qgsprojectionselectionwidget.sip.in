@@ -145,6 +145,13 @@ Returns the title for the CRS selector dialog window.
 .. versionadded:: 3.24
 %End
 
+    void setFilter( const QList< QgsCoordinateReferenceSystem > &crses );
+%Docstring
+Sets a filtered list of CRSes to show in the widget.
+
+.. versionadded:: 3.28
+%End
+
   signals:
 
     void crsChanged( const QgsCoordinateReferenceSystem & );

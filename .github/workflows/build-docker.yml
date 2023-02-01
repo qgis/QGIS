@@ -34,7 +34,7 @@ jobs:
           if [[ "${GITHUB_REF}" =~ ^refs/tags ]]; then
             echo "::set-output name=matrix::{\"branch\":[\"${GITHUB_REF##*/}\"]}"
           else
-            echo "::set-output name=matrix::{\"branch\":[\"master\", \"release-3_22\", \"release-3_26\"]}"
+            echo "::set-output name=matrix::{\"branch\":[\"master\", \"release-3_22\", \"release-3_28\"]}"
           fi
 
   build-docker:
@@ -51,6 +51,7 @@ jobs:
       DOCKER_BUILD_DEPS_FILE: qgis3-qt5-build-deps.dockerfile
 
     strategy:
+      fail-fast: false
       matrix: ${{ fromJSON( needs.define-strategy.outputs.matrix ) }}
 
     steps:
@@ -69,7 +70,7 @@ jobs:
 
       - name: Cache
         id: cache
-        uses: actions/cache@v3.0.9
+        uses: actions/cache@v3.2.2
         with:
           path: ~/.ccache
           key: docker-build-${{ matrix.branch }}-${{ github.sha }}

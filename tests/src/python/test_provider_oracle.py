@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for the Oracle provider.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -121,7 +120,7 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         QgsSettings().setValue('/qgis/compileExpressions', False)
 
     def uncompiledFilters(self):
-        filters = set([
+        filters = {
             '(name = \'Apple\') is not null',
             '"name" || \' \' || "name" = \'Orange Orange\'',
             '"name" || \' \' || "cnt" = \'Orange 100\'',
@@ -181,7 +180,7 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
             '"date" = to_date(\'www4ww5ww2020\',\'wwwdwwMwwyyyy\')',
             'to_time("time") >= make_time(12, 14, 14)',
             'to_time("time") = to_time(\'000www14ww13ww12www\',\'zzzwwwsswwmmwwhhwww\')'
-        ])
+        }
         return filters
 
     def testAddFeatureWrongGeomType(self):
@@ -378,22 +377,22 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         if check_valid:
             self.assertTrue(self.conn)
             query = QSqlQuery(self.conn)
-            sql = """select p.GEOM.st_isvalid() from QGIS.{} p where "pk" = {}""".format(table, pk)
+            sql = f"""select p.GEOM.st_isvalid() from QGIS.{table} p where "pk" = {pk}"""
             res = query.exec_(sql)
             self.assertTrue(res, sql + ': ' + query.lastError().text())
             query.next()
             valid = query.value(0)
-            self.assertTrue(valid, "geometry '{}' inserted in database is not valid".format(wkt))
+            self.assertTrue(valid, f"geometry '{wkt}' inserted in database is not valid")
             query.finish()
 
         expected_wkt = wkt if wkt_ref is None else wkt_ref
         res_wkt = layer.getFeature(pk).geometry().asWkt()
-        self.assertTrue(compareWkt(res_wkt, expected_wkt, 0.00001), "\nactual   = {}\nexpected = {}".format(res_wkt, expected_wkt))
+        self.assertTrue(compareWkt(res_wkt, expected_wkt, 0.00001), f"\nactual   = {res_wkt}\nexpected = {expected_wkt}")
 
     def createTable(self, name, dims, srid):
-        self.execSQLCommand('DROP TABLE "QGIS"."{}"'.format(name), ignore_errors=True)
-        self.execSQLCommand("""DELETE FROM user_sdo_geom_metadata  where TABLE_NAME = '{}'""".format(name))
-        self.execSQLCommand("""CREATE TABLE QGIS.{} ("pk" INTEGER PRIMARY KEY, GEOM SDO_GEOMETRY)""".format(name))
+        self.execSQLCommand(f'DROP TABLE "QGIS"."{name}"', ignore_errors=True)
+        self.execSQLCommand(f"""DELETE FROM user_sdo_geom_metadata  where TABLE_NAME = '{name}'""")
+        self.execSQLCommand(f"""CREATE TABLE QGIS.{name} ("pk" INTEGER PRIMARY KEY, GEOM SDO_GEOMETRY)""")
         self.execSQLCommand("""INSERT INTO user_sdo_geom_metadata (TABLE_NAME, COLUMN_NAME, DIMINFO, SRID) VALUES ( '{}', 'GEOM', sdo_dim_array(sdo_dim_element('X',-50,50,0.005),sdo_dim_element('Y',-50,50,0.005){}),{})""".format(
             name, ",sdo_dim_element('Z',-50,50,0.005)" if dims > 2 else "", srid), ignore_errors=True)
         self.execSQLCommand("""CREATE INDEX {0}_spatial_idx ON QGIS.{0}(GEOM) INDEXTYPE IS MDSYS.SPATIAL_INDEX""".format(name))
@@ -1070,7 +1069,7 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         def countFeature(table_name):
             self.assertTrue(self.conn)
             query = QSqlQuery(self.conn)
-            res = query.exec_('SELECT count(*) FROM "QGIS"."{}"'.format(table_name))
+            res = query.exec_(f'SELECT count(*) FROM "QGIS"."{table_name}"')
             self.assertTrue(query.next())
             count = query.value(0)
             query.finish()
@@ -1167,6 +1166,48 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         print(exporter.errorMessage())
         self.assertEqual(exporter.errorCount(), 0)
         self.assertEqual(exporter.errorCode(), 0)
+
+    def testDetectedGeomType(self):
+        """
+        Test detected geom type when no one is required
+        """
+
+        testdata = [
+            ("POINT", 2, "SDO_GEOMETRY( 2001,5698,SDO_POINT_TYPE(1, 2, NULL), NULL, NULL)", QgsWkbTypes.Point),
+            ("POINTZ", 3, "SDO_GEOMETRY( 3001,5698,SDO_POINT_TYPE(1, 2, 3), NULL, NULL)", QgsWkbTypes.PointZ),
+            # there is difference between line and curve so everything is a compoundcurve to cover both
+            # https://docs.oracle.com/database/121/SPATL/sdo_geometry-object-type.htm
+            ("LINE", 2, "SDO_GEOMETRY( 2002,5698,NULL, SDO_ELEM_INFO_ARRAY(1,2,1), SDO_ORDINATE_ARRAY(1,2,3,4,5,6))", QgsWkbTypes.CompoundCurve),
+            ("LINEZ", 3, "SDO_GEOMETRY(3002,5698,NULL, SDO_ELEM_INFO_ARRAY(1,2,1), SDO_ORDINATE_ARRAY(1,2,3,4,5,6,7,8,9))", QgsWkbTypes.CompoundCurveZ),
+            ("CURVE", 2, "SDO_GEOMETRY(2002,5698,NULL, SDO_ELEM_INFO_ARRAY(1, 2, 2), SDO_ORDINATE_ARRAY(1, 2, 5, 4, 7, 2.2, 10, .1, 13, 4))", QgsWkbTypes.CompoundCurve),
+            ("CURVEZ", 3, "SDO_GEOMETRY(3002,5698,NULL, SDO_ELEM_INFO_ARRAY(1, 2, 2), SDO_ORDINATE_ARRAY(1, 2, 1, 5, 4, 2, 7, 2.2, 3, 10, 0.1, 4, 13, 4, 5))", QgsWkbTypes.CompoundCurveZ),
+            ("POLYGON", 2, "SDO_GEOMETRY(2003,5698,NULL, SDO_ELEM_INFO_ARRAY(1,1003,1), SDO_ORDINATE_ARRAY(1, 2, 11, 2, 11, 22, 1, 22, 1, 2))", QgsWkbTypes.Polygon),
+            ("POLYGONZ", 3, "SDO_GEOMETRY(3003,5698,NULL, SDO_ELEM_INFO_ARRAY(1,1003,1), SDO_ORDINATE_ARRAY(1, 2, 3, 11, 2, 13, 11, 22, 15, 1, 22, 7, 1, 2, 3))", QgsWkbTypes.PolygonZ),
+
+            ("MULTIPOINT", 2, "SDO_GEOMETRY( 2005,5698,NULL, sdo_elem_info_array (1,1,1, 3,1,1), sdo_ordinate_array (1,2, 3,4))", QgsWkbTypes.MultiPoint),
+            ("MULTIPOINTZ", 3, "SDO_GEOMETRY( 3005,5698,NULL, sdo_elem_info_array (1,1,2), sdo_ordinate_array (1,2,3, 4,5,6))", QgsWkbTypes.MultiPointZ),
+            # there is difference between line and curve so everything is a compoundcurve to cover both
+            # https://docs.oracle.com/database/121/SPATL/sdo_geometry-object-type.htm
+            ("MULTILINE", 2, "SDO_GEOMETRY(2006,5698,NULL, SDO_ELEM_INFO_ARRAY(1,2,1, 5,2,1), SDO_ORDINATE_ARRAY(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))", QgsWkbTypes.MultiCurve),
+            ("MULTILINEZ", 3, "SDO_GEOMETRY(3006,5698,NULL, SDO_ELEM_INFO_ARRAY(1,2,1, 7,2,1), SDO_ORDINATE_ARRAY(1, 2, 11, 3, 4, -11, 5, 6, 9, 7, 8, 1, 9, 10, -3))", QgsWkbTypes.MultiCurveZ),
+            ("MULTICURVE", 2, "SDO_GEOMETRY(2006,5698,NULL, SDO_ELEM_INFO_ARRAY(1,2,2, 11,2,2), SDO_ORDINATE_ARRAY(1, 2, 5, 4, 7, 2.2, 10, .1, 13, 4, -11, -3, 5, 7, 10, -1))", QgsWkbTypes.MultiCurve),
+            ("MULTICURVEZ", 3, "SDO_GEOMETRY(3006,5698,NULL, SDO_ELEM_INFO_ARRAY(1,2,2, 16,2,2), SDO_ORDINATE_ARRAY(1, 2, 1, 5, 4, 2, 7, 2.2, 3, 10, .1, 4, 13, 4, 5, -11, -3, 6, 5, 7, 8, 10, -1, 9))", QgsWkbTypes.MultiCurveZ),
+            ("MULTIPOLYGON", 2, "SDO_GEOMETRY(2007,5698,NULL, SDO_ELEM_INFO_ARRAY(1,1003,1, 11,1003,1, 21,2003,1, 29,2003,1), SDO_ORDINATE_ARRAY(1, 2, 11, 2, 11, 22, 1, 22, 1, 2, 1, 2, 11, 2, 11, 22, 1, 22, 1, 2, 5, 6, 8, 9, 8, 6, 5, 6, 3, 4, 5, 6, 3, 6, 3, 4))", QgsWkbTypes.MultiPolygon),
+            ("MULTIPOLYGONZ", 3, "SDO_GEOMETRY(3007,5698,NULL, SDO_ELEM_INFO_ARRAY(1,1003,1, 16,1003,1, 31,2003,1), SDO_ORDINATE_ARRAY(1, 2, 3, 11, 2, 13, 11, 22, 15, 1, 22, 7, 1, 2, 3, 1, 2, 3, 11, 2, 13, 11, 22, 15, 1, 22, 7, 1, 2, 3, 5, 6, 1, 8, 9, -1, 8, 6, 2, 5, 6, 1))", QgsWkbTypes.MultiPolygonZ)
+        ]
+
+        for name, dim, geom, wkb_type in testdata:
+            # We choose SRID=5698 (see https://docs.oracle.com/database/121/SPATL/three-dimensional-coordinate-reference-system-support.htm#SPATL626)
+            # to get Oracle valid geometries because it support 3D and arcs (arcs are not supported in geodetic projection)
+            self.createTable(f'DETECT_{name}', dim, 5698)
+            self.execSQLCommand(f'INSERT INTO "QGIS"."DETECT_{name}" ("pk", GEOM) SELECT 1, {geom} from dual')
+
+            layer = QgsVectorLayer(
+                self.dbconn + f' sslmode=disable key=\'pk\' srid=3857 table="QGIS"."DETECT_{name}" (GEOM) sql=', f'test{name}', 'oracle')
+            self.assertTrue(layer.isValid())
+            self.assertEqual(layer.wkbType(), wkb_type)
+
+            self.execSQLCommand(f'DROP TABLE "QGIS"."DETECT_{name}"')
 
 
 if __name__ == '__main__':

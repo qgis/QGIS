@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Base Unit tests for QgsAbastractProviderConnection API.
 
 Providers must implement a test based on TestPyQgsProviderConnectionBase
@@ -219,7 +218,11 @@ class TestPyQgsProviderConnectionBase():
             self.assertIsNotNone(table_property)
             self.assertEqual(table_property.tableName(), self.myNewTable)
             self.assertEqual(table_property.geometryColumnCount(), 1)
-            self.assertEqual(table_property.geometryColumnTypes()[0].wkbType, QgsWkbTypes.LineString)
+
+            # with oracle line and curve have the same type, so it defaults to curve https://docs.oracle.com/database/121/SPATL/sdo_geometry-object-type.htm#SPATL494
+            line_wkb_type = QgsWkbTypes.LineString if self.providerKey != 'oracle' else QgsWkbTypes.CompoundCurve
+
+            self.assertEqual(table_property.geometryColumnTypes()[0].wkbType, line_wkb_type)
             cols = table_property.geometryColumnTypes()
             self.assertEqual(cols[0].crs, QgsCoordinateReferenceSystem.fromEpsgId(3857))
             self.assertEqual(table_property.defaultName(), self.myNewTable)
@@ -251,7 +254,7 @@ class TestPyQgsProviderConnectionBase():
 
                 # MSSQL literal syntax for UTF8 requires 'N' prefix
                 # Oracle date time definition needs some prefix
-                sql = "INSERT INTO %s (\"string_t\", \"long_t\", \"double_t\", \"integer_t\", \"date_t\", \"datetime_t\", \"time_t\") VALUES (%s'QGIS Rocks - \U0001f604', 666, 1.234, 1234, %s '2019-07-08', %s, '12:00:13.00')" % (
+                sql = "INSERT INTO {} (\"string_t\", \"long_t\", \"double_t\", \"integer_t\", \"date_t\", \"datetime_t\", \"time_t\") VALUES ({}'QGIS Rocks - \U0001f604', 666, 1.234, 1234, {} '2019-07-08', {}, '12:00:13.00')".format(
                     table, 'N' if self.providerKey == 'mssql' else '',
                     "DATE" if self.providerKey == 'oracle' else '',
                     "TIMESTAMP '2019-07-08 12:00:12'" if self.providerKey == 'oracle' else "'2019-07-08T12:00:12'"
@@ -316,7 +319,7 @@ class TestPyQgsProviderConnectionBase():
                 if self.providerKey != 'mssql':
                     self.assertIn(res, ([[QtCore.QTime(12, 0, 13)]], [['12:00:13.00']]))
 
-                sql = "DELETE FROM %s WHERE \"string_t\" = %s'QGIS Rocks - \U0001f604'" % (
+                sql = "DELETE FROM {} WHERE \"string_t\" = {}'QGIS Rocks - \U0001f604'".format(
                     table, 'N' if self.providerKey == 'mssql' else '')
                 res = conn.executeSql(sql)
                 self.assertEqual(res, [])
@@ -391,22 +394,22 @@ class TestPyQgsProviderConnectionBase():
             self.assertEqual(len(table.geometryColumnTypes()), 1)
             ct = table.geometryColumnTypes()[0]
             self.assertEqual(ct.crs, QgsCoordinateReferenceSystem.fromEpsgId(3857))
-            self.assertEqual(ct.wkbType, QgsWkbTypes.LineString)
+            self.assertEqual(ct.wkbType, line_wkb_type)
             # Add a new (existing type)
-            table.addGeometryColumnType(QgsWkbTypes.LineString, QgsCoordinateReferenceSystem.fromEpsgId(3857))
+            table.addGeometryColumnType(line_wkb_type, QgsCoordinateReferenceSystem.fromEpsgId(3857))
             self.assertEqual(len(table.geometryColumnTypes()), 1)
             ct = table.geometryColumnTypes()[0]
             self.assertEqual(ct.crs, QgsCoordinateReferenceSystem.fromEpsgId(3857))
-            self.assertEqual(ct.wkbType, QgsWkbTypes.LineString)
+            self.assertEqual(ct.wkbType, line_wkb_type)
             # Add a new one
-            table.addGeometryColumnType(QgsWkbTypes.LineString, QgsCoordinateReferenceSystem.fromEpsgId(4326))
+            table.addGeometryColumnType(line_wkb_type, QgsCoordinateReferenceSystem.fromEpsgId(4326))
             self.assertEqual(len(table.geometryColumnTypes()), 2)
             ct = table.geometryColumnTypes()[0]
             self.assertEqual(ct.crs, QgsCoordinateReferenceSystem.fromEpsgId(3857))
-            self.assertEqual(ct.wkbType, QgsWkbTypes.LineString)
+            self.assertEqual(ct.wkbType, line_wkb_type)
             ct = table.geometryColumnTypes()[1]
             self.assertEqual(ct.crs, QgsCoordinateReferenceSystem.fromEpsgId(4326))
-            self.assertEqual(ct.wkbType, QgsWkbTypes.LineString)
+            self.assertEqual(ct.wkbType, line_wkb_type)
 
             # Check fields
             fields = conn.fields(schema, self.myNewTable)

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsNetworkContentFetcherRegistry
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -7,8 +6,6 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from builtins import chr
-from builtins import str
 
 __author__ = 'Denis Rouzaud'
 __date__ = '27/04/2018'
@@ -40,7 +37,7 @@ class TestQgsNetworkContentFetcherTask(unittest.TestCase):
         cls.port = cls.httpd.server_address[1]
 
         cls.httpd_thread = threading.Thread(target=cls.httpd.serve_forever)
-        cls.httpd_thread.setDaemon(True)
+        cls.httpd_thread.daemon = True
         cls.httpd_thread.start()
 
     def __init__(self, methodName):

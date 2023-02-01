@@ -30,6 +30,7 @@ set(QGIS_APP_SRCS
   qgsdevtoolspanelwidget.cpp
   qgsdiscoverrelationsdialog.cpp
   qgsdxfexportdialog.cpp
+  qgselevationshadingrenderersettingswidget.cpp
   qgsformannotationdialog.cpp
   qgsguivectorlayertools.cpp
   qgshtmlannotationdialog.cpp
@@ -59,9 +60,9 @@ set(QGIS_APP_SRCS
   qgsmapcanvasdockwidget.cpp
   qgsmapsavedialog.cpp
   qgsprojectlistitemdelegate.cpp
-  qgsprovidersublayersdialog.cpp
   qgspuzzlewidget.cpp
   qgsversionmigration.cpp
+  qgsrasterattributetableapputils.cpp
   qgssnappinglayertreemodel.cpp
   qgssnappingwidget.cpp
   qgsstatusbarcoordinateswidget.cpp
@@ -180,8 +181,6 @@ set(QGIS_APP_SRCS
 
   elevation/qgselevationprofileexportsettingswidget.cpp
   elevation/qgselevationprofileimageexportdialog.cpp
-  elevation/qgselevationprofilelayertreemodel.cpp
-  elevation/qgselevationprofilelayertreeview.cpp
   elevation/qgselevationprofilepdfexportdialog.cpp
   elevation/qgselevationprofiletoolidentify.cpp
   elevation/qgselevationprofiletoolmeasure.cpp
@@ -263,9 +262,15 @@ set(QGIS_APP_SRCS
   options/qgsrenderingoptions.cpp
   options/qgsvectorrenderingoptions.cpp
 
+  gps/qgsappgpsconnection.cpp
+  gps/qgsappgpsdigitizing.cpp
+  gps/qgsappgpslogging.cpp
+  gps/qgsappgpssettingsmenu.cpp
   gps/qgsgpsbearingitem.cpp
+  gps/qgsgpscanvasbridge.cpp
   gps/qgsgpsinformationwidget.cpp
   gps/qgsgpsmarker.cpp
+  gps/qgsgpstoolbar.cpp
 
   project/qgsprojectelevationsettingswidget.cpp
 
@@ -365,8 +370,9 @@ if (WITH_3D)
   )
 endif()
 
+find_package(${QT_VERSION_BASE} COMPONENTS UiTools REQUIRED)
 
-set (WITH_QWTPOLAR FALSE CACHE BOOL "Determines whether QwtPolar should be built")
+set (WITH_QWTPOLAR FALSE CACHE BOOL "Determines whether QwtPolar is available or whether functionality requiring QwtPolar should be disabled.")
 
 if (WITH_QWTPOLAR)
   add_definitions(-DWITH_QWTPOLAR)

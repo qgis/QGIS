@@ -127,3 +127,7 @@ exclude =
 	python/server/auto_additions/,
 	# Plenty of star imports used
 	python/PyQt/
+	cmake/
+	# People using a virtualenv
+	.venv/
+	venv/

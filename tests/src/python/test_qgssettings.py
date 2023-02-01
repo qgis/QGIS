@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Test the QgsSettings class
 
@@ -12,7 +11,7 @@ the Free Software Foundation; either version 2 of the License, or
 
 import os
 import tempfile
-from qgis.core import QgsSettings, QgsTolerance, QgsMapLayerProxyModel
+from qgis.core import Qgis, QgsSettings, QgsTolerance, QgsMapLayerProxyModel
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtCore import QSettings, QVariant
 from pathlib import Path
@@ -222,7 +221,8 @@ class TestQgsSettings(unittest.TestCase):
 
         self.settings.beginGroup('testqgissettings')
         self.assertEqual(sorted(['bar', 'foo']), sorted(self.settings.childGroups()))
-        self.assertEqual(['foo'], self.settings.globalChildGroups())
+        self.assertEqual(['foo'], self.settings.childGroups(Qgis.SettingsOrigin.Global))
+        self.assertEqual(['bar'], self.settings.childGroups(Qgis.SettingsOrigin.Local))
         self.settings.endGroup()
 
         self.globalsettings.remove('testqgissettings/foo')
@@ -231,6 +231,20 @@ class TestQgsSettings(unittest.TestCase):
         self.assertEqual(['bar'], self.settings.childGroups())
         self.assertEqual([], self.settings.globalChildGroups())
         self.settings.endGroup()
+
+    def test_origin(self):
+        self.assertEqual(self.settings.allKeys(), [])
+        self.assertEqual(self.globalsettings.allKeys(), [])
+
+        self.addToDefaults('testqgissettings/global/setting', 'qgis')
+        self.settings.setValue('testqgissettings/local/setting', 'rocks')
+
+        self.assertEqual(self.settings.origin('testqgissettings/global/setting'), Qgis.SettingsOrigin.Global)
+        self.assertEqual(self.settings.origin('testqgissettings/local/setting'), Qgis.SettingsOrigin.Local)
+        self.assertEqual(self.settings.origin('undefined-key'), Qgis.SettingsOrigin.Any)
+
+        self.settings.setValue('testqgissettings/global/setting', 'rocks')
+        self.assertEqual(self.settings.origin('testqgissettings/global/setting'), Qgis.SettingsOrigin.Global)
 
     def test_group_section(self):
         # Test group by using Section

@@ -128,8 +128,6 @@ class QgsHanaProvider final : public QgsVectorDataProvider
     QgsDataSourceUri mUri;
     // Srid of the geometry column
     int mSrid = -1;
-    // Srs extent
-    QgsRectangle mSrsExtent;
     // Flag that shows the presence of a planar equivalent in a database
     bool mHasSrsPlanarEquivalent = false;
     // Name of the table with no schema

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests base for the database project storage.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -7,7 +6,6 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
 """
-from builtins import next
 
 __author__ = 'Julien Cabieces'
 __date__ = '2022-04-19'
@@ -78,7 +76,7 @@ class TestPyQgsProjectStorageOracle(TestPyQgsProjectStorageBase, unittest.TestCa
         query.finish()
 
     def dropProjectsTable(self):
-        self.execSQLCommand('DROP TABLE {}."qgis_projects"'.format(self.schema), True)
+        self.execSQLCommand(f'DROP TABLE {self.schema}."qgis_projects"', True)
 
     def encode_uri(self, ds_uri, schema_name, project_name=None):
         u = QUrl()

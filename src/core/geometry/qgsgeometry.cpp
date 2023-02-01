@@ -1523,6 +1523,12 @@ QVector<QgsGeometry> QgsGeometry::coerceToType( const QgsWkbTypes::Type type, do
     newGeom.get()->addMValue( defaultM );
   }
 
+  // Straight -> curve
+  if ( QgsWkbTypes::isCurvedType( type ) && !QgsWkbTypes::isCurvedType( newGeom.wkbType() ) )
+  {
+    newGeom.convertToCurvedMultiType();
+  }
+
   // Multi -> single
   if ( ! QgsWkbTypes::isMultiType( type ) && newGeom.isMultipart( ) )
   {
@@ -1587,6 +1593,52 @@ bool QgsGeometry::convertToMultiType()
   // and replace it with the multi geometry.
   // TADA! a clone free conversion in some cases
   d->geometry = std::move( geom );
+  return true;
+}
+
+bool QgsGeometry::convertToCurvedMultiType()
+{
+  if ( !d->geometry )
+  {
+    return false;
+  }
+
+  switch ( QgsWkbTypes::flatType( d->geometry->wkbType() ) )
+  {
+    case QgsWkbTypes::MultiPoint:
+    case QgsWkbTypes::MultiCurve:
+    case QgsWkbTypes::MultiSurface:
+    case QgsWkbTypes::GeometryCollection:
+    {
+      return true;
+    }
+    default:
+      break;
+  }
+
+  std::unique_ptr< QgsAbstractGeometry >geom = QgsGeometryFactory::geomFromWkbType( QgsWkbTypes::curveType( QgsWkbTypes::multiType( d->geometry->wkbType() ) ) );
+  QgsGeometryCollection *multiGeom = qgsgeometry_cast<QgsGeometryCollection *>( geom.get() );
+  if ( !multiGeom )
+  {
+    return false;
+  }
+
+  QgsGeometryCollection *sourceMultiGeom = qgsgeometry_cast<QgsGeometryCollection *>( d->geometry.get() );
+  if ( sourceMultiGeom )
+  {
+    for ( int i = 0; i < sourceMultiGeom->numGeometries(); ++i )
+    {
+      if ( !multiGeom->addGeometry( sourceMultiGeom->geometryN( i )->clone() ) )
+        return false;
+    }
+  }
+  else
+  {
+    if ( !multiGeom->addGeometry( d->geometry->clone() ) )
+      return false;
+  }
+
+  reset( std::move( geom ) );
   return true;
 }
 
@@ -2850,15 +2902,20 @@ int QgsGeometry::avoidIntersections( const QList<QgsVectorLayer *> &avoidInterse
   QgsWkbTypes::Type geomTypeBeforeModification = wkbType();
 
   bool haveInvalidGeometry = false;
+  bool geomModified = false;
+
   std::unique_ptr< QgsAbstractGeometry > diffGeom = QgsGeometryEditUtils::avoidIntersections( *( d->geometry ), avoidIntersectionsLayers, haveInvalidGeometry, ignoreFeatures );
   if ( diffGeom )
   {
     reset( std::move( diffGeom ) );
+    geomModified = true;
   }
 
   if ( geomTypeBeforeModification != wkbType() )
     return 2;
   if ( haveInvalidGeometry )
+    return 3;
+  if ( !geomModified )
     return 4;
 
   return 0;

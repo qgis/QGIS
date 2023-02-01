@@ -178,25 +178,37 @@ bool QgsRasterLayerProfileGenerator::generateProfile( const QgsProfileGeneration
   int subRegionHeight = 0;
   int subRegionLeft = 0;
   int subRegionTop = 0;
-  const QgsRectangle rasterSubRegion = mRasterProvider->xSize() > 0 && mRasterProvider->ySize() > 0 ?
-                                       QgsRasterIterator::subRegion(
-                                         mRasterProvider->extent(),
-                                         mRasterProvider->xSize(),
-                                         mRasterProvider->ySize(),
-                                         transformedCurve->boundingBox(),
-                                         subRegionWidth,
-                                         subRegionHeight,
-                                         subRegionLeft,
-                                         subRegionTop ) : transformedCurve->boundingBox();
+  QgsRectangle rasterSubRegion = mRasterProvider->xSize() > 0 && mRasterProvider->ySize() > 0 ?
+                                 QgsRasterIterator::subRegion(
+                                   mRasterProvider->extent(),
+                                   mRasterProvider->xSize(),
+                                   mRasterProvider->ySize(),
+                                   transformedCurve->boundingBox(),
+                                   subRegionWidth,
+                                   subRegionHeight,
+                                   subRegionLeft,
+                                   subRegionTop ) : transformedCurve->boundingBox();
 
-  if ( mRasterProvider->xSize() == 0 || mRasterProvider->ySize() == 0 )
+  const bool zeroXYSize = mRasterProvider->xSize() == 0 || mRasterProvider->ySize() == 0;
+  if ( zeroXYSize )
   {
-    // e.g. XYZ tile source -- this is a rough hack for https://github.com/qgis/QGIS/issues/48806, which results
-    // in pretty poor curves ;)
     const double curveLengthInPixels = sourceCurve->length() / context.mapUnitsPerDistancePixel();
     const double conversionFactor = curveLengthInPixels / transformedCurve->length();
-    subRegionWidth = 2 * conversionFactor * rasterSubRegion.width();
-    subRegionHeight = 2 * conversionFactor * rasterSubRegion.height();
+    subRegionWidth = rasterSubRegion.width() * conversionFactor;
+    subRegionHeight = rasterSubRegion.height() * conversionFactor;
+
+    // ensure we fetch at least 1 pixel wide/high blocks, otherwise exactly vertical/horizontal profile lines will result in zero size blocks
+    // see https://github.com/qgis/QGIS/issues/51196
+    if ( subRegionWidth == 0 )
+    {
+      subRegionWidth = 1;
+      rasterSubRegion.setXMaximum( rasterSubRegion.xMinimum() + 1 / conversionFactor );
+    }
+    if ( subRegionHeight == 0 )
+    {
+      subRegionHeight = 1;
+      rasterSubRegion.setYMaximum( rasterSubRegion.yMinimum() + 1 / conversionFactor );
+    }
   }
 
   // iterate over the raster blocks, throwing away any which don't intersect the profile curve
@@ -248,8 +260,17 @@ bool QgsRasterLayerProfileGenerator::generateProfile( const QgsProfileGeneration
         // convert point to a pixel and sample, if it's in this block
         if ( blockExtent.contains( *it ) )
         {
-          const int row = std::clamp( static_cast< int >( std::round( ( blockExtent.yMaximum() - it->y() ) / mRasterUnitsPerPixelY ) ), 0, blockRows - 1 );
-          const int col = std::clamp( static_cast< int >( std::round( ( it->x() - blockExtent.xMinimum() ) / mRasterUnitsPerPixelX ) ),  0, blockColumns - 1 );
+          int row, col;
+          if ( zeroXYSize )
+          {
+            row = std::clamp( static_cast< int >( std::round( ( blockExtent.yMaximum() - it->y() ) * blockRows / blockExtent.height() ) ), 0, blockRows - 1 );
+            col = std::clamp( static_cast< int >( std::round( ( it->x() - blockExtent.xMinimum() ) * blockColumns / blockExtent.width() ) ), 0, blockColumns - 1 );
+          }
+          else
+          {
+            row = std::clamp( static_cast< int >( std::round( ( blockExtent.yMaximum() - it->y() ) / mRasterUnitsPerPixelY ) ), 0, blockRows - 1 );
+            col = std::clamp( static_cast< int >( std::round( ( it->x() - blockExtent.xMinimum() ) / mRasterUnitsPerPixelX ) ),  0, blockColumns - 1 );
+          }
           double val = block->valueAndNoData( row, col, isNoData );
           if ( !isNoData )
           {

@@ -65,7 +65,7 @@ void TestQgisAppPython::initTestCase()
   QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
   QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
 
-  qDebug() << "TestQgisAppClipboard::initTestCase()";
+  qDebug() << "TestQgisAppPython::initTestCase()";
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::initQgis();

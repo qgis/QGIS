@@ -13,7 +13,9 @@ class QgsDetailedItemWidget : QWidget
 %Docstring(signature="appended")
 A widget renderer for detailed item views.
 
-.. seealso:: :py:func:`also`
+.. seealso:: :py:class:`QgsDetailedItem`
+
+.. seealso:: :py:class:`QgsDetailedItemData`
 %End
 
 %TypeHeaderCode

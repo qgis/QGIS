@@ -1,5 +1,0 @@
-Binary Erosion-Reconstruction
-grid_filter
-QgsProcessingParameterRasterLayer|INPUT_GRID|Input Grid|None|False
-QgsProcessingParameterRasterDestination|OUTPUT_GRID|Output Grid
-QgsProcessingParameterNumber|RADIUS|Filter Size (Radius)|QgsProcessingParameterNumber.Integer|3|False|None|None

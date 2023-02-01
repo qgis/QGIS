@@ -1,9 +1,0 @@
-Upslope and Downslope Curvature
-ta_morphometry
-QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
-QgsProcessingParameterRasterDestination|C_LOCAL|Local Curvature
-QgsProcessingParameterRasterDestination|C_UP|Upslope Curvature
-QgsProcessingParameterRasterDestination|C_UP_LOCAL|Local Upslope Curvature
-QgsProcessingParameterRasterDestination|C_DOWN|Downslope Curvature
-QgsProcessingParameterRasterDestination|C_DOWN_LOCAL|Local Downslope Curvature
-QgsProcessingParameterNumber|WEIGHTING|Upslope Weighting|QgsProcessingParameterNumber.Double|0.500000|False|0.000000|1.000000

@@ -20,12 +20,13 @@
 
 #include <memory>
 #include "qgsvectordataprovider.h"
-#include "qgsdatasourceuri.h"
 #include "qgsafsshareddata.h"
 #include "qgscoordinatereferencesystem.h"
 #include "geometry/qgswkbtypes.h"
 #include "qgsfields.h"
 #include "qgslayermetadata.h"
+#include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
 
 #include "qgsprovidermetadata.h"
 #include "qgshttpheaders.h"
@@ -39,8 +40,8 @@ class QgsAfsProvider : public QgsVectorDataProvider
 
   public:
 
-    static const QString AFS_PROVIDER_KEY;
-    static const QString AFS_PROVIDER_DESCRIPTION;
+    static const inline QString AFS_PROVIDER_KEY = QStringLiteral( "arcgisfeatureserver" );
+    static const inline QString AFS_PROVIDER_DESCRIPTION = QStringLiteral( "ArcGIS Feature Service data provider" );
 
     QgsAfsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 

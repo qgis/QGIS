@@ -20,19 +20,6 @@ Stores global configuration for labeling engine
 #include "qgslabelingenginesettings.h"
 %End
   public:
-    enum Flag
-    {
-      UseAllLabels,
-      UsePartialCandidates,
-      // TODO QGIS 4.0: remove
-      RenderOutlineLabels,
-      DrawLabelRectOnly,
-      DrawCandidates,
-      DrawUnplacedLabels,
-      CollectUnplacedLabels,
-    };
-    typedef QFlags<QgsLabelingEngineSettings::Flag> Flags;
-
 
 
     enum Search
@@ -44,12 +31,6 @@ Stores global configuration for labeling engine
       Falp
     };
 
-    enum PlacementEngineVersion
-    {
-      PlacementEngineVersion1,
-      PlacementEngineVersion2,
-    };
-
     QgsLabelingEngineSettings();
 
     void clear();
@@ -57,19 +38,19 @@ Stores global configuration for labeling engine
 Returns the configuration to the defaults
 %End
 
-    void setFlags( Flags flags );
+    void setFlags( Qgis::LabelingFlags flags );
 %Docstring
 Sets flags of the labeling engine
 %End
-    Flags flags() const;
+    Qgis::LabelingFlags flags() const;
 %Docstring
 Gets flags of the labeling engine
 %End
-    bool testFlag( Flag f ) const;
+    bool testFlag( Qgis::LabelingFlag f ) const;
 %Docstring
 Test whether a particular flag is enabled
 %End
-    void setFlag( Flag f, bool enabled = true );
+    void setFlag( Qgis::LabelingFlag f, bool enabled = true );
 %Docstring
 Sets whether a particual flag is enabled
 %End
@@ -188,7 +169,7 @@ Sets the ``color`` to use when rendering unplaced labels.
 .. versionadded:: 3.10
 %End
 
-    PlacementEngineVersion placementVersion() const;
+    Qgis::LabelPlacementEngineVersion placementVersion() const;
 %Docstring
 Returns the placement engine version, which dictates how the label placement problem is solved.
 
@@ -197,7 +178,7 @@ Returns the placement engine version, which dictates how the label placement pro
 .. versionadded:: 3.10.2
 %End
 
-    void setPlacementVersion( PlacementEngineVersion version );
+    void setPlacementVersion( Qgis::LabelPlacementEngineVersion version );
 %Docstring
 Sets the placement engine ``version``, which dictates how the label placement problem is solved.
 
@@ -207,9 +188,6 @@ Sets the placement engine ``version``, which dictates how the label placement pr
 %End
 
 };
-
-QFlags<QgsLabelingEngineSettings::Flag> operator|(QgsLabelingEngineSettings::Flag f1, QFlags<QgsLabelingEngineSettings::Flag> f2);
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

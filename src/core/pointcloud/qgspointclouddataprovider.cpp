@@ -22,6 +22,7 @@
 #include "qgspointcloudrequest.h"
 #include "qgsgeometryengine.h"
 #include "qgspointcloudstatscalculator.h"
+#include "qgsthreadingutils.h"
 
 #include <mutex>
 #include <QDebug>
@@ -41,27 +42,37 @@ QgsPointCloudDataProvider::~QgsPointCloudDataProvider() = default;
 
 QgsPointCloudDataProvider::Capabilities QgsPointCloudDataProvider::capabilities() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return QgsPointCloudDataProvider::NoCapabilities;
 }
 
 bool QgsPointCloudDataProvider::hasValidIndex() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsPointCloudIndex *lIndex = index();
   return lIndex && lIndex->isValid();
 }
 
 QgsGeometry QgsPointCloudDataProvider::polygonBounds() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return QgsGeometry::fromRect( extent() );
 }
 
 QVariantMap QgsPointCloudDataProvider::originalMetadata() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return QVariantMap();
 }
 
 QgsPointCloudRenderer *QgsPointCloudDataProvider::createRenderer( const QVariantMap & ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return nullptr;
 }
 
@@ -173,11 +184,15 @@ QMap<int, QString> QgsPointCloudDataProvider::translatedDataFormatIds()
 
 bool QgsPointCloudDataProvider::hasStatisticsMetadata() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return index() && index()->hasStatisticsMetadata();
 }
 
 QVariant QgsPointCloudDataProvider::metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsPointCloudIndex *pcIndex = index();
   if ( pcIndex )
   {
@@ -188,6 +203,8 @@ QVariant QgsPointCloudDataProvider::metadataStatistic( const QString &attribute,
 
 QVariantList QgsPointCloudDataProvider::metadataClasses( const QString &attribute ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsPointCloudIndex *pcIndex = index();
   if ( pcIndex )
   {
@@ -198,6 +215,8 @@ QVariantList QgsPointCloudDataProvider::metadataClasses( const QString &attribut
 
 QVariant QgsPointCloudDataProvider::metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsPointCloudIndex *pcIndex = index();
   if ( pcIndex )
   {
@@ -206,9 +225,10 @@ QVariant QgsPointCloudDataProvider::metadataClassStatistic( const QString &attri
   return QVariant();
 }
 
-
 QgsPointCloudStatistics QgsPointCloudDataProvider::metadataStatistics()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsPointCloudIndex *pcIndex = index();
   if ( pcIndex )
   {
@@ -277,6 +297,8 @@ QVector<QVariantMap> QgsPointCloudDataProvider::identify(
   const QgsGeometry &extentGeometry,
   const QgsDoubleRange &extentZRange, int pointsLimit )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QVector<QVariantMap> acceptedPoints;
 
   QgsPointCloudIndex *index = this->index();
@@ -307,6 +329,8 @@ QVector<IndexedPointCloudNode> QgsPointCloudDataProvider::traverseTree(
   const QgsGeometry &extentGeometry,
   const QgsDoubleRange &extentZRange )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QVector<IndexedPointCloudNode> nodes;
 
   const QgsDoubleRange nodeZRange = pc->nodeZRange( n );
@@ -334,6 +358,8 @@ QVector<IndexedPointCloudNode> QgsPointCloudDataProvider::traverseTree(
 
 bool QgsPointCloudDataProvider::setSubsetString( const QString &subset, bool updateFeatureCount )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   Q_UNUSED( updateFeatureCount )
   const auto i = index();
   if ( !i )
@@ -348,6 +374,8 @@ bool QgsPointCloudDataProvider::setSubsetString( const QString &subset, bool upd
 
 QString QgsPointCloudDataProvider::subsetString() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mSubsetString;
 }
 

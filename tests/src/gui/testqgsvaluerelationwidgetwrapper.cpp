@@ -24,7 +24,7 @@
 #include <qgsvectorlayer.h>
 #include "qgseditorwidgetwrapper.h"
 #include <editorwidgets/qgsvaluerelationwidgetwrapper.h>
-#include <QTableWidget>
+#include "qgsfilterlineedit.h"
 #include <QComboBox>
 #include "qgsgui.h"
 #include <gdal_version.h>
@@ -60,6 +60,8 @@ class TestQgsValueRelationWidgetWrapper : public QObject
     void testMatchLayerName();
     //! Check that setFeature works correctly after regression #42003
     void testRegressionGH42003();
+    void testAllowMultiColumns();
+    void testAllowMultiAndCompleter();
 };
 
 void TestQgsValueRelationWidgetWrapper::initTestCase()
@@ -86,24 +88,48 @@ void TestQgsValueRelationWidgetWrapper::cleanup()
 void TestQgsValueRelationWidgetWrapper::testScrollBarUnlocked()
 {
   // create a vector layer
-  QgsVectorLayer vl1( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=fk|:int" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer vl1( QStringLiteral( "Polygon?crs=epsg:4326&field=pk:int&field=province:int&field=municipality:string" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer vl2( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=fk_province:int&field=fk_municipality:int" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
   QgsProject::instance()->addMapLayer( &vl1, false, false );
+  QgsProject::instance()->addMapLayer( &vl2, false, false );
 
-  // build a value relation widget wrapper
-  QgsValueRelationWidgetWrapper w( &vl1, 0, nullptr, nullptr );
+  // insert some features
+  QgsFeature f1( vl1.fields() );
+  f1.setAttribute( QStringLiteral( "pk" ), 1 );
+  f1.setAttribute( QStringLiteral( "province" ), 123 );
+  f1.setAttribute( QStringLiteral( "municipality" ), QStringLiteral( "Some Place By The River" ) );
+  f1.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POLYGON(( 0 0, 0 1, 1 1, 1 0, 0 0 ))" ) ) );
+  QVERIFY( f1.isValid() );
+  QgsFeature f2( vl1.fields() );
+  f2.setAttribute( QStringLiteral( "pk" ), 2 );
+  f2.setAttribute( QStringLiteral( "province" ), 245 );
+  f2.setAttribute( QStringLiteral( "municipality" ), QStringLiteral( "Dreamland By The Clouds" ) );
+  f2.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POLYGON(( 1 0, 1 1, 2 1, 2 0, 1 0 ))" ) ) );
+  QVERIFY( f2.isValid() );
+  QVERIFY( vl1.dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 ) );
 
-  QVariantMap config;
-  config.insert( QStringLiteral( "AllowMulti" ), true );
-  w.setConfig( config );
+  QgsFeature f3( vl2.fields() );
+  f3.setAttribute( QStringLiteral( "fk_province" ), 123 );
+  f3.setAttribute( QStringLiteral( "fk_municipality" ), 1 );
+  f3.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POINT( 0.5 0.5)" ) ) );
+  QVERIFY( f3.isValid() );
+  QVERIFY( f3.geometry().isGeosValid() );
+  QVERIFY( vl2.dataProvider()->addFeature( f3 ) );
+
+  // build a value relation widget wrapper for municipality
+  QgsValueRelationWidgetWrapper w( &vl2, vl2.fields().indexOf( QLatin1String( "fk_municipality" ) ), nullptr, nullptr );
+  QVariantMap cfg;
+  cfg.insert( QStringLiteral( "Layer" ), vl1.id() );
+  cfg.insert( QStringLiteral( "Key" ),  QStringLiteral( "pk" ) );
+  cfg.insert( QStringLiteral( "Value" ), QStringLiteral( "municipality" ) );
+  cfg.insert( QStringLiteral( "AllowMulti" ), true );
+  cfg.insert( QStringLiteral( "NofColumns" ), 1 );
+  cfg.insert( QStringLiteral( "AllowNull" ), false );
+  cfg.insert( QStringLiteral( "OrderByValue" ), true );
+  cfg.insert( QStringLiteral( "FilterExpression" ), QStringLiteral( "\"province\" = current_value('fk_province')" ) );
+  cfg.insert( QStringLiteral( "UseCompleter" ), false );
+  w.setConfig( cfg );
   w.widget();
-  w.setEnabled( true );
-
-  // add an item virtually
-  QTableWidgetItem item;
-  item.setText( QStringLiteral( "MyText" ) );
-  w.mTableWidget->setItem( 0, 0, &item );
-
-  QCOMPARE( w.mTableWidget->item( 0, 0 )->text(), QString( "MyText" ) );
 
   // when the widget wrapper is enabled, the container should be enabled
   // as well as items
@@ -1672,5 +1698,124 @@ void TestQgsValueRelationWidgetWrapper::testRegressionGH42003()
 
 }
 
+void TestQgsValueRelationWidgetWrapper::testAllowMultiColumns()
+{
+  // create ogr gpkg layers
+  const QString myFileName( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  const QString myTempDirName = tempDir.path();
+  QFile::copy( myFileName + "/provider/test_json.gpkg", myTempDirName + "/test_json.gpkg" );
+  const QString myTempFileName = myTempDirName + "/test_json.gpkg";
+  const QFileInfo myMapFileInfo( myTempFileName );
+  std::unique_ptr<QgsVectorLayer> vl_text( new QgsVectorLayer( myMapFileInfo.filePath() + "|layername=foo", "test", QStringLiteral( "ogr" ) ) );
+  std::unique_ptr<QgsVectorLayer> vl_authors( new QgsVectorLayer( myMapFileInfo.filePath() + "|layername=author", "test", QStringLiteral( "ogr" ) ) );
+  QVERIFY( vl_text->isValid() );
+  QVERIFY( vl_authors->isValid() );
+
+  QgsProject::instance()->addMapLayer( vl_text.get(), false, false );
+  QgsProject::instance()->addMapLayer( vl_authors.get(), false, false );
+  vl_text->startEditing();
+
+  // build a value relation widget wrapper for authors
+  QgsValueRelationWidgetWrapper w_favoriteauthors( vl_text.get(), vl_text->fields().indexOf( QLatin1String( "PRFEDEA" ) ), nullptr, nullptr );
+  QVariantMap cfg_favoriteauthors;
+  cfg_favoriteauthors.insert( QStringLiteral( "Layer" ), vl_authors->id() );
+  cfg_favoriteauthors.insert( QStringLiteral( "Key" ),  QStringLiteral( "fid" ) );
+  cfg_favoriteauthors.insert( QStringLiteral( "Value" ), QStringLiteral( "NAME" ) );
+  cfg_favoriteauthors.insert( QStringLiteral( "AllowMulti" ), true );
+  cfg_favoriteauthors.insert( QStringLiteral( "NofColumns" ), 3 );
+  cfg_favoriteauthors.insert( QStringLiteral( "AllowNull" ), false );
+  cfg_favoriteauthors.insert( QStringLiteral( "OrderByValue" ), false );
+  cfg_favoriteauthors.insert( QStringLiteral( "UseCompleter" ), false );
+  w_favoriteauthors.setConfig( cfg_favoriteauthors );
+  w_favoriteauthors.widget();
+  w_favoriteauthors.setEnabled( true );
+
+  //check if set up nice
+  QCOMPARE( w_favoriteauthors.mTableWidget->rowCount(), 2 );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->text(), QStringLiteral( "Erich Gamma" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->data( Qt::UserRole ).toString(), QStringLiteral( "1" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 1 )->text(), QStringLiteral( "Richard Helm" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 1 )->data( Qt::UserRole ).toString(), QStringLiteral( "2" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 2 )->text(), QStringLiteral( "Ralph Johnson" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 2 )->data( Qt::UserRole ).toString(), QStringLiteral( "3" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 0 )->text(), QStringLiteral( "John Vlissides" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 0 )->data( Qt::UserRole ).toString(), QStringLiteral( "4" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 1 )->text(), QStringLiteral( "Douglas Adams" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 1 )->data( Qt::UserRole ).toString(), QStringLiteral( "5" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 2 )->text(), QStringLiteral( "Ken Follett" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 2 )->data( Qt::UserRole ).toString(), QStringLiteral( "6" ) );
+}
+
+void TestQgsValueRelationWidgetWrapper::testAllowMultiAndCompleter()
+{
+  // create ogr gpkg layers
+  const QString myFileName( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  const QString myTempDirName = tempDir.path();
+  QFile::copy( myFileName + "/provider/test_json.gpkg", myTempDirName + "/test_json.gpkg" );
+  const QString myTempFileName = myTempDirName + "/test_json.gpkg";
+  const QFileInfo myMapFileInfo( myTempFileName );
+  std::unique_ptr<QgsVectorLayer> vl_text( new QgsVectorLayer( myMapFileInfo.filePath() + "|layername=foo", "test", QStringLiteral( "ogr" ) ) );
+  std::unique_ptr<QgsVectorLayer> vl_authors( new QgsVectorLayer( myMapFileInfo.filePath() + "|layername=author", "test", QStringLiteral( "ogr" ) ) );
+  QVERIFY( vl_text->isValid() );
+  QVERIFY( vl_authors->isValid() );
+
+  QgsProject::instance()->addMapLayer( vl_text.get(), false, false );
+  QgsProject::instance()->addMapLayer( vl_authors.get(), false, false );
+  vl_text->startEditing();
+
+  // build a value relation widget wrapper for authors
+  QgsValueRelationWidgetWrapper w_favoriteauthors( vl_text.get(), vl_text->fields().indexOf( QLatin1String( "PRFEDEA" ) ), nullptr, nullptr );
+  QVariantMap cfg_favoriteauthors;
+  cfg_favoriteauthors.insert( QStringLiteral( "Layer" ), vl_authors->id() );
+  cfg_favoriteauthors.insert( QStringLiteral( "Key" ),  QStringLiteral( "fid" ) );
+  cfg_favoriteauthors.insert( QStringLiteral( "Value" ), QStringLiteral( "NAME" ) );
+  cfg_favoriteauthors.insert( QStringLiteral( "AllowMulti" ), true );
+  cfg_favoriteauthors.insert( QStringLiteral( "NofColumns" ), 3 );
+  cfg_favoriteauthors.insert( QStringLiteral( "AllowNull" ), false );
+  cfg_favoriteauthors.insert( QStringLiteral( "OrderByValue" ), false );
+  cfg_favoriteauthors.insert( QStringLiteral( "UseCompleter" ), true );
+  w_favoriteauthors.setConfig( cfg_favoriteauthors );
+  w_favoriteauthors.widget();
+  w_favoriteauthors.setEnabled( true );
+
+  //check if set up nice
+  QCOMPARE( w_favoriteauthors.mTableWidget->rowCount(), 2 );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->text(), QStringLiteral( "Erich Gamma" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->data( Qt::UserRole ).toString(), QStringLiteral( "1" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 1 )->text(), QStringLiteral( "Richard Helm" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 1 )->data( Qt::UserRole ).toString(), QStringLiteral( "2" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 2 )->text(), QStringLiteral( "Ralph Johnson" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 2 )->data( Qt::UserRole ).toString(), QStringLiteral( "3" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 0 )->text(), QStringLiteral( "John Vlissides" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 0 )->data( Qt::UserRole ).toString(), QStringLiteral( "4" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 1 )->text(), QStringLiteral( "Douglas Adams" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 1 )->data( Qt::UserRole ).toString(), QStringLiteral( "5" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 2 )->text(), QStringLiteral( "Ken Follett" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 2 )->data( Qt::UserRole ).toString(), QStringLiteral( "6" ) );
+
+  // set a filter string and check if items are filtered
+  w_favoriteauthors.mTableWidget->mSearchWidget->setText( QStringLiteral( "john" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->rowCount(), 1 );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->text(), QStringLiteral( "Ralph Johnson" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->data( Qt::UserRole ).toString(), QStringLiteral( "3" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 1 )->text(), QStringLiteral( "John Vlissides" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 1 )->data( Qt::UserRole ).toString(), QStringLiteral( "4" ) );
+
+  // clear the filter and check that all are back
+  w_favoriteauthors.mTableWidget->mSearchWidget->clear();
+  QCOMPARE( w_favoriteauthors.mTableWidget->rowCount(), 2 );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->text(), QStringLiteral( "Erich Gamma" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 0 )->data( Qt::UserRole ).toString(), QStringLiteral( "1" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 1 )->text(), QStringLiteral( "Richard Helm" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 1 )->data( Qt::UserRole ).toString(), QStringLiteral( "2" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 2 )->text(), QStringLiteral( "Ralph Johnson" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 0, 2 )->data( Qt::UserRole ).toString(), QStringLiteral( "3" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 0 )->text(), QStringLiteral( "John Vlissides" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 0 )->data( Qt::UserRole ).toString(), QStringLiteral( "4" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 1 )->text(), QStringLiteral( "Douglas Adams" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 1 )->data( Qt::UserRole ).toString(), QStringLiteral( "5" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 2 )->text(), QStringLiteral( "Ken Follett" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 1, 2 )->data( Qt::UserRole ).toString(), QStringLiteral( "6" ) );
+}
 QGSTEST_MAIN( TestQgsValueRelationWidgetWrapper )
 #include "testqgsvaluerelationwidgetwrapper.moc"

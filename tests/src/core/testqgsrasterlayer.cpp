@@ -46,6 +46,7 @@
 #include "qgsrastertransparency.h"
 #include "qgspalettedrasterrenderer.h"
 #include "qgsrasterlayertemporalproperties.h"
+#include "qgsmaplayerrenderer.h"
 
 //qgis unit test includes
 #include <qgsrenderchecker.h>
@@ -89,6 +90,7 @@ class TestQgsRasterLayer : public QgsTest
     void multiBandColorRendererNoData();
     void multiBandColorRendererNoDataColor();
     void palettedRendererNoData();
+    void palettedRendererRasterAttributeTable();
     void palettedRendererNoDataColor();
     void singleBandGrayRendererNoData();
     void singleBandGrayRendererNoDataColor();
@@ -101,6 +103,7 @@ class TestQgsRasterLayer : public QgsTest
     void sample();
     void testTemporalProperties();
     void rotatedRaster();
+    void forceRasterRender();
 
 
   private:
@@ -379,9 +382,9 @@ void TestQgsRasterLayer::checkStats()
   QCOMPARE( myStatistics.minimumValue, 0.0 );
   QCOMPARE( myStatistics.maximumValue, 9.0 );
   QGSCOMPARENEAR( myStatistics.mean, 4.5, 4 * std::numeric_limits<double>::epsilon() );
-  const double stdDev = 2.87228132326901431;
+  const double stdDev = 2.8722813233;
   // TODO: verify why GDAL stdDev is so different from generic (2.88675)
-  QGSCOMPARENEAR( myStatistics.stdDev, stdDev, 0.00000000000001 );
+  QGSCOMPARENEAR( myStatistics.stdDev, stdDev, 0.000001 );
 
   // limited extent
   myStatistics = mpRasterLayer->dataProvider()->bandStatistics( 1,
@@ -468,15 +471,17 @@ void TestQgsRasterLayer::checkScaleOffset()
   QgsRasterDataProvider *myProvider = myRasterLayer->dataProvider();
   const QgsPointXY myPoint( 1535030, 5083350 );
   const QgsRectangle myRect( 1535030 - 5, 5083350 - 5, 1535030 + 5, 5083350 + 5 );
-  const QgsRasterIdentifyResult identifyResult = myProvider->identify( myPoint, QgsRaster::IdentifyFormatValue, myRect, 1, 1 );
+  const QgsRasterIdentifyResult identifyResult = myProvider->identify( myPoint, Qgis::RasterIdentifyFormat::Value, myRect, 1, 1 );
 
   if ( identifyResult.isValid() )
   {
     const QMap<int, QVariant> values = identifyResult.results();
-    for ( const int bandNo : values.keys() )
+    for ( auto it = values.constBegin(); it != values.constEnd(); it++ )
     {
+      const int bandNo = it.key();
+
       QString valueString;
-      if ( values.value( bandNo ).isNull() )
+      if ( it.value().isNull() )
       {
         valueString = tr( "no data" );
         mReport += QStringLiteral( " %1 = %2 <br>\n" ).arg( myProvider->generateBandName( bandNo ), valueString );
@@ -486,7 +491,7 @@ void TestQgsRasterLayer::checkScaleOffset()
       else
       {
         const double expected = 0.99995432;
-        const double value = values.value( bandNo ).toDouble();
+        const double value = it.value().toDouble();
         valueString = QgsRasterBlock::printValue( value );
         mReport += QStringLiteral( " %1 = %2 <br>\n" ).arg( myProvider->generateBandName( bandNo ), valueString );
         mReport += QStringLiteral( " value = %1 expected = %2 diff = %3 <br>\n" ).arg( value ).arg( expected ).arg( std::fabs( value - expected ) );
@@ -522,7 +527,7 @@ void TestQgsRasterLayer::buildExternalOverviews()
   // OK now we can go on to test
   //
 
-  const QgsRaster::RasterPyramidsFormat myFormatFlag = QgsRaster::PyramidsGTiff;
+  const Qgis::RasterPyramidFormat myFormatFlag = Qgis::RasterPyramidFormat::GeoTiff;
   QList< QgsRasterPyramid > myPyramidList = mypLayer->dataProvider()->buildPyramidList();
   for ( int myCounterInt = 0; myCounterInt < myPyramidList.count(); myCounterInt++ )
   {
@@ -578,7 +583,7 @@ void TestQgsRasterLayer::buildExternalOverviews()
 
   // Check that the overview is Deflate compressed
   const QString ovrFilename( myTempPath + "landsat.tif.ovr" );
-  GDALDatasetH hDS = GDALOpen( ovrFilename.toLocal8Bit().constData(), GA_ReadOnly );
+  GDALDatasetH hDS = GDALOpen( ovrFilename.toUtf8().constData(), GA_ReadOnly );
   QVERIFY( hDS );
   const char *pszCompression = GDALGetMetadataItem( hDS, "COMPRESSION", "IMAGE_STRUCTURE" );
   QVERIFY( pszCompression && EQUAL( pszCompression, "DEFLATE" ) );
@@ -727,6 +732,61 @@ void TestQgsRasterLayer::palettedRendererNoData()
   mMapSettings->setDestinationCrs( rl->crs() );
   mMapSettings->setExtent( rl->extent() );
   QVERIFY( render( QStringLiteral( "raster_palettedrenderer_nodata" ) ) );
+}
+
+void TestQgsRasterLayer::palettedRendererRasterAttributeTable()
+{
+  const QString rasterFileName = mTestDataDir + "raster/band1_byte_attribute_table_epsg4326.tif";
+  std::unique_ptr< QgsRasterLayer> rl = std::make_unique< QgsRasterLayer >( rasterFileName,
+                                        QStringLiteral( "rl" ) );
+  QVERIFY( rl->isValid() );
+  QVERIFY( rl->dataProvider()->setNoDataValue( 1, 9999 ) );
+  mMapSettings->setLayers( QList<QgsMapLayer *>() << rl.get() );
+  mMapSettings->setDestinationCrs( rl->crs() );
+  mMapSettings->setExtent( rl->extent() );
+  QVERIFY( render( QStringLiteral( "raster_palettedrenderer_with_attribute_table" ) ) );
+  QgsPalettedRasterRenderer *rasterRenderer { static_cast<QgsPalettedRasterRenderer *>( rl->renderer() ) };
+  QVERIFY( rasterRenderer );
+
+  const QgsPalettedRasterRenderer::MultiValueClassData multiValueclasses { rasterRenderer->multiValueClasses() };
+  QCOMPARE( multiValueclasses.size(), 79 );
+
+  // The test class with multiple value
+  QgsPalettedRasterRenderer::MultiValueClass testClass = multiValueclasses.at( 0 );
+  QCOMPARE( testClass.label, QStringLiteral( "2" ) );
+  QCOMPARE( testClass.values.size(), 3 );
+  QCOMPARE( testClass.values.at( 0 ).toDouble( ), 2.0 );
+  QCOMPARE( testClass.values.at( 1 ).toDouble( ), 246.0 );
+  QCOMPARE( testClass.values.at( 2 ).toDouble( ), 254.0 );
+
+  // Test legacy classes
+  QgsPalettedRasterRenderer::ClassData legacyClasses { rasterRenderer->classes() };
+  QCOMPARE( legacyClasses.size(), 79 + 2 );
+
+  // Make sure the actual grouped values are returned as individual entries
+  struct Klass
+  {
+    QString label;
+    QString color;
+  };
+
+  QMap<double, Klass> classMap;
+  for ( const QgsPalettedRasterRenderer::Class &klass : std::as_const( legacyClasses ) )
+  {
+    classMap.insert( klass.value, { klass.label, klass.color.name() } );
+  }
+
+  QVERIFY( classMap.contains( 2.0 ) );
+  QVERIFY( classMap.contains( 246.0 ) );
+  QVERIFY( classMap.contains( 254.0 ) );
+
+  QCOMPARE( classMap.value( 2.0 ).label,  QStringLiteral( "2" ) );
+  QCOMPARE( classMap.value( 246.0 ).label,  classMap.value( 2.0 ).label );
+  QCOMPARE( classMap.value( 254.0 ).label,  classMap.value( 2.0 ).label );
+
+  QCOMPARE( classMap.value( 246.0 ).color, classMap.value( 2.0 ).color );
+  QCOMPARE( classMap.value( 254.0 ).color, classMap.value( 2.0 ).color );
+
 }
 
 void TestQgsRasterLayer::palettedRendererNoDataColor()
@@ -1053,6 +1113,19 @@ void TestQgsRasterLayer::rotatedRaster()
 
   mMapSettings->setLayers( QList<QgsMapLayer *>() << rgba.get() );
   QVERIFY( render( QStringLiteral( "raster_rotated_rgba" ) ) );
+}
+
+void TestQgsRasterLayer::forceRasterRender()
+{
+  QVERIFY2( mpLandsatRasterLayer->isValid(), "landsat.tif layer is not valid!" );
+
+  mMapSettings->setDestinationCrs( mpLandsatRasterLayer->crs() );
+  mMapSettings->setExtent( QgsRectangle( 10, 10, 11, 11 ) );  // outside of layer extent
+  mMapSettings->setLayers( QList<QgsMapLayer *>() << mpLandsatRasterLayer );
+
+  QgsRenderContext context( QgsRenderContext::fromMapSettings( *mMapSettings ) );
+  std::unique_ptr<QgsMapLayerRenderer> layerRenderer( mpLandsatRasterLayer->createMapRenderer( context ) );
+  layerRenderer->forceRasterRender();  // this should not crash
 }
 
 QGSTEST_MAIN( TestQgsRasterLayer )

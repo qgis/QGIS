@@ -22,6 +22,7 @@
 #include <locale>
 #include <iomanip>
 
+///@cond PRIVATE
 struct formatter : std::numpunct<wchar_t>
 {
   formatter( QChar thousands, bool showThousands, QChar decimal )
@@ -37,7 +38,7 @@ struct formatter : std::numpunct<wchar_t>
   wchar_t mDecimal;
   bool mShowThousands = true;
 };
-
+///@endcond
 
 QgsGeographicCoordinateNumericFormat::QgsGeographicCoordinateNumericFormat()
 {
@@ -200,7 +201,7 @@ QString QgsGeographicCoordinateNumericFormat::formatLatitudeAsDegreesMinutesSeco
     wrappedY = wrappedY + 180.0;
   }
 
-  const int precisionMultiplier = std::pow( 10.0, numberDecimalPlaces() );
+  const double precisionMultiplier = std::pow( 10.0, numberDecimalPlaces() );
 
   int degreesY = int( std::fabs( wrappedY ) );
   const double floatMinutesY = ( std::fabs( wrappedY ) - degreesY ) * 60.0;
@@ -291,7 +292,7 @@ QString QgsGeographicCoordinateNumericFormat::formatLongitudeAsDegreesMinutesSec
     wrappedX = wrappedX + 360.0;
   }
 
-  const int precisionMultiplier = std::pow( 10.0, numberDecimalPlaces() );
+  const double precisionMultiplier = std::pow( 10.0, numberDecimalPlaces() );
 
   int degreesX = int( std::fabs( wrappedX ) );
   const double floatMinutesX = ( std::fabs( wrappedX ) - degreesX ) * 60.0;
@@ -391,7 +392,7 @@ QString QgsGeographicCoordinateNumericFormat::formatLatitudeAsDegreesMinutes( do
   int degreesY = int( std::fabs( wrappedY ) );
   double floatMinutesY = ( std::fabs( wrappedY ) - degreesY ) * 60.0;
 
-  const int precisionMultiplier = std::pow( 10.0, numberDecimalPlaces() );
+  const double precisionMultiplier = std::pow( 10.0, numberDecimalPlaces() );
 
   //make sure rounding to specified precision doesn't create minutes >= 60
   if ( std::round( floatMinutesY * precisionMultiplier ) >= 60 * precisionMultiplier )
@@ -462,7 +463,7 @@ QString QgsGeographicCoordinateNumericFormat::formatLongitudeAsDegreesMinutes( d
   int degreesX = int( std::fabs( wrappedX ) );
   double floatMinutesX = ( std::fabs( wrappedX ) - degreesX ) * 60.0;
 
-  const int precisionMultiplier = std::pow( 10.0, numberDecimalPlaces() );
+  const double precisionMultiplier = std::pow( 10.0, numberDecimalPlaces() );
 
   //make sure rounding to specified precision doesn't create minutes >= 60
   if ( std::round( floatMinutesX * precisionMultiplier ) >= 60 * precisionMultiplier )
@@ -538,7 +539,7 @@ QString QgsGeographicCoordinateNumericFormat::formatLatitudeAsDegrees( double va
 
   const double absY = std::fabs( wrappedY );
 
-  const int precisionMultiplier = std::pow( 10.0, numberDecimalPlaces() );
+  const double precisionMultiplier = std::pow( 10.0, numberDecimalPlaces() );
 
   QString hemisphere;
   QString sign;
@@ -590,7 +591,7 @@ QString QgsGeographicCoordinateNumericFormat::formatLongitudeAsDegrees( double v
 
   const double absX = std::fabs( wrappedX );
 
-  const int precisionMultiplier = std::pow( 10.0, numberDecimalPlaces() );
+  const double precisionMultiplier = std::pow( 10.0, numberDecimalPlaces() );
 
   QString hemisphere;
   QString sign;

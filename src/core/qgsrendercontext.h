@@ -46,6 +46,7 @@ class QgsRenderedFeatureHandlerInterface;
 class QgsSymbolLayer;
 class QgsMaskIdProvider;
 class QgsMapClippingRegion;
+class QgsElevationMap;
 
 
 /**
@@ -1050,6 +1051,25 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      */
     void setCurrentFrame( long long frame );
 
+
+    /**
+     * Returns the destination elevation map for the render operation.
+     *
+     * \see setElevationMap()
+     * \since QGIS 3.30
+     */
+    QgsElevationMap *elevationMap() const;
+
+    /**
+     * Sets the destination elevation \a map for the render operation. Ownership of the elevation map
+     * is not transferred and the QgsElevationMap destination must stay alive for the duration
+     * of any rendering operations.
+     *
+     * \see elevationMap()
+     * \since QGIS 3.30
+     */
+    void setElevationMap( QgsElevationMap *map );
+
   private:
 
     Qgis::RenderContextFlags mFlags;
@@ -1174,6 +1194,8 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;
 #endif
+
+    QgsElevationMap *mElevationMap = nullptr;
 };
 
 #ifndef SIP_RUN

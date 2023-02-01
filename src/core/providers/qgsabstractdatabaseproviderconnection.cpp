@@ -1015,7 +1015,32 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsAbstractDatabaseProviderConn
   };
 }
 
+QSet<QString> QgsAbstractDatabaseProviderConnection::illegalFieldNames() const
+{
+  return mIllegalFieldNames;
+}
+
 QList<Qgis::FieldDomainType> QgsAbstractDatabaseProviderConnection::supportedFieldDomainTypes() const
+{
+  return {};
+}
+
+QList<Qgis::RelationshipCardinality> QgsAbstractDatabaseProviderConnection::supportedRelationshipCardinalities() const
+{
+  return {};
+}
+
+QList<Qgis::RelationshipStrength> QgsAbstractDatabaseProviderConnection::supportedRelationshipStrengths() const
+{
+  return {};
+}
+
+Qgis::RelationshipCapabilities QgsAbstractDatabaseProviderConnection::supportedRelationshipCapabilities() const
+{
+  return Qgis::RelationshipCapabilities();
+}
+
+QStringList QgsAbstractDatabaseProviderConnection::relatedTableTypes() const
 {
   return {};
 }
@@ -1338,6 +1363,21 @@ QList< QgsWeakRelation > QgsAbstractDatabaseProviderConnection::relationships( c
 {
   checkCapability( Capability::RetrieveRelationships );
   return {};
+}
+
+void QgsAbstractDatabaseProviderConnection::addRelationship( const QgsWeakRelation & ) const
+{
+  checkCapability( Capability::AddRelationship );
+}
+
+void QgsAbstractDatabaseProviderConnection::updateRelationship( const QgsWeakRelation & ) const
+{
+  checkCapability( Capability::UpdateRelationship );
+}
+
+void QgsAbstractDatabaseProviderConnection::deleteRelationship( const QgsWeakRelation & ) const
+{
+  checkCapability( Capability::DeleteRelationship );
 }
 
 QString QgsAbstractDatabaseProviderConnection::TableProperty::defaultName() const

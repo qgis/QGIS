@@ -42,10 +42,10 @@ class CORE_EXPORT QgsFontManager : public QObject
 
 #ifndef SIP_RUN
     //! Settings entry for font family replacements
-    static const inline QgsSettingsEntryStringList settingsFontFamilyReplacements = QgsSettingsEntryStringList( QStringLiteral( "fontFamilyReplacements" ), QgsSettings::Prefix::FONTS, QStringList(), QStringLiteral( "Automatic font family replacements" ) );
+    static const QgsSettingsEntryStringList *settingsFontFamilyReplacements;
 
     //! Settings entry for font family replacements
-    static const inline QgsSettingsEntryBool settingsDownloadMissingFonts = QgsSettingsEntryBool( QStringLiteral( "downloadMissingFonts" ), QgsSettings::Prefix::FONTS, true, QStringLiteral( "Automatically download missing fonts whenever possible" ) );
+    static const QgsSettingsEntryBool *settingsDownloadMissingFonts;
 #endif
 
     /**

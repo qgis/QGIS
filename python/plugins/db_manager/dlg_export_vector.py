@@ -46,8 +46,8 @@ class DlgExportVector(QDialog, Ui_Dialog):
         self.setupUi(self)
 
         vectorFilterName = "lastVectorFileFilter"  # "lastRasterFileFilter"
-        self.lastUsedVectorFilterSettingsKey = u"/UI/{0}".format(vectorFilterName)
-        self.lastUsedVectorDirSettingsKey = u"/UI/{0}Dir".format(vectorFilterName)
+        self.lastUsedVectorFilterSettingsKey = "/UI/{0}".format(vectorFilterName)
+        self.lastUsedVectorDirSettingsKey = "/UI/{0}Dir".format(vectorFilterName)
 
         # update UI
         self.setupWorkingMode()

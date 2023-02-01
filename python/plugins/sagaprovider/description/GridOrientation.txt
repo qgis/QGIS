@@ -1,5 +1,0 @@
-Grid Orientation
-grid_tools
-QgsProcessingParameterRasterLayer|INPUT|Grid|None|False
-QgsProcessingParameterEnum|METHOD|Method|[0] Copy;[1] Flip;[2] Mirror;[3] Invert
-QgsProcessingParameterRasterDestination|RESULT|Changed Grid

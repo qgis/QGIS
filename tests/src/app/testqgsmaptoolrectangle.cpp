@@ -105,7 +105,7 @@ void TestQgsMapToolRectangle::resetMapTool( QgsMapToolShapeMetadata *metadata )
 
 void TestQgsMapToolRectangle::testRectangleFromCenter()
 {
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 333 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 333 );
   mLayer->startEditing();
 
   QgsMapToolShapeRectangleCenterMetadata md;
@@ -126,12 +126,12 @@ void TestQgsMapToolRectangle::testRectangleFromCenter()
   QVERIFY( static_cast<QgsLineString *>( f.geometry().get() )->equals( line ) );
 
   mLayer->rollBack();
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 0 );
 }
 
 void TestQgsMapToolRectangle::testRectangleFromCenterWithDeletedVertex()
 {
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 333 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 333 );
   mLayer->startEditing();
 
   QgsMapToolShapeRectangleCenterMetadata md;
@@ -154,12 +154,12 @@ void TestQgsMapToolRectangle::testRectangleFromCenterWithDeletedVertex()
   QVERIFY( static_cast<QgsLineString *>( f.geometry().get() )->equals( line ) );
 
   mLayer->rollBack();
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 0 );
 }
 
 void TestQgsMapToolRectangle::testRectangleFromExtent()
 {
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 222 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 222 );
   mLayer->startEditing();
 
   QgsMapToolShapeRectangleExtentMetadata md;
@@ -180,11 +180,11 @@ void TestQgsMapToolRectangle::testRectangleFromExtent()
   QVERIFY( static_cast<QgsLineString *>( f.geometry().get() )->equals( line ) );
 
   mLayer->rollBack();
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 0 );
 }
 void TestQgsMapToolRectangle::testRectangleFromExtentWithDeletedVertex()
 {
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 222 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 222 );
   mLayer->startEditing();
 
   QgsMapToolShapeRectangleExtentMetadata md;
@@ -207,13 +207,13 @@ void TestQgsMapToolRectangle::testRectangleFromExtentWithDeletedVertex()
   QVERIFY( static_cast<QgsLineString *>( f.geometry().get() )->equals( line ) );
 
   mLayer->rollBack();
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 0 );
 }
 
 
 void TestQgsMapToolRectangle::testRectangleFrom3PointsDistance()
 {
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 111 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 111 );
   mLayer->startEditing();
 
   QgsMapToolShapeRectangle3PointsMetadata md( QgsMapToolShapeRectangle3PointsMetadata::CreateMode::Distance );
@@ -236,11 +236,11 @@ void TestQgsMapToolRectangle::testRectangleFrom3PointsDistance()
   QVERIFY( static_cast<QgsLineString *>( f.geometry().get() )->equals( line ) );
 
   mLayer->rollBack();
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 0 );
 }
 void TestQgsMapToolRectangle::testRectangleFrom3PointsDistanceWithDeletedVertex()
 {
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 111 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 111 );
   mLayer->startEditing();
 
   QgsMapToolShapeRectangle3PointsMetadata md( QgsMapToolShapeRectangle3PointsMetadata::CreateMode::Distance );
@@ -265,12 +265,12 @@ void TestQgsMapToolRectangle::testRectangleFrom3PointsDistanceWithDeletedVertex(
   QVERIFY( static_cast<QgsLineString *>( f.geometry().get() )->equals( line ) );
 
   mLayer->rollBack();
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 0 );
 }
 
 void TestQgsMapToolRectangle::testRectangleFrom3PointsProjected()
 {
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 111 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 111 );
   mLayer->startEditing();
 
   QgsMapToolShapeRectangle3PointsMetadata md( QgsMapToolShapeRectangle3PointsMetadata::CreateMode::Projected );
@@ -293,11 +293,11 @@ void TestQgsMapToolRectangle::testRectangleFrom3PointsProjected()
   QVERIFY( static_cast<QgsLineString *>( f.geometry().get() )->equals( line ) );
 
   mLayer->rollBack();
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 0 );
 }
 void TestQgsMapToolRectangle::testRectangleFrom3PointsProjectedWithDeletedVertex()
 {
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 111 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 111 );
   mLayer->startEditing();
 
   QgsMapToolShapeRectangle3PointsMetadata md( QgsMapToolShapeRectangle3PointsMetadata::CreateMode::Projected );
@@ -322,7 +322,7 @@ void TestQgsMapToolRectangle::testRectangleFrom3PointsProjectedWithDeletedVertex
   QVERIFY( static_cast<QgsLineString *>( f.geometry().get() )->equals( line ) );
 
   mLayer->rollBack();
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 0 );
 }
 QGSTEST_MAIN( TestQgsMapToolRectangle )
 #include "testqgsmaptoolrectangle.moc"

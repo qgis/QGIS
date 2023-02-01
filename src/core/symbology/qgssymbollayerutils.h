@@ -422,7 +422,20 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * Converts a polygon symbolizer \a element to a list of marker symbol layers.
      */
     static bool convertPolygonSymbolizerToPointMarker( QDomElement &element, QList<QgsSymbolLayer *> &layerList );
+
+    /**
+     * Checks if \a element contains an ExternalGraphic element with format "image/svg+xml"
+     * @return TRUE if the ExternalGraphic with format "image/svg+xml" is found .
+     */
     static bool hasExternalGraphic( QDomElement &element );
+
+    /**
+     * Checks if \a element contains an ExternalGraphic element, if the optional \a format is specified it will also be checked.
+     * @return TRUE if the ExternalGraphic element is found and the optionally specified format matches.
+     * \since QGIS 3.30
+     */
+    static bool hasExternalGraphicV2( QDomElement &element, const QString format = QString() );
+
     static bool hasWellKnownMark( QDomElement &element );
 
     static bool needFontMarker( QDomElement &element );
@@ -432,6 +445,13 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static bool needLinePatternFill( QDomElement &element );
     static bool needPointPatternFill( QDomElement &element );
     static bool needSvgFill( QDomElement &element );
+
+    /**
+     * Checks if \a element contains a graphic fill with a raster image of type PNG, JPEG or GIF.
+     * @return TRUE if element contains a graphic fill with a raster image.
+     * \since QGIS 3.30
+     */
+    static bool needRasterImageFill( QDomElement &element );
 
     static void fillToSld( QDomDocument &doc, QDomElement &element,
                            Qt::BrushStyle brushStyle, const QColor &color = QColor() );
@@ -896,6 +916,17 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \since QGIS 3.18
      */
     static QgsStringMap evaluatePropertiesMap( const QMap<QString, QgsProperty> &propertiesMap, const QgsExpressionContext &context );
+
+    /**
+     * Calculate the minimum size in pixels of a symbol tile given the symbol \a width and \a height and the symbol layer rotation \a angleRad in radians (counter clockwise).
+     * The method makes approximations and can modify \a angle in order to generate the smallest possible tile.
+     * \param width marker width, including margins
+     * \param height marker height, including margins
+     * \param angleRad symbol layer rotation angle in radians (counter clockwise), it may be approximated by the method to minimize the tile size.
+     * \return the size of the tile
+     * \since QGIS 3.30
+     */
+    static QSize tileSize( int width, int height, double &angleRad SIP_INOUT );
 
     ///@cond PRIVATE
 #ifndef SIP_RUN

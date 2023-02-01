@@ -1,5 +1,0 @@
-Fuzzy Union (OR)
-grid_calculus
-QgsProcessingParameterMultipleLayers|GRIDS|Grids|3|None|False
-QgsProcessingParameterEnum|TYPE|Operator Type|[0] max(a, b) (non-interactive);[1] a + b - a * b;[2] min(1, a + b)
-QgsProcessingParameterRasterDestination|OR|Union

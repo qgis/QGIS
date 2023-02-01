@@ -68,7 +68,7 @@ int main( int argc, char *argv[] )
     versionInfo = info.split( "\n" );
   }
 
-#ifdef MSVC
+#ifdef _MSC_VER
   DWORD processId;
   DWORD threadId;
   LPEXCEPTION_POINTERS exception;
@@ -86,7 +86,7 @@ int main( int argc, char *argv[] )
 
   QgsCrashReport report;
   report.setVersionInfo( versionInfo );
-#ifdef MSVC
+#ifdef _MSC_VER
   report.setStackTrace( stackTrace.get() );
 #endif
   report.setPythonCrashLogFilePath( pythonCrashLogFile );
@@ -101,7 +101,7 @@ int main( int argc, char *argv[] )
   QApplication::exec();
 
 
-#ifdef MSVC
+#ifdef _MSC_VER
   for ( HANDLE threadHandle : stackTrace->threads )
   {
     ResumeThread( threadHandle );

@@ -65,6 +65,9 @@ Returns attributes for the new layer.
 .. versionadded:: 3.14
 %End
 
+    virtual void accept();
+
+
 };
 
 /************************************************************************

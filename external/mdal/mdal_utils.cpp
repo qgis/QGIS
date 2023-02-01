@@ -16,10 +16,11 @@
 #include <ctime>
 #include <stdlib.h>
 
-#if defined _WIN32
+#ifdef _MSC_VER
 #define UNICODE
 #include <locale>
 #include <codecvt>
+#include <stringapiset.h>
 #endif
 
 std::string MDAL::getEnvVar( const std::string &varname, const std::string &defaultVal )
@@ -37,7 +38,7 @@ std::string MDAL::getEnvVar( const std::string &varname, const std::string &defa
 
 bool MDAL::openInputFile( std::ifstream &inputFileStream, const std::string &fileName, std::ios_base::openmode mode )
 {
-#if defined _MSC_VER
+#ifdef _MSC_VER
   std::wstring_convert< std::codecvt_utf8_utf16< wchar_t > > converter;
   std::wstring wStr = converter.from_bytes( fileName );
   inputFileStream.open( wStr, std::ifstream::in | mode );
@@ -52,7 +53,7 @@ std::ifstream MDAL::openInputFile( const std::string &fileName, std::ios_base::o
 {
   std::ifstream ret;
 
-#if defined _MSC_VER
+#ifdef _MSC_VER
   std::wstring_convert< std::codecvt_utf8_utf16< wchar_t > > converter;
   std::wstring wStr = converter.from_bytes( fileName );
   ret.open( wStr, mode );
@@ -67,7 +68,7 @@ std::ofstream MDAL::openOutputFile( const std::string &fileName, std::ios_base::
 {
   std::ofstream ret;
 
-#if defined _MSC_VER
+#ifdef _MSC_VER
   std::wstring_convert< std::codecvt_utf8_utf16< wchar_t > > converter;
   std::wstring wStr = converter.from_bytes( fileName );
   ret.open( wStr, mode );
@@ -188,6 +189,11 @@ size_t MDAL::toSizeT( const char &str )
 }
 
 size_t MDAL::toSizeT( const double value )
+{
+  return static_cast<size_t>( value );
+}
+
+size_t MDAL::toSizeT( const int value )
 {
   return static_cast<size_t>( value );
 }
@@ -337,7 +343,7 @@ std::string MDAL::leftJustified( const std::string &str, size_t width, char fill
 std::string MDAL::toLower( const std::string &std )
 {
   std::string res( std );
-#ifdef WIN32
+#ifdef _MSC_VER
   //silence algorithm(1443): warning C4244: '=': conversion from 'int' to 'char'
   std::transform( res.begin(), res.end(), res.begin(),
   []( char c ) {return static_cast<char>( ::tolower( c ) );} );
@@ -393,6 +399,42 @@ std::string MDAL::trim( const std::string &s, const std::string &delimiters )
     return s;
 
   return ltrim( rtrim( s, delimiters ), delimiters );
+}
+
+#ifdef _MSC_VER
+static std::string utf8ToWin32Recode( const std::string &utf8String )
+{
+  //from GDAL: ./port/cpl_recode_stub.cpp, CPLWin32Recode()
+
+  // Compute length in wide characters
+  int wlen = MultiByteToWideChar( CP_UTF8, 0, utf8String.c_str(), -1, nullptr, 0 );
+
+  // do the conversion to wide char
+  std::wstring wstr;
+  wstr.resize( MDAL::toSizeT( wlen ) + 1 );
+  wstr.data()[wlen] = 0;
+  MultiByteToWideChar( CP_UTF8, 0, utf8String.c_str(), -1, wstr.data(), wstr.size() );
+
+  int len = WideCharToMultiByte( CP_ACP, 0, wstr.c_str(), -1, nullptr, 0, nullptr, nullptr );
+
+  std::string ret;
+  ret.resize( MDAL::toSizeT( len ) + 1 );
+
+  WideCharToMultiByte( CP_ACP, 0, wstr.c_str(), -1, ret.data(), ret.size(), nullptr, nullptr );
+
+  return ret;
+}
+#endif
+
+std::string MDAL::systemFileName( const std::string &utf8FileName )
+{
+  std::string ret;
+#ifdef _MSC_VER
+  ret = utf8ToWin32Recode( utf8FileName );
+#else
+  ret = utf8FileName;
+#endif
+  return ret;
 }
 
 // http://www.cplusplus.com/faq/sequences/strings/trim/
@@ -1036,7 +1078,7 @@ MDAL::Library::Library( std::string libraryFile )
 MDAL::Library::~Library()
 {
   d->mRef--;
-#ifdef WIN32
+#ifdef _WIN32
   if ( d->mLibrary &&  d->mRef == 0 )
     FreeLibrary( d->mLibrary );
 #else
@@ -1070,7 +1112,7 @@ bool MDAL::Library::isValid()
 std::vector<std::string> MDAL::Library::libraryFilesInDir( const std::string &dirPath )
 {
   std::vector<std::string> filesList;
-#if defined(WIN32)
+#ifdef _WIN32
   WIN32_FIND_DATA data;
   HANDLE hFind;
   std::string pattern = dirPath;
@@ -1115,7 +1157,7 @@ bool MDAL::Library::loadLibrary()
   //should we allow only one successful loading?
   if ( d->mLibrary )
     return false;
-#ifdef WIN32
+#ifdef _WIN32
   UINT uOldErrorMode =
     SetErrorMode( SEM_NOOPENFILEERRORBOX | SEM_FAILCRITICALERRORS );
   d->mLibrary = LoadLibrary( d->mLibraryFile.c_str() );

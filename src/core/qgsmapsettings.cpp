@@ -884,3 +884,13 @@ void QgsMapSettings::setCurrentFrame( long long frame )
 {
   mCurrentFrame = frame;
 }
+
+const QgsElevationShadingRenderer &QgsMapSettings::elevationShadingRenderer() const
+{
+  return mShadingRenderer;
+}
+
+void QgsMapSettings::setElevationShadingRenderer( const QgsElevationShadingRenderer &elevationShadingRenderer )
+{
+  mShadingRenderer = elevationShadingRenderer;
+}

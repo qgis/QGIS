@@ -99,30 +99,30 @@ Content-Type: text/xml; charset=utf-8
     <Keyword vocabulary="ISO">infoMapAccessService</Keyword>
    </KeywordList>
    <CRS>CRS:84</CRS>
-   <CRS>EPSG:3857</CRS>
    <CRS>EPSG:4326</CRS>
+   <CRS>EPSG:3857</CRS>
    <EX_GeographicBoundingBox>
     <westBoundLongitude>6.565019</westBoundLongitude>
     <eastBoundLongitude>15.224411</eastBoundLongitude>
     <southBoundLatitude>42.875379</southBoundLatitude>
     <northBoundLatitude>45.828505</northBoundLatitude>
    </EX_GeographicBoundingBox>
-   <BoundingBox maxy="15.224411" maxx="45.828505" miny="6.565019" CRS="EPSG:4326" minx="42.875379"/>
    <BoundingBox maxy="5752909.361" maxx="1694773.614" miny="5293022.486" CRS="EPSG:3857" minx="730814.655"/>
+   <BoundingBox maxy="15.224411" maxx="45.828505" miny="6.565019" CRS="EPSG:4326" minx="42.875379"/>
    <Layer queryable="1">
     <Name>bug_gh30264_empty_layer_wrong_bbox</Name>
     <Title>bug_gh30264_empty_layer_wrong_bbox</Title>
     <CRS>CRS:84</CRS>
-    <CRS>EPSG:3857</CRS>
     <CRS>EPSG:4326</CRS>
+    <CRS>EPSG:3857</CRS>
     <EX_GeographicBoundingBox>
      <westBoundLongitude>6.565019</westBoundLongitude>
      <eastBoundLongitude>15.224411</eastBoundLongitude>
      <southBoundLatitude>42.875379</southBoundLatitude>
      <northBoundLatitude>45.828505</northBoundLatitude>
     </EX_GeographicBoundingBox>
-    <BoundingBox maxy="15.224411" maxx="45.828505" miny="6.565019" CRS="EPSG:4326" minx="42.875379"/>
     <BoundingBox maxy="5752909.361" maxx="1694773.614" miny="5293022.486" CRS="EPSG:3857" minx="730814.655"/>
+    <BoundingBox maxy="15.224411" maxx="45.828505" miny="6.565019" CRS="EPSG:4326" minx="42.875379"/>
     <Style>
      <Name>default</Name>
      <Title>default</Title>

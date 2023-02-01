@@ -23,10 +23,11 @@
 
 #include "ui_qgsaddattrdialogbase.h"
 #include "qgsguiutils.h"
-#include "qgsfields.h"
 #include "qgis_gui.h"
+#include <QSet>
 
 class QgsVectorLayer;
+class QgsField;
 
 /**
  * \ingroup gui
@@ -46,6 +47,14 @@ class GUI_EXPORT QgsAddAttrDialog: public QDialog, private Ui::QgsAddAttrDialogB
     QgsAddAttrDialog( const std::list<QString> &typelist,
                       QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
+    /**
+     * Sets a list of field \a names which are considered illegal and
+     * should not be accepted by the dialog.
+     *
+     * \since QGIS 3.30
+     */
+    void setIllegalFieldNames( const QSet< QString> &names );
+
     //! Returns a field for the configured attribute
     QgsField field() const;
 
@@ -55,7 +64,8 @@ class GUI_EXPORT QgsAddAttrDialog: public QDialog, private Ui::QgsAddAttrDialogB
     void accept() override;
 
   private:
-    bool mIsShapeFile;
+    bool mIsShapeFile = false;
+    QSet< QString > mIllegalFieldNames;
 
     void setPrecisionMinMax();
 };

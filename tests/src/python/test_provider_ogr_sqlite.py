@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for the OGR/GPKG provider.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -63,7 +62,7 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
         f = None
         ds = None
 
-        vl = QgsVectorLayer('{}'.format(tmpfile), 'test', 'ogr')
+        vl = QgsVectorLayer(f'{tmpfile}', 'test', 'ogr')
         self.assertEqual(len(vl.fields()), 3)
         got = [(f.attribute('fid'), f.attribute('strfield'), f.attribute('intfield')) for f in vl.getFeatures()]
         self.assertEqual(got, [(12, 'foo', 123)])
@@ -138,7 +137,7 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
         lyr.CreateField(fld2)
         ds = None
 
-        vl = QgsVectorLayer('{}'.format(tmpfile), 'test', 'ogr')
+        vl = QgsVectorLayer(f'{tmpfile}', 'test', 'ogr')
         self.assertTrue(vl.isValid())
 
         # test some bad indexes
@@ -181,7 +180,7 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
 
         ds = None
 
-        vl = QgsVectorLayer('{}'.format(tmpfile), 'test', 'ogr')
+        vl = QgsVectorLayer(f'{tmpfile}', 'test', 'ogr')
         self.assertTrue(vl.isValid())
 
         # test some bad indexes
@@ -356,7 +355,7 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
         f = None
         ds = None
 
-        layer = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+        layer = QgsVectorLayer(f'{tmpfile}' + "|layername=" + "test", 'test', 'ogr')
 
         # Check that pk field has unique constraint
         fields = layer.fields()
@@ -371,7 +370,7 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
         self.assertTrue(layer.commitChanges())
         self.assertEqual(layer.featureCount(), 2)
 
-        layer = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+        layer = QgsVectorLayer(f'{tmpfile}' + "|layername=" + "test", 'test', 'ogr')
         self.assertEqual(layer.featureCount(), 2)
         self.assertEqual([f for f in layer.getFeatures()][0].geometry().asWkt(), 'Polygon ((0.5 0, 0.5 1, 1 1, 1 0, 0.5 0))')
         self.assertEqual([f for f in layer.getFeatures()][1].geometry().asWkt(), 'Polygon ((0.5 1, 0.5 0, 0 0, 0 1, 0.5 1))')
@@ -454,7 +453,7 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
         ds.CreateLayer('test', geom_type=ogr.wkbPolygon)
         ds = None
 
-        vl = QgsVectorLayer('{}|layerid=0'.format(tmpfile), 'test', 'ogr')
+        vl = QgsVectorLayer(f'{tmpfile}|layerid=0', 'test', 'ogr')
         caps = vl.dataProvider().capabilities()
         self.assertFalse(caps & QgsVectorDataProvider.CreateSpatialIndex)
 
@@ -466,7 +465,7 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
         ds.CreateLayer('test', geom_type=ogr.wkbPolygon)
         ds = None
 
-        vl = QgsVectorLayer('{}|layerid=0'.format(tmpfile), 'test', 'ogr')
+        vl = QgsVectorLayer(f'{tmpfile}|layerid=0', 'test', 'ogr')
         caps = vl.dataProvider().capabilities()
         self.assertTrue(caps & QgsVectorDataProvider.CreateSpatialIndex)
 

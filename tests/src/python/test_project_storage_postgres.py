@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for the postgres project storage.
 
 Note: to prepare the DB, you need to run the sql files specified in
@@ -10,7 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
 """
-from builtins import next
 
 __author__ = 'Martin Dobias'
 __date__ = '2018-03-29'

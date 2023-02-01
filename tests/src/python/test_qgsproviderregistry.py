@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsProviderRegistry.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -92,7 +91,7 @@ class TestQgsProviderRegistry(unittest.TestCase):
         """
         providers = QgsProviderRegistry.instance().providerList()
         for p in providers:
-            if p == 'geonode' or p == 'vectortile':
+            if p == 'vectortile':
                 continue
 
             self.assertTrue(QgsProviderRegistry.instance().createProvider(p, ''))

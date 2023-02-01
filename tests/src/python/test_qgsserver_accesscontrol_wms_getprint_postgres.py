@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer WMS GetPrint with postgres access control filters.
 
 From build dir, run: ctest -R PyQgsServerAccessControlWMSGetPrintPG -V
@@ -130,7 +129,7 @@ class TestQgsServerAccessControlWMSGetPrintPG(QgsServerTestBase):
 
         assert layer.isValid()
 
-        project = open(project_path, 'r').read()
+        project = open(project_path).read()
         with open(cls.temp_project_path, 'w+') as f:
             f.write(re.sub(r'<datasource>.*</datasource>', '<datasource>%s</datasource>' % cls.layer_uri, project))
 

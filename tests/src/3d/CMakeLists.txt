@@ -29,6 +29,7 @@ set(TESTS
   testqgstessellator.cpp
   testqgs3dsymbolregistry.cpp
   testqgspointcloud3drendering.cpp
+  testqgsaabb.cpp
 )
 
 

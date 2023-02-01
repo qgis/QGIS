@@ -110,30 +110,30 @@ Content-Type: text/xml; charset=utf-8
     <Keyword vocabulary="ISO">infoMapAccessService</Keyword>
    </KeywordList>
    <CRS>CRS:84</CRS>
-   <CRS>EPSG:3857</CRS>
    <CRS>EPSG:4326</CRS>
+   <CRS>EPSG:3857</CRS>
    <EX_GeographicBoundingBox>
     <westBoundLongitude>-174.766579</westBoundLongitude>
     <eastBoundLongitude>177.930822</eastBoundLongitude>
     <southBoundLatitude>-69.957839</southBoundLatitude>
     <northBoundLatitude>84.307877</northBoundLatitude>
    </EX_GeographicBoundingBox>
-   <BoundingBox CRS="EPSG:4326" miny="-174.766579" minx="-69.957839" maxy="177.930822" maxx="84.307877"/>
    <BoundingBox CRS="EPSG:3857" miny="-11055007" minx="-20609694" maxy="19143773" maxx="20961936"/>
+   <BoundingBox CRS="EPSG:4326" miny="-174.766579" minx="-69.957839" maxy="177.930822" maxx="84.307877"/>
    <Layer queryable="1">
     <Name>Datetime_dim</Name>
     <Title>Datetime_dim</Title>
     <CRS>CRS:84</CRS>
-    <CRS>EPSG:3857</CRS>
     <CRS>EPSG:4326</CRS>
+    <CRS>EPSG:3857</CRS>
     <EX_GeographicBoundingBox>
      <westBoundLongitude>-7.99492</westBoundLongitude>
      <eastBoundLongitude>-0.855025</eastBoundLongitude>
      <southBoundLatitude>37.4402</southBoundLatitude>
      <northBoundLatitude>43.0264</northBoundLatitude>
     </EX_GeographicBoundingBox>
-    <BoundingBox miny="-7.99492" minx="37.4402" maxy="-0.855025" maxx="43.0264" CRS="EPSG:4326"/>
     <BoundingBox miny="4500643.903" minx="-889990.424" maxy="5315991.06" maxx="-95180.947" CRS="EPSG:3857"/>
+    <BoundingBox miny="-7.99492" minx="37.4402" maxy="-0.855025" maxx="43.0264" CRS="EPSG:4326"/>
     <Style>
      <Name>défaut</Name>
      <Title>défaut</Title>
@@ -149,16 +149,16 @@ Content-Type: text/xml; charset=utf-8
     <Name>Contours</Name>
     <Title>Contours</Title>
     <CRS>CRS:84</CRS>
-    <CRS>EPSG:3857</CRS>
     <CRS>EPSG:4326</CRS>
+    <CRS>EPSG:3857</CRS>
     <EX_GeographicBoundingBox>
      <westBoundLongitude>-28.761387</westBoundLongitude>
      <eastBoundLongitude>0.000001</eastBoundLongitude>
      <southBoundLatitude>29.999996</southBoundLatitude>
      <northBoundLatitude>60</northBoundLatitude>
     </EX_GeographicBoundingBox>
-    <BoundingBox maxy="0.000001" minx="29.999996" CRS="EPSG:4326" maxx="60" miny="-28.761387"/>
     <BoundingBox maxy="8399737.89" minx="-3201702.942" CRS="EPSG:3857" maxx="0.001" miny="3503549.353"/>
+    <BoundingBox maxy="0.000001" minx="29.999996" CRS="EPSG:4326" maxx="60" miny="-28.761387"/>
     <Style>
      <Name>default</Name>
      <Title>default</Title>
@@ -173,16 +173,16 @@ Content-Type: text/xml; charset=utf-8
     <Name>Slopes</Name>
     <Title>Slopes</Title>
     <CRS>CRS:84</CRS>
-    <CRS>EPSG:3857</CRS>
     <CRS>EPSG:4326</CRS>
+    <CRS>EPSG:3857</CRS>
     <EX_GeographicBoundingBox>
      <westBoundLongitude>-9.40375</westBoundLongitude>
      <eastBoundLongitude>0.000001</eastBoundLongitude>
      <southBoundLatitude>36.0667</southBoundLatitude>
      <northBoundLatitude>43.7562</northBoundLatitude>
     </EX_GeographicBoundingBox>
-    <BoundingBox CRS="EPSG:4326" miny="-9.40375" minx="36.0667" maxy="0.000001" maxx="43.7562"/>
     <BoundingBox CRS="EPSG:3857" miny="4309803.074" minx="-1046820.662" maxy="5427790.763" maxx="0.001"/>
+    <BoundingBox CRS="EPSG:4326" miny="-9.40375" minx="36.0667" maxy="0.000001" maxx="43.7562"/>
     <Style>
      <Name>default</Name>
      <Title>default</Title>
@@ -197,16 +197,16 @@ Content-Type: text/xml; charset=utf-8
     <Name>dem</Name>
     <Title>dem</Title>
     <CRS>CRS:84</CRS>
-    <CRS>EPSG:3857</CRS>
     <CRS>EPSG:4326</CRS>
+    <CRS>EPSG:3857</CRS>
     <EX_GeographicBoundingBox>
      <westBoundLongitude>-30</westBoundLongitude>
      <eastBoundLongitude>0.000001</eastBoundLongitude>
      <southBoundLatitude>29.999999</southBoundLatitude>
      <northBoundLatitude>60</northBoundLatitude>
     </EX_GeographicBoundingBox>
-    <BoundingBox CRS="EPSG:4326" miny="-30" minx="29.999999" maxy="0.000001" maxx="60"/>
     <BoundingBox CRS="EPSG:3857" miny="3503549.843" minx="-3339584.724" maxy="8399737.89" maxx="0.001"/>
+    <BoundingBox CRS="EPSG:4326" miny="-30" minx="29.999999" maxy="0.000001" maxx="60"/>
     <Style>
      <Name>default</Name>
      <Title>default</Title>

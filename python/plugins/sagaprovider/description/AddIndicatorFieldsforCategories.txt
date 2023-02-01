@@ -1,6 +1,0 @@
-Add Indicator Fields for Categories
-table_tools
-QgsProcessingParameterFeatureSource|TABLE|Table|5|None|False
-QgsProcessingParameterField|FIELD|Categories|None|TABLE|-1|False|False
-QgsProcessingParameterFeatureSource|OUT_TABLE|Output table with field(s) deleted|5|None|True
-QgsProcessingParameterVectorDestination|OUT_SHAPES|Output shapes with field(s) deleted

@@ -85,6 +85,7 @@ typedef struct _nmeaGPGSA
   double  PDOP;       //!< Dilution of precision
   double  HDOP;       //!< Horizontal dilution of precision
   double  VDOP;       //!< Vertical dilution of precision
+  char    pack_type;  //!< P=GPS, N=generic, L=GLONASS
 
 } nmeaGPGSA;
 

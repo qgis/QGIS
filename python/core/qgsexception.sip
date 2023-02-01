@@ -58,3 +58,15 @@
   SIP_UNBLOCK_THREADS
 %End
 };
+
+%Exception QgsSettingsException(SIP_Exception) /PyName=QgsSettingsException/
+{
+%TypeHeaderCode
+#include <qgsexception.h>
+%End
+%RaiseCode
+  SIP_BLOCK_THREADS
+  PyErr_SetString(sipException_QgsSettingsException, sipExceptionRef.what().toUtf8().constData() );
+  SIP_UNBLOCK_THREADS
+%End
+};

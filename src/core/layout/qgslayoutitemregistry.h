@@ -368,6 +368,11 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
       LayoutManualTable,  //!< Manual (fixed) table
       LayoutMarker, //!< Marker item
 
+      LayoutElevationProfile, //!< Elevation profile item (since QGIS 3.30)
+
+      // WARNING!!!! SIP CASTING OF QgsLayoutItem and QgsLayoutMultiFrame DEPENDS on these
+      // values, and must be updated if any additional types are added
+
       // item types provided by plugins
       PluginItem = LayoutTextTable + 10000, //!< Starting point for plugin item types
     };

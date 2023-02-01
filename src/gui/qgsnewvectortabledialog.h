@@ -131,6 +131,8 @@ class GUI_EXPORT QgsNewVectorTableDialog : public QDialog, private Ui_QgsNewVect
     QStringList mTableNames;
     QStringList mValidationErrors;
 
+    QSet<QString> mIllegalFieldNames;
+
     void updateButtons();
     void selectRow( int row );
     void validate();

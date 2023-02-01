@@ -102,7 +102,11 @@ void QgsHttpHeaderWidget::setFromSettings( const QgsSettings &settings, const QS
   // load headers from settings
   QgsHttpHeaders headers;
   headers.setFromSettings( settings, key );
+  setHeaders( headers );
+}
 
+void QgsHttpHeaderWidget::setHeaders( const QgsHttpHeaders &headers )
+{
   // clean table
   for ( int i = tblwdgQueryPairs->rowCount(); i > 0; i-- )
     tblwdgQueryPairs->removeRow( i - 1 );
@@ -124,6 +128,8 @@ void QgsHttpHeaderWidget::setFromSettings( const QgsSettings &settings, const QS
 
 void QgsHttpHeaderWidget::updateSettings( QgsSettings &settings, const QString &key ) const
 {
+  Q_NOWARN_DEPRECATED_PUSH
   QgsHttpHeaders h = httpHeaders();
   h.updateSettings( settings, key );
+  Q_NOWARN_DEPRECATED_POP
 }

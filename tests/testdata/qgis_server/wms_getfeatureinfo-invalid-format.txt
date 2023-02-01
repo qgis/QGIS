@@ -1,6 +1,7 @@
 *****
 Content-Type: text/xml; charset=utf-8
 
+<?xml version="1.0" encoding="UTF-8"?>
 <ServiceExceptionReport version="1.3.0" xmlns="http://www.opengis.net/ogc">
  <ServiceException code="InvalidFormat">The format 'InvalidFormat' from INFO_FORMAT is not supported.</ServiceException>
 </ServiceExceptionReport>

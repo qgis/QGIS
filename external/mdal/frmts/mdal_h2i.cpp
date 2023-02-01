@@ -377,6 +377,7 @@ MDAL::DatasetH2i::DatasetH2i( MDAL::DatasetGroup *grp, std::shared_ptr<std::ifst
 void MDAL::DatasetH2i::clear()
 {
   mValues.clear();
+  mValues.shrink_to_fit();
   mDataLoaded = false;
 }
 

@@ -44,21 +44,6 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <item>
-      <property name="text">
-       <string>External (GTiff .ovr)</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Internal (if possible)</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>External (Erdas Imagine .aux)</string>
-      </property>
-     </item>
     </widget>
    </item>
    <item row="3" column="0">

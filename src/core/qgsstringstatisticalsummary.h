@@ -159,7 +159,7 @@ class CORE_EXPORT QgsStringStatisticalSummary
      * Returns the number of distinct string values.
      * \see distinctValues()
      */
-    int countDistinct() const { return mValues.keys().count(); }
+    int countDistinct() const { return mValues.count(); }
 
     /**
      * Returns the set of distinct string values.

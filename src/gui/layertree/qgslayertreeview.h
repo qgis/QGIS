@@ -303,6 +303,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
      * \since QGIS 3.2
      */
     static QStringList viewOnlyCustomProperties() SIP_SKIP;
+
 ///@endcond
 
   public slots:
@@ -350,6 +351,9 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     //! Emitted when a current layer is changed
     void currentLayerChanged( QgsMapLayer *layer );
 
+    //! Emitted when datasets are dropped onto the layer tree view
+    void datasetsDropped( QDropEvent *event );
+
   protected:
     void contextMenuEvent( QContextMenuEvent *event ) override;
 
@@ -360,6 +364,8 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     void mouseReleaseEvent( QMouseEvent *event ) override;
     void keyPressEvent( QKeyEvent *event ) override;
 
+    void dragEnterEvent( QDragEnterEvent *event ) override;
+    void dragMoveEvent( QDragMoveEvent *event ) override;
     void dropEvent( QDropEvent *event ) override;
 
     void resizeEvent( QResizeEvent *event ) override;

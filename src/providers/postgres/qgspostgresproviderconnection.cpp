@@ -132,6 +132,18 @@ void QgsPostgresProviderConnection::setDefaultCapabilities()
     Qgis::SqlLayerDefinitionCapability::GeometryColumn,
     Qgis::SqlLayerDefinitionCapability::UnstableFeatureIds,
   };
+
+  // see https://www.postgresql.org/docs/current/ddl-system-columns.html
+  mIllegalFieldNames =
+  {
+    QStringLiteral( "tableoid" ),
+    QStringLiteral( "xmin" ),
+    QStringLiteral( "cmin" ),
+    QStringLiteral( "xmax" ),
+    QStringLiteral( "cmax" ),
+    QStringLiteral( "ctid" ),
+
+  };
 }
 
 void QgsPostgresProviderConnection::dropTablePrivate( const QString &schema, const QString &name ) const
@@ -251,7 +263,6 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection
 
 QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QString &sql, bool resolveTypes, QgsFeedback *feedback, std::shared_ptr<QgsPoolPostgresConn> pgconn ) const
 {
-  QStringList columnNames;
   return execSqlPrivate( sql, resolveTypes, feedback, pgconn ).rows();
 }
 

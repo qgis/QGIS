@@ -1,0 +1,178 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layout/qgslayoutitemelevationprofile.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsLayoutItemElevationProfile: QgsLayoutItem
+{
+%Docstring(signature="appended")
+A layout item subclass for elevation profile plots.
+
+.. versionadded:: 3.30
+%End
+
+%TypeHeaderCode
+#include "qgslayoutitemelevationprofile.h"
+%End
+  public:
+
+    QgsLayoutItemElevationProfile( QgsLayout *layout );
+%Docstring
+Constructor for QgsLayoutItemElevationProfile, with the specified parent ``layout``.
+%End
+
+    ~QgsLayoutItemElevationProfile();
+
+    static QgsLayoutItemElevationProfile *create( QgsLayout *layout ) /Factory/;
+%Docstring
+Returns a new elevation profile item for the specified ``layout``.
+
+The caller takes responsibility for deleting the returned object.
+%End
+
+    virtual int type() const;
+
+    virtual QIcon icon() const;
+
+    virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
+
+    virtual QgsLayoutItem::Flags itemFlags() const;
+
+
+    Qgs2DPlot *plot();
+%Docstring
+Returns a reference to the elevation plot object, which can be used to
+set plot appearance and properties.
+%End
+
+
+    QList< QgsMapLayer * > layers() const;
+%Docstring
+Returns the list of map layers participating in the elevation profile.
+
+.. seealso:: :py:func:`setLayers`
+%End
+
+    void setLayers( const QList< QgsMapLayer * > &layers );
+%Docstring
+Sets the list of map ``layers`` participating in the elevation profile.
+
+.. seealso:: :py:func:`layers`
+%End
+
+    void setProfileCurve( QgsCurve *curve /Transfer/ );
+%Docstring
+Sets the cross section profile ``curve``, which represents the line along which the profile should be generated.
+
+Ownership of ``curve`` is transferred to the item.
+
+The coordinate reference system of the ``curve`` is set via :py:func:`~QgsLayoutItemElevationProfile.setCrs`.
+
+.. seealso:: :py:func:`profileCurve`
+%End
+
+    QgsCurve *profileCurve() const;
+%Docstring
+Returns the cross section profile curve, which represents the line along which the profile should be generated.
+
+The coordinate reference system of the curve is retrieved via :py:func:`~QgsLayoutItemElevationProfile.crs`.
+
+.. seealso:: :py:func:`setProfileCurve`
+%End
+
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Sets the desired Coordinate Reference System (``crs``) for the profile.
+
+This also represents the CRS associated with the :py:func:`~QgsLayoutItemElevationProfile.profileCurve`.
+
+.. seealso:: :py:func:`crs`
+%End
+
+    QgsCoordinateReferenceSystem crs() const;
+%Docstring
+Returns the desired Coordinate Reference System for the profile.
+
+This also represents the CRS associated with the :py:func:`~QgsLayoutItemElevationProfile.profileCurve`.
+
+.. seealso:: :py:func:`setCrs`
+%End
+
+    void setTolerance( double tolerance );
+%Docstring
+Sets the tolerance of the request (in :py:func:`~QgsLayoutItemElevationProfile.crs` units).
+
+This value determines how far from the :py:func:`~QgsLayoutItemElevationProfile.profileCurve` is appropriate for inclusion of results. For instance,
+when a profile is generated for a point vector layer this tolerance distance will dictate how far from the
+actual profile curve a point can reside within to be included in the results. Other sources may completely
+ignore this tolerance if it is not appropriate for the particular source.
+
+.. seealso:: :py:func:`tolerance`
+%End
+
+    double tolerance() const;
+%Docstring
+Returns the tolerance of the request (in :py:func:`~QgsLayoutItemElevationProfile.crs` units).
+
+This value determines how far from the :py:func:`~QgsLayoutItemElevationProfile.profileCurve` is appropriate for inclusion of results. For instance,
+when a profile is generated for a point vector layer this tolerance distance will dictate how far from the
+actual profile curve a point can reside within to be included in the results. Other sources may completely
+ignore this tolerance if it is not appropriate for the particular source.
+
+.. seealso:: :py:func:`setTolerance`
+%End
+
+    bool atlasDriven() const;
+%Docstring
+Returns whether the profile curve is set to follow the current atlas feature.
+
+.. seealso:: :py:func:`setAtlasDriven`
+%End
+
+    void setAtlasDriven( bool enabled );
+%Docstring
+Sets whether the profile curve will follow the current atlas feature.
+
+This requires an active layout atlas or report, using a line geometry type coverage layer.
+
+.. seealso:: :py:func:`atlasDriven`
+%End
+
+    QgsProfileRequest profileRequest() const;
+%Docstring
+Returns the profile request used to generate the elevation profile.
+%End
+
+    virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
+
+
+  public slots:
+
+    virtual void refresh();
+
+    virtual void invalidateCache();
+
+
+  protected:
+    virtual void draw( QgsLayoutItemRenderContext &context );
+
+    virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layout/qgslayoutitemelevationprofile.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

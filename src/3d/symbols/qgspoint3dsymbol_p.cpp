@@ -217,7 +217,7 @@ Qt3DRender::QMaterial *QgsInstancedPoint3DSymbolHandler::material( const QgsPoin
   effect->addParameter( paramInst );
   effect->addParameter( paramInstNormal );
 
-  symbol->material()->addParametersToEffect( effect );
+  symbol->materialSettings()->addParametersToEffect( effect );
 
   Qt3DRender::QMaterial *material = new Qt3DRender::QMaterial;
   material->setEffect( effect );
@@ -421,7 +421,7 @@ void QgsModelPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
   {
     //  "overwriteMaterial" is a legacy setting indicating that non-embedded material should be used
     if ( mSymbol->shapeProperties()[QStringLiteral( "overwriteMaterial" )].toBool()
-         || ( mSymbol->material() && mSymbol->material()->type() != QLatin1String( "null" ) ) )
+         || ( mSymbol->materialSettings() && mSymbol->materialSettings()->type() != QLatin1String( "null" ) ) )
     {
       addMeshEntities( context.map(), out.positions, mSymbol.get(), parent, false );
     }
@@ -469,7 +469,7 @@ void QgsModelPoint3DSymbolHandler::addMeshEntities( const Qgs3DMapSettings &map,
   QgsMaterialContext materialContext;
   materialContext.setIsSelected( are_selected );
   materialContext.setSelectionColor( map.selectionColor() );
-  Qt3DRender::QMaterial *mat = symbol->material()->toMaterial( QgsMaterialSettingsRenderingTechnique::Triangles, materialContext );
+  Qt3DRender::QMaterial *mat = symbol->materialSettings()->toMaterial( QgsMaterialSettingsRenderingTechnique::Triangles, materialContext );
 
   // get nodes
   for ( const QVector3D &position : positions )

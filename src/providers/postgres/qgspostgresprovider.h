@@ -432,6 +432,14 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
     {
       QString topologyName;
       long    layerId;
+      int     layerLevel;
+      enum TopoFeatureType
+      {
+        Puntal = 1,
+        Lineal = 2,
+        Polygonal = 3,
+        Mixed = 4
+      } featureType;
     };
 
     TopoLayerInfo mTopoLayerInfo;
@@ -615,6 +623,7 @@ class QgsPostgresProviderMetadata final: public QgsProviderMetadata
     bool saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle, const QString &styleName,
                     const QString &styleDescription, const QString &uiFileContent, bool useAsDefault, QString &errCause ) override;
     QString loadStyle( const QString &uri, QString &errCause ) override;
+    virtual QString loadStoredStyle( const QString &uri, QString &styleName, QString &errCause ) override;
     int listStyles( const QString &uri, QStringList &ids,
                     QStringList &names, QStringList &descriptions, QString &errCause ) override;
     bool deleteStyleById( const QString &uri, const QString &styleId, QString &errCause ) override;

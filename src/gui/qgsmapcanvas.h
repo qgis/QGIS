@@ -1022,6 +1022,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
 
     void updateDevicePixelFromScreen();
 
+    void onElevationShadingRendererChanged();
+
   signals:
 
     /**

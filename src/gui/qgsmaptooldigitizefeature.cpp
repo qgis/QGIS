@@ -83,8 +83,8 @@ void QgsMapToolDigitizeFeature::layerGeometryCaptured( const QgsGeometry &geomet
 
     if ( mCheckGeometryType )
     {
-      double defaultZ = QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.value();
-      double defaultM = QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.value();
+      double defaultZ = QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->value();
+      double defaultM = QgsSettingsRegistryCore::settingsDigitizingDefaultMValue->value();
       QVector<QgsGeometry> layerGeometries = geometry.coerceToType( layerWKBType, defaultZ, defaultM );
       if ( layerGeometries.count() > 0 )
         layerGeometry = layerGeometries.at( 0 );

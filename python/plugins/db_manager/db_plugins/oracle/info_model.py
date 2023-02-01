@@ -44,7 +44,7 @@ class ORDatabaseInfo(DatabaseInfo):
     def connectionDetails(self):
         tbl = []
 
-        if self.db.connector.host != u"":
+        if self.db.connector.host != "":
             tbl.append((QApplication.translate("DBManagerPlugin", "Host:"),
                         self.db.connector.host))
         tbl.append((QApplication.translate("DBManagerPlugin", "Database:"),
@@ -66,8 +66,7 @@ class ORDatabaseInfo(DatabaseInfo):
             return
 
         tbl = [
-            (QApplication.translate("DBManagerPlugin", "Oracle\
-            Spatial:"),
+            (QApplication.translate("DBManagerPlugin", "Oracle Spatial:"),
              info[0])
         ]
         ret.append(HtmlTable(tbl))
@@ -77,10 +76,10 @@ class ORDatabaseInfo(DatabaseInfo):
                 HtmlParagraph(
                     QApplication.translate(
                         "DBManagerPlugin",
-                        (u"<warning> ALL_SDO_GEOM_METADATA"
-                         u" view doesn't exist!\n"
-                         u"This view is essential for many"
-                         u"GIS applications for enumeration of tables."))))
+                        "<warning> ALL_SDO_GEOM_METADATA"
+                        " view doesn't exist!\n"
+                        "This view is essential for many"
+                        " GIS applications for enumeration of tables.")))
 
         return ret
 
@@ -177,8 +176,8 @@ class ORTableInfo(TableInfo):
                 "DBManagerPlugin", "Privileges:"),
                 QApplication.translate(
                 "DBManagerPlugin",
-                (u"<warning> This user doesn't have usage privileges"
-                 u"for this schema!"))))
+                "<warning> This user doesn't have usage privileges"
+                " for this schema!")))
         else:
             table_priv = self.table.database().connector.getTablePrivileges(
                 (self.table.schemaName(), self.table.name))
@@ -193,7 +192,7 @@ class ORTableInfo(TableInfo):
                 privileges.append("delete")
 
             if len(privileges) > 0:
-                priv_string = u", ".join(privileges)
+                priv_string = ", ".join(privileges)
             else:
                 priv_string = QApplication.translate(
                     "DBManagerPlugin",
@@ -218,7 +217,7 @@ class ORTableInfo(TableInfo):
 
         # primary key defined?
         if (not self.table.isView and
-                self.table.objectType != u"MATERIALIZED VIEW"):
+                self.table.objectType != "MATERIALIZED VIEW"):
             pk = [fld for fld in self.table.fields() if fld.primaryKey]
             if len(pk) <= 0:
                 ret.append(
@@ -245,9 +244,9 @@ class ORTableInfo(TableInfo):
             ret.append(HtmlParagraph(
                 QApplication.translate(
                     "DBManagerPlugin",
-                    (u"<warning> ALL_SDO_GEOM_METADATA table doesn't exist!\n"
-                     u"This table is essential for many GIS"
-                     u"applications for enumeration of tables."))))
+                    "<warning> ALL_SDO_GEOM_METADATA table doesn't exist!\n"
+                    "This table is essential for many GIS"
+                    " applications for enumeration of tables.")))
 
         return ret
 
@@ -269,7 +268,7 @@ class ORTableInfo(TableInfo):
         for fld in self.table.fields():
             char_max_len = fld.charMaxLen if fld.charMaxLen else ""
             if fld.modifier:
-                char_max_len = u"{},{}".format(char_max_len, fld.modifier)
+                char_max_len = "{},{}".format(char_max_len, fld.modifier)
             is_null_txt = "N" if fld.notNull else "Y"
 
             # make primary key field underlined
@@ -333,8 +332,8 @@ class ORTableInfo(TableInfo):
             tbl.append((idx.name, idx.column, idx.indexType,
                         idx.status, idx.analyzed, idx.compression,
                         idx.isUnique,
-                        (u'<a href="action:index/{}/rebuild">Rebuild'
-                         u"""</a>""".format(idx.name))))
+                        ('<a href="action:index/{}/rebuild">Rebuild'
+                         """</a>""".format(idx.name))))
 
         return HtmlTable(tbl, {"class": "header"})
 
@@ -355,20 +354,20 @@ class ORTableInfo(TableInfo):
 
         # add table contents
         for trig in self.table.triggers():
-            name = (u"""{0} (<a href="action:trigger/"""
-                    u"""{0}/{1}">{1}</a>)""".format(trig.name, "delete"))
+            name = ("""{0} (<a href="action:trigger/"""
+                    """{0}/{1}">{1}</a>)""".format(trig.name, "delete"))
 
-            if trig.enabled == u"ENABLED":
+            if trig.enabled == "ENABLED":
                 enabled, action = (
                     QApplication.translate("DBManagerPlugin", "Yes"),
-                    u"disable")
+                    "disable")
             else:
                 enabled, action = (
                     QApplication.translate("DBManagerPlugin", "No"),
                     "enable")
 
-            txt_enabled = (u"""{0} (<a href="action:trigger/"""
-                           u"""{1}/{2}">{2}</a>)""".format(
+            txt_enabled = ("""{0} (<a href="action:trigger/"""
+                           """{1}/{2}">{2}</a>)""".format(
                                enabled, trig.name, action))
 
             tbl.append((name, trig.event, trig.type, txt_enabled))
@@ -379,10 +378,10 @@ class ORTableInfo(TableInfo):
             HtmlParagraph(
                 QApplication.translate(
                     "DBManagerPlugin",
-                    (u'<a href="action:triggers/enable">'
-                     u'Enable all triggers</a> / '
-                     u'<a href="action:triggers/disable">'
-                     u'Disable all triggers</a>'))))
+                    '<a href="action:triggers/enable">'
+                    'Enable all triggers</a> / '
+                    '<a href="action:triggers/disable">'
+                    'Disable all triggers</a>')))
 
         return ret
 
@@ -462,7 +461,7 @@ class ORTableInfo(TableInfo):
                         'Triggers'),
                     triggers_details))
 
-        if self.table.objectType == u"MATERIALIZED VIEW":
+        if self.table.objectType == "MATERIALIZED VIEW":
             mview_info = self.getMViewInfo()
             ret.append(
                 HtmlSection(
@@ -510,11 +509,9 @@ class ORTableInfo(TableInfo):
         tbl.append((QApplication.translate("DBManagerPlugin",
                                            "Use no index:"),
                     values[9]))
-        tbl.append((QApplication.translate(
-            "DBManagerPlugin",
-            (u'<a href="action:mview/refresh">Refresh the materializ'
-             u'ed view</a>')),
-            u""))
+        tbl.append(('<a href="action:mview/refresh">{0}</a>'.format(
+            QApplication.translate("DBManagerPlugin", "Refresh the materialized view")),
+            ""))
         ret.append(HtmlTable(tbl))
 
         return ret
@@ -524,7 +521,7 @@ class ORTableInfo(TableInfo):
         definition of the view.
         """
 
-        if self.table.objectType not in [u"VIEW", u"MATERIALIZED VIEW"]:
+        if self.table.objectType not in ["VIEW", "MATERIALIZED VIEW"]:
             return []
 
         ret = self.getTableInfo()
@@ -539,10 +536,10 @@ class ORTableInfo(TableInfo):
         result = highlight(view_def, lexer, formatter)
 
         if view_def:
-            if self.table.objectType == u"VIEW":
-                title = u"View Definition"
+            if self.table.objectType == "VIEW":
+                title = "View Definition"
             else:
-                title = u"Materialized View Definition"
+                title = "Materialized View Definition"
             ret.append(
                 HtmlSection(
                     QApplication.translate("DBManagerPlugin", title),
@@ -551,7 +548,7 @@ class ORTableInfo(TableInfo):
         return ret
 
     def toHtml(self):
-        if self.table.objectType in [u"VIEW", u"MATERIALIZED VIEW"]:
+        if self.table.objectType in ["VIEW", "MATERIALIZED VIEW"]:
             ret = self.getViewInfo()
         else:
             ret = self.getTableInfo()
@@ -598,7 +595,7 @@ class ORVectorTableInfo(ORTableInfo, VectorTableInfo):
             tbl.append(
                 (QApplication.translate(
                     "DBManagerPlugin", "Spatial ref:"),
-                 u"{0} ({1})".format(sr_info, srid)))
+                 "{0} ({1})".format(sr_info, srid)))
 
         # estimated extent
         if not self.table.estimatedExtent:
@@ -610,8 +607,8 @@ class ORVectorTableInfo(ORTableInfo, VectorTableInfo):
             self.table.blockSignals(False)
 
         if self.table.estimatedExtent:
-            estimated_extent_str = (u"{:.9f}, {:.9f} - {:.9f}, "
-                                    u"{:.9f}".format(
+            estimated_extent_str = ("{:.9f}, {:.9f} - {:.9f}, "
+                                    "{:.9f}".format(
                                         *self.table.estimatedExtent))
 
             tbl.append(
@@ -622,8 +619,8 @@ class ORVectorTableInfo(ORTableInfo, VectorTableInfo):
         # extent
         extent_str = None
         if self.table.extent and len(self.table.extent) == 4:
-            extent_str = (u"{:.9f}, {:.9f} - {:.9f}, "
-                          u"{:.9f}".format(*self.table.extent))
+            extent_str = ("{:.9f}, {:.9f} - {:.9f}, "
+                          "{:.9f}".format(*self.table.extent))
         elif (self.table.rowCount is not None and self.table.rowCount > 0) or (self.table.estimatedRowCount is not None and self.table.estimatedRowCount > 0):
             # Can't calculate an extent on empty layer
             extent_str = QApplication.translate(
@@ -646,9 +643,9 @@ class ORVectorTableInfo(ORTableInfo, VectorTableInfo):
                 HtmlParagraph(
                     QApplication.translate(
                         "DBManagerPlugin",
-                        (u'<warning> Metadata extent is different from'
-                         u'real extent. You should <a href="action:extent'
-                         u'/update">update it</a>!'))))
+                        '<warning> Metadata extent is different from'
+                        ' real extent. You should <a href="action:extent'
+                        '/update">update it</a>!')))
 
         # is there an entry in geometry_columns?
         if self.table.geomType.lower() == 'geometry':
@@ -665,8 +662,8 @@ class ORVectorTableInfo(ORTableInfo, VectorTableInfo):
                     HtmlParagraph(
                         QApplication.translate(
                             "DBManagerPlugin",
-                            (u'<warning> No spatial index defined (<a href='
-                             u'"action:spatialindex/create">'
-                             u'create it</a>).'))))
+                            '<warning> No spatial index defined (<a href='
+                            '"action:spatialindex/create">'
+                            'create it</a>).')))
 
         return ret

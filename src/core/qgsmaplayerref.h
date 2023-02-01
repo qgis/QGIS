@@ -19,6 +19,7 @@
 #define SIP_NO_FILE
 
 #include <QPointer>
+#include <QDomElement>
 
 #include "qgsmaplayer.h"
 #include "qgsdataprovider.h"
@@ -289,6 +290,38 @@ struct _LayerRef
     return nullptr;
   }
 
+  /**
+   * Reads the layer's properties from an XML \a element.
+   *
+   * \see writeXml()
+   * \since QGIS 3.30
+   */
+  bool readXml( const QDomElement &element, const QgsReadWriteContext &context )
+  {
+    Q_UNUSED( context )
+
+    layerId = element.attribute( QStringLiteral( "id" ) );
+    name = element.attribute( QStringLiteral( "name" ) );
+    source = element.attribute( QStringLiteral( "source" ) );
+    provider = element.attribute( QStringLiteral( "provider" ) );
+    return true;
+  }
+
+  /**
+   * Writes the layer's properties to a XML \a element.
+   *
+   * \see readXml()
+   * \since QGIS 3.30
+   */
+  void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const
+  {
+    Q_UNUSED( context )
+
+    element.setAttribute( QStringLiteral( "id" ), layerId );
+    element.setAttribute( QStringLiteral( "name" ), name );
+    element.setAttribute( QStringLiteral( "source" ), source );
+    element.setAttribute( QStringLiteral( "provider" ), provider );
+  }
 
 };
 

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 
 From build dir, run: ctest -R PyQgsServerModules -V

@@ -944,7 +944,7 @@ void QgsSpatiaLiteProvider::fetchConstraints()
 
     QString sqlDef = QString::fromUtf8( results[ 1 ] );
     // extract definition
-    QRegularExpression re( QStringLiteral( R"raw(\((.+)\))raw" ) );
+    QRegularExpression re( QStringLiteral( R"raw(\((.+)\))raw" ), QRegularExpression::PatternOption::DotMatchesEverythingOption );
     QRegularExpressionMatch match = re.match( sqlDef );
     if ( match.hasMatch() )
     {
@@ -4148,6 +4148,8 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
   if ( flist.isEmpty() )
     return true;
 
+  const QString logUri = uri( ).uri( false );
+
   QgsAttributes attributevec = flist[0].attributes();
 
   const QString savepointId { QStringLiteral( "qgis_spatialite_internal_savepoint_%1" ).arg( ++ sSavepointId ) };
@@ -4328,6 +4330,10 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         // performing actual row insert
         ret = sqlite3_step( stmt );
 
+        char *expandedSql = sqlite3_expanded_sql( stmt );
+        QgsDatabaseQueryLogWrapper logWrapper( QString( expandedSql ), logUri, QStringLiteral( "spatialite" ), QStringLiteral( "QgsSpatiaLiteProvider" ), QStringLiteral( "addFeatures" ) );
+        sqlite3_free( expandedSql );
+
         sqlite3_finalize( stmt );
 
         if ( ret == SQLITE_DONE || ret == SQLITE_ROW )
@@ -4345,6 +4351,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
           const char *err = sqlite3_errmsg( sqliteHandle( ) );
           errMsg = ( char * ) sqlite3_malloc( ( int ) strlen( err ) + 1 );
           strcpy( errMsg, err );
+          logWrapper.setError( errMsg );
           break;
         }
       }
@@ -4355,7 +4362,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       ret = exec_sql( sqliteHandle(), QStringLiteral( "RELEASE SAVEPOINT \"%1\"" ).arg( savepointId ), uri().uri(), errMsg, QGS_QUERY_LOG_ORIGIN );
     }
 
-  } // BEGIN statement
+  } // SAVEPOINT statement
 
   if ( ret != SQLITE_OK )
   {
@@ -4369,6 +4376,8 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     {
       // ROLLBACK after some previous error
       ( void )exec_sql( sqliteHandle(), QStringLiteral( "ROLLBACK TRANSACTION TO SAVEPOINT \"%1\"" ).arg( savepointId ), uri().uri(), nullptr, QGS_QUERY_LOG_ORIGIN );
+      // Also release the savepoint or it will remain on the stack.
+      ( void ) exec_sql( sqliteHandle(), QStringLiteral( "RELEASE SAVEPOINT \"%1\"" ).arg( savepointId ), uri().uri(), errMsg, QGS_QUERY_LOG_ORIGIN );
     }
   }
   else
@@ -6290,6 +6299,12 @@ bool QgsSpatiaLiteProviderMetadata::saveStyle( const QString &uri, const QString
 
 QString QgsSpatiaLiteProviderMetadata::loadStyle( const QString &uri, QString &errCause )
 {
+  QString styleName;
+  return loadStoredStyle( uri, styleName, errCause );
+}
+
+QString QgsSpatiaLiteProviderMetadata::loadStoredStyle( const QString &uri, QString &styleName, QString &errCause )
+{
   QgsDataSourceUri dsUri( uri );
   QString sqlitePath = dsUri.database();
   QgsDebugMsgLevel( "Database is: " + sqlitePath, 5 );
@@ -6315,7 +6330,7 @@ QString QgsSpatiaLiteProviderMetadata::loadStyle( const QString &uri, QString &e
     geomColumnExpr = QStringLiteral( "=" ) + QgsSqliteUtils::quotedString( dsUri.geometryColumn() );
   }
 
-  QString selectQmlQuery = QString( "SELECT styleQML"
+  QString selectQmlQuery = QString( "SELECT styleName, styleQML"
                                     " FROM layer_styles"
                                     " WHERE f_table_schema %1"
                                     " AND f_table_name=%2"
@@ -6338,7 +6353,8 @@ QString QgsSpatiaLiteProviderMetadata::loadStyle( const QString &uri, QString &e
     return QString();
   }
 
-  QString style = ( rows == 1 ) ? QString::fromUtf8( results[( rows * columns ) + 0 ] ) : QString();
+  styleName = ( rows == 1 ) ? QString::fromUtf8( results[( rows * columns ) + 0 ] ) : QString();
+  QString style = ( rows == 1 ) ? QString::fromUtf8( results[( rows * columns ) + 1 ] ) : QString();
   sqlite3_free_table( results );
 
   QgsSqliteHandle::closeDb( handle );

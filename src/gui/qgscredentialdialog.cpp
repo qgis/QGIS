@@ -19,8 +19,8 @@
 
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
-#include "qgssettings.h"
 #include "qgsapplication.h"
+#include "qgsgui.h"
 
 #include <QPushButton>
 #include <QMenu>
@@ -46,6 +46,8 @@ QgsCredentialDialog::QgsCredentialDialog( QWidget *parent, Qt::WindowFlags fl )
 
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
+
   connect( leMasterPass, &QgsPasswordLineEdit::textChanged, this, &QgsCredentialDialog::leMasterPass_textChanged );
   connect( leMasterPassVerify, &QgsPasswordLineEdit::textChanged, this, &QgsCredentialDialog::leMasterPassVerify_textChanged );
   connect( chkbxEraseAuthDb, &QCheckBox::toggled, this, &QgsCredentialDialog::chkbxEraseAuthDb_toggled );

@@ -98,8 +98,10 @@ void TestQgisAppClipboard::copyPaste()
   filesCounts.insert( QStringLiteral( "lines.shp" ), 6 );
   filesCounts.insert( QStringLiteral( "polys.shp" ), 10 );
 
-  for ( const QString &fileName : filesCounts.keys() )
+  for ( auto it = filesCounts.constBegin(); it != filesCounts.constEnd(); it++ )
   {
+    const QString fileName = it.key();
+
     // add vector layer
     const QString filePath = mTestDataDir + fileName;
     qDebug() << "add vector layer: " << filePath;
@@ -113,13 +115,13 @@ void TestQgisAppClipboard::copyPaste()
     const QgsFeatureList features = mQgisApp->clipboard()->copyOf();
     qDebug() << features.size() << " features copied to clipboard";
 
-    QVERIFY( features.size() == filesCounts.value( fileName ) );
+    QVERIFY( features.size() == it.value() );
 
     QgsVectorLayer *pastedLayer = mQgisApp->pasteAsNewMemoryVector( QStringLiteral( "pasted" ) );
     QVERIFY( pastedLayer );
     QVERIFY( pastedLayer->isValid() );
     qDebug() << pastedLayer->featureCount() << " features in pasted layer";
-    QVERIFY( pastedLayer->featureCount() == filesCounts.value( fileName ) );
+    QVERIFY( pastedLayer->featureCount() == it.value() );
   }
 }
 

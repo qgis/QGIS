@@ -209,6 +209,33 @@ EOT
 fi
 
 #######################################
+# Wait for Minio container to be ready
+#######################################
+
+if [ $# -eq 0 ] || [ $1 = "ALL_BUT_PROVIDERS" ] || [ $1 = "ALL" ] ; then
+
+  echo "::group::Setup Minio"
+
+  echo "Wait for minio to be ready..."
+  COUNT=0
+  while ! curl http://$QGIS_MINIO_HOST:$QGIS_MINIO_PORT &> /dev/null;
+  do
+    printf "."
+    sleep 5
+    if [[ $(( COUNT++ )) -eq 40 ]]; then
+      break
+    fi
+  done
+  if [[ ${COUNT} -eq 41 ]]; then
+    echo "Error: Minio docker timeout!!!"
+  else
+    echo "done"
+  fi
+
+  echo "::endgroup::"
+fi
+
+#######################################
 # Wait for WebDAV container to be ready
 #######################################
 

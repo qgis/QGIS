@@ -23,7 +23,7 @@ __copyright__ = '(C) 2016, Victor Olaya'
 
 import os
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.PyQt.QtWidgets import QAction, QMenu
+from qgis.PyQt.QtWidgets import QAction, QMenu, QToolButton
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QApplication
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
@@ -41,11 +41,13 @@ from processing.tools import dataobjects
 algorithmsToolbar = None
 menusSettingsGroup = 'Menus'
 defaultMenuEntries = {}
-toolBarButtons = {}
+toolBarButtons = []
+toolButton = None
+toolButtonAction = None
 
 
 def initMenusAndToolbars():
-    global defaultMenuEntries, toolBarButtons
+    global defaultMenuEntries, toolBarButtons, toolButton, toolButtonAction
     vectorMenu = iface.vectorMenu().title()
     analysisToolsMenu = vectorMenu + "/" + Processing.tr('&Analysis Tools')
     defaultMenuEntries.update({'qgis:distancematrix': analysisToolsMenu,
@@ -67,6 +69,7 @@ def initMenusAndToolbars():
                                'native:randompointsonlines': researchToolsMenu,
                                'qgis:regularpoints': researchToolsMenu,
                                'native:selectbylocation': researchToolsMenu,
+                               'native:selectwithindistance': researchToolsMenu,
                                'native:polygonfromlayerextent': researchToolsMenu})
     geoprocessingToolsMenu = vectorMenu + "/" + Processing.tr('&Geoprocessing Tools')
     defaultMenuEntries.update({'native:buffer': geoprocessingToolsMenu,
@@ -135,7 +138,12 @@ def initMenusAndToolbars():
                                'gdal:overviews': miscMenu,
                                'gdal:tileindex': miscMenu})
 
-    toolBarButtons = {'native:selectbylocation': iface.selectionToolBar()}
+    toolBarButtons = ['native:selectbylocation', 'native:selectwithindistance']
+
+    toolbar = iface.selectionToolBar()
+    toolButton = QToolButton(toolbar)
+    toolButton.setPopupMode(QToolButton.MenuButtonPopup)
+    toolButtonAction = toolbar.addWidget(toolButton)
 
 
 if iface is not None:
@@ -300,7 +308,7 @@ def findAction(actions, alg):
     return None
 
 
-def addToolBarButton(algId, toolbar, icon=None, tooltip=None):
+def addToolBarButton(index, algId, icon=None, tooltip=None):
     alg = QgsApplication.processingRegistry().algorithmById(algId)
     if alg is None or alg.id() != algId:
         assert False, algId
@@ -318,25 +326,16 @@ def addToolBarButton(algId, toolbar, icon=None, tooltip=None):
     action.triggered.connect(lambda: _executeAlgorithm(algId))
     action.setObjectName("mProcessingAlg_%s" % algId)
 
-    if toolbar:
-        toolbar.addAction(action)
-    else:
-        QgsMessageLog.logMessage(Processing.tr('Toolbar "{}" not found').format(toolbar.windowTitle),
-                                 Processing.tr('Processing'))
-
-
-def removeToolBarButton(algId, toolbar):
-    if toolbar:
-        action = findAction(toolbar.actions(), algId)
-        if action is not None:
-            toolbar.removeAction(action)
+    toolButton.addAction(action)
+    if index == 0:
+        toolButton.setDefaultAction(action)
 
 
 def createButtons():
-    for algId, toolbar in toolBarButtons.items():
-        addToolBarButton(algId, toolbar)
+    toolbar = iface.selectionToolBar()
+    for index, algId in enumerate(toolBarButtons):
+        addToolBarButton(index, algId)
 
 
 def removeButtons():
-    for algId, toolbar in toolBarButtons.items():
-        removeToolBarButton(algId, toolbar)
+    iface.selectionToolBar().removeAction(toolButtonAction)

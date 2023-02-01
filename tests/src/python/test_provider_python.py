@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for the python dataprovider.
 
 From build dir, run: ctest -R PyQgsPythonProvider -V

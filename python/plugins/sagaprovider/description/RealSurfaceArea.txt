@@ -1,4 +1,0 @@
-Real Surface Area
-ta_morphometry
-QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
-QgsProcessingParameterRasterDestination|AREA|Surface Area

@@ -63,9 +63,8 @@ namespace
     }
     rsStats->close();
 
-    for ( const QString &key : compositeKeys.keys() )
+    for ( const QStringList &indexColumns : compositeKeys )
     {
-      const QStringList indexColumns = compositeKeys.value( key );
       if ( indexColumns.size() <= 1 )
         continue;
       for ( const QString &clmName : indexColumns )

@@ -56,9 +56,13 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
      *
      * \param parent The parent QWidget
      * \param filenames The list of apis files to load for the Python lexer
+     * \param mode code editor mode (since QGIS 3.30)
      * \since QGIS 2.6
      */
-    QgsCodeEditorPython( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QList<QString> &filenames = QList<QString>() );
+    QgsCodeEditorPython( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QList<QString> &filenames = QList<QString>(),
+                         QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor );
+
+    Qgis::ScriptLanguage language() const override;
 
     /**
      * Load APIs from one or more files
@@ -67,10 +71,30 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
     void loadAPIs( const QList<QString> &filenames );
 
     /**
-     * Load a script file
-     * \param script The script file to load
+     * Loads a \a script file.
      */
     bool loadScript( const QString &script );
+
+    /**
+     * Check whether the current cursor position is inside a string literal or a comment
+     *
+     * \since QGIS 3.30
+     */
+    bool isCursorInsideStringLiteralOrComment() const;
+
+    /**
+     * Returns the character before the cursor, or an empty string if cursor is set at start
+     *
+     * \since QGIS 3.30
+     */
+    QString characterBeforeCursor() const;
+
+    /**
+     * Returns the character after the cursor, or an empty string if the cursot is set at end
+     *
+     * \since QGIS 3.30
+     */
+    QString characterAfterCursor() const;
 
   public slots:
 
@@ -81,9 +105,18 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
      */
     void searchSelectedTextInPyQGISDocs();
 
+    /**
+     * Toggle comment for the selected text.
+     *
+     * \since QGIS 3.30
+     */
+    void toggleComment();
+
   protected:
 
     void initializeLexer() override;
+
+    virtual void keyPressEvent( QKeyEvent *event ) override;
 
   protected slots:
 
@@ -98,6 +131,11 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
 
     QList<QString> mAPISFilesList;
     QString mPapFile;
+
+    static const QMap<QString, QString> sCompletionPairs;
+
+    // Only used for selected text
+    static const QStringList sCompletionSingleCharacters;
 
 };
 

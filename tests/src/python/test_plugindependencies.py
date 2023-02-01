@@ -1,4 +1,3 @@
-# coding=utf-8
 """QGIS Plugin dependencies test
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -190,10 +189,10 @@ class PluginDependenciesTest(unittest.TestCase):
 
 
 def pluginSuite():
-    return unittest.makeSuite(PluginDependenciesTest, 'test')
+    return unittest.defaultTestLoader.loadTestsFromTestCase(PluginDependenciesTest, 'test')
 
 
 if __name__ == "__main__":
-    suite = unittest.makeSuite(PluginDependenciesTest)
+    suite = unittest.defaultTestLoader.loadTestsFromTestCase(PluginDependenciesTest)
     runner = unittest.TextTestRunner(verbosity=2)
     runner.run(suite)
