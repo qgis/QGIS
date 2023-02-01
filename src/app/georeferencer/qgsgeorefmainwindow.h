@@ -18,7 +18,6 @@
 #include "qgsmapcoordsdialog.h"
 #include "qgsimagewarper.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgssettingsentryenumflag.h"
 
 #include <memory>
 
@@ -49,6 +48,10 @@ class QgsGCPCanvasItem;
 class QgsGcpPoint;
 class QgsMapLayer;
 class QgsScreenHelper;
+class QgsSettingsEntryBool;
+class QgsSettingsEntryString;
+template<class T> class QgsSettingsEntryEnumFlag;
+
 
 class QgsGeorefDockWidget : public QgsDockWidget
 {

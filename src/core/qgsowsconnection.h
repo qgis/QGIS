@@ -24,12 +24,18 @@
 
 #include "qgis_core.h"
 #include "qgsdatasourceuri.h"
-#include "qgssettingsentryimpl.h"
-#include "qgssettingsentryenumflag.h"
+#include "qgssettings.h"
 
 #include <QStringList>
 #include <QPushButton>
 
+
+class QgsSettingsEntryBool;
+class QgsSettingsEntryDouble;
+class QgsSettingsEntryInteger;
+class QgsSettingsEntryString;
+class QgsSettingsEntryVariantMap;
+template<class T> class QgsSettingsEntryEnumFlag;
 
 
 /**

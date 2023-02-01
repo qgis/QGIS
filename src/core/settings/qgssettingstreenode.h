@@ -21,9 +21,9 @@
 #include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgssettingsregistry.h"
 
 class QgsSettingsTreeNamedListNode;
+class QgsSettingsEntryBase;
 class QgsSettingsEntryString;
 
 

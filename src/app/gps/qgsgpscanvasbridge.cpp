@@ -28,6 +28,8 @@
 #include "qgslocaldefaultsettings.h"
 #include "qgsprojectdisplaysettings.h"
 #include "qgsbearingnumericformat.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsentryenumflag.h"
 
 const QgsSettingsEntryBool *QgsGpsCanvasBridge::settingShowBearingLine = new QgsSettingsEntryBool( QStringLiteral( "show-bearing-line" ), QgsSettings::sTreeGps, false, QStringLiteral( "Whether the GPS bearing line symbol should be shown" ) );
 

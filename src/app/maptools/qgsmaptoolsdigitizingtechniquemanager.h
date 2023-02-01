@@ -19,17 +19,16 @@
 #define QGSMAPTOOLSDIGITIZINGTECHNIQUEMANAGER_H
 
 #include "qgis_app.h"
-#include "qgssettingsentryimpl.h"
-#include "qgssettingsentryenumflag.h"
 #include "qgsmaptoolcapture.h"
 #include "qgsmaptoolshapeabstract.h"
-#include "qgsmaptoolshapecircle2points.h"
-
+#include "qgssettings.h"
 
 #include <QWidgetAction>
 
-
 class QgsSpinBox;
+class QgsSettingsEntryString;
+template<class T>
+class QgsSettingsEntryEnumFlag;
 
 class QAction;
 class QToolButton;

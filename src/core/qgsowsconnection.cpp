@@ -25,6 +25,8 @@
 #include "qgsowsconnection.h"
 #include "qgssettings.h"
 #include "qgshttpheaders.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsentryenumflag.h"
 
 #include <QPicture>
 #include <QUrl>
