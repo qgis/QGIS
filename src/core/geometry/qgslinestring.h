@@ -508,7 +508,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * does not have a z dimension
      * \see setZAt()
      */
-    double zAt( int index ) const
+    double zAt( int index ) const override
     {
       if ( index >= 0 && index < mZ.size() )
         return mZ.at( index );
@@ -527,7 +527,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      *
      * \throws IndexError if no point with the specified index exists.
     */
-    double zAt( int index ) const;
+    double zAt( int index ) const override;
     % MethodCode
     const int count = sipCpp->numPoints();
     if ( a0 < -count || a0 >= count )
@@ -554,7 +554,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * does not have m values
      * \see setMAt()
      */
-    double mAt( int index ) const
+    double mAt( int index ) const override
     {
       if ( index >= 0 && index < mM.size() )
         return mM.at( index );
@@ -573,7 +573,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      *
      * \throws IndexError if no point with the specified index exists.
     */
-    double mAt( int index ) const;
+    double mAt( int index ) const override;
     % MethodCode
     const int count = sipCpp->numPoints();
     if ( a0 < -count || a0 >= count )

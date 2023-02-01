@@ -229,6 +229,28 @@ Returns the y-coordinate of the specified node in the line string.
 :return: y-coordinate of node, or 0.0 if index is out of bounds
 %End
 
+    virtual double zAt( int index ) const = 0;
+%Docstring
+Returns the z-coordinate of the specified node in the line string.
+
+:param index: index of node, where the first node in the line is 0
+
+:return: z-coordinate of node, or 0.0 if index is out of bounds
+
+.. versionadded:: 3.28
+%End
+
+    virtual double mAt( int index ) const = 0;
+%Docstring
+Returns the m-coordinate of the specified node in the line string.
+
+:param index: index of node, where the first node in the line is 0
+
+:return: m-coordinate of node, or 0.0 if index is out of bounds
+
+.. versionadded:: 3.28
+%End
+
     virtual QPolygonF asQPolygonF() const;
 %Docstring
 Returns a QPolygonF representing the points.
