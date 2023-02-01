@@ -145,6 +145,7 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
 
         items = {
             "type": "FeatureCollection",
+            "numberMatched": 5,
             "features": [
                 {"type": "Feature", "id": "feat.1",
                  "properties": {"pk": 1, "cnt": 100, "name": "Orange", "name2": "oranGe", "num_char": "1", "dt": "2020-05-03 12:13:14", "date": "2020-05-03", "time": "12:13:14"},
@@ -163,6 +164,10 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
                  "geometry": {"type": "Point", "coordinates": [-71.123, 78.23]}}
             ]
         }
+
+        # limit 1 for getting count
+        with open(sanitize(endpoint, '/collections/mycollection/items?limit=1&' + ACCEPT_ITEMS), 'wb') as f:
+            f.write(json.dumps(items).encode('UTF-8'))
 
         # first items
         with open(sanitize(endpoint, '/collections/mycollection/items?limit=10&' + ACCEPT_ITEMS), 'wb') as f:
@@ -816,6 +821,54 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         source = vl.dataProvider()
 
         self.assertEqual(source.sourceCrs().authid(), 'EPSG:2056')
+
+    def testFeatureCountFallback(self):
+
+        # On Windows we must make sure that any backslash in the path is
+        # replaced by a forward slash so that QUrl can process it
+        basetestpath = tempfile.mkdtemp().replace('\\', '/')
+        endpoint = basetestpath + '/fake_qgis_http_endpoint_feature_count_fallback'
+
+        create_landing_page_api_collection(endpoint,
+                                           crs_url="http://www.opengis.net/def/crs/EPSG/0/2056",
+                                           bbox=[2508500, 1152000, 2513450, 1156950])
+
+        items = {
+            "type": "FeatureCollection",
+            "features": [
+                {"type": "Feature", "id": "feat.1",
+                 "properties": {"pk": 1, "cnt": 100, "name": "Orange", "name2": "oranGe", "num_char": "1", "dt": "2020-05-03 12:13:14", "date": "2020-05-03", "time": "12:13:14"},
+                 "geometry": {"type": "Point", "coordinates": [2510100, 1155050]}},
+                {"type": "Feature", "id": "feat.2",
+                 "properties": {"pk": 2, "cnt": 200, "name": "Apple", "name2": "Apple", "num_char": "2", "dt": "2020-05-04 12:14:14", "date": "2020-05-04", "time": "12:14:14"},
+                 "geometry": {"type": "Point", "coordinates": [2511250, 1154600]}},
+                {"type": "Feature", "id": "feat.3",
+                 "properties": {"pk": 4, "cnt": 400, "name": "Honey", "name2": "Honey", "num_char": "4", "dt": "2021-05-04 13:13:14", "date": "2021-05-04", "time": "13:13:14"},
+                 "geometry": {"type": "Point", "coordinates": [2511260, 1154610]}},
+                {"type": "Feature", "id": "feat.4",
+                 "properties": {"pk": 5, "cnt": -200, "name": None, "name2": "NuLl", "num_char": "5", "dt": "2020-05-04 12:13:14", "date": "2020-05-02", "time": "12:13:01"},
+                 "geometry": {"type": "Point", "coordinates": [2511270, 1154620]}}
+            ]
+        }
+
+        # first items
+        with open(sanitize(endpoint, '/collections/mycollection/items?limit=1&' + ACCEPT_ITEMS), 'wb') as f:
+            f.write(json.dumps(items).encode('UTF-8'))
+
+        # first items
+        with open(sanitize(endpoint, '/collections/mycollection/items?limit=10&' + ACCEPT_ITEMS), 'wb') as f:
+            f.write(json.dumps(items).encode('UTF-8'))
+
+        # real page
+        with open(sanitize(endpoint, '/collections/mycollection/items?limit=1000&' + ACCEPT_ITEMS), 'wb') as f:
+            f.write(json.dumps(items).encode('UTF-8'))
+
+        # Create test layer
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='mycollection'", 'test', 'OAPIF')
+        assert vl.isValid()
+        source = vl.dataProvider()
+
+        self.assertEqual(source.featureCount(), 4)
 
 
 if __name__ == '__main__':
