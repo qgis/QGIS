@@ -55,6 +55,7 @@
 #ifdef HAVE_SPATIALITE
 #include "qgsspatialiteprovider.h"
 #include "qgswfsprovider.h"
+#include "qgswfsprovidermetadata.h"
 #include "qgsoapifprovider.h"
 #include "qgsvirtuallayerprovider.h"
 #endif
