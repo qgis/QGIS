@@ -70,7 +70,7 @@ jobs:
 
       - name: Cache
         id: cache
-        uses: actions/cache@v3.2.2
+        uses: actions/cache@v3.2.4
         with:
           path: ~/.ccache
           key: docker-build-${{ matrix.branch }}-${{ github.sha }}
