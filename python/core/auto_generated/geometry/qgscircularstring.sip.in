@@ -200,6 +200,10 @@ Appends the contents of another circular ``string`` to the end of this circular 
 
     virtual double yAt( int index ) const /HoldGIL/;
 
+    virtual double zAt( int index ) const /HoldGIL/;
+
+    virtual double mAt( int index ) const /HoldGIL/;
+
 
     virtual bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = 0 );
 

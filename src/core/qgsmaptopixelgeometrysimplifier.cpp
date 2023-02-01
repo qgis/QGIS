@@ -150,19 +150,27 @@ std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry
 
     QVector< double > lineStringX;
     QVector< double > lineStringY;
+    QVector< double > lineStringZ;
+    QVector< double > lineStringM;
     if ( flatType == QgsWkbTypes::LineString )
     {
       // if we are making a linestring, we do it in an optimised way by directly constructing
       // the final x/y vectors, which avoids calling the slower insertVertex method
       lineStringX.reserve( numPoints );
       lineStringY.reserve( numPoints );
+
+      if ( geometry.is3D() )
+        lineStringZ.reserve( numPoints );
+
+      if ( geometry.isMeasure() )
+        lineStringM.reserve( numPoints );
     }
     else
     {
       output.reset( qgsgeometry_cast< QgsCurve * >( srcCurve.createEmptyWithSameType() ) );
     }
 
-    double x = 0.0, y = 0.0, lastX = 0.0, lastY = 0.0;
+    double x = 0.0, y = 0.0, z = 0.0, m = 0.0, lastX = 0.0, lastY = 0.0;
 
     if ( numPoints <= ( isaLinearRing ? 4 : 2 ) )
       isGeneralizable = false;
@@ -190,10 +198,18 @@ std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry
 
         const double *xData = nullptr;
         const double *yData = nullptr;
+        const double *zData = nullptr;
+        const double *mData = nullptr;
         if ( flatType == QgsWkbTypes::LineString )
         {
           xData = qgsgeometry_cast< const QgsLineString * >( &srcCurve )->xData();
           yData = qgsgeometry_cast< const QgsLineString * >( &srcCurve )->yData();
+
+          if ( geometry.is3D() )
+            zData = qgsgeometry_cast< const QgsLineString * >( &srcCurve )->zData();
+
+          if ( geometry.isMeasure() )
+            mData = qgsgeometry_cast< const QgsLineString * >( &srcCurve )->mData();
         }
 
         for ( int i = 0; i < numPoints; ++i )
@@ -202,11 +218,23 @@ std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry
           {
             x = *xData++;
             y = *yData++;
+
+            if ( geometry.is3D() )
+              z = *zData++;
+
+            if ( geometry.isMeasure() )
+              m = *mData++;
           }
           else
           {
             x = srcCurve.xAt( i );
             y = srcCurve.yAt( i );
+
+            if ( geometry.is3D() )
+              z = srcCurve.zAt( i );
+
+            if ( geometry.isMeasure() )
+              m = srcCurve.mAt( i );
           }
 
           if ( i == 0 ||
@@ -215,11 +243,17 @@ std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry
                ( !isaLinearRing && ( i == 1 || i >= numPoints - 2 ) ) )
           {
             if ( output )
-              output->insertVertex( QgsVertexId( 0, 0, output->numPoints() ), QgsPoint( x, y ) );
+              output->insertVertex( QgsVertexId( 0, 0, output->numPoints() ), QgsPoint( x, y, z, m ) );
             else
             {
               lineStringX.append( x );
               lineStringY.append( y );
+
+              if ( geometry.is3D() )
+                lineStringZ.append( z );
+
+              if ( geometry.isMeasure() )
+                lineStringM.append( m );
             }
             lastX = x;
             lastY = y;
@@ -253,6 +287,12 @@ std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry
             {
               lineStringX.append( ea.inpts.at( i ).x() );
               lineStringY.append( ea.inpts.at( i ).y() );
+
+              if ( geometry.is3D() )
+                lineStringZ.append( ea.inpts.at( i ).z() );
+
+              if ( geometry.isMeasure() )
+                lineStringM.append( ea.inpts.at( i ).m() );
             }
           }
         }
@@ -309,7 +349,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry
 
     if ( !output )
     {
-      output = std::make_unique< QgsLineString >( lineStringX, lineStringY );
+      output = std::make_unique< QgsLineString >( lineStringX, lineStringY, lineStringZ, lineStringM );
     }
     if ( output->numPoints() < ( isaLinearRing ? 4 : 2 ) )
     {
