@@ -1032,9 +1032,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mDefaultZValueSpinBox->setValue( QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->value() );
   mDefaultZValueSpinBox->setClearValue( QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->defaultValue() );
 
-  mDefaultMValueSpinBox->setValue(
-    mSettings->value( QStringLiteral( "/qgis/digitizing/default_m_value" ), Qgis::DEFAULT_M_COORDINATE ).toDouble()
-  );
+  mDefaultMValueSpinBox->setValue( QgsSettingsRegistryCore::settingsDigitizingDefaultMValue->value() );
   mDefaultMValueSpinBox->setClearValue( Qgis::DEFAULT_M_COORDINATE );
 
   //default snap mode
