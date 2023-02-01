@@ -4064,6 +4064,14 @@ QString QgsVectorLayer::displayExpression() const
   }
 }
 
+bool QgsVectorLayer::hasMapTips() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  // display expressions are used as a fallback when no explicit map tip template is set
+  return !mapTipTemplate().isEmpty() || !displayExpression().isEmpty();
+}
+
 bool QgsVectorLayer::isEditable() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS

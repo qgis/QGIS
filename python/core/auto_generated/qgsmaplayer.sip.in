@@ -1528,6 +1528,15 @@ Set placeholder image for legend. If the string is empty, a generated legend wil
 .. versionadded:: 3.22
 %End
 
+    virtual bool hasMapTips() const;
+%Docstring
+Returns ``True`` if the layer contains map tips.
+
+.. seealso:: :py:func:`mapTipTemplate`
+
+.. seealso:: :py:func:`setMapTipTemplate`
+%End
+
     QString mapTipTemplate() const;
 %Docstring
 The mapTip is a pretty, html representation for feature information.
@@ -1553,7 +1562,6 @@ It may also contain embedded expressions.
 
 .. versionadded:: 3.30
 %End
-
 
   public slots:
 
