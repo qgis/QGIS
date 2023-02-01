@@ -16,15 +16,12 @@
 
 #include "qgsabstractgeopdfexporter.h"
 #include "qgscoordinatetransformcontext.h"
-#include "qgsrenderedfeaturehandlerinterface.h"
-#include "qgsfeaturerequest.h"
 #include "qgslogger.h"
 #include "qgsgeometry.h"
-#include "qgsvectorlayer.h"
 #include "qgsvectorfilewriter.h"
+#include "qgsfileutils.h"
 
 #include <gdal.h>
-#include "qgsgdalutils.h"
 #include "cpl_string.h"
 
 #include <QMutex>
@@ -123,10 +120,7 @@ bool QgsAbstractGeoPdfExporter::finalize( const QList<ComponentLayerDetail> &com
 
 QString QgsAbstractGeoPdfExporter::generateTemporaryFilepath( const QString &filename ) const
 {
-  QString cleanedFileName = filename;
-  cleanedFileName.replace( '\\', '_' );
-  cleanedFileName.replace( '/', '_' );
-  return mTemporaryDir.filePath( cleanedFileName );
+  return mTemporaryDir.filePath( QgsFileUtils::stringToSafeFilename( filename ) );
 }
 
 bool QgsAbstractGeoPdfExporter::compositionModeSupported( QPainter::CompositionMode mode )
