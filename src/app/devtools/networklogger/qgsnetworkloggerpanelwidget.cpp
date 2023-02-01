@@ -82,7 +82,7 @@ QgsNetworkLoggerTreeView::QgsNetworkLoggerTreeView( QgsNetworkLogger *logger, QW
       mLogger->removeRequestRows( rowsToTrim );
     }
 
-    if ( mAutoScroll )
+    if ( mAutoScroll && isVisible() )
       scrollToBottom();
   } );
 
