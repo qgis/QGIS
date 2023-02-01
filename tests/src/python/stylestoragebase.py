@@ -1,4 +1,3 @@
-# coding=utf-8
 """"Base test for provider style DB storage
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -134,7 +133,7 @@ class StyleStorageTestBase():
         vl.saveStyleToDatabase('style3', 'style3', False, None)
         num, ids, names, desc, err = vl.listStylesInDatabase()
 
-        self.assertTrue(set(['style2', 'style3', 'style1']).issubset(set(names)))
+        self.assertTrue({'style2', 'style3', 'style1'}.issubset(set(names)))
 
         del vl
         vl = QgsVectorLayer(uri, 'vl', self.providerKey)
@@ -156,4 +155,4 @@ class StyleStorageTestBase():
         self.assertEqual(symbol.color().name(), '#00ff00')
 
         mgr = vl.styleManager()
-        self.assertTrue(set(['style2', 'style3', 'style1']).issubset(set(names)))
+        self.assertTrue({'style2', 'style3', 'style1'}.issubset(set(names)))

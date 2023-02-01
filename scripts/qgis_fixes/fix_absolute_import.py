@@ -8,4 +8,4 @@ class FixAbsoluteImport(FixAbsoluteImportOrig):
             return False
         if imp_name == "AlgorithmsTestBase":
             return False
-        return super(FixAbsoluteImport, self).probably_a_local_import(imp_name)
+        return super().probably_a_local_import(imp_name)

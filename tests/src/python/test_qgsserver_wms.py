@@ -131,7 +131,7 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
         rh = response.headers()
         rk = sorted(rh.keys())
         for k in rk:
-            headers.append((f"{k}: {rh[k]}").encode('utf-8'))
+            headers.append((f"{k}: {rh[k]}").encode())
 
         reference_path = os.path.join(self.testdata_path, 'wms_getcapabilities_rewriting.txt')
         f = open(reference_path, 'rb')

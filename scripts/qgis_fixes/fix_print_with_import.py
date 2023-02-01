@@ -10,7 +10,7 @@ class FixPrintWithImport(FixPrintWithImportOrig):
         if "fix_print_with_import" in node.prefix:
             return node
 
-        r = super(FixPrintWithImport, self).transform(node, results)
+        r = super().transform(node, results)
 
         if not r or r == node:
             return r

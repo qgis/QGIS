@@ -157,7 +157,7 @@ class TestQgsServerCacheManager(QgsServerTestBase):
         rh = response.headers()
         rk = sorted(rh.keys())
         for k in rk:
-            headers.append((f"{k}: {rh[k]}").encode('utf-8'))
+            headers.append((f"{k}: {rh[k]}").encode())
         return b"\n".join(headers) + b"\n\n", bytes(response.body())
 
     @classmethod
@@ -188,7 +188,7 @@ class TestQgsServerCacheManager(QgsServerTestBase):
         rh = response.headers()
         rk = sorted(rh.keys())
         for k in rk:
-            headers.append((f"{k}: {rh[k]}").encode('utf-8'))
+            headers.append((f"{k}: {rh[k]}").encode())
         return b"\n".join(headers) + b"\n\n", bytes(response.body())
 
     def test_getcapabilities(self):

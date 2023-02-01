@@ -404,30 +404,30 @@ def build_pattern():
             else:
                 dotted = old_module.split('.')
                 if len(dotted) == 3:
-                    from_name = "dotted_name<%r '.' %r '.' %r>" % (dotted[0], dotted[1], dotted[2])
+                    from_name = f"dotted_name<{dotted[0]!r} '.' {dotted[1]!r} '.' {dotted[2]!r}>"
                 else:
                     assert len(dotted) == 2
-                    from_name = "dotted_name<%r '.' %r>" % (dotted[0], dotted[1])
+                    from_name = f"dotted_name<{dotted[0]!r} '.' {dotted[1]!r}>"
 
-            yield """import_name< 'import' (module=%s
-                                  | dotted_as_names< any* module=%s any* >) >
-                  """ % (from_name, from_name)
-            yield """import_from< 'from' mod_member=%s 'import'
-                       ( member=%s | import_as_name< member=%s 'as' any > |
+            yield """import_name< 'import' (module={}
+                                  | dotted_as_names< any* module={} any* >) >
+                  """.format(from_name, from_name)
+            yield """import_from< 'from' mod_member={} 'import'
+                       ( member={} | import_as_name< member={} 'as' any > |
                          import_as_names< members=any*  >) >
-                  """ % (from_name, members, members)
-            yield """import_from< 'from' mod_member=%s 'import' '('
-                       ( member=%s | import_as_name< member=%s 'as' any > |
+                  """.format(from_name, members, members)
+            yield """import_from< 'from' mod_member={} 'import' '('
+                       ( member={} | import_as_name< member={} 'as' any > |
                          import_as_names< members=any*  >) ')' >
-                  """ % (from_name, members, members)
+                  """.format(from_name, members, members)
             yield """import_from< 'from' module_star=%s 'import' star='*' >
                   """ % from_name
             yield """import_name< 'import'
                                   dotted_as_name< module_as=%s 'as' any > >
                   """ % from_name
             # bare_with_attr has a special significance for FixImports.match().
-            yield """power< bare_with_attr=%s trailer< '.' member=%s > any* >
-                  """ % (from_name, members)
+            yield """power< bare_with_attr={} trailer< '.' member={} > any* >
+                  """.format(from_name, members)
 
 
 class FixPyqt(FixImports):
@@ -517,7 +517,7 @@ class FixPyqt(FixImports):
                             found = True
                     if not found:
                         f = open("/tmp/missing", "a+")
-                        f.write("member %s of %s not found\n" % (member_name, mod_member.value))
+                        f.write(f"member {member_name} of {mod_member.value} not found\n")
                         f.close()
                         missing = True
 

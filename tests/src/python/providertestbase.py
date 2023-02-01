@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit test utils for provider tests.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -7,8 +6,6 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from builtins import str
-from builtins import object
 
 __author__ = 'Matthias Kuhn'
 __date__ = '2015-04-27'
@@ -183,11 +180,11 @@ class ProviderTestCase(FeatureSourceTestCase):
         self.source.setSubsetString(subset)
         self.assertEqual(len(changed_spy), 1)
 
-        result = set([f[self.pk_name] for f in self.source.getFeatures()])
+        result = {f[self.pk_name] for f in self.source.getFeatures()}
         all_valid = (all(f.isValid() for f in self.source.getFeatures()))
         self.source.setSubsetString(None)
 
-        expected = set([2, 3, 4])
+        expected = {2, 3, 4}
         assert set(expected) == result, 'Expected {} and got {} when testing subset string {}'.format(set(expected),
                                                                                                       result, subset)
         self.assertTrue(all_valid)
@@ -196,10 +193,10 @@ class ProviderTestCase(FeatureSourceTestCase):
         self.source.setSubsetString(subset)
         extent = QgsRectangle(-70, 70, -60, 75)
         request = QgsFeatureRequest().setFilterRect(extent)
-        result = set([f[self.pk_name] for f in self.source.getFeatures(request)])
+        result = {f[self.pk_name] for f in self.source.getFeatures(request)}
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
         self.source.setSubsetString(None)
-        expected = set([2])
+        expected = {2}
         assert set(expected) == result, 'Expected {} and got {} when testing subset string {}'.format(set(expected),
                                                                                                       result, subset)
         self.assertTrue(all_valid)
@@ -207,19 +204,19 @@ class ProviderTestCase(FeatureSourceTestCase):
         # Subset string AND filter rect, version 2
         self.source.setSubsetString(subset)
         extent = QgsRectangle(-71, 65, -60, 80)
-        result = set([f[self.pk_name] for f in self.source.getFeatures(QgsFeatureRequest().setFilterRect(extent))])
+        result = {f[self.pk_name] for f in self.source.getFeatures(QgsFeatureRequest().setFilterRect(extent))}
         self.source.setSubsetString(None)
-        expected = set([2, 4])
+        expected = {2, 4}
         assert set(expected) == result, 'Expected {} and got {} when testing subset string {}'.format(set(expected),
                                                                                                       result, subset)
 
         # Subset string AND expression
         self.source.setSubsetString(subset)
         request = QgsFeatureRequest().setFilterExpression('length("name")=5')
-        result = set([f[self.pk_name] for f in self.source.getFeatures(request)])
+        result = {f[self.pk_name] for f in self.source.getFeatures(request)}
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
         self.source.setSubsetString(None)
-        expected = set([2, 4])
+        expected = {2, 4}
         assert set(expected) == result, 'Expected {} and got {} when testing subset string {}'.format(set(expected),
                                                                                                       result, subset)
         self.assertTrue(all_valid)
@@ -229,10 +226,10 @@ class ProviderTestCase(FeatureSourceTestCase):
             ids = {f[self.pk_name]: f.id() for f in self.source.getFeatures()}
             self.source.setSubsetString(subset)
             request = QgsFeatureRequest().setFilterFid(ids[4])
-            result = set([f.id() for f in self.source.getFeatures(request)])
+            result = {f.id() for f in self.source.getFeatures(request)}
             all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
             self.source.setSubsetString(None)
-            expected = set([ids[4]])
+            expected = {ids[4]}
             assert set(expected) == result, 'Expected {} and got {} when testing subset string {}'.format(set(expected),
                                                                                                           result, subset)
             self.assertTrue(all_valid)
@@ -240,10 +237,10 @@ class ProviderTestCase(FeatureSourceTestCase):
             # Subset string AND filter fids
             self.source.setSubsetString(subset)
             request = QgsFeatureRequest().setFilterFids([ids[2], ids[4]])
-            result = set([f.id() for f in self.source.getFeatures(request)])
+            result = {f.id() for f in self.source.getFeatures(request)}
             all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
             self.source.setSubsetString(None)
-            expected = set([ids[2], ids[4]])
+            expected = {ids[2], ids[4]}
             assert set(expected) == result, 'Expected {} and got {} when testing subset string {}'.format(set(expected),
                                                                                                           result, subset)
             self.assertTrue(all_valid)
@@ -345,20 +342,20 @@ class ProviderTestCase(FeatureSourceTestCase):
         features = [f[self.pk_name] for f in self.poly_provider.getFeatures(request)]
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
         # Some providers may return the exact intersection matches (2, 3) even without the ExactIntersect flag, so we accept that too
-        assert set(features) == set([2, 3]) or set(features) == set([1, 2, 3]), 'Got {} instead'.format(features)
+        assert set(features) == {2, 3} or set(features) == {1, 2, 3}, f'Got {features} instead'
         self.assertTrue(all_valid)
 
         # Test with exact intersection
         request = QgsFeatureRequest().setFilterRect(extent).setFlags(QgsFeatureRequest.ExactIntersect)
         features = [f[self.pk_name] for f in self.poly_provider.getFeatures(request)]
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
-        assert set(features) == set([2, 3]), 'Got {} instead'.format(features)
+        assert set(features) == {2, 3}, f'Got {features} instead'
         self.assertTrue(all_valid)
 
         # test with an empty rectangle
         extent = QgsRectangle()
         features = [f[self.pk_name] for f in self.source.getFeatures(QgsFeatureRequest().setFilterRect(extent))]
-        assert set(features) == set([1, 2, 3, 4, 5]), 'Got {} instead'.format(features)
+        assert set(features) == {1, 2, 3, 4, 5}, f'Got {features} instead'
 
     def testMinValue(self):
         self.assertFalse(self.source.minimumValue(-1))
@@ -463,73 +460,73 @@ class ProviderTestCase(FeatureSourceTestCase):
         self.assertEqual(self.source.uniqueValues(1000), set())
 
         self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('cnt'))),
-                         set([-200, 100, 200, 300, 400]))
-        assert set(['Apple', 'Honey', 'Orange', 'Pear', NULL]) == set(
+                         {-200, 100, 200, 300, 400})
+        assert {'Apple', 'Honey', 'Orange', 'Pear', NULL} == set(
             self.source.uniqueValues(self.source.fields().lookupField('name'))), 'Got {}'.format(
             set(self.source.uniqueValues(self.source.fields().lookupField('name'))))
 
         if self.treat_datetime_as_string():
             self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('dt'))),
-                             set(['2021-05-04 13:13:14', '2020-05-04 12:14:14', '2020-05-04 12:13:14',
-                                  '2020-05-03 12:13:14', NULL]))
+                             {'2021-05-04 13:13:14', '2020-05-04 12:14:14', '2020-05-04 12:13:14',
+                              '2020-05-03 12:13:14', NULL})
         else:
             if self.treat_datetime_tz_as_utc():
                 self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('dt'))),
-                                 set([QDateTime(2021, 5, 4, 13, 13, 14, 0, Qt.UTC), QDateTime(2020, 5, 4, 12, 14, 14, 0, Qt.UTC),
-                                      QDateTime(2020, 5, 4, 12, 13, 14, 0, Qt.UTC), QDateTime(2020, 5, 3, 12, 13, 14, 0, Qt.UTC), NULL]))
+                                 {QDateTime(2021, 5, 4, 13, 13, 14, 0, Qt.UTC), QDateTime(2020, 5, 4, 12, 14, 14, 0, Qt.UTC),
+                                  QDateTime(2020, 5, 4, 12, 13, 14, 0, Qt.UTC), QDateTime(2020, 5, 3, 12, 13, 14, 0, Qt.UTC), NULL})
             else:
                 self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('dt'))),
-                                 set([QDateTime(2021, 5, 4, 13, 13, 14), QDateTime(2020, 5, 4, 12, 14, 14),
-                                      QDateTime(2020, 5, 4, 12, 13, 14), QDateTime(2020, 5, 3, 12, 13, 14), NULL]))
+                                 {QDateTime(2021, 5, 4, 13, 13, 14), QDateTime(2020, 5, 4, 12, 14, 14),
+                                  QDateTime(2020, 5, 4, 12, 13, 14), QDateTime(2020, 5, 3, 12, 13, 14), NULL})
 
         if self.treat_date_as_string():
             self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('date'))),
-                             set(['2020-05-03', '2020-05-04', '2021-05-04', '2020-05-02', NULL]))
+                             {'2020-05-03', '2020-05-04', '2021-05-04', '2020-05-02', NULL})
         elif self.treat_date_as_datetime():
             self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('date'))),
-                             set([QDateTime(2020, 5, 3, 0, 0, 0), QDateTime(2020, 5, 4, 0, 0, 0),
-                                  QDateTime(2021, 5, 4, 0, 0, 0), QDateTime(2020, 5, 2, 0, 0, 0), NULL]))
+                             {QDateTime(2020, 5, 3, 0, 0, 0), QDateTime(2020, 5, 4, 0, 0, 0),
+                              QDateTime(2021, 5, 4, 0, 0, 0), QDateTime(2020, 5, 2, 0, 0, 0), NULL})
         else:
             self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('date'))),
-                             set([QDate(2020, 5, 3), QDate(2020, 5, 4), QDate(2021, 5, 4), QDate(2020, 5, 2), NULL]))
+                             {QDate(2020, 5, 3), QDate(2020, 5, 4), QDate(2021, 5, 4), QDate(2020, 5, 2), NULL})
         if self.treat_time_as_string():
             self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('time'))),
-                             set(['12:14:14', '13:13:14', '12:13:14', '12:13:01', NULL]))
+                             {'12:14:14', '13:13:14', '12:13:14', '12:13:01', NULL})
         else:
             self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('time'))),
-                             set([QTime(12, 14, 14), QTime(13, 13, 14), QTime(12, 13, 14), QTime(12, 13, 1), NULL]))
+                             {QTime(12, 14, 14), QTime(13, 13, 14), QTime(12, 13, 14), QTime(12, 13, 1), NULL})
 
         if self.source.supportsSubsetString():
             subset = self.getSubsetString2()
             self.source.setSubsetString(subset)
             values = self.source.uniqueValues(self.source.fields().lookupField('cnt'))
             self.source.setSubsetString(None)
-            self.assertEqual(set(values), set([200, 300]))
+            self.assertEqual(set(values), {200, 300})
 
     def testUniqueStringsMatching(self):
         self.assertEqual(self.source.uniqueStringsMatching(-1, 'a'), [])
         self.assertEqual(self.source.uniqueStringsMatching(100001, 'a'), [])
 
         field_index = self.source.fields().lookupField('name')
-        self.assertEqual(set(self.source.uniqueStringsMatching(field_index, 'a')), set(['Pear', 'Orange', 'Apple']))
+        self.assertEqual(set(self.source.uniqueStringsMatching(field_index, 'a')), {'Pear', 'Orange', 'Apple'})
         # test case insensitive
-        self.assertEqual(set(self.source.uniqueStringsMatching(field_index, 'A')), set(['Pear', 'Orange', 'Apple']))
+        self.assertEqual(set(self.source.uniqueStringsMatching(field_index, 'A')), {'Pear', 'Orange', 'Apple'})
         # test string ending in substring
-        self.assertEqual(set(self.source.uniqueStringsMatching(field_index, 'ney')), set(['Honey']))
+        self.assertEqual(set(self.source.uniqueStringsMatching(field_index, 'ney')), {'Honey'})
         # test limit
         result = set(self.source.uniqueStringsMatching(field_index, 'a', 2))
         self.assertEqual(len(result), 2)
-        self.assertTrue(result.issubset(set(['Pear', 'Orange', 'Apple'])))
+        self.assertTrue(result.issubset({'Pear', 'Orange', 'Apple'}))
 
-        assert set(['Apple', 'Honey', 'Orange', 'Pear', NULL]) == set(
-            self.source.uniqueValues(field_index)), 'Got {}'.format(set(self.source.uniqueValues(field_index)))
+        assert {'Apple', 'Honey', 'Orange', 'Pear', NULL} == set(
+            self.source.uniqueValues(field_index)), f'Got {set(self.source.uniqueValues(field_index))}'
 
         if self.source.supportsSubsetString():
             subset = self.getSubsetString2()
             self.source.setSubsetString(subset)
             values = self.source.uniqueStringsMatching(field_index, 'a')
             self.source.setSubsetString(None)
-            self.assertEqual(set(values), set(['Pear', 'Apple']))
+            self.assertEqual(set(values), {'Pear', 'Apple'})
 
     def testFeatureCount(self):
         self.assertEqual(self.source.featureCount(), 5)
@@ -1138,7 +1135,7 @@ class ProviderTestCase(FeatureSourceTestCase):
         feat = next(iterators[0])
         context = QgsExpressionContext()
         context.setFeature(feat)
-        exp = QgsExpression('get_feature(\'{layer}\', \'pk\', 5)'.format(layer=self.vl.id()))
+        exp = QgsExpression(f'get_feature(\'{self.vl.id()}\', \'pk\', 5)')
         exp.evaluate(context)
 
     def testEmptySubsetOfAttributesWithSubsetString(self):
