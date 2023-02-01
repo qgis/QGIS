@@ -2168,15 +2168,9 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
   // But this is undesirable in general, so don't do this when we know that
   // we don't need to.
   bool mayNeedResetReadingAfterGetFeature = true;
-  if ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) )
-  {
-    mayNeedResetReadingAfterGetFeature = false;
-  }
-  else if ( mGDALDriverName == QLatin1String( "GPKG" ) )
-  {
-    mayNeedResetReadingAfterGetFeature = false;
-  }
-  else if ( mGDALDriverName == QLatin1String( "CSV" ) )
+  if ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) ||
+       mGDALDriverName == QLatin1String( "GPKG" ) ||
+       mGDALDriverName == QLatin1String( "CSV" ) )
   {
     mayNeedResetReadingAfterGetFeature = false;
   }
