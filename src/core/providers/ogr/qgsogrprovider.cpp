@@ -2176,6 +2176,10 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
   {
     mayNeedResetReadingAfterGetFeature = false;
   }
+  else if ( mGDALDriverName == QLatin1String( "CSV" ) )
+  {
+    mayNeedResetReadingAfterGetFeature = false;
+  }
 
   for ( QgsChangedAttributesMap::const_iterator it = attr_map.begin(); it != attr_map.end(); ++it )
   {
