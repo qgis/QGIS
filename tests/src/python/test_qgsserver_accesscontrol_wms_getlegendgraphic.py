@@ -68,7 +68,7 @@ class TestQgsServerAccessControlWMSGetlegendgraphic(TestQgsServerAccessControl):
         response, headers = self._get_restricted(query_string)
         self.assertEqual(
             headers.get("Content-Type"), "text/xml; charset=utf-8",
-            "Content type for GetMap is wrong: %s" % headers.get("Content-Type"))
+            f"Content type for GetMap is wrong: {headers.get('Content-Type')}")
         self.assertTrue(
             str(response).find('<ServiceException code="Security">') != -1,
             "Not allowed GetLegendGraphic"
@@ -96,7 +96,7 @@ class TestQgsServerAccessControlWMSGetlegendgraphic(TestQgsServerAccessControl):
         response, headers = self._get_restricted(query_string)
         self.assertEqual(
             headers.get("Content-Type"), "text/xml; charset=utf-8",
-            "Content type for GetMap is wrong: %s" % headers.get("Content-Type"))
+            f"Content type for GetMap is wrong: {headers.get('Content-Type')}")
         self.assertTrue(
             str(response).find('<ServiceException code="Security">') != -1,
             "Not allowed GetLegendGraphic"

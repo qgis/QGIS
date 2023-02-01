@@ -133,7 +133,7 @@ class TestQgsFeature(unittest.TestCase):
         fit.nextFeature(feat)
         fit.close()
         myValidValue = feat.isValid()
-        myMessage = '\nExpected: {}\nGot: {}'.format("True", myValidValue)
+        myMessage = f"\nExpected: True\nGot: {myValidValue}"
         assert myValidValue, myMessage
 
     def test_Validity(self):
@@ -169,10 +169,7 @@ class TestQgsFeature(unittest.TestCase):
 
         # Only for printing purposes
         myExpectedAttributes = ["Highway", 1]
-        myMessage = '\nExpected: {}\nGot: {}'.format(
-            myExpectedAttributes,
-            myAttributes
-        )
+        myMessage = f'\nExpected: {myExpectedAttributes}\nGot: {myAttributes}'
 
         assert myAttributes == myExpectedAttributes, myMessage
 

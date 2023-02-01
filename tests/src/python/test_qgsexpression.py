@@ -22,7 +22,7 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
     @qgsfunction(1, 'testing', register=False)
     def testfun(values, feature, parent):
         """ Function help """
-        return "Testing_%s" % values[0]
+        return f"Testing_{values[0]}"
 
     @qgsfunction(args="auto", group='testing', register=False)
     def autocount(value1, value2, value3, feature, parent):

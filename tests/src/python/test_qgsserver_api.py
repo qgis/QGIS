@@ -275,7 +275,7 @@ class QgsServerAPITestBase(QgsServerTestBase):
             f = open(path.encode('utf8'), 'w+', encoding='utf8')
             f.write(result)
             f.close()
-            print("Reference file %s regenerated!" % path.encode('utf8'))
+            print(f"Reference file {path.encode('utf8')} regenerated!")
 
         with open(path.encode('utf8'), encoding='utf8') as f:
             if reference_file.endswith('json'):
@@ -713,7 +713,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
 
         # Invalid request
         data = b'not json!'
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items' % insert_layer,
+        request = QgsBufferServerRequest(f'http://server.qgis.org/wfs3/collections/{insert_layer}/items',
                                          QgsBufferServerRequest.PostMethod,
                                          {'Content-Type': 'application/geo+json'},
                                          data
@@ -745,7 +745,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
         },
         "type": "Feature"
         }"""
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items' % insert_layer,
+        request = QgsBufferServerRequest(f'http://server.qgis.org/wfs3/collections/{insert_layer}/items',
                                          QgsBufferServerRequest.PostMethod,
                                          {'Content-Type': 'application/geo+json'},
                                          data
@@ -792,7 +792,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
 
         # Invalid request
         data = b'not json!'
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % update_layer,
+        request = QgsBufferServerRequest(f'http://server.qgis.org/wfs3/collections/{update_layer}/items/1',
                                          QgsBufferServerRequest.PutMethod,
                                          {'Content-Type': 'application/geo+json'},
                                          data
@@ -826,7 +826,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
         }"""
 
         # Unauthorized layer
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % insert_layer,
+        request = QgsBufferServerRequest(f'http://server.qgis.org/wfs3/collections/{insert_layer}/items/1',
                                          QgsBufferServerRequest.PutMethod,
                                          {'Content-Type': 'application/geo+json'},
                                          data
@@ -836,7 +836,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
         self.assertEqual(response.statusCode(), 403)
 
         # Authorized layer
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % update_layer,
+        request = QgsBufferServerRequest(f'http://server.qgis.org/wfs3/collections/{update_layer}/items/1',
                                          QgsBufferServerRequest.PutMethod,
                                          {'Content-Type': 'application/geo+json'},
                                          data
@@ -881,7 +881,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
         },
         "type": "Feature"
         }"""
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % update_layer,
+        request = QgsBufferServerRequest(f'http://server.qgis.org/wfs3/collections/{update_layer}/items/1',
                                          QgsBufferServerRequest.PutMethod,
                                          {'Content-Type': 'application/geo+json'},
                                          data
@@ -923,7 +923,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
         },
         "type": "Feature"
         }"""
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % hidden_text_2_layer,
+        request = QgsBufferServerRequest(f'http://server.qgis.org/wfs3/collections/{hidden_text_2_layer}/items/1',
                                          QgsBufferServerRequest.PutMethod,
                                          {'Content-Type': 'application/geo+json'},
                                          data
@@ -953,7 +953,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
 
         # Valid request on unauthorized layer
         data = b''
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % update_layer,
+        request = QgsBufferServerRequest(f'http://server.qgis.org/wfs3/collections/{update_layer}/items/1',
                                          QgsBufferServerRequest.DeleteMethod)
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response, project)
@@ -961,7 +961,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
 
         # Valid request on authorized layer
         data = b''
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % delete_layer,
+        request = QgsBufferServerRequest(f'http://server.qgis.org/wfs3/collections/{delete_layer}/items/1',
                                          QgsBufferServerRequest.DeleteMethod)
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response, project)
@@ -993,7 +993,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
 
         # Invalid request
         data = b'not json!'
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % update_layer,
+        request = QgsBufferServerRequest(f'http://server.qgis.org/wfs3/collections/{update_layer}/items/1',
                                          QgsBufferServerRequest.PutMethod,
                                          {'Content-Type': 'application/json'},
                                          data
@@ -1015,7 +1015,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
             }
         }
         """
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % update_layer,
+        request = QgsBufferServerRequest(f'http://server.qgis.org/wfs3/collections/{update_layer}/items/1',
                                          QgsBufferServerRequest.PatchMethod,
                                          {'Content-Type': 'application/json'},
                                          data
@@ -1035,7 +1035,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
         }"""
 
         # Unauthorized layer
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % insert_layer,
+        request = QgsBufferServerRequest(f'http://server.qgis.org/wfs3/collections/{insert_layer}/items/1',
                                          QgsBufferServerRequest.PatchMethod,
                                          {'Content-Type': 'application/json'},
                                          data
@@ -1045,7 +1045,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
         self.assertEqual(response.statusCode(), 403)
 
         # Authorized layer
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % update_layer,
+        request = QgsBufferServerRequest(f'http://server.qgis.org/wfs3/collections/{update_layer}/items/1',
                                          QgsBufferServerRequest.PatchMethod,
                                          {'Content-Type': 'application/json'},
                                          data
@@ -1074,7 +1074,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
             r'\.\d+', '', feature.geometry().asWkt().upper()), 'MULTIPOINT ((804542 5593348))')
 
         # Try to update a forbidden (unpublished) field
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % hidden_text_2_layer,
+        request = QgsBufferServerRequest(f'http://server.qgis.org/wfs3/collections/{hidden_text_2_layer}/items/1',
                                          QgsBufferServerRequest.PatchMethod,
                                          {'Content-Type': 'application/json'},
                                          data
@@ -1389,7 +1389,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
         def _date_tester(project_path, datetime, expected, unexpected):
             # Test "created" date field exact
             request = QgsBufferServerRequest(
-                'http://server.qgis.org/wfs3/collections/points/items?datetime=%s' % datetime)
+                f'http://server.qgis.org/wfs3/collections/points/items?datetime={datetime}')
             response = QgsBufferServerResponse()
             project.read(project_path)
             self.server.handleRequest(request, response, project)

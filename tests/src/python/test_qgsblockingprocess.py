@@ -190,7 +190,7 @@ class TestQgsBlockingProcess(unittest.TestCase):
             f.write('echo $PATH')
 
         prev_path_val = os.getenv('PATH')
-        new_path = "{}{}{}".format('/my_test/folder', os.pathsep, prev_path_val)
+        new_path = f"/my_test/folder{os.pathsep}{prev_path_val}"
         os.environ['PATH'] = new_path
 
         std_out.val = ''

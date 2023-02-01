@@ -154,7 +154,7 @@ class TestSelectiveMasking(unittest.TestCase):
         self.map_settings.setLayers([self.points_layer, self.lines_layer, self.polys_layer])
 
     def tearDown(self):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 

@@ -78,7 +78,7 @@ class TestQgsSymbol(unittest.TestCase):
         self.report = "<h1>Python QgsSymbol Tests</h1>\n"
 
     def tearDown(self):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 
@@ -288,7 +288,7 @@ class TestQgsSymbol(unittest.TestCase):
             def get_geom():
                 if 'geom' not in test:
                     geom = QgsGeometry.fromWkt(test['wkt'])
-                    assert geom and not geom.isNull(), 'Could not create geometry {}'.format(test['wkt'])
+                    assert geom and not geom.isNull(), f"Could not create geometry {test['wkt']}"
                 else:
                     geom = test['geom']
                 return geom
@@ -875,7 +875,7 @@ class TestQgsMarkerSymbol(unittest.TestCase):
         self.report = "<h1>Python QgsMarkerSymbol Tests</h1>\n"
 
     def tearDown(self):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 
@@ -1155,7 +1155,7 @@ class TestQgsLineSymbol(unittest.TestCase):
         self.report = "<h1>Python QgsLineSymbol Tests</h1>\n"
 
     def tearDown(self):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 
@@ -1220,7 +1220,7 @@ class TestQgsFillSymbol(unittest.TestCase):
         self.report = "<h1>Python QgsFillSymbol Tests</h1>\n"
 
     def tearDown(self):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 

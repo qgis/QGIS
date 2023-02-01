@@ -262,7 +262,7 @@ class TestLayoutBase(TestQgsPalLabeling):
         else:
             return False, ''
 
-        qDebug("_get_layout_pdf_image call: {}".format(' '.join(call)))
+        qDebug(f"_get_layout_pdf_image call: {' '.join(call)}")
         res = False
         try:
             subprocess.check_call(call)

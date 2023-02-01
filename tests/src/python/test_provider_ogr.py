@@ -390,7 +390,7 @@ class PyQgsOGRProvider(unittest.TestCase):
             datasource = os.path.join(self.basetestpath, 'test.csv')
             with open(datasource, 'w') as f:
                 f.write('id,WKT\n')
-                f.write('1,"%s"' % row[0])
+                f.write(f'1,"{row[0]}"')
 
             vl = QgsVectorLayer(datasource, 'test', 'ogr')
             self.assertTrue(vl.isValid())
@@ -2312,7 +2312,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[0].layerNumber(), 0)
         self.assertEqual(res[0].name(), "ARC")
         self.assertEqual(res[0].description(), "")
-        self.assertEqual(res[0].uri(), '{}|layername=ARC'.format(os.path.join(TEST_DATA_DIR, 'esri_coverage', 'testpolyavc')))
+        self.assertEqual(res[0].uri(), f"{os.path.join(TEST_DATA_DIR, 'esri_coverage', 'testpolyavc')}|layername=ARC")
         self.assertEqual(res[0].providerKey(), "ogr")
         self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
         self.assertFalse(res[0].skippedContainerScan())
@@ -2465,7 +2465,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[0].layerNumber(), 0)
         self.assertEqual(res[0].name(), "ARC")
         self.assertEqual(res[0].description(), "")
-        self.assertEqual(res[0].uri(), '{}|layername=ARC'.format(os.path.join(TEST_DATA_DIR, 'esri_coverage', 'testpolyavc')))
+        self.assertEqual(res[0].uri(), f"{os.path.join(TEST_DATA_DIR, 'esri_coverage', 'testpolyavc')}|layername=ARC")
         self.assertEqual(res[0].providerKey(), "ogr")
         self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
         self.assertFalse(res[0].skippedContainerScan())

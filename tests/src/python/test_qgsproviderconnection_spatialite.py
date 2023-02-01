@@ -64,7 +64,7 @@ class TestPyQgsProviderConnectionSpatialite(unittest.TestCase, TestPyQgsProvider
         spatialite_original_path = f'{TEST_DATA_DIR}/qgis_server/test_project_wms_grouped_layers.sqlite'
         cls.spatialite_path = os.path.join(cls.basetestpath, 'test.sqlite')
         shutil.copy(spatialite_original_path, cls.spatialite_path)
-        cls.uri = "dbname=\'%s\'" % cls.spatialite_path
+        cls.uri = f"dbname='{cls.spatialite_path}'"
         vl = QgsVectorLayer(f'{cls.uri} table=\'cdb_lines\'', 'test', 'spatialite')
         assert vl.isValid()
 

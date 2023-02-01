@@ -73,7 +73,7 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
 
         # Test raster
         self.assertEqual(conn.tableUri('qgis_test', 'Raster1'),
-                         '%s table="qgis_test"."Raster1"' % self.uri)
+                         f'{self.uri} table="qgis_test"."Raster1"')
 
         rl = QgsRasterLayer(conn.tableUri('qgis_test', 'Raster1'), 'r1', 'postgresraster')
         self.assertTrue(rl.isValid())

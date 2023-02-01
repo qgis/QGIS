@@ -56,7 +56,7 @@ class TestQgsImageCache(unittest.TestCase):
         QgsApplication.imageCache().remoteImageFetched.connect(self.imageFetched)
 
     def tearDown(self):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 

@@ -75,11 +75,11 @@ class TestLayerDependencies(unittest.TestCase):
         con.commit()
         con.close()
 
-        self.pointsLayer = QgsVectorLayer("dbname='%s' table=\"node\" (geom) sql=" % fn, "points", "spatialite")
+        self.pointsLayer = QgsVectorLayer(f"dbname='{fn}' table=\"node\" (geom) sql=", "points", "spatialite")
         assert (self.pointsLayer.isValid())
-        self.linesLayer = QgsVectorLayer("dbname='%s' table=\"section\" (geom) sql=" % fn, "lines", "spatialite")
+        self.linesLayer = QgsVectorLayer(f"dbname='{fn}' table=\"section\" (geom) sql=", "lines", "spatialite")
         assert (self.linesLayer.isValid())
-        self.pointsLayer2 = QgsVectorLayer("dbname='%s' table=\"node2\" (geom) sql=" % fn, "_points2", "spatialite")
+        self.pointsLayer2 = QgsVectorLayer(f"dbname='{fn}' table=\"node2\" (geom) sql=", "_points2", "spatialite")
         assert (self.pointsLayer2.isValid())
         QgsProject.instance().addMapLayers([self.pointsLayer, self.linesLayer, self.pointsLayer2])
 
@@ -281,11 +281,11 @@ class TestLayerDependencies(unittest.TestCase):
         # remove all layers
         QgsProject.instance().removeAllMapLayers()
         # set dependencies and add back layers
-        self.pointsLayer = QgsVectorLayer("dbname='%s' table=\"node\" (geom) sql=" % self.fn, "points", "spatialite")
+        self.pointsLayer = QgsVectorLayer(f"dbname='{self.fn}' table=\"node\" (geom) sql=", "points", "spatialite")
         assert (self.pointsLayer.isValid())
-        self.linesLayer = QgsVectorLayer("dbname='%s' table=\"section\" (geom) sql=" % self.fn, "lines", "spatialite")
+        self.linesLayer = QgsVectorLayer(f"dbname='{self.fn}' table=\"section\" (geom) sql=", "lines", "spatialite")
         assert (self.linesLayer.isValid())
-        self.pointsLayer2 = QgsVectorLayer("dbname='%s' table=\"node2\" (geom) sql=" % self.fn, "_points2", "spatialite")
+        self.pointsLayer2 = QgsVectorLayer(f"dbname='{self.fn}' table=\"node2\" (geom) sql=", "_points2", "spatialite")
         assert (self.pointsLayer2.isValid())
         self.pointsLayer.setDependencies([QgsMapLayerDependency(self.linesLayer.id())])
         self.pointsLayer2.setDependencies([QgsMapLayerDependency(self.pointsLayer.id())])

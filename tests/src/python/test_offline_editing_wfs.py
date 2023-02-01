@@ -95,7 +95,7 @@ class TestWFST(unittest.TestCase, OfflineTestBase):
         self.port = int(re.findall(br':(\d+)', line)[0])
         assert self.port != 0
         # Wait for the server process to start
-        assert waitServer('http://127.0.0.1:%s' % self.port), "Server is not responding!"
+        assert waitServer(f'http://127.0.0.1:{self.port}'), "Server is not responding!"
         self._setUp()
 
     def tearDown(self):

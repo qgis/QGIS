@@ -163,7 +163,7 @@ class TestAuthManager(unittest.TestCase):
 
         cls.server = subprocess.Popen([os.path.join(QGIS_POSTGRES_EXECUTABLE_PATH, 'postgres'), '-D',
                                        cls.data_path, '-c',
-                                       "config_file=%s" % cls.pg_conf],
+                                       f"config_file={cls.pg_conf}"],
                                       env=env,
                                       stdout=subprocess.PIPE,
                                       stderr=subprocess.PIPE)

@@ -38,7 +38,7 @@ class PluginDependenciesTest(unittest.TestCase):
 
         QCoreApplication.setOrganizationName("QGIS")
         QCoreApplication.setOrganizationDomain("qgis.org")
-        QCoreApplication.setApplicationName("QGIS-TEST-%s" % uuid.uuid1())
+        QCoreApplication.setApplicationName(f"QGIS-TEST-{uuid.uuid1()}")
         qgis_app = start_app()
 
         # Installed plugins

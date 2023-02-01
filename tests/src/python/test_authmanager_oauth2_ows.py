@@ -234,7 +234,7 @@ class TestAuthManager(unittest.TestCase):
         }
         if authcfg is not None:
             parms.update({'authcfg': authcfg})
-        uri = '&'.join([("{}={}".format(k, v.replace('=', '%3D'))) for k, v in list(parms.items())])
+        uri = '&'.join([f"{k}={v.replace('=', '%3D')}" for k, v in list(parms.items())])
         wms_layer = QgsRasterLayer(uri, layer_name, 'wms')
         return wms_layer
 

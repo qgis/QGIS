@@ -94,8 +94,7 @@ class TestWFST(unittest.TestCase):
         cls.port = int(re.findall(br':(\d+)', line)[0])
         assert cls.port != 0
         # Wait for the server process to start
-        assert waitServer('http://127.0.0.1:%s' %
-                          cls.port), "Server is not responding!"
+        assert waitServer(f'http://127.0.0.1:{cls.port}'), "Server is not responding!"
 
     @classmethod
     def tearDownClass(cls):
@@ -153,8 +152,7 @@ class TestWFST(unittest.TestCase):
         parms = {
             'srsname': 'EPSG:4326',
             'typename': type_name,
-            'url': 'http://127.0.0.1:{}/?map={}'.format(cls.port,
-                                                        cls.project_path),
+            'url': f'http://127.0.0.1:{cls.port}/?map={cls.project_path}',
             'version': cls.VERSION,
             'table': '',
             # 'sql': '',
@@ -170,13 +168,11 @@ class TestWFST(unittest.TestCase):
         Find the feature and return it, raise exception if not found
         """
 
-        request = QgsFeatureRequest(QgsExpression("{}={}".format(attr_name,
-                                                                 attr_value)))
+        request = QgsFeatureRequest(QgsExpression(f"{attr_name}={attr_value}"))
         try:
             return next(layer.dataProvider().getFeatures(request))
         except StopIteration:
-            raise Exception("Wrong attributes in WFS layer %s" %
-                            layer.name())
+            raise Exception(f"Wrong attributes in WFS layer {layer.name()}")
 
     def _checkAddFeatures(self, wfs_layer, layer, features):
         """
@@ -195,7 +191,7 @@ class TestWFST(unittest.TestCase):
         # Verify features from the layers
         for f in ogr_features:
             geom = next(wfs_layer.dataProvider().getFeatures(QgsFeatureRequest(
-                QgsExpression('"id" = %s' % f.attribute('id'))))).geometry()
+                QgsExpression(f"\"id\" = {f.attribute('id')}")))).geometry()
             self.assertEqual(geom.boundingBox(), f.geometry().boundingBox())
 
     def _checkUpdateFeatures(self, wfs_layer, old_features, new_features):

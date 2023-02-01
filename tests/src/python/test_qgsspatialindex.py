@@ -43,8 +43,7 @@ class TestQgsSpatialIndex(unittest.TestCase):
         myMessage = f'Expected: {myExpectedValue} Got: {myValue}'
         self.assertEqual(myValue, myExpectedValue, myMessage)
         fids.sort()
-        myMessage = ('Expected: %s\nGot: %s\n' %
-                     ([1, 2, 5, 6], fids))
+        myMessage = f'Expected: {[1, 2, 5, 6]}\nGot: {fids}\n'
         assert fids == [1, 2, 5, 6], myMessage
 
         # nearest neighbor test
@@ -54,8 +53,7 @@ class TestQgsSpatialIndex(unittest.TestCase):
         myMessage = f'Expected: {myExpectedValue} Got: {myValue}'
 
         fids.sort()
-        myMessage = ('Expected: %s\nGot: %s\n' %
-                     ([0, 1, 5], fids))
+        myMessage = f'Expected: {[0, 1, 5]}\nGot: {fids}\n'
         assert fids == [0, 1, 5], myMessage
 
     def testGetGeometry(self):

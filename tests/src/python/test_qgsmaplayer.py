@@ -152,12 +152,12 @@ class TestQgsMapLayer(unittest.TestCase):
         uri = layer.styleURI()
         self.assertEqual(uri, os.path.join(TEST_DATA_DIR, 'provider', 'bug_17795.qml'))
 
-        layer = QgsVectorLayer("{}|layername=bug_17795".format(os.path.join(TEST_DATA_DIR, 'provider', 'bug_17795.gpkg')), "layer", "ogr")
+        layer = QgsVectorLayer(f"{os.path.join(TEST_DATA_DIR, 'provider', 'bug_17795.gpkg')}|layername=bug_17795", "layer", "ogr")
         uri = layer.styleURI()
         self.assertEqual(uri, os.path.join(TEST_DATA_DIR, 'provider', 'bug_17795.qml'))
 
         # delimited text
-        uri = 'file://{}?type=csv&detectTypes=yes&geomType=none'.format(os.path.join(TEST_DATA_DIR, 'delimitedtext', 'test.csv'))
+        uri = f"file://{os.path.join(TEST_DATA_DIR, 'delimitedtext', 'test.csv')}?type=csv&detectTypes=yes&geomType=none"
         layer = QgsVectorLayer(uri, "layer", "delimitedtext")
         uri = layer.styleURI()
         self.assertEqual(uri, os.path.join(TEST_DATA_DIR, 'delimitedtext', 'test.qml'))

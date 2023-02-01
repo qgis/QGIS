@@ -725,7 +725,7 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         context = vl.createExpressionContext()
         for i in range(2):
             features_data.append(
-                QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 44)'), {0: 'test_%s' % i, 1: 123}))
+                QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 44)'), {0: f'test_{i}', 1: 123}))
         features = QgsVectorLayerUtils.createFeatures(vl, features_data, context)
 
         self.assertEqual(features[0].attributes()[1], 124)

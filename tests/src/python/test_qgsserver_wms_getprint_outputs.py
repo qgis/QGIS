@@ -77,7 +77,7 @@ class PyQgsServerWMSGetPrintOutputs(QgsServerTestBase):
         else:
             return False, ''
 
-        print("exportToPdf call: {}".format(' '.join(call)))
+        print(f"exportToPdf call: {' '.join(call)}")
         try:
             subprocess.check_call(call)
         except subprocess.CalledProcessError as e:
@@ -88,12 +88,12 @@ class PyQgsServerWMSGetPrintOutputs(QgsServerTestBase):
 
     def _pdf_diff(self, pdf, control_image, max_diff, max_size_diff=QSize(), dpi=96):
 
-        temp_pdf = os.path.join(tempfile.gettempdir(), "%s_result.pdf" % control_image)
+        temp_pdf = os.path.join(tempfile.gettempdir(), f"{control_image}_result.pdf")
 
         with open(temp_pdf, "wb") as f:
             f.write(pdf)
 
-        temp_image = os.path.join(tempfile.gettempdir(), "%s_result.png" % control_image)
+        temp_image = os.path.join(tempfile.gettempdir(), f"{control_image}_result.png")
         self._pdf_to_png(temp_pdf, temp_image, dpi=dpi, page=1)
 
         control = QgsMultiRenderChecker()
@@ -112,13 +112,13 @@ class PyQgsServerWMSGetPrintOutputs(QgsServerTestBase):
 
         self.assertEqual(
             headers.get("Content-Type"), 'application/pdf',
-            "Content type is wrong: {} instead of {}\n{}".format(headers.get("Content-Type"), 'application/pdf', response))
+            f"Content type is wrong: {headers.get('Content-Type')} instead of application/pdf\n{response}")
 
         test, report = self._pdf_diff(response, image, max_diff, max_size_diff, dpi)
 
         with open(os.path.join(tempfile.gettempdir(), image + "_result.pdf"), "rb") as rendered_file:
             if not os.environ.get('ENCODED_OUTPUT'):
-                message = "PDF is wrong: rendered file {}/{}_result.{}".format(tempfile.gettempdir(), image, 'pdf')
+                message = f"PDF is wrong: rendered file {tempfile.gettempdir()}/{image}_result.pdf"
             else:
                 encoded_rendered_file = base64.b64encode(rendered_file.read())
                 message = "PDF is wrong\n{}File:\necho '{}' | base64 -d >{}/{}_result.{}".format(
@@ -127,7 +127,7 @@ class PyQgsServerWMSGetPrintOutputs(QgsServerTestBase):
 
         with open(os.path.join(tempfile.gettempdir(), image + "_result.png"), "rb") as rendered_file:
             if not os.environ.get('ENCODED_OUTPUT'):
-                message = "Image is wrong: rendered file {}/{}_result.{}".format(tempfile.gettempdir(), image, 'png')
+                message = f"Image is wrong: rendered file {tempfile.gettempdir()}/{image}_result.png"
             else:
                 encoded_rendered_file = base64.b64encode(rendered_file.read())
                 message = "Image is wrong\n{}\nImage:\necho '{}' | base64 -d >{}/{}_result.{}".format(
@@ -138,7 +138,7 @@ class PyQgsServerWMSGetPrintOutputs(QgsServerTestBase):
         if os.path.exists(os.path.join(tempfile.gettempdir(), image + "_result_diff.png")):
             with open(os.path.join(tempfile.gettempdir(), image + "_result_diff.png"), "rb") as diff_file:
                 if not os.environ.get('ENCODED_OUTPUT'):
-                    message = "Image is wrong: diff file {}/{}_result_diff.{}".format(tempfile.gettempdir(), image, 'png')
+                    message = f"Image is wrong: diff file {tempfile.gettempdir()}/{image}_result_diff.png"
                 else:
                     encoded_diff_file = base64.b64encode(diff_file.read())
                     message += "\nDiff:\necho '{}' | base64 -d > {}/{}_result_diff.{}".format(

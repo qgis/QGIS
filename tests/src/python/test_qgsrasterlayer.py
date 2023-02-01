@@ -87,7 +87,7 @@ class TestQgsRasterLayer(unittest.TestCase):
         myFileInfo = QFileInfo(myPath)
         myBaseName = myFileInfo.baseName()
         myRasterLayer = QgsRasterLayer(myPath, myBaseName)
-        myMessage = 'Raster not loaded: %s' % myPath
+        myMessage = f'Raster not loaded: {myPath}'
         assert myRasterLayer.isValid(), myMessage
         myPoint = QgsPointXY(786690, 3345803)
         # print 'Extents: %s' % myRasterLayer.extent().toString()
@@ -259,7 +259,7 @@ class TestQgsRasterLayer(unittest.TestCase):
         myFileInfo = QFileInfo(myPath)
         myBaseName = myFileInfo.baseName()
         myRasterLayer = QgsRasterLayer(myPath, myBaseName)
-        myMessage = 'Raster not loaded: %s' % myPath
+        myMessage = f'Raster not loaded: {myPath}'
         assert myRasterLayer.isValid(), myMessage
 
         renderer = QgsSingleBandGrayRenderer(myRasterLayer.dataProvider(), 1)
@@ -329,7 +329,7 @@ class TestQgsRasterLayer(unittest.TestCase):
         myFileInfo = QFileInfo(myPath)
         myBaseName = myFileInfo.baseName()
         myRasterLayer = QgsRasterLayer(myPath, myBaseName)
-        myMessage = 'Raster not loaded: %s' % myPath
+        myMessage = f'Raster not loaded: {myPath}'
         assert myRasterLayer.isValid(), myMessage
         # crash on next line
         QgsProject.instance().addMapLayers([myRasterLayer])
@@ -341,7 +341,7 @@ class TestQgsRasterLayer(unittest.TestCase):
         myFileInfo = QFileInfo(myPath)
         myBaseName = myFileInfo.baseName()
         myRasterLayer = QgsRasterLayer(myPath, myBaseName)
-        myMessage = 'Raster not loaded: %s' % myPath
+        myMessage = f'Raster not loaded: {myPath}'
         assert myRasterLayer.isValid(), myMessage
 
         myRasterShader = QgsRasterShader()
@@ -1116,7 +1116,7 @@ class TestQgsRasterLayer(unittest.TestCase):
         myFileInfo = QFileInfo(myPath)
         myBaseName = myFileInfo.baseName()
         myRasterLayer = QgsRasterLayer(myPath, myBaseName)
-        myMessage = 'Raster not loaded: %s' % myPath
+        myMessage = f'Raster not loaded: {myPath}'
         assert myRasterLayer.isValid(), myMessage
 
         # do generic export with default layer values
