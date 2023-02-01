@@ -16,17 +16,14 @@
 #include "qgsmaphittest.h"
 
 #include "qgsfeatureiterator.h"
-#include "qgsproject.h"
 #include "qgsrendercontext.h"
-#include "qgsmaplayerstylemanager.h"
 #include "qgsrenderer.h"
-#include "qgspointdisplacementrenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgssymbollayerutils.h"
 #include "qgsgeometry.h"
 #include "qgsgeometryengine.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgsmarkersymbol.h"
+#include "qgsmaplayerstylemanager.h"
 
 QgsMapHitTest::QgsMapHitTest( const QgsMapSettings &settings, const QgsGeometry &polygon, const LayerFilterExpression &layerFilterExpression )
   : mSettings( settings )
@@ -57,8 +54,8 @@ void QgsMapHitTest::run()
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mSettings );
   context.setPainter( &painter ); // we are not going to draw anything, but we still need a working painter
 
-  const auto constLayers = mSettings.layers( true );
-  for ( QgsMapLayer *layer : constLayers )
+  const QList< QgsMapLayer * > layers = mSettings.layers( true );
+  for ( QgsMapLayer *layer : layers )
   {
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
     if ( !vl || !vl->renderer() )
@@ -112,6 +109,10 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols,
   const bool moreSymbolsPerFeature = r->capabilities() & QgsFeatureRenderer::MoreSymbolsPerFeature;
   r->startRender( context, vl->fields() );
 
+  const QString rendererFilterExpression = r->filter( vl->fields() );
+
+  QSet<QString> requiredAttributes = r->usedAttributes( context );
+
   QgsGeometry transformedPolygon = mPolygon;
   if ( !mOnlyExpressions && !mPolygon.isNull() )
   {
@@ -122,8 +123,24 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols,
     }
   }
 
+  const bool hasExpression = mLayerFilterExpression.contains( vl->id() );
+  std::unique_ptr<QgsExpression> expr;
+  if ( hasExpression )
+  {
+    expr.reset( new QgsExpression( mLayerFilterExpression[vl->id()] ) );
+    expr->prepare( &context.expressionContext() );
+
+    requiredAttributes.unite( expr->referencedColumns() );
+  }
+
   QgsFeature f;
   QgsFeatureRequest request;
+  request.setSubsetOfAttributes( requiredAttributes, vl->fields() );
+  if ( !rendererFilterExpression.isEmpty() )
+  {
+    request.setFilterExpression( rendererFilterExpression );
+  }
+
   std::unique_ptr< QgsGeometryEngine > polygonEngine;
   if ( !mOnlyExpressions )
   {
@@ -144,13 +161,7 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols,
   SymbolSet lUsedSymbols;
   SymbolSet lUsedSymbolsRuleKey;
   bool allExpressionFalse = false;
-  const bool hasExpression = mLayerFilterExpression.contains( vl->id() );
-  std::unique_ptr<QgsExpression> expr;
-  if ( hasExpression )
-  {
-    expr.reset( new QgsExpression( mLayerFilterExpression[vl->id()] ) );
-    expr->prepare( &context.expressionContext() );
-  }
+
   while ( fi.nextFeature( f ) )
   {
     context.expressionContext().setFeature( f );
