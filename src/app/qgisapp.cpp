@@ -14439,13 +14439,13 @@ void QgisApp::showMapTip()
   // Only show maptips if the mouse is still over the map canvas when timer is triggered
   if ( mMapTipsVisible && mMapCanvas->underMouse() )
   {
-    QPoint myPointerPos = mMapCanvas->mouseLastXY();
+    const QPoint pointerPos = mMapCanvas->mouseLastXY();
 
     //  Make sure there is an active layer before proceeding
-    QgsMapLayer *mypLayer = mMapCanvas->currentLayer();
-    if ( mypLayer && !mypLayer->mapTipTemplate().isEmpty() )
+    QgsMapLayer *layer = mMapCanvas->currentLayer();
+    if ( layer && layer->hasMapTips() )
     {
-      mpMaptip->showMapTip( mypLayer, mLastMapPosition, myPointerPos, mMapCanvas );
+      mpMaptip->showMapTip( layer, mLastMapPosition, pointerPos, mMapCanvas );
     }
   }
 }

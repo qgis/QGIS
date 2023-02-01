@@ -42,7 +42,7 @@ Default constructor
 
     void showMapTip( QgsMapLayer *thepLayer,
                      QgsPointXY &mapPosition,
-                     QPoint &pixelPosition,
+                     const QPoint &pixelPosition,
                      QgsMapCanvas *mpMapCanvas );
 %Docstring
 Show a maptip at a given point on the map canvas

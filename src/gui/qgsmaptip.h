@@ -71,7 +71,7 @@ class GUI_EXPORT QgsMapTip : public QWidget
      */
     void showMapTip( QgsMapLayer *thepLayer,
                      QgsPointXY &mapPosition,
-                     QPoint &pixelPosition,
+                     const QPoint &pixelPosition,
                      QgsMapCanvas *mpMapCanvas );
 
     /**

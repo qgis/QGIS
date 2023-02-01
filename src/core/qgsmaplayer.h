@@ -1544,6 +1544,14 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void setLegendPlaceholderImage( const QString &imgPath ) { mLegendPlaceholderImage = imgPath; }
 
     /**
+     * Returns TRUE if the layer contains map tips.
+     *
+     * \see mapTipTemplate()
+     * \see setMapTipTemplate()
+     */
+    virtual bool hasMapTips() const;
+
+    /**
      * The mapTip is a pretty, html representation for feature information.
      *
      * It may also contain embedded expressions.
@@ -1562,7 +1570,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \since QGIS 3.30
      */
     void setMapTipTemplate( const QString &mapTipTemplate );
-
 
   public slots:
 

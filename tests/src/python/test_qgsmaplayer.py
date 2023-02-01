@@ -253,6 +253,18 @@ class TestQgsMapLayer(unittest.TestCase):
         self.assertIn('original abstract', vl.metadata().abstract())
         self.assertEqual(vl.metadata().rights(), ['original right 1', 'original right 2'])
 
+    def testMapTips(self):
+        rl = QgsRasterLayer(os.path.join(TEST_DATA_DIR, 'float1-16.tif'), 'test')
+        self.assertFalse(rl.hasMapTips())
+
+        rl.setMapTipTemplate('some template')
+        self.assertEqual(rl.mapTipTemplate(), 'some template')
+        self.assertTrue(rl.hasMapTips())
+
+        rl.setMapTipTemplate(None)
+        self.assertFalse(rl.mapTipTemplate())
+        self.assertFalse(rl.hasMapTips())
+
 
 if __name__ == '__main__':
     unittest.main()
