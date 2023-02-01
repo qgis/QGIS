@@ -111,8 +111,8 @@ class APP_EXPORT QgsAppLayerHandling
     static QgsPointCloudLayer *addPointCloudLayer( const QString &uri,
         const QString &baseName,
         const QString &provider,
-        bool showWarningOnInvalid = true,
-        bool addToLegend = true );
+        bool addToLegend = true,
+        bool showWarningOnInvalid = true );
 
     /**
      * Adds a plugin layer from a given \a uri and \a provider.
