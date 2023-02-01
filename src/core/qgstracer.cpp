@@ -22,11 +22,11 @@
 #include "qgsgeos.h"
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
-#include "qgsexception.h"
 #include "qgsrenderer.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsrendercontext.h"
+#include "qgssettingsentryimpl.h"
 
 #include <queue>
 #include <vector>

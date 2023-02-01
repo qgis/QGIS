@@ -24,6 +24,7 @@
 #include <QTimeZone>
 
 #include "qgssettingsentryimpl.h"
+#include "qgssettingsentryenumflag.h"
 
 const QgsSettingsEntryDouble *QgsGpsLogger::settingsDistanceThreshold = new QgsSettingsEntryDouble( QStringLiteral( "distanceThreshold" ), QgsSettings::sTreeGps, 0 );
 const QgsSettingsEntryBool *QgsGpsLogger::settingsApplyLeapSeconds = new QgsSettingsEntryBool( QStringLiteral( "applyLeapSeconds" ), QgsSettings::sTreeGps, true );
@@ -31,8 +32,6 @@ const QgsSettingsEntryString *QgsGpsLogger::settingsTimestampTimeZone = new QgsS
 const QgsSettingsEntryInteger *QgsGpsLogger::settingsTimeStampFormat = new QgsSettingsEntryInteger( QStringLiteral( "timeStampFormat" ), QgsSettings::sTreeGps, Qt::LocalTime );
 const QgsSettingsEntryInteger *QgsGpsLogger::settingsLeapSecondsCorrection = new QgsSettingsEntryInteger( QStringLiteral( "leapSecondsCorrection" ), QgsSettings::sTreeGps, 18 );
 const QgsSettingsEntryInteger *QgsGpsLogger::settingsAcquisitionInterval = new QgsSettingsEntryInteger( QStringLiteral( "acquisitionInterval" ), QgsSettings::sTreeGps, 0 );
-
-
 
 const QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponent> *QgsGpsLogger::settingsGpsMValueComponent = new QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponent>( QStringLiteral( "m-value-attribute" ), QgsSettings::sTreeGps, Qgis::GpsInformationComponent::Timestamp, QStringLiteral( "Which GPS attribute should be stored in geometry m values" ) ) SIP_SKIP;
 

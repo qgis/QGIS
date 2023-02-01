@@ -15,8 +15,10 @@
 
 #include "qgssettingsregistrycore.h"
 
-
 #include "qgis.h"
+
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsentryenumflag.h"
 
 #include "qgsbabelformatregistry.h"
 #include "qgslayout.h"

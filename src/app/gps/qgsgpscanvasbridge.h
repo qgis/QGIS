@@ -22,8 +22,6 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdistancearea.h"
 #include "qgsmapcanvasinteractionblocker.h"
-#include "qgssettingsentryimpl.h"
-#include "qgssettingsentryenumflag.h"
 #include "qgis_app.h"
 
 class QgsAppGpsConnection;
@@ -32,6 +30,12 @@ class QgsGpsMarker;
 class QgsGpsBearingItem;
 class QgsGpsInformation;
 class QgsBearingNumericFormat;
+
+class QgsSettingsEntryBool;
+class QgsSettingsEntryInteger;
+class QgsSettingsEntryString;
+template<class T>
+class QgsSettingsEntryEnumFlag;
 
 class QTapAndHoldGesture;
 

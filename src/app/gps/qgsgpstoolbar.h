@@ -21,7 +21,6 @@
 #include <QElapsedTimer>
 
 #include "qgscoordinatereferencesystem.h"
-#include "qgssettingsentryenumflag.h"
 
 class QgsAppGpsConnection;
 class QgsMapCanvas;
@@ -30,6 +29,9 @@ class QgsVectorLayer;
 class QgsMapLayerProxyModel;
 class QToolButton;
 class QgsAppGpsDigitizing;
+
+template<class T>
+class QgsSettingsEntryEnumFlag;
 
 
 class QgsGpsToolBar : public QToolBar

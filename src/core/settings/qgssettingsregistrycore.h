@@ -19,11 +19,15 @@
 
 #include "qgis_core.h"
 #include "qgssettingsregistry.h"
-#include "qgssettingsentryimpl.h"
-#include "qgssettingsentryenumflag.h"
 
 #include "qgis.h"
 
+class QgsSettingsEntryBool;
+class QgsSettingsEntryColor;
+class QgsSettingsEntryDouble;
+class QgsSettingsEntryInteger;
+class QgsSettingsEntryString;
+template<class T> class QgsSettingsEntryEnumFlag;
 
 /**
  * \ingroup core

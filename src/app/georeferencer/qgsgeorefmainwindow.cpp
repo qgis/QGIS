@@ -69,6 +69,8 @@
 #include "qgsmessagebar.h"
 #include "qgsvectorwarper.h"
 #include "qgsscreenhelper.h"
+#include "qgssettingsentryenumflag.h"
+
 
 const QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod> *QgsGeoreferencerMainWindow::settingResamplingMethod = new QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod>( QStringLiteral( "resampling-method" ), sTreeGeoreferencer, QgsImageWarper::ResamplingMethod::NearestNeighbour, QObject::tr( "Last used georeferencer resampling method" ) );
 

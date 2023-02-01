@@ -25,6 +25,8 @@
 #include "qgshttpheaders.h"
 #include "qgsowsconnection.h"
 #include "qgsvectortileconnection.h"
+#include "qgssettingsentryenumflag.h"
+
 
 
 QgsManageConnectionsDialog::QgsManageConnectionsDialog( QWidget *parent, Mode mode, Type type, const QString &fileName )
