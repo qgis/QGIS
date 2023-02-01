@@ -385,7 +385,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
 
     def testSingleSymbolNoScaleDependencies(self):
         layer = QgsVectorLayer("Point", "addfeat", "memory")
-        mFilePath = QDir.toNativeSeparators('{}/symbol_layer/{}.qml'.format(unitTestDataPath(), "singleSymbol"))
+        mFilePath = QDir.toNativeSeparators(f"{unitTestDataPath()}/symbol_layer/singleSymbol.qml")
         layer.loadNamedStyle(mFilePath)
 
         dom, root = self.layerToSld(layer)
@@ -395,7 +395,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
 
     def testSingleSymbolScaleDependencies(self):
         layer = QgsVectorLayer("Point", "addfeat", "memory")
-        mFilePath = QDir.toNativeSeparators('{}/symbol_layer/{}.qml'.format(unitTestDataPath(), "singleSymbol"))
+        mFilePath = QDir.toNativeSeparators(f"{unitTestDataPath()}/symbol_layer/singleSymbol.qml")
         layer.loadNamedStyle(mFilePath)
         layer.setMaximumScale(1000)
         layer.setMinimumScale(500000)
@@ -408,7 +408,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
 
     def testCategorizedNoScaleDependencies(self):
         layer = QgsVectorLayer("Polygon", "addfeat", "memory")
-        mFilePath = QDir.toNativeSeparators('{}/symbol_layer/{}.qml'.format(unitTestDataPath(), "categorized"))
+        mFilePath = QDir.toNativeSeparators(f"{unitTestDataPath()}/symbol_layer/categorized.qml")
         layer.loadNamedStyle(mFilePath)
 
         dom, root = self.layerToSld(layer)
@@ -420,7 +420,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
 
     def testCategorizedWithScaleDependencies(self):
         layer = QgsVectorLayer("Polygon", "addfeat", "memory")
-        mFilePath = QDir.toNativeSeparators('{}/symbol_layer/{}.qml'.format(unitTestDataPath(), "categorized"))
+        mFilePath = QDir.toNativeSeparators(f"{unitTestDataPath()}/symbol_layer/categorized.qml")
         layer.loadNamedStyle(mFilePath)
         layer.setMaximumScale(1000)
         layer.setMinimumScale(500000)
@@ -436,7 +436,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
     def testGraduatedNoScaleDependencies(self):
         layer = QgsVectorLayer("Polygon", "addfeat", "memory")
 
-        mFilePath = QDir.toNativeSeparators('{}/symbol_layer/{}.qml'.format(unitTestDataPath(), "graduated"))
+        mFilePath = QDir.toNativeSeparators(f"{unitTestDataPath()}/symbol_layer/graduated.qml")
         status = layer.loadNamedStyle(mFilePath)  # NOQA
 
         dom, root = self.layerToSld(layer)
@@ -462,7 +462,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
     def testRuleBasedNoRootScaleDependencies(self):
         layer = QgsVectorLayer("Polygon", "addfeat", "memory")
 
-        mFilePath = QDir.toNativeSeparators('{}/symbol_layer/{}.qml'.format(unitTestDataPath(), "ruleBased"))
+        mFilePath = QDir.toNativeSeparators(f"{unitTestDataPath()}/symbol_layer/ruleBased.qml")
         status = layer.loadNamedStyle(mFilePath)  # NOQA
         layer.setMaximumScale(5000)
         layer.setMinimumScale(50000000)
@@ -479,7 +479,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         layer = QgsVectorLayer("Point", "addfeat", "memory")
 
         mFilePath = QDir.toNativeSeparators(
-            '{}/symbol_layer/{}.qml'.format(unitTestDataPath(), "categorizedFunctionConflict"))
+            f"{unitTestDataPath()}/symbol_layer/categorizedFunctionConflict.qml")
         status = layer.loadNamedStyle(mFilePath)  # NOQA
 
         dom, root = self.layerToSld(layer)
@@ -1213,7 +1213,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
     def testRuleBaseEmptyFilter(self):
         layer = QgsVectorLayer("Point", "addfeat", "memory")
 
-        mFilePath = QDir.toNativeSeparators('{}/symbol_layer/{}.qml'.format(unitTestDataPath(), "categorizedEmptyValue"))
+        mFilePath = QDir.toNativeSeparators(f"{unitTestDataPath()}/symbol_layer/categorizedEmptyValue.qml")
         status = layer.loadNamedStyle(mFilePath)  # NOQA
 
         dom, root = self.layerToSld(layer)

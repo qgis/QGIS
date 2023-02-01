@@ -938,7 +938,7 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         self.assertEqual(write_result, QgsVectorFileWriter.NoError, error_message)
 
         # Real test
-        vl = QgsVectorLayer("%s|layername=test" % filename, 'src_test', 'ogr')
+        vl = QgsVectorLayer(f"{filename}|layername=test", 'src_test', 'ogr')
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.featureCount(), 1)
 

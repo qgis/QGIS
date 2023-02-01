@@ -43,7 +43,7 @@ class TestQgsAttributeForm(unittest.TestCase):
 
     @classmethod
     def createLayerWithOnePoint(cls, field_type):
-        layer = QgsVectorLayer("Point?field=fld:%s" % field_type,
+        layer = QgsVectorLayer(f"Point?field=fld:{field_type}",
                                "vl", "memory")
         pr = layer.dataProvider()
         f = QgsFeature()

@@ -33,7 +33,7 @@ class TestQgsSettings(unittest.TestCase):
         h, path = tempfile.mkstemp('.ini')
         Path(path).touch()
         assert QgsSettings.setGlobalSettingsPath(path)
-        self.settings = QgsSettings('testqgissettings', 'testqgissettings%s' % self.cnt)
+        self.settings = QgsSettings('testqgissettings', f'testqgissettings{self.cnt}')
         self.globalsettings = QSettings(self.settings.globalSettingsPath(), QSettings.IniFormat)
         self.globalsettings.sync()
         assert os.path.exists(self.globalsettings.fileName())

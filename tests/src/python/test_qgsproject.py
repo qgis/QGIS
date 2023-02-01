@@ -131,13 +131,13 @@ class TestQgsProject(unittest.TestCase):
         for token in validTokens:
             self.messageCaught = False
             prj.readEntry("test", token)
-            myMessage = "valid token '%s' not accepted" % (token)
+            myMessage = f"valid token '{token}' not accepted"
             assert not self.messageCaught, myMessage
 
         for token in invalidTokens:
             self.messageCaught = False
             prj.readEntry("test", token)
-            myMessage = "invalid token '%s' accepted" % (token)
+            myMessage = f"invalid token '{token}' accepted"
             assert self.messageCaught, myMessage
 
         logger.messageReceived.disconnect(self.catchMessage)

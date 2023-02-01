@@ -108,8 +108,7 @@ class TestQgsRectangle(unittest.TestCase):
         myExpectedWkt = ('0 0, '
                          '5 5')
         myWkt = rect1.asWktCoordinates()
-        myMessage = ('Expected: %s\nGot: %s\n' %
-                     (myExpectedWkt, myWkt))
+        myMessage = f'Expected: {myExpectedWkt}\nGot: {myWkt}\n'
         self.assertTrue(compareWkt(myWkt, myExpectedWkt), myMessage)
 
     def testAsWktPolygon(self):
@@ -121,8 +120,7 @@ class TestQgsRectangle(unittest.TestCase):
                          '0 5, '
                          '0 0))')
         myWkt = rect1.asWktPolygon()
-        myMessage = ('Expected: %s\nGot: %s\n' %
-                     (myExpectedWkt, myWkt))
+        myMessage = f'Expected: {myExpectedWkt}\nGot: {myWkt}\n'
         self.assertTrue(compareWkt(myWkt, myExpectedWkt), myMessage)
 
     def testToString(self):

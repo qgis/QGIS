@@ -104,7 +104,7 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
         conn.table('', 'osm')
         conn.table('', 'cdb_lines')
 
-        self.assertEqual(conn.tableUri('', 'osm'), "GPKG:%s:osm" % self.uri)
+        self.assertEqual(conn.tableUri('', 'osm'), f"GPKG:{self.uri}:osm")
         rl = QgsRasterLayer(conn.tableUri('', 'osm'), 'r', 'gdal')
         self.assertTrue(rl.isValid())
 

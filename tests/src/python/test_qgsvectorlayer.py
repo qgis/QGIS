@@ -189,7 +189,7 @@ def dumpFeature(f):
         print("geometry wkb: %d" % geom.wkbType())
     else:
         print("no geometry")
-    print("attrs: %s" % str(f.attributes()))
+    print(f"attrs: {str(f.attributes())}")
 
 
 def formatAttributes(attrs):

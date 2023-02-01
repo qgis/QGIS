@@ -1397,7 +1397,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
 
         testPath = tmpfile + '|layername=bug_17795'
         subSetString = '"name" = \'int\''
-        subSet = '|subset=%s' % subSetString
+        subSet = f'|subset={subSetString}'
 
         # unfiltered
         vl = QgsVectorLayer(testPath, 'test', 'ogr')
@@ -2131,7 +2131,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         for tmpfile in (tmpfile1, tmpfile2):
             ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
             for i in range(2):
-                lyr = ds.CreateLayer('test%s' % i, geom_type=ogr.wkbPoint)
+                lyr = ds.CreateLayer(f'test{i}', geom_type=ogr.wkbPoint)
                 lyr.CreateField(ogr.FieldDefn('str_field', ogr.OFTString))
                 f = ogr.Feature(lyr.GetLayerDefn())
                 f.SetGeometry(ogr.CreateGeometryFromWkt('POINT (1 1)'))

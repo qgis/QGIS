@@ -100,7 +100,7 @@ class TestQgsProcessExecutablePt2(unittest.TestCase):
 
     def testAlgorithmRunJson(self):
         output_file = self.TMP_DIR + '/polygon_centroid2.shp'
-        rc, output, err = self.run_process(['run', '--no-python', '--json', 'native:centroids', '--', 'INPUT={}'.format(TEST_DATA_DIR + '/polys.shp'), f'OUTPUT={output_file}'])
+        rc, output, err = self.run_process(['run', '--no-python', '--json', 'native:centroids', '--', f"INPUT={TEST_DATA_DIR + '/polys.shp'}", f'OUTPUT={output_file}'])
         res = json.loads(output)
 
         self.assertIn('gdal_version', res)
@@ -124,9 +124,9 @@ class TestQgsProcessExecutablePt2(unittest.TestCase):
         """
         output_file = self.TMP_DIR + '/package.gpkg'
         rc, output, err = self.run_process(['run', '--no-python', '--json', 'native:package', '--',
-                                            'LAYERS={}'.format(TEST_DATA_DIR + '/polys.shp'),
-                                            'LAYERS={}'.format(TEST_DATA_DIR + '/points.shp'),
-                                            'LAYERS={}'.format(TEST_DATA_DIR + '/lines.shp'),
+                                            f"LAYERS={TEST_DATA_DIR + '/polys.shp'}",
+                                            f"LAYERS={TEST_DATA_DIR + '/points.shp'}",
+                                            f"LAYERS={TEST_DATA_DIR + '/lines.shp'}",
                                             f'OUTPUT={output_file}'])
         res = json.loads(output)
 
@@ -158,7 +158,7 @@ class TestQgsProcessExecutablePt2(unittest.TestCase):
 
     def testModelRun(self):
         output_file = self.TMP_DIR + '/model_output.shp'
-        rc, output, err = self.run_process(['run', '--no-python', TEST_DATA_DIR + '/test_model.model3', '--', 'FEATS={}'.format(TEST_DATA_DIR + '/polys.shp'), f'native:centroids_1:CENTROIDS={output_file}'])
+        rc, output, err = self.run_process(['run', '--no-python', TEST_DATA_DIR + '/test_model.model3', '--', f"FEATS={TEST_DATA_DIR + '/polys.shp'}", f'native:centroids_1:CENTROIDS={output_file}'])
         self.assertFalse(self._strip_ignorable_errors(err))
         self.assertEqual(rc, 0)
         self.assertIn('0...10...20...30...40...50...60...70...80...90', output.lower())
@@ -191,7 +191,7 @@ class TestQgsProcessExecutablePt2(unittest.TestCase):
 
     def testModelRunJson(self):
         output_file = self.TMP_DIR + '/model_output2.shp'
-        rc, output, err = self.run_process(['run', TEST_DATA_DIR + '/test_model.model3', '--no-python', '--json', '--', 'FEATS={}'.format(TEST_DATA_DIR + '/polys.shp'), f'native:centroids_1:CENTROIDS={output_file}'])
+        rc, output, err = self.run_process(['run', TEST_DATA_DIR + '/test_model.model3', '--no-python', '--json', '--', f"FEATS={TEST_DATA_DIR + '/polys.shp'}", f'native:centroids_1:CENTROIDS={output_file}'])
         self.assertFalse(self._strip_ignorable_errors(err))
         self.assertEqual(rc, 0)
 
@@ -299,7 +299,7 @@ class TestQgsProcessExecutablePt2(unittest.TestCase):
         self.assertEqual(rc, 0)
 
     def testLoadLayer(self):
-        rc, output, err = self.run_process(['run', '--no-python', 'native:raiseexception', '--MESSAGE=CONFIRMED', '--CONDITION=layer_property(load_layer(\'{}\',\'ogr\'),\'feature_count\')>10'.format(TEST_DATA_DIR + '/points.shp')])
+        rc, output, err = self.run_process(['run', '--no-python', 'native:raiseexception', '--MESSAGE=CONFIRMED', f"--CONDITION=layer_property(load_layer('{TEST_DATA_DIR + '/points.shp'}','ogr'),'feature_count')>10"])
         self.assertIn('CONFIRMED', self._strip_ignorable_errors(err))
 
         self.assertEqual(rc, 1)

@@ -134,7 +134,7 @@ class TestVectorTile(unittest.TestCase):
         self.assertEqual(vl.sourceMaxZoom(), 19)
 
     def testSelection(self):
-        layer = QgsVectorTileLayer('type=vtpk&url={}'.format(unitTestDataPath() + '/testvtpk.vtpk'), 'tiles')
+        layer = QgsVectorTileLayer(f"type=vtpk&url={unitTestDataPath() + '/testvtpk.vtpk'}", 'tiles')
         self.assertTrue(layer.isValid())
 
         self.assertFalse(layer.selectedFeatures())

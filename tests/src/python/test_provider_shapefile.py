@@ -752,7 +752,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
 
         testPath = TEST_DATA_DIR + '/' + 'points.shp'
         subSetString = '"Class" = \'Biplane\''
-        subSet = '|layerid=0|subset=%s' % subSetString
+        subSet = f'|layerid=0|subset={subSetString}'
 
         # unfiltered
         vl = QgsVectorLayer(testPath, 'test', 'ogr')

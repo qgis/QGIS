@@ -549,7 +549,7 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
                 self.assertEqual(expectedMax, vendorOption.firstChild().nodeValue())
             else:
                 self.fail(
-                    'Unrecognised vendorOption name {}'.format(vendorOption.attributes().namedItem('name').nodeValue()))
+                    f"Unrecognised vendorOption name {vendorOption.attributes().namedItem('name').nodeValue()}")
 
     def assertChannelBand(self, root, bandTag, expectedValue, index=0):
         channelSelection = root.elementsByTagName('sld:ChannelSelection').item(index)

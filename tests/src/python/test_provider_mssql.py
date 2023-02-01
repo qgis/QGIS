@@ -430,7 +430,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(errmsg)
 
         mFilePath = QDir.toNativeSeparators(
-            '{}/symbol_layer/{}.qml'.format(unitTestDataPath(), "singleSymbol"))
+            f"{unitTestDataPath()}/symbol_layer/singleSymbol.qml")
         status = vl.loadNamedStyle(mFilePath)
         self.assertTrue(status)
 

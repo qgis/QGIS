@@ -48,8 +48,7 @@ class TestQgsAuthManager(unittest.TestCase):
 
     def setUp(self):
         testid = self.id().split('.')
-        testheader = '\n#####_____ {0}.{1} _____#####\n'. \
-            format(testid[1], testid[2])
+        testheader = f'\n#####_____ {testid[1]}.{testid[2]} _____#####\n'
         qDebug(testheader)
 
         if (not self.authm.masterPasswordIsSet() or
@@ -385,10 +384,7 @@ class TestQgsAuthManager(unittest.TestCase):
         for _ in range(50):
             # time.sleep(0.01)  # or else the salt is not random enough
             uids.append(self.authm.uniqueConfigId())
-        msg = 'Generated 50 config ids are not unique:\n{}\n{}'.format(
-            uids,
-            list(set(uids))
-        )
+        msg = f'Generated 50 config ids are not unique:\n{uids}\n{list(set(uids))}'
         self.assertEqual(len(uids), len(list(set(uids))), msg)
 
     def config_list(self):

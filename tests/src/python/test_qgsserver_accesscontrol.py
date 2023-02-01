@@ -273,4 +273,4 @@ class TestQgsServerAccessControl(QgsServerTestBase):
             )
             self.assertTrue(
                 str(response).find(f"<qgs:color>{color}</qgs:color>") != -1,
-                "Wrong color in result\n%s" % response)
+                f"Wrong color in result\n{response}")

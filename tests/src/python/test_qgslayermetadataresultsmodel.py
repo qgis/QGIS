@@ -75,7 +75,7 @@ class TestQgsLayerMetadataResultModels(TestCase):
         self.conn.store('test_conn')
 
         for i in range(NUM_LAYERS):
-            lyr = ds.CreateLayer("layer_%s" % i, geom_type=ogr.wkbPoint, options=['SPATIAL_INDEX=NO'])
+            lyr = ds.CreateLayer(f"layer_{i}", geom_type=ogr.wkbPoint, options=['SPATIAL_INDEX=NO'])
             lyr.CreateField(ogr.FieldDefn('text_field', ogr.OFTString))
             f = ogr.Feature(lyr.GetLayerDefn())
             f['text_field'] = 'foo'

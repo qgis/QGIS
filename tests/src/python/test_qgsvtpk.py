@@ -131,7 +131,7 @@ class TestQgsVtpk(unittest.TestCase):
         self.assertEqual(layer_metadata.extent().spatialExtents()[0].extentCrs.authid(), 'EPSG:4326')
 
     def testVectorTileLayer(self):
-        layer = QgsVectorTileLayer('type=vtpk&url={}'.format(unitTestDataPath() + '/testvtpk.vtpk'), 'tiles')
+        layer = QgsVectorTileLayer(f"type=vtpk&url={unitTestDataPath() + '/testvtpk.vtpk'}", 'tiles')
         self.assertTrue(layer.isValid())
         self.assertEqual(layer.sourceType(), 'vtpk')
         self.assertEqual(layer.sourcePath(), unitTestDataPath() + '/testvtpk.vtpk')
