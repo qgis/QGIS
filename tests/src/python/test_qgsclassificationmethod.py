@@ -162,6 +162,21 @@ class TestQgsClassificationMethods(unittest.TestCase):
         self.assertEqual(QgsClassificationMethod.rangesToBreaks(r),
                          [57.0])
 
+    def testQgsClassificationFixedIntervalLabelForRange(self):
+
+        m = QgsClassificationFixedInterval()
+
+        # lowerValue, upperValue, labelFormat, expected
+        cases = (
+            (1, 2, '%1 - %2', '1 - 2'),
+            (1, 2, '%1', '1'),
+            (1, 2, '%2', '2'),
+        )
+
+        for lowerValue, upperValue, labelFormat, expected in cases:
+            m.setLabelFormat(labelFormat)
+            self.assertEqual(m.labelForRange(lowerValue, upperValue), expected)
+
 
 if __name__ == "__main__":
     unittest.main()
