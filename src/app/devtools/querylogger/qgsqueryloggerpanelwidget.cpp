@@ -82,7 +82,7 @@ QgsDatabaseQueryLoggerTreeView::QgsDatabaseQueryLoggerTreeView( QgsAppQueryLogge
       mLogger->removeRequestRows( rowsToTrim );
     }
 
-    if ( mAutoScroll )
+    if ( mAutoScroll && isVisible() )
       scrollToBottom();
   } );
 
