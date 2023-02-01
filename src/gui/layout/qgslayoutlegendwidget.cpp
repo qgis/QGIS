@@ -815,8 +815,7 @@ void QgsLayoutLegendWidget::mCheckBoxAutoUpdate_stateChanged( int state, bool us
     mLegend->beginCommand( tr( "Change Auto Update" ) );
 
     mLegend->setAutoUpdateModel( state == Qt::Checked );
-
-    mLegend->updateFilterByMap();
+    mLegend->update();
     mLegend->endCommand();
   }
 
@@ -853,7 +852,7 @@ void QgsLayoutLegendWidget::composerMapChanged( QgsLayoutItem *item )
   {
     mLegend->beginCommand( tr( "Change Legend Map" ) );
     mLegend->setLinkedMap( map );
-    mLegend->updateFilterByMap();
+    mLegend->update();
     mLegend->endCommand();
 
     setLegendMapViewData();
@@ -871,7 +870,7 @@ void QgsLayoutLegendWidget::mCheckboxResizeContents_toggled( bool checked )
   mLegend->setResizeToContents( checked );
   if ( checked )
     mLegend->adjustBoxSize();
-  mLegend->updateFilterByMap();
+  mLegend->update();
   mLegend->endCommand();
 }
 
@@ -1235,7 +1234,7 @@ void QgsLayoutLegendWidget::updateLegend()
     // this will reset the model completely, losing any changes
     mLegend->setAutoUpdateModel( true );
     mLegend->setAutoUpdateModel( false );
-    mLegend->updateFilterByMap();
+    mLegend->update();
     mLegend->endCommand();
   }
 }
@@ -1376,7 +1375,7 @@ void QgsLayoutLegendWidget::setCurrentNodeStyleFromAction()
     return;
 
   QgsLegendRenderer::setNodeLegendStyle( mItemTreeView->currentNode(), static_cast< QgsLegendStyle::Style >( a->data().toInt() ) );
-  mLegend->updateFilterByMap();
+  mLegend->update();
 }
 
 void QgsLayoutLegendWidget::setLegendMapViewData()
@@ -1696,7 +1695,7 @@ void QgsLayoutLegendNodeWidget::labelChanged()
   }
 
   mLegend->adjustBoxSize();
-  mLegend->updateFilterByMap();
+  mLegend->update();
   mLegend->endCommand();
 }
 
@@ -1722,7 +1721,7 @@ void QgsLayoutLegendNodeWidget::patchChanged()
   }
 
   mLegend->adjustBoxSize();
-  mLegend->updateFilterByMap();
+  mLegend->update();
   mLegend->endCommand();
 }
 
@@ -1794,7 +1793,7 @@ void QgsLayoutLegendNodeWidget::sizeChanged( double )
   }
 
   mLegend->adjustBoxSize();
-  mLegend->updateFilterByMap();
+  mLegend->update();
   mLegend->endCommand();
 }
 
@@ -1838,7 +1837,7 @@ void QgsLayoutLegendNodeWidget::customSymbolChanged()
   }
 
   mLegend->adjustBoxSize();
-  mLegend->updateFilterByMap();
+  mLegend->update();
   mLegend->endCommand();
 }
 
@@ -1851,7 +1850,7 @@ void QgsLayoutLegendNodeWidget::colorRampLegendChanged()
   mLegend->model()->refreshLayerLegend( mLayer );
 
   mLegend->adjustBoxSize();
-  mLegend->updateFilterByMap();
+  mLegend->update();
   mLegend->endCommand();
 }
 
@@ -1874,7 +1873,7 @@ void QgsLayoutLegendNodeWidget::columnBreakToggled( bool checked )
   }
 
   mLegend->adjustBoxSize();
-  mLegend->updateFilterByMap();
+  mLegend->update();
   mLegend->endCommand();
 }
 
@@ -1888,7 +1887,7 @@ void QgsLayoutLegendNodeWidget::columnSplitChanged()
   }
 
   mLegend->adjustBoxSize();
-  mLegend->updateFilterByMap();
+  mLegend->update();
   mLegend->endCommand();
 }
 
