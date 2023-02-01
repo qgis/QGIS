@@ -4148,6 +4148,8 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
   if ( flist.isEmpty() )
     return true;
 
+  const QString logUri = uri( ).uri( false );
+
   QgsAttributes attributevec = flist[0].attributes();
 
   const QString savepointId { QStringLiteral( "qgis_spatialite_internal_savepoint_%1" ).arg( ++ sSavepointId ) };
@@ -4329,7 +4331,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         ret = sqlite3_step( stmt );
 
         char *expandedSql = sqlite3_expanded_sql( stmt );
-        QgsDatabaseQueryLogWrapper logWrapper( QString( expandedSql ), uri( ).uri( false ), QStringLiteral( "spatialite" ), QStringLiteral( "QgsSpatiaLiteProvider" ), QStringLiteral( "addFeatures" ) );
+        QgsDatabaseQueryLogWrapper logWrapper( QString( expandedSql ), logUri, QStringLiteral( "spatialite" ), QStringLiteral( "QgsSpatiaLiteProvider" ), QStringLiteral( "addFeatures" ) );
         sqlite3_free( expandedSql );
 
         sqlite3_finalize( stmt );
