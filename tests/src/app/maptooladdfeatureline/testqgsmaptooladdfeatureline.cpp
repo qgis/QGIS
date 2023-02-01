@@ -27,8 +27,8 @@
 #include "qgssettings.h"
 #include "qgsvectorlayer.h"
 #include "qgswkbtypes.h"
-#include "qgsmapmouseevent.h"
 #include "testqgsmaptoolutils.h"
+#include "qgssettingsregistrycore.h"
 
 bool operator==( const QgsGeometry &g1, const QgsGeometry &g2 )
 {
@@ -507,7 +507,7 @@ void TestQgsMapToolAddFeatureLine::testTracingWithConvertToCurves()
   const QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
 
   // tracing enabled - without converting to curves
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), false );
+  QgsSettingsRegistryCore::settingsDigitizingConvertToCurve->setValue( false );
 
   utils.mouseClick( 6, 1, Qt::LeftButton );
   utils.mouseClick( 7, 1, Qt::LeftButton );
@@ -523,7 +523,7 @@ void TestQgsMapToolAddFeatureLine::testTracingWithConvertToCurves()
   mLayerLineCurved->undoStack()->undo();
 
   // we redo the same with convert to curves enabled
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), true );
+  QgsSettingsRegistryCore::settingsDigitizingConvertToCurve->setValue( true );
 
   // tracing enabled - without converting to curves
   utils.mouseClick( 6, 1, Qt::LeftButton );
@@ -552,8 +552,8 @@ void TestQgsMapToolAddFeatureLine::testTracingWithConvertToCurvesCustomTolerance
   // At this distance, the arcs aren't correctly detected with the default tolerance
   const double offset = 100000000; // remember to change the feature geometry accordingly in initTestCase (sic)
 
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve_angle_tolerance" ), 1e-5 );
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve_distance_tolerance" ), 1e-5 );
+  QgsSettingsRegistryCore::settingsDigitizingConvertToCurveAngleTolerance->setValue( 1e-5 );
+  QgsSettingsRegistryCore::settingsDigitizingConvertToCurveDistanceTolerance->setValue( 1e-5 );
 
   mCanvas->setExtent( QgsRectangle( offset + 0, offset + 0, offset + 8, offset + 8 ) );
   QCOMPARE( mCanvas->mapSettings().visibleExtent(), QgsRectangle( offset + 0, offset + 0, offset + 8, offset + 8 ) );
@@ -568,7 +568,7 @@ void TestQgsMapToolAddFeatureLine::testTracingWithConvertToCurvesCustomTolerance
   const QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
 
   // tracing enabled - without converting to curves
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), false );
+  QgsSettingsRegistryCore::settingsDigitizingConvertToCurve->setValue( false );
 
   utils.mouseClick( offset + 6, offset + 1, Qt::LeftButton );
   utils.mouseClick( offset + 7, offset + 1, Qt::LeftButton );
@@ -584,7 +584,7 @@ void TestQgsMapToolAddFeatureLine::testTracingWithConvertToCurvesCustomTolerance
   mLayerLineCurvedOffset->undoStack()->undo();
 
   // we redo the same with convert to curves enabled
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), true );
+  QgsSettingsRegistryCore::settingsDigitizingConvertToCurve->setValue( true );
 
   // tracing enabled - without converting to curves
   utils.mouseClick( offset + 6, offset + 1, Qt::LeftButton );
@@ -882,8 +882,7 @@ void TestQgsMapToolAddFeatureLine::testUndo()
 void TestQgsMapToolAddFeatureLine::testStreamTolerance()
 {
   // test streaming mode digitizing with tolerance
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "/qgis/digitizing/stream_tolerance" ), 10 );
+  QgsSettingsRegistryCore::settingsDigitizingStreamTolerance->setValue( 10 );
 
   TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
 
