@@ -2964,6 +2964,41 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(vl.featureCount(), 2)
         self.assertEqual(len([x for x in vl.getFeatures()]), 2)
 
+    def testCsvInterleavedUpdate(self):
+        """Checks whether a full update with interleaved fids works reliably, related to GH #51668"""
+
+        temp_dir = QTemporaryDir()
+        temp_path = temp_dir.path()
+        csv_path = os.path.join(temp_path, 'test.csv')
+        with open(csv_path, 'w+') as f:
+            f.write('fid\tname\n')
+            f.write('1\t"feat 1"\n')
+            f.write('2\t"feat 2"\n')
+            f.write('3\t"feat 3"\n')
+
+        vl = QgsVectorLayer(csv_path, 'csv')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.featureCount(), 3)
+        f = next(vl.getFeatures())
+        self.assertEqual(f.attributes(), ['1', "feat 1"])
+
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.addAttribute(QgsField('newf', QVariant.String)))
+        self.assertTrue(vl.changeAttributeValues(3, {2: 'fid 3'}))
+        self.assertTrue(vl.changeAttributeValues(1, {2: 'fid 1'}))
+        self.assertTrue(vl.changeAttributeValues(2, {2: 'fid 2'}))
+        self.assertTrue(vl.commitChanges())
+
+        vl = QgsVectorLayer(csv_path, 'csv')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.featureCount(), 3)
+        features = {f.id(): f.attributes() for f in vl.getFeatures()}
+        self.assertEqual(features, {
+            1: ['1', 'feat 1', 'fid 1'],
+            2: ['2', 'feat 2', 'fid 2'],
+            3: ['3', 'feat 3', 'fid 3']
+        })
+
 
 if __name__ == '__main__':
     unittest.main()
