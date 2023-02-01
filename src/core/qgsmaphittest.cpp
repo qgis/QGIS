@@ -23,7 +23,7 @@
 #include "qgsgeometry.h"
 #include "qgsgeometryengine.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgsmaplayerstylemanager.h"
+#include "qgsmaplayerstyle.h"
 
 QgsMapHitTest::QgsMapHitTest( const QgsMapSettings &settings, const QgsGeometry &polygon, const LayerFilterExpression &layerFilterExpression )
   : mSettings( settings )
@@ -109,7 +109,13 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols,
   const bool moreSymbolsPerFeature = r->capabilities() & QgsFeatureRenderer::MoreSymbolsPerFeature;
   r->startRender( context, vl->fields() );
 
+  QgsFeatureRequest request;
+
   const QString rendererFilterExpression = r->filter( vl->fields() );
+  if ( !rendererFilterExpression.isEmpty() )
+  {
+    request.setFilterExpression( rendererFilterExpression );
+  }
 
   QSet<QString> requiredAttributes = r->usedAttributes( context );
 
@@ -123,23 +129,18 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols,
     }
   }
 
-  const bool hasExpression = mLayerFilterExpression.contains( vl->id() );
   std::unique_ptr<QgsExpression> expr;
-  if ( hasExpression )
+  if ( mLayerFilterExpression.contains( vl->id() ) )
   {
-    expr.reset( new QgsExpression( mLayerFilterExpression[vl->id()] ) );
+    const QString expression = mLayerFilterExpression[vl->id()];
+    expr.reset( new QgsExpression( expression ) );
     expr->prepare( &context.expressionContext() );
 
     requiredAttributes.unite( expr->referencedColumns() );
+    request.combineFilterExpression( expression );
   }
 
-  QgsFeature f;
-  QgsFeatureRequest request;
   request.setSubsetOfAttributes( requiredAttributes, vl->fields() );
-  if ( !rendererFilterExpression.isEmpty() )
-  {
-    request.setFilterExpression( rendererFilterExpression );
-  }
 
   std::unique_ptr< QgsGeometryEngine > polygonEngine;
   if ( !mOnlyExpressions )
@@ -161,6 +162,7 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols,
   usedSymbols.clear();
   usedSymbolsRuleKey.clear();
 
+  QgsFeature f;
   while ( fi.nextFeature( f ) )
   {
     // filter out elements outside of the polygon
@@ -173,13 +175,6 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols,
     }
 
     context.expressionContext().setFeature( f );
-
-    // filter out elements where the expression is false
-    if ( hasExpression )
-    {
-      if ( !expr->evaluate( &context.expressionContext() ).toBool() )
-        continue;
-    }
 
     //make sure we store string representation of symbol, not pointer
     //otherwise layer style override changes will delete original symbols and leave hanging pointers
