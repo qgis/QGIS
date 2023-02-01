@@ -158,9 +158,8 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols,
   }
   QgsFeatureIterator fi = vl->getFeatures( request );
 
-  SymbolSet lUsedSymbols;
-  SymbolSet lUsedSymbolsRuleKey;
-  bool allExpressionFalse = false;
+  usedSymbols.clear();
+  usedSymbolsRuleKey.clear();
 
   while ( fi.nextFeature( f ) )
   {
@@ -180,8 +179,6 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols,
     {
       if ( !expr->evaluate( &context.expressionContext() ).toBool() )
         continue;
-      else
-        allExpressionFalse = false;
     }
 
     //make sure we store string representation of symbol, not pointer
@@ -189,7 +186,7 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols,
     const auto constLegendKeysForFeature = r->legendKeysForFeature( f, context );
     for ( const QString &legendKey : constLegendKeysForFeature )
     {
-      lUsedSymbolsRuleKey.insert( legendKey );
+      usedSymbolsRuleKey.insert( legendKey );
     }
 
     if ( moreSymbolsPerFeature )
@@ -198,23 +195,16 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols,
       for ( QgsSymbol *s : constOriginalSymbolsForFeature )
       {
         if ( s )
-          lUsedSymbols.insert( QgsSymbolLayerUtils::symbolProperties( s ) );
+          usedSymbols.insert( QgsSymbolLayerUtils::symbolProperties( s ) );
       }
     }
     else
     {
       QgsSymbol *s = r->originalSymbolForFeature( f, context );
       if ( s )
-        lUsedSymbols.insert( QgsSymbolLayerUtils::symbolProperties( s ) );
+        usedSymbols.insert( QgsSymbolLayerUtils::symbolProperties( s ) );
     }
   }
   r->stopRender( context );
-
-  if ( !allExpressionFalse )
-  {
-    // QSet is implicitly shared => constant time
-    usedSymbols = lUsedSymbols;
-    usedSymbolsRuleKey = lUsedSymbolsRuleKey;
-  }
 }
 
