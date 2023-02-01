@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 """
 ***************************************************************************
@@ -72,9 +71,9 @@ def getControlImagePath(path):
 
     matching_control_images = [x[0] for x in os.walk(control_images_folder) if path in x[0]]
     if len(matching_control_images) > 1:
-        error('Found multiple matching control images for {}'.format(path))
+        error(f'Found multiple matching control images for {path}')
     elif len(matching_control_images) == 0:
-        error('No matching control images found for {}'.format(path))
+        error(f'No matching control images found for {path}')
 
     found_control_image_path = matching_control_images[0]
 
@@ -82,28 +81,28 @@ def getControlImagePath(path):
     images = glob.glob(os.path.join(found_control_image_path, '*.png'))
     filtered_images = [i for i in images if not i[-9:] == '_mask.png']
     if len(filtered_images) > 1:
-        error('Found multiple matching control images for {}'.format(path))
+        error(f'Found multiple matching control images for {path}')
     elif len(filtered_images) == 0:
-        error('No matching control images found for {}'.format(path))
+        error(f'No matching control images found for {path}')
 
     found_image = filtered_images[0]
-    print('Found matching control image: {}'.format(found_image))
+    print(f'Found matching control image: {found_image}')
     return found_image
 
 
 def updateMask(control_image_path, rendered_image_path, mask_image_path):
     control_image = imageFromPath(control_image_path)
     if not control_image:
-        error('Could not read control image {}'.format(control_image_path))
+        error(f'Could not read control image {control_image_path}')
 
     rendered_image = imageFromPath(rendered_image_path)
     if not rendered_image:
-        error('Could not read rendered image {}'.format(rendered_image_path))
+        error(f'Could not read rendered image {rendered_image_path}')
     if not rendered_image.width() == control_image.width() or not rendered_image.height() == control_image.height():
-        print(('Size mismatch - control image is {}x{}, rendered image is {}x{}'.format(control_image.width(),
-                                                                                        control_image.height(),
-                                                                                        rendered_image.width(),
-                                                                                        rendered_image.height())))
+        print('Size mismatch - control image is {}x{}, rendered image is {}x{}'.format(control_image.width(),
+                                                                                       control_image.height(),
+                                                                                       rendered_image.width(),
+                                                                                       rendered_image.height()))
 
     max_width = min(rendered_image.width(), control_image.width())
     max_height = min(rendered_image.height(), control_image.height())
@@ -111,7 +110,7 @@ def updateMask(control_image_path, rendered_image_path, mask_image_path):
     # read current mask, if it exist
     mask_image = imageFromPath(mask_image_path)
     if mask_image.isNull():
-        print('Mask image does not exist, creating {}'.format(mask_image_path))
+        print(f'Mask image does not exist, creating {mask_image_path}')
         mask_image = QImage(control_image.width(), control_image.height(), QImage.Format_ARGB32)
         mask_image.fill(QColor(0, 0, 0))
 
@@ -142,9 +141,9 @@ def updateMask(control_image_path, rendered_image_path, mask_image_path):
     if mismatch_count:
         # update mask
         mask_image.save(mask_image_path, "png")
-        print('Updated {} pixels in {}'.format(mismatch_count, mask_image_path))
+        print(f'Updated {mismatch_count} pixels in {mask_image_path}')
     else:
-        print('No mismatches in {}'.format(mask_image_path))
+        print(f'No mismatches in {mask_image_path}')
 
 
 parser = argparse.ArgumentParser()  # OptionParser("usage: %prog control_image rendered_image mask_image")

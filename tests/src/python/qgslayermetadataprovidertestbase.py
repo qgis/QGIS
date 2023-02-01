@@ -1,4 +1,3 @@
-# coding=utf-8
 """"Base test for layer metadata providers
 
 .. note:: This program is free software; you can redistribute it and/or modify

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 QGIS Server HTTP wrapper for testing purposes
 ================================================================================
@@ -264,7 +263,7 @@ class XYZFilter(QgsServerFilter):
             handler.setParameter('SRS', 'EPSG:4326')
             handler.setParameter('HEIGHT', '256')
             handler.setParameter('WIDTH', '256')
-            handler.setParameter('BBOX', "{},{},{},{}".format(lat_deg2, lon_deg, lat_deg, lon_deg2))
+            handler.setParameter('BBOX', f"{lat_deg2},{lon_deg},{lat_deg},{lon_deg2}")
 
 
 xyzfilter = XYZFilter(qgs_server.serverInterface())
@@ -417,7 +416,7 @@ class Handler(BaseHTTPRequestHandler):
         for k, v in self.headers.items():
             headers['HTTP_%s' % k.replace(' ', '-').replace('-', '_').replace(' ', '-').upper()] = v
         if not self.path.startswith('http'):
-            self.path = "%s://%s:%s%s" % ('https' if HTTPS_ENABLED else 'http', QGIS_SERVER_HOST, self.server.server_port, self.path)
+            self.path = "{}://{}:{}{}".format('https' if HTTPS_ENABLED else 'http', QGIS_SERVER_HOST, self.server.server_port, self.path)
         request = QgsBufferServerRequest(
             self.path, (QgsServerRequest.PostMethod if post_body is not None else QgsServerRequest.GetMethod), headers, post_body)
         response = QgsBufferServerResponse()

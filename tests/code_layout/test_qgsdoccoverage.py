@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for API documentation coverage.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -44,55 +43,55 @@ class TestQgsDocCoverage(unittest.TestCase):
         missing = parser.documentable_members - parser.documented_members
 
         print("---------------------------------")
-        print(("{} total documentable members".format(parser.documentable_members)))
-        print(("{} total contain valid documentation".format(parser.documented_members)))
-        print(("Total documentation coverage {}%".format(coverage)))
+        print(f"{parser.documentable_members} total documentable members")
+        print(f"{parser.documented_members} total contain valid documentation")
+        print(f"Total documentation coverage {coverage}%")
         print("---------------------------------")
-        print(("{} members missing documentation".format(missing)))
+        print(f"{missing} members missing documentation")
         print("---------------------------------")
         print("Unacceptable missing documentation:")
 
         if parser.undocumented_members:
             for cls, props in list(parser.undocumented_members.items()):
-                print(('\n\nClass {}, {}/{} members documented\n'.format(colored(cls, 'yellow'), props['documented'], props['members'])))
+                print('\n\nClass {}, {}/{} members documented\n'.format(colored(cls, 'yellow'), props['documented'], props['members']))
                 for mem in props['missing_members']:
-                    print((colored('  "' + mem + '"', 'yellow', attrs=['bold'])))
+                    print(colored('  "' + mem + '"', 'yellow', attrs=['bold']))
 
         if parser.noncompliant_members:
             for cls, props in list(parser.noncompliant_members.items()):
-                print(('\n\nClass {}, non-compliant members found\n'.format(colored(cls, 'yellow'))))
+                print('\n\nClass {}, non-compliant members found\n'.format(colored(cls, 'yellow')))
                 for p in props:
                     for mem, error in p.items():
-                        print((colored('  ' + mem + ': ' + error, 'yellow', attrs=['bold'])))
+                        print(colored('  ' + mem + ': ' + error, 'yellow', attrs=['bold']))
 
         if parser.broken_links:
             for cls, props in list(parser.broken_links.items()):
-                print(('\n\nClass {}, broken see also links found\n'.format(colored(cls, 'yellow'))))
+                print('\n\nClass {}, broken see also links found\n'.format(colored(cls, 'yellow')))
                 for member, links in props.items():
                     for l in links:
-                        print((colored('  ' + member + ': ' + l, 'yellow', attrs=['bold'])))
+                        print(colored('  ' + member + ': ' + l, 'yellow', attrs=['bold']))
         # self.assertEquals(len(parser.undocumented_string), 0, 'FAIL: new undocumented members have been introduced, please add documentation for these members')
 
         if parser.classes_missing_group:
             print("---------------------------------")
             print('\n')
-            print((colored('{} classes have been added without Doxygen group tag ("\\ingroup"):'.format(len(parser.classes_missing_group)), 'yellow')))
+            print(colored(f'{len(parser.classes_missing_group)} classes have been added without Doxygen group tag ("\\ingroup"):', 'yellow'))
             print('')
-            print(('  ' + '\n  '.join([colored(cls, 'yellow', attrs=['bold']) for cls in parser.classes_missing_group])))
+            print('  ' + '\n  '.join([colored(cls, 'yellow', attrs=['bold']) for cls in parser.classes_missing_group]))
 
         if parser.classes_missing_version_added:
             print("---------------------------------")
             print('\n')
-            print((colored('{} classes have been added without a version added doxygen note ("\\since QGIS x.xx"):'.format(len(parser.classes_missing_version_added)), 'yellow')))
+            print(colored(f'{len(parser.classes_missing_version_added)} classes have been added without a version added doxygen note ("\\since QGIS x.xx"):', 'yellow'))
             print('')
-            print(('  ' + '\n  '.join([colored(cls, 'yellow', attrs=['bold']) for cls in parser.classes_missing_version_added])))
+            print('  ' + '\n  '.join([colored(cls, 'yellow', attrs=['bold']) for cls in parser.classes_missing_version_added]))
 
         if parser.classes_missing_brief:
             print("---------------------------------")
             print('\n')
-            print((colored('{} classes have been added without at least a brief description:'.format(len(parser.classes_missing_brief)), 'yellow')))
+            print(colored(f'{len(parser.classes_missing_brief)} classes have been added without at least a brief description:', 'yellow'))
             print('')
-            print(('  ' + '\n  '.join([colored(cls, 'yellow', attrs=['bold']) for cls in parser.classes_missing_brief])))
+            print('  ' + '\n  '.join([colored(cls, 'yellow', attrs=['bold']) for cls in parser.classes_missing_brief]))
 
         sys.stdout.flush()
         self.assertTrue(not parser.undocumented_members, 'Undocumented members found')

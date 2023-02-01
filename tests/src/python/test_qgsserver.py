@@ -304,7 +304,7 @@ class QgsServerTestBase(unittest.TestCase):
         rh = response.headers()
         rk = sorted(rh.keys())
         for k in rk:
-            headers.append((f"{k}: {rh[k]}").encode('utf-8'))
+            headers.append((f"{k}: {rh[k]}").encode())
         return b"\n".join(headers) + b"\n\n", bytes(response.body())
 
     def _execute_request_project(self, qs, project, requestMethod=QgsServerRequest.GetMethod, data=None):
@@ -315,7 +315,7 @@ class QgsServerTestBase(unittest.TestCase):
         rh = response.headers()
         rk = sorted(rh.keys())
         for k in rk:
-            headers.append((f"{k}: {rh[k]}").encode('utf-8'))
+            headers.append((f"{k}: {rh[k]}").encode())
         return b"\n".join(headers) + b"\n\n", bytes(response.body())
 
     def _assert_status_code(self, status_code, qs, requestMethod=QgsServerRequest.GetMethod, data=None, project=None):
