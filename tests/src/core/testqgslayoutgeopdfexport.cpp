@@ -69,6 +69,9 @@ void TestQgsLayoutGeoPdfExport::testTempFilenames()
 
   outputFile = geoPdfExporter.generateTemporaryFilepath( QStringLiteral( "test\\ src.pdf" ) );
   QVERIFY( outputFile.endsWith( QStringLiteral( "test_ src.pdf" ) ) );
+
+  outputFile = geoPdfExporter.generateTemporaryFilepath( QStringLiteral( "test: src.pdf" ) );
+  QVERIFY( outputFile.endsWith( QStringLiteral( "test_ src.pdf" ) ) );
 }
 
 void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
