@@ -792,6 +792,22 @@ double QgsCircularString::yAt( int index ) const
     return 0.0;
 }
 
+double QgsCircularString::zAt( int index ) const
+{
+  if ( index >= 0 && index < mZ.size() )
+    return mZ.at( index );
+  else
+    return 0.0;
+}
+
+double QgsCircularString::mAt( int index ) const
+{
+  if ( index >= 0 && index < mM.size() )
+    return mM.at( index );
+  else
+    return 0.0;
+}
+
 bool QgsCircularString::transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback )
 {
   if ( !transformer )
