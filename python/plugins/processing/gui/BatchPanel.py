@@ -722,6 +722,15 @@ class BatchPanel(QgsPanelWidget, WIDGET):
             del self.wrappers[row - 1]
             self.tblParameters.removeRow(row)
 
+            for tableRow in range(1, self.tblParameters.rowCount()):
+                for out in self.alg.destinationParameterDefinitions():
+                    if out.flags() & QgsProcessingParameterDefinition.FlagHidden:
+                        continue
+
+                    col = self.parameter_to_column[out.name()]
+                    widget = self.tblParameters.cellWidget(tableRow, col)
+                    widget.updateRow(row)
+
     def toggleAdvancedMode(self, checked):
         for param in self.alg.parameterDefinitions():
             if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced and not (param.flags() & QgsProcessingParameterDefinition.FlagHidden):

@@ -150,6 +150,10 @@ class BatchOutputSelectionPanel(QWidget):
             self.table.cellWidget(self.row, self.col).setValue(dirName)
             settings.setValue('/Processing/LastBatchOutputPath', dirName)
 
+    def updateRow(self, updatedRow):
+        if updatedRow < self.row:
+            self.row -= 1
+
     def setValue(self, text):
         return self.text.setText(text)
 
