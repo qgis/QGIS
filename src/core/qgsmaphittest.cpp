@@ -164,7 +164,6 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols,
 
   while ( fi.nextFeature( f ) )
   {
-    context.expressionContext().setFeature( f );
     // filter out elements outside of the polygon
     if ( f.hasGeometry() && polygonEngine )
     {
@@ -173,6 +172,8 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols,
         continue;
       }
     }
+
+    context.expressionContext().setFeature( f );
 
     // filter out elements where the expression is false
     if ( hasExpression )
