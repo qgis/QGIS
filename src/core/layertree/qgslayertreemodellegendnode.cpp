@@ -875,7 +875,7 @@ void QgsSymbolLegendNode::updateLabel()
 
   if ( showFeatureCount && vl )
   {
-    const bool estimatedCount = QgsDataSourceUri( vl->dataProvider()->dataSourceUri() ).useEstimatedMetadata();
+    const bool estimatedCount = vl->dataProvider() ? QgsDataSourceUri( vl->dataProvider()->dataSourceUri() ).useEstimatedMetadata() : false;
     const qlonglong count = mEmbeddedInParent ? vl->featureCount() : vl->featureCount( mItem.ruleKey() ) ;
 
     // if you modify this line, please update QgsLayerTreeModel::data (DisplayRole)
