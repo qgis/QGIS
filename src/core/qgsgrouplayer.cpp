@@ -21,10 +21,7 @@
 #include "qgsmaplayerlistutils_p.h"
 #include "qgsgrouplayerrenderer.h"
 #include "qgsmaplayerref.h"
-#include "qgsvectorlayer.h"
-#include "qgscoordinatetransform.h"
 #include "qgspainteffect.h"
-#include "qgsmessagelog.h"
 #include "qgspainteffectregistry.h"
 #include "qgsapplication.h"
 #include "qgsmaplayerutils.h"
@@ -175,7 +172,7 @@ bool QgsGroupLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &
   {
     // add the blend mode field
     QDomElement blendModeElem  = doc.createElement( QStringLiteral( "blendMode" ) );
-    const QDomText blendModeText = doc.createTextNode( QString::number( QgsPainting::getBlendModeEnum( blendMode() ) ) );
+    const QDomText blendModeText = doc.createTextNode( QString::number( static_cast< int >( QgsPainting::getBlendModeEnum( blendMode() ) ) ) );
     blendModeElem.appendChild( blendModeText );
     node.appendChild( blendModeElem );
   }
@@ -217,7 +214,7 @@ bool QgsGroupLayer::readSymbology( const QDomNode &node, QString &, QgsReadWrite
     if ( !blendModeNode.isNull() )
     {
       const QDomElement e = blendModeNode.toElement();
-      setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( e.text().toInt() ) ) );
+      setBlendMode( QgsPainting::getCompositionMode( static_cast< Qgis::BlendMode >( e.text().toInt() ) ) );
     }
   }
 

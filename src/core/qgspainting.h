@@ -18,6 +18,7 @@
 #include <QPainter>
 
 #include "qgis_core.h"
+#include "qgis.h"
 
 /**
  * \ingroup core
@@ -29,49 +30,17 @@ class CORE_EXPORT QgsPainting
 {
   public:
 
-    /**
-     * Blending modes enum defining the available composition modes that can
-     * be used when rendering a layer
-     */
-    enum BlendMode
-    {
-      BlendNormal,
-      BlendLighten,
-      BlendScreen,
-      BlendDodge,
-      BlendAddition,
-      BlendDarken,
-      BlendMultiply,
-      BlendBurn,
-      BlendOverlay,
-      BlendSoftLight,
-      BlendHardLight,
-      BlendDifference,
-      BlendSubtract,
-      BlendSource,
-      BlendDestinationOver,
-      BlendClear,
-      BlendDestination,
-      BlendSourceIn,
-      BlendDestinationIn,
-      BlendSourceOut,
-      BlendDestinationOut,
-      BlendSourceAtop,
-      BlendDestinationAtop,
-      BlendXor,
-    };
-
     //! Returns a QPainter::CompositionMode corresponding to a BlendMode
-    static QPainter::CompositionMode getCompositionMode( QgsPainting::BlendMode blendMode );
+    static QPainter::CompositionMode getCompositionMode( Qgis::BlendMode blendMode );
     //! Returns a BlendMode corresponding to a QPainter::CompositionMode
-    static QgsPainting::BlendMode getBlendModeEnum( QPainter::CompositionMode blendMode );
+    static Qgis::BlendMode getBlendModeEnum( QPainter::CompositionMode blendMode );
 
     /**
      * Returns TRUE if \a mode is a clipping blend mode.
      *
      * \since QGIS 3.30
      */
-    static bool isClippingMode( QgsPainting::BlendMode mode );
+    static bool isClippingMode( Qgis::BlendMode mode );
 
 };
 
