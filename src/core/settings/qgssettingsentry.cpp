@@ -130,6 +130,11 @@ void QgsSettingsEntryBase::remove( const QStringList &dynamicKeyPartList ) const
   QgsSettings().remove( key( dynamicKeyPartList ) );
 }
 
+int QgsSettingsEntryBase::section() const
+{
+  return QgsSettings::NoSection;
+}
+
 bool QgsSettingsEntryBase::setVariantValue( const QVariant &value, const QString &dynamicKeyPart ) const
 {
   return setVariantValuePrivate( value, dynamicKeyPartToList( dynamicKeyPart ) );
