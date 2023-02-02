@@ -24,7 +24,7 @@
 #include "qgsproject.h"
 #include "qgsprojectgpssettings.h"
 #include "qgsappgpslogging.h"
-#include "qgssettingsentryenumflag.h".h"
+#include "qgssettingsentryenumflag.h"
 
 
 #include <QRadioButton>
