@@ -13,9 +13,7 @@ __copyright__ = 'Copyright 2018, GISCE-TI S.L.'
 
 import uuid
 import os
-import re
 import json
-import unittest
 from qgis.PyQt.QtCore import QCoreApplication
 from pyplugin_installer.plugindependencies import find_dependencies
 

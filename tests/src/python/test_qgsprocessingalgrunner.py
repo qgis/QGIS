@@ -9,14 +9,10 @@ __author__ = 'Alessandro Pasotti'
 __date__ = '2019-02'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
-import re
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.testing import start_app, unittest
-from qgis.core import QgsProcessingAlgRunnerTask
 
 from processing.core.Processing import Processing
-from processing.core.ProcessingConfig import ProcessingConfig
-from qgis.testing import start_app, unittest
 from qgis.analysis import QgsNativeAlgorithms
 from qgis.core import (
     QgsApplication,

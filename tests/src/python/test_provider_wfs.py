@@ -701,7 +701,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
             self.assertTrue(logger.messages()[0].decode('UTF-8') == "The following unknown parameter(s) have been found in the URI: foo",
                             logger.messages())
 
-    def testWFS10_outputformat_GML3(self):
+    def testWFS10_outputformat_GML3_2(self):
         """Test WFS 1.0 with OUTPUTFORMAT=GML3"""
         # We also test attribute fields in upper-case, and a field named GEOMETRY
 
@@ -3921,7 +3921,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         values = [f['INTFIELD'] for f in vl.getFeatures(request)]
         self.assertEqual(values, [100])
 
-    def testWFS10_outputformat_GML3(self):
+    def testWFS10_outputformat_GML3_1(self):
         """Test WFS 1.0 with OUTPUTFORMAT=GML3"""
         # We also test attribute fields in upper-case, and a field named GEOMETRY
 

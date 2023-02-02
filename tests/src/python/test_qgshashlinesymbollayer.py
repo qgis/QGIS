@@ -132,7 +132,7 @@ class TestQgsHashedLineSymbolLayer(unittest.TestCase):
         rendered_image = self.renderGeometry(s, g)
         assert self.imageCheck('line_hash_no_rotate', 'line_hash_no_rotate', rendered_image)
 
-    def testHashAverageAngle(self):
+    def testHashAverageAngleInterval(self):
         s = QgsLineSymbol()
         s.deleteSymbolLayer(0)
 
@@ -155,7 +155,7 @@ class TestQgsHashedLineSymbolLayer(unittest.TestCase):
         rendered_image = self.renderGeometry(s, g)
         assert self.imageCheck('line_hash_average_angle', 'line_hash_average_angle', rendered_image)
 
-    def testHashAverageAngle(self):
+    def testHashAverageAngleCentralPoint(self):
         s = QgsLineSymbol()
         s.deleteSymbolLayer(0)
 

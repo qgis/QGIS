@@ -33,7 +33,6 @@ from qgis.core import (
     QgsVectorLayer,
     QgsFeatureRequest,
     QgsExpression,
-    QgsGeometry,
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransform,
     QgsCoordinateTransformContext,

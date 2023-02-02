@@ -24,39 +24,18 @@ import qgis  # NOQA
 import os
 from utilities import unitTestDataPath
 
-from qgis.PyQt.QtCore import QDir, Qt, QSize
-from qgis.PyQt.QtGui import QImage, QColor, QPainter
-from qgis.PyQt.QtXml import QDomDocument
+from qgis.PyQt.QtCore import QDir, QSize
 
-from qgis.core import (Qgis,
-                       QgsGeometry,
-                       QgsFillSymbol,
-                       QgsRenderContext,
-                       QgsFeature,
-                       QgsMapSettings,
-                       QgsRenderChecker,
-                       QgsVectorLayer,
-                       QgsReadWriteContext,
-                       QgsSymbolLayerUtils,
-                       QgsSimpleMarkerSymbolLayer,
-                       QgsLineSymbolLayer,
-                       QgsTemplatedLineSymbolLayerBase,
-                       QgsMarkerLineSymbolLayer,
-                       QgsMarkerSymbol,
-                       QgsGeometryGeneratorSymbolLayer,
-                       QgsSymbol,
-                       QgsFontMarkerSymbolLayer,
-                       QgsFontUtils,
-                       QgsLineSymbol,
-                       QgsSymbolLayer,
-                       QgsProperty,
-                       QgsRectangle,
-                       QgsUnitTypes,
-                       QgsMultiRenderChecker,
-                       QgsSingleSymbolRenderer,
-                       QgsAnimatedMarkerSymbolLayer,
-                       QgsMarkerSymbol
-                       )
+from qgis.core import (
+    QgsMapSettings,
+    QgsRenderChecker,
+    QgsVectorLayer,
+    QgsRectangle,
+    QgsMultiRenderChecker,
+    QgsSingleSymbolRenderer,
+    QgsAnimatedMarkerSymbolLayer,
+    QgsMarkerSymbol
+)
 
 from qgis.testing import unittest, start_app
 

@@ -15,7 +15,6 @@ __date__ = '28/06/2019'
 import qgis  # NOQA
 import os
 import subprocess
-import difflib
 
 from qgis.PyQt.QtCore import (
     Qt,
@@ -35,10 +34,7 @@ from qgis.testing import unittest, start_app
 from utilities import (
     unitTestDataPath,
     getTempfilePath,
-    renderMapToImage,
-    loadTestFonts,
     getTestFont,
-    openInBrowserTab
 )
 
 from qgis.core import (
@@ -52,8 +48,6 @@ from qgis.core import (
     QgsMapRendererSequentialJob,
     QgsMapRendererCustomPainterJob,
     QgsRenderChecker,
-    QgsSimpleMarkerSymbolLayer,
-    QgsSimpleMarkerSymbolLayerBase,
     QgsMarkerSymbol,
     QgsMaskMarkerSymbolLayer,
     QgsSingleSymbolRenderer,
@@ -63,11 +57,8 @@ from qgis.core import (
     QgsUnitTypes,
     QgsOuterGlowEffect,
     QgsPalLayerSettings,
-    QgsRuleBasedLabeling,
-    QgsPalLayerSettings,
     QgsProperty,
     QgsRenderContext,
-    QgsVectorLayerSimpleLabeling,
     QgsLayout,
     QgsLayoutItemPage,
     QgsLayoutSize,

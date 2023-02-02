@@ -847,8 +847,8 @@ class TestQgsRasterLayer(unittest.TestCase):
         self.assertEqual(classes[4].color.alpha(), 255)
 
         # qgis style, with labels
-        qgis = '3 255 0 0 255 class 1\n4 0 255 0 200 class 2'
-        classes = QgsPalettedRasterRenderer.classDataFromString(qgis)
+        qgis_style = '3 255 0 0 255 class 1\n4 0 255 0 200 class 2'
+        classes = QgsPalettedRasterRenderer.classDataFromString(qgis_style)
         self.assertEqual(len(classes), 2)
         self.assertEqual(classes[0].value, 3)
         self.assertEqual(classes[0].color.name(), '#ff0000')
