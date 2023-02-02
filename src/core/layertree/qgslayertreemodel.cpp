@@ -179,7 +179,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
       if ( vlayer && nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() && role == Qt::DisplayRole )
       {
-        const bool estimatedCount = QgsDataSourceUri( vlayer->dataProvider()->dataSourceUri() ).useEstimatedMetadata();
+        const bool estimatedCount = vlayer->dataProvider() ? QgsDataSourceUri( vlayer->dataProvider()->dataSourceUri() ).useEstimatedMetadata() : false;
         const qlonglong count = vlayer->featureCount();
 
         // if you modify this line, please update QgsSymbolLegendNode::updateLabel
@@ -322,7 +322,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
 
         QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
         const bool showFeatureCount = nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toBool();
-        const bool estimatedCount = QgsDataSourceUri( layer->dataProvider()->dataSourceUri() ).useEstimatedMetadata();
+        const bool estimatedCount = layer->dataProvider() ? QgsDataSourceUri( layer->dataProvider()->dataSourceUri() ).useEstimatedMetadata() : false;
         if ( showFeatureCount && estimatedCount )
         {
           parts << tr( "<b>Feature count is estimated</b> : the feature count is determined by the database statistics" );
