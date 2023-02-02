@@ -14,7 +14,6 @@ import qgis  # NOQA
 import os
 
 from qgis.PyQt.QtCore import QCoreApplication, QLocale, QTemporaryDir, QEvent
-from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsBookmark,
                        QgsBookmarkManager,

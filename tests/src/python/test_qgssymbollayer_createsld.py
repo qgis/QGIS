@@ -27,7 +27,7 @@ from qgis.PyQt.QtGui import QColor, QFont
 
 from qgis.core import (
     Qgis,
-    QgsSimpleMarkerSymbolLayer, QgsSimpleMarkerSymbolLayerBase, QgsUnitTypes, QgsSvgMarkerSymbolLayer,
+    QgsSimpleMarkerSymbolLayerBase, QgsUnitTypes, QgsSvgMarkerSymbolLayer,
     QgsFontMarkerSymbolLayer, QgsEllipseSymbolLayer, QgsSimpleLineSymbolLayer,
     QgsMarkerLineSymbolLayer, QgsMarkerSymbol, QgsSimpleFillSymbolLayer, QgsSVGFillSymbolLayer,
     QgsLinePatternFillSymbolLayer, QgsPointPatternFillSymbolLayer, QgsVectorLayer, QgsVectorLayerSimpleLabeling,
@@ -804,13 +804,13 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
     def testPointPlacementBelow(self):
         self.assertLabelQuadrant(QgsPalLayerSettings.QuadrantBelow, "Below", 0.5, 1)
 
-    def testPointPlacementAboveRight(self):
+    def testPointPlacementBelowRight(self):
         self.assertLabelQuadrant(QgsPalLayerSettings.QuadrantBelowRight, "BelowRight", 0, 1)
 
-    def testPointPlacementCartoraphic(self):
+    def testPointPlacementCartoraphicOrderedPositionsAroundPoint(self):
         self.assertPointPlacementDistance(QgsPalLayerSettings.OrderedPositionsAroundPoint)
 
-    def testPointPlacementCartoraphic(self):
+    def testPointPlacementCartoraphicAroundPoint(self):
         self.assertPointPlacementDistance(QgsPalLayerSettings.AroundPoint)
 
     def testLineParallelPlacement(self):

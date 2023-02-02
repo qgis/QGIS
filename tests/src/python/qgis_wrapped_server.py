@@ -115,17 +115,7 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-import copy
 import os
-import signal
-import ssl
-import sys
-import urllib.parse
-
-from http.server import BaseHTTPRequestHandler, HTTPServer
-from qgis.core import QgsApplication
-from qgis.server import (QgsBufferServerRequest, QgsBufferServerResponse,
-                         QgsServer, QgsServerRequest)
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '05/15/2016'
@@ -143,9 +133,8 @@ import copy
 import urllib.parse
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from socketserver import ThreadingMixIn
-import threading
 
-from qgis.core import QgsApplication, QgsCoordinateTransform, QgsCoordinateReferenceSystem
+from qgis.core import QgsApplication
 from qgis.server import QgsServer, QgsServerRequest, QgsBufferServerRequest, QgsBufferServerResponse, QgsServerFilter
 
 QGIS_SERVER_PORT = int(os.environ.get('QGIS_SERVER_PORT', '8081'))
@@ -201,7 +190,6 @@ qgs_app = QgsApplication([], False)
 qgs_server = QgsServer()
 
 if QGIS_SERVER_HTTP_BASIC_AUTH:
-    from qgis.server import QgsServerFilter
     import base64
 
     class HTTPBasicFilter(QgsServerFilter):
@@ -273,7 +261,6 @@ qgs_server.serverInterface().registerFilter(xyzfilter)
 if QGIS_SERVER_OAUTH2_AUTH:
     from qgis.server import QgsServerFilter
     from oauthlib.oauth2 import RequestValidator, LegacyApplicationServer
-    import base64
     from datetime import datetime
 
     # Naive token storage implementation

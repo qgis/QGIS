@@ -446,7 +446,7 @@ class TestQgsServerAccessControlWFS(TestQgsServerAccessControl):
             str(response).find("<qgs:pk>7</qgs:pk>") != -1,
             "Unexpected result in GetFeature\n%s" % response)
 
-    def test_wfs_getfeature_featureid_hello(self):
+    def test_wfs_getfeature_featureid_hello_1(self):
         query_string = "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WFS",
@@ -475,7 +475,7 @@ class TestQgsServerAccessControlWFS(TestQgsServerAccessControl):
             str(response).find("<qgs:color>NULL</qgs:color>") != -1,  # spellok
             "Unexpected color NULL in result of GetFeature\n%s" % response)
 
-    def test_wfs_getfeature_featureid_hello(self):
+    def test_wfs_getfeature_featureid_hello_2(self):
         query_string = "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WFS",

@@ -15,27 +15,14 @@ __copyright__ = 'Copyright 2022, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.PyQt.QtCore import (
-    QDate,
-    QDateTime,
-    QVariant,
-    Qt,
-    QDateTime,
-    QDate,
-    QTime,
-    QTimer,
-    QTemporaryDir,
-)
 
 from qgis.core import (Qgis,
                        QgsFeature,
                        QgsGeometry,
                        QgsLineString,
-                       QgsPolygon,
                        QgsPoint,
                        QgsPointXY,
                        QgsVectorLayer,
-                       QgsVectorLayerTools,
                        QgsVectorLayerEditUtils)
 
 

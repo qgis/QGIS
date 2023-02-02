@@ -29,14 +29,13 @@ from qgis.core import (QgsRasterFileWriter,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterCrs,
-                       QgsProcessingParameterString,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterExtent,
                        QgsProcessingParameterString,
                        QgsProcessingParameterRasterDestination,
-                       QgsProcessingUtils)
+                       )
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 

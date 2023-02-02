@@ -2311,7 +2311,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.setLineHeight(1.5)
         assert self.checkRender(format, 'text_line_height', QgsTextRenderer.Text, text=['test', 'multi', 'line'])
 
-    def testDrawLineHeightAbsolute(self):
+    def testDrawLineHeightAbsolutePoints(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
         format.setSize(30)
@@ -2320,7 +2320,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.setLineHeightUnit(QgsUnitTypes.RenderPoints)
         assert self.checkRender(format, 'text_line_absolute_height', QgsTextRenderer.Text, text=['test', 'multi', 'line'])
 
-    def testDrawLineHeightAbsolute(self):
+    def testDrawLineHeightAbsoluteMillimeters(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
         format.setSize(30)

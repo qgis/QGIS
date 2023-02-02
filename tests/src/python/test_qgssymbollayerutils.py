@@ -25,7 +25,6 @@ from qgis.PyQt.QtGui import (
     QImage
 )
 from qgis.core import (
-    Qgis,
     QgsSymbolLayerUtils,
     QgsMarkerSymbol,
     QgsArrowSymbolLayer,
@@ -42,7 +41,6 @@ from qgis.core import (
     Qgis,
     QgsSingleSymbolRenderer,
     QgsAnimatedMarkerSymbolLayer,
-    QgsSimpleMarkerSymbolLayer
 )
 from qgis.testing import unittest, start_app
 

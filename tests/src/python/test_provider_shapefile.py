@@ -637,7 +637,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
             # force close of data provider
             vl.setDataSource('', 'test', 'ogr', options)
 
-    def testEncoding(self):
+    def testEncoding_iso(self):
         file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'iso-8859-1.shp')
         vl = QgsVectorLayer(file_path)
         self.assertTrue(vl.isValid())
@@ -1047,7 +1047,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
 
             osgeo.ogr.GetDriverByName('ESRI Shapefile').DeleteDataSource(tmpfile)
 
-    def testEncoding(self):
+    def testEncoding_cp852(self):
         """ Test that CP852 shapefile is read/written correctly """
 
         tmpdir = tempfile.mkdtemp()
