@@ -30,15 +30,14 @@ class QgsSettingsEntryString;
 /**
  * \ingroup core
  * \class QgsSettingsTreeNode
- * \brief QgsSettingsTreeNode is a tree node for the settings registry
- * to help organizing and introspecting the registry.
+ * \brief QgsSettingsTreeNode is a tree node for the settings tree
+ * to help organizing and introspecting the tree.
  * It is either a root node, a normal node or
  * a named list (to store a group of settings under a dynamic named key).
- * The root node holds a pointer to a registry (might be null)
  * to automatically register a settings entry on its creation when a parent is provided.
  *
+ * \see QgsSettingsTreee
  * \see QgsSettingsEntryBase
- * \see QgsSettingsRegistry
  *
  * \since QGIS 3.30
  */
@@ -196,13 +195,13 @@ class CORE_EXPORT QgsSettingsTreeNode
 /**
  * \ingroup core
  * \class QgsSettingsTreeNamedListNode
- * \brief QgsSettingsTreeNamedListNode is a named list tree node for the settings registry
- * to help organizing and introspecting the registry.
+ * \brief QgsSettingsTreeNamedListNode is a named list tree node for the settings tree
+ * to help organizing and introspecting the tree.
  * the named list node is used to store a group of settings under a dynamically named key.
  *
+ * \see QgsSettingsTree
  * \see QgsSettingsTreeNode
  * \see QgsSettingsEntryBase
- * \see QgsSettingsRegistry
  *
  * \since QGIS 3.30
  */
