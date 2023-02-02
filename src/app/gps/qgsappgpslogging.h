@@ -17,16 +17,19 @@
 #define QGSAPPGPSLOGGING_H
 
 #include <QObject>
-
-#include "qgis_app.h"
-#include "qgssettingsentryimpl.h"
-
 #include <QTextStream>
+
+#include "qgis.h"
+#include "qgis_app.h"
+
+
+class QFile;
+
 
 class QgsAppGpsConnection;
 class QgsVectorLayerGpsLogger;
-class QFile;
 class QgsVectorLayer;
+class QgsSettingsEntryString;
 
 class APP_EXPORT QgsAppGpsLogging: public QObject
 {

@@ -18,8 +18,6 @@
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgscurve.h"
 #include "qgslinestring.h"
-#include "qgscircularstring.h"
-#include "qgscurvepolygon.h"
 #include "qgsgeometryutils.h"
 #include "qgsgeometryvalidator.h"
 #include "qgsguiutils.h"
@@ -42,6 +40,8 @@
 #include "qgsmapmouseevent.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsmessagebar.h"
+#include "qgssettingsentryimpl.h"
+
 
 #include <QMenu>
 #include <QRubberBand>

@@ -19,11 +19,11 @@
 #define QGSGEOMETRYOPTIONS_H
 
 #include "qgis_core.h"
-#include "qgis_sip.h"
 #include "qgsgeometry.h"
-#include "qgssettingsentryimpl.h"
 
 #include <QObject>
+
+class QgsSettingsEntryString;
 
 /**
  * \ingroup core

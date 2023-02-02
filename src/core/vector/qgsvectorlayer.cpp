@@ -109,6 +109,7 @@
 
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
 const QgsSettingsEntryDouble *QgsVectorLayer::settingsSimplifyDrawingTol = new QgsSettingsEntryDouble( QStringLiteral( "simplifyDrawingTol" ), QgsSettingsTree::sTreeQgis, Qgis::DEFAULT_MAPTOPIXEL_THRESHOLD );
 const QgsSettingsEntryBool *QgsVectorLayer::settingsSimplifyLocal = new QgsSettingsEntryBool( QStringLiteral( "simplifyLocal" ), QgsSettingsTree::sTreeQgis, true );

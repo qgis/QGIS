@@ -47,6 +47,8 @@
 #include "qgsmaskpaintdevice.h"
 #include "qgsrasterrenderer.h"
 #include "qgselevationmap.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
 const QgsSettingsEntryBool *QgsMapRendererJob::settingsLogCanvasRefreshEvent = new QgsSettingsEntryBool( QStringLiteral( "logCanvasRefreshEvent" ), QgsSettingsTree::sTreeMap, false );
 

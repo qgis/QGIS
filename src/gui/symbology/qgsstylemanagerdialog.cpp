@@ -44,6 +44,8 @@
 #include "qgsproject.h"
 #include "qgsprojectstylesettings.h"
 #include "qgsfileutils.h"
+#include "qgssettingsentryimpl.h"
+
 
 #include <QAction>
 #include <QFile>

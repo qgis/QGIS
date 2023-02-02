@@ -16,7 +16,8 @@
 #include "qgswfsconnection.h"
 #include "qgswfsconstants.h"
 #include "qgslogger.h"
-#include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
+
 
 static const QString SERVICE_WFS = QStringLiteral( "WFS" );
 

@@ -38,8 +38,8 @@
 **
 ****************************************************************************/
 
-#ifndef QGSSETTINGSTREE_H
-#define QGSSETTINGSTREE_H
+#ifndef QGSSETTINGSTREEWIDGET_H
+#define QGSSETTINGSTREEWIDGET_H
 
 #include <QIcon>
 #include <QTimer>

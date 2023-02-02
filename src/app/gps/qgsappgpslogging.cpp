@@ -22,6 +22,9 @@
 #include "qgsvectorlayergpslogger.h"
 #include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
+#include "qgssettingstree.h"
+#include "qgssettingsentryimpl.h"
+
 
 const QgsSettingsEntryString *QgsAppGpsLogging::settingLastLogFolder = new QgsSettingsEntryString( QStringLiteral( "last-log-folder" ), QgsSettingsTree::sTreeGps, QString(), QStringLiteral( "Last used folder for GPS log files" ) );
 

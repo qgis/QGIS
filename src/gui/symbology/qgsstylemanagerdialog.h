@@ -22,16 +22,16 @@
 #include <QMenu>
 
 #include "ui_qgsstylemanagerdialogbase.h"
-#include "qgshelp.h"
 #include "qgsstylemodel.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
 class QgsStyle;
 class QgsTemporaryCursorOverride;
 class QgsMessageBar;
 class QgsProjectStyleDatabaseModel;
+class QgsSettingsEntryString;
 
 #ifndef SIP_RUN
 ///@cond PRIVATE

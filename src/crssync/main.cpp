@@ -20,6 +20,7 @@
 #include "qgsconfig.h"
 
 #include <QRegExp>
+#include <QSettings>
 #include <QTemporaryDir>
 
 #include <iostream>

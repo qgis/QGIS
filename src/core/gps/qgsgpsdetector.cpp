@@ -16,11 +16,10 @@
  ***************************************************************************/
 
 #include "qgsgpsdetector.h"
-#include "qgslogger.h"
 #include "qgsgpsconnection.h"
 #include "qgsnmeaconnection.h"
 #include "qgsgpsdconnection.h"
-#include "qgssettings.h"
+#include "qgssettingstree.h"
 #include "qgssettingsentryenumflag.h"
 
 
@@ -86,8 +85,6 @@ QgsGpsDetector::~QgsGpsDetector() = default;
 void QgsGpsDetector::advance()
 {
   mConn.reset();
-
-  QgsSettings settings;
 
   while ( !mConn )
   {

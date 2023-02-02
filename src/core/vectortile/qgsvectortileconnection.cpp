@@ -15,9 +15,10 @@
 
 #include "qgsvectortileconnection.h"
 
-#include "qgslogger.h"
 #include "qgsdatasourceuri.h"
 #include "qgshttpheaders.h"
+#include "qgssettingsentryimpl.h"
+
 
 #include <QFileInfo>
 

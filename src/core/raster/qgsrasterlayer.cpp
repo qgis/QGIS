@@ -59,6 +59,7 @@ email                : tim at linfiniti.com
 #include "qgsrasterlayerprofilegenerator.h"
 #include "qgsthreadingutils.h"
 #include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
 #include <cmath>
 #include <cstdio>

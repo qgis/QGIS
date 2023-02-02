@@ -30,8 +30,7 @@ class QgsMapLayerProxyModel;
 class QToolButton;
 class QgsAppGpsDigitizing;
 
-template<class T>
-class QgsSettingsEntryEnumFlag;
+template<class T> class QgsSettingsEntryEnumFlag;
 
 
 class QgsGpsToolBar : public QToolBar

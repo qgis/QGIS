@@ -18,7 +18,8 @@
 #include "qgsapplication.h"
 #include "qgsnetworkcontentfetchertask.h"
 #include "qgsziputils.h"
-#include "qgsfontutils.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>

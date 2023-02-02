@@ -57,6 +57,8 @@
 #include "qgsbearingnumericformat.h"
 #include "qgscoordinatenumericformat.h"
 #include "options/qgsadvancedoptions.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsentryenumflag.h"
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"

@@ -17,6 +17,7 @@
 #define QGSBABELFORMATREGISTRY_H
 
 #include "qgis_core.h"
+#include "qgssettingstree.h"
 #include "qgssettingsentryimpl.h"
 #include "qgis.h"
 

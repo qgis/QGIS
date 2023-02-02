@@ -17,6 +17,7 @@
 #include "qgspostgresprovidermetadatautils.h"
 #include "qgspostgresproviderconnection.h"
 #include "qgscoordinatetransform.h"
+#include "qgslogger.h"
 
 #include <QTextStream>
 

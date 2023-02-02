@@ -18,6 +18,7 @@
 #include "qgssettingsregistryapp.h"
 #include "qgsidentifyresultsdialog.h"
 #include "qgspluginmanager.h"
+#include "qgssettingsentryimpl.h"
 
 
 QgsSettingsRegistryApp::QgsSettingsRegistryApp()

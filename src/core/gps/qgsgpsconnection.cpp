@@ -18,6 +18,8 @@
 #include "qgsgpsconnection.h"
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
+
 
 #include <QIODevice>
 

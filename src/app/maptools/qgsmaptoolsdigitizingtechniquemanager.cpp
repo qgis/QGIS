@@ -18,14 +18,14 @@
 #include "qgsmaptoolsdigitizingtechniquemanager.h"
 #include "qgisapp.h"
 #include "qgsmaptoolcapture.h"
-#include "qgsmaptoolshapecircle2points.h
+#include "qgsmaptoolshapecircle2points.h"
 #include "qgsmaptoolshaperegistry.h"
 #include "qgsgui.h"
 #include "qgsmapcanvas.h"
 #include "qgsspinbox.h"
 #include "qgssettingsregistrycore.h"
-#include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
+#include "qgssettingsentryenumflag.h"
 
 
 #include <QAction>

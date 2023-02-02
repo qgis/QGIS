@@ -20,6 +20,7 @@
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 #include "qgssettingsregistrycore.h"
+#include "qgssettingsentryimpl.h"
 
 #include <QKeyEvent>
 

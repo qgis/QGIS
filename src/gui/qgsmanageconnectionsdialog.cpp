@@ -25,6 +25,7 @@
 #include "qgshttpheaders.h"
 #include "qgsowsconnection.h"
 #include "qgsvectortileconnection.h"
+#include "qgssettingsentryimpl.h"
 #include "qgssettingsentryenumflag.h"
 
 

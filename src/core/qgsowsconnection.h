@@ -24,7 +24,7 @@
 
 #include "qgis_core.h"
 #include "qgsdatasourceuri.h"
-#include "qgssettings.h"
+#include "qgssettingstree.h"
 
 #include <QStringList>
 #include <QPushButton>

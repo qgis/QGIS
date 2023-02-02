@@ -17,7 +17,8 @@
 #define QGSVECTORTILECONNECTION_H
 
 #include "qgis_core.h"
-#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
+#include "qgssettingstreenode.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
@@ -26,6 +27,10 @@
 
 #include "qgsabstractproviderconnection.h"
 #include "qgshttpheaders.h"
+
+class QgsSettingsEntryString;
+class QgsSettingsEntryInteger;
+class QgsSettingsEntryVariantMap;
 
 class CORE_EXPORT QgsVectorTileProviderConnection : public QgsAbstractProviderConnection
 {

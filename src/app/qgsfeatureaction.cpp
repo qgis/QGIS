@@ -19,11 +19,8 @@
 #include "qgsattributedialog.h"
 #include "qgsdistancearea.h"
 #include "qgsfeatureaction.h"
-#include "qgsguivectorlayertools.h"
-#include "qgsidentifyresultsdialog.h"
 #include "qgslogger.h"
 #include "qgshighlight.h"
-#include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
@@ -31,6 +28,7 @@
 #include "qgsaction.h"
 #include "qgsvectorlayerutils.h"
 #include "qgssettingsregistrycore.h"
+#include "qgssettingsentryimpl.h"
 
 #include <QPushButton>
 

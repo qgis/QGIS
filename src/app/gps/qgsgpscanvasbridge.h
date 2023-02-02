@@ -34,8 +34,7 @@ class QgsBearingNumericFormat;
 class QgsSettingsEntryBool;
 class QgsSettingsEntryInteger;
 class QgsSettingsEntryString;
-template<class T>
-class QgsSettingsEntryEnumFlag;
+template<class T> class QgsSettingsEntryEnumFlag;
 
 class QTapAndHoldGesture;
 

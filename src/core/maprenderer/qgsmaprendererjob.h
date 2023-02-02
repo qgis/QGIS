@@ -30,7 +30,6 @@
 #include "qgslabelsink.h"
 #include "qgsmapsettings.h"
 #include "qgsmaskidprovider.h"
-#include "qgssettingsentryimpl.h"
 
 class QPicture;
 
@@ -41,6 +40,7 @@ class QgsMapRendererCache;
 class QgsFeatureFilterProvider;
 class QgsRenderedItemResults;
 class QgsElevationMap;
+class QgsSettingsEntryBool;
 
 #ifndef SIP_RUN
 /// @cond PRIVATE

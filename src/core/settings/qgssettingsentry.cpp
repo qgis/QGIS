@@ -14,6 +14,8 @@
  ***************************************************************************/
 
 #include "qgssettingsentry.h"
+#include "qgssettings.h"
+#include "qgssettingstreenode.h"
 #include "qgslogger.h"
 
 #include <QRegularExpression>

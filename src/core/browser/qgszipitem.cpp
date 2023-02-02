@@ -19,6 +19,8 @@
 #include "qgsapplication.h"
 #include "qgsdataitemprovider.h"
 #include "qgsdataitemproviderregistry.h"
+#include "qgssettings.h"
+
 #include <QFileInfo>
 
 #include <cpl_vsi.h>

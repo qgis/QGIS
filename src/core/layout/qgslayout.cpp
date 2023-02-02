@@ -32,6 +32,8 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgsruntimeprofiler.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
 const QgsSettingsEntryStringList *QgsLayout::settingsSearchPathForTemplates = new QgsSettingsEntryStringList( QStringLiteral( "search-paths-for-templates" ), QgsSettingsTree::sTreeLayout, QStringList(), QObject::tr( "Search path for templates" ) );
 

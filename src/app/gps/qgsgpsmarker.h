@@ -20,12 +20,15 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgspointxy.h"
 #include "qgspointmarkeritem.h"
-#include "qgssettingsentryimpl.h"
 
 #include <QObject>
 
 
 class QPainter;
+
+class QgsSettingsEntryBool;
+class QgsSettingsEntryString;
+
 
 /**
  * \ingroup app
