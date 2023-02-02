@@ -13,7 +13,6 @@ import os
 import shutil
 import qgis  # NOQA
 
-from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.core import (QgsProject,
                        QgsLayerDefinition,
                        QgsVectorLayer,

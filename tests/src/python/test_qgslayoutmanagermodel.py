@@ -19,12 +19,10 @@ from qgis.core import (QgsPrintLayout,
                        QgsLayoutManagerProxyModel,
                        QgsProject,
                        QgsReport,
-                       QgsMasterLayoutInterface)
+                       )
 from qgis.PyQt.QtCore import Qt, QModelIndex
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
-from qgis.PyQt.QtXml import QDomDocument
-from qgis.PyQt.QtTest import QSignalSpy
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

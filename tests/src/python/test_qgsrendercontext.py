@@ -14,7 +14,7 @@ import qgis  # NOQA
 from qgis.core import (QgsRenderContext,
                        QgsMapSettings,
                        QgsDistanceArea,
-                       QgsRectangle, QgsPointXY,
+                       QgsPointXY,
                        QgsCoordinateReferenceSystem,
                        QgsMapUnitScale,
                        QgsUnitTypes,

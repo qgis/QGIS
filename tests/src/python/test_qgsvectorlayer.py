@@ -20,8 +20,6 @@ import shutil
 import glob
 
 from qgis.PyQt.QtCore import (
-    QDate,
-    QDateTime,
     QVariant,
     Qt,
     QDateTime,
@@ -53,7 +51,6 @@ from qgis.core import (Qgis,
                        QgsFields,
                        QgsVectorLayerJoinInfo,
                        QgsSymbol,
-                       QgsSingleSymbolRenderer,
                        QgsCoordinateReferenceSystem,
                        QgsVectorLayerCache,
                        QgsReadWriteContext,

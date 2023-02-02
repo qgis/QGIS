@@ -12,41 +12,20 @@ __copyright__ = 'Copyright 2023, The QGIS Project'
 import os
 import tempfile
 
-from time import sleep
-
 from qgis.PyQt.QtCore import QRectF, QDir
 from qgis.PyQt.QtGui import QColor
 from qgis.core import (QgsPrintLayout,
                        QgsLayoutItemElevationProfile,
-                       QgsLayoutItemMap,
                        QgsLayout,
-                       QgsMapSettings,
                        QgsVectorLayer,
-                       QgsMarkerSymbol,
-                       QgsSingleSymbolRenderer,
-                       QgsRectangle,
                        QgsProject,
-                       QgsLayoutObject,
-                       QgsProperty,
-                       QgsLayoutMeasurement,
-                       QgsLayoutItem,
-                       QgsLayoutPoint,
-                       QgsLayoutSize,
-                       QgsExpression,
-                       QgsMapLayerLegendUtils,
-                       QgsLegendStyle,
                        QgsFontUtils,
                        QgsLineSymbol,
-                       QgsMapThemeCollection,
-                       QgsCategorizedSymbolRenderer,
-                       QgsRendererCategory,
                        QgsRasterLayer,
-                       QgsApplication,
                        QgsGeometry,
                        QgsCoordinateReferenceSystem,
                        QgsExpressionContextUtils,
                        QgsFlatTerrainProvider,
-                       QgsLayoutChecker,
                        QgsFeature,
                        Qgis,
                        QgsFillSymbol,

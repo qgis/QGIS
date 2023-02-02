@@ -12,7 +12,6 @@ __copyright__ = 'Copyright 2021, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.testing import unittest
 from qgis.core import (
     QgsMapLayerUtils,
     QgsCoordinateReferenceSystem,
@@ -21,7 +20,6 @@ from qgis.core import (
     QgsRasterLayer,
     QgsAnnotationLayer,
     QgsGroupLayer,
-    QgsRectangle,
     QgsProject,
     QgsMapLayerType
 )

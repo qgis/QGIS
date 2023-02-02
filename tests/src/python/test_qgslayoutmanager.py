@@ -11,8 +11,6 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.PyQt.QtXml import QDomDocument
-
 from qgis.core import (QgsPrintLayout,
                        QgsLayoutManager,
                        QgsProject,
