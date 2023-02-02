@@ -19,6 +19,7 @@
 #include "qgslayertreeutils.h"
 #include "qgsmaplayer.h"
 #include "qgsgrouplayer.h"
+#include "qgspainting.h"
 
 #include <QDomElement>
 #include <QStringList>
@@ -485,6 +486,21 @@ QgsGroupLayer *QgsLayerTreeGroup::groupLayer()
 
 void QgsLayerTreeGroup::setGroupLayer( QgsGroupLayer *layer )
 {
+  if ( QgsGroupLayer *groupLayer = qobject_cast< QgsGroupLayer * >( mGroupLayer.get() ) )
+  {
+    if ( !layer )
+    {
+      // clearing the group layer -- ensure all child layers have consistent settings
+      const QList< QgsMapLayer * > children = groupLayer->childLayers();
+      for ( QgsMapLayer *child : children )
+      {
+        if ( QgsPainting::isClippingMode( QgsPainting::getBlendModeEnum( child->blendMode() ) ) )
+        {
+          child->setBlendMode( QPainter::CompositionMode_SourceOver );
+        }
+      }
+    }
+  }
   mGroupLayer.setLayer( layer );
   refreshParentGroupLayerMembers();
 }

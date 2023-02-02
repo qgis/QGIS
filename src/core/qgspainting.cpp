@@ -135,3 +135,38 @@ QgsPainting::BlendMode QgsPainting::getBlendModeEnum( QPainter::CompositionMode 
       return QgsPainting::BlendNormal;
   }
 }
+
+bool QgsPainting::isClippingMode( BlendMode mode )
+{
+  switch ( mode )
+  {
+    case BlendNormal:
+    case BlendLighten:
+    case BlendScreen:
+    case BlendDodge:
+    case BlendAddition:
+    case BlendDarken:
+    case BlendMultiply:
+    case BlendBurn:
+    case BlendOverlay:
+    case BlendSoftLight:
+    case BlendHardLight:
+    case BlendDifference:
+    case BlendSubtract:
+    case BlendSource:
+    case BlendDestinationOver:
+    case BlendClear:
+    case BlendDestination:
+      return false;
+
+    case BlendSourceIn:
+    case BlendDestinationIn:
+    case BlendSourceOut:
+    case BlendDestinationOut:
+    case BlendSourceAtop:
+    case BlendDestinationAtop:
+    case BlendXor:
+      return true;
+  }
+  return false;
+}
