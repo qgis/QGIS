@@ -2796,7 +2796,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
       if ( !blendModeNode.isNull() )
       {
         QDomElement e = blendModeNode.toElement();
-        setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( e.text().toInt() ) ) );
+        setBlendMode( QgsPainting::getCompositionMode( static_cast< Qgis::BlendMode >( e.text().toInt() ) ) );
       }
 
       // get and set the feature blend mode if it exists
@@ -2804,7 +2804,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
       if ( !featureBlendModeNode.isNull() )
       {
         QDomElement e = featureBlendModeNode.toElement();
-        setFeatureBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( e.text().toInt() ) ) );
+        setFeatureBlendMode( QgsPainting::getCompositionMode( static_cast< Qgis::BlendMode >( e.text().toInt() ) ) );
       }
     }
 
@@ -3186,13 +3186,13 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
     {
       // add the blend mode field
       QDomElement blendModeElem  = doc.createElement( QStringLiteral( "blendMode" ) );
-      QDomText blendModeText = doc.createTextNode( QString::number( QgsPainting::getBlendModeEnum( blendMode() ) ) );
+      QDomText blendModeText = doc.createTextNode( QString::number( static_cast< int >( QgsPainting::getBlendModeEnum( blendMode() ) ) ) );
       blendModeElem.appendChild( blendModeText );
       node.appendChild( blendModeElem );
 
       // add the feature blend mode field
       QDomElement featureBlendModeElem  = doc.createElement( QStringLiteral( "featureBlendMode" ) );
-      QDomText featureBlendModeText = doc.createTextNode( QString::number( QgsPainting::getBlendModeEnum( featureBlendMode() ) ) );
+      QDomText featureBlendModeText = doc.createTextNode( QString::number( static_cast< int >( QgsPainting::getBlendModeEnum( featureBlendMode() ) ) ) );
       featureBlendModeElem.appendChild( featureBlendModeText );
       node.appendChild( featureBlendModeElem );
     }

@@ -25,7 +25,6 @@
 #include "qgsfeedback.h"
 #include "qgsannotationitemeditoperation.h"
 #include "qgspainteffect.h"
-#include "qgseffectstack.h"
 #include "qgspainteffectregistry.h"
 #include "qgsthreadingutils.h"
 #include <QUuid>
@@ -428,7 +427,7 @@ bool QgsAnnotationLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
   {
     // add the blend mode field
     QDomElement blendModeElem  = doc.createElement( QStringLiteral( "blendMode" ) );
-    const QDomText blendModeText = doc.createTextNode( QString::number( QgsPainting::getBlendModeEnum( blendMode() ) ) );
+    const QDomText blendModeText = doc.createTextNode( QString::number( static_cast< int >( QgsPainting::getBlendModeEnum( blendMode() ) ) ) );
     blendModeElem.appendChild( blendModeText );
     node.appendChild( blendModeElem );
 
@@ -465,7 +464,7 @@ bool QgsAnnotationLayer::readSymbology( const QDomNode &node, QString &, QgsRead
     if ( !blendModeNode.isNull() )
     {
       const QDomElement e = blendModeNode.toElement();
-      setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( e.text().toInt() ) ) );
+      setBlendMode( QgsPainting::getCompositionMode( static_cast< Qgis::BlendMode >( e.text().toInt() ) ) );
     }
 
     //restore layer effect

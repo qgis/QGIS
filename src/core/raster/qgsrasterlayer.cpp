@@ -2245,7 +2245,7 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
   if ( !blendModeNode.isNull() )
   {
     const QDomElement e = blendModeNode.toElement();
-    setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( e.text().toInt() ) ) );
+    setBlendMode( QgsPainting::getCompositionMode( static_cast< Qgis::BlendMode >( e.text().toInt() ) ) );
   }
 
   const QDomElement elemDataDefinedProperties = layer_node.firstChildElement( QStringLiteral( "pipe-data-defined-properties" ) );
@@ -2501,7 +2501,7 @@ bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &documen
 
   // add blend mode node
   QDomElement blendModeElement  = document.createElement( QStringLiteral( "blendMode" ) );
-  const QDomText blendModeText = document.createTextNode( QString::number( QgsPainting::getBlendModeEnum( blendMode() ) ) );
+  const QDomText blendModeText = document.createTextNode( QString::number( static_cast< int >( QgsPainting::getBlendModeEnum( blendMode() ) ) ) );
   blendModeElement.appendChild( blendModeText );
   layer_node.appendChild( blendModeElement );
 

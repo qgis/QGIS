@@ -283,7 +283,7 @@ void QgsTextShadowSettings::readFromLayer( QgsVectorLayer *layer )
   d->scale = layer->customProperty( QStringLiteral( "labeling/shadowScale" ), QVariant( 100 ) ).toInt();
   d->color = QgsTextRendererUtils::readColor( layer, QStringLiteral( "labeling/shadowColor" ), Qt::black, false );
   d->blendMode = QgsPainting::getCompositionMode(
-                   static_cast< QgsPainting::BlendMode >( layer->customProperty( QStringLiteral( "labeling/shadowBlendMode" ), QVariant( QgsPainting::BlendMultiply ) ).toUInt() ) );
+                   static_cast< Qgis::BlendMode >( layer->customProperty( QStringLiteral( "labeling/shadowBlendMode" ), QVariant( static_cast< int >( Qgis::BlendMode::Multiply ) ) ).toUInt() ) );
 }
 
 void QgsTextShadowSettings::readXml( const QDomElement &elem )
@@ -351,7 +351,7 @@ void QgsTextShadowSettings::readXml( const QDomElement &elem )
   d->scale = shadowElem.attribute( QStringLiteral( "shadowScale" ), QStringLiteral( "100" ) ).toInt();
   d->color = QgsSymbolLayerUtils::decodeColor( shadowElem.attribute( QStringLiteral( "shadowColor" ), QgsSymbolLayerUtils::encodeColor( Qt::black ) ) );
   d->blendMode = QgsPainting::getCompositionMode(
-                   static_cast< QgsPainting::BlendMode >( shadowElem.attribute( QStringLiteral( "shadowBlendMode" ), QString::number( QgsPainting::BlendMultiply ) ).toUInt() ) );
+                   static_cast< Qgis::BlendMode >( shadowElem.attribute( QStringLiteral( "shadowBlendMode" ), QString::number( static_cast<int>( Qgis::BlendMode::Multiply ) ) ).toUInt() ) );
 }
 
 QDomElement QgsTextShadowSettings::writeXml( QDomDocument &doc ) const
@@ -371,7 +371,7 @@ QDomElement QgsTextShadowSettings::writeXml( QDomDocument &doc ) const
   shadowElem.setAttribute( QStringLiteral( "shadowOpacity" ), d->opacity );
   shadowElem.setAttribute( QStringLiteral( "shadowScale" ), d->scale );
   shadowElem.setAttribute( QStringLiteral( "shadowColor" ), QgsSymbolLayerUtils::encodeColor( d->color ) );
-  shadowElem.setAttribute( QStringLiteral( "shadowBlendMode" ), QgsPainting::getBlendModeEnum( d->blendMode ) );
+  shadowElem.setAttribute( QStringLiteral( "shadowBlendMode" ), static_cast< int >( QgsPainting::getBlendModeEnum( d->blendMode ) ) );
   return shadowElem;
 }
 

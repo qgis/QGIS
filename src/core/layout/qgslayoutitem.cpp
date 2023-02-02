@@ -679,7 +679,7 @@ bool QgsLayoutItem::writeXml( QDomElement &parentElement, QDomDocument &doc, con
   element.appendChild( bgColorElem );
 
   //blend mode
-  element.setAttribute( QStringLiteral( "blendMode" ), QgsPainting::getBlendModeEnum( mBlendMode ) );
+  element.setAttribute( QStringLiteral( "blendMode" ), static_cast< int >( QgsPainting::getBlendModeEnum( mBlendMode ) ) );
 
   //opacity
   element.setAttribute( QStringLiteral( "opacity" ), QString::number( mOpacity ) );
@@ -803,7 +803,7 @@ bool QgsLayoutItem::readXml( const QDomElement &element, const QDomDocument &doc
   }
 
   //blend mode
-  setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( element.attribute( QStringLiteral( "blendMode" ), QStringLiteral( "0" ) ).toUInt() ) ) );
+  setBlendMode( QgsPainting::getCompositionMode( static_cast< Qgis::BlendMode >( element.attribute( QStringLiteral( "blendMode" ), QStringLiteral( "0" ) ).toUInt() ) ) );
 
   //opacity
   if ( element.hasAttribute( QStringLiteral( "opacity" ) ) )
