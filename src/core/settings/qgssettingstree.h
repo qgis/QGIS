@@ -29,9 +29,10 @@
  */
 class CORE_EXPORT QgsSettingsTree
 {
-#ifndef SIP_RUN
 
   public:
+
+#ifndef SIP_RUN
 
     /**
      * Returns the tree root node for the settings tree

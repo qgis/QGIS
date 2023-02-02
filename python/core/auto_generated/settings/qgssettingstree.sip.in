@@ -21,6 +21,19 @@ class QgsSettingsTree
 %TypeHeaderCode
 #include "qgssettingstree.h"
 %End
+  public:
+
+
+    static QgsSettingsTreeNode *createPluginTreeNode( const QString &pluginName );
+%Docstring
+Creates a settings tree node for the given ``pluginName``
+%End
+
+
+    static void unregisterPluginTreeNode( const QString &pluginName );
+%Docstring
+Unregisters the tree node for the given plugin
+%End
 };
 
 /************************************************************************
