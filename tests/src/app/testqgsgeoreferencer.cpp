@@ -15,12 +15,6 @@
 #include "qgstest.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
-#include "qgsvectorlayer.h"
-#include "qgsfeature.h"
-#include "qgsfeatureiterator.h"
-#include "qgsgeometry.h"
-#include "qgsvectordataprovider.h"
-#include "qgsfieldcalculator.h"
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
 #include "georeferencer/qgsgeoreftransform.h"
@@ -48,6 +42,7 @@ class TestQgsGeoreferencer : public QObject
     void testGcpList();
     void testSaveLoadGcps();
     void testSaveLoadGcpsNoCrs();
+    void testTransformClone();
     void testTransformImageNoGeoference();
     void testTransformImageWithExistingGeoreference();
     void testRasterChangeCoords();
@@ -352,6 +347,60 @@ void TestQgsGeoreferencer::testSaveLoadGcpsNoCrs()
   QCOMPARE( res.at( 2 ).destinationPoint().y(), 200 );
   QVERIFY( !res.at( 2 ).isEnabled() );
   QCOMPARE( res.at( 2 ).destinationPointCrs().authid(), QStringLiteral( "EPSG:3111" ) );
+}
+
+void TestQgsGeoreferencer::testTransformClone()
+{
+  // an image with no georeferencing
+  QgsGeorefTransform transform( QgsGcpTransformerInterface::TransformMethod::PolynomialOrder1 );
+  transform.loadRaster( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/rgb256x256.png" ) );
+
+  QVERIFY( transform.updateParametersFromGcps( {QgsPointXY( 0, 0 ), QgsPointXY( 10, 0 ), QgsPointXY( 0, 30 ), QgsPointXY( 10, 30 )},
+  {QgsPointXY( 10, 5 ), QgsPointXY( 16, 5 ), QgsPointXY( 10, 8 ), QgsPointXY( 16, 8 )}, true ) );
+
+  std::unique_ptr< QgsGeorefTransform > cloned( dynamic_cast< QgsGeorefTransform * >( transform.clone() ) );
+  QCOMPARE( cloned->method(), QgsGcpTransformerInterface::TransformMethod::PolynomialOrder1 );
+  QVERIFY( !cloned->hasExistingGeoreference() );
+
+  QgsPointXY res;
+  QVERIFY( cloned->transform( QgsPointXY( 0, 5 ), res, true ) );
+  QCOMPARE( res.x(), 10 );
+  QCOMPARE( res.y(), 5.5 );
+  QVERIFY( cloned->transform( QgsPointXY( 9, 25 ), res, true ) );
+  QCOMPARE( res.x(), 15.4 );
+  QCOMPARE( res.y(), 7.5 );
+  // reverse transform
+  QVERIFY( cloned->transform( QgsPointXY( 10, 5.5 ), res, false ) );
+  QCOMPARE( res.x(), 0.0 );
+  QCOMPARE( res.y(), 5.0 );
+  QVERIFY( cloned->transform( QgsPointXY( 15.4, 7.5 ), res, false ) );
+  QCOMPARE( res.x(), 9.0 );
+  QCOMPARE( res.y(), 25.0 );
+
+  // an image which is already georeferenced
+  QgsGeorefTransform transform2( QgsGcpTransformerInterface::TransformMethod::Linear );
+  transform2.loadRaster( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.tif" ) );
+
+  QVERIFY( transform2.updateParametersFromGcps( {QgsPointXY( 783414, 3350122 ), QgsPointXY( 791344, 3349795 ), QgsPointXY( 783077, 334093 ), QgsPointXY( 791134, 3341401 )},
+  {QgsPointXY( 783414, 3350122 ), QgsPointXY( 791344, 3349795 ), QgsPointXY( 783077, 334093 ), QgsPointXY( 791134, 3341401 )}, true ) );
+
+  cloned.reset( dynamic_cast< QgsGeorefTransform * >( transform2.clone() ) );
+  QCOMPARE( cloned->method(), QgsGcpTransformerInterface::TransformMethod::Linear );
+  QVERIFY( cloned->hasExistingGeoreference() );
+
+  QVERIFY( cloned->transform( QgsPointXY( 30.7302631579, -14.0548245614 ), res, true ) );
+  QGSCOMPARENEAR( res.x(), 783414, 1 );
+  QGSCOMPARENEAR( res.y(), 3350122, 1 );
+  QVERIFY( cloned->transform( QgsPointXY( 166.168859649, -167.0548245614 ), res, true ) );
+  QGSCOMPARENEAR( res.x(), 791134, 1 );
+  QGSCOMPARENEAR( res.y(), 3341401, 1 );
+  // reverse transform
+  QVERIFY( cloned->transform( QgsPointXY( 783414, 3350122 ), res, false ) );
+  QGSCOMPARENEAR( res.x(), 30.7302631579, 0.1 );
+  QGSCOMPARENEAR( res.y(), -14.0548245614, 0.1 );
+  QVERIFY( cloned->transform( QgsPointXY( 791134, 3341401 ), res, false ) );
+  QGSCOMPARENEAR( res.x(), 166.168859649, 0.1 );
+  QGSCOMPARENEAR( res.y(), -167.0548245614, 0.1 );
 }
 
 void TestQgsGeoreferencer::testTransformImageNoGeoference()
