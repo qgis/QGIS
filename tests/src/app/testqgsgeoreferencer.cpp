@@ -21,6 +21,7 @@
 #include "georeferencer/qgsgeorefdatapoint.h"
 #include "georeferencer/qgsgcplist.h"
 #include "georeferencer/qgsgcplistmodel.h"
+#include "georeferencer/qgsgeorefmainwindow.h"
 
 /**
  * \ingroup UnitTests
@@ -49,6 +50,7 @@ class TestQgsGeoreferencer : public QObject
     void testUpdateResiduals();
     void testListModel();
     void testListModelCrs();
+    void testGdalCommands();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -839,6 +841,24 @@ void TestQgsGeoreferencer::testListModelCrs()
   QCOMPARE( list.at( 2 )->destinationPoint().x(), 159 );
   QCOMPARE( list.at( 2 )->destinationPoint().y(), -29 );
   QCOMPARE( list.at( 2 )->destinationPointCrs().authid(), QStringLiteral( "EPSG:4326" ) );
+}
+
+void TestQgsGeoreferencer::testGdalCommands()
+{
+  QgsGeoreferencerMainWindow window;
+  window.openLayer( QgsMapLayerType::RasterLayer, QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.tif" ) );
+
+  window.addPoint( QgsPointXY( 783414, 3350122 ), QgsPointXY( 783414, 3350122 ), QgsCoordinateReferenceSystem() );
+  window.addPoint( QgsPointXY( 791344, 3349795 ), QgsPointXY( 791344, 33497952 ), QgsCoordinateReferenceSystem() );
+  window.addPoint( QgsPointXY( 783077, 334093 ), QgsPointXY( 783077, 334093 ), QgsCoordinateReferenceSystem() );
+  window.addPoint( QgsPointXY( 791134, 3341401 ), QgsPointXY( 791134, 3341401 ), QgsCoordinateReferenceSystem() );
+
+  QString command = window.generateGDALtranslateCommand();
+  // gdal_translate command must use source pixels, not geographic coordinates
+  QCOMPARE( command, QStringLiteral( "gdal_translate -of GTiff -co TFW=YES -gcp 30.7303 14.0548 783414 3.35012e+06 -gcp 169.853 19.7917 791344 3.3498e+07 -gcp 24.818 52926.8 783077 334093 -gcp 166.169 167.055 791134 3.3414e+06 \"%1\" \"%2\"" ).arg(
+              QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.tif" ),
+              QDir::tempPath() + QStringLiteral( "/landsat.tif" ) ) );
+
 }
 
 QGSTEST_MAIN( TestQgsGeoreferencer )
