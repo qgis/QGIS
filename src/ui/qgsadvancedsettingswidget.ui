@@ -53,7 +53,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QgsSettingsTree" name="mAdvancedSettingsEditor" native="true">
+       <widget class="QgsSettingsTreeWidget" name="mAdvancedSettingsEditor" native="true">
         <property name="visible">
          <bool>false</bool>
         </property>
@@ -66,7 +66,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsSettingsTree</class>
+   <class>QgsSettingsTreeWidget</class>
    <extends>QWidget</extends>
    <header>qgssettingstree.h</header>
    <container>1</container>

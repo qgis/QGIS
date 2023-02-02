@@ -39,7 +39,7 @@ class QgsAdvancedSettingsWidget : public QgsOptionsPageWidget, private Ui::QgsAd
     ~QgsAdvancedSettingsWidget() override;
     void apply() override;
 
-    QgsSettingsTree *settingsTree();
+    QgsSettingsTreeWidget *settingsTree();
 
   private:
 
