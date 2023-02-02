@@ -54,21 +54,6 @@ QgsSettingsTreeNode *QgsSettings::treeRoot()
   return sTreeRoot;
 }
 
-QgsSettingsTreeNode *QgsSettings::createPluginTreeNode( const QString &pluginName )
-{
-  QgsSettingsTreeNode *te = sTreePlugins->childNode( pluginName );
-  if ( te )
-    return te;
-  else
-    return sTreePlugins->createChildNode( pluginName );
-}
-
-void QgsSettings::unregisterPluginTreeNode( const QString &pluginName )
-{
-  QgsSettingsTreeNode *pluginTreeNode = sTreePlugins->childNode( pluginName );
-  delete pluginTreeNode;
-}
-
 QgsSettings::QgsSettings( const QString &organization, const QString &application, QObject *parent )
 {
   mUserSettings = new QSettings( organization, application, parent );

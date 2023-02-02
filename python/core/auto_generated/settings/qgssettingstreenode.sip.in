@@ -14,16 +14,15 @@
 class QgsSettingsTreeNode
 {
 %Docstring(signature="appended")
-:py:class:`QgsSettingsTreeNode` is a tree node for the settings registry
-to help organizing and introspecting the registry.
+:py:class:`QgsSettingsTreeNode` is a tree node for the settings tree
+to help organizing and introspecting the tree.
 It is either a root node, a normal node or
 a named list (to store a group of settings under a dynamic named key).
-The root node holds a pointer to a registry (might be null)
 to automatically register a settings entry on its creation when a parent is provided.
 
-.. seealso:: :py:class:`QgsSettingsEntryBase`
+.. seealso:: :py:class:`QgsSettingsTreee`
 
-.. seealso:: :py:class:`QgsSettingsRegistry`
+.. seealso:: :py:class:`QgsSettingsEntryBase`
 
 .. versionadded:: 3.30
 %End
@@ -187,15 +186,15 @@ Registers a child nodes
 class QgsSettingsTreeNamedListNode : QgsSettingsTreeNode
 {
 %Docstring(signature="appended")
-:py:class:`QgsSettingsTreeNamedListNode` is a named list tree node for the settings registry
-to help organizing and introspecting the registry.
+:py:class:`QgsSettingsTreeNamedListNode` is a named list tree node for the settings tree
+to help organizing and introspecting the tree.
 the named list node is used to store a group of settings under a dynamically named key.
+
+.. seealso:: :py:class:`QgsSettingsTree`
 
 .. seealso:: :py:class:`QgsSettingsTreeNode`
 
 .. seealso:: :py:class:`QgsSettingsEntryBase`
-
-.. seealso:: :py:class:`QgsSettingsRegistry`
 
 .. versionadded:: 3.30
 %End
