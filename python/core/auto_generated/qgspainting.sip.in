@@ -58,6 +58,13 @@ Returns a QPainter.CompositionMode corresponding to a BlendMode
 Returns a BlendMode corresponding to a QPainter.CompositionMode
 %End
 
+    static bool isClippingMode( QgsPainting::BlendMode mode );
+%Docstring
+Returns ``True`` if ``mode`` is a clipping blend mode.
+
+.. versionadded:: 3.30
+%End
+
 };
 
 /************************************************************************

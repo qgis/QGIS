@@ -66,6 +66,13 @@ class CORE_EXPORT QgsPainting
     //! Returns a BlendMode corresponding to a QPainter::CompositionMode
     static QgsPainting::BlendMode getBlendModeEnum( QPainter::CompositionMode blendMode );
 
+    /**
+     * Returns TRUE if \a mode is a clipping blend mode.
+     *
+     * \since QGIS 3.30
+     */
+    static bool isClippingMode( QgsPainting::BlendMode mode );
+
 };
 
 #endif // QGSPAINTING_H
