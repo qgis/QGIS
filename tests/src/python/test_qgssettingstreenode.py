@@ -9,7 +9,7 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from qgis.core import QgsSettingsException, QgsSettings, QgsSettingsTreeNode, QgsSettingsEntryString, QgsSettingsEntryEnumFlag, QgsUnitTypes
+from qgis.core import QgsSettingsException, QgsSettings, QgsSettingsTree, QgsSettingsTreeNode, QgsSettingsEntryString, QgsSettingsEntryEnumFlag, QgsUnitTypes
 from qgis.testing import start_app, unittest
 
 
@@ -27,13 +27,13 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.pluginName = "UnitTest"
 
     def tearDown(self):
-        QgsSettings.unregisterPluginTreeNode(self.pluginName)
+        QgsSettingsTree.unregisterPluginTreeNode(self.pluginName)
 
     def test_constructor(self):
         with self.assertRaises(TypeError):
             QgsSettingsTreeNode()
 
-        root = QgsSettings.createPluginTreeNode(self.pluginName)
+        root = QgsSettingsTree.createPluginTreeNode(self.pluginName)
         self.assertEqual(root.type(), QgsSettingsTreeNode.Type.Standard)
         pluginsNode = root.parent()
         self.assertEqual(pluginsNode.type(), QgsSettingsTreeNode.Type.Standard)
@@ -41,7 +41,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(pluginsNode.parent().parent(), None)
 
     def test_parent(self):
-        root = QgsSettings.createPluginTreeNode(self.pluginName)
+        root = QgsSettingsTree.createPluginTreeNode(self.pluginName)
         self.assertEqual(root.type(), QgsSettingsTreeNode.Type.Standard)
 
         l1 = root.createChildNode("test-parent-level-1")
@@ -62,7 +62,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(l1.childrenNodes(), [l1a, l1b])
 
     def test_setting(self):
-        root = QgsSettings.createPluginTreeNode(self.pluginName)
+        root = QgsSettingsTree.createPluginTreeNode(self.pluginName)
         setting = QgsSettingsEntryString("mysetting", root)
 
         self.assertEqual(setting.parent(), root)
@@ -72,7 +72,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(root.childrenNodes(), [])
 
     def test_named_list(self):
-        proot = QgsSettings.createPluginTreeNode(self.pluginName)
+        proot = QgsSettingsTree.createPluginTreeNode(self.pluginName)
         l1 = proot.createChildNode("level-1")
         self.assertEqual(l1.namedNodesCount(), 0)
         nl = l1.createNamedListNode("my_list")
@@ -110,14 +110,14 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(QgsSettings().value(setting.key(['item1', 'item2'])), None)
 
     def test_registration(self):
-        proot = QgsSettings.createPluginTreeNode(self.pluginName)
+        proot = QgsSettingsTree.createPluginTreeNode(self.pluginName)
         self.assertEqual(len(proot.childrenNodes()), 0)
         l1 = proot.createChildNode("level-1")
         self.assertEqual(len(proot.childrenNodes()), 1)
-        QgsSettings.unregisterPluginTreeNode(self.pluginName)
+        QgsSettingsTree.unregisterPluginTreeNode(self.pluginName)
 
         # with several levels + settings
-        proot = QgsSettings.createPluginTreeNode(self.pluginName)
+        proot = QgsSettingsTree.createPluginTreeNode(self.pluginName)
         l1 = proot.createChildNode("level-1")
         s1 = QgsSettingsEntryString("my-setting-1", l1)
         l2 = l1.createChildNode("level-2")
@@ -126,16 +126,16 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(len(l2.childrenSettings()), 1)
         l2.unregisterChildSetting(s2)
         self.assertEqual(len(l2.childrenSettings()), 0)
-        QgsSettings.unregisterPluginTreeNode(self.pluginName)
+        QgsSettingsTree.unregisterPluginTreeNode(self.pluginName)
 
     def test_duplicated_key(self):
-        proot = QgsSettings.createPluginTreeNode(self.pluginName)
+        proot = QgsSettingsTree.createPluginTreeNode(self.pluginName)
         proot.createChildNode("duplicate-key")
         with self.assertRaises(QgsSettingsException):
             QgsSettingsEntryString("duplicate-key", proot)
 
     def test_python_implementation(self):
-        proot = QgsSettings.createPluginTreeNode(self.pluginName)
+        proot = QgsSettingsTree.createPluginTreeNode(self.pluginName)
         self.setting = QgsSettingsEntryEnumFlag("python-implemented-setting", proot, QgsUnitTypes.LayoutMeters)
         self.assertEqual(type(self.setting), QgsSettingsEntryEnumFlag)
         self.assertEqual(type(proot.childSetting("python-implemented-setting")), QgsSettingsEntryEnumFlag)
