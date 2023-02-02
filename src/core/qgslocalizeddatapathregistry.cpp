@@ -21,7 +21,7 @@
 #include "qgsreadwritelocker.h"
 
 
-const QgsSettingsEntryStringList *QgsLocalizedDataPathRegistry::settingsLocalizedDataPaths = new QgsSettingsEntryStringList( QStringLiteral( "localized_data_paths" ), QgsSettings::sTreeQgis, QStringList() );
+const QgsSettingsEntryStringList *QgsLocalizedDataPathRegistry::settingsLocalizedDataPaths = new QgsSettingsEntryStringList( QStringLiteral( "localized_data_paths" ), QgsSettingsTree::sTreeQgis, QStringList() );
 
 QgsLocalizedDataPathRegistry::QgsLocalizedDataPathRegistry()
 {

@@ -177,7 +177,7 @@ Registers a child elements
 
    This is not available in Python bindings. Use method createElement on an existing tree element.
 
-.. seealso:: :py:func:`QgsSettings.createPluginTreeNode`
+.. seealso:: :py:func:`QgsSettingsTree.createPluginTreeNode`
 %End
     QgsSettingsTreeNode( const QgsSettingsTreeNode &other );
 };
@@ -274,7 +274,7 @@ Init the elements with the specific ``options``
 
    This is not available in Python bindings. Use method createNamedListNode on an existing tree element.
 
-.. seealso:: :py:func:`QgsSettings.createPluginTreeNode`
+.. seealso:: :py:func:`QgsSettingsTree.createPluginTreeNode`
 %End
     QgsSettingsTreeNamedListNode( const QgsSettingsTreeNamedListNode &other );
 };

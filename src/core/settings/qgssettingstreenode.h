@@ -81,7 +81,7 @@ class CORE_EXPORT QgsSettingsTreeNode
 
     /**
      * Creates a tree root node
-     * \note This is not available in Python bindings. Use QgsSettings.createPluginTreeNode instead.
+     * \note This is not available in Python bindings. Use QgsSettingsTree.createPluginTreeNode instead.
      */
     static QgsSettingsTreeNode *createRootNode() SIP_SKIP;
 
@@ -168,7 +168,7 @@ class CORE_EXPORT QgsSettingsTreeNode
 
     /**
      * \note This is not available in Python bindings. Use method createNode on an existing tree node.
-     * \see QgsSettings.createPluginTreeNode
+     * \see QgsSettingsTree.createPluginTreeNode
      */
     QgsSettingsTreeNode() = default SIP_FORCE;
 
@@ -261,7 +261,7 @@ class CORE_EXPORT QgsSettingsTreeNamedListNode : public QgsSettingsTreeNode
 
     /**
      * \note This is not available in Python bindings. Use method createNamedListNode on an existing tree node.
-     * \see QgsSettings.createPluginTreeNode
+     * \see QgsSettingsTree.createPluginTreeNode
      */
     QgsSettingsTreeNamedListNode() = default SIP_FORCE;
 

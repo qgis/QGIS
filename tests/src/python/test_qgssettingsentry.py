@@ -10,7 +10,7 @@ the Free Software Foundation; either version 2 of the License, or
 """
 
 from qgis import core as qgis_core
-from qgis.core import Qgis, QgsSettings, QgsSettingsEntryVariant, QgsSettingsEntryString, QgsSettingsEntryStringList, QgsSettingsEntryBool, QgsSettingsEntryInteger, QgsSettingsEntryDouble, QgsSettingsEntryColor, QgsSettingsEntryEnumFlag, QgsUnitTypes, QgsMapLayerProxyModel, QgsSettingsEntryVariantMap, QgsSettingsEntryGroup
+from qgis.core import Qgis, QgsSettings, QgsSettingsTree, QgsSettingsEntryVariant, QgsSettingsEntryString, QgsSettingsEntryStringList, QgsSettingsEntryBool, QgsSettingsEntryInteger, QgsSettingsEntryDouble, QgsSettingsEntryColor, QgsSettingsEntryEnumFlag, QgsUnitTypes, QgsMapLayerProxyModel, QgsSettingsEntryVariantMap, QgsSettingsEntryGroup
 from qgis.testing import start_app, unittest
 
 from qgis.PyQt.QtCore import Qt
@@ -100,7 +100,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
             self.assertEqual(settings_entry.key(), settings_key_complete)
 
     def test_with_parent_element(self):
-        root = QgsSettings.createPluginTreeNode(self.pluginName)
+        root = QgsSettingsTree.createPluginTreeNode(self.pluginName)
         setting = QgsSettingsEntryInteger("my_setting", root)
         self.assertEqual(setting.key(), f"/plugins/{self.pluginName}/my_setting")
         self.assertEqual(setting.name(), 'my_setting')

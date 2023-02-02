@@ -84,8 +84,8 @@ email                : tim at linfiniti.com
 #include <QSlider>
 #include <QUrl>
 
-const QgsSettingsEntryDouble *QgsRasterLayer::settingsRasterDefaultOversampling = new QgsSettingsEntryDouble( QStringLiteral( "default-oversampling" ), QgsSettings::sTreeRaster, 2.0 );
-const QgsSettingsEntryBool *QgsRasterLayer::settingsRasterDefaultEarlyResampling = new QgsSettingsEntryBool( QStringLiteral( "default-early-resampling" ), QgsSettings::sTreeRaster, false );
+const QgsSettingsEntryDouble *QgsRasterLayer::settingsRasterDefaultOversampling = new QgsSettingsEntryDouble( QStringLiteral( "default-oversampling" ), QgsSettingsTree::sTreeRaster, 2.0 );
+const QgsSettingsEntryBool *QgsRasterLayer::settingsRasterDefaultEarlyResampling = new QgsSettingsEntryBool( QStringLiteral( "default-early-resampling" ), QgsSettingsTree::sTreeRaster, false );
 
 #define ERR(message) QGS_ERROR_MESSAGE(message,"Raster layer")
 
