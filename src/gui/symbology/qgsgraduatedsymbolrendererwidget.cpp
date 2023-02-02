@@ -601,6 +601,9 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   connect( mExpressionWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) >( &QgsFieldExpressionWidget::fieldChanged ), mHistogramWidget, &QgsHistogramWidget::setSourceFieldExp );
 
   mExpressionWidget->registerExpressionContextGenerator( this );
+
+  mUpdateTimer.setSingleShot( true );
+  mUpdateTimer.connect( &mUpdateTimer, &QTimer::timeout, this, &QgsGraduatedSymbolRendererWidget::classifyGraduatedImpl );
 }
 
 void QgsGraduatedSymbolRendererWidget::mSizeUnitWidget_changed()
@@ -1025,6 +1028,12 @@ void QgsGraduatedSymbolRendererWidget::symmetryPointEditingFinished( )
 
 void QgsGraduatedSymbolRendererWidget::classifyGraduated()
 {
+  mUpdateTimer.start( 500 );
+}
+
+void QgsGraduatedSymbolRendererWidget::classifyGraduatedImpl( )
+{
+
   if ( mBlockUpdates )
     return;
 
