@@ -18,7 +18,7 @@
 """
 
 from .metaenum import metaEnumFromValue
-from qgis.core import QgsSettings, QgsSettingsEntryBase, QgsLogger, Qgis
+from qgis.core import QgsSettings, QgsSettingsTree, QgsSettingsEntryBase, QgsLogger, Qgis
 import qgis  # required to get base class of enums
 
 
