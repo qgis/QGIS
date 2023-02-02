@@ -43,7 +43,7 @@ from qgis.PyQt.QtWidgets import (
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
 import qgis
-from qgis.core import Qgis, QgsApplication, QgsNetworkAccessManager, QgsSettings, QgsNetworkRequestParameters
+from qgis.core import Qgis, QgsApplication, QgsNetworkAccessManager, QgsSettings, QgsSettingsTree, QgsNetworkRequestParameters
 from qgis.gui import QgsMessageBar, QgsPasswordLineEdit, QgsHelp
 from qgis.utils import (iface, startPlugin, unloadPlugin, loadPlugin, OverrideCursor,
                         reloadPlugin, updateAvailablePlugins, plugins_metadata_parser)
