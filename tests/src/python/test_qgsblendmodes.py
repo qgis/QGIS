@@ -171,6 +171,16 @@ class TestQgsBlendModes(unittest.TestCase):
 
         self.assertTrue(result)
 
+    def test_is_clipping_mode(self):
+        self.assertFalse(QgsPainting.isClippingMode(Qgis.BlendMode.Normal))
+        self.assertFalse(QgsPainting.isClippingMode(Qgis.BlendMode.Lighten))
+        self.assertTrue(QgsPainting.isClippingMode(Qgis.BlendMode.SourceIn))
+        self.assertTrue(QgsPainting.isClippingMode(Qgis.BlendMode.DestinationIn))
+        self.assertTrue(QgsPainting.isClippingMode(Qgis.BlendMode.SourceOut))
+        self.assertTrue(QgsPainting.isClippingMode(Qgis.BlendMode.DestinationOut))
+        self.assertTrue(QgsPainting.isClippingMode(Qgis.BlendMode.SourceAtop))
+        self.assertTrue(QgsPainting.isClippingMode(Qgis.BlendMode.DestinationAtop))
+
 
 if __name__ == '__main__':
     unittest.main()
