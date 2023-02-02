@@ -17,11 +17,13 @@
 #include "qgsnetworkcontentfetchertask.h"
 #include "qgsnetworkcontentfetcher.h"
 #include "qgsnetworkaccessmanager.h"
-#include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgsjsonutils.h"
 #include "qgsmessagelog.h"
 #include "qgsapplication.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
+
 #include <QDateTime>
 #include <QUrlQuery>
 #include <QFile>

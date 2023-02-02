@@ -28,6 +28,9 @@
 #include "qgscoordinatetransform.h"
 #include "qgsdoublevalidator.h"
 #include "qgspanelwidgetstack.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
+
 
 #include <QClipboard>
 #include <QLabel>

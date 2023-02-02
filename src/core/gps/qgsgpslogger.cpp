@@ -19,12 +19,13 @@
 #include "qgsgeometry.h"
 #include "qgslinestring.h"
 #include "qgspolygon.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingstree.h"
 
 #include <QTimer>
 #include <QTimeZone>
 
-#include "qgssettingsentryimpl.h"
-#include "qgssettingsentryenumflag.h"
 
 const QgsSettingsEntryDouble *QgsGpsLogger::settingsDistanceThreshold = new QgsSettingsEntryDouble( QStringLiteral( "distanceThreshold" ), QgsSettingsTree::sTreeGps, 0 );
 const QgsSettingsEntryBool *QgsGpsLogger::settingsApplyLeapSeconds = new QgsSettingsEntryBool( QStringLiteral( "applyLeapSeconds" ), QgsSettingsTree::sTreeGps, true );
@@ -232,9 +233,6 @@ void QgsGpsLogger::updateGpsSettings()
   }
   else
   {
-    // legacy settings
-    QgsSettings settings;
-
     acquisitionInterval = QgsGpsLogger::settingsAcquisitionInterval->value();
     mDistanceThreshold = QgsGpsLogger::settingsDistanceThreshold->value();
     mApplyLeapSettings = QgsGpsLogger::settingsApplyLeapSeconds->value();

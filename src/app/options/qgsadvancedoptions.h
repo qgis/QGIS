@@ -18,6 +18,7 @@
 #include "ui_qgsadvancedsettingswidget.h"
 #include "qgsoptionswidgetfactory.h"
 #include "qgssettings.h"
+#include "qgssettingstreewidget.h"
 
 /**
  * \ingroup app

@@ -20,7 +20,6 @@
 
 #include "qgscoordinatetransform.h"
 #include "qgis_app.h"
-#include "qgssettingsentryimpl.h"
 #include "qgsgpslogger.h"
 #include "qgsmaplayeraction.h"
 #include "qgsattributes.h"
@@ -31,6 +30,7 @@ class QgsRubberBand;
 class QgsPoint;
 class QgsGpsInformation;
 class QgsVectorLayer;
+class QgsSettingsEntryString;
 
 class QgsAppGpsDigitizing;
 

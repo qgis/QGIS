@@ -17,13 +17,15 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgssettingsentryimpl.h"
 #include <QObject>
 #include <QUrl>
 #include <QPixmap>
 #include <QDateTime>
 
 class QgsNetworkContentFetcher;
+class QgsSettingsEntryInteger64;
+class QgsSettingsEntryString;
+class QgsSettingsEntryDouble;
 
 /**
  * \ingroup core

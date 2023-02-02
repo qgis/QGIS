@@ -17,7 +17,8 @@
 
 #include "qgslocator.h"
 #include "qgsmessagelog.h"
-#include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
+
 #include <QtConcurrent>
 #include <functional>
 

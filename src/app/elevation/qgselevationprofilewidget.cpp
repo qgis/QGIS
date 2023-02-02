@@ -48,6 +48,9 @@
 #include "qgsshortcutsmanager.h"
 #include "qgselevationprofiletoolidentify.h"
 #include "qgselevationprofiletoolmeasure.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
+
 
 #include <QToolBar>
 #include <QProgressBar>

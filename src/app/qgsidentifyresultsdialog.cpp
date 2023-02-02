@@ -90,6 +90,8 @@
 #include "qgspointcloudlayer.h"
 #include "qgscolorrampimpl.h"
 #include "qgsmaplayeraction.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
 #include <nlohmann/json.hpp>
 

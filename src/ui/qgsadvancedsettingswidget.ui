@@ -68,7 +68,7 @@
   <customwidget>
    <class>QgsSettingsTreeWidget</class>
    <extends>QWidget</extends>
-   <header>qgssettingstree.h</header>
+   <header>qgssettingstreewidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

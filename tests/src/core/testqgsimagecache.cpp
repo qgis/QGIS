@@ -27,6 +27,7 @@
 #include "qgsimagecache.h"
 #include "qgsapplication.h"
 #include "qgsrenderchecker.h"
+#include "qgssettings.h"
 
 /**
  * \ingroup UnitTests

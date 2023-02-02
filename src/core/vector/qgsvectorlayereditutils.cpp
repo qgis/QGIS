@@ -20,7 +20,6 @@
 #include "qgslinestring.h"
 #include "qgslogger.h"
 #include "qgspoint.h"
-#include "qgsgeometryfactory.h"
 #include "qgis.h"
 #include "qgswkbtypes.h"
 #include "qgsvectorlayerutils.h"
@@ -28,6 +27,7 @@
 #include "qgsgeometryoptions.h"
 #include "qgsabstractgeometry.h"
 #include "qgssettingsregistrycore.h"
+#include "qgssettingsentryimpl.h"
 
 #include <limits>
 

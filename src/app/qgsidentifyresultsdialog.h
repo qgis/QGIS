@@ -28,7 +28,6 @@
 #include "qgswebview.h"
 #include "qgsexpressioncontext.h"
 #include "qgsmaptoolselectionhandler.h"
-#include "qgssettingsentryimpl.h"
 
 #include <QWidget>
 #include <QList>
@@ -51,6 +50,7 @@ class QgsMeshLayer;
 class QgsDockWidget;
 class QgsMapLayerAction;
 class QgsEditorWidgetSetup;
+class QgsSettingsEntryBool;
 
 class QwtPlotCurve;
 

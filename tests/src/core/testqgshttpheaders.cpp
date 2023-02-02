@@ -22,7 +22,7 @@
 //header for class being tested
 #include <qgshttpheaders.h>
 #include <qgspoint.h>
-#include "qgslogger.h"
+#include "qgssettings.h"
 #include "qgsowsconnection.h"
 #include <QNetworkRequest>
 #include <QUrlQuery>

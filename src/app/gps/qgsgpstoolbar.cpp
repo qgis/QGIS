@@ -30,6 +30,7 @@
 #include "qgsunittypes.h"
 #include "qgsgpsinformation.h"
 #include "qgssettingsentryenumflag.h"
+#include "qgssettingstree.h"
 
 #include <QLabel>
 #include <QToolButton>

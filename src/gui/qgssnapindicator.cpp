@@ -20,6 +20,7 @@
 #include "qgssettingsregistrycore.h"
 #include "qgsvectorlayer.h"
 #include "qgsvertexmarker.h"
+#include "qgssettingsentryimpl.h"
 
 #include <QToolTip>
 

@@ -19,6 +19,7 @@
 
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsentryenumflag.h"
+#include "qgssettings.h"
 
 #include "qgsbabelformatregistry.h"
 #include "qgslayout.h"

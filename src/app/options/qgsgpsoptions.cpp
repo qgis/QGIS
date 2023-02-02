@@ -24,6 +24,8 @@
 #include "qgsgpscanvasbridge.h"
 #include "qgsappgpsdigitizing.h"
 #include "qgslinesymbol.h"
+#include "qgssettingsentryenumflag.h"
+
 
 #include <QTimeZone>
 

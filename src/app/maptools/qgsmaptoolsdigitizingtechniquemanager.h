@@ -21,14 +21,13 @@
 #include "qgis_app.h"
 #include "qgsmaptoolcapture.h"
 #include "qgsmaptoolshapeabstract.h"
-#include "qgssettings.h"
+#include "qgssettingstree.h"
 
 #include <QWidgetAction>
 
 class QgsSpinBox;
 class QgsSettingsEntryString;
-template<class T>
-class QgsSettingsEntryEnumFlag;
+template<class T> class QgsSettingsEntryEnumFlag;
 
 class QAction;
 class QToolButton;
@@ -52,7 +51,6 @@ class APP_EXPORT QgsMapToolsDigitizingTechniqueManager : public QObject
     Q_OBJECT
   public:
     static const QgsSettingsEntryEnumFlag<Qgis::CaptureTechnique> *settingsDigitizingTechnique;
-
 
     static inline QgsSettingsTreeNode *sTreeShapeMapTools = QgsSettingsTree::sTreeDigitizing->createChildNode( QStringLiteral( "shape-map-tools" ) );
     static const QgsSettingsEntryString *settingMapToolShapeCurrent;

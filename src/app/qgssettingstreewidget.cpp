@@ -41,18 +41,17 @@
 #include <QHeaderView>
 #include <QEvent>
 
-#include "qgssettingstree.h"
+#include "qgssettingstreewidget.h"
 #include "qgsvariantdelegate.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
-#include "qgssettingsentry.h"
 #include "qgsapplication.h"
 #include "qgsguiutils.h"
 
 #include <QMenu>
 #include <QMessageBox>
 
-QgsSettingsTreeWidget::QgsSettingsTree( QWidget *parent )
+QgsSettingsTreeWidget::QgsSettingsTreeWidget( QWidget *parent )
   : QTreeWidget( parent )
 {
   setItemDelegate( new QgsVariantDelegate( this ) );
@@ -377,7 +376,7 @@ int QgsSettingsTreeWidget::childCount( QTreeWidgetItem *parent )
 }
 
 int QgsSettingsTreeWidget::findChild( QTreeWidgetItem *parent, const QString &text,
-                                int startIndex )
+                                      int startIndex )
 {
   for ( int i = startIndex; i < childCount( parent ); ++i )
   {
@@ -388,7 +387,7 @@ int QgsSettingsTreeWidget::findChild( QTreeWidgetItem *parent, const QString &te
 }
 
 void QgsSettingsTreeWidget::moveItemForward( QTreeWidgetItem *parent, int oldIndex,
-                                       int newIndex )
+    int newIndex )
 {
   for ( int i = 0; i < oldIndex - newIndex; ++i )
     delete childAt( parent, newIndex );

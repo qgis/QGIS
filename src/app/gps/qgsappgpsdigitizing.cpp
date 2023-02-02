@@ -29,6 +29,8 @@
 #include "qgsattributeform.h"
 #include "qgsattributedialog.h"
 #include "qgshighlight.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
 #include <QTimeZone>
 

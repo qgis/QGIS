@@ -20,6 +20,7 @@
 #include "qgsgui.h"
 #include "qgsowsconnection.h"
 #include "fromencodedcomponenthelper.h"
+#include "qgssettingsentryimpl.h"
 
 #include <QMessageBox>
 #include <QUrl>

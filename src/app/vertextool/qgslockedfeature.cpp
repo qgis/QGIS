@@ -30,6 +30,8 @@
 #include "qgsproject.h"
 #include "qgsstatusbar.h"
 #include "qgsmapcanvas.h"
+#include "qgssettingsentryimpl.h"
+
 
 
 QgsLockedFeature::QgsLockedFeature( QgsFeatureId featureId,

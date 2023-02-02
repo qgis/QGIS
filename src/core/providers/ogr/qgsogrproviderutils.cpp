@@ -27,6 +27,7 @@ email                : nyall dot dawson at gmail dot com
 #include "qgsogrdbconnection.h"
 #include "qgsfileutils.h"
 #include "qgsvariantutils.h"
+#include "qgssettings.h"
 
 #include <ogr_srs_api.h>
 #include <cpl_port.h>

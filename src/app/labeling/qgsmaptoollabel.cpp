@@ -33,12 +33,13 @@
 #include "qgsreferencedgeometry.h"
 #include "qgsnewauxiliarylayerdialog.h"
 #include "qgsadvanceddigitizingdockwidget.h"
+#include "qgssettingsentryimpl.h"
+
 
 #include <QMouseEvent>
 
 QgsMapToolLabel::QgsMapToolLabel( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
   : QgsMapToolAdvancedDigitizing( canvas, cadDock )
-
 {
 }
 

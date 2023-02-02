@@ -27,7 +27,7 @@ const QgsSettingsEntryString *QgsOgrDbConnection::settingsOgrConnectionSelected 
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
 
-#include "qgslogger.h"
+#include "qgssettings.h"
 
 QgsOgrDbConnection::QgsOgrDbConnection( const QString &connName, const QString &settingsKey )
   : mConnName( connName )
