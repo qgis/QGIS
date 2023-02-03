@@ -32,6 +32,8 @@
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 
+#include "pal.h"
+
 const QgsSettingsEntryEnumFlag<Qgis::SnappingMode> *QgsSettingsRegistryCore::settingsDigitizingDefaultSnapMode = new QgsSettingsEntryEnumFlag<Qgis::SnappingMode>( QStringLiteral( "default-snap-mode" ), QgsSettingsTree::sTreeDigitizing, Qgis::SnappingMode::AllLayers );
 
 const QgsSettingsEntryEnumFlag<Qgis::SnappingType> *QgsSettingsRegistryCore::settingsDigitizingDefaultSnapType = new QgsSettingsEntryEnumFlag<Qgis::SnappingType>( QStringLiteral( "default-snap-type" ), QgsSettingsTree::sTreeDigitizing, Qgis::SnappingType::Vertex );
@@ -142,6 +144,10 @@ void QgsSettingsRegistryCore::migrateOldSettings()
 
   QgsRasterLayer::settingsRasterDefaultOversampling->copyValueFromKey( QStringLiteral( "Raster/defaultOversampling" ), true );
   QgsRasterLayer::settingsRasterDefaultEarlyResampling->copyValueFromKey( QStringLiteral( "Raster/defaultEarlyResampling" ), true );
+
+  pal::Pal::settingsRenderingLabelCandidatesLimitPoints->copyValueFromKey( QStringLiteral( "core/rendering/label_candidates_limit_points" ), true );
+  pal::Pal::settingsRenderingLabelCandidatesLimitLines->copyValueFromKey( QStringLiteral( "core/rendering/label_candidates_limit_lines" ), true );
+  pal::Pal::settingsRenderingLabelCandidatesLimitPolygons->copyValueFromKey( QStringLiteral( "core/rendering/label_candidates_limit_polygons" ), true );
 
   // digitizing settings - added in 3.30
   {
@@ -345,6 +351,11 @@ void QgsSettingsRegistryCore::backwardCompatibility()
 
   QgsRasterLayer::settingsRasterDefaultOversampling->copyValueToKey( QStringLiteral( "Raster/defaultOversampling" ) );
   QgsRasterLayer::settingsRasterDefaultEarlyResampling->copyValueToKey( QStringLiteral( "Raster/defaultEarlyResampling" ) );
+
+  pal::Pal::settingsRenderingLabelCandidatesLimitPoints->copyValueToKey( QStringLiteral( "core/rendering/label_candidates_limit_points" ) );
+  pal::Pal::settingsRenderingLabelCandidatesLimitLines->copyValueToKey( QStringLiteral( "core/rendering/label_candidates_limit_lines" ) );
+  pal::Pal::settingsRenderingLabelCandidatesLimitPolygons->copyValueToKey( QStringLiteral( "core/rendering/label_candidates_limit_polygons" ) );
+
 
   // digitizing settings - added in 3.30
   {

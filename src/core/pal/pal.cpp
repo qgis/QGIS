@@ -41,20 +41,26 @@
 #include "internalexception.h"
 #include "util.h"
 #include "palrtree.h"
-#include "qgssettings.h"
 #include "qgslabelingengine.h"
 #include "qgsrendercontext.h"
+#include "qgssettingsentryimpl.h"
+
 #include <cfloat>
 #include <list>
 
+
 using namespace pal;
+
+const QgsSettingsEntryInteger *Pal::settingsRenderingLabelCandidatesLimitPoints = new QgsSettingsEntryInteger( QStringLiteral( "label-candidates-limit-points" ), sTreePal, 0 );
+const QgsSettingsEntryInteger *Pal::settingsRenderingLabelCandidatesLimitLines = new QgsSettingsEntryInteger( QStringLiteral( "label-candidates-limit-lines" ), sTreePal, 0 );
+const QgsSettingsEntryInteger *Pal::settingsRenderingLabelCandidatesLimitPolygons = new QgsSettingsEntryInteger( QStringLiteral( "label-candidates-limit-polygons" ), sTreePal, 0 );
+
 
 Pal::Pal()
 {
-  QgsSettings settings;
-  mGlobalCandidatesLimitPoint = settings.value( QStringLiteral( "rendering/label_candidates_limit_points" ), 0, QgsSettings::Core ).toInt();
-  mGlobalCandidatesLimitLine = settings.value( QStringLiteral( "rendering/label_candidates_limit_lines" ), 0, QgsSettings::Core ).toInt();
-  mGlobalCandidatesLimitPolygon = settings.value( QStringLiteral( "rendering/label_candidates_limit_polygons" ), 0, QgsSettings::Core ).toInt();
+  mGlobalCandidatesLimitPoint = Pal::settingsRenderingLabelCandidatesLimitPoints->value();
+  mGlobalCandidatesLimitLine = Pal::settingsRenderingLabelCandidatesLimitLines->value();
+  mGlobalCandidatesLimitPolygon = Pal::settingsRenderingLabelCandidatesLimitPolygons->value();
 }
 
 Pal::~Pal() = default;

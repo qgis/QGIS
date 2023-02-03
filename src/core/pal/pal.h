@@ -36,12 +36,16 @@
 #include "qgis_core.h"
 #include "qgsgeometry.h"
 #include "qgsgeos.h"
+#include "qgssettingstree.h"
+
 #include <QList>
 #include <iostream>
 #include <ctime>
 #include <QMutex>
 #include <QStringList>
 #include <unordered_map>
+
+class QgsSettingsEntryInteger;
 
 // TODO ${MAJOR} ${MINOR} etc instead of 0.2
 
@@ -82,6 +86,11 @@ namespace pal
       friend class Layer;
 
     public:
+      static inline QgsSettingsTreeNode *sTreePal = QgsSettingsTree::sTreeRendering->createChildNode( QStringLiteral( "pal" ) );
+
+      static const QgsSettingsEntryInteger *settingsRenderingLabelCandidatesLimitPoints;
+      static const QgsSettingsEntryInteger *settingsRenderingLabelCandidatesLimitLines;
+      static const QgsSettingsEntryInteger *settingsRenderingLabelCandidatesLimitPolygons;
 
       /**
        * \brief Create an new pal instance
