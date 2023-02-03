@@ -668,6 +668,15 @@ Returns the page the item is currently on, with the first page returning 0.
 .. seealso:: :py:func:`pagePos`
 %End
 
+    int anchorPage() const;
+%Docstring
+Returns the reference page of the item, should be different than :py:func:`page` when using expression to move the object.
+
+.. seealso:: :py:func:`page`
+
+.. versionadded:: 3.30
+%End
+
     QPointF pagePos() const;
 %Docstring
 Returns the item's position (in layout units) relative to the top left corner of its current page.
