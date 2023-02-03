@@ -11,6 +11,7 @@ __author__ = 'Stephane Brunner'
 __date__ = '28/08/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
+import os
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -841,6 +842,179 @@ class TestQgsServerAccessControlWFS(TestQgsServerAccessControl):
             "REQUEST": "GetFeature",
             "TYPENAME": "Hello_Filter",
             "FEATUREID": "Hello_Filter.6"
+        }.items())])
+
+        response, headers = self._get_fullaccess(query_string)
+        # The feature with `pk = 6` is in the response
+        self.assertTrue(
+            str(response).find("<qgs:pk>6</qgs:pk>") != -1,
+            "No result in GetFeature\n%s" % response)
+        # The feature with `pk = 1` is not in the response
+        self.assertFalse(
+            str(response).find("<qgs:pk>1</qgs:pk>") != -1,
+            "Unexpected result in GetFeature\n%s" % response)
+        # The feature with `pk = 7` is not in the response
+        self.assertFalse(
+            str(response).find("<qgs:pk>7</qgs:pk>") != -1,
+            "Unexpected result in GetFeature\n%s" % response)
+
+        response, headers = self._get_restricted(query_string)
+        # The feature with `pk = 6` is in the response
+        self.assertTrue(
+            str(response).find("<qgs:pk>6</qgs:pk>") != -1,
+            "No result in GetFeature\n%s" % response)
+        # The feature with `pk = 1` is not in the response
+        self.assertFalse(
+            str(response).find("<qgs:pk>1</qgs:pk>") != -1,
+            "Unexpected result in GetFeature\n%s" % response)
+        # The feature with `pk = 7` is not in the response
+        self.assertFalse(
+            str(response).find("<qgs:pk>7</qgs:pk>") != -1,
+            "Unexpected result in GetFeature\n%s" % response)
+
+    # # ESRI Shapefile datasource # #
+
+    def test_wfs_getfeature_shp_featureid_hello(self):
+        """Tests WFS GetFeature Request on 'Hello' with FeatureId `Hello.1` and access control
+           The datasource is an ESRI Shapefile
+           The restricted access to 'Hello' is the expression `$id = 1`
+           The field 'color' has restricted access
+        """
+        query_string = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(os.path.join(self.tmp_path, 'project_shp.qgs')),
+            "SERVICE": "WFS",
+            "VERSION": "1.0.0",
+            "REQUEST": "GetFeature",
+            "TYPENAME": "Hello",
+            "FEATUREID": "Hello.1"
+        }.items())])
+
+        response, headers = self._get_fullaccess(query_string)
+        # The feature with `pk = 2` is in the response with the field 'color'
+        self.assertTrue(
+            str(response).find("<qgs:pk>2</qgs:pk>") != -1,
+            "No result in GetFeature\n%s" % response)
+        self.assertTrue(
+            str(response).find("<qgs:color>blue</qgs:color>") != -1,  # spellok
+            "No color in result of GetFeature\n%s" % response)
+        # The feature with `pk = 1` is not in the response
+        self.assertFalse(
+            str(response).find("<qgs:pk>1</qgs:pk>") != -1,
+            "Unexpected result in GetFeature\n%s" % response)
+
+        response, headers = self._get_restricted(query_string)
+        # The feature with `pk = 2` is in the response without the field 'color'
+        self.assertTrue(
+            str(response).find("<qgs:pk>2</qgs:pk>") != -1,
+            "No result in GetFeature\n%s" % response)
+        self.assertFalse(
+            str(response).find("<qgs:color>blue</qgs:color>") != -1,  # spellok
+            "Unexpected color in result of GetFeature\n%s" % response)
+        self.assertFalse(
+            str(response).find("<qgs:color>NULL</qgs:color>") != -1,  # spellok
+            "Unexpected color NULL in result of GetFeature\n%s" % response)
+        # The feature with `pk = 1` is still not in the response
+        self.assertFalse(
+            str(response).find("<qgs:pk>1</qgs:pk>") != -1,
+            "Unexpected result in GetFeature\n%s" % response)
+
+    def test_wfs_getfeature_shp_featureid_hello2(self):
+        """Tests WFS GetFeature Request on 'Hello' with FeatureId `Hello.0` and access control
+           The datasource is an ESRI Shapefile
+           The restricted access to 'Hello' is the expression `$id = 1`
+           The field 'color' has restricted access
+        """
+        query_string = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(os.path.join(self.tmp_path, 'project_shp.qgs')),
+            "SERVICE": "WFS",
+            "VERSION": "1.0.0",
+            "REQUEST": "GetFeature",
+            "TYPENAME": "Hello",
+            "FEATUREID": "Hello.0"
+        }.items())])
+
+        response, headers = self._get_fullaccess(query_string)
+        # The feature with `pk = 1` is in the response
+        self.assertTrue(
+            str(response).find("<qgs:pk>1</qgs:pk>") != -1,
+            "No result in GetFeature\n%s" % response)
+        # The feature with `pk = 2` is not in the response
+        self.assertFalse(
+            str(response).find("<qgs:pk>2</qgs:pk>") != -1,
+            "Unexpected result in GetFeature\n%s" % response)
+
+        response, headers = self._get_restricted(query_string)
+        # The feature with `pk = 1` is not in the response
+        self.assertFalse(
+            str(response).find("<qgs:pk>1</qgs:pk>") != -1,
+            "Unexpected result in GetFeature\n%s" % response)
+        # The feature with `pk = 2` is still not in the response
+        self.assertFalse(
+            str(response).find("<qgs:pk>2</qgs:pk>") != -1,
+            "Unexpected result in GetFeature\n%s" % response)
+        # No qgs feature Hello_Filter element
+        self.assertFalse(
+            str(response).find("<qgs:Hello ") != -1,
+            "Unexpected result in GetFeature\n%s" % response)
+
+    def test_wfs_getfeature_shp_featureid_hello_filter(self):
+        """Tests WFS GetFeature Request on 'Hello_Filter' with FeatureId `Hello_Filter.1` and access control
+           The datasource is an ESRI Shapefile
+           The restricted access to 'Hello_Filter is the expression `pkuid = 6 or pkuid = 7`
+        """
+        query_string = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(os.path.join(self.tmp_path, 'project_shp.qgs')),
+            "SERVICE": "WFS",
+            "VERSION": "1.0.0",
+            "REQUEST": "GetFeature",
+            "TYPENAME": "Hello_Filter",
+            "FEATUREID": "Hello_Filter.0"
+        }.items())])
+
+        response, headers = self._get_fullaccess(query_string)
+        # The feature with `pk = 1` is in the response
+        self.assertTrue(
+            str(response).find("<qgs:pk>1</qgs:pk>") != -1,
+            "No result in GetFeature\n%s" % response)
+        # The feature with `pk = 6` is not in the response
+        self.assertFalse(
+            str(response).find("<qgs:pk>6</qgs:pk>") != -1,
+            "Unexpected result in GetFeature\n%s" % response)
+        # The feature with `pk = 7` is not in the response
+        self.assertFalse(
+            str(response).find("<qgs:pk>7</qgs:pk>") != -1,
+            "Unexpected result in GetFeature\n%s" % response)
+
+        response, headers = self._get_restricted(query_string)
+        # The feature with `pk = 1` is not in the response
+        self.assertFalse(
+            str(response).find("<qgs:pk>1</qgs:pk>") != -1,
+            "Unexpected result in GetFeature\n%s" % response)
+        # The feature with `pk = 6` is still not in the response
+        self.assertFalse(
+            str(response).find("<qgs:pk>6</qgs:pk>") != -1,
+            "Unexpected result in GetFeature\n%s" % response)
+        # The feature with `pk = 7` is still not in the response
+        self.assertFalse(
+            str(response).find("<qgs:pk>7</qgs:pk>") != -1,
+            "Unexpected result in GetFeature\n%s" % response)
+        # No qgs feature Hello_Filter element
+        self.assertFalse(
+            str(response).find("<qgs:Hello_Filter ") != -1,
+            "Unexpected result in GetFeature\n%s" % response)
+
+    def test_wfs_getfeature_shp_featureid_hello_filter2(self):
+        """Tests WFS GetFeature Request on 'Hello_Filter' with FeatureId `Hello_Filter.5` and access control
+           The datasource is an ESRI Shapefile
+           The restricted access to 'Hello_Filter is the expression `pkuid = 6 or pkuid = 7`
+        """
+        query_string = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(os.path.join(self.tmp_path, 'project_shp.qgs')),
+            "SERVICE": "WFS",
+            "VERSION": "1.0.0",
+            "REQUEST": "GetFeature",
+            "TYPENAME": "Hello_Filter",
+            "FEATUREID": "Hello_Filter.5"
         }.items())])
 
         response, headers = self._get_fullaccess(query_string)
