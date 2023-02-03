@@ -340,10 +340,28 @@ namespace QgsWfs
 
       // subset of attributes
       featureRequest.setSubsetOfAttributes( attrIndexes );
+      // Access control expression could not be combined with feature ids filter
+      // This request will store the access control expression if the feature request
+      // filter type is feature ids
+      QgsFeatureRequest accessControlRequest;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
       if ( accessControl )
       {
-        accessControl->filterFeatures( vlayer, featureRequest );
+        // Access control expression could not be combined with feature ids filter
+        if ( featureRequest.filterType() == QgsFeatureRequest::FilterFid || featureRequest.filterType() == QgsFeatureRequest::FilterFids )
+        {
+          // expression context for access control filter
+          QgsExpressionContext accessControlContext;
+          accessControlContext << QgsExpressionContextUtils::globalScope()
+                               << QgsExpressionContextUtils::projectScope( project )
+                               << QgsExpressionContextUtils::layerScope( vlayer );
+          accessControlRequest.setExpressionContext( accessControlContext );
+          accessControl->filterFeatures( vlayer, accessControlRequest );
+        }
+        else
+        {
+          accessControl->filterFeatures( vlayer, featureRequest );
+        }
 
         QStringList attributes = QStringList();
         for ( int idx : std::as_const( attrIndexes ) )
@@ -428,6 +446,10 @@ namespace QgsWfs
       {
         while ( fit.nextFeature( feature ) && ( aRequest.maxFeatures == -1 || sentFeatures < aRequest.maxFeatures ) )
         {
+          if ( accessControlRequest.filterType() != QgsFeatureRequest::FilterNone && !accessControlRequest.acceptFeature( feature ) )
+          {
+            continue;
+          }
           if ( iteratedFeatures >= aRequest.startIndex )
           {
             ++sentFeatures;
@@ -457,6 +479,10 @@ namespace QgsWfs
                                         };
         while ( fit.nextFeature( feature ) && ( aRequest.maxFeatures == -1 || sentFeatures < aRequest.maxFeatures ) )
         {
+          if ( accessControlRequest.filterType() != QgsFeatureRequest::FilterNone && !accessControlRequest.acceptFeature( feature ) )
+          {
+            continue;
+          }
           if ( iteratedFeatures == aRequest.startIndex )
             startGetFeature( request, response, project, aRequest.outputFormat, requestPrecision, requestCrs, &requestRect, typeNameList, serverIface->serverSettings() );
 
