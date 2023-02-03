@@ -10,19 +10,20 @@ __date__ = '01/03/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
 import qgis  # NOQA
+
 from qgis.analysis import (
-    QgsVectorWarper,
     QgsGcpPoint,
-    QgsGcpTransformerInterface
+    QgsGcpTransformerInterface,
+    QgsVectorWarper,
 )
 from qgis.core import (
-    QgsVectorLayer,
+    QgsCoordinateReferenceSystem,
     QgsFeature,
+    QgsFeatureStore,
     QgsGeometry,
     QgsPointXY,
-    QgsFeatureStore,
-    QgsCoordinateReferenceSystem,
-    QgsProject
+    QgsProject,
+    QgsVectorLayer,
 )
 from qgis.testing import start_app, unittest
 

@@ -11,11 +11,8 @@ __date__ = '17/08/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import qgis  # NOQA
-
-
 from qgis.PyQt.QtGui import QColor
-
-from qgis.core import (QgsColorRampShader, QgsGradientColorRamp, QgsGradientStop)
+from qgis.core import QgsColorRampShader, QgsGradientColorRamp, QgsGradientStop
 from qgis.testing import unittest
 
 

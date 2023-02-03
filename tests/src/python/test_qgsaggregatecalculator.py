@@ -12,19 +12,19 @@ __date__ = '16/05/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.core import (QgsAggregateCalculator,
-                       QgsVectorLayer,
-                       QgsFeature,
-                       QgsInterval,
-                       QgsExpressionContext,
-                       QgsExpressionContextScope,
-                       QgsGeometry,
-                       QgsFeatureRequest,
-                       NULL
-                       )
-from qgis.PyQt.QtCore import QDateTime, QDate, QTime
-from qgis.testing import unittest, start_app
+from qgis.PyQt.QtCore import QDate, QDateTime, QTime
+from qgis.core import (
+    NULL,
+    QgsAggregateCalculator,
+    QgsExpressionContext,
+    QgsExpressionContextScope,
+    QgsFeature,
+    QgsFeatureRequest,
+    QgsGeometry,
+    QgsInterval,
+    QgsVectorLayer,
+)
+from qgis.testing import start_app, unittest
 
 from utilities import compareWkt
 

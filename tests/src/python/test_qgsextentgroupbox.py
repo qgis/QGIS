@@ -9,14 +9,21 @@ __author__ = 'Nyall Dawson'
 __date__ = '31/05/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
 import os
 
-from qgis.core import QgsRectangle, QgsCoordinateReferenceSystem, QgsVectorLayer, QgsProject, QgsFeature, QgsGeometry
-from qgis.gui import QgsExtentGroupBox
-
+import qgis  # NOQA
 from qgis.PyQt.QtTest import QSignalSpy
+from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsFeature,
+    QgsGeometry,
+    QgsProject,
+    QgsRectangle,
+    QgsVectorLayer,
+)
+from qgis.gui import QgsExtentGroupBox
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()

@@ -18,39 +18,50 @@ import shutil
 import sys
 import tempfile
 import time
+from sqlite3 import OperationalError
 
 import qgis  # NOQA
 from osgeo import gdal, ogr
-from providertestbase import ProviderTestCase
-from qgis.core import (Qgis,
-                       QgsFeature,
-                       QgsCoordinateReferenceSystem,
-                       QgsFeatureRequest,
-                       QgsFeatureSink,
-                       QgsFields,
-                       QgsField,
-                       QgsFieldConstraints,
-                       QgsGeometry,
-                       QgsProviderRegistry,
-                       QgsRectangle,
-                       QgsSettings,
-                       QgsVectorLayer,
-                       QgsVectorLayerExporter,
-                       QgsPointXY,
-                       QgsProject,
-                       QgsWkbTypes,
-                       QgsDataProvider,
-                       QgsVectorDataProvider,
-                       QgsLayerMetadata,
-                       QgsProviderMetadata,
-                       NULL)
-from qgis.PyQt.QtCore import QCoreApplication, QVariant, QDate, QTime, QDateTime, Qt, QTemporaryDir, QFileInfo
+from qgis.PyQt.QtCore import (
+    QCoreApplication,
+    QDate,
+    QDateTime,
+    QFileInfo,
+    Qt,
+    QTemporaryDir,
+    QTime,
+    QVariant,
+)
 from qgis.PyQt.QtXml import QDomDocument
+from qgis.core import (
+    NULL,
+    Qgis,
+    QgsCoordinateReferenceSystem,
+    QgsDataProvider,
+    QgsFeature,
+    QgsFeatureRequest,
+    QgsFeatureSink,
+    QgsField,
+    QgsFieldConstraints,
+    QgsFields,
+    QgsGeometry,
+    QgsLayerMetadata,
+    QgsPointXY,
+    QgsProject,
+    QgsProviderMetadata,
+    QgsProviderRegistry,
+    QgsRectangle,
+    QgsSettings,
+    QgsVectorDataProvider,
+    QgsVectorLayer,
+    QgsVectorLayerExporter,
+    QgsWkbTypes,
+)
 from qgis.testing import start_app, unittest
 from qgis.utils import spatialite_connect
-from utilities import unitTestDataPath
 
-from sqlite3 import OperationalError
+from providertestbase import ProviderTestCase
+from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
 

@@ -13,13 +13,12 @@ __copyright__ = 'Copyright 2022, ItOpen'
 
 import os
 import shutil
-from stylestoragebase import StyleStorageTestBase, StyleStorageTestCaseBase
+
 from qgis.PyQt.QtCore import QTemporaryDir
-from qgis.core import (
-    QgsProviderRegistry,
-    QgsDataSourceUri,
-)
+from qgis.core import QgsDataSourceUri, QgsProviderRegistry
 from qgis.testing import unittest
+
+from stylestoragebase import StyleStorageTestBase, StyleStorageTestCaseBase
 from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()

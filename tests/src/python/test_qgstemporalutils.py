@@ -10,22 +10,19 @@ __date__ = '13/3/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.core import (QgsProject,
-                       QgsTemporalUtils,
-                       QgsRasterLayer,
-                       QgsDateTimeRange,
-                       QgsInterval,
-                       QgsUnitTypes,
-                       QgsRasterLayerTemporalProperties)
-
-from qgis.PyQt.QtCore import (QDate,
-                              QTime,
-                              QDateTime,
-                              Qt)
-
+from qgis.PyQt.QtCore import QDate, QDateTime, Qt, QTime
+from qgis.core import (
+    QgsDateTimeRange,
+    QgsInterval,
+    QgsProject,
+    QgsRasterLayer,
+    QgsRasterLayerTemporalProperties,
+    QgsTemporalUtils,
+    QgsUnitTypes,
+)
 from qgis.testing import start_app, unittest
-from utilities import (unitTestDataPath)
+
+from utilities import unitTestDataPath
 
 app = start_app()
 TEST_DATA_DIR = unitTestDataPath()

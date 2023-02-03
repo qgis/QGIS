@@ -12,7 +12,6 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 import qgis  # NOQA switch sip api
 
 from qgis.gui import QgsSearchWidgetToolButton, QgsSearchWidgetWrapper
-
 from qgis.testing import start_app, unittest
 
 start_app()

@@ -10,27 +10,19 @@ __date__ = '2018-07-05'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
 
+from qgis.PyQt.QtCore import QDate, QDateTime, QTime
 from qgis.core import (
-    QgsVectorLayer,
-    QgsFeatureRequest,
-    QgsFeature,
-    QgsGeometry,
     NULL,
-    QgsVectorLayerSelectedFeatureSource
+    QgsFeature,
+    QgsFeatureRequest,
+    QgsGeometry,
+    QgsVectorLayer,
+    QgsVectorLayerSelectedFeatureSource,
 )
-
-from qgis.PyQt.QtCore import QDateTime, QDate, QTime
-
-from qgis.testing import (
-    start_app,
-    unittest
-)
-
-from utilities import (
-    unitTestDataPath
-)
+from qgis.testing import start_app, unittest
 
 from featuresourcetestbase import FeatureSourceTestCase
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

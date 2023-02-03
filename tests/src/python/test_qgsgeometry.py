@@ -9,53 +9,54 @@ __author__ = 'Tim Sutton'
 __date__ = '20/08/2012'
 __copyright__ = 'Copyright 2012, The QGIS Project'
 
-import os
 import csv
 import math
+import os
 
+from qgis.PyQt.QtCore import QDir, QPointF
+from qgis.PyQt.QtGui import (
+    QBrush,
+    QColor,
+    QImage,
+    QPainter,
+    QPainterPath,
+    QPen,
+    QPolygonF,
+    QTransform,
+)
 from qgis.core import (
-    QgsGeometry,
-    QgsGeometryParameters,
-    QgsVectorLayer,
-    QgsFeature,
-    QgsPointXY,
-    QgsPoint,
+    Qgis,
+    QgsAbstractGeometryTransformer,
+    QgsCircle,
     QgsCircularString,
     QgsCompoundCurve,
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform,
     QgsCurvePolygon,
+    QgsFeature,
+    QgsGeometry,
     QgsGeometryCollection,
+    QgsGeometryParameters,
     QgsLineString,
     QgsMultiCurve,
     QgsMultiLineString,
     QgsMultiPoint,
     QgsMultiPolygon,
     QgsMultiSurface,
+    QgsPoint,
+    QgsPointXY,
     QgsPolygon,
-    QgsCoordinateTransform,
-    QgsRectangle,
-    QgsWkbTypes,
-    QgsTriangle,
-    QgsRenderChecker,
-    QgsCoordinateReferenceSystem,
     QgsProject,
+    QgsRectangle,
+    QgsRenderChecker,
+    QgsTriangle,
+    QgsVectorLayer,
     QgsVertexId,
-    QgsAbstractGeometryTransformer,
-    QgsCircle,
-    Qgis
+    QgsWkbTypes,
 )
-from qgis.PyQt.QtCore import QDir, QPointF, QRectF
-from qgis.PyQt.QtGui import QImage, QPainter, QPen, QColor, QBrush, QPainterPath, QPolygonF, QTransform
+from qgis.testing import start_app, unittest
 
-from qgis.testing import (
-    start_app,
-    unittest,
-)
-
-from utilities import (
-    compareWkt,
-    unitTestDataPath,
-    writeShape
-)
+from utilities import compareWkt, unitTestDataPath, writeShape
 
 # Convenience instances in case you may need them not used in this test
 

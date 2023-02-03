@@ -11,23 +11,22 @@ __author__ = 'Nyall Dawson'
 __date__ = '28/05/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
-import qgis  # NOQA switch sip api
-
-from qgis.core import (QgsVectorLayer,
-                       QgsFeature,
-                       QgsActionManager,
-                       QgsAction,
-                       QgsExpressionContext,
-                       QgsField,
-                       QgsFields
-                       )
-from qgis.PyQt.QtCore import QDir, QTemporaryFile, QUuid
-
-from qgis.testing import start_app, unittest
-
 import os
-import time
 import platform
+import time
+
+import qgis  # NOQA switch sip api
+from qgis.PyQt.QtCore import QDir, QTemporaryFile, QUuid
+from qgis.core import (
+    QgsAction,
+    QgsActionManager,
+    QgsExpressionContext,
+    QgsFeature,
+    QgsField,
+    QgsFields,
+    QgsVectorLayer,
+)
+from qgis.testing import start_app, unittest
 
 start_app()
 

@@ -12,14 +12,8 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import tempfile
-from qgis.core import (
-    QgsVectorLayer,
-    QgsMapLayer,
-    QgsReadWriteContext,
-)
-from qgis.PyQt.QtXml import QDomDocument, QDomNode
-
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.core import QgsMapLayer, QgsReadWriteContext, QgsVectorLayer
 from qgis.testing import unittest
 
 

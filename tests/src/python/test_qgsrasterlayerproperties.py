@@ -10,15 +10,22 @@ __author__ = 'Benjamin Jakimow'
 __date__ = '14/01/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
-import qgis  # NOQA
 import pathlib
 import typing
-from qgis.PyQt.QtWidgets import QWidget
+
+import qgis  # NOQA
 from qgis.PyQt.QtGui import QIcon
-from qgis.gui import QgsMapCanvas, QgsMapLayerConfigWidgetFactory, QgsMapLayerConfigWidget, QgsRasterLayerProperties
+from qgis.PyQt.QtWidgets import QWidget
 from qgis.core import QgsMapLayer, QgsProject, QgsRasterLayer
-from utilities import unitTestDataPath
+from qgis.gui import (
+    QgsMapCanvas,
+    QgsMapLayerConfigWidget,
+    QgsMapLayerConfigWidgetFactory,
+    QgsRasterLayerProperties,
+)
 from qgis.testing import start_app, unittest
+
+from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
 # not used in this test

@@ -9,48 +9,55 @@ __author__ = 'Nyall Dawson'
 __date__ = '11/12/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
-from qgis.PyQt import sip
-import tempfile
-import shutil
 import os
 import subprocess
-from xml.dom import minidom
-from osgeo import gdal
+import tempfile
 
-from qgis.core import (QgsMultiRenderChecker,
-                       QgsLayoutExporter,
-                       QgsLayout,
-                       QgsProject,
-                       QgsMargins,
-                       QgsLayoutItemShape,
-                       QgsLayoutItemLabel,
-                       QgsLayoutGuide,
-                       QgsRectangle,
-                       QgsLayoutItemPage,
-                       QgsLayoutItemMap,
-                       QgsLayoutItemScaleBar,
-                       QgsLayoutPoint,
-                       QgsLayoutMeasurement,
-                       QgsUnitTypes,
-                       QgsSimpleFillSymbolLayer,
-                       QgsFillSymbol,
-                       QgsVectorLayer,
-                       QgsCoordinateReferenceSystem,
-                       QgsPrintLayout,
-                       QgsSingleSymbolRenderer,
-                       QgsRenderContext,
-                       QgsReport,
-                       QgsPalLayerSettings,
-                       QgsFeature,
-                       QgsGeometry,
-                       QgsPointXY,
-                       QgsVectorLayerSimpleLabeling)
-from qgis.PyQt.QtCore import QSize, QSizeF, QDir, QRectF, Qt, QDateTime, QDate, QTime, QTimeZone
+import qgis  # NOQA
+from osgeo import gdal
+from qgis.PyQt.QtCore import (
+    QDate,
+    QDateTime,
+    QDir,
+    QRectF,
+    QSize,
+    Qt,
+    QTime,
+    QTimeZone,
+)
 from qgis.PyQt.QtGui import QImage, QPainter
 from qgis.PyQt.QtPrintSupport import QPrinter
-from qgis.PyQt.QtSvg import QSvgRenderer, QSvgGenerator
-
+from qgis.PyQt.QtSvg import QSvgRenderer
+from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsFeature,
+    QgsFillSymbol,
+    QgsGeometry,
+    QgsLayout,
+    QgsLayoutExporter,
+    QgsLayoutGuide,
+    QgsLayoutItemLabel,
+    QgsLayoutItemMap,
+    QgsLayoutItemPage,
+    QgsLayoutItemScaleBar,
+    QgsLayoutItemShape,
+    QgsLayoutMeasurement,
+    QgsLayoutPoint,
+    QgsMargins,
+    QgsMultiRenderChecker,
+    QgsPalLayerSettings,
+    QgsPointXY,
+    QgsPrintLayout,
+    QgsProject,
+    QgsRectangle,
+    QgsRenderContext,
+    QgsReport,
+    QgsSimpleFillSymbolLayer,
+    QgsSingleSymbolRenderer,
+    QgsUnitTypes,
+    QgsVectorLayer,
+    QgsVectorLayerSimpleLabeling,
+)
 from qgis.testing import start_app, unittest
 
 from utilities import getExecutablePath, unitTestDataPath

@@ -10,15 +10,15 @@ __date__ = '12/11/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import qgis  # NOQA
-
 from qgis.PyQt.QtTest import QSignalSpy
-from qgis.gui import (QgsProjectionSelectionWidget,
-                      QgsProjectionSelectionTreeWidget,
-                      QgsProjectionSelectionDialog)
-from qgis.core import QgsCoordinateReferenceSystem, QgsProject, QgsProjUtils
 from qgis.PyQt.QtWidgets import QComboBox
+from qgis.core import QgsCoordinateReferenceSystem, QgsProject
+from qgis.gui import (
+    QgsProjectionSelectionDialog,
+    QgsProjectionSelectionTreeWidget,
+    QgsProjectionSelectionWidget,
+)
 from qgis.testing import start_app, unittest
-
 
 start_app()
 

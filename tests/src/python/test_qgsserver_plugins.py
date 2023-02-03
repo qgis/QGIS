@@ -15,15 +15,13 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import os
 
-from qgis.server import QgsServer, QgsServiceRegistry, QgsService
-from qgis.core import QgsMessageLog
-from qgis.testing import unittest
-from utilities import unitTestDataPath
-from test_qgsserver import QgsServerTestBase
-
-
 import osgeo.gdal  # NOQA
+from qgis.core import QgsMessageLog
+from qgis.server import QgsServer, QgsService
+from qgis.testing import unittest
 
+from test_qgsserver import QgsServerTestBase
+from utilities import unitTestDataPath
 
 # Strip path and content length because path may vary
 RE_STRIP_UNCHECKABLE = br'MAP=[^"]+|Content-Length: \d+'
@@ -181,8 +179,8 @@ class TestQgsServerPlugins(QgsServerTestBase):
         """ Test plugin can read confif path
         """
         try:
-            from qgis.server import QgsServerFilter
             from qgis.core import QgsProject
+            from qgis.server import QgsServerFilter
         except ImportError:
             print("QGIS Server plugins are not compiled. Skipping test")
             return
@@ -274,8 +272,8 @@ class TestQgsServerPlugins(QgsServerTestBase):
         """ Test streaming pipeline propagation
         """
         try:
-            from qgis.server import QgsServerFilter
             from qgis.core import QgsProject
+            from qgis.server import QgsServerFilter
         except ImportError:
             print("QGIS Server plugins are not compiled. Skipping test")
             return

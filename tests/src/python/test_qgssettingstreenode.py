@@ -9,9 +9,16 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from qgis.core import QgsSettingsException, QgsSettings, QgsSettingsTree, QgsSettingsTreeNode, QgsSettingsEntryString, QgsSettingsEntryEnumFlag, QgsUnitTypes
+from qgis.core import (
+    QgsSettings,
+    QgsSettingsEntryEnumFlag,
+    QgsSettingsEntryString,
+    QgsSettingsException,
+    QgsSettingsTree,
+    QgsSettingsTreeNode,
+    QgsUnitTypes,
+)
 from qgis.testing import start_app, unittest
-
 
 __author__ = 'Denis Rouzaud'
 __date__ = '19/12/2022'

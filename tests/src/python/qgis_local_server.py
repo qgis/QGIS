@@ -10,31 +10,28 @@ __author__ = 'Larry Shaffer'
 __date__ = '2014/02/11'
 __copyright__ = 'Copyright 2014, The QGIS Project'
 
-import sys
 import os
-import shutil
 import platform
+import shutil
 import subprocess
-import time
-import urllib.request
-import urllib.parse
-import urllib.error
-import urllib.request
-import urllib.error
-import urllib.parse
+import sys
 import tempfile
+import time
+import urllib.error
+import urllib.parse
+import urllib.request
 
 from utilities import (
-    unitTestDataPath,
     getExecutablePath,
+    getTempfilePath,
     openInBrowserTab,
-    getTempfilePath
+    unitTestDataPath,
 )
 
 # allow import error to be raised if qgis is not on sys.path
 try:
     # noinspection PyUnresolvedReferences
-    from qgis.core import QgsRectangle, QgsCoordinateReferenceSystem
+    from qgis.core import QgsCoordinateReferenceSystem, QgsRectangle
 except ImportError as e:
     raise ImportError(str(e) + '\n\nPlace path to pyqgis modules on sys.path,'
                                ' or assign to PYTHONPATH')

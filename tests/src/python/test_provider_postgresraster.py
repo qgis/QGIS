@@ -18,25 +18,22 @@ __author__ = 'Alessandro Pasotti'
 __date__ = '2019-12-20'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
-import qgis  # NOQA
 import os
 import time
 
+import qgis  # NOQA
 from qgis.core import (
-    QgsSettings,
-    QgsReadWriteContext,
-    QgsRectangle,
-    QgsCoordinateReferenceSystem,
-    QgsProject,
-    QgsRasterLayer,
-    QgsPointXY,
-    QgsRaster,
-    QgsProviderRegistry,
-    QgsRasterBandStats,
     QgsDataSourceUri,
+    QgsPointXY,
+    QgsProviderRegistry,
+    QgsRaster,
+    QgsRasterBandStats,
+    QgsRasterLayer,
+    QgsRectangle,
 )
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath, compareWkt
+
+from utilities import compareWkt, unitTestDataPath
 
 QGISAPP = start_app()
 TEST_DATA_DIR = unitTestDataPath()

@@ -11,13 +11,15 @@ __copyright__ = 'Copyright 2018, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.core import (QgsApplication,
-                       QgsAbstractValidityCheck,
-                       QgsValidityCheckRegistry,
-                       QgsValidityCheckResult,
-                       QgsValidityCheckContext,
-                       QgsFeedback,
-                       check)
+from qgis.core import (
+    QgsAbstractValidityCheck,
+    QgsApplication,
+    QgsFeedback,
+    QgsValidityCheckContext,
+    QgsValidityCheckRegistry,
+    QgsValidityCheckResult,
+    check,
+)
 from qgis.testing import start_app, unittest
 
 app = start_app()

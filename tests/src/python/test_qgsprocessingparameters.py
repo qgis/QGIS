@@ -9,16 +9,15 @@ __author__ = 'David Marteau'
 __date__ = '2020-09'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-from qgis.PyQt.QtCore import QCoreApplication
-
 from processing.core.Processing import Processing
-from qgis.testing import start_app, unittest
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (
     QgsApplication,
-    QgsSettings,
     QgsProcessingParameterGeometry,
+    QgsSettings,
     QgsWkbTypes,
 )
+from qgis.testing import start_app, unittest
 
 start_app()
 

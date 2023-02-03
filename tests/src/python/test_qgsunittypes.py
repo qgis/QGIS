@@ -10,10 +10,9 @@ __date__ = '03.02.2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.testing import unittest
-from qgis.core import QgsUnitTypes
 from qgis.PyQt.QtCore import QLocale
+from qgis.core import QgsUnitTypes
+from qgis.testing import unittest
 
 
 class TestQgsUnitTypes(unittest.TestCase):

@@ -10,14 +10,17 @@ __author__ = 'Julien Cabieces'
 __date__ = '22/03/2021'
 __copyright__ = 'Copyright 2021, The QGIS Project'
 
-import qgis  # NOQA
-
-from qgis.core import (QgsVectorLayer,
-                       QgsCoordinateReferenceSystem,
-                       QgsVectorFileWriter)
-from qgis.PyQt.QtCore import QVariant, QDir
 import os
+
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QDir, QVariant
+from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsVectorFileWriter,
+    QgsVectorLayer,
+)
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()

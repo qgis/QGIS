@@ -13,32 +13,22 @@ import os
 
 import qgis  # NOQA
 from qgis.PyQt.QtCore import QDir
-from qgis.core import (
-    QgsRasterLayer,
-    QgsLineString,
-    QgsProfileRequest,
-    QgsCoordinateReferenceSystem,
-    QgsVectorLayer,
-    Qgis,
-    QgsRasterDemTerrainProvider,
-    QgsFeature,
-    QgsGeometry,
-    QgsCoordinateTransformContext,
-    QgsProjUtils,
-    QgsProfilePlotRenderer,
-    QgsFillSymbol,
-    QgsRenderChecker,
-    QgsCategorizedSymbolRenderer,
-    QgsProfilePoint,
-    QgsProfileSnapContext,
-    QgsProfileIdentifyContext,
-    QgsDoubleRange,
-    QgsProfileGenerationContext,
-    QgsUnitTypes,
-    QgsPointCloudLayer,
-    QgsProviderRegistry
-)
 from qgis.PyQt.QtGui import QColor
+from qgis.core import (
+    Qgis,
+    QgsDoubleRange,
+    QgsLineString,
+    QgsPointCloudLayer,
+    QgsProfileGenerationContext,
+    QgsProfileIdentifyContext,
+    QgsProfilePlotRenderer,
+    QgsProfilePoint,
+    QgsProfileRequest,
+    QgsProfileSnapContext,
+    QgsProviderRegistry,
+    QgsRenderChecker,
+    QgsUnitTypes,
+)
 from qgis.testing import start_app, unittest
 
 from utilities import unitTestDataPath

@@ -9,21 +9,21 @@ __author__ = 'Denis Rouzaud'
 __date__ = '3/09/2019'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
-import qgis  # NOQA
 import random
 
+import qgis  # NOQA
 from qgis.PyQt.QtCore import QLocale
-from qgis.testing import unittest, start_app
 from qgis.core import (
-    QgsClassificationMethod,
-    QgsClassificationLogarithmic,
-    QgsClassificationJenks,
     QgsClassificationFixedInterval,
+    QgsClassificationJenks,
+    QgsClassificationLogarithmic,
+    QgsClassificationMethod,
     QgsFeature,
-    QgsVectorLayer,
+    QgsGeometry,
     QgsPointXY,
-    QgsGeometry
+    QgsVectorLayer,
 )
+from qgis.testing import start_app, unittest
 
 start_app()
 

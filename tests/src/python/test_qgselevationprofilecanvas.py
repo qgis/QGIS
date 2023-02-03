@@ -10,33 +10,16 @@ __date__ = '28/3/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.PyQt.QtCore import (
-    QDir,
-    QEvent,
-    Qt,
-    QPoint,
-    QPointF
-)
-from qgis.PyQt.QtGui import (
-    QKeyEvent,
-    QMouseEvent,
-    QWheelEvent
-)
-
+from qgis.PyQt.QtCore import QDir, QEvent, QPoint, QPointF, Qt
+from qgis.PyQt.QtGui import QKeyEvent, QMouseEvent, QWheelEvent
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsLineString,
     QgsPoint,
     QgsPointXY,
-    QgsProject
+    QgsProject,
 )
-from qgis.gui import (
-    QgsElevationProfileCanvas,
-    QgsPlotTool,
-    QgsPlotMouseEvent
-)
-
+from qgis.gui import QgsElevationProfileCanvas, QgsPlotMouseEvent, QgsPlotTool
 from qgis.testing import start_app, unittest
 
 app = start_app()

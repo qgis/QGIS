@@ -12,27 +12,17 @@ __author__ = "Julien Cabieces"
 __date__ = "31/03/2021"
 __copyright__ = "Copyright 2021, The QGIS Project"
 
-from shutil import rmtree
 import os
 import tempfile
-import time
 
-from utilities import unitTestDataPath, waitServer
-
-from qgis.PyQt.QtCore import QCoreApplication, QEventLoop, QUrl, QTimer
+from qgis.PyQt.QtCore import QCoreApplication, QEventLoop, QTimer
 from qgis.PyQt.QtTest import QSignalSpy
-
 from qgis.core import (
     Qgis,
     QgsApplication,
     QgsAuthMethodConfig,
-    QgsExternalStorageFetchedContent,
 )
-
-from qgis.testing import (
-    start_app,
-    unittest,
-)
+from qgis.testing import start_app
 
 
 class TestPyQgsExternalStorageBase:

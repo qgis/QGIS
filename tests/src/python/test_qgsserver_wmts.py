@@ -19,19 +19,15 @@ import os
 os.environ['QT_HASH_SEED'] = '1'
 
 import re
-import urllib.request
-import urllib.parse
 import urllib.error
-
-from qgis.server import QgsServerRequest
-
-from qgis.testing import unittest
-from qgis.PyQt.QtCore import QSize
+import urllib.parse
+import urllib.request
 
 import osgeo.gdal  # NOQA
 
-from test_qgsserver import QgsServerTestBase
 from qgis.core import QgsProject
+from qgis.testing import unittest
+from test_qgsserver import QgsServerTestBase
 
 # Strip path and content length because path may vary
 RE_STRIP_UNCHECKABLE = br'MAP=[^"]+|Content-Length: \d+|timeStamp="[^"]+"'

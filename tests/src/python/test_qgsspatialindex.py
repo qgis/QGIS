@@ -11,12 +11,13 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.core import (QgsSpatialIndex,
-                       QgsFeature,
-                       QgsGeometry,
-                       QgsRectangle,
-                       QgsPointXY)
-
+from qgis.core import (
+    QgsFeature,
+    QgsGeometry,
+    QgsPointXY,
+    QgsRectangle,
+    QgsSpatialIndex,
+)
 from qgis.testing import start_app, unittest
 
 start_app()

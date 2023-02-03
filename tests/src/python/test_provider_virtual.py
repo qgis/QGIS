@@ -9,32 +9,30 @@ __author__ = 'Hugo Mercier'
 __date__ = '26/11/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-import qgis  # NOQA
 import os
+import tempfile
 
-from qgis.core import (QgsVectorLayer,
-                       QgsField,
-                       QgsFeature,
-                       QgsFeatureRequest,
-                       QgsGeometry,
-                       QgsRectangle,
-                       QgsVirtualLayerDefinition,
-                       QgsWkbTypes,
-                       QgsProject,
-                       QgsVectorLayerJoinInfo,
-                       QgsVectorFileWriter,
-                       QgsVirtualLayerDefinitionUtils
-                       )
-
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QTemporaryDir, QUrl, QVariant
+from qgis.core import (
+    QgsFeature,
+    QgsFeatureRequest,
+    QgsField,
+    QgsGeometry,
+    QgsProject,
+    QgsRectangle,
+    QgsVectorFileWriter,
+    QgsVectorLayer,
+    QgsVectorLayerJoinInfo,
+    QgsVirtualLayerDefinition,
+    QgsVirtualLayerDefinitionUtils,
+    QgsWkbTypes,
+)
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
-
-from providertestbase import ProviderTestCase
-from qgis.PyQt.QtCore import QUrl, QVariant, QTemporaryDir
-
 from qgis.utils import spatialite_connect
 
-import tempfile
+from providertestbase import ProviderTestCase
+from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
 start_app()

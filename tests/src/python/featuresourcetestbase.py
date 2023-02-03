@@ -11,21 +11,17 @@ __author__ = 'Nyall Dawson'
 __date__ = '2017-05-25'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
+from qgis.PyQt.QtCore import QDate, QDateTime, Qt, QTime
 from qgis.core import (
-    QgsRectangle,
-    QgsFeatureRequest,
-    QgsFeature,
-    QgsWkbTypes,
-    QgsProject,
-    QgsGeometry,
-    QgsAbstractFeatureIterator,
-    QgsExpressionContextScope,
-    QgsExpressionContext,
-    QgsVectorLayerFeatureSource,
+    NULL,
     QgsCoordinateReferenceSystem,
-    NULL
+    QgsFeature,
+    QgsFeatureRequest,
+    QgsGeometry,
+    QgsProject,
+    QgsRectangle,
+    QgsWkbTypes,
 )
-from qgis.PyQt.QtCore import Qt, QDate, QTime, QDateTime
 
 from utilities import compareWkt
 

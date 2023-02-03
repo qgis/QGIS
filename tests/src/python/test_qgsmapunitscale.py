@@ -10,9 +10,14 @@ __date__ = '2015-09'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.core import (QgsMapUnitScale, QgsRenderContext, QgsSymbolLayerUtils, QgsMapSettings, QgsRectangle)
 from qgis.PyQt.QtCore import QSize
+from qgis.core import (
+    QgsMapSettings,
+    QgsMapUnitScale,
+    QgsRectangle,
+    QgsRenderContext,
+    QgsSymbolLayerUtils,
+)
 from qgis.testing import unittest
 
 

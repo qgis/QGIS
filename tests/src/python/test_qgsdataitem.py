@@ -11,9 +11,11 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 
 
 import os
+
 from qgis.core import QgsDataCollectionItem, QgsDirectoryItem
-from utilities import unitTestDataPath
 from qgis.testing import start_app, unittest
+
+from utilities import unitTestDataPath
 
 app = start_app()
 

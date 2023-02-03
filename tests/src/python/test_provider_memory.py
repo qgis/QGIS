@@ -11,36 +11,30 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 
 from urllib.parse import parse_qs
 
-from qgis.PyQt.QtCore import QVariant, QByteArray, QDate, QDateTime, QTime
+from qgis.PyQt.QtCore import QByteArray, QDate, QDateTime, QTime, QVariant
 from qgis.core import (
+    NULL,
+    QgsCoordinateReferenceSystem,
+    QgsFeature,
+    QgsFeatureRequest,
+    QgsFeatureSink,
+    QgsFeatureSource,
     QgsField,
     QgsFields,
+    QgsGeometry,
     QgsLayerDefinition,
+    QgsMemoryProviderUtils,
     QgsPointXY,
     QgsReadWriteContext,
-    QgsVectorLayer,
-    QgsFeatureRequest,
-    QgsFeature,
-    QgsGeometry,
-    QgsWkbTypes,
-    NULL,
-    QgsMemoryProviderUtils,
-    QgsCoordinateReferenceSystem,
     QgsRectangle,
     QgsTestUtils,
-    QgsFeatureSource,
-    QgsFeatureSink,
+    QgsVectorLayer,
+    QgsWkbTypes,
 )
-from qgis.testing import (
-    start_app,
-    unittest
-)
+from qgis.testing import start_app, unittest
 
 from providertestbase import ProviderTestCase
-from utilities import (
-    unitTestDataPath,
-    compareWkt
-)
+from utilities import compareWkt, unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

@@ -9,14 +9,12 @@ __author__ = 'Nyall Dawson'
 __date__ = '2019-09-25'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
-from qgis.core import (QgsConditionalStyle,
-                       QgsMarkerSymbol)
-from qgis.gui import QgsEditConditionalFormatRuleWidget
-from qgis.testing import (start_app,
-                          unittest,
-                          )
-from utilities import unitTestDataPath, getTestFont
 from qgis.PyQt.QtGui import QColor
+from qgis.core import QgsConditionalStyle, QgsMarkerSymbol
+from qgis.gui import QgsEditConditionalFormatRuleWidget
+from qgis.testing import start_app, unittest
+
+from utilities import getTestFont, unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

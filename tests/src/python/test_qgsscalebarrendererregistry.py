@@ -11,8 +11,7 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.core import (QgsScaleBarRendererRegistry,
-                       QgsScaleBarRenderer)
+from qgis.core import QgsScaleBarRenderer, QgsScaleBarRendererRegistry
 from qgis.testing import start_app, unittest
 
 start_app()

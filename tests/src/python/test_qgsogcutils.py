@@ -14,11 +14,9 @@ __date__ = '21/06/2019'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
 import qgis  # NOQA switch sip api
-
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtXml import QDomDocument
-from qgis.core import QgsOgcUtils, QgsVectorLayer, QgsField
-
+from qgis.core import QgsField, QgsOgcUtils, QgsVectorLayer
 from qgis.testing import start_app, unittest
 
 start_app()

@@ -12,26 +12,14 @@ __author__ = "Jacky Volpes"
 __date__ = "20/12/2022"
 __copyright__ = "Copyright 2022, The QGIS Project"
 
-from shutil import rmtree
 import os
-import tempfile
-import time
-
-from utilities import unitTestDataPath, waitServer
-from test_qgsexternalstorage_base import TestPyQgsExternalStorageBase
-
-from qgis.PyQt.QtCore import QCoreApplication, QEventLoop, QUrl
 
 from qgis.core import (
-    QgsApplication,
     QgsAuthMethodConfig,
-    QgsExternalStorageFetchedContent,
 )
+from qgis.testing import unittest
 
-from qgis.testing import (
-    start_app,
-    unittest,
-)
+from test_qgsexternalstorage_base import TestPyQgsExternalStorageBase
 
 
 class TestPyQgsExternalStorageAwsS3(TestPyQgsExternalStorageBase, unittest.TestCase):

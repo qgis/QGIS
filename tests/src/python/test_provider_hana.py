@@ -17,15 +17,14 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 
 import os
 
-from providertestbase import ProviderTestCase
-from PyQt5.QtCore import QVariant, QDate, QTime, QDateTime, QByteArray
+from PyQt5.QtCore import QByteArray, QDate, QDateTime, QTime, QVariant
 from qgis.core import (
     NULL,
     QgsCoordinateReferenceSystem,
     QgsDataProvider,
     QgsDataSourceUri,
-    QgsFeatureRequest,
     QgsFeature,
+    QgsFeatureRequest,
     QgsField,
     QgsFieldConstraints,
     QgsGeometry,
@@ -36,8 +35,11 @@ from qgis.core import (
     QgsVectorDataProvider,
     QgsVectorLayer,
     QgsVectorLayerExporter,
-    QgsWkbTypes)
+    QgsWkbTypes,
+)
 from qgis.testing import start_app, unittest
+
+from providertestbase import ProviderTestCase
 from test_hana_utils import QgsHanaProviderUtils
 from utilities import unitTestDataPath
 

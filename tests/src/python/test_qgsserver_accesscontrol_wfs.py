@@ -11,11 +11,13 @@ __author__ = 'Stephane Brunner'
 __date__ = '28/08/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-from qgis.testing import unittest
-import urllib.request
-import urllib.parse
 import urllib.error
-from test_qgsserver_accesscontrol import TestQgsServerAccessControl, XML_NS
+import urllib.parse
+import urllib.request
+
+from qgis.testing import unittest
+
+from test_qgsserver_accesscontrol import XML_NS, TestQgsServerAccessControl
 
 
 class TestQgsServerAccessControlWFS(TestQgsServerAccessControl):

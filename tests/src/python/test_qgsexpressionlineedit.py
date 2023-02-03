@@ -17,8 +17,8 @@ try:
 except:
     use_signal_spy = False
 
-from qgis.testing import start_app, unittest
 from qgis.gui import QgsExpressionLineEdit
+from qgis.testing import start_app, unittest
 
 start_app()
 

@@ -27,27 +27,28 @@ import os
 from qgis.PyQt.QtCore import QSize
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtXml import QDomDocument
-
-from qgis.core import (QgsVectorLayer,
-                       QgsProject,
-                       QgsRectangle,
-                       QgsMultiRenderChecker,
-                       QgsPointClusterRenderer,
-                       QgsUnitTypes,
-                       QgsMapUnitScale,
-                       QgsMarkerSymbol,
-                       QgsSingleSymbolRenderer,
-                       QgsReadWriteContext,
-                       QgsPointDisplacementRenderer,
-                       QgsMapSettings,
-                       QgsProperty,
-                       QgsSymbolLayer,
-                       QgsRenderContext,
-                       QgsFeature,
-                       QgsGeometry
-                       )
+from qgis.core import (
+    QgsFeature,
+    QgsGeometry,
+    QgsMapSettings,
+    QgsMapUnitScale,
+    QgsMarkerSymbol,
+    QgsMultiRenderChecker,
+    QgsPointClusterRenderer,
+    QgsPointDisplacementRenderer,
+    QgsProject,
+    QgsProperty,
+    QgsReadWriteContext,
+    QgsRectangle,
+    QgsRenderContext,
+    QgsSingleSymbolRenderer,
+    QgsSymbolLayer,
+    QgsUnitTypes,
+    QgsVectorLayer,
+)
 from qgis.testing import start_app, unittest
-from utilities import (unitTestDataPath)
+
+from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
 # not used in this test

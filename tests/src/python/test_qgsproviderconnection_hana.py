@@ -13,13 +13,15 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import os
+
 from qgis.core import (
     QgsAbstractDatabaseProviderConnection,
-    QgsDataSourceUri,
-    QgsProviderRegistry)
+    QgsProviderRegistry,
+)
 from qgis.testing import unittest
-from test_qgsproviderconnection_base import TestPyQgsProviderConnectionBase
+
 from test_hana_utils import QgsHanaProviderUtils
+from test_qgsproviderconnection_base import TestPyQgsProviderConnectionBase
 
 
 class TestPyQgsProviderConnectionHana(unittest.TestCase, TestPyQgsProviderConnectionBase):

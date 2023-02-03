@@ -10,24 +10,25 @@ __date__ = '10/09/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.core import (QgsSymbol,
-                       QgsFillSymbol,
-                       QgsMarkerSymbol,
-                       QgsLineSymbol,
-                       QgsLimitedRandomColorRamp,
-                       QgsStyleModel,
-                       QgsStyle,
-                       QgsStyleProxyModel,
-                       QgsTextFormat,
-                       QgsPalLayerSettings,
-                       QgsWkbTypes,
-                       QgsLegendPatchShape,
-                       QgsGeometry,
-                       QgsAbstract3DSymbol)
-from qgis.testing import start_app, unittest
-from qgis.PyQt.QtCore import Qt, QSize, QModelIndex
+from qgis.PyQt.QtCore import QModelIndex, QSize, Qt
 from qgis.PyQt.QtGui import QColor
+from qgis.core import (
+    QgsAbstract3DSymbol,
+    QgsFillSymbol,
+    QgsGeometry,
+    QgsLegendPatchShape,
+    QgsLimitedRandomColorRamp,
+    QgsLineSymbol,
+    QgsMarkerSymbol,
+    QgsPalLayerSettings,
+    QgsStyle,
+    QgsStyleModel,
+    QgsStyleProxyModel,
+    QgsSymbol,
+    QgsTextFormat,
+    QgsWkbTypes,
+)
+from qgis.testing import start_app, unittest
 
 start_app()
 

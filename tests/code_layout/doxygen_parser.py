@@ -19,9 +19,9 @@ __author__ = 'Denis Rouzaud'
 __date__ = 'May 2017'
 __copyright__ = '(C) 2017, Denis Rouzaud'
 
-import re
 import glob
 import os
+import re
 
 try:
     import xml.etree.ElementTree as ET

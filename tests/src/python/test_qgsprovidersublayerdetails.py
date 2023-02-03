@@ -9,19 +9,19 @@ __author__ = 'Nyall Dawson'
 __date__ = '16/03/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
 import os
 
+import qgis  # NOQA
 from qgis.core import (
-    QgsProviderRegistry,
-    QgsMapLayerType,
-    QgsWkbTypes,
-    QgsProviderSublayerDetails,
     Qgis,
     QgsCoordinateTransformContext,
-    QgsVectorLayer
+    QgsMapLayerType,
+    QgsProviderSublayerDetails,
+    QgsVectorLayer,
+    QgsWkbTypes,
 )
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them

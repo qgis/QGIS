@@ -9,32 +9,26 @@ __author__ = 'Luigi Pirelli'
 __date__ = '2017-11-02'
 __copyright__ = 'Copyright 2017, Boundless Spatial Inc'
 
+import glob
 import os
-import shutil
-import time
 import signal
 import stat
 import subprocess
 import tempfile
-import glob
+import time
 from shutil import rmtree
 
+from plugins.db_manager.db_plugins import createDbPlugin, supportedDbTypes
+from qgis.PyQt.QtCore import QCoreApplication, QFile
+from qgis.PyQt.QtNetwork import QSslCertificate
 from qgis.core import (
     QgsApplication,
-    QgsAuthManager,
     QgsAuthMethodConfig,
-    QgsVectorLayer,
     QgsDataSourceUri,
-    QgsSettings,
     QgsProviderRegistry,
-    QgsWkbTypes,
+    QgsSettings,
 )
-from qgis.PyQt.QtCore import QCoreApplication, QFile
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtNetwork import QSslCertificate
-
-from plugins.db_manager.db_plugins import supportedDbTypes, createDbPlugin
-from plugins.db_manager.db_plugins.plugin import TableField
 
 from utilities import unitTestDataPath
 

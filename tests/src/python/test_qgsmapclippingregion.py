@@ -11,12 +11,8 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
 
+from qgis.core import QgsGeometry, QgsMapClippingRegion, QgsVectorLayer
 from qgis.testing import unittest
-from qgis.core import (
-    QgsMapClippingRegion,
-    QgsGeometry,
-    QgsVectorLayer
-)
 
 
 class TestQgsMapClippingRegion(unittest.TestCase):

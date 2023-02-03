@@ -9,18 +9,22 @@ __author__ = '(C) 2018 by Nyall Dawson'
 __date__ = '29/03/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
-import qgis  # NOQA
-
+import http.server
 import os
 import socketserver
 import threading
-import http.server
 import time
-from qgis.PyQt.QtCore import QDir, QCoreApplication
-from qgis.PyQt.QtGui import QColor, QImage, QPainter
 
-from qgis.core import (QgsSvgCache, QgsRenderChecker, QgsApplication, QgsMultiRenderChecker)
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QCoreApplication, QDir
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.core import (
+    QgsApplication,
+    QgsMultiRenderChecker,
+    QgsRenderChecker,
+)
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()

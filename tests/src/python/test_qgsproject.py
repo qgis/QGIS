@@ -10,44 +10,42 @@ __author__ = 'Sebastian Dietrich'
 __date__ = '19/11/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
+import codecs
 import os
 import re
-from osgeo import ogr
-import codecs
 from io import BytesIO
-from zipfile import ZipFile
+from shutil import copyfile
 from tempfile import TemporaryDirectory
+from zipfile import ZipFile
 
 import qgis  # NOQA
-
-from qgis.core import (Qgis,
-                       QgsProject,
-                       QgsCoordinateTransformContext,
-                       QgsProjectDirtyBlocker,
-                       QgsApplication,
-                       QgsUnitTypes,
-                       QgsCoordinateReferenceSystem,
-                       QgsDataProvider,
-                       QgsLabelingEngineSettings,
-                       QgsVectorLayer,
-                       QgsRasterLayer,
-                       QgsMapLayer,
-                       QgsExpressionContextUtils,
-                       QgsProjectColorScheme,
-                       QgsSettings,
-                       QgsFeature,
-                       QgsGeometry)
-from qgis.gui import (QgsLayerTreeMapCanvasBridge,
-                      QgsMapCanvas)
-
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtCore import QT_VERSION_STR, QTemporaryDir, QTemporaryFile
-from qgis.PyQt.QtGui import QColor
+from osgeo import ogr
 from qgis.PyQt import sip
-
+from qgis.PyQt.QtCore import QT_VERSION_STR, QTemporaryDir
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.core import (
+    Qgis,
+    QgsApplication,
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransformContext,
+    QgsDataProvider,
+    QgsExpressionContextUtils,
+    QgsFeature,
+    QgsGeometry,
+    QgsLabelingEngineSettings,
+    QgsMapLayer,
+    QgsProject,
+    QgsProjectColorScheme,
+    QgsProjectDirtyBlocker,
+    QgsRasterLayer,
+    QgsSettings,
+    QgsUnitTypes,
+    QgsVectorLayer,
+)
 from qgis.testing import start_app, unittest
-from utilities import (unitTestDataPath)
-from shutil import copyfile
+
+from utilities import unitTestDataPath
 
 app = start_app()
 TEST_DATA_DIR = unitTestDataPath()

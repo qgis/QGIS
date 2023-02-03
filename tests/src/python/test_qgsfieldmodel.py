@@ -10,18 +10,18 @@ __date__ = '14/11/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.core import (QgsField,
-                       QgsFields,
-                       QgsVectorLayer,
-                       QgsFieldModel,
-                       QgsFieldProxyModel,
-                       QgsEditorWidgetSetup,
-                       QgsProject,
-                       QgsVectorLayerJoinInfo,
-                       QgsFieldConstraints)
-from qgis.PyQt.QtCore import QVariant, Qt, QModelIndex
-
+from qgis.PyQt.QtCore import QModelIndex, Qt, QVariant
+from qgis.core import (
+    QgsEditorWidgetSetup,
+    QgsField,
+    QgsFieldConstraints,
+    QgsFieldModel,
+    QgsFieldProxyModel,
+    QgsFields,
+    QgsProject,
+    QgsVectorLayer,
+    QgsVectorLayerJoinInfo,
+)
 from qgis.testing import start_app, unittest
 
 start_app()

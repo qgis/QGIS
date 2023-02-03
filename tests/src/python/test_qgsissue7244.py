@@ -9,14 +9,11 @@ __author__ = 'Vincent Mora'
 __date__ = '09/07/2013'
 __copyright__ = 'Copyright 2013, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
 
+import qgis  # NOQA
 from qgis.core import QgsPointXY, QgsVectorLayer
-
 from qgis.testing import start_app, unittest
-
 from qgis.utils import spatialite_connect
 
 # Convenience instances in case you may need them

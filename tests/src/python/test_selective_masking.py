@@ -12,60 +12,44 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Hugo Mercier / Oslandia'
 __date__ = '28/06/2019'
 
-import qgis  # NOQA
 import os
 import subprocess
 
-from qgis.PyQt.QtCore import (
-    Qt,
-    QSize,
-    QRectF,
-    QDir
-)
-
-from qgis.PyQt.QtGui import (
-    QColor,
-    QImage,
-    QPainter
-)
-
-from qgis.testing import unittest, start_app
-
-from utilities import (
-    unitTestDataPath,
-    getTempfilePath,
-    getTestFont,
-)
-
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QDir, QRectF, QSize, Qt
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.core import (
     Qgis,
-    QgsMapSettings,
     QgsCoordinateReferenceSystem,
-    QgsRectangle,
-    QgsProject,
-    QgsSymbolLayerReference,
-    QgsMapRendererParallelJob,
-    QgsMapRendererSequentialJob,
-    QgsMapRendererCustomPainterJob,
-    QgsRenderChecker,
-    QgsMarkerSymbol,
-    QgsMaskMarkerSymbolLayer,
-    QgsSingleSymbolRenderer,
-    QgsSymbolLayerId,
-    QgsSymbolLayerUtils,
-    QgsMapRendererCache,
-    QgsUnitTypes,
-    QgsOuterGlowEffect,
-    QgsPalLayerSettings,
-    QgsProperty,
-    QgsRenderContext,
     QgsLayout,
+    QgsLayoutExporter,
+    QgsLayoutItemMap,
     QgsLayoutItemPage,
     QgsLayoutSize,
-    QgsLayoutItemMap,
-    QgsLayoutExporter,
+    QgsMapRendererCache,
+    QgsMapRendererCustomPainterJob,
+    QgsMapRendererParallelJob,
+    QgsMapRendererSequentialJob,
+    QgsMapSettings,
+    QgsMarkerSymbol,
+    QgsMaskMarkerSymbolLayer,
+    QgsOuterGlowEffect,
+    QgsPalLayerSettings,
+    QgsProject,
+    QgsProperty,
+    QgsRectangle,
+    QgsRenderChecker,
+    QgsRenderContext,
+    QgsSingleSymbolRenderer,
+    QgsSymbolLayerId,
+    QgsSymbolLayerReference,
+    QgsSymbolLayerUtils,
+    QgsUnitTypes,
     QgsWkbTypes,
 )
+from qgis.testing import start_app, unittest
+
+from utilities import getTempfilePath, getTestFont, unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
 

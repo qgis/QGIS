@@ -9,17 +9,19 @@ __author__ = 'Alessandro Pasotti'
 __date__ = '2018-09'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
-import re
-
 from processing.core.Processing import Processing
 from processing.gui.AlgorithmExecutor import execute
-from qgis.analysis import QgsNativeAlgorithms
-from qgis.core import (QgsApplication, QgsVectorLayer,
-                       QgsGeometry, QgsProcessingContext,
-                       QgsProcessingFeedback, QgsSettings,
-                       )
 from qgis.PyQt.QtCore import QCoreApplication
+from qgis.analysis import QgsNativeAlgorithms
+from qgis.core import (
+    QgsApplication,
+    QgsProcessingContext,
+    QgsProcessingFeedback,
+    QgsSettings,
+    QgsVectorLayer,
+)
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()

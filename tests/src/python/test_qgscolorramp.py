@@ -11,14 +11,16 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import qgis  # NOQA
 from qgis.PyQt.QtGui import QColor, QGradient
-from qgis.core import (Qgis,
-                       QgsGradientColorRamp,
-                       QgsGradientStop,
-                       QgsLimitedRandomColorRamp,
-                       QgsRandomColorRamp,
-                       QgsColorBrewerColorRamp,
-                       QgsCptCityColorRamp,
-                       QgsPresetSchemeColorRamp)
+from qgis.core import (
+    Qgis,
+    QgsColorBrewerColorRamp,
+    QgsCptCityColorRamp,
+    QgsGradientColorRamp,
+    QgsGradientStop,
+    QgsLimitedRandomColorRamp,
+    QgsPresetSchemeColorRamp,
+    QgsRandomColorRamp,
+)
 from qgis.testing import unittest
 
 

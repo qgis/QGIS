@@ -10,31 +10,24 @@ __date__ = '05/04/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.PyQt.QtCore import (QSize,
-                              QSizeF,
-                              QPointF,
-                              QDir)
-from qgis.PyQt.QtGui import (QPolygonF,
-                             QImage,
-                             QPainter,
-                             QColor)
-from qgis.core import (QgsLegendPatchShape,
-                       QgsGeometry,
-                       QgsSymbol,
-                       QgsFillSymbol,
-                       QgsLineSymbol,
-                       QgsMarkerSymbol,
-                       QgsRenderChecker,
-                       QgsReadWriteContext,
-                       QgsRenderContext,
-                       QgsStyle
-                       )
-from qgis.PyQt.QtXml import QDomDocument, QDomElement
-
+from qgis.PyQt.QtCore import QDir, QSize, QSizeF
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.core import (
+    QgsFillSymbol,
+    QgsGeometry,
+    QgsLegendPatchShape,
+    QgsLineSymbol,
+    QgsMarkerSymbol,
+    QgsReadWriteContext,
+    QgsRenderChecker,
+    QgsRenderContext,
+    QgsStyle,
+    QgsSymbol,
+)
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
 
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

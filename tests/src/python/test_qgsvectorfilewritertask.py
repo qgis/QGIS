@@ -9,19 +9,19 @@ __author__ = 'Nyall Dawson'
 __date__ = '12/02/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
 import os
 
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QCoreApplication, QDir
 from qgis.core import (
     QgsApplication,
-    QgsVectorLayer,
     QgsFeature,
     QgsGeometry,
     QgsPointXY,
     QgsVectorFileWriter,
-    QgsVectorFileWriterTask
+    QgsVectorFileWriterTask,
+    QgsVectorLayer,
 )
-from qgis.PyQt.QtCore import QCoreApplication, QDir
 from qgis.testing import start_app, unittest
 
 start_app()

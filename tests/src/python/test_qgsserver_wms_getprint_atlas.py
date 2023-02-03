@@ -20,11 +20,10 @@ os.environ['QT_HASH_SEED'] = '1'
 
 import urllib.parse
 
-from qgis.testing import unittest
-from utilities import unitTestDataPath
-from test_qgsserver import QgsServerTestBase
-
 from qgis.core import QgsProject
+from qgis.testing import unittest
+from test_qgsserver import QgsServerTestBase
+from utilities import unitTestDataPath
 
 
 class TestQgsServerWMSGetPrintAtlas(QgsServerTestBase):

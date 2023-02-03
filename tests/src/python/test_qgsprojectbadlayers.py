@@ -9,33 +9,27 @@ __author__ = 'Alessandro Pasotti'
 __date__ = '20/10/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
-import os
 import filecmp
+import os
+from shutil import copyfile
 
 import qgis  # NOQA
-
-from qgis.core import (QgsProject,
-                       QgsVectorLayer,
-                       QgsCoordinateTransform,
-                       QgsMapSettings,
-                       QgsRasterLayer,
-                       QgsMapLayer,
-                       QgsRectangle,
-                       QgsDataProvider,
-                       QgsReadWriteContext,
-                       QgsCoordinateReferenceSystem,
-                       )
-from qgis.gui import (QgsLayerTreeMapCanvasBridge,
-                      QgsMapCanvas)
-
-from qgis.PyQt.QtGui import QFont, QColor
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtCore import QT_VERSION_STR, QTemporaryDir, QSize
+from qgis.PyQt.QtCore import QSize, QTemporaryDir
+from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtXml import QDomDocument, QDomNode
-
+from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsDataProvider,
+    QgsMapSettings,
+    QgsProject,
+    QgsRasterLayer,
+    QgsReadWriteContext,
+    QgsRectangle,
+    QgsVectorLayer,
+)
 from qgis.testing import start_app, unittest
-from utilities import (unitTestDataPath, renderMapToImage)
-from shutil import copyfile
+
+from utilities import renderMapToImage, unitTestDataPath
 
 app = start_app()
 TEST_DATA_DIR = unitTestDataPath()

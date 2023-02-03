@@ -13,16 +13,10 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import os
-from qgis.core import (
-    QgsDatabaseSchemaModel,
-    QgsProviderRegistry,
-)
-from qgis.PyQt.QtCore import (
-    QCoreApplication,
-    QModelIndex,
-    Qt
-)
-from qgis.testing import unittest, start_app
+
+from qgis.PyQt.QtCore import QCoreApplication, QModelIndex, Qt
+from qgis.core import QgsDatabaseSchemaModel, QgsProviderRegistry
+from qgis.testing import start_app, unittest
 
 
 class TestPyQgsDatabaseSchemaModel(unittest.TestCase):
