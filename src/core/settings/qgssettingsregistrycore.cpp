@@ -25,6 +25,7 @@
 #include "qgslayout.h"
 #include "qgslocator.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgslayoututils.h"
 #include "qgsowsconnection.h"
 #include "qgsprocessing.h"
 #include "qgsvectortileconnection.h"
@@ -107,6 +108,9 @@ const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsLayerTreeShowFeatur
 
 const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsEnableWMSTilePrefetching = new QgsSettingsEntryBool( QStringLiteral( "enable_wms_tile_prefetch" ), QgsSettingsTree::sTreeWms, false, QStringLiteral( "Whether to include WMS layers when rendering tiles adjacent to the visible map area" ) );
 
+const QgsSettingsEntryStringList *QgsSettingsRegistryCore::settingsMapScales = new QgsSettingsEntryStringList( QStringLiteral( "scales" ), QgsSettingsTree::sTreeMap, Qgis::defaultProjectScales().split( ',' ) );
+
+
 QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   : QgsSettingsRegistry()
 {
@@ -148,6 +152,11 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   pal::Pal::settingsRenderingLabelCandidatesLimitPoints->copyValueFromKey( QStringLiteral( "core/rendering/label_candidates_limit_points" ), true );
   pal::Pal::settingsRenderingLabelCandidatesLimitLines->copyValueFromKey( QStringLiteral( "core/rendering/label_candidates_limit_lines" ), true );
   pal::Pal::settingsRenderingLabelCandidatesLimitPolygons->copyValueFromKey( QStringLiteral( "core/rendering/label_candidates_limit_polygons" ), true );
+
+  // migrate only one way for map scales
+  if ( !settingsMapScales->exists() )
+    settingsMapScales->setValue( QgsSettings().value( QStringLiteral( "Map/scales" ) ).toString().split( ',' ) );
+
 
   // digitizing settings - added in 3.30
   {

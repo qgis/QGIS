@@ -16,9 +16,9 @@
  ***************************************************************************/
 
 #include "qgis.h"
-#include "qgslogger.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsscalecombobox.h"
-#include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
 
 #include <QAbstractItemView>
 #include <QLocale>
@@ -44,12 +44,7 @@ void QgsScaleComboBox::updateScales( const QStringList &scales )
 
   if ( scales.isEmpty() )
   {
-    const QgsSettings settings;
-    const QString myScales = settings.value( QStringLiteral( "Map/scales" ), Qgis::defaultProjectScales() ).toString();
-    if ( !myScales.isEmpty() )
-    {
-      myScalesList = myScales.split( ',' );
-    }
+    const QStringList scales = QgsSettingsRegistryCore::settingsMapScales->value();
   }
   else
   {

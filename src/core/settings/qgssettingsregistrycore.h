@@ -27,6 +27,7 @@ class QgsSettingsEntryColor;
 class QgsSettingsEntryDouble;
 class QgsSettingsEntryInteger;
 class QgsSettingsEntryString;
+class QgsSettingsEntryStringList;
 template<class T> class QgsSettingsEntryEnumFlag;
 
 /**
@@ -162,6 +163,8 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
 
     //! Settings entry enable WMS tile prefetching.
     static const QgsSettingsEntryBool *settingsEnableWMSTilePrefetching;
+
+    static const QgsSettingsEntryStringList *settingsMapScales;
 
   private:
     void migrateOldSettings();
