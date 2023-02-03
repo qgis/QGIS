@@ -17,6 +17,7 @@
 
 #include "qgslayoutmapgridwidget.h"
 #include "qgssymbolselectordialog.h"
+#include "qgssettingsregistrycore.h"
 #include "qgssymbol.h"
 #include "qgslayoutitemmap.h"
 #include "qgsproject.h"
@@ -472,10 +473,8 @@ bool QgsLayoutMapGridWidget::hasPredefinedScales() const
   if ( !hasProjectScales || scales.isEmpty() )
   {
     // default to global map tool scales
-    const QgsSettings settings;
-    const QString scalesStr( settings.value( QStringLiteral( "Map/scales" ), Qgis::defaultProjectScales() ).toString() );
-    QStringList myScalesList = scalesStr.split( ',' );
-    return !myScalesList.isEmpty() && !myScalesList[0].isEmpty();
+    const QStringList scales = QgsSettingsRegistryCore::settingsMapScales->value();
+    return !scales.isEmpty() && !scales[0].isEmpty();
   }
   return true;
 }
