@@ -490,15 +490,7 @@ void QgsLayerTreeGroup::setGroupLayer( QgsGroupLayer *layer )
   {
     if ( !layer )
     {
-      // clearing the group layer -- ensure all child layers have consistent settings
-      const QList< QgsMapLayer * > children = groupLayer->childLayers();
-      for ( QgsMapLayer *child : children )
-      {
-        if ( QgsPainting::isClippingMode( QgsPainting::getBlendModeEnum( child->blendMode() ) ) )
-        {
-          child->setBlendMode( QPainter::CompositionMode_SourceOver );
-        }
-      }
+      groupLayer->prepareLayersForRemovalFromGroup();
     }
   }
   mGroupLayer.setLayer( layer );
