@@ -662,7 +662,7 @@ void QgsGraduatedSymbolRendererWidget::connectUpdateHandlers()
 
   for ( const auto &ppww : std::as_const( mParameterWidgetWrappers ) )
   {
-    connect( ppww.get(), &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
+    connect( ppww.get(), &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, &QgsGraduatedSymbolRendererWidget::classificationMethodWidgetChanged );
   }
 }
 
@@ -688,7 +688,7 @@ void QgsGraduatedSymbolRendererWidget::disconnectUpdateHandlers()
 
   for ( const auto &ppww : std::as_const( mParameterWidgetWrappers ) )
   {
-    disconnect( ppww.get(), &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
+    disconnect( ppww.get(), &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, &QgsGraduatedSymbolRendererWidget::classificationMethodWidgetChanged );
   }
 }
 
@@ -724,12 +724,15 @@ void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
     spinPrecision->setValue( method->labelPrecision() );
     cbxTrimTrailingZeroes->setChecked( method->labelTrimTrailingZeroes() );
 
-    QgsProcessingContext context;
-    for ( const auto &ppww : std::as_const( mParameterWidgetWrappers ) )
+    if ( !mBlockClassificationMethodUpdates )
     {
-      const QgsProcessingParameterDefinition *def = ppww->parameterDefinition();
-      QVariant value = method->parameterValues().value( def->name(), def->defaultValueForGui() );
-      ppww->setParameterValue( value, context );
+      QgsProcessingContext context;
+      for ( const auto &ppww : std::as_const( mParameterWidgetWrappers ) )
+      {
+        const QgsProcessingParameterDefinition *def = ppww->parameterDefinition();
+        QVariant value = method->parameterValues().value( def->name(), def->defaultValueForGui() );
+        ppww->setParameterValue( value, context );
+      }
     }
   }
 
@@ -874,7 +877,7 @@ void QgsGraduatedSymbolRendererWidget::updateMethodParameters()
     QVariant value = method->parameterValues().value( def->name(), def->defaultValueForGui() );
     ppww->setParameterValue( value, context );
 
-    connect( ppww, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
+    connect( ppww, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, &QgsGraduatedSymbolRendererWidget::classificationMethodWidgetChanged );
 
     mParameterWidgetWrappers.push_back( std::unique_ptr<QgsAbstractProcessingParameterWidgetWrapper>( ppww ) );
   }
@@ -1025,6 +1028,11 @@ void QgsGraduatedSymbolRendererWidget::symmetryPointEditingFinished( )
   }
 }
 
+void QgsGraduatedSymbolRendererWidget::classificationMethodWidgetChanged()
+{
+  mDeferredUpdateWasTriggeredByClassificationMethod = true;
+  classifyGraduated();
+}
 
 void QgsGraduatedSymbolRendererWidget::classifyGraduated()
 {
@@ -1033,9 +1041,16 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
 
 void QgsGraduatedSymbolRendererWidget::classifyGraduatedImpl( )
 {
-
   if ( mBlockUpdates )
+  {
+    mDeferredUpdateWasTriggeredByClassificationMethod = false;
     return;
+  }
+
+  if ( mDeferredUpdateWasTriggeredByClassificationMethod )
+  {
+    mBlockClassificationMethodUpdates++;
+  }
 
   QgsTemporaryCursorOverride override( Qt::WaitCursor );
   QString attrName = mExpressionWidget->currentField();
@@ -1091,6 +1106,11 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduatedImpl( )
   {
     if ( QMessageBox::Cancel == QMessageBox::question( this, tr( "Apply Classification" ), tr( "Natural break classification (Jenks) is O(n2) complexity, your classification may take a long time.\nPress cancel to abort breaks calculation or OK to continue." ), QMessageBox::Cancel, QMessageBox::Ok ) )
     {
+      if ( mDeferredUpdateWasTriggeredByClassificationMethod )
+      {
+        mBlockClassificationMethodUpdates--;
+        mDeferredUpdateWasTriggeredByClassificationMethod = false;
+      }
       return;
     }
   }
@@ -1101,7 +1121,11 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduatedImpl( )
     if ( !ramp )
     {
       QMessageBox::critical( this, tr( "Apply Classification" ), tr( "No color ramp defined." ) );
-      return;
+      if ( mDeferredUpdateWasTriggeredByClassificationMethod )
+      {
+        mBlockClassificationMethodUpdates--;
+        mDeferredUpdateWasTriggeredByClassificationMethod = false;
+      }
     }
     mRenderer->setSourceColorRamp( ramp.release() );
   }
@@ -1119,6 +1143,12 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduatedImpl( )
   // PrettyBreaks and StdDev calculation don't generate exact
   // number of classes - leave user interface unchanged for these
   updateUiFromRenderer( false );
+
+  if ( mDeferredUpdateWasTriggeredByClassificationMethod )
+  {
+    mBlockClassificationMethodUpdates--;
+    mDeferredUpdateWasTriggeredByClassificationMethod = false;
+  }
 }
 
 void QgsGraduatedSymbolRendererWidget::reapplyColorRamp()
