@@ -177,6 +177,8 @@ std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry
 
     bool isLongSegment;
     bool hasLongSegments = false; //-> To avoid replace the simplified geometry by its BBOX when there are 'long' segments.
+    const bool is3D = geometry.is3D();
+    const bool isMeasure = geometry.isMeasure();
 
     // Check whether the LinearRing is really closed.
     if ( isaLinearRing )
@@ -205,10 +207,10 @@ std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry
           xData = qgsgeometry_cast< const QgsLineString * >( &srcCurve )->xData();
           yData = qgsgeometry_cast< const QgsLineString * >( &srcCurve )->yData();
 
-          if ( geometry.is3D() )
+          if ( is3D )
             zData = qgsgeometry_cast< const QgsLineString * >( &srcCurve )->zData();
 
-          if ( geometry.isMeasure() )
+          if ( isMeasure )
             mData = qgsgeometry_cast< const QgsLineString * >( &srcCurve )->mData();
         }
 
@@ -218,24 +220,18 @@ std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry
           {
             x = *xData++;
             y = *yData++;
-
-            if ( geometry.is3D() )
-              z = *zData++;
-
-            if ( geometry.isMeasure() )
-              m = *mData++;
           }
           else
           {
             x = srcCurve.xAt( i );
             y = srcCurve.yAt( i );
-
-            if ( geometry.is3D() )
-              z = srcCurve.zAt( i );
-
-            if ( geometry.isMeasure() )
-              m = srcCurve.mAt( i );
           }
+
+          if ( is3D )
+            z = zData ? *zData++ : srcCurve.zAt( i );
+
+          if ( isMeasure )
+            m = mData ? *mData++ : srcCurve.mAt( i );
 
           if ( i == 0 ||
                !isGeneralizable ||
@@ -249,10 +245,10 @@ std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry
               lineStringX.append( x );
               lineStringY.append( y );
 
-              if ( geometry.is3D() )
+              if ( is3D )
                 lineStringZ.append( z );
 
-              if ( geometry.isMeasure() )
+              if ( isMeasure )
                 lineStringM.append( m );
             }
             lastX = x;
@@ -288,10 +284,10 @@ std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry
               lineStringX.append( ea.inpts.at( i ).x() );
               lineStringY.append( ea.inpts.at( i ).y() );
 
-              if ( geometry.is3D() )
+              if ( is3D )
                 lineStringZ.append( ea.inpts.at( i ).z() );
 
-              if ( geometry.isMeasure() )
+              if ( isMeasure )
                 lineStringM.append( ea.inpts.at( i ).m() );
             }
           }
