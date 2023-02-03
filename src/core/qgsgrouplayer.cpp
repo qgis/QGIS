@@ -289,9 +289,15 @@ void QgsGroupLayer::setChildLayers( const QList< QgsMapLayer * > &layers )
   }
   for ( QgsMapLayer *layer : currentLayers )
   {
-    if ( !layers.contains( layer ) )
+    if ( layer && !layers.contains( layer ) )
     {
+      // layer removed from group
       disconnect( layer, &QgsMapLayer::repaintRequested, this, &QgsMapLayer::triggerRepaint );
+
+      if ( QgsPainting::isClippingMode( QgsPainting::getBlendModeEnum( layer->blendMode() ) ) )
+      {
+        layer->setBlendMode( QPainter::CompositionMode_SourceOver );
+      }
     }
   }
   mChildren = _qgis_listRawToRef( layers );
@@ -329,6 +335,17 @@ void QgsGroupLayer::setPaintEffect( QgsPaintEffect *effect )
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   mPaintEffect.reset( effect );
+}
+
+void QgsGroupLayer::prepareLayersForRemovalFromGroup()
+{
+  for ( const QgsMapLayerRef &child : std::as_const( mChildren ) )
+  {
+    if ( child.get() && QgsPainting::isClippingMode( QgsPainting::getBlendModeEnum( child->blendMode() ) ) )
+    {
+      child->setBlendMode( QPainter::CompositionMode_SourceOver );
+    }
+  }
 }
 
 //

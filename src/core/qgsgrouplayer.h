@@ -126,6 +126,17 @@ class CORE_EXPORT QgsGroupLayer : public QgsMapLayer
      */
     void setPaintEffect( QgsPaintEffect *effect SIP_TRANSFER );
 
+    /**
+     * Prepares all child layers in the group prior to removal from the group.
+     *
+     * This method should be called before removing a group layer from a project, to ensure
+     * that the existing child layers are in a state which is compatible with non-group
+     * layer children.
+     *
+     * \since QGIS 3.30
+     */
+    void prepareLayersForRemovalFromGroup();
+
   private:
 
     QgsGroupLayerDataProvider *mDataProvider = nullptr;
