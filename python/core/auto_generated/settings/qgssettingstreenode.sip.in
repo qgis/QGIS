@@ -20,7 +20,7 @@ It is either a root node, a normal node or
 a named list (to store a group of settings under a dynamic named key).
 to automatically register a settings entry on its creation when a parent is provided.
 
-.. seealso:: :py:class:`QgsSettingsTreee`
+.. seealso:: :py:class:`QgsSettingsTree`
 
 .. seealso:: :py:class:`QgsSettingsEntryBase`
 
