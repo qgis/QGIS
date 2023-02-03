@@ -1214,7 +1214,15 @@ void QgsAttributeForm::updateEditableState()
         const bool isEditable { it->valueAsBool( context, true, &ok ) };
         if ( ok )
         {
-          w->setEnabled( isEditable );
+          QgsAttributeFormEditorWidget *editorWidget { qobject_cast<QgsAttributeFormEditorWidget *>( w ) };
+          if ( editorWidget )
+          {
+            editorWidget->editorWidget()->setEnabled( isEditable );
+          }
+          else
+          {
+            w->setEnabled( isEditable );
+          }
         }
       }
     }
