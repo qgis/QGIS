@@ -36,7 +36,7 @@ class QgsSettingsEntryString;
  * a named list (to store a group of settings under a dynamic named key).
  * to automatically register a settings entry on its creation when a parent is provided.
  *
- * \see QgsSettingsTreee
+ * \see QgsSettingsTree
  * \see QgsSettingsEntryBase
  *
  * \since QGIS 3.30
