@@ -698,10 +698,10 @@ class EditorTabWidget(QTabWidget):
         nr = self.count()
         if not tabName:
             tabName = QCoreApplication.translate('PythonConsole', 'Untitled-{0}').format(nr)
-        self.tab = EditorTab(self, self.parent, filename, readOnly)
+        tab = EditorTab(self, self.parent, filename, readOnly)
         self.iconTab = QgsApplication.getThemeIcon('console/iconTabEditorConsole.svg')
-        self.addTab(self.tab, self.iconTab, tabName + ' (ro)' if readOnly else tabName)
-        self.setCurrentWidget(self.tab)
+        self.addTab(tab, self.iconTab, tabName + ' (ro)' if readOnly else tabName)
+        self.setCurrentWidget(tab)
         if filename:
             self.setTabToolTip(self.currentIndex(), filename)
         else:
@@ -712,14 +712,6 @@ class EditorTabWidget(QTabWidget):
         s = self.tabText(index)
         self.setTabTitle(index, '*{}'.format(s) if modified else re.sub(r'^(\*)', '', s))
         self.parent.saveFileButton.setEnabled(modified)
-
-    def closeTab(self, tab):
-        if self.count() < 2:
-            self.removeTab(self.indexOf(tab))
-            self.newTabEditor()
-        else:
-            self.removeTab(self.indexOf(tab))
-        self.currentWidget().setFocus(Qt.TabFocusReason)
 
     def setTabTitle(self, tab, title):
         self.setTabText(tab, title)
@@ -736,10 +728,10 @@ class EditorTabWidget(QTabWidget):
             res = QMessageBox.question(self, txtSaveOnRemove,
                                        txtMsgSaveOnRemove,
                                        QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel)
+            if res == QMessageBox.Cancel:
+                return
             if res == QMessageBox.Save:
                 tabWidget.save()
-            elif res == QMessageBox.Cancel:
-                return
             if tabWidget.path:
                 self.parent.updateTabListScript(tabWidget.path, action='remove')
             self.removeTab(tab)
@@ -753,6 +745,8 @@ class EditorTabWidget(QTabWidget):
                 self.newTabEditor()
             else:
                 self.removeTab(tab)
+
+        tabWidget.deleteLater()
         self.currentWidget().newEditor.setFocus(Qt.TabFocusReason)
 
     def buttonClosePressed(self):
