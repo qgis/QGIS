@@ -23,7 +23,6 @@
 #include <QFileInfo>
 #include <QTime>
 
-
 double readRationale( const Exiv2::Value &value, long n = 0 )
 {
   const Exiv2::Rational rational = value.toRational( n );
@@ -44,8 +43,6 @@ double readCoordinate( const Exiv2::Value &value )
 
 QVariant decodeXmpData( const QString &key, Exiv2::XmpData::const_iterator &it )
 {
-  Q_UNUSED( key )
-
   QVariant val;
   if ( key == QLatin1String( "Xmp.xmp.MetadataDate" ) ||
        key == QLatin1String( "Xmp.xmp.CreateDate" ) ||
@@ -243,7 +240,6 @@ QVariant decodeExifData( const QString &key, Exiv2::ExifData::const_iterator &it
       case Exiv2::lastTypeId:
         val = QString::fromStdString( it->toString() );
         break;
-
     }
   }
   return val;
@@ -442,6 +438,135 @@ bool QgsExifTools::geoTagImage( const QString &imagePath, const QgsPointXY &loca
     exifData["Exif.GPSInfo.GPSLatitudeRef"] = location.y() > 0 ? "N" : "S";
     exifData["Exif.GPSInfo.GPSLongitudeRef"] = location.x() > 0 ? "E" : "W";
     exifData["Exif.Image.GPSTag"] = 4908;
+    image->writeMetadata();
+  }
+  catch ( ... )
+  {
+    return false;
+  }
+  return true;
+}
+
+bool QgsExifTools::tagImage( const QString &imagePath, const QString &tag, const QVariant &value )
+{
+  try
+  {
+    std::unique_ptr< Exiv2::Image > image( Exiv2::ImageFactory::open( imagePath.toStdString() ) );
+    if ( !image )
+      return false;
+
+    QVariant actualValue;
+    if ( tag == QLatin1String( "Exif.GPSInfo.GPSLatitude" ) ||
+         tag == QLatin1String( "Exif.GPSInfo.GPSLongitude" ) ||
+         tag == QLatin1String( "Exif.GPSInfo.GPSDestLatitude" ) ||
+         tag == QLatin1String( "Exif.GPSInfo.GPSDestLongitude" ) )
+    {
+      actualValue = doubleToExifCoordinateString( value.toDouble() );
+    }
+    else if ( tag == QLatin1String( "Exif.GPSInfo.GPSAltitude" ) )
+    {
+      actualValue = QStringLiteral( "%1/1000" ).arg( static_cast< int>( std::floor( std::abs( value.toDouble() ) * 1000 ) ) );
+    }
+    else if ( value.type() == QVariant::DateTime )
+    {
+      const QDateTime dateTime = value.toDateTime();
+      if ( tag == QLatin1String( "Exif.Image.DateTime" ) ||
+           tag == QLatin1String( "Exif.Image.DateTime" ) ||
+           tag == QLatin1String( "Exif.Photo.DateTimeDigitized" ) ||
+           tag == QLatin1String( "Exif.Photo.DateTimeOriginal" ) )
+      {
+        actualValue = dateTime.toString( QStringLiteral( "yyyy:MM:dd hh:mm:ss" ) );
+      }
+      else
+      {
+        actualValue = dateTime.toString( Qt::ISODate );
+      }
+    }
+    else if ( value.type() == QVariant::Date )
+    {
+      const QDate date = value.toDate();
+      if ( tag == QLatin1String( "Exif.GPSInfo.GPSDateStamp" ) )
+      {
+        actualValue = date.toString( QStringLiteral( "yyyy:MM:dd" ) );
+      }
+      else
+      {
+        actualValue = date.toString( QStringLiteral( "yyyy-MM-dd" ) );
+      }
+    }
+    else if ( value.type() == QVariant::Time )
+    {
+      const QTime time = value.toTime();
+      if ( tag == QLatin1String( "Exif.GPSInfo.GPSTimeStamp" ) )
+      {
+        actualValue = QStringLiteral( "%1/1 %2/1 %3/1" ).arg( time.hour() ).arg( time.minute() ).arg( time.second() );
+      }
+      else
+      {
+        actualValue = time.toString( QStringLiteral( "HH:mm:ss" ) );
+      }
+    }
+    else
+    {
+      actualValue = value;
+    }
+
+    const bool isXmp = tag.startsWith( QLatin1String( "Xmp." ) );
+    image->readMetadata();
+    if ( actualValue.type() == QVariant::Int ||
+         actualValue.type() == QVariant::LongLong )
+    {
+      if ( isXmp )
+      {
+        Exiv2::XmpData &xmpData = image->xmpData();
+        xmpData[tag.toStdString()] = static_cast<uint32_t>( actualValue.toLongLong() );
+      }
+      else
+      {
+        Exiv2::ExifData &exifData = image->exifData();
+        exifData[tag.toStdString()] = static_cast<uint32_t>( actualValue.toLongLong() );
+      }
+    }
+    if ( actualValue.type() == QVariant::UInt ||
+         actualValue.type() ==  QVariant::ULongLong )
+    {
+      if ( isXmp )
+      {
+        Exiv2::XmpData &xmpData = image->xmpData();
+        xmpData[tag.toStdString()] = static_cast<int32_t>( actualValue.toULongLong() );
+      }
+      else
+      {
+        Exiv2::ExifData &exifData = image->exifData();
+        exifData[tag.toStdString()] = static_cast<int32_t>( actualValue.toULongLong() );
+      }
+    }
+    else if ( actualValue.type() == QVariant::Double )
+    {
+      if ( isXmp )
+      {
+        Exiv2::XmpData &xmpData = image->xmpData();
+        xmpData[tag.toStdString()] = Exiv2::floatToRationalCast( actualValue.toFloat() );
+      }
+      else
+      {
+        Exiv2::ExifData &exifData = image->exifData();
+        exifData[tag.toStdString()] = Exiv2::floatToRationalCast( actualValue.toFloat() );
+      }
+    }
+    else
+    {
+      if ( isXmp )
+      {
+        Exiv2::XmpData &xmpData = image->xmpData();
+        xmpData[tag.toStdString()] = actualValue.toString().toStdString();
+      }
+      else
+      {
+        Exiv2::ExifData &exifData = image->exifData();
+        exifData[tag.toStdString()] = actualValue.toString().toStdString();
+      }
+    }
     image->writeMetadata();
   }
   catch ( ... )
