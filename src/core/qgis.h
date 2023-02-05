@@ -2803,6 +2803,43 @@ class CORE_EXPORT Qgis
     Q_ENUM( ElevationMapCombineMethod )
 
     /**
+     * Blending modes defining the available composition modes that can
+     * be used when painting.
+     *
+     * \note Prior to QGIS 3.30 this was available as QgsPainting::BlendMode.
+     *
+     * \since QGIS 3.30
+     */
+    enum class BlendMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsPainting, BlendMode ) : int
+      {
+      Normal SIP_MONKEYPATCH_COMPAT_NAME( BlendNormal ), //!< Normal
+      Lighten SIP_MONKEYPATCH_COMPAT_NAME( BlendLighten ), //!< Lighten
+      Screen SIP_MONKEYPATCH_COMPAT_NAME( BlendScreen ), //!< Screen
+      Dodge SIP_MONKEYPATCH_COMPAT_NAME( BlendDodge ), //!< Dodge
+      Addition SIP_MONKEYPATCH_COMPAT_NAME( BlendAddition ), //!< Addition
+      Darken SIP_MONKEYPATCH_COMPAT_NAME( BlendDarken ), //!< Darken
+      Multiply SIP_MONKEYPATCH_COMPAT_NAME( BlendMultiply ), //!< Multiple
+      Burn SIP_MONKEYPATCH_COMPAT_NAME( BlendBurn ), //!< Burn
+      Overlay SIP_MONKEYPATCH_COMPAT_NAME( BlendOverlay ), //!< Overlay
+      SoftLight SIP_MONKEYPATCH_COMPAT_NAME( BlendSoftLight ), //!< Soft light
+      HardLight SIP_MONKEYPATCH_COMPAT_NAME( BlendHardLight ), //!< Hard light
+      Difference SIP_MONKEYPATCH_COMPAT_NAME( BlendDifference ), //!< Difference
+      Subtract SIP_MONKEYPATCH_COMPAT_NAME( BlendSubtract ), //!< Subtract
+      Source SIP_MONKEYPATCH_COMPAT_NAME( BlendSource ), //!< Source
+      DestinationOver SIP_MONKEYPATCH_COMPAT_NAME( BlendDestinationOver ), //!< Destination over
+      Clear SIP_MONKEYPATCH_COMPAT_NAME( BlendClear ), //!< Clear
+      Destination SIP_MONKEYPATCH_COMPAT_NAME( BlendDestination ), //!< Destination
+      SourceIn SIP_MONKEYPATCH_COMPAT_NAME( BlendSourceIn ), //!< Source in
+      DestinationIn SIP_MONKEYPATCH_COMPAT_NAME( BlendDestinationIn ), //!< Destination in
+      SourceOut SIP_MONKEYPATCH_COMPAT_NAME( BlendSourceOut ), //!< Source out
+      DestinationOut SIP_MONKEYPATCH_COMPAT_NAME( BlendDestinationOut ), //!< Destination out
+      SourceAtop SIP_MONKEYPATCH_COMPAT_NAME( BlendSourceAtop ), //!< Source atop
+      DestinationAtop SIP_MONKEYPATCH_COMPAT_NAME( BlendDestinationAtop ), //!< Destination atop
+      Xor SIP_MONKEYPATCH_COMPAT_NAME( BlendXor ), //!< XOR
+    };
+    Q_ENUM( BlendMode )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */

@@ -14,6 +14,8 @@ import qgis  # NOQA
 from qgis.core import (
     QgsCoordinateTransformContext,
     QgsGroupLayer,
+    QgsLayerTreeGroup,
+    QgsLayerTreeLayer,
     QgsProject,
     QgsProjectUtils,
     QgsRasterLayer,
@@ -146,6 +148,42 @@ class TestQgsProjectUtils(unittest.TestCase):
         self.assertFalse(QgsProjectUtils.layerIsContainedInGroupLayer(p, layer2))
         self.assertTrue(QgsProjectUtils.layerIsContainedInGroupLayer(p, layer3))
         self.assertTrue(QgsProjectUtils.layerIsContainedInGroupLayer(p, layer4))
+
+        # catch alternative situation -- group layer nodes which are unchecked
+        layer_tree_root = p.layerTreeRoot()
+
+        tree_group1 = layer_tree_root.addGroup('group 1')
+
+        tree_group2 = layer_tree_root.addGroup('group 2')
+
+        layer5 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer1", "memory")
+        p.addMapLayer(layer5)
+        node1 = tree_group1.addLayer(layer5)
+        node1.setItemVisibilityChecked(False)
+
+        layer6 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer2", "memory")
+        p.addMapLayer(layer6)
+        tree_group1a = tree_group1.addGroup('group 1a')
+        node2 = tree_group1a.addLayer(layer6)
+        node2.setItemVisibilityChecked(False)
+
+        layer7 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer3", "memory")
+        p.addMapLayer(layer7)
+        node3 = tree_group2.addLayer(layer7)
+        node3.setItemVisibilityChecked(False)
+
+        self.assertFalse(QgsProjectUtils.layerIsContainedInGroupLayer(p, layer5))
+        self.assertFalse(QgsProjectUtils.layerIsContainedInGroupLayer(p, layer6))
+        self.assertFalse(QgsProjectUtils.layerIsContainedInGroupLayer(p, layer7))
+
+        group_layer_from_tree = tree_group1.convertToGroupLayer(QgsGroupLayer.LayerOptions(QgsCoordinateTransformContext()))
+
+        self.assertTrue(QgsProjectUtils.layerIsContainedInGroupLayer(p, layer5))
+        self.assertTrue(QgsProjectUtils.layerIsContainedInGroupLayer(p, layer6))
+        self.assertFalse(QgsProjectUtils.layerIsContainedInGroupLayer(p, layer7))
 
 
 if __name__ == '__main__':

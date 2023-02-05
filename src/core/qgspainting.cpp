@@ -17,121 +17,156 @@
 
 #include "qgslogger.h"
 
-QPainter::CompositionMode QgsPainting::getCompositionMode( QgsPainting::BlendMode blendMode )
+QPainter::CompositionMode QgsPainting::getCompositionMode( Qgis::BlendMode blendMode )
 {
-  // Map QgsPainting::BlendNormal to QPainter::CompositionMode
+  // Map Qgis::BlendMode::Normal to QPainter::CompositionMode
   switch ( blendMode )
   {
-    case QgsPainting::BlendNormal:
+    case Qgis::BlendMode::Normal:
       return QPainter::CompositionMode_SourceOver;
-    case QgsPainting::BlendLighten:
+    case Qgis::BlendMode::Lighten:
       return QPainter::CompositionMode_Lighten;
-    case QgsPainting::BlendScreen:
+    case Qgis::BlendMode::Screen:
       return QPainter::CompositionMode_Screen;
-    case QgsPainting::BlendDodge:
+    case Qgis::BlendMode::Dodge:
       return QPainter::CompositionMode_ColorDodge;
-    case QgsPainting::BlendAddition:
+    case Qgis::BlendMode::Addition:
       return QPainter::CompositionMode_Plus;
-    case QgsPainting::BlendDarken:
+    case Qgis::BlendMode::Darken:
       return QPainter::CompositionMode_Darken;
-    case QgsPainting::BlendMultiply:
+    case Qgis::BlendMode::Multiply:
       return QPainter::CompositionMode_Multiply;
-    case QgsPainting::BlendBurn:
+    case Qgis::BlendMode::Burn:
       return QPainter::CompositionMode_ColorBurn;
-    case QgsPainting::BlendOverlay:
+    case Qgis::BlendMode::Overlay:
       return QPainter::CompositionMode_Overlay;
-    case QgsPainting::BlendSoftLight:
+    case Qgis::BlendMode::SoftLight:
       return QPainter::CompositionMode_SoftLight;
-    case QgsPainting::BlendHardLight:
+    case Qgis::BlendMode::HardLight:
       return QPainter::CompositionMode_HardLight;
-    case QgsPainting::BlendDifference:
+    case Qgis::BlendMode::Difference:
       return QPainter::CompositionMode_Difference;
-    case QgsPainting::BlendSubtract:
+    case Qgis::BlendMode::Subtract:
       return QPainter::CompositionMode_Exclusion;
-    case QgsPainting::BlendSource:
+    case Qgis::BlendMode::Source:
       return QPainter::CompositionMode_Source;
-    case QgsPainting::BlendDestinationOver:
+    case Qgis::BlendMode::DestinationOver:
       return QPainter::CompositionMode_DestinationOver;
-    case QgsPainting::BlendClear:
+    case Qgis::BlendMode::Clear:
       return QPainter::CompositionMode_Clear;
-    case QgsPainting::BlendDestination:
+    case Qgis::BlendMode::Destination:
       return QPainter::CompositionMode_Destination;
-    case QgsPainting::BlendSourceIn:
+    case Qgis::BlendMode::SourceIn:
       return QPainter::CompositionMode_SourceIn;
-    case QgsPainting::BlendDestinationIn:
+    case Qgis::BlendMode::DestinationIn:
       return QPainter::CompositionMode_DestinationIn;
-    case QgsPainting::BlendSourceOut:
+    case Qgis::BlendMode::SourceOut:
       return QPainter::CompositionMode_SourceOut;
-    case QgsPainting::BlendDestinationOut:
+    case Qgis::BlendMode::DestinationOut:
       return QPainter::CompositionMode_DestinationOut;
-    case QgsPainting::BlendSourceAtop:
+    case Qgis::BlendMode::SourceAtop:
       return QPainter::CompositionMode_SourceAtop;
-    case QgsPainting::BlendDestinationAtop:
+    case Qgis::BlendMode::DestinationAtop:
       return QPainter::CompositionMode_DestinationAtop;
-    case QgsPainting::BlendXor:
+    case Qgis::BlendMode::Xor:
       return QPainter::CompositionMode_Xor;
     default:
-      QgsDebugMsg( QStringLiteral( "Blend mode %1 mapped to SourceOver" ).arg( blendMode ) );
+      QgsDebugMsg( QStringLiteral( "Blend mode %1 mapped to SourceOver" ).arg( qgsEnumValueToKey( blendMode ) ) );
       return QPainter::CompositionMode_SourceOver;
   }
 }
 
 
-QgsPainting::BlendMode QgsPainting::getBlendModeEnum( QPainter::CompositionMode blendMode )
+Qgis::BlendMode QgsPainting::getBlendModeEnum( QPainter::CompositionMode blendMode )
 {
-  // Map QPainter::CompositionMode to QgsPainting::BlendNormal
+  // Map QPainter::CompositionMode to Qgis::BlendMode::Normal
   switch ( blendMode )
   {
     case QPainter::CompositionMode_SourceOver:
-      return QgsPainting::BlendNormal;
+      return Qgis::BlendMode::Normal;
     case QPainter::CompositionMode_Lighten:
-      return QgsPainting::BlendLighten;
+      return Qgis::BlendMode::Lighten;
     case QPainter::CompositionMode_Screen:
-      return QgsPainting::BlendScreen;
+      return Qgis::BlendMode::Screen;
     case QPainter::CompositionMode_ColorDodge:
-      return QgsPainting::BlendDodge;
+      return Qgis::BlendMode::Dodge;
     case QPainter::CompositionMode_Plus:
-      return QgsPainting::BlendAddition;
+      return Qgis::BlendMode::Addition;
     case QPainter::CompositionMode_Darken:
-      return QgsPainting::BlendDarken;
+      return Qgis::BlendMode::Darken;
     case QPainter::CompositionMode_Multiply:
-      return QgsPainting::BlendMultiply;
+      return Qgis::BlendMode::Multiply;
     case QPainter::CompositionMode_ColorBurn:
-      return QgsPainting::BlendBurn;
+      return Qgis::BlendMode::Burn;
     case QPainter::CompositionMode_Overlay:
-      return QgsPainting::BlendOverlay;
+      return Qgis::BlendMode::Overlay;
     case QPainter::CompositionMode_SoftLight:
-      return QgsPainting::BlendSoftLight;
+      return Qgis::BlendMode::SoftLight;
     case QPainter::CompositionMode_HardLight:
-      return QgsPainting::BlendHardLight;
+      return Qgis::BlendMode::HardLight;
     case QPainter::CompositionMode_Difference:
-      return QgsPainting::BlendDifference;
+      return Qgis::BlendMode::Difference;
     case QPainter::CompositionMode_Exclusion:
-      return QgsPainting::BlendSubtract;
+      return Qgis::BlendMode::Subtract;
     case QPainter::CompositionMode_Source:
-      return QgsPainting::BlendSource;
+      return Qgis::BlendMode::Source;
     case QPainter::CompositionMode_DestinationOver:
-      return QgsPainting::BlendDestinationOver;
+      return Qgis::BlendMode::DestinationOver;
     case QPainter::CompositionMode_Clear:
-      return QgsPainting::BlendClear;
+      return Qgis::BlendMode::Clear;
     case QPainter::CompositionMode_Destination:
-      return QgsPainting::BlendDestination;
+      return Qgis::BlendMode::Destination;
     case QPainter::CompositionMode_SourceIn:
-      return QgsPainting::BlendSourceIn;
+      return Qgis::BlendMode::SourceIn;
     case QPainter::CompositionMode_DestinationIn:
-      return QgsPainting::BlendDestinationIn;
+      return Qgis::BlendMode::DestinationIn;
     case QPainter::CompositionMode_SourceOut:
-      return QgsPainting::BlendSourceOut;
+      return Qgis::BlendMode::SourceOut;
     case QPainter::CompositionMode_DestinationOut:
-      return QgsPainting::BlendDestinationOut;
+      return Qgis::BlendMode::DestinationOut;
     case QPainter::CompositionMode_SourceAtop:
-      return QgsPainting::BlendSourceAtop;
+      return Qgis::BlendMode::SourceAtop;
     case QPainter::CompositionMode_DestinationAtop:
-      return QgsPainting::BlendDestinationAtop;
+      return Qgis::BlendMode::DestinationAtop;
     case QPainter::CompositionMode_Xor:
-      return QgsPainting::BlendXor;
+      return Qgis::BlendMode::Xor;
     default:
       QgsDebugMsg( QStringLiteral( "Composition mode %1 mapped to Normal" ).arg( blendMode ) );
-      return QgsPainting::BlendNormal;
+      return Qgis::BlendMode::Normal;
   }
+}
+
+bool QgsPainting::isClippingMode( Qgis::BlendMode mode )
+{
+  switch ( mode )
+  {
+    case Qgis::BlendMode::Normal:
+    case Qgis::BlendMode::Lighten:
+    case Qgis::BlendMode::Screen:
+    case Qgis::BlendMode::Dodge:
+    case Qgis::BlendMode::Addition:
+    case Qgis::BlendMode::Darken:
+    case Qgis::BlendMode::Multiply:
+    case Qgis::BlendMode::Burn:
+    case Qgis::BlendMode::Overlay:
+    case Qgis::BlendMode::SoftLight:
+    case Qgis::BlendMode::HardLight:
+    case Qgis::BlendMode::Difference:
+    case Qgis::BlendMode::Subtract:
+    case Qgis::BlendMode::Source:
+    case Qgis::BlendMode::DestinationOver:
+    case Qgis::BlendMode::Clear:
+    case Qgis::BlendMode::Destination:
+      return false;
+
+    case Qgis::BlendMode::SourceIn:
+    case Qgis::BlendMode::DestinationIn:
+    case Qgis::BlendMode::SourceOut:
+    case Qgis::BlendMode::DestinationOut:
+    case Qgis::BlendMode::SourceAtop:
+    case Qgis::BlendMode::DestinationAtop:
+    case Qgis::BlendMode::Xor:
+      return true;
+  }
+  return false;
 }

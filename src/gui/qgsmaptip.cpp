@@ -27,7 +27,6 @@
 #include "qgsrenderer.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsmaplayertemporalproperties.h"
-#include "qgsvectorlayertemporalproperties.h"
 #include "qgsrendercontext.h"
 #include "qgsmapcanvasutils.h"
 
@@ -59,7 +58,7 @@ QgsMapTip::QgsMapTip()
 
 void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
                             QgsPointXY &mapPosition,
-                            QPoint &pixelPosition,
+                            const QPoint &pixelPosition,
                             QgsMapCanvas *pMapCanvas )
 {
   // Do the search using the active layer and the preferred label field for the

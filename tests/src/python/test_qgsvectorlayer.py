@@ -4411,6 +4411,34 @@ class TestQgsVectorLayerTransformContext(unittest.TestCase):
         layer.hasSpatialIndex()
         # layer.accept(QgsStyleEntityVisitorInterface())
 
+    def testMapTips(self):
+        vl = QgsVectorLayer('Point?crs=epsg:3111&field=pk:integer', 'test', 'memory')
+        self.assertEqual(vl.displayExpression(), '"pk"')
+        # layer has map tips because display expression will be used
+        self.assertTrue(vl.hasMapTips())
+
+        vl.setMapTipTemplate('some template')
+        self.assertEqual(vl.mapTipTemplate(), 'some template')
+        self.assertTrue(vl.hasMapTips())
+
+        vl.setMapTipTemplate(None)
+        self.assertFalse(vl.mapTipTemplate())
+        self.assertTrue(vl.hasMapTips())
+
+        # layer with no fields
+        vl = QgsVectorLayer('Point?crs=epsg:3111', 'test', 'memory')
+        self.assertFalse(vl.displayExpression())
+        self.assertFalse(vl.hasMapTips())
+
+        vl.setMapTipTemplate('some template')
+        self.assertEqual(vl.mapTipTemplate(), 'some template')
+        self.assertTrue(vl.hasMapTips())
+
+        vl.setMapTipTemplate(None)
+        self.assertFalse(vl.mapTipTemplate())
+        self.assertFalse(vl.hasMapTips())
+
+
 # TODO:
 # - fetch rect: feat with changed geometry: 1. in rect, 2. out of rect
 # - more join tests
