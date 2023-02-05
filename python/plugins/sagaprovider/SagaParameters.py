@@ -50,14 +50,8 @@ class SagaImageOutputParam(QgsProcessingParameterRasterDestination):
         copy = SagaImageOutputParam(self.name(), self.description())
         return copy
 
-    def defaultFileExtension(self):
-        return 'tif'
-
     def createFileFilter(self):
         return '{} (*.tif *.TIF)'.format(QCoreApplication.translate("SAGAAlgorithm", 'TIF files'))
-
-    def supportedOutputRasterLayerExtensions(self):
-        return ['tif']
 
     def isSupportedOutputValue(self, value, context):
         output_path = QgsProcessingParameters.parameterAsOutputLayer(self, value, context)

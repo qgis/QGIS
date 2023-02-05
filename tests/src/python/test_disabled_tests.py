@@ -16,7 +16,6 @@ import shutil
 
 from qgis.PyQt.QtCore import QEventLoop, QT_VERSION
 from qgis.core import QgsDataCollectionItem, QgsLayerItem
-from qgis.testing import start_app, unittest
 from qgis.PyQt.QtCore import QVariant, QLocale
 from qgis.PyQt.QtGui import QValidator
 from qgis.core import QgsVectorLayer

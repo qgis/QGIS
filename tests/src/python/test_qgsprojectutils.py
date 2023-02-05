@@ -13,7 +13,6 @@ __copyright__ = 'Copyright 2021, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.testing import unittest
 from qgis.core import (
     QgsProjectUtils,
     QgsGroupLayer,

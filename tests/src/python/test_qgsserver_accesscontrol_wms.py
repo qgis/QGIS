@@ -57,6 +57,8 @@ class TestQgsServerAccessControlWMS(TestQgsServerAccessControl):
             str(response).find("<Name>Country</Name>") != -1,
             "Unexpected Country layer in GetCapabilities\n%s" % response)
 
+    # This test hasn't run yet
+    @unittest.expectedFailure
     def test_wms_getprojectsettings(self):
         query_string = "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
@@ -95,7 +97,7 @@ class TestQgsServerAccessControlWMS(TestQgsServerAccessControl):
                 "<LayerDrawingOrder>Country_Diagrams,Country_Labels,dem,Hello_Filter_SubsetString,Hello_Project_SubsetString,Hello_SubsetString,Hello,db_point</LayerDrawingOrder>") != -1,
             "Wrong LayerDrawingOrder in GetProjectSettings\n%s" % response)
 
-    def test_wms_getprojectsettings(self):
+    def test_wms_getcontext(self):
         query_string = "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",

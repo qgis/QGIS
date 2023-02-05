@@ -8,8 +8,6 @@ ignore =
 	E501,
 	# do not use variables named ‘l’, ‘O’, or ‘I’
 	E741,
-	# redefinition of unused name from line N
-	F811,
 	# local variable name is assigned to but never used
 	F841,
 	# class names should use CapWords convention
@@ -127,3 +125,5 @@ exclude =
 	python/server/auto_additions/,
 	# Plenty of star imports used
 	python/PyQt/
+	.venv/
+	venv/
