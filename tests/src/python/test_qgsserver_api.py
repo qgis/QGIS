@@ -14,47 +14,41 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os
 import json
+import os
 import re
 import shutil
 
 # Deterministic XML
 os.environ['QT_HASH_SEED'] = '1'
 
+from urllib import parse
+
+from qgis.core import (
+    QgsFeature,
+    QgsFeatureRequest,
+    QgsGeometry,
+    QgsProject,
+    QgsVectorLayer,
+    QgsVectorLayerServerProperties,
+)
+from qgis.PyQt import QtCore
 from qgis.server import (
     QgsBufferServerRequest,
     QgsBufferServerResponse,
     QgsServer,
     QgsServerApi,
     QgsServerApiBadRequestException,
-    QgsServerQueryStringParameter,
     QgsServerApiContext,
+    QgsServerApiUtils,
     QgsServerOgcApi,
     QgsServerOgcApiHandler,
-    QgsServerApiUtils,
-    QgsServiceRegistry
+    QgsServerQueryStringParameter,
+    QgsServiceRegistry,
 )
-
-from qgis.core import (
-    QgsProject,
-    QgsRectangle,
-    QgsVectorLayerServerProperties,
-    QgsFeatureRequest,
-    QgsVectorLayer,
-    QgsFeature,
-    QgsGeometry,
-)
-
-from qgis.PyQt import QtCore
-
 from qgis.testing import unittest
-from utilities import unitTestDataPath
-from urllib import parse
-
-import tempfile
-
 from test_qgsserver import QgsServerTestBase
+from utilities import unitTestDataPath
 
 
 class QgsServerAPIUtilsTest(QgsServerTestBase):

@@ -11,22 +11,19 @@ __author__ = 'elpaso@itopen.it'
 __date__ = '2022-11-07'
 __copyright__ = 'Copyright 2022, ItOpen'
 
-from qgis.testing import start_app, unittest
 from qgis.PyQt.QtCore import QCoreApplication, QVariant
 from qgis.PyQt.QtGui import QColor
-
 from qgis.core import (
-    QgsProviderRegistry,
-    QgsSettings,
     QgsAbstractDatabaseProviderConnection,
+    QgsCoordinateReferenceSystem,
     QgsField,
     QgsFields,
-    QgsCoordinateReferenceSystem,
-    QgsWkbTypes,
+    QgsProviderRegistry,
+    QgsSettings,
     QgsVectorLayer,
+    QgsWkbTypes,
 )
-
-import time
+from qgis.testing import start_app, unittest
 
 
 class StyleStorageTestCaseBase(unittest.TestCase):

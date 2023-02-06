@@ -23,43 +23,28 @@ __author__ = 'Matthias Kuhn'
 __date__ = '2015-04-23'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-
-import os
-
+from qgis.PyQt.QtCore import QDate, QDateTime, QTime, QVariant
 from qgis.core import (
+    NULL,
+    QgsFeature,
+    QgsFeatureRequest,
     QgsField,
-    QgsFields,
+    QgsGeometry,
     QgsLayerDefinition,
     QgsPointXY,
-    QgsReadWriteContext,
-    QgsVectorLayer,
-    QgsFeatureRequest,
-    QgsFeature,
-    QgsGeometry,
-    QgsWkbTypes,
-    NULL,
-    QgsMemoryProviderUtils,
-    QgsCoordinateReferenceSystem,
-    QgsRectangle,
-    QgsTestUtils,
     QgsProviderMetadata,
     QgsProviderRegistry,
+    QgsReadWriteContext,
+    QgsRectangle,
+    QgsTestUtils,
+    QgsVectorLayer,
+    QgsWkbTypes,
 )
-
-from qgis.testing import (
-    start_app,
-    unittest
-)
-
-from utilities import (
-    unitTestDataPath,
-    compareWkt
-)
+from qgis.testing import start_app, unittest
 
 from provider_python import PyProvider
-
 from providertestbase import ProviderTestCase
-from qgis.PyQt.QtCore import QVariant, QDateTime, QDate, QTime
+from utilities import compareWkt, unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

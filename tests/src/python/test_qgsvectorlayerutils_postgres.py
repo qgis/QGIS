@@ -10,13 +10,14 @@ __date__ = '22/03/2021'
 __copyright__ = 'Copyright 2021, The QGIS Project'
 
 import os
-import qgis  # NOQA
 
-from qgis.core import (QgsVectorLayer,
-                       QgsVectorLayerUtils,
-                       QgsDefaultValue,
-                       NULL
-                       )
+import qgis  # NOQA
+from qgis.core import (
+    NULL,
+    QgsDefaultValue,
+    QgsVectorLayer,
+    QgsVectorLayerUtils,
+)
 from qgis.testing import start_app, unittest
 
 start_app()

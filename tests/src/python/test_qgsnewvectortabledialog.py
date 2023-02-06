@@ -13,25 +13,23 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 
-import tempfile
 import shutil
+import tempfile
 
+from qgis.PyQt.QtWidgets import (
+    QCheckBox,
+    QComboBox,
+    QDialogButtonBox,
+    QLineEdit,
+)
 from qgis.core import (
-    QgsApplication,
+    QgsFields,
     QgsProviderRegistry,
     QgsVectorLayer,
     QgsWkbTypes,
-    QgsFields
 )
-
 from qgis.gui import QgsNewVectorTableDialog
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtWidgets import (
-    QDialogButtonBox,
-    QLineEdit,
-    QComboBox,
-    QCheckBox
-)
 
 from utilities import unitTestDataPath
 

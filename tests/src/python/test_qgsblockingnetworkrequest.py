@@ -11,15 +11,13 @@ __date__ = '12/11/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
 import qgis  # NOQA
+from qgis.PyQt.QtCore import QUrl
+from qgis.PyQt.QtNetwork import QNetworkReply, QNetworkRequest
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.core import QgsBlockingNetworkRequest
+from qgis.testing import start_app, unittest
 
 import mockedwebserver
-import os
-from qgis.testing import unittest, start_app
-from qgis.core import QgsBlockingNetworkRequest
-from utilities import unitTestDataPath
-from qgis.PyQt.QtCore import QUrl
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtNetwork import QNetworkReply, QNetworkRequest
 
 app = start_app()
 

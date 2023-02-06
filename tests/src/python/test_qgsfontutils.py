@@ -11,16 +11,11 @@ __author__ = 'Larry Shaffer'
 __date__ = '2014/02/19'
 __copyright__ = 'Copyright 2014, The QGIS Project'
 
-from qgis.core import QgsFontUtils, QgsSettings
-from qgis.testing import (
-    start_app,
-    unittest
-)
 from qgis.PyQt.QtCore import QCoreApplication
-from utilities import (
-    getTestFontFamily,
-    loadTestFonts
-)
+from qgis.core import QgsFontUtils, QgsSettings
+from qgis.testing import start_app, unittest
+
+from utilities import getTestFontFamily, loadTestFonts
 
 
 class TestQgsFontUtils(unittest.TestCase):

@@ -11,16 +11,13 @@ __copyright__ = 'Copyright 2021, The QGIS Project'
 
 from qgis.core import (
     Qgis,
-    QgsWkbTypes,
+    QgsMapLayerType,
     QgsProviderRegistry,
-    QgsProviderUtils,
     QgsProviderSublayerDetails,
-    QgsMapLayerType
+    QgsProviderUtils,
+    QgsWkbTypes,
 )
-from qgis.testing import (
-    unittest,
-    start_app
-)
+from qgis.testing import start_app, unittest
 
 from utilities import unitTestDataPath
 

@@ -13,27 +13,25 @@ __author__ = 'Alessandro Pasotti'
 __date__ = '25/05/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-import os
 import json
+import os
 
 # Needed on Qt 5 so that the serialization of XML is consistent among all executions
 os.environ['QT_HASH_SEED'] = '1'
 
 import re
-import urllib.request
-import urllib.parse
 import urllib.error
-
-from qgis.testing import unittest
+import urllib.parse
+import urllib.request
 
 import osgeo.gdal  # NOQA
 
 from owslib.wms import WebMapService
-
-from test_qgsserver import QgsServerTestBase
 from qgis.core import QgsProject
-from qgis.server import QgsServer, QgsServerRequest, QgsBufferServerResponse
 from qgis.PyQt.QtCore import QUrl
+from qgis.server import QgsBufferServerResponse, QgsServer, QgsServerRequest
+from qgis.testing import unittest
+from test_qgsserver import QgsServerTestBase
 
 # Strip path and content length because path may vary
 RE_STRIP_UNCHECKABLE = b'MAP=[^"]+|SERVICE=[^"]+|Content-Length: \\d+'

@@ -10,23 +10,22 @@ __date__ = '09/01/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.core import (QgsProjectDisplaySettings,
-                       QgsReadWriteContext,
-                       QgsBearingNumericFormat,
-                       QgsGeographicCoordinateNumericFormat,
-                       QgsSettings,
-                       QgsLocalDefaultSettings,
-                       QgsUnitTypes,
-                       QgsCoordinateReferenceSystem,
-                       Qgis)
-
 from qgis.PyQt.QtCore import QCoreApplication
-
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
+from qgis.core import (
+    Qgis,
+    QgsBearingNumericFormat,
+    QgsCoordinateReferenceSystem,
+    QgsGeographicCoordinateNumericFormat,
+    QgsLocalDefaultSettings,
+    QgsProjectDisplaySettings,
+    QgsReadWriteContext,
+    QgsSettings,
+)
 from qgis.testing import start_app, unittest
-from utilities import (unitTestDataPath)
+
+from utilities import unitTestDataPath
 
 app = start_app()
 TEST_DATA_DIR = unitTestDataPath()

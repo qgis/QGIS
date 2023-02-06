@@ -1067,6 +1067,36 @@ double QgsCompoundCurve::yAt( int index ) const
   return 0.0;
 }
 
+double QgsCompoundCurve::zAt( int index ) const
+{
+  int currentVertexId = 0;
+  for ( int j = 0; j < mCurves.size(); ++j )
+  {
+    int nCurvePoints = mCurves.at( j )->numPoints();
+    if ( ( index - currentVertexId ) < nCurvePoints )
+    {
+      return mCurves.at( j )->zAt( index - currentVertexId );
+    }
+    currentVertexId += ( nCurvePoints - 1 );
+  }
+  return 0.0;
+}
+
+double QgsCompoundCurve::mAt( int index ) const
+{
+  int currentVertexId = 0;
+  for ( int j = 0; j < mCurves.size(); ++j )
+  {
+    int nCurvePoints = mCurves.at( j )->numPoints();
+    if ( ( index - currentVertexId ) < nCurvePoints )
+    {
+      return mCurves.at( j )->mAt( index - currentVertexId );
+    }
+    currentVertexId += ( nCurvePoints - 1 );
+  }
+  return 0.0;
+}
+
 bool QgsCompoundCurve::transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback )
 {
   bool res = true;

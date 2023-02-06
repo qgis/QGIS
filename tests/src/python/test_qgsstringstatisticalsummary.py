@@ -11,8 +11,7 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.core import (QgsStringStatisticalSummary
-                       )
+from qgis.core import QgsStringStatisticalSummary
 from qgis.testing import unittest
 
 

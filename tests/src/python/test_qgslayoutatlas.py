@@ -9,43 +9,43 @@ __author__ = 'Nyall Dawson'
 __date__ = '19/12/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
-from qgis.PyQt import sip
-import tempfile
-import shutil
-import os
 import glob
+import os
+import shutil
+import tempfile
 
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QDir, QFileInfo, QRectF
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
-    QgsPrintLayout,
+    QgsCategorizedSymbolRenderer,
+    QgsCoordinateReferenceSystem,
+    QgsFeature,
+    QgsFillSymbol,
+    QgsFontUtils,
+    QgsGeometry,
+    QgsLayoutItemLabel,
+    QgsLayoutItemLegend,
+    QgsLayoutItemMap,
     QgsLayoutObject,
+    QgsLayoutPoint,
+    QgsLegendStyle,
+    QgsMarkerSymbol,
+    QgsPointXY,
+    QgsPrintLayout,
     QgsProject,
     QgsProperty,
-    QgsFillSymbol,
     QgsReadWriteContext,
-    QgsLayoutItemMap,
-    QgsLayoutPoint,
-    QgsVectorLayer,
     QgsRectangle,
-    QgsCoordinateReferenceSystem,
-    QgsSingleSymbolRenderer,
-    QgsLayoutItemLabel,
-    QgsFontUtils,
-    QgsFeature,
-    QgsGeometry,
-    QgsPointXY,
-    QgsCategorizedSymbolRenderer,
     QgsRendererCategory,
-    QgsMarkerSymbol,
-    QgsLayoutItemLegend,
-    QgsLegendStyle)
-from qgis.PyQt.QtCore import QFileInfo, QRectF, QDir
-from qgis.PyQt.QtXml import QDomDocument
-from utilities import unitTestDataPath
+    QgsSingleSymbolRenderer,
+    QgsVectorLayer,
+)
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtTest import QSignalSpy
 
 from qgslayoutchecker import QgsLayoutChecker
+from utilities import unitTestDataPath
 
 start_app()
 

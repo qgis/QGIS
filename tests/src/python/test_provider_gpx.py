@@ -9,21 +9,11 @@ __author__ = 'Nyall Dawson'
 __date__ = '2021-07-30'
 __copyright__ = 'Copyright 2021, The QGIS Project'
 
-from qgis.core import (
-    QgsVectorLayer,
-    QgsFeature,
-    QgsPoint,
-    QgsProviderRegistry
-)
-from qgis.testing import (
-    start_app,
-    unittest
-)
+from qgis.core import QgsFeature, QgsPoint, QgsProviderRegistry, QgsVectorLayer
+from qgis.testing import start_app, unittest
 
 from providertestbase import ProviderTestCase
-from utilities import (
-    unitTestDataPath
-)
+from utilities import unitTestDataPath
 
 start_app()
 

@@ -11,30 +11,29 @@ __author__ = 'Matthias Kuhn'
 __date__ = '2015-04-27'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
+from qgis.PyQt.QtCore import QDate, QDateTime, Qt, QTime, QVariant
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
-    QgsApplication,
-    QgsRectangle,
-    QgsFeatureRequest,
-    QgsFeature,
-    QgsGeometry,
+    NULL,
     QgsAbstractFeatureIterator,
-    QgsExpressionContextScope,
-    QgsExpressionContext,
+    QgsApplication,
+    QgsDataProvider,
     QgsExpression,
-    QgsVectorDataProvider,
-    QgsVectorLayerFeatureSource,
+    QgsExpressionContext,
+    QgsExpressionContextScope,
+    QgsFeature,
+    QgsFeatureRequest,
     QgsFeatureSink,
-    QgsTestUtils,
     QgsFeatureSource,
     QgsFieldConstraints,
-    QgsDataProvider,
+    QgsGeometry,
+    QgsRectangle,
+    QgsTestUtils,
+    QgsVectorDataProvider,
+    QgsVectorLayerFeatureSource,
     QgsVectorLayerUtils,
-    NULL
 )
-from qgis.PyQt.QtCore import Qt, QDate, QTime, QDateTime, QVariant
-from qgis.PyQt.QtTest import QSignalSpy
 
-from utilities import compareWkt
 from featuresourcetestbase import FeatureSourceTestCase
 
 

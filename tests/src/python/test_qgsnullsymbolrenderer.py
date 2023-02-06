@@ -19,19 +19,20 @@ __author__ = 'Nyall Dawson'
 __date__ = 'April 2016'
 __copyright__ = '(C) 2016, Nyall Dawson'
 
-import qgis  # NOQA
-
 import os
 
+import qgis  # NOQA
 from qgis.PyQt.QtCore import QSize
-
-from qgis.core import (QgsVectorLayer,
-                       QgsProject,
-                       QgsRectangle,
-                       QgsMultiRenderChecker,
-                       QgsNullSymbolRenderer)
+from qgis.core import (
+    QgsMultiRenderChecker,
+    QgsNullSymbolRenderer,
+    QgsProject,
+    QgsRectangle,
+    QgsVectorLayer,
+)
 from qgis.testing import start_app, unittest
 from qgis.testing.mocked import get_iface
+
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them

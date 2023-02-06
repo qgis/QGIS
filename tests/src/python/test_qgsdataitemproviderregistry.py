@@ -11,10 +11,12 @@ __copyright__ = 'Copyright 2018, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.core import (QgsApplication,
-                       QgsDataItemProvider,
-                       QgsDataProvider,
-                       QgsDataItemProviderRegistry)
+from qgis.core import (
+    QgsApplication,
+    QgsDataItemProvider,
+    QgsDataItemProviderRegistry,
+    QgsDataProvider,
+)
 from qgis.testing import start_app, unittest
 
 app = start_app()

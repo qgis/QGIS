@@ -13,17 +13,17 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import os
-from test_qgsproviderconnection_base import TestPyQgsProviderConnectionBase
-from qgis.core import (
-    QgsVectorLayer,
-    QgsProviderRegistry,
-    QgsDataSourceUri,
-    QgsAbstractDatabaseProviderConnection,
-    QgsProviderConnectionException,
 
+from qgis.PyQt.QtSql import QSqlDatabase, QSqlQuery
+from qgis.core import (
+    QgsAbstractDatabaseProviderConnection,
+    QgsDataSourceUri,
+    QgsProviderConnectionException,
+    QgsProviderRegistry,
 )
 from qgis.testing import unittest
-from qgis.PyQt.QtSql import QSqlDatabase, QSqlQuery
+
+from test_qgsproviderconnection_base import TestPyQgsProviderConnectionBase
 
 
 class TestPyQgsProviderConnectionOracle(unittest.TestCase, TestPyQgsProviderConnectionBase):

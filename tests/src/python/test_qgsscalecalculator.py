@@ -10,11 +10,8 @@ __date__ = '30/12/2021'
 __copyright__ = 'Copyright 2021, The QGIS Project'
 
 import qgis  # NOQA
-import math
-from qgis.PyQt.QtCore import Qt, QSizeF
-from qgis.PyQt.QtTest import QSignalSpy
 
-from qgis.core import QgsScaleCalculator, QgsRectangle, QgsUnitTypes
+from qgis.core import QgsRectangle, QgsScaleCalculator, QgsUnitTypes
 from qgis.testing import start_app, unittest
 
 start_app()

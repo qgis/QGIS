@@ -10,19 +10,19 @@ __date__ = '15/10/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import os
-from qgis.testing import unittest
-
-from utilities import printImportant
-from doxygen_parser import DoxygenParser
-
-from termcolor import colored
 
 # Import all the things!
-from qgis.analysis import *         # NOQA
-from qgis.core import *             # NOQA
-from qgis.gui import *              # NOQA
+from qgis.analysis import *  # NOQA
+from qgis.core import *  # NOQA
+from qgis.gui import *  # NOQA
+from qgis.testing import unittest
+from termcolor import colored
+from utilities import printImportant
+
+from doxygen_parser import DoxygenParser
+
 try:
-    from qgis.server import *       # NOQA
+    from qgis.server import *  # NOQA
 except:
     pass
 

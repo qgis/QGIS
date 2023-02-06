@@ -16,8 +16,8 @@ test_versioncompare.py
 
 import qgis  # NOQA
 
-from qgis.testing import unittest, start_app
 from pyplugin_installer.version_compare import compareVersions
+from qgis.testing import start_app, unittest
 
 start_app()
 

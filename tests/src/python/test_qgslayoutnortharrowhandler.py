@@ -10,19 +10,19 @@ __date__ = '05/04/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
 from qgis.PyQt.QtCore import QRectF
 from qgis.PyQt.QtTest import QSignalSpy
-from qgis.core import (QgsLayoutNorthArrowHandler,
-                       QgsLayout,
-                       QgsLayoutItemMap,
-                       QgsRectangle,
-                       QgsCoordinateReferenceSystem,
-                       QgsProject
-                       )
+from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsLayout,
+    QgsLayoutItemMap,
+    QgsLayoutNorthArrowHandler,
+    QgsProject,
+    QgsRectangle,
+)
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
 
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

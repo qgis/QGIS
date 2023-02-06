@@ -12,19 +12,15 @@ __date__ = '28/01/2022'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import os
-import sys
-import qgis  # NOQA
-
 from pathlib import Path
 from time import time
 
+import qgis  # NOQA
+from qgis.core import QgsApplication
+from qgis.server import QgsConfigCache, QgsServerSettings
 from qgis.testing import unittest
-from utilities import unitTestDataPath
-from qgis.server import (QgsConfigCache,
-                         QgsServerSettings)
-from qgis.core import QgsApplication, QgsProject
 
-from test_qgsserver import QgsServerTestBase
+from utilities import unitTestDataPath
 
 
 class TestQgsServerConfigCache(unittest.TestCase):

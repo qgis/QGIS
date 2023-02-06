@@ -18,51 +18,60 @@ __author__ = 'Matthias Kuhn'
 __date__ = '2015-04-23'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-import qgis  # NOQA
-import psycopg2
-
 import os
 import time
 from datetime import datetime
 
+import psycopg2
+import qgis  # NOQA
+from qgis.PyQt.QtCore import (
+    QByteArray,
+    QDate,
+    QDateTime,
+    QDir,
+    QObject,
+    QTemporaryDir,
+    QTime,
+    QVariant,
+)
+from qgis.PyQt.QtWidgets import QLabel
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.analysis import QgsNativeAlgorithms
 from qgis.core import (
+    NULL,
     Qgis,
     QgsApplication,
-    QgsVectorLayer,
-    QgsVectorLayerExporter,
+    QgsCoordinateReferenceSystem,
+    QgsDataProvider,
+    QgsDataSourceUri,
+    QgsDefaultValue,
+    QgsFeature,
     QgsFeatureRequest,
     QgsFeatureSource,
-    QgsFeature,
     QgsFieldConstraints,
-    QgsDataProvider,
-    QgsVectorLayerUtils,
-    QgsSettings,
-    QgsTransactionGroup,
+    QgsGeometry,
+    QgsProcessingContext,
+    QgsProcessingFeedback,
+    QgsProcessingUtils,
+    QgsProject,
+    QgsProviderConnectionException,
+    QgsProviderRegistry,
     QgsReadWriteContext,
     QgsRectangle,
     QgsReferencedGeometry,
-    QgsDefaultValue,
-    QgsCoordinateReferenceSystem,
-    QgsProcessingUtils,
-    QgsProcessingContext,
-    QgsProcessingFeedback,
-    QgsProject,
-    QgsWkbTypes,
-    QgsGeometry,
-    QgsProviderRegistry,
+    QgsSettings,
+    QgsTransactionGroup,
     QgsVectorDataProvider,
-    QgsDataSourceUri,
-    QgsProviderConnectionException,
-    NULL,
+    QgsVectorLayer,
+    QgsVectorLayerExporter,
+    QgsVectorLayerUtils,
+    QgsWkbTypes,
 )
-from qgis.analysis import QgsNativeAlgorithms
-from qgis.gui import QgsGui, QgsAttributeForm
-from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir, QObject, QByteArray, QTemporaryDir
-from qgis.PyQt.QtWidgets import QLabel
+from qgis.gui import QgsAttributeForm, QgsGui
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtXml import QDomDocument
-from utilities import unitTestDataPath, compareWkt
+
 from providertestbase import ProviderTestCase
+from utilities import compareWkt, unitTestDataPath
 
 QGISAPP = start_app()
 TEST_DATA_DIR = unitTestDataPath()

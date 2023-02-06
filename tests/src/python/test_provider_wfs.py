@@ -10,43 +10,45 @@ __date__ = '2016-03-25'
 __copyright__ = 'Copyright 2016, Even Rouault'
 
 import hashlib
+import http.server
 import os
 import re
 import shutil
-import tempfile
-import http.server
-import threading
 import socketserver
+import tempfile
+import threading
 
 # Needed on Qt 5 so that the serialization of XML is consistent among all executions
 os.environ['QT_HASH_SEED'] = '1'
 
-from qgis.PyQt.QtCore import QCoreApplication, Qt, QObject, QDateTime, QEventLoop
-
+from providertestbase import ProviderTestCase
 from qgis.core import (
     Qgis,
-    QgsWkbTypes,
-    QgsVectorLayer,
-    QgsFeature,
-    QgsGeometry,
-    QgsRectangle,
-    QgsPointXY,
-    QgsVectorDataProvider,
-    QgsFeatureRequest,
     QgsApplication,
-    QgsSettings,
     QgsExpression,
-    QgsExpressionContextUtils,
     QgsExpressionContext,
     QgsExpressionContextScope,
+    QgsExpressionContextUtils,
+    QgsFeature,
+    QgsFeatureRequest,
+    QgsGeometry,
     QgsMapLayerType,
-    QgsProviderRegistry
+    QgsPointXY,
+    QgsProviderRegistry,
+    QgsRectangle,
+    QgsSettings,
+    QgsVectorDataProvider,
+    QgsVectorLayer,
+    QgsWkbTypes,
 )
-
-from qgis.testing import (start_app,
-                          unittest
-                          )
-from providertestbase import ProviderTestCase
+from qgis.PyQt.QtCore import (
+    QCoreApplication,
+    QDateTime,
+    QEventLoop,
+    QObject,
+    Qt,
+)
+from qgis.testing import start_app, unittest
 from utilities import compareWkt, unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()

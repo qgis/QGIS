@@ -24,7 +24,7 @@
 #include "qgsprocessingparameterdefinitionwidget.h"
 #include "qgsmaptool.h"
 #include "qgsprocessingcontext.h"
-#include "processing/models/qgsprocessingmodelchildparametersource.h"
+#include "qgsprocessingmodelchildparametersource.h"
 
 #include <QAbstractButton>
 

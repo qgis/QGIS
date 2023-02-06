@@ -9,36 +9,34 @@ __author__ = 'Nyall Dawson'
 __date__ = '2016-07-06'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
 
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QDate, QDateTime, QTime, QVariant
+from qgis.PyQt.QtSql import QSqlDatabase, QSqlQuery
 from qgis.core import (
-    Qgis,
-    QgsSettings,
-    QgsVectorLayer,
-    QgsFeatureRequest,
     NULL,
-    QgsProject,
-    QgsTransactionGroup,
-    QgsFeature,
-    QgsGeometry,
-    QgsWkbTypes,
+    Qgis,
+    QgsCoordinateReferenceSystem,
     QgsDataProvider,
-    QgsVectorLayerExporter,
+    QgsFeature,
+    QgsFeatureRequest,
     QgsField,
     QgsFields,
-    QgsCoordinateReferenceSystem,
+    QgsGeometry,
+    QgsProject,
     QgsProjUtils,
-    QgsProviderRegistry
+    QgsProviderRegistry,
+    QgsSettings,
+    QgsTransactionGroup,
+    QgsVectorLayer,
+    QgsVectorLayerExporter,
+    QgsWkbTypes,
 )
-
-from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant
-from qgis.PyQt.QtSql import QSqlDatabase, QSqlQuery
-
-from utilities import unitTestDataPath, compareWkt
 from qgis.testing import start_app, unittest
+
 from providertestbase import ProviderTestCase
+from utilities import compareWkt, unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

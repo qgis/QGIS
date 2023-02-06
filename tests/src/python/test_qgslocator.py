@@ -9,22 +9,22 @@ __author__ = '(C) 2017 by Nyall Dawson'
 __date__ = '6/05/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
-
-import os
-
-from qgis.core import (QgsLocator,
-                       QgsLocatorFilter,
-                       QgsLocatorContext,
-                       QgsLocatorResult,
-                       QgsLocatorModel,
-                       QgsLocatorProxyModel,
-                       QgsLocatorAutomaticModel,
-                       QgsSettings)
-from qgis.PyQt.QtCore import QVariant, pyqtSignal, QCoreApplication
 from time import sleep
-from qgis.testing import start_app, unittest
+
+import qgis  # NOQA
 from qgis.PyQt import sip
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.core import (
+    QgsLocator,
+    QgsLocatorAutomaticModel,
+    QgsLocatorContext,
+    QgsLocatorFilter,
+    QgsLocatorModel,
+    QgsLocatorProxyModel,
+    QgsLocatorResult,
+    QgsSettings,
+)
+from qgis.testing import start_app, unittest
 
 start_app()
 

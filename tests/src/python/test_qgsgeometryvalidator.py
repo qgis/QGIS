@@ -9,18 +9,9 @@ __author__ = 'Nyall Dawson'
 __date__ = '03/10/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
-from qgis.core import (
-    QgsGeometry,
-    QgsGeometryValidator,
-    QgsPointXY
-)
-
-from qgis.testing import (
-    unittest,
-    start_app
-)
-
 from qgis.PyQt.QtTest import QSignalSpy
+from qgis.core import QgsGeometry, QgsGeometryValidator, QgsPointXY
+from qgis.testing import start_app, unittest
 
 app = start_app()
 

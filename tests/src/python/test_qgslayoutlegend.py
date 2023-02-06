@@ -9,45 +9,45 @@ __author__ = '(C) 2017 by Nyall Dawson'
 __date__ = '24/10/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-from qgis.PyQt.QtCore import QRectF, QDir
-from qgis.PyQt.QtGui import QColor
-
-from qgis.core import (QgsPrintLayout,
-                       QgsCoordinateReferenceSystem,
-                       QgsLayoutItemLegend,
-                       QgsLayoutItemMap,
-                       QgsLayout,
-                       QgsMapSettings,
-                       QgsVectorLayer,
-                       QgsMarkerSymbol,
-                       QgsSingleSymbolRenderer,
-                       QgsRectangle,
-                       QgsProject,
-                       QgsLayoutObject,
-                       QgsProperty,
-                       QgsLayoutMeasurement,
-                       QgsLayoutItem,
-                       QgsLayoutPoint,
-                       QgsLayoutSize,
-                       QgsExpression,
-                       QgsMapLayerLegendUtils,
-                       QgsLegendStyle,
-                       QgsFontUtils,
-                       QgsLineSymbol,
-                       QgsMapThemeCollection,
-                       QgsCategorizedSymbolRenderer,
-                       QgsRendererCategory,
-                       QgsFillSymbol,
-                       QgsApplication,
-                       QgsRuleBasedRenderer)
-from qgis.testing import (start_app,
-                          unittest
-                          )
-from utilities import unitTestDataPath
-from qgslayoutchecker import QgsLayoutChecker
 import os
 from time import sleep
+
+from qgis.PyQt.QtCore import QDir, QRectF
+from qgis.PyQt.QtGui import QColor
+from qgis.core import (
+    QgsCategorizedSymbolRenderer,
+    QgsCoordinateReferenceSystem,
+    QgsExpression,
+    QgsFillSymbol,
+    QgsFontUtils,
+    QgsLayout,
+    QgsLayoutItem,
+    QgsLayoutItemLegend,
+    QgsLayoutItemMap,
+    QgsLayoutMeasurement,
+    QgsLayoutObject,
+    QgsLayoutPoint,
+    QgsLayoutSize,
+    QgsLegendStyle,
+    QgsLineSymbol,
+    QgsMapLayerLegendUtils,
+    QgsMapSettings,
+    QgsMapThemeCollection,
+    QgsMarkerSymbol,
+    QgsPrintLayout,
+    QgsProject,
+    QgsProperty,
+    QgsRectangle,
+    QgsRendererCategory,
+    QgsRuleBasedRenderer,
+    QgsSingleSymbolRenderer,
+    QgsVectorLayer,
+)
+from qgis.testing import start_app, unittest
+
+from qgslayoutchecker import QgsLayoutChecker
 from test_qgslayoutitem import LayoutItemTestCase
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

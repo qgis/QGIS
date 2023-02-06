@@ -12,8 +12,7 @@ __date__ = '2019-11-21'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
 from hdbcli import dbapi
-from qgis.core import (
-    QgsVectorLayer, QgsDataSourceUri)
+from qgis.core import QgsDataSourceUri, QgsVectorLayer
 
 
 class QgsHanaProviderUtils:

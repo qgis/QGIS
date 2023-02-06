@@ -19,25 +19,23 @@ __author__ = 'Nyall Dawson'
 __date__ = 'April 2022'
 __copyright__ = '(C) 2022, Nyall Dawson'
 
-import qgis  # NOQA
-
 import os
-from utilities import unitTestDataPath
 
+import qgis  # NOQA
 from qgis.PyQt.QtCore import QDir, QSize
-
 from qgis.core import (
-    QgsMapSettings,
-    QgsRenderChecker,
-    QgsVectorLayer,
-    QgsRectangle,
-    QgsMultiRenderChecker,
-    QgsSingleSymbolRenderer,
     QgsAnimatedMarkerSymbolLayer,
-    QgsMarkerSymbol
+    QgsMapSettings,
+    QgsMarkerSymbol,
+    QgsMultiRenderChecker,
+    QgsRectangle,
+    QgsRenderChecker,
+    QgsSingleSymbolRenderer,
+    QgsVectorLayer,
 )
+from qgis.testing import start_app, unittest
 
-from qgis.testing import unittest, start_app
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

@@ -16,13 +16,14 @@ __copyright__ = 'Copyright 2020, ItOpen'
 import os
 
 from qgis.core import (
-    QgsProject,
     QgsLegendModel,
-    QgsLegendSettings,
     QgsLegendRenderer,
+    QgsLegendSettings,
+    QgsProject,
     QgsRenderContext,
 )
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 QGISAPP = start_app()

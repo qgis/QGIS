@@ -11,11 +11,13 @@ __author__ = 'David Marteau'
 __date__ = '10/09/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
-from qgis.testing import unittest
-import urllib.request
-import urllib.parse
 import urllib.error
-from test_qgsserver_accesscontrol import TestQgsServerAccessControl, XML_NS
+import urllib.parse
+import urllib.request
+
+from qgis.testing import unittest
+
+from test_qgsserver_accesscontrol import TestQgsServerAccessControl
 
 
 class TestQgsServerAccessControlFixFilters(TestQgsServerAccessControl):

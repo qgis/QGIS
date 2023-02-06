@@ -16,13 +16,14 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 import os
-import sys
-import re
-import subprocess
-import tempfile
 import random
+import re
 import string
+import subprocess
+import sys
+import tempfile
 import urllib
+
 from functools import partial
 
 __author__ = 'Alessandro Pasotti'
@@ -31,23 +32,16 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 
 from shutil import rmtree
 
-from utilities import unitTestDataPath, waitServer
 from qgis.core import (
     QgsApplication,
     QgsAuthMethodConfig,
-    QgsVectorLayer,
-    QgsRasterLayer,
     QgsFileDownloader,
+    QgsRasterLayer,
+    QgsVectorLayer,
 )
-
-from qgis.testing import (
-    start_app,
-    unittest,
-)
-from qgis.PyQt.QtCore import (
-    QEventLoop,
-    QUrl,
-)
+from qgis.PyQt.QtCore import QEventLoop, QUrl
+from qgis.testing import start_app, unittest
+from utilities import unitTestDataPath, waitServer
 
 try:
     QGIS_SERVER_ENDPOINT_PORT = os.environ['QGIS_SERVER_ENDPOINT_PORT']

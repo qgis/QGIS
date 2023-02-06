@@ -12,8 +12,8 @@ __date__ = '28/08/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
 from qgis.testing import unittest
-from test_qgsserver_accesscontrol import TestQgsServerAccessControl, XML_NS
 
+from test_qgsserver_accesscontrol import XML_NS, TestQgsServerAccessControl
 
 WFS_TRANSACTION_INSERT = """<?xml version="1.0" encoding="UTF-8"?>
 <wfs:Transaction {xml_ns}>

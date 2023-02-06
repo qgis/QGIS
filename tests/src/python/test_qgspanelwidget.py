@@ -10,8 +10,7 @@ __date__ = '16/08/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.PyQt.QtWidgets import QWidget, QDialog
+from qgis.PyQt.QtWidgets import QDialog, QWidget
 from qgis.gui import QgsPanelWidget
 from qgis.testing import start_app, unittest
 

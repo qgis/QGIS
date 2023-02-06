@@ -9,22 +9,25 @@ __author__ = 'Nyall Dawson'
 __date__ = '1/02/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import os
-import qgis  # NOQA
-import tempfile
 import glob
+import os
 import shutil
-import sip
+import tempfile
 
-from qgis.core import (QgsReadWriteContext,
-                       QgsVectorLayer,
-                       QgsRasterLayer,
-                       QgsProject,
-                       QgsLayerMetadata,
-                       QgsLayerNotesUtils)
-from qgis.testing import start_app, unittest
-from qgis.PyQt.QtXml import QDomDocument
+import qgis  # NOQA
+import sip
 from qgis.PyQt.QtCore import QTemporaryDir
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.core import (
+    QgsLayerMetadata,
+    QgsLayerNotesUtils,
+    QgsProject,
+    QgsRasterLayer,
+    QgsReadWriteContext,
+    QgsVectorLayer,
+)
+from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()

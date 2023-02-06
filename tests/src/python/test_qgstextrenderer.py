@@ -13,37 +13,47 @@ import os
 
 import qgis  # NOQA
 from PyQt5.QtSvg import QSvgGenerator
-from qgis.PyQt.QtCore import (Qt, QT_VERSION_STR, QSizeF, QPointF, QRectF, QDir, QSize)
-from qgis.PyQt.QtGui import (QColor, QPainter, QFont, QImage, QBrush, QPen)
+from qgis.PyQt.QtCore import (
+    QT_VERSION_STR,
+    QDir,
+    QPointF,
+    QRectF,
+    QSize,
+    QSizeF,
+    Qt,
+)
+from qgis.PyQt.QtGui import QBrush, QColor, QFont, QImage, QPainter, QPen
 from qgis.PyQt.QtXml import QDomDocument
-from qgis.core import (Qgis,
-                       QgsTextBufferSettings,
-                       QgsTextMaskSettings,
-                       QgsTextBackgroundSettings,
-                       QgsTextShadowSettings,
-                       QgsTextFormat,
-                       QgsUnitTypes,
-                       QgsMapUnitScale,
-                       QgsVectorLayer,
-                       QgsTextRenderer,
-                       QgsMapSettings,
-                       QgsReadWriteContext,
-                       QgsRenderContext,
-                       QgsRectangle,
-                       QgsRenderChecker,
-                       QgsBlurEffect,
-                       QgsMarkerSymbol,
-                       QgsFillSymbol,
-                       QgsSimpleFillSymbolLayer,
-                       QgsPalLayerSettings,
-                       QgsProperty,
-                       QgsFontUtils,
-                       QgsSymbolLayerId,
-                       QgsSymbolLayerReference,
-                       QgsStringUtils,
-                       QgsTextDocument,
-                       QgsTextDocumentMetrics)
-from qgis.testing import unittest, start_app
+from qgis.core import (
+    Qgis,
+    QgsBlurEffect,
+    QgsFillSymbol,
+    QgsFontUtils,
+    QgsMapSettings,
+    QgsMapUnitScale,
+    QgsMarkerSymbol,
+    QgsPalLayerSettings,
+    QgsProperty,
+    QgsReadWriteContext,
+    QgsRectangle,
+    QgsRenderChecker,
+    QgsRenderContext,
+    QgsSimpleFillSymbolLayer,
+    QgsStringUtils,
+    QgsSymbolLayerId,
+    QgsSymbolLayerReference,
+    QgsTextBackgroundSettings,
+    QgsTextBufferSettings,
+    QgsTextDocument,
+    QgsTextDocumentMetrics,
+    QgsTextFormat,
+    QgsTextMaskSettings,
+    QgsTextRenderer,
+    QgsTextShadowSettings,
+    QgsUnitTypes,
+    QgsVectorLayer,
+)
+from qgis.testing import start_app, unittest
 
 from utilities import getTestFont, svgSymbolsPath
 

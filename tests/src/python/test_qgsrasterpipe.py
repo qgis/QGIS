@@ -23,11 +23,12 @@ __date__ = 'June 2021'
 __copyright__ = '(C) 2021, Nyall Dawson'
 
 import qgis  # NOQA
-from qgis.core import (QgsRasterPipe,
-                       QgsProperty,
-                       QgsExpressionContext,
-                       QgsSingleBandPseudoColorRenderer
-                       )
+from qgis.core import (
+    QgsExpressionContext,
+    QgsProperty,
+    QgsRasterPipe,
+    QgsSingleBandPseudoColorRenderer,
+)
 from qgis.testing import start_app, unittest
 
 from utilities import unitTestDataPath

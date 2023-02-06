@@ -9,38 +9,39 @@ __author__ = 'Alessandro Pasotti'
 __date__ = '2018-09'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
-import re
 import os
-from qgis.PyQt.QtCore import QCoreApplication, QVariant, QTemporaryDir
-from qgis.core import (
-    QgsFeature,
-    QgsGeometry,
-    QgsSettings,
-    QgsApplication,
-    QgsMemoryProviderUtils,
-    QgsWkbTypes,
-    QgsField,
-    QgsFields,
-    QgsProcessingFeatureSourceDefinition,
-    QgsProcessingContext,
-    QgsProcessingFeedback,
-    QgsCoordinateReferenceSystem,
-    QgsProject,
-    QgsProcessingException,
-    QgsVectorLayer,
-    QgsFeatureSink,
-    QgsProperty
-)
+import re
+import shutil
+
 from processing.core.Processing import Processing
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.tools import dataobjects
 from processing.gui.AlgorithmExecutor import execute_in_place_run
-from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
-from qgis.PyQt.QtTest import QSignalSpy
+from processing.tools import dataobjects
+from qgis.PyQt.QtCore import QCoreApplication, QTemporaryDir, QVariant
 from qgis.analysis import QgsNativeAlgorithms
-from qgis.core import QgsVectorLayerUtils, QgsFeatureRequest
-import shutil
+from qgis.core import (
+    QgsApplication,
+    QgsCoordinateReferenceSystem,
+    QgsFeature,
+    QgsFeatureRequest,
+    QgsFeatureSink,
+    QgsField,
+    QgsFields,
+    QgsGeometry,
+    QgsMemoryProviderUtils,
+    QgsProcessingContext,
+    QgsProcessingException,
+    QgsProcessingFeedback,
+    QgsProject,
+    QgsProperty,
+    QgsSettings,
+    QgsVectorLayer,
+    QgsVectorLayerUtils,
+    QgsWkbTypes,
+)
+from qgis.testing import start_app, unittest
+
+from utilities import unitTestDataPath
 
 start_app()
 

@@ -10,12 +10,9 @@ __date__ = '08/11/2021'
 __copyright__ = 'Copyright 2021, The QGIS Project'
 
 import qgis  # NOQA
-from qgis.analysis import (
-    QgsGraph
-)
-from qgis.core import (
-    QgsPointXY
-)
+
+from qgis.analysis import QgsGraph
+from qgis.core import QgsPointXY
 from qgis.testing import start_app, unittest
 
 start_app()

@@ -23,20 +23,21 @@ import os
 
 import qgis  # NOQA
 from qgis.PyQt.QtCore import QSize
-from qgis.PyQt.QtGui import QPainter, QColor
+from qgis.PyQt.QtGui import QColor, QPainter
 from qgis.core import (
+    Qgis,
+    QgsMapSettings,
+    QgsMultiBandColorRenderer,
+    QgsMultiRenderChecker,
+    QgsPainting,
+    QgsProject,
+    QgsRasterLayer,
+    QgsRectangle,
     QgsVectorLayer,
     QgsVectorSimplifyMethod,
-    QgsProject,
-    QgsMultiRenderChecker,
-    QgsRasterLayer,
-    QgsMultiBandColorRenderer,
-    QgsRectangle,
-    QgsMapSettings,
-    Qgis,
-    QgsPainting
 )
 from qgis.testing import unittest
+
 from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()

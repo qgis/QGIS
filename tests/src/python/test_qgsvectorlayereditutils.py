@@ -12,37 +12,29 @@ __author__ = 'Loïc Bartoletti'
 __date__ = '18/10/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
-import qgis  # NOQA
-
-import tempfile
 import os
+import tempfile
 
+import qgis  # NOQA
 from qgis.PyQt.QtCore import (
     QVariant,
-    Qt,
-    QDateTime,
-    QDate,
-    QTime,
-    QTimer,
-    QTemporaryDir,
 )
-
-from qgis.core import (Qgis,
-                       QgsFeature,
-                       QgsField,
-                       QgsFields,
-                       QgsGeometry,
-                       QgsLineString,
-                       QgsPoint,
-                       QgsPointXY,
-                       QgsCoordinateReferenceSystem,
-                       QgsCoordinateTransformContext,
-                       QgsVectorLayer,
-                       QgsVectorLayerEditUtils,
-                       QgsVectorFileWriter,
-                       QgsWkbTypes)
-
-
+from qgis.core import (
+    Qgis,
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransformContext,
+    QgsFeature,
+    QgsField,
+    QgsFields,
+    QgsGeometry,
+    QgsLineString,
+    QgsPoint,
+    QgsPointXY,
+    QgsVectorFileWriter,
+    QgsVectorLayer,
+    QgsVectorLayerEditUtils,
+    QgsWkbTypes,
+)
 from qgis.testing import start_app, unittest
 
 start_app()

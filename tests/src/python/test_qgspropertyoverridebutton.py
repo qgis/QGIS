@@ -10,17 +10,15 @@ __date__ = '11/01/2019'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.core import (QgsPropertyDefinition,
-                       QgsProperty,
-                       QgsApplication,
-                       QgsProjectColorScheme)
-
-from qgis.gui import (QgsColorButton,
-                      QgsPropertyOverrideButton)
-
-from qgis.testing import start_app, unittest
 from qgis.PyQt.QtGui import QColor
+from qgis.core import (
+    QgsApplication,
+    QgsProjectColorScheme,
+    QgsProperty,
+    QgsPropertyDefinition,
+)
+from qgis.gui import QgsColorButton, QgsPropertyOverrideButton
+from qgis.testing import start_app, unittest
 
 start_app()
 

@@ -10,13 +10,12 @@ __date__ = '2019-05-25'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
 from qgis.core import (
-    QgsProjUtils,
     QgsCoordinateReferenceSystem,
-    QgsDatumTransform
+    QgsDatumTransform,
+    QgsProjUtils,
 )
-from qgis.testing import (start_app,
-                          unittest,
-                          )
+from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()

@@ -124,17 +124,24 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 # executions
 os.environ['QT_HASH_SEED'] = '1'
 
-import sys
+import copy
+import math
 import signal
 import ssl
-import math
-import copy
+import sys
 import urllib.parse
+
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from socketserver import ThreadingMixIn
 
 from qgis.core import QgsApplication
-from qgis.server import QgsServer, QgsServerRequest, QgsBufferServerRequest, QgsBufferServerResponse, QgsServerFilter
+from qgis.server import (
+    QgsBufferServerRequest,
+    QgsBufferServerResponse,
+    QgsServer,
+    QgsServerFilter,
+    QgsServerRequest,
+)
 
 QGIS_SERVER_PORT = int(os.environ.get('QGIS_SERVER_PORT', '8081'))
 QGIS_SERVER_HOST = os.environ.get('QGIS_SERVER_HOST', '127.0.0.1')
@@ -258,9 +265,10 @@ xyzfilter = XYZFilter(qgs_server.serverInterface())
 qgs_server.serverInterface().registerFilter(xyzfilter)
 
 if QGIS_SERVER_OAUTH2_AUTH:
-    from qgis.server import QgsServerFilter
-    from oauthlib.oauth2 import RequestValidator, LegacyApplicationServer
     from datetime import datetime
+
+    from oauthlib.oauth2 import LegacyApplicationServer, RequestValidator
+    from qgis.server import QgsServerFilter
 
     # Naive token storage implementation
     _tokens = {}

@@ -9,21 +9,30 @@ __author__ = 'Nyall Dawson'
 __date__ = '11/04/2017'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
-import qgis  # NOQA
+import http.server
 import os
-
-from qgis.core import (QgsApplication, QgsVectorLayer, QgsReadWriteContext, QgsEditFormConfig,
-                       QgsFetchedContent, QgsAttributeEditorContainer, QgsFeature, QgsSettings,
-                       Qgis, QgsNetworkContentFetcherRegistry, QgsAttributeEditorElement)
-from qgis.gui import QgsGui
-
-from qgis.testing import start_app, unittest
-from qgis.PyQt.QtXml import QDomDocument
-from qgis.PyQt.QtGui import QColor
-from utilities import unitTestDataPath
 import socketserver
 import threading
-import http.server
+
+import qgis  # NOQA
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.core import (
+    QgsApplication,
+    QgsAttributeEditorContainer,
+    QgsAttributeEditorElement,
+    QgsEditFormConfig,
+    QgsFeature,
+    QgsFetchedContent,
+    QgsNetworkContentFetcherRegistry,
+    QgsReadWriteContext,
+    QgsSettings,
+    QgsVectorLayer,
+)
+from qgis.gui import QgsGui
+from qgis.testing import start_app, unittest
+
+from utilities import unitTestDataPath
 
 app = start_app()
 

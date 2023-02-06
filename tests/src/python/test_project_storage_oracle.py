@@ -11,22 +11,19 @@ __author__ = 'Julien Cabieces'
 __date__ = '2022-04-19'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
-import time
 
+import qgis  # NOQA
+from PyQt5.QtCore import QUrl, QUrlQuery
+from qgis.PyQt.QtSql import QSqlDatabase, QSqlQuery
 from qgis.core import (
-    QgsApplication,
     QgsDataSourceUri,
     QgsVectorLayer,
-    QgsProject,
 )
-from PyQt5.QtCore import QDateTime, QUrl, QUrlQuery
-from qgis.PyQt.QtSql import QSqlDatabase, QSqlQuery
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
+
 from test_project_storage_base import TestPyQgsProjectStorageBase
+from utilities import unitTestDataPath
 
 QGISAPP = start_app()
 TEST_DATA_DIR = unitTestDataPath()

@@ -9,18 +9,15 @@ __author__ = 'Nyall Dawson'
 __date__ = '18/12/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
+import os
 import shutil
+import tempfile
 
 import qgis  # NOQA
-
-import tempfile
-import os
-from qgis.core import (
-    Qgis,
-    QgsFileUtils
-)
 from qgis.PyQt.QtCore import QTemporaryDir
+from qgis.core import Qgis, QgsFileUtils
 from qgis.testing import unittest
+
 from utilities import unitTestDataPath
 
 

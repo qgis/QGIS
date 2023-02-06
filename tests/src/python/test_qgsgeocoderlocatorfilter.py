@@ -10,24 +10,19 @@ __date__ = '02/11/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsFeedback,
     QgsGeocoderInterface,
-    QgsWkbTypes,
     QgsGeocoderResult,
     QgsGeometry,
-    QgsPointXY,
-    QgsCoordinateReferenceSystem,
     QgsLocatorContext,
-    QgsFeedback,
-    QgsGeocoderContext,
-    QgsRectangle
+    QgsPointXY,
+    QgsRectangle,
+    QgsWkbTypes,
 )
-from qgis.gui import (
-    QgsMapCanvas,
-    QgsGeocoderLocatorFilter
-)
+from qgis.gui import QgsGeocoderLocatorFilter, QgsMapCanvas
 from qgis.testing import start_app, unittest
 
 start_app()

@@ -9,18 +9,14 @@ __author__ = 'Nyall Dawson'
 __date__ = '24/02/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
-import qgis  # NOQA switch sip api
-
-from qgis.core import (QgsVectorLayer,
-                       QgsRasterLayer,
-                       QgsMapLayer)
-from qgis.gui import (QgsMapLayerActionRegistry,
-                      QgsMapLayerAction)
-
-from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
-
 import os
+
+import qgis  # NOQA switch sip api
+from qgis.core import QgsMapLayer, QgsRasterLayer, QgsVectorLayer
+from qgis.gui import QgsMapLayerAction
+from qgis.testing import start_app, unittest
+
+from utilities import unitTestDataPath
 
 start_app()
 

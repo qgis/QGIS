@@ -9,18 +9,10 @@ __author__ = 'Loïc Bartoletti'
 __date__ = '27/07/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
 
-from qgis.core import (
-    QgsVectorLayer,
-    QgsProject,
-    QgsRelationManager
-)
-from qgis.gui import (
-    QgsMapCanvas
-)
+import qgis  # NOQA
+from qgis.core import QgsProject, QgsVectorLayer
 from qgis.testing import start_app, unittest
 
 start_app()

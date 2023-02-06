@@ -75,7 +75,10 @@ class TestQgsMapToPixelGeometrySimplifier : public QObject
     void testIsGeneralizableByMapBoundingBox();
     void testWkbDimensionMismatch();
     void testCircularString();
+    void testSnapToGrid();
+    void testSnapToGridZM();
     void testVisvalingam();
+    void testVisvalingamZM();
     void testRingValidity();
     void testAbstractGeometrySimplify();
 
@@ -196,6 +199,28 @@ void TestQgsMapToPixelGeometrySimplifier::testCircularString()
   QCOMPARE( simplifier.simplify( g ).asWkt(), WKT );
 }
 
+void TestQgsMapToPixelGeometrySimplifier::testSnapToGrid()
+{
+  const QString wkt( QStringLiteral( "LineString (0 0, 30 0, 31 30, 32 0, 40 0, 41 100, 42 0, 50 0)" ) );
+  const QgsGeometry g = QgsGeometry::fromWkt( wkt );
+
+  const QgsMapToPixelSimplifier simplifier( QgsMapToPixelSimplifier::SimplifyGeometry, 80, QgsMapToPixelSimplifier::SnapToGrid );
+  const QString expectedWkt( QStringLiteral( "LineString (0 0, 30 0, 32 0, 41 100, 42 0, 50 0)" ) );
+
+  QCOMPARE( simplifier.simplify( g ).asWkt(), expectedWkt );
+}
+
+void TestQgsMapToPixelGeometrySimplifier::testSnapToGridZM()
+{
+  const QString wkt( QStringLiteral( "LineString (0 0 101 1, 30 0 102 2, 31 30 103 3, 32 0 104 4, 40 0 105 5, 41 100 106 6, 42 0 107 7, 50 0 108 8)" ) );
+  const QgsGeometry g = QgsGeometry::fromWkt( wkt );
+
+  const QgsMapToPixelSimplifier simplifier( QgsMapToPixelSimplifier::SimplifyGeometry, 80, QgsMapToPixelSimplifier::SnapToGrid );
+  const QString expectedWkt( QStringLiteral( "LineStringZM (0 0 101 1, 30 0 102 2, 32 0 104 4, 41 100 106 6, 42 0 107 7, 50 0 108 8)" ) );
+
+  QCOMPARE( simplifier.simplify( g ).asWkt(), expectedWkt );
+}
+
 void TestQgsMapToPixelGeometrySimplifier::testVisvalingam()
 {
   const QString wkt( QStringLiteral( "LineString (0 0, 30 0, 31 30, 32 0, 40 0, 41 100, 42 0, 50 0)" ) );
@@ -203,6 +228,17 @@ void TestQgsMapToPixelGeometrySimplifier::testVisvalingam()
 
   const QgsMapToPixelSimplifier simplifier( QgsMapToPixelSimplifier::SimplifyGeometry, 7, QgsMapToPixelSimplifier::Visvalingam );
   const QString expectedWkt( QStringLiteral( "LineString (0 0, 40 0, 41 100, 42 0, 50 0)" ) );
+
+  QCOMPARE( simplifier.simplify( g ).asWkt(), expectedWkt );
+}
+
+void TestQgsMapToPixelGeometrySimplifier::testVisvalingamZM()
+{
+  const QString wkt( QStringLiteral( "LineStringZM (0 0 100 1, 30 0 100 1, 31 30 100 1, 32 0 100 1, 40 0 100 1, 41 100 100 1, 42 0 100 1, 50 0 100 1)" ) );
+  const QgsGeometry g = QgsGeometry::fromWkt( wkt );
+
+  const QgsMapToPixelSimplifier simplifier( QgsMapToPixelSimplifier::SimplifyGeometry, 7, QgsMapToPixelSimplifier::Visvalingam );
+  const QString expectedWkt( QStringLiteral( "LineStringZM (0 0 100 1, 40 0 100 1, 41 100 100 1, 42 0 100 1, 50 0 100 1)" ) );
 
   QCOMPARE( simplifier.simplify( g ).asWkt(), expectedWkt );
 }

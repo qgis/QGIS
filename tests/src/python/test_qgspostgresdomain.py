@@ -9,12 +9,10 @@ __author__ = 'Denis Rouzaud'
 __date__ = '10/02/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
 
-from qgis.core import QgsVectorLayer, QgsProject
-
+import qgis  # NOQA
+from qgis.core import QgsProject, QgsVectorLayer
 from qgis.testing import start_app, unittest
 
 start_app()

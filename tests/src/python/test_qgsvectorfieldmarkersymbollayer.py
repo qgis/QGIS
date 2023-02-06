@@ -21,24 +21,20 @@ __copyright__ = '(C) 2021, Nyall Dawson'
 
 import qgis  # NOQA
 from qgis.PyQt.QtCore import QDir, QVariant
-from qgis.PyQt.QtGui import QImage, QColor, QPainter
-from qgis.PyQt.QtXml import QDomDocument
-from qgis.core import (QgsGeometry,
-                       QgsFields,
-                       QgsField,
-                       QgsRenderContext,
-                       QgsFeature,
-                       QgsMapSettings,
-                       QgsRenderChecker,
-                       QgsReadWriteContext,
-                       QgsSymbolLayerUtils,
-                       QgsSimpleMarkerSymbolLayer,
-                       QgsLineSymbolLayer,
-                       QgsLineSymbol,
-                       QgsMarkerSymbol,
-                       QgsVectorFieldSymbolLayer
-                       )
-from qgis.testing import unittest, start_app
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.core import (
+    QgsFeature,
+    QgsField,
+    QgsFields,
+    QgsGeometry,
+    QgsLineSymbol,
+    QgsMapSettings,
+    QgsMarkerSymbol,
+    QgsRenderChecker,
+    QgsRenderContext,
+    QgsVectorFieldSymbolLayer,
+)
+from qgis.testing import start_app, unittest
 
 from utilities import unitTestDataPath
 

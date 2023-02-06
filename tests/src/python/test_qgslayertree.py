@@ -9,28 +9,24 @@ __author__ = 'Matthias Kuhn'
 __date__ = '22.3.2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
+from tempfile import TemporaryDirectory
 
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QCoreApplication, QDir, QEvent
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
+    QgsCoordinateTransformContext,
+    QgsGroupLayer,
     QgsLayerTree,
+    QgsLayerTreeGroup,
+    QgsLayerTreeLayer,
     QgsProject,
     QgsVectorLayer,
-    QgsLayerTreeLayer,
-    QgsLayerTreeGroup,
-    QgsGroupLayer,
-    QgsCoordinateTransformContext
 )
 from qgis.testing import start_app, unittest
-from utilities import (unitTestDataPath)
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtCore import (
-    QDir,
-    QCoreApplication,
-    QEvent
-)
-from tempfile import TemporaryDirectory
+
+from utilities import unitTestDataPath
 
 app = start_app()
 TEST_DATA_DIR = unitTestDataPath()

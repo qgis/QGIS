@@ -15,53 +15,47 @@ __author__ = 'Larry Shaffer'
 __date__ = '07/09/2013'
 __copyright__ = 'Copyright 2013, The QGIS Project'
 
-import qgis  # NOQA
-
-import os
-import sys
 import datetime
 import glob
+import os
 import shutil
+import sys
 from collections.abc import Callable
 
-from qgis.PyQt.QtCore import QSize, qDebug, Qt
-from qgis.PyQt.QtGui import QFont, QColor
-
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QSize, Qt, qDebug
+from qgis.PyQt.QtGui import QColor, QFont
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransform,
-    QgsDataSourceUri,
     QgsGeometry,
     QgsLabelingEngineSettings,
-    QgsProject,
     QgsMapSettings,
+    QgsMultiRenderChecker,
     QgsPalLabeling,
     QgsPalLayerSettings,
-    QgsProviderRegistry,
+    QgsProject,
     QgsStringReplacementCollection,
+    QgsTextFormat,
+    QgsUnitTypes,
     QgsVectorLayer,
     QgsVectorLayerSimpleLabeling,
-    QgsMultiRenderChecker,
-    QgsUnitTypes,
-    QgsVectorTileLayer,
-    QgsVectorTileBasicLabelingStyle,
-    QgsWkbTypes,
     QgsVectorTileBasicLabeling,
-    QgsTextFormat
+    QgsVectorTileBasicLabelingStyle,
+    QgsVectorTileLayer,
+    QgsWkbTypes,
 )
-
 from qgis.testing import start_app, unittest
 from qgis.testing.mocked import get_iface
 
 from utilities import (
-    unitTestDataPath,
     getTempfilePath,
-    renderMapToImage,
-    loadTestFonts,
     getTestFont,
-    openInBrowserTab
+    loadTestFonts,
+    openInBrowserTab,
+    renderMapToImage,
+    unitTestDataPath,
 )
-
 
 start_app(sys.platform != 'darwin')  # No cleanup on mac os x, it crashes the pallabelingcanvas test on exit
 FONTSLOADED = loadTestFonts()

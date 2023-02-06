@@ -11,27 +11,24 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtCore import QDir, QPointF
+from qgis.PyQt.QtGui import QColor, QImage, QPainter, QPolygonF
+from qgis.core import (
+    QgsColorRampShader,
+    QgsFeature,
+    QgsGeometry,
+    QgsInterpolatedLineColor,
+    QgsInterpolatedLineSymbolLayer,
+    QgsInterpolatedLineWidth,
+    QgsLineSymbol,
+    QgsMapSettings,
+    QgsProperty,
+    QgsRenderChecker,
+    QgsRenderContext,
+    QgsStyle,
+    QgsSymbolLayer,
+)
 from qgis.testing import unittest
-from qgis.PyQt.QtCore import (QDir,
-                              QPointF)
-from qgis.PyQt.QtGui import (QImage,
-                             QPainter,
-                             QColor,
-                             QPolygonF)
-from qgis.core import (QgsRenderChecker,
-                       QgsInterpolatedLineSymbolLayer,
-                       QgsInterpolatedLineWidth,
-                       QgsInterpolatedLineColor,
-                       QgsColorRampShader,
-                       QgsStyle,
-                       QgsMapSettings,
-                       QgsLineSymbol,
-                       QgsGeometry,
-                       QgsFeature,
-                       QgsRenderContext,
-                       QgsSymbolLayer,
-                       QgsProperty)
 
 
 class TestQgsLineSymbolLayers(unittest.TestCase):

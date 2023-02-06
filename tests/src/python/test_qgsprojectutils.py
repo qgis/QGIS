@@ -11,18 +11,18 @@ __copyright__ = 'Copyright 2021, The QGIS Project'
 
 
 import qgis  # NOQA
-
 from qgis.core import (
-    QgsProjectUtils,
-    QgsGroupLayer,
     QgsCoordinateTransformContext,
-    QgsVectorLayer,
-    QgsRasterLayer,
-    QgsProject,
+    QgsGroupLayer,
     QgsLayerTreeGroup,
     QgsLayerTreeLayer,
+    QgsProject,
+    QgsProjectUtils,
+    QgsRasterLayer,
+    QgsVectorLayer,
 )
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()

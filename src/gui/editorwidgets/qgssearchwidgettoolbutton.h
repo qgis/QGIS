@@ -16,7 +16,7 @@
 #ifndef QGSSEARCHWIDGETTOOLBUTTON_H
 #define QGSSEARCHWIDGETTOOLBUTTON_H
 
-#include "editorwidgets/core/qgssearchwidgetwrapper.h"
+#include "qgssearchwidgetwrapper.h"
 #include "qgis_sip.h"
 #include <QToolButton>
 #include "qgis_gui.h"

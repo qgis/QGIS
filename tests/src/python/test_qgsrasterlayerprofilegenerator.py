@@ -12,25 +12,17 @@ __copyright__ = 'Copyright 2022, The QGIS Project'
 import os
 
 import qgis  # NOQA
-
-from qgis.PyQt.QtCore import QTemporaryDir
-
 from qgis.core import (
-    QgsRasterLayer,
-    QgsLineString,
-    QgsProfileRequest,
     QgsCoordinateReferenceSystem,
-    QgsCoordinateTransformContext,
-    QgsFlatTerrainProvider,
-    QgsMeshTerrainProvider,
+    QgsLineString,
+    QgsProfileIdentifyContext,
     QgsProfilePoint,
+    QgsProfileRequest,
     QgsProfileSnapContext,
-    QgsProfileIdentifyContext
+    QgsRasterLayer,
 )
-
-from qgis.PyQt.QtXml import QDomDocument
-
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()

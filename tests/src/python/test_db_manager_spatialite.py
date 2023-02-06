@@ -9,19 +9,17 @@ __author__ = 'Even Rouault'
 __date__ = '2016-10-17'
 __copyright__ = 'Copyright 2016, Even Rouault'
 
-import qgis  # NOQA
-
 import os
-import tempfile
 import shutil
-from osgeo import gdal, ogr, osr
+import tempfile
 
-from qgis.core import QgsDataSourceUri, QgsSettings
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.testing import start_app, unittest
-
-from plugins.db_manager.db_plugins import supportedDbTypes, createDbPlugin
+import qgis  # NOQA
+from osgeo import ogr
+from plugins.db_manager.db_plugins import createDbPlugin, supportedDbTypes
 from plugins.db_manager.db_plugins.plugin import TableField
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.core import QgsDataSourceUri, QgsSettings
+from qgis.testing import start_app, unittest
 
 
 def GDAL_COMPUTE_VERSION(maj, min, rev):

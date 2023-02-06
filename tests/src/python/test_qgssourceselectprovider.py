@@ -10,12 +10,14 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-import os
-import tempfile
-from qgis.gui import (QgsGui, QgsSourceSelectProvider, QgsSourceSelectProviderRegistry, QgsAbstractDataSourceWidget)
-from qgis.testing import start_app, unittest
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QWidget
+from qgis.gui import (
+    QgsAbstractDataSourceWidget,
+    QgsGui,
+    QgsSourceSelectProvider,
+    QgsSourceSelectProviderRegistry,
+)
+from qgis.testing import start_app, unittest
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '01/09/2017'

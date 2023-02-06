@@ -11,19 +11,18 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 
 
 import qgis  # NOQA
-
-from qgis.testing import unittest
 from qgis.PyQt.QtCore import QDir
-from qgis.PyQt.QtGui import (QImage,
-                             QPainter,
-                             QColor)
-from qgis.core import (QgsRenderChecker,
-                       QgsSimpleLineSymbolLayer,
-                       QgsMapSettings,
-                       QgsLineSymbol,
-                       QgsGeometry,
-                       QgsFeature,
-                       QgsRenderContext)
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.core import (
+    QgsFeature,
+    QgsGeometry,
+    QgsLineSymbol,
+    QgsMapSettings,
+    QgsRenderChecker,
+    QgsRenderContext,
+    QgsSimpleLineSymbolLayer,
+)
+from qgis.testing import unittest
 
 
 class TestQgsLineSymbolLayers(unittest.TestCase):

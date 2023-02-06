@@ -19,41 +19,40 @@ __author__ = 'Matthias Kuhn'
 __date__ = 'December 2015'
 __copyright__ = '(C) 2015, Matthias Kuhn'
 
-import qgis  # NOQA
-
 import os
 
-from qgis.PyQt.QtCore import QSize, QDir, QPointF
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QDir, QPointF, QSize
 from qgis.PyQt.QtGui import QColor, QImage, QPainter, QPolygonF
 from qgis.core import (
-    QgsVectorLayer,
-    QgsSingleSymbolRenderer,
-    QgsFillSymbol,
-    QgsLineSymbol,
-    QgsMarkerSymbol,
-    QgsProject,
-    QgsRectangle,
-    QgsGeometryGeneratorSymbolLayer,
-    QgsSymbol,
-    QgsMultiRenderChecker,
-    QgsMapSettings,
     Qgis,
-    QgsUnitTypes,
-    QgsRenderContext,
-    QgsRenderChecker,
+    QgsArrowSymbolLayer,
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransform,
-    QgsArrowSymbolLayer,
     QgsFeature,
-    QgsGeometry,
+    QgsFillSymbol,
     QgsFontMarkerSymbolLayer,
     QgsFontUtils,
+    QgsGeometry,
+    QgsGeometryGeneratorSymbolLayer,
+    QgsLineSymbol,
+    QgsMapSettings,
+    QgsMarkerSymbol,
+    QgsMultiRenderChecker,
+    QgsProject,
+    QgsProperty,
+    QgsRectangle,
+    QgsRenderChecker,
+    QgsRenderContext,
+    QgsSingleSymbolRenderer,
+    QgsSymbol,
     QgsSymbolLayer,
-    QgsProperty
+    QgsUnitTypes,
+    QgsVectorLayer,
 )
-
 from qgis.testing import start_app, unittest
 from qgis.testing.mocked import get_iface
+
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them

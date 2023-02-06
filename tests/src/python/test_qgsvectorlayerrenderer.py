@@ -9,31 +9,31 @@ __author__ = 'Nyall Dawson'
 __date__ = '2020-06'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
 
-from qgis.PyQt.QtCore import QSize, QDir
-
-from qgis.core import (QgsVectorLayer,
-                       QgsMapClippingRegion,
-                       QgsRectangle,
-                       QgsMultiRenderChecker,
-                       QgsGeometry,
-                       QgsSingleSymbolRenderer,
-                       QgsMapSettings,
-                       QgsFillSymbol,
-                       QgsCoordinateReferenceSystem,
-                       QgsRuleBasedRenderer,
-                       QgsFeatureRendererGenerator,
-                       QgsCategorizedSymbolRenderer,
-                       QgsRendererCategory,
-                       QgsCentroidFillSymbolLayer,
-                       QgsMarkerSymbol,
-                       QgsLineSymbol
-                       )
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QDir, QSize
+from qgis.core import (
+    QgsCategorizedSymbolRenderer,
+    QgsCentroidFillSymbolLayer,
+    QgsCoordinateReferenceSystem,
+    QgsFeatureRendererGenerator,
+    QgsFillSymbol,
+    QgsGeometry,
+    QgsLineSymbol,
+    QgsMapClippingRegion,
+    QgsMapSettings,
+    QgsMarkerSymbol,
+    QgsMultiRenderChecker,
+    QgsRectangle,
+    QgsRendererCategory,
+    QgsRuleBasedRenderer,
+    QgsSingleSymbolRenderer,
+    QgsVectorLayer,
+)
 from qgis.testing import start_app, unittest
-from utilities import (unitTestDataPath)
+
+from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
 # not used in this test

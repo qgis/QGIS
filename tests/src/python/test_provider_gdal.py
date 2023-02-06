@@ -14,6 +14,7 @@ import os
 import struct
 
 from osgeo import gdal
+from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.core import (
     Qgis,
     QgsPointXY,
@@ -22,7 +23,6 @@ from qgis.core import (
     QgsRectangle,
 )
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtCore import QTemporaryDir
 
 from utilities import unitTestDataPath
 

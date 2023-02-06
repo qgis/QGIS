@@ -24,11 +24,8 @@ import tempfile
 
 import qgis  # NOQA
 from qgis.PyQt.QtCore import QProcess
-from qgis.core import (
-    QgsBlockingProcess,
-    QgsFeedback
-)
-from qgis.testing import unittest, start_app
+from qgis.core import QgsBlockingProcess, QgsFeedback
+from qgis.testing import start_app, unittest
 
 from utilities import unitTestDataPath
 

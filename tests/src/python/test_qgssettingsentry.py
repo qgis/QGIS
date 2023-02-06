@@ -10,11 +10,26 @@ the Free Software Foundation; either version 2 of the License, or
 """
 
 from qgis import core as qgis_core
-from qgis.core import Qgis, QgsSettings, QgsSettingsTree, QgsSettingsEntryVariant, QgsSettingsEntryString, QgsSettingsEntryStringList, QgsSettingsEntryBool, QgsSettingsEntryInteger, QgsSettingsEntryDouble, QgsSettingsEntryColor, QgsSettingsEntryEnumFlag, QgsUnitTypes, QgsMapLayerProxyModel, QgsSettingsEntryVariantMap, QgsSettingsEntryGroup
-from qgis.testing import start_app, unittest
-
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor
+from qgis.core import (
+    Qgis,
+    QgsMapLayerProxyModel,
+    QgsSettings,
+    QgsSettingsEntryBool,
+    QgsSettingsEntryColor,
+    QgsSettingsEntryDouble,
+    QgsSettingsEntryEnumFlag,
+    QgsSettingsEntryGroup,
+    QgsSettingsEntryInteger,
+    QgsSettingsEntryString,
+    QgsSettingsEntryStringList,
+    QgsSettingsEntryVariant,
+    QgsSettingsEntryVariantMap,
+    QgsSettingsTree,
+    QgsUnitTypes,
+)
+from qgis.testing import start_app, unittest
 
 __author__ = 'Damiano Lombardi'
 __date__ = '02/04/2021'

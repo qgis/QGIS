@@ -9,24 +9,25 @@ __author__ = '(C) 2019 by Nyall Dawson'
 __date__ = '02/09/2019'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
-import qgis  # NOQA
 import os
 
-from qgis.PyQt.QtCore import QCoreApplication, QLocale, QTemporaryDir, QEvent
-
-from qgis.core import (QgsBookmark,
-                       QgsBookmarkManager,
-                       QgsProject,
-                       QgsReferencedRectangle,
-                       QgsRectangle,
-                       QgsCoordinateReferenceSystem,
-                       QgsSettings,
-                       QgsApplication)
-
-from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
-from qgis.PyQt.QtXml import QDomDocument
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QCoreApplication, QEvent, QLocale, QTemporaryDir
 from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.core import (
+    QgsApplication,
+    QgsBookmark,
+    QgsBookmarkManager,
+    QgsCoordinateReferenceSystem,
+    QgsProject,
+    QgsRectangle,
+    QgsReferencedRectangle,
+    QgsSettings,
+)
+from qgis.testing import start_app, unittest
+
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

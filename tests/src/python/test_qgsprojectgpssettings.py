@@ -9,27 +9,22 @@ __author__ = 'Nyall Dawson'
 __date__ = '03/11/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
-import qgis  # NOQA
 import os
 
-from qgis.core import (QgsProjectGpsSettings,
-                       QgsReadWriteContext,
-                       QgsBearingNumericFormat,
-                       QgsGeographicCoordinateNumericFormat,
-                       QgsSettings,
-                       QgsLocalDefaultSettings,
-                       QgsUnitTypes,
-                       QgsCoordinateReferenceSystem,
-                       Qgis,
-                       QgsVectorLayer,
-                       QgsProject)
-
+import qgis  # NOQA
 from qgis.PyQt.QtCore import QCoreApplication
-
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
+from qgis.core import (
+    QgsProject,
+    QgsProjectGpsSettings,
+    QgsReadWriteContext,
+    QgsSettings,
+    QgsVectorLayer,
+)
 from qgis.testing import start_app, unittest
-from utilities import (unitTestDataPath)
+
+from utilities import unitTestDataPath
 
 app = start_app()
 TEST_DATA_DIR = unitTestDataPath()

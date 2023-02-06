@@ -672,6 +672,10 @@ void TestQgsCompoundCurve::gettersSetters()
   ( void )cc.xAt( 1 );
   ( void )cc.yAt( -1 );
   ( void )cc.yAt( 1 );
+  ( void )cc.zAt( -1 );
+  ( void )cc.zAt( 1 );
+  ( void )cc.mAt( -1 );
+  ( void )cc.mAt( 1 );
 
   QgsCircularString cs;
   cs.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 )
@@ -689,6 +693,16 @@ void TestQgsCompoundCurve::gettersSetters()
   QCOMPARE( cc.yAt( 2 ), 22.0 );
   ( void ) cc.yAt( -1 ); //out of range
   ( void ) cc.yAt( 11 ); //out of range
+  QCOMPARE( cc.zAt( 0 ), 3.0 );
+  QCOMPARE( cc.zAt( 1 ), 13.0 );
+  QCOMPARE( cc.zAt( 2 ), 23.0 );
+  ( void ) cc.zAt( -1 ); //out of range
+  ( void ) cc.zAt( 11 ); //out of range
+  QCOMPARE( cc.mAt( 0 ), 4.0 );
+  QCOMPARE( cc.mAt( 1 ), 14.0 );
+  QCOMPARE( cc.mAt( 2 ), 24.0 );
+  ( void ) cc.mAt( -1 ); //out of range
+  ( void ) cc.mAt( 11 ); //out of range
 
   cs.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 21, 22, 23, 24 )
                 << QgsPoint( QgsWkbTypes::PointZM, 31, 22, 13, 14 ) );
@@ -708,14 +722,32 @@ void TestQgsCompoundCurve::gettersSetters()
   QCOMPARE( cc.yAt( 4 ), 0.0 );
   ( void ) cc.yAt( -1 ); //out of range
   ( void ) cc.yAt( 11 ); //out of range
+  QCOMPARE( cc.zAt( 0 ), 3.0 );
+  QCOMPARE( cc.zAt( 1 ), 13.0 );
+  QCOMPARE( cc.zAt( 2 ), 23.0 );
+  QCOMPARE( cc.zAt( 3 ), 13.0 );
+  QCOMPARE( cc.zAt( 4 ), 0.0 );
+  ( void ) cc.zAt( -1 ); //out of range
+  ( void ) cc.zAt( 11 ); //out of range
+  QCOMPARE( cc.mAt( 0 ), 4.0 );
+  QCOMPARE( cc.mAt( 1 ), 14.0 );
+  QCOMPARE( cc.mAt( 2 ), 24.0 );
+  QCOMPARE( cc.mAt( 3 ), 14.0 );
+  QCOMPARE( cc.mAt( 4 ), 0.0 );
+  ( void ) cc.mAt( -1 ); //out of range
+  ( void ) cc.mAt( 11 ); //out of range
 
   cc.moveVertex( QgsVertexId( 0, 0, 0 ), QgsPoint( 51.0, 52.0 ) );
   QCOMPARE( cc.xAt( 0 ), 51.0 );
   QCOMPARE( cc.yAt( 0 ), 52.0 );
+  QCOMPARE( cc.zAt( 0 ), 3.0 );
+  QCOMPARE( cc.mAt( 0 ), 4.0 );
 
   cc.moveVertex( QgsVertexId( 0, 0, 1 ), QgsPoint( 61.0, 62 ) );
   QCOMPARE( cc.xAt( 1 ), 61.0 );
   QCOMPARE( cc.yAt( 1 ), 62.0 );
+  QCOMPARE( cc.zAt( 1 ), 13.0 );
+  QCOMPARE( cc.mAt( 1 ), 14.0 );
 
   cc.moveVertex( QgsVertexId( 0, 0, -1 ), QgsPoint( 71.0, 2 ) ); //out of range
   cc.moveVertex( QgsVertexId( 0, 0, 11 ), QgsPoint( 71.0, 2 ) ); //out of range

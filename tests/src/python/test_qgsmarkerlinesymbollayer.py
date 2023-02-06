@@ -19,44 +19,43 @@ __author__ = 'Nyall Dawson'
 __date__ = 'November 2018'
 __copyright__ = '(C) 2018, Nyall Dawson'
 
-import qgis  # NOQA
-
 import os
-from utilities import unitTestDataPath
 
-from qgis.PyQt.QtCore import QDir, Qt, QSize
-from qgis.PyQt.QtGui import QImage, QColor, QPainter
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QDir, QSize, Qt
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.PyQt.QtXml import QDomDocument
+from qgis.core import (
+    Qgis,
+    QgsFeature,
+    QgsFillSymbol,
+    QgsFontMarkerSymbolLayer,
+    QgsFontUtils,
+    QgsGeometry,
+    QgsGeometryGeneratorSymbolLayer,
+    QgsLineSymbol,
+    QgsLineSymbolLayer,
+    QgsMapSettings,
+    QgsMarkerLineSymbolLayer,
+    QgsMarkerSymbol,
+    QgsMultiRenderChecker,
+    QgsProperty,
+    QgsReadWriteContext,
+    QgsRectangle,
+    QgsRenderChecker,
+    QgsRenderContext,
+    QgsSimpleMarkerSymbolLayer,
+    QgsSingleSymbolRenderer,
+    QgsSymbol,
+    QgsSymbolLayer,
+    QgsSymbolLayerUtils,
+    QgsTemplatedLineSymbolLayerBase,
+    QgsUnitTypes,
+    QgsVectorLayer,
+)
+from qgis.testing import start_app, unittest
 
-from qgis.core import (Qgis,
-                       QgsGeometry,
-                       QgsFillSymbol,
-                       QgsRenderContext,
-                       QgsFeature,
-                       QgsMapSettings,
-                       QgsRenderChecker,
-                       QgsVectorLayer,
-                       QgsReadWriteContext,
-                       QgsSymbolLayerUtils,
-                       QgsSimpleMarkerSymbolLayer,
-                       QgsLineSymbolLayer,
-                       QgsTemplatedLineSymbolLayerBase,
-                       QgsMarkerLineSymbolLayer,
-                       QgsMarkerSymbol,
-                       QgsGeometryGeneratorSymbolLayer,
-                       QgsSymbol,
-                       QgsFontMarkerSymbolLayer,
-                       QgsFontUtils,
-                       QgsLineSymbol,
-                       QgsSymbolLayer,
-                       QgsProperty,
-                       QgsRectangle,
-                       QgsUnitTypes,
-                       QgsMultiRenderChecker,
-                       QgsSingleSymbolRenderer
-                       )
-
-from qgis.testing import unittest, start_app
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

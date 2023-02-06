@@ -13,10 +13,11 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 
 from qgis.testing import unittest
 import os
+import urllib.error
 import urllib.request
 import urllib.parse
-import urllib.error
-from test_qgsserver_accesscontrol import TestQgsServerAccessControl, XML_NS
+
+from test_qgsserver_accesscontrol import XML_NS, TestQgsServerAccessControl
 
 
 class TestQgsServerAccessControlWFS(TestQgsServerAccessControl):

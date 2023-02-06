@@ -9,14 +9,15 @@ __author__ = 'Nyall Dawson'
 __date__ = '09/05/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
 import os
 
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QFileInfo
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import QgsRasterLayer
 from qgis.gui import QgsRasterBandComboBox
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtCore import QFileInfo
-from qgis.PyQt.QtTest import QSignalSpy
+
 from utilities import unitTestDataPath
 
 start_app()

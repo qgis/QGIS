@@ -10,18 +10,21 @@ __date__ = '15/07/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import os
+
 import qgis  # NOQA
-from qgis.PyQt.QtCore import QVariant, QTemporaryDir
+from qgis.PyQt.QtCore import QTemporaryDir, QVariant
 from qgis.PyQt.QtTest import QSignalSpy
-from qgis.core import (Qgis,
-                       QgsVectorLayer,
-                       QgsFeature,
-                       QgsProject,
-                       QgsGeometry,
-                       QgsPointXY,
-                       QgsField,
-                       QgsVectorFileWriter,
-                       QgsCoordinateTransformContext)
+from qgis.core import (
+    Qgis,
+    QgsCoordinateTransformContext,
+    QgsFeature,
+    QgsField,
+    QgsGeometry,
+    QgsPointXY,
+    QgsProject,
+    QgsVectorFileWriter,
+    QgsVectorLayer,
+)
 from qgis.testing import start_app, unittest
 
 start_app()

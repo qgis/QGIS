@@ -20,27 +20,26 @@ os.environ['QT_HASH_SEED'] = '1'
 
 import json
 import re
-import urllib.request
-import urllib.parse
 import urllib.error
-from lxml import etree as et
-from qgis.server import QgsServerRequest
-
-from qgis.testing import unittest
-from qgis.core import (
-    QgsProject,
-    QgsFeature,
-    QgsVectorLayer,
-    QgsFeatureRequest,
-    QgsExpression,
-    QgsCoordinateReferenceSystem,
-    QgsCoordinateTransform,
-    QgsCoordinateTransformContext,
-    QgsGeometry,
-)
+import urllib.parse
+import urllib.request
 
 import osgeo.gdal  # NOQA
 
+from lxml import etree as et
+from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform,
+    QgsCoordinateTransformContext,
+    QgsExpression,
+    QgsFeature,
+    QgsFeatureRequest,
+    QgsGeometry,
+    QgsProject,
+    QgsVectorLayer,
+)
+from qgis.server import QgsServerRequest
+from qgis.testing import unittest
 from test_qgsserver import QgsServerTestBase
 
 # Strip path and content length because path may vary

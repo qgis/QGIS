@@ -26,13 +26,13 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 from time import sleep
 
 from qgis.core import (
-    QgsFeature,
-    QgsGeometry,
-    QgsPointXY,
-    QgsFeatureRequest,
     QgsExpression,
-    QgsProject,
+    QgsFeature,
+    QgsFeatureRequest,
+    QgsGeometry,
     QgsOfflineEditing,
+    QgsPointXY,
+    QgsProject,
 )
 
 # Tet features, fields: [id, name, geometry]
