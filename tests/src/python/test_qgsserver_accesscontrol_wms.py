@@ -45,6 +45,9 @@ class TestQgsServerAccessControlWMS(TestQgsServerAccessControl):
             str(response).find("<Name>Hello</Name>") != -1,
             f"No Hello layer in GetCapabilities\n{response}")
         self.assertTrue(
+            str(response).find("<Name>Country_grp</Name>") != -1,
+            f"Unexpected Country_grp layer in GetCapabilities\n{response}")
+        self.assertTrue(
             str(response).find("<Name>Country</Name>") != -1,
             f"No Country layer in GetCapabilities\n{response}")
 
@@ -53,11 +56,12 @@ class TestQgsServerAccessControlWMS(TestQgsServerAccessControl):
             str(response).find("<Name>Hello</Name>") != -1,
             f"No Hello layer in GetCapabilities\n{response}")
         self.assertFalse(
+            str(response).find("<Name>Country_grp</Name>") != -1,
+            f"Unexpected Country_grp layer in GetCapabilities\n{response}")
+        self.assertFalse(
             str(response).find("<Name>Country</Name>") != -1,
             f"Unexpected Country layer in GetCapabilities\n{response}")
 
-    # This test hasn't run yet
-    @unittest.expectedFailure
     def test_wms_getprojectsettings(self):
         query_string = "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
@@ -78,7 +82,7 @@ class TestQgsServerAccessControlWMS(TestQgsServerAccessControl):
             f"No Country_grp layer in GetProjectSettings\n{response}")
         self.assertTrue(
             str(response).find(
-                "<LayerDrawingOrder>Country_Diagrams,Country_Labels,Country,dem,Hello_Filter_SubsetString,Hello_Project_SubsetString,Hello_SubsetString,Hello,db_point</LayerDrawingOrder>") != -1,
+                "<LayerDrawingOrder>Country_Diagrams,Country_Labels,Country,dem,Hello_Filter_SubsetString,Hello_Project_SubsetString,Hello_SubsetString,Hello_Filter,Hello_OnOff,Hello,db_point</LayerDrawingOrder>") != -1,
             f"LayerDrawingOrder in GetProjectSettings\n{response}")
 
         response, headers = self._get_restricted(query_string)
@@ -93,7 +97,7 @@ class TestQgsServerAccessControlWMS(TestQgsServerAccessControl):
             f"Unexpected Country_grp layer in GetProjectSettings\n{response}")
         self.assertTrue(
             str(response).find(
-                "<LayerDrawingOrder>Country_Diagrams,Country_Labels,dem,Hello_Filter_SubsetString,Hello_Project_SubsetString,Hello_SubsetString,Hello,db_point</LayerDrawingOrder>") != -1,
+                "<LayerDrawingOrder>Country_Diagrams,Country_Labels,dem,Hello_Filter_SubsetString,Hello_Project_SubsetString,Hello_SubsetString,Hello_Filter,Hello,db_point</LayerDrawingOrder>") != -1,
             f"Wrong LayerDrawingOrder in GetProjectSettings\n{response}")
 
     def test_wms_getcontext(self):
