@@ -37,7 +37,7 @@ class DatabaseInfo(object):
     def databaseInfo(self):
         info = self.db.connector.getDatabaseInfo()
         tbl = [
-            (QApplication.translate("DBManagerPlugin", "Database description: "), info[0])
+            (QApplication.translate("DBManagerPlugin", "Database description:") + " ", info[0])
         ]
         return HtmlTable(tbl)
         
