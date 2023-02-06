@@ -2641,11 +2641,11 @@ void QgsProjectProperties::addScaleToScaleList( QListWidgetItem *newItem )
   QListWidgetItem *duplicateItem = lstScales->findItems( newItem->text(), Qt::MatchExactly ).value( 0 );
   delete duplicateItem;
 
-  int newDenominator = newItem->data( Qt::UserRole ).toInt();
+  const int newDenominator = newItem->data( Qt::UserRole ).toInt();
   int i;
   for ( i = 0; i < lstScales->count(); i++ )
   {
-    int denominator = lstScales->item( i )->data( Qt::UserRole ).toInt();
+    const int denominator = lstScales->item( i )->data( Qt::UserRole ).toInt();
     if ( newDenominator > denominator )
       break;
   }
