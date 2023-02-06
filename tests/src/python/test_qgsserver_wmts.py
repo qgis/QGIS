@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer WMTS.
 
 From build dir, run: ctest -R PyQgsServerWMTS -V
@@ -48,7 +47,7 @@ class TestQgsServerWMTS(QgsServerTestBase):
             project = self.projectGroupsPath
         assert os.path.exists(project), "Project file not found: " + project
 
-        query_string = '?MAP=%s&SERVICE=WMTS&REQUEST=%s' % (urllib.parse.quote(project), request)
+        query_string = f'?MAP={urllib.parse.quote(project)}&SERVICE=WMTS&REQUEST={request}'
         if version:
             query_string += '&VERSION=%s' % version
 
@@ -74,7 +73,7 @@ class TestQgsServerWMTS(QgsServerTestBase):
         response = re.sub(RE_STRIP_UNCHECKABLE, b'', response)
         expected = re.sub(RE_STRIP_UNCHECKABLE, b'', expected)
 
-        self.assertXMLEqual(response, expected, msg="request %s failed.\n Query: %s" % (query_string, request))
+        self.assertXMLEqual(response, expected, msg=f"request {query_string} failed.\n Query: {request}")
 
     def wmts_request_compare_project(self, project, request, version='', extra_query_string='',
                                      reference_base_name=None):
@@ -104,7 +103,7 @@ class TestQgsServerWMTS(QgsServerTestBase):
         response = re.sub(RE_STRIP_UNCHECKABLE, b'', response)
         expected = re.sub(RE_STRIP_UNCHECKABLE, b'', expected)
 
-        self.assertXMLEqual(response, expected, msg="request %s failed.\n Query: %s" % (query_string, request))
+        self.assertXMLEqual(response, expected, msg=f"request {query_string} failed.\n Query: {request}")
 
     def test_operation_not_supported(self):
         qs = '?MAP=%s&SERVICE=WFS&VERSION=1.0.0&REQUEST=NotAValidRequest' % urllib.parse.quote(self.projectPath)

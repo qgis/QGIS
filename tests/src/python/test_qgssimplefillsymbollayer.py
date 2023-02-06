@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     test_qgssimplefillsymbollayer.py
@@ -219,7 +217,7 @@ class TestQgsSimpleFillSymbolLayer(unittest.TestCase):
         return image
 
     def imageCheck(self, name, reference_image, image):
-        TestQgsSimpleFillSymbolLayer.report += "<h2>Render {}</h2>\n".format(name)
+        TestQgsSimpleFillSymbolLayer.report += f"<h2>Render {name}</h2>\n"
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + 'symbol_' + name + ".png"
         image.save(file_name, "PNG")
@@ -230,7 +228,7 @@ class TestQgsSimpleFillSymbolLayer(unittest.TestCase):
         checker.setColorTolerance(2)
         result = checker.compareImages(name, 20)
         TestQgsSimpleFillSymbolLayer.report += checker.report()
-        print((TestQgsSimpleFillSymbolLayer.report))
+        print(TestQgsSimpleFillSymbolLayer.report)
         return result
 
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for edit widgets.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -45,7 +44,7 @@ def createLayer(manyFeatures: bool = False):
     if manyFeatures:
         for i in range(4, 100):
             f = QgsFeature()
-            f.setAttributes(["test{}".format(i), i])
+            f.setAttributes([f"test{i}", i])
             flist.append(f)
 
     assert pr.addFeatures(flist)

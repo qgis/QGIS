@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 ***************************************************************************
     test_qgsrasterrenderer_createsld.py
@@ -90,7 +89,7 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
         items = []
         for index in range(10):
             items.append(QgsColorRampShader.ColorRampItem(index, QColor('#{0:02d}{0:02d}{0:02d}'.format(index)),
-                                                          "{}".format(index)))
+                                                          f"{index}"))
         colorRampShaderFcn.setColorRampItemList(items)
         shader.setRasterShaderFunction(colorRampShaderFcn)
         # create instance to test
@@ -100,7 +99,7 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
         # do test
         dom, root = self.rendererToSld(self.raster_layer.renderer())
         self.assertNoOpacity(root)
-        self.assertChannelBand(root, 'sld:GrayChannel', '{}'.format(bandNo))
+        self.assertChannelBand(root, 'sld:GrayChannel', f'{bandNo}')
         # check ColorMapEntry classes
         colorMap = root.elementsByTagName('sld:ColorMap')
         colorMap = colorMap.item(0).toElement()
@@ -110,8 +109,8 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
         self.assertEqual(colorMapEntries.count(), 10)
         for index in range(colorMapEntries.count()):
             colorMapEntry = colorMapEntries.at(index).toElement()
-            self.assertEqual(colorMapEntry.attribute('quantity'), '{}'.format(index))
-            self.assertEqual(colorMapEntry.attribute('label'), '{}'.format(index))
+            self.assertEqual(colorMapEntry.attribute('quantity'), f'{index}')
+            self.assertEqual(colorMapEntry.attribute('label'), f'{index}')
             self.assertEqual(colorMapEntry.attribute('opacity'), '')
             self.assertEqual(colorMapEntry.attribute('color'), '#{0:02d}{0:02d}{0:02d}'.format(index))
 
@@ -130,7 +129,7 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
         items = []
         for index in range(10):
             items.append(QgsColorRampShader.ColorRampItem(index, QColor('#{0:02d}{0:02d}{0:02d}'.format(index)),
-                                                          "{}".format(index)))
+                                                          f"{index}"))
         colorRampShaderFcn.setColorRampItemList(items)
         shader.setRasterShaderFunction(colorRampShaderFcn)
         # create instance to test
@@ -140,7 +139,7 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
         # do test
         dom, root = self.rendererToSld(self.raster_layer.renderer())
         self.assertNoOpacity(root)
-        self.assertChannelBand(root, 'sld:GrayChannel', '{}'.format(bandNo))
+        self.assertChannelBand(root, 'sld:GrayChannel', f'{bandNo}')
         # check ColorMapEntry classes
         colorMap = root.elementsByTagName('sld:ColorMap')
         colorMap = colorMap.item(0).toElement()
@@ -150,8 +149,8 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
         self.assertEqual(colorMapEntries.count(), 10)
         for index in range(colorMapEntries.count()):
             colorMapEntry = colorMapEntries.at(index).toElement()
-            self.assertEqual(colorMapEntry.attribute('quantity'), '{}'.format(index))
-            self.assertEqual(colorMapEntry.attribute('label'), '{}'.format(index))
+            self.assertEqual(colorMapEntry.attribute('quantity'), f'{index}')
+            self.assertEqual(colorMapEntry.attribute('label'), f'{index}')
             self.assertEqual(colorMapEntry.attribute('opacity'), '')
             self.assertEqual(colorMapEntry.attribute('color'), '#{0:02d}{0:02d}{0:02d}'.format(index))
 
@@ -170,7 +169,7 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
         items = []
         for index in range(10):
             items.append(QgsColorRampShader.ColorRampItem(index, QColor('#{0:02d}{0:02d}{0:02d}'.format(index)),
-                                                          "{}".format(index)))
+                                                          f"{index}"))
         colorRampShaderFcn.setColorRampItemList(items)
         shader.setRasterShaderFunction(colorRampShaderFcn)
         # create instance to test
@@ -180,7 +179,7 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
         # do test
         dom, root = self.rendererToSld(self.raster_layer.renderer())
         self.assertNoOpacity(root)
-        self.assertChannelBand(root, 'sld:GrayChannel', '{}'.format(bandNo))
+        self.assertChannelBand(root, 'sld:GrayChannel', f'{bandNo}')
         # check ColorMapEntry classes
         colorMap = root.elementsByTagName('sld:ColorMap')
         colorMap = colorMap.item(0).toElement()
@@ -191,8 +190,8 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
         self.assertEqual(colorMapEntries.count(), 10)
         for index in range(colorMapEntries.count()):
             colorMapEntry = colorMapEntries.at(index).toElement()
-            self.assertEqual(colorMapEntry.attribute('quantity'), '{}'.format(index))
-            self.assertEqual(colorMapEntry.attribute('label'), '{}'.format(index))
+            self.assertEqual(colorMapEntry.attribute('quantity'), f'{index}')
+            self.assertEqual(colorMapEntry.attribute('label'), f'{index}')
             self.assertEqual(colorMapEntry.attribute('opacity'), '')
             self.assertEqual(colorMapEntry.attribute('color'), '#{0:02d}{0:02d}{0:02d}'.format(index))
 
@@ -206,7 +205,7 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
         items = []
         for index in range(255):
             items.append(
-                QgsColorRampShader.ColorRampItem(index, QColor.fromHsv(index, 255, 255, 255), "{}".format(index)))
+                QgsColorRampShader.ColorRampItem(index, QColor.fromHsv(index, 255, 255, 255), f"{index}"))
         colorRampShaderFcn.setColorRampItemList(items)
         shader.setRasterShaderFunction(colorRampShaderFcn)
         # create instance to test
@@ -241,8 +240,8 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
         self.assertEqual(colorMapEntries.count(), 10)
         for index in range(colorMapEntries.count()):
             colorMapEntry = colorMapEntries.at(index).toElement()
-            self.assertEqual(colorMapEntry.attribute('quantity'), '{}'.format(index))
-            self.assertEqual(colorMapEntry.attribute('label'), '{}'.format(index))
+            self.assertEqual(colorMapEntry.attribute('quantity'), f'{index}')
+            self.assertEqual(colorMapEntry.attribute('label'), f'{index}')
             self.assertEqual(colorMapEntry.attribute('opacity'), '')
             self.assertEqual(colorMapEntry.attribute('color'), '#{0:02d}{0:02d}{0:02d}'.format(index))
 
@@ -500,9 +499,9 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
                 found = True
                 self.assertEqual(vendorOption.firstChild().nodeValue(), expectedValue)
         if (expectedValue is None) and found:
-            self.fail("found VendorOption: {} where supposed not present".format(name))
+            self.fail(f"found VendorOption: {name} where supposed not present")
         if expectedValue and not found:
-            self.fail("Not found VendorOption: {}".format(name))
+            self.fail(f"Not found VendorOption: {name}")
 
     def assertGamma(self, root, expectedValue, index=0):
         enhancement = root.elementsByTagName('sld:ContrastEnhancement').item(index)

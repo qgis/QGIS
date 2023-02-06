@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for the MS SQL provider.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -52,7 +51,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         cls.vl = QgsVectorLayer(
             cls.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=',
             'test', 'mssql')
-        assert cls.vl.dataProvider() is not None, "No data provider for {}".format(cls.vl.source())
+        assert cls.vl.dataProvider() is not None, f"No data provider for {cls.vl.source()}"
         assert cls.vl.isValid(), cls.vl.dataProvider().error().message()
         cls.source = cls.vl.dataProvider()
         cls.poly_vl = QgsVectorLayer(
@@ -76,7 +75,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
 
     def setUp(self):
         for t in ['new_table', 'new_table_multipoint', 'new_table_multipolygon']:
-            self.execSQLCommand('DROP TABLE IF EXISTS qgis_test.[{}]'.format(t))
+            self.execSQLCommand(f'DROP TABLE IF EXISTS qgis_test.[{t}]')
 
     def execSQLCommand(self, sql):
         self.assertTrue(self.conn_api)
@@ -129,7 +128,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         QgsSettings().setValue('/qgis/compileExpressions', False)
 
     def partiallyCompiledFilters(self):
-        filters = set([
+        filters = {
             'name ILIKE \'QGIS\'',
             'name = \'Apple\'',
             '\"NaMe\" = \'Apple\'',
@@ -146,11 +145,11 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
             'lower(name) = \'apple\'',
             'upper(name) = \'APPLE\'',
             'name = trim(\'   Apple   \')'
-        ])
+        }
         return filters
 
     def uncompiledFilters(self):
-        filters = set([
+        filters = {
             '"name" IS NULL',
             '"name" IS NOT NULL',
             '"name" NOT LIKE \'Ap%\'',
@@ -211,7 +210,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
             '"dt" = to_datetime(\'000www14ww13ww12www4ww5ww2020\',\'zzzwwwsswwmmwwhhwwwdwwMwwyyyy\')',
             '"date" = to_date(\'www4ww5ww2020\',\'wwwdwwMwwyyyy\')',
             '"time" = to_time(\'000www14ww13ww12www\',\'zzzwwwsswwmmwwhhwww\')'
-        ])
+        }
         return filters
 
     def testGetFeaturesUncompiled(self):
@@ -308,7 +307,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         f4.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(4, 3)))
         pr.addFeatures([f, f2, f3, f4])
 
-        uri = '{} table="qgis_test"."new_table" sql='.format(self.dbconn)
+        uri = f'{self.dbconn} table="qgis_test"."new_table" sql='
         error, message = QgsVectorLayerExporter.exportLayer(layer, uri, 'mssql',
                                                             QgsCoordinateReferenceSystem('EPSG:4326'))
         self.assertEqual(error, QgsVectorLayerExporter.NoError)
@@ -341,7 +340,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         f3.setGeometry(QgsGeometry.fromWkt('MultiPoint(7 8)'))
         pr.addFeatures([f, f2, f3])
 
-        uri = '{} table="qgis_test"."new_table_multipoint" sql='.format(self.dbconn)
+        uri = f'{self.dbconn} table="qgis_test"."new_table_multipoint" sql='
         error, message = QgsVectorLayerExporter.exportLayer(layer, uri, 'mssql',
                                                             QgsCoordinateReferenceSystem('EPSG:3111'))
         self.assertEqual(error, QgsVectorLayerExporter.NoError)
@@ -394,7 +393,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
             self.assertEqual(new_layer.crs().authid(), 'EPSG:4326')
             result_geoms = [f.geometry().asWkt(14) for f in new_layer.getFeatures()]
             self.assertEqual(result_geoms, [t])
-            self.execSQLCommand('DROP TABLE IF EXISTS [qgis_test].[new_table_curvegeom_{}]'.format(str(idx)))
+            self.execSQLCommand(f'DROP TABLE IF EXISTS [qgis_test].[new_table_curvegeom_{str(idx)}]')
 
     def testStyle(self):
         self.execSQLCommand('DROP TABLE IF EXISTS layer_styles')
@@ -429,7 +428,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(errmsg)
 
         mFilePath = QDir.toNativeSeparators(
-            '%s/symbol_layer/%s.qml' % (unitTestDataPath(), "singleSymbol"))
+            '{}/symbol_layer/{}.qml'.format(unitTestDataPath(), "singleSymbol"))
         status = vl.loadNamedStyle(mFilePath)
         self.assertTrue(status)
 
@@ -507,7 +506,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         f.setGeometry(QgsGeometry.fromWkt('MultiPolygon(((0 0, 1 0, 1 1, 0 1, 0 0)),((10 0, 11 0, 11 1, 10 1, 10 0)))'))
         pr.addFeatures([f])
 
-        uri = '{} table="qgis_test"."new_table_multipolygon" sql='.format(self.dbconn)
+        uri = f'{self.dbconn} table="qgis_test"."new_table_multipolygon" sql='
         error, message = QgsVectorLayerExporter.exportLayer(layer, uri, 'mssql',
                                                             QgsCoordinateReferenceSystem('EPSG:4326'))
         self.assertEqual(error, QgsVectorLayerExporter.NoError)
@@ -536,7 +535,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         f.setAttributes([133])
         pr.addFeatures([f])
 
-        uri = '{} table="qgis_test"."sacrificialLamb" sql='.format(self.dbconn)
+        uri = f'{self.dbconn} table="qgis_test"."sacrificialLamb" sql='
         new_layer = QgsVectorLayer(uri, 'new', 'mssql')
         self.assertTrue(new_layer.isValid())
         self.assertEqual([f.attributes() for f in new_layer.getFeatures()], [[1]])
@@ -549,14 +548,14 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual([f.attributes() for f in new_layer.getFeatures()], [[1]])
 
     def testMultiGeomColumns(self):
-        uri = '{} table="qgis_test"."multiGeomColumns" (geom1) sql='.format(self.dbconn)
+        uri = f'{self.dbconn} table="qgis_test"."multiGeomColumns" (geom1) sql='
         new_layer = QgsVectorLayer(uri, 'new', 'mssql')
         self.assertTrue(new_layer.isValid())
 
         geom = {f[0]: f.geometry().asWkt() for f in new_layer.getFeatures()}
         self.assertEqual(geom, {1: 'Point (2 3)', 2: 'Point (3 4)', 3: '', 4: 'Point (5 6)', 5: 'Point (1 2)'})
 
-        uri = '{} table="qgis_test"."multiGeomColumns" (geom2) sql='.format(self.dbconn)
+        uri = f'{self.dbconn} table="qgis_test"."multiGeomColumns" (geom2) sql='
         new_layer2 = QgsVectorLayer(uri, 'new', 'mssql')
         self.assertTrue(new_layer2.isValid())
 
@@ -639,7 +638,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         """
         Check that tables with PKs composed of many fields of different types are correctly read and written to
         """
-        vl = QgsVectorLayer('{} type=POINT estimatedmetadata=true key=\'"pk1","pk2"\' table="qgis_test"."tb_test_compound_pk" (geom)'.format(self.dbconn), "test_compound", "mssql")
+        vl = QgsVectorLayer(f'{self.dbconn} type=POINT estimatedmetadata=true key=\'"pk1","pk2"\' table="qgis_test"."tb_test_compound_pk" (geom)', "test_compound", "mssql")
         self.assertTrue(vl.isValid())
 
         fields = vl.fields()
@@ -657,7 +656,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.commitChanges())
 
         # Did we get it right? Let's create a new QgsVectorLayer and try to read back our changes:
-        vl2 = QgsVectorLayer('{} type=POINT estimatedmetadata=true table="qgis_test"."tb_test_compound_pk" (geom) key=\'"pk1","pk2"\' '.format(self.dbconn), "test_compound2", "mssql")
+        vl2 = QgsVectorLayer(f'{self.dbconn} type=POINT estimatedmetadata=true table="qgis_test"."tb_test_compound_pk" (geom) key=\'"pk1","pk2"\' ', "test_compound2", "mssql")
         self.assertTrue(vl2.isValid())
         f2 = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression('pk1 = 1 AND pk2 = 2')))
         self.assertTrue(f2.isValid())
@@ -704,7 +703,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         """
         Check that tables with PKs composed of many fields of different types are correctly read and written to
         """
-        vl = QgsVectorLayer('{} type=POINT key=\'"pk1","pk2","pk3"\' table="qgis_test"."tb_test_composite_float_pk" (geom)'.format(self.dbconn), "test_composite_float", "mssql")
+        vl = QgsVectorLayer(f'{self.dbconn} type=POINT key=\'"pk1","pk2","pk3"\' table="qgis_test"."tb_test_composite_float_pk" (geom)', "test_composite_float", "mssql")
         self.assertTrue(vl.isValid())
 
         fields = vl.fields()
@@ -724,7 +723,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.commitChanges())
 
         # Did we get it right? Let's create a new QgsVectorLayer and try to read back our changes:
-        vl2 = QgsVectorLayer('{} sslmode=disable srid=4326 key=\'"pk1","pk2","pk3"\' table="qgis_test"."tb_test_composite_float_pk" (geom)'.format(self.dbconn), "test_composite_float2", "mssql")
+        vl2 = QgsVectorLayer(f'{self.dbconn} sslmode=disable srid=4326 key=\'"pk1","pk2","pk3"\' table="qgis_test"."tb_test_composite_float_pk" (geom)', "test_composite_float2", "mssql")
         self.assertTrue(vl2.isValid())
         f2 = next(vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk3 = 3.14159274')))
         self.assertTrue(f2.isValid())
@@ -863,7 +862,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]""")
 
-        uri = '{} table="qgis_test"."test_identity" sql='.format(self.dbconn)
+        uri = f'{self.dbconn} table="qgis_test"."test_identity" sql='
         vl = QgsVectorLayer(uri, '', 'mssql')
         self.assertTrue(vl.isValid())
 
@@ -909,7 +908,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         f4.setAttributes([4, NULL, 3])
         f4.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(4, 3)))
         pr.addFeatures([f1, f2, f3, f4])
-        uri = '{} table="qgis_test"."layer_extent_in_geometry_table" sql='.format(self.dbconn)
+        uri = f'{self.dbconn} table="qgis_test"."layer_extent_in_geometry_table" sql='
         QgsVectorLayerExporter.exportLayer(layer, uri, 'mssql', QgsCoordinateReferenceSystem('EPSG:4326'))
 
         layerUri = QgsDataSourceUri(uri)
@@ -965,7 +964,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         conn.execSql('DROP TABLE IF EXISTS qgis_test.test_complex_pk_name')
         conn.execSql('CREATE TABLE qgis_test.test_complex_pk_name ([test-field] int)')
 
-        uri = '{} table="qgis_test"."test_complex_pk_name" sql='.format(self.dbconn)
+        uri = f'{self.dbconn} table="qgis_test"."test_complex_pk_name" sql='
         vl = QgsVectorLayer(uri, '', 'mssql')
         self.assertTrue(vl.isValid())
 

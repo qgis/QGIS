@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsFeature.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -38,7 +37,7 @@ class TestQgsFeature(unittest.TestCase):
         feat.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(123, 456)))
         myId = feat.id()
         myExpectedId = 0
-        myMessage = '\nExpected: %s\nGot: %s' % (myExpectedId, myId)
+        myMessage = f'\nExpected: {myExpectedId}\nGot: {myId}'
         assert myId == myExpectedId, myMessage
 
     def test_FeatureDefaultConstructor(self):
@@ -135,7 +134,7 @@ class TestQgsFeature(unittest.TestCase):
         fit.nextFeature(feat)
         fit.close()
         myValidValue = feat.isValid()
-        myMessage = '\nExpected: %s\nGot: %s' % ("True", myValidValue)
+        myMessage = '\nExpected: {}\nGot: {}'.format("True", myValidValue)
         assert myValidValue, myMessage
 
     def test_Validity(self):
@@ -171,7 +170,7 @@ class TestQgsFeature(unittest.TestCase):
 
         # Only for printing purposes
         myExpectedAttributes = ["Highway", 1]
-        myMessage = '\nExpected: %s\nGot: %s' % (
+        myMessage = '\nExpected: {}\nGot: {}'.format(
             myExpectedAttributes,
             myAttributes
         )
@@ -203,7 +202,7 @@ class TestQgsFeature(unittest.TestCase):
         feat.deleteAttribute(1)
         myAttrs = [feat[0], feat[1]]
         myExpectedAttrs = ["text1", "text3"]
-        myMessage = '\nExpected: %s\nGot: %s' % (str(myExpectedAttrs), str(myAttrs))
+        myMessage = f'\nExpected: {str(myExpectedAttrs)}\nGot: {str(myAttrs)}'
         assert myAttrs == myExpectedAttrs, myMessage
 
     def test_DeleteAttributeByName(self):
@@ -227,7 +226,7 @@ class TestQgsFeature(unittest.TestCase):
         feat.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(123, 456)))
         myGeometry = feat.geometry()
         myExpectedGeometry = "!None"
-        myMessage = '\nExpected: %s\nGot: %s' % (myExpectedGeometry, myGeometry)
+        myMessage = f'\nExpected: {myExpectedGeometry}\nGot: {myGeometry}'
         assert myGeometry is not None, myMessage
 
         # set from QgsAbstractGeometry

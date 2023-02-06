@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     test_qgsrandommarkersymbollayer.py
@@ -322,7 +320,7 @@ class TestQgsRandomMarkerSymbolLayer(unittest.TestCase):
         return image
 
     def imageCheck(self, name, reference_image, image, expect_fail=False):
-        self.report += "<h2>Render {}</h2>\n".format(name)
+        self.report += f"<h2>Render {name}</h2>\n"
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + 'symbol_' + name + ".png"
         image.save(file_name, "PNG")

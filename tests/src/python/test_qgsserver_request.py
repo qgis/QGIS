@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServerRequest.
 
 From build dir, run: ctest -R PyQgsServerRequest -V
@@ -236,10 +235,10 @@ class QgsServerRequestTest(QgsServerTestBase):
             try:
                 os.environ[env] = value
                 request = QgsFcgiServerRequest()
-                self.assertEquals(request.headers(), {header: value})
+                self.assertEqual(request.headers(), {header: value})
                 request = QgsServerRequest(request)
-                self.assertEquals(request.headers(), {header: value})
-                self.assertEquals(request.header(enum), value)
+                self.assertEqual(request.headers(), {header: value})
+                self.assertEqual(request.header(enum), value)
             finally:
                 del os.environ[env]
 

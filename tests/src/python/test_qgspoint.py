@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsPoint.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -30,13 +29,13 @@ class TestQgsPointXY(unittest.TestCase):
     def test_Point(self):
         myExpectedValue = 10.0
         myActualValue = self.mPoint.x()
-        myMessage = 'Expected: %s Got: %s' % (myExpectedValue, myActualValue)
+        myMessage = f'Expected: {myExpectedValue} Got: {myActualValue}'
         assert myExpectedValue == myActualValue, myMessage
 
     def test_pointToString(self):
         myExpectedValue = '10, 10'
         myActualValue = self.mPoint.toString()
-        myMessage = 'Expected: %s Got: %s' % (myExpectedValue, myActualValue)
+        myMessage = f'Expected: {myExpectedValue} Got: {myActualValue}'
         assert myExpectedValue == myActualValue, myMessage
 
     def test_hash(self):
@@ -48,7 +47,7 @@ class TestQgsPointXY(unittest.TestCase):
         assert a.__hash__() != b.__hash__()
         assert e.__hash__() == a.__hash__()
 
-        mySet = set([a, b, c, d, e])
+        mySet = {a, b, c, d, e}
         assert len(mySet) == 4
 
     def test_issue_32443(self):

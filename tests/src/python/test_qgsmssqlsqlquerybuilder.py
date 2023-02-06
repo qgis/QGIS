@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Contains tests for QgsMsSqlQueryBuilder
 
 .. note:: This program is free software; you can redistribute it and/or modify

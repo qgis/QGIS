@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS python layer provider test.
 
 This module is a Python implementation of (a clone of) the core memory
@@ -162,7 +161,7 @@ class PyFeatureIterator(QgsAbstractFeatureIterator):
 class PyFeatureSource(QgsAbstractFeatureSource):
 
     def __init__(self, provider):
-        super(PyFeatureSource, self).__init__()
+        super().__init__()
         self._provider = provider
         self._features = provider._features
 

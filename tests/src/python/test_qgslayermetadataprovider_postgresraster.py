@@ -1,4 +1,3 @@
-# coding=utf-8
 """"Test for postgres layer metadata provider
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -31,7 +30,7 @@ class TestPostgresLayerMetadataProvider(unittest.TestCase, LayerMetadataProvider
 
     def getLayer(self):
 
-        return QgsRasterLayer('{} table="qgis_test"."Raster1" (Rast)'.format(self.getConnectionUri()), "someData", 'postgresraster')
+        return QgsRasterLayer(f'{self.getConnectionUri()} table="qgis_test"."Raster1" (Rast)', "someData", 'postgresraster')
 
     def getConnectionUri(self) -> str:
 

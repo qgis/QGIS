@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS unit tests for QgsPalLabeling: label rendering output to map canvas
 
 From build dir, run: ctest -R PyQgsPalLabelingCanvas -V
@@ -53,7 +52,7 @@ class TestCanvasBase(TestQgsPalLabeling):
 
     def setUp(self):
         """Run before each test."""
-        super(TestCanvasBase, self).setUp()
+        super().setUp()
         self._TestImage = ''
         # ensure per test map settings stay encapsulated
         self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
@@ -71,7 +70,7 @@ class TestCanvasBase(TestQgsPalLabeling):
             ms = self._TestMapSettings  # per test settings
             settings_type = 'Test'
         if 'PAL_VERBOSE' in os.environ:
-            qDebug('MapSettings type: {0}'.format(settings_type))
+            qDebug(f'MapSettings type: {settings_type}')
             qDebug(mapSettingsString(ms))
 
         img = renderMapToImage(ms, parallel=False)
@@ -109,7 +108,7 @@ class TestCanvasPoint(TestCanvasBasePoint, TestPointBase):
 
     def setUp(self):
         """Run before each test."""
-        super(TestCanvasPoint, self).setUp()
+        super().setUp()
         self.configTest('pal_canvas', 'sp')
 
 
@@ -125,7 +124,7 @@ class TestCanvasLine(TestCanvasBaseLine, TestLineBase):
 
     def setUp(self):
         """Run before each test."""
-        super(TestCanvasLine, self).setUp()
+        super().setUp()
         self.configTest('pal_canvas_line', 'sp')
 
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsProjectElevationProperties
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -92,7 +91,7 @@ class TestQgsProjectElevationProperties(unittest.TestCase):
         p.elevationProperties().setTerrainProvider(provider)
 
         tmp_dir = QTemporaryDir()
-        tmp_project_file = "{}/project.qgs".format(tmp_dir.path())
+        tmp_project_file = f"{tmp_dir.path()}/project.qgs"
         self.assertTrue(p.write(tmp_project_file))
 
         project2 = QgsProject()

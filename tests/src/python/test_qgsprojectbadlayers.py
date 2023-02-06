@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsProject bad layers handling.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -122,7 +121,7 @@ class TestQgsProjectBadLayers(unittest.TestCase):
 
         # Now create an invalid project:
         bad_project_path = os.path.join(temp_dir.path(), 'project_bad.qgs')
-        with open(project_path, 'r') as infile:
+        with open(project_path) as infile:
             with open(bad_project_path, 'w+') as outfile:
                 outfile.write(infile.read().replace('./lines.shp', './lines-BAD_SOURCE.shp').replace('band1_byte_ct_epsg4326_copy.tif', 'band1_byte_ct_epsg4326_copy-BAD_SOURCE.tif'))
 
@@ -148,7 +147,7 @@ class TestQgsProjectBadLayers(unittest.TestCase):
         p.write(bad_project_path2)
         # Re-save the project, with fixed paths
         good_project_path = os.path.join(temp_dir.path(), 'project_good.qgs')
-        with open(bad_project_path2, 'r') as infile:
+        with open(bad_project_path2) as infile:
             with open(good_project_path, 'w+') as outfile:
                 outfile.write(infile.read().replace('./lines-BAD_SOURCE.shp', './lines.shp').replace('band1_byte_ct_epsg4326_copy-BAD_SOURCE.tif', 'band1_byte_ct_epsg4326_copy.tif'))
 
@@ -193,7 +192,7 @@ class TestQgsProjectBadLayers(unittest.TestCase):
 
         # Now build a bad project
         bad_project_path = os.path.join(temp_dir.path(), 'relation_reference_test_bad.qgs')
-        with open(project_path, 'r') as infile:
+        with open(project_path) as infile:
             with open(bad_project_path, 'w+') as outfile:
                 outfile.write(infile.read().replace('./relation_reference_test.gpkg', './relation_reference_test-BAD_SOURCE.gpkg'))
 
@@ -237,7 +236,7 @@ class TestQgsProjectBadLayers(unittest.TestCase):
 
         # Now fix the bad project
         bad_project_path_fixed = os.path.join(temp_dir.path(), 'relation_reference_test_bad_fixed.qgs')
-        with open(bad_project_path2, 'r') as infile:
+        with open(bad_project_path2) as infile:
             with open(bad_project_path_fixed, 'w+') as outfile:
                 outfile.write(infile.read().replace('./relation_reference_test-BAD_SOURCE.gpkg', './relation_reference_test.gpkg'))
 
@@ -300,7 +299,7 @@ class TestQgsProjectBadLayers(unittest.TestCase):
         # Now build a bad project
         p.removeAllMapLayers()
         bad_project_path = os.path.join(temp_dir.path(), 'bad_layers_test.qgs')
-        with open(project_path, 'r') as infile:
+        with open(project_path) as infile:
             with open(bad_project_path, 'w+') as outfile:
                 outfile.write(infile.read().replace('./bad_layers_test.', './bad_layers_test-BAD_SOURCE.').replace('bad_layer_raster_test.tiff', 'bad_layer_raster_test-BAD_SOURCE.tiff'))
 

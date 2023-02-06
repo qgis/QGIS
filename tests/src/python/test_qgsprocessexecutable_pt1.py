@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for qgis_process.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -186,7 +185,7 @@ class TestQgsProcessExecutablePt1(unittest.TestCase):
 
     def testAlgorithmRunLegacy(self):
         output_file = self.TMP_DIR + '/polygon_centroid.shp'
-        rc, output, err = self.run_process(['run', '--no-python', 'native:centroids', '--INPUT={}'.format(TEST_DATA_DIR + '/polys.shp'), '--OUTPUT={}'.format(output_file)])
+        rc, output, err = self.run_process(['run', '--no-python', 'native:centroids', '--INPUT={}'.format(TEST_DATA_DIR + '/polys.shp'), f'--OUTPUT={output_file}'])
         self.assertFalse(self._strip_ignorable_errors(err))
         self.assertIn('0...10...20...30...40...50...60...70...80...90', output.lower())
         self.assertIn('results', output.lower())
@@ -196,7 +195,7 @@ class TestQgsProcessExecutablePt1(unittest.TestCase):
 
     def testAlgorithmRun(self):
         output_file = self.TMP_DIR + '/polygon_centroid.shp'
-        rc, output, err = self.run_process(['run', '--no-python', 'native:centroids', '--', 'INPUT={}'.format(TEST_DATA_DIR + '/polys.shp'), 'OUTPUT={}'.format(output_file)])
+        rc, output, err = self.run_process(['run', '--no-python', 'native:centroids', '--', 'INPUT={}'.format(TEST_DATA_DIR + '/polys.shp'), f'OUTPUT={output_file}'])
         self.assertFalse(self._strip_ignorable_errors(err))
         self.assertIn('0...10...20...30...40...50...60...70...80...90', output.lower())
         self.assertIn('results', output.lower())
@@ -345,6 +344,6 @@ if __name__ == '__main__':
             if found:
                 break
 
-    print(('\nQGIS_PROCESS_BIN: {}'.format(QGIS_PROCESS_BIN)))
+    print(f'\nQGIS_PROCESS_BIN: {QGIS_PROCESS_BIN}')
     assert QGIS_PROCESS_BIN, 'qgis_process binary not found, skipping test suite'
     unittest.main()

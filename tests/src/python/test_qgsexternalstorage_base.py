@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Base Unit tests for QgsExternalStorage API
 
 External storage backend must implement a test based on TestPyQgsExternalStorageBase
@@ -81,7 +80,7 @@ class TestPyQgsExternalStorageBase():
 
     def checkContent(self, file_path, content):
         """Check that file content matches given content"""
-        f = open(file_path, 'r')
+        f = open(file_path)
         self.assertTrue(f.read(), b"New content")
         f.close()
 

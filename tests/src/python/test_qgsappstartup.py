@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsApplication.
 
 From build dir: ctest -R PyQgsAppStartup -V
@@ -87,7 +86,7 @@ class TestPyQgsAppStartup(unittest.TestCase):
             if s > timeOut:
                 raise Exception('Timed out waiting for application start, Call: "{}", Env: {}'.format(' '.join(call), env))
 
-        with open(myTestFile, 'rt', encoding='utf-8') as res_file:
+        with open(myTestFile, encoding='utf-8') as res_file:
             lines = res_file.readlines()
 
         try:
@@ -105,7 +104,7 @@ class TestPyQgsAppStartup(unittest.TestCase):
         testfilepath = os.path.join(self.TMP_DIR, testfile).replace('\\', '/')
         testcode = [
             "from qgis.core import QgsApplication\n"
-            "f = open('{0}', 'w')\n".format(testfilepath),
+            "f = open('{}', 'w')\n".format(testfilepath),
             "f.write('Platform: ' + QgsApplication.platform())\n",
             "f.close()\n"
         ]
@@ -126,7 +125,7 @@ class TestPyQgsAppStartup(unittest.TestCase):
         testfilepath = os.path.join(self.TMP_DIR, testfile).replace('\\', '/')
         testcode = [
             "import sys\n"
-            "f = open('{0}', 'a')\n".format(testfilepath),
+            "f = open('{}', 'a')\n".format(testfilepath),
             "for arg in sys.argv:\n"
             "  f.write(arg)\n",
             "  f.write('\\n')\n",
@@ -175,6 +174,6 @@ if __name__ == '__main__':
             if found:
                 break
 
-    print(('\nQGIS_BIN: {}'.format(QGIS_BIN)))
+    print(f'\nQGIS_BIN: {QGIS_BIN}')
     assert QGIS_BIN, 'QGIS binary not found, skipping test suite'
     unittest.main()

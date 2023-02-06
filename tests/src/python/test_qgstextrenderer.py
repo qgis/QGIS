@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsTextRenderer.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -1266,7 +1265,7 @@ class PyQgsTextRenderer(unittest.TestCase):
 
         # family
         f.dataDefinedProperties().setProperty(QgsPalLayerSettings.Family, QgsProperty.fromExpression(
-            "'{}'".format(QgsFontUtils.getStandardTestFont().family())))
+            f"'{QgsFontUtils.getStandardTestFont().family()}'"))
         f.updateDataDefinedProperties(context)
         self.assertEqual(f.font().family(), QgsFontUtils.getStandardTestFont().family())
 
@@ -1460,7 +1459,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         self.assertAlmostEqual(metrics2.width(string), 104.15, 1)
 
     def imageCheck(self, name, reference_image, image):
-        PyQgsTextRenderer.report += "<h2>Render {}</h2>\n".format(name)
+        PyQgsTextRenderer.report += f"<h2>Render {name}</h2>\n"
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + name + ".png"
         image.save(file_name, "PNG")
@@ -3316,7 +3315,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.setSize(30)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
 
-        filename = '{}/test_render_text.svg'.format(QDir.tempPath())
+        filename = f'{QDir.tempPath()}/test_render_text.svg'
         svg = QSvgGenerator()
         svg.setFileName(filename)
         svg.setSize(QSize(400, 400))
@@ -3349,7 +3348,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         painter.end()
 
         # expect svg to contain a text object with the label
-        with open(filename, 'r') as f:
+        with open(filename) as f:
             lines = ''.join(f.readlines())
         self.assertIn('<text', lines)
         self.assertIn('>my test text<', lines)
@@ -3383,7 +3382,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         painter.end()
 
         # expect svg to contain a text object with the label
-        with open(filename, 'r') as f:
+        with open(filename) as f:
             lines = ''.join(f.readlines())
         self.assertNotIn('<text', lines)
         self.assertNotIn('>my test text<', lines)

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsAnnotationLayer.
 
 From build dir, run: ctest -R PyQgsAnnotationLayer -V
@@ -247,7 +246,7 @@ class TestQgsAnnotationLayer(unittest.TestCase):
 
         # save project to xml
         tmpDir = QTemporaryDir()
-        tmpFile = "{}/project.qgs".format(tmpDir.path())
+        tmpFile = f"{tmpDir.path()}/project.qgs"
         self.assertTrue(p.write(tmpFile))
 
         # test that annotation layer is cleared with project
@@ -602,7 +601,7 @@ class TestQgsAnnotationLayer(unittest.TestCase):
                                                                                                             result))
 
     def imageCheck(self, name, reference_image, image):
-        TestQgsAnnotationLayer.report += "<h2>Render {}</h2>\n".format(name)
+        TestQgsAnnotationLayer.report += f"<h2>Render {name}</h2>\n"
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + 'patch_' + name + ".png"
         image.save(file_name, "PNG")

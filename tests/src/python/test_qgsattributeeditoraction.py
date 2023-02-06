@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsAttributeEditorAction
 
 From build dir, run: ctest -R PyQgsAttributeEditorAction -V

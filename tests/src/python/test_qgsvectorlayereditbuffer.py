@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsVectorLayerEditBuffer.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -182,7 +181,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         layer.deleteFeature(2)
 
         # test contents of buffer
-        self.assertEqual(set(layer.editBuffer().deletedFeatureIds()), set([1, 2]))
+        self.assertEqual(set(layer.editBuffer().deletedFeatureIds()), {1, 2})
         self.assertTrue(layer.editBuffer().isFeatureDeleted(1))
         self.assertTrue(layer.editBuffer().isFeatureDeleted(2))
 
@@ -215,7 +214,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         layer.deleteFeatures([1, 2])
 
         # test contents of buffer
-        self.assertEqual(set(layer.editBuffer().deletedFeatureIds()), set([1, 2]))
+        self.assertEqual(set(layer.editBuffer().deletedFeatureIds()), {1, 2})
         self.assertTrue(layer.editBuffer().isFeatureDeleted(1))
         self.assertTrue(layer.editBuffer().isFeatureDeleted(2))
 
@@ -259,7 +258,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         layer.changeAttributeValue(2, 1, 5)
 
         # test contents of buffer
-        self.assertEqual(set(layer.editBuffer().changedAttributeValues().keys()), set([1, 2]))
+        self.assertEqual(set(layer.editBuffer().changedAttributeValues().keys()), {1, 2})
         self.assertEqual(layer.editBuffer().changedAttributeValues()[1], {0: 'a'})
         self.assertEqual(layer.editBuffer().changedAttributeValues()[2], {1: 5})
         self.assertTrue(layer.editBuffer().isFeatureAttributesChanged(1))
@@ -326,7 +325,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         layer.changeGeometry(2, QgsGeometry.fromPointXY(QgsPointXY(20, 40)))
 
         # test contents of buffer
-        self.assertEqual(set(layer.editBuffer().changedGeometries().keys()), set([1, 2]))
+        self.assertEqual(set(layer.editBuffer().changedGeometries().keys()), {1, 2})
         self.assertEqual(layer.editBuffer().changedGeometries()[1].constGet().x(), 100)
         self.assertEqual(layer.editBuffer().changedGeometries()[2].constGet().x(), 20)
         self.assertTrue(layer.editBuffer().isFeatureGeometryChanged(1))

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for Processing Package Layers algorithm.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -229,9 +228,9 @@ class TestPackageLayers(unittest.TestCase):
 
             # Check export
             for layer_name in list(expected_ids.keys()):
-                l = QgsVectorLayer(self.temp_export_path + '|layername={}'.format(layer_name), layer_name)
+                l = QgsVectorLayer(self.temp_export_path + f'|layername={layer_name}', layer_name)
                 self.assertTrue(l.isValid())
-                ids = set([l.id() for l in l.getFeatures()])
+                ids = {l.id() for l in l.getFeatures()}
                 self.assertEqual(ids, expected_ids[layer_name], layer_name + str(ids))
 
         region = QgsProject.instance().mapLayersByName('region')[0]

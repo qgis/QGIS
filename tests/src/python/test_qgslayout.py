@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLayout
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -398,14 +397,14 @@ class TestQgsLayout(unittest.TestCase):
 
         self.assertFalse(l.selectedLayoutItems())
         item1.setSelected(True)
-        self.assertEqual(set(l.selectedLayoutItems()), set([item1]))
+        self.assertEqual(set(l.selectedLayoutItems()), {item1})
         item2.setSelected(True)
-        self.assertEqual(set(l.selectedLayoutItems()), set([item1, item2]))
+        self.assertEqual(set(l.selectedLayoutItems()), {item1, item2})
         item3.setSelected(True)
-        self.assertEqual(set(l.selectedLayoutItems()), set([item1, item2, item3]))
+        self.assertEqual(set(l.selectedLayoutItems()), {item1, item2, item3})
         item3.setLocked(True)
-        self.assertEqual(set(l.selectedLayoutItems(False)), set([item1, item2]))
-        self.assertEqual(set(l.selectedLayoutItems(True)), set([item1, item2, item3]))
+        self.assertEqual(set(l.selectedLayoutItems(False)), {item1, item2})
+        self.assertEqual(set(l.selectedLayoutItems(True)), {item1, item2, item3})
 
     def testSelections(self):
         p = QgsProject()

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsFeatureIterator.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -45,7 +44,7 @@ class TestQgsFeatureIterator(unittest.TestCase):
 
         ids = [feat.id() for feat in pointLayer.getFeatures(QgsFeatureRequest().setFilterExpression('Staff > 3'))]
         expectedIds = [1, 5, 6, 7, 8]
-        myMessage = '\nExpected: {0} features\nGot: {1} features'.format(repr(expectedIds), repr(ids))
+        myMessage = f'\nExpected: {repr(expectedIds)} features\nGot: {repr(ids)} features'
         assert ids == expectedIds, myMessage
 
         pointLayer.startEditing()
@@ -53,14 +52,14 @@ class TestQgsFeatureIterator(unittest.TestCase):
 
         ids = [feat.id() for feat in pointLayer.getFeatures(QgsFeatureRequest().setFilterExpression('Staff > 3'))]
         expectedIds = [-2, 1, 5, 6, 7, 8]
-        myMessage = '\nExpected: {0} features\nGot: {1} features'.format(repr(expectedIds), repr(ids))
+        myMessage = f'\nExpected: {repr(expectedIds)} features\nGot: {repr(ids)} features'
         assert ids == expectedIds, myMessage
 
         pointLayer.rollBack()
 
         ids = [feat.id() for feat in pointLayer.getFeatures(QgsFeatureRequest().setFilterExpression('Staff > 3'))]
         expectedIds = [1, 5, 6, 7, 8]
-        myMessage = '\nExpected: {0} features\nGot: {1} features'.format(repr(expectedIds), repr(ids))
+        myMessage = f'\nExpected: {repr(expectedIds)} features\nGot: {repr(ids)} features'
         assert ids == expectedIds, myMessage
 
     def test_FilterExpressionWithAccents(self):
@@ -70,13 +69,13 @@ class TestQgsFeatureIterator(unittest.TestCase):
         layer.setProviderEncoding("ISO-8859-1")
         ids = [feat.id() for feat in layer.getFeatures(QgsFeatureRequest().setFilterExpression("TYPE_1 = 'Région'"))]
         expectedIds = [0, 1, 2, 3]
-        myMessage = '\nExpected: {0} features\nGot: {1} features'.format(repr(expectedIds), repr(ids))
+        myMessage = f'\nExpected: {repr(expectedIds)} features\nGot: {repr(ids)} features'
         assert ids == expectedIds, myMessage
 
         layer.setProviderEncoding("UTF-8")
         ids = [feat.id() for feat in layer.getFeatures(QgsFeatureRequest().setFilterExpression("TYPE_1 = 'Région'"))]
         expectedIds = []
-        myMessage = '\nExpected: {0} features\nGot: {1} features'.format(repr(expectedIds), repr(ids))
+        myMessage = f'\nExpected: {repr(expectedIds)} features\nGot: {repr(ids)} features'
         assert ids == expectedIds, myMessage
 
     def test_FilterFids(self):

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsHighlight.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -92,13 +91,13 @@ class TestQgsHighlight(unittest.TestCase):
         painter.begin(image)
         self.iface.mapCanvas().render(painter)
         painter.end()
-        control_image = os.path.join(tempdir, 'highlight_{}.png'.format(testname))
+        control_image = os.path.join(tempdir, f'highlight_{testname}.png')
         image.save(control_image)
         checker = QgsRenderChecker()
         checker.setControlPathPrefix("highlight")
-        checker.setControlName("expected_highlight_{}".format(testname))
+        checker.setControlName(f"expected_highlight_{testname}")
         checker.setRenderedImage(control_image)
-        self.assertTrue(checker.compareImages("highlight_{}".format(testname)))
+        self.assertTrue(checker.compareImages(f"highlight_{testname}"))
         shutil.rmtree(tempdir)
 
     def testLine(self):
@@ -176,7 +175,7 @@ class TestQgsHighlight(unittest.TestCase):
         self.assertTrue(self.canvasImageCheck('highlight_transform', 'highlight_transform', canvas))
 
     def canvasImageCheck(self, name, reference_image, canvas):
-        self.report += "<h2>Render {}</h2>\n".format(name)
+        self.report += f"<h2>Render {name}</h2>\n"
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + 'rendered_' + name + ".png"
 
@@ -193,7 +192,7 @@ class TestQgsHighlight(unittest.TestCase):
         checker.setColorTolerance(2)
         result = checker.runTest(name, 20)
         self.report += checker.report()
-        print((self.report))
+        print(self.report)
         return result
 
 

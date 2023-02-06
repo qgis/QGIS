@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer Locale Override Options.
 
 From build dir, run: ctest -R PyQgsServerLocaleOverride -V

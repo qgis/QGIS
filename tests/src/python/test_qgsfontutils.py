@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for core QgsFontUtils class
 
 From build dir: ctest -R PyQgsFontUtils -V

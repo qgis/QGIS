@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for the DBManager GPKG plugin
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -451,7 +450,7 @@ class TestPyQgsDBManagerGpkg(unittest.TestCase):
         connection = createDbPlugin('gpkg', connectionName)
         connection.connect()
         db = connection.database()
-        res = db.connector._execute(None, "SELECT St_area({}) from foo".format(db.tables()[0].fields()[1].name))
+        res = db.connector._execute(None, f"SELECT St_area({db.tables()[0].fields()[1].name}) from foo")
         results = [row for row in res]
         self.assertEqual(results,
                          [(215229.265625,), (247328.171875,), (261752.78125,), (547597.2109375,), (15775.7578125,),
