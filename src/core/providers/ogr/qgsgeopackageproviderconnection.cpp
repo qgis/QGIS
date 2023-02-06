@@ -17,17 +17,11 @@
 #include <sqlite3.h>
 
 #include "qgsgeopackageproviderconnection.h"
-#include "qgsogrdbconnection.h"
 #include "qgssettings.h"
-#include "qgsogrprovider.h"
 #include "qgsmessagelog.h"
-#include "qgsproviderregistry.h"
-#include "qgsprovidermetadata.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 #include "qgsfeedback.h"
-#include "qgsogrutils.h"
-#include "qgsfielddomain.h"
 #include "qgscoordinatetransform.h"
 
 #include <QTextCodec>
@@ -354,6 +348,12 @@ void QgsGeoPackageProviderConnection::setDefaultCapabilities()
   {
     Qgis::SqlLayerDefinitionCapability::SubsetStringFilter,
   };
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+  mCapabilities |= Capability::AddRelationship;
+  mCapabilities |= Capability::UpdateRelationship;
+  mCapabilities |= Capability::DeleteRelationship;
+#endif
 }
 
 QString QgsGeoPackageProviderConnection::primaryKeyColumnName( const QString &table ) const
@@ -405,6 +405,12 @@ QList<QgsLayerMetadataProviderResult> QgsGeoPackageProviderConnection::searchLay
   {
     try
     {
+      // first check if metadata tables/extension exists
+      if ( executeSql( QStringLiteral( "SELECT name FROM sqlite_master WHERE name='gpkg_metadata' AND type='table'" ), nullptr ).isEmpty() )
+      {
+        return results;
+      }
+
       const QString searchQuery { QStringLiteral( R"SQL(
       SELECT
         ref.table_name, md.metadata, gc.geometry_type_name
@@ -412,7 +418,7 @@ QList<QgsLayerMetadataProviderResult> QgsGeoPackageProviderConnection::searchLay
         gpkg_metadata_reference AS ref
       JOIN
         gpkg_metadata AS md ON md.id = ref.md_file_id
-      JOIN
+      LEFT JOIN
         gpkg_geometry_columns AS gc ON gc.table_name = ref.table_name
       WHERE
         md.md_standard_uri = 'http://mrcc.com/qgis.dtd'
@@ -529,7 +535,7 @@ QgsFields QgsGeoPackageProviderConnection::fields( const QString &schema, const 
     }
     // Append name of the geometry column, the data provider does not expose this information so we need an extra query:/
     const QString sql = QStringLiteral( "SELECT g.column_name "
-                                        "FROM gpkg_contents c LEFT JOIN gpkg_geometry_columns g ON (c.table_name = g.table_name) "
+                                        "FROM gpkg_contents c CROSS JOIN gpkg_geometry_columns g ON (c.table_name = g.table_name) "
                                         "WHERE c.table_name = %1" ).arg( QgsSqliteUtils::quotedString( table ) );
     try
     {

@@ -123,6 +123,8 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 #include "qgslayoutframe.h"
 #include "qgslayoutitemshape.h"
 #include "qgslayoutitempage.h"
+#include "qgslayoutitemmarker.h"
+#include "qgslayoutitemelevationprofile.h"
 #endif
 
 #ifdef SIP_RUN
@@ -182,6 +184,14 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
         sipType = sipType_QgsLayoutFrame;
         *sipCppRet = static_cast<QgsLayoutFrame *>( sipCpp );
         break;
+      case QGraphicsItem::UserType + 117:
+        sipType = sipType_QgsLayoutItemMarker;
+        *sipCppRet = static_cast<QgsLayoutItemMarker *>( sipCpp );
+        break;
+      case QGraphicsItem::UserType + 118:
+        sipType = sipType_QgsLayoutItemElevationProfile;
+        *sipCppRet = static_cast<QgsLayoutItemElevationProfile *>( sipCpp );
+        break;
 
       // did you read that comment above? NO? Go read it now. You're about to break stuff.
 
@@ -221,6 +231,10 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       UndoStrokeWidth, //!< Stroke width adjustment
       UndoBackgroundColor, //!< Background color adjustment
       UndoOpacity, //!< Opacity adjustment
+      UndoMarginLeft, //!< Left margin (since QGIS 3.30)
+      UndoMarginTop, //!< Top margin (since QGIS 3.30)
+      UndoMarginBottom, //!< Bottom margin (since QGIS 3.30)
+      UndoMarginRight, //!< Right margin (since QGIS 3.30)
       UndoSetId, //!< Change item ID
       UndoRotation, //!< Rotation adjustment
       UndoShapeStyle, //!< Shape symbol style
@@ -292,6 +306,23 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       UndoArrowHeadWidth, //!< Arrow head width
       UndoArrowHeadFillColor, //!< Arrow head fill color
       UndoArrowHeadStrokeColor, //!< Arrow head stroke color
+      UndoElevationProfileTolerance, //!< Change elevation profile distance tolerance
+      UndoElevationProfileChartBackground, //!< Change elevation profile chart background
+      UndoElevationProfileChartBorder, //!< Change elevation profile chart border
+      UndoElevationProfileDistanceMajorGridlines, //!< Change elevation profile distance axis major gridlines
+      UndoElevationProfileDistanceMinorGridlines, //!< Change elevation profile distance axis minor gridlines
+      UndoElevationProfileDistanceFormat, //!< Change elevation profile distance axis number format
+      UndoElevationProfileDistanceFont, //!< Change elevation profile distance axis number font
+      UndoElevationProfileDistanceLabels, //!< Change elevation profile distance axis label interval
+      UndoElevationProfileElevationMajorGridlines, //!< Change elevation profile elevation axis major gridlines
+      UndoElevationProfileElevationMinorGridlines, //!< Change elevation profile elevation axis minor gridlines
+      UndoElevationProfileElevationFormat, //!< Change elevation profile elevation axis number format
+      UndoElevationProfileElevationFont, //!< Change elevation profile elevation axis number font
+      UndoElevationProfileElevationLabels, //!< Change elevation profile elevation axis label interval
+      UndoElevationProfileMinimumDistance, //!< Change elevation profile minimum distance
+      UndoElevationProfileMaximumDistance, //!< Change elevation profile maximum distance
+      UndoElevationProfileMinimumElevation, //!< Change elevation profile minimum elevation
+      UndoElevationProfileMaximumElevation, //!< Change elevation profile maximum elevation
 
       UndoCustomCommand, //!< Base id for plugin based item undo commands
     };
@@ -333,7 +364,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     /**
      * Returns the item's icon.
      */
-    virtual QIcon icon() const { return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItem.svg" ) ); }
+    virtual QIcon icon() const;
 
     /**
      * Returns the item identification string. This is a unique random string set for the item

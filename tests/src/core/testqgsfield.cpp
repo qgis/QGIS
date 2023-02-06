@@ -534,7 +534,7 @@ void TestQgsField::convertCompatible()
   QString error;
   QVERIFY( !doubleField.convertCompatible( stringVar, &error ) );
   QCOMPARE( stringVar.type(), QVariant::Double );
-  QCOMPARE( error, QStringLiteral( "Could not convert value \"test string\" to target type" ) );
+  QCOMPARE( error, QStringLiteral( "Could not convert value \"test string\" to target type \"double\"" ) );
   stringVar = QVariant( "test string" );
   QVERIFY( !doubleField.convertCompatible( stringVar ) );
   QVERIFY( stringVar.isNull() );
@@ -699,7 +699,7 @@ void TestQgsField::convertCompatible()
   // This should not convert
   stringDouble = QVariant( "1.223.456,012345" );
   QVERIFY( ! doubleField.convertCompatible( stringDouble, &error ) );
-  QCOMPARE( error, QStringLiteral( "Could not convert value \"1.223.456,012345\" to target type" ) );
+  QCOMPARE( error, QStringLiteral( "Could not convert value \"1.223.456,012345\" to target type \"double\"" ) );
 
   //double with precision
   const QgsField doubleWithPrecField( QStringLiteral( "double" ), QVariant::Double, QStringLiteral( "double" ), 10, 3 );

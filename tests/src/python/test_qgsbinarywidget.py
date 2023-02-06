@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for binary editor widgets.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,9 +10,8 @@ __date__ = '11/11/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
 import qgis  # NOQA
-
 from qgis.PyQt.QtCore import QByteArray
-from qgis.core import QgsFeature, QgsGeometry, QgsPointXY, QgsVectorLayer, NULL
+from qgis.core import NULL, QgsFeature, QgsGeometry, QgsPointXY, QgsVectorLayer
 from qgis.gui import QgsGui
 from qgis.testing import start_app, unittest
 

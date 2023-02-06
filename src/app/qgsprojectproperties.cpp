@@ -99,6 +99,9 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mExtentGroupBox->setTitleBase( tr( "Set Project Full Extent" ) );
   mExtentGroupBox->setMapCanvas( mapCanvas, false );
 
+  mAdvertisedExtentServer->setOutputCrs( QgsProject::instance()->crs() );
+  mAdvertisedExtentServer->setMapCanvas( mapCanvas, false );
+
   mMetadataWidget = new QgsMetadataWidget();
   mMetadataPage->layout()->addWidget( mMetadataWidget );
 
@@ -106,7 +109,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   connect( pbnRemoveScale, &QToolButton::clicked, this, &QgsProjectProperties::pbnRemoveScale_clicked );
   connect( pbnImportScales, &QToolButton::clicked, this, &QgsProjectProperties::pbnImportScales_clicked );
   connect( pbnExportScales, &QToolButton::clicked, this, &QgsProjectProperties::pbnExportScales_clicked );
-  connect( pbnWMSExtCanvas, &QPushButton::clicked, this, &QgsProjectProperties::pbnWMSExtCanvas_clicked );
+  connect( grpWMSExt, &QGroupBox::toggled, this, &QgsProjectProperties::wmsExtent_toggled );
   connect( pbnWMSAddSRS, &QToolButton::clicked, this, &QgsProjectProperties::pbnWMSAddSRS_clicked );
   connect( pbnWMSRemoveSRS, &QToolButton::clicked, this, &QgsProjectProperties::pbnWMSRemoveSRS_clicked );
   connect( pbnWMSSetUsedSRS, &QPushButton::clicked, this, &QgsProjectProperties::pbnWMSSetUsedSRS_clicked );
@@ -403,7 +406,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
       break;
   }
 
-  const Qgis::CoordinateOrder axisOrder = qgsEnumKeyToValue( QgsProject::instance()->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/CoordinateOrder" ) ), Qgis::CoordinateOrder::Default );
+  const Qgis::CoordinateOrder axisOrder = QgsProject::instance()->displaySettings()->coordinateAxisOrder();
   mCoordinateOrderComboBox->setCurrentIndex( mCoordinateOrderComboBox->findData( static_cast< int >( axisOrder ) ) );
 
   mDistanceUnitsCombo->setCurrentIndex( mDistanceUnitsCombo->findData( QgsProject::instance()->distanceUnits() ) );
@@ -651,19 +654,19 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   bool ok = false;
   QStringList values;
 
-  mWMSExtMinX->setValidator( new QDoubleValidator( mWMSExtMinX ) );
-  mWMSExtMinY->setValidator( new QDoubleValidator( mWMSExtMinY ) );
-  mWMSExtMaxX->setValidator( new QDoubleValidator( mWMSExtMaxX ) );
-  mWMSExtMaxY->setValidator( new QDoubleValidator( mWMSExtMaxY ) );
-
   values = QgsProject::instance()->readListEntry( QStringLiteral( "WMSExtent" ), QStringLiteral( "/" ), QStringList(), &ok );
   grpWMSExt->setChecked( ok && values.size() == 4 );
   if ( grpWMSExt->isChecked() )
   {
-    mWMSExtMinX->setText( values[0] );
-    mWMSExtMinY->setText( values[1] );
-    mWMSExtMaxX->setText( values[2] );
-    mWMSExtMaxY->setText( values[3] );
+    mAdvertisedExtentServer->setOriginalExtent(
+      QgsRectangle(
+        values[0].toDouble(),
+        values[1].toDouble(),
+        values[2].toDouble(),
+        values[3].toDouble()
+      ),
+      QgsProject::instance()->crs() );
+    mAdvertisedExtentServer->setOutputExtentFromOriginal();
   }
 
   values = QgsProject::instance()->readListEntry( QStringLiteral( "WMSCrsList" ), QStringLiteral( "/" ), QStringList(), &ok );
@@ -715,6 +718,9 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   bool segmentizeFeatureInfoGeometry = QgsProject::instance()->readBoolEntry( QStringLiteral( "WMSSegmentizeFeatureInfoGeometry" ), QStringLiteral( "/" ) );
   mSegmentizeFeatureInfoGeometryCheckBox->setChecked( segmentizeFeatureInfoGeometry );
+
+  bool addLayerGroupsLegendGraphic = QgsProject::instance()->readBoolEntry( QStringLiteral( "WMSAddLayerGroupsLegendGraphic" ), QStringLiteral( "/" ) );
+  mAddLayerGroupsLegendGraphicCheckBox->setChecked( addLayerGroupsLegendGraphic );
 
   bool useLayerIDs = QgsProject::instance()->readBoolEntry( QStringLiteral( "WMSUseLayerIDs" ), QStringLiteral( "/" ) );
   mWmsUseLayerIDs->setChecked( useLayerIDs );
@@ -1074,7 +1080,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   }
 
   cbtsLocale->addItem( QIcon( QStringLiteral( ":/images/flags/%1.svg" ).arg( QLatin1String( "en_US" ) ) ), QLocale( QStringLiteral( "en_US" ) ).nativeLanguageName(), QStringLiteral( "en_US" ) );
-  cbtsLocale->setCurrentIndex( cbtsLocale->findData( QgsApplication::settingsLocaleUserLocale.value() ) );
+  cbtsLocale->setCurrentIndex( cbtsLocale->findData( QgsApplication::settingsLocaleUserLocale->value() ) );
 
   connect( generateTsFileButton, &QPushButton::clicked, this, &QgsProjectProperties::onGenerateTsFileButton );
 
@@ -1214,7 +1220,7 @@ void QgsProjectProperties::apply()
     QgsProject::instance()->displaySettings()->setCoordinateCustomCrs( QgsCoordinateReferenceSystem( "EPSG:4326" ) );
   }
 
-  QgsProject::instance()->writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/CoordinateOrder" ), qgsEnumValueToKey( static_cast< Qgis::CoordinateOrder >( mCoordinateOrderComboBox->currentData().toInt() ) ) );
+  QgsProject::instance()->displaySettings()->setCoordinateAxisOrder( static_cast< Qgis::CoordinateOrder >( mCoordinateOrderComboBox->currentData().toInt() ) );
 
   // Announce that we may have a new display precision setting
   emit displayPrecisionChanged();
@@ -1439,12 +1445,15 @@ void QgsProjectProperties::apply()
 
   if ( grpWMSExt->isChecked() )
   {
-    QgsProject::instance()->writeEntry( QStringLiteral( "WMSExtent" ), QStringLiteral( "/" ),
-                                        QStringList()
-                                        << mWMSExtMinX->text()
-                                        << mWMSExtMinY->text()
-                                        << mWMSExtMaxX->text()
-                                        << mWMSExtMaxY->text() );
+    QgsRectangle wmsExtent = mAdvertisedExtentServer->outputExtent();
+    QgsProject::instance()->writeEntry(
+      QStringLiteral( "WMSExtent" ), QStringLiteral( "/" ),
+      QStringList()
+      << qgsDoubleToString( wmsExtent.xMinimum() )
+      << qgsDoubleToString( wmsExtent.yMinimum() )
+      << qgsDoubleToString( wmsExtent.xMaximum() )
+      << qgsDoubleToString( wmsExtent.yMaximum() )
+    );
   }
   else
   {
@@ -1510,6 +1519,7 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSFeatureInfoUseAttributeFormSettings" ), QStringLiteral( "/" ), mUseAttributeFormSettingsCheckBox->isChecked() );
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSAddWktGeometry" ), QStringLiteral( "/" ), mAddWktGeometryCheckBox->isChecked() );
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSSegmentizeFeatureInfoGeometry" ), QStringLiteral( "/" ), mSegmentizeFeatureInfoGeometryCheckBox->isChecked() );
+  QgsProject::instance()->writeEntry( QStringLiteral( "WMSAddLayerGroupsLegendGraphic" ), QStringLiteral( "/" ), mAddLayerGroupsLegendGraphicCheckBox->isChecked() );
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSUseLayerIDs" ), QStringLiteral( "/" ), mWmsUseLayerIDs->isChecked() );
 
   QString maxWidthText = mMaxWidthLineEdit->text();
@@ -1976,15 +1986,18 @@ void QgsProjectProperties::crsChanged( const QgsCoordinateReferenceSystem &crs )
   }
 
   mExtentGroupBox->setOutputCrs( crs );
+  mAdvertisedExtentServer->setOutputCrs( crs );
 }
 
-void QgsProjectProperties::pbnWMSExtCanvas_clicked()
+void QgsProjectProperties::wmsExtent_toggled()
 {
-  QgsRectangle ext = mMapCanvas->extent();
-  mWMSExtMinX->setText( qgsDoubleToString( ext.xMinimum() ) );
-  mWMSExtMinY->setText( qgsDoubleToString( ext.yMinimum() ) );
-  mWMSExtMaxX->setText( qgsDoubleToString( ext.xMaximum() ) );
-  mWMSExtMaxY->setText( qgsDoubleToString( ext.yMaximum() ) );
+  if ( grpWMSExt->isChecked() )
+  {
+    if ( mAdvertisedExtentServer->outputExtent().isEmpty() )
+    {
+      mAdvertisedExtentServer->setOutputExtentFromCurrent();
+    }
+  }
 }
 
 void QgsProjectProperties::pbnWMSAddSRS_clicked()
@@ -2557,7 +2570,7 @@ void QgsProjectProperties::newStyleDatabase()
 
 void QgsProjectProperties::addStyleDatabasePrivate( bool createNew )
 {
-  QString initialFolder = QgsStyleManagerDialog::settingLastStyleDatabaseFolder.value();
+  QString initialFolder = QgsStyleManagerDialog::settingLastStyleDatabaseFolder->value();
   if ( initialFolder.isEmpty() )
     initialFolder = QDir::homePath();
 
@@ -2574,7 +2587,7 @@ void QgsProjectProperties::addStyleDatabasePrivate( bool createNew )
                            tr( "Style databases" ) + " (*.db *.xml)" );
   if ( ! databasePath.isEmpty() )
   {
-    QgsStyleManagerDialog::settingLastStyleDatabaseFolder.setValue( QFileInfo( databasePath ).path() );
+    QgsStyleManagerDialog::settingLastStyleDatabaseFolder->setValue( QFileInfo( databasePath ).path() );
 
     if ( createNew )
     {

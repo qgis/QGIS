@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer API.
 
 From build dir, run: ctest -R PyQgsServerApi -V
@@ -15,47 +14,41 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os
 import json
+import os
 import re
 import shutil
 
 # Deterministic XML
 os.environ['QT_HASH_SEED'] = '1'
 
+from urllib import parse
+
+from qgis.core import (
+    QgsFeature,
+    QgsFeatureRequest,
+    QgsGeometry,
+    QgsProject,
+    QgsVectorLayer,
+    QgsVectorLayerServerProperties,
+)
+from qgis.PyQt import QtCore
 from qgis.server import (
     QgsBufferServerRequest,
     QgsBufferServerResponse,
     QgsServer,
     QgsServerApi,
     QgsServerApiBadRequestException,
-    QgsServerQueryStringParameter,
     QgsServerApiContext,
+    QgsServerApiUtils,
     QgsServerOgcApi,
     QgsServerOgcApiHandler,
-    QgsServerApiUtils,
-    QgsServiceRegistry
+    QgsServerQueryStringParameter,
+    QgsServiceRegistry,
 )
-
-from qgis.core import (
-    QgsProject,
-    QgsRectangle,
-    QgsVectorLayerServerProperties,
-    QgsFeatureRequest,
-    QgsVectorLayer,
-    QgsFeature,
-    QgsGeometry,
-)
-
-from qgis.PyQt import QtCore
-
 from qgis.testing import unittest
-from utilities import unitTestDataPath
-from urllib import parse
-
-import tempfile
-
 from test_qgsserver import QgsServerTestBase
+from utilities import unitTestDataPath
 
 
 class QgsServerAPIUtilsTest(QgsServerTestBase):
@@ -90,9 +83,9 @@ class QgsServerAPIUtilsTest(QgsServerTestBase):
         crss = QgsServerApiUtils.publishedCrsList(project)
         self.assertTrue('http://www.opengis.net/def/crs/OGC/1.3/CRS84' in crss)
         self.assertTrue(
-            'http://www.opengis.net/def/crs/EPSG/9.6.2/3857' in crss)
+            'http://www.opengis.net/def/crs/EPSG/0/3857' in crss)
         self.assertTrue(
-            'http://www.opengis.net/def/crs/EPSG/9.6.2/4326' in crss)
+            'http://www.opengis.net/def/crs/EPSG/0/4326' in crss)
 
     def test_parse_crs(self):
         crs = QgsServerApiUtils.parseCrs(
@@ -100,11 +93,11 @@ class QgsServerAPIUtilsTest(QgsServerTestBase):
         self.assertTrue(crs.isValid())
 
         crs = QgsServerApiUtils.parseCrs(
-            'http://www.opengis.net/def/crs/EPSG/9.6.2/4326')
+            'http://www.opengis.net/def/crs/EPSG/0/4326')
         self.assertEqual(crs.postgisSrid(), 4326)
 
         crs = QgsServerApiUtils.parseCrs(
-            'http://www.opengis.net/def/crs/EPSG/9.6.2/3857')
+            'http://www.opengis.net/def/crs/EPSG/0/3857')
         self.assertTrue(crs.isValid())
         self.assertEqual(crs.postgisSrid(), 3857)
 
@@ -209,7 +202,7 @@ class QgsServerAPITestBase(QgsServerTestBase):
         for n, v in response.headers().items():
             if n == 'Content-Length':
                 continue
-            result.append("%s: %s" % (n, v))
+            result.append(f"{n}: {v}")
         result.append('')
         result.append(bytes(response.body()).decode('utf8'))
         return '\n'.join(result)
@@ -220,7 +213,7 @@ class QgsServerAPITestBase(QgsServerTestBase):
         actual_lines = actual.split('\n')
         expected_lines = expected.split('\n')
         for i in range(len(actual_lines)):
-            self.assertEqual(actual_lines[i], expected_lines[i], "File: %s\nLine: %s\nActual  : %s\nExpected: %s" % (
+            self.assertEqual(actual_lines[i], expected_lines[i], "File: {}\nLine: {}\nActual  : {}\nExpected: {}".format(
                 reference_file, i, actual_lines[i], expected_lines[i]))
 
     def normalize_json(self, content):
@@ -276,9 +269,9 @@ class QgsServerAPITestBase(QgsServerTestBase):
             f = open(path.encode('utf8'), 'w+', encoding='utf8')
             f.write(result)
             f.close()
-            print("Reference file %s regenerated!" % path.encode('utf8'))
+            print(f"Reference file {path.encode('utf8')} regenerated!")
 
-        with open(path.encode('utf8'), 'r', encoding='utf8') as f:
+        with open(path.encode('utf8'), encoding='utf8') as f:
             if reference_file.endswith('json'):
                 self.assertLinesEqual(self.normalize_json(
                     result), self.normalize_json(f.read()), path.encode('utf8'))
@@ -295,7 +288,7 @@ class QgsServerAPITestBase(QgsServerTestBase):
 
     @classmethod
     def setUpClass(cls):
-        super(QgsServerAPITestBase, cls).setUpClass()
+        super().setUpClass()
         cls.maxDiff = None
 
 
@@ -552,9 +545,9 @@ class QgsServerAPITest(QgsServerAPITestBase):
         project = QgsProject()
         project.read(os.path.join(self.temporary_path, 'qgis_server', 'test_project_api.qgs'))
         encoded_crs = parse.quote(
-            'http://www.opengis.net/def/crs/EPSG/9.6.2/3857', safe='')
+            'http://www.opengis.net/def/crs/EPSG/0/3857', safe='')
         request = QgsBufferServerRequest(
-            'http://server.qgis.org/wfs3/collections/testlayer%20èé/items?crs={}'.format(encoded_crs))
+            f'http://server.qgis.org/wfs3/collections/testlayer%20èé/items?crs={encoded_crs}')
         self.compareApi(
             request, project, 'test_wfs3_collections_items_testlayer_èé_crs_3857.json')
 
@@ -564,9 +557,9 @@ class QgsServerAPITest(QgsServerAPITestBase):
         project.read(os.path.join(self.temporary_path, 'qgis_server',
                                   'test_project_wms_grouped_nested_layers.qgs'))
         encoded_crs = parse.quote(
-            'http://www.opengis.net/def/crs/EPSG/9.6.2/4326', safe='')
+            'http://www.opengis.net/def/crs/EPSG/0/4326', safe='')
         request = QgsBufferServerRequest(
-            'http://server.qgis.org/wfs3/collections/as-areas-short-name/items?crs={}'.format(encoded_crs))
+            f'http://server.qgis.org/wfs3/collections/as-areas-short-name/items?crs={encoded_crs}')
         self.compareApi(
             request, project, 'test_wfs3_collections_items_as-areas-short-name_4326.json')
 
@@ -576,9 +569,9 @@ class QgsServerAPITest(QgsServerAPITestBase):
         project.read(os.path.join(self.temporary_path, 'qgis_server',
                                   'test_project_wms_grouped_nested_layers.qgs'))
         encoded_crs = parse.quote(
-            'http://www.opengis.net/def/crs/EPSG/9.6.2/3857', safe='')
+            'http://www.opengis.net/def/crs/EPSG/0/3857', safe='')
         request = QgsBufferServerRequest(
-            'http://server.qgis.org/wfs3/collections/as-areas-short-name/items?crs={}'.format(encoded_crs))
+            f'http://server.qgis.org/wfs3/collections/as-areas-short-name/items?crs={encoded_crs}')
         self.compareApi(
             request, project, 'test_wfs3_collections_items_as-areas-short-name_3857.json')
 
@@ -645,7 +638,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
 
         # Test with a different CRS
         encoded_crs = parse.quote(
-            'http://www.opengis.net/def/crs/EPSG/9.6.2/3857', safe='')
+            'http://www.opengis.net/def/crs/EPSG/0/3857', safe='')
         request = QgsBufferServerRequest(
             'http://server.qgis.org/wfs3/collections/testlayer%20èé/items?bbox=913191,5606014,913234,5606029&bbox-crs={}'.format(
                 encoded_crs))
@@ -714,7 +707,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
 
         # Invalid request
         data = b'not json!'
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items' % insert_layer,
+        request = QgsBufferServerRequest(f'http://server.qgis.org/wfs3/collections/{insert_layer}/items',
                                          QgsBufferServerRequest.PostMethod,
                                          {'Content-Type': 'application/geo+json'},
                                          data
@@ -726,7 +719,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
             '[{"code":"Bad request error","description":"JSON parse error' in bytes(response.body()).decode('utf8'))
 
         # Valid request
-        data = """{
+        data = b"""{
         "geometry": {
             "coordinates": [[
             7.247,
@@ -745,8 +738,8 @@ class QgsServerAPITest(QgsServerAPITestBase):
             "bool_1": true
         },
         "type": "Feature"
-        }""".encode('utf8')
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items' % insert_layer,
+        }"""
+        request = QgsBufferServerRequest(f'http://server.qgis.org/wfs3/collections/{insert_layer}/items',
                                          QgsBufferServerRequest.PostMethod,
                                          {'Content-Type': 'application/geo+json'},
                                          data
@@ -762,7 +755,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
         feature = next(project.mapLayersByName(
             'test layer èé 3857 published insert')[0].getFeatures(req))
         self.assertEqual(response.headers()['Location'],
-                         'http://server.qgis.org/wfs3/collections/%s/items/%s' % (insert_layer, feature.id()))
+                         f'http://server.qgis.org/wfs3/collections/{insert_layer}/items/{feature.id()}')
         self.assertEqual(feature.attribute('text_1'), 'Text 1')
         self.assertEqual(feature.attribute('text_2'), 'Text 2')
         self.assertEqual(feature.attribute('int_1'), 123)
@@ -793,7 +786,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
 
         # Invalid request
         data = b'not json!'
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % update_layer,
+        request = QgsBufferServerRequest(f'http://server.qgis.org/wfs3/collections/{update_layer}/items/1',
                                          QgsBufferServerRequest.PutMethod,
                                          {'Content-Type': 'application/geo+json'},
                                          data
@@ -805,7 +798,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
             '[{"code":"Bad request error","description":"JSON parse error' in bytes(response.body()).decode('utf8'))
 
         # Valid request: change feature with ID 1
-        data = """{
+        data = b"""{
         "geometry": {
             "coordinates": [[
             7.247,
@@ -824,10 +817,10 @@ class QgsServerAPITest(QgsServerAPITestBase):
             "bool_1": true
         },
         "type": "Feature"
-        }""".encode('utf8')
+        }"""
 
         # Unauthorized layer
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % insert_layer,
+        request = QgsBufferServerRequest(f'http://server.qgis.org/wfs3/collections/{insert_layer}/items/1',
                                          QgsBufferServerRequest.PutMethod,
                                          {'Content-Type': 'application/geo+json'},
                                          data
@@ -837,7 +830,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
         self.assertEqual(response.statusCode(), 403)
 
         # Authorized layer
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % update_layer,
+        request = QgsBufferServerRequest(f'http://server.qgis.org/wfs3/collections/{update_layer}/items/1',
                                          QgsBufferServerRequest.PutMethod,
                                          {'Content-Type': 'application/geo+json'},
                                          data
@@ -866,7 +859,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
             r'\.\d+', '', feature.geometry().asWkt().upper()), 'MULTIPOINT ((806732 5592286))')
 
         # Test with partial and unordered properties
-        data = """{
+        data = b"""{
         "geometry": {
             "coordinates": [[
             8.247,
@@ -881,8 +874,8 @@ class QgsServerAPITest(QgsServerAPITestBase):
             "text_1": "Text 1-bis"
         },
         "type": "Feature"
-        }""".encode('utf8')
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % update_layer,
+        }"""
+        request = QgsBufferServerRequest(f'http://server.qgis.org/wfs3/collections/{update_layer}/items/1',
                                          QgsBufferServerRequest.PutMethod,
                                          {'Content-Type': 'application/geo+json'},
                                          data
@@ -911,7 +904,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
             r'\.\d+', '', feature.geometry().asWkt().upper()), 'MULTIPOINT ((918051 5750592))')
 
         # Try to update a forbidden (unpublished) field
-        data = """{
+        data = b"""{
         "geometry": {
             "coordinates": [[
             8.247,
@@ -923,8 +916,8 @@ class QgsServerAPITest(QgsServerAPITestBase):
             "text_2": "Text 2-tris"
         },
         "type": "Feature"
-        }""".encode('utf8')
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % hidden_text_2_layer,
+        }"""
+        request = QgsBufferServerRequest(f'http://server.qgis.org/wfs3/collections/{hidden_text_2_layer}/items/1',
                                          QgsBufferServerRequest.PutMethod,
                                          {'Content-Type': 'application/geo+json'},
                                          data
@@ -954,7 +947,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
 
         # Valid request on unauthorized layer
         data = b''
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % update_layer,
+        request = QgsBufferServerRequest(f'http://server.qgis.org/wfs3/collections/{update_layer}/items/1',
                                          QgsBufferServerRequest.DeleteMethod)
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response, project)
@@ -962,7 +955,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
 
         # Valid request on authorized layer
         data = b''
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % delete_layer,
+        request = QgsBufferServerRequest(f'http://server.qgis.org/wfs3/collections/{delete_layer}/items/1',
                                          QgsBufferServerRequest.DeleteMethod)
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response, project)
@@ -994,7 +987,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
 
         # Invalid request
         data = b'not json!'
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % update_layer,
+        request = QgsBufferServerRequest(f'http://server.qgis.org/wfs3/collections/{update_layer}/items/1',
                                          QgsBufferServerRequest.PutMethod,
                                          {'Content-Type': 'application/json'},
                                          data
@@ -1016,7 +1009,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
             }
         }
         """
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % update_layer,
+        request = QgsBufferServerRequest(f'http://server.qgis.org/wfs3/collections/{update_layer}/items/1',
                                          QgsBufferServerRequest.PatchMethod,
                                          {'Content-Type': 'application/json'},
                                          data
@@ -1028,15 +1021,15 @@ class QgsServerAPITest(QgsServerAPITestBase):
                          r'[{"code":"Not implemented error","description":"\"add\" instruction in PATCH method is not implemented"}]')
 
         # Valid request: change feature with ID 1
-        data = """{
+        data = b"""{
             "modify": {
                 "text_2": "A new text 2",
                 "blob_1": "dGVzdA=="
             }
-        }""".encode('utf8')
+        }"""
 
         # Unauthorized layer
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % insert_layer,
+        request = QgsBufferServerRequest(f'http://server.qgis.org/wfs3/collections/{insert_layer}/items/1',
                                          QgsBufferServerRequest.PatchMethod,
                                          {'Content-Type': 'application/json'},
                                          data
@@ -1046,7 +1039,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
         self.assertEqual(response.statusCode(), 403)
 
         # Authorized layer
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % update_layer,
+        request = QgsBufferServerRequest(f'http://server.qgis.org/wfs3/collections/{update_layer}/items/1',
                                          QgsBufferServerRequest.PatchMethod,
                                          {'Content-Type': 'application/json'},
                                          data
@@ -1075,7 +1068,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
             r'\.\d+', '', feature.geometry().asWkt().upper()), 'MULTIPOINT ((804542 5593348))')
 
         # Try to update a forbidden (unpublished) field
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % hidden_text_2_layer,
+        request = QgsBufferServerRequest(f'http://server.qgis.org/wfs3/collections/{hidden_text_2_layer}/items/1',
                                          QgsBufferServerRequest.PatchMethod,
                                          {'Content-Type': 'application/json'},
                                          data
@@ -1140,8 +1133,9 @@ class QgsServerAPITest(QgsServerAPITestBase):
             'http://server.qgis.org/wfs3/collections/testlayer%20èé/items?properties')
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response, project)
-        self.assertEqual(bytes(response.body()).decode('utf8'),
-                         '[{"code":"Bad request error","description":"Argument \'properties\' is not valid. Comma separated list of feature property names to be added to the result. Valid values: \'id\', \'name\', \'utf8nameè\'"}]')
+        self.assertIn(bytes(response.body()).decode('utf8'), (
+            '[{"code":"Bad request error","description":"Argument \'properties\' is not valid. Comma separated list of feature property names to be added to the result. Valid values: \'id\', \'utf8nameè\', \'name\'"}]',
+            '[{"code":"Bad request error","description":"Argument \'properties\' is not valid. Comma separated list of feature property names to be added to the result. Valid values: \'id\', \'name\', \'utf8nameè\'"}]'))
 
         # Valid request
         response = QgsBufferServerResponse()
@@ -1204,6 +1198,62 @@ class QgsServerAPITest(QgsServerAPITestBase):
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response, project)
         self.assertEqual(bytes(response.body()).decode('utf-8'), '[{"code":"Internal server error","description":"Invalid feature ID [xYz@]"}]')
+
+    def test_wfs3_field_alias(self):
+
+        project = QgsProject()
+        project.read(os.path.join(self.temporary_path, 'qgis_server', 'test_project_api.qgs'))
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/fields_alias/items.geojson')
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        j_response = json.loads(bytes(response.body()).decode('utf8'))
+        self.assertEqual(list(j_response['features'][0]['properties'].keys()), ['alias_id', 'alias_name', 'utf8nameè'])
+
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/fields_alias/items.geojson?properties=alias_name')
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        j_response = json.loads(bytes(response.body()).decode('utf8'))
+        self.assertEqual(list(j_response['features'][0]['properties'].keys()), ['alias_name'])
+
+        # Also accepts real name
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/fields_alias/items.geojson?properties=name')
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        j_response = json.loads(bytes(response.body()).decode('utf8'))
+        self.assertEqual(list(j_response['features'][0]['properties'].keys()), ['alias_name'])
+
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/fields_alias/items.geojson?sortby=alias_name&sortdesc=1')
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        j_response = json.loads(bytes(response.body()).decode('utf8'))
+        self.assertEqual([f['id'] for f in j_response['features']], ['1', '2', '0'])
+
+        # Also accepts real name
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/fields_alias/items.geojson?sortby=name&sortdesc=1')
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        j_response = json.loads(bytes(response.body()).decode('utf8'))
+        self.assertEqual([f['id'] for f in j_response['features']], ['1', '2', '0'])
+
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/fields_alias/items.geojson?alias_name=th*')
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        j_response = json.loads(bytes(response.body()).decode('utf8'))
+        self.assertEqual([f['id'] for f in j_response['features']], ['2'])
+
+        # Also accepts real name
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/fields_alias/items.geojson?name=th*')
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        j_response = json.loads(bytes(response.body()).decode('utf8'))
+        self.assertEqual([f['id'] for f in j_response['features']], ['2'])
 
     def test_wfs3_time_filters_ranges(self):
         """Test datetime filters"""
@@ -1333,7 +1383,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
         def _date_tester(project_path, datetime, expected, unexpected):
             # Test "created" date field exact
             request = QgsBufferServerRequest(
-                'http://server.qgis.org/wfs3/collections/points/items?datetime=%s' % datetime)
+                f'http://server.qgis.org/wfs3/collections/points/items?datetime={datetime}')
             response = QgsBufferServerResponse()
             project.read(project_path)
             self.server.handleRequest(request, response, project)
@@ -1744,7 +1794,7 @@ class Handler3(QgsServerOgcApiHandler):
     templatePathOverride = None
 
     def __init__(self):
-        super(Handler3, self).__init__()
+        super().__init__()
         self.setContentTypes([QgsServerOgcApi.JSON])
 
     def path(self):
@@ -1777,7 +1827,7 @@ class Handler3(QgsServerOgcApiHandler):
 
     def templatePath(self, context):
         if self.templatePathOverride is None:
-            return super(Handler3, self).templatePath(context)
+            return super().templatePath(context)
         else:
             return self.templatePathOverride
 

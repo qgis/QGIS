@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for accessing QgsApplication members with a QgsApplication instance.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,10 +9,11 @@ __author__ = 'Nyall Dawson'
 __date__ = '1/02/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
 import sys
+
+import qgis  # NOQA
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (QgsApplication)
+from qgis.core import QgsApplication
 from qgis.testing import unittest
 
 """

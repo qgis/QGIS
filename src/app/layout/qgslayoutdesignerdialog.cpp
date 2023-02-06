@@ -73,6 +73,8 @@
 #include "qgslayoutlabelwidget.h"
 #include "qgslabelingresults.h"
 #include "qgsscreenhelper.h"
+#include "qgsshortcutsmanager.h"
+#include "qgsconfigureshortcutsdialog.h"
 #include "ui_defaults.h"
 
 #include <QShortcut>
@@ -993,6 +995,12 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   std::sort( actions.begin(), actions.end(), cmpByText_ );
   mToolbarMenu->insertActions( nullptr, actions );
 
+  // Create the shortcuts manager
+  mShortcutsManager = new QgsShortcutsManager( this, "LayoutDesigner/shortcuts/" );
+  mShortcutsManager->registerAllChildren( this );
+  mShortcutsDialog = new QgsConfigureShortcutsDialog( this, mShortcutsManager ) ;
+  connect( mActionKeyboardShortcuts, &QAction::triggered, mShortcutsDialog, &QDialog::show );
+
   restoreWindowState();
 
   //listen out to status bar updates from the view
@@ -1124,6 +1132,13 @@ std::unique_ptr<QgsLayoutDesignerInterface::ExportResults> QgsLayoutDesignerDial
 {
   return mLastExportResults ? std::make_unique< QgsLayoutDesignerInterface::ExportResults>( *mLastExportResults ) : nullptr;
 }
+
+
+QgsShortcutsManager *QgsLayoutDesignerDialog::shortcutsManager()
+{
+  return mShortcutsManager;
+}
+
 
 QgsLayout *QgsLayoutDesignerDialog::currentLayout()
 {

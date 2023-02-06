@@ -117,6 +117,11 @@ const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerS
       {
         readFlags |= Qgis::ProjectReadFlag::TrustLayerMetadata;
       }
+      // Activate force layer read only flag
+      if ( settings->forceReadOnlyLayers() )
+      {
+        readFlags |= Qgis::ProjectReadFlag::ForceReadOnlyLayers;
+      }
       // Activate don't load layouts flag
       if ( settings->getPrintDisabled() )
       {
@@ -175,6 +180,19 @@ const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerS
 
   auto entry = mProjectCache[ path ];
   return entry ? entry->second.get() : nullptr;
+}
+
+QList<QgsProject *> QgsConfigCache::projects() const
+{
+  QList<QgsProject *> projects;
+
+  const auto constKeys {  mProjectCache.keys() };
+  for ( const auto &path : std::as_const( constKeys ) )
+  {
+    projects << mProjectCache[path]->second.get();
+  }
+
+  return projects;
 }
 
 QDomDocument *QgsConfigCache::xmlDocument( const QString &filePath )
@@ -334,4 +352,3 @@ void QgsNullCacheStrategy::entryInserted( const QString &path )
 {
   Q_UNUSED( path )
 }
-

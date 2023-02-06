@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsRange
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,12 +10,9 @@ __date__ = '11.04.2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.testing import unittest
-from qgis.core import (QgsIntRange,
-                       QgsDoubleRange,
-                       QgsDateRange)
 from qgis.PyQt.QtCore import QDate
+from qgis.core import QgsDateRange, QgsDoubleRange, QgsIntRange
+from qgis.testing import unittest
 
 
 class TestQgsIntRange(unittest.TestCase):

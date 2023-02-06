@@ -834,7 +834,6 @@ class CORE_EXPORT QgsStyle : public QObject
      * Creates tables structure for new database
      *
      *  This function is used to create the tables structure in a newly-created database.
-     *  \returns returns the success state of the temporary memory database creation
      *  \see createDatabase()
      *  \see createMemoryDatabase()
      *  \since QGIS 3.0

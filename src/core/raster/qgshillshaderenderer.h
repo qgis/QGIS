@@ -47,6 +47,7 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
     QgsHillshadeRenderer( QgsRasterInterface *input, int band, double lightAzimuth, double lightAltitude );
 
     QgsHillshadeRenderer *clone() const override SIP_FACTORY;
+    Qgis::RasterRendererFlags flags() const override;
 
     /**
      * \brief Factory method to create a new renderer

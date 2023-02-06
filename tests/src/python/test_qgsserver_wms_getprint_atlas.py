@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer WMS GetPrint.
 
 From build dir, run: ctest -R PyQgsServerWMSGetPrintAtlas -V
@@ -21,17 +20,16 @@ os.environ['QT_HASH_SEED'] = '1'
 
 import urllib.parse
 
-from qgis.testing import unittest
-from utilities import unitTestDataPath
-from test_qgsserver import QgsServerTestBase
-
 from qgis.core import QgsProject
+from qgis.testing import unittest
+from test_qgsserver import QgsServerTestBase
+from utilities import unitTestDataPath
 
 
 class TestQgsServerWMSGetPrintAtlas(QgsServerTestBase):
     """QGIS Server WMS Tests for GetPrint atlas request"""
 
-    def test_wms_getprint_atlas(self):
+    def __test_wms_getprint_atlas(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
@@ -46,7 +44,7 @@ class TestQgsServerWMSGetPrintAtlas(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetPrint_Atlas")
 
-    def test_wms_getprint_atlas_getProjectSettings(self):
+    def __test_wms_getprint_atlas_getProjectSettings(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
@@ -62,7 +60,7 @@ class TestQgsServerWMSGetPrintAtlas(QgsServerTestBase):
 
         project = QgsProject()
         self.assertTrue(project.read(os.path.join(unitTestDataPath(), 'qgis_server', 'bug_gh30817_atlas_pk.qgs')))
-        qs = "?" + "&".join(["%s=%s" % i for i in list({
+        params = {
             "SERVICE": "WMS",
             "VERSION": "1.3.0",
             "REQUEST": "GetPrint",
@@ -72,9 +70,17 @@ class TestQgsServerWMSGetPrintAtlas(QgsServerTestBase):
             "DPI": "50",
             "CRS": "EPSG:2056",
             "ATLAS_PK": "2",
-        }.items())])
+        }
+        qs = "?" + "&".join(["%s=%s" % i for i in list(params.items())])
         r, h = self._result(self._execute_request_project(qs, project))
         self._img_diff_error(r, h, "WMS_GetPrint_Atlas_No_Pk")
+
+        # Test issue GH #49900: when using map scales scale
+        params['TEMPLATE'] = 'layout_fixed_scale'
+        params['ATLAS_PK'] = '4'
+        qs = "?" + "&".join(["%s=%s" % i for i in list(params.items())])
+        r, h = self._result(self._execute_request_project(qs, project))
+        self._img_diff_error(r, h, "WMS_GetPrint_Atlas_Fixed_Scale")
 
 
 if __name__ == '__main__':

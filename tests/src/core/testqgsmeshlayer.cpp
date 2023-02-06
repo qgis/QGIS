@@ -1016,7 +1016,7 @@ void TestQgsMeshLayer::test_path()
   QCOMPARE( layers1.count(), 1 );
 
   // Check if the mesh is still here but invalid
-  QgsMeshLayer *meshLayer1 = qobject_cast<QgsMeshLayer *>( layers1.values().at( 0 ) );
+  QgsMeshLayer *meshLayer1 = qobject_cast<QgsMeshLayer *>( layers1.first() );
   QVERIFY( meshLayer1 );
   QVERIFY( !meshLayer1->isValid() );
   QCOMPARE( meshLayer1->name(), QStringLiteral( "mesh layer" ) );
@@ -1028,7 +1028,7 @@ void TestQgsMeshLayer::test_path()
   QMap<QString, QgsMapLayer *> layers2 = project2.mapLayers();
   QCOMPARE( layers2.count(), 1 );
 
-  QgsMeshLayer *meshLayer2 = qobject_cast<QgsMeshLayer *>( layers2.values().at( 0 ) );
+  QgsMeshLayer *meshLayer2 = qobject_cast<QgsMeshLayer *>( layers2.first() );
   QVERIFY( meshLayer2 );
   QVERIFY( meshLayer2->isValid() );
   QCOMPARE( meshLayer2->name(), QStringLiteral( "mesh layer" ) );
@@ -1279,7 +1279,7 @@ void TestQgsMeshLayer::test_snap_on_mesh()
 {
   //1D mesh
   mMdal1DLayer->updateTriangularMesh();
-  const double searchRadius = 10;
+  double searchRadius = 10;
 
   QgsPointXY snappedPoint;
 
@@ -1318,6 +1318,47 @@ void TestQgsMeshLayer::test_snap_on_mesh()
   QCOMPARE( snappedPoint, QgsPointXY( 2333.33333333, 2333.333333333 ) );
   snappedPoint = mMdalLayer->snapOnElement( QgsMesh::Face, QgsPointXY( 500, 500 ), searchRadius );
   QCOMPARE( snappedPoint, QgsPointXY() );
+
+  // same test but with coordinates in geographic system with transform coordinates
+  QgsCoordinateReferenceSystem wgs84Crs;
+  wgs84Crs.createFromProj( "+proj=longlat +datum=WGS84 +no_defs" );
+  QVERIFY( wgs84Crs.isValid() );
+  QgsCoordinateReferenceSystem EPSG32620crs;
+  EPSG32620crs.createFromProj( "+proj=utm +zone=20 +datum=WGS84 +units=m +no_defs" );
+
+  //1D mesh
+  mMdal1DLayer->setCrs( EPSG32620crs );
+  QgsCoordinateTransform transform( EPSG32620crs, wgs84Crs, QgsProject::instance() );
+  mMdal1DLayer->updateTriangularMesh( transform );
+  searchRadius = 1;
+  snappedPoint = mMdal1DLayer->snapOnElement( QgsMesh::Vertex, QgsPointXY(), searchRadius );
+  QCOMPARE( snappedPoint, QgsPointXY() );
+  snappedPoint = mMdal1DLayer->snapOnElement( QgsMesh::Vertex, transform.transform( QgsPointXY( 1002, 2005 ) ), searchRadius );
+  QCOMPARE( snappedPoint, transform.transform( QgsPointXY( 1000, 2000 ) ) );
+  snappedPoint = mMdal1DLayer->snapOnElement( QgsMesh::Edge, transform.transform( QgsPointXY( 1002, 2005 ) ), searchRadius );
+  QCOMPARE( snappedPoint, transform.transform( QgsPointXY( 1002, 2000 ) ) );
+  snappedPoint = mMdal1DLayer->snapOnElement( QgsMesh::Edge, transform.transform( QgsPointXY( 998, 2005 ) ), searchRadius );
+  QCOMPARE( snappedPoint, transform.transform( QgsPointXY( 1000, 2000 ) ) );
+  snappedPoint = mMdal1DLayer->snapOnElement( QgsMesh::Vertex, transform.transform( QgsPointXY( 2002, 2998 ) ), searchRadius );
+  QCOMPARE( snappedPoint, transform.transform( QgsPointXY( 2000, 3000 ) ) );
+
+  //2D mesh
+  mMdalLayer->setCrs( EPSG32620crs );
+  mMdalLayer->updateTriangularMesh( transform );
+  snappedPoint = mMdalLayer->snapOnElement( QgsMesh::Vertex, QgsPointXY(), searchRadius );
+  QCOMPARE( snappedPoint, QgsPointXY() );
+  snappedPoint = mMdalLayer->snapOnElement( QgsMesh::Vertex, QgsPointXY(), searchRadius );
+  QCOMPARE( snappedPoint, QgsPointXY() );
+  snappedPoint = mMdalLayer->snapOnElement( QgsMesh::Vertex,  transform.transform( QgsPointXY( 1002, 2005 ) ), searchRadius );
+  QCOMPARE( snappedPoint,  transform.transform( QgsPointXY( 1000, 2000 ) ) );
+  snappedPoint = mMdalLayer->snapOnElement( QgsMesh::Vertex,  transform.transform( QgsPointXY( 2002, 2998 ) ), searchRadius );
+  QCOMPARE( snappedPoint,  transform.transform( QgsPointXY( 2000, 3000 ) ) );
+  snappedPoint = mMdalLayer->snapOnElement( QgsMesh::Face,  transform.transform( QgsPointXY( 998, 1998 ) ), searchRadius );
+  QCOMPARE( snappedPoint,  transform.transform( QgsPointXY( 1500, 2500 ) ) );
+  snappedPoint = mMdalLayer->snapOnElement( QgsMesh::Face,  transform.transform( QgsPointXY( 1002, 2001 ) ), searchRadius );
+  QCOMPARE( snappedPoint,  transform.transform( QgsPointXY( 1500, 2500 ) ) );
+  snappedPoint = mMdalLayer->snapOnElement( QgsMesh::Face,  transform.transform( QgsPointXY( 1998, 2998 ) ), searchRadius );
+  QCOMPARE( snappedPoint,  transform.transform( QgsPointXY( 1500, 2500 ) ) );
 }
 
 void TestQgsMeshLayer::test_dataset_value_from_layer()

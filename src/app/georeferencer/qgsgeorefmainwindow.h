@@ -18,7 +18,7 @@
 #include "qgsmapcoordsdialog.h"
 #include "qgsimagewarper.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgssettingsentryenumflag.h"
+#include "qgssettingstree.h"
 
 #include <memory>
 
@@ -49,6 +49,10 @@ class QgsGCPCanvasItem;
 class QgsGcpPoint;
 class QgsMapLayer;
 class QgsScreenHelper;
+class QgsSettingsEntryBool;
+class QgsSettingsEntryString;
+template<class T> class QgsSettingsEntryEnumFlag;
+
 
 class QgsGeorefDockWidget : public QgsDockWidget
 {
@@ -57,20 +61,21 @@ class QgsGeorefDockWidget : public QgsDockWidget
     QgsGeorefDockWidget( const QString &title, QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
 };
 
-class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPluginGuiBase
+class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPluginGuiBase
 {
     Q_OBJECT
 
   public:
+    static inline QgsSettingsTreeNode *sTreeGeoreferencer = QgsSettingsTree::sTreeApp->createChildNode( QStringLiteral( "georeferencer" ) );
 
-    static const inline QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod> settingResamplingMethod = QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod>( QStringLiteral( "resampling-method" ), QgsSettings::Prefix::APP_GEOREFERENCER, QgsImageWarper::ResamplingMethod::NearestNeighbour, QObject::tr( "Last used georeferencer resampling method" ) );
-    static const inline QgsSettingsEntryString settingCompressionMethod = QgsSettingsEntryString( QStringLiteral( "compression-method" ), QgsSettings::Prefix::APP_GEOREFERENCER, QStringLiteral( "NONE" ), QObject::tr( "Last used georeferencer compression method" ) );
-    static const inline QgsSettingsEntryBool settingUseZeroForTransparent = QgsSettingsEntryBool( QStringLiteral( "use-zero-for-transparent" ), QgsSettings::Prefix::APP_GEOREFERENCER, false, QObject::tr( "Last used georeferencer use-zero-as-transparent option" ) );
-    static const inline QgsSettingsEntryEnumFlag<QgsGcpTransformerInterface::TransformMethod> settingTransformMethod = QgsSettingsEntryEnumFlag<QgsGcpTransformerInterface::TransformMethod>( QStringLiteral( "transform-method" ), QgsSettings::Prefix::APP_GEOREFERENCER, QgsGcpTransformerInterface::TransformMethod::Linear, QObject::tr( "Last used georeferencer transform method" ) );
-    static const inline QgsSettingsEntryBool settingSaveGcps = QgsSettingsEntryBool( QStringLiteral( "save-gcp-points" ), QgsSettings::Prefix::APP_GEOREFERENCER, false, QObject::tr( "Whether georeferencer should automatically save .points files" ) );
-    static const inline QgsSettingsEntryBool settingLoadInProject = QgsSettingsEntryBool( QStringLiteral( "load-result-in-project" ), QgsSettings::Prefix::APP_GEOREFERENCER, true, QObject::tr( "Whether georeferencer should automatically load results into the current project" ) );
-    static const inline QgsSettingsEntryString settingLastSourceFolder = QgsSettingsEntryString( QStringLiteral( "last-source-folder" ), QgsSettings::Prefix::APP_GEOREFERENCER, QString(), QObject::tr( "Last used folder for georeferencer source files" ) );
-    static const inline QgsSettingsEntryString settingLastRasterFileFilter = QgsSettingsEntryString( QStringLiteral( "last-raster-file-filter" ), QgsSettings::Prefix::APP_GEOREFERENCER, QString(), QObject::tr( "Last used raster file filter for georeferencer source files" ) );
+    static const QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod> *settingResamplingMethod;
+    static const QgsSettingsEntryString *settingCompressionMethod;
+    static const QgsSettingsEntryBool *settingUseZeroForTransparent;
+    static const QgsSettingsEntryEnumFlag<QgsGcpTransformerInterface::TransformMethod> *settingTransformMethod;
+    static const QgsSettingsEntryBool *settingSaveGcps;
+    static const QgsSettingsEntryBool *settingLoadInProject;
+    static const QgsSettingsEntryString *settingLastSourceFolder;
+    static const QgsSettingsEntryString *settingLastRasterFileFilter;
 
     QgsGeoreferencerMainWindow( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
     ~QgsGeoreferencerMainWindow() override;
@@ -183,6 +188,8 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     bool georeferenceRaster();
     bool georeferenceVector();
 
+    void postProcessGeoreferencedLayer( const QString &fileName, QgsMapLayerType type, const QString &provider );
+
     bool writeWorldFile( const QgsPointXY &origin, double pixelXSize, double pixelYSize, double rotation );
     bool writePDFReportFile( const QString &fileName, const QgsGeorefTransform &transform );
     bool writePDFMapFile( const QString &fileName, const QgsGeorefTransform &transform );
@@ -291,6 +298,8 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
 
 
     QgsDockWidget *mDock = nullptr;
+
+    friend class TestQgsGeoreferencer;
 };
 
 #endif

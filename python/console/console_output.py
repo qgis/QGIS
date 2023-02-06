@@ -24,7 +24,11 @@ from qgis.PyQt.QtGui import QColor, QFont, QKeySequence, QFontDatabase
 from qgis.PyQt.QtWidgets import QGridLayout, QSpacerItem, QSizePolicy, QShortcut, QMenu, QApplication
 from qgis.PyQt.Qsci import QsciScintilla
 from qgis.core import Qgis, QgsApplication, QgsSettings
-from qgis.gui import QgsMessageBar, QgsCodeEditorPython
+from qgis.gui import (
+    QgsMessageBar,
+    QgsCodeEditorPython,
+    QgsCodeInterpreter
+)
 import sys
 
 
@@ -65,7 +69,7 @@ class writeOut(QObject):
         if self.out:
             self.out.write(m)
 
-        self.move_cursor_to_end()
+        self.sO.moveCursorToEnd()
 
         if self.style != "_traceback":
             self.sO.repaint()
@@ -73,18 +77,6 @@ class writeOut(QObject):
         if self.fire_keyboard_interrupt:
             self.fire_keyboard_interrupt = False
             raise KeyboardInterrupt
-
-    def move_cursor_to_end(self):
-        """Move cursor to end of text"""
-        line, index = self.get_end_pos()
-        self.sO.setCursorPosition(line, index)
-        self.sO.ensureCursorVisible()
-        self.sO.ensureLineVisible(line)
-
-    def get_end_pos(self):
-        """Return (line, index) position of the last character"""
-        line = self.sO.lines() - 1
-        return (line, len(self.sO.text(line)))
 
     def flush(self):
         pass
@@ -249,7 +241,7 @@ class ShellOutputScintilla(QgsCodeEditorPython):
         txt = e.text()
         if len(txt) and txt >= " ":
             self.shell.append(txt)
-            self.shell.move_cursor_to_end()
+            self.shell.moveCursorToEnd()
             self.shell.setFocus()
             e.ignore()
         else:

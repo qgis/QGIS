@@ -828,8 +828,6 @@ Creates tables structure for new database
 
 This function is used to create the tables structure in a newly-created database.
 
-:return: returns the success state of the temporary memory database creation
-
 .. seealso:: :py:func:`createDatabase`
 
 .. seealso:: :py:func:`createMemoryDatabase`

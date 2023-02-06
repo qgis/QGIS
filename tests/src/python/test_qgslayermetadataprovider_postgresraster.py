@@ -1,4 +1,3 @@
-# coding=utf-8
 """"Test for postgres layer metadata provider
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -14,13 +13,9 @@ __copyright__ = 'Copyright 2022, ItOpen'
 
 import os
 
-from qgis.core import (
-    QgsRasterLayer,
-    QgsProviderRegistry,
-)
-
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.core import QgsProviderRegistry, QgsRasterLayer
 from qgis.testing import unittest
+
 from qgslayermetadataprovidertestbase import LayerMetadataProviderTestBase
 
 
@@ -32,7 +27,7 @@ class TestPostgresLayerMetadataProvider(unittest.TestCase, LayerMetadataProvider
 
     def getLayer(self):
 
-        return QgsRasterLayer('{} table="qgis_test"."Raster1" (Rast)'.format(self.getConnectionUri()), "someData", 'postgresraster')
+        return QgsRasterLayer(f'{self.getConnectionUri()} table="qgis_test"."Raster1" (Rast)', "someData", 'postgresraster')
 
     def getConnectionUri(self) -> str:
 
@@ -42,6 +37,11 @@ class TestPostgresLayerMetadataProvider(unittest.TestCase, LayerMetadataProvider
             dbconn = os.environ['QGIS_PGTEST_DB']
 
         return dbconn
+
+    def clearMetadataTable(self):
+
+        self.conn.execSql('DROP TABLE IF EXISTS qgis_test.qgis_layer_metadata')
+        self.conn.execSql('DROP TABLE IF EXISTS public.qgis_layer_metadata')
 
     def setUp(self):
 
@@ -57,6 +57,8 @@ class TestPostgresLayerMetadataProvider(unittest.TestCase, LayerMetadataProvider
         conn.execSql('DROP TABLE IF EXISTS qgis_test.qgis_layer_metadata')
         conn.setConfiguration({'metadataInDatabase': True})
         conn.store('PG Metadata Enabled Connection')
+        self.conn = conn
+        self.clearMetadataTable()
 
 
 if __name__ == '__main__':

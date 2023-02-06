@@ -32,7 +32,7 @@ QString QgsSwapXYAlgorithm::displayName() const
 
 QStringList QgsSwapXYAlgorithm::tags() const
 {
-  return QObject::tr( "invert,flip,swap,latitude,longitude" ).split( ',' );
+  return QObject::tr( "invert,flip,swap,switch,latitude,longitude" ).split( ',' );
 }
 
 QString QgsSwapXYAlgorithm::group() const

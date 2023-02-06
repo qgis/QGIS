@@ -18,10 +18,8 @@
 #include "qgscoordinatenumericformat.h"
 #include "qgis.h"
 #include "qgsreadwritecontext.h"
-#include "qgssettings.h"
-#include "qgsapplication.h"
-#include "qgsnumericformatregistry.h"
 
+#include <QSettings>
 #include <memory>
 
 void QgsLocalDefaultSettings::setBearingFormat( const QgsBearingNumericFormat *format )

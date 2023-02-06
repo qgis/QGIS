@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsProjectViewSettings.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,29 +9,30 @@ __author__ = 'Nyall Dawson'
 __date__ = '30/10/2019'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
-import qgis  # NOQA
 import os
 
-from qgis.core import (QgsProject,
-                       QgsProjectViewSettings,
-                       QgsReadWriteContext,
-                       QgsReferencedRectangle,
-                       QgsRectangle,
-                       QgsCoordinateReferenceSystem,
-                       QgsVectorLayer,
-                       QgsFeature,
-                       QgsGeometry,
-                       QgsPointXY,
-                       QgsRasterLayer,
-                       Qgis)
-from qgis.gui import QgsMapCanvas
-
+import qgis  # NOQA
 from qgis.PyQt.QtCore import QTemporaryDir
-
 from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtXml import QDomDocument, QDomElement
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.core import (
+    Qgis,
+    QgsCoordinateReferenceSystem,
+    QgsFeature,
+    QgsGeometry,
+    QgsPointXY,
+    QgsProject,
+    QgsProjectViewSettings,
+    QgsRasterLayer,
+    QgsReadWriteContext,
+    QgsRectangle,
+    QgsReferencedRectangle,
+    QgsVectorLayer,
+)
+from qgis.gui import QgsMapCanvas
 from qgis.testing import start_app, unittest
-from utilities import (unitTestDataPath)
+
+from utilities import unitTestDataPath
 
 app = start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -106,7 +106,7 @@ class TestQgsProjectViewSettings(unittest.TestCase):
         canvas.show()
 
         tmpDir = QTemporaryDir()
-        tmpFile = "{}/project.qgz".format(tmpDir.path())
+        tmpFile = f"{tmpDir.path()}/project.qgz"
         self.assertTrue(p.write(tmpFile))
 
         QgsProject.instance().read(tmpFile)
@@ -148,7 +148,7 @@ class TestQgsProjectViewSettings(unittest.TestCase):
         canvas.show()
 
         tmpDir = QTemporaryDir()
-        tmpFile = "{}/project.qgz".format(tmpDir.path())
+        tmpFile = f"{tmpDir.path()}/project.qgz"
         self.assertTrue(p.write(tmpFile))
 
         QgsProject.instance().read(tmpFile)

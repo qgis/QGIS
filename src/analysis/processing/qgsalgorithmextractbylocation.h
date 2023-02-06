@@ -52,11 +52,17 @@ class QgsLocationBasedAlgorithm : public QgsProcessingAlgorithm
     QStringList predicateOptionsList() const;
     void process( const QgsProcessingContext &context, QgsFeatureSource *targetSource, QgsFeatureSource *intersectSource, const QList<int> &selectedPredicates, const std::function< void( const QgsFeature & )> &handleFeatureFunction, bool onlyRequireTargetIds, QgsProcessingFeedback *feedback, const QgsFeatureIds &skipTargetFeatureIds = QgsFeatureIds() );
 
+  protected:
+
+    QgsCoordinateReferenceSystem mTargetCrs;
+    long long mTargetFeatureCount = 0;
+    long long mIntersectFeatureCount = 0;
 
   private:
 
     void processByIteratingOverTargetSource( const QgsProcessingContext &context, QgsFeatureSource *targetSource, QgsFeatureSource *intersectSource, const QList<int> &selectedPredicates, const std::function< void( const QgsFeature & )> &handleFeatureFunction, bool onlyRequireTargetIds, QgsProcessingFeedback *feedback, const QgsFeatureIds &skipTargetFeatureIds );
     void processByIteratingOverIntersectSource( const QgsProcessingContext &context, QgsFeatureSource *targetSource, QgsFeatureSource *intersectSource, const QList<int> &selectedPredicates, const std::function< void( const QgsFeature & )> &handleFeatureFunction, bool onlyRequireTargetIds, QgsProcessingFeedback *feedback, const QgsFeatureIds &skipTargetFeatureIds );
+
 };
 
 
@@ -85,7 +91,6 @@ class QgsSelectByLocationAlgorithm : public QgsLocationBasedAlgorithm
 
     QVariantMap processAlgorithm( const QVariantMap &parameters,
                                   QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-
 };
 
 /**
@@ -110,6 +115,8 @@ class QgsExtractByLocationAlgorithm : public QgsLocationBasedAlgorithm
 
     QVariantMap processAlgorithm( const QVariantMap &parameters,
                                   QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    bool prepareAlgorithm( const QVariantMap &parameters,
+                           QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
 };
 

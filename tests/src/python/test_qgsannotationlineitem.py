@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsAnnotationLineItem.
 
 From build dir, run: ctest -R PyQgsAnnotationLineItem -V
@@ -13,38 +12,34 @@ __date__ = '29/07/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.PyQt.QtCore import (QSize,
-                              QDir)
-from qgis.PyQt.QtGui import (QImage,
-                             QPainter,
-                             QColor,
-                             QTransform)
-from qgis.core import (QgsMapSettings,
-                       QgsCoordinateTransform,
-                       QgsProject,
-                       QgsPoint,
-                       QgsCoordinateReferenceSystem,
-                       QgsLineSymbol,
-                       QgsRenderChecker,
-                       QgsReadWriteContext,
-                       QgsRenderContext,
-                       QgsAnnotationLineItem,
-                       QgsRectangle,
-                       QgsLineString,
-                       QgsCircularString,
-                       QgsAnnotationItemNode,
-                       QgsPointXY,
-                       Qgis,
-                       QgsVertexId,
-                       QgsAnnotationItemEditOperationMoveNode,
-                       QgsAnnotationItemEditOperationDeleteNode,
-                       QgsAnnotationItemEditOperationTranslateItem,
-                       QgsAnnotationItemEditOperationAddNode
-                       )
+from qgis.PyQt.QtCore import QDir, QSize
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.PyQt.QtXml import QDomDocument
-
+from qgis.core import (
+    Qgis,
+    QgsAnnotationItemEditOperationAddNode,
+    QgsAnnotationItemEditOperationDeleteNode,
+    QgsAnnotationItemEditOperationMoveNode,
+    QgsAnnotationItemEditOperationTranslateItem,
+    QgsAnnotationItemNode,
+    QgsAnnotationLineItem,
+    QgsCircularString,
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform,
+    QgsLineString,
+    QgsLineSymbol,
+    QgsMapSettings,
+    QgsPoint,
+    QgsPointXY,
+    QgsProject,
+    QgsReadWriteContext,
+    QgsRectangle,
+    QgsRenderChecker,
+    QgsRenderContext,
+    QgsVertexId,
+)
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()
@@ -59,7 +54,7 @@ class TestQgsAnnotationLineItem(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(cls.report)
 
@@ -252,7 +247,7 @@ class TestQgsAnnotationLineItem(unittest.TestCase):
         self.assertTrue(self.imageCheck('linestring_item_transform', 'linestring_item_transform', image))
 
     def imageCheck(self, name, reference_image, image):
-        TestQgsAnnotationLineItem.report += "<h2>Render {}</h2>\n".format(name)
+        TestQgsAnnotationLineItem.report += f"<h2>Render {name}</h2>\n"
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + 'patch_' + name + ".png"
         image.save(file_name, "PNG")

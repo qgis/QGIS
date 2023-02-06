@@ -29,6 +29,7 @@
 class ANALYSIS_EXPORT QgsGeometryDuplicateCheckError : public QgsGeometryCheckError
 {
   public:
+    //! Constructor
     QgsGeometryDuplicateCheckError( const QgsGeometryCheck *check,
                                     const QgsGeometryCheckerUtils::LayerFeature &layerFeature,
                                     const QgsPointXY &errorLocation,
@@ -37,8 +38,11 @@ class ANALYSIS_EXPORT QgsGeometryDuplicateCheckError : public QgsGeometryCheckEr
       : QgsGeometryCheckError( check, layerFeature, errorLocation, QgsVertexId(), duplicatesString( featurePools, duplicates ) )
       , mDuplicates( duplicates )
     { }
+
+    //! Returns the duplicates
     QMap<QString, QList<QgsFeatureId>> duplicates() const { return mDuplicates; }
 
+    //! Returns if the \a other error is equivalent
     bool isEqual( QgsGeometryCheckError *other ) const override
     {
       return other->check() == check() &&

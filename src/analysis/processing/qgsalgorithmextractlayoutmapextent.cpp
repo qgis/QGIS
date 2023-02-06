@@ -68,6 +68,11 @@ void QgsLayoutMapExtentToLayerAlgorithm::initAlgorithm( const QVariantMap & )
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "ROTATION" ), QObject::tr( "Map rotation" ) ) );
 }
 
+QgsProcessingAlgorithm::Flags QgsLayoutMapExtentToLayerAlgorithm::flags() const
+{
+  return QgsProcessingAlgorithm::flags() | FlagRequiresProject;
+}
+
 QString QgsLayoutMapExtentToLayerAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm creates a polygon layer containing the extent of a print layout map item (or items), "

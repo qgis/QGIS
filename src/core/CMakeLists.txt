@@ -31,6 +31,11 @@ set(QGIS_CORE_SRCS
   ${FLEX_QgsMeshCalcLexer_OUTPUTS}
   ${BISON_QgsMeshCalcParser_OUTPUTS}
 
+  actions/qgsaction.cpp
+  actions/qgsactionscope.cpp
+  actions/qgsactionscoperegistry.cpp
+  actions/qgsactionmanager.cpp
+
   callouts/qgscallout.cpp
   callouts/qgscalloutsregistry.cpp
 
@@ -67,7 +72,11 @@ set(QGIS_CORE_SRCS
   gps/qgsgpsconnectionregistry.cpp
   gps/qgsgpsdconnection.cpp
   gps/qgsgpsdetector.cpp
+  gps/qgsgpsinformation.cpp
+  gps/qgsgpslogger.cpp
   gps/qgsnmeaconnection.cpp
+  gps/qgssatelliteinformation.cpp
+  gps/qgsvectorlayergpslogger.cpp
 
   plot/qgsplot.cpp
 
@@ -130,7 +139,9 @@ set(QGIS_CORE_SRCS
   editform/qgsattributeeditorfield.cpp
   editform/qgsattributeeditorrelation.cpp
   editform/qgsattributeeditorhtmlelement.cpp
+  editform/qgsattributeeditortextelement.cpp
   editform/qgsattributeeditorqmlelement.cpp
+  editform/qgsattributeeditorspacerelement.cpp
 
   effects/qgsblureffect.cpp
   effects/qgscoloreffect.cpp
@@ -145,7 +156,7 @@ set(QGIS_CORE_SRCS
   externalstorage/qgsexternalstorage.cpp
   externalstorage/qgsexternalstorageregistry.cpp
   externalstorage/qgssimplecopyexternalstorage.cpp
-  externalstorage/qgswebdavexternalstorage.cpp
+  externalstorage/qgshttpexternalstorage.cpp
 
   layertree/qgscolorramplegendnode.cpp
   layertree/qgscolorramplegendnodesettings.cpp
@@ -326,10 +337,6 @@ set(QGIS_CORE_SRCS
   qgsabstractcontentcache.cpp
   qgsabstractgeopdfexporter.cpp
   qgsapplication.cpp
-  qgsaction.cpp
-  qgsactionscope.cpp
-  qgsactionscoperegistry.cpp
-  qgsactionmanager.cpp
   qgsaggregatecalculator.cpp
   qgsanimatedicon.cpp
   qgspostgresstringutils.cpp
@@ -370,6 +377,7 @@ set(QGIS_CORE_SRCS
   qgsdiagramrenderer.cpp
   qgsdistancearea.cpp
   qgselevationmap.cpp
+  qgselevationshadingrenderer.cpp
   qgselevationutils.cpp
   qgserror.cpp
   qgseventtracing.cpp
@@ -493,6 +501,7 @@ set(QGIS_CORE_SRCS
   qgsshapegenerator.cpp
   qgssimplifymethod.cpp
   qgssingleitemmodel.cpp
+  qgssldexportcontext.cpp
   qgssnappingutils.cpp
   qgsspatialindex.cpp
   qgsspatialindexkdbush.cpp
@@ -575,6 +584,7 @@ set(QGIS_CORE_SRCS
   layout/qgslayoutgeopdfexporter.cpp
   layout/qgslayoutitem.cpp
   layout/qgslayoutitemattributetable.cpp
+  layout/qgslayoutitemelevationprofile.cpp
   layout/qgslayoutitemgroup.cpp
   layout/qgslayoutitemgroupundocommand.cpp
   layout/qgslayoutitemhtml.cpp
@@ -660,6 +670,7 @@ set(QGIS_CORE_SRCS
   project/qgsprojectelevationproperties.cpp
   project/qgsprojectfiletransform.cpp
   project/qgsprojectdisplaysettings.cpp
+  project/qgsprojectgpssettings.cpp
   project/qgsprojectproperty.cpp
   project/qgsprojectservervalidator.cpp
   project/qgsprojectstorage.cpp
@@ -671,6 +682,7 @@ set(QGIS_CORE_SRCS
   project/qgsprojectviewsettings.cpp
   project/qgsmapviewsmanager.cpp
 
+  raster/qgsrasterattributetable.cpp
   raster/qgscliptominmaxenhancement.cpp
   raster/qgscolorrampshader.cpp
   raster/qgscontrastenhancement.cpp
@@ -841,14 +853,14 @@ set(QGIS_CORE_SRCS
   fieldformatter/qgsvaluemapfieldformatter.cpp
   fieldformatter/qgsvaluerelationfieldformatter.cpp
 
-  geocms/geonode/qgsgeonodeconnection.cpp
-  geocms/geonode/qgsgeonoderequest.cpp
-
   settings/qgssettings.cpp
   settings/qgssettingsentry.cpp
+  settings/qgssettingsentrygroup.cpp
   settings/qgssettingsentryimpl.cpp
   settings/qgssettingsregistry.cpp
   settings/qgssettingsregistrycore.cpp
+  settings/qgssettingstree.cpp
+  settings/qgssettingstreenode.cpp
 
   validity/qgsabstractvaliditycheck.cpp
   validity/qgsvaliditycheckcontext.cpp
@@ -989,10 +1001,6 @@ set(QGIS_CORE_HDRS
   qgis_sip.h
   qgsabstractcontentcache.h
   qgsabstractgeopdfexporter.h
-  qgsaction.h
-  qgsactionmanager.h
-  qgsactionscope.h
-  qgsactionscoperegistry.h
   qgsaggregatecalculator.h
   qgsanimatedicon.h
   qgsapplication.h
@@ -1035,6 +1043,7 @@ set(QGIS_CORE_HDRS
   qgsdistancearea.h
   qgseditorwidgetsetup.h
   qgselevationmap.h
+  qgselevationshadingrenderer.h
   qgselevationutils.h
   qgserror.h
   qgseventtracing.h
@@ -1174,6 +1183,7 @@ set(QGIS_CORE_HDRS
   qgsshapegenerator.h
   qgssimplifymethod.h
   qgssingleitemmodel.h
+  qgssldexportcontext.h
   qgssnappingconfig.h
   qgssnappingutils.h
   qgsspatialindex.h
@@ -1183,6 +1193,7 @@ set(QGIS_CORE_HDRS
   qgssourcecache.h
   qgsspatialiteutils.h
   qgssqlexpressioncompiler.h
+  qgssqliteexpressioncompiler.h
   qgssqliteutils.h
   qgssqlstatement.h
   qgsstatisticalsummary.h
@@ -1232,6 +1243,11 @@ set(QGIS_CORE_HDRS
   3d/qgsabstract3dsymbol.h
   3d/qgsabstract3drenderer.h
   3d/qgsabstractpointcloud3drenderer.h
+
+  actions/qgsaction.h
+  actions/qgsactionmanager.h
+  actions/qgsactionscope.h
+  actions/qgsactionscoperegistry.h
 
   annotations/qgsannotation.h
   annotations/qgsannotationitem.h
@@ -1298,6 +1314,8 @@ set(QGIS_CORE_HDRS
   diagram/qgstextdiagram.h
 
   dxf/qgsdxfexport.h
+  dxf/qgsdxfpaintdevice.h
+  dxf/qgsdxfpaintengine.h
 
   editform/qgseditformconfig.h
   editform/qgsattributeeditoraction.h
@@ -1306,7 +1324,9 @@ set(QGIS_CORE_HDRS
   editform/qgsattributeeditorfield.h
   editform/qgsattributeeditorrelation.h
   editform/qgsattributeeditorhtmlelement.h
+  editform/qgsattributeeditortextelement.h
   editform/qgsattributeeditorqmlelement.h
+  editform/qgsattributeeditorspacerelement.h
 
   elevation/qgsabstractprofilegenerator.h
   elevation/qgsabstractprofilesurfacegenerator.h
@@ -1346,9 +1366,6 @@ set(QGIS_CORE_HDRS
   fieldformatter/qgsrelationreferencefieldformatter.h
   fieldformatter/qgsvaluemapfieldformatter.h
   fieldformatter/qgsvaluerelationfieldformatter.h
-
-  geocms/geonode/qgsgeonodeconnection.h
-  geocms/geonode/qgsgeonoderequest.h
 
   geocoding/qgsabstractgeocoderlocatorfilter.h
   geocoding/qgsgeocoder.h
@@ -1400,7 +1417,11 @@ set(QGIS_CORE_HDRS
   gps/qgsgpsconnection.h
   gps/qgsgpsdconnection.h
   gps/qgsgpsdetector.h
+  gps/qgsgpsinformation.h
+  gps/qgsgpslogger.h
   gps/qgsnmeaconnection.h
+  gps/qgssatelliteinformation.h
+  gps/qgsvectorlayergpslogger.h
 
   labeling/qgscalloutposition.h
   labeling/qgslabelfeature.h
@@ -1448,6 +1469,7 @@ set(QGIS_CORE_HDRS
   layout/qgslayoutguidecollection.h
   layout/qgslayoutitem.h
   layout/qgslayoutitemattributetable.h
+  layout/qgslayoutitemelevationprofile.h
   layout/qgslayoutitemgroup.h
   layout/qgslayoutitemgroupundocommand.h
   layout/qgslayoutitemhtml.h
@@ -1665,6 +1687,7 @@ set(QGIS_CORE_HDRS
   project/qgsprojectdisplaysettings.h
   project/qgsprojectelevationproperties.h
   project/qgsprojectfiletransform.h
+  project/qgsprojectgpssettings.h
   project/qgsprojectproperty.h
   project/qgsprojectservervalidator.h
   project/qgsprojectstorage.h
@@ -1714,6 +1737,7 @@ set(QGIS_CORE_HDRS
   providers/ogr/qgsogrproviderutils.h
   providers/ogr/qgsogrtransaction.h
 
+  raster/qgsrasterattributetable.h
   raster/qgsbilinearrasterresampler.h
   raster/qgsbrightnesscontrastfilter.h
   raster/qgscliptominmaxenhancement.h
@@ -1798,6 +1822,7 @@ set(QGIS_CORE_HDRS
   symbology/qgsmapinfosymbolconverter.h
   symbology/qgsmarkersymbol.h
   symbology/qgsmarkersymbollayer.h
+  symbology/qgsmasksymbollayer.h
   symbology/qgsmergedfeaturerenderer.h
   symbology/qgsnullsymbolrenderer.h
   symbology/qgspointclusterrenderer.h
@@ -1837,10 +1862,13 @@ set(QGIS_CORE_HDRS
 
   settings/qgssettings.h
   settings/qgssettingsentry.h
+  settings/qgssettingsentrygroup.h
   settings/qgssettingsentryenumflag.h
   settings/qgssettingsentryimpl.h
   settings/qgssettingsregistry.h
   settings/qgssettingsregistrycore.h
+  settings/qgssettingstree.h
+  settings/qgssettingstreenode.h
 
   validity/qgsabstractvaliditycheck.h
   validity/qgsvaliditycheckcontext.h
@@ -1909,7 +1937,7 @@ set(QGIS_CORE_PRIVATE_HDRS
   expression/qgsexpression_p.h
 
   externalstorage/qgssimplecopyexternalstorage_p.h
-  externalstorage/qgswebdavexternalstorage_p.h
+  externalstorage/qgshttpexternalstorage_p.h
 
   proj/qgscoordinatereferencesystem_p.h
   proj/qgscoordinatetransformcontext_p.h
@@ -1941,7 +1969,11 @@ if (HAVE_OPENCL)
 endif()
 
 if(MSVC)
-  set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp PROPERTIES COMPILE_FLAGS "/bigobj")
+  set_source_files_properties(
+      ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
+      proj/qgscoordinatereferencesystem.cpp
+      PROPERTIES COMPILE_FLAGS "/bigobj"
+  )
 else()
   if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND (CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo))
     set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp PROPERTIES COMPILE_FLAGS "-O1")
@@ -2144,6 +2176,7 @@ target_include_directories(qgis_core PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
   3d
+  actions
   annotations
   auth
   browser
@@ -2158,8 +2191,6 @@ target_include_directories(qgis_core PUBLIC
   externalstorage
   fieldformatter
   geometry
-  geocms
-  geocms/geonode
   geocoding
   gps
   labeling
@@ -2278,10 +2309,6 @@ endif()
 
 if (APPLE)
   target_link_libraries(qgis_core ${LIBTASN1_LIBRARY})
-endif()
-
-if (APPLE AND NOT IOS)
-  target_link_libraries(qgis_core qgis_native)
 endif()
 
 target_link_libraries(qgis_core

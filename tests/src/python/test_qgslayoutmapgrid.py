@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLayoutItemMapGrid.
 
 .. note. This program is free software; you can redistribute it and/or modify
@@ -11,24 +10,24 @@ __date__ = '20/10/2017'
 __copyright__ = 'Copyright 2012, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.PyQt.QtCore import QRectF, QDir
-from qgis.PyQt.QtGui import QPainter, QColor
+from qgis.PyQt.QtCore import QDir, QRectF
+from qgis.PyQt.QtGui import QColor, QPainter
 from qgis.PyQt.QtTest import QSignalSpy
-
-from qgis.core import (QgsLayoutItemMap,
-                       QgsLayoutItemMapGrid,
-                       QgsRectangle,
-                       QgsLayout,
-                       QgsProperty,
-                       QgsLayoutObject,
-                       QgsFontUtils,
-                       QgsTextFormat,
-                       QgsProject,
-                       QgsCoordinateReferenceSystem)
+from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsLayout,
+    QgsLayoutItemMap,
+    QgsLayoutItemMapGrid,
+    QgsLayoutObject,
+    QgsProject,
+    QgsProperty,
+    QgsRectangle,
+    QgsTextFormat,
+)
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath, getTestFont
+
 from qgslayoutchecker import QgsLayoutChecker
+from utilities import getTestFont, unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -40,7 +39,7 @@ class TestQgsLayoutMapGrid(unittest.TestCase):
         self.report = "<h1>Python QgsLayoutItemMap Tests</h1>\n"
 
     def tearDown(self):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 

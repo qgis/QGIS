@@ -366,7 +366,6 @@ bool QgsVariantUtils::isNull( const QVariant &variant )
       }
       return false;
 
-    case QVariant::LastCoreType:
     case QVariant::Color:
     case QVariant::Font:
     case QVariant::Brush:
@@ -381,7 +380,6 @@ bool QgsVariantUtils::isNull( const QVariant &variant )
     case QVariant::Transform:
     case QVariant::Matrix4x4:
     case QVariant::SizePolicy:
-    case QVariant::LastGuiType:
       break;
 
     case QVariant::UserType:

@@ -27,8 +27,8 @@
 #include "qgssettings.h"
 #include "qgsvectorlayer.h"
 #include "qgswkbtypes.h"
-#include "qgsmapmouseevent.h"
 #include "testqgsmaptoolutils.h"
+#include "qgssettingsregistrycore.h"
 
 bool operator==( const QgsGeometry &g1, const QgsGeometry &g2 )
 {
@@ -65,6 +65,7 @@ class TestQgsMapToolAddFeatureLine : public QObject
 
     void testNoTracing();
     void testTracing();
+    void testTracingWithTransform();
     void testTracingWithOffset();
     void testTracingWithConvertToCurves();
     void testTracingWithConvertToCurvesCustomTolerance();
@@ -360,6 +361,61 @@ void TestQgsMapToolAddFeatureLine::testTracing()
   mEnableTracingAction->setChecked( false );
 }
 
+void TestQgsMapToolAddFeatureLine::testTracingWithTransform()
+{
+  TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
+
+  QgsVectorLayer *lineLayer3857 = new QgsVectorLayer( QStringLiteral( "CompoundCurve?crs=EPSG:3857" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
+  QVERIFY( lineLayer3857->isValid() );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << lineLayer3857 );
+
+  lineLayer3857->startEditing();
+  mCanvas->setCurrentLayer( lineLayer3857 );
+
+
+  // tracing enabled - same clicks - now following line
+
+  mEnableTracingAction->setChecked( true );
+  mCaptureTool->setCurrentCaptureTechnique( Qgis::CaptureTechnique::StraightSegments );
+
+  const QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
+
+  utils.mouseClick( 1, 1, Qt::LeftButton );
+  utils.mouseClick( 3, 2, Qt::LeftButton );
+
+  // be sure it doesn't create an extra curve
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( -3 ), QStringLiteral( "CompoundCurve ((-841000 6406000, -841000 6406000, -841000 6406000))" ) );
+
+  utils.mouseClick( 3, 2, Qt::RightButton );
+
+  const QgsFeatureId newFid = utils.newFeatureId( oldFids );
+
+  QCOMPARE( lineLayer3857->undoStack()->index(), 1 );
+  QCOMPARE( lineLayer3857->getFeature( newFid ).geometry().asWkt( -3 ), QStringLiteral( "LineString (-841000 6406000, -841000 6406000, -841000 6406000)" ) );
+
+  lineLayer3857->undoStack()->undo();
+
+  // no other unexpected changes happened
+  QCOMPARE( lineLayer3857->undoStack()->index(), 0 );
+
+  // tracing enabled - combined with first and last segments that are not traced
+
+  utils.mouseClick( 0, 2, Qt::LeftButton );
+  utils.mouseClick( 1, 1, Qt::LeftButton );
+  utils.mouseClick( 3, 2, Qt::LeftButton );
+  utils.mouseClick( 4, 1, Qt::LeftButton );
+  utils.mouseClick( 4, 1, Qt::RightButton );
+
+  const QgsFeatureId newFid2 = utils.newFeatureId( oldFids );
+
+  QCOMPARE( lineLayer3857->undoStack()->index(), 1 );
+  QCOMPARE( lineLayer3857->getFeature( newFid2 ).geometry().asWkt( -3 ), QStringLiteral( "LineString (-841000 6406000, -841000 6406000, -841000 6406000, -841000 6406000, -841000 6406000, -841000 6406000)" ) );
+
+  mEnableTracingAction->setChecked( false );
+  mCanvas->setCurrentLayer( mLayerLine );
+  QgsProject::instance()->removeMapLayer( lineLayer3857 );
+}
+
 void TestQgsMapToolAddFeatureLine::testTracingWithOffset()
 {
   TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
@@ -451,7 +507,7 @@ void TestQgsMapToolAddFeatureLine::testTracingWithConvertToCurves()
   const QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
 
   // tracing enabled - without converting to curves
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), false );
+  QgsSettingsRegistryCore::settingsDigitizingConvertToCurve->setValue( false );
 
   utils.mouseClick( 6, 1, Qt::LeftButton );
   utils.mouseClick( 7, 1, Qt::LeftButton );
@@ -467,7 +523,7 @@ void TestQgsMapToolAddFeatureLine::testTracingWithConvertToCurves()
   mLayerLineCurved->undoStack()->undo();
 
   // we redo the same with convert to curves enabled
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), true );
+  QgsSettingsRegistryCore::settingsDigitizingConvertToCurve->setValue( true );
 
   // tracing enabled - without converting to curves
   utils.mouseClick( 6, 1, Qt::LeftButton );
@@ -496,8 +552,8 @@ void TestQgsMapToolAddFeatureLine::testTracingWithConvertToCurvesCustomTolerance
   // At this distance, the arcs aren't correctly detected with the default tolerance
   const double offset = 100000000; // remember to change the feature geometry accordingly in initTestCase (sic)
 
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve_angle_tolerance" ), 1e-5 );
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve_distance_tolerance" ), 1e-5 );
+  QgsSettingsRegistryCore::settingsDigitizingConvertToCurveAngleTolerance->setValue( 1e-5 );
+  QgsSettingsRegistryCore::settingsDigitizingConvertToCurveDistanceTolerance->setValue( 1e-5 );
 
   mCanvas->setExtent( QgsRectangle( offset + 0, offset + 0, offset + 8, offset + 8 ) );
   QCOMPARE( mCanvas->mapSettings().visibleExtent(), QgsRectangle( offset + 0, offset + 0, offset + 8, offset + 8 ) );
@@ -512,7 +568,7 @@ void TestQgsMapToolAddFeatureLine::testTracingWithConvertToCurvesCustomTolerance
   const QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
 
   // tracing enabled - without converting to curves
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), false );
+  QgsSettingsRegistryCore::settingsDigitizingConvertToCurve->setValue( false );
 
   utils.mouseClick( offset + 6, offset + 1, Qt::LeftButton );
   utils.mouseClick( offset + 7, offset + 1, Qt::LeftButton );
@@ -528,7 +584,7 @@ void TestQgsMapToolAddFeatureLine::testTracingWithConvertToCurvesCustomTolerance
   mLayerLineCurvedOffset->undoStack()->undo();
 
   // we redo the same with convert to curves enabled
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), true );
+  QgsSettingsRegistryCore::settingsDigitizingConvertToCurve->setValue( true );
 
   // tracing enabled - without converting to curves
   utils.mouseClick( offset + 6, offset + 1, Qt::LeftButton );
@@ -826,8 +882,7 @@ void TestQgsMapToolAddFeatureLine::testUndo()
 void TestQgsMapToolAddFeatureLine::testStreamTolerance()
 {
   // test streaming mode digitizing with tolerance
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "/qgis/digitizing/stream_tolerance" ), 10 );
+  QgsSettingsRegistryCore::settingsDigitizingStreamTolerance->setValue( 10 );
 
   TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
 

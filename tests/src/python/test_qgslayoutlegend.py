@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLayoutItemLegend.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,43 +9,43 @@ __author__ = '(C) 2017 by Nyall Dawson'
 __date__ = '24/10/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-from qgis.PyQt.QtCore import QRectF, QDir
-from qgis.PyQt.QtGui import QColor
-
-from qgis.core import (QgsPrintLayout,
-                       QgsLayoutItemLegend,
-                       QgsLayoutItemMap,
-                       QgsLayout,
-                       QgsMapSettings,
-                       QgsVectorLayer,
-                       QgsMarkerSymbol,
-                       QgsSingleSymbolRenderer,
-                       QgsRectangle,
-                       QgsProject,
-                       QgsLayoutObject,
-                       QgsProperty,
-                       QgsLayoutMeasurement,
-                       QgsLayoutItem,
-                       QgsLayoutPoint,
-                       QgsLayoutSize,
-                       QgsExpression,
-                       QgsMapLayerLegendUtils,
-                       QgsLegendStyle,
-                       QgsFontUtils,
-                       QgsLineSymbol,
-                       QgsMapThemeCollection,
-                       QgsCategorizedSymbolRenderer,
-                       QgsRendererCategory,
-                       QgsFillSymbol,
-                       QgsApplication)
-from qgis.testing import (start_app,
-                          unittest
-                          )
-from utilities import unitTestDataPath
-from qgslayoutchecker import QgsLayoutChecker
 import os
 from time import sleep
+
+from qgis.PyQt.QtCore import QDir, QRectF
+from qgis.PyQt.QtGui import QColor
+from qgis.core import (
+    QgsCategorizedSymbolRenderer,
+    QgsExpression,
+    QgsFillSymbol,
+    QgsFontUtils,
+    QgsLayout,
+    QgsLayoutItem,
+    QgsLayoutItemLegend,
+    QgsLayoutItemMap,
+    QgsLayoutMeasurement,
+    QgsLayoutObject,
+    QgsLayoutPoint,
+    QgsLayoutSize,
+    QgsLegendStyle,
+    QgsLineSymbol,
+    QgsMapLayerLegendUtils,
+    QgsMapSettings,
+    QgsMapThemeCollection,
+    QgsMarkerSymbol,
+    QgsPrintLayout,
+    QgsProject,
+    QgsProperty,
+    QgsRectangle,
+    QgsRendererCategory,
+    QgsSingleSymbolRenderer,
+    QgsVectorLayer,
+)
+from qgis.testing import start_app, unittest
+
+from qgslayoutchecker import QgsLayoutChecker
 from test_qgslayoutitem import LayoutItemTestCase
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -61,7 +60,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
 
     @classmethod
     def tearDownClass(cls):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(cls.report)
 
@@ -157,6 +156,12 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         layout.addLayoutItem(legend)
         legend.setLinkedMap(map)
 
+        legend.setStyleFont(QgsLegendStyle.Title, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.Group, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.Subgroup, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.Symbol, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.SymbolLabel, QgsFontUtils.getStandardTestFont('Bold', 16))
+
         map.setExtent(QgsRectangle(-102.51, 41.16, -102.36, 41.30))
 
         checker = QgsLayoutChecker(
@@ -236,6 +241,12 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         legend.setTitle('')
         legend.setLegendFilterByMapEnabled(True)
 
+        legend.setStyleFont(QgsLegendStyle.Title, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.Group, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.Subgroup, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.Symbol, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.SymbolLabel, QgsFontUtils.getStandardTestFont('Bold', 16))
+
         # disable auto resizing
         legend.setResizeToContents(False)
 
@@ -279,6 +290,12 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         legend.setBackgroundColor(QColor(200, 200, 200))
         legend.setTitle('')
         legend.setLegendFilterByMapEnabled(True)
+
+        legend.setStyleFont(QgsLegendStyle.Title, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.Group, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.Subgroup, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.Symbol, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.SymbolLabel, QgsFontUtils.getStandardTestFont('Bold', 16))
 
         # disable auto resizing
         legend.setResizeToContents(False)
@@ -651,6 +668,11 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         legend.setTitle('')
         layout.addLayoutItem(legend)
         legend.setLinkedMap(map1)
+        legend.setStyleFont(QgsLegendStyle.Title, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.Group, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.Subgroup, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.Symbol, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.SymbolLabel, QgsFontUtils.getStandardTestFont('Bold', 16))
 
         legend2 = QgsLayoutItemLegend(layout)
         legend2.setTitle("Legend")
@@ -661,6 +683,11 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         legend2.setTitle('')
         layout.addLayoutItem(legend2)
         legend2.setLinkedMap(map2)
+        legend2.setStyleFont(QgsLegendStyle.Title, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend2.setStyleFont(QgsLegendStyle.Group, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend2.setStyleFont(QgsLegendStyle.Subgroup, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend2.setStyleFont(QgsLegendStyle.Symbol, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend2.setStyleFont(QgsLegendStyle.SymbolLabel, QgsFontUtils.getStandardTestFont('Bold', 16))
 
         checker = QgsLayoutChecker(
             'composer_legend_theme', layout)
@@ -712,6 +739,12 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         layout.addLayoutItem(legend)
         legend.setLinkedMap(map1)
 
+        legend.setStyleFont(QgsLegendStyle.Title, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.Group, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.Subgroup, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.Symbol, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.SymbolLabel, QgsFontUtils.getStandardTestFont('Bold', 16))
+
         legend2 = QgsLayoutItemLegend(layout)
         legend2.setTitle("Legend")
         legend2.attemptSetSceneRect(QRectF(120, 120, 80, 80))
@@ -721,6 +754,12 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         legend2.setTitle('')
         layout.addLayoutItem(legend2)
         legend2.setLinkedMap(map2)
+
+        legend2.setStyleFont(QgsLegendStyle.Title, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend2.setStyleFont(QgsLegendStyle.Group, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend2.setStyleFont(QgsLegendStyle.Subgroup, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend2.setStyleFont(QgsLegendStyle.Symbol, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend2.setStyleFont(QgsLegendStyle.SymbolLabel, QgsFontUtils.getStandardTestFont('Bold', 16))
 
         checker = QgsLayoutChecker(
             'composer_legend_scale_map', layout)

@@ -18,6 +18,7 @@
 #ifndef QGSIDENTIFYRESULTSDIALOG_H
 #define QGSIDENTIFYRESULTSDIALOG_H
 
+#include "qgis_app.h"
 #include "ui_qgsidentifyresultsbase.h"
 #include "qgshelp.h"
 #include "qgsfeature.h"
@@ -27,16 +28,15 @@
 #include "qgswebview.h"
 #include "qgsexpressioncontext.h"
 #include "qgsmaptoolselectionhandler.h"
-#include "qgssettingsentryimpl.h"
 
 #include <QWidget>
 #include <QList>
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QUrl>
-#include "qgis_app.h"
 
 class QCloseEvent;
+class QToolButton;
 class QTreeWidgetItem;
 class QAction;
 class QMenu;
@@ -50,6 +50,7 @@ class QgsMeshLayer;
 class QgsDockWidget;
 class QgsMapLayerAction;
 class QgsEditorWidgetSetup;
+class QgsSettingsEntryBool;
 
 class QwtPlotCurve;
 
@@ -134,7 +135,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     ~QgsIdentifyResultsDialog() override;
 
-    static const inline QgsSettingsEntryBool settingHideNullValues = QgsSettingsEntryBool( QStringLiteral( "hideNullValues" ), QgsSettings::Prefix::MAP, false, QStringLiteral( "Whether to hide attributes with NULL values in the identify feature result" ) );
+    static const QgsSettingsEntryBool *settingHideNullValues;
 
     //! Adds feature from vector layer
     void addFeature( QgsVectorLayer *layer,

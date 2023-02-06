@@ -117,6 +117,7 @@ void QgsMapToolSelectionHandler::canvasReleaseEvent( QgsMapMouseEvent *e )
   switch ( mSelectionMode )
   {
     case QgsMapToolSelectionHandler::SelectSimple:
+    case QgsMapToolSelectionHandler::SelectOnMouseOver:
       selectFeaturesReleaseEvent( e );
       break;
     case QgsMapToolSelectionHandler::SelectPolygon:
@@ -135,6 +136,7 @@ void QgsMapToolSelectionHandler::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   switch ( mSelectionMode )
   {
+    case QgsMapToolSelectionHandler::SelectOnMouseOver:
     case QgsMapToolSelectionHandler::SelectSimple:
       selectFeaturesMoveEvent( e );
       break;
@@ -154,6 +156,7 @@ void QgsMapToolSelectionHandler::canvasPressEvent( QgsMapMouseEvent *e )
 {
   switch ( mSelectionMode )
   {
+    case QgsMapToolSelectionHandler::SelectOnMouseOver:
     case QgsMapToolSelectionHandler::SelectSimple:
       selectFeaturesPressEvent( e );
       break;
@@ -192,6 +195,32 @@ void QgsMapToolSelectionHandler::selectFeaturesPressEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolSelectionHandler::selectFeaturesMoveEvent( QgsMapMouseEvent *e )
 {
+
+  if ( mSelectionMode == QgsMapToolSelectionHandler::SelectOnMouseOver && mCanvas->underMouse() )
+  {
+    mMoveLastCursorPos = e->pos();
+    // This is a (well known, according to google) false positive,
+    // I tried all possible NOLINT placements without success, this
+    // ugly ifdef seems to do the trick with silencing the warning.
+#ifndef __clang_analyzer__
+    if ( ! mOnMouseMoveDelayTimer || ! mOnMouseMoveDelayTimer->isActive() )
+    {
+      setSelectedGeometry( QgsGeometry::fromPointXY( toMapCoordinates( e->pos() ) ), e->modifiers() );
+      mOnMouseMoveDelayTimer = std::make_unique<QTimer>( );
+      mOnMouseMoveDelayTimer->setSingleShot( true );
+      connect( mOnMouseMoveDelayTimer.get(), &QTimer::timeout, this, [ = ]
+      {
+        if ( ! mMoveLastCursorPos.isNull() )
+        {
+          setSelectedGeometry( QgsGeometry::fromPointXY( toMapCoordinates( mMoveLastCursorPos ) ), e->modifiers() );
+        }
+      } );
+      mOnMouseMoveDelayTimer->start( 300 );
+    }
+#endif
+    return;
+  }
+
   if ( e->buttons() != Qt::LeftButton )
     return;
 
@@ -467,6 +496,7 @@ QgsGeometry QgsMapToolSelectionHandler::selectedGeometry() const
 void QgsMapToolSelectionHandler::setSelectedGeometry( const QgsGeometry &geometry, Qt::KeyboardModifiers modifiers )
 {
   mSelectionGeometry = geometry;
+  mMoveLastCursorPos = QPoint();
   emit geometryChanged( modifiers );
 }
 

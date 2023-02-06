@@ -1,5 +1,3 @@
-
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsFieldDomainWidget
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,13 +9,15 @@ __author__ = 'Nyall Dawson'
 __date__ = '2022-01-25'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
-from qgis.core import (Qgis,
-                       QgsCodedValue,
-                       QgsCodedFieldDomain,
-                       QgsRangeFieldDomain,
-                       QgsGlobFieldDomain)
-from qgis.gui import QgsFieldDomainWidget
 from qgis.PyQt.QtCore import QVariant
+from qgis.core import (
+    Qgis,
+    QgsCodedFieldDomain,
+    QgsCodedValue,
+    QgsGlobFieldDomain,
+    QgsRangeFieldDomain,
+)
+from qgis.gui import QgsFieldDomainWidget
 from qgis.testing import start_app, unittest
 
 start_app()

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer Locale Override Options.
 
 From build dir, run: ctest -R PyQgsServerLocaleOverride -V
@@ -24,14 +23,8 @@ import os
 # executions
 os.environ['QT_HASH_SEED'] = '1'
 
-from utilities import (
-    unitTestDataPath,
-)
 from qgis.testing import unittest
-
 from test_qgsserver_wms import TestQgsServerWMSTestBase
-from qgis.core import QgsProject, QgsFontUtils
-from qgis.server import QgsServer
 
 
 class TestQgsServerWMSLocaleOverride(TestQgsServerWMSTestBase):

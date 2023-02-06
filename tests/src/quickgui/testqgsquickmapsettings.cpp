@@ -14,7 +14,6 @@
  ***************************************************************************/
 #include <QObject>
 #include <QApplication>
-#include <QDesktopWidget>
 
 #include "qgsapplication.h"
 #include "qgstest.h"

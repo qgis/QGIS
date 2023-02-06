@@ -30,6 +30,7 @@ set(QGIS_APP_SRCS
   qgsdevtoolspanelwidget.cpp
   qgsdiscoverrelationsdialog.cpp
   qgsdxfexportdialog.cpp
+  qgselevationshadingrenderersettingswidget.cpp
   qgsformannotationdialog.cpp
   qgsguivectorlayertools.cpp
   qgshtmlannotationdialog.cpp
@@ -59,9 +60,9 @@ set(QGIS_APP_SRCS
   qgsmapcanvasdockwidget.cpp
   qgsmapsavedialog.cpp
   qgsprojectlistitemdelegate.cpp
-  qgsprovidersublayersdialog.cpp
   qgspuzzlewidget.cpp
   qgsversionmigration.cpp
+  qgsrasterattributetableapputils.cpp
   qgssnappinglayertreemodel.cpp
   qgssnappingwidget.cpp
   qgsstatusbarcoordinateswidget.cpp
@@ -134,8 +135,6 @@ set(QGIS_APP_SRCS
 
   raster/qgsrasterelevationpropertieswidget.cpp
 
-  vectortile/qgsvectortilelayerproperties.cpp
-
   vertextool/qgslockedfeature.cpp
   vertextool/qgsvertexeditor.cpp
   vertextool/qgsvertextool.cpp
@@ -182,8 +181,6 @@ set(QGIS_APP_SRCS
 
   elevation/qgselevationprofileexportsettingswidget.cpp
   elevation/qgselevationprofileimageexportdialog.cpp
-  elevation/qgselevationprofilelayertreemodel.cpp
-  elevation/qgselevationprofilelayertreeview.cpp
   elevation/qgselevationprofilepdfexportdialog.cpp
   elevation/qgselevationprofiletoolidentify.cpp
   elevation/qgselevationprofiletoolmeasure.cpp
@@ -265,9 +262,15 @@ set(QGIS_APP_SRCS
   options/qgsrenderingoptions.cpp
   options/qgsvectorrenderingoptions.cpp
 
+  gps/qgsappgpsconnection.cpp
+  gps/qgsappgpsdigitizing.cpp
+  gps/qgsappgpslogging.cpp
+  gps/qgsappgpssettingsmenu.cpp
   gps/qgsgpsbearingitem.cpp
+  gps/qgsgpscanvasbridge.cpp
   gps/qgsgpsinformationwidget.cpp
   gps/qgsgpsmarker.cpp
+  gps/qgsgpstoolbar.cpp
 
   project/qgsprojectelevationsettingswidget.cpp
 
@@ -277,7 +280,7 @@ set(QGIS_APP_SRCS
   pluginmanager/qgspluginsortfilterproxymodel.cpp
   pluginmanager/qgspluginitemdelegate.cpp
 
-  qgssettingstree.cpp
+  qgssettingstreewidget.cpp
   qgssettingsregistryapp.cpp
   qgsvariantdelegate.cpp
   qgscrashhandler.cpp
@@ -367,8 +370,9 @@ if (WITH_3D)
   )
 endif()
 
+find_package(${QT_VERSION_BASE} COMPONENTS UiTools REQUIRED)
 
-set (WITH_QWTPOLAR FALSE CACHE BOOL "Determines whether QwtPolar should be built")
+set (WITH_QWTPOLAR FALSE CACHE BOOL "Determines whether QwtPolar is available or whether functionality requiring QwtPolar should be disabled.")
 
 if (WITH_QWTPOLAR)
   add_definitions(-DWITH_QWTPOLAR)
@@ -515,6 +519,7 @@ target_include_directories(qgis_app PUBLIC
 
   ${CMAKE_SOURCE_DIR}/src/app
   ${CMAKE_SOURCE_DIR}/src/app/decorations
+  ${CMAKE_SOURCE_DIR}/src/app/devtools
   ${CMAKE_SOURCE_DIR}/src/app/devtools/networklogger
   ${CMAKE_SOURCE_DIR}/src/app/labeling
   ${CMAKE_SOURCE_DIR}/src/app/layout
@@ -524,6 +529,7 @@ target_include_directories(qgis_app PUBLIC
   ${CMAKE_SOURCE_DIR}/src/app/maptools
   ${CMAKE_SOURCE_DIR}/src/app/mesh
   ${CMAKE_SOURCE_DIR}/src/app/locator
+  ${CMAKE_SOURCE_DIR}/src/app/options
   ${CMAKE_SOURCE_DIR}/src/app/pointcloud
   ${CMAKE_SOURCE_DIR}/src/app/vectortile
   ${CMAKE_SOURCE_DIR}/src/plugins

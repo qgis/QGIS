@@ -101,4 +101,5 @@ void QgsWindow3DEngine::setSize( QSize s )
   mWindow3D->setHeight( mSize.height() );
   mFrameGraph->setSize( mSize );
   camera()->setAspectRatio( float( mSize.width() ) / float( mSize.height() ) );
+  emit sizeChanged();
 }

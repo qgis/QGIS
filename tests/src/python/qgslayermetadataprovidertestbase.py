@@ -1,4 +1,3 @@
-# coding=utf-8
 """"Base test for layer metadata providers
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -12,24 +11,22 @@ __author__ = 'elpaso@itopen.it'
 __date__ = '2022-08-19'
 __copyright__ = 'Copyright 2022, ItOpen'
 
-import os
-
-from qgis.core import (
-    QgsVectorLayer,
-    QgsRasterLayer,
-    QgsMapLayerType,
-    QgsProviderRegistry,
-    QgsWkbTypes,
-    QgsLayerMetadata,
-    QgsProviderMetadata,
-    QgsBox3d,
-    QgsRectangle,
-    QgsMetadataSearchContext,
-)
-
 from qgis.PyQt.QtCore import QCoreApplication
-from utilities import compareWkt, unitTestDataPath
+from qgis.core import (
+    QgsBox3d,
+    QgsLayerMetadata,
+    QgsMapLayerType,
+    QgsMetadataSearchContext,
+    QgsProviderMetadata,
+    QgsProviderRegistry,
+    QgsRasterLayer,
+    QgsRectangle,
+    QgsVectorLayer,
+    QgsWkbTypes,
+)
 from qgis.testing import start_app
+
+from utilities import compareWkt, unitTestDataPath
 
 QGIS_APP = start_app()
 TEST_DATA_DIR = unitTestDataPath()

@@ -22,7 +22,6 @@
 #include "qgscompoundcurve.h"
 #include "qgsgeometry.h"
 #include "qobjectuniqueptr.h"
-#include "qgssnappingutils.h"
 
 #include <QPoint>
 #include <QList>
@@ -155,6 +154,8 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     /**
      * Returns the rubberBand currently owned by this map tool and
      * transfers ownership to the caller.
+     *
+     * May be NULLPTR.
      *
      * \since QGIS 3.8
      */

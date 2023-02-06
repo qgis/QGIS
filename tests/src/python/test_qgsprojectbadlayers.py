@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsProject bad layers handling.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -6,39 +5,31 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-from builtins import chr
-from builtins import range
 __author__ = 'Alessandro Pasotti'
 __date__ = '20/10/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
-import os
 import filecmp
+import os
+from shutil import copyfile
 
 import qgis  # NOQA
-
-from qgis.core import (QgsProject,
-                       QgsVectorLayer,
-                       QgsCoordinateTransform,
-                       QgsMapSettings,
-                       QgsRasterLayer,
-                       QgsMapLayer,
-                       QgsRectangle,
-                       QgsDataProvider,
-                       QgsReadWriteContext,
-                       QgsCoordinateReferenceSystem,
-                       )
-from qgis.gui import (QgsLayerTreeMapCanvasBridge,
-                      QgsMapCanvas)
-
-from qgis.PyQt.QtGui import QFont, QColor
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtCore import QT_VERSION_STR, QTemporaryDir, QSize
+from qgis.PyQt.QtCore import QSize, QTemporaryDir
+from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtXml import QDomDocument, QDomNode
-
+from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsDataProvider,
+    QgsMapSettings,
+    QgsProject,
+    QgsRasterLayer,
+    QgsReadWriteContext,
+    QgsRectangle,
+    QgsVectorLayer,
+)
 from qgis.testing import start_app, unittest
-from utilities import (unitTestDataPath, renderMapToImage)
-from shutil import copyfile
+
+from utilities import renderMapToImage, unitTestDataPath
 
 app = start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -100,7 +91,7 @@ class TestQgsProjectBadLayers(unittest.TestCase):
         p = QgsProject.instance()
         temp_dir = QTemporaryDir()
         for ext in ('shp', 'dbf', 'shx', 'prj'):
-            copyfile(os.path.join(TEST_DATA_DIR, 'lines.%s' % ext), os.path.join(temp_dir.path(), 'lines.%s' % ext))
+            copyfile(os.path.join(TEST_DATA_DIR, f'lines.{ext}'), os.path.join(temp_dir.path(), f'lines.{ext}'))
         copyfile(os.path.join(TEST_DATA_DIR, 'raster', 'band1_byte_ct_epsg4326.tif'), os.path.join(temp_dir.path(), 'band1_byte_ct_epsg4326.tif'))
         copyfile(os.path.join(TEST_DATA_DIR, 'raster', 'band1_byte_ct_epsg4326.tif'), os.path.join(temp_dir.path(), 'band1_byte_ct_epsg4326_copy.tif'))
         l = QgsVectorLayer(os.path.join(temp_dir.path(), 'lines.shp'), 'lines', 'ogr')
@@ -131,7 +122,7 @@ class TestQgsProjectBadLayers(unittest.TestCase):
 
         # Now create an invalid project:
         bad_project_path = os.path.join(temp_dir.path(), 'project_bad.qgs')
-        with open(project_path, 'r') as infile:
+        with open(project_path) as infile:
             with open(bad_project_path, 'w+') as outfile:
                 outfile.write(infile.read().replace('./lines.shp', './lines-BAD_SOURCE.shp').replace('band1_byte_ct_epsg4326_copy.tif', 'band1_byte_ct_epsg4326_copy-BAD_SOURCE.tif'))
 
@@ -157,7 +148,7 @@ class TestQgsProjectBadLayers(unittest.TestCase):
         p.write(bad_project_path2)
         # Re-save the project, with fixed paths
         good_project_path = os.path.join(temp_dir.path(), 'project_good.qgs')
-        with open(bad_project_path2, 'r') as infile:
+        with open(bad_project_path2) as infile:
             with open(good_project_path, 'w+') as outfile:
                 outfile.write(infile.read().replace('./lines-BAD_SOURCE.shp', './lines.shp').replace('band1_byte_ct_epsg4326_copy-BAD_SOURCE.tif', 'band1_byte_ct_epsg4326_copy.tif'))
 
@@ -178,7 +169,7 @@ class TestQgsProjectBadLayers(unittest.TestCase):
         temp_dir = QTemporaryDir()
         p = QgsProject.instance()
         for ext in ('qgs', 'gpkg'):
-            copyfile(os.path.join(TEST_DATA_DIR, 'projects', 'relation_reference_test.%s' % ext), os.path.join(temp_dir.path(), 'relation_reference_test.%s' % ext))
+            copyfile(os.path.join(TEST_DATA_DIR, 'projects', f'relation_reference_test.{ext}'), os.path.join(temp_dir.path(), f'relation_reference_test.{ext}'))
 
         # Load the good project
         project_path = os.path.join(temp_dir.path(), 'relation_reference_test.qgs')
@@ -202,7 +193,7 @@ class TestQgsProjectBadLayers(unittest.TestCase):
 
         # Now build a bad project
         bad_project_path = os.path.join(temp_dir.path(), 'relation_reference_test_bad.qgs')
-        with open(project_path, 'r') as infile:
+        with open(project_path) as infile:
             with open(bad_project_path, 'w+') as outfile:
                 outfile.write(infile.read().replace('./relation_reference_test.gpkg', './relation_reference_test-BAD_SOURCE.gpkg'))
 
@@ -246,7 +237,7 @@ class TestQgsProjectBadLayers(unittest.TestCase):
 
         # Now fix the bad project
         bad_project_path_fixed = os.path.join(temp_dir.path(), 'relation_reference_test_bad_fixed.qgs')
-        with open(bad_project_path2, 'r') as infile:
+        with open(bad_project_path2) as infile:
             with open(bad_project_path_fixed, 'w+') as outfile:
                 outfile.write(infile.read().replace('./relation_reference_test-BAD_SOURCE.gpkg', './relation_reference_test.gpkg'))
 
@@ -309,7 +300,7 @@ class TestQgsProjectBadLayers(unittest.TestCase):
         # Now build a bad project
         p.removeAllMapLayers()
         bad_project_path = os.path.join(temp_dir.path(), 'bad_layers_test.qgs')
-        with open(project_path, 'r') as infile:
+        with open(project_path) as infile:
             with open(bad_project_path, 'w+') as outfile:
                 outfile.write(infile.read().replace('./bad_layers_test.', './bad_layers_test-BAD_SOURCE.').replace('bad_layer_raster_test.tiff', 'bad_layer_raster_test-BAD_SOURCE.tiff'))
 

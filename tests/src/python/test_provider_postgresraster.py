@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for the postgres raster provider.
 
 Note: to prepare the DB, you need to run the sql files specified in
@@ -14,31 +13,27 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
 """
-from builtins import next
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '2019-12-20'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
-import qgis  # NOQA
 import os
 import time
 
+import qgis  # NOQA
 from qgis.core import (
-    QgsSettings,
-    QgsReadWriteContext,
-    QgsRectangle,
-    QgsCoordinateReferenceSystem,
-    QgsProject,
-    QgsRasterLayer,
-    QgsPointXY,
-    QgsRaster,
-    QgsProviderRegistry,
-    QgsRasterBandStats,
     QgsDataSourceUri,
+    QgsPointXY,
+    QgsProviderRegistry,
+    QgsRaster,
+    QgsRasterBandStats,
+    QgsRasterLayer,
+    QgsRectangle,
 )
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath, compareWkt
+
+from utilities import compareWkt, unitTestDataPath
 
 QGISAPP = start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -57,7 +52,7 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
             basename = tablename
 
         if tablename not in [n.tableName() for n in conn.tables(schemaname)]:
-            with open(os.path.join(TEST_DATA_DIR, 'provider', 'postgresraster', basename + '.sql'), 'r') as f:
+            with open(os.path.join(TEST_DATA_DIR, 'provider', 'postgresraster', basename + '.sql')) as f:
                 sql = f.read()
                 conn.executeSql(sql)
             assert (tablename in [n.tableName() for n in conn.tables(
@@ -108,10 +103,6 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
         self.assertTrue(gdal_rl.isValid())
         self.assertEqual(value, gdal_rl.dataProvider().block(
             band, self.rl.extent(), 6, 5).data().toHex())
-
-    @classmethod
-    def tearDownClass(cls):
-        """Run after all tests"""
 
     def testExtent(self):
         extent = self.rl.extent()
@@ -222,50 +213,44 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
 
         def _speed_check(schema, table, width, height):
             print('-' * 80)
-            print("Testing: {schema}.{table}".format(
-                table=table, schema=schema))
+            print(f"Testing: {schema}.{table}")
             print('-' * 80)
 
             # GDAL
             start = time.time()
             rl = QgsRasterLayer(
                 "PG: " + conn +
-                "table={table} mode=2 schema={schema}".format(
-                    table=table, schema=schema), 'gdal_layer',
+                f"table={table} mode=2 schema={schema}", 'gdal_layer',
                 'gdal')
             self.assertTrue(rl.isValid())
             # Make is smaller than full extent
             extent = rl.extent().buffered(-rl.extent().width() * 0.2)
             checkpoint_1 = time.time()
-            print("Tiled GDAL start time: {:.6f}".format(checkpoint_1 - start))
+            print(f"Tiled GDAL start time: {checkpoint_1 - start:.6f}")
             rl.dataProvider().block(1, extent, width, height)
             checkpoint_2 = time.time()
-            print("Tiled GDAL first block time: {:.6f}".format(
-                checkpoint_2 - checkpoint_1))
+            print(f"Tiled GDAL first block time: {checkpoint_2 - checkpoint_1:.6f}")
             # rl.dataProvider().block(1, extent, width, height)
             checkpoint_3 = time.time()
-            print("Tiled GDAL second block time: {:.6f}".format(
-                checkpoint_3 - checkpoint_2))
-            print("Total GDAL time: {:.6f}".format(checkpoint_3 - start))
+            print(f"Tiled GDAL second block time: {checkpoint_3 - checkpoint_2:.6f}")
+            print(f"Total GDAL time: {checkpoint_3 - start:.6f}")
             print('-' * 80)
 
             # PG native
             start = time.time()
-            rl = QgsRasterLayer(conn + "table={table} schema={schema}".format(table=table, schema=schema), 'gdal_layer',
+            rl = QgsRasterLayer(conn + f"table={table} schema={schema}", 'gdal_layer',
                                 'postgresraster')
             self.assertTrue(rl.isValid())
             extent = rl.extent().buffered(-rl.extent().width() * 0.2)
             checkpoint_1 = time.time()
-            print("Tiled PG start time: {:.6f}".format(checkpoint_1 - start))
+            print(f"Tiled PG start time: {checkpoint_1 - start:.6f}")
             rl.dataProvider().block(1, extent, width, height)
             checkpoint_2 = time.time()
-            print("Tiled PG first block time: {:.6f}".format(
-                checkpoint_2 - checkpoint_1))
+            print(f"Tiled PG first block time: {checkpoint_2 - checkpoint_1:.6f}")
             rl.dataProvider().block(1, extent, width, height)
             checkpoint_3 = time.time()
-            print("Tiled PG second block time: {:.6f}".format(
-                checkpoint_3 - checkpoint_2))
-            print("Total PG time: {:.6f}".format(checkpoint_3 - start))
+            print(f"Tiled PG second block time: {checkpoint_3 - checkpoint_2:.6f}")
+            print(f"Total PG time: {checkpoint_3 - start:.6f}")
             print('-' * 80)
 
         _speed_check(schema, table, 1000, 1000)
@@ -275,8 +260,7 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
         See: GH #34823"""
 
         rl = QgsRasterLayer(
-            self.dbconn + " sslmode=disable table={table} schema={schema}".format(
-                table='cosmo_i5_snow', schema='idro'),
+            self.dbconn + " sslmode=disable table=cosmo_i5_snow schema=idro",
             'pg_layer', 'postgresraster')
         self.assertTrue(rl.isValid())
         self.assertTrue(compareWkt(rl.extent().asWktPolygon(),
@@ -554,6 +538,15 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
         rl_r2 = _6x6_block_data(rl, extent_2)
         r2_r2 = _6x6_block_data(rl2, extent_2)
         self.assertEqual(rl_r2, r2_r2)
+
+    def testView(self):
+        """Test issue GH #50841"""
+
+        rl = QgsRasterLayer(
+            self.dbconn + " key=\'rid\' srid=3035 sslmode=disable table={table} schema={schema}".format(
+                table='raster_tiled_3035_view', schema='public'), 'pg_layer', 'postgresraster')
+
+        self.assertTrue(rl.isValid())
 
 
 if __name__ == '__main__':

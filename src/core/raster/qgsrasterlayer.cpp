@@ -18,18 +18,15 @@ email                : tim at linfiniti.com
 #include "qgsbrightnesscontrastfilter.h"
 #include "qgscolorrampshader.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgscoordinatetransform.h"
 #include "qgsdatasourceuri.h"
 #include "qgshuesaturationfilter.h"
 #include "qgslayermetadataformatter.h"
 #include "qgslogger.h"
 #include "qgsmaplayerlegend.h"
-#include "qgsmaplayerutils.h"
 #include "qgsmaptopixel.h"
 #include "qgsmessagelog.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgspainting.h"
-#include "qgspalettedrasterrenderer.h"
 #include "qgspathresolver.h"
 #include "qgsprojectfiletransform.h"
 #include "qgsproviderregistry.h"
@@ -47,7 +44,6 @@ email                : tim at linfiniti.com
 #include "qgsxmlutils.h"
 #include "qgsrectangle.h"
 #include "qgsrendercontext.h"
-#include "qgssinglebandcolordatarenderer.h"
 #include "qgssinglebandgrayrenderer.h"
 #include "qgssinglebandpseudocolorrenderer.h"
 #include "qgssettings.h"
@@ -61,6 +57,9 @@ email                : tim at linfiniti.com
 #include "qgsrasterpipe.h"
 #include "qgsrasterlayerelevationproperties.h"
 #include "qgsrasterlayerprofilegenerator.h"
+#include "qgsthreadingutils.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
 #include <cmath>
 #include <cstdio>
@@ -85,6 +84,9 @@ email                : tim at linfiniti.com
 #include <QRegularExpression>
 #include <QSlider>
 #include <QUrl>
+
+const QgsSettingsEntryDouble *QgsRasterLayer::settingsRasterDefaultOversampling = new QgsSettingsEntryDouble( QStringLiteral( "default-oversampling" ), QgsSettingsTree::sTreeRaster, 2.0 );
+const QgsSettingsEntryBool *QgsRasterLayer::settingsRasterDefaultEarlyResampling = new QgsSettingsEntryBool( QStringLiteral( "default-early-resampling" ), QgsSettingsTree::sTreeRaster, false );
 
 #define ERR(message) QGS_ERROR_MESSAGE(message,"Raster layer")
 
@@ -139,6 +141,7 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
   {
     providerFlags |= QgsDataProvider::FlagLoadDefaultStyle;
   }
+
   setDataSource( uri, baseName, providerKey, providerOptions, providerFlags );
 
   if ( isValid() )
@@ -158,6 +161,8 @@ QgsRasterLayer::~QgsRasterLayer()
 
 QgsRasterLayer *QgsRasterLayer::clone() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsRasterLayer::LayerOptions options;
   if ( mDataProvider )
   {
@@ -167,6 +172,7 @@ QgsRasterLayer *QgsRasterLayer::clone() const
   QgsMapLayer::clone( layer );
   layer->mElevationProperties = mElevationProperties->clone();
   layer->mElevationProperties->setParent( layer );
+  layer->setMapTipTemplate( mapTipTemplate() );
 
   // do not clone data provider which is the first element in pipe
   for ( int i = 1; i < mPipe->size(); i++ )
@@ -181,6 +187,8 @@ QgsRasterLayer *QgsRasterLayer::clone() const
 
 QgsAbstractProfileGenerator *QgsRasterLayer::createProfileGenerator( const QgsProfileRequest &request )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( !mElevationProperties->isEnabled() )
     return nullptr;
 
@@ -225,6 +233,8 @@ QDateTime QgsRasterLayer::lastModified( QString const &name )
 
 void QgsRasterLayer::setDataProvider( const QString &provider )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   setDataProvider( provider, QgsDataProvider::ProviderOptions() );
 }
 
@@ -239,33 +249,79 @@ typedef QgsDataProvider *classFactoryFunction_t( const QString *, const QgsDataP
 
 int QgsRasterLayer::bandCount() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( !mDataProvider ) return 0;
   return mDataProvider->bandCount();
 }
 
 QString QgsRasterLayer::bandName( int bandNo ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( !mDataProvider ) return QString();
   return mDataProvider->generateBandName( bandNo );
 }
 
-void QgsRasterLayer::setRendererForDrawingStyle( QgsRaster::DrawingStyle drawingStyle )
+QgsRasterAttributeTable *QgsRasterLayer::attributeTable( int bandNoInt ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( !mDataProvider )
+    return nullptr;
+  return mDataProvider->attributeTable( bandNoInt );
+}
+
+int QgsRasterLayer::attributeTableCount() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( !mDataProvider )
+    return 0;
+
+  int ratCount { 0 };
+  for ( int bandNo = 1; bandNo <= bandCount(); ++bandNo )
+  {
+    if ( attributeTable( bandNo ) )
+    {
+      ratCount++;
+    }
+  }
+  return ratCount;
+}
+
+bool QgsRasterLayer::canCreateRasterAttributeTable()
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mDataProvider && renderer() && renderer()->canCreateRasterAttributeTable();
+}
+
+void QgsRasterLayer::setRendererForDrawingStyle( Qgis::RasterDrawingStyle drawingStyle )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   setRenderer( QgsApplication::rasterRendererRegistry()->defaultRendererForDrawingStyle( drawingStyle, mDataProvider ) );
 }
 
 QgsRasterDataProvider *QgsRasterLayer::dataProvider()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mDataProvider;
 }
 
 const QgsRasterDataProvider *QgsRasterLayer::dataProvider() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mDataProvider;
 }
 
 void QgsRasterLayer::reload()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mDataProvider )
   {
     mDataProvider->reloadData();
@@ -274,6 +330,8 @@ void QgsRasterLayer::reload()
 
 QgsMapLayerRenderer *QgsRasterLayer::createMapRenderer( QgsRenderContext &rendererContext )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return new QgsRasterLayerRenderer( this, rendererContext );
 }
 
@@ -282,6 +340,8 @@ void QgsRasterLayer::draw( QPainter *theQPainter,
                            QgsRasterViewPort *rasterViewPort,
                            const QgsMapToPixel *qgsMapToPixel )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsDebugMsgLevel( QStringLiteral( " 3 arguments" ), 4 );
   QElapsedTimer time;
   time.start();
@@ -327,12 +387,16 @@ void QgsRasterLayer::draw( QPainter *theQPainter,
 
 QgsLegendColorList QgsRasterLayer::legendSymbologyItems() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsRasterRenderer *renderer = mPipe->renderer();
   return renderer ? renderer->legendSymbologyItems() : QList< QPair< QString, QColor > >();;
 }
 
 QString QgsRasterLayer::htmlMetadata() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( !mDataProvider )
     return QString();
 
@@ -371,6 +435,9 @@ QString QgsRasterLayer::htmlMetadata() const
   {
     case Qgis::DataType::Byte:
       myMetadata += tr( "Byte - Eight bit unsigned integer" );
+      break;
+    case Qgis::DataType::Int8:
+      myMetadata += tr( "Int8 - Eight bit signed integer" );
       break;
     case Qgis::DataType::UInt16:
       myMetadata += tr( "UInt16 - Sixteen bit unsigned integer " );
@@ -457,9 +524,9 @@ QString QgsRasterLayer::htmlMetadata() const
       myMetadata += tr( "n/a" );
     myMetadata += QLatin1String( "</td>" );
 
-    if ( provider->hasStatistics( i, QgsRasterBandStats::Min | QgsRasterBandStats::Max, provider->extent(), SAMPLE_SIZE ) )
+    if ( provider->hasStatistics( i, QgsRasterBandStats::Min | QgsRasterBandStats::Max, provider->extent(), static_cast<int>( SAMPLE_SIZE ) ) )
     {
-      const QgsRasterBandStats myRasterBandStats = provider->bandStatistics( i, QgsRasterBandStats::Min | QgsRasterBandStats::Max, provider->extent(), SAMPLE_SIZE );
+      const QgsRasterBandStats myRasterBandStats = provider->bandStatistics( i, QgsRasterBandStats::Min | QgsRasterBandStats::Max, provider->extent(), static_cast<int>( SAMPLE_SIZE ) );
       myMetadata += QStringLiteral( "<td>" ) % QString::number( myRasterBandStats.minimumValue, 'f', 10 ) % QStringLiteral( "</td>" ) %
                     QStringLiteral( "<td>" ) % QString::number( myRasterBandStats.maximumValue, 'f', 10 ) % QStringLiteral( "</td>" );
     }
@@ -495,6 +562,8 @@ QString QgsRasterLayer::htmlMetadata() const
 
 Qgis::MapLayerProperties QgsRasterLayer::properties() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   Qgis::MapLayerProperties res;
   if ( mDataProvider && ( mDataProvider->flags() & Qgis::DataProviderFlag::IsBasemapSource ) )
   {
@@ -505,13 +574,15 @@ Qgis::MapLayerProperties QgsRasterLayer::properties() const
 
 QPixmap QgsRasterLayer::paletteAsPixmap( int bandNumber )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   //TODO: This function should take dimensions
   QgsDebugMsgLevel( QStringLiteral( "entered." ), 4 );
 
   // Only do this for the GDAL provider?
   // Maybe WMS can do this differently using QImage::numColors and QImage::color()
   if ( mDataProvider &&
-       mDataProvider->colorInterpretation( bandNumber ) == QgsRaster::PaletteIndex )
+       mDataProvider->colorInterpretation( bandNumber ) == Qgis::RasterColorInterpretation::PaletteIndex )
   {
     QgsDebugMsgLevel( QStringLiteral( "....found paletted image" ), 4 );
     QgsColorRampShader myShader;
@@ -560,11 +631,15 @@ QPixmap QgsRasterLayer::paletteAsPixmap( int bandNumber )
 
 QString QgsRasterLayer::providerType() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mProviderKey;
 }
 
 double QgsRasterLayer::rasterUnitsPerPixelX() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
 // We return one raster pixel per map unit pixel
 // One raster pixel can have several raster units...
 
@@ -581,6 +656,8 @@ double QgsRasterLayer::rasterUnitsPerPixelX() const
 
 double QgsRasterLayer::rasterUnitsPerPixelY() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mDataProvider &&
        mDataProvider->capabilities() & QgsRasterDataProvider::Size && !qgsDoubleNear( mDataProvider->ySize(), 0.0 ) )
   {
@@ -591,6 +668,8 @@ double QgsRasterLayer::rasterUnitsPerPixelY() const
 
 void QgsRasterLayer::setOpacity( double opacity )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( !mPipe->renderer() || mPipe->renderer()->opacity() == opacity )
     return;
 
@@ -601,16 +680,20 @@ void QgsRasterLayer::setOpacity( double opacity )
 
 double QgsRasterLayer::opacity() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mPipe->renderer() ? mPipe->renderer()->opacity() : 1.0;
 }
 
 void QgsRasterLayer::init()
 {
-  mRasterType = QgsRasterLayer::GrayOrUndefined;
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  mRasterType = Qgis::RasterLayerType::GrayOrUndefined;
 
   whileBlocking( this )->setLegend( QgsMapLayerLegend::defaultRasterLegend( this ) );
 
-  setRendererForDrawingStyle( QgsRaster::UndefinedDrawingStyle );
+  setRendererForDrawingStyle( Qgis::RasterDrawingStyle::Undefined );
 
   //Initialize the last view port structure, should really be a class
   mLastViewPort.mWidth = 0;
@@ -619,6 +702,8 @@ void QgsRasterLayer::init()
 
 void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
   setValid( false ); // assume the layer is invalid until we determine otherwise
 
@@ -704,76 +789,122 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   {
     // handle singleband gray with alpha
     if ( mDataProvider->bandCount() == 2
-         && ( ( mDataProvider->colorInterpretation( 1 ) == QgsRaster::GrayIndex
-                && mDataProvider->colorInterpretation( 2 ) == QgsRaster::AlphaBand )
-              || ( mDataProvider->colorInterpretation( 1 ) == QgsRaster::AlphaBand
-                   && mDataProvider->colorInterpretation( 2 ) == QgsRaster::GrayIndex ) ) )
+         && ( ( mDataProvider->colorInterpretation( 1 ) == Qgis::RasterColorInterpretation::GrayIndex
+                && mDataProvider->colorInterpretation( 2 ) == Qgis::RasterColorInterpretation::AlphaBand )
+              || ( mDataProvider->colorInterpretation( 1 ) == Qgis::RasterColorInterpretation::AlphaBand
+                   && mDataProvider->colorInterpretation( 2 ) == Qgis::RasterColorInterpretation::GrayIndex ) ) )
     {
-      mRasterType = GrayOrUndefined;
+      mRasterType = Qgis::RasterLayerType::GrayOrUndefined;
     }
     else
     {
-      mRasterType = Multiband;
+      mRasterType = Qgis::RasterLayerType::MultiBand;
     }
   }
   else if ( mDataProvider->dataType( 1 ) == Qgis::DataType::ARGB32
             ||  mDataProvider->dataType( 1 ) == Qgis::DataType::ARGB32_Premultiplied )
   {
-    mRasterType = ColorLayer;
+    mRasterType = Qgis::RasterLayerType::SingleBandColorData;
   }
-  else if ( mDataProvider->colorInterpretation( 1 ) == QgsRaster::PaletteIndex )
+  else if ( mDataProvider->colorInterpretation( 1 ) == Qgis::RasterColorInterpretation::PaletteIndex
+            || mDataProvider->colorInterpretation( 1 ) == Qgis::RasterColorInterpretation::ContinuousPalette )
   {
-    mRasterType = Palette;
-  }
-  else if ( mDataProvider->colorInterpretation( 1 ) == QgsRaster::ContinuousPalette )
-  {
-    mRasterType = Palette;
+    mRasterType = Qgis::RasterLayerType::Palette;
   }
   else
   {
-    mRasterType = GrayOrUndefined;
+    mRasterType = Qgis::RasterLayerType::GrayOrUndefined;
   }
 
-  QgsDebugMsgLevel( "mRasterType = " + QString::number( mRasterType ), 4 );
-  if ( mRasterType == ColorLayer )
+  QgsDebugMsgLevel( "mRasterType = " + qgsEnumValueToKey( mRasterType ), 4 );
+
+  // Raster Attribute Table logic to load from provider or same basename + vat.dbf file.
+  QString errorMessage;
+  bool hasRat { mDataProvider->readNativeAttributeTable( &errorMessage ) };
+  if ( ! hasRat )
   {
-    QgsDebugMsgLevel( "Setting drawing style to SingleBandColorDataStyle " + QString::number( QgsRaster::SingleBandColorDataStyle ), 4 );
-    setRendererForDrawingStyle( QgsRaster::SingleBandColorDataStyle );
-  }
-  else if ( mRasterType == Palette && mDataProvider->colorInterpretation( 1 ) == QgsRaster::PaletteIndex )
-  {
-    setRendererForDrawingStyle( QgsRaster::PalettedColor ); //sensible default
-  }
-  else if ( mRasterType == Palette && mDataProvider->colorInterpretation( 1 ) == QgsRaster::ContinuousPalette )
-  {
-    setRendererForDrawingStyle( QgsRaster::SingleBandPseudoColor );
-    // Load color table
-    const QList<QgsColorRampShader::ColorRampItem> colorTable = mDataProvider->colorTable( 1 );
-    QgsSingleBandPseudoColorRenderer *r = dynamic_cast<QgsSingleBandPseudoColorRenderer *>( renderer() );
-    if ( r )
+    errorMessage.clear();
+    QgsDebugMsgLevel( "Native Raster Raster Attribute Table read failed " + errorMessage, 2 );
+    if ( QFile::exists( mDataProvider->dataSourceUri( ) +  ".vat.dbf" ) )
     {
-      // TODO: this should go somewhere else
-      QgsRasterShader *shader = new QgsRasterShader();
-      QgsColorRampShader *colorRampShader = new QgsColorRampShader();
-      colorRampShader->setColorRampType( QgsColorRampShader::Interpolated );
-      colorRampShader->setColorRampItemList( colorTable );
-      shader->setRasterShaderFunction( colorRampShader );
-      r->setShader( shader );
+      std::unique_ptr<QgsRasterAttributeTable> rat = std::make_unique<QgsRasterAttributeTable>();
+      hasRat = rat->readFromFile( mDataProvider->dataSourceUri( ) +  ".vat.dbf", &errorMessage );
+      if ( hasRat )
+      {
+        if ( rat->isValid( &errorMessage ) )
+        {
+          mDataProvider->setAttributeTable( 1, rat.release() );
+          QgsDebugMsgLevel( "DBF Raster Attribute Table successfully read from " + mDataProvider->dataSourceUri( ) +  ".vat.dbf", 2 );
+        }
+        else
+        {
+          QgsDebugMsgLevel( "DBF Raster Attribute Table is not valid, skipping: " + errorMessage, 2 );
+        }
+      }
+      else
+      {
+        QgsDebugMsgLevel( "DBF Raster Attribute Table read failed " + errorMessage, 2 );
+      }
     }
   }
-  else if ( mRasterType == Multiband )
+  else
   {
-    setRendererForDrawingStyle( QgsRaster::MultiBandColor );  //sensible default
+    QgsDebugMsgLevel( "Native Raster Attribute Table read success", 2 );
   }
-  else                        //GrayOrUndefined
+
+  switch ( mRasterType )
   {
-    setRendererForDrawingStyle( QgsRaster::SingleBandGray );  //sensible default
+    case Qgis::RasterLayerType::SingleBandColorData:
+    {
+      QgsDebugMsgLevel( "Setting drawing style to SingleBandColorDataStyle " + qgsEnumValueToKey( Qgis::RasterDrawingStyle::SingleBandColorData ), 4 );
+      setRendererForDrawingStyle( Qgis::RasterDrawingStyle::SingleBandColorData );
+      break;
+    }
+    case Qgis::RasterLayerType::Palette:
+    {
+      if ( mDataProvider->colorInterpretation( 1 ) == Qgis::RasterColorInterpretation::PaletteIndex )
+      {
+        setRendererForDrawingStyle( Qgis::RasterDrawingStyle::PalettedColor ); //sensible default
+      }
+      else if ( mDataProvider->colorInterpretation( 1 ) == Qgis::RasterColorInterpretation::ContinuousPalette )
+      {
+        setRendererForDrawingStyle( Qgis::RasterDrawingStyle::SingleBandPseudoColor );
+        // Load color table
+        const QList<QgsColorRampShader::ColorRampItem> colorTable = mDataProvider->colorTable( 1 );
+        QgsSingleBandPseudoColorRenderer *r = dynamic_cast<QgsSingleBandPseudoColorRenderer *>( renderer() );
+        if ( r )
+        {
+          // TODO: this should go somewhere else
+          QgsRasterShader *shader = new QgsRasterShader();
+          QgsColorRampShader *colorRampShader = new QgsColorRampShader();
+          colorRampShader->setColorRampType( QgsColorRampShader::Interpolated );
+          colorRampShader->setColorRampItemList( colorTable );
+          shader->setRasterShaderFunction( colorRampShader );
+          r->setShader( shader );
+        }
+      }
+      else
+      {
+        setRendererForDrawingStyle( Qgis::RasterDrawingStyle::SingleBandGray );  //sensible default
+      }
+      break;
+    }
+    case Qgis::RasterLayerType::MultiBand:
+    {
+      setRendererForDrawingStyle( Qgis::RasterDrawingStyle::MultiBandColor );  //sensible default
+      break;
+    }
+    case Qgis::RasterLayerType::GrayOrUndefined:
+    {
+      setRendererForDrawingStyle( Qgis::RasterDrawingStyle::SingleBandGray );  //sensible default
+      break;
+    }
   }
 
   // Auto set alpha band
   for ( int bandNo = 1; bandNo <= mDataProvider->bandCount(); bandNo++ )
   {
-    if ( mDataProvider->colorInterpretation( bandNo ) == QgsRaster::AlphaBand )
+    if ( mDataProvider->colorInterpretation( bandNo ) == Qgis::RasterColorInterpretation::AlphaBand )
     {
       if ( auto *lRenderer = mPipe->renderer() )
       {
@@ -816,12 +947,12 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
       mDataProvider->setZoomedOutResamplingMethod( QgsRasterDataProvider::ResamplingMethod::Bilinear );
     }
 
-    const double maxOversampling = settings.value( QStringLiteral( "/Raster/defaultOversampling" ), 2.0 ).toDouble();
+    const double maxOversampling = QgsRasterLayer::settingsRasterDefaultOversampling->value();
     resampleFilter->setMaxOversampling( maxOversampling );
     mDataProvider->setMaxOversampling( maxOversampling );
 
     if ( ( mDataProvider->providerCapabilities() & QgsRasterDataProvider::ProviderHintCanPerformProviderResampling ) &&
-         settings.value( QStringLiteral( "/Raster/defaultEarlyResampling" ), false ).toBool() )
+         QgsRasterLayer::settingsRasterDefaultEarlyResampling->value() )
     {
       setResamplingStage( Qgis::RasterResamplingStage::Provider );
     }
@@ -837,23 +968,23 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
 
   // Set default identify format - use the richest format available
   const int capabilities = mDataProvider->capabilities();
-  QgsRaster::IdentifyFormat identifyFormat = QgsRaster::IdentifyFormatUndefined;
+  Qgis::RasterIdentifyFormat identifyFormat = Qgis::RasterIdentifyFormat::Undefined;
   if ( capabilities & QgsRasterInterface::IdentifyHtml )
   {
     // HTML is usually richest
-    identifyFormat = QgsRaster::IdentifyFormatHtml;
+    identifyFormat = Qgis::RasterIdentifyFormat::Html;
   }
   else if ( capabilities & QgsRasterInterface::IdentifyFeature )
   {
-    identifyFormat = QgsRaster::IdentifyFormatFeature;
+    identifyFormat = Qgis::RasterIdentifyFormat::Feature;
   }
   else if ( capabilities & QgsRasterInterface::IdentifyText )
   {
-    identifyFormat = QgsRaster::IdentifyFormatText;
+    identifyFormat = Qgis::RasterIdentifyFormat::Text;
   }
   else if ( capabilities & QgsRasterInterface::IdentifyValue )
   {
-    identifyFormat = QgsRaster::IdentifyFormatValue;
+    identifyFormat = Qgis::RasterIdentifyFormat::Value;
   }
   setCustomProperty( QStringLiteral( "identify/format" ), QgsRasterDataProvider::identifyFormatName( identifyFormat ) );
 
@@ -880,6 +1011,8 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
 void QgsRasterLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider,
     const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const bool hadRenderer( renderer() );
 
   QDomImplementation domImplementation;
@@ -970,8 +1103,75 @@ void QgsRasterLayer::setDataSourcePrivate( const QString &dataSource, const QStr
   }
 }
 
+void QgsRasterLayer::writeRasterAttributeTableExternalPaths( QDomNode &layerNode, QDomDocument &doc, const QgsReadWriteContext &context ) const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( attributeTableCount() > 0 )
+  {
+    QDomElement elem = doc.createElement( QStringLiteral( "FileBasedAttributeTables" ) );
+    for ( int bandNo = 1; bandNo <= bandCount(); bandNo++ )
+    {
+      if ( QgsRasterAttributeTable *rat = attributeTable( bandNo ); rat && ! rat->filePath().isEmpty() )
+      {
+        QDomElement ratElem = doc.createElement( QStringLiteral( "AttributeTable" ) );
+        ratElem.setAttribute( QStringLiteral( "band" ), bandNo );
+        ratElem.setAttribute( QStringLiteral( "path" ), context.pathResolver().writePath( rat->filePath( ) ) );
+        elem.appendChild( ratElem );
+      }
+    }
+    layerNode.appendChild( elem );
+  }
+}
+
+void QgsRasterLayer::readRasterAttributeTableExternalPaths( const QDomNode &layerNode, QgsReadWriteContext &context ) const
+{
+  const QDomElement ratsElement = layerNode.firstChildElement( QStringLiteral( "FileBasedAttributeTables" ) );
+  if ( !ratsElement.isNull() && ratsElement.childNodes().count() > 0 )
+  {
+    const QDomNodeList ratElements { ratsElement.childNodes() };
+    for ( int idx = 0; idx < ratElements.count(); idx++ )
+    {
+      const QDomNode ratElement { ratElements.at( idx ) };
+      if ( ratElement.attributes().contains( QStringLiteral( "band" ) )
+           && ratElement.attributes().contains( QStringLiteral( "path" ) ) )
+      {
+        bool ok;
+        const int band { ratElement.attributes().namedItem( QStringLiteral( "band" ) ).nodeValue().toInt( &ok ) };
+
+        // Check band is ok
+        if ( ! ok ||  band <= 0 || band > bandCount() )
+        {
+          QgsMessageLog::logMessage( tr( "Error reading raster attribute table: invalid band %1." ).arg( band ), tr( "Raster" ) );
+          continue;
+        }
+
+        const QString path { context.pathResolver().readPath( ratElement.attributes().namedItem( QStringLiteral( "path" ) ).nodeValue() ) };
+        if ( ! QFile::exists( path ) )
+        {
+          QgsMessageLog::logMessage( tr( "Error loading raster attribute table, file not found: %1." ).arg( path ), tr( "Raster" ) );
+          continue;
+        }
+
+        std::unique_ptr<QgsRasterAttributeTable> rat = std::make_unique<QgsRasterAttributeTable>();
+        QString errorMessage;
+        if ( ! rat->readFromFile( path, &errorMessage ) )
+        {
+          QgsMessageLog::logMessage( tr( "Error loading raster attribute table from path %1: %2" ).arg( path, errorMessage ), tr( "Raster" ) );
+          continue;
+        }
+
+        // All good, set the RAT
+        mDataProvider->setAttributeTable( band, rat.release() );
+      }
+    }
+  }
+}
+
 void QgsRasterLayer::closeDataProvider()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   setValid( false );
   mPipe->remove( mDataProvider );
   mDataProvider = nullptr;
@@ -984,6 +1184,7 @@ void QgsRasterLayer::computeMinMax( int band,
                                     int sampleSize,
                                     double &min, double &max )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   min = std::numeric_limits<double>::quiet_NaN();
   max = std::numeric_limits<double>::quiet_NaN();
@@ -1003,6 +1204,12 @@ void QgsRasterLayer::computeMinMax( int band,
         {
           myRasterBandStats.minimumValue = 0;
           myRasterBandStats.maximumValue = 255;
+          break;
+        }
+        case Qgis::DataType::Int8:
+        {
+          myRasterBandStats.minimumValue = std::numeric_limits<int8_t>::lowest();
+          myRasterBandStats.maximumValue = std::numeric_limits<int8_t>::max();
           break;
         }
         case Qgis::DataType::UInt16:
@@ -1076,21 +1283,29 @@ void QgsRasterLayer::computeMinMax( int band,
 
 bool QgsRasterLayer::ignoreExtents() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mDataProvider ? mDataProvider->ignoreExtents() : false;
 }
 
 QgsMapLayerTemporalProperties *QgsRasterLayer::temporalProperties()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mTemporalProperties;
 }
 
 QgsMapLayerElevationProperties *QgsRasterLayer::elevationProperties()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mElevationProperties;
 }
 
 void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm, QgsRasterMinMaxOrigin::Limits limits, const QgsRectangle &extent, int sampleSize, bool generateLookupTableFlag )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   setContrastEnhancement( algorithm,
                           limits,
                           extent,
@@ -1106,6 +1321,8 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
     bool generateLookupTableFlag,
     QgsRasterRenderer *rasterRenderer )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsDebugMsgLevel( QStringLiteral( "theAlgorithm = %1 limits = %2 extent.isEmpty() = %3" ).arg( algorithm ).arg( limits ).arg( extent.isEmpty() ), 4 );
   if ( !rasterRenderer || !mDataProvider )
   {
@@ -1173,9 +1390,29 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
 
       if ( rendererType == QLatin1String( "singlebandpseudocolor" ) )
       {
-        myPseudoColorRenderer->setClassificationMin( min );
-        myPseudoColorRenderer->setClassificationMax( max );
-        if ( myPseudoColorRenderer->shader() )
+        // This is not necessary, but clang-tidy thinks it is.
+        if ( ! myPseudoColorRenderer )
+        {
+          return;
+        }
+        // Do not overwrite min/max with NaN if they were already set,
+        // for example when the style was already loaded from a raster attribute table
+        // in that case we need to respect the style from the attribute table and do
+        // not perform any reclassification.
+        bool minMaxChanged { false };
+        if ( ! std::isnan( min ) )
+        {
+          myPseudoColorRenderer->setClassificationMin( min );
+          minMaxChanged = true;
+        }
+
+        if ( ! std::isnan( max ) )
+        {
+          myPseudoColorRenderer->setClassificationMax( max );
+          minMaxChanged = true;
+        }
+
+        if ( minMaxChanged && myPseudoColorRenderer->shader() )
         {
           QgsColorRampShader *colorRampShader = dynamic_cast<QgsColorRampShader *>( myPseudoColorRenderer->shader()->rasterShaderFunction() );
           if ( colorRampShader )
@@ -1197,11 +1434,12 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
     }
   }
 
-  if ( rendererType == QLatin1String( "singlebandgray" ) )
+  // Again, second check is redundant but clang-tidy doesn't agree
+  if ( rendererType == QLatin1String( "singlebandgray" ) && myGrayRenderer )
   {
     if ( myEnhancements.first() ) myGrayRenderer->setContrastEnhancement( myEnhancements.takeFirst() );
   }
-  else if ( rendererType == QLatin1String( "multibandcolor" ) )
+  else if ( rendererType == QLatin1String( "multibandcolor" ) && myMultiBandRenderer )
   {
     if ( myEnhancements.first() ) myMultiBandRenderer->setRedContrastEnhancement( myEnhancements.takeFirst() );
     if ( myEnhancements.first() ) myMultiBandRenderer->setGreenContrastEnhancement( myEnhancements.takeFirst() );
@@ -1232,6 +1470,8 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
 
 void QgsRasterLayer::refreshContrastEnhancement( const QgsRectangle &extent )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsSingleBandGrayRenderer *singleBandRenderer = nullptr;
   QgsMultiBandColorRenderer *multiBandRenderer = nullptr;
   const QgsContrastEnhancement *ce = nullptr;
@@ -1251,7 +1491,7 @@ void QgsRasterLayer::refreshContrastEnhancement( const QgsRectangle &extent )
                             renderer()->minMaxOrigin().limits() == QgsRasterMinMaxOrigin::None ?
                             QgsRasterMinMaxOrigin::MinMax : renderer()->minMaxOrigin().limits(),
                             extent,
-                            SAMPLE_SIZE,
+                            static_cast<int>( SAMPLE_SIZE ),
                             true,
                             renderer() );
   }
@@ -1264,7 +1504,7 @@ void QgsRasterLayer::refreshContrastEnhancement( const QgsRectangle &extent )
       setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum,
                               myLimits,
                               extent,
-                              SAMPLE_SIZE,
+                              static_cast<int>( SAMPLE_SIZE ),
                               true,
                               renderer() );
     }
@@ -1274,6 +1514,8 @@ void QgsRasterLayer::refreshContrastEnhancement( const QgsRectangle &extent )
 void QgsRasterLayer::refreshRendererIfNeeded( QgsRasterRenderer *rasterRenderer,
     const QgsRectangle &extent )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mDataProvider &&
        mLastRectangleUsedByRefreshContrastEnhancementIfNeeded != extent &&
        rasterRenderer->minMaxOrigin().limits() != QgsRasterMinMaxOrigin::None &&
@@ -1285,6 +1527,8 @@ void QgsRasterLayer::refreshRendererIfNeeded( QgsRasterRenderer *rasterRenderer,
 
 void QgsRasterLayer::refreshRenderer( QgsRasterRenderer *rasterRenderer, const QgsRectangle &extent )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mDataProvider )
   {
     QgsSingleBandGrayRenderer *singleBandRenderer = nullptr;
@@ -1307,7 +1551,7 @@ void QgsRasterLayer::refreshRenderer( QgsRasterRenderer *rasterRenderer, const Q
       computeMinMax( sbpcr->band(),
                      rasterRenderer->minMaxOrigin(),
                      rasterRenderer->minMaxOrigin().limits(), extent,
-                     SAMPLE_SIZE, min, max );
+                     static_cast<int>( SAMPLE_SIZE ), min, max );
       sbpcr->setClassificationMin( min );
       sbpcr->setClassificationMax( max );
 
@@ -1347,7 +1591,7 @@ void QgsRasterLayer::refreshRenderer( QgsRasterRenderer *rasterRenderer, const Q
       setContrastEnhancement( ce->contrastEnhancementAlgorithm(),
                               rasterRenderer->minMaxOrigin().limits(),
                               extent,
-                              SAMPLE_SIZE,
+                              static_cast<int>( SAMPLE_SIZE ),
                               true,
                               rasterRenderer );
 
@@ -1378,6 +1622,8 @@ void QgsRasterLayer::refreshRenderer( QgsRasterRenderer *rasterRenderer, const Q
 
 QString QgsRasterLayer::subsetString() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( !isValid() || !mDataProvider )
   {
     QgsDebugMsgLevel( QStringLiteral( "invoked with invalid layer or null mDataProvider" ), 3 );
@@ -1392,6 +1638,8 @@ QString QgsRasterLayer::subsetString() const
 
 bool QgsRasterLayer::setSubsetString( const QString &subset )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( !isValid() || !mDataProvider )
   {
     QgsDebugMsgLevel( QStringLiteral( "invoked with invalid layer or null mDataProvider or while editing" ), 3 );
@@ -1426,6 +1674,8 @@ bool QgsRasterLayer::defaultContrastEnhancementSettings(
   QgsContrastEnhancement::ContrastEnhancementAlgorithm &myAlgorithm,
   QgsRasterMinMaxOrigin::Limits &myLimits ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   const QgsSettings mySettings;
 
   QString key;
@@ -1484,6 +1734,8 @@ bool QgsRasterLayer::defaultContrastEnhancementSettings(
 
 void QgsRasterLayer::setDefaultContrastEnhancement()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
 
   QgsContrastEnhancement::ContrastEnhancementAlgorithm myAlgorithm;
@@ -1495,6 +1747,8 @@ void QgsRasterLayer::setDefaultContrastEnhancement()
 
 void QgsRasterLayer::setLayerOrder( QStringList const &layers )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsDebugMsgLevel( QStringLiteral( "entered." ), 4 );
 
   if ( mDataProvider )
@@ -1507,17 +1761,19 @@ void QgsRasterLayer::setLayerOrder( QStringList const &layers )
 
 void QgsRasterLayer::setSubLayerVisibility( const QString &name, bool vis )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   if ( mDataProvider )
   {
     QgsDebugMsgLevel( QStringLiteral( "About to mDataProvider->setSubLayerVisibility(name, vis)." ), 4 );
     mDataProvider->setSubLayerVisibility( name, vis );
   }
-
 }
 
 QDateTime QgsRasterLayer::timestamp() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( !mDataProvider )
     return QDateTime();
   return mDataProvider->timestamp();
@@ -1525,6 +1781,8 @@ QDateTime QgsRasterLayer::timestamp() const
 
 bool QgsRasterLayer::accept( QgsStyleEntityVisitorInterface *visitor ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( auto *lRenderer = mPipe->renderer() )
   {
     if ( !lRenderer->accept( visitor ) )
@@ -1536,6 +1794,8 @@ bool QgsRasterLayer::accept( QgsStyleEntityVisitorInterface *visitor ) const
 
 bool QgsRasterLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QVariantMap &props ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   Q_UNUSED( errorMessage )
 
   QVariantMap localProps = QVariantMap( props );
@@ -1741,9 +2001,10 @@ bool QgsRasterLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &error
   return true;
 }
 
-
 void QgsRasterLayer::setRenderer( QgsRasterRenderer *renderer )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
   if ( !renderer )
   {
@@ -1757,26 +2018,36 @@ void QgsRasterLayer::setRenderer( QgsRasterRenderer *renderer )
 
 QgsRasterRenderer *QgsRasterLayer::renderer() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mPipe->renderer();
 }
 
 QgsRasterResampleFilter *QgsRasterLayer::resampleFilter() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mPipe->resampleFilter();
 }
 
 QgsBrightnessContrastFilter *QgsRasterLayer::brightnessFilter() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mPipe->brightnessFilter();
 }
 
 QgsHueSaturationFilter *QgsRasterLayer::hueSaturationFilter() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mPipe->hueSaturationFilter();
 }
 
 void QgsRasterLayer::showStatusMessage( QString const &message )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   // QgsDebugMsg(QString("entered with '%1'.").arg(theMessage));
 
   // Pass-through
@@ -1786,6 +2057,8 @@ void QgsRasterLayer::showStatusMessage( QString const &message )
 
 void QgsRasterLayer::setTransformContext( const QgsCoordinateTransformContext &transformContext )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( mDataProvider )
     mDataProvider->setTransformContext( transformContext );
   invalidateWgs84Extent();
@@ -1793,6 +2066,8 @@ void QgsRasterLayer::setTransformContext( const QgsCoordinateTransformContext &t
 
 QStringList QgsRasterLayer::subLayers() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( ! mDataProvider )
     return QStringList();
   return mDataProvider->subLayers();
@@ -1802,6 +2077,8 @@ QStringList QgsRasterLayer::subLayers() const
 // note: previewAsImage and previewAsPixmap should use a common low-level fct QgsRasterLayer::previewOnPaintDevice( QSize size, QColor bgColor, QPaintDevice &device )
 QImage QgsRasterLayer::previewAsImage( QSize size, const QColor &bgColor, QImage::Format format )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QImage image( size, format );
 
   if ( ! isValid( ) )
@@ -1859,19 +2136,11 @@ QImage QgsRasterLayer::previewAsImage( QSize size, const QColor &bgColor, QImage
   return image;
 }
 
-//////////////////////////////////////////////////////////
-//
-// Protected methods
-//
-/////////////////////////////////////////////////////////
-/*
- * \param QDomNode node that will contain the symbology definition for this layer.
- * \param errorMessage reference to string that will be updated with any error messages
- * \return TRUE in case of success.
- */
 bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMessage,
                                     QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   Q_UNUSED( errorMessage )
   // TODO: implement categories for raster layer
 
@@ -1977,12 +2246,15 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
   if ( !blendModeNode.isNull() )
   {
     const QDomElement e = blendModeNode.toElement();
-    setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( e.text().toInt() ) ) );
+    setBlendMode( QgsPainting::getCompositionMode( static_cast< Qgis::BlendMode >( e.text().toInt() ) ) );
   }
 
   const QDomElement elemDataDefinedProperties = layer_node.firstChildElement( QStringLiteral( "pipe-data-defined-properties" ) );
   if ( !elemDataDefinedProperties.isNull() )
     mPipe->dataDefinedProperties().readXml( elemDataDefinedProperties, QgsRasterPipe::propertyDefinitions() );
+
+  if ( categories.testFlag( MapTips ) )
+    setMapTipTemplate( layer_node.namedItem( QStringLiteral( "mapTip" ) ).toElement().text() );
 
   readCustomProperties( layer_node );
 
@@ -1994,11 +2266,15 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
 
 bool QgsRasterLayer::readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return readSymbology( node, errorMessage, context, categories );
 }
 
 bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &context )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
   // Make sure to read the file first so stats etc are initialized properly!
 
@@ -2069,6 +2345,10 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     {
       flags |= QgsDataProvider::FlagTrustDataSource;
     }
+    if ( mReadFlags & QgsMapLayer::FlagForceReadOnly )
+    {
+      flags |= QgsDataProvider::ForceReadOnly;
+    }
     // read extent
     if ( mReadFlags & QgsMapLayer::FlagReadExtentFromXml )
     {
@@ -2108,7 +2388,7 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
   // old wms settings we need to correct
   if ( res && mProviderKey == QLatin1String( "wms" ) && ( !renderer() || renderer()->type() != QLatin1String( "singlebandcolordata" ) ) )
   {
-    setRendererForDrawingStyle( QgsRaster::SingleBandColorDataStyle );
+    setRendererForDrawingStyle( Qgis::RasterDrawingStyle::SingleBandColorData );
   }
 
   // Check timestamp
@@ -2164,6 +2444,8 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     }
   }
 
+  readRasterAttributeTableExternalPaths( layer_node, context );
+
   readStyleManager( layer_node );
 
   return res;
@@ -2172,11 +2454,22 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
 bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &document, QString &errorMessage,
                                      const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   Q_UNUSED( errorMessage )
   // TODO: implement categories for raster layer
 
   QDomElement layerElement = layer_node.toElement();
   writeCommonStyle( layerElement, document, context, categories );
+
+  // save map tip
+  if ( categories.testFlag( MapTips ) )
+  {
+    QDomElement mapTipElem = document.createElement( QStringLiteral( "mapTip" ) );
+    QDomText mapTipText = document.createTextNode( mapTipTemplate() );
+    mapTipElem.appendChild( mapTipText );
+    layer_node.toElement().appendChild( mapTipElem );
+  }
 
   // Store pipe members into pipe element, in future, it will be
   // possible to add custom filters into the pipe
@@ -2209,7 +2502,7 @@ bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &documen
 
   // add blend mode node
   QDomElement blendModeElement  = document.createElement( QStringLiteral( "blendMode" ) );
-  const QDomText blendModeText = document.createTextNode( QString::number( QgsPainting::getBlendModeEnum( blendMode() ) ) );
+  const QDomText blendModeText = document.createTextNode( QString::number( static_cast< int >( QgsPainting::getBlendModeEnum( blendMode() ) ) ) );
   blendModeElement.appendChild( blendModeText );
   layer_node.appendChild( blendModeElement );
 
@@ -2219,17 +2512,17 @@ bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &documen
 bool QgsRasterLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage,
                                  const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
 {
-  return writeSymbology( node, doc, errorMessage, context, categories );
-} // bool QgsRasterLayer::writeSymbology
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-/*
- *  virtual
- *  \note Called by QgsMapLayer::writeXml().
- */
+  return writeSymbology( node, doc, errorMessage, context, categories );
+}
+
 bool QgsRasterLayer::writeXml( QDomNode &layer_node,
                                QDomDocument &document,
                                const QgsReadWriteContext &context ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( !mDataProvider )
     return false;
 
@@ -2279,6 +2572,9 @@ bool QgsRasterLayer::writeXml( QDomNode &layer_node,
     layer_node.appendChild( noData );
   }
 
+  // Store file-based raster attribute table paths (if any)
+  writeRasterAttributeTableExternalPaths( layer_node, document, context );
+
   writeStyleManager( layer_node, document );
 
   serverProperties()->writeXml( layer_node, document );
@@ -2313,9 +2609,10 @@ static bool _parseGpkgColons( const QString &src, QString &filename, QString &ta
   return false;
 }
 
-
 QString QgsRasterLayer::encodedSource( const QString &source, const QgsReadWriteContext &context ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QString src( source );
   bool handled = false;
 
@@ -2427,6 +2724,8 @@ QString QgsRasterLayer::encodedSource( const QString &source, const QgsReadWrite
 
 QString QgsRasterLayer::decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QString src( source );
 
   if ( provider == QLatin1String( "wms" ) )
@@ -2617,33 +2916,38 @@ QString QgsRasterLayer::decodedSource( const QString &source, const QString &pro
 
 int QgsRasterLayer::width() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( !mDataProvider ) return 0;
   return mDataProvider->xSize();
 }
 
 int QgsRasterLayer::height() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   if ( !mDataProvider ) return 0;
   return mDataProvider->ySize();
 }
 
 void QgsRasterLayer::setResamplingStage( Qgis::RasterResamplingStage stage )
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   mPipe->setResamplingStage( stage );
 }
 
 Qgis::RasterResamplingStage QgsRasterLayer::resamplingStage() const
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   return mPipe->resamplingStage();
 }
 
-//////////////////////////////////////////////////////////
-//
-// Private methods
-//
-/////////////////////////////////////////////////////////
 bool QgsRasterLayer::update()
 {
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
   QgsDebugMsgLevel( QStringLiteral( "entered." ), 4 );
   // Check if data changed
   if ( mDataProvider && mDataProvider->dataTimestamp() > mDataProvider->timestamp() )

@@ -14,33 +14,31 @@
  ***************************************************************************/
 
 #include "qgscameracontroller.h"
-#include "qgsraycastingutils_p.h"
 #include "qgsterrainentity_p.h"
 #include "qgsvector3d.h"
-#include "qgssettings.h"
 #include "qgs3dutils.h"
+#include "qgswindow3dengine.h"
+#include "qgs3dmapscene.h"
 
 #include "qgis.h"
 
 #include <QDomDocument>
 #include <Qt3DRender/QCamera>
-#include <Qt3DRender/QObjectPicker>
-#include <Qt3DRender/QPickEvent>
 #include <Qt3DInput>
 
 #include "qgslogger.h"
 
-QgsCameraController::QgsCameraController( Qt3DCore::QNode *parent )
-  : Qt3DCore::QEntity( parent )
+QgsCameraController::QgsCameraController( Qgs3DMapScene *scene )
+  : Qt3DCore::QEntity( scene )
+  , mScene( scene )
+  , mCamera( scene->engine()->camera() )
   , mCameraBeforeRotation( new Qt3DRender::QCamera )
   , mCameraBeforeDrag( new Qt3DRender::QCamera )
   , mCameraBeforeZoom( new Qt3DRender::QCamera )
-  , mMouseDevice( new Qt3DInput::QMouseDevice() )
-  , mKeyboardDevice( new Qt3DInput::QKeyboardDevice() )
   , mMouseHandler( new Qt3DInput::QMouseHandler )
   , mKeyboardHandler( new Qt3DInput::QKeyboardHandler )
 {
-  mMouseHandler->setSourceDevice( mMouseDevice );
+  mMouseHandler->setSourceDevice( new Qt3DInput::QMouseDevice() );
   connect( mMouseHandler, &Qt3DInput::QMouseHandler::positionChanged,
            this, &QgsCameraController::onPositionChanged );
   connect( mMouseHandler, &Qt3DInput::QMouseHandler::wheel,
@@ -51,7 +49,7 @@ QgsCameraController::QgsCameraController( Qt3DCore::QNode *parent )
            this, &QgsCameraController::onMouseReleased );
   addComponent( mMouseHandler );
 
-  mKeyboardHandler->setSourceDevice( mKeyboardDevice );
+  mKeyboardHandler->setSourceDevice( new Qt3DInput::QKeyboardDevice() );
   connect( mKeyboardHandler, &Qt3DInput::QKeyboardHandler::pressed,
            this, &QgsCameraController::onKeyPressed );
   connect( mKeyboardHandler, &Qt3DInput::QKeyboardHandler::released,
@@ -68,6 +66,12 @@ QgsCameraController::QgsCameraController( Qt3DCore::QNode *parent )
   mFpsNavTimer->setInterval( 10 );
   connect( mFpsNavTimer, &QTimer::timeout, this, &QgsCameraController::applyFlyModeKeyMovements );
   mFpsNavTimer->start();
+}
+
+QWindow *QgsCameraController::window() const
+{
+  QgsWindow3DEngine *windowEngine = qobject_cast<QgsWindow3DEngine *>( mScene->engine() );
+  return windowEngine ? windowEngine->window() : nullptr;
 }
 
 void QgsCameraController::setCameraNavigationMode( QgsCameraController::NavigationMode navigationMode )
@@ -92,36 +96,6 @@ void QgsCameraController::setCameraMovementSpeed( double movementSpeed )
 void QgsCameraController::setVerticalAxisInversion( QgsCameraController::VerticalAxisInversion inversion )
 {
   mVerticalAxisInversion = inversion;
-}
-
-void QgsCameraController::setTerrainEntity( QgsTerrainEntity *te )
-{
-  mTerrainEntity = te;
-  // object picker for terrain for correct map panning
-  if ( mTerrainEntity )
-    connect( te->terrainPicker(), &Qt3DRender::QObjectPicker::pressed, this, &QgsCameraController::onPickerMousePressed );
-}
-
-void QgsCameraController::setCamera( Qt3DRender::QCamera *camera )
-{
-  if ( mCamera == camera )
-    return;
-  mCamera = camera;
-
-  mCameraPose.updateCamera( mCamera ); // initial setup
-
-  // TODO: set camera's parent if not set already?
-  // TODO: registerDestructionHelper (?)
-  emit cameraChanged();
-}
-
-void QgsCameraController::setViewport( QRect viewport )
-{
-  if ( mViewport == viewport )
-    return;
-
-  mViewport = viewport;
-  emit viewportChanged();
 }
 
 void QgsCameraController::rotateCamera( float diffPitch, float diffYaw )
@@ -169,8 +143,9 @@ void QgsCameraController::resetView( float distance )
 void QgsCameraController::setViewFromTop( float worldX, float worldY, float distance, float yaw )
 {
   QgsCameraPose camPose;
-  if ( mTerrainEntity )
-    camPose.setCenterPoint( QgsVector3D( worldX, mTerrainEntity->terrainElevationOffset(), worldY ) );
+  QgsTerrainEntity *terrain = mScene->terrainEntity();
+  if ( terrain )
+    camPose.setCenterPoint( QgsVector3D( worldX, terrain->terrainElevationOffset(), worldY ) );
   else
     camPose.setCenterPoint( QgsVector3D( worldX, 0.0f, worldY ) );
   camPose.setDistanceFromCenterPoint( distance );
@@ -293,8 +268,6 @@ void QgsCameraController::moveCameraPositionBy( const QVector3D &posDiff )
 
 void QgsCameraController::onPositionChanged( Qt3DInput::QMouseEvent *mouse )
 {
-  mIsInZoomInState = false;
-  mCumulatedWheelY = 0;
   switch ( mCameraNavigationMode )
   {
     case TerrainBasedNavigation:
@@ -317,7 +290,7 @@ bool QgsCameraController::screenPointToWorldPos( QPoint position, Qt3DRender::QC
   }
   else
   {
-    worldPosition = Qgs3DUtils::screenPointToWorldPos( position, depth, mViewport.size(), cameraBefore );
+    worldPosition = Qgs3DUtils::screenPointToWorldPos( position, depth, mScene->engine()->size(), cameraBefore );
     if ( !std::isfinite( worldPosition.x() ) || !std::isfinite( worldPosition.y() ) || !std::isfinite( worldPosition.z() ) )
     {
       QgsDebugMsgLevel( QStringLiteral( "screenPointToWorldPos: position is NaN or Inf. This should not happen." ), 2 );
@@ -352,7 +325,7 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
   {
     // rotate/tilt using mouse (camera moves as it rotates around the clicked point)
 
-    double scale = std::max( mViewport.width(), mViewport.height() );
+    double scale = std::max( mScene->engine()->size().width(), mScene->engine()->size().height() );
     float pitchDiff = 180 * ( mouse->y() - mMiddleButtonClickPos.y() ) / scale;
     float yawDiff = -180 * ( mouse->x() - mMiddleButtonClickPos.x() ) / scale;
 
@@ -389,7 +362,7 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
 
     // Second transformation : Shift camera position back
     {
-      QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( QPoint( mMiddleButtonClickPos.x(), mMiddleButtonClickPos.y() ), mViewport.size(), mCamera );
+      QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( QPoint( mMiddleButtonClickPos.x(), mMiddleButtonClickPos.y() ), mScene->engine()->size(), mCamera );
 
       QVector3D clickedPositionWorld = ray.origin() + mRotationDistanceFromCenter * ray.direction();
 
@@ -432,7 +405,7 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
 
     QVector3D cameraBeforeDragPos = mCameraBeforeDrag->position();
 
-    QVector3D moveToPosition = Qgs3DUtils::screenPointToWorldPos( mMousePos, mDragDepth, mViewport.size(), mCameraBeforeDrag.get() );
+    QVector3D moveToPosition = Qgs3DUtils::screenPointToWorldPos( mMousePos, mDragDepth, mScene->engine()->size(), mCameraBeforeDrag.get() );
     QVector3D cameraBeforeToMoveToPos = ( moveToPosition - mCameraBeforeDrag->position() ).normalized();
     QVector3D cameraBeforeToDragPointPos = ( mDragPoint - mCameraBeforeDrag->position() ).normalized();
 
@@ -460,6 +433,15 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
     mCameraPose.setCenterPoint( mCameraBeforeDrag->viewCenter() + shiftVector );
     updateCameraFromPose();
   }
+  else if ( hasLeftButton && hasShift && hasCtrl )
+  {
+    // change the camera elevation, similar to pageUp/pageDown
+    QgsVector3D center = mCameraPose.centerPoint();
+    double tElev = mMousePos.y() - mouse->y();
+    center.set( center.x(), center.y() + tElev * 0.5, center.z() );
+    mCameraPose.setCenterPoint( center );
+    updateCameraFromPose();
+  }
   else if ( hasRightButton && !hasShift && !hasCtrl )
   {
     if ( !mDepthBufferIsReady )
@@ -478,17 +460,26 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
 
     float dist = ( mCameraBeforeDrag->position() - mDragPoint ).length();
 
+    int yOffset = 0;
+    int screenHeight = mScene->engine()->size().height();
+    QWindow *win = window();
+    if ( win )
+    {
+      yOffset = win->mapToGlobal( QPoint( 0, 0 ) ).y();
+      screenHeight = win->screen()->size().height();
+    }
+
     // Applies smoothing
     if ( mMousePos.y() > mDragButtonClickPos.y() ) // zoom in
     {
-      double f = ( double )( mMousePos.y() - mDragButtonClickPos.y() ) / ( double )( mViewport.height() - mDragButtonClickPos.y() );
+      double f = ( double )( mMousePos.y() - mDragButtonClickPos.y() ) / ( double )( screenHeight - mDragButtonClickPos.y() - yOffset );
       f = std::max( 0.0, std::min( 1.0, f ) );
       f = 1 - ( std::expm1( -2 * f ) ) / ( std::expm1( -2 ) );
       dist = dist * f;
     }
     else // zoom out
     {
-      double f = 1 - ( double )( mMousePos.y() ) / ( double )( mDragButtonClickPos.y() );
+      double f = 1 - ( double )( mMousePos.y() + yOffset ) / ( double )( mDragButtonClickPos.y() + yOffset );
       f = std::max( 0.0, std::min( 1.0, f ) );
       f = ( std::expm1( 2 * f ) ) / ( std::expm1( 2 ) );
       dist = dist + 2 * dist * f;
@@ -507,7 +498,7 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
 
     // Second transformation : Shift camera position back
     {
-      QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( QPoint( mDragButtonClickPos.x(), mDragButtonClickPos.y() ), mViewport.size(), mCamera );
+      QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( QPoint( mDragButtonClickPos.x(), mDragButtonClickPos.y() ), mScene->engine()->size(), mCamera );
       QVector3D clickedPositionWorld = ray.origin() + dist * ray.direction();
 
       QVector3D shiftVector = clickedPositionWorld - mCamera->viewCenter();
@@ -567,7 +558,7 @@ void QgsCameraController::handleTerrainNavigationWheelZoom()
 
   // Second transformation : Shift camera position back
   {
-    QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( QPoint( mMousePos.x(), mMousePos.y() ), mViewport.size(), mCamera );
+    QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( QPoint( mMousePos.x(), mMousePos.y() ), mScene->engine()->size(), mCamera );
     QVector3D clickedPositionWorld = ray.origin() + dist * ray.direction();
 
     QVector3D shiftVector = clickedPositionWorld - mCamera->viewCenter();
@@ -956,7 +947,7 @@ void QgsCameraController::onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent
     mIgnoreNextMouseMove = true;
 
     // reset cursor back to center of map widget
-    emit setCursorPosition( QPoint( mViewport.width() / 2, mViewport.height() / 2 ) );
+    emit setCursorPosition( QPoint( mScene->engine()->size().width() / 2, mScene->engine()->size().height() / 2 ) );
   }
 }
 
@@ -967,12 +958,6 @@ void QgsCameraController::onKeyReleased( Qt3DInput::QKeyEvent *event )
 
   mDepressedKeys.remove( event->key() );
 }
-
-void QgsCameraController::onPickerMousePressed( Qt3DRender::QPickEvent *pick )
-{
-  mLastPressedHeight = pick->worldIntersection().y();
-}
-
 
 void QgsCameraController::tiltUpAroundViewCenter( float deltaPitch )
 {

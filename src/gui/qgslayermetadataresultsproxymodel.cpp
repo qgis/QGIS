@@ -26,9 +26,21 @@ void QgsLayerMetadataResultsProxyModel::setFilterExtent( const QgsRectangle &ext
   invalidateFilter();
 }
 
+void QgsLayerMetadataResultsProxyModel::setFilterGeometryType( const QgsWkbTypes::GeometryType geometryType )
+{
+  mFilterGeometryType = geometryType;
+  invalidateFilter();
+}
+
 void QgsLayerMetadataResultsProxyModel::setFilterString( const QString &filterString )
 {
   mFilterString = filterString;
+  invalidateFilter();
+}
+
+void QgsLayerMetadataResultsProxyModel::setFilterMapLayerType( const QgsMapLayerType mapLayerType )
+{
+  mFilterMapLayerType = mapLayerType;
   invalidateFilter();
 }
 
@@ -36,13 +48,57 @@ bool QgsLayerMetadataResultsProxyModel::filterAcceptsRow( int sourceRow, const Q
 {
   QModelIndex index0 = sourceModel()->index( sourceRow, 0, sourceParent );
   bool result { QSortFilterProxyModel::filterAcceptsRow( sourceRow, sourceParent ) };
-  if ( result && ! mFilterString.isEmpty() )
+
+  if ( result )
   {
-    result = result && sourceModel()->data( index0, Qt::ItemDataRole::UserRole ).value<QgsLayerMetadataProviderResult>( ).contains( mFilterString );
+    const QgsLayerMetadataProviderResult &metadataResult { sourceModel()->data( index0, Qt::ItemDataRole::UserRole ).value<QgsLayerMetadataProviderResult>( ) };
+
+    if ( ! mFilterString.isEmpty() )
+    {
+      result = result && metadataResult.contains( mFilterString );
+    }
+
+    if ( result && ! mFilterExtent.isEmpty() )
+    {
+      // Exclude aspatial from extent filter
+      result = result && ( metadataResult.geometryType() != QgsWkbTypes::UnknownGeometry && metadataResult.geometryType() != QgsWkbTypes::NullGeometry ) && mFilterExtent.intersects( metadataResult.geographicExtent().boundingBox() );
+    }
+
+    if ( result && mFilterMapLayerTypeEnabled )
+    {
+      result = result && metadataResult.layerType() == mFilterMapLayerType;
+    }
+
+    if ( result && mFilterGeometryTypeEnabled )
+    {
+      if ( mFilterGeometryType == QgsWkbTypes::UnknownGeometry || mFilterGeometryType == QgsWkbTypes::NullGeometry )
+      {
+        result = result && ( metadataResult.geometryType() == QgsWkbTypes::UnknownGeometry || metadataResult.geometryType() == QgsWkbTypes::NullGeometry );
+      }
+      else
+      {
+        result = result &&  metadataResult.geometryType() == mFilterGeometryType;
+      }
+    }
   }
-  if ( result && ! mFilterExtent.isEmpty() )
-  {
-    result = result && mFilterExtent.intersects( sourceModel()->data( index0, Qt::ItemDataRole::UserRole ).value<QgsLayerMetadataProviderResult>( ).geographicExtent().boundingBox() );
-  }
+
   return result;
 }
+
+void QgsLayerMetadataResultsProxyModel::setFilterMapLayerTypeEnabled( bool enabled )
+{
+  mFilterMapLayerTypeEnabled = enabled;
+  invalidateFilter();
+}
+
+void QgsLayerMetadataResultsProxyModel::setFilterGeometryTypeEnabled( bool enabled )
+{
+  mFilterGeometryTypeEnabled = enabled;
+  invalidateFilter();
+}
+
+const QString QgsLayerMetadataResultsProxyModel::filterString() const
+{
+  return mFilterString;
+}
+

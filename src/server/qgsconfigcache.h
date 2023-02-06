@@ -117,6 +117,12 @@ class SERVER_EXPORT QgsConfigCache : public QObject
      */
     QString strategyName() const { return mStrategy->name(); }
 
+    /**
+     * Returns projects currently in cache.
+     * \since QGIS 3.30
+     */
+    QList<QgsProject *> projects() const;
+
   public:
     //! Initialize from settings
     QgsConfigCache( QgsServerSettings *settings );

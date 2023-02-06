@@ -179,6 +179,7 @@ class CORE_EXPORT QgsSimpleFillSymbolLayer : public QgsFillSymbolLayer
     Qt::PenStyle dxfPenStyle() const override;
     QColor dxfBrushColor( QgsSymbolRenderContext &context ) const override;
     Qt::BrushStyle dxfBrushStyle() const override;
+    QImage toTiledPatternImage( ) const override;
 
   protected:
     QBrush mBrush;
@@ -200,6 +201,7 @@ class CORE_EXPORT QgsSimpleFillSymbolLayer : public QgsFillSymbolLayer
   private:
     //helper functions for data defined symbology
     void applyDataDefinedSymbology( QgsSymbolRenderContext &context, QBrush &brush, QPen &pen, QPen &selPen );
+
 };
 
 class QgsColorRamp;
@@ -894,6 +896,13 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
 
     /**
+     * Creates a new QgsRasterFillSymbolLayer from a SLD \a element. The caller takes
+     * ownership of the returned object.
+     * \since QGIS 3.30
+     */
+    static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
+
+    /**
      * Turns relative paths in properties map to absolute when reading and vice versa when writing.
      * Used internally when reading/writing symbols.
      * \since QGIS 3.0
@@ -1417,6 +1426,7 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     QVariantMap properties() const override;
     QgsLinePatternFillSymbolLayer *clone() const override SIP_FACTORY;
     void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override;
+    QImage toTiledPatternImage( ) const override;
     double estimateMaxBleed( const QgsRenderContext &context ) const override;
 
     QString ogrFeatureStyleWidth( double widthScaleFactor ) const;
@@ -1688,6 +1698,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     QVariantMap properties() const override;
     QgsPointPatternFillSymbolLayer *clone() const override SIP_FACTORY;
     void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override;
+    QImage toTiledPatternImage( ) const override;
     double estimateMaxBleed( const QgsRenderContext &context ) const override;
     bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
     QgsSymbol *subSymbol() override;

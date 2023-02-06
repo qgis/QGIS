@@ -20,6 +20,7 @@
 #include "qgsdemterraingenerator.h"
 #include "qgsmeshterraingenerator.h"
 #include "qgsonlineterraingenerator.h"
+#include "qgsprojectviewsettings.h"
 #include "qgsvectorlayer3drenderer.h"
 #include "qgsmeshlayer3drenderer.h"
 #include "qgspointcloudlayer3drenderer.h"
@@ -94,6 +95,7 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mRendererUsage( other.mRendererUsage )
   , m3dAxisSettings( other.m3dAxisSettings )
   , mIsDebugOverlayEnabled( other.mIsDebugOverlayEnabled )
+  , mExtent( other.mExtent )
 {
   for ( QgsAbstract3DRenderer *renderer : std::as_const( other.mRenderers ) )
   {
@@ -127,6 +129,20 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
               elemOrigin.attribute( QStringLiteral( "x" ) ).toDouble(),
               elemOrigin.attribute( QStringLiteral( "y" ) ).toDouble(),
               elemOrigin.attribute( QStringLiteral( "z" ) ).toDouble() );
+
+  QDomElement elemExtent = elem.firstChildElement( QStringLiteral( "extent" ) );
+  if ( !elemExtent.isNull() )
+  {
+    mExtent = QgsRectangle(
+                elemExtent.attribute( QStringLiteral( "xMin" ) ).toDouble(),
+                elemExtent.attribute( QStringLiteral( "yMin" ) ).toDouble(),
+                elemExtent.attribute( QStringLiteral( "xMax" ) ).toDouble(),
+                elemExtent.attribute( QStringLiteral( "yMax" ) ).toDouble() );
+  }
+  else
+  {
+    mExtent = QgsProject::instance()->viewSettings()->fullExtent();
+  }
 
   QDomElement elemCamera = elem.firstChildElement( QStringLiteral( "camera" ) );
   if ( !elemCamera.isNull() )
@@ -340,6 +356,13 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elemOrigin.setAttribute( QStringLiteral( "z" ), QString::number( mOrigin.z() ) );
   elem.appendChild( elemOrigin );
 
+  QDomElement elemExtent = doc.createElement( QStringLiteral( "extent" ) );
+  elemExtent.setAttribute( QStringLiteral( "xMin" ), mExtent.xMinimum() );
+  elemExtent.setAttribute( QStringLiteral( "yMin" ), mExtent.yMinimum() );
+  elemExtent.setAttribute( QStringLiteral( "xMax" ), mExtent.xMaximum() );
+  elemExtent.setAttribute( QStringLiteral( "yMax" ), mExtent.yMaximum() );
+  elem.appendChild( elemExtent );
+
   QDomElement elemCamera = doc.createElement( QStringLiteral( "camera" ) );
   elemCamera.setAttribute( QStringLiteral( "field-of-view" ), mFieldOfView );
   elemCamera.setAttribute( QStringLiteral( "projection-type" ), static_cast< int >( mProjectionType ) );
@@ -484,6 +507,35 @@ void Qgs3DMapSettings::resolveReferences( const QgsProject &project )
   }
 }
 
+void Qgs3DMapSettings::setExtent( const QgsRectangle &extent )
+{
+  if ( extent == mExtent )
+    return;
+
+  mExtent = extent;
+  const QgsPointXY center = mExtent.center();
+  setOrigin( QgsVector3D( center.x(), center.y(), 0 ) );
+  if ( mTerrainGenerator )
+  {
+    QgsRectangle terrainExtent = mExtent;
+    if ( mCrs != mTerrainGenerator->crs() )
+    {
+      QgsCoordinateTransform ct = QgsCoordinateTransform( mCrs, mTerrainGenerator->crs(), mTransformContext );
+      ct.setBallparkTransformsAreAppropriate( true );
+      try
+      {
+        terrainExtent = ct.transformBoundingBox( mExtent );
+      }
+      catch ( const QgsCsException & )
+      {
+        QgsDebugMsg( QStringLiteral( "Transformation of map extent to terrain crs failed." ) );
+      }
+    }
+    mTerrainGenerator->setExtent( terrainExtent );
+  }
+  emit extentChanged();
+}
+
 QgsVector3D Qgs3DMapSettings::mapToWorldCoordinates( const QgsVector3D &mapCoords ) const
 {
   return Qgs3DUtils::mapToWorldCoordinates( mapCoords, mOrigin );
@@ -581,11 +633,11 @@ QList<QgsMapLayer *> Qgs3DMapSettings::layers() const
 
 void Qgs3DMapSettings::configureTerrainFromProject( QgsProjectElevationProperties *properties, const QgsRectangle &fullExtent )
 {
+  setExtent( fullExtent );
   if ( properties->terrainProvider()->type() == QLatin1String( "flat" ) )
   {
     QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
     flatTerrain->setCrs( crs() );
-    flatTerrain->setExtent( fullExtent );
     setTerrainGenerator( flatTerrain );
 
     setTerrainElevationOffset( properties->terrainProvider()->offset() );
@@ -621,7 +673,6 @@ void Qgs3DMapSettings::configureTerrainFromProject( QgsProjectElevationPropertie
   {
     QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
     flatTerrain->setCrs( crs() );
-    flatTerrain->setExtent( fullExtent );
     setTerrainGenerator( flatTerrain );
   }
 }
@@ -680,12 +731,25 @@ void Qgs3DMapSettings::setTerrainGenerator( QgsTerrainGenerator *gen )
 {
   if ( mTerrainGenerator )
   {
-    disconnect( mTerrainGenerator.get(), &QgsTerrainGenerator::extentChanged, this, &Qgs3DMapSettings::terrainGeneratorChanged );
     disconnect( mTerrainGenerator.get(), &QgsTerrainGenerator::terrainChanged, this, &Qgs3DMapSettings::terrainGeneratorChanged );
   }
 
+  QgsRectangle terrainExtent = mExtent;
+  if ( mCrs != gen->crs() )
+  {
+    QgsCoordinateTransform ct = QgsCoordinateTransform( mCrs, gen->crs(), mTransformContext );
+    ct.setBallparkTransformsAreAppropriate( true );
+    try
+    {
+      terrainExtent = ct.transformBoundingBox( mExtent );
+    }
+    catch ( const QgsCsException & )
+    {
+      QgsDebugMsg( QStringLiteral( "Transformation of map extent to terrain crs failed." ) );
+    }
+  }
+  gen->setExtent( terrainExtent );
   mTerrainGenerator.reset( gen );
-  connect( mTerrainGenerator.get(), &QgsTerrainGenerator::extentChanged, this, &Qgs3DMapSettings::terrainGeneratorChanged );
   connect( mTerrainGenerator.get(), &QgsTerrainGenerator::terrainChanged, this, &Qgs3DMapSettings::terrainGeneratorChanged );
 
   emit terrainGeneratorChanged();
@@ -974,6 +1038,7 @@ void Qgs3DMapSettings::connectChangedSignalsToSettingsChanged()
   connect( this, &Qgs3DMapSettings::fpsCounterEnabledChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::axisSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::ambientOcclusionSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::extentChanged, this, &Qgs3DMapSettings::settingsChanged );
 }
 
 

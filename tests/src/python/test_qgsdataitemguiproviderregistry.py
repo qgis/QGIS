@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsDataItemGuiProviderRegistry
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -12,11 +11,13 @@ __copyright__ = 'Copyright 2018, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.gui import (QgsGui,
-                      QgsDataItemGuiContext,
-                      QgsDataItemGuiProvider,
-                      QgsDataItemGuiProviderRegistry,
-                      QgsMessageBar)
+from qgis.gui import (
+    QgsDataItemGuiContext,
+    QgsDataItemGuiProvider,
+    QgsDataItemGuiProviderRegistry,
+    QgsGui,
+    QgsMessageBar,
+)
 from qgis.testing import start_app, unittest
 
 app = start_app()

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for SIP binding coverage.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,19 +10,19 @@ __date__ = '15/10/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import os
-from qgis.testing import unittest
-
-from utilities import printImportant
-from doxygen_parser import DoxygenParser
-
-from termcolor import colored
 
 # Import all the things!
-from qgis.analysis import *         # NOQA
-from qgis.core import *             # NOQA
-from qgis.gui import *              # NOQA
+from qgis.analysis import *  # NOQA
+from qgis.core import *  # NOQA
+from qgis.gui import *  # NOQA
+from qgis.testing import unittest
+from termcolor import colored
+from utilities import printImportant
+
+from doxygen_parser import DoxygenParser
+
 try:
-    from qgis.server import *       # NOQA
+    from qgis.server import *  # NOQA
 except:
     pass
 
@@ -37,7 +36,7 @@ class TestQgsSipCoverage(unittest.TestCase):
         parser = DoxygenParser(docPath)
 
         # first look for objects without any bindings
-        objects = set([m[0] for m in parser.bindable_members])
+        objects = {m[0] for m in parser.bindable_members}
         missing_objects = []
         bound_objects = {}
         for o in objects:
@@ -72,20 +71,20 @@ class TestQgsSipCoverage(unittest.TestCase):
                     if m[1] in dir(obj):
                         continue
                 except:
-                    printImportant("SIP coverage test: something strange happened in {}.{}, obj={}".format(m[0], m[1], obj))
+                    printImportant(f"SIP coverage test: something strange happened in {m[0]}.{m[1]}, obj={obj}")
 
-                missing_members.append('{}.{}'.format(m[0], m[1]))
+                missing_members.append(f'{m[0]}.{m[1]}')
 
         missing_members.sort()
 
         if missing_objects:
             print("---------------------------------")
-            print((colored('Missing classes:', 'yellow')))
-            print(('  ' + '\n  '.join([colored(obj, 'yellow', attrs=['bold']) for obj in missing_objects])))
+            print(colored('Missing classes:', 'yellow'))
+            print('  ' + '\n  '.join([colored(obj, 'yellow', attrs=['bold']) for obj in missing_objects]))
         if missing_members:
             print("---------------------------------")
-            print((colored('Missing members:', 'yellow')))
-            print(('  ' + '\n  '.join([colored(mem, 'yellow', attrs=['bold']) for mem in missing_members])))
+            print(colored('Missing members:', 'yellow'))
+            print('  ' + '\n  '.join([colored(mem, 'yellow', attrs=['bold']) for mem in missing_members]))
 
         # print summaries
         missing_class_count = len(missing_objects)
@@ -93,11 +92,11 @@ class TestQgsSipCoverage(unittest.TestCase):
         coverage = 100.0 * present_count / len(objects)
 
         print("---------------------------------")
-        printImportant("{} total bindable classes".format(len(objects)))
-        printImportant("{} total have bindings".format(present_count))
-        printImportant("Binding coverage by classes {}%".format(coverage))
+        printImportant(f"{len(objects)} total bindable classes")
+        printImportant(f"{present_count} total have bindings")
+        printImportant(f"Binding coverage by classes {coverage}%")
         printImportant("---------------------------------")
-        printImportant("{} classes missing bindings".format(missing_class_count))
+        printImportant(f"{missing_class_count} classes missing bindings")
         print("---------------------------------")
 
         missing_member_count = len(missing_members)
@@ -105,11 +104,11 @@ class TestQgsSipCoverage(unittest.TestCase):
         coverage = 100.0 * present_count / len(parser.bindable_members)
 
         print("---------------------------------")
-        printImportant("{} total bindable members".format(len(parser.bindable_members)))
-        printImportant("{} total have bindings".format(present_count))
-        printImportant("Binding coverage by members {}%".format(coverage))
+        printImportant(f"{len(parser.bindable_members)} total bindable members")
+        printImportant(f"{present_count} total have bindings")
+        printImportant(f"Binding coverage by members {coverage}%")
         printImportant("---------------------------------")
-        printImportant("{} members missing bindings".format(missing_member_count))
+        printImportant(f"{missing_member_count} members missing bindings")
 
         self.assertEqual(missing_class_count, 0, """\n\nFAIL: new unbound classes have been introduced, please add SIP bindings for these classes
 If these classes are not suitable for the Python bindings, please add the Doxygen tag

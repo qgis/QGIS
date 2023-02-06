@@ -14,8 +14,8 @@
  ***************************************************************************/
 
 #include "qgschunkloader_p.h"
-
 #include "qgschunknode_p.h"
+
 #include <QVector>
 ///@cond PRIVATE
 
@@ -23,11 +23,12 @@ QgsQuadtreeChunkLoaderFactory::QgsQuadtreeChunkLoaderFactory() = default;
 
 QgsQuadtreeChunkLoaderFactory::~QgsQuadtreeChunkLoaderFactory() = default;
 
-void QgsQuadtreeChunkLoaderFactory::setupQuadtree( const QgsAABB &rootBbox, float rootError, int maxLevel )
+void QgsQuadtreeChunkLoaderFactory::setupQuadtree( const QgsAABB &rootBbox, float rootError, int maxLevel, const QgsAABB &clippingBbox )
 {
   mRootBbox = rootBbox;
   mRootError = rootError;
   mMaxLevel = maxLevel;
+  mClippingBbox = clippingBbox;
 }
 
 QgsChunkNode *QgsQuadtreeChunkLoaderFactory::createRootNode() const
@@ -60,7 +61,9 @@ QVector<QgsChunkNode *> QgsQuadtreeChunkLoaderFactory::createChildren( QgsChunkN
     const float chZMax = dy ? bbox.zMax : zc;
     const float chYMin = bbox.yMin;
     const float chYMax = bbox.yMax;
-    children << new QgsChunkNode( childId, QgsAABB( chXMin, chYMin, chZMin, chXMax, chYMax, chZMax ), childError, node );
+    const QgsAABB childBbox = QgsAABB( chXMin, chYMin, chZMin, chXMax, chYMax, chZMax );
+    if ( mClippingBbox.isEmpty() || childBbox.intersects( mClippingBbox ) )
+      children << new QgsChunkNode( childId, childBbox, childError, node );
   }
   return children;
 }

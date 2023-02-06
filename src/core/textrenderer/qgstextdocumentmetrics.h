@@ -22,6 +22,7 @@
 
 #include <QVector>
 #include <QSizeF>
+#include <QRectF>
 
 class QgsTextDocument;
 class QgsRenderContext;
@@ -53,9 +54,27 @@ class CORE_EXPORT QgsTextDocumentMetrics
     static QgsTextDocumentMetrics calculateMetrics( const QgsTextDocument &document, const QgsTextFormat &format, const QgsRenderContext &context, double scaleFactor = 1.0 );
 
     /**
+     * Returns TRUE if the metrics could not be calculated because the text format has a null font size.
+     *
+     * \since QGIS 3.30
+     */
+    bool isNullFontSize() const { return mIsNullSize; }
+
+    /**
      * Returns the overall size of the document.
      */
     QSizeF documentSize( Qgis::TextLayoutMode mode, Qgis::TextOrientation orientation ) const;
+
+    /**
+     * Returns the outer bounds of the document, which is the documentSize() adjusted to account
+     * for any text elements which fall outside of the usual document margins (such as super or
+     * sub script elements)
+     *
+     * \warning Currently this is only supported for the Qgis::TextLayoutMode::Labeling mode.
+     *
+     * \since QGIS 3.30
+     */
+    QRectF outerBounds( Qgis::TextLayoutMode mode, Qgis::TextOrientation orientation ) const;
 
     /**
      * Returns the width of the block at the specified index.
@@ -68,9 +87,31 @@ class CORE_EXPORT QgsTextDocumentMetrics
     double blockHeight( int blockIndex ) const;
 
     /**
+     * Returns the cap height for the first line of text.
+     *
+     * \since QGIS 3.30
+     */
+    double firstLineCapHeight() const;
+
+    /**
      * Returns the offset from the top of the document to the text baseline for the given block index.
      */
     double baselineOffset( int blockIndex, Qgis::TextLayoutMode mode ) const;
+
+    /**
+     * Returns the horizontal advance of the fragment at the specified block and fragment index.
+     *
+     * \since QGIS 3.30
+     */
+    double fragmentHorizontalAdvance( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode mode ) const;
+
+    /**
+     * Returns the vertical offset from a text block's baseline which should be applied
+     * to the fragment at the specified index within that block.
+     *
+     * \since QGIS 3.30
+     */
+    double fragmentVerticalOffset( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode mode ) const;
 
     /**
      * Returns the vertical orientation x offset for the specified block.
@@ -99,9 +140,15 @@ class CORE_EXPORT QgsTextDocumentMetrics
 
   private:
 
+    bool mIsNullSize = false;
+
     QSizeF mDocumentSizeLabelMode;
     QSizeF mDocumentSizePointRectMode;
     QSizeF mDocumentSizeVerticalOrientation;
+    QSizeF mDocumentSizeCapHeightMode;
+    QSizeF mDocumentSizeAscentMode;
+
+    QRectF mOuterBoundsLabelMode;
 
     QList < QList< QFont > > mFragmentFonts;
     QList< double > mBlockWidths;
@@ -109,11 +156,21 @@ class CORE_EXPORT QgsTextDocumentMetrics
     QList< double > mBaselineOffsetsLabelMode;
     QList< double > mBaselineOffsetsPointMode;
     QList< double > mBaselineOffsetsRectMode;
+    QList< double > mBaselineOffsetsCapHeightMode;
+    QList< double > mBaselineOffsetsAscentBased;
+
+    QList< QList< double > > mFragmentHorizontalAdvance;
+
+    QList< QList< double > > mFragmentVerticalOffsetsLabelMode;
+    QList< QList< double > > mFragmentVerticalOffsetsPointMode;
+    QList< QList< double > > mFragmentVerticalOffsetsRectMode;
+
     QList< double > mVerticalOrientationXOffsets;
     QList< double > mBlockMaxDescent;
     QList< double > mBlockMaxCharacterWidth;
     double mFirstLineAscentOffset = 0;
     double mLastLineAscentOffset = 0;
+    double mFirstLineCapHeight = 0;
 
 };
 

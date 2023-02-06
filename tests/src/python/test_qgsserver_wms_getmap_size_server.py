@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer MaxHeight and MaxWidth Override Options.
 
 From build dir, run: ctest -R PyQgsServerWMSGetMapSizeServer -V
@@ -25,7 +24,6 @@ import os
 os.environ['QT_HASH_SEED'] = '1'
 
 from qgis.testing import unittest
-
 from test_qgsserver import QgsServerTestBase
 from test_qgsserver_wms_getmap_size_project import make_request
 
@@ -44,7 +42,7 @@ class TestQgsServerWMSGetMapSizeServer(QgsServerTestBase):
 
     def setUp(self):
         self.project = os.path.join(self.testdata_path, "test_project_with_size.qgs")
-        self.expected_too_big = self.strip_version_xmlns(b'<ServiceExceptionReport version="1.3.0" xmlns="http://www.opengis.net/ogc">\n <ServiceException code="InvalidParameterValue">The requested map size is too large</ServiceException>\n</ServiceExceptionReport>\n')
+        self.expected_too_big = self.strip_version_xmlns(b'<?xml version="1.0" encoding="UTF-8"?>\n<ServiceExceptionReport version="1.3.0" xmlns="http://www.opengis.net/ogc">\n <ServiceException code="InvalidParameterValue">The requested map size is too large</ServiceException>\n</ServiceExceptionReport>\n')
 
     def test_wms_getmap_invalid_size_server(self):
         # test the 3000 limit from server is overriding the less conservative 5000 in the project

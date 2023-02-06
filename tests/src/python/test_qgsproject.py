@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsProject.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -6,50 +5,47 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-from builtins import chr
-from builtins import range
 
 __author__ = 'Sebastian Dietrich'
 __date__ = '19/11/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
+import codecs
 import os
 import re
-from osgeo import ogr
-import codecs
 from io import BytesIO
-from zipfile import ZipFile
+from shutil import copyfile
 from tempfile import TemporaryDirectory
+from zipfile import ZipFile
 
 import qgis  # NOQA
-
-from qgis.core import (Qgis,
-                       QgsProject,
-                       QgsCoordinateTransformContext,
-                       QgsProjectDirtyBlocker,
-                       QgsApplication,
-                       QgsUnitTypes,
-                       QgsCoordinateReferenceSystem,
-                       QgsLabelingEngineSettings,
-                       QgsVectorLayer,
-                       QgsRasterLayer,
-                       QgsMapLayer,
-                       QgsExpressionContextUtils,
-                       QgsProjectColorScheme,
-                       QgsSettings,
-                       QgsFeature,
-                       QgsGeometry)
-from qgis.gui import (QgsLayerTreeMapCanvasBridge,
-                      QgsMapCanvas)
-
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtCore import QT_VERSION_STR, QTemporaryDir, QTemporaryFile
-from qgis.PyQt.QtGui import QColor
+from osgeo import ogr
 from qgis.PyQt import sip
-
+from qgis.PyQt.QtCore import QT_VERSION_STR, QTemporaryDir
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.core import (
+    Qgis,
+    QgsApplication,
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransformContext,
+    QgsDataProvider,
+    QgsExpressionContextUtils,
+    QgsFeature,
+    QgsGeometry,
+    QgsLabelingEngineSettings,
+    QgsMapLayer,
+    QgsProject,
+    QgsProjectColorScheme,
+    QgsProjectDirtyBlocker,
+    QgsRasterLayer,
+    QgsSettings,
+    QgsUnitTypes,
+    QgsVectorLayer,
+)
 from qgis.testing import start_app, unittest
-from utilities import (unitTestDataPath)
-from shutil import copyfile
+
+from utilities import unitTestDataPath
 
 app = start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -133,13 +129,13 @@ class TestQgsProject(unittest.TestCase):
         for token in validTokens:
             self.messageCaught = False
             prj.readEntry("test", token)
-            myMessage = "valid token '%s' not accepted" % (token)
+            myMessage = f"valid token '{token}' not accepted"
             assert not self.messageCaught, myMessage
 
         for token in invalidTokens:
             self.messageCaught = False
             prj.readEntry("test", token)
-            myMessage = "invalid token '%s' accepted" % (token)
+            myMessage = f"invalid token '{token}' accepted"
             assert self.messageCaught, myMessage
 
         logger.messageReceived.disconnect(self.catchMessage)
@@ -323,7 +319,7 @@ class TestQgsProject(unittest.TestCase):
 
         l1 = createLayer('test')
         l2 = createLayer('test2')
-        self.assertEqual(set(QgsProject.instance().addMapLayers([l1, l2])), set([l1, l2]))
+        self.assertEqual(set(QgsProject.instance().addMapLayers([l1, l2])), {l1, l2})
         self.assertEqual(len(QgsProject.instance().mapLayersByName('test')), 1)
         self.assertEqual(len(QgsProject.instance().mapLayersByName('test2')), 1)
         self.assertEqual(QgsProject.instance().count(), 2)
@@ -331,7 +327,7 @@ class TestQgsProject(unittest.TestCase):
         # adding more layers should leave existing layers intact
         l3 = createLayer('test3')
         l4 = createLayer('test4')
-        self.assertEqual(set(QgsProject.instance().addMapLayers([l3, l4])), set([l3, l4]))
+        self.assertEqual(set(QgsProject.instance().addMapLayers([l3, l4])), {l3, l4})
         self.assertEqual(len(QgsProject.instance().mapLayersByName('test')), 1)
         self.assertEqual(len(QgsProject.instance().mapLayersByName('test2')), 1)
         self.assertEqual(len(QgsProject.instance().mapLayersByName('test3')), 1)
@@ -437,7 +433,7 @@ class TestQgsProject(unittest.TestCase):
         # duplicate name
         l3 = createLayer('test')
         p.addMapLayer(l3)
-        self.assertEqual(set(p.mapLayersByName('test')), set([l1, l3]))
+        self.assertEqual(set(p.mapLayersByName('test')), {l1, l3})
 
     def test_mapLayers(self):
         """ test retrieving map layers list """
@@ -736,7 +732,7 @@ class TestQgsProject(unittest.TestCase):
 
     def test_zip_new_project(self):
         tmpDir = QTemporaryDir()
-        tmpFile = "{}/project.qgz".format(tmpDir.path())
+        tmpFile = f"{tmpDir.path()}/project.qgz"
 
         # zip with existing file
         open(tmpFile, 'a').close()
@@ -759,7 +755,7 @@ class TestQgsProject(unittest.TestCase):
 
     def test_zip_filename(self):
         tmpDir = QTemporaryDir()
-        tmpFile = "{}/project.qgz".format(tmpDir.path())
+        tmpFile = f"{tmpDir.path()}/project.qgz"
 
         project = QgsProject()
         self.assertFalse(project.write())
@@ -776,7 +772,7 @@ class TestQgsProject(unittest.TestCase):
 
     def test_zip_unzip(self):
         tmpDir = QTemporaryDir()
-        tmpFile = "{}/project.qgz".format(tmpDir.path())
+        tmpFile = f"{tmpDir.path()}/project.qgz"
 
         project = QgsProject()
 
@@ -827,7 +823,7 @@ class TestQgsProject(unittest.TestCase):
         self.assertEqual(len(project.snappingConfig().individualLayerSettings()), 3)
 
         tmpDir = QTemporaryDir()
-        tmpFile = "{}/project_snap.qgs".format(tmpDir.path())
+        tmpFile = f"{tmpDir.path()}/project_snap.qgs"
         self.assertTrue(project.write(tmpFile))
 
         # only ONE signal!
@@ -853,7 +849,7 @@ class TestQgsProject(unittest.TestCase):
         Test whether paths to layer sources are stored as relative to the project path
         """
         tmpDir = QTemporaryDir()
-        tmpFile = "{}/project.qgs".format(tmpDir.path())
+        tmpFile = f"{tmpDir.path()}/project.qgs"
         copyfile(os.path.join(TEST_DATA_DIR, "points.shp"), os.path.join(tmpDir.path(), "points.shp"))
         copyfile(os.path.join(TEST_DATA_DIR, "points.dbf"), os.path.join(tmpDir.path(), "points.dbf"))
         copyfile(os.path.join(TEST_DATA_DIR, "points.shx"), os.path.join(tmpDir.path(), "points.shx"))
@@ -874,7 +870,7 @@ class TestQgsProject(unittest.TestCase):
         self.assertTrue(project.write(tmpFile))
         del project
 
-        with open(tmpFile, 'r') as f:
+        with open(tmpFile) as f:
             content = ''.join(f.readlines())
             self.assertTrue('source="./lines.shp"' in content)
             self.assertTrue('source="./points.shp"' in content)
@@ -884,16 +880,16 @@ class TestQgsProject(unittest.TestCase):
         project = QgsProject()
         self.assertTrue(project.read(tmpFile))
         store = project.layerStore()
-        self.assertEqual(set([l.name() for l in store.mapLayers().values()]), set(['lines', 'landsat', 'points']))
+        self.assertEqual({l.name() for l in store.mapLayers().values()}, {'lines', 'landsat', 'points'})
         project.writeEntryBool('Paths', '/Absolute', True)
-        tmpFile2 = "{}/project2.qgs".format(tmpDir.path())
+        tmpFile2 = f"{tmpDir.path()}/project2.qgs"
         self.assertTrue(project.write(tmpFile2))
 
-        with open(tmpFile2, 'r') as f:
+        with open(tmpFile2) as f:
             content = ''.join(f.readlines())
-            self.assertTrue('source="{}/lines.shp"'.format(tmpDir.path()) in content)
-            self.assertTrue('source="{}/points.shp"'.format(tmpDir.path()) in content)
-            self.assertTrue('source="{}/landsat_4326.tif"'.format(tmpDir.path()) in content)
+            self.assertTrue(f'source="{tmpDir.path()}/lines.shp"' in content)
+            self.assertTrue(f'source="{tmpDir.path()}/points.shp"' in content)
+            self.assertTrue(f'source="{tmpDir.path()}/landsat_4326.tif"' in content)
 
         del project
 
@@ -925,7 +921,7 @@ class TestQgsProject(unittest.TestCase):
             self.assertTrue(project.addMapLayers([l]))
             self.assertEqual(project.count(), 1)
             # Project URI
-            uri = 'geopackage://{}?projectName=relative_project'.format(path)
+            uri = f'geopackage://{path}?projectName=relative_project'
             project.setFileName(uri)
             self.assertTrue(project.write())
             # Verify
@@ -946,7 +942,7 @@ class TestQgsProject(unittest.TestCase):
                 del d
                 # Verify moved
                 project = QgsProject()
-                uri2 = 'geopackage://{}?projectName=relative_project'.format(path2)
+                uri2 = f'geopackage://{path2}?projectName=relative_project'
                 self.assertTrue(project.read(uri2))
 
                 _check_datasource(path2)
@@ -962,7 +958,7 @@ class TestQgsProject(unittest.TestCase):
         In other words, test if project's and layers' names are correctly resolved.
         """
         tmpDir = QTemporaryDir()
-        tmpFile = "{}/project.qgs".format(tmpDir.path())
+        tmpFile = f"{tmpDir.path()}/project.qgs"
         copyfile(os.path.join(TEST_DATA_DIR, "points.shp"), os.path.join(tmpDir.path(), "points.shp"))
         copyfile(os.path.join(TEST_DATA_DIR, "points.dbf"), os.path.join(tmpDir.path(), "points.dbf"))
         copyfile(os.path.join(TEST_DATA_DIR, "points.shx"), os.path.join(tmpDir.path(), "points.shx"))
@@ -987,7 +983,7 @@ class TestQgsProject(unittest.TestCase):
         tmpDir2 = QTemporaryDir()
         symlinkDir = os.path.join(tmpDir2.path(), "dir")
         os.symlink(tmpDir.path(), symlinkDir)
-        tmpFile = "{}/project.qgs".format(symlinkDir)
+        tmpFile = f"{symlinkDir}/project.qgs"
 
         # Open project from symmlink and force re-save.
         project = QgsProject()
@@ -995,7 +991,7 @@ class TestQgsProject(unittest.TestCase):
         self.assertTrue(project.write(tmpFile))
         del project
 
-        with open(tmpFile, 'r') as f:
+        with open(tmpFile) as f:
             content = ''.join(f.readlines())
             self.assertTrue('source="./lines.shp"' in content)
             self.assertTrue('source="./points.shp"' in content)
@@ -1009,7 +1005,7 @@ class TestQgsProject(unittest.TestCase):
 
         # simulate save file
         tmp_dir = QTemporaryDir()
-        tmp_file = "{}/project.qgs".format(tmp_dir.path())
+        tmp_file = f"{tmp_dir.path()}/project.qgs"
         with open(tmp_file, 'w') as f:
             pass
         p.setFileName(tmp_file)
@@ -1035,7 +1031,7 @@ class TestQgsProject(unittest.TestCase):
         self.assertEqual(len(path_changed_spy), 2)
 
         # setting file name should not affect home path is manually set
-        tmp_file_2 = "{}/project/project2.qgs".format(tmp_dir.path())
+        tmp_file_2 = f"{tmp_dir.path()}/project/project2.qgs"
         os.mkdir(tmp_dir.path() + '/project')
         with open(tmp_file_2, 'w') as f:
             pass
@@ -1184,7 +1180,7 @@ class TestQgsProject(unittest.TestCase):
 
     def testPalPropertiesReadWrite(self):
         tmpDir = QTemporaryDir()
-        tmpFile = "{}/project.qgs".format(tmpDir.path())
+        tmpFile = f"{tmpDir.path()}/project.qgs"
 
         s0 = QgsLabelingEngineSettings()
         s0.setMaximumLineCandidatesPerCm(33)
@@ -1223,8 +1219,8 @@ class TestQgsProject(unittest.TestCase):
 
     def testProjectTitleWithPeriod(self):
         tmpDir = QTemporaryDir()
-        tmpFile = "{}/2.18.21.qgs".format(tmpDir.path())
-        tmpFile2 = "{}/qgis-3.2.0.qgs".format(tmpDir.path())
+        tmpFile = f"{tmpDir.path()}/2.18.21.qgs"
+        tmpFile2 = f"{tmpDir.path()}/qgis-3.2.0.qgs"
 
         p0 = QgsProject()
         p0.setFileName(tmpFile)
@@ -1238,7 +1234,7 @@ class TestQgsProject(unittest.TestCase):
     def testWriteEntry(self):
 
         tmpDir = QTemporaryDir()
-        tmpFile = "{}/project.qgs".format(tmpDir.path())
+        tmpFile = f"{tmpDir.path()}/project.qgs"
 
         # zip with existing file
         project = QgsProject()
@@ -1366,7 +1362,7 @@ class TestQgsProject(unittest.TestCase):
             copyfile(os.path.join(TEST_DATA_DIR, 'projects', 'relative_paths_gh30387.gpkg'), path)
             project = QgsProject.instance()
             # Project URI
-            uri = 'geopackage://{}?projectName=relative_project'.format(path)
+            uri = f'geopackage://{path}?projectName=relative_project'
             project.setFileName(uri)
             self.assertTrue(project.write())
             # Verify
@@ -1530,7 +1526,7 @@ class TestQgsProject(unittest.TestCase):
         layer_c.startEditing()
 
         tmp_dir = QTemporaryDir()
-        tmp_project_file = "{}/project.qgs".format(tmp_dir.path())
+        tmp_project_file = f"{tmp_dir.path()}/project.qgs"
         self.assertTrue(project.write(tmp_project_file))
 
         # project did NOT have remember editable layers flag set, so layers should NOT be editable
@@ -1543,7 +1539,7 @@ class TestQgsProject(unittest.TestCase):
 
         # set remember edits status flag
         project.setFlag(Qgis.ProjectFlag.RememberLayerEditStatusBetweenSessions)
-        tmp_project_file2 = "{}/project2.qgs".format(tmp_dir.path())
+        tmp_project_file2 = f"{tmp_dir.path()}/project2.qgs"
         self.assertTrue(project.write(tmp_project_file2))
 
         project3 = QgsProject()
@@ -1556,7 +1552,7 @@ class TestQgsProject(unittest.TestCase):
 
         # turn off flag and re-save project
         project3.setFlag(Qgis.ProjectFlag.RememberLayerEditStatusBetweenSessions, False)
-        tmp_project_file3 = "{}/project2.qgs".format(tmp_dir.path())
+        tmp_project_file3 = f"{tmp_dir.path()}/project2.qgs"
         self.assertTrue(project3.write(tmp_project_file3))
 
         project4 = QgsProject()
@@ -1565,6 +1561,35 @@ class TestQgsProject(unittest.TestCase):
         self.assertFalse(project4.mapLayer(layer_a.id()).isEditable())
         self.assertFalse(project4.mapLayer(layer_b.id()).isEditable())
         self.assertFalse(project4.mapLayer(layer_c.id()).isEditable())
+
+    def test_remember_evaluate_default_values(self):
+        """
+        Test that EvaluateDefaultValues property is correctly set when loading project
+        """
+
+        project = QgsProject()
+
+        layer = QgsVectorLayer('Point?crs=epsg:4326&field=int:integer&field=int2:integer', 'test', 'memory')
+
+        project.addMapLayers([layer])
+
+        self.assertEqual(layer.dataProvider().providerProperty(QgsDataProvider.EvaluateDefaultValues, None), None)
+        project.setFlags(project.flags() | Qgis.ProjectFlag.EvaluateDefaultValuesOnProviderSide)
+        self.assertTrue(project.flags() & Qgis.ProjectFlag.EvaluateDefaultValuesOnProviderSide)
+        self.assertEqual(layer.dataProvider().providerProperty(QgsDataProvider.EvaluateDefaultValues, None), True)
+
+        tmp_dir = QTemporaryDir()
+        tmp_project_file = f"{tmp_dir.path()}/project.qgs"
+        self.assertTrue(project.write(tmp_project_file))
+
+        project2 = QgsProject()
+        self.assertTrue(project2.read(tmp_project_file))
+
+        layers = list(project2.mapLayers().values())
+        self.assertEqual(len(layers), 1)
+
+        self.assertTrue(project2.flags() & Qgis.ProjectFlag.EvaluateDefaultValuesOnProviderSide)
+        self.assertEqual(layers[0].dataProvider().providerProperty(QgsDataProvider.EvaluateDefaultValues, None), True)
 
 
 if __name__ == '__main__':

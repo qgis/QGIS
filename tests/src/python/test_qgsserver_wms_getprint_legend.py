@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer WMS GetPrint legend.
 
 From build dir, run: ctest -R PyQgsServerWMSGetPrintLegend -V
@@ -20,13 +19,11 @@ import shutil
 # Needed on Qt 5 so that the serialization of XML is consistent among all executions
 os.environ['QT_HASH_SEED'] = '1'
 
-from qgis.testing import unittest
-from qgis.server import QgsBufferServerRequest, QgsBufferServerResponse
 from qgis.core import QgsProject
 from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.PyQt.QtGui import QImage
-
-
+from qgis.server import QgsBufferServerRequest, QgsBufferServerResponse
+from qgis.testing import unittest
 from test_qgsserver import QgsServerTestBase
 from utilities import unitTestDataPath
 

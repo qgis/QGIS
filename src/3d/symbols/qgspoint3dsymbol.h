@@ -66,15 +66,15 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCTOR
     //! Sets method that determines altitude (whether to clamp to feature to terrain)
     void setAltitudeClamping( Qgis::AltitudeClamping altClamping ) { mAltClamping = altClamping; }
 
-    //! Returns material used for shading of the symbol
-    QgsAbstractMaterialSettings *material() const;
+    //! Returns material settings used for shading of the symbol
+    QgsAbstractMaterialSettings *materialSettings() const;
 
     /**
      * Sets the \a material settings used for shading of the symbol.
      *
      * Ownership of \a material is transferred to the symbol.
      */
-    void setMaterial( QgsAbstractMaterialSettings *material SIP_TRANSFER );
+    void setMaterialSettings( QgsAbstractMaterialSettings *materialSettings SIP_TRANSFER );
 
     //! 3D shape types supported by the symbol
     enum Shape
@@ -127,7 +127,7 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCTOR
     //! how to handle altitude of vector features
     Qgis::AltitudeClamping mAltClamping = Qgis::AltitudeClamping::Relative;
 
-    std::unique_ptr< QgsAbstractMaterialSettings> mMaterial;  //!< Defines appearance of objects
+    std::unique_ptr< QgsAbstractMaterialSettings> mMaterialSettings;  //!< Defines appearance of objects
     Shape mShape = Cylinder;  //!< What kind of shape to use
     QVariantMap mShapeProperties;  //!< Key-value dictionary of shape's properties (different keys for each shape)
     QMatrix4x4 mTransform;  //!< Transform of individual instanced models

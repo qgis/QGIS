@@ -1,4 +1,3 @@
-# coding=utf-8
 """"Test for ogr layer metadata provider
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -15,14 +14,14 @@ __copyright__ = 'Copyright 2022, ItOpen'
 import os
 import shutil
 
-from qgis.core import (
-    QgsVectorLayer,
-    QgsProviderRegistry,
-)
-
 from qgis.PyQt.QtCore import QTemporaryDir
+from qgis.core import QgsProviderRegistry, QgsVectorLayer
 from qgis.testing import unittest
-from qgslayermetadataprovidertestbase import LayerMetadataProviderTestBase, TEST_DATA_DIR
+
+from qgslayermetadataprovidertestbase import (
+    TEST_DATA_DIR,
+    LayerMetadataProviderTestBase,
+)
 
 
 class TestPostgresLayerMetadataProvider(unittest.TestCase, LayerMetadataProviderTestBase):
@@ -33,7 +32,7 @@ class TestPostgresLayerMetadataProvider(unittest.TestCase, LayerMetadataProvider
 
     def getLayer(self) -> QgsVectorLayer:
 
-        return QgsVectorLayer('{}|layername=geopackage'.format(self.getConnectionUri()), "someData", 'ogr')
+        return QgsVectorLayer(f'{self.getConnectionUri()}|layername=geopackage', "someData", 'ogr')
 
     def getConnectionUri(self) -> str:
 

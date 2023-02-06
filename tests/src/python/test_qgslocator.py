@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLocator.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,22 +9,22 @@ __author__ = '(C) 2017 by Nyall Dawson'
 __date__ = '6/05/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
-
-import os
-
-from qgis.core import (QgsLocator,
-                       QgsLocatorFilter,
-                       QgsLocatorContext,
-                       QgsLocatorResult,
-                       QgsLocatorModel,
-                       QgsLocatorProxyModel,
-                       QgsLocatorAutomaticModel,
-                       QgsSettings)
-from qgis.PyQt.QtCore import QVariant, pyqtSignal, QCoreApplication
 from time import sleep
-from qgis.testing import start_app, unittest
+
+import qgis  # NOQA
 from qgis.PyQt import sip
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.core import (
+    QgsLocator,
+    QgsLocatorAutomaticModel,
+    QgsLocatorContext,
+    QgsLocatorFilter,
+    QgsLocatorModel,
+    QgsLocatorProxyModel,
+    QgsLocatorResult,
+    QgsSettings,
+)
+from qgis.testing import start_app, unittest
 
 start_app()
 
@@ -314,7 +313,7 @@ class TestQgsLocator(unittest.TestCase):
         l.deregisterFilter(filter_c)
 
         # filter with custom prefix
-        QgsSettings().setValue("locator_filters/prefix_test_custom", 'xyz', QgsSettings.Gui)
+        QgsSettings().setValue("locator-filters/items/test_custom/prefix", 'xyz')
         filter_c = test_filter('custom', 'abc')
         l.registerFilter(filter_c)
         self.assertEqual(filter_c.prefix(), 'abc')

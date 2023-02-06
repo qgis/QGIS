@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for Postgres QgsQueryResultModel.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -14,16 +13,21 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import os
-from time import sleep
+
+from qgis.PyQt.QtCore import (
+    QCoreApplication,
+    QModelIndex,
+    Qt,
+    QTimer,
+    QVariant,
+)
+from qgis.PyQt.QtTest import QAbstractItemModelTester
+from qgis.PyQt.QtWidgets import QDialog, QLabel, QListView, QVBoxLayout
 from qgis.core import (
     QgsProviderRegistry,
     QgsQueryResultModel,
-    QgsAbstractDatabaseProviderConnection,
 )
-from qgis.testing import unittest, start_app
-from qgis.PyQt.QtCore import QCoreApplication, QVariant, Qt, QTimer, QModelIndex
-from qgis.PyQt.QtWidgets import QListView, QDialog, QVBoxLayout, QLabel
-from qgis.PyQt.QtTest import QAbstractItemModelTester
+from qgis.testing import start_app, unittest
 
 
 class TestPyQgsQgsQueryResultModel(unittest.TestCase):
@@ -49,7 +53,7 @@ class TestPyQgsQgsQueryResultModel(unittest.TestCase):
         md = QgsProviderRegistry.instance().providerMetadata('postgres')
         conn = md.createConnection(cls.uri, {})
         conn.executeSql('DROP TABLE IF EXISTS qgis_test.random_big_data CASCADE;')
-        conn.executeSql('SELECT * INTO qgis_test.random_big_data FROM ( SELECT x AS id, md5(random()::text) AS descr FROM generate_series(1,%s) x ) AS foo_row;' % cls.NUM_RECORDS)
+        conn.executeSql(f'SELECT * INTO qgis_test.random_big_data FROM ( SELECT x AS id, md5(random()::text) AS descr FROM generate_series(1,{cls.NUM_RECORDS}) x ) AS foo_row;')
 
     @classmethod
     def tearDownClass(cls):
@@ -141,7 +145,7 @@ class TestPyQgsQgsQueryResultModel(unittest.TestCase):
         v.setModel(model)
 
         def _set_row_count(idx, first, last):
-            lbl.setText('Rows %s fetched' % model.rowCount(model.index(-1, -1)))  # noqa: F821
+            lbl.setText(f'Rows {model.rowCount(model.index(-1, -1))} fetched')  # noqa: F821
 
         model.rowsInserted.connect(_set_row_count)
 

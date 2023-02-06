@@ -401,6 +401,24 @@ Adds an individual ``link`` to the existing links.
 .. seealso:: :py:func:`setLinks`
 %End
 
+    QDateTime dateTime( Qgis::MetadataDateType type ) const;
+%Docstring
+Returns the date for the specified date ``type``.
+
+.. seealso:: :py:func:`setDateTime`
+
+.. versionadded:: 3.30
+%End
+
+    void setDateTime( Qgis::MetadataDateType type, QDateTime date );
+%Docstring
+Sets a date value for the specified date ``type``.
+
+.. seealso:: :py:func:`dateTime`
+
+.. versionadded:: 3.30
+%End
+
     virtual bool readMetadataXml( const QDomElement &metadataElement );
 %Docstring
 Sets state from DOM document.
@@ -443,6 +461,7 @@ Constructor for QgsAbstractMetadataBase.
 
 QgsAbstractMetadataBase cannot be instantiated directly, it must be subclassed.
 %End
+
 
 
 

@@ -127,6 +127,7 @@ Base class for processing filters like renderers, reprojector, resampler etc.
 #include <qgssinglebandcolordatarenderer.h>
 #include <qgssinglebandgrayrenderer.h>
 #include <qgssinglebandpseudocolorrenderer.h>
+#include <qgsrastercontourrenderer.h>
 %End
 %ConvertToSubClassCode
     if ( dynamic_cast<QgsBrightnessContrastFilter *>( sipCpp ) )
@@ -158,6 +159,8 @@ Base class for processing filters like renderers, reprojector, resampler etc.
         sipType = sipType_QgsSingleBandGrayRenderer;
       else if ( dynamic_cast<QgsSingleBandPseudoColorRenderer *>( sipCpp ) )
         sipType = sipType_QgsSingleBandPseudoColorRenderer;
+      else if ( dynamic_cast<QgsRasterContourRenderer *>( sipCpp ) )
+        sipType = sipType_QgsRasterContourRenderer;
       else
         sipType = sipType_QgsRasterRenderer;
     }

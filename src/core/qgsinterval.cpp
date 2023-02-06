@@ -37,6 +37,14 @@ QgsInterval::QgsInterval( double seconds )
 {
 }
 
+QgsInterval::QgsInterval( std::chrono::milliseconds milliseconds )
+  : mSeconds( static_cast<double>( milliseconds.count() ) / 1000.0 )
+  , mValid( true )
+  , mOriginalDuration( static_cast<double>( milliseconds.count() ) )
+  , mOriginalUnit( QgsUnitTypes::TemporalMilliseconds )
+{
+}
+
 QgsInterval::QgsInterval( double duration, QgsUnitTypes::TemporalUnit unit )
   : mSeconds( duration * QgsUnitTypes::fromUnitToUnitFactor( unit, QgsUnitTypes::TemporalSeconds ) )
   , mValid( true )
@@ -296,11 +304,15 @@ QDebug operator<<( QDebug dbg, const QgsInterval &interval )
   return dbg.maybeSpace();
 }
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
+
 QgsInterval operator-( const QDateTime &dt1, const QDateTime &dt2 )
 {
   const qint64 mSeconds = dt2.msecsTo( dt1 );
   return QgsInterval( mSeconds / 1000.0 );
 }
+
+#endif
 
 QDateTime operator+( const QDateTime &start, const QgsInterval &interval )
 {
@@ -318,3 +330,4 @@ QgsInterval operator-( QTime time1, QTime time2 )
   const qint64 mSeconds = time2.msecsTo( time1 );
   return QgsInterval( mSeconds / 1000.0 );
 }
+

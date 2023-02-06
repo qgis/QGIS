@@ -37,6 +37,8 @@ static bool _palIsCanceled( void *ctx )
   return ( reinterpret_cast< QgsRenderContext * >( ctx ) )->renderingStopped();
 }
 
+///@cond PRIVATE
+
 /**
  * \ingroup core
  * \class QgsLabelSorter
@@ -46,8 +48,8 @@ class QgsLabelSorter
 {
   public:
 
-    explicit QgsLabelSorter( const QgsMapSettings &mapSettings )
-      : mMapSettings( mapSettings )
+    explicit QgsLabelSorter( const QStringList &layerRenderingOrderIds )
+      : mLayerRenderingOrderIds( layerRenderingOrderIds )
     {}
 
     bool operator()( pal::LabelPosition *lp1, pal::LabelPosition *lp2 ) const
@@ -59,9 +61,8 @@ class QgsLabelSorter
         return lf1->zIndex() < lf2->zIndex();
 
       //equal z-index, so fallback to respecting layer render order
-      QStringList layerIds = mMapSettings.layerIds();
-      int layer1Pos = layerIds.indexOf( lf1->provider()->layerId() );
-      int layer2Pos = layerIds.indexOf( lf2->provider()->layerId() );
+      int layer1Pos = mLayerRenderingOrderIds.indexOf( lf1->provider()->layerId() );
+      int layer2Pos = mLayerRenderingOrderIds.indexOf( lf2->provider()->layerId() );
       if ( layer1Pos != layer2Pos && layer1Pos >= 0 && layer2Pos >= 0 )
         return layer1Pos > layer2Pos; //higher positions are rendered first
 
@@ -71,8 +72,10 @@ class QgsLabelSorter
 
   private:
 
-    const QgsMapSettings &mMapSettings;
+    const QStringList mLayerRenderingOrderIds;
 };
+
+///@endcond
 
 //
 // QgsLabelingEngine
@@ -91,6 +94,7 @@ QgsLabelingEngine::~QgsLabelingEngine()
 void QgsLabelingEngine::setMapSettings( const QgsMapSettings &mapSettings )
 {
   mMapSettings = mapSettings;
+  mLayerRenderingOrderIds = mMapSettings.layerIds();
   if ( mResults )
     mResults->setMapSettings( mapSettings );
 }
@@ -265,7 +269,7 @@ void QgsLabelingEngine::registerLabels( QgsRenderContext &context )
   mPal->setMaximumLineCandidatesPerMapUnit( settings.maximumLineCandidatesPerCm() / context.convertToMapUnits( 10, QgsUnitTypes::RenderMillimeters ) );
   mPal->setMaximumPolygonCandidatesPerMapUnitSquared( settings.maximumPolygonCandidatesPerCmSquared() / std::pow( context.convertToMapUnits( 10, QgsUnitTypes::RenderMillimeters ), 2 ) );
 
-  mPal->setShowPartialLabels( settings.testFlag( QgsLabelingEngineSettings::UsePartialCandidates ) );
+  mPal->setShowPartialLabels( settings.testFlag( Qgis::LabelingFlag::UsePartialCandidates ) );
   mPal->setPlacementVersion( settings.placementVersion() );
 
   // for each provider: get labels and register them in PAL
@@ -318,7 +322,7 @@ void QgsLabelingEngine::solve( QgsRenderContext &context )
     mapBoundaryGeom = mapBoundaryGeom.difference( region.geometry );
   }
 
-  if ( settings.flags() & QgsLabelingEngineSettings::DrawCandidates )
+  if ( settings.flags() & Qgis::LabelingFlag::DrawCandidates )
   {
     // draw map boundary
     QgsFeature f;
@@ -382,7 +386,7 @@ void QgsLabelingEngine::solve( QgsRenderContext &context )
   // this is done before actual solution of the problem
   // before number of candidates gets reduced
   // TODO mCandidates.clear();
-  if ( settings.testFlag( QgsLabelingEngineSettings::DrawCandidates ) && mProblem )
+  if ( settings.testFlag( Qgis::LabelingFlag::DrawCandidates ) && mProblem )
   {
     painter->setBrush( Qt::NoBrush );
     for ( int i = 0; i < static_cast< int >( mProblem->featureCount() ); i++ )
@@ -398,11 +402,12 @@ void QgsLabelingEngine::solve( QgsRenderContext &context )
 
   // find the solution
   mLabels = mPal->solveProblem( mProblem.get(), context,
-                                settings.testFlag( QgsLabelingEngineSettings::UseAllLabels ),
-                                settings.testFlag( QgsLabelingEngineSettings::DrawUnplacedLabels ) || settings.testFlag( QgsLabelingEngineSettings::CollectUnplacedLabels ) ? &mUnlabeled : nullptr );
+                                settings.testFlag( Qgis::LabelingFlag::UseAllLabels ),
+                                settings.testFlag( Qgis::LabelingFlag::DrawUnplacedLabels )
+                                || settings.testFlag( Qgis::LabelingFlag::CollectUnplacedLabels ) ? &mUnlabeled : nullptr );
 
   // sort labels
-  std::sort( mLabels.begin(), mLabels.end(), QgsLabelSorter( mMapSettings ) );
+  std::sort( mLabels.begin(), mLabels.end(), QgsLabelSorter( mLayerRenderingOrderIds ) );
 
   QgsDebugMsgLevel( QStringLiteral( "LABELING work:  %1 ms ... labels# %2" ).arg( t.elapsed() ).arg( mLabels.size() ), 4 );
 }
@@ -490,7 +495,7 @@ void QgsLabelingEngine::drawLabels( QgsRenderContext &context, const QString &la
   }
 
   // draw unplaced labels. These are always rendered on top
-  if ( settings.testFlag( QgsLabelingEngineSettings::DrawUnplacedLabels ) || settings.testFlag( QgsLabelingEngineSettings::CollectUnplacedLabels ) )
+  if ( settings.testFlag( Qgis::LabelingFlag::DrawUnplacedLabels ) || settings.testFlag( Qgis::LabelingFlag::CollectUnplacedLabels ) )
   {
     for ( pal::LabelPosition *label : std::as_const( mUnlabeled ) )
     {

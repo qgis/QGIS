@@ -36,6 +36,11 @@ QgsSingleBandColorDataRenderer *QgsSingleBandColorDataRenderer::clone() const
   return renderer;
 }
 
+Qgis::RasterRendererFlags QgsSingleBandColorDataRenderer::flags() const
+{
+  return Qgis::RasterRendererFlag::InternalLayerOpacityHandling;
+}
+
 QgsRasterRenderer *QgsSingleBandColorDataRenderer::create( const QDomElement &elem, QgsRasterInterface *input )
 {
   if ( elem.isNull() )

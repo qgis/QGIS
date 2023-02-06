@@ -141,10 +141,16 @@ void TestQgsSettingsEntry::flagValue()
   // Make sure the setting is not existing
   QgsSettings().remove( settingsKey );
 
-  const QgsSettingsEntryEnumFlag settingsEntryFlag( settingsKey, mSettingsSection, pointAndLine, QStringLiteral( "Filters" ) );
+  const QgsSettingsEntryEnumFlag settingsEntryFlag( settingsKey, mSettingsSection, QgsMapLayerProxyModel::Filters(), QStringLiteral( "Filters" ) );
 
   // Check default value
-  QCOMPARE( settingsEntryFlag.defaultValue(), pointAndLine );
+  QCOMPARE( settingsEntryFlag.defaultValue(), QgsMapLayerProxyModel::Filters() );
+
+  // check no value
+  QCOMPARE( settingsEntryFlag.exists(), false );
+  QCOMPARE( settingsEntryFlag.value(), QgsMapLayerProxyModel::Filters() );
+
+  QCOMPARE( settingsEntryFlag.valueWithDefaultOverride( pointAndLine ), pointAndLine );
 
   // Check set value
   {

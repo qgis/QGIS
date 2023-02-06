@@ -17,6 +17,7 @@
 
 #include "qgswmtsutils.h"
 #include "qgswmtsparameters.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsserverprojectutils.h"
 
 #include "qgsproject.h"
@@ -26,6 +27,7 @@
 #include "qgssettings.h"
 #include "qgsprojectviewsettings.h"
 #include "qgscoordinatetransform.h"
+#include "qgssettingsentryimpl.h"
 
 namespace QgsWmts
 {
@@ -196,7 +198,7 @@ namespace QgsWmts
 
     // default scales
     const QgsSettings settings;
-    const QStringList scaleList = settings.value( QStringLiteral( "Map/scales" ), Qgis::defaultProjectScales() ).toString().split( ',' );
+    const QStringList scaleList = QgsSettingsRegistryCore::settingsMapScales->value();
     //load project scales
     const bool useProjectScales = project->viewSettings()->useProjectScales();
     const QVector< double >projectScales = project->viewSettings()->mapScales();

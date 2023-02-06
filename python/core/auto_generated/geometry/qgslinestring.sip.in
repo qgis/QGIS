@@ -363,7 +363,8 @@ corresponds to the last point in the line.
 
 
 
-    double zAt( int index ) const;
+    virtual double zAt( int index ) const;
+
 %Docstring
 Returns the z-coordinate of the specified node in the line string.
 
@@ -391,7 +392,8 @@ corresponds to the last point in the line.
 %End
 
 
-    double mAt( int index ) const;
+    virtual double mAt( int index ) const;
+
 %Docstring
 Returns the m-coordinate of the specified node in the line string.
 
@@ -705,6 +707,16 @@ of the curve.
 
 
     virtual void sumUpArea( double &sum /Out/ ) const;
+
+%Docstring
+Calculates the shoelace/triangle formula sum for the points in the linestring.
+If the linestring is closed (i.e. a polygon) then the polygon area is equal to the absolute value of the sum.
+Please note that the sum will be negative if the points are defined in clockwise order.
+Therefore, if you want to use the sum as an area (as the method name indicates) then you probably should use the absolute value,
+since otherwise a bug can be introduced (such as the bug fixed for github issue 49578)
+
+.. seealso:: :py:func:`https`
+%End
 
     virtual double vertexAngle( QgsVertexId vertex ) const;
 

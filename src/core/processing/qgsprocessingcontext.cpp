@@ -31,6 +31,7 @@ QgsProcessingContext::QgsProcessingContext()
       mFeedback->reportError( QObject::tr( "Encountered a transform error when reprojecting feature with id %1." ).arg( feature.id() ) );
   };
   mTransformErrorCallback = callback;
+  mExpressionContext.setLoadedLayerStore( &tempLayerStore );
 }
 
 QgsProcessingContext::~QgsProcessingContext()
@@ -39,6 +40,13 @@ QgsProcessingContext::~QgsProcessingContext()
   {
     delete it.value().postProcessor();
   }
+}
+
+void QgsProcessingContext::setExpressionContext( const QgsExpressionContext &context )
+{
+  mExpressionContext = context;
+  // any layers temporarily loaded by expressions should use the same temporary layer store as this context
+  mExpressionContext.setLoadedLayerStore( &tempLayerStore );
 }
 
 void QgsProcessingContext::setLayersToLoadOnCompletion( const QMap<QString, QgsProcessingContext::LayerDetails> &layers )
@@ -156,6 +164,22 @@ QVariantMap QgsProcessingContext::exportToMap() const
 
 QStringList QgsProcessingContext::asQgisProcessArguments( QgsProcessingContext::ProcessArgumentFlags flags ) const
 {
+  auto escapeIfNeeded = []( const QString & input ) -> QString
+  {
+    // play it safe and escape everything UNLESS it's purely alphanumeric characters (and a very select scattering of other common characters!)
+    const thread_local QRegularExpression nonAlphaNumericRx( QStringLiteral( "[^a-zA-Z0-9.\\-/_]" ) );
+    if ( nonAlphaNumericRx.match( input ).hasMatch() )
+    {
+      QString escaped = input;
+      escaped.replace( '\'', QLatin1String( "'\\''" ) );
+      return QStringLiteral( "'%1'" ).arg( escaped );
+    }
+    else
+    {
+      return input;
+    }
+  };
+
   QStringList res;
   if ( mDistanceUnit != QgsUnitTypes::DistanceUnknownUnit )
     res << QStringLiteral( "--distance_units=%1" ).arg( QgsUnitTypes::encodeUnit( mDistanceUnit ) );
@@ -166,7 +190,7 @@ QStringList QgsProcessingContext::asQgisProcessArguments( QgsProcessingContext::
 
   if ( mProject && flags & ProcessArgumentFlag::IncludeProjectPath )
   {
-    res << QStringLiteral( "--project_path=%1" ).arg( mProject->fileName() );
+    res << QStringLiteral( "--project_path=%1" ).arg( escapeIfNeeded( mProject->fileName() ) );
   }
 
   return res;
@@ -230,7 +254,7 @@ void QgsProcessingContext::LayerDetails::setOutputLayerName( QgsMapLayer *layer 
   if ( !layer )
     return;
 
-  const bool preferFilenameAsLayerName = QgsProcessing::settingsPreferFilenameAsLayerName.value();
+  const bool preferFilenameAsLayerName = QgsProcessing::settingsPreferFilenameAsLayerName->value();
 
   // note - for temporary layers, we don't use the filename, regardless of user setting (it will be meaningless!)
   if ( ( !forceName && preferFilenameAsLayerName && !layer->isTemporary() ) || name.isEmpty() )

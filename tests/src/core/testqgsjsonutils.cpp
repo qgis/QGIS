@@ -44,6 +44,7 @@ class TestQgsJsonUtils : public QObject
     void testExportAttributesJson_data();
     void testExportAttributesJson();
     void testExportFeatureJson();
+    void testExportFeatureJsonCrs();
     void testExportGeomToJson();
 };
 
@@ -242,6 +243,32 @@ void TestQgsJsonUtils::testExportFeatureJson()
 
   feature.setId( 123 );
   const auto jPrecision( exporterPrecision.exportFeatureToJsonObject( feature ) );
+  QCOMPARE( QString::fromStdString( jPrecision.dump() ),  expectedJsonPrecision );
+  const auto jsonPrecision { exporterPrecision.exportFeature( feature ) };
+  QCOMPARE( jsonPrecision, expectedJsonPrecision );
+
+}
+
+void TestQgsJsonUtils::testExportFeatureJsonCrs()
+{
+  QgsVectorLayer vl { QStringLiteral( "Polygon?field=fldtxt:string&field=fldint:integer&field=flddbl:double" ), QStringLiteral( "mem" ), QStringLiteral( "memory" ) };
+  QgsFeature feature { vl.fields() };
+  feature.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POLYGON((1.12 1.34,5.45 1.12,5.34 5.33,1.56 5.2,1.12 1.34),(2 2, 3 2, 3 3, 2 3,2 2))" ) ) );
+  feature.setAttributes( QgsAttributes() << QStringLiteral( "a value" ) << 1 << 2.0 );
+
+  QgsJsonExporter exporterPrecision { &vl, 1 };
+  exporterPrecision.setDestinationCrs( QgsCoordinateReferenceSystem( "EPSG:3857" ) );
+
+
+  const auto expectedJsonPrecision { QStringLiteral( "{\"bbox\":[124677.8,124685.8,606691.2,594190.5],\"geometry\":"
+                                     "{\"coordinates\":[[[124677.8,149181.7],[606691.2,124685.8],[594446.1,594190.5],[173658.4,579657.7],"
+                                     "[124677.8,149181.7]],[[222639.0,222684.2],[333958.5,222684.2],[333958.5,334111.2],[222639.0,334111.2],"
+                                     "[222639.0,222684.2]]],\"type\":\"Polygon\"},\"id\":123,\"properties\":{\"flddbl\":2.0,\"fldint\":1,"
+                                     "\"fldtxt\":\"a value\"},\"type\":\"Feature\"}" ) };
+
+  feature.setId( 123 );
+  const auto jPrecision( exporterPrecision.exportFeatureToJsonObject( feature ) );
+  qDebug() << QString::fromStdString( jPrecision.dump() );
   QCOMPARE( QString::fromStdString( jPrecision.dump() ),  expectedJsonPrecision );
   const auto jsonPrecision { exporterPrecision.exportFeature( feature ) };
   QCOMPARE( jsonPrecision, expectedJsonPrecision );

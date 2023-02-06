@@ -1,0 +1,75 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/raster/qgscreaterasterattributetabledialog.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsCreateRasterAttributeTableDialog : QDialog
+{
+%Docstring(signature="appended")
+The :py:class:`QgsCreateRasterAttributeTableDialog` dialog collects the information required to create a new raster attribute table and performs the creation when the dialog is accepted.
+
+.. warning::
+
+   Client code must check if the creation of attribute tables is supported by the raster layer by calling :py:func:`QgsRasterLayer.canCreateAttributeTable()` before using this dialog.
+
+.. versionadded:: 3.30
+%End
+
+%TypeHeaderCode
+#include "qgscreaterasterattributetabledialog.h"
+%End
+  public:
+
+    QgsCreateRasterAttributeTableDialog( QgsRasterLayer *rasterLayer, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Creates a new QgsCreateRasterAttributeTableDialog.
+
+:param rasterLayer: the raster layer, must be suitable for creating a new raster attribute table
+:param parent: optional parent
+%End
+
+    QString filePath( ) const;
+%Docstring
+Returns the file path in case of VAT.DBF save option.
+%End
+
+    bool saveToFile( ) const;
+%Docstring
+Returns ``True`` if the option to save to a file is selected.
+%End
+
+    bool openWhenDone( ) const;
+%Docstring
+Returns ``True`` if the option to open the newly created attribute table is checked.
+%End
+
+    void setMessageBar( QgsMessageBar *bar );
+%Docstring
+Sets the message ``bar`` associated with the widget. This allows the widget to push feedback messages
+to the appropriate message bar.
+%End
+
+    void setOpenWhenDoneVisible( bool visible );
+%Docstring
+Sets the visibility of the "Open newly created raster attribute table" option to ``visible``, the option is visible by default.
+%End
+
+  public slots:
+
+    virtual void accept();
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/raster/qgscreaterasterattributetabledialog.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -246,6 +246,16 @@ void QgsSymbolButton::registerExpressionContextGenerator( QgsExpressionContextGe
   mExpressionContextGenerator = generator;
 }
 
+void QgsSymbolButton::setDefaultSymbol( QgsSymbol *symbol )
+{
+  mDefaultSymbol.reset( symbol );
+}
+
+const QgsSymbol *QgsSymbolButton::defaultSymbol() const
+{
+  return mDefaultSymbol.get();
+}
+
 void QgsSymbolButton::setSymbol( QgsSymbol *symbol )
 {
   mSymbol.reset( symbol );
@@ -489,13 +499,14 @@ void QgsSymbolButton::prepareMenu()
   mMenu->addAction( copySymbolAction );
   connect( copySymbolAction, &QAction::triggered, this, &QgsSymbolButton::copySymbol );
 
+  const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
+
   QAction *pasteSymbolAction = new QAction( tr( "Paste Symbol" ), this );
   //enable or disable paste action based on current clipboard contents. We always show the paste
   //action, even if it's disabled, to give hint to the user that pasting symbols is possible
   std::unique_ptr< QgsSymbol > tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
   if ( tempSymbol && tempSymbol->type() == mType )
   {
-    const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
     pasteSymbolAction->setIcon( QgsSymbolLayerUtils::symbolPreviewIcon( tempSymbol.get(), QSize( iconSize, iconSize ), 1 ) );
   }
   else
@@ -511,6 +522,15 @@ void QgsSymbolButton::prepareMenu()
     nullAction->setEnabled( !isNull() );
     mMenu->addAction( nullAction );
     connect( nullAction, &QAction::triggered, this, &QgsSymbolButton::setToNull );
+  }
+
+  //show default symbol option if set
+  if ( mDefaultSymbol )
+  {
+    QAction *defaultSymbolAction = new QAction( tr( "Default Symbol" ), this );
+    defaultSymbolAction->setIcon( QgsSymbolLayerUtils::symbolPreviewIcon( mDefaultSymbol.get(), QSize( iconSize, iconSize ), 1 ) );
+    mMenu->addAction( defaultSymbolAction );
+    connect( defaultSymbolAction, &QAction::triggered, this, &QgsSymbolButton::setToDefaultSymbol );
   }
 
   if ( mSymbol )
@@ -830,4 +850,14 @@ bool QgsSymbolButton::isNull() const
 void QgsSymbolButton::setToNull()
 {
   setSymbol( nullptr );
+}
+
+void QgsSymbolButton::setToDefaultSymbol()
+{
+  if ( !mDefaultSymbol )
+  {
+    return;
+  }
+
+  setSymbol( mDefaultSymbol->clone() );
 }

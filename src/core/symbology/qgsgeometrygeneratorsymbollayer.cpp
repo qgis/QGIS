@@ -269,6 +269,11 @@ void QgsGeometryGeneratorSymbolLayer::setGeometryExpression( const QString &exp 
   mExpression.reset( new QgsExpression( exp ) );
 }
 
+QString QgsGeometryGeneratorSymbolLayer::geometryExpression() const
+{
+  return mExpression->expression();
+}
+
 bool QgsGeometryGeneratorSymbolLayer::setSubSymbol( QgsSymbol *symbol )
 {
   switch ( symbol->type() )

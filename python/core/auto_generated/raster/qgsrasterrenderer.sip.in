@@ -45,6 +45,24 @@ QgsRasterRenderer cannot be copied. Use :py:func:`~QgsRasterRenderer.clone` inst
 
 
     virtual QString type() const;
+%Docstring
+Returns a unique string representation of the renderer type.
+%End
+
+    virtual Qgis::RasterRendererFlags flags() const;
+%Docstring
+Returns flags which dictate renderer behavior.
+
+.. versionadded:: 3.28
+%End
+
+    virtual bool canCreateRasterAttributeTable( ) const;
+%Docstring
+Returns ``True`` if the renderer is suitable for attribute table creation.
+The default implementation returns ``False``.
+
+.. versionadded:: 3.30
+%End
 
     virtual bool setInput( QgsRasterInterface *input );
 

@@ -173,13 +173,13 @@ QByteArray QgsPolygon::asWkb( QgsAbstractGeometry::WkbFlags flags ) const
   {
     QgsPointSequence pts;
     mExteriorRing->points( pts );
-    QgsGeometryUtils::pointsToWKB( wkb, pts, mExteriorRing->is3D(), mExteriorRing->isMeasure() );
+    QgsGeometryUtils::pointsToWKB( wkb, pts, mExteriorRing->is3D(), mExteriorRing->isMeasure(), flags );
   }
   for ( const QgsCurve *curve : mInteriorRings )
   {
     QgsPointSequence pts;
     curve->points( pts );
-    QgsGeometryUtils::pointsToWKB( wkb, pts, curve->is3D(), curve->isMeasure() );
+    QgsGeometryUtils::pointsToWKB( wkb, pts, curve->is3D(), curve->isMeasure(), flags );
   }
 
   return wkbArray;
@@ -316,11 +316,14 @@ QgsPolygon *QgsPolygon::surfaceToPolygon() const
 QgsCurvePolygon *QgsPolygon::toCurveType() const
 {
   QgsCurvePolygon *curvePolygon = new QgsCurvePolygon();
-  curvePolygon->setExteriorRing( mExteriorRing->clone() );
-  int nInteriorRings = mInteriorRings.size();
-  for ( int i = 0; i < nInteriorRings; ++i )
+  if ( mExteriorRing )
   {
-    curvePolygon->addInteriorRing( mInteriorRings.at( i )->clone() );
+    curvePolygon->setExteriorRing( mExteriorRing->clone() );
+    int nInteriorRings = mInteriorRings.size();
+    for ( int i = 0; i < nInteriorRings; ++i )
+    {
+      curvePolygon->addInteriorRing( mInteriorRings.at( i )->clone() );
+    }
   }
   return curvePolygon;
 }

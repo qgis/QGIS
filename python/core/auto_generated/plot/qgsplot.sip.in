@@ -35,12 +35,12 @@ Constructor for QgsPlot.
 
     virtual ~QgsPlot();
 
-    virtual bool writeXml( QDomElement &element, QDomDocument &document, QgsReadWriteContext &context ) const;
+    virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 %Docstring
 Writes the plot's properties into an XML ``element``.
 %End
 
-    virtual bool readXml( const QDomElement &element, QgsReadWriteContext &context );
+    virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
 Reads the plot's properties from an XML ``element``.
 %End
@@ -68,12 +68,12 @@ Encapsulates the properties of a plot axis.
     ~QgsPlotAxis();
 
 
-    bool writeXml( QDomElement &element, QDomDocument &document, QgsReadWriteContext &context ) const;
+    bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 %Docstring
 Writes the axis' properties into an XML ``element``.
 %End
 
-    bool readXml( const QDomElement &element, QgsReadWriteContext &context );
+    bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
 Reads the axis' properties from an XML ``element``.
 %End
@@ -214,12 +214,12 @@ Constructor for Qgs2DPlot.
     ~Qgs2DPlot();
 
 
-    virtual bool writeXml( QDomElement &element, QDomDocument &document, QgsReadWriteContext &context ) const;
+    virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
 %Docstring
 Qgs2DPlot cannot be copied
 %End
-    virtual bool readXml( const QDomElement &element, QgsReadWriteContext &context );
+    virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 
 
     void render( QgsRenderContext &context );
@@ -341,7 +341,6 @@ Returns a reference to the plot's y axis.
 %End
 
 
-
     QgsFillSymbol *chartBackgroundSymbol();
 %Docstring
 Returns the fill symbol used to render the background of the chart.
@@ -390,6 +389,58 @@ Sets the ``margins`` of the plot area (in millimeters)
 
   private:
     Qgs2DPlot( const Qgs2DPlot &other );
+};
+
+class QgsPlotDefaultSettings
+{
+%Docstring(signature="appended")
+Manages default settings for plot objects
+
+.. warning::
+
+   This class is not considered stable API, and may change in future!
+
+.. versionadded:: 3.30
+%End
+
+%TypeHeaderCode
+#include "qgsplot.h"
+%End
+  public:
+
+    static QgsNumericFormat *axisLabelNumericFormat() /Factory/;
+%Docstring
+Returns the default numeric format to use for plot axis labels.
+%End
+
+    static QgsLineSymbol *axisGridMajorSymbol() /Factory/;
+%Docstring
+Returns the default line symbol to use for axis major grid lines.
+
+.. seealso:: :py:func:`axisGridMinorSymbol`
+%End
+
+    static QgsLineSymbol *axisGridMinorSymbol() /Factory/;
+%Docstring
+Returns the default line symbol to use for axis minor grid lines.
+
+.. seealso:: :py:func:`axisGridMajorSymbol`
+%End
+
+    static QgsFillSymbol *chartBackgroundSymbol() /Factory/;
+%Docstring
+Returns the default fill symbol to use for the chart area background fill.
+
+.. seealso:: :py:func:`chartBorderSymbol`
+%End
+
+    static QgsFillSymbol *chartBorderSymbol() /Factory/;
+%Docstring
+Returns the default fill symbol to use for the chart area border.
+
+.. seealso:: :py:func:`chartBackgroundSymbol`
+%End
+
 };
 
 /************************************************************************

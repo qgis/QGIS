@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for core additions
 
 From build dir, run: ctest -R PyCoreAdditions -V
@@ -13,11 +12,13 @@ __date__ = '15.5.2018'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import qgis  # NOQA
-import os
 
-from qgis.testing import unittest, start_app
-from qgis.core import metaEnumFromValue, metaEnumFromType, QgsTolerance, QgsMapLayer
-from qgis.PyQt import sip
+from qgis.core import (
+    QgsMapLayer,
+    QgsTolerance,
+    metaEnumFromValue,
+)
+from qgis.testing import start_app, unittest
 
 start_app()
 

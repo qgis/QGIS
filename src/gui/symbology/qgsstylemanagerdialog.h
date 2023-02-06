@@ -22,16 +22,16 @@
 #include <QMenu>
 
 #include "ui_qgsstylemanagerdialogbase.h"
-#include "qgshelp.h"
 #include "qgsstylemodel.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
 class QgsStyle;
 class QgsTemporaryCursorOverride;
 class QgsMessageBar;
 class QgsProjectStyleDatabaseModel;
+class QgsSettingsEntryString;
 
 #ifndef SIP_RUN
 ///@cond PRIVATE
@@ -74,11 +74,13 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
   public:
 #ifndef SIP_RUN
 
+    static inline QgsSettingsTreeNode *sTtreeStyleManager = QgsSettingsTree::sTreeApp->createChildNode( QStringLiteral( "style-manager" ) );
+
     /**
      * Last used folder for generic style database actions.
      * \since QGIS 3.26
      */
-    static const inline QgsSettingsEntryString settingLastStyleDatabaseFolder = QgsSettingsEntryString( QStringLiteral( "last-style-database-folder" ), QgsSettings::Prefix::STYLE_MANAGER, QString(), QStringLiteral( "Last used folder for style databases" ) );
+    static const QgsSettingsEntryString *settingLastStyleDatabaseFolder;
 #endif
 
     /**

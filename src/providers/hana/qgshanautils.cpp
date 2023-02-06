@@ -16,6 +16,7 @@
  ***************************************************************************/
 #include "qgsdatasourceuri.h"
 #include "qgshanaexception.h"
+#include "qgshanasettings.h"
 #include "qgshanautils.h"
 
 #include <QDate>
@@ -48,14 +49,28 @@ QString QgsHanaUtils::connectionInfo( const QgsDataSourceUri &uri )
       connectionItems << QStringLiteral( "%1=%2" ).arg( key, value );
   };
 
-  if ( !uri.database().isEmpty() )
-    addItem( "dbname", escape( uri.database() ) );
-  if ( !uri.host().isEmpty() )
-    addItem( "host", escape( uri.host() ), false );
-  if ( !uri.port().isEmpty() )
-    addItem( "port", uri.port(), false );
-  if ( !uri.driver().isEmpty() )
-    addItem( "driver", escape( uri.driver() ) );
+  QgsHanaConnectionType connType = QgsHanaConnectionType::HostPort;
+  if ( uri.hasParam( "connectionType" ) )
+    connType = static_cast<QgsHanaConnectionType>( uri.param( "connectionType" ).toUInt() );
+
+  addItem( "connectionType", QString::number( static_cast<uint>( connType ) ) );
+  switch ( connType )
+  {
+    case QgsHanaConnectionType::Dsn:
+      if ( uri.hasParam( "dsn" ) )
+        addItem( "dsn", escape( uri.param( "dsn" ) ) );
+      break;
+    case QgsHanaConnectionType::HostPort:
+      if ( !uri.database().isEmpty() )
+        addItem( "dbname", escape( uri.database() ) );
+      if ( !uri.host().isEmpty() )
+        addItem( "host", escape( uri.host() ), false );
+      if ( !uri.port().isEmpty() )
+        addItem( "port", uri.port(), false );
+      if ( !uri.driver().isEmpty() )
+        addItem( "driver", escape( uri.driver() ) );
+      break;
+  }
 
   if ( !uri.username().isEmpty() )
   {

@@ -20,6 +20,7 @@
 #include "qgseditformconfig.h"
 #include "qgsfontutils.h"
 #include "qgstest.h"
+#include "qgssettings.h"
 
 /**
  * \ingroup UnitTests

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsConnectionRegistry.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,20 +9,21 @@ __author__ = 'Nyall Dawson'
 __date__ = '16/03/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
-
-import shutil
 import os
+import shutil
 import tempfile
+
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (
     QgsApplication,
-    QgsSettings,
     QgsProviderConnectionException,
+    QgsProviderRegistry,
+    QgsSettings,
     QgsVectorLayer,
-    QgsProviderRegistry
 )
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
@@ -43,11 +43,11 @@ class TestQgsConnectionRegistry(unittest.TestCase):
         start_app()
         QgsSettings().clear()
 
-        gpkg_original_path = '{}/qgis_server/test_project_wms_grouped_layers.gpkg'.format(TEST_DATA_DIR)
+        gpkg_original_path = f'{TEST_DATA_DIR}/qgis_server/test_project_wms_grouped_layers.gpkg'
         cls.basetestpath = tempfile.mkdtemp()
-        cls.gpkg_path = '{}/test_gpkg.gpkg'.format(cls.basetestpath)
+        cls.gpkg_path = f'{cls.basetestpath}/test_gpkg.gpkg'
         shutil.copy(gpkg_original_path, cls.gpkg_path)
-        vl = QgsVectorLayer('{}|layername=cdb_lines'.format(cls.gpkg_path), 'test', 'ogr')
+        vl = QgsVectorLayer(f'{cls.gpkg_path}|layername=cdb_lines', 'test', 'ogr')
         assert vl.isValid()
 
     @classmethod

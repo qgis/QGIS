@@ -20,9 +20,7 @@
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingutils.h"
 #include "qgsprocessingalgorithm.h"
-#include "qgsvectorlayerfeatureiterator.h"
 #include "qgsprocessingoutputs.h"
-#include "qgssettings.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsreferencedgeometry.h"
 #include "qgsprocessingregistry.h"
@@ -1970,7 +1968,6 @@ QStringList QgsProcessingParameters::parameterAsFields( const QgsProcessingParam
   if ( !definition )
     return QStringList();
 
-  const QStringList resultStringList;
   return parameterAsFields( definition, parameters.value( definition->name() ), context );
 }
 
@@ -2451,6 +2448,11 @@ QString QgsProcessingParameterDefinition::valueAsPythonString( const QVariant &v
 
 QVariant QgsProcessingParameterDefinition::valueAsJsonObject( const QVariant &value, QgsProcessingContext &context ) const
 {
+  return valueAsJsonObjectPrivate( value, context, ValueAsStringFlags() );
+}
+
+QVariant QgsProcessingParameterDefinition::valueAsJsonObjectPrivate( const QVariant &value, QgsProcessingContext &context, ValueAsStringFlags flags ) const
+{
   if ( !value.isValid() )
     return value;
 
@@ -2497,7 +2499,6 @@ QVariant QgsProcessingParameterDefinition::valueAsJsonObject( const QVariant &va
         break;
     }
 
-
     if ( value.userType() == QMetaType::type( "QgsProperty" ) )
     {
       const QgsProperty prop = value.value< QgsProperty >();
@@ -2507,12 +2508,10 @@ QVariant QgsProcessingParameterDefinition::valueAsJsonObject( const QVariant &va
           return QVariant();
         case QgsProperty::StaticProperty:
           return valueAsJsonObject( prop.staticValue(), context );
-
-        // these are not supported for serialization
         case QgsProperty::FieldBasedProperty:
+          return QVariantMap( {{QStringLiteral( "type" ), QStringLiteral( "data_defined" )}, {QStringLiteral( "field" ), prop.field() }} );
         case QgsProperty::ExpressionBasedProperty:
-          QgsDebugMsg( QStringLiteral( "could not convert expression/field based property to JSON object" ) );
-          return QVariant();
+          return QVariantMap( {{QStringLiteral( "type" ), QStringLiteral( "data_defined" )}, {QStringLiteral( "expression" ), prop.expressionString() }} );
       }
     }
 
@@ -2541,7 +2540,8 @@ QVariant QgsProcessingParameterDefinition::valueAsJsonObject( const QVariant &va
       return QStringLiteral( "%1, %3, %2, %4 [%5]" ).arg( qgsDoubleToString( r.xMinimum() ),
              qgsDoubleToString( r.yMinimum() ),
              qgsDoubleToString( r.xMaximum() ),
-             qgsDoubleToString( r.yMaximum() ),                                                                                                                             r.crs().authid() );
+             qgsDoubleToString( r.yMaximum() ),
+             r.crs().authid() );
     }
     else if ( value.userType() == QMetaType::type( "QgsGeometry" ) )
     {
@@ -2628,15 +2628,18 @@ QVariant QgsProcessingParameterDefinition::valueAsJsonObject( const QVariant &va
       return fromVar.toString( Qt::ISODate );
     }
 
-    // value may be a map layer
-    QVariantMap p;
-    p.insert( name(), value );
-    if ( QgsMapLayer *layer = QgsProcessingParameters::parameterAsLayer( this, p, context ) )
+    if ( flags & ValueAsStringFlag::AllowMapLayerValues )
     {
-      const QString source = QgsProcessingUtils::normalizeLayerSource( layer->source() );
-      if ( !source.isEmpty() )
-        return source;
-      return layer->id();
+      // value may be a map layer
+      QVariantMap p;
+      p.insert( name(), value );
+      if ( QgsMapLayer *layer = QgsProcessingParameters::parameterAsLayer( this, p, context ) )
+      {
+        const QString source = QgsProcessingUtils::normalizeLayerSource( layer->source() );
+        if ( !source.isEmpty() )
+          return source;
+        return layer->id();
+      }
     }
 
     // now we handle strings, after any other specific logic has already been applied
@@ -2650,6 +2653,11 @@ QVariant QgsProcessingParameterDefinition::valueAsJsonObject( const QVariant &va
 }
 
 QString QgsProcessingParameterDefinition::valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
+{
+  return valueAsStringPrivate( value, context, ok, ValueAsStringFlags() );
+}
+
+QString QgsProcessingParameterDefinition::valueAsStringPrivate( const QVariant &value, QgsProcessingContext &context, bool &ok, ValueAsStringFlags flags ) const
 {
   ok = true;
 
@@ -2684,12 +2692,10 @@ QString QgsProcessingParameterDefinition::valueAsString( const QVariant &value, 
         return QString();
       case QgsProperty::StaticProperty:
         return valueAsString( prop.staticValue(), context, ok );
-
-      // these are not supported for serialization
       case QgsProperty::FieldBasedProperty:
+        return QStringLiteral( "field:%1" ).arg( prop.field() );
       case QgsProperty::ExpressionBasedProperty:
-        QgsDebugMsg( QStringLiteral( "could not convert expression/field based property to string" ) );
-        return QString();
+        return QStringLiteral( "expression:%1" ).arg( prop.expressionString() );
     }
   }
 
@@ -2803,15 +2809,18 @@ QString QgsProcessingParameterDefinition::valueAsString( const QVariant &value, 
     return fromVar.toString( Qt::ISODate );
   }
 
-  // value may be a map layer
-  QVariantMap p;
-  p.insert( name(), value );
-  if ( QgsMapLayer *layer = QgsProcessingParameters::parameterAsLayer( this, p, context ) )
+  if ( flags & ValueAsStringFlag::AllowMapLayerValues )
   {
-    const QString source = QgsProcessingUtils::normalizeLayerSource( layer->source() );
-    if ( !source.isEmpty() )
-      return source;
-    return layer->id();
+    // value may be a map layer
+    QVariantMap p;
+    p.insert( name(), value );
+    if ( QgsMapLayer *layer = QgsProcessingParameters::parameterAsLayer( this, p, context ) )
+    {
+      const QString source = QgsProcessingUtils::normalizeLayerSource( layer->source() );
+      if ( !source.isEmpty() )
+        return source;
+      return layer->id();
+    }
   }
 
   // now we handle strings, after any other specific logic has already been applied
@@ -3039,6 +3048,16 @@ QString QgsProcessingParameterCrs::valueAsPythonString( const QVariant &value, Q
   return QgsProcessingParameterDefinition::valueAsPythonString( value, context );
 }
 
+QString QgsProcessingParameterCrs::valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
+{
+  return valueAsStringPrivate( value, context, ok, ValueAsStringFlag::AllowMapLayerValues );
+}
+
+QVariant QgsProcessingParameterCrs::valueAsJsonObject( const QVariant &value, QgsProcessingContext &context ) const
+{
+  return valueAsJsonObjectPrivate( value, context, ValueAsStringFlag::AllowMapLayerValues );
+}
+
 QgsProcessingParameterCrs *QgsProcessingParameterCrs::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   return new QgsProcessingParameterCrs( name, description, definition.compare( QLatin1String( "none" ), Qt::CaseInsensitive ) == 0 ? QVariant() : definition, isOptional );
@@ -3100,6 +3119,16 @@ QString QgsProcessingParameterMapLayer::valueAsPythonString( const QVariant &val
   QgsMapLayer *layer = QgsProcessingParameters::parameterAsLayer( this, p, context );
   return layer ? QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer->source() ) )
          : QgsProcessingUtils::stringToPythonLiteral( val.toString() );
+}
+
+QString QgsProcessingParameterMapLayer::valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
+{
+  return valueAsStringPrivate( value, context, ok, ValueAsStringFlag::AllowMapLayerValues );
+}
+
+QVariant QgsProcessingParameterMapLayer::valueAsJsonObject( const QVariant &value, QgsProcessingContext &context ) const
+{
+  return valueAsJsonObjectPrivate( value, context, ValueAsStringFlag::AllowMapLayerValues );
 }
 
 QString createAllMapLayerFileFilter()
@@ -3429,6 +3458,16 @@ QString QgsProcessingParameterExtent::valueAsPythonString( const QVariant &value
     return QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer->source() ) );
 
   return QgsProcessingParameterDefinition::valueAsPythonString( value, context );
+}
+
+QString QgsProcessingParameterExtent::valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
+{
+  return valueAsStringPrivate( value, context, ok, ValueAsStringFlag::AllowMapLayerValues );
+}
+
+QVariant QgsProcessingParameterExtent::valueAsJsonObject( const QVariant &value, QgsProcessingContext &context ) const
+{
+  return valueAsJsonObjectPrivate( value, context, ValueAsStringFlag::AllowMapLayerValues );
 }
 
 QgsProcessingParameterExtent *QgsProcessingParameterExtent::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
@@ -4215,6 +4254,16 @@ QString QgsProcessingParameterMultipleLayers::valueAsPythonString( const QVarian
   return QgsProcessingParameterDefinition::valueAsPythonString( value, context );
 }
 
+QString QgsProcessingParameterMultipleLayers::valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
+{
+  return valueAsStringPrivate( value, context, ok, ValueAsStringFlag::AllowMapLayerValues );
+}
+
+QVariant QgsProcessingParameterMultipleLayers::valueAsJsonObject( const QVariant &value, QgsProcessingContext &context ) const
+{
+  return valueAsJsonObjectPrivate( value, context, ValueAsStringFlag::AllowMapLayerValues );
+}
+
 QString QgsProcessingParameterMultipleLayers::asScriptCode() const
 {
   QString code = QStringLiteral( "##%1=" ).arg( mName );
@@ -4280,7 +4329,6 @@ QString QgsProcessingParameterMultipleLayers::asPythonString( const QgsProcessin
 
 QString QgsProcessingParameterMultipleLayers::createFileFilter() const
 {
-  const QStringList exts;
   switch ( mLayerType )
   {
     case QgsProcessing::TypeFile:
@@ -4692,6 +4740,16 @@ QString QgsProcessingParameterRasterLayer::valueAsPythonString( const QVariant &
   QgsRasterLayer *layer = QgsProcessingParameters::parameterAsRasterLayer( this, p, context );
   return layer ? QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer->source() ) )
          : QgsProcessingUtils::stringToPythonLiteral( val.toString() );
+}
+
+QString QgsProcessingParameterRasterLayer::valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
+{
+  return valueAsStringPrivate( value, context, ok, ValueAsStringFlag::AllowMapLayerValues );
+}
+
+QVariant QgsProcessingParameterRasterLayer::valueAsJsonObject( const QVariant &value, QgsProcessingContext &context ) const
+{
+  return valueAsJsonObjectPrivate( value, context, ValueAsStringFlag::AllowMapLayerValues );
 }
 
 QString QgsProcessingParameterRasterLayer::createFileFilter() const
@@ -5386,6 +5444,16 @@ QString QgsProcessingParameterVectorLayer::valueAsPythonString( const QVariant &
          : QgsProcessingUtils::stringToPythonLiteral( val.toString() );
 }
 
+QString QgsProcessingParameterVectorLayer::valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
+{
+  return valueAsStringPrivate( value, context, ok, ValueAsStringFlag::AllowMapLayerValues );
+}
+
+QVariant QgsProcessingParameterVectorLayer::valueAsJsonObject( const QVariant &value, QgsProcessingContext &context ) const
+{
+  return valueAsJsonObjectPrivate( value, context, ValueAsStringFlag::AllowMapLayerValues );
+}
+
 QString QgsProcessingParameterVectorLayer::asPythonString( const QgsProcessing::PythonOutputType outputType ) const
 {
   switch ( outputType )
@@ -5521,6 +5589,16 @@ QString QgsProcessingParameterMeshLayer::valueAsPythonString( const QVariant &va
   QgsMeshLayer *layer = QgsProcessingParameters::parameterAsMeshLayer( this, p, context );
   return layer ? QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer->source() ) )
          : QgsProcessingUtils::stringToPythonLiteral( val.toString() );
+}
+
+QString QgsProcessingParameterMeshLayer::valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
+{
+  return valueAsStringPrivate( value, context, ok, ValueAsStringFlag::AllowMapLayerValues );
+}
+
+QVariant QgsProcessingParameterMeshLayer::valueAsJsonObject( const QVariant &value, QgsProcessingContext &context ) const
+{
+  return valueAsJsonObjectPrivate( value, context, ValueAsStringFlag::AllowMapLayerValues );
 }
 
 QString QgsProcessingParameterMeshLayer::createFileFilter() const
@@ -5969,6 +6047,16 @@ QString QgsProcessingParameterFeatureSource::valueAsPythonString( const QVariant
     layerString = layer->providerType() != QLatin1String( "ogr" ) && layer->providerType() != QLatin1String( "gdal" ) && layer->providerType() != QLatin1String( "mdal" ) ? QgsProcessingUtils::encodeProviderKeyAndUri( layer->providerType(), layer->source() ) : layer->source();
 
   return QgsProcessingUtils::stringToPythonLiteral( layerString );
+}
+
+QString QgsProcessingParameterFeatureSource::valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
+{
+  return valueAsStringPrivate( value, context, ok, ValueAsStringFlag::AllowMapLayerValues );
+}
+
+QVariant QgsProcessingParameterFeatureSource::valueAsJsonObject( const QVariant &value, QgsProcessingContext &context ) const
+{
+  return valueAsJsonObjectPrivate( value, context, ValueAsStringFlag::AllowMapLayerValues );
 }
 
 QString QgsProcessingParameterFeatureSource::asScriptCode() const
@@ -8697,6 +8785,16 @@ QString QgsProcessingParameterPointCloudLayer::valueAsPythonString( const QVaria
          : QgsProcessingUtils::stringToPythonLiteral( val.toString() );
 }
 
+QString QgsProcessingParameterPointCloudLayer::valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
+{
+  return valueAsStringPrivate( value, context, ok, ValueAsStringFlag::AllowMapLayerValues );
+}
+
+QVariant QgsProcessingParameterPointCloudLayer::valueAsJsonObject( const QVariant &value, QgsProcessingContext &context ) const
+{
+  return valueAsJsonObjectPrivate( value, context, ValueAsStringFlag::AllowMapLayerValues );
+}
+
 QString QgsProcessingParameterPointCloudLayer::createFileFilter() const
 {
   return QgsProviderRegistry::instance()->filePointCloudFilters() + QStringLiteral( ";;" ) + QObject::tr( "All files (*.*)" );
@@ -8774,6 +8872,16 @@ QString QgsProcessingParameterAnnotationLayer::valueAsPythonString( const QVaria
   QgsAnnotationLayer *layer = QgsProcessingParameters::parameterAsAnnotationLayer( this, p, context );
   return layer ? QgsProcessingUtils::stringToPythonLiteral( layer == context.project()->mainAnnotationLayer() ? QStringLiteral( "main" ) : layer->id() )
          : QgsProcessingUtils::stringToPythonLiteral( val.toString() );
+}
+
+QString QgsProcessingParameterAnnotationLayer::valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
+{
+  return valueAsStringPrivate( value, context, ok, ValueAsStringFlag::AllowMapLayerValues );
+}
+
+QVariant QgsProcessingParameterAnnotationLayer::valueAsJsonObject( const QVariant &value, QgsProcessingContext &context ) const
+{
+  return valueAsJsonObjectPrivate( value, context, ValueAsStringFlag::AllowMapLayerValues );
 }
 
 QgsProcessingParameterAnnotationLayer *QgsProcessingParameterAnnotationLayer::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )

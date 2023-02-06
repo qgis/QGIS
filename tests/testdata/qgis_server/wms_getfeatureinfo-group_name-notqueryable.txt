@@ -1,6 +1,7 @@
 Content-Length: 254
 Content-Type: text/xml; charset=utf-8
 
+<?xml version="1.0" encoding="UTF-8"?>
 <GetFeatureInfoResponse>
  <Layer name="testlayer2">
   <Feature id="2">

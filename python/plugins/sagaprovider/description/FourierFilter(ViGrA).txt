@@ -1,9 +1,0 @@
-Fourier Filter (ViGrA)
-imagery_vigra
-QgsProcessingParameterRasterLayer|INPUT|Input|None|False
-QgsProcessingParameterRasterDestination|OUTPUT|Output
-QgsProcessingParameterNumber|SCALE|Size of smoothing filter|QgsProcessingParameterNumber.Double|2.000000|False|0.000000|None
-QgsProcessingParameterNumber|POWER|Power|QgsProcessingParameterNumber.Double|0.500000|False|None|None
-QgsProcessingParameterNumber|RANGE_MIN|Range (Min)|QgsProcessingParameterNumber.Integer|None|False|None|None
-QgsProcessingParameterNumber|RANGE_MAX|Range (Max)|QgsProcessingParameterNumber.Integer|None|False|None|None
-QgsProcessingParameterEnum|FILTER|Filter|[0] gaussian;[1] power of distance;[2] include range;[3] exclude range|False|0

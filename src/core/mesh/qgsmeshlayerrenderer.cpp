@@ -42,6 +42,7 @@
 #include "qgsmeshdataprovidertemporalcapabilities.h"
 #include "qgsmapclippingutils.h"
 #include "qgscolorrampshader.h"
+#include "qgsmeshlayerelevationproperties.h"
 
 QgsMeshLayerRenderer::QgsMeshLayerRenderer(
   QgsMeshLayer *layer,
@@ -78,6 +79,13 @@ QgsMeshLayerRenderer::QgsMeshLayerRenderer(
   calculateOutputSize();
 
   mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( *renderContext(), layer );
+
+  if ( layer->elevationProperties() && layer->elevationProperties()->hasElevation() )
+  {
+    mRenderElevationMap = true;
+    mElevationScale = layer->elevationProperties()->zScale();
+    mElevationOffset = layer->elevationProperties()->zOffset();
+  }
 }
 
 void QgsMeshLayerRenderer::copyTriangularMeshes( QgsMeshLayer *layer, QgsRenderContext &context )
@@ -236,6 +244,7 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
     mVectorDatasetMagMaximum = cache->mVectorDatasetMagMaximum;
     mVectorDatasetGroupMagMinimum = cache->mVectorDatasetMagMinimum;
     mVectorDatasetGroupMagMaximum = cache->mVectorDatasetMagMaximum;
+    mVectorActiveFaceFlagValues = cache->mVectorActiveFaceFlagValues;
     mVectorDataType = cache->mVectorDataType;
     return;
   }
@@ -269,6 +278,9 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
       else
         mVectorDatasetValuesMag = QVector<double>( count, std::numeric_limits<double>::quiet_NaN() );
 
+      // populate face active flag
+      mVectorActiveFaceFlagValues = layer->areFacesActive( datasetIndex, 0, mNativeMesh.faces.count() );
+
       const QgsMeshDatasetMetadata datasetMetadata = layer->datasetMetadata( datasetIndex );
       mVectorDatasetMagMinimum = datasetMetadata.minimum();
       mVectorDatasetMagMaximum = datasetMetadata.maximum();
@@ -284,6 +296,7 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
   cache->mVectorDatasetMagMaximum = mVectorDatasetMagMaximum;
   cache->mVectorDatasetGroupMagMinimum = mVectorDatasetMagMinimum;
   cache->mVectorDatasetGroupMagMaximum = mVectorDatasetMagMaximum;
+  cache->mVectorActiveFaceFlagValues = mVectorActiveFaceFlagValues;
   cache->mVectorDataType = mVectorDataType;
   cache->mVectorAveragingMethod.reset( mRendererSettings.averagingMethod() ? mRendererSettings.averagingMethod()->clone() : nullptr );
 }
@@ -556,6 +569,7 @@ void QgsMeshLayerRenderer::renderScalarDatasetOnFaces( const QgsMeshRendererScal
                                          context,
                                          mOutputSize );
   interpolator.setSpatialIndexActive( mIsMeshSimplificationActive );
+  interpolator.setElevationMapSettings( mRenderElevationMap, mElevationScale, mElevationOffset );
   QgsSingleBandPseudoColorRenderer renderer( &interpolator, 0, sh );  // takes ownership of sh
   renderer.setClassificationMin( scalarSettings.classificationMinimum() );
   renderer.setClassificationMax( scalarSettings.classificationMaximum() );
@@ -585,7 +599,7 @@ void QgsMeshLayerRenderer::renderVectorDataset()
   std::unique_ptr<QgsMeshVectorRenderer> renderer( QgsMeshVectorRenderer::makeVectorRenderer(
         mTriangularMesh,
         mVectorDatasetValues,
-        mScalarActiveFaceFlagValues,
+        mVectorActiveFaceFlagValues,
         mVectorDatasetValuesMag,
         mVectorDatasetMagMaximum,
         mVectorDatasetMagMinimum,
@@ -593,6 +607,7 @@ void QgsMeshLayerRenderer::renderVectorDataset()
         mRendererSettings.vectorSettings( groupIndex ),
         *renderContext(),
         mLayerExtent,
+        mFeedback.get(),
         mOutputSize ) );
 
   if ( renderer )

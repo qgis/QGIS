@@ -548,6 +548,11 @@ namespace QgsWms
     const QgsWmsParameter pFormatOpts( QgsWmsParameter::FORMAT_OPTIONS,
                                        QVariant::String );
     save( pFormatOpts );
+
+    const QgsWmsParameter pAddLayerGroups( QgsWmsParameter::ADDLAYERGROUPS,
+                                           QVariant::Bool,
+                                           QVariant( false ) );
+    save( pAddLayerGroups );
   }
 
   QgsWmsParameters::QgsWmsParameters( const QgsServerParameters &parameters )
@@ -1028,6 +1033,11 @@ namespace QgsWms
     return mWmsParameters.value( QgsWmsParameter::TILED ).toBool();
   }
 
+  bool QgsWmsParameters::addLayerGroups() const
+  {
+    return mWmsParameters.value( QgsWmsParameter::ADDLAYERGROUPS ).toBool();
+  }
+
   QString QgsWmsParameters::showFeatureCount() const
   {
     return mWmsParameters.value( QgsWmsParameter::SHOWFEATURECOUNT ).toString();
@@ -1290,11 +1300,17 @@ namespace QgsWms
 
     settings.rstyle( QgsLegendStyle::Style::Subgroup ).setMargin( QgsLegendStyle::Side::Top, layerSpaceAsDouble() );
     settings.rstyle( QgsLegendStyle::Style::Subgroup ).setMargin( QgsLegendStyle::Side::Bottom, layerTitleSpaceAsDouble() );
-    settings.rstyle( QgsLegendStyle::Style::Subgroup ).setFont( layerFont() );
+
+    // text format must be set before setting the format's colors
+    settings.rstyle( QgsLegendStyle::Style::Subgroup ).setTextFormat( QgsTextFormat::fromQFont( layerFont() ) );
+    settings.rstyle( QgsLegendStyle::Style::SymbolLabel ).setTextFormat( QgsTextFormat::fromQFont( itemFont() ) );
 
     if ( !itemFontColor().isEmpty() )
     {
-      settings.setFontColor( itemFontColorAsColor() );
+      settings.rstyle( QgsLegendStyle::Title ).textFormat().setColor( itemFontColorAsColor() );
+      settings.rstyle( QgsLegendStyle::Group ).textFormat().setColor( itemFontColorAsColor() );
+      settings.rstyle( QgsLegendStyle::Subgroup ).textFormat().setColor( itemFontColorAsColor() );
+      settings.rstyle( QgsLegendStyle::SymbolLabel ).textFormat().setColor( itemFontColorAsColor() );
     }
 
     // Ok, this is tricky: because QgsLegendSettings's layerFontColor was added to the API after
@@ -1302,9 +1318,9 @@ namespace QgsWms
     // for the whole legend we need to preserve that behavior.
     // But, the 2.18 server parameters ITEMFONTCOLOR did not have effect on the layer titles too, so
     // we set explicitly layerFontColor to black if it's not overridden by LAYERFONTCOLOR argument.
-    settings.setLayerFontColor( layerFontColor().isEmpty() ? QColor( Qt::black ) : layerFontColorAsColor() );
+    settings.rstyle( QgsLegendStyle::Group ).textFormat().setColor( layerFontColor().isEmpty() ? QColor( Qt::black ) : layerFontColorAsColor() );
+    settings.rstyle( QgsLegendStyle::Subgroup ).textFormat().setColor( layerFontColor().isEmpty() ? QColor( Qt::black ) : layerFontColorAsColor() );
 
-    settings.rstyle( QgsLegendStyle::Style::SymbolLabel ).setFont( itemFont() );
     settings.rstyle( QgsLegendStyle::Style::Symbol ).setMargin( QgsLegendStyle::Side::Top, symbolSpaceAsDouble() );
     settings.rstyle( QgsLegendStyle::Style::SymbolLabel ).setMargin( QgsLegendStyle::Side::Left, iconLabelSpaceAsDouble() );
 

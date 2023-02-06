@@ -15,7 +15,6 @@
 
 #include "qgsvectortilematrixset.h"
 #include "qgstiles.h"
-#include "qgsvectortileutils.h"
 #include "qgsarcgisrestutils.h"
 #include "qgslogger.h"
 
@@ -79,5 +78,7 @@ bool QgsVectorTileMatrixSet::fromEsriJson( const QVariantMap &json )
     tm.setScale( lodMap.value( QStringLiteral( "scale" ) ).toDouble() );
     addMatrix( tm );
   }
+
+  setRootMatrix( QgsTileMatrix::fromCustomDef( 0, crs, QgsPointXY( originX, originY ), z0Dimension, 1, 1 ) );
   return true;
 }

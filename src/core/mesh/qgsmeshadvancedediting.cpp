@@ -119,6 +119,15 @@ void QgsMeshEditRefineFaces::createNewVerticesAndRefinedFaces( QgsMeshEditor *me
   int startingVertexIndex = mesh.vertexCount();
   int startingGlobalFaceIndex = mesh.faceCount();
 
+  auto canBeRefined = [ & ]( int fi )->bool
+  {
+    if ( fi < 0 || fi > mesh.faceCount() )
+      return false;
+    int fs = mesh.face( fi ).size();
+    return fs == 3 || fs == 4;
+
+  };
+
   for ( const int faceIndex : std::as_const( mInputFaces ) )
   {
     FaceRefinement refinement;
@@ -128,7 +137,7 @@ void QgsMeshEditRefineFaces::createNewVerticesAndRefinedFaces( QgsMeshEditor *me
 
     QVector<int> addedVerticesIndex( faceSize, -1 );
 
-    if ( faceSize == 3 || faceSize == 4 )
+    if ( canBeRefined( faceIndex ) )
     {
       refinement.newVerticesLocalIndex.reserve( faceSize );
       refinement.refinedFaceNeighbor.reserve( faceSize );
@@ -144,7 +153,7 @@ void QgsMeshEditRefineFaces::createNewVerticesAndRefinedFaces( QgsMeshEditor *me
 
         int neighborFaceIndex = neighbors.at( positionInFace );
         bool needCreateVertex = true;
-        if ( neighborFaceIndex != -1 && facesToRefine.contains( neighborFaceIndex ) )
+        if ( neighborFaceIndex != -1 && facesToRefine.contains( neighborFaceIndex ) && canBeRefined( neighborFaceIndex ) )
         {
           int neighborFaceSize = mesh.face( neighborFaceIndex ).size();
           int positionVertexInNeighbor = vertexPositionInFace( mesh, face.at( positionInFace ), neighborFaceIndex );
@@ -225,25 +234,25 @@ void QgsMeshEditRefineFaces::createNewVerticesAndRefinedFaces( QgsMeshEditor *me
         refinement.newCenterVertexIndex = -1;
 
       facesRefinement.insert( faceIndex, refinement );
+
+      //look for vertexToFace
+      for ( int positionInFace = 0; positionInFace < faceSize; ++positionInFace )
+      {
+        if ( addedVerticesIndex.at( positionInFace ) != -1 )
+        {
+          mVertexToFaceToAdd[addedVerticesIndex.at( positionInFace )] =
+            refinement.newFacesChangesIndex.at( positionInFace ) + startingGlobalFaceIndex;
+        }
+
+        int vertexIndex = face.at( positionInFace );
+        if ( topology.firstFaceLinked( vertexIndex ) == faceIndex )
+          mVerticesToFaceChanges.append( {vertexIndex, faceIndex, refinement.newFacesChangesIndex.at( positionInFace ) + startingGlobalFaceIndex} );
+      }
     }
     else
     {
       //not 3 or 4 vertices, we do not refine this face
       facesToRefine.remove( faceIndex );
-    }
-
-    //look for vertexToFace
-    for ( int positionInFace = 0; positionInFace < faceSize; ++positionInFace )
-    {
-      if ( addedVerticesIndex.at( positionInFace ) != -1 )
-      {
-        mVertexToFaceToAdd[addedVerticesIndex.at( positionInFace )] =
-          refinement.newFacesChangesIndex.at( positionInFace ) + startingGlobalFaceIndex;
-      }
-
-      int vertexIndex = face.at( positionInFace );
-      if ( topology.firstFaceLinked( vertexIndex ) == faceIndex )
-        mVerticesToFaceChanges.append( {vertexIndex, faceIndex, refinement.newFacesChangesIndex.at( positionInFace ) + startingGlobalFaceIndex} );
     }
   }
 

@@ -77,6 +77,11 @@ QString QgsProviderMetadata::library() const
   return mLibrary;
 }
 
+QString QgsProviderMetadata::suggestGroupNameForUri( const QString & /*uri*/ ) const
+{
+  return QString();
+}
+
 QgsProviderMetadata::CreateDataProviderFunction QgsProviderMetadata::createFunction() const
 {
   return mCreateFunction;
@@ -269,6 +274,12 @@ bool QgsProviderMetadata::saveStyle( const QString &, const QString &, const QSt
 QString QgsProviderMetadata::loadStyle( const QString &, QString &errCause )
 {
   errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "loadStyle" ) );
+  return QString();
+}
+
+QString QgsProviderMetadata::loadStoredStyle( const QString &, QString &, QString &errCause )
+{
+  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "loadStoredStyle" ) );
   return QString();
 }
 

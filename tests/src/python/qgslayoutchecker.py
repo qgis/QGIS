@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 '''
 qgslayoutchecker.py - check rendering of QgsLayout against an expected image
  --------------------------------------
@@ -16,16 +15,15 @@ qgslayoutchecker.py - check rendering of QgsLayout against an expected image
 '''
 
 import qgis  # NOQA
-
-from qgis.PyQt.QtCore import QSize, QDir, QFileInfo
+from qgis.PyQt.QtCore import QDir, QFileInfo, QSize
 from qgis.PyQt.QtGui import QImage, QPainter
-from qgis.core import QgsMultiRenderChecker, QgsLayoutExporter
+from qgis.core import QgsLayoutExporter, QgsMultiRenderChecker
 
 
 class QgsLayoutChecker(QgsMultiRenderChecker):
 
     def __init__(self, test_name, layout):
-        super(QgsLayoutChecker, self).__init__()
+        super().__init__()
         self.layout = layout
         self.test_name = test_name
         self.dots_per_meter = 96 / 25.4 * 1000

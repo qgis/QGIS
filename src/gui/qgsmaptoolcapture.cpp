@@ -17,7 +17,6 @@
 #include "qgsexception.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometryvalidator.h"
-#include "qgslayertreeview.h"
 #include "qgslinestring.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
@@ -30,12 +29,12 @@
 #include "qgsvertexmarker.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsapplication.h"
-#include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsproject.h"
 #include "qgsmaptoolcapturerubberband.h"
 #include "qgsmaptoolshapeabstract.h"
 #include "qgsmaptoolshaperegistry.h"
-#include "qgsgui.h"
+#include "qgssnappingutils.h"
+#include "qgsadvanceddigitizingdockwidget.h"
 
 #include <QAction>
 #include <QCursor>
@@ -281,17 +280,31 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
     return false;
 
   QgsTracer::PathError err;
-  QVector<QgsPointXY> points = tracer->findShortestPath( pt0, point, &err );
-  if ( points.isEmpty() )
+  const QVector<QgsPointXY> tracedPointsInMapCrs = tracer->findShortestPath( pt0, point, &err );
+  if ( tracedPointsInMapCrs.isEmpty() )
     return false; // ignore the vertex - can't find path to the end point!
 
   // transform points
   QgsPointSequence layerPoints;
-  QgsPoint lp; // in layer coords
-  for ( int i = 0; i < points.count(); ++i )
+  layerPoints.reserve( tracedPointsInMapCrs.size() );
+  QgsPointSequence mapPoints;
+  mapPoints.reserve( tracedPointsInMapCrs.size() );
+  for ( const QgsPointXY &tracedPointMapCrs : tracedPointsInMapCrs )
   {
-    if ( nextPoint( QgsPoint( points[i] ), lp ) != 0 )
+    QgsPoint mapPoint( tracedPointMapCrs );
+
+    QgsPoint lp; // in layer coords
+    if ( nextPoint( mapPoint, lp ) != 0 )
       return false;
+
+    // copy z and m from layer point back to mapPoint, as nextPoint() call will populate these based
+    // on the context of the trace
+    if ( lp.is3D() )
+      mapPoint.addZValue( lp.z() );
+    if ( lp.isMeasure() )
+      mapPoint.addMValue( lp.m() );
+
+    mapPoints << mapPoint;
     layerPoints << lp;
   }
 
@@ -302,12 +315,12 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
   mSnappingMatches.append( QgsPointLocator::Match() );
 
   int pointBefore = mCaptureCurve.numPoints();
-  addCurve( new QgsLineString( layerPoints ) );
+  addCurve( new QgsLineString( mapPoints ) );
 
   resetRubberBand();
 
   // Curves de-approximation
-  if ( QgsSettingsRegistryCore::settingsDigitizingConvertToCurve.value() )
+  if ( QgsSettingsRegistryCore::settingsDigitizingConvertToCurve->value() )
   {
     // If the tool and the layer support curves
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer() );
@@ -315,8 +328,8 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
     {
       const QgsGeometry linear = QgsGeometry( mCaptureCurve.segmentize() );
       const QgsGeometry curved = linear.convertToCurves(
-                                   QgsSettingsRegistryCore::settingsDigitizingConvertToCurveAngleTolerance.value(),
-                                   QgsSettingsRegistryCore::settingsDigitizingConvertToCurveDistanceTolerance.value()
+                                   QgsSettingsRegistryCore::settingsDigitizingConvertToCurveAngleTolerance->value(),
+                                   QgsSettingsRegistryCore::settingsDigitizingConvertToCurveDistanceTolerance->value()
                                  );
       if ( QgsWkbTypes::flatType( curved.wkbType() ) != QgsWkbTypes::CompoundCurve )
       {
@@ -350,7 +363,7 @@ QgsMapToolCaptureRubberBand *QgsMapToolCapture::createCurveRubberBand() const
   rb->setStrokeWidth( digitizingStrokeWidth() );
   QColor color = digitizingStrokeColor();
 
-  const double alphaScale = QgsSettingsRegistryCore::settingsDigitizingLineColorAlphaScale.value();
+  const double alphaScale = QgsSettingsRegistryCore::settingsDigitizingLineColorAlphaScale->value();
   color.setAlphaF( color.alphaF() * alphaScale );
   rb->setLineStyle( Qt::DotLine );
   rb->setStrokeColor( color );
@@ -415,7 +428,7 @@ void QgsMapToolCapture::setCurrentCaptureTechnique( Qgis::CaptureTechnique techn
       break;
     case Qgis::CaptureTechnique::Streaming:
       mLineDigitizingType = QgsWkbTypes::LineString;
-      mStreamingToleranceInPixels = QgsSettingsRegistryCore::settingsDigitizingStreamTolerance.value();
+      mStreamingToleranceInPixels = QgsSettingsRegistryCore::settingsDigitizingStreamTolerance->value();
       break;
     case Qgis::CaptureTechnique::Shape:
       mLineDigitizingType = QgsWkbTypes::LineString;
@@ -1006,7 +1019,7 @@ void QgsMapToolCapture::closePolygon()
 
 void QgsMapToolCapture::validateGeometry()
 {
-  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries.value() == 0
+  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries->value() == 0
        || !( capabilities() & ValidateGeometries )
      )
     return;
@@ -1050,7 +1063,7 @@ void QgsMapToolCapture::validateGeometry()
     return;
 
   Qgis::GeometryValidationEngine method = Qgis::GeometryValidationEngine::QgisInternal;
-  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries.value() == 2 )
+  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries->value() == 2 )
     method = Qgis::GeometryValidationEngine::Geos;
   mValidator = new QgsGeometryValidator( geom, nullptr, method );
   connect( mValidator, &QgsGeometryValidator::errorFound, this, &QgsMapToolCapture::addError );

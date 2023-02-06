@@ -433,6 +433,7 @@ class QgsSpatiaLiteProviderMetadata final: public QgsProviderMetadata
                     const QString &styleName, const QString &styleDescription,
                     const QString &uiFileContent, bool useAsDefault, QString &errCause ) override;
     QString loadStyle( const QString &uri, QString &errCause ) override;
+    virtual QString loadStoredStyle( const QString &uri, QString &styleName, QString &errCause ) override;
     int listStyles( const QString &uri, QStringList &ids, QStringList &names,
                     QStringList &descriptions, QString &errCause ) override;
     QVariantMap decodeUri( const QString &uri ) const override;

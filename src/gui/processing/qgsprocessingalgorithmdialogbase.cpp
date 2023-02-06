@@ -234,7 +234,11 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
         if ( parameterValues.isEmpty() )
           return;
 
-        setParameters( parameterValues );
+        bool ok = false;
+        QString error;
+        const QVariantMap preparedValues = QgsProcessingUtils::preprocessQgisProcessParameters( parameterValues, ok, error );
+
+        setParameters( preparedValues );
       } );
 
       mButtonBox->addButton( mAdvancedButton, QDialogButtonBox::ResetRole );

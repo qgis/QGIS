@@ -133,14 +133,6 @@ class Processing(object):
                 except ImportError:
                     pass
 
-                try:
-                    from sagaprovider.SagaAlgorithmProvider import SagaAlgorithmProvider
-                    p = SagaAlgorithmProvider()
-                    if QgsApplication.processingRegistry().addProvider(p):
-                        Processing.BASIC_PROVIDERS.append(p)
-                except ImportError:
-                    pass
-
             # And initialize
             ProcessingConfig.initialize()
             ProcessingConfig.readSettings()

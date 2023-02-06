@@ -1,5 +1,0 @@
-Line Simplification
-shapes_lines
-QgsProcessingParameterFeatureSource|LINES|Lines|1|None|False
-QgsProcessingParameterNumber|TOLERANCE|Tolerance|QgsProcessingParameterNumber.Double|1.0|False|None|None
-QgsProcessingParameterVectorDestination|OUTPUT|Simplified Lines

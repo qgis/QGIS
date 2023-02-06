@@ -29,19 +29,17 @@
 #include "qgssymbollayerutils.h"
 #include "qgssymbollayer.h"
 #include "qgsproject.h"
-#include "qgsmaplayerstylemanager.h"
 #include "qgsvectorlayer.h"
 #include "qgslinesymbollayer.h"
 #include "qgslinesymbol.h"
 #include "qgsfillsymbol.h"
-#include "qgsmarkersymbol.h"
+#include "qgsmaplayerstyle.h"
 
 #include "qgsprintlayout.h"
 #include "qgslayoutatlas.h"
 
 #include "qgslayoutundostack.h"
 #include "qgslayoutpagecollection.h"
-#include "qgslayoutitemregistry.h"
 #include "qgslayoutitemlabel.h"
 #include "qgslayoutitemshape.h"
 #include "qgslayoutitempicture.h"
@@ -195,6 +193,7 @@ std::unique_ptr< QgsPrintLayout > QgsCompositionConverter::createLayoutFromCompo
     const QDomElement atlasElement = parentElement.elementsByTagName( QStringLiteral( "Atlas" ) ).at( 0 ).toElement();
     readAtlasXml( layout->atlas(), atlasElement, layout->project() );
   }
+#include "qgslayoutitemregistry.h"
 
   layout->undoStack()->blockCommands( false );
   return layout;
@@ -974,7 +973,7 @@ bool QgsCompositionConverter::readMapXml( QgsLayoutItemMap *layoutItem, const QD
     mapGrid->setFramePenColor( QgsSymbolLayerUtils::decodeColor( gridElem.attribute( QStringLiteral( "framePenColor" ), QStringLiteral( "0,0,0" ) ) ) );
     mapGrid->setFrameFillColor1( QgsSymbolLayerUtils::decodeColor( gridElem.attribute( QStringLiteral( "frameFillColor1" ), QStringLiteral( "255,255,255,255" ) ) ) );
     mapGrid->setFrameFillColor2( QgsSymbolLayerUtils::decodeColor( gridElem.attribute( QStringLiteral( "frameFillColor2" ), QStringLiteral( "0,0,0,255" ) ) ) );
-    mapGrid->setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( itemElem.attribute( QStringLiteral( "gridBlendMode" ), QStringLiteral( "0" ) ).toUInt() ) ) );
+    mapGrid->setBlendMode( QgsPainting::getCompositionMode( static_cast< Qgis::BlendMode >( itemElem.attribute( QStringLiteral( "gridBlendMode" ), QStringLiteral( "0" ) ).toUInt() ) ) );
     const QDomElement gridSymbolElem = gridElem.firstChildElement( QStringLiteral( "symbol" ) );
     QgsLineSymbol *lineSymbol = nullptr;
     if ( gridSymbolElem.isNull() )
@@ -1292,7 +1291,10 @@ bool QgsCompositionConverter::readLegendXml( QgsLayoutItemLegend *layoutItem, co
   //font color
   QColor fontClr;
   fontClr.setNamedColor( itemElem.attribute( QStringLiteral( "fontColor" ), QStringLiteral( "#000000" ) ) );
-  layoutItem->setFontColor( fontClr );
+  layoutItem->rstyle( QgsLegendStyle::Title ).textFormat().setColor( fontClr );
+  layoutItem->rstyle( QgsLegendStyle::Group ).textFormat().setColor( fontClr );
+  layoutItem->rstyle( QgsLegendStyle::Subgroup ).textFormat().setColor( fontClr );
+  layoutItem->rstyle( QgsLegendStyle::SymbolLabel ).textFormat().setColor( fontClr );
 
   //spaces
   layoutItem->setBoxSpace( itemElem.attribute( QStringLiteral( "boxSpace" ), QStringLiteral( "2.0" ) ).toDouble() );
@@ -1302,7 +1304,9 @@ bool QgsCompositionConverter::readLegendXml( QgsLayoutItemLegend *layoutItem, co
   layoutItem->setSymbolHeight( itemElem.attribute( QStringLiteral( "symbolHeight" ), QStringLiteral( "14.0" ) ).toDouble() );
   layoutItem->setWmsLegendWidth( itemElem.attribute( QStringLiteral( "wmsLegendWidth" ), QStringLiteral( "50" ) ).toDouble() );
   layoutItem->setWmsLegendHeight( itemElem.attribute( QStringLiteral( "wmsLegendHeight" ), QStringLiteral( "25" ) ).toDouble() );
+  Q_NOWARN_DEPRECATED_PUSH
   layoutItem->setLineSpacing( itemElem.attribute( QStringLiteral( "lineSpacing" ), QStringLiteral( "1.0" ) ).toDouble() );
+  Q_NOWARN_DEPRECATED_POP
 
   layoutItem->setDrawRasterStroke( itemElem.attribute( QStringLiteral( "rasterBorder" ), QStringLiteral( "1" ) ) != QLatin1String( "0" ) );
   layoutItem->setRasterStrokeColor( QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "rasterBorderColor" ), QStringLiteral( "0,0,0" ) ) ) );
@@ -1737,7 +1741,7 @@ bool QgsCompositionConverter::readXml( QgsLayoutItem *layoutItem, const QDomElem
   }
 
   //blend mode
-  layoutItem->setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( itemElem.attribute( QStringLiteral( "blendMode" ), QStringLiteral( "0" ) ).toUInt() ) ) );
+  layoutItem->setBlendMode( QgsPainting::getCompositionMode( static_cast< Qgis::BlendMode >( itemElem.attribute( QStringLiteral( "blendMode" ), QStringLiteral( "0" ) ).toUInt() ) ) );
 
   //opacity
   if ( itemElem.hasAttribute( QStringLiteral( "opacity" ) ) )

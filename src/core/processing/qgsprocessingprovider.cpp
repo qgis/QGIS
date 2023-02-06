@@ -182,7 +182,7 @@ bool QgsProcessingProvider::isSupportedOutputValue( const QVariant &outputValue,
   else if ( parameter->type() == QgsProcessingParameterRasterDestination::typeName() )
   {
     const QFileInfo fi( outputPath );
-    const QString extension = fi.completeSuffix();
+    const QString extension = fi.suffix();
     if ( !supportedOutputRasterLayerExtensions().contains( extension, Qt::CaseInsensitive ) )
     {
       error = tr( "“.%1” files are not supported as outputs for this algorithm" ).arg( extension );

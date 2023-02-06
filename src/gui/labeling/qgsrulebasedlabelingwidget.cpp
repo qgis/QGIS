@@ -595,7 +595,7 @@ bool QgsRuleBasedLabelingModel::dropMimeData( const QMimeData *data, Qt::DropAct
     QDomElement ruleElem = rootElem.firstChildElement( QStringLiteral( "rule" ) );
     if ( rootElem.attribute( QStringLiteral( "type" ) ) == QLatin1String( "renderer" ) )
       _renderer2labelingRules( ruleElem ); // do some modifications so that we load the rules more nicely
-    QgsRuleBasedLabeling::Rule *rule = QgsRuleBasedLabeling::Rule::create( ruleElem, QgsReadWriteContext() );
+    QgsRuleBasedLabeling::Rule *rule = QgsRuleBasedLabeling::Rule::create( ruleElem, QgsReadWriteContext(), false );
 
     insertRule( parent, row + rows, rule );
 

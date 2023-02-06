@@ -19,7 +19,6 @@
 #include <typeinfo>
 
 #include "qgsapplication.h"
-#include "qgscoordinatetransform.h"
 #include "qgsfileutils.h"
 #include "qgshelp.h"
 #include "qgslogger.h"
@@ -30,12 +29,9 @@
 #include "qgsmeshlayerproperties.h"
 #include "qgsmeshstaticdatasetwidget.h"
 #include "qgsproject.h"
-#include "qgsprojectionselectiondialog.h"
 #include "qgsrenderermeshpropertieswidget.h"
 #include "qgsmeshlayertemporalproperties.h"
 #include "qgssettings.h"
-#include "qgsprojecttimesettings.h"
-#include "qgsproviderregistry.h"
 #include "qgsdatumtransformdialog.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
 #include "qgsgui.h"
@@ -91,6 +87,10 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   connect( mMeshLayer, &QgsMeshLayer::activeScalarDatasetGroupChanged, mStaticDatasetWidget, &QgsMeshStaticDatasetWidget::setScalarDatasetGroup );
   connect( mMeshLayer, &QgsMeshLayer::activeVectorDatasetGroupChanged, mStaticDatasetWidget, &QgsMeshStaticDatasetWidget::setVectorDatasetGroup );
 
+  mScaleRangeWidget->setMapCanvas( mCanvas );
+  chkUseScaleDependentRendering->setChecked( lyr->hasScaleBasedVisibility() );
+  mScaleRangeWidget->setScaleRange( lyr->minimumScale(), lyr->maximumScale() );
+
   connect( mAlwaysTimeFromSourceCheckBox, &QCheckBox::stateChanged, this, [this]
   {
     mTemporalDateTimeReference->setEnabled( !mAlwaysTimeFromSourceCheckBox->isChecked() );
@@ -135,6 +135,8 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   mOptsPage_Source->setProperty( "helpPage", QStringLiteral( "working_with_mesh/mesh_properties.html#source-properties" ) );
   mOptsPage_Style->setProperty( "helpPage", QStringLiteral( "working_with_mesh/mesh_properties.html#symbology-properties" ) );
   mOptsPage_Rendering->setProperty( "helpPage", QStringLiteral( "working_with_mesh/mesh_properties.html#rendering-properties" ) );
+  mOptsPage_Temporal->setProperty( "helpPage", QStringLiteral( "working_with_mesh/mesh_properties.html#temporal-properties" ) );
+  mOptsPage_Metadata->setProperty( "helpPage", QStringLiteral( "working_with_mesh/mesh_properties.html#metadata-properties" ) );
 
   mBtnStyle = new QPushButton( tr( "Style" ) );
   QMenu *menuStyle = new QMenu( this );
@@ -171,8 +173,6 @@ void QgsMeshLayerProperties::addPropertiesPageFactory( const QgsMapLayerConfigWi
 
   QgsMapLayerConfigWidget *page = factory->createWidget( mMeshLayer, mCanvas, false, this );
   mConfigWidgets << page;
-
-  page->setProperty( "helpPage", QStringLiteral( "working_with_mesh/mesh_properties.html#d-view-properties" ) );
 
   const QString beforePage = factory->layerPropertiesPagePositionHint();
   if ( beforePage.isEmpty() )
@@ -389,6 +389,10 @@ void QgsMeshLayerProperties::apply()
                             ( simplifySettings.reductionFactor() != mMeshLayer->meshSimplificationSettings().reductionFactor() ) );
 
   mMeshLayer->setMeshSimplificationSettings( simplifySettings );
+
+  mMeshLayer->setScaleBasedVisibility( chkUseScaleDependentRendering->isChecked() );
+  mMeshLayer->setMinimumScale( mScaleRangeWidget->minimumScale() );
+  mMeshLayer->setMaximumScale( mScaleRangeWidget->maximumScale() );
 
   QgsDebugMsgLevel( QStringLiteral( "processing temporal tab" ), 4 );
   /*

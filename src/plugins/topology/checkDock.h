@@ -106,6 +106,16 @@ class checkDock : public QgsDockWidget, private Ui::checkDock
      */
     void updateRubberBands( bool visible );
 
+    /**
+     * Update the filter combo box to reflect
+     * current error names
+     */
+    void updateFilterComboBox();
+
+    /**
+     * Filter errors using the current filter combo box's value
+     */
+    void filterErrors();
 
   private:
     rulesDialog *mConfigureDialog = nullptr;
@@ -119,8 +129,9 @@ class checkDock : public QgsDockWidget, private Ui::checkDock
     QgsVertexMarker *mVMFeature2 = nullptr;
     QList<QgsRubberBand *> mRbErrorMarkers;
 
+    QStringList mErrorNames;
     ErrorList mErrorList;
-    DockModel *mErrorListModel = nullptr;
+    DockFilterModel *mErrorListModel = nullptr;
 
     QgisInterface *qgsInterface = nullptr;
 

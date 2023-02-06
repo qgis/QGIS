@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsCoordinateReferenceSystem.
 
 Note that most of the tests for this class are in the c++ test file!
@@ -14,8 +13,7 @@ __copyright__ = 'Copyright 2022, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.core import (QgsCoordinateReferenceSystem,
-                       Qgis)
+from qgis.core import Qgis, QgsCoordinateReferenceSystem
 from qgis.testing import start_app, unittest
 
 start_app()

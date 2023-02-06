@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for terrain providers
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,22 +9,20 @@ __author__ = 'Nyall Dawson'
 __date__ = '17/03/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
-import os
 import math
+import os
 
 import qgis  # NOQA
-
 from qgis.PyQt.QtXml import QDomDocument
-
 from qgis.core import (
+    QgsCoordinateReferenceSystem,
     QgsFlatTerrainProvider,
-    QgsRasterDemTerrainProvider,
+    QgsMeshLayer,
     QgsMeshTerrainProvider,
     QgsProject,
+    QgsRasterDemTerrainProvider,
     QgsRasterLayer,
-    QgsMeshLayer,
     QgsReadWriteContext,
-    QgsCoordinateReferenceSystem
 )
 from qgis.testing import start_app, unittest
 

@@ -66,6 +66,11 @@
 					<xs:documentation>Set of descriptive keywords associated with a given resource.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
+			<xs:element name="dates" type="rm:datesType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Set of key dates associated with a given resource.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
 			<xs:element name="contact" type="rm:contactType" maxOccurs="unbounded">
 				<xs:annotation>
 					<xs:documentation>Contact person/entity associated with a given resource.</xs:documentation>
@@ -101,6 +106,54 @@
 				<xs:documentation>Reference (URI/URL preferred) to a codelist or vocabulary associated with keyword list.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
+	</xs:complexType>
+	<xs:simpleType name="dateDescriptor" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Created">
+				<xs:annotation>
+					<xs:documentation>Date resource was created.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="Published">
+				<xs:annotation>
+					<xs:documentation>Date resource was first published.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="Revised">
+				<xs:annotation>
+					<xs:documentation>Date resource was most recently revised.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="Superseded">
+				<xs:annotation>
+					<xs:documentation>Date resource was superseded.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:attributeGroup name="dateAttrs">
+		<xs:attribute name="type" type="rm:dateDescriptor" use="required">
+			<xs:annotation>
+				<xs:documentation>Date type.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="value" type="xs:dateTime" use="required">
+			<xs:annotation>
+				<xs:documentation>Associated datetime value.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:attributeGroup>
+	<xs:complexType name="dateType">
+		<xs:attributeGroup ref="rm:dateAttrs"/>
+	</xs:complexType>
+	<xs:complexType name="datesType">
+		<xs:sequence>
+			<xs:element name="date" minOccurs="0" maxOccurs="unbounded" type="rm:dateType">
+				<xs:annotation>
+					<xs:documentation>A date associated with a resource.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="contactType">
 		<xs:sequence>

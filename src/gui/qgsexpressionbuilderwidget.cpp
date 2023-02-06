@@ -466,7 +466,7 @@ void QgsExpressionBuilderWidget::btnRemoveFile_pressed()
 
     if ( cmbFileNames->count() > 0 )
     {
-      cmbFileNames->setCurrentRow( currentRow > 0 ? currentRow - 1 : 0 );
+      whileBlocking( cmbFileNames )->setCurrentRow( currentRow > 0 ? currentRow - 1 : 0 );
       loadCodeFromFile( mFunctionsPath + QDir::separator() + cmbFileNames->currentItem()->text() );
     }
     else

@@ -45,20 +45,10 @@
 #endif
 
 #ifdef WIN32
-// Open files in binary mode
 #include <fcntl.h> /*  _O_BINARY */
 #include <windows.h>
 #include <dbghelp.h>
 #include <time.h>
-#ifdef MSVC
-#undef _fmode
-int _fmode = _O_BINARY;
-#else
-// Only do this if we are not building on windows with msvc.
-// Recommended method for doing this with msvc is with a call to _set_fmode
-// which is the first thing we do in main().
-// Similarly, with MinGW set _fmode in main().
-#endif  //_MSC_VER
 #else
 #include <getopt.h>
 #endif
@@ -156,6 +146,7 @@ void usage( const QString &appName )
       << QStringLiteral( "\t[-g, --globalsettingsfile path]\tuse the given ini file as Global Settings (defaults)\n" )
       << QStringLiteral( "\t[-a, --authdbdirectory path] use the given directory for authentication database\n" )
       << QStringLiteral( "\t[-f, --code path]\trun the given python file on load\n" )
+      << QStringLiteral( "\t[-F, --py-args arguments]\targuments for python. This arguments will be available for each python execution via 'sys.argv' included the file specified by '--code'. All arguments till '--' are passed to python and ignored by QGIS\n" )
       << QStringLiteral( "\t[-d, --defaultui]\tstart by resetting user ui settings to default\n" )
       << QStringLiteral( "\t[--hide-browser]\thide the browser widget\n" )
       << QStringLiteral( "\t[--dxf-export filename.dxf]\temit dxf output of loaded datasets to given file\n" )
@@ -612,6 +603,7 @@ int main( int argc, char *argv[] )
   QString authdbdirectory;
 
   QString pythonfile;
+  QStringList pythonArgs;
 
   QString customizationfile;
   QString globalsettingsfile;
@@ -731,6 +723,19 @@ int main( int argc, char *argv[] )
         else if ( i + 1 < argc && ( arg == QLatin1String( "--code" ) || arg == QLatin1String( "-f" ) ) )
         {
           pythonfile = QDir::toNativeSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
+        }
+        else if ( i + 1 < argc && ( arg == QLatin1String( "--py-args" ) || arg == QLatin1String( "-F" ) ) )
+        {
+          // Handle all parameters till '--' as code args
+          for ( i++; i < args.size(); ++i )
+          {
+            if ( args[i] == QLatin1String( "--" ) )
+            {
+              i--;
+              break;
+            }
+            pythonArgs << args[i];
+          }
         }
         else if ( i + 1 < argc && ( arg == QLatin1String( "--customizationfile" ) || arg == QLatin1String( "-z" ) ) )
         {
@@ -886,6 +891,16 @@ int main( int argc, char *argv[] )
   // Initialize the application and the translation stuff
   /////////////////////////////////////////////////////////////////////
 
+
+#if defined(Q_OS_WIN)
+  // FIXES #29021
+  // Prevent Qt from treating the AltGr key as  Ctrl+Alt on Windows, which causes shortcuts to be fired
+  // instead of entering some characters (eg "}", "|") on some keyboard layouts
+  // See https://doc.qt.io/qt-6/qguiapplication.html#platform-specific-arguments
+  qputenv( "QT_QPA_PLATFORM", "windows:altgr" );
+#endif
+
+
 #if defined(Q_OS_UNIX) && !defined(Q_OS_MAC) && !defined(ANDROID)
   bool myUseGuiFlag = nullptr != getenv( "DISPLAY" );
 #else
@@ -1003,16 +1018,16 @@ int main( int argc, char *argv[] )
   {
     /* Translation file for QGIS.
     */
-    QString myUserTranslation = QgsApplication::settingsLocaleUserLocale.value();
-    QString myGlobalLocale = QgsApplication::settingsLocaleGlobalLocale.value();
+    QString myUserTranslation = QgsApplication::settingsLocaleUserLocale->value();
+    QString myGlobalLocale = QgsApplication::settingsLocaleGlobalLocale->value();
     bool myShowGroupSeparatorFlag = false; // Default to false
-    bool myLocaleOverrideFlag = QgsApplication::settingsLocaleOverrideFlag.value();
+    bool myLocaleOverrideFlag = QgsApplication::settingsLocaleOverrideFlag->value();
 
     // Override Show Group Separator if the global override flag is set
     if ( myLocaleOverrideFlag )
     {
       // Default to false again
-      myShowGroupSeparatorFlag = QgsApplication::settingsLocaleShowGroupSeparator.value();
+      myShowGroupSeparatorFlag = QgsApplication::settingsLocaleShowGroupSeparator->value();
     }
 
     //
@@ -1026,7 +1041,7 @@ int main( int argc, char *argv[] )
     //
     if ( !translationCode.isNull() && !translationCode.isEmpty() )
     {
-      QgsApplication::settingsLocaleUserLocale.setValue( translationCode );
+      QgsApplication::settingsLocaleUserLocale->setValue( translationCode );
     }
     else
     {
@@ -1035,7 +1050,7 @@ int main( int argc, char *argv[] )
         translationCode = QLocale().name();
         //setting the locale/userLocale when the --lang= option is not set will allow third party
         //plugins to always use the same locale as the QGIS, otherwise they can be out of sync
-        QgsApplication::settingsLocaleUserLocale.setValue( translationCode );
+        QgsApplication::settingsLocaleUserLocale->setValue( translationCode );
       }
       else
       {
@@ -1526,6 +1541,20 @@ int main( int argc, char *argv[] )
       QgsRectangle rect( coords[0], coords[1], coords[2], coords[3] );
       qgis->setExtent( rect );
     }
+  }
+
+  if ( !pythonArgs.isEmpty() )
+  {
+    if ( !pythonfile.isEmpty() )
+    {
+#ifdef Q_OS_WIN
+      //replace backslashes with forward slashes
+      pythonfile.replace( '\\', '/' );
+#endif
+      pythonArgs.prepend( pythonfile );
+    }
+
+    QgsPythonRunner::run( QStringLiteral( "sys.argv = ['%1']" ).arg( pythonArgs.replaceInStrings( QChar( '\'' ), QStringLiteral( "\\'" ) ).join( "','" ) ) );
   }
 
   if ( !pythonfile.isEmpty() )

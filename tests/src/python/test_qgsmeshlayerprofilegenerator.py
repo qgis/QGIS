@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsMeshLayer profile generation
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -13,25 +12,17 @@ __copyright__ = 'Copyright 2022, The QGIS Project'
 import os
 
 import qgis  # NOQA
-
-from qgis.PyQt.QtCore import QTemporaryDir
-
 from qgis.core import (
-    QgsMeshLayer,
-    QgsLineString,
-    QgsProfileRequest,
     QgsCoordinateReferenceSystem,
-    QgsCoordinateTransformContext,
-    QgsFlatTerrainProvider,
-    QgsMeshTerrainProvider,
+    QgsLineString,
+    QgsMeshLayer,
+    QgsProfileIdentifyContext,
     QgsProfilePoint,
+    QgsProfileRequest,
     QgsProfileSnapContext,
-    QgsProfileIdentifyContext
 )
-
-from qgis.PyQt.QtXml import QDomDocument
-
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()

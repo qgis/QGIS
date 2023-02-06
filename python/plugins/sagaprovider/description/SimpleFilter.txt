@@ -1,7 +1,0 @@
-Simple Filter
-grid_filter
-QgsProcessingParameterRasterLayer|INPUT|Grid|None|False
-QgsProcessingParameterEnum|MODE|Search Mode|[0] Square;[1] Circle
-QgsProcessingParameterEnum|METHOD|Filter|[0] Smooth;[1] Sharpen;[2] Edge
-QgsProcessingParameterNumber|RADIUS|Radius|QgsProcessingParameterNumber.Integer|2|False|None|None
-QgsProcessingParameterRasterDestination|RESULT|Filtered Grid

@@ -52,6 +52,11 @@ void QgsCalculateVectorOverlapsAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList< int >() << QgsProcessing::TypeVectorPolygon ) );
   addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Overlay layers" ), QgsProcessing::TypeVectorPolygon ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Overlap" ) ) );
+
+  std::unique_ptr< QgsProcessingParameterNumber > gridSize = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "GRID_SIZE" ),
+      QObject::tr( "Grid size" ), QgsProcessingParameterNumber::Double, QVariant(), true, 0 );
+  gridSize->setFlags( gridSize->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  addParameter( gridSize.release() );
 }
 
 QIcon QgsCalculateVectorOverlapsAlgorithm::icon() const
@@ -130,6 +135,12 @@ QVariantMap QgsCalculateVectorOverlapsAlgorithm::processAlgorithm( const QVarian
   da.setSourceCrs( mCrs, context.transformContext() );
   da.setEllipsoid( context.ellipsoid() );
 
+  QgsGeometryParameters geometryParameters;
+  if ( parameters.value( QStringLiteral( "GRID_SIZE" ) ).isValid() )
+  {
+    geometryParameters.setGridSize( parameterAsDouble( parameters, QStringLiteral( "GRID_SIZE" ), context ) );
+  }
+
   // loop through input
   const double step = mInputCount > 0 ? 100.0 / mInputCount : 0;
   long i = 0;
@@ -176,12 +187,12 @@ QVariantMap QgsCalculateVectorOverlapsAlgorithm::processAlgorithm( const QVarian
           break;
 
         // dissolve intersecting features, calculate total area of them within our buffer
-        const QgsGeometry overlayDissolved = QgsGeometry::unaryUnion( intersectingGeoms );
+        const QgsGeometry overlayDissolved = QgsGeometry::unaryUnion( intersectingGeoms, geometryParameters );
 
         if ( feedback->isCanceled() )
           break;
 
-        const QgsGeometry overlayIntersection = inputGeom.intersection( overlayDissolved );
+        const QgsGeometry overlayIntersection = inputGeom.intersection( overlayDissolved, geometryParameters );
 
         const double overlayArea = da.measureArea( overlayIntersection );
         outAttributes.append( overlayArea );

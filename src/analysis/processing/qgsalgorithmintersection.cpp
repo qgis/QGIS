@@ -74,6 +74,10 @@ void QgsIntersectionAlgorithm::initAlgorithm( const QVariantMap & )
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Intersection" ) ) );
 
+  std::unique_ptr< QgsProcessingParameterNumber > gridSize = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "GRID_SIZE" ),
+      QObject::tr( "Grid size" ), QgsProcessingParameterNumber::Double, QVariant(), true, 0 );
+  gridSize->setFlags( gridSize->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  addParameter( gridSize.release() );
 }
 
 
@@ -112,7 +116,13 @@ QVariantMap QgsIntersectionAlgorithm::processAlgorithm( const QVariantMap &param
   long count = 0;
   const long total = sourceA->featureCount();
 
-  QgsOverlayUtils::intersection( *sourceA, *sourceB, *sink, context, feedback, count, total, fieldIndicesA, fieldIndicesB );
+  QgsGeometryParameters geometryParameters;
+  if ( parameters.value( QStringLiteral( "GRID_SIZE" ) ).isValid() )
+  {
+    geometryParameters.setGridSize( parameterAsDouble( parameters, QStringLiteral( "GRID_SIZE" ), context ) );
+  }
+
+  QgsOverlayUtils::intersection( *sourceA, *sourceB, *sink, context, feedback, count, total, fieldIndicesA, fieldIndicesB, geometryParameters );
 
   return outputs;
 }

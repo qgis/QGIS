@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsElevationProfileCanvas
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,33 +10,16 @@ __date__ = '28/3/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.PyQt.QtCore import (
-    QDir,
-    QEvent,
-    Qt,
-    QPoint,
-    QPointF
-)
-from qgis.PyQt.QtGui import (
-    QKeyEvent,
-    QMouseEvent,
-    QWheelEvent
-)
-
+from qgis.PyQt.QtCore import QDir, QEvent, QPoint, QPointF, Qt
+from qgis.PyQt.QtGui import QKeyEvent, QMouseEvent, QWheelEvent
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsLineString,
     QgsPoint,
     QgsPointXY,
-    QgsProject
+    QgsProject,
 )
-from qgis.gui import (
-    QgsElevationProfileCanvas,
-    QgsPlotTool,
-    QgsPlotMouseEvent
-)
-
+from qgis.gui import QgsElevationProfileCanvas, QgsPlotMouseEvent, QgsPlotTool
 from qgis.testing import start_app, unittest
 
 app = start_app()
@@ -77,7 +59,7 @@ class TestQgsElevationProfileCanvas(unittest.TestCase):
         self.report = "<h1>Python QgsElevationProfileCanvas Tests</h1>\n"
 
     def tearDown(self):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 

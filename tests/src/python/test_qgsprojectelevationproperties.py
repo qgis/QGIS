@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsProjectElevationProperties
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -13,22 +12,19 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 import os
 
 import qgis  # NOQA
-
 from qgis.PyQt.QtCore import QTemporaryDir
-
-from qgis.core import (
-    QgsProjectElevationProperties,
-    QgsReadWriteContext,
-    QgsProject,
-    QgsFlatTerrainProvider,
-    QgsRasterDemTerrainProvider,
-    QgsMeshTerrainProvider,
-    QgsRasterLayer
-)
-
 from qgis.PyQt.QtXml import QDomDocument
-
+from qgis.core import (
+    QgsFlatTerrainProvider,
+    QgsMeshTerrainProvider,
+    QgsProject,
+    QgsProjectElevationProperties,
+    QgsRasterDemTerrainProvider,
+    QgsRasterLayer,
+    QgsReadWriteContext,
+)
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()
@@ -95,7 +91,7 @@ class TestQgsProjectElevationProperties(unittest.TestCase):
         p.elevationProperties().setTerrainProvider(provider)
 
         tmp_dir = QTemporaryDir()
-        tmp_project_file = "{}/project.qgs".format(tmp_dir.path())
+        tmp_project_file = f"{tmp_dir.path()}/project.qgs"
         self.assertTrue(p.write(tmp_project_file))
 
         project2 = QgsProject()

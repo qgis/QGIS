@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsProjectStyleSettings.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,33 +10,32 @@ __date__ = '09/05/2022'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
 import qgis  # NOQA
-import os
-
-from qgis.core import (QgsProject,
-                       QgsProjectStyleSettings,
-                       QgsProjectStyleDatabaseModel,
-                       QgsProjectStyleDatabaseProxyModel,
-                       QgsReadWriteContext,
-                       QgsSymbol,
-                       QgsWkbTypes,
-                       QgsStyle,
-                       QgsGradientColorRamp,
-                       QgsTextFormat,
-                       Qgis)
-
 from qgis.PyQt.QtCore import (
-    Qt,
-    QModelIndex,
-    QTemporaryDir,
     QCoreApplication,
-    QEvent
+    QEvent,
+    QModelIndex,
+    Qt,
+    QTemporaryDir,
 )
-from qgis.PyQt.QtGui import QFont, QColor
-
+from qgis.PyQt.QtGui import QColor, QFont
 from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtXml import QDomDocument, QDomElement
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.core import (
+    Qgis,
+    QgsGradientColorRamp,
+    QgsProject,
+    QgsProjectStyleDatabaseModel,
+    QgsProjectStyleDatabaseProxyModel,
+    QgsProjectStyleSettings,
+    QgsReadWriteContext,
+    QgsStyle,
+    QgsSymbol,
+    QgsTextFormat,
+    QgsWkbTypes,
+)
 from qgis.testing import start_app, unittest
-from utilities import (unitTestDataPath)
+
+from utilities import unitTestDataPath
 
 try:
     from qgis.core import QgsCombinedStyleModel
@@ -110,7 +108,7 @@ class TestQgsProjectViewSettings(unittest.TestCase):
         self.assertEqual(settings.projectStyle().textFormatCount(), 1)
 
         tmp_dir = QTemporaryDir()
-        tmp_project_file = "{}/project.qgs".format(tmp_dir.path())
+        tmp_project_file = f"{tmp_dir.path()}/project.qgs"
         self.assertTrue(project.write(tmp_project_file))
 
         project.deleteLater()

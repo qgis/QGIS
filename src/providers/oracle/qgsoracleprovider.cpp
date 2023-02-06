@@ -803,6 +803,13 @@ bool QgsOracleProvider::hasSufficientPermsAndCapabilities()
   QSqlQuery qry( *conn );
   if ( !mIsQuery )
   {
+    if ( mReadFlags & QgsDataProvider::ForceReadOnly )
+    {
+      // Does not check editable capabilities
+      qry.finish();
+
+      return true;
+    }
     if ( conn->currentUser() == mOwnerName )
     {
       // full set of privileges for the owner
@@ -3817,6 +3824,13 @@ bool QgsOracleProviderMetadata::saveStyle( const QString &uri,
 
 QString QgsOracleProviderMetadata::loadStyle( const QString &uri, QString &errCause )
 {
+  QString styleName;
+  return loadStoredStyle( uri, styleName, errCause );
+}
+
+
+QString QgsOracleProviderMetadata::loadStoredStyle( const QString &uri, QString &styleName, QString &errCause )
+{
   errCause.clear();
   QgsDataSourceUri dsUri( uri );
 
@@ -3841,8 +3855,8 @@ QString QgsOracleProviderMetadata::loadStyle( const QString &uri, QString &errCa
   if ( !dsUri.geometryColumn().isEmpty() )
     args << dsUri.geometryColumn();
 
-  if ( !LoggedExecStatic( qry, "SELECT styleQML FROM ("
-                          "SELECT styleQML"
+  if ( !LoggedExecStatic( qry, "SELECT styleName, styleQML FROM ("
+                          "SELECT styleName, styleQML"
                           " FROM layer_styles"
                           " WHERE f_table_catalog=?"
                           " AND f_table_schema=?"
@@ -3860,13 +3874,15 @@ QString QgsOracleProviderMetadata::loadStyle( const QString &uri, QString &errCa
   }
   else
   {
-    style = qry.value( 0 ).toString();
+    styleName = qry.value( 0 ).toString();
+    style = qry.value( 1 ).toString();
   }
 
   conn->disconnect();
 
   return style;
 }
+
 
 int QgsOracleProviderMetadata::listStyles( const QString &uri,
     QStringList &ids,
@@ -4191,3 +4207,4 @@ QIcon QgsOracleProviderMetadata::icon() const
 {
   return QgsApplication::getThemeIcon( QStringLiteral( "mIconOracle.svg" ) );
 }
+

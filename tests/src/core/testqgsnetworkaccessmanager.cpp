@@ -181,7 +181,7 @@ void TestQgsNetworkAccessManager::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  QgsNetworkAccessManager::settingsNetworkTimeout.setValue( 5000 );
+  QgsNetworkAccessManager::settingsNetworkTimeout->setValue( 5000 );
 
   mHttpBinHost = QStringLiteral( "httpbin.org" );
   const QString overrideHost = qgetenv( "QGIS_HTTPBIN_HOST" );

@@ -213,13 +213,13 @@ class CORE_EXPORT QgsTopologicalMesh
      * Returns whether faces with index in \a faceIndexes can be removed/
      * The method an error object with type QgsMeshEditingError::NoError if the faces can be removed, otherwise returns the corresponding error
      */
-    QgsMeshEditingError facesCanBeRemoved( const QList<int> facesIndexes );
+    QgsMeshEditingError facesCanBeRemoved( const QList<int> &facesIndexes );
 
     /**
      * Removes faces with index in \a faceIndexes.
      * The method returns a instance of the class QgsTopologicalMesh::Change that can be used to reverse or reapply the operation.
      */
-    Changes removeFaces( const QList<int> facesIndexes );
+    Changes removeFaces( const QList<int> &facesIndexes );
 
     /**
      * Returns TRUE if the edge can be flipped (only available for edge shared by two faces with 3 vertices)
@@ -307,6 +307,14 @@ class CORE_EXPORT QgsTopologicalMesh
     static QgsMeshEditingError counterClockwiseFaces( QgsMeshFace &face, QgsMesh *mesh );
 
     /**
+     * Checks the topology of the \a vertices as they are contained in a face and returns indication on direction.
+     * If the face is clockwise, \a clockwise is TRUE
+     *
+     * \since QGIS 3.30
+     */
+    static QgsMeshEditingError checkTopologyOfVerticesAsFace( const QVector<QgsMeshVertex> &vertices, bool &clockwise );
+
+    /**
      * Reindexes faces and vertices, after this operation, the topological
      * mesh can't be edited anymore and only the method mesh can be used to access to the raw mesh.
      */
@@ -333,7 +341,7 @@ class CORE_EXPORT QgsTopologicalMesh
       bool allowUniqueSharedVertex );
 
     //! Returns all faces indexes that are concerned by the face with index in \a faceIndex, that is sharing a least one vertex or one edge
-    QSet<int> concernedFacesBy( const QList<int> faceIndexes ) const;
+    QSet<int> concernedFacesBy( const QList<int> &faceIndexes ) const;
 
     //! References the vertex as a free vertex to be able to access to all free vertices
     void referenceAsFreeVertex( int vertexIndex );

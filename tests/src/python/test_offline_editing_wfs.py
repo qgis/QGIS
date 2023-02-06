@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Offline editing Tests.
 
@@ -20,31 +19,23 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-from builtins import str
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '05/15/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import os
-import sys
 import re
 import subprocess
-from shutil import copytree, rmtree
+import sys
 import tempfile
-from utilities import unitTestDataPath, waitServer
-from qgis.core import (
-    QgsVectorLayer,
-    QgsAuthManager,
-    QgsApplication
-)
+from shutil import copytree, rmtree
 
-from qgis.testing import (
-    start_app,
-    unittest,
-)
+from qgis.core import QgsApplication, QgsVectorLayer
+from qgis.testing import start_app, unittest
 
 from offlineditingtestbase import OfflineTestBase
+from utilities import unitTestDataPath, waitServer
 
 try:
     QGIS_SERVER_OFFLINE_PORT = os.environ['QGIS_SERVER_OFFLINE_PORT']
@@ -97,7 +88,7 @@ class TestWFST(unittest.TestCase, OfflineTestBase):
         self.port = int(re.findall(br':(\d+)', line)[0])
         assert self.port != 0
         # Wait for the server process to start
-        assert waitServer('http://127.0.0.1:%s' % self.port), "Server is not responding!"
+        assert waitServer(f'http://127.0.0.1:{self.port}'), "Server is not responding!"
         self._setUp()
 
     def tearDown(self):
@@ -121,15 +112,15 @@ class TestWFST(unittest.TestCase, OfflineTestBase):
         parms = {
             'srsname': 'EPSG:4326',
             'typename': type_name,
-            'url': 'http://127.0.0.1:%s/%s/?map=%s' % (self.port,
-                                                       self.counter,
-                                                       self.project_path),
+            'url': 'http://127.0.0.1:{}/{}/?map={}'.format(self.port,
+                                                           self.counter,
+                                                           self.project_path),
             'version': 'auto',
             'table': '',
             # 'sql': '',
         }
         self.counter += 1
-        uri = ' '.join([("%s='%s'" % (k, v)) for k, v in list(parms.items())])
+        uri = ' '.join([(f"{k}='{v}'") for k, v in list(parms.items())])
         wfs_layer = QgsVectorLayer(uri, layer_name, 'WFS')
         wfs_layer.setParent(QgsApplication.authManager())
         assert wfs_layer.isValid()

@@ -21,7 +21,6 @@
 #include "qgsapplication.h"
 #include "qgslocaldefaultsettings.h"
 #include "qgsproject.h"
-#include "qgssettings.h"
 
 #include <QDomElement>
 
@@ -47,6 +46,8 @@ void QgsProjectDisplaySettings::reset()
   mCoordinateType = Qgis::CoordinateDisplayType::MapCrs;
   mCoordinateCustomCrs = QgsCoordinateReferenceSystem( "EPSG:4326" );
 
+  mCoordinateAxisOrder = Qgis::CoordinateOrder::Default;
+
   mCoordinateCrs = QgsCoordinateReferenceSystem();
   updateCoordinateCrs();
 
@@ -54,6 +55,7 @@ void QgsProjectDisplaySettings::reset()
   emit geographicCoordinateFormatChanged();
   emit coordinateTypeChanged();
   emit coordinateCustomCrsChanged();
+  emit coordinateAxisOrderChanged();
 }
 
 void QgsProjectDisplaySettings::setBearingFormat( QgsBearingNumericFormat *format )
@@ -87,6 +89,15 @@ void QgsProjectDisplaySettings::setCoordinateType( Qgis::CoordinateDisplayType t
   updateCoordinateCrs();
 
   emit coordinateTypeChanged();
+}
+
+void QgsProjectDisplaySettings::setCoordinateAxisOrder( Qgis::CoordinateOrder order )
+{
+  if ( mCoordinateAxisOrder == order )
+    return;
+
+  mCoordinateAxisOrder = order;
+  emit coordinateAxisOrderChanged();
 }
 
 void QgsProjectDisplaySettings::setCoordinateCustomCrs( const QgsCoordinateReferenceSystem &crs )
@@ -185,7 +196,7 @@ bool QgsProjectDisplaySettings::readXml( const QDomElement &element, const QgsRe
       const QString format = project->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DegreeFormat" ), QString() );
       if ( !format.isEmpty() )
       {
-        if ( format != QStringLiteral( "MU" ) && !project->crs().isGeographic() )
+        if ( format != QLatin1String( "MU" ) && !project->crs().isGeographic() )
         {
           setCoordinateType( Qgis::CoordinateDisplayType::CustomCrs );
         }
@@ -203,6 +214,16 @@ bool QgsProjectDisplaySettings::readXml( const QDomElement &element, const QgsRe
       mCoordinateCustomCrs.readXml( crsElem );
     }
     emit coordinateCustomCrsChanged();
+  }
+
+
+  if ( element.hasAttribute( QStringLiteral( "CoordinateAxisOrder" ) ) )
+  {
+    setCoordinateAxisOrder( qgsEnumKeyToValue( element.attribute( QStringLiteral( "CoordinateAxisOrder" ) ), Qgis::CoordinateOrder::Default ) );
+  }
+  else if ( project )
+  {
+    setCoordinateAxisOrder( qgsEnumKeyToValue( QgsProject::instance()->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/CoordinateOrder" ) ), Qgis::CoordinateOrder::Default ) );
   }
 
   return true;
@@ -231,6 +252,8 @@ QDomElement QgsProjectDisplaySettings::writeXml( QDomDocument &doc, const QgsRea
     mCoordinateCustomCrs.writeXml( crsElem, doc );
     element.appendChild( crsElem );
   }
+
+  element.setAttribute( QStringLiteral( "CoordinateAxisOrder" ), qgsEnumValueToKey( mCoordinateAxisOrder ) );
 
   return element;
 }

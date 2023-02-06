@@ -51,9 +51,9 @@ QgsRasterRenderingOptionsWidget::QgsRasterRenderingOptionsWidget( QWidget *paren
   QString zoomedOutResampling = settings.value( QStringLiteral( "/Raster/defaultZoomedOutResampling" ), QStringLiteral( "nearest neighbour" ) ).toString();
   mZoomedOutResamplingComboBox->setCurrentIndex( mZoomedOutResamplingComboBox->findData( zoomedOutResampling ) );
 
-  spnOversampling->setValue( settings.value( QStringLiteral( "/Raster/defaultOversampling" ), 2.0 ).toDouble() );
+  spnOversampling->setValue( QgsRasterLayer::settingsRasterDefaultOversampling->value() );
   spnOversampling->setClearValue( 2.0 );
-  mCbEarlyResampling->setChecked( settings.value( QStringLiteral( "/Raster/defaultEarlyResampling" ), false ).toBool() );
+  mCbEarlyResampling->setChecked( QgsRasterLayer::settingsRasterDefaultEarlyResampling->value() );
 
   initContrastEnhancement( cboxContrastEnhancementAlgorithmSingleBand, QStringLiteral( "singleBand" ),
                            QgsContrastEnhancement::contrastEnhancementAlgorithmString( QgsRasterLayer::SINGLE_BAND_ENHANCEMENT_ALGORITHM ) );
@@ -89,8 +89,8 @@ void QgsRasterRenderingOptionsWidget::apply()
   settings.setValue( QStringLiteral( "/Raster/defaultZoomedInResampling" ), mZoomedInResamplingComboBox->currentData().toString() );
   settings.setValue( QStringLiteral( "/Raster/defaultZoomedOutResampling" ), mZoomedOutResamplingComboBox->currentData().toString() );
 
-  settings.setValue( QStringLiteral( "/Raster/defaultOversampling" ), spnOversampling->value() );
-  settings.setValue( QStringLiteral( "/Raster/defaultEarlyResampling" ), mCbEarlyResampling->isChecked() );
+  QgsRasterLayer::settingsRasterDefaultOversampling->setValue( spnOversampling->value() );
+  QgsRasterLayer::settingsRasterDefaultEarlyResampling->setValue( mCbEarlyResampling->isChecked() );
 
   saveContrastEnhancement( cboxContrastEnhancementAlgorithmSingleBand, QStringLiteral( "singleBand" ) );
   saveContrastEnhancement( cboxContrastEnhancementAlgorithmMultiBandSingleByte, QStringLiteral( "multiBandSingleByte" ) );

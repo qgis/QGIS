@@ -1,4 +1,3 @@
-# coding=utf-8
 """"Test QgsLegendRenderer JSON export
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -17,13 +16,14 @@ __copyright__ = 'Copyright 2020, ItOpen'
 import os
 
 from qgis.core import (
-    QgsProject,
     QgsLegendModel,
-    QgsLegendSettings,
     QgsLegendRenderer,
+    QgsLegendSettings,
+    QgsProject,
     QgsRenderContext,
 )
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 QGISAPP = start_app()

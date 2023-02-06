@@ -474,6 +474,20 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static QString platform();
 
+
+    /**
+     * Returns the QGIS application full name.
+     *
+     * It can be defined by the environment variable QGIS_APPLICATION_FULL_NAME or the /qgis/application_full_name
+     * in the QGIS config file.
+     *
+     * By default it is equal to applicationName()+' '+platform()
+     *
+     * \see platform()
+     * \since QGIS 3.30
+     */
+    static QString applicationFullName();
+
     /**
      * Returns the QGIS locale.
      * \since QGIS 3.0
@@ -671,8 +685,9 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * Returns the application's settings registry, used for managing application settings.
      * \since QGIS 3.20
+     * \deprecated since QGIS 3.30 use QgsSettings::treeRoot() instead
      */
-    static QgsSettingsRegistryCore *settingsRegistryCore() SIP_KEEPREFERENCE;
+    Q_DECL_DEPRECATED static QgsSettingsRegistryCore *settingsRegistryCore() SIP_KEEPREFERENCE SIP_DEPRECATED;
 
     /**
      * Returns the application's color scheme registry, used for managing color schemes.
@@ -1039,17 +1054,18 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     void collectTranslatableObjects( QgsTranslationContext *translationContext );
 
+
 #ifndef SIP_RUN
     //! Settings entry locale user locale
-    static const inline QgsSettingsEntryString settingsLocaleUserLocale = QgsSettingsEntryString( QStringLiteral( "userLocale" ), QgsSettings::Prefix::LOCALE, QString() );
+    static const QgsSettingsEntryString *settingsLocaleUserLocale;
     //! Settings entry locale override flag
-    static const inline QgsSettingsEntryBool settingsLocaleOverrideFlag = QgsSettingsEntryBool( QStringLiteral( "overrideFlag" ), QgsSettings::Prefix::LOCALE, false );
+    static const QgsSettingsEntryBool *settingsLocaleOverrideFlag;
     //! Settings entry locale global locale
-    static const inline QgsSettingsEntryString settingsLocaleGlobalLocale = QgsSettingsEntryString( QStringLiteral( "globalLocale" ), QgsSettings::Prefix::LOCALE, QString() );
+    static const QgsSettingsEntryString *settingsLocaleGlobalLocale;
     //! Settings entry locale show group separator
-    static const inline QgsSettingsEntryBool settingsLocaleShowGroupSeparator = QgsSettingsEntryBool( QStringLiteral( "showGroupSeparator" ), QgsSettings::Prefix::LOCALE, false );
+    static const QgsSettingsEntryBool *settingsLocaleShowGroupSeparator;
     //! Settings entry search path for SVG
-    static const inline QgsSettingsEntryStringList settingsSearchPathsForSVG = QgsSettingsEntryStringList( QStringLiteral( "searchPathsForSVG" ), QgsSettings::Prefix::SVG, QStringList() );
+    static const QgsSettingsEntryStringList *settingsSearchPathsForSVG;
 #endif
 
 #ifdef SIP_RUN

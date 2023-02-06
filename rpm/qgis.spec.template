@@ -56,7 +56,11 @@ BuildRequires:  desktop-file-utils
 
 # Geo stuff
 BuildRequires:  gdal-devel
+%if 0%{?fedora} >= 37
+BuildRequires:  python3-gdal
+%else
 BuildRequires:  gdal-python3
+%endif
 BuildRequires:  geos-devel
 BuildRequires:  gsl-devel
 BuildRequires:  libspatialite-devel
@@ -87,7 +91,6 @@ BuildRequires:  ocl-icd-devel
 
 # Python stuff
 BuildRequires:  python3-devel
-BuildRequires:  python3-future
 BuildRequires:  python3-jinja2
 BuildRequires:  python3-OWSLib
 BuildRequires:  python3-psycopg2
@@ -110,6 +113,7 @@ BuildRequires:  qscintilla-qt5-devel
 
 # Qt5 stuff
 BuildRequires:  qt5-qtlocation-devel
+BuildRequires:  qt5-qtmultimedia-devel
 BuildRequires:  qt5-qtsvg-devel
 BuildRequires:  qt5-qttools-static
 BuildRequires:  qt5-qtwebkit-devel
@@ -172,9 +176,12 @@ Provides:       %{name}-python = %{combinedversion}-%{release}
 Provides:       %{name}-python%{?_isa} = %{combinedversion}-%{release}
 Summary:        Python integration and plug-ins for QGIS
 Requires:       %{name}%{?_isa} = %{combinedversion}-%{release}
+%if 0%{?fedora} >= 37
+Requires:       python3-gdal
+%else
 Requires:       gdal-python3
+%endif
 Requires:       gdal-python-tools
-Requires:       python3-future
 Requires:       python3-jinja2
 Requires:       python3-OWSLib
 Requires:       python3-psycopg2

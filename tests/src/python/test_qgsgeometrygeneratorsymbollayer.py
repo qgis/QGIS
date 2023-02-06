@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     test_qgsgeometrygeneratorsymbollayer.py
@@ -21,41 +19,40 @@ __author__ = 'Matthias Kuhn'
 __date__ = 'December 2015'
 __copyright__ = '(C) 2015, Matthias Kuhn'
 
-import qgis  # NOQA
-
 import os
 
-from qgis.PyQt.QtCore import QSize, QDir, QPointF
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QDir, QPointF, QSize
 from qgis.PyQt.QtGui import QColor, QImage, QPainter, QPolygonF
 from qgis.core import (
-    QgsVectorLayer,
-    QgsSingleSymbolRenderer,
-    QgsFillSymbol,
-    QgsLineSymbol,
-    QgsMarkerSymbol,
-    QgsProject,
-    QgsRectangle,
-    QgsGeometryGeneratorSymbolLayer,
-    QgsSymbol,
-    QgsMultiRenderChecker,
-    QgsMapSettings,
     Qgis,
-    QgsUnitTypes,
-    QgsRenderContext,
-    QgsRenderChecker,
+    QgsArrowSymbolLayer,
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransform,
-    QgsArrowSymbolLayer,
     QgsFeature,
-    QgsGeometry,
+    QgsFillSymbol,
     QgsFontMarkerSymbolLayer,
     QgsFontUtils,
+    QgsGeometry,
+    QgsGeometryGeneratorSymbolLayer,
+    QgsLineSymbol,
+    QgsMapSettings,
+    QgsMarkerSymbol,
+    QgsMultiRenderChecker,
+    QgsProject,
+    QgsProperty,
+    QgsRectangle,
+    QgsRenderChecker,
+    QgsRenderContext,
+    QgsSingleSymbolRenderer,
+    QgsSymbol,
     QgsSymbolLayer,
-    QgsProperty
+    QgsUnitTypes,
+    QgsVectorLayer,
 )
-
 from qgis.testing import start_app, unittest
 from qgis.testing.mocked import get_iface
+
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
@@ -97,7 +94,7 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
 
     def tearDown(self):
         QgsProject.instance().removeAllMapLayers()
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 
@@ -487,7 +484,7 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         self.assertTrue(res)
 
     def imageCheck(self, name, reference_image, image):
-        self.report += "<h2>Render {}</h2>\n".format(name)
+        self.report += f"<h2>Render {name}</h2>\n"
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + name + ".png"
         image.save(file_name, "PNG")
@@ -497,7 +494,7 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         checker.setColorTolerance(2)
         result = checker.compareImages(name, 0)
         self.report += checker.report()
-        print((self.report))
+        print(self.report)
         return result
 
 

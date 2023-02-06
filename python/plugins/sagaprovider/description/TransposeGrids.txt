@@ -1,6 +1,0 @@
-Transpose Grids
-grid_tools
-QgsProcessingParameterRasterLayer|GRIDS|Input Grid|None|False
-QgsProcessingParameterBoolean|MIRROR_X|Mirror Horizontally|False
-QgsProcessingParameterBoolean|MIRROR_Y|Mirror Vertically|False
-QgsProcessingParameterRasterDestination|TRANSPOSED|Transposed Grid

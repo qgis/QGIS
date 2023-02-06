@@ -29,7 +29,6 @@
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreemodellegendnode.h"
-#include "qgslayertreeregistrybridge.h"
 #include "qgslayertreeviewdefaultactions.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerstylecategoriesmodel.h"
@@ -53,7 +52,7 @@
 #include "qgsxmlutils.h"
 #include "qgsmeshlayer.h"
 #include "qgsmapcanvasutils.h"
-
+#include "qgsmaplayeraction.h"
 
 QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView *view, QgsMapCanvas *canvas )
   : mView( view )
@@ -216,11 +215,23 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         QAction *zoomToNative = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomActual.svg" ) ), tr( "Zoom to Nat&ive Resolution (100%)" ), QgisApp::instance(), &QgisApp::legendLayerZoomNative );
         zoomToNative->setEnabled( rlayer->isValid() );
 
-        if ( rlayer->rasterType() != QgsRasterLayer::Palette )
+        if ( rlayer->rasterType() != Qgis::RasterLayerType::Palette )
         {
           QAction *stretch = menu->addAction( tr( "&Stretch Using Current Extent" ), QgisApp::instance(), &QgisApp::legendLayerStretchUsingCurrentExtent );
           stretch->setEnabled( rlayer->isValid() );
         }
+
+        if ( rlayer->attributeTableCount() > 0 )
+        {
+          // Open RAT action
+          menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ), tr( "Open Raster Attribute Table" ), QgisApp::instance(), &QgisApp::openRasterAttributeTable );
+        }
+        else if ( rlayer->canCreateRasterAttributeTable() )
+        {
+          menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionCreateTable.svg" ) ), tr( "Create Raster Attribute Table" ), QgisApp::instance(), &QgisApp::createRasterAttributeTable );
+        }
+
+        menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddTable.svg" ) ), tr( "Load Raster Attribute Table from VAT.DBF" ), QgisApp::instance(), &QgisApp::loadRasterAttributeTableFromFile );
       }
 
       // No raster support in createSqlVectorLayer (yet)
@@ -395,25 +406,34 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       if ( vlayer && vlayer->selectedFeatureCount() > 0 )
       {
         const int selectionCount = vlayer->selectedFeatureCount();
-        QgsMapLayerAction::Target target;
-        if ( selectionCount == 1 )
-          target = QgsMapLayerAction::Target::SingleFeature;
-        else
-          target = QgsMapLayerAction::Target::MultipleFeatures;
+        const Qgis::MapLayerActionTarget target = selectionCount == 1 ? Qgis::MapLayerActionTarget::SingleFeature : Qgis::MapLayerActionTarget::MultipleFeatures;
 
-        const QList<QgsMapLayerAction *> constRegisteredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer, target );
+        QgsMapLayerActionContext context;
+        const QList<QgsMapLayerAction *> constRegisteredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer, target, context );
         if ( !constRegisteredActions.isEmpty() )
         {
           QMenu *actionMenu = menu->addMenu( tr( "Actions on Selection (%1)" ).arg( selectionCount ) );
           for ( QgsMapLayerAction *action : constRegisteredActions )
           {
-            if ( target == QgsMapLayerAction::Target::SingleFeature )
+            if ( target == Qgis::MapLayerActionTarget::SingleFeature )
             {
-              actionMenu->addAction( action->text(), action, [ = ]() { action->triggerForFeature( vlayer,  vlayer->selectedFeatures().at( 0 ) ); } );
+              actionMenu->addAction( action->text(), action, [ = ]()
+              {
+                Q_NOWARN_DEPRECATED_PUSH
+                action->triggerForFeature( vlayer,  vlayer->selectedFeatures().at( 0 ) );
+                Q_NOWARN_DEPRECATED_POP
+                action->triggerForFeature( vlayer,  vlayer->selectedFeatures().at( 0 ), context );
+              } );
             }
-            else if ( target == QgsMapLayerAction::Target::MultipleFeatures )
+            else if ( target == Qgis::MapLayerActionTarget::MultipleFeatures )
             {
-              actionMenu->addAction( action->text(), action, [ = ]() {action->triggerForFeatures( vlayer, vlayer->selectedFeatures() );} );
+              actionMenu->addAction( action->text(), action, [ = ]()
+              {
+                Q_NOWARN_DEPRECATED_PUSH
+                action->triggerForFeatures( vlayer, vlayer->selectedFeatures() );
+                Q_NOWARN_DEPRECATED_POP
+                action->triggerForFeatures( vlayer, vlayer->selectedFeatures(), context );
+              } );
             }
           }
         }

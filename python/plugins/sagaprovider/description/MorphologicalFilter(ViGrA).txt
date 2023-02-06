@@ -1,8 +1,0 @@
-Morphological Filter (ViGrA)
-imagery_vigra
-QgsProcessingParameterRasterLayer|INPUT|Input|None|False
-QgsProcessingParameterRasterDestination|OUTPUT|Output
-QgsProcessingParameterEnum|TYPE|Operation|[0] Dilation;[1] Erosion;[2] Median;[3] User defined rank|False|0
-QgsProcessingParameterNumber|RADIUS|Radius (cells)|QgsProcessingParameterNumber.Integer|1|False|0|None
-QgsProcessingParameterNumber|RANK|User defined rank|QgsProcessingParameterNumber.Double|0.500000|False|0.000000|1.000000
-QgsProcessingParameterBoolean|RESCALE|Rescale Values (0-255)|True

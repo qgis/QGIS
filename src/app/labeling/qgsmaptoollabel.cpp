@@ -33,12 +33,13 @@
 #include "qgsreferencedgeometry.h"
 #include "qgsnewauxiliarylayerdialog.h"
 #include "qgsadvanceddigitizingdockwidget.h"
+#include "qgssettingsentryimpl.h"
+
 
 #include <QMouseEvent>
 
 QgsMapToolLabel::QgsMapToolLabel( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
   : QgsMapToolAdvancedDigitizing( canvas, cadDock )
-
 {
 }
 
@@ -236,11 +237,7 @@ void QgsMapToolLabel::createRubberBands()
       QgsGeometry geom = f.geometry();
       if ( !geom.isNull() )
       {
-
-        const int r = QgsSettingsRegistryCore::settingsDigitizingLineColorRed.value();
-        const int g = QgsSettingsRegistryCore::settingsDigitizingLineColorGreen.value();
-        const int b = QgsSettingsRegistryCore::settingsDigitizingLineColorBlue.value();
-        const int a = QgsSettingsRegistryCore::settingsDigitizingLineColorAlpha.value();
+        const QColor lineColor = QgsSettingsRegistryCore::settingsDigitizingLineColor->value();
 
         if ( geom.type() == QgsWkbTypes::PolygonGeometry )
         {
@@ -253,12 +250,12 @@ void QgsMapToolLabel::createRubberBands()
         else if ( geom.type() == QgsWkbTypes::LineGeometry )
         {
           mOffsetFromLineStartRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PointGeometry );
-          mOffsetFromLineStartRubberBand->setColor( QColor( r, g, b, a ) );
+          mOffsetFromLineStartRubberBand->setColor( lineColor );
           mOffsetFromLineStartRubberBand->hide();
         }
 
         mFeatureRubberBand = new QgsRubberBand( mCanvas, geom.type() );
-        mFeatureRubberBand->setColor( QColor( r, g, b, a ) );
+        mFeatureRubberBand->setColor( lineColor );
         mFeatureRubberBand->setToGeometry( geom, vlayer );
         mFeatureRubberBand->show();
       }

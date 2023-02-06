@@ -20,6 +20,7 @@
 
 #include "qgis_core.h"
 #include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 #include <QString>
 
 //
@@ -109,14 +110,16 @@ class CORE_EXPORT QgsProcessing
     static const QString TEMPORARY_OUTPUT;
 
 #ifndef SIP_RUN
+    static inline QgsSettingsTreeNode *sTreeConfiguration = QgsSettingsTree::sTreeQgis->createChildNode( QStringLiteral( "configuration" ) );
+
     //! Settings entry prefer filename as layer name
-    static const inline QgsSettingsEntryBool settingsPreferFilenameAsLayerName = QgsSettingsEntryBool( QStringLiteral( "PREFER_FILENAME_AS_LAYER_NAME" ), QgsSettings::Prefix::PROCESSING_CONFIGURATION, true, QObject::tr( "Prefer filename as layer name" ) );
+    static const QgsSettingsEntryBool *settingsPreferFilenameAsLayerName;
     //! Settings entry temp path
-    static const inline QgsSettingsEntryString settingsTempPath = QgsSettingsEntryString( QStringLiteral( "TEMP_PATH2" ), QgsSettings::Prefix::PROCESSING_CONFIGURATION, QString() );
+    static const QgsSettingsEntryString *settingsTempPath;
     //! Settings entry default output vector layer ext
-    static const inline QgsSettingsEntryInteger settingsDefaultOutputVectorLayerExt = QgsSettingsEntryInteger( QStringLiteral( "DefaultOutputVectorLayerExt" ), QgsSettings::Prefix::PROCESSING_CONFIGURATION, -1 );
+    static const QgsSettingsEntryInteger *settingsDefaultOutputVectorLayerExt;
     //! Settings entry default output raster layer ext
-    static const inline QgsSettingsEntryInteger settingsDefaultOutputRasterLayerExt = QgsSettingsEntryInteger( QStringLiteral( "DefaultOutputRasterLayerExt" ), QgsSettings::Prefix::PROCESSING_CONFIGURATION, -1 );
+    static const QgsSettingsEntryInteger *settingsDefaultOutputRasterLayerExt;
 #endif
 };
 

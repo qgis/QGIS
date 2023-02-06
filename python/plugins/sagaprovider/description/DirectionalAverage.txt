@@ -1,7 +1,0 @@
-Directional Average
-contrib_perego
-QgsProcessingParameterRasterLayer|INPUT|Input|None|False
-QgsProcessingParameterRasterDestination|RESULT|Output Grid
-QgsProcessingParameterNumber|ANG|Angle (in degrees)|QgsProcessingParameterNumber.Double|0.000000|False|None|None
-QgsProcessingParameterNumber|R1|Main Radius|QgsProcessingParameterNumber.Double|1.000000|False|None|None
-QgsProcessingParameterNumber|R2|Transversal radius|QgsProcessingParameterNumber.Double|0.500000|False|None|None

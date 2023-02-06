@@ -69,6 +69,20 @@ By default it is root group with zero index.
 .. versionadded:: 3.10
 %End
 
+    void setLayerInsertionMethod( Qgis::LayerTreeInsertionMethod method );
+%Docstring
+Sets the insertion ``method`` used to add layers to the tree
+
+.. versionadded:: 3.30
+%End
+
+    Qgis::LayerTreeInsertionMethod layerInsertionMethod() const;
+%Docstring
+Returns the insertion method used to add layers to the tree
+
+.. versionadded:: 3.30
+%End
+
   signals:
 
     void addedLayersToLayerTree( const QList<QgsMapLayer *> &layers );

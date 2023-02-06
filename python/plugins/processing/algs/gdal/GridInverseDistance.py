@@ -177,7 +177,7 @@ class GridInverseDistance(GdalAlgorithm):
 
         params = 'invdist'
         params += ':power={}'.format(self.parameterAsDouble(parameters, self.POWER, context))
-        params += ':smothing={}'.format(self.parameterAsDouble(parameters, self.SMOOTHING, context))
+        params += ':smoothing={}'.format(self.parameterAsDouble(parameters, self.SMOOTHING, context))
         params += ':radius1={}'.format(self.parameterAsDouble(parameters, self.RADIUS_1, context))
         params += ':radius2={}'.format(self.parameterAsDouble(parameters, self.RADIUS_2, context))
         params += ':angle={}'.format(self.parameterAsDouble(parameters, self.ANGLE, context))

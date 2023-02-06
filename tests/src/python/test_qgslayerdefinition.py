@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLayerDefinition
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -12,20 +11,14 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import os
 import shutil
+
 import qgis  # NOQA
-
 from qgis.PyQt.QtCore import QTemporaryDir
-from qgis.core import (QgsProject,
-                       QgsLayerDefinition,
-                       QgsVectorLayer,
-                       Qgis
-                       )
-
-from qgis.testing import unittest, start_app
-from utilities import unitTestDataPath
-
 from qgis.PyQt.QtXml import QDomDocument
-from qgis.PyQt.QtCore import QTemporaryDir
+from qgis.core import Qgis, QgsLayerDefinition, QgsProject, QgsVectorLayer
+from qgis.testing import start_app, unittest
+
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -152,7 +145,7 @@ class TestQgsLayerDefinition(unittest.TestCase):
         ok, err = QgsLayerDefinition.exportLayerDefinition(temp_dir.filePath('relative.qlr'), [p.layerTreeRoot()], Qgis.FilePathType.Relative)
         self.assertTrue(ok)
 
-        with open(temp_dir.filePath('relative.qlr'), 'rt') as f:
+        with open(temp_dir.filePath('relative.qlr')) as f:
             lines = f.readlines()
         self.assertIn('source="./points_gpkg.gpkg"', '\n'.join(lines))
 
@@ -160,7 +153,7 @@ class TestQgsLayerDefinition(unittest.TestCase):
         ok, err = QgsLayerDefinition.exportLayerDefinition(temp_dir.filePath('absolute.qlr'), [p.layerTreeRoot()], Qgis.FilePathType.Absolute)
         self.assertTrue(ok)
 
-        with open(temp_dir.filePath('absolute.qlr'), 'rt') as f:
+        with open(temp_dir.filePath('absolute.qlr')) as f:
             lines = f.readlines()
         self.assertIn(f'source="{gpkg_path}"', '\n'.join(lines))
 

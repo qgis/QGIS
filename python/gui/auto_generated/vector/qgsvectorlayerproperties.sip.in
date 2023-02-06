@@ -28,6 +28,7 @@ Adds a properties page factory to the vector layer properties dialog.
 %End
 
   protected slots:
+    void optionsStackedWidget_CurrentChanged( int index ) final;
 
   signals:
 

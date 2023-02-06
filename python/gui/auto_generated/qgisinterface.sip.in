@@ -842,6 +842,13 @@ This represents the current layer tree group and index where newly added map lay
 .. versionadded:: 3.10
 %End
 
+    virtual QgsUserProfileManager *userProfileManager() = 0;
+%Docstring
+Returns a reference to the user profile manager
+
+.. versionadded:: 3.30
+%End
+
   public slots: // TODO: do these functions really need to be slots?
 
 
@@ -1233,20 +1240,21 @@ Vector Layer:
 mOptsPage_Information, mOptsPage_Source, mOptsPage_Style, mOptsPage_Labels,
 mOptsPage_Masks, mOptsPage_Diagrams, mOptsPage_SourceFields, mOptsPage_AttributesForm,
 mOptsPage_Joins, mOptsPage_AuxiliaryStorage, mOptsPage_Actions, mOptsPage_Display,
-mOptsPage_Rendering, mOptsPage_Temporal, mOptsPage_Variables, mOptsPage_Metadata,
-mOptsPage_DataDependencies, mOptsPage_Legend, mOptsPage_Server
+mOptsPage_Rendering, mOptsPage_Temporal, mOptsPage_Variables, mOptsPage_Elevation,
+mOptsPage_Metadata, mOptsPage_DataDependencies, mOptsPage_Legend, mOptsPage_Server
 
 Raster Layer:
 mOptsPage_Information, mOptsPage_Source, mOptsPage_Style, mOptsPage_Transparency,
 mOptsPage_Histogram, mOptsPage_Rendering, mOptsPage_Temporal, mOptsPage_Pyramids,
-mOptsPage_Metadata, mOptsPage_Legend, mOptsPage_Server
+mOptsPage_Elevation, mOptsPage_Metadata, mOptsPage_Legend, mOptsPage_Server
 
 Mesh Layer:
 mOptsPage_Information, mOptsPage_Source, mOptsPage_Style, mOptsPage_StyleContent,
-mOptsPage_Rendering, mOptsPage_Temporal, mOptsPage_Metadata
+mOptsPage_Rendering, mOptsPage_Temporal, mOptsPage_Elevation, mOptsPage_Metadata
 
 Point Cloud Layer:
-mOptsPage_Information, mOptsPage_Source, mOptsPage_Metadata, mOptsPage_Statistics
+mOptsPage_Information, mOptsPage_Source, mOptsPage_Elevation, mOptsPage_Metadata,
+mOptsPage_Statistics, mOptsPage_Rendering
 
 Vector Tile Layer:
 mOptsPage_Information, mOptsPage_Style, mOptsPage_Labeling, mOptsPage_Metadata
@@ -1639,7 +1647,7 @@ creating a new browser model for every use.
 .. versionadded:: 3.4
 %End
 
-    virtual void setGpsPanelConnection( QgsGpsConnection *connection ) = 0;
+    virtual void setGpsPanelConnection( QgsGpsConnection *connection /Transfer/ ) = 0;
 %Docstring
 Sets a GPS ``connection`` to use within the GPS Panel widget.
 

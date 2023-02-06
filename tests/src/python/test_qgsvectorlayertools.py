@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit test utils for provider tests.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,10 +10,15 @@ __author__ = 'Denis Rouzaud'
 __date__ = '2016-11-07'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-from qgis.core import QgsFeatureRequest, QgsVectorLayer, QgsProject, QgsVectorLayerTools
-from qgis.testing import start_app, unittest
-
 import os
+
+from qgis.core import (
+    QgsFeatureRequest,
+    QgsProject,
+    QgsVectorLayer,
+    QgsVectorLayerTools,
+)
+from qgis.testing import start_app, unittest
 
 start_app()
 

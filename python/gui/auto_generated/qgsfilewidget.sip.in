@@ -295,6 +295,10 @@ returns a HTML code with a link to the given file path
 Returns a filePath with relative path options applied (or not) !
 %End
 
+  public:
+    virtual QSize minimumSizeHint() const;
+
+
 };
 
 

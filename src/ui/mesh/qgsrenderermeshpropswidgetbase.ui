@@ -494,31 +494,31 @@
   <customwidget>
    <class>QgsMeshRendererScalarSettingsWidget</class>
    <extends>QWidget</extends>
-   <header>mesh/qgsmeshrendererscalarsettingswidget.h</header>
+   <header>qgsmeshrendererscalarsettingswidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsMeshRendererActiveDatasetWidget</class>
    <extends>QWidget</extends>
-   <header>mesh/qgsmeshrendereractivedatasetwidget.h</header>
+   <header>qgsmeshrendereractivedatasetwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsMeshRendererMeshSettingsWidget</class>
    <extends>QWidget</extends>
-   <header>mesh/qgsmeshrenderermeshsettingswidget.h</header>
+   <header>qgsmeshrenderermeshsettingswidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsMeshRendererVectorSettingsWidget</class>
    <extends>QWidget</extends>
-   <header>mesh/qgsmeshrenderervectorsettingswidget.h</header>
+   <header>qgsmeshrenderervectorsettingswidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsMeshRenderer3dAveragingWidget</class>
    <extends>QWidget</extends>
-   <header>mesh/qgsmeshrenderer3daveragingwidget.h</header>
+   <header>qgsmeshrenderer3daveragingwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

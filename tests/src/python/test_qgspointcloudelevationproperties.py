@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsPointCloudLayerElevationProperties
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,23 +10,21 @@ __date__ = '09/11/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.core import (
-    QgsPointCloudLayerElevationProperties,
-    QgsReadWriteContext,
-    QgsUnitTypes,
-    Qgis,
-    QgsPointCloudLayer,
-    QgsProviderRegistry,
-    QgsPointCloudClassifiedRenderer
-)
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
-
+from qgis.core import (
+    Qgis,
+    QgsPointCloudClassifiedRenderer,
+    QgsPointCloudLayer,
+    QgsPointCloudLayerElevationProperties,
+    QgsProviderRegistry,
+    QgsReadWriteContext,
+    QgsUnitTypes,
+)
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
 
+from utilities import unitTestDataPath
 
 start_app()
 

@@ -1,6 +1,0 @@
-Surface Specific Points
-ta_morphometry
-QgsProcessingParameterRasterLayer|ELEVATION|Elevation|None|False
-QgsProcessingParameterEnum|METHOD|Method|[0] Mark Highest Neighbour;[1] Opposite Neighbours;[2] Flow Direction;[3] Flow Direction (up and down);[4] Peucker & Douglas
-QgsProcessingParameterNumber|THRESHOLD|Threshold|QgsProcessingParameterNumber.Double|2.0|False|None|None
-QgsProcessingParameterRasterDestination|RESULT|Result

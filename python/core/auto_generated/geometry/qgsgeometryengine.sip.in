@@ -89,44 +89,68 @@ tests against other geometries.
 .. seealso:: :py:func:`geometryChanged`
 %End
 
-    virtual QgsAbstractGeometry *intersection( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0 /Factory/;
+    virtual QgsAbstractGeometry *intersection( const QgsAbstractGeometry *geom, QString *errorMsg = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0 /Factory/;
 %Docstring
 Calculate the intersection of this and ``geom``.
 
+:param geom: geometry to perform the operation
+:param errorMsg: Error message returned by GEOS
+:param parameters: can be used to specify parameters which control the intersection results (since QGIS 3.28)
+
 .. versionadded:: 3.0
 %End
 
-    virtual QgsAbstractGeometry *difference( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0 /Factory/;
+    virtual QgsAbstractGeometry *difference( const QgsAbstractGeometry *geom, QString *errorMsg = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0 /Factory/;
 %Docstring
 Calculate the difference of this and ``geom``.
 
+:param geom: geometry to perform the operation
+:param errorMsg: Error message returned by GEOS
+:param parameters: can be used to specify parameters which control the difference results (since QGIS 3.28)
+
 .. versionadded:: 3.0
 %End
 
-    virtual QgsAbstractGeometry *combine( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0 /Factory/;
+    virtual QgsAbstractGeometry *combine( const QgsAbstractGeometry *geom, QString *errorMsg = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0 /Factory/;
 %Docstring
 Calculate the combination of this and ``geom``.
 
+:param geom: geometry to perform the operation
+:param errorMsg: Error message returned by GEOS
+:param parameters: can be used to specify parameters which control the union results (since QGIS 3.28)
+
 .. versionadded:: 3.0
 %End
 
-    virtual QgsAbstractGeometry *combine( const QVector<QgsAbstractGeometry *> &geomList, QString *errorMsg ) const = 0 /Factory/;
+    virtual QgsAbstractGeometry *combine( const QVector<QgsAbstractGeometry *> &geomList, QString *errorMsg, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0 /Factory/;
 %Docstring
 Calculate the combination of this and ``geometries``.
 
+:param geomList: list of geometries to perform the operation
+:param errorMsg: Error message returned by GEOS
+:param parameters: can be used to specify parameters which control the combination results (since QGIS 3.28)
+
 .. versionadded:: 3.0
 %End
 
-    virtual QgsAbstractGeometry *combine( const QVector< QgsGeometry > &geometries, QString *errorMsg = 0 ) const = 0 /Factory/;
+    virtual QgsAbstractGeometry *combine( const QVector< QgsGeometry > &geometries, QString *errorMsg = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0 /Factory/;
 %Docstring
 Calculate the combination of this and ``geometries``.
 
+:param geometries: list of geometries to perform the operation
+:param errorMsg: Error message returned by GEOS
+:param parameters: can be used to specify parameters which control the combination results (since QGIS 3.28)
+
 .. versionadded:: 3.0
 %End
 
-    virtual QgsAbstractGeometry *symDifference( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0 /Factory/;
+    virtual QgsAbstractGeometry *symDifference( const QgsAbstractGeometry *geom, QString *errorMsg = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0 /Factory/;
 %Docstring
 Calculate the symmetric difference of this and ``geom``.
+
+:param geom: geometry to perform the operation
+:param errorMsg: Error message returned by GEOS
+:param parameters: can be used to specify parameters which control the difference results (since QGIS 3.28)
 
 .. versionadded:: 3.0
 %End
@@ -329,7 +353,6 @@ Logs an error ``message`` encountered during an operation.
 
     QgsGeometryEngine( const QgsAbstractGeometry *geometry );
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

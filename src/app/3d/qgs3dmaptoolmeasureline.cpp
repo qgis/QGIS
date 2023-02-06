@@ -74,7 +74,7 @@ void Qgs3DMapToolMeasureLine::activate()
 
   mCanvas->scene()->registerPickHandler( mPickHandler.get() );
 
-  mRubberBand.reset( new QgsRubberBand3D( *mCanvas->map(), mCanvas->cameraController(), mCanvas->scene() ) );
+  mRubberBand.reset( new QgsRubberBand3D( *mCanvas->map(), mCanvas->engine(), mCanvas->scene() ) );
 
   if ( mIsAlreadyActivated )
   {

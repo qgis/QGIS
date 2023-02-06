@@ -20,6 +20,7 @@
 #include "qgssettingsregistrycore.h"
 #include "qgsvectorlayer.h"
 #include "qgsvertexmarker.h"
+#include "qgssettingsentryimpl.h"
 
 #include <QToolTip>
 
@@ -54,7 +55,7 @@ void QgsSnapIndicator::setMatch( const QgsPointLocator::Match &match )
       mSnappingMarker->setPenWidth( QgsGuiUtils::scaleIconSize( 3 ) );
     }
 
-    const QColor color = QgsSettingsRegistryCore::settingsDigitizingSnapColor.value();
+    const QColor color = QgsSettingsRegistryCore::settingsDigitizingSnapColor->value();
     mSnappingMarker->setColor( color );
 
     int iconType;
@@ -91,7 +92,7 @@ void QgsSnapIndicator::setMatch( const QgsPointLocator::Match &match )
     mSnappingMarker->setCenter( match.point() );
 
     // tooltip
-    if ( QgsSettingsRegistryCore::settingsDigitizingSnapTooltip.value() )
+    if ( QgsSettingsRegistryCore::settingsDigitizingSnapTooltip->value() )
     {
       const QPoint ptCanvas = mSnappingMarker->toCanvasCoordinates( match.point() ).toPoint();
       const QPoint ptGlobal = mCanvas->mapToGlobal( ptCanvas );

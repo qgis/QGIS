@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for Processing Package Layers algorithm.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,21 +9,23 @@ __author__ = 'Alessandro Pasotti'
 __date__ = '2022-07'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
-import re
 import os
 
-from osgeo import gdal, ogr
+from osgeo import ogr
 from processing.core.Processing import Processing
 from processing.gui.AlgorithmExecutor import execute
-from qgis.analysis import QgsNativeAlgorithms
-from qgis.core import (QgsApplication, QgsVectorLayer,
-                       QgsGeometry, QgsProcessingContext,
-                       QgsProcessingFeedback, QgsSettings,
-                       QgsProviderRegistry, QgsProject, QgsRelation
-                       )
 from qgis.PyQt.QtCore import QCoreApplication, QTemporaryDir
+from qgis.analysis import QgsNativeAlgorithms
+from qgis.core import (
+    QgsApplication,
+    QgsProcessingContext,
+    QgsProcessingFeedback,
+    QgsProject,
+    QgsRelation,
+    QgsSettings,
+    QgsVectorLayer,
+)
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
 
 start_app()
 
@@ -231,9 +232,9 @@ class TestPackageLayers(unittest.TestCase):
 
             # Check export
             for layer_name in list(expected_ids.keys()):
-                l = QgsVectorLayer(self.temp_export_path + '|layername={}'.format(layer_name), layer_name)
+                l = QgsVectorLayer(self.temp_export_path + f'|layername={layer_name}', layer_name)
                 self.assertTrue(l.isValid())
-                ids = set([l.id() for l in l.getFeatures()])
+                ids = {l.id() for l in l.getFeatures()}
                 self.assertEqual(ids, expected_ids[layer_name], layer_name + str(ids))
 
         region = QgsProject.instance().mapLayersByName('region')[0]

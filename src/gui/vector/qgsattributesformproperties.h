@@ -92,6 +92,16 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
       QString htmlCode;
     };
 
+    struct TextElementEditorConfiguration
+    {
+      QString text;
+    };
+
+    struct SpacerElementEditorConfiguration
+    {
+      bool drawLine = false;
+    };
+
     /**
      * \ingroup gui
      * \class DnDTreeItemData
@@ -107,7 +117,9 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
           QmlWidget,
           HtmlWidget,
           WidgetType, //!< In the widget tree, the type of widget
-          Action //!< Layer action
+          Action, //!< Layer action
+          TextWidget, //!< Text widget type, \since QGIS 3.30
+          SpacerWidget, //!< Spacer widget type, \since QGIS 3.30
         };
 
         //do we need that
@@ -212,8 +224,32 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
         HtmlElementEditorConfiguration htmlElementEditorConfiguration() const;
         void setHtmlElementEditorConfiguration( HtmlElementEditorConfiguration htmlElementEditorConfiguration );
 
+        /**
+         * Returns the spacer element configuration
+         * \since QGIS 3.30
+         */
+        SpacerElementEditorConfiguration spacerElementEditorConfiguration() const;
+
+        /**
+         * Sets the the spacer element configuration to \a spacerElementEditorConfiguration
+         * \since QGIS 3.30
+         */
+        void setSpacerElementEditorConfiguration( SpacerElementEditorConfiguration spacerElementEditorConfiguration );
+
         QColor backgroundColor() const;
         void setBackgroundColor( const QColor &backgroundColor );
+
+        /**
+         * Returns the editor configuration for text element.
+         * \since QGIS 3.30
+         */
+        TextElementEditorConfiguration textElementEditorConfiguration() const;
+
+        /**
+         * Sets the editor configuration for text element to \a textElementEditorConfiguration.
+         * \since QGIS 3.30
+         */
+        void setTextElementEditorConfiguration( const TextElementEditorConfiguration &textElementEditorConfiguration );
 
       private:
         Type mType = Field;
@@ -226,6 +262,8 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
         RelationEditorConfiguration mRelationEditorConfiguration;
         QmlElementEditorConfiguration mQmlElementEditorConfiguration;
         HtmlElementEditorConfiguration mHtmlElementEditorConfiguration;
+        TextElementEditorConfiguration mTextElementEditorConfiguration;
+        SpacerElementEditorConfiguration mSpacerElementEditorConfiguration;
         QColor mBackgroundColor;
         bool mCollapsed = false;
         QgsOptionalExpression mCollapsedExpression;
@@ -342,7 +380,7 @@ QDataStream &operator>> ( QDataStream &stream, QgsAttributesFormProperties::DnDT
  *
  * Graphical representation for the attribute editor drag and drop editor
  */
-class GUI_EXPORT QgsAttributesDnDTree : public QTreeWidget
+class GUI_EXPORT QgsAttributesDnDTree : public QTreeWidget, private QgsExpressionContextGenerator
 {
     Q_OBJECT
 
@@ -391,6 +429,10 @@ class GUI_EXPORT QgsAttributesDnDTree : public QTreeWidget
   private:
     QgsVectorLayer *mLayer = nullptr;
     Type mType = QgsAttributesDnDTree::Type::Drag;
+
+    // QgsExpressionContextGenerator interface
+  public:
+    QgsExpressionContext createExpressionContext() const override;
 };
 
 

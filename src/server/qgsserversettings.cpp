@@ -164,6 +164,18 @@ void QgsServerSettings::initSettings()
                                       };
   mSettings[ sTrustLayerMetadata.envVar ] = sTrustLayerMetadata;
 
+
+  // force to open layers in read-only mode
+  const Setting sForceReadOnlyLayers = { QgsServerSettingsEnv::QGIS_SERVER_FORCE_READONLY_LAYERS,
+                                         QgsServerSettingsEnv::DEFAULT_VALUE,
+                                         QStringLiteral( "Force to open layers in read-only mode" ),
+                                         QString(),
+                                         QVariant::Bool,
+                                         QVariant( false ),
+                                         QVariant()
+                                       };
+  mSettings[ sForceReadOnlyLayers.envVar ] = sForceReadOnlyLayers;
+
   // don't load layouts
   const Setting sDontLoadLayouts = { QgsServerSettingsEnv::QGIS_SERVER_DISABLE_GETPRINT,
                                      QgsServerSettingsEnv::DEFAULT_VALUE,
@@ -366,6 +378,16 @@ void QgsServerSettings::initSettings()
                                            QVariant()
                                          };
   mSettings[ sAllowedExtraSqlTokens.envVar ] = sAllowedExtraSqlTokens;
+
+  const Setting sApplicationName = { QgsServerSettingsEnv::QGIS_SERVER_APPLICATION_NAME,
+                                     QgsServerSettingsEnv::DEFAULT_VALUE,
+                                     QStringLiteral( "The QGIS Server application name" ),
+                                     QStringLiteral( "/qgis/application_full_name" ),
+                                     QVariant::String,
+                                     QVariant( QgsApplication::applicationFullName() ),
+                                     QVariant()
+                                   };
+  mSettings[ sApplicationName.envVar ] = sApplicationName;
 
 }
 
@@ -612,6 +634,11 @@ bool QgsServerSettings::trustLayerMetadata() const
   return value( QgsServerSettingsEnv::QGIS_SERVER_TRUST_LAYER_METADATA ).toBool();
 }
 
+bool QgsServerSettings::forceReadOnlyLayers() const
+{
+  return value( QgsServerSettingsEnv::QGIS_SERVER_FORCE_READONLY_LAYERS ).toBool();
+}
+
 bool QgsServerSettings::getPrintDisabled() const
 {
   return value( QgsServerSettingsEnv::QGIS_SERVER_DISABLE_GETPRINT ).toBool();
@@ -678,3 +705,7 @@ QStringList QgsServerSettings::allowedExtraSqlTokens() const
   return strVal.split( ',' );
 }
 
+QString QgsServerSettings::applicationName() const
+{
+  return value( QgsServerSettingsEnv::QGIS_SERVER_APPLICATION_NAME ).toString().trimmed();
+}

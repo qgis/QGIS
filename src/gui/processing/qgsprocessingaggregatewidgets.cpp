@@ -257,7 +257,6 @@ void QgsAggregateMappingModel::setSourceFields( const QgsFields &sourceFields )
   if ( mExpressionContextGenerator )
     mExpressionContextGenerator->setSourceFields( mSourceFields );
 
-  const QStringList usedFields;
   beginResetModel();
   mMapping.clear();
 

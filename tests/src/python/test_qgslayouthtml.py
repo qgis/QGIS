@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLayoutItemHtml.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,22 +9,21 @@ __author__ = 'Nyall Dawson'
 __date__ = '20/11/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
 
-from qgis.PyQt.QtCore import QUrl, qDebug, QRectF
-from qgis.core import (QgsLayout,
-                       QgsLayoutItemHtml,
-                       QgsLayoutFrame,
-                       QgsLayoutMultiFrame,
-                       QgsMapSettings,
-                       QgsProject)
-
-from qgslayoutchecker import QgsLayoutChecker
-
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QRectF, QUrl, qDebug
+from qgis.core import (
+    QgsLayout,
+    QgsLayoutFrame,
+    QgsLayoutItemHtml,
+    QgsLayoutMultiFrame,
+    QgsProject,
+)
 from qgis.testing import start_app, unittest
 from qgis.testing.mocked import get_iface
+
+from qgslayoutchecker import QgsLayoutChecker
 from utilities import unitTestDataPath
 
 start_app()

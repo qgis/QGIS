@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLayout
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,36 +9,33 @@ __author__ = 'Nyall Dawson'
 __date__ = '18/07/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
+import os
+import shutil
+import tempfile
+
 import qgis  # NOQA
 from qgis.PyQt import sip
-import tempfile
-import shutil
-import os
-
-from qgis.core import (QgsUnitTypes,
-                       QgsLayout,
-                       QgsLayoutItemPage,
-                       QgsLayoutGuide,
-                       QgsLayoutObject,
-                       QgsProject,
-                       QgsPrintLayout,
-                       QgsLayoutItemGroup,
-                       QgsLayoutItem,
-                       QgsLayoutItemHtml,
-                       QgsProperty,
-                       QgsLayoutPageCollection,
-                       QgsLayoutMeasurement,
-                       QgsLayoutFrame,
-                       QgsFillSymbol,
-                       QgsReadWriteContext,
-                       QgsLayoutItemMap,
-                       QgsLayoutItemLabel,
-                       QgsLayoutSize,
-                       QgsLayoutPoint)
-from qgis.PyQt.QtCore import Qt, QCoreApplication, QEvent, QPointF, QRectF
+from qgis.PyQt.QtCore import QPointF, Qt
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
-
+from qgis.core import (
+    QgsLayout,
+    QgsLayoutFrame,
+    QgsLayoutGuide,
+    QgsLayoutItem,
+    QgsLayoutItemGroup,
+    QgsLayoutItemHtml,
+    QgsLayoutItemLabel,
+    QgsLayoutItemMap,
+    QgsLayoutItemPage,
+    QgsLayoutMeasurement,
+    QgsLayoutPoint,
+    QgsLayoutSize,
+    QgsPrintLayout,
+    QgsProject,
+    QgsReadWriteContext,
+    QgsUnitTypes,
+)
 from qgis.testing import start_app, unittest
 
 start_app()
@@ -403,14 +399,14 @@ class TestQgsLayout(unittest.TestCase):
 
         self.assertFalse(l.selectedLayoutItems())
         item1.setSelected(True)
-        self.assertEqual(set(l.selectedLayoutItems()), set([item1]))
+        self.assertEqual(set(l.selectedLayoutItems()), {item1})
         item2.setSelected(True)
-        self.assertEqual(set(l.selectedLayoutItems()), set([item1, item2]))
+        self.assertEqual(set(l.selectedLayoutItems()), {item1, item2})
         item3.setSelected(True)
-        self.assertEqual(set(l.selectedLayoutItems()), set([item1, item2, item3]))
+        self.assertEqual(set(l.selectedLayoutItems()), {item1, item2, item3})
         item3.setLocked(True)
-        self.assertEqual(set(l.selectedLayoutItems(False)), set([item1, item2]))
-        self.assertEqual(set(l.selectedLayoutItems(True)), set([item1, item2, item3]))
+        self.assertEqual(set(l.selectedLayoutItems(False)), {item1, item2})
+        self.assertEqual(set(l.selectedLayoutItems(True)), {item1, item2, item3})
 
     def testSelections(self):
         p = QgsProject()

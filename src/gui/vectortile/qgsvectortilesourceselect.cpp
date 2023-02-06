@@ -36,6 +36,8 @@ QgsVectorTileSourceSelect::QgsVectorTileSourceSelect( QWidget *parent, Qt::Windo
 {
   setupUi( this );
 
+  mConnectionDetailsGroupBox->hide();
+
   setWindowTitle( tr( "Add Vector Tile Layer" ) );
   mConnectionsGroupBox->setTitle( tr( "Vector Tile Connections" ) );
 

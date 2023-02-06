@@ -65,24 +65,6 @@ for my $f (<python/plugins/processing/algs/grass*/description/*.txt>) {
 	$strings{"GrassAlgorithm"}{$group} = $f;
 }
 
-for my $f (<python/plugins/processing/algs/saga/description/*.txt>) {
-	open I, $f;
-	binmode(I, ":utf8");
-	my $desc = scalar(<I>);
-
-	while( my($class, $name, $description, $rest) = split /\|/, scalar(<I>) ) {
-		next unless defined $description;
-		$description =~ s/\s+$//;
-		$strings{"SAGAAlgorithm"}{$description} = $f
-	}
-
-	close I;
-
-	chop $desc;
-
-	$strings{"SAGAAlgorithm"}{$desc} = $f;
-}
-
 for my $f (<python/plugins/processing/algs/help/*.yaml>) {
 	my ($base) = $f =~ /.*\/(.*)\.yaml$/;
 	$base = uc $base;

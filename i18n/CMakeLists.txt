@@ -23,11 +23,11 @@ endmacro(ADD_TRANSLATION_FILES)
 file(MAKE_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/i18n)
 
 
-set(TS_FILES qgis_ar.ts qgis_bg.ts qgis_bs.ts qgis_ca.ts qgis_cs.ts qgis_da.ts qgis_de.ts qgis_el.ts qgis_en_US.ts qgis_es.ts qgis_et.ts qgis_eu.ts qgis_fa.ts qgis_fi.ts qgis_fr.ts qgis_gl.ts qgis_hu.ts qgis_is.ts qgis_it.ts qgis_ja.ts qgis_ko.ts qgis_ky.ts qgis_lt.ts qgis_lv.ts qgis_nb.ts qgis_nl.ts qgis_pl.ts qgis_pt_BR.ts qgis_pt_PT.ts qgis_ro.ts qgis_ru.ts qgis_sc.ts qgis_sv.ts qgis_tr.ts qgis_uk.ts qgis_vi.ts qgis_zh-Hans.ts qgis_zh-Hant.ts)
+set(TS_FILES qgis_ar.ts qgis_bg.ts qgis_bs.ts qgis_ca.ts qgis_cs.ts qgis_da.ts qgis_de.ts qgis_en_US.ts qgis_es.ts qgis_et.ts qgis_eu.ts qgis_fa.ts qgis_fi.ts qgis_fr.ts qgis_gl.ts qgis_hu.ts qgis_is.ts qgis_it.ts qgis_ja.ts qgis_ko.ts qgis_ky.ts qgis_lt.ts qgis_lv.ts qgis_nb.ts qgis_nl.ts qgis_pl.ts qgis_pt_BR.ts qgis_pt_PT.ts qgis_ro.ts qgis_ru.ts qgis_sc.ts qgis_sv.ts qgis_tr.ts qgis_uk.ts qgis_vi.ts qgis_zh-Hans.ts qgis_zh-Hant.ts)
 
 ADD_TRANSLATION_FILES (QM_FILES ${TS_FILES})
 
-if (UNIX AND NOT APPLE AND PYQT5_FOUND)
+if (UNIX AND NOT APPLE AND PYQT_FOUND)
   add_custom_command(
     OUTPUT ${CMAKE_BINARY_DIR}/org.qgis.qgis.desktop ${CMAKE_BINARY_DIR}/org.qgis.qgis.appdata.xml
     WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"

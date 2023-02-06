@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsDatabaseTableModel
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -14,21 +13,17 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import os
+
+from qgis.PyQt.QtCore import QCoreApplication, QModelIndex, Qt, QVariant
 from qgis.core import (
-    QgsDatabaseTableModel,
-    QgsProviderRegistry,
     QgsCoordinateReferenceSystem,
-    QgsWkbTypes,
+    QgsDatabaseTableModel,
+    QgsField,
     QgsFields,
-    QgsField
+    QgsProviderRegistry,
+    QgsWkbTypes,
 )
-from qgis.PyQt.QtCore import (
-    QCoreApplication,
-    QModelIndex,
-    Qt,
-    QVariant
-)
-from qgis.testing import unittest, start_app
+from qgis.testing import start_app, unittest
 
 
 class TestPyQgsDatabaseTableModel(unittest.TestCase):

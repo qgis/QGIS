@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for edit widgets.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,13 +10,19 @@ __date__ = '20/05/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.core import (QgsProject, QgsFeature, QgsGeometry, QgsPointXY, QgsVectorLayer, NULL, QgsField)
+from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtWidgets import QTextEdit
+from qgis.core import (
+    NULL,
+    QgsFeature,
+    QgsField,
+    QgsGeometry,
+    QgsPointXY,
+    QgsProject,
+    QgsVectorLayer,
+)
 from qgis.gui import QgsGui
-
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtCore import Qt, QVariant
-from qgis.PyQt.QtWidgets import QTextEdit, QTableWidgetItem
 
 start_app()
 
@@ -124,24 +129,6 @@ class TestQgsValueRelationWidget(unittest.TestCase):
         self.assertFalse(widget.isEnabled())
         wrapper.setEnabled(True)
         self.assertTrue(widget.isEnabled())
-
-    def test_enableDisableOnTableWidget(self):
-        reg = QgsGui.editorWidgetRegistry()
-        layer = QgsVectorLayer("none?field=number:integer", "layer", "memory")
-        wrapper = reg.create('ValueRelation', layer, 0, {'AllowMulti': 'True'}, None, None)
-
-        widget = wrapper.widget()
-        item = QTableWidgetItem('first item')
-        widget.setItem(0, 0, item)
-
-        # does not change the state the whole widget but the single items instead
-        wrapper.setEnabled(False)
-        # widget still true, but items false
-        self.assertTrue(widget.isEnabled())
-        self.assertNotEqual(widget.item(0, 0).flags(), widget.item(0, 0).flags() | Qt.ItemIsEnabled)
-        wrapper.setEnabled(True)
-        self.assertTrue(widget.isEnabled())
-        self.assertEqual(widget.item(0, 0).flags(), widget.item(0, 0).flags() | Qt.ItemIsEnabled)
 
     def test_value_relation_set_value_not_in_map(self):
         """

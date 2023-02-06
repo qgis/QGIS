@@ -20,8 +20,8 @@
 #include "qgslayoutlegendlayersdialog.h"
 #include "qgslayoutitemwidget.h"
 #include "qgslayoutitemmap.h"
-#include "qgslayout.h"
 #include "qgsguiutils.h"
+#include "qgslayoutdesignerinterface.h"
 
 #include "qgsapplication.h"
 #include "qgslayertree.h"
@@ -31,7 +31,6 @@
 #include "qgslegendrenderer.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerlegend.h"
-#include "qgsproject.h"
 #include "qgsrenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgslayoutatlas.h"
@@ -40,9 +39,8 @@
 #include "qgsunittypes.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgslegendpatchshapewidget.h"
-#include "qgslayertreefilterproxymodel.h"
 #include "qgscolorramplegendnodewidget.h"
+#include "qgssymbol.h"
 
 #include <QMenu>
 #include <QMessageBox>
@@ -104,10 +102,8 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
   connect( mSymbolSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mSymbolSpaceSpinBox_valueChanged );
   connect( mSymbolSideSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::spaceSymbolSideChanged );
   connect( mIconLabelSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mIconLabelSpaceSpinBox_valueChanged );
-  connect( mFontColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutLegendWidget::mFontColorButton_colorChanged );
   connect( mBoxSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mBoxSpaceSpinBox_valueChanged );
   connect( mColumnSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mColumnSpaceSpinBox_valueChanged );
-  connect( mLineSpacingSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mLineSpacingSpinBox_valueChanged );
   connect( mCheckBoxAutoUpdate, &QCheckBox::stateChanged, this, [ = ]( int state ) { mCheckBoxAutoUpdate_stateChanged( state ); } );
   connect( mCheckboxResizeContents, &QCheckBox::toggled, this, &QgsLayoutLegendWidget::mCheckboxResizeContents_toggled );
   connect( mRasterStrokeGroupBox, &QgsCollapsibleGroupBoxBasic::toggled, this, &QgsLayoutLegendWidget::mRasterStrokeGroupBox_toggled );
@@ -128,10 +124,10 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
   connect( mItemTreeView, &QgsLayerTreeView::doubleClicked, this, &QgsLayoutLegendWidget::mItemTreeView_doubleClicked );
   setPanelTitle( tr( "Legend Properties" ) );
 
-  mTitleFontButton->setMode( QgsFontButton::ModeQFont );
-  mGroupFontButton->setMode( QgsFontButton::ModeQFont );
-  mLayerFontButton->setMode( QgsFontButton::ModeQFont );
-  mItemFontButton->setMode( QgsFontButton::ModeQFont );
+  mTitleFontButton->setMode( QgsFontButton::ModeTextRenderer );
+  mGroupFontButton->setMode( QgsFontButton::ModeTextRenderer );
+  mLayerFontButton->setMode( QgsFontButton::ModeTextRenderer );
+  mItemFontButton->setMode( QgsFontButton::ModeTextRenderer );
 
   mTitleAlignCombo->setAvailableAlignments( Qt::AlignLeft | Qt::AlignHCenter | Qt::AlignRight );
   mGroupAlignCombo->setAvailableAlignments( Qt::AlignLeft | Qt::AlignHCenter | Qt::AlignRight );
@@ -168,9 +164,6 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
   mExpressionFilterButton->setIconSize( QgsGuiUtils::iconSize( true ) );
   mLayerExpressionButton->setIconSize( QgsGuiUtils::iconSize( true ) );
 
-  mFontColorButton->setColorDialogTitle( tr( "Select Font Color" ) );
-  mFontColorButton->setContext( QStringLiteral( "composer" ) );
-
   mRasterStrokeColorButton->setColorDialogTitle( tr( "Select Stroke Color" ) );
   mRasterStrokeColorButton->setAllowOpacity( true );
   mRasterStrokeColorButton->setContext( QStringLiteral( "composer " ) );
@@ -197,6 +190,23 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
   }
   connect( &legend->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, this, &QgsLayoutLegendWidget::updateFilterLegendByAtlasButton );
 
+  mTitleFontButton->registerExpressionContextGenerator( this );
+  mGroupFontButton->registerExpressionContextGenerator( this );
+  mLayerFontButton->registerExpressionContextGenerator( this );
+  mItemFontButton->registerExpressionContextGenerator( this );
+
+  mTitleFontButton->setLayer( coverageLayer() );
+  mGroupFontButton->setLayer( coverageLayer() );
+  mLayerFontButton->setLayer( coverageLayer() );
+  mItemFontButton->setLayer( coverageLayer() );
+  if ( mLegend->layout() )
+  {
+    connect( &mLegend->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mTitleFontButton, &QgsFontButton::setLayer );
+    connect( &mLegend->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mGroupFontButton, &QgsFontButton::setLayer );
+    connect( &mLegend->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mLayerFontButton, &QgsFontButton::setLayer );
+    connect( &mLegend->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mItemFontButton, &QgsFontButton::setLayer );
+  }
+
   registerDataDefinedButton( mLegendTitleDDBtn, QgsLayoutObject::LegendTitle );
   registerDataDefinedButton( mColumnsDDBtn, QgsLayoutObject::LegendColumnCount );
 
@@ -214,6 +224,15 @@ void QgsLayoutLegendWidget::setMasterLayout( QgsMasterLayoutInterface *masterLay
 {
   if ( mItemPropertiesWidget )
     mItemPropertiesWidget->setMasterLayout( masterLayout );
+}
+
+void QgsLayoutLegendWidget::setDesignerInterface( QgsLayoutDesignerInterface *iface )
+{
+  QgsLayoutItemBaseWidget::setDesignerInterface( iface );
+  mTitleFontButton->setMessageBar( iface->messageBar() );
+  mGroupFontButton->setMessageBar( iface->messageBar() );
+  mLayerFontButton->setMessageBar( iface->messageBar() );
+  mItemFontButton->setMessageBar( iface->messageBar() );
 }
 
 void QgsLayoutLegendWidget::setGuiElements()
@@ -255,7 +274,6 @@ void QgsLayoutLegendWidget::setGuiElements()
   mSymbolSideSpaceSpinBox->setValue( mLegend->style( QgsLegendStyle::Symbol ).margin( QgsLegendStyle::Left ) );
   mBoxSpaceSpinBox->setValue( mLegend->boxSpace() );
   mColumnSpaceSpinBox->setValue( mLegend->columnSpace() );
-  mLineSpacingSpinBox->setValue( mLegend->lineSpacing() );
 
   mRasterStrokeGroupBox->setChecked( mLegend->drawRasterStroke() );
   mRasterStrokeWidthSpinBox->setValue( mLegend->rasterStrokeWidth() );
@@ -269,11 +287,10 @@ void QgsLayoutLegendWidget::setGuiElements()
 
   QgsLayoutItemMap *map = mLegend->linkedMap();
   mMapComboBox->setItem( map );
-  mFontColorButton->setColor( mLegend->fontColor() );
-  mTitleFontButton->setCurrentFont( mLegend->style( QgsLegendStyle::Title ).font() );
-  mGroupFontButton->setCurrentFont( mLegend->style( QgsLegendStyle::Group ).font() );
-  mLayerFontButton->setCurrentFont( mLegend->style( QgsLegendStyle::Subgroup ).font() );
-  mItemFontButton->setCurrentFont( mLegend->style( QgsLegendStyle::SymbolLabel ).font() );
+  mTitleFontButton->setTextFormat( mLegend->style( QgsLegendStyle::Title ).textFormat() );
+  mGroupFontButton->setTextFormat( mLegend->style( QgsLegendStyle::Group ).textFormat() );
+  mLayerFontButton->setTextFormat( mLegend->style( QgsLegendStyle::Subgroup ).textFormat() );
+  mItemFontButton->setTextFormat( mLegend->style( QgsLegendStyle::SymbolLabel ).textFormat() );
 
   blockAllSignals( false );
 
@@ -612,7 +629,7 @@ void QgsLayoutLegendWidget::titleFontChanged()
   if ( mLegend )
   {
     mLegend->beginCommand( tr( "Change Title Font" ), QgsLayoutItem::UndoLegendTitleFont );
-    mLegend->setStyleFont( QgsLegendStyle::Title, mTitleFontButton->currentFont() );
+    mLegend->rstyle( QgsLegendStyle::Title ).setTextFormat( mTitleFontButton->textFormat() );
     mLegend->adjustBoxSize();
     mLegend->update();
     mLegend->endCommand();
@@ -624,7 +641,7 @@ void QgsLayoutLegendWidget::groupFontChanged()
   if ( mLegend )
   {
     mLegend->beginCommand( tr( "Change Group Font" ), QgsLayoutItem::UndoLegendGroupFont );
-    mLegend->setStyleFont( QgsLegendStyle::Group, mGroupFontButton->currentFont() );
+    mLegend->rstyle( QgsLegendStyle::Group ).setTextFormat( mGroupFontButton->textFormat() );
     mLegend->adjustBoxSize();
     mLegend->update();
     mLegend->endCommand();
@@ -636,7 +653,7 @@ void QgsLayoutLegendWidget::layerFontChanged()
   if ( mLegend )
   {
     mLegend->beginCommand( tr( "Change Layer Font" ), QgsLayoutItem::UndoLegendLayerFont );
-    mLegend->setStyleFont( QgsLegendStyle::Subgroup, mLayerFontButton->currentFont() );
+    mLegend->rstyle( QgsLegendStyle::Subgroup ).setTextFormat( mLayerFontButton->textFormat() );
     mLegend->adjustBoxSize();
     mLegend->update();
     mLegend->endCommand();
@@ -648,7 +665,7 @@ void QgsLayoutLegendWidget::itemFontChanged()
   if ( mLegend )
   {
     mLegend->beginCommand( tr( "Change Item Font" ), QgsLayoutItem::UndoLegendItemFont );
-    mLegend->setStyleFont( QgsLegendStyle::SymbolLabel, mItemFontButton->currentFont() );
+    mLegend->rstyle( QgsLegendStyle::SymbolLabel ).setTextFormat( mItemFontButton->textFormat() );
     mLegend->adjustBoxSize();
     mLegend->update();
     mLegend->endCommand();
@@ -665,19 +682,6 @@ void QgsLayoutLegendWidget::spaceBelowSubGroupHeadingChanged( double space )
     mLegend->update();
     mLegend->endCommand();
   }
-}
-
-void QgsLayoutLegendWidget::mFontColorButton_colorChanged( const QColor &newFontColor )
-{
-  if ( !mLegend )
-  {
-    return;
-  }
-
-  mLegend->beginCommand( tr( "Change Font Color" ), QgsLayoutItem::UndoLegendFontColor );
-  mLegend->setFontColor( newFontColor );
-  mLegend->update();
-  mLegend->endCommand();
 }
 
 void QgsLayoutLegendWidget::mBoxSpaceSpinBox_valueChanged( double d )
@@ -698,18 +702,6 @@ void QgsLayoutLegendWidget::mColumnSpaceSpinBox_valueChanged( double d )
   {
     mLegend->beginCommand( tr( "Change Column Space" ), QgsLayoutItem::UndoLegendColumnSpace );
     mLegend->setColumnSpace( d );
-    mLegend->adjustBoxSize();
-    mLegend->update();
-    mLegend->endCommand();
-  }
-}
-
-void QgsLayoutLegendWidget::mLineSpacingSpinBox_valueChanged( double d )
-{
-  if ( mLegend )
-  {
-    mLegend->beginCommand( tr( "Change Line Space" ), QgsLayoutItem::UndoLegendLineSpacing );
-    mLegend->setLineSpacing( d );
     mLegend->adjustBoxSize();
     mLegend->update();
     mLegend->endCommand();
@@ -815,8 +807,7 @@ void QgsLayoutLegendWidget::mCheckBoxAutoUpdate_stateChanged( int state, bool us
     mLegend->beginCommand( tr( "Change Auto Update" ) );
 
     mLegend->setAutoUpdateModel( state == Qt::Checked );
-
-    mLegend->updateFilterByMap();
+    mLegend->update();
     mLegend->endCommand();
   }
 
@@ -853,7 +844,7 @@ void QgsLayoutLegendWidget::composerMapChanged( QgsLayoutItem *item )
   {
     mLegend->beginCommand( tr( "Change Legend Map" ) );
     mLegend->setLinkedMap( map );
-    mLegend->updateFilterByMap();
+    mLegend->update();
     mLegend->endCommand();
 
     setLegendMapViewData();
@@ -871,7 +862,7 @@ void QgsLayoutLegendWidget::mCheckboxResizeContents_toggled( bool checked )
   mLegend->setResizeToContents( checked );
   if ( checked )
     mLegend->adjustBoxSize();
-  mLegend->updateFilterByMap();
+  mLegend->update();
   mLegend->endCommand();
 }
 
@@ -1235,7 +1226,7 @@ void QgsLayoutLegendWidget::updateLegend()
     // this will reset the model completely, losing any changes
     mLegend->setAutoUpdateModel( true );
     mLegend->setAutoUpdateModel( false );
-    mLegend->updateFilterByMap();
+    mLegend->update();
     mLegend->endCommand();
   }
 }
@@ -1244,6 +1235,12 @@ void QgsLayoutLegendWidget::setReportTypeString( const QString &string )
 {
   mFilterLegendByAtlasCheckBox->setText( tr( "Only show items inside current %1 feature" ).arg( string ) );
   mFilterLegendByAtlasCheckBox->setToolTip( tr( "Filter out legend elements that lie outside the current %1 feature." ).arg( string ) );
+}
+
+QgsExpressionContext QgsLayoutLegendWidget::createExpressionContext() const
+{
+  QgsExpressionContext context = mLegend->createExpressionContext();
+  return context;
 }
 
 bool QgsLayoutLegendWidget::setNewItem( QgsLayoutItem *item )
@@ -1298,7 +1295,6 @@ void QgsLayoutLegendWidget::blockAllSignals( bool b )
   mIconLabelSpaceSpinBox->blockSignals( b );
   mBoxSpaceSpinBox->blockSignals( b );
   mColumnSpaceSpinBox->blockSignals( b );
-  mFontColorButton->blockSignals( b );
   mRasterStrokeGroupBox->blockSignals( b );
   mRasterStrokeColorButton->blockSignals( b );
   mRasterStrokeWidthSpinBox->blockSignals( b );
@@ -1312,7 +1308,6 @@ void QgsLayoutLegendWidget::blockAllSignals( bool b )
   mLayerFontButton->blockSignals( b );
   mItemFontButton->blockSignals( b );
   mWrapCharLineEdit->blockSignals( b );
-  mLineSpacingSpinBox->blockSignals( b );
 }
 
 void QgsLayoutLegendWidget::selectedChanged( const QModelIndex &current, const QModelIndex &previous )
@@ -1376,7 +1371,7 @@ void QgsLayoutLegendWidget::setCurrentNodeStyleFromAction()
     return;
 
   QgsLegendRenderer::setNodeLegendStyle( mItemTreeView->currentNode(), static_cast< QgsLegendStyle::Style >( a->data().toInt() ) );
-  mLegend->updateFilterByMap();
+  mLegend->update();
 }
 
 void QgsLayoutLegendWidget::setLegendMapViewData()
@@ -1696,7 +1691,7 @@ void QgsLayoutLegendNodeWidget::labelChanged()
   }
 
   mLegend->adjustBoxSize();
-  mLegend->updateFilterByMap();
+  mLegend->update();
   mLegend->endCommand();
 }
 
@@ -1722,7 +1717,7 @@ void QgsLayoutLegendNodeWidget::patchChanged()
   }
 
   mLegend->adjustBoxSize();
-  mLegend->updateFilterByMap();
+  mLegend->update();
   mLegend->endCommand();
 }
 
@@ -1794,7 +1789,7 @@ void QgsLayoutLegendNodeWidget::sizeChanged( double )
   }
 
   mLegend->adjustBoxSize();
-  mLegend->updateFilterByMap();
+  mLegend->update();
   mLegend->endCommand();
 }
 
@@ -1838,7 +1833,7 @@ void QgsLayoutLegendNodeWidget::customSymbolChanged()
   }
 
   mLegend->adjustBoxSize();
-  mLegend->updateFilterByMap();
+  mLegend->update();
   mLegend->endCommand();
 }
 
@@ -1851,7 +1846,7 @@ void QgsLayoutLegendNodeWidget::colorRampLegendChanged()
   mLegend->model()->refreshLayerLegend( mLayer );
 
   mLegend->adjustBoxSize();
-  mLegend->updateFilterByMap();
+  mLegend->update();
   mLegend->endCommand();
 }
 
@@ -1874,7 +1869,7 @@ void QgsLayoutLegendNodeWidget::columnBreakToggled( bool checked )
   }
 
   mLegend->adjustBoxSize();
-  mLegend->updateFilterByMap();
+  mLegend->update();
   mLegend->endCommand();
 }
 
@@ -1888,7 +1883,7 @@ void QgsLayoutLegendNodeWidget::columnSplitChanged()
   }
 
   mLegend->adjustBoxSize();
-  mLegend->updateFilterByMap();
+  mLegend->update();
   mLegend->endCommand();
 }
 

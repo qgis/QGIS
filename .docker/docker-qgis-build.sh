@@ -57,14 +57,6 @@ if [[ ${BUILD_WITH_QT6} = "ON" ]]; then
 fi
 
 CMAKE_EXTRA_ARGS=()
-if [[ ${PATCH_QT_3D} == "true" ]]; then
-  CMAKE_EXTRA_ARGS+=(
-    "-DQT5_3DEXTRA_LIBRARY=/usr/lib/x86_64-linux-gnu/libQt53DExtras.so"
-    "-DQT5_3DEXTRA_INCLUDE_DIR=${CTEST_SOURCE_DIR}/external/qt3dextra-headers"
-    "-DCMAKE_PREFIX_PATH=${CTEST_SOURCE_DIR}/external/qt3dextra-headers/cmake"
-    "-DQt53DExtras_DIR=${CTEST_SOURCE_DIR}/external/qt3dextra-headers/cmake/Qt53DExtras"
-  )
-fi
 
 if [[ ${BUILD_WITH_QT6} = "ON" ]]; then
   CMAKE_EXTRA_ARGS+=(
@@ -72,6 +64,12 @@ if [[ ${BUILD_WITH_QT6} = "ON" ]]; then
    "-DQSCINTILLA_LIBRARY=/usr/lib64/libqscintilla2_qt6.so"
    "-DQWT_INCLUDE_DIR=/usr/local/qwt-6.2.0/include/"
    "-DQWT_LIBRARY=/usr/local/qwt-6.2.0/lib/libqwt.so.6"
+  )
+fi
+
+if [[ "${WITH_COMPILE_COMMANDS}" == "ON" ]]; then
+  CMAKE_EXTRA_ARGS+=(
+    "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
   )
 fi
 
@@ -100,10 +98,10 @@ cmake \
  -DENABLE_PGTEST=${WITH_QT5} \
  -DENABLE_SAGA_TESTS=${WITH_QT5} \
  -DENABLE_MSSQLTEST=${WITH_QT5} \
- -DENABLE_HANATEST=${HANA_TESTS_ENABLED} \
+ -DENABLE_HANATEST=${WITH_QT5} \
  -DENABLE_ORACLETEST=${WITH_QT5} \
  -DPUSH_TO_CDASH=${PUSH_TO_CDASH} \
- -DWITH_HANA=${WITH_QT5} \
+ -DWITH_HANA=ON \
  -DWITH_QGIS_PROCESS=ON \
  -DWITH_QSPATIALITE=${WITH_QT5} \
  -DWITH_QWTPOLAR=OFF \
@@ -114,7 +112,7 @@ cmake \
  -DWITH_SERVER_LANDINGPAGE_WEBAPP=${WITH_QT5} \
  -DWITH_ORACLE=${WITH_QT5} \
  -DWITH_PDAL=ON \
- -DWITH_QT5SERIALPORT=${WITH_QT5} \
+ -DWITH_QTSERIALPORT=ON \
  -DWITH_QTWEBKIT=${WITH_QT5} \
  -DWITH_OAUTH2_PLUGIN=${WITH_QT5} \
  -DORACLE_INCLUDEDIR=/instantclient_19_9/sdk/include/ \
@@ -123,8 +121,9 @@ cmake \
  -DPYTHON_TEST_WRAPPER="timeout -sSIGSEGV 55s" \
  -DCXX_EXTRA_FLAGS="${CLANG_WARNINGS}" \
  -DWERROR=TRUE \
+ -DAGGRESSIVE_SAFE_MODE=ON \
  -DWITH_CLAZY=${WITH_CLAZY} \
- ${CMAKE_EXTRA_ARGS[*]} ..
+ "${CMAKE_EXTRA_ARGS[@]}" ..
 echo "::endgroup::"
 
 # Workaround https://github.com/actions/checkout/issues/760

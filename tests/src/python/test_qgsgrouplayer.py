@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsGroupLayer.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,38 +9,31 @@ __author__ = 'Nyall Dawson'
 __date__ = '22/11/2021'
 __copyright__ = 'Copyright 2021, The QGIS Project'
 
-import qgis  # NOQA
-
-import tempfile
 import os
-import gc
-from qgis.PyQt.QtCore import (
-    QCoreApplication,
-    QEvent,
-    QSize,
-    QDir
-)
-from qgis.PyQt.QtGui import (
-    QPainter,
-    QColor
-)
 from tempfile import TemporaryDirectory
 
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QCoreApplication, QDir, QEvent, QSize
+from qgis.PyQt.QtGui import QColor, QPainter
 from qgis.core import (
-    QgsFeature,
-    QgsVectorLayer,
-    QgsProject,
+    QgsColorEffect,
     QgsCoordinateTransformContext,
-    QgsGroupLayer,
-    QgsGeometry,
-    QgsPointXY,
-    QgsMapSettings,
-    QgsMultiRenderChecker,
+    QgsDrawSourceEffect,
     QgsDropShadowEffect,
     QgsEffectStack,
-    QgsDrawSourceEffect
+    QgsFeature,
+    QgsGeometry,
+    QgsGroupLayer,
+    QgsImageOperation,
+    QgsMapSettings,
+    QgsMultiRenderChecker,
+    QgsPointXY,
+    QgsProject,
+    QgsRasterLayer,
+    QgsVectorLayer,
 )
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()
@@ -57,7 +49,7 @@ class TestQgsGroupLayer(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(cls.report)
 
@@ -284,6 +276,43 @@ class TestQgsGroupLayer(unittest.TestCase):
         renderchecker.setControlPathPrefix('group_layer')
         renderchecker.setControlName('expected_group_paint_effect')
         result = renderchecker.runTest('expected_group_paint_effect')
+        TestQgsGroupLayer.report += renderchecker.report()
+        self.assertTrue(result)
+
+    def test_render_magnification(self):
+        """
+        Test rendering layers with magnification
+        """
+        vl1 = QgsVectorLayer(TEST_DATA_DIR + '/points.shp')
+        self.assertTrue(vl1.isValid())
+        rl1 = QgsRasterLayer(TEST_DATA_DIR + '/raster_layer.tiff')
+        self.assertTrue(rl1.isValid())
+
+        options = QgsGroupLayer.LayerOptions(QgsCoordinateTransformContext())
+        group_layer = QgsGroupLayer('group', options)
+        group_layer.setChildLayers([rl1, vl1])
+
+        color_effect = QgsColorEffect()
+        color_effect.setGrayscaleMode(QgsImageOperation.GrayscaleAverage)
+
+        effect_stack = QgsEffectStack()
+        effect_stack.appendEffect(color_effect)
+        group_layer.setPaintEffect(effect_stack)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(600, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDpiTarget(192)
+        mapsettings.setMagnificationFactor(2)
+        mapsettings.setDestinationCrs(group_layer.crs())
+        mapsettings.setExtent(group_layer.extent())
+        mapsettings.setLayers([group_layer])
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlPathPrefix('group_layer')
+        renderchecker.setControlName('expected_group_magnification')
+        result = renderchecker.runTest('expected_group_magnification')
         TestQgsGroupLayer.report += renderchecker.report()
         self.assertTrue(result)
 

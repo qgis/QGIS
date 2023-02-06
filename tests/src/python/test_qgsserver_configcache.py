@@ -12,19 +12,15 @@ __date__ = '28/01/2022'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import os
-import sys
-import qgis  # NOQA
-
 from pathlib import Path
 from time import time
 
+import qgis  # NOQA
+from qgis.core import QgsApplication
+from qgis.server import QgsConfigCache, QgsServerSettings
 from qgis.testing import unittest
-from utilities import unitTestDataPath
-from qgis.server import (QgsConfigCache,
-                         QgsServerSettings)
-from qgis.core import QgsApplication, QgsProject
 
-from test_qgsserver import QgsServerTestBase
+from utilities import unitTestDataPath
 
 
 class TestQgsServerConfigCache(unittest.TestCase):
@@ -198,6 +194,18 @@ class TestQgsServerConfigCache(unittest.TestCase):
         QgsConfigCache.initialize(settings)
 
         self.assertEqual(QgsConfigCache.instance().strategyName(), 'off')
+
+    def test_list_projects(self):
+        settings = QgsServerSettings()
+        settings.load()
+        cache = QgsConfigCache(settings)
+
+        path = Path(unitTestDataPath('qgis_server_project')) / 'project.qgs'
+        prj1 = cache.project(str(path))
+
+        projects = cache.projects()
+        self.assertEqual(len(projects), 1)
+        self.assertEqual(projects[0].fileName(), path.as_posix())
 
 
 if __name__ == "__main__":

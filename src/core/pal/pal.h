@@ -36,13 +36,16 @@
 #include "qgis_core.h"
 #include "qgsgeometry.h"
 #include "qgsgeos.h"
-#include "qgslabelingenginesettings.h"
+#include "qgssettingstree.h"
+
 #include <QList>
 #include <iostream>
 #include <ctime>
 #include <QMutex>
 #include <QStringList>
 #include <unordered_map>
+
+class QgsSettingsEntryInteger;
 
 // TODO ${MAJOR} ${MINOR} etc instead of 0.2
 
@@ -83,6 +86,11 @@ namespace pal
       friend class Layer;
 
     public:
+      static inline QgsSettingsTreeNode *sTreePal = QgsSettingsTree::sTreeRendering->createChildNode( QStringLiteral( "pal" ) );
+
+      static const QgsSettingsEntryInteger *settingsRenderingLabelCandidatesLimitPoints;
+      static const QgsSettingsEntryInteger *settingsRenderingLabelCandidatesLimitLines;
+      static const QgsSettingsEntryInteger *settingsRenderingLabelCandidatesLimitPolygons;
 
       /**
        * \brief Create an new pal instance
@@ -195,14 +203,14 @@ namespace pal
        *
        * \see setPlacementVersion()
        */
-      QgsLabelingEngineSettings::PlacementEngineVersion placementVersion() const;
+      Qgis::LabelPlacementEngineVersion placementVersion() const;
 
       /**
        * Sets the placement engine \a version, which dictates how the label placement problem is solved.
        *
        * \see placementVersion()
        */
-      void setPlacementVersion( QgsLabelingEngineSettings::PlacementEngineVersion placementVersion );
+      void setPlacementVersion( Qgis::LabelPlacementEngineVersion placementVersion );
 
       /**
        * Returns the global candidates limit for point features, or 0 if no global limit is in effect.
@@ -278,7 +286,7 @@ namespace pal
       int mGlobalCandidatesLimitLine = 0;
       int mGlobalCandidatesLimitPolygon = 0;
 
-      QgsLabelingEngineSettings::PlacementEngineVersion mPlacementVersion = QgsLabelingEngineSettings::PlacementEngineVersion2;
+      Qgis::LabelPlacementEngineVersion mPlacementVersion = Qgis::LabelPlacementEngineVersion::Version2;
 
       //! Callback that may be called from PAL to check whether the job has not been canceled in meanwhile
       FnIsCanceled fnIsCanceled = nullptr;

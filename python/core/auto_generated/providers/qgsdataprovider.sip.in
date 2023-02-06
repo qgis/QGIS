@@ -77,6 +77,7 @@ Abstract base class for spatial data provider implementations.
       FlagLoadDefaultStyle,
       SkipGetExtent,
       SkipFullScan,
+      ForceReadOnly,
     };
     typedef QFlags<QgsDataProvider::ReadFlag> ReadFlags;
 

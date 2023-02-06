@@ -1,5 +1,0 @@
-Grid Division
-grid_calculus
-QgsProcessingParameterRasterLayer|A|Dividend|None|False
-QgsProcessingParameterRasterLayer|B|Divisor|None|False
-QgsProcessingParameterRasterDestination|C|Quotient

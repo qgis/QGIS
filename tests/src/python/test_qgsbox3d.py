@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsBox3d.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -12,12 +11,7 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.core import (QgsBox3d,
-                       QgsPointXY,
-                       QgsPoint,
-                       QgsWkbTypes,
-                       QgsRectangle)
-
+from qgis.core import QgsBox3d, QgsPoint, QgsRectangle
 from qgis.testing import unittest
 
 

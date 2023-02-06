@@ -1,7 +1,0 @@
-Clip Points with Polygons
-shapes_points
-QgsProcessingParameterFeatureSource|POINTS|Points|0|None|False
-QgsProcessingParameterFeatureSource|POLYGONS|Polygons|2|None|False
-QgsProcessingParameterField|FIELD|Add Attribute to Clipped Points|None|POLYGONS|-1|False|False
-QgsProcessingParameterEnum|METHOD|Clipping Options|[0] one layer for all points;[1] separate layer for each polygon
-QgsProcessingParameterVectorDestination|CLIPS|Clipped Points

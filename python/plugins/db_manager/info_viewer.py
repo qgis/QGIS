@@ -97,14 +97,14 @@ class InfoViewer(QTextBrowser):
     def _showPluginInfo(self):
         from .db_plugins import getDbPluginErrors
 
-        html = u'<div style="background-color:#ffffcc;"><h1>&nbsp;' + self.tr("DB Manager") + '</h1></div>'
+        html = '<div style="background-color:#ffffcc;"><h1>&nbsp;' + self.tr("DB Manager") + '</h1></div>'
         html += '<div style="margin-left:8px;">'
         for msg in getDbPluginErrors():
-            html += u"<p>%s" % msg
+            html += "<p>%s" % msg
         self.setHtml(html)
 
     def _showDatabaseInfo(self, connection):
-        html = u'<div style="background-color:#ccffcc;"><h1>&nbsp;%s</h1></div>' % connection.connectionName()
+        html = '<div style="background-color:#ccffcc;"><h1>&nbsp;%s</h1></div>' % connection.connectionName()
         html += '<div style="margin-left:8px;">'
         try:
             if connection.database() is None:
@@ -112,27 +112,27 @@ class InfoViewer(QTextBrowser):
             else:
                 html += connection.database().info().toHtml()
         except DbError as e:
-            html += u'<p style="color:red">%s</p>' % str(e).replace('\n', '<br>')
+            html += '<p style="color:red">%s</p>' % str(e).replace('\n', '<br>')
         html += '</div>'
         self.setHtml(html)
 
     def _showSchemaInfo(self, schema):
-        html = u'<div style="background-color:#ffcccc;"><h1>&nbsp;%s</h1></div>' % schema.name
+        html = '<div style="background-color:#ffcccc;"><h1>&nbsp;%s</h1></div>' % schema.name
         html += '<div style="margin-left:8px;">'
         try:
             html += schema.info().toHtml()
         except DbError as e:
-            html += u'<p style="color:red">%s</p>' % str(e).replace('\n', '<br>')
+            html += '<p style="color:red">%s</p>' % str(e).replace('\n', '<br>')
         html += "</div>"
         self.setHtml(html)
 
     def _showTableInfo(self, table):
-        html = u'<div style="background-color:#ccccff"><h1>&nbsp;%s</h1></div>' % table.name
+        html = '<div style="background-color:#ccccff"><h1>&nbsp;%s</h1></div>' % table.name
         html += '<div style="margin-left:8px;">'
         try:
             html += table.info().toHtml()
         except DbError as e:
-            html += u'<p style="color:red">%s</p>' % str(e).replace('\n', '<br>')
+            html += '<p style="color:red">%s</p>' % str(e).replace('\n', '<br>')
         html += '</div>'
         self.setHtml(html)
         return True
@@ -142,7 +142,7 @@ class InfoViewer(QTextBrowser):
         html = str(html).replace('<warning>', '<img src=":/db_manager/warning">&nbsp;&nbsp; ')
 
         # add default style
-        html = u"""
+        html = """
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>

@@ -19,19 +19,16 @@
 #include <QSet>
 #include <QSettings>
 
-#include "qgsattributetabledelegate.h"
-#include "qgsattributetablefiltermodel.h"
 #include "qgsattributetablemodel.h"
 #include "qgsfeaturelistmodel.h"
 #include "qgsfeaturelistviewdelegate.h"
 #include "qgsfeaturelistview.h"
 #include "qgsfeatureselectionmodel.h"
 #include "qgslogger.h"
-#include "qgsmapcanvas.h"
-#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerselectionmanager.h"
 #include "qgsvectorlayercache.h"
+#include "qgsactionmenu.h"
 
 QgsFeatureListView::QgsFeatureListView( QWidget *parent )
   : QListView( parent )

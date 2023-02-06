@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsBookmarkModel.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,19 +10,19 @@ __date__ = '02/09/2019'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.PyQt.QtCore import Qt, QCoreApplication, QLocale
-
-from qgis.core import (QgsBookmark,
-                       QgsBookmarkManager,
-                       QgsBookmarkManagerModel,
-                       QgsProject,
-                       QgsReferencedRectangle,
-                       QgsRectangle,
-                       QgsCoordinateReferenceSystem,
-                       QgsSettings)
-
+from qgis.PyQt.QtCore import QCoreApplication, QLocale, Qt
+from qgis.core import (
+    QgsBookmark,
+    QgsBookmarkManager,
+    QgsBookmarkManagerModel,
+    QgsCoordinateReferenceSystem,
+    QgsProject,
+    QgsRectangle,
+    QgsReferencedRectangle,
+    QgsSettings,
+)
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()

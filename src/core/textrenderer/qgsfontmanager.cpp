@@ -18,7 +18,8 @@
 #include "qgsapplication.h"
 #include "qgsnetworkcontentfetchertask.h"
 #include "qgsziputils.h"
-#include "qgsfontutils.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
@@ -27,10 +28,14 @@
 #include <QTemporaryFile>
 #include <QTemporaryDir>
 
+const QgsSettingsEntryStringList *QgsFontManager::settingsFontFamilyReplacements = new QgsSettingsEntryStringList( QStringLiteral( "fontFamilyReplacements" ), QgsSettingsTree::sTreeFonts, QStringList(), QStringLiteral( "Automatic font family replacements" ) );
+
+const QgsSettingsEntryBool *QgsFontManager::settingsDownloadMissingFonts = new QgsSettingsEntryBool( QStringLiteral( "downloadMissingFonts" ), QgsSettingsTree::sTreeFonts, true, QStringLiteral( "Automatically download missing fonts whenever possible" ) );
+
 QgsFontManager::QgsFontManager( QObject *parent )
   : QObject( parent )
 {
-  const QStringList replacements = settingsFontFamilyReplacements.value();
+  const QStringList replacements = settingsFontFamilyReplacements->value();
   for ( const QString &replacement : replacements )
   {
     const thread_local QRegularExpression rxReplacement( QStringLiteral( "(.*?):(.*)" ) );
@@ -91,7 +96,7 @@ void QgsFontManager::storeFamilyReplacements()
   QStringList replacements;
   for ( auto it = mFamilyReplacements.constBegin(); it != mFamilyReplacements.constEnd(); ++it )
     replacements << QStringLiteral( "%1:%2" ).arg( it.key(), it.value() );
-  settingsFontFamilyReplacements.setValue( replacements );
+  settingsFontFamilyReplacements->setValue( replacements );
 }
 
 void QgsFontManager::installUserFonts()
@@ -138,7 +143,7 @@ void QgsFontManager::installFontsFromDirectory( const QString &dir )
 bool QgsFontManager::tryToDownloadFontFamily( const QString &family, QString &matchedFamily )
 {
   matchedFamily.clear();
-  if ( !settingsDownloadMissingFonts.value() )
+  if ( !settingsDownloadMissingFonts->value() )
     return false;
 
   QgsReadWriteLocker locker( mReplacementLock, QgsReadWriteLocker::Read );
@@ -245,6 +250,7 @@ QString QgsFontManager::urlForFontDownload( const QString &family, QString &matc
     QStringLiteral( "Arbutus" ),
     QStringLiteral( "Arbutus Slab" ),
     QStringLiteral( "Architects Daughter" ),
+    QStringLiteral( "Archivo" ),
     QStringLiteral( "Archivo Black" ),
     QStringLiteral( "Archivo Narrow" ),
     QStringLiteral( "Arimo" ),

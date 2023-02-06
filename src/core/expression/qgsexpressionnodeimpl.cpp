@@ -22,6 +22,9 @@
 #include "qgsstringutils.h"
 #include "qgsvariantutils.h"
 
+#include <QDate>
+#include <QDateTime>
+#include <QTime>
 #include <QRegularExpression>
 
 const char *QgsExpressionNodeBinaryOperator::BINARY_OPERATOR_TEXT[] =
@@ -99,6 +102,8 @@ QString QgsExpressionNode::NodeList::cleanNamedNodeName( const QString &name )
     cleaned = QStringLiteral( "geometry1" );
   else if ( cleaned == QLatin1String( "geometry b" ) )
     cleaned = QStringLiteral( "geometry2" );
+  else if ( cleaned == QLatin1String( "i" ) )
+    cleaned = QStringLiteral( "vertex" );
 
   return cleaned;
 }
@@ -295,7 +300,7 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
         ENSURE_NO_EVAL_ERROR
         QDateTime datetime2 = QgsExpressionUtils::getDateTimeValue( vR, parent );
         ENSURE_NO_EVAL_ERROR
-        return datetime1 - datetime2;
+        return QgsInterval( datetime1 - datetime2 );
       }
       else
       {

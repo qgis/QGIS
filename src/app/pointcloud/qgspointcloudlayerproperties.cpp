@@ -54,6 +54,10 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
 
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsPointCloudLayerProperties::crsChanged );
 
+  mScaleRangeWidget->setMapCanvas( mMapCanvas );
+  chkUseScaleDependentRendering->setChecked( lyr->hasScaleBasedVisibility() );
+  mScaleRangeWidget->setScaleRange( lyr->minimumScale(), lyr->maximumScale() );
+
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
   // and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
@@ -105,6 +109,13 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
 
   mBtnMetadata->setMenu( menuMetadata );
   buttonBox->addButton( mBtnMetadata, QDialogButtonBox::ResetRole );
+
+  //Add help page references
+  mOptsPage_Information->setProperty( "helpPage", QStringLiteral( "working_with_point_clouds/point_clouds.html#information-properties" ) );
+  mOptsPage_Source->setProperty( "helpPage", QStringLiteral( "working_with_point_clouds/point_clouds.html#source-properties" ) );
+  mOptsPage_Rendering->setProperty( "helpPage", QStringLiteral( "working_with_point_clouds/point_clouds.html#rendering-properties" ) );
+  mOptsPage_Metadata->setProperty( "helpPage", QStringLiteral( "working_with_point_clouds/point_clouds.html#metadata-properties" ) );
+  mOptsPage_Statistics->setProperty( "helpPage", QStringLiteral( "working_with_point_clouds/point_clouds.html#statistics-properties" ) );
 
   mStatisticsTableView->setModel( new QgsPointCloudAttributeStatisticsModel( mLayer, mStatisticsTableView ) );
   mStatisticsTableView->verticalHeader()->hide();
@@ -159,6 +170,11 @@ void QgsPointCloudLayerProperties::apply()
   mMetadataWidget->acceptMetadata();
 
   mLayer->setName( mLayerOrigNameLineEdit->text() );
+
+  mLayer->setScaleBasedVisibility( chkUseScaleDependentRendering->isChecked() );
+  mLayer->setMinimumScale( mScaleRangeWidget->minimumScale() );
+  mLayer->setMaximumScale( mScaleRangeWidget->maximumScale() );
+
   mBackupCrs = mLayer->crs();
 
   for ( QgsMapLayerConfigWidget *w : mConfigWidgets )
@@ -432,7 +448,7 @@ void QgsPointCloudLayerProperties::showHelp()
   }
   else
   {
-    QgsHelp::openHelp( QStringLiteral( "working_with_vector_tiles/vector_tiles_properties.html" ) );
+    QgsHelp::openHelp( QStringLiteral( "working_with_point_clouds/point_clouds.html" ) );
   }
 }
 

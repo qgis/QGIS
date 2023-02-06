@@ -15,7 +15,8 @@
 
 
 #include "qgssettingsentryimpl.h"
-
+#include "qgslogger.h"
+#include "qgssettings.h"
 
 Qgis::SettingsType QgsSettingsEntryVariant::settingsType() const
 {
@@ -55,27 +56,15 @@ Qgis::SettingsType QgsSettingsEntryString::settingsType() const
   return Qgis::SettingsType::String;
 }
 
-void QgsSettingsEntryString::setMinLength( int minLength )
-{
-  mMinLength = minLength;
-}
-
 int QgsSettingsEntryString::minLength() const
 {
   return mMinLength;
-}
-
-void QgsSettingsEntryString::setMaxLength( int maxLength )
-{
-  mMaxLength = maxLength;
 }
 
 int QgsSettingsEntryString::maxLength() const
 {
   return mMaxLength;
 }
-
-
 
 QStringList QgsSettingsEntryStringList::convertFromVariant( const QVariant &value ) const
 {
@@ -100,7 +89,7 @@ Qgis::SettingsType QgsSettingsEntryBool::settingsType() const
 }
 
 
-bool QgsSettingsEntryInteger::checkValue( qlonglong value ) const
+bool QgsSettingsEntryInteger::checkValue( int value ) const
 {
   if ( value < mMinValue )
   {
@@ -121,7 +110,7 @@ bool QgsSettingsEntryInteger::checkValue( qlonglong value ) const
   return true;
 }
 
-qlonglong QgsSettingsEntryInteger::convertFromVariant( const QVariant &value ) const
+int QgsSettingsEntryInteger::convertFromVariant( const QVariant &value ) const
 {
   return value.toLongLong();
 }
@@ -131,30 +120,17 @@ Qgis::SettingsType QgsSettingsEntryInteger::settingsType() const
   return Qgis::SettingsType::Integer;
 }
 
-void QgsSettingsEntryInteger::setMinValue( qlonglong minValue )
-{
-  mMinValue = minValue;
-}
-
-qlonglong QgsSettingsEntryInteger::minValue() const
-{
-  return mMinValue;
-}
-
-void QgsSettingsEntryInteger::setMaxValue( qlonglong maxValue )
-{
-  mMaxValue = maxValue;
-}
-
-qlonglong QgsSettingsEntryInteger::maxValue() const
+int QgsSettingsEntryInteger::maxValue() const
 {
   return mMaxValue;
 }
 
+int QgsSettingsEntryInteger::minValue() const
+{
+  return mMaxValue;
+}
 
-
-
-bool QgsSettingsEntryDouble::checkValue( double value ) const
+bool QgsSettingsEntryInteger64::checkValue( qlonglong value ) const
 {
   if ( value < mMinValue )
   {
@@ -169,6 +145,47 @@ bool QgsSettingsEntryDouble::checkValue( double value ) const
     QgsDebugMsg( QObject::tr( "Can't set value for setting. Value '%1' is greather than maximum value '%2'." )
                  .arg( QString::number( value ) )
                  .arg( QString::number( mMaxValue ) ) );
+    return false;
+  }
+
+  return true;
+}
+
+qlonglong QgsSettingsEntryInteger64::convertFromVariant( const QVariant &value ) const
+{
+  return value.toLongLong();
+}
+
+Qgis::SettingsType QgsSettingsEntryInteger64::settingsType() const
+{
+  return Qgis::SettingsType::Integer;
+}
+
+qlonglong QgsSettingsEntryInteger64::maxValue() const
+{
+  return mMaxValue;
+}
+
+qlonglong QgsSettingsEntryInteger64::minValue() const
+{
+  return mMaxValue;
+}
+
+
+
+bool QgsSettingsEntryDouble::checkValue( double value ) const
+{
+  if ( value < mMinValue )
+  {
+    QgsDebugMsg( QObject::tr( "Can't set value for setting. Value '%1' is less than minimum value '%2'." )
+                 .arg( QString::number( value ), QString::number( mMinValue ) ) );
+    return false;
+  }
+
+  if ( value > mMaxValue )
+  {
+    QgsDebugMsg( QObject::tr( "Can't set value for setting. Value '%1' is greather than maximum value '%2'." )
+                 .arg( QString::number( value ), QString::number( mMaxValue ) ) );
     return false;
   }
 
@@ -185,19 +202,9 @@ Qgis::SettingsType QgsSettingsEntryDouble::settingsType() const
   return Qgis::SettingsType::Double;
 }
 
-void QgsSettingsEntryDouble::setMinValue( double minValue )
-{
-  mMinValue = minValue;
-}
-
 double QgsSettingsEntryDouble::minValue() const
 {
   return mMinValue;
-}
-
-void QgsSettingsEntryDouble::setMaxValue( double maxValue )
-{
-  mMaxValue = maxValue;
 }
 
 double QgsSettingsEntryDouble::maxValue() const
@@ -224,5 +231,62 @@ QColor QgsSettingsEntryColor::convertFromVariant( const QVariant &value ) const
 Qgis::SettingsType QgsSettingsEntryColor::settingsType() const
 {
   return Qgis::SettingsType::Color;
+}
+
+bool QgsSettingsEntryColor::checkValue( const QColor &value ) const
+{
+  if ( !mAllowAlpha && value.alpha() != 255 )
+  {
+    QgsDebugMsg( QObject::tr( "Settings %1 doesn't allow transparency and the given color has transparency." ).arg( definitionKey() ) );
+    return false;
+  }
+
+  return true;
+}
+
+bool QgsSettingsEntryColor::copyValueFromKeys( const QString &redKey, const QString &greenKey, const QString &blueKey, const QString &alphaKey, bool removeSettingAtKey ) const
+{
+  QgsSettings settings;
+  if ( settings.contains( redKey ) && settings.contains( greenKey ) && settings.contains( blueKey ) && ( alphaKey.isNull() || settings.contains( alphaKey ) ) )
+  {
+    QVariant oldValue;
+    if ( alphaKey.isNull() )
+      oldValue = QColor( settings.value( redKey ).toInt(), settings.value( greenKey ).toInt(), settings.value( blueKey ).toInt() );
+    else
+      oldValue = QColor( settings.value( redKey ).toInt(), settings.value( greenKey ).toInt(), settings.value( blueKey ).toInt(), settings.value( alphaKey ).toInt() );
+
+    if ( removeSettingAtKey )
+    {
+      settings.remove( redKey );
+      settings.remove( greenKey );
+      settings.remove( blueKey );
+      settings.remove( alphaKey );
+    }
+
+    setVariantValuePrivate( oldValue );
+    return true;
+  }
+  return false;
+}
+
+void QgsSettingsEntryColor::copyValueToKeys( const QString &redKey, const QString &greenKey, const QString &blueKey, const QString &alphaKey ) const
+{
+  QgsSettings settings;
+  const QColor color = value();
+  settings.setValue( redKey, color.red() );
+  settings.setValue( greenKey, color.green() );
+  settings.setValue( blueKey, color.blue() );
+  if ( !alphaKey.isNull() )
+    settings.setValue( alphaKey, color.alpha() );
+}
+
+QVariantMap QgsSettingsEntryVariantMap::convertFromVariant( const QVariant &value ) const
+{
+  return value.value<QVariantMap>();
+}
+
+Qgis::SettingsType QgsSettingsEntryVariantMap::settingsType() const
+{
+  return Qgis::SettingsType::VariantMap;
 }
 

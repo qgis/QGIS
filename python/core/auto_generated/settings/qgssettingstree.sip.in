@@ -1,0 +1,45 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/settings/qgssettingstree.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsSettingsTree
+{
+%Docstring(signature="appended")
+:py:class:`QgsSettingsTree` holds the tree structure for the settings in QGIS core
+
+.. seealso:: :py:class:`QgsSettingsEntryBase`
+
+.. versionadded:: 3.30
+%End
+
+%TypeHeaderCode
+#include "qgssettingstree.h"
+%End
+  public:
+
+
+    static QgsSettingsTreeNode *createPluginTreeNode( const QString &pluginName );
+%Docstring
+Creates a settings tree node for the given ``pluginName``
+%End
+
+
+    static void unregisterPluginTreeNode( const QString &pluginName );
+%Docstring
+Unregisters the tree node for the given plugin
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/settings/qgssettingstree.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

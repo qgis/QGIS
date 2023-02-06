@@ -122,7 +122,7 @@ void QgsCalloutWidget::updateDataDefinedProperty()
   emit changed();
 }
 
-/// @cond PRIVATE
+///@cond PRIVATE
 
 //
 // QgsSimpleLineCalloutWidget

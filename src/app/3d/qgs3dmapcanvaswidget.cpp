@@ -392,7 +392,7 @@ void Qgs3DMapCanvasWidget::setMainCanvas( QgsMapCanvas *canvas )
 
 void Qgs3DMapCanvasWidget::resetView()
 {
-  mCanvas->resetView( true );
+  mCanvas->resetView();
 }
 
 void Qgs3DMapCanvasWidget::configure()
@@ -412,7 +412,7 @@ void Qgs3DMapCanvasWidget::configure()
 
   Qgs3DMapSettings *map = mCanvas->map();
   Qgs3DMapConfigWidget *w = new Qgs3DMapConfigWidget( map, mMainCanvas, mCanvas, mConfigureDialog );
-  QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Apply | QDialogButtonBox::Close | QDialogButtonBox::Help, mConfigureDialog );
+  QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Apply | QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Help, mConfigureDialog );
 
   auto applyConfig = [ = ]()
   {
@@ -446,14 +446,17 @@ void Qgs3DMapCanvasWidget::configure()
   connect( buttons, &QDialogButtonBox::rejected, mConfigureDialog, &QDialog::reject );
   connect( buttons, &QDialogButtonBox::clicked, mConfigureDialog, [ = ]( QAbstractButton * button )
   {
-    if ( buttons->buttonRole( button ) == QDialogButtonBox::ApplyRole )
+    if ( button == buttons->button( QDialogButtonBox::Apply ) || button == buttons->button( QDialogButtonBox::Ok ) )
       applyConfig();
+    if ( button == buttons->button( QDialogButtonBox::Ok ) )
+      mConfigureDialog->accept();
   } );
   connect( buttons, &QDialogButtonBox::helpRequested, w, []() { QgsHelp::openHelp( QStringLiteral( "introduction/qgis_gui.html#scene-configuration" ) ); } );
 
   connect( w, &Qgs3DMapConfigWidget::isValidChanged, this, [ = ]( bool valid )
   {
     buttons->button( QDialogButtonBox::Apply )->setEnabled( valid );
+    buttons->button( QDialogButtonBox::Ok )->setEnabled( valid );
   } );
 
   QVBoxLayout *layout = new QVBoxLayout( mConfigureDialog );

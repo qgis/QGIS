@@ -18,6 +18,7 @@
 #include "ui_qgsadvancedsettingswidget.h"
 #include "qgsoptionswidgetfactory.h"
 #include "qgssettings.h"
+#include "qgssettingstreewidget.h"
 
 /**
  * \ingroup app
@@ -39,7 +40,7 @@ class QgsAdvancedSettingsWidget : public QgsOptionsPageWidget, private Ui::QgsAd
     ~QgsAdvancedSettingsWidget() override;
     void apply() override;
 
-    QgsSettingsTree *settingsTree();
+    QgsSettingsTreeWidget *settingsTree();
 
   private:
 

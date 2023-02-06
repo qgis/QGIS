@@ -26,14 +26,12 @@
 
 #include "qgslogger.h"
 #include "qgswmsprovider.h"
-#include "qgswmsconnection.h"
 #include "qgscoordinatetransform.h"
 #include "qgswmsdataitems.h"
 #include "qgsdatasourceuri.h"
 #include "qgsfeaturestore.h"
 #include "qgsgeometry.h"
 #include "qgsrasteridentifyresult.h"
-#include "qgsrasterlayer.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmapsettings.h"
@@ -49,6 +47,7 @@
 #include "qgswmscapabilities.h"
 #include "qgsexception.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsogrutils.h"
 #include "qgsproviderregistry.h"
 #include "qgsruntimeprofiler.h"
@@ -222,6 +221,22 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
       temporalCapabilities()->setDefaultInterval( mTileLayer->temporalInterval );
       temporalCapabilities()->setFlags( mTileLayer->temporalCapabilityFlags );
       temporalCapabilities()->setIntervalHandlingMethod( Qgis::TemporalIntervalMatchMethod::FindClosestMatchToStartOfRange );
+    }
+
+    if ( !mSettings.mXyz )
+    {
+      switch ( mSettings.mTilePixelRatio )
+      {
+        case Qgis::TilePixelRatio::Undefined:
+          mTileLayer->dpi = -1;
+          break;
+        case Qgis::TilePixelRatio::StandardDpi:
+          mTileLayer->dpi = 96;
+          break;
+        case Qgis::TilePixelRatio::HighDpi:
+          mTileLayer->dpi = 192;
+          break;
+      }
     }
   }
 
@@ -543,7 +558,7 @@ bool QgsWmsProvider::setImageCrs( QString const &crs )
 
       if ( mSettings.mTileMatrixSetId.isEmpty() && tl->setLinks.size() == 1 )
       {
-        QString tms = tl->setLinks.keys()[0];
+        QString tms = tl->setLinks.constBegin().key();
 
         if ( !mCaps.mTileMatrixSets.contains( tms ) )
         {
@@ -578,8 +593,8 @@ bool QgsWmsProvider::setImageCrs( QString const &crs )
       }
       if ( !mTileMatrixSet->tileMatrices.empty() )
       {
-        setProperty( "tileWidth", mTileMatrixSet->tileMatrices.values().first().tileWidth );
-        setProperty( "tileHeight", mTileMatrixSet->tileMatrices.values().first().tileHeight );
+        setProperty( "tileWidth", mTileMatrixSet->tileMatrices.first().tileWidth );
+        setProperty( "tileHeight", mTileMatrixSet->tileMatrices.first().tileHeight );
       }
     }
     else
@@ -810,7 +825,9 @@ QImage *QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, in
 
       // if we know both source and output DPI, let's scale the tiles
       if ( mDpi != -1 && mTileLayer->dpi != -1 )
+      {
         vres *= static_cast<double>( mDpi ) / mTileLayer->dpi;
+      }
 
       // find nearest resolution
       tm = mTileMatrixSet->findNearestResolution( vres );
@@ -1125,45 +1142,6 @@ QImage *QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, in
   return image;
 }
 
-static GDALResampleAlg getGDALResamplingAlg( QgsRasterDataProvider::ResamplingMethod method )
-{
-  GDALResampleAlg eResampleAlg = GRA_NearestNeighbour;
-  switch ( method )
-  {
-    case QgsRasterDataProvider::ResamplingMethod::Nearest:
-    case QgsRasterDataProvider::ResamplingMethod::Gauss: // Gauss not available in GDALResampleAlg
-      eResampleAlg = GRA_NearestNeighbour;
-      break;
-
-    case QgsRasterDataProvider::ResamplingMethod::Bilinear:
-      eResampleAlg = GRA_Bilinear;
-      break;
-
-    case QgsRasterDataProvider::ResamplingMethod::Cubic:
-      eResampleAlg = GRA_Cubic;
-      break;
-
-    case QgsRasterDataProvider::ResamplingMethod::CubicSpline:
-      eResampleAlg = GRA_CubicSpline;
-      break;
-
-    case QgsRasterDataProvider::ResamplingMethod::Lanczos:
-      eResampleAlg = GRA_Lanczos;
-      break;
-
-    case QgsRasterDataProvider::ResamplingMethod::Average:
-      eResampleAlg = GRA_Average;
-      break;
-
-    case QgsRasterDataProvider::ResamplingMethod::Mode:
-      eResampleAlg = GRA_Mode;
-      break;
-  }
-
-  return eResampleAlg;
-}
-
-
 bool QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int pixelWidth, int pixelHeight, void *block, QgsRasterBlockFeedback *feedback )
 {
   Q_UNUSED( bandNo )
@@ -1215,9 +1193,9 @@ bool QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int
 
         GDALResampleAlg alg;
         if ( resamplingFactor < 1 || qgsDoubleNear( resamplingFactor, 1.0 ) )
-          alg = getGDALResamplingAlg( mZoomedInResamplingMethod );
+          alg = QgsGdalUtils::gdalResamplingAlgorithm( mZoomedInResamplingMethod );
         else
-          alg = getGDALResamplingAlg( mZoomedOutResamplingMethod );
+          alg = QgsGdalUtils::gdalResamplingAlgorithm( mZoomedOutResamplingMethod );
 
         gdal::dataset_unique_ptr gdalDsInput = QgsGdalUtils::blockToSingleBandMemoryDataset( image->width(), image->height(), effectiveExtent, data.data(), GDT_Float32 );
         gdal::dataset_unique_ptr gdalDsOutput = QgsGdalUtils::blockToSingleBandMemoryDataset( pixelWidth, pixelHeight, viewExtent, block, GDT_Float32 );
@@ -2363,7 +2341,8 @@ int QgsWmsProvider::capabilities() const
     }
   }
 
-  if ( mSettings.mXyz )
+  bool enablePrefetch = QgsSettingsRegistryCore::settingsEnableWMSTilePrefetching->value();
+  if ( mSettings.mXyz || enablePrefetch )
   {
     capability |= Capability::Prefetch;
   }
@@ -3135,9 +3114,44 @@ QString QgsWmsProvider::htmlMetadata()
   return metadata;
 }
 
-QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
+double QgsWmsProvider::sample( const QgsPointXY &point, int band, bool *ok, const QgsRectangle &boundingBox, int width, int height, int dpi )
 {
-  QgsDebugMsgLevel( QStringLiteral( "format = %1" ).arg( format ), 2 );
+  if ( ok )
+    *ok = false;
+
+  Qgis::DataType bandDataType = sourceDataType( band );
+  if ( mSettings.mTiled && mTileMatrixSet &&
+       ( bandDataType != Qgis::DataType::UnknownDataType && bandDataType != Qgis::DataType::ARGB32 && bandDataType != Qgis::DataType::ARGB32_Premultiplied ) )
+  {
+    const double maximumNativeResolution = mNativeResolutions.at( 0 );
+    const double xMin = point.x() - std::fmod( point.x(), maximumNativeResolution );
+    const double yMin = point.y() - std::fmod( point.y(), maximumNativeResolution );
+    QgsRectangle rect( xMin, yMin, xMin + maximumNativeResolution, yMin + maximumNativeResolution );
+
+
+    std::unique_ptr<QgsRasterBlock> b( block( band, rect, 1, 1 ) );
+    if ( b->isValid() )
+    {
+      bool isNoData = true;
+      const double value = b->valueAndNoData( 0, 0, isNoData );
+      if ( !isNoData )
+      {
+        if ( ok )
+          *ok = true;
+
+        return value;
+      }
+    }
+
+    return std::numeric_limits<double>::quiet_NaN();
+  }
+
+  return QgsRasterDataProvider::sample( point, band, ok, boundingBox, width, height, dpi );
+}
+
+QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, Qgis::RasterIdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
+{
+  QgsDebugMsgLevel( QStringLiteral( "format = %1" ).arg( qgsEnumValueToKey( format ) ), 2 );
 
   QString formatStr;
   formatStr = mCaps.mIdentifyFormats.value( format );
@@ -3146,7 +3160,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
     return QgsRasterIdentifyResult( QGS_ERROR( tr( "Format not supported" ) ) );
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "format = %1 format = %2" ).arg( format ).arg( formatStr ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "format = %1 format = %2" ).arg( qgsEnumValueToKey( format ) ).arg( formatStr ), 2 );
 
   QMap<int, QVariant> results;
   if ( !extent().contains( point ) )
@@ -3533,19 +3547,22 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
 
         if ( isXml && parseServiceExceptionReportDom( body, mErrorCaption, mError ) )
         {
-          QgsMessageLog::logMessage( tr( "Get feature info request error (Title: %1; Error: %2; URL: %3)" )
-                                     .arg( mErrorCaption, mError,
-                                           requestUrl.toString() ), tr( "WMS" ) );
-          continue;
+          if ( !mError.isEmpty() ) //xml is not necessarily an exception
+          {
+            QgsMessageLog::logMessage( tr( "Get feature info request error (Title: %1; Error: %2; URL: %3)" )
+                                       .arg( mErrorCaption, mError,
+                                             requestUrl.toString() ), tr( "WMS" ) );
+            continue;
+          }
         }
       }
     }
 
-    if ( format == QgsRaster::IdentifyFormatHtml || format == QgsRaster::IdentifyFormatText )
+    if ( format == Qgis::RasterIdentifyFormat::Html || format == Qgis::RasterIdentifyFormat::Text )
     {
       results.insert( results.size(), QString::fromUtf8( mIdentifyResultBodies.value( 0 ) ) );
     }
-    else if ( format == QgsRaster::IdentifyFormatFeature ) // GML
+    else if ( format == Qgis::RasterIdentifyFormat::Feature ) // GML
     {
       // The response maybe
       // 1) simple GML
@@ -3575,17 +3592,26 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
       int gmlPart = -1;
       int xsdPart = -1;
       int jsonPart = -1;
+
+      // Headers are case insensitive
+
       for ( int i = 0; i < mIdentifyResultHeaders.size(); i++ )
       {
-        if ( xsdPart == -1 && mIdentifyResultHeaders.at( i ).value( "Content-Disposition" ).contains( ".xsd" ) )
+        QgsNetworkReplyParser::RawHeaderMap identifyResultHeader;
+        for ( auto it = mIdentifyResultHeaders.at( i ).cbegin(); it != mIdentifyResultHeaders.at( i ).cend(); ++it )
+        {
+          identifyResultHeader.insert( it.key().toLower(), it.value() );
+        }
+
+        if ( xsdPart == -1 && identifyResultHeader.value( "content-disposition" ).contains( ".xsd" ) )
         {
           xsdPart = i;
         }
-        else if ( gmlPart == -1 && mIdentifyResultHeaders.at( i ).value( "Content-Disposition" ).contains( ".dat" ) )
+        else if ( gmlPart == -1 && identifyResultHeader.value( "content-disposition" ).contains( ".dat" ) )
         {
           gmlPart = i;
         }
-        else if ( jsonPart == -1 && mIdentifyResultHeaders.at( i ).value( "Content-Type" ).contains( "json" ) )
+        else if ( jsonPart == -1 && identifyResultHeader.value( "content-type" ).contains( "json" ) )
         {
           jsonPart = i;
         }

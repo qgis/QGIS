@@ -70,7 +70,7 @@ QgsHanaProviderConnection::QgsHanaProviderConnection( const QString &name )
 {
   mProviderKey = QStringLiteral( "hana" );
   QgsHanaSettings settings( name, true );
-  setUri( settings.toDataSourceUri().uri() );
+  setUri( settings.toDataSourceUri().uri( false ) );
   setCapabilities();
 }
 

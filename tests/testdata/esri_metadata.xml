@@ -141,6 +141,10 @@
       <resTitle Sync="FALSE">Baseline roads and tracks Queensland</resTitle>
       <date>
         <pubDate>2016-06-28T00:00:00</pubDate>
+        <createDate>2022-11-01T00:00:00</createDate>
+        <reviseDate>2022-11-05T00:00:00</reviseDate>
+        <deprecDate>2022-11-29T00:00:00</deprecDate>
+        <supersDate>2022-11-12T00:00:00</supersDate>
       </date>
       <citRespParty>
         <rpIndName>DNRM, NR, LSI, ED</rpIndName>

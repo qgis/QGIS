@@ -30,6 +30,7 @@
 #include "qgslayoutmanager.h"
 #include "qgsmarkersymbol.h"
 
+
 class TestQgsProject : public QObject
 {
     Q_OBJECT
@@ -223,18 +224,9 @@ static QHash<QString, QString> _parseSvgPathsForLayers( const QString &projectFi
   while ( !layerElem.isNull() )
   {
     const QString layerName = layerElem.firstChildElement( QStringLiteral( "layername" ) ).text();
-    QString svgPath;
     const QDomElement symbolElem = layerElem.firstChildElement( QStringLiteral( "renderer-v2" ) ).firstChildElement( QStringLiteral( "symbols" ) ).firstChildElement( QStringLiteral( "symbol" ) ).firstChildElement( QStringLiteral( "layer" ) );
-    QDomElement propElem = symbolElem.firstChildElement( QStringLiteral( "prop" ) );
-    while ( !propElem.isNull() )
-    {
-      if ( propElem.attribute( QStringLiteral( "k" ) ) == QLatin1String( "name" ) )
-      {
-        svgPath = propElem.attribute( QStringLiteral( "v" ) );
-        break;
-      }
-      propElem = propElem.nextSiblingElement( QStringLiteral( "prop" ) );
-    }
+    QVariantMap props = QgsSymbolLayerUtils::parseProperties( symbolElem );
+    QString svgPath = props.value( QLatin1String( "name" ) ).toString();
     projectFileSvgPaths[layerName] = svgPath;
     layerElem = layerElem.nextSiblingElement();
   }

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLabelLineSettings
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,20 +9,21 @@ __author__ = 'Nyall Dawson'
 __date__ = '2019-12-07'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
-import qgis  # NOQA
 import os
 
-from qgis.core import (QgsProperty,
-                       QgsPropertyCollection,
-                       QgsPalLayerSettings,
-                       QgsLabelLineSettings,
-                       QgsExpressionContext,
-                       QgsExpressionContextScope,
-                       QgsUnitTypes,
-                       QgsMapUnitScale,
-                       QgsLabeling)
-
-from qgis.testing import unittest, start_app
+import qgis  # NOQA
+from qgis.core import (
+    QgsExpressionContext,
+    QgsExpressionContextScope,
+    QgsLabeling,
+    QgsLabelLineSettings,
+    QgsMapUnitScale,
+    QgsPalLayerSettings,
+    QgsProperty,
+    QgsPropertyCollection,
+    QgsUnitTypes,
+)
+from qgis.testing import start_app, unittest
 
 start_app()
 

@@ -338,7 +338,7 @@ Draws a symbol layer preview to a QPicture
 .. versionadded:: 2.9
 %End
 
-    static QIcon symbolLayerPreviewIcon( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid );
+    static QIcon symbolLayerPreviewIcon( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid, QgsMapLayer *mapLayer = 0 );
 %Docstring
 Draws a symbol layer preview to an icon.
 
@@ -347,6 +347,7 @@ Draws a symbol layer preview to an icon.
 :param size: target size of preview icon
 :param scale: map unit scale for preview
 :param parentSymbolType: since QGIS 3.22, can be used to specify the parent symbol type so that geometry generator preview icons are correctly calculated
+:param mapLayer: since QGIS 3.28, can be used to specify the associated map layer so that layer related expressions are correctly calculated
 
 :return: icon containing symbol layer preview
 
@@ -436,7 +437,21 @@ Creates a symbol layer list from a DOM ``element``.
 %Docstring
 Converts a polygon symbolizer ``element`` to a list of marker symbol layers.
 %End
+
     static bool hasExternalGraphic( QDomElement &element );
+%Docstring
+Checks if ``element`` contains an ExternalGraphic element with format "image/svg+xml"
+@return ``True`` if the ExternalGraphic with format "image/svg+xml" is found .
+%End
+
+    static bool hasExternalGraphicV2( QDomElement &element, const QString format = QString() );
+%Docstring
+Checks if ``element`` contains an ExternalGraphic element, if the optional ``format`` is specified it will also be checked.
+@return ``True`` if the ExternalGraphic element is found and the optionally specified format matches.
+
+.. versionadded:: 3.30
+%End
+
     static bool hasWellKnownMark( QDomElement &element );
 
     static bool needFontMarker( QDomElement &element );
@@ -446,6 +461,14 @@ Converts a polygon symbolizer ``element`` to a list of marker symbol layers.
     static bool needLinePatternFill( QDomElement &element );
     static bool needPointPatternFill( QDomElement &element );
     static bool needSvgFill( QDomElement &element );
+
+    static bool needRasterImageFill( QDomElement &element );
+%Docstring
+Checks if ``element`` contains a graphic fill with a raster image of type PNG, JPEG or GIF.
+@return ``True`` if element contains a graphic fill with a raster image.
+
+.. versionadded:: 3.30
+%End
 
     static void fillToSld( QDomDocument &doc, QDomElement &element,
                            Qt::BrushStyle brushStyle, const QColor &color = QColor() );
@@ -971,7 +994,7 @@ Returns -1 if the ``renderer`` is not animated.
 .. versionadded:: 3.26
 %End
 
-    static QgsSymbol *restrictedSizeSymbol( const QgsSymbol *s, double minSize, double maxSize, QgsRenderContext *context, double &width, double &height );
+    static QgsSymbol *restrictedSizeSymbol( const QgsSymbol *s, double minSize, double maxSize, QgsRenderContext *context, double &width, double &height, bool *ok = 0 );
 %Docstring
 Creates a new symbol with size restricted to min/max size if original size is out of min/max range
 
@@ -980,9 +1003,13 @@ Creates a new symbol with size restricted to min/max size if original size is ou
 :param maxSize: the maximum size in mm
 :param context: the render context
 :param width: expected width, can be changed by the function
-:param height: expected height, can be changed by this function
+:param height: expected height, can be changed by the function
+:param ok: if not None, ok is set to false if it's not possible to compute a restricted symbol (if geometry generators
+           are involved for instance)
 
-:return: 0 if size is within minSize/maxSize range. New symbol if size was out of min/max range. Caller takes ownership
+:return: None if size is within minSize/maxSize range or if it's not possible to compute a
+         restricted size symbol. New symbol if size was out of min/max range.
+         Caller takes ownership
 %End
 
     static QgsStringMap evaluatePropertiesMap( const QMap<QString, QgsProperty> &propertiesMap, const QgsExpressionContext &context );
@@ -992,10 +1019,22 @@ Evaluates a map of properties using the given ``context`` and returns a variant 
 .. versionadded:: 3.18
 %End
 
+    static QSize tileSize( int width, int height, double &angleRad /In,Out/ );
+%Docstring
+Calculate the minimum size in pixels of a symbol tile given the symbol ``width`` and ``height`` and the symbol layer rotation ``angleRad`` in radians (counter clockwise).
+The method makes approximations and can modify ``angle`` in order to generate the smallest possible tile.
+
+:param width: marker width, including margins
+:param height: marker height, including margins
+:param angleRad: symbol layer rotation angle in radians (counter clockwise), it may be approximated by the method to minimize the tile size.
+
+:return: the size of the tile
+
+.. versionadded:: 3.30
+%End
+
 
 };
-
-
 
 
 

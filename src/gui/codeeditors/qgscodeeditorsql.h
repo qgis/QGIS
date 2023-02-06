@@ -39,6 +39,7 @@ class GUI_EXPORT QgsCodeEditorSQL : public QgsCodeEditor
     //! Constructor for QgsCodeEditorSQL
     QgsCodeEditorSQL( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
+    Qgis::ScriptLanguage language() const override;
 
     virtual ~QgsCodeEditorSQL();
 

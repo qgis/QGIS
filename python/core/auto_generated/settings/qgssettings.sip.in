@@ -65,7 +65,6 @@ static bool setGlobalSettingsPath( QString path );
       Gps,
     };
 
-
     explicit QgsSettings( const QString &organization,
                           const QString &application = QString(), QObject *parent = 0 );
 %Docstring
@@ -174,7 +173,7 @@ Returns a list of all keys, including subkeys, that can be read using the QSetti
 %Docstring
 Returns a list of all top-level keys that can be read using the QSettings object.
 %End
-    QStringList childGroups() const;
+    QStringList childGroups( Qgis::SettingsOrigin origin = Qgis::SettingsOrigin::Any ) const;
 %Docstring
 Returns a list of all key top-level groups that contain keys that can be read using the QSettings object.
 %End
@@ -215,6 +214,17 @@ Sets the current array index to i. Calls to functions such as :py:func:`~QgsSett
 :py:func:`~QgsSettings.remove`, and :py:func:`~QgsSettings.contains` will operate on the array entry at that index.
 %End
 
+    Qgis::SettingsOrigin origin( const QString &key ) const;
+%Docstring
+Returns the origin of the setting if it exists at the given ``key``
+
+.. note::
+
+   it will return Qgis.SettingsOrigin.Any if the key doesn't exist
+
+.. versionadded:: 3.30
+%End
+
     void setValue( const QString &key, const QVariant &value, QgsSettings::Section section = QgsSettings::NoSection );
 %Docstring
 Sets the value of setting key to value. If the key already exists, the previous value is overwritten.
@@ -244,6 +254,7 @@ An optional Section argument can be used to get a value from a specific Section.
 
     sipIsErr = !sipRes;
 %End
+
 
 
     bool contains( const QString &key, QgsSettings::Section section = QgsSettings::NoSection ) const;

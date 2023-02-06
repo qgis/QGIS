@@ -57,7 +57,6 @@ void initCanvas3D( Qgs3DMapCanvas *canvas )
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( map->crs() );
-  flatTerrain->setExtent( fullExtent );
   map->setTerrainGenerator( flatTerrain );
 
   QgsPointLightSettings defaultPointLight;

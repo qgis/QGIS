@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for Processing In-Place algorithms.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,38 +9,39 @@ __author__ = 'Alessandro Pasotti'
 __date__ = '2018-09'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
-import re
 import os
-from qgis.PyQt.QtCore import QCoreApplication, QVariant, QTemporaryDir
-from qgis.core import (
-    QgsFeature,
-    QgsGeometry,
-    QgsSettings,
-    QgsApplication,
-    QgsMemoryProviderUtils,
-    QgsWkbTypes,
-    QgsField,
-    QgsFields,
-    QgsProcessingFeatureSourceDefinition,
-    QgsProcessingContext,
-    QgsProcessingFeedback,
-    QgsCoordinateReferenceSystem,
-    QgsProject,
-    QgsProcessingException,
-    QgsVectorLayer,
-    QgsFeatureSink,
-    QgsProperty
-)
+import re
+import shutil
+
 from processing.core.Processing import Processing
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.tools import dataobjects
 from processing.gui.AlgorithmExecutor import execute_in_place_run
-from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
-from qgis.PyQt.QtTest import QSignalSpy
+from processing.tools import dataobjects
+from qgis.PyQt.QtCore import QCoreApplication, QTemporaryDir, QVariant
 from qgis.analysis import QgsNativeAlgorithms
-from qgis.core import QgsVectorLayerUtils, QgsFeatureRequest
-import shutil
+from qgis.core import (
+    QgsApplication,
+    QgsCoordinateReferenceSystem,
+    QgsFeature,
+    QgsFeatureRequest,
+    QgsFeatureSink,
+    QgsField,
+    QgsFields,
+    QgsGeometry,
+    QgsMemoryProviderUtils,
+    QgsProcessingContext,
+    QgsProcessingException,
+    QgsProcessingFeedback,
+    QgsProject,
+    QgsProperty,
+    QgsSettings,
+    QgsVectorLayer,
+    QgsVectorLayerUtils,
+    QgsWkbTypes,
+)
+from qgis.testing import start_app, unittest
+
+from utilities import unitTestDataPath
 
 start_app()
 
@@ -132,7 +132,7 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         wkb_type = getattr(QgsWkbTypes, layer_wkb_name)
         fields.append(QgsField('int_f', QVariant.Int))
         layer = QgsMemoryProviderUtils.createMemoryLayer(
-            '%s_layer' % layer_wkb_name, fields, wkb_type, QgsCoordinateReferenceSystem('EPSG:4326'))
+            f'{layer_wkb_name}_layer', fields, wkb_type, QgsCoordinateReferenceSystem('EPSG:4326'))
         self.assertTrue(layer.isValid())
         self.assertEqual(layer.wkbType(), wkb_type)
         return layer
@@ -144,7 +144,7 @@ class TestQgsProcessingInPlace(unittest.TestCase):
             layer = self._make_layer(layer_wkb_name)
             # print("Checking %s ( %s ) : %s" % (alg_name, layer_wkb_name, supported))
             self.assertEqual(alg.supportInPlaceEdit(layer), supported,
-                             "Expected: %s - %s = supported: %s" % (alg_name, layer_wkb_name, supported))
+                             f"Expected: {alg_name} - {layer_wkb_name} = supported: {supported}")
 
     def test_support_in_place_edit(self):
 
@@ -223,7 +223,7 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         for new_f in new_features:
             self.assertEqual(new_f.geometry().wkbType(), layer.wkbType())
 
-        self.assertTrue(layer.addFeatures(new_features), "Fail: %s - %s - %s" % (feature_wkt, attrs, layer_wkb_name))
+        self.assertTrue(layer.addFeatures(new_features), f"Fail: {feature_wkt} - {attrs} - {layer_wkb_name}")
         return layer, new_features
 
     def test_QgsVectorLayerUtilsmakeFeaturesCompatible(self):
@@ -786,7 +786,7 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         self.assertEqual(polygon_layer.featureCount(), 3)
         geoms = [f.geometry() for f in new_features]
         [g.normalize() for g in geoms]
-        wkt1, wkt2, wkt3 = [g.asWkt() for g in geoms]
+        wkt1, wkt2, wkt3 = (g.asWkt() for g in geoms)
         self.assertEqual(wkt1, 'Polygon ((0 0, 1 1, 2 0, 0 0))')
         self.assertEqual(wkt2, 'Polygon ((0 2, 2 2, 1 1, 0 2))')
         self.assertEqual(re.sub(r'0000\d+', '', wkt3), 'Polygon ((1.1 1.1, 1.1 2.1, 2.1 2.1, 2.1 1.1, 1.1 1.1))')
@@ -815,7 +815,7 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         self.assertEqual(polygonz_layer.featureCount(), 2)
         geoms = [f.geometry() for f in new_features]
         [g.normalize() for g in geoms]
-        wkt1, wkt2 = [g.asWkt() for g in geoms]
+        wkt1, wkt2 = (g.asWkt() for g in geoms)
         self.assertEqual(wkt1, 'PolygonZ ((0 0 1, 1 1 2.25, 2 0 4, 0 0 1))')
         self.assertEqual(wkt2, 'PolygonZ ((0 2 3, 2 2 1, 1 1 2.25, 0 2 3))')
 

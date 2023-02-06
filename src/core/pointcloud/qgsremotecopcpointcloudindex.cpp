@@ -135,7 +135,7 @@ QgsPointCloudBlockRequest *QgsRemoteCopcPointCloudIndex::asyncNodeData( const In
   int pointCount = mHierarchy.value( n );
 
   return new QgsCopcPointCloudBlockRequest( n, mUrl.toString(), attributes(), requestAttributes,
-         scale(), offset(), filterExpression,
+         scale(), offset(), filterExpression, request.filterRect(),
          blockOffset, blockSize, pointCount, *mLazInfo.get() );
 }
 

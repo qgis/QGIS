@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 """
 ***************************************************************************
@@ -17,10 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from __future__ import print_function
-from future import standard_library
-standard_library.install_aliases()
-from builtins import range
 
 __author__ = 'Nyall Dawson'
 __date__ = 'October 2016'
@@ -73,12 +68,12 @@ def colorDiff(c1, c2):
 def imageFromPath(path):
     if (path[:8] == 'https://' or path[:7] == 'file://'):
         # fetch remote image
-        print('Fetching remote ({})'.format(path))
+        print(f'Fetching remote ({path})')
         data = urllib.request.urlopen(path).read()
         image = QImage()
         image.loadFromData(data)
     else:
-        print('Using local ({})'.format(path))
+        print(f'Using local ({path})')
         image = QImage(path)
     return image
 
@@ -96,7 +91,7 @@ class SelectReferenceImageDialog(QDialog):
         self.button_box.rejected.connect(self.reject)
 
         layout = QVBoxLayout()
-        layout.addWidget(QLabel('Found multiple matching reference images for {}'.format(test_name)))
+        layout.addWidget(QLabel(f'Found multiple matching reference images for {test_name}'))
 
         self.list = QListWidget()
         layout.addWidget(self.list, 1)
@@ -187,7 +182,7 @@ class ResultHandler(QDialog):
     def parse_url(self, url):
         parts = urllib.parse.urlsplit(url)
         apiurl = urllib.parse.urlunsplit((parts.scheme, parts.netloc, '/api/v1/testDetails.php', parts.query, parts.fragment))
-        print('Fetching dash results from api: {}'.format(apiurl))
+        print(f'Fetching dash results from api: {apiurl}')
         page = urllib.request.urlopen(apiurl)
         content = json.loads(page.read().decode('utf-8'))
 
@@ -199,7 +194,7 @@ class ResultHandler(QDialog):
             m = re.search(r'Rendered Image (.*?)(\s|$)', img['role'])
             test_name = m.group(1)
             rendered_image = 'displayImage.php?imgid={}'.format(img['imgid'])
-            images[test_name] = '{}/{}'.format(dash_url, rendered_image)
+            images[test_name] = f'{dash_url}/{rendered_image}'
 
         if images:
             print('Found images:\n')
@@ -230,12 +225,12 @@ class ResultHandler(QDialog):
     def load_images(self, control_image_path, rendered_image_path, mask_image_path):
         self.control_image = imageFromPath(control_image_path)
         if not self.control_image:
-            error('Could not read control image {}'.format(control_image_path))
+            error(f'Could not read control image {control_image_path}')
 
         self.rendered_image = imageFromPath(rendered_image_path)
         if not self.rendered_image:
             error(
-                'Could not read rendered image {}'.format(rendered_image_path))
+                f'Could not read rendered image {rendered_image_path}')
         if not self.rendered_image.width() == self.control_image.width() or not self.rendered_image.height() == self.control_image.height():
             print(
                 'Size mismatch - control image is {}x{}, rendered image is {}x{}'.format(self.control_image.width(),
@@ -254,7 +249,7 @@ class ResultHandler(QDialog):
         self.mask_image = imageFromPath(mask_image_path)
         if self.mask_image.isNull():
             print(
-                'Mask image does not exist, creating {}'.format(mask_image_path))
+                f'Mask image does not exist, creating {mask_image_path}')
             self.mask_image = QImage(
                 self.control_image.width(), self.control_image.height(), QImage.Format_ARGB32)
             self.mask_image.fill(QColor(0, 0, 0))
@@ -375,7 +370,7 @@ class ResultHandler(QDialog):
 
             self.found_control_image_path = dlg.selected_image()
         elif len(matching_control_images) == 0:
-            print(termcolor.colored('No matching control images found for {}'.format(test_name), 'yellow'))
+            print(termcolor.colored(f'No matching control images found for {test_name}', 'yellow'))
             return None
         else:
             self.found_control_image_path = matching_control_images[0]
@@ -385,12 +380,12 @@ class ResultHandler(QDialog):
         filtered_images = [i for i in images if not i[-9:] == '_mask.png']
         if len(filtered_images) > 1:
             error(
-                'Found multiple matching control images for {}'.format(test_name))
+                f'Found multiple matching control images for {test_name}')
         elif len(filtered_images) == 0:
-            error('No matching control images found for {}'.format(test_name))
+            error(f'No matching control images found for {test_name}')
 
         self.found_image = filtered_images[0]
-        print('Found matching control image: {}'.format(self.found_image))
+        print(f'Found matching control image: {self.found_image}')
         return self.found_image
 
     def create_diff_image(self, control_image, rendered_image, mask_image):

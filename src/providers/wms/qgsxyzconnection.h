@@ -14,9 +14,9 @@
  ***************************************************************************/
 
 #ifndef QGSXYZCONNECTION_H
-#define QGSXYZCONNECTION_H
 
 #include <QStringList>
+
 #include "qgshttpheaders.h"
 
 
@@ -50,12 +50,6 @@ class QgsXyzConnectionUtils
   public:
     //! Returns list of existing connections, unless the hidden ones
     static QStringList connectionList();
-
-    //! Returns last used connection
-    static QString selectedConnection();
-
-    //! Saves name of the last used connection
-    static void setSelectedConnection( const QString &connName );
 
     //! Returns connection details
     static QgsXyzConnection connection( const QString &name );

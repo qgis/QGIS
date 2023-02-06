@@ -872,6 +872,15 @@ void QgsWMSSourceSelect::lstLayers_itemSelectionChanged()
   labelCoordRefSys->setDisabled( mCRSs.isEmpty() );
   mCrsSelector->setDisabled( mCRSs.isEmpty() );
 
+  QList< QgsCoordinateReferenceSystem > crsFilter;
+  crsFilter.reserve( mCRSs.size() );
+  for ( const QString &crs : std::as_const( mCRSs ) )
+  {
+    crsFilter << QgsCoordinateReferenceSystem( crs );
+  }
+  if ( !crsFilter.isEmpty() )
+    mCrsSelector->setFilter( crsFilter );
+
   if ( !layers.isEmpty() && !mCRSs.isEmpty() )
   {
 
@@ -1038,7 +1047,6 @@ QString QgsWMSSourceSelect::connName()
 void QgsWMSSourceSelect::collectSelectedLayers( QStringList &layers, QStringList &styles, QStringList &titles )
 {
   //go through list in layer order tab
-  QStringList selectedLayerList;
   for ( int i = mLayerOrderTreeWidget->topLevelItemCount() - 1; i >= 0; --i )
   {
     layers << mLayerOrderTreeWidget->topLevelItem( i )->text( 0 );
@@ -1156,9 +1164,12 @@ void QgsWMSSourceSelect::filterLayers( const QString &searchText )
   {
     // show everything and reset tree nesting
     setChildrenVisible( lstLayers->invisibleRootItem(), true );
-    for ( QTreeWidgetItem *item : mTreeInitialExpand.keys() )
+    for ( auto it = mTreeInitialExpand.constBegin(); it != mTreeInitialExpand.constEnd(); it++ )
+    {
+      QTreeWidgetItem *item = it.key();
       if ( item )
-        item->setExpanded( mTreeInitialExpand.value( item ) );
+        item->setExpanded( it.value() );
+    }
     mTreeInitialExpand.clear();
   }
   else

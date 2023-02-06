@@ -138,8 +138,8 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     void geometryChanged() override;
     void prepareGeometry() override;
 
-    QgsAbstractGeometry *intersection( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
-    QgsAbstractGeometry *difference( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
+    QgsAbstractGeometry *intersection( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const override;
+    QgsAbstractGeometry *difference( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const override;
 
     /**
      * Performs a fast, non-robust intersection between the geometry and
@@ -159,14 +159,18 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      *
      * Curved geometries are not supported.
      *
+     * \param maxNodes Maximum nodes used
+     * \param errorMsg Error message returned by GEOS
+     * \param parameters can be used to specify parameters which control the subdivision results (since QGIS 3.28)
+     *
      * \since QGIS 3.0
      */
-    std::unique_ptr< QgsAbstractGeometry > subdivide( int maxNodes, QString *errorMsg = nullptr ) const;
+    std::unique_ptr< QgsAbstractGeometry > subdivide( int maxNodes, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
 
-    QgsAbstractGeometry *combine( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
-    QgsAbstractGeometry *combine( const QVector<QgsAbstractGeometry *> &geomList, QString *errorMsg ) const override;
-    QgsAbstractGeometry *combine( const QVector< QgsGeometry > &, QString *errorMsg = nullptr ) const override;
-    QgsAbstractGeometry *symDifference( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
+    QgsAbstractGeometry *combine( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const override;
+    QgsAbstractGeometry *combine( const QVector<QgsAbstractGeometry *> &geomList, QString *errorMsg, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const override;
+    QgsAbstractGeometry *combine( const QVector< QgsGeometry > &, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const override;
+    QgsAbstractGeometry *symDifference( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const override;
     QgsAbstractGeometry *buffer( double distance, int segments, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *buffer( double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *simplify( double tolerance, QString *errorMsg = nullptr ) const override;
@@ -622,7 +626,15 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 
     //geos util functions
     void cacheGeos() const;
-    std::unique_ptr< QgsAbstractGeometry > overlay( const QgsAbstractGeometry *geom, Overlay op, QString *errorMsg = nullptr ) const;
+
+    /**
+     * Returns a geometry representing the overlay operation with \a geom.
+     * \param geom geometry to perform the operation
+     * \param errorMsg Error message returned by GEOS
+     * \param op Overlay Operation
+     * \param parameters can be used to specify parameters which control the overlay results (since QGIS 3.28)
+     */
+    std::unique_ptr< QgsAbstractGeometry > overlay( const QgsAbstractGeometry *geom, Overlay op, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
     bool relation( const QgsAbstractGeometry *geom, Relation r, QString *errorMsg = nullptr ) const;
     static GEOSCoordSequence *createCoordinateSequence( const QgsCurve *curve, double precision, bool forceClose = false );
     static std::unique_ptr< QgsLineString > sequenceToLinestring( const GEOSGeometry *geos, bool hasZ, bool hasM );
@@ -652,7 +664,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     static int lineContainedInLine( const GEOSGeometry *line1, const GEOSGeometry *line2 );
     static int pointContainedInLine( const GEOSGeometry *point, const GEOSGeometry *line );
     static int geomDigits( const GEOSGeometry *geom );
-    void subdivideRecursive( const GEOSGeometry *currentPart, int maxNodes, int depth, QgsGeometryCollection *parts, const QgsRectangle &clipRect ) const;
+    void subdivideRecursive( const GEOSGeometry *currentPart, int maxNodes, int depth, QgsGeometryCollection *parts, const QgsRectangle &clipRect, double gridSize = -1 ) const;
 };
 
 /// @cond PRIVATE

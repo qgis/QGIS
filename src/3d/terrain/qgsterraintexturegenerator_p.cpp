@@ -38,6 +38,22 @@ int QgsTerrainTextureGenerator::render( const QgsRectangle &extent, QgsChunkNode
 {
   QgsMapSettings mapSettings( baseMapSettings() );
   mapSettings.setExtent( extent );
+  QSize size = QSize( mTextureSize );
+  if ( mMap.terrainGenerator()->type() == QgsTerrainGenerator::Flat )
+  {
+    // The flat terrain generator might have non-square tiles, clipped at the scene's extent.
+    // We need to produce non-square textures for those cases.
+    const QgsRectangle clippedExtent = extent.intersect( mMap.extent() );
+    if ( !qgsDoubleNear( clippedExtent.width(), clippedExtent.height() ) )
+    {
+      if ( clippedExtent.height() > clippedExtent.width() )
+        size.setWidth( std::round( size.width() * clippedExtent.width() / clippedExtent.height() ) );
+      else if ( clippedExtent.height() < clippedExtent.width() )
+        size.setHeight( std::round( size.height() * clippedExtent.height() / clippedExtent.width() ) );
+    }
+    mapSettings.setExtent( clippedExtent );
+  }
+  mapSettings.setOutputSize( size );
 
   QList<QgsMapLayer *> layers = mMap.layers();
   QList<QgsMapLayer *> toBeRenderedLayers;
@@ -86,13 +102,14 @@ void QgsTerrainTextureGenerator::cancelJob( int jobId )
 
 void QgsTerrainTextureGenerator::waitForFinished()
 {
-  for ( QgsMapRendererSequentialJob *job : mJobs.keys() )
-    disconnect( job, &QgsMapRendererJob::finished, this, &QgsTerrainTextureGenerator::onRenderingFinished );
+  for ( auto it = mJobs.keyBegin(); it != mJobs.keyEnd(); it++ )
+    disconnect( *it, &QgsMapRendererJob::finished, this, &QgsTerrainTextureGenerator::onRenderingFinished );
   QVector<QgsMapRendererSequentialJob *> toBeDeleted;
-  for ( QgsMapRendererSequentialJob *mapJob : mJobs.keys() )
+  for ( auto it = mJobs.constBegin(); it != mJobs.constEnd(); it++ )
   {
+    QgsMapRendererSequentialJob *mapJob = it.key();
     mapJob->waitForFinished();
-    JobData jobData = mJobs.value( mapJob );
+    JobData jobData = it.value();
     toBeDeleted.push_back( mapJob );
 
     QImage img = mapJob->renderedImage();

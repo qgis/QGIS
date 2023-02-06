@@ -20,6 +20,7 @@
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsrangerequestcache.h"
+#include "qgssettings.h"
 
 #include <QElapsedTimer>
 #include <QNetworkReply>

@@ -334,7 +334,7 @@ namespace QgsWfs
       transactionUpdate &action = *tuIt;
       QString typeName = action.typeName;
 
-      if ( !mapLayerMap.keys().contains( typeName ) )
+      if ( !mapLayerMap.contains( typeName ) )
       {
         action.error = true;
         action.errorMsg = QStringLiteral( "TypeName '%1' unknown" ).arg( typeName );
@@ -552,7 +552,7 @@ namespace QgsWfs
       transactionDelete &action = *tdIt;
       QString typeName = action.typeName;
 
-      if ( !mapLayerMap.keys().contains( typeName ) )
+      if ( !mapLayerMap.contains( typeName ) )
       {
         action.error = true;
         action.errorMsg = QStringLiteral( "TypeName '%1' unknown" ).arg( typeName );
@@ -670,7 +670,7 @@ namespace QgsWfs
       transactionInsert &action = *tiIt;
       QString typeName = action.typeName;
 
-      if ( !mapLayerMap.keys().contains( typeName ) )
+      if ( !mapLayerMap.contains( typeName ) )
       {
         action.error = true;
         action.errorMsg = QStringLiteral( "TypeName '%1' unknown" ).arg( typeName );
@@ -1310,5 +1310,3 @@ namespace QgsWfs
   }
 
 } // namespace QgsWfs
-
-

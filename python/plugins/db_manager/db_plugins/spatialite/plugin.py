@@ -66,10 +66,10 @@ class SpatiaLiteDBPlugin(DBPlugin):
     def connect(self, parent=None):
         conn_name = self.connectionName()
         settings = QgsSettings()
-        settings.beginGroup(u"/%s/%s" % (self.connectionSettingsKey(), conn_name))
+        settings.beginGroup("/%s/%s" % (self.connectionSettingsKey(), conn_name))
 
         if not settings.contains("sqlitepath"):  # non-existent entry?
-            raise InvalidDataException(self.tr(u'There is no defined database connection "{0}".').format(conn_name))
+            raise InvalidDataException(self.tr('There is no defined database connection "{0}".').format(conn_name))
 
         database = settings.value("sqlitepath")
 
@@ -80,7 +80,7 @@ class SpatiaLiteDBPlugin(DBPlugin):
     @classmethod
     def addConnection(self, conn_name, uri):
         settings = QgsSettings()
-        settings.beginGroup(u"/%s/%s" % (self.connectionSettingsKey(), conn_name))
+        settings.beginGroup("/%s/%s" % (self.connectionSettingsKey(), conn_name))
         settings.setValue("sqlitepath", uri.database())
         return True
 
@@ -173,7 +173,7 @@ class SLDatabase(Database):
         return True
 
     def spatialIndexClause(self, src_table, src_column, dest_table, dest_column):
-        return u""" "%s".ROWID IN (\nSELECT ROWID FROM SpatialIndex WHERE f_table_name='%s' AND search_frame="%s"."%s") """ % (src_table, src_table, dest_table, dest_column)
+        return """ "%s".ROWID IN (\nSELECT ROWID FROM SpatialIndex WHERE f_table_name='%s' AND search_frame="%s"."%s") """ % (src_table, src_table, dest_table, dest_column)
 
     def supportsComment(self):
         return False
@@ -186,7 +186,7 @@ class SLTable(Table):
         self.name, self.isView, self.isSysTable = row
 
     def ogrUri(self):
-        ogrUri = u"%s|layername=%s" % (self.uri().database(), self.name)
+        ogrUri = "%s|layername=%s" % (self.uri().database(), self.name)
         return ogrUri
 
     def mimeUri(self):
@@ -270,12 +270,12 @@ class SLRasterTable(SLTable, RasterTable):
         # return SLRasterTableInfo(self)
 
     def rasterliteGdalUri(self):
-        gdalUri = u'RASTERLITE:%s,table=%s' % (self.uri().database(), self.prefixName)
+        gdalUri = 'RASTERLITE:%s,table=%s' % (self.uri().database(), self.prefixName)
         return gdalUri
 
     def mimeUri(self):
         # QGIS has no provider to load rasters, let's use GDAL
-        uri = u"raster:gdal:%s:%s" % (self.name, self.uri().database())
+        uri = "raster:gdal:%s:%s" % (self.name, self.uri().database())
         return uri
 
     def toMapLayer(self, geometryType=None, crs=None):

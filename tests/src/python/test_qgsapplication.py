@@ -10,8 +10,8 @@ __date__ = '20/01/2011'
 __copyright__ = 'Copyright 2012, The QGIS Project'
 
 import qgis  # NOQA
-from qgis.testing import start_app, unittest
 
+from qgis.testing import start_app, unittest
 
 QGISAPP = start_app()
 
@@ -23,8 +23,7 @@ class TestPyQgsApplication(unittest.TestCase):
         QGISAPP.setUITheme('fooobar')
         myExpectedResult = 'default'
         myResult = QGISAPP.themeName()
-        myMessage = ('Expected:\n%s\nGot:\n%s\n' %
-                     (myExpectedResult, myResult))
+        myMessage = f'Expected:\n{myExpectedResult}\nGot:\n{myResult}\n'
         assert myExpectedResult == myResult, myMessage
 
 

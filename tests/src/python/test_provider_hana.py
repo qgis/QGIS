@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for the SAP HANA provider.
 
 Read tests/README.md about writing/launching tests with HANA.
@@ -18,15 +17,14 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 
 import os
 
-from providertestbase import ProviderTestCase
-from PyQt5.QtCore import QVariant, QDate, QTime, QDateTime, QByteArray
+from PyQt5.QtCore import QByteArray, QDate, QDateTime, QTime, QVariant
 from qgis.core import (
     NULL,
     QgsCoordinateReferenceSystem,
     QgsDataProvider,
     QgsDataSourceUri,
-    QgsFeatureRequest,
     QgsFeature,
+    QgsFeatureRequest,
     QgsField,
     QgsFieldConstraints,
     QgsGeometry,
@@ -37,8 +35,11 @@ from qgis.core import (
     QgsVectorDataProvider,
     QgsVectorLayer,
     QgsVectorLayerExporter,
-    QgsWkbTypes)
+    QgsWkbTypes,
+)
 from qgis.testing import start_app, unittest
+
+from providertestbase import ProviderTestCase
 from test_hana_utils import QgsHanaProviderUtils
 from utilities import unitTestDataPath
 
@@ -134,7 +135,7 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
         QgsSettings().setValue('/qgis/compileExpressions', False)
 
     def uncompiledFilters(self):
-        filters = set([
+        filters = {
             '(name = \'Apple\') is not null',
             'false and NULL',
             'true and NULL',
@@ -183,11 +184,11 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
             '"dt" = to_datetime(\'000www14ww13ww12www4ww5ww2020\',\'zzzwwwsswwmmwwhhwwwdwwMwwyyyy\')',
             '"date" = to_date(\'www4ww5ww2020\',\'wwwdwwMwwyyyy\')',
             '"time" = to_time(\'000www14ww13ww12www\',\'zzzwwwsswwmmwwhhwww\')',
-        ])
+        }
         return filters
 
     def partiallyCompiledFilters(self):
-        return set([])
+        return set()
 
     # HERE GO THE PROVIDER SPECIFIC TESTS
     def testMetadata(self):
@@ -531,20 +532,25 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
         """Test filterRect which partially lies outside of the srs extent"""
         self.source.setSubsetString(None)
         extent = QgsRectangle(-103, 46, -25, 97)
-        result = set([f[self.pk_name] for f in self.source.getFeatures(QgsFeatureRequest().setFilterRect(extent))])
-        expected = set([1, 2, 4, 5])
+        result = {f[self.pk_name] for f in self.source.getFeatures(QgsFeatureRequest().setFilterRect(extent))}
+        expected = {1, 2, 4, 5}
         assert set(expected) == result, f'Expected {expected} and got {result} when testing setFilterRect {extent}'
 
     def testEncodeDecodeUri(self):
         """Test HANA encode/decode URI"""
         md = QgsProviderRegistry.instance().providerMetadata('hana')
+        self.maxDiff = None
         self.assertEqual(md.decodeUri(
+            "connectionType=0 dsn='HANADB1' "
             "driver='/usr/sap/hdbclient/libodbcHDB.so' dbname='qgis_tests' host=localhost port=30015 "
             "user='myuser' password='mypwd' srid=2016 table=\"public\".\"gis\" (geom) type=MultiPolygon key='id' "
             "sslEnabled='true' sslCryptoProvider='commoncrypto' sslValidateCertificate='false' "
             "sslHostNameInCertificate='hostname.domain.com' sslKeyStore='mykey.pem' "
-            "sslTrustStore='server_root.crt' "),
+            "sslTrustStore='server_root.crt' "
+            "proxyEnabled='true' proxyHttp='true' proxyHost='h' proxyPort=2 proxyUsername='u' proxyPassword='p' "),
             {
+                'connectionType': '0',
+                'dsn': 'HANADB1',
                 'driver': '/usr/sap/hdbclient/libodbcHDB.so',
                 'dbname': 'qgis_tests',
                 'host': 'localhost',
@@ -563,9 +569,17 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
                 'sslHostNameInCertificate': 'hostname.domain.com',
                 'sslKeyStore': 'mykey.pem',
                 'sslTrustStore': 'server_root.crt',
-                'selectatid': False})
+                'selectatid': False,
+                'proxyEnabled': 'true',
+                'proxyHttp': 'true',
+                'proxyHost': 'h',
+                'proxyPort': '2',
+                'proxyUsername': 'u',
+                'proxyPassword': 'p'})
 
-        self.assertEqual(md.encodeUri({'driver': '/usr/sap/hdbclient/libodbcHDB.so',
+        self.assertEqual(md.encodeUri({'connectionType': '0',
+                                       'dsn': 'HANADB1',
+                                       'driver': '/usr/sap/hdbclient/libodbcHDB.so',
                                        'dbname': 'qgis_tests',
                                        'host': 'localhost',
                                        'port': '30015',
@@ -583,13 +597,20 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
                                        'sslHostNameInCertificate': 'hostname.domain.com',
                                        'sslKeyStore': 'mykey.pem',
                                        'sslTrustStore': 'server_root.crt',
-                                       'selectatid': False}),
+                                       'selectatid': False,
+                                       'proxyEnabled': 'true',
+                                       'proxyHttp': 'false',
+                                       'proxyHost': 'h',
+                                       'proxyPort': '3',
+                                       'proxyUsername': 'u',
+                                       'proxyPassword': 'p'}),
                          "dbname='qgis_tests' driver='/usr/sap/hdbclient/libodbcHDB.so' user='myuser' password='mypwd' "
-                         "srid=2016 host='localhost' key='id' port='30015' selectatid='false' "
-                         "sslCryptoProvider='commoncrypto' sslEnabled='true' "
+                         "key='id' srid=2016 connectionType='0' dsn='HANADB1' host='localhost' port='30015' "
+                         "proxyEnabled='true' proxyHost='h' proxyHttp='false' proxyPassword='p' proxyPort='3' "
+                         "proxyUsername='u' selectatid='false' sslCryptoProvider='commoncrypto' sslEnabled='true' "
                          "sslHostNameInCertificate='hostname.domain.com' sslKeyStore='mykey.pem' "
-                         "sslTrustStore='server_root.crt' sslValidateCertificate='false' "
-                         "type='MultiPolygon' table=\"public\".\"gis\" (geom)")
+                         "sslTrustStore='server_root.crt' sslValidateCertificate='false' type='MultiPolygon' "
+                         "table=\"public\".\"gis\" (geom)")
 
 
 if __name__ == '__main__':

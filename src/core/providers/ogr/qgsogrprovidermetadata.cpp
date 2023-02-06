@@ -141,6 +141,7 @@ QVariantMap QgsOgrProviderMetadata::decodeUri( const QString &uri ) const
   QString layerName;
   QString subset;
   QString geometryType;
+  QString uniqueGeometryType;
   QStringList openOptions;
   QString databaseName;
   QString authcfg;
@@ -177,6 +178,7 @@ QVariantMap QgsOgrProviderMetadata::decodeUri( const QString &uri ) const
   if ( path.contains( '|' ) )
   {
     const QRegularExpression geometryTypeRegex( QStringLiteral( "\\|geometrytype=([a-zA-Z0-9]*)" ), QRegularExpression::PatternOption::CaseInsensitiveOption );
+    const QRegularExpression uniqueGeometryTypeRegex( QStringLiteral( "\\|uniqueGeometryType=([a-z]*)" ), QRegularExpression::PatternOption::CaseInsensitiveOption );
     const QRegularExpression layerNameRegex( QStringLiteral( "\\|layername=([^|]*)" ), QRegularExpression::PatternOption::CaseInsensitiveOption );
     const QRegularExpression layerIdRegex( QStringLiteral( "\\|layerid=([^|]*)" ), QRegularExpression::PatternOption::CaseInsensitiveOption );
     const QRegularExpression subsetRegex( QStringLiteral( "\\|subset=((?:.*[\r\n]*)*)\\Z" ) );
@@ -189,6 +191,13 @@ QVariantMap QgsOgrProviderMetadata::decodeUri( const QString &uri ) const
     if ( match.hasMatch() )
     {
       geometryType = match.captured( 1 );
+      path = path.remove( match.capturedStart( 0 ), match.capturedLength( 0 ) );
+    }
+
+    match = uniqueGeometryTypeRegex.match( path );
+    if ( match.hasMatch() )
+    {
+      uniqueGeometryType = match.captured( 1 );
       path = path.remove( match.capturedStart( 0 ), match.capturedLength( 0 ) );
     }
 
@@ -265,6 +274,8 @@ QVariantMap QgsOgrProviderMetadata::decodeUri( const QString &uri ) const
     uriComponents.insert( QStringLiteral( "subset" ), subset );
   if ( !geometryType.isEmpty() )
     uriComponents.insert( QStringLiteral( "geometryType" ), geometryType );
+  if ( !uniqueGeometryType.isEmpty() )
+    uriComponents.insert( QStringLiteral( "uniqueGeometryType" ), uniqueGeometryType );
   if ( !databaseName.isEmpty() )
     uriComponents.insert( QStringLiteral( "databaseName" ), databaseName );
   if ( !openOptions.isEmpty() )
@@ -289,10 +300,13 @@ QString QgsOgrProviderMetadata::encodeUri( const QVariantMap &parts ) const
   const QString geometryType = parts.value( QStringLiteral( "geometryType" ) ).toString();
   const QString authcfg = parts.value( QStringLiteral( "authcfg" ) ).toString();
   const QStringList openOptions = parts.value( QStringLiteral( "openOptions" ) ).toStringList();
+  const QString uniqueGeometryType = parts.value( QStringLiteral( "uniqueGeometryType" ) ).toString();
 
   QString uri = vsiPrefix + path + vsiSuffix
                 + ( !layerName.isEmpty() ? QStringLiteral( "|layername=%1" ).arg( layerName ) : !layerId.isEmpty() ? QStringLiteral( "|layerid=%1" ).arg( layerId ) : QString() )
                 + ( !geometryType.isEmpty() ? QStringLiteral( "|geometrytype=%1" ).arg( geometryType ) : QString() );
+  if ( !uniqueGeometryType.isEmpty() )
+    uri += QStringLiteral( "|uniqueGeometryType=%1" ).arg( uniqueGeometryType );
   for ( const QString &openOption : openOptions )
   {
     uri += QLatin1String( "|option:" );
@@ -660,6 +674,12 @@ bool LoadDataSourceLayerStylesAndLayer( const QString &uri,
 
 QString QgsOgrProviderMetadata::loadStyle( const QString &uri, QString &errCause )
 {
+  QString name;
+  return loadStoredStyle( uri, name, errCause );
+}
+
+QString QgsOgrProviderMetadata::loadStoredStyle( const QString &uri, QString &styleName, QString &errCause )
+{
   QgsOgrLayerUniquePtr layerStyles;
   QgsOgrLayerUniquePtr userLayer;
   if ( !LoadDataSourceLayerStylesAndLayer( uri, layerStyles, userLayer, errCause ) )
@@ -696,6 +716,8 @@ QString QgsOgrProviderMetadata::loadStyle( const QString &uri, QString &errCause
     {
       styleQML = QString::fromUtf8(
                    OGR_F_GetFieldAsString( hFeat.get(), OGR_FD_GetFieldIndex( hLayerDefn, "styleQML" ) ) );
+      styleName = QString::fromUtf8(
+                    OGR_F_GetFieldAsString( hFeat.get(), OGR_FD_GetFieldIndex( hLayerDefn, "styleName" ) ) );
       break;
     }
 
@@ -709,7 +731,8 @@ QString QgsOgrProviderMetadata::loadStyle( const QString &uri, QString &errCause
       moreRecentTimestamp = ts;
       styleQML = QString::fromUtf8(
                    OGR_F_GetFieldAsString( hFeat.get(), OGR_FD_GetFieldIndex( hLayerDefn, "styleQML" ) ) );
-
+      styleName = QString::fromUtf8(
+                    OGR_F_GetFieldAsString( hFeat.get(), OGR_FD_GetFieldIndex( hLayerDefn, "styleName" ) ) );
     }
   }
   OGR_L_ResetReading( hLayer );
@@ -782,6 +805,7 @@ int QgsOgrProviderMetadata::listStyles(
   QMap<int, QString> mapIdToDescription;
   QMap<qlonglong, QList<int> > mapTimestampToId;
   int numberOfRelatedStyles = 0;
+
   while ( true )
   {
     gdal::ogr_feature_unique_ptr hFeature( OGR_L_GetNextFeature( hLayer ) );
@@ -816,8 +840,8 @@ int QgsOgrProviderMetadata::listStyles(
       int  year, month, day, hour, minute, second, TZ;
       OGR_F_GetFieldAsDateTime( hFeature.get(), OGR_FD_GetFieldIndex( hLayerDefn, "update_time" ),
                                 &year, &month, &day, &hour, &minute, &second, &TZ );
-      qlonglong ts = second + minute * 60 + hour * 3600 + day * 24 * 3600 +
-                     static_cast<qlonglong>( month ) * 31 * 24 * 3600 + static_cast<qlonglong>( year ) * 12 * 31 * 24 * 3600;
+      const qlonglong ts = second + minute * 60 + hour * 3600 + day * 24 * 3600 +
+                           static_cast<qlonglong>( month ) * 31 * 24 * 3600 + static_cast<qlonglong>( year ) * 12 * 31 * 24 * 3600;
 
       listTimestamp.append( ts );
       mapIdToStyleName[fid] = styleName;

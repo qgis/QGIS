@@ -1,7 +1,0 @@
-Vectorising Grid Classes
-shapes_grid
-QgsProcessingParameterRasterLayer|GRID|Grid|None|False
-QgsProcessingParameterEnum|CLASS_ALL|Class Selection|[0] one single class specified by class identifier;[1] all classes|False|1
-QgsProcessingParameterNumber|CLASS_ID|Class Identifier|QgsProcessingParameterNumber.Integer|0|False|None|None
-QgsProcessingParameterEnum|SPLIT|Vectorised class as...|[0] one single (multi-)polygon object;[1] each island as separated polygon|False|1
-QgsProcessingParameterVectorDestination|POLYGONS|Vectorized

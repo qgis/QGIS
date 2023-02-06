@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsSubsetStringEditorProviderRegistry
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,15 +10,14 @@ __date__ = '15/11/2020'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
 import qgis  # NOQA
-
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtWidgets import QDialog
-
 from qgis.core import QgsVectorLayer
-from qgis.gui import (QgsGui,
-                      QgsQueryBuilder,
-                      QgsSubsetStringEditorInterface,
-                      QgsSubsetStringEditorProvider)
+from qgis.gui import (
+    QgsGui,
+    QgsQueryBuilder,
+    QgsSubsetStringEditorInterface,
+    QgsSubsetStringEditorProvider,
+)
 from qgis.testing import start_app, unittest
 
 app = start_app()

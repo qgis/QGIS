@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for qgis_process.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,18 +9,17 @@ __author__ = '(C) 2020 by Nyall Dawson'
 __date__ = '05/04/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import sys
-import os
 import glob
+import json
+import os
 import re
-import time
 import shutil
 import subprocess
+import sys
 import tempfile
-import json
-import errno
 
 from qgis.testing import unittest
+
 from utilities import unitTestDataPath
 
 print('CTEST_FULL_OUTPUT')
@@ -101,7 +99,7 @@ class TestQgsProcessExecutablePt2(unittest.TestCase):
 
     def testAlgorithmRunJson(self):
         output_file = self.TMP_DIR + '/polygon_centroid2.shp'
-        rc, output, err = self.run_process(['run', '--no-python', '--json', 'native:centroids', '--', 'INPUT={}'.format(TEST_DATA_DIR + '/polys.shp'), 'OUTPUT={}'.format(output_file)])
+        rc, output, err = self.run_process(['run', '--no-python', '--json', 'native:centroids', '--', f"INPUT={TEST_DATA_DIR + '/polys.shp'}", f'OUTPUT={output_file}'])
         res = json.loads(output)
 
         self.assertIn('gdal_version', res)
@@ -125,10 +123,10 @@ class TestQgsProcessExecutablePt2(unittest.TestCase):
         """
         output_file = self.TMP_DIR + '/package.gpkg'
         rc, output, err = self.run_process(['run', '--no-python', '--json', 'native:package', '--',
-                                            'LAYERS={}'.format(TEST_DATA_DIR + '/polys.shp'),
-                                            'LAYERS={}'.format(TEST_DATA_DIR + '/points.shp'),
-                                            'LAYERS={}'.format(TEST_DATA_DIR + '/lines.shp'),
-                                            'OUTPUT={}'.format(output_file)])
+                                            f"LAYERS={TEST_DATA_DIR + '/polys.shp'}",
+                                            f"LAYERS={TEST_DATA_DIR + '/points.shp'}",
+                                            f"LAYERS={TEST_DATA_DIR + '/lines.shp'}",
+                                            f'OUTPUT={output_file}'])
         res = json.loads(output)
 
         self.assertIn('gdal_version', res)
@@ -159,7 +157,7 @@ class TestQgsProcessExecutablePt2(unittest.TestCase):
 
     def testModelRun(self):
         output_file = self.TMP_DIR + '/model_output.shp'
-        rc, output, err = self.run_process(['run', '--no-python', TEST_DATA_DIR + '/test_model.model3', '--', 'FEATS={}'.format(TEST_DATA_DIR + '/polys.shp'), 'native:centroids_1:CENTROIDS={}'.format(output_file)])
+        rc, output, err = self.run_process(['run', '--no-python', TEST_DATA_DIR + '/test_model.model3', '--', f"FEATS={TEST_DATA_DIR + '/polys.shp'}", f'native:centroids_1:CENTROIDS={output_file}'])
         self.assertFalse(self._strip_ignorable_errors(err))
         self.assertEqual(rc, 0)
         self.assertIn('0...10...20...30...40...50...60...70...80...90', output.lower())
@@ -192,7 +190,7 @@ class TestQgsProcessExecutablePt2(unittest.TestCase):
 
     def testModelRunJson(self):
         output_file = self.TMP_DIR + '/model_output2.shp'
-        rc, output, err = self.run_process(['run', TEST_DATA_DIR + '/test_model.model3', '--no-python', '--json', '--', 'FEATS={}'.format(TEST_DATA_DIR + '/polys.shp'), 'native:centroids_1:CENTROIDS={}'.format(output_file)])
+        rc, output, err = self.run_process(['run', TEST_DATA_DIR + '/test_model.model3', '--no-python', '--json', '--', f"FEATS={TEST_DATA_DIR + '/polys.shp'}", f'native:centroids_1:CENTROIDS={output_file}'])
         self.assertFalse(self._strip_ignorable_errors(err))
         self.assertEqual(rc, 0)
 
@@ -208,13 +206,13 @@ class TestQgsProcessExecutablePt2(unittest.TestCase):
 
     def testModelRunWithLog(self):
         output_file = self.TMP_DIR + '/model_log.log'
-        rc, output, err = self.run_process(['run', '--no-python', TEST_DATA_DIR + '/test_logging_model.model3', '--', 'logfile={}'.format(output_file)])
+        rc, output, err = self.run_process(['run', '--no-python', TEST_DATA_DIR + '/test_logging_model.model3', '--', f'logfile={output_file}'])
         self.assertEqual(rc, 0)
         self.assertIn('0...10...20...30...40...50...60...70...80...90', output.lower())
         self.assertIn('results', output.lower())
         self.assertTrue(os.path.exists(output_file))
 
-        with open(output_file, 'rt') as f:
+        with open(output_file) as f:
             lines = '\n'.join(f.readlines())
 
         self.assertIn('Test logged message', lines)
@@ -299,6 +297,47 @@ class TestQgsProcessExecutablePt2(unittest.TestCase):
         self.assertIn('OUTPUT:	abc:def', output)
         self.assertEqual(rc, 0)
 
+    def testLoadLayer(self):
+        rc, output, err = self.run_process(['run', '--no-python', 'native:raiseexception', '--MESSAGE=CONFIRMED', f"--CONDITION=layer_property(load_layer('{TEST_DATA_DIR + '/points.shp'}','ogr'),'feature_count')>10"])
+        self.assertIn('CONFIRMED', self._strip_ignorable_errors(err))
+
+        self.assertEqual(rc, 1)
+
+    def testDynamicParameters(self):
+        output_file = self.TMP_DIR + '/dynamic_out2.shp'
+
+        rc, output, err = self.run_process(
+            ['run', 'native:buffer', '--INPUT=' + TEST_DATA_DIR + '/points.shp', '--OUTPUT=' + output_file, '--DISTANCE=field:fid', '--json'])
+        self.assertFalse(self._strip_ignorable_errors(err))
+
+        self.assertEqual(rc, 0)
+
+        res = json.loads(output)
+        self.assertEqual(res['algorithm_details']['id'], 'native:buffer')
+        self.assertEqual(res['inputs']['DISTANCE'], 'field:fid')
+
+    def testDynamicParametersJson(self):
+        output_file = self.TMP_DIR + '/dynamic_out.shp'
+
+        params = {
+            'inputs':
+                {
+                    'INPUT': TEST_DATA_DIR + '/points.shp',
+                    'DISTANCE': {'type': 'data_defined', 'field': 'fid'},
+                    'OUTPUT': output_file
+                }
+        }
+
+        rc, output, err = self.run_process_stdin(
+            ['run', 'native:buffer', '-'], json.dumps(params))
+        self.assertFalse(self._strip_ignorable_errors(err))
+
+        self.assertEqual(rc, 0)
+
+        res = json.loads(output)
+        self.assertEqual(res['algorithm_details']['id'], 'native:buffer')
+        self.assertEqual(res['inputs']['DISTANCE'], {'field': 'fid', 'type': 'data_defined'})
+
 
 if __name__ == '__main__':
     # look for qgis bin path
@@ -328,6 +367,6 @@ if __name__ == '__main__':
             if found:
                 break
 
-    print(('\nQGIS_PROCESS_BIN: {}'.format(QGIS_PROCESS_BIN)))
+    print(f'\nQGIS_PROCESS_BIN: {QGIS_PROCESS_BIN}')
     assert QGIS_PROCESS_BIN, 'qgis_process binary not found, skipping test suite'
     unittest.main()

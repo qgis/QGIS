@@ -41,9 +41,16 @@ class CORE_EXPORT QgsRasterDrawer
     /**
      * The QgsRasterDrawer constructor.
      * \param iterator the raster iterator to fetch data from
-     * \param dpiTarget the target \a dpi (dots per inch) to be taken into consideration when rendering
+     * \param dpiTarget the target dpi (dots per inch) to be taken into consideration when rendering
+     * \deprecated since QGIS 3.28. Use the constructor without the \a dpiTarget argument instead, as DPI is now handled by the draw() method which accepts a QgsRenderContext.
      */
-    QgsRasterDrawer( QgsRasterIterator *iterator, double dpiTarget = -1.0 );
+    Q_DECL_DEPRECATED QgsRasterDrawer( QgsRasterIterator *iterator, double dpiTarget ) SIP_DEPRECATED;
+
+    /**
+     * The QgsRasterDrawer constructor.
+     * \param iterator the raster iterator to fetch data from
+     */
+    QgsRasterDrawer( QgsRasterIterator *iterator );
 
     /**
      * Draws raster data.
@@ -53,6 +60,15 @@ class CORE_EXPORT QgsRasterDrawer
      * \param feedback optional raster feedback object for cancellation/preview. Added in QGIS 3.0.
      */
     void draw( QPainter *p, QgsRasterViewPort *viewPort, const QgsMapToPixel *qgsMapToPixel, QgsRasterBlockFeedback *feedback = nullptr );
+
+    /**
+     * Draws raster data.
+     * \param context the render context
+     * \param viewPort viewport to render
+     * \param feedback optional raster feedback object for cancellation/preview.
+     * \since QGIS 3.28
+     */
+    void draw( QgsRenderContext &context, QgsRasterViewPort *viewPort, QgsRasterBlockFeedback *feedback = nullptr );
 
   protected:
 
@@ -71,6 +87,7 @@ class CORE_EXPORT QgsRasterDrawer
   private:
     QgsRasterIterator *mIterator = nullptr;
     double mDpiTarget = -1.0;
+    double mDpiScaleFactor = 1.0;
 };
 
 #endif // QGSRASTERDRAWER_H

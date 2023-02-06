@@ -57,6 +57,8 @@ QgsPointCloudElevationPropertiesWidget::QgsPointCloudElevationPropertiesWidget( 
   connect( mPointColorButton, &QgsColorButton::colorChanged, this, &QgsPointCloudElevationPropertiesWidget::onChanged );
   connect( mCheckBoxRespectLayerColors, &QCheckBox::toggled, this, &QgsPointCloudElevationPropertiesWidget::onChanged );
   connect( mOpacityByDistanceCheckBox, &QCheckBox::toggled, this, &QgsPointCloudElevationPropertiesWidget::onChanged );
+
+  setProperty( "helpPage", QStringLiteral( "working_with_point_clouds/point_clouds.html#elevation-properties" ) );
 }
 
 void QgsPointCloudElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )

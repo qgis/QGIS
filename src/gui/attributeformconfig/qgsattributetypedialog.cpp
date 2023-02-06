@@ -74,7 +74,16 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
   mExpressionWidget->registerExpressionContextGenerator( this );
   mExpressionWidget->setLayer( mLayer );
 
+  mEditableExpressionButton->registerExpressionContextGenerator( this );
+  mEditableExpressionButton->init( QgsEditFormConfig::DataDefinedProperty::Editable, mDataDefinedProperties.property( QgsEditFormConfig::DataDefinedProperty::Editable ), vl->editFormConfig().propertyDefinitions(), vl );
+  mEditableExpressionButton->registerLinkedWidget( isFieldEditableCheckBox );
+  connect( mEditableExpressionButton, &QgsPropertyOverrideButton::changed, this, [ = ]
+  {
+    mDataDefinedProperties.setProperty( QgsEditFormConfig::DataDefinedProperty::Editable, mEditableExpressionButton->toProperty() );
+  } );
+
   mAliasExpressionButton->registerExpressionContextGenerator( this );
+  mAliasExpressionButton->init( QgsEditFormConfig::DataDefinedProperty::Alias, mDataDefinedProperties.property( QgsEditFormConfig::DataDefinedProperty::Alias ), vl->editFormConfig().propertyDefinitions(), vl );
   connect( mAliasExpressionButton, &QgsPropertyOverrideButton::changed, this, [ = ]
   {
     mDataDefinedProperties.setProperty( QgsEditFormConfig::DataDefinedProperty::Alias, mAliasExpressionButton->toProperty() );
@@ -321,6 +330,7 @@ QgsExpressionContext QgsAttributeTypeDialog::createExpressionContext() const
       << QgsExpressionContextUtils::globalScope()
       << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
       << QgsExpressionContextUtils::layerScope( mLayer )
+      << QgsExpressionContextUtils::formScope( )
       << QgsExpressionContextUtils::mapToolCaptureScope( QList<QgsPointLocator::Match>() );
 
   return context;
@@ -371,6 +381,10 @@ void QgsAttributeTypeDialog::setDataDefinedProperties( const QgsPropertyCollecti
   if ( properties.hasProperty( QgsEditFormConfig::DataDefinedProperty::Alias ) )
   {
     mAliasExpressionButton->setToProperty( properties.property( QgsEditFormConfig::DataDefinedProperty::Alias ) );
+  }
+  if ( properties.hasProperty( QgsEditFormConfig::DataDefinedProperty::Editable ) )
+  {
+    mEditableExpressionButton->setToProperty( properties.property( QgsEditFormConfig::DataDefinedProperty::Editable ) );
   }
 }
 

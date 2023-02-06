@@ -21,7 +21,6 @@
 
 #include "ui_qgsmeasurebase.h"
 #include "qgs3dmaptoolmeasureline.h"
-#include "qgs3dmapcanvas.h"
 #include "qgsunittypes.h"
 
 

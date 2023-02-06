@@ -261,7 +261,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>661</width>
-                <height>508</height>
+                <height>506</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -335,7 +335,7 @@
                  <property name="checkable">
                   <bool>false</bool>
                  </property>
-                 <property name="syncGroup" stdset="0">
+                 <property name="syncGroup">
                   <string notr="true">vectorgeneral</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -343,7 +343,7 @@
                    <number>6</number>
                   </property>
                   <item>
-                   <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
+                   <widget class="QgsProjectionSelectionWidget" name="mCrsSelector">
                     <property name="focusPolicy">
                      <enum>Qt::StrongFocus</enum>
                     </property>
@@ -400,19 +400,6 @@
                  </layout>
                 </widget>
                </item>
-               <item>
-                <spacer name="verticalSpacer_3">
-                 <property name="orientation">
-                  <enum>Qt::Vertical</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>0</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
               </layout>
              </widget>
             </widget>
@@ -447,7 +434,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>661</width>
-                <height>508</height>
+                <height>506</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -483,6 +470,49 @@
            <property name="bottomMargin">
             <number>0</number>
            </property>
+           <item>
+            <widget class="QgsCollapsibleGroupBox" name="chkUseScaleDependentRendering">
+             <property name="title">
+              <string>Scale Dependent Visibility</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+             <property name="syncGroup">
+              <string notr="true">rastergeneral</string>
+             </property>
+             <layout class="QGridLayout" name="_5">
+              <property name="leftMargin">
+               <number>11</number>
+              </property>
+              <property name="topMargin">
+               <number>11</number>
+              </property>
+              <property name="rightMargin">
+               <number>11</number>
+              </property>
+              <property name="bottomMargin">
+               <number>11</number>
+              </property>
+              <property name="verticalSpacing">
+               <number>6</number>
+              </property>
+              <item row="0" column="0" colspan="2">
+               <widget class="QgsScaleRangeWidget" name="mScaleRangeWidget">
+                <property name="toolTip">
+                 <string/>
+                </property>
+                <property name="whatsThis">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
            <item>
             <widget class="QgsCollapsibleGroupBox" name="mSimplifyMeshGroupBox">
              <property name="title">
@@ -831,11 +861,6 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
@@ -850,6 +875,16 @@
    <extends>QWidget</extends>
    <header>qgsprojectionselectionwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsScaleRangeWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsscalerangewidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsScrollArea</class>
@@ -886,11 +921,13 @@
   <tabstop>mCrsSelector</tabstop>
   <tabstop>mStaticDatasetGroupBox</tabstop>
   <tabstop>scrollArea</tabstop>
+  <tabstop>chkUseScaleDependentRendering</tabstop>
   <tabstop>mSimplifyMeshGroupBox</tabstop>
   <tabstop>mSimplifyReductionFactorSpinBox</tabstop>
   <tabstop>mSimplifyMeshResolutionSpinBox</tabstop>
   <tabstop>mTemporalDateTimeReference</tabstop>
   <tabstop>mTemporalReloadButton</tabstop>
+  <tabstop>mAlwaysTimeFromSourceCheckBox</tabstop>
   <tabstop>mTemporalDateTimeStart</tabstop>
   <tabstop>mTemporalDateTimeEnd</tabstop>
   <tabstop>mComboBoxTemporalDatasetMatchingMethod</tabstop>

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsRelationManager.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -12,12 +11,13 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.core import (QgsVectorLayer,
-                       QgsRelation,
-                       QgsPolymorphicRelation,
-                       QgsRelationManager,
-                       QgsProject
-                       )
+from qgis.core import (
+    QgsPolymorphicRelation,
+    QgsProject,
+    QgsRelation,
+    QgsRelationManager,
+    QgsVectorLayer,
+)
 from qgis.testing import start_app, unittest
 
 start_app()
@@ -90,7 +90,7 @@ class TestQgsRelationManager(unittest.TestCase):
         relations = manager.relations()
         self.assertEqual(len(relations), 2)
         ids = [r.id() for r in list(relations.values())]
-        self.assertEqual(set(ids), set(['rel1', 'rel2']))
+        self.assertEqual(set(ids), {'rel1', 'rel2'})
 
     def test_relationById(self):
         """ test retrieving relation by id"""
@@ -149,17 +149,17 @@ class TestQgsRelationManager(unittest.TestCase):
 
         rels = manager.relationsByName('my relation')
         ids = [r.id() for r in rels]
-        self.assertEqual(set(ids), set(['rel1']))
+        self.assertEqual(set(ids), {'rel1'})
 
         # case insensitive
         rels = manager.relationsByName('My RelAtion')
         ids = [r.id() for r in rels]
-        self.assertEqual(set(ids), set(['rel1']))
+        self.assertEqual(set(ids), {'rel1'})
 
         # multiple results
         rels = manager.relationsByName('dupe name')
         ids = [r.id() for r in rels]
-        self.assertEqual(set(ids), set(['rel2', 'rel3']))
+        self.assertEqual(set(ids), {'rel2', 'rel3'})
 
     def test_setPolymorphicRelations(self):
         # tests polymorphicRelations/setPolymorphicRelations

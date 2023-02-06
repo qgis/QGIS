@@ -1523,6 +1523,12 @@ QVector<QgsGeometry> QgsGeometry::coerceToType( const QgsWkbTypes::Type type, do
     newGeom.get()->addMValue( defaultM );
   }
 
+  // Straight -> curve
+  if ( QgsWkbTypes::isCurvedType( type ) && !QgsWkbTypes::isCurvedType( newGeom.wkbType() ) )
+  {
+    newGeom.convertToCurvedMultiType();
+  }
+
   // Multi -> single
   if ( ! QgsWkbTypes::isMultiType( type ) && newGeom.isMultipart( ) )
   {
@@ -1587,6 +1593,52 @@ bool QgsGeometry::convertToMultiType()
   // and replace it with the multi geometry.
   // TADA! a clone free conversion in some cases
   d->geometry = std::move( geom );
+  return true;
+}
+
+bool QgsGeometry::convertToCurvedMultiType()
+{
+  if ( !d->geometry )
+  {
+    return false;
+  }
+
+  switch ( QgsWkbTypes::flatType( d->geometry->wkbType() ) )
+  {
+    case QgsWkbTypes::MultiPoint:
+    case QgsWkbTypes::MultiCurve:
+    case QgsWkbTypes::MultiSurface:
+    case QgsWkbTypes::GeometryCollection:
+    {
+      return true;
+    }
+    default:
+      break;
+  }
+
+  std::unique_ptr< QgsAbstractGeometry >geom = QgsGeometryFactory::geomFromWkbType( QgsWkbTypes::curveType( QgsWkbTypes::multiType( d->geometry->wkbType() ) ) );
+  QgsGeometryCollection *multiGeom = qgsgeometry_cast<QgsGeometryCollection *>( geom.get() );
+  if ( !multiGeom )
+  {
+    return false;
+  }
+
+  QgsGeometryCollection *sourceMultiGeom = qgsgeometry_cast<QgsGeometryCollection *>( d->geometry.get() );
+  if ( sourceMultiGeom )
+  {
+    for ( int i = 0; i < sourceMultiGeom->numGeometries(); ++i )
+    {
+      if ( !multiGeom->addGeometry( sourceMultiGeom->geometryN( i )->clone() ) )
+        return false;
+    }
+  }
+  else
+  {
+    if ( !multiGeom->addGeometry( d->geometry->clone() ) )
+      return false;
+  }
+
+  reset( std::move( geom ) );
   return true;
 }
 
@@ -2467,7 +2519,7 @@ QgsGeometry QgsGeometry::sharedPaths( const QgsGeometry &other ) const
   return result;
 }
 
-QgsGeometry QgsGeometry::subdivide( int maxNodes ) const
+QgsGeometry QgsGeometry::subdivide( int maxNodes, const QgsGeometryParameters &parameters ) const
 {
   if ( !d->geometry )
   {
@@ -2484,7 +2536,7 @@ QgsGeometry QgsGeometry::subdivide( int maxNodes ) const
 
   QgsGeos geos( geom );
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > result( geos.subdivide( maxNodes, &mLastError ) );
+  std::unique_ptr< QgsAbstractGeometry > result( geos.subdivide( maxNodes, &mLastError, parameters ) );
   if ( !result )
   {
     QgsGeometry geom;
@@ -2621,7 +2673,7 @@ double QgsGeometry::interpolateAngle( double distance ) const
   }
 }
 
-QgsGeometry QgsGeometry::intersection( const QgsGeometry &geometry ) const
+QgsGeometry QgsGeometry::intersection( const QgsGeometry &geometry, const QgsGeometryParameters &parameters ) const
 {
   if ( !d->geometry || geometry.isNull() )
   {
@@ -2631,7 +2683,7 @@ QgsGeometry QgsGeometry::intersection( const QgsGeometry &geometry ) const
   QgsGeos geos( d->geometry.get() );
 
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > resultGeom( geos.intersection( geometry.d->geometry.get(), &mLastError ) );
+  std::unique_ptr< QgsAbstractGeometry > resultGeom( geos.intersection( geometry.d->geometry.get(), &mLastError, parameters ) );
 
   if ( !resultGeom )
   {
@@ -2643,7 +2695,7 @@ QgsGeometry QgsGeometry::intersection( const QgsGeometry &geometry ) const
   return QgsGeometry( std::move( resultGeom ) );
 }
 
-QgsGeometry QgsGeometry::combine( const QgsGeometry &geometry ) const
+QgsGeometry QgsGeometry::combine( const QgsGeometry &geometry, const QgsGeometryParameters &parameters ) const
 {
   if ( !d->geometry || geometry.isNull() )
   {
@@ -2652,7 +2704,7 @@ QgsGeometry QgsGeometry::combine( const QgsGeometry &geometry ) const
 
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > resultGeom( geos.combine( geometry.d->geometry.get(), &mLastError ) );
+  std::unique_ptr< QgsAbstractGeometry > resultGeom( geos.combine( geometry.d->geometry.get(), &mLastError, parameters ) );
   if ( !resultGeom )
   {
     QgsGeometry geom;
@@ -2682,7 +2734,7 @@ QgsGeometry QgsGeometry::mergeLines() const
   return result;
 }
 
-QgsGeometry QgsGeometry::difference( const QgsGeometry &geometry ) const
+QgsGeometry QgsGeometry::difference( const QgsGeometry &geometry, const QgsGeometryParameters &parameters ) const
 {
   if ( !d->geometry || geometry.isNull() )
   {
@@ -2692,7 +2744,7 @@ QgsGeometry QgsGeometry::difference( const QgsGeometry &geometry ) const
   QgsGeos geos( d->geometry.get() );
 
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > resultGeom( geos.difference( geometry.d->geometry.get(), &mLastError ) );
+  std::unique_ptr< QgsAbstractGeometry > resultGeom( geos.difference( geometry.d->geometry.get(), &mLastError, parameters ) );
   if ( !resultGeom )
   {
     QgsGeometry geom;
@@ -2702,7 +2754,7 @@ QgsGeometry QgsGeometry::difference( const QgsGeometry &geometry ) const
   return QgsGeometry( std::move( resultGeom ) );
 }
 
-QgsGeometry QgsGeometry::symDifference( const QgsGeometry &geometry ) const
+QgsGeometry QgsGeometry::symDifference( const QgsGeometry &geometry, const QgsGeometryParameters &parameters ) const
 {
   if ( !d->geometry || geometry.isNull() )
   {
@@ -2712,7 +2764,7 @@ QgsGeometry QgsGeometry::symDifference( const QgsGeometry &geometry ) const
   QgsGeos geos( d->geometry.get() );
 
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > resultGeom( geos.symDifference( geometry.d->geometry.get(), &mLastError ) );
+  std::unique_ptr< QgsAbstractGeometry > resultGeom( geos.symDifference( geometry.d->geometry.get(), &mLastError, parameters ) );
   if ( !resultGeom )
   {
     QgsGeometry geom;
@@ -2850,15 +2902,20 @@ int QgsGeometry::avoidIntersections( const QList<QgsVectorLayer *> &avoidInterse
   QgsWkbTypes::Type geomTypeBeforeModification = wkbType();
 
   bool haveInvalidGeometry = false;
+  bool geomModified = false;
+
   std::unique_ptr< QgsAbstractGeometry > diffGeom = QgsGeometryEditUtils::avoidIntersections( *( d->geometry ), avoidIntersectionsLayers, haveInvalidGeometry, ignoreFeatures );
   if ( diffGeom )
   {
     reset( std::move( diffGeom ) );
+    geomModified = true;
   }
 
   if ( geomTypeBeforeModification != wkbType() )
     return 2;
   if ( haveInvalidGeometry )
+    return 3;
+  if ( !geomModified )
     return 4;
 
   return 0;
@@ -3080,12 +3137,12 @@ bool QgsGeometry::isGeosEqual( const QgsGeometry &g ) const
   return geos.isEqual( g.d->geometry.get(), &mLastError );
 }
 
-QgsGeometry QgsGeometry::unaryUnion( const QVector<QgsGeometry> &geometries )
+QgsGeometry QgsGeometry::unaryUnion( const QVector<QgsGeometry> &geometries, const QgsGeometryParameters &parameters )
 {
   QgsGeos geos( nullptr );
 
   QString error;
-  std::unique_ptr< QgsAbstractGeometry > geom( geos.combine( geometries, &error ) );
+  std::unique_ptr< QgsAbstractGeometry > geom( geos.combine( geometries, &error, parameters ) );
   QgsGeometry result( std::move( geom ) );
   result.mLastError = error;
   return result;
@@ -4013,3 +4070,4 @@ bool QgsGeometry::Error::hasWhere() const
 {
   return mHasLocation;
 }
+

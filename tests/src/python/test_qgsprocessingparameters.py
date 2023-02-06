@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for Processing algorithm runner(s).
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,25 +9,15 @@ __author__ = 'David Marteau'
 __date__ = '2020-09'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import re
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.testing import start_app, unittest
-from qgis.core import QgsProcessingAlgRunnerTask
-
 from processing.core.Processing import Processing
-from processing.core.ProcessingConfig import ProcessingConfig
-from qgis.testing import start_app, unittest
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (
     QgsApplication,
-    QgsSettings,
-    QgsProcessingContext,
-    QgsProcessingAlgRunnerTask,
-    QgsProcessingAlgorithm,
-    QgsProject,
-    QgsProcessingFeedback,
     QgsProcessingParameterGeometry,
+    QgsSettings,
     QgsWkbTypes,
 )
+from qgis.testing import start_app, unittest
 
 start_app()
 

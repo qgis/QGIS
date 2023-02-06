@@ -147,14 +147,12 @@ void QgsRendererCategory::toSld( QDomDocument &doc, QDomElement &element, QVaria
   QString filterFunc;
   if ( QgsVariantUtils::isNull( mValue ) || mValue.toString().isEmpty() )
   {
-    filterFunc = QStringLiteral( "%1 = '%2' or %1 is null" )
-                 .arg( attrName.replace( '\"', QLatin1String( "\"\"" ) ),
-                       mValue.toString().replace( '\'', QLatin1String( "''" ) ) );
+    filterFunc = QStringLiteral( "ELSE" );
   }
   else
   {
     filterFunc = QStringLiteral( "%1 = '%2'" )
-                 .arg( attrName.replace( '\"', QLatin1String( "\"\"" ) ),
+                 .arg( attrName.replace( '\"', QLatin1String( "\"\"" ) ).append( '"' ).prepend( '"' ),
                        mValue.toString().replace( '\'', QLatin1String( "''" ) ) );
   }
 

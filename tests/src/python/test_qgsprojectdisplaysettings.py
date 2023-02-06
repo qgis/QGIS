@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsProjectDisplaySettings.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,23 +10,22 @@ __date__ = '09/01/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.core import (QgsProjectDisplaySettings,
-                       QgsReadWriteContext,
-                       QgsBearingNumericFormat,
-                       QgsGeographicCoordinateNumericFormat,
-                       QgsSettings,
-                       QgsLocalDefaultSettings,
-                       QgsUnitTypes,
-                       QgsCoordinateReferenceSystem,
-                       Qgis)
-
 from qgis.PyQt.QtCore import QCoreApplication
-
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
+from qgis.core import (
+    Qgis,
+    QgsBearingNumericFormat,
+    QgsCoordinateReferenceSystem,
+    QgsGeographicCoordinateNumericFormat,
+    QgsLocalDefaultSettings,
+    QgsProjectDisplaySettings,
+    QgsReadWriteContext,
+    QgsSettings,
+)
 from qgis.testing import start_app, unittest
-from utilities import (unitTestDataPath)
+
+from utilities import unitTestDataPath
 
 app = start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -94,6 +92,18 @@ class TestQgsProjectDisplaySettings(unittest.TestCase):
         p.setCoordinateType(Qgis.CoordinateDisplayType.MapGeographic)
         self.assertEqual(len(spy), 1)
         self.assertEqual(p.coordinateType(), Qgis.CoordinateDisplayType.MapGeographic)
+
+    def testCoordinateAxisOrder(self):
+        p = QgsProjectDisplaySettings()
+
+        self.assertEqual(p.coordinateAxisOrder(), Qgis.CoordinateOrder.Default)
+
+        spy = QSignalSpy(p.coordinateAxisOrderChanged)
+        p.setCoordinateAxisOrder(Qgis.CoordinateOrder.YX)
+        self.assertEqual(len(spy), 1)
+        self.assertEqual(p.coordinateAxisOrder(), Qgis.CoordinateOrder.YX)
+        p.setCoordinateAxisOrder(Qgis.CoordinateOrder.YX)
+        self.assertEqual(len(spy), 1)
 
     def testCoordinateTypeCustomCrs(self):
         p = QgsProjectDisplaySettings()
@@ -173,6 +183,8 @@ class TestQgsProjectDisplaySettings(unittest.TestCase):
         format.setAngleFormat(QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutesSeconds)
         p.setGeographicCoordinateFormat(format)
 
+        p.setCoordinateAxisOrder(Qgis.CoordinateOrder.YX)
+
         doc = QDomDocument("testdoc")
         elem = p.writeXml(doc, QgsReadWriteContext())
 
@@ -186,6 +198,7 @@ class TestQgsProjectDisplaySettings(unittest.TestCase):
         self.assertEqual(p2.bearingFormat().directionFormat(), QgsBearingNumericFormat.UseRange0To360)
         self.assertEqual(p.geographicCoordinateFormat().numberDecimalPlaces(), 7)
         self.assertEqual(p.geographicCoordinateFormat().angleFormat(), QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutesSeconds)
+        self.assertEqual(p.coordinateAxisOrder(), Qgis.CoordinateOrder.YX)
 
 
 if __name__ == '__main__':

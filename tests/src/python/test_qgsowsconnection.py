@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsOwsConnection
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,12 +10,9 @@ __date__ = '12.09.2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.testing import unittest, start_app
-from qgis.core import (QgsOwsConnection,
-                       QgsDataSourceUri,
-                       QgsSettings)
 from qgis.PyQt.QtCore import QCoreApplication
+from qgis.core import QgsDataSourceUri, QgsOwsConnection, QgsSettings
+from qgis.testing import start_app, unittest
 
 
 class TestQgsOwsConnection(unittest.TestCase):
@@ -32,22 +28,22 @@ class TestQgsOwsConnection(unittest.TestCase):
 
         # setup some fake connections
         settings = QgsSettings()
-        key = 'qgis/connections-wms/test/'
+        key = '/connections/ows/items/wms/connections/items/test/'
         settings.setValue(key + 'url', 'aaa.bbb.com')
-        settings.setValue(key + 'referer', 'my_ref')
-        settings.setValue(key + 'ignoreGetMapURI', True)
-        settings.setValue(key + 'ignoreGetFeatureInfoURI', True)
-        settings.setValue(key + 'smoothPixmapTransform', True)
-        settings.setValue(key + 'dpiMode', 4)
-        settings.setValue(key + 'ignoreAxisOrientation', True)
-        settings.setValue(key + 'invertAxisOrientation', True)
+        settings.setValue(key + 'http-header', {'referer': 'my_ref'})
+        settings.setValue(key + 'ignore-get-map-uri', True)
+        settings.setValue(key + 'ignore-get-feature-info-uri', True)
+        settings.setValue(key + 'smooth-pixmap-transform', True)
+        settings.setValue(key + 'dpi-mode', 4)
+        settings.setValue(key + 'ignore-axis-orientation', True)
+        settings.setValue(key + 'invert-axis-orientation', True)
 
-        key = 'qgis/connections-wfs/test/'
+        key = '/connections/ows/items/wfs/connections/items/test/'
         settings.setValue(key + 'url', 'ccc.ddd.com')
         settings.setValue(key + 'version', '1.1.0')
-        settings.setValue(key + 'maxnumfeatures', '47')
-        settings.setValue(key + 'ignoreAxisOrientation', True)
-        settings.setValue(key + 'invertAxisOrientation', True)
+        settings.setValue(key + 'max-num-features', '47')
+        settings.setValue(key + 'ignore-axis-orientation', True)
+        settings.setValue(key + 'invert-axis-orientation', True)
 
     def testWmsConnection(self):
         c = QgsOwsConnection('WMS', 'test')
@@ -64,7 +60,7 @@ class TestQgsOwsConnection(unittest.TestCase):
 
     def testWmsSettings(self):
         uri = QgsDataSourceUri()
-        QgsOwsConnection.addWmsWcsConnectionSettings(uri, 'qgis/connections-wms/test/')
+        QgsOwsConnection.addWmsWcsConnectionSettings(uri, 'wms', 'test')
 
         self.assertEqual(uri.httpHeader('referer'), 'my_ref')
         self.assertEqual(uri.param('IgnoreGetMapUrl'), '1')
@@ -86,7 +82,7 @@ class TestQgsOwsConnection(unittest.TestCase):
 
     def testWfsSettings(self):
         uri = QgsDataSourceUri()
-        QgsOwsConnection.addWfsConnectionSettings(uri, 'qgis/connections-wfs/test/')
+        QgsOwsConnection.addWfsConnectionSettings(uri, 'wfs', 'test')
 
         self.assertEqual(uri.param('version'), '1.1.0')
         self.assertEqual(uri.param('maxNumFeatures'), '47')

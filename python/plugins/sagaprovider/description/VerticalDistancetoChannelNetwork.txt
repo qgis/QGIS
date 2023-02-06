@@ -1,8 +1,0 @@
-Vertical Distance to Channel Network
-ta_channels
-QgsProcessingParameterRasterLayer|ELEVATION|Elevation|None|False
-QgsProcessingParameterRasterLayer|CHANNELS|Channel Network|None|False
-QgsProcessingParameterNumber|THRESHOLD|Tension Threshold [Percentage of Cell Size]|QgsProcessingParameterNumber.Integer|1|False|None|None
-QgsProcessingParameterBoolean|NOUNDERGROUND  |Keep Base Level below Surface|True
-QgsProcessingParameterRasterDestination|DISTANCE|Vertical Distance to Channel Network
-QgsProcessingParameterRasterDestination|BASELEVEL|Channel Network Base Level

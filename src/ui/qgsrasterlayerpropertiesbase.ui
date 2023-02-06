@@ -93,7 +93,7 @@
           <bool>true</bool>
          </property>
          <property name="currentRow">
-          <number>0</number>
+          <number>-1</number>
          </property>
          <item>
           <property name="text">
@@ -205,6 +205,27 @@
          </item>
          <item>
           <property name="text">
+           <string>Display</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/propertyicons/display.svg</normaloff>:/images/themes/default/propertyicons/display.svg</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Attribute Tables</string>
+          </property>
+          <property name="toolTip">
+           <string>Manage Raster Attribute Tables</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/propertyicons/attributes.svg</normaloff>:/images/themes/default/propertyicons/attributes.svg</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>QGIS Server</string>
           </property>
           <property name="toolTip">
@@ -254,7 +275,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>10</number>
          </property>
          <widget class="QWidget" name="mOptsPage_Information">
           <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -1325,21 +1346,6 @@ p, li { white-space: pre-wrap; }
                       <verstretch>0</verstretch>
                      </sizepolicy>
                     </property>
-                    <item>
-                     <property name="text">
-                      <string>External</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>Internal (if possible)</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>External (Erdas Imagine)</string>
-                     </property>
-                    </item>
                    </widget>
                   </item>
                   <item row="1" column="0">
@@ -1438,6 +1444,173 @@ p, li { white-space: pre-wrap; }
            </item>
           </layout>
          </widget>
+         <widget class="QWidget" name="mOptsPage_Display">
+          <layout class="QVBoxLayout" name="verticalLayout_25">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QWidget" name="scrollArea_10" native="true">
+             <property name="widgetResizable" stdset="0">
+              <bool>true</bool>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_101">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item row="0" column="0">
+               <widget class="QGroupBox" name="groupBox_2">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="title">
+                 <string>HTML Map Tip</string>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_81">
+                 <item row="1" column="2">
+                  <widget class="QPushButton" name="mInsertExpressionButton">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="toolTip">
+                    <string>Inserts the selected field or expression into the map tip</string>
+                   </property>
+                   <property name="text">
+                    <string>Insert</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="0" colspan="3">
+                  <widget class="QgsCodeEditorHTML" name="mMapTipWidget" native="true">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>100</height>
+                    </size>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0" colspan="2">
+                  <widget class="QgsExpressionLineEdit" name="mMapTipExpressionWidget" native="true">
+                   <property name="focusPolicy">
+                    <enum>Qt::StrongFocus</enum>
+                   </property>
+                   <property name="toolTip">
+                    <string>The valid attribute names for this layer</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0" colspan="3">
+                  <widget class="QLabel" name="labelMapTipInfo">
+                   <property name="text">
+                    <string>The HTML map tips are shown when moving mouse over features of the currently selected layer when the 'Show Map Tips' action is toggled on.</string>
+                   </property>
+                   <property name="wordWrap">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="mOptsPage_RasterAttributeTable">
+          <layout class="QVBoxLayout" name="verticalLayout_rat">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QWidget" name="mNoRasterAttributeTableWidget" native="true">
+             <layout class="QVBoxLayout" name="verticalLayout_5">
+              <item>
+               <widget class="QLabel" name="mRasterAttributeTableLabel">
+                <property name="text">
+                 <string>There are no raster attribute tables associated with this data source.
+
+If the current symbology can be converted to an attribute table you can create a new attribute table using the context menu available in the layer tree or the button below.
+
+You can also import an existing raster attribute table from a VAT.DBF file and associate it with a raster band.</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="mCreateRasterAttributeTableButton">
+                <property name="text">
+                 <string>New attribute table from current symbology</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="mLoadRasterAttributeTableFromFileButton">
+                <property name="text">
+                 <string>Load attribute table from VAT.DBF file</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="verticalSpacer_2">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
          <widget class="QWidget" name="mOptsPage_Server">
           <layout class="QVBoxLayout" name="verticalLayout_8">
            <property name="leftMargin">
@@ -1466,7 +1639,7 @@ p, li { white-space: pre-wrap; }
                 <x>0</x>
                 <y>0</y>
                 <width>263</width>
-                <height>566</height>
+                <height>599</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_12">
@@ -1879,18 +2052,6 @@ p, li { white-space: pre-wrap; }
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
@@ -1924,6 +2085,23 @@ p, li { white-space: pre-wrap; }
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsCodeEditorHTML</class>
+   <extends>QWidget</extends>
+   <header>qgscodeeditorhtml.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsBlendModeComboBox</class>
    <extends>QComboBox</extends>
    <header>qgsblendmodecombobox.h</header>
@@ -1932,6 +2110,12 @@ p, li { white-space: pre-wrap; }
    <class>QgsImageSourceLineEdit</class>
    <extends>QWidget</extends>
    <header>qgsfilecontentsourcelineedit.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsExpressionLineEdit</class>
+   <extends>QWidget</extends>
+   <header>qgsexpressionlineedit.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
@@ -1993,6 +2177,8 @@ p, li { white-space: pre-wrap; }
   <tabstop>mInvertColorsCheck</tabstop>
  </tabstops>
  <resources>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>

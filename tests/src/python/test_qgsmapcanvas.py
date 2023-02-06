@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsMapCanvas
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,43 +9,36 @@ __author__ = 'Nyall Dawson'
 __date__ = '24/1/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
-
-from qgis.PyQt.QtCore import (
-    QDate,
-    QTime,
-    QDateTime,
-    QDir
-)
-
-from qgis.core import (QgsMapSettings,
-                       QgsCoordinateReferenceSystem,
-                       QgsRectangle,
-                       QgsVectorLayer,
-                       QgsFeature,
-                       QgsGeometry,
-                       QgsMultiRenderChecker,
-                       QgsFillSymbol,
-                       QgsSingleSymbolRenderer,
-                       QgsMapThemeCollection,
-                       QgsProject, QgsAnnotationPolygonItem,
-                       QgsPolygon,
-                       QgsLineString,
-                       QgsPoint,
-                       QgsPointXY,
-                       QgsApplication,
-                       QgsAnnotationLayer,
-                       QgsAnnotationLineItem,
-                       QgsAnnotationMarkerItem,
-                       QgsTemporalController,
-                       QgsTemporalNavigationObject,
-                       QgsDateTimeRange,
-                       QgsInterval
-                       )
-from qgis.gui import (QgsMapCanvas)
-
-from qgis.PyQt.QtXml import (QDomDocument, QDomElement)
 import time
+
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QDate, QDateTime, QDir, QTime
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.core import (
+    QgsAnnotationLayer,
+    QgsAnnotationLineItem,
+    QgsAnnotationMarkerItem,
+    QgsAnnotationPolygonItem,
+    QgsCoordinateReferenceSystem,
+    QgsDateTimeRange,
+    QgsFeature,
+    QgsFillSymbol,
+    QgsGeometry,
+    QgsInterval,
+    QgsLineString,
+    QgsMapThemeCollection,
+    QgsMultiRenderChecker,
+    QgsPoint,
+    QgsPointXY,
+    QgsPolygon,
+    QgsProject,
+    QgsRectangle,
+    QgsSingleSymbolRenderer,
+    QgsTemporalController,
+    QgsTemporalNavigationObject,
+    QgsVectorLayer,
+)
+from qgis.gui import QgsMapCanvas
 from qgis.testing import start_app, unittest
 
 app = start_app()
@@ -58,7 +50,7 @@ class TestQgsMapCanvas(unittest.TestCase):
         self.report = "<h1>Python QgsMapCanvas Tests</h1>\n"
 
     def tearDown(self):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 
@@ -418,7 +410,7 @@ class TestQgsMapCanvas(unittest.TestCase):
         annotation_layer.clear()
 
     def canvasImageCheck(self, name, reference_image, canvas, expect_fail=False):
-        self.report += "<h2>Render {}</h2>\n".format(name)
+        self.report += f"<h2>Render {name}</h2>\n"
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + 'mapcanvas_' + name + ".png"
         print(file_name)
@@ -431,7 +423,7 @@ class TestQgsMapCanvas(unittest.TestCase):
         checker.setExpectFail(expect_fail)
         result = checker.runTest(name, 20)
         self.report += checker.report()
-        print((self.report))
+        print(self.report)
         return result
 
     def testSaveCanvasVariablesToProject(self):

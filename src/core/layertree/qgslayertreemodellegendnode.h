@@ -35,6 +35,9 @@ class QgsLegendSettings;
 class QgsMapSettings;
 class QgsSymbol;
 class QgsRenderContext;
+class QgsTextFormat;
+class QgsTextDocument;
+class QgsTextDocumentMetrics;
 
 /**
  * \ingroup core
@@ -232,6 +235,21 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
        * \since QGIS 3.14
        */
       QSizeF patchSize;
+
+      /**
+       * Optional text document
+       *
+       * \since QGIS 3.30
+       */
+      const QgsTextDocument *textDocument = nullptr;
+
+      /**
+       * Optional text document metrics.
+       *
+       * \since QGIS 3.30
+       */
+      const QgsTextDocumentMetrics *textDocumentMetrics = nullptr;
+
     };
 
     struct ItemMetrics

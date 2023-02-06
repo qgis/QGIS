@@ -456,7 +456,7 @@ class TestQgsWmsCapabilities: public QObject
       QTest::addColumn<int>( "capability" );
 
       QTest::newRow( "text/plain" ) << QByteArray( "text/plain" ) << static_cast<int>( QgsRasterInterface::IdentifyText );
-      QTest::newRow( "text/xml" ) << QByteArray( "text/xml" ) << static_cast<int>( QgsRasterInterface::NoCapabilities );
+      QTest::newRow( "text/xml" ) << QByteArray( "text/xml" ) << static_cast<int>( QgsRasterInterface::IdentifyFeature );
       QTest::newRow( "text/html" ) << QByteArray( "text/html" ) << static_cast<int>( QgsRasterInterface::IdentifyHtml );
       QTest::newRow( "application/json" ) << QByteArray( "application/json" ) << static_cast<int>( QgsRasterInterface::IdentifyFeature );
       QTest::newRow( "application/geojson" ) << QByteArray( "application/geojson" ) << static_cast<int>( QgsRasterInterface::IdentifyFeature );

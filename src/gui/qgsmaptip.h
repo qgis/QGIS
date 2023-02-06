@@ -71,7 +71,7 @@ class GUI_EXPORT QgsMapTip : public QWidget
      */
     void showMapTip( QgsMapLayer *thepLayer,
                      QgsPointXY &mapPosition,
-                     QPoint &pixelPosition,
+                     const QPoint &pixelPosition,
                      QgsMapCanvas *mpMapCanvas );
 
     /**
@@ -96,6 +96,11 @@ class GUI_EXPORT QgsMapTip : public QWidget
     QString fetchFeature( QgsMapLayer *thepLayer,
                           QgsPointXY &mapPosition,
                           QgsMapCanvas *mapCanvas );
+
+    // Sample the raster and get the maptip text
+    QString fetchRaster( QgsMapLayer *layer,
+                         QgsPointXY &mapPosition,
+                         QgsMapCanvas *mapCanvas );
 
     QString replaceText(
       QString displayText, QgsVectorLayer *layer, QgsFeature &feat );

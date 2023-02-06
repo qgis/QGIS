@@ -28,6 +28,7 @@ QgsPointCloudLayer3DRendererWidget::QgsPointCloudLayer3DRendererWidget( QgsPoint
   : QgsMapLayerConfigWidget( layer, canvas, parent )
 {
   setPanelTitle( tr( "3D View" ) );
+  setObjectName( QStringLiteral( "mOptsPage_3DView" ) );
 
   QVBoxLayout *layout = new QVBoxLayout( this );
   layout->setContentsMargins( 0, 0, 0, 0 );
@@ -38,6 +39,7 @@ QgsPointCloudLayer3DRendererWidget::QgsPointCloudLayer3DRendererWidget( QgsPoint
   mWidgetPointCloudSymbol->connectChildPanels( this );
 
   connect( mWidgetPointCloudSymbol, &QgsPointCloud3DSymbolWidget::changed, this, &QgsPointCloudLayer3DRendererWidget::widgetChanged );
+  setProperty( "helpPage", QStringLiteral( "working_with_point_clouds/point_clouds.html#d-view-properties" ) );
 }
 
 void QgsPointCloudLayer3DRendererWidget::setRenderer( const QgsPointCloudLayer3DRenderer *renderer )
@@ -134,7 +136,7 @@ bool QgsPointCloudLayer3DRendererWidgetFactory::supportsLayer( QgsMapLayer *laye
 
 QString QgsPointCloudLayer3DRendererWidgetFactory::layerPropertiesPagePositionHint() const
 {
-  return QStringLiteral( "mOptsPage_Metadata" );
+  return QStringLiteral( "mOptsPage_Rendering" );
 }
 
 bool QgsPointCloudLayer3DRendererWidgetFactory::supportsStyleDock() const

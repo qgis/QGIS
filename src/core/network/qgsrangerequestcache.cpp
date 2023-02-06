@@ -144,7 +144,6 @@ void QgsRangeRequestCache::expire()
 
 QFileInfoList QgsRangeRequestCache::cacheEntries()
 {
-  QStringList list;
   QDir dir( mCacheDir );
   QFileInfoList filesList = dir.entryInfoList( QDir::Filter::Files, QDir::SortFlags() );
   std::sort( filesList.begin(), filesList.end(), []( QFileInfo & f1, QFileInfo & f2 )

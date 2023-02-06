@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Helper utilities for HANA provider.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -13,8 +12,7 @@ __date__ = '2019-11-21'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
 from hdbcli import dbapi
-from qgis.core import (
-    QgsVectorLayer, QgsDataSourceUri)
+from qgis.core import QgsDataSourceUri, QgsVectorLayer
 
 
 class QgsHanaProviderUtils:
@@ -130,4 +128,4 @@ class QgsHanaProviderUtils:
     def generateSchemaName(conn, prefix):
         sql = "SELECT REPLACE(CURRENT_UTCDATE, '-', '') || '_' || BINTOHEX(SYSUUID) FROM DUMMY;"
         uid = QgsHanaProviderUtils.executeSQL(conn, sql, return_result=True)
-        return '{}_{}'.format(prefix, uid)
+        return f'{prefix}_{uid}'

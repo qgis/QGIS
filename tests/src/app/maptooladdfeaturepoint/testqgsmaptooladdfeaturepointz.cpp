@@ -158,7 +158,7 @@ void TestQgsMapToolAddFeaturePointZ::testPointZ()
   TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
 
   // test with default Z value = 333
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 333 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 333 );
 
   QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
 
@@ -190,7 +190,7 @@ void TestQgsMapToolAddFeaturePointZ::testTopologicalEditingZ()
   TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
 
   // test with default Z value = 333
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 333 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 333 );
 
   const QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
 

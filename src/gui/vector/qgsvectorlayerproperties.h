@@ -24,13 +24,10 @@
 #include "qgsoptionsdialogbase.h"
 #include "ui_qgsvectorlayerpropertiesbase.h"
 #include "qgsguiutils.h"
-#include "qgshelp.h"
-#include "qgsmaplayerstylemanager.h"
 #include "qgsmaplayerserverproperties.h"
 #include "qgsvectorlayerjoininfo.h"
-#include "qgslayertree.h"
-#include "qgslayertreemodel.h"
 #include "qgslayertreefilterproxymodel.h"
+#include "qgsmaplayerstyle.h"
 
 class QgsMapLayer;
 
@@ -79,7 +76,7 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );
 
   protected slots:
-    void optionsStackedWidget_CurrentChanged( int index ) override SIP_SKIP;
+    void optionsStackedWidget_CurrentChanged( int index ) final;
 
   private slots:
 

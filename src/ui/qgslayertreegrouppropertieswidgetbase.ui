@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Annotation Item Properties</string>
+   <string>Group Properties</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="leftMargin">
@@ -116,6 +116,12 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+  <tabstops>
+  <tabstop>mRenderAsGroupCheckBox</tabstop>
+  <tabstop>mOpacityWidget</tabstop>
+  <tabstop>mBlendModeComboBox</tabstop>
+  <tabstop>mEffectWidget</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

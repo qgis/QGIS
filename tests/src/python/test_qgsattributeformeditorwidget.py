@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsAttributeFormEditorWidget.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,17 +10,16 @@ __date__ = '2016-05'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.gui import (QgsSearchWidgetWrapper,
-                      QgsAttributeFormEditorWidget,
-                      QgsDefaultSearchWidgetWrapper,
-                      QgsAttributeForm,
-                      QgsSearchWidgetToolButton,
-                      QgsGui
-                      )
-from qgis.core import (QgsVectorLayer)
-from qgis.PyQt.QtWidgets import QWidget, QDateTimeEdit
-from qgis.PyQt.QtCore import QDateTime, QDate, QTime
+from qgis.PyQt.QtCore import QDate, QDateTime, QTime
+from qgis.PyQt.QtWidgets import QDateTimeEdit, QWidget
+from qgis.core import QgsVectorLayer
+from qgis.gui import (
+    QgsAttributeForm,
+    QgsAttributeFormEditorWidget,
+    QgsDefaultSearchWidgetWrapper,
+    QgsGui,
+    QgsSearchWidgetWrapper,
+)
 from qgis.testing import start_app, unittest
 
 start_app()

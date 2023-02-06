@@ -19,7 +19,7 @@
 #include "qgsphongmaterialsettings.h"
 
 QgsMesh3DSymbol::QgsMesh3DSymbol()
-  : mMaterial( std::make_unique< QgsPhongMaterialSettings >() )
+  : mMaterialSettings( std::make_unique< QgsPhongMaterialSettings >() )
 {
 
 }
@@ -32,7 +32,7 @@ QgsMesh3DSymbol *QgsMesh3DSymbol::clone() const
 
   result->mAltClamping = mAltClamping;
   result->mHeight = mHeight;
-  result->mMaterial.reset( mMaterial->clone() );
+  result->mMaterialSettings.reset( mMaterialSettings->clone() );
   result->mAddBackFaces = mAddBackFaces;
   result->mEnabled = mEnabled;
   result->mSmoothedTriangles = mSmoothedTriangles;
@@ -67,7 +67,7 @@ void QgsMesh3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &co
   elem.appendChild( elemDataProperties );
 
   QDomElement elemMaterial = doc.createElement( QStringLiteral( "material" ) );
-  mMaterial->writeXml( elemMaterial, context );
+  mMaterialSettings->writeXml( elemMaterial, context );
   elem.appendChild( elemMaterial );
 
   //Advanced symbol
@@ -105,7 +105,7 @@ void QgsMesh3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContex
   mAddBackFaces = elemDataProperties.attribute( QStringLiteral( "add-back-faces" ) ).toInt();
 
   const QDomElement elemMaterial = elem.firstChildElement( QStringLiteral( "material" ) );
-  mMaterial->readXml( elemMaterial, context );
+  mMaterialSettings->readXml( elemMaterial, context );
 
   //Advanced symbol
   const QDomElement elemAdvancedSettings = elem.firstChildElement( QStringLiteral( "advanced-settings" ) );
@@ -293,15 +293,15 @@ void QgsMesh3DSymbol::setEnabled( bool enabled )
 }
 
 
-QgsAbstractMaterialSettings *QgsMesh3DSymbol::material() const
+QgsAbstractMaterialSettings *QgsMesh3DSymbol::materialSettings() const
 {
-  return mMaterial.get();
+  return mMaterialSettings.get();
 }
 
-void QgsMesh3DSymbol::setMaterial( QgsAbstractMaterialSettings *material )
+void QgsMesh3DSymbol::setMaterialSettings( QgsAbstractMaterialSettings *materialSettings )
 {
-  if ( material == mMaterial.get() )
+  if ( materialSettings == mMaterialSettings.get() )
     return;
 
-  mMaterial.reset( material );
+  mMaterialSettings.reset( materialSettings );
 }

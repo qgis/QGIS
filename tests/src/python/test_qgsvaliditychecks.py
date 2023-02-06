@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for validity checks
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -12,13 +11,15 @@ __copyright__ = 'Copyright 2018, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.core import (QgsApplication,
-                       QgsAbstractValidityCheck,
-                       QgsValidityCheckRegistry,
-                       QgsValidityCheckResult,
-                       QgsValidityCheckContext,
-                       QgsFeedback,
-                       check)
+from qgis.core import (
+    QgsAbstractValidityCheck,
+    QgsApplication,
+    QgsFeedback,
+    QgsValidityCheckContext,
+    QgsValidityCheckRegistry,
+    QgsValidityCheckResult,
+    check,
+)
 from qgis.testing import start_app, unittest
 
 app = start_app()

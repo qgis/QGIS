@@ -506,7 +506,7 @@ void QgsTextBackgroundSettings::readFromLayer( QgsVectorLayer *layer )
     d->opacity = ( layer->customProperty( QStringLiteral( "labeling/shapeOpacity" ) ).toDouble() );
   }
   d->blendMode = QgsPainting::getCompositionMode(
-                   static_cast< QgsPainting::BlendMode >( layer->customProperty( QStringLiteral( "labeling/shapeBlendMode" ), QVariant( QgsPainting::BlendNormal ) ).toUInt() ) );
+                   static_cast< Qgis::BlendMode >( layer->customProperty( QStringLiteral( "labeling/shapeBlendMode" ), QVariant( static_cast< int>( Qgis::BlendMode::Normal ) ) ).toUInt() ) );
 
   if ( layer->customProperty( QStringLiteral( "labeling/shapeEffect" ) ).isValid() )
   {
@@ -635,7 +635,7 @@ void QgsTextBackgroundSettings::readXml( const QDomElement &elem, const QgsReadW
   }
 
   d->blendMode = QgsPainting::getCompositionMode(
-                   static_cast< QgsPainting::BlendMode >( backgroundElem.attribute( QStringLiteral( "shapeBlendMode" ), QString::number( QgsPainting::BlendNormal ) ).toUInt() ) );
+                   static_cast< Qgis::BlendMode >( backgroundElem.attribute( QStringLiteral( "shapeBlendMode" ), QString::number( static_cast< int >( Qgis::BlendMode::Normal ) ) ).toUInt() ) );
 
   const QDomElement effectElem = backgroundElem.firstChildElement( QStringLiteral( "effect" ) );
   if ( !effectElem.isNull() )
@@ -706,7 +706,7 @@ QDomElement QgsTextBackgroundSettings::writeXml( QDomDocument &doc, const QgsRea
   backgroundElem.setAttribute( QStringLiteral( "shapeBorderWidthMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->strokeWidthMapUnitScale ) );
   backgroundElem.setAttribute( QStringLiteral( "shapeJoinStyle" ), static_cast< unsigned int >( d->joinStyle ) );
   backgroundElem.setAttribute( QStringLiteral( "shapeOpacity" ), d->opacity );
-  backgroundElem.setAttribute( QStringLiteral( "shapeBlendMode" ), QgsPainting::getBlendModeEnum( d->blendMode ) );
+  backgroundElem.setAttribute( QStringLiteral( "shapeBlendMode" ), static_cast< int >( QgsPainting::getBlendModeEnum( d->blendMode ) ) );
   if ( d->paintEffect && !QgsPaintEffectRegistry::isDefaultStack( d->paintEffect.get() ) )
     d->paintEffect->saveProperties( doc, backgroundElem );
 

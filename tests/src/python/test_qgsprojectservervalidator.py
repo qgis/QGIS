@@ -12,11 +12,7 @@ __author__ = 'Etienne Trimaille'
 __date__ = '27/03/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-from qgis.core import (
-    QgsProject,
-    QgsVectorLayer,
-    QgsProjectServerValidator,
-)
+from qgis.core import QgsProject, QgsProjectServerValidator, QgsVectorLayer
 from qgis.testing import start_app, unittest
 
 app = start_app()

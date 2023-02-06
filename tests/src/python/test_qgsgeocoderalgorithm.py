@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsBatchGeocodeAlgorithm.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,24 +10,23 @@ __date__ = '02/11/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtCore import QVariant
 from qgis.analysis import QgsBatchGeocodeAlgorithm
 from qgis.core import (
+    NULL,
+    QgsCoordinateReferenceSystem,
+    QgsFeature,
+    QgsField,
+    QgsFields,
     QgsGeocoderInterface,
-    QgsWkbTypes,
     QgsGeocoderResult,
     QgsGeometry,
     QgsPointXY,
-    QgsCoordinateReferenceSystem,
-    QgsFeature,
     QgsProcessingContext,
     QgsProcessingFeedback,
     QgsRectangle,
-    QgsField,
-    QgsFields,
-    NULL
+    QgsWkbTypes,
 )
-from qgis.PyQt.QtCore import QVariant
 from qgis.testing import start_app, unittest
 
 start_app()

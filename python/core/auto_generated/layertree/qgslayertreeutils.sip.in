@@ -142,6 +142,25 @@ or the group itself if it doesn't hold the property
 
 .. versionadded:: 3.8
 %End
+
+    static QgsLayerTreeLayer *insertLayerAtOptimalPlacement( QgsLayerTreeGroup *group, QgsMapLayer *layer );
+%Docstring
+Inserts a ``layer`` within a given ``group`` at an optimal index position by insuring a given layer
+type will always sit on top of or below other types. From top to bottom, the stacking logic is
+as follow:
+
+- vector points
+- vector lines
+- vector polygons
+- point clouds
+- meshes
+- rasters
+- base maps
+
+A base map is defined as a non-gdal provider raster layer (e.g. XYZ raster layer, vector tile layer, etc.)
+
+.. versionadded:: 3.28
+%End
 };
 
 /************************************************************************

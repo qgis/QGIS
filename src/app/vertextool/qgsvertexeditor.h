@@ -28,8 +28,6 @@
 #include "qgspoint.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvertexid.h"
-#include "qgssettingsentryimpl.h"
-#include "qgssettings.h"
 #include "qgspanelwidget.h"
 
 class QLabel;
@@ -40,6 +38,7 @@ class QgsLockedFeature;
 class QgsVectorLayer;
 class QCheckBox;
 class QStackedWidget;
+class QgsSettingsEntryBool;
 
 class APP_EXPORT QgsVertexEntry
 {
@@ -144,7 +143,7 @@ class APP_EXPORT QgsVertexEditor : public QgsDockWidget
     Q_OBJECT
   public:
 
-    static const inline QgsSettingsEntryBool settingAutoPopupVertexEditorDock = QgsSettingsEntryBool( QStringLiteral( "auto_popup_vertex_editor_dock" ), QgsSettings::Prefix::QGIS_DIGITIZING, true, QStringLiteral( "Whether the auto-popup behavior of the vertex editor dock should be enabled" ) );
+    static const QgsSettingsEntryBool *settingAutoPopupVertexEditorDock;
 
     QgsVertexEditor( QgsMapCanvas *canvas );
 

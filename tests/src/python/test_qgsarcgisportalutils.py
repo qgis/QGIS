@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for the AFS provider.
 
 From build dir, run: ctest -R PyQgsArcGisPortalUtils -V
@@ -17,13 +16,8 @@ import os
 import tempfile
 
 from qgis.PyQt.QtCore import QCoreApplication, QObject
-from qgis.core import (QgsArcGisPortalUtils,
-                       QgsApplication,
-                       QgsSettings
-                       )
-from qgis.testing import (start_app,
-                          unittest
-                          )
+from qgis.core import QgsApplication, QgsArcGisPortalUtils, QgsSettings
+from qgis.testing import start_app, unittest
 
 
 def sanitize(endpoint, x):
@@ -94,7 +88,7 @@ class TestPyQgsArcGisPortalUtils(unittest.TestCase):
         print(self.basetestpath)
         endpoint = self.basetestpath + '/user_fake_qgis_http_endpoint'
         with open(sanitize(endpoint, '/self?f=json'), 'wb') as f:
-            f.write("""{
+            f.write(b"""{
   "username": "me",
   "id": "2a",
   "groups": [
@@ -107,7 +101,7 @@ class TestPyQgsArcGisPortalUtils(unittest.TestCase):
       "title": "Another Group"
     }
   ]
-}""".encode('UTF-8'))
+}""")
 
         res = QgsArcGisPortalUtils.retrieveUserInfo('http://' + endpoint, '', '')
         # no errors
@@ -124,7 +118,7 @@ class TestPyQgsArcGisPortalUtils(unittest.TestCase):
         endpoint = self.basetestpath + '/user_fake_qgis_http_endpoint'
 
         with open(sanitize(endpoint + '_users/', 'some_user?f=json'), 'wb') as f:
-            f.write("""{
+            f.write(b"""{
   "username": "some_user",
   "id": "2b",
   "groups": [
@@ -137,7 +131,7 @@ class TestPyQgsArcGisPortalUtils(unittest.TestCase):
       "title": "Another Group"
     }
   ]
-}""".encode('UTF-8'))
+}""")
 
         headers = {'referer': 'http://google.com'}
         res = QgsArcGisPortalUtils.retrieveUserInfo('http://' + endpoint, 'some_user', '', headers)
@@ -155,7 +149,7 @@ class TestPyQgsArcGisPortalUtils(unittest.TestCase):
         endpoint = self.basetestpath + '/group_fake_qgis_http_endpoint'
 
         with open(sanitize(endpoint + '_users/', 'some_user?f=json'), 'wb') as f:
-            f.write("""{
+            f.write(b"""{
           "username": "some_user",
           "id": "2b",
           "groups": [
@@ -168,7 +162,7 @@ class TestPyQgsArcGisPortalUtils(unittest.TestCase):
               "title": "Another Group"
             }
           ]
-        }""".encode('UTF-8'))
+        }""")
 
         res = QgsArcGisPortalUtils.retrieveUserGroups('http://' + endpoint, 'some_user', '')
         # no errors
@@ -184,7 +178,7 @@ class TestPyQgsArcGisPortalUtils(unittest.TestCase):
         endpoint = self.basetestpath + '/group_items_fake_qgis_http_endpoint'
 
         with open(sanitize(endpoint + '_groups/', 'ab1?f=json&start=1&num=2'), 'wb') as f:
-            f.write("""{
+            f.write(b"""{
   "total": 3,
   "start": 1,
   "num": 2,
@@ -199,10 +193,10 @@ class TestPyQgsArcGisPortalUtils(unittest.TestCase):
       "title": "Item 2"
     }
   ]
-}""".encode('UTF-8'))
+}""")
 
             with open(sanitize(endpoint + '_groups/', 'ab1?f=json&start=3&num=2'), 'wb') as f:
-                f.write("""{
+                f.write(b"""{
           "total": 3,
           "start": 3,
           "num": 1,
@@ -213,7 +207,7 @@ class TestPyQgsArcGisPortalUtils(unittest.TestCase):
               "title": "Item 3"
             }
           ]
-        }""".encode('UTF-8'))
+        }""")
         res = QgsArcGisPortalUtils.retrieveGroupContent('http://' + endpoint, 'ab1', '', pageSize=2)
         # no errors
         self.assertFalse(res[1])
@@ -229,7 +223,7 @@ class TestPyQgsArcGisPortalUtils(unittest.TestCase):
         endpoint = self.basetestpath + '/groupf_items_fake_qgis_http_endpoint'
 
         with open(sanitize(endpoint + '_groups/', 'ab1?f=json&start=1&num=2'), 'wb') as f:
-            f.write("""{
+            f.write(b"""{
   "total": 3,
   "start": 1,
   "num": 2,
@@ -246,10 +240,10 @@ class TestPyQgsArcGisPortalUtils(unittest.TestCase):
       "type":"Map Service"
     }
   ]
-}""".encode('UTF-8'))
+}""")
 
             with open(sanitize(endpoint + '_groups/', 'ab1?f=json&start=3&num=2'), 'wb') as f:
-                f.write("""{
+                f.write(b"""{
           "total": 3,
           "start": 3,
           "num": 1,
@@ -261,7 +255,7 @@ class TestPyQgsArcGisPortalUtils(unittest.TestCase):
               "type":"Image Service"
             }
           ]
-        }""".encode('UTF-8'))
+        }""")
         res = QgsArcGisPortalUtils.retrieveGroupItemsOfType('http://' + endpoint, 'ab1', '',
                                                             [QgsArcGisPortalUtils.FeatureService], pageSize=2)
         # no errors

@@ -69,12 +69,12 @@ Returns method that determines altitude (whether to clamp to feature to terrain)
 Sets method that determines altitude (whether to clamp to feature to terrain)
 %End
 
-    QgsAbstractMaterialSettings *material() const;
+    QgsAbstractMaterialSettings *materialSettings() const;
 %Docstring
-Returns material used for shading of the symbol
+Returns material settings used for shading of the symbol
 %End
 
-    void setMaterial( QgsAbstractMaterialSettings *material /Transfer/ );
+    void setMaterialSettings( QgsAbstractMaterialSettings *materialSettings /Transfer/ );
 %Docstring
 Sets the ``material`` settings used for shading of the symbol.
 

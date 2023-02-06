@@ -18,7 +18,6 @@
 
 #include "qgsdxfexport.h"
 #include "qgsdxfpaintdevice.h"
-#include "qgsexpression.h"
 #include "qgsfontutils.h"
 #include "qgsimagecache.h"
 #include "qgsimageoperation.h"
@@ -36,6 +35,7 @@
 #include <QDir>
 #include <QDomDocument>
 #include <QDomElement>
+#include <QUrlQuery>
 
 #include <cmath>
 
@@ -1415,16 +1415,25 @@ void QgsSimpleMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement 
 
   // <Rotation>
   QString angleFunc;
-  bool ok;
-  const double angle = props.value( QStringLiteral( "angle" ), QStringLiteral( "0" ) ).toDouble( &ok );
-  if ( !ok )
+
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::PropertyAngle ) )
   {
-    angleFunc = QStringLiteral( "%1 + %2" ).arg( props.value( QStringLiteral( "angle" ), QStringLiteral( "0" ) ).toString() ).arg( mAngle );
+    angleFunc = mDataDefinedProperties.property( QgsSymbolLayer::Property::PropertyAngle ).asExpression();
   }
-  else if ( !qgsDoubleNear( angle + mAngle, 0.0 ) )
+  else
   {
-    angleFunc = QString::number( angle + mAngle );
+    bool ok;
+    const double angle = props.value( QStringLiteral( "angle" ), QStringLiteral( "0" ) ).toDouble( &ok );
+    if ( !ok )
+    {
+      angleFunc = QStringLiteral( "%1 + %2" ).arg( props.value( QStringLiteral( "angle" ), QStringLiteral( "0" ) ).toString() ).arg( mAngle );
+    }
+    else if ( !qgsDoubleNear( angle + mAngle, 0.0 ) )
+    {
+      angleFunc = QString::number( angle + mAngle );
+    }
   }
+
   QgsSymbolLayerUtils::createRotationElement( doc, graphicElem, angleFunc );
 
   // <Displacement>
@@ -2676,10 +2685,11 @@ QgsSymbolLayer *QgsSvgMarkerSymbolLayer::createFromSld( QDomElement &element )
     return nullptr;
 
   QString path, mimeType;
-  QColor fillColor;
+  // Unused and to be DEPRECATED in externalGraphicFromSld
+  QColor fillColor_;
   double size;
 
-  if ( !QgsSymbolLayerUtils::externalGraphicFromSld( graphicElem, path, mimeType, fillColor, size ) )
+  if ( !QgsSymbolLayerUtils::externalGraphicFromSld( graphicElem, path, mimeType, fillColor_, size ) )
     return nullptr;
 
   double scaleFactor = 1.0;
@@ -2703,11 +2713,77 @@ QgsSymbolLayer *QgsSvgMarkerSymbolLayer::createFromSld( QDomElement &element )
   QPointF offset;
   QgsSymbolLayerUtils::displacementFromSldElement( graphicElem, offset );
 
-  QgsSvgMarkerSymbolLayer *m = new QgsSvgMarkerSymbolLayer( path, size );
+  // Extract parameters from URL
+  QString realPath { path };
+  QUrl svgUrl { path };
+
+  // Because color definition can start with '#', the url parsing won't recognize the query string entirely
+  QUrlQuery queryString;
+
+  if ( svgUrl.hasQuery() && svgUrl.hasFragment() )
+  {
+    const QString queryPart { path.mid( path.indexOf( '?' ) + 1 ) };
+    queryString.setQuery( queryPart );
+  }
+
+  // Remove query for simple file paths
+  if ( svgUrl.scheme().isEmpty() || svgUrl.isLocalFile() )
+  {
+    svgUrl.setQuery( QString() );
+    realPath = svgUrl.path();
+  }
+
+  QgsSvgMarkerSymbolLayer *m = new QgsSvgMarkerSymbolLayer( realPath, size );
+
+  QMap<QString, QgsProperty> params;
+
+  bool ok;
+
+  if ( queryString.hasQueryItem( QStringLiteral( "fill" ) ) )
+  {
+    const QColor fillColor { queryString.queryItemValue( QStringLiteral( "fill" ) ) };
+    m->setFillColor( fillColor );
+  }
+
+  if ( queryString.hasQueryItem( QStringLiteral( "fill-opacity" ) ) )
+  {
+    const double alpha { queryString.queryItemValue( QStringLiteral( "fill-opacity" ) ).toDouble( &ok ) };
+    if ( ok )
+    {
+      params.insert( QStringLiteral( "fill-opacity" ), QgsProperty::fromValue( alpha ) );
+    }
+  }
+
+  if ( queryString.hasQueryItem( QStringLiteral( "outline" ) ) )
+  {
+    const QColor strokeColor { queryString.queryItemValue( QStringLiteral( "outline" ) ) };
+    m->setStrokeColor( strokeColor );
+  }
+
+  if ( queryString.hasQueryItem( QStringLiteral( "outline-opacity" ) ) )
+  {
+    const double alpha { queryString.queryItemValue( QStringLiteral( "outline-opacity" ) ).toDouble( &ok ) };
+    if ( ok )
+    {
+      params.insert( QStringLiteral( "outline-opacity" ), QgsProperty::fromValue( alpha ) );
+    }
+  }
+
+  if ( queryString.hasQueryItem( QStringLiteral( "outline-width" ) ) )
+  {
+    const int width { queryString.queryItemValue( QStringLiteral( "outline-width" ) ).toInt( &ok )};
+    if ( ok )
+    {
+      m->setStrokeWidth( width );
+    }
+  }
+
+  if ( ! params.isEmpty() )
+  {
+    m->setParameters( params );
+  }
+
   m->setOutputUnit( sldUnitSize );
-  m->setFillColor( fillColor );
-  //m->setStrokeColor( strokeColor );
-  //m->setStrokeWidth( strokeWidth );
   m->setAngle( angle );
   m->setOffset( offset );
   return m;

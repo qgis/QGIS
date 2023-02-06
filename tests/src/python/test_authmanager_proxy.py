@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Tests for auth manager Basic configuration update proxy
 
@@ -11,14 +10,17 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 import os
-import re
-import string
-import sys
-from shutil import rmtree
-import tempfile
 import random
+import string
+import tempfile
+from shutil import rmtree
 
-from qgis.core import QgsAuthManager, QgsAuthMethodConfig, QgsNetworkAccessManager, QgsSettings, QgsApplication
+from qgis.core import (
+    QgsApplication,
+    QgsAuthMethodConfig,
+    QgsNetworkAccessManager,
+    QgsSettings,
+)
 from qgis.testing import start_app, unittest
 
 __author__ = 'Alessandro Pasotti'

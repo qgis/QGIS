@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsMapBoxGlStyleConverter.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,24 +10,24 @@ __date__ = '29/07/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-from qgis.PyQt.QtCore import QSize, QCoreApplication
-from qgis.PyQt.QtGui import (QColor, QImage)
-from qgis.core import (QgsMapBoxGlStyleConverter,
-                       QgsMapBoxGlStyleConversionContext,
-                       QgsMapBoxGlStyleRasterSource,
-                       QgsSymbolLayer,
-                       QgsWkbTypes,
-                       QgsApplication,
-                       QgsFontManager,
-                       QgsSettings,
-                       Qgis,
-                       QgsRasterLayer,
-                       QgsRasterPipe,
-                       QgsSymbol
-                       )
+from qgis.PyQt.QtCore import QCoreApplication, QSize
+from qgis.PyQt.QtGui import QColor, QImage
+from qgis.core import (
+    Qgis,
+    QgsApplication,
+    QgsMapBoxGlStyleConversionContext,
+    QgsMapBoxGlStyleConverter,
+    QgsMapBoxGlStyleRasterSource,
+    QgsRasterLayer,
+    QgsRasterPipe,
+    QgsSettings,
+    QgsSymbol,
+    QgsSymbolLayer,
+    QgsWkbTypes,
+)
 from qgis.testing import start_app, unittest
 
-from utilities import unitTestDataPath, getTestFont
+from utilities import getTestFont, unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

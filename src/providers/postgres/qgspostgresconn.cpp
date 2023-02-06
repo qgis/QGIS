@@ -32,6 +32,7 @@
 #include "qgspostgresconnpool.h"
 #include "qgsvariantutils.h"
 #include "qgsdbquerylog.h"
+#include "qgsapplication.h"
 
 #include <QApplication>
 #include <QStringList>
@@ -258,6 +259,42 @@ QgsPostgresConn *QgsPostgresConn::connectDb( const QString &conninfo, bool reado
   return conn;
 }
 
+QgsPostgresConn *QgsPostgresConn::connectDb( const QgsDataSourceUri &uri, bool readonly, bool shared, bool transaction )
+{
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo( false ), readonly, shared, transaction );
+  if ( !conn )
+  {
+    return conn;
+  }
+
+  const QString sessionRoleKey = QStringLiteral( "session_role" );
+  if ( uri.hasParam( sessionRoleKey ) )
+  {
+    const QString sessionRole = uri.param( sessionRoleKey );
+    if ( !sessionRole.isEmpty() )
+    {
+      if ( !conn->setSessionRole( sessionRole ) )
+      {
+        QgsDebugMsgLevel(
+          QStringLiteral(
+            "Set session role failed for ROLE %1"
+          )
+          .arg( quotedValue( sessionRole ) )
+          ,
+          2
+        );
+        conn->unref();
+        return nullptr;
+      }
+    }
+  }
+  else
+  {
+    conn->resetSessionRole();
+  }
+  return conn;
+}
+
 static void noticeProcessor( void *arg, const char *message )
 {
   Q_UNUSED( arg )
@@ -413,8 +450,11 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
 
   if ( mPostgresqlVersion >= 90000 )
   {
-    LoggedPQexecNR( "QgsPostgresConn", QStringLiteral( "SET application_name='QGIS'" ) );
-    LoggedPQexecNR( "QgsPostgresConn", QStringLiteral( "SET extra_float_digits=3" ) );
+    // Quoting floating point values and application name for PostgreSQL connection in 1 request
+    LoggedPQexecNR(
+      "QgsPostgresConn",
+      QStringLiteral( "SET extra_float_digits=3; SET application_name=%1" ).arg( quotedValue( QgsApplication::applicationFullName() ) )
+    );
   }
 
   PQsetNoticeProcessor( mConn, noticeProcessor, nullptr );
@@ -1217,6 +1257,19 @@ QString QgsPostgresConn::postgisVersion() const
   }
 
   return mPostgisVersionInfo;
+}
+
+/* Functions for determining available features in postGIS */
+bool QgsPostgresConn::setSessionRole( const QString &sessionRole )
+{
+  if ( !sessionRole.isEmpty() )
+    return LoggedPQexecNR( "QgsPostgresConn", QStringLiteral( "SET ROLE %1" ).arg( quotedValue( sessionRole ) ) );
+  else
+    return resetSessionRole();
+}
+bool QgsPostgresConn::resetSessionRole()
+{
+  return LoggedPQexecNR( "QgsPostgresConn", QStringLiteral( "RESET ROLE" ) );
 }
 
 QString QgsPostgresConn::quotedIdentifier( const QString &ident )

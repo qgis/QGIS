@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLayoutItemPropertiesDialog
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -12,9 +11,14 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.core import QgsUnitTypes, QgsLayoutSize, QgsLayoutPoint, QgsLayoutItem, QgsProject, QgsLayout
-from qgis.gui import QgsLayoutItemPropertiesDialog
-
+from qgis.core import (
+    QgsLayout,
+    QgsLayoutItem,
+    QgsLayoutPoint,
+    QgsLayoutSize,
+    QgsProject,
+    QgsUnitTypes,
+)
 from qgis.testing import start_app, unittest
 
 start_app()

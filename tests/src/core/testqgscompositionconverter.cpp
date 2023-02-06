@@ -166,7 +166,7 @@ void TestQgsCompositionConverter::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-  QgsApplication::settingsSearchPathsForSVG.setValue( QStringList() << QStringLiteral( TEST_DATA_DIR ) );
+  QgsApplication::settingsSearchPathsForSVG->setValue( QStringList() << QStringLiteral( TEST_DATA_DIR ) );
 }
 
 void TestQgsCompositionConverter::init()
@@ -385,7 +385,7 @@ void TestQgsCompositionConverter::importComposerTemplateMap()
 
   item->setLayers( project.mapLayers().values() );
 
-  for ( auto const &l : project.mapLayers().values() )
+  for ( auto const &l : project.mapLayers() )
   {
     QVERIFY( l->isValid() );
   }

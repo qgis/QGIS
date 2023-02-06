@@ -44,7 +44,7 @@ QgsTerrainGenerator::Type QgsOnlineTerrainGenerator::type() const
   return QgsTerrainGenerator::Online;
 }
 
-QgsRectangle QgsOnlineTerrainGenerator::extent() const
+QgsRectangle QgsOnlineTerrainGenerator::rootChunkExtent() const
 {
   return mTerrainTilingScheme.tileToExtent( 0, 0, 0 );
 }
@@ -104,8 +104,6 @@ void QgsOnlineTerrainGenerator::setExtent( const QgsRectangle &extent )
 
   mExtent = extent;
   updateGenerator();
-
-  emit extentChanged();
 }
 
 void QgsOnlineTerrainGenerator::updateGenerator()

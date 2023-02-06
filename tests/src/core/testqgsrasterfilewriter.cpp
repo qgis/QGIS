@@ -293,7 +293,7 @@ void TestQgsRasterFileWriter::testVrtCreation()
   levelList << 2 << 4 << 8 << 16 << 32 << 64 << 128;
   rasterFileWriter->setPyramidsList( levelList );
   //3. Pyramid format
-  rasterFileWriter->setPyramidsFormat( QgsRaster::PyramidsGTiff );
+  rasterFileWriter->setPyramidsFormat( Qgis::RasterPyramidFormat::GeoTiff );
   //4. Resampling method
   rasterFileWriter->setPyramidsResampling( QStringLiteral( "NEAREST" ) );
   //5. Tiled mode => true for vrt creation

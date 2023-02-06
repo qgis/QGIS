@@ -15,16 +15,13 @@
 
 #include "qgsvectorlayerrenderer.h"
 
-#include "diagram/qgsdiagram.h"
 
-#include "qgsdiagramrenderer.h"
 #include "qgsmessagelog.h"
 #include "qgspallabeling.h"
 #include "qgsrenderer.h"
 #include "qgsrendercontext.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgssymbollayer.h"
-#include "qgssymbollayerutils.h"
 #include "qgssymbol.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerdiagramprovider.h"
@@ -42,6 +39,7 @@
 #include "qgsvectorlayertemporalproperties.h"
 #include "qgsmapclippingutils.h"
 #include "qgsfeaturerenderergenerator.h"
+#include "qgssettingsentryimpl.h"
 
 #include <QPicture>
 #include <QTimer>
@@ -116,9 +114,9 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
     mSimplifyGeometry = layer->simplifyDrawingCanbeApplied( *renderContext(), QgsVectorSimplifyMethod::GeometrySimplification );
   }
 
-  mVertexMarkerOnlyForSelection = QgsSettingsRegistryCore::settingsDigitizingMarkerOnlyForSelected.value();
+  mVertexMarkerOnlyForSelection = QgsSettingsRegistryCore::settingsDigitizingMarkerOnlyForSelected->value();
 
-  QString markerTypeString = QgsSettingsRegistryCore::settingsDigitizingMarkerStyle.value();
+  QString markerTypeString = QgsSettingsRegistryCore::settingsDigitizingMarkerStyle->value();
   if ( markerTypeString == QLatin1String( "Cross" ) )
   {
     mVertexMarkerStyle = Qgis::VertexMarkerType::Cross;
@@ -132,7 +130,7 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
     mVertexMarkerStyle = Qgis::VertexMarkerType::NoMarker;
   }
 
-  mVertexMarkerSize = QgsSettingsRegistryCore::settingsDigitizingMarkerSizeMm.value();
+  mVertexMarkerSize = QgsSettingsRegistryCore::settingsDigitizingMarkerSizeMm->value();
 
   QgsDebugMsgLevel( "rendering v2:\n  " + mRenderer->dump(), 2 );
 

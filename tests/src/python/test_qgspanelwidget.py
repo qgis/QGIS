@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsPanelWidget.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,8 +10,7 @@ __date__ = '16/08/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.PyQt.QtWidgets import QWidget, QDialog
+from qgis.PyQt.QtWidgets import QDialog, QWidget
 from qgis.gui import QgsPanelWidget
 from qgis.testing import start_app, unittest
 

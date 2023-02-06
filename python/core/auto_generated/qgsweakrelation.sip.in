@@ -44,6 +44,23 @@ and cannot be translated to :py:class:`QgsRelations` or respected in QGIS relati
 Default constructor for an invalid relation.
 %End
 
+    QgsWeakRelation( const QString &relationId,
+                     const QString &relationName,
+                     const Qgis::RelationshipStrength strength,
+                     const QString &referencingLayerId,
+                     const QString &referencingLayerName,
+                     const QString &referencingLayerSource,
+                     const QString &referencingLayerProviderKey,
+                     const QString &referencedLayerId,
+                     const QString &referencedLayerName,
+                     const QString &referencedLayerSource,
+                     const QString &referencedLayerProviderKey
+                   );
+%Docstring
+Creates a QgsWeakRelation.
+
+.. versionadded:: 3.30
+%End
 
     QList< QgsRelation > resolvedRelations( const QgsProject *project ) const;
 %Docstring

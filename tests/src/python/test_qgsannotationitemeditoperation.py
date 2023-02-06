@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsAnnotationItemEditOperation
 
 From build dir, run: ctest -R QgsAnnotationItemEditOperation -V
@@ -14,13 +13,12 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
 from qgis.core import (
-    QgsAnnotationItemEditOperationMoveNode,
-    QgsAnnotationItemEditOperationDeleteNode,
-    QgsAnnotationItemEditOperationTranslateItem,
     QgsAnnotationItemEditOperationAddNode,
-    QgsVertexId,
+    QgsAnnotationItemEditOperationDeleteNode,
+    QgsAnnotationItemEditOperationMoveNode,
+    QgsAnnotationItemEditOperationTranslateItem,
     QgsPoint,
-    QgsPointXY
+    QgsVertexId,
 )
 from qgis.testing import start_app, unittest
 

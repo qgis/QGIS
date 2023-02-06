@@ -297,6 +297,7 @@ Returns width of contextual menu mark, at right of layer node items.
 
 
 
+
   public slots:
     void refreshLayerSymbology( const QString &layerId );
 %Docstring
@@ -353,6 +354,11 @@ Returns the show private layers status
 Emitted when a current layer is changed
 %End
 
+    void datasetsDropped( QDropEvent *event );
+%Docstring
+Emitted when datasets are dropped onto the layer tree view
+%End
+
   protected:
     virtual void contextMenuEvent( QContextMenuEvent *event );
 
@@ -365,6 +371,10 @@ Emitted when a current layer is changed
 
     virtual void keyPressEvent( QKeyEvent *event );
 
+
+    virtual void dragEnterEvent( QDragEnterEvent *event );
+
+    virtual void dragMoveEvent( QDragMoveEvent *event );
 
     virtual void dropEvent( QDropEvent *event );
 

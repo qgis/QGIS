@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLineSegment2D.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -12,8 +11,7 @@ __copyright__ = 'Copyright 2018, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.core import (QgsPointXY, QgsLineSegment2D)
-
+from qgis.core import QgsLineSegment2D, QgsPointXY
 from qgis.testing import start_app, unittest
 
 start_app()

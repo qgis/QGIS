@@ -1,7 +1,0 @@
-Watershed Segmentation (ViGrA)
-imagery_vigra
-QgsProcessingParameterRasterLayer|INPUT|Input|None|False
-QgsProcessingParameterRasterDestination|OUTPUT|Segmentation
-QgsProcessingParameterNumber|SCALE|Width of gradient filter|QgsProcessingParameterNumber.Double|1.000000|False|0.000000|None
-QgsProcessingParameterBoolean|RGB|RGB coded data|False
-QgsProcessingParameterBoolean|EDGES|Edges|False

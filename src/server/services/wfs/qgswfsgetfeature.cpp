@@ -340,10 +340,28 @@ namespace QgsWfs
 
       // subset of attributes
       featureRequest.setSubsetOfAttributes( attrIndexes );
+      // Access control expression could not be combined with feature ids filter
+      // This request will store the access control expression if the feature request
+      // filter type is feature ids
+      QgsFeatureRequest accessControlRequest;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
       if ( accessControl )
       {
-        accessControl->filterFeatures( vlayer, featureRequest );
+        // Access control expression could not be combined with feature ids filter
+        if ( featureRequest.filterType() == QgsFeatureRequest::FilterFid || featureRequest.filterType() == QgsFeatureRequest::FilterFids )
+        {
+          // expression context for access control filter
+          QgsExpressionContext accessControlContext;
+          accessControlContext << QgsExpressionContextUtils::globalScope()
+                               << QgsExpressionContextUtils::projectScope( project )
+                               << QgsExpressionContextUtils::layerScope( vlayer );
+          accessControlRequest.setExpressionContext( accessControlContext );
+          accessControl->filterFeatures( vlayer, accessControlRequest );
+        }
+        else
+        {
+          accessControl->filterFeatures( vlayer, featureRequest );
+        }
 
         QStringList attributes = QStringList();
         for ( int idx : std::as_const( attrIndexes ) )
@@ -428,6 +446,10 @@ namespace QgsWfs
       {
         while ( fit.nextFeature( feature ) && ( aRequest.maxFeatures == -1 || sentFeatures < aRequest.maxFeatures ) )
         {
+          if ( accessControlRequest.filterType() != QgsFeatureRequest::FilterNone && !accessControlRequest.acceptFeature( feature ) )
+          {
+            continue;
+          }
           if ( iteratedFeatures >= aRequest.startIndex )
           {
             ++sentFeatures;
@@ -457,6 +479,10 @@ namespace QgsWfs
                                         };
         while ( fit.nextFeature( feature ) && ( aRequest.maxFeatures == -1 || sentFeatures < aRequest.maxFeatures ) )
         {
+          if ( accessControlRequest.filterType() != QgsFeatureRequest::FilterNone && !accessControlRequest.acceptFeature( feature ) )
+          {
+            continue;
+          }
           if ( iteratedFeatures == aRequest.startIndex )
             startGetFeature( request, response, project, aRequest.outputFormat, requestPrecision, requestCrs, &requestRect, typeNameList, serverIface->serverSettings() );
 
@@ -1064,7 +1090,8 @@ namespace QgsWfs
         else
           query.addQueryItem( QStringLiteral( "VERSION" ), QStringLiteral( "1.0.0" ) );
 
-        for ( auto param : query.queryItems() )
+        const auto constItems { query.queryItems() };
+        for ( const auto &param : std::as_const( constItems ) )
         {
           if ( sParamFilter.contains( param.first.toUpper() ) )
             query.removeAllQueryItems( param.first );
@@ -1283,6 +1310,15 @@ namespace QgsWfs
           fcString += QLatin1String( "  " );
         else
           fcString += QLatin1String( " ," );
+
+        const QgsCoordinateReferenceSystem destinationCrs { params.srsName.isEmpty( ) ? QStringLiteral( "EPSG:4326" ) : params.srsName };
+        if ( ! destinationCrs.isValid() )
+        {
+          throw QgsRequestNotWellFormedException( QStringLiteral( "srsName error: '%1' is not valid." ).arg( params.srsName ) );
+        }
+
+        mJsonExporter.setDestinationCrs( destinationCrs );
+        mJsonExporter.setTransformGeometries( true );
         mJsonExporter.setSourceCrs( params.crs );
         mJsonExporter.setIncludeGeometry( false );
         mJsonExporter.setIncludeAttributes( !params.attributeIndexes.isEmpty() );
@@ -1438,7 +1474,7 @@ namespace QgsWfs
       for ( int i = 0; i < params.attributeIndexes.count(); ++i )
       {
         int idx = params.attributeIndexes[i];
-        if ( idx >= fields.count() )
+        if ( idx >= fields.count() || QgsVariantUtils::isNull( featureAttributes[idx] ) )
         {
           continue;
         }
@@ -1535,7 +1571,7 @@ namespace QgsWfs
       for ( int i = 0; i < params.attributeIndexes.count(); ++i )
       {
         int idx = params.attributeIndexes[i];
-        if ( idx >= fields.count() )
+        if ( idx >= fields.count() || QgsVariantUtils::isNull( featureAttributes[idx] ) )
         {
           continue;
         }
@@ -1580,14 +1616,35 @@ namespace QgsWfs
 
       if ( setup.type() ==  QStringLiteral( "DateTime" ) )
       {
-        const QVariantMap config = setup.config();
-        const QString fieldFormat = config.value( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( value.type() ) ).toString();
-        QDateTime date = value.toDateTime();
+        // For time fields use const TIME_FORMAT
+        if ( value.type() == QVariant::Time )
+        {
+          return value.toTime().toString( QgsDateTimeFieldFormatter::TIME_FORMAT );
+        }
 
+        // Get editor widget setup config
+        const QVariantMap config = setup.config();
+        // Get field format, for ISO format then use const display format
+        // else use field format saved in editor widget setup config
+        const QString fieldFormat =
+          config.value( QStringLiteral( "field_iso_format" ), false ).toBool() ?
+          QgsDateTimeFieldFormatter::DISPLAY_FOR_ISO_FORMAT :
+          config.value( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( value.type() ) ).toString();
+
+        // Convert value to date time
+        QDateTime date = value.toDateTime();
+        // if not valid try to convert to date with field format
+        if ( !date.isValid() )
+        {
+          date = QDateTime::fromString( value.toString(), fieldFormat );
+        }
+        // if the date is valid, convert to string with field format
         if ( date.isValid() )
         {
           return date.toString( fieldFormat );
         }
+        // else provide the value as string
+        return value.toString();
       }
       else if ( setup.type() ==  QStringLiteral( "Range" ) )
       {

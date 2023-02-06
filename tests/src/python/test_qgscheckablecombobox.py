@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsCheckableComboBox
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -14,8 +13,6 @@ import qgis  # NOQA
 
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtTest import QSignalSpy
-
-from qgis.gui import QgsCheckableComboBox
 from qgis.testing import start_app, unittest
 
 start_app()

@@ -449,6 +449,9 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
       case Qgis::DataType::Byte:
         entry.typeName = QStringLiteral( "unsigned char" );
         break;
+      case Qgis::DataType::Int8:
+        entry.typeName = QStringLiteral( "signed char" );
+        break;
       case Qgis::DataType::UInt16:
         entry.typeName = QStringLiteral( "unsigned int" );
         break;
@@ -470,7 +473,13 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
       case Qgis::DataType::Float64:
         entry.typeName = QStringLiteral( "double" );
         break;
-      default:
+      case Qgis::DataType::CInt16:
+      case Qgis::DataType::CInt32:
+      case Qgis::DataType::CFloat32:
+      case Qgis::DataType::CFloat64:
+      case Qgis::DataType::ARGB32:
+      case Qgis::DataType::ARGB32_Premultiplied:
+      case Qgis::DataType::UnknownDataType:
         return BandError;
     }
     entry.bufferSize = entry.dataSize * mNumOutputColumns;

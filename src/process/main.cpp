@@ -27,18 +27,9 @@
 #include <cstdlib>
 
 #include "qgsapplication.h"
+
 #ifdef Q_OS_WIN
-// Open files in binary mode
 #include <fcntl.h> /*  _O_BINARY */
-#ifdef MSVC
-#undef _fmode
-int _fmode = _O_BINARY;
-#else
-// Only do this if we are not building on windows with msvc.
-// Recommended method for doing this with msvc is with a call to _set_fmode
-// which is the first thing we do in main().
-// Similarly, with MinGW set _fmode in main().
-#endif  //_MSC_VER
 #else
 #include <getopt.h>
 #endif
@@ -117,6 +108,7 @@ int main( int argc, char *argv[] )
   QTimer::singleShot( 0, &app, [&exec, args, &res]
   {
     res = exec.run( args );
+    QgsApplication::exitQgis();
     QCoreApplication::exit( res );
   } );
   return QgsApplication::exec();

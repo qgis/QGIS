@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for field formatters.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,36 +9,36 @@ __author__ = 'Matthias Kuhn'
 __date__ = '05/12/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
-import tempfile
 import os
+import tempfile
 
 import qgis  # NOQA
 from qgis.PyQt.QtCore import (
     QCoreApplication,
-    QLocale,
-    QVariant,
     QDate,
-    QTime,
     QDateTime,
-    Qt
+    QLocale,
+    Qt,
+    QTime,
+    QVariant,
 )
 from qgis.core import (
     QgsApplication,
-    QgsFeature,
-    QgsProject,
-    QgsRelation,
-    QgsVectorLayer,
-    QgsValueMapFieldFormatter,
-    QgsValueRelationFieldFormatter,
-    QgsRelationReferenceFieldFormatter,
-    QgsRangeFieldFormatter,
     QgsCheckBoxFieldFormatter,
-    QgsFallbackFieldFormatter,
     QgsDateTimeFieldFormatter,
-    QgsSettings,
+    QgsFallbackFieldFormatter,
+    QgsFeature,
     QgsGeometry,
     QgsPointXY,
-    QgsVectorFileWriter
+    QgsProject,
+    QgsRangeFieldFormatter,
+    QgsRelation,
+    QgsRelationReferenceFieldFormatter,
+    QgsSettings,
+    QgsValueMapFieldFormatter,
+    QgsValueRelationFieldFormatter,
+    QgsVectorFileWriter,
+    QgsVectorLayer,
 )
 from qgis.testing import start_app, unittest
 from qgis.utils import spatialite_connect

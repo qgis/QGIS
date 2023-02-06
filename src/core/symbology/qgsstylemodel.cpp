@@ -605,7 +605,6 @@ void QgsStyleModel::setIconGenerator( QgsAbstractStyleEntityIconGenerator *gener
 void QgsStyleModel::onEntityAdded( QgsStyle::StyleEntity type, const QString &name )
 {
   mIconCache[ type ].remove( name );
-  const QStringList oldSymbolNames = mEntityNames[ type ];
   const QStringList newSymbolNames = mStyle->allNames( type );
 
   // find index of newly added symbol
@@ -1066,4 +1065,3 @@ void QgsStyleProxyModel::setEntityFilters( const QList<QgsStyle::StyleEntity> &f
   mEntityFilters = filters;
   invalidateFilter();
 }
-

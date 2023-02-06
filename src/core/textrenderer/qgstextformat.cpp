@@ -488,7 +488,7 @@ void QgsTextFormat::readFromLayer( QgsVectorLayer *layer )
     d->opacity = ( layer->customProperty( QStringLiteral( "labeling/textOpacity" ) ).toDouble() );
   }
   d->blendMode = QgsPainting::getCompositionMode(
-                   static_cast< QgsPainting::BlendMode >( layer->customProperty( QStringLiteral( "labeling/blendMode" ), QVariant( QgsPainting::BlendNormal ) ).toUInt() ) );
+                   static_cast< Qgis::BlendMode >( layer->customProperty( QStringLiteral( "labeling/blendMode" ), QVariant( static_cast< int >( Qgis::BlendMode::Normal ) ) ).toUInt() ) );
   d->multilineHeight = layer->customProperty( QStringLiteral( "labeling/multilineHeight" ), QVariant( 1.0 ) ).toDouble();
   d->previewBackgroundColor = QgsTextRendererUtils::readColor( layer, QStringLiteral( "labeling/previewBkgrdColor" ), QColor( 255, 255, 255 ), false );
 
@@ -619,7 +619,7 @@ void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext 
   d->previewBackgroundColor = QgsSymbolLayerUtils::decodeColor( textStyleElem.attribute( QStringLiteral( "previewBkgrdColor" ), QgsSymbolLayerUtils::encodeColor( Qt::white ) ) );
 
   d->blendMode = QgsPainting::getCompositionMode(
-                   static_cast< QgsPainting::BlendMode >( textStyleElem.attribute( QStringLiteral( "blendMode" ), QString::number( QgsPainting::BlendNormal ) ).toUInt() ) );
+                   static_cast< Qgis::BlendMode >( textStyleElem.attribute( QStringLiteral( "blendMode" ), QString::number( static_cast< int >( Qgis::BlendMode::Normal ) ) ).toUInt() ) );
 
   if ( !textStyleElem.hasAttribute( QStringLiteral( "multilineHeight" ) ) )
   {
@@ -728,7 +728,7 @@ QDomElement QgsTextFormat::writeXml( QDomDocument &doc, const QgsReadWriteContex
     textStyleElem.setAttribute( QStringLiteral( "stretchFactor" ), d->textFont.stretch() );
 #endif
   textStyleElem.setAttribute( QStringLiteral( "textOrientation" ), QgsTextRendererUtils::encodeTextOrientation( d->orientation ) );
-  textStyleElem.setAttribute( QStringLiteral( "blendMode" ), QgsPainting::getBlendModeEnum( d->blendMode ) );
+  textStyleElem.setAttribute( QStringLiteral( "blendMode" ), static_cast< int >( QgsPainting::getBlendModeEnum( d->blendMode ) ) );
   textStyleElem.setAttribute( QStringLiteral( "multilineHeight" ), d->multilineHeight );
   textStyleElem.setAttribute( QStringLiteral( "multilineHeightUnit" ), QgsUnitTypes::encodeUnit( d->multilineHeightUnits ) );
 

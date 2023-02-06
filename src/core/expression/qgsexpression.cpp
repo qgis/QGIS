@@ -748,6 +748,11 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts()->insert( QStringLiteral( "layer_crs" ), QCoreApplication::translate( "variable_help", "CRS Authority ID of current layer." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "layer" ), QCoreApplication::translate( "variable_help", "The current layer." ) );
 
+  //feature variables
+  sVariableHelpTexts()->insert( QStringLiteral( "feature" ), QCoreApplication::translate( "variable_help", "The current feature being evaluated. This can be used with the 'attribute' function to evaluate attribute values from the current feature." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "id" ), QCoreApplication::translate( "variable_help", "The ID of the current feature being evaluated." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "geometry" ), QCoreApplication::translate( "variable_help", "The geometry of the current feature being evaluated." ) );
+
   //composition variables
   sVariableHelpTexts()->insert( QStringLiteral( "layout_name" ), QCoreApplication::translate( "variable_help", "Name of composition." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "layout_numpages" ), QCoreApplication::translate( "variable_help", "Number of pages in composition." ) );
@@ -821,6 +826,7 @@ void QgsExpression::initVariableHelp()
 
   // map canvas item variables
   sVariableHelpTexts()->insert( QStringLiteral( "canvas_cursor_point" ), QCoreApplication::translate( "variable_help", "Last cursor position on the canvas in the project's geographical coordinates." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "layer_cursor_point" ), QCoreApplication::translate( "variable_help", "Last cursor position on the canvas in the current layers's geographical coordinates." ) );
 
   // legend canvas item variables
   sVariableHelpTexts()->insert( QStringLiteral( "legend_title" ), QCoreApplication::translate( "variable_help", "Title of the legend." ) );

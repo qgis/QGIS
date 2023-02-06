@@ -353,19 +353,10 @@ bool QgsLazInfo::supportsRangeQueries( QUrl &url )
   nr.setAttribute( QNetworkRequest::CacheSaveControlAttribute, false );
   nr.setRawHeader( "Range", "bytes=0-0" );
   QgsBlockingNetworkRequest req;
-  QgsBlockingNetworkRequest::ErrorCode errCode = req.head( nr );
+  // ignore the reply's status, we only care if accept-ranges is in the headers
+  req.head( nr );
   QgsNetworkReplyContent reply = req.reply();
-  const QList<QgsNetworkReplyContent::RawHeaderPair> pairs = reply.rawHeaderPairs();
-  bool acceptsRanges = false;
-  for ( const auto &pair : pairs )
-  {
-    if ( QString::fromLocal8Bit( pair.first ).compare( QStringLiteral( "Accept-Ranges" ), Qt::CaseInsensitive ) == 0 &&
-         QString::fromLocal8Bit( pair.second ).compare( QStringLiteral( "bytes" ), Qt::CaseInsensitive ) == 0 )
-    {
-      acceptsRanges = true;
-      break;
-    }
-  }
 
-  return errCode == QgsBlockingNetworkRequest::NoError && acceptsRanges;
+  const QString acceptRangesHeader = reply.rawHeader( QStringLiteral( "Accept-Ranges" ).toLocal8Bit() );
+  return acceptRangesHeader.compare( QStringLiteral( "bytes" ), Qt::CaseSensitivity::CaseInsensitive ) == 0;
 }

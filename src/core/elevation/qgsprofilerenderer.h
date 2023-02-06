@@ -83,6 +83,19 @@ class CORE_EXPORT QgsProfilePlotRenderer : public QObject
     void startGeneration();
 
     /**
+     * Generate the profile results synchronously in this thread. The function does not return until the generation
+     * is complete.
+     *
+     * This is an alternative to ordinary API (using startGeneration() + waiting for generationFinished() signal).
+     * Users are discouraged to use this method unless they have a strong reason for doing it.
+     * The synchronous generation blocks the main thread, making the application unresponsive.
+     * Also, it is not possible to cancel generation while it is in progress.
+     *
+     * \since QGIS 3.30
+     */
+    void generateSynchronously();
+
+    /**
      * Stop the generation job - does not return until the job has terminated.
      * Does nothing if the generation is not active.
      */

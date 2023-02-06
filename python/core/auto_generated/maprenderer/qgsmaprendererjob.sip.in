@@ -181,6 +181,7 @@ Returns map settings with which this job was started.
 
 
 
+
   signals:
 
     void renderingLayersFinished();
@@ -221,6 +222,7 @@ emitted when asynchronous rendering is finished (or canceled).
 %End
 
   protected:
+
 
 
 

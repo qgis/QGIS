@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsTaskManager.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -14,12 +13,9 @@ import os
 from time import sleep
 
 import qgis  # NOQA
-
-from qgis.core import QgsTask, QgsApplication
-
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtTest import QSignalSpy
-
+from qgis.core import QgsApplication, QgsTask
 from qgis.testing import start_app, unittest
 
 start_app()

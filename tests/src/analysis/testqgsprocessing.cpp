@@ -37,10 +37,8 @@
 #include "qgsgeometry.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsexpressioncontext.h"
-#include "qgsxmlutils.h"
 #include "qgsreferencedgeometry.h"
 #include "qgssettings.h"
-#include "qgsmessagelog.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsprintlayout.h"
@@ -397,6 +395,14 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
 
       params.insert( "p2", QStringLiteral( "thisisa'test" ) );
       QCOMPARE( asQgisProcessCommand( params, context, ok ), QStringLiteral( "qgis_process run test --distance_units=meters --p1=a --p2='thisisa'\\''test'" ) );
+      QVERIFY( ok );
+
+      addParameter( new QgsProcessingParameterString( "dd_field", QString(), true ) );
+      addParameter( new QgsProcessingParameterString( "dd_expression", QString(), true ) );
+
+      params.insert( "dd_field", QgsProperty::fromField( QStringLiteral( "my field" ) ) );
+      params.insert( "dd_expression", QgsProperty::fromExpression( QStringLiteral( "\"some field\" * 200" ) ) );
+      QCOMPARE( asQgisProcessCommand( params, context, ok ), QStringLiteral( "qgis_process run test --distance_units=meters --p1=a --p2='thisisa'\\''test' --dd_field='field:my field' --dd_expression='expression:\"some field\" * 200'" ) );
       QVERIFY( ok );
     }
 
@@ -801,6 +807,7 @@ class TestQgsProcessing: public QObject
     void sourceTypeToString_data();
     void sourceTypeToString();
     void formatHelp();
+    void preprocessParameters();
 
   private:
 
@@ -1230,6 +1237,8 @@ void TestQgsProcessing::context()
   context.setInvalidGeometryCheck( QgsFeatureRequest::GeometrySkipInvalid );
   QCOMPARE( context.invalidGeometryCheck(), QgsFeatureRequest::GeometrySkipInvalid );
 
+  QCOMPARE( context.expressionContext().loadedLayerStore(), context.temporaryLayerStore() );
+
   QgsVectorLayer *vector = new QgsVectorLayer( "Polygon", "vector", "memory" );
   context.temporaryLayerStore()->addMapLayer( vector );
   QCOMPARE( context.temporaryLayerStore()->mapLayer( vector->id() ), vector );
@@ -1243,6 +1252,15 @@ void TestQgsProcessing::context()
   QCOMPARE( static_cast< int >( context2.logLevel() ), static_cast< int >( QgsProcessingContext::Verbose ) );
   // layers from temporaryLayerStore must not be copied by copyThreadSafeSettings
   QVERIFY( context2.temporaryLayerStore()->mapLayers().isEmpty() );
+  QCOMPARE( context2.expressionContext().loadedLayerStore(), context2.temporaryLayerStore() );
+
+  QgsExpressionContext expContext;
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope();
+  scope->setVariable( QStringLiteral( "var" ), 5 );
+  expContext.appendScope( scope );
+  context2.setExpressionContext( expContext );
+  QCOMPARE( context2.expressionContext().variable( QStringLiteral( "var" ) ).toInt(), 5 );
+  QCOMPARE( context2.expressionContext().loadedLayerStore(), context2.temporaryLayerStore() );
 
   // layers to load on completion
   QgsVectorLayer *v1 = new QgsVectorLayer( "Polygon", "V1", "memory" );
@@ -1384,6 +1402,14 @@ void TestQgsProcessing::contextToProcessArguments()
   {
     QStringLiteral( "--distance_units=meters" ), QStringLiteral( "--area_units=m2" ), QStringLiteral( "--ellipsoid=NONE" ),
     QStringLiteral( "--project_path=%1" ).arg( TEST_DATA_DIR + QStringLiteral( "/projects/custom_crs.qgs" ) )
+  } ) );
+
+  QTemporaryDir tmpDir;
+  p.write( tmpDir.filePath( QStringLiteral( "project name with spaces.qgs" ) ) );
+  QCOMPARE( context2.asQgisProcessArguments( QgsProcessingContext::ProcessArgumentFlag::IncludeProjectPath ), QStringList(
+  {
+    QStringLiteral( "--distance_units=meters" ), QStringLiteral( "--area_units=m2" ), QStringLiteral( "--ellipsoid=NONE" ),
+    QStringLiteral( "--project_path='%1'" ).arg( p.fileName() )
   } ) );
 }
 
@@ -2658,11 +2684,11 @@ void TestQgsProcessing::parameters()
   context2.layersToLoadOnCompletion().values().at( 0 ).setOutputLayerName( rl.get() );
   QCOMPARE( rl->name(), QStringLiteral( "landsat" ) );
   // unless setting prohibits it...
-  QgsProcessing::settingsPreferFilenameAsLayerName.setValue( false );
+  QgsProcessing::settingsPreferFilenameAsLayerName->setValue( false );
   context2.layersToLoadOnCompletion().values().at( 0 ).setOutputLayerName( rl.get() );
   QCOMPARE( rl->name(), QStringLiteral( "my_dest" ) );
   // if layer has a layername, we should use that instead of the base file name...
-  QgsProcessing::settingsPreferFilenameAsLayerName.setValue( true );
+  QgsProcessing::settingsPreferFilenameAsLayerName->setValue( true );
   vl = std::make_unique< QgsVectorLayer >( QStringLiteral( TEST_DATA_DIR ) + "/points_gpkg.gpkg|layername=points_small", QString() );
   context2.layersToLoadOnCompletion().values().at( 0 ).setOutputLayerName( vl.get() );
   QCOMPARE( vl->name(), QStringLiteral( "points_small" ) );
@@ -4232,6 +4258,12 @@ void TestQgsProcessing::parameterFile()
   QCOMPARE( def->valueAsJsonObject( "uri='complex' username=\"complex\"", context ), QVariant( QStringLiteral( "uri='complex' username=\"complex\"" ) ) );
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "c:\\test\\new data\\test.dat" ), context ), QVariant( QStringLiteral( "c:\\test\\new data\\test.dat" ) ) );
 
+  const QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
+  // ensure valueAsJsonObject doesn't try to load a file path as a layer
+  QCOMPARE( context.temporaryLayerStore()->count(), 0 );
+  QCOMPARE( def->valueAsJsonObject( QVariant( testDataDir + QStringLiteral( "tenbytenraster.asc" ) ), context ), QVariant( testDataDir + QStringLiteral( "tenbytenraster.asc" ) ) );
+  QCOMPARE( context.temporaryLayerStore()->count(), 0 );
+
   bool ok = false;
   QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
   QVERIFY( ok );
@@ -4241,6 +4273,11 @@ void TestQgsProcessing::parameterFile()
   QVERIFY( ok );
   QCOMPARE( def->valueAsString( QStringLiteral( "c:\\test\\new data\\test.dat" ), context, ok ), QStringLiteral( "c:\\test\\new data\\test.dat" ) );
   QVERIFY( ok );
+  // ensure valueAsString doesn't try to load a file path as a layer
+  QCOMPARE( context.temporaryLayerStore()->count(), 0 );
+  QCOMPARE( def->valueAsString( QVariant( testDataDir + QStringLiteral( "tenbytenraster.asc" ) ), context, ok ), testDataDir + QStringLiteral( "tenbytenraster.asc" ) );
+  QVERIFY( ok );
+  QCOMPARE( context.temporaryLayerStore()->count(), 0 );
 
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterFile('non_optional', '', behavior=QgsProcessingParameterFile.File, extension='.bmp', defaultValue='abc.bmp')" ) );
@@ -6077,6 +6114,10 @@ void TestQgsProcessing::parameterString()
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "abc\ndef" ), context ), QVariant( QStringLiteral( "abc\ndef" ) ) );
   QCOMPARE( def->valueAsJsonObject( "uri='complex' username=\"complex\"", context ), QVariant( QStringLiteral( "uri='complex' username=\"complex\"" ) ) );
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "c:\\test\\new data\\test.dat" ), context ), QVariant( QStringLiteral( "c:\\test\\new data\\test.dat" ) ) );
+
+  QCOMPARE( def->valueAsJsonObject( QVariant::fromValue( QgsProperty::fromValue( QStringLiteral( "test" ) ) ), context ), QVariant( QStringLiteral( "test" ) ) );
+  QCOMPARE( def->valueAsJsonObject( QVariant::fromValue( QgsProperty::fromField( QStringLiteral( "a field" ) ) ), context ), QVariantMap( {{QStringLiteral( "type" ), QStringLiteral( "data_defined" )}, {QStringLiteral( "field" ), QStringLiteral( "a field" ) }} ) );
+  QCOMPARE( def->valueAsJsonObject( QVariant::fromValue( QgsProperty::fromExpression( QStringLiteral( "\"a field\" * 2" ) ) ), context ), QVariantMap( {{QStringLiteral( "type" ), QStringLiteral( "data_defined" )}, {QStringLiteral( "expression" ),  QStringLiteral( "\"a field\" * 2" ) }} ) );
 
   bool ok = false;
   QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
@@ -9709,8 +9750,8 @@ void TestQgsProcessing::parameterMeshDatasetGroups()
   QgsProject project;
   context.setProject( &project );
 
-  QCOMPARE( QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( QVariant() ), QList<int>( {0} ) );
-  QCOMPARE( QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( QVariantList() ), QList<int>( {0} ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( QVariant() ), QList<int>() );
+  QCOMPARE( QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( QVariantList() ), QList<int>() );
   QCOMPARE( QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( 3 ), QList<int>( {3} ) );
   QCOMPARE( QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( QVariant( "3" ) ), QList<int>( {3} ) );
   QCOMPARE( QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( QVariantList( { "3", "4", "5"} ) ), QList<int>( {3, 4, 5 } ) );
@@ -11020,7 +11061,7 @@ void TestQgsProcessing::tempUtils()
 
   const QgsSettings settings;
   const QString alternative_tempFolder1 = tempDirPath + QStringLiteral( "/alternative_temp_test_one" );
-  QgsProcessing::settingsTempPath.setValue( alternative_tempFolder1 );
+  QgsProcessing::settingsTempPath->setValue( alternative_tempFolder1 );
   // check folder and if it's constant with alternative temp folder 1
   tempFolder = QgsProcessingUtils::tempFolder();
   QCOMPARE( tempFolder.left( alternative_tempFolder1.length() ), alternative_tempFolder1 );
@@ -11032,7 +11073,7 @@ void TestQgsProcessing::tempUtils()
   QVERIFY( alternativeTempFile1.startsWith( alternative_tempFolder1 ) );
   // change temp folder in the settings again
   const QString alternative_tempFolder2 =  tempDirPath + QStringLiteral( "/alternative_temp_test_two" );
-  QgsProcessing::settingsTempPath.setValue( alternative_tempFolder2 );
+  QgsProcessing::settingsTempPath->setValue( alternative_tempFolder2 );
   // check folder and if it's constant constant with alternative temp folder 2
   tempFolder = QgsProcessingUtils::tempFolder();
   QCOMPARE( tempFolder.left( alternative_tempFolder2.length() ), alternative_tempFolder2 );
@@ -11042,7 +11083,7 @@ void TestQgsProcessing::tempUtils()
   QVERIFY( alternativeTempFile2.endsWith( "alternative_temptest.txt" ) );
   QVERIFY( alternativeTempFile2.startsWith( tempFolder ) );
   QVERIFY( alternativeTempFile2.startsWith( alternative_tempFolder2 ) );
-  QgsProcessing::settingsTempPath.setValue( QString() );
+  QgsProcessing::settingsTempPath->setValue( QString() );
 
 }
 
@@ -11511,8 +11552,8 @@ void TestQgsProcessing::defaultExtensionsForProvider()
   QCOMPARE( context.preferredRasterFormat(), QStringLiteral( "tif" ) );
 
   // unless the user has set a default format, which IS supported by that provider
-  QgsProcessing::settingsDefaultOutputVectorLayerExt.setValue( QgsVectorFileWriter::supportedFormatExtensions().indexOf( QLatin1String( "tab" ) ) );
-  QgsProcessing::settingsDefaultOutputRasterLayerExt.setValue( QgsRasterFileWriter::supportedFormatExtensions().indexOf( QLatin1String( "sdat" ) ) );
+  QgsProcessing::settingsDefaultOutputVectorLayerExt->setValue( QgsVectorFileWriter::supportedFormatExtensions().indexOf( QLatin1String( "tab" ) ) );
+  QgsProcessing::settingsDefaultOutputRasterLayerExt->setValue( QgsRasterFileWriter::supportedFormatExtensions().indexOf( QLatin1String( "sdat" ) ) );
 
   QCOMPARE( provider.defaultVectorFileExtension( true ), QStringLiteral( "tab" ) );
   QCOMPARE( provider.defaultRasterFileExtension(), QStringLiteral( "sdat" ) );
@@ -11523,8 +11564,8 @@ void TestQgsProcessing::defaultExtensionsForProvider()
   QCOMPARE( context2.preferredRasterFormat(), QStringLiteral( "sdat" ) );
 
   // but if default is not supported by provider, we use a supported format
-  QgsProcessing::settingsDefaultOutputVectorLayerExt.setValue( QgsVectorFileWriter::supportedFormatExtensions().indexOf( QLatin1String( "gpkg" ) ) );
-  QgsProcessing::settingsDefaultOutputRasterLayerExt.setValue( QgsRasterFileWriter::supportedFormatExtensions().indexOf( QLatin1String( "ecw" ) ) );
+  QgsProcessing::settingsDefaultOutputVectorLayerExt->setValue( QgsVectorFileWriter::supportedFormatExtensions().indexOf( QLatin1String( "gpkg" ) ) );
+  QgsProcessing::settingsDefaultOutputRasterLayerExt->setValue( QgsRasterFileWriter::supportedFormatExtensions().indexOf( QLatin1String( "ecw" ) ) );
   QCOMPARE( provider.defaultVectorFileExtension( true ), QStringLiteral( "mif" ) );
   QCOMPARE( provider.defaultRasterFileExtension(), QStringLiteral( "mig" ) );
 }
@@ -11647,6 +11688,66 @@ void TestQgsProcessing::formatHelp()
   QCOMPARE( QgsProcessingUtils::formatHelpMapAsHtml( help, &a ), QStringLiteral( "<html><body><p></p>\n<h2>Examples</h2>\n<p>aabbcc</p><br></body></html>" ) );
 }
 
+void TestQgsProcessing::preprocessParameters()
+{
+  QVariantMap inputs;
+  inputs.insert( QStringLiteral( "int" ), 5 );
+  inputs.insert( QStringLiteral( "string" ), QStringLiteral( "a string" ) );
+  inputs.insert( QStringLiteral( "data defined field" ), QVariantMap( {{QStringLiteral( "type" ), QStringLiteral( "data_defined" )}, {QStringLiteral( "field" ), QStringLiteral( "DEPTH_FIELD" ) }} ) );
+  inputs.insert( QStringLiteral( "data defined expression" ), QVariantMap( {{QStringLiteral( "type" ), QStringLiteral( "data_defined" )}, {QStringLiteral( "expression" ), QStringLiteral( "A_FIELD * 200" ) }} ) );
+  inputs.insert( QStringLiteral( "data defined field using string" ), QStringLiteral( "field:MY FIELD" ) );
+  inputs.insert( QStringLiteral( "data defined expression using string" ), QStringLiteral( "expression:SOME_FIELD * 2" ) );
+  inputs.insert( QStringLiteral( "invalid" ), QVariantMap( {{QStringLiteral( "type" ), QStringLiteral( "data_defined" )}} ) );
+
+  bool ok = false;
+  QString error;
+  QVariantMap outputs = QgsProcessingUtils::preprocessQgisProcessParameters( inputs, ok, error );
+  QVERIFY( !ok );
+  QVERIFY( !error.isEmpty() );
+
+  inputs.remove( QStringLiteral( "invalid" ) );
+  error.clear();
+  outputs = QgsProcessingUtils::preprocessQgisProcessParameters( inputs, ok, error );
+  QVERIFY( ok );
+  QVERIFY( error.isEmpty() );
+
+  QCOMPARE( outputs.value( QStringLiteral( "int" ) ).toInt(), 5 );
+  QCOMPARE( outputs.value( QStringLiteral( "string" ) ).toString(), QStringLiteral( "a string" ) );
+  QCOMPARE( outputs.value( QStringLiteral( "data defined field" ) ).value< QgsProperty >().propertyType(), QgsProperty::FieldBasedProperty );
+  QCOMPARE( outputs.value( QStringLiteral( "data defined field" ) ).value< QgsProperty >().field(), QStringLiteral( "DEPTH_FIELD" ) );
+  QCOMPARE( outputs.value( QStringLiteral( "data defined field using string" ) ).value< QgsProperty >().propertyType(), QgsProperty::FieldBasedProperty );
+  QCOMPARE( outputs.value( QStringLiteral( "data defined field using string" ) ).value< QgsProperty >().field(), QStringLiteral( "MY FIELD" ) );
+  QCOMPARE( outputs.value( QStringLiteral( "data defined expression" ) ).value< QgsProperty >().propertyType(), QgsProperty::ExpressionBasedProperty );
+  QCOMPARE( outputs.value( QStringLiteral( "data defined expression" ) ).value< QgsProperty >().expressionString(), QStringLiteral( "A_FIELD * 200" ) );
+  QCOMPARE( outputs.value( QStringLiteral( "data defined expression using string" ) ).value< QgsProperty >().propertyType(), QgsProperty::ExpressionBasedProperty );
+  QCOMPARE( outputs.value( QStringLiteral( "data defined expression using string" ) ).value< QgsProperty >().expressionString(), QStringLiteral( "SOME_FIELD * 2" ) );
+
+  // test round trip of data defined parameters
+  const QgsProcessingAlgorithm *bufferAlg = QgsApplication::processingRegistry()->algorithmById( "native:buffer" );
+  QVERIFY( bufferAlg );
+
+  inputs.clear();
+  inputs.insert( QStringLiteral( "DISTANCE" ), QgsProperty::fromField( QStringLiteral( "DEPTH_FIELD" ) ) );
+
+  QgsProcessingContext context;
+  QVariantMap exportedParams = bufferAlg->asMap( inputs, context );
+  outputs = QgsProcessingUtils::preprocessQgisProcessParameters( inputs, ok, error );
+  QVERIFY( ok );
+  QVERIFY( error.isEmpty() );
+
+  QCOMPARE( outputs.value( QStringLiteral( "DISTANCE" ) ).value< QgsProperty >().propertyType(), QgsProperty::FieldBasedProperty );
+  QCOMPARE( outputs.value( QStringLiteral( "DISTANCE" ) ).value< QgsProperty >().field(), QStringLiteral( "DEPTH_FIELD" ) );
+
+  inputs.insert( QStringLiteral( "DISTANCE" ), QgsProperty::fromExpression( QStringLiteral( "A_FIELD * 200" ) ) );
+
+  exportedParams = bufferAlg->asMap( inputs, context );
+  outputs = QgsProcessingUtils::preprocessQgisProcessParameters( inputs, ok, error );
+  QVERIFY( ok );
+  QVERIFY( error.isEmpty() );
+
+  QCOMPARE( outputs.value( QStringLiteral( "DISTANCE" ) ).value< QgsProperty >().propertyType(), QgsProperty::ExpressionBasedProperty );
+  QCOMPARE( outputs.value( QStringLiteral( "DISTANCE" ) ).value< QgsProperty >().expressionString(), QStringLiteral( "A_FIELD * 200" ) );
+}
 
 QGSTEST_MAIN( TestQgsProcessing )
 #include "testqgsprocessing.moc"

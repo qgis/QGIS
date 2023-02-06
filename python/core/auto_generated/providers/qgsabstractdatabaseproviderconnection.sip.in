@@ -41,6 +41,7 @@ is not supported or cannot be performed without errors.
       View,
       MaterializedView,
       Foreign,
+      IncludeSystemTables,
     };
 
     typedef QFlags<QgsAbstractDatabaseProviderConnection::TableFlag> TableFlags;
@@ -356,6 +357,9 @@ This information is calculated from the geometry columns types.
       AddFieldDomain,
       RenameField,
       RetrieveRelationships,
+      AddRelationship,
+      UpdateRelationship,
+      DeleteRelationship,
     };
     typedef QFlags<QgsAbstractDatabaseProviderConnection::Capability> Capabilities;
 
@@ -722,6 +726,14 @@ Subclasses should add provider- and/or connection- specific words.
 .. versionadded:: 3.22
 %End
 
+    virtual QSet< QString > illegalFieldNames() const;
+%Docstring
+Returns a list of field names which are considered illegal by the connection and
+should not be used when creating or altering fields.
+
+.. versionadded:: 3.30
+%End
+
     virtual QStringList fieldDomainNames() const throw( QgsProviderConnectionException );
 %Docstring
 Returns a list of field domain names present on the provider.
@@ -783,6 +795,107 @@ Adds a new field ``domain`` to the database.
 .. versionadded:: 3.26
 %End
 
+    SIP_PYOBJECT supportedRelationshipCardinalities() const /TypeHint="List[Qgis.RelationshipCardinality]"/;
+%Docstring
+Returns a list of relationship cardinalities which are supported by the provider.
+
+.. versionadded:: 3.30
+%End
+%MethodCode
+    // adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
+
+    const QList< Qgis::RelationshipCardinality > cppRes = sipCpp->supportedRelationshipCardinalities();
+
+    PyObject *l = PyList_New( cppRes.size() );
+
+    if ( !l )
+      sipIsErr = 1;
+    else
+    {
+      for ( int i = 0; i < cppRes.size(); ++i )
+      {
+        PyObject *eobj = sipConvertFromEnum( static_cast<int>( cppRes.at( i ) ),
+                                             sipType_Qgis_RelationshipCardinality );
+
+        if ( !eobj )
+        {
+          sipIsErr = 1;
+        }
+
+        PyList_SetItem( l, i, eobj );
+      }
+
+      if ( !sipIsErr )
+      {
+        sipRes = l;
+      }
+      else
+      {
+        Py_DECREF( l );
+      }
+    }
+%End
+
+    SIP_PYOBJECT supportedRelationshipStrengths() const /TypeHint="List[Qgis.RelationshipStrength]"/;
+%Docstring
+Returns a list of relationship strengths which are supported by the provider.
+
+.. versionadded:: 3.30
+%End
+%MethodCode
+    // adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
+
+    const QList< Qgis::RelationshipStrength > cppRes = sipCpp->supportedRelationshipStrengths();
+
+    PyObject *l = PyList_New( cppRes.size() );
+
+    if ( !l )
+      sipIsErr = 1;
+    else
+    {
+      for ( int i = 0; i < cppRes.size(); ++i )
+      {
+        PyObject *eobj = sipConvertFromEnum( static_cast<int>( cppRes.at( i ) ),
+                                             sipType_Qgis_RelationshipStrength );
+
+        if ( !eobj )
+        {
+          sipIsErr = 1;
+        }
+
+        PyList_SetItem( l, i, eobj );
+      }
+
+      if ( !sipIsErr )
+      {
+        sipRes = l;
+      }
+      else
+      {
+        Py_DECREF( l );
+      }
+    }
+%End
+
+    virtual Qgis::RelationshipCapabilities supportedRelationshipCapabilities() const;
+%Docstring
+Returns the relationship capabilities supported by the provider.
+
+.. versionadded:: 3.30
+%End
+
+    virtual QStringList relatedTableTypes() const;
+%Docstring
+Returns a list of the related table types supported by the database format.
+
+The related table type is a free-form string representing the type of related features, where the
+exact interpretation is format dependent. For instance, table types from GeoPackage
+relationships will directly reflect the categories from the GeoPackage related
+tables extension (i.e. "media", "simple attributes", "features", "attributes" and "tiles").
+
+.. versionadded:: 3.30
+%End
+
     virtual QList< QgsWeakRelation > relationships( const QString &schema = QString(), const QString &tableName = QString() ) const throw( QgsProviderConnectionException );
 %Docstring
 Returns a list of relationships detected in the database.
@@ -795,6 +908,33 @@ forms the left (or "parent" / "referenced") side of the relationship are retriev
 :raises QgsProviderConnectionException: if any errors are encountered.
 
 .. versionadded:: 3.28
+%End
+
+    virtual void addRelationship( const QgsWeakRelation &relationship ) const throw( QgsProviderConnectionException );
+%Docstring
+Adds a new field ``relationship`` to the database.
+
+:raises QgsProviderConnectionException: if any errors are encountered.
+
+.. versionadded:: 3.30
+%End
+
+    virtual void updateRelationship( const QgsWeakRelation &relationship ) const throw( QgsProviderConnectionException );
+%Docstring
+Updates an existing ``relationship`` in the database.
+
+:raises QgsProviderConnectionException: if any errors are encountered.
+
+.. versionadded:: 3.30
+%End
+
+    virtual void deleteRelationship( const QgsWeakRelation &relationship ) const throw( QgsProviderConnectionException );
+%Docstring
+Deletes an existing ``relationship`` in the database.
+
+:raises QgsProviderConnectionException: if any errors are encountered.
+
+.. versionadded:: 3.30
 %End
 
     virtual QgsProviderSqlQueryBuilder *queryBuilder() const /Factory/;

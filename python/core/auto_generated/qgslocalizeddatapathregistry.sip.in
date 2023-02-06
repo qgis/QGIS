@@ -11,6 +11,8 @@
 
 
 
+
+
 class QgsLocalizedDataPathRegistry
 {
 %Docstring(signature="appended")

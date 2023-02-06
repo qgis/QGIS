@@ -69,6 +69,24 @@
 #include "qgsmessagebar.h"
 #include "qgsvectorwarper.h"
 #include "qgsscreenhelper.h"
+#include "qgssettingsentryenumflag.h"
+
+
+const QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod> *QgsGeoreferencerMainWindow::settingResamplingMethod = new QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod>( QStringLiteral( "resampling-method" ), sTreeGeoreferencer, QgsImageWarper::ResamplingMethod::NearestNeighbour, QObject::tr( "Last used georeferencer resampling method" ) );
+
+const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingCompressionMethod = new QgsSettingsEntryString( QStringLiteral( "compression-method" ), sTreeGeoreferencer, QStringLiteral( "NONE" ), QObject::tr( "Last used georeferencer compression method" ) );
+
+const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingUseZeroForTransparent = new QgsSettingsEntryBool( QStringLiteral( "use-zero-for-transparent" ), sTreeGeoreferencer, false, QObject::tr( "Last used georeferencer use-zero-as-transparent option" ) );
+
+const QgsSettingsEntryEnumFlag<QgsGcpTransformerInterface::TransformMethod> *QgsGeoreferencerMainWindow::settingTransformMethod = new QgsSettingsEntryEnumFlag<QgsGcpTransformerInterface::TransformMethod>( QStringLiteral( "transform-method" ), sTreeGeoreferencer, QgsGcpTransformerInterface::TransformMethod::Linear, QObject::tr( "Last used georeferencer transform method" ) );
+
+const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingSaveGcps = new QgsSettingsEntryBool( QStringLiteral( "save-gcp-points" ), sTreeGeoreferencer, false, QObject::tr( "Whether georeferencer should automatically save .points files" ) );
+
+const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingLoadInProject = new QgsSettingsEntryBool( QStringLiteral( "load-result-in-project" ), sTreeGeoreferencer, true, QObject::tr( "Whether georeferencer should automatically load results into the current project" ) );
+
+const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingLastSourceFolder = new QgsSettingsEntryString( QStringLiteral( "last-source-folder" ), sTreeGeoreferencer, QString(), QObject::tr( "Last used folder for georeferencer source files" ) );
+
+const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingLastRasterFileFilter = new QgsSettingsEntryString( QStringLiteral( "last-raster-file-filter" ), sTreeGeoreferencer, QString(), QObject::tr( "Last used raster file filter for georeferencer source files" ) );
 
 QgsGeorefDockWidget::QgsGeorefDockWidget( const QString &title, QWidget *parent, Qt::WindowFlags flags )
   : QgsDockWidget( title, parent, flags )
@@ -220,7 +238,7 @@ void QgsGeoreferencerMainWindow::openLayer( QgsMapLayerType layerType, const QSt
   QString uri;
   if ( fileName.isEmpty() )
   {
-    QString dir = settingLastSourceFolder.value();
+    QString dir = settingLastSourceFolder->value();
     if ( dir.isEmpty() )
       dir = QDir::homePath();
 
@@ -230,7 +248,7 @@ void QgsGeoreferencerMainWindow::openLayer( QgsMapLayerType layerType, const QSt
 
       case QgsMapLayerType::RasterLayer:
       {
-        QString lastUsedFilter = settingLastRasterFileFilter.value();
+        QString lastUsedFilter = settingLastRasterFileFilter->value();
         if ( lastUsedFilter.isEmpty() )
           lastUsedFilter = otherFiles;
 
@@ -243,7 +261,7 @@ void QgsGeoreferencerMainWindow::openLayer( QgsMapLayerType layerType, const QSt
 
         provider = QStringLiteral( "gdal" );
         uri = mFileName;
-        settingLastRasterFileFilter.setValue( lastUsedFilter );
+        settingLastRasterFileFilter->setValue( lastUsedFilter );
         break;
       }
 
@@ -275,6 +293,23 @@ void QgsGeoreferencerMainWindow::openLayer( QgsMapLayerType layerType, const QSt
   else
   {
     mFileName = fileName;
+    uri = mFileName;
+    switch ( layerType )
+    {
+      case QgsMapLayerType::RasterLayer:
+        provider = QStringLiteral( "gdal" );
+        break;
+      case QgsMapLayerType::VectorLayer:
+        provider = QStringLiteral( "ogr" );
+        break;
+      case QgsMapLayerType::PluginLayer:
+      case QgsMapLayerType::MeshLayer:
+      case QgsMapLayerType::VectorTileLayer:
+      case QgsMapLayerType::AnnotationLayer:
+      case QgsMapLayerType::PointCloudLayer:
+      case QgsMapLayerType::GroupLayer:
+        break;
+    }
   }
   mModifiedFileName.clear();
   mCreateWorldFileOnly = false;
@@ -302,7 +337,7 @@ void QgsGeoreferencerMainWindow::openLayer( QgsMapLayerType layerType, const QSt
   }
 
   QFileInfo fileInfo( mFileName );
-  settingLastSourceFolder.setValue( fileInfo.path() );
+  settingLastSourceFolder->setValue( fileInfo.path() );
 
   mGeorefTransform.setMethod( mTransformMethod );
 
@@ -1333,34 +1368,28 @@ void QgsGeoreferencerMainWindow::loadSource( QgsMapLayerType layerType, const QS
 void QgsGeoreferencerMainWindow::readSettings()
 {
   QgsSettings s;
-  const QRect georefRect = mScreenHelper->availableGeometry();
-  resize( s.value( QStringLiteral( "/Plugin-GeoReferencer/size" ), QSize( georefRect.width() / 2 + georefRect.width() / 5,
-                   QgisApp::instance()->height() ) ).toSize() );
-  move( s.value( QStringLiteral( "/Plugin-GeoReferencer/pos" ), QPoint( parentWidget()->width() / 2 - width() / 2, 0 ) ).toPoint() );
   restoreState( s.value( QStringLiteral( "/Plugin-GeoReferencer/uistate" ) ).toByteArray() );
 
   // warp options
-  mResamplingMethod = settingResamplingMethod.value();
-  mCompressionMethod = settingCompressionMethod.value();
-  mUseZeroForTrans = settingUseZeroForTransparent.value();
-  mTransformMethod = settingTransformMethod.value();
-  mSaveGcp = settingSaveGcps.value();
-  mLoadInQgis = settingLoadInProject.value();
+  mResamplingMethod = settingResamplingMethod->value();
+  mCompressionMethod = settingCompressionMethod->value();
+  mUseZeroForTrans = settingUseZeroForTransparent->value();
+  mTransformMethod = settingTransformMethod->value();
+  mSaveGcp = settingSaveGcps->value();
+  mLoadInQgis = settingLoadInProject->value();
 }
 
 void QgsGeoreferencerMainWindow::writeSettings()
 {
   QgsSettings s;
-  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/pos" ), pos() );
-  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/size" ), size() );
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/uistate" ), saveState() );
 
-  settingTransformMethod.setValue( mTransformMethod );
-  settingResamplingMethod.setValue( mResamplingMethod );
-  settingCompressionMethod.setValue( mCompressionMethod );
-  settingUseZeroForTransparent.setValue( mUseZeroForTrans );
-  settingSaveGcps.setValue( mSaveGcp );
-  settingLoadInProject.setValue( mLoadInQgis );
+  settingTransformMethod->setValue( mTransformMethod );
+  settingResamplingMethod->setValue( mResamplingMethod );
+  settingCompressionMethod->setValue( mCompressionMethod );
+  settingUseZeroForTransparent->setValue( mUseZeroForTrans );
+  settingSaveGcps->setValue( mSaveGcp );
+  settingLoadInProject->setValue( mLoadInQgis );
 }
 
 bool QgsGeoreferencerMainWindow::loadGCPs( QString &error )
@@ -1472,14 +1501,8 @@ bool QgsGeoreferencerMainWindow::georeference()
       return false;
     }
 
-    if ( !mPdfOutputFile.isEmpty() )
-    {
-      writePDFReportFile( mPdfOutputFile, mGeorefTransform );
-    }
-    if ( !mPdfOutputMapFile.isEmpty() )
-    {
-      writePDFMapFile( mPdfOutputMapFile, mGeorefTransform );
-    }
+    postProcessGeoreferencedLayer( mFileName, QgsMapLayerType::RasterLayer, QStringLiteral( "gdal" ) );
+
     return true;
   }
   else
@@ -1536,26 +1559,7 @@ bool QgsGeoreferencerMainWindow::georeferenceRaster()
   bool result = true;
   connect( task, &QgsTask::taskCompleted, &loop, [&loop, this]
   {
-    if ( !mPdfOutputFile.isEmpty() )
-    {
-      writePDFReportFile( mPdfOutputFile, mGeorefTransform );
-    }
-    if ( !mPdfOutputMapFile.isEmpty() )
-    {
-      writePDFMapFile( mPdfOutputMapFile, mGeorefTransform );
-    }
-    if ( mSaveGcp )
-    {
-      mGCPpointsFileName = mFileName + QLatin1String( ".points" );
-      saveGCPs();
-    }
-
-    mMessageBar->pushMessage( tr( "Georeference Successful" ), tr( "Raster was successfully georeferenced." ), Qgis::MessageLevel::Success );
-    if ( mLoadInQgis )
-    {
-      const QString layerSource = mCreateWorldFileOnly ? mFileName : mModifiedFileName;
-      QgisApp::instance()->addRasterLayer( layerSource, QFileInfo( layerSource ).completeBaseName(), QStringLiteral( "gdal" ) );
-    }
+    postProcessGeoreferencedLayer( mCreateWorldFileOnly ? mFileName : mModifiedFileName, QgsMapLayerType::RasterLayer, QStringLiteral( "gdal" ) );
 
     loop.quit();
   } );
@@ -1620,25 +1624,7 @@ bool QgsGeoreferencerMainWindow::georeferenceVector()
   bool result = true;
   connect( task, &QgsTask::taskCompleted, &loop, [&loop, this]
   {
-    if ( !mPdfOutputFile.isEmpty() )
-    {
-      writePDFReportFile( mPdfOutputFile, mGeorefTransform );
-    }
-    if ( !mPdfOutputMapFile.isEmpty() )
-    {
-      writePDFMapFile( mPdfOutputMapFile, mGeorefTransform );
-    }
-    if ( mSaveGcp )
-    {
-      mGCPpointsFileName = mFileName + QLatin1String( ".points" );
-      saveGCPs();
-    }
-    mMessageBar->pushMessage( tr( "Georeference Successful" ), tr( "Vector layer was successfully georeferenced." ), Qgis::MessageLevel::Success );
-    if ( mLoadInQgis )
-    {
-      QgisApp::instance()->addVectorLayer( mModifiedFileName, QFileInfo( mModifiedFileName ).completeBaseName(), QStringLiteral( "ogr" ) );
-    }
-
+    postProcessGeoreferencedLayer( mModifiedFileName, QgsMapLayerType::VectorLayer, QStringLiteral( "ogr" ) );
     loop.quit();
   } );
 
@@ -1655,6 +1641,47 @@ bool QgsGeoreferencerMainWindow::georeferenceVector()
   QgsApplication::taskManager()->addTask( task );
   loop.exec();
   return result;
+}
+
+void QgsGeoreferencerMainWindow::postProcessGeoreferencedLayer( const QString &layerSource, QgsMapLayerType type, const QString &provider )
+{
+  if ( !mPdfOutputFile.isEmpty() )
+  {
+    writePDFReportFile( mPdfOutputFile, mGeorefTransform );
+  }
+  if ( !mPdfOutputMapFile.isEmpty() )
+  {
+    writePDFMapFile( mPdfOutputMapFile, mGeorefTransform );
+  }
+
+  if ( mSaveGcp )
+  {
+    mGCPpointsFileName = mFileName + QLatin1String( ".points" );
+    saveGCPs();
+  }
+
+  mMessageBar->pushMessage( tr( "Georeference Successful" ), tr( "Raster was successfully georeferenced." ), Qgis::MessageLevel::Success );
+  if ( mLoadInQgis )
+  {
+    switch ( type )
+    {
+      case QgsMapLayerType::VectorLayer:
+        QgisApp::instance()->addVectorLayer( layerSource, QFileInfo( layerSource ).completeBaseName(), provider );
+        break;
+
+      case QgsMapLayerType::RasterLayer:
+        QgisApp::instance()->addRasterLayer( layerSource, QFileInfo( layerSource ).completeBaseName(), provider );
+        break;
+
+      case QgsMapLayerType::PluginLayer:
+      case QgsMapLayerType::MeshLayer:
+      case QgsMapLayerType::VectorTileLayer:
+      case QgsMapLayerType::AnnotationLayer:
+      case QgsMapLayerType::PointCloudLayer:
+      case QgsMapLayerType::GroupLayer:
+        break;
+    }
+  }
 }
 
 bool QgsGeoreferencerMainWindow::writeWorldFile( const QgsPointXY &origin, double pixelXSize, double pixelYSize, double rotation )
@@ -2107,8 +2134,9 @@ QString QgsGeoreferencerMainWindow::generateGDALtranslateCommand( bool generateT
 
   for ( QgsGeorefDataPoint *pt : std::as_const( mPoints ) )
   {
+    const QgsPointXY pixel = mGeorefTransform.toSourcePixel( pt->sourcePoint() );
     const QgsPointXY transformedDestinationPoint = pt->transformedDestinationPoint( mTargetCrs, QgsProject::instance()->transformContext() );
-    gdalCommand << QStringLiteral( "-gcp %1 %2 %3 %4" ).arg( pt->sourcePoint().x() ).arg( -pt->sourcePoint().y() )
+    gdalCommand << QStringLiteral( "-gcp %1 %2 %3 %4" ).arg( pixel.x() ).arg( -pixel.y() )
                 .arg( transformedDestinationPoint.x() ).arg( transformedDestinationPoint.y() );
   }
 
@@ -2215,8 +2243,8 @@ bool QgsGeoreferencerMainWindow::validate()
     return false;
   }
 
-  if ( mCreateWorldFileOnly
-       && ( QgsGcpTransformerInterface::TransformMethod::Linear != mTransformMethod && QgsGcpTransformerInterface::TransformMethod::Helmert != mTransformMethod ) )
+  if ( mModifiedFileName.isEmpty() && ( !mCreateWorldFileOnly
+                                        || ( QgsGcpTransformerInterface::TransformMethod::Linear != mTransformMethod && QgsGcpTransformerInterface::TransformMethod::Helmert != mTransformMethod ) ) )
   {
     QMessageBox::information( this, tr( "Georeferencer" ), tr( "Please set output file name." ) );
     showTransformSettingsDialog();

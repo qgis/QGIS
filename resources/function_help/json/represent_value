@@ -8,7 +8,8 @@
     "description": "The value which should be resolved. Most likely a field."
   }, {
     "arg": "fieldName",
-    "description": "The field name for which the widget configuration should be loaded. (Optional)"
+    "description": "The field name for which the widget configuration should be loaded.",
+    "optional": true
   }],
   "examples": [{
     "expression": "represent_value(\"field_with_value_map\")",

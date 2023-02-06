@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsProfileRequest
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,27 +9,19 @@ __author__ = 'Nyall Dawson'
 __date__ = '18/03/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
-import os
-
 import qgis  # NOQA
 
-from qgis.PyQt.QtCore import QTemporaryDir
-
 from qgis.core import (
-    QgsLineString,
-    QgsProfileRequest,
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransformContext,
-    QgsFlatTerrainProvider,
-    QgsMeshTerrainProvider,
     QgsExpressionContext,
-    QgsExpressionContextScope
+    QgsExpressionContextScope,
+    QgsFlatTerrainProvider,
+    QgsLineString,
+    QgsMeshTerrainProvider,
+    QgsProfileRequest,
 )
-
-from qgis.PyQt.QtXml import QDomDocument
-
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
 
 start_app()
 

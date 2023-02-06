@@ -31,8 +31,7 @@
 #include "qgsfeaturelistmodel.h"
 #include "qgsifeatureselectionmanager.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaplayeractionregistry.h"
-#include "qgsmessagelog.h"
+#include "qgsmaplayeraction.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayercache.h"
 #include "qgsorganizetablecolumnsdialog.h"
@@ -46,6 +45,7 @@
 #include "qgsmapcanvasutils.h"
 #include "qgsmessagebar.h"
 #include "qgsvectorlayereditbuffer.h"
+#include "qgsactionmenu.h"
 
 
 QgsDualView::QgsDualView( QWidget *parent )
@@ -183,6 +183,10 @@ void QgsDualView::initAttributeForm( const QgsFeature &feature )
   {
     mAttributeEditor->layout()->addWidget( mAttributeForm );
   }
+
+  // This is an arbitrary yet small value to fix issue GH #50181
+  // the default value is 0.
+  mAttributeForm->setMinimumWidth( 200 );
 
   setAttributeTableConfig( mLayer->attributeTableConfig() );
 
@@ -322,6 +326,10 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
     case QgsAttributeTableFilterModel::ShowSelected:
       disconnect( masterModel()->layer(), &QgsVectorLayer::selectionChanged, this, &QgsDualView::updateSelectedFeatures );
       break;
+
+    case QgsAttributeTableFilterModel::ShowInvalid:
+      mMasterModel->setShowValidityState( false );
+      break;
   }
 
   QgsFeatureRequest r = mMasterModel->request();
@@ -359,6 +367,16 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
       connect( masterModel()->layer(), &QgsVectorLayer::layerModified, this, &QgsDualView::updateEditedAddedFeatures );
       break;
 
+    case QgsAttributeTableFilterModel::ShowInvalid:
+    {
+      mMasterModel->setShowValidityState( true );
+      const QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
+      filterFeatures( QStringLiteral( "is_feature_valid() = false" ), context );
+      connect( mFilterModel, &QgsAttributeTableFilterModel::featuresFiltered, this, &QgsDualView::filterChanged );
+      connect( mFilterModel, &QgsAttributeTableFilterModel::filterError, this, &QgsDualView::filterError );
+      break;
+    }
+
     case QgsAttributeTableFilterModel::ShowAll:
     case QgsAttributeTableFilterModel::ShowFilteredList:
     {
@@ -386,6 +404,7 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
     case QgsAttributeTableFilterModel::ShowAll:
     case QgsAttributeTableFilterModel::ShowEdited:
     case QgsAttributeTableFilterModel::ShowFilteredList:
+    case QgsAttributeTableFilterModel::ShowInvalid:
     case QgsAttributeTableFilterModel::ShowSelected:
       setBrowsingAutoPanScaleAllowed( true );
       break;
@@ -868,7 +887,8 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &maste
   }
 
   //add actions from QgsMapLayerActionRegistry to context menu
-  const QList<QgsMapLayerAction *> registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer, QgsMapLayerAction::Layer | QgsMapLayerAction::SingleFeature );
+  QgsMapLayerActionContext context;
+  const QList<QgsMapLayerAction *> registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer, Qgis::MapLayerActionTarget::Layer | Qgis::MapLayerActionTarget::SingleFeature, context );
   if ( !registeredActions.isEmpty() )
   {
     //add a separator between user defined and standard actions
@@ -886,16 +906,23 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &maste
   const QgsFeatureId currentFid = mMasterModel->rowToId( masterIndex.row() );
   if ( mLayer->selectedFeatureCount() > 1 && mLayer->selectedFeatureIds().contains( currentFid ) )
   {
-    const QList<QgsMapLayerAction *> registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer, QgsMapLayerAction::MultipleFeatures );
+    const QList<QgsMapLayerAction *> registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer, Qgis::MapLayerActionTarget::MultipleFeatures, context );
     if ( !registeredActions.isEmpty() )
     {
       menu->addSeparator();
       QAction *action = menu->addAction( tr( "Actions on Selection (%1)" ).arg( mLayer->selectedFeatureCount() ) );
       action->setEnabled( false );
 
+      QgsMapLayerActionContext context;
       for ( QgsMapLayerAction *action : registeredActions )
       {
-        menu->addAction( action->text(), action, [ = ]() {action->triggerForFeatures( mLayer, mLayer->selectedFeatures() );} );
+        menu->addAction( action->text(), action, [ = ]()
+        {
+          Q_NOWARN_DEPRECATED_PUSH
+          action->triggerForFeatures( mLayer, mLayer->selectedFeatures() );
+          Q_NOWARN_DEPRECATED_POP
+          action->triggerForFeatures( mLayer, mLayer->selectedFeatures(), context );
+        } );
       }
     }
   }
@@ -1343,5 +1370,6 @@ void QgsAttributeTableAction::featureForm()
 
 void QgsAttributeTableMapLayerAction::execute()
 {
-  mDualView->masterModel()->executeMapLayerAction( mAction, mFieldIdx );
+  QgsMapLayerActionContext context;
+  mDualView->masterModel()->executeMapLayerAction( mAction, mFieldIdx, context );
 }

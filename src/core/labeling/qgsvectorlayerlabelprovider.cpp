@@ -478,7 +478,7 @@ void QgsVectorLayerLabelProvider::drawUnplacedLabel( QgsRenderContext &context, 
   QgsTextFormat format = mSettings.format();
   if ( mSettings.drawLabels
        && mSettings.unplacedVisibility() != Qgis::UnplacedLabelVisibility::NeverShow
-       && mEngine->engineSettings().flags() & QgsLabelingEngineSettings::DrawUnplacedLabels )
+       && mEngine->engineSettings().flags() & Qgis::LabelingFlag::DrawUnplacedLabels )
   {
     QgsPalLayerSettings tmpLyr( mSettings );
     format = tmpLyr.format();
@@ -506,7 +506,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
 
   QPointF outPt = xform.transform( label->getX(), label->getY() ).toQPointF();
 
-  if ( mEngine->engineSettings().testFlag( QgsLabelingEngineSettings::DrawLabelRectOnly ) )  // TODO: this should get directly to labeling engine
+  if ( mEngine->engineSettings().testFlag( Qgis::LabelingFlag::DrawLabelRectOnly ) )  // TODO: this should get directly to labeling engine
   {
     //debugging rect
     if ( drawType != Qgis::TextComponent::Text )
@@ -537,6 +537,103 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
       drawLabelPrivate( label->nextPart(), context, tmpLyr, drawType, dpiRatio );
 
     return;
+  }
+  if ( mEngine->engineSettings().testFlag( Qgis::LabelingFlag::DrawLabelMetrics ) )
+  {
+    if ( drawType != Qgis::TextComponent::Text )
+      return;
+
+    QgsPointXY outPt2 = xform.transform( label->getX() + label->getWidth(), label->getY() + label->getHeight() );
+    QRectF rect( 0, 0, outPt2.x() - outPt.x(), outPt2.y() - outPt.y() );
+    painter->save();
+    painter->setRenderHint( QPainter::Antialiasing, false );
+    painter->translate( QPointF( outPt.x(), outPt.y() ) );
+    painter->rotate( -label->getAlpha() * 180 / M_PI );
+
+    painter->setBrush( Qt::NoBrush );
+    painter->setPen( QColor( 255, 0, 0, 220 ) );
+
+    painter->drawRect( rect );
+
+
+    painter->setPen( QColor( 0, 0, 0, 60 ) );
+    const QgsMargins &margins = label->getFeaturePart()->feature()->visualMargin();
+    if ( margins.top() > 0 )
+    {
+      const double topMargin = margins.top() / context.mapToPixel().mapUnitsPerPixel();
+      painter->drawLine( QPointF( rect.left(), rect.top() - topMargin ), QPointF( rect.right(), rect.top() - topMargin ) );
+    }
+    if ( margins.bottom() > 0 )
+    {
+      const double bottomMargin = margins.top() / context.mapToPixel().mapUnitsPerPixel();
+      painter->drawLine( QPointF( rect.left(), rect.bottom() + bottomMargin ), QPointF( rect.right(), rect.bottom() + bottomMargin ) );
+    }
+
+    const QRectF outerBounds = label->getFeaturePart()->feature()->outerBounds();
+    if ( !outerBounds.isNull() )
+    {
+      const QRectF mapOuterBounds = QRectF( label->getX() + outerBounds.left(),
+                                            label->getY() + outerBounds.top(),
+                                            outerBounds.width(), outerBounds.height() );
+
+      QgsPointXY outerBoundsPt1 = xform.transform( mapOuterBounds.left(), mapOuterBounds.top() );
+      QgsPointXY outerBoundsPt2 = xform.transform( mapOuterBounds.right(), mapOuterBounds.bottom() );
+
+      const QRectF outerBoundsPixel( outerBoundsPt1.x() - outPt.x(),
+                                     outerBoundsPt1.y() - outPt.y(),
+                                     outerBoundsPt2.x() - outerBoundsPt1.x(),
+                                     outerBoundsPt2.y() - outerBoundsPt1.y() );
+
+      QPen pen( QColor( 255, 0, 255, 140 ) );
+      pen.setCosmetic( true );
+      pen.setWidth( 1 );
+      painter->setPen( pen );
+      painter->drawRect( outerBoundsPixel );
+    }
+
+    if ( QgsTextLabelFeature *textFeature = dynamic_cast< QgsTextLabelFeature * >( label->getFeaturePart()->feature() ) )
+    {
+      const QgsTextDocumentMetrics &metrics = textFeature->documentMetrics();
+      const QgsTextDocument &document = textFeature->document();
+      const int blockCount = document.size();
+
+      double prevBlockBaseline = rect.bottom() - rect.top();
+
+      // draw block baselines
+      for ( int blockIndex = 0; blockIndex < blockCount; ++blockIndex )
+      {
+        const double blockBaseLine = metrics.baselineOffset( blockIndex, Qgis::TextLayoutMode::Labeling );
+
+        const QgsTextBlock &block = document.at( blockIndex );
+        const int fragmentCount = block.size();
+        double left = 0;
+        for ( int fragmentIndex = 0; fragmentIndex < fragmentCount; ++fragmentIndex )
+        {
+          const double fragmentVerticalOffset = metrics.fragmentVerticalOffset( blockIndex, fragmentIndex, Qgis::TextLayoutMode::Labeling );
+          const double right = left + metrics.fragmentHorizontalAdvance( blockIndex, fragmentIndex, Qgis::TextLayoutMode::Labeling );
+
+          if ( fragmentIndex > 0 )
+          {
+            QPen pen( QColor( 0, 0, 255, 220 ) );
+            pen.setStyle( Qt::PenStyle::DashLine );
+
+            painter->setPen( pen );
+
+            painter->drawLine( QPointF( rect.left() + left, rect.top() + blockBaseLine + fragmentVerticalOffset ),
+                               QPointF( rect.left() + left, rect.top() + prevBlockBaseline ) );
+
+          }
+
+          painter->setPen( QColor( 0, 0, 255, 220 ) );
+          painter->drawLine( QPointF( rect.left() + left, rect.top()  + blockBaseLine + fragmentVerticalOffset ),
+                             QPointF( rect.left() + right, rect.top() + blockBaseLine + fragmentVerticalOffset ) );
+          left = right;
+        }
+        prevBlockBaseline = blockBaseLine;
+      }
+    }
+
+    painter->restore();
   }
 
   QgsTextRenderer::Component component;

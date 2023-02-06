@@ -27,6 +27,10 @@
 #include "qgsproviderregistry.h"
 #include "qgsvectorfilewriter.h"
 
+const QgsSettingsEntryString *QgsTransformSettingsDialog::settingLastDestinationFolder = new QgsSettingsEntryString( QStringLiteral( "last-destination-folder" ), QgsGeoreferencerMainWindow::sTreeGeoreferencer, QString(), QObject::tr( "Last used folder for georeferencer destination files" ) );
+
+const QgsSettingsEntryString *QgsTransformSettingsDialog::settingLastPdfFolder = new QgsSettingsEntryString( QStringLiteral( "last-pdf-folder" ), QgsGeoreferencerMainWindow::sTreeGeoreferencer, QString(), QObject::tr( "Last used folder for georeferencer PDF report files" ) );
+
 QgsTransformSettingsDialog::QgsTransformSettingsDialog( QgsMapLayerType type, const QString &source, const QString &output, QWidget *parent )
   : QDialog( parent )
   , mType( type )
@@ -70,21 +74,21 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( QgsMapLayerType type, co
   mOutputSettingsGroupBox->adjustSize();
 
   outputFile->setDialogTitle( tr( "Destination File" ) );
-  const QString lastDestinationFolder = settingLastDestinationFolder.value();
+  const QString lastDestinationFolder = settingLastDestinationFolder->value();
   outputFile->setDefaultRoot( lastDestinationFolder.isEmpty() ? QDir::homePath() : lastDestinationFolder );
   connect( outputFile, &QgsFileWidget::fileChanged, this, [ = ]
   {
-    settingLastDestinationFolder.setValue( QFileInfo( outputFile->filePath() ).absolutePath() );
+    settingLastDestinationFolder->setValue( QFileInfo( outputFile->filePath() ).absolutePath() );
   } );
 
   mPdfMap->setStorageMode( QgsFileWidget::SaveFile );
   mPdfMap->setFilter( tr( "PDF files" ) + " (*.pdf *.PDF)" );
   mPdfMap->setDialogTitle( tr( "Save Map File As" ) );
-  const QString lastPdfFolder = settingLastPdfFolder.value();
+  const QString lastPdfFolder = settingLastPdfFolder->value();
   mPdfMap->setDefaultRoot( lastPdfFolder.isEmpty() ? QDir::homePath() : lastPdfFolder );
   connect( mPdfMap, &QgsFileWidget::fileChanged, this, [ = ]
   {
-    settingLastPdfFolder.setValue( QFileInfo( mPdfMap->filePath() ).absolutePath() );
+    settingLastPdfFolder->setValue( QFileInfo( mPdfMap->filePath() ).absolutePath() );
   } );
 
   mPdfReport->setStorageMode( QgsFileWidget::SaveFile );
@@ -93,7 +97,7 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( QgsMapLayerType type, co
   mPdfReport->setDefaultRoot( lastPdfFolder.isEmpty() ? QDir::homePath() : lastPdfFolder );
   connect( mPdfReport, &QgsFileWidget::fileChanged, this, [ = ]
   {
-    settingLastPdfFolder.setValue( QFileInfo( mPdfMap->filePath() ).absolutePath() );
+    settingLastPdfFolder->setValue( QFileInfo( mPdfMap->filePath() ).absolutePath() );
   } );
 
   connect( cmbTransformType, &QComboBox::currentTextChanged, this, &QgsTransformSettingsDialog::cmbTransformType_currentIndexChanged );

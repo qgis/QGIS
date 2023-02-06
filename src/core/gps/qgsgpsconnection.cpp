@@ -16,97 +16,48 @@
  ***************************************************************************/
 
 #include "qgsgpsconnection.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
-#include <QCoreApplication>
-#include <QTime>
+
 #include <QIODevice>
-#include <QStringList>
-#include <QFileInfo>
 
-#include "info.h"
 
-bool QgsGpsInformation::isValid() const
-{
-  bool valid = false;
-  if ( status == 'V' || fixType == NMEA_FIX_BAD || qualityIndicator == Qgis::GpsQualityIndicator::Invalid ) // some sources say that 'V' indicates position fix, but is below acceptable quality
-  {
-    valid = false;
-  }
-  else if ( fixType == NMEA_FIX_2D )
-  {
-    valid = true;
-  }
-  else if ( status == 'A' || fixType == NMEA_FIX_3D || ( qualityIndicator != Qgis::GpsQualityIndicator::Invalid ) ) // good
-  {
-    valid = true;
-  }
+const QgsSettingsEntryEnumFlag<Qgis::GpsConnectionType> *QgsGpsConnection::settingsGpsConnectionType = new QgsSettingsEntryEnumFlag<Qgis::GpsConnectionType>( QStringLiteral( "gps-connection-type" ), QgsSettingsTree::sTreeGps, Qgis::GpsConnectionType::Automatic, QStringLiteral( "GPS connection type" ) ) SIP_SKIP;
 
-  return valid;
-}
+const QgsSettingsEntryEnumFlag<Qt::TimeSpec> *QgsGpsConnection::settingsGpsTimeStampSpecification = new QgsSettingsEntryEnumFlag<Qt::TimeSpec>( QStringLiteral( "timestamp-time-spec" ), QgsSettingsTree::sTreeGps, Qt::TimeSpec::LocalTime, QStringLiteral( "GPS time stamp specification" ) ) SIP_SKIP;
 
-QgsGpsInformation::FixStatus QgsGpsInformation::fixStatus() const
-{
-  FixStatus fixStatus = NoData;
+const QgsSettingsEntryString *QgsGpsConnection::settingsGpsdHostName = new QgsSettingsEntryString( QStringLiteral( "gpsd-host-name" ), QgsSettingsTree::sTreeGps, QString(), QStringLiteral( "GPSD connection host name" ) ) SIP_SKIP;
 
-  // no fix if any of the three report bad; default values are invalid values and won't be changed if the corresponding NMEA msg is not received
-  if ( status == 'V' || fixType == NMEA_FIX_BAD || qualityIndicator == Qgis::GpsQualityIndicator::Invalid ) // some sources say that 'V' indicates position fix, but is below acceptable quality
-  {
-    fixStatus = NoFix;
-  }
-  else if ( fixType == NMEA_FIX_2D ) // 2D indication (from GGA)
-  {
-    fixStatus = Fix2D;
-  }
-  else if ( status == 'A' || fixType == NMEA_FIX_3D || qualityIndicator != Qgis::GpsQualityIndicator::Invalid ) // good
-  {
-    fixStatus = Fix3D;
-  }
-  return fixStatus;
-}
+const QgsSettingsEntryInteger *QgsGpsConnection::settingsGpsdPortNumber = new QgsSettingsEntryInteger( QStringLiteral( "gpsd-port" ), QgsSettingsTree::sTreeGps, 2947, QStringLiteral( "GPSD port number" ) ) SIP_SKIP;
 
-QString QgsGpsInformation::qualityDescription() const
-{
-  switch ( qualityIndicator )
-  {
-    case Qgis::GpsQualityIndicator::Simulation:
-      return QCoreApplication::translate( "QgsGpsInformation", "Simulation mode" );
+const QgsSettingsEntryString *QgsGpsConnection::settingsGpsdDeviceName = new QgsSettingsEntryString( QStringLiteral( "gpsd-device-name" ), QgsSettingsTree::sTreeGps, QString(), QStringLiteral( "GPSD connection device name" ) ) SIP_SKIP;
 
-    case Qgis::GpsQualityIndicator::Manual:
-      return QCoreApplication::translate( "QgsGpsInformation", "Manual input mode" );
+const QgsSettingsEntryString *QgsGpsConnection::settingsGpsSerialDevice = new QgsSettingsEntryString( QStringLiteral( "gpsd-serial-device" ), QgsSettingsTree::sTreeGps, QString(), QStringLiteral( "GPS serial device name" ) ) SIP_SKIP;
 
-    case Qgis::GpsQualityIndicator::Estimated:
-      return QCoreApplication::translate( "QgsGpsInformation", "Estimated" );
+const QgsSettingsEntryInteger *QgsGpsConnection::settingGpsAcquisitionInterval = new QgsSettingsEntryInteger( QStringLiteral( "acquisition-interval" ), QgsSettingsTree::sTreeGps, 0, QStringLiteral( "GPS track point acquisition interval" ) ) SIP_SKIP;
 
-    case Qgis::GpsQualityIndicator::FloatRTK:
-      return QCoreApplication::translate( "QgsGpsInformation", "Float RTK" );
+const QgsSettingsEntryDouble *QgsGpsConnection::settingGpsDistanceThreshold = new QgsSettingsEntryDouble( QStringLiteral( "distance-threshold" ), QgsSettingsTree::sTreeGps, 0, QStringLiteral( "GPS track point distance threshold" ) ) SIP_SKIP;
 
-    case Qgis::GpsQualityIndicator::RTK:
-      return QCoreApplication::translate( "QgsGpsInformation", "Fixed RTK" );
+const QgsSettingsEntryBool *QgsGpsConnection::settingGpsBearingFromTravelDirection = new QgsSettingsEntryBool( QStringLiteral( "calculate-bearing-from-travel" ), QgsSettingsTree::sTreeGps, false, QStringLiteral( "Calculate GPS bearing from travel direction" ) ) SIP_SKIP;
 
-    case Qgis::GpsQualityIndicator::PPS:
-      return QCoreApplication::translate( "QgsGpsInformation", "PPS" );
+const QgsSettingsEntryBool *QgsGpsConnection::settingGpsApplyLeapSecondsCorrection = new QgsSettingsEntryBool( QStringLiteral( "apply-leap-seconds-correction" ), QgsSettingsTree::sTreeGps, true, QStringLiteral( "Whether leap seconds corrections should be applied to GPS timestamps" ) ) SIP_SKIP;
 
-    case Qgis::GpsQualityIndicator::DGPS:
-      return QCoreApplication::translate( "QgsGpsInformation", "DGPS" );
+const QgsSettingsEntryInteger *QgsGpsConnection::settingGpsLeapSeconds = new QgsSettingsEntryInteger( QStringLiteral( "leap-seconds" ), QgsSettingsTree::sTreeGps, 18, QStringLiteral( "Leap seconds correction amount (in seconds)" ) ) SIP_SKIP;
 
-    case Qgis::GpsQualityIndicator::GPS:
-      return QCoreApplication::translate( "QgsGpsInformation", "Autonomous" );
+const QgsSettingsEntryString *QgsGpsConnection::settingsGpsTimeStampTimeZone = new QgsSettingsEntryString( QStringLiteral( "timestamp-time-zone" ), QgsSettingsTree::sTreeGps, QString(), QStringLiteral( "GPS time stamp time zone" ) ) SIP_SKIP;
 
-    case Qgis::GpsQualityIndicator::Invalid:
-      return QCoreApplication::translate( "QgsGpsInformation", "Invalid" );
-
-    case Qgis::GpsQualityIndicator::Unknown:
-    default:
-      return QCoreApplication::translate( "QgsGpsInformation", "Unknown (%1)" ).arg( QString::number( quality ) );
-  }
-}
+const QgsSettingsEntryInteger *QgsGpsConnection::settingsGpsTimeStampOffsetFromUtc = new QgsSettingsEntryInteger( QStringLiteral( "timestamp-offset-from-utc" ), QgsSettingsTree::sTreeGps, 0, QStringLiteral( "GPS time stamp offset from UTC (in seconds)" ) ) SIP_SKIP;
 
 QgsGpsConnection::QgsGpsConnection( QIODevice *dev )
   : QObject( nullptr )
   , mSource( dev )
 {
-  clearLastGPSInformation();
-  QObject::connect( dev, &QIODevice::readyRead, this, &QgsGpsConnection::parseData );
+  if ( mSource )
+    QObject::connect( mSource.get(), &QIODevice::readyRead, this, &QgsGpsConnection::parseData );
+
+  QObject::connect( this, &QgsGpsConnection::stateChanged, this, &QgsGpsConnection::onStateChanged );
 }
 
 QgsGpsConnection::~QgsGpsConnection()
@@ -137,6 +88,13 @@ bool QgsGpsConnection::close()
   }
 
   mSource->close();
+
+  if ( mLastFixStatus != Qgis::GpsFixStatus::NoData )
+  {
+    mLastFixStatus = Qgis::GpsFixStatus::NoData;
+    emit fixStatusChanged( mLastFixStatus );
+  }
+
   return true;
 }
 
@@ -147,13 +105,42 @@ void QgsGpsConnection::cleanupSource()
     mSource->close();
   }
   mSource.reset();
+
+  if ( mLastFixStatus != Qgis::GpsFixStatus::NoData )
+  {
+    mLastFixStatus = Qgis::GpsFixStatus::NoData;
+    emit fixStatusChanged( mLastFixStatus );
+  }
 }
 
 void QgsGpsConnection::setSource( QIODevice *source )
 {
   cleanupSource();
   mSource.reset( source );
+  QObject::connect( mSource.get(), &QIODevice::readyRead, this, &QgsGpsConnection::parseData );
+
   clearLastGPSInformation();
+}
+
+void QgsGpsConnection::onStateChanged( const QgsGpsInformation &info )
+{
+  if ( info.isValid() )
+  {
+    const QgsPoint oldPosition = mLastLocation;
+    mLastLocation = QgsPoint( info.longitude, info.latitude, info.elevation );
+    if ( mLastLocation != oldPosition )
+    {
+      emit positionChanged( mLastLocation );
+    }
+  }
+
+  Qgis::GnssConstellation bestFixConstellation = Qgis::GnssConstellation::Unknown;
+  Qgis::GpsFixStatus bestFix = info.bestFixStatus( bestFixConstellation );
+  if ( bestFix != mLastFixStatus )
+  {
+    mLastFixStatus = bestFix;
+    emit fixStatusChanged( mLastFixStatus );
+  }
 }
 
 void QgsGpsConnection::clearLastGPSInformation()

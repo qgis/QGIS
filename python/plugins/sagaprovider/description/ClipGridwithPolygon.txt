@@ -1,5 +1,0 @@
-Clip Grid with Polygon
-shapes_grid
-QgsProcessingParameterRasterLayer|INPUT|Input|None|False
-QgsProcessingParameterFeatureSource|POLYGONS|Polygons|2|None|False
-QgsProcessingParameterRasterDestination|OUTPUT|Clipped

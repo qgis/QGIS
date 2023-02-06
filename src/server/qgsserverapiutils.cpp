@@ -581,6 +581,23 @@ const QVector<QgsVectorLayer *> QgsServerApiUtils::publishedWfsLayers( const Qgs
   return publishedWfsLayers< QgsVectorLayer * >( context );
 }
 
+QString QgsServerApiUtils::fieldName( const QString &name, const QgsVectorLayer *layer )
+{
+  if ( layer->fields().names().contains( name ) )
+  {
+    return name;
+  }
+  const QgsFields fields { layer->fields() };
+  for ( const QgsField &field : std::as_const( fields ) )
+  {
+    if ( field.displayName() == name )
+    {
+      return field.name();
+    }
+  }
+  throw QgsServerApiBadRequestException{ QStringLiteral( "Field '%1' is not a valid field name for layer: %2" ).arg( name, layer->name() ) };
+}
+
 QString QgsServerApiUtils::sanitizedFieldValue( const QString &value )
 {
   QString result { QUrl( value ).toString() };
@@ -596,7 +613,7 @@ QStringList QgsServerApiUtils::publishedCrsList( const QgsProject *project )
     const QStringList outputCrsList = QgsServerProjectUtils::wmsOutputCrsList( *project );
     for ( const QString &crsId : outputCrsList )
     {
-      const auto crsUri { crsToOgcUri( QgsCoordinateReferenceSystem::fromOgcWmsCrs( crsId ) ) };
+      const auto crsUri { QgsCoordinateReferenceSystem::fromOgcWmsCrs( crsId ).toOgcUri() };
       if ( ! crsUri.isEmpty() )
       {
         result.push_back( crsUri );
@@ -608,25 +625,7 @@ QStringList QgsServerApiUtils::publishedCrsList( const QgsProject *project )
 
 QString QgsServerApiUtils::crsToOgcUri( const QgsCoordinateReferenceSystem &crs )
 {
-  const auto parts { crs.authid().split( ':' ) };
-  if ( parts.length() == 2 )
-  {
-    if ( parts[0] == QLatin1String( "EPSG" ) )
-      return  QStringLiteral( "http://www.opengis.net/def/crs/EPSG/9.6.2/%1" ).arg( parts[1] ) ;
-    else if ( parts[0] == QLatin1String( "OGC" ) )
-    {
-      return  QStringLiteral( "http://www.opengis.net/def/crs/OGC/1.3/%1" ).arg( parts[1] ) ;
-    }
-    else
-    {
-      QgsMessageLog::logMessage( QStringLiteral( "Error converting published CRS to URI %1: (not OGC or EPSG)" ).arg( crs.authid() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
-    }
-  }
-  else
-  {
-    QgsMessageLog::logMessage( QStringLiteral( "Error converting published CRS to URI: %1" ).arg( crs.authid() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
-  }
-  return QString();
+  return crs.toOgcUri();
 }
 
 QString QgsServerApiUtils::appendMapParameter( const QString &path, const QUrl &requestUrl )

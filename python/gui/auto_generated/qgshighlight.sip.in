@@ -143,6 +143,13 @@ Returns the layer for which this highlight has been created.
     virtual void updatePosition();
 
 
+    void applyDefaultStyle();
+%Docstring
+Applies the default style from the user settings to the highlight.
+
+.. versionadded:: 3.30
+%End
+
   protected:
     virtual void paint( QPainter *p );
 

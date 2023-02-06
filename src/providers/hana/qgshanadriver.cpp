@@ -75,6 +75,14 @@ ConnectionRef QgsHanaDriver::createConnection()
   return mEnv->createConnection();
 }
 
+QStringList QgsHanaDriver::dataSources()
+{
+  QStringList list;
+  for ( const DataSourceInformation &ds : mEnv->getDataSources() )
+    list << QString::fromStdString( ds.name );
+  return list;
+}
+
 const QString &QgsHanaDriver::driver() const
 {
   return mDriver;

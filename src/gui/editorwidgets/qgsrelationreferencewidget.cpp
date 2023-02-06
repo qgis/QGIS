@@ -43,7 +43,6 @@
 #include "qgsfeaturelistcombobox.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeaturefiltermodel.h"
-#include "qgsidentifymenu.h"
 #include "qgsvectorlayerutils.h"
 
 
@@ -584,7 +583,7 @@ void QgsRelationReferenceWidget::highlightFeature( QgsFeature f, CanvasExtent ca
   // highlight
   deleteHighlight();
   mHighlight = new QgsHighlight( mCanvas, f, mReferencedLayer );
-  QgsIdentifyMenu::styleHighlight( mHighlight );
+  mHighlight->applyDefaultStyle();
   mHighlight->show();
 
   QTimer *timer = new QTimer( this );
@@ -808,11 +807,11 @@ void QgsRelationReferenceWidget::filterChanged()
           QgsAttributeList subset = attrs;
 
           QString expression = filterExpression;
-          if ( ! filterExpression.isEmpty() && ! filtersAttrs.values().isEmpty() )
+          if ( ! filterExpression.isEmpty() && ! filtersAttrs.isEmpty() )
             expression += QLatin1String( " AND " );
 
           expression += filtersAttrs.isEmpty() ? QString() : QStringLiteral( " ( " );
-          expression += filtersAttrs.values().join( QLatin1String( " AND " ) );
+          expression += qgsMapJoinValues( filtersAttrs, QLatin1String( " AND " ) );
           expression += filtersAttrs.isEmpty() ? QString() : QStringLiteral( " ) " );
 
           subset << mReferencedLayer->fields().lookupField( fieldName );
@@ -844,11 +843,11 @@ void QgsRelationReferenceWidget::filterChanged()
     }
   }
 
-  if ( ! filterExpression.isEmpty() && ! filters.values().isEmpty() )
+  if ( ! filterExpression.isEmpty() && ! filters.isEmpty() )
     filterExpression += QLatin1String( " AND " );
 
   filterExpression += filters.isEmpty() ? QString() : QStringLiteral( " ( " );
-  filterExpression += filters.values().join( QLatin1String( " AND " ) );
+  filterExpression += qgsMapJoinValues( filters, QLatin1String( " AND " ) );
   filterExpression += filters.isEmpty() ? QString() : QStringLiteral( " ) " );
 
   mComboBox->setFilterExpression( filterExpression );

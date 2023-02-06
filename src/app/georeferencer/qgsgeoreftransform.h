@@ -19,7 +19,6 @@
 
 #include <gdal_alg.h>
 #include "qgis_app.h"
-#include "qgspoint.h"
 #include "qgsgcptransformer.h"
 #include "qgsrasterchangecoords.h"
 

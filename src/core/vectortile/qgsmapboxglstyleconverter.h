@@ -20,8 +20,10 @@
 #include "qgis_sip.h"
 #include "qgsproperty.h"
 #include "qgspropertycollection.h"
-#include <QVariantMap>
+#include "qgsunittypes.h"
+
 #include <memory>
+#include <QVariantMap>
 #include <QImage>
 
 class QgsVectorTileRenderer;

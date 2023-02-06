@@ -14,9 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsactionwidgetwrapper.h"
-#include "qgsactionmanager.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgspythonrunner.h"
 #include "qgsattributeform.h"
 
 #include <QLayout>
@@ -105,7 +103,7 @@ void QgsActionWidgetWrapper::initWidget( QWidget *editor )
       QgsExpressionContext expressionContext = layer()->createExpressionContext();
       expressionContext << QgsExpressionContextUtils::formScope( mFeature, attributecontext.attributeFormModeString() );
       expressionContext.setFeature( mFeature );
-      if ( mAction.type() == QgsAction::ActionType::GenericPython )
+      if ( mAction.type() == Qgis::AttributeActionType::GenericPython )
       {
         if ( QgsAttributeForm *form = qobject_cast<QgsAttributeForm *>( parent() ) )
         {

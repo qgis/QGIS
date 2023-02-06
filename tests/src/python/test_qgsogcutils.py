@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsOgcUtils.
 
 From build dir, run: ctest -R PyQgsOgcUtils -V
@@ -15,11 +14,9 @@ __date__ = '21/06/2019'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
 import qgis  # NOQA switch sip api
-
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtXml import QDomDocument
-from qgis.core import QgsOgcUtils, QgsVectorLayer, QgsField
-
+from qgis.core import QgsField, QgsOgcUtils, QgsVectorLayer
 from qgis.testing import start_app, unittest
 
 start_app()
@@ -210,6 +207,35 @@ class TestQgsOgcUtils(unittest.TestCase):
         e = QgsOgcUtils.expressionFromOgcFilter(d.documentElement(), vl)
         self.assertEqual(e.expression(), 'id > 2 AND id < 4')
 
+        # Literal is empty
+        f = '''<?xml version="1.0" encoding="UTF-8"?>
+            <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+              <ogc:PropertyIsEqualTo>
+                <ogc:PropertyName>id</ogc:PropertyName>
+                <ogc:Literal></ogc:Literal>
+              </ogc:PropertyIsEqualTo>
+            </ogc:Filter>
+        '''
+        d = QDomDocument('filter')
+        d.setContent(f, True)
+
+        e = QgsOgcUtils.expressionFromOgcFilter(d.documentElement(), vl)
+        self.assertEqual(e.expression(), 'id = \'\'')
+
+        f = '''<?xml version="1.0" encoding="UTF-8"?>
+            <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+              <ogc:PropertyIsEqualTo>
+                <ogc:PropertyName>id</ogc:PropertyName>
+                <ogc:Literal/>
+              </ogc:PropertyIsEqualTo>
+            </ogc:Filter>
+        '''
+        d = QDomDocument('filter')
+        d.setContent(f, True)
+
+        e = QgsOgcUtils.expressionFromOgcFilter(d.documentElement(), vl)
+        self.assertEqual(e.expression(), 'id = \'\'')
+
     def test_expressionFromOgcFilterWithDouble(self):
         """
         Test expressionFromOgcFilter with Double type field
@@ -302,6 +328,35 @@ class TestQgsOgcUtils(unittest.TestCase):
         e = QgsOgcUtils.expressionFromOgcFilter(d.documentElement(), vl)
         self.assertEqual(e.expression(), 'id > 1.5 AND id < 3.5')
 
+        # Literal is empty
+        f = '''<?xml version="1.0" encoding="UTF-8"?>
+            <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+              <ogc:PropertyIsEqualTo>
+                <ogc:PropertyName>id</ogc:PropertyName>
+                <ogc:Literal></ogc:Literal>
+              </ogc:PropertyIsEqualTo>
+            </ogc:Filter>
+        '''
+        d = QDomDocument('filter')
+        d.setContent(f, True)
+
+        e = QgsOgcUtils.expressionFromOgcFilter(d.documentElement(), vl)
+        self.assertEqual(e.expression(), 'id = \'\'')
+
+        f = '''<?xml version="1.0" encoding="UTF-8"?>
+            <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+              <ogc:PropertyIsEqualTo>
+                <ogc:PropertyName>id</ogc:PropertyName>
+                <ogc:Literal/>
+              </ogc:PropertyIsEqualTo>
+            </ogc:Filter>
+        '''
+        d = QDomDocument('filter')
+        d.setContent(f, True)
+
+        e = QgsOgcUtils.expressionFromOgcFilter(d.documentElement(), vl)
+        self.assertEqual(e.expression(), 'id = \'\'')
+
     def test_expressionFromOgcFilterWithString(self):
         """
         Test expressionFromOgcFilter with String type field
@@ -393,6 +448,35 @@ class TestQgsOgcUtils(unittest.TestCase):
 
         e = QgsOgcUtils.expressionFromOgcFilter(d.documentElement(), vl)
         self.assertEqual(e.expression(), 'id > \'15e-01\' AND id < \'35e-01\'')
+
+        # Literal is empty
+        f = '''<?xml version="1.0" encoding="UTF-8"?>
+            <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+              <ogc:PropertyIsEqualTo>
+                <ogc:PropertyName>id</ogc:PropertyName>
+                <ogc:Literal></ogc:Literal>
+              </ogc:PropertyIsEqualTo>
+            </ogc:Filter>
+        '''
+        d = QDomDocument('filter')
+        d.setContent(f, True)
+
+        e = QgsOgcUtils.expressionFromOgcFilter(d.documentElement(), vl)
+        self.assertEqual(e.expression(), 'id = \'\'')
+
+        f = '''<?xml version="1.0" encoding="UTF-8"?>
+            <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+              <ogc:PropertyIsEqualTo>
+                <ogc:PropertyName>id</ogc:PropertyName>
+                <ogc:Literal/>
+              </ogc:PropertyIsEqualTo>
+            </ogc:Filter>
+        '''
+        d = QDomDocument('filter')
+        d.setContent(f, True)
+
+        e = QgsOgcUtils.expressionFromOgcFilter(d.documentElement(), vl)
+        self.assertEqual(e.expression(), 'id = \'\'')
 
     def test_expressionFromOgcFilterWithAndOrPropertyIsLike(self):
         """

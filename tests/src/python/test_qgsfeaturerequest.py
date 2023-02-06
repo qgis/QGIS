@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsFeatureRequest.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,21 +10,21 @@ __date__ = '12/06/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.core import (QgsFeatureRequest,
-                       QgsRectangle,
-                       QgsExpressionContext,
-                       QgsExpressionContextScope,
-                       QgsFields,
-                       QgsField,
-                       QgsSimplifyMethod,
-                       QgsCoordinateReferenceSystem,
-                       QgsCoordinateTransformContext,
-                       QgsGeometry,
-                       Qgis)
 from qgis.PyQt.QtCore import QVariant
+from qgis.core import (
+    Qgis,
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransformContext,
+    QgsExpressionContext,
+    QgsExpressionContextScope,
+    QgsFeatureRequest,
+    QgsField,
+    QgsFields,
+    QgsGeometry,
+    QgsRectangle,
+    QgsSimplifyMethod,
+)
 from qgis.testing import start_app, unittest
-
 
 from utilities import unitTestDataPath
 

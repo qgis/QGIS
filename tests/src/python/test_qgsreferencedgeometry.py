@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsReferencedGeometry.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,15 +10,15 @@ __date__ = '31/08/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.core import (QgsRectangle,
-                       QgsPointXY,
-                       QgsReferencedRectangle,
-                       QgsReferencedPointXY,
-                       QgsCoordinateReferenceSystem)
 from qgis.PyQt.QtCore import QVariant
+from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsPointXY,
+    QgsRectangle,
+    QgsReferencedPointXY,
+    QgsReferencedRectangle,
+)
 from qgis.testing import start_app, unittest
-from utilities import compareWkt
 
 start_app()
 

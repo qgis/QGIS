@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsVirtualLayerDefinition
 
 From build dir, run: ctest -R PyQgsSelectiveMasking -V
@@ -13,69 +12,44 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Hugo Mercier / Oslandia'
 __date__ = '28/06/2019'
 
-import qgis  # NOQA
 import os
 import subprocess
-import difflib
 
-from qgis.PyQt.QtCore import (
-    Qt,
-    QSize,
-    QRectF,
-    QDir
-)
-
-from qgis.PyQt.QtGui import (
-    QColor,
-    QImage,
-    QPainter
-)
-
-from qgis.testing import unittest, start_app
-
-from utilities import (
-    unitTestDataPath,
-    getTempfilePath,
-    renderMapToImage,
-    loadTestFonts,
-    getTestFont,
-    openInBrowserTab
-)
-
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QDir, QRectF, QSize, Qt
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.core import (
     Qgis,
-    QgsMapSettings,
     QgsCoordinateReferenceSystem,
-    QgsRectangle,
-    QgsProject,
-    QgsSymbolLayerReference,
-    QgsMapRendererParallelJob,
-    QgsMapRendererSequentialJob,
-    QgsMapRendererCustomPainterJob,
-    QgsRenderChecker,
-    QgsSimpleMarkerSymbolLayer,
-    QgsSimpleMarkerSymbolLayerBase,
-    QgsMarkerSymbol,
-    QgsMaskMarkerSymbolLayer,
-    QgsSingleSymbolRenderer,
-    QgsSymbolLayerId,
-    QgsSymbolLayerUtils,
-    QgsMapRendererCache,
-    QgsUnitTypes,
-    QgsOuterGlowEffect,
-    QgsPalLayerSettings,
-    QgsRuleBasedLabeling,
-    QgsPalLayerSettings,
-    QgsProperty,
-    QgsRenderContext,
-    QgsVectorLayerSimpleLabeling,
     QgsLayout,
+    QgsLayoutExporter,
+    QgsLayoutItemMap,
     QgsLayoutItemPage,
     QgsLayoutSize,
-    QgsLayoutItemMap,
-    QgsLayoutExporter,
+    QgsMapRendererCache,
+    QgsMapRendererCustomPainterJob,
+    QgsMapRendererParallelJob,
+    QgsMapRendererSequentialJob,
+    QgsMapSettings,
+    QgsMarkerSymbol,
+    QgsMaskMarkerSymbolLayer,
+    QgsOuterGlowEffect,
+    QgsPalLayerSettings,
+    QgsProject,
+    QgsProperty,
+    QgsRectangle,
+    QgsRenderChecker,
+    QgsRenderContext,
+    QgsSingleSymbolRenderer,
+    QgsSymbolLayerId,
+    QgsSymbolLayerReference,
+    QgsSymbolLayerUtils,
+    QgsUnitTypes,
     QgsWkbTypes,
 )
+from qgis.testing import start_app, unittest
+
+from utilities import getTempfilePath, getTestFont, unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
 
@@ -155,7 +129,7 @@ class TestSelectiveMasking(unittest.TestCase):
         self.map_settings.setLayers([self.points_layer, self.lines_layer, self.polys_layer])
 
     def tearDown(self):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 
@@ -178,7 +152,7 @@ class TestSelectiveMasking(unittest.TestCase):
                     renderMapToImageWithTime(self.map_settings, parallel=do_parallel, cache=cache)
                 img, t = renderMapToImageWithTime(self.map_settings, parallel=do_parallel, cache=cache)
                 img.save(tmp)
-                print("Image rendered in {}".format(tmp))
+                print(f"Image rendered in {tmp}")
 
                 self.checker.setControlName(control_name)
                 self.checker.setRenderedImage(tmp)
@@ -187,7 +161,7 @@ class TestSelectiveMasking(unittest.TestCase):
                 self.report += self.checker.report()
                 self.assertTrue(res)
 
-                print("=== Rendering took {}s".format(float(t) / 1000.0))
+                print(f"=== Rendering took {float(t) / 1000.0}s")
 
     def check_layout_export(self, control_name, expected_nb_raster, layers=None, dpiTarget=None):
         """

@@ -69,7 +69,12 @@ QVariant QgsLayerMetadataResultsModel::data( const QModelIndex &index, int role 
             return md ? md->description() : providerName;
           }
           case Sections::GeometryType:
-            return QgsWkbTypes::geometryDisplayString( mResult.metadata().at( index.row() ).geometryType() );
+          {
+            const QgsLayerMetadataProviderResult &md { mResult.metadata().at( index.row() ) };
+            if ( md.layerType() == QgsMapLayerType::RasterLayer )
+              return tr( "Raster" );
+            return md.geometryType() == QgsWkbTypes::GeometryType::UnknownGeometry ? QgsWkbTypes::geometryDisplayString( QgsWkbTypes::GeometryType::NullGeometry ) : QgsWkbTypes::geometryDisplayString( md.geometryType() );
+          }
           default:
             return QVariant();
         }
@@ -87,7 +92,10 @@ QVariant QgsLayerMetadataResultsModel::data( const QModelIndex &index, int role 
       {
         if ( index.column() == 0 )
         {
-          return QgsIconUtils::iconForGeometryType( mResult.metadata().at( index.row() ).geometryType() );
+          const QgsLayerMetadataProviderResult &md { mResult.metadata().at( index.row() ) };
+          if ( md.layerType() == QgsMapLayerType::RasterLayer )
+            return QgsApplication::getThemeIcon( QStringLiteral( "mIconRaster.svg" ) );
+          return QgsIconUtils::iconForGeometryType( md.geometryType() == QgsWkbTypes::GeometryType::UnknownGeometry ? QgsWkbTypes::GeometryType::NullGeometry : md.geometryType() );
         }
         break;
       }
@@ -121,7 +129,7 @@ QVariant QgsLayerMetadataResultsModel::headerData( int section, Qt::Orientation 
         case Sections::DataProviderName:
           return tr( "Provider" );
         case Sections::GeometryType:
-          return tr( "Geometry Type" );
+          return tr( "Layer Type" );
       }
     }
     // other roles here ...

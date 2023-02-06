@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsSelectionContext.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -9,9 +8,7 @@ the Free Software Foundation; either version 2 of the License, or
 
 import qgis  # NOQA
 
-from qgis.core import (
-    QgsSelectionContext,
-)
+from qgis.core import QgsSelectionContext
 from qgis.testing import unittest
 
 

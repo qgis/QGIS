@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsMapRenderer.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,27 +9,28 @@ __author__ = 'Nyall Dawson'
 __date__ = '1/02/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
-
-from qgis.core import (QgsMapRendererCache,
-                       QgsMapRendererParallelJob,
-                       QgsMapRendererSequentialJob,
-                       QgsMapRendererCustomPainterJob,
-                       QgsPalLayerSettings,
-                       QgsRectangle,
-                       QgsTextFormat,
-                       QgsVectorLayer,
-                       QgsVectorLayerSimpleLabeling,
-                       QgsFeature,
-                       QgsGeometry,
-                       QgsMapSettings,
-                       QgsPointXY)
-from qgis.testing import start_app, unittest
-from qgis.PyQt.QtCore import QSize, QThreadPool
-from qgis.PyQt.QtGui import QPainter, QImage
-from qgis.PyQt.QtTest import QSignalSpy
 from random import uniform
 
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QSize
+from qgis.PyQt.QtGui import QImage, QPainter
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.core import (
+    QgsFeature,
+    QgsGeometry,
+    QgsMapRendererCache,
+    QgsMapRendererCustomPainterJob,
+    QgsMapRendererParallelJob,
+    QgsMapRendererSequentialJob,
+    QgsMapSettings,
+    QgsPalLayerSettings,
+    QgsPointXY,
+    QgsRectangle,
+    QgsTextFormat,
+    QgsVectorLayer,
+    QgsVectorLayerSimpleLabeling,
+)
+from qgis.testing import start_app, unittest
 
 app = start_app()
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Tests for auth manager Basic Auth access to postgres.
 
@@ -25,30 +24,22 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 import os
-import time
 import signal
 import stat
 import subprocess
 import tempfile
-
+import time
 from shutil import rmtree
 
-from utilities import unitTestDataPath
+from qgis.PyQt.QtNetwork import QSslCertificate
 from qgis.core import (
     QgsApplication,
-    QgsAuthManager,
     QgsAuthMethodConfig,
     QgsVectorLayer,
-    QgsDataSourceUri,
-    QgsWkbTypes,
 )
+from qgis.testing import start_app, unittest
 
-from qgis.PyQt.QtNetwork import QSslCertificate
-
-from qgis.testing import (
-    start_app,
-    unittest,
-)
+from utilities import unitTestDataPath
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '03/11/2017'
@@ -164,7 +155,7 @@ class TestAuthManager(unittest.TestCase):
 
         cls.server = subprocess.Popen([os.path.join(QGIS_POSTGRES_EXECUTABLE_PATH, 'postgres'), '-D',
                                        cls.data_path, '-c',
-                                       "config_file=%s" % cls.pg_conf],
+                                       f"config_file={cls.pg_conf}"],
                                       env=env,
                                       stdout=subprocess.PIPE,
                                       stderr=subprocess.PIPE)
@@ -183,7 +174,7 @@ class TestAuthManager(unittest.TestCase):
         test_sql = os.path.join(unitTestDataPath('provider'), 'testdata_pg.sql')
         subprocess.check_call([os.path.join(QGIS_POSTGRES_EXECUTABLE_PATH, 'psql'), '-h', 'localhost', '-p', cls.port, '-f', test_sql, cls.dbname], env=env)
         # Create a role
-        subprocess.check_call([os.path.join(QGIS_POSTGRES_EXECUTABLE_PATH, 'psql'), '-h', 'localhost', '-p', cls.port, '-c', 'CREATE ROLE "%s" WITH SUPERUSER LOGIN PASSWORD \'%s\'' % (cls.username, cls.password), cls.dbname], env=env)
+        subprocess.check_call([os.path.join(QGIS_POSTGRES_EXECUTABLE_PATH, 'psql'), '-h', 'localhost', '-p', cls.port, '-c', f'CREATE ROLE "{cls.username}" WITH SUPERUSER LOGIN PASSWORD \'{cls.password}\'', cls.dbname], env=env)
 
     @classmethod
     def tearDownClass(cls):

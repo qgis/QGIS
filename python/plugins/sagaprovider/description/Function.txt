@@ -1,8 +1,0 @@
-Function
-grid_calculus
-QgsProcessingParameterNumber|XMIN|xmin|QgsProcessingParameterNumber.Double|0.0|False|None|None
-QgsProcessingParameterNumber|XMAX|xmax|QgsProcessingParameterNumber.Double|0.0|False|None|None
-QgsProcessingParameterNumber|YMIN|ymin|QgsProcessingParameterNumber.Double|0.0|False|None|None
-QgsProcessingParameterNumber|YMAX|ymax|QgsProcessingParameterNumber.Double|0.0|False|None|None
-QgsProcessingParameterString|FORMUL|Formula|
-QgsProcessingParameterRasterDestination|RESULT|Function

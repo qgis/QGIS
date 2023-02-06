@@ -49,6 +49,8 @@ struct QgsWFSConstants
   static const QString URI_PARAM_PAGING_ENABLED;
   static const QString URI_PARAM_PAGE_SIZE;
   static const QString URI_PARAM_WFST_1_1_PREFER_COORDINATES;
+  static const QString URI_PARAM_SKIP_INITIAL_GET_FEATURE;
+  static const QString URI_PARAM_GEOMETRY_TYPE_FILTER;
 
   //
   static const QString VERSION_AUTO;

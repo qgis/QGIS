@@ -28,6 +28,9 @@
 #include "qgscoordinatetransform.h"
 #include "qgsdoublevalidator.h"
 #include "qgspanelwidgetstack.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
+
 
 #include <QClipboard>
 #include <QLabel>
@@ -41,6 +44,8 @@
 #include <QCheckBox>
 #include <QStackedWidget>
 #include <QMenu>
+
+const QgsSettingsEntryBool *QgsVertexEditor::settingAutoPopupVertexEditorDock = new QgsSettingsEntryBool( QStringLiteral( "auto-popup-vertex-editor-dock" ), QgsSettingsTree::sTreeDigitizing, true, QStringLiteral( "Whether the auto-popup behavior of the vertex editor dock should be enabled" ) );
 
 static const int MIN_RADIUS_ROLE = Qt::UserRole + 1;
 
@@ -371,10 +376,10 @@ QgsVertexEditorWidget::QgsVertexEditorWidget( QgsMapCanvas *canvas )
   mWidgetMenu = new QMenu( this );
   QAction *autoPopupAction = new QAction( tr( "Auto-open Table" ), this );
   autoPopupAction->setCheckable( true );
-  autoPopupAction->setChecked( QgsVertexEditor::settingAutoPopupVertexEditorDock.value() );
+  autoPopupAction->setChecked( QgsVertexEditor::settingAutoPopupVertexEditorDock->value() );
   connect( autoPopupAction, &QAction::toggled, this, [ = ]( bool checked )
   {
-    QgsVertexEditor::settingAutoPopupVertexEditorDock.setValue( checked );
+    QgsVertexEditor::settingAutoPopupVertexEditorDock->setValue( checked );
   } );
   mWidgetMenu->addAction( autoPopupAction );
 }

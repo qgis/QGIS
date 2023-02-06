@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer WMS GetMap.
 
 From build dir, run: ctest -R PyQgsServerWMSGetMap -V
@@ -19,23 +18,25 @@ import os
 # Needed on Qt 5 so that the serialization of XML is consistent among all executions
 os.environ['QT_HASH_SEED'] = '1'
 
-import re
-import urllib.request
-import urllib.parse
 import urllib.error
-
-from lxml import etree as et
-
-from qgis.testing import unittest
-from qgis.PyQt.QtCore import QSize, QDate, QDateTime, QTime
-from qgis.PyQt.QtGui import QImage, QColor
+import urllib.parse
+import urllib.request
 
 import osgeo.gdal  # NOQA
 
+from lxml import etree as et
+from qgis.core import (
+    QgsFeature,
+    QgsGeometry,
+    QgsProject,
+    QgsVectorLayer,
+    QgsVectorLayerTemporalProperties,
+)
+from qgis.PyQt.QtCore import QDate, QDateTime, QTime
+from qgis.PyQt.QtGui import QColor, QImage
+from qgis.testing import unittest
 from test_qgsserver import QgsServerTestBase
 from utilities import unitTestDataPath
-from qgis.core import QgsProject, QgsVectorLayer, QgsVectorLayerTemporalProperties, QgsGeometry, QgsFeature
-from qgis.server import QgsServerProjectUtils
 
 # Strip path and content length because path may vary
 RE_STRIP_UNCHECKABLE = br'MAP=[^"]+|Content-Length: \d+'
@@ -950,7 +951,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         }.items())])
 
         expected = self.strip_version_xmlns(
-            b'<ServiceExceptionReport  >\n <ServiceException code="Security">The filter string  "name" IN ( \'africa , \'eurasia\' ) has been rejected because of security reasons. Note: Text strings have to be enclosed in single or double quotes. A space between each word / special character is mandatory. Allowed Keywords and special characters are IS,NOT,NULL,AND,OR,IN,=,&lt;,>=,>,>=,!=,\',\',(,),DMETAPHONE,SOUNDEX. Not allowed are semicolons in the filter expression.</ServiceException>\n</ServiceExceptionReport>\n')
+            b'<?xml version="1.0" encoding="UTF-8"?>\n<ServiceExceptionReport  >\n <ServiceException code="Security">The filter string  "name" IN ( \'africa , \'eurasia\' ) has been rejected because of security reasons. Note: Text strings have to be enclosed in single or double quotes. A space between each word / special character is mandatory. Allowed Keywords and special characters are IS,NOT,NULL,AND,OR,IN,=,&lt;,>=,>,>=,!=,\',\',(,),DMETAPHONE,SOUNDEX. Not allowed are semicolons in the filter expression.</ServiceException>\n</ServiceExceptionReport>\n')
         r, h = self._result(self._execute_request(qs))
 
         self.assertEqual(self.strip_version_xmlns(r), expected)
@@ -1042,7 +1043,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         filter_country = ("(<Filter><PropertyIsEqualTo><PropertyName>name"
                           "</PropertyName><Literal>eurasia</Literal>"
                           "</PropertyIsEqualTo></Filter>)")
-        filter = "{}{}".format(filter_hello, filter_country)
+        filter = f"{filter_hello}{filter_country}"
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
@@ -1332,9 +1333,9 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         self._img_diff_error(r, h, "WMS_GetMap_Annotations")
 
     def test_wms_getmap_sld(self):
+        import http.server
         import socketserver
         import threading
-        import http.server
 
         # Bring up a simple HTTP server
         os.chdir(unitTestDataPath() + '')
@@ -1344,7 +1345,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         port = httpd.server_address[1]
 
         httpd_thread = threading.Thread(target=httpd.serve_forever)
-        httpd_thread.setDaemon(True)
+        httpd_thread.daemon = True
         httpd_thread.start()
 
         qs = "?" + "&".join(["%s=%s" % i for i in list({

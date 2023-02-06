@@ -6,7 +6,6 @@
      xmlns:ogr="http://ogr.maptools.org/"
      xmlns:gml="http://www.opengis.net/gml/3.2">
   <gml:boundedBy><gml:Envelope srsName="urn:ogc:def:crs:EPSG::4326"><gml:lowerCorner>-5 0</gml:lowerCorner><gml:upperCorner>2 8</gml:upperCorner></gml:Envelope></gml:boundedBy>
-                                                                                                                                                                             
   <ogr:featureMember>
     <ogr:difference_points_vs_polys gml:id="difference_points_vs_polys.0">
       <ogr:fid>points.0</ogr:fid>
@@ -31,7 +30,7 @@
   <ogr:featureMember>
     <ogr:difference_points_vs_polys gml:id="difference_points_vs_polys.3">
       <gml:boundedBy><gml:Envelope srsName="urn:ogc:def:crs:EPSG::4326"><gml:lowerCorner>2 5</gml:lowerCorner><gml:upperCorner>2 5</gml:upperCorner></gml:Envelope></gml:boundedBy>
-      <ogr:geometryProperty><gml:MultiPoint srsName="urn:ogc:def:crs:EPSG::4326" gml:id="difference_points_vs_polys.geom.3"><gml:pointMember><gml:Point gml:id="difference_points_vs_polys.geom.3.0"><gml:pos>2 5</gml:pos></gml:Point></gml:pointMember></gml:MultiPoint></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326" gml:id="difference_points_vs_polys.geom.3"><gml:pos>2 5</gml:pos></gml:Point></ogr:geometryProperty>
       <ogr:fid>points.3</ogr:fid>
       <ogr:id>4</ogr:id>
       <ogr:id2>2</ogr:id2>
@@ -47,7 +46,7 @@
   <ogr:featureMember>
     <ogr:difference_points_vs_polys gml:id="difference_points_vs_polys.5">
       <gml:boundedBy><gml:Envelope srsName="urn:ogc:def:crs:EPSG::4326"><gml:lowerCorner>-5 0</gml:lowerCorner><gml:upperCorner>-5 0</gml:upperCorner></gml:Envelope></gml:boundedBy>
-      <ogr:geometryProperty><gml:MultiPoint srsName="urn:ogc:def:crs:EPSG::4326" gml:id="difference_points_vs_polys.geom.5"><gml:pointMember><gml:Point gml:id="difference_points_vs_polys.geom.5.0"><gml:pos>-5 0</gml:pos></gml:Point></gml:pointMember></gml:MultiPoint></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326" gml:id="difference_points_vs_polys.geom.5"><gml:pos>-5 0</gml:pos></gml:Point></ogr:geometryProperty>
       <ogr:fid>points.5</ogr:fid>
       <ogr:id>6</ogr:id>
       <ogr:id2>0</ogr:id2>
@@ -56,7 +55,7 @@
   <ogr:featureMember>
     <ogr:difference_points_vs_polys gml:id="difference_points_vs_polys.6">
       <gml:boundedBy><gml:Envelope srsName="urn:ogc:def:crs:EPSG::4326"><gml:lowerCorner>-1 8</gml:lowerCorner><gml:upperCorner>-1 8</gml:upperCorner></gml:Envelope></gml:boundedBy>
-      <ogr:geometryProperty><gml:MultiPoint srsName="urn:ogc:def:crs:EPSG::4326" gml:id="difference_points_vs_polys.geom.6"><gml:pointMember><gml:Point gml:id="difference_points_vs_polys.geom.6.0"><gml:pos>-1 8</gml:pos></gml:Point></gml:pointMember></gml:MultiPoint></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326" gml:id="difference_points_vs_polys.geom.6"><gml:pos>-1 8</gml:pos></gml:Point></ogr:geometryProperty>
       <ogr:fid>points.6</ogr:fid>
       <ogr:id>7</ogr:id>
       <ogr:id2>0</ogr:id2>

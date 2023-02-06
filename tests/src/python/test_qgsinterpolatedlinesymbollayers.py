@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsInterpolatedLineSymbolLayer.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -12,27 +11,24 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtCore import QDir, QPointF
+from qgis.PyQt.QtGui import QColor, QImage, QPainter, QPolygonF
+from qgis.core import (
+    QgsColorRampShader,
+    QgsFeature,
+    QgsGeometry,
+    QgsInterpolatedLineColor,
+    QgsInterpolatedLineSymbolLayer,
+    QgsInterpolatedLineWidth,
+    QgsLineSymbol,
+    QgsMapSettings,
+    QgsProperty,
+    QgsRenderChecker,
+    QgsRenderContext,
+    QgsStyle,
+    QgsSymbolLayer,
+)
 from qgis.testing import unittest
-from qgis.PyQt.QtCore import (QDir,
-                              QPointF)
-from qgis.PyQt.QtGui import (QImage,
-                             QPainter,
-                             QColor,
-                             QPolygonF)
-from qgis.core import (QgsRenderChecker,
-                       QgsInterpolatedLineSymbolLayer,
-                       QgsInterpolatedLineWidth,
-                       QgsInterpolatedLineColor,
-                       QgsColorRampShader,
-                       QgsStyle,
-                       QgsMapSettings,
-                       QgsLineSymbol,
-                       QgsGeometry,
-                       QgsFeature,
-                       QgsRenderContext,
-                       QgsSymbolLayer,
-                       QgsProperty)
 
 
 class TestQgsLineSymbolLayers(unittest.TestCase):
@@ -41,12 +37,12 @@ class TestQgsLineSymbolLayers(unittest.TestCase):
         self.report = "<h1>Python QgsInterpolatedLineSymbolLayer Tests</h1>\n"
 
     def tearDown(self):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 
     def imageCheck(self, name, reference_image, image):
-        self.report += "<h2>Render {}</h2>\n".format(name)
+        self.report += f"<h2>Render {name}</h2>\n"
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + 'symbollayer_' + name + ".png"
         image.save(file_name, "PNG")
@@ -57,7 +53,7 @@ class TestQgsLineSymbolLayers(unittest.TestCase):
         checker.setColorTolerance(2)
         result = checker.compareImages(name, 0)
         self.report += checker.report()
-        print((self.report))
+        print(self.report)
         return result
 
     def renderImage(self, interpolated_width, interpolated_color, image_name):

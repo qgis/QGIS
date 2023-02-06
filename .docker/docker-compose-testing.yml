@@ -18,6 +18,15 @@ services:
       - ${QGIS_WORKSPACE}/.docker/webdav/passwords.list:/etc/nginx/.passwords.list
       - /tmp/webdav_tests:/tmp/webdav_tests_root/webdav_tests
 
+  minio:
+    image: minio/minio
+    volumes:
+      - /tmp/minio_tests:/data
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=adminio€
+    command: server /data
+
   qgis-deps:
     tty: true
     image: qgis3-build-deps-binary-image
@@ -27,6 +36,7 @@ services:
     links:
     #  - mssql
       - webdav
+      - minio
       - httpbin
     env_file:
       - docker-variables.env

@@ -19,8 +19,6 @@
 #include "qgsdatasourceuri.h"
 #include "qgsowsconnection.h"
 
-#include "qgsgeonodeconnection.h"
-#include "qgsgeonoderequest.h"
 #include "qgssettings.h"
 
 #ifdef HAVE_GUI
@@ -257,51 +255,4 @@ QgsDataItem *QgsWcsDataItemProvider::createDataItem( const QString &path, QgsDat
   }
 
   return nullptr;
-}
-
-
-QVector<QgsDataItem *> QgsWcsDataItemProvider::createDataItems( const QString &path, QgsDataItem *parentItem )
-{
-  QVector<QgsDataItem *> items;
-  if ( path.startsWith( QLatin1String( "geonode:/" ) ) )
-  {
-    QString connectionName = path.split( '/' ).last();
-    if ( QgsGeoNodeConnectionUtils::connectionList().contains( connectionName ) )
-    {
-      QgsGeoNodeConnection connection( connectionName );
-
-      QString url = connection.uri().param( QStringLiteral( "url" ) );
-      QgsGeoNodeRequest geonodeRequest( url, true );
-
-      const QStringList encodedUris( geonodeRequest.fetchServiceUrlsBlocking( QStringLiteral( "WCS" ) ) );
-
-      if ( !encodedUris.isEmpty() )
-      {
-        for ( const QString &encodedUri : encodedUris )
-        {
-          QgsDebugMsgLevel( encodedUri, 3 );
-          QgsDataSourceUri uri;
-          QgsSettings settings;
-          QString key( QgsGeoNodeConnectionUtils::pathGeoNodeConnection() + "/" + connectionName );
-
-          QString dpiMode = settings.value( key + "/wcs/dpiMode", "all" ).toString();
-          uri.setParam( QStringLiteral( "url" ), encodedUri );
-          if ( !dpiMode.isEmpty() )
-          {
-            uri.setParam( QStringLiteral( "dpiMode" ), dpiMode );
-          }
-
-          QgsDebugMsgLevel( QStringLiteral( "WCS full uri: '%1'." ).arg( QString( uri.encodedUri() ) ), 2 );
-
-          QgsDataItem *item = new QgsWCSConnectionItem( parentItem, QStringLiteral( "WCS" ), path, uri.encodedUri() );
-          if ( item )
-          {
-            items.append( item );
-          }
-        }
-      }
-    }
-  }
-
-  return items;
 }

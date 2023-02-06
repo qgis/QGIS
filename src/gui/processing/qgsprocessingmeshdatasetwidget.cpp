@@ -133,10 +133,10 @@ void QgsProcessingMeshDatasetGroupsWidget::showDialog()
   }
   else
   {
-    for ( int i : mDatasetGroupsNames.keys() )
+    for ( auto it = mDatasetGroupsNames.constBegin(); it != mDatasetGroupsNames.constEnd(); it++ )
     {
-      availableOptions.append( i );
-      options.append( mDatasetGroupsNames.value( i ) );
+      availableOptions.append( it.key() );
+      options.append( it.value() );
     }
   }
 
@@ -652,11 +652,11 @@ void QgsProcessingMeshDatasetTimeWidget::populateTimeSteps()
     }
   }
 
-  for ( qint64 key : timeStep.keys() )
+  for ( auto it = timeStep.constBegin(); it != timeStep.constEnd(); it++ )
   {
-    QString stringTime = QgsMeshLayerUtils::formatTime( key / 1000 / 3600, mReferenceTime, QgsMeshTimeSettings() );
+    QString stringTime = QgsMeshLayerUtils::formatTime( static_cast<double>( it.key() ) / 1000. / 3600., mReferenceTime, QgsMeshTimeSettings() );
     QVariantList data;
-    const QgsMeshDatasetIndex &index = timeStep.value( key );
+    const QgsMeshDatasetIndex &index = it.value();
     data << index.group() << index.dataset();
     whileBlocking( comboBoxDatasetTimeStep )->addItem( stringTime, data );
   }
@@ -688,11 +688,11 @@ void QgsProcessingMeshDatasetTimeWidget::populateTimeStepsFromLayer()
     }
   }
 
-  for ( qint64 key : timeStep.keys() )
+  for ( auto it = timeStep.constBegin(); it != timeStep.constEnd(); it++ )
   {
-    QString stringTime = mMeshLayer->formatTime( key / 1000.0 / 3600.0 );
+    QString stringTime = mMeshLayer->formatTime( static_cast<double>( it.key() ) / 1000.0 / 3600.0 );
     QVariantList data;
-    const QgsMeshDatasetIndex &index = timeStep.value( key );
+    const QgsMeshDatasetIndex &index = it.value();
     data << index.group() << index.dataset();
     whileBlocking( comboBoxDatasetTimeStep )->addItem( stringTime, data );
   }
@@ -888,4 +888,3 @@ QgsProcessingParameterDefinition *QgsProcessingMeshDatasetTimeParameterDefinitio
 }
 
 ///@endcond
-

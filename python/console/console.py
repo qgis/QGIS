@@ -110,7 +110,6 @@ class PythonConsole(QgsDockWidget):
         super().__init__(parent)
         self.setObjectName("PythonConsole")
         self.setWindowTitle(QCoreApplication.translate("PythonConsole", "Python Console"))
-        # self.setAllowedAreas(Qt.BottomDockWidgetArea)
 
         self.console = PythonConsoleWidget(self)
         QgsGui.instance().optionsChanged.connect(self.console.updateSettings)
@@ -167,13 +166,9 @@ class PythonConsoleWidget(QWidget):
         self.splitter.addWidget(self.shellOutWidget)
         self.splitter.addWidget(self.shell)
 
-        # self.splitterEditor.addWidget(self.tabEditorWidget)
-
         self.splitterObj = QSplitter(self.splitterEditor)
         self.splitterObj.setHandleWidth(3)
         self.splitterObj.setOrientation(Qt.Horizontal)
-        # self.splitterObj.setSizes([0, 0])
-        # self.splitterObj.setStretchFactor(0, 1)
 
         self.widgetEditor = QWidget(self.splitterObj)
         self.widgetFind = QWidget(self)
@@ -184,10 +179,6 @@ class PythonConsoleWidget(QWidget):
         self.listClassMethod.setHeaderLabels([objInspLabel, ''])
         self.listClassMethod.setColumnHidden(1, True)
         self.listClassMethod.setAlternatingRowColors(True)
-
-        # self.splitterEditor.addWidget(self.widgetEditor)
-        # self.splitterObj.addWidget(self.listClassMethod)
-        # self.splitterObj.addWidget(self.widgetEditor)
 
         # Hide side editor on start up
         self.splitterObj.hide()
@@ -286,26 +277,18 @@ class PythonConsoleWidget(QWidget):
         self.runScriptEditorButton.setIconVisibleInMenu(True)
         self.runScriptEditorButton.setToolTip(runScriptEditorBt)
         self.runScriptEditorButton.setText(runScriptEditorBt)
-        # Action Run Script (subprocess)
-        commentEditorBt = QCoreApplication.translate("PythonConsole", "Comment")
-        self.commentEditorButton = QAction(self)
-        self.commentEditorButton.setCheckable(False)
-        self.commentEditorButton.setEnabled(True)
-        self.commentEditorButton.setIcon(QgsApplication.getThemeIcon("console/iconCommentEditorConsole.svg"))
-        self.commentEditorButton.setMenuRole(QAction.PreferencesRole)
-        self.commentEditorButton.setIconVisibleInMenu(True)
-        self.commentEditorButton.setToolTip(commentEditorBt)
-        self.commentEditorButton.setText(commentEditorBt)
-        # Action Run Script (subprocess)
-        uncommentEditorBt = QCoreApplication.translate("PythonConsole", "Uncomment")
-        self.uncommentEditorButton = QAction(self)
-        self.uncommentEditorButton.setCheckable(False)
-        self.uncommentEditorButton.setEnabled(True)
-        self.uncommentEditorButton.setIcon(QgsApplication.getThemeIcon("console/iconUncommentEditorConsole.svg"))
-        self.uncommentEditorButton.setMenuRole(QAction.PreferencesRole)
-        self.uncommentEditorButton.setIconVisibleInMenu(True)
-        self.uncommentEditorButton.setToolTip(uncommentEditorBt)
-        self.uncommentEditorButton.setText(uncommentEditorBt)
+
+        # Action Toggle comment
+        toggleText = QCoreApplication.translate("PythonConsole", "Toggle Comment")
+        self.toggleCommentEditorButton = QAction(self)
+        self.toggleCommentEditorButton.setCheckable(False)
+        self.toggleCommentEditorButton.setEnabled(True)
+        self.toggleCommentEditorButton.setIcon(QgsApplication.getThemeIcon("console/iconCommentEditorConsole.svg"))
+        self.toggleCommentEditorButton.setMenuRole(QAction.PreferencesRole)
+        self.toggleCommentEditorButton.setIconVisibleInMenu(True)
+        self.toggleCommentEditorButton.setToolTip(toggleText + " <b>Ctrl+:</b>")
+        self.toggleCommentEditorButton.setText(toggleText)
+
         # Action for Object browser
         objList = QCoreApplication.translate("PythonConsole", "Object Inspector…")
         self.objectListButton = QAction(self)
@@ -433,8 +416,7 @@ class PythonConsoleWidget(QWidget):
         self.toolBarEditor.addSeparator()
         self.toolBarEditor.addAction(self.findTextButton)
         self.toolBarEditor.addSeparator()
-        self.toolBarEditor.addAction(self.commentEditorButton)
-        self.toolBarEditor.addAction(self.uncommentEditorButton)
+        self.toolBarEditor.addAction(self.toggleCommentEditorButton)
         self.toolBarEditor.addSeparator()
         self.toolBarEditor.addAction(self.objectListButton)
 
@@ -527,8 +509,7 @@ class PythonConsoleWidget(QWidget):
 
         self.findTextButton.triggered.connect(self._toggleFind)
         self.objectListButton.toggled.connect(self.toggleObjectListWidget)
-        self.commentEditorButton.triggered.connect(self.commentCode)
-        self.uncommentEditorButton.triggered.connect(self.uncommentCode)
+        self.toggleCommentEditorButton.triggered.connect(self.toggleComment)
         self.runScriptEditorButton.triggered.connect(self.runScriptEditor)
         self.cutEditorButton.triggered.connect(self.cutEditor)
         self.copyEditorButton.triggered.connect(self.copyEditor)
@@ -657,11 +638,8 @@ class PythonConsoleWidget(QWidget):
     def runScriptEditor(self):
         self.tabEditorWidget.currentWidget().newEditor.runScriptCode()
 
-    def commentCode(self):
-        self.tabEditorWidget.currentWidget().newEditor.commentEditorCode(True)
-
-    def uncommentCode(self):
-        self.tabEditorWidget.currentWidget().newEditor.commentEditorCode(False)
+    def toggleComment(self):
+        self.tabEditorWidget.currentWidget().newEditor.toggleComment()
 
     def openScriptFileExtEditor(self):
         tabWidget = self.tabEditorWidget.currentWidget()
@@ -782,7 +760,7 @@ class PythonConsoleWidget(QWidget):
         self.settings.setValue("pythonConsole/splitterObj", self.splitterObj.saveState())
         self.settings.setValue("pythonConsole/splitterEditor", self.splitterEditor.saveState())
 
-        self.shell.writeHistoryFile(True)
+        self.shell.writeHistoryFile()
 
     def restoreSettingsConsole(self):
         storedTabScripts = self.settings.value("pythonConsole/tabScripts", [])

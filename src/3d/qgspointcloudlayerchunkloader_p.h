@@ -82,6 +82,7 @@ class QgsPointCloudLayerChunkLoaderFactory : public QgsChunkLoaderFactory
     double mZValueOffset = 0;
     int mPointBudget = 1000000;
     bool mTriangulate = false;
+    QgsRectangle mExtent; //!< This should hold the map's extent in layer's crs
 };
 
 

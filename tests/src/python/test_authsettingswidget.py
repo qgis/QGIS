@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Tests for authentication widget
 
@@ -11,18 +10,17 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 import os
-import re
-import string
-import sys
-from shutil import rmtree
-import tempfile
 import random
+import string
+import tempfile
+from shutil import rmtree
 
-from qgis.core import QgsAuthMethodConfig, QgsNetworkAccessManager, QgsSettings, QgsApplication
+from qgis.core import (
+    QgsApplication,
+    QgsAuthMethodConfig,
+)
 from qgis.gui import QgsAuthSettingsWidget
 from qgis.testing import start_app, unittest
-
-from utilities import unitTestDataPath
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '27/09/2017'

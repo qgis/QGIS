@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     test_qgslineburstsymbollayer.py
@@ -23,21 +21,22 @@ __copyright__ = '(C) 2021, Nyall Dawson'
 
 import qgis  # NOQA
 from qgis.PyQt.QtCore import QDir, Qt
-from qgis.PyQt.QtGui import QImage, QColor, QPainter
-from qgis.core import (QgsGeometry,
-                       Qgis,
-                       QgsRenderContext,
-                       QgsFeature,
-                       QgsMapSettings,
-                       QgsRenderChecker,
-                       QgsGradientColorRamp,
-                       QgsGradientStop,
-                       QgsLineSymbol,
-                       QgsLineburstSymbolLayer,
-                       QgsSymbolLayer,
-                       QgsProperty
-                       )
-from qgis.testing import unittest, start_app
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.core import (
+    Qgis,
+    QgsFeature,
+    QgsGeometry,
+    QgsGradientColorRamp,
+    QgsGradientStop,
+    QgsLineburstSymbolLayer,
+    QgsLineSymbol,
+    QgsMapSettings,
+    QgsProperty,
+    QgsRenderChecker,
+    QgsRenderContext,
+    QgsSymbolLayer,
+)
+from qgis.testing import start_app, unittest
 
 from utilities import unitTestDataPath
 
@@ -51,7 +50,7 @@ class TestQgsLineburstSymbolLayer(unittest.TestCase):
         self.report = "<h1>Python QgsLineburstSymbolLayer Tests</h1>\n"
 
     def tearDown(self):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 
@@ -232,7 +231,7 @@ class TestQgsLineburstSymbolLayer(unittest.TestCase):
         return image
 
     def imageCheck(self, name, reference_image, image):
-        self.report += "<h2>Render {}</h2>\n".format(name)
+        self.report += f"<h2>Render {name}</h2>\n"
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + 'symbol_' + name + ".png"
         image.save(file_name, "PNG")
@@ -243,7 +242,7 @@ class TestQgsLineburstSymbolLayer(unittest.TestCase):
         checker.setColorTolerance(2)
         result = checker.compareImages(name, 20)
         self.report += checker.report()
-        print((self.report))
+        print(self.report)
         return result
 
 

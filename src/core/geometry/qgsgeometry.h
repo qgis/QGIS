@@ -103,6 +103,45 @@ struct QgsGeometryPrivate;
 
 /**
  * \ingroup core
+ * \brief Encapsulates parameters under which a geometry operation is performed.
+ *
+ * \since QGIS 3.28
+ */
+class CORE_EXPORT QgsGeometryParameters
+{
+  public:
+
+    /**
+     * Returns the grid size which will be used to snap vertices of a geometry.
+     *
+     * This parameter is used to control the grid size (or precision) for GEOS geometry operations. Output
+     * geometry result vertices will be computed on that same precision grid.
+     *
+     * A value of -1 indicates that no precision reduction will be applied.
+     *
+     * \see setGridSize()
+     */
+    double gridSize() const { return mGridSize; }
+
+    /**
+     * Sets the grid \a size which will be used to snap vertices of a geometry.
+     *
+     * This parameter is used to control the grid size (or precision) for GEOS geometry operations. Output
+     * geometry result vertices will be computed on that same precision grid.
+     *
+     * A value of -1 indicates that no precision reduction will be applied.
+     *
+     * \see gridSize()
+     */
+    void setGridSize( double size ) { mGridSize = size; }
+
+  private:
+
+    double mGridSize = -1;
+};
+
+/**
+ * \ingroup core
  * \brief A geometry is the spatial representation of a feature.
  *
  * QgsGeometry acts as a generic container for geometry objects. QgsGeometry objects are implicitly shared,
@@ -1714,9 +1753,12 @@ class CORE_EXPORT QgsGeometry
      * If an error was encountered while creating the result, more information can be retrieved
      * by calling lastError() on the returned geometry.
      *
+     * Since QGIS 3.28 the optional \a parameters argument can be used to specify parameters which
+     * control the subdivision results.
+     *
      * \since QGIS 3.0
      */
-    QgsGeometry subdivide( int maxNodes = 256 ) const;
+    QgsGeometry subdivide( int maxNodes = 256, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
 
     /**
      * Returns an interpolated point on the geometry at the specified \a distance.
@@ -1766,8 +1808,11 @@ class CORE_EXPORT QgsGeometry
      *
      * If an error was encountered while creating the result, more information can be retrieved
      * by calling lastError() on the returned geometry.
+     *
+     * Since QGIS 3.28 the optional \a parameters argument can be used to specify parameters which
+     * control the intersection results.
      */
-    QgsGeometry intersection( const QgsGeometry &geometry ) const;
+    QgsGeometry intersection( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
 
     /**
      * Clips the geometry using the specified \a rectangle.
@@ -1788,8 +1833,11 @@ class CORE_EXPORT QgsGeometry
      * by calling lastError() on the returned geometry.
      *
      * \note this operation is not called union since its a reserved word in C++.
+     *
+     * Since QGIS 3.28 the optional \a parameters argument can be used to specify parameters which
+     * control the union results.
      */
-    QgsGeometry combine( const QgsGeometry &geometry ) const;
+    QgsGeometry combine( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
 
     /**
      * Merges any connected lines in a LineString/MultiLineString geometry and
@@ -1808,8 +1856,11 @@ class CORE_EXPORT QgsGeometry
      *
      * If an error was encountered while creating the result, more information can be retrieved
      * by calling lastError() on the returned geometry.
+     *
+     * Since QGIS 3.28 the optional \a parameters argument can be used to specify parameters which
+     * control the difference results.
      */
-    QgsGeometry difference( const QgsGeometry &geometry ) const;
+    QgsGeometry difference( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
 
     /**
      * Returns a geometry representing the points making up this geometry that do not make up other.
@@ -1818,8 +1869,11 @@ class CORE_EXPORT QgsGeometry
      *
      * If an error was encountered while creating the result, more information can be retrieved
      * by calling lastError() on the returned geometry.
+     *
+     * Since QGIS 3.28 the optional \a parameters argument can be used to specify parameters which
+     * control the difference results.
      */
-    QgsGeometry symDifference( const QgsGeometry &geometry ) const;
+    QgsGeometry symDifference( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
 
     //! Returns an extruded version of this geometry.
     QgsGeometry extrude( double x, double y );
@@ -2323,6 +2377,23 @@ class CORE_EXPORT QgsGeometry
     bool convertToMultiType();
 
     /**
+     * Converts a geometry into a multitype geometry of curve kind (when there
+     * is a corresponding curve type).
+     * e.g. a polygon into a multisurface geometry with one polygon,
+     * a multipolygon into a multisurface, a linestring into a multicurve
+     * geometry with one linestring, or a multilinestring into a multicurve.
+     * If it is already a multipart curve geometry, it will return TRUE and
+     * not change the geometry. It will also return TRUE and do nothing if
+     * the current geometry is a multipoint or a geometry collection. A single
+     * point will be transformed to a multipoint.
+     *
+     * \returns TRUE in case of success and FALSE else
+     *
+     * \since QGIS 3.30
+     */
+    bool convertToCurvedMultiType();
+
+    /**
      * Converts multi type geometry into single type geometry
      * e.g. a multipolygon into a polygon geometry. Only the first part of the
      * multi geometry will be retained.
@@ -2352,6 +2423,7 @@ class CORE_EXPORT QgsGeometry
      *          1 if geometry is not of polygon type,
      *          2 if avoid intersection would change the geometry type,
      *          3 at least one geometry intersected is invalid. The algorithm may not work and return the same geometry as the input. You must fix your intersecting geometries.
+     *          4 if the geometry is not intersected by one of the geometries present in the provided layers.
      * \since QGIS 1.5
      */
     int avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers,
@@ -2494,8 +2566,11 @@ class CORE_EXPORT QgsGeometry
      * Compute the unary union on a list of \a geometries. May be faster than an iterative union on a set of geometries.
      * The returned geometry will be fully noded, i.e. a node will be created at every common intersection of the
      * input geometries. An empty geometry will be returned in the case of errors.
+     *
+     * Since QGIS 3.28 the optional \a parameters argument can be used to specify parameters which
+     * control the union results.
      */
-    static QgsGeometry unaryUnion( const QVector<QgsGeometry> &geometries );
+    static QgsGeometry unaryUnion( const QVector<QgsGeometry> &geometries, const QgsGeometryParameters &parameters = QgsGeometryParameters() );
 
     /**
      * Creates a GeometryCollection geometry containing possible polygons formed from the constituent

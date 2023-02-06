@@ -58,7 +58,7 @@ class QgsGdalProviderBase
 
     Qgis::DataType dataTypeFromGdal( GDALDataType gdalDataType ) const;
 
-    int colorInterpretationFromGdal( GDALColorInterp gdalColorInterpretation ) const;
+    Qgis::RasterColorInterpretation colorInterpretationFromGdal( GDALColorInterp gdalColorInterpretation ) const;
 
     QList<QgsColorRampShader::ColorRampItem> colorTable( GDALDatasetH gdalDataset, int bandNo )const;
 

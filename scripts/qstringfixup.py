@@ -38,7 +38,7 @@
 import re
 import sys
 
-lines = [l[0:-1] if l[-1] == '\n' else l for l in open(sys.argv[1], "rt").readlines()]
+lines = [l[0:-1] if l[-1] == '\n' else l for l in open(sys.argv[1]).readlines()]
 
 # Double quoted strings that only include ASCII characters
 string_literal = r"""(R?"(?:(?:\\['"\\nrt])|[\x00-\x21\x23-\x5B\x5D-\x7F])+?")"""
@@ -49,23 +49,23 @@ char_literal = r"""('(?:\\['"\\nrt]|[\x00-\x26\x28-\x5B\x5D-\x7F])')"""
 # Simple expression like foo or foo.bar() or foo.bar(baz, baw)
 simple_expr = r"""([a-zA-Z0-9_:<>]+(?:\.(?:[a-zA-Z0-9_]+\([^\(\)]*\)|[a-zA-Z0-9_]+))?)"""
 
-qsl = r"""QStringLiteral\( {string_literal} \)""".format(string_literal=string_literal)
+qsl = fr"""QStringLiteral\( {string_literal} \)"""
 
 # Find lines like "    foo += QStringLiteral( "bla" );  // optional comment"
-pattern_plus_equal = re.compile(r'^([ ]*)([^ ]+) \+= {qsl};([ ]*//.*)?$'.format(qsl=qsl))
+pattern_plus_equal = re.compile(fr'^([ ]*)([^ ]+) \+= {qsl};([ ]*//.*)?$')
 
 # Find patterns like "...QString( tr( "foo" ) )..."
-pattern_qstring_tr = re.compile(r"""(.*)QString\( tr\( {string_literal} \) \)(.*)""".format(string_literal=string_literal))
+pattern_qstring_tr = re.compile(fr"""(.*)QString\( tr\( {string_literal} \) \)(.*)""")
 
 # Find patterns like "...== QStringLiteral( "foo" ) something that is not like .arg()"
 pattern_equalequal_qsl = re.compile(r'(.*)(==|!=) ' + qsl + r'( \)| \|\|| &&| }|;| \?| ,)(.*)')
 
 # Find patterns like "...startsWith( QStringLiteral( "foo" ) )..."
-pattern_startswith_qsl = re.compile(r'(.*)\.(startsWith|endsWith|indexOf|lastIndexOf|compare)\( {qsl} \)(.*)'.format(qsl=qsl))
+pattern_startswith_qsl = re.compile(fr'(.*)\.(startsWith|endsWith|indexOf|lastIndexOf|compare)\( {qsl} \)(.*)')
 
 # .replace( 'a' or simple_expr or qsl, QStringLiteral( "foo" ) )
-replace_char_qsl = re.compile(r"""(.*)\.replace\( {char_literal}, {qsl} \)(.*)""".format(char_literal=char_literal, qsl=qsl))
-replace_str_qsl = re.compile(r"""(.*)\.replace\( {string_literal}, {qsl} \)(.*)""".format(string_literal=string_literal, qsl=qsl))
+replace_char_qsl = re.compile(fr"""(.*)\.replace\( {char_literal}, {qsl} \)(.*)""")
+replace_str_qsl = re.compile(fr"""(.*)\.replace\( {string_literal}, {qsl} \)(.*)""")
 # Do not use that: if simple_expr is a QRegExp, there is no QString::replace(QRegExp, QLatin1String)
 # replace_simple_expr_qsl = re.compile(r"""(.*)\.replace\( {simple_expr}, {qsl} \)(.*)""".format(simple_expr=simple_expr, qsl=qsl))
 
@@ -73,14 +73,14 @@ replace_str_qsl = re.compile(r"""(.*)\.replace\( {string_literal}, {qsl} \)(.*)"
 replace_qsl_qsl = re.compile(r"""(.*)\.replace\( {qsl}, {qsl} \)(.*)""".format(qsl=qsl))
 
 # .replace( QStringLiteral( "foo" ), something
-replace_qsl_something = re.compile(r"""(.*)\.replace\( {qsl}, (.+)""".format(qsl=qsl))
+replace_qsl_something = re.compile(fr"""(.*)\.replace\( {qsl}, (.+)""")
 
 # .arg( QStringLiteral( "foo" ) )
 # note: QString QString::arg(QLatin1String a) added in QT 5.10, but using QLatin1String() will work with older too
-arg_qsl = re.compile(r"""(.*)\.arg\( {qsl} \)(.*)""".format(qsl=qsl))
+arg_qsl = re.compile(fr"""(.*)\.arg\( {qsl} \)(.*)""")
 
 # .join( QStringLiteral( "foo" ) )
-join = re.compile(r"""(.*)\.join\( {qsl} \)(.*)""".format(qsl=qsl))
+join = re.compile(fr"""(.*)\.join\( {qsl} \)(.*)""")
 
 # if QT >= 5.14 .compare would be ok
 qlatin1str_single_char = re.compile(r"""(.*)(.startsWith\(|.endsWith\(|.indexOf\(|.lastIndexOf\(|\+=) QLatin1String\( ("[^"]") \)(.*)""")

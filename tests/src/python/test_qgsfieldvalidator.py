@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsFieldValidator.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,16 +9,17 @@ __author__ = 'Alessandro Pasotti'
 __date__ = '31/01/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
-import qgis  # NOQA
-import tempfile
 import os
 import shutil
+import tempfile
 
-from qgis.PyQt.QtCore import QVariant, QLocale
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QLocale, QVariant
 from qgis.PyQt.QtGui import QValidator
 from qgis.core import QgsVectorLayer
 from qgis.gui import QgsFieldValidator
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
@@ -115,7 +115,7 @@ class TestQgsFieldValidator(unittest.TestCase):
 
         # Invalid
         _test('12345-1234', QValidator.Invalid)
-        _test('12345%s1234' % DECIMAL_SEPARATOR, QValidator.Invalid)
+        _test(f'12345{DECIMAL_SEPARATOR}1234', QValidator.Invalid)
         _test('onetwothree', QValidator.Invalid)
 
     def test_doubleValidator(self):

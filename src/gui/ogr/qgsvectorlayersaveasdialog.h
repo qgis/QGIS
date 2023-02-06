@@ -20,8 +20,6 @@
 
 #include "ui_qgsvectorlayersaveasdialogbase.h"
 #include <QDialog>
-#include "qgshelp.h"
-#include "qgsfields.h"
 #include "qgsvectorfilewriter.h"
 #include "qgis_gui.h"
 

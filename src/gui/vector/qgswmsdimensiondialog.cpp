@@ -63,9 +63,9 @@ QgsWmsDimensionDialog::QgsWmsDimensionDialog( QgsVectorLayer *layer, QStringList
   // Set default display combobox
   mDefaultDisplayComboBox->clear();
   QMap<int, QString> defaultDisplayLabels = QgsMapLayerServerProperties::wmsDimensionDefaultDisplayLabels();
-  for ( const int &k : defaultDisplayLabels.keys() )
+  for ( auto it = defaultDisplayLabels.constBegin(); it != defaultDisplayLabels.constEnd(); it++ )
   {
-    mDefaultDisplayComboBox->addItem( defaultDisplayLabels[k], QVariant( k ) );
+    mDefaultDisplayComboBox->addItem( it.value(), QVariant( it.key() ) );
   }
   // Set default display to All values
   mDefaultDisplayComboBox->setCurrentIndex( mDefaultDisplayComboBox->findData( QVariant( QgsMapLayerServerProperties::WmsDimensionInfo::AllValues ) ) );

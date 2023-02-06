@@ -14,6 +14,7 @@
 
 
 
+
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
 
@@ -143,8 +144,8 @@ attribute operators, “BBOX, Disjoint, Intersects, Touches, Crosses, Contains, 
 spatial binary operators and the QGIS local “geomFromWKT, geomFromGML”
 geometry constructor functions.
 
-OGC API - Features data provider (oapif)
-~~~~~~~~-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+OGC API Features data provider (oapif)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Used to access data provided by a OGC API - Features server.
 
@@ -339,6 +340,8 @@ Provider to display vector data in a GRASS GIS layer.
 %End
   public:
 
+
+
     struct LayerOptions
     {
 
@@ -370,6 +373,9 @@ Constructor for LayerOptions.
 
       bool skipCrsValidation;
 
+      bool forceReadOnly;
+
+      bool loadAllStoredStyles;
     };
 
     struct DeleteContext
@@ -504,6 +510,9 @@ Uses :py:class:`QgsExpression`
 
 :return: The expression which will be used to preview features for this layer
 %End
+
+    virtual bool hasMapTips() const ${SIP_FINAL};
+
 
     virtual QgsVectorDataProvider *dataProvider() ${SIP_FINAL};
 
@@ -1841,7 +1850,9 @@ If you need only the count of committed features call this method on this layer'
 %Docstring
 Makes layer read-only (editing disabled) or not
 
-:return: ``False`` if the layer is in editing yet
+:return: ``False`` if the layer is in editing yet or if the data source is in read-only mode
+
+.. seealso:: :py:func:`readOnlyChanged`
 %End
 
     virtual bool supportsEditing() const;
@@ -2568,24 +2579,6 @@ Sets the attribute table configuration object.
 This defines the appearance of the attribute table.
 %End
 
-    QString mapTipTemplate() const;
-%Docstring
-The mapTip is a pretty, html representation for feature information.
-
-It may also contain embedded expressions.
-
-.. versionadded:: 3.0
-%End
-
-    void setMapTipTemplate( const QString &mapTipTemplate );
-%Docstring
-The mapTip is a pretty, html representation for feature information.
-
-It may also contain embedded expressions.
-
-.. versionadded:: 3.0
-%End
-
     virtual QgsExpressionContext createExpressionContext() const ${SIP_FINAL};
 
 
@@ -2983,13 +2976,6 @@ to this signal and update the element accordingly.
 :param errorMessage: Write error messages into this string.
 %End
 
-    void mapTipTemplateChanged();
-%Docstring
-Emitted when the map tip changes
-
-.. versionadded:: 3.0
-%End
-
     void displayExpressionChanged();
 %Docstring
 Emitted when the display expression changes
@@ -3013,6 +2999,8 @@ Will be emitted whenever the edit form configuration of this layer changes.
 %Docstring
 Emitted when the read only state of this layer is changed.
 Only applies to manually set readonly state, not to the edit mode.
+
+.. seealso:: :py:func:`setReadOnly`
 
 .. versionadded:: 3.0
 %End

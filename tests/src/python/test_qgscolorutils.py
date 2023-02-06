@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsColorUtils.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,22 +9,11 @@ __author__ = 'Nyall Dawson'
 __date__ = '06/07/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
-import shutil
-
 import qgis  # NOQA
-
-import tempfile
-import os
 from qgis.PyQt.QtGui import QColor
-from qgis.core import (
-    QgsSymbolLayerUtils,
-    QgsColorUtils,
-    QgsReadWriteContext
-)
 from qgis.PyQt.QtXml import QDomDocument
-
+from qgis.core import QgsColorUtils, QgsReadWriteContext, QgsSymbolLayerUtils
 from qgis.testing import unittest
-from utilities import unitTestDataPath
 
 
 class TestQgsColorUtils(unittest.TestCase):

@@ -29,6 +29,7 @@
 #include "qgsgeometry.h"
 #include "qgsmapserviceexception.h"
 #include "qgslayertree.h"
+#include "qgslayoututils.h"
 #include "qgslayertreemodel.h"
 #include "qgslegendrenderer.h"
 #include "qgsmaplayer.h"
@@ -44,6 +45,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectortilelayer.h"
 #include "qgsmessagelog.h"
 #include "qgsrenderer.h"
 #include "qgsfeature.h"
@@ -71,6 +73,8 @@
 #include "qgsattributeeditorelement.h"
 #include "qgsattributeeditorfield.h"
 #include "qgsdimensionfilter.h"
+#include "qgstextdocument.h"
+#include "qgstextdocumentmetrics.h"
 
 #include <QImage>
 #include <QPainter>
@@ -503,6 +507,8 @@ namespace QgsWms
         if ( ok )
           exportSettings.dpi = dpi;
       }
+      // Set scales
+      exportSettings.predefinedMapScales = QgsLayoutUtils::predefinedScales( layout.get( ) );
       // Draw selections
       exportSettings.flags |= QgsLayoutRenderContext::FlagDrawSelection;
       if ( atlas )
@@ -536,6 +542,8 @@ namespace QgsWms
           dpi = _dpi;
       }
       exportSettings.dpi = dpi;
+      // Set scales
+      exportSettings.predefinedMapScales = QgsLayoutUtils::predefinedScales( layout.get( ) );
       // Draw selections
       exportSettings.flags |= QgsLayoutRenderContext::FlagDrawSelection;
       // Destination image size in px
@@ -607,6 +615,8 @@ namespace QgsWms
       exportSettings.flags |= QgsLayoutRenderContext::FlagDrawSelection;
       // Print as raster
       exportSettings.rasterizeWholeImage = layout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
+      // Set scales
+      exportSettings.predefinedMapScales = QgsLayoutUtils::predefinedScales( layout.get( ) );
 
       // Export all pages
       if ( atlas )
@@ -1404,6 +1414,8 @@ namespace QgsWms
     }
 
     QDomDocument result;
+    const QDomNode header = result.createProcessingInstruction( QStringLiteral( "xml" ), QStringLiteral( "version=\"1.0\" encoding=\"UTF-8\"" ) );
+    result.appendChild( header );
 
     QDomElement getFeatureInfoElement;
     QgsWmsParameters::Format infoFormat = mWmsParameters.infoFormat();
@@ -1821,7 +1833,9 @@ namespace QgsWms
         {
           QDomElement maptipElem = infoDocument.createElement( QStringLiteral( "Attribute" ) );
           maptipElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "maptip" ) );
-          maptipElem.setAttribute( QStringLiteral( "value" ),  QgsExpression::replaceExpressionText( mapTip, &renderContext.expressionContext() ) );
+          QgsExpressionContext context { renderContext.expressionContext() };
+          context.appendScope( QgsExpressionContextUtils::layerScope( layer ) );
+          maptipElem.setAttribute( QStringLiteral( "value" ),  QgsExpression::replaceExpressionText( mapTip, &context ) );
           featureElement.appendChild( maptipElem );
         }
 
@@ -1988,10 +2002,10 @@ namespace QgsWms
       return false;
     }
 
-    const QgsRaster::IdentifyFormat identifyFormat(
+    const Qgis::RasterIdentifyFormat identifyFormat(
       static_cast<bool>( layer->dataProvider()->capabilities() & QgsRasterDataProvider::IdentifyFeature )
-      ? QgsRaster::IdentifyFormat::IdentifyFormatFeature
-      : QgsRaster::IdentifyFormat::IdentifyFormatValue );
+      ? Qgis::RasterIdentifyFormat::Feature
+      : Qgis::RasterIdentifyFormat::Value );
 
     QgsRasterIdentifyResult identifyResult;
     if ( layer->crs() != mapSettings.destinationCrs() )
@@ -2025,7 +2039,7 @@ namespace QgsWms
       int gmlVersion = mWmsParameters.infoFormatVersion();
       QString typeName = mContext.layerNickname( *layer );
 
-      if ( identifyFormat == QgsRaster::IdentifyFormatValue )
+      if ( identifyFormat == Qgis::RasterIdentifyFormat::Value )
       {
         feature.initAttributes( attributes.count() );
         int index = 0;
@@ -2074,7 +2088,7 @@ namespace QgsWms
     }
     else
     {
-      if ( identifyFormat == QgsRaster::IdentifyFormatValue )
+      if ( identifyFormat == Qgis::RasterIdentifyFormat::Value )
       {
         for ( auto it = attributes.constBegin(); it != attributes.constEnd(); ++it )
         {
@@ -3080,15 +3094,21 @@ namespace QgsWms
 
     if ( !renderJob.errors().isEmpty() )
     {
+      const QgsMapRendererJob::Error e = renderJob.errors().at( 0 );
+
       QString layerWMSName;
-      QString firstErrorLayerId = renderJob.errors().at( 0 ).layerID;
-      QgsMapLayer *errorLayer = mProject->mapLayer( firstErrorLayerId );
+      QgsMapLayer *errorLayer = mProject->mapLayer( e.layerID );
       if ( errorLayer )
       {
         layerWMSName = mContext.layerNickname( *errorLayer );
       }
 
-      throw QgsException( QStringLiteral( "Map rendering error in layer '%1'" ).arg( layerWMSName ) );
+      QString errorMessage = QStringLiteral( "Rendering error : '%1'" ).arg( e.message );
+      if ( ! layerWMSName.isEmpty() )
+      {
+        errorMessage = QStringLiteral( "Rendering error : '%1' in layer '%2'" ).arg( e.message, layerWMSName );
+      }
+      throw QgsException( errorMessage );
     }
 
     return painter;
@@ -3115,8 +3135,14 @@ namespace QgsWms
           break;
         }
 
-        case QgsMapLayerType::MeshLayer:
         case QgsMapLayerType::VectorTileLayer:
+        {
+          QgsVectorTileLayer *vl = qobject_cast<QgsVectorTileLayer *>( layer );
+          vl->setOpacity( opacity / 255. );
+          break;
+        }
+
+        case QgsMapLayerType::MeshLayer:
         case QgsMapLayerType::PluginLayer:
         case QgsMapLayerType::AnnotationLayer:
         case QgsMapLayerType::PointCloudLayer:

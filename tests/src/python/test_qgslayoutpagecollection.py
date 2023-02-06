@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLayoutPageCollection
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -12,27 +11,26 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
 from qgis.PyQt import sip
-
-from qgis.core import (QgsUnitTypes,
-                       QgsLayout,
-                       QgsLayoutItemPage,
-                       QgsLayoutSize,
-                       QgsLayoutPoint,
-                       QgsLayoutObject,
-                       QgsProject,
-                       QgsMargins,
-                       QgsProperty,
-                       QgsLayoutGuide,
-                       QgsLayoutMeasurement,
-                       QgsLayoutPageCollection,
-                       QgsSimpleFillSymbolLayer,
-                       QgsLayoutItemShape,
-                       QgsFillSymbol,
-                       QgsReadWriteContext)
-from qgis.PyQt.QtCore import Qt, QCoreApplication, QEvent, QPointF, QRectF
+from qgis.PyQt.QtCore import QCoreApplication, QEvent, QPointF, QRectF, Qt
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
-
+from qgis.core import (
+    QgsFillSymbol,
+    QgsLayout,
+    QgsLayoutGuide,
+    QgsLayoutItemPage,
+    QgsLayoutItemShape,
+    QgsLayoutMeasurement,
+    QgsLayoutObject,
+    QgsLayoutPoint,
+    QgsLayoutSize,
+    QgsMargins,
+    QgsProject,
+    QgsProperty,
+    QgsReadWriteContext,
+    QgsSimpleFillSymbolLayer,
+    QgsUnitTypes,
+)
 from qgis.testing import start_app, unittest
 
 start_app()

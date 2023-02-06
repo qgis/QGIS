@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for the attribute form
 
 
@@ -14,25 +13,23 @@ __author__ = 'Alessandro Pasotti'
 __date__ = '2019-06-06'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
-from qgis.testing import start_app, unittest
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import (
-    QgsFields,
-    QgsVectorLayer,
-    QgsFeature,
-    QgsEditorWidgetSetup,
-    QgsEditFormConfig,
-    QgsAttributeEditorElement,
     QgsDefaultValue,
-    QgsField
+    QgsEditFormConfig,
+    QgsEditorWidgetSetup,
+    QgsFeature,
+    QgsField,
+    QgsVectorLayer,
 )
 from qgis.gui import (
+    QgsAttributeEditorContext,
     QgsAttributeForm,
+    QgsFilterLineEdit,
     QgsGui,
-    QgsEditorWidgetWrapper,
     QgsMapCanvas,
-    QgsAttributeEditorContext
 )
-from qgis.PyQt.QtCore import QVariant
+from qgis.testing import start_app, unittest
 
 QGISAPP = start_app()
 
@@ -46,7 +43,7 @@ class TestQgsAttributeForm(unittest.TestCase):
 
     @classmethod
     def createLayerWithOnePoint(cls, field_type):
-        layer = QgsVectorLayer("Point?field=fld:%s" % field_type,
+        layer = QgsVectorLayer(f"Point?field=fld:{field_type}",
                                "vl", "memory")
         pr = layer.dataProvider()
         f = QgsFeature()
@@ -118,6 +115,46 @@ class TestQgsAttributeForm(unittest.TestCase):
 
         for field_type, value in field_types.items():
             self.checkForm(field_type, value)
+
+    def test_duplicated_widgets_multiedit(self):
+        """
+        Test multiedit with duplicated widgets
+        """
+
+        field_type = 'integer'
+        vl = self.createLayerWithOnePoint(field_type)
+
+        # add another point
+        pr = vl.dataProvider()
+        f = QgsFeature()
+        assert pr.addFeatures([f])
+        assert vl.featureCount() == 2
+
+        assert vl.startEditing()
+
+        assert vl.changeAttributeValue(1, 0, 123)
+        assert vl.changeAttributeValue(2, 0, 456)
+
+        widget_type = 'TextEdit'
+        form = self.createFormWithDuplicateWidget(vl, field_type, widget_type)
+
+        fids = list()
+        for feature in vl.getFeatures():
+            fids.append(feature.id())
+
+        form.setMode(QgsAttributeEditorContext.MultiEditMode)
+        form.setMultiEditFeatureIds(fids)
+
+        for children in form.findChildren(QgsFilterLineEdit):
+            if children.objectName() == 'fld':
+                # As the values are mixed, the widget values should be empty
+                assert not children.text()
+
+        # After save the values should be unchanged
+        form.save()
+        featuresIterator = vl.getFeatures()
+        self.assertEqual(next(featuresIterator).attribute(0), 123)
+        self.assertEqual(next(featuresIterator).attribute(0), 456)
 
     def test_on_update(self):
         """Test live update"""

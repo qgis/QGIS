@@ -107,12 +107,12 @@ Returns whether the renderer will render data with simple lines (otherwise it us
 Sets whether the renderer will render data with simple lines (otherwise it uses buffer)
 %End
 
-    QgsAbstractMaterialSettings *material() const;
+    QgsAbstractMaterialSettings *materialSettings() const;
 %Docstring
-Returns material used for shading of the symbol
+Returns material settings used for shading of the symbol
 %End
 
-    void setMaterial( QgsAbstractMaterialSettings *material /Transfer/ );
+    void setMaterialSettings( QgsAbstractMaterialSettings *materialSettings /Transfer/ );
 %Docstring
 Sets the ``material`` settings used for shading of the symbol.
 

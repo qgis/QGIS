@@ -10,6 +10,7 @@
 
 
 
+
 class QgsGeometryOptions : QObject
 {
 %Docstring(signature="appended")

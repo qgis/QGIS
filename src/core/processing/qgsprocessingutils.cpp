@@ -808,7 +808,7 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
       destination = QStringLiteral( "output" );
 
     // memory provider cannot be used with QgsVectorLayerImport - so create layer manually
-    std::unique_ptr< QgsVectorLayer > layer( QgsMemoryProviderUtils::createMemoryLayer( destination, fields, geometryType, crs ) );
+    std::unique_ptr< QgsVectorLayer > layer( QgsMemoryProviderUtils::createMemoryLayer( destination, fields, geometryType, crs, false ) );
     if ( !layer || !layer->isValid() )
     {
       throw QgsProcessingException( QObject::tr( "Could not create memory layer" ) );
@@ -1036,7 +1036,7 @@ QString QgsProcessingUtils::tempFolder()
   static QString sFolder;
   static QMutex sMutex;
   QMutexLocker locker( &sMutex );
-  const QString basePath = QgsProcessing::settingsTempPath.value();
+  const QString basePath = QgsProcessing::settingsTempPath->value();
   if ( basePath.isEmpty() )
   {
     // default setting -- automatically create a temp folder
@@ -1304,7 +1304,7 @@ QgsFields QgsProcessingUtils::indicesToFields( const QList<int> &indices, const 
 
 QString QgsProcessingUtils::defaultVectorExtension()
 {
-  const int setting = QgsProcessing::settingsDefaultOutputVectorLayerExt.value();
+  const int setting = QgsProcessing::settingsDefaultOutputVectorLayerExt->value();
   if ( setting == -1 )
     return QStringLiteral( "gpkg" );
   return QgsVectorFileWriter::supportedFormatExtensions().value( setting, QStringLiteral( "gpkg" ) );
@@ -1312,7 +1312,7 @@ QString QgsProcessingUtils::defaultVectorExtension()
 
 QString QgsProcessingUtils::defaultRasterExtension()
 {
-  const int setting = QgsProcessing::settingsDefaultOutputRasterLayerExt.value();
+  const int setting = QgsProcessing::settingsDefaultOutputRasterLayerExt->value();
   if ( setting == -1 )
     return QStringLiteral( "tif" );
   return QgsRasterFileWriter::supportedFormatExtensions().value( setting, QStringLiteral( "tif" ) );
@@ -1377,6 +1377,63 @@ QVariantMap QgsProcessingUtils::removePointerValuesFromMap( const QVariantMap &m
     }
   }
   return res;
+}
+
+QVariantMap QgsProcessingUtils::preprocessQgisProcessParameters( const QVariantMap &parameters, bool &ok, QString &error )
+{
+  QVariantMap output;
+  ok = true;
+  for ( auto it = parameters.constBegin(); it != parameters.constEnd(); ++it )
+  {
+    if ( it.value().type() == QVariant::Map )
+    {
+      const QVariantMap value = it.value().toMap();
+      if ( value.value( QStringLiteral( "type" ) ).toString() == QLatin1String( "data_defined" ) )
+      {
+        const QString expression = value.value( QStringLiteral( "expression" ) ).toString();
+        const QString field = value.value( QStringLiteral( "field" ) ).toString();
+        if ( !expression.isEmpty() )
+        {
+          output.insert( it.key(), QgsProperty::fromExpression( expression ) );
+        }
+        else if ( !field.isEmpty() )
+        {
+          output.insert( it.key(), QgsProperty::fromField( field ) );
+        }
+        else
+        {
+          ok = false;
+          error = QObject::tr( "Invalid data defined parameter for %1, requires 'expression' or 'field' values." ).arg( it.key() );
+        }
+      }
+      else
+      {
+        output.insert( it.key(), it.value() );
+      }
+    }
+    else if ( it.value().type() == QVariant::String )
+    {
+      const QString stringValue = it.value().toString();
+
+      if ( stringValue.startsWith( QLatin1String( "field:" ) ) )
+      {
+        output.insert( it.key(), QgsProperty::fromField( stringValue.mid( 6 ) ) );
+      }
+      else if ( stringValue.startsWith( QLatin1String( "expression:" ) ) )
+      {
+        output.insert( it.key(), QgsProperty::fromExpression( stringValue.mid( 11 ) ) );
+      }
+      else
+      {
+        output.insert( it.key(), it.value() );
+      }
+    }
+    else
+    {
+      output.insert( it.key(), it.value() );
+    }
+  }
+  return output;
 }
 
 //

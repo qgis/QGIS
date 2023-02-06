@@ -1,5 +1,0 @@
-Ordered Weighted Averaging|Ordered Weighted Averaging (OWA)
-grid_analysis
-QgsProcessingParameterMultipleLayers|GRIDS|Input Grids|3|None|False
-QgsProcessingParameterMatrix|WEIGHTS|Weights|3|False|Weight
-QgsProcessingParameterRasterDestination|OUTPUT|Output Grid

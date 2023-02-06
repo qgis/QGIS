@@ -15,7 +15,6 @@
 
 #include "qgslayoutguiutils.h"
 #include "qgsgui.h"
-#include "qgslayout.h"
 #include "qgslayoutitemguiregistry.h"
 #include "qgslayoutitemregistry.h"
 #include "qgslayoutviewrubberband.h"
@@ -32,6 +31,7 @@
 #include "qgslayoutpicturewidget.h"
 #include "qgslayoutitempicture.h"
 #include "qgslayoutitemlabel.h"
+#include "qgslayoutitemelevationprofile.h"
 #include "qgslayoutlabelwidget.h"
 #include "qgslayoutitemlegend.h"
 #include "qgslayoutitemscalebar.h"
@@ -44,7 +44,9 @@
 #include "qgslayoutattributetablewidget.h"
 #include "qgslayoutitemmanualtable.h"
 #include "qgslayoutmanualtablewidget.h"
+#include "qgslayoutelevationprofilewidget.h"
 #include "qgsmapcanvas.h"
+#include "qgsplot.h"
 
 /**
  * Attempts to find the best guess at a map item to link \a referenceItem to,
@@ -229,10 +231,24 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
     const QString defaultFontString = settings.value( QStringLiteral( "LayoutDesigner/defaultFont" ), QVariant(), QgsSettings::Gui ).toString();
     if ( !defaultFontString.isEmpty() )
     {
-      legend->rstyle( QgsLegendStyle::Title ).rfont().setFamily( defaultFontString );
-      legend->rstyle( QgsLegendStyle::Group ).rfont().setFamily( defaultFontString );
-      legend->rstyle( QgsLegendStyle::Subgroup ).rfont().setFamily( defaultFontString );
-      legend->rstyle( QgsLegendStyle::SymbolLabel ).rfont().setFamily( defaultFontString );
+      QFont font;
+      font.setFamily( defaultFontString );
+
+      QgsTextFormat f = legend->rstyle( QgsLegendStyle::Title ).textFormat();
+      f.setFont( font );
+      legend->rstyle( QgsLegendStyle::Title ).setTextFormat( f );
+
+      f = legend->rstyle( QgsLegendStyle::Group ).textFormat();
+      f.setFont( font );
+      legend->rstyle( QgsLegendStyle::Group ).setTextFormat( f );
+
+      f = legend->rstyle( QgsLegendStyle::Subgroup ).textFormat();
+      f.setFont( font );
+      legend->rstyle( QgsLegendStyle::Subgroup ).setTextFormat( f );
+
+      f = legend->rstyle( QgsLegendStyle::SymbolLabel ).textFormat();
+      f.setFont( font );
+      legend->rstyle( QgsLegendStyle::SymbolLabel ).setTextFormat( f );
     }
 
     legend->updateLegend();
@@ -504,4 +520,38 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
     return f;
   } );
   registry->addLayoutItemGuiMetadata( manualTableItemMetadata.release() );
+
+
+  // elevation profile item
+
+  auto elevationProfileItemMetadata = std::make_unique< QgsLayoutItemGuiMetadata >( QgsLayoutItemRegistry::LayoutElevationProfile, QObject::tr( "Elevation Profile" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionElevationProfile.svg" ) ),
+                                      [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
+  {
+    return new QgsLayoutElevationProfileWidget( qobject_cast< QgsLayoutItemElevationProfile * >( item ) );
+  }, createRubberBand );
+  elevationProfileItemMetadata->setItemCreationFunction( [ = ]( QgsLayout * layout )->QgsLayoutItem *
+  {
+    std::unique_ptr< QgsLayoutItemElevationProfile > profileItem = std::make_unique< QgsLayoutItemElevationProfile >( layout );
+
+    //set default fonts from settings
+    QgsSettings settings;
+    const QString defaultFontString = settings.value( QStringLiteral( "LayoutDesigner/defaultFont" ), QVariant(), QgsSettings::Gui ).toString();
+    if ( !defaultFontString.isEmpty() )
+    {
+      QgsTextFormat format = profileItem->plot()->xAxis().textFormat();
+      QFont f = format.font();
+      f.setFamily( defaultFontString );
+      format.setFont( f );
+      profileItem->plot()->xAxis().setTextFormat( format );
+
+      format = profileItem->plot()->yAxis().textFormat();
+      f = format.font();
+      f.setFamily( defaultFontString );
+      format.setFont( f );
+      profileItem->plot()->yAxis().setTextFormat( format );
+    }
+    return profileItem.release();
+  } );
+  registry->addLayoutItemGuiMetadata( elevationProfileItemMetadata.release() );
+
 }

@@ -17,8 +17,7 @@
 #define QGSSOURCESELECTPROVIDERREGISTRY_H
 
 #include <QList>
-#include <QWidget>
-
+#include <QObject>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 
@@ -38,8 +37,10 @@ class QgsAbstractDataSourceWidget;
  *
  * \since QGIS 3.0
  */
-class GUI_EXPORT QgsSourceSelectProviderRegistry
+class GUI_EXPORT QgsSourceSelectProviderRegistry : public QObject
 {
+    Q_OBJECT
+
   public:
 
     QgsSourceSelectProviderRegistry();
@@ -88,6 +89,22 @@ class GUI_EXPORT QgsSourceSelectProviderRegistry
       Qt::WindowFlags fl,
       QgsProviderRegistry::WidgetMode widgetMode
     );
+
+  signals:
+
+    /**
+     * Emitted whenever a provider is added to the registry.
+     *
+     * \since QGIS 3.30
+     */
+    void providerAdded( const QString &name );
+
+    /**
+     * Emitted whenever a provider is removed from the registry.
+     *
+     * \since QGIS 3.30
+     */
+    void providerRemoved( const QString &name );
 
   private:
 #ifdef SIP_RUN

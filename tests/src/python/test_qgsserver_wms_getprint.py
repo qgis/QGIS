@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer WMS GetPrint.
 
 From build dir, run: ctest -R PyQgsServerWMSGetPrint -V
@@ -21,11 +20,9 @@ os.environ['QT_HASH_SEED'] = '1'
 
 import urllib.parse
 
-from qgis.testing import unittest
-
-from test_qgsserver import QgsServerTestBase
-
 from qgis.PyQt.QtCore import QSize
+from qgis.testing import unittest
+from test_qgsserver import QgsServerTestBase
 
 
 class TestQgsServerWMSGetPrint(QgsServerTestBase):

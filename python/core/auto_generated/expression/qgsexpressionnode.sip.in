@@ -284,6 +284,7 @@ Returns the node's static cached value. Only valid if :py:func:`~QgsExpressionNo
 .. versionadded:: 3.18
 %End
 
+
     const QgsExpressionNode *effectiveNode() const;
 %Docstring
 Returns a reference to the simplest node which represents this node,

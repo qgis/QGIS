@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsRasterLayerElevationProperties
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,17 +10,14 @@ __date__ = '09/11/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
+    Qgis,
+    QgsFillSymbol,
+    QgsLineSymbol,
     QgsRasterLayerElevationProperties,
     QgsReadWriteContext,
-    QgsLineSymbol,
-    QgsFillSymbol,
-    Qgis
 )
-
-from qgis.PyQt.QtXml import QDomDocument
-
 from qgis.testing import start_app, unittest
 
 start_app()
