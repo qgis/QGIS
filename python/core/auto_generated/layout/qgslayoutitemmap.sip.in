@@ -927,6 +927,13 @@ Returns the map's item based clip path settings.
 .. versionadded:: 3.16
 %End
 
+    QgsGeometry atlasGeometry( const QgsCoordinateReferenceSystem crs ) const;
+%Docstring
+Returns the current geometry ( from the source layer or data-defined ) in the provided crs.
+
+.. versionadded:: 3.32
+%End
+
   protected:
 
     virtual void draw( QgsLayoutItemRenderContext &context );

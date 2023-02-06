@@ -2804,8 +2804,7 @@ QgsGeometry QgsLayoutItemMap::atlasGeometry( const QgsCoordinateReferenceSystem 
   if ( mDataDefinedProperties.isActive( QgsLayoutObject::AtlasGeometryOverride ) )
   {
     QgsExpressionContext context = createExpressionContext();
-    //mDataDefinedProperties.prepare( context );
-    //expression QgsExpression( mDataDefinedProperties.value( QgsLayoutObject::AtlasGeometryOverride, context ).expressionString() )expression.evaluate( &context) )
+    //mDataDefinedProperties.prepare( context ); // needed?
     QgsGeometry geometry = mDataDefinedProperties.value( QgsLayoutObject::AtlasGeometryOverride, context ).value<QgsGeometry>();
     QgsCoordinateReferenceSystem layerCrs = mLayout->reportContext().layer()->crs();
     if ( crs.isValid() && crs != layerCrs )
@@ -2814,7 +2813,7 @@ QgsGeometry QgsLayoutItemMap::atlasGeometry( const QgsCoordinateReferenceSystem 
       return ( geometry );
   }
 
-  return( mLayout->reportContext().currentGeometry( crs ) );
+  return ( mLayout->reportContext().currentGeometry( crs ) );
 }
 
 

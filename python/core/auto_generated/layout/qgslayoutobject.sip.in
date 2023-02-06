@@ -207,6 +207,7 @@ A base class for objects which belong to a layout.
       ElevationProfileMaximumDistance,
       ElevationProfileMinimumElevation,
       ElevationProfileMaximumElevation,
+      AtlasGeometryOverride,
     };
 
     enum PropertyValueType
