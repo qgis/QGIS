@@ -221,7 +221,7 @@ class CORE_EXPORT QgsExpressionUtils
     {
       bool ok;
       const double converted = getDoubleInternal( value, &ok );
-      if ( !ok || std::isnan( x ) || !std::isfinite( x ) )
+      if ( !ok || std::isnan( converted ) || !std::isfinite( converted ) )
       {
         parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to double" ).arg( value.toString() ) );
         return 0;
@@ -255,7 +255,7 @@ class CORE_EXPORT QgsExpressionUtils
         const qlonglong converted = value.toLongLong( &ok );
         if ( ok )
         {
-          return x;
+          return converted;
         }
       }
       parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to int" ).arg( value.toString() ) );
