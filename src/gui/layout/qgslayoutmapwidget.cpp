@@ -201,7 +201,7 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item, QgsMapCanvas *ma
   connect( mMapItem, &QgsLayoutItemMap::extentChanged, mItemPropertiesWidget, &QgsLayoutItemPropertiesWidget::updateVariables );
   connect( mMapItem, &QgsLayoutItemMap::mapRotationChanged, mItemPropertiesWidget, &QgsLayoutItemPropertiesWidget::updateVariables );
 
-  connect( mGeometryOverrideDDBtn, &QgsPropertyOverrideButton::changed ,mMapItem, &QgsLayoutItemMap::refresh );
+  connect( mGeometryOverrideDDBtn, &QgsPropertyOverrideButton::changed, mMapItem, &QgsLayoutItemMap::refresh );
 
   blockAllSignals( false );
 }
