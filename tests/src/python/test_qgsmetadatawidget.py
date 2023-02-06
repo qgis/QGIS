@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsMetadataWidget.
 
 Run with: ctest -V -R QgsMetadataWidget

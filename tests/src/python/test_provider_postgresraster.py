@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for the postgres raster provider.
 
 Note: to prepare the DB, you need to run the sql files specified in
@@ -53,7 +52,7 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
             basename = tablename
 
         if tablename not in [n.tableName() for n in conn.tables(schemaname)]:
-            with open(os.path.join(TEST_DATA_DIR, 'provider', 'postgresraster', basename + '.sql'), 'r') as f:
+            with open(os.path.join(TEST_DATA_DIR, 'provider', 'postgresraster', basename + '.sql')) as f:
                 sql = f.read()
                 conn.executeSql(sql)
             assert (tablename in [n.tableName() for n in conn.tables(
@@ -233,7 +232,7 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
             # Make is smaller than full extent
             extent = rl.extent().buffered(-rl.extent().width() * 0.2)
             checkpoint_1 = time.time()
-            print("Tiled GDAL start time: {:.6f}".format(checkpoint_1 - start))
+            print(f"Tiled GDAL start time: {checkpoint_1 - start:.6f}")
             rl.dataProvider().block(1, extent, width, height)
             checkpoint_2 = time.time()
             print("Tiled GDAL first block time: {:.6f}".format(
@@ -242,17 +241,17 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
             checkpoint_3 = time.time()
             print("Tiled GDAL second block time: {:.6f}".format(
                 checkpoint_3 - checkpoint_2))
-            print("Total GDAL time: {:.6f}".format(checkpoint_3 - start))
+            print(f"Total GDAL time: {checkpoint_3 - start:.6f}")
             print('-' * 80)
 
             # PG native
             start = time.time()
-            rl = QgsRasterLayer(conn + "table={table} schema={schema}".format(table=table, schema=schema), 'gdal_layer',
+            rl = QgsRasterLayer(conn + f"table={table} schema={schema}", 'gdal_layer',
                                 'postgresraster')
             self.assertTrue(rl.isValid())
             extent = rl.extent().buffered(-rl.extent().width() * 0.2)
             checkpoint_1 = time.time()
-            print("Tiled PG start time: {:.6f}".format(checkpoint_1 - start))
+            print(f"Tiled PG start time: {checkpoint_1 - start:.6f}")
             rl.dataProvider().block(1, extent, width, height)
             checkpoint_2 = time.time()
             print("Tiled PG first block time: {:.6f}".format(
@@ -261,7 +260,7 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
             checkpoint_3 = time.time()
             print("Tiled PG second block time: {:.6f}".format(
                 checkpoint_3 - checkpoint_2))
-            print("Total PG time: {:.6f}".format(checkpoint_3 - start))
+            print(f"Total PG time: {checkpoint_3 - start:.6f}")
             print('-' * 80)
 
         _speed_check(schema, table, 1000, 1000)

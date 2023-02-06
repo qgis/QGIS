@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Helper utilities for HANA provider.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -130,4 +129,4 @@ class QgsHanaProviderUtils:
     def generateSchemaName(conn, prefix):
         sql = "SELECT REPLACE(CURRENT_UTCDATE, '-', '') || '_' || BINTOHEX(SYSUUID) FROM DUMMY;"
         uid = QgsHanaProviderUtils.executeSQL(conn, sql, return_result=True)
-        return '{}_{}'.format(prefix, uid)
+        return f'{prefix}_{uid}'

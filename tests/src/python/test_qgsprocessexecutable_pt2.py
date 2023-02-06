@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for qgis_process.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -100,7 +99,7 @@ class TestQgsProcessExecutablePt2(unittest.TestCase):
 
     def testAlgorithmRunJson(self):
         output_file = self.TMP_DIR + '/polygon_centroid2.shp'
-        rc, output, err = self.run_process(['run', '--no-python', '--json', 'native:centroids', '--', 'INPUT={}'.format(TEST_DATA_DIR + '/polys.shp'), 'OUTPUT={}'.format(output_file)])
+        rc, output, err = self.run_process(['run', '--no-python', '--json', 'native:centroids', '--', 'INPUT={}'.format(TEST_DATA_DIR + '/polys.shp'), f'OUTPUT={output_file}'])
         res = json.loads(output)
 
         self.assertIn('gdal_version', res)
@@ -127,7 +126,7 @@ class TestQgsProcessExecutablePt2(unittest.TestCase):
                                             'LAYERS={}'.format(TEST_DATA_DIR + '/polys.shp'),
                                             'LAYERS={}'.format(TEST_DATA_DIR + '/points.shp'),
                                             'LAYERS={}'.format(TEST_DATA_DIR + '/lines.shp'),
-                                            'OUTPUT={}'.format(output_file)])
+                                            f'OUTPUT={output_file}'])
         res = json.loads(output)
 
         self.assertIn('gdal_version', res)
@@ -158,7 +157,7 @@ class TestQgsProcessExecutablePt2(unittest.TestCase):
 
     def testModelRun(self):
         output_file = self.TMP_DIR + '/model_output.shp'
-        rc, output, err = self.run_process(['run', '--no-python', TEST_DATA_DIR + '/test_model.model3', '--', 'FEATS={}'.format(TEST_DATA_DIR + '/polys.shp'), 'native:centroids_1:CENTROIDS={}'.format(output_file)])
+        rc, output, err = self.run_process(['run', '--no-python', TEST_DATA_DIR + '/test_model.model3', '--', 'FEATS={}'.format(TEST_DATA_DIR + '/polys.shp'), f'native:centroids_1:CENTROIDS={output_file}'])
         self.assertFalse(self._strip_ignorable_errors(err))
         self.assertEqual(rc, 0)
         self.assertIn('0...10...20...30...40...50...60...70...80...90', output.lower())
@@ -191,7 +190,7 @@ class TestQgsProcessExecutablePt2(unittest.TestCase):
 
     def testModelRunJson(self):
         output_file = self.TMP_DIR + '/model_output2.shp'
-        rc, output, err = self.run_process(['run', TEST_DATA_DIR + '/test_model.model3', '--no-python', '--json', '--', 'FEATS={}'.format(TEST_DATA_DIR + '/polys.shp'), 'native:centroids_1:CENTROIDS={}'.format(output_file)])
+        rc, output, err = self.run_process(['run', TEST_DATA_DIR + '/test_model.model3', '--no-python', '--json', '--', 'FEATS={}'.format(TEST_DATA_DIR + '/polys.shp'), f'native:centroids_1:CENTROIDS={output_file}'])
         self.assertFalse(self._strip_ignorable_errors(err))
         self.assertEqual(rc, 0)
 
@@ -207,13 +206,13 @@ class TestQgsProcessExecutablePt2(unittest.TestCase):
 
     def testModelRunWithLog(self):
         output_file = self.TMP_DIR + '/model_log.log'
-        rc, output, err = self.run_process(['run', '--no-python', TEST_DATA_DIR + '/test_logging_model.model3', '--', 'logfile={}'.format(output_file)])
+        rc, output, err = self.run_process(['run', '--no-python', TEST_DATA_DIR + '/test_logging_model.model3', '--', f'logfile={output_file}'])
         self.assertEqual(rc, 0)
         self.assertIn('0...10...20...30...40...50...60...70...80...90', output.lower())
         self.assertIn('results', output.lower())
         self.assertTrue(os.path.exists(output_file))
 
-        with open(output_file, 'rt') as f:
+        with open(output_file) as f:
             lines = '\n'.join(f.readlines())
 
         self.assertIn('Test logged message', lines)
@@ -327,6 +326,6 @@ if __name__ == '__main__':
             if found:
                 break
 
-    print(('\nQGIS_PROCESS_BIN: {}'.format(QGIS_PROCESS_BIN)))
+    print(f'\nQGIS_PROCESS_BIN: {QGIS_PROCESS_BIN}')
     assert QGIS_PROCESS_BIN, 'qgis_process binary not found, skipping test suite'
     unittest.main()

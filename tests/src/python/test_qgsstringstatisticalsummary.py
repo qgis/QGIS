@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsStringStatisticalSummary.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -34,7 +33,7 @@ class PyQgsStringStatisticalSummary(unittest.TestCase):
         self.assertEqual(s2.count(), 10)
         self.assertEqual(s.countDistinct(), 6)
         self.assertEqual(s2.countDistinct(), 6)
-        self.assertEqual(set(s.distinctValues()), set(['cc', 'aaaa', 'bbbbbbbb', 'eeee', 'dddd', '']))
+        self.assertEqual(set(s.distinctValues()), {'cc', 'aaaa', 'bbbbbbbb', 'eeee', 'dddd', ''})
         self.assertEqual(s2.distinctValues(), s.distinctValues())
         self.assertEqual(s.countMissing(), 2)
         self.assertEqual(s2.countMissing(), 2)
@@ -101,7 +100,7 @@ class PyQgsStringStatisticalSummary(unittest.TestCase):
         self.assertEqual(s.statistics(), QgsStringStatisticalSummary.All)
         s.calculateFromVariants(['cc', 5, 'bbbb', 'aaaa', 'eeee', 6, 9, '9', ''])
         self.assertEqual(s.count(), 6)
-        self.assertEqual(set(s.distinctValues()), set(['cc', 'aaaa', 'bbbb', 'eeee', '', '9']))
+        self.assertEqual(set(s.distinctValues()), {'cc', 'aaaa', 'bbbb', 'eeee', '', '9'})
         self.assertEqual(s.countMissing(), 1)
         self.assertEqual(s.min(), '9')
         self.assertEqual(s.max(), 'eeee')

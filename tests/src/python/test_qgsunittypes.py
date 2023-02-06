@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsUnitTypes
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -116,8 +115,8 @@ class TestQgsUnitTypes(unittest.TestCase):
         self.assertEqual(res, QgsUnitTypes.DistanceUnknownUnit)
 
         # Test that string is cleaned before conversion
-        res, ok = QgsUnitTypes.stringToDistanceUnit(' {}  '.format(QgsUnitTypes.toString(QgsUnitTypes.DistanceFeet).upper()))
-        print((' {}  '.format(QgsUnitTypes.toString(QgsUnitTypes.DistanceFeet).upper())))
+        res, ok = QgsUnitTypes.stringToDistanceUnit(f' {QgsUnitTypes.toString(QgsUnitTypes.DistanceFeet).upper()}  ')
+        print(f' {QgsUnitTypes.toString(QgsUnitTypes.DistanceFeet).upper()}  ')
         assert ok
         self.assertEqual(res, QgsUnitTypes.DistanceFeet)
 
@@ -196,7 +195,7 @@ class TestQgsUnitTypes(unittest.TestCase):
         self.assertEqual(res, QgsUnitTypes.AreaUnknownUnit)
 
         # Test that string is cleaned before conversion
-        res, ok = QgsUnitTypes.stringToAreaUnit(' {}  '.format(QgsUnitTypes.toString(QgsUnitTypes.AreaSquareMiles).upper()))
+        res, ok = QgsUnitTypes.stringToAreaUnit(f' {QgsUnitTypes.toString(QgsUnitTypes.AreaSquareMiles).upper()}  ')
         assert ok
         self.assertEqual(res, QgsUnitTypes.AreaSquareMiles)
 
@@ -272,7 +271,7 @@ class TestQgsUnitTypes(unittest.TestCase):
         self.assertEqual(res, QgsUnitTypes.VolumeUnknownUnit)
 
         # Test that string is cleaned before conversion
-        res, ok = QgsUnitTypes.stringToVolumeUnit(' {}  '.format(QgsUnitTypes.toString(QgsUnitTypes.VolumeBarrel).upper()))
+        res, ok = QgsUnitTypes.stringToVolumeUnit(f' {QgsUnitTypes.toString(QgsUnitTypes.VolumeBarrel).upper()}  ')
         assert ok
         self.assertEqual(res, QgsUnitTypes.VolumeBarrel)
 
@@ -332,7 +331,7 @@ class TestQgsUnitTypes(unittest.TestCase):
         self.assertEqual(res, QgsUnitTypes.TemporalUnknownUnit)
 
         # Test that string is cleaned before conversion
-        res, ok = QgsUnitTypes.stringToTemporalUnit(' {}  '.format(QgsUnitTypes.toString(QgsUnitTypes.TemporalDecades).upper()))
+        res, ok = QgsUnitTypes.stringToTemporalUnit(f' {QgsUnitTypes.toString(QgsUnitTypes.TemporalDecades).upper()}  ')
         assert ok
         self.assertEqual(res, QgsUnitTypes.TemporalDecades)
 
@@ -516,7 +515,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                 res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, QgsUnitTypes.DistanceUnknownUnit)
                 self.assertAlmostEqual(res,
                                        1.0,
-                                       msg='got {:.7f}, expected 1.0 when converting from {} to unknown units'.format(res, QgsUnitTypes.toString(from_unit)))
+                                       msg=f'got {res:.7f}, expected 1.0 when converting from {QgsUnitTypes.toString(from_unit)} to unknown units')
 
     def testAreaFromUnitToUnitFactor(self):
         """Test calculation of conversion factor between areal units"""
@@ -691,7 +690,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                 res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, QgsUnitTypes.AreaUnknownUnit)
                 self.assertAlmostEqual(res,
                                        1.0,
-                                       msg='got {:.7f}, expected 1.0 when converting from {} to unknown units'.format(res, QgsUnitTypes.toString(from_unit)))
+                                       msg=f'got {res:.7f}, expected 1.0 when converting from {QgsUnitTypes.toString(from_unit)} to unknown units')
 
     def testDistanceToAreaUnit(self):
         """Test distanceToAreaUnit conversion"""
@@ -878,7 +877,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                 res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, QgsUnitTypes.VolumeUnknownUnit)
                 self.assertAlmostEqual(res,
                                        1.0,
-                                       msg='got {:.7f}, expected 1.0 when converting from {} to unknown units'.format(res, QgsUnitTypes.toString(from_unit)))
+                                       msg=f'got {res:.7f}, expected 1.0 when converting from {QgsUnitTypes.toString(from_unit)} to unknown units')
 
     def testTemporalFromUnitToUnitFactor(self):
         """Test calculation of conversion factor between temporal units"""
@@ -1039,11 +1038,11 @@ class TestQgsUnitTypes(unittest.TestCase):
                 res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, QgsUnitTypes.TemporalUnknownUnit)
                 self.assertAlmostEqual(res,
                                        1.0,
-                                       msg='got {:.7f}, expected 1.0 when converting from {} to unknown units'.format(res, QgsUnitTypes.toString(from_unit)))
+                                       msg=f'got {res:.7f}, expected 1.0 when converting from {QgsUnitTypes.toString(from_unit)} to unknown units')
                 res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, QgsUnitTypes.TemporalIrregularStep)
                 self.assertAlmostEqual(res,
                                        1.0,
-                                       msg='got {:.7f}, expected 1.0 when converting from {} to unknown units'.format(res, QgsUnitTypes.toString(from_unit)))
+                                       msg=f'got {res:.7f}, expected 1.0 when converting from {QgsUnitTypes.toString(from_unit)} to unknown units')
 
     def testDistanceToVolumeUnit(self):
         """Test distanceToVolumeUnit conversion"""
@@ -1093,7 +1092,7 @@ class TestQgsUnitTypes(unittest.TestCase):
 
         for u in units:
             res, ok = QgsUnitTypes.decodeAngleUnit(QgsUnitTypes.encodeUnit(u))
-            assert ok, 'could not decode unit {}'.format(QgsUnitTypes.toString(u))
+            assert ok, f'could not decode unit {QgsUnitTypes.toString(u)}'
             self.assertEqual(res, u)
 
         # Test decoding bad units
@@ -1160,7 +1159,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                 res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, QgsUnitTypes.AngleUnknownUnit)
                 self.assertAlmostEqual(res,
                                        1.0,
-                                       msg='got {:.7f}, expected 1.0 when converting from {} to unknown units'.format(res, QgsUnitTypes.toString(from_unit)))
+                                       msg=f'got {res:.7f}, expected 1.0 when converting from {QgsUnitTypes.toString(from_unit)} to unknown units')
 
     def testFormatAngle(self):
         """Test formatting angles"""

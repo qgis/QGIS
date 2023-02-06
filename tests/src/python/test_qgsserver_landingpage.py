@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer Landing Page Plugin.
 
 From build dir, run: ctest -R PyQgsServerLandingPage -V

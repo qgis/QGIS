@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsPalLabeling: base suite of render check tests
 
 Class is meant to be inherited by classes that test different labeling outputs
@@ -27,7 +26,7 @@ from utilities import svgSymbolsPath
 
 
 # noinspection PyPep8Naming
-class TestPointBase(object):
+class TestPointBase:
 
     def __init__(self):
         """Dummy assignments, intended to be overridden in subclasses"""
@@ -232,7 +231,7 @@ class TestPointBase(object):
 # noinspection PyPep8Naming
 
 
-class TestLineBase(object):
+class TestLineBase:
 
     def __init__(self):
         """Dummy assignments, intended to be overridden in subclasses"""

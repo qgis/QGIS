@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsAggregateMapping widget and model.
 
 From build dir, run: ctest -R PyQgsAggregateMappingWidget -V

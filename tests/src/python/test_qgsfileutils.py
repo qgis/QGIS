@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsFileUtils.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -122,7 +121,7 @@ class TestQgsFileUtils(unittest.TestCase):
 
         base_path = tempfile.mkdtemp()
         file = os.path.join(base_path, 'test.csv')
-        with open(file, 'wt') as f:
+        with open(file, 'w') as f:
             f.write('\n')
 
         self.assertEqual(QgsFileUtils.findClosestExistingPath(os.path.join(base_path, 'a file name.bmp')),
@@ -273,7 +272,7 @@ class TestQgsFileUtils(unittest.TestCase):
             shutil.copy(f'{unitTestDataPath()}/lines.{ext}', f'{base_path}/ll.{ext}')
 
         # file name clash
-        with open(f'{base_path}/yy.shp', 'wt') as f:
+        with open(f'{base_path}/yy.shp', 'w') as f:
             f.write('')
         res, error = QgsFileUtils.renameDataset(f'{base_path}/ll.shp', f'{base_path}/yy.shp',
                                                 Qgis.FileOperationFlags())
@@ -284,7 +283,7 @@ class TestQgsFileUtils(unittest.TestCase):
             self.assertTrue(os.path.exists(f'{base_path}/ll.{ext}'))
 
         # sidecar clash
-        with open(f'{base_path}/yyy.shx', 'wt') as f:
+        with open(f'{base_path}/yyy.shx', 'w') as f:
             f.write('')
         res, error = QgsFileUtils.renameDataset(f'{base_path}/ll.shp', f'{base_path}/yyy.shp')
         self.assertFalse(res)

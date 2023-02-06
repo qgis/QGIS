@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsProjectViewSettings.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -105,7 +104,7 @@ class TestQgsProjectViewSettings(unittest.TestCase):
         canvas.show()
 
         tmpDir = QTemporaryDir()
-        tmpFile = "{}/project.qgz".format(tmpDir.path())
+        tmpFile = f"{tmpDir.path()}/project.qgz"
         self.assertTrue(p.write(tmpFile))
 
         QgsProject.instance().read(tmpFile)
@@ -147,7 +146,7 @@ class TestQgsProjectViewSettings(unittest.TestCase):
         canvas.show()
 
         tmpDir = QTemporaryDir()
-        tmpFile = "{}/project.qgz".format(tmpDir.path())
+        tmpFile = f"{tmpDir.path()}/project.qgz"
         self.assertTrue(p.write(tmpFile))
 
         QgsProject.instance().read(tmpFile)

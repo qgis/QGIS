@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer WMS GetMap with QGIS_SERVER_IGNORE_BAD_LAYERS=true.
 
 From build dir, run: ctest -R PyQgsServerWMSGetMapIgnoreBadLayers -V

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for WebDAV external storage
 
 External storage backend must implement a test based on TestPyQgsExternalStorageBase

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLayerMetadata.
 
 Run with: ctest -V -R PyQgsLayerMetadata

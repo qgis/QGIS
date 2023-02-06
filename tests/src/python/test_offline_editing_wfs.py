@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Offline editing Tests.
 
@@ -20,7 +19,6 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-from builtins import str
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '05/15/2016'
@@ -120,7 +118,7 @@ class TestWFST(unittest.TestCase, OfflineTestBase):
         parms = {
             'srsname': 'EPSG:4326',
             'typename': type_name,
-            'url': 'http://127.0.0.1:%s/%s/?map=%s' % (self.port,
+            'url': 'http://127.0.0.1:{}/{}/?map={}'.format(self.port,
                                                        self.counter,
                                                        self.project_path),
             'version': 'auto',
@@ -128,7 +126,7 @@ class TestWFST(unittest.TestCase, OfflineTestBase):
             # 'sql': '',
         }
         self.counter += 1
-        uri = ' '.join([("%s='%s'" % (k, v)) for k, v in list(parms.items())])
+        uri = ' '.join([(f"{k}='{v}'") for k, v in list(parms.items())])
         wfs_layer = QgsVectorLayer(uri, layer_name, 'WFS')
         wfs_layer.setParent(QgsApplication.authManager())
         assert wfs_layer.isValid()

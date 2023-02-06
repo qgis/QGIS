@@ -49,7 +49,7 @@ def install_http_handler(handler_instance):
         custom_handler = None
 
 
-class RequestResponse(object):
+class RequestResponse:
     def __init__(self, method, path, code, headers=None, body=None, custom_method=None, expected_headers=None, expected_body=None, add_content_length_header=True, unexpected_headers=[]):
         self.method = method
         self.path = path
@@ -63,7 +63,7 @@ class RequestResponse(object):
         self.unexpected_headers = unexpected_headers
 
 
-class SequentialHandler(object):
+class SequentialHandler:
     def __init__(self):
         self.req_count = 0
         self.req_resp = []

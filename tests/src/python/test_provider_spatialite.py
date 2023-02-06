@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsSpatialiteProvider
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -358,7 +357,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         QgsSettings().setValue('/qgis/compileExpressions', False)
 
     def uncompiledFilters(self):
-        return set(['cnt = 10 ^ 2',
+        return {'cnt = 10 ^ 2',
                     '"name" ~ \'[OP]ra[gne]+\'',
                     'sqrt(pk) >= 2',
                     'radians(cnt) < 2',
@@ -419,15 +418,15 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
                     'dt NOT BETWEEN make_datetime(2020, 5, 3, 12, 13, 14) AND make_datetime(2020, 5, 4, 12, 14, 14)',
                     '"dt" <= make_datetime(2020, 5, 4, 12, 13, 14)',
                     '"date" <= make_datetime(2020, 5, 4, 12, 13, 14)'
-                    ])
+                    }
 
     def partiallyCompiledFilters(self):
-        return set(['"name" NOT LIKE \'Ap%\'',
+        return {'"name" NOT LIKE \'Ap%\'',
                     'name LIKE \'Apple\'',
                     'name LIKE \'aPple\'',
                     'name LIKE \'Ap_le\'',
                     'name LIKE \'Ap\\_le\''
-                    ])
+                    }
 
     def test_SplitFeature(self):
         """Create SpatiaLite database"""
@@ -558,7 +557,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.isValid())
         # The iterator will take one extra connection
         myiter = vl.getFeatures()
-        print((vl.featureCount()))
+        print(vl.featureCount())
         # Consume one feature but the iterator is still opened
         f = next(myiter)
         self.assertTrue(f.isValid())
@@ -815,7 +814,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.isValid())
 
         self.assertTrue(
-            vl.dataProvider().skipConstraintCheck(0, QgsFieldConstraints.ConstraintUnique, str("Autogenerate")))
+            vl.dataProvider().skipConstraintCheck(0, QgsFieldConstraints.ConstraintUnique, "Autogenerate"))
         self.assertFalse(vl.dataProvider().skipConstraintCheck(
             0, QgsFieldConstraints.ConstraintUnique, 123))
 
@@ -888,7 +887,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         res = [row for row in rs]
         self.assertEqual(len(res), 1)
         index_name = res[0][1]
-        rs = cur.execute("PRAGMA index_info({})".format(index_name))
+        rs = cur.execute(f"PRAGMA index_info({index_name})")
         res = [row for row in rs]
         self.assertEqual(len(res), 1)
         self.assertEqual(res[0][2], 'name')
@@ -902,12 +901,12 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         indexed_columns = []
         for row in res:
             index_name = row[1]
-            rs = cur.execute("PRAGMA index_info({})".format(index_name))
+            rs = cur.execute(f"PRAGMA index_info({index_name})")
             res = [row for row in rs]
             self.assertEqual(len(res), 1)
             indexed_columns.append(res[0][2])
 
-        self.assertEqual(set(indexed_columns), set(['name', 'number']))
+        self.assertEqual(set(indexed_columns), {'name', 'number'})
         con.close()
 
     def testSubsetStringRegexp(self):
@@ -976,7 +975,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         """Check that the provider URI decoding returns expected values"""
 
         filename = '/home/to/path/test.db'
-        uri = 'dbname=\'{}\' table="test" (geometry) key=testkey sql=1=1'.format(filename)
+        uri = f'dbname=\'{filename}\' table="test" (geometry) key=testkey sql=1=1'
         registry = QgsProviderRegistry.instance()
         components = registry.decodeUri('spatialite', uri)
         self.assertEqual(components['path'], filename)
@@ -997,7 +996,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
                  'geometryColumn': 'geometry',
                  'keyColumn': 'testkey'}
         uri = registry.encodeUri('spatialite', parts)
-        self.assertEqual(uri, 'dbname=\'{}\' key=\'testkey\' table="test" (geometry) sql=1=1'.format(filename))
+        self.assertEqual(uri, f'dbname=\'{filename}\' key=\'testkey\' table="test" (geometry) sql=1=1')
 
     def testPKNotInt(self):
         """ Check when primary key is not an integer """
@@ -1010,7 +1009,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
 
         # try the two different types of index creation
         for index_creation_method in ['CreateSpatialIndex', 'CreateMbrCache']:
-            table_name = "pk_is_string_{}".format(index_creation_method)
+            table_name = f"pk_is_string_{index_creation_method}"
 
             cur.execute("BEGIN")
             sql = "SELECT InitSpatialMetadata()"
@@ -1167,7 +1166,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertFalse(qml)
         self.assertTrue(errmsg)
 
-        qml, success = vl.loadNamedStyle('{}|layerid=0'.format(dbname))
+        qml, success = vl.loadNamedStyle(f'{dbname}|layerid=0')
         self.assertFalse(success)
 
         errorMsg = vl.saveStyleToDatabase("name", "description", False, "")
@@ -1275,7 +1274,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
             vl = QgsVectorLayer('dbname=\'{}\' table="{}" (geom) sql='.format(
                 dbname, sql), 'test', 'spatialite')
             self.assertTrue(
-                vl.isValid(), 'dbname: {} - sql: {}'.format(dbname, sql))
+                vl.isValid(), f'dbname: {dbname} - sql: {sql}')
             self.assertTrue(vl.featureCount() > 1)
             self.assertTrue(vl.isSpatial())
 
@@ -1332,9 +1331,9 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
                 self.assertTrue(f.isValid())
                 self.assertTrue(vl.getFeature(i - offset).isValid())
                 self.assertEqual(vl.getFeature(i - offset)
-                                 ['name'], 'name {id}'.format(id=i))
+                                 ['name'], f'name {i}')
                 self.assertEqual(f.id(), i - offset)
-                self.assertEqual(f['name'], 'name {id}'.format(id=i))
+                self.assertEqual(f['name'], f'name {i}')
                 self.assertEqual(f.geometry().asWkt(),
                                  'Point ({id} {id})'.format(id=i))
                 i += 1
@@ -1482,7 +1481,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
             res, features = provider.addFeatures([ft])
 
             layer = typeStr
-            uri = "dbname=%s table='%s' (geometry)" % (dbname, layer)
+            uri = f"dbname={dbname} table='{layer}' (geometry)"
             write_result, error_message = QgsVectorLayerExporter.exportLayer(ml,
                                                                              uri,
                                                                              'spatialite',
@@ -1836,7 +1835,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         con.close()
 
         layer = QgsVectorLayer(
-            'dbname=\'{}\' table="table50523" (position) sql='.format(self.dbname), 'test', 'spatialite')
+            f'dbname=\'{self.dbname}\' table="table50523" (position) sql=', 'test', 'spatialite')
 
         self.assertTrue(layer.isValid())
 
@@ -1865,7 +1864,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(layer.commitChanges())
 
         layer = QgsVectorLayer(
-            'dbname=\'{}\' table="table50523" (position) sql='.format(self.dbname), 'test', 'spatialite')
+            f'dbname=\'{self.dbname}\' table="table50523" (position) sql=', 'test', 'spatialite')
         self.assertEqual(len([f for f in layer.getFeatures()]), 1)
 
 

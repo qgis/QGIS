@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit test utils for provider tests.
 
 .. note:: This program is free software; you can redistribute it and/or modify

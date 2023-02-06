@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLayoutExporter
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -94,14 +93,14 @@ def pdfToPng(pdf_file_path, rendered_file_path, page, dpi=96):
     else:
         return False, ''
 
-    print("exportToPdf call: {0}".format(' '.join(call)))
+    print("exportToPdf call: {}".format(' '.join(call)))
     try:
         subprocess.check_call(call)
     except subprocess.CalledProcessError as e:
         assert False, ("exportToPdf failed!\n"
-                       "cmd: {0}\n"
-                       "returncode: {1}\n"
-                       "message: {2}".format(e.cmd, e.returncode, e.message))
+                       "cmd: {}\n"
+                       "returncode: {}\n"
+                       "message: {}".format(e.cmd, e.returncode, e.message))
 
 
 def svgToPng(svg_file_path, rendered_file_path, width):
@@ -150,7 +149,7 @@ class TestQgsLayoutExporter(unittest.TestCase):
         checker.setSizeTolerance(size_tolerance, size_tolerance)
         result = checker.runTest(name, 20)
         self.report += checker.report()
-        print((self.report))
+        print(self.report)
         return result
 
     def testRenderPage(self):
@@ -394,7 +393,7 @@ class TestQgsLayoutExporter(unittest.TestCase):
 
         page2_path = os.path.join(self.basetestpath, 'test_exporttoimagesizebadaspect_2.png')
         im = QImage(page2_path)
-        self.assertTrue(self.checkImage('exporttoimagesize_badaspect', 'exporttoimagedpi_page2', page2_path), '{}x{}'.format(im.width(), im.height()))
+        self.assertTrue(self.checkImage('exporttoimagesize_badaspect', 'exporttoimagedpi_page2', page2_path), f'{im.width()}x{im.height()}')
 
     def testExportToPdf(self):
         md = QgsProject.instance().metadata()
@@ -714,7 +713,7 @@ class TestQgsLayoutExporter(unittest.TestCase):
         self.assertTrue(os.path.exists(svg_file_path))
 
         # expect svg to contain a text object with the scale
-        with open(svg_file_path, 'r') as f:
+        with open(svg_file_path) as f:
             lines = ''.join(f.readlines())
         self.assertIn('<text', lines)
         self.assertIn('>1:666<', lines)
@@ -726,7 +725,7 @@ class TestQgsLayoutExporter(unittest.TestCase):
         self.assertTrue(os.path.exists(svg_file_path))
 
         # expect svg NOT to contain a text object with the scale
-        with open(svg_file_path, 'r') as f:
+        with open(svg_file_path) as f:
             lines = ''.join(f.readlines())
         self.assertNotIn('<text', lines)
         self.assertNotIn('>1:666<', lines)
@@ -816,7 +815,7 @@ class TestQgsLayoutExporter(unittest.TestCase):
         self.assertTrue(os.path.exists(rendered_file_path))
         self.assertTrue(os.path.exists(world_file_path))
 
-        lines = tuple(open(world_file_path, 'r'))
+        lines = tuple(open(world_file_path))
         values = [float(f) for f in lines]
         self.assertAlmostEqual(values[0], 0.794117647059, 2)
         self.assertAlmostEqual(values[1], 0.0, 2)

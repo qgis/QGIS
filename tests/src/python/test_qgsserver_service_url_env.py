@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 QGIS Unit tests for QgsServer with service URL defined in the environment variables
 """

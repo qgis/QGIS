@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer.
 
 From build dir, run: ctest -R PyQgsServerAccessControlWMSGetMapPG -V
@@ -38,7 +37,7 @@ class RestrictedAccessControlPG(QgsAccessControlFilter):
         """ Return an additional expression filter """
 
         if not self._active:
-            return super(RestrictedAccessControlPG, self).layerFilterExpression(layer)
+            return super().layerFilterExpression(layer)
 
         if layer.name() == "someData" or layer.name() == "someDataLong":
             return "pk > 2"
@@ -49,7 +48,7 @@ class RestrictedAccessControlPG(QgsAccessControlFilter):
         """ Return an additional subset string (typically SQL) filter """
 
         if not self._active:
-            return super(RestrictedAccessControlPG, self).layerFilterSubsetString(layer)
+            return super().layerFilterSubsetString(layer)
 
         if layer.name() == "someData" or layer.name() == "someDataLong":
             return "pk > 2"
@@ -59,17 +58,17 @@ class RestrictedAccessControlPG(QgsAccessControlFilter):
     def layerPermissions(self, layer):
         """ Return the layer rights """
 
-        return super(RestrictedAccessControlPG, self).layerPermissions(layer)
+        return super().layerPermissions(layer)
 
     def authorizedLayerAttributes(self, layer, attributes):
         """ Return the authorised layer attributes """
 
-        return super(RestrictedAccessControlPG, self).authorizedLayerAttributes(layer, attributes)
+        return super().authorizedLayerAttributes(layer, attributes)
 
     def allowToEdit(self, layer, feature):
         """ Are we authorise to modify the following geometry """
 
-        return super(RestrictedAccessControlPG, self).allowToEdit(layer, feature)
+        return super().allowToEdit(layer, feature)
 
     def cacheKey(self):
         return "r" if self._active else "f"
@@ -107,7 +106,7 @@ class TestQgsServerAccessControlWMSGetMapPG(TestQgsServerAccessControl):
         super().setUp()
 
         self.projectPath = os.path.join(self.testdata_path, "project_postgres.qgs")
-        self.assertTrue(os.path.isfile(self.projectPath), 'Could not find project file "{}"'.format(self.projectPath))
+        self.assertTrue(os.path.isfile(self.projectPath), f'Could not find project file "{self.projectPath}"')
 
     def _handle_request(self, restricted, query_string, **kwargs):
         self._accesscontrolpg._active = restricted

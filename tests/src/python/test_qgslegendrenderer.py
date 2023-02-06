@@ -1,4 +1,3 @@
-# coding=utf-8
 """"Test QgsLegendRenderer JSON export
 
 .. note:: This program is free software; you can redistribute it and/or modify

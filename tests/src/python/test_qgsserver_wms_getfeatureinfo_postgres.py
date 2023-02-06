@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer GetFeatureInfo WMS with PG.
 
 From build dir, run: ctest -R PyQgsServerWMSGetFeatureInfoPG -V

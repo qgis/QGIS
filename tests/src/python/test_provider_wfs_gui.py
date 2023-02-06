@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for the WFS provider. GUI part
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -143,7 +142,7 @@ class TestPyQgsWFSProviderGUI(unittest.TestCase):
         if sys.platform == 'win32' and expected_endpoint[1] == ':':
             expected_endpoint = expected_endpoint[0] + expected_endpoint[2:]
         with open(sanitize(endpoint, '?SERVICE=WFS?REQUEST=GetCapabilities?ACCEPTVERSIONS=2.0.0,1.1.0,1.0.0'), 'wb') as f:
-            f.write("""
+            f.write(b"""
 <wfs:WFS_Capabilities version="2.0.0" xmlns="http://www.opengis.net/wfs/2.0" xmlns:wfs="http://www.opengis.net/wfs/2.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:gml="http://schemas.opengis.net/gml/3.2" xmlns:fes="http://www.opengis.net/fes/2.0">
   <FeatureTypeList>
     <FeatureType>
@@ -194,7 +193,7 @@ class TestPyQgsWFSProviderGUI(unittest.TestCase):
       </fes:Function>
     </fes:Functions>
   </fes:Filter_Capabilities>
-</wfs:WFS_Capabilities>""".encode('UTF-8'))
+</wfs:WFS_Capabilities>""")
 
         txtUrl.setText("http://" + endpoint)
         new_conn.accept()
@@ -236,7 +235,7 @@ class TestPyQgsWFSProviderGUI(unittest.TestCase):
         # Click again but with valid DescribeFeatureType
 
         with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'), 'wb') as f:
-            f.write("""
+            f.write(b"""
 <xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
   <xsd:import namespace="http://www.opengis.net/gml/3.2"/>
   <xsd:complexType name="typenameType">
@@ -251,7 +250,7 @@ class TestPyQgsWFSProviderGUI(unittest.TestCase):
   </xsd:complexType>
   <xsd:element name="typename" substitutionGroup="gml:_Feature" type="my:typenameType"/>
 </xsd:schema>
-""".encode('UTF-8'))
+""")
         QTest.mouseClick(buttonBuildQuery, Qt.LeftButton)
 
         # Check that the combos are properly initialized

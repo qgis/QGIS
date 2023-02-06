@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsActionManager.
 
 From build dir, run: ctest -R PyQgsActionManager -V
@@ -61,7 +60,7 @@ class TestQgsActionManager(unittest.TestCase):
 
     def create_action(self, dest_file, text_to_write):
         """ returns an action which writes some output to a file """
-        return 'python {} {} {}'.format(self.run_script_file, dest_file, text_to_write)
+        return f'python {self.run_script_file} {dest_file} {text_to_write}'
 
     def testLayer(self):
         self.assertEqual(self.manager.layer(), self.layer)
@@ -150,7 +149,7 @@ class TestQgsActionManager(unittest.TestCase):
         self.assertFalse(self.manager.defaultAction('Feature').isValid())
 
     def check_action_result(self, temp_file):
-        with open(temp_file, 'r') as result:
+        with open(temp_file) as result:
             output = result.read()
         return output
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for the DBManager GPKG plugin
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -177,7 +176,7 @@ class TestPyQgsDBManagerPostgis(unittest.TestCase):
         if provider is None:
             raise Exception("cannot create postgres provider")
         if not provider.isValid():
-            raise Exception("Created postgres provider is not valid: {}".format(str(provider.errors())))
+            raise Exception(f"Created postgres provider is not valid: {str(provider.errors())}")
         # save provider config that is the way how db_manager is aware of a PG connection
         cls.addConnectionConfig(TEST_CONNECTION_NAME, uri)
 

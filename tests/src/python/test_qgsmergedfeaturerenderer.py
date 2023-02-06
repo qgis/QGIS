@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsMergedFeatureRenderer
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -170,7 +169,7 @@ class TestQgsMergedFeatureRenderer(unittest.TestCase):
 
     def imageCheck(self, name, reference_image, map_settings):
         map_settings.setOutputDpi(96)
-        self.report += "<h2>Render {}</h2>\n".format(name)
+        self.report += f"<h2>Render {name}</h2>\n"
 
         checker = QgsRenderChecker()
         checker.setControlPathPrefix("mergedfeaturerenderer")

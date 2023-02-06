@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsClassificationMethod implementations
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -72,7 +71,7 @@ class TestQgsClassificationMethods(unittest.TestCase):
         r = m.classes(vl, 'value', 8)
 
         self.assertEqual(len(r), 6)
-        self.assertEqual(r[0].label(), '{} - 10^4'.format(QLocale().toString(2746.71)))
+        self.assertEqual(r[0].label(), f'{QLocale().toString(2746.71)} - 10^4')
         self.assertEqual(QgsClassificationMethod.rangesToBreaks(r),
                          [10000.0, 100000.0, 1000000.0, 10000000.0, 100000000.0, 1000000000.0])
 
