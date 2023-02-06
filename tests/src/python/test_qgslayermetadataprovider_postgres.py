@@ -18,8 +18,8 @@ from qgis.core import (
     QgsVectorLayer,
     QgsProviderRegistry,
 )
-
 from qgis.testing import unittest
+
 from qgslayermetadataprovidertestbase import LayerMetadataProviderTestBase
 
 

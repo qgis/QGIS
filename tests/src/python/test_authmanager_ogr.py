@@ -12,9 +12,7 @@ the Free Software Foundation; either version 2 of the License, or
 
 from qgis.core import (
     QgsApplication,
-    QgsAuthManager,
     QgsAuthMethodConfig,
-    QgsDataSourceUri,
     QgsProviderRegistry,
 )
 

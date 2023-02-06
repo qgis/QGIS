@@ -11,15 +11,13 @@ __date__ = '31/08/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsRectangle,
                        QgsPointXY,
                        QgsReferencedRectangle,
                        QgsReferencedPointXY,
                        QgsCoordinateReferenceSystem)
-from qgis.PyQt.QtCore import QVariant
 from qgis.testing import start_app, unittest
-from utilities import compareWkt
 
 start_app()
 

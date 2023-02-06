@@ -13,16 +13,15 @@ __date__ = '28/08/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import os
-import json
-from qgis.testing import unittest
-import urllib.request
-import urllib.parse
 import urllib.error
-from test_qgsserver_accesscontrol import TestQgsServerAccessControl
-from utilities import unitTestDataPath
+import urllib.parse
+import urllib.request
 
 from qgis.core import QgsProviderRegistry
 from qgis.server import QgsAccessControlFilter
+from qgis.testing import unittest
+
+from test_qgsserver_accesscontrol import TestQgsServerAccessControl
 
 
 class RestrictedAccessControlPG(QgsAccessControlFilter):

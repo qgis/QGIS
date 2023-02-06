@@ -11,10 +11,6 @@ import os
 # Deterministic XML
 os.environ['QT_HASH_SEED'] = '1'
 
-import urllib.request
-import urllib.parse
-import urllib.error
-
 from qgis.server import QgsServer
 from qgis.core import QgsFontUtils
 from qgis.testing import unittest, start_app

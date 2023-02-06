@@ -11,35 +11,21 @@ __date__ = '28/11/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import qgis  # NOQA
-
-import os
-
+from qgis.PyQt.QtWidgets import (
+    QLabel,
+    QGridLayout,
+    QCheckBox,
+)
 from qgis.core import (
     QgsRelation,
-    QgsVectorLayerTools,
 )
-
 from qgis.gui import (
     QgsGui,
     QgsAbstractRelationEditorWidget,
     QgsAbstractRelationEditorConfigWidget,
     QgsAbstractRelationEditorWidgetFactory,
     QgsRelationEditorWidget,
-    QgsRelationEditorConfigWidget,
-    QgsAttributeEditorContext,
-    QgsAdvancedDigitizingDockWidget
-)
-
-from qgis.PyQt.QtCore import QTimer
-from qgis.PyQt.QtWidgets import (
-    QToolButton,
-    QMessageBox,
-    QDialogButtonBox,
-    QTableView,
-    QDialog,
-    QLabel,
-    QGridLayout,
-    QCheckBox,
+    QgsRelationEditorConfigWidget
 )
 from qgis.testing import start_app, unittest
 

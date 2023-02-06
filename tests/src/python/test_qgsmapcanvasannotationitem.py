@@ -11,7 +11,7 @@ __date__ = '24/1/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtCore import QPointF, QSizeF
 from qgis.core import (QgsTextAnnotation,
                        QgsCoordinateReferenceSystem,
                        QgsRectangle,
@@ -21,10 +21,8 @@ from qgis.core import (QgsTextAnnotation,
                        QgsGeometry,
                        QgsFillSymbol)
 from qgis.gui import QgsMapCanvas, QgsMapCanvasAnnotationItem
-
-from qgis.PyQt.QtCore import QPointF, QSizeF
-
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()

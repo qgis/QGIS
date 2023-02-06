@@ -22,13 +22,9 @@ __date__ = 'January 2016'
 __copyright__ = '(C) 2016, Nyall Dawson'
 
 import qgis  # NOQA
-
-from utilities import unitTestDataPath
-
 from qgis.PyQt.QtCore import QDir, Qt, QSize
 from qgis.PyQt.QtGui import QImage, QColor, QPainter
 from qgis.PyQt.QtXml import QDomDocument
-
 from qgis.core import (QgsGeometry,
                        QgsRectangle,
                        QgsCoordinateTransform,
@@ -63,8 +59,9 @@ from qgis.core import (QgsGeometry,
                        QgsRasterFillSymbolLayer,
                        QgsPoint
                        )
-
 from qgis.testing import unittest, start_app
+
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

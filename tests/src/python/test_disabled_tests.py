@@ -10,17 +10,18 @@ __author__ = 'Nyall Dawson'
 __date__ = '10/08/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
-import tempfile
 import os
 import shutil
+import tempfile
 
 from qgis.PyQt.QtCore import QEventLoop, QT_VERSION
-from qgis.core import QgsDataCollectionItem, QgsLayerItem
-from qgis.PyQt.QtCore import QVariant, QLocale
+from qgis.PyQt.QtCore import QLocale
 from qgis.PyQt.QtGui import QValidator
+from qgis.core import QgsDataCollectionItem, QgsLayerItem
 from qgis.core import QgsVectorLayer
 from qgis.gui import QgsFieldValidator
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 app = start_app()

@@ -11,38 +11,26 @@ __date__ = '2019-10-12'
 __copyright__ = 'Copyright 2019, Even Rouault'
 
 import copy
-import json
 import hashlib
+import json
 import os
-import re
 import shutil
 import tempfile
 
-from osgeo import gdal
-from qgis.PyQt.QtCore import QCoreApplication, Qt, QObject, QDateTime, QVariant
+from qgis.PyQt.QtCore import QCoreApplication, Qt, QDateTime
 from qgis.PyQt.QtTest import QSignalSpy
-
 from qgis.core import (
-    QgsWkbTypes,
     QgsVectorLayer,
-    QgsFeature,
-    QgsGeometry,
     QgsRectangle,
-    QgsPointXY,
-    QgsVectorDataProvider,
     QgsFeatureRequest,
     QgsApplication,
     QgsSettings,
-    QgsExpression,
-    QgsExpressionContextUtils,
-    QgsExpressionContext,
-    QgsCoordinateReferenceSystem,
-    QgsBox3d,
-    QgsMessageLog
+    QgsBox3d
 )
 from qgis.testing import (start_app,
                           unittest
                           )
+
 from providertestbase import ProviderTestCase
 
 

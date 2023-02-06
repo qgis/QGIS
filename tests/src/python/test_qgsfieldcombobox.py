@@ -11,13 +11,12 @@ __date__ = '20/07/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import QgsFields, QgsVectorLayer, QgsFieldProxyModel, QgsField, QgsFieldModel
 from qgis.gui import QgsFieldComboBox
-from qgis.PyQt.QtCore import QVariant, Qt
-from qgis.PyQt.QtTest import QSignalSpy
-
 from qgis.testing import start_app, unittest
+
 start_app()
 
 

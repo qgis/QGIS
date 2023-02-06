@@ -11,9 +11,8 @@ __date__ = '12/02/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.core import (QgsFeedback)
 from qgis.PyQt.QtTest import QSignalSpy
+from qgis.core import (QgsFeedback)
 from qgis.testing import unittest
 
 

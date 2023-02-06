@@ -13,11 +13,7 @@ __copyright__ = 'Copyright 2022, The QGIS Project'
 import qgis  # NOQA
 
 from qgis.PyQt.QtCore import (
-    QDir,
-    QEvent,
-    Qt,
-    QPoint,
-    QPointF
+    Qt
 )
 from qgis.PyQt.QtGui import (
     QColor

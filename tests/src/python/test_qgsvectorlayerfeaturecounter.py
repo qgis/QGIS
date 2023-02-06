@@ -12,22 +12,14 @@ __copyright__ = 'Copyright 2021, The QGIS Project'
 
 import qgis  # NOQA
 
-import os
-
-from qgis.PyQt.QtCore import QVariant, Qt, QDateTime, QDate, QTime
-from qgis.PyQt.QtGui import QPainter
-from qgis.PyQt.QtXml import QDomDocument
+from qgis.PyQt.QtCore import QDateTime, QDate, QTime
 from qgis.PyQt.QtTest import QSignalSpy
 
-from qgis.core import (QgsWkbTypes,
-                       QgsVectorLayer,
+from qgis.core import (QgsVectorLayer,
                        QgsFeature,
                        QgsGeometry,
-                       QgsField,
-                       QgsFields,
                        NULL)
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
 
 start_app()
 

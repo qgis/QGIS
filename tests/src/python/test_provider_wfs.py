@@ -11,13 +11,13 @@ __date__ = '2016-03-25'
 __copyright__ = 'Copyright 2016, Even Rouault'
 
 import hashlib
+import http.server
 import os
 import re
 import shutil
-import tempfile
-import http.server
-import threading
 import socketserver
+import tempfile
+import threading
 
 # Needed on Qt 5 so that the serialization of XML is consistent among all executions
 os.environ['QT_HASH_SEED'] = '1'

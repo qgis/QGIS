@@ -12,8 +12,6 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.gui import QgsOpacityWidget
-
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.testing import start_app, unittest
 

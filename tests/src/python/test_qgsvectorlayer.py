@@ -13,13 +13,12 @@ __author__ = 'Tim Sutton'
 __date__ = '20/08/2012'
 __copyright__ = 'Copyright 2012, The QGIS Project'
 
-import qgis  # NOQA
-
-import os
-import tempfile
-import shutil
 import glob
+import os
+import shutil
+import tempfile
 
+import qgis  # NOQA
 from qgis.PyQt.QtCore import (
     QVariant,
     Qt,
@@ -30,8 +29,8 @@ from qgis.PyQt.QtCore import (
     QTemporaryDir,
 )
 from qgis.PyQt.QtGui import QPainter, QColor
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
-
 from qgis.core import (Qgis,
                        QgsWkbTypes,
                        QgsAction,
@@ -84,8 +83,8 @@ from qgis.core import (Qgis,
 from qgis.gui import (QgsAttributeTableModel,
                       QgsGui
                       )
-from qgis.PyQt.QtTest import QSignalSpy
 from qgis.testing import start_app, unittest
+
 from featuresourcetestbase import FeatureSourceTestCase
 from utilities import unitTestDataPath
 

@@ -40,9 +40,9 @@ import difflib
 
 from io import StringIO
 from qgis.server import QgsServer, QgsServerRequest, QgsBufferServerRequest, QgsBufferServerResponse, QgsServerParameterDefinition
-from qgis.core import QgsRenderChecker, QgsApplication, QgsFontUtils, QgsMultiRenderChecker
+from qgis.core import QgsFontUtils, QgsMultiRenderChecker
 from qgis.testing import unittest, start_app
-from qgis.PyQt.QtCore import QSize, QUrlQuery
+from qgis.PyQt.QtCore import QSize
 from qgis.PyQt.QtGui import QColor
 from utilities import unitTestDataPath
 

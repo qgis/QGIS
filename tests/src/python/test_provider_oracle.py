@@ -10,10 +10,11 @@ __author__ = 'Nyall Dawson'
 __date__ = '2016-07-06'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
 
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant
+from qgis.PyQt.QtSql import QSqlDatabase, QSqlQuery
 from qgis.core import (
     Qgis,
     QgsSettings,
@@ -33,13 +34,10 @@ from qgis.core import (
     QgsProjUtils,
     QgsProviderRegistry
 )
-
-from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant
-from qgis.PyQt.QtSql import QSqlDatabase, QSqlQuery
-
-from utilities import unitTestDataPath, compareWkt
 from qgis.testing import start_app, unittest
+
 from providertestbase import ProviderTestCase
+from utilities import unitTestDataPath, compareWkt
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

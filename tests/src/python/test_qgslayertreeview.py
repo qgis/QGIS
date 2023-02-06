@@ -10,17 +10,16 @@ __author__ = 'Nyall Dawson'
 __date__ = '02.04.2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
-import qgis  # NOQA
-
-import os
-
 from distutils.version import StrictVersion
 
+import qgis  # NOQA
+from qgis.PyQt.Qt import PYQT_VERSION_STR
+from qgis.PyQt.QtCore import QStringListModel
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     QgsLayerTreeModel,
     QgsProject,
     QgsVectorLayer,
-    QgsLayerTreeLayer,
     QgsLayerTree,
 )
 from qgis.gui import (
@@ -28,11 +27,8 @@ from qgis.gui import (
     QgsLayerTreeViewDefaultActions,
 )
 from qgis.testing import start_app, unittest
-from utilities import (unitTestDataPath)
-from qgis.PyQt.QtCore import QStringListModel
-from qgis.PyQt.QtTest import QSignalSpy
 
-from qgis.PyQt.Qt import PYQT_VERSION_STR
+from utilities import (unitTestDataPath)
 
 USE_MODEL_TESTER = False
 

@@ -12,7 +12,6 @@ __copyright__ = 'Copyright 2021, The QGIS Project'
 
 
 import qgis  # NOQA
-
 from qgis.core import (
     QgsProjectUtils,
     QgsGroupLayer,
@@ -22,6 +21,7 @@ from qgis.core import (
     QgsProject
 )
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()

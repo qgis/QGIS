@@ -15,13 +15,13 @@ __copyright__ = 'Copyright 2022, ItOpen'
 import os
 import shutil
 
+from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.core import (
     QgsVectorLayer,
     QgsProviderRegistry,
 )
-
-from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.testing import unittest
+
 from qgslayermetadataprovidertestbase import LayerMetadataProviderTestBase, TEST_DATA_DIR
 
 

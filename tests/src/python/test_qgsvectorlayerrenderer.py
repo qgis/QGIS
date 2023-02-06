@@ -10,12 +10,10 @@ __author__ = 'Nyall Dawson'
 __date__ = '2020-06'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
 
+import qgis  # NOQA
 from qgis.PyQt.QtCore import QSize, QDir
-
 from qgis.core import (QgsVectorLayer,
                        QgsMapClippingRegion,
                        QgsRectangle,
@@ -34,6 +32,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsLineSymbol
                        )
 from qgis.testing import start_app, unittest
+
 from utilities import (unitTestDataPath)
 
 # Convenience instances in case you may need them

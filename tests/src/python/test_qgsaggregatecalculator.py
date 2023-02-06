@@ -13,7 +13,7 @@ __date__ = '16/05/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtCore import QDateTime, QDate, QTime
 from qgis.core import (QgsAggregateCalculator,
                        QgsVectorLayer,
                        QgsFeature,
@@ -24,7 +24,6 @@ from qgis.core import (QgsAggregateCalculator,
                        QgsFeatureRequest,
                        NULL
                        )
-from qgis.PyQt.QtCore import QDateTime, QDate, QTime
 from qgis.testing import unittest, start_app
 
 from utilities import compareWkt

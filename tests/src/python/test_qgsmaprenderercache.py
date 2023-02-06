@@ -10,17 +10,18 @@ __author__ = 'Nyall Dawson'
 __date__ = '1/02/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
+from time import sleep
 
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtGui import QImage
 from qgis.core import (QgsMapRendererCache,
                        QgsRectangle,
                        QgsVectorLayer,
                        QgsProject,
                        QgsMapToPixel)
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.PyQt.QtGui import QImage
-from time import sleep
+
 start_app()
 
 

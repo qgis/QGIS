@@ -11,8 +11,8 @@ __date__ = '22/03/2021'
 __copyright__ = 'Copyright 2021, The QGIS Project'
 
 import os
-import qgis  # NOQA
 
+import qgis  # NOQA
 from qgis.core import (QgsVectorLayer,
                        QgsVectorLayerUtils,
                        QgsDefaultValue,

@@ -11,34 +11,23 @@ __date__ = '04/12/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtCore import QDir, QSize, Qt
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     QgsProviderRegistry,
     QgsPointCloudLayer,
     QgsPointCloudExtentRenderer,
-    QgsPointCloudCategory,
     QgsReadWriteContext,
-    QgsRenderContext,
-    QgsPointCloudRenderContext,
-    QgsVector3D,
     QgsMultiRenderChecker,
     QgsMapSettings,
     QgsRectangle,
-    QgsUnitTypes,
-    QgsMapUnitScale,
     QgsCoordinateReferenceSystem,
-    QgsDoubleRange,
-    QgsColorRampShader,
     QgsFillSymbol,
-    QgsLayerTreeLayer,
-    QgsLayerTreeModelLegendNode
+    QgsLayerTreeLayer
 )
-
-from qgis.PyQt.QtCore import QDir, QSize, Qt
-from qgis.PyQt.QtGui import QColor
-from qgis.PyQt.QtXml import QDomDocument
-
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()

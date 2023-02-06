@@ -20,7 +20,6 @@ import tempfile
 from pathlib import Path
 
 import qgis  # NOQA
-from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (QgsVectorLayer,
                        QgsVectorTileWriter,
@@ -28,12 +27,12 @@ from qgis.core import (QgsVectorLayer,
                        QgsTileXYZ,
                        QgsProviderRegistry,
                        QgsVectorTileLayer,
-                       QgsProviderMetadata,
                        QgsGeometry,
                        QgsSelectionContext,
                        Qgis
                        )
 from qgis.testing import unittest, start_app
+
 from utilities import unitTestDataPath
 
 TEST_DATA_PATH = Path(unitTestDataPath())

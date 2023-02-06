@@ -10,13 +10,11 @@ __author__ = 'Nyall Dawson'
 __date__ = '30/12/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
 
-from qgis.PyQt.QtCore import QSize, QDir, Qt
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QDir
 from qgis.PyQt.QtGui import QColor
-
 from qgis.core import (QgsRenderChecker,
                        QgsMapSettings,
                        QgsVectorLayer,
@@ -30,10 +28,10 @@ from qgis.core import (QgsRenderChecker,
                        QgsMarkerLineSymbolLayer,
                        QgsLineSymbol,
                        QgsTemplatedLineSymbolLayerBase,
-                       QgsMarkerSymbol,
-                       QgsMarkerSymbolLayer
+                       QgsMarkerSymbol
                        )
 from qgis.testing import unittest
+
 from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()

@@ -13,9 +13,8 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 import os
 
 import qgis  # NOQA
-
 from qgis.PyQt.QtCore import QTemporaryDir
-
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     QgsProjectElevationProperties,
     QgsReadWriteContext,
@@ -25,10 +24,8 @@ from qgis.core import (
     QgsMeshTerrainProvider,
     QgsRasterLayer
 )
-
-from qgis.PyQt.QtXml import QDomDocument
-
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()

@@ -19,8 +19,10 @@ __revision__ = '$Format:%H$'
 
 import os
 import time
+
+from qgis.PyQt import QtCore
 from qgis.PyQt.QtCore import QCoreApplication, QVariant
-from qgis.testing import start_app
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     QgsSettings,
     QgsProviderRegistry,
@@ -39,8 +41,7 @@ from qgis.core import (
     QgsMapLayerUtils,
     Qgis,
 )
-from qgis.PyQt import QtCore
-from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import start_app
 
 
 class TestPyQgsProviderConnectionBase():

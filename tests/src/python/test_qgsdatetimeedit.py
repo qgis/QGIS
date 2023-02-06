@@ -11,9 +11,8 @@ __date__ = '2018-01-04'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.gui import QgsDateTimeEdit, QgsDateEdit, QgsTimeEdit
 from qgis.PyQt.QtCore import Qt, QDateTime, QDate, QTime
+from qgis.gui import QgsDateTimeEdit, QgsDateEdit, QgsTimeEdit
 from qgis.testing import start_app, unittest
 
 start_app()

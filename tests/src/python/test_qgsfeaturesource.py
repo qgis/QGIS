@@ -11,8 +11,6 @@ __date__ = '26/04/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 import qgis  # NOQA
 
-import os
-
 from qgis.core import (QgsVectorLayer,
                        QgsFeature,
                        QgsGeometry,
@@ -21,7 +19,6 @@ from qgis.core import (QgsVectorLayer,
                        QgsFeatureRequest,
                        QgsWkbTypes,
                        QgsCoordinateReferenceSystem)
-from qgis.PyQt.QtCore import QVariant
 from qgis.testing import start_app, unittest
 start_app()
 

@@ -11,9 +11,8 @@ __date__ = '23/10/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.testing import start_app, unittest
 from qgis.core import QgsLayoutItemScaleBar
+from qgis.testing import start_app, unittest
 
 from test_qgslayoutitem import LayoutItemTestCase
 

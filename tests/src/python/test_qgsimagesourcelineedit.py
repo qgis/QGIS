@@ -10,14 +10,14 @@ __author__ = 'Nyall Dawson'
 __date__ = '5/12/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
-import qgis  # NOQA
 import os
-from qgis.gui import QgsImageSourceLineEdit
 
+import qgis  # NOQA
 from qgis.PyQt.QtTest import QSignalSpy
+from qgis.gui import QgsImageSourceLineEdit
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
 
+from utilities import unitTestDataPath
 
 start_app()
 

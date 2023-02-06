@@ -11,12 +11,11 @@ __date__ = '11.04.2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.testing import unittest
+from qgis.PyQt.QtCore import QDate
 from qgis.core import (QgsIntRange,
                        QgsDoubleRange,
                        QgsDateRange)
-from qgis.PyQt.QtCore import QDate
+from qgis.testing import unittest
 
 
 class TestQgsIntRange(unittest.TestCase):

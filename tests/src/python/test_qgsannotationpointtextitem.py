@@ -13,20 +13,18 @@ __date__ = '10/08/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
 from qgis.PyQt.QtCore import (QSize,
                               QDir,
                               Qt)
 from qgis.PyQt.QtGui import (QImage,
                              QPainter,
-                             QColor,
-                             QTransform)
+                             QColor)
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (QgsMapSettings,
                        QgsCoordinateTransform,
                        QgsProject,
                        QgsPointXY,
                        QgsCoordinateReferenceSystem,
-                       QgsMarkerSymbol,
                        QgsRenderChecker,
                        QgsReadWriteContext,
                        QgsRenderContext,
@@ -42,9 +40,8 @@ from qgis.core import (QgsMapSettings,
                        QgsAnnotationItemEditOperationTranslateItem,
                        QgsPoint
                        )
-from qgis.PyQt.QtXml import QDomDocument
-
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath, getTestFont
 
 start_app()

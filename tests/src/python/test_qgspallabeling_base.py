@@ -16,29 +16,25 @@ __author__ = 'Larry Shaffer'
 __date__ = '07/09/2013'
 __copyright__ = 'Copyright 2013, The QGIS Project'
 
-import qgis  # NOQA
-
-import os
-import sys
 import datetime
 import glob
+import os
 import shutil
+import sys
 from collections.abc import Callable
 
+import qgis  # NOQA
 from qgis.PyQt.QtCore import QSize, qDebug, Qt
 from qgis.PyQt.QtGui import QFont, QColor
-
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransform,
-    QgsDataSourceUri,
     QgsGeometry,
     QgsLabelingEngineSettings,
     QgsProject,
     QgsMapSettings,
     QgsPalLabeling,
     QgsPalLayerSettings,
-    QgsProviderRegistry,
     QgsStringReplacementCollection,
     QgsVectorLayer,
     QgsVectorLayerSimpleLabeling,
@@ -50,7 +46,6 @@ from qgis.core import (
     QgsVectorTileBasicLabeling,
     QgsTextFormat
 )
-
 from qgis.testing import start_app, unittest
 from qgis.testing.mocked import get_iface
 
@@ -62,7 +57,6 @@ from utilities import (
     getTestFont,
     openInBrowserTab
 )
-
 
 start_app(sys.platform != 'darwin')  # No cleanup on mac os x, it crashes the pallabelingcanvas test on exit
 FONTSLOADED = loadTestFonts()

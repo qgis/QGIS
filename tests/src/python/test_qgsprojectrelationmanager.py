@@ -11,14 +11,14 @@ __date__ = '19/12/2019'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
 import os
-import qgis  # NOQA
 
+import qgis  # NOQA
 from qgis.core import (QgsVectorLayer,
                        QgsRelation,
-                       QgsRelationManager,
                        QgsProject
                        )
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()

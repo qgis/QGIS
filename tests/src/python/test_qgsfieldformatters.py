@@ -10,8 +10,8 @@ __author__ = 'Matthias Kuhn'
 __date__ = '05/12/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
-import tempfile
 import os
+import tempfile
 
 import qgis  # NOQA
 from qgis.PyQt.QtCore import (

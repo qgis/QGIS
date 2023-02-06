@@ -11,19 +11,19 @@ __author__ = 'Larry Shaffer'
 __date__ = '2014/02/11'
 __copyright__ = 'Copyright 2014, The QGIS Project'
 
-import sys
 import os
-import shutil
 import platform
+import shutil
 import subprocess
-import time
-import urllib.request
-import urllib.parse
-import urllib.error
-import urllib.request
-import urllib.error
-import urllib.parse
+import sys
 import tempfile
+import time
+import urllib.error
+import urllib.error
+import urllib.parse
+import urllib.parse
+import urllib.request
+import urllib.request
 
 from utilities import (
     unitTestDataPath,

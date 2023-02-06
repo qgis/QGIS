@@ -12,23 +12,21 @@ __author__ = 'René-Luc DHONT'
 __date__ = '19/07/2018'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-import qgis  # NOQA
-
-import os
-import urllib.request
-import urllib.parse
-import urllib.error
-import tempfile
 import hashlib
+import os
+import tempfile
+import urllib.error
+import urllib.parse
+import urllib.request
 
-from qgis.testing import unittest
-from utilities import unitTestDataPath
-from qgis.server import QgsServer, QgsServerCacheFilter, QgsServerRequest, QgsBufferServerRequest, \
-    QgsBufferServerResponse
-from qgis.core import QgsApplication, QgsFontUtils, QgsProject
-from qgis.PyQt.QtCore import QIODevice, QFile, QByteArray, QBuffer, QSize
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QIODevice, QByteArray, QBuffer, QSize
 from qgis.PyQt.QtGui import QImage
 from qgis.PyQt.QtXml import QDomDocument
+from qgis.core import QgsProject
+from qgis.server import QgsServerCacheFilter, QgsServerRequest, QgsBufferServerRequest, \
+    QgsBufferServerResponse
+from qgis.testing import unittest
 
 from test_qgsserver import QgsServerTestBase
 

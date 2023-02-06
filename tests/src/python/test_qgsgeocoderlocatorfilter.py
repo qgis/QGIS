@@ -22,7 +22,6 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsLocatorContext,
     QgsFeedback,
-    QgsGeocoderContext,
     QgsRectangle
 )
 from qgis.gui import (

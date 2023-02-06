@@ -19,7 +19,6 @@ import os
 # Needed on Qt 5 so that the serialization of XML is consistent among all executions
 os.environ['QT_HASH_SEED'] = '1'
 
-import re
 import json
 import urllib.request
 import urllib.parse
@@ -42,7 +41,6 @@ from qgis.server import (
     QgsBufferServerRequest,
     QgsBufferServerResponse,
     QgsServer,
-    QgsServerRequest,
 )
 
 # Strip path and content length because path may vary

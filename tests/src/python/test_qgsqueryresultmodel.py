@@ -14,16 +14,15 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import os
-from time import sleep
+
+from qgis.PyQt.QtCore import QCoreApplication, QVariant, Qt, QTimer, QModelIndex
+from qgis.PyQt.QtTest import QAbstractItemModelTester
+from qgis.PyQt.QtWidgets import QListView, QDialog, QVBoxLayout, QLabel
 from qgis.core import (
     QgsProviderRegistry,
     QgsQueryResultModel,
-    QgsAbstractDatabaseProviderConnection,
 )
 from qgis.testing import unittest, start_app
-from qgis.PyQt.QtCore import QCoreApplication, QVariant, Qt, QTimer, QModelIndex
-from qgis.PyQt.QtWidgets import QListView, QDialog, QVBoxLayout, QLabel
-from qgis.PyQt.QtTest import QAbstractItemModelTester
 
 
 class TestPyQgsQgsQueryResultModel(unittest.TestCase):

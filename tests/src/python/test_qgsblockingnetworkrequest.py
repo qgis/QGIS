@@ -7,7 +7,6 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from builtins import chr
 from builtins import str
 __author__ = 'Nyall Dawson'
 __date__ = '12/11/2018'
@@ -16,10 +15,8 @@ __copyright__ = 'Copyright 2018, The QGIS Project'
 import qgis  # NOQA
 
 import mockedwebserver
-import os
 from qgis.testing import unittest, start_app
 from qgis.core import QgsBlockingNetworkRequest
-from utilities import unitTestDataPath
 from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtNetwork import QNetworkReply, QNetworkRequest

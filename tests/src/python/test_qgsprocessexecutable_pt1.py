@@ -10,18 +10,17 @@ __author__ = '(C) 2020 by Nyall Dawson'
 __date__ = '05/04/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import sys
-import os
 import glob
+import json
+import os
 import re
-import time
 import shutil
 import subprocess
+import sys
 import tempfile
-import json
-import errno
 
 from qgis.testing import unittest
+
 from utilities import unitTestDataPath
 
 print('CTEST_FULL_OUTPUT')

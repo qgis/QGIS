@@ -11,14 +11,14 @@ __date__ = '13/01/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
 import os
+
 import qgis  # NOQA
-from qgis.PyQt.QtCore import QVariant, QTemporaryDir
+from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.core import (Qgis,
                        QgsGeometry,
                        QgsVectorLayer,
                        QgsFeature,
                        QgsProject,
-                       QgsField,
                        QgsVectorFileWriter,
                        QgsCoordinateTransformContext)
 from qgis.testing import start_app, unittest

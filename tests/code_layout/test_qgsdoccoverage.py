@@ -12,15 +12,19 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import os
 import sys
+
 try:
     from qgis.static_testing import unittest
 except ImportError:
     import unittest
 
-from termcolor import colored
-
+from acceptable_missing_doc import (
+    ACCEPTABLE_MISSING_ADDED_NOTE,
+    ACCEPTABLE_MISSING_BRIEF,
+    ACCEPTABLE_MISSING_DOCS,
+)
 from doxygen_parser import DoxygenParser
-from acceptable_missing_doc import ACCEPTABLE_MISSING_DOCS, ACCEPTABLE_MISSING_ADDED_NOTE, ACCEPTABLE_MISSING_BRIEF
+from termcolor import colored
 
 # TO regenerate the list:
 # uncomment the lines under the `# GEN LIST` in tests/code_layout/doxygen_parser.py

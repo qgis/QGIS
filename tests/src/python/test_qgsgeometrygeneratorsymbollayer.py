@@ -21,10 +21,9 @@ __author__ = 'Matthias Kuhn'
 __date__ = 'December 2015'
 __copyright__ = '(C) 2015, Matthias Kuhn'
 
-import qgis  # NOQA
-
 import os
 
+import qgis  # NOQA
 from qgis.PyQt.QtCore import QSize, QDir, QPointF
 from qgis.PyQt.QtGui import QColor, QImage, QPainter, QPolygonF
 from qgis.core import (
@@ -53,9 +52,9 @@ from qgis.core import (
     QgsSymbolLayer,
     QgsProperty
 )
-
 from qgis.testing import start_app, unittest
 from qgis.testing.mocked import get_iface
+
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them

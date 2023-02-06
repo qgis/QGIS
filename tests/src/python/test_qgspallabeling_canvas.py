@@ -15,24 +15,23 @@ __author__ = 'Larry Shaffer'
 __date__ = '07/09/2013'
 __copyright__ = 'Copyright 2013, The QGIS Project'
 
-import qgis  # NOQA
-
-import sys
 import os
-from qgis.PyQt.QtCore import qDebug, QThreadPool
-from qgis.core import QgsVectorLayerSimpleLabeling
+import sys
 
-from utilities import (
-    getTempfilePath,
-    renderMapToImage,
-    mapSettingsString
-)
+import qgis  # NOQA
+from qgis.PyQt.QtCore import qDebug
+from qgis.core import QgsVectorLayerSimpleLabeling
 
 from test_qgspallabeling_base import TestQgsPalLabeling, runSuite
 from test_qgspallabeling_tests import (
     TestPointBase,
     TestLineBase,
     suiteTests
+)
+from utilities import (
+    getTempfilePath,
+    renderMapToImage,
+    mapSettingsString
 )
 
 

@@ -16,10 +16,10 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 import os
 
 from qgis.PyQt.QtCore import QCoreApplication
+from qgis.server import QgsServerSettings, QgsServerSettingsEnv
+from qgis.testing import unittest
 
 from utilities import unitTestDataPath
-from qgis.testing import unittest
-from qgis.server import QgsServerSettings, QgsServerSettingsEnv
 
 DEFAULT_CACHE_SIZE = 256 * 1024 * 1024
 

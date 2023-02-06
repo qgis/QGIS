@@ -11,16 +11,14 @@ __date__ = '09/11/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtCore import QDir
 from qgis.core import (
     QgsProviderRegistry,
     QgsPointCloudLayer,
     QgsStatisticalSummary
 )
-
-from qgis.PyQt.QtCore import QDir
-
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()

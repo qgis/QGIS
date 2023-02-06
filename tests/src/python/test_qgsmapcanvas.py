@@ -10,17 +10,17 @@ __author__ = 'Nyall Dawson'
 __date__ = '24/1/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
+import time
 
+import qgis  # NOQA
 from qgis.PyQt.QtCore import (
     QDate,
     QTime,
     QDateTime,
     QDir
 )
-
-from qgis.core import (QgsMapSettings,
-                       QgsCoordinateReferenceSystem,
+from qgis.PyQt.QtXml import (QDomDocument)
+from qgis.core import (QgsCoordinateReferenceSystem,
                        QgsRectangle,
                        QgsVectorLayer,
                        QgsFeature,
@@ -34,7 +34,6 @@ from qgis.core import (QgsMapSettings,
                        QgsLineString,
                        QgsPoint,
                        QgsPointXY,
-                       QgsApplication,
                        QgsAnnotationLayer,
                        QgsAnnotationLineItem,
                        QgsAnnotationMarkerItem,
@@ -44,9 +43,6 @@ from qgis.core import (QgsMapSettings,
                        QgsInterval
                        )
 from qgis.gui import (QgsMapCanvas)
-
-from qgis.PyQt.QtXml import (QDomDocument, QDomElement)
-import time
 from qgis.testing import start_app, unittest
 
 app = start_app()

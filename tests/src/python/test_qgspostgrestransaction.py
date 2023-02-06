@@ -10,10 +10,9 @@ __author__ = 'Nyall Dawson'
 __date__ = '11/06/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
 
+import qgis  # NOQA
 from qgis.core import (
     Qgis,
     QgsVectorLayer,
@@ -21,7 +20,6 @@ from qgis.core import (
     QgsTransaction,
     QgsDataSourceUri
 )
-
 from qgis.testing import start_app, unittest
 
 start_app()

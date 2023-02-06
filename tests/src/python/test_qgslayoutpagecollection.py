@@ -12,7 +12,9 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
 from qgis.PyQt import sip
-
+from qgis.PyQt.QtCore import Qt, QCoreApplication, QEvent, QPointF, QRectF
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (QgsUnitTypes,
                        QgsLayout,
                        QgsLayoutItemPage,
@@ -24,15 +26,10 @@ from qgis.core import (QgsUnitTypes,
                        QgsProperty,
                        QgsLayoutGuide,
                        QgsLayoutMeasurement,
-                       QgsLayoutPageCollection,
                        QgsSimpleFillSymbolLayer,
                        QgsLayoutItemShape,
                        QgsFillSymbol,
                        QgsReadWriteContext)
-from qgis.PyQt.QtCore import Qt, QCoreApplication, QEvent, QPointF, QRectF
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtXml import QDomDocument
-
 from qgis.testing import start_app, unittest
 
 start_app()

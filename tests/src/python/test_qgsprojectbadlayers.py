@@ -6,39 +6,30 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-from builtins import chr
-from builtins import range
 __author__ = 'Alessandro Pasotti'
 __date__ = '20/10/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
-import os
 import filecmp
+import os
+from shutil import copyfile
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtCore import QTemporaryDir, QSize
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtXml import QDomDocument, QDomNode
 from qgis.core import (QgsProject,
                        QgsVectorLayer,
-                       QgsCoordinateTransform,
                        QgsMapSettings,
                        QgsRasterLayer,
-                       QgsMapLayer,
                        QgsRectangle,
                        QgsDataProvider,
                        QgsReadWriteContext,
                        QgsCoordinateReferenceSystem,
                        )
-from qgis.gui import (QgsLayerTreeMapCanvasBridge,
-                      QgsMapCanvas)
-
-from qgis.PyQt.QtGui import QFont, QColor
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtCore import QT_VERSION_STR, QTemporaryDir, QSize
-from qgis.PyQt.QtXml import QDomDocument, QDomNode
-
 from qgis.testing import start_app, unittest
+
 from utilities import (unitTestDataPath, renderMapToImage)
-from shutil import copyfile
 
 app = start_app()
 TEST_DATA_DIR = unitTestDataPath()

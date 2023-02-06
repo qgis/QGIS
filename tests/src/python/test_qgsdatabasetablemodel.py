@@ -14,6 +14,13 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import os
+
+from qgis.PyQt.QtCore import (
+    QCoreApplication,
+    QModelIndex,
+    Qt,
+    QVariant
+)
 from qgis.core import (
     QgsDatabaseTableModel,
     QgsProviderRegistry,
@@ -21,12 +28,6 @@ from qgis.core import (
     QgsWkbTypes,
     QgsFields,
     QgsField
-)
-from qgis.PyQt.QtCore import (
-    QCoreApplication,
-    QModelIndex,
-    Qt,
-    QVariant
 )
 from qgis.testing import unittest, start_app
 

@@ -7,8 +7,8 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from builtins import str
 from builtins import object
+from builtins import str
 
 __author__ = 'Nyall Dawson'
 __date__ = '2017-05-25'
@@ -21,10 +21,6 @@ from qgis.core import (
     QgsWkbTypes,
     QgsProject,
     QgsGeometry,
-    QgsAbstractFeatureIterator,
-    QgsExpressionContextScope,
-    QgsExpressionContext,
-    QgsVectorLayerFeatureSource,
     QgsCoordinateReferenceSystem,
     NULL
 )

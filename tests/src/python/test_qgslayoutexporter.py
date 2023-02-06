@@ -10,15 +10,16 @@ __author__ = 'Nyall Dawson'
 __date__ = '11/12/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
-from qgis.PyQt import sip
-import tempfile
-import shutil
 import os
 import subprocess
-from xml.dom import minidom
-from osgeo import gdal
+import tempfile
 
+import qgis  # NOQA
+from osgeo import gdal
+from qgis.PyQt.QtCore import QSize, QDir, QRectF, Qt, QDateTime, QDate, QTime, QTimeZone
+from qgis.PyQt.QtGui import QImage, QPainter
+from qgis.PyQt.QtPrintSupport import QPrinter
+from qgis.PyQt.QtSvg import QSvgRenderer
 from qgis.core import (QgsMultiRenderChecker,
                        QgsLayoutExporter,
                        QgsLayout,
@@ -47,11 +48,6 @@ from qgis.core import (QgsMultiRenderChecker,
                        QgsGeometry,
                        QgsPointXY,
                        QgsVectorLayerSimpleLabeling)
-from qgis.PyQt.QtCore import QSize, QSizeF, QDir, QRectF, Qt, QDateTime, QDate, QTime, QTimeZone
-from qgis.PyQt.QtGui import QImage, QPainter
-from qgis.PyQt.QtPrintSupport import QPrinter
-from qgis.PyQt.QtSvg import QSvgRenderer, QSvgGenerator
-
 from qgis.testing import start_app, unittest
 
 from utilities import getExecutablePath, unitTestDataPath

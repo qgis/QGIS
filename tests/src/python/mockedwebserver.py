@@ -28,12 +28,11 @@
 # DEALINGS IN THE SOFTWARE.
 ###############################################################################
 
+import contextlib
+import sys
+import time
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from threading import Thread
-
-import contextlib
-import time
-import sys
 
 do_log = False
 custom_handler = None

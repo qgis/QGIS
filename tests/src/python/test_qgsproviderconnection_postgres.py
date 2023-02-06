@@ -14,8 +14,8 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import os
-import time
-from test_qgsproviderconnection_base import TestPyQgsProviderConnectionBase
+
+from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.core import (
     Qgis,
     QgsWkbTypes,
@@ -23,14 +23,13 @@ from qgis.core import (
     QgsProviderConnectionException,
     QgsVectorLayer,
     QgsProviderRegistry,
-    QgsCoordinateReferenceSystem,
     QgsRasterLayer,
     QgsDataSourceUri,
     QgsSettings,
 )
 from qgis.testing import unittest
-from osgeo import gdal
-from qgis.PyQt.QtCore import QTemporaryDir
+
+from test_qgsproviderconnection_base import TestPyQgsProviderConnectionBase
 
 
 class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderConnectionBase):

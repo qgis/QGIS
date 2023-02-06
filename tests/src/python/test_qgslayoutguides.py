@@ -11,7 +11,11 @@ __date__ = '05/07/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt import sip
+from qgis.PyQt.QtCore import (Qt,
+                              QModelIndex)
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (QgsProject,
                        QgsLayout,
                        QgsLayoutGuide,
@@ -21,16 +25,7 @@ from qgis.core import (QgsProject,
                        QgsLayoutItemPage,
                        QgsLayoutGuideCollection,
                        QgsLayoutGuideProxyModel)
-from qgis.PyQt.QtCore import (Qt,
-                              QModelIndex)
-from qgis.PyQt.QtGui import (QPen,
-                             QColor)
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtXml import QDomDocument
-
 from qgis.testing import start_app, unittest
-
-from qgis.PyQt import sip
 
 start_app()
 

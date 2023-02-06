@@ -10,11 +10,12 @@ __author__ = 'Nyall Dawson'
 __date__ = '16/03/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
-
-import shutil
 import os
+import shutil
 import tempfile
+
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (
     QgsApplication,
     QgsSettings,
@@ -22,8 +23,8 @@ from qgis.core import (
     QgsVectorLayer,
     QgsProviderRegistry
 )
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them

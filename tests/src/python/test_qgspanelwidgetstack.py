@@ -11,10 +11,9 @@ __date__ = '05/10/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.gui import QgsPanelWidget, QgsPanelWidgetStack
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtTest import QSignalSpy
 
 start_app()
 

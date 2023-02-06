@@ -43,7 +43,6 @@ from qgis.core import (QgsMapSettings,
                        QgsGeometry,
                        QgsAnnotationItemEditOperationMoveNode,
                        QgsVertexId,
-                       QgsPointXY,
                        Qgis
                        )
 from qgis.testing import start_app, unittest

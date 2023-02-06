@@ -24,17 +24,15 @@ __author__ = 'Massimo Endrighi'
 __date__ = 'October 2012'
 __copyright__ = '(C) 2012, Massimo Endrighi'
 
-import qgis  # NOQA
-
-from osgeo import ogr
 import os
-
 from distutils.version import StrictVersion
+
+import qgis  # NOQA
+from osgeo import ogr
 from qgis.PyQt.Qt import PYQT_VERSION_STR
 from qgis.PyQt.QtCore import Qt, QObject, QDir, QFile, QIODevice, QPointF, QSize, QTemporaryDir
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
-
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (QgsCentroidFillSymbolLayer,
                        QgsEllipseSymbolLayer,
                        QgsFillSymbolLayer,
@@ -75,12 +73,11 @@ from qgis.core import (QgsCentroidFillSymbolLayer,
                        QgsMultiRenderChecker,
                        QgsSingleSymbolRenderer,
                        QgsProperty,
-                       QgsExpressionContext,
-                       QgsExpressionContextUtils,
                        QgsCategorizedSymbolRenderer,
                        QgsRendererCategory,
                        )
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them

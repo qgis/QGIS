@@ -24,6 +24,7 @@ from qgis.core import (
     QgsRenderContext,
 )
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 QGISAPP = start_app()

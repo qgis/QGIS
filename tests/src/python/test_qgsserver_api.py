@@ -15,8 +15,8 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os
 import json
+import os
 import re
 import shutil
 
@@ -39,7 +39,6 @@ from qgis.server import (
 
 from qgis.core import (
     QgsProject,
-    QgsRectangle,
     QgsVectorLayerServerProperties,
     QgsFeatureRequest,
     QgsVectorLayer,
@@ -52,8 +51,6 @@ from qgis.PyQt import QtCore
 from qgis.testing import unittest
 from utilities import unitTestDataPath
 from urllib import parse
-
-import tempfile
 
 from test_qgsserver import QgsServerTestBase
 

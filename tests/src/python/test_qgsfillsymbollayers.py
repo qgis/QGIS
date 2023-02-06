@@ -12,8 +12,6 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 
 
 import qgis  # NOQA
-
-from qgis.testing import unittest
 from qgis.PyQt.QtCore import QDir
 from qgis.PyQt.QtGui import (QImage,
                              QPainter,
@@ -25,6 +23,7 @@ from qgis.core import (QgsRenderChecker,
                        QgsGeometry,
                        QgsFeature,
                        QgsRenderContext)
+from qgis.testing import unittest
 
 
 class TestQgsFillSymbolLayers(unittest.TestCase):

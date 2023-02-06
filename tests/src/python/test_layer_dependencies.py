@@ -10,9 +10,12 @@ __author__ = 'Hugo Mercier'
 __date__ = '12/07/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
-import qgis  # NOQA
 import os
+import tempfile
 
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QSize, QPoint
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (QgsProject,
                        QgsVectorLayer,
                        QgsMapSettings,
@@ -27,14 +30,7 @@ from qgis.core import (QgsProject,
                        QgsLayerDefinition,
                        QgsMapLayerDependency
                        )
-
 from qgis.testing import start_app, unittest
-
-from qgis.PyQt.QtCore import QSize, QPoint
-from qgis.PyQt.QtTest import QSignalSpy
-
-import tempfile
-
 from qgis.utils import spatialite_connect
 
 # Convenience instances in case you may need them

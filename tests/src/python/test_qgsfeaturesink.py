@@ -10,9 +10,7 @@ __author__ = '(C) 2017 by Nyall Dawson'
 __date__ = '26/04/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 import qgis  # NOQA
-
-import os
-
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsFeatureStore,
                        QgsVectorLayer,
                        QgsFeature,
@@ -25,14 +23,13 @@ from qgis.core import (QgsFeatureStore,
                        QgsRemappingProxyFeatureSink,
                        QgsRemappingSinkDefinition,
                        QgsWkbTypes,
-                       QgsCoordinateTransform,
                        QgsProject,
                        QgsProperty,
                        QgsExpressionContext,
                        QgsExpressionContextScope
                        )
-from qgis.PyQt.QtCore import QVariant
 from qgis.testing import start_app, unittest
+
 start_app()
 
 

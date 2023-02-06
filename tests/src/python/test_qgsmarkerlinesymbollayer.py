@@ -21,15 +21,12 @@ __author__ = 'Nyall Dawson'
 __date__ = 'November 2018'
 __copyright__ = '(C) 2018, Nyall Dawson'
 
-import qgis  # NOQA
-
 import os
-from utilities import unitTestDataPath
 
+import qgis  # NOQA
 from qgis.PyQt.QtCore import QDir, Qt, QSize
 from qgis.PyQt.QtGui import QImage, QColor, QPainter
 from qgis.PyQt.QtXml import QDomDocument
-
 from qgis.core import (Qgis,
                        QgsGeometry,
                        QgsFillSymbol,
@@ -57,8 +54,9 @@ from qgis.core import (Qgis,
                        QgsMultiRenderChecker,
                        QgsSingleSymbolRenderer
                        )
-
 from qgis.testing import unittest, start_app
+
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

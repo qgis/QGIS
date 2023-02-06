@@ -10,13 +10,15 @@ __author__ = 'Nyall Dawson'
 __date__ = '19/12/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
-from qgis.PyQt import sip
-import tempfile
-import shutil
-import os
 import glob
+import os
+import shutil
+import tempfile
 
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QFileInfo, QRectF, QDir
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     QgsPrintLayout,
     QgsLayoutObject,
@@ -40,13 +42,10 @@ from qgis.core import (
     QgsMarkerSymbol,
     QgsLayoutItemLegend,
     QgsLegendStyle)
-from qgis.PyQt.QtCore import QFileInfo, QRectF, QDir
-from qgis.PyQt.QtXml import QDomDocument
-from utilities import unitTestDataPath
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtTest import QSignalSpy
 
 from qgslayoutchecker import QgsLayoutChecker
+from utilities import unitTestDataPath
 
 start_app()
 

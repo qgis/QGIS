@@ -21,8 +21,6 @@ __author__ = 'Hugo Mercier'
 __date__ = 'July 2013'
 __copyright__ = '(C) 2013, Hugo Mercier'
 
-import os
-
 
 class Test:
 

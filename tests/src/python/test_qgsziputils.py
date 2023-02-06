@@ -11,10 +11,12 @@ __date__ = '06/7/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import os
+
+from qgis.PyQt.QtCore import QTemporaryFile, QTemporaryDir
 from qgis.core import QgsZipUtils
 from qgis.testing import unittest
+
 from utilities import unitTestDataPath
-from qgis.PyQt.QtCore import QTemporaryFile, QTemporaryDir
 
 
 def tmpPath():

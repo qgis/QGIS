@@ -13,11 +13,9 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os
 import shutil
-from osgeo import gdal  # NOQA
 
-from test_qgsproviderconnection_base import TestPyQgsProviderConnectionBase
+from osgeo import gdal  # NOQA
 from qgis.PyQt.QtCore import QTemporaryDir, QVariant
 from qgis.core import (
     Qgis,
@@ -35,6 +33,8 @@ from qgis.core import (
     QgsCodedValue
 )
 from qgis.testing import unittest
+
+from test_qgsproviderconnection_base import TestPyQgsProviderConnectionBase
 from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()

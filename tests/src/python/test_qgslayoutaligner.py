@@ -11,25 +11,15 @@ __date__ = '3/10/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
-from qgis.PyQt import sip
 
 from qgis.core import (QgsUnitTypes,
                        QgsLayout,
                        QgsLayoutAligner,
-                       QgsLayoutItemPage,
-                       QgsLayoutGuide,
-                       QgsLayoutObject,
                        QgsProject,
-                       QgsProperty,
-                       QgsLayoutPageCollection,
-                       QgsLayoutMeasurement,
                        QgsLayoutItemPicture,
                        QgsLayoutSize,
                        QgsLayoutPoint,
                        QgsLayoutItem)
-from qgis.PyQt.QtCore import Qt, QCoreApplication, QEvent, QPointF, QRectF
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.testing import start_app, unittest
 

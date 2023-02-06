@@ -10,13 +10,11 @@ __author__ = 'Nyall Dawson'
 __date__ = '17/03/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
-import os
 import math
+import os
 
 import qgis  # NOQA
-
 from qgis.PyQt.QtXml import QDomDocument
-
 from qgis.core import (
     QgsFlatTerrainProvider,
     QgsRasterDemTerrainProvider,

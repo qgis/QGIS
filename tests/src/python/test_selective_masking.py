@@ -13,31 +13,21 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Hugo Mercier / Oslandia'
 __date__ = '28/06/2019'
 
-import qgis  # NOQA
 import os
 import subprocess
 
+import qgis  # NOQA
 from qgis.PyQt.QtCore import (
     Qt,
     QSize,
     QRectF,
     QDir
 )
-
 from qgis.PyQt.QtGui import (
     QColor,
     QImage,
     QPainter
 )
-
-from qgis.testing import unittest, start_app
-
-from utilities import (
-    unitTestDataPath,
-    getTempfilePath,
-    getTestFont,
-)
-
 from qgis.core import (
     Qgis,
     QgsMapSettings,
@@ -66,6 +56,13 @@ from qgis.core import (
     QgsLayoutItemMap,
     QgsLayoutExporter,
     QgsWkbTypes,
+)
+from qgis.testing import unittest, start_app
+
+from utilities import (
+    unitTestDataPath,
+    getTempfilePath,
+    getTestFont,
 )
 
 TEST_DATA_DIR = unitTestDataPath()

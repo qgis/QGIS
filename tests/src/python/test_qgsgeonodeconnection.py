@@ -11,13 +11,11 @@ __date__ = '12.09.2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.testing import unittest, start_app
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsGeoNodeConnectionUtils,
                        QgsGeoNodeConnection,
-                       QgsDataSourceUri,
                        QgsSettings)
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.testing import unittest, start_app
 
 
 class TestQgsGeoNodeConnection(unittest.TestCase):

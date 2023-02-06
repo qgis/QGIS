@@ -23,12 +23,10 @@ import filecmp
 from shutil import copyfile
 import numpy as np
 
-from qgis.PyQt.QtCore import QSize, QFileInfo, Qt, QTemporaryDir
+from qgis.PyQt.QtCore import QSize, QFileInfo, QTemporaryDir
 
 from qgis.PyQt.QtGui import (
     QColor,
-    QImage,
-    QPainter,
     QResizeEvent
 )
 from qgis.PyQt.QtXml import QDomDocument

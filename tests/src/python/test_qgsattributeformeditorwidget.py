@@ -11,17 +11,15 @@ __date__ = '2016-05'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtCore import QDateTime, QDate, QTime
+from qgis.PyQt.QtWidgets import QWidget, QDateTimeEdit
+from qgis.core import (QgsVectorLayer)
 from qgis.gui import (QgsSearchWidgetWrapper,
                       QgsAttributeFormEditorWidget,
                       QgsDefaultSearchWidgetWrapper,
                       QgsAttributeForm,
-                      QgsSearchWidgetToolButton,
                       QgsGui
                       )
-from qgis.core import (QgsVectorLayer)
-from qgis.PyQt.QtWidgets import QWidget, QDateTimeEdit
-from qgis.PyQt.QtCore import QDateTime, QDate, QTime
 from qgis.testing import start_app, unittest
 
 start_app()

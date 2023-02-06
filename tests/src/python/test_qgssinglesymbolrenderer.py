@@ -24,12 +24,10 @@ __author__ = 'Matthias Kuhn'
 __date__ = 'December 2015'
 __copyright__ = '(C) 2015, Matthias Kuhn'
 
-import qgis  # NOQA
-
 import os
 
+import qgis  # NOQA
 from qgis.PyQt.QtCore import QSize
-
 from qgis.core import (QgsVectorLayer,
                        QgsProject,
                        QgsRectangle,
@@ -41,6 +39,7 @@ from qgis.core import (QgsVectorLayer,
                        )
 from qgis.testing import unittest
 from qgis.testing.mocked import get_iface
+
 from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()

@@ -11,10 +11,10 @@ __date__ = '2018-07'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
 from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import QgsSettings
 from qgis.gui import QgsProcessingRecentAlgorithmLog, QgsGui
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtTest import QSignalSpy
 
 start_app()
 

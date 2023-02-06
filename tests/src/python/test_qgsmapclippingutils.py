@@ -11,8 +11,6 @@ __date__ = '2020-06'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.testing import unittest
 from qgis.core import (
     QgsMapClippingRegion,
     QgsMapClippingUtils,
@@ -26,8 +24,8 @@ from qgis.core import (
     QgsMapToPixel,
     QgsMapLayerType
 )
-
 from qgis.testing import start_app
+from qgis.testing import unittest
 
 start_app()
 

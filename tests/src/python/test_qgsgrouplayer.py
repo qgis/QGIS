@@ -10,11 +10,10 @@ __author__ = 'Nyall Dawson'
 __date__ = '22/11/2021'
 __copyright__ = 'Copyright 2021, The QGIS Project'
 
-import qgis  # NOQA
-
-import tempfile
 import os
-import gc
+from tempfile import TemporaryDirectory
+
+import qgis  # NOQA
 from qgis.PyQt.QtCore import (
     QCoreApplication,
     QEvent,
@@ -25,8 +24,6 @@ from qgis.PyQt.QtGui import (
     QPainter,
     QColor
 )
-from tempfile import TemporaryDirectory
-
 from qgis.core import (
     QgsFeature,
     QgsVectorLayer,
@@ -45,6 +42,7 @@ from qgis.core import (
     QgsImageOperation
 )
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()

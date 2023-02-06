@@ -21,11 +21,10 @@ __author__ = 'Jorge Gustavo Rocha'
 __date__ = 'January 2017'
 __copyright__ = '(C) 2017, Jorge Gustavo Rocha'
 
-import qgis  # NOQA
-
 import os
+
+import qgis  # NOQA
 from qgis.PyQt.QtXml import QDomDocument
-from qgis.testing import start_app, unittest
 from qgis.core import (QgsVectorLayer,
                        QgsFeature,
                        QgsGeometry,
@@ -41,7 +40,9 @@ from qgis.core import (QgsVectorLayer,
                        QgsSimpleMarkerSymbolLayer,
                        QgsFontMarkerSymbolLayer
                        )
+from qgis.testing import start_app, unittest
 from qgis.testing.mocked import get_iface
+
 from utilities import unitTestDataPath
 
 start_app()

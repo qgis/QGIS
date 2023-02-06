@@ -13,19 +13,17 @@ __date__ = '11/04/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtCore import (QDate,
+                              QTime,
+                              QDateTime,
+                              QRegularExpression, )
 from qgis.PyQt.QtXml import QDomDocument
-
 from qgis.core import (QgsLayerMetadata,
                        QgsCoordinateReferenceSystem,
                        QgsVectorLayer,
                        QgsNativeMetadataValidator,
                        QgsBox3d,
                        QgsDateTimeRange)
-from qgis.PyQt.QtCore import (QDate,
-                              QTime,
-                              QDateTime,
-                              QRegularExpression,)
 from qgis.testing import start_app, unittest
 
 start_app()

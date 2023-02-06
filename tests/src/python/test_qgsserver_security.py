@@ -13,8 +13,9 @@ __author__ = 'Paul Blottiere'
 __date__ = '31/01/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-from qgis.utils import spatialite_connect
 import os
+
+from qgis.utils import spatialite_connect
 
 # Needed on Qt 5 so that the serialization of XML is consistent among all executions
 os.environ['QT_HASH_SEED'] = '1'

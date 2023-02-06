@@ -11,7 +11,7 @@ __date__ = '02/11/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtCore import QVariant
 from qgis.analysis import QgsBatchGeocodeAlgorithm
 from qgis.core import (
     QgsGeocoderInterface,
@@ -28,7 +28,6 @@ from qgis.core import (
     QgsFields,
     NULL
 )
-from qgis.PyQt.QtCore import QVariant
 from qgis.testing import start_app, unittest
 
 start_app()

@@ -10,20 +10,19 @@ __author__ = 'Nyall Dawson'
 __date__ = '30/06/2021'
 __copyright__ = 'Copyright 2021, The QGIS Project'
 
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     QgsApplication,
     QgsProviderSublayerTask,
     QgsMapLayerType,
     QgsWkbTypes
 )
-
 from qgis.testing import (
     unittest,
     start_app
 )
-from utilities import unitTestDataPath
 
-from qgis.PyQt.QtTest import QSignalSpy
+from utilities import unitTestDataPath
 
 app = start_app()
 

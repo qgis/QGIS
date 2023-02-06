@@ -21,13 +21,11 @@ __author__ = 'Nyall Dawson'
 __date__ = 'May 2013'
 __copyright__ = '(C) 2013, Nyall Dawson, Massimo Endrighi'
 
-import qgis  # NOQA
-
 import os
 
+import qgis  # NOQA
 from qgis.PyQt.QtCore import QSize
 from qgis.PyQt.QtGui import QPainter, QColor
-
 from qgis.core import (QgsVectorLayer,
                        QgsVectorSimplifyMethod,
                        QgsProject,
@@ -37,9 +35,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsRectangle,
                        QgsMapSettings
                        )
-
 from qgis.testing import unittest
-
 from qgis.testing.mocked import get_iface
 
 from utilities import unitTestDataPath

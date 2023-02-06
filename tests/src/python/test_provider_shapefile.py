@@ -10,16 +10,17 @@ __author__ = 'Matthias Kuhn'
 __date__ = '2015-04-23'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
+import glob
 import os
 import re
-import tempfile
 import shutil
-import glob
+import sys
+import tempfile
+
 import osgeo.gdal
 import osgeo.ogr
-import sys
-
 from osgeo import gdal
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import (
     QgsApplication,
     QgsDataProvider,
@@ -36,10 +37,10 @@ from qgis.core import (
     QgsVectorLayerExporter,
     Qgis
 )
-from qgis.PyQt.QtCore import QVariant
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
+
 from providertestbase import ProviderTestCase
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

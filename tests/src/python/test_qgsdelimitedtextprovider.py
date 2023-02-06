@@ -21,16 +21,16 @@ __copyright__ = 'Copyright 2013, The QGIS Project'
 #
 # To recreate all tests, set rebuildTests to true
 
-import qgis  # NOQA
-
+import inspect
 import os
 import re
 import tempfile
-import inspect
 import time
-import test_qgsdelimitedtextprovider_wanted as want  # NOQA
-
 from collections.abc import Callable
+
+import qgis  # NOQA
+
+import test_qgsdelimitedtextprovider_wanted as want  # NOQA
 
 rebuildTests = 'REBUILD_DELIMITED_TEXT_TESTS' in os.environ
 
