@@ -62,4 +62,6 @@ else()
   )
 endif()
 
+set(QGIS_GUI_UI_HDRS ${QGIS_UIS_H} PARENT_SCOPE)
+
 add_custom_target(ui ALL DEPENDS ${QGIS_UIS_H})
