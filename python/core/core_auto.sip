@@ -667,6 +667,7 @@
 %Include auto_generated/symbology/qgsmapinfosymbolconverter.sip
 %Include auto_generated/symbology/qgsmarkersymbol.sip
 %Include auto_generated/symbology/qgsmarkersymbollayer.sip
+%Include auto_generated/symbology/qgsmasksymbollayer.sip
 %Include auto_generated/symbology/qgsmergedfeaturerenderer.sip
 %Include auto_generated/symbology/qgsnullsymbolrenderer.sip
 %Include auto_generated/symbology/qgspointclusterrenderer.sip
@@ -743,4 +744,3 @@
 %Include auto_generated/vectortile/qgsvtpktiles.sip
 %Include auto_generated/gps/qgsqtlocationconnection.sip
 %Include auto_generated/gps/qgsgpsconnectionregistry.sip
-%Include auto_generated/symbology/qgsmasksymbollayer.sip

@@ -3,6 +3,7 @@
 %Include auto_generated/qgs3dsymbolwidget.sip
 %Include auto_generated/qgsabstractdatasourcewidget.sip
 %Include auto_generated/qgsabstractmaptoolhandler.sip
+%Include auto_generated/qgsadvanceddigitizingcanvasitem.sip
 %Include auto_generated/qgsadvanceddigitizingdockwidget.sip
 %Include auto_generated/qgsadvanceddigitizingfloater.sip
 %Include auto_generated/qgsaggregatetoolbutton.sip
@@ -478,4 +479,3 @@
 %Include auto_generated/tableeditor/qgstableeditorwidget.sip
 %Include auto_generated/vectortile/qgsvectortilelayerproperties.sip
 %Include auto_generated/editorwidgets/qgsqmlwidgetwrapper.sip
-%Include auto_generated/qgsadvanceddigitizingcanvasitem.sip
