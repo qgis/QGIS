@@ -183,8 +183,8 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
 
     def uncompiledFilters(self):
         return {'"dt" = to_datetime(\'000www14ww13ww12www4ww5ww2020\',\'zzzwwwsswwmmwwhhwwwdwwMwwyyyy\')',
-                    '"date" = to_date(\'www4ww5ww2020\',\'wwwdwwMwwyyyy\')',
-                    '"time" = to_time(\'000www14ww13ww12www\',\'zzzwwwsswwmmwwhhwww\')'}
+                '"date" = to_date(\'www4ww5ww2020\',\'wwwdwwMwwyyyy\')',
+                '"time" = to_time(\'000www14ww13ww12www\',\'zzzwwwsswwmmwwhhwww\')'}
 
     def partiallyCompiledFilters(self):
         return set()
@@ -3239,8 +3239,8 @@ class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
 
     def uncompiledFilters(self):
         return {'"dt" = to_datetime(\'000www14ww13ww12www4ww5ww2020\',\'zzzwwwsswwmmwwhhwwwdwwMwwyyyy\')',
-                    '"date" = to_date(\'www4ww5ww2020\',\'wwwdwwMwwyyyy\')',
-                    '"time" = to_time(\'000www14ww13ww12www\',\'zzzwwwsswwmmwwhhwww\')'}
+                '"date" = to_date(\'www4ww5ww2020\',\'wwwdwwMwwyyyy\')',
+                '"time" = to_time(\'000www14ww13ww12www\',\'zzzwwwsswwmmwwhhwww\')'}
 
     def partiallyCompiledFilters(self):
         return set()
@@ -3374,8 +3374,8 @@ class TestPyQgsPostgresProviderBigintSinglePk(unittest.TestCase, ProviderTestCas
 
     def uncompiledFilters(self):
         return {'"dt" = to_datetime(\'000www14ww13ww12www4ww5ww2020\',\'zzzwwwsswwmmwwhhwwwdwwMwwyyyy\')',
-                    '"date" = to_date(\'www4ww5ww2020\',\'wwwdwwMwwyyyy\')',
-                    '"time" = to_time(\'000www14ww13ww12www\',\'zzzwwwsswwmmwwhhwww\')'}
+                '"date" = to_date(\'www4ww5ww2020\',\'wwwdwwMwwyyyy\')',
+                '"time" = to_time(\'000www14ww13ww12www\',\'zzzwwwsswwmmwwhhwww\')'}
 
     def partiallyCompiledFilters(self):
         return set()

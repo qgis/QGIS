@@ -156,7 +156,7 @@ class TestWFST(unittest.TestCase):
             'srsname': 'EPSG:4326',
             'typename': type_name,
             'url': 'http://127.0.0.1:{}/?map={}'.format(cls.port,
-                                                    cls.project_path),
+                                                        cls.project_path),
             'version': cls.VERSION,
             'table': '',
             # 'sql': '',
@@ -173,7 +173,7 @@ class TestWFST(unittest.TestCase):
         """
 
         request = QgsFeatureRequest(QgsExpression("{}={}".format(attr_name,
-                                                             attr_value)))
+                                                                 attr_value)))
         try:
             return next(layer.dataProvider().getFeatures(request))
         except StopIteration:

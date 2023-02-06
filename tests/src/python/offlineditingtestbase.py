@@ -115,7 +115,7 @@ class OfflineTestBase:
         Find the feature and return it, raise exception if not found
         """
         request = QgsFeatureRequest(QgsExpression("{}={}".format(attr_name,
-                                                             attr_value)))
+                                                                 attr_value)))
         try:
             return next(layer.dataProvider().getFeatures(request))
         except StopIteration:

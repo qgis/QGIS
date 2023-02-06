@@ -88,7 +88,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         if (da_3068.sourceCrs().isGeographic()):
             da_3068.setEllipsoid(da_3068.sourceCrs().ellipsoidAcronym())
         print("setting [{}] srid [{}] description [{}]".format('Soldner Berlin', da_3068.sourceCrs().authid(),
-                                                                da_3068.sourceCrs().description()))
+                                                               da_3068.sourceCrs().description()))
         self.assertEqual(da_3068.sourceCrs().authid(), 'EPSG:3068')
         da_wsg84.setSourceCrs(QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:4326'),
                               QgsProject.instance().transformContext())
@@ -96,12 +96,12 @@ class TestQgsDistanceArea(unittest.TestCase):
             da_wsg84.setEllipsoid(da_wsg84.sourceCrs().ellipsoidAcronym())
         self.assertEqual(da_wsg84.sourceCrs().authid(), 'EPSG:4326')
         print("setting [{}] srid [{}] description [{}] isGeographic[{}]".format('Wsg84',
-                                                                                 da_wsg84.sourceCrs().authid(),
-                                                                                 da_wsg84.sourceCrs().description(),
-                                                                                 da_wsg84.sourceCrs().isGeographic()))
+                                                                                da_wsg84.sourceCrs().authid(),
+                                                                                da_wsg84.sourceCrs().description(),
+                                                                                da_wsg84.sourceCrs().isGeographic()))
         # print(("-- projectionAcronym[{}] ellipsoidAcronym[{}] toWkt[{}] mapUnits[{}] toProj4[{}]".format(da_wsg84.sourceCrs().projectionAcronym(),da_wsg84.sourceCrs().ellipsoidAcronym(), da_wsg84.sourceCrs().toWkt(),da_wsg84.sourceCrs().mapUnits(),da_wsg84.sourceCrs().toProj())))
         print("Testing Position change for[{}] years[{}]".format('Ampelanlage - Potsdamer Platz, Verkehrsinsel',
-                                                                  '1924 and 1998'))
+                                                                 '1924 and 1998'))
 
         # 1924-10-24 SRID=3068;POINT(23099.49 20296.69)
         # 1924-10-24 SRID=4326;POINT(13.37650707988041 52.50952361017194)
