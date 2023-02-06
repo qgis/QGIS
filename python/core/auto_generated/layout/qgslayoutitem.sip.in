@@ -670,11 +670,11 @@ Returns the page the item is currently on, with the first page returning 0.
 
     int anchorPage() const;
 %Docstring
-Returns the reference page of the item, should be different than :py:func:`page` when using expression to move the object.
+Returns the reference page of the item, should be different than :py:func:`~QgsLayoutItem.page` when using expression to move the object. 
 
 .. seealso:: :py:func:`page`
 
-.. versionadded:: 3.30
+.. versionadded:: 3.32
 %End
 
     QPointF pagePos() const;
