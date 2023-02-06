@@ -110,7 +110,7 @@ This is currently used to implement selective masking.
 %End
 
 
- void setDisabledSymbolLayers( const QSet<const QgsSymbolLayer *> &symbolLayers );
+ void setDisabledSymbolLayers( const QSet<const QgsSymbolLayer *> &symbolLayers ) /Deprecated/;
 %Docstring
 When rendering a map layer in a second pass (for selective masking),
 some symbol layers may be disabled.
@@ -141,7 +141,7 @@ Sets the list of disabled symbol layer ids.
 .. versionadded:: 3.30
 %End
 
- QSet<const QgsSymbolLayer *> disabledSymbolLayers() const;
+ QSet<const QgsSymbolLayer *> disabledSymbolLayers() const /Deprecated/;
 %Docstring
 When rendering a map layer in a second pass (for selective masking),
 some symbol layers may be disabled.
@@ -158,7 +158,7 @@ Returns the list of disabled symbol layers.
    and replaced with disabledSymbolLayersV2
 %End
 
-    const QSet<QString> &disabledSymbolLayersV2() const;
+    QSet<QString> disabledSymbolLayersV2() const;
 %Docstring
 When rendering a map layer in a second pass (for selective masking),
 some symbol layers may be disabled.

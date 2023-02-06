@@ -12,7 +12,6 @@ __copyright__ = 'Copyright 2018, The QGIS Project'
 import qgis  # NOQA
 from qgis.PyQt.QtCore import QModelIndex, QSize, Qt
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtCore import Qt, QSize, QModelIndex
 from qgis.PyQt.QtGui import QColor
 from qgis.core import (
     QgsAbstract3DSymbol,
@@ -20,6 +19,7 @@ from qgis.core import (
     QgsGeometry,
     QgsLegendPatchShape,
     QgsLimitedRandomColorRamp,
+    QgsLinePatternFillSymbolLayer,
     QgsLineSymbol,
     QgsMarkerSymbol,
     QgsPalLayerSettings,
@@ -30,7 +30,6 @@ from qgis.core import (
     QgsTextFormat,
     QgsWkbTypes,
 )
-from qgis.testing import start_app, unittest
 
 start_app()
 

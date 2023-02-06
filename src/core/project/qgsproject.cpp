@@ -1950,7 +1950,7 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   if ( QgsProjectVersion( 3, 28, 0 ) > mSaveVersion )
   {
     Q_NOWARN_DEPRECATED_PUSH
-    QgsSymbolLayerUtils::fixOldSymbolLayerReferences( mapLayers() );
+    QgsProjectFileTransform::fixOldSymbolLayerReferences( mapLayers() );
     Q_NOWARN_DEPRECATED_POP
   }
 

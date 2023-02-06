@@ -2628,14 +2628,16 @@ bool QgsLinePatternFillSymbolLayer::hasDataDefinedProperties() const
 
 void QgsLinePatternFillSymbolLayer::startFeatureRender( const QgsFeature &, QgsRenderContext &context )
 {
-  // deliberately don't pass this on to subsymbol here
   installMasks( context, true );
+
+  // The base class version passes this on to the subsymbol, but we deliberately don't do that here.
 }
 
 void QgsLinePatternFillSymbolLayer::stopFeatureRender( const QgsFeature &, QgsRenderContext &context )
 {
-  // deliberately don't pass this on to subsymbol here
   removeMasks( context, true );
+
+  // The base class version passes this on to the subsymbol, but we deliberately don't do that here.
 }
 
 QImage QgsLinePatternFillSymbolLayer::toTiledPatternImage() const
@@ -3939,18 +3941,20 @@ void QgsPointPatternFillSymbolLayer::stopRender( QgsSymbolRenderContext &context
 
 void QgsPointPatternFillSymbolLayer::startFeatureRender( const QgsFeature &, QgsRenderContext &context )
 {
+  installMasks( context, true );
+
   // The base class version passes this on to the subsymbol, but we deliberately don't do that here.
   // Otherwise generators used in the subsymbol will only render a single point per feature (they
   // have logic to only render once per paired call to startFeatureRender/stopFeatureRender).
-  installMasks( context, true );
 }
 
 void QgsPointPatternFillSymbolLayer::stopFeatureRender( const QgsFeature &, QgsRenderContext &context )
 {
+  removeMasks( context, true );
+
   // The base class version passes this on to the subsymbol, but we deliberately don't do that here.
   // Otherwise generators used in the subsymbol will only render a single point per feature (they
   // have logic to only render once per paired call to startFeatureRender/stopFeatureRender).
-  removeMasks( context, true );
 }
 
 void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context )

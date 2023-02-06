@@ -18,7 +18,9 @@ from qgis.core import (
     Qgis,
     QgsAnimatedMarkerSymbolLayer,
     QgsArrowSymbolLayer,
+    QgsFillSymbol,
     QgsGradientColorRamp,
+    QgsLinePatternFillSymbolLayer,
     QgsMapUnitScale,
     QgsMarkerLineSymbolLayer,
     QgsMarkerSymbol,
@@ -31,6 +33,7 @@ from qgis.core import (
     QgsSymbolLayer,
     QgsSymbolLayerUtils,
     QgsUnitTypes,
+    QgsVectorLayer
 )
 from qgis.testing import start_app, unittest
 

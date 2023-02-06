@@ -35,7 +35,7 @@ QgsSymbolLayerReferenceList stringToSymbolLayerReferenceList( const QString &str
   if ( str.isEmpty() )
     return lst;
 
-  if ( str.contains( "," ) )
+  if ( str.contains( ',' ) )
   {
     // TODO QGIS 4 : remove this if branch, keep only else part
     Q_NOWARN_DEPRECATED_PUSH
@@ -79,7 +79,7 @@ QgsSymbolLayerReferenceList stringToSymbolLayerReferenceList( const QString &str
   }
   else
   {
-    const QStringList elems = str.split( ";" );
+    const QStringList elems = str.split( ';' );
     for ( int i = 0; i < elems.size(); )
     {
       lst << QgsSymbolLayerReference( elems[i], elems[i + 1] );

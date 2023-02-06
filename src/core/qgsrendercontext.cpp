@@ -736,7 +736,7 @@ QSet<const QgsSymbolLayer *> QgsRenderContext::disabledSymbolLayers() const
   return QSet<const QgsSymbolLayer *>();
 }
 
-const QSet<QString> &QgsRenderContext::disabledSymbolLayersV2() const
+QSet<QString> QgsRenderContext::disabledSymbolLayersV2() const
 {
   return mDisabledSymbolLayers;
 }

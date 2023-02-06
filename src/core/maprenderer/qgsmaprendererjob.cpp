@@ -732,7 +732,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
         if ( !layerJobMapping.contains( sourceLayerId ) )
           continue;
 
-        for ( QString symbolLayerId : mit.value().symbolLayerIds )
+        for ( const QString &symbolLayerId : mit.value().symbolLayerIds )
           slRefs.insert( QgsSymbolLayerReference( sourceLayerId, symbolLayerId ) );
 
         hasEffects |= mit.value().hasEffects;
@@ -863,7 +863,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
       continue;
 
     QList<MaskSource> &sourceList = it->second;
-    const QSet<QString> &symbolList = it->first;
+    const QSet<QString> symbolList = it->first;
 
     secondPassJobs.emplace_back( LayerRenderJob() );
     LayerRenderJob &job2 = secondPassJobs.back();

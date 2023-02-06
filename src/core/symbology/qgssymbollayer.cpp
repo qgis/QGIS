@@ -933,8 +933,7 @@ void QgsSymbolLayer::installMasks( QgsRenderContext &context, bool recursive )
     context.painter()->setClipPath( mClipPath, Qt::IntersectClip );
   }
 
-  QgsSymbol *lSubSymbol = recursive ? subSymbol() : nullptr;
-  if ( lSubSymbol )
+  if ( QgsSymbol *lSubSymbol = recursive ? subSymbol() : nullptr )
   {
     for ( QgsSymbolLayer *sl : lSubSymbol->symbolLayers() )
       sl->installMasks( context, true );
@@ -948,8 +947,7 @@ void QgsSymbolLayer::removeMasks( QgsRenderContext &context, bool recursive )
     context.painter()->restore();
   }
 
-  QgsSymbol *lSubSymbol = recursive ? subSymbol() : nullptr;
-  if ( lSubSymbol )
+  if ( QgsSymbol *lSubSymbol = recursive ? subSymbol() : nullptr )
   {
     for ( QgsSymbolLayer *sl : lSubSymbol->symbolLayers() )
       sl->removeMasks( context, true );
@@ -962,7 +960,7 @@ void QgsSymbolLayer::setId( const QString &id )
   mId = id;
 }
 
-const QString &QgsSymbolLayer::id() const
+QString QgsSymbolLayer::id() const
 {
   return mId;
 }

@@ -644,7 +644,7 @@ class CORE_EXPORT QgsSymbolLayer
      * This id is unique in the whole project
      * \since QGIS 3.30
      */
-    const QString &id() const;
+    QString id() const;
 
   protected:
 
