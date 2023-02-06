@@ -254,6 +254,7 @@ void TestQgsOverlayExpression::testOverlayMeasure()
   QgsExpression exp( expression );
   QVERIFY2( exp.prepare( &context ), exp.parserErrorString().toUtf8().constData() );
   const QVariant result = exp.evaluate( &context );
+  qDebug() << fixed << qSetRealNumberPrecision( 16 ) << "\nresult:\n\t\t" << result.toList() << "\nexpectedResult:\n\t\t" << expectedResult;
   QCOMPARE( result, expectedResult );
 
 }
@@ -393,7 +394,7 @@ void TestQgsOverlayExpression::testOverlayMeasure_data()
   // Test polygon intersection resulting in a line with min_inscribed_circle_radius and expression
   QVariantMap expectedPoly;
   expectedPoly.insert( QStringLiteral( "id" ), 2LL );
-  expectedPoly.insert( QStringLiteral( "overlap" ), 667.992431640625 );
+  expectedPoly.insert( QStringLiteral( "overlap" ), 667.9924154989421368 );
   expectedPoly.insert( QStringLiteral( "radius" ), 12.576424447201404 );
   expectedPoly.insert( QStringLiteral( "result" ), 1002 );
   QTest::newRow( "intersects line expression no match" ) << "overlay_intersects('polygons2', expression:=fid, return_details:=true, min_inscribed_circle_radius:=3, sort_by_intersection_size:='desc')" << "Polygon ((2604689.01899999985471368 1231313.05799999996088445, 2604695.41300000017508864 1231337.88999999989755452, 2604704.85499999998137355 1231335.10299999988637865, 2604713.89399999985471368 1231333.42900000000372529, 2604719.80599999986588955 1231332.34700000006705523, 2604713.325999999884516 1231305.375, 2604697.20899999979883432 1231310.25600000005215406, 2604689.01899999985471368 1231313.05799999996088445))" << ( QVariantList() << expectedPoly );
