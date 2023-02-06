@@ -441,7 +441,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   {
     for ( double scale : projectScales )
     {
-      addScaleToScaleList( QStringLiteral( "1:%1" ).arg( QLocale().toString( scale, 'f', 0 ) ) );
+      addScaleToScaleList( scale );
     }
   }
   connect( lstScales, &QListWidget::itemChanged, this, &QgsProjectProperties::scaleItemChanged );
@@ -1274,14 +1274,11 @@ void QgsProjectProperties::apply()
   projectScales.reserve( lstScales->count() );
   for ( int i = 0; i < lstScales->count(); ++i )
   {
-    const QString scaleText = lstScales->item( i )->text();
-    const QStringList parts = scaleText.split( ':' );
-    if ( parts.size() == 2 )
+    bool ok;
+    const int scaleDenominator = lstScales->item( i )->data( Qt::UserRole ).toDouble( &ok );
+    if ( ok )
     {
-      bool ok = false;
-      const double scale = parts.at( 1 ).toDouble( &ok );
-      if ( ok )
-        projectScales.append( scale );
+      projectScales.append( scaleDenominator );
     }
   }
 
@@ -2209,7 +2206,7 @@ void QgsProjectProperties::pbnAddScale_clicked()
 
   if ( myScale != -1 )
   {
-    QListWidgetItem *newItem = addScaleToScaleList( QStringLiteral( "1:%1" ).arg( myScale ) );
+    QListWidgetItem *newItem = addScaleToScaleList( myScale );
     lstScales->setCurrentItem( newItem );
   }
 }
@@ -2238,9 +2235,19 @@ void QgsProjectProperties::pbnImportScales_clicked()
   }
 
   const auto constMyScales = myScales;
+  bool ok;
   for ( const QString &scale : constMyScales )
   {
-    addScaleToScaleList( scale );
+    // Parse scale string
+    const QStringList parts { scale.split( ':' ) };
+    if ( parts.count( ) == 2 )
+    {
+      const double scaleDenominator { parts.at( 1 ).toDouble( &ok ) };
+      if ( ok )
+      {
+        addScaleToScaleList( scaleDenominator );
+      }
+    }
   }
 }
 
@@ -2263,7 +2270,7 @@ void QgsProjectProperties::pbnExportScales_clicked()
   myScales.reserve( lstScales->count() );
   for ( int i = 0; i < lstScales->count(); ++i )
   {
-    myScales.append( lstScales->item( i )->text() );
+    myScales.append( QStringLiteral( "1:%1" ).arg( lstScales->item( i )->data( Qt::UserRole ).toDouble() ) );
   }
 
   QString msg;
@@ -2615,10 +2622,11 @@ void QgsProjectProperties::removeStyleDatabase()
   delete mListStyleDatabases->takeItem( currentRow );
 }
 
-QListWidgetItem *QgsProjectProperties::addScaleToScaleList( const QString &newScale )
+QListWidgetItem *QgsProjectProperties::addScaleToScaleList( const double newScaleDenominator )
 {
   // TODO QGIS3: Rework the scale list widget to be a reusable piece of code, see PR #2558
-  QListWidgetItem *newItem = new QListWidgetItem( newScale );
+  QListWidgetItem *newItem = new QListWidgetItem( QStringLiteral( "1:%1" ).arg( QLocale().toString( newScaleDenominator, 'f', 0 ) ) );
+  newItem->setData( Qt::UserRole, newScaleDenominator );
   addScaleToScaleList( newItem );
   return newItem;
 }
@@ -2629,16 +2637,15 @@ void QgsProjectProperties::addScaleToScaleList( QListWidgetItem *newItem )
   QListWidgetItem *duplicateItem = lstScales->findItems( newItem->text(), Qt::MatchExactly ).value( 0 );
   delete duplicateItem;
 
-  int newDenominator = newItem->text().split( ':' ).value( 1 ).toInt();
+  int newDenominator = newItem->data( Qt::UserRole ).toInt();
   int i;
   for ( i = 0; i < lstScales->count(); i++ )
   {
-    int denominator = lstScales->item( i )->text().split( ':' ).value( 1 ).toInt();
+    int denominator = lstScales->item( i )->data( Qt::UserRole ).toInt();
     if ( newDenominator > denominator )
       break;
   }
 
-  newItem->setData( Qt::UserRole, newItem->text() );
   newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
   lstScales->insertItem( i, newItem );
 }
@@ -2646,17 +2653,24 @@ void QgsProjectProperties::addScaleToScaleList( QListWidgetItem *newItem )
 void QgsProjectProperties::scaleItemChanged( QListWidgetItem *changedScaleItem )
 {
   // Check if the new value is valid, restore the old value if not.
-  const thread_local QRegularExpression sRegExp( "^1:0*[1-9]\\d*$" );
-  if ( sRegExp.match( changedScaleItem->text() ).hasMatch() )
+  const QStringList parts { changedScaleItem->text().split( ':' ) };
+  bool valid { parts.count() == 2 };
+  double newDenominator { -1 };  // invalid
+
+  if ( valid )
   {
-    //Remove leading zeroes from the denominator
-    const thread_local QRegularExpression sNoLeadingZeroRegExp( "1:0*" );
-    changedScaleItem->setText( changedScaleItem->text().replace( sNoLeadingZeroRegExp, QStringLiteral( "1:" ) ) );
+    newDenominator = QgsDoubleValidator::toDouble( parts.at( 1 ), &valid );
+  }
+
+  if ( valid )
+  {
+    changedScaleItem->setText( QStringLiteral( "1:%1" ).arg( QLocale().toString( newDenominator ) ) );
+    changedScaleItem->setData( Qt::UserRole, newDenominator );
   }
   else
   {
     QMessageBox::warning( this, tr( "Set Scale" ), tr( "The text you entered is not a valid scale." ) );
-    changedScaleItem->setText( changedScaleItem->data( Qt::UserRole ).toString() );
+    changedScaleItem->setText( QStringLiteral( "1:%1" ).arg( QLocale().toString( changedScaleItem->data( Qt::UserRole ).toDouble() ) ) );
   }
 
   // Take the changed item out of the list and re-add it. This keeps things ordered and creates correct meta-data for the changed item.
