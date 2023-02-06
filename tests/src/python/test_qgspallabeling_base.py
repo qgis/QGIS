@@ -230,7 +230,7 @@ class TestQgsPalLabeling(unittest.TestCase):
 
         # define the shorthand name of the test (to minimize file name length)
         self._Test = '{}_{}'.format(self._TestGroupAbbr,
-                                      self._TestFunction.replace('test_', ''))
+                                    self._TestFunction.replace('test_', ''))
 
     def defaultLayerSettings(self):
         lyr = QgsPalLayerSettings()
@@ -291,7 +291,7 @@ class TestQgsPalLabeling(unittest.TestCase):
             if os.path.exists(f):
                 os.remove(f)
         qDebug('Control image for {}.{}'.format(self._TestGroup,
-                                                  self._TestFunction))
+                                                self._TestFunction))
 
         if not tmpimg:
             # TODO: this can be deprecated, when per-base-test-class rendering

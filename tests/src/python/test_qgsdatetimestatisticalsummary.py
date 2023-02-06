@@ -46,11 +46,11 @@ class PyQgsDateTimeStatisticalSummary(unittest.TestCase):
         self.assertEqual(s2.countDistinct(), 6)
         self.assertEqual(set(s.distinctValues()),
                          {QDateTime(QDate(2015, 3, 4), QTime(11, 10, 54)),
-                              QDateTime(QDate(2011, 1, 5), QTime(15, 3, 1)),
-                              QDateTime(QDate(2019, 12, 28), QTime(23, 10, 1)),
-                              QDateTime(),
-                              QDateTime(QDate(1998, 1, 2), QTime(1, 10, 54)),
-                              QDateTime(QDate(2011, 1, 5), QTime(11, 10, 54))})
+                          QDateTime(QDate(2011, 1, 5), QTime(15, 3, 1)),
+                          QDateTime(QDate(2019, 12, 28), QTime(23, 10, 1)),
+                          QDateTime(),
+                          QDateTime(QDate(1998, 1, 2), QTime(1, 10, 54)),
+                          QDateTime(QDate(2011, 1, 5), QTime(11, 10, 54))})
         self.assertEqual(s2.distinctValues(), s.distinctValues())
         self.assertEqual(s.countMissing(), 2)
         self.assertEqual(s2.countMissing(), 2)
@@ -121,10 +121,10 @@ class PyQgsDateTimeStatisticalSummary(unittest.TestCase):
                      QDateTime(QDate(2011, 1, 5), QTime(11, 10, 54))])
         self.assertEqual(s.count(), 9)
         self.assertEqual(set(s.distinctValues()), {QDateTime(QDate(2015, 3, 4), QTime(11, 10, 54)),
-                                                       QDateTime(QDate(2019, 12, 28), QTime(23, 10, 1)),
-                                                       QDateTime(QDate(1998, 1, 2), QTime(1, 10, 54)),
-                                                       QDateTime(QDate(2011, 1, 5), QTime(11, 10, 54)),
-                                                       QDateTime()})
+                                                   QDateTime(QDate(2019, 12, 28), QTime(23, 10, 1)),
+                                                   QDateTime(QDate(1998, 1, 2), QTime(1, 10, 54)),
+                                                   QDateTime(QDate(2011, 1, 5), QTime(11, 10, 54)),
+                                                   QDateTime()})
         self.assertEqual(s.countMissing(), 4)
         self.assertEqual(s.min(), QDateTime(QDate(1998, 1, 2), QTime(1, 10, 54)))
         self.assertEqual(s.max(), QDateTime(QDate(2019, 12, 28), QTime(23, 10, 1)))

@@ -466,11 +466,11 @@ class ProviderTestCase(FeatureSourceTestCase):
         if self.treat_datetime_as_string():
             self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('dt'))),
                              {'2021-05-04 13:13:14', '2020-05-04 12:14:14', '2020-05-04 12:13:14',
-                                  '2020-05-03 12:13:14', NULL})
+                              '2020-05-03 12:13:14', NULL})
         else:
             self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('dt'))),
                              {QDateTime(2021, 5, 4, 13, 13, 14), QDateTime(2020, 5, 4, 12, 14, 14),
-                                  QDateTime(2020, 5, 4, 12, 13, 14), QDateTime(2020, 5, 3, 12, 13, 14), NULL})
+                              QDateTime(2020, 5, 4, 12, 13, 14), QDateTime(2020, 5, 3, 12, 13, 14), NULL})
 
         if self.treat_date_as_string():
             self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('date'))),
@@ -478,7 +478,7 @@ class ProviderTestCase(FeatureSourceTestCase):
         elif self.treat_date_as_datetime():
             self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('date'))),
                              {QDateTime(2020, 5, 3, 0, 0, 0), QDateTime(2020, 5, 4, 0, 0, 0),
-                                  QDateTime(2021, 5, 4, 0, 0, 0), QDateTime(2020, 5, 2, 0, 0, 0), NULL})
+                              QDateTime(2021, 5, 4, 0, 0, 0), QDateTime(2020, 5, 2, 0, 0, 0), NULL})
         else:
             self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('date'))),
                              {QDate(2020, 5, 3), QDate(2020, 5, 4), QDate(2021, 5, 4), QDate(2020, 5, 2), NULL})

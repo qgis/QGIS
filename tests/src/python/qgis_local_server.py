@@ -18,10 +18,7 @@ import sys
 import tempfile
 import time
 import urllib.error
-import urllib.error
 import urllib.parse
-import urllib.parse
-import urllib.request
 import urllib.request
 
 from utilities import (
