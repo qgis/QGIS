@@ -250,6 +250,8 @@ QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const Q
   *sProfilePath() = profileFolder;
 
   connect( instance(), &QgsApplication::localeChanged, &QgsDateTimeFieldFormatter::applyLocaleChange );
+
+  mApplicationMembers->mSettingsRegistryCore->migrateOldSettings();
 }
 
 void QgsApplication::init( QString profileFolder )
@@ -485,6 +487,8 @@ void QgsApplication::init( QString profileFolder )
 
 QgsApplication::~QgsApplication()
 {
+  mApplicationMembers->mSettingsRegistryCore->backwardCompatibility();
+
   delete mDataItemProviderRegistry;
   delete mApplicationMembers;
   delete mQgisTranslator;
