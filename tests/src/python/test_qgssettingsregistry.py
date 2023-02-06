@@ -10,7 +10,7 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from qgis.core import QgsSettingsRegistry, QgsSettingsRegistryCore, QgsSettingsEntryBase, QgsSettingsEntryInteger, QgsApplication
+from qgis.core import QgsSettingsRegistry, QgsSettingsEntryInteger, QgsApplication
 from qgis.testing import start_app, unittest
 
 __author__ = 'Damiano Lombardi'

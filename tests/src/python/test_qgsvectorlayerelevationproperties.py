@@ -11,7 +11,7 @@ __date__ = '09/11/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     Qgis,
     QgsVectorLayer,
@@ -24,11 +24,9 @@ from qgis.core import (
     QgsMapLayerElevationProperties,
     QgsPropertyCollection
 )
-from utilities import unitTestDataPath
-
-from qgis.PyQt.QtXml import QDomDocument
-
 from qgis.testing import start_app, unittest
+
+from utilities import unitTestDataPath
 
 start_app()
 

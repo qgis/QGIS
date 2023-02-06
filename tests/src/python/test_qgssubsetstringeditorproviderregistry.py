@@ -13,7 +13,6 @@ __copyright__ = 'Copyright 2018, The QGIS Project'
 import qgis  # NOQA
 
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtWidgets import QDialog
 
 from qgis.core import QgsVectorLayer
 from qgis.gui import (QgsGui,

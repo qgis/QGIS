@@ -10,9 +10,9 @@ __author__ = 'Germán Carrillo'
 __date__ = '06/10/2012'
 __copyright__ = 'Copyright 2012, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
+
+import qgis  # NOQA
 from qgis.core import (QgsFeature,
                        QgsPoint,
                        QgsGeometry,
@@ -23,6 +23,7 @@ from qgis.core import (QgsFeature,
                        QgsField,
                        QgsUnsetAttributeValue)
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()

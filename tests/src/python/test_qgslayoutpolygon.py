@@ -11,12 +11,10 @@ __date__ = '14/03/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.PyQt.QtGui import QPolygonF, QPainter, QImage
 from qgis.PyQt.QtCore import QPointF, QRectF
-from qgis.PyQt.QtXml import QDomDocument
+from qgis.PyQt.QtGui import QPolygonF, QPainter, QImage
 from qgis.PyQt.QtTest import QSignalSpy
-
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (QgsLayoutItemPolygon,
                        QgsLayoutItemRegistry,
                        QgsLayout,
@@ -29,9 +27,10 @@ from qgis.core import (QgsLayoutItemPolygon,
 from qgis.testing import (start_app,
                           unittest
                           )
-from utilities import unitTestDataPath
+
 from qgslayoutchecker import QgsLayoutChecker
 from test_qgslayoutitem import LayoutItemTestCase
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

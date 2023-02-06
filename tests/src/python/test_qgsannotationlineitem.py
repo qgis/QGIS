@@ -13,13 +13,12 @@ __date__ = '29/07/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
 from qgis.PyQt.QtCore import (QSize,
                               QDir)
 from qgis.PyQt.QtGui import (QImage,
                              QPainter,
-                             QColor,
-                             QTransform)
+                             QColor)
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (QgsMapSettings,
                        QgsCoordinateTransform,
                        QgsProject,
@@ -42,9 +41,8 @@ from qgis.core import (QgsMapSettings,
                        QgsAnnotationItemEditOperationTranslateItem,
                        QgsAnnotationItemEditOperationAddNode
                        )
-from qgis.PyQt.QtXml import QDomDocument
-
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()

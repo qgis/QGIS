@@ -11,9 +11,7 @@ __date__ = '02/09/2019'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
 import qgis  # NOQA
-
 from qgis.PyQt.QtCore import Qt, QCoreApplication, QLocale
-
 from qgis.core import (QgsBookmark,
                        QgsBookmarkManager,
                        QgsBookmarkManagerModel,
@@ -22,8 +20,8 @@ from qgis.core import (QgsBookmark,
                        QgsRectangle,
                        QgsCoordinateReferenceSystem,
                        QgsSettings)
-
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()

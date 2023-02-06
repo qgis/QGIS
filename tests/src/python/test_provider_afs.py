@@ -13,13 +13,9 @@ __date__ = '2018-02-16'
 __copyright__ = 'Copyright 2018, Nyall Dawson'
 
 import hashlib
-import os
-import re
 import tempfile
-import shutil
 
 from qgis.PyQt.QtCore import QCoreApplication, Qt, QObject, QDate, QDateTime, QTime
-
 from qgis.core import (NULL,
                        QgsVectorLayer,
                        QgsLayerMetadata,
@@ -31,7 +27,6 @@ from qgis.core import (NULL,
                        QgsCategorizedSymbolRenderer,
                        QgsProviderRegistry,
                        QgsWkbTypes,
-                       QgsDataSourceUri,
                        QgsVectorDataProviderTemporalCapabilities,
                        QgsFieldConstraints,
                        QgsVectorDataProvider,
@@ -41,6 +36,7 @@ from qgis.core import (NULL,
 from qgis.testing import (start_app,
                           unittest
                           )
+
 from providertestbase import ProviderTestCase
 
 

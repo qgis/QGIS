@@ -10,16 +10,15 @@ __author__ = 'Nyall Dawson'
 __date__ = '2015-12-07'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
 
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir
 from qgis.core import (QgsSettings,
                        QgsVectorLayer,
                        QgsFeatureRequest,
                        QgsFeature,
                        QgsField,
-                       QgsFields,
                        QgsFieldConstraints,
                        QgsDataSourceUri,
                        QgsWkbTypes,
@@ -31,11 +30,10 @@ from qgis.core import (QgsSettings,
                        QgsVectorLayerExporter,
                        QgsCoordinateReferenceSystem,
                        QgsDataProvider)
-
-from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir
-from utilities import unitTestDataPath
 from qgis.testing import start_app, unittest
+
 from providertestbase import ProviderTestCase
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

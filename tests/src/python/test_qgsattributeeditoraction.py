@@ -13,23 +13,14 @@ __date__ = '16/08/2021'
 __copyright__ = 'Copyright 2021, The QGIS Project'
 
 import qgis  # NOQA switch sip api
-
+from qgis.PyQt.QtCore import QUuid
 from qgis.core import (QgsVectorLayer,
                        QgsProject,
-                       QgsFeature,
                        QgsAction,
                        QgsAttributeEditorAction,
                        QgsAttributeEditorContainer,
                        )
-from qgis.PyQt.QtCore import QDir, QTemporaryFile, QUuid
-from qgis.PyQt.QtWidgets import QPushButton, QWidget
-from qgis.PyQt.QtGui import QIcon
-
 from qgis.testing import start_app, unittest
-
-import os
-import time
-import platform
 
 start_app()
 

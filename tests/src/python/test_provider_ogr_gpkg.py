@@ -19,10 +19,12 @@ import shutil
 import sys
 import tempfile
 import time
+from sqlite3 import OperationalError
 
 import qgis  # NOQA
 from osgeo import gdal, ogr
-from providertestbase import ProviderTestCase
+from qgis.PyQt.QtCore import QCoreApplication, QVariant, QDate, QDateTime, QTemporaryDir, QFileInfo
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (Qgis,
                        QgsFeature,
                        QgsCoordinateReferenceSystem,
@@ -45,13 +47,11 @@ from qgis.core import (Qgis,
                        QgsLayerMetadata,
                        QgsProviderMetadata,
                        NULL)
-from qgis.PyQt.QtCore import QCoreApplication, QVariant, QDate, QTime, QDateTime, Qt, QTemporaryDir, QFileInfo
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.testing import start_app, unittest
 from qgis.utils import spatialite_connect
-from utilities import unitTestDataPath
 
-from sqlite3 import OperationalError
+from providertestbase import ProviderTestCase
+from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
 

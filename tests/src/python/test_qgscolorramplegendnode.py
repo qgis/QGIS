@@ -13,7 +13,7 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 import qgis  # NOQA
 from qgis.PyQt.QtCore import QSize, QDir, Qt, QSizeF
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
-from qgis.PyQt.QtXml import QDomDocument, QDomElement
+from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsGradientColorRamp,
                        QgsRectangle,

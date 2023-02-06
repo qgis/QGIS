@@ -11,7 +11,10 @@ __date__ = '05/07/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtCore import (
+    Qt,
+    QModelIndex
+)
 from qgis.core import (
     Qgis,
     QgsMapLayerType,
@@ -19,10 +22,6 @@ from qgis.core import (
     QgsProviderSublayerDetails,
     QgsProviderSublayerProxyModel,
     QgsProviderSublayerModel
-)
-from qgis.PyQt.QtCore import (
-    Qt,
-    QModelIndex
 )
 from qgis.testing import start_app, unittest
 

@@ -10,9 +10,10 @@ __author__ = 'Paul Blottiere'
 __date__ = '28/02/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
-import qgis  # NOQA
 import os
 
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (
     QgsProject,
     QgsVectorLayer,
@@ -20,8 +21,8 @@ from qgis.core import (
     QgsVirtualLayerDefinition,
     QgsVirtualLayerTask
 )
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()

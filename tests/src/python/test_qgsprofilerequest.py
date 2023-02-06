@@ -10,11 +10,7 @@ __author__ = 'Nyall Dawson'
 __date__ = '18/03/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
-import os
-
 import qgis  # NOQA
-
-from qgis.PyQt.QtCore import QTemporaryDir
 
 from qgis.core import (
     QgsLineString,
@@ -27,10 +23,7 @@ from qgis.core import (
     QgsExpressionContextScope
 )
 
-from qgis.PyQt.QtXml import QDomDocument
-
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
 
 start_app()
 

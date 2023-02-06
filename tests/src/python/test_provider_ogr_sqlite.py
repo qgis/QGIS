@@ -10,14 +10,13 @@ __author__ = 'Even Rouault'
 __date__ = '2016-06-01'
 __copyright__ = 'Copyright 2016, Even Rouault'
 
-import qgis  # NOQA
-
 import os
-import tempfile
 import shutil
-import hashlib
-from osgeo import gdal, ogr
+import tempfile
 
+import qgis  # NOQA
+from osgeo import ogr
+from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QByteArray
 from qgis.core import (QgsVectorLayer,
                        QgsFeature,
                        QgsFeatureRequest,
@@ -27,7 +26,6 @@ from qgis.core import (QgsVectorLayer,
                        QgsRectangle,
                        QgsVectorDataProvider)
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QByteArray
 
 start_app()
 

@@ -13,21 +13,16 @@ __author__ = 'René-Luc Dhont'
 __date__ = '29/08/2019'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
-from utilities import unitTestDataPath
-from qgis.testing import unittest
-from qgis.server import QgsServer, QgsAccessControlFilter, QgsServerRequest, QgsBufferServerRequest, QgsBufferServerResponse
-from qgis.core import QgsRenderChecker, QgsApplication
-from qgis.PyQt.QtCore import QSize
-import tempfile
-import urllib.request
-import urllib.parse
 import urllib.error
-from test_qgsserver import QgsServerTestBase
+import urllib.parse
+import urllib.request
+
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QSize
+from qgis.testing import unittest
+
 from test_qgsserver_wms import TestQgsServerWMSTestBase
-import base64
 
 
 class TestQgsServerWMSDimension(TestQgsServerWMSTestBase):

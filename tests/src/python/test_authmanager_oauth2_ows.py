@@ -15,16 +15,15 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
+import json
 import os
-import sys
+import random
 import re
+import stat
 import subprocess
+import sys
 import tempfile
 import urllib
-import stat
-import json
-import time
-import random
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '20/04/2017'

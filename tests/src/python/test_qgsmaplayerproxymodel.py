@@ -17,10 +17,8 @@ from qgis.core import (
     QgsMeshLayer,
     QgsAnnotationLayer,
     QgsProject,
-    QgsMapLayerModel,
     QgsMapLayerProxyModel
 )
-from qgis.PyQt.QtCore import Qt, QModelIndex
 
 from qgis.testing import start_app, unittest
 

@@ -11,20 +11,18 @@ __date__ = '23/10/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.testing import start_app, unittest
 from qgis.PyQt.QtCore import QFileInfo, QDate, QDateTime
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (QgsVectorLayer,
                        QgsPrintLayout,
-                       QgsLayout,
                        QgsLayoutItemLabel,
                        QgsProject,
                        QgsLayoutItemPage,
                        QgsLayoutPoint)
-from utilities import unitTestDataPath
-from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import start_app, unittest
 
 from test_qgslayoutitem import LayoutItemTestCase
+from utilities import unitTestDataPath
 
 start_app()
 

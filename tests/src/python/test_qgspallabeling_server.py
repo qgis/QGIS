@@ -15,23 +15,19 @@ __author__ = 'Larry Shaffer'
 __date__ = '07/12/2013'
 __copyright__ = 'Copyright 2013, The QGIS Project'
 
-import qgis  # NOQA
-
-import sys
-import os
 import glob
+import os
 import shutil
+import sys
 
+import qgis  # NOQA
 from qgis.PyQt.QtCore import qDebug
-
-from qgis.core import QgsProject, QgsApplication, QgsSettings, QgsPalLabeling
-
-from utilities import mapSettingsString
+from qgis.core import QgsProject, QgsApplication, QgsSettings
 
 from qgis_local_server import getLocalServer
-
 from test_qgspallabeling_base import TestQgsPalLabeling, runSuite
 from test_qgspallabeling_tests import TestPointBase, TestLineBase, suiteTests
+from utilities import mapSettingsString
 
 MAPSERV = getLocalServer()
 

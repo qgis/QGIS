@@ -13,7 +13,15 @@ __date__ = '24/1/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtCore import (QDir,
+                              QPointF,
+                              QSize,
+                              QSizeF,
+                              QRectF)
+from qgis.PyQt.QtGui import (QColor,
+                             QPainter,
+                             QImage,
+                             QTextDocument)
 from qgis.core import (QgsTextAnnotation,
                        QgsSvgAnnotation,
                        QgsHtmlAnnotation,
@@ -32,18 +40,9 @@ from qgis.core import (QgsTextAnnotation,
                        QgsLayoutItemMap,
                        QgsPointXY)
 from qgis.gui import QgsFormAnnotation
-from qgis.PyQt.QtCore import (QDir,
-                              QPointF,
-                              QSize,
-                              QSizeF,
-                              QRectF)
-from qgis.PyQt.QtGui import (QColor,
-                             QPainter,
-                             QImage,
-                             QTextDocument)
-from qgslayoutchecker import QgsLayoutChecker
-
 from qgis.testing import start_app, unittest
+
+from qgslayoutchecker import QgsLayoutChecker
 from utilities import unitTestDataPath
 
 start_app()

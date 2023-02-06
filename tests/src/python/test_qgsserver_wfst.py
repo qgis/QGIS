@@ -32,12 +32,12 @@ __date__ = '05/15/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import os
-import sys
 import re
 import subprocess
-from shutil import copytree, rmtree
+import sys
 import tempfile
-from utilities import unitTestDataPath, waitServer
+from shutil import copytree, rmtree
+
 from qgis.core import (
     QgsVectorLayer,
     QgsFeature,
@@ -51,6 +51,8 @@ from qgis.testing import (
     start_app,
     unittest,
 )
+
+from utilities import unitTestDataPath, waitServer
 
 # 0 = auto
 QGIS_SERVER_PORT = os.environ.get('QGIS_SERVER_PORT', '0')

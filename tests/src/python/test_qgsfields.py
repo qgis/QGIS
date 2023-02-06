@@ -11,10 +11,9 @@ __date__ = '16/08/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtCore import QVariant, QDate
 from qgis.core import QgsVectorLayer, NULL
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtCore import QVariant, QDate, QDateTime, QTime
 
 start_app()
 

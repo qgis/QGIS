@@ -11,9 +11,8 @@ __date__ = '24/04/2020'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import qgis  # NOQA
-
-import os
-
+from qgis.PyQt.QtTest import QSignalSpy, QTest
+from qgis.PyQt.QtWidgets import QComboBox
 from qgis.core import (
     QgsApplication,
     QgsFeature,
@@ -24,12 +23,7 @@ from qgis.core import (
 from qgis.gui import (
     QgsFeaturePickerWidget
 )
-
 from qgis.testing import start_app, unittest
-
-from qgis.PyQt.QtWidgets import QComboBox
-from qgis.PyQt.QtTest import QSignalSpy, QTest
-
 
 start_app()
 

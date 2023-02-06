@@ -33,6 +33,7 @@ from qgis.core import (
     NULL
 )
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()

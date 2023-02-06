@@ -12,10 +12,11 @@ the Free Software Foundation; either version 2 of the License, or
 
 import os
 import tempfile
+from pathlib import Path
+
+from qgis.PyQt.QtCore import QSettings, QVariant
 from qgis.core import QgsSettings, QgsTolerance, QgsMapLayerProxyModel
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtCore import QSettings, QVariant
-from pathlib import Path
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '02/02/2017'

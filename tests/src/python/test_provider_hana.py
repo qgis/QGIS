@@ -18,7 +18,6 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 
 import os
 
-from providertestbase import ProviderTestCase
 from PyQt5.QtCore import QVariant, QDate, QTime, QDateTime, QByteArray
 from qgis.core import (
     NULL,
@@ -39,6 +38,8 @@ from qgis.core import (
     QgsVectorLayerExporter,
     QgsWkbTypes)
 from qgis.testing import start_app, unittest
+
+from providertestbase import ProviderTestCase
 from test_hana_utils import QgsHanaProviderUtils
 from utilities import unitTestDataPath
 

@@ -15,17 +15,15 @@ __author__ = 'Larry Shaffer'
 __date__ = '2014/02/21'
 __copyright__ = 'Copyright 2013, The QGIS Project'
 
-import qgis  # NOQA
-
-import sys
 import os
 import subprocess
+import sys
 
-from qgis.PyQt.QtCore import QRect, QRectF, QSize, QSizeF, qDebug, QThreadPool
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QRect, QRectF, QSize, QSizeF, qDebug
 from qgis.PyQt.QtGui import QImage, QColor, QPainter
 from qgis.PyQt.QtPrintSupport import QPrinter
 from qgis.PyQt.QtSvg import QSvgRenderer, QSvgGenerator
-
 from qgis.core import (QgsLayout,
                        QgsLayoutItemPage,
                        QgsLayoutSize,
@@ -36,18 +34,16 @@ from qgis.core import (QgsLayout,
                        QgsVectorLayerSimpleLabeling,
                        QgsLabelingEngineSettings)
 
-
-from utilities import (
-    getTempfilePath,
-    getExecutablePath,
-    mapSettingsString
-)
-
 from test_qgspallabeling_base import TestQgsPalLabeling, runSuite
 from test_qgspallabeling_tests import (
     TestPointBase,
     TestLineBase,
     suiteTests
+)
+from utilities import (
+    getTempfilePath,
+    getExecutablePath,
+    mapSettingsString
 )
 
 # PDF-to-image utility

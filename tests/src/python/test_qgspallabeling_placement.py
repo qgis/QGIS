@@ -14,13 +14,11 @@ __author__ = 'Nyall Dawson'
 __date__ = '2015-08-24'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
 import sys
 
-from qgis.PyQt.QtCore import QThreadPool, qDebug
-
+import qgis  # NOQA
+from qgis.PyQt.QtCore import qDebug
 from qgis.core import (QgsLabelingEngineSettings,
                        QgsPalLayerSettings,
                        QgsSingleSymbolRenderer,
@@ -29,10 +27,9 @@ from qgis.core import (QgsLabelingEngineSettings,
                        QgsVectorLayerSimpleLabeling,
                        QgsLabelObstacleSettings,
                        QgsLabeling)
-from utilities import getTempfilePath, renderMapToImage, mapSettingsString
 
 from test_qgspallabeling_base import TestQgsPalLabeling, runSuite
-from qgis.testing import unittest
+from utilities import getTempfilePath, renderMapToImage, mapSettingsString
 
 
 # noinspection PyPep8Naming

@@ -12,8 +12,12 @@ __author__ = 'Nyall Dawson'
 __date__ = '28/05/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
-import qgis  # NOQA switch sip api
+import os
+import platform
+import time
 
+import qgis  # NOQA switch sip api
+from qgis.PyQt.QtCore import QDir, QTemporaryFile, QUuid
 from qgis.core import (QgsVectorLayer,
                        QgsFeature,
                        QgsActionManager,
@@ -22,13 +26,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsField,
                        QgsFields
                        )
-from qgis.PyQt.QtCore import QDir, QTemporaryFile, QUuid
-
 from qgis.testing import start_app, unittest
-
-import os
-import time
-import platform
 
 start_app()
 

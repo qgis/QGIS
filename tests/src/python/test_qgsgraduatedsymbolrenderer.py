@@ -11,8 +11,9 @@ __date__ = '3/10/2014'
 __copyright__ = 'Copyright 2014, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.testing import unittest, start_app
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (QgsGraduatedSymbolRenderer,
                        QgsRendererRange,
                        QgsRendererRangeLabelFormat,
@@ -25,9 +26,7 @@ from qgis.core import (QgsGraduatedSymbolRenderer,
                        QgsReadWriteContext,
                        QgsRenderContext
                        )
-from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtXml import QDomDocument
-from qgis.PyQt.QtGui import QColor
+from qgis.testing import unittest, start_app
 
 start_app()
 

@@ -14,14 +14,15 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import os
-from test_qgsproviderconnection_base import TestPyQgsProviderConnectionBase
+
 from qgis.core import (
     QgsVectorLayer,
     QgsProviderRegistry,
     QgsDataSourceUri,
-    QgsAbstractDatabaseProviderConnection,
 )
 from qgis.testing import unittest
+
+from test_qgsproviderconnection_base import TestPyQgsProviderConnectionBase
 
 
 class TestPyQgsProviderConnectionMssql(unittest.TestCase, TestPyQgsProviderConnectionBase):

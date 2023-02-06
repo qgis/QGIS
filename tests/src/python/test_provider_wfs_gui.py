@@ -11,15 +11,14 @@ __date__ = '2016-03-25'
 __copyright__ = 'Copyright 2016, Even Rouault'
 
 import hashlib
+import shutil
 import sys
 import tempfile
-import shutil
 
 from qgis.PyQt.QtCore import QCoreApplication, Qt, QEventLoop
-from qgis.PyQt.QtWidgets import QApplication, QWidget, QTextEdit, QLineEdit, QDialogButtonBox, QComboBox
 from qgis.PyQt.QtTest import QTest
-
-from qgis.core import QgsProviderRegistry, QgsSettings
+from qgis.PyQt.QtWidgets import QApplication, QWidget, QTextEdit, QLineEdit, QDialogButtonBox, QComboBox
+from qgis.core import QgsSettings
 from qgis.gui import QgsGui
 from qgis.testing import start_app, unittest
 

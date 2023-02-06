@@ -10,13 +10,11 @@ __author__ = '(C) 2017 Nyall Dawson'
 __date__ = '20/10/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
 
+import qgis  # NOQA
 from qgis.PyQt.QtCore import QFileInfo, QRectF, QDir
 from qgis.PyQt.QtGui import QPainter
-
 from qgis.core import (QgsLayoutItemMap,
                        QgsLayoutItemMapItem,
                        QgsRectangle,
@@ -34,11 +32,11 @@ from qgis.core import (QgsLayoutItemMap,
                        QgsProperty,
                        QgsGeometry,
                        QgsPointXY)
-
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
+
 from qgslayoutchecker import QgsLayoutChecker
 from test_qgslayoutitem import LayoutItemTestCase
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

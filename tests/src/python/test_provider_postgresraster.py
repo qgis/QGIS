@@ -14,22 +14,17 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
 """
-from builtins import next
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '2019-12-20'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
-import qgis  # NOQA
 import os
 import time
 
+import qgis  # NOQA
 from qgis.core import (
-    QgsSettings,
-    QgsReadWriteContext,
     QgsRectangle,
-    QgsCoordinateReferenceSystem,
-    QgsProject,
     QgsRasterLayer,
     QgsPointXY,
     QgsRaster,
@@ -38,6 +33,7 @@ from qgis.core import (
     QgsDataSourceUri,
 )
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath, compareWkt
 
 QGISAPP = start_app()

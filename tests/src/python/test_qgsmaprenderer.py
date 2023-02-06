@@ -10,8 +10,12 @@ __author__ = 'Nyall Dawson'
 __date__ = '1/02/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
+from random import uniform
 
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QSize
+from qgis.PyQt.QtGui import QPainter, QImage
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (QgsMapRendererCache,
                        QgsMapRendererParallelJob,
                        QgsMapRendererSequentialJob,
@@ -26,11 +30,6 @@ from qgis.core import (QgsMapRendererCache,
                        QgsMapSettings,
                        QgsPointXY)
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtCore import QSize, QThreadPool
-from qgis.PyQt.QtGui import QPainter, QImage
-from qgis.PyQt.QtTest import QSignalSpy
-from random import uniform
-
 
 app = start_app()
 

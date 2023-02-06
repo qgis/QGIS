@@ -11,13 +11,12 @@ __date__ = '2020-06'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.testing import unittest
 from qgis.core import (
     QgsMapClippingRegion,
     QgsGeometry,
     QgsVectorLayer
 )
+from qgis.testing import unittest
 
 
 class TestQgsMapClippingRegion(unittest.TestCase):

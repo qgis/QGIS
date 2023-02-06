@@ -11,8 +11,16 @@ __date__ = '09/05/2022'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
 import qgis  # NOQA
-import os
-
+from qgis.PyQt.QtCore import (
+    Qt,
+    QModelIndex,
+    QTemporaryDir,
+    QCoreApplication,
+    QEvent
+)
+from qgis.PyQt.QtGui import QFont, QColor
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (QgsProject,
                        QgsProjectStyleSettings,
                        QgsProjectStyleDatabaseModel,
@@ -24,19 +32,8 @@ from qgis.core import (QgsProject,
                        QgsGradientColorRamp,
                        QgsTextFormat,
                        Qgis)
-
-from qgis.PyQt.QtCore import (
-    Qt,
-    QModelIndex,
-    QTemporaryDir,
-    QCoreApplication,
-    QEvent
-)
-from qgis.PyQt.QtGui import QFont, QColor
-
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtXml import QDomDocument, QDomElement
 from qgis.testing import start_app, unittest
+
 from utilities import (unitTestDataPath)
 
 try:

@@ -40,11 +40,9 @@ from qgis.core import (Qgis,
                        QgsSettings,
                        QgsFeature,
                        QgsGeometry)
-from qgis.gui import (QgsLayerTreeMapCanvasBridge,
-                      QgsMapCanvas)
 
 from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtCore import QT_VERSION_STR, QTemporaryDir, QTemporaryFile
+from qgis.PyQt.QtCore import QT_VERSION_STR, QTemporaryDir
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt import sip
 

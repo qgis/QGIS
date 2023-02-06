@@ -10,10 +10,12 @@ __author__ = 'Tim Sutton'
 __date__ = '20/08/2012'
 __copyright__ = 'Copyright 2012, The QGIS Project'
 
-import os
 import csv
 import math
+import os
 
+from qgis.PyQt.QtCore import QDir, QPointF
+from qgis.PyQt.QtGui import QImage, QPainter, QPen, QColor, QBrush, QPainterPath, QPolygonF, QTransform
 from qgis.core import (
     QgsGeometry,
     QgsGeometryParameters,
@@ -44,9 +46,6 @@ from qgis.core import (
     QgsCircle,
     Qgis
 )
-from qgis.PyQt.QtCore import QDir, QPointF, QRectF
-from qgis.PyQt.QtGui import QImage, QPainter, QPen, QColor, QBrush, QPainterPath, QPolygonF, QTransform
-
 from qgis.testing import (
     start_app,
     unittest,

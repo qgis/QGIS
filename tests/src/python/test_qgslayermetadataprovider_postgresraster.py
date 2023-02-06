@@ -18,9 +18,8 @@ from qgis.core import (
     QgsRasterLayer,
     QgsProviderRegistry,
 )
-
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.testing import unittest
+
 from qgslayermetadataprovidertestbase import LayerMetadataProviderTestBase
 
 

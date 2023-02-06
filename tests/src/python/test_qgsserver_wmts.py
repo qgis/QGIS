@@ -24,10 +24,7 @@ import urllib.request
 import urllib.parse
 import urllib.error
 
-from qgis.server import QgsServerRequest
-
 from qgis.testing import unittest
-from qgis.PyQt.QtCore import QSize
 
 import osgeo.gdal  # NOQA
 

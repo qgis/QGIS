@@ -12,8 +12,6 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 
 
 import qgis  # NOQA
-
-from qgis.testing import unittest
 from qgis.PyQt.QtCore import (QDir,
                               QPointF)
 from qgis.PyQt.QtGui import (QImage,
@@ -33,6 +31,7 @@ from qgis.core import (QgsRenderChecker,
                        QgsRenderContext,
                        QgsSymbolLayer,
                        QgsProperty)
+from qgis.testing import unittest
 
 
 class TestQgsLineSymbolLayers(unittest.TestCase):

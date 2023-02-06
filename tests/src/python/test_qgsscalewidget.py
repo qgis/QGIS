@@ -10,11 +10,10 @@ __author__ = 'Nyall Dawson'
 __date__ = '13/03/2019'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
-import qgis  # NOQA
 import math
-from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtTest import QSignalSpy
 
+import qgis  # NOQA
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.gui import QgsScaleWidget
 from qgis.testing import start_app, unittest
 

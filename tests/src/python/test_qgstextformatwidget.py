@@ -11,7 +11,8 @@ __date__ = '2016-09'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtCore import (Qt, QSizeF, QPointF)
+from qgis.PyQt.QtGui import (QColor, QPainter)
 from qgis.core import (QgsTextBufferSettings,
                        QgsTextMaskSettings,
                        QgsTextBackgroundSettings,
@@ -24,9 +25,8 @@ from qgis.core import (QgsTextBufferSettings,
                        QgsSymbolLayerReference,
                        QgsSymbolLayerId)
 from qgis.gui import (QgsTextFormatWidget, QgsTextFormatDialog)
-from qgis.PyQt.QtGui import (QColor, QPainter)
-from qgis.PyQt.QtCore import (Qt, QSizeF, QPointF)
 from qgis.testing import unittest, start_app
+
 from utilities import getTestFont
 
 start_app()

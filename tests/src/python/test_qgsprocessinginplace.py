@@ -10,9 +10,16 @@ __author__ = 'Alessandro Pasotti'
 __date__ = '2018-09'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
-import re
 import os
+import re
+import shutil
+
+from processing.core.Processing import Processing
+from processing.core.ProcessingConfig import ProcessingConfig
+from processing.gui.AlgorithmExecutor import execute_in_place_run
+from processing.tools import dataobjects
 from qgis.PyQt.QtCore import QCoreApplication, QVariant, QTemporaryDir
+from qgis.analysis import QgsNativeAlgorithms
 from qgis.core import (
     QgsFeature,
     QgsGeometry,
@@ -22,7 +29,6 @@ from qgis.core import (
     QgsWkbTypes,
     QgsField,
     QgsFields,
-    QgsProcessingFeatureSourceDefinition,
     QgsProcessingContext,
     QgsProcessingFeedback,
     QgsCoordinateReferenceSystem,
@@ -32,16 +38,10 @@ from qgis.core import (
     QgsFeatureSink,
     QgsProperty
 )
-from processing.core.Processing import Processing
-from processing.core.ProcessingConfig import ProcessingConfig
-from processing.tools import dataobjects
-from processing.gui.AlgorithmExecutor import execute_in_place_run
-from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.analysis import QgsNativeAlgorithms
 from qgis.core import QgsVectorLayerUtils, QgsFeatureRequest
-import shutil
+from qgis.testing import start_app, unittest
+
+from utilities import unitTestDataPath
 
 start_app()
 

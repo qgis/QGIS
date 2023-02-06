@@ -24,7 +24,6 @@ __copyright__ = '(C) 2021, Nyall Dawson'
 import qgis  # NOQA
 from qgis.PyQt.QtCore import QDir, QVariant
 from qgis.PyQt.QtGui import QImage, QColor, QPainter
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (QgsGeometry,
                        QgsFields,
                        QgsField,
@@ -32,10 +31,6 @@ from qgis.core import (QgsGeometry,
                        QgsFeature,
                        QgsMapSettings,
                        QgsRenderChecker,
-                       QgsReadWriteContext,
-                       QgsSymbolLayerUtils,
-                       QgsSimpleMarkerSymbolLayer,
-                       QgsLineSymbolLayer,
                        QgsLineSymbol,
                        QgsMarkerSymbol,
                        QgsVectorFieldSymbolLayer

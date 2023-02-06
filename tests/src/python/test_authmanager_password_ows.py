@@ -17,12 +17,12 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 import os
-import sys
-import re
-import subprocess
-import tempfile
 import random
+import re
 import string
+import subprocess
+import sys
+import tempfile
 import urllib
 from functools import partial
 

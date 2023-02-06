@@ -12,17 +12,18 @@ __author__ = 'Hugo Mercier (hugo.mercier@oslandia.com)'
 __date__ = '17/07/2013'
 __copyright__ = 'Copyright 2013, The QGIS Project'
 
-import sys
-import os
+import errno
 import glob
+import os
 import re
-import time
 import shutil
 import subprocess
+import sys
 import tempfile
-import errno
+import time
 
 from qgis.testing import unittest
+
 from utilities import unitTestDataPath
 
 print('CTEST_FULL_OUTPUT')

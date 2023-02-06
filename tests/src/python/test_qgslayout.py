@@ -10,36 +10,31 @@ __author__ = 'Nyall Dawson'
 __date__ = '18/07/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
+import os
+import shutil
+import tempfile
+
 import qgis  # NOQA
 from qgis.PyQt import sip
-import tempfile
-import shutil
-import os
-
+from qgis.PyQt.QtCore import Qt, QPointF
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (QgsUnitTypes,
                        QgsLayout,
                        QgsLayoutItemPage,
                        QgsLayoutGuide,
-                       QgsLayoutObject,
                        QgsProject,
                        QgsPrintLayout,
                        QgsLayoutItemGroup,
                        QgsLayoutItem,
                        QgsLayoutItemHtml,
-                       QgsProperty,
-                       QgsLayoutPageCollection,
                        QgsLayoutMeasurement,
                        QgsLayoutFrame,
-                       QgsFillSymbol,
                        QgsReadWriteContext,
                        QgsLayoutItemMap,
                        QgsLayoutItemLabel,
                        QgsLayoutSize,
                        QgsLayoutPoint)
-from qgis.PyQt.QtCore import Qt, QCoreApplication, QEvent, QPointF, QRectF
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtXml import QDomDocument
-
 from qgis.testing import start_app, unittest
 
 start_app()

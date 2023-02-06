@@ -12,18 +12,16 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
 """
-from builtins import next
 
 __author__ = 'Daryna Dyka'
 __date__ = '2021-06-13'
 __copyright__ = 'Copyright 2021, The QGIS Project'
 
-import qgis  # NOQA
-import psycopg2
-
 import os
 import time
 
+import psycopg2
+import qgis  # NOQA
 from qgis.core import QgsVectorLayer, QgsFeatureRequest
 from qgis.testing import start_app, unittest
 

@@ -11,10 +11,9 @@ __date__ = '26/11/2021'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import qgis  # NOQA
+from qgis.PyQt import sip
 from qgis.core import Qgis, QgsApplication, QgsSymbolLayerAbstractMetadata, QgsSymbolLayer, QgsSimpleMarkerSymbolLayer
 from qgis.testing import start_app, unittest
-from qgis.PyQt import sip
-
 
 start_app()
 

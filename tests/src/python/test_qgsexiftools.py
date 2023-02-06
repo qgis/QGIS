@@ -10,12 +10,14 @@ __author__ = 'Nyall Dawson'
 __date__ = '09/11/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
-import qgis  # NOQA switch sip api
 import os
 import shutil
+
+import qgis  # NOQA switch sip api
 from qgis.PyQt.QtCore import QTemporaryFile, QDateTime
 from qgis.core import QgsPointXY, QgsExifTools
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()

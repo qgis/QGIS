@@ -10,11 +10,12 @@ __author__ = '(C) 2019 by Nyall Dawson'
 __date__ = '02/09/2019'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
-import qgis  # NOQA
 import os
 
+import qgis  # NOQA
 from qgis.PyQt.QtCore import QCoreApplication, QLocale, QTemporaryDir, QEvent
-
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (QgsBookmark,
                        QgsBookmarkManager,
                        QgsProject,
@@ -23,11 +24,9 @@ from qgis.core import (QgsBookmark,
                        QgsCoordinateReferenceSystem,
                        QgsSettings,
                        QgsApplication)
-
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
-from qgis.PyQt.QtXml import QDomDocument
-from qgis.PyQt.QtTest import QSignalSpy
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

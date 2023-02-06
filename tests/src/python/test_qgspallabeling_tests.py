@@ -14,16 +14,14 @@ __author__ = 'Larry Shaffer'
 __date__ = '07/16/2013'
 __copyright__ = 'Copyright 2013, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
 
+import qgis  # NOQA
 from qgis.PyQt.QtCore import Qt, QPointF, QSizeF
 from qgis.PyQt.QtGui import QFont
-
+from qgis.core import QgsCoordinateReferenceSystem
 from qgis.core import QgsLabelingEngineSettings, QgsPalLayerSettings, QgsUnitTypes, QgsTextBackgroundSettings, \
     QgsProject, QgsExpressionContextUtils, QgsExpressionContext
-from qgis.core import QgsCoordinateReferenceSystem
 
 from utilities import svgSymbolsPath
 

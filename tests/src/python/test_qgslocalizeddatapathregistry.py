@@ -10,20 +10,20 @@ __author__ = 'Denis Rouzaud'
 __date__ = '13/05/2020'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
-import qgis  # NOQA
-
-from tempfile import NamedTemporaryFile
-import tempfile
-from pathlib import Path
 import os
 import shutil
+import tempfile
+from pathlib import Path
+from tempfile import NamedTemporaryFile
+
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QDir
 from qgis.core import (
     QgsApplication,
     QgsPathResolver,
     QgsProject,
     QgsVectorLayer
 )
-from qgis.PyQt.QtCore import QDir
 from qgis.testing import start_app, unittest
 
 start_app()

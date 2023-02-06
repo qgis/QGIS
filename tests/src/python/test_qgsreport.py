@@ -11,19 +11,17 @@ __date__ = '29/12/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (QgsProject,
                        QgsLayout,
                        QgsReport,
                        QgsReportSectionLayout,
                        QgsReportSectionFieldGroup,
                        QgsVectorLayer,
-                       QgsField,
                        QgsFeature,
                        QgsReadWriteContext,
                        QgsUnitTypes)
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtXml import QDomDocument
 
 start_app()
 

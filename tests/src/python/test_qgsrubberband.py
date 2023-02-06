@@ -9,15 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 
 import qgis  # NOQA
 
-from qgis.PyQt.QtCore import (
-    QSize
-)
-from qgis.PyQt.QtGui import (
-    QResizeEvent
-)
-from qgis.core import (
-    QgsProject,
-)
 from qgis.gui import QgsRubberBand
 from qgis.testing import start_app, unittest
 from qgis.testing.mocked import get_iface

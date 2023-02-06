@@ -11,30 +11,15 @@ __date__ = '08/06/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
-
-import os
-
-from qgis.PyQt.QtCore import QVariant, Qt, QDateTime, QDate, QTime
-from qgis.PyQt.QtGui import QPainter
-from qgis.PyQt.QtXml import QDomDocument
-
-from qgis.core import (QgsWkbTypes,
-                       QgsVectorLayer,
+from qgis.PyQt.QtCore import QDateTime, QDate, QTime
+from qgis.core import (QgsVectorLayer,
                        QgsVectorLayerCache,
-                       QgsRectangle,
                        QgsFeature,
-                       QgsFeatureRequest,
                        QgsGeometry,
-                       QgsPointXY,
-                       QgsField,
-                       QgsFields,
-                       QgsCoordinateReferenceSystem,
-                       QgsProject,
-                       QgsPoint,
                        NULL)
 from qgis.testing import start_app, unittest
+
 from featuresourcetestbase import FeatureSourceTestCase
-from utilities import unitTestDataPath
 
 start_app()
 

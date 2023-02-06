@@ -11,15 +11,13 @@ __date__ = '14/06/2019'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.core import QgsVectorLayer, QgsMeshLayer, QgsProject, QgsMapLayerProxyModel
-from qgis.gui import QgsMapLayerComboBox
 from qgis.PyQt.QtCore import (
     QCoreApplication,
     QEvent
 )
 from qgis.PyQt.QtTest import QSignalSpy
-
+from qgis.core import QgsVectorLayer, QgsMeshLayer, QgsProject, QgsMapLayerProxyModel
+from qgis.gui import QgsMapLayerComboBox
 from qgis.testing import start_app, unittest
 
 start_app()

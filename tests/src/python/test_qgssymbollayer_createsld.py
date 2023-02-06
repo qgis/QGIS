@@ -20,11 +20,9 @@ __date__ = 'July 2016'
 __copyright__ = '(C) 2012, Andrea Aime'
 
 import qgis  # NOQA
-
 from qgis.PyQt.QtCore import Qt, QDir, QFile, QIODevice, QPointF, QSizeF
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.PyQt.QtGui import QColor, QFont
-
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     Qgis,
     QgsSimpleMarkerSymbolLayerBase, QgsUnitTypes, QgsSvgMarkerSymbolLayer,
@@ -34,6 +32,7 @@ from qgis.core import (
     QgsTextBufferSettings, QgsPalLayerSettings, QgsTextBackgroundSettings, QgsRuleBasedLabeling,
     QgsLineSymbol, QgsSymbolLayer, QgsSimpleMarkerSymbolLayer, QgsProperty)
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them

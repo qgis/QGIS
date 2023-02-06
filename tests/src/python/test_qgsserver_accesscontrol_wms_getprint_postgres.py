@@ -16,12 +16,9 @@ __copyright__ = 'Copyright 2021, The QGIS Project'
 
 import os
 import re
-import hashlib
 
 # Needed on Qt 5 so that the serialization of XML is consistent among all executions
 os.environ['QT_HASH_SEED'] = '1'
-
-import urllib.parse
 
 from qgis.core import QgsProject, QgsProviderRegistry, QgsVectorLayer
 from qgis.PyQt.QtCore import QTemporaryDir

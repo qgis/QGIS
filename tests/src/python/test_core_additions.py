@@ -13,11 +13,8 @@ __date__ = '15.5.2018'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import qgis  # NOQA
-import os
-
+from qgis.core import metaEnumFromValue, QgsTolerance, QgsMapLayer
 from qgis.testing import unittest, start_app
-from qgis.core import metaEnumFromValue, metaEnumFromType, QgsTolerance, QgsMapLayer
-from qgis.PyQt import sip
 
 start_app()
 

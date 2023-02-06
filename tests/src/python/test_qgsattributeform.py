@@ -14,7 +14,7 @@ __author__ = 'Alessandro Pasotti'
 __date__ = '2019-06-06'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
-from qgis.testing import start_app, unittest
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import (
     QgsVectorLayer,
     QgsFeature,
@@ -30,7 +30,7 @@ from qgis.gui import (
     QgsAttributeEditorContext,
     QgsFilterLineEdit
 )
-from qgis.PyQt.QtCore import QVariant
+from qgis.testing import start_app, unittest
 
 QGISAPP = start_app()
 

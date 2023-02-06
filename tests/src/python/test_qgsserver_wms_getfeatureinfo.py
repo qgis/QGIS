@@ -20,7 +20,6 @@ import os
 # executions
 os.environ['QT_HASH_SEED'] = '1'
 
-import re
 import urllib.request
 import urllib.parse
 import urllib.error
@@ -28,7 +27,6 @@ import urllib.error
 import json
 
 from qgis.testing import unittest
-from qgis.PyQt.QtCore import QSize
 
 import osgeo.gdal  # NOQA
 

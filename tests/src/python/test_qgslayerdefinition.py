@@ -12,19 +12,18 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import os
 import shutil
-import qgis  # NOQA
 
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QTemporaryDir
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (QgsProject,
                        QgsLayerDefinition,
                        QgsVectorLayer,
                        Qgis
                        )
-
 from qgis.testing import unittest, start_app
-from utilities import unitTestDataPath
 
-from qgis.PyQt.QtXml import QDomDocument
-from qgis.PyQt.QtCore import QTemporaryDir
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

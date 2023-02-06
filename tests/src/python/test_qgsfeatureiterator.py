@@ -10,12 +10,11 @@ __author__ = 'Matthias Kuhn'
 __date__ = '18/09/2013'
 __copyright__ = 'Copyright 2013, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
 
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsAuxiliaryStorage,
-                       QgsAuxiliaryLayer,
                        QgsVectorLayer,
                        QgsFeatureRequest,
                        QgsFeature,
@@ -26,7 +25,6 @@ from qgis.core import (QgsAuxiliaryStorage,
                        QgsVectorLayerJoinInfo,
                        QgsGeometry)
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtCore import QVariant
 
 from utilities import unitTestDataPath
 

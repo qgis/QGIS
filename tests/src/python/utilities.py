@@ -9,13 +9,13 @@ __author__ = 'Tim Sutton (tim@linfiniti.com)'
 __date__ = '20/01/2011'
 __copyright__ = 'Copyright 2012, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
-import sys
 import platform
-import tempfile
 import re
+import sys
+import tempfile
+
+import qgis  # NOQA
 
 try:
     from urllib2 import urlopen, HTTPError, URLError

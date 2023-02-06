@@ -13,9 +13,9 @@ __date__ = '20/03/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.PyQt.QtXml import QDomDocument
-
+from qgis.PyQt.QtCore import (QDate,
+                              QTime,
+                              QDateTime)
 from qgis.core import (QgsCoordinateReferenceSystem,
                        QgsAbstractMetadataBase,
                        QgsLayerMetadata,
@@ -23,9 +23,6 @@ from qgis.core import (QgsCoordinateReferenceSystem,
                        QgsBox3d,
                        QgsDateTimeRange)
 from qgis.gui import (QgsMetadataWidget)
-from qgis.PyQt.QtCore import (QDate,
-                              QTime,
-                              QDateTime)
 from qgis.testing import start_app, unittest
 
 start_app()

@@ -10,22 +10,20 @@ __author__ = 'Stephane Brunner'
 __date__ = '28/08/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-import qgis  # NOQA
-import shutil
-
 import os
-from shutil import copyfile
+import shutil
+import tempfile
 from math import sqrt
-from utilities import unitTestDataPath
+
+import qgis  # NOQA
 from osgeo import gdal
 from osgeo.gdalconst import GA_ReadOnly
-from qgis.server import QgsServer, QgsAccessControlFilter, QgsServerRequest, QgsBufferServerRequest, QgsBufferServerResponse
-from qgis.core import QgsRenderChecker, QgsApplication
 from qgis.PyQt.QtCore import QSize
-import tempfile
-from test_qgsserver import QgsServerTestBase
-import base64
+from qgis.core import QgsRenderChecker
+from qgis.server import QgsAccessControlFilter, QgsServerRequest, QgsBufferServerRequest, QgsBufferServerResponse
 
+from test_qgsserver import QgsServerTestBase
+from utilities import unitTestDataPath
 
 XML_NS = \
     'service="WFS" version="1.0.0" ' \

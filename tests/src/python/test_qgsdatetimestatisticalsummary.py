@@ -11,12 +11,11 @@ __date__ = '07/05/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtCore import QDateTime, QDate, QTime
 from qgis.core import (QgsDateTimeStatisticalSummary,
                        QgsInterval,
                        NULL
                        )
-from qgis.PyQt.QtCore import QDateTime, QDate, QTime
 from qgis.testing import unittest
 
 

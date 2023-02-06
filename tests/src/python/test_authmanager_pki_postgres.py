@@ -21,33 +21,26 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-import os
-import time
-import signal
-import stat
-import subprocess
-import tempfile
 import glob
+import os
+import stat
+import tempfile
 
-from shutil import rmtree
-
-from utilities import unitTestDataPath
+from qgis.PyQt.QtCore import QFile
+from qgis.PyQt.QtNetwork import QSslCertificate
 from qgis.core import (
     QgsApplication,
-    QgsAuthManager,
     QgsAuthMethodConfig,
     QgsVectorLayer,
     QgsDataSourceUri,
     QgsWkbTypes,
 )
-
-from qgis.PyQt.QtNetwork import QSslCertificate
-from qgis.PyQt.QtCore import QFile
-
 from qgis.testing import (
     start_app,
     unittest,
 )
+
+from utilities import unitTestDataPath
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '25/10/2016'

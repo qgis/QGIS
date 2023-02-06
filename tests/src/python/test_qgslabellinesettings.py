@@ -10,9 +10,9 @@ __author__ = 'Nyall Dawson'
 __date__ = '2019-12-07'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
-import qgis  # NOQA
 import os
 
+import qgis  # NOQA
 from qgis.core import (QgsProperty,
                        QgsPropertyCollection,
                        QgsPalLayerSettings,
@@ -22,7 +22,6 @@ from qgis.core import (QgsProperty,
                        QgsUnitTypes,
                        QgsMapUnitScale,
                        QgsLabeling)
-
 from qgis.testing import unittest, start_app
 
 start_app()

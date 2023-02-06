@@ -11,17 +11,15 @@ __date__ = '20/04/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (QgsLegendPatchShape,
                        QgsGeometry,
                        QgsSymbol
                        )
 from qgis.gui import QgsLegendPatchShapeWidget
-from qgis.PyQt.QtTest import QSignalSpy
-
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
 
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

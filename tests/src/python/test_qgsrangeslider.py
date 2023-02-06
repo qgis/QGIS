@@ -11,13 +11,10 @@ __date__ = '2020-11-25'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.gui import QgsRangeSlider
-
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtWidgets import QSlider
 from qgis.PyQt.QtTest import QSignalSpy
-
+from qgis.PyQt.QtWidgets import QSlider
+from qgis.gui import QgsRangeSlider
 from qgis.testing import start_app, unittest
 
 start_app()

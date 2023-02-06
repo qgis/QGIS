@@ -11,8 +11,8 @@ __date__ = '03/07/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
-
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (QgsLayoutItemMap,
                        QgsLayout,
                        QgsProject,
@@ -20,12 +20,9 @@ from qgis.core import (QgsLayoutItemMap,
                        QgsMapClippingRegion,
                        QgsVectorLayer,
                        QgsReadWriteContext)
-
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtXml import QDomDocument
 
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

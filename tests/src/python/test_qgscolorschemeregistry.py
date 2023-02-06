@@ -11,9 +11,8 @@ __date__ = '25/07/2014'
 __copyright__ = 'Copyright 2014, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.testing import start_app, unittest
 from qgis.core import QgsColorSchemeRegistry, QgsRecentColorScheme, QgsApplication, QgsColorScheme
+from qgis.testing import start_app, unittest
 
 start_app()
 

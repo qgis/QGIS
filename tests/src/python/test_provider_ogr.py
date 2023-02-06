@@ -20,7 +20,6 @@ from datetime import datetime
 from osgeo import gdal, ogr  # NOQA
 from qgis.PyQt.QtCore import QVariant, QByteArray, QTemporaryDir
 from qgis.PyQt.QtXml import QDomDocument
-
 from qgis.core import (
     NULL,
     QgsAuthMethodConfig,
@@ -56,7 +55,6 @@ from qgis.core import (
     QgsUnsetAttributeValue,
     QgsFieldConstraints
 )
-
 from qgis.gui import (
     QgsGui
 )

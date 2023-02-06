@@ -13,9 +13,7 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 import qgis  # NOQA
 
 from qgis.core import (QgsBox3d,
-                       QgsPointXY,
                        QgsPoint,
-                       QgsWkbTypes,
                        QgsRectangle)
 
 from qgis.testing import unittest

@@ -24,7 +24,7 @@ import urllib.parse
 from qgis.testing import unittest
 from qgis.PyQt.QtCore import QSize, Qt
 from qgis.PyQt.QtGui import QImage, QPainter
-from qgis.PyQt.QtSvg import QSvgRenderer, QSvgGenerator
+from qgis.PyQt.QtSvg import QSvgRenderer
 
 import osgeo.gdal  # NOQA
 import tempfile

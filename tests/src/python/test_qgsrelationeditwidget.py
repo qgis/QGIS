@@ -10,10 +10,17 @@ __author__ = 'Matthias Kuhn'
 __date__ = '28/11/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
 
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QTimer
+from qgis.PyQt.QtWidgets import (
+    QToolButton,
+    QMessageBox,
+    QDialogButtonBox,
+    QTableView,
+    QDialog
+)
 from qgis.core import (
     QgsFeature,
     QgsVectorLayer,
@@ -24,22 +31,12 @@ from qgis.core import (
     QgsVectorLayerTools,
     QgsGeometry
 )
-
 from qgis.gui import (
     QgsGui,
     QgsRelationWidgetWrapper,
     QgsAttributeEditorContext,
     QgsMapCanvas,
     QgsAdvancedDigitizingDockWidget
-)
-
-from qgis.PyQt.QtCore import QTimer
-from qgis.PyQt.QtWidgets import (
-    QToolButton,
-    QMessageBox,
-    QDialogButtonBox,
-    QTableView,
-    QDialog
 )
 from qgis.testing import start_app, unittest
 

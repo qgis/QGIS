@@ -16,6 +16,8 @@ import shutil
 from functools import partial
 from stat import S_IREAD, S_IRGRP, S_IROTH, S_IWUSR
 
+from qgis.PyQt.QtCore import QTemporaryDir
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     QgsPolygon,
     QgsWkbTypes,
@@ -30,10 +32,8 @@ from qgis.core import (
     QgsNotSupportedException,
     QgsProviderConnectionException,
 )
-
-from qgis.PyQt.QtCore import QTemporaryDir
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.testing import unittest, start_app
+
 from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()

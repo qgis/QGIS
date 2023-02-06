@@ -11,10 +11,9 @@ __date__ = '03/12/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtCore import QModelIndex, Qt
 from qgis.core import QgsValidityCheckResult
 from qgis.gui import QgsValidityCheckResultsModel
-from qgis.PyQt.QtCore import QModelIndex, Qt
 from qgis.testing import start_app, unittest
 
 app = start_app()

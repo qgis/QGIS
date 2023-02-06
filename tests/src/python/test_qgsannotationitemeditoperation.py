@@ -19,8 +19,7 @@ from qgis.core import (
     QgsAnnotationItemEditOperationTranslateItem,
     QgsAnnotationItemEditOperationAddNode,
     QgsVertexId,
-    QgsPoint,
-    QgsPointXY
+    QgsPoint
 )
 from qgis.testing import start_app, unittest
 

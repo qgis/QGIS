@@ -11,7 +11,7 @@ __date__ = '09/11/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     QgsProviderRegistry,
     QgsPointCloudLayer,
@@ -20,10 +20,8 @@ from qgis.core import (
     QgsPointCloudAttribute
 )
 from qgis.gui import QgsPointCloudAttributeComboBox
-from qgis.PyQt.QtCore import QVariant, Qt
-from qgis.PyQt.QtTest import QSignalSpy
-
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()

@@ -11,8 +11,7 @@ __date__ = '3/05/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.testing import unittest, start_app
+from qgis.PyQt.QtCore import QVariant, QTextCodec, QLocale, Qt
 from qgis.core import (QgsJsonUtils,
                        QgsJsonExporter,
                        QgsCoordinateReferenceSystem,
@@ -29,7 +28,7 @@ from qgis.core import (QgsJsonUtils,
                        QgsRelation,
                        QgsEditorWidgetSetup
                        )
-from qgis.PyQt.QtCore import QVariant, QTextCodec, QLocale, Qt
+from qgis.testing import unittest, start_app
 
 start_app()
 codec = QTextCodec.codecForName("System")

@@ -13,13 +13,15 @@ __date__ = '2022-08-19'
 __copyright__ = 'Copyright 2022, ItOpen'
 
 import os
-from osgeo import ogr
+import unittest
 
+from osgeo import ogr
+from qgis.PyQt.QtCore import QCoreApplication, QTemporaryDir, QVariant, Qt
+from qgis.PyQt.QtTest import QAbstractItemModelTester
 from qgis.core import (
     QgsVectorLayer,
     QgsProviderRegistry,
     QgsWkbTypes,
-    QgsMapLayerType,
     QgsLayerMetadata,
     QgsProviderMetadata,
     QgsBox3d,
@@ -31,18 +33,11 @@ from qgis.core import (
     QgsFeature,
     QgsGeometry,
 )
-
 from qgis.gui import (
     QgsLayerMetadataResultsModel,
     QgsLayerMetadataResultsProxyModel,
 )
-
-from qgis.PyQt.QtTest import QAbstractItemModelTester
-
-from qgis.PyQt.QtCore import QCoreApplication, QTemporaryDir, QVariant, Qt
-from utilities import compareWkt, unitTestDataPath
 from qgis.testing import start_app, TestCase
-import unittest
 
 QGIS_APP = start_app()
 NUM_LAYERS = 20

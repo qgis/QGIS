@@ -10,8 +10,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '18/03/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
-import os
-
 import qgis  # NOQA
 
 from qgis.PyQt.QtCore import QCoreApplication, QEvent, Qt

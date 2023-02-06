@@ -10,11 +10,11 @@ __author__ = 'Nyall Dawson'
 __date__ = '22/07/2019'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
-import qgis  # NOQA
-
-import tempfile
-import os
 import gc
+import os
+import tempfile
+
+import qgis  # NOQA
 from qgis.core import (
     QgsPathResolver,
     QgsVectorLayer,
@@ -22,6 +22,7 @@ from qgis.core import (
     QgsApplication
 )
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()

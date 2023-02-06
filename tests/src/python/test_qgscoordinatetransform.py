@@ -16,9 +16,7 @@ from qgis.core import (QgsRectangle,
                        QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform,
                        QgsCoordinateTransformContext,
-                       QgsDatumTransform,
-                       QgsProject,
-                       QgsProjUtils)
+                       QgsProject)
 from qgis.testing import start_app, unittest
 
 start_app()

@@ -11,7 +11,8 @@ __date__ = '16/01/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtCore import QSize, QDateTime
+from qgis.PyQt.QtGui import QPainter, QImage
 from qgis.core import (QgsRenderContext,
                        QgsMapSettings,
                        QgsDistanceArea,
@@ -28,10 +29,7 @@ from qgis.core import (QgsRenderContext,
                        QgsGeometry,
                        QgsDoubleRange,
                        Qgis)
-from qgis.PyQt.QtCore import QSize, QDateTime
-from qgis.PyQt.QtGui import QPainter, QImage
 from qgis.testing import start_app, unittest
-import math
 
 # Convenience instances in case you may need them
 # to find the srs.db

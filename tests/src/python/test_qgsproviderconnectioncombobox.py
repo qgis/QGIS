@@ -10,21 +10,20 @@ __author__ = 'Nyall Dawson'
 __date__ = '8/03/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
-
-import tempfile
-import shutil
 import os
+import shutil
+import tempfile
 
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     QgsVectorLayer,
     QgsProviderRegistry
 )
 from qgis.gui import QgsProviderConnectionComboBox
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.PyQt.QtTest import QSignalSpy
-
 from qgis.testing import unittest
+
 from utilities import unitTestDataPath, start_app
 
 start_app()

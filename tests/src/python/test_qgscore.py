@@ -11,11 +11,8 @@ __date__ = '28.6.2019'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
 import qgis  # NOQA
-import os
-
-from qgis.testing import unittest, start_app
 from qgis.core import qgsRound, qgsDoubleNear
-from qgis.PyQt import sip
+from qgis.testing import unittest, start_app
 
 start_app()
 

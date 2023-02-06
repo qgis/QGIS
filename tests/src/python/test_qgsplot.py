@@ -11,7 +11,6 @@ __date__ = '28/3/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
 import qgis  # NOQA
-
 from qgis.PyQt.QtCore import (
     QDir,
     Qt,
@@ -22,7 +21,7 @@ from qgis.PyQt.QtGui import (
     QPainter,
     QColor
 )
-
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     Qgs2DPlot,
     QgsRenderContext,
@@ -37,9 +36,6 @@ from qgis.core import (
     QgsSymbolLayer,
     QgsPalLayerSettings
 )
-
-from qgis.PyQt.QtXml import QDomDocument, QDomElement
-
 from qgis.testing import start_app, unittest
 
 app = start_app()

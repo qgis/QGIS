@@ -17,8 +17,6 @@ from qgis.core import (
     QgsProcessingFeedback
 )
 
-from qgis.PyQt.QtXml import QDomDocument
-
 from qgis.testing import start_app, unittest
 
 start_app()

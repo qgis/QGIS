@@ -14,7 +14,6 @@ import qgis  # NOQA
 
 from qgis.core import QgsVectorLayer
 from qgis.gui import (QgsGui,
-                      QgsQueryBuilder,
                       QgsProviderSourceWidget,
                       QgsProviderSourceWidgetProvider)
 from qgis.testing import start_app, unittest

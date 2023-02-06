@@ -10,11 +10,11 @@ __author__ = 'Matthias Kuhn'
 __date__ = '8.11.2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
 import os
-import tempfile
 import shutil
+import tempfile
 
+import qgis  # NOQA
 from qgis.PyQt.QtCore import (
     QSize,
     Qt,
@@ -25,8 +25,7 @@ from qgis.PyQt.QtGui import (
     QColor,
     QImage,
     QPainter,
-    QResizeEvent,
-    QPixmap
+    QResizeEvent
 )
 from qgis.core import (
     QgsVectorLayer,
@@ -46,6 +45,7 @@ from qgis.gui import (
 )
 from qgis.testing import start_app, unittest
 from qgis.testing.mocked import get_iface
+
 from utilities import unitTestDataPath
 
 app = start_app()

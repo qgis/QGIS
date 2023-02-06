@@ -10,19 +10,14 @@ __author__ = 'Nyall Dawson'
 __date__ = '8/03/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import os
-
 import qgis  # NOQA
-
 from qgis.core import (QgsProject,
-                       QgsApplication,
-                       QgsUnitTypes,
-                       QgsCoordinateReferenceSystem,
                        QgsVectorLayer)
 from qgis.gui import (QgsLayerTreeMapCanvasBridge,
                       QgsMapCanvas,
                       QgsCustomLayerOrderWidget)
 from qgis.testing import start_app, unittest
+
 from utilities import (unitTestDataPath)
 
 app = start_app()

@@ -10,12 +10,11 @@ __author__ = 'Radim Blazek'
 __date__ = '20/08/2012'
 __copyright__ = 'Copyright 2012, The QGIS Project'
 
-import qgis  # NOQA
-
-import os
 import glob
+import os
 import tempfile
 
+import qgis  # NOQA
 from osgeo import gdal
 from qgis.PyQt.QtCore import QTemporaryFile, QDir
 from qgis.core import (QgsContrastEnhancement,
@@ -26,8 +25,8 @@ from qgis.core import (QgsContrastEnhancement,
                        QgsRasterFileWriter,
                        QgsRasterProjector,
                        QgsRectangle)
-
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()
