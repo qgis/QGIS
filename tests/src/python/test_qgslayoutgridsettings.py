@@ -10,19 +10,17 @@ __date__ = '05/07/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.core import (QgsProject,
-                       QgsLayout,
-                       QgsLayoutGridSettings,
-                       QgsLayoutMeasurement,
-                       QgsUnitTypes,
-                       QgsLayoutPoint,
-                       QgsLayoutItemPage,
-                       QgsReadWriteContext)
-from qgis.PyQt.QtGui import (QPen,
-                             QColor)
+from qgis.PyQt.QtGui import QColor, QPen
 from qgis.PyQt.QtXml import QDomDocument
-
+from qgis.core import (
+    QgsLayout,
+    QgsLayoutGridSettings,
+    QgsLayoutMeasurement,
+    QgsLayoutPoint,
+    QgsProject,
+    QgsReadWriteContext,
+    QgsUnitTypes,
+)
 from qgis.testing import start_app, unittest
 
 start_app()

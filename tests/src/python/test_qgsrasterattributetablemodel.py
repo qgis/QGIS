@@ -14,21 +14,14 @@ __date__ = '04/09/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
 import qgis  # NOQA
-
-import os
-from qgis.PyQt.QtCore import QVariant, QModelIndex
+from qgis.PyQt.Qt import Qt
+from qgis.PyQt.QtCore import QModelIndex, QVariant
 from qgis.PyQt.QtGui import QColor
-from qgis.PyQt.Qt import Qt, PYQT_VERSION_STR
-
-from qgis.core import (Qgis,
-                       QgsRasterAttributeTable,
-                       )
-from qgis.gui import (QgsRasterAttributeTableModel,)
-
+from qgis.PyQt.QtTest import QAbstractItemModelTester
+from qgis.core import Qgis, QgsRasterAttributeTable
+from qgis.gui import QgsRasterAttributeTableModel
 from qgis.testing import start_app, unittest
 from qgis.testing.mocked import get_iface
-
-from qgis.PyQt.QtTest import QAbstractItemModelTester
 
 # Convenience instances in case you may need them
 # not used in this test

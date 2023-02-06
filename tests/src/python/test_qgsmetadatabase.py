@@ -12,19 +12,13 @@ __date__ = '19/03/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtCore import QDate, QDateTime, QTime
 from qgis.PyQt.QtXml import QDomDocument
-
-from qgis.core import (QgsAbstractMetadataBase,
-                       QgsCoordinateReferenceSystem,
-                       QgsVectorLayer,
-                       QgsNativeMetadataBaseValidator,
-                       QgsBox3d,
-                       QgsDateTimeRange,
-                       Qgis)
-from qgis.PyQt.QtCore import (QDate,
-                              QTime,
-                              QDateTime)
+from qgis.core import (
+    Qgis,
+    QgsAbstractMetadataBase,
+    QgsNativeMetadataBaseValidator,
+)
 from qgis.testing import start_app, unittest
 
 start_app()

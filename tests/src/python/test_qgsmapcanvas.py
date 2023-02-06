@@ -9,43 +9,36 @@ __author__ = 'Nyall Dawson'
 __date__ = '24/1/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
-
-from qgis.PyQt.QtCore import (
-    QDate,
-    QTime,
-    QDateTime,
-    QDir
-)
-
-from qgis.core import (QgsMapSettings,
-                       QgsCoordinateReferenceSystem,
-                       QgsRectangle,
-                       QgsVectorLayer,
-                       QgsFeature,
-                       QgsGeometry,
-                       QgsMultiRenderChecker,
-                       QgsFillSymbol,
-                       QgsSingleSymbolRenderer,
-                       QgsMapThemeCollection,
-                       QgsProject, QgsAnnotationPolygonItem,
-                       QgsPolygon,
-                       QgsLineString,
-                       QgsPoint,
-                       QgsPointXY,
-                       QgsApplication,
-                       QgsAnnotationLayer,
-                       QgsAnnotationLineItem,
-                       QgsAnnotationMarkerItem,
-                       QgsTemporalController,
-                       QgsTemporalNavigationObject,
-                       QgsDateTimeRange,
-                       QgsInterval
-                       )
-from qgis.gui import (QgsMapCanvas)
-
-from qgis.PyQt.QtXml import (QDomDocument, QDomElement)
 import time
+
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QDate, QDateTime, QDir, QTime
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.core import (
+    QgsAnnotationLayer,
+    QgsAnnotationLineItem,
+    QgsAnnotationMarkerItem,
+    QgsAnnotationPolygonItem,
+    QgsCoordinateReferenceSystem,
+    QgsDateTimeRange,
+    QgsFeature,
+    QgsFillSymbol,
+    QgsGeometry,
+    QgsInterval,
+    QgsLineString,
+    QgsMapThemeCollection,
+    QgsMultiRenderChecker,
+    QgsPoint,
+    QgsPointXY,
+    QgsPolygon,
+    QgsProject,
+    QgsRectangle,
+    QgsSingleSymbolRenderer,
+    QgsTemporalController,
+    QgsTemporalNavigationObject,
+    QgsVectorLayer,
+)
+from qgis.gui import QgsMapCanvas
 from qgis.testing import start_app, unittest
 
 app = start_app()

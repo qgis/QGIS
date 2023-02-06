@@ -13,11 +13,7 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.core import (
-    QgsTextBlock,
-    QgsTextFragment,
-    QgsStringUtils
-)
+from qgis.core import QgsStringUtils, QgsTextBlock, QgsTextFragment
 from qgis.testing import start_app, unittest
 
 start_app()

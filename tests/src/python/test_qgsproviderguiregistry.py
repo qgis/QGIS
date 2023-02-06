@@ -10,14 +10,10 @@ __date__ = '23/11/2021'
 __copyright__ = 'Copyright 2021, The QGIS Project'
 
 import sys
-import qgis  # NOQA
 
-from qgis.gui import (
-    QgsGui,
-    QgsProviderGuiRegistry
-)
+import qgis  # NOQA
+from qgis.gui import QgsGui
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
 # to find the srs.db

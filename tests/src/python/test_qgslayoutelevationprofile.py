@@ -12,28 +12,29 @@ __copyright__ = 'Copyright 2023, The QGIS Project'
 import os
 import tempfile
 
-from qgis.PyQt.QtCore import QRectF, QDir
+from qgis.PyQt.QtCore import QDir, QRectF
 from qgis.PyQt.QtGui import QColor
-from qgis.core import (QgsPrintLayout,
-                       QgsLayoutItemElevationProfile,
-                       QgsLayout,
-                       QgsVectorLayer,
-                       QgsProject,
-                       QgsFontUtils,
-                       QgsLineSymbol,
-                       QgsRasterLayer,
-                       QgsGeometry,
-                       QgsCoordinateReferenceSystem,
-                       QgsExpressionContextUtils,
-                       QgsFlatTerrainProvider,
-                       QgsFeature,
-                       Qgis,
-                       QgsFillSymbol,
-                       QgsLineString,
-                       QgsTextFormat)
-from qgis.testing import (start_app,
-                          unittest
-                          )
+from qgis.core import (
+    Qgis,
+    QgsCoordinateReferenceSystem,
+    QgsExpressionContextUtils,
+    QgsFeature,
+    QgsFillSymbol,
+    QgsFlatTerrainProvider,
+    QgsFontUtils,
+    QgsGeometry,
+    QgsLayout,
+    QgsLayoutItemElevationProfile,
+    QgsLineString,
+    QgsLineSymbol,
+    QgsPrintLayout,
+    QgsProject,
+    QgsRasterLayer,
+    QgsTextFormat,
+    QgsVectorLayer,
+)
+from qgis.testing import start_app, unittest
+
 from qgslayoutchecker import QgsLayoutChecker
 from test_qgslayoutitem import LayoutItemTestCase
 from utilities import unitTestDataPath

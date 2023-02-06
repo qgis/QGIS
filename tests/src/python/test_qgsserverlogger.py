@@ -9,8 +9,8 @@ __copyright__ = 'Copyright 2018, The QGIS Project'
 
 import os
 
-from qgis.testing import unittest
 from qgis.server import QgsServerLogger
+from qgis.testing import unittest
 
 from utilities import unitTestDataPath
 

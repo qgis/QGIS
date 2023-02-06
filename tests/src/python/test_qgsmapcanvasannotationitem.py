@@ -10,20 +10,20 @@ __date__ = '24/1/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.core import (QgsTextAnnotation,
-                       QgsCoordinateReferenceSystem,
-                       QgsRectangle,
-                       QgsPointXY,
-                       QgsVectorLayer,
-                       QgsFeature,
-                       QgsGeometry,
-                       QgsFillSymbol)
-from qgis.gui import QgsMapCanvas, QgsMapCanvasAnnotationItem
-
 from qgis.PyQt.QtCore import QPointF, QSizeF
-
+from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsFeature,
+    QgsFillSymbol,
+    QgsGeometry,
+    QgsPointXY,
+    QgsRectangle,
+    QgsTextAnnotation,
+    QgsVectorLayer,
+)
+from qgis.gui import QgsMapCanvas, QgsMapCanvasAnnotationItem
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()

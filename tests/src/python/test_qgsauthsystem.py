@@ -14,12 +14,19 @@ __copyright__ = 'Copyright 2014, Boundless Spatial, Inc.'
 import os
 import tempfile
 
-from qgis.core import QgsAuthCertUtils, QgsPkiBundle, QgsAuthMethodConfig, QgsAuthMethod, QgsAuthConfigSslServer, QgsApplication
-from qgis.gui import QgsAuthEditorWidgets
 from qgis.PyQt.QtCore import QFileInfo, qDebug
-from qgis.PyQt.QtNetwork import QSsl, QSslError, QSslCertificate, QSslSocket
+from qgis.PyQt.QtNetwork import QSsl, QSslCertificate, QSslError, QSslSocket
 from qgis.PyQt.QtTest import QTest
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QVBoxLayout
+from qgis.core import (
+    QgsApplication,
+    QgsAuthCertUtils,
+    QgsAuthConfigSslServer,
+    QgsAuthMethod,
+    QgsAuthMethodConfig,
+    QgsPkiBundle,
+)
+from qgis.gui import QgsAuthEditorWidgets
 from qgis.testing import start_app, unittest
 
 from utilities import unitTestDataPath

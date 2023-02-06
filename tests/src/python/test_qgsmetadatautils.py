@@ -11,13 +11,8 @@ __copyright__ = 'Copyright 2021, The QGIS Project'
 
 from qgis.PyQt.QtCore import QDateTime
 from qgis.PyQt.QtXml import QDomDocument
-from qgis.core import (
-    QgsMetadataUtils,
-    Qgis
-)
-from qgis.testing import (start_app,
-                          unittest,
-                          )
+from qgis.core import Qgis, QgsMetadataUtils
+from qgis.testing import start_app, unittest
 
 from utilities import unitTestDataPath
 

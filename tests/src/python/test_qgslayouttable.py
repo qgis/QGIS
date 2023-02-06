@@ -9,10 +9,8 @@ __author__ = '(C) 2022 by Nyall Dawson'
 __date__ = '13/06/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
-from qgis.core import (QgsLayoutTableColumn)
-from qgis.testing import (start_app,
-                          unittest
-                          )
+from qgis.core import QgsLayoutTableColumn
+from qgis.testing import start_app, unittest
 
 from utilities import unitTestDataPath
 

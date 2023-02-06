@@ -9,14 +9,10 @@ __author__ = 'Nathan Woodrow'
 __date__ = '10.12.2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
-import sys
-import os
 import qgis  # NOQA
 
-from qgis.testing import unittest, start_app
 from qgis.processing import alg
-from qgis.core import QgsSettings
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.testing import start_app, unittest
 
 start_app()
 

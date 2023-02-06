@@ -10,17 +10,18 @@ __author__ = 'Matthias Kuhn'
 __date__ = '4/28/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-import qgis  # NOQA
-
+import http.server
 import os
-from qgis.testing import unittest, start_app
-from qgis.core import QgsNetworkContentFetcher
-from utilities import unitTestDataPath
-from qgis.PyQt.QtCore import QUrl
-from qgis.PyQt.QtNetwork import QNetworkReply, QNetworkRequest
 import socketserver
 import threading
-import http.server
+
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QUrl
+from qgis.PyQt.QtNetwork import QNetworkReply, QNetworkRequest
+from qgis.core import QgsNetworkContentFetcher
+from qgis.testing import start_app, unittest
+
+from utilities import unitTestDataPath
 
 app = start_app()
 

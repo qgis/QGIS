@@ -19,39 +19,37 @@ __author__ = 'Nyall Dawson'
 __date__ = 'November 2018'
 __copyright__ = '(C) 2018, Nyall Dawson'
 
-import qgis  # NOQA
-
 import os
 
-from utilities import unitTestDataPath
-
-from qgis.PyQt.QtCore import QDir, Qt, QSize
-from qgis.PyQt.QtGui import QImage, QColor, QPainter
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QDir, QSize, Qt
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.PyQt.QtXml import QDomDocument
+from qgis.core import (
+    QgsFeature,
+    QgsFillSymbol,
+    QgsGeometry,
+    QgsLineSymbol,
+    QgsLineSymbolLayer,
+    QgsMapSettings,
+    QgsMapUnitScale,
+    QgsMultiRenderChecker,
+    QgsProperty,
+    QgsReadWriteContext,
+    QgsRectangle,
+    QgsRenderChecker,
+    QgsRenderContext,
+    QgsSimpleLineSymbolLayer,
+    QgsSingleSymbolRenderer,
+    QgsSymbol,
+    QgsSymbolLayer,
+    QgsSymbolLayerUtils,
+    QgsUnitTypes,
+    QgsVectorLayer,
+)
+from qgis.testing import start_app, unittest
 
-from qgis.core import (QgsGeometry,
-                       QgsRectangle,
-                       QgsFillSymbol,
-                       QgsRenderContext,
-                       QgsFeature,
-                       QgsMapSettings,
-                       QgsRenderChecker,
-                       QgsReadWriteContext,
-                       QgsSymbolLayerUtils,
-                       QgsSimpleLineSymbolLayer,
-                       QgsLineSymbolLayer,
-                       QgsLineSymbol,
-                       QgsUnitTypes,
-                       QgsMapUnitScale,
-                       QgsVectorLayer,
-                       QgsSymbolLayer,
-                       QgsMultiRenderChecker,
-                       QgsProperty,
-                       QgsSingleSymbolRenderer,
-                       QgsSymbol
-                       )
-
-from qgis.testing import unittest, start_app
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

@@ -11,9 +11,11 @@ __copyright__ = 'Copyright 2022, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.core import (QgsCoordinateReferenceSystem,
-                       QgsCoordinateReferenceSystemUtils,
-                       Qgis)
+from qgis.core import (
+    Qgis,
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateReferenceSystemUtils,
+)
 from qgis.testing import start_app, unittest
 
 start_app()

@@ -9,10 +9,10 @@ __author__ = 'Tim Sutton'
 __date__ = '20/08/2012'
 __copyright__ = 'Copyright 2012, The QGIS Project'
 
-import qgis  # NOQA
-
-import tempfile
 import os
+import tempfile
+
+import qgis  # NOQA
 
 (myFileHandle, myFilename) = tempfile.mkstemp()
 os.environ['QGIS_DEBUG'] = '2'

@@ -16,24 +16,24 @@ import shutil
 from functools import partial
 from stat import S_IREAD, S_IRGRP, S_IROTH, S_IWUSR
 
-from qgis.core import (
-    QgsPolygon,
-    QgsWkbTypes,
-    QgsRectangle,
-    QgsMapLayerType,
-    QgsProviderRegistry,
-    QgsAbstractLayerMetadataProvider,
-    QgsLayerMetadataSearchResults,
-    QgsLayerMetadataProviderResult,
-    QgsMetadataSearchContext,
-    QgsLayerMetadata,
-    QgsNotSupportedException,
-    QgsProviderConnectionException,
-)
-
 from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.PyQt.QtXml import QDomDocument
-from qgis.testing import unittest, start_app
+from qgis.core import (
+    QgsAbstractLayerMetadataProvider,
+    QgsLayerMetadata,
+    QgsLayerMetadataProviderResult,
+    QgsLayerMetadataSearchResults,
+    QgsMapLayerType,
+    QgsMetadataSearchContext,
+    QgsNotSupportedException,
+    QgsPolygon,
+    QgsProviderConnectionException,
+    QgsProviderRegistry,
+    QgsRectangle,
+    QgsWkbTypes,
+)
+from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()

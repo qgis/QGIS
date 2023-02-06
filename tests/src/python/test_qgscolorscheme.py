@@ -10,11 +10,16 @@ __date__ = '25/07/2014'
 __copyright__ = 'Copyright 2014, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.testing import unittest, start_app
-from qgis.core import QgsColorScheme, QgsUserColorScheme, QgsRecentColorScheme, QgsSettings
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QColor
+from qgis.core import (
+    QgsColorScheme,
+    QgsRecentColorScheme,
+    QgsSettings,
+    QgsUserColorScheme,
+)
+from qgis.testing import start_app, unittest
+
 
 # Make a dummy color scheme for testing
 

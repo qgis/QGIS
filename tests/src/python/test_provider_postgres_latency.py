@@ -16,13 +16,12 @@ __author__ = 'Daryna Dyka'
 __date__ = '2021-06-13'
 __copyright__ = 'Copyright 2021, The QGIS Project'
 
-import qgis  # NOQA
-import psycopg2
-
 import os
 import time
 
-from qgis.core import QgsVectorLayer, QgsFeatureRequest
+import psycopg2
+import qgis  # NOQA
+from qgis.core import QgsFeatureRequest, QgsVectorLayer
 from qgis.testing import start_app, unittest
 
 QGISAPP = start_app()

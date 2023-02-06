@@ -10,25 +10,25 @@ __date__ = '3/05/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.testing import unittest, start_app
-from qgis.core import (QgsJsonUtils,
-                       QgsJsonExporter,
-                       QgsCoordinateReferenceSystem,
-                       QgsProject,
-                       QgsFeature,
-                       QgsField,
-                       QgsFields,
-                       QgsWkbTypes,
-                       QgsGeometry,
-                       QgsPoint,
-                       QgsLineString,
-                       NULL,
-                       QgsVectorLayer,
-                       QgsRelation,
-                       QgsEditorWidgetSetup
-                       )
-from qgis.PyQt.QtCore import QVariant, QTextCodec, QLocale, Qt
+from qgis.PyQt.QtCore import QLocale, Qt, QTextCodec, QVariant
+from qgis.core import (
+    NULL,
+    QgsCoordinateReferenceSystem,
+    QgsEditorWidgetSetup,
+    QgsFeature,
+    QgsField,
+    QgsFields,
+    QgsGeometry,
+    QgsJsonExporter,
+    QgsJsonUtils,
+    QgsLineString,
+    QgsPoint,
+    QgsProject,
+    QgsRelation,
+    QgsVectorLayer,
+    QgsWkbTypes,
+)
+from qgis.testing import start_app, unittest
 
 start_app()
 codec = QTextCodec.codecForName("System")

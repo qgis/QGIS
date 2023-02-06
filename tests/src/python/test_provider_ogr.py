@@ -17,50 +17,46 @@ import tempfile
 from datetime import datetime
 
 from osgeo import gdal, ogr  # NOQA
-from qgis.PyQt.QtCore import QVariant, QByteArray, QTemporaryDir
+from qgis.PyQt.QtCore import QByteArray, QTemporaryDir, QVariant
 from qgis.PyQt.QtXml import QDomDocument
-
 from qgis.core import (
     NULL,
-    QgsCoordinateReferenceSystem,
-    QgsAuthMethodConfig,
+    Qgis,
+    QgsAbstractDatabaseProviderConnection,
     QgsApplication,
+    QgsAuthMethodConfig,
+    QgsCoordinateReferenceSystem,
     QgsCoordinateTransformContext,
+    QgsDataProvider,
+    QgsDirectoryItem,
     QgsEditorWidgetSetup,
-    QgsProject,
-    QgsField,
-    QgsFields,
-    QgsGeometry,
-    QgsRectangle,
-    QgsProviderRegistry,
     QgsFeature,
     QgsFeatureRequest,
-    QgsSettings,
-    QgsDataProvider,
-    QgsVectorDataProvider,
-    QgsVectorLayer,
-    QgsVectorFileWriter,
-    QgsVectorLayerExporter,
-    QgsWkbTypes,
-    QgsNetworkAccessManager,
+    QgsField,
+    QgsFieldConstraints,
+    QgsFields,
+    QgsGeometry,
     QgsLayerMetadata,
-    QgsNotSupportedException,
     QgsMapLayerType,
-    QgsProviderSublayerDetails,
-    Qgis,
-    QgsDirectoryItem,
-    QgsAbstractDatabaseProviderConnection,
+    QgsNetworkAccessManager,
+    QgsNotSupportedException,
+    QgsProject,
     QgsProviderConnectionException,
     QgsProviderMetadata,
+    QgsProviderRegistry,
+    QgsProviderSublayerDetails,
+    QgsRectangle,
     QgsRelation,
+    QgsSettings,
     QgsUnsetAttributeValue,
-    QgsFieldConstraints,
-    QgsWeakRelation
+    QgsVectorDataProvider,
+    QgsVectorFileWriter,
+    QgsVectorLayer,
+    QgsVectorLayerExporter,
+    QgsWeakRelation,
+    QgsWkbTypes,
 )
-
-from qgis.gui import (
-    QgsGui
-)
+from qgis.gui import QgsGui
 from qgis.testing import start_app, unittest
 from qgis.utils import spatialite_connect
 

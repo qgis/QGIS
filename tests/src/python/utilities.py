@@ -9,35 +9,33 @@ __author__ = 'Tim Sutton (tim@linfiniti.com)'
 __date__ = '20/01/2011'
 __copyright__ = 'Copyright 2012, The QGIS Project'
 
+import os
+import platform
+import re
+import sys
+import tempfile
+
 import qgis  # NOQA
 
-import os
-import sys
-import platform
-import tempfile
-import re
-
 try:
-    from urllib2 import urlopen, HTTPError, URLError
+    from urllib2 import HTTPError, URLError, urlopen
 except ImportError:
     from urllib.request import urlopen, HTTPError, URLError
 
-from qgis.PyQt.QtCore import QDir, QUrl, QUrlQuery
+import hashlib
+import subprocess
+import webbrowser
 
 from qgis.core import (
     QgsCoordinateReferenceSystem,
-    QgsVectorFileWriter,
-    QgsMapSettings,
+    QgsFontUtils,
     QgsMapRendererParallelJob,
     QgsMapRendererSequentialJob,
-    QgsFontUtils
+    QgsMapSettings,
+    QgsVectorFileWriter,
 )
+from qgis.PyQt.QtCore import QDir, QUrl, QUrlQuery
 from qgis.testing import start_app
-import hashlib
-
-
-import webbrowser
-import subprocess
 
 GEOCRS = 4326  # constant for EPSG:GEOCRS Geographic CRS id
 

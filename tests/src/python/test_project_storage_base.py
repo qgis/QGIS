@@ -13,19 +13,12 @@ __copyright__ = 'Copyright 2022, The QGIS Project'
 
 import qgis  # NOQA
 
-import os
-import time
-
+from PyQt5.QtCore import QDateTime
 from qgis.core import (
     QgsApplication,
-    QgsDataSourceUri,
-    QgsVectorLayer,
     QgsProject,
+    QgsVectorLayer,
 )
-from PyQt5.QtCore import QDateTime, QUrl, QUrlQuery
-from qgis.PyQt.QtSql import QSqlDatabase, QSqlQuery
-from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
 
 
 class TestPyQgsProjectStorageBase:

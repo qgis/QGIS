@@ -9,21 +9,23 @@ __author__ = 'Alessandro Pasotti'
 __date__ = '2022-07'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
-import re
 import os
 
-from osgeo import gdal, ogr
+from osgeo import ogr
 from processing.core.Processing import Processing
 from processing.gui.AlgorithmExecutor import execute
-from qgis.analysis import QgsNativeAlgorithms
-from qgis.core import (QgsApplication, QgsVectorLayer,
-                       QgsGeometry, QgsProcessingContext,
-                       QgsProcessingFeedback, QgsSettings,
-                       QgsProviderRegistry, QgsProject, QgsRelation
-                       )
 from qgis.PyQt.QtCore import QCoreApplication, QTemporaryDir
+from qgis.analysis import QgsNativeAlgorithms
+from qgis.core import (
+    QgsApplication,
+    QgsProcessingContext,
+    QgsProcessingFeedback,
+    QgsProject,
+    QgsRelation,
+    QgsSettings,
+    QgsVectorLayer,
+)
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
 
 start_app()
 

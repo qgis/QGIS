@@ -13,59 +13,53 @@ __author__ = 'Tim Sutton'
 __date__ = '20/08/2012'
 __copyright__ = 'Copyright 2012, The QGIS Project'
 
-import qgis  # NOQA
-
-from osgeo import gdal
-import os
 import filecmp
+import os
 from shutil import copyfile
+
 import numpy as np
-
-from qgis.PyQt.QtCore import QSize, QFileInfo, Qt, QTemporaryDir
-
-from qgis.PyQt.QtGui import (
-    QColor,
-    QImage,
-    QPainter,
-    QResizeEvent
-)
+import qgis  # NOQA
+from osgeo import gdal
+from qgis.PyQt.QtCore import QFileInfo, QSize, QTemporaryDir
+from qgis.PyQt.QtGui import QColor, QResizeEvent
 from qgis.PyQt.QtXml import QDomDocument
-
-from qgis.core import (Qgis,
-                       QgsMapLayerServerProperties,
-                       QgsRaster,
-                       QgsRasterLayer,
-                       QgsReadWriteContext,
-                       QgsColorRampShader,
-                       QgsContrastEnhancement,
-                       QgsDataProvider,
-                       QgsProject,
-                       QgsMapSettings,
-                       QgsPointXY,
-                       QgsRasterMinMaxOrigin,
-                       QgsRasterShader,
-                       QgsRasterTransparency,
-                       QgsRenderChecker,
-                       QgsPalettedRasterRenderer,
-                       QgsSingleBandGrayRenderer,
-                       QgsSingleBandPseudoColorRenderer,
-                       QgsLimitedRandomColorRamp,
-                       QgsGradientColorRamp,
-                       QgsHueSaturationFilter,
-                       QgsCoordinateTransformContext,
-                       QgsCoordinateReferenceSystem,
-                       QgsRasterHistogram,
-                       QgsCubicRasterResampler,
-                       QgsBilinearRasterResampler,
-                       QgsLayerDefinition,
-                       QgsRasterPipe,
-                       QgsProperty,
-                       QgsExpressionContext,
-                       QgsExpressionContextScope
-                       )
-from utilities import unitTestDataPath
+from qgis.core import (
+    Qgis,
+    QgsBilinearRasterResampler,
+    QgsColorRampShader,
+    QgsContrastEnhancement,
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransformContext,
+    QgsCubicRasterResampler,
+    QgsDataProvider,
+    QgsExpressionContext,
+    QgsExpressionContextScope,
+    QgsGradientColorRamp,
+    QgsHueSaturationFilter,
+    QgsLayerDefinition,
+    QgsLimitedRandomColorRamp,
+    QgsMapLayerServerProperties,
+    QgsMapSettings,
+    QgsPalettedRasterRenderer,
+    QgsPointXY,
+    QgsProject,
+    QgsProperty,
+    QgsRaster,
+    QgsRasterHistogram,
+    QgsRasterLayer,
+    QgsRasterMinMaxOrigin,
+    QgsRasterPipe,
+    QgsRasterShader,
+    QgsRasterTransparency,
+    QgsReadWriteContext,
+    QgsRenderChecker,
+    QgsSingleBandGrayRenderer,
+    QgsSingleBandPseudoColorRenderer,
+)
 from qgis.testing import start_app, unittest
 from qgis.testing.mocked import get_iface
+
+from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
 # not used in this test

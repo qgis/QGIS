@@ -9,35 +9,35 @@ __author__ = '(C) 2017 Nyall Dawson'
 __date__ = '20/10/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
 
-from qgis.PyQt.QtCore import QFileInfo, QRectF, QDir
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QDir, QFileInfo, QRectF
 from qgis.PyQt.QtGui import QPainter
-
-from qgis.core import (QgsLayoutItemMap,
-                       QgsLayoutItemMapItem,
-                       QgsRectangle,
-                       QgsRasterLayer,
-                       QgsVectorLayer,
-                       QgsLayout,
-                       QgsProject,
-                       QgsMultiBandColorRenderer,
-                       QgsFillSymbol,
-                       QgsSingleSymbolRenderer,
-                       QgsCoordinateReferenceSystem,
-                       QgsLayoutItemMapOverview,
-                       QgsFeature,
-                       QgsSymbolLayer,
-                       QgsProperty,
-                       QgsGeometry,
-                       QgsPointXY)
-
+from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsFeature,
+    QgsFillSymbol,
+    QgsGeometry,
+    QgsLayout,
+    QgsLayoutItemMap,
+    QgsLayoutItemMapItem,
+    QgsLayoutItemMapOverview,
+    QgsMultiBandColorRenderer,
+    QgsPointXY,
+    QgsProject,
+    QgsProperty,
+    QgsRasterLayer,
+    QgsRectangle,
+    QgsSingleSymbolRenderer,
+    QgsSymbolLayer,
+    QgsVectorLayer,
+)
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
+
 from qgslayoutchecker import QgsLayoutChecker
 from test_qgslayoutitem import LayoutItemTestCase
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

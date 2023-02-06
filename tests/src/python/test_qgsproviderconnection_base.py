@@ -18,28 +18,29 @@ __revision__ = '$Format:%H$'
 
 import os
 import time
-from qgis.PyQt.QtCore import QCoreApplication, QVariant
-from qgis.testing import start_app
-from qgis.core import (
-    QgsSettings,
-    QgsProviderRegistry,
-    QgsWkbTypes,
-    QgsVectorLayer,
-    QgsFields,
-    QgsCoordinateReferenceSystem,
-    QgsField,
-    QgsAbstractDatabaseProviderConnection,
-    QgsProviderConnectionException,
-    QgsFeature,
-    QgsGeometry,
-    QgsFeedback,
-    QgsApplication,
-    QgsTask,
-    QgsMapLayerUtils,
-    Qgis,
-)
+
 from qgis.PyQt import QtCore
+from qgis.PyQt.QtCore import QCoreApplication, QVariant
 from qgis.PyQt.QtTest import QSignalSpy
+from qgis.core import (
+    Qgis,
+    QgsAbstractDatabaseProviderConnection,
+    QgsApplication,
+    QgsCoordinateReferenceSystem,
+    QgsFeature,
+    QgsFeedback,
+    QgsField,
+    QgsFields,
+    QgsGeometry,
+    QgsMapLayerUtils,
+    QgsProviderConnectionException,
+    QgsProviderRegistry,
+    QgsSettings,
+    QgsTask,
+    QgsVectorLayer,
+    QgsWkbTypes,
+)
+from qgis.testing import start_app
 
 
 class TestPyQgsProviderConnectionBase():

@@ -19,21 +19,48 @@ __author__ = 'Andrea Aime'
 __date__ = 'July 2016'
 __copyright__ = '(C) 2012, Andrea Aime'
 
-import qgis  # NOQA
 import os
-from qgis.PyQt.QtCore import Qt, QDir, QFile, QIODevice, QPointF, QSizeF, QTemporaryDir
-from qgis.PyQt.QtXml import QDomDocument
-from qgis.PyQt.QtGui import QColor, QFont, QImage
 
+import qgis  # NOQA
+from qgis.PyQt.QtCore import (
+    QDir,
+    QFile,
+    QIODevice,
+    QPointF,
+    QSizeF,
+    Qt,
+    QTemporaryDir,
+)
+from qgis.PyQt.QtGui import QColor, QFont, QImage
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     Qgis,
-    QgsSimpleMarkerSymbolLayerBase, QgsUnitTypes, QgsSvgMarkerSymbolLayer,
-    QgsFontMarkerSymbolLayer, QgsEllipseSymbolLayer, QgsSimpleLineSymbolLayer,
-    QgsMarkerLineSymbolLayer, QgsMarkerSymbol, QgsSimpleFillSymbolLayer, QgsSVGFillSymbolLayer,
-    QgsLinePatternFillSymbolLayer, QgsPointPatternFillSymbolLayer, QgsVectorLayer, QgsVectorLayerSimpleLabeling,
-    QgsTextBufferSettings, QgsPalLayerSettings, QgsTextBackgroundSettings, QgsRuleBasedLabeling,
-    QgsLineSymbol, QgsSymbolLayer, QgsSimpleMarkerSymbolLayer, QgsProperty, QgsSldExportContext)
+    QgsEllipseSymbolLayer,
+    QgsFontMarkerSymbolLayer,
+    QgsLinePatternFillSymbolLayer,
+    QgsLineSymbol,
+    QgsMarkerLineSymbolLayer,
+    QgsMarkerSymbol,
+    QgsPalLayerSettings,
+    QgsPointPatternFillSymbolLayer,
+    QgsProperty,
+    QgsRuleBasedLabeling,
+    QgsSimpleFillSymbolLayer,
+    QgsSimpleLineSymbolLayer,
+    QgsSimpleMarkerSymbolLayer,
+    QgsSimpleMarkerSymbolLayerBase,
+    QgsSldExportContext,
+    QgsSVGFillSymbolLayer,
+    QgsSvgMarkerSymbolLayer,
+    QgsSymbolLayer,
+    QgsTextBackgroundSettings,
+    QgsTextBufferSettings,
+    QgsUnitTypes,
+    QgsVectorLayer,
+    QgsVectorLayerSimpleLabeling,
+)
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them

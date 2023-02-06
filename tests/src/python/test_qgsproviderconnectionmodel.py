@@ -15,18 +15,16 @@ __revision__ = '$Format:%H$'
 import os
 import shutil
 import tempfile
+
+from qgis.PyQt.QtCore import QCoreApplication, QModelIndex, Qt
 from qgis.core import (
-    QgsVectorLayer,
-    QgsProviderRegistry,
     QgsProviderConnectionModel,
-)
-from qgis.PyQt.QtCore import (
-    QModelIndex,
-    Qt,
-    QCoreApplication
+    QgsProviderRegistry,
+    QgsVectorLayer,
 )
 from qgis.testing import unittest
-from utilities import unitTestDataPath, start_app
+
+from utilities import start_app, unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
 

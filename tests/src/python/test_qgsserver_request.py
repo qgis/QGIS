@@ -20,8 +20,12 @@ import unittest
 from urllib.parse import parse_qs, urlencode, urlparse
 
 from qgis.PyQt.QtCore import QUrl
-from qgis.server import (QgsBufferServerResponse, QgsFcgiServerRequest,
-                         QgsServerRequest)
+from qgis.server import (
+    QgsBufferServerResponse,
+    QgsFcgiServerRequest,
+    QgsServerRequest,
+)
+
 from test_qgsserver import QgsServerTestBase
 
 

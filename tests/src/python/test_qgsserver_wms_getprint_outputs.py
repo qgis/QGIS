@@ -18,20 +18,19 @@ import os
 # Needed on Qt 5 so that the serialization of XML is consistent among all executions
 os.environ['QT_HASH_SEED'] = '1'
 
-import urllib.parse
-
-from qgis.testing import unittest
-from qgis.PyQt.QtCore import QSize, Qt
-from qgis.PyQt.QtGui import QImage, QPainter
-from qgis.PyQt.QtSvg import QSvgRenderer, QSvgGenerator
-
-import osgeo.gdal  # NOQA
-import tempfile
 import base64
 import subprocess
+import tempfile
+import urllib.parse
 
-from test_qgsserver import QgsServerTestBase
+import osgeo.gdal  # NOQA
+
 from qgis.core import QgsMultiRenderChecker
+from qgis.PyQt.QtCore import QSize, Qt
+from qgis.PyQt.QtGui import QImage, QPainter
+from qgis.PyQt.QtSvg import QSvgRenderer
+from qgis.testing import unittest
+from test_qgsserver import QgsServerTestBase
 from utilities import getExecutablePath, unitTestDataPath
 
 

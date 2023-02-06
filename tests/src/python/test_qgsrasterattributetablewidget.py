@@ -14,33 +14,18 @@ __date__ = '20/08/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
 import qgis  # NOQA
-
-from osgeo import gdal
-from osgeo import osr
-import numpy as np
-
-import os
-
 from qgis.PyQt.QtCore import QTemporaryDir, QVariant
-from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtWidgets import QDialog, QVBoxLayout
-
-
-from qgis.core import (Qgis,
-                       QgsRasterLayer,
-                       QgsRasterAttributeTable,
-                       QgsPalettedRasterRenderer,
-                       QgsSingleBandPseudoColorRenderer,
-                       QgsPresetSchemeColorRamp,
-                       )
-
-from qgis.gui import (QgsRasterAttributeTableWidget,
-                      )
-
-from test_qgsrasterattributetable import createTestRasters
-
+from qgis.core import (
+    Qgis,
+    QgsRasterAttributeTable,
+    QgsRasterLayer,
+)
+from qgis.gui import QgsRasterAttributeTableWidget
 from qgis.testing import start_app, unittest
 from qgis.testing.mocked import get_iface
+
+from test_qgsrasterattributetable import createTestRasters
 
 # Convenience instances in case you may need them
 # not used in this test

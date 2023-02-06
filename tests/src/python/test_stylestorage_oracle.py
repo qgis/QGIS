@@ -12,13 +12,11 @@ __date__ = '2022-11-07'
 __copyright__ = 'Copyright 2022, ItOpen'
 
 import os
-from stylestoragebase import StyleStorageTestBase, StyleStorageTestCaseBase
-from qgis.PyQt.QtCore import QTemporaryDir
-from qgis.core import (
-    QgsDataSourceUri,
-    QgsProviderRegistry,
-)
+
+from qgis.core import QgsDataSourceUri, QgsProviderRegistry
 from qgis.testing import unittest
+
+from stylestoragebase import StyleStorageTestBase, StyleStorageTestCaseBase
 
 
 class StyleStorageTest(StyleStorageTestCaseBase, StyleStorageTestBase):

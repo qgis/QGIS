@@ -10,35 +10,32 @@ __date__ = '09/11/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtCore import QDir, QSize, Qt
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
-    QgsProviderRegistry,
-    QgsPointCloudLayer,
-    QgsPointCloudAttributeByRampRenderer,
-    QgsPointCloudRenderer,
-    QgsReadWriteContext,
-    QgsRenderContext,
-    QgsPointCloudRenderContext,
-    QgsVector3D,
-    QgsMultiRenderChecker,
-    QgsMapSettings,
-    QgsRectangle,
-    QgsUnitTypes,
-    QgsMapUnitScale,
+    QgsColorRampLegendNode,
+    QgsColorRampShader,
     QgsCoordinateReferenceSystem,
     QgsDoubleRange,
-    QgsColorRampShader,
-    QgsStyle,
     QgsLayerTreeLayer,
-    QgsColorRampLegendNode,
-    QgsSimpleLegendNode
+    QgsMapSettings,
+    QgsMapUnitScale,
+    QgsMultiRenderChecker,
+    QgsPointCloudAttributeByRampRenderer,
+    QgsPointCloudLayer,
+    QgsPointCloudRenderContext,
+    QgsPointCloudRenderer,
+    QgsProviderRegistry,
+    QgsReadWriteContext,
+    QgsRectangle,
+    QgsRenderContext,
+    QgsSimpleLegendNode,
+    QgsStyle,
+    QgsUnitTypes,
+    QgsVector3D,
 )
-
-from qgis.PyQt.QtCore import QDir, QSize, Qt
-from qgis.PyQt.QtGui import QPainter
-from qgis.PyQt.QtXml import QDomDocument
-
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()

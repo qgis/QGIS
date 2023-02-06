@@ -12,14 +12,13 @@ __date__ = '12/05/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtGui import QColor
 from qgis.core import (
     Qgis,
     QgsFontUtils,
+    QgsRenderContext,
     QgsTextCharacterFormat,
-    QgsRenderContext
 )
-from qgis.PyQt.QtGui import QColor
 from qgis.testing import start_app, unittest
 
 start_app()

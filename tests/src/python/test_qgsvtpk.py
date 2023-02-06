@@ -11,9 +11,9 @@ __copyright__ = 'Copyright 2022, The QGIS Project'
 
 import qgis  # NOQA
 from qgis.core import (
-    QgsVtpkTiles,
+    QgsCoordinateTransformContext,
     QgsVectorTileLayer,
-    QgsCoordinateTransformContext
+    QgsVtpkTiles,
 )
 from qgis.testing import start_app, unittest
 

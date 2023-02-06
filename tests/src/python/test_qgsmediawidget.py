@@ -12,7 +12,6 @@ __copyright__ = 'Copyright 2023, The QGIS Project'
 import qgis  # NOQA
 
 from qgis.gui import QgsMediaWidget
-from qgis.core import QgsApplication
 from qgis.testing import start_app, unittest
 
 start_app()

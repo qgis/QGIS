@@ -18,24 +18,26 @@ from datetime import datetime
 
 import qgis  # NOQA
 from osgeo import ogr
-from qgis.PyQt.QtCore import QVariant, QByteArray
-from qgis.core import (Qgis,
-                       QgsProviderRegistry,
-                       QgsDataSourceUri,
-                       QgsVectorLayer,
-                       QgsVectorDataProvider,
-                       QgsPointXY,
-                       QgsFeature,
-                       QgsGeometry,
-                       QgsProject,
-                       QgsFieldConstraints,
-                       QgsVectorLayerUtils,
-                       QgsSettings,
-                       QgsDefaultValue,
-                       QgsFeatureRequest,
-                       QgsRectangle,
-                       QgsVectorLayerExporter,
-                       QgsWkbTypes)
+from qgis.PyQt.QtCore import QByteArray, QVariant
+from qgis.core import (
+    Qgis,
+    QgsDataSourceUri,
+    QgsDefaultValue,
+    QgsFeature,
+    QgsFeatureRequest,
+    QgsFieldConstraints,
+    QgsGeometry,
+    QgsPointXY,
+    QgsProject,
+    QgsProviderRegistry,
+    QgsRectangle,
+    QgsSettings,
+    QgsVectorDataProvider,
+    QgsVectorLayer,
+    QgsVectorLayerExporter,
+    QgsVectorLayerUtils,
+    QgsWkbTypes,
+)
 from qgis.testing import start_app, unittest
 from qgis.utils import spatialite_connect
 

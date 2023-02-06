@@ -10,15 +10,13 @@ __date__ = '16/11/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.core import QgsVectorLayer, QgsProject, QgsMapLayerModel, QgsApplication
-from qgis.PyQt.QtCore import (
-    QCoreApplication,
-    Qt,
-    QModelIndex,
-    QEvent
+from qgis.PyQt.QtCore import QCoreApplication, QEvent, QModelIndex, Qt
+from qgis.core import (
+    QgsApplication,
+    QgsMapLayerModel,
+    QgsProject,
+    QgsVectorLayer,
 )
-
 from qgis.testing import start_app, unittest
 
 start_app()

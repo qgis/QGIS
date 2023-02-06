@@ -10,21 +10,20 @@ __date__ = '03/07/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
-
-from qgis.core import (QgsLayoutItemMap,
-                       QgsLayout,
-                       QgsProject,
-                       QgsLayoutItemMapAtlasClippingSettings,
-                       QgsMapClippingRegion,
-                       QgsVectorLayer,
-                       QgsReadWriteContext)
-
-from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
+from qgis.core import (
+    QgsLayout,
+    QgsLayoutItemMap,
+    QgsLayoutItemMapAtlasClippingSettings,
+    QgsMapClippingRegion,
+    QgsProject,
+    QgsReadWriteContext,
+    QgsVectorLayer,
+)
+from qgis.testing import start_app, unittest
 
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

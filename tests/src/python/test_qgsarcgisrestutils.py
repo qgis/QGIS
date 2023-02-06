@@ -12,26 +12,20 @@ __date__ = '14/07/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
 import qgis  # NOQA
-from qgis.PyQt.QtCore import (
-    Qt,
-    QVariant,
-    QDate,
-    QTime,
-    QDateTime,
-    QTimeZone
-)
+from qgis.PyQt.QtCore import QDate, QDateTime, Qt, QTime, QTimeZone, QVariant
 from qgis.core import (
-    QgsGeometry,
+    NULL,
+    QgsArcGisRestContext,
     QgsArcGisRestUtils,
     QgsCoordinateReferenceSystem,
-    QgsFields,
+    QgsFeature,
     QgsField,
     QgsFieldConstraints,
-    QgsFeature,
-    QgsArcGisRestContext,
-    NULL
+    QgsFields,
+    QgsGeometry,
 )
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()

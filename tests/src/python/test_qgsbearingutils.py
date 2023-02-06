@@ -11,14 +11,13 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import qgis  # NOQA switch sip api
 
-from qgis.core import (QgsBearingUtils,
-                       QgsCoordinateReferenceSystem,
-                       QgsCoordinateTransformContext,
-                       QgsPointXY
-                       )
-
+from qgis.core import (
+    QgsBearingUtils,
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransformContext,
+    QgsPointXY,
+)
 from qgis.testing import start_app, unittest
-
 
 start_app()
 

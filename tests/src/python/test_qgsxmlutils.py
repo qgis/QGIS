@@ -10,25 +10,23 @@ __date__ = '18/11/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import qgis  # NOQA switch sip api
-from qgis.core import (QgsXmlUtils,
-                       QgsProperty,
-                       QgsGeometry,
-                       QgsFeatureRequest,
-                       QgsCoordinateReferenceSystem,
-                       QgsProcessingOutputLayerDefinition,
-                       QgsProcessingFeatureSourceDefinition,
-                       QgsRemappingSinkDefinition,
-                       QgsWkbTypes,
-                       QgsCoordinateTransform,
-                       QgsFields,
-                       QgsField,
-                       QgsProject,
-                       NULL)
-
-from qgis.PyQt.QtCore import QDateTime, QDate, QTime, QVariant
-from qgis.PyQt.QtXml import QDomDocument
+from qgis.PyQt.QtCore import QDate, QDateTime, QTime, QVariant
 from qgis.PyQt.QtGui import QColor
-
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.core import (
+    NULL,
+    QgsCoordinateReferenceSystem,
+    QgsFeatureRequest,
+    QgsField,
+    QgsFields,
+    QgsGeometry,
+    QgsProcessingFeatureSourceDefinition,
+    QgsProcessingOutputLayerDefinition,
+    QgsProperty,
+    QgsRemappingSinkDefinition,
+    QgsWkbTypes,
+    QgsXmlUtils,
+)
 from qgis.testing import start_app, unittest
 
 start_app()

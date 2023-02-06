@@ -9,42 +9,29 @@ __author__ = 'Matthias Kuhn'
 __date__ = '8.11.2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
 import os
-import tempfile
 import shutil
+import tempfile
 
-from qgis.PyQt.QtCore import (
-    QSize,
-    Qt,
-    QDir,
-
-)
-from qgis.PyQt.QtGui import (
-    QColor,
-    QImage,
-    QPainter,
-    QResizeEvent,
-    QPixmap
-)
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QDir, QSize, Qt
+from qgis.PyQt.QtGui import QColor, QImage, QPainter, QResizeEvent
 from qgis.core import (
-    QgsVectorLayer,
+    QgsCoordinateReferenceSystem,
+    QgsFillSymbol,
+    QgsGeometryGeneratorSymbolLayer,
+    QgsMultiRenderChecker,
     QgsProject,
     QgsRectangle,
     QgsRenderChecker,
-    QgsCoordinateReferenceSystem,
-    QgsMultiRenderChecker,
-    QgsGeometryGeneratorSymbolLayer,
-    QgsFillSymbol,
     QgsSingleSymbolRenderer,
-    QgsSymbol
+    QgsSymbol,
+    QgsVectorLayer,
 )
-from qgis.gui import (
-    QgsHighlight,
-    QgsMapCanvas
-)
+from qgis.gui import QgsHighlight, QgsMapCanvas
 from qgis.testing import start_app, unittest
 from qgis.testing.mocked import get_iface
+
 from utilities import unitTestDataPath
 
 app = start_app()

@@ -10,8 +10,8 @@ __date__ = '18/4/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
-from qgis.core import (QgsEllipsoidUtils,
-                       QgsProjUtils)
+
+from qgis.core import QgsEllipsoidUtils, QgsProjUtils
 from qgis.testing import start_app, unittest
 
 app = start_app()

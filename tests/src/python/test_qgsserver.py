@@ -30,26 +30,35 @@ import os
 # Deterministic XML
 os.environ['QT_HASH_SEED'] = '1'
 
-import re
-import urllib.request
-import urllib.parse
-import urllib.error
-import email
+import base64
 import difflib
+import email
+import re
+import tempfile
+import urllib.error
+import urllib.parse
+import urllib.request
 
 from io import StringIO
-from qgis.server import QgsServer, QgsServerRequest, QgsBufferServerRequest, QgsBufferServerResponse, QgsServerParameterDefinition
-from qgis.core import QgsRenderChecker, QgsApplication, QgsFontUtils, QgsMultiRenderChecker
-from qgis.testing import unittest, start_app
-from qgis.PyQt.QtCore import QSize, QUrlQuery
-from qgis.PyQt.QtGui import QColor
-from utilities import unitTestDataPath
-
-import osgeo.gdal  # NOQA
-import tempfile
-import base64
 from shutil import copytree
 
+import osgeo.gdal  # NOQA
+
+from qgis.core import (
+    QgsFontUtils,
+    QgsMultiRenderChecker,
+)
+from qgis.PyQt.QtCore import QSize
+from qgis.PyQt.QtGui import QColor
+from qgis.server import (
+    QgsBufferServerRequest,
+    QgsBufferServerResponse,
+    QgsServer,
+    QgsServerParameterDefinition,
+    QgsServerRequest,
+)
+from qgis.testing import start_app, unittest
+from utilities import unitTestDataPath
 
 start_app()
 

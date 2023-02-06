@@ -12,7 +12,7 @@ __copyright__ = 'Copyright 2021, The QGIS Project'
 import qgis  # NOQA
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import QgsCoordinateReferenceSystem
-from qgis.gui import (QgsCrsDefinitionWidget)
+from qgis.gui import QgsCrsDefinitionWidget
 from qgis.testing import start_app, unittest
 
 start_app()

@@ -12,20 +12,23 @@ __author__ = 'Paul Blottiere'
 __date__ = '31/01/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-from qgis.utils import spatialite_connect
 import os
+
+from qgis.utils import spatialite_connect
 
 # Needed on Qt 5 so that the serialization of XML is consistent among all executions
 os.environ['QT_HASH_SEED'] = '1'
 
 import time
 import urllib.parse
+
 from shutil import copyfile
+
 from qgis.core import QgsApplication
 from qgis.server import QgsServer
 from qgis.testing import unittest
-from utilities import unitTestDataPath
 from test_qgsserver import QgsServerTestBase
+from utilities import unitTestDataPath
 
 
 class TestQgsServerSecurity(QgsServerTestBase):

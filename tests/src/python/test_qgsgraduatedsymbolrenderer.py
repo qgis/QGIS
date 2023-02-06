@@ -10,23 +10,23 @@ __date__ = '3/10/2014'
 __copyright__ = 'Copyright 2014, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.testing import unittest, start_app
-from qgis.core import (QgsGraduatedSymbolRenderer,
-                       QgsRendererRange,
-                       QgsRendererRangeLabelFormat,
-                       QgsMarkerSymbol,
-                       QgsGradientColorRamp,
-                       QgsVectorLayer,
-                       QgsFeature,
-                       QgsGeometry,
-                       QgsPointXY,
-                       QgsReadWriteContext,
-                       QgsRenderContext
-                       )
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.core import (
+    QgsFeature,
+    QgsGeometry,
+    QgsGradientColorRamp,
+    QgsGraduatedSymbolRenderer,
+    QgsMarkerSymbol,
+    QgsPointXY,
+    QgsReadWriteContext,
+    QgsRenderContext,
+    QgsRendererRange,
+    QgsRendererRangeLabelFormat,
+    QgsVectorLayer,
+)
+from qgis.testing import start_app, unittest
 
 start_app()
 

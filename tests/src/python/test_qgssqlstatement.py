@@ -9,8 +9,8 @@ __author__ = 'Even Rouault'
 __date__ = '4/4/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
-from qgis.testing import unittest
 from qgis.core import QgsSQLStatement, QgsSQLStatementFragment
+from qgis.testing import unittest
 
 
 class TestQgsSQLStatementCustomFunctions(unittest.TestCase):

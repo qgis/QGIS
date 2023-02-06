@@ -9,30 +9,29 @@ __author__ = 'Nyall Dawson'
 __date__ = '30/12/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
 
-from qgis.PyQt.QtCore import QSize, QDir, Qt
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QDir
 from qgis.PyQt.QtGui import QColor
-
-from qgis.core import (QgsRenderChecker,
-                       QgsMapSettings,
-                       QgsVectorLayer,
-                       QgsMergedFeatureRenderer,
-                       QgsSingleSymbolRenderer,
-                       QgsFillSymbol,
-                       QgsSimpleFillSymbolLayer,
-                       QgsCategorizedSymbolRenderer,
-                       QgsRendererCategory,
-                       QgsSimpleLineSymbolLayer,
-                       QgsMarkerLineSymbolLayer,
-                       QgsLineSymbol,
-                       QgsTemplatedLineSymbolLayerBase,
-                       QgsMarkerSymbol,
-                       QgsMarkerSymbolLayer
-                       )
+from qgis.core import (
+    QgsCategorizedSymbolRenderer,
+    QgsFillSymbol,
+    QgsLineSymbol,
+    QgsMapSettings,
+    QgsMarkerLineSymbolLayer,
+    QgsMarkerSymbol,
+    QgsMergedFeatureRenderer,
+    QgsRenderChecker,
+    QgsRendererCategory,
+    QgsSimpleFillSymbolLayer,
+    QgsSimpleLineSymbolLayer,
+    QgsSingleSymbolRenderer,
+    QgsTemplatedLineSymbolLayerBase,
+    QgsVectorLayer,
+)
 from qgis.testing import unittest
+
 from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()

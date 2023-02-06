@@ -10,23 +10,22 @@ __date__ = '05/07/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.core import (QgsProject,
-                       QgsLayout,
-                       QgsLayoutSnapper,
-                       QgsLayoutGridSettings,
-                       QgsLayoutMeasurement,
-                       QgsUnitTypes,
-                       QgsLayoutPoint,
-                       QgsLayoutItemPage,
-                       QgsLayoutGuide,
-                       QgsReadWriteContext,
-                       QgsLayoutItemMap,
-                       QgsLayoutSize)
-from qgis.PyQt.QtCore import QPointF, Qt, QRectF
+from qgis.PyQt.QtCore import QPointF, QRectF, Qt
 from qgis.PyQt.QtWidgets import QGraphicsLineItem
 from qgis.PyQt.QtXml import QDomDocument
-
+from qgis.core import (
+    QgsLayout,
+    QgsLayoutGuide,
+    QgsLayoutItemMap,
+    QgsLayoutItemPage,
+    QgsLayoutMeasurement,
+    QgsLayoutPoint,
+    QgsLayoutSize,
+    QgsLayoutSnapper,
+    QgsProject,
+    QgsReadWriteContext,
+    QgsUnitTypes,
+)
 from qgis.testing import start_app, unittest
 
 start_app()

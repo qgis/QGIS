@@ -10,13 +10,19 @@ __date__ = '20/05/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.core import (QgsProject, QgsFeature, QgsGeometry, QgsPointXY, QgsVectorLayer, NULL, QgsField)
+from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtWidgets import QTextEdit
+from qgis.core import (
+    NULL,
+    QgsFeature,
+    QgsField,
+    QgsGeometry,
+    QgsPointXY,
+    QgsProject,
+    QgsVectorLayer,
+)
 from qgis.gui import QgsGui
-
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtCore import Qt, QVariant
-from qgis.PyQt.QtWidgets import QTextEdit, QTableWidgetItem
 
 start_app()
 

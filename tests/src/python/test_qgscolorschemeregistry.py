@@ -11,8 +11,13 @@ __copyright__ = 'Copyright 2014, The QGIS Project'
 
 import qgis  # NOQA
 
+from qgis.core import (
+    QgsApplication,
+    QgsColorScheme,
+    QgsColorSchemeRegistry,
+    QgsRecentColorScheme,
+)
 from qgis.testing import start_app, unittest
-from qgis.core import QgsColorSchemeRegistry, QgsRecentColorScheme, QgsApplication, QgsColorScheme
 
 start_app()
 

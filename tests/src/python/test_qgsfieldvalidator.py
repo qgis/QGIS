@@ -9,16 +9,17 @@ __author__ = 'Alessandro Pasotti'
 __date__ = '31/01/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
-import qgis  # NOQA
-import tempfile
 import os
 import shutil
+import tempfile
 
-from qgis.PyQt.QtCore import QVariant, QLocale
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QLocale, QVariant
 from qgis.PyQt.QtGui import QValidator
 from qgis.core import QgsVectorLayer
 from qgis.gui import QgsFieldValidator
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()

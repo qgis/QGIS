@@ -10,10 +10,8 @@ __date__ = '26/04/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import qgis  # NOQA
-from qgis.PyQt.QtWidgets import QWidget, QGridLayout
-
+from qgis.PyQt.QtWidgets import QGridLayout, QWidget
 from qgis.gui import QgsFloatingWidget
-
 from qgis.testing import start_app, unittest
 
 start_app()

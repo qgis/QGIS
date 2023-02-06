@@ -23,19 +23,20 @@ __date__ = 'December 2015'
 __copyright__ = '(C) 2015, Matthias Kuhn'
 
 import qgis  # NOQA
-from qgis.PyQt.QtCore import QSize, QDir
-from qgis.core import (QgsVectorLayer,
-                       QgsRectangle,
-                       QgsMultiRenderChecker,
-                       QgsEmbeddedSymbolRenderer,
-                       QgsFillSymbol,
-                       QgsMarkerSymbol,
-                       QgsLineSymbol,
-                       QgsMapSettings,
-                       QgsFeature,
-                       QgsGeometry
-                       )
-from qgis.testing import unittest, start_app
+from qgis.PyQt.QtCore import QDir, QSize
+from qgis.core import (
+    QgsEmbeddedSymbolRenderer,
+    QgsFeature,
+    QgsFillSymbol,
+    QgsGeometry,
+    QgsLineSymbol,
+    QgsMapSettings,
+    QgsMarkerSymbol,
+    QgsMultiRenderChecker,
+    QgsRectangle,
+    QgsVectorLayer,
+)
+from qgis.testing import start_app, unittest
 
 from utilities import unitTestDataPath
 

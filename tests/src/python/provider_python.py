@@ -12,42 +12,28 @@ __author__ = 'Alessandro Pasotti'
 __date__ = '2018-03-18'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import (
     Qgis,
-    QgsField,
-    QgsFields,
-    QgsLayerDefinition,
-    QgsPointXY,
-    QgsReadWriteContext,
-    QgsVectorLayer,
-    QgsFeatureRequest,
-    QgsFeature,
-    QgsGeometry,
-    QgsProject,
-    QgsWkbTypes,
+    QgsAbstractFeatureIterator,
+    QgsAbstractFeatureSource,
+    QgsCoordinateTransform,
+    QgsCsException,
+    QgsDataProvider,
     QgsExpression,
     QgsExpressionContext,
     QgsExpressionContextUtils,
-    NULL,
-    QgsCoordinateTransform,
-    QgsMemoryProviderUtils,
-    QgsCoordinateReferenceSystem,
-    QgsRectangle,
-    QgsTestUtils,
-    QgsVectorDataProvider,
-    QgsAbstractFeatureSource,
-    QgsAbstractFeatureIterator,
+    QgsFeature,
     QgsFeatureIterator,
-    QgsApplication,
-    QgsProviderRegistry,
-    QgsProviderMetadata,
-    QgsGeometryEngine,
+    QgsFeatureRequest,
+    QgsFields,
+    QgsGeometry,
+    QgsProject,
+    QgsRectangle,
     QgsSpatialIndex,
-    QgsDataProvider,
-    QgsCsException,
+    QgsVectorDataProvider,
+    QgsVectorLayer,
 )
-
-from qgis.PyQt.QtCore import QVariant
 
 
 class PyFeatureIterator(QgsAbstractFeatureIterator):

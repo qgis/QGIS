@@ -9,31 +9,28 @@ __author__ = 'Hugo Mercier'
 __date__ = '12/07/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
-import qgis  # NOQA
 import os
-
-from qgis.core import (QgsProject,
-                       QgsVectorLayer,
-                       QgsMapSettings,
-                       QgsSnappingConfig,
-                       QgsSnappingUtils,
-                       Qgis,
-                       QgsTolerance,
-                       QgsRectangle,
-                       QgsPointXY,
-                       QgsFeature,
-                       QgsGeometry,
-                       QgsLayerDefinition,
-                       QgsMapLayerDependency
-                       )
-
-from qgis.testing import start_app, unittest
-
-from qgis.PyQt.QtCore import QSize, QPoint
-from qgis.PyQt.QtTest import QSignalSpy
-
 import tempfile
 
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QPoint, QSize
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.core import (
+    Qgis,
+    QgsFeature,
+    QgsGeometry,
+    QgsLayerDefinition,
+    QgsMapLayerDependency,
+    QgsMapSettings,
+    QgsPointXY,
+    QgsProject,
+    QgsRectangle,
+    QgsSnappingConfig,
+    QgsSnappingUtils,
+    QgsTolerance,
+    QgsVectorLayer,
+)
+from qgis.testing import start_app, unittest
 from qgis.utils import spatialite_connect
 
 # Convenience instances in case you may need them
