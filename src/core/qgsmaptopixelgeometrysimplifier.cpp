@@ -150,25 +150,35 @@ std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry
 
     QVector< double > lineStringX;
     QVector< double > lineStringY;
+    QVector< double > lineStringZ;
+    QVector< double > lineStringM;
     if ( flatType == QgsWkbTypes::LineString )
     {
       // if we are making a linestring, we do it in an optimised way by directly constructing
       // the final x/y vectors, which avoids calling the slower insertVertex method
       lineStringX.reserve( numPoints );
       lineStringY.reserve( numPoints );
+
+      if ( geometry.is3D() )
+        lineStringZ.reserve( numPoints );
+
+      if ( geometry.isMeasure() )
+        lineStringM.reserve( numPoints );
     }
     else
     {
       output.reset( qgsgeometry_cast< QgsCurve * >( srcCurve.createEmptyWithSameType() ) );
     }
 
-    double x = 0.0, y = 0.0, lastX = 0.0, lastY = 0.0;
+    double x = 0.0, y = 0.0, z = 0.0, m = 0.0, lastX = 0.0, lastY = 0.0;
 
     if ( numPoints <= ( isaLinearRing ? 4 : 2 ) )
       isGeneralizable = false;
 
     bool isLongSegment;
     bool hasLongSegments = false; //-> To avoid replace the simplified geometry by its BBOX when there are 'long' segments.
+    const bool is3D = geometry.is3D();
+    const bool isMeasure = geometry.isMeasure();
 
     // Check whether the LinearRing is really closed.
     if ( isaLinearRing )
@@ -190,10 +200,18 @@ std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry
 
         const double *xData = nullptr;
         const double *yData = nullptr;
+        const double *zData = nullptr;
+        const double *mData = nullptr;
         if ( flatType == QgsWkbTypes::LineString )
         {
           xData = qgsgeometry_cast< const QgsLineString * >( &srcCurve )->xData();
           yData = qgsgeometry_cast< const QgsLineString * >( &srcCurve )->yData();
+
+          if ( is3D )
+            zData = qgsgeometry_cast< const QgsLineString * >( &srcCurve )->zData();
+
+          if ( isMeasure )
+            mData = qgsgeometry_cast< const QgsLineString * >( &srcCurve )->mData();
         }
 
         for ( int i = 0; i < numPoints; ++i )
@@ -209,17 +227,29 @@ std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry
             y = srcCurve.yAt( i );
           }
 
+          if ( is3D )
+            z = zData ? *zData++ : srcCurve.zAt( i );
+
+          if ( isMeasure )
+            m = mData ? *mData++ : srcCurve.mAt( i );
+
           if ( i == 0 ||
                !isGeneralizable ||
                !equalSnapToGrid( x, y, lastX, lastY, gridOriginX, gridOriginY, gridInverseSizeXY ) ||
                ( !isaLinearRing && ( i == 1 || i >= numPoints - 2 ) ) )
           {
             if ( output )
-              output->insertVertex( QgsVertexId( 0, 0, output->numPoints() ), QgsPoint( x, y ) );
+              output->insertVertex( QgsVertexId( 0, 0, output->numPoints() ), QgsPoint( x, y, z, m ) );
             else
             {
               lineStringX.append( x );
               lineStringY.append( y );
+
+              if ( is3D )
+                lineStringZ.append( z );
+
+              if ( isMeasure )
+                lineStringM.append( m );
             }
             lastX = x;
             lastY = y;
@@ -253,6 +283,12 @@ std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry
             {
               lineStringX.append( ea.inpts.at( i ).x() );
               lineStringY.append( ea.inpts.at( i ).y() );
+
+              if ( is3D )
+                lineStringZ.append( ea.inpts.at( i ).z() );
+
+              if ( isMeasure )
+                lineStringM.append( ea.inpts.at( i ).m() );
             }
           }
         }
@@ -309,7 +345,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry
 
     if ( !output )
     {
-      output = std::make_unique< QgsLineString >( lineStringX, lineStringY );
+      output = std::make_unique< QgsLineString >( lineStringX, lineStringY, lineStringZ, lineStringM );
     }
     if ( output->numPoints() < ( isaLinearRing ? 4 : 2 ) )
     {
