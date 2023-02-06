@@ -33,7 +33,7 @@ class DatabaseInfo(object):
 
     def __del__(self):
         self.db = None
-        
+
     def databaseInfo(self):
         info = self.db.connector.getDatabaseInfo()
         tbl = [

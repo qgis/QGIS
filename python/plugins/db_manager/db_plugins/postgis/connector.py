@@ -396,7 +396,7 @@ class PostGisDBConnector(DBConnector):
             "date", "time", "timestamp",  # date/time
             "boolean"  # bool
         ]
-        
+
     def getDatabaseInfo(self):
         """ db description: get comments of current database """
         sql = "SELECT pg_catalog.shobj_description(d.oid, 'pg_database') AS description from pg_catalog.pg_database d where datname = current_database()"
@@ -404,7 +404,7 @@ class PostGisDBConnector(DBConnector):
         res = self._fetchone(c)
         self._close_cursor(c)
         return res
-        
+
     def getDatabasePrivileges(self):
         """ db privileges: (can create schemas, can create temp. tables) """
         sql = "SELECT has_database_privilege(current_database(), 'CREATE'), has_database_privilege(current_database(), 'TEMP')"
