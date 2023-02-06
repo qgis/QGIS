@@ -99,6 +99,16 @@ class CORE_EXPORT QgsExifTools
      */
     static bool geoTagImage( const QString &imagePath, const QgsPointXY &location, const GeoTagDetails &details = QgsExifTools::GeoTagDetails() );
 
+    /**
+     * Writes a tag to the image at imagePath.
+     * \param imagePath the image path
+     * \param tag the exif tag name
+     * \param value the exif tag value
+     * \returns TRUE if writing was successful.
+     * \since QGIS 3.30
+     */
+    static bool tagImage( const QString &imagePath, const QString &tag, const QVariant &value );
+
 };
 
 #endif // QGSEXIFTOOLS_H
