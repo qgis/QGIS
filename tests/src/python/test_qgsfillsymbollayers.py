@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsFillSymbolLayers.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -12,8 +11,6 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 
 
 import qgis  # NOQA
-
-from qgis.testing import unittest
 from qgis.PyQt.QtCore import QDir
 from qgis.PyQt.QtGui import (QImage,
                              QPainter,
@@ -25,6 +22,7 @@ from qgis.core import (QgsRenderChecker,
                        QgsGeometry,
                        QgsFeature,
                        QgsRenderContext)
+from qgis.testing import unittest
 
 
 class TestQgsFillSymbolLayers(unittest.TestCase):
@@ -38,7 +36,7 @@ class TestQgsFillSymbolLayers(unittest.TestCase):
             report_file.write(self.report)
 
     def imageCheck(self, name, reference_image, image):
-        self.report += "<h2>Render {}</h2>\n".format(name)
+        self.report += f"<h2>Render {name}</h2>\n"
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + 'symbollayer_' + name + ".png"
         image.save(file_name, "PNG")
@@ -49,7 +47,7 @@ class TestQgsFillSymbolLayers(unittest.TestCase):
         checker.setColorTolerance(2)
         result = checker.compareImages(name, 0)
         self.report += checker.report()
-        print((self.report))
+        print(self.report)
         return result
 
     def testSimpleLineWithOffset(self):

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLayoutPicture.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,12 +9,12 @@ __author__ = '(C) 2017 by Nyall Dawson'
 __date__ = '23/10/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
-
+import http.server
 import os
 import socketserver
 import threading
-import http.server
+
+import qgis  # NOQA
 from qgis.PyQt.QtCore import QRectF, QDir
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
@@ -28,9 +27,10 @@ from qgis.core import (QgsLayoutItemPicture,
                        QgsReadWriteContext
                        )
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
+
 from qgslayoutchecker import QgsLayoutChecker
 from test_qgslayoutitem import LayoutItemTestCase
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

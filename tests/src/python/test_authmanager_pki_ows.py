@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Tests for auth manager WMS/WFS using QGIS Server through PKI
 enabled qgis_wrapped_server.py.
@@ -16,12 +15,12 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 import os
-import sys
 import re
+import stat
 import subprocess
+import sys
 import tempfile
 import urllib
-import stat
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '25/10/2016'
@@ -32,7 +31,6 @@ from shutil import rmtree
 from utilities import unitTestDataPath, waitServer
 from qgis.core import (
     QgsApplication,
-    QgsAuthManager,
     QgsAuthMethodConfig,
     QgsVectorLayer,
     QgsRasterLayer,
@@ -129,7 +127,7 @@ class TestAuthManager(unittest.TestCase):
         cls.port = int(re.findall(br':(\d+)', line)[0])
         assert cls.port != 0
         # Wait for the server process to start
-        assert waitServer('%s://%s:%s' % (cls.protocol, cls.hostname, cls.port)), "Server is not responding! %s://%s:%s" % (cls.protocol, cls.hostname, cls.port)
+        assert waitServer(f'{cls.protocol}://{cls.hostname}:{cls.port}'), f"Server is not responding! {cls.protocol}://{cls.hostname}:{cls.port}"
 
     @classmethod
     def tearDownClass(cls):
@@ -156,13 +154,13 @@ class TestAuthManager(unittest.TestCase):
         parms = {
             'srsname': 'EPSG:4326',
             'typename': type_name,
-            'url': '%s://%s:%s/?map=%s' % (cls.protocol, cls.hostname, cls.port, cls.project_path),
+            'url': f'{cls.protocol}://{cls.hostname}:{cls.port}/?map={cls.project_path}',
             'version': 'auto',
             'table': '',
         }
         if authcfg is not None:
             parms.update({'authcfg': authcfg})
-        uri = ' '.join([("%s='%s'" % (k, v)) for k, v in list(parms.items())])
+        uri = ' '.join([(f"{k}='{v}'") for k, v in list(parms.items())])
         wfs_layer = QgsVectorLayer(uri, layer_name, 'WFS')
         return wfs_layer
 
@@ -175,7 +173,7 @@ class TestAuthManager(unittest.TestCase):
             layer_name = 'wms_' + layers.replace(',', '')
         parms = {
             'crs': 'EPSG:4326',
-            'url': '%s://%s:%s/?map=%s' % (cls.protocol, cls.hostname, cls.port, cls.project_path),
+            'url': f'{cls.protocol}://{cls.hostname}:{cls.port}/?map={cls.project_path}',
             'format': 'image/png',
             # This is needed because of a really weird implementation in QGIS Server, that
             # replaces _ in the the real layer name with spaces
@@ -186,7 +184,7 @@ class TestAuthManager(unittest.TestCase):
         }
         if authcfg is not None:
             parms.update({'authcfg': authcfg})
-        uri = '&'.join([("%s=%s" % (k, v.replace('=', '%3D'))) for k, v in list(parms.items())])
+        uri = '&'.join([("{}={}".format(k, v.replace('=', '%3D'))) for k, v in list(parms.items())])
         wms_layer = QgsRasterLayer(uri, layer_name, 'wms')
         return wms_layer
 

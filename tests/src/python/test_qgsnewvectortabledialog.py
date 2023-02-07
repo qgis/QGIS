@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsNewVectorTableDialog
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -14,25 +13,23 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 
-import tempfile
 import shutil
+import tempfile
 
-from qgis.core import (
-    QgsApplication,
-    QgsProviderRegistry,
-    QgsVectorLayer,
-    QgsWkbTypes,
-    QgsFields
-)
-
-from qgis.gui import QgsNewVectorTableDialog
-from qgis.testing import start_app, unittest
 from qgis.PyQt.QtWidgets import (
     QDialogButtonBox,
     QLineEdit,
     QComboBox,
     QCheckBox
 )
+from qgis.core import (
+    QgsProviderRegistry,
+    QgsVectorLayer,
+    QgsWkbTypes,
+    QgsFields
+)
+from qgis.gui import QgsNewVectorTableDialog
+from qgis.testing import start_app, unittest
 
 from utilities import unitTestDataPath
 

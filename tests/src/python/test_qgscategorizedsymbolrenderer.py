@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsCategorizedSymbolRenderer
 
 From build dir, run: ctest -R PyQgsCategorizedSymbolRenderer -V
@@ -12,11 +11,12 @@ __author__ = 'Nyall Dawson'
 __date__ = '2/12/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
 
-from qgis.testing import unittest, start_app
+import qgis  # NOQA
+from qgis.PyQt.QtCore import Qt, QVariant, QSize, QLocale, QTemporaryDir
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (QgsCategorizedSymbolRenderer,
                        QgsRendererCategory,
                        QgsMarkerSymbol,
@@ -25,7 +25,6 @@ from qgis.core import (QgsCategorizedSymbolRenderer,
                        QgsField,
                        QgsFields,
                        QgsFeature,
-                       QgsRenderContext,
                        QgsSymbol,
                        QgsStyle,
                        QgsVectorLayer,
@@ -41,9 +40,7 @@ from qgis.core import (QgsCategorizedSymbolRenderer,
                        QgsEmbeddedSymbolRenderer,
                        QgsGeometry
                        )
-from qgis.PyQt.QtCore import Qt, QVariant, QSize, QLocale, QTemporaryDir
-from qgis.PyQt.QtGui import QColor
-from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import unittest, start_app
 
 from utilities import unitTestDataPath
 

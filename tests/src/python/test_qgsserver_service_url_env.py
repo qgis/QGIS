@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 QGIS Unit tests for QgsServer with service URL defined in the environment variables
 """
@@ -10,10 +9,6 @@ import os
 
 # Deterministic XML
 os.environ['QT_HASH_SEED'] = '1'
-
-import urllib.request
-import urllib.parse
-import urllib.error
 
 from qgis.server import QgsServer
 from qgis.core import QgsFontUtils

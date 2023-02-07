@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for TestQgsCoordinateOperationWidget
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,18 +9,17 @@ __author__ = 'Nyall Dawson'
 __date__ = '19/12/2019'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
-import qgis  # NOQA
 import os
 
+import qgis  # NOQA
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
-    QgsProjUtils,
     QgsDatumTransform,
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransformContext)
 from qgis.gui import QgsCoordinateOperationWidget
-
-from qgis.PyQt.QtTest import QSignalSpy
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()

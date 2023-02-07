@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLayoutView.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -12,6 +11,10 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
 from qgis.PyQt import sip
+from qgis.PyQt.QtCore import QRectF, QMimeData, QByteArray
+from qgis.PyQt.QtGui import QTransform
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtWidgets import QApplication
 from qgis.core import (QgsProject,
                        QgsLayout,
                        QgsUnitTypes,
@@ -24,11 +27,6 @@ from qgis.core import (QgsProject,
                        QgsLayoutSize,
                        QgsLayoutAligner)
 from qgis.gui import QgsLayoutView
-from qgis.PyQt.QtCore import QRectF, QMimeData, QByteArray
-from qgis.PyQt.QtGui import QTransform
-from qgis.PyQt.QtWidgets import QApplication
-from qgis.PyQt.QtTest import QSignalSpy
-
 from qgis.testing import start_app, unittest
 
 start_app()

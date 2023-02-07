@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     test_qgsgeometrygeneratorsymbollayer.py
@@ -21,10 +19,9 @@ __author__ = 'Matthias Kuhn'
 __date__ = 'December 2015'
 __copyright__ = '(C) 2015, Matthias Kuhn'
 
-import qgis  # NOQA
-
 import os
 
+import qgis  # NOQA
 from qgis.PyQt.QtCore import QSize, QDir, QPointF
 from qgis.PyQt.QtGui import QColor, QImage, QPainter, QPolygonF
 from qgis.core import (
@@ -53,9 +50,9 @@ from qgis.core import (
     QgsSymbolLayer,
     QgsProperty
 )
-
 from qgis.testing import start_app, unittest
 from qgis.testing.mocked import get_iface
+
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
@@ -487,7 +484,7 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         self.assertTrue(res)
 
     def imageCheck(self, name, reference_image, image):
-        self.report += "<h2>Render {}</h2>\n".format(name)
+        self.report += f"<h2>Render {name}</h2>\n"
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + name + ".png"
         image.save(file_name, "PNG")
@@ -497,7 +494,7 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         checker.setColorTolerance(2)
         result = checker.compareImages(name, 0)
         self.report += checker.report()
-        print((self.report))
+        print(self.report)
         return result
 
 

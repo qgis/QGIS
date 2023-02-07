@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsMetadataBase.
 
 Run with: ctest -V -R QgsMetadataBase
@@ -17,14 +16,7 @@ import qgis  # NOQA
 from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsAbstractMetadataBase,
-                       QgsCoordinateReferenceSystem,
-                       QgsVectorLayer,
-                       QgsNativeMetadataBaseValidator,
-                       QgsBox3d,
-                       QgsDateTimeRange)
-from qgis.PyQt.QtCore import (QDate,
-                              QTime,
-                              QDateTime)
+                       QgsNativeMetadataBaseValidator)
 from qgis.testing import start_app, unittest
 
 start_app()

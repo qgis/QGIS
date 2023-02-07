@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServerLogger.
 
 From build dir, run: ctest -R PyQgsServerLogger -V
@@ -10,8 +9,8 @@ __copyright__ = 'Copyright 2018, The QGIS Project'
 
 import os
 
-from qgis.testing import unittest
 from qgis.server import QgsServerLogger
+from qgis.testing import unittest
 
 from utilities import unitTestDataPath
 

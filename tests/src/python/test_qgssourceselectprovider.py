@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Test the QgsSourceSelectProvider
 and QgsSourceSelectProviderRegistry classes
@@ -11,12 +10,9 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-import os
-import tempfile
+from qgis.PyQt.QtGui import QIcon
 from qgis.gui import (QgsGui, QgsSourceSelectProvider, QgsSourceSelectProviderRegistry, QgsAbstractDataSourceWidget)
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QWidget
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '01/09/2017'

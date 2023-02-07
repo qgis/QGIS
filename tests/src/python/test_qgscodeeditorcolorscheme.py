@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsCodeEditorColorScheme
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,16 +10,11 @@ __date__ = '03/10/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
-import sys
-
-from qgis.core import QgsSettings, QgsApplication
-from qgis.gui import QgsCodeEditorColorScheme, QgsCodeEditorColorSchemeRegistry, QgsGui
-
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.PyQt.QtGui import QColor, QFont
+from qgis.PyQt.QtGui import QColor
+from qgis.core import QgsSettings
+from qgis.gui import QgsCodeEditorColorScheme, QgsCodeEditorColorSchemeRegistry, QgsGui
 from qgis.testing import start_app, unittest
-from utilities import getTestFont
 
 start_app()
 

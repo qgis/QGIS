@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsAggregateMapping widget and model.
 
 From build dir, run: ctest -R PyQgsAggregateMappingWidget -V
@@ -15,15 +14,6 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from qgis.core import (
-    QgsFields,
-    QgsField,
-    QgsFieldConstraints,
-)
-from qgis.gui import (
-    QgsAggregateMappingWidget,
-    QgsAggregateMappingModel,
-)
 from qgis.PyQt.Qt import Qt
 from qgis.PyQt.QtCore import (
     QCoreApplication,
@@ -31,8 +21,13 @@ from qgis.PyQt.QtCore import (
     QModelIndex,
     QItemSelectionModel,
 )
-from qgis.PyQt.QtGui import (
-    QColor
+from qgis.core import (
+    QgsFields,
+    QgsField,
+)
+from qgis.gui import (
+    QgsAggregateMappingWidget,
+    QgsAggregateMappingModel,
 )
 from qgis.testing import start_app, unittest
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLayoutUnitsComboBox
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,13 +10,9 @@ __date__ = '18/07/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.core import QgsUnitTypes, QgsLayoutMeasurementConverter
-from qgis.gui import QgsLayoutUnitsComboBox
-
-from qgis.PyQt.QtWidgets import QDoubleSpinBox
-
 from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtWidgets import QDoubleSpinBox
+from qgis.core import QgsUnitTypes, QgsLayoutMeasurementConverter
 from qgis.testing import start_app, unittest
 
 start_app()

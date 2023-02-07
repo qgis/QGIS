@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 '''
 test_qgsoptional.py
                      --------------------------------------
@@ -16,9 +15,8 @@ test_qgsoptional.py
 '''
 
 import qgis  # NOQA
-
-from qgis.testing import unittest
 from qgis.core import QgsOptionalExpression, QgsExpression
+from qgis.testing import unittest
 
 
 class TestQgsOptional(unittest.TestCase):

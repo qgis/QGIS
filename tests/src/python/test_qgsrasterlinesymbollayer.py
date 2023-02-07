@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     test_qgshashlinesymbollayer.py
@@ -22,44 +20,19 @@ __date__ = 'March 2019'
 __copyright__ = '(C) 2019, Nyall Dawson'
 
 import qgis  # NOQA
-
-import os
-from utilities import unitTestDataPath
-
-from qgis.PyQt.QtCore import QDir, Qt, QSize
+from qgis.PyQt.QtCore import QDir, Qt
 from qgis.PyQt.QtGui import QImage, QColor, QPainter
-from qgis.PyQt.QtXml import QDomDocument
-
 from qgis.core import (QgsGeometry,
-                       QgsFillSymbol,
                        QgsRenderContext,
                        QgsFeature,
                        QgsMapSettings,
                        QgsRenderChecker,
-                       QgsReadWriteContext,
-                       QgsSymbolLayerUtils,
-                       QgsSimpleMarkerSymbolLayer,
-                       QgsLineSymbolLayer,
-                       QgsMarkerLineSymbolLayer,
-                       QgsMarkerSymbol,
-                       QgsGeometryGeneratorSymbolLayer,
-                       QgsSymbol,
-                       QgsFontMarkerSymbolLayer,
-                       QgsMultiRenderChecker,
                        QgsLineSymbol,
-                       QgsSymbolLayer,
-                       QgsProperty,
-                       QgsRectangle,
-                       QgsUnitTypes,
-                       QgsSimpleLineSymbolLayer,
-                       QgsTemplatedLineSymbolLayerBase,
-                       QgsHashedLineSymbolLayer,
-                       QgsVectorLayer,
-                       QgsSingleSymbolRenderer,
                        QgsRasterLineSymbolLayer
                        )
-
 from qgis.testing import unittest, start_app
+
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -241,7 +214,7 @@ class TestQgsRasterLineSymbolLayer(unittest.TestCase):
         return image
 
     def imageCheck(self, name, reference_image, image):
-        self.report += "<h2>Render {}</h2>\n".format(name)
+        self.report += f"<h2>Render {name}</h2>\n"
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + 'symbol_' + name + ".png"
         image.save(file_name, "PNG")
@@ -252,7 +225,7 @@ class TestQgsRasterLineSymbolLayer(unittest.TestCase):
         checker.setColorTolerance(2)
         result = checker.compareImages(name, 20)
         self.report += checker.report()
-        print((self.report))
+        print(self.report)
         return result
 
 

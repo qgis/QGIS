@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsMapCanvas
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,17 +9,17 @@ __author__ = 'Nyall Dawson'
 __date__ = '24/1/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
+import time
 
+import qgis  # NOQA
 from qgis.PyQt.QtCore import (
     QDate,
     QTime,
     QDateTime,
     QDir
 )
-
-from qgis.core import (QgsMapSettings,
-                       QgsCoordinateReferenceSystem,
+from qgis.PyQt.QtXml import (QDomDocument)
+from qgis.core import (QgsCoordinateReferenceSystem,
                        QgsRectangle,
                        QgsVectorLayer,
                        QgsFeature,
@@ -34,7 +33,6 @@ from qgis.core import (QgsMapSettings,
                        QgsLineString,
                        QgsPoint,
                        QgsPointXY,
-                       QgsApplication,
                        QgsAnnotationLayer,
                        QgsAnnotationLineItem,
                        QgsAnnotationMarkerItem,
@@ -44,9 +42,6 @@ from qgis.core import (QgsMapSettings,
                        QgsInterval
                        )
 from qgis.gui import (QgsMapCanvas)
-
-from qgis.PyQt.QtXml import (QDomDocument, QDomElement)
-import time
 from qgis.testing import start_app, unittest
 
 app = start_app()
@@ -418,7 +413,7 @@ class TestQgsMapCanvas(unittest.TestCase):
         annotation_layer.clear()
 
     def canvasImageCheck(self, name, reference_image, canvas, expect_fail=False):
-        self.report += "<h2>Render {}</h2>\n".format(name)
+        self.report += f"<h2>Render {name}</h2>\n"
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + 'mapcanvas_' + name + ".png"
         print(file_name)
@@ -431,7 +426,7 @@ class TestQgsMapCanvas(unittest.TestCase):
         checker.setExpectFail(expect_fail)
         result = checker.runTest(name, 20)
         self.report += checker.report()
-        print((self.report))
+        print(self.report)
         return result
 
     def testSaveCanvasVariablesToProject(self):

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     test_qgspointdisplacementrenderer.py
@@ -24,14 +22,12 @@ __author__ = 'Nyall Dawson'
 __date__ = 'September 2016'
 __copyright__ = '(C) 2016, Nyall Dawson'
 
-import qgis  # NOQA
-
 import os
 
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QSize, QDir
 from qgis.PyQt.QtGui import QColor
-from qgis.PyQt.QtCore import QSize, QThreadPool, QDir
 from qgis.PyQt.QtXml import QDomDocument
-
 from qgis.core import (QgsVectorLayer,
                        QgsProject,
                        QgsRectangle,
@@ -54,6 +50,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsGeometry
                        )
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsFeatureRenderer.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -17,7 +16,6 @@ from qgis.core import (QgsRendererAbstractMetadata,
                        QgsVectorLayer,
                        QgsFeature,
                        QgsGeometry,
-                       QgsPoint,
                        QgsPointXY
                        )
 from qgis.testing import start_app, unittest

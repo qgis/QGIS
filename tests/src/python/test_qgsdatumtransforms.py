@@ -1,5 +1,3 @@
-
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsDatumTransforms.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -19,6 +17,7 @@ from qgis.core import (
 from qgis.testing import (start_app,
                           unittest,
                           )
+
 from utilities import unitTestDataPath
 
 start_app()

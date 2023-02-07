@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsProviderGuiRegistry.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,14 +10,12 @@ __date__ = '23/11/2021'
 __copyright__ = 'Copyright 2021, The QGIS Project'
 
 import sys
-import qgis  # NOQA
 
+import qgis  # NOQA
 from qgis.gui import (
-    QgsGui,
-    QgsProviderGuiRegistry
+    QgsGui
 )
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
 # to find the srs.db

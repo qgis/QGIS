@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsPlot
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,7 +10,6 @@ __date__ = '28/3/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
 import qgis  # NOQA
-
 from qgis.PyQt.QtCore import (
     QDir,
     Qt,
@@ -22,7 +20,7 @@ from qgis.PyQt.QtGui import (
     QPainter,
     QColor
 )
-
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     Qgs2DPlot,
     QgsRenderContext,
@@ -37,9 +35,6 @@ from qgis.core import (
     QgsSymbolLayer,
     QgsPalLayerSettings
 )
-
-from qgis.PyQt.QtXml import QDomDocument, QDomElement
-
 from qgis.testing import start_app, unittest
 
 app = start_app()
@@ -412,7 +407,7 @@ class TestQgsPlot(unittest.TestCase):
         self.assertEqual(res.yAxis().gridMajorSymbol().color().name(), '#0066ff')
 
     def imageCheck(self, name, reference_image, image):
-        self.report += "<h2>Render {}</h2>\n".format(name)
+        self.report += f"<h2>Render {name}</h2>\n"
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + 'plot_' + name + ".png"
         image.save(file_name, "PNG")
@@ -423,7 +418,7 @@ class TestQgsPlot(unittest.TestCase):
         checker.setColorTolerance(2)
         result = checker.compareImages(name, 20)
         self.report += checker.report()
-        print((self.report))
+        print(self.report)
         return result
 
 

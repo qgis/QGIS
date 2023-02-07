@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLocator.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,10 +9,11 @@ __author__ = '(C) 2017 by Nyall Dawson'
 __date__ = '6/05/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
+from time import sleep
+
 import qgis  # NOQA
-
-import os
-
+from qgis.PyQt import sip
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsLocator,
                        QgsLocatorFilter,
                        QgsLocatorContext,
@@ -22,10 +22,7 @@ from qgis.core import (QgsLocator,
                        QgsLocatorProxyModel,
                        QgsLocatorAutomaticModel,
                        QgsSettings)
-from qgis.PyQt.QtCore import QVariant, pyqtSignal, QCoreApplication
-from time import sleep
 from qgis.testing import start_app, unittest
-from qgis.PyQt import sip
 
 start_app()
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Base Unit tests for QgsExternalStorage API
 
 External storage backend must implement a test based on TestPyQgsExternalStorageBase
@@ -13,25 +12,17 @@ __author__ = 'Julien Cabieces'
 __date__ = '31/03/2021'
 __copyright__ = 'Copyright 2021, The QGIS Project'
 
-from shutil import rmtree
 import os
 import tempfile
-import time
 
-from utilities import unitTestDataPath, waitServer
-
-from qgis.PyQt.QtCore import QCoreApplication, QEventLoop, QUrl, QTimer
+from qgis.PyQt.QtCore import QCoreApplication, QEventLoop, QTimer
 from qgis.PyQt.QtTest import QSignalSpy
-
 from qgis.core import (
     Qgis,
     QgsApplication,
-    QgsAuthMethodConfig,
-    QgsExternalStorageFetchedContent)
-
+    QgsAuthMethodConfig)
 from qgis.testing import (
     start_app,
-    unittest,
 )
 
 
@@ -89,7 +80,7 @@ class TestPyQgsExternalStorageBase():
 
     def checkContent(self, file_path, content):
         """Check that file content matches given content"""
-        f = open(file_path, 'r')
+        f = open(file_path)
         self.assertTrue(f.read(), b"New content")
         f.close()
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer WMS GetPrint map theme.
 
 From build dir, run: ctest -R PyQgsServerWMSGetPrintMapTheme -V
@@ -15,7 +14,6 @@ __date__ = '24/05/2021'
 __copyright__ = 'Copyright 2021, The QGIS Project'
 
 import os
-import shutil
 
 # Needed on Qt 5 so that the serialization of XML is consistent among all executions
 os.environ['QT_HASH_SEED'] = '1'
@@ -23,12 +21,10 @@ os.environ['QT_HASH_SEED'] = '1'
 from qgis.testing import unittest
 from qgis.server import QgsBufferServerRequest, QgsBufferServerResponse
 from qgis.core import QgsProject
-from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.PyQt.QtGui import QImage
 
 
 from test_qgsserver import QgsServerTestBase
-from utilities import unitTestDataPath
 
 
 class PyQgsServerWMSGetPrintMapTheme(QgsServerTestBase):

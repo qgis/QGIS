@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for Postgres domains.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,12 +9,10 @@ __author__ = 'Denis Rouzaud'
 __date__ = '10/02/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
 
+import qgis  # NOQA
 from qgis.core import QgsVectorLayer, QgsProject
-
 from qgis.testing import start_app, unittest
 
 start_app()

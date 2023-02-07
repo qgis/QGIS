@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsArcGisRestUtils
 
 From build dir, run: ctest -R QgsArcGisRestUtils -V
@@ -33,6 +32,7 @@ from qgis.core import (
     NULL
 )
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()

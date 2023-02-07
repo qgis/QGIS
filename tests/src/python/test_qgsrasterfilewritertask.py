@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsRasterFileWriterTask.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,9 +9,10 @@ __author__ = 'Nyall Dawson'
 __date__ = '12/02/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
 import os
 
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QCoreApplication, QDir
 from qgis.core import (
     QgsApplication,
     QgsCoordinateTransformContext,
@@ -21,8 +21,8 @@ from qgis.core import (
     QgsRasterFileWriter,
     QgsRasterFileWriterTask
 )
-from qgis.PyQt.QtCore import QCoreApplication, QDir
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()

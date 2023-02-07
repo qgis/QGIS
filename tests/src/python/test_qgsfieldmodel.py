@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsFieldModel
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,7 +10,7 @@ __date__ = '14/11/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtCore import QVariant, Qt, QModelIndex
 from qgis.core import (QgsField,
                        QgsFields,
                        QgsVectorLayer,
@@ -21,8 +20,6 @@ from qgis.core import (QgsField,
                        QgsProject,
                        QgsVectorLayerJoinInfo,
                        QgsFieldConstraints)
-from qgis.PyQt.QtCore import QVariant, Qt, QModelIndex
-
 from qgis.testing import start_app, unittest
 
 start_app()

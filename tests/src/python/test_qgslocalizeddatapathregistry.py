@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLocalizedDataPathRegistry.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,27 +9,27 @@ __author__ = 'Denis Rouzaud'
 __date__ = '13/05/2020'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
-import qgis  # NOQA
-
-from tempfile import NamedTemporaryFile
-import tempfile
-from pathlib import Path
 import os
 import shutil
+import tempfile
+from pathlib import Path
+from tempfile import NamedTemporaryFile
+
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QDir
 from qgis.core import (
     QgsApplication,
     QgsPathResolver,
     QgsProject,
     QgsVectorLayer
 )
-from qgis.PyQt.QtCore import QDir
 from qgis.testing import start_app, unittest
 
 start_app()
 
 MAP_PATH = "data/world_map.gpkg"
 BASE_PATH = QgsApplication.pkgDataPath() + '/resources'
-ABSOLUTE_PATH = '{}/{}'.format(BASE_PATH, MAP_PATH)
+ABSOLUTE_PATH = f'{BASE_PATH}/{MAP_PATH}'
 
 
 class TestQgsLocalizedDataPathRegistry(unittest.TestCase):
@@ -57,8 +56,8 @@ class TestQgsLocalizedDataPathRegistry(unittest.TestCase):
         self.assertEqual(QgsApplication.localizedDataPathRegistry().globalPath(MAP_PATH), ABSOLUTE_PATH)
 
     def testOrderOfPreference(self):
-        os.mkdir('{}/data'.format(self.temp_path))
-        alt_dir = '{}/{}'.format(self.temp_path, MAP_PATH)
+        os.mkdir(f'{self.temp_path}/data')
+        alt_dir = f'{self.temp_path}/{MAP_PATH}'
         Path(alt_dir).touch()
         QgsApplication.localizedDataPathRegistry().registerPath(self.temp_path, 0)
         self.assertEqual(QDir.toNativeSeparators(QgsApplication.localizedDataPathRegistry().globalPath(MAP_PATH)), QDir.toNativeSeparators(alt_dir))
@@ -69,7 +68,7 @@ class TestQgsLocalizedDataPathRegistry(unittest.TestCase):
         self.assertEqual(QgsPathResolver().writePath(ABSOLUTE_PATH), 'localized:' + MAP_PATH)
 
     def testProject(self):
-        layer = QgsVectorLayer('{}|layername=countries'.format(ABSOLUTE_PATH), 'Test', 'ogr')
+        layer = QgsVectorLayer(f'{ABSOLUTE_PATH}|layername=countries', 'Test', 'ogr')
 
         # write
         p = QgsProject()
@@ -90,7 +89,7 @@ class TestQgsLocalizedDataPathRegistry(unittest.TestCase):
         p2.setFileName(fh.name)
         p2.read()
         self.assertTrue(len(p2.mapLayers()))
-        self.assertEqual(p2.mapLayers()[layer.id()].source(), '{}/{}|layername=countries'.format(BASE_PATH, MAP_PATH))
+        self.assertEqual(p2.mapLayers()[layer.id()].source(), f'{BASE_PATH}/{MAP_PATH}|layername=countries')
 
         os.remove(fh.name)
 

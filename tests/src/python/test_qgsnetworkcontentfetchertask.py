@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsNetworkContentFetcherTask
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -7,8 +6,6 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from builtins import chr
-from builtins import str
 
 __author__ = 'Nyall Dawson'
 __date__ = '29/03/2018'
@@ -18,10 +15,10 @@ import qgis  # NOQA
 
 import os
 from qgis.testing import unittest, start_app
-from qgis.core import QgsNetworkContentFetcher, QgsNetworkContentFetcherTask, QgsApplication
+from qgis.core import QgsNetworkContentFetcherTask, QgsApplication
 from utilities import unitTestDataPath
 from qgis.PyQt.QtCore import QUrl
-from qgis.PyQt.QtNetwork import QNetworkReply, QNetworkRequest
+from qgis.PyQt.QtNetwork import QNetworkReply
 import socketserver
 import threading
 import http.server

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer WMS GetPrint legend.
 
 From build dir, run: ctest -R PyQgsServerWMSGetPrintLegend -V

@@ -37,6 +37,7 @@ class TestQgsLayoutGeoPdfExport : public QgsTest
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
+    void testTempFilenames();
     void testCollectingFeatures();
     void skipLayers();
     void layerOrder();
@@ -51,6 +52,26 @@ void TestQgsLayoutGeoPdfExport::initTestCase()
 void TestQgsLayoutGeoPdfExport::cleanupTestCase()
 {
   QgsApplication::exitQgis();
+}
+
+void TestQgsLayoutGeoPdfExport::testTempFilenames()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+  QgsLayoutGeoPdfExporter geoPdfExporter( &l );
+
+  QString outputFile = geoPdfExporter.generateTemporaryFilepath( QStringLiteral( "test_src.pdf" ) );
+  QVERIFY( outputFile.endsWith( QStringLiteral( "test_src.pdf" ) ) );
+
+  // test generating temporary file path with slash characters (https://github.com/qgis/QGIS/issues/51480)
+  outputFile = geoPdfExporter.generateTemporaryFilepath( QStringLiteral( "test/ src.pdf" ) );
+  QVERIFY( outputFile.endsWith( QStringLiteral( "test_ src.pdf" ) ) );
+
+  outputFile = geoPdfExporter.generateTemporaryFilepath( QStringLiteral( "test\\ src.pdf" ) );
+  QVERIFY( outputFile.endsWith( QStringLiteral( "test_ src.pdf" ) ) );
+
+  outputFile = geoPdfExporter.generateTemporaryFilepath( QStringLiteral( "test: src.pdf" ) );
+  QVERIFY( outputFile.endsWith( QStringLiteral( "test_ src.pdf" ) ) );
 }
 
 void TestQgsLayoutGeoPdfExport::testCollectingFeatures()

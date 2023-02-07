@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Tests for WFS-T provider using QGIS Server through qgis_wrapped_server.py.
 
@@ -32,12 +31,12 @@ __date__ = '05/15/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import os
-import sys
 import re
 import subprocess
-from shutil import copytree, rmtree
+import sys
 import tempfile
-from utilities import unitTestDataPath, waitServer
+from shutil import copytree, rmtree
+
 from qgis.core import (
     QgsVectorLayer,
     QgsFeature,
@@ -51,6 +50,8 @@ from qgis.testing import (
     start_app,
     unittest,
 )
+
+from utilities import unitTestDataPath, waitServer
 
 # 0 = auto
 QGIS_SERVER_PORT = os.environ.get('QGIS_SERVER_PORT', '0')
@@ -154,13 +155,13 @@ class TestWFST(unittest.TestCase):
         parms = {
             'srsname': 'EPSG:4326',
             'typename': type_name,
-            'url': 'http://127.0.0.1:%s/?map=%s' % (cls.port,
-                                                    cls.project_path),
+            'url': 'http://127.0.0.1:{}/?map={}'.format(cls.port,
+                                                        cls.project_path),
             'version': cls.VERSION,
             'table': '',
             # 'sql': '',
         }
-        uri = ' '.join([("%s='%s'" % (k, v)) for k, v in list(parms.items())])
+        uri = ' '.join([(f"{k}='{v}'") for k, v in list(parms.items())])
         wfs_layer = QgsVectorLayer(uri, layer_name, 'WFS')
         assert wfs_layer.isValid()
         return wfs_layer
@@ -171,8 +172,8 @@ class TestWFST(unittest.TestCase):
         Find the feature and return it, raise exception if not found
         """
 
-        request = QgsFeatureRequest(QgsExpression("%s=%s" % (attr_name,
-                                                             attr_value)))
+        request = QgsFeatureRequest(QgsExpression("{}={}".format(attr_name,
+                                                                 attr_value)))
         try:
             return next(layer.dataProvider().getFeatures(request))
         except StopIteration:

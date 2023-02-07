@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsXmlUtils.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,6 +10,9 @@ __date__ = '18/11/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import qgis  # NOQA switch sip api
+from qgis.PyQt.QtCore import QDateTime, QDate, QTime, QVariant
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (QgsXmlUtils,
                        QgsProperty,
                        QgsGeometry,
@@ -20,16 +22,9 @@ from qgis.core import (QgsXmlUtils,
                        QgsProcessingFeatureSourceDefinition,
                        QgsRemappingSinkDefinition,
                        QgsWkbTypes,
-                       QgsCoordinateTransform,
                        QgsFields,
                        QgsField,
-                       QgsProject,
                        NULL)
-
-from qgis.PyQt.QtCore import QDateTime, QDate, QTime, QVariant
-from qgis.PyQt.QtXml import QDomDocument
-from qgis.PyQt.QtGui import QColor
-
 from qgis.testing import start_app, unittest
 
 start_app()

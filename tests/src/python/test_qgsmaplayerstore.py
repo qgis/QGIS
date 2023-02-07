@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsMapLayerStore.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,20 +10,20 @@ __date__ = '2017-05'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import os
+from time import sleep
+
+from qgis.PyQt import sip
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument, QDomNode
 from qgis.core import (
     QgsMapLayerStore,
     QgsVectorLayer,
     QgsMapLayer,
-    QgsDataProvider,
     QgsProject,
     QgsReadWriteContext,
 )
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtCore import QT_VERSION_STR
-from qgis.PyQt import sip
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtXml import QDomDocument, QDomNode
-from time import sleep
+
 from utilities import unitTestDataPath
 
 start_app()

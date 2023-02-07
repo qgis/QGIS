@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Contains tests for QgsMsSqlQueryBuilder
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,15 +9,11 @@ __author__ = 'Nyall Dawson'
 __date__ = '25/08/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
-import os
-import shutil
-import tempfile
-
 from qgis.core import (
-    QgsProviderSqlQueryBuilder,
     QgsProviderRegistry
 )
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 app = start_app()

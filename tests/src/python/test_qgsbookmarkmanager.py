@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsBookmarkManager.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,12 +9,12 @@ __author__ = '(C) 2019 by Nyall Dawson'
 __date__ = '02/09/2019'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
-import qgis  # NOQA
 import os
 
+import qgis  # NOQA
 from qgis.PyQt.QtCore import QCoreApplication, QLocale, QTemporaryDir, QEvent
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
-
 from qgis.core import (QgsBookmark,
                        QgsBookmarkManager,
                        QgsProject,
@@ -24,11 +23,9 @@ from qgis.core import (QgsBookmark,
                        QgsCoordinateReferenceSystem,
                        QgsSettings,
                        QgsApplication)
-
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
-from qgis.PyQt.QtXml import QDomDocument
-from qgis.PyQt.QtTest import QSignalSpy
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -405,7 +402,7 @@ class TestQgsBookmarkManager(unittest.TestCase):
         manager = QgsBookmarkManager()
 
         tmpDir = QTemporaryDir()
-        tmpFile = "{}/bookmarks.xml".format(tmpDir.path())
+        tmpFile = f"{tmpDir.path()}/bookmarks.xml"
 
         manager.initialize(tmpFile)
 
@@ -441,7 +438,7 @@ class TestQgsBookmarkManager(unittest.TestCase):
         self.assertEqual(manager2.bookmarks(), [b, b2, b3])
 
         # but a manager with a different key should not...
-        tmpFile2 = "{}/bookmarks2.xml".format(tmpDir.path())
+        tmpFile2 = f"{tmpDir.path()}/bookmarks2.xml"
         manager3 = QgsBookmarkManager()
         manager3.initialize(tmpFile2)
         self.assertEqual(manager3.bookmarks(), [])
@@ -528,7 +525,7 @@ class TestQgsBookmarkManager(unittest.TestCase):
         manager3 = QgsBookmarkManager.createProjectBasedManager(p)
 
         tmpDir = QTemporaryDir()
-        tmpFile = "{}/bookmarks.xml".format(tmpDir.path())
+        tmpFile = f"{tmpDir.path()}/bookmarks.xml"
 
         # no managers
         self.assertTrue(QgsBookmarkManager.exportToFile(tmpFile, []))

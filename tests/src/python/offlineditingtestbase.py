@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit test utils for offline editing tests.
 
 There are three layers referenced through the code:
@@ -19,7 +18,6 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from builtins import object
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '2016-06-30'
@@ -53,7 +51,7 @@ TEST_FEATURES_INSERT = [
 ]
 
 
-class OfflineTestBase(object):
+class OfflineTestBase:
     """Generic test methods for all online providers"""
 
     def _setUp(self):
@@ -116,8 +114,8 @@ class OfflineTestBase(object):
         """
         Find the feature and return it, raise exception if not found
         """
-        request = QgsFeatureRequest(QgsExpression("%s=%s" % (attr_name,
-                                                             attr_value)))
+        request = QgsFeatureRequest(QgsExpression("{}={}".format(attr_name,
+                                                                 attr_value)))
         try:
             return next(layer.dataProvider().getFeatures(request))
         except StopIteration:

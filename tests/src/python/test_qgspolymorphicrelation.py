@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsPolymorphicRelation.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -17,12 +16,9 @@ from qgis.core import (QgsVectorLayer,
                        QgsPolymorphicRelation,
                        QgsGeometry,
                        QgsPointXY,
-                       QgsAttributeEditorElement,
-                       QgsAttributeEditorRelation,
                        QgsProject
                        )
 from qgis.testing import start_app, unittest
-import os
 
 start_app()
 

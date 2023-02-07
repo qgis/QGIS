@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsRasterResampler.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -6,24 +5,20 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-from builtins import str
 
 __author__ = 'Nyall Dawson'
 __date__ = '14/11/2019'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
-from osgeo import gdal
-import struct
-from contextlib import contextmanager
-import tempfile
-
-import qgis  # NOQA
-
 import os
 import shutil
+import struct
+import tempfile
+from contextlib import contextmanager
 
+import qgis  # NOQA
+from osgeo import gdal
 from qgis.PyQt.QtGui import qRed
-
 from qgis.core import (QgsRasterLayer,
                        QgsRectangle,
                        QgsRasterResampleFilter,
@@ -32,8 +27,9 @@ from qgis.core import (QgsRasterLayer,
                        QgsBilinearRasterResampler,
                        QgsRasterDataProvider
                        )
-from utilities import unitTestDataPath
 from qgis.testing import start_app, unittest
+
+from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
 # not used in this test

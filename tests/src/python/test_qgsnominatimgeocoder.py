@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsNominatimGeocoder.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -14,15 +13,12 @@ import tempfile
 
 import qgis  # NOQA
 from qgis.PyQt.QtCore import (
-    QCoreApplication,
-    QUrl
+    QCoreApplication
 )
 from qgis.core import (
     QgsSettings,
     QgsRectangle,
-    QgsNominatimGeocoder,
-    QgsGeocoderContext,
-    QgsCoordinateTransformContext
+    QgsNominatimGeocoder
 )
 from qgis.testing import start_app, unittest
 

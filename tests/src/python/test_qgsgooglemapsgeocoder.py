@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsGeocoderLocatorFilter.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -177,7 +176,7 @@ class TestQgsGeocoderLocatorFilter(unittest.TestCase):
         geocoder.setEndpoint(self.endpoint)
 
         with open(geocoder.requestUrl('20 green st, twaddlingham').toString().replace('file://', ''), 'wb') as f:
-            f.write("""
+            f.write(b"""
         {
    "results" : [
       {
@@ -246,7 +245,7 @@ class TestQgsGeocoderLocatorFilter(unittest.TestCase):
    ],
    "status" : "OK"
 }
-        """.encode('UTF-8'))
+        """)
 
         context = QgsGeocoderContext(QgsCoordinateTransformContext())
         results = geocoder.geocodeString('20 green st, twaddlingham', context)

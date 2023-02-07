@@ -1,5 +1,3 @@
-
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for the memory layer provider.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,6 +9,9 @@ __author__ = 'Nathan.Woodrow'
 __date__ = '2015-08-11'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
+from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtGui import QFont, QColor
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (QgsConditionalStyle,
                        QgsFeature,
                        QgsFields,
@@ -22,10 +23,8 @@ from qgis.core import (QgsConditionalStyle,
 from qgis.testing import (start_app,
                           unittest,
                           )
+
 from utilities import unitTestDataPath
-from qgis.PyQt.QtCore import QVariant
-from qgis.PyQt.QtGui import QFont, QColor
-from qgis.PyQt.QtTest import QSignalSpy
 
 #
 start_app()

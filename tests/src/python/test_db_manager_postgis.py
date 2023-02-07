@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for the DBManager GPKG plugin
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,32 +9,26 @@ __author__ = 'Luigi Pirelli'
 __date__ = '2017-11-02'
 __copyright__ = 'Copyright 2017, Boundless Spatial Inc'
 
+import glob
 import os
-import shutil
-import time
 import signal
 import stat
 import subprocess
 import tempfile
-import glob
+import time
 from shutil import rmtree
 
+from plugins.db_manager.db_plugins import supportedDbTypes, createDbPlugin
+from qgis.PyQt.QtCore import QCoreApplication, QFile
+from qgis.PyQt.QtNetwork import QSslCertificate
 from qgis.core import (
     QgsApplication,
-    QgsAuthManager,
     QgsAuthMethodConfig,
-    QgsVectorLayer,
     QgsDataSourceUri,
     QgsSettings,
     QgsProviderRegistry,
-    QgsWkbTypes,
 )
-from qgis.PyQt.QtCore import QCoreApplication, QFile
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtNetwork import QSslCertificate
-
-from plugins.db_manager.db_plugins import supportedDbTypes, createDbPlugin
-from plugins.db_manager.db_plugins.plugin import TableField
 
 from utilities import unitTestDataPath
 
@@ -183,7 +176,7 @@ class TestPyQgsDBManagerPostgis(unittest.TestCase):
         if provider is None:
             raise Exception("cannot create postgres provider")
         if not provider.isValid():
-            raise Exception("Created postgres provider is not valid: {}".format(str(provider.errors())))
+            raise Exception(f"Created postgres provider is not valid: {str(provider.errors())}")
         # save provider config that is the way how db_manager is aware of a PG connection
         cls.addConnectionConfig(TEST_CONNECTION_NAME, uri)
 

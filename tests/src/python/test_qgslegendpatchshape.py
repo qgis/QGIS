@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLegendPatchShape.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,15 +10,13 @@ __date__ = '05/04/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
 from qgis.PyQt.QtCore import (QSize,
                               QSizeF,
-                              QPointF,
                               QDir)
-from qgis.PyQt.QtGui import (QPolygonF,
-                             QImage,
+from qgis.PyQt.QtGui import (QImage,
                              QPainter,
                              QColor)
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (QgsLegendPatchShape,
                        QgsGeometry,
                        QgsSymbol,
@@ -31,11 +28,9 @@ from qgis.core import (QgsLegendPatchShape,
                        QgsRenderContext,
                        QgsStyle
                        )
-from qgis.PyQt.QtXml import QDomDocument, QDomElement
-
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
 
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -281,7 +276,7 @@ class TestQgsLegendPatchShape(unittest.TestCase):
         return image
 
     def imageCheck(self, name, reference_image, image):
-        self.report += "<h2>Render {}</h2>\n".format(name)
+        self.report += f"<h2>Render {name}</h2>\n"
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + 'patch_' + name + ".png"
         image.save(file_name, "PNG")
@@ -292,7 +287,7 @@ class TestQgsLegendPatchShape(unittest.TestCase):
         checker.setColorTolerance(2)
         result = checker.compareImages(name, 20)
         self.report += checker.report()
-        print((self.report))
+        print(self.report)
         return result
 
 

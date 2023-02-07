@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer.
 
 From build dir, run: ctest -R PyQgsServerAccessControlWFS -V
@@ -12,10 +11,12 @@ __author__ = 'Stephane Brunner'
 __date__ = '28/08/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-from qgis.testing import unittest
-import urllib.request
-import urllib.parse
 import urllib.error
+import urllib.parse
+import urllib.request
+
+from qgis.testing import unittest
+
 from test_qgsserver_accesscontrol import TestQgsServerAccessControl, XML_NS
 
 
@@ -446,7 +447,7 @@ class TestQgsServerAccessControlWFS(TestQgsServerAccessControl):
             str(response).find("<qgs:pk>7</qgs:pk>") != -1,
             "Unexpected result in GetFeature\n%s" % response)
 
-    def test_wfs_getfeature_featureid_hello(self):
+    def test_wfs_getfeature_featureid_hello_1(self):
         query_string = "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WFS",
@@ -475,7 +476,7 @@ class TestQgsServerAccessControlWFS(TestQgsServerAccessControl):
             str(response).find("<qgs:color>NULL</qgs:color>") != -1,  # spellok
             "Unexpected color NULL in result of GetFeature\n%s" % response)
 
-    def test_wfs_getfeature_featureid_hello(self):
+    def test_wfs_getfeature_featureid_hello_2(self):
         query_string = "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WFS",

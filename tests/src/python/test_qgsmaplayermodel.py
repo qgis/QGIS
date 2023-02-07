@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsMapLayerModel
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,15 +10,13 @@ __date__ = '16/11/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.core import QgsVectorLayer, QgsProject, QgsMapLayerModel, QgsApplication
 from qgis.PyQt.QtCore import (
     QCoreApplication,
     Qt,
     QModelIndex,
     QEvent
 )
-
+from qgis.core import QgsVectorLayer, QgsProject, QgsMapLayerModel, QgsApplication
 from qgis.testing import start_app, unittest
 
 start_app()
@@ -94,15 +91,15 @@ class TestQgsMapLayerModel(unittest.TestCase):
         m = QgsMapLayerModel()
         m.setItemsCheckable(True)
         self.assertFalse(m.layersChecked())
-        self.assertEqual(set(m.layersChecked(Qt.Unchecked)), set([l1, l2]))
+        self.assertEqual(set(m.layersChecked(Qt.Unchecked)), {l1, l2})
 
         m.checkAll(Qt.Checked)
-        self.assertEqual(set(m.layersChecked()), set([l1, l2]))
+        self.assertEqual(set(m.layersChecked()), {l1, l2})
         self.assertFalse(set(m.layersChecked(Qt.Unchecked)))
 
         m.checkAll(Qt.Unchecked)
         self.assertFalse(m.layersChecked())
-        self.assertEqual(set(m.layersChecked(Qt.Unchecked)), set([l1, l2]))
+        self.assertEqual(set(m.layersChecked(Qt.Unchecked)), {l1, l2})
 
         QgsProject.instance().removeMapLayers([l1.id(), l2.id()])
 

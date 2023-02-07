@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for Oracle QgsAbastractProviderConnection API.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -14,9 +13,9 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import os
-from test_qgsproviderconnection_base import TestPyQgsProviderConnectionBase
+
+from qgis.PyQt.QtSql import QSqlDatabase, QSqlQuery
 from qgis.core import (
-    QgsVectorLayer,
     QgsProviderRegistry,
     QgsDataSourceUri,
     QgsAbstractDatabaseProviderConnection,
@@ -24,7 +23,8 @@ from qgis.core import (
 
 )
 from qgis.testing import unittest
-from qgis.PyQt.QtSql import QSqlDatabase, QSqlQuery
+
+from test_qgsproviderconnection_base import TestPyQgsProviderConnectionBase
 
 
 class TestPyQgsProviderConnectionOracle(unittest.TestCase, TestPyQgsProviderConnectionBase):
@@ -183,7 +183,7 @@ class TestPyQgsProviderConnectionOracle(unittest.TestCase, TestPyQgsProviderConn
         conn = md.createConnection(self.uri, {})
         tables = conn.tables('QGIS')
 
-        tables_dict = dict([(table.tableName(), table.primaryKeyColumns()) for table in tables])
+        tables_dict = {table.tableName(): table.primaryKeyColumns() for table in tables}
 
         self.assertEqual(sorted(tables_dict['SOME_DATA_VIEW']), ['GEOM', 'cnt', 'date', 'dt', 'name', 'name2', 'num_char', 'pk', 'time'])
         self.assertEqual(sorted(tables_dict['SOME_DATA']), ['pk'])

@@ -310,6 +310,9 @@ bool QgsLayoutItemLegend::autoUpdateModel() const
 
 void QgsLayoutItemLegend::setLegendFilterByMapEnabled( bool enabled )
 {
+  if ( mLegendFilterByMap == enabled )
+    return;
+
   mLegendFilterByMap = enabled;
   updateFilterByMap( false );
 }
@@ -555,7 +558,6 @@ void QgsLayoutItemLegend::setRasterStrokeWidth( double width )
   mSettings.setRasterStrokeWidth( width );
 }
 
-
 void QgsLayoutItemLegend::updateLegend()
 {
   adjustBoxSize();
@@ -771,6 +773,9 @@ void QgsLayoutItemLegend::setupMapConnections( QgsLayoutItemMap *map, bool conne
 
 void QgsLayoutItemLegend::setLinkedMap( QgsLayoutItemMap *map )
 {
+  if ( mMap == map )
+    return;
+
   if ( mMap )
   {
     setupMapConnections( mMap, false );

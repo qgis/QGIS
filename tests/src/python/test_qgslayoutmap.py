@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLayoutItemMap.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,15 +9,13 @@ __author__ = '(C) 2017 Nyall Dawson'
 __date__ = '20/10/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
 
-from qgis.PyQt.QtCore import QFileInfo, QRectF, QDir, QCoreApplication, QEvent, QSizeF
-from qgis.PyQt.QtXml import QDomDocument
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QFileInfo, QRectF, QDir, QSizeF
 from qgis.PyQt.QtGui import QPainter, QColor
 from qgis.PyQt.QtTest import QSignalSpy
-
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (QgsLayoutItemMap,
                        QgsRectangle,
                        QgsRasterLayer,
@@ -48,11 +45,11 @@ from qgis.core import (QgsLayoutItemMap,
                        QgsMapClippingRegion,
                        QgsLayoutItemMapOverview,
                        QgsAnnotationPolygonItem)
-
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
+
 from qgslayoutchecker import QgsLayoutChecker
 from test_qgslayoutitem import LayoutItemTestCase
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsDatabaseTableComboBox
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,10 +9,11 @@ __author__ = 'Nyall Dawson'
 __date__ = '8/03/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
 
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QCoreApplication, QVariant
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     QgsProviderRegistry,
     QgsFields,
@@ -22,10 +22,8 @@ from qgis.core import (
     QgsCoordinateReferenceSystem
 )
 from qgis.gui import QgsDatabaseTableComboBox
-from qgis.PyQt.QtCore import QCoreApplication, QVariant
-from qgis.PyQt.QtTest import QSignalSpy
-
 from qgis.testing import unittest
+
 from utilities import unitTestDataPath, start_app
 
 start_app()

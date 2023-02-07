@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for the python dataprovider.
 
 From build dir, run: ctest -R PyQgsPythonProvider -V
@@ -24,12 +23,9 @@ __author__ = 'Matthias Kuhn'
 __date__ = '2015-04-23'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-
-import os
-
+from qgis.PyQt.QtCore import QVariant, QDateTime, QDate, QTime
 from qgis.core import (
     QgsField,
-    QgsFields,
     QgsLayerDefinition,
     QgsPointXY,
     QgsReadWriteContext,
@@ -39,28 +35,22 @@ from qgis.core import (
     QgsGeometry,
     QgsWkbTypes,
     NULL,
-    QgsMemoryProviderUtils,
-    QgsCoordinateReferenceSystem,
     QgsRectangle,
     QgsTestUtils,
     QgsProviderMetadata,
     QgsProviderRegistry,
 )
-
 from qgis.testing import (
     start_app,
     unittest
 )
 
+from provider_python import PyProvider
+from providertestbase import ProviderTestCase
 from utilities import (
     unitTestDataPath,
     compareWkt
 )
-
-from provider_python import PyProvider
-
-from providertestbase import ProviderTestCase
-from qgis.PyQt.QtCore import QVariant, QDateTime, QDate, QTime
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

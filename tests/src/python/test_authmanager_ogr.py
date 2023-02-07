@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Tests for auth manager Basic Auth OGR connection credentials injection
 
@@ -12,9 +11,7 @@ the Free Software Foundation; either version 2 of the License, or
 
 from qgis.core import (
     QgsApplication,
-    QgsAuthManager,
     QgsAuthMethodConfig,
-    QgsDataSourceUri,
     QgsProviderRegistry,
 )
 
@@ -95,7 +92,7 @@ class TestAuthManager(unittest.TestCase):
         pr = QgsProviderRegistry.instance().createProvider('ogr', '')
         for uri, expanded in TEST_URIS.items():
             pr.setDataSourceUri(uri % self.authcfg)
-            self.assertTrue(expanded in pr.dataSourceUri(True), "%s != %s" % (expanded, pr.dataSourceUri(True)))
+            self.assertTrue(expanded in pr.dataSourceUri(True), f"{expanded} != {pr.dataSourceUri(True)}")
 
         # Test sublayers
         for uri, expanded in TEST_URIS.items():

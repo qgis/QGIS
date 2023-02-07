@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer GetFeatureInfo WMS.
 
 From build dir, run: ctest -R PyQgsServerWMSGetFeatureInfo -V
@@ -20,7 +19,6 @@ import os
 # executions
 os.environ['QT_HASH_SEED'] = '1'
 
-import re
 import urllib.request
 import urllib.parse
 import urllib.error
@@ -28,7 +26,6 @@ import urllib.error
 import json
 
 from qgis.testing import unittest
-from qgis.PyQt.QtCore import QSize
 
 import osgeo.gdal  # NOQA
 
@@ -901,21 +898,21 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
             'FILTER': 'layer4:"utf8nameè" != \'\'',
         }
 
-        req = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % (k, v) for k, v in req_params.items()]))
+        req = QgsBufferServerRequest('?' + '&'.join([f"{k}={v}" for k, v in req_params.items()]))
         res = QgsBufferServerResponse()
         self.server.handleRequest(req, res, project)
         j_body = json.loads(bytes(res.body()).decode())
         self.assertEqual(len(j_body['features']), 3)
 
         req_params['FILTER'] = 'layer4:"utf8nameè" = \'three èé↓\''
-        req = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % (k, v) for k, v in req_params.items()]))
+        req = QgsBufferServerRequest('?' + '&'.join([f"{k}={v}" for k, v in req_params.items()]))
         res = QgsBufferServerResponse()
         self.server.handleRequest(req, res, project)
         j_body = json.loads(bytes(res.body()).decode())
         self.assertEqual(len(j_body['features']), 1)
 
         req_params['FILTER'] = 'layer4:"utf8nameè" != \'three èé↓\''
-        req = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % (k, v) for k, v in req_params.items()]))
+        req = QgsBufferServerRequest('?' + '&'.join([f"{k}={v}" for k, v in req_params.items()]))
         res = QgsBufferServerResponse()
         self.server.handleRequest(req, res, project)
         j_body = json.loads(bytes(res.body()).decode())
@@ -923,7 +920,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
 
         # REPLACE filter
         req_params['FILTER'] = 'layer4:REPLACE ( "utf8nameè" , \'three\' , \'____\' ) != \'____ èé↓\''
-        req = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % (k, v) for k, v in req_params.items()]))
+        req = QgsBufferServerRequest('?' + '&'.join([f"{k}={v}" for k, v in req_params.items()]))
         res = QgsBufferServerResponse()
         self.server.handleRequest(req, res, project)
 
@@ -932,7 +929,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
         os.putenv('QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS', 'RePlAcE')
         self.server.serverInterface().reloadSettings()
 
-        req = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % (k, v) for k, v in req_params.items()]))
+        req = QgsBufferServerRequest('?' + '&'.join([f"{k}={v}" for k, v in req_params.items()]))
         res = QgsBufferServerResponse()
         self.server.handleRequest(req, res, project)
         j_body = json.loads(bytes(res.body()).decode())
@@ -942,7 +939,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
         self.server.serverInterface().reloadSettings()
 
         req_params['FILTER'] = 'layer4:REPLACE ( "utf8nameè" , \'three\' , \'____\' ) != \'____ èé↓\''
-        req = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % (k, v) for k, v in req_params.items()]))
+        req = QgsBufferServerRequest('?' + '&'.join([f"{k}={v}" for k, v in req_params.items()]))
         res = QgsBufferServerResponse()
         self.server.handleRequest(req, res, project)
 
@@ -953,7 +950,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
         self.server.serverInterface().reloadSettings()
         req_params['FILTER'] = 'layer4:LOWER ( REPLACE ( "utf8nameè" , \'three\' , \'THREE\' ) ) = \'three èé↓\''
 
-        req = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % (k, v) for k, v in req_params.items()]))
+        req = QgsBufferServerRequest('?' + '&'.join([f"{k}={v}" for k, v in req_params.items()]))
         res = QgsBufferServerResponse()
         self.server.handleRequest(req, res, project)
         j_body = json.loads(bytes(res.body()).decode())

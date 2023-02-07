@@ -1,4 +1,3 @@
-# coding=utf-8
 """"Test for postgres layer metadata provider
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -18,8 +17,8 @@ from qgis.core import (
     QgsVectorLayer,
     QgsProviderRegistry,
 )
-
 from qgis.testing import unittest
+
 from qgslayermetadataprovidertestbase import LayerMetadataProviderTestBase
 
 
@@ -31,7 +30,7 @@ class TestPostgresLayerMetadataProvider(unittest.TestCase, LayerMetadataProvider
 
     def getLayer(self):
 
-        return QgsVectorLayer('{} type=Point table="qgis_test"."someData" (geom) sql='.format(self.getConnectionUri()), "someData", 'postgres')
+        return QgsVectorLayer(f'{self.getConnectionUri()} type=Point table="qgis_test"."someData" (geom) sql=', "someData", 'postgres')
 
     def getConnectionUri(self) -> str:
 

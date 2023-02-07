@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer GetFeatureInfo WMS with PG.
 
 From build dir, run: ctest -R PyQgsServerWMSGetFeatureInfoPG -V
@@ -17,13 +16,11 @@ __copyright__ = 'Copyright 2021, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import os
-import tempfile
 
 # Needed on Qt 5 so that the serialization of XML is consistent among all
 # executions
 os.environ['QT_HASH_SEED'] = '1'
 
-import re
 import urllib.parse
 import xml.etree.ElementTree as ET
 import json

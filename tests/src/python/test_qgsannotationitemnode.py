@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsAnnotationItemNode
 
 From build dir, run: ctest -R PyQgsAnnotationLayer -V

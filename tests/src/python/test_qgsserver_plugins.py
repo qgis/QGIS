@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer plugins and filters.
 
 
@@ -16,15 +15,13 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import os
 
-from qgis.server import QgsServer, QgsServiceRegistry, QgsService
-from qgis.core import QgsMessageLog
-from qgis.testing import unittest
-from utilities import unitTestDataPath
-from test_qgsserver import QgsServerTestBase
-
-
 import osgeo.gdal  # NOQA
+from qgis.core import QgsMessageLog
+from qgis.server import QgsServer, QgsService
+from qgis.testing import unittest
 
+from test_qgsserver import QgsServerTestBase
+from utilities import unitTestDataPath
 
 # Strip path and content length because path may vary
 RE_STRIP_UNCHECKABLE = br'MAP=[^"]+|Content-Length: \d+'
@@ -75,7 +72,7 @@ class TestQgsServerPlugins(QgsServerTestBase):
                 if params.get('SERVICE', '').upper() == 'SIMPLE':
                     request.clear()
                     request.setResponseHeader('Content-type', 'text/plain')
-                    request.appendBody('Hello from SimpleServer!'.encode('utf-8'))
+                    request.appendBody(b'Hello from SimpleServer!')
 
         serverIface = self.server.serverInterface()
         filter = SimpleHelloFilter(serverIface)
@@ -97,7 +94,7 @@ class TestQgsServerPlugins(QgsServerTestBase):
                 request = self.serverInterface().requestHandler()
                 params = request.parameterMap()
                 if params.get('SERVICE', '').upper() == 'SIMPLE':
-                    request.appendBody('Hello from Filter1!'.encode('utf-8'))
+                    request.appendBody(b'Hello from Filter1!')
 
         class Filter2(QgsServerFilter):
 
@@ -105,7 +102,7 @@ class TestQgsServerPlugins(QgsServerTestBase):
                 request = self.serverInterface().requestHandler()
                 params = request.parameterMap()
                 if params.get('SERVICE', '').upper() == 'SIMPLE':
-                    request.appendBody('Hello from Filter2!'.encode('utf-8'))
+                    request.appendBody(b'Hello from Filter2!')
 
         class Filter3(QgsServerFilter):
             """Test get and set status code"""
@@ -132,7 +129,7 @@ class TestQgsServerPlugins(QgsServerTestBase):
                 request = self.serverInterface().requestHandler()
                 request.clearBody()
                 headers2 = request.responseHeaders()
-                request.appendBody('new body, new life!'.encode('utf-8'))
+                request.appendBody(b'new body, new life!')
 
         filter1 = Filter1(serverIface)
         filter2 = Filter2(serverIface)
@@ -146,7 +143,7 @@ class TestQgsServerPlugins(QgsServerTestBase):
         self.assertTrue(filter2 in serverIface.filters()[100])
         self.assertEqual(filter1, serverIface.filters()[101][0])
         self.assertEqual(filter2, serverIface.filters()[200][0])
-        header, body = [_v for _v in self._execute_request('?service=simple')]
+        header, body = (_v for _v in self._execute_request('?service=simple'))
         response = header + body
         expected = b'Content-Length: 62\nContent-type: text/plain\n\nHello from SimpleServer!Hello from Filter1!Hello from Filter2!'
         self.assertEqual(response, expected)

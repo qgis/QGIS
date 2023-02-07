@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLayoutSnapper.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,11 +10,12 @@ __date__ = '05/07/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtCore import QPointF, Qt, QRectF
+from qgis.PyQt.QtWidgets import QGraphicsLineItem
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (QgsProject,
                        QgsLayout,
                        QgsLayoutSnapper,
-                       QgsLayoutGridSettings,
                        QgsLayoutMeasurement,
                        QgsUnitTypes,
                        QgsLayoutPoint,
@@ -24,10 +24,6 @@ from qgis.core import (QgsProject,
                        QgsReadWriteContext,
                        QgsLayoutItemMap,
                        QgsLayoutSize)
-from qgis.PyQt.QtCore import QPointF, Qt, QRectF
-from qgis.PyQt.QtWidgets import QGraphicsLineItem
-from qgis.PyQt.QtXml import QDomDocument
-
 from qgis.testing import start_app, unittest
 
 start_app()

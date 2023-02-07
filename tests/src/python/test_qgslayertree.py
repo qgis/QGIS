@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLayerTree.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,10 +9,16 @@ __author__ = 'Matthias Kuhn'
 __date__ = '22.3.2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
+from tempfile import TemporaryDirectory
 
+import qgis  # NOQA
+from qgis.PyQt.QtCore import (
+    QDir,
+    QCoreApplication,
+    QEvent
+)
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     QgsLayerTree,
     QgsProject,
@@ -24,14 +29,8 @@ from qgis.core import (
     QgsCoordinateTransformContext
 )
 from qgis.testing import start_app, unittest
+
 from utilities import (unitTestDataPath)
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtCore import (
-    QDir,
-    QCoreApplication,
-    QEvent
-)
-from tempfile import TemporaryDirectory
 
 app = start_app()
 TEST_DATA_DIR = unitTestDataPath()

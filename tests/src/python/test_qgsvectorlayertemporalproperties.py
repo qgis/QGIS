@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsVectorLayerTemporalProperties
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,7 +10,11 @@ __date__ = '73/05/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtCore import (QDateTime,
+                              QDate,
+                              QTime,
+                              QVariant)
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (QgsDateTimeRange,
                        QgsVectorLayerTemporalProperties,
                        QgsReadWriteContext,
@@ -20,12 +23,7 @@ from qgis.core import (QgsDateTimeRange,
                        QgsUnitTypes,
                        QgsVectorLayerTemporalContext,
                        Qgis)
-from qgis.PyQt.QtCore import (QDateTime,
-                              QDate,
-                              QTime,
-                              QVariant)
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtXml import QDomDocument
 
 app = start_app()
 

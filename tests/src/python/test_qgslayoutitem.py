@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLayoutItem.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -10,10 +9,12 @@ __author__ = '(C) 2017 by Nyall Dawson'
 __date__ = '17/01/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
-from qgis.testing import start_app, unittest
+
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QRectF
+from qgis.PyQt.QtGui import QColor, QPainter
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (QgsProject,
                        QgsLayout,
                        QgsLayoutItemMap,
@@ -25,11 +26,9 @@ from qgis.core import (QgsProject,
                        QgsLayoutPoint,
                        QgsLayoutSize,
                        QgsLayoutItemLabel,
-                       QgsLayoutItem,
-                       QgsApplication)
-from qgis.PyQt.QtCore import QRectF
-from qgis.PyQt.QtGui import QColor, QPainter
-from qgis.PyQt.QtTest import QSignalSpy
+                       QgsLayoutItem)
+from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
@@ -37,7 +36,7 @@ TEST_DATA_DIR = unitTestDataPath()
 start_app()
 
 
-class LayoutItemTestCase(object):
+class LayoutItemTestCase:
     '''
         This is a collection of generic tests for QgsLayoutItem subclasses.
         To make use of it, subclass it and set self.item_class to a QgsLayoutItem subclass you want to test.
