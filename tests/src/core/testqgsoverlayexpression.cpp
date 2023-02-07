@@ -254,7 +254,6 @@ void TestQgsOverlayExpression::testOverlayMeasure()
   QgsExpression exp( expression );
   QVERIFY2( exp.prepare( &context ), exp.parserErrorString().toUtf8().constData() );
   const QVariant result = exp.evaluate( &context );
-  qDebug() << fixed << qSetRealNumberPrecision( 16 ) << "\nresult:\n\t\t" << result.toList() << "\nexpectedResult:\n\t\t" << expectedResult;
   QCOMPARE( result, expectedResult );
 
 }
