@@ -5641,8 +5641,14 @@ static QVariant fcnFormatNumber( const QVariantList &values, const QgsExpression
 
   if ( trimTrailingZeros )
   {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     const QChar decimal = locale.decimalPoint();
     const QChar zeroDigit = locale.zeroDigit();
+#else
+    const QChar decimal = locale.decimalPoint().at( 0 );
+    const QChar zeroDigit = locale.zeroDigit().at( 0 );
+#endif
+
     if ( res.contains( decimal ) )
     {
       int trimPoint = res.length() - 1;
