@@ -268,12 +268,12 @@ void TestQgsOverlayExpression::testOverlayMeasure_data()
   QVariantMap expected3;
   expected3.insert( QStringLiteral( "id" ), 3LL );
   expected3.insert( QStringLiteral( "result" ), 3LL );
-  expected3.insert( QStringLiteral( "overlap" ), 1.4033836999701634 );
+  expected3.insert( QStringLiteral( "overlap" ), 1.4033836999702842 );
   expected3 .insert( QStringLiteral( "radius" ), 0.5344336346973622 );
   QVariantMap expected1;
   expected1.insert( QStringLiteral( "id" ), 1LL );
   expected1.insert( QStringLiteral( "result" ), 1LL );
-  expected1.insert( QStringLiteral( "overlap" ), 1.2281139270096446 );
+  expected1.insert( QStringLiteral( "overlap" ), 1.2281139270097938 );
   expected1.insert( QStringLiteral( "radius" ),  0.46454276882989376 );
 
   QTest::newRow( "intersects min_overlap multi match return measure" ) << "overlay_intersects('polys', expression:=$id, min_overlap:=1.34, return_details:=true)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << ( QVariantList() << expected3 ) ;
@@ -299,11 +299,11 @@ void TestQgsOverlayExpression::testOverlayMeasure_data()
     QVariantMap expected3;
     expected3.insert( QStringLiteral( "id" ), 3LL );
     expected3.insert( QStringLiteral( "result" ), 3 );
-    expected3.insert( QStringLiteral( "overlap" ), 19.049688572712284 );
+    expected3.insert( QStringLiteral( "overlap" ), 19.0496885727123733 );
     QVariantMap expected1;
     expected1.insert( QStringLiteral( "id" ), 1LL );
     expected1.insert( QStringLiteral( "result" ), 1 );
-    expected1.insert( QStringLiteral( "overlap" ), 18.569843123334977 );
+    expected1.insert( QStringLiteral( "overlap" ), 18.5698431233350831 );
 
     expected3.insert( QStringLiteral( "radius" ), 1.3414663642343596 );
     expected1.insert( QStringLiteral( "radius" ), 1.8924012738149243 );
