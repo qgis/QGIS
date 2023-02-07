@@ -1591,6 +1591,12 @@ class TestQgsExpression: public QObject
       QTest::newRow( "format_number large" ) << "format_number(9000000.0,0)" << false << QVariant( "9,000,000" );
       QTest::newRow( "format_number many decimals" ) << "format_number(123.45600,4)" << false << QVariant( "123.4560" );
       QTest::newRow( "format_number no decimals" ) << "format_number(1999.567,0)" << false << QVariant( "2,000" );
+      QTest::newRow( "format_number omit group separator" ) << "format_number(1002999.567,0,omit_group_separators:=true)" << false << QVariant( "1003000" );
+      QTest::newRow( "format_number omit group separator small" ) << "format_number(999,0,omit_group_separators:=true)" << false << QVariant( "999" );
+      QTest::newRow( "format_number trim trailing zeros" ) << "format_number(123.45600,4,trim_trailing_zeroes:=true)" << false << QVariant( "123.456" );
+      QTest::newRow( "format_number trim trailing zeros none" ) << "format_number(123.45600,2,trim_trailing_zeroes:=true)" << false << QVariant( "123.46" );
+      QTest::newRow( "format_number trim trailing zeros many" ) << "format_number(123.45600,10,trim_trailing_zeroes:=true)" << false << QVariant( "123.456" );
+      QTest::newRow( "format_number trim trailing zeros no decimal" ) << "format_number(123,0,trim_trailing_zeroes:=true)" << false << QVariant( "123" );
       QTest::newRow( "format_number language parameter" ) << "format_number(123457.00,2,'fr')" << false << QVariant( "123\u202F457,00" );
       QTest::newRow( "lower" ) << "lower('HeLLo')" << false << QVariant( "hello" );
       QTest::newRow( "upper" ) << "upper('HeLLo')" << false << QVariant( "HELLO" );
