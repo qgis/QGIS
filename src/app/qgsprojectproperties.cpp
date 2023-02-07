@@ -1278,7 +1278,7 @@ void QgsProjectProperties::apply()
   for ( int i = 0; i < lstScales->count(); ++i )
   {
     bool ok;
-    const int scaleDenominator = lstScales->item( i )->data( Qt::UserRole ).toDouble( &ok );
+    const double scaleDenominator { lstScales->item( i )->data( Qt::UserRole ).toDouble( &ok ) };
     if ( ok )
     {
       projectScales.append( scaleDenominator );
