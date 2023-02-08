@@ -134,10 +134,37 @@ namespace QgsWms
     QgsLegendSettings settings = legendSettings();
     QgsLegendRenderer renderer( &model, settings );
 
-    // create image
+    QgsRenderContext context = QgsRenderContext::fromQPainter( nullptr );
+    context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
+    context.setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering, true );
+
+    QgsDistanceArea distanceArea  = QgsDistanceArea();
+    if ( !mWmsParameters.bbox().isEmpty() )
+    {
+      QgsMapSettings mapSettings;
+      mapSettings.setFlag( Qgis::MapSettingsFlag::RenderBlocking );
+      std::unique_ptr<QImage> tmp( createImage( mContext.mapSize( false ) ) );
+      configureMapSettings( tmp.get(), mapSettings );
+      context.setRendererScale( mapSettings.scale() );
+      context.setMapToPixel( mapSettings.mapToPixel() );
+
+      distanceArea.setSourceCrs( QgsCoordinateReferenceSystem( mapSettings.destinationCrs() ), mapSettings.transformContext() );
+      distanceArea.setEllipsoid( mapSettings.ellipsoid() );
+    }
+    else
+    {
+      const double mmPerMapUnit = 1 / QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mProject );
+      context.setMapToPixel( QgsMapToPixel( 1 / ( mmPerMapUnit * context.scaleFactor() ) ) );
+
+      distanceArea.setSourceCrs( QgsCoordinateReferenceSystem( mWmsParameters.crs() ), mProject->transformContext() );
+      distanceArea.setEllipsoid( geoNone() );
+    }
+    context.setDistanceArea( distanceArea );
+
+    // create image with size according to the context
     std::unique_ptr<QImage> image;
     const qreal dpmm = mContext.dotsPerMm();
-    const QSizeF minSize = renderer.minimumSize();
+    const QSizeF minSize = renderer.minimumSize( &context );
     const QSize size( static_cast<int>( minSize.width() * dpmm ), static_cast<int>( minSize.height() * dpmm ) );
     if ( !mContext.isValidWidthHeight( size.width(), size.height() ) )
     {
@@ -145,16 +172,10 @@ namespace QgsWms
     }
     image.reset( createImage( size ) );
 
-    // configure painter
+    // set painter and scale context
     QPainter painter( image.get() );
-    QgsRenderContext context = QgsRenderContext::fromQPainter( &painter );
-    context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
+    context.setPainter( &painter );
     QgsScopedRenderContextScaleToMm scaleContext( context );
-    // QGIS 4.0 -- take from real render context instead
-    Q_NOWARN_DEPRECATED_PUSH
-    context.setRendererScale( settings.mapScale() );
-    context.setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * context.scaleFactor() ) ) );
-    Q_NOWARN_DEPRECATED_POP
 
     // rendering
     renderer.drawLegend( context );
@@ -192,6 +213,34 @@ namespace QgsWms
     // rendering
     QgsLegendSettings settings = legendSettings();
     QgsLayerTreeModelLegendNode::ItemContext ctx;
+
+    QgsRenderContext context = QgsRenderContext::fromQPainter( painter.get() );
+    context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
+
+    QgsDistanceArea distanceArea  = QgsDistanceArea();
+    if ( !mWmsParameters.bbox().isEmpty() )
+    {
+      QgsMapSettings mapSettings;
+      mapSettings.setFlag( Qgis::MapSettingsFlag::RenderBlocking );
+      std::unique_ptr<QImage> tmp( createImage( mContext.mapSize( false ) ) );
+      configureMapSettings( tmp.get(), mapSettings );
+      context.setRendererScale( mapSettings.scale() );
+      context.setMapToPixel( mapSettings.mapToPixel() );
+
+      distanceArea.setSourceCrs( QgsCoordinateReferenceSystem( mapSettings.destinationCrs() ), mapSettings.transformContext() );
+      distanceArea.setEllipsoid( mapSettings.ellipsoid() );
+    }
+    else
+    {
+      const double mmPerMapUnit = 1 / QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mProject );
+      context.setMapToPixel( QgsMapToPixel( 1 / ( mmPerMapUnit * context.scaleFactor() ) ) );
+
+      distanceArea.setSourceCrs( QgsCoordinateReferenceSystem( mWmsParameters.crs() ), mProject->transformContext() );
+      distanceArea.setEllipsoid( geoNone() );
+    }
+    context.setDistanceArea( distanceArea );
+    ctx.context = &context;
+
     ctx.painter = painter.get();
     nodeModel.drawSymbol( settings, &ctx, size.height() / dpmm );
     painter->end();
