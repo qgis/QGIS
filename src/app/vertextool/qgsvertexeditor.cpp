@@ -71,14 +71,11 @@ void QgsVertexEditorModel::setFeature( QgsLockedFeature *lockedFeature )
     mHasZ = QgsWkbTypes::hasZ( layerWKBType );
     mHasM = QgsWkbTypes::hasM( layerWKBType );
 
-    if ( mHasZ )
-      mZCol = 2;
+    mZCol = mHasZ ? 2 : -1;
 
-    if ( mHasM )
-      mMCol = 2 + ( mHasZ ? 1 : 0 );
+    mMCol = mHasM ? ( 2 + ( mHasZ ? 1 : 0 ) ) : -1;
 
-    if ( mHasR )
-      mRCol = 2 + ( mHasZ ? 1 : 0 ) + ( mHasM ? 1 : 0 );
+    mRCol = mHasR ? ( 2 + ( mHasZ ? 1 : 0 ) + ( mHasM ? 1 : 0 ) ) : -1;
   }
 
   endResetModel();
