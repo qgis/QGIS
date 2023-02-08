@@ -7158,6 +7158,29 @@ class TestQgsGeometry(unittest.TestCase):
         subdivideExpected = a.subdivide(6, geom_params)
         self.assertEqual(subdivideExpected.asWkt(), 'MultiPolygon (((0 10, 7 10, 7 0, 0 0, 0 10)),((10 0, 7 0, 7 5, 10 5, 10 0)),((10 10, 10 6, 10 5, 7 5, 7 10, 10 10)),((14 6, 14 5, 10 5, 10 6, 14 6)),((28 6, 28 5, 14 5, 14 6, 28 6)),((55 6, 55 5, 28 5, 28 6, 55 6)),((100 5, 55 5, 55 6, 100 5)),((100 10, 110 10, 110 0, 100 0, 100 5, 100 10)))')
 
+    def testIntersectsMultiPolygonEmptyRect(self):
+        """Test intersection between a polygon and an empty rectangle. Fix for GH #51492."""
+
+        ''' ogr failing test
+        poly = ogr.CreateGeometryFromWkt('POLYGON((0 0, 0 2, 2 2, 2 0, 0 0))')
+        multi_poly = ogr.CreateGeometryFromWkt('MULTIPOLYGON(((0 0, 0 2, 2 2, 2 0, 0 0)))')
+        bbox = ogr.CreateGeometryFromWkt('POLYGON((1 1, 1 1, 1 1, 1 1, 1 1))')
+        point = ogr.CreateGeometryFromWkt('POINT(1 1)')
+        assert poly.Intersects(point)
+        assert poly.Intersects(bbox)
+        assert multi_poly.Intersects(point)
+        assert multi_poly.Intersects(bbox)   ## << fails
+        '''
+
+        poly = QgsGeometry.fromWkt('MULTIPOLYGON(((0 0, 0 2, 2 2, 2 0, 0 0)))')
+        point = QgsGeometry.fromWkt('POINT(1 1)')
+        bbox = point.boundingBox()
+        self.assertEqual(bbox.area(), 0)
+
+        self.assertTrue(poly.intersects(point))
+        self.assertTrue(poly.boundingBox().intersects(bbox))
+        self.assertTrue(poly.intersects(bbox))  # was failing here!
+
 
 if __name__ == '__main__':
     unittest.main()
