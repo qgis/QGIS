@@ -219,9 +219,47 @@ class GUI_EXPORT QgisInterface : public QObject
     /**
      * Returns a reference to the main window "Import/Export" project menu.
      *
+     * \see addProjectImportAction()
+     * \see addProjectExportAction
      * \since QGIS 3.30
      */
     virtual QMenu *projectImportExportMenu() = 0;
+
+    /**
+     * Adds an \a action to the QGIS "Import project" menu.
+     *
+     * \see removeProjectImportAction()
+     * \see addProjectExportAction()
+     * \since QGIS 3.30
+     */
+    virtual void addProjectImportAction( QAction *action ) = 0;
+
+    /**
+     * Adds an \a action to the QGIS "Import project" menu.
+     *
+     * \see addProjectImportAction()
+     * \see removeProjectExportAction()
+     * \since QGIS 3.30
+     */
+    virtual void removeProjectImportAction( QAction *action ) = 0;
+
+    /**
+     * Adds an \a action to the QGIS "Export project" menu.
+     *
+     * \see removeProjectExportAction()
+     * \see addProjectImportAction()
+     * \since QGIS 3.30
+     */
+    virtual void addProjectExportAction( QAction *action ) = 0;
+
+    /**
+     * Adds an \a action to the QGIS "Export project" menu.
+     *
+     * \see addProjectExportAction()
+     * \see removeProjectImportAction()
+     * \since QGIS 3.30
+     */
+    virtual void removeProjectExportAction( QAction *action ) = 0;
 
     /**
      * Returns a reference to the main window "Edit" menu.
