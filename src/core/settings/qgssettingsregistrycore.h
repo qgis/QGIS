@@ -167,6 +167,8 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     static const QgsSettingsEntryStringList *settingsMapScales;
 
   private:
+    friend class QgsApplication;
+
     void migrateOldSettings();
     void backwardCompatibility();
 

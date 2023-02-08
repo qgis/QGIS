@@ -25,7 +25,6 @@
 #include "qgslayout.h"
 #include "qgslocator.h"
 #include "qgsnetworkaccessmanager.h"
-#include "qgslayoututils.h"
 #include "qgsowsconnection.h"
 #include "qgsprocessing.h"
 #include "qgsvectortileconnection.h"
@@ -114,12 +113,10 @@ const QgsSettingsEntryStringList *QgsSettingsRegistryCore::settingsMapScales = n
 QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   : QgsSettingsRegistry()
 {
-  migrateOldSettings();
 }
 
 QgsSettingsRegistryCore::~QgsSettingsRegistryCore()
 {
-  backwardCompatibility();
 }
 
 void QgsSettingsRegistryCore::migrateOldSettings()
