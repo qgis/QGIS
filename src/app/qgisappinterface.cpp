@@ -637,6 +637,53 @@ void QgisAppInterface::unregisterCustomProjectOpenHandler( QgsCustomProjectOpenH
 
 QMenu *QgisAppInterface::projectMenu() { return qgis->projectMenu(); }
 QMenu *QgisAppInterface::projectImportExportMenu() { return qgis->projectImportExportMenu(); }
+
+void QgisAppInterface::addProjectImportAction( QAction *action )
+{
+  if ( QMenu *menu = projectImportExportMenu() )
+  {
+    // import actions come at the end of the menu, so we can add this action
+    // directly
+    menu->addAction( action );
+  }
+}
+
+void QgisAppInterface::removeProjectImportAction( QAction *action )
+{
+  if ( QMenu *menu = projectImportExportMenu() )
+  {
+    menu->removeAction( action );
+  }
+}
+
+void QgisAppInterface::addProjectExportAction( QAction *action )
+{
+  if ( QMenu *menu = projectImportExportMenu() )
+  {
+    // export actions come before import actions in the menu, so find separator in menu
+    const QList< QAction * > actions = menu->actions();
+    for ( QAction *menuAction : actions )
+    {
+      if ( menuAction->isSeparator() )
+      {
+        menu->insertAction( menuAction, action );
+        return;
+      }
+    }
+    // play it safe -- if we change the menu in future and remove the separator, ensure
+    // the action is still added somewhere
+    menu->addAction( action );
+  }
+}
+
+void QgisAppInterface::removeProjectExportAction( QAction *action )
+{
+  if ( QMenu *menu = projectImportExportMenu() )
+  {
+    menu->removeAction( action );
+  }
+}
+
 QMenu *QgisAppInterface::editMenu() { return qgis->editMenu(); }
 QMenu *QgisAppInterface::viewMenu() { return qgis->viewMenu(); }
 QMenu *QgisAppInterface::layerMenu() { return qgis->layerMenu(); }

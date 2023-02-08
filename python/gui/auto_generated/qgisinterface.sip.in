@@ -181,6 +181,54 @@ Returns a reference to the main window "Project" menu.
 %Docstring
 Returns a reference to the main window "Import/Export" project menu.
 
+.. seealso:: :py:func:`addProjectImportAction`
+
+.. seealso:: :py:func:`addProjectExportAction`
+
+.. versionadded:: 3.30
+%End
+
+    virtual void addProjectImportAction( QAction *action ) = 0;
+%Docstring
+Adds an ``action`` to the QGIS "Import project" menu.
+
+.. seealso:: :py:func:`removeProjectImportAction`
+
+.. seealso:: :py:func:`addProjectExportAction`
+
+.. versionadded:: 3.30
+%End
+
+    virtual void removeProjectImportAction( QAction *action ) = 0;
+%Docstring
+Adds an ``action`` to the QGIS "Import project" menu.
+
+.. seealso:: :py:func:`addProjectImportAction`
+
+.. seealso:: :py:func:`removeProjectExportAction`
+
+.. versionadded:: 3.30
+%End
+
+    virtual void addProjectExportAction( QAction *action ) = 0;
+%Docstring
+Adds an ``action`` to the QGIS "Export project" menu.
+
+.. seealso:: :py:func:`removeProjectExportAction`
+
+.. seealso:: :py:func:`addProjectImportAction`
+
+.. versionadded:: 3.30
+%End
+
+    virtual void removeProjectExportAction( QAction *action ) = 0;
+%Docstring
+Adds an ``action`` to the QGIS "Export project" menu.
+
+.. seealso:: :py:func:`addProjectExportAction`
+
+.. seealso:: :py:func:`removeProjectImportAction`
+
 .. versionadded:: 3.30
 %End
 

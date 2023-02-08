@@ -164,7 +164,11 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void registerCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) override;
     void unregisterCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) override;
     QMenu *projectMenu() override;
-    QMenu* projectImportExportMenu() override;
+    QMenu *projectImportExportMenu() override;
+    void addProjectImportAction( QAction *action ) override;
+    void removeProjectImportAction( QAction *action )override;
+    void addProjectExportAction( QAction *action ) override;
+    void removeProjectExportAction( QAction *action ) override;
     QMenu *editMenu() override;
     QMenu *viewMenu() override;
     QMenu *layerMenu() override;
