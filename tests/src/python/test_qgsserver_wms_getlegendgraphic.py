@@ -821,6 +821,102 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_ScaleSymbol_DefaultScale_2056", max_size_diff=QSize(15, 15))
 
+    def test_wms_GetLegendGraphic_MetersAtScaleSymbol_Scaled(self):
+        # http://localhost:8000/?MAP=/home/dave/dev/qgis/QGIS/tests/testdata/qgis_server/test_project_meters_at_scaledsymbols.qgs&SERVICE=WMS&REQUEST=GetLegendGraphics&LAYERS=testlayer&CRS=EPSG:4326&SRCHEIGHT=2550&SRCWIDTH=3850&BBOX=44.89945254864102964,8.20044117721021948,44.90400902275693085,8.20936038559772285
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": self.testdata_path + 'test_project_meters_at_scaledsymbols.qgs',
+            "SERVICE": "WMS",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "testlayer",
+            "FORMAT": "image/png",
+            "SRCHEIGHT": "2550",
+            "SRCWIDTH": "3850",
+            "BBOX": "44.89945254864102964,8.20044117721021948,44.90400902275693085,8.20936038559772285",
+            "CRS": "EPSG:4326"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_MetersAtScaleSymbol_Scaled", max_size_diff=QSize(15, 15))
+
+    def test_wms_GetLegendGraphic_MetersAtScaleSymbol_DefaultScale(self):
+        # http://localhost:8000/?MAP=/home/dave/dev/qgis/QGIS/tests/testdata/qgis_server/test_project_meters_at_scaledsymbols.qgs&SERVICE=WMS&REQUEST=GetLegendGraphics&LAYERS=testlayer&CRS=EPSG:4326
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": self.testdata_path + 'test_project_meters_at_scaledsymbols.qgs',
+            "SERVICE": "WMS",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "testlayer",
+            "FORMAT": "image/png",
+            "CRS": "EPSG:4326"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_MetersAtScaleSymbol_DefaultScale", max_size_diff=QSize(15, 15))
+
+    def test_wms_GetLegendGraphic_MetersAtScaleSymbol_Rule(self):
+        # http://localhost:8000/?MAP=/home/dave/dev/qgis/QGIS/tests/testdata/qgis_server/test_project_meters_at_scaledsymbols.qgs&SERVICE=WMS&REQUEST=GetLegendGraphics&LAYERS=testlayer&CRS=EPSG:4326&WIDTH=50&HEIGHT=50&RULE=two
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": self.testdata_path + 'test_project_meters_at_scaledsymbols.qgs',
+            "SERVICE": "WMS",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "testlayer",
+            "FORMAT": "image/png",
+            "CRS": "EPSG:4326",
+            "WIDTH": "50",
+            "HEIGHT": "50",
+            "RULE": "two"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_MetersAtScaleSymbol_Rule", max_size_diff=QSize(15, 15))
+
+    def test_wms_GetLegendGraphic_MetersAtScaleSymbol_Scaled_2056(self):
+        # http://localhost:8000/?MAP=/home/dave/dev/qgis/QGIS/tests/testdata/qgis_server/test_project_meters_at_scaledsymbols_2056.qgs&SERVICE=WMS&REQUEST=GetLegendGraphics&LAYERS=testlayer_2056&CRS=EPSG:2056&BBOX=2662610.7,1268841.8,2663010.5,1269000.05&SRCHEIGHT=1100&SRCWIDTH=1700
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": self.testdata_path + 'test_project_meters_at_scaledsymbols_2056.qgs',
+            "SERVICE": "WMS",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "testlayer_2056",
+            "FORMAT": "image/png",
+            "SRCHEIGHT": "1100",
+            "SRCWIDTH": "1700",
+            "BBOX": "2662610.7,1268841.8,2663010.5,1269000.05",
+            "CRS": "EPSG:2056"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_MetersAtScaleSymbol_Scaled_2056", max_size_diff=QSize(15, 15))
+
+    def test_wms_GetLegendGraphic_MetersAtScaleSymbol_DefaultScale_2056(self):
+        # http://localhost:8000/?MAP=/home/dave/dev/qgis/QGIS/tests/testdata/qgis_server/test_project_meters_at_scaledsymbols_2056.qgs&SERVICE=WMS&REQUEST=GetLegendGraphics&LAYERS=testlayer_2056&CRS=EPSG:2056
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": self.testdata_path + 'test_project_meters_at_scaledsymbols_2056.qgs',
+            "SERVICE": "WMS",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "testlayer_2056",
+            "FORMAT": "image/png",
+            "CRS": "EPSG:2056"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_MetersAtScaleSymbol_DefaultScale_2056", max_size_diff=QSize(15, 15))
+        
+    def test_wms_GetLegendGraphic_MetersAtScaleSymbol_Rule_2056(self):
+        # http://localhost:8000/?MAP=/home/dave/dev/qgis/QGIS/tests/testdata/qgis_server/test_project_meters_at_scaledsymbols_2056.qgs&SERVICE=WMS&REQUEST=GetLegendGraphics&LAYERS=testlayer_2056&CRS=EPSG:2056&WIDTH=50&HEIGHT=50&RULE=test
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": self.testdata_path + 'test_project_meters_at_scaledsymbols_2056.qgs',
+            "SERVICE": "WMS",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "testlayer_2056",
+            "FORMAT": "image/png",
+            "CRS": "EPSG:2056"
+            "WIDTH": "50",
+            "HEIGHT": "50",
+            "RULE": "test"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_MetersAtScaleSymbol_Rule_2056", max_size_diff=QSize(15, 15))
+
     def test_wms_GetLegendGraphic_LAYERFONTCOLOR(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
