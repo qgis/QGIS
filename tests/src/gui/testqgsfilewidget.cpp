@@ -85,6 +85,9 @@ void TestQgsFileWidget::toUrl()
   w->setFullUrl( false );
   QCOMPARE( w->toUrl( "/home/test2/file5.ext" ), QString( "<a href=\"file:///home/test2/file5.ext\">file5.ext</a>" ) );
   QCOMPARE( w->toUrl( "../test2/file6.ext" ), QString( "<a href=\"file:///home/test2/file6.ext\">file6.ext</a>" ) );
+
+  QCOMPARE( w->toUrl( QString() ), QgsApplication::nullRepresentation() );
+  QCOMPARE( w->toUrl( QgsApplication::nullRepresentation() ), QgsApplication::nullRepresentation() );
 }
 
 void TestQgsFileWidget::testDroppedFiles()
