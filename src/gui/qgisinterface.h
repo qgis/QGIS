@@ -217,6 +217,13 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QMenu *projectMenu() = 0;
 
     /**
+     * Returns a reference to the main window "Import/Export" project menu.
+     *
+     * \since QGIS 3.30
+     */
+    virtual QMenu *projectImportExportMenu() = 0;
+
+    /**
      * Returns a reference to the main window "Edit" menu.
      */
     virtual QMenu *editMenu() = 0;

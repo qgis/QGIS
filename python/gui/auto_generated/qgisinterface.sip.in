@@ -177,6 +177,13 @@ Advanced digitizing dock widget
 Returns a reference to the main window "Project" menu.
 %End
 
+    virtual QMenu *projectImportExportMenu() = 0;
+%Docstring
+Returns a reference to the main window "Import/Export" project menu.
+
+.. versionadded:: 3.30
+%End
+
     virtual QMenu *editMenu() = 0;
 %Docstring
 Returns a reference to the main window "Edit" menu.
