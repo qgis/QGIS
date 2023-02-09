@@ -134,9 +134,8 @@ namespace QgsWms
     QgsLegendSettings settings = legendSettings();
     QgsLegendRenderer renderer( &model, settings );
 
-    QgsRenderContext context = QgsRenderContext::fromQPainter( nullptr );
-    context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
-    context.setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering, true );
+    QgsRenderContext tmpcontext = QgsRenderContext::fromQPainter( nullptr );
+    tmpcontext.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
 
     QgsDistanceArea distanceArea  = QgsDistanceArea();
     if ( !mWmsParameters.bbox().isEmpty() )
@@ -145,8 +144,61 @@ namespace QgsWms
       mapSettings.setFlag( Qgis::MapSettingsFlag::RenderBlocking );
       std::unique_ptr<QImage> tmp( createImage( mContext.mapSize( false ) ) );
       configureMapSettings( tmp.get(), mapSettings );
+
+      tmpcontext.setRendererScale( mapSettings.scale() );
+
+      Q_NOWARN_DEPRECATED_PUSH
+      tmpcontext.setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * tmpcontext.scaleFactor() ) ) );
+      Q_NOWARN_DEPRECATED_POP
+      //tmpcontext.setMapToPixel( mapSettings.mapToPixel() );
+
+      distanceArea.setSourceCrs( QgsCoordinateReferenceSystem( mapSettings.destinationCrs() ), mapSettings.transformContext() );
+      distanceArea.setEllipsoid( mapSettings.ellipsoid() );
+    }
+    else
+    {
+      const double mmPerMapUnit = 1 / QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mProject );
+      tmpcontext.setMapToPixel( QgsMapToPixel( 1 / ( mmPerMapUnit * tmpcontext.scaleFactor() ) ) );
+
+      distanceArea.setSourceCrs( QgsCoordinateReferenceSystem( mWmsParameters.crs() ), mProject->transformContext() );
+      distanceArea.setEllipsoid( geoNone() );
+    }
+    tmpcontext.setDistanceArea( distanceArea );
+
+    tmpcontext.setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering, true );
+    // create image with size according to the context
+    std::unique_ptr<QImage> image;
+    const qreal dpmm = mContext.dotsPerMm();
+    const QSizeF minSize = renderer.minimumSize( &tmpcontext );
+    const QSize size( static_cast<int>( minSize.width() * dpmm ), static_cast<int>( minSize.height() * dpmm ) );
+    if ( !mContext.isValidWidthHeight( size.width(), size.height() ) )
+    {
+      throw QgsServerException( QStringLiteral( "Legend image is too large" ) );
+    }
+    image.reset( createImage( size ) );
+
+
+    // set painter and scale context
+    QPainter painter( image.get() );
+
+    QgsRenderContext context = QgsRenderContext::fromQPainter( &painter );
+    context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
+
+    QgsScopedRenderContextScaleToMm scaleContext( context );
+
+    if ( !mWmsParameters.bbox().isEmpty() )
+    {
+      QgsMapSettings mapSettings;
+      mapSettings.setFlag( Qgis::MapSettingsFlag::RenderBlocking );
+      std::unique_ptr<QImage> tmp( createImage( mContext.mapSize( false ) ) );
+      configureMapSettings( tmp.get(), mapSettings );
+
       context.setRendererScale( mapSettings.scale() );
-      context.setMapToPixel( mapSettings.mapToPixel() );
+
+      Q_NOWARN_DEPRECATED_PUSH
+      context.setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * context.scaleFactor() ) ) );
+      Q_NOWARN_DEPRECATED_POP
+      //context.setMapToPixel( mapSettings.mapToPixel() );
 
       distanceArea.setSourceCrs( QgsCoordinateReferenceSystem( mapSettings.destinationCrs() ), mapSettings.transformContext() );
       distanceArea.setEllipsoid( mapSettings.ellipsoid() );
@@ -160,22 +212,6 @@ namespace QgsWms
       distanceArea.setEllipsoid( geoNone() );
     }
     context.setDistanceArea( distanceArea );
-
-    // create image with size according to the context
-    std::unique_ptr<QImage> image;
-    const qreal dpmm = mContext.dotsPerMm();
-    const QSizeF minSize = renderer.minimumSize( &context );
-    const QSize size( static_cast<int>( minSize.width() * dpmm ), static_cast<int>( minSize.height() * dpmm ) );
-    if ( !mContext.isValidWidthHeight( size.width(), size.height() ) )
-    {
-      throw QgsServerException( QStringLiteral( "Legend image is too large" ) );
-    }
-    image.reset( createImage( size ) );
-
-    // set painter and scale context
-    QPainter painter( image.get() );
-    context.setPainter( &painter );
-    QgsScopedRenderContextScaleToMm scaleContext( context );
 
     // rendering
     renderer.drawLegend( context );
