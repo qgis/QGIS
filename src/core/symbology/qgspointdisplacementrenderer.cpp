@@ -96,12 +96,16 @@ void QgsPointDisplacementRenderer::drawGroup( QPointF centerPoint, QgsRenderCont
   //only draw circle/grid if there's a pen present - otherwise skip drawing transparent grids
   if ( mCircleColor.isValid() && mCircleColor.alpha() > 0 )
   {
-    //draw circle
-    if ( circleRadius > 0 )
-      drawCircle( circleRadius, symbolContext, centerPoint, group.size() );
-    //draw grid
-    else
-      drawGrid( gridSize, symbolContext, symbolPositions, group.size() );
+    switch ( mPlacement )
+    {
+      case Ring:
+      case ConcentricRings:
+        drawCircle( circleRadius, symbolContext, centerPoint, group.size() );
+        break;
+      case Grid:
+        drawGrid( gridSize, symbolContext, symbolPositions, group.size() );
+        break;
+    }
   }
 
   if ( group.size() > 1 )

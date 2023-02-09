@@ -33,6 +33,8 @@ from qgis.core import (
     QgsFeature,
     QgsFontUtils,
     QgsGeometry,
+    QgsGeometryGeneratorSymbolLayer,
+    QgsMapRendererSequentialJob,
     QgsMapSettings,
     QgsMapUnitScale,
     QgsMarkerSymbol,
@@ -46,9 +48,10 @@ from qgis.core import (
     QgsRenderContext,
     QgsRendererCategory,
     QgsSingleSymbolRenderer,
+    QgsSymbol,
     QgsSymbolLayer,
     QgsUnitTypes,
-    QgsVectorLayer,
+    QgsVectorLayer
 )
 from qgis.testing import start_app, unittest
 
@@ -501,6 +504,32 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
         ctx = QgsRenderContext.fromMapSettings(mapsettings)
 
         self.assertCountEqual(renderer.usedAttributes(ctx), {})
+
+    def testGeometryGenerator(self):
+        """
+        Don't check result image here, there is no point in using geometry generators
+        with point displacement renderer, we just want to avoid crash
+        """
+
+        layer, renderer, mapsettings = self._setUp()
+        layer.renderer().setTolerance(10)
+        layer.renderer().setPlacement(QgsPointDisplacementRenderer.Ring)
+        layer.renderer().setCircleRadiusAddition(0)
+
+        geomGeneratorSymbolLayer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': '$geometry'})
+        geomGeneratorSymbolLayer.setSymbolType(QgsSymbol.Marker)
+        geomGeneratorSymbolLayer.subSymbol().setSize(2.5)
+
+        markerSymbol = QgsMarkerSymbol()
+        markerSymbol.deleteSymbolLayer(0)
+        markerSymbol.appendSymbolLayer(geomGeneratorSymbolLayer)
+        self.assertEqual(markerSymbol.size(), 2.5)
+
+        layer.renderer().setEmbeddedRenderer(QgsSingleSymbolRenderer(markerSymbol))
+
+        job = QgsMapRendererSequentialJob(mapsettings)
+        job.start()
+        job.waitForFinished()
 
 
 if __name__ == '__main__':
