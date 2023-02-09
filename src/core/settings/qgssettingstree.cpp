@@ -22,6 +22,17 @@ QgsSettingsTreeNode *QgsSettingsTree::treeRoot()
   return sTreeRoot;
 }
 
+const QgsSettingsTreeNode *QgsSettingsTree::nodeCopy( const QString &key )
+{
+  QgsSettingsTreeNode *copyNode = nullptr;
+  const QgsSettingsTreeNode *node = treeRoot()->childNode( key );
+  if ( node )
+  {
+    copyNode = new QgsSettingsTreeNode();
+    copyNode->copy( node );
+  }
+  return copyNode;
+}
 
 QgsSettingsTreeNode *QgsSettingsTree::createPluginTreeNode( const QString &pluginName )
 {

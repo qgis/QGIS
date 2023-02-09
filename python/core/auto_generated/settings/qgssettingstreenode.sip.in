@@ -160,6 +160,8 @@ Returns the number of named nodes in the complete key
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
+    virtual void copy( const QgsSettingsTreeNode *other );
+
   protected:
     void registerChildNode( QgsSettingsTreeNode *node );
 %Docstring
@@ -258,6 +260,8 @@ Deletes a named item from the named list node
 %Docstring
 Returns the setting used to store the selected item
 %End
+
+    virtual void copy( const QgsSettingsTreeNode *other );
 
   protected:
     void initNamedList( const QgsSettingsTreeNode::Options &options );
