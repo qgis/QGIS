@@ -154,7 +154,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
         # cannot add a child node since the getter returns a const
         node.createChildNode("test")
         self.assertEqual(len(node.childrenNodes()), count + 1)
-        self.assertEqual(len(QgsSettingsTree.nodeCopy("gps")), count)
+        self.assertEqual(len(QgsSettingsTree.nodeCopy("gps").childrenNodes()), count)
 
 
 if __name__ == '__main__':
