@@ -158,15 +158,7 @@ void QgsAppLayerHandling::addSortedLayersToLegend( QList<QgsMapLayer *> &layers 
       {
         QgsVectorLayer *av = qobject_cast<QgsVectorLayer *>( a );
         QgsVectorLayer *bv = qobject_cast<QgsVectorLayer *>( b );
-        if ( ( av->geometryType() == QgsWkbTypes::PointGeometry && bv->geometryType() != QgsWkbTypes::PointGeometry ) ||
-             ( av->geometryType() == QgsWkbTypes::LineGeometry && bv->geometryType() == QgsWkbTypes::PolygonGeometry ) )
-        {
-          return false;
-        }
-        else
-        {
-          return true;
-        }
+        return av->geometryType() > bv->geometryType();
       }
 
       return layerTypeOrdering.value( a->type() ) > layerTypeOrdering.value( b->type() );
