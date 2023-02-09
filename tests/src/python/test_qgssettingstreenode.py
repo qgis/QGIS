@@ -147,6 +147,15 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(type(self.setting), QgsSettingsEntryEnumFlag)
         self.assertEqual(type(proot.childSetting("python-implemented-setting")), QgsSettingsEntryEnumFlag)
 
+    def test_get_node(self):
+        node = QgsSettingsTree.nodeCopy("gps")
+        self.assertIsNotNone(node)
+        count = len(node.childrenNodes())
+        # cannot add a child node since the getter returns a const
+        node.createChildNode("test")
+        self.assertEqual(len(node.childrenNodes()), count + 1)
+        self.assertEqual(len(QgsSettingsTree.nodeCopy("gps")), count)
+
 
 if __name__ == '__main__':
     unittest.main()
