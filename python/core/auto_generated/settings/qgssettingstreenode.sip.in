@@ -161,6 +161,9 @@ Returns the number of named nodes in the complete key
 %End
 
     virtual void copy( const QgsSettingsTreeNode *other );
+%Docstring
+Copies the ``other`` node to this instance
+%End
 
   protected:
     void registerChildNode( QgsSettingsTreeNode *node );

@@ -157,6 +157,7 @@ class CORE_EXPORT QgsSettingsTreeNode
     % End
 #endif
 
+    //! Copies the \a other node to this instance
     virtual void copy( const QgsSettingsTreeNode *other );
 
   protected:
