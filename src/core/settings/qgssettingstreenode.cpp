@@ -27,7 +27,8 @@ QgsSettingsTreeNode::~QgsSettingsTreeNode()
     mParent->unregisterChildNode( this );
 
   qDeleteAll( mChildrenNodes );
-  qDeleteAll( mChildrenSettings );
+  if ( !mIsCopy )
+    qDeleteAll( mChildrenSettings );
 }
 
 QgsSettingsTreeNode *QgsSettingsTreeNode::createRootNode()
@@ -115,6 +116,48 @@ void QgsSettingsTreeNode::registerChildNode( QgsSettingsTreeNode *node )
   mChildrenNodes.append( node );
 }
 
+void QgsSettingsTreeNode::copy( const QgsSettingsTreeNode *other )
+{
+  mIsCopy = true;
+  mType = other->type();
+  mChildrenSettings = other->mChildrenSettings;
+  mParent = other->mParent;
+  mKey = other->mKey;
+  mCompleteKey = other->mCompleteKey;
+  mNamedNodesCount = other->mNamedNodesCount;
+
+  const QList<QgsSettingsTreeNode *> children = other->mChildrenNodes;
+  for ( const QgsSettingsTreeNode *child : children )
+  {
+    switch ( child->type() )
+    {
+      case Type::Root:
+      {
+        Q_ASSERT( false );
+        break;
+      }
+
+      case Type::Standard:
+      {
+        QgsSettingsTreeNode *newChild = new QgsSettingsTreeNode();
+        newChild->copy( child );
+        mChildrenNodes.append( newChild );
+        break;
+      }
+
+      case Type::NamedList:
+      {
+        QgsSettingsTreeNamedListNode *newChild = new QgsSettingsTreeNamedListNode();
+        newChild->copy( child );
+        mChildrenNodes.append( newChild );
+        break;
+      }
+    }
+  }
+
+  mChildrenSettings = other->childrenSettings();
+}
+
 void QgsSettingsTreeNode::unregisterChildSetting( const QgsSettingsEntryBase *setting, bool deleteSettingValues, const QStringList &parentsNamedItems )
 {
   if ( deleteSettingValues )
@@ -148,6 +191,17 @@ void QgsSettingsTreeNamedListNode::initNamedList( const QgsSettingsTreeNode::Opt
   mNamedNodesCount = mParent->namedNodesCount() + 1;
   mItemsCompleteKey = QStringLiteral( "%1items/" ).arg( mCompleteKey );
   mCompleteKey.append( QStringLiteral( "items/%%1/" ).arg( mNamedNodesCount ) );
+}
+
+void QgsSettingsTreeNamedListNode::copy( const  QgsSettingsTreeNode *other )
+{
+  QgsSettingsTreeNode::copy( other );
+
+  const QgsSettingsTreeNamedListNode *otherNamedList = dynamic_cast<const QgsSettingsTreeNamedListNode *>( other );
+
+  mOptions = otherNamedList->mOptions;
+  mSelectedItemSetting = otherNamedList->mSelectedItemSetting;
+  mItemsCompleteKey = otherNamedList->mItemsCompleteKey;
 }
 
 QgsSettingsTreeNamedListNode::~QgsSettingsTreeNamedListNode()
