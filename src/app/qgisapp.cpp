@@ -5461,23 +5461,12 @@ void QgisApp::addSelectedVectorLayer( const QString &uri, const QString &layerNa
 
 void QgisApp::replaceSelectedVectorLayer( const QString &oldId, const QString &uri, const QString &layerName, const QString &provider )
 {
-  QgsMapLayer *old = QgsProject::instance()->mapLayer( oldId );
-  if ( !old )
-    return;
-  QgsVectorLayer *oldLayer = static_cast<QgsVectorLayer *>( old );
-  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-  QgsVectorLayer *newLayer = new QgsVectorLayer( uri, layerName, provider, options );
-  if ( !newLayer || !newLayer->isValid() )
+  QgsVectorLayer *oldLayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( oldId ) );
+  if ( !oldLayer )
     return;
 
-  QgsProject::instance()->addMapLayer( newLayer, /*addToLegend*/ false, /*takeOwnership*/ true );
-  duplicateVectorStyle( oldLayer, newLayer );
-
-  // insert the new layer just below the old one
-  QgsLayerTreeUtils::insertLayerBelow( QgsProject::instance()->layerTreeRoot(), oldLayer, newLayer );
-  // and remove the old layer
-  QgsProject::instance()->removeMapLayer( oldLayer );
-} // QgisApp:replaceSelectedVectorLayer
+  oldLayer->setDataSource( uri, layerName, provider );
+}
 
 void QgisApp::fileExit()
 {
