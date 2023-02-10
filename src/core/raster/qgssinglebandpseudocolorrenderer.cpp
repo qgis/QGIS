@@ -280,7 +280,16 @@ QgsRasterBlock *QgsSingleBandPseudoColorRenderer::block( int bandNo, QgsRectangl
       }
       if ( mAlphaBand > 0 )
       {
-        currentOpacity *= alphaBlock->value( i ) / 255.0;
+        const double alpha = alphaBlock->value( i );
+        if ( alpha == 0 )
+        {
+          outputBlock->setColor( i, myDefaultColor );
+          continue;
+        }
+        else
+        {
+          currentOpacity *= alpha / 255.0;
+        }
       }
 
       outputBlockData[i] = qRgba( currentOpacity * red, currentOpacity * green, currentOpacity * blue, currentOpacity * alpha );
