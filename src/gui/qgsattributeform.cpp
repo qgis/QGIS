@@ -1535,29 +1535,37 @@ void QgsAttributeForm::synchronizeState()
 
   if ( mMode != QgsAttributeEditorContext::SearchMode )
   {
-    QStringList invalidFields, descriptions;
-    mValidConstraints = currentFormValidHardConstraints( invalidFields, descriptions );
-
-    if ( isEditable && mContext.formMode() == QgsAttributeEditorContext::Embed )
+    if ( mMode == QgsAttributeEditorContext::Mode::MultiEditMode && mLayer->selectedFeatureCount() == 0 )
     {
-      if ( !mValidConstraints && !mConstraintsFailMessageBarItem )
+      isEditable = false;
+      mMessageBar->pushMessage( tr( "Multi edit mode requires at least one selected feature." ), Qgis::MessageLevel::Info );
+    }
+    else
+    {
+      QStringList invalidFields, descriptions;
+      mValidConstraints = currentFormValidHardConstraints( invalidFields, descriptions );
+
+      if ( isEditable && mContext.formMode() == QgsAttributeEditorContext::Embed )
       {
-        mConstraintsFailMessageBarItem = new QgsMessageBarItem( tr( "Changes to this form will not be saved. %n field(s) don't meet their constraints.", "invalid fields", invalidFields.size() ), Qgis::MessageLevel::Warning, -1 );
-        mMessageBar->pushItem( mConstraintsFailMessageBarItem );
+        if ( !mValidConstraints && !mConstraintsFailMessageBarItem )
+        {
+          mConstraintsFailMessageBarItem = new QgsMessageBarItem( tr( "Changes to this form will not be saved. %n field(s) don't meet their constraints.", "invalid fields", invalidFields.size() ), Qgis::MessageLevel::Warning, -1 );
+          mMessageBar->pushItem( mConstraintsFailMessageBarItem );
+        }
+        else if ( mValidConstraints && mConstraintsFailMessageBarItem )
+        {
+          mMessageBar->popWidget( mConstraintsFailMessageBarItem );
+          mConstraintsFailMessageBarItem = nullptr;
+        }
       }
-      else if ( mValidConstraints && mConstraintsFailMessageBarItem )
+      else if ( mConstraintsFailMessageBarItem )
       {
         mMessageBar->popWidget( mConstraintsFailMessageBarItem );
         mConstraintsFailMessageBarItem = nullptr;
       }
-    }
-    else if ( mConstraintsFailMessageBarItem )
-    {
-      mMessageBar->popWidget( mConstraintsFailMessageBarItem );
-      mConstraintsFailMessageBarItem = nullptr;
-    }
 
-    isEditable = isEditable & mValidConstraints;
+      isEditable = isEditable & mValidConstraints;
+    }
   }
 
   // change OK button status
