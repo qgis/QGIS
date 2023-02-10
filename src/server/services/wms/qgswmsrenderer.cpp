@@ -147,18 +147,33 @@ namespace QgsWms
 
       tmpcontext.setRendererScale( mapSettings.scale() );
 
-      Q_NOWARN_DEPRECATED_PUSH
-      tmpcontext.setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * tmpcontext.scaleFactor() ) ) );
-      Q_NOWARN_DEPRECATED_POP
-      //tmpcontext.setMapToPixel( mapSettings.mapToPixel() );
+      /*
+       * When using legend setting we did this: setMapUnitsPerPixel( mapSettings.mapUnitsPerPixel() ) where it multiplied it with 96 as dpi
+       * We would like to do this:
+       *       context.setMapToPixel( mapSettings.mapToPixel() );
+       * but this leads to problems (most possible because of different DPI)
+       */
+      const double mapUnitsPerPixel = mapSettings.mapUnitsPerPixel();
+      const double uglyconvert_mmPerMapUnit = 1 / mapUnitsPerPixel / ( 96 / 25.4 );
+
+      tmpcontext.setMapToPixel( QgsMapToPixel( 1 / ( uglyconvert_mmPerMapUnit * tmpcontext.scaleFactor() ) ) );
+      //context.setMapToPixel( mapSettings.mapToPixel() );
 
       distanceArea.setSourceCrs( QgsCoordinateReferenceSystem( mapSettings.destinationCrs() ), mapSettings.transformContext() );
       distanceArea.setEllipsoid( mapSettings.ellipsoid() );
     }
     else
     {
-      const double mmPerMapUnit = 1 / QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mProject );
-      tmpcontext.setMapToPixel( QgsMapToPixel( 1 / ( mmPerMapUnit * tmpcontext.scaleFactor() ) ) );
+      /*
+       * When using legend setting we did this: setMapUnitsPerPixel( defaultMapUnitsPerPixel ) where it multiplied it with 96 as dpi
+       * We would like to do this:
+       *       const double mmPerMapUnit = 1 / QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mProject );
+       *       context.setMapToPixel( QgsMapToPixel( 1 / ( mmPerMapUnit * context.scaleFactor() ) ) );
+       * but this leads to problems (most possible because of different DPI)
+       */
+      const double defaultMapUnitsPerPixel = QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mContext.project() ) / mContext.dotsPerMm();
+      const double uglyconvert_mmPerMapUnit = 1 / defaultMapUnitsPerPixel / ( 96 / 25.4 );
+      tmpcontext.setMapToPixel( QgsMapToPixel( 1 / ( uglyconvert_mmPerMapUnit * tmpcontext.scaleFactor() ) ) );
 
       distanceArea.setSourceCrs( QgsCoordinateReferenceSystem( mWmsParameters.crs() ), mProject->transformContext() );
       distanceArea.setEllipsoid( geoNone() );
@@ -195,9 +210,16 @@ namespace QgsWms
 
       context.setRendererScale( mapSettings.scale() );
 
-      Q_NOWARN_DEPRECATED_PUSH
-      context.setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * context.scaleFactor() ) ) );
-      Q_NOWARN_DEPRECATED_POP
+      /*
+       * When using legend setting we did this: setMapUnitsPerPixel( mapSettings.mapUnitsPerPixel() ) where it multiplied it with 96 as dpi
+       * We would like to do this:
+       *       context.setMapToPixel( mapSettings.mapToPixel() );
+       * but this leads to problems (most possible because of different DPI)
+       */
+      const double mapUnitsPerPixel = mapSettings.mapUnitsPerPixel();
+      const double uglyconvert_mmPerMapUnit = 1 / mapUnitsPerPixel / ( 96 / 25.4 );
+
+      context.setMapToPixel( QgsMapToPixel( 1 / ( uglyconvert_mmPerMapUnit * context.scaleFactor() ) ) );
       //context.setMapToPixel( mapSettings.mapToPixel() );
 
       distanceArea.setSourceCrs( QgsCoordinateReferenceSystem( mapSettings.destinationCrs() ), mapSettings.transformContext() );
@@ -205,13 +227,16 @@ namespace QgsWms
     }
     else
     {
-      Q_NOWARN_DEPRECATED_PUSH
+      /*
+       * When using legend setting we did this: setMapUnitsPerPixel( defaultMapUnitsPerPixel ) where it multiplied it with 96 as dpi
+       * We would like to do this:
+       *       const double mmPerMapUnit = 1 / QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mProject );
+       *       context.setMapToPixel( QgsMapToPixel( 1 / ( mmPerMapUnit * context.scaleFactor() ) ) );
+       * but this leads to problems (most possible because of different DPI)
+       */
       const double defaultMapUnitsPerPixel = QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mContext.project() ) / mContext.dotsPerMm();
-      settings.setMapUnitsPerPixel( defaultMapUnitsPerPixel );
-      context.setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * context.scaleFactor() ) ) );
-      Q_NOWARN_DEPRECATED_POP
-      //const double mmPerMapUnit = 1 / QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mProject );
-      //context.setMapToPixel( QgsMapToPixel( 1 / ( mmPerMapUnit * context.scaleFactor() ) ) );
+      const double uglyconvert_mmPerMapUnit = 1 / defaultMapUnitsPerPixel / ( 96 / 25.4 );
+      context.setMapToPixel( QgsMapToPixel( 1 / ( uglyconvert_mmPerMapUnit * context.scaleFactor() ) ) );
 
       distanceArea.setSourceCrs( QgsCoordinateReferenceSystem( mWmsParameters.crs() ), mProject->transformContext() );
       distanceArea.setEllipsoid( geoNone() );
