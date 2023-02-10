@@ -1,0 +1,25 @@
+{
+  "name": "rtrim",
+  "type": "function",
+  "groups": ["String"],
+  "description": "Removes the longest string containing only the specified characters (a space by default) from the end of string.",
+  "arguments": [{
+    "arg": "string",
+    "description": "string to trim"
+  },
+  {
+    "arg": "characters",
+    "description": "characters to trim",
+    "optional": true,
+    "default": "' '"
+  }],
+  "examples": [{
+    "expression": "rtrim('   hello world  ')",
+    "returns": "'   hello world'"
+  },
+  {
+    "expression": "rtrim('testxxzx', 'xyz')",
+    "returns": "'test'"
+  }],
+  "tags": ["removes", "whitespace", "spaces", "tabs", "trailing"]
+}
