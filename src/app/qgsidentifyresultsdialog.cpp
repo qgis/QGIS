@@ -737,6 +737,9 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
     const QString representedValue = representValue( vlayer, setup, fields.at( i ).name(), attrs.at( i ) );
     attrItem->setSortData( 1, representedValue );
     attrItem->setToolTip( 1, representedValue );
+    // To make sure we can copy to clipboard even when an alternate widget is used (json/url),
+    // we store the representedValue to UserRole + 2 and read from that when copying to clipboard
+    attrItem->setData( 1, Qt::UserRole + 2, representedValue );
 
     if ( setup.type() == QLatin1String( "JsonEdit" ) )
     {
@@ -1913,7 +1916,7 @@ QTreeWidgetItem *QgsIdentifyResultsDialog::retrieveAttributes( QTreeWidgetItem *
       continue;
     if ( item == lstResults->currentItem() )
       idx = item->data( 0, Qt::UserRole + 1 ).toInt();
-    attributes.insert( item->data( 0, Qt::UserRole + 1 ).toInt(), item->data( 1, Qt::DisplayRole ) );
+    attributes.insert( item->data( 0, Qt::UserRole + 1 ).toInt(), item->data( 1, Qt::UserRole + 2 ) );
   }
 
   return featItem;
@@ -2292,8 +2295,8 @@ void QgsIdentifyResultsDialog::collapseAll()
 void QgsIdentifyResultsDialog::copyAttributeValue()
 {
   QClipboard *clipboard = QApplication::clipboard();
-  const QString text = lstResults->currentItem()->data( 1, Qt::DisplayRole ).toString();
-  QgsDebugMsg( QStringLiteral( "set clipboard: %1" ).arg( text ) );
+  const QString text = lstResults->currentItem()->data( 1, Qt::UserRole + 2 ).toString();
+  QgsDebugMsgLevel( QStringLiteral( "set clipboard: %1" ).arg( text ), 2 );
   clipboard->setText( text );
 }
 
