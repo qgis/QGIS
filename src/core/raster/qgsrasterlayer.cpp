@@ -785,14 +785,22 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   //TODO Change this to look at the color interp and palette interp to decide which type of layer it is
   QgsDebugMsgLevel( "bandCount = " + QString::number( mDataProvider->bandCount() ), 4 );
   QgsDebugMsgLevel( "dataType = " + qgsEnumValueToKey< Qgis::DataType >( mDataProvider->dataType( 1 ) ), 4 );
-  if ( ( mDataProvider->bandCount() > 1 ) )
+  const int bandCount = mDataProvider->bandCount();
+  if ( bandCount > 2 )
+  {
+    mRasterType = Qgis::RasterLayerType::MultiBand;
+  }
+  else if ( bandCount == 2 )
   {
     // handle singleband gray with alpha
-    if ( mDataProvider->bandCount() == 2
-         && ( ( mDataProvider->colorInterpretation( 1 ) == Qgis::RasterColorInterpretation::GrayIndex
-                && mDataProvider->colorInterpretation( 2 ) == Qgis::RasterColorInterpretation::AlphaBand )
-              || ( mDataProvider->colorInterpretation( 1 ) == Qgis::RasterColorInterpretation::AlphaBand
-                   && mDataProvider->colorInterpretation( 2 ) == Qgis::RasterColorInterpretation::GrayIndex ) ) )
+    auto colorInterpretationIsGrayOrUndefined = []( Qgis::RasterColorInterpretation interpretation )
+    {
+      return interpretation == Qgis::RasterColorInterpretation::GrayIndex
+             || interpretation == Qgis::RasterColorInterpretation::Undefined;
+    };
+
+    if ( ( colorInterpretationIsGrayOrUndefined( mDataProvider->colorInterpretation( 1 ) ) && mDataProvider->colorInterpretation( 2 ) == Qgis::RasterColorInterpretation::AlphaBand )
+         || ( mDataProvider->colorInterpretation( 1 ) == Qgis::RasterColorInterpretation::AlphaBand && colorInterpretationIsGrayOrUndefined( mDataProvider->colorInterpretation( 2 ) ) ) )
     {
       mRasterType = Qgis::RasterLayerType::GrayOrUndefined;
     }
