@@ -28,6 +28,8 @@ void QgsTableWidgetBase::init( QAbstractTableModel *model )
   tableView->setModel( model );
   connect( tableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsTableWidgetBase::onSelectionChanged );
   connect( model, &QAbstractItemModel::dataChanged, this, &QgsTableWidgetBase::valueChanged );
+  connect( model, &QAbstractItemModel::rowsRemoved, this, &QgsTableWidgetBase::valueChanged );
+  connect( model, &QAbstractItemModel::rowsInserted, this, &QgsTableWidgetBase::valueChanged );
 }
 
 void QgsTableWidgetBase::addButton_clicked()
