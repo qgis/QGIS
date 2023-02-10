@@ -100,8 +100,29 @@ bool QgsContrastEnhancement::generateLookupTable()
     return false;
   if ( NoEnhancement == mContrastEnhancementAlgorithm )
     return false;
-  if ( Qgis::DataType::Byte != mRasterDataType && Qgis::DataType::UInt16 != mRasterDataType && Qgis::DataType::Int16 != mRasterDataType )
-    return false;
+
+  switch ( mRasterDataType )
+  {
+    case Qgis::DataType::Byte:
+    case Qgis::DataType::UInt16:
+    case Qgis::DataType::Int16:
+    case Qgis::DataType::Int8:
+      break;
+
+    case Qgis::DataType::UnknownDataType:
+    case Qgis::DataType::UInt32:
+    case Qgis::DataType::Int32:
+    case Qgis::DataType::Float32:
+    case Qgis::DataType::Float64:
+    case Qgis::DataType::CInt16:
+    case Qgis::DataType::CInt32:
+    case Qgis::DataType::CFloat32:
+    case Qgis::DataType::CFloat64:
+    case Qgis::DataType::ARGB32:
+    case Qgis::DataType::ARGB32_Premultiplied:
+      return false;
+  }
+
   if ( !mLookupTable )
     return false;
 
