@@ -134,10 +134,10 @@ namespace QgsWms
     QgsLegendSettings settings = legendSettings();
     QgsLegendRenderer renderer( &model, settings );
 
-    QgsRenderContext tmpcontext = QgsRenderContext::fromQPainter( nullptr );
-    tmpcontext.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
-
     QgsDistanceArea distanceArea  = QgsDistanceArea();
+    double rendererScale = 1.0;
+    double mmPerMapUnit;
+
     if ( !mWmsParameters.bbox().isEmpty() )
     {
       QgsMapSettings mapSettings;
@@ -145,42 +145,30 @@ namespace QgsWms
       std::unique_ptr<QImage> tmp( createImage( mContext.mapSize( false ) ) );
       configureMapSettings( tmp.get(), mapSettings );
 
-      tmpcontext.setRendererScale( mapSettings.scale() );
+      rendererScale = mapSettings.scale();
 
-      /*
-       * When using legend setting we did this: setMapUnitsPerPixel( mapSettings.mapUnitsPerPixel() ) where it multiplied it with 96 as dpi
-       * We would like to do this:
-       *       context.setMapToPixel( mapSettings.mapToPixel() );
-       * but this leads to problems (most possible because of different DPI)
-       */
       const double mapUnitsPerPixel = mapSettings.mapUnitsPerPixel();
-      const double uglyconvert_mmPerMapUnit = 1 / mapUnitsPerPixel / ( 96 / 25.4 );
-
-      tmpcontext.setMapToPixel( QgsMapToPixel( 1 / ( uglyconvert_mmPerMapUnit * tmpcontext.scaleFactor() ) ) );
-      //context.setMapToPixel( mapSettings.mapToPixel() );
-
+      mmPerMapUnit = 1 / mapUnitsPerPixel / ( 96 / 25.4 );
       distanceArea.setSourceCrs( QgsCoordinateReferenceSystem( mapSettings.destinationCrs() ), mapSettings.transformContext() );
       distanceArea.setEllipsoid( mapSettings.ellipsoid() );
     }
     else
     {
-      /*
-       * When using legend setting we did this: setMapUnitsPerPixel( defaultMapUnitsPerPixel ) where it multiplied it with 96 as dpi
-       * We would like to do this:
-       *       const double mmPerMapUnit = 1 / QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mProject );
-       *       context.setMapToPixel( QgsMapToPixel( 1 / ( mmPerMapUnit * context.scaleFactor() ) ) );
-       * but this leads to problems (most possible because of different DPI)
-       */
+
       const double defaultMapUnitsPerPixel = QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mContext.project() ) / mContext.dotsPerMm();
-      const double uglyconvert_mmPerMapUnit = 1 / defaultMapUnitsPerPixel / ( 96 / 25.4 );
-      tmpcontext.setMapToPixel( QgsMapToPixel( 1 / ( uglyconvert_mmPerMapUnit * tmpcontext.scaleFactor() ) ) );
+      mmPerMapUnit = 1 / defaultMapUnitsPerPixel / ( 96 / 25.4 );
 
       distanceArea.setSourceCrs( QgsCoordinateReferenceSystem( mWmsParameters.crs() ), mProject->transformContext() );
       distanceArea.setEllipsoid( geoNone() );
     }
+
+    QgsRenderContext tmpcontext = QgsRenderContext::fromQPainter( nullptr );
+    tmpcontext.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
+    tmpcontext.setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering, true );
+    tmpcontext.setRendererScale( rendererScale );
+    tmpcontext.setMapToPixel( QgsMapToPixel( 1 / ( mmPerMapUnit * tmpcontext.scaleFactor() ) ) );
     tmpcontext.setDistanceArea( distanceArea );
 
-    tmpcontext.setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering, true );
     // create image with size according to the context
     std::unique_ptr<QImage> image;
     const qreal dpmm = mContext.dotsPerMm();
@@ -192,56 +180,18 @@ namespace QgsWms
     }
     image.reset( createImage( size ) );
 
-
     // set painter and scale context
     QPainter painter( image.get() );
 
     QgsRenderContext context = QgsRenderContext::fromQPainter( &painter );
     context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
+    context.setRendererScale( rendererScale );
+    context.setMapToPixel( QgsMapToPixel( 1 / ( mmPerMapUnit * context.scaleFactor() ) ) );
+    context.setDistanceArea( distanceArea );
 
     QgsScopedRenderContextScaleToMm scaleContext( context );
 
-    if ( !mWmsParameters.bbox().isEmpty() )
-    {
-      QgsMapSettings mapSettings;
-      mapSettings.setFlag( Qgis::MapSettingsFlag::RenderBlocking );
-      std::unique_ptr<QImage> tmp( createImage( mContext.mapSize( false ) ) );
-      configureMapSettings( tmp.get(), mapSettings );
-
-      context.setRendererScale( mapSettings.scale() );
-
-      /*
-       * When using legend setting we did this: setMapUnitsPerPixel( mapSettings.mapUnitsPerPixel() ) where it multiplied it with 96 as dpi
-       * We would like to do this:
-       *       context.setMapToPixel( mapSettings.mapToPixel() );
-       * but this leads to problems (most possible because of different DPI)
-       */
-      const double mapUnitsPerPixel = mapSettings.mapUnitsPerPixel();
-      const double uglyconvert_mmPerMapUnit = 1 / mapUnitsPerPixel / ( 96 / 25.4 );
-
-      context.setMapToPixel( QgsMapToPixel( 1 / ( uglyconvert_mmPerMapUnit * context.scaleFactor() ) ) );
-      //context.setMapToPixel( mapSettings.mapToPixel() );
-
-      distanceArea.setSourceCrs( QgsCoordinateReferenceSystem( mapSettings.destinationCrs() ), mapSettings.transformContext() );
-      distanceArea.setEllipsoid( mapSettings.ellipsoid() );
-    }
-    else
-    {
-      /*
-       * When using legend setting we did this: setMapUnitsPerPixel( defaultMapUnitsPerPixel ) where it multiplied it with 96 as dpi
-       * We would like to do this:
-       *       const double mmPerMapUnit = 1 / QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mProject );
-       *       context.setMapToPixel( QgsMapToPixel( 1 / ( mmPerMapUnit * context.scaleFactor() ) ) );
-       * but this leads to problems (most possible because of different DPI)
-       */
-      const double defaultMapUnitsPerPixel = QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mContext.project() ) / mContext.dotsPerMm();
-      const double uglyconvert_mmPerMapUnit = 1 / defaultMapUnitsPerPixel / ( 96 / 25.4 );
-      context.setMapToPixel( QgsMapToPixel( 1 / ( uglyconvert_mmPerMapUnit * context.scaleFactor() ) ) );
-
-      distanceArea.setSourceCrs( QgsCoordinateReferenceSystem( mWmsParameters.crs() ), mProject->transformContext() );
-      distanceArea.setEllipsoid( geoNone() );
-    }
-    context.setDistanceArea( distanceArea );
+    qDebug() << "scale factor now 2" << context.scaleFactor();
 
     // rendering
     renderer.drawLegend( context );
@@ -291,14 +241,20 @@ namespace QgsWms
       std::unique_ptr<QImage> tmp( createImage( mContext.mapSize( false ) ) );
       configureMapSettings( tmp.get(), mapSettings );
       context.setRendererScale( mapSettings.scale() );
-      context.setMapToPixel( mapSettings.mapToPixel() );
+
+      const double mapUnitsPerPixel = mapSettings.mapUnitsPerPixel();
+      const double mmPerMapUnit = 1 / mapUnitsPerPixel / ( 96 / 25.4 );
+
+      context.setMapToPixel( QgsMapToPixel( 1 / ( mmPerMapUnit * context.scaleFactor() ) ) );
 
       distanceArea.setSourceCrs( QgsCoordinateReferenceSystem( mapSettings.destinationCrs() ), mapSettings.transformContext() );
       distanceArea.setEllipsoid( mapSettings.ellipsoid() );
     }
     else
     {
-      const double mmPerMapUnit = 1 / QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mProject );
+      const double defaultMapUnitsPerPixel = QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mProject ) / mContext.dotsPerMm();
+      const double mmPerMapUnit = 1 / defaultMapUnitsPerPixel / ( 96 / 25.4 );
+
       context.setMapToPixel( QgsMapToPixel( 1 / ( mmPerMapUnit * context.scaleFactor() ) ) );
 
       distanceArea.setSourceCrs( QgsCoordinateReferenceSystem( mWmsParameters.crs() ), mProject->transformContext() );
