@@ -2788,7 +2788,7 @@ void QgisApp::createActions()
   connect( mActionPasteAsNewVector, &QAction::triggered, this, &QgisApp::pasteAsNewVector );
   connect( mActionPasteAsNewMemoryVector, &QAction::triggered, this, [ = ] { pasteAsNewMemoryVector(); } );
   connect( mActionCopyStyle, &QAction::triggered, this, [ = ] { copyStyle(); } );
-  connect( mActionPasteStyle, &QAction::triggered, this, [ = ] { pasteStyle(); } );
+  connect( mActionPasteStyle, &QAction::triggered, this, [ = ] { applyStyleToGroup(); } );
   connect( mActionCopyLayer, &QAction::triggered, this, &QgisApp::copyLayer );
   connect( mActionPasteLayer, &QAction::triggered, this, &QgisApp::pasteLayer );
   connect( mActionAddFeature, &QAction::triggered, this, &QgisApp::addFeature );
@@ -12086,8 +12086,11 @@ void QgisApp::applyStyleToGroup()
   if ( !mLayerTreeView )
     return;
 
-  const auto constSelectedNodes = mLayerTreeView->selectedNodes();
-  for ( QgsLayerTreeNode *node : constSelectedNodes )
+  QList< QgsLayerTreeNode * > selectedNodes = mLayerTreeView->selectedNodes();
+  if ( selectedNodes.isEmpty() && mLayerTreeView->currentNode() )
+    selectedNodes.append( mLayerTreeView->currentNode() );
+
+  for ( QgsLayerTreeNode *node : selectedNodes )
   {
     if ( QgsLayerTree::isGroup( node ) )
     {
@@ -14889,7 +14892,10 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionCopyFeatures->setEnabled( false );
     mActionPasteFeatures->setEnabled( false );
     mActionCopyStyle->setEnabled( false );
-    mActionPasteStyle->setEnabled( false );
+    mActionPasteStyle->setEnabled( mLayerTreeView &&
+                                   mLayerTreeView->currentNode() &&
+                                   QgsLayerTree::isGroup( mLayerTreeView->currentNode() ) &&
+                                   clipboard()->hasFormat( QStringLiteral( QGSCLIPBOARD_STYLE_MIME ) ) );
     mActionCopyLayer->setEnabled( false );
     // pasting should be allowed if there is a layer in the clipboard
     mActionPasteLayer->setEnabled( clipboard()->hasFormat( QStringLiteral( QGSCLIPBOARD_MAPLAYER_MIME ) ) );
