@@ -2282,6 +2282,14 @@ void TestQgsGeometry::splitGeometry()
   QCOMPARE( newGeoms.count(), 1 );
   QCOMPARE( newGeoms[0].asWkt( 2 ), QStringLiteral( "LineString (6 2, 6 -2, 3 -2, 3 2, 0 2, 0 0)" ) );
 
+  // Test splitting Z enabled line on an existing vertex - https://github.com/qgis/QGIS/issues/49403
+  g2 = QgsGeometry::fromWkt( "LineStringZ (0 0 0, 1 1 1, 2 2 2 )" );
+  testPoints.clear();
+  newGeoms.clear();
+  QCOMPARE( g2.splitGeometry( QgsPointSequence() << QgsPoint( 1, 1 ), newGeoms, false, testPoints ), Qgis::GeometryOperationResult::Success );
+  QCOMPARE( newGeoms.count(), 1 );
+  QCOMPARE( newGeoms[0].asWkt( 2 ), QStringLiteral( "LineStringZ (1 1 1, 2 2 2)" ) );
+
   // Test split geometry with topological editing
   QVector<QgsPointXY> testPointsXY;
   testPoints.clear();
@@ -2331,6 +2339,15 @@ void TestQgsGeometry::splitGeometry()
   // Repeat previous tests with QVector<QgsPointXY> instead of QgsPointSequence
   // Those tests are for the deprecated QgsGeometry::splitGeometry() variant and should be removed in QGIS 4.0
   Q_NOWARN_DEPRECATED_PUSH
+  // Test splitting Z enabled line on an existing vertex - https://github.com/qgis/QGIS/issues/49403
+  g2 = QgsGeometry::fromWkt( "LineStringZ (0 0 0, 1 1 1, 2 2 2 )" );
+  testPoints.clear();
+  newGeoms.clear();
+  QCOMPARE( g2.splitGeometry( QgsPolylineXY() << QgsPointXY( 1, 1 ), newGeoms, false, testPointsXY ), Qgis::GeometryOperationResult::Success );
+  QCOMPARE( newGeoms.count(), 1 );
+  QCOMPARE( newGeoms[0].asWkt( 2 ), QStringLiteral( "LineStringZ (1 1 1, 2 2 2)" ) );
+
+  // Test split geometry with topological editing
   testPointsXY.clear();
   newGeoms.clear();
   g1 = QgsGeometry::fromWkt( QStringLiteral( "Polygon ((1.0 1.0, 1.0 100.0, 100.0 100.0, 100.0 1.0, 1.0 1.0))" ) );
@@ -2368,6 +2385,14 @@ void TestQgsGeometry::splitGeometry()
   QVERIFY( QgsGeometry::fromWkt( QStringLiteral( "Linestring (1.0 42.0, 100.0 42.0)" ) ).touches( QgsGeometry::fromPointXY( testPointsXY.at( 0 ) ) ) );
   QVERIFY( QgsGeometry::fromWkt( QStringLiteral( "Linestring (1.0 42.0, 100.0 42.0)" ) ).touches( QgsGeometry::fromPointXY( testPointsXY.at( 1 ) ) ) );
   Q_NOWARN_DEPRECATED_POP
+
+  // Should not crash - https://github.com/qgis/QGIS/issues/50948
+  g2 = QgsGeometry::fromWkt( "LineString ( -63294.10966012725839391 -79156.27234554117603693, -63290.25259721937618451 -79162.78533450335089583, -63290.25259721936890855 -79162.78533450335089583)" );
+  testPoints.clear();
+  newGeoms.clear();
+  QCOMPARE( g2.splitGeometry( QgsPointSequence() << QgsPoint( -63290.25259721936890855, -79165.28533450335089583 ) << QgsPoint( -63290.25259721936890855, -79160.28533450335089583 ), newGeoms, false, testPoints ), Qgis::GeometryOperationResult::Success );
+  QCOMPARE( newGeoms.count(), 1 );
+  QCOMPARE( newGeoms[0].asWkt( 17 ), QStringLiteral( "LineString (-63290.25259721937618451 -79162.78533450335089583, -63290.25259721936890855 -79162.78533450335089583)" ) );
 }
 
 void TestQgsGeometry::snappedToGrid()
