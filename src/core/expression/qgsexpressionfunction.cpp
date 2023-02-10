@@ -1342,6 +1342,28 @@ static QVariant fcnTrim( const QVariantList &values, const QgsExpressionContext 
   return QVariant( str.trimmed() );
 }
 
+static QVariant fcnLTrim( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QString str = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+
+  const QString characters = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
+
+  const QRegularExpression re( QStringLiteral( "^([%1]*)" ).arg( QRegularExpression::escape( characters ) ) );
+  str.replace( re, QString() );
+  return QVariant( str );
+}
+
+static QVariant fcnRTrim( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QString str = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+
+  const QString characters = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
+
+  const QRegularExpression re( QStringLiteral( "([%1]*)$" ).arg( QRegularExpression::escape( characters ) ) );
+  str.replace( re, QString() );
+  return QVariant( str );
+}
+
 static QVariant fcnLevenshtein( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QString string1 = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
@@ -8159,6 +8181,12 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "upper" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ), fcnUpper, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "title" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ), fcnTitle, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "trim" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ), fcnTrim, QStringLiteral( "String" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "ltrim" ), QgsExpressionFunction::ParameterList()
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "characters" ), true, QStringLiteral( " " ) ), fcnLTrim, QStringLiteral( "String" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "rtrim" ), QgsExpressionFunction::ParameterList()
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "characters" ), true, QStringLiteral( " " ) ), fcnRTrim, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "levenshtein" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string1" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "string2" ) ), fcnLevenshtein, QStringLiteral( "Fuzzy Matching" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "longest_common_substring" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string1" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "string2" ) ), fcnLCS, QStringLiteral( "Fuzzy Matching" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "hamming_distance" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string1" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "string2" ) ), fcnHamming, QStringLiteral( "Fuzzy Matching" ) )
