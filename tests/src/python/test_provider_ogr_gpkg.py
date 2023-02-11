@@ -22,7 +22,7 @@ from sqlite3 import OperationalError
 
 import qgis  # NOQA
 from osgeo import gdal, ogr
-from qgis.PyQt.QtCore import QCoreApplication, QVariant, QDate, QDateTime, QTemporaryDir, QFileInfo
+from qgis.PyQt.QtCore import QCoreApplication, QVariant, QDate, QDateTime, Qt, QTemporaryDir, QTime, QFileInfo
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (Qgis,
                        QgsFeature,
