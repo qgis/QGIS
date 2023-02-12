@@ -93,6 +93,10 @@
 
 #include <nlohmann/json.hpp>
 
+// Qt::DisplayRole is empty for fields that use an alternate widget, like json or url, so
+// we store the representedValue to UserRole + 2 and read from that when copying to clipboard
+constexpr int REPRESENTED_VALUE_ROLE = Qt::UserRole + 2;
+
 const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingHideNullValues = new QgsSettingsEntryBool( QStringLiteral( "hide-null-values" ), QgsSettings::sTreeMap, false, QStringLiteral( "Whether to hide attributes with NULL values in the identify feature result" ) );
 
 
@@ -242,7 +246,7 @@ QgsWebView *QgsIdentifyResultsWebView::createWindow( QWebPage::WebWindowType typ
 QSize QgsIdentifyResultsWebView::sizeHint() const
 {
   QSize s = page()->mainFrame()->contentsSize();
-  QgsDebugMsg( QStringLiteral( "content size: %1 x %2" ).arg( s.width() ).arg( s.height() ) );
+  QgsDebugMsgLevel( QStringLiteral( "content size: %1 x %2" ).arg( s.width() ).arg( s.height() ), 2 );
   int height = s.height();
 
   // parent is qt_scrollarea_viewport
@@ -253,7 +257,7 @@ QSize QgsIdentifyResultsWebView::sizeHint() const
     // It can probably happen that parent is available but it does not have yet
     // correct size, see #9377.
     const int max = widget->size().height() * 0.9;
-    QgsDebugMsg( QStringLiteral( "parent widget height = %1 max height = %2" ).arg( widget->size().height() ).arg( max ) );
+    QgsDebugMsgLevel( QStringLiteral( "parent widget height = %1 max height = %2" ).arg( widget->size().height() ).arg( max ), 2 );
     height = std::min( height, max );
   }
   else
@@ -266,7 +270,7 @@ QSize QgsIdentifyResultsWebView::sizeHint() const
   height = std::max( height, 100 );
 
   s = QSize( size().width(), height );
-  QgsDebugMsg( QStringLiteral( "size: %1 x %2" ).arg( s.width() ).arg( s.height() ) );
+  QgsDebugMsgLevel( QStringLiteral( "size: %1 x %2" ).arg( s.width() ).arg( s.height() ), 2 );
   return s;
 }
 
@@ -737,9 +741,7 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
     const QString representedValue = representValue( vlayer, setup, fields.at( i ).name(), attrs.at( i ) );
     attrItem->setSortData( 1, representedValue );
     attrItem->setToolTip( 1, representedValue );
-    // To make sure we can copy to clipboard even when an alternate widget is used (json/url),
-    // we store the representedValue to UserRole + 2 and read from that when copying to clipboard
-    attrItem->setData( 1, Qt::UserRole + 2, representedValue );
+    attrItem->setData( 1, REPRESENTED_VALUE_ROLE, representedValue );
 
     if ( setup.type() == QLatin1String( "JsonEdit" ) )
     {
@@ -927,7 +929,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     const QgsFeature &feature,
     const QMap<QString, QVariant> &params )
 {
-  QgsDebugMsg( QStringLiteral( "feature.isValid() = %1" ).arg( feature.isValid() ) );
+  QgsDebugMsgLevel( QStringLiteral( "feature.isValid() = %1" ).arg( feature.isValid() ), 2 );
   QTreeWidgetItem *layItem = layerItem( layer );
 
   const Qgis::RasterIdentifyFormat currentFormat = QgsRasterDataProvider::identifyFormatFromName( layer->customProperty( QStringLiteral( "identify/format" ) ).toString() );
@@ -989,7 +991,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
   // add feature attributes
   if ( feature.isValid() )
   {
-    QgsDebugMsg( QStringLiteral( "fields size = %1 attributes size = %2" ).arg( fields.size() ).arg( feature.attributes().size() ) );
+    QgsDebugMsgLevel( QStringLiteral( "fields size = %1 attributes size = %2" ).arg( fields.size() ).arg( feature.attributes().size() ), 2 );
     const QgsAttributes attrs = feature.attributes();
     for ( int i = 0; i < attrs.count(); ++i )
     {
@@ -1131,7 +1133,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
 
   for ( QMap<QString, QString>::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
   {
-    QgsDebugMsg( QStringLiteral( "adding item #%1 / %2 / %3 / %4" ).arg( j ).arg( layer->name(), it.key(), it.value() ) );
+    QgsDebugMsgLevel( QStringLiteral( "adding item #%1 / %2 / %3 / %4" ).arg( j ).arg( layer->name(), it.key(), it.value() ), 2 );
     QTableWidgetItem *item = new QTableWidgetItem( layer->name() );
     item->setData( Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( layer ) ) );
     item->setData( Qt::UserRole + 1, layer->id() );
@@ -1916,7 +1918,7 @@ QTreeWidgetItem *QgsIdentifyResultsDialog::retrieveAttributes( QTreeWidgetItem *
       continue;
     if ( item == lstResults->currentItem() )
       idx = item->data( 0, Qt::UserRole + 1 ).toInt();
-    attributes.insert( item->data( 0, Qt::UserRole + 1 ).toInt(), item->data( 1, Qt::UserRole + 2 ) );
+    attributes.insert( item->data( 0, Qt::UserRole + 1 ).toInt(), item->data( 1, REPRESENTED_VALUE_ROLE ) );
   }
 
   return featItem;
@@ -2050,13 +2052,13 @@ void QgsIdentifyResultsDialog::featureDeleted( QgsFeatureId fid )
 
   for ( int i = tblResults->rowCount() - 1; i >= 0; i-- )
   {
-    QgsDebugMsg( QStringLiteral( "item %1 / %2" ).arg( i ).arg( tblResults->rowCount() ) );
+    QgsDebugMsgLevel( QStringLiteral( "item %1 / %2" ).arg( i ).arg( tblResults->rowCount() ), 2 );
     QTableWidgetItem *layItem = tblResults->item( i, 0 );
     QTableWidgetItem *featItem = tblResults->item( i, 1 );
     if ( layItem && layItem->data( Qt::UserRole ).value<QObject *>() == sender() &&
          featItem && STRING_TO_FID( featItem->data( Qt::UserRole ) ) == fid )
     {
-      QgsDebugMsg( QStringLiteral( "removing row %1" ).arg( i ) );
+      QgsDebugMsgLevel( QStringLiteral( "removing row %1" ).arg( i ), 2 );
       tblResults->removeRow( i );
     }
   }
@@ -2295,7 +2297,7 @@ void QgsIdentifyResultsDialog::collapseAll()
 void QgsIdentifyResultsDialog::copyAttributeValue()
 {
   QClipboard *clipboard = QApplication::clipboard();
-  const QString text = lstResults->currentItem()->data( 1, Qt::UserRole + 2 ).toString();
+  const QString text = lstResults->currentItem()->data( 1, REPRESENTED_VALUE_ROLE ).toString();
   QgsDebugMsgLevel( QStringLiteral( "set clipboard: %1" ).arg( text ), 2 );
   clipboard->setText( text );
 }
@@ -2344,7 +2346,7 @@ void QgsIdentifyResultsDialog::copyFeatureAttributes()
     }
   }
 
-  QgsDebugMsg( QStringLiteral( "set clipboard: %1" ).arg( text ) );
+  QgsDebugMsgLevel( QStringLiteral( "set clipboard: %1" ).arg( text ), 2 );
   clipboard->setText( text );
 }
 
@@ -2495,7 +2497,7 @@ void QgsIdentifyResultsDialog::formatChanged( int index )
   }
 
   const Qgis::RasterIdentifyFormat format = combo->itemData( index, Qt::UserRole ).value< Qgis::RasterIdentifyFormat >();
-  QgsDebugMsg( QStringLiteral( "format = %1" ).arg( qgsEnumValueToKey( format ) ) );
+  QgsDebugMsgLevel( QStringLiteral( "format = %1" ).arg( qgsEnumValueToKey( format ) ), 2 );
   QgsRasterLayer *layer = qobject_cast<QgsRasterLayer *>( combo->itemData( index, Qt::UserRole + 1 ).value<QObject *>() );
   if ( !layer )
   {
@@ -2517,9 +2519,9 @@ void QgsIdentifyResultsDialog::formatChanged( int index )
   for ( int i = layItem->childCount() - 1; i > 0; i-- )
   {
     QTreeWidgetItem *child = layItem->child( i );
-    QgsDebugMsg( QStringLiteral( "remove %1:0x%2" ).arg( i ).arg( ( qint64 ) child, 0, 16 ) );
+    QgsDebugMsgLevel( QStringLiteral( "remove %1:0x%2" ).arg( i ).arg( ( qint64 ) child, 0, 16 ), 2 );
     layItem->removeChild( child );
-    QgsDebugMsg( QStringLiteral( "removed %1:0x%2" ).arg( i ).arg( ( qint64 ) child, 0, 16 ) );
+    QgsDebugMsgLevel( QStringLiteral( "removed %1:0x%2" ).arg( i ).arg( ( qint64 ) child, 0, 16 ), 2 );
   }
 
   // let know QgsMapToolIdentify that format changed
