@@ -12,34 +12,26 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import os
 
-from qgis.gui import (
-    QgsAttributeTableModel,
-    QgsEditorWidgetFactory,
-    QgsGui
-)
-from qgis.core import (
-    QgsProject,
-    Qgis,
-    QgsFeature,
-    QgsGeometry,
-    QgsPointXY,
-    QgsVectorLayer,
-    QgsVectorLayerCache,
-    QgsConditionalStyle,
-    QgsVectorLayerExporter,
-    QgsMemoryProviderUtils,
-    QgsField,
-    QgsFields,
-    QgsWkbTypes,
-    QgsFeatureRequest
-)
-from qgis.PyQt.QtCore import Qt, QTemporaryDir, QVariant, QSortFilterProxyModel
+from qgis.PyQt.QtCore import QSortFilterProxyModel, Qt, QTemporaryDir, QVariant
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtTest import QSignalSpy
-
-from qgis.testing import (start_app,
-                          unittest
-                          )
+from qgis.core import (
+    Qgis,
+    QgsConditionalStyle,
+    QgsFeature,
+    QgsFeatureRequest,
+    QgsField,
+    QgsFields,
+    QgsGeometry,
+    QgsMemoryProviderUtils,
+    QgsPointXY,
+    QgsProject,
+    QgsVectorLayer,
+    QgsVectorLayerCache,
+    QgsVectorLayerExporter,
+)
+from qgis.gui import QgsAttributeTableModel, QgsEditorWidgetFactory, QgsGui
+from qgis.testing import start_app, unittest
 
 start_app()
 

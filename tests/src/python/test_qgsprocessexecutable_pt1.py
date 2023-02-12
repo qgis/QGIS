@@ -9,18 +9,17 @@ __author__ = '(C) 2020 by Nyall Dawson'
 __date__ = '05/04/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import sys
-import os
 import glob
+import json
+import os
 import re
-import time
 import shutil
 import subprocess
+import sys
 import tempfile
-import json
-import errno
 
 from qgis.testing import unittest
+
 from utilities import unitTestDataPath
 
 print('CTEST_FULL_OUTPUT')
@@ -186,7 +185,7 @@ class TestQgsProcessExecutablePt1(unittest.TestCase):
 
     def testAlgorithmRunLegacy(self):
         output_file = self.TMP_DIR + '/polygon_centroid.shp'
-        rc, output, err = self.run_process(['run', '--no-python', 'native:centroids', '--INPUT={}'.format(TEST_DATA_DIR + '/polys.shp'), f'--OUTPUT={output_file}'])
+        rc, output, err = self.run_process(['run', '--no-python', 'native:centroids', f"--INPUT={TEST_DATA_DIR + '/polys.shp'}", f'--OUTPUT={output_file}'])
         self.assertFalse(self._strip_ignorable_errors(err))
         self.assertIn('0...10...20...30...40...50...60...70...80...90', output.lower())
         self.assertIn('results', output.lower())
@@ -196,7 +195,7 @@ class TestQgsProcessExecutablePt1(unittest.TestCase):
 
     def testAlgorithmRun(self):
         output_file = self.TMP_DIR + '/polygon_centroid.shp'
-        rc, output, err = self.run_process(['run', '--no-python', 'native:centroids', '--', 'INPUT={}'.format(TEST_DATA_DIR + '/polys.shp'), f'OUTPUT={output_file}'])
+        rc, output, err = self.run_process(['run', '--no-python', 'native:centroids', '--', f"INPUT={TEST_DATA_DIR + '/polys.shp'}", f'OUTPUT={output_file}'])
         self.assertFalse(self._strip_ignorable_errors(err))
         self.assertIn('0...10...20...30...40...50...60...70...80...90', output.lower())
         self.assertIn('results', output.lower())

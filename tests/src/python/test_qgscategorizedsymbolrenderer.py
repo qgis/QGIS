@@ -11,38 +11,37 @@ __author__ = 'Nyall Dawson'
 __date__ = '2/12/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
 
-from qgis.testing import unittest, start_app
-from qgis.core import (QgsCategorizedSymbolRenderer,
-                       QgsRendererCategory,
-                       QgsMarkerSymbol,
-                       QgsLineSymbol,
-                       QgsFillSymbol,
-                       QgsField,
-                       QgsFields,
-                       QgsFeature,
-                       QgsRenderContext,
-                       QgsSymbol,
-                       QgsStyle,
-                       QgsVectorLayer,
-                       QgsEditorWidgetSetup,
-                       QgsReadWriteContext,
-                       QgsProject,
-                       QgsSimpleMarkerSymbolLayer,
-                       QgsSymbolLayer,
-                       QgsProperty,
-                       QgsMapSettings,
-                       QgsRectangle,
-                       QgsRenderContext,
-                       QgsEmbeddedSymbolRenderer,
-                       QgsGeometry
-                       )
-from qgis.PyQt.QtCore import Qt, QVariant, QSize, QLocale, QTemporaryDir
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QLocale, QSize, Qt, QTemporaryDir, QVariant
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtXml import QDomDocument
+from qgis.core import (
+    QgsCategorizedSymbolRenderer,
+    QgsEditorWidgetSetup,
+    QgsEmbeddedSymbolRenderer,
+    QgsFeature,
+    QgsField,
+    QgsFields,
+    QgsFillSymbol,
+    QgsGeometry,
+    QgsLineSymbol,
+    QgsMapSettings,
+    QgsMarkerSymbol,
+    QgsProject,
+    QgsProperty,
+    QgsReadWriteContext,
+    QgsRectangle,
+    QgsRenderContext,
+    QgsRendererCategory,
+    QgsSimpleMarkerSymbolLayer,
+    QgsStyle,
+    QgsSymbol,
+    QgsSymbolLayer,
+    QgsVectorLayer,
+)
+from qgis.testing import start_app, unittest
 
 from utilities import unitTestDataPath
 

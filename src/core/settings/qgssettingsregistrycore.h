@@ -19,11 +19,16 @@
 
 #include "qgis_core.h"
 #include "qgssettingsregistry.h"
-#include "qgssettingsentryimpl.h"
-#include "qgssettingsentryenumflag.h"
 
 #include "qgis.h"
 
+class QgsSettingsEntryBool;
+class QgsSettingsEntryColor;
+class QgsSettingsEntryDouble;
+class QgsSettingsEntryInteger;
+class QgsSettingsEntryString;
+class QgsSettingsEntryStringList;
+template<class T> class QgsSettingsEntryEnumFlag;
 
 /**
  * \ingroup core
@@ -159,7 +164,11 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     //! Settings entry enable WMS tile prefetching.
     static const QgsSettingsEntryBool *settingsEnableWMSTilePrefetching;
 
+    static const QgsSettingsEntryStringList *settingsMapScales;
+
   private:
+    friend class QgsApplication;
+
     void migrateOldSettings();
     void backwardCompatibility();
 

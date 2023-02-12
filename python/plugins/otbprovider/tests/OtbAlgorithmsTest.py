@@ -22,9 +22,6 @@ __date__ = 'Janauary 2019'
 __copyright__ = '(C) 2019, CNES'
 
 import os
-import sys
-import unittest
-import hashlib
 import shutil
 import nose2
 import tempfile

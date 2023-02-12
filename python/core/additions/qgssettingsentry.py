@@ -18,7 +18,7 @@
 """
 
 from .metaenum import metaEnumFromValue
-from qgis.core import QgsSettings, QgsSettingsEntryBase, QgsLogger, Qgis
+from qgis.core import QgsSettings, QgsSettingsTree, QgsSettingsEntryBase, QgsLogger, Qgis
 import qgis  # required to get base class of enums
 
 
@@ -54,7 +54,7 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
             self.__enumFlagClass = defaultValue.__class__
 
         if type(pluginName) == str:
-            parent = QgsSettings.createPluginTreeNode(pluginName)
+            parent = QgsSettingsTree.createPluginTreeNode(pluginName)
         else:
             parent = pluginName
         super().__init__(key, parent, defaultValueStr, description, options)

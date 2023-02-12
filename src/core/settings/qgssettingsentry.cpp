@@ -14,6 +14,8 @@
  ***************************************************************************/
 
 #include "qgssettingsentry.h"
+#include "qgssettings.h"
+#include "qgssettingstreenode.h"
 #include "qgslogger.h"
 
 #include <QRegularExpression>
@@ -128,6 +130,11 @@ void QgsSettingsEntryBase::remove( const QString &dynamicKeyPart ) const
 void QgsSettingsEntryBase::remove( const QStringList &dynamicKeyPartList ) const
 {
   QgsSettings().remove( key( dynamicKeyPartList ) );
+}
+
+int QgsSettingsEntryBase::section() const
+{
+  return QgsSettings::NoSection;
 }
 
 bool QgsSettingsEntryBase::setVariantValue( const QVariant &value, const QString &dynamicKeyPart ) const

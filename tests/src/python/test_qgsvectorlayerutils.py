@@ -9,31 +9,28 @@ __author__ = 'Nyall Dawson'
 __date__ = '25/10/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
-import os
-import qgis  # NOQA
 import shutil
 import tempfile
 
-from qgis.PyQt.QtCore import QVariant, QDate
-from qgis.core import (QgsProject,
-                       QgsVectorLayer,
-                       QgsVectorLayerUtils,
-                       QgsFieldConstraints,
-                       QgsFeature,
-                       QgsFeatureIterator,
-                       QgsGeometry,
-                       QgsPointXY,
-                       QgsDefaultValue,
-                       QgsRelation,
-                       QgsFields,
-                       QgsField,
-                       QgsMemoryProviderUtils,
-                       QgsWkbTypes,
-                       QgsCoordinateReferenceSystem,
-                       QgsVectorLayerJoinInfo,
-                       NULL
-                       )
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QVariant
+from qgis.core import (
+    NULL,
+    QgsDefaultValue,
+    QgsFeature,
+    QgsField,
+    QgsFieldConstraints,
+    QgsFields,
+    QgsGeometry,
+    QgsPointXY,
+    QgsProject,
+    QgsRelation,
+    QgsVectorLayer,
+    QgsVectorLayerJoinInfo,
+    QgsVectorLayerUtils,
+)
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()
@@ -725,7 +722,7 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         context = vl.createExpressionContext()
         for i in range(2):
             features_data.append(
-                QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 44)'), {0: 'test_%s' % i, 1: 123}))
+                QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 44)'), {0: f'test_{i}', 1: 123}))
         features = QgsVectorLayerUtils.createFeatures(vl, features_data, context)
 
         self.assertEqual(features[0].attributes()[1], 124)

@@ -5628,9 +5628,42 @@ static QVariant fcnFormatNumber( const QVariantList &values, const QgsExpression
     return QVariant();
   }
 
+  const bool omitGroupSeparator = values.value( 3 ).toBool();
+  const bool trimTrailingZeros = values.value( 4 ).toBool();
+
   QLocale locale = !language.isEmpty() ? QLocale( language ) : QLocale();
-  locale.setNumberOptions( locale.numberOptions() &= ~QLocale::NumberOption::OmitGroupSeparator );
-  return locale.toString( value, 'f', places );
+  if ( !omitGroupSeparator )
+    locale.setNumberOptions( locale.numberOptions() & ~QLocale::NumberOption::OmitGroupSeparator );
+  else
+    locale.setNumberOptions( locale.numberOptions() | QLocale::NumberOption::OmitGroupSeparator );
+
+  QString res = locale.toString( value, 'f', places );
+
+  if ( trimTrailingZeros )
+  {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    const QChar decimal = locale.decimalPoint();
+    const QChar zeroDigit = locale.zeroDigit();
+#else
+    const QChar decimal = locale.decimalPoint().at( 0 );
+    const QChar zeroDigit = locale.zeroDigit().at( 0 );
+#endif
+
+    if ( res.contains( decimal ) )
+    {
+      int trimPoint = res.length() - 1;
+
+      while ( res.at( trimPoint ) == zeroDigit )
+        trimPoint--;
+
+      if ( res.at( trimPoint ) == decimal )
+        trimPoint--;
+
+      res.truncate( trimPoint + 1 );
+    }
+  }
+
+  return res;
 }
 
 static QVariant fcnFormatDate( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -8133,7 +8166,12 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "rpad" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "width" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "fill" ) ), fcnRPad, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "lpad" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "width" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "fill" ) ), fcnLPad, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "format" ), -1, fcnFormatString, QStringLiteral( "String" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "format_number" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "number" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "places" ), true, 0 ) << QgsExpressionFunction::Parameter( QStringLiteral( "language" ), true, QVariant() ), fcnFormatNumber, QStringLiteral( "String" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "format_number" ), QgsExpressionFunction::ParameterList()
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "number" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "places" ), true, 0 )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "language" ), true, QVariant() )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "omit_group_separators" ), true, false )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "trim_trailing_zeroes" ), true, false ), fcnFormatNumber, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "format_date" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "datetime" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "format" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "language" ), true, QVariant() ), fcnFormatDate, QStringList() << QStringLiteral( "String" ) << QStringLiteral( "Date and Time" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "color_grayscale_average" ),  QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "color" ) ), fcnColorGrayscaleAverage, QStringLiteral( "Color" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "color_mix_rgb" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "color1" ) )

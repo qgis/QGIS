@@ -15,11 +15,11 @@ import qgis  # NOQA
 
 from qgis.core import (
     Qgis,
-    QgsTextDocument,
+    QgsStringUtils,
     QgsTextBlock,
-    QgsTextFragment,
     QgsTextCharacterFormat,
-    QgsStringUtils
+    QgsTextDocument,
+    QgsTextFragment,
 )
 from qgis.testing import start_app, unittest
 

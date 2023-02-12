@@ -9,32 +9,34 @@ __author__ = 'Paul Blottiere'
 __date__ = '06/09/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
 
+import qgis  # NOQA
 from qgis.PyQt.QtCore import QTemporaryFile, QVariant
-from qgis.core import (QgsAuxiliaryStorage,
-                       QgsAuxiliaryLayer,
-                       QgsVectorLayer,
-                       QgsFeature,
-                       QgsGeometry,
-                       QgsPropertyDefinition,
-                       QgsProperty,
-                       QgsProject,
-                       QgsProjectArchive,
-                       QgsFeatureRequest,
-                       QgsPalLayerSettings,
-                       QgsSymbolLayer,
-                       QgsVectorLayerSimpleLabeling,
-                       QgsField,
-                       QgsCallout,
-                       QgsSimpleLineCallout,
-                       NULL,
-                       QgsDiagramLayerSettings,
-                       QgsSingleCategoryDiagramRenderer)
+from qgis.core import (
+    NULL,
+    QgsAuxiliaryLayer,
+    QgsAuxiliaryStorage,
+    QgsCallout,
+    QgsDiagramLayerSettings,
+    QgsFeature,
+    QgsFeatureRequest,
+    QgsField,
+    QgsGeometry,
+    QgsPalLayerSettings,
+    QgsProject,
+    QgsProjectArchive,
+    QgsProperty,
+    QgsPropertyDefinition,
+    QgsSimpleLineCallout,
+    QgsSingleCategoryDiagramRenderer,
+    QgsSymbolLayer,
+    QgsVectorLayer,
+    QgsVectorLayerSimpleLabeling,
+)
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath, writeShape
+
+from utilities import writeShape
 
 start_app()
 

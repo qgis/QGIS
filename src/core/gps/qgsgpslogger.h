@@ -23,8 +23,6 @@
 #include "qgsdistancearea.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgswkbtypes.h"
-#include "qgssettingsentryimpl.h"
-#include "qgssettingsentryenumflag.h"
 
 #include <QObject>
 #include <QPointer>
@@ -32,9 +30,12 @@
 #include "info.h"
 
 class QgsSettingsEntryBool;
-class QgsSettingsEntryString;
-class QgsSettingsEntryInteger;
 class QgsSettingsEntryDouble;
+class QgsSettingsEntryInteger;
+class QgsSettingsEntryString;
+template<class T> class QgsSettingsEntryEnumFlag;
+
+
 class QgsGpsConnection;
 class QgsGpsInformation;
 

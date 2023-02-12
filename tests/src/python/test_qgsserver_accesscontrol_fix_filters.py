@@ -11,11 +11,13 @@ __author__ = 'David Marteau'
 __date__ = '10/09/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
-from qgis.testing import unittest
-import urllib.request
-import urllib.parse
 import urllib.error
-from test_qgsserver_accesscontrol import TestQgsServerAccessControl, XML_NS
+import urllib.parse
+import urllib.request
+
+from qgis.testing import unittest
+
+from test_qgsserver_accesscontrol import TestQgsServerAccessControl
 
 
 class TestQgsServerAccessControlFixFilters(TestQgsServerAccessControl):
@@ -47,7 +49,7 @@ class TestQgsServerAccessControlFixFilters(TestQgsServerAccessControl):
         response, headers = self._get_fullaccess(wfs_query_string)
         self.assertTrue(
             str(response).find("<qgs:pk>1</qgs:pk>") != -1,
-            "No result in GetFeature\n%s" % response)
+            f"No result in GetFeature\n{response}")
 
         # Execute a restricted WMS request
         # That will store the filter expression in cache
@@ -62,7 +64,7 @@ class TestQgsServerAccessControlFixFilters(TestQgsServerAccessControl):
         response, headers = self._get_fullaccess(wfs_query_string)
         self.assertTrue(
             str(response).find("<qgs:pk>1</qgs:pk>") != -1,
-            "No result in GetFeature\n%s" % response)
+            f"No result in GetFeature\n{response}")
 
 
 if __name__ == "__main__":

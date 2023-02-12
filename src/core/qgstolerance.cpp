@@ -16,6 +16,8 @@
 #include "qgstolerance.h"
 #include "qgsmapsettings.h"
 #include "qgssettingsregistrycore.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsentryenumflag.h"
 #include "qgspointxy.h"
 
 #include <QPoint>

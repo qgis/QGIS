@@ -23,7 +23,7 @@
 #include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgssettings.h"
+
 
 class QgsSettingsTreeNode;
 
@@ -206,7 +206,7 @@ class CORE_EXPORT QgsSettingsEntryBase
      * Returns settings section. The settings section of the parent group is returned if available.
      * \deprecated since QGIS 3.26 the key is entirely self-defined
      */
-    Q_DECL_DEPRECATED QgsSettings::Section section() const {return QgsSettings::NoSection;}
+    Q_DECL_DEPRECATED int section() const;
 
     /**
      * Set settings value.

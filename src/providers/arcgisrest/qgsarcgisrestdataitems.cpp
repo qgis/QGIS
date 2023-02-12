@@ -19,6 +19,7 @@
 #include "qgsarcgisrestquery.h"
 #include "qgsarcgisportalutils.h"
 #include "qgsdataprovider.h"
+#include "qgssettingsentryimpl.h"
 
 #ifdef HAVE_GUI
 #include "qgsarcgisrestsourceselect.h"

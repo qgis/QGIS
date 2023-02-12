@@ -70,7 +70,7 @@ void QgsBookmarkEditorDialog::crsChanged( const QgsCoordinateReferenceSystem &cr
 
 void QgsBookmarkEditorDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#spatial-bookmarks" ) );
+  QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#sec-bookmarks" ) );
 }
 
 void QgsBookmarkEditorDialog::onAccepted()

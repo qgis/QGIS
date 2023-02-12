@@ -13,27 +13,25 @@ __author__ = 'Alessandro Pasotti'
 __date__ = '25/05/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-import os
 import json
+import os
 
 # Needed on Qt 5 so that the serialization of XML is consistent among all executions
 os.environ['QT_HASH_SEED'] = '1'
 
 import re
-import urllib.request
-import urllib.parse
 import urllib.error
-
-from qgis.testing import unittest
+import urllib.parse
+import urllib.request
 
 import osgeo.gdal  # NOQA
 
 from owslib.wms import WebMapService
-
-from test_qgsserver import QgsServerTestBase
 from qgis.core import QgsProject
-from qgis.server import QgsServer, QgsServerRequest, QgsBufferServerResponse
 from qgis.PyQt.QtCore import QUrl
+from qgis.server import QgsBufferServerResponse, QgsServer, QgsServerRequest
+from qgis.testing import unittest
+from test_qgsserver import QgsServerTestBase
 
 # Strip path and content length because path may vary
 RE_STRIP_UNCHECKABLE = b'MAP=[^"]+|SERVICE=[^"]+|Content-Length: \\d+'
@@ -94,7 +92,7 @@ class TestQgsServerWMSTestBase(QgsServerTestBase):
                 response = re.sub(RE_STRIP_EXTENTS, b'*****', response)
                 expected = re.sub(RE_STRIP_EXTENTS, b'*****', expected)
 
-            msg = "request {} failed.\nQuery: {}\nExpected file: {}\nResponse:\n{}".format(query_string, request, reference_path, response.decode('utf-8'))
+            msg = f"request {query_string} failed.\nQuery: {request}\nExpected file: {reference_path}\nResponse:\n{response.decode('utf-8')}"
 
             try:
                 self.assertXMLEqual(response, expected, msg=msg, raw=raw)
@@ -131,7 +129,7 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
         rh = response.headers()
         rk = sorted(rh.keys())
         for k in rk:
-            headers.append((f"{k}: {rh[k]}").encode('utf-8'))
+            headers.append((f"{k}: {rh[k]}").encode())
 
         reference_path = os.path.join(self.testdata_path, 'wms_getcapabilities_rewriting.txt')
         f = open(reference_path, 'rb')
@@ -148,7 +146,7 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
         self.wms_request_compare('GetContext')
 
     def test_operation_not_supported(self):
-        qs = '?MAP=%s&SERVICE=WMS&VERSION=1.3.0&REQUEST=NotAValidRequest' % urllib.parse.quote(self.projectPath)
+        qs = f'?MAP={urllib.parse.quote(self.projectPath)}&SERVICE=WMS&VERSION=1.3.0&REQUEST=NotAValidRequest'
         self._assert_status_code(501, qs)
 
     def test_describelayer(self):
@@ -185,8 +183,8 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
             "LAYERS": "db_point"
         }.items())])
         r, h = self._result(self._execute_request(qs))
-        assert "StyledLayerDescriptor" in str(r), "StyledLayerDescriptor not in %s" % r
-        assert "__sld_style" not in str(r), "__sld_style in %s" % r
+        assert "StyledLayerDescriptor" in str(r), f"StyledLayerDescriptor not in {r}"
+        assert "__sld_style" not in str(r), f"__sld_style in {r}"
 
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
@@ -212,8 +210,8 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
             "LAYERS": "db_point"
         }.items())])
         r, h = self._result(self._execute_request(qs))
-        assert "StyledLayerDescriptor" in str(r), "StyledLayerDescriptor not in %s" % r
-        assert "__sld_style" not in str(r), "__sld_style in %s" % r
+        assert "StyledLayerDescriptor" in str(r), f"StyledLayerDescriptor not in {r}"
+        assert "__sld_style" not in str(r), f"__sld_style in {r}"
 
     def test_wms_getschemaextension(self):
         self.wms_request_compare('GetSchemaExtension',
@@ -227,7 +225,7 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
         project = QgsProject()
         project.read(projectPath)
 
-        query_string = 'https://www.qgis.org/?SERVICE=WMS&VERSION=1.3.0&REQUEST=%s' % (request)
+        query_string = f'https://www.qgis.org/?SERVICE=WMS&VERSION=1.3.0&REQUEST={request}'
         if extra is not None:
             query_string += extra
         header, body = self._execute_request_project(query_string, project)
@@ -240,7 +238,7 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
         response = re.sub(RE_STRIP_UNCHECKABLE, b'*****', response)
         expected = re.sub(RE_STRIP_UNCHECKABLE, b'*****', expected)
 
-        self.assertXMLEqual(response, expected, msg="request {} failed.\nQuery: {}\nExpected file: {}\nResponse:\n{}".format(query_string, request, reference_path, response.decode('utf-8')))
+        self.assertXMLEqual(response, expected, msg=f"request {query_string} failed.\nQuery: {request}\nExpected file: {reference_path}\nResponse:\n{response.decode('utf-8')}")
 
     def test_wms_getcapabilities_project(self):
         """WMS GetCapabilities without map parameter"""
@@ -266,7 +264,7 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
         f.close()
         response = re.sub(RE_STRIP_UNCHECKABLE, b'', response)
         expected = re.sub(RE_STRIP_UNCHECKABLE, b'', expected)
-        self.assertXMLEqual(response, expected, msg="request {} failed.\nQuery: {}\nExpected file: {}\nResponse:\n{}".format(query_string, request, reference_path, response.decode('utf-8')))
+        self.assertXMLEqual(response, expected, msg=f"request {query_string} failed.\nQuery: {request}\nExpected file: {reference_path}\nResponse:\n{response.decode('utf-8')}")
 
     def test_project_wms_inspire(self):
         """Test some WMS request"""

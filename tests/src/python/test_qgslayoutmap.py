@@ -9,49 +9,54 @@ __author__ = '(C) 2017 Nyall Dawson'
 __date__ = '20/10/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
 
-from qgis.PyQt.QtCore import QFileInfo, QRectF, QDir, QCoreApplication, QEvent, QSizeF
-from qgis.PyQt.QtXml import QDomDocument
-from qgis.PyQt.QtGui import QPainter, QColor
+import qgis  # NOQA
+from qgis.PyQt.QtCore import (
+    QDir,
+    QFileInfo,
+    QRectF,
+    QSizeF,
+)
+from qgis.PyQt.QtGui import QColor, QPainter
 from qgis.PyQt.QtTest import QSignalSpy
-
-from qgis.core import (QgsLayoutItemMap,
-                       QgsRectangle,
-                       QgsRasterLayer,
-                       QgsVectorLayer,
-                       QgsLayout,
-                       QgsMapSettings,
-                       QgsProject,
-                       QgsMultiBandColorRenderer,
-                       QgsCoordinateReferenceSystem,
-                       QgsTextFormat,
-                       QgsFontUtils,
-                       QgsPalLayerSettings,
-                       QgsNullSymbolRenderer,
-                       QgsPoint,
-                       QgsFeature,
-                       QgsVectorLayerSimpleLabeling,
-                       QgsLabelingEngineSettings,
-                       QgsLayoutMeasurement,
-                       QgsUnitTypes,
-                       QgsLayoutObject,
-                       QgsProperty,
-                       QgsReadWriteContext,
-                       QgsFillSymbol,
-                       QgsSingleSymbolRenderer,
-                       QgsGeometry,
-                       QgsLayoutItemShape,
-                       QgsMapClippingRegion,
-                       QgsLayoutItemMapOverview,
-                       QgsAnnotationPolygonItem)
-
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.core import (
+    QgsAnnotationPolygonItem,
+    QgsCoordinateReferenceSystem,
+    QgsFeature,
+    QgsFillSymbol,
+    QgsFontUtils,
+    QgsGeometry,
+    QgsLabelingEngineSettings,
+    QgsLayout,
+    QgsLayoutItemMap,
+    QgsLayoutItemMapOverview,
+    QgsLayoutItemShape,
+    QgsLayoutMeasurement,
+    QgsLayoutObject,
+    QgsMapClippingRegion,
+    QgsMapSettings,
+    QgsMultiBandColorRenderer,
+    QgsNullSymbolRenderer,
+    QgsPalLayerSettings,
+    QgsPoint,
+    QgsProject,
+    QgsProperty,
+    QgsRasterLayer,
+    QgsReadWriteContext,
+    QgsRectangle,
+    QgsSingleSymbolRenderer,
+    QgsTextFormat,
+    QgsUnitTypes,
+    QgsVectorLayer,
+    QgsVectorLayerSimpleLabeling,
+)
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
+
 from qgslayoutchecker import QgsLayoutChecker
 from test_qgslayoutitem import LayoutItemTestCase
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -66,7 +71,7 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
 
     @classmethod
     def tearDownClass(cls):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(cls.report)
 

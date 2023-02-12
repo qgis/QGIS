@@ -9,14 +9,9 @@ __author__ = 'Nyall Dawson'
 __date__ = '25/07/2014'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-import qgis
-from qgis.testing import unittest
-from qgis.core import (
-    QgsCoordinateFormatter,
-    QgsPointXY,
-    Qgis
-)
 from qgis.PyQt.QtCore import QLocale
+from qgis.core import Qgis, QgsCoordinateFormatter, QgsPointXY
+from qgis.testing import unittest
 
 
 class TestQgsCoordinateFormatter(unittest.TestCase):

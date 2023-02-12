@@ -30,26 +30,35 @@ import os
 # Deterministic XML
 os.environ['QT_HASH_SEED'] = '1'
 
-import re
-import urllib.request
-import urllib.parse
-import urllib.error
-import email
+import base64
 import difflib
+import email
+import re
+import tempfile
+import urllib.error
+import urllib.parse
+import urllib.request
 
 from io import StringIO
-from qgis.server import QgsServer, QgsServerRequest, QgsBufferServerRequest, QgsBufferServerResponse, QgsServerParameterDefinition
-from qgis.core import QgsRenderChecker, QgsApplication, QgsFontUtils, QgsMultiRenderChecker
-from qgis.testing import unittest, start_app
-from qgis.PyQt.QtCore import QSize, QUrlQuery
-from qgis.PyQt.QtGui import QColor
-from utilities import unitTestDataPath
-
-import osgeo.gdal  # NOQA
-import tempfile
-import base64
 from shutil import copytree
 
+import osgeo.gdal  # NOQA
+
+from qgis.core import (
+    QgsFontUtils,
+    QgsMultiRenderChecker,
+)
+from qgis.PyQt.QtCore import QSize
+from qgis.PyQt.QtGui import QColor
+from qgis.server import (
+    QgsBufferServerRequest,
+    QgsBufferServerResponse,
+    QgsServer,
+    QgsServerParameterDefinition,
+    QgsServerRequest,
+)
+from qgis.testing import start_app, unittest
+from utilities import unitTestDataPath
 
 start_app()
 
@@ -270,7 +279,7 @@ class QgsServerTestBase(unittest.TestCase):
 
         self.assertEqual(
             headers.get("Content-Type"), contentType,
-            "Content type is wrong: {} instead of {}\n{}".format(headers.get("Content-Type"), contentType, response))
+            f"Content type is wrong: {headers.get('Content-Type')} instead of {contentType}\n{response}")
 
         test, report = self._img_diff(response, image, max_diff, max_size_diff, outputFormat)
 
@@ -304,7 +313,7 @@ class QgsServerTestBase(unittest.TestCase):
         rh = response.headers()
         rk = sorted(rh.keys())
         for k in rk:
-            headers.append((f"{k}: {rh[k]}").encode('utf-8'))
+            headers.append((f"{k}: {rh[k]}").encode())
         return b"\n".join(headers) + b"\n\n", bytes(response.body())
 
     def _execute_request_project(self, qs, project, requestMethod=QgsServerRequest.GetMethod, data=None):
@@ -315,7 +324,7 @@ class QgsServerTestBase(unittest.TestCase):
         rh = response.headers()
         rk = sorted(rh.keys())
         for k in rk:
-            headers.append((f"{k}: {rh[k]}").encode('utf-8'))
+            headers.append((f"{k}: {rh[k]}").encode())
         return b"\n".join(headers) + b"\n\n", bytes(response.body())
 
     def _assert_status_code(self, status_code, qs, requestMethod=QgsServerRequest.GetMethod, data=None, project=None):
@@ -405,10 +414,10 @@ class TestQgsServer(QgsServerTestBase):
     def test_multiple_servers(self):
         """Segfaults?"""
         for i in range(10):
-            locals()["s%s" % i] = QgsServer()
-            locals()["rq%s" % i] = QgsBufferServerRequest("")
-            locals()["re%s" % i] = QgsBufferServerResponse()
-            locals()["s%s" % i].handleRequest(locals()["rq%s" % i], locals()["re%s" % i])
+            locals()[f"s{i}"] = QgsServer()
+            locals()[f"rq{i}"] = QgsBufferServerRequest("")
+            locals()[f"re{i}"] = QgsBufferServerResponse()
+            locals()[f"s{i}"].handleRequest(locals()[f"rq{i}"], locals()[f"re{i}"])
 
     def test_requestHandler(self):
         """Test request handler"""
@@ -443,7 +452,7 @@ class TestQgsServer(QgsServerTestBase):
 
         # Test response when project is specified but without service
         project = self.testdata_path + "test_project_wfs.qgs"
-        qs = '?MAP=%s' % (urllib.parse.quote(project))
+        qs = f'?MAP={urllib.parse.quote(project)}'
         header, body = self._execute_request(qs)
         response = self.strip_version_xmlns(header + body)
         expected = self.strip_version_xmlns(b'Content-Length: 365\nContent-Type: text/xml; charset=utf-8\n\n<?xml version="1.0" encoding="UTF-8"?>\n<ServiceExceptionReport  >\n <ServiceException code="Service configuration error">Service unknown or unsupported. Current supported services (case-sensitive): WMS WFS WCS WMTS SampleService, or use a WFS3 (OGC API Features) endpoint</ServiceException>\n</ServiceExceptionReport>\n')
@@ -472,7 +481,7 @@ class TestQgsServer(QgsServerTestBase):
         response = re.sub(RE_STRIP_UNCHECKABLE, b'', response)
         expected = re.sub(RE_STRIP_UNCHECKABLE, b'', expected)
 
-        self.assertXMLEqual(response, expected, msg="request {} failed.\n Query: {}\n Expected:\n{}\n\n Response:\n{}".format(query_string, request, expected.decode('utf-8'), response.decode('utf-8')))
+        self.assertXMLEqual(response, expected, msg=f"request {query_string} failed.\n Query: {request}\n Expected:\n{expected.decode('utf-8')}\n\n Response:\n{response.decode('utf-8')}")
 
     def test_project_wcs(self):
         """Test some WCS request"""

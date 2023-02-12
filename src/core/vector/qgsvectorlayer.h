@@ -661,6 +661,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     QString displayExpression() const;
 
+    bool hasMapTips() const FINAL;
+
     QgsVectorDataProvider *dataProvider() FINAL;
     const QgsVectorDataProvider *dataProvider() const FINAL SIP_SKIP;
     QgsMapLayerTemporalProperties *temporalProperties() override;

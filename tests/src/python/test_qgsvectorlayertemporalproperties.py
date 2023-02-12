@@ -10,21 +10,19 @@ __date__ = '73/05/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.core import (QgsDateTimeRange,
-                       QgsVectorLayerTemporalProperties,
-                       QgsReadWriteContext,
-                       QgsVectorLayer,
-                       QgsVectorDataProviderTemporalCapabilities,
-                       QgsUnitTypes,
-                       QgsVectorLayerTemporalContext,
-                       Qgis)
-from qgis.PyQt.QtCore import (QDateTime,
-                              QDate,
-                              QTime,
-                              QVariant)
-from qgis.testing import start_app, unittest
+from qgis.PyQt.QtCore import QDate, QDateTime, QTime, QVariant
 from qgis.PyQt.QtXml import QDomDocument
+from qgis.core import (
+    Qgis,
+    QgsDateTimeRange,
+    QgsReadWriteContext,
+    QgsUnitTypes,
+    QgsVectorDataProviderTemporalCapabilities,
+    QgsVectorLayer,
+    QgsVectorLayerTemporalContext,
+    QgsVectorLayerTemporalProperties,
+)
+from qgis.testing import start_app, unittest
 
 app = start_app()
 

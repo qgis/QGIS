@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Convenience interface to a locally spawned QGIS Server, e.g. for unit tests
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -11,31 +10,28 @@ __author__ = 'Larry Shaffer'
 __date__ = '2014/02/11'
 __copyright__ = 'Copyright 2014, The QGIS Project'
 
-import sys
 import os
-import shutil
 import platform
+import shutil
 import subprocess
-import time
-import urllib.request
-import urllib.parse
-import urllib.error
-import urllib.request
-import urllib.error
-import urllib.parse
+import sys
 import tempfile
+import time
+import urllib.error
+import urllib.parse
+import urllib.request
 
 from utilities import (
-    unitTestDataPath,
     getExecutablePath,
+    getTempfilePath,
     openInBrowserTab,
-    getTempfilePath
+    unitTestDataPath,
 )
 
 # allow import error to be raised if qgis is not on sys.path
 try:
     # noinspection PyUnresolvedReferences
-    from qgis.core import QgsRectangle, QgsCoordinateReferenceSystem
+    from qgis.core import QgsCoordinateReferenceSystem, QgsRectangle
 except ImportError as e:
     raise ImportError(str(e) + '\n\nPlace path to pyqgis modules on sys.path,'
                                ' or assign to PYTHONPATH')
@@ -51,8 +47,8 @@ class ServerProcessError(Exception):
         msg += '\n' + ('\n' + str(err).strip() + '\n' if err else '')
         self.msg = """
 #----------------------------------------------------------------#
-{0}
-{1}
+{}
+{}
 #----------------------------------------------------------------#
     """.format(title, msg)
 
@@ -60,7 +56,7 @@ class ServerProcessError(Exception):
         return self.msg
 
 
-class ServerProcess(object):
+class ServerProcess:
 
     def __init__(self):
         self._startenv = None
@@ -170,7 +166,7 @@ class WebServerProcess(ServerProcess):
         sufx = 'unix' if self._unix else 'win'
         if kind == 'lighttpd':
             conf = os.path.join(conf_dir, 'lighttpd', 'config',
-                                'lighttpd_{0}.conf'.format(sufx))
+                                f'lighttpd_{sufx}.conf')
             self.set_startenv({'QGIS_SERVER_TEMP_DIR': temp_dir})
             init_scr_dir = os.path.join(conf_dir, 'lighttpd', 'scripts')
             if self._mac:
@@ -239,10 +235,10 @@ class FcgiServerProcess(ServerProcess):
 
 
 # noinspection PyPep8Naming,PyShadowingNames
-class QgisLocalServer(object):
+class QgisLocalServer:
 
     def __init__(self, fcgi_bin):
-        msg = 'FCGI binary not found at:\n{0}'.format(fcgi_bin)
+        msg = f'FCGI binary not found at:\n{fcgi_bin}'
         assert os.path.exists(fcgi_bin), msg
 
         msg = "FCGI binary not 'qgis_mapserv.fcgi':"
@@ -251,9 +247,9 @@ class QgisLocalServer(object):
         # hardcoded url, makes all this automated
         self._ip = '127.0.0.1'
         self._port = '8448'
-        self._web_url = 'http://{0}:{1}'.format(self._ip, self._port)
+        self._web_url = f'http://{self._ip}:{self._port}'
         self._fcgibin_path = '/cgi-bin/qgis_mapserv.fcgi'
-        self._fcgi_url = '{0}{1}'.format(self._web_url, self._fcgibin_path)
+        self._fcgi_url = f'{self._web_url}{self._fcgibin_path}'
         self._conf_dir = unitTestDataPath('qgis_local_server')
 
         self._fcgiserv_process = self._webserv_process = None
@@ -280,8 +276,8 @@ class QgisLocalServer(object):
                 self._webserv_kind = web
                 break
             else:
-                chkd += "Find '{0}': {1}\n".format(fcgi, fcgi_path)
-                chkd += "Find '{0}': {1}\n\n".format(web, web_path)
+                chkd += f"Find '{fcgi}': {fcgi_path}\n"
+                chkd += f"Find '{web}': {web_path}\n\n"
 
         if not (self._fcgiserv_path and self._webserv_path):
             raise ServerProcessError(
@@ -426,7 +422,7 @@ class QgisLocalServer(object):
         xml = res.read().decode('utf-8')
         if browser:
             tmp_name = getTempfilePath('html')
-            with open(tmp_name, 'wt') as temp_html:
+            with open(tmp_name, 'w') as temp_html:
                 temp_html.write(xml)
             url = tmp_name
             openInBrowserTab(url)
@@ -450,7 +446,7 @@ class QgisLocalServer(object):
             raise KeyError(str(err) + '\nMAP not found in parameters dict')
 
         if not os.path.exists(proj):
-            msg = '{0}'.format(proj)
+            msg = f'{proj}'
             w_proj = os.path.join(self._web_dir, proj)
             if os.path.exists(w_proj):
                 params['MAP'] = w_proj
@@ -458,7 +454,7 @@ class QgisLocalServer(object):
                 msg += '\n  or\n' + w_proj
                 raise ServerProcessError(
                     'GetMap Request Error',
-                    'Project not found at:\n{0}'.format(msg)
+                    f'Project not found at:\n{msg}'
                 )
 
         if (('REQUEST' in params and params['REQUEST'] != 'GetMap') or
@@ -503,7 +499,7 @@ class QgisLocalServer(object):
                 )
             else:
                 delta = time.time() - start_time
-                print(('Seconds elapsed for server GetMap: ' + str(delta)))
+                print('Seconds elapsed for server GetMap: ' + str(delta))
                 break
 
         if resp is not None:
@@ -538,7 +534,7 @@ class QgisLocalServer(object):
 
     @staticmethod
     def _params_to_upper(params):
-        return dict((k.upper(), v) for k, v in list(params.items()))
+        return {k.upper(): v for k, v in list(params.items())}
 
     @staticmethod
     def _convert_instances(params):

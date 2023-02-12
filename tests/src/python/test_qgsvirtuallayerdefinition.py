@@ -9,17 +9,17 @@ __author__ = 'Hugo Mercier'
 __date__ = '10/12/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-import qgis  # NOQA
-
-from qgis.core import (QgsField,
-                       QgsWkbTypes,
-                       QgsFields,
-                       QgsVirtualLayerDefinition
-                       )
-
-from qgis.testing import unittest
-from qgis.PyQt.QtCore import QVariant, QUrl
 import os
+
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QUrl, QVariant
+from qgis.core import (
+    QgsField,
+    QgsFields,
+    QgsVirtualLayerDefinition,
+    QgsWkbTypes,
+)
+from qgis.testing import unittest
 
 
 def strToUrl(s):

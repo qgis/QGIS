@@ -18,31 +18,27 @@ import os
 # Needed on Qt 5 so that the serialization of XML is consistent among all executions
 os.environ['QT_HASH_SEED'] = '1'
 
-import re
 import json
-import urllib.request
-import urllib.parse
 import urllib.error
-
-from qgis.testing import unittest
-from qgis.PyQt.QtCore import QSize
+import urllib.parse
+import urllib.request
 
 import osgeo.gdal  # NOQA
 
-from test_qgsserver_wms import TestQgsServerWMSTestBase
 from qgis.core import (
-    QgsProject,
     QgsMarkerSymbol,
+    QgsProject,
     QgsRuleBasedRenderer,
     QgsVectorLayer,
 )
-
+from qgis.PyQt.QtCore import QSize
 from qgis.server import (
     QgsBufferServerRequest,
     QgsBufferServerResponse,
     QgsServer,
-    QgsServerRequest,
 )
+from qgis.testing import unittest
+from test_qgsserver_wms import TestQgsServerWMSTestBase
 
 # Strip path and content length because path may vary
 RE_STRIP_UNCHECKABLE = br'MAP=[^"]+|Content-Length: \d+'

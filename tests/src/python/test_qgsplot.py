@@ -10,35 +10,23 @@ __date__ = '28/3/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.PyQt.QtCore import (
-    QDir,
-    Qt,
-    QSizeF
-)
-from qgis.PyQt.QtGui import (
-    QImage,
-    QPainter,
-    QColor
-)
-
+from qgis.PyQt.QtCore import QDir, QSizeF, Qt
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     Qgs2DPlot,
-    QgsRenderContext,
-    QgsRenderChecker,
-    QgsFontUtils,
-    QgsTextFormat,
     QgsBasicNumericFormat,
     QgsFillSymbol,
+    QgsFontUtils,
     QgsLineSymbol,
-    QgsReadWriteContext,
+    QgsPalLayerSettings,
     QgsProperty,
+    QgsReadWriteContext,
+    QgsRenderChecker,
+    QgsRenderContext,
     QgsSymbolLayer,
-    QgsPalLayerSettings
+    QgsTextFormat,
 )
-
-from qgis.PyQt.QtXml import QDomDocument, QDomElement
-
 from qgis.testing import start_app, unittest
 
 app = start_app()
@@ -50,7 +38,7 @@ class TestQgsPlot(unittest.TestCase):
         self.report = "<h1>Python QgsPlot Tests</h1>\n"
 
     def tearDown(self):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 

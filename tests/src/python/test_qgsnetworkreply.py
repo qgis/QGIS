@@ -12,15 +12,8 @@ __copyright__ = 'Copyright 2022, The QGIS Project'
 
 import qgis  # NOQA
 
-import os
-from qgis.testing import unittest, start_app
 from qgis.core import QgsNetworkReplyContent
-from utilities import unitTestDataPath
-from qgis.PyQt.QtCore import QUrl
-from qgis.PyQt.QtNetwork import QNetworkReply, QNetworkRequest
-import socketserver
-import threading
-import http.server
+from qgis.testing import start_app, unittest
 
 app = start_app()
 

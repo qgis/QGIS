@@ -9,19 +9,20 @@ __author__ = 'Jürgen E. Fischer'
 __date__ = '19/01/2014'
 __copyright__ = 'Copyright 2014, The QGIS Project'
 
-import qgis  # NOQA
 import math
-
-from qgis.core import (QgsGeometry,
-                       QgsPointXY,
-                       QgsDistanceArea,
-                       QgsCoordinateReferenceSystem,
-                       QgsUnitTypes,
-                       QgsProject)
-
-from qgis.testing import start_app, unittest
-from qgis.PyQt.QtCore import QLocale
 from pprint import pprint
+
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QLocale
+from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsDistanceArea,
+    QgsGeometry,
+    QgsPointXY,
+    QgsProject,
+    QgsUnitTypes,
+)
+from qgis.testing import start_app, unittest
 
 # Convenience instances in case you may need them
 # not used in this test
@@ -58,8 +59,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         )
         da = QgsDistanceArea()
         length = da.measureLength(linestring)
-        myMessage = ('Expected:\n%f\nGot:\n%f\n' %
-                     (4, length))
+        myMessage = f'Expected:\n{4:f}\nGot:\n{length:f}\n'
         assert length == 4, myMessage
 
     def testBearing(self):
@@ -559,8 +559,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         )
         da = QgsDistanceArea()
         length = da.measureLength(linestring)
-        myMessage = ('Expected:\n%f\nGot:\n%f\n' %
-                     (9, length))
+        myMessage = f'Expected:\n{9:f}\nGot:\n{length:f}\n'
         assert length == 9, myMessage
 
     def testMeasurePolygon(self):

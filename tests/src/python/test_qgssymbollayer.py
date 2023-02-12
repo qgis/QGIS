@@ -22,62 +22,68 @@ __author__ = 'Massimo Endrighi'
 __date__ = 'October 2012'
 __copyright__ = '(C) 2012, Massimo Endrighi'
 
-import qgis  # NOQA
-
-from osgeo import ogr
 import os
 
-from qgis.PyQt.Qt import PYQT_VERSION_STR
-from qgis.PyQt.QtCore import Qt, QObject, QDir, QFile, QIODevice, QPointF, QSize, QTemporaryDir
-from qgis.PyQt.QtXml import QDomDocument
+import qgis  # NOQA
+from osgeo import ogr
+from qgis.PyQt.QtCore import (
+    QDir,
+    QFile,
+    QIODevice,
+    QObject,
+    QPointF,
+    QSize,
+    Qt,
+    QTemporaryDir,
+)
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
-
-from qgis.core import (QgsCentroidFillSymbolLayer,
-                       QgsEllipseSymbolLayer,
-                       QgsFillSymbolLayer,
-                       QgsFontMarkerSymbolLayer,
-                       QgsFilledMarkerSymbolLayer,
-                       QgsGradientFillSymbolLayer,
-                       QgsImageFillSymbolLayer,
-                       QgsLinePatternFillSymbolLayer,
-                       QgsLineSymbolLayer,
-                       QgsMarkerLineSymbolLayer,
-                       QgsMarkerSymbolLayer,
-                       QgsReadWriteContext,
-                       QgsPointPatternFillSymbolLayer,
-                       QgsSimpleFillSymbolLayer,
-                       QgsSimpleLineSymbolLayer,
-                       QgsSimpleMarkerSymbolLayer,
-                       QgsSimpleMarkerSymbolLayerBase,
-                       QgsSVGFillSymbolLayer,
-                       QgsSvgMarkerSymbolLayer,
-                       QgsSymbolLayer,
-                       QgsVectorFieldSymbolLayer,
-                       QgsRasterFillSymbolLayer,
-                       QgsShapeburstFillSymbolLayer,
-                       QgsArrowSymbolLayer,
-                       QgsUnitTypes,
-                       QgsFillSymbol,
-                       QgsLineSymbol,
-                       QgsMarkerSymbol,
-                       QgsSymbolLayerUtils,
-                       QgsMapSettings,
-                       QgsGeometry,
-                       QgsFeature,
-                       QgsRenderContext,
-                       QgsRenderChecker,
-                       QgsRectangle,
-                       QgsVectorLayer,
-                       QgsProject,
-                       QgsMultiRenderChecker,
-                       QgsSingleSymbolRenderer,
-                       QgsProperty,
-                       QgsExpressionContext,
-                       QgsExpressionContextUtils,
-                       QgsCategorizedSymbolRenderer,
-                       QgsRendererCategory,
-                       )
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.core import (
+    QgsArrowSymbolLayer,
+    QgsCategorizedSymbolRenderer,
+    QgsCentroidFillSymbolLayer,
+    QgsEllipseSymbolLayer,
+    QgsFeature,
+    QgsFilledMarkerSymbolLayer,
+    QgsFillSymbol,
+    QgsFillSymbolLayer,
+    QgsFontMarkerSymbolLayer,
+    QgsGeometry,
+    QgsGradientFillSymbolLayer,
+    QgsImageFillSymbolLayer,
+    QgsLinePatternFillSymbolLayer,
+    QgsLineSymbol,
+    QgsLineSymbolLayer,
+    QgsMapSettings,
+    QgsMarkerLineSymbolLayer,
+    QgsMarkerSymbol,
+    QgsMarkerSymbolLayer,
+    QgsMultiRenderChecker,
+    QgsPointPatternFillSymbolLayer,
+    QgsProject,
+    QgsProperty,
+    QgsRasterFillSymbolLayer,
+    QgsReadWriteContext,
+    QgsRectangle,
+    QgsRenderChecker,
+    QgsRenderContext,
+    QgsRendererCategory,
+    QgsShapeburstFillSymbolLayer,
+    QgsSimpleFillSymbolLayer,
+    QgsSimpleLineSymbolLayer,
+    QgsSimpleMarkerSymbolLayer,
+    QgsSimpleMarkerSymbolLayerBase,
+    QgsSingleSymbolRenderer,
+    QgsSVGFillSymbolLayer,
+    QgsSvgMarkerSymbolLayer,
+    QgsSymbolLayer,
+    QgsSymbolLayerUtils,
+    QgsUnitTypes,
+    QgsVectorFieldSymbolLayer,
+    QgsVectorLayer,
+)
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
@@ -107,7 +113,7 @@ class TestQgsSymbolLayer(unittest.TestCase):
         self.report = "<h1>Python QgsSymbolLayer Tests</h1>\n"
 
     def tearDown(self):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 

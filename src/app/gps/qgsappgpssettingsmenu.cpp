@@ -21,10 +21,11 @@
 #include "qgsfileutils.h"
 #include "qgsapplication.h"
 #include "qgsgpsmarker.h"
-#include "qgsappgpsdigitizing.h"
 #include "qgsproject.h"
 #include "qgsprojectgpssettings.h"
 #include "qgsappgpslogging.h"
+#include "qgssettingsentryenumflag.h"
+
 
 #include <QRadioButton>
 #include <QButtonGroup>

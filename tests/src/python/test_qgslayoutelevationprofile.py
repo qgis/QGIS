@@ -12,49 +12,29 @@ __copyright__ = 'Copyright 2023, The QGIS Project'
 import os
 import tempfile
 
-from time import sleep
-
-from qgis.PyQt.QtCore import QRectF, QDir
+from qgis.PyQt.QtCore import QDir, QRectF
 from qgis.PyQt.QtGui import QColor
-from qgis.core import (QgsPrintLayout,
-                       QgsLayoutItemElevationProfile,
-                       QgsLayoutItemMap,
-                       QgsLayout,
-                       QgsMapSettings,
-                       QgsVectorLayer,
-                       QgsMarkerSymbol,
-                       QgsSingleSymbolRenderer,
-                       QgsRectangle,
-                       QgsProject,
-                       QgsLayoutObject,
-                       QgsProperty,
-                       QgsLayoutMeasurement,
-                       QgsLayoutItem,
-                       QgsLayoutPoint,
-                       QgsLayoutSize,
-                       QgsExpression,
-                       QgsMapLayerLegendUtils,
-                       QgsLegendStyle,
-                       QgsFontUtils,
-                       QgsLineSymbol,
-                       QgsMapThemeCollection,
-                       QgsCategorizedSymbolRenderer,
-                       QgsRendererCategory,
-                       QgsRasterLayer,
-                       QgsApplication,
-                       QgsGeometry,
-                       QgsCoordinateReferenceSystem,
-                       QgsExpressionContextUtils,
-                       QgsFlatTerrainProvider,
-                       QgsLayoutChecker,
-                       QgsFeature,
-                       Qgis,
-                       QgsFillSymbol,
-                       QgsLineString,
-                       QgsTextFormat)
-from qgis.testing import (start_app,
-                          unittest
-                          )
+from qgis.core import (
+    Qgis,
+    QgsCoordinateReferenceSystem,
+    QgsExpressionContextUtils,
+    QgsFeature,
+    QgsFillSymbol,
+    QgsFlatTerrainProvider,
+    QgsFontUtils,
+    QgsGeometry,
+    QgsLayout,
+    QgsLayoutItemElevationProfile,
+    QgsLineString,
+    QgsLineSymbol,
+    QgsPrintLayout,
+    QgsProject,
+    QgsRasterLayer,
+    QgsTextFormat,
+    QgsVectorLayer,
+)
+from qgis.testing import start_app, unittest
+
 from qgslayoutchecker import QgsLayoutChecker
 from test_qgslayoutitem import LayoutItemTestCase
 from utilities import unitTestDataPath
@@ -72,7 +52,7 @@ class TestQgsLayoutItemElevationProfile(unittest.TestCase, LayoutItemTestCase):
 
     @classmethod
     def tearDownClass(cls):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(cls.report)
 

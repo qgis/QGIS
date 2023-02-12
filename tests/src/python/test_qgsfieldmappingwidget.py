@@ -12,26 +12,16 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from qgis.core import (
-    QgsFields,
-    QgsField,
-    QgsFieldConstraints,
-    QgsProperty
-)
-from qgis.gui import (
-    QgsFieldMappingWidget,
-    QgsFieldMappingModel,
-)
 from qgis.PyQt.Qt import Qt
 from qgis.PyQt.QtCore import (
     QCoreApplication,
-    QVariant,
-    QModelIndex,
     QItemSelectionModel,
+    QModelIndex,
+    QVariant,
 )
-from qgis.PyQt.QtGui import (
-    QColor
-)
+from qgis.PyQt.QtGui import QColor
+from qgis.core import QgsField, QgsFieldConstraints, QgsFields, QgsProperty
+from qgis.gui import QgsFieldMappingModel, QgsFieldMappingWidget
 from qgis.testing import start_app, unittest
 
 

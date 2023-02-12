@@ -15,7 +15,8 @@
 
 
 #include "qgssettingsentryimpl.h"
-
+#include "qgslogger.h"
+#include "qgssettings.h"
 
 Qgis::SettingsType QgsSettingsEntryVariant::settingsType() const
 {

@@ -19,6 +19,7 @@ on:
     branches:
       - master
       - release-**
+      - queued_ltr_backports
     # paths cannot be filtered on this workflow on pull request as it is a required one in the branch protection
     # feature request and hacks: https://github.community/t/feature-request-conditional-required-checks/16761
 

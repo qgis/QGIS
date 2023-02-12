@@ -110,6 +110,17 @@ Ownership is transferred to the renderer.
 .. seealso:: :py:func:`paintEffect`
 %End
 
+    void prepareLayersForRemovalFromGroup();
+%Docstring
+Prepares all child layers in the group prior to removal from the group.
+
+This method should be called before removing a group layer from a project, to ensure
+that the existing child layers are in a state which is compatible with non-group
+layer children.
+
+.. versionadded:: 3.30
+%End
+
 };
 
 

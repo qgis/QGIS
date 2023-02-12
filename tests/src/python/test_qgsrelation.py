@@ -9,20 +9,21 @@ __author__ = 'Matthias Kuhn'
 __date__ = '07/10/2013'
 __copyright__ = 'Copyright 2013, The QGIS Project'
 
-import qgis  # NOQA
-
-from qgis.core import (QgsVectorLayer,
-                       QgsFeature,
-                       QgsRelation,
-                       QgsGeometry,
-                       QgsPointXY,
-                       QgsAttributeEditorElement,
-                       QgsAttributeEditorRelation,
-                       QgsProject
-                       )
-from utilities import unitTestDataPath
-from qgis.testing import start_app, unittest
 import os
+
+import qgis  # NOQA
+from qgis.core import (
+    QgsAttributeEditorElement,
+    QgsFeature,
+    QgsGeometry,
+    QgsPointXY,
+    QgsProject,
+    QgsRelation,
+    QgsVectorLayer,
+)
+from qgis.testing import start_app, unittest
+
+from utilities import unitTestDataPath
 
 start_app()
 

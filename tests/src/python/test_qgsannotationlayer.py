@@ -12,43 +12,39 @@ __date__ = '29/07/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-from qgis.PyQt.QtCore import (QSize,
-                              QDir,
-                              QTemporaryDir)
-from qgis.PyQt.QtGui import (QImage,
-                             QPainter,
-                             QColor)
+from qgis.PyQt.QtCore import QDir, QSize, QTemporaryDir
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.PyQt.QtXml import QDomDocument
-from qgis.core import (QgsMapSettings,
-                       QgsCoordinateTransform,
-                       QgsProject,
-                       QgsPoint,
-                       QgsCoordinateReferenceSystem,
-                       QgsFillSymbol,
-                       QgsRenderChecker,
-                       QgsReadWriteContext,
-                       QgsRenderContext,
-                       QgsAnnotationPolygonItem,
-                       QgsRectangle,
-                       QgsLineString,
-                       QgsPolygon,
-                       QgsAnnotationLayer,
-                       QgsAnnotationLineItem,
-                       QgsAnnotationMarkerItem,
-                       QgsLineSymbol,
-                       QgsMarkerSymbol,
-                       QgsMapRendererSequentialJob,
-                       QgsMapRendererParallelJob,
-                       QgsGeometry,
-                       QgsAnnotationItemEditOperationMoveNode,
-                       QgsVertexId,
-                       QgsPointXY,
-                       Qgis,
-                       QgsLayerNotesUtils
-                       )
+from qgis.core import (
+    Qgis,
+    QgsAnnotationItemEditOperationMoveNode,
+    QgsAnnotationLayer,
+    QgsAnnotationLineItem,
+    QgsAnnotationMarkerItem,
+    QgsAnnotationPolygonItem,
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform,
+    QgsFillSymbol,
+    QgsGeometry,
+    QgsLayerNotesUtils,
+    QgsLineString,
+    QgsLineSymbol,
+    QgsMapRendererParallelJob,
+    QgsMapRendererSequentialJob,
+    QgsMapSettings,
+    QgsMarkerSymbol,
+    QgsPoint,
+    QgsPolygon,
+    QgsProject,
+    QgsReadWriteContext,
+    QgsRectangle,
+    QgsRenderChecker,
+    QgsRenderContext,
+    QgsVertexId,
+)
 from qgis.testing import start_app, unittest
 
-from utilities import unitTestDataPath, compareWkt
+from utilities import compareWkt, unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -62,7 +58,7 @@ class TestQgsAnnotationLayer(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(cls.report)
 

@@ -13,13 +13,12 @@ __copyright__ = 'Copyright 2022, ItOpen'
 
 import os
 import shutil
-from stylestoragebase import StyleStorageTestBase, StyleStorageTestCaseBase
+
 from qgis.PyQt.QtCore import QTemporaryDir
-from qgis.core import (
-    QgsProviderRegistry,
-    QgsDataSourceUri,
-)
+from qgis.core import QgsDataSourceUri, QgsProviderRegistry
 from qgis.testing import unittest
+
+from stylestoragebase import StyleStorageTestBase, StyleStorageTestCaseBase
 from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
@@ -37,7 +36,7 @@ class StyleStorageTest(StyleStorageTestCaseBase, StyleStorageTestBase):
         self.temp_path = self.temp_dir.path()
         md = QgsProviderRegistry.instance().providerMetadata(self.providerKey)
         shutil.copy(os.path.join(TEST_DATA_DIR, 'provider', 'spatialite.db'), os.path.join(self.temp_path, 'spatialite.db'))
-        self.test_uri = "dbname='{}'".format(os.path.join(self.temp_path, 'spatialite.db'))
+        self.test_uri = f"dbname='{os.path.join(self.temp_path, 'spatialite.db')}'"
         self.uri = self.test_uri
 
     def layerUri(self, conn, schema_name, table_name):

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
 *                                                                         *
@@ -11,14 +9,11 @@
 ***************************************************************************
 """
 
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (QgsProcessing,
-                       QgsFeatureSink,
-                       QgsProcessingException,
-                       QgsProcessingAlgorithm,
-                       QgsProcessingParameterString,
-                       QgsProcessingOutputString)
-from qgis import processing
+from qgis.core import (
+    QgsProcessingAlgorithm,
+    QgsProcessingOutputString,
+    QgsProcessingParameterString,
+)
 
 
 class AlgWithComplexParamNames(QgsProcessingAlgorithm):

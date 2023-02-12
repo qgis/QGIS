@@ -9,42 +9,29 @@ __author__ = 'Matthias Kuhn'
 __date__ = '8.11.2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
 import os
-import tempfile
 import shutil
+import tempfile
 
-from qgis.PyQt.QtCore import (
-    QSize,
-    Qt,
-    QDir,
-
-)
-from qgis.PyQt.QtGui import (
-    QColor,
-    QImage,
-    QPainter,
-    QResizeEvent,
-    QPixmap
-)
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QDir, QSize, Qt
+from qgis.PyQt.QtGui import QColor, QImage, QPainter, QResizeEvent
 from qgis.core import (
-    QgsVectorLayer,
+    QgsCoordinateReferenceSystem,
+    QgsFillSymbol,
+    QgsGeometryGeneratorSymbolLayer,
+    QgsMultiRenderChecker,
     QgsProject,
     QgsRectangle,
     QgsRenderChecker,
-    QgsCoordinateReferenceSystem,
-    QgsMultiRenderChecker,
-    QgsGeometryGeneratorSymbolLayer,
-    QgsFillSymbol,
     QgsSingleSymbolRenderer,
-    QgsSymbol
+    QgsSymbol,
+    QgsVectorLayer,
 )
-from qgis.gui import (
-    QgsHighlight,
-    QgsMapCanvas
-)
+from qgis.gui import QgsHighlight, QgsMapCanvas
 from qgis.testing import start_app, unittest
 from qgis.testing.mocked import get_iface
+
 from utilities import unitTestDataPath
 
 app = start_app()
@@ -62,7 +49,7 @@ class TestQgsHighlight(unittest.TestCase):
         self.report = "<h1>Python QgsMapCanvas Tests</h1>\n"
 
     def tearDown(self):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 

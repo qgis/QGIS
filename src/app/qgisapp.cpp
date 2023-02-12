@@ -103,6 +103,7 @@
 #include "qgsdockablewidgethelper.h"
 #include "vertextool/qgsvertexeditor.h"
 #include "qgsvectorlayerutils.h"
+#include "qgsvectorlayereditutils.h"
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsabstractdatasourcewidget.h"
 #include "qgsmeshlayer.h"
@@ -9638,9 +9639,8 @@ void QgisApp::mergeSelectedFeatures()
     return;
   }
 
-  //get selected feature ids (as a QSet<int> )
-  const QgsFeatureIds &featureIdSet = vl->selectedFeatureIds();
-  if ( featureIdSet.size() < 2 )
+  // Check at least two features are selected
+  if ( vl->selectedFeatureIds().size() < 2 )
   {
     visibleMessageBar()->pushMessage(
       tr( "Not enough features selected" ),
@@ -9714,104 +9714,38 @@ void QgisApp::mergeSelectedFeatures()
       }
       return;
     }
+    else if ( !QgsWkbTypes::isMultiType( vl->wkbType() ) )
+    {
+      const QgsGeometryCollection *c = qgsgeometry_cast<const QgsGeometryCollection *>( unionGeom.constGet() );
+      if ( ( c && c->partCount() > 1 ) || !unionGeom.convertToSingleType() )
+      {
+        visibleMessageBar()->pushMessage(
+          tr( "Merge failed" ),
+          tr( "Resulting geometry type (multipart) is incompatible with layer type (singlepart)." ),
+          Qgis::MessageLevel::Critical );
+        return;
+      }
+    }
   }
 
-  QgsAttributes attrs = d.mergedAttributes();
-  QgsAttributeMap newAttributes;
   QString errorMessage;
-  QgsFeatureId mergeFeatureId = FID_NULL;
-  for ( int i = 0; i < attrs.count(); ++i )
+  QgsVectorLayerEditUtils vectorLayerEditUtils( vl );
+  bool success = vectorLayerEditUtils.mergeFeatures( d.targetFeatureId(), vl->selectedFeatureIds(), d.mergedAttributes(), unionGeom, errorMessage );
+
+  if ( !success )
   {
-    QVariant val = attrs.at( i );
-    bool isDefaultValue = vl->fields().fieldOrigin( i ) == QgsFields::OriginProvider &&
-                          vl->dataProvider() &&
-                          vl->dataProvider()->defaultValueClause( vl->fields().fieldOriginIndex( i ) ) == val;
-    bool isPrimaryKey =  vl->fields().fieldOrigin( i ) == QgsFields::OriginProvider &&
-                         vl->dataProvider() &&
-                         vl->dataProvider()->pkAttributeIndexes().contains( vl->fields().fieldOriginIndex( i ) );
-
-    if ( isPrimaryKey && !isDefaultValue )
-    {
-      QgsFeatureRequest request;
-      request.setFlags( QgsFeatureRequest::Flag::NoGeometry );
-      // Handle multi pks
-      if ( vl->dataProvider()->pkAttributeIndexes().count() > 1 && vl->dataProvider()->pkAttributeIndexes().count() <= attrs.count() )
-      {
-        const auto pkIdxList { vl->dataProvider()->pkAttributeIndexes() };
-        QStringList conditions;
-        QStringList fieldNames;
-        for ( const int &pkIdx : std::as_const( pkIdxList ) )
-        {
-          const QgsField pkField { vl->fields().field( pkIdx ) };
-          conditions.push_back( QgsExpression::createFieldEqualityExpression( pkField.name(), attrs.at( pkIdx ), pkField.type( ) ) );
-          fieldNames.push_back( pkField.name() );
-        }
-        request.setSubsetOfAttributes( fieldNames, vl->fields( ) );
-        request.setFilterExpression( conditions.join( QLatin1String( " AND " ) ) );
-      }
-      else  // single pk
-      {
-        const QgsField pkField { vl->fields().field( i ) };
-        request.setSubsetOfAttributes( QStringList() << pkField.name(), vl->fields( ) );
-        request.setFilterExpression( QgsExpression::createFieldEqualityExpression( pkField.name(), val, pkField.type( ) ) );
-      }
-
-      QgsFeature f;
-      QgsFeatureIterator featureIterator = vl->getFeatures( request );
-      if ( featureIterator.nextFeature( f ) )
-      {
-        mergeFeatureId = f.id( );
-      }
-    }
-
-    // convert to destination data type
-    if ( !isDefaultValue && !vl->fields().at( i ).convertCompatible( val, &errorMessage ) )
-    {
-      visibleMessageBar()->pushMessage(
-        tr( "Invalid result" ),
-        tr( "Could not store value '%1' in field of type %2: %3" ).arg( attrs.at( i ).toString(), vl->fields().at( i ).typeName(), errorMessage ),
-        Qgis::MessageLevel::Warning );
-    }
-    newAttributes[ i ] = val;
+    visibleMessageBar()->pushMessage(
+      tr( "Merge failed" ),
+      errorMessage,
+      Qgis::MessageLevel::Critical );
   }
-
-  vl->beginEditCommand( tr( "Merged features" ) );
-
-  QgsFeature mergeFeature;
-  if ( mergeFeatureId == FID_NULL )
+  else if ( success && !errorMessage.isEmpty() )
   {
-    // Create new feature
-    mergeFeature = QgsVectorLayerUtils::createFeature( vl, unionGeom, newAttributes );
+    visibleMessageBar()->pushMessage(
+      tr( "Invalid result" ),
+      errorMessage,
+      Qgis::MessageLevel::Warning );
   }
-  else
-  {
-    // Merge into existing feature
-    featureIdsAfter.remove( mergeFeatureId );
-  }
-
-  // Delete other features
-  QgsFeatureIds::const_iterator feature_it = featureIdsAfter.constBegin();
-  for ( ; feature_it != featureIdsAfter.constEnd(); ++feature_it )
-  {
-    vl->deleteFeature( *feature_it );
-  }
-
-
-  if ( mergeFeatureId == FID_NULL )
-  {
-    // Add the new feature
-    vl->addFeature( mergeFeature );
-  }
-  else
-  {
-    // Modify merge feature
-    vl->changeGeometry( mergeFeatureId, unionGeom );
-    vl->changeAttributeValues( mergeFeatureId, newAttributes );
-  }
-
-  vl->endEditCommand();
-
-  vl->triggerRepaint();
 }
 
 void QgisApp::vertexTool()
@@ -12469,7 +12403,7 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage, in
   std::unique_ptr< QgsOptions > optionsDialog( createOptionsDialog( parent ) );
 
   QgsSettings mySettings;
-  QString oldScales = mySettings.value( QStringLiteral( "Map/scales" ), Qgis::defaultProjectScales() ).toString();
+  const QStringList oldScales = QgsSettingsRegistryCore::settingsMapScales->value();
 
   if ( !currentPage.isEmpty() )
   {
@@ -12511,7 +12445,7 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage, in
 
     mRasterFileFilter = QgsProviderRegistry::instance()->fileRasterFilters();
 
-    if ( oldScales != mySettings.value( QStringLiteral( "Map/scales" ), Qgis::defaultProjectScales() ).toString() )
+    if ( oldScales != QgsSettingsRegistryCore::settingsMapScales->value() )
     {
       mScaleWidget->updateScales();
     }
@@ -14505,13 +14439,13 @@ void QgisApp::showMapTip()
   // Only show maptips if the mouse is still over the map canvas when timer is triggered
   if ( mMapTipsVisible && mMapCanvas->underMouse() )
   {
-    QPoint myPointerPos = mMapCanvas->mouseLastXY();
+    const QPoint pointerPos = mMapCanvas->mouseLastXY();
 
     //  Make sure there is an active layer before proceeding
-    QgsMapLayer *mypLayer = mMapCanvas->currentLayer();
-    if ( mypLayer && !mypLayer->mapTipTemplate().isEmpty() )
+    QgsMapLayer *layer = mMapCanvas->currentLayer();
+    if ( layer && layer->hasMapTips() )
     {
-      mpMaptip->showMapTip( mypLayer, mLastMapPosition, myPointerPos, mMapCanvas );
+      mpMaptip->showMapTip( layer, mLastMapPosition, pointerPos, mMapCanvas );
     }
   }
 }
@@ -15633,7 +15567,7 @@ void QgisApp::renameView()
   renameDlg.buttonBox()->addButton( QDialogButtonBox::Help );
   connect( renameDlg.buttonBox(), &QDialogButtonBox::helpRequested, this, [ = ]
   {
-    QgsHelp::openHelp( QStringLiteral( "introduction/qgis_gui.html#map-view" ) );
+    QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html" ) );
   } );
 
   if ( renameDlg.exec() || renameDlg.name().isEmpty() )

@@ -20,49 +20,47 @@ __date__ = 'January 2016'
 __copyright__ = '(C) 2016, Nyall Dawson'
 
 import qgis  # NOQA
+from qgis.PyQt.QtCore import QDir, QSize, Qt
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.core import (
+    Qgis,
+    QgsArrowSymbolLayer,
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform,
+    QgsFeature,
+    QgsFillSymbol,
+    QgsGeometry,
+    QgsGeometryGeneratorSymbolLayer,
+    QgsLineString,
+    QgsLineSymbol,
+    QgsMapSettings,
+    QgsMapUnitScale,
+    QgsMarkerLineSymbolLayer,
+    QgsMarkerSymbol,
+    QgsMultiPolygon,
+    QgsPoint,
+    QgsPolygon,
+    QgsProject,
+    QgsProperty,
+    QgsRasterFillSymbolLayer,
+    QgsReadWriteContext,
+    QgsRectangle,
+    QgsRenderChecker,
+    QgsRenderContext,
+    QgsSimpleFillSymbolLayer,
+    QgsSimpleLineSymbolLayer,
+    QgsSimpleMarkerSymbolLayer,
+    QgsSimpleMarkerSymbolLayerBase,
+    QgsSymbol,
+    QgsSymbolLayer,
+    QgsSymbolLayerUtils,
+    QgsUnitTypes,
+    QgsWkbTypes,
+)
+from qgis.testing import start_app, unittest
 
 from utilities import unitTestDataPath
-
-from qgis.PyQt.QtCore import QDir, Qt, QSize
-from qgis.PyQt.QtGui import QImage, QColor, QPainter
-from qgis.PyQt.QtXml import QDomDocument
-
-from qgis.core import (QgsGeometry,
-                       QgsRectangle,
-                       QgsCoordinateTransform,
-                       QgsCoordinateReferenceSystem,
-                       QgsMapUnitScale,
-                       QgsMarkerSymbol,
-                       QgsMultiPolygon,
-                       QgsPolygon,
-                       QgsLineString,
-                       QgsFillSymbol,
-                       QgsLineSymbol,
-                       QgsRenderContext,
-                       QgsFeature,
-                       QgsMapSettings,
-                       QgsRenderChecker,
-                       QgsSimpleMarkerSymbolLayer,
-                       QgsSimpleMarkerSymbolLayerBase,
-                       QgsSimpleLineSymbolLayer,
-                       QgsSimpleFillSymbolLayer,
-                       QgsUnitTypes,
-                       QgsWkbTypes,
-                       QgsProject,
-                       QgsReadWriteContext,
-                       QgsSymbolLayerUtils,
-                       QgsMarkerLineSymbolLayer,
-                       QgsArrowSymbolLayer,
-                       QgsGeometryGeneratorSymbolLayer,
-                       QgsSymbol,
-                       Qgis,
-                       QgsSymbolLayer,
-                       QgsProperty,
-                       QgsRasterFillSymbolLayer,
-                       QgsPoint
-                       )
-
-from qgis.testing import unittest, start_app
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -78,7 +76,7 @@ class TestQgsSymbol(unittest.TestCase):
         self.report = "<h1>Python QgsSymbol Tests</h1>\n"
 
     def tearDown(self):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 
@@ -288,7 +286,7 @@ class TestQgsSymbol(unittest.TestCase):
             def get_geom():
                 if 'geom' not in test:
                     geom = QgsGeometry.fromWkt(test['wkt'])
-                    assert geom and not geom.isNull(), 'Could not create geometry {}'.format(test['wkt'])
+                    assert geom and not geom.isNull(), f"Could not create geometry {test['wkt']}"
                 else:
                     geom = test['geom']
                 return geom
@@ -875,7 +873,7 @@ class TestQgsMarkerSymbol(unittest.TestCase):
         self.report = "<h1>Python QgsMarkerSymbol Tests</h1>\n"
 
     def tearDown(self):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 
@@ -1155,7 +1153,7 @@ class TestQgsLineSymbol(unittest.TestCase):
         self.report = "<h1>Python QgsLineSymbol Tests</h1>\n"
 
     def tearDown(self):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 
@@ -1220,7 +1218,7 @@ class TestQgsFillSymbol(unittest.TestCase):
         self.report = "<h1>Python QgsFillSymbol Tests</h1>\n"
 
     def tearDown(self):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 

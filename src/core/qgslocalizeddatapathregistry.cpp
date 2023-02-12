@@ -16,12 +16,12 @@
 #include <QDir>
 
 #include "qgslocalizeddatapathregistry.h"
-#include "qgssettings.h"
 #include "qgis.h"
 #include "qgsreadwritelocker.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
-
-const QgsSettingsEntryStringList *QgsLocalizedDataPathRegistry::settingsLocalizedDataPaths = new QgsSettingsEntryStringList( QStringLiteral( "localized_data_paths" ), QgsSettings::sTreeQgis, QStringList() );
+const QgsSettingsEntryStringList *QgsLocalizedDataPathRegistry::settingsLocalizedDataPaths = new QgsSettingsEntryStringList( QStringLiteral( "localized_data_paths" ), QgsSettingsTree::sTreeQgis, QStringList() );
 
 QgsLocalizedDataPathRegistry::QgsLocalizedDataPathRegistry()
 {

@@ -25,24 +25,17 @@ __date__ = '05/15/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import os
-import sys
 import re
 import subprocess
-from shutil import copytree, rmtree
+import sys
 import tempfile
-from utilities import unitTestDataPath, waitServer
-from qgis.core import (
-    QgsVectorLayer,
-    QgsAuthManager,
-    QgsApplication
-)
+from shutil import copytree, rmtree
 
-from qgis.testing import (
-    start_app,
-    unittest,
-)
+from qgis.core import QgsApplication, QgsVectorLayer
+from qgis.testing import start_app, unittest
 
 from offlineditingtestbase import OfflineTestBase
+from utilities import unitTestDataPath, waitServer
 
 try:
     QGIS_SERVER_OFFLINE_PORT = os.environ['QGIS_SERVER_OFFLINE_PORT']
@@ -95,7 +88,7 @@ class TestWFST(unittest.TestCase, OfflineTestBase):
         self.port = int(re.findall(br':(\d+)', line)[0])
         assert self.port != 0
         # Wait for the server process to start
-        assert waitServer('http://127.0.0.1:%s' % self.port), "Server is not responding!"
+        assert waitServer(f'http://127.0.0.1:{self.port}'), "Server is not responding!"
         self._setUp()
 
     def tearDown(self):

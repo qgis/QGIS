@@ -11,12 +11,8 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.testing import unittest, start_app
-from qgis.core import (edit,
-                       QgsFeature,
-                       QgsVectorLayer,
-                       QgsEditError
-                       )
+from qgis.core import QgsEditError, QgsFeature, QgsVectorLayer, edit
+from qgis.testing import start_app, unittest
 
 start_app()
 

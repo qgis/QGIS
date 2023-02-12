@@ -19,8 +19,8 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgslayoutitem.h"
-#include "scalebar/qgsscalebarsettings.h"
-#include "scalebar/qgsscalebarrenderer.h"
+#include "qgsscalebarsettings.h"
+#include "qgsscalebarrenderer.h"
 #include <QFont>
 #include <QPen>
 #include <QColor>

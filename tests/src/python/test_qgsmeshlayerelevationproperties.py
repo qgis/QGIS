@@ -10,17 +10,14 @@ __date__ = '09/11/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
+    Qgis,
+    QgsFillSymbol,
+    QgsLineSymbol,
     QgsMeshLayerElevationProperties,
     QgsReadWriteContext,
-    QgsLineSymbol,
-    QgsFillSymbol,
-    Qgis
 )
-
-from qgis.PyQt.QtXml import QDomDocument
-
 from qgis.testing import start_app, unittest
 
 start_app()

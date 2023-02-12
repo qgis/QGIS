@@ -12,18 +12,16 @@ __date__ = '19/03/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.PyQt.QtXml import QDomDocument
-
-from qgis.core import (QgsProjectMetadata,
-                       QgsAbstractMetadataBase,
-                       QgsProject,
-                       QgsNativeProjectMetadataValidator)
-from qgis.PyQt.QtCore import (QDate,
-                              QTime,
-                              QDateTime)
-from qgis.testing import start_app, unittest
+from qgis.PyQt.QtCore import QDate, QDateTime, QTime
 from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.core import (
+    QgsAbstractMetadataBase,
+    QgsNativeProjectMetadataValidator,
+    QgsProject,
+    QgsProjectMetadata,
+)
+from qgis.testing import start_app, unittest
 
 start_app()
 

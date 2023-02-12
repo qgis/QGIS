@@ -15,18 +15,19 @@ __copyright__ = 'Copyright 2021, The QGIS Project'
 
 import os
 import re
-import hashlib
 
 # Needed on Qt 5 so that the serialization of XML is consistent among all executions
 os.environ['QT_HASH_SEED'] = '1'
 
-import urllib.parse
-
 from qgis.core import QgsProject, QgsProviderRegistry, QgsVectorLayer
 from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.PyQt.QtGui import QImage
-from qgis.server import (QgsServer, QgsBufferServerRequest,
-                         QgsBufferServerResponse, QgsAccessControlFilter)
+from qgis.server import (
+    QgsAccessControlFilter,
+    QgsBufferServerRequest,
+    QgsBufferServerResponse,
+    QgsServer,
+)
 from qgis.testing import unittest
 from test_qgsserver import QgsServerTestBase
 from utilities import unitTestDataPath
@@ -131,7 +132,7 @@ class TestQgsServerAccessControlWMSGetPrintPG(QgsServerTestBase):
 
         project = open(project_path).read()
         with open(cls.temp_project_path, 'w+') as f:
-            f.write(re.sub(r'<datasource>.*</datasource>', '<datasource>%s</datasource>' % cls.layer_uri, project))
+            f.write(re.sub(r'<datasource>.*</datasource>', f'<datasource>{cls.layer_uri}</datasource>', project))
 
         cls.test_project = QgsProject()
         cls.test_project.read(cls.temp_project_path)

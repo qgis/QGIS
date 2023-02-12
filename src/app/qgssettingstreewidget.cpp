@@ -41,18 +41,17 @@
 #include <QHeaderView>
 #include <QEvent>
 
-#include "qgssettingstree.h"
+#include "qgssettingstreewidget.h"
 #include "qgsvariantdelegate.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
-#include "qgssettingsentry.h"
 #include "qgsapplication.h"
 #include "qgsguiutils.h"
 
 #include <QMenu>
 #include <QMessageBox>
 
-QgsSettingsTree::QgsSettingsTree( QWidget *parent )
+QgsSettingsTreeWidget::QgsSettingsTreeWidget( QWidget *parent )
   : QTreeWidget( parent )
 {
   setItemDelegate( new QgsVariantDelegate( this ) );
@@ -73,14 +72,14 @@ QgsSettingsTree::QgsSettingsTree( QWidget *parent )
 
   setEditTriggers( QAbstractItemView::AllEditTriggers );
 
-  connect( &mRefreshTimer, &QTimer::timeout, this, &QgsSettingsTree::maybeRefresh );
+  connect( &mRefreshTimer, &QTimer::timeout, this, &QgsSettingsTreeWidget::maybeRefresh );
 
   setContextMenuPolicy( Qt::CustomContextMenu );
-  connect( this, &QTreeWidget::customContextMenuRequested, this, &QgsSettingsTree::showContextMenu );
+  connect( this, &QTreeWidget::customContextMenuRequested, this, &QgsSettingsTreeWidget::showContextMenu );
   mContextMenu = new QMenu( this );
 }
 
-void QgsSettingsTree::setSettingsObject( QgsSettings *settings )
+void QgsSettingsTreeWidget::setSettingsObject( QgsSettings *settings )
 {
   mSettings = settings;
   clear();
@@ -99,12 +98,12 @@ void QgsSettingsTree::setSettingsObject( QgsSettings *settings )
   }
 }
 
-QSize QgsSettingsTree::sizeHint() const
+QSize QgsSettingsTreeWidget::sizeHint() const
 {
   return QSize( 800, 600 );
 }
 
-void QgsSettingsTree::setAutoRefresh( bool autoRefresh )
+void QgsSettingsTreeWidget::setAutoRefresh( bool autoRefresh )
 {
   mAutoRefresh = autoRefresh;
   if ( mAutoRefresh )
@@ -119,19 +118,19 @@ void QgsSettingsTree::setAutoRefresh( bool autoRefresh )
   }
 }
 
-void QgsSettingsTree::maybeRefresh()
+void QgsSettingsTreeWidget::maybeRefresh()
 {
   if ( state() != EditingState )
     refresh();
 }
 
-void QgsSettingsTree::refresh()
+void QgsSettingsTreeWidget::refresh()
 {
   if ( !mSettings )
     return;
 
   disconnect( this, &QTreeWidget::itemChanged,
-              this, &QgsSettingsTree::updateSetting );
+              this, &QgsSettingsTreeWidget::updateSetting );
 
   mSettings->sync();
 
@@ -149,10 +148,10 @@ void QgsSettingsTree::refresh()
   updateChildItems( nullptr );
 
   connect( this, &QTreeWidget::itemChanged,
-           this, &QgsSettingsTree::updateSetting );
+           this, &QgsSettingsTreeWidget::updateSetting );
 }
 
-bool QgsSettingsTree::event( QEvent *event )
+bool QgsSettingsTreeWidget::event( QEvent *event )
 {
   if ( event->type() == QEvent::WindowActivate )
   {
@@ -162,13 +161,13 @@ bool QgsSettingsTree::event( QEvent *event )
   return QTreeWidget::event( event );
 }
 
-void QgsSettingsTree::showEvent( QShowEvent * )
+void QgsSettingsTreeWidget::showEvent( QShowEvent * )
 {
   const QgsTemporaryCursorOverride waitCursor( Qt::BusyCursor );
   refresh();
 }
 
-void QgsSettingsTree::updateSetting( QTreeWidgetItem *item )
+void QgsSettingsTreeWidget::updateSetting( QTreeWidgetItem *item )
 {
   const QString key = itemKey( item );
   if ( key.isNull() )
@@ -179,7 +178,7 @@ void QgsSettingsTree::updateSetting( QTreeWidgetItem *item )
     refresh();
 }
 
-void QgsSettingsTree::showContextMenu( QPoint pos )
+void QgsSettingsTreeWidget::showContextMenu( QPoint pos )
 {
   QTreeWidgetItem *item = itemAt( pos );
   if ( !item )
@@ -234,7 +233,7 @@ void QgsSettingsTree::showContextMenu( QPoint pos )
   mContextMenu->exec( mapToGlobal( pos ) );
 }
 
-void QgsSettingsTree::updateChildItems( QTreeWidgetItem *parent )
+void QgsSettingsTreeWidget::updateChildItems( QTreeWidgetItem *parent )
 {
   int dividerIndex = 0;
 
@@ -307,7 +306,7 @@ void QgsSettingsTree::updateChildItems( QTreeWidgetItem *parent )
     delete childAt( parent, dividerIndex );
 }
 
-QTreeWidgetItem *QgsSettingsTree::createItem( const QString &text,
+QTreeWidgetItem *QgsSettingsTreeWidget::createItem( const QString &text,
     QTreeWidgetItem *parent, int index, const bool isGroup )
 {
   QTreeWidgetItem *after = nullptr;
@@ -344,7 +343,7 @@ QTreeWidgetItem *QgsSettingsTree::createItem( const QString &text,
   return item;
 }
 
-QString QgsSettingsTree::itemKey( QTreeWidgetItem *item )
+QString QgsSettingsTreeWidget::itemKey( QTreeWidgetItem *item )
 {
   if ( ! item )
     return QString();
@@ -360,7 +359,7 @@ QString QgsSettingsTree::itemKey( QTreeWidgetItem *item )
   return key;
 }
 
-QTreeWidgetItem *QgsSettingsTree::childAt( QTreeWidgetItem *parent, int index )
+QTreeWidgetItem *QgsSettingsTreeWidget::childAt( QTreeWidgetItem *parent, int index )
 {
   if ( parent )
     return parent->child( index );
@@ -368,7 +367,7 @@ QTreeWidgetItem *QgsSettingsTree::childAt( QTreeWidgetItem *parent, int index )
     return topLevelItem( index );
 }
 
-int QgsSettingsTree::childCount( QTreeWidgetItem *parent )
+int QgsSettingsTreeWidget::childCount( QTreeWidgetItem *parent )
 {
   if ( parent )
     return parent->childCount();
@@ -376,8 +375,8 @@ int QgsSettingsTree::childCount( QTreeWidgetItem *parent )
     return topLevelItemCount();
 }
 
-int QgsSettingsTree::findChild( QTreeWidgetItem *parent, const QString &text,
-                                int startIndex )
+int QgsSettingsTreeWidget::findChild( QTreeWidgetItem *parent, const QString &text,
+                                      int startIndex )
 {
   for ( int i = startIndex; i < childCount( parent ); ++i )
   {
@@ -387,8 +386,8 @@ int QgsSettingsTree::findChild( QTreeWidgetItem *parent, const QString &text,
   return -1;
 }
 
-void QgsSettingsTree::moveItemForward( QTreeWidgetItem *parent, int oldIndex,
-                                       int newIndex )
+void QgsSettingsTreeWidget::moveItemForward( QTreeWidgetItem *parent, int oldIndex,
+    int newIndex )
 {
   for ( int i = 0; i < oldIndex - newIndex; ++i )
     delete childAt( parent, newIndex );

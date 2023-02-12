@@ -15,12 +15,12 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 import os
-import sys
 import re
+import stat
 import subprocess
+import sys
 import tempfile
 import urllib
-import stat
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '25/10/2016'
@@ -28,21 +28,15 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 
 from shutil import rmtree
 
-from utilities import unitTestDataPath, waitServer
 from qgis.core import (
     QgsApplication,
-    QgsAuthManager,
     QgsAuthMethodConfig,
-    QgsVectorLayer,
     QgsRasterLayer,
+    QgsVectorLayer,
 )
-
 from qgis.PyQt.QtNetwork import QSslCertificate
-
-from qgis.testing import (
-    start_app,
-    unittest,
-)
+from qgis.testing import start_app, unittest
+from utilities import unitTestDataPath, waitServer
 
 try:
     QGIS_SERVER_ENDPOINT_PORT = os.environ['QGIS_SERVER_ENDPOINT_PORT']
@@ -185,7 +179,7 @@ class TestAuthManager(unittest.TestCase):
         }
         if authcfg is not None:
             parms.update({'authcfg': authcfg})
-        uri = '&'.join([("{}={}".format(k, v.replace('=', '%3D'))) for k, v in list(parms.items())])
+        uri = '&'.join([f"{k}={v.replace('=', '%3D')}" for k, v in list(parms.items())])
         wms_layer = QgsRasterLayer(uri, layer_name, 'wms')
         return wms_layer
 

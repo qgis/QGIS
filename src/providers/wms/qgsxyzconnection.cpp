@@ -18,6 +18,7 @@
 
 #include "qgsowsconnection.h"
 #include "qgsdatasourceuri.h"
+#include "qgssettingsentryimpl.h"
 
 
 QString QgsXyzConnection::encodedUri() const

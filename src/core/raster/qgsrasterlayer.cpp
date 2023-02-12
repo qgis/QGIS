@@ -59,6 +59,7 @@ email                : tim at linfiniti.com
 #include "qgsrasterlayerprofilegenerator.h"
 #include "qgsthreadingutils.h"
 #include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
 #include <cmath>
 #include <cstdio>
@@ -84,8 +85,8 @@ email                : tim at linfiniti.com
 #include <QSlider>
 #include <QUrl>
 
-const QgsSettingsEntryDouble *QgsRasterLayer::settingsRasterDefaultOversampling = new QgsSettingsEntryDouble( QStringLiteral( "default-oversampling" ), QgsSettings::sTreeRaster, 2.0 );
-const QgsSettingsEntryBool *QgsRasterLayer::settingsRasterDefaultEarlyResampling = new QgsSettingsEntryBool( QStringLiteral( "default-early-resampling" ), QgsSettings::sTreeRaster, false );
+const QgsSettingsEntryDouble *QgsRasterLayer::settingsRasterDefaultOversampling = new QgsSettingsEntryDouble( QStringLiteral( "default-oversampling" ), QgsSettingsTree::sTreeRaster, 2.0 );
+const QgsSettingsEntryBool *QgsRasterLayer::settingsRasterDefaultEarlyResampling = new QgsSettingsEntryBool( QStringLiteral( "default-early-resampling" ), QgsSettingsTree::sTreeRaster, false );
 
 #define ERR(message) QGS_ERROR_MESSAGE(message,"Raster layer")
 
@@ -784,14 +785,22 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   //TODO Change this to look at the color interp and palette interp to decide which type of layer it is
   QgsDebugMsgLevel( "bandCount = " + QString::number( mDataProvider->bandCount() ), 4 );
   QgsDebugMsgLevel( "dataType = " + qgsEnumValueToKey< Qgis::DataType >( mDataProvider->dataType( 1 ) ), 4 );
-  if ( ( mDataProvider->bandCount() > 1 ) )
+  const int bandCount = mDataProvider->bandCount();
+  if ( bandCount > 2 )
+  {
+    mRasterType = Qgis::RasterLayerType::MultiBand;
+  }
+  else if ( bandCount == 2 )
   {
     // handle singleband gray with alpha
-    if ( mDataProvider->bandCount() == 2
-         && ( ( mDataProvider->colorInterpretation( 1 ) == Qgis::RasterColorInterpretation::GrayIndex
-                && mDataProvider->colorInterpretation( 2 ) == Qgis::RasterColorInterpretation::AlphaBand )
-              || ( mDataProvider->colorInterpretation( 1 ) == Qgis::RasterColorInterpretation::AlphaBand
-                   && mDataProvider->colorInterpretation( 2 ) == Qgis::RasterColorInterpretation::GrayIndex ) ) )
+    auto colorInterpretationIsGrayOrUndefined = []( Qgis::RasterColorInterpretation interpretation )
+    {
+      return interpretation == Qgis::RasterColorInterpretation::GrayIndex
+             || interpretation == Qgis::RasterColorInterpretation::Undefined;
+    };
+
+    if ( ( colorInterpretationIsGrayOrUndefined( mDataProvider->colorInterpretation( 1 ) ) && mDataProvider->colorInterpretation( 2 ) == Qgis::RasterColorInterpretation::AlphaBand )
+         || ( mDataProvider->colorInterpretation( 1 ) == Qgis::RasterColorInterpretation::AlphaBand && colorInterpretationIsGrayOrUndefined( mDataProvider->colorInterpretation( 2 ) ) ) )
     {
       mRasterType = Qgis::RasterLayerType::GrayOrUndefined;
     }
@@ -2245,7 +2254,7 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
   if ( !blendModeNode.isNull() )
   {
     const QDomElement e = blendModeNode.toElement();
-    setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( e.text().toInt() ) ) );
+    setBlendMode( QgsPainting::getCompositionMode( static_cast< Qgis::BlendMode >( e.text().toInt() ) ) );
   }
 
   const QDomElement elemDataDefinedProperties = layer_node.firstChildElement( QStringLiteral( "pipe-data-defined-properties" ) );
@@ -2501,7 +2510,7 @@ bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &documen
 
   // add blend mode node
   QDomElement blendModeElement  = document.createElement( QStringLiteral( "blendMode" ) );
-  const QDomText blendModeText = document.createTextNode( QString::number( QgsPainting::getBlendModeEnum( blendMode() ) ) );
+  const QDomText blendModeText = document.createTextNode( QString::number( static_cast< int >( QgsPainting::getBlendModeEnum( blendMode() ) ) ) );
   blendModeElement.appendChild( blendModeText );
   layer_node.appendChild( blendModeElement );
 

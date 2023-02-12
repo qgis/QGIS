@@ -12,37 +12,31 @@ __date__ = '24/1/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.core import (QgsTextAnnotation,
-                       QgsSvgAnnotation,
-                       QgsHtmlAnnotation,
-                       QgsMapSettings,
-                       QgsRenderContext,
-                       QgsCoordinateReferenceSystem,
-                       QgsRectangle,
-                       QgsMultiRenderChecker,
-                       QgsRenderChecker,
-                       QgsVectorLayer,
-                       QgsFeature,
-                       QgsMargins,
-                       QgsFillSymbol,
-                       QgsProject,
-                       QgsLayout,
-                       QgsLayoutItemMap,
-                       QgsPointXY)
+from qgis.PyQt.QtCore import QDir, QPointF, QRectF, QSize, QSizeF
+from qgis.PyQt.QtGui import QColor, QImage, QPainter, QTextDocument
+from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsFeature,
+    QgsFillSymbol,
+    QgsHtmlAnnotation,
+    QgsLayout,
+    QgsLayoutItemMap,
+    QgsMapSettings,
+    QgsMargins,
+    QgsMultiRenderChecker,
+    QgsPointXY,
+    QgsProject,
+    QgsRectangle,
+    QgsRenderChecker,
+    QgsRenderContext,
+    QgsSvgAnnotation,
+    QgsTextAnnotation,
+    QgsVectorLayer,
+)
 from qgis.gui import QgsFormAnnotation
-from qgis.PyQt.QtCore import (QDir,
-                              QPointF,
-                              QSize,
-                              QSizeF,
-                              QRectF)
-from qgis.PyQt.QtGui import (QColor,
-                             QPainter,
-                             QImage,
-                             QTextDocument)
-from qgslayoutchecker import QgsLayoutChecker
-
 from qgis.testing import start_app, unittest
+
+from qgslayoutchecker import QgsLayoutChecker
 from utilities import unitTestDataPath
 
 start_app()
@@ -55,7 +49,7 @@ class TestQgsAnnotation(unittest.TestCase):
         self.report = "<h1>Python QgsAnnotation Tests</h1>\n"
 
     def tearDown(self):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 

@@ -18,28 +18,29 @@ __revision__ = '$Format:%H$'
 
 import os
 import time
-from qgis.PyQt.QtCore import QCoreApplication, QVariant
-from qgis.testing import start_app
-from qgis.core import (
-    QgsSettings,
-    QgsProviderRegistry,
-    QgsWkbTypes,
-    QgsVectorLayer,
-    QgsFields,
-    QgsCoordinateReferenceSystem,
-    QgsField,
-    QgsAbstractDatabaseProviderConnection,
-    QgsProviderConnectionException,
-    QgsFeature,
-    QgsGeometry,
-    QgsFeedback,
-    QgsApplication,
-    QgsTask,
-    QgsMapLayerUtils,
-    Qgis,
-)
+
 from qgis.PyQt import QtCore
+from qgis.PyQt.QtCore import QCoreApplication, QVariant
 from qgis.PyQt.QtTest import QSignalSpy
+from qgis.core import (
+    Qgis,
+    QgsAbstractDatabaseProviderConnection,
+    QgsApplication,
+    QgsCoordinateReferenceSystem,
+    QgsFeature,
+    QgsFeedback,
+    QgsField,
+    QgsFields,
+    QgsGeometry,
+    QgsMapLayerUtils,
+    QgsProviderConnectionException,
+    QgsProviderRegistry,
+    QgsSettings,
+    QgsTask,
+    QgsVectorLayer,
+    QgsWkbTypes,
+)
+from qgis.testing import start_app
 
 
 class TestPyQgsProviderConnectionBase():
@@ -248,7 +249,7 @@ class TestPyQgsProviderConnectionBase():
             # Check executeSql
             if capabilities & QgsAbstractDatabaseProviderConnection.ExecuteSql:
                 if schema:
-                    table = "\"%s\".\"myNewAspatialTable\"" % schema
+                    table = f"\"{schema}\".\"myNewAspatialTable\""
                 else:
                     table = 'myNewAspatialTable'
 
@@ -261,7 +262,7 @@ class TestPyQgsProviderConnectionBase():
                 )
                 res = conn.executeSql(sql)
                 self.assertEqual(res, [])
-                sql = "SELECT \"string_t\", \"long_t\", \"double_t\", \"integer_t\", \"date_t\", \"datetime_t\" FROM %s" % table
+                sql = f"SELECT \"string_t\", \"long_t\", \"double_t\", \"integer_t\", \"date_t\", \"datetime_t\" FROM {table}"
                 res = conn.executeSql(sql)
 
                 expected_date = QtCore.QDate(2019, 7, 8)
@@ -311,7 +312,7 @@ class TestPyQgsProviderConnectionBase():
                 self.assertFalse(res.hasNextRow())
 
                 # Test time_t
-                sql = "SELECT \"time_t\" FROM %s" % table
+                sql = f"SELECT \"time_t\" FROM {table}"
                 res = conn.executeSql(sql)
 
                 # This does not work in MSSQL and returns a QByteArray, we have no way to know that it is a time
@@ -323,7 +324,7 @@ class TestPyQgsProviderConnectionBase():
                     table, 'N' if self.providerKey == 'mssql' else '')
                 res = conn.executeSql(sql)
                 self.assertEqual(res, [])
-                sql = "SELECT \"string_t\", \"integer_t\" FROM %s" % table
+                sql = f"SELECT \"string_t\", \"integer_t\" FROM {table}"
                 res = conn.executeSql(sql)
                 self.assertEqual(res, [])
 

@@ -9,32 +9,32 @@ __author__ = 'Nyall Dawson'
 __date__ = '2015-12-07'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
 
-from qgis.core import (QgsSettings,
-                       QgsVectorLayer,
-                       QgsFeatureRequest,
-                       QgsFeature,
-                       QgsField,
-                       QgsFields,
-                       QgsFieldConstraints,
-                       QgsDataSourceUri,
-                       QgsWkbTypes,
-                       QgsGeometry,
-                       QgsPointXY,
-                       QgsRectangle,
-                       QgsProviderRegistry,
-                       NULL,
-                       QgsVectorLayerExporter,
-                       QgsCoordinateReferenceSystem,
-                       QgsDataProvider)
-
-from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir
-from utilities import unitTestDataPath
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QDate, QDateTime, QDir, QTime, QVariant
+from qgis.core import (
+    NULL,
+    QgsCoordinateReferenceSystem,
+    QgsDataProvider,
+    QgsDataSourceUri,
+    QgsFeature,
+    QgsFeatureRequest,
+    QgsField,
+    QgsFieldConstraints,
+    QgsGeometry,
+    QgsPointXY,
+    QgsProviderRegistry,
+    QgsRectangle,
+    QgsSettings,
+    QgsVectorLayer,
+    QgsVectorLayerExporter,
+    QgsWkbTypes,
+)
 from qgis.testing import start_app, unittest
+
 from providertestbase import ProviderTestCase
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -430,7 +430,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(errmsg)
 
         mFilePath = QDir.toNativeSeparators(
-            '{}/symbol_layer/{}.qml'.format(unitTestDataPath(), "singleSymbol"))
+            f"{unitTestDataPath()}/symbol_layer/singleSymbol.qml")
         status = vl.loadNamedStyle(mFilePath)
         self.assertTrue(status)
 

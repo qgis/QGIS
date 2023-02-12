@@ -13,31 +13,27 @@ __author__ = 'Alessandro Pasotti'
 __date__ = '20/08/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
-import qgis  # NOQA
-
-from osgeo import gdal
-from osgeo import osr
-import numpy as np
+import os
 import shutil
 
-import os
-
+import numpy as np
+import qgis  # NOQA
+from osgeo import gdal, osr
 from qgis.PyQt.QtCore import QTemporaryDir, QVariant
 from qgis.PyQt.QtGui import QColor
-
-
-from qgis.core import (Qgis,
-                       QgsProject,
-                       QgsRasterLayer,
-                       QgsRasterAttributeTable,
-                       QgsPalettedRasterRenderer,
-                       QgsSingleBandPseudoColorRenderer,
-                       QgsPresetSchemeColorRamp,
-                       )
-
+from qgis.core import (
+    Qgis,
+    QgsPalettedRasterRenderer,
+    QgsPresetSchemeColorRamp,
+    QgsProject,
+    QgsRasterAttributeTable,
+    QgsRasterLayer,
+    QgsSingleBandPseudoColorRenderer,
+)
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
 from qgis.testing.mocked import get_iface
+
+from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
 # not used in this test

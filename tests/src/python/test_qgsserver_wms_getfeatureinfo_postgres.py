@@ -16,22 +16,25 @@ __copyright__ = 'Copyright 2021, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import os
-import tempfile
 
 # Needed on Qt 5 so that the serialization of XML is consistent among all
 # executions
 os.environ['QT_HASH_SEED'] = '1'
 
-import re
+import json
 import urllib.parse
 import xml.etree.ElementTree as ET
-import json
 
-from qgis.testing import unittest
-
-from test_qgsserver_wms import TestQgsServerWMSTestBase
-from qgis.core import QgsProject, QgsVectorLayer, QgsFeatureRequest, QgsExpression, QgsProviderRegistry
+from qgis.core import (
+    QgsExpression,
+    QgsFeatureRequest,
+    QgsProject,
+    QgsProviderRegistry,
+    QgsVectorLayer,
+)
 from qgis.server import QgsBufferServerRequest, QgsBufferServerResponse
+from qgis.testing import unittest
+from test_qgsserver_wms import TestQgsServerWMSTestBase
 
 
 class TestQgsServerWMSGetFeatureInfoPG(TestQgsServerWMSTestBase):

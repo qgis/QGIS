@@ -28,6 +28,9 @@
 #include "qgscoordinatetransform.h"
 #include "qgsdoublevalidator.h"
 #include "qgspanelwidgetstack.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
+
 
 #include <QClipboard>
 #include <QLabel>
@@ -42,7 +45,7 @@
 #include <QStackedWidget>
 #include <QMenu>
 
-const QgsSettingsEntryBool *QgsVertexEditor::settingAutoPopupVertexEditorDock = new QgsSettingsEntryBool( QStringLiteral( "auto_popup_vertex_editor_dock" ), QgsSettings::sTreeDigitizing, true, QStringLiteral( "Whether the auto-popup behavior of the vertex editor dock should be enabled" ) );
+const QgsSettingsEntryBool *QgsVertexEditor::settingAutoPopupVertexEditorDock = new QgsSettingsEntryBool( QStringLiteral( "auto-popup-vertex-editor-dock" ), QgsSettingsTree::sTreeDigitizing, true, QStringLiteral( "Whether the auto-popup behavior of the vertex editor dock should be enabled" ) );
 
 static const int MIN_RADIUS_ROLE = Qt::UserRole + 1;
 

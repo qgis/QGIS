@@ -16,6 +16,7 @@
 #include "qgssettingstreenode.h"
 #include "qgssettingsentryimpl.h"
 #include "qgsexception.h"
+#include "qgssettings.h"
 
 #include <QDir>
 

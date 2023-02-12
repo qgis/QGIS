@@ -9,21 +9,21 @@ __author__ = 'Denis Rouzaud'
 __date__ = '3/09/2019'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
-import qgis  # NOQA
 import random
 
+import qgis  # NOQA
 from qgis.PyQt.QtCore import QLocale
-from qgis.testing import unittest, start_app
 from qgis.core import (
-    QgsClassificationMethod,
-    QgsClassificationLogarithmic,
-    QgsClassificationJenks,
     QgsClassificationFixedInterval,
+    QgsClassificationJenks,
+    QgsClassificationLogarithmic,
+    QgsClassificationMethod,
     QgsFeature,
-    QgsVectorLayer,
+    QgsGeometry,
     QgsPointXY,
-    QgsGeometry
+    QgsVectorLayer,
 )
+from qgis.testing import start_app, unittest
 
 start_app()
 
@@ -161,6 +161,21 @@ class TestQgsClassificationMethods(unittest.TestCase):
         self.assertEqual(len(r), 1)
         self.assertEqual(QgsClassificationMethod.rangesToBreaks(r),
                          [57.0])
+
+    def testQgsClassificationFixedIntervalLabelForRange(self):
+
+        m = QgsClassificationFixedInterval()
+
+        # lowerValue, upperValue, labelFormat, expected
+        cases = (
+            (1, 2, '%1 - %2', '1 - 2'),
+            (1, 2, '%1', '1'),
+            (1, 2, '%2', '2'),
+        )
+
+        for lowerValue, upperValue, labelFormat, expected in cases:
+            m.setLabelFormat(labelFormat)
+            self.assertEqual(m.labelForRange(lowerValue, upperValue), expected)
 
 
 if __name__ == "__main__":

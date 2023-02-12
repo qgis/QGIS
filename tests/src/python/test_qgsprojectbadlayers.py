@@ -9,33 +9,27 @@ __author__ = 'Alessandro Pasotti'
 __date__ = '20/10/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
-import os
 import filecmp
+import os
+from shutil import copyfile
 
 import qgis  # NOQA
-
-from qgis.core import (QgsProject,
-                       QgsVectorLayer,
-                       QgsCoordinateTransform,
-                       QgsMapSettings,
-                       QgsRasterLayer,
-                       QgsMapLayer,
-                       QgsRectangle,
-                       QgsDataProvider,
-                       QgsReadWriteContext,
-                       QgsCoordinateReferenceSystem,
-                       )
-from qgis.gui import (QgsLayerTreeMapCanvasBridge,
-                      QgsMapCanvas)
-
-from qgis.PyQt.QtGui import QFont, QColor
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtCore import QT_VERSION_STR, QTemporaryDir, QSize
+from qgis.PyQt.QtCore import QSize, QTemporaryDir
+from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtXml import QDomDocument, QDomNode
-
+from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsDataProvider,
+    QgsMapSettings,
+    QgsProject,
+    QgsRasterLayer,
+    QgsReadWriteContext,
+    QgsRectangle,
+    QgsVectorLayer,
+)
 from qgis.testing import start_app, unittest
-from utilities import (unitTestDataPath, renderMapToImage)
-from shutil import copyfile
+
+from utilities import renderMapToImage, unitTestDataPath
 
 app = start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -97,7 +91,7 @@ class TestQgsProjectBadLayers(unittest.TestCase):
         p = QgsProject.instance()
         temp_dir = QTemporaryDir()
         for ext in ('shp', 'dbf', 'shx', 'prj'):
-            copyfile(os.path.join(TEST_DATA_DIR, 'lines.%s' % ext), os.path.join(temp_dir.path(), 'lines.%s' % ext))
+            copyfile(os.path.join(TEST_DATA_DIR, f'lines.{ext}'), os.path.join(temp_dir.path(), f'lines.{ext}'))
         copyfile(os.path.join(TEST_DATA_DIR, 'raster', 'band1_byte_ct_epsg4326.tif'), os.path.join(temp_dir.path(), 'band1_byte_ct_epsg4326.tif'))
         copyfile(os.path.join(TEST_DATA_DIR, 'raster', 'band1_byte_ct_epsg4326.tif'), os.path.join(temp_dir.path(), 'band1_byte_ct_epsg4326_copy.tif'))
         l = QgsVectorLayer(os.path.join(temp_dir.path(), 'lines.shp'), 'lines', 'ogr')
@@ -175,7 +169,7 @@ class TestQgsProjectBadLayers(unittest.TestCase):
         temp_dir = QTemporaryDir()
         p = QgsProject.instance()
         for ext in ('qgs', 'gpkg'):
-            copyfile(os.path.join(TEST_DATA_DIR, 'projects', 'relation_reference_test.%s' % ext), os.path.join(temp_dir.path(), 'relation_reference_test.%s' % ext))
+            copyfile(os.path.join(TEST_DATA_DIR, 'projects', f'relation_reference_test.{ext}'), os.path.join(temp_dir.path(), f'relation_reference_test.{ext}'))
 
         # Load the good project
         project_path = os.path.join(temp_dir.path(), 'relation_reference_test.qgs')

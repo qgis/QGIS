@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """QGIS Unit test utils for QgsFeatureSource subclasses.
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -7,33 +6,27 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from builtins import str
-from builtins import object
 
 __author__ = 'Nyall Dawson'
 __date__ = '2017-05-25'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
+from qgis.PyQt.QtCore import QDate, QDateTime, Qt, QTime
 from qgis.core import (
-    QgsRectangle,
-    QgsFeatureRequest,
-    QgsFeature,
-    QgsWkbTypes,
-    QgsProject,
-    QgsGeometry,
-    QgsAbstractFeatureIterator,
-    QgsExpressionContextScope,
-    QgsExpressionContext,
-    QgsVectorLayerFeatureSource,
+    NULL,
     QgsCoordinateReferenceSystem,
-    NULL
+    QgsFeature,
+    QgsFeatureRequest,
+    QgsGeometry,
+    QgsProject,
+    QgsRectangle,
+    QgsWkbTypes,
 )
-from qgis.PyQt.QtCore import Qt, QDate, QTime, QDateTime
 
 from utilities import compareWkt
 
 
-class FeatureSourceTestCase(object):
+class FeatureSourceTestCase:
     """
     This is a collection of tests for QgsFeatureSources subclasses and kept generic.
     To make use of it, subclass it and set self.source to a QgsFeatureSource you want to test.
@@ -130,7 +123,7 @@ class FeatureSourceTestCase(object):
             else:
                 expected_geometries[i] = None
 
-        self.assertEqual(attributes, expected_attributes, 'Expected {}, got {}'.format(expected_attributes, attributes))
+        self.assertEqual(attributes, expected_attributes, f'Expected {expected_attributes}, got {attributes}')
 
         self.assertEqual(len(expected_geometries), len(geometries))
 
@@ -141,18 +134,18 @@ class FeatureSourceTestCase(object):
                                                                                                                  geometries[
                                                                                                                      pk])
             else:
-                self.assertFalse(geometries[pk], 'Expected null geometry for {}'.format(pk))
+                self.assertFalse(geometries[pk], f'Expected null geometry for {pk}')
 
     def assert_query(self, source, expression, expected):
         request = QgsFeatureRequest().setFilterExpression(expression).setFlags(QgsFeatureRequest.NoGeometry | QgsFeatureRequest.IgnoreStaticNodesDuringExpressionCompilation)
-        result = set([f['pk'] for f in source.getFeatures(request)])
+        result = {f['pk'] for f in source.getFeatures(request)}
         assert set(expected) == result, 'Expected {} and got {} when testing expression "{}"'.format(set(expected),
                                                                                                      result, expression)
         self.assertTrue(all(f.isValid() for f in source.getFeatures(request)))
 
         # Also check that filter works when referenced fields are not being retrieved by request
-        result = set([f['pk'] for f in source.getFeatures(
-            QgsFeatureRequest().setFilterExpression(expression).setSubsetOfAttributes(['pk'], self.source.fields()).setFlags(QgsFeatureRequest.IgnoreStaticNodesDuringExpressionCompilation))])
+        result = {f['pk'] for f in source.getFeatures(
+            QgsFeatureRequest().setFilterExpression(expression).setSubsetOfAttributes(['pk'], self.source.fields()).setFlags(QgsFeatureRequest.IgnoreStaticNodesDuringExpressionCompilation))}
         assert set(
             expected) == result, 'Expected {} and got {} when testing expression "{}" using empty attribute subset'.format(
             set(expected), result, expression)
@@ -446,7 +439,7 @@ class FeatureSourceTestCase(object):
         # Order by guaranteed to fail
         request = QgsFeatureRequest().addOrderBy('not a valid expression*', False)
         values = [f['pk'] for f in self.source.getFeatures(request)]
-        self.assertEqual(set(values), set([5, 4, 3, 2, 1]))
+        self.assertEqual(set(values), {5, 4, 3, 2, 1})
 
         # Multiple order bys and boolean
         request = QgsFeatureRequest().addOrderBy('pk > 2').addOrderBy('pk', False)
@@ -492,7 +485,7 @@ class FeatureSourceTestCase(object):
 
     def testGetFeaturesFidTests(self):
         fids = [f.id() for f in self.source.getFeatures()]
-        assert len(fids) == 5, 'Expected 5 features, got {} instead'.format(len(fids))
+        assert len(fids) == 5, f'Expected 5 features, got {len(fids)} instead'
         for id in fids:
             features = [f for f in self.source.getFeatures(QgsFeatureRequest().setFilterFid(id))]
             self.assertEqual(len(features), 1)
@@ -522,34 +515,34 @@ class FeatureSourceTestCase(object):
 
         # empty list = no features
         request = QgsFeatureRequest().setFilterFids([])
-        result = set([f.id() for f in self.source.getFeatures(request)])
+        result = {f.id() for f in self.source.getFeatures(request)}
         self.assertFalse(result)
 
         request = QgsFeatureRequest().setFilterFids([fids[0], fids[2]])
-        result = set([f.id() for f in self.source.getFeatures(request)])
+        result = {f.id() for f in self.source.getFeatures(request)}
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
-        expected = set([fids[0], fids[2]])
-        assert result == expected, 'Expected {} and got {} when testing for feature IDs filter'.format(expected, result)
+        expected = {fids[0], fids[2]}
+        assert result == expected, f'Expected {expected} and got {result} when testing for feature IDs filter'
         self.assertTrue(all_valid)
 
         # test that results match QgsFeatureRequest.acceptFeature
         for f in self.source.getFeatures():
             self.assertEqual(request.acceptFeature(f), f.id() in expected)
 
-        result = set(
-            [f.id() for f in self.source.getFeatures(QgsFeatureRequest().setFilterFids([fids[1], fids[3], fids[4]]))])
-        expected = set([fids[1], fids[3], fids[4]])
-        assert result == expected, 'Expected {} and got {} when testing for feature IDs filter'.format(expected, result)
+        result = {
+            f.id() for f in self.source.getFeatures(QgsFeatureRequest().setFilterFids([fids[1], fids[3], fids[4]]))}
+        expected = {fids[1], fids[3], fids[4]}
+        assert result == expected, f'Expected {expected} and got {result} when testing for feature IDs filter'
 
         # sources should ignore non-existent fids
-        result = set([f.id() for f in self.source.getFeatures(
-            QgsFeatureRequest().setFilterFids([-101, fids[1], -102, fids[3], -103, fids[4], -104]))])
-        expected = set([fids[1], fids[3], fids[4]])
-        assert result == expected, 'Expected {} and got {} when testing for feature IDs filter'.format(expected, result)
+        result = {f.id() for f in self.source.getFeatures(
+            QgsFeatureRequest().setFilterFids([-101, fids[1], -102, fids[3], -103, fids[4], -104]))}
+        expected = {fids[1], fids[3], fids[4]}
+        assert result == expected, f'Expected {expected} and got {result} when testing for feature IDs filter'
 
-        result = set([f.id() for f in self.source.getFeatures(QgsFeatureRequest().setFilterFids([]))])
-        expected = set([])
-        assert result == expected, 'Expected {} and got {} when testing for feature IDs filter'.format(expected, result)
+        result = {f.id() for f in self.source.getFeatures(QgsFeatureRequest().setFilterFids([]))}
+        expected = set()
+        assert result == expected, f'Expected {expected} and got {result} when testing for feature IDs filter'
 
         # Rewind mid-way
         request = QgsFeatureRequest().setFilterFids([fids[1], fids[3], fids[4]])
@@ -577,19 +570,19 @@ class FeatureSourceTestCase(object):
         request = QgsFeatureRequest().setFilterRect(extent)
         features = [f['pk'] for f in self.source.getFeatures(request)]
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
-        assert set(features) == set([2, 4]), 'Got {} instead'.format(features)
+        assert set(features) == {2, 4}, f'Got {features} instead'
         self.assertTrue(all_valid)
 
         # test that results match QgsFeatureRequest.acceptFeature
         for f in self.source.getFeatures():
-            self.assertEqual(request.acceptFeature(f), f['pk'] in set([2, 4]))
+            self.assertEqual(request.acceptFeature(f), f['pk'] in {2, 4})
 
         # test with an empty rectangle
         extent = QgsRectangle()
         request = QgsFeatureRequest().setFilterRect(extent)
         features = [f['pk'] for f in self.source.getFeatures(request)]
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
-        assert set(features) == set([1, 2, 3, 4, 5]), 'Got {} instead'.format(features)
+        assert set(features) == {1, 2, 3, 4, 5}, f'Got {features} instead'
         self.assertTrue(all_valid)
 
         # ExactIntersection flag set, but no filter rect set. Should be ignored.
@@ -597,7 +590,7 @@ class FeatureSourceTestCase(object):
         request.setFlags(QgsFeatureRequest.ExactIntersect)
         features = [f['pk'] for f in self.source.getFeatures(request)]
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
-        assert set(features) == set([1, 2, 3, 4, 5]), 'Got {} instead'.format(features)
+        assert set(features) == {1, 2, 3, 4, 5}, f'Got {features} instead'
         self.assertTrue(all_valid)
 
     def testGetFeaturesFilterRectTestsNoGeomFlag(self):
@@ -612,19 +605,19 @@ class FeatureSourceTestCase(object):
 
         features = [f['pk'] for f in self.source.getFeatures(request)]
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
-        assert set(features) == set([2, 4]), 'Got {} instead'.format(features)
+        assert set(features) == {2, 4}, f'Got {features} instead'
         self.assertTrue(all_valid)
 
         # test that results match QgsFeatureRequest.acceptFeature
         for f in self.source.getFeatures():
-            self.assertEqual(request.acceptFeature(f), f['pk'] in set([2, 4]))
+            self.assertEqual(request.acceptFeature(f), f['pk'] in {2, 4})
 
         # test with an empty rectangle
         extent = QgsRectangle()
         request = QgsFeatureRequest().setFilterRect(extent).setFlags(QgsFeatureRequest.NoGeometry)
         features = [f['pk'] for f in self.source.getFeatures(request)]
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
-        assert set(features) == set([1, 2, 3, 4, 5]), 'Got {} instead'.format(features)
+        assert set(features) == {1, 2, 3, 4, 5}, f'Got {features} instead'
         self.assertTrue(all_valid)
 
         # ExactIntersection flag set, but no filter rect set. Should be ignored.
@@ -632,13 +625,13 @@ class FeatureSourceTestCase(object):
         request.setFlags(QgsFeatureRequest.ExactIntersect | QgsFeatureRequest.NoGeometry)
         features = [f['pk'] for f in self.source.getFeatures(request)]
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
-        assert set(features) == set([1, 2, 3, 4, 5]), 'Got {} instead'.format(features)
+        assert set(features) == {1, 2, 3, 4, 5}, f'Got {features} instead'
         self.assertTrue(all_valid)
 
     def testRectAndExpression(self):
         extent = QgsRectangle(-70, 67, -60, 80)
         request = QgsFeatureRequest().setFilterExpression('"cnt">200').setFilterRect(extent)
-        result = set([f['pk'] for f in self.source.getFeatures(request)])
+        result = {f['pk'] for f in self.source.getFeatures(request)}
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
         expected = [4]
         assert set(
@@ -648,7 +641,7 @@ class FeatureSourceTestCase(object):
 
         # shouldn't matter what order this is done in
         request = QgsFeatureRequest().setFilterRect(extent).setFilterExpression('"cnt">200')
-        result = set([f['pk'] for f in self.source.getFeatures(request)])
+        result = {f['pk'] for f in self.source.getFeatures(request)}
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
         expected = [4]
         assert set(
@@ -664,22 +657,22 @@ class FeatureSourceTestCase(object):
         request = QgsFeatureRequest().setDistanceWithin(QgsGeometry.fromWkt('LineString (-63.2 69.9, -68.47 69.86, -69.74 79.28)'), 1.7)
         features = [f['pk'] for f in self.source.getFeatures(request)]
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
-        assert set(features) == set([2, 5]), 'Got {} instead'.format(features)
+        assert set(features) == {2, 5}, f'Got {features} instead'
         self.assertTrue(all_valid)
 
         # test that results match QgsFeatureRequest.acceptFeature
         for f in self.source.getFeatures():
-            self.assertEqual(request.acceptFeature(f), f['pk'] in set([2, 5]))
+            self.assertEqual(request.acceptFeature(f), f['pk'] in {2, 5})
 
         request = QgsFeatureRequest().setDistanceWithin(QgsGeometry.fromWkt('LineString (-63.2 69.9, -68.47 69.86, -69.74 79.28)'), 0.6)
         features = [f['pk'] for f in self.source.getFeatures(request)]
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
-        assert set(features) == set([2]), 'Got {} instead'.format(features)
+        assert set(features) == {2}, f'Got {features} instead'
         self.assertTrue(all_valid)
 
         # test that results match QgsFeatureRequest.acceptFeature
         for f in self.source.getFeatures():
-            self.assertEqual(request.acceptFeature(f), f['pk'] in set([2]))
+            self.assertEqual(request.acceptFeature(f), f['pk'] in {2})
 
         # in different crs
         request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3857'), QgsProject.instance().transformContext()).setDistanceWithin(QgsGeometry.fromWkt('LineString (-7035391 11036245, -7622045 11023301, -7763421 15092839)'), 250000)
@@ -693,45 +686,45 @@ class FeatureSourceTestCase(object):
             QgsGeometry.fromWkt('Point (-68.1 78.1)'), 3.6)
         features = [f['pk'] for f in self.source.getFeatures(request)]
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
-        assert set(features) == set([4, 5]), 'Got {} instead'.format(features)
+        assert set(features) == {4, 5}, f'Got {features} instead'
         self.assertTrue(all_valid)
 
         # test that results match QgsFeatureRequest.acceptFeature
         for f in self.source.getFeatures():
-            self.assertEqual(request.acceptFeature(f), f['pk'] in set([4, 5]))
+            self.assertEqual(request.acceptFeature(f), f['pk'] in {4, 5})
 
         request = QgsFeatureRequest().setDistanceWithin(
             QgsGeometry.fromWkt('Polygon ((-64.47 79.59, -64.37 73.59, -72.69 73.61, -72.73 68.07, -62.51 68.01, -62.71 79.55, -64.47 79.59))'), 0)
         features = [f['pk'] for f in self.source.getFeatures(request)]
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
-        assert set(features) == set([2]), 'Got {} instead'.format(features)
+        assert set(features) == {2}, f'Got {features} instead'
         self.assertTrue(all_valid)
 
         # test that results match QgsFeatureRequest.acceptFeature
         for f in self.source.getFeatures():
-            self.assertEqual(request.acceptFeature(f), f['pk'] in set([2]))
+            self.assertEqual(request.acceptFeature(f), f['pk'] in {2})
 
         request = QgsFeatureRequest().setDistanceWithin(
             QgsGeometry.fromWkt('Polygon ((-64.47 79.59, -64.37 73.59, -72.69 73.61, -72.73 68.07, -62.51 68.01, -62.71 79.55, -64.47 79.59))'), 1.3)
         features = [f['pk'] for f in self.source.getFeatures(request)]
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
-        assert set(features) == set([2, 4]), 'Got {} instead'.format(features)
+        assert set(features) == {2, 4}, f'Got {features} instead'
         self.assertTrue(all_valid)
 
         # test that results match QgsFeatureRequest.acceptFeature
         for f in self.source.getFeatures():
-            self.assertEqual(request.acceptFeature(f), f['pk'] in set([2, 4]))
+            self.assertEqual(request.acceptFeature(f), f['pk'] in {2, 4})
 
         request = QgsFeatureRequest().setDistanceWithin(
             QgsGeometry.fromWkt('Polygon ((-64.47 79.59, -64.37 73.59, -72.69 73.61, -72.73 68.07, -62.51 68.01, -62.71 79.55, -64.47 79.59))'), 2.3)
         features = [f['pk'] for f in self.source.getFeatures(request)]
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
-        assert set(features) == set([1, 2, 4]), 'Got {} instead'.format(features)
+        assert set(features) == {1, 2, 4}, f'Got {features} instead'
         self.assertTrue(all_valid)
 
         # test that results match QgsFeatureRequest.acceptFeature
         for f in self.source.getFeatures():
-            self.assertEqual(request.acceptFeature(f), f['pk'] in set([1, 2, 4]))
+            self.assertEqual(request.acceptFeature(f), f['pk'] in {1, 2, 4})
 
         # test with linestring whose bounding box overlaps all query
         # points but being only within one of them, which we hope will
@@ -749,14 +742,14 @@ class FeatureSourceTestCase(object):
         request = QgsFeatureRequest().setFilterExpression(
             'attribute($currentfeature,\'cnt\')>200 and $x>=-70 and $x<=-60').setSubsetOfAttributes([]).setFlags(
             QgsFeatureRequest.NoGeometry | QgsFeatureRequest.IgnoreStaticNodesDuringExpressionCompilation)
-        result = set([f['pk'] for f in self.source.getFeatures(request)])
+        result = {f['pk'] for f in self.source.getFeatures(request)}
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
         self.assertEqual(result, {4})
         self.assertTrue(all_valid)
 
         request = QgsFeatureRequest().setFilterExpression(
             'attribute($currentfeature,\'cnt\')>200 and $x>=-70 and $x<=-60').setFlags(QgsFeatureRequest.IgnoreStaticNodesDuringExpressionCompilation)
-        result = set([f['pk'] for f in self.source.getFeatures(request)])
+        result = {f['pk'] for f in self.source.getFeatures(request)}
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
         self.assertEqual(result, {4})
         self.assertTrue(all_valid)
@@ -771,7 +764,7 @@ class FeatureSourceTestCase(object):
 
         extent = QgsRectangle(-70, 67, -60, 80)
         request = QgsFeatureRequest().setFilterFids([ids[3], ids[4]]).setFilterRect(extent)
-        result = set([f['pk'] for f in self.source.getFeatures(request)])
+        result = {f['pk'] for f in self.source.getFeatures(request)}
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
         expected = [4]
         assert set(
@@ -781,7 +774,7 @@ class FeatureSourceTestCase(object):
 
         # shouldn't matter what order this is done in
         request = QgsFeatureRequest().setFilterRect(extent).setFilterFids([ids[3], ids[4]])
-        result = set([f['pk'] for f in self.source.getFeatures(request)])
+        result = {f['pk'] for f in self.source.getFeatures(request)}
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
         expected = [4]
         assert set(
@@ -830,18 +823,18 @@ class FeatureSourceTestCase(object):
     def testGetFeaturesLimit(self):
         it = self.source.getFeatures(QgsFeatureRequest().setLimit(2))
         features = [f['pk'] for f in it]
-        assert len(features) == 2, 'Expected two features, got {} instead'.format(len(features))
+        assert len(features) == 2, f'Expected two features, got {len(features)} instead'
         # fetch one feature
         feature = QgsFeature()
         assert not it.nextFeature(feature), 'Expected no feature after limit, got one'
         it.rewind()
         features = [f['pk'] for f in it]
-        assert len(features) == 2, 'Expected two features after rewind, got {} instead'.format(len(features))
+        assert len(features) == 2, f'Expected two features after rewind, got {len(features)} instead'
         it.rewind()
         assert it.nextFeature(feature), 'Expected feature after rewind, got none'
         it.rewind()
         features = [f['pk'] for f in it]
-        assert len(features) == 2, 'Expected two features after rewind, got {} instead'.format(len(features))
+        assert len(features) == 2, f'Expected two features after rewind, got {len(features)} instead'
         # test with expression, both with and without compilation
         try:
             self.disableCompiler()
@@ -849,7 +842,7 @@ class FeatureSourceTestCase(object):
             pass
         it = self.source.getFeatures(QgsFeatureRequest().setLimit(2).setFilterExpression('cnt <= 100'))
         features = [f['pk'] for f in it]
-        assert set(features) == set([1, 5]), 'Expected [1,5] for expression and feature limit, Got {} instead'.format(
+        assert set(features) == {1, 5}, 'Expected [1,5] for expression and feature limit, Got {} instead'.format(
             features)
         try:
             self.enableCompiler()
@@ -857,12 +850,12 @@ class FeatureSourceTestCase(object):
             pass
         it = self.source.getFeatures(QgsFeatureRequest().setLimit(2).setFilterExpression('cnt <= 100'))
         features = [f['pk'] for f in it]
-        assert set(features) == set([1, 5]), 'Expected [1,5] for expression and feature limit, Got {} instead'.format(
+        assert set(features) == {1, 5}, 'Expected [1,5] for expression and feature limit, Got {} instead'.format(
             features)
         # limit to more features than exist
         it = self.source.getFeatures(QgsFeatureRequest().setLimit(3).setFilterExpression('cnt <= 100'))
         features = [f['pk'] for f in it]
-        assert set(features) == set([1, 5]), 'Expected [1,5] for expression and feature limit, Got {} instead'.format(
+        assert set(features) == {1, 5}, 'Expected [1,5] for expression and feature limit, Got {} instead'.format(
             features)
         # limit to less features than possible
         it = self.source.getFeatures(QgsFeatureRequest().setLimit(1).setFilterExpression('cnt <= 100'))
@@ -890,28 +883,28 @@ class FeatureSourceTestCase(object):
         """ Test that expected results are returned when using subsets of attributes """
 
         tz = Qt.UTC if self.treat_datetime_tz_as_utc() else Qt.LocalTime
-        tests = {'pk': set([1, 2, 3, 4, 5]),
-                 'cnt': set([-200, 300, 100, 200, 400]),
-                 'name': set(['Pear', 'Orange', 'Apple', 'Honey', NULL]),
-                 'name2': set(['NuLl', 'PEaR', 'oranGe', 'Apple', 'Honey']),
-                 'dt': set([NULL, '2021-05-04 13:13:14' if self.treat_datetime_as_string() else QDateTime(2021, 5, 4, 13, 13, 14, 0, tz) if not self.treat_datetime_as_string() else '2021-05-04 13:13:14',
-                            '2020-05-04 12:14:14' if self.treat_datetime_as_string() else QDateTime(2020, 5, 4, 12, 14, 14, 0, tz) if not self.treat_datetime_as_string() else '2020-05-04 12:14:14',
-                            '2020-05-04 12:13:14' if self.treat_datetime_as_string() else QDateTime(2020, 5, 4, 12, 13, 14, 0, tz) if not self.treat_datetime_as_string() else '2020-05-04 12:13:14',
-                            '2020-05-03 12:13:14' if self.treat_datetime_as_string() else QDateTime(2020, 5, 3, 12, 13, 14, 0, tz) if not self.treat_datetime_as_string() else '2020-05-03 12:13:14']),
-                 'date': set([NULL,
-                              '2020-05-02' if self.treat_date_as_string() else QDate(2020, 5, 2) if not self.treat_date_as_datetime() else QDateTime(2020, 5, 2, 0, 0, 0),
-                              '2020-05-03' if self.treat_date_as_string() else QDate(2020, 5, 3) if not self.treat_date_as_datetime() else QDateTime(2020, 5, 3, 0, 0, 0),
-                              '2020-05-04' if self.treat_date_as_string() else QDate(2020, 5, 4) if not self.treat_date_as_datetime() else QDateTime(2020, 5, 4, 0, 0, 0),
-                              '2021-05-04' if self.treat_date_as_string() else QDate(2021, 5, 4) if not self.treat_date_as_datetime() else QDateTime(2021, 5, 4, 0, 0, 0)]),
-                 'time': set([QTime(12, 13, 1) if not self.treat_time_as_string() else '12:13:01',
-                              QTime(12, 14, 14) if not self.treat_time_as_string() else '12:14:14',
-                              QTime(12, 13, 14) if not self.treat_time_as_string() else '12:13:14',
-                              QTime(13, 13, 14) if not self.treat_time_as_string() else '13:13:14', NULL])}
+        tests = {'pk': {1, 2, 3, 4, 5},
+                 'cnt': {-200, 300, 100, 200, 400},
+                 'name': {'Pear', 'Orange', 'Apple', 'Honey', NULL},
+                 'name2': {'NuLl', 'PEaR', 'oranGe', 'Apple', 'Honey'},
+                 'dt': {NULL, '2021-05-04 13:13:14' if self.treat_datetime_as_string() else QDateTime(2021, 5, 4, 13, 13, 14, 0, tz) if not self.treat_datetime_as_string() else '2021-05-04 13:13:14',
+                        '2020-05-04 12:14:14' if self.treat_datetime_as_string() else QDateTime(2020, 5, 4, 12, 14, 14, 0, tz) if not self.treat_datetime_as_string() else '2020-05-04 12:14:14',
+                        '2020-05-04 12:13:14' if self.treat_datetime_as_string() else QDateTime(2020, 5, 4, 12, 13, 14, 0, tz) if not self.treat_datetime_as_string() else '2020-05-04 12:13:14',
+                        '2020-05-03 12:13:14' if self.treat_datetime_as_string() else QDateTime(2020, 5, 3, 12, 13, 14, 0, tz) if not self.treat_datetime_as_string() else '2020-05-03 12:13:14'},
+                 'date': {NULL,
+                          '2020-05-02' if self.treat_date_as_string() else QDate(2020, 5, 2) if not self.treat_date_as_datetime() else QDateTime(2020, 5, 2, 0, 0, 0),
+                          '2020-05-03' if self.treat_date_as_string() else QDate(2020, 5, 3) if not self.treat_date_as_datetime() else QDateTime(2020, 5, 3, 0, 0, 0),
+                          '2020-05-04' if self.treat_date_as_string() else QDate(2020, 5, 4) if not self.treat_date_as_datetime() else QDateTime(2020, 5, 4, 0, 0, 0),
+                          '2021-05-04' if self.treat_date_as_string() else QDate(2021, 5, 4) if not self.treat_date_as_datetime() else QDateTime(2021, 5, 4, 0, 0, 0)},
+                 'time': {QTime(12, 13, 1) if not self.treat_time_as_string() else '12:13:01',
+                          QTime(12, 14, 14) if not self.treat_time_as_string() else '12:14:14',
+                          QTime(12, 13, 14) if not self.treat_time_as_string() else '12:13:14',
+                          QTime(13, 13, 14) if not self.treat_time_as_string() else '13:13:14', NULL}}
         for field, expected in list(tests.items()):
             request = QgsFeatureRequest().setSubsetOfAttributes([field], self.source.fields())
-            result = set([f[field] for f in self.source.getFeatures(request)])
+            result = {f[field] for f in self.source.getFeatures(request)}
             all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
-            self.assertEqual(result, expected, 'Expected {}, got {}'.format(expected, result))
+            self.assertEqual(result, expected, f'Expected {expected}, got {result}')
             self.assertTrue(all_valid)
 
     def testGetFeaturesSubsetAttributes2(self):
@@ -949,38 +942,38 @@ class FeatureSourceTestCase(object):
 
     def testUniqueValues(self):
         self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('cnt'))),
-                         set([-200, 100, 200, 300, 400]))
-        assert set(['Apple', 'Honey', 'Orange', 'Pear', NULL]) == set(
+                         {-200, 100, 200, 300, 400})
+        assert {'Apple', 'Honey', 'Orange', 'Pear', NULL} == set(
             self.source.uniqueValues(self.source.fields().lookupField('name'))), 'Got {}'.format(
             set(self.source.uniqueValues(self.source.fields().lookupField('name'))))
 
         if self.treat_datetime_as_string():
             self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('dt'))),
-                             set(['2021-05-04 13:13:14', '2020-05-04 12:14:14', '2020-05-04 12:13:14', '2020-05-03 12:13:14', NULL]))
+                             {'2021-05-04 13:13:14', '2020-05-04 12:14:14', '2020-05-04 12:13:14', '2020-05-03 12:13:14', NULL})
         else:
             if self.treat_datetime_tz_as_utc():
                 self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('dt'))),
-                                 set([QDateTime(2021, 5, 4, 13, 13, 14, 0, Qt.UTC), QDateTime(2020, 5, 4, 12, 14, 14, 0, Qt.UTC),
-                                      QDateTime(2020, 5, 4, 12, 13, 14, 0, Qt.UTC), QDateTime(2020, 5, 3, 12, 13, 14, 0, Qt.UTC), NULL]))
+                                 {QDateTime(2021, 5, 4, 13, 13, 14, 0, Qt.UTC), QDateTime(2020, 5, 4, 12, 14, 14, 0, Qt.UTC),
+                                  QDateTime(2020, 5, 4, 12, 13, 14, 0, Qt.UTC), QDateTime(2020, 5, 3, 12, 13, 14, 0, Qt.UTC), NULL})
             else:
                 self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('dt'))),
-                                 set([QDateTime(2021, 5, 4, 13, 13, 14), QDateTime(2020, 5, 4, 12, 14, 14), QDateTime(2020, 5, 4, 12, 13, 14), QDateTime(2020, 5, 3, 12, 13, 14), NULL]))
+                                 {QDateTime(2021, 5, 4, 13, 13, 14), QDateTime(2020, 5, 4, 12, 14, 14), QDateTime(2020, 5, 4, 12, 13, 14), QDateTime(2020, 5, 3, 12, 13, 14), NULL})
 
         if self.treat_date_as_string():
             self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('date'))),
-                             set(['2020-05-03', '2020-05-04', '2021-05-04', '2020-05-02', NULL]))
+                             {'2020-05-03', '2020-05-04', '2021-05-04', '2020-05-02', NULL})
         elif self.treat_date_as_datetime():
             self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('date'))),
-                             set([QDateTime(2020, 5, 3, 0, 0, 0), QDateTime(2020, 5, 4, 0, 0, 0), QDateTime(2021, 5, 4, 0, 0, 0), QDateTime(2020, 5, 2, 0, 0, 0), NULL]))
+                             {QDateTime(2020, 5, 3, 0, 0, 0), QDateTime(2020, 5, 4, 0, 0, 0), QDateTime(2021, 5, 4, 0, 0, 0), QDateTime(2020, 5, 2, 0, 0, 0), NULL})
         else:
             self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('date'))),
-                             set([QDate(2020, 5, 3), QDate(2020, 5, 4), QDate(2021, 5, 4), QDate(2020, 5, 2), NULL]))
+                             {QDate(2020, 5, 3), QDate(2020, 5, 4), QDate(2021, 5, 4), QDate(2020, 5, 2), NULL})
         if self.treat_time_as_string():
             self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('time'))),
-                             set(['12:14:14', '13:13:14', '12:13:14', '12:13:01', NULL]))
+                             {'12:14:14', '13:13:14', '12:13:14', '12:13:01', NULL})
         else:
             self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('time'))),
-                             set([QTime(12, 14, 14), QTime(13, 13, 14), QTime(12, 13, 14), QTime(12, 13, 1), NULL]))
+                             {QTime(12, 14, 14), QTime(13, 13, 14), QTime(12, 13, 14), QTime(12, 13, 1), NULL})
 
     def testMinimumValue(self):
         self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('cnt')), -200)
@@ -1025,7 +1018,7 @@ class FeatureSourceTestCase(object):
             self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('time')), '13:13:14')
 
     def testAllFeatureIds(self):
-        ids = set([f.id() for f in self.source.getFeatures()])
+        ids = {f.id() for f in self.source.getFeatures()}
         self.assertEqual(set(self.source.allFeatureIds()), ids)
 
     def testSubsetOfAttributesWithFilterExprWithNonExistingColumn(self):

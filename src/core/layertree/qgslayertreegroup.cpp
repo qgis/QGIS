@@ -19,6 +19,7 @@
 #include "qgslayertreeutils.h"
 #include "qgsmaplayer.h"
 #include "qgsgrouplayer.h"
+#include "qgspainting.h"
 
 #include <QDomElement>
 #include <QStringList>
@@ -485,6 +486,13 @@ QgsGroupLayer *QgsLayerTreeGroup::groupLayer()
 
 void QgsLayerTreeGroup::setGroupLayer( QgsGroupLayer *layer )
 {
+  if ( QgsGroupLayer *groupLayer = qobject_cast< QgsGroupLayer * >( mGroupLayer.get() ) )
+  {
+    if ( !layer )
+    {
+      groupLayer->prepareLayersForRemovalFromGroup();
+    }
+  }
   mGroupLayer.setLayer( layer );
   refreshParentGroupLayerMembers();
 }

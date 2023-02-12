@@ -9,24 +9,25 @@ __author__ = 'Radim Blazek'
 __date__ = '20/08/2012'
 __copyright__ = 'Copyright 2012, The QGIS Project'
 
-import qgis  # NOQA
-
-import os
 import glob
+import os
 import tempfile
 
+import qgis  # NOQA
 from osgeo import gdal
-from qgis.PyQt.QtCore import QTemporaryFile, QDir
-from qgis.core import (QgsContrastEnhancement,
-                       QgsRaster,
-                       QgsRasterLayer,
-                       QgsRasterChecker,
-                       QgsRasterPipe,
-                       QgsRasterFileWriter,
-                       QgsRasterProjector,
-                       QgsRectangle)
-
+from qgis.PyQt.QtCore import QDir, QTemporaryFile
+from qgis.core import (
+    QgsContrastEnhancement,
+    QgsRaster,
+    QgsRasterChecker,
+    QgsRasterFileWriter,
+    QgsRasterLayer,
+    QgsRasterPipe,
+    QgsRasterProjector,
+    QgsRectangle,
+)
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()
@@ -85,14 +86,14 @@ class TestQgsRasterFileWriter(unittest.TestCase):
         return ok
 
     def testWrite(self):
-        for name in glob.glob("%s/raster/*.tif" % self.testDataDir):
+        for name in glob.glob(f"{self.testDataDir}/raster/*.tif"):
             baseName = os.path.basename(name)
             allOk = True
-            ok = self.write("raster/%s" % baseName)
+            ok = self.write(f"raster/{baseName}")
             if not ok:
                 allOk = False
 
-        reportFilePath = "%s/qgistest.html" % QDir.tempPath()
+        reportFilePath = f"{QDir.tempPath()}/qgistest.html"
         reportFile = open(reportFilePath, 'a')
         reportFile.write(self.report)
         reportFile.close()
@@ -169,7 +170,7 @@ class TestQgsRasterFileWriter(unittest.TestCase):
                                         provider.crs()), 0)
 
         # Check that the test geopackage contains the raster layer and compare
-        rlayer = QgsRasterLayer('GPKG:%s:imported_table' % test_gpkg)
+        rlayer = QgsRasterLayer(f'GPKG:{test_gpkg}:imported_table')
         self.assertTrue(rlayer.isValid())
         out_provider = rlayer.dataProvider()
         for i in range(3):

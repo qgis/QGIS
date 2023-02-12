@@ -24,12 +24,17 @@
 #include <QString>
 
 #include "qgis_core.h"
-#include "qgssettingsentryenumflag.h"
-#include "qgssettingsentryimpl.h"
 #include "qgspoint.h"
 #include "qgsgpsinformation.h"
 
 class QIODevice;
+
+class QgsSettingsEntryBool;
+class QgsSettingsEntryDouble;
+class QgsSettingsEntryInteger;
+class QgsSettingsEntryString;
+template<class T> class QgsSettingsEntryEnumFlag;
+
 
 #ifdef SIP_RUN
 % ModuleHeaderCode

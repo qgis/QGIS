@@ -14,40 +14,30 @@ __author__ = 'Larry Shaffer'
 __date__ = '2014/02/21'
 __copyright__ = 'Copyright 2013, The QGIS Project'
 
-import qgis  # NOQA
-
-import sys
 import os
 import subprocess
+import sys
 
-from qgis.PyQt.QtCore import QRect, QRectF, QSize, QSizeF, qDebug, QThreadPool
-from qgis.PyQt.QtGui import QImage, QColor, QPainter
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QRect, QRectF, QSize, QSizeF, qDebug
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.PyQt.QtPrintSupport import QPrinter
-from qgis.PyQt.QtSvg import QSvgRenderer, QSvgGenerator
-
-from qgis.core import (QgsLayout,
-                       QgsLayoutItemPage,
-                       QgsLayoutSize,
-                       QgsLayoutItemMap,
-                       QgsLayoutExporter,
-                       QgsMapSettings,
-                       QgsProject,
-                       QgsVectorLayerSimpleLabeling,
-                       QgsLabelingEngineSettings)
-
-
-from utilities import (
-    getTempfilePath,
-    getExecutablePath,
-    mapSettingsString
+from qgis.PyQt.QtSvg import QSvgGenerator, QSvgRenderer
+from qgis.core import (
+    QgsLabelingEngineSettings,
+    QgsLayout,
+    QgsLayoutExporter,
+    QgsLayoutItemMap,
+    QgsLayoutItemPage,
+    QgsLayoutSize,
+    QgsMapSettings,
+    QgsProject,
+    QgsVectorLayerSimpleLabeling,
 )
 
 from test_qgspallabeling_base import TestQgsPalLabeling, runSuite
-from test_qgspallabeling_tests import (
-    TestPointBase,
-    TestLineBase,
-    suiteTests
-)
+from test_qgspallabeling_tests import TestLineBase, TestPointBase, suiteTests
+from utilities import getExecutablePath, getTempfilePath, mapSettingsString
 
 # PDF-to-image utility
 # look for Poppler w/ Cairo, then muPDF
@@ -262,7 +252,7 @@ class TestLayoutBase(TestQgsPalLabeling):
         else:
             return False, ''
 
-        qDebug("_get_layout_pdf_image call: {}".format(' '.join(call)))
+        qDebug(f"_get_layout_pdf_image call: {' '.join(call)}")
         res = False
         try:
             subprocess.check_call(call)

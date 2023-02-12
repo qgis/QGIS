@@ -23,13 +23,15 @@
 
 #include "qgsapplication.h"
 #include "qgsmessagelog.h"
+#include "qgssettings.h"
 #include "qgslogger.h"
 #include "qgis.h"
-#include "qgssettings.h"
 #include "qgsnetworkdiskcache.h"
 #include "qgsauthmanager.h"
 #include "qgsnetworkreply.h"
 #include "qgsblockingnetworkrequest.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
 #include <QUrl>
 #include <QTimer>
@@ -41,7 +43,7 @@
 #include <QStandardPaths>
 #include <QUuid>
 
-const QgsSettingsEntryInteger *QgsNetworkAccessManager::settingsNetworkTimeout = new QgsSettingsEntryInteger( QStringLiteral( "network-timeout" ), QgsSettings::sTreeNetwork, 60000, QObject::tr( "Network timeout" ) );
+const QgsSettingsEntryInteger *QgsNetworkAccessManager::settingsNetworkTimeout = new QgsSettingsEntryInteger( QStringLiteral( "network-timeout" ), QgsSettingsTree::sTreeNetwork, 60000, QObject::tr( "Network timeout" ) );
 
 #ifndef QT_NO_SSL
 #include <QSslConfiguration>

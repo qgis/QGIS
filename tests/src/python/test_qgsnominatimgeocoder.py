@@ -12,16 +12,11 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 import tempfile
 
 import qgis  # NOQA
-from qgis.PyQt.QtCore import (
-    QCoreApplication,
-    QUrl
-)
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (
-    QgsSettings,
-    QgsRectangle,
     QgsNominatimGeocoder,
-    QgsGeocoderContext,
-    QgsCoordinateTransformContext
+    QgsRectangle,
+    QgsSettings,
 )
 from qgis.testing import start_app, unittest
 

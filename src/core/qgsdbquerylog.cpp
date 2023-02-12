@@ -15,6 +15,8 @@
 
 #include "qgsdbquerylog.h"
 #include "qgsapplication.h"
+#include "qgslogger.h"
+
 #include <QDateTime>
 
 //

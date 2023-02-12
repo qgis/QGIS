@@ -15,8 +15,6 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import os
-import json
-import re
 
 # Deterministic XML
 os.environ['QT_HASH_SEED'] = '1'
@@ -24,14 +22,9 @@ os.environ['QT_HASH_SEED'] = '1'
 from qgis.server import (
     QgsBufferServerRequest,
     QgsBufferServerResponse,
-    QgsServerApiContext
+    QgsServerApiContext,
 )
 from qgis.testing import unittest
-from utilities import unitTestDataPath
-from urllib import parse
-
-import tempfile
-
 from test_qgsserver import QgsServerTestBase
 
 

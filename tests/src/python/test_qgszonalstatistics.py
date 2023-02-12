@@ -9,14 +9,21 @@ __author__ = 'Alexander Bruy'
 __date__ = '15/07/2013'
 __copyright__ = 'Copyright 2013, The QGIS Project'
 
-import qgis  # NOQA
 import os
 import shutil
-from qgis.PyQt.QtCore import QDir, QFile, QTemporaryDir
-from qgis.core import QgsVectorLayer, QgsRasterLayer, QgsFeature, QgsFeatureRequest, QgsGeometry
-from qgis.analysis import QgsZonalStatistics
 
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QDir, QFile, QTemporaryDir
+from qgis.analysis import QgsZonalStatistics
+from qgis.core import (
+    QgsFeature,
+    QgsFeatureRequest,
+    QgsGeometry,
+    QgsRasterLayer,
+    QgsVectorLayer,
+)
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()

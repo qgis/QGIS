@@ -22,7 +22,6 @@
 #include "qgis_app.h"
 #include "qgsgeometry.h"
 #include "qobjectuniqueptr.h"
-#include "qgssettingsentryimpl.h"
 #include "qgselevationprofilelayertreeview.h"
 
 #include <QWidgetAction>
@@ -49,6 +48,8 @@ class QgsElevationProfileToolIdentify;
 class QgsElevationProfileToolMeasure;
 class QLabel;
 class QgsProfilePoint;
+class QgsSettingsEntryDouble;
+class QgsSettingsEntryBool;
 
 class QgsAppElevationProfileLayerTreeView : public QgsElevationProfileLayerTreeView
 {

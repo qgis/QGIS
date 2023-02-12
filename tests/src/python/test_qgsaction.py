@@ -11,25 +11,19 @@ __author__ = 'Alessandro Pasotti'
 __date__ = '24/11/2021'
 __copyright__ = 'Copyright 2021, The QGIS Project'
 
-import qgis  # NOQA switch sip api
+import os
+from functools import partial
 
+import qgis  # NOQA switch sip api
+from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.core import (
-    QgsExpressionContext,
     QgsAction,
+    QgsApplication,
+    QgsExpressionContext,
     QgsNetworkAccessManager,
     QgsNetworkRequestParameters,
-    QgsApplication,
 )
-
-from qgis.PyQt.QtCore import QTemporaryDir
-
 from qgis.testing import start_app, unittest
-
-import os
-import re
-import time
-import platform
-from functools import partial
 
 start_app()
 

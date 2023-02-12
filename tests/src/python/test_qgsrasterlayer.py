@@ -13,59 +13,53 @@ __author__ = 'Tim Sutton'
 __date__ = '20/08/2012'
 __copyright__ = 'Copyright 2012, The QGIS Project'
 
-import qgis  # NOQA
-
-from osgeo import gdal
-import os
 import filecmp
+import os
 from shutil import copyfile
+
 import numpy as np
-
-from qgis.PyQt.QtCore import QSize, QFileInfo, Qt, QTemporaryDir
-
-from qgis.PyQt.QtGui import (
-    QColor,
-    QImage,
-    QPainter,
-    QResizeEvent
-)
+import qgis  # NOQA
+from osgeo import gdal
+from qgis.PyQt.QtCore import QFileInfo, QSize, QTemporaryDir
+from qgis.PyQt.QtGui import QColor, QResizeEvent
 from qgis.PyQt.QtXml import QDomDocument
-
-from qgis.core import (Qgis,
-                       QgsMapLayerServerProperties,
-                       QgsRaster,
-                       QgsRasterLayer,
-                       QgsReadWriteContext,
-                       QgsColorRampShader,
-                       QgsContrastEnhancement,
-                       QgsDataProvider,
-                       QgsProject,
-                       QgsMapSettings,
-                       QgsPointXY,
-                       QgsRasterMinMaxOrigin,
-                       QgsRasterShader,
-                       QgsRasterTransparency,
-                       QgsRenderChecker,
-                       QgsPalettedRasterRenderer,
-                       QgsSingleBandGrayRenderer,
-                       QgsSingleBandPseudoColorRenderer,
-                       QgsLimitedRandomColorRamp,
-                       QgsGradientColorRamp,
-                       QgsHueSaturationFilter,
-                       QgsCoordinateTransformContext,
-                       QgsCoordinateReferenceSystem,
-                       QgsRasterHistogram,
-                       QgsCubicRasterResampler,
-                       QgsBilinearRasterResampler,
-                       QgsLayerDefinition,
-                       QgsRasterPipe,
-                       QgsProperty,
-                       QgsExpressionContext,
-                       QgsExpressionContextScope
-                       )
-from utilities import unitTestDataPath
+from qgis.core import (
+    Qgis,
+    QgsBilinearRasterResampler,
+    QgsColorRampShader,
+    QgsContrastEnhancement,
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransformContext,
+    QgsCubicRasterResampler,
+    QgsDataProvider,
+    QgsExpressionContext,
+    QgsExpressionContextScope,
+    QgsGradientColorRamp,
+    QgsHueSaturationFilter,
+    QgsLayerDefinition,
+    QgsLimitedRandomColorRamp,
+    QgsMapLayerServerProperties,
+    QgsMapSettings,
+    QgsPalettedRasterRenderer,
+    QgsPointXY,
+    QgsProject,
+    QgsProperty,
+    QgsRaster,
+    QgsRasterHistogram,
+    QgsRasterLayer,
+    QgsRasterMinMaxOrigin,
+    QgsRasterPipe,
+    QgsRasterShader,
+    QgsRasterTransparency,
+    QgsReadWriteContext,
+    QgsRenderChecker,
+    QgsSingleBandGrayRenderer,
+    QgsSingleBandPseudoColorRenderer,
+)
 from qgis.testing import start_app, unittest
 from qgis.testing.mocked import get_iface
+
+from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
 # not used in this test
@@ -87,7 +81,7 @@ class TestQgsRasterLayer(unittest.TestCase):
         myFileInfo = QFileInfo(myPath)
         myBaseName = myFileInfo.baseName()
         myRasterLayer = QgsRasterLayer(myPath, myBaseName)
-        myMessage = 'Raster not loaded: %s' % myPath
+        myMessage = f'Raster not loaded: {myPath}'
         assert myRasterLayer.isValid(), myMessage
         myPoint = QgsPointXY(786690, 3345803)
         # print 'Extents: %s' % myRasterLayer.extent().toString()
@@ -259,7 +253,7 @@ class TestQgsRasterLayer(unittest.TestCase):
         myFileInfo = QFileInfo(myPath)
         myBaseName = myFileInfo.baseName()
         myRasterLayer = QgsRasterLayer(myPath, myBaseName)
-        myMessage = 'Raster not loaded: %s' % myPath
+        myMessage = f'Raster not loaded: {myPath}'
         assert myRasterLayer.isValid(), myMessage
 
         renderer = QgsSingleBandGrayRenderer(myRasterLayer.dataProvider(), 1)
@@ -329,7 +323,7 @@ class TestQgsRasterLayer(unittest.TestCase):
         myFileInfo = QFileInfo(myPath)
         myBaseName = myFileInfo.baseName()
         myRasterLayer = QgsRasterLayer(myPath, myBaseName)
-        myMessage = 'Raster not loaded: %s' % myPath
+        myMessage = f'Raster not loaded: {myPath}'
         assert myRasterLayer.isValid(), myMessage
         # crash on next line
         QgsProject.instance().addMapLayers([myRasterLayer])
@@ -341,7 +335,7 @@ class TestQgsRasterLayer(unittest.TestCase):
         myFileInfo = QFileInfo(myPath)
         myBaseName = myFileInfo.baseName()
         myRasterLayer = QgsRasterLayer(myPath, myBaseName)
-        myMessage = 'Raster not loaded: %s' % myPath
+        myMessage = f'Raster not loaded: {myPath}'
         assert myRasterLayer.isValid(), myMessage
 
         myRasterShader = QgsRasterShader()
@@ -847,8 +841,8 @@ class TestQgsRasterLayer(unittest.TestCase):
         self.assertEqual(classes[4].color.alpha(), 255)
 
         # qgis style, with labels
-        qgis = '3 255 0 0 255 class 1\n4 0 255 0 200 class 2'
-        classes = QgsPalettedRasterRenderer.classDataFromString(qgis)
+        qgis_style = '3 255 0 0 255 class 1\n4 0 255 0 200 class 2'
+        classes = QgsPalettedRasterRenderer.classDataFromString(qgis_style)
         self.assertEqual(len(classes), 2)
         self.assertEqual(classes[0].value, 3)
         self.assertEqual(classes[0].color.name(), '#ff0000')
@@ -1116,7 +1110,7 @@ class TestQgsRasterLayer(unittest.TestCase):
         myFileInfo = QFileInfo(myPath)
         myBaseName = myFileInfo.baseName()
         myRasterLayer = QgsRasterLayer(myPath, myBaseName)
-        myMessage = 'Raster not loaded: %s' % myPath
+        myMessage = f'Raster not loaded: {myPath}'
         assert myRasterLayer.isValid(), myMessage
 
         # do generic export with default layer values

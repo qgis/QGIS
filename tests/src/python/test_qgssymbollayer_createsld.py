@@ -19,21 +19,48 @@ __author__ = 'Andrea Aime'
 __date__ = 'July 2016'
 __copyright__ = '(C) 2012, Andrea Aime'
 
-import qgis  # NOQA
 import os
-from qgis.PyQt.QtCore import Qt, QDir, QFile, QIODevice, QPointF, QSizeF, QTemporaryDir
-from qgis.PyQt.QtXml import QDomDocument
-from qgis.PyQt.QtGui import QColor, QFont, QImage
 
+import qgis  # NOQA
+from qgis.PyQt.QtCore import (
+    QDir,
+    QFile,
+    QIODevice,
+    QPointF,
+    QSizeF,
+    Qt,
+    QTemporaryDir,
+)
+from qgis.PyQt.QtGui import QColor, QFont, QImage
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     Qgis,
-    QgsSimpleMarkerSymbolLayer, QgsSimpleMarkerSymbolLayerBase, QgsUnitTypes, QgsSvgMarkerSymbolLayer,
-    QgsFontMarkerSymbolLayer, QgsEllipseSymbolLayer, QgsSimpleLineSymbolLayer,
-    QgsMarkerLineSymbolLayer, QgsMarkerSymbol, QgsSimpleFillSymbolLayer, QgsSVGFillSymbolLayer,
-    QgsLinePatternFillSymbolLayer, QgsPointPatternFillSymbolLayer, QgsVectorLayer, QgsVectorLayerSimpleLabeling,
-    QgsTextBufferSettings, QgsPalLayerSettings, QgsTextBackgroundSettings, QgsRuleBasedLabeling,
-    QgsLineSymbol, QgsSymbolLayer, QgsSimpleMarkerSymbolLayer, QgsProperty, QgsSldExportContext)
+    QgsEllipseSymbolLayer,
+    QgsFontMarkerSymbolLayer,
+    QgsLinePatternFillSymbolLayer,
+    QgsLineSymbol,
+    QgsMarkerLineSymbolLayer,
+    QgsMarkerSymbol,
+    QgsPalLayerSettings,
+    QgsPointPatternFillSymbolLayer,
+    QgsProperty,
+    QgsRuleBasedLabeling,
+    QgsSimpleFillSymbolLayer,
+    QgsSimpleLineSymbolLayer,
+    QgsSimpleMarkerSymbolLayer,
+    QgsSimpleMarkerSymbolLayerBase,
+    QgsSldExportContext,
+    QgsSVGFillSymbolLayer,
+    QgsSvgMarkerSymbolLayer,
+    QgsSymbolLayer,
+    QgsTextBackgroundSettings,
+    QgsTextBufferSettings,
+    QgsUnitTypes,
+    QgsVectorLayer,
+    QgsVectorLayerSimpleLabeling,
+)
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
@@ -385,7 +412,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
 
     def testSingleSymbolNoScaleDependencies(self):
         layer = QgsVectorLayer("Point", "addfeat", "memory")
-        mFilePath = QDir.toNativeSeparators('{}/symbol_layer/{}.qml'.format(unitTestDataPath(), "singleSymbol"))
+        mFilePath = QDir.toNativeSeparators(f"{unitTestDataPath()}/symbol_layer/singleSymbol.qml")
         layer.loadNamedStyle(mFilePath)
 
         dom, root = self.layerToSld(layer)
@@ -395,7 +422,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
 
     def testSingleSymbolScaleDependencies(self):
         layer = QgsVectorLayer("Point", "addfeat", "memory")
-        mFilePath = QDir.toNativeSeparators('{}/symbol_layer/{}.qml'.format(unitTestDataPath(), "singleSymbol"))
+        mFilePath = QDir.toNativeSeparators(f"{unitTestDataPath()}/symbol_layer/singleSymbol.qml")
         layer.loadNamedStyle(mFilePath)
         layer.setMaximumScale(1000)
         layer.setMinimumScale(500000)
@@ -408,7 +435,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
 
     def testCategorizedNoScaleDependencies(self):
         layer = QgsVectorLayer("Polygon", "addfeat", "memory")
-        mFilePath = QDir.toNativeSeparators('{}/symbol_layer/{}.qml'.format(unitTestDataPath(), "categorized"))
+        mFilePath = QDir.toNativeSeparators(f"{unitTestDataPath()}/symbol_layer/categorized.qml")
         layer.loadNamedStyle(mFilePath)
 
         dom, root = self.layerToSld(layer)
@@ -420,7 +447,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
 
     def testCategorizedWithScaleDependencies(self):
         layer = QgsVectorLayer("Polygon", "addfeat", "memory")
-        mFilePath = QDir.toNativeSeparators('{}/symbol_layer/{}.qml'.format(unitTestDataPath(), "categorized"))
+        mFilePath = QDir.toNativeSeparators(f"{unitTestDataPath()}/symbol_layer/categorized.qml")
         layer.loadNamedStyle(mFilePath)
         layer.setMaximumScale(1000)
         layer.setMinimumScale(500000)
@@ -436,7 +463,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
     def testGraduatedNoScaleDependencies(self):
         layer = QgsVectorLayer("Polygon", "addfeat", "memory")
 
-        mFilePath = QDir.toNativeSeparators('{}/symbol_layer/{}.qml'.format(unitTestDataPath(), "graduated"))
+        mFilePath = QDir.toNativeSeparators(f"{unitTestDataPath()}/symbol_layer/graduated.qml")
         status = layer.loadNamedStyle(mFilePath)  # NOQA
 
         dom, root = self.layerToSld(layer)
@@ -462,7 +489,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
     def testRuleBasedNoRootScaleDependencies(self):
         layer = QgsVectorLayer("Polygon", "addfeat", "memory")
 
-        mFilePath = QDir.toNativeSeparators('{}/symbol_layer/{}.qml'.format(unitTestDataPath(), "ruleBased"))
+        mFilePath = QDir.toNativeSeparators(f"{unitTestDataPath()}/symbol_layer/ruleBased.qml")
         status = layer.loadNamedStyle(mFilePath)  # NOQA
         layer.setMaximumScale(5000)
         layer.setMinimumScale(50000000)
@@ -479,7 +506,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         layer = QgsVectorLayer("Point", "addfeat", "memory")
 
         mFilePath = QDir.toNativeSeparators(
-            '{}/symbol_layer/{}.qml'.format(unitTestDataPath(), "categorizedFunctionConflict"))
+            f"{unitTestDataPath()}/symbol_layer/categorizedFunctionConflict.qml")
         status = layer.loadNamedStyle(mFilePath)  # NOQA
 
         dom, root = self.layerToSld(layer)
@@ -804,13 +831,13 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
     def testPointPlacementBelow(self):
         self.assertLabelQuadrant(QgsPalLayerSettings.QuadrantBelow, "Below", 0.5, 1)
 
-    def testPointPlacementAboveRight(self):
+    def testPointPlacementBelowRight(self):
         self.assertLabelQuadrant(QgsPalLayerSettings.QuadrantBelowRight, "BelowRight", 0, 1)
 
-    def testPointPlacementCartoraphic(self):
+    def testPointPlacementCartoraphicOrderedPositionsAroundPoint(self):
         self.assertPointPlacementDistance(QgsPalLayerSettings.OrderedPositionsAroundPoint)
 
-    def testPointPlacementCartoraphic(self):
+    def testPointPlacementCartoraphicAroundPoint(self):
         self.assertPointPlacementDistance(QgsPalLayerSettings.AroundPoint)
 
     def testLineParallelPlacement(self):
@@ -1213,7 +1240,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
     def testRuleBaseEmptyFilter(self):
         layer = QgsVectorLayer("Point", "addfeat", "memory")
 
-        mFilePath = QDir.toNativeSeparators('{}/symbol_layer/{}.qml'.format(unitTestDataPath(), "categorizedEmptyValue"))
+        mFilePath = QDir.toNativeSeparators(f"{unitTestDataPath()}/symbol_layer/categorizedEmptyValue.qml")
         status = layer.loadNamedStyle(mFilePath)  # NOQA
 
         dom, root = self.layerToSld(layer)

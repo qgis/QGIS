@@ -17,50 +17,46 @@ import tempfile
 from datetime import datetime
 
 from osgeo import gdal, ogr  # NOQA
-from qgis.PyQt.QtCore import QVariant, QByteArray, QTemporaryDir
+from qgis.PyQt.QtCore import QByteArray, QTemporaryDir, QVariant
 from qgis.PyQt.QtXml import QDomDocument
-
 from qgis.core import (
     NULL,
-    QgsCoordinateReferenceSystem,
-    QgsAuthMethodConfig,
+    Qgis,
+    QgsAbstractDatabaseProviderConnection,
     QgsApplication,
+    QgsAuthMethodConfig,
+    QgsCoordinateReferenceSystem,
     QgsCoordinateTransformContext,
+    QgsDataProvider,
+    QgsDirectoryItem,
     QgsEditorWidgetSetup,
-    QgsProject,
-    QgsField,
-    QgsFields,
-    QgsGeometry,
-    QgsRectangle,
-    QgsProviderRegistry,
     QgsFeature,
     QgsFeatureRequest,
-    QgsSettings,
-    QgsDataProvider,
-    QgsVectorDataProvider,
-    QgsVectorLayer,
-    QgsVectorFileWriter,
-    QgsVectorLayerExporter,
-    QgsWkbTypes,
-    QgsNetworkAccessManager,
+    QgsField,
+    QgsFieldConstraints,
+    QgsFields,
+    QgsGeometry,
     QgsLayerMetadata,
-    QgsNotSupportedException,
     QgsMapLayerType,
-    QgsProviderSublayerDetails,
-    Qgis,
-    QgsDirectoryItem,
-    QgsAbstractDatabaseProviderConnection,
+    QgsNetworkAccessManager,
+    QgsNotSupportedException,
+    QgsProject,
     QgsProviderConnectionException,
     QgsProviderMetadata,
+    QgsProviderRegistry,
+    QgsProviderSublayerDetails,
+    QgsRectangle,
     QgsRelation,
+    QgsSettings,
     QgsUnsetAttributeValue,
-    QgsFieldConstraints,
-    QgsWeakRelation
+    QgsVectorDataProvider,
+    QgsVectorFileWriter,
+    QgsVectorLayer,
+    QgsVectorLayerExporter,
+    QgsWeakRelation,
+    QgsWkbTypes,
 )
-
-from qgis.gui import (
-    QgsGui
-)
+from qgis.gui import QgsGui
 from qgis.testing import start_app, unittest
 from qgis.utils import spatialite_connect
 
@@ -390,7 +386,7 @@ class PyQgsOGRProvider(unittest.TestCase):
             datasource = os.path.join(self.basetestpath, 'test.csv')
             with open(datasource, 'w') as f:
                 f.write('id,WKT\n')
-                f.write('1,"%s"' % row[0])
+                f.write(f'1,"{row[0]}"')
 
             vl = QgsVectorLayer(datasource, 'test', 'ogr')
             self.assertTrue(vl.isValid())
@@ -2312,7 +2308,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[0].layerNumber(), 0)
         self.assertEqual(res[0].name(), "ARC")
         self.assertEqual(res[0].description(), "")
-        self.assertEqual(res[0].uri(), '{}|layername=ARC'.format(os.path.join(TEST_DATA_DIR, 'esri_coverage', 'testpolyavc')))
+        self.assertEqual(res[0].uri(), f"{os.path.join(TEST_DATA_DIR, 'esri_coverage', 'testpolyavc')}|layername=ARC")
         self.assertEqual(res[0].providerKey(), "ogr")
         self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
         self.assertFalse(res[0].skippedContainerScan())
@@ -2465,7 +2461,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[0].layerNumber(), 0)
         self.assertEqual(res[0].name(), "ARC")
         self.assertEqual(res[0].description(), "")
-        self.assertEqual(res[0].uri(), '{}|layername=ARC'.format(os.path.join(TEST_DATA_DIR, 'esri_coverage', 'testpolyavc')))
+        self.assertEqual(res[0].uri(), f"{os.path.join(TEST_DATA_DIR, 'esri_coverage', 'testpolyavc')}|layername=ARC")
         self.assertEqual(res[0].providerKey(), "ogr")
         self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
         self.assertFalse(res[0].skippedContainerScan())
@@ -3139,6 +3135,41 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(vl.wkbType(), QgsWkbTypes.NoGeometry)
         self.assertEqual(vl.featureCount(), 2)
         self.assertEqual(len([x for x in vl.getFeatures()]), 2)
+
+    def testCsvInterleavedUpdate(self):
+        """Checks whether a full update with interleaved fids works reliably, related to GH #51668"""
+
+        temp_dir = QTemporaryDir()
+        temp_path = temp_dir.path()
+        csv_path = os.path.join(temp_path, 'test.csv')
+        with open(csv_path, 'w+') as f:
+            f.write('fid\tname\n')
+            f.write('1\t"feat 1"\n')
+            f.write('2\t"feat 2"\n')
+            f.write('3\t"feat 3"\n')
+
+        vl = QgsVectorLayer(csv_path, 'csv')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.featureCount(), 3)
+        f = next(vl.getFeatures())
+        self.assertEqual(f.attributes(), ['1', "feat 1"])
+
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.addAttribute(QgsField('newf', QVariant.String)))
+        self.assertTrue(vl.changeAttributeValues(3, {2: 'fid 3'}))
+        self.assertTrue(vl.changeAttributeValues(1, {2: 'fid 1'}))
+        self.assertTrue(vl.changeAttributeValues(2, {2: 'fid 2'}))
+        self.assertTrue(vl.commitChanges())
+
+        vl = QgsVectorLayer(csv_path, 'csv')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.featureCount(), 3)
+        features = {f.id(): f.attributes() for f in vl.getFeatures()}
+        self.assertEqual(features, {
+            1: ['1', 'feat 1', 'fid 1'],
+            2: ['2', 'feat 2', 'fid 2'],
+            3: ['3', 'feat 3', 'fid 3']
+        })
 
 
 if __name__ == '__main__':

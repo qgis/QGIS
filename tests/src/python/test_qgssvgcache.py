@@ -9,18 +9,22 @@ __author__ = '(C) 2018 by Nyall Dawson'
 __date__ = '29/03/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
-import qgis  # NOQA
-
+import http.server
 import os
 import socketserver
 import threading
-import http.server
 import time
-from qgis.PyQt.QtCore import QDir, QCoreApplication
-from qgis.PyQt.QtGui import QColor, QImage, QPainter
 
-from qgis.core import (QgsSvgCache, QgsRenderChecker, QgsApplication, QgsMultiRenderChecker)
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QCoreApplication, QDir
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.core import (
+    QgsApplication,
+    QgsMultiRenderChecker,
+    QgsRenderChecker,
+)
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()
@@ -56,7 +60,7 @@ class TestQgsSvgCache(unittest.TestCase):
         QgsApplication.svgCache().remoteSvgFetched.connect(self.svgFetched)
 
     def tearDown(self):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 

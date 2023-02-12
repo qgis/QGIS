@@ -9,42 +9,30 @@ __author__ = 'Nyall Dawson'
 __date__ = '2016-09'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
-import qgis  # NOQA
 import math
-from qgis.PyQt.QtCore import (
-    QSizeF,
-    QPointF,
-    QMimeData,
-    QDir,
-    QSize,
-    Qt
-)
-from qgis.PyQt.QtGui import (
-    QColor,
-    QPolygonF,
-    QImage
-)
+
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QDir, QMimeData, QPointF, QSize, QSizeF, Qt
+from qgis.PyQt.QtGui import QColor, QImage, QPolygonF
 from qgis.core import (
     Qgis,
-    QgsSymbolLayerUtils,
-    QgsMarkerSymbol,
-    QgsArrowSymbolLayer,
-    QgsUnitTypes,
-    QgsRenderChecker,
-    QgsGradientColorRamp,
-    QgsShapeburstFillSymbolLayer,
-    QgsMarkerLineSymbolLayer,
-    QgsSimpleLineSymbolLayer,
-    QgsSimpleFillSymbolLayer,
-    QgsSymbolLayer,
-    QgsProperty,
-    QgsMapUnitScale,
-    Qgis,
-    QgsSingleSymbolRenderer,
     QgsAnimatedMarkerSymbolLayer,
-    QgsSimpleMarkerSymbolLayer
+    QgsArrowSymbolLayer,
+    QgsGradientColorRamp,
+    QgsMapUnitScale,
+    QgsMarkerLineSymbolLayer,
+    QgsMarkerSymbol,
+    QgsProperty,
+    QgsRenderChecker,
+    QgsShapeburstFillSymbolLayer,
+    QgsSimpleFillSymbolLayer,
+    QgsSimpleLineSymbolLayer,
+    QgsSingleSymbolRenderer,
+    QgsSymbolLayer,
+    QgsSymbolLayerUtils,
+    QgsUnitTypes,
 )
-from qgis.testing import unittest, start_app
+from qgis.testing import start_app, unittest
 
 start_app()
 
@@ -57,7 +45,7 @@ class PyQgsSymbolLayerUtils(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(cls.report)
 

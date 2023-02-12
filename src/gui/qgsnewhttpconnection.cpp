@@ -21,6 +21,8 @@
 #include "qgsgui.h"
 #include "fromencodedcomponenthelper.h"
 #include "qgsowsconnection.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsentryenumflag.h"
 
 #include <QMessageBox>
 #include <QUrl>

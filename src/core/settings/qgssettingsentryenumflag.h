@@ -20,6 +20,7 @@
 
 #include "qgis.h"
 #include "qgssettingsentry.h"
+#include "qgslogger.h"
 
 /**
  * \class QgsSettingsEntryEnumFlag

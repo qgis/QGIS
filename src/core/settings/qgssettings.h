@@ -80,53 +80,6 @@ class CORE_EXPORT QgsSettings : public QObject
       Gps, //!< GPS section, since QGIS 3.22
     };
 
-#ifndef SIP_RUN
-
-    /**
-     * Returns the tree root node for the settings
-     * \since QGIS 3.30
-     */
-    static QgsSettingsTreeNode *treeRoot();
-
-    // only create first level here
-    static inline QgsSettingsTreeNode *sTreeApp = treeRoot()->createChildNode( QStringLiteral( "app" ) );
-    static inline QgsSettingsTreeNode *sTreeConnections = treeRoot()->createChildNode( QStringLiteral( "connections" ) );
-    static inline QgsSettingsTreeNode *sTreeCore = treeRoot()->createChildNode( QStringLiteral( "core" ) );
-    static inline QgsSettingsTreeNode *sTreeElevationProfile = treeRoot()->createChildNode( QStringLiteral( "elevation-profile" ) );
-    static inline QgsSettingsTreeNode *sTreeFonts = treeRoot()->createChildNode( QStringLiteral( "fonts" ) );
-    static inline QgsSettingsTreeNode *sTreeGeometryValidation = treeRoot()->createChildNode( QStringLiteral( "geometry_validation" ) );
-    static inline QgsSettingsTreeNode *sTreeGps = treeRoot()->createChildNode( QStringLiteral( "gps" ) );
-    static inline QgsSettingsTreeNode *sTreeGui = treeRoot()->createChildNode( QStringLiteral( "gui" ) );
-    static inline QgsSettingsTreeNode *sTreeLayerTree = treeRoot()->createChildNode( QStringLiteral( "layer-tree" ) );
-    static inline QgsSettingsTreeNode *sTreeLayout = treeRoot()->createChildNode( QStringLiteral( "layout" ) );
-    static inline QgsSettingsTreeNode *sTreeLocale = treeRoot()->createChildNode( QStringLiteral( "locale" ) );
-    static inline QgsSettingsTreeNode *sTreeMap = treeRoot()->createChildNode( QStringLiteral( "map" ) );
-    static inline QgsSettingsTreeNode *sTreeNetwork = treeRoot()->createChildNode( QStringLiteral( "network" ) );
-    static inline QgsSettingsTreeNode *sTreeQgis = treeRoot()->createChildNode( QStringLiteral( "qgis" ) );
-    static inline QgsSettingsTreeNode *sTreePlugins = treeRoot()->createChildNode( QStringLiteral( "plugins" ) );
-    static inline QgsSettingsTreeNode *sTreeProcessing = treeRoot()->createChildNode( QStringLiteral( "processing" ) );
-    static inline QgsSettingsTreeNode *sTreeRaster = treeRoot()->createChildNode( QStringLiteral( "raster" ) );
-    static inline QgsSettingsTreeNode *sTreeSvg = treeRoot()->createChildNode( QStringLiteral( "svg" ) );
-    static inline QgsSettingsTreeNode *sTreeWms = treeRoot()->createChildNode( QStringLiteral( "wms" ) );
-
-    // sub levels
-    static inline QgsSettingsTreeNode *sTreeDigitizing = sTreeQgis->createChildNode( QStringLiteral( "digitizing" ) );
-
-#endif
-
-    /**
-     * Creates a settings tree node for the given \a pluginName
-     * \since QGIS 3.30
-     */
-    static QgsSettingsTreeNode *createPluginTreeNode( const QString &pluginName );
-
-
-    /**
-     * Unregisters the tree node for the given plugin
-     * \since QGIS 3.30
-     */
-    static void unregisterPluginTreeNode( const QString &pluginName );
-
     /**
      * Constructs a QgsSettings object for accessing settings of the application
      * called application from the organization called organization, and with parent parent.

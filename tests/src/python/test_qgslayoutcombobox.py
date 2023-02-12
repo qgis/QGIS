@@ -10,22 +10,18 @@ __date__ = '11/03/2019'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.PyQt.QtXml import QDomDocument
-
-from qgis.core import (QgsPrintLayout,
-                       QgsLayoutManager,
-                       QgsLayoutManagerModel,
-                       QgsLayoutManagerProxyModel,
-                       QgsProject,
-                       QgsReport,
-                       QgsMasterLayoutInterface)
-from qgis.gui import QgsLayoutComboBox
-from qgis.PyQt.QtCore import Qt, QModelIndex
-from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.PyQt.QtTest import QSignalSpy
+from qgis.core import (
+    QgsLayoutManager,
+    QgsLayoutManagerProxyModel,
+    QgsPrintLayout,
+    QgsProject,
+    QgsReport,
+)
+from qgis.gui import QgsLayoutComboBox
+from qgis.testing import start_app, unittest
+
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

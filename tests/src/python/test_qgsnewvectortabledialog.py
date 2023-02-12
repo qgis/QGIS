@@ -13,25 +13,23 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 
-import tempfile
 import shutil
+import tempfile
 
+from qgis.PyQt.QtWidgets import (
+    QCheckBox,
+    QComboBox,
+    QDialogButtonBox,
+    QLineEdit,
+)
 from qgis.core import (
-    QgsApplication,
+    QgsFields,
     QgsProviderRegistry,
     QgsVectorLayer,
     QgsWkbTypes,
-    QgsFields
 )
-
 from qgis.gui import QgsNewVectorTableDialog
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtWidgets import (
-    QDialogButtonBox,
-    QLineEdit,
-    QComboBox,
-    QCheckBox
-)
 
 from utilities import unitTestDataPath
 
@@ -49,8 +47,7 @@ class TestPyQgsNewVectorTableDialog(unittest.TestCase):
             TEST_DATA_DIR)
         cls.gpkg_path = tempfile.mktemp('.gpkg')
         shutil.copy(gpkg_original_path, cls.gpkg_path)
-        vl = QgsVectorLayer('{}|layername=cdb_lines'.format(
-            cls.gpkg_path), 'test', 'ogr')
+        vl = QgsVectorLayer(f'{cls.gpkg_path}|layername=cdb_lines', 'test', 'ogr')
         assert vl.isValid()
         cls.uri = cls.gpkg_path
 

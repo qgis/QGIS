@@ -69,6 +69,8 @@
 #include "qgsmessagebar.h"
 #include "qgsvectorwarper.h"
 #include "qgsscreenhelper.h"
+#include "qgssettingsentryenumflag.h"
+
 
 const QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod> *QgsGeoreferencerMainWindow::settingResamplingMethod = new QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod>( QStringLiteral( "resampling-method" ), sTreeGeoreferencer, QgsImageWarper::ResamplingMethod::NearestNeighbour, QObject::tr( "Last used georeferencer resampling method" ) );
 
@@ -1366,10 +1368,6 @@ void QgsGeoreferencerMainWindow::loadSource( QgsMapLayerType layerType, const QS
 void QgsGeoreferencerMainWindow::readSettings()
 {
   QgsSettings s;
-  const QRect georefRect = mScreenHelper->availableGeometry();
-  resize( s.value( QStringLiteral( "/Plugin-GeoReferencer/size" ), QSize( georefRect.width() / 2 + georefRect.width() / 5,
-                   QgisApp::instance()->height() ) ).toSize() );
-  move( s.value( QStringLiteral( "/Plugin-GeoReferencer/pos" ), QPoint( parentWidget()->width() / 2 - width() / 2, 0 ) ).toPoint() );
   restoreState( s.value( QStringLiteral( "/Plugin-GeoReferencer/uistate" ) ).toByteArray() );
 
   // warp options
@@ -1384,8 +1382,6 @@ void QgsGeoreferencerMainWindow::readSettings()
 void QgsGeoreferencerMainWindow::writeSettings()
 {
   QgsSettings s;
-  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/pos" ), pos() );
-  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/size" ), size() );
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/uistate" ), saveState() );
 
   settingTransformMethod->setValue( mTransformMethod );
@@ -2138,8 +2134,9 @@ QString QgsGeoreferencerMainWindow::generateGDALtranslateCommand( bool generateT
 
   for ( QgsGeorefDataPoint *pt : std::as_const( mPoints ) )
   {
+    const QgsPointXY pixel = mGeorefTransform.toSourcePixel( pt->sourcePoint() );
     const QgsPointXY transformedDestinationPoint = pt->transformedDestinationPoint( mTargetCrs, QgsProject::instance()->transformContext() );
-    gdalCommand << QStringLiteral( "-gcp %1 %2 %3 %4" ).arg( pt->sourcePoint().x() ).arg( -pt->sourcePoint().y() )
+    gdalCommand << QStringLiteral( "-gcp %1 %2 %3 %4" ).arg( pixel.x() ).arg( -pixel.y() )
                 .arg( transformedDestinationPoint.x() ).arg( transformedDestinationPoint.y() );
   }
 
@@ -2246,8 +2243,8 @@ bool QgsGeoreferencerMainWindow::validate()
     return false;
   }
 
-  if ( mCreateWorldFileOnly
-       && ( QgsGcpTransformerInterface::TransformMethod::Linear != mTransformMethod && QgsGcpTransformerInterface::TransformMethod::Helmert != mTransformMethod ) )
+  if ( mModifiedFileName.isEmpty() && ( !mCreateWorldFileOnly
+                                        || ( QgsGcpTransformerInterface::TransformMethod::Linear != mTransformMethod && QgsGcpTransformerInterface::TransformMethod::Helmert != mTransformMethod ) ) )
   {
     QMessageBox::information( this, tr( "Georeferencer" ), tr( "Please set output file name." ) );
     showTransformSettingsDialog();

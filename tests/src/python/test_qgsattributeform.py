@@ -13,23 +13,23 @@ __author__ = 'Alessandro Pasotti'
 __date__ = '2019-06-06'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
-from qgis.testing import start_app, unittest
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import (
-    QgsVectorLayer,
-    QgsFeature,
-    QgsEditorWidgetSetup,
-    QgsEditFormConfig,
     QgsDefaultValue,
-    QgsField
+    QgsEditFormConfig,
+    QgsEditorWidgetSetup,
+    QgsFeature,
+    QgsField,
+    QgsVectorLayer,
 )
 from qgis.gui import (
+    QgsAttributeEditorContext,
     QgsAttributeForm,
+    QgsFilterLineEdit,
     QgsGui,
     QgsMapCanvas,
-    QgsAttributeEditorContext,
-    QgsFilterLineEdit
 )
-from qgis.PyQt.QtCore import QVariant
+from qgis.testing import start_app, unittest
 
 QGISAPP = start_app()
 
@@ -43,7 +43,7 @@ class TestQgsAttributeForm(unittest.TestCase):
 
     @classmethod
     def createLayerWithOnePoint(cls, field_type):
-        layer = QgsVectorLayer("Point?field=fld:%s" % field_type,
+        layer = QgsVectorLayer(f"Point?field=fld:{field_type}",
                                "vl", "memory")
         pr = layer.dataProvider()
         f = QgsFeature()

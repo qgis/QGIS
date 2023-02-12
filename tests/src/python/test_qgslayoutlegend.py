@@ -9,43 +9,45 @@ __author__ = '(C) 2017 by Nyall Dawson'
 __date__ = '24/10/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-from qgis.PyQt.QtCore import QRectF, QDir
-from qgis.PyQt.QtGui import QColor
-
-from qgis.core import (QgsPrintLayout,
-                       QgsLayoutItemLegend,
-                       QgsLayoutItemMap,
-                       QgsLayout,
-                       QgsMapSettings,
-                       QgsVectorLayer,
-                       QgsMarkerSymbol,
-                       QgsSingleSymbolRenderer,
-                       QgsRectangle,
-                       QgsProject,
-                       QgsLayoutObject,
-                       QgsProperty,
-                       QgsLayoutMeasurement,
-                       QgsLayoutItem,
-                       QgsLayoutPoint,
-                       QgsLayoutSize,
-                       QgsExpression,
-                       QgsMapLayerLegendUtils,
-                       QgsLegendStyle,
-                       QgsFontUtils,
-                       QgsLineSymbol,
-                       QgsMapThemeCollection,
-                       QgsCategorizedSymbolRenderer,
-                       QgsRendererCategory,
-                       QgsFillSymbol,
-                       QgsApplication)
-from qgis.testing import (start_app,
-                          unittest
-                          )
-from utilities import unitTestDataPath
-from qgslayoutchecker import QgsLayoutChecker
 import os
 from time import sleep
+
+from qgis.PyQt.QtCore import QDir, QRectF
+from qgis.PyQt.QtGui import QColor
+from qgis.core import (
+    QgsCategorizedSymbolRenderer,
+    QgsCoordinateReferenceSystem,
+    QgsExpression,
+    QgsFillSymbol,
+    QgsFontUtils,
+    QgsLayout,
+    QgsLayoutItem,
+    QgsLayoutItemLegend,
+    QgsLayoutItemMap,
+    QgsLayoutMeasurement,
+    QgsLayoutObject,
+    QgsLayoutPoint,
+    QgsLayoutSize,
+    QgsLegendStyle,
+    QgsLineSymbol,
+    QgsMapLayerLegendUtils,
+    QgsMapSettings,
+    QgsMapThemeCollection,
+    QgsMarkerSymbol,
+    QgsPrintLayout,
+    QgsProject,
+    QgsProperty,
+    QgsRectangle,
+    QgsRendererCategory,
+    QgsRuleBasedRenderer,
+    QgsSingleSymbolRenderer,
+    QgsVectorLayer,
+)
+from qgis.testing import start_app, unittest
+
+from qgslayoutchecker import QgsLayoutChecker
 from test_qgslayoutitem import LayoutItemTestCase
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -60,7 +62,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
 
     @classmethod
     def tearDownClass(cls):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(cls.report)
 
@@ -818,6 +820,80 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         self.assertTrue(result, message)
 
         QgsProject.instance().clear()
+
+    def test_rulebased_child_filter(self):
+        point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
+        point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
+
+        root_rule = QgsRuleBasedRenderer.Rule(None)
+        marker_symbol = QgsMarkerSymbol.createSimple(
+            {'color': '#ff0000', 'outline_style': 'no', 'size': '8'})
+
+        less_than_two_rule = QgsRuleBasedRenderer.Rule(marker_symbol, filterExp='"Importance" <=2', label='lessthantwo')
+        root_rule.appendChild(less_than_two_rule)
+
+        else_rule = QgsRuleBasedRenderer.Rule(None, elseRule=True)
+
+        marker_symbol = QgsMarkerSymbol.createSimple(
+            {'color': '#00ffff', 'outline_style': 'no', 'size': '4'})
+        one_rule = QgsRuleBasedRenderer.Rule(marker_symbol, filterExp='"Pilots" = 1', label='1')
+        else_rule.appendChild(one_rule)
+        marker_symbol = QgsMarkerSymbol.createSimple(
+            {'color': '#ff8888', 'outline_style': 'no', 'size': '4'})
+        two_rule = QgsRuleBasedRenderer.Rule(marker_symbol, filterExp='"Pilots" = 2', label='2')
+        else_rule.appendChild(two_rule)
+        marker_symbol = QgsMarkerSymbol.createSimple(
+            {'color': '#8888ff', 'outline_style': 'no', 'size': '4'})
+        three_rule = QgsRuleBasedRenderer.Rule(marker_symbol, filterExp='"Pilots" = 3', label='3')
+        else_rule.appendChild(three_rule)
+
+        root_rule.appendChild(else_rule)
+
+        renderer = QgsRuleBasedRenderer(root_rule)
+        point_layer.setRenderer(renderer)
+        p = QgsProject()
+        p.addMapLayer(point_layer)
+
+        s = QgsMapSettings()
+        s.setLayers([point_layer])
+        layout = QgsLayout(p)
+        layout.initializeDefaults()
+
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(19, 17, 185, 165))
+        map.setFrameEnabled(True)
+        map.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        map.setLayers([point_layer])
+        layout.addLayoutItem(map)
+
+        legend = QgsLayoutItemLegend(layout)
+        legend.setTitle("Legend")
+        legend.attemptSetSceneRect(QRectF(220, 20, 20, 20))
+        legend.setFrameEnabled(True)
+        legend.setFrameStrokeWidth(QgsLayoutMeasurement(2))
+        legend.setBackgroundColor(QColor(200, 200, 200))
+        legend.setTitle('')
+        legend.setLegendFilterByMapEnabled(True)
+
+        legend.setStyleFont(QgsLegendStyle.Title, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.Group, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.Subgroup, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.Symbol, QgsFontUtils.getStandardTestFont('Bold', 16))
+        legend.setStyleFont(QgsLegendStyle.SymbolLabel,
+                            QgsFontUtils.getStandardTestFont('Bold', 16))
+
+        layout.addLayoutItem(legend)
+        legend.setLinkedMap(map)
+        legend.setLegendFilterByMapEnabled(True)
+
+        map.setExtent(QgsRectangle(-119.778, 18.158, -82.444, 51.514))
+
+        checker = QgsLayoutChecker(
+            'composer_legend_elseChild', layout)
+        checker.setControlPathPrefix("composer_legend")
+        result, message = checker.testLayout()
+        TestQgsLayoutItemLegend.report += checker.report()
+        self.assertTrue(result, message)
 
 
 if __name__ == '__main__':

@@ -10,38 +10,48 @@ __author__ = 'Tim Sutton'
 __date__ = '20/08/2012'
 __copyright__ = 'Copyright 2012, The QGIS Project'
 
-import qgis  # NOQA
-
-from qgis.core import (QgsVectorLayer,
-                       QgsFeature,
-                       QgsField,
-                       QgsGeometry,
-                       QgsPointXY,
-                       QgsCoordinateReferenceSystem,
-                       QgsVectorFileWriter,
-                       QgsFeatureRequest,
-                       QgsProject,
-                       QgsWkbTypes,
-                       QgsRectangle,
-                       QgsCoordinateTransform,
-                       QgsMultiPolygon,
-                       QgsTriangle,
-                       QgsPoint,
-                       QgsFields,
-                       QgsCoordinateTransformContext,
-                       QgsFeatureSink,
-                       QgsMemoryProviderUtils,
-                       QgsLayerMetadata,
-                       QgsUnsetAttributeValue,
-                       NULL
-                       )
-from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir, QByteArray, QTemporaryDir
 import os
 import tempfile
+
 import osgeo.gdal  # NOQA
+import qgis  # NOQA
 from osgeo import gdal, ogr
+from qgis.PyQt.QtCore import (
+    QByteArray,
+    QDate,
+    QDateTime,
+    QDir,
+    QTemporaryDir,
+    QTime,
+    QVariant,
+)
+from qgis.core import (
+    NULL,
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform,
+    QgsCoordinateTransformContext,
+    QgsFeature,
+    QgsFeatureRequest,
+    QgsFeatureSink,
+    QgsField,
+    QgsFields,
+    QgsGeometry,
+    QgsLayerMetadata,
+    QgsMemoryProviderUtils,
+    QgsMultiPolygon,
+    QgsPoint,
+    QgsPointXY,
+    QgsProject,
+    QgsRectangle,
+    QgsTriangle,
+    QgsUnsetAttributeValue,
+    QgsVectorFileWriter,
+    QgsVectorLayer,
+    QgsWkbTypes,
+)
 from qgis.testing import start_app, unittest
-from utilities import writeShape, compareWkt, unitTestDataPath
+
+from utilities import compareWkt, unitTestDataPath, writeShape
 
 TEST_DATA_DIR = unitTestDataPath()
 start_app()
@@ -938,7 +948,7 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         self.assertEqual(write_result, QgsVectorFileWriter.NoError, error_message)
 
         # Real test
-        vl = QgsVectorLayer("%s|layername=test" % filename, 'src_test', 'ogr')
+        vl = QgsVectorLayer(f"{filename}|layername=test", 'src_test', 'ogr')
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.featureCount(), 1)
 

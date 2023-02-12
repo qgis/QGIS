@@ -9,27 +9,29 @@ __author__ = '(C) 2017 by Nyall Dawson'
 __date__ = '23/10/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
-
+import http.server
 import os
 import socketserver
 import threading
-import http.server
-from qgis.PyQt.QtCore import QRectF, QDir
+
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QDir, QRectF
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
-from qgis.core import (QgsLayoutItemPicture,
-                       QgsLayout,
-                       QgsLayoutItemMap,
-                       QgsRectangle,
-                       QgsCoordinateReferenceSystem,
-                       QgsProject,
-                       QgsReadWriteContext
-                       )
+from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsLayout,
+    QgsLayoutItemMap,
+    QgsLayoutItemPicture,
+    QgsProject,
+    QgsReadWriteContext,
+    QgsRectangle,
+)
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
+
 from qgslayoutchecker import QgsLayoutChecker
 from test_qgslayoutitem import LayoutItemTestCase
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -74,7 +76,7 @@ class TestQgsLayoutPicture(unittest.TestCase, LayoutItemTestCase):
         self.report = "<h1>Python QgsLayoutItemPicture Tests</h1>\n"
 
     def tearDown(self):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 

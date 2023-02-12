@@ -10,25 +10,18 @@ __date__ = '02.04.2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
 import qgis  # NOQA
-
-import os
-
+from qgis.PyQt.QtCore import QStringListModel
+from qgis.PyQt.QtTest import QAbstractItemModelTester, QSignalSpy
 from qgis.core import (
+    QgsLayerTree,
     QgsLayerTreeModel,
     QgsProject,
     QgsVectorLayer,
-    QgsLayerTreeLayer,
-    QgsLayerTree,
 )
-from qgis.gui import (
-    QgsLayerTreeView,
-    QgsLayerTreeViewDefaultActions,
-)
+from qgis.gui import QgsLayerTreeView, QgsLayerTreeViewDefaultActions
 from qgis.testing import start_app, unittest
-from utilities import (unitTestDataPath)
-from qgis.PyQt.QtCore import QStringListModel
-from qgis.PyQt.QtTest import QSignalSpy, QAbstractItemModelTester
-from qgis.PyQt.Qt import PYQT_VERSION_STR
+
+from utilities import unitTestDataPath
 
 app = start_app()
 TEST_DATA_DIR = unitTestDataPath()

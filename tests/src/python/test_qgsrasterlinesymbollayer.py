@@ -20,44 +20,20 @@ __date__ = 'March 2019'
 __copyright__ = '(C) 2019, Nyall Dawson'
 
 import qgis  # NOQA
+from qgis.PyQt.QtCore import QDir, Qt
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.core import (
+    QgsFeature,
+    QgsGeometry,
+    QgsLineSymbol,
+    QgsMapSettings,
+    QgsRasterLineSymbolLayer,
+    QgsRenderChecker,
+    QgsRenderContext,
+)
+from qgis.testing import start_app, unittest
 
-import os
 from utilities import unitTestDataPath
-
-from qgis.PyQt.QtCore import QDir, Qt, QSize
-from qgis.PyQt.QtGui import QImage, QColor, QPainter
-from qgis.PyQt.QtXml import QDomDocument
-
-from qgis.core import (QgsGeometry,
-                       QgsFillSymbol,
-                       QgsRenderContext,
-                       QgsFeature,
-                       QgsMapSettings,
-                       QgsRenderChecker,
-                       QgsReadWriteContext,
-                       QgsSymbolLayerUtils,
-                       QgsSimpleMarkerSymbolLayer,
-                       QgsLineSymbolLayer,
-                       QgsMarkerLineSymbolLayer,
-                       QgsMarkerSymbol,
-                       QgsGeometryGeneratorSymbolLayer,
-                       QgsSymbol,
-                       QgsFontMarkerSymbolLayer,
-                       QgsMultiRenderChecker,
-                       QgsLineSymbol,
-                       QgsSymbolLayer,
-                       QgsProperty,
-                       QgsRectangle,
-                       QgsUnitTypes,
-                       QgsSimpleLineSymbolLayer,
-                       QgsTemplatedLineSymbolLayerBase,
-                       QgsHashedLineSymbolLayer,
-                       QgsVectorLayer,
-                       QgsSingleSymbolRenderer,
-                       QgsRasterLineSymbolLayer
-                       )
-
-from qgis.testing import unittest, start_app
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -69,7 +45,7 @@ class TestQgsRasterLineSymbolLayer(unittest.TestCase):
         self.report = "<h1>Python QgsRasterLineSymbolLayer Tests</h1>\n"
 
     def tearDown(self):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 

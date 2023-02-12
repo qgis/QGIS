@@ -511,6 +511,9 @@ Uses :py:class:`QgsExpression`
 :return: The expression which will be used to preview features for this layer
 %End
 
+    virtual bool hasMapTips() const ${SIP_FINAL};
+
+
     virtual QgsVectorDataProvider *dataProvider() ${SIP_FINAL};
 
     virtual QgsMapLayerTemporalProperties *temporalProperties();

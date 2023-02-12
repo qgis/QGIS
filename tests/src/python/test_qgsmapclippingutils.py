@@ -11,22 +11,20 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.testing import unittest
 from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform,
+    QgsGeometry,
     QgsMapClippingRegion,
     QgsMapClippingUtils,
+    QgsMapLayerType,
     QgsMapSettings,
-    QgsRenderContext,
-    QgsGeometry,
-    QgsVectorLayer,
-    QgsCoordinateTransform,
-    QgsCoordinateReferenceSystem,
-    QgsProject,
     QgsMapToPixel,
-    QgsMapLayerType
+    QgsProject,
+    QgsRenderContext,
+    QgsVectorLayer,
 )
-
-from qgis.testing import start_app
+from qgis.testing import start_app, unittest
 
 start_app()
 

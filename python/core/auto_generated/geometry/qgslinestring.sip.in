@@ -363,7 +363,8 @@ corresponds to the last point in the line.
 
 
 
-    double zAt( int index ) const;
+    virtual double zAt( int index ) const;
+
 %Docstring
 Returns the z-coordinate of the specified node in the line string.
 
@@ -391,7 +392,8 @@ corresponds to the last point in the line.
 %End
 
 
-    double mAt( int index ) const;
+    virtual double mAt( int index ) const;
+
 %Docstring
 Returns the m-coordinate of the specified node in the line string.
 

@@ -20,37 +20,42 @@ __copyright__ = 'Copyright 2013, The QGIS Project'
 #
 # To recreate all tests, set rebuildTests to true
 
-import qgis  # NOQA
-
+import inspect
 import os
 import re
 import tempfile
-import inspect
 import time
-import test_qgsdelimitedtextprovider_wanted as want  # NOQA
-
 from collections.abc import Callable
+
+import qgis  # NOQA
+
+import test_qgsdelimitedtextprovider_wanted as want  # NOQA
 
 rebuildTests = 'REBUILD_DELIMITED_TEXT_TESTS' in os.environ
 
-from qgis.PyQt.QtCore import QCoreApplication, QVariant, QUrl, QObject, QTemporaryDir, QDate
-
+from providertestbase import ProviderTestCase
 from qgis.core import (
-    QgsGeometry,
-    QgsProviderRegistry,
-    QgsVectorLayer,
-    QgsFeatureRequest,
-    QgsRectangle,
+    NULL,
     QgsApplication,
     QgsFeature,
-    QgsWkbTypes,
+    QgsFeatureRequest,
     QgsFeatureSource,
-    NULL)
-
+    QgsGeometry,
+    QgsProviderRegistry,
+    QgsRectangle,
+    QgsVectorLayer,
+    QgsWkbTypes,
+)
+from qgis.PyQt.QtCore import (
+    QCoreApplication,
+    QDate,
+    QObject,
+    QTemporaryDir,
+    QUrl,
+    QVariant,
+)
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath, compareWkt, compareUrl
-
-from providertestbase import ProviderTestCase
+from utilities import compareUrl, compareWkt, unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

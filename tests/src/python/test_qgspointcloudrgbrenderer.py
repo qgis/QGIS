@@ -14,24 +14,24 @@ from qgis.PyQt.QtCore import QDir, QSize
 from qgis.PyQt.QtGui import QPainter
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
-    QgsProviderRegistry,
-    QgsPointCloudLayer,
-    QgsPointCloudRgbRenderer,
-    QgsReadWriteContext,
-    QgsRenderContext,
-    QgsPointCloudRenderContext,
-    QgsVector3D,
-    QgsMultiRenderChecker,
-    QgsMapSettings,
-    QgsRectangle,
     QgsContrastEnhancement,
-    QgsUnitTypes,
-    QgsMapUnitScale,
     QgsCoordinateReferenceSystem,
     QgsDoubleRange,
-    QgsPointCloudRenderer,
+    QgsGeometry,
     QgsMapClippingRegion,
-    QgsGeometry
+    QgsMapSettings,
+    QgsMapUnitScale,
+    QgsMultiRenderChecker,
+    QgsPointCloudLayer,
+    QgsPointCloudRenderContext,
+    QgsPointCloudRenderer,
+    QgsPointCloudRgbRenderer,
+    QgsProviderRegistry,
+    QgsReadWriteContext,
+    QgsRectangle,
+    QgsRenderContext,
+    QgsUnitTypes,
+    QgsVector3D,
 )
 from qgis.testing import start_app, unittest
 
@@ -48,7 +48,7 @@ class TestQgsPointCloudRgbRenderer(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(cls.report)
 

@@ -27,6 +27,7 @@
 #include "qgsoptionsdialogbase.h"
 #include "qgsguiutils.h"
 #include "qgis.h"
+#include "qgssettingstree.h"
 
 class QgsPluginSortFilterProxyModel;
 class QgsPythonUtils;
@@ -52,7 +53,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     Q_OBJECT
   public:
 
-    static inline QgsSettingsTreeNode *sTreePluginManager = QgsSettings::sTreePlugins->createChildNode( QStringLiteral( "_plugin_manager" ) );
+    static inline QgsSettingsTreeNode *sTreePluginManager = QgsSettingsTree::sTreePlugins->createChildNode( QStringLiteral( "_plugin_manager" ) );
 
     static const QgsSettingsEntryBool *settingsAutomaticallyCheckForPluginUpdates;
     static const QgsSettingsEntryBool *settingsAllowExperimental;

@@ -10,31 +10,24 @@ __date__ = '05/04/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.PyQt.QtCore import (QSize,
-                              QSizeF,
-                              QPointF,
-                              QDir)
-from qgis.PyQt.QtGui import (QPolygonF,
-                             QImage,
-                             QPainter,
-                             QColor)
-from qgis.core import (QgsLegendPatchShape,
-                       QgsGeometry,
-                       QgsSymbol,
-                       QgsFillSymbol,
-                       QgsLineSymbol,
-                       QgsMarkerSymbol,
-                       QgsRenderChecker,
-                       QgsReadWriteContext,
-                       QgsRenderContext,
-                       QgsStyle
-                       )
-from qgis.PyQt.QtXml import QDomDocument, QDomElement
-
+from qgis.PyQt.QtCore import QDir, QSize, QSizeF
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.core import (
+    QgsFillSymbol,
+    QgsGeometry,
+    QgsLegendPatchShape,
+    QgsLineSymbol,
+    QgsMarkerSymbol,
+    QgsReadWriteContext,
+    QgsRenderChecker,
+    QgsRenderContext,
+    QgsStyle,
+    QgsSymbol,
+)
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
 
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -50,7 +43,7 @@ class TestQgsLegendPatchShape(unittest.TestCase):
         self.report = "<h1>Python QgsLegendPatchShape Tests</h1>\n"
 
     def tearDown(self):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 

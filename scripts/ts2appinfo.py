@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 /***************************************************************************
                                ts2appinfo.py
@@ -39,7 +38,7 @@ for elem in ['name', 'summary', 'description']:
         else:
             r.remove(c)
 
-f = open("linux/org.qgis.qgis.desktop.in", "r")
+f = open("linux/org.qgis.qgis.desktop.in")
 lines = f.readlines()
 
 for line in lines:
@@ -96,7 +95,7 @@ for line in lines:
 
             t = line.strip()[len(prefix) + 1:]
             for lang in strings[t]:
-                l = "{}[{}]={}\n".format(prefix, lang, strings[t][lang])
+                l = f"{prefix}[{lang}]={strings[t][lang]}\n"
                 f.write(l)
 
         elif line.startswith(prefix + "["):

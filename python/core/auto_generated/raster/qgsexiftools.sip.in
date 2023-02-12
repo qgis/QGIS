@@ -89,6 +89,19 @@ Returns ``True`` if writing was successful.
 .. seealso:: :py:func:`getGeoTag`
 %End
 
+    static bool tagImage( const QString &imagePath, const QString &tag, const QVariant &value );
+%Docstring
+Writes a tag to the image at imagePath.
+
+:param imagePath: the image path
+:param tag: the exif tag name
+:param value: the exif tag value
+
+:return: ``True`` if writing was successful.
+
+.. versionadded:: 3.30
+%End
+
 };
 
 /************************************************************************

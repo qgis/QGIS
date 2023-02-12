@@ -10,11 +10,16 @@ __date__ = '4/11/2012'
 __copyright__ = 'Copyright 2012, The QGIS Project'
 
 import qgis  # NOQA
-
 from qgis.PyQt.QtCore import QVariant
+from qgis.core import (
+    NULL,
+    QgsExpression,
+    QgsExpressionContext,
+    QgsFeatureRequest,
+    QgsFields,
+)
 from qgis.testing import unittest
 from qgis.utils import qgsfunction
-from qgis.core import QgsExpression, QgsFeatureRequest, QgsFields, QgsExpressionContext, NULL
 
 
 class TestQgsExpressionCustomFunctions(unittest.TestCase):
@@ -22,7 +27,7 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
     @qgsfunction(1, 'testing', register=False)
     def testfun(values, feature, parent):
         """ Function help """
-        return "Testing_%s" % values[0]
+        return f"Testing_{values[0]}"
 
     @qgsfunction(args="auto", group='testing', register=False)
     def autocount(value1, value2, value3, feature, parent):

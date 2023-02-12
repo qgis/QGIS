@@ -16,10 +16,11 @@
 #ifndef QGSMAPTOOLSHAPEELLIPSEABSTRACT_H
 #define QGSMAPTOOLSHAPEELLIPSEABSTRACT_H
 
-#include "qgsmaptoolshapecircleabstract.h"
+#include "qgsmaptoolshapeabstract.h"
 #include "qgsellipse.h"
 #include "qgssettingsregistrycore.h"
 #include "qgis_app.h"
+#include "qgssettingsentryimpl.h"
 
 class QgsGeometryRubberBand;
 class QgsSnapIndicator;

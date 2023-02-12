@@ -10,25 +10,23 @@ __date__ = '15/06/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
 import os.path
+import tempfile
 
 import qgis  # NOQA
-
-from qgis.core import (
-    QgsFontManager,
-    QgsSettings,
-    QgsApplication,
-    QgsTextFormat,
-    QgsReadWriteContext
-)
 from qgis.PyQt.QtCore import QCoreApplication, QUrl
 from qgis.PyQt.QtGui import QFont
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
-
+from qgis.core import (
+    QgsApplication,
+    QgsFontManager,
+    QgsReadWriteContext,
+    QgsSettings,
+    QgsTextFormat,
+)
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
-from utilities import getTestFont
-import tempfile
+
+from utilities import getTestFont, unitTestDataPath
 
 start_app()
 

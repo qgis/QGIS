@@ -12,6 +12,8 @@
 
 
 
+
+
 class QgsGpsLogger : QObject
 {
 %Docstring(signature="appended")

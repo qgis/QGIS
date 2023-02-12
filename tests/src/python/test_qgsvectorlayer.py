@@ -12,82 +12,78 @@ __author__ = 'Tim Sutton'
 __date__ = '20/08/2012'
 __copyright__ = 'Copyright 2012, The QGIS Project'
 
-import qgis  # NOQA
-
-import os
-import tempfile
-import shutil
 import glob
+import os
+import shutil
+import tempfile
 
+import qgis  # NOQA
 from qgis.PyQt.QtCore import (
     QDate,
     QDateTime,
-    QVariant,
     Qt,
-    QDateTime,
-    QDate,
+    QTemporaryDir,
     QTime,
     QTimer,
-    QTemporaryDir,
+    QVariant,
 )
-from qgis.PyQt.QtGui import QPainter, QColor
-from qgis.PyQt.QtXml import QDomDocument
-
-from qgis.core import (Qgis,
-                       QgsWkbTypes,
-                       QgsAction,
-                       QgsAuxiliaryStorage,
-                       QgsCoordinateTransformContext,
-                       QgsDataProvider,
-                       QgsDefaultValue,
-                       QgsEditorWidgetSetup,
-                       QgsMapLayer,
-                       QgsVectorLayer,
-                       QgsRectangle,
-                       QgsFeature,
-                       QgsFeatureRequest,
-                       QgsGeometry,
-                       QgsPointXY,
-                       QgsField,
-                       QgsFieldConstraints,
-                       QgsFields,
-                       QgsVectorLayerJoinInfo,
-                       QgsSymbol,
-                       QgsSingleSymbolRenderer,
-                       QgsCoordinateReferenceSystem,
-                       QgsVectorLayerCache,
-                       QgsReadWriteContext,
-                       QgsProject,
-                       QgsUnitTypes,
-                       QgsAggregateCalculator,
-                       QgsPoint,
-                       QgsExpressionContext,
-                       QgsExpressionContextScope,
-                       QgsExpressionContextUtils,
-                       QgsLineSymbol,
-                       QgsMapLayerServerProperties,
-                       QgsMapLayerStyle,
-                       QgsMapLayerDependency,
-                       QgsRenderContext,
-                       QgsPalLayerSettings,
-                       QgsVectorLayerSimpleLabeling,
-                       QgsSingleCategoryDiagramRenderer,
-                       QgsDiagramLayerSettings,
-                       QgsTextFormat,
-                       QgsVectorLayerSelectedFeatureSource,
-                       QgsExpression,
-                       QgsLayerMetadata,
-                       QgsAnimatedMarkerSymbolLayer,
-                       QgsMarkerSymbol,
-                       QgsSingleSymbolRenderer,
-                       QgsEmbeddedSymbolRenderer,
-                       QgsNullSymbolRenderer,
-                       NULL)
-from qgis.gui import (QgsAttributeTableModel,
-                      QgsGui
-                      )
+from qgis.PyQt.QtGui import QColor, QPainter
 from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.core import (
+    NULL,
+    Qgis,
+    QgsAction,
+    QgsAggregateCalculator,
+    QgsAnimatedMarkerSymbolLayer,
+    QgsAuxiliaryStorage,
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransformContext,
+    QgsDataProvider,
+    QgsDefaultValue,
+    QgsDiagramLayerSettings,
+    QgsEditorWidgetSetup,
+    QgsEmbeddedSymbolRenderer,
+    QgsExpression,
+    QgsExpressionContext,
+    QgsExpressionContextScope,
+    QgsExpressionContextUtils,
+    QgsFeature,
+    QgsFeatureRequest,
+    QgsField,
+    QgsFieldConstraints,
+    QgsFields,
+    QgsGeometry,
+    QgsLayerMetadata,
+    QgsLineSymbol,
+    QgsMapLayer,
+    QgsMapLayerDependency,
+    QgsMapLayerServerProperties,
+    QgsMapLayerStyle,
+    QgsMarkerSymbol,
+    QgsNullSymbolRenderer,
+    QgsPalLayerSettings,
+    QgsPoint,
+    QgsPointXY,
+    QgsProject,
+    QgsReadWriteContext,
+    QgsRectangle,
+    QgsRenderContext,
+    QgsSingleCategoryDiagramRenderer,
+    QgsSingleSymbolRenderer,
+    QgsSymbol,
+    QgsTextFormat,
+    QgsUnitTypes,
+    QgsVectorLayer,
+    QgsVectorLayerCache,
+    QgsVectorLayerJoinInfo,
+    QgsVectorLayerSelectedFeatureSource,
+    QgsVectorLayerSimpleLabeling,
+    QgsWkbTypes,
+)
+from qgis.gui import QgsAttributeTableModel, QgsGui
 from qgis.testing import start_app, unittest
+
 from featuresourcetestbase import FeatureSourceTestCase
 from utilities import unitTestDataPath
 
@@ -189,7 +185,7 @@ def dumpFeature(f):
         print("geometry wkb: %d" % geom.wkbType())
     else:
         print("no geometry")
-    print("attrs: %s" % str(f.attributes()))
+    print(f"attrs: {str(f.attributes())}")
 
 
 def formatAttributes(attrs):
@@ -4414,6 +4410,34 @@ class TestQgsVectorLayerTransformContext(unittest.TestCase):
         layer.setTransformContext(QgsCoordinateTransformContext())
         layer.hasSpatialIndex()
         # layer.accept(QgsStyleEntityVisitorInterface())
+
+    def testMapTips(self):
+        vl = QgsVectorLayer('Point?crs=epsg:3111&field=pk:integer', 'test', 'memory')
+        self.assertEqual(vl.displayExpression(), '"pk"')
+        # layer has map tips because display expression will be used
+        self.assertTrue(vl.hasMapTips())
+
+        vl.setMapTipTemplate('some template')
+        self.assertEqual(vl.mapTipTemplate(), 'some template')
+        self.assertTrue(vl.hasMapTips())
+
+        vl.setMapTipTemplate(None)
+        self.assertFalse(vl.mapTipTemplate())
+        self.assertTrue(vl.hasMapTips())
+
+        # layer with no fields
+        vl = QgsVectorLayer('Point?crs=epsg:3111', 'test', 'memory')
+        self.assertFalse(vl.displayExpression())
+        self.assertFalse(vl.hasMapTips())
+
+        vl.setMapTipTemplate('some template')
+        self.assertEqual(vl.mapTipTemplate(), 'some template')
+        self.assertTrue(vl.hasMapTips())
+
+        vl.setMapTipTemplate(None)
+        self.assertFalse(vl.mapTipTemplate())
+        self.assertFalse(vl.hasMapTips())
+
 
 # TODO:
 # - fetch rect: feat with changed geometry: 1. in rect, 2. out of rect

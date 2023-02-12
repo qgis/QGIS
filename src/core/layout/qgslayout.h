@@ -33,6 +33,7 @@ class QgsLayoutPageCollection;
 class QgsLayoutUndoStack;
 class QgsLayoutRenderContext;
 class QgsLayoutReportContext;
+class QgsSettingsEntryStringList;
 
 /**
  * \ingroup core

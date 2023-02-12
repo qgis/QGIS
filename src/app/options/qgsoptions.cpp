@@ -57,6 +57,8 @@
 #include "qgsbearingnumericformat.h"
 #include "qgscoordinatenumericformat.h"
 #include "options/qgsadvancedoptions.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsentryenumflag.h"
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -806,15 +808,12 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   spinZoomFactor->setClearValue( 200 );
 
   // predefined scales for scale combobox
-  QString scalePaths = mSettings->value( QStringLiteral( "Map/scales" ), Qgis::defaultProjectScales() ).toString();
-  if ( !scalePaths.isEmpty() )
+  const QStringList scalePaths = QgsSettingsRegistryCore::settingsMapScales->value();
+  for ( const QString &scale : scalePaths )
   {
-    const QStringList scalesList = scalePaths.split( ',' );
-    for ( const QString &scale : scalesList )
-    {
-      addScaleToScaleList( scale );
-    }
+    addScaleToScaleList( scale );
   }
+
   connect( mListGlobalScales, &QListWidget::itemChanged, this, &QgsOptions::scaleItemChanged );
   connect( pbnAddScale, &QAbstractButton::clicked, this, &QgsOptions::addScale );
   connect( pbnRemoveScale, &QAbstractButton::clicked, this, &QgsOptions::removeScale );
@@ -1032,9 +1031,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mDefaultZValueSpinBox->setValue( QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->value() );
   mDefaultZValueSpinBox->setClearValue( QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->defaultValue() );
 
-  mDefaultMValueSpinBox->setValue(
-    mSettings->value( QStringLiteral( "/qgis/digitizing/default_m_value" ), Qgis::DEFAULT_M_COORDINATE ).toDouble()
-  );
+  mDefaultMValueSpinBox->setValue( QgsSettingsRegistryCore::settingsDigitizingDefaultMValue->value() );
   mDefaultMValueSpinBox->setClearValue( Qgis::DEFAULT_M_COORDINATE );
 
   //default snap mode
@@ -1741,16 +1738,12 @@ void QgsOptions::saveOptions()
   QgsSettingsRegistryCore::settingsDigitizingConvertToCurveDistanceTolerance->setValue( mTracingCustomDistanceToleranceSpinBox->value() );
 
   // default scale list
-  QString myPaths;
+  QStringList myPaths;
   for ( int i = 0; i < mListGlobalScales->count(); ++i )
   {
-    if ( i != 0 )
-    {
-      myPaths += ',';
-    }
-    myPaths += mListGlobalScales->item( i )->text();
+    myPaths << mListGlobalScales->item( i )->text();
   }
-  mSettings->setValue( QStringLiteral( "Map/scales" ), myPaths );
+  QgsSettingsRegistryCore::settingsMapScales->setValue( myPaths );
 
   //
   // Color palette

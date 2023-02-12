@@ -1017,6 +1017,12 @@ namespace QgsWms
           }
 
           handleLayersFromTreeGroup( doc, layerElem, serverIface, project, request, treeGroupChild, wmsLayerInfos, projectSettings );
+
+          // Check if child layer elements have been added
+          if ( layerElem.elementsByTagName( QStringLiteral( "Layer" ) ).length() == 0 )
+          {
+            continue;
+          }
         }
         else
         {

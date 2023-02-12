@@ -11,36 +11,30 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 
 from urllib.parse import parse_qs
 
-from qgis.PyQt.QtCore import QVariant, QByteArray, QDate, QDateTime, QTime
+from qgis.PyQt.QtCore import QByteArray, QDate, QDateTime, QTime, QVariant
 from qgis.core import (
+    NULL,
+    QgsCoordinateReferenceSystem,
+    QgsFeature,
+    QgsFeatureRequest,
+    QgsFeatureSink,
+    QgsFeatureSource,
     QgsField,
     QgsFields,
+    QgsGeometry,
     QgsLayerDefinition,
+    QgsMemoryProviderUtils,
     QgsPointXY,
     QgsReadWriteContext,
-    QgsVectorLayer,
-    QgsFeatureRequest,
-    QgsFeature,
-    QgsGeometry,
-    QgsWkbTypes,
-    NULL,
-    QgsMemoryProviderUtils,
-    QgsCoordinateReferenceSystem,
     QgsRectangle,
     QgsTestUtils,
-    QgsFeatureSource,
-    QgsFeatureSink,
+    QgsVectorLayer,
+    QgsWkbTypes,
 )
-from qgis.testing import (
-    start_app,
-    unittest
-)
+from qgis.testing import start_app, unittest
 
 from providertestbase import ProviderTestCase
-from utilities import (
-    unitTestDataPath,
-    compareWkt
-)
+from utilities import compareWkt, unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -142,7 +136,7 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         testVectors = ["Point", "LineString", "Polygon", "MultiPoint", "MultiLineString", "MultiPolygon", "None"]
         for v in testVectors:
             layer = QgsVectorLayer(v, "test", "memory")
-            assert layer.isValid(), "Failed to create valid %s memory layer" % (v)
+            assert layer.isValid(), f"Failed to create valid {v} memory layer"
 
     def testLayerGeometry(self):
         testVectors = [("Point", QgsWkbTypes.PointGeometry, QgsWkbTypes.Point),
@@ -179,12 +173,10 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         for v in testVectors:
             layer = QgsVectorLayer(v[0], "test", "memory")
 
-            myMessage = ('Expected: %s\nGot: %s\n' %
-                         (v[1], layer.geometryType()))
+            myMessage = f'Expected: {v[1]}\nGot: {layer.geometryType()}\n'
             assert layer.geometryType() == v[1], myMessage
 
-            myMessage = ('Expected: %s\nGot: %s\n' %
-                         (v[2], layer.wkbType()))
+            myMessage = f'Expected: {v[2]}\nGot: {layer.wkbType()}\n'
             assert layer.wkbType() == v[2], myMessage
 
     def testAddFeatures(self):
@@ -196,8 +188,7 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
                                       QgsField("size", QVariant.Double)])
         assert res, "Failed to add attributes"
 
-        myMessage = ('Expected: %s\nGot: %s\n' %
-                     (3, len(provider.fields())))
+        myMessage = f'Expected: {3}\nGot: {len(provider.fields())}\n'
 
         assert len(provider.fields()) == 3, myMessage
 
@@ -210,30 +201,25 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
 
         assert res, "Failed to add feature"
 
-        myMessage = ('Expected: %s\nGot: %s\n' %
-                     (1, provider.featureCount()))
+        myMessage = f'Expected: {1}\nGot: {provider.featureCount()}\n'
         assert provider.featureCount() == 1, myMessage
 
         for f in provider.getFeatures(QgsFeatureRequest()):
-            myMessage = ('Expected: %s\nGot: %s\n' %
-                         ("Johny", f[0]))
+            myMessage = f"Expected: {'Johny'}\nGot: {f[0]}\n"
 
             assert f[0] == "Johny", myMessage
 
-            myMessage = ('Expected: %s\nGot: %s\n' %
-                         (20, f[1]))
+            myMessage = f'Expected: {20}\nGot: {f[1]}\n'
 
             assert f[1] == 20, myMessage
 
-            myMessage = ('Expected: %s\nGot: %s\n' %
-                         (0.3, f[2]))
+            myMessage = f'Expected: {0.3}\nGot: {f[2]}\n'
 
             assert (f[2] - 0.3) < 0.0000001, myMessage
 
             geom = f.geometry()
 
-            myMessage = ('Expected: %s\nGot: %s\n' %
-                         ("Point (10 10)", str(geom.asWkt())))
+            myMessage = f"Expected: {'Point (10 10)'}\nGot: {str(geom.asWkt())}\n"
 
             assert compareWkt(str(geom.asWkt()), "Point (10 10)"), myMessage
 

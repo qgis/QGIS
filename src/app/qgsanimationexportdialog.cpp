@@ -127,7 +127,7 @@ QgsAnimationExportDialog::QgsAnimationExportDialog( QWidget *parent, QgsMapCanva
 
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, [ = ]
   {
-    QgsHelp::openHelp( QStringLiteral( "introduction/qgis_gui.html#time-based-control-on-the-map-canvas" ) );
+    QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#maptimecontrol" ) );
   } );
 
   connect( buttonBox, &QDialogButtonBox::accepted, this, [ = ]

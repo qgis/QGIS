@@ -11,6 +11,8 @@
 
 
 
+
+
 %ModuleHeaderCode
 #include "qgsgpsconnection.h"
 %End

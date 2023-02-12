@@ -9,22 +9,25 @@ __author__ = 'Stephane Brunner'
 __date__ = '28/08/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-import qgis  # NOQA
-import shutil
-
 import os
-from shutil import copyfile
+import shutil
+import tempfile
 from math import sqrt
-from utilities import unitTestDataPath
+
+import qgis  # NOQA
 from osgeo import gdal
 from osgeo.gdalconst import GA_ReadOnly
-from qgis.server import QgsServer, QgsAccessControlFilter, QgsServerRequest, QgsBufferServerRequest, QgsBufferServerResponse
-from qgis.core import QgsRenderChecker, QgsApplication
 from qgis.PyQt.QtCore import QSize
-import tempfile
-from test_qgsserver import QgsServerTestBase
-import base64
+from qgis.core import QgsRenderChecker
+from qgis.server import (
+    QgsAccessControlFilter,
+    QgsBufferServerRequest,
+    QgsBufferServerResponse,
+    QgsServerRequest,
+)
 
+from test_qgsserver import QgsServerTestBase
+from utilities import unitTestDataPath
 
 XML_NS = \
     'service="WFS" version="1.0.0" ' \
@@ -132,7 +135,7 @@ class TestQgsServerAccessControl(QgsServerTestBase):
         rh = response.headers()
         rk = sorted(rh.keys())
         for k in rk:
-            headers.append((f"{k}: {rh[k]}").encode('utf-8'))
+            headers.append((f"{k}: {rh[k]}").encode())
         return b"\n".join(headers) + b"\n\n", bytes(response.body())
 
     @classmethod
@@ -273,4 +276,4 @@ class TestQgsServerAccessControl(QgsServerTestBase):
             )
             self.assertTrue(
                 str(response).find(f"<qgs:color>{color}</qgs:color>") != -1,
-                "Wrong color in result\n%s" % response)
+                f"Wrong color in result\n{response}")

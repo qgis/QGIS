@@ -19,26 +19,24 @@ __author__ = 'Matthias Kuhn'
 __date__ = 'January 2016'
 __copyright__ = '(C) 2016, Matthiasd Kuhn'
 
-import qgis  # NOQA
-
 import os
 
+import qgis  # NOQA
 from qgis.PyQt.QtCore import QSize
-
 from qgis.core import (
-    QgsVectorLayer,
-    QgsProject,
-    QgsRectangle,
-    QgsMultiRenderChecker,
-    QgsSingleSymbolRenderer,
     QgsFillSymbol,
-    QgsRenderContext,
+    QgsMultiRenderChecker,
+    QgsProject,
     QgsProperty,
-    QgsSymbolLayer
+    QgsRectangle,
+    QgsRenderContext,
+    QgsSingleSymbolRenderer,
+    QgsSymbolLayer,
+    QgsVectorLayer,
 )
-
-from qgis.testing import unittest, start_app
+from qgis.testing import start_app, unittest
 from qgis.testing.mocked import get_iface
+
 from utilities import unitTestDataPath
 
 start_app()

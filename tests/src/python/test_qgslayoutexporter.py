@@ -9,48 +9,55 @@ __author__ = 'Nyall Dawson'
 __date__ = '11/12/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
-from qgis.PyQt import sip
-import tempfile
-import shutil
 import os
 import subprocess
-from xml.dom import minidom
-from osgeo import gdal
+import tempfile
 
-from qgis.core import (QgsMultiRenderChecker,
-                       QgsLayoutExporter,
-                       QgsLayout,
-                       QgsProject,
-                       QgsMargins,
-                       QgsLayoutItemShape,
-                       QgsLayoutItemLabel,
-                       QgsLayoutGuide,
-                       QgsRectangle,
-                       QgsLayoutItemPage,
-                       QgsLayoutItemMap,
-                       QgsLayoutItemScaleBar,
-                       QgsLayoutPoint,
-                       QgsLayoutMeasurement,
-                       QgsUnitTypes,
-                       QgsSimpleFillSymbolLayer,
-                       QgsFillSymbol,
-                       QgsVectorLayer,
-                       QgsCoordinateReferenceSystem,
-                       QgsPrintLayout,
-                       QgsSingleSymbolRenderer,
-                       QgsRenderContext,
-                       QgsReport,
-                       QgsPalLayerSettings,
-                       QgsFeature,
-                       QgsGeometry,
-                       QgsPointXY,
-                       QgsVectorLayerSimpleLabeling)
-from qgis.PyQt.QtCore import QSize, QSizeF, QDir, QRectF, Qt, QDateTime, QDate, QTime, QTimeZone
+import qgis  # NOQA
+from osgeo import gdal
+from qgis.PyQt.QtCore import (
+    QDate,
+    QDateTime,
+    QDir,
+    QRectF,
+    QSize,
+    Qt,
+    QTime,
+    QTimeZone,
+)
 from qgis.PyQt.QtGui import QImage, QPainter
 from qgis.PyQt.QtPrintSupport import QPrinter
-from qgis.PyQt.QtSvg import QSvgRenderer, QSvgGenerator
-
+from qgis.PyQt.QtSvg import QSvgRenderer
+from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsFeature,
+    QgsFillSymbol,
+    QgsGeometry,
+    QgsLayout,
+    QgsLayoutExporter,
+    QgsLayoutGuide,
+    QgsLayoutItemLabel,
+    QgsLayoutItemMap,
+    QgsLayoutItemPage,
+    QgsLayoutItemScaleBar,
+    QgsLayoutItemShape,
+    QgsLayoutMeasurement,
+    QgsLayoutPoint,
+    QgsMargins,
+    QgsMultiRenderChecker,
+    QgsPalLayerSettings,
+    QgsPointXY,
+    QgsPrintLayout,
+    QgsProject,
+    QgsRectangle,
+    QgsRenderContext,
+    QgsReport,
+    QgsSimpleFillSymbolLayer,
+    QgsSingleSymbolRenderer,
+    QgsUnitTypes,
+    QgsVectorLayer,
+    QgsVectorLayerSimpleLabeling,
+)
 from qgis.testing import start_app, unittest
 
 from utilities import getExecutablePath, unitTestDataPath
@@ -97,7 +104,7 @@ def pdfToPng(pdf_file_path, rendered_file_path, page, dpi=96):
     else:
         return False, ''
 
-    print("exportToPdf call: {}".format(' '.join(call)))
+    print(f"exportToPdf call: {' '.join(call)}")
     try:
         subprocess.check_call(call)
     except subprocess.CalledProcessError as e:
@@ -140,7 +147,7 @@ class TestQgsLayoutExporter(unittest.TestCase):
         self.report = "<h1>Python QgsLayoutExporter Tests</h1>\n"
 
     def tearDown(self):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 

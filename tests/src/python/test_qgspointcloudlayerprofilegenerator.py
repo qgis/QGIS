@@ -13,32 +13,22 @@ import os
 
 import qgis  # NOQA
 from qgis.PyQt.QtCore import QDir
-from qgis.core import (
-    QgsRasterLayer,
-    QgsLineString,
-    QgsProfileRequest,
-    QgsCoordinateReferenceSystem,
-    QgsVectorLayer,
-    Qgis,
-    QgsRasterDemTerrainProvider,
-    QgsFeature,
-    QgsGeometry,
-    QgsCoordinateTransformContext,
-    QgsProjUtils,
-    QgsProfilePlotRenderer,
-    QgsFillSymbol,
-    QgsRenderChecker,
-    QgsCategorizedSymbolRenderer,
-    QgsProfilePoint,
-    QgsProfileSnapContext,
-    QgsProfileIdentifyContext,
-    QgsDoubleRange,
-    QgsProfileGenerationContext,
-    QgsUnitTypes,
-    QgsPointCloudLayer,
-    QgsProviderRegistry
-)
 from qgis.PyQt.QtGui import QColor
+from qgis.core import (
+    Qgis,
+    QgsDoubleRange,
+    QgsLineString,
+    QgsPointCloudLayer,
+    QgsProfileGenerationContext,
+    QgsProfileIdentifyContext,
+    QgsProfilePlotRenderer,
+    QgsProfilePoint,
+    QgsProfileRequest,
+    QgsProfileSnapContext,
+    QgsProviderRegistry,
+    QgsRenderChecker,
+    QgsUnitTypes,
+)
 from qgis.testing import start_app, unittest
 
 from utilities import unitTestDataPath
@@ -56,7 +46,7 @@ class TestQgsPointCloudLayerProfileGenerator(unittest.TestCase):
         self.report = "<h1>Python QgsPointCloudLayerProfileGenerator Tests</h1>\n"
 
     def tearDown(self):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 

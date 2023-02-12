@@ -24,6 +24,9 @@
 #include "qgsvariantutils.h"
 #include "qgsfeaturerequest.h"
 
+#include <QDate>
+#include <QDateTime>
+#include <QTime>
 #include <QThread>
 #include <QLocale>
 #include <functional>

@@ -18,7 +18,8 @@
 #include "qgsapplication.h"
 #include "qgsnetworkcontentfetchertask.h"
 #include "qgsziputils.h"
-#include "qgsfontutils.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
@@ -27,9 +28,9 @@
 #include <QTemporaryFile>
 #include <QTemporaryDir>
 
-const QgsSettingsEntryStringList *QgsFontManager::settingsFontFamilyReplacements = new QgsSettingsEntryStringList( QStringLiteral( "fontFamilyReplacements" ), QgsSettings::sTreeFonts, QStringList(), QStringLiteral( "Automatic font family replacements" ) );
+const QgsSettingsEntryStringList *QgsFontManager::settingsFontFamilyReplacements = new QgsSettingsEntryStringList( QStringLiteral( "fontFamilyReplacements" ), QgsSettingsTree::sTreeFonts, QStringList(), QStringLiteral( "Automatic font family replacements" ) );
 
-const QgsSettingsEntryBool *QgsFontManager::settingsDownloadMissingFonts = new QgsSettingsEntryBool( QStringLiteral( "downloadMissingFonts" ), QgsSettings::sTreeFonts, true, QStringLiteral( "Automatically download missing fonts whenever possible" ) );
+const QgsSettingsEntryBool *QgsFontManager::settingsDownloadMissingFonts = new QgsSettingsEntryBool( QStringLiteral( "downloadMissingFonts" ), QgsSettingsTree::sTreeFonts, true, QStringLiteral( "Automatically download missing fonts whenever possible" ) );
 
 QgsFontManager::QgsFontManager( QObject *parent )
   : QObject( parent )

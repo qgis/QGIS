@@ -45,7 +45,7 @@ void QgsAdvancedSettingsWidget::apply()
 // nothing to do -- mAdvancedSettingsEditor applies changes immediately
 }
 
-QgsSettingsTree *QgsAdvancedSettingsWidget::settingsTree()
+QgsSettingsTreeWidget *QgsAdvancedSettingsWidget::settingsTree()
 {
   return mAdvancedSettingsEditor;
 }

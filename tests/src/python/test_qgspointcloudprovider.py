@@ -10,16 +10,14 @@ __date__ = '09/11/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.core import (
-    QgsProviderRegistry,
-    QgsPointCloudLayer,
-    QgsStatisticalSummary
-)
-
 from qgis.PyQt.QtCore import QDir
-
+from qgis.core import (
+    QgsPointCloudLayer,
+    QgsProviderRegistry,
+    QgsStatisticalSummary,
+)
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()
@@ -33,7 +31,7 @@ class TestQgsPointCloudDataProvider(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(cls.report)
 

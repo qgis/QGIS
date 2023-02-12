@@ -10,23 +10,23 @@ __date__ = '3/10/2014'
 __copyright__ = 'Copyright 2014, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.testing import unittest, start_app
-from qgis.core import (QgsGraduatedSymbolRenderer,
-                       QgsRendererRange,
-                       QgsRendererRangeLabelFormat,
-                       QgsMarkerSymbol,
-                       QgsGradientColorRamp,
-                       QgsVectorLayer,
-                       QgsFeature,
-                       QgsGeometry,
-                       QgsPointXY,
-                       QgsReadWriteContext,
-                       QgsRenderContext
-                       )
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.core import (
+    QgsFeature,
+    QgsGeometry,
+    QgsGradientColorRamp,
+    QgsGraduatedSymbolRenderer,
+    QgsMarkerSymbol,
+    QgsPointXY,
+    QgsReadWriteContext,
+    QgsRenderContext,
+    QgsRendererRange,
+    QgsRendererRangeLabelFormat,
+    QgsVectorLayer,
+)
+from qgis.testing import start_app, unittest
 
 start_app()
 
@@ -250,6 +250,7 @@ class TestQgsGraduatedSymbolRenderer(unittest.TestCase):
             ("%1%1", "1.231.23"),
             ("from %1 to %2 meters", "from 1.23 to 2.34 meters"),
             ("from %2 to %1 meters", "from 2.34 to 1.23 meters"),
+            ("< %2", "< 2.34"),
         )
         format.setPrecision(2)
         format.setTrimTrailingZeroes(False)

@@ -202,7 +202,7 @@ QString Qgs3DMeasureDialog::formatDistance( double distance ) const
 
 void Qgs3DMeasureDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#measuring" ) );
+  QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#measuring" ) );
 }
 
 void Qgs3DMeasureDialog::openConfigTab()

@@ -11,10 +11,11 @@ the Free Software Foundation; either version 2 of the License, or
 
 import os
 import tempfile
-from qgis.core import Qgis, QgsSettings, QgsTolerance, QgsMapLayerProxyModel
-from qgis.testing import start_app, unittest
-from qgis.PyQt.QtCore import QSettings, QVariant
 from pathlib import Path
+
+from qgis.PyQt.QtCore import QSettings, QVariant
+from qgis.core import Qgis, QgsMapLayerProxyModel, QgsSettings, QgsTolerance
+from qgis.testing import start_app, unittest
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '02/02/2017'
@@ -33,7 +34,7 @@ class TestQgsSettings(unittest.TestCase):
         h, path = tempfile.mkstemp('.ini')
         Path(path).touch()
         assert QgsSettings.setGlobalSettingsPath(path)
-        self.settings = QgsSettings('testqgissettings', 'testqgissettings%s' % self.cnt)
+        self.settings = QgsSettings('testqgissettings', f'testqgissettings{self.cnt}')
         self.globalsettings = QSettings(self.settings.globalSettingsPath(), QSettings.IniFormat)
         self.globalsettings.sync()
         assert os.path.exists(self.globalsettings.fileName())

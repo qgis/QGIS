@@ -22,6 +22,9 @@
 #include "qgsstringutils.h"
 #include "qgsvariantutils.h"
 
+#include <QDate>
+#include <QDateTime>
+#include <QTime>
 #include <QRegularExpression>
 
 const char *QgsExpressionNodeBinaryOperator::BINARY_OPERATOR_TEXT[] =

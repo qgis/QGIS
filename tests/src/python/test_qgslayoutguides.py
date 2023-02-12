@@ -10,26 +10,22 @@ __date__ = '05/07/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.core import (QgsProject,
-                       QgsLayout,
-                       QgsLayoutGuide,
-                       QgsLayoutMeasurement,
-                       QgsUnitTypes,
-                       QgsReadWriteContext,
-                       QgsLayoutItemPage,
-                       QgsLayoutGuideCollection,
-                       QgsLayoutGuideProxyModel)
-from qgis.PyQt.QtCore import (Qt,
-                              QModelIndex)
-from qgis.PyQt.QtGui import (QPen,
-                             QColor)
+from qgis.PyQt import sip
+from qgis.PyQt.QtCore import QModelIndex, Qt
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
-
+from qgis.core import (
+    QgsLayout,
+    QgsLayoutGuide,
+    QgsLayoutGuideCollection,
+    QgsLayoutGuideProxyModel,
+    QgsLayoutItemPage,
+    QgsLayoutMeasurement,
+    QgsProject,
+    QgsReadWriteContext,
+    QgsUnitTypes,
+)
 from qgis.testing import start_app, unittest
-
-from qgis.PyQt import sip
 
 start_app()
 

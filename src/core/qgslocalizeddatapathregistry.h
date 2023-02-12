@@ -24,7 +24,9 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgssettingsentryimpl.h"
+
+
+class QgsSettingsEntryStringList;
 
 /**
  * \ingroup core

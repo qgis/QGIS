@@ -14,12 +14,19 @@ __copyright__ = 'Copyright 2014, Boundless Spatial, Inc.'
 import os
 import tempfile
 
-from qgis.core import QgsAuthCertUtils, QgsPkiBundle, QgsAuthMethodConfig, QgsAuthMethod, QgsAuthConfigSslServer, QgsApplication
-from qgis.gui import QgsAuthEditorWidgets
 from qgis.PyQt.QtCore import QFileInfo, qDebug
-from qgis.PyQt.QtNetwork import QSsl, QSslError, QSslCertificate, QSslSocket
+from qgis.PyQt.QtNetwork import QSsl, QSslCertificate, QSslError, QSslSocket
 from qgis.PyQt.QtTest import QTest
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QVBoxLayout
+from qgis.core import (
+    QgsApplication,
+    QgsAuthCertUtils,
+    QgsAuthConfigSslServer,
+    QgsAuthMethod,
+    QgsAuthMethodConfig,
+    QgsPkiBundle,
+)
+from qgis.gui import QgsAuthEditorWidgets
 from qgis.testing import start_app, unittest
 
 from utilities import unitTestDataPath
@@ -48,8 +55,7 @@ class TestQgsAuthManager(unittest.TestCase):
 
     def setUp(self):
         testid = self.id().split('.')
-        testheader = '\n#####_____ {0}.{1} _____#####\n'. \
-            format(testid[1], testid[2])
+        testheader = f'\n#####_____ {testid[1]}.{testid[2]} _____#####\n'
         qDebug(testheader)
 
         if (not self.authm.masterPasswordIsSet() or
@@ -385,10 +391,7 @@ class TestQgsAuthManager(unittest.TestCase):
         for _ in range(50):
             # time.sleep(0.01)  # or else the salt is not random enough
             uids.append(self.authm.uniqueConfigId())
-        msg = 'Generated 50 config ids are not unique:\n{}\n{}'.format(
-            uids,
-            list(set(uids))
-        )
+        msg = f'Generated 50 config ids are not unique:\n{uids}\n{list(set(uids))}'
         self.assertEqual(len(uids), len(list(set(uids))), msg)
 
     def config_list(self):

@@ -12,36 +12,31 @@ __date__ = '2022-08-19'
 __copyright__ = 'Copyright 2022, ItOpen'
 
 import os
-from osgeo import ogr
+import unittest
 
+from osgeo import ogr
+from qgis.PyQt.QtCore import QCoreApplication, Qt, QTemporaryDir, QVariant
+from qgis.PyQt.QtTest import QAbstractItemModelTester
 from qgis.core import (
-    QgsVectorLayer,
-    QgsProviderRegistry,
-    QgsWkbTypes,
-    QgsMapLayerType,
-    QgsLayerMetadata,
-    QgsProviderMetadata,
     QgsBox3d,
-    QgsRectangle,
-    QgsMetadataSearchContext,
-    QgsFields,
-    QgsField,
     QgsCoordinateReferenceSystem,
     QgsFeature,
+    QgsField,
+    QgsFields,
     QgsGeometry,
+    QgsLayerMetadata,
+    QgsMetadataSearchContext,
+    QgsProviderMetadata,
+    QgsProviderRegistry,
+    QgsRectangle,
+    QgsVectorLayer,
+    QgsWkbTypes,
 )
-
 from qgis.gui import (
     QgsLayerMetadataResultsModel,
     QgsLayerMetadataResultsProxyModel,
 )
-
-from qgis.PyQt.QtTest import QAbstractItemModelTester
-
-from qgis.PyQt.QtCore import QCoreApplication, QTemporaryDir, QVariant, Qt
-from utilities import compareWkt, unitTestDataPath
-from qgis.testing import start_app, TestCase
-import unittest
+from qgis.testing import TestCase, start_app
 
 QGIS_APP = start_app()
 NUM_LAYERS = 20
@@ -75,7 +70,7 @@ class TestQgsLayerMetadataResultModels(TestCase):
         self.conn.store('test_conn')
 
         for i in range(NUM_LAYERS):
-            lyr = ds.CreateLayer("layer_%s" % i, geom_type=ogr.wkbPoint, options=['SPATIAL_INDEX=NO'])
+            lyr = ds.CreateLayer(f"layer_{i}", geom_type=ogr.wkbPoint, options=['SPATIAL_INDEX=NO'])
             lyr.CreateField(ogr.FieldDefn('text_field', ogr.OFTString))
             f = ogr.Feature(lyr.GetLayerDefn())
             f['text_field'] = 'foo'

@@ -28,8 +28,6 @@
 #include "qgspoint.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvertexid.h"
-#include "qgssettingsentryimpl.h"
-#include "qgssettings.h"
 #include "qgspanelwidget.h"
 
 class QLabel;
@@ -40,6 +38,7 @@ class QgsLockedFeature;
 class QgsVectorLayer;
 class QCheckBox;
 class QStackedWidget;
+class QgsSettingsEntryBool;
 
 class APP_EXPORT QgsVertexEntry
 {

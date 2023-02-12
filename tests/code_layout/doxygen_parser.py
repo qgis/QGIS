@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     mocked
@@ -21,12 +19,12 @@ __author__ = 'Denis Rouzaud'
 __date__ = 'May 2017'
 __copyright__ = '(C) 2017, Denis Rouzaud'
 
-import re
 import glob
 import os
+import re
 
 try:
-    import xml.etree.cElementTree as ET
+    import xml.etree.ElementTree as ET
 except ImportError:
     import xml.etree.ElementTree as ET
 
@@ -158,9 +156,9 @@ class DoxygenParser():
                         unacceptable_undocumented = undocumented - set(acceptable_missing)
 
                         # do a case insensitive check too
-                        unacceptable_undocumented_insensitive = set(
-                            [DoxygenParser.standardize_signature(u) for u in undocumented]) - set(
-                            [DoxygenParser.standardize_signature(u) for u in acceptable_missing])
+                        unacceptable_undocumented_insensitive = {
+                            DoxygenParser.standardize_signature(u) for u in undocumented} - {
+                            DoxygenParser.standardize_signature(u) for u in acceptable_missing}
 
                         if len(unacceptable_undocumented_insensitive) > 0:
                             self.undocumented_members[class_name] = {}
@@ -183,13 +181,13 @@ class DoxygenParser():
         except ET.ParseError as e:
             # sometimes Doxygen generates malformed xml (e.g., for < and > operators)
             line_num, col = e.position
-            with open(f, 'r') as xml_file:
+            with open(f) as xml_file:
                 for i, l in enumerate(xml_file):
                     if i == line_num - 1:
                         line = l
                         break
             caret = '{:=>{}}'.format('^', col)
-            print(('ParseError in {}\n{}\n{}\n{}'.format(f, e, line, caret)))
+            print(f'ParseError in {f}\n{e}\n{line}\n{caret}')
 
         self.documentable_members += documentable_members
         self.documented_members += documented_members
@@ -458,7 +456,7 @@ class DoxygenParser():
         try:
             definition = member_elem.find('definition').text
             name = member_elem.find('name').text
-            if '{}::{}'.format(name, name) in definition:
+            if f'{name}::{name}' in definition:
                 return True
         except:
             pass

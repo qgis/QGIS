@@ -11,18 +11,13 @@ __author__ = 'elpaso@itopen.it'
 __date__ = '2018-09-19'
 __copyright__ = 'Copyright 2018, GISCE-TI S.L.'
 
-import uuid
-import os
-import re
 import json
-import unittest
-from qgis.PyQt.QtCore import QCoreApplication
-from pyplugin_installer.plugindependencies import find_dependencies
+import os
+import uuid
 
-from qgis.testing import (
-    start_app,
-    unittest,
-)
+from pyplugin_installer.plugindependencies import find_dependencies
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.testing import start_app, unittest
 
 from utilities import unitTestDataPath
 
@@ -38,7 +33,7 @@ class PluginDependenciesTest(unittest.TestCase):
 
         QCoreApplication.setOrganizationName("QGIS")
         QCoreApplication.setOrganizationDomain("qgis.org")
-        QCoreApplication.setApplicationName("QGIS-TEST-%s" % uuid.uuid1())
+        QCoreApplication.setApplicationName(f"QGIS-TEST-{uuid.uuid1()}")
         qgis_app = start_app()
 
         # Installed plugins

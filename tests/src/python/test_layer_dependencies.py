@@ -9,31 +9,28 @@ __author__ = 'Hugo Mercier'
 __date__ = '12/07/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
-import qgis  # NOQA
 import os
-
-from qgis.core import (QgsProject,
-                       QgsVectorLayer,
-                       QgsMapSettings,
-                       QgsSnappingConfig,
-                       QgsSnappingUtils,
-                       Qgis,
-                       QgsTolerance,
-                       QgsRectangle,
-                       QgsPointXY,
-                       QgsFeature,
-                       QgsGeometry,
-                       QgsLayerDefinition,
-                       QgsMapLayerDependency
-                       )
-
-from qgis.testing import start_app, unittest
-
-from qgis.PyQt.QtCore import QSize, QPoint
-from qgis.PyQt.QtTest import QSignalSpy
-
 import tempfile
 
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QPoint, QSize
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.core import (
+    Qgis,
+    QgsFeature,
+    QgsGeometry,
+    QgsLayerDefinition,
+    QgsMapLayerDependency,
+    QgsMapSettings,
+    QgsPointXY,
+    QgsProject,
+    QgsRectangle,
+    QgsSnappingConfig,
+    QgsSnappingUtils,
+    QgsTolerance,
+    QgsVectorLayer,
+)
+from qgis.testing import start_app, unittest
 from qgis.utils import spatialite_connect
 
 # Convenience instances in case you may need them
@@ -75,11 +72,11 @@ class TestLayerDependencies(unittest.TestCase):
         con.commit()
         con.close()
 
-        self.pointsLayer = QgsVectorLayer("dbname='%s' table=\"node\" (geom) sql=" % fn, "points", "spatialite")
+        self.pointsLayer = QgsVectorLayer(f"dbname='{fn}' table=\"node\" (geom) sql=", "points", "spatialite")
         assert (self.pointsLayer.isValid())
-        self.linesLayer = QgsVectorLayer("dbname='%s' table=\"section\" (geom) sql=" % fn, "lines", "spatialite")
+        self.linesLayer = QgsVectorLayer(f"dbname='{fn}' table=\"section\" (geom) sql=", "lines", "spatialite")
         assert (self.linesLayer.isValid())
-        self.pointsLayer2 = QgsVectorLayer("dbname='%s' table=\"node2\" (geom) sql=" % fn, "_points2", "spatialite")
+        self.pointsLayer2 = QgsVectorLayer(f"dbname='{fn}' table=\"node2\" (geom) sql=", "_points2", "spatialite")
         assert (self.pointsLayer2.isValid())
         QgsProject.instance().addMapLayers([self.pointsLayer, self.linesLayer, self.pointsLayer2])
 
@@ -281,11 +278,11 @@ class TestLayerDependencies(unittest.TestCase):
         # remove all layers
         QgsProject.instance().removeAllMapLayers()
         # set dependencies and add back layers
-        self.pointsLayer = QgsVectorLayer("dbname='%s' table=\"node\" (geom) sql=" % self.fn, "points", "spatialite")
+        self.pointsLayer = QgsVectorLayer(f"dbname='{self.fn}' table=\"node\" (geom) sql=", "points", "spatialite")
         assert (self.pointsLayer.isValid())
-        self.linesLayer = QgsVectorLayer("dbname='%s' table=\"section\" (geom) sql=" % self.fn, "lines", "spatialite")
+        self.linesLayer = QgsVectorLayer(f"dbname='{self.fn}' table=\"section\" (geom) sql=", "lines", "spatialite")
         assert (self.linesLayer.isValid())
-        self.pointsLayer2 = QgsVectorLayer("dbname='%s' table=\"node2\" (geom) sql=" % self.fn, "_points2", "spatialite")
+        self.pointsLayer2 = QgsVectorLayer(f"dbname='{self.fn}' table=\"node2\" (geom) sql=", "_points2", "spatialite")
         assert (self.pointsLayer2.isValid())
         self.pointsLayer.setDependencies([QgsMapLayerDependency(self.linesLayer.id())])
         self.pointsLayer2.setDependencies([QgsMapLayerDependency(self.pointsLayer.id())])

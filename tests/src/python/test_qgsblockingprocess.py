@@ -24,11 +24,8 @@ import tempfile
 
 import qgis  # NOQA
 from qgis.PyQt.QtCore import QProcess
-from qgis.core import (
-    QgsBlockingProcess,
-    QgsFeedback
-)
-from qgis.testing import unittest, start_app
+from qgis.core import QgsBlockingProcess, QgsFeedback
+from qgis.testing import start_app, unittest
 
 from utilities import unitTestDataPath
 
@@ -190,7 +187,7 @@ class TestQgsBlockingProcess(unittest.TestCase):
             f.write('echo $PATH')
 
         prev_path_val = os.getenv('PATH')
-        new_path = "{}{}{}".format('/my_test/folder', os.pathsep, prev_path_val)
+        new_path = f"/my_test/folder{os.pathsep}{prev_path_val}"
         os.environ['PATH'] = new_path
 
         std_out.val = ''

@@ -10,27 +10,28 @@ __date__ = '2015-08'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import qgis  # NOQA
-from qgis.PyQt.QtCore import QSize, QDir, Qt, QSizeF
+from qgis.PyQt.QtCore import QDir, QSize, QSizeF, Qt
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
-from qgis.PyQt.QtXml import QDomDocument, QDomElement
-
-from qgis.core import (QgsGradientColorRamp,
-                       QgsRectangle,
-                       QgsColorRampLegendNode,
-                       QgsLayerTreeLayer,
-                       QgsVectorLayer,
-                       QgsMultiRenderChecker,
-                       QgsFontUtils,
-                       QgsLegendSettings,
-                       QgsLegendStyle,
-                       QgsLayerTreeModelLegendNode,
-                       QgsRenderContext,
-                       QgsMapSettings,
-                       QgsColorRampLegendNodeSettings,
-                       QgsBearingNumericFormat,
-                       QgsReadWriteContext,
-                       QgsBasicNumericFormat,
-                       QgsTextFormat)
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.core import (
+    QgsBasicNumericFormat,
+    QgsBearingNumericFormat,
+    QgsColorRampLegendNode,
+    QgsColorRampLegendNodeSettings,
+    QgsFontUtils,
+    QgsGradientColorRamp,
+    QgsLayerTreeLayer,
+    QgsLayerTreeModelLegendNode,
+    QgsLegendSettings,
+    QgsLegendStyle,
+    QgsMapSettings,
+    QgsMultiRenderChecker,
+    QgsReadWriteContext,
+    QgsRectangle,
+    QgsRenderContext,
+    QgsTextFormat,
+    QgsVectorLayer,
+)
 from qgis.testing import start_app, unittest
 
 start_app()
@@ -57,7 +58,7 @@ class TestQgsColorRampLegendNode(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(cls.report)
 

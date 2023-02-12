@@ -22,6 +22,9 @@
 #include "qgsstatusbar.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsentryenumflag.h"
+
 
 QgsAppGpsConnection::QgsAppGpsConnection( QObject *parent )
   : QObject( parent )

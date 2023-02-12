@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     acceptable_missing_doc.py
@@ -1392,4 +1390,4 @@ ACCEPTABLE_MISSING_BRIEF = [
 
 if __name__ == '__main__':
     for k in sorted(list(ACCEPTABLE_MISSING_DOCS.keys())):
-        print('    "{}": {},'.format(k, sorted(ACCEPTABLE_MISSING_DOCS[k])))
+        print(f'    "{k}": {sorted(ACCEPTABLE_MISSING_DOCS[k])},')

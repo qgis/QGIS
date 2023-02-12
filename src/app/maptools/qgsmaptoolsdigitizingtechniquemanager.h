@@ -19,17 +19,15 @@
 #define QGSMAPTOOLSDIGITIZINGTECHNIQUEMANAGER_H
 
 #include "qgis_app.h"
-#include "qgssettingsentryimpl.h"
-#include "qgssettingsentryenumflag.h"
 #include "qgsmaptoolcapture.h"
 #include "qgsmaptoolshapeabstract.h"
-#include "qgsmaptoolshapecircle2points.h"
-
+#include "qgssettingstree.h"
 
 #include <QWidgetAction>
 
-
 class QgsSpinBox;
+class QgsSettingsEntryString;
+template<class T> class QgsSettingsEntryEnumFlag;
 
 class QAction;
 class QToolButton;
@@ -54,9 +52,10 @@ class APP_EXPORT QgsMapToolsDigitizingTechniqueManager : public QObject
   public:
     static const QgsSettingsEntryEnumFlag<Qgis::CaptureTechnique> *settingsDigitizingTechnique;
 
-    static inline QgsSettingsTreeNode *sTreeShapeMapTools = QgsSettings::sTreeDigitizing->createChildNode( QStringLiteral( "shape-map-tools" ) );
-    static const QgsSettingsEntryString *settingMapToolShapeDefaultForShape;
+    static inline QgsSettingsTreeNode *sTreeShapeMapTools = QgsSettingsTree::sTreeDigitizing->createChildNode( QStringLiteral( "shape-map-tools" ) );
     static const QgsSettingsEntryString *settingMapToolShapeCurrent;
+    static inline QgsSettingsTreeNamedListNode *sTreeShapeMapToolsCategories = sTreeShapeMapTools->createNamedListNode( QStringLiteral( "categories" ) );
+    static const QgsSettingsEntryString *settingMapToolShapeDefaultForCategory;
 
     QgsMapToolsDigitizingTechniqueManager( QObject *parent );
     ~QgsMapToolsDigitizingTechniqueManager();

@@ -19,31 +19,32 @@ __author__ = 'Jorge Gustavo Rocha'
 __date__ = 'January 2017'
 __copyright__ = '(C) 2017, Jorge Gustavo Rocha'
 
-import qgis  # NOQA
-
 import os
-from qgis.PyQt.QtXml import QDomDocument
+
+import qgis  # NOQA
 from qgis.PyQt.QtCore import QTemporaryDir
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.core import (
+    Qgis,
+    QgsEllipseSymbolLayer,
+    QgsFeature,
+    QgsFontMarkerSymbolLayer,
+    QgsGeometry,
+    QgsLinePatternFillSymbolLayer,
+    QgsMarkerLineSymbolLayer,
+    QgsPointXY,
+    QgsSimpleFillSymbolLayer,
+    QgsSimpleLineSymbolLayer,
+    QgsSimpleMarkerSymbolLayer,
+    QgsSVGFillSymbolLayer,
+    QgsSvgMarkerSymbolLayer,
+    QgsSymbol,
+    QgsUnitTypes,
+    QgsVectorLayer,
+)
 from qgis.testing import start_app, unittest
-from qgis.core import (Qgis,
-                       QgsVectorLayer,
-                       QgsFeature,
-                       QgsGeometry,
-                       QgsUnitTypes,
-                       QgsPointXY,
-                       QgsSvgMarkerSymbolLayer,
-                       QgsSymbol,
-                       QgsEllipseSymbolLayer,
-                       QgsSimpleFillSymbolLayer,
-                       QgsSVGFillSymbolLayer,
-                       QgsSvgMarkerSymbolLayer,
-                       QgsLinePatternFillSymbolLayer,
-                       QgsSimpleLineSymbolLayer,
-                       QgsMarkerLineSymbolLayer,
-                       QgsSimpleMarkerSymbolLayer,
-                       QgsFontMarkerSymbolLayer
-                       )
 from qgis.testing.mocked import get_iface
+
 from utilities import unitTestDataPath
 
 start_app()

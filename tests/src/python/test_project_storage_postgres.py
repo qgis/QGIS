@@ -14,22 +14,19 @@ __author__ = 'Martin Dobias'
 __date__ = '2018-03-29'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
-import qgis  # NOQA
-import psycopg2
-
 import os
-import time
 
+import psycopg2
+import qgis  # NOQA
+from PyQt5.QtCore import QUrl, QUrlQuery
 from qgis.core import (
-    QgsApplication,
     QgsDataSourceUri,
     QgsVectorLayer,
-    QgsProject,
 )
-from PyQt5.QtCore import QDateTime, QUrl, QUrlQuery
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
+
 from test_project_storage_base import TestPyQgsProjectStorageBase
+from utilities import unitTestDataPath
 
 QGISAPP = start_app()
 TEST_DATA_DIR = unitTestDataPath()

@@ -47,28 +47,6 @@ void QgsSettings::init()
 }
 
 
-QgsSettingsTreeNode *QgsSettings::treeRoot()
-{
-  // this must be defined in cpp code so we are sure only one instance is around
-  static QgsSettingsTreeNode *sTreeRoot = QgsSettingsTreeNode::createRootNode();
-  return sTreeRoot;
-}
-
-QgsSettingsTreeNode *QgsSettings::createPluginTreeNode( const QString &pluginName )
-{
-  QgsSettingsTreeNode *te = sTreePlugins->childNode( pluginName );
-  if ( te )
-    return te;
-  else
-    return sTreePlugins->createChildNode( pluginName );
-}
-
-void QgsSettings::unregisterPluginTreeNode( const QString &pluginName )
-{
-  QgsSettingsTreeNode *pluginTreeNode = sTreePlugins->childNode( pluginName );
-  delete pluginTreeNode;
-}
-
 QgsSettings::QgsSettings( const QString &organization, const QString &application, QObject *parent )
 {
   mUserSettings = new QSettings( organization, application, parent );

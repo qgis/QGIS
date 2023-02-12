@@ -13,23 +13,22 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import os
-import time
-from test_qgsproviderconnection_base import TestPyQgsProviderConnectionBase
+
+from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.core import (
     Qgis,
-    QgsWkbTypes,
     QgsAbstractDatabaseProviderConnection,
-    QgsProviderConnectionException,
-    QgsVectorLayer,
-    QgsProviderRegistry,
-    QgsCoordinateReferenceSystem,
-    QgsRasterLayer,
     QgsDataSourceUri,
+    QgsProviderConnectionException,
+    QgsProviderRegistry,
+    QgsRasterLayer,
     QgsSettings,
+    QgsVectorLayer,
+    QgsWkbTypes,
 )
 from qgis.testing import unittest
-from osgeo import gdal
-from qgis.PyQt.QtCore import QTemporaryDir
+
+from test_qgsproviderconnection_base import TestPyQgsProviderConnectionBase
 
 
 class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderConnectionBase):
@@ -73,7 +72,7 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
 
         # Test raster
         self.assertEqual(conn.tableUri('qgis_test', 'Raster1'),
-                         '%s table="qgis_test"."Raster1"' % self.uri)
+                         f'{self.uri} table="qgis_test"."Raster1"')
 
         rl = QgsRasterLayer(conn.tableUri('qgis_test', 'Raster1'), 'r1', 'postgresraster')
         self.assertTrue(rl.isValid())

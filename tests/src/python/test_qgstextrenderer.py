@@ -13,37 +13,47 @@ import os
 
 import qgis  # NOQA
 from PyQt5.QtSvg import QSvgGenerator
-from qgis.PyQt.QtCore import (Qt, QT_VERSION_STR, QSizeF, QPointF, QRectF, QDir, QSize)
-from qgis.PyQt.QtGui import (QColor, QPainter, QFont, QImage, QBrush, QPen)
+from qgis.PyQt.QtCore import (
+    QT_VERSION_STR,
+    QDir,
+    QPointF,
+    QRectF,
+    QSize,
+    QSizeF,
+    Qt,
+)
+from qgis.PyQt.QtGui import QBrush, QColor, QFont, QImage, QPainter, QPen
 from qgis.PyQt.QtXml import QDomDocument
-from qgis.core import (Qgis,
-                       QgsTextBufferSettings,
-                       QgsTextMaskSettings,
-                       QgsTextBackgroundSettings,
-                       QgsTextShadowSettings,
-                       QgsTextFormat,
-                       QgsUnitTypes,
-                       QgsMapUnitScale,
-                       QgsVectorLayer,
-                       QgsTextRenderer,
-                       QgsMapSettings,
-                       QgsReadWriteContext,
-                       QgsRenderContext,
-                       QgsRectangle,
-                       QgsRenderChecker,
-                       QgsBlurEffect,
-                       QgsMarkerSymbol,
-                       QgsFillSymbol,
-                       QgsSimpleFillSymbolLayer,
-                       QgsPalLayerSettings,
-                       QgsProperty,
-                       QgsFontUtils,
-                       QgsSymbolLayerId,
-                       QgsSymbolLayerReference,
-                       QgsStringUtils,
-                       QgsTextDocument,
-                       QgsTextDocumentMetrics)
-from qgis.testing import unittest, start_app
+from qgis.core import (
+    Qgis,
+    QgsBlurEffect,
+    QgsFillSymbol,
+    QgsFontUtils,
+    QgsMapSettings,
+    QgsMapUnitScale,
+    QgsMarkerSymbol,
+    QgsPalLayerSettings,
+    QgsProperty,
+    QgsReadWriteContext,
+    QgsRectangle,
+    QgsRenderChecker,
+    QgsRenderContext,
+    QgsSimpleFillSymbolLayer,
+    QgsStringUtils,
+    QgsSymbolLayerId,
+    QgsSymbolLayerReference,
+    QgsTextBackgroundSettings,
+    QgsTextBufferSettings,
+    QgsTextDocument,
+    QgsTextDocumentMetrics,
+    QgsTextFormat,
+    QgsTextMaskSettings,
+    QgsTextRenderer,
+    QgsTextShadowSettings,
+    QgsUnitTypes,
+    QgsVectorLayer,
+)
+from qgis.testing import start_app, unittest
 
 from utilities import getTestFont, svgSymbolsPath
 
@@ -65,7 +75,7 @@ class PyQgsTextRenderer(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(cls.report)
 
@@ -2541,7 +2551,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.setLineHeight(1.5)
         assert self.checkRender(format, 'text_line_height', QgsTextRenderer.Text, text=['test', 'multi', 'line'])
 
-    def testDrawLineHeightAbsolute(self):
+    def testDrawLineHeightAbsolutePoints(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
         format.setSize(30)
@@ -2550,7 +2560,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.setLineHeightUnit(QgsUnitTypes.RenderPoints)
         assert self.checkRender(format, 'text_line_absolute_height', QgsTextRenderer.Text, text=['test', 'multi', 'line'])
 
-    def testDrawLineHeightAbsolute(self):
+    def testDrawLineHeightAbsoluteMillimeters(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
         format.setSize(30)

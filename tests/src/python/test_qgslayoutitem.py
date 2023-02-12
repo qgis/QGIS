@@ -9,26 +9,28 @@ __author__ = '(C) 2017 by Nyall Dawson'
 __date__ = '17/01/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
-from qgis.testing import start_app, unittest
-from qgis.core import (QgsProject,
-                       QgsLayout,
-                       QgsLayoutItemMap,
-                       QgsLayoutItemShape,
-                       QgsLayoutObject,
-                       QgsProperty,
-                       QgsLayoutMeasurement,
-                       QgsUnitTypes,
-                       QgsLayoutPoint,
-                       QgsLayoutSize,
-                       QgsLayoutItemLabel,
-                       QgsLayoutItem,
-                       QgsApplication)
+
+import qgis  # NOQA
 from qgis.PyQt.QtCore import QRectF
 from qgis.PyQt.QtGui import QColor, QPainter
 from qgis.PyQt.QtTest import QSignalSpy
+from qgis.core import (
+    QgsLayout,
+    QgsLayoutItem,
+    QgsLayoutItemLabel,
+    QgsLayoutItemMap,
+    QgsLayoutItemShape,
+    QgsLayoutMeasurement,
+    QgsLayoutObject,
+    QgsLayoutPoint,
+    QgsLayoutSize,
+    QgsProject,
+    QgsProperty,
+    QgsUnitTypes,
+)
+from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()

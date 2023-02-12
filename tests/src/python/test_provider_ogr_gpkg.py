@@ -18,39 +18,50 @@ import shutil
 import sys
 import tempfile
 import time
+from sqlite3 import OperationalError
 
 import qgis  # NOQA
 from osgeo import gdal, ogr
-from providertestbase import ProviderTestCase
-from qgis.core import (Qgis,
-                       QgsFeature,
-                       QgsCoordinateReferenceSystem,
-                       QgsFeatureRequest,
-                       QgsFeatureSink,
-                       QgsFields,
-                       QgsField,
-                       QgsFieldConstraints,
-                       QgsGeometry,
-                       QgsProviderRegistry,
-                       QgsRectangle,
-                       QgsSettings,
-                       QgsVectorLayer,
-                       QgsVectorLayerExporter,
-                       QgsPointXY,
-                       QgsProject,
-                       QgsWkbTypes,
-                       QgsDataProvider,
-                       QgsVectorDataProvider,
-                       QgsLayerMetadata,
-                       QgsProviderMetadata,
-                       NULL)
-from qgis.PyQt.QtCore import QCoreApplication, QVariant, QDate, QTime, QDateTime, Qt, QTemporaryDir, QFileInfo
+from qgis.PyQt.QtCore import (
+    QCoreApplication,
+    QDate,
+    QDateTime,
+    QFileInfo,
+    Qt,
+    QTemporaryDir,
+    QTime,
+    QVariant,
+)
 from qgis.PyQt.QtXml import QDomDocument
+from qgis.core import (
+    NULL,
+    Qgis,
+    QgsCoordinateReferenceSystem,
+    QgsDataProvider,
+    QgsFeature,
+    QgsFeatureRequest,
+    QgsFeatureSink,
+    QgsField,
+    QgsFieldConstraints,
+    QgsFields,
+    QgsGeometry,
+    QgsLayerMetadata,
+    QgsPointXY,
+    QgsProject,
+    QgsProviderMetadata,
+    QgsProviderRegistry,
+    QgsRectangle,
+    QgsSettings,
+    QgsVectorDataProvider,
+    QgsVectorLayer,
+    QgsVectorLayerExporter,
+    QgsWkbTypes,
+)
 from qgis.testing import start_app, unittest
 from qgis.utils import spatialite_connect
-from utilities import unitTestDataPath
 
-from sqlite3 import OperationalError
+from providertestbase import ProviderTestCase
+from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
 
@@ -1397,7 +1408,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
 
         testPath = tmpfile + '|layername=bug_17795'
         subSetString = '"name" = \'int\''
-        subSet = '|subset=%s' % subSetString
+        subSet = f'|subset={subSetString}'
 
         # unfiltered
         vl = QgsVectorLayer(testPath, 'test', 'ogr')
@@ -2131,7 +2142,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         for tmpfile in (tmpfile1, tmpfile2):
             ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
             for i in range(2):
-                lyr = ds.CreateLayer('test%s' % i, geom_type=ogr.wkbPoint)
+                lyr = ds.CreateLayer(f'test{i}', geom_type=ogr.wkbPoint)
                 lyr.CreateField(ogr.FieldDefn('str_field', ogr.OFTString))
                 f = ogr.Feature(lyr.GetLayerDefn())
                 f.SetGeometry(ogr.CreateGeometryFromWkt('POINT (1 1)'))

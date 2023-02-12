@@ -2474,6 +2474,13 @@ bool QgsMapLayer::accept( QgsStyleEntityVisitorInterface * ) const
   return true;
 }
 
+bool QgsMapLayer::hasMapTips() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return !mMapTipTemplate.isEmpty();
+}
+
 void QgsMapLayer::setProviderType( const QString &providerType )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS

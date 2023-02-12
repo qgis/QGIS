@@ -9,36 +9,37 @@ __author__ = 'Matthias Kuhn'
 __date__ = '2015-04-23'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
+import glob
 import os
 import re
-import tempfile
 import shutil
-import glob
+import sys
+import tempfile
+
 import osgeo.gdal
 import osgeo.ogr
-import sys
-
 from osgeo import gdal
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import (
+    Qgis,
     QgsApplication,
     QgsDataProvider,
-    QgsSettings,
     QgsFeature,
+    QgsFeatureRequest,
     QgsField,
     QgsGeometry,
-    QgsVectorLayer,
-    QgsFeatureRequest,
     QgsProviderRegistry,
     QgsRectangle,
+    QgsSettings,
     QgsVectorDataProvider,
-    QgsWkbTypes,
+    QgsVectorLayer,
     QgsVectorLayerExporter,
-    Qgis
+    QgsWkbTypes,
 )
-from qgis.PyQt.QtCore import QVariant
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
+
 from providertestbase import ProviderTestCase
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -636,7 +637,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
             # force close of data provider
             vl.setDataSource('', 'test', 'ogr', options)
 
-    def testEncoding(self):
+    def testEncoding_iso(self):
         file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'iso-8859-1.shp')
         vl = QgsVectorLayer(file_path)
         self.assertTrue(vl.isValid())
@@ -752,7 +753,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
 
         testPath = TEST_DATA_DIR + '/' + 'points.shp'
         subSetString = '"Class" = \'Biplane\''
-        subSet = '|layerid=0|subset=%s' % subSetString
+        subSet = f'|layerid=0|subset={subSetString}'
 
         # unfiltered
         vl = QgsVectorLayer(testPath, 'test', 'ogr')
@@ -1046,7 +1047,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
 
             osgeo.ogr.GetDriverByName('ESRI Shapefile').DeleteDataSource(tmpfile)
 
-    def testEncoding(self):
+    def testEncoding_cp852(self):
         """ Test that CP852 shapefile is read/written correctly """
 
         tmpdir = tempfile.mkdtemp()

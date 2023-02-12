@@ -14,31 +14,31 @@ import os
 import qgis  # NOQA
 from qgis.PyQt.QtCore import QDir
 from qgis.core import (
-    QgsRasterLayer,
-    QgsLineString,
-    QgsProfileRequest,
-    QgsCoordinateReferenceSystem,
-    QgsVectorLayer,
     Qgis,
-    QgsRasterDemTerrainProvider,
-    QgsFeature,
-    QgsGeometry,
-    QgsCoordinateTransformContext,
-    QgsProjUtils,
-    QgsProfilePlotRenderer,
-    QgsFillSymbol,
-    QgsRenderChecker,
     QgsCategorizedSymbolRenderer,
-    QgsRendererCategory,
-    QgsMapLayerElevationProperties,
-    QgsProperty,
-    QgsProfilePoint,
-    QgsProfileSnapContext,
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransformContext,
+    QgsDoubleRange,
+    QgsFeature,
+    QgsFillSymbol,
+    QgsGeometry,
+    QgsLineString,
     QgsLineSymbol,
+    QgsMapLayerElevationProperties,
     QgsMarkerSymbol,
     QgsProfileIdentifyContext,
-    QgsDoubleRange,
-    QgsSymbolLayer
+    QgsProfilePlotRenderer,
+    QgsProfilePoint,
+    QgsProfileRequest,
+    QgsProfileSnapContext,
+    QgsProjUtils,
+    QgsProperty,
+    QgsRasterDemTerrainProvider,
+    QgsRasterLayer,
+    QgsRenderChecker,
+    QgsRendererCategory,
+    QgsSymbolLayer,
+    QgsVectorLayer,
 )
 from qgis.testing import start_app, unittest
 
@@ -57,7 +57,7 @@ class TestQgsVectorLayerProfileGenerator(unittest.TestCase):
         self.report = "<h1>Python QgsVectorLayerProfileGenerator Tests</h1>\n"
 
     def tearDown(self):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 

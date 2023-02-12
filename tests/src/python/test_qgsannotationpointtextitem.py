@@ -12,39 +12,33 @@ __date__ = '10/08/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.PyQt.QtCore import (QSize,
-                              QDir,
-                              Qt)
-from qgis.PyQt.QtGui import (QImage,
-                             QPainter,
-                             QColor,
-                             QTransform)
-from qgis.core import (QgsMapSettings,
-                       QgsCoordinateTransform,
-                       QgsProject,
-                       QgsPointXY,
-                       QgsCoordinateReferenceSystem,
-                       QgsMarkerSymbol,
-                       QgsRenderChecker,
-                       QgsReadWriteContext,
-                       QgsRenderContext,
-                       QgsAnnotationPointTextItem,
-                       QgsRectangle,
-                       QgsTextFormat,
-                       QgsAnnotationItemNode,
-                       Qgis,
-                       QgsVertexId,
-                       QgsAnnotationItemEditOperationMoveNode,
-                       QgsAnnotationItemEditOperationDeleteNode,
-                       QgsAnnotationItemEditOperationAddNode,
-                       QgsAnnotationItemEditOperationTranslateItem,
-                       QgsPoint
-                       )
+from qgis.PyQt.QtCore import QDir, QSize, Qt
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.PyQt.QtXml import QDomDocument
-
+from qgis.core import (
+    Qgis,
+    QgsAnnotationItemEditOperationAddNode,
+    QgsAnnotationItemEditOperationDeleteNode,
+    QgsAnnotationItemEditOperationMoveNode,
+    QgsAnnotationItemEditOperationTranslateItem,
+    QgsAnnotationItemNode,
+    QgsAnnotationPointTextItem,
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform,
+    QgsMapSettings,
+    QgsPoint,
+    QgsPointXY,
+    QgsProject,
+    QgsReadWriteContext,
+    QgsRectangle,
+    QgsRenderChecker,
+    QgsRenderContext,
+    QgsTextFormat,
+    QgsVertexId,
+)
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath, getTestFont
+
+from utilities import getTestFont, unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -58,7 +52,7 @@ class TestQgsAnnotationPointTextItem(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(cls.report)
 

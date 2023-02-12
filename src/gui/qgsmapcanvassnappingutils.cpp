@@ -17,6 +17,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
 #include "qgssettingsregistrycore.h"
+#include "qgssettingsentryimpl.h"
 
 #include <QApplication>
 #include <QProgressDialog>

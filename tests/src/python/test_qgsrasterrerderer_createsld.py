@@ -19,38 +19,30 @@ __author__ = 'Luigi Pirelli'
 __date__ = 'December 2018'
 __copyright__ = '(C) 2018, Luigi Pirelli'
 
-import qgis  # NOQA
-
 import os
 import random
 
+import qgis  # NOQA
 from qgis.PyQt.QtCore import (
-    Qt,
-    QDir,
-    QFile,
-    QIODevice,
-    QPointF,
-    QSizeF,
     QFileInfo,
 )
+from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtXml import QDomDocument
-from qgis.PyQt.QtGui import QColor, QFont
-
 from qgis.core import (
-    QgsRasterLayer,
-    QgsRasterRenderer,
-    QgsMultiBandColorRenderer,
-    QgsSingleBandGrayRenderer,
-    QgsPalettedRasterRenderer,
-    QgsSingleBandPseudoColorRenderer,
-    QgsContrastEnhancement,
-    QgsRasterMinMaxOrigin,
-    Qgis,
-    QgsRasterBandStats,
-    QgsRasterShader,
     QgsColorRampShader,
+    QgsContrastEnhancement,
+    QgsMultiBandColorRenderer,
+    QgsPalettedRasterRenderer,
+    QgsRasterBandStats,
+    QgsRasterLayer,
+    QgsRasterMinMaxOrigin,
+    QgsRasterRenderer,
+    QgsRasterShader,
+    QgsSingleBandGrayRenderer,
+    QgsSingleBandPseudoColorRenderer,
 )
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
@@ -549,7 +541,7 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
                 self.assertEqual(expectedMax, vendorOption.firstChild().nodeValue())
             else:
                 self.fail(
-                    'Unrecognised vendorOption name {}'.format(vendorOption.attributes().namedItem('name').nodeValue()))
+                    f"Unrecognised vendorOption name {vendorOption.attributes().namedItem('name').nodeValue()}")
 
     def assertChannelBand(self, root, bandTag, expectedValue, index=0):
         channelSelection = root.elementsByTagName('sld:ChannelSelection').item(index)

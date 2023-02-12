@@ -19,34 +19,32 @@ __author__ = 'Hugo Mercier'
 __date__ = 'March 2016'
 __copyright__ = '(C) 2016, Hugo Mercier'
 
-import qgis  # NOQA
-
 import os
 
-from qgis.PyQt.QtCore import QSize, QDir
-from qgis.PyQt.QtGui import QColor, QPainter, QImage
-
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QDir, QSize
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.core import (
-    QgsVectorLayer,
-    QgsSingleSymbolRenderer,
-    QgsLineSymbol,
-    QgsFillSymbol,
-    QgsProject,
-    QgsRectangle,
     QgsArrowSymbolLayer,
-    QgsMultiRenderChecker,
-    QgsProperty,
-    QgsSymbolLayer,
-    QgsMapSettings,
-    QgsSymbol,
-    QgsGeometry,
     QgsFeature,
+    QgsFillSymbol,
+    QgsGeometry,
+    QgsLineSymbol,
+    QgsMapSettings,
+    QgsMultiRenderChecker,
+    QgsProject,
+    QgsProperty,
+    QgsRectangle,
+    QgsRenderChecker,
     QgsRenderContext,
-    QgsRenderChecker
+    QgsSingleSymbolRenderer,
+    QgsSymbol,
+    QgsSymbolLayer,
+    QgsVectorLayer,
 )
-
 from qgis.testing import start_app, unittest
 from qgis.testing.mocked import get_iface
+
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
@@ -78,7 +76,7 @@ class TestQgsArrowSymbolLayer(unittest.TestCase):
 
     def tearDown(self):
         QgsProject.instance().removeAllMapLayers()
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 

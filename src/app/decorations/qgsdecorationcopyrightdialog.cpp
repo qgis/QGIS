@@ -130,5 +130,5 @@ void QgsDecorationCopyrightDialog::apply()
 
 void QgsDecorationCopyrightDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#copyright_decoration" ) );
+  QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#copyright-decoration" ) );
 }

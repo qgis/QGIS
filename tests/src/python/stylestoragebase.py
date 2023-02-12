@@ -1,4 +1,3 @@
-# coding=utf-8
 """"Base test for provider style DB storage
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -12,22 +11,19 @@ __author__ = 'elpaso@itopen.it'
 __date__ = '2022-11-07'
 __copyright__ = 'Copyright 2022, ItOpen'
 
-from qgis.testing import start_app, unittest
 from qgis.PyQt.QtCore import QCoreApplication, QVariant
 from qgis.PyQt.QtGui import QColor
-
 from qgis.core import (
-    QgsProviderRegistry,
-    QgsSettings,
     QgsAbstractDatabaseProviderConnection,
+    QgsCoordinateReferenceSystem,
     QgsField,
     QgsFields,
-    QgsCoordinateReferenceSystem,
-    QgsWkbTypes,
+    QgsProviderRegistry,
+    QgsSettings,
     QgsVectorLayer,
+    QgsWkbTypes,
 )
-
-import time
+from qgis.testing import start_app, unittest
 
 
 class StyleStorageTestCaseBase(unittest.TestCase):
@@ -134,7 +130,7 @@ class StyleStorageTestBase():
         vl.saveStyleToDatabase('style3', 'style3', False, None)
         num, ids, names, desc, err = vl.listStylesInDatabase()
 
-        self.assertTrue(set(['style2', 'style3', 'style1']).issubset(set(names)))
+        self.assertTrue({'style2', 'style3', 'style1'}.issubset(set(names)))
 
         del vl
         vl = QgsVectorLayer(uri, 'vl', self.providerKey)
@@ -156,4 +152,4 @@ class StyleStorageTestBase():
         self.assertEqual(symbol.color().name(), '#00ff00')
 
         mgr = vl.styleManager()
-        self.assertTrue(set(['style2', 'style3', 'style1']).issubset(set(names)))
+        self.assertTrue({'style2', 'style3', 'style1'}.issubset(set(names)))

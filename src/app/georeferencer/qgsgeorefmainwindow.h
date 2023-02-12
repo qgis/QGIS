@@ -18,7 +18,7 @@
 #include "qgsmapcoordsdialog.h"
 #include "qgsimagewarper.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgssettingsentryenumflag.h"
+#include "qgssettingstree.h"
 
 #include <memory>
 
@@ -49,6 +49,10 @@ class QgsGCPCanvasItem;
 class QgsGcpPoint;
 class QgsMapLayer;
 class QgsScreenHelper;
+class QgsSettingsEntryBool;
+class QgsSettingsEntryString;
+template<class T> class QgsSettingsEntryEnumFlag;
+
 
 class QgsGeorefDockWidget : public QgsDockWidget
 {
@@ -57,12 +61,12 @@ class QgsGeorefDockWidget : public QgsDockWidget
     QgsGeorefDockWidget( const QString &title, QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
 };
 
-class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPluginGuiBase
+class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPluginGuiBase
 {
     Q_OBJECT
 
   public:
-    static inline QgsSettingsTreeNode *sTreeGeoreferencer = QgsSettings::sTreeApp->createChildNode( QStringLiteral( "georeferencer" ) );
+    static inline QgsSettingsTreeNode *sTreeGeoreferencer = QgsSettingsTree::sTreeApp->createChildNode( QStringLiteral( "georeferencer" ) );
 
     static const QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod> *settingResamplingMethod;
     static const QgsSettingsEntryString *settingCompressionMethod;
@@ -294,6 +298,8 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
 
 
     QgsDockWidget *mDock = nullptr;
+
+    friend class TestQgsGeoreferencer;
 };
 
 #endif

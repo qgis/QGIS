@@ -13,8 +13,9 @@ the Free Software Foundation; either version 2 of the License, or
 import os
 import tempfile
 from functools import partial
+
 from qgis.PyQt.QtCore import QEventLoop, QUrl
-from qgis.core import (QgsFileDownloader, )
+from qgis.core import QgsFileDownloader
 from qgis.testing import start_app, unittest
 
 __author__ = 'Alessandro Pasotti'

@@ -9,30 +9,29 @@ __author__ = 'Nyall Dawson'
 __date__ = '30/12/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
-
 import os
 
-from qgis.PyQt.QtCore import QSize, QDir, Qt
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QDir
 from qgis.PyQt.QtGui import QColor
-
-from qgis.core import (QgsRenderChecker,
-                       QgsMapSettings,
-                       QgsVectorLayer,
-                       QgsMergedFeatureRenderer,
-                       QgsSingleSymbolRenderer,
-                       QgsFillSymbol,
-                       QgsSimpleFillSymbolLayer,
-                       QgsCategorizedSymbolRenderer,
-                       QgsRendererCategory,
-                       QgsSimpleLineSymbolLayer,
-                       QgsMarkerLineSymbolLayer,
-                       QgsLineSymbol,
-                       QgsTemplatedLineSymbolLayerBase,
-                       QgsMarkerSymbol,
-                       QgsMarkerSymbolLayer
-                       )
+from qgis.core import (
+    QgsCategorizedSymbolRenderer,
+    QgsFillSymbol,
+    QgsLineSymbol,
+    QgsMapSettings,
+    QgsMarkerLineSymbolLayer,
+    QgsMarkerSymbol,
+    QgsMergedFeatureRenderer,
+    QgsRenderChecker,
+    QgsRendererCategory,
+    QgsSimpleFillSymbolLayer,
+    QgsSimpleLineSymbolLayer,
+    QgsSingleSymbolRenderer,
+    QgsTemplatedLineSymbolLayerBase,
+    QgsVectorLayer,
+)
 from qgis.testing import unittest
+
 from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
@@ -44,7 +43,7 @@ class TestQgsMergedFeatureRenderer(unittest.TestCase):
         self.report = "<h1>Python QgsMergedFeatureRenderer Tests</h1>\n"
 
     def tearDown(self):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 

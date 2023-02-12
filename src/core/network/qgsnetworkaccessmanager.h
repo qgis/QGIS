@@ -34,9 +34,9 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgssettingsentryimpl.h"
 
 class QgsFeedback;
+class QgsSettingsEntryInteger;
 
 #ifndef SIP_RUN
 #include "qgsconfig.h"

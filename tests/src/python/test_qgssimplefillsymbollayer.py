@@ -19,31 +19,30 @@ __author__ = 'Nyall Dawson'
 __date__ = 'September 2020'
 __copyright__ = '(C) 2020, Nyall Dawson'
 
-import qgis  # NOQA
 import os
 
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QDir, QPointF, QSize, Qt
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.core import (
+    QgsFeature,
+    QgsFillSymbol,
+    QgsGeometry,
+    QgsMapSettings,
+    QgsMultiRenderChecker,
+    QgsProperty,
+    QgsRectangle,
+    QgsRenderChecker,
+    QgsRenderContext,
+    QgsSimpleFillSymbolLayer,
+    QgsSingleSymbolRenderer,
+    QgsSymbol,
+    QgsSymbolLayer,
+    QgsVectorLayer,
+)
+from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
-
-from qgis.PyQt.QtCore import QDir, QPointF, Qt, QSize
-from qgis.PyQt.QtGui import QImage, QColor, QPainter
-
-from qgis.core import (QgsGeometry,
-                       QgsFillSymbol,
-                       QgsRenderContext,
-                       QgsFeature,
-                       QgsMapSettings,
-                       QgsRenderChecker,
-                       QgsVectorLayer,
-                       QgsSimpleFillSymbolLayer,
-                       QgsSymbolLayer,
-                       QgsProperty,
-                       QgsSingleSymbolRenderer,
-                       QgsRectangle,
-                       QgsMultiRenderChecker,
-                       QgsSymbol
-                       )
-
-from qgis.testing import unittest, start_app
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -57,7 +56,7 @@ class TestQgsSimpleFillSymbolLayer(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
         with open(report_file_path, 'a') as report_file:
             report_file.write(cls.report)
 

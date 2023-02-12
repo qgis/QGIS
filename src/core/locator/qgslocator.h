@@ -29,7 +29,10 @@
 #include "qgslocatorfilter.h"
 #include "qgsfeedback.h"
 #include "qgslocatorcontext.h"
-#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
+
+class QgsSettingsEntryBool;
+class QgsSettingsEntryString;
 
 
 /**
@@ -154,7 +157,7 @@ class CORE_EXPORT QgsLocator : public QObject
     QStringList completionList() const {return mAutocompletionList;}
 
 #ifndef SIP_RUN
-    static inline QgsSettingsTreeNamedListNode *sTreeLocatorFilters = QgsSettings::treeRoot()->createNamedListNode( QStringLiteral( "locator-filters" ) );
+    static inline QgsSettingsTreeNamedListNode *sTreeLocatorFilters = QgsSettingsTree::treeRoot()->createNamedListNode( QStringLiteral( "locator-filters" ) );
 
     //! Settings entry locator filter enabled
     static const QgsSettingsEntryBool *settingsLocatorFilterEnabled;

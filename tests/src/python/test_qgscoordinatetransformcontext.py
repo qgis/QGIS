@@ -10,18 +10,17 @@ __date__ = '11/5/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.core import (QgsCoordinateReferenceSystem,
-                       QgsCoordinateTransformContext,
-                       QgsDatumTransform,
-                       QgsReadWriteContext,
-                       QgsProject,
-                       QgsSettings,
-                       QgsProjUtils)
-from qgis.testing import start_app, unittest
-from qgis.PyQt.QtXml import QDomDocument
-from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransformContext,
+    QgsProject,
+    QgsReadWriteContext,
+    QgsSettings,
+)
+from qgis.testing import start_app, unittest
 
 app = start_app()
 

@@ -11,10 +11,8 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.core import (QgsPalLayerSettings,
-                       QgsLabelThinningSettings)
-
-from qgis.testing import unittest, start_app
+from qgis.core import QgsLabelThinningSettings, QgsPalLayerSettings
+from qgis.testing import start_app, unittest
 
 start_app()
 

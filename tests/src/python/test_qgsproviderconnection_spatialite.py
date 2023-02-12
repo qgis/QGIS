@@ -15,19 +15,20 @@ __revision__ = '$Format:%H$'
 import os
 import shutil
 import tempfile
-from test_qgsproviderconnection_base import TestPyQgsProviderConnectionBase
+
 from qgis.core import (
     Qgis,
-    QgsWkbTypes,
     QgsAbstractDatabaseProviderConnection,
-    QgsProviderConnectionException,
-    QgsVectorLayer,
-    QgsRasterLayer,
-    QgsProviderRegistry,
-    QgsFields,
     QgsCoordinateReferenceSystem,
+    QgsFields,
+    QgsProviderConnectionException,
+    QgsProviderRegistry,
+    QgsVectorLayer,
+    QgsWkbTypes,
 )
 from qgis.testing import unittest
+
+from test_qgsproviderconnection_base import TestPyQgsProviderConnectionBase
 from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
@@ -64,7 +65,7 @@ class TestPyQgsProviderConnectionSpatialite(unittest.TestCase, TestPyQgsProvider
         spatialite_original_path = f'{TEST_DATA_DIR}/qgis_server/test_project_wms_grouped_layers.sqlite'
         cls.spatialite_path = os.path.join(cls.basetestpath, 'test.sqlite')
         shutil.copy(spatialite_original_path, cls.spatialite_path)
-        cls.uri = "dbname=\'%s\'" % cls.spatialite_path
+        cls.uri = f"dbname='{cls.spatialite_path}'"
         vl = QgsVectorLayer(f'{cls.uri} table=\'cdb_lines\'', 'test', 'spatialite')
         assert vl.isValid()
 
