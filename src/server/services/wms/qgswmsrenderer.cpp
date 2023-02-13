@@ -134,9 +134,10 @@ namespace QgsWms
     QgsLegendSettings settings = legendSettings();
     QgsLegendRenderer renderer( &model, settings );
 
+    // get scaling information
     QgsDistanceArea distanceArea  = QgsDistanceArea();
-    double rendererScale = 1.0;
-    double mmPerMapUnit;
+    double rendererScale = 1;
+    double mmPerMapUnit = 1;
 
     if ( !mWmsParameters.bbox().isEmpty() )
     {
@@ -162,6 +163,7 @@ namespace QgsWms
       distanceArea.setEllipsoid( geoNone() );
     }
 
+    // create temporary context to calculate size of image
     QgsRenderContext tmpcontext = QgsRenderContext::fromQPainter( nullptr );
     tmpcontext.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
     tmpcontext.setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering, true );
@@ -180,9 +182,10 @@ namespace QgsWms
     }
     image.reset( createImage( size ) );
 
-    // set painter and scale context
+    // create painter according to the image
     QPainter painter( image.get() );
 
+    // create context according to the painter
     QgsRenderContext context = QgsRenderContext::fromQPainter( &painter );
     context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
     context.setRendererScale( rendererScale );
@@ -190,8 +193,6 @@ namespace QgsWms
     context.setDistanceArea( distanceArea );
 
     QgsScopedRenderContextScaleToMm scaleContext( context );
-
-    qDebug() << "scale factor now 2" << context.scaleFactor();
 
     // rendering
     renderer.drawLegend( context );
