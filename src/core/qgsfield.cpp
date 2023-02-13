@@ -589,6 +589,29 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
     return false;
   }
 
+  // Handle referenced geometries (e.g. from additional geometry fields)
+  if ( d->type == QVariant::String && v.type() == QVariant::UserType && v.canConvert<QgsReferencedGeometry>( ) )
+  {
+    const QgsReferencedGeometry geom { v.value<QgsReferencedGeometry>( ) };
+    if ( geom.isNull() )
+    {
+      v = QVariant( d->type );
+    }
+    else
+    {
+      // EWKT only if authid is EPSG, not sure if it makes sense otherwise
+      if ( geom.crs().authid().startsWith( QStringLiteral( "EPSG:" ) ) )
+      {
+        v = QVariant( QStringLiteral( "SRID=%1;%2" ).arg( geom.crs().authid().mid( 5 ), geom.asWkt() ) );
+      }
+      else
+      {
+        v = QVariant( geom.asWkt() );
+      }
+    }
+    return true;
+  }
+
   if ( !v.convert( d->type ) )
   {
     v = QVariant( d->type );

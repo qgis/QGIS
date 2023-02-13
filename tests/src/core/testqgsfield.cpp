@@ -12,6 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsreferencedgeometry.h"
 #include "qgstest.h"
 
 #include <QObject>
@@ -21,7 +22,6 @@
 
 #include <memory>
 
-#include "qgssettings.h"
 #include "qgsfield.h"
 #include "qgsapplication.h"
 #include "qgstest.h"
@@ -716,6 +716,20 @@ void TestQgsField::convertCompatible()
   QCOMPARE( error, QStringLiteral( "String of length 10 exceeds maximum field length (3)" ) );
   QCOMPARE( stringVar.type(), QVariant::String );
   QCOMPARE( stringVar.toString(), QString( "lon" ) );
+
+  // Referenced geometries
+  const QgsField stringGeomRef( QStringLiteral( "string" ), QVariant::String, QStringLiteral( "string" ) );
+  QgsGeometry geom { QgsGeometry::fromWkt( "POINT( 1 1 )" ) };
+  QgsReferencedGeometry geomRef { geom, QgsCoordinateReferenceSystem() };
+  QVariant geomVar = QVariant::fromValue( geomRef );
+  QVERIFY( stringGeomRef.convertCompatible( geomVar, &error ) );
+  QCOMPARE( geomVar.type(), QVariant::String );
+  QCOMPARE( geomVar.toString().toUpper(), QString( "POINT (1 1)" ) );
+  geomRef.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) );
+  geomVar = QVariant::fromValue( geomRef );
+  QVERIFY( stringGeomRef.convertCompatible( geomVar, &error ) );
+  QCOMPARE( geomVar.type(), QVariant::String );
+  QCOMPARE( geomVar.toString().toUpper(), QString( "SRID=4326;POINT (1 1)" ) );
 
 
   /////////////////////////////////////////////////////////
