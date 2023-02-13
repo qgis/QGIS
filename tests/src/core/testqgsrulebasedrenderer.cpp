@@ -1221,12 +1221,14 @@ class TestQgsRuleBasedRenderer: public QgsTest
       QgsRuleBasedRenderer::Rule *rule1 = new QgsRuleBasedRenderer::Rule( QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType::PointGeometry ), 0, 0, "\"field_name\" = 1" );
       QgsRuleBasedRenderer::Rule *rule2 = new QgsRuleBasedRenderer::Rule( QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType::PointGeometry ), 0, 0, "\"field_name\" = 6" );
       QgsRuleBasedRenderer::Rule *ruleElse = new QgsRuleBasedRenderer::Rule( QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType::PointGeometry ), 0, 0, "ELSE" );
+      QgsRuleBasedRenderer::Rule *ruleElse2 = new QgsRuleBasedRenderer::Rule( QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType::PointGeometry ), 0, 0, "ELSE" );
 
       Q_ASSERT( ruleElse->isElse() );
 
       rootRule->appendChild( rule1 );
       rootRule->appendChild( rule2 );
       rootRule->appendChild( ruleElse );
+      rootRule->appendChild( ruleElse2 );
 
       bool ok;
 

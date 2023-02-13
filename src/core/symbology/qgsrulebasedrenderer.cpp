@@ -1149,7 +1149,7 @@ QString QgsRuleBasedRenderer::legendKeyToExpression( const QString &key, QgsVect
       const QList<QgsRuleBasedRenderer::Rule *> siblings = rule->parent()->children();
       for ( Rule *sibling : siblings )
       {
-        if ( sibling == rule )
+        if ( sibling == rule || sibling->isElse() )
           continue;
 
         const QString siblingExpression = ruleToExpression( sibling );
