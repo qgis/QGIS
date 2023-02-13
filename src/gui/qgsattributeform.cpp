@@ -532,8 +532,6 @@ QgsFeature QgsAttributeForm::getUpdatedFeature() const
 
 void QgsAttributeForm::updateValuesDependencies( const int originIdx )
 {
-  updateFieldDependencies();
-
   updateValuesDependenciesDefaultValues( originIdx );
   updateValuesDependenciesVirtualFields( originIdx );
 }
@@ -557,7 +555,11 @@ void QgsAttributeForm::updateValuesDependenciesDefaultValues( const int originId
     QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
     if ( eww )
     {
-      //do not update when when mMode is not AddFeatureMode and it's not applyOnUpdate
+      // Update only on form opening (except when applyOnUpdate is activated)
+      if ( mValuesInitialized && !eww->field().defaultValueDefinition().applyOnUpdate() )
+        continue;
+
+      // Update only when mMode is AddFeatureMode (except when applyOnUpdate is activated)
       if ( mMode != QgsAttributeEditorContext::AddFeatureMode && !eww->field().defaultValueDefinition().applyOnUpdate() )
       {
         continue;
@@ -916,6 +918,23 @@ void QgsAttributeForm::resetValues()
   {
     ww->setFeature( mFeature );
   }
+
+  // Prepare value dependencies
+  updateFieldDependencies();
+
+  // Update dependent fields
+  for ( QgsWidgetWrapper *ww : constMWidgets )
+  {
+    QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
+    if ( !eww )
+      continue;
+
+    // Append field index here, so it's not updated recursively
+    mAlreadyUpdatedFields.append( eww->fieldIdx() );
+    updateValuesDependencies( eww->fieldIdx() );
+    mAlreadyUpdatedFields.removeAll( eww->fieldIdx() );
+  }
+
   mValuesInitialized = true;
   mDirty = false;
 }

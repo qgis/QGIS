@@ -178,6 +178,38 @@ class TestQgsAttributeForm(unittest.TestCase):
         form.changeAttribute('age', 7)
         self.assertEqual(form.currentFormFeature()['numbers'], [1, 7])
 
+    def test_default_value_alway_updated(self):
+        """Test that default values are not updated on every edit operation
+        when containing an 'attribute' expression"""
+
+        layer = QgsVectorLayer("Point?field=age:int&field=number:int", "vl", "memory")
+
+        layer.setEditorWidgetSetup(0, QgsEditorWidgetSetup('Range', {}))
+
+        # set default value for numbers to attribute("age"), it will depend on the field age and should not update
+        layer.setDefaultValueDefinition(1, QgsDefaultValue("attribute(@feature, 'age')", False))
+        layer.setEditorWidgetSetup(1, QgsEditorWidgetSetup('Range', {}))
+
+        layer.startEditing()
+
+        feature = QgsFeature(layer.fields())
+        feature.setAttribute('age', 15)
+
+        form = QgsAttributeForm(layer)
+        form.setMode(QgsAttributeEditorContext.AddFeatureMode)
+        form.setFeature(feature)
+
+        QGISAPP.processEvents()
+
+        self.assertEqual(form.currentFormFeature()['age'], 15)
+        self.assertEqual(form.currentFormFeature()['number'], 15)
+        # return
+        form.changeAttribute('number', 12)
+        form.changeAttribute('age', 1)
+        self.assertEqual(form.currentFormFeature()['number'], 12)
+        form.changeAttribute('age', 7)
+        self.assertEqual(form.currentFormFeature()['number'], 12)
+
 
 if __name__ == '__main__':
     unittest.main()
