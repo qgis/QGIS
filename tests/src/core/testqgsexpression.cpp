@@ -4008,6 +4008,10 @@ class TestQgsExpression: public QObject
       QCOMPARE( QgsExpression( "array_remove_all(array(1, 2, 3, 4, 3), 3)" ).evaluate( &context ), QVariant( removeAllExpected ) );
       QCOMPARE( QgsExpression( "array_remove_all(array(1, 2, 3, 4, 3), '3')" ).evaluate( &context ), QVariant( removeAllExpected ) );
 
+      QCOMPARE( QgsExpression( "array_remove_all(NULL, 3)" ).evaluate( &context ), QVariant() );
+      QCOMPARE( QgsExpression( "array_remove_all(array(1, NULL, 3, NULL, 3), 3)" ).evaluate( &context ), QVariantList( {1, QVariant(), QVariant()} ) );
+      QCOMPARE( QgsExpression( "array_remove_all(array(1, NULL, 3, NULL, 3), NULL)" ).evaluate( &context ), QVariantList( {1, 3, 3 } ) );
+
       QVariantList concatExpected = array;
       concatExpected << 56 << 57;
       QCOMPARE( QgsExpression( "array_cat(\"ints\", array(56, 57))" ).evaluate( &context ), QVariant( concatExpected ) );
