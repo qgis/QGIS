@@ -533,11 +533,25 @@ void QgsPalLayerSettings::startRender( QgsRenderContext &context )
     return;
   }
 
-  if ( placement == Qgis::LabelPlacement::Curved )
+  switch ( placement )
   {
-    // force horizontal orientation, other orientation modes aren't unsupported for curved placement
-    mFormat.setOrientation( Qgis::TextOrientation::Horizontal );
-    mDataDefinedProperties.property( QgsPalLayerSettings::TextOrientation ).setActive( false );
+    case Qgis::LabelPlacement::PerimeterCurved:
+    case Qgis::LabelPlacement::Curved:
+    {
+      // force horizontal orientation, other orientation modes aren't unsupported for curved placement
+      mFormat.setOrientation( Qgis::TextOrientation::Horizontal );
+      mDataDefinedProperties.property( QgsPalLayerSettings::TextOrientation ).setActive( false );
+      break;
+    }
+
+    case Qgis::LabelPlacement::AroundPoint:
+    case Qgis::LabelPlacement::OverPoint:
+    case Qgis::LabelPlacement::Line:
+    case Qgis::LabelPlacement::Horizontal:
+    case Qgis::LabelPlacement::Free:
+    case Qgis::LabelPlacement::OrderedPositionsAroundPoint:
+    case Qgis::LabelPlacement::OutsidePolygons:
+      break;
   }
 
   if ( mCallout )
@@ -2043,25 +2057,39 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   double maxcharanglein = 20.0; // range 20.0-60.0
   double maxcharangleout = -20.0; // range 20.0-95.0
 
-  if ( placement == Qgis::LabelPlacement::Curved || placement == Qgis::LabelPlacement::PerimeterCurved )
+  switch ( placement )
   {
-    maxcharanglein = maxCurvedCharAngleIn;
-    maxcharangleout = maxCurvedCharAngleOut;
-
-    //data defined maximum angle between curved label characters?
-    if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::CurvedCharAngleInOut ) )
+    case Qgis::LabelPlacement::PerimeterCurved:
+    case Qgis::LabelPlacement::Curved:
     {
-      exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::CurvedCharAngleInOut, context.expressionContext() );
-      bool ok = false;
-      const QPointF maxcharanglePt = QgsSymbolLayerUtils::toPoint( exprVal, &ok );
-      if ( ok )
+      maxcharanglein = maxCurvedCharAngleIn;
+      maxcharangleout = maxCurvedCharAngleOut;
+
+      //data defined maximum angle between curved label characters?
+      if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::CurvedCharAngleInOut ) )
       {
-        maxcharanglein = std::clamp( static_cast< double >( maxcharanglePt.x() ), 20.0, 60.0 );
-        maxcharangleout = std::clamp( static_cast< double >( maxcharanglePt.y() ), 20.0, 95.0 );
+        exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::CurvedCharAngleInOut, context.expressionContext() );
+        bool ok = false;
+        const QPointF maxcharanglePt = QgsSymbolLayerUtils::toPoint( exprVal, &ok );
+        if ( ok )
+        {
+          maxcharanglein = std::clamp( static_cast< double >( maxcharanglePt.x() ), 20.0, 60.0 );
+          maxcharangleout = std::clamp( static_cast< double >( maxcharanglePt.y() ), 20.0, 95.0 );
+        }
       }
+      // make sure maxcharangleout is always negative
+      maxcharangleout = -( std::fabs( maxcharangleout ) );
+      break;
     }
-    // make sure maxcharangleout is always negative
-    maxcharangleout = -( std::fabs( maxcharangleout ) );
+
+    case Qgis::LabelPlacement::AroundPoint:
+    case Qgis::LabelPlacement::OverPoint:
+    case Qgis::LabelPlacement::Line:
+    case Qgis::LabelPlacement::Horizontal:
+    case Qgis::LabelPlacement::Free:
+    case Qgis::LabelPlacement::OrderedPositionsAroundPoint:
+    case Qgis::LabelPlacement::OutsidePolygons:
+      break;
   }
 
   // data defined centroid whole or clipped?
@@ -2750,19 +2778,30 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
 
   // when using certain placement modes, we force a tiny minimum distance. This ensures that
   // candidates are created just offset from a border and avoids candidates being incorrectly flagged as colliding with neighbours
-  if ( placement == Qgis::LabelPlacement::Line
-       || placement == Qgis::LabelPlacement::Curved
-       || placement == Qgis::LabelPlacement::PerimeterCurved )
+  switch ( placement )
   {
-    distance = ( distance < 0 ? -1 : 1 ) * std::max( std::fabs( distance ), 1.0 );
-  }
-  else if ( placement == Qgis::LabelPlacement::OutsidePolygons
-            || ( ( placement == Qgis::LabelPlacement::Horizontal
-                   || placement == Qgis::LabelPlacement::AroundPoint
-                   || placement == Qgis::LabelPlacement::OverPoint ||
-                   placement == Qgis::LabelPlacement::Free ) && polygonPlacement & QgsLabeling::PolygonPlacementFlag::AllowPlacementOutsideOfPolygon ) )
-  {
-    distance = std::max( distance, 2.0 );
+    case Qgis::LabelPlacement::Line:
+    case Qgis::LabelPlacement::Curved:
+    case Qgis::LabelPlacement::PerimeterCurved:
+      distance = ( distance < 0 ? -1 : 1 ) * std::max( std::fabs( distance ), 1.0 );
+      break;
+
+    case Qgis::LabelPlacement::OrderedPositionsAroundPoint:
+      break;
+
+    case Qgis::LabelPlacement::AroundPoint:
+    case Qgis::LabelPlacement::OverPoint:
+    case Qgis::LabelPlacement::Horizontal:
+    case Qgis::LabelPlacement::Free:
+      if ( polygonPlacement & QgsLabeling::PolygonPlacementFlag::AllowPlacementOutsideOfPolygon )
+      {
+        distance = std::max( distance, 2.0 );
+      }
+      break;
+
+    case Qgis::LabelPlacement::OutsidePolygons:
+      distance = std::max( distance, 2.0 );
+      break;
   }
 
   if ( !qgsDoubleNear( distance, 0.0 ) )
