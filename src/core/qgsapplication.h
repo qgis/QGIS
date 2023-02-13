@@ -1057,15 +1057,15 @@ class CORE_EXPORT QgsApplication : public QApplication
 
 #ifndef SIP_RUN
     //! Settings entry locale user locale
-    static const QgsSettingsEntryString *settingsLocaleUserLocale;
+    static const QgsSettingsEntryString *settingsLocaleUserLocale();
     //! Settings entry locale override flag
-    static const QgsSettingsEntryBool *settingsLocaleOverrideFlag;
+    static const QgsSettingsEntryBool *settingsLocaleOverrideFlag();
     //! Settings entry locale global locale
-    static const QgsSettingsEntryString *settingsLocaleGlobalLocale;
+    static const QgsSettingsEntryString *settingsLocaleGlobalLocale();
     //! Settings entry locale show group separator
-    static const QgsSettingsEntryBool *settingsLocaleShowGroupSeparator;
+    static const QgsSettingsEntryBool *settingsLocaleShowGroupSeparator();
     //! Settings entry search path for SVG
-    static const QgsSettingsEntryStringList *settingsSearchPathsForSVG;
+    static const QgsSettingsEntryStringList *settingsSearchPathsForSVG();
 #endif
 
 #ifdef SIP_RUN

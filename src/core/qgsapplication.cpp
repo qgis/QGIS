@@ -115,16 +115,6 @@
 #include <QAuthenticator>
 #include <QRecursiveMutex>
 
-const QgsSettingsEntryString *QgsApplication::settingsLocaleUserLocale = new QgsSettingsEntryString( QStringLiteral( "userLocale" ), QgsSettingsTree::sTreeLocale, QString() );
-
-const QgsSettingsEntryBool *QgsApplication::settingsLocaleOverrideFlag = new QgsSettingsEntryBool( QStringLiteral( "overrideFlag" ), QgsSettingsTree::sTreeLocale, false );
-
-const QgsSettingsEntryString *QgsApplication::settingsLocaleGlobalLocale = new QgsSettingsEntryString( QStringLiteral( "globalLocale" ), QgsSettingsTree::sTreeLocale, QString() );
-
-const QgsSettingsEntryBool *QgsApplication::settingsLocaleShowGroupSeparator = new QgsSettingsEntryBool( QStringLiteral( "showGroupSeparator" ), QgsSettingsTree::sTreeLocale, false );
-
-const QgsSettingsEntryStringList *QgsApplication::settingsSearchPathsForSVG = new QgsSettingsEntryStringList( QStringLiteral( "searchPathsForSVG" ), QgsSettingsTree::sTreeSvg, QStringList() );
-
 #ifndef Q_OS_WIN
 #include <netinet/in.h>
 #include <pwd.h>
@@ -1186,7 +1176,7 @@ QString QgsApplication::srsDatabaseFilePath()
 
 void QgsApplication::setSvgPaths( const QStringList &svgPaths )
 {
-  settingsSearchPathsForSVG->setValue( svgPaths );
+  settingsSearchPathsForSVG()->setValue( svgPaths );
   members()->mSvgPathCacheValid = false;
 }
 
@@ -1205,7 +1195,7 @@ QStringList QgsApplication::svgPaths()
     locker.changeMode( QgsReadWriteLocker::Write );
     //local directories to search when looking for an SVG with a given basename
     //defined by user in options dialog
-    const QStringList pathList = settingsSearchPathsForSVG->value();
+    const QStringList pathList = settingsSearchPathsForSVG()->value();
 
     // maintain user set order while stripping duplicates
     QStringList paths;
@@ -1411,9 +1401,9 @@ QString QgsApplication::applicationFullName()
 
 QString QgsApplication::locale()
 {
-  if ( settingsLocaleOverrideFlag->value() )
+  if ( settingsLocaleOverrideFlag()->value() )
   {
-    QString locale = settingsLocaleUserLocale->value();
+    QString locale = settingsLocaleUserLocale()->value();
     // don't differentiate en_US and en_GB
     if ( locale.startsWith( QLatin1String( "en" ), Qt::CaseInsensitive ) )
     {
@@ -2083,6 +2073,36 @@ QString QgsApplication::translation() const
 void QgsApplication::collectTranslatableObjects( QgsTranslationContext *translationContext )
 {
   emit requestForTranslatableObjects( translationContext );
+}
+
+const QgsSettingsEntryString *QgsApplication::settingsLocaleUserLocale()
+{
+  static QgsSettingsEntryString *s { new QgsSettingsEntryString( QStringLiteral( "userLocale" ), QgsSettingsTree::sTreeLocale, QString() ) };
+  return s;
+}
+
+const QgsSettingsEntryBool *QgsApplication::settingsLocaleOverrideFlag()
+{
+  static QgsSettingsEntryBool *s { new QgsSettingsEntryBool( QStringLiteral( "settingsLocaleOverrideFlag" ), QgsSettingsTree::sTreeLocale, false ) };
+  return s;
+}
+
+const QgsSettingsEntryString *QgsApplication::settingsLocaleGlobalLocale()
+{
+  static QgsSettingsEntryString *s { new QgsSettingsEntryString( QStringLiteral( "globalLocale" ), QgsSettingsTree::sTreeLocale, QString() ) };
+  return s;
+}
+
+const QgsSettingsEntryBool *QgsApplication::settingsLocaleShowGroupSeparator()
+{
+  static QgsSettingsEntryBool *s { new QgsSettingsEntryBool( QStringLiteral( "showGroupSeparator" ), QgsSettingsTree::sTreeLocale, false ) };
+  return s;
+}
+
+const QgsSettingsEntryStringList *QgsApplication::settingsSearchPathsForSVG()
+{
+  static QgsSettingsEntryStringList *s { new QgsSettingsEntryStringList( QStringLiteral( "searchPathsForSVG" ), QgsSettingsTree::sTreeSvg, QStringList() ) };
+  return s;
 }
 
 QString QgsApplication::nullRepresentation()

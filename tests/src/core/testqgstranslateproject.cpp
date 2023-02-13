@@ -57,12 +57,12 @@ void TestQgsTranslateProject::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  original_locale = QgsApplication::settingsLocaleUserLocale->value();
+  original_locale = QgsApplication::settingsLocaleUserLocale()->value();
 }
 
 void TestQgsTranslateProject::cleanupTestCase()
 {
-  QgsApplication::settingsLocaleUserLocale->setValue( original_locale );
+  QgsApplication::settingsLocaleUserLocale()->setValue( original_locale );
   QgsApplication::exitQgis();
 
   //delete translated project file
@@ -91,7 +91,7 @@ void TestQgsTranslateProject::cleanup()
 void TestQgsTranslateProject::createTsFile()
 {
   //open project in english
-  QgsApplication::settingsLocaleUserLocale->setValue( "en" );
+  QgsApplication::settingsLocaleUserLocale()->setValue( "en" );
   QString projectFileName( TEST_DATA_DIR );
   projectFileName = projectFileName + "/project_translation/points_translation.qgs";
   QgsProject::instance()->read( projectFileName );
@@ -163,7 +163,7 @@ void TestQgsTranslateProject::createTsFile()
 void TestQgsTranslateProject::translateProject()
 {
   //open project in german
-  QgsApplication::settingsLocaleUserLocale->setValue( "de" );
+  QgsApplication::settingsLocaleUserLocale()->setValue( "de" );
   QString projectFileName( TEST_DATA_DIR );
   projectFileName = projectFileName + "/project_translation/points_translation.qgs";
   QgsProject::instance()->read( projectFileName );

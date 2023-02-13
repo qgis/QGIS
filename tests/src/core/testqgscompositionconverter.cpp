@@ -166,7 +166,7 @@ void TestQgsCompositionConverter::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-  QgsApplication::settingsSearchPathsForSVG->setValue( QStringList() << QStringLiteral( TEST_DATA_DIR ) );
+  QgsApplication::settingsSearchPathsForSVG()->setValue( QStringList() << QStringLiteral( TEST_DATA_DIR ) );
 }
 
 void TestQgsCompositionConverter::init()

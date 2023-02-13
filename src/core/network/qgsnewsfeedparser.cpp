@@ -63,7 +63,7 @@ QgsNewsFeedParser::QgsNewsFeedParser( const QUrl &feedUrl, const QString &authcf
   QString feedLanguage = settingsFeedLanguage->value( mFeedKey );
   if ( feedLanguage.isEmpty() )
   {
-    feedLanguage = QgsApplication::settingsLocaleUserLocale->valueWithDefaultOverride( QStringLiteral( "en" ) );
+    feedLanguage = QgsApplication::settingsLocaleUserLocale()->valueWithDefaultOverride( QStringLiteral( "en" ) );
   }
   if ( !feedLanguage.isEmpty() && feedLanguage != QLatin1String( "C" ) )
     query.addQueryItem( QStringLiteral( "lang" ), feedLanguage.mid( 0, 2 ) );
