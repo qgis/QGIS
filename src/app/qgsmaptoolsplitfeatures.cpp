@@ -64,7 +64,6 @@ void QgsMapToolSplitFeatures::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
   bool split = false;
 
-
   //add point to list and to rubber band
   if ( e->button() == Qt::LeftButton )
   {
