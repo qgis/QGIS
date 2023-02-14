@@ -757,7 +757,31 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
 
     QgsTextDocument document;
     QgsTextDocumentMetrics metrics;
-    if ( !tmpLyr.format().allowHtmlFormatting() || tmpLyr.placement == Qgis::LabelPlacement::Curved )
+
+    // If we are using non-curved, HTML formatted labels then we've already precalculated the text metrics.
+    // Otherwise we'll need to calculate them now.
+    bool metricsRequired = !tmpLyr.format().allowHtmlFormatting();
+    if ( !metricsRequired )
+    {
+      switch ( tmpLyr.placement )
+      {
+        case Qgis::LabelPlacement::Curved:
+        case Qgis::LabelPlacement::PerimeterCurved:
+          metricsRequired = true;
+          break;
+
+        case Qgis::LabelPlacement::AroundPoint:
+        case Qgis::LabelPlacement::OverPoint:
+        case Qgis::LabelPlacement::Line:
+        case Qgis::LabelPlacement::Horizontal:
+        case Qgis::LabelPlacement::Free:
+        case Qgis::LabelPlacement::OrderedPositionsAroundPoint:
+        case Qgis::LabelPlacement::OutsidePolygons:
+          break;
+      }
+    }
+
+    if ( metricsRequired )
     {
       const QgsTextCharacterFormat c = lf->characterFormat( label->getPartId() );
       const QStringList multiLineList = QgsPalLabeling::splitToLines( txt, tmpLyr.wrapChar, tmpLyr.autoWrapLength, tmpLyr.useMaxLineLengthForAutoWrap );

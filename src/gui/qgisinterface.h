@@ -71,6 +71,7 @@ class QgsGpsConnection;
 class QgsApplicationExitBlockerInterface;
 class QgsAbstractMapToolHandler;
 class QgsUserProfileManager;
+class QgsDataSourceManagerDialog;
 
 /**
  * \ingroup gui
@@ -317,6 +318,15 @@ class GUI_EXPORT QgisInterface : public QObject
      * \since QGIS 3.4
      */
     virtual QToolBar *dataSourceManagerToolBar() = 0;
+
+    /**
+     * Opens a page in the main window "Data Source Manager" dialog.
+     *
+     * This method creates and opens the dialog if it is not already visible.
+     *
+     * \since QGIS 3.30
+     */
+    virtual void openDataSourceManagerPage( const QString &pageName ) = 0;
 
     /**
      * Returns a reference to the main window "Map Navigation" toolbar.

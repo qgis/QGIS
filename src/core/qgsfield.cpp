@@ -127,6 +127,18 @@ QString QgsField::displayType( const bool showConstraints ) const
   return typeStr;
 }
 
+QString QgsField::friendlyTypeString() const
+{
+  if ( d->type == QVariant::UserType )
+  {
+    if ( d->typeName.compare( QLatin1String( "geometry" ), Qt::CaseInsensitive ) == 0 )
+    {
+      return QObject::tr( "Geometry" );
+    }
+  }
+  return QgsVariantUtils::typeToDisplayString( d->type, d->subType );
+}
+
 QVariant::Type QgsField::type() const
 {
   return d->type;
@@ -603,8 +615,24 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
     }
     return true;
   }
-
-  if ( !v.convert( d->type ) )
+  else if ( d->type == QVariant::UserType && d->typeName.compare( QLatin1String( "geometry" ), Qt::CaseInsensitive ) == 0 )
+  {
+    if ( v.userType() == QMetaType::type( "QgsReferencedGeometry" ) || v.userType() == QMetaType::type( "QgsGeometry" ) )
+    {
+      return true;
+    }
+    else if ( v.type() == QVariant::String )
+    {
+      const QgsGeometry geom = QgsGeometry::fromWkt( v.toString() );
+      if ( !geom.isNull() )
+      {
+        v = QVariant::fromValue( geom );
+        return true;
+      }
+    }
+    return false;
+  }
+  else if ( !v.convert( d->type ) )
   {
     v = QVariant( d->type );
 

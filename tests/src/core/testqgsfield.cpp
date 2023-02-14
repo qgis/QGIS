@@ -25,6 +25,7 @@
 #include "qgsfield.h"
 #include "qgsapplication.h"
 #include "qgstest.h"
+#include "qgsreferencedgeometry.h"
 
 class TestQgsField: public QObject
 {
@@ -49,6 +50,7 @@ class TestQgsField: public QObject
     void displayName();
     void displayNameWithAlias();
     void displayType();
+    void friendlyTypeString();
     void editorWidgetSetup();
     void collection();
 
@@ -804,6 +806,23 @@ void TestQgsField::convertCompatible()
   QVERIFY( jsonField.convertCompatible( jsonValue ) );
   QCOMPARE( jsonValue.type(), QVariant::String );
   QCOMPARE( jsonValue, QString( "{\"a\":1,\"c\":3}" ) );
+
+  // geometry field conversion
+  const QgsField geometryField( QStringLiteral( "geometry" ), QVariant::UserType, QStringLiteral( "geometry" ) );
+  QVariant geometryValue;
+  QVERIFY( geometryField.convertCompatible( geometryValue ) );
+  QVERIFY( geometryValue.isNull() );
+  geometryValue = QVariant::fromValue( QgsGeometry::fromWkt( QStringLiteral( "Point( 1 2 )" ) ) );
+  QVERIFY( geometryField.convertCompatible( geometryValue ) );
+  QCOMPARE( geometryValue.userType(), QMetaType::type( "QgsGeometry" ) );
+
+  geometryValue = QVariant::fromValue( QgsReferencedGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point( 1 2 )" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) ) );
+  QVERIFY( geometryField.convertCompatible( geometryValue ) );
+  QCOMPARE( geometryValue.userType(), QMetaType::type( "QgsReferencedGeometry" ) );
+
+  geometryValue = QStringLiteral( "LineString( 1 2, 3 4 )" );
+  QVERIFY( geometryField.convertCompatible( geometryValue ) );
+  QCOMPARE( geometryValue.userType(), QMetaType::type( "QgsGeometry" ) );
 }
 
 void TestQgsField::dataStream()
@@ -878,6 +897,21 @@ void TestQgsField::displayType()
   QCOMPARE( field.displayType( true ), QString( "numeric(20, 10) NULL UNIQUE" ) );
 }
 
+void TestQgsField::friendlyTypeString()
+{
+  QgsField field;
+  field.setType( QVariant::String );
+  QCOMPARE( field.friendlyTypeString(), QStringLiteral( "Text (string)" ) );
+  field.setType( QVariant::Double );
+  field.setLength( 20 );
+  QCOMPARE( field.friendlyTypeString(), QStringLiteral( "Decimal (double)" ) );
+  field.setType( QVariant::List );
+  field.setSubType( QVariant::String );
+  QCOMPARE( field.friendlyTypeString(), QStringLiteral( "List" ) );
+  field.setType( QVariant::UserType );
+  field.setTypeName( QStringLiteral( "geometry" ) );
+  QCOMPARE( field.friendlyTypeString(), QStringLiteral( "Geometry" ) );
+}
 
 void TestQgsField::editorWidgetSetup()
 {

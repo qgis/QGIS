@@ -281,6 +281,15 @@ Returns a reference to the main window "Data Source Manager" toolbar.
 .. versionadded:: 3.4
 %End
 
+    virtual void openDataSourceManagerPage( const QString &pageName ) = 0;
+%Docstring
+Opens a page in the main window "Data Source Manager" dialog.
+
+This method creates and opens the dialog if it is not already visible.
+
+.. versionadded:: 3.30
+%End
+
     virtual QToolBar *mapNavToolToolBar() = 0;
 %Docstring
 Returns a reference to the main window "Map Navigation" toolbar.
