@@ -285,13 +285,13 @@ QIcon QgsFields::iconForField( int fieldIdx, bool considerOrigin ) const
         return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/join.svg" ) );
 
       default:
-        return iconForFieldType( d->fields.at( fieldIdx ).field.type(), d->fields.at( fieldIdx ).field.subType() );
+        return iconForFieldType( d->fields.at( fieldIdx ).field.type(), d->fields.at( fieldIdx ).field.subType(), d->fields.at( fieldIdx ).field.typeName() );
     }
   }
-  return iconForFieldType( d->fields.at( fieldIdx ).field.type(), d->fields.at( fieldIdx ).field.subType() );
+  return iconForFieldType( d->fields.at( fieldIdx ).field.type(), d->fields.at( fieldIdx ).field.subType(), d->fields.at( fieldIdx ).field.typeName() );
 }
 
-QIcon QgsFields::iconForFieldType( QVariant::Type type, QVariant::Type subType )
+QIcon QgsFields::iconForFieldType( QVariant::Type type, QVariant::Type subType, const QString &typeString )
 {
   switch ( type )
   {
@@ -335,6 +335,16 @@ QIcon QgsFields::iconForFieldType( QVariant::Type type, QVariant::Type subType )
       return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldArrayString.svg" ) );
     case QVariant::Map:
       return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldJson.svg" ) );
+    case QVariant::UserType:
+      if ( typeString.compare( QLatin1String( "geometry" ) ) == 0 )
+      {
+        return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldGeometry.svg" ) );
+      }
+      else
+      {
+        return QIcon();
+      }
+
     default:
       return QIcon();
   }
