@@ -127,6 +127,18 @@ QString QgsField::displayType( const bool showConstraints ) const
   return typeStr;
 }
 
+QString QgsField::friendlyTypeString() const
+{
+  if ( d->type == QVariant::UserType )
+  {
+    if ( d->typeName.compare( QLatin1String( "geometry" ), Qt::CaseInsensitive ) == 0 )
+    {
+      return QObject::tr( "Geometry" );
+    }
+  }
+  return QgsVariantUtils::typeToDisplayString( d->type, d->subType );
+}
+
 QVariant::Type QgsField::type() const
 {
   return d->type;
