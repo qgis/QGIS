@@ -725,12 +725,6 @@ void TestQgsField::convertCompatible()
   QVERIFY( stringGeomRef.convertCompatible( geomVar, &error ) );
   QCOMPARE( geomVar.type(), QVariant::String );
   QCOMPARE( geomVar.toString().toUpper(), QString( "POINT (1 1)" ) );
-  geomRef.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) );
-  geomVar = QVariant::fromValue( geomRef );
-  QVERIFY( stringGeomRef.convertCompatible( geomVar, &error ) );
-  QCOMPARE( geomVar.type(), QVariant::String );
-  QCOMPARE( geomVar.toString().toUpper(), QString( "SRID=4326;POINT (1 1)" ) );
-
 
   /////////////////////////////////////////////////////////
   // German locale tests

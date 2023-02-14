@@ -599,15 +599,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
     }
     else
     {
-      // EWKT only if authid is EPSG, not sure if it makes sense otherwise
-      if ( geom.crs().authid().startsWith( QStringLiteral( "EPSG:" ) ) )
-      {
-        v = QVariant( QStringLiteral( "SRID=%1;%2" ).arg( geom.crs().authid().mid( 5 ), geom.asWkt() ) );
-      }
-      else
-      {
-        v = QVariant( geom.asWkt() );
-      }
+      v = QVariant( geom.asWkt() );
     }
     return true;
   }
