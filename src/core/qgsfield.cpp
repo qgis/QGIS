@@ -589,7 +589,24 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
     return false;
   }
 
-  if ( !v.convert( d->type ) )
+  if ( d->type == QVariant::UserType && d->typeName.compare( QLatin1String( "geometry" ), Qt::CaseInsensitive ) == 0 )
+  {
+    if ( v.userType() == QMetaType::type( "QgsReferencedGeometry" ) || v.userType() == QMetaType::type( "QgsGeometry" ) )
+    {
+      return true;
+    }
+    else if ( v.type() == QVariant::String )
+    {
+      const QgsGeometry geom = QgsGeometry::fromWkt( v.toString() );
+      if ( !geom.isNull() )
+      {
+        v = QVariant::fromValue( geom );
+        return true;
+      }
+    }
+    return false;
+  }
+  else if ( !v.convert( d->type ) )
   {
     v = QVariant( d->type );
 
