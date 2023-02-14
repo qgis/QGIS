@@ -182,6 +182,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QToolBar *fileToolBar() override;
     QToolBar *layerToolBar() override;
     QToolBar *dataSourceManagerToolBar() override;
+    void openDataSourceManagerPage( const QString &pageName ) override;
     QToolBar *mapNavToolToolBar() override;
     QToolBar *digitizeToolBar() override;
     QToolBar *advancedDigitizeToolBar() override;
