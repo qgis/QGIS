@@ -119,6 +119,7 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
 
                   // complex types
                   << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Map ), QStringLiteral( "map" ), QVariant::Map, -1, -1, -1, -1 )
+                  << QgsVectorDataProvider::NativeType( tr( "Geometry" ), QStringLiteral( "geometry" ), QVariant::UserType )
                 );
 
   if ( query.hasQueryItem( QStringLiteral( "field" ) ) )
