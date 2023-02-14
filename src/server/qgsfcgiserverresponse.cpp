@@ -23,15 +23,17 @@
 #include <fcgi_stdio.h>
 #include <QDebug>
 
-#include <sys/types.h>
-#include <sys/socket.h>
 #include <unistd.h>
-#include <netinet/in.h>
-#include <netinet/tcp.h>
 #include "qgslogger.h"
 
-#define check(expr) if (!(expr)) { QgsMessageLog::logMessage( QStringLiteral( "FCGI_stdin unable to set socket option '%1'!" ).arg(#expr), QStringLiteral( "FCGIServer" ), Qgis::MessageLevel::Warning );}
+#ifdef Q_OS_LINUX
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netinet/tcp.h>
+#endif
 
+#ifdef Q_OS_LINUX
 //
 // QgsFCGXStreamData copied from libfcgi FCGX_Stream_Data
 //
@@ -54,7 +56,7 @@ typedef struct QgsFCGXStreamData
   int rawWrite;             /* writer: write data without stream headers */
   FCGX_Request *reqDataPtr; /* request data not specific to one stream */
 } QgsFCGXStreamData;
-
+#endif
 
 SocketMonitoringThread::SocketMonitoringThread( bool *isResponseFinished, QgsFeedback *feedback )
   : mIsResponseFinished( isResponseFinished )
@@ -65,6 +67,7 @@ SocketMonitoringThread::SocketMonitoringThread( bool *isResponseFinished, QgsFee
   Q_ASSERT( mIsResponseFinished );
   Q_ASSERT( mFeedback );
 
+#ifdef Q_OS_LINUX
   if ( FCGI_stdout && FCGI_stdout->fcgx_stream && FCGI_stdout->fcgx_stream->data )
   {
     QgsFCGXStreamData *stream = static_cast<QgsFCGXStreamData *>( FCGI_stdin->fcgx_stream->data );
@@ -78,7 +81,10 @@ SocketMonitoringThread::SocketMonitoringThread( bool *isResponseFinished, QgsFee
 
       // Ie. LINGER = 1, TIME_WAIT = 0
       struct linger lo = { 1, 0 };
-      check( setsockopt( mIpcFd, SOL_SOCKET, SO_LINGER, &lo, sizeof( lo ) ) != -1 );
+      if ( !( setsockopt( mIpcFd, SOL_SOCKET, SO_LINGER, &lo, sizeof( lo ) ) != -1 ) )
+      {
+        QgsMessageLog::logMessage( QStringLiteral( "FCGI_stdin unable to set socket option 'SOL_SOCKET/SO_LINGER'!" ), QStringLiteral( "FCGIServer" ), Qgis::MessageLevel::Warning );
+      }
     }
     else
     {
@@ -93,6 +99,7 @@ SocketMonitoringThread::SocketMonitoringThread( bool *isResponseFinished, QgsFee
                                QStringLiteral( "FCGIServer" ),
                                Qgis::MessageLevel::Warning );
   }
+#endif
 }
 
 void SocketMonitoringThread::run( )
@@ -105,6 +112,7 @@ void SocketMonitoringThread::run( )
     return;
   }
 
+#ifdef Q_OS_LINUX
   char c;
   while ( !*mIsResponseFinished )
   {
@@ -133,6 +141,7 @@ void SocketMonitoringThread::run( )
   {
     QgsDebugMsgLevel( QStringLiteral( "FCGIServer: socket monitoring quits: no more socket." ), 2 );
   }
+#endif
 }
 
 
@@ -147,8 +156,15 @@ QgsFcgiServerResponse::QgsFcgiServerResponse( QgsServerRequest::Method method )
   mBuffer.open( QIODevice::ReadWrite );
   setDefaultHeaders();
 
-  mSocketMonitoringThread = new SocketMonitoringThread( &mFinished, mFeedback.get() );
+  mSocketMonitoringThread = std::make_unique<SocketMonitoringThread>( &mFinished, mFeedback.get() );
   mSocketMonitoringThread->start();
+}
+
+QgsFcgiServerResponse::~QgsFcgiServerResponse()
+{
+  mFinished = true;
+  mSocketMonitoringThread->exit();
+  mSocketMonitoringThread->wait();
 }
 
 void QgsFcgiServerResponse::removeHeader( const QString &key )

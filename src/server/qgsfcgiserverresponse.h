@@ -69,6 +69,7 @@ class SERVER_EXPORT QgsFcgiServerResponse: public QgsServerResponse
      * \param method The HTTP method (Get by default)
      */
     QgsFcgiServerResponse( QgsServerRequest::Method method = QgsServerRequest::GetMethod );
+    virtual ~QgsFcgiServerResponse();
 
     void setHeader( const QString &key, const QString &value ) override;
 
@@ -117,7 +118,7 @@ class SERVER_EXPORT QgsFcgiServerResponse: public QgsServerResponse
     QgsServerRequest::Method mMethod;
     int mStatusCode = 0;
 
-    SocketMonitoringThread *mSocketMonitoringThread = nullptr;
+    std::unique_ptr<SocketMonitoringThread> mSocketMonitoringThread;
     std::unique_ptr<QgsFeedback> mFeedback;
 };
 
