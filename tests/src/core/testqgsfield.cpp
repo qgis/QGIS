@@ -49,6 +49,7 @@ class TestQgsField: public QObject
     void displayName();
     void displayNameWithAlias();
     void displayType();
+    void friendlyTypeString();
     void editorWidgetSetup();
     void collection();
 
@@ -870,6 +871,21 @@ void TestQgsField::displayType()
   QCOMPARE( field.displayType( true ), QString( "numeric(20, 10) NULL UNIQUE" ) );
 }
 
+void TestQgsField::friendlyTypeString()
+{
+  QgsField field;
+  field.setType( QVariant::String );
+  QCOMPARE( field.friendlyTypeString(), QStringLiteral( "Text (string)" ) );
+  field.setType( QVariant::Double );
+  field.setLength( 20 );
+  QCOMPARE( field.friendlyTypeString(), QStringLiteral( "Decimal (double)" ) );
+  field.setType( QVariant::List );
+  field.setSubType( QVariant::String );
+  QCOMPARE( field.friendlyTypeString(), QStringLiteral( "List" ) );
+  field.setType( QVariant::UserType );
+  field.setTypeName( QStringLiteral( "geometry" ) );
+  QCOMPARE( field.friendlyTypeString(), QStringLiteral( "Geometry" ) );
+}
 
 void TestQgsField::editorWidgetSetup()
 {
