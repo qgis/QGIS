@@ -1347,6 +1347,13 @@ called when panning is in action, reset indicates end of panning
     virtual void showEvent( QShowEvent *event );
 
 
+    void emitExtentsChanged();
+%Docstring
+Emits the extentsChanged signal when appropriate.
+
+.. versionadded:: 3.30
+%End
+
 
 
 
