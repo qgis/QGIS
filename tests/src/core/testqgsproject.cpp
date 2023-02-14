@@ -403,9 +403,37 @@ void TestQgsProject::testLayerFlags()
   QgsProject prj2;
   prj2.setFileName( f.fileName() );
   QVERIFY( prj2.read() );
-  QgsMapLayer *layer = prj.mapLayer( layer2id );
+  QgsMapLayer *layer = prj2.mapLayer( layer2id );
   QVERIFY( layer );
   QVERIFY( !layer->flags().testFlag( QgsMapLayer::Removable ) );
+
+  // test setFlags modifies correctly existing layer settings
+  QVERIFY( !prj2.isDirty() );
+  prj2.setFlag( Qgis::ProjectFlag::TrustStoredLayerStatistics, true );
+  prj2.setFlag( Qgis::ProjectFlag::EvaluateDefaultValuesOnProviderSide, true );
+  QVERIFY( prj2.isDirty() );
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( prj2.mapLayer( layer2id ) );
+  QVERIFY( vlayer->readExtentFromXml() );
+  // vlayer doesn't have trust because it will be done for new layer or when reloading the project
+  // no need to set trust on a layer which has already loaded everything
+  QVERIFY( !vlayer->dataProvider()->mReadFlags.testFlag( QgsDataProvider::FlagTrustDataSource ) );
+  QVERIFY( vlayer->dataProvider()->providerProperty( QgsVectorDataProvider::EvaluateDefaultValues ).toBool() );
+
+  prj2.write();
+
+  // check reload of project sets the correct flags and layer properties
+  QgsProject prj3;
+  prj3.setFileName( f.fileName() );
+  QVERIFY( prj3.read() );
+  QVERIFY( prj3.flags().testFlag( Qgis::ProjectFlag::TrustStoredLayerStatistics ) );
+  QVERIFY( prj3.flags().testFlag( Qgis::ProjectFlag::EvaluateDefaultValuesOnProviderSide ) );
+  vlayer = qobject_cast<QgsVectorLayer *>( prj3.mapLayer( layer2id ) );
+  QVERIFY( vlayer );
+  QVERIFY( !vlayer->flags().testFlag( QgsMapLayer::Removable ) );
+  QVERIFY( !prj3.isDirty() );
+  QVERIFY( vlayer->readExtentFromXml() );
+  QVERIFY( vlayer->dataProvider()->mReadFlags.testFlag( QgsDataProvider::FlagTrustDataSource ) );
+  QVERIFY( vlayer->dataProvider()->providerProperty( QgsVectorDataProvider::EvaluateDefaultValues ).toBool() );
 }
 
 void TestQgsProject::testLocalFiles()

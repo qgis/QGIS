@@ -539,7 +539,11 @@ void QgsProject::setFlags( Qgis::ProjectFlags flags )
     }
   }
 
-  mFlags = flags;
+  if ( mFlags != flags )
+  {
+    mFlags = flags;
+    setDirty( true );
+  }
 }
 
 void QgsProject::setFlag( Qgis::ProjectFlag flag, bool enabled )
@@ -1403,15 +1407,8 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   switch ( layerType )
   {
     case QgsMapLayerType::VectorLayer:
-    {
       mapLayer = std::make_unique<QgsVectorLayer>();
-      // apply specific settings to vector layer
-      if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mapLayer.get() ) )
-      {
-        vl->setReadExtentFromXml( ( mFlags & Qgis::ProjectFlag::TrustStoredLayerStatistics ) || ( flags & Qgis::ProjectReadFlag::TrustLayerMetadata ) );
-      }
       break;
-    }
 
     case QgsMapLayerType::RasterLayer:
       mapLayer = std::make_unique<QgsRasterLayer>();
@@ -1478,6 +1475,17 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
 
   profile.switchTask( tr( "Load layer source" ) );
   const bool layerIsValid = mapLayer->readLayerXml( layerElem, context, layerFlags ) && mapLayer->isValid();
+
+  // apply specific settings to vector layer
+  if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mapLayer.get() ) )
+  {
+    vl->setReadExtentFromXml( ( mFlags & Qgis::ProjectFlag::TrustStoredLayerStatistics ) || ( flags & Qgis::ProjectReadFlag::TrustLayerMetadata ) );
+    if ( vl->dataProvider() )
+    {
+      const bool evaluateDefaultValues = mFlags & Qgis::ProjectFlag::EvaluateDefaultValuesOnProviderSide;
+      vl->dataProvider()->setProviderProperty( QgsVectorDataProvider::EvaluateDefaultValues, evaluateDefaultValues );
+    }
+  }
 
   profile.switchTask( tr( "Add layer to project" ) );
   QList<QgsMapLayer *> newLayers;
@@ -1896,6 +1904,8 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   // get the map layers
   profile.switchTask( tr( "Reading map layers" ) );
 
+  loadProjectFlags( doc.get() );
+
   QList<QDomNode> brokenNodes;
   const bool clean = _getMapLayers( *doc, brokenNodes, flags );
 
@@ -1935,8 +1945,6 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   // now that layers are loaded, we can resolve layer tree's references to the layers
   profile.switchTask( tr( "Resolving references" ) );
   mRootGroup->resolveReferences( this );
-
-  loadProjectFlags( doc.get() );
 
   if ( !layerTreeElem.isNull() )
   {
