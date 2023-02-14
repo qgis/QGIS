@@ -614,11 +614,12 @@ bool QgsWmsProvider::setImageCrs( QString const &crs )
 
 void QgsWmsProvider::setQueryItem( QUrlQuery &url, const QString &item, const QString &value )
 {
-  url.removeQueryItem( item );
+  QString key = QUrl::toPercentEncoding( item );
+  url.removeQueryItem( key );
   if ( value.isNull() )
-    url.addQueryItem( item, "" );
+    url.addQueryItem( key, "" );
   else
-    url.addQueryItem( item, value );
+    url.addQueryItem( key, QUrl::toPercentEncoding( value ) );
 }
 
 void QgsWmsProvider::setFormatQueryItem( QUrlQuery &url )
@@ -1238,8 +1239,8 @@ QUrl QgsWmsProvider::createRequestUrlWMS( const QgsRectangle &viewExtent, int pi
   {
     if ( mActiveSubLayerVisibility.constFind( *it ).value() )
     {
-      visibleLayers += QUrl::toPercentEncoding( *it );
-      visibleStyles += QUrl::toPercentEncoding( *it2 );
+      visibleLayers += *it;
+      visibleStyles += *it2;
     }
 
     ++it2;
