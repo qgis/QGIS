@@ -23,14 +23,11 @@
 #include <fcgi_stdio.h>
 #include <QDebug>
 
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <unistd.h>
-#include <netinet/in.h>
-#include <netinet/tcp.h>
 #include "qgslogger.h"
 
-#define check(expr) if (!(expr)) { QgsMessageLog::logMessage( QStringLiteral( "FCGI_stdin unable to set socket option '%1'!" ).arg(#expr), QStringLiteral( "FCGIServer" ), Qgis::MessageLevel::Warning );}
+#if defined(Q_OS_UNIX) && !defined(Q_OS_ANDROiD)
+#include <sys/types.h>
+#include <sys/socket.h>
 
 //
 // QgsFCGXStreamData copied from libfcgi FCGX_Stream_Data
@@ -54,7 +51,7 @@ typedef struct QgsFCGXStreamData
   int rawWrite;             /* writer: write data without stream headers */
   FCGX_Request *reqDataPtr; /* request data not specific to one stream */
 } QgsFCGXStreamData;
-
+#endif
 
 QgsSocketMonitoringThread::QgsSocketMonitoringThread( bool *isResponseFinished, QgsFeedback *feedback )
   : mIsResponseFinished( isResponseFinished )
@@ -65,6 +62,7 @@ QgsSocketMonitoringThread::QgsSocketMonitoringThread( bool *isResponseFinished, 
   Q_ASSERT( mIsResponseFinished );
   Q_ASSERT( mFeedback );
 
+#if defined(Q_OS_UNIX) && !defined(Q_OS_ANDROiD)
   if ( FCGI_stdout && FCGI_stdout->fcgx_stream && FCGI_stdout->fcgx_stream->data )
   {
     QgsFCGXStreamData *stream = static_cast<QgsFCGXStreamData *>( FCGI_stdin->fcgx_stream->data );
@@ -85,6 +83,7 @@ QgsSocketMonitoringThread::QgsSocketMonitoringThread( bool *isResponseFinished, 
                                QStringLiteral( "FCGIServer" ),
                                Qgis::MessageLevel::Warning );
   }
+#endif
 }
 
 void QgsSocketMonitoringThread::run( )
@@ -97,6 +96,7 @@ void QgsSocketMonitoringThread::run( )
     return;
   }
 
+#if defined(Q_OS_UNIX) && !defined(Q_OS_ANDROiD)
   char c;
   while ( !*mIsResponseFinished )
   {
@@ -125,6 +125,7 @@ void QgsSocketMonitoringThread::run( )
   {
     QgsDebugMsgLevel( QStringLiteral( "FCGIServer: socket monitoring quits: no more socket." ), 2 );
   }
+#endif
 }
 
 
@@ -141,6 +142,13 @@ QgsFcgiServerResponse::QgsFcgiServerResponse( QgsServerRequest::Method method )
 
   mSocketMonitoringThread = std::make_unique<QgsSocketMonitoringThread>( &mFinished, mFeedback.get() );
   mSocketMonitoringThread->start();
+}
+
+QgsFcgiServerResponse::~QgsFcgiServerResponse()
+{
+  mFinished = true;
+  mSocketMonitoringThread->exit();
+  mSocketMonitoringThread->wait();
 }
 
 void QgsFcgiServerResponse::removeHeader( const QString &key )
