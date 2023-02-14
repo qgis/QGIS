@@ -21,10 +21,10 @@
 
 #include <memory>
 
-#include "qgssettings.h"
 #include "qgsfield.h"
 #include "qgsapplication.h"
 #include "qgstest.h"
+#include "qgsreferencedgeometry.h"
 
 class TestQgsField: public QObject
 {
@@ -796,6 +796,23 @@ void TestQgsField::convertCompatible()
   QVERIFY( jsonField.convertCompatible( jsonValue ) );
   QCOMPARE( jsonValue.type(), QVariant::String );
   QCOMPARE( jsonValue, QString( "{\"a\":1,\"c\":3}" ) );
+
+  // geometry field conversion
+  const QgsField geometryField( QStringLiteral( "geometry" ), QVariant::UserType, QStringLiteral( "geometry" ) );
+  QVariant geometryValue;
+  QVERIFY( geometryField.convertCompatible( geometryValue ) );
+  QVERIFY( geometryValue.isNull() );
+  geometryValue = QVariant::fromValue( QgsGeometry::fromWkt( QStringLiteral( "Point( 1 2 )" ) ) );
+  QVERIFY( geometryField.convertCompatible( geometryValue ) );
+  QCOMPARE( geometryValue.userType(), QMetaType::type( "QgsGeometry" ) );
+
+  geometryValue = QVariant::fromValue( QgsReferencedGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point( 1 2 )" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) ) );
+  QVERIFY( geometryField.convertCompatible( geometryValue ) );
+  QCOMPARE( geometryValue.userType(), QMetaType::type( "QgsReferencedGeometry" ) );
+
+  geometryValue = QStringLiteral( "LineString( 1 2, 3 4 )" );
+  QVERIFY( geometryField.convertCompatible( geometryValue ) );
+  QCOMPARE( geometryValue.userType(), QMetaType::type( "QgsGeometry" ) );
 }
 
 void TestQgsField::dataStream()
