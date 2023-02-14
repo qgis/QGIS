@@ -97,6 +97,7 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
   mTypeBox->addItem( QgsFields::iconForFieldType( QVariant::List, QVariant::Double ), QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::Double ), "doublelist" );
   mTypeBox->addItem( QgsFields::iconForFieldType( QVariant::List, QVariant::LongLong ), QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::LongLong ), "integer64list" );
   mTypeBox->addItem( QgsFields::iconForFieldType( QVariant::Map ), QgsVariantUtils::typeToDisplayString( QVariant::Map ), "map" );
+  mTypeBox->addItem( QgsFields::iconForFieldType( QVariant::UserType, QVariant::Invalid, QStringLiteral( "geometry" ) ), tr( "Geometry" ), "geometry" );
   mTypeBox_currentIndexChanged( 1 );
 
   mWidth->setValidator( new QIntValidator( 1, 255, this ) );
@@ -154,71 +155,78 @@ void QgsNewMemoryLayerDialog::geometryTypeChanged( int )
   mOkButton->setEnabled( ok );
 }
 
-void QgsNewMemoryLayerDialog::mTypeBox_currentIndexChanged( int index )
+void QgsNewMemoryLayerDialog::mTypeBox_currentIndexChanged( int )
 {
-  switch ( index )
+  const QString fieldType = mTypeBox->currentData().toString();
+  if ( fieldType == QStringLiteral( "string" ) )
   {
-    case 0: // Text data
-      if ( mWidth->text().toInt() < 1 || mWidth->text().toInt() > 255 )
-        mWidth->setText( QStringLiteral( "255" ) );
-      mPrecision->clear();
-      mPrecision->setEnabled( false );
-      mWidth->setValidator( new QIntValidator( 1, 255, this ) );
-      break;
-    case 1: // Whole number
-      if ( mWidth->text().toInt() < 1 || mWidth->text().toInt() > 10 )
-        mWidth->setText( QStringLiteral( "10" ) );
-      mPrecision->clear();
-      mPrecision->setEnabled( false );
-      mWidth->setValidator( new QIntValidator( 1, 10, this ) );
-      break;
-    case 2: // Decimal number
-      if ( mWidth->text().toInt() < 1 || mWidth->text().toInt() > 30 )
-        mWidth->setText( QStringLiteral( "30" ) );
-      if ( mPrecision->text().toInt() < 1 || mPrecision->text().toInt() > 30 )
-        mPrecision->setText( QStringLiteral( "6" ) );
-      mPrecision->setEnabled( true );
-      mWidth->setValidator( new QIntValidator( 1, 20, this ) );
-      break;
-    case 3: // Boolean
-      mWidth->clear();
-      mWidth->setEnabled( false );
-      mPrecision->clear();
-      mPrecision->setEnabled( false );
-      break;
-    case 4: // Date
-      mWidth->clear();
-      mWidth->setEnabled( false );
-      mPrecision->clear();
-      mPrecision->setEnabled( false );
-      break;
-    case 5: // Time
-      mWidth->clear();
-      mWidth->setEnabled( false );
-      mPrecision->clear();
-      mPrecision->setEnabled( false );
-      break;
-    case 6: // Datetime
-      mWidth->clear();
-      mWidth->setEnabled( false );
-      mPrecision->clear();
-      mPrecision->setEnabled( false );
-      break;
-    case 7: // Binary
-    case 8: // Stringlist
-    case 9: // Integerlist
-    case 10: // Doublelist
-    case 11: // Integer64list
-    case 12: // Map
-      mWidth->clear();
-      mWidth->setEnabled( false );
-      mPrecision->clear();
-      mPrecision->setEnabled( false );
-      break;
-
-    default:
-      QgsDebugMsg( QStringLiteral( "unexpected index" ) );
-      break;
+    if ( mWidth->text().toInt() < 1 || mWidth->text().toInt() > 255 )
+      mWidth->setText( QStringLiteral( "255" ) );
+    mPrecision->clear();
+    mPrecision->setEnabled( false );
+    mWidth->setValidator( new QIntValidator( 1, 255, this ) );
+  }
+  else if ( fieldType == QStringLiteral( "integer" ) )
+  {
+    if ( mWidth->text().toInt() < 1 || mWidth->text().toInt() > 10 )
+      mWidth->setText( QStringLiteral( "10" ) );
+    mPrecision->clear();
+    mPrecision->setEnabled( false );
+    mWidth->setValidator( new QIntValidator( 1, 10, this ) );
+  }
+  else if ( fieldType == QStringLiteral( "double" ) )
+  {
+    if ( mWidth->text().toInt() < 1 || mWidth->text().toInt() > 30 )
+      mWidth->setText( QStringLiteral( "30" ) );
+    if ( mPrecision->text().toInt() < 1 || mPrecision->text().toInt() > 30 )
+      mPrecision->setText( QStringLiteral( "6" ) );
+    mPrecision->setEnabled( true );
+    mWidth->setValidator( new QIntValidator( 1, 20, this ) );
+  }
+  else if ( fieldType == QStringLiteral( "bool" ) )
+  {
+    mWidth->clear();
+    mWidth->setEnabled( false );
+    mPrecision->clear();
+    mPrecision->setEnabled( false );
+  }
+  else if ( fieldType == QStringLiteral( "date" ) )
+  {
+    mWidth->clear();
+    mWidth->setEnabled( false );
+    mPrecision->clear();
+    mPrecision->setEnabled( false );
+  }
+  else if ( fieldType == QStringLiteral( "time" ) )
+  {
+    mWidth->clear();
+    mWidth->setEnabled( false );
+    mPrecision->clear();
+    mPrecision->setEnabled( false );
+  }
+  else if ( fieldType == QStringLiteral( "datetime" ) )
+  {
+    mWidth->clear();
+    mWidth->setEnabled( false );
+    mPrecision->clear();
+    mPrecision->setEnabled( false );
+  }
+  else if ( fieldType == QStringLiteral( "binary" )
+            || fieldType == QStringLiteral( "stringlist" )
+            || fieldType == QStringLiteral( "integerlist" )
+            || fieldType == QStringLiteral( "doublelist" )
+            || fieldType == QStringLiteral( "integer64list" )
+            || fieldType == QStringLiteral( "map" )
+            || fieldType == QStringLiteral( "geometry" ) )
+  {
+    mWidth->clear();
+    mWidth->setEnabled( false );
+    mPrecision->clear();
+    mPrecision->setEnabled( false );
+  }
+  else
+  {
+    QgsDebugMsg( QStringLiteral( "unexpected index" ) );
   }
 }
 
@@ -298,6 +306,8 @@ QgsFields QgsNewMemoryLayerDialog::fields() const
     }
     else if ( typeName == QLatin1String( "map" ) )
       fieldType = QVariant::Map;
+    else if ( typeName == QLatin1String( "geometry" ) )
+      fieldType = QVariant::UserType;
 
     const QgsField field = QgsField( name, fieldType, typeName, width, precision, QString(), fieldSubType );
     fields.append( field );
