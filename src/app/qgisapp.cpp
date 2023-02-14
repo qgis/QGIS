@@ -2589,7 +2589,6 @@ void QgisApp::dataSourceManager( const QString &pageName )
 
     connect( this, &QgisApp::newProject, mDataSourceManagerDialog, &QgsDataSourceManagerDialog::updateProjectHome );
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::openFile, this, [this]( const QString & file ) { openFile( file ); } );
-
   }
   else
   {
