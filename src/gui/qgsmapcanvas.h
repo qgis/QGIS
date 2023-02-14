@@ -1229,6 +1229,13 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
 
     void showEvent( QShowEvent *event ) override;
 
+    /**
+     * Emits the extentsChanged signal when appropriate.
+     *
+     * \since QGIS 3.30
+     */
+    void emitExtentsChanged();
+
     /// implementation struct
     class CanvasProperties;
 
@@ -1427,6 +1434,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     QList< QgsMapCanvasInteractionBlocker * > mInteractionBlockers;
 
     int mBlockItemPositionUpdates = 0;
+    int mBlockExtentChangedSignal = 0;
+    int mBlockScaleChangedSignal = 0;
 
     std::unique_ptr< QgsTemporaryCursorOverride > mTemporaryCursorOverride;
 
