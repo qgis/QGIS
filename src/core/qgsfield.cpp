@@ -590,7 +590,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
   }
 
   // Handle referenced geometries (e.g. from additional geometry fields)
-  if ( d->type == QVariant::String && v.type() == QVariant::UserType && v.canConvert<QgsReferencedGeometry>( ) )
+  if ( d->type == QVariant::String && v.userType() == QMetaType::type( "QgsReferencedGeometry" ) )
   {
     const QgsReferencedGeometry geom { v.value<QgsReferencedGeometry>( ) };
     if ( geom.isNull() )
