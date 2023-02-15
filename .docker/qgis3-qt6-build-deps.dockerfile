@@ -72,7 +72,7 @@ RUN cd /usr/src \
   && wget https://github.com/frankosterfeld/qtkeychain/archive/841f31c7ca177e45647fd705200d7fcbeee056e5/master.zip \
   && unzip master.zip \
   && rm master.zip \
-  && cd qtkeychain-master \
+  && cd qtkeychain-841f31c7ca177e45647fd705200d7fcbeee056e5 \
   && cmake -DBUILD_WITH_QT6=ON -DBUILD_TRANSLATIONS=OFF -DCMAKE_INSTALL_PREFIX=/usr/local -GNinja \
   && ninja install
 
