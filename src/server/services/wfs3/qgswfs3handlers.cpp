@@ -1465,7 +1465,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
       try
       {
         // Parse
-        json postData = json::parse( context.request()->data() );
+        json postData = json::parse( context.request()->data().toStdString() );
 
         // Process data: extract geometry (because we need to process attributes in a much more complex way)
         const QgsFields fields = QgsOgrUtils::stringToFields( context.request()->data(), QTextCodec::codecForName( "UTF-8" ) );
@@ -1729,7 +1729,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
       try
       {
         // Parse
-        json postData = json::parse( context.request()->data() );
+        json postData = json::parse( context.request()->data().toStdString() );
         // Process data: extract geometry (because we need to process attributes in a much more complex way)
         const QgsFields fields( QgsOgrUtils::stringToFields( context.request()->data(), QTextCodec::codecForName( "UTF-8" ) ) );
         const QgsFeatureList features = QgsOgrUtils::stringToFeatureList( context.request()->data(), fields, QTextCodec::codecForName( "UTF-8" ) );
@@ -1867,7 +1867,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
       try
       {
         // Parse
-        json postData = json::parse( context.request()->data() );
+        json postData = json::parse( context.request()->data().toStdString() );
 
         // If the request contains "add" we raise
         if ( postData.contains( "add" ) )
