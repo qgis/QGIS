@@ -601,7 +601,21 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
     return false;
   }
 
-  if ( d->type == QVariant::UserType && d->typeName.compare( QLatin1String( "geometry" ), Qt::CaseInsensitive ) == 0 )
+  // Handle referenced geometries (e.g. from additional geometry fields)
+  if ( d->type == QVariant::String && v.userType() == QMetaType::type( "QgsReferencedGeometry" ) )
+  {
+    const QgsReferencedGeometry geom { v.value<QgsReferencedGeometry>( ) };
+    if ( geom.isNull() )
+    {
+      v = QVariant( d->type );
+    }
+    else
+    {
+      v = QVariant( geom.asWkt() );
+    }
+    return true;
+  }
+  else if ( d->type == QVariant::UserType && d->typeName.compare( QLatin1String( "geometry" ), Qt::CaseInsensitive ) == 0 )
   {
     if ( v.userType() == QMetaType::type( "QgsReferencedGeometry" ) || v.userType() == QMetaType::type( "QgsGeometry" ) )
     {

@@ -12,6 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsreferencedgeometry.h"
 #include "qgstest.h"
 
 #include <QObject>
@@ -718,6 +719,14 @@ void TestQgsField::convertCompatible()
   QCOMPARE( stringVar.type(), QVariant::String );
   QCOMPARE( stringVar.toString(), QString( "lon" ) );
 
+  // Referenced geometries
+  const QgsField stringGeomRef( QStringLiteral( "string" ), QVariant::String, QStringLiteral( "string" ) );
+  QgsGeometry geom { QgsGeometry::fromWkt( "POINT( 1 1 )" ) };
+  QgsReferencedGeometry geomRef { geom, QgsCoordinateReferenceSystem() };
+  QVariant geomVar = QVariant::fromValue( geomRef );
+  QVERIFY( stringGeomRef.convertCompatible( geomVar, &error ) );
+  QCOMPARE( geomVar.type(), QVariant::String );
+  QCOMPARE( geomVar.toString().toUpper(), QString( "POINT (1 1)" ) );
 
   /////////////////////////////////////////////////////////
   // German locale tests
