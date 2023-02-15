@@ -2781,3 +2781,65 @@ QString QgsPostgresConn::currentDatabase() const
 
   return database;
 }
+
+QgsCoordinateReferenceSystem QgsPostgresConn::sridToCrs( int srid )
+{
+  QgsCoordinateReferenceSystem crs;
+
+  QMutexLocker locker( &mCrsCacheMutex );
+  if ( mCrsCache.contains( srid ) )
+    crs = mCrsCache.value( srid );
+  else
+  {
+    QgsPostgresResult result( LoggedPQexec( QStringLiteral( "QgsPostgresProvider" ), QStringLiteral( "SELECT auth_name, auth_srid, srtext, proj4text FROM spatial_ref_sys WHERE srid=%1" ).arg( srid ) ) );
+    if ( result.PQresultStatus() == PGRES_TUPLES_OK )
+    {
+      if ( result.PQntuples() > 0 )
+      {
+        const QString authName = result.PQgetvalue( 0, 0 );
+        const QString authSRID = result.PQgetvalue( 0, 1 );
+        const QString srText = result.PQgetvalue( 0, 2 );
+        bool ok = false;
+        if ( authName == QLatin1String( "EPSG" ) || authName == QLatin1String( "ESRI" ) )
+        {
+          ok = crs.createFromUserInput( authName + ':' + authSRID );
+        }
+        if ( !ok && !srText.isEmpty() )
+        {
+          ok = crs.createFromUserInput( srText );
+        }
+        if ( !ok )
+          crs = QgsCoordinateReferenceSystem::fromProj( result.PQgetvalue( 0, 3 ) );
+      }
+      mCrsCache.insert( srid, crs );
+    }
+  }
+  return crs;
+}
+
+int QgsPostgresConn::crsToSrid( const QgsCoordinateReferenceSystem &crs )
+{
+  QMutexLocker locker( &mCrsCacheMutex );
+  int srid = mCrsCache.key( crs );
+
+  if ( srid > -1 )
+    return srid;
+  else
+  {
+    QStringList authParts = crs.authid().split( ':' );
+    if ( authParts.size() != 2 )
+      return -1;
+    const QString authName = authParts.first();
+    const QString authId = authParts.last();
+    QgsPostgresResult result( PQexec( QStringLiteral( "SELECT srid FROM spatial_ref_sys WHERE auth_name='%1' AND auth_srid=%2" ).arg( authName, authId ) ) );
+
+    if ( result.PQresultStatus() == PGRES_TUPLES_OK )
+    {
+      int srid = result.PQgetvalue( 0, 0 ).toInt();
+      mCrsCache.insert( srid, crs );
+      return srid;
+    }
+  }
+
+  return -1;
+}

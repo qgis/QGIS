@@ -456,6 +456,10 @@ class QgsPostgresConn : public QObject
     void lock() { mLock.lock(); }
     void unlock() { mLock.unlock(); }
 
+    QgsCoordinateReferenceSystem sridToCrs( int srsId );
+
+    int crsToSrid( const QgsCoordinateReferenceSystem &crs );
+
   private:
 
     int mRef;
@@ -529,6 +533,12 @@ class QgsPostgresConn : public QObject
     bool mTransaction;
 
     mutable QRecursiveMutex mLock;
+
+    /* Mutex protecting sCrsCache */
+    QMutex mCrsCacheMutex;
+
+    /* Cache of SRID to CRS */
+    mutable QMap<int, QgsCoordinateReferenceSystem> mCrsCache;
 };
 
 // clazy:excludeall=qstring-allocations
