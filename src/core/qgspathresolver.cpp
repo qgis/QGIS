@@ -23,6 +23,9 @@
 #include <QUrl>
 #include <QUuid>
 
+#if defined(Q_OS_WIN)
+#include <QRegularExpression>
+#endif
 
 typedef std::vector< std::pair< QString, std::function< QString( const QString & ) > > > CustomResolvers;
 Q_GLOBAL_STATIC( CustomResolvers, sCustomResolvers )
@@ -139,6 +142,16 @@ QString QgsPathResolver::readPath( const QString &f ) const
   }
 
 #if defined(Q_OS_WIN)
+
+  // delimiter saved with pre 3.2x QGIS versions might be unencoded
+  thread_local const QRegularExpression delimiterRe( R"re(delimiter=([^&]+))re" );
+  const QRegularExpressionMatch match = delimiterRe.match( srcPath );
+  if ( match.hasMatch() )
+  {
+    const QString delimiter = match.captured( 0 ).replace( '\\', QStringLiteral( "%5C" ) );
+    srcPath.replace( match.captured( 0 ), delimiter );
+  }
+
   srcPath.replace( '\\', '/' );
   projPath.replace( '\\', '/' );
 
