@@ -100,7 +100,7 @@ QVariant QgsTextEditWrapper::value() const
       mInvalidJSON = false;
       return qjson;
     }
-    if ( json::accept( v.toUtf8() ) )
+    if ( json::accept( v.toStdString() ) )
     {
       QVariant qjson = QgsJsonUtils::parseJson( v.toStdString() );
       mInvalidJSON = false;
