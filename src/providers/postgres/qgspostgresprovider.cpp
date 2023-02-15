@@ -443,74 +443,17 @@ QString QgsPostgresProvider::geomAttrToString( const QVariant &attr, QgsPostgres
     return toEwkt( attr.value<QgsReferencedGeometry>(), conn );
 }
 
-static QMutex sMutex;
-static QMap<int, QgsCoordinateReferenceSystem> sCrsCache;
-
 int QgsPostgresProvider::crsToSrid( const QgsCoordinateReferenceSystem &crs, QgsPostgresConn *conn )
 {
-  QMutexLocker locker( &sMutex );
-  int srid = sCrsCache.key( crs );
-
-  if ( srid > -1 )
-    return srid;
-  else
-  {
-    if ( conn )
-    {
-      QStringList authParts = crs.authid().split( ':' );
-      if ( authParts.size() != 2 )
-        return -1;
-      const QString authName = authParts.first();
-      const QString authId = authParts.last();
-      QgsPostgresResult result( conn->PQexec( QStringLiteral( "SELECT srid FROM spatial_ref_sys WHERE auth_name='%1' AND auth_srid=%2" ).arg( authName, authId ) ) );
-
-      if ( result.PQresultStatus() == PGRES_TUPLES_OK )
-      {
-        int srid = result.PQgetvalue( 0, 0 ).toInt();
-        sCrsCache.insert( srid, crs );
-        return srid;
-      }
-    }
-  }
-
-  return -1;
+  int srid = -1;
+  if ( conn ) srid = conn->crsToSrid( crs );
+  return srid;
 }
 
 QgsCoordinateReferenceSystem QgsPostgresProvider::sridToCrs( int srid, QgsPostgresConn *conn )
 {
   QgsCoordinateReferenceSystem crs;
-
-  QMutexLocker locker( &sMutex );
-  if ( sCrsCache.contains( srid ) )
-    crs = sCrsCache.value( srid );
-  else
-  {
-    if ( conn )
-    {
-      QgsPostgresResult result( conn->LoggedPQexec( QStringLiteral( "QgsPostgresProvider" ), QStringLiteral( "SELECT auth_name, auth_srid, srtext, proj4text FROM spatial_ref_sys WHERE srid=%1" ).arg( srid ) ) );
-      if ( result.PQresultStatus() == PGRES_TUPLES_OK )
-      {
-        if ( result.PQntuples() > 0 )
-        {
-          const QString authName = result.PQgetvalue( 0, 0 );
-          const QString authSRID = result.PQgetvalue( 0, 1 );
-          const QString srText = result.PQgetvalue( 0, 2 );
-          bool ok = false;
-          if ( authName == QLatin1String( "EPSG" ) || authName == QLatin1String( "ESRI" ) )
-          {
-            ok = crs.createFromUserInput( authName + ':' + authSRID );
-          }
-          if ( !ok && !srText.isEmpty() )
-          {
-            ok = crs.createFromUserInput( srText );
-          }
-          if ( !ok )
-            crs = QgsCoordinateReferenceSystem::fromProj( result.PQgetvalue( 0, 3 ) );
-        }
-        sCrsCache.insert( srid, crs );
-      }
-    }
-  }
+  if ( conn ) crs = conn->sridToCrs( srid );
   return crs;
 }
 
