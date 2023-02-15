@@ -290,20 +290,20 @@ QVariantMap QgsFilterByLayerTypeAlgorithm::processAlgorithm( const QVariantMap &
 
   switch ( layer->type() )
   {
-    case QgsMapLayerType::VectorLayer:
+    case Qgis::LayerType::Vector:
       outputs.insert( QStringLiteral( "VECTOR" ), parameters.value( QStringLiteral( "INPUT" ) ) );
       break;
 
-    case QgsMapLayerType::RasterLayer:
+    case Qgis::LayerType::Raster:
       outputs.insert( QStringLiteral( "RASTER" ), parameters.value( QStringLiteral( "INPUT" ) ) );
       break;
 
-    case QgsMapLayerType::PluginLayer:
-    case QgsMapLayerType::MeshLayer:
-    case QgsMapLayerType::VectorTileLayer:
-    case QgsMapLayerType::AnnotationLayer:
-    case QgsMapLayerType::PointCloudLayer:
-    case QgsMapLayerType::GroupLayer:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Mesh:
+    case Qgis::LayerType::VectorTile:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::PointCloud:
+    case Qgis::LayerType::Group:
       break;
   }
 

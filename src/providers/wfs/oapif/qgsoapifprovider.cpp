@@ -896,9 +896,9 @@ QgsOapifProvider *QgsOapifProviderMetadata::createProvider( const QString &uri, 
   return new QgsOapifProvider( uri, options, flags );
 }
 
-QList<QgsMapLayerType> QgsOapifProviderMetadata::supportedLayerTypes() const
+QList<Qgis::LayerType> QgsOapifProviderMetadata::supportedLayerTypes() const
 {
-  return { QgsMapLayerType::VectorLayer };
+  return { Qgis::LayerType::Vector };
 }
 
 QgsOapifProviderMetadata::QgsOapifProviderMetadata():

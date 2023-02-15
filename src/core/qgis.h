@@ -38,23 +38,6 @@ int QgisEvent = QEvent::User + 1;
 % End
 #endif
 
-/**
- * \ingroup core
- * \brief Types of layers that can be added to a map
- * \since QGIS 3.8
- */
-enum class QgsMapLayerType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayer, LayerType ) : int
-  {
-  VectorLayer, //!< Vector layer
-  RasterLayer, //!< Raster layer
-  PluginLayer, //!< Plugin based layer
-  MeshLayer,      //!< Mesh layer. Added in QGIS 3.2
-  VectorTileLayer, //!< Vector tile layer. Added in QGIS 3.14
-  AnnotationLayer, //!< Contains freeform, georeferenced annotations. Added in QGIS 3.16
-  PointCloudLayer, //!< Point cloud layer. Added in QGIS 3.18
-  GroupLayer, //!< Composite group layer. Added in QGIS 3.24
-};
-
 #ifndef SIP_RUN
 // qHash implementation for scoped enum type
 // https://gitlab.com/frostasm/programming-knowledge-base/-/snippets/20120
@@ -120,6 +103,24 @@ class CORE_EXPORT Qgis
       NoLevel = 4, //!< No level
     };
     Q_ENUM( MessageLevel )
+
+    /**
+     * Types of layers that can be added to a map
+     *
+     * \since QGIS 3.30. Prior to 3.30 this was available as QgsMapLayerType.
+     */
+    enum class LayerType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayer, LayerType ) : int
+      {
+      Vector SIP_MONKEYPATCH_COMPAT_NAME( VectorLayer ), //!< Vector layer
+      Raster SIP_MONKEYPATCH_COMPAT_NAME( RasterLayer ), //!< Raster layer
+      Plugin SIP_MONKEYPATCH_COMPAT_NAME( PluginLayer ), //!< Plugin based layer
+      Mesh SIP_MONKEYPATCH_COMPAT_NAME( MeshLayer ),    //!< Mesh layer. Added in QGIS 3.2
+      VectorTile SIP_MONKEYPATCH_COMPAT_NAME( VectorTileLayer ), //!< Vector tile layer. Added in QGIS 3.14
+      Annotation SIP_MONKEYPATCH_COMPAT_NAME( AnnotationLayer ), //!< Contains freeform, georeferenced annotations. Added in QGIS 3.16
+      PointCloud SIP_MONKEYPATCH_COMPAT_NAME( PointCloudLayer ), //!< Point cloud layer. Added in QGIS 3.18
+      Group SIP_MONKEYPATCH_COMPAT_NAME( GroupLayer ), //!< Composite group layer. Added in QGIS 3.24
+    };
+    Q_ENUM( LayerType )
 
     /**
      * Raster data types.

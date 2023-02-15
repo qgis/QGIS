@@ -673,7 +673,7 @@ void QgsProcessingMapLayerComboBox::browseForLayer()
 {
   if ( QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this ) )
   {
-    QgsDataSourceSelectWidget *widget = new QgsDataSourceSelectWidget( mBrowserModel, true, QgsMapLayerType::VectorLayer );
+    QgsDataSourceSelectWidget *widget = new QgsDataSourceSelectWidget( mBrowserModel, true, Qgis::LayerType::Vector );
     widget->setPanelTitle( tr( "Browse for \"%1\"" ).arg( mParameter->description() ) );
 
     panel->openPanel( widget );

@@ -22,7 +22,6 @@
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
-#include "qgsreferencedgeometry.h"
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
 #include "qgscoordinatetransform.h"
@@ -139,12 +138,12 @@ bool QgsMapLayerUtils::updateLayerSourcePath( QgsMapLayer *layer, const QString 
   return true;
 }
 
-QList<QgsMapLayer *> QgsMapLayerUtils::sortLayersByType( const QList<QgsMapLayer *> &layers, const QList<QgsMapLayerType> &order )
+QList<QgsMapLayer *> QgsMapLayerUtils::sortLayersByType( const QList<QgsMapLayer *> &layers, const QList<Qgis::LayerType> &order )
 {
   QList< QgsMapLayer * > res = layers;
   std::sort( res.begin(), res.end(), [&order]( const QgsMapLayer * a, const QgsMapLayer * b ) -> bool
   {
-    for ( QgsMapLayerType type : order )
+    for ( Qgis::LayerType type : order )
     {
       if ( a->type() == type && b->type() != type )
         return true;

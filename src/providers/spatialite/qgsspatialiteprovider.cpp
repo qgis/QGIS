@@ -5907,9 +5907,9 @@ QgsSpatiaLiteProvider *QgsSpatiaLiteProviderMetadata::createProvider(
   return new QgsSpatiaLiteProvider( uri, options, flags );
 }
 
-QList<QgsMapLayerType> QgsSpatiaLiteProviderMetadata::supportedLayerTypes() const
+QList<Qgis::LayerType> QgsSpatiaLiteProviderMetadata::supportedLayerTypes() const
 {
-  return { QgsMapLayerType::VectorLayer };
+  return { Qgis::LayerType::Vector };
 }
 
 QString QgsSpatiaLiteProviderMetadata::encodeUri( const QVariantMap &parts ) const

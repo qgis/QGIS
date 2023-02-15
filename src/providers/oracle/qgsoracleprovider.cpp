@@ -4198,9 +4198,9 @@ void QgsOracleProviderMetadata::saveConnection( const QgsAbstractProviderConnect
 
 // vim: set sw=2
 
-QList<QgsMapLayerType> QgsOracleProviderMetadata::supportedLayerTypes() const
+QList<Qgis::LayerType> QgsOracleProviderMetadata::supportedLayerTypes() const
 {
-  return { QgsMapLayerType::VectorLayer };
+  return { Qgis::LayerType::Vector };
 }
 
 QIcon QgsOracleProviderMetadata::icon() const

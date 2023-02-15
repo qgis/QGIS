@@ -26,10 +26,8 @@
 #include "qgis.h"
 #include "qgsfieldcombobox.h"
 #include "qgisapp.h"
-#include "qgslayertreemapcanvasbridge.h"
 #include "qgsmapthemecollection.h"
 #include "qgsmapcanvas.h"
-#include "qgsprojectionselectiondialog.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
 
@@ -532,7 +530,7 @@ void QgsDxfExportDialog::cleanGroup( QgsLayerTreeNode *node )
   for ( QgsLayerTreeNode *child : constChildren )
   {
     if ( QgsLayerTree::isLayer( child ) &&
-         ( QgsLayerTree::toLayer( child )->layer()->type() != QgsMapLayerType::VectorLayer ||
+         ( QgsLayerTree::toLayer( child )->layer()->type() != Qgis::LayerType::Vector ||
            ! QgsLayerTree::toLayer( child )->layer()->isSpatial() ) )
     {
       toRemove << child;

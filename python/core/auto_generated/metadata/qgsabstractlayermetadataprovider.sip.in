@@ -101,12 +101,12 @@ Returns the data provider name.
 Sets the data provider name to ``dataProviderName``.
 %End
 
-    QgsMapLayerType layerType() const;
+    Qgis::LayerType layerType() const;
 %Docstring
 Returns the layer type.
 %End
 
-    void setLayerType( QgsMapLayerType layerType );
+    void setLayerType( Qgis::LayerType layerType );
 %Docstring
 Sets the layer type to ``layerType``.
 %End

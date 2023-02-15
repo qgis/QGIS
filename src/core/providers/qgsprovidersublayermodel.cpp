@@ -201,7 +201,7 @@ QVariant QgsProviderSublayerModelSublayerNode::data( int role, int column ) cons
         {
           switch ( mSublayer.type() )
           {
-            case QgsMapLayerType::VectorLayer:
+            case Qgis::LayerType::Vector:
             {
               QString count;
               if ( mSublayer.featureCount() == static_cast< long long >( Qgis::FeatureCountState::Uncounted )
@@ -220,13 +220,13 @@ QVariant QgsProviderSublayerModelSublayerNode::data( int role, int column ) cons
                          count );
             }
 
-            case QgsMapLayerType::RasterLayer:
-            case QgsMapLayerType::PluginLayer:
-            case QgsMapLayerType::MeshLayer:
-            case QgsMapLayerType::VectorTileLayer:
-            case QgsMapLayerType::AnnotationLayer:
-            case QgsMapLayerType::PointCloudLayer:
-            case QgsMapLayerType::GroupLayer:
+            case Qgis::LayerType::Raster:
+            case Qgis::LayerType::Plugin:
+            case Qgis::LayerType::Mesh:
+            case Qgis::LayerType::VectorTile:
+            case Qgis::LayerType::Annotation:
+            case Qgis::LayerType::PointCloud:
+            case Qgis::LayerType::Group:
               return mSublayer.description();
           }
           break;
@@ -240,7 +240,7 @@ QVariant QgsProviderSublayerModelSublayerNode::data( int role, int column ) cons
     case Qt::DecorationRole:
     {
       if ( column == 0 )
-        return mSublayer.type() == QgsMapLayerType::VectorLayer
+        return mSublayer.type() == Qgis::LayerType::Vector
                ? ( mSublayer.wkbType() != QgsWkbTypes::Unknown ? QgsIconUtils::iconForWkbType( mSublayer.wkbType() ) : QVariant() )
                : QgsIconUtils::iconForLayerType( mSublayer.type() );
       else

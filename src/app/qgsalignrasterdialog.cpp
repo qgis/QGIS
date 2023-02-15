@@ -39,7 +39,7 @@ static QgsMapLayer *_rasterLayer( const QString &filename )
   const auto constLayers = layers;
   for ( QgsMapLayer *layer : constLayers )
   {
-    if ( layer->type() == QgsMapLayerType::RasterLayer && layer->source() == filename )
+    if ( layer->type() == Qgis::LayerType::Raster && layer->source() == filename )
       return layer;
   }
   return nullptr;

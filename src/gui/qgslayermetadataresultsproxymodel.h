@@ -74,7 +74,7 @@ class GUI_EXPORT QgsLayerMetadataResultsProxyModel : public QSortFilterProxyMode
     /**
      * Sets the map layer type filter to \a mapLayerType.
      */
-    void setFilterMapLayerType( const QgsMapLayerType mapLayerType );
+    void setFilterMapLayerType( const Qgis::LayerType mapLayerType );
 
     // QSortFilterProxyModel interface
   protected:
@@ -86,7 +86,7 @@ class GUI_EXPORT QgsLayerMetadataResultsProxyModel : public QSortFilterProxyMode
     QgsRectangle mFilterExtent;
     QString mFilterString;
     QgsWkbTypes::GeometryType mFilterGeometryType = QgsWkbTypes::GeometryType::PointGeometry;
-    QgsMapLayerType mFilterMapLayerType = QgsMapLayerType::VectorLayer;
+    Qgis::LayerType mFilterMapLayerType = Qgis::LayerType::Vector;
     bool mFilterGeometryTypeEnabled = false;
     bool mFilterMapLayerTypeEnabled = false;
 };

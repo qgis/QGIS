@@ -88,7 +88,7 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
   private slots:
     // file
     void reset();
-    void openLayer( QgsMapLayerType layerType, const QString &fileName = QString() );
+    void openLayer( Qgis::LayerType layerType, const QString &fileName = QString() );
     void generateGDALScript();
     bool showTransformSettingsDialog();
 
@@ -172,7 +172,7 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
     void setupConnections();
     void removeOldLayer();
 
-    void loadSource( QgsMapLayerType layerType, const QString &uri, const QString &provider );
+    void loadSource( Qgis::LayerType layerType, const QString &uri, const QString &provider );
 
     // settings
     void readSettings();
@@ -188,7 +188,7 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
     bool georeferenceRaster();
     bool georeferenceVector();
 
-    void postProcessGeoreferencedLayer( const QString &fileName, QgsMapLayerType type, const QString &provider );
+    void postProcessGeoreferencedLayer( const QString &fileName, Qgis::LayerType type, const QString &provider );
 
     bool writeWorldFile( const QgsPointXY &origin, double pixelXSize, double pixelYSize, double rotation );
     bool writePDFReportFile( const QString &fileName, const QgsGeorefTransform &transform );

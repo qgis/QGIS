@@ -23,7 +23,6 @@
 #include "qgswfsutils.h"
 #include "qgsogcutils.h"
 #include "qgsserverprojectutils.h"
-#include "qgswfsparameters.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 
@@ -85,7 +84,7 @@ namespace QgsWfs
       {
         continue;
       }
-      if ( layer->type() != QgsMapLayerType::VectorLayer )
+      if ( layer->type() != Qgis::LayerType::Vector )
       {
         continue;
       }

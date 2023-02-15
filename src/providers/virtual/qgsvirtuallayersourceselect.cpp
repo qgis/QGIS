@@ -24,10 +24,6 @@ email                : hugo dot mercier at oslandia dot com
 #include "qgsproject.h"
 #include "qgsprovidermetadata.h"
 #include "qgsprojectionselectiondialog.h"
-#include "layertree/qgslayertreemodel.h"
-#include "layertree/qgslayertreegroup.h"
-#include "layertree/qgslayertreelayer.h"
-#include "layertree/qgslayertree.h"
 #include "qgsproviderregistry.h"
 #include "qgsiconutils.h"
 #include "qgsembeddedlayerselectdialog.h"
@@ -97,7 +93,7 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::W
   connect( mLayersTable->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &QgsVirtualLayerSourceSelect::tableRowChanged );
 
   // prepare provider list
-  const QSet< QString > vectorLayerProviders = QgsProviderRegistry::instance()->providersForLayerType( QgsMapLayerType::VectorLayer );
+  const QSet< QString > vectorLayerProviders = QgsProviderRegistry::instance()->providersForLayerType( Qgis::LayerType::Vector );
   mProviderList = qgis::setToList( vectorLayerProviders );
   std::sort( mProviderList.begin(), mProviderList.end() );
 
@@ -377,7 +373,7 @@ void QgsVirtualLayerSourceSelect::updateLayersList()
   if ( mTreeView )
   {
     QList<QgsMapLayer *> selected = mTreeView->selectedLayers();
-    if ( selected.size() == 1 && selected[0]->type() == QgsMapLayerType::VectorLayer && static_cast<QgsVectorLayer *>( selected[0] )->providerType() == QLatin1String( "virtual" ) )
+    if ( selected.size() == 1 && selected[0]->type() == Qgis::LayerType::Vector && static_cast<QgsVectorLayer *>( selected[0] )->providerType() == QLatin1String( "virtual" ) )
     {
       mLayerNameCombo->setCurrentIndex( mLayerNameCombo->findData( selected[0]->id() ) );
     }
@@ -402,7 +398,7 @@ void QgsVirtualLayerSourceSelect::updateLayersList()
   const auto constMapLayers = QgsProject::instance()->mapLayers();
   for ( QgsMapLayer *l : constMapLayers )
   {
-    if ( l->type() == QgsMapLayerType::VectorLayer )
+    if ( l->type() == Qgis::LayerType::Vector )
     {
       apis->add( l->name() );
       QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( l );
@@ -585,7 +581,7 @@ QString QgsVirtualLayerSourceWidget::provider() const
 
 void QgsVirtualLayerSourceWidget::browseForLayer()
 {
-  QgsDataSourceSelectDialog dlg( qobject_cast< QgsBrowserGuiModel * >( mBrowserModel ), true, QgsMapLayerType::VectorLayer, this );
+  QgsDataSourceSelectDialog dlg( qobject_cast< QgsBrowserGuiModel * >( mBrowserModel ), true, Qgis::LayerType::Vector, this );
   dlg.setWindowTitle( tr( "Select Layer Source" ) );
 
   QString source = mLineEdit->text();

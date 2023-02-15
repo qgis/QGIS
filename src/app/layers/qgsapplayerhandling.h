@@ -219,7 +219,7 @@ class APP_EXPORT QgsAppLayerHandling
 
   private:
 
-    template<typename T> static T *addLayerPrivate( QgsMapLayerType type, const QString &uri, const QString &baseName, const QString &providerKey, bool guiWarnings = true, bool addToLegend = true );
+    template<typename T> static T *addLayerPrivate( Qgis::LayerType type, const QString &uri, const QString &baseName, const QString &providerKey, bool guiWarnings = true, bool addToLegend = true );
 
     /**
      * Post processes a single added \a layer, applying any default behavior which should
@@ -235,7 +235,7 @@ class APP_EXPORT QgsAppLayerHandling
      * This method will open a dialog so the user can select GDAL sublayers to load
      * \returns TRUE if any items were loaded
      */
-    static bool askUserForZipItemLayers( const QString &path, const QList< QgsMapLayerType > &acceptableTypes );
+    static bool askUserForZipItemLayers( const QString &path, const QList< Qgis::LayerType > &acceptableTypes );
 
     static SublayerHandling shouldAskUserForSublayers( const QList< QgsProviderSublayerDetails > &layers, bool hasNonLayerItems = false );
 

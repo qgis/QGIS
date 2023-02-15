@@ -58,7 +58,7 @@ Sets the geometry type filter to ``geometryType``.
 Sets the text filter to ``filterString``.
 %End
 
-    void setFilterMapLayerType( const QgsMapLayerType mapLayerType );
+    void setFilterMapLayerType( const Qgis::LayerType mapLayerType );
 %Docstring
 Sets the map layer type filter to ``mapLayerType``.
 %End

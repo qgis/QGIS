@@ -415,7 +415,7 @@ void QgsMapCanvas::setLayersPrivate( const QList<QgsMapLayer *> &layers )
     disconnect( layer, &QgsMapLayer::autoRefreshIntervalChanged, this, &QgsMapCanvas::updateAutoRefreshTimer );
     switch ( layer->type() )
     {
-      case QgsMapLayerType::VectorLayer:
+      case Qgis::LayerType::Vector:
       {
         QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
         disconnect( vlayer, &QgsVectorLayer::selectionChanged, this, &QgsMapCanvas::selectionChangedSlot );
@@ -423,19 +423,19 @@ void QgsMapCanvas::setLayersPrivate( const QList<QgsMapLayer *> &layers )
         break;
       }
 
-      case QgsMapLayerType::VectorTileLayer:
+      case Qgis::LayerType::VectorTile:
       {
         QgsVectorTileLayer *vtlayer = qobject_cast<QgsVectorTileLayer *>( layer );
         disconnect( vtlayer, &QgsVectorTileLayer::selectionChanged, this, &QgsMapCanvas::selectionChangedSlot );
         break;
       }
 
-      case QgsMapLayerType::RasterLayer:
-      case QgsMapLayerType::PluginLayer:
-      case QgsMapLayerType::MeshLayer:
-      case QgsMapLayerType::AnnotationLayer:
-      case QgsMapLayerType::PointCloudLayer:
-      case QgsMapLayerType::GroupLayer:
+      case Qgis::LayerType::Raster:
+      case Qgis::LayerType::Plugin:
+      case Qgis::LayerType::Mesh:
+      case Qgis::LayerType::Annotation:
+      case Qgis::LayerType::PointCloud:
+      case Qgis::LayerType::Group:
         break;
     }
   }
@@ -452,7 +452,7 @@ void QgsMapCanvas::setLayersPrivate( const QList<QgsMapLayer *> &layers )
 
     switch ( layer->type() )
     {
-      case QgsMapLayerType::VectorLayer:
+      case Qgis::LayerType::Vector:
       {
         QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
         connect( vlayer, &QgsVectorLayer::selectionChanged, this, &QgsMapCanvas::selectionChangedSlot );
@@ -460,19 +460,19 @@ void QgsMapCanvas::setLayersPrivate( const QList<QgsMapLayer *> &layers )
         break;
       }
 
-      case QgsMapLayerType::VectorTileLayer:
+      case Qgis::LayerType::VectorTile:
       {
         QgsVectorTileLayer *vtlayer = qobject_cast<QgsVectorTileLayer *>( layer );
         connect( vtlayer, &QgsVectorTileLayer::selectionChanged, this, &QgsMapCanvas::selectionChangedSlot );
         break;
       }
 
-      case QgsMapLayerType::RasterLayer:
-      case QgsMapLayerType::PluginLayer:
-      case QgsMapLayerType::MeshLayer:
-      case QgsMapLayerType::AnnotationLayer:
-      case QgsMapLayerType::PointCloudLayer:
-      case QgsMapLayerType::GroupLayer:
+      case Qgis::LayerType::Raster:
+      case Qgis::LayerType::Plugin:
+      case Qgis::LayerType::Mesh:
+      case Qgis::LayerType::Annotation:
+      case Qgis::LayerType::PointCloud:
+      case Qgis::LayerType::Group:
         break;
     }
   }
@@ -1686,7 +1686,7 @@ void QgsMapCanvas::zoomToSelected( QgsMapLayer *layer )
 
   switch ( layer->type() )
   {
-    case QgsMapLayerType::VectorLayer:
+    case Qgis::LayerType::Vector:
     {
       QgsVectorLayer *vlayer = qobject_cast< QgsVectorLayer * >( layer );
       if ( vlayer->selectedFeatureCount() == 0 )
@@ -1711,7 +1711,7 @@ void QgsMapCanvas::zoomToSelected( QgsMapLayer *layer )
       break;
     }
 
-    case QgsMapLayerType::VectorTileLayer:
+    case Qgis::LayerType::VectorTile:
     {
       QgsVectorTileLayer *vtLayer = qobject_cast< QgsVectorTileLayer * >( layer );
       if ( vtLayer->selectedFeatureCount() == 0 )
@@ -1737,12 +1737,12 @@ void QgsMapCanvas::zoomToSelected( QgsMapLayer *layer )
       break;
     }
 
-    case QgsMapLayerType::RasterLayer:
-    case QgsMapLayerType::PluginLayer:
-    case QgsMapLayerType::MeshLayer:
-    case QgsMapLayerType::AnnotationLayer:
-    case QgsMapLayerType::PointCloudLayer:
-    case QgsMapLayerType::GroupLayer:
+    case Qgis::LayerType::Raster:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Mesh:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::PointCloud:
+    case Qgis::LayerType::Group:
       return;   // not supported
   }
 
@@ -1763,7 +1763,7 @@ void QgsMapCanvas::zoomToSelected( const QList<QgsMapLayer *> &layers )
 
     switch ( mapLayer->type() )
     {
-      case QgsMapLayerType::VectorLayer:
+      case Qgis::LayerType::Vector:
       {
         QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mapLayer );
 
@@ -1784,7 +1784,7 @@ void QgsMapCanvas::zoomToSelected( const QList<QgsMapLayer *> &layers )
         break;
       }
 
-      case QgsMapLayerType::VectorTileLayer:
+      case Qgis::LayerType::VectorTile:
       {
         QgsVectorTileLayer *vtLayer = qobject_cast< QgsVectorTileLayer * >( mapLayer );
         if ( vtLayer->selectedFeatureCount() == 0 )
@@ -1805,12 +1805,12 @@ void QgsMapCanvas::zoomToSelected( const QList<QgsMapLayer *> &layers )
         break;
       }
 
-      case QgsMapLayerType::RasterLayer:
-      case QgsMapLayerType::PluginLayer:
-      case QgsMapLayerType::MeshLayer:
-      case QgsMapLayerType::AnnotationLayer:
-      case QgsMapLayerType::PointCloudLayer:
-      case QgsMapLayerType::GroupLayer:
+      case Qgis::LayerType::Raster:
+      case Qgis::LayerType::Plugin:
+      case Qgis::LayerType::Mesh:
+      case Qgis::LayerType::Annotation:
+      case Qgis::LayerType::PointCloud:
+      case Qgis::LayerType::Group:
         break;
     }
   }
@@ -1965,7 +1965,7 @@ void QgsMapCanvas::panToSelected( QgsMapLayer *layer )
   QgsRectangle rect;
   switch ( layer->type() )
   {
-    case QgsMapLayerType::VectorLayer:
+    case Qgis::LayerType::Vector:
     {
       QgsVectorLayer *vLayer = qobject_cast< QgsVectorLayer * >( layer );
       if ( vLayer->selectedFeatureCount() == 0 )
@@ -1974,7 +1974,7 @@ void QgsMapCanvas::panToSelected( QgsMapLayer *layer )
       rect = vLayer->boundingBoxOfSelected();
       break;
     }
-    case QgsMapLayerType::VectorTileLayer:
+    case Qgis::LayerType::VectorTile:
     {
       QgsVectorTileLayer *vtLayer = qobject_cast< QgsVectorTileLayer * >( layer );
       if ( vtLayer->selectedFeatureCount() == 0 )
@@ -1991,12 +1991,12 @@ void QgsMapCanvas::panToSelected( QgsMapLayer *layer )
       break;
     }
 
-    case QgsMapLayerType::RasterLayer:
-    case QgsMapLayerType::PluginLayer:
-    case QgsMapLayerType::MeshLayer:
-    case QgsMapLayerType::AnnotationLayer:
-    case QgsMapLayerType::PointCloudLayer:
-    case QgsMapLayerType::GroupLayer:
+    case Qgis::LayerType::Raster:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Mesh:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::PointCloud:
+    case Qgis::LayerType::Group:
       return;
   }
 
@@ -2025,7 +2025,7 @@ void QgsMapCanvas::panToSelected( const QList<QgsMapLayer *> &layers )
     rect.setMinimal();
     switch ( mapLayer->type() )
     {
-      case QgsMapLayerType::VectorLayer:
+      case Qgis::LayerType::Vector:
       {
         QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mapLayer );
         if ( layer->selectedFeatureCount() == 0 )
@@ -2043,7 +2043,7 @@ void QgsMapCanvas::panToSelected( const QList<QgsMapLayer *> &layers )
         break;
       }
 
-      case QgsMapLayerType::VectorTileLayer:
+      case Qgis::LayerType::VectorTile:
       {
         QgsVectorTileLayer *vtLayer = qobject_cast< QgsVectorTileLayer * >( mapLayer );
         if ( vtLayer->selectedFeatureCount() == 0 )
@@ -2062,12 +2062,12 @@ void QgsMapCanvas::panToSelected( const QList<QgsMapLayer *> &layers )
         break;
       }
 
-      case QgsMapLayerType::RasterLayer:
-      case QgsMapLayerType::PluginLayer:
-      case QgsMapLayerType::MeshLayer:
-      case QgsMapLayerType::AnnotationLayer:
-      case QgsMapLayerType::PointCloudLayer:
-      case QgsMapLayerType::GroupLayer:
+      case Qgis::LayerType::Raster:
+      case Qgis::LayerType::Plugin:
+      case Qgis::LayerType::Mesh:
+      case Qgis::LayerType::Annotation:
+      case Qgis::LayerType::PointCloud:
+      case Qgis::LayerType::Group:
         continue;
     }
 

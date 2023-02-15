@@ -17,7 +17,6 @@ email                : nyall dot dawson at gmail dot com
 #include "qgsogrprovidermetadata.h"
 #include "qgsogrprovider.h"
 #include "qgsgeopackagedataitems.h"
-#include "qgssettings.h"
 #include "qgsmessagelog.h"
 #include "qgsogrtransaction.h"
 #include "qgsogrlayermetadataprovider.h"
@@ -34,8 +33,6 @@ email                : nyall dot dawson at gmail dot com
 #include "qgsgdalutils.h"
 #include "qgsproviderregistry.h"
 #include "qgsvectorfilewriter.h"
-#include "qgsvectorlayer.h"
-#include "qgsproject.h"
 
 #include <gdal.h>
 #include <QFileInfo>
@@ -1284,13 +1281,13 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
     if ( !QgsGdalUtils::pathIsCheapToOpen( path ) )
     {
       // if this is a VRT file make sure it is vector VRT
-      if ( suffix == QLatin1String( "vrt" ) && !QgsGdalUtils::vrtMatchesLayerType( path, QgsMapLayerType::VectorLayer ) )
+      if ( suffix == QLatin1String( "vrt" ) && !QgsGdalUtils::vrtMatchesLayerType( path, Qgis::LayerType::Vector ) )
       {
         return {};
       }
 
       QgsProviderSublayerDetails details;
-      details.setType( QgsMapLayerType::VectorLayer );
+      details.setType( Qgis::LayerType::Vector );
       details.setProviderKey( QStringLiteral( "ogr" ) );
       details.setUri( uri );
       details.setName( uriParts.value( QStringLiteral( "vsiSuffix" ) ).toString().isEmpty()
@@ -1579,9 +1576,9 @@ QStringList QgsOgrProviderMetadata::sidecarFilesForUri( const QString &uri ) con
   return res;
 }
 
-QList<QgsMapLayerType> QgsOgrProviderMetadata::supportedLayerTypes() const
+QList<Qgis::LayerType> QgsOgrProviderMetadata::supportedLayerTypes() const
 {
-  return { QgsMapLayerType::VectorLayer };
+  return { Qgis::LayerType::Vector };
 }
 
 QMap<QString, QgsAbstractProviderConnection *> QgsOgrProviderMetadata::connections( bool cached )

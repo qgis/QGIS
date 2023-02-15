@@ -22,7 +22,6 @@
 #include "qgspointcloudlayer.h"
 #include "qgsrendercontext.h"
 #include "qgspointcloudindex.h"
-#include "qgsstyle.h"
 #include "qgscolorramp.h"
 #include "qgselevationmap.h"
 #include "qgspointcloudrequest.h"
@@ -32,7 +31,6 @@
 #include "qgslogger.h"
 #include "qgspointcloudlayerelevationproperties.h"
 #include "qgsmessagelog.h"
-#include "qgscircle.h"
 #include "qgsmapclippingutils.h"
 #include "qgspointcloudblockrequest.h"
 
@@ -81,7 +79,7 @@ bool QgsPointCloudLayerRenderer::render()
   if ( !mClippingRegions.empty() )
   {
     bool needsPainterClipPath = false;
-    const QPainterPath path = QgsMapClippingUtils::calculatePainterClipRegion( mClippingRegions, *renderContext(), QgsMapLayerType::VectorTileLayer, needsPainterClipPath );
+    const QPainterPath path = QgsMapClippingUtils::calculatePainterClipRegion( mClippingRegions, *renderContext(), Qgis::LayerType::VectorTile, needsPainterClipPath );
     if ( needsPainterClipPath )
       renderContext()->painter()->setClipPath( path, Qt::IntersectClip );
   }

@@ -30,19 +30,16 @@
 #include "qgis.h"
 #include "qgsapplication.h"
 #include "qgsproviderregistry.h"
-#include "qgseptprovider.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudindex.h"
 #include "qgspointcloudlayerelevationproperties.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsgeometry.h"
-#include "qgseptdecoder.h"
-#include "qgslazdecoder.h"
 #include "qgslazinfo.h"
 #include "qgspointcloudstatscalculator.h"
 #include "qgspointcloudstatistics.h"
-#include "qgsstatisticalsummary.h"
 #include "qgsfeedback.h"
+#include "qgsprovidermetadata.h"
 
 /**
  * \ingroup UnitTests
@@ -143,12 +140,12 @@ void TestQgsEptProvider::preferredUri()
   QList<QgsProviderRegistry::ProviderCandidateDetails> candidates = QgsProviderRegistry::instance()->preferredProvidersForUri( QStringLiteral( "/home/test/ept.json" ) );
   QCOMPARE( candidates.size(), 1 );
   QCOMPARE( candidates.at( 0 ).metadata()->key(), QStringLiteral( "ept" ) );
-  QCOMPARE( candidates.at( 0 ).layerTypes(), QList< QgsMapLayerType >() << QgsMapLayerType::PointCloudLayer );
+  QCOMPARE( candidates.at( 0 ).layerTypes(), QList< Qgis::LayerType >() << Qgis::LayerType::PointCloud );
 
   candidates = QgsProviderRegistry::instance()->preferredProvidersForUri( QStringLiteral( "/home/test/EPT.JSON" ) );
   QCOMPARE( candidates.size(), 1 );
   QCOMPARE( candidates.at( 0 ).metadata()->key(), QStringLiteral( "ept" ) );
-  QCOMPARE( candidates.at( 0 ).layerTypes(), QList< QgsMapLayerType >() << QgsMapLayerType::PointCloudLayer );
+  QCOMPARE( candidates.at( 0 ).layerTypes(), QList< Qgis::LayerType >() << Qgis::LayerType::PointCloud );
 
   QVERIFY( !QgsProviderRegistry::instance()->shouldDeferUriForOtherProviders( QStringLiteral( "/home/test/ept.json" ), QStringLiteral( "ept" ) ) );
   QVERIFY( QgsProviderRegistry::instance()->shouldDeferUriForOtherProviders( QStringLiteral( "/home/test/ept.json" ), QStringLiteral( "ogr" ) ) );
@@ -159,8 +156,8 @@ void TestQgsEptProvider::layerTypesForUri()
   QgsProviderMetadata *eptMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ept" ) );
   QVERIFY( eptMetadata->capabilities() & QgsProviderMetadata::LayerTypesForUri );
 
-  QCOMPARE( eptMetadata->validLayerTypesForUri( QStringLiteral( "/home/test/ept.json" ) ), QList< QgsMapLayerType >() << QgsMapLayerType::PointCloudLayer );
-  QCOMPARE( eptMetadata->validLayerTypesForUri( QStringLiteral( "/home/test/cloud.las" ) ), QList< QgsMapLayerType >() );
+  QCOMPARE( eptMetadata->validLayerTypesForUri( QStringLiteral( "/home/test/ept.json" ) ), QList< Qgis::LayerType >() << Qgis::LayerType::PointCloud );
+  QCOMPARE( eptMetadata->validLayerTypesForUri( QStringLiteral( "/home/test/cloud.las" ) ), QList< Qgis::LayerType >() );
 }
 
 void TestQgsEptProvider::uriIsBlocklisted()
@@ -188,7 +185,7 @@ void TestQgsEptProvider::querySublayers()
   QCOMPARE( res.at( 0 ).name(), QStringLiteral( "sunshine-coast" ) );
   QCOMPARE( res.at( 0 ).uri(), mTestDataDir + "/point_clouds/ept/sunshine-coast/ept.json" );
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "ept" ) );
-  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::PointCloudLayer );
+  QCOMPARE( res.at( 0 ).type(), Qgis::LayerType::PointCloud );
 
   // make sure result is valid to load layer from
   const QgsProviderSublayerDetails::LayerOptions options{ QgsCoordinateTransformContext() };

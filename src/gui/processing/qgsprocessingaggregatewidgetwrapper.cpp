@@ -29,8 +29,6 @@
 #include "qgsprocessingmodelalgorithm.h"
 
 #include "qgsprocessingparameteraggregate.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsfieldexpressionwidget.h"
 
 /// @cond private
 
@@ -353,7 +351,7 @@ void QgsProcessingAggregateWidgetWrapper::setParentLayerWrapperValue( const QgsA
   // need to grab ownership of layer if required - otherwise layer may be deleted when context
   // goes out of scope
   std::unique_ptr< QgsMapLayer > ownedLayer( context->takeResultLayer( layer->id() ) );
-  if ( ownedLayer && ownedLayer->type() == QgsMapLayerType::VectorLayer )
+  if ( ownedLayer && ownedLayer->type() == Qgis::LayerType::Vector )
   {
     mParentLayer.reset( qobject_cast< QgsVectorLayer * >( ownedLayer.release() ) );
     layer = mParentLayer.get();

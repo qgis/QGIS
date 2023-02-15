@@ -78,16 +78,16 @@ bool QgsMapToolLabel::labelAtPosition( QMouseEvent *e, QgsLabelPosition &p )
       // are supported by the map tools.
       switch ( layer->type() )
       {
-        case QgsMapLayerType::VectorLayer:
+        case Qgis::LayerType::Vector:
           return false;
 
-        case QgsMapLayerType::RasterLayer:
-        case QgsMapLayerType::PluginLayer:
-        case QgsMapLayerType::MeshLayer:
-        case QgsMapLayerType::VectorTileLayer:
-        case QgsMapLayerType::AnnotationLayer:
-        case QgsMapLayerType::PointCloudLayer:
-        case QgsMapLayerType::GroupLayer:
+        case Qgis::LayerType::Raster:
+        case Qgis::LayerType::Plugin:
+        case Qgis::LayerType::Mesh:
+        case Qgis::LayerType::VectorTile:
+        case Qgis::LayerType::Annotation:
+        case Qgis::LayerType::PointCloud:
+        case Qgis::LayerType::Group:
           return true;
       }
     }
@@ -169,16 +169,16 @@ bool QgsMapToolLabel::calloutAtPosition( QMouseEvent *e, QgsCalloutPosition &p, 
       // are supported by the map tools.
       switch ( layer->type() )
       {
-        case QgsMapLayerType::VectorLayer:
+        case Qgis::LayerType::Vector:
           return false;
 
-        case QgsMapLayerType::RasterLayer:
-        case QgsMapLayerType::PluginLayer:
-        case QgsMapLayerType::MeshLayer:
-        case QgsMapLayerType::VectorTileLayer:
-        case QgsMapLayerType::AnnotationLayer:
-        case QgsMapLayerType::PointCloudLayer:
-        case QgsMapLayerType::GroupLayer:
+        case Qgis::LayerType::Raster:
+        case Qgis::LayerType::Plugin:
+        case Qgis::LayerType::Mesh:
+        case Qgis::LayerType::VectorTile:
+        case Qgis::LayerType::Annotation:
+        case Qgis::LayerType::PointCloud:
+        case Qgis::LayerType::Group:
           return true;
       }
     }

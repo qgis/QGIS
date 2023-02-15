@@ -171,7 +171,7 @@ QMap< QString, QgsWmsLayerInfos > QgsWmsLayerInfos::buildWmsLayerInfos(
     // First define if the layer has an extent
     // Vector layer with No Geometry has no extent the other has one
     bool hasExtent = true;
-    if ( ml->type() == QgsMapLayerType::VectorLayer )
+    if ( ml->type() == Qgis::LayerType::Vector )
     {
       QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( ml );
       if ( !vLayer || vLayer->wkbType() == QgsWkbTypes::NoGeometry )

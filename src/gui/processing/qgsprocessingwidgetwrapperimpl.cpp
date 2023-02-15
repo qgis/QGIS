@@ -60,7 +60,6 @@
 #include "qgsprocessingoutputdestinationwidget.h"
 #include "qgscheckablecombobox.h"
 #include "qgsexpressioncontext.h"
-#include "qgsexpressioncontextutils.h"
 #include "qgsdoublevalidator.h"
 #include "qgsmaplayercombobox.h"
 #include "qgsannotationlayer.h"
@@ -2302,7 +2301,7 @@ void QgsProcessingExpressionWidgetWrapper::setParentLayerWrapperValue( const Qgs
   // need to grab ownership of layer if required - otherwise layer may be deleted when context
   // goes out of scope
   std::unique_ptr< QgsMapLayer > ownedLayer( context->takeResultLayer( layer->id() ) );
-  if ( ownedLayer && ownedLayer->type() == QgsMapLayerType::VectorLayer )
+  if ( ownedLayer && ownedLayer->type() == Qgis::LayerType::Vector )
   {
     mParentLayer.reset( qobject_cast< QgsVectorLayer * >( ownedLayer.release() ) );
     layer = mParentLayer.get();
@@ -4484,7 +4483,7 @@ void QgsProcessingFieldWidgetWrapper::setParentLayerWrapperValue( const QgsAbstr
     // need to grab ownership of layer if required - otherwise layer may be deleted when context
     // goes out of scope
     std::unique_ptr< QgsMapLayer > ownedLayer( context->takeResultLayer( layer->id() ) );
-    if ( ownedLayer && ownedLayer->type() == QgsMapLayerType::VectorLayer )
+    if ( ownedLayer && ownedLayer->type() == Qgis::LayerType::Vector )
     {
       mParentLayer.reset( qobject_cast< QgsVectorLayer * >( ownedLayer.release() ) );
       layer = mParentLayer.get();
@@ -6631,7 +6630,7 @@ void QgsProcessingBandWidgetWrapper::setParentLayerWrapperValue( const QgsAbstra
     // need to grab ownership of layer if required - otherwise layer may be deleted when context
     // goes out of scope
     std::unique_ptr< QgsMapLayer > ownedLayer( context->takeResultLayer( layer->id() ) );
-    if ( ownedLayer && ownedLayer->type() == QgsMapLayerType::RasterLayer )
+    if ( ownedLayer && ownedLayer->type() == Qgis::LayerType::Raster )
     {
       mParentLayer.reset( qobject_cast< QgsRasterLayer * >( ownedLayer.release() ) );
       layer = mParentLayer.get();

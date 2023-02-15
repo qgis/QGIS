@@ -19,6 +19,12 @@
  *                                                                         *
  ***************************************************************************/
 
+class QgsServerInterface;
+class QgsProject;
+class QgsWmsRequest;
+class QgsServerResponse;
+class QDomDocument;
+
 namespace QgsWms
 {
 

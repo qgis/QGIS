@@ -17,8 +17,6 @@
 
 #include "qgsalgorithmmultiintersection.h"
 
-#include "qgsgeometrycollection.h"
-#include "qgsgeometryengine.h"
 #include "qgsoverlayutils.h"
 #include "qgsvectorlayer.h"
 
@@ -92,7 +90,7 @@ QVariantMap QgsMultiIntersectionAlgorithm::processAlgorithm( const QVariantMap &
     if ( !layer )
       throw QgsProcessingException( QObject::tr( "Error retrieving map layer." ) );
 
-    if ( layer->type() != QgsMapLayerType::VectorLayer )
+    if ( layer->type() != Qgis::LayerType::Vector )
       throw QgsProcessingException( QObject::tr( "All layers must be vector layers!" ) );
 
     totalLayerCount++;

@@ -6382,21 +6382,21 @@ static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpres
     {
       switch ( layer->type() )
       {
-        case QgsMapLayerType::VectorLayer:
+        case Qgis::LayerType::Vector:
           return QCoreApplication::translate( "expressions", "Vector" );
-        case QgsMapLayerType::RasterLayer:
+        case Qgis::LayerType::Raster:
           return QCoreApplication::translate( "expressions", "Raster" );
-        case QgsMapLayerType::MeshLayer:
+        case Qgis::LayerType::Mesh:
           return QCoreApplication::translate( "expressions", "Mesh" );
-        case QgsMapLayerType::VectorTileLayer:
+        case Qgis::LayerType::VectorTile:
           return QCoreApplication::translate( "expressions", "Vector Tile" );
-        case QgsMapLayerType::PluginLayer:
+        case Qgis::LayerType::Plugin:
           return QCoreApplication::translate( "expressions", "Plugin" );
-        case QgsMapLayerType::AnnotationLayer:
+        case Qgis::LayerType::Annotation:
           return QCoreApplication::translate( "expressions", "Annotation" );
-        case QgsMapLayerType::PointCloudLayer:
+        case Qgis::LayerType::PointCloud:
           return QCoreApplication::translate( "expressions", "Point Cloud" );
-        case QgsMapLayerType::GroupLayer:
+        case Qgis::LayerType::Group:
           return QCoreApplication::translate( "expressions", "Group" );
       }
     }

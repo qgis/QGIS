@@ -212,23 +212,23 @@ bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLa
 
 bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLayer *layer, const QgsGeometry &geometry, const QgsRectangle &viewExtent, double mapUnitsPerPixel, QgsMapToolIdentify::LayerType layerType, const QgsIdentifyContext &identifyContext )
 {
-  if ( layer->type() == QgsMapLayerType::RasterLayer && layerType.testFlag( RasterLayer ) )
+  if ( layer->type() == Qgis::LayerType::Raster && layerType.testFlag( RasterLayer ) )
   {
     return identifyRasterLayer( results, qobject_cast<QgsRasterLayer *>( layer ), geometry, viewExtent, mapUnitsPerPixel, identifyContext );
   }
-  else if ( layer->type() == QgsMapLayerType::VectorLayer && layerType.testFlag( VectorLayer ) )
+  else if ( layer->type() == Qgis::LayerType::Vector && layerType.testFlag( VectorLayer ) )
   {
     return identifyVectorLayer( results, qobject_cast<QgsVectorLayer *>( layer ), geometry, identifyContext );
   }
-  else if ( layer->type() == QgsMapLayerType::MeshLayer && layerType.testFlag( MeshLayer ) )
+  else if ( layer->type() == Qgis::LayerType::Mesh && layerType.testFlag( MeshLayer ) )
   {
     return identifyMeshLayer( results, qobject_cast<QgsMeshLayer *>( layer ), geometry, identifyContext );
   }
-  else if ( layer->type() == QgsMapLayerType::VectorTileLayer && layerType.testFlag( VectorTileLayer ) )
+  else if ( layer->type() == Qgis::LayerType::VectorTile && layerType.testFlag( VectorTileLayer ) )
   {
     return identifyVectorTileLayer( results, qobject_cast<QgsVectorTileLayer *>( layer ), geometry, identifyContext );
   }
-  else if ( layer->type() == QgsMapLayerType::PointCloudLayer && layerType.testFlag( PointCloudLayer ) )
+  else if ( layer->type() == Qgis::LayerType::PointCloud && layerType.testFlag( PointCloudLayer ) )
   {
     return identifyPointCloudLayer( results, qobject_cast<QgsPointCloudLayer *>( layer ), geometry, identifyContext );
   }
@@ -1309,7 +1309,7 @@ void QgsMapToolIdentify::fromElevationProfileLayerIdentificationToIdentifyResult
 
   switch ( layer->type() )
   {
-    case QgsMapLayerType::VectorLayer:
+    case Qgis::LayerType::Vector:
     {
       QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer );
 
@@ -1362,8 +1362,8 @@ void QgsMapToolIdentify::fromElevationProfileLayerIdentificationToIdentifyResult
       break;
     }
 
-    case QgsMapLayerType::RasterLayer:
-    case QgsMapLayerType::MeshLayer:
+    case Qgis::LayerType::Raster:
+    case Qgis::LayerType::Mesh:
     {
       for ( const QVariantMap &map : identified )
       {
@@ -1379,17 +1379,17 @@ void QgsMapToolIdentify::fromElevationProfileLayerIdentificationToIdentifyResult
       break;
     }
 
-    case QgsMapLayerType::PointCloudLayer:
+    case Qgis::LayerType::PointCloud:
     {
       QgsPointCloudLayer *pcLayer = qobject_cast< QgsPointCloudLayer * >( layer );
       fromPointCloudIdentificationToIdentifyResults( pcLayer, identified, results );
       break;
     }
 
-    case QgsMapLayerType::PluginLayer:
-    case QgsMapLayerType::VectorTileLayer:
-    case QgsMapLayerType::AnnotationLayer:
-    case QgsMapLayerType::GroupLayer:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::VectorTile:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::Group:
       break;
   }
 }

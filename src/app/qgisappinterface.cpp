@@ -46,7 +46,6 @@
 #include "qgsmessagebar.h"
 #include "qgsappmaptools.h"
 
-
 QgisAppInterface::QgisAppInterface( QgisApp *_qgis )
   : qgis( _qgis )
   , pluginManagerIface( _qgis->pluginManager() )
@@ -82,7 +81,7 @@ QgsLayerTreeView *QgisAppInterface::layerTreeView()
 }
 
 void QgisAppInterface::addCustomActionForLayerType( QAction *action,
-    QString menu, QgsMapLayerType type, bool allLayers )
+    QString menu, Qgis::LayerType type, bool allLayers )
 {
   QgsAppLayerTreeViewMenuProvider *menuProvider = dynamic_cast<QgsAppLayerTreeViewMenuProvider *>( qgis->layerTreeView()->menuProvider() );
   if ( !menuProvider )

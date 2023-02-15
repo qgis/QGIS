@@ -1474,7 +1474,7 @@ void TestQgsProcessing::mapLayers()
   // test loadMapLayerFromString with raster
   QgsMapLayer *l = QgsProcessingUtils::loadMapLayerFromString( raster, QgsCoordinateTransformContext() );
   QVERIFY( l->isValid() );
-  QCOMPARE( l->type(), QgsMapLayerType::RasterLayer );
+  QCOMPARE( l->type(), Qgis::LayerType::Raster );
   QCOMPARE( l->name(), QStringLiteral( "landsat" ) );
 
   delete l;
@@ -1482,21 +1482,21 @@ void TestQgsProcessing::mapLayers()
   // use encoded provider/uri string
   l = QgsProcessingUtils::loadMapLayerFromString( QStringLiteral( "gdal://%1" ).arg( raster ), QgsCoordinateTransformContext() );
   QVERIFY( l->isValid() );
-  QCOMPARE( l->type(), QgsMapLayerType::RasterLayer );
+  QCOMPARE( l->type(), Qgis::LayerType::Raster );
   QCOMPARE( l->name(), QStringLiteral( "landsat" ) );
   delete l;
 
   //test with vector
   l = QgsProcessingUtils::loadMapLayerFromString( vector, QgsCoordinateTransformContext() );
   QVERIFY( l->isValid() );
-  QCOMPARE( l->type(), QgsMapLayerType::VectorLayer );
+  QCOMPARE( l->type(), Qgis::LayerType::Vector );
   QCOMPARE( l->name(), QStringLiteral( "points" ) );
   delete l;
 
   // use encoded provider/uri string
   l = QgsProcessingUtils::loadMapLayerFromString( QStringLiteral( "ogr://%1" ).arg( vector ), QgsCoordinateTransformContext() );
   QVERIFY( l->isValid() );
-  QCOMPARE( l->type(), QgsMapLayerType::VectorLayer );
+  QCOMPARE( l->type(), Qgis::LayerType::Vector );
   QCOMPARE( l->name(), QStringLiteral( "points" ) );
   delete l;
 
@@ -1506,7 +1506,7 @@ void TestQgsProcessing::mapLayers()
   QVERIFY( !l );
   l = QgsProcessingUtils::loadMapLayerFromString( testDataDir + "multipoint.shp", QgsCoordinateTransformContext() );
   QVERIFY( l->isValid() );
-  QCOMPARE( l->type(), QgsMapLayerType::VectorLayer );
+  QCOMPARE( l->type(), Qgis::LayerType::Vector );
   QCOMPARE( l->name(), QStringLiteral( "multipoint" ) );
   delete l;
 
@@ -1642,7 +1642,7 @@ void TestQgsProcessing::mapLayerFromString()
   // allow loading
   QgsMapLayer *loadedLayer = QgsProcessingUtils::mapLayerFromString( newRaster, c, true );
   QVERIFY( loadedLayer->isValid() );
-  QCOMPARE( loadedLayer->type(), QgsMapLayerType::RasterLayer );
+  QCOMPARE( loadedLayer->type(), Qgis::LayerType::Raster );
   // should now be in temporary store
   QCOMPARE( c.temporaryLayerStore()->mapLayer( loadedLayer->id() ), loadedLayer );
 

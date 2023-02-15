@@ -3842,13 +3842,13 @@ bool QgsPalLabeling::staticWillUseLayer( const QgsMapLayer *layer )
 {
   switch ( layer->type() )
   {
-    case QgsMapLayerType::VectorLayer:
+    case Qgis::LayerType::Vector:
     {
       const QgsVectorLayer *vl = qobject_cast< const QgsVectorLayer * >( layer );
       return vl->labelsEnabled() || vl->diagramsEnabled();
     }
 
-    case QgsMapLayerType::VectorTileLayer:
+    case Qgis::LayerType::VectorTile:
     {
       const QgsVectorTileLayer *vl = qobject_cast< const QgsVectorTileLayer * >( layer );
       if ( !vl->labeling() )
@@ -3860,12 +3860,12 @@ bool QgsPalLabeling::staticWillUseLayer( const QgsMapLayer *layer )
       return false;
     }
 
-    case QgsMapLayerType::RasterLayer:
-    case QgsMapLayerType::PluginLayer:
-    case QgsMapLayerType::MeshLayer:
-    case QgsMapLayerType::PointCloudLayer:
-    case QgsMapLayerType::AnnotationLayer:
-    case QgsMapLayerType::GroupLayer:
+    case Qgis::LayerType::Raster:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Mesh:
+    case Qgis::LayerType::PointCloud:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::Group:
       return false;
   }
   return false;

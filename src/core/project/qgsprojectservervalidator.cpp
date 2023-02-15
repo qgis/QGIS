@@ -69,7 +69,7 @@ void QgsProjectServerValidator::browseLayerTree( QgsLayerTreeGroup *treeGroup, Q
         else
           owsNames << shortName;
 
-        if ( layer->type() == QgsMapLayerType::VectorLayer )
+        if ( layer->type() == Qgis::LayerType::Vector )
         {
           QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( layer );
           if ( vl->dataProvider() && vl->dataProvider()->encoding() == QLatin1String( "System" ) )

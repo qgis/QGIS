@@ -658,7 +658,7 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
     translationContext->registerTranslation( QStringLiteral( "project:layers:%1" ).arg( layer->layerId() ), layer->name() );
 
     QgsMapLayer *mapLayer = layer->layer();
-    if ( mapLayer && mapLayer->type() == QgsMapLayerType::VectorLayer )
+    if ( mapLayer && mapLayer->type() == Qgis::LayerType::Vector )
     {
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mapLayer );
 
@@ -1397,7 +1397,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   QgsScopedRuntimeProfile profile( tr( "Create layer" ), QStringLiteral( "projectload" ) );
 
   bool ok = false;
-  const QgsMapLayerType layerType( QgsMapLayerFactory::typeFromString( type, ok ) );
+  const Qgis::LayerType layerType( QgsMapLayerFactory::typeFromString( type, ok ) );
   if ( !ok )
   {
     QgsDebugMsg( QStringLiteral( "Unknown layer type \"%1\"" ).arg( type ) );
@@ -1406,41 +1406,41 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
 
   switch ( layerType )
   {
-    case QgsMapLayerType::VectorLayer:
+    case Qgis::LayerType::Vector:
       mapLayer = std::make_unique<QgsVectorLayer>();
       break;
 
-    case QgsMapLayerType::RasterLayer:
+    case Qgis::LayerType::Raster:
       mapLayer = std::make_unique<QgsRasterLayer>();
       break;
 
-    case QgsMapLayerType::MeshLayer:
+    case Qgis::LayerType::Mesh:
       mapLayer = std::make_unique<QgsMeshLayer>();
       break;
 
-    case QgsMapLayerType::VectorTileLayer:
+    case Qgis::LayerType::VectorTile:
       mapLayer = std::make_unique<QgsVectorTileLayer>();
       break;
 
-    case QgsMapLayerType::PointCloudLayer:
+    case Qgis::LayerType::PointCloud:
       mapLayer = std::make_unique<QgsPointCloudLayer>();
       break;
 
-    case QgsMapLayerType::PluginLayer:
+    case Qgis::LayerType::Plugin:
     {
       const QString typeName = layerElem.attribute( QStringLiteral( "name" ) );
       mapLayer.reset( QgsApplication::pluginLayerRegistry()->createLayer( typeName ) );
       break;
     }
 
-    case QgsMapLayerType::AnnotationLayer:
+    case Qgis::LayerType::Annotation:
     {
       const QgsAnnotationLayer::LayerOptions options( mTransformContext );
       mapLayer = std::make_unique<QgsAnnotationLayer>( QString(), options );
       break;
     }
 
-    case QgsMapLayerType::GroupLayer:
+    case Qgis::LayerType::Group:
     {
       const QgsGroupLayer::LayerOptions options( mTransformContext );
       mapLayer = std::make_unique<QgsGroupLayer>( QString(), options );
@@ -4195,7 +4195,7 @@ QList<QgsMapLayer *> QgsProject::addMapLayers(
   {
     for ( QgsMapLayer *mlayer : myResultList )
     {
-      if ( mlayer->type() != QgsMapLayerType::VectorLayer )
+      if ( mlayer->type() != Qgis::LayerType::Vector )
         continue;
 
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mlayer );
@@ -4227,7 +4227,7 @@ void QgsProject::removeAuxiliaryLayer( const QgsMapLayer *ml )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( ! ml || ml->type() != QgsMapLayerType::VectorLayer )
+  if ( ! ml || ml->type() != Qgis::LayerType::Vector )
     return;
 
   const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( ml );
@@ -4390,7 +4390,7 @@ bool QgsProject::saveAuxiliaryStorage( const QString &filename )
   bool empty = true;
   for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
   {
-    if ( it.value()->type() != QgsMapLayerType::VectorLayer )
+    if ( it.value()->type() != Qgis::LayerType::Vector )
       continue;
 
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() );

@@ -30,10 +30,7 @@
 #include "qgslayoutitemhtml.h"
 #include "qgslayoutframe.h"
 #include "qgslayoutpagecollection.h"
-
-#include "qgsmaplayerstylemanager.h"
 #include "qgsmaplayertemporalproperties.h"
-
 #include "qgsexception.h"
 #include "qgsexpressionnodeimpl.h"
 #include "qgsvectorlayer.h"
@@ -764,7 +761,7 @@ namespace QgsWms
     for ( int i = 0; i < wfsLayerIds.size(); ++i )
     {
       QgsMapLayer *layer = project->mapLayer( wfsLayerIds.at( i ) );
-      if ( ! layer || layer->type() != QgsMapLayerType::VectorLayer )
+      if ( ! layer || layer->type() != Qgis::LayerType::Vector )
       {
         continue;
       }
@@ -1192,7 +1189,7 @@ namespace QgsWms
           bool timeDimensionAdded { false };
 
           // Add dimensions
-          if ( l->type() == QgsMapLayerType::VectorLayer )
+          if ( l->type() == Qgis::LayerType::Vector )
           {
             QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( l );
             QgsMapLayerServerProperties *serverProperties = static_cast<QgsMapLayerServerProperties *>( vl->serverProperties() );
@@ -1676,7 +1673,7 @@ namespace QgsWms
 
       switch ( currentLayer->type() )
       {
-        case QgsMapLayerType::VectorLayer:
+        case Qgis::LayerType::Vector:
         {
           QgsVectorLayer *vLayer = static_cast<QgsVectorLayer *>( currentLayer );
 
@@ -1751,7 +1748,7 @@ namespace QgsWms
           break;
         }
 
-        case QgsMapLayerType::RasterLayer:
+        case Qgis::LayerType::Raster:
         {
           const QgsDataProvider *provider = currentLayer->dataProvider();
           if ( provider && provider->name() == "wms" )
@@ -1797,12 +1794,12 @@ namespace QgsWms
           break;
         }
 
-        case QgsMapLayerType::MeshLayer:
-        case QgsMapLayerType::VectorTileLayer:
-        case QgsMapLayerType::PluginLayer:
-        case QgsMapLayerType::AnnotationLayer:
-        case QgsMapLayerType::PointCloudLayer:
-        case QgsMapLayerType::GroupLayer:
+        case Qgis::LayerType::Mesh:
+        case Qgis::LayerType::VectorTile:
+        case Qgis::LayerType::Plugin:
+        case Qgis::LayerType::Annotation:
+        case Qgis::LayerType::PointCloud:
+        case Qgis::LayerType::Group:
           break;
       }
     }

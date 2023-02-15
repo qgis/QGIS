@@ -846,7 +846,7 @@ void TestQgsGeoreferencer::testListModelCrs()
 void TestQgsGeoreferencer::testGdalCommands()
 {
   QgsGeoreferencerMainWindow window;
-  window.openLayer( QgsMapLayerType::RasterLayer, QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.tif" ) );
+  window.openLayer( Qgis::LayerType::Raster, QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.tif" ) );
 
   window.addPoint( QgsPointXY( 783414, 3350122 ), QgsPointXY( 783414, 3350122 ), QgsCoordinateReferenceSystem() );
   window.addPoint( QgsPointXY( 791344, 3349795 ), QgsPointXY( 791344, 33497952 ), QgsCoordinateReferenceSystem() );

@@ -18,7 +18,6 @@
 #include <string>
 
 #include "qgsmdalprovider.h"
-#include "qgstriangularmesh.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgsmeshdataprovidertemporalcapabilities.h"
@@ -1169,7 +1168,7 @@ QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const
       return {};
 
     QgsProviderSublayerDetails details;
-    details.setType( QgsMapLayerType::MeshLayer );
+    details.setType( Qgis::LayerType::Mesh );
     details.setProviderKey( QStringLiteral( "mdal" ) );
     details.setUri( uri );
     details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( path ) );
@@ -1196,7 +1195,7 @@ QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const
     QgsProviderSublayerDetails details;
     details.setUri( layerUri );
     details.setProviderKey( QStringLiteral( "mdal" ) );
-    details.setType( QgsMapLayerType::MeshLayer );
+    details.setType( Qgis::LayerType::Mesh );
     details.setLayerNumber( layerIndex );
     details.setDriverName( layerUriParts.value( QStringLiteral( "driver" ) ).toString() );
 
@@ -1215,9 +1214,9 @@ QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const
   return res;
 }
 
-QList<QgsMapLayerType> QgsMdalProviderMetadata::supportedLayerTypes() const
+QList<Qgis::LayerType> QgsMdalProviderMetadata::supportedLayerTypes() const
 {
-  return { QgsMapLayerType::MeshLayer };
+  return { Qgis::LayerType::Mesh };
 }
 
 QString QgsMdalProviderMetadata::filters( FilterType type )

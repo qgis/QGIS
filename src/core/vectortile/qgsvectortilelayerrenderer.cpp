@@ -75,7 +75,7 @@ bool QgsVectorTileLayerRenderer::render()
   if ( !mClippingRegions.empty() )
   {
     bool needsPainterClipPath = false;
-    const QPainterPath path = QgsMapClippingUtils::calculatePainterClipRegion( mClippingRegions, *renderContext(), QgsMapLayerType::VectorTileLayer, needsPainterClipPath );
+    const QPainterPath path = QgsMapClippingUtils::calculatePainterClipRegion( mClippingRegions, *renderContext(), Qgis::LayerType::VectorTile, needsPainterClipPath );
     if ( needsPainterClipPath )
       renderContext()->painter()->setClipPath( path, Qt::IntersectClip );
   }

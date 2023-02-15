@@ -43,7 +43,6 @@
 #include "qgsspatialindex.h"
 #include "qgis.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgsproviderregistry.h"
 #include "qgsvariantutils.h"
 
 #include "qgsdelimitedtextfeatureiterator.h"
@@ -1420,9 +1419,9 @@ QgsProviderMetadata::ProviderCapabilities QgsDelimitedTextProviderMetadata::prov
   return FileBasedUris;
 }
 
-QList<QgsMapLayerType> QgsDelimitedTextProviderMetadata::supportedLayerTypes() const
+QList<Qgis::LayerType> QgsDelimitedTextProviderMetadata::supportedLayerTypes() const
 {
-  return { QgsMapLayerType::VectorLayer };
+  return { Qgis::LayerType::Vector };
 }
 
 QgsDataProvider *QgsDelimitedTextProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )

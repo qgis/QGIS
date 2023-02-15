@@ -20,7 +20,6 @@
 #include "qgsruntimeprofiler.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
-#include "qgsmessagelog.h"
 #include "qgsjsonutils.h"
 #include "json.hpp"
 #include "qgspdalindexingtask.h"
@@ -29,6 +28,7 @@
 #include "qgsprovidersublayerdetails.h"
 #include "qgsproviderutils.h"
 #include "qgsthreadingutils.h"
+#include "qgscopcpointcloudindex.h"
 
 #include <pdal/Options.hpp>
 #include <pdal/StageFactory.hpp>
@@ -379,15 +379,15 @@ int QgsPdalProviderMetadata::priorityForUri( const QString &uri ) const
   return 0;
 }
 
-QList<QgsMapLayerType> QgsPdalProviderMetadata::validLayerTypesForUri( const QString &uri ) const
+QList<Qgis::LayerType> QgsPdalProviderMetadata::validLayerTypesForUri( const QString &uri ) const
 {
   const QVariantMap parts = decodeUri( uri );
   QString filePath = parts.value( QStringLiteral( "path" ) ).toString();
   const QFileInfo fi( filePath );
   if ( sExtensions.contains( fi.suffix(), Qt::CaseInsensitive ) )
-    return QList<QgsMapLayerType>() << QgsMapLayerType::PointCloudLayer;
+    return QList<Qgis::LayerType>() << Qgis::LayerType::PointCloud;
 
-  return QList<QgsMapLayerType>();
+  return QList<Qgis::LayerType>();
 }
 
 QList<QgsProviderSublayerDetails> QgsPdalProviderMetadata::querySublayers( const QString &uri, Qgis::SublayerQueryFlags, QgsFeedback * ) const
@@ -401,7 +401,7 @@ QList<QgsProviderSublayerDetails> QgsPdalProviderMetadata::querySublayers( const
     QgsProviderSublayerDetails details;
     details.setUri( uri );
     details.setProviderKey( QStringLiteral( "pdal" ) );
-    details.setType( QgsMapLayerType::PointCloudLayer );
+    details.setType( Qgis::LayerType::PointCloud );
     details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( uri ) );
     return {details};
   }
@@ -434,9 +434,9 @@ QgsProviderMetadata::ProviderCapabilities QgsPdalProviderMetadata::providerCapab
   return FileBasedUris;
 }
 
-QList<QgsMapLayerType> QgsPdalProviderMetadata::supportedLayerTypes() const
+QList<Qgis::LayerType> QgsPdalProviderMetadata::supportedLayerTypes() const
 {
-  return { QgsMapLayerType::PointCloudLayer };
+  return { Qgis::LayerType::PointCloud };
 }
 
 QString QgsPdalProviderMetadata::encodeUri( const QVariantMap &parts ) const

@@ -1796,7 +1796,7 @@ void TestQgsMeshLayer::testMdalProviderQuerySublayers()
   QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "ESRI_TIN:\"%1/esri_tin/tdenv9.adf\"" ).arg( TEST_DATA_DIR ) );
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "mdal" ) );
   QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "ESRI_TIN" ) );
-  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::MeshLayer );
+  QCOMPARE( res.at( 0 ).type(), Qgis::LayerType::Mesh );
 
   // single layer mesh
   res = mdalMetadata->querySublayers( mDataDir + "/quad_and_triangle.2dm" );
@@ -1806,7 +1806,7 @@ void TestQgsMeshLayer::testMdalProviderQuerySublayers()
   QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "2DM:\"%1/quad_and_triangle.2dm\"" ).arg( mDataDir ) );
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "mdal" ) );
   QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "2DM" ) );
-  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::MeshLayer );
+  QCOMPARE( res.at( 0 ).type(), Qgis::LayerType::Mesh );
 
   // make sure result is valid to load layer from
   const QgsProviderSublayerDetails::LayerOptions options{ QgsCoordinateTransformContext() };
@@ -1820,7 +1820,7 @@ void TestQgsMeshLayer::testMdalProviderQuerySublayers()
   QCOMPARE( res.at( 0 ).name(), QStringLiteral( "quad_and_triangle" ) );
   QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "2DM:\"%1/quad_and_triangle.2dm\"" ).arg( mDataDir ) );
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "mdal" ) );
-  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::MeshLayer );
+  QCOMPARE( res.at( 0 ).type(), Qgis::LayerType::Mesh );
   QCOMPARE( res.at( 0 ).driverName(), "2DM" );
   ml.reset( qgis::down_cast< QgsMeshLayer * >( res.at( 0 ).toLayer( options ) ) );
   QVERIFY( ml->isValid() );
@@ -1832,7 +1832,7 @@ void TestQgsMeshLayer::testMdalProviderQuerySublayers()
   QCOMPARE( res.at( 0 ).name(), QStringLiteral( "mesh1d" ) );
   QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "Ugrid:\"%1/manzese_1d2d_small_map.nc\":mesh1d" ).arg( mDataDir ) );
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "mdal" ) );
-  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::MeshLayer );
+  QCOMPARE( res.at( 0 ).type(), Qgis::LayerType::Mesh );
   QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "Ugrid" ) );
   ml.reset( qgis::down_cast< QgsMeshLayer * >( res.at( 0 ).toLayer( options ) ) );
   QVERIFY( ml->isValid() );
@@ -1840,7 +1840,7 @@ void TestQgsMeshLayer::testMdalProviderQuerySublayers()
   QCOMPARE( res.at( 1 ).name(), QStringLiteral( "mesh2d" ) );
   QCOMPARE( res.at( 1 ).uri(), QStringLiteral( "Ugrid:\"%1/manzese_1d2d_small_map.nc\":mesh2d" ).arg( mDataDir ) );
   QCOMPARE( res.at( 1 ).providerKey(), QStringLiteral( "mdal" ) );
-  QCOMPARE( res.at( 1 ).type(), QgsMapLayerType::MeshLayer );
+  QCOMPARE( res.at( 1 ).type(), Qgis::LayerType::Mesh );
   QCOMPARE( res.at( 1 ).driverName(), QStringLiteral( "Ugrid" ) );
   ml.reset( qgis::down_cast< QgsMeshLayer * >( res.at( 1 ).toLayer( options ) ) );
   QVERIFY( ml->isValid() );
@@ -1852,7 +1852,7 @@ void TestQgsMeshLayer::testMdalProviderQuerySublayers()
   QCOMPARE( res.at( 0 ).name(), QStringLiteral( "mesh1d" ) );
   QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "Ugrid:\"%1/manzese_1d2d_small_map.nc\":mesh1d" ).arg( mDataDir ) );
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "mdal" ) );
-  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::MeshLayer );
+  QCOMPARE( res.at( 0 ).type(), Qgis::LayerType::Mesh );
   QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "Ugrid" ) );
   ml.reset( qgis::down_cast< QgsMeshLayer * >( res.at( 0 ).toLayer( options ) ) );
   QVERIFY( ml->isValid() );
@@ -1862,7 +1862,7 @@ void TestQgsMeshLayer::testMdalProviderQuerySublayers()
   QCOMPARE( res.at( 0 ).name(), QStringLiteral( "mesh2d" ) );
   QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "Ugrid:\"%1/manzese_1d2d_small_map.nc\":mesh2d" ).arg( mDataDir ) );
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "mdal" ) );
-  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::MeshLayer );
+  QCOMPARE( res.at( 0 ).type(), Qgis::LayerType::Mesh );
   QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "Ugrid" ) );
   ml.reset( qgis::down_cast< QgsMeshLayer * >( res.at( 0 ).toLayer( options ) ) );
   QVERIFY( ml->isValid() );
@@ -1888,7 +1888,7 @@ void TestQgsMeshLayer::testMdalProviderQuerySublayersFastScan()
   QCOMPARE( res.at( 0 ).name(), QStringLiteral( "quad_and_triangle" ) );
   QCOMPARE( res.at( 0 ).uri(), mDataDir + "/quad_and_triangle.2dm" );
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "mdal" ) );
-  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::MeshLayer );
+  QCOMPARE( res.at( 0 ).type(), Qgis::LayerType::Mesh );
   QVERIFY( res.at( 0 ).skippedContainerScan() );
 
   // mesh with two layers
@@ -1898,7 +1898,7 @@ void TestQgsMeshLayer::testMdalProviderQuerySublayersFastScan()
   QCOMPARE( res.at( 0 ).name(), QStringLiteral( "manzese_1d2d_small_map" ) );
   QCOMPARE( res.at( 0 ).uri(), mDataDir + "/manzese_1d2d_small_map.nc" );
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "mdal" ) );
-  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::MeshLayer );
+  QCOMPARE( res.at( 0 ).type(), Qgis::LayerType::Mesh );
   QVERIFY( res.at( 0 ).skippedContainerScan() );
 
   // even though mdal reports support for .adf files, these are not a mesh:
@@ -1924,7 +1924,7 @@ void TestQgsMeshLayer::testMdalProviderQuerySublayersFastScan()
   QCOMPARE( res.at( 0 ).name(), QStringLiteral( "esri_tin" ) );
   QCOMPARE( res.at( 0 ).uri(), QString( TEST_DATA_DIR ) + "/esri_tin/tdenv9.adf" );
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "mdal" ) );
-  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::MeshLayer );
+  QCOMPARE( res.at( 0 ).type(), Qgis::LayerType::Mesh );
   // only tdenv?.adf file should report capabilities
   res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/esri_tin/thul.adf", Qgis::SublayerQueryFlag::FastScan );
   QVERIFY( res.empty() );

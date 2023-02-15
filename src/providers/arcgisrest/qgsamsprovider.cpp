@@ -1316,9 +1316,9 @@ QString QgsAmsProviderMetadata::encodeUri( const QVariantMap &parts ) const
   return dsUri.uri( false );
 }
 
-QList<QgsMapLayerType> QgsAmsProviderMetadata::supportedLayerTypes() const
+QList<Qgis::LayerType> QgsAmsProviderMetadata::supportedLayerTypes() const
 {
-  return { QgsMapLayerType::RasterLayer };
+  return { Qgis::LayerType::Raster };
 }
 
 #ifndef HAVE_STATIC_PROVIDERS

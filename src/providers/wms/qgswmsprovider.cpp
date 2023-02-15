@@ -5217,9 +5217,9 @@ QString QgsWmsProviderMetadata::encodeUri( const QVariantMap &parts ) const
   return query.toString();
 }
 
-QList<QgsMapLayerType> QgsWmsProviderMetadata::supportedLayerTypes() const
+QList<Qgis::LayerType> QgsWmsProviderMetadata::supportedLayerTypes() const
 {
-  return { QgsMapLayerType::RasterLayer };
+  return { Qgis::LayerType::Raster };
 }
 
 #ifndef HAVE_STATIC_PROVIDERS

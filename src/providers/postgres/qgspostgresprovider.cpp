@@ -19,7 +19,6 @@
 #include "qgsfeature.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
-#include "qgsmessageoutput.h"
 #include "qgsmessagelog.h"
 #include "qgsprojectstorageregistry.h"
 #include "qgslayermetadataproviderregistry.h"
@@ -27,7 +26,6 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsxmlutils.h"
 #include "qgsvectorlayer.h"
-#include "qgsvectorlayerexporter.h"
 #include "qgspostgresprovider.h"
 #include "qgspostgresconn.h"
 #include "qgspostgresconnpool.h"
@@ -39,7 +37,6 @@
 #include "qgspostgresproviderconnection.h"
 #include "qgslogger.h"
 #include "qgsfeedback.h"
-#include "qgssettings.h"
 #include "qgsstringutils.h"
 #include "qgsjsonutils.h"
 #include "qgsdbquerylog.h"
@@ -6161,14 +6158,14 @@ QString QgsPostgresProviderMetadata::encodeUri( const QVariantMap &parts ) const
   return dsUri.uri( false );
 }
 
-QList<QgsMapLayerType> QgsPostgresProviderMetadata::supportedLayerTypes() const
+QList<Qgis::LayerType> QgsPostgresProviderMetadata::supportedLayerTypes() const
 {
-  return { QgsMapLayerType::VectorLayer };
+  return { Qgis::LayerType::Vector };
 }
 
 bool QgsPostgresProviderMetadata::saveLayerMetadata( const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage )
 {
-  return QgsPostgresProviderMetadataUtils::saveLayerMetadata( QgsMapLayerType::VectorLayer, uri, metadata, errorMessage );
+  return QgsPostgresProviderMetadataUtils::saveLayerMetadata( Qgis::LayerType::Vector, uri, metadata, errorMessage );
 }
 
 

@@ -54,7 +54,7 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     QgsMapLayerAction( const QString &name, QObject *parent SIP_TRANSFERTHIS, QgsMapLayer *layer, Qgis::MapLayerActionTargets targets = Qgis::MapLayerActionTarget::AllActions, const QIcon &icon = QIcon(), Qgis::MapLayerActionFlags flags = Qgis::MapLayerActionFlags() );
 
     //! Creates a map layer action which can run on a specific type of layer
-    QgsMapLayerAction( const QString &name, QObject *parent SIP_TRANSFERTHIS, QgsMapLayerType layerType, Qgis::MapLayerActionTargets targets = Qgis::MapLayerActionTarget::AllActions, const QIcon &icon = QIcon(), Qgis::MapLayerActionFlags flags = Qgis::MapLayerActionFlags() );
+    QgsMapLayerAction( const QString &name, QObject *parent SIP_TRANSFERTHIS, Qgis::LayerType layerType, Qgis::MapLayerActionTargets targets = Qgis::MapLayerActionTarget::AllActions, const QIcon &icon = QIcon(), Qgis::MapLayerActionFlags flags = Qgis::MapLayerActionFlags() );
 
     ~QgsMapLayerAction() override;
 
@@ -186,7 +186,7 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     // true if action is only valid for a specific layer type
     bool mSpecificLayerType = false;
     // layer type if action is only valid for a specific layer type
-    QgsMapLayerType mLayerType = QgsMapLayerType::VectorLayer;
+    Qgis::LayerType mLayerType = Qgis::LayerType::Vector;
 
     // determine if the action can be run on layer and/or single feature and/or multiple features
     Qgis::MapLayerActionTargets mTargets = Qgis::MapLayerActionTargets();

@@ -1,33 +1,34 @@
 # The following has been generated automatically from src/core/qgis.h
-QgsMapLayer.LayerType = QgsMapLayerType
+Qgis.MessageLevel.baseClass = Qgis
+QgsMapLayer.LayerType = Qgis.LayerType
 # monkey patching scoped based enum
-QgsMapLayer.VectorLayer = QgsMapLayerType.VectorLayer
+QgsMapLayer.VectorLayer = Qgis.LayerType.Vector
 QgsMapLayer.VectorLayer.is_monkey_patched = True
 QgsMapLayer.VectorLayer.__doc__ = "Vector layer"
-QgsMapLayer.RasterLayer = QgsMapLayerType.RasterLayer
+QgsMapLayer.RasterLayer = Qgis.LayerType.Raster
 QgsMapLayer.RasterLayer.is_monkey_patched = True
 QgsMapLayer.RasterLayer.__doc__ = "Raster layer"
-QgsMapLayer.PluginLayer = QgsMapLayerType.PluginLayer
+QgsMapLayer.PluginLayer = Qgis.LayerType.Plugin
 QgsMapLayer.PluginLayer.is_monkey_patched = True
 QgsMapLayer.PluginLayer.__doc__ = "Plugin based layer"
-QgsMapLayer.MeshLayer = QgsMapLayerType.MeshLayer
+QgsMapLayer.MeshLayer = Qgis.LayerType.Mesh
 QgsMapLayer.MeshLayer.is_monkey_patched = True
 QgsMapLayer.MeshLayer.__doc__ = "Mesh layer. Added in QGIS 3.2"
-QgsMapLayer.VectorTileLayer = QgsMapLayerType.VectorTileLayer
+QgsMapLayer.VectorTileLayer = Qgis.LayerType.VectorTile
 QgsMapLayer.VectorTileLayer.is_monkey_patched = True
 QgsMapLayer.VectorTileLayer.__doc__ = "Vector tile layer. Added in QGIS 3.14"
-QgsMapLayer.AnnotationLayer = QgsMapLayerType.AnnotationLayer
+QgsMapLayer.AnnotationLayer = Qgis.LayerType.Annotation
 QgsMapLayer.AnnotationLayer.is_monkey_patched = True
 QgsMapLayer.AnnotationLayer.__doc__ = "Contains freeform, georeferenced annotations. Added in QGIS 3.16"
-QgsMapLayer.PointCloudLayer = QgsMapLayerType.PointCloudLayer
+QgsMapLayer.PointCloudLayer = Qgis.LayerType.PointCloud
 QgsMapLayer.PointCloudLayer.is_monkey_patched = True
 QgsMapLayer.PointCloudLayer.__doc__ = "Point cloud layer. Added in QGIS 3.18"
-QgsMapLayer.GroupLayer = QgsMapLayerType.GroupLayer
+QgsMapLayer.GroupLayer = Qgis.LayerType.Group
 QgsMapLayer.GroupLayer.is_monkey_patched = True
 QgsMapLayer.GroupLayer.__doc__ = "Composite group layer. Added in QGIS 3.24"
-QgsMapLayerType.__doc__ = 'Types of layers that can be added to a map\n\n.. versionadded:: 3.8\n\n' + '* ``VectorLayer``: ' + QgsMapLayerType.VectorLayer.__doc__ + '\n' + '* ``RasterLayer``: ' + QgsMapLayerType.RasterLayer.__doc__ + '\n' + '* ``PluginLayer``: ' + QgsMapLayerType.PluginLayer.__doc__ + '\n' + '* ``MeshLayer``: ' + QgsMapLayerType.MeshLayer.__doc__ + '\n' + '* ``VectorTileLayer``: ' + QgsMapLayerType.VectorTileLayer.__doc__ + '\n' + '* ``AnnotationLayer``: ' + QgsMapLayerType.AnnotationLayer.__doc__ + '\n' + '* ``PointCloudLayer``: ' + QgsMapLayerType.PointCloudLayer.__doc__ + '\n' + '* ``GroupLayer``: ' + QgsMapLayerType.GroupLayer.__doc__
+Qgis.LayerType.__doc__ = 'Types of layers that can be added to a map\n\n.. versionadded:: 3.30.\n\n' + '* ``VectorLayer``: ' + Qgis.LayerType.Vector.__doc__ + '\n' + '* ``RasterLayer``: ' + Qgis.LayerType.Raster.__doc__ + '\n' + '* ``PluginLayer``: ' + Qgis.LayerType.Plugin.__doc__ + '\n' + '* ``MeshLayer``: ' + Qgis.LayerType.Mesh.__doc__ + '\n' + '* ``VectorTileLayer``: ' + Qgis.LayerType.VectorTile.__doc__ + '\n' + '* ``AnnotationLayer``: ' + Qgis.LayerType.Annotation.__doc__ + '\n' + '* ``PointCloudLayer``: ' + Qgis.LayerType.PointCloud.__doc__ + '\n' + '* ``GroupLayer``: ' + Qgis.LayerType.Group.__doc__
 # --
-Qgis.MessageLevel.baseClass = Qgis
+Qgis.LayerType.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.UnknownDataType = Qgis.DataType.UnknownDataType
 Qgis.UnknownDataType.is_monkey_patched = True

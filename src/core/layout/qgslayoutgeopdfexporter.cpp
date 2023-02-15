@@ -18,15 +18,11 @@
 #include "qgsrenderedfeaturehandlerinterface.h"
 #include "qgsfeaturerequest.h"
 #include "qgslayout.h"
-#include "qgslogger.h"
 #include "qgsgeometry.h"
 #include "qgsvectorlayer.h"
-#include "qgsvectorfilewriter.h"
 #include "qgslayertree.h"
 
 #include <gdal.h>
-#include "qgsgdalutils.h"
-#include "cpl_string.h"
 #include "qgslayoutpagecollection.h"
 
 #include <QMutex>
@@ -120,7 +116,7 @@ QgsLayoutGeoPdfExporter::QgsLayoutGeoPdfExporter( QgsLayout *layout )
     {
       const QVariant visibility = ml->customProperty( QStringLiteral( "geopdf/initiallyVisible" ), true );
       mInitialLayerVisibility.insert( ml->id(), !visibility.isValid() ? true : visibility.toBool() );
-      if ( ml->type() == QgsMapLayerType::VectorLayer )
+      if ( ml->type() == Qgis::LayerType::Vector )
       {
         const QVariant v = ml->customProperty( QStringLiteral( "geopdf/includeFeatures" ) );
         if ( !v.isValid() || v.toBool() )

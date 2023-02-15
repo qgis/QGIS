@@ -15,7 +15,6 @@
 
 #include "qgspointcloudelevationpropertieswidget.h"
 #include "qgspointcloudrendererpropertieswidget.h"
-#include "qgsstyle.h"
 #include "qgsapplication.h"
 #include "qgsmaplayer.h"
 #include "qgspointcloudlayer.h"
@@ -152,7 +151,7 @@ bool QgsPointCloudElevationPropertiesWidgetFactory::supportsStyleDock() const
 
 bool QgsPointCloudElevationPropertiesWidgetFactory::supportsLayer( QgsMapLayer *layer ) const
 {
-  return layer->type() == QgsMapLayerType::PointCloudLayer;
+  return layer->type() == Qgis::LayerType::PointCloud;
 }
 
 QString QgsPointCloudElevationPropertiesWidgetFactory::layerPropertiesPagePositionHint() const

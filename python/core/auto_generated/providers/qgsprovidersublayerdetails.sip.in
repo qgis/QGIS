@@ -47,14 +47,14 @@ Sets the associated data provider key.
 .. seealso:: :py:func:`providerKey`
 %End
 
-    QgsMapLayerType type() const;
+    Qgis::LayerType type() const;
 %Docstring
 Returns the layer type.
 
 .. seealso:: :py:func:`setType`
 %End
 
-    void setType( QgsMapLayerType type );
+    void setType( Qgis::LayerType type );
 %Docstring
 Sets the layer ``type``.
 

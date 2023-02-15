@@ -826,9 +826,9 @@ QgsDataProvider *QgsMemoryProviderMetadata::createProvider( const QString &uri, 
   return new QgsMemoryProvider( uri, options, flags );
 }
 
-QList<QgsMapLayerType> QgsMemoryProviderMetadata::supportedLayerTypes() const
+QList<Qgis::LayerType> QgsMemoryProviderMetadata::supportedLayerTypes() const
 {
-  return { QgsMapLayerType::VectorLayer };
+  return { Qgis::LayerType::Vector };
 }
 
 ///@endcond

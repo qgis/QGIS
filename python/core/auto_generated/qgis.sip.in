@@ -19,18 +19,6 @@
 int QgisEvent = QEvent::User + 1;
 %End
 
-enum class QgsMapLayerType
-  {
-  VectorLayer,
-  RasterLayer,
-  PluginLayer,
-  MeshLayer,
-  VectorTileLayer,
-  AnnotationLayer,
-  PointCloudLayer,
-  GroupLayer,
-};
-
 
 class Qgis
 {
@@ -84,6 +72,18 @@ The development version
       Critical,
       Success,
       NoLevel,
+    };
+
+    enum class LayerType
+      {
+      Vector,
+      Raster,
+      Plugin,
+      Mesh,
+      VectorTile,
+      Annotation,
+      PointCloud,
+      Group,
     };
 
     enum class DataType

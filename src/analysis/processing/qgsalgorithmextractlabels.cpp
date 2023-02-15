@@ -576,7 +576,7 @@ bool QgsExtractLabelsAlgorithm::prepareAlgorithm( const QVariantMap &parameters,
     for ( const QgsMapLayer *l : constLayers )
     {
       // only copy vector layers as other layer types aren't actors in the labeling process
-      if ( l->type() == QgsMapLayerType::VectorLayer )
+      if ( l->type() == Qgis::LayerType::Vector )
         mMapLayers.push_back( l->clone() );
     }
     mMapThemeStyleOverrides = context.project()->mapThemeCollection( )->mapThemeStyleOverrides( mapTheme );
@@ -597,7 +597,7 @@ bool QgsExtractLabelsAlgorithm::prepareAlgorithm( const QVariantMap &parameters,
 
     for ( const QgsMapLayer *l : std::as_const( layers ) )
     {
-      if ( l->type() == QgsMapLayerType::VectorLayer )
+      if ( l->type() == Qgis::LayerType::Vector )
         mMapLayers.push_back( l->clone() );
     }
   }

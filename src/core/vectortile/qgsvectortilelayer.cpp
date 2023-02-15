@@ -43,7 +43,7 @@
 #include <QUrlQuery>
 
 QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseName, const LayerOptions &options )
-  : QgsMapLayer( QgsMapLayerType::VectorTileLayer, baseName )
+  : QgsMapLayer( Qgis::LayerType::VectorTile, baseName )
   , mTransformContext( options.transformContext )
 {
   mMatrixSet = QgsVectorTileMatrixSet::fromWebMercator();
@@ -390,7 +390,7 @@ bool QgsVectorTileLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   QDomElement mapLayerNode = layerNode.toElement();
-  mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( QgsMapLayerType::VectorTileLayer ) );
+  mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( Qgis::LayerType::VectorTile ) );
 
   mapLayerNode.appendChild( mMatrixSet.writeXml( doc, context ) );
 

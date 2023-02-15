@@ -34,7 +34,6 @@ email                : jpalmer at linz dot govt dot nz
 #include "qgsproject.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsmessagelog.h"
-#include "qgsvectorlayertemporalproperties.h"
 #include "qgsmapcanvasutils.h"
 #include "qgsselectioncontext.h"
 
@@ -50,16 +49,16 @@ QgsMapLayer *QgsMapToolSelectUtils::getCurrentTargetLayer( QgsMapCanvas *canvas 
   {
     switch ( layer->type() )
     {
-      case QgsMapLayerType::VectorLayer:
-      case QgsMapLayerType::VectorTileLayer:
+      case Qgis::LayerType::Vector:
+      case Qgis::LayerType::VectorTile:
         // supported
         break;
-      case QgsMapLayerType::RasterLayer:
-      case QgsMapLayerType::PluginLayer:
-      case QgsMapLayerType::MeshLayer:
-      case QgsMapLayerType::AnnotationLayer:
-      case QgsMapLayerType::PointCloudLayer:
-      case QgsMapLayerType::GroupLayer:
+      case Qgis::LayerType::Raster:
+      case Qgis::LayerType::Plugin:
+      case Qgis::LayerType::Mesh:
+      case Qgis::LayerType::Annotation:
+      case Qgis::LayerType::PointCloud:
+      case Qgis::LayerType::Group:
         layer = nullptr; //not supported
         break;
     }
@@ -104,7 +103,7 @@ QgsRectangle QgsMapToolSelectUtils::expandSelectRectangle( QgsPointXY mapPoint, 
   {
     switch ( layer->type() )
     {
-      case QgsMapLayerType::VectorLayer:
+      case Qgis::LayerType::Vector:
       {
         QgsVectorLayer *vLayer = qobject_cast< QgsVectorLayer * >( layer );
         if ( vLayer->geometryType() != QgsWkbTypes::PolygonGeometry )
@@ -120,17 +119,17 @@ QgsRectangle QgsMapToolSelectUtils::expandSelectRectangle( QgsPointXY mapPoint, 
         }
         break;
       }
-      case QgsMapLayerType::VectorTileLayer:
+      case Qgis::LayerType::VectorTile:
         // mixed layer type, so aim for somewhere between the vector layer polygon/point sizes
         boxSize = 2;
         break;
 
-      case QgsMapLayerType::RasterLayer:
-      case QgsMapLayerType::PluginLayer:
-      case QgsMapLayerType::MeshLayer:
-      case QgsMapLayerType::AnnotationLayer:
-      case QgsMapLayerType::PointCloudLayer:
-      case QgsMapLayerType::GroupLayer:
+      case Qgis::LayerType::Raster:
+      case Qgis::LayerType::Plugin:
+      case Qgis::LayerType::Mesh:
+      case Qgis::LayerType::Annotation:
+      case Qgis::LayerType::PointCloud:
+      case Qgis::LayerType::Group:
         break;
     }
   }
@@ -220,7 +219,7 @@ void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas *canvas, const Qgs
   QApplication::setOverrideCursor( Qt::WaitCursor );
   switch ( layer->type() )
   {
-    case QgsMapLayerType::VectorLayer:
+    case Qgis::LayerType::Vector:
     {
       QgsVectorLayer *vlayer = qobject_cast< QgsVectorLayer *>( layer );
       QgsFeatureIds selectedFeatures = getMatchingFeatures( canvas, selectGeometry, false, true );
@@ -253,7 +252,7 @@ void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas *canvas, const Qgs
       break;
     }
 
-    case QgsMapLayerType::VectorTileLayer:
+    case Qgis::LayerType::VectorTile:
     {
       QgsVectorTileLayer *vtLayer = qobject_cast< QgsVectorTileLayer *>( layer );
 
@@ -277,12 +276,12 @@ void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas *canvas, const Qgs
       break;
     }
 
-    case QgsMapLayerType::RasterLayer:
-    case QgsMapLayerType::PluginLayer:
-    case QgsMapLayerType::MeshLayer:
-    case QgsMapLayerType::AnnotationLayer:
-    case QgsMapLayerType::PointCloudLayer:
-    case QgsMapLayerType::GroupLayer:
+    case Qgis::LayerType::Raster:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Mesh:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::PointCloud:
+    case Qgis::LayerType::Group:
       break;
   }
 
@@ -303,7 +302,7 @@ void QgsMapToolSelectUtils::setSelectedFeatures( QgsMapCanvas *canvas, const Qgs
 
   switch ( layer->type() )
   {
-    case QgsMapLayerType::VectorLayer:
+    case Qgis::LayerType::Vector:
     {
       QgsVectorLayer *vLayer = qobject_cast< QgsVectorLayer * >( layer );
       QgsFeatureIds selectedFeatures = getMatchingFeatures( canvas, selectGeometry, doContains, singleSelect );
@@ -311,7 +310,7 @@ void QgsMapToolSelectUtils::setSelectedFeatures( QgsMapCanvas *canvas, const Qgs
       break;
     }
 
-    case QgsMapLayerType::VectorTileLayer:
+    case Qgis::LayerType::VectorTile:
     {
       QgsVectorTileLayer *vtLayer = qobject_cast< QgsVectorTileLayer * >( layer );
       QgsCoordinateTransform ct( canvas->mapSettings().destinationCrs(), layer->crs(), QgsProject::instance() );
@@ -330,12 +329,12 @@ void QgsMapToolSelectUtils::setSelectedFeatures( QgsMapCanvas *canvas, const Qgs
       break;
     }
 
-    case QgsMapLayerType::RasterLayer:
-    case QgsMapLayerType::PluginLayer:
-    case QgsMapLayerType::MeshLayer:
-    case QgsMapLayerType::AnnotationLayer:
-    case QgsMapLayerType::PointCloudLayer:
-    case QgsMapLayerType::GroupLayer:
+    case Qgis::LayerType::Raster:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Mesh:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::PointCloud:
+    case Qgis::LayerType::Group:
       break;
   }
 

@@ -23,9 +23,9 @@ which are not wrapped by PyQt:
 */
 
 // adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
-%MappedType QList<QgsMapLayerType>
-        /TypeHintIn="Iterable[QgsMapLayerType]",
-        TypeHintOut="List[QgsMapLayerType]", TypeHintValue="[]"/
+%MappedType QList<Qgis::LayerType>
+        /TypeHintIn="Iterable[Qgis.LayerType]",
+        TypeHintOut="List[Qgis.LayerType]", TypeHintValue="[]"/
 {
 %TypeHeaderCode
 #include "qgis.h"
@@ -40,7 +40,7 @@ which are not wrapped by PyQt:
     for (int i = 0; i < sipCpp->size(); ++i)
     {
         PyObject *eobj = sipConvertFromEnum(static_cast<int>(sipCpp->at(i)),
-                sipType_QgsMapLayerType);
+                sipType_Qgis_LayerType);
 
         if (!eobj)
         {
@@ -73,7 +73,7 @@ which are not wrapped by PyQt:
         return 0;
     }
 
-    QList<QgsMapLayerType> *ql = new QList<QgsMapLayerType>;
+    QList<Qgis::LayerType> *ql = new QList<Qgis::LayerType>;
 
     for (Py_ssize_t i = 0; ; ++i)
     {
@@ -94,12 +94,12 @@ which are not wrapped by PyQt:
             break;
         }
 
-        int v = sipConvertToEnum(itm, sipType_QgsMapLayerType);
+        int v = sipConvertToEnum(itm, sipType_Qgis_LayerType);
 
         if (PyErr_Occurred())
         {
             PyErr_Format(PyExc_TypeError,
-                    "index %zd has type '%s' but 'QgsMapLayerType' is expected",
+                    "index %zd has type '%s' but 'Qgis.LayerType' is expected",
                     i, sipPyTypeName(Py_TYPE(itm)));
 
             Py_DECREF(itm);
@@ -110,7 +110,7 @@ which are not wrapped by PyQt:
             return 0;
         }
 
-        ql->append(static_cast<QgsMapLayerType>(v));
+        ql->append(static_cast<Qgis::LayerType>(v));
 
         Py_DECREF(itm);
     }

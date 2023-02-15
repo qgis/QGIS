@@ -133,7 +133,7 @@ void QgsServerWmsDimensionProperties::readXml( const QDomNode &layer_node )
   reset();
 
   // Apply only for vector layers
-  if ( layer()->type() != QgsMapLayerType::VectorLayer )
+  if ( layer()->type() != Qgis::LayerType::Vector )
     return;
 
   const QgsFields fields = static_cast<const QgsVectorLayer *>( layer() )->fields();

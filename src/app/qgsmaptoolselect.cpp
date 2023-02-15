@@ -16,7 +16,6 @@
 
 #include "qgsmaptoolselect.h"
 #include "qgsmaptoolselectutils.h"
-#include "qgsrubberband.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
 #include "qgsvectorlayer.h"
@@ -24,8 +23,6 @@
 #include "qgspointxy.h"
 #include "qgis.h"
 #include "qgsapplication.h"
-#include "qgslogger.h"
-#include "qgshighlight.h"
 
 #include <QMouseEvent>
 #include <QMenu>
@@ -147,7 +144,7 @@ bool QgsMapToolSelect::populateContextMenuWithEvent( QMenu *menu, QgsMapMouseEve
   Q_ASSERT( menu );
   QgsMapLayer *layer = QgsMapToolSelectUtils::getCurrentTargetLayer( mCanvas );
 
-  if ( !layer  || layer->type() != QgsMapLayerType::VectorLayer )
+  if ( !layer  || layer->type() != Qgis::LayerType::Vector )
     return false;
 
   QgsVectorLayer *vlayer = qobject_cast< QgsVectorLayer * >( layer );

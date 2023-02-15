@@ -140,7 +140,7 @@ class QgsVirtualLayerProviderMetadata final: public QgsProviderMetadata
     QgsVirtualLayerProviderMetadata();
     QIcon icon() const override;
     QgsVirtualLayerProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
-    QList< QgsMapLayerType > supportedLayerTypes() const override;
+    QList< Qgis::LayerType > supportedLayerTypes() const override;
 };
 
 // clazy:excludeall=qstring-allocations
