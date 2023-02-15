@@ -69,7 +69,7 @@ RUN cd /usr/src \
   && ninja install
 
 RUN cd /usr/src \
-  && wget https://github.com/frankosterfeld/qtkeychain/archive/refs/heads/master.zip \
+  && wget https://github.com/frankosterfeld/qtkeychain/archive/841f31c7ca177e45647fd705200d7fcbeee056e5/master.zip \
   && unzip master.zip \
   && rm master.zip \
   && cd qtkeychain-master \
