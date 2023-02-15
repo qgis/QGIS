@@ -478,6 +478,15 @@ void TestQgsPostgresProvider::testEwktInOut()
   QCOMPARE( g.crs().authid(), "EPSG:4326" );
   ewkt_obtained = QgsPostgresProvider::toEwkt( g, conn );
   QCOMPARE( ewkt_obtained, "SRID=4326;LineString (0 0, -5 2)" );
+
+  // Test for srid-less geometry
+  // See https://github.com/qgis/QGIS/issues/49380#issuecomment-1282913470
+  g = QgsPostgresProvider::fromEwkt( "POINT(0 0)", conn );
+  QVERIFY( ! g.isNull() );
+  ewkt_obtained = QgsPostgresProvider::toEwkt( g, conn );
+  QVERIFY( ! g.crs().isValid() ); // is unknown
+  QCOMPARE( ewkt_obtained, QString( "SRID=0;Point (0 0)" ) );
+
 }
 #endif // ENABLE_PGTEST
 
