@@ -49,6 +49,8 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
 {
     Q_OBJECT
 
+    friend class TestQgsPostgresProvider;
+
   public:
 
     static const QString POSTGRES_KEY;
