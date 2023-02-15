@@ -526,7 +526,7 @@ bool QgsWmsCapabilities::parseResponse( const QByteArray &response, QgsWmsParser
       format = Qgis::RasterIdentifyFormat::Text;
     else if ( f == QLatin1String( "text/html" ) )
       format = Qgis::RasterIdentifyFormat::Html;
-    else if ( f.startsWith( QLatin1String( "GML." ) ) || f == QLatin1String( "application/vnd.ogc.gml" ) || f == QLatin1String( "application/json" ) || f == QLatin1String( "application/geojson" ) || f.contains( QLatin1String( "gml" ), Qt::CaseInsensitive ) || f == QLatin1String( "text/xml" ) )
+    else if ( f.startsWith( QLatin1String( "GML." ) ) || f == QLatin1String( "application/vnd.ogc.gml" ) || f == QLatin1String( "application/json" ) || f == QLatin1String( "application/geojson" ) || f == QLatin1String( "application/geo+json" ) || f.contains( QLatin1String( "gml" ), Qt::CaseInsensitive ) || ( f == QLatin1String( "text/xml" ) && !mBaseUrl.contains( "MapServer" ) ) )
       format = Qgis::RasterIdentifyFormat::Feature;
 
     mIdentifyFormats.insert( format, f );
@@ -1992,7 +1992,8 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
                 || ( format == QLatin1String( "application/vnd.ogc.gml" ) )
                 || ( format.contains( QLatin1String( "gml" ), Qt::CaseInsensitive ) )
                 || ( format == QLatin1String( "application/json" ) )
-                || ( format == QLatin1String( "application/geojson" ) ) )
+                || ( format == QLatin1String( "application/geojson" ) )
+                || ( format == QLatin1String( "application/geo+json" ) ) )
         fmt = Qgis::RasterIdentifyFormat::Feature;
       else
       {
@@ -2240,7 +2241,8 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
                   || ( format == QLatin1String( "application/vnd.ogc.gml" ) )
                   || ( format.contains( QLatin1String( "gml" ), Qt::CaseInsensitive ) )
                   || ( format == QLatin1String( "application/json" ) )
-                  || ( format == QLatin1String( "application/geojson" ) ) )
+                  || ( format == QLatin1String( "application/geojson" ) )
+                  || ( format == QLatin1String( "application/geo+json" ) ) )
           fmt = Qgis::RasterIdentifyFormat::Feature;
         else
         {

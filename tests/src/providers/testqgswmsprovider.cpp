@@ -100,7 +100,7 @@ class TestQgsWmsProvider: public QgsTest
       QgsWmsProvider provider( failingAddress, QgsDataProvider::ProviderOptions(), mCapabilities );
       QUrl url( provider.createRequestUrlWMS( QgsRectangle( 0, 0, 90, 90 ), 100, 100 ) );
       QCOMPARE( url.toString(), QString( "http://localhost:8380/mapserv?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap"
-                                         "&BBOX=0,0,90,90&CRS=CRS:84&WIDTH=100&HEIGHT=100&LAYERS=&"
+                                         "&BBOX=0%2C0%2C90%2C90&CRS=CRS%3A84&WIDTH=100&HEIGHT=100&LAYERS=&"
                                          "STYLES=&FORMAT=&TRANSPARENT=TRUE" ) );
     }
 
@@ -116,8 +116,8 @@ class TestQgsWmsProvider: public QgsTest
       QVERIFY( cap.parseResponse( content, config ) );
       QgsWmsProvider provider( failingAddress, QgsDataProvider::ProviderOptions(), &cap );
       QUrl url( provider.createRequestUrlWMS( QgsRectangle( 0, 0, 90, 90 ), 100, 100 ) );
-      QCOMPARE( url.toString(), QString( "http://localhost:8380/mapserv?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=0,0,90,90&"
-                                         "CRS=EPSG:2056&WIDTH=100&HEIGHT=100&"
+      QCOMPARE( url.toString(), QString( "http://localhost:8380/mapserv?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=0%2C0%2C90%2C90&"
+                                         "CRS=EPSG%3A2056&WIDTH=100&HEIGHT=100&"
                                          "LAYERS=plus%2Bsign&STYLES=&FORMAT=&TRANSPARENT=TRUE" ) );
     }
 

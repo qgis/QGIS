@@ -460,6 +460,7 @@ class TestQgsWmsCapabilities: public QObject
       QTest::newRow( "text/html" ) << QByteArray( "text/html" ) << static_cast<int>( QgsRasterInterface::IdentifyHtml );
       QTest::newRow( "application/json" ) << QByteArray( "application/json" ) << static_cast<int>( QgsRasterInterface::IdentifyFeature );
       QTest::newRow( "application/geojson" ) << QByteArray( "application/geojson" ) << static_cast<int>( QgsRasterInterface::IdentifyFeature );
+      QTest::newRow( "application/geo+json" ) << QByteArray( "application/geo+json" ) << static_cast<int>( QgsRasterInterface::IdentifyFeature );
       QTest::newRow( "application/vnd.ogc.gml" ) << QByteArray( "application/vnd.ogc.gml" ) << static_cast<int>( QgsRasterInterface::IdentifyFeature );
       QTest::newRow( "application/vnd.esri.wms_featureinfo_xml" ) << QByteArray( "application/vnd.esri.wms_featureinfo_xml" ) << static_cast<int>( QgsRasterInterface::NoCapabilities );
     }
