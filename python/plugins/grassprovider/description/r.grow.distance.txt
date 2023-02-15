@@ -4,6 +4,6 @@ Raster (r.*)
 QgsProcessingParameterRasterLayer|input|Input input raster layer|None|False
 QgsProcessingParameterEnum|metric|Metric|euclidean;squared;maximum;manhattan;geodesic|False|0|True
 *QgsProcessingParameterBoolean|-m|Output distances in meters instead of map units|False
-*QgsProcessingParameterBoolean|-|Calculate distance to nearest NULL cell|False
+*QgsProcessingParameterBoolean|-n|Calculate distance to nearest NULL cell|False
 QgsProcessingParameterRasterDestination|distance|Distance
 QgsProcessingParameterRasterDestination|value|Value of nearest cell
