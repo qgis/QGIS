@@ -37,8 +37,12 @@ void QgsLayerTreeViewFilterIndicatorProvider::onIndicatorClicked( const QModelIn
   if ( !QgsLayerTree::isLayer( node ) )
     return;
 
-  QgisApp::instance()->layerSubsetString( QgsLayerTree::toLayer( node )->layer() );
+  QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer();
+  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+  if ( vl && vl->isEditable() )
+    return;
 
+  QgisApp::instance()->layerSubsetString( layer );
 }
 
 QString QgsLayerTreeViewFilterIndicatorProvider::iconName( QgsMapLayer *layer )
