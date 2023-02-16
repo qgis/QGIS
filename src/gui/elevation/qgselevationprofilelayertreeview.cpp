@@ -62,7 +62,7 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
           std::unique_ptr< QgsSymbol > symbol;
           switch ( layer->type() )
           {
-            case QgsMapLayerType::VectorLayer:
+            case Qgis::LayerType::Vector:
             {
               QgsVectorLayerElevationProperties *elevationProperties = qgis::down_cast< QgsVectorLayerElevationProperties * >( layer->elevationProperties() );
               QgsVectorLayer *vLayer = qobject_cast< QgsVectorLayer * >( layer );
@@ -142,7 +142,7 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
               break;
             }
 
-            case QgsMapLayerType::RasterLayer:
+            case Qgis::LayerType::Raster:
             {
               QgsRasterLayerElevationProperties *rlProps = qgis::down_cast< QgsRasterLayerElevationProperties * >( layer->elevationProperties() );
               switch ( rlProps->profileSymbology() )
@@ -163,7 +163,7 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
               break;
             }
 
-            case QgsMapLayerType::MeshLayer:
+            case Qgis::LayerType::Mesh:
             {
               QgsMeshLayerElevationProperties *mlProps = qgis::down_cast< QgsMeshLayerElevationProperties * >( layer->elevationProperties() );
               switch ( mlProps->profileSymbology() )
@@ -184,11 +184,11 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
               break;
             }
 
-            case QgsMapLayerType::PluginLayer:
-            case QgsMapLayerType::VectorTileLayer:
-            case QgsMapLayerType::AnnotationLayer:
-            case QgsMapLayerType::PointCloudLayer:
-            case QgsMapLayerType::GroupLayer:
+            case Qgis::LayerType::Plugin:
+            case Qgis::LayerType::VectorTile:
+            case Qgis::LayerType::Annotation:
+            case Qgis::LayerType::PointCloud:
+            case Qgis::LayerType::Group:
               break;
           }
           if ( !symbol )
@@ -378,10 +378,10 @@ void QgsElevationProfileLayerTreeView::populateInitialLayers( QgsProject *projec
   // the vector feature
   QList< QgsMapLayer * > sortedLayers = QgsMapLayerUtils::sortLayersByType( layers,
   {
-    QgsMapLayerType::RasterLayer,
-    QgsMapLayerType::MeshLayer,
-    QgsMapLayerType::VectorLayer,
-    QgsMapLayerType::PointCloudLayer
+    Qgis::LayerType::Raster,
+    Qgis::LayerType::Mesh,
+    Qgis::LayerType::Vector,
+    Qgis::LayerType::PointCloud
   } );
 
   std::reverse( sortedLayers.begin(), sortedLayers.end() );

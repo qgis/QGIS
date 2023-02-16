@@ -104,7 +104,7 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
       continue;
     }
 
-    if ( layer->type() != QgsMapLayerType::VectorLayer )
+    if ( layer->type() != Qgis::LayerType::Vector )
       throw QgsProcessingException( QObject::tr( "All layers must be vector layers!" ) );
 
     QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer );

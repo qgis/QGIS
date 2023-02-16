@@ -38,7 +38,7 @@ void QgsLayerMetadataResultsProxyModel::setFilterString( const QString &filterSt
   invalidateFilter();
 }
 
-void QgsLayerMetadataResultsProxyModel::setFilterMapLayerType( const QgsMapLayerType mapLayerType )
+void QgsLayerMetadataResultsProxyModel::setFilterMapLayerType( const Qgis::LayerType mapLayerType )
 {
   mFilterMapLayerType = mapLayerType;
   invalidateFilter();

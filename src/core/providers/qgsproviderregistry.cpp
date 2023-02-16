@@ -22,10 +22,8 @@
 #include "qgsdataprovider.h"
 #include "qgsdataitemprovider.h"
 #include "qgslogger.h"
-#include "qgsmessageoutput.h"
 #include "qgsmessagelog.h"
 #include "qgsprovidermetadata.h"
-#include "qgsvectorlayer.h"
 #include "qgsvectortileprovidermetadata.h"
 #include "qgsproject.h"
 #include "qgsprovidersublayerdetails.h"
@@ -154,7 +152,7 @@ class PdalUnusableUriHandlerInterface : public QgsProviderRegistry::UnusableUriH
     {
       QgsProviderRegistry::UnusableUriDetails res = QgsProviderRegistry::UnusableUriDetails( uri,
           QObject::tr( "LAS and LAZ files cannot be opened by this QGIS install." ),
-          QList<QgsMapLayerType>() << QgsMapLayerType::PointCloudLayer );
+          QList<Qgis::LayerType>() << Qgis::LayerType::PointCloud );
 
 #ifdef Q_OS_WIN
       res.detailedWarning = QObject::tr( "The installer used to install this version of QGIS does "
@@ -889,7 +887,7 @@ QgsProviderMetadata *QgsProviderRegistry::providerMetadata( const QString &provi
   return findMetadata_( mProviders, providerKey );
 }
 
-QSet<QString> QgsProviderRegistry::providersForLayerType( QgsMapLayerType type ) const
+QSet<QString> QgsProviderRegistry::providersForLayerType( Qgis::LayerType type ) const
 {
   QSet<QString> lst;
   for ( Providers::const_iterator it = mProviders.begin(); it != mProviders.end(); ++it )

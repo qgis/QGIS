@@ -1569,7 +1569,7 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
     }
   }
 
-  if ( mLayer && mLayer->layer()  && mLayer->layer()->type() == QgsMapLayerType::VectorLayer )
+  if ( mLayer && mLayer->layer()  && mLayer->layer()->type() == Qgis::LayerType::Vector )
   {
     switch ( qobject_cast< QgsVectorLayer * >( mLayer->layer() )->geometryType() )
     {

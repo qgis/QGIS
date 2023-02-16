@@ -71,7 +71,7 @@ QVariant QgsLayerMetadataResultsModel::data( const QModelIndex &index, int role 
           case Sections::GeometryType:
           {
             const QgsLayerMetadataProviderResult &md { mResult.metadata().at( index.row() ) };
-            if ( md.layerType() == QgsMapLayerType::RasterLayer )
+            if ( md.layerType() == Qgis::LayerType::Raster )
               return tr( "Raster" );
             return md.geometryType() == QgsWkbTypes::GeometryType::UnknownGeometry ? QgsWkbTypes::geometryDisplayString( QgsWkbTypes::GeometryType::NullGeometry ) : QgsWkbTypes::geometryDisplayString( md.geometryType() );
           }
@@ -93,7 +93,7 @@ QVariant QgsLayerMetadataResultsModel::data( const QModelIndex &index, int role 
         if ( index.column() == 0 )
         {
           const QgsLayerMetadataProviderResult &md { mResult.metadata().at( index.row() ) };
-          if ( md.layerType() == QgsMapLayerType::RasterLayer )
+          if ( md.layerType() == Qgis::LayerType::Raster )
             return QgsApplication::getThemeIcon( QStringLiteral( "mIconRaster.svg" ) );
           return QgsIconUtils::iconForGeometryType( md.geometryType() == QgsWkbTypes::GeometryType::UnknownGeometry ? QgsWkbTypes::GeometryType::NullGeometry : md.geometryType() );
         }

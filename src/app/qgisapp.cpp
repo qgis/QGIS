@@ -7497,7 +7497,7 @@ void QgisApp::refreshFeatureActions()
 
 void QgisApp::changeDataSource( QgsMapLayer *layer )
 {
-  QgsMapLayerType layerType( layer->type() );
+  Qgis::LayerType layerType( layer->type() );
 
   QgsDataSourceSelectDialog dlg( mBrowserModel, true, layerType );
   if ( !layer->isValid() )
@@ -8062,23 +8062,23 @@ QString QgisApp::saveAsFile( QgsMapLayer *layer, const bool onlySelected, const 
   if ( !layer )
     return QString();
 
-  QgsMapLayerType layerType = layer->type();
+  Qgis::LayerType layerType = layer->type();
   switch ( layerType )
   {
-    case QgsMapLayerType::RasterLayer:
+    case Qgis::LayerType::Raster:
       return saveAsRasterFile( qobject_cast<QgsRasterLayer *>( layer ), defaultToAddToMap );
 
-    case QgsMapLayerType::VectorLayer:
+    case Qgis::LayerType::Vector:
       return saveAsVectorFileGeneral( qobject_cast<QgsVectorLayer *>( layer ), true, onlySelected, defaultToAddToMap );
 
-    case QgsMapLayerType::PointCloudLayer:
+    case Qgis::LayerType::PointCloud:
       return saveAsPointCloudLayer( qobject_cast<QgsPointCloudLayer *>( layer ) );
 
-    case QgsMapLayerType::MeshLayer:
-    case QgsMapLayerType::VectorTileLayer:
-    case QgsMapLayerType::PluginLayer:
-    case QgsMapLayerType::AnnotationLayer:
-    case QgsMapLayerType::GroupLayer:
+    case Qgis::LayerType::Mesh:
+    case Qgis::LayerType::VectorTile:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::Group:
       return QString();
   }
   return QString();
@@ -8162,7 +8162,7 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
   switch ( layer->type() )
   {
 
-    case QgsMapLayerType::VectorLayer:
+    case Qgis::LayerType::Vector:
     {
       QgsVectorLayer *vlayer = qobject_cast< QgsVectorLayer * >( layer );
       QgsVectorLayerSaveStyleDialog dlg( vlayer, this );
@@ -8248,10 +8248,10 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
       break;
     }
 
-    case QgsMapLayerType::RasterLayer:
-    case QgsMapLayerType::MeshLayer:
-    case QgsMapLayerType::PointCloudLayer:
-    case QgsMapLayerType::VectorTileLayer:
+    case Qgis::LayerType::Raster:
+    case Qgis::LayerType::Mesh:
+    case Qgis::LayerType::PointCloud:
+    case Qgis::LayerType::VectorTile:
     {
       QgsSettings settings;
       QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
@@ -8274,9 +8274,9 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
       break;
     }
 
-    case QgsMapLayerType::AnnotationLayer:
-    case QgsMapLayerType::PluginLayer:
-    case QgsMapLayerType::GroupLayer:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Group:
       break;
 
   }
@@ -9835,26 +9835,26 @@ void QgisApp::deselectActiveLayer()
 
   switch ( layer->type() )
   {
-    case QgsMapLayerType::VectorLayer:
+    case Qgis::LayerType::Vector:
     {
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
       vlayer->removeSelection();
       break;
     }
 
-    case QgsMapLayerType::VectorTileLayer:
+    case Qgis::LayerType::VectorTile:
     {
       QgsVectorTileLayer *vtlayer = qobject_cast<QgsVectorTileLayer *>( layer );
       vtlayer->removeSelection();
       break;
     }
 
-    case QgsMapLayerType::RasterLayer:
-    case QgsMapLayerType::PluginLayer:
-    case QgsMapLayerType::MeshLayer:
-    case QgsMapLayerType::AnnotationLayer:
-    case QgsMapLayerType::PointCloudLayer:
-    case QgsMapLayerType::GroupLayer:
+    case Qgis::LayerType::Raster:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Mesh:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::PointCloud:
+    case Qgis::LayerType::Group:
     {
       visibleMessageBar()->pushMessage(
         tr( "No active vector layer" ),
@@ -10004,20 +10004,20 @@ void QgisApp::copySelectionToClipboard( QgsMapLayer *layerContainingSelection )
 
   switch ( layerContainingSelection->type() )
   {
-    case QgsMapLayerType::VectorLayer:
+    case Qgis::LayerType::Vector:
       clipboard()->replaceWithCopyOf( qobject_cast<QgsVectorLayer *>( layerContainingSelection ) );
       break;
 
-    case QgsMapLayerType::VectorTileLayer:
+    case Qgis::LayerType::VectorTile:
       clipboard()->replaceWithCopyOf( qobject_cast<QgsVectorTileLayer *>( layerContainingSelection ) );
       break;
 
-    case QgsMapLayerType::RasterLayer:
-    case QgsMapLayerType::PluginLayer:
-    case QgsMapLayerType::MeshLayer:
-    case QgsMapLayerType::AnnotationLayer:
-    case QgsMapLayerType::PointCloudLayer:
-    case QgsMapLayerType::GroupLayer:
+    case Qgis::LayerType::Raster:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Mesh:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::PointCloud:
+    case Qgis::LayerType::Group:
       return; // not supported
   }
 }
@@ -10419,8 +10419,8 @@ void QgisApp::pasteStyle( QgsMapLayer *destinationLayer, QgsMapLayer::StyleCateg
       }
 
       bool isVectorStyle = doc.elementsByTagName( QStringLiteral( "pipe" ) ).isEmpty();
-      if ( ( selectionLayer->type() == QgsMapLayerType::RasterLayer && isVectorStyle ) ||
-           ( selectionLayer->type() == QgsMapLayerType::VectorLayer && !isVectorStyle ) )
+      if ( ( selectionLayer->type() == Qgis::LayerType::Raster && isVectorStyle ) ||
+           ( selectionLayer->type() == Qgis::LayerType::Vector && !isVectorStyle ) )
       {
         return;
       }
@@ -10596,16 +10596,16 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
 {
   switch ( layer->type() )
   {
-    case QgsMapLayerType::VectorLayer:
+    case Qgis::LayerType::Vector:
       return toggleEditingVectorLayer( qobject_cast<QgsVectorLayer *>( layer ), allowCancel );
-    case QgsMapLayerType::MeshLayer:
+    case Qgis::LayerType::Mesh:
       return toggleEditingMeshLayer( qobject_cast<QgsMeshLayer *>( layer ), allowCancel );
-    case QgsMapLayerType::RasterLayer:
-    case QgsMapLayerType::PluginLayer:
-    case QgsMapLayerType::VectorTileLayer:
-    case QgsMapLayerType::AnnotationLayer:
-    case QgsMapLayerType::PointCloudLayer:
-    case QgsMapLayerType::GroupLayer:
+    case Qgis::LayerType::Raster:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::VectorTile:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::PointCloud:
+    case Qgis::LayerType::Group:
       break;
   }
   return false;
@@ -10928,16 +10928,16 @@ void QgisApp::saveEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRep
 
   switch ( layer->type() )
   {
-    case QgsMapLayerType::VectorLayer:
+    case Qgis::LayerType::Vector:
       return saveVectorLayerEdits( layer, leaveEditable, triggerRepaint );
-    case QgsMapLayerType::MeshLayer:
+    case Qgis::LayerType::Mesh:
       return saveMeshLayerEdits( layer, leaveEditable, triggerRepaint );
-    case QgsMapLayerType::RasterLayer:
-    case QgsMapLayerType::PluginLayer:
-    case QgsMapLayerType::VectorTileLayer:
-    case QgsMapLayerType::AnnotationLayer:
-    case QgsMapLayerType::PointCloudLayer:
-    case QgsMapLayerType::GroupLayer:
+    case Qgis::LayerType::Raster:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::VectorTile:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::PointCloud:
+    case Qgis::LayerType::Group:
       break;
   }
 }
@@ -10995,16 +10995,16 @@ void QgisApp::cancelEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerR
 
   switch ( layer->type() )
   {
-    case QgsMapLayerType::VectorLayer:
+    case Qgis::LayerType::Vector:
       return cancelVectorLayerEdits( layer, leaveEditable, triggerRepaint );
-    case QgsMapLayerType::MeshLayer:
+    case Qgis::LayerType::Mesh:
       return cancelMeshLayerEdits( layer, leaveEditable, triggerRepaint );
-    case QgsMapLayerType::RasterLayer:
-    case QgsMapLayerType::PluginLayer:
-    case QgsMapLayerType::VectorTileLayer:
-    case QgsMapLayerType::AnnotationLayer:
-    case QgsMapLayerType::PointCloudLayer:
-    case QgsMapLayerType::GroupLayer:
+    case Qgis::LayerType::Raster:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::VectorTile:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::PointCloud:
+    case Qgis::LayerType::Group:
       break;
   }
 }
@@ -11201,7 +11201,7 @@ void QgisApp::updateLayerModifiedActions()
   {
     switch ( currentLayer->type() )
     {
-      case QgsMapLayerType::VectorLayer:
+      case Qgis::LayerType::Vector:
       {
         QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( currentLayer );
         if ( QgsVectorDataProvider *dprovider = vlayer->dataProvider() )
@@ -11212,18 +11212,18 @@ void QgisApp::updateLayerModifiedActions()
         }
       }
       break;
-      case QgsMapLayerType::MeshLayer:
+      case Qgis::LayerType::Mesh:
       {
         QgsMeshLayer *mlayer = qobject_cast<QgsMeshLayer *>( currentLayer );
         enableSaveLayerEdits = ( mlayer->isEditable() && mlayer->isModified() );
       }
       break;
-      case QgsMapLayerType::RasterLayer:
-      case QgsMapLayerType::PluginLayer:
-      case QgsMapLayerType::VectorTileLayer:
-      case QgsMapLayerType::AnnotationLayer:
-      case QgsMapLayerType::PointCloudLayer:
-      case QgsMapLayerType::GroupLayer:
+      case Qgis::LayerType::Raster:
+      case Qgis::LayerType::Plugin:
+      case Qgis::LayerType::VectorTile:
+      case Qgis::LayerType::Annotation:
+      case Qgis::LayerType::PointCloud:
+      case Qgis::LayerType::Group:
         break;
     }
   }
@@ -11674,15 +11674,15 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
 
     switch ( selectedLyr->type() )
     {
-      case QgsMapLayerType::PluginLayer:
+      case Qgis::LayerType::Plugin:
         unSppType = tr( "Plugin layer" );
         break;
 
-      case QgsMapLayerType::GroupLayer:
+      case Qgis::LayerType::Group:
         unSppType = tr( "Group layer" );
         break;
 
-      case QgsMapLayerType::VectorLayer:
+      case Qgis::LayerType::Vector:
       {
         if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( selectedLyr ) )
         {
@@ -11694,11 +11694,11 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
         break;
       }
 
-      case QgsMapLayerType::PointCloudLayer:
-      case QgsMapLayerType::RasterLayer:
-      case QgsMapLayerType::VectorTileLayer:
-      case QgsMapLayerType::MeshLayer:
-      case QgsMapLayerType::AnnotationLayer:
+      case Qgis::LayerType::PointCloud:
+      case Qgis::LayerType::Raster:
+      case Qgis::LayerType::VectorTile:
+      case Qgis::LayerType::Mesh:
+      case Qgis::LayerType::Annotation:
       {
         dupLayer = selectedLyr->clone();
         break;
@@ -14493,7 +14493,7 @@ void QgisApp::selectionChanged( QgsMapLayer *layer )
   {
     switch ( layer->type() )
     {
-      case QgsMapLayerType::VectorLayer:
+      case Qgis::LayerType::Vector:
       {
         QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
         const int selectedCount = vlayer->selectedFeatureCount();
@@ -14524,7 +14524,7 @@ void QgisApp::selectionChanged( QgsMapLayer *layer )
         break;
       }
 
-      case QgsMapLayerType::VectorTileLayer:
+      case Qgis::LayerType::VectorTile:
       {
         QgsVectorTileLayer *vtLayer = qobject_cast< QgsVectorTileLayer * >( layer );
         const int selectedCount = vtLayer->selectedFeatureCount();
@@ -14532,12 +14532,12 @@ void QgisApp::selectionChanged( QgsMapLayer *layer )
         break;
       }
 
-      case QgsMapLayerType::RasterLayer:
-      case QgsMapLayerType::PluginLayer:
-      case QgsMapLayerType::MeshLayer:
-      case QgsMapLayerType::AnnotationLayer:
-      case QgsMapLayerType::PointCloudLayer:
-      case QgsMapLayerType::GroupLayer:
+      case Qgis::LayerType::Raster:
+      case Qgis::LayerType::Plugin:
+      case Qgis::LayerType::Mesh:
+      case Qgis::LayerType::Annotation:
+      case Qgis::LayerType::PointCloud:
+      case Qgis::LayerType::Group:
         break;   // not supported
     }
   }
@@ -14583,7 +14583,7 @@ void QgisApp::legendLayerSelectionChanged()
   if ( selectedLayers.size() == 1 )
   {
     QgsLayerTreeLayer *l = selectedLayers.front();
-    if ( l->layer() && l->layer()->type() == QgsMapLayerType::VectorLayer )
+    if ( l->layer() && l->layer()->type() == Qgis::LayerType::Vector )
     {
       mLegendExpressionFilterButton->setEnabled( true );
       bool exprEnabled;
@@ -14653,24 +14653,24 @@ bool QgisApp::selectedLayersHaveSelection()
   {
     switch ( activeLayer()->type() )
     {
-      case QgsMapLayerType::VectorLayer:
+      case Qgis::LayerType::Vector:
       {
         QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( activeLayer() );
         return layer->selectedFeatureCount() > 0;
       }
 
-      case QgsMapLayerType::VectorTileLayer:
+      case Qgis::LayerType::VectorTile:
       {
         QgsVectorTileLayer *layer = qobject_cast<QgsVectorTileLayer *>( activeLayer() );
         return layer->selectedFeatureCount() > 0;
       }
 
-      case QgsMapLayerType::RasterLayer:
-      case QgsMapLayerType::PluginLayer:
-      case QgsMapLayerType::MeshLayer:
-      case QgsMapLayerType::AnnotationLayer:
-      case QgsMapLayerType::PointCloudLayer:
-      case QgsMapLayerType::GroupLayer:
+      case Qgis::LayerType::Raster:
+      case Qgis::LayerType::Plugin:
+      case Qgis::LayerType::Mesh:
+      case Qgis::LayerType::Annotation:
+      case Qgis::LayerType::PointCloud:
+      case Qgis::LayerType::Group:
         return false;
     }
   }
@@ -14682,14 +14682,14 @@ bool QgisApp::selectedLayersHaveSelection()
 
     switch ( mapLayer->type() )
     {
-      case QgsMapLayerType::VectorLayer:
+      case Qgis::LayerType::Vector:
       {
         QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mapLayer );
         if ( layer->selectedFeatureCount() > 0 )
           return true;
         break;
       }
-      case QgsMapLayerType::VectorTileLayer:
+      case Qgis::LayerType::VectorTile:
       {
         QgsVectorTileLayer *layer = qobject_cast<QgsVectorTileLayer *>( mapLayer );
         if ( layer->selectedFeatureCount() > 0 )
@@ -14697,12 +14697,12 @@ bool QgisApp::selectedLayersHaveSelection()
         break;
       }
 
-      case QgsMapLayerType::RasterLayer:
-      case QgsMapLayerType::PluginLayer:
-      case QgsMapLayerType::MeshLayer:
-      case QgsMapLayerType::AnnotationLayer:
-      case QgsMapLayerType::PointCloudLayer:
-      case QgsMapLayerType::GroupLayer:
+      case Qgis::LayerType::Raster:
+      case Qgis::LayerType::Plugin:
+      case Qgis::LayerType::Mesh:
+      case Qgis::LayerType::Annotation:
+      case Qgis::LayerType::PointCloud:
+      case Qgis::LayerType::Group:
         break;
     }
   }
@@ -14890,7 +14890,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
   // Vector layers
   switch ( layer->type() )
   {
-    case QgsMapLayerType::VectorLayer:
+    case Qgis::LayerType::Vector:
     {
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
       QgsVectorDataProvider *dprovider = vlayer->dataProvider();
@@ -15105,7 +15105,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       break;
     }
 
-    case QgsMapLayerType::RasterLayer:
+    case Qgis::LayerType::Raster:
     {
       const QgsRasterLayer *rlayer = qobject_cast<const QgsRasterLayer *>( layer );
       const QgsRasterDataProvider *dprovider = rlayer->dataProvider();
@@ -15225,7 +15225,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       break;
     }
 
-    case QgsMapLayerType::MeshLayer:
+    case Qgis::LayerType::Mesh:
     {
       QgsMeshLayer *mlayer = qobject_cast<QgsMeshLayer *>( layer );
 
@@ -15303,7 +15303,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
 
     break;
 
-    case QgsMapLayerType::VectorTileLayer:
+    case Qgis::LayerType::VectorTile:
     {
       QgsVectorTileLayer *vtLayer = qobject_cast< QgsVectorTileLayer * >( layer );
       const bool layerHasSelection = vtLayer->selectedFeatureCount() > 0;
@@ -15375,7 +15375,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       break;
     }
 
-    case QgsMapLayerType::PointCloudLayer:
+    case Qgis::LayerType::PointCloud:
     {
       const QgsDataProvider *dprovider = layer->dataProvider();
       mActionLocalHistogramStretch->setEnabled( false );
@@ -15445,11 +15445,11 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       enableMeshEditingTools( false );
       break;
     }
-    case QgsMapLayerType::PluginLayer:
-    case QgsMapLayerType::GroupLayer:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Group:
       break;
 
-    case QgsMapLayerType::AnnotationLayer:
+    case Qgis::LayerType::Annotation:
     {
       mActionLocalHistogramStretch->setEnabled( false );
       mActionFullHistogramStretch->setEnabled( false );
@@ -16188,7 +16188,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
 
   switch ( mapLayer->type() )
   {
-    case QgsMapLayerType::RasterLayer:
+    case Qgis::LayerType::Raster:
     {
       QgsRasterLayerProperties *rasterLayerPropertiesDialog = new QgsRasterLayerProperties( mapLayer, mMapCanvas, this );
 
@@ -16222,7 +16222,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
       break;
     }
 
-    case QgsMapLayerType::MeshLayer:
+    case Qgis::LayerType::Mesh:
     {
       QgsMeshLayerProperties meshLayerPropertiesDialog( mapLayer, mMapCanvas, this );
 
@@ -16246,7 +16246,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
       break;
     }
 
-    case QgsMapLayerType::VectorLayer:
+    case Qgis::LayerType::Vector:
     {
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mapLayer );
 
@@ -16287,7 +16287,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
       break;
     }
 
-    case QgsMapLayerType::VectorTileLayer:
+    case Qgis::LayerType::VectorTile:
     {
       QgsVectorTileLayerProperties vectorTileLayerPropertiesDialog( qobject_cast<QgsVectorTileLayer *>( mapLayer ), mMapCanvas, visibleMessageBar(), this );
       if ( !page.isEmpty() )
@@ -16305,7 +16305,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
       break;
     }
 
-    case QgsMapLayerType::PointCloudLayer:
+    case Qgis::LayerType::PointCloud:
     {
       QgsPointCloudLayerProperties pointCloudLayerPropertiesDialog( qobject_cast<QgsPointCloudLayer *>( mapLayer ), mMapCanvas, visibleMessageBar(), this );
 
@@ -16329,7 +16329,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
       break;
     }
 
-    case QgsMapLayerType::PluginLayer:
+    case Qgis::LayerType::Plugin:
     {
       QgsPluginLayer *pl = qobject_cast<QgsPluginLayer *>( mapLayer );
       if ( !pl )
@@ -16348,7 +16348,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
       break;
     }
 
-    case QgsMapLayerType::AnnotationLayer:
+    case Qgis::LayerType::Annotation:
     {
       QgsAnnotationLayerProperties annotationLayerPropertiesDialog( qobject_cast<QgsAnnotationLayer *>( mapLayer ), mMapCanvas, visibleMessageBar(), this );
 
@@ -16372,7 +16372,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
       break;
     }
 
-    case QgsMapLayerType::GroupLayer:
+    case Qgis::LayerType::Group:
       break;
   }
 }
@@ -16734,7 +16734,7 @@ void QgisApp::transactionGroupCommitError( const QString &error )
 
 QgsFeature QgisApp::duplicateFeatures( QgsMapLayer *mlayer, const QgsFeature &feature )
 {
-  if ( mlayer->type() != QgsMapLayerType::VectorLayer )
+  if ( mlayer->type() != Qgis::LayerType::Vector )
     return QgsFeature();
 
   QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mlayer );
@@ -16784,7 +16784,7 @@ QgsFeature QgisApp::duplicateFeatures( QgsMapLayer *mlayer, const QgsFeature &fe
 
 QgsFeature QgisApp::duplicateFeatureDigitized( QgsMapLayer *mlayer, const QgsFeature &feature )
 {
-  if ( mlayer->type() != QgsMapLayerType::VectorLayer )
+  if ( mlayer->type() != Qgis::LayerType::Vector )
     return QgsFeature();
 
   QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mlayer );

@@ -44,7 +44,6 @@
 #include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
-#include "qgsmessageoutput.h"
 #include "qgsmessagelog.h"
 #include "qgsrectangle.h"
 #include "qgis.h"
@@ -3093,9 +3092,9 @@ QString QgsMssqlProviderMetadata::encodeUri( const QVariantMap &parts ) const
   return dsUri.uri();
 }
 
-QList<QgsMapLayerType> QgsMssqlProviderMetadata::supportedLayerTypes() const
+QList<Qgis::LayerType> QgsMssqlProviderMetadata::supportedLayerTypes() const
 {
-  return { QgsMapLayerType::VectorLayer };
+  return { Qgis::LayerType::Vector };
 }
 
 bool QgsMssqlProviderMetadata::execLogged( QSqlQuery &qry, const QString &sql, const QString &uri, const QString &queryOrigin ) const

@@ -160,7 +160,7 @@ class QgsMdalProviderMetadata: public QgsProviderMetadata
     ProviderCapabilities providerCapabilities() const override;
     QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
     QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
-    QList< QgsMapLayerType > supportedLayerTypes() const override;
+    QList< Qgis::LayerType > supportedLayerTypes() const override;
 };
 
 #endif //QGSMDALPROVIDER_H

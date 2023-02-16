@@ -14,10 +14,7 @@
  ***************************************************************************/
 
 #include "qgsprocessingoutputdestinationwidget.h"
-#include "qgsgui.h"
 #include "qgsprocessingparameters.h"
-#include "qgsproviderregistry.h"
-#include "qgsprovidermetadata.h"
 #include "qgsnewdatabasetablenamewidget.h"
 #include "qgssettings.h"
 #include "qgsfileutils.h"
@@ -533,7 +530,7 @@ void QgsProcessingLayerOutputDestinationWidget::appendToLayer()
 {
   if ( QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this ) )
   {
-    QgsDataSourceSelectWidget *widget = new QgsDataSourceSelectWidget( mBrowserModel, true, QgsMapLayerType::VectorLayer );
+    QgsDataSourceSelectWidget *widget = new QgsDataSourceSelectWidget( mBrowserModel, true, Qgis::LayerType::Vector );
     widget->setPanelTitle( tr( "Append \"%1\" to Layer" ).arg( mParameter->description() ) );
 
     panel->openPanel( widget );

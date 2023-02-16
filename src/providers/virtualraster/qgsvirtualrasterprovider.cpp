@@ -272,9 +272,9 @@ QgsVirtualRasterProvider *QgsVirtualRasterProviderMetadata::createProvider( cons
   return new QgsVirtualRasterProvider( uri, options );
 }
 
-QList<QgsMapLayerType> QgsVirtualRasterProviderMetadata::supportedLayerTypes() const
+QList<Qgis::LayerType> QgsVirtualRasterProviderMetadata::supportedLayerTypes() const
 {
-  return { QgsMapLayerType::RasterLayer };
+  return { Qgis::LayerType::Raster };
 }
 
 QgsVirtualRasterProvider *QgsVirtualRasterProvider::clone() const

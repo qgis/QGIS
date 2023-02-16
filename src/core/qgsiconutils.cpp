@@ -100,18 +100,18 @@ QIcon QgsIconUtils::iconForLayer( const QgsMapLayer *layer )
 {
   switch ( layer->type() )
   {
-    case QgsMapLayerType::RasterLayer:
-    case QgsMapLayerType::MeshLayer:
-    case QgsMapLayerType::VectorTileLayer:
-    case QgsMapLayerType::PointCloudLayer:
-    case QgsMapLayerType::PluginLayer:
-    case QgsMapLayerType::AnnotationLayer:
-    case QgsMapLayerType::GroupLayer:
+    case Qgis::LayerType::Raster:
+    case Qgis::LayerType::Mesh:
+    case Qgis::LayerType::VectorTile:
+    case Qgis::LayerType::PointCloud:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::Group:
     {
       return QgsIconUtils::iconForLayerType( layer->type() );
     }
 
-    case QgsMapLayerType::VectorLayer:
+    case Qgis::LayerType::Vector:
     {
       const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( layer );
       if ( !vl )
@@ -147,30 +147,30 @@ QIcon QgsIconUtils::iconForLayer( const QgsMapLayer *layer )
   return QIcon();
 }
 
-QIcon QgsIconUtils::iconForLayerType( QgsMapLayerType type )
+QIcon QgsIconUtils::iconForLayerType( Qgis::LayerType type )
 {
   switch ( type )
   {
-    case QgsMapLayerType::RasterLayer:
+    case Qgis::LayerType::Raster:
       return QgsIconUtils::iconRaster();
 
-    case QgsMapLayerType::MeshLayer:
+    case Qgis::LayerType::Mesh:
       return QgsIconUtils::iconMesh();
 
-    case QgsMapLayerType::VectorTileLayer:
+    case Qgis::LayerType::VectorTile:
       return QgsIconUtils::iconVectorTile();
 
-    case QgsMapLayerType::PointCloudLayer:
+    case Qgis::LayerType::PointCloud:
       return QgsIconUtils::iconPointCloud();
 
-    case QgsMapLayerType::VectorLayer:
+    case Qgis::LayerType::Vector:
       return QgsIconUtils::iconGeometryCollection();
 
-    case QgsMapLayerType::AnnotationLayer:
+    case Qgis::LayerType::Annotation:
       return QgsApplication::getThemeIcon( QStringLiteral( "/mIconAnnotationLayer.svg" ) );
 
-    case QgsMapLayerType::PluginLayer:
-    case QgsMapLayerType::GroupLayer:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Group:
       break;
   }
   return QIcon();

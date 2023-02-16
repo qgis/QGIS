@@ -50,7 +50,7 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &baseName,
                             const QString &providerKey,
                             const QgsMeshLayer::LayerOptions &options )
-  : QgsMapLayer( QgsMapLayerType::MeshLayer, baseName, meshLayerPath )
+  : QgsMapLayer( Qgis::LayerType::Mesh, baseName, meshLayerPath )
   , mDatasetGroupStore( new QgsMeshDatasetGroupStore( this ) )
   , mTemporalProperties( new QgsMeshLayerTemporalProperties( this ) )
   , mElevationProperties( new QgsMeshLayerElevationProperties( this ) )
@@ -1840,7 +1840,7 @@ bool QgsMeshLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const
     return false;
   }
 
-  mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( QgsMapLayerType::MeshLayer ) );
+  mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( Qgis::LayerType::Mesh ) );
 
   // add provider node
   if ( mDataProvider )

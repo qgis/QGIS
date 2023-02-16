@@ -1780,7 +1780,7 @@ QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH
 
         QgsProviderSublayerDetails details;
         details.setProviderKey( PROVIDER_KEY );
-        details.setType( QgsMapLayerType::RasterLayer );
+        details.setType( Qgis::LayerType::Raster );
         details.setName( layerName );
         details.setDescription( layerDesc );
         details.setLayerNumber( i );
@@ -4058,8 +4058,8 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
     }
 
     // if this is a VRT file make sure it is raster VRT
-    if ( ( vsiPrefix.isEmpty() && suffix == QLatin1String( "vrt" ) && !QgsGdalUtils::vrtMatchesLayerType( path, QgsMapLayerType::RasterLayer ) )
-         || ( !vsiPrefix.isEmpty() && suffix == QLatin1String( "vrt" ) && !QgsGdalUtils::vrtMatchesLayerType( gdalUri, QgsMapLayerType::RasterLayer ) ) )
+    if ( ( vsiPrefix.isEmpty() && suffix == QLatin1String( "vrt" ) && !QgsGdalUtils::vrtMatchesLayerType( path, Qgis::LayerType::Raster ) )
+         || ( !vsiPrefix.isEmpty() && suffix == QLatin1String( "vrt" ) && !QgsGdalUtils::vrtMatchesLayerType( gdalUri, Qgis::LayerType::Raster ) ) )
     {
       return {};
     }
@@ -4076,7 +4076,7 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
     }
 
     QgsProviderSublayerDetails details;
-    details.setType( QgsMapLayerType::RasterLayer );
+    details.setType( Qgis::LayerType::Raster );
     details.setProviderKey( QStringLiteral( "gdal" ) );
     details.setUri( uri );
     details.setName( uriParts.value( QStringLiteral( "vsiSuffix" ) ).toString().isEmpty()
@@ -4109,7 +4109,7 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
       {
         QgsProviderSublayerDetails details;
         details.setProviderKey( PROVIDER_KEY );
-        details.setType( QgsMapLayerType::RasterLayer );
+        details.setType( Qgis::LayerType::Raster );
         details.setUri( uri );
         details.setLayerNumber( 1 );
         GDALDriverH hDriver = GDALGetDatasetDriver( dataset.get() );
@@ -4279,9 +4279,9 @@ QStringList QgsGdalProviderMetadata::sidecarFilesForUri( const QString &uri ) co
   return res;
 }
 
-QList<QgsMapLayerType> QgsGdalProviderMetadata::supportedLayerTypes() const
+QList<Qgis::LayerType> QgsGdalProviderMetadata::supportedLayerTypes() const
 {
-  return { QgsMapLayerType::RasterLayer };
+  return { Qgis::LayerType::Raster };
 }
 
 QgsGdalProviderMetadata::QgsGdalProviderMetadata():

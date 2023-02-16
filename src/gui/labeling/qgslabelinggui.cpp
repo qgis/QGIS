@@ -18,10 +18,7 @@
 #include "qgslabelinggui.h"
 #include "qgsvectorlayer.h"
 #include "qgsmapcanvas.h"
-#include "qgsvectorlayerlabeling.h"
 #include "qgsproject.h"
-#include "qgsauxiliarystorage.h"
-#include "qgsnewauxiliarylayerdialog.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgshelp.h"
@@ -315,7 +312,7 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
 {
   mPreviewFeature = QgsFeature();
 
-  if ( ( !mapLayer || mapLayer->type() != QgsMapLayerType::VectorLayer ) && mGeomType == QgsWkbTypes::UnknownGeometry )
+  if ( ( !mapLayer || mapLayer->type() != Qgis::LayerType::Vector ) && mGeomType == QgsWkbTypes::UnknownGeometry )
   {
     setEnabled( false );
     return;

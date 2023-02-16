@@ -126,7 +126,7 @@ bool QgsMeshLayer3DRendererWidgetFactory::supportLayerPropertiesDialog() const
 
 bool QgsMeshLayer3DRendererWidgetFactory::supportsLayer( QgsMapLayer *layer ) const
 {
-  return layer->type() == QgsMapLayerType::MeshLayer;
+  return layer->type() == Qgis::LayerType::Mesh;
 }
 
 QString QgsMeshLayer3DRendererWidgetFactory::layerPropertiesPagePositionHint() const

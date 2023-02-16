@@ -108,7 +108,7 @@ class CORE_EXPORT QgsIconUtils
      *
      * \since QGIS 3.22
      */
-    static QIcon iconForLayerType( QgsMapLayerType type );
+    static QIcon iconForLayerType( Qgis::LayerType type );
 
 };
 

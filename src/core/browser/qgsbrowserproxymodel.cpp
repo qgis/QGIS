@@ -157,12 +157,12 @@ void QgsBrowserProxyModel::setShowLayers( bool showLayers )
   mShowLayers = showLayers;
 }
 
-QgsMapLayerType QgsBrowserProxyModel::layerType() const
+Qgis::LayerType QgsBrowserProxyModel::layerType() const
 {
   return mLayerType;
 }
 
-void QgsBrowserProxyModel::setLayerType( QgsMapLayerType type )
+void QgsBrowserProxyModel::setLayerType( Qgis::LayerType type )
 {
   mLayerType = type;
   invalidateFilter();

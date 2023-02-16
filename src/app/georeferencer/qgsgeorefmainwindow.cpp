@@ -221,7 +221,7 @@ void QgsGeoreferencerMainWindow::reset()
   }
 }
 
-void QgsGeoreferencerMainWindow::openLayer( QgsMapLayerType layerType, const QString &fileName )
+void QgsGeoreferencerMainWindow::openLayer( Qgis::LayerType layerType, const QString &fileName )
 {
   switch ( checkNeedGCPSave() )
   {
@@ -246,7 +246,7 @@ void QgsGeoreferencerMainWindow::openLayer( QgsMapLayerType layerType, const QSt
     switch ( layerType )
     {
 
-      case QgsMapLayerType::RasterLayer:
+      case Qgis::LayerType::Raster:
       {
         QString lastUsedFilter = settingLastRasterFileFilter->value();
         if ( lastUsedFilter.isEmpty() )
@@ -265,9 +265,9 @@ void QgsGeoreferencerMainWindow::openLayer( QgsMapLayerType layerType, const QSt
         break;
       }
 
-      case QgsMapLayerType::VectorLayer:
+      case Qgis::LayerType::Vector:
       {
-        QgsDataSourceSelectDialog dlg( QgisApp::instance()->browserModel(), true, QgsMapLayerType::VectorLayer, this );
+        QgsDataSourceSelectDialog dlg( QgisApp::instance()->browserModel(), true, Qgis::LayerType::Vector, this );
         dlg.setWindowTitle( tr( "Open Vector" ) );
         if ( !dlg.exec() )
           return;
@@ -281,12 +281,12 @@ void QgsGeoreferencerMainWindow::openLayer( QgsMapLayerType layerType, const QSt
         break;
       }
 
-      case QgsMapLayerType::PluginLayer:
-      case QgsMapLayerType::MeshLayer:
-      case QgsMapLayerType::VectorTileLayer:
-      case QgsMapLayerType::AnnotationLayer:
-      case QgsMapLayerType::PointCloudLayer:
-      case QgsMapLayerType::GroupLayer:
+      case Qgis::LayerType::Plugin:
+      case Qgis::LayerType::Mesh:
+      case Qgis::LayerType::VectorTile:
+      case Qgis::LayerType::Annotation:
+      case Qgis::LayerType::PointCloud:
+      case Qgis::LayerType::Group:
         break;
     }
   }
@@ -296,18 +296,18 @@ void QgsGeoreferencerMainWindow::openLayer( QgsMapLayerType layerType, const QSt
     uri = mFileName;
     switch ( layerType )
     {
-      case QgsMapLayerType::RasterLayer:
+      case Qgis::LayerType::Raster:
         provider = QStringLiteral( "gdal" );
         break;
-      case QgsMapLayerType::VectorLayer:
+      case Qgis::LayerType::Vector:
         provider = QStringLiteral( "ogr" );
         break;
-      case QgsMapLayerType::PluginLayer:
-      case QgsMapLayerType::MeshLayer:
-      case QgsMapLayerType::VectorTileLayer:
-      case QgsMapLayerType::AnnotationLayer:
-      case QgsMapLayerType::PointCloudLayer:
-      case QgsMapLayerType::GroupLayer:
+      case Qgis::LayerType::Plugin:
+      case Qgis::LayerType::Mesh:
+      case Qgis::LayerType::VectorTile:
+      case Qgis::LayerType::Annotation:
+      case Qgis::LayerType::PointCloud:
+      case Qgis::LayerType::Group:
         break;
     }
   }
@@ -317,7 +317,7 @@ void QgsGeoreferencerMainWindow::openLayer( QgsMapLayerType layerType, const QSt
   QString errMsg;
   switch ( layerType )
   {
-    case QgsMapLayerType::RasterLayer:
+    case Qgis::LayerType::Raster:
       if ( !QgsRasterLayer::isValidRasterFileName( mFileName, errMsg ) )
       {
         mMessageBar->pushMessage( tr( "Open Raster" ), tr( "%1 is not a supported raster data source.%2" ).arg( mFileName,
@@ -326,13 +326,13 @@ void QgsGeoreferencerMainWindow::openLayer( QgsMapLayerType layerType, const QSt
       }
       break;
 
-    case QgsMapLayerType::PluginLayer:
-    case QgsMapLayerType::VectorLayer:
-    case QgsMapLayerType::MeshLayer:
-    case QgsMapLayerType::VectorTileLayer:
-    case QgsMapLayerType::AnnotationLayer:
-    case QgsMapLayerType::PointCloudLayer:
-    case QgsMapLayerType::GroupLayer:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Vector:
+    case Qgis::LayerType::Mesh:
+    case Qgis::LayerType::VectorTile:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::PointCloud:
+    case Qgis::LayerType::Group:
       break;
   }
 
@@ -344,16 +344,16 @@ void QgsGeoreferencerMainWindow::openLayer( QgsMapLayerType layerType, const QSt
 
   switch ( layerType )
   {
-    case QgsMapLayerType::RasterLayer:
+    case Qgis::LayerType::Raster:
       mGeorefTransform.loadRaster( mFileName );
       break;
-    case QgsMapLayerType::VectorLayer:
-    case QgsMapLayerType::PluginLayer:
-    case QgsMapLayerType::MeshLayer:
-    case QgsMapLayerType::VectorTileLayer:
-    case QgsMapLayerType::AnnotationLayer:
-    case QgsMapLayerType::PointCloudLayer:
-    case QgsMapLayerType::GroupLayer:
+    case Qgis::LayerType::Vector:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Mesh:
+    case Qgis::LayerType::VectorTile:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::PointCloud:
+    case Qgis::LayerType::Group:
       break;
   }
 
@@ -422,9 +422,9 @@ void QgsGeoreferencerMainWindow::dropEvent( QDropEvent *event )
   {
     // TODO -- consider using querySublayers to determine this instead
     if ( QgsRasterLayer::isValidRasterFileName( file ) )
-      openLayer( QgsMapLayerType::RasterLayer, file );
+      openLayer( Qgis::LayerType::Raster, file );
     else
-      openLayer( QgsMapLayerType::VectorLayer, file );
+      openLayer( Qgis::LayerType::Vector, file );
 
     timer->deleteLater();
   } );
@@ -443,7 +443,7 @@ void QgsGeoreferencerMainWindow::dragEnterEvent( QDragEnterEvent *event )
 
 bool QgsGeoreferencerMainWindow::showTransformSettingsDialog()
 {
-  QgsTransformSettingsDialog d( mLayer ? mLayer->type() : QgsMapLayerType::RasterLayer, mFileName, mModifiedFileName );
+  QgsTransformSettingsDialog d( mLayer ? mLayer->type() : Qgis::LayerType::Raster, mFileName, mModifiedFileName );
   d.setTargetCrs( mTargetCrs );
   d.setCreateWorldFileOnly( mCreateWorldFileOnly );
   d.setTransformMethod( mTransformMethod );
@@ -516,7 +516,7 @@ void QgsGeoreferencerMainWindow::generateGDALScript()
     {
       switch ( mLayer->type() )
       {
-        case QgsMapLayerType::RasterLayer:
+        case Qgis::LayerType::Raster:
         {
           // CAVEAT: generateGDALwarpCommand() relies on some member variables being set
           // by generateGDALtranslateCommand(), so this method must be called before
@@ -539,19 +539,19 @@ void QgsGeoreferencerMainWindow::generateGDALScript()
           break;
         }
 
-        case QgsMapLayerType::VectorLayer:
+        case Qgis::LayerType::Vector:
         {
           const QString command = generateGDALogr2ogrCommand();
           showGDALScript( QStringList() << command );
           break;
         }
 
-        case QgsMapLayerType::PluginLayer:
-        case QgsMapLayerType::MeshLayer:
-        case QgsMapLayerType::VectorTileLayer:
-        case QgsMapLayerType::AnnotationLayer:
-        case QgsMapLayerType::PointCloudLayer:
-        case QgsMapLayerType::GroupLayer:
+        case Qgis::LayerType::Plugin:
+        case Qgis::LayerType::Mesh:
+        case Qgis::LayerType::VectorTile:
+        case Qgis::LayerType::Annotation:
+        case Qgis::LayerType::PointCloud:
+        case Qgis::LayerType::Group:
           break;
       }
       break;
@@ -852,7 +852,7 @@ void QgsGeoreferencerMainWindow::showGeorefConfigDialog()
 
 void QgsGeoreferencerMainWindow::fullHistogramStretch()
 {
-  if ( mLayer && mLayer->type() == QgsMapLayerType::RasterLayer && mCanvas )
+  if ( mLayer && mLayer->type() == Qgis::LayerType::Raster && mCanvas )
   {
     qobject_cast<QgsRasterLayer *>( mLayer.get() )->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum );
     mCanvas->refresh();
@@ -863,7 +863,7 @@ void QgsGeoreferencerMainWindow::localHistogramStretch()
 {
   QgsRectangle rectangle = QgisApp::instance()->mapCanvas()->mapSettings().outputExtentToLayerExtent( mLayer.get(), QgisApp::instance()->mapCanvas()->extent() );
 
-  if ( mLayer && mLayer->type() == QgsMapLayerType::RasterLayer && mCanvas )
+  if ( mLayer && mLayer->type() == Qgis::LayerType::Raster && mCanvas )
   {
     qobject_cast<QgsRasterLayer *>( mLayer.get() )->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRasterMinMaxOrigin::MinMax, rectangle );
     mCanvas->refresh();
@@ -985,9 +985,9 @@ void QgsGeoreferencerMainWindow::createActions()
   connect( mActionReset, &QAction::triggered, this, &QgsGeoreferencerMainWindow::reset );
 
   mActionOpenRaster->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddRasterLayer.svg" ) ) );
-  connect( mActionOpenRaster, &QAction::triggered, this, [ = ] { openLayer( QgsMapLayerType::RasterLayer ); } );
+  connect( mActionOpenRaster, &QAction::triggered, this, [ = ] { openLayer( Qgis::LayerType::Raster ); } );
 
-  connect( mActionOpenVector, &QAction::triggered, this, [ = ] { openLayer( QgsMapLayerType::VectorLayer ); } );
+  connect( mActionOpenVector, &QAction::triggered, this, [ = ] { openLayer( Qgis::LayerType::Vector ); } );
 
   mActionStartGeoref->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionStart.svg" ) ) );
   connect( mActionStartGeoref, &QAction::triggered, this, &QgsGeoreferencerMainWindow::georeference );
@@ -1284,11 +1284,11 @@ void QgsGeoreferencerMainWindow::removeOldLayer()
   mCanvas->refresh();
 }
 
-void QgsGeoreferencerMainWindow::loadSource( QgsMapLayerType layerType, const QString &uri, const QString &provider )
+void QgsGeoreferencerMainWindow::loadSource( Qgis::LayerType layerType, const QString &uri, const QString &provider )
 {
   switch ( layerType )
   {
-    case QgsMapLayerType::VectorLayer:
+    case Qgis::LayerType::Vector:
     {
       QgsVectorLayer::LayerOptions options( QgsProject::instance()->transformContext() );
       // never prompt for a crs selection for the input layer!
@@ -1297,7 +1297,7 @@ void QgsGeoreferencerMainWindow::loadSource( QgsMapLayerType layerType, const QS
       break;
     }
 
-    case QgsMapLayerType::RasterLayer:
+    case Qgis::LayerType::Raster:
     {
       QgsRasterLayer::LayerOptions options( true, QgsProject::instance()->transformContext() );
       // never prompt for a crs selection for the input raster!
@@ -1306,12 +1306,12 @@ void QgsGeoreferencerMainWindow::loadSource( QgsMapLayerType layerType, const QS
       break;
     }
 
-    case QgsMapLayerType::PluginLayer:
-    case QgsMapLayerType::MeshLayer:
-    case QgsMapLayerType::VectorTileLayer:
-    case QgsMapLayerType::AnnotationLayer:
-    case QgsMapLayerType::PointCloudLayer:
-    case QgsMapLayerType::GroupLayer:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Mesh:
+    case Qgis::LayerType::VectorTile:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::PointCloud:
+    case Qgis::LayerType::Group:
       Q_ASSERT_X( false, "QgsGeoreferencerMainWindow::loadSource", "unsupported layer type" );
       return;
   }
@@ -1332,8 +1332,8 @@ void QgsGeoreferencerMainWindow::loadSource( QgsMapLayerType layerType, const QS
   // add layer to map canvas
   mCanvas->setLayers( QList<QgsMapLayer *>() << mLayer.get() );
 
-  mActionLocalHistogramStretch->setEnabled( layerType == QgsMapLayerType::RasterLayer );
-  mActionFullHistogramStretch->setEnabled( layerType == QgsMapLayerType::RasterLayer );
+  mActionLocalHistogramStretch->setEnabled( layerType == Qgis::LayerType::Raster );
+  mActionFullHistogramStretch->setEnabled( layerType == Qgis::LayerType::Raster );
 
   // Status Bar
   if ( mGeorefTransform.hasExistingGeoreference() )
@@ -1348,18 +1348,18 @@ void QgsGeoreferencerMainWindow::loadSource( QgsMapLayerType layerType, const QS
 
     switch ( layerType )
     {
-      case QgsMapLayerType::VectorLayer:
+      case Qgis::LayerType::Vector:
         mEPSG->setToolTip( tr( "Source coordinate" ) );
         break;
-      case QgsMapLayerType::RasterLayer:
+      case Qgis::LayerType::Raster:
         mEPSG->setToolTip( tr( "Coordinate of image (column/line)" ) );
         break;
-      case QgsMapLayerType::PluginLayer:
-      case QgsMapLayerType::MeshLayer:
-      case QgsMapLayerType::VectorTileLayer:
-      case QgsMapLayerType::AnnotationLayer:
-      case QgsMapLayerType::PointCloudLayer:
-      case QgsMapLayerType::GroupLayer:
+      case Qgis::LayerType::Plugin:
+      case Qgis::LayerType::Mesh:
+      case Qgis::LayerType::VectorTile:
+      case Qgis::LayerType::Annotation:
+      case Qgis::LayerType::PointCloud:
+      case Qgis::LayerType::Group:
         break;
     }
   }
@@ -1464,7 +1464,7 @@ bool QgsGeoreferencerMainWindow::georeference()
   if ( !validate() )
     return false;
 
-  if ( mLayer->type() == QgsMapLayerType::RasterLayer && mCreateWorldFileOnly && ( QgsGcpTransformerInterface::TransformMethod::Linear == mGeorefTransform.transformParametrisation() ||
+  if ( mLayer->type() == Qgis::LayerType::Raster && mCreateWorldFileOnly && ( QgsGcpTransformerInterface::TransformMethod::Linear == mGeorefTransform.transformParametrisation() ||
        QgsGcpTransformerInterface::TransformMethod::Helmert == mGeorefTransform.transformParametrisation() ) )
   {
     QgsPointXY origin;
@@ -1501,7 +1501,7 @@ bool QgsGeoreferencerMainWindow::georeference()
       return false;
     }
 
-    postProcessGeoreferencedLayer( mFileName, QgsMapLayerType::RasterLayer, QStringLiteral( "gdal" ) );
+    postProcessGeoreferencedLayer( mFileName, Qgis::LayerType::Raster, QStringLiteral( "gdal" ) );
 
     return true;
   }
@@ -1509,18 +1509,18 @@ bool QgsGeoreferencerMainWindow::georeference()
   {
     switch ( mLayer->type() )
     {
-      case QgsMapLayerType::VectorLayer:
+      case Qgis::LayerType::Vector:
         return georeferenceVector();
 
-      case QgsMapLayerType::RasterLayer:
+      case Qgis::LayerType::Raster:
         return georeferenceRaster();
 
-      case QgsMapLayerType::PluginLayer:
-      case QgsMapLayerType::MeshLayer:
-      case QgsMapLayerType::VectorTileLayer:
-      case QgsMapLayerType::AnnotationLayer:
-      case QgsMapLayerType::PointCloudLayer:
-      case QgsMapLayerType::GroupLayer:
+      case Qgis::LayerType::Plugin:
+      case Qgis::LayerType::Mesh:
+      case Qgis::LayerType::VectorTile:
+      case Qgis::LayerType::Annotation:
+      case Qgis::LayerType::PointCloud:
+      case Qgis::LayerType::Group:
         break;
     }
     return false;
@@ -1559,7 +1559,7 @@ bool QgsGeoreferencerMainWindow::georeferenceRaster()
   bool result = true;
   connect( task, &QgsTask::taskCompleted, &loop, [&loop, this]
   {
-    postProcessGeoreferencedLayer( mCreateWorldFileOnly ? mFileName : mModifiedFileName, QgsMapLayerType::RasterLayer, QStringLiteral( "gdal" ) );
+    postProcessGeoreferencedLayer( mCreateWorldFileOnly ? mFileName : mModifiedFileName, Qgis::LayerType::Raster, QStringLiteral( "gdal" ) );
 
     loop.quit();
   } );
@@ -1624,7 +1624,7 @@ bool QgsGeoreferencerMainWindow::georeferenceVector()
   bool result = true;
   connect( task, &QgsTask::taskCompleted, &loop, [&loop, this]
   {
-    postProcessGeoreferencedLayer( mModifiedFileName, QgsMapLayerType::VectorLayer, QStringLiteral( "ogr" ) );
+    postProcessGeoreferencedLayer( mModifiedFileName, Qgis::LayerType::Vector, QStringLiteral( "ogr" ) );
     loop.quit();
   } );
 
@@ -1643,7 +1643,7 @@ bool QgsGeoreferencerMainWindow::georeferenceVector()
   return result;
 }
 
-void QgsGeoreferencerMainWindow::postProcessGeoreferencedLayer( const QString &layerSource, QgsMapLayerType type, const QString &provider )
+void QgsGeoreferencerMainWindow::postProcessGeoreferencedLayer( const QString &layerSource, Qgis::LayerType type, const QString &provider )
 {
   if ( !mPdfOutputFile.isEmpty() )
   {
@@ -1665,20 +1665,20 @@ void QgsGeoreferencerMainWindow::postProcessGeoreferencedLayer( const QString &l
   {
     switch ( type )
     {
-      case QgsMapLayerType::VectorLayer:
+      case Qgis::LayerType::Vector:
         QgisApp::instance()->addVectorLayer( layerSource, QFileInfo( layerSource ).completeBaseName(), provider );
         break;
 
-      case QgsMapLayerType::RasterLayer:
+      case Qgis::LayerType::Raster:
         QgisApp::instance()->addRasterLayer( layerSource, QFileInfo( layerSource ).completeBaseName(), provider );
         break;
 
-      case QgsMapLayerType::PluginLayer:
-      case QgsMapLayerType::MeshLayer:
-      case QgsMapLayerType::VectorTileLayer:
-      case QgsMapLayerType::AnnotationLayer:
-      case QgsMapLayerType::PointCloudLayer:
-      case QgsMapLayerType::GroupLayer:
+      case Qgis::LayerType::Plugin:
+      case Qgis::LayerType::Mesh:
+      case Qgis::LayerType::VectorTile:
+      case Qgis::LayerType::Annotation:
+      case Qgis::LayerType::PointCloud:
+      case Qgis::LayerType::Group:
         break;
     }
   }

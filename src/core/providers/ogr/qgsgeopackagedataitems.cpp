@@ -111,7 +111,7 @@ QVector<QgsDataItem *> QgsGeoPackageCollectionItem::createChildren()
   {
     switch ( sublayer.type() )
     {
-      case QgsMapLayerType::VectorLayer:
+      case Qgis::LayerType::Vector:
       {
         Qgis::BrowserLayerType layerType = Qgis::BrowserLayerType::Vector;
 
@@ -142,16 +142,16 @@ QVector<QgsDataItem *> QgsGeoPackageCollectionItem::createChildren()
         break;
       }
 
-      case QgsMapLayerType::RasterLayer:
+      case Qgis::LayerType::Raster:
         children.append( new QgsGeoPackageRasterLayerItem( this, sublayer.name(), path, sublayer.uri() ) );
         break;
 
-      case QgsMapLayerType::PluginLayer:
-      case QgsMapLayerType::MeshLayer:
-      case QgsMapLayerType::VectorTileLayer:
-      case QgsMapLayerType::AnnotationLayer:
-      case QgsMapLayerType::PointCloudLayer:
-      case QgsMapLayerType::GroupLayer:
+      case Qgis::LayerType::Plugin:
+      case Qgis::LayerType::Mesh:
+      case Qgis::LayerType::VectorTile:
+      case Qgis::LayerType::Annotation:
+      case Qgis::LayerType::PointCloud:
+      case Qgis::LayerType::Group:
         break;
     }
   }

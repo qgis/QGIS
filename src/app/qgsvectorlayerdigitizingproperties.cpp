@@ -181,5 +181,5 @@ QgsMapLayerConfigWidget *QgsVectorLayerDigitizingPropertiesFactory::createWidget
 
 bool QgsVectorLayerDigitizingPropertiesFactory::supportsLayer( QgsMapLayer *layer ) const
 {
-  return layer->type() == QgsMapLayerType::VectorLayer;
+  return layer->type() == Qgis::LayerType::Vector;
 }

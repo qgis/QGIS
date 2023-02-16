@@ -2251,7 +2251,7 @@ void QgsOptions::loadGdalDriverList()
   QStringList myDrivers;
   QStringList myGdalWriteDrivers;
   QMap<QString, QString> myDriversFlags, myDriversExt, myDriversLongName;
-  QMap<QString, QgsMapLayerType> driversType;
+  QMap<QString, Qgis::LayerType> driversType;
 
   // make sure we save list when accept()
   mLoadedGdalDriverList = true;
@@ -2278,18 +2278,18 @@ void QgsOptions::loadGdalDriverList()
     myDrivers << myGdalDriverDescription;
     if ( QString( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_RASTER, nullptr ) ) == QLatin1String( "YES" ) )
     {
-      driversType[myGdalDriverDescription] = QgsMapLayerType::RasterLayer;
+      driversType[myGdalDriverDescription] = Qgis::LayerType::Raster;
     }
     else if ( QString( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_VECTOR, nullptr ) ) == QLatin1String( "YES" ) )
     {
-      driversType[myGdalDriverDescription] = QgsMapLayerType::VectorLayer;
+      driversType[myGdalDriverDescription] = Qgis::LayerType::Vector;
     }
 
     QgsDebugMsgLevel( QStringLiteral( "driver #%1 - %2" ).arg( i ).arg( myGdalDriverDescription ), 2 );
 
     // get driver R/W flags, adopted from GDALGeneralCmdLineProcessor()
     QString driverFlags = "";
-    if ( driversType[myGdalDriverDescription] == QgsMapLayerType::RasterLayer )
+    if ( driversType[myGdalDriverDescription] == Qgis::LayerType::Raster )
     {
       if ( QgsGdalUtils::supportsRasterCreate( myGdalDriver ) )
       {
@@ -2356,7 +2356,7 @@ void QgsOptions::loadGdalDriverList()
     QString myFlags = myDriversFlags[myName];
     mypItem->setText( 2, myFlags );
     mypItem->setText( 3, myDriversLongName[myName] );
-    if ( driversType[myName] == QgsMapLayerType::RasterLayer )
+    if ( driversType[myName] == Qgis::LayerType::Raster )
     {
       lstRasterDrivers->addTopLevelItem( mypItem );
     }

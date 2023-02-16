@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsvectorelevationpropertieswidget.h"
-#include "qgsstyle.h"
 #include "qgsapplication.h"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
@@ -411,7 +410,7 @@ bool QgsVectorElevationPropertiesWidgetFactory::supportsStyleDock() const
 
 bool QgsVectorElevationPropertiesWidgetFactory::supportsLayer( QgsMapLayer *layer ) const
 {
-  return layer->type() == QgsMapLayerType::VectorLayer;
+  return layer->type() == Qgis::LayerType::Vector;
 }
 
 QString QgsVectorElevationPropertiesWidgetFactory::layerPropertiesPagePositionHint() const

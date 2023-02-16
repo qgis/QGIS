@@ -430,7 +430,7 @@ void QgsGrassPlugin::onFieldsChanged()
   QgsDebugMsg( "uri = " + uri );
   for ( QgsMapLayer *layer : QgsProject::instance()->mapLayers().values() )
   {
-    if ( !layer || layer->type() != QgsMapLayerType::VectorLayer )
+    if ( !layer || layer->type() != Qgis::LayerType::Vector )
     {
       continue;
     }
@@ -794,7 +794,7 @@ void QgsGrassPlugin::unload()
 
   for ( QgsMapLayer *layer : QgsProject::instance()->mapLayers().values() )
   {
-    if ( !layer || layer->type() != QgsMapLayerType::VectorLayer )
+    if ( !layer || layer->type() != Qgis::LayerType::Vector )
     {
       continue;
     }

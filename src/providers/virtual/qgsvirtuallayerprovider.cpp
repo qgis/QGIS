@@ -121,7 +121,7 @@ bool QgsVirtualLayerProvider::loadSourceLayers()
         PROVIDER_ERROR( QString( "Cannot find layer %1" ).arg( layer.reference() ) );
         return false;
       }
-      if ( l->type() != QgsMapLayerType::VectorLayer )
+      if ( l->type() != Qgis::LayerType::Vector )
       {
         PROVIDER_ERROR( QString( "Layer %1 is not a vector layer" ).arg( layer.reference() ) );
         return false;
@@ -250,7 +250,7 @@ bool QgsVirtualLayerProvider::createIt()
       const auto constMapLayers = QgsProject::instance()->mapLayers();
       for ( const QgsMapLayer *l : constMapLayers )
       {
-        if ( l->type() != QgsMapLayerType::VectorLayer )
+        if ( l->type() != Qgis::LayerType::Vector )
           continue;
 
         const QgsVectorLayer *vl = static_cast<const QgsVectorLayer *>( l );
@@ -672,9 +672,9 @@ QgsVirtualLayerProvider *QgsVirtualLayerProviderMetadata::createProvider(
   return new QgsVirtualLayerProvider( uri, options, flags );
 }
 
-QList<QgsMapLayerType> QgsVirtualLayerProviderMetadata::supportedLayerTypes() const
+QList<Qgis::LayerType> QgsVirtualLayerProviderMetadata::supportedLayerTypes() const
 {
-  return { QgsMapLayerType::VectorLayer };
+  return { Qgis::LayerType::Vector };
 }
 
 QgsVirtualLayerProviderMetadata::QgsVirtualLayerProviderMetadata():

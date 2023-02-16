@@ -453,9 +453,9 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
           { "name", l->name().toStdString() },
           { "id", l->id().toStdString() },
           { "crs", l->crs().authid().toStdString() },
-          { "type", l->type() ==  QgsMapLayerType::VectorLayer ? "vector" : "raster" },
+          { "type", l->type() ==  Qgis::LayerType::Vector ? "vector" : "raster" },
         };
-        if ( l->type() == QgsMapLayerType::VectorLayer )
+        if ( l->type() == Qgis::LayerType::Vector )
         {
           const QgsVectorLayer *vl = static_cast<const QgsVectorLayer *>( l );
           wmsLayer[ "pk" ] = vl->primaryKeyAttributes();
@@ -593,7 +593,7 @@ json QgsLandingPageUtils::layerTree( const QgsProject &project, const QStringLis
     if ( QgsLayerTree::isLayer( node ) )
     {
       const QgsLayerTreeLayer *l { static_cast<const QgsLayerTreeLayer *>( node ) };
-      if ( l->layer() && ( l->layer()->type() == QgsMapLayerType::VectorLayer || l->layer()->type() == QgsMapLayerType::RasterLayer )
+      if ( l->layer() && ( l->layer()->type() == Qgis::LayerType::Vector || l->layer()->type() == Qgis::LayerType::Raster )
            && ! wmsRestrictedLayers.contains( l->name() ) )
       {
         rec[ "id" ] = l->layerId().toStdString();
@@ -621,7 +621,7 @@ json QgsLandingPageUtils::layerTree( const QgsProject &project, const QStringLis
         rec["max_scale"] = l->layer()->maximumScale();
       }
       rec[ "is_layer" ] = true;
-      rec[ "layer_type" ] = l->layer()->type() == QgsMapLayerType::VectorLayer ? "vector" : "raster";
+      rec[ "layer_type" ] = l->layer()->type() == Qgis::LayerType::Vector ? "vector" : "raster";
     }
     else
     {

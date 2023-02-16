@@ -273,13 +273,13 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      * \since QGIS 3.26
      */
 #ifndef SIP_RUN
-    virtual QList< QgsMapLayerType > supportedLayerTypes() const;
+    virtual QList< Qgis::LayerType > supportedLayerTypes() const;
 #else
-    SIP_PYOBJECT supportedLayerTypes() const SIP_TYPEHINT( List[QgsMapLayerType] );
+    SIP_PYOBJECT supportedLayerTypes() const SIP_TYPEHINT( List[Qgis.LayerType] );
     % MethodCode
     // adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
 
-    const QList< QgsMapLayerType > cppRes = sipCpp->supportedLayerTypes();
+    const QList< Qgis::LayerType > cppRes = sipCpp->supportedLayerTypes();
 
     PyObject *l = PyList_New( cppRes.size() );
 
@@ -290,7 +290,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
       for ( int i = 0; i < cppRes.size(); ++i )
       {
         PyObject *eobj = sipConvertFromEnum( static_cast<int>( cppRes.at( i ) ),
-                                             sipType_QgsMapLayerType );
+                                             sipType_Qgis_LayerType );
 
         if ( !eobj )
         {
@@ -398,7 +398,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      *
      * \since QGIS 3.18
      */
-    virtual QList< QgsMapLayerType > validLayerTypesForUri( const QString &uri ) const;
+    virtual QList< Qgis::LayerType > validLayerTypesForUri( const QString &uri ) const;
 
     /**
      * Returns TRUE if the specified \a uri is known by this provider to be something which should

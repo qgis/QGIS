@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgslayeritem.h"
-#include "qgsapplication.h"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsiconutils.h"
@@ -99,24 +98,24 @@ QgsLayerItem::QgsLayerItem( QgsDataItem *parent, const QString &name, const QStr
   mIconName = iconName( layerType );
 }
 
-QgsMapLayerType QgsLayerItem::mapLayerType() const
+Qgis::LayerType QgsLayerItem::mapLayerType() const
 {
   switch ( mLayerType )
   {
     case Qgis::BrowserLayerType::Raster:
-      return QgsMapLayerType::RasterLayer;
+      return Qgis::LayerType::Raster;
 
     case Qgis::BrowserLayerType::Mesh:
-      return QgsMapLayerType::MeshLayer;
+      return Qgis::LayerType::Mesh;
 
     case Qgis::BrowserLayerType::VectorTile:
-      return QgsMapLayerType::VectorTileLayer;
+      return Qgis::LayerType::VectorTile;
 
     case Qgis::BrowserLayerType::Plugin:
-      return QgsMapLayerType::PluginLayer;
+      return Qgis::LayerType::Plugin;
 
     case Qgis::BrowserLayerType::PointCloud:
-      return QgsMapLayerType::PointCloudLayer;
+      return Qgis::LayerType::PointCloud;
 
     case Qgis::BrowserLayerType::NoType:
     case Qgis::BrowserLayerType::Vector:
@@ -126,17 +125,17 @@ QgsMapLayerType QgsLayerItem::mapLayerType() const
     case Qgis::BrowserLayerType::TableLayer:
     case Qgis::BrowserLayerType::Table:
     case Qgis::BrowserLayerType::Database:
-      return QgsMapLayerType::VectorLayer;
+      return Qgis::LayerType::Vector;
   }
 
-  return QgsMapLayerType::VectorLayer; // no warnings
+  return Qgis::LayerType::Vector; // no warnings
 }
 
 Qgis::BrowserLayerType QgsLayerItem::typeFromMapLayer( QgsMapLayer *layer )
 {
   switch ( layer->type() )
   {
-    case QgsMapLayerType::VectorLayer:
+    case Qgis::LayerType::Vector:
     {
       switch ( qobject_cast< QgsVectorLayer * >( layer )->geometryType() )
       {
@@ -159,18 +158,18 @@ Qgis::BrowserLayerType QgsLayerItem::typeFromMapLayer( QgsMapLayer *layer )
       return Qgis::BrowserLayerType::Vector; // no warnings
     }
 
-    case QgsMapLayerType::RasterLayer:
+    case Qgis::LayerType::Raster:
       return Qgis::BrowserLayerType::Raster;
-    case QgsMapLayerType::PluginLayer:
+    case Qgis::LayerType::Plugin:
       return Qgis::BrowserLayerType::Plugin;
-    case QgsMapLayerType::MeshLayer:
+    case Qgis::LayerType::Mesh:
       return Qgis::BrowserLayerType::Mesh;
-    case QgsMapLayerType::PointCloudLayer:
+    case Qgis::LayerType::PointCloud:
       return Qgis::BrowserLayerType::PointCloud;
-    case QgsMapLayerType::VectorTileLayer:
+    case Qgis::LayerType::VectorTile:
       return Qgis::BrowserLayerType::VectorTile;
-    case QgsMapLayerType::AnnotationLayer:
-    case QgsMapLayerType::GroupLayer:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::Group:
       return Qgis::BrowserLayerType::Vector; // will never happen!
   }
   return Qgis::BrowserLayerType::Vector; // no warnings
@@ -233,7 +232,7 @@ QgsMimeDataUtils::UriList QgsLayerItem::mimeUris() const
 
   switch ( mapLayerType() )
   {
-    case QgsMapLayerType::VectorLayer:
+    case Qgis::LayerType::Vector:
       u.layerType = QStringLiteral( "vector" );
       switch ( mLayerType )
       {
@@ -262,25 +261,25 @@ QgsMimeDataUtils::UriList QgsLayerItem::mimeUris() const
           break;
       }
       break;
-    case QgsMapLayerType::RasterLayer:
+    case Qgis::LayerType::Raster:
       u.layerType = QStringLiteral( "raster" );
       break;
-    case QgsMapLayerType::MeshLayer:
+    case Qgis::LayerType::Mesh:
       u.layerType = QStringLiteral( "mesh" );
       break;
-    case QgsMapLayerType::VectorTileLayer:
+    case Qgis::LayerType::VectorTile:
       u.layerType = QStringLiteral( "vector-tile" );
       break;
-    case QgsMapLayerType::PointCloudLayer:
+    case Qgis::LayerType::PointCloud:
       u.layerType = QStringLiteral( "pointcloud" );
       break;
-    case QgsMapLayerType::PluginLayer:
+    case Qgis::LayerType::Plugin:
       u.layerType = QStringLiteral( "plugin" );
       break;
-    case QgsMapLayerType::GroupLayer:
+    case Qgis::LayerType::Group:
       u.layerType = QStringLiteral( "group" );
       break;
-    case QgsMapLayerType::AnnotationLayer:
+    case Qgis::LayerType::Annotation:
       u.layerType = QStringLiteral( "annotation" );
       break;
   }

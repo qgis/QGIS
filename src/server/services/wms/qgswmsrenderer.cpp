@@ -17,7 +17,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgswmsutils.h"
 #include "qgsjsonutils.h"
 #include "qgswmsrenderer.h"
 #include "qgsfilterrestorer.h"
@@ -27,13 +26,11 @@
 #include "qgsfieldformatterregistry.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
-#include "qgsmapserviceexception.h"
 #include "qgslayertree.h"
 #include "qgslayoututils.h"
 #include "qgslayertreemodel.h"
 #include "qgslegendrenderer.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerlegend.h"
 #include "qgsmapthemecollection.h"
 #include "qgsmaptopixel.h"
 #include "qgsproject.h"
@@ -60,7 +57,6 @@
 #include "qgsannotationmanager.h"
 #include "qgsannotation.h"
 #include "qgsvectorlayerlabeling.h"
-#include "qgsvectorlayerfeaturecounter.h"
 #include "qgspallabeling.h"
 #include "qgswmsrestorer.h"
 #include "qgsdxfexport.h"
@@ -73,8 +69,6 @@
 #include "qgsattributeeditorelement.h"
 #include "qgsattributeeditorfield.h"
 #include "qgsdimensionfilter.h"
-#include "qgstextdocument.h"
-#include "qgstextdocumentmetrics.h"
 
 #include <QImage>
 #include <QPainter>
@@ -997,7 +991,7 @@ namespace QgsWms
     for ( QgsMapLayer *layer : layers )
     {
       layerIdx++;
-      if ( layer->type() != QgsMapLayerType::VectorLayer )
+      if ( layer->type() != Qgis::LayerType::Vector )
         continue;
 
       // cast for dxf layers
@@ -1505,7 +1499,7 @@ namespace QgsWms
             }
           }
 
-          if ( layer->type() == QgsMapLayerType::VectorLayer )
+          if ( layer->type() == Qgis::LayerType::Vector )
           {
             QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
             if ( vectorLayer )
@@ -2557,7 +2551,7 @@ namespace QgsWms
       if ( !layer )
         continue;
 
-      if ( layer->type() == QgsMapLayerType::VectorLayer )
+      if ( layer->type() == Qgis::LayerType::Vector )
       {
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
 
@@ -3120,14 +3114,14 @@ namespace QgsWms
     {
       switch ( layer->type() )
       {
-        case QgsMapLayerType::VectorLayer:
+        case Qgis::LayerType::Vector:
         {
           QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
           vl->setOpacity( opacity / 255. );
           break;
         }
 
-        case QgsMapLayerType::RasterLayer:
+        case Qgis::LayerType::Raster:
         {
           QgsRasterLayer *rl = qobject_cast<QgsRasterLayer *>( layer );
           QgsRasterRenderer *rasterRenderer = rl->renderer();
@@ -3135,18 +3129,18 @@ namespace QgsWms
           break;
         }
 
-        case QgsMapLayerType::VectorTileLayer:
+        case Qgis::LayerType::VectorTile:
         {
           QgsVectorTileLayer *vl = qobject_cast<QgsVectorTileLayer *>( layer );
           vl->setOpacity( opacity / 255. );
           break;
         }
 
-        case QgsMapLayerType::MeshLayer:
-        case QgsMapLayerType::PluginLayer:
-        case QgsMapLayerType::AnnotationLayer:
-        case QgsMapLayerType::PointCloudLayer:
-        case QgsMapLayerType::GroupLayer:
+        case Qgis::LayerType::Mesh:
+        case Qgis::LayerType::Plugin:
+        case Qgis::LayerType::Annotation:
+        case Qgis::LayerType::PointCloud:
+        case Qgis::LayerType::Group:
           break;
       }
     }
@@ -3155,7 +3149,7 @@ namespace QgsWms
   void QgsRenderer::setLayerFilter( QgsMapLayer *layer, const QList<QgsWmsParametersFilter> &filters )
   {
 
-    if ( layer->type() == QgsMapLayerType::VectorLayer )
+    if ( layer->type() == Qgis::LayerType::Vector )
     {
       QgsVectorLayer *filteredLayer = qobject_cast<QgsVectorLayer *>( layer );
       QStringList expList;
@@ -3429,7 +3423,7 @@ namespace QgsWms
 
   void QgsRenderer::setLayerSelection( QgsMapLayer *layer, const QStringList &fids ) const
   {
-    if ( !fids.empty() && layer->type() == QgsMapLayerType::VectorLayer )
+    if ( !fids.empty() && layer->type() == Qgis::LayerType::Vector )
     {
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
 

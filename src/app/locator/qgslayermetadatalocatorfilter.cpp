@@ -58,17 +58,17 @@ void QgsLayerMetadataLocatorFilter::triggerResult( const QgsLocatorResult &resul
   QgsLayerMetadataProviderResult metadataResult { result.userData.value<QgsLayerMetadataProviderResult>() };
   switch ( metadataResult.layerType() )
   {
-    case QgsMapLayerType::RasterLayer:
+    case Qgis::LayerType::Raster:
     {
       QgisApp::instance()->addRasterLayer( metadataResult.uri(), metadataResult.identifier(), metadataResult.dataProviderName() );
       break;
     }
-    case QgsMapLayerType::VectorLayer:
+    case Qgis::LayerType::Vector:
     {
       QgisApp::instance()->addVectorLayer( metadataResult.uri(), metadataResult.identifier(), metadataResult.dataProviderName() );
       break;
     }
-    case QgsMapLayerType::MeshLayer:
+    case Qgis::LayerType::Mesh:
     {
       QgisApp::instance()->addMeshLayer( metadataResult.uri(), metadataResult.identifier(), metadataResult.dataProviderName() );
       break;

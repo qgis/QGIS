@@ -804,7 +804,7 @@ void QgsWmsRenderContext::removeUnwantedLayers()
 
       if ( mFlags & UseWfsLayersOnly )
       {
-        if ( layer->type() != QgsMapLayerType::VectorLayer )
+        if ( layer->type() != Qgis::LayerType::Vector )
         {
           continue;
         }

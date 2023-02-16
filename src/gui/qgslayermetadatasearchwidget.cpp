@@ -129,13 +129,13 @@ QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( QWidget *parent, Qt:
         mProxyModel->setFilterGeometryTypeEnabled( true );
         mProxyModel->setFilterGeometryType( geomTypeFilterValue.value<QgsWkbTypes::GeometryType>( ) );
         mProxyModel->setFilterMapLayerTypeEnabled( true );
-        mProxyModel->setFilterMapLayerType( QgsMapLayerType::VectorLayer );
+        mProxyModel->setFilterMapLayerType( Qgis::LayerType::Vector );
       }
       else // Raster layers
       {
         mProxyModel->setFilterGeometryTypeEnabled( false );
         mProxyModel->setFilterMapLayerTypeEnabled( true );
-        mProxyModel->setFilterMapLayerType( QgsMapLayerType::RasterLayer );
+        mProxyModel->setFilterMapLayerType( Qgis::LayerType::Raster );
       }
     }
 
@@ -205,17 +205,17 @@ void QgsLayerMetadataSearchWidget::addButtonClicked()
       const QgsLayerMetadataProviderResult metadataResult { mSourceModel->data( mProxyModel->mapToSource( selectedIndex ), QgsLayerMetadataResultsModel::Roles::Metadata ).value<QgsLayerMetadataProviderResult>() };
       switch ( metadataResult.layerType() )
       {
-        case QgsMapLayerType::RasterLayer:
+        case Qgis::LayerType::Raster:
         {
           emit addRasterLayer( metadataResult.uri(), metadataResult.identifier(), metadataResult.dataProviderName() );
           break;
         }
-        case QgsMapLayerType::VectorLayer:
+        case Qgis::LayerType::Vector:
         {
           emit addVectorLayer( metadataResult.uri(), metadataResult.identifier(), metadataResult.dataProviderName() );
           break;
         }
-        case QgsMapLayerType::MeshLayer:
+        case Qgis::LayerType::Mesh:
         {
           emit addMeshLayer( metadataResult.uri(), metadataResult.identifier(), metadataResult.dataProviderName() );
           break;

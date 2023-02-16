@@ -196,20 +196,20 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMa
   {
     switch ( layer->type() )
     {
-      case QgsMapLayerType::VectorLayer:
+      case Qgis::LayerType::Vector:
         return !canUseLayer( qobject_cast< QgsVectorLayer * >( layer ) );
-      case QgsMapLayerType::RasterLayer:
+      case Qgis::LayerType::Raster:
         return !canUseLayer( qobject_cast< QgsRasterLayer * >( layer ) );
-      case QgsMapLayerType::PluginLayer:
-      case QgsMapLayerType::GroupLayer:
+      case Qgis::LayerType::Plugin:
+      case Qgis::LayerType::Group:
         return true;
-      case QgsMapLayerType::MeshLayer:
+      case Qgis::LayerType::Mesh:
         return !canUseLayer( qobject_cast< QgsMeshLayer * >( layer ) );
-      case QgsMapLayerType::VectorTileLayer:
+      case Qgis::LayerType::VectorTile:
         return !canUseLayer( qobject_cast< QgsVectorTileLayer * >( layer ) );
-      case QgsMapLayerType::PointCloudLayer:
+      case Qgis::LayerType::PointCloud:
         return !canUseLayer( qobject_cast< QgsPointCloudLayer * >( layer ) );
-      case QgsMapLayerType::AnnotationLayer:
+      case Qgis::LayerType::Annotation:
         return !canUseLayer( qobject_cast< QgsAnnotationLayer * >( layer ) );
     }
     return true;
@@ -223,19 +223,19 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMa
         return true;
 
       case LayerHint::Vector:
-        return l->type() == QgsMapLayerType::VectorLayer;
+        return l->type() == Qgis::LayerType::Vector;
 
       case LayerHint::Raster:
-        return l->type() == QgsMapLayerType::RasterLayer;
+        return l->type() == Qgis::LayerType::Raster;
 
       case LayerHint::Mesh:
-        return l->type() == QgsMapLayerType::MeshLayer;
+        return l->type() == Qgis::LayerType::Mesh;
 
       case LayerHint::PointCloud:
-        return l->type() == QgsMapLayerType::PointCloudLayer;
+        return l->type() == Qgis::LayerType::PointCloud;
 
       case LayerHint::Annotation:
-        return l->type() == QgsMapLayerType::AnnotationLayer;
+        return l->type() == Qgis::LayerType::Annotation;
     }
     return true;
   };

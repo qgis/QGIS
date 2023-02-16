@@ -198,7 +198,7 @@ void QgsQuickElevationProfileCanvas::setupLayerConnections( QgsMapLayer *layer, 
 
   switch ( layer->type() )
   {
-    case QgsMapLayerType::VectorLayer:
+    case Qgis::LayerType::Vector:
     {
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
       if ( isDisconnect )
@@ -217,13 +217,13 @@ void QgsQuickElevationProfileCanvas::setupLayerConnections( QgsMapLayer *layer, 
       }
       break;
     }
-    case QgsMapLayerType::RasterLayer:
-    case QgsMapLayerType::PluginLayer:
-    case QgsMapLayerType::MeshLayer:
-    case QgsMapLayerType::VectorTileLayer:
-    case QgsMapLayerType::AnnotationLayer:
-    case QgsMapLayerType::PointCloudLayer:
-    case QgsMapLayerType::GroupLayer:
+    case Qgis::LayerType::Raster:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Mesh:
+    case Qgis::LayerType::VectorTile:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::PointCloud:
+    case Qgis::LayerType::Group:
       break;
   }
 }
@@ -514,10 +514,10 @@ void QgsQuickElevationProfileCanvas::populateLayersFromProject()
   // the vector feature
   QList<QgsMapLayer *> sortedLayers = QgsMapLayerUtils::sortLayersByType( projectLayers,
   {
-    QgsMapLayerType::RasterLayer,
-    QgsMapLayerType::MeshLayer,
-    QgsMapLayerType::VectorLayer,
-    QgsMapLayerType::PointCloudLayer
+    Qgis::LayerType::Raster,
+    Qgis::LayerType::Mesh,
+    Qgis::LayerType::Vector,
+    Qgis::LayerType::PointCloud
   } );
 
   // filter list, removing null layers and invalid layers

@@ -96,12 +96,12 @@ void QgsLayerMetadataProviderResult::setDataProviderName( const QString &dataPro
   mDataProviderName = dataProviderName;
 }
 
-QgsMapLayerType QgsLayerMetadataProviderResult::layerType() const
+Qgis::LayerType QgsLayerMetadataProviderResult::layerType() const
 {
   return mLayerType;
 }
 
-void QgsLayerMetadataProviderResult::setLayerType( QgsMapLayerType layerType )
+void QgsLayerMetadataProviderResult::setLayerType( Qgis::LayerType layerType )
 {
   mLayerType = layerType;
 }

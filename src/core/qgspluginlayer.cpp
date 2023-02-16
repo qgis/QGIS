@@ -14,12 +14,8 @@
  ***************************************************************************/
 #include "qgspluginlayer.h"
 
-#include "qgsmaplayerlegend.h"
-#include "qgsmaplayerrenderer.h"
-
-
 QgsPluginLayer::QgsPluginLayer( const QString &layerType, const QString &layerName )
-  : QgsMapLayer( QgsMapLayerType::PluginLayer, layerName )
+  : QgsMapLayer( Qgis::LayerType::Plugin, layerName )
   , mPluginLayerType( layerType )
 {
   mDataProvider = new QgsPluginLayerDataProvider( layerType, QgsDataProvider::ProviderOptions(), QgsDataProvider::ReadFlags() );

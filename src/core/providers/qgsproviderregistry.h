@@ -356,7 +356,7 @@ class CORE_EXPORT QgsProviderRegistry
      *
      * \since QGIS 3.26
      */
-    QSet< QString > providersForLayerType( QgsMapLayerType type ) const;
+    QSet< QString > providersForLayerType( Qgis::LayerType type ) const;
 
     /**
      * \ingroup core
@@ -373,7 +373,7 @@ class CORE_EXPORT QgsProviderRegistry
         /**
          * Constructor for ProviderCandidateDetails, with the specified provider \a metadata and valid candidate \a layerTypes.
          */
-        ProviderCandidateDetails( QgsProviderMetadata *metadata, const QList< QgsMapLayerType > &layerTypes )
+        ProviderCandidateDetails( QgsProviderMetadata *metadata, const QList< Qgis::LayerType > &layerTypes )
           : mMetadata( metadata )
           , mLayerTypes( layerTypes )
         {}
@@ -387,7 +387,7 @@ class CORE_EXPORT QgsProviderRegistry
          * Returns a list of map layer types which are valid options for opening the
          * target using this candidate provider.
          */
-        QList<QgsMapLayerType> layerTypes() const { return mLayerTypes; }
+        QList<Qgis::LayerType> layerTypes() const { return mLayerTypes; }
 
 #ifdef SIP_RUN
         SIP_PYOBJECT __repr__();
@@ -400,7 +400,7 @@ class CORE_EXPORT QgsProviderRegistry
       private:
         QgsProviderMetadata *mMetadata = nullptr;
 
-        QList< QgsMapLayerType > mLayerTypes;
+        QList< Qgis::LayerType > mLayerTypes;
 
     };
 
@@ -443,7 +443,7 @@ class CORE_EXPORT QgsProviderRegistry
          * The optional \a layerTypes argument can be used to specify layer types which are usually valid
          * options for opening the URI.
          */
-        UnusableUriDetails( const QString &uri = QString(), const QString &warning = QString(), const QList< QgsMapLayerType > &layerTypes = QList< QgsMapLayerType >() )
+        UnusableUriDetails( const QString &uri = QString(), const QString &warning = QString(), const QList< Qgis::LayerType > &layerTypes = QList< Qgis::LayerType >() )
           : uri( uri )
           , warning( warning )
           , layerTypes( layerTypes )
@@ -468,7 +468,7 @@ class CORE_EXPORT QgsProviderRegistry
          * Contains a list of map layer types which are usually valid options for opening the
          * target URI.
          */
-        QList<QgsMapLayerType> layerTypes;
+        QList<Qgis::LayerType> layerTypes;
 
 #ifdef SIP_RUN
         SIP_PYOBJECT __repr__();

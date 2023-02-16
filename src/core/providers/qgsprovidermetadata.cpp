@@ -67,7 +67,7 @@ QgsProviderMetadata::ProviderCapabilities QgsProviderMetadata::providerCapabilit
   return QgsProviderMetadata::ProviderCapabilities();
 }
 
-QList<QgsMapLayerType> QgsProviderMetadata::supportedLayerTypes() const
+QList<Qgis::LayerType> QgsProviderMetadata::supportedLayerTypes() const
 {
   return {};
 }
@@ -112,9 +112,9 @@ int QgsProviderMetadata::priorityForUri( const QString & ) const
   return 0;
 }
 
-QList<QgsMapLayerType> QgsProviderMetadata::validLayerTypesForUri( const QString & ) const
+QList<Qgis::LayerType> QgsProviderMetadata::validLayerTypesForUri( const QString & ) const
 {
-  return QList<QgsMapLayerType>();
+  return QList<Qgis::LayerType>();
 }
 
 bool QgsProviderMetadata::uriIsBlocklisted( const QString & ) const

@@ -490,7 +490,7 @@ QList<QgsLayerMetadataProviderResult> QgsGeoPackageProviderConnection::searchLay
           {
             result.setGeometryType( QgsWkbTypes::GeometryType::UnknownGeometry );
           }
-          result.setLayerType( QgsMapLayerType::VectorLayer );
+          result.setLayerType( Qgis::LayerType::Vector );
 
           results.push_back( result );
         }

@@ -25,14 +25,13 @@
 #include <QToolButton>
 #include <QWidgetAction>
 #include <QCheckBox>
+#include <QTreeView>
 
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsdoublespinbox.h"
-#include "qgsfloatingwidget.h"
 #include "qgslayertreegroup.h"
 #include "qgslayertree.h"
-#include "qgslayertreeview.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsproject.h"
@@ -817,7 +816,7 @@ void QgsSnappingWidget::cleanGroup( QgsLayerTreeNode *node )
   const auto constChildren = node->children();
   for ( QgsLayerTreeNode *child : constChildren )
   {
-    if ( QgsLayerTree::isLayer( child ) && ( !QgsLayerTree::toLayer( child )->layer() || QgsLayerTree::toLayer( child )->layer()->type() != QgsMapLayerType::VectorLayer ) )
+    if ( QgsLayerTree::isLayer( child ) && ( !QgsLayerTree::toLayer( child )->layer() || QgsLayerTree::toLayer( child )->layer()->type() != Qgis::LayerType::Vector ) )
     {
       toRemove << child;
       continue;

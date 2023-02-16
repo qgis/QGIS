@@ -596,7 +596,7 @@ bool QgsDecorationGrid::getIntervalFromCurrentLayer( double *values ) const
     QMessageBox::warning( nullptr, tr( "Get Interval from Layer" ), tr( "No active layer" ) );
     return false;
   }
-  if ( layer->type() != QgsMapLayerType::RasterLayer )
+  if ( layer->type() != Qgis::LayerType::Raster )
   {
     QMessageBox::warning( nullptr, tr( "Get Interval from Layer" ), tr( "Please select a raster layer." ) );
     return false;

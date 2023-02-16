@@ -48,7 +48,7 @@ QgsPointCloudLayer::QgsPointCloudLayer( const QString &uri,
                                         const QString &baseName,
                                         const QString &providerLib,
                                         const QgsPointCloudLayer::LayerOptions &options )
-  : QgsMapLayer( QgsMapLayerType::PointCloudLayer, baseName, uri )
+  : QgsMapLayer( Qgis::LayerType::PointCloud, baseName, uri )
   , mElevationProperties( new QgsPointCloudLayerElevationProperties( this ) )
   , mLayerOptions( options )
 {
@@ -194,7 +194,7 @@ bool QgsPointCloudLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   QDomElement mapLayerNode = layerNode.toElement();
-  mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( QgsMapLayerType::PointCloudLayer ) );
+  mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( Qgis::LayerType::PointCloud ) );
 
   if ( !subsetString().isEmpty() )
   {

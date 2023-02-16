@@ -1987,9 +1987,9 @@ QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
   return new QgsHanaProviderMetadata();
 }
 
-QList<QgsMapLayerType> QgsHanaProviderMetadata::supportedLayerTypes() const
+QList<Qgis::LayerType> QgsHanaProviderMetadata::supportedLayerTypes() const
 {
-  return { QgsMapLayerType::VectorLayer };
+  return { Qgis::LayerType::Vector };
 }
 
 QIcon QgsHanaProviderMetadata::icon() const

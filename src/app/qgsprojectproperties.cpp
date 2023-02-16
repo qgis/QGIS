@@ -870,7 +870,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   for ( QMap<QString, QgsMapLayer *>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it, i++ )
   {
     currentLayer = it.value();
-    if ( currentLayer->type() == QgsMapLayerType::VectorLayer )
+    if ( currentLayer->type() == Qgis::LayerType::Vector )
     {
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( currentLayer );
       QgsVectorDataProvider *provider = vlayer->dataProvider();
@@ -932,7 +932,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   for ( QMap<QString, QgsMapLayer *>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it, i++ )
   {
     currentLayer = it.value();
-    if ( currentLayer->type() == QgsMapLayerType::RasterLayer )
+    if ( currentLayer->type() == Qgis::LayerType::Raster )
     {
 
       QTableWidgetItem *twi = new QTableWidgetItem( QString::number( j ) );
@@ -1035,7 +1035,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   const auto constMapLayers = mapLayers;
   for ( QgsMapLayer *mapLayer : constMapLayers )
   {
-    if ( QgsMapLayerType::VectorLayer == mapLayer->type() )
+    if ( Qgis::LayerType::Vector == mapLayer->type() )
     {
       vectorLayers.append( qobject_cast<QgsVectorLayer *>( mapLayer ) );
     }
