@@ -115,6 +115,32 @@ if (NOT LazPerf_FOUND)
   )
 endif()
 
+set(PDAL_WRENCH_SRCS
+  ${CMAKE_SOURCE_DIR}/external/pdal_wrench/main.cpp
+  ${CMAKE_SOURCE_DIR}/external/pdal_wrench/alg.cpp
+  ${CMAKE_SOURCE_DIR}/external/pdal_wrench/boundary.cpp
+  ${CMAKE_SOURCE_DIR}/external/pdal_wrench/clip.cpp
+  ${CMAKE_SOURCE_DIR}/external/pdal_wrench/density.cpp
+  ${CMAKE_SOURCE_DIR}/external/pdal_wrench/info.cpp
+  ${CMAKE_SOURCE_DIR}/external/pdal_wrench/merge.cpp
+  ${CMAKE_SOURCE_DIR}/external/pdal_wrench/thin.cpp
+  ${CMAKE_SOURCE_DIR}/external/pdal_wrench/to_raster.cpp
+  ${CMAKE_SOURCE_DIR}/external/pdal_wrench/to_raster_tin.cpp
+  ${CMAKE_SOURCE_DIR}/external/pdal_wrench/to_vector.cpp
+  ${CMAKE_SOURCE_DIR}/external/pdal_wrench/translate.cpp
+  ${CMAKE_SOURCE_DIR}/external/pdal_wrench/utils.cpp
+  ${CMAKE_SOURCE_DIR}/external/pdal_wrench/vpc.cpp
+
+  ${CMAKE_SOURCE_DIR}/external/pdal_wrench/tile/tile.cpp
+  ${CMAKE_SOURCE_DIR}/external/pdal_wrench/tile/BufferCache.cpp
+  ${CMAKE_SOURCE_DIR}/external/pdal_wrench/tile/Cell.cpp
+  ${CMAKE_SOURCE_DIR}/external/pdal_wrench/tile/FileProcessor.cpp
+  ${CMAKE_SOURCE_DIR}/external/pdal_wrench/tile/Las.cpp
+  ${CMAKE_SOURCE_DIR}/external/pdal_wrench/tile/TileGrid.cpp
+  ${CMAKE_SOURCE_DIR}/external/pdal_wrench/tile/ThreadPool.cpp
+  ${CMAKE_SOURCE_DIR}/external/pdal_wrench/tile/Writer.cpp
+)
+
 ########################################################
 # Build
 
@@ -145,6 +171,24 @@ if (LazPerf_FOUND)
 else()
   target_include_directories(untwine PRIVATE ${CMAKE_SOURCE_DIR}/external)
 endif()
+
+add_executable(pdal_wrench ${PDAL_WRENCH_SRCS})
+target_compile_features(pdal_wrench PRIVATE cxx_std_17)
+
+set_target_properties(pdal_wrench PROPERTIES
+  RUNTIME_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIBEXEC_SUBDIR}
+)
+
+target_include_directories(pdal_wrench PRIVATE
+  ${PDAL_INCLUDE_DIR}
+  ${GDAL_INCLUDE_DIR}
+  ${CMAKE_SOURCE_DIR}/external
+)
+
+target_link_libraries (pdal_wrench PRIVATE
+  ${PDAL_LIBRARIES}
+  ${GDAL_LIBRARY}
+)
 
 add_library (provider_pdal MODULE ${PDAL_SRCS} ${PDAL_HDRS} ${PDAL_GUI_SRCS} ${PDAL_GUI_HDRS})
 
