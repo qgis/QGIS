@@ -14,20 +14,14 @@
  ***************************************************************************/
 
 #include "qgssymbollayer.h"
-#include "qgsclipper.h"
-#include "qgsexpression.h"
 #include "qgsrendercontext.h"
-#include "qgsvectorlayer.h"
 #include "qgsdxfexport.h"
 #include "qgsgeometrysimplifier.h"
 #include "qgspainteffect.h"
-#include "qgseffectstack.h"
 #include "qgspainteffectregistry.h"
 #include "qgsproperty.h"
 #include "qgsexpressioncontext.h"
 #include "qgssymbollayerutils.h"
-#include "qgsapplication.h"
-#include "qgsmultipoint.h"
 #include "qgslegendpatchshape.h"
 #include "qgsstyle.h"
 #include "qgsexpressioncontextutils.h"
@@ -198,7 +192,7 @@ double QgsSymbolLayer::dxfAngle( QgsSymbolRenderContext &context ) const
   return 0.0;
 }
 
-QVector<qreal> QgsSymbolLayer::dxfCustomDashPattern( QgsUnitTypes::RenderUnit &unit ) const
+QVector<qreal> QgsSymbolLayer::dxfCustomDashPattern( Qgis::RenderUnit &unit ) const
 {
   Q_UNUSED( unit )
   return QVector<qreal>();
@@ -566,7 +560,7 @@ void QgsMarkerSymbolLayer::markerOffset( QgsSymbolRenderContext &context, double
 }
 
 void QgsMarkerSymbolLayer::markerOffset( QgsSymbolRenderContext &context, double width, double height,
-    QgsUnitTypes::RenderUnit widthUnit, QgsUnitTypes::RenderUnit heightUnit,
+    Qgis::RenderUnit widthUnit, Qgis::RenderUnit heightUnit,
     double &offsetX, double &offsetY, const QgsMapUnitScale &widthMapUnitScale, const QgsMapUnitScale &heightMapUnitScale ) const
 {
   offsetX = mOffset.x();
@@ -614,19 +608,19 @@ void QgsMarkerSymbolLayer::markerOffset( QgsSymbolRenderContext &context, double
   }
 
   double anchorPointCorrectionX = context.renderContext().convertToPainterUnits( width, widthUnit, widthMapUnitScale ) / 2.0;
-  if ( widthUnit == QgsUnitTypes::RenderMetersInMapUnits && context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
+  if ( widthUnit == Qgis::RenderUnit::MetersInMapUnits && context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
   {
     // rendering for symbol previews -- an size in meters in map units can't be calculated, so treat the size as millimeters
     // and clamp it to a reasonable range. It's the best we can do in this situation!
-    anchorPointCorrectionX = std::min( std::max( context.renderContext().convertToPainterUnits( width, QgsUnitTypes::RenderMillimeters ), 3.0 ), 100.0 ) / 2.0;
+    anchorPointCorrectionX = std::min( std::max( context.renderContext().convertToPainterUnits( width, Qgis::RenderUnit::Millimeters ), 3.0 ), 100.0 ) / 2.0;
   }
 
   double anchorPointCorrectionY = context.renderContext().convertToPainterUnits( height, heightUnit, heightMapUnitScale ) / 2.0;
-  if ( heightUnit == QgsUnitTypes::RenderMetersInMapUnits && context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
+  if ( heightUnit == Qgis::RenderUnit::MetersInMapUnits && context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
   {
     // rendering for symbol previews -- an size in meters in map units can't be calculated, so treat the size as millimeters
     // and clamp it to a reasonable range. It's the best we can do in this situation!
-    anchorPointCorrectionY = std::min( std::max( context.renderContext().convertToPainterUnits( height, QgsUnitTypes::RenderMillimeters ), 3.0 ), 100.0 ) / 2.0;
+    anchorPointCorrectionY = std::min( std::max( context.renderContext().convertToPainterUnits( height, Qgis::RenderUnit::Millimeters ), 3.0 ), 100.0 ) / 2.0;
   }
 
   if ( horizontalAnchorPoint == Left )
@@ -688,17 +682,17 @@ QgsMarkerSymbolLayer::VerticalAnchorPoint QgsMarkerSymbolLayer::decodeVerticalAn
   }
 }
 
-void QgsMarkerSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
+void QgsMarkerSymbolLayer::setOutputUnit( Qgis::RenderUnit unit )
 {
   mSizeUnit = unit;
   mOffsetUnit = unit;
 }
 
-QgsUnitTypes::RenderUnit QgsMarkerSymbolLayer::outputUnit() const
+Qgis::RenderUnit QgsMarkerSymbolLayer::outputUnit() const
 {
   if ( mOffsetUnit != mSizeUnit )
   {
-    return QgsUnitTypes::RenderUnknownUnit;
+    return Qgis::RenderUnit::Unknown;
   }
   return mOffsetUnit;
 }
@@ -718,13 +712,13 @@ QgsMapUnitScale QgsMarkerSymbolLayer::mapUnitScale() const
   return QgsMapUnitScale();
 }
 
-void QgsLineSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
+void QgsLineSymbolLayer::setOutputUnit( Qgis::RenderUnit unit )
 {
   mWidthUnit = unit;
   mOffsetUnit = unit;
 }
 
-QgsUnitTypes::RenderUnit QgsLineSymbolLayer::outputUnit() const
+Qgis::RenderUnit QgsLineSymbolLayer::outputUnit() const
 {
   return mWidthUnit;
 }

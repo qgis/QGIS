@@ -1045,11 +1045,11 @@ void QgsProject::clear()
 
   //fallback to QGIS default measurement unit
   bool ok = false;
-  const QgsUnitTypes::DistanceUnit distanceUnit = QgsUnitTypes::decodeDistanceUnit( mSettings.value( QStringLiteral( "/qgis/measure/displayunits" ) ).toString(), &ok );
-  setDistanceUnits( ok ? distanceUnit : QgsUnitTypes::DistanceMeters );
+  const Qgis::DistanceUnit distanceUnit = QgsUnitTypes::decodeDistanceUnit( mSettings.value( QStringLiteral( "/qgis/measure/displayunits" ) ).toString(), &ok );
+  setDistanceUnits( ok ? distanceUnit : Qgis::DistanceUnit::Meters );
   ok = false;
-  const QgsUnitTypes::AreaUnit areaUnits = QgsUnitTypes::decodeAreaUnit( mSettings.value( QStringLiteral( "/qgis/measure/areaunits" ) ).toString(), &ok );
-  setAreaUnits( ok ? areaUnits : QgsUnitTypes::AreaSquareMeters );
+  const Qgis::AreaUnit areaUnits = QgsUnitTypes::decodeAreaUnit( mSettings.value( QStringLiteral( "/qgis/measure/areaunits" ) ).toString(), &ok );
+  setAreaUnits( ok ? areaUnits : Qgis::AreaUnit::SquareMeters );
 
   mEmbeddedLayers.clear();
   mRelationManager->clear();
@@ -3614,7 +3614,7 @@ bool QgsProject::topologicalEditing() const
   return readNumEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/TopologicalEditing" ), 0 );
 }
 
-void QgsProject::setDistanceUnits( QgsUnitTypes::DistanceUnit unit )
+void QgsProject::setDistanceUnits( Qgis::DistanceUnit unit )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -3626,7 +3626,7 @@ void QgsProject::setDistanceUnits( QgsUnitTypes::DistanceUnit unit )
   emit distanceUnitsChanged();
 }
 
-void QgsProject::setAreaUnits( QgsUnitTypes::AreaUnit unit )
+void QgsProject::setAreaUnits( Qgis::AreaUnit unit )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 

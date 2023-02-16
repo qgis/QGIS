@@ -19,7 +19,6 @@
 #include "qgssymbollayerutils.h"
 #include "qgsmaplayer.h"
 #include "qgsproject.h"
-#include "qgsgeometryutils.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgsshapegenerator.h"
 #include "qgssymbol.h"
@@ -156,16 +155,16 @@ void QgsAnnotation::render( QgsRenderContext &context ) const
   }
   if ( mHasFixedMapPosition )
   {
-    painter->translate( context.convertToPainterUnits( mOffsetFromReferencePoint.x(), QgsUnitTypes::RenderMillimeters ) + context.convertToPainterUnits( mContentsMargins.left(), QgsUnitTypes::RenderMillimeters ),
-                        context.convertToPainterUnits( mOffsetFromReferencePoint.y(), QgsUnitTypes::RenderMillimeters ) + context.convertToPainterUnits( mContentsMargins.top(), QgsUnitTypes::RenderMillimeters ) );
+    painter->translate( context.convertToPainterUnits( mOffsetFromReferencePoint.x(), Qgis::RenderUnit::Millimeters ) + context.convertToPainterUnits( mContentsMargins.left(), Qgis::RenderUnit::Millimeters ),
+                        context.convertToPainterUnits( mOffsetFromReferencePoint.y(), Qgis::RenderUnit::Millimeters ) + context.convertToPainterUnits( mContentsMargins.top(), Qgis::RenderUnit::Millimeters ) );
   }
   else
   {
-    painter->translate( context.convertToPainterUnits( mContentsMargins.left(), QgsUnitTypes::RenderMillimeters ),
-                        context.convertToPainterUnits( mContentsMargins.top(), QgsUnitTypes::RenderMillimeters ) );
+    painter->translate( context.convertToPainterUnits( mContentsMargins.left(), Qgis::RenderUnit::Millimeters ),
+                        context.convertToPainterUnits( mContentsMargins.top(), Qgis::RenderUnit::Millimeters ) );
   }
-  const QSizeF size( context.convertToPainterUnits( mFrameSize.width(), QgsUnitTypes::RenderMillimeters ) - context.convertToPainterUnits( mContentsMargins.left() + mContentsMargins.right(), QgsUnitTypes::RenderMillimeters ),
-                     context.convertToPainterUnits( mFrameSize.height(), QgsUnitTypes::RenderMillimeters ) - context.convertToPainterUnits( mContentsMargins.top() + mContentsMargins.bottom(), QgsUnitTypes::RenderMillimeters ) );
+  const QSizeF size( context.convertToPainterUnits( mFrameSize.width(), Qgis::RenderUnit::Millimeters ) - context.convertToPainterUnits( mContentsMargins.left() + mContentsMargins.right(), Qgis::RenderUnit::Millimeters ),
+                     context.convertToPainterUnits( mFrameSize.height(), Qgis::RenderUnit::Millimeters ) - context.convertToPainterUnits( mContentsMargins.top() + mContentsMargins.bottom(), Qgis::RenderUnit::Millimeters ) );
 
   // scale back from painter dpi to 96 dpi --
 // double dotsPerMM = context.painter()->device()->logicalDpiX() / ( 25.4 * 3.78 );
@@ -229,7 +228,7 @@ void QgsAnnotation::drawFrame( QgsRenderContext &context ) const
 
   auto scaleSize = [&context]( double size )->double
   {
-    return context.convertToPainterUnits( size, QgsUnitTypes::RenderMillimeters );
+    return context.convertToPainterUnits( size, Qgis::RenderUnit::Millimeters );
   };
 
   const QRectF frameRect( mHasFixedMapPosition ? scaleSize( mOffsetFromReferencePoint.x() ) : 0,
@@ -238,7 +237,7 @@ void QgsAnnotation::drawFrame( QgsRenderContext &context ) const
                           scaleSize( mFrameSize.height() ) );
   const QgsPointXY origin = mHasFixedMapPosition ? QgsPointXY( 0, 0 ) : QgsPointXY( frameRect.center().x(), frameRect.center().y() );
 
-  const QPolygonF poly = QgsShapeGenerator::createBalloon( origin, frameRect, context.convertToPainterUnits( mSegmentPointWidthMm, QgsUnitTypes::RenderMillimeters ) );
+  const QPolygonF poly = QgsShapeGenerator::createBalloon( origin, frameRect, context.convertToPainterUnits( mSegmentPointWidthMm, Qgis::RenderUnit::Millimeters ) );
 
   mFillSymbol->startRender( context );
   const QVector<QPolygonF> rings; //empty list

@@ -88,7 +88,7 @@ class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElev
      *
      * \since QGIS 3.26
      */
-    QgsUnitTypes::RenderUnit maximumScreenErrorUnit() const { return mMaximumScreenErrorUnit; }
+    Qgis::RenderUnit maximumScreenErrorUnit() const { return mMaximumScreenErrorUnit; }
 
     /**
      * Sets the \a unit for the maximum screen error allowed when generating elevation profiles for the point cloud.
@@ -98,7 +98,7 @@ class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElev
      *
      * \since QGIS 3.26
      */
-    void setMaximumScreenErrorUnit( QgsUnitTypes::RenderUnit unit );
+    void setMaximumScreenErrorUnit( Qgis::RenderUnit unit );
 
     /**
      * Returns the symbol used drawing points in elevation profile charts.
@@ -181,7 +181,7 @@ class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElev
      *
      * \since QGIS 3.26
      */
-    void setPointSizeUnit( const QgsUnitTypes::RenderUnit units );
+    void setPointSizeUnit( const Qgis::RenderUnit units );
 
     /**
      * Returns the units used for the point size used for drawing points in elevation profile charts.
@@ -190,7 +190,7 @@ class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElev
      *
      * \since QGIS 3.26
      */
-    QgsUnitTypes::RenderUnit pointSizeUnit() const { return mPointSizeUnit; }
+    Qgis::RenderUnit pointSizeUnit() const { return mPointSizeUnit; }
 
     /**
      * Returns TRUE if layer coloring should be respected when rendering elevation profile plots.
@@ -209,10 +209,10 @@ class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElev
   private:
 
     double mMaximumScreenError = 0.3;
-    QgsUnitTypes::RenderUnit mMaximumScreenErrorUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mMaximumScreenErrorUnit = Qgis::RenderUnit::Millimeters;
 
     double mPointSize = 0.6;
-    QgsUnitTypes::RenderUnit mPointSizeUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mPointSizeUnit = Qgis::RenderUnit::Millimeters;
     Qgis::PointCloudSymbol mPointSymbol = Qgis::PointCloudSymbol::Square;
     QColor mPointColor;
     bool mRespectLayerColors = true;

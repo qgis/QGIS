@@ -19,10 +19,7 @@
 
 #include "qgis.h"
 #include "qgsmeshlayer.h"
-#include "qgsmeshlayerutils.h"
-#include "qgsmessagelog.h"
 #include "qgsmeshvariablestrokewidthwidget.h"
-#include "qgssettings.h"
 #include <QPointer>
 
 QgsMeshRendererScalarSettingsWidget::QgsMeshRendererScalarSettingsWidget( QWidget *parent )
@@ -41,11 +38,13 @@ QgsMeshRendererScalarSettingsWidget::QgsMeshRendererScalarSettingsWidget( QWidge
   mScalarInterpolationTypeComboBox->addItem( tr( "Neighbour Average" ), QgsMeshRendererScalarSettings::NeighbourAverage );
   mScalarInterpolationTypeComboBox->setCurrentIndex( 0 );
 
-  mScalarEdgeStrokeWidthUnitSelectionWidget->setUnits( QgsUnitTypes::RenderUnitList()
-      << QgsUnitTypes::RenderMillimeters
-      << QgsUnitTypes::RenderMetersInMapUnits
-      << QgsUnitTypes::RenderPixels
-      << QgsUnitTypes::RenderPoints );
+  mScalarEdgeStrokeWidthUnitSelectionWidget->setUnits(
+  {
+    Qgis::RenderUnit::Millimeters,
+    Qgis::RenderUnit::MetersInMapUnits,
+    Qgis::RenderUnit::Pixels,
+    Qgis::RenderUnit::Points,
+  } );
 
   // connect
   connect( mScalarRecalculateMinMaxButton, &QPushButton::clicked, this, &QgsMeshRendererScalarSettingsWidget::recalculateMinMaxButtonClicked );

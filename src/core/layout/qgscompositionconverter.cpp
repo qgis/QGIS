@@ -34,6 +34,8 @@
 #include "qgslinesymbol.h"
 #include "qgsfillsymbol.h"
 #include "qgsmaplayerstyle.h"
+#include "qgslayoutrendercontext.h"
+#include "qgsunittypes.h"
 
 #include "qgsprintlayout.h"
 #include "qgslayoutatlas.h"
@@ -193,7 +195,6 @@ std::unique_ptr< QgsPrintLayout > QgsCompositionConverter::createLayoutFromCompo
     const QDomElement atlasElement = parentElement.elementsByTagName( QStringLiteral( "Atlas" ) ).at( 0 ).toElement();
     readAtlasXml( layout->atlas(), atlasElement, layout->project() );
   }
-#include "qgslayoutitemregistry.h"
 
   layout->undoStack()->blockCommands( false );
   return layout;
@@ -542,12 +543,12 @@ bool QgsCompositionConverter::readLabelXml( QgsLayoutItemLabel *layoutItem, cons
   if ( font.pointSizeF() > 0 )
   {
     format.setSize( font.pointSizeF() );
-    format.setSizeUnit( QgsUnitTypes::RenderPoints );
+    format.setSizeUnit( Qgis::RenderUnit::Points );
   }
   else if ( font.pixelSize() > 0 )
   {
     format.setSize( font.pixelSize() );
-    format.setSizeUnit( QgsUnitTypes::RenderPixels );
+    format.setSizeUnit( Qgis::RenderUnit::Pixels );
   }
 
   //font color
@@ -1015,12 +1016,12 @@ bool QgsCompositionConverter::readMapXml( QgsLayoutItemMap *layoutItem, const QD
       if ( annotationFont.pointSizeF() > 0 )
       {
         annotationFormat.setSize( annotationFont.pointSizeF() );
-        annotationFormat.setSizeUnit( QgsUnitTypes::RenderPoints );
+        annotationFormat.setSizeUnit( Qgis::RenderUnit::Points );
       }
       else if ( annotationFont.pixelSize() > 0 )
       {
         annotationFormat.setSize( annotationFont.pixelSize() );
-        annotationFormat.setSizeUnit( QgsUnitTypes::RenderPixels );
+        annotationFormat.setSizeUnit( Qgis::RenderUnit::Pixels );
       }
       annotationFormat.setColor( QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "fontColor" ), QStringLiteral( "0,0,0,255" ) ) ) );
       mapGrid->setAnnotationTextFormat( annotationFormat );
@@ -1130,7 +1131,7 @@ bool QgsCompositionConverter::readScaleBarXml( QgsLayoutItemScaleBar *layoutItem
   std::unique_ptr< QgsLineSymbol > lineSymbol = std::make_unique< QgsLineSymbol >();
   std::unique_ptr< QgsSimpleLineSymbolLayer > lineSymbolLayer = std::make_unique< QgsSimpleLineSymbolLayer >();
   lineSymbolLayer->setWidth( itemElem.attribute( QStringLiteral( "outlineWidth" ), QStringLiteral( "0.3" ) ).toDouble() );
-  lineSymbolLayer->setWidthUnit( QgsUnitTypes::RenderMillimeters );
+  lineSymbolLayer->setWidthUnit( Qgis::RenderUnit::Millimeters );
   lineSymbolLayer->setPenJoinStyle( QgsSymbolLayerUtils::decodePenJoinStyle( itemElem.attribute( QStringLiteral( "lineJoinStyle" ), QStringLiteral( "miter" ) ) ) );
   lineSymbolLayer->setPenCapStyle( QgsSymbolLayerUtils::decodePenCapStyle( itemElem.attribute( QStringLiteral( "lineCapStyle" ), QStringLiteral( "square" ) ) ) );
   //stroke color
@@ -1195,20 +1196,20 @@ bool QgsCompositionConverter::readScaleBarXml( QgsLayoutItemScaleBar *layoutItem
 
   if ( itemElem.attribute( QStringLiteral( "unitType" ) ).isEmpty() )
   {
-    QgsUnitTypes::DistanceUnit u = QgsUnitTypes::DistanceUnknownUnit;
+    Qgis::DistanceUnit u = Qgis::DistanceUnit::Unknown;
     switch ( itemElem.attribute( QStringLiteral( "units" ) ).toInt() )
     {
       case 0:
-        u = QgsUnitTypes::DistanceUnknownUnit;
+        u = Qgis::DistanceUnit::Unknown;
         break;
       case 1:
-        u = QgsUnitTypes::DistanceMeters;
+        u = Qgis::DistanceUnit::Meters;
         break;
       case 2:
-        u = QgsUnitTypes::DistanceFeet;
+        u = Qgis::DistanceUnit::Feet;
         break;
       case 3:
-        u = QgsUnitTypes::DistanceNauticalMiles;
+        u = Qgis::DistanceUnit::NauticalMiles;
         break;
     }
     layoutItem->setUnits( u );
@@ -1461,12 +1462,12 @@ bool QgsCompositionConverter::readTableXml( QgsLayoutItemAttributeTable *layoutI
   if ( headerFont.pointSizeF() > 0 )
   {
     headerFormat.setSize( headerFont.pointSizeF() );
-    headerFormat.setSizeUnit( QgsUnitTypes::RenderPoints );
+    headerFormat.setSizeUnit( Qgis::RenderUnit::Points );
   }
   else if ( headerFont.pixelSize() > 0 )
   {
     headerFormat.setSize( headerFont.pixelSize() );
-    headerFormat.setSizeUnit( QgsUnitTypes::RenderPixels );
+    headerFormat.setSizeUnit( Qgis::RenderUnit::Pixels );
   }
   headerFormat.setColor( QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "headerFontColor" ), QStringLiteral( "0,0,0,255" ) ) ) );
   layoutItem->setHeaderTextFormat( headerFormat );
@@ -1483,12 +1484,12 @@ bool QgsCompositionConverter::readTableXml( QgsLayoutItemAttributeTable *layoutI
   if ( contentFont.pointSizeF() > 0 )
   {
     contentFormat.setSize( contentFont.pointSizeF() );
-    contentFormat.setSizeUnit( QgsUnitTypes::RenderPoints );
+    contentFormat.setSizeUnit( Qgis::RenderUnit::Points );
   }
   else if ( contentFont.pixelSize() > 0 )
   {
     contentFormat.setSize( contentFont.pixelSize() );
-    contentFormat.setSizeUnit( QgsUnitTypes::RenderPixels );
+    contentFormat.setSizeUnit( Qgis::RenderUnit::Pixels );
   }
   contentFormat.setColor( QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "contentFontColor" ), QStringLiteral( "0,0,0,255" ) ) ) );
   layoutItem->setContentTextFormat( contentFormat );

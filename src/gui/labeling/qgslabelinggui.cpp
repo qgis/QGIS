@@ -250,14 +250,14 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, 
   mFontMultiLineAlignComboBox->addItem( tr( "Right" ), static_cast< int >( Qgis::LabelMultiLineAlignment::Right ) );
   mFontMultiLineAlignComboBox->addItem( tr( "Justify" ), static_cast< int >( Qgis::LabelMultiLineAlignment::Justify ) );
 
-  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( QgsUnitTypes::AngleDegrees ), QgsUnitTypes::AngleDegrees );
-  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( QgsUnitTypes::AngleRadians ), QgsUnitTypes::AngleRadians );
-  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( QgsUnitTypes::AngleGon ), QgsUnitTypes::AngleGon );
-  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( QgsUnitTypes::AngleMinutesOfArc ), QgsUnitTypes::AngleMinutesOfArc );
-  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( QgsUnitTypes::AngleSecondsOfArc ), QgsUnitTypes::AngleSecondsOfArc );
-  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( QgsUnitTypes::AngleTurn ), QgsUnitTypes::AngleTurn );
-  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( QgsUnitTypes::AngleMilliradiansSI ), QgsUnitTypes::AngleMilliradiansSI );
-  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( QgsUnitTypes::AngleMilNATO ), QgsUnitTypes::AngleMilNATO );
+  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( Qgis::AngleUnit::Degrees ), static_cast< int >( Qgis::AngleUnit::Degrees ) );
+  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( Qgis::AngleUnit::Radians ), static_cast< int >( Qgis::AngleUnit::Radians ) );
+  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( Qgis::AngleUnit::Gon ), static_cast< int >( Qgis::AngleUnit::Gon ) );
+  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( Qgis::AngleUnit::MinutesOfArc ), static_cast< int >( Qgis::AngleUnit::MinutesOfArc ) );
+  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( Qgis::AngleUnit::SecondsOfArc ), static_cast< int >( Qgis::AngleUnit::SecondsOfArc ) );
+  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( Qgis::AngleUnit::Turn ), static_cast< int >( Qgis::AngleUnit::Turn ) );
+  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( Qgis::AngleUnit::MilliradiansSI ), static_cast< int >( Qgis::AngleUnit::MilliradiansSI ) );
+  mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( Qgis::AngleUnit::MilNATO ), static_cast< int >( Qgis::AngleUnit::MilNATO ) );
 
   // connections for groupboxes with separate activation checkboxes (that need to honor data defined setting)
   connect( mBufferDrawChkBx, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
@@ -631,7 +631,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.useMaxLineLengthForAutoWrap = mAutoWrapTypeComboBox->currentIndex() == 0;
   lyr.multilineAlign = static_cast< Qgis::LabelMultiLineAlignment >( mFontMultiLineAlignComboBox->currentData().toInt() );
   lyr.preserveRotation = chkPreserveRotation->isChecked();
-  lyr.setRotationUnit( static_cast< QgsUnitTypes::AngleUnit >( mCoordRotationUnitComboBox->currentData().toInt() ) );
+  lyr.setRotationUnit( static_cast< Qgis::AngleUnit >( mCoordRotationUnitComboBox->currentData().toInt() ) );
   lyr.geometryGenerator = mGeometryGenerator->text();
   lyr.geometryGeneratorType = mGeometryGeneratorType->currentData().value<QgsWkbTypes::GeometryType>();
   lyr.geometryGeneratorEnabled = mGeometryGeneratorGroupBox->isChecked();

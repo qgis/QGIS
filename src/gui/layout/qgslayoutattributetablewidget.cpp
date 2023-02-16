@@ -28,7 +28,7 @@
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
-#include "qgsguiutils.h"
+#include "qgslayoutreportcontext.h"
 #include "qgslayouttablebackgroundcolorsdialog.h"
 
 QgsLayoutAttributeTableWidget::QgsLayoutAttributeTableWidget( QgsLayoutFrame *frame )

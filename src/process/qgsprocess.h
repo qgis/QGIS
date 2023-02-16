@@ -23,7 +23,6 @@
 #endif
 
 #include "qgsprocessingfeedback.h"
-#include "qgsunittypes.h"
 #include "qgsprocessingcontext.h"
 #include <QElapsedTimer>
 
@@ -83,8 +82,8 @@ class QgsProcessingExec
     int execute( const QString &algId,
                  const QVariantMap &parameters,
                  const QString &ellipsoid,
-                 QgsUnitTypes::DistanceUnit distanceUnit,
-                 QgsUnitTypes::AreaUnit areaUnit,
+                 Qgis::DistanceUnit distanceUnit,
+                 Qgis::AreaUnit areaUnit,
                  QgsProcessingContext::LogLevel logLevel,
                  bool useJson,
                  const QString &projectPath = QString() );

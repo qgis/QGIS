@@ -80,7 +80,7 @@ void QgsLineSymbol::setWidth( double w ) const
   }
 }
 
-void QgsLineSymbol::setWidthUnit( QgsUnitTypes::RenderUnit unit ) const
+void QgsLineSymbol::setWidthUnit( Qgis::RenderUnit unit ) const
 {
   const auto constLLayers = mLayers;
   for ( QgsSymbolLayer *layer : constLLayers )
@@ -236,7 +236,7 @@ void QgsLineSymbol::renderPolyline( const QPolygonF &points, const QgsFeature *f
 
   //save old painter
   QPainter *renderPainter = context.painter();
-  QgsSymbolRenderContext symbolContext( context, QgsUnitTypes::RenderUnknownUnit, opacity, selected, mRenderHints, f );
+  QgsSymbolRenderContext symbolContext( context, Qgis::RenderUnit::Unknown, opacity, selected, mRenderHints, f );
   symbolContext.setOriginalGeometryType( QgsWkbTypes::LineGeometry );
   symbolContext.setGeometryPartCount( symbolRenderContext()->geometryPartCount() );
   symbolContext.setGeometryPartNum( symbolRenderContext()->geometryPartNum() );

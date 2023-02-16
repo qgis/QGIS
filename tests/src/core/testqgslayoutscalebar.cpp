@@ -105,7 +105,7 @@ void TestQgsLayoutScaleBar::singleBox()
   l.addLayoutItem( scalebar );
   scalebar->setLinkedMap( map );
   scalebar->setTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() ) );
-  scalebar->setUnits( QgsUnitTypes::DistanceMeters );
+  scalebar->setUnits( Qgis::DistanceUnit::Meters );
   scalebar->setUnitsPerSegment( 2000 );
   scalebar->setNumberOfSegmentsLeft( 0 );
   scalebar->setNumberOfSegments( 2 );
@@ -137,7 +137,7 @@ void TestQgsLayoutScaleBar::singleBoxLineSymbol()
   l.addLayoutItem( scalebar );
   scalebar->setLinkedMap( map );
   scalebar->setTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() ) );
-  scalebar->setUnits( QgsUnitTypes::DistanceMeters );
+  scalebar->setUnits( Qgis::DistanceUnit::Meters );
   scalebar->setUnitsPerSegment( 2000 );
   scalebar->setNumberOfSegmentsLeft( 2 );
   scalebar->setNumberOfSegments( 2 );
@@ -146,13 +146,13 @@ void TestQgsLayoutScaleBar::singleBoxLineSymbol()
   std::unique_ptr< QgsLineSymbol > lineSymbol = std::make_unique< QgsLineSymbol >();
   std::unique_ptr< QgsSimpleLineSymbolLayer > lineSymbolLayer = std::make_unique< QgsSimpleLineSymbolLayer >();
   lineSymbolLayer->setWidth( 4 );
-  lineSymbolLayer->setWidthUnit( QgsUnitTypes::RenderMillimeters );
+  lineSymbolLayer->setWidthUnit( Qgis::RenderUnit::Millimeters );
   lineSymbolLayer->setColor( QColor( 255, 0, 0 ) );
   lineSymbol->changeSymbolLayer( 0, lineSymbolLayer.release() );
 
   lineSymbolLayer = std::make_unique< QgsSimpleLineSymbolLayer >();
   lineSymbolLayer->setWidth( 2 );
-  lineSymbolLayer->setWidthUnit( QgsUnitTypes::RenderMillimeters );
+  lineSymbolLayer->setWidthUnit( Qgis::RenderUnit::Millimeters );
   lineSymbolLayer->setColor( QColor( 255, 255, 0 ) );
   lineSymbol->appendSymbolLayer( lineSymbolLayer.release() );
 
@@ -181,7 +181,7 @@ void TestQgsLayoutScaleBar::singleBoxFillSymbol()
   l.addLayoutItem( scalebar );
   scalebar->setLinkedMap( map );
   scalebar->setTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() ) );
-  scalebar->setUnits( QgsUnitTypes::DistanceMeters );
+  scalebar->setUnits( Qgis::DistanceUnit::Meters );
   scalebar->setUnitsPerSegment( 2000 );
   scalebar->setNumberOfSegmentsLeft( 2 );
   scalebar->setNumberOfSegments( 2 );
@@ -224,7 +224,7 @@ void TestQgsLayoutScaleBar::singleBoxLabelBelowSegment()
   l.addLayoutItem( scalebar );
   scalebar->setLinkedMap( map );
   scalebar->setTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ), 18 ) ) );
-  scalebar->setUnits( QgsUnitTypes::DistanceMeters );
+  scalebar->setUnits( Qgis::DistanceUnit::Meters );
   scalebar->setUnitsPerSegment( 2000 );
   scalebar->setNumberOfSegmentsLeft( 0 );
   scalebar->setNumberOfSegments( 2 );
@@ -259,7 +259,7 @@ void TestQgsLayoutScaleBar::singleBoxAlpha()
   format.setColor( QColor( 255, 0, 255 ) );
   format.setOpacity( 100.0 / 255 );
   scalebar->setTextFormat( format );
-  scalebar->setUnits( QgsUnitTypes::DistanceMeters );
+  scalebar->setUnits( Qgis::DistanceUnit::Meters );
   scalebar->setUnitsPerSegment( 2000 );
   scalebar->setNumberOfSegmentsLeft( 0 );
   scalebar->setNumberOfSegments( 2 );
@@ -299,7 +299,7 @@ void TestQgsLayoutScaleBar::doubleBox()
   QgsTextFormat format = QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() );
   format.setColor( Qt::black );
   scalebar->setTextFormat( format );
-  scalebar->setUnits( QgsUnitTypes::DistanceMeters );
+  scalebar->setUnits( Qgis::DistanceUnit::Meters );
   scalebar->setUnitsPerSegment( 2000 );
   scalebar->setNumberOfSegmentsLeft( 0 );
   scalebar->setNumberOfSegments( 2 );
@@ -335,7 +335,7 @@ void TestQgsLayoutScaleBar::doubleBoxLineSymbol()
   l.addLayoutItem( scalebar );
   scalebar->setLinkedMap( map );
   scalebar->setTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() ) );
-  scalebar->setUnits( QgsUnitTypes::DistanceMeters );
+  scalebar->setUnits( Qgis::DistanceUnit::Meters );
   scalebar->setUnitsPerSegment( 2000 );
   scalebar->setNumberOfSegmentsLeft( 2 );
   scalebar->setNumberOfSegments( 2 );
@@ -344,13 +344,13 @@ void TestQgsLayoutScaleBar::doubleBoxLineSymbol()
   std::unique_ptr< QgsLineSymbol > lineSymbol = std::make_unique< QgsLineSymbol >();
   std::unique_ptr< QgsSimpleLineSymbolLayer > lineSymbolLayer = std::make_unique< QgsSimpleLineSymbolLayer >();
   lineSymbolLayer->setWidth( 4 );
-  lineSymbolLayer->setWidthUnit( QgsUnitTypes::RenderMillimeters );
+  lineSymbolLayer->setWidthUnit( Qgis::RenderUnit::Millimeters );
   lineSymbolLayer->setColor( QColor( 255, 0, 0 ) );
   lineSymbol->changeSymbolLayer( 0, lineSymbolLayer.release() );
 
   lineSymbolLayer = std::make_unique< QgsSimpleLineSymbolLayer >();
   lineSymbolLayer->setWidth( 2 );
-  lineSymbolLayer->setWidthUnit( QgsUnitTypes::RenderMillimeters );
+  lineSymbolLayer->setWidthUnit( Qgis::RenderUnit::Millimeters );
   lineSymbolLayer->setColor( QColor( 255, 255, 0 ) );
   lineSymbol->appendSymbolLayer( lineSymbolLayer.release() );
 
@@ -379,7 +379,7 @@ void TestQgsLayoutScaleBar::doubleBoxFillSymbol()
   l.addLayoutItem( scalebar );
   scalebar->setLinkedMap( map );
   scalebar->setTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() ) );
-  scalebar->setUnits( QgsUnitTypes::DistanceMeters );
+  scalebar->setUnits( Qgis::DistanceUnit::Meters );
   scalebar->setUnitsPerSegment( 2000 );
   scalebar->setNumberOfSegmentsLeft( 2 );
   scalebar->setNumberOfSegments( 2 );
@@ -424,7 +424,7 @@ void TestQgsLayoutScaleBar::doubleBoxLabelCenteredSegment()
   QgsTextFormat format = QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ), 18 ) );
   format.setColor( Qt::black );
   scalebar->setTextFormat( format );
-  scalebar->setUnits( QgsUnitTypes::DistanceMeters );
+  scalebar->setUnits( Qgis::DistanceUnit::Meters );
   scalebar->setUnitsPerSegment( 2000 );
   scalebar->setNumberOfSegmentsLeft( 0 );
   scalebar->setNumberOfSegments( 3 );
@@ -464,7 +464,7 @@ void TestQgsLayoutScaleBar::numeric()
   scalebar->setLinkedMap( map );
   const QgsTextFormat format = QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() );
   scalebar->setTextFormat( format );
-  scalebar->setUnits( QgsUnitTypes::DistanceMeters );
+  scalebar->setUnits( Qgis::DistanceUnit::Meters );
   scalebar->setUnitsPerSegment( 2000 );
   scalebar->setNumberOfSegmentsLeft( 0 );
   scalebar->setNumberOfSegments( 2 );
@@ -502,7 +502,7 @@ void TestQgsLayoutScaleBar::tick()
   l.addLayoutItem( scalebar );
   scalebar->setLinkedMap( map );
   scalebar->setTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() ) );
-  scalebar->setUnits( QgsUnitTypes::DistanceMeters );
+  scalebar->setUnits( Qgis::DistanceUnit::Meters );
   scalebar->setUnitsPerSegment( 2000 );
   scalebar->setNumberOfSegmentsLeft( 0 );
   scalebar->setNumberOfSegments( 2 );
@@ -536,7 +536,7 @@ void TestQgsLayoutScaleBar::tickLineSymbol()
   l.addLayoutItem( scalebar );
   scalebar->setLinkedMap( map );
   scalebar->setTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() ) );
-  scalebar->setUnits( QgsUnitTypes::DistanceMeters );
+  scalebar->setUnits( Qgis::DistanceUnit::Meters );
   scalebar->setUnitsPerSegment( 2000 );
   scalebar->setNumberOfSegmentsLeft( 2 );
   scalebar->setNumberOfSegments( 2 );
@@ -545,13 +545,13 @@ void TestQgsLayoutScaleBar::tickLineSymbol()
   std::unique_ptr< QgsLineSymbol > lineSymbol = std::make_unique< QgsLineSymbol >();
   std::unique_ptr< QgsSimpleLineSymbolLayer > lineSymbolLayer = std::make_unique< QgsSimpleLineSymbolLayer >();
   lineSymbolLayer->setWidth( 4 );
-  lineSymbolLayer->setWidthUnit( QgsUnitTypes::RenderMillimeters );
+  lineSymbolLayer->setWidthUnit( Qgis::RenderUnit::Millimeters );
   lineSymbolLayer->setColor( QColor( 255, 0, 0 ) );
   lineSymbol->changeSymbolLayer( 0, lineSymbolLayer.release() );
 
   lineSymbolLayer = std::make_unique< QgsSimpleLineSymbolLayer >();
   lineSymbolLayer->setWidth( 2 );
-  lineSymbolLayer->setWidthUnit( QgsUnitTypes::RenderMillimeters );
+  lineSymbolLayer->setWidthUnit( Qgis::RenderUnit::Millimeters );
   lineSymbolLayer->setColor( QColor( 255, 255, 0 ) );
   lineSymbol->appendSymbolLayer( lineSymbolLayer.release() );
 
@@ -585,7 +585,7 @@ void TestQgsLayoutScaleBar::dataDefined()
   scalebar->setLinkedMap( map );
   const QgsTextFormat format = QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() );
   scalebar->setTextFormat( format );
-  scalebar->setUnits( QgsUnitTypes::DistanceMeters );
+  scalebar->setUnits( Qgis::DistanceUnit::Meters );
   scalebar->setUnitsPerSegment( 500 );
   scalebar->setNumberOfSegmentsLeft( 4 );
   scalebar->setNumberOfSegments( 6 );
@@ -596,7 +596,7 @@ void TestQgsLayoutScaleBar::dataDefined()
   std::unique_ptr< QgsLineSymbol > lineSymbol = std::make_unique< QgsLineSymbol >();
   std::unique_ptr< QgsSimpleLineSymbolLayer > lineSymbolLayer = std::make_unique< QgsSimpleLineSymbolLayer >();
   lineSymbolLayer->setWidth( 1 );
-  lineSymbolLayer->setWidthUnit( QgsUnitTypes::RenderMillimeters );
+  lineSymbolLayer->setWidthUnit( Qgis::RenderUnit::Millimeters );
   lineSymbolLayer->setColor( QColor( 0, 0, 0 ) );
   lineSymbol->changeSymbolLayer( 0, lineSymbolLayer.release() );
   scalebar->setLineSymbol( lineSymbol.release() );
@@ -681,7 +681,7 @@ void TestQgsLayoutScaleBar::textFormat()
   scalebar->attemptSetSceneRect( QRectF( 20, 180, 50, 20 ) );
   l.addLayoutItem( scalebar );
   scalebar->setLinkedMap( map );
-  scalebar->setUnits( QgsUnitTypes::DistanceMeters );
+  scalebar->setUnits( Qgis::DistanceUnit::Meters );
   scalebar->setUnitsPerSegment( 2000 );
   scalebar->setNumberOfSegmentsLeft( 0 );
   scalebar->setNumberOfSegments( 2 );
@@ -716,7 +716,7 @@ void TestQgsLayoutScaleBar::numericFormat()
   scalebar->attemptSetSceneRect( QRectF( 20, 180, 50, 20 ) );
   l.addLayoutItem( scalebar );
   scalebar->setLinkedMap( map );
-  scalebar->setUnits( QgsUnitTypes::DistanceMeters );
+  scalebar->setUnits( Qgis::DistanceUnit::Meters );
   scalebar->setUnitsPerSegment( 2000 );
   scalebar->setNumberOfSegmentsLeft( 0 );
   scalebar->setNumberOfSegments( 2 );
@@ -753,7 +753,7 @@ void TestQgsLayoutScaleBar::steppedLine()
   l.addLayoutItem( scalebar );
   scalebar->setLinkedMap( map );
   scalebar->setTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() ) );
-  scalebar->setUnits( QgsUnitTypes::DistanceMeters );
+  scalebar->setUnits( Qgis::DistanceUnit::Meters );
   scalebar->setUnitsPerSegment( 2000 );
   scalebar->setNumberOfSegmentsLeft( 2 );
   scalebar->setNumberOfSegments( 2 );
@@ -763,13 +763,13 @@ void TestQgsLayoutScaleBar::steppedLine()
   std::unique_ptr< QgsLineSymbol > lineSymbol = std::make_unique< QgsLineSymbol >();
   std::unique_ptr< QgsSimpleLineSymbolLayer > lineSymbolLayer = std::make_unique< QgsSimpleLineSymbolLayer >();
   lineSymbolLayer->setWidth( 4 );
-  lineSymbolLayer->setWidthUnit( QgsUnitTypes::RenderMillimeters );
+  lineSymbolLayer->setWidthUnit( Qgis::RenderUnit::Millimeters );
   lineSymbolLayer->setColor( QColor( 255, 0, 0 ) );
   lineSymbol->changeSymbolLayer( 0, lineSymbolLayer.release() );
 
   lineSymbolLayer = std::make_unique< QgsSimpleLineSymbolLayer >();
   lineSymbolLayer->setWidth( 2 );
-  lineSymbolLayer->setWidthUnit( QgsUnitTypes::RenderMillimeters );
+  lineSymbolLayer->setWidthUnit( Qgis::RenderUnit::Millimeters );
   lineSymbolLayer->setColor( QColor( 255, 255, 0 ) );
   lineSymbol->appendSymbolLayer( lineSymbolLayer.release() );
 
@@ -798,7 +798,7 @@ void TestQgsLayoutScaleBar::hollow()
   l.addLayoutItem( scalebar );
   scalebar->setLinkedMap( map );
   scalebar->setTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() ) );
-  scalebar->setUnits( QgsUnitTypes::DistanceMeters );
+  scalebar->setUnits( Qgis::DistanceUnit::Meters );
   scalebar->setUnitsPerSegment( 2000 );
   scalebar->setNumberOfSegmentsLeft( 2 );
   scalebar->setNumberOfSegments( 2 );
@@ -808,13 +808,13 @@ void TestQgsLayoutScaleBar::hollow()
   std::unique_ptr< QgsLineSymbol > lineSymbol = std::make_unique< QgsLineSymbol >();
   std::unique_ptr< QgsSimpleLineSymbolLayer > lineSymbolLayer = std::make_unique< QgsSimpleLineSymbolLayer >();
   lineSymbolLayer->setWidth( 4 );
-  lineSymbolLayer->setWidthUnit( QgsUnitTypes::RenderMillimeters );
+  lineSymbolLayer->setWidthUnit( Qgis::RenderUnit::Millimeters );
   lineSymbolLayer->setColor( QColor( 255, 0, 0 ) );
   lineSymbol->changeSymbolLayer( 0, lineSymbolLayer.release() );
 
   lineSymbolLayer = std::make_unique< QgsSimpleLineSymbolLayer >();
   lineSymbolLayer->setWidth( 2 );
-  lineSymbolLayer->setWidthUnit( QgsUnitTypes::RenderMillimeters );
+  lineSymbolLayer->setWidthUnit( Qgis::RenderUnit::Millimeters );
   lineSymbolLayer->setColor( QColor( 255, 255, 0 ) );
   lineSymbol->appendSymbolLayer( lineSymbolLayer.release() );
 
@@ -852,13 +852,13 @@ void TestQgsLayoutScaleBar::hollowDefaults()
   std::unique_ptr< QgsLineSymbol > lineSymbol = std::make_unique< QgsLineSymbol >();
   std::unique_ptr< QgsSimpleLineSymbolLayer > lineSymbolLayer = std::make_unique< QgsSimpleLineSymbolLayer >();
   lineSymbolLayer->setWidth( 4 );
-  lineSymbolLayer->setWidthUnit( QgsUnitTypes::RenderMillimeters );
+  lineSymbolLayer->setWidthUnit( Qgis::RenderUnit::Millimeters );
   lineSymbolLayer->setColor( QColor( 255, 0, 0 ) );
   lineSymbol->changeSymbolLayer( 0, lineSymbolLayer.release() );
 
   lineSymbolLayer = std::make_unique< QgsSimpleLineSymbolLayer >();
   lineSymbolLayer->setWidth( 2 );
-  lineSymbolLayer->setWidthUnit( QgsUnitTypes::RenderMillimeters );
+  lineSymbolLayer->setWidthUnit( Qgis::RenderUnit::Millimeters );
   lineSymbolLayer->setColor( QColor( 255, 255, 0 ) );
   lineSymbol->appendSymbolLayer( lineSymbolLayer.release() );
 
@@ -904,7 +904,7 @@ void TestQgsLayoutScaleBar::tickSubdivisions()
   l.addLayoutItem( scalebar );
   scalebar->setLinkedMap( map );
   scalebar->setTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() ) );
-  scalebar->setUnits( QgsUnitTypes::DistanceMeters );
+  scalebar->setUnits( Qgis::DistanceUnit::Meters );
   scalebar->setUnitsPerSegment( 2000 );
   scalebar->setNumberOfSegmentsLeft( 0 );
   scalebar->setNumberOfSegments( 2 );
@@ -916,13 +916,13 @@ void TestQgsLayoutScaleBar::tickSubdivisions()
   std::unique_ptr< QgsLineSymbol > lineSymbol = std::make_unique< QgsLineSymbol >();
   std::unique_ptr< QgsSimpleLineSymbolLayer > lineSymbolLayer = std::make_unique< QgsSimpleLineSymbolLayer >();
   lineSymbolLayer->setWidth( 4 );
-  lineSymbolLayer->setWidthUnit( QgsUnitTypes::RenderMillimeters );
+  lineSymbolLayer->setWidthUnit( Qgis::RenderUnit::Millimeters );
   lineSymbolLayer->setColor( QColor( 255, 0, 0 ) );
   lineSymbol->changeSymbolLayer( 0, lineSymbolLayer.release() );
 
   lineSymbolLayer = std::make_unique< QgsSimpleLineSymbolLayer >();
   lineSymbolLayer->setWidth( 2 );
-  lineSymbolLayer->setWidthUnit( QgsUnitTypes::RenderMillimeters );
+  lineSymbolLayer->setWidthUnit( Qgis::RenderUnit::Millimeters );
   lineSymbolLayer->setColor( QColor( 255, 255, 0 ) );
   lineSymbol->appendSymbolLayer( lineSymbolLayer.release() );
 

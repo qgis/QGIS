@@ -79,7 +79,7 @@ Returns a DOM element representing the settings.
 .. seealso:: :py:func:`readXml`
 %End
 
-    QgsUnitTypes::TemporalUnit timeStepUnit() const;
+    Qgis::TemporalUnit timeStepUnit() const;
 %Docstring
 Returns the project's time step (length of one animation frame) unit, which is used as the default value when
 animating the project.
@@ -89,7 +89,7 @@ animating the project.
 .. seealso:: :py:func:`timeStep`
 %End
 
-    void setTimeStepUnit( QgsUnitTypes::TemporalUnit unit );
+    void setTimeStepUnit( Qgis::TemporalUnit unit );
 %Docstring
 Sets the project's time step (length of one animation frame) ``unit``, which is used as the default value when
 animating the project.

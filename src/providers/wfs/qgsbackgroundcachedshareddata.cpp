@@ -20,7 +20,6 @@
 #include "qgsmessagelog.h"
 #include "qgsproviderregistry.h"
 #include "qgsspatialiteutils.h"
-#include "qgsvectorfilewriter.h"
 #include "qgswfsutils.h" // for isCompatibleType()
 
 #include <QCryptographicHash>
@@ -794,9 +793,9 @@ void QgsBackgroundCachedSharedData::endOfDownload( bool success, long long featu
       {
         // Grow the extent by ~ 50 km (completely arbitrary number if you wonder!)
         // so that it is sufficiently zoomed out
-        if ( mSourceCrs.mapUnits() == QgsUnitTypes::DistanceMeters )
+        if ( mSourceCrs.mapUnits() == Qgis::DistanceUnit::Meters )
           mComputedExtent.grow( 50. * 1000. );
-        else if ( mSourceCrs.mapUnits() == QgsUnitTypes::DistanceDegrees )
+        else if ( mSourceCrs.mapUnits() == Qgis::DistanceUnit::Degrees )
           mComputedExtent.grow( 50. / 110 );
         pushError( QObject::tr( "Layer extent reported by the server is not correct. "
                                 "You may need to zoom on layer and then zoom out to see all features" ) );

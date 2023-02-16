@@ -147,35 +147,35 @@ void QgsTextFormatWidget::initWidget()
   {
     unitWidget->setMapCanvas( mMapCanvas );
   }
-  mFontSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits
-                                 << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderInches );
-  mBufferUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                               << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches << QgsUnitTypes::RenderPercentage );
-  mMaskBufferUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                                   << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches  << QgsUnitTypes::RenderPercentage );
-  mShapeSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                                  << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mShapeOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                                    << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mShapeRadiusUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits
-                                    << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderPercentage
-                                    << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mShapeStrokeWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                                         << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mShadowOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                                     << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches << QgsUnitTypes::RenderPercentage );
-  mShadowRadiusUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                                     << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches  << QgsUnitTypes::RenderPercentage );
-  mPointOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                                    << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mLineDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                                     << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mRepeatDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                                       << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mOverrunDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                                        << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mLineHeightUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderPercentage << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels
-                                   << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mFontSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Points << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits
+                                 << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Inches );
+  mBufferUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
+                               << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches << Qgis::RenderUnit::Percentage );
+  mMaskBufferUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
+                                   << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches  << Qgis::RenderUnit::Percentage );
+  mShapeSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
+                                  << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mShapeOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
+                                    << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mShapeRadiusUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits
+                                    << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Percentage
+                                    << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mShapeStrokeWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
+                                         << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mShadowOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
+                                     << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches << Qgis::RenderUnit::Percentage );
+  mShadowRadiusUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
+                                     << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches  << Qgis::RenderUnit::Percentage );
+  mPointOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
+                                    << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mLineDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
+                                     << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mRepeatDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
+                                       << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mOverrunDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
+                                        << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mLineHeightUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Percentage << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Pixels
+                                   << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
   mFontLineHeightSpinBox->setClearValue( 100.0 );
   mShapeRotationDblSpnBx->setClearValue( 0.0 );
   mShapeOffsetXSpnBx->setClearValue( 0.0 );
@@ -191,7 +191,7 @@ void QgsTextFormatWidget::initWidget()
 
   connect( mLineHeightUnitWidget, &QgsUnitSelectionWidget::changed, this, [ = ]
   {
-    if ( mLineHeightUnitWidget->unit() == QgsUnitTypes::RenderPercentage )
+    if ( mLineHeightUnitWidget->unit() == Qgis::RenderUnit::Percentage )
       mFontLineHeightSpinBox->setClearValue( 100.0 );
     else
       mFontLineHeightSpinBox->setClearValue( 10.0 );
@@ -960,7 +960,7 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
     mLabelingOptionsListWidget->setCurrentRow( 0 );
     whileBlocking( mOptionsTab )->setCurrentIndex( 0 );
   }
-  mFontLineHeightSpinBox->setValue( format.lineHeightUnit() == QgsUnitTypes::RenderPercentage ? ( format.lineHeight() * 100 ) : format.lineHeight() );
+  mFontLineHeightSpinBox->setValue( format.lineHeightUnit() == Qgis::RenderUnit::Percentage ? ( format.lineHeight() * 100 ) : format.lineHeight() );
   mLineHeightUnitWidget->setUnit( format.lineHeightUnit() );
 
   // shape background
@@ -1074,7 +1074,7 @@ QgsTextFormat QgsTextFormatWidget::format( bool includeDataDefinedProperties ) c
   format.setBlendMode( comboBlendMode->blendMode() );
   format.setSizeUnit( mFontSizeUnitWidget->unit() );
   format.setSizeMapUnitScale( mFontSizeUnitWidget->getMapUnitScale() );
-  format.setLineHeight( mLineHeightUnitWidget->unit() == QgsUnitTypes::RenderPercentage ? ( mFontLineHeightSpinBox->value() / 100 ) : mFontLineHeightSpinBox->value() );
+  format.setLineHeight( mLineHeightUnitWidget->unit() == Qgis::RenderUnit::Percentage ? ( mFontLineHeightSpinBox->value() / 100 ) : mFontLineHeightSpinBox->value() );
   format.setLineHeightUnit( mLineHeightUnitWidget->unit() );
   format.setPreviewBackgroundColor( mPreviewBackgroundColor );
   format.setOrientation( static_cast< Qgis::TextOrientation >( mTextOrientationComboBox->currentData().toInt() ) );
@@ -1558,7 +1558,7 @@ void QgsTextFormatWidget::mFontLetterSpacingSpinBox_valueChanged( double spacing
 void QgsTextFormatWidget::mFontSizeUnitWidget_changed()
 {
   // disable pixel size limiting for labels defined in points
-  if ( mFontSizeUnitWidget->unit() != QgsUnitTypes::RenderMapUnits )
+  if ( mFontSizeUnitWidget->unit() != Qgis::RenderUnit::MapUnits )
   {
     mFontLimitPixelChkBox->setChecked( false );
   }

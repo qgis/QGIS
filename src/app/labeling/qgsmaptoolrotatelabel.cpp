@@ -163,7 +163,7 @@ void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent *e )
         // Convert to degree
         mCurrentRotation = mCurrentRotation
                            * QgsUnitTypes::fromUnitToUnitFactor( mCurrentLabel.settings.rotationUnit(),
-                               QgsUnitTypes::AngleDegrees );
+                               Qgis::AngleUnit::Degrees );
 
         mStartRotation = mCurrentRotation;
         createRubberBands();
@@ -219,7 +219,7 @@ void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent *e )
         }
 
         // Convert back to settings unit
-        const double rotation = rotationDegree * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AngleDegrees,
+        const double rotation = rotationDegree * QgsUnitTypes::fromUnitToUnitFactor( Qgis::AngleUnit::Degrees,
                                 mCurrentLabel.settings.rotationUnit() );
 
         vlayer->beginEditCommand( tr( "Rotated label" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );

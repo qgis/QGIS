@@ -800,10 +800,10 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
     }
   }
 
-  QgsUnitTypes::DistanceUnit cartesianDistanceUnits = QgsUnitTypes::unitType( layer->crs().mapUnits() ) == QgsUnitTypes::unitType( displayDistanceUnits() )
+  Qgis::DistanceUnit cartesianDistanceUnits = QgsUnitTypes::unitType( layer->crs().mapUnits() ) == QgsUnitTypes::unitType( displayDistanceUnits() )
       ? displayDistanceUnits() : layer->crs().mapUnits();
-  QgsUnitTypes::AreaUnit cartesianAreaUnits = QgsUnitTypes::unitType( QgsUnitTypes::distanceToAreaUnit( layer->crs().mapUnits() ) ) == QgsUnitTypes::unitType( displayAreaUnits() )
-      ? displayAreaUnits() : QgsUnitTypes::distanceToAreaUnit( layer->crs().mapUnits() );
+  Qgis::AreaUnit cartesianAreaUnits = QgsUnitTypes::unitType( QgsUnitTypes::distanceToAreaUnit( layer->crs().mapUnits() ) ) == QgsUnitTypes::unitType( displayAreaUnits() )
+                                      ? displayAreaUnits() : QgsUnitTypes::distanceToAreaUnit( layer->crs().mapUnits() );
 
   if ( geometryType == QgsWkbTypes::LineGeometry )
   {
@@ -1221,12 +1221,12 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
   return true;
 }
 
-QgsUnitTypes::DistanceUnit QgsMapToolIdentify::displayDistanceUnits() const
+Qgis::DistanceUnit QgsMapToolIdentify::displayDistanceUnits() const
 {
   return mCanvas->mapUnits();
 }
 
-QgsUnitTypes::AreaUnit QgsMapToolIdentify::displayAreaUnits() const
+Qgis::AreaUnit QgsMapToolIdentify::displayAreaUnits() const
 {
   return QgsUnitTypes::distanceToAreaUnit( mCanvas->mapUnits() );
 }
@@ -1241,7 +1241,7 @@ QString QgsMapToolIdentify::formatArea( double area ) const
   return formatArea( area, displayAreaUnits() );
 }
 
-QString QgsMapToolIdentify::formatDistance( double distance, QgsUnitTypes::DistanceUnit unit ) const
+QString QgsMapToolIdentify::formatDistance( double distance, Qgis::DistanceUnit unit ) const
 {
   QgsSettings settings;
   bool baseUnit = settings.value( QStringLiteral( "qgis/measure/keepbaseunit" ), true ).toBool();
@@ -1249,7 +1249,7 @@ QString QgsMapToolIdentify::formatDistance( double distance, QgsUnitTypes::Dista
   return QgsDistanceArea::formatDistance( distance, mCoordinatePrecision, unit, baseUnit );
 }
 
-QString QgsMapToolIdentify::formatArea( double area, QgsUnitTypes::AreaUnit unit ) const
+QString QgsMapToolIdentify::formatArea( double area, Qgis::AreaUnit unit ) const
 {
   QgsSettings settings;
   bool baseUnit = settings.value( QStringLiteral( "qgis/measure/keepbaseunit" ), true ).toBool();

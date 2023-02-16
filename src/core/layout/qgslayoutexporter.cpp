@@ -281,7 +281,7 @@ QImage QgsLayoutExporter::renderRegionToImage( const QRectF &region, QSize image
   ( void )restorer;
 
   double resolution = mLayout->renderContext().dpi();
-  double oneInchInLayoutUnits = mLayout->convertToLayoutUnits( QgsLayoutMeasurement( 1, QgsUnitTypes::LayoutInches ) );
+  double oneInchInLayoutUnits = mLayout->convertToLayoutUnits( QgsLayoutMeasurement( 1, Qgis::LayoutUnit::Inches ) );
   if ( imageSize.isValid() )
   {
     //output size in pixels specified, calculate resolution using average of
@@ -614,7 +614,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
       details.dpi = settings.dpi;
       // TODO - multipages
       QgsLayoutSize pageSize = mLayout->pageCollection()->page( 0 )->sizeWithUnits();
-      QgsLayoutSize pageSizeMM = mLayout->renderContext().measurementConverter().convert( pageSize, QgsUnitTypes::LayoutMillimeters );
+      QgsLayoutSize pageSizeMM = mLayout->renderContext().measurementConverter().convert( pageSize, Qgis::LayoutUnit::Millimeters );
       details.pageSizeMm = pageSizeMM.toQSizeF();
 
       if ( settings.exportMetadata )
@@ -649,10 +649,10 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
           const QPointF topRight = map->mapToScene( QPointF( map->rect().width(), 0 ) );
           const QPointF bottomLeft = map->mapToScene( QPointF( 0, map->rect().height() ) );
           const QPointF bottomRight = map->mapToScene( QPointF( map->rect().width(), map->rect().height() ) );
-          const QgsLayoutPoint topLeftMm = mLayout->convertFromLayoutUnits( topLeft, QgsUnitTypes::LayoutMillimeters );
-          const QgsLayoutPoint topRightMm = mLayout->convertFromLayoutUnits( topRight, QgsUnitTypes::LayoutMillimeters );
-          const QgsLayoutPoint bottomLeftMm = mLayout->convertFromLayoutUnits( bottomLeft, QgsUnitTypes::LayoutMillimeters );
-          const QgsLayoutPoint bottomRightMm = mLayout->convertFromLayoutUnits( bottomRight, QgsUnitTypes::LayoutMillimeters );
+          const QgsLayoutPoint topLeftMm = mLayout->convertFromLayoutUnits( topLeft, Qgis::LayoutUnit::Millimeters );
+          const QgsLayoutPoint topRightMm = mLayout->convertFromLayoutUnits( topRight, Qgis::LayoutUnit::Millimeters );
+          const QgsLayoutPoint bottomLeftMm = mLayout->convertFromLayoutUnits( bottomLeft, Qgis::LayoutUnit::Millimeters );
+          const QgsLayoutPoint bottomRightMm = mLayout->convertFromLayoutUnits( bottomRight, Qgis::LayoutUnit::Millimeters );
 
           georef.pageBoundsPolygon.setExteriorRing( new QgsLineString( QVector< QgsPointXY >() << QgsPointXY( topLeftMm.x(), topLeftMm.y() )
               << QgsPointXY( topRightMm.x(), topRightMm.y() )
@@ -1024,7 +1024,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
   pageDetails.baseName = fi.baseName();
   pageDetails.extension = fi.completeSuffix();
 
-  double inchesToLayoutUnits = mLayout->convertToLayoutUnits( QgsLayoutMeasurement( 1, QgsUnitTypes::LayoutInches ) );
+  double inchesToLayoutUnits = mLayout->convertToLayoutUnits( QgsLayoutMeasurement( 1, Qgis::LayoutUnit::Inches ) );
 
   for ( int i = 0; i < mLayout->pageCollection()->pageCount(); ++i )
   {
@@ -1346,7 +1346,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::printPrivate( QPrinter &print
 void QgsLayoutExporter::updatePrinterPageSize( QgsLayout *layout, QPrinter &printer, int page )
 {
   QgsLayoutSize pageSize = layout->pageCollection()->page( page )->sizeWithUnits();
-  QgsLayoutSize pageSizeMM = layout->renderContext().measurementConverter().convert( pageSize, QgsUnitTypes::LayoutMillimeters );
+  QgsLayoutSize pageSizeMM = layout->renderContext().measurementConverter().convert( pageSize, Qgis::LayoutUnit::Millimeters );
 
   QPageLayout pageLayout( QPageSize( pageSizeMM.toQSizeF(), QPageSize::Millimeter ),
                           QPageLayout::Portrait,
@@ -2028,7 +2028,7 @@ QImage QgsLayoutExporter::createImage( const QgsLayoutExporter::ImageExportSetti
       return QImage();
     }
 
-    double pixelToLayoutUnits = mLayout->convertToLayoutUnits( QgsLayoutMeasurement( 1, QgsUnitTypes::LayoutPixels ) );
+    double pixelToLayoutUnits = mLayout->convertToLayoutUnits( QgsLayoutMeasurement( 1, Qgis::LayoutUnit::Pixels ) );
     bounds = bounds.adjusted( -settings.cropMargins.left() * pixelToLayoutUnits,
                               -settings.cropMargins.top() * pixelToLayoutUnits,
                               settings.cropMargins.right() * pixelToLayoutUnits,

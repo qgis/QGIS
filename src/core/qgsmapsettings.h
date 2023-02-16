@@ -354,7 +354,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     /**
      * Returns the units of the map's geographical coordinates - used for scale calculation.
      */
-    QgsUnitTypes::DistanceUnit mapUnits() const;
+    Qgis::DistanceUnit mapUnits() const;
 
     /**
      * Sets the \a ellipsoid by its acronym. Known ellipsoid acronyms can be

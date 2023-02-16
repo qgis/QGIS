@@ -17,6 +17,7 @@
 
 #include "qgsprojecttimesettings.h"
 #include "qgis.h"
+#include "qgsunittypes.h"
 #include <QDomElement>
 
 QgsProjectTimeSettings::QgsProjectTimeSettings( QObject *parent )
@@ -60,7 +61,7 @@ bool QgsProjectTimeSettings::readXml( const QDomElement &element, const QgsReadW
 
   }
 
-  mTimeStepUnit = QgsUnitTypes::decodeTemporalUnit( element.attribute( QStringLiteral( "timeStepUnit" ), QgsUnitTypes::encodeUnit( QgsUnitTypes::TemporalHours ) ) );
+  mTimeStepUnit = QgsUnitTypes::decodeTemporalUnit( element.attribute( QStringLiteral( "timeStepUnit" ), QgsUnitTypes::encodeUnit( Qgis::TemporalUnit::Hours ) ) );
   mTimeStep = element.attribute( QStringLiteral( "timeStep" ), "1" ).toDouble();
   mFrameRate = element.attribute( QStringLiteral( "frameRate" ), "1" ).toDouble();
   mCumulativeTemporalRange = element.attribute( QStringLiteral( "cumulativeTemporalRange" ), "0" ).toInt();
@@ -98,12 +99,12 @@ QDomElement QgsProjectTimeSettings::writeXml( QDomDocument &document, const QgsR
   return element;
 }
 
-QgsUnitTypes::TemporalUnit QgsProjectTimeSettings::timeStepUnit() const
+Qgis::TemporalUnit QgsProjectTimeSettings::timeStepUnit() const
 {
   return mTimeStepUnit;
 }
 
-void QgsProjectTimeSettings::setTimeStepUnit( QgsUnitTypes::TemporalUnit unit )
+void QgsProjectTimeSettings::setTimeStepUnit( Qgis::TemporalUnit unit )
 {
   mTimeStepUnit = unit;
 }

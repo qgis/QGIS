@@ -26,7 +26,7 @@
 #include "qgsproviderregistry.h"
 #include "qgsproject.h"
 #include "qgstriangularmesh.h"
-#include "qgsmeshlayerutils.h"
+#include "qgsexpression.h"
 #include "qgsmeshlayertemporalproperties.h"
 
 #include "qgsmeshdataprovidertemporalcapabilities.h"
@@ -1700,7 +1700,7 @@ void TestQgsMeshLayer::test_setDataSource()
   QCOMPARE( firstLayer->dataProvider()->extraDatasets().count(), 3 );
   QCOMPARE( firstLayer->datasetGroupTreeRootItem()->childCount(), 5 );
 
-  firstLayer->dataProvider()->temporalCapabilities()->setTemporalUnit( QgsUnitTypes::TemporalMinutes );
+  firstLayer->dataProvider()->temporalCapabilities()->setTemporalUnit( Qgis::TemporalUnit::Minutes );
 
   QgsReadWriteContext readWriteContext;
   QDomDocument doc( "savedLayer" );
@@ -1716,7 +1716,7 @@ void TestQgsMeshLayer::test_setDataSource()
   QCOMPARE( layerWithGoodDataSource.datasetGroupTreeRootItem()->child( 1 )->description(), mDataDir + "/quad_and_triangle_vertex_scalar.dat" );
   QCOMPARE( layerWithGoodDataSource.datasetGroupTreeRootItem()->child( 2 )->description(), mDataDir + "/quad_and_triangle_vertex_vector.dat" );
   QCOMPARE( layerWithGoodDataSource.datasetGroupTreeRootItem()->child( 3 )->description(), mDataDir + "/quad_and_triangle_els_face_scalar.dat" );
-  QCOMPARE( layerWithGoodDataSource.dataProvider()->temporalCapabilities()->temporalUnit(), QgsUnitTypes::TemporalMinutes );
+  QCOMPARE( layerWithGoodDataSource.dataProvider()->temporalCapabilities()->temporalUnit(), Qgis::TemporalUnit::Minutes );
 
   QCOMPARE( QgsMeshDatasetValue( 30.0 ), layerWithGoodDataSource.datasetValue( QgsMeshDatasetIndex( 0, 0 ), 1 ) );
   QCOMPARE( QgsMeshDatasetValue( 2.0 ), layerWithGoodDataSource.datasetValue( QgsMeshDatasetIndex( 1, 0 ), 1 ) );
@@ -1751,7 +1751,7 @@ void TestQgsMeshLayer::test_setDataSource()
   QCOMPARE( layerWithBadDataSource.datasetGroupTreeRootItem()->child( 1 )->description(), mDataDir + "/quad_and_triangle_vertex_scalar.dat" );
   QCOMPARE( layerWithBadDataSource.datasetGroupTreeRootItem()->child( 2 )->description(), mDataDir + "/quad_and_triangle_vertex_vector.dat" );
   QCOMPARE( layerWithBadDataSource.datasetGroupTreeRootItem()->child( 3 )->description(), mDataDir + "/quad_and_triangle_els_face_scalar.dat" );
-  QCOMPARE( layerWithGoodDataSource.dataProvider()->temporalCapabilities()->temporalUnit(), QgsUnitTypes::TemporalMinutes );
+  QCOMPARE( layerWithGoodDataSource.dataProvider()->temporalCapabilities()->temporalUnit(), Qgis::TemporalUnit::Minutes );
 
   QCOMPARE( QgsMeshDatasetValue( 30.0 ), layerWithBadDataSource.datasetValue( QgsMeshDatasetIndex( 0, 0 ), 1 ) );
   QCOMPARE( QgsMeshDatasetValue( 2.0 ), layerWithBadDataSource.datasetValue( QgsMeshDatasetIndex( 1, 0 ), 1 ) );
@@ -2173,7 +2173,7 @@ void TestQgsMeshLayer::test_temporal()
   QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1, time_2 ) ).dataset(), 17 );
   mMdal3DLayer->setTemporalMatchingMethod( QgsMeshDataProviderTemporalCapabilities::FindClosestDatasetFromStartRangeTime );
   QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1, time_2 ) ).dataset(), 18 );
-  QCOMPARE( mMdal3DLayer->datasetIndexAtRelativeTime( QgsInterval( 3, QgsUnitTypes::TemporalHours ), 1 ), QgsMeshDatasetIndex( 1, 18 ) );
+  QCOMPARE( mMdal3DLayer->datasetIndexAtRelativeTime( QgsInterval( 3, Qgis::TemporalUnit::Hours ), 1 ), QgsMeshDatasetIndex( 1, 18 ) );
   // Next dataset
   mMdal3DLayer->setTemporalMatchingMethod( QgsMeshDataProviderTemporalCapabilities::FindClosestDatasetBeforeStartRangeTime );
   QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1.addSecs( 400 ), time_2.addSecs( 400 ) ) ).dataset(), 18 );
@@ -2184,18 +2184,18 @@ void TestQgsMeshLayer::test_temporal()
   QgsMeshLayerTemporalProperties *tempProp = static_cast<QgsMeshLayerTemporalProperties *>( mMdal3DLayer->temporalProperties() );
   tempProp->setReferenceTime( QDateTime( QDate( 1980, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ), mMdal3DLayer->dataProvider()->temporalCapabilities() );
   QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1, time_2 ) ).dataset(), -1 );
-  QCOMPARE( mMdal3DLayer->datasetIndexAtRelativeTime( QgsInterval( 3, QgsUnitTypes::TemporalHours ), 1 ), QgsMeshDatasetIndex( 1, 18 ) );
+  QCOMPARE( mMdal3DLayer->datasetIndexAtRelativeTime( QgsInterval( 3, Qgis::TemporalUnit::Hours ), 1 ), QgsMeshDatasetIndex( 1, 18 ) );
   time_1 = QDateTime( QDate( 1980, 1, 1 ), QTime( 3, 0, 0 ), Qt::UTC );
   time_2 = time_1.addSecs( 300 );
   QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1, time_2 ) ).dataset(), 18 );
-  QCOMPARE( mMdal3DLayer->datasetIndexAtRelativeTime( QgsInterval( 3, QgsUnitTypes::TemporalHours ), 1 ), QgsMeshDatasetIndex( 1, 18 ) );
+  QCOMPARE( mMdal3DLayer->datasetIndexAtRelativeTime( QgsInterval( 3, Qgis::TemporalUnit::Hours ), 1 ), QgsMeshDatasetIndex( 1, 18 ) );
 
   tempProp->setReferenceTime( QDateTime( QDate( 1995, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ), mMdal3DLayer->dataProvider()->temporalCapabilities() );
   QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1, time_2 ) ).dataset(), -1 );
   time_1 = QDateTime( QDate( 1995, 1, 1 ), QTime( 3, 0, 0 ), Qt::UTC );
   time_2 = time_1.addSecs( 300 );
   QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1, time_2 ) ).dataset(), 18 );
-  QCOMPARE( mMdal3DLayer->datasetIndexAtRelativeTime( QgsInterval( 3, QgsUnitTypes::TemporalHours ), 1 ), QgsMeshDatasetIndex( 1, 18 ) );
+  QCOMPARE( mMdal3DLayer->datasetIndexAtRelativeTime( QgsInterval( 3, Qgis::TemporalUnit::Hours ), 1 ), QgsMeshDatasetIndex( 1, 18 ) );
 }
 
 

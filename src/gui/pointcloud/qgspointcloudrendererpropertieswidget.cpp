@@ -25,8 +25,6 @@
 #include "qgspointcloudattributebyramprendererwidget.h"
 #include "qgspointcloudclassifiedrendererwidget.h"
 #include "qgspointcloudextentrendererwidget.h"
-
-#include "qgspointcloudrgbrenderer.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
 #include "qgsprojectutils.h"
@@ -95,8 +93,12 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
   connect( mBlendModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
 
-  mPointSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                                  << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mPointSizeUnitWidget->setUnits( {Qgis::RenderUnit::Millimeters,
+                                   Qgis::RenderUnit::MetersInMapUnits,
+                                   Qgis::RenderUnit::MapUnits,
+                                   Qgis::RenderUnit::Pixels,
+                                   Qgis::RenderUnit::Points,
+                                   Qgis::RenderUnit::Inches } );
 
   connect( mPointSizeSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   connect( mPointSizeUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
@@ -105,8 +107,12 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
   mDrawOrderComboBox->addItem( tr( "Bottom to Top" ), static_cast< int >( Qgis::PointCloudDrawOrder::BottomToTop ) );
   mDrawOrderComboBox->addItem( tr( "Top to Bottom" ), static_cast< int >( Qgis::PointCloudDrawOrder::TopToBottom ) );
 
-  mMaxErrorUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                                 << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mMaxErrorUnitWidget->setUnits( { Qgis::RenderUnit::Millimeters,
+                                   Qgis::RenderUnit::MetersInMapUnits,
+                                   Qgis::RenderUnit::MapUnits,
+                                   Qgis::RenderUnit::Pixels,
+                                   Qgis::RenderUnit::Points,
+                                   Qgis::RenderUnit::Inches } );
   mMaxErrorSpinBox->setClearValue( 0.3 );
 
   connect( mMaxErrorSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );

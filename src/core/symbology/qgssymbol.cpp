@@ -606,22 +606,22 @@ QgsSymbol::~QgsSymbol()
   qDeleteAll( mLayers );
 }
 
-QgsUnitTypes::RenderUnit QgsSymbol::outputUnit() const
+Qgis::RenderUnit QgsSymbol::outputUnit() const
 {
   if ( mLayers.empty() )
   {
-    return QgsUnitTypes::RenderUnknownUnit;
+    return Qgis::RenderUnit::Unknown;
   }
 
   QgsSymbolLayerList::const_iterator it = mLayers.constBegin();
 
-  QgsUnitTypes::RenderUnit unit = ( *it )->outputUnit();
+  Qgis::RenderUnit unit = ( *it )->outputUnit();
 
   for ( ; it != mLayers.constEnd(); ++it )
   {
     if ( ( *it )->outputUnit() != unit )
     {
-      return QgsUnitTypes::RenderUnknownUnit;
+      return Qgis::RenderUnit::Unknown;
     }
   }
   return unit;
@@ -668,7 +668,7 @@ QgsMapUnitScale QgsSymbol::mapUnitScale() const
   return scale;
 }
 
-void QgsSymbol::setOutputUnit( QgsUnitTypes::RenderUnit u ) const
+void QgsSymbol::setOutputUnit( Qgis::RenderUnit u ) const
 {
   const auto constMLayers = mLayers;
   for ( QgsSymbolLayer *layer : constMLayers )
@@ -827,11 +827,11 @@ void QgsSymbol::startRender( QgsRenderContext &context, const QgsFields &fields 
   Q_ASSERT_X( !mStarted, "startRender", "Rendering has already been started for this symbol instance!" );
   mStarted = true;
 
-  mSymbolRenderContext.reset( new QgsSymbolRenderContext( context, QgsUnitTypes::RenderUnknownUnit, mOpacity, false, mRenderHints, nullptr, fields ) );
+  mSymbolRenderContext.reset( new QgsSymbolRenderContext( context, Qgis::RenderUnit::Unknown, mOpacity, false, mRenderHints, nullptr, fields ) );
 
   // Why do we need a copy here ? Is it to make sure the symbol layer rendering does not mess with the symbol render context ?
   // Or is there another profound reason ?
-  QgsSymbolRenderContext symbolContext( context, QgsUnitTypes::RenderUnknownUnit, mOpacity, false, mRenderHints, nullptr, fields );
+  QgsSymbolRenderContext symbolContext( context, Qgis::RenderUnit::Unknown, mOpacity, false, mRenderHints, nullptr, fields );
 
   std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::updateSymbolScope( this, new QgsExpressionContextScope() ) );
 
@@ -936,7 +936,7 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
 
   const double opacity = expressionContext ? dataDefinedProperties().valueAsDouble( QgsSymbol::PropertyOpacity, *expressionContext, mOpacity ) : mOpacity;
 
-  QgsSymbolRenderContext symbolContext( *context, QgsUnitTypes::RenderUnknownUnit, opacity, false, mRenderHints, nullptr );
+  QgsSymbolRenderContext symbolContext( *context, Qgis::RenderUnit::Unknown, opacity, false, mRenderHints, nullptr );
   symbolContext.setSelected( selected );
   switch ( mType )
   {
@@ -1747,7 +1747,6 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
 
     case Qgis::SymbolType::Fill:
     {
-      int i = 0;
       for ( const PolygonInfo &info : std::as_const( polygonsToRender ) )
       {
         if ( context.hasRenderedFeatureHandlers() && !info.renderExterior.empty() )
@@ -1766,7 +1765,6 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
             markers << hole;
           }
         }
-        i++;
       }
       break;
     }
@@ -1828,7 +1826,7 @@ QgsSymbolRenderContext *QgsSymbol::symbolRenderContext()
 
 void QgsSymbol::renderVertexMarker( QPointF pt, QgsRenderContext &context, Qgis::VertexMarkerType currentVertexMarkerType, double currentVertexMarkerSize )
 {
-  int markerSize = context.convertToPainterUnits( currentVertexMarkerSize, QgsUnitTypes::RenderMillimeters );
+  int markerSize = context.convertToPainterUnits( currentVertexMarkerSize, Qgis::RenderUnit::Millimeters );
   QgsSymbolLayerUtils::drawVertexMarker( pt.x(), pt.y(), *context.painter(), currentVertexMarkerType, markerSize );
 }
 

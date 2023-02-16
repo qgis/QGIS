@@ -173,7 +173,7 @@ The  scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 .. versionadded:: 3.0
 %End
 
-    QgsUnitTypes::DistanceUnit mapUnits() const;
+    Qgis::DistanceUnit mapUnits() const;
 %Docstring
 Retrieve map units
 
@@ -471,7 +471,7 @@ Write mtext (MTEXT)
 .. versionadded:: 2.15
 %End
 
-    static double mapUnitScaleFactor( double scale, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits, double mapUnitsPerPixel = 1.0 );
+    static double mapUnitScaleFactor( double scale, Qgis::RenderUnit symbolUnits, Qgis::DistanceUnit mapUnits, double mapUnitsPerPixel = 1.0 );
 %Docstring
 Returns scale factor for conversion to map units
 

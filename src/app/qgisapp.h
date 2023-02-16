@@ -1891,7 +1891,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void extentChanged();
     void showRotation();
 
-    void showPanMessage( double distance, QgsUnitTypes::DistanceUnit unit, double bearing );
+    void showPanMessage( double distance, Qgis::DistanceUnit unit, double bearing );
 
     void selectionModeChanged( QgsMapToolSelect::Mode mode );
 

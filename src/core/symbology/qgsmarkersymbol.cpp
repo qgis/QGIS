@@ -238,7 +238,7 @@ double QgsMarkerSymbol::size( const QgsRenderContext &context ) const
   return maxSize;
 }
 
-void QgsMarkerSymbol::setSizeUnit( QgsUnitTypes::RenderUnit unit ) const
+void QgsMarkerSymbol::setSizeUnit( Qgis::RenderUnit unit ) const
 {
   const auto constMLayers = mLayers;
   for ( QgsSymbolLayer *layer : constMLayers )
@@ -251,10 +251,10 @@ void QgsMarkerSymbol::setSizeUnit( QgsUnitTypes::RenderUnit unit ) const
   }
 }
 
-QgsUnitTypes::RenderUnit QgsMarkerSymbol::sizeUnit() const
+Qgis::RenderUnit QgsMarkerSymbol::sizeUnit() const
 {
   bool first = true;
-  QgsUnitTypes::RenderUnit unit = QgsUnitTypes::RenderUnknownUnit;
+  Qgis::RenderUnit unit = Qgis::RenderUnit::Unknown;
 
   const auto constMLayers = mLayers;
   for ( QgsSymbolLayer *layer : constMLayers )
@@ -268,7 +268,7 @@ QgsUnitTypes::RenderUnit QgsMarkerSymbol::sizeUnit() const
     else
     {
       if ( unit != markerLayer->sizeUnit() )
-        return QgsUnitTypes::RenderUnknownUnit;
+        return Qgis::RenderUnit::Unknown;
     }
 
     first = false;
@@ -449,7 +449,7 @@ void QgsMarkerSymbol::renderPoint( QPointF point, const QgsFeature *f, QgsRender
   const double opacity = dataDefinedProperties().hasActiveProperties() ? dataDefinedProperties().valueAsDouble( QgsSymbol::PropertyOpacity, context.expressionContext(), mOpacity * 100 ) * 0.01
                          : mOpacity;
 
-  QgsSymbolRenderContext symbolContext( context, QgsUnitTypes::RenderUnknownUnit, opacity, selected, mRenderHints, f );
+  QgsSymbolRenderContext symbolContext( context, Qgis::RenderUnit::Unknown, opacity, selected, mRenderHints, f );
   symbolContext.setGeometryPartCount( symbolRenderContext()->geometryPartCount() );
   symbolContext.setGeometryPartNum( symbolRenderContext()->geometryPartNum() );
 
@@ -498,7 +498,7 @@ void QgsMarkerSymbol::renderPoint( QPointF point, const QgsFeature *f, QgsRender
 
 QRectF QgsMarkerSymbol::bounds( QPointF point, QgsRenderContext &context, const QgsFeature &feature ) const
 {
-  QgsSymbolRenderContext symbolContext( context, QgsUnitTypes::RenderUnknownUnit, mOpacity, false, mRenderHints, &feature, feature.fields() );
+  QgsSymbolRenderContext symbolContext( context, Qgis::RenderUnit::Unknown, mOpacity, false, mRenderHints, &feature, feature.fields() );
 
   QRectF bound;
   const auto constMLayers = mLayers;

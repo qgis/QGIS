@@ -381,7 +381,7 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::Lab
   // size has already been calculated and stored in the defined font - this calculated size
   // is in pixels
   format.setSize( dFont.pixelSize() );
-  format.setSizeUnit( QgsUnitTypes::RenderPixels );
+  format.setSizeUnit( Qgis::RenderUnit::Pixels );
   tmpLyr.setFormat( format );
 
   if ( tmpLyr.multilineAlign == Qgis::LabelMultiLineAlignment::FollowPlacement )
@@ -666,8 +666,8 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
       QgsScopedRenderContextReferenceScaleOverride referenceScaleOverride( context, -1.0 );
 
       // convert label size to render units
-      double labelWidthPx = context.convertToPainterUnits( label->getWidth(), QgsUnitTypes::RenderMapUnits, QgsMapUnitScale() );
-      double labelHeightPx = context.convertToPainterUnits( label->getHeight(), QgsUnitTypes::RenderMapUnits, QgsMapUnitScale() );
+      double labelWidthPx = context.convertToPainterUnits( label->getWidth(), Qgis::RenderUnit::MapUnits, QgsMapUnitScale() );
+      double labelHeightPx = context.convertToPainterUnits( label->getHeight(), Qgis::RenderUnit::MapUnits, QgsMapUnitScale() );
 
       component.size = QSizeF( labelWidthPx, labelHeightPx );
     }

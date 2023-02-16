@@ -16,23 +16,17 @@
  ***************************************************************************/
 
 #include "qgslayoutmapgridwidget.h"
-#include "qgssymbolselectordialog.h"
 #include "qgssettingsregistrycore.h"
 #include "qgssymbol.h"
 #include "qgslayoutitemmap.h"
 #include "qgsproject.h"
-#include "qgssymbollayerutils.h"
-#include "qgsstyle.h"
-#include "qgsprojectionselectiondialog.h"
 #include "qgslayout.h"
-#include "qgsmapsettings.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsvectorlayer.h"
 #include "qgsprojectviewsettings.h"
-#include "qgstextformatwidget.h"
-#include "qgsguiutils.h"
 #include "qgsmarkersymbol.h"
 #include "qgslinesymbol.h"
+#include "qgslayoutreportcontext.h"
 
 QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, QgsLayoutItemMap *map )
   : QgsLayoutItemBaseWidget( nullptr, mapGrid )
@@ -1092,18 +1086,18 @@ void QgsLayoutMapGridWidget::onCrsChanged()
   const QgsCoordinateReferenceSystem crs = mMapGrid->crs().isValid() ? mMapGrid->crs() : mMap->crs();
   switch ( crs.mapUnits() )
   {
-    case QgsUnitTypes::DistanceMeters:
-    case QgsUnitTypes::DistanceKilometers:
-    case QgsUnitTypes::DistanceFeet:
-    case QgsUnitTypes::DistanceNauticalMiles:
-    case QgsUnitTypes::DistanceYards:
-    case QgsUnitTypes::DistanceMiles:
-    case QgsUnitTypes::DistanceCentimeters:
-    case QgsUnitTypes::DistanceMillimeters:
+    case Qgis::DistanceUnit::Meters:
+    case Qgis::DistanceUnit::Kilometers:
+    case Qgis::DistanceUnit::Feet:
+    case Qgis::DistanceUnit::NauticalMiles:
+    case Qgis::DistanceUnit::Yards:
+    case Qgis::DistanceUnit::Miles:
+    case Qgis::DistanceUnit::Centimeters:
+    case Qgis::DistanceUnit::Millimeters:
       break;
 
-    case QgsUnitTypes::DistanceDegrees:
-    case QgsUnitTypes::DistanceUnknownUnit:
+    case Qgis::DistanceUnit::Degrees:
+    case Qgis::DistanceUnit::Unknown:
       mAnnotationFormatComboBox->addItem( tr( "Degree, Minute" ), QgsLayoutItemMapGrid::DegreeMinuteNoSuffix );
       mAnnotationFormatComboBox->addItem( tr( "Degree, Minute with Suffix" ), QgsLayoutItemMapGrid::DegreeMinute );
       mAnnotationFormatComboBox->addItem( tr( "Degree, Minute Aligned" ), QgsLayoutItemMapGrid::DegreeMinutePadded );

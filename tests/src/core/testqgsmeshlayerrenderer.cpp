@@ -31,12 +31,9 @@
 #include "qgsmeshlayer.h"
 #include "qgsapplication.h"
 #include "qgsmaplayerlegend.h"
-#include "qgsproviderregistry.h"
 #include "qgsproject.h"
-#include "qgsmaprenderersequentialjob.h"
-#include "qgsmeshmemorydataprovider.h"
 #include "qgsmesh3daveraging.h"
-#include "qgsmeshlayertemporalproperties.h"
+#include "qgsmaplayertemporalproperties.h"
 
 //qgis test includes
 #include "qgsrenderchecker.h"
@@ -602,7 +599,7 @@ void TestQgsMeshRenderer::test_vertex_vector_traces()
   QgsMeshRendererVectorTracesSettings tracesSetting = settings.tracesSettings();
   tracesSetting.setParticlesCount( -1 );
   tracesSetting.setMaximumTailLength( 40 );
-  tracesSetting.setMaximumTailLengthUnit( QgsUnitTypes::RenderPixels );
+  tracesSetting.setMaximumTailLengthUnit( Qgis::RenderUnit::Pixels );
   settings.setTracesSettings( tracesSetting );
   rendererSettings.setVectorSettings( ds.group(), settings );
   mMemoryLayer->setRendererSettings( rendererSettings );
@@ -630,7 +627,7 @@ void TestQgsMeshRenderer::test_vertex_vector_traces_colorRamp()
   QgsMeshRendererVectorTracesSettings tracesSetting = settings.tracesSettings();
   tracesSetting.setParticlesCount( -1 );
   tracesSetting.setMaximumTailLength( 40 );
-  tracesSetting.setMaximumTailLengthUnit( QgsUnitTypes::RenderPixels );
+  tracesSetting.setMaximumTailLengthUnit( Qgis::RenderUnit::Pixels );
   settings.setTracesSettings( tracesSetting );
   rendererSettings.setVectorSettings( ds.group(), settings );
   mMemoryLayer->setRendererSettings( rendererSettings );

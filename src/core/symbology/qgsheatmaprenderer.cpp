@@ -18,16 +18,10 @@
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 
-#include "qgslogger.h"
 #include "qgsfeature.h"
-#include "qgsvectorlayer.h"
-#include "qgssymbollayer.h"
-#include "qgsogcutils.h"
 #include "qgscolorramp.h"
 #include "qgscolorrampimpl.h"
 #include "qgsrendercontext.h"
-#include "qgspainteffect.h"
-#include "qgspainteffectregistry.h"
 #include "qgsstyleentityvisitor.h"
 
 #include <QDomDocument>
@@ -311,7 +305,7 @@ QgsFeatureRenderer *QgsHeatmapRenderer::create( QDomElement &element, const QgsR
   Q_UNUSED( context )
   QgsHeatmapRenderer *r = new QgsHeatmapRenderer();
   r->setRadius( element.attribute( QStringLiteral( "radius" ), QStringLiteral( "50.0" ) ).toFloat() );
-  r->setRadiusUnit( static_cast< QgsUnitTypes::RenderUnit >( element.attribute( QStringLiteral( "radius_unit" ), QStringLiteral( "0" ) ).toInt() ) );
+  r->setRadiusUnit( static_cast< Qgis::RenderUnit >( element.attribute( QStringLiteral( "radius_unit" ), QStringLiteral( "0" ) ).toInt() ) );
   r->setRadiusMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( element.attribute( QStringLiteral( "radius_map_unit_scale" ), QString() ) ) );
   r->setMaximumValue( element.attribute( QStringLiteral( "max_value" ), QStringLiteral( "0.0" ) ).toFloat() );
   r->setRenderQuality( element.attribute( QStringLiteral( "quality" ), QStringLiteral( "0" ) ).toInt() );
@@ -331,7 +325,7 @@ QDomElement QgsHeatmapRenderer::save( QDomDocument &doc, const QgsReadWriteConte
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "heatmapRenderer" ) );
   rendererElem.setAttribute( QStringLiteral( "radius" ), QString::number( mRadius ) );
-  rendererElem.setAttribute( QStringLiteral( "radius_unit" ), QString::number( mRadiusUnit ) );
+  rendererElem.setAttribute( QStringLiteral( "radius_unit" ), QString::number( static_cast< int >( mRadiusUnit ) ) );
   rendererElem.setAttribute( QStringLiteral( "radius_map_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mRadiusMapUnitScale ) );
   rendererElem.setAttribute( QStringLiteral( "max_value" ), QString::number( mExplicitMax ) );
   rendererElem.setAttribute( QStringLiteral( "quality" ), QString::number( mRenderQuality ) );

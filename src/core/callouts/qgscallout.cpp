@@ -31,6 +31,7 @@
 #include "qgspainting.h"
 #include "qgsfillsymbol.h"
 #include "qgslinesymbol.h"
+#include "qgsunittypes.h"
 
 #include <mutex>
 

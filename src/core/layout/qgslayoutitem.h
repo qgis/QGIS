@@ -24,7 +24,6 @@
 #include "qgsrendercontext.h"
 #include "qgslayoutundocommand.h"
 #include "qgslayoutmeasurement.h"
-#include "qgsapplication.h"
 #include <QGraphicsRectItem>
 #include <QIcon>
 #include <QPainter>
@@ -1318,7 +1317,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     //! Item frame color
     QColor mFrameColor = QColor( 0, 0, 0 );
     //! Item frame width
-    QgsLayoutMeasurement mFrameWidth = QgsLayoutMeasurement( 0.3, QgsUnitTypes::LayoutMillimeters );
+    QgsLayoutMeasurement mFrameWidth = QgsLayoutMeasurement( 0.3, Qgis::LayoutUnit::Millimeters );
     //! Frame join style
     Qt::PenJoinStyle mFrameJoinStyle = Qt::MiterJoin;
 

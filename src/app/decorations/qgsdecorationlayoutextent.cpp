@@ -37,7 +37,7 @@ QgsDecorationLayoutExtent::QgsDecorationLayoutExtent( QObject *parent )
   : QgsDecorationItem( parent )
 {
   mPlacement = BottomRight;
-  mMarginUnit = QgsUnitTypes::RenderMillimeters;
+  mMarginUnit = Qgis::RenderUnit::Millimeters;
 
   setDisplayName( tr( "Layout Extent" ) );
   mConfigurationName = QStringLiteral( "LayoutExtent" );

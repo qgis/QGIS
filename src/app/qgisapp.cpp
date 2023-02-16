@@ -14323,7 +14323,7 @@ void QgisApp::showRotation()
   whileBlocking( mRotationEdit )->setValue( myrotation );
 }
 
-void QgisApp::showPanMessage( double distance, QgsUnitTypes::DistanceUnit unit, double bearing )
+void QgisApp::showPanMessage( double distance, Qgis::DistanceUnit unit, double bearing )
 {
   const bool showMessage = QgsSettings().value( QStringLiteral( "showPanDistanceInStatusBar" ), true, QgsSettings::App ).toBool();
   if ( !showMessage )

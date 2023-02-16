@@ -385,7 +385,7 @@ Cartesian methods (ie no ellipsoidal calculations).
 .. seealso:: :py:func:`geomCalculator`
 %End
 
-    QgsUnitTypes::DistanceUnit distanceUnits() const;
+    Qgis::DistanceUnit distanceUnits() const;
 %Docstring
 Returns the desired distance units for calculations involving :py:func:`~QgsExpression.geomCalculator`, e.g., "$length" and "$perimeter".
 
@@ -400,7 +400,7 @@ Returns the desired distance units for calculations involving :py:func:`~QgsExpr
 .. versionadded:: 2.14
 %End
 
-    void setDistanceUnits( QgsUnitTypes::DistanceUnit unit );
+    void setDistanceUnits( Qgis::DistanceUnit unit );
 %Docstring
 Sets the desired distance units for calculations involving :py:func:`~QgsExpression.geomCalculator`, e.g., "$length" and "$perimeter".
 If distance units are set to :py:class:`QgsUnitTypes`.DistanceUnknownUnit (default), :py:func:`~QgsExpression.prepare` will read
@@ -417,7 +417,7 @@ variables from the expression context ("project_distance_units") to determine di
 .. versionadded:: 2.14
 %End
 
-    QgsUnitTypes::AreaUnit areaUnits() const;
+    Qgis::AreaUnit areaUnits() const;
 %Docstring
 Returns the desired areal units for calculations involving :py:func:`~QgsExpression.geomCalculator`, e.g., "$area".
 
@@ -432,7 +432,7 @@ Returns the desired areal units for calculations involving :py:func:`~QgsExpress
 .. versionadded:: 2.14
 %End
 
-    void setAreaUnits( QgsUnitTypes::AreaUnit unit );
+    void setAreaUnits( Qgis::AreaUnit unit );
 %Docstring
 Sets the desired areal units for calculations involving :py:func:`~QgsExpression.geomCalculator`, e.g., "$area".
 If distance units are set to :py:class:`QgsUnitTypes`.AreaUnknownUnit (default), :py:func:`~QgsExpression.prepare` will read

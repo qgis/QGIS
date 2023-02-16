@@ -22,9 +22,6 @@
 #include "qgslayoutreportcontext.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoututils.h"
-#include "qgsproject.h"
-#include "qgsexpression.h"
-#include "qgsvectorlayer.h"
 #include "qgsmessagelog.h"
 #include "qgspathresolver.h"
 #include "qgsproperty.h"
@@ -32,8 +29,6 @@
 #include "qgssymbollayerutils.h"
 #include "qgssvgcache.h"
 #include "qgslogger.h"
-#include "qgsbearingutils.h"
-#include "qgsmapsettings.h"
 #include "qgsreadwritecontext.h"
 #include "qgsimagecache.h"
 #include "qgslayoutnortharrowhandler.h"
@@ -127,8 +122,8 @@ void QgsLayoutItemPicture::draw( QgsLayoutItemRenderContext &context )
     {
       boundRectWidthMM = rect().width();
       boundRectHeightMM = rect().height();
-      imageRect = QRect( 0, 0, mLayout->convertFromLayoutUnits( rect().width(), QgsUnitTypes::LayoutMillimeters ).length() * mLayout->renderContext().dpi() / 25.4,
-                         mLayout->convertFromLayoutUnits( rect().height(), QgsUnitTypes::LayoutMillimeters ).length() * mLayout->renderContext().dpi() / 25.4 );
+      imageRect = QRect( 0, 0, mLayout->convertFromLayoutUnits( rect().width(), Qgis::LayoutUnit::Millimeters ).length() * mLayout->renderContext().dpi() / 25.4,
+                         mLayout->convertFromLayoutUnits( rect().height(), Qgis::LayoutUnit::Millimeters ).length() * mLayout->renderContext().dpi() / 25.4 );
     }
 
     //zoom mode - calculate anchor point and rotation
@@ -254,7 +249,7 @@ QSizeF QgsLayoutItemPicture::applyItemSizeConstraint( const QSizeF targetSize )
     {
       if ( !( currentPictureSize.isEmpty() ) )
       {
-        const QgsLayoutSize sizeMM = mLayout->convertFromLayoutUnits( currentPictureSize, QgsUnitTypes::LayoutMillimeters );
+        const QgsLayoutSize sizeMM = mLayout->convertFromLayoutUnits( currentPictureSize, Qgis::LayoutUnit::Millimeters );
         newSize.setWidth( sizeMM.width() * 25.4 / mLayout->renderContext().dpi() );
         newSize.setHeight( sizeMM.height() * 25.4 / mLayout->renderContext().dpi() );
       }

@@ -371,7 +371,7 @@ Returns the destination coordinate reference system for the map render.
 .. seealso:: :py:func:`setDestinationCrs`
 %End
 
-    QgsUnitTypes::DistanceUnit mapUnits() const;
+    Qgis::DistanceUnit mapUnits() const;
 %Docstring
 Returns the units of the map's geographical coordinates - used for scale calculation.
 %End

@@ -241,11 +241,11 @@ QgsDxfExport::ExportResult QgsDxfExport::writeToFile( QIODevice *d, const QStrin
   if ( mExtent.isEmpty() )
     return ExportResult::EmptyExtentError;
 
-  QgsUnitTypes::DistanceUnit mapUnits = mCrs.mapUnits();
+  Qgis::DistanceUnit mapUnits = mCrs.mapUnits();
   mMapSettings.setExtent( mExtent );
 
   int dpi = 96;
-  mFactor = 1000 * dpi / mSymbologyScale / 25.4 * QgsUnitTypes::fromUnitToUnitFactor( mapUnits, QgsUnitTypes::DistanceMeters );
+  mFactor = 1000 * dpi / mSymbologyScale / 25.4 * QgsUnitTypes::fromUnitToUnitFactor( mapUnits, Qgis::DistanceUnit::Meters );
   mMapSettings.setOutputSize( QSize( mExtent.width() * mFactor, mExtent.height() * mFactor ) );
   mMapSettings.setOutputDpi( dpi );
 
@@ -260,7 +260,7 @@ QgsDxfExport::ExportResult QgsDxfExport::writeToFile( QIODevice *d, const QStrin
   return ExportResult::Success;
 }
 
-QgsUnitTypes::DistanceUnit QgsDxfExport::mapUnits() const
+Qgis::DistanceUnit QgsDxfExport::mapUnits() const
 {
   return mMapUnits;
 }
@@ -601,7 +601,7 @@ void QgsDxfExport::writeBlocks()
       continue;
 
     // if point symbol layer and no data defined properties: write block
-    QgsSymbolRenderContext ctx( ct, QgsUnitTypes::RenderMapUnits, symbolLayer.second->opacity(), false, symbolLayer.second->renderHints(), nullptr );
+    QgsSymbolRenderContext ctx( ct, Qgis::RenderUnit::MapUnits, symbolLayer.second->opacity(), false, symbolLayer.second->renderHints(), nullptr );
 
     // markers with data defined properties are inserted inline
     if ( hasDataDefinedProperties( ml, symbolLayer.second ) )
@@ -654,7 +654,7 @@ void QgsDxfExport::writeEntities()
   // iterate through the maplayers
   for ( DxfLayerJob *job : std::as_const( mJobs ) )
   {
-    QgsSymbolRenderContext sctx( mRenderContext, QgsUnitTypes::RenderMillimeters, 1.0, false, Qgis::SymbolRenderHints(), nullptr );
+    QgsSymbolRenderContext sctx( mRenderContext, Qgis::RenderUnit::Millimeters, 1.0, false, Qgis::SymbolRenderHints(), nullptr );
 
     if ( mSymbologyExport == QgsDxfExport::SymbolLayerSymbology &&
          ( job->renderer->capabilities() & QgsFeatureRenderer::SymbolLevels ) &&
@@ -815,7 +815,7 @@ void QgsDxfExport::writeEntitiesSymbolLevels( DxfLayerJob *job )
   const QList<QgsExpressionContextScope *> scopes = job->renderContext.expressionContext().scopes();
   for ( QgsExpressionContextScope *scope : scopes )
     ctx.expressionContext().appendScope( new QgsExpressionContextScope( *scope ) );
-  QgsSymbolRenderContext sctx( ctx, QgsUnitTypes::RenderMillimeters, 1.0, false, Qgis::SymbolRenderHints(), nullptr );
+  QgsSymbolRenderContext sctx( ctx, Qgis::RenderUnit::Millimeters, 1.0, false, Qgis::SymbolRenderHints(), nullptr );
 
   // get iterator
   QgsFeatureRequest req;
@@ -1821,17 +1821,17 @@ QgsRenderContext QgsDxfExport::renderContext() const
   return mRenderContext;
 }
 
-double QgsDxfExport::mapUnitScaleFactor( double scale, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits, double mapUnitsPerPixel )
+double QgsDxfExport::mapUnitScaleFactor( double scale, Qgis::RenderUnit symbolUnits, Qgis::DistanceUnit mapUnits, double mapUnitsPerPixel )
 {
-  if ( symbolUnits == QgsUnitTypes::RenderMapUnits )
+  if ( symbolUnits == Qgis::RenderUnit::MapUnits )
   {
     return 1.0;
   }
-  else if ( symbolUnits == QgsUnitTypes::RenderMillimeters )
+  else if ( symbolUnits == Qgis::RenderUnit::Millimeters )
   {
-    return ( scale * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMeters, mapUnits ) / 1000.0 );
+    return ( scale * QgsUnitTypes::fromUnitToUnitFactor( Qgis::DistanceUnit::Meters, mapUnits ) / 1000.0 );
   }
-  else if ( symbolUnits == QgsUnitTypes::RenderPixels )
+  else if ( symbolUnits == Qgis::RenderUnit::Pixels )
   {
     return mapUnitsPerPixel;
   }
@@ -1919,19 +1919,19 @@ void QgsDxfExport::writeDefaultLinetypes()
   QVector<qreal> dashVector( 2 );
   dashVector[0] = das;
   dashVector[1] = dss;
-  writeLinetype( QStringLiteral( "DASH" ), dashVector, QgsUnitTypes::RenderMapUnits );
+  writeLinetype( QStringLiteral( "DASH" ), dashVector, Qgis::RenderUnit::MapUnits );
 
   QVector<qreal> dotVector( 2 );
   dotVector[0] = dos;
   dotVector[1] = dss;
-  writeLinetype( QStringLiteral( "DOT" ), dotVector, QgsUnitTypes::RenderMapUnits );
+  writeLinetype( QStringLiteral( "DOT" ), dotVector, Qgis::RenderUnit::MapUnits );
 
   QVector<qreal> dashDotVector( 4 );
   dashDotVector[0] = das;
   dashDotVector[1] = dss;
   dashDotVector[2] = dos;
   dashDotVector[3] = dss;
-  writeLinetype( QStringLiteral( "DASHDOT" ), dashDotVector, QgsUnitTypes::RenderMapUnits );
+  writeLinetype( QStringLiteral( "DASHDOT" ), dashDotVector, Qgis::RenderUnit::MapUnits );
 
   QVector<qreal> dashDotDotVector( 6 );
   dashDotDotVector[0] = das;
@@ -1940,7 +1940,7 @@ void QgsDxfExport::writeDefaultLinetypes()
   dashDotDotVector[3] = dss;
   dashDotDotVector[4] = dos;
   dashDotDotVector[5] = dss;
-  writeLinetype( QStringLiteral( "DASHDOTDOT" ), dashDotDotVector, QgsUnitTypes::RenderMapUnits );
+  writeLinetype( QStringLiteral( "DASHDOTDOT" ), dashDotDotVector, Qgis::RenderUnit::MapUnits );
 }
 
 void QgsDxfExport::writeSymbolLayerLinetype( const QgsSymbolLayer *symbolLayer )
@@ -1950,7 +1950,7 @@ void QgsDxfExport::writeSymbolLayerLinetype( const QgsSymbolLayer *symbolLayer )
     return;
   }
 
-  QgsUnitTypes::RenderUnit unit;
+  Qgis::RenderUnit unit;
   QVector<qreal> customLinestyle = symbolLayer->dxfCustomDashPattern( unit );
   if ( !customLinestyle.isEmpty() )
   {
@@ -1977,7 +1977,7 @@ int QgsDxfExport::nLineTypes( const QList< QPair< QgsSymbolLayer *, QgsSymbol * 
   return nLineTypes;
 }
 
-void QgsDxfExport::writeLinetype( const QString &styleName, const QVector<qreal> &pattern, QgsUnitTypes::RenderUnit u )
+void QgsDxfExport::writeLinetype( const QString &styleName, const QVector<qreal> &pattern, Qgis::RenderUnit u )
 {
   double length = 0;
   for ( qreal size : pattern )
@@ -2084,7 +2084,7 @@ double QgsDxfExport::dashSeparatorSize() const
 
 double QgsDxfExport::sizeToMapUnits( double s ) const
 {
-  double size = s * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMeters, mMapUnits );
+  double size = s * QgsUnitTypes::fromUnitToUnitFactor( Qgis::DistanceUnit::Meters, mMapUnits );
   return size;
 }
 

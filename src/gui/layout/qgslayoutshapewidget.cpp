@@ -16,12 +16,13 @@
  ***************************************************************************/
 
 #include "qgslayoutshapewidget.h"
-#include "qgsstyle.h"
 #include "qgslayoutitemshape.h"
 #include "qgslayout.h"
 #include "qgslayoutundostack.h"
 #include "qgsvectorlayer.h"
 #include "qgsfillsymbol.h"
+#include "qgslayoutrendercontext.h"
+#include "qgslayoutreportcontext.h"
 
 QgsLayoutShapeWidget::QgsLayoutShapeWidget( QgsLayoutItemShape *shape )
   : QgsLayoutItemBaseWidget( nullptr, shape )

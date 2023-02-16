@@ -148,29 +148,29 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mCoordinateOrderComboBox->addItem( tr( "Easting, Northing (Longitude, Latitude)" ), static_cast< int >( Qgis::CoordinateOrder::XY ) );
   mCoordinateOrderComboBox->addItem( tr( "Northing, Easting (Latitude, Longitude)" ), static_cast< int >( Qgis::CoordinateOrder::YX ) );
 
-  mDistanceUnitsCombo->addItem( tr( "Meters" ), QgsUnitTypes::DistanceMeters );
-  mDistanceUnitsCombo->addItem( tr( "Kilometers" ), QgsUnitTypes::DistanceKilometers );
-  mDistanceUnitsCombo->addItem( tr( "Feet" ), QgsUnitTypes::DistanceFeet );
-  mDistanceUnitsCombo->addItem( tr( "Yards" ), QgsUnitTypes::DistanceYards );
-  mDistanceUnitsCombo->addItem( tr( "Miles" ), QgsUnitTypes::DistanceMiles );
-  mDistanceUnitsCombo->addItem( tr( "Nautical Miles" ), QgsUnitTypes::DistanceNauticalMiles );
-  mDistanceUnitsCombo->addItem( tr( "Centimeters" ), QgsUnitTypes::DistanceCentimeters );
-  mDistanceUnitsCombo->addItem( tr( "Millimeters" ), QgsUnitTypes::DistanceMillimeters );
-  mDistanceUnitsCombo->addItem( tr( "Degrees" ), QgsUnitTypes::DistanceDegrees );
-  mDistanceUnitsCombo->addItem( tr( "Map Units" ), QgsUnitTypes::DistanceUnknownUnit );
+  mDistanceUnitsCombo->addItem( tr( "Meters" ), static_cast< int >( Qgis::DistanceUnit::Meters ) );
+  mDistanceUnitsCombo->addItem( tr( "Kilometers" ), static_cast< int >( Qgis::DistanceUnit::Kilometers ) );
+  mDistanceUnitsCombo->addItem( tr( "Feet" ), static_cast< int >( Qgis::DistanceUnit::Feet ) );
+  mDistanceUnitsCombo->addItem( tr( "Yards" ), static_cast< int >( Qgis::DistanceUnit::Yards ) );
+  mDistanceUnitsCombo->addItem( tr( "Miles" ), static_cast< int >( Qgis::DistanceUnit::Miles ) );
+  mDistanceUnitsCombo->addItem( tr( "Nautical Miles" ), static_cast< int >( Qgis::DistanceUnit::NauticalMiles ) );
+  mDistanceUnitsCombo->addItem( tr( "Centimeters" ), static_cast< int >( Qgis::DistanceUnit::Centimeters ) );
+  mDistanceUnitsCombo->addItem( tr( "Millimeters" ), static_cast< int >( Qgis::DistanceUnit::Millimeters ) );
+  mDistanceUnitsCombo->addItem( tr( "Degrees" ), static_cast< int >( Qgis::DistanceUnit::Degrees ) );
+  mDistanceUnitsCombo->addItem( tr( "Map Units" ), static_cast< int >( Qgis::DistanceUnit::Unknown ) );
 
-  mAreaUnitsCombo->addItem( tr( "Square Meters" ), QgsUnitTypes::AreaSquareMeters );
-  mAreaUnitsCombo->addItem( tr( "Square Kilometers" ), QgsUnitTypes::AreaSquareKilometers );
-  mAreaUnitsCombo->addItem( tr( "Square Feet" ), QgsUnitTypes::AreaSquareFeet );
-  mAreaUnitsCombo->addItem( tr( "Square Yards" ), QgsUnitTypes::AreaSquareYards );
-  mAreaUnitsCombo->addItem( tr( "Square Miles" ), QgsUnitTypes::AreaSquareMiles );
-  mAreaUnitsCombo->addItem( tr( "Hectares" ), QgsUnitTypes::AreaHectares );
-  mAreaUnitsCombo->addItem( tr( "Acres" ), QgsUnitTypes::AreaAcres );
-  mAreaUnitsCombo->addItem( tr( "Square Nautical Miles" ), QgsUnitTypes::AreaSquareNauticalMiles );
-  mAreaUnitsCombo->addItem( tr( "Square Centimeters" ), QgsUnitTypes::AreaSquareCentimeters );
-  mAreaUnitsCombo->addItem( tr( "Square Millimeters" ), QgsUnitTypes::AreaSquareMillimeters );
-  mAreaUnitsCombo->addItem( tr( "Square Degrees" ), QgsUnitTypes::AreaSquareDegrees );
-  mAreaUnitsCombo->addItem( tr( "Map Units" ), QgsUnitTypes::AreaUnknownUnit );
+  mAreaUnitsCombo->addItem( tr( "Square Meters" ), static_cast< int >( Qgis::AreaUnit::SquareMeters ) );
+  mAreaUnitsCombo->addItem( tr( "Square Kilometers" ), static_cast< int >( Qgis::AreaUnit::SquareKilometers ) );
+  mAreaUnitsCombo->addItem( tr( "Square Feet" ), static_cast< int >( Qgis::AreaUnit::SquareFeet ) );
+  mAreaUnitsCombo->addItem( tr( "Square Yards" ), static_cast< int >( Qgis::AreaUnit::SquareYards ) );
+  mAreaUnitsCombo->addItem( tr( "Square Miles" ), static_cast< int >( Qgis::AreaUnit::SquareMiles ) );
+  mAreaUnitsCombo->addItem( tr( "Hectares" ), static_cast< int >( Qgis::AreaUnit::Hectares ) );
+  mAreaUnitsCombo->addItem( tr( "Acres" ), static_cast< int >( Qgis::AreaUnit::Acres ) );
+  mAreaUnitsCombo->addItem( tr( "Square Nautical Miles" ), static_cast< int >( Qgis::AreaUnit::SquareNauticalMiles ) );
+  mAreaUnitsCombo->addItem( tr( "Square Centimeters" ), static_cast< int >( Qgis::AreaUnit::SquareCentimeters ) );
+  mAreaUnitsCombo->addItem( tr( "Square Millimeters" ), static_cast< int >( Qgis::AreaUnit::SquareMillimeters ) );
+  mAreaUnitsCombo->addItem( tr( "Square Degrees" ), static_cast< int >( Qgis::AreaUnit::SquareDegrees ) );
+  mAreaUnitsCombo->addItem( tr( "Map Units" ), static_cast< int >( Qgis::AreaUnit::Unknown ) );
 
   mTransactionModeComboBox->addItem( tr( "Local Edit Buffer" ), static_cast< int >( Qgis::TransactionMode::Disabled ) );
   mTransactionModeComboBox->setItemData( mTransactionModeComboBox->count() - 1, tr( "Edits are buffered locally and sent to the provider when toggling layer editing mode." ), Qt::ToolTipRole );
@@ -409,8 +409,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   const Qgis::CoordinateOrder axisOrder = QgsProject::instance()->displaySettings()->coordinateAxisOrder();
   mCoordinateOrderComboBox->setCurrentIndex( mCoordinateOrderComboBox->findData( static_cast< int >( axisOrder ) ) );
 
-  mDistanceUnitsCombo->setCurrentIndex( mDistanceUnitsCombo->findData( QgsProject::instance()->distanceUnits() ) );
-  mAreaUnitsCombo->setCurrentIndex( mAreaUnitsCombo->findData( QgsProject::instance()->areaUnits() ) );
+  mDistanceUnitsCombo->setCurrentIndex( mDistanceUnitsCombo->findData( static_cast< int >( QgsProject::instance()->distanceUnits() ) ) );
+  mAreaUnitsCombo->setCurrentIndex( mAreaUnitsCombo->findData( static_cast< int >( QgsProject::instance()->areaUnits() ) ) );
 
   //get the color selections and set the button color accordingly
   int myRedInt = settings.value( QStringLiteral( "qgis/default_selection_color_red" ), 255 ).toInt();
@@ -766,7 +766,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   else
   {
     mWMSDefaultMapUnitScale = new QgsScaleWidget();
-    mWMSDefaultMapUnitScale->setScale( QgsProject::instance()->readDoubleEntry( QStringLiteral( "WMSDefaultMapUnitsPerMm" ), QStringLiteral( "/" ), 1 ) * QgsUnitTypes::fromUnitToUnitFactor( QgsProject::instance()->crs().mapUnits(), QgsUnitTypes::DistanceMillimeters ) );
+    mWMSDefaultMapUnitScale->setScale( QgsProject::instance()->readDoubleEntry( QStringLiteral( "WMSDefaultMapUnitsPerMm" ), QStringLiteral( "/" ), 1 ) * QgsUnitTypes::fromUnitToUnitFactor( QgsProject::instance()->crs().mapUnits(), Qgis::DistanceUnit::Millimeters ) );
     mWMSDefaultMapUnitScale->setToolTip( defaultValueToolTip );
     mWMSDefaultMapUnitsPerMmLayout->addWidget( mWMSDefaultMapUnitScale );
     mWMSDefaultMapUnitsPerMmLabel->setText( tr( "Default scale for legend" ) );
@@ -1225,10 +1225,10 @@ void QgsProjectProperties::apply()
   // Announce that we may have a new display precision setting
   emit displayPrecisionChanged();
 
-  const QgsUnitTypes::DistanceUnit distanceUnits = static_cast< QgsUnitTypes::DistanceUnit >( mDistanceUnitsCombo->currentData().toInt() );
+  const Qgis::DistanceUnit distanceUnits = static_cast< Qgis::DistanceUnit >( mDistanceUnitsCombo->currentData().toInt() );
   QgsProject::instance()->setDistanceUnits( distanceUnits );
 
-  const QgsUnitTypes::AreaUnit areaUnits = static_cast< QgsUnitTypes::AreaUnit >( mAreaUnitsCombo->currentData().toInt() );
+  const Qgis::AreaUnit areaUnits = static_cast< Qgis::AreaUnit >( mAreaUnitsCombo->currentData().toInt() );
   QgsProject::instance()->setAreaUnits( areaUnits );
 
   QgsProject::instance()->setFilePathStorage( static_cast< Qgis::FilePathType >( cbxAbsolutePath->currentData().toInt() ) );
@@ -1561,7 +1561,7 @@ void QgsProjectProperties::apply()
   }
   else if ( mWMSDefaultMapUnitScale )
   {
-    double defaultMapUnitsPerMm = mWMSDefaultMapUnitScale->scale() / QgsUnitTypes::fromUnitToUnitFactor( QgsProject::instance()->crs().mapUnits(), QgsUnitTypes::DistanceMillimeters );
+    double defaultMapUnitsPerMm = mWMSDefaultMapUnitScale->scale() / QgsUnitTypes::fromUnitToUnitFactor( QgsProject::instance()->crs().mapUnits(), Qgis::DistanceUnit::Millimeters );
     QgsProject::instance()->writeEntry( QStringLiteral( "WMSDefaultMapUnitsPerMm" ), QStringLiteral( "/" ), defaultMapUnitsPerMm );
   }
 
@@ -1870,7 +1870,7 @@ void QgsProjectProperties::updateGuiForCoordinateCrs()
   const int customIndex = mCoordinateDisplayComboBox->findData( static_cast<int>( Qgis::CoordinateDisplayType::CustomCrs ) );
   if ( coordinateType == Qgis::CoordinateDisplayType::CustomCrs )
   {
-    const QgsUnitTypes::DistanceUnit units = mCoordinateCrs->crs().mapUnits();
+    const Qgis::DistanceUnit units = mCoordinateCrs->crs().mapUnits();
     mCoordinateDisplayComboBox->setItemText( customIndex, tr( "Custom Projection Units (%1)" ).arg( QgsUnitTypes::toString( units ) ) );
   }
   else
@@ -1908,13 +1908,13 @@ void QgsProjectProperties::updateGuiForMapUnits()
   if ( !mCrs.isValid() )
   {
     // no projection set - disable everything!
-    int idx = mDistanceUnitsCombo->findData( QgsUnitTypes::DistanceUnknownUnit );
+    int idx = mDistanceUnitsCombo->findData( static_cast<int>( Qgis::DistanceUnit::Unknown ) );
     if ( idx >= 0 )
     {
       mDistanceUnitsCombo->setItemText( idx, tr( "Unknown Units" ) );
       mDistanceUnitsCombo->setCurrentIndex( idx );
     }
-    idx = mAreaUnitsCombo->findData( QgsUnitTypes::AreaUnknownUnit );
+    idx = mAreaUnitsCombo->findData( static_cast< int >( Qgis::AreaUnit::Unknown ) );
     if ( idx >= 0 )
     {
       mAreaUnitsCombo->setItemText( idx, tr( "Unknown Units" ) );
@@ -1932,7 +1932,7 @@ void QgsProjectProperties::updateGuiForMapUnits()
   }
   else
   {
-    QgsUnitTypes::DistanceUnit units = mCrs.mapUnits();
+    Qgis::DistanceUnit units = mCrs.mapUnits();
 
     mDistanceUnitsCombo->setEnabled( true );
     mAreaUnitsCombo->setEnabled( true );
@@ -1944,13 +1944,13 @@ void QgsProjectProperties::updateGuiForMapUnits()
     mCoordinateDisplayComboBox->setItemText( idx, mapUnitString );
 
     //also update unit combo boxes
-    idx = mDistanceUnitsCombo->findData( QgsUnitTypes::DistanceUnknownUnit );
+    idx = mDistanceUnitsCombo->findData( static_cast< int >( Qgis::DistanceUnit::Unknown ) );
     if ( idx >= 0 )
     {
       QString mapUnitString = tr( "Map Units (%1)" ).arg( QgsUnitTypes::toString( units ) );
       mDistanceUnitsCombo->setItemText( idx, mapUnitString );
     }
-    idx = mAreaUnitsCombo->findData( QgsUnitTypes::AreaUnknownUnit );
+    idx = mAreaUnitsCombo->findData( static_cast< int >( Qgis::AreaUnit::Unknown ) );
     if ( idx >= 0 )
     {
       QString mapUnitString = tr( "Map Units (%1)" ).arg( QgsUnitTypes::toString( QgsUnitTypes::distanceToAreaUnit( units ) ) );
@@ -2376,14 +2376,14 @@ void QgsProjectProperties::addWmtsGrid( const QString &crsStr )
       int rowRes = ( extent.yMaximum() - extent.yMinimum() ) / tileSize;
       if ( colRes > rowRes )
       {
-        scaleDenominator = std::ceil( colRes * QgsUnitTypes::fromUnitToUnitFactor( crs.mapUnits(), QgsUnitTypes::DistanceMeters ) / POINTS_TO_M );
+        scaleDenominator = std::ceil( colRes * QgsUnitTypes::fromUnitToUnitFactor( crs.mapUnits(), Qgis::DistanceUnit::Meters ) / POINTS_TO_M );
       }
       else
       {
-        scaleDenominator = std::ceil( rowRes * QgsUnitTypes::fromUnitToUnitFactor( crs.mapUnits(), QgsUnitTypes::DistanceMeters ) / POINTS_TO_M );
+        scaleDenominator = std::ceil( rowRes * QgsUnitTypes::fromUnitToUnitFactor( crs.mapUnits(), Qgis::DistanceUnit::Meters ) / POINTS_TO_M );
       }
       // Calculate resolution based on scale denominator
-      double res = POINTS_TO_M * scaleDenominator / QgsUnitTypes::fromUnitToUnitFactor( crs.mapUnits(), QgsUnitTypes::DistanceMeters );
+      double res = POINTS_TO_M * scaleDenominator / QgsUnitTypes::fromUnitToUnitFactor( crs.mapUnits(), Qgis::DistanceUnit::Meters );
       // Get numbers of column and row for the resolution
       int col = std::ceil( ( extent.xMaximum() - extent.xMinimum() ) / ( tileSize * res ) );
       int row = std::ceil( ( extent.yMaximum() - extent.yMinimum() ) / ( tileSize * res ) );

@@ -391,11 +391,11 @@ Copy constructor
     QList< QString > categoryLabels;
     QSizeF size; //size
 
-    QgsUnitTypes::RenderUnit sizeType;
+    Qgis::RenderUnit sizeType;
 
     QgsMapUnitScale sizeScale;
 
-    QgsUnitTypes::RenderUnit lineSizeUnit;
+    Qgis::RenderUnit lineSizeUnit;
 
     QgsMapUnitScale lineSizeScale;
 
@@ -450,7 +450,7 @@ Spacing units are set via :py:func:`~QgsDiagramSettings.setSpacingUnit`.
 .. versionadded:: 3.12
 %End
 
-    void setSpacingUnit( QgsUnitTypes::RenderUnit unit );
+    void setSpacingUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the ``unit`` for the content spacing.
 
@@ -463,7 +463,7 @@ Sets the ``unit`` for the content spacing.
 .. versionadded:: 3.12
 %End
 
-    QgsUnitTypes::RenderUnit spacingUnit() const;
+    Qgis::RenderUnit spacingUnit() const;
 %Docstring
 Returns the units for the content spacing.
 

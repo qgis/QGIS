@@ -482,7 +482,7 @@ class CORE_EXPORT QgsSymbolLayer
      * \param unit output units
      * \see outputUnit()
      */
-    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit ) { Q_UNUSED( unit ) }
+    virtual void setOutputUnit( Qgis::RenderUnit unit ) { Q_UNUSED( unit ) }
 
     /**
      * Returns the units to use for sizes and widths within the symbol layer. Individual
@@ -492,7 +492,7 @@ class CORE_EXPORT QgsSymbolLayer
      * \returns output unit, or QgsUnitTypes::RenderUnknownUnit if the symbol layer contains mixed units
      * \see setOutputUnit()
      */
-    virtual QgsUnitTypes::RenderUnit outputUnit() const { return QgsUnitTypes::RenderUnknownUnit; }
+    virtual Qgis::RenderUnit outputUnit() const { return Qgis::RenderUnit::Unknown; }
 
     /**
      * Returns TRUE if the symbol layer has any components which use map unit based sizes.
@@ -551,7 +551,7 @@ class CORE_EXPORT QgsSymbolLayer
     virtual double dxfAngle( QgsSymbolRenderContext &context ) const;
 
     //! Gets dash pattern
-    virtual QVector<qreal> dxfCustomDashPattern( QgsUnitTypes::RenderUnit &unit ) const;
+    virtual QVector<qreal> dxfCustomDashPattern( Qgis::RenderUnit &unit ) const;
 
     //! Gets pen style
     virtual Qt::PenStyle dxfPenStyle() const;
@@ -791,7 +791,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      * \see setSize()
      * \see setSizeMapUnitScale()
      */
-    void setSizeUnit( QgsUnitTypes::RenderUnit unit ) { mSizeUnit = unit; }
+    void setSizeUnit( Qgis::RenderUnit unit ) { mSizeUnit = unit; }
 
     /**
      * Returns the units for the symbol's size.
@@ -799,7 +799,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      * \see size()
      * \see sizeMapUnitScale()
      */
-    QgsUnitTypes::RenderUnit sizeUnit() const { return mSizeUnit; }
+    Qgis::RenderUnit sizeUnit() const { return mSizeUnit; }
 
     /**
      * Sets the map unit scale for the symbol's size.
@@ -857,7 +857,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      * \see setOffset()
      * \see setOffsetMapUnitScale()
      */
-    void setOffsetUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetUnit = unit; }
+    void setOffsetUnit( Qgis::RenderUnit unit ) { mOffsetUnit = unit; }
 
     /**
      * Returns the units for the symbol's offset.
@@ -865,7 +865,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      * \see offset()
      * \see offsetMapUnitScale()
      */
-    QgsUnitTypes::RenderUnit offsetUnit() const { return mOffsetUnit; }
+    Qgis::RenderUnit offsetUnit() const { return mOffsetUnit; }
 
     /**
      * Sets the map unit scale for the symbol's offset.
@@ -929,8 +929,8 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
     virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
     { Q_UNUSED( props ) element.appendChild( doc.createComment( QStringLiteral( "QgsMarkerSymbolLayer %1 not implemented yet" ).arg( layerType() ) ) ); }
 
-    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
-    QgsUnitTypes::RenderUnit outputUnit() const override;
+    void setOutputUnit( Qgis::RenderUnit unit ) override;
+    Qgis::RenderUnit outputUnit() const override;
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
 
@@ -973,7 +973,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
 
     //! \note available in Python bindings as markerOffset2
     void markerOffset( QgsSymbolRenderContext &context, double width, double height,
-                       QgsUnitTypes::RenderUnit widthUnit, QgsUnitTypes::RenderUnit heightUnit,
+                       Qgis::RenderUnit widthUnit, Qgis::RenderUnit heightUnit,
                        double &offsetX, double &offsetY,
                        const QgsMapUnitScale &widthMapUnitScale, const QgsMapUnitScale &heightMapUnitScale ) const SIP_PYNAME( markerOffset2 );
 
@@ -992,13 +992,13 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
     //! Marker size
     double mSize = 2.0;
     //! Marker size unit
-    QgsUnitTypes::RenderUnit mSizeUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mSizeUnit = Qgis::RenderUnit::Millimeters;
     //! Marker size map unit scale
     QgsMapUnitScale mSizeMapUnitScale;
     //! Marker offset
     QPointF mOffset;
     //! Offset units
-    QgsUnitTypes::RenderUnit mOffsetUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mOffsetUnit = Qgis::RenderUnit::Millimeters;
     //! Offset map unit scale
     QgsMapUnitScale mOffsetMapUnitScale;
     //! Marker size scaling method
@@ -1039,8 +1039,8 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
     //! QgsLineSymbolLayer cannot be copied
     QgsLineSymbolLayer &operator=( const QgsLineSymbolLayer &other ) = delete;
 
-    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
-    QgsUnitTypes::RenderUnit outputUnit() const override;
+    void setOutputUnit( Qgis::RenderUnit unit ) override;
+    Qgis::RenderUnit outputUnit() const override;
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
     void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) override;
@@ -1128,7 +1128,7 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
      * \see setOffset()
      * \see setOffsetMapUnitScale()
     */
-    void setOffsetUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetUnit = unit; }
+    void setOffsetUnit( Qgis::RenderUnit unit ) { mOffsetUnit = unit; }
 
     /**
      * Returns the units for the line's offset.
@@ -1136,7 +1136,7 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
      * \see offset()
      * \see offsetMapUnitScale()
     */
-    QgsUnitTypes::RenderUnit offsetUnit() const { return mOffsetUnit; }
+    Qgis::RenderUnit offsetUnit() const { return mOffsetUnit; }
 
     /**
      * Sets the map unit \a scale for the line's offset.
@@ -1162,13 +1162,13 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
      * \param unit width units
      * \see widthUnit()
     */
-    void setWidthUnit( QgsUnitTypes::RenderUnit unit ) { mWidthUnit = unit; }
+    void setWidthUnit( Qgis::RenderUnit unit ) { mWidthUnit = unit; }
 
     /**
      * Returns the units for the line's width.
      * \see setWidthUnit()
     */
-    QgsUnitTypes::RenderUnit widthUnit() const { return mWidthUnit; }
+    Qgis::RenderUnit widthUnit() const { return mWidthUnit; }
 
     void setWidthMapUnitScale( const QgsMapUnitScale &scale ) { mWidthMapUnitScale = scale; }
     const QgsMapUnitScale &widthMapUnitScale() const { return mWidthMapUnitScale; }
@@ -1201,10 +1201,10 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
     QgsLineSymbolLayer( bool locked = false );
 
     double mWidth = 0;
-    QgsUnitTypes::RenderUnit mWidthUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mWidthUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mWidthMapUnitScale;
     double mOffset = 0;
-    QgsUnitTypes::RenderUnit mOffsetUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mOffsetUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mOffsetMapUnitScale;
 
     RenderRingFilter mRingFilter = AllRings;

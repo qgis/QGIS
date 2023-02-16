@@ -22,9 +22,7 @@
 #include "qgslayoutmodel.h"
 #include "qgslayoutitemregistry.h"
 #include "qgsoffscreen3dengine.h"
-#include "qgspostprocessingentity.h"
-#include "qgsshadowrenderingframegraph.h"
-#include "qgswindow3dengine.h"
+#include "qgslayoutrendercontext.h"
 
 QgsLayoutItem3DMap::QgsLayoutItem3DMap( QgsLayout *layout )
   : QgsLayoutItem( layout )
@@ -147,7 +145,7 @@ void QgsLayoutItem3DMap::draw( QgsLayoutItemRenderContext &context )
     }
   }
 
-  QSizeF sizePixels = mLayout->renderContext().measurementConverter().convert( sizeWithUnits(), QgsUnitTypes::LayoutPixels ).toQSizeF();
+  QSizeF sizePixels = mLayout->renderContext().measurementConverter().convert( sizeWithUnits(), Qgis::LayoutUnit::Pixels ).toQSizeF();
   QSize sizePixelsInt = QSize( static_cast<int>( std::ceil( sizePixels.width() ) ),
                                static_cast<int>( std::ceil( sizePixels.height() ) ) );
 

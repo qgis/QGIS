@@ -138,7 +138,7 @@ class TestQgsDiagram : public QgsTest
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
-      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.sizeType = Qgis::RenderUnit::Millimeters;
       ds.size = QSizeF( 5, 5 );
       ds.rotationOffset = 0;
 
@@ -175,7 +175,7 @@ class TestQgsDiagram : public QgsTest
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
-      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.sizeType = Qgis::RenderUnit::Millimeters;
       ds.size = QSizeF( 5, 5 );
       ds.rotationOffset = 0;
 
@@ -212,7 +212,7 @@ class TestQgsDiagram : public QgsTest
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
-      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.sizeType = Qgis::RenderUnit::Millimeters;
       ds.size = QSizeF( 5, 5 );
       ds.rotationOffset = 0;
 
@@ -249,7 +249,7 @@ class TestQgsDiagram : public QgsTest
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
-      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.sizeType = Qgis::RenderUnit::Millimeters;
       ds.size = QSizeF( 5, 5 );
       ds.rotationOffset = 0;
 
@@ -286,7 +286,7 @@ class TestQgsDiagram : public QgsTest
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
-      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.sizeType = Qgis::RenderUnit::Millimeters;
       ds.size = QSizeF( 5, 5 );
       ds.rotationOffset = 0;
       ds.setPaintEffect( new QgsDropShadowEffect() );
@@ -324,7 +324,7 @@ class TestQgsDiagram : public QgsTest
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
-      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.sizeType = Qgis::RenderUnit::Millimeters;
       ds.size = QSizeF( 5, 5 );
       ds.rotationOffset = 0;
 
@@ -361,11 +361,11 @@ class TestQgsDiagram : public QgsTest
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
-      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.sizeType = Qgis::RenderUnit::Millimeters;
       ds.size = QSizeF( 5, 5 );
       ds.rotationOffset = 0;
       ds.setSpacing( 17 );
-      ds.setSpacingUnit( QgsUnitTypes::RenderPoints );
+      ds.setSpacingUnit( Qgis::RenderUnit::Points );
 
       QgsLinearlyInterpolatedDiagramRenderer *dr = new QgsLinearlyInterpolatedDiagramRenderer();
       dr->setLowerValue( 0.0 );
@@ -400,7 +400,7 @@ class TestQgsDiagram : public QgsTest
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
-      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.sizeType = Qgis::RenderUnit::Millimeters;
       ds.size = QSizeF( 5, 5 );
       ds.rotationOffset = 0;
       ds.setShowAxis( true );
@@ -455,7 +455,7 @@ class TestQgsDiagram : public QgsTest
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
-      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.sizeType = Qgis::RenderUnit::Millimeters;
       ds.size = QSizeF( 5, 5 );
       ds.rotationOffset = 0;
       ds.diagramOrientation = QgsDiagramSettings::Right;
@@ -502,7 +502,7 @@ class TestQgsDiagram : public QgsTest
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
-      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.sizeType = Qgis::RenderUnit::Millimeters;
       ds.size = QSizeF( 15, 15 );
       ds.rotationOffset = 0;
       ds.diagramOrientation = QgsDiagramSettings::Up;
@@ -548,7 +548,7 @@ class TestQgsDiagram : public QgsTest
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
-      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.sizeType = Qgis::RenderUnit::Millimeters;
       ds.size = QSizeF( 5, 5 );
       ds.rotationOffset = 0;
       ds.diagramOrientation = QgsDiagramSettings::Up;
@@ -599,7 +599,7 @@ class TestQgsDiagram : public QgsTest
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
-      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.sizeType = Qgis::RenderUnit::Millimeters;
       ds.size = QSizeF( 5, 5 );
       ds.rotationOffset = 0;
       ds.setSpacing( 3 );
@@ -655,7 +655,7 @@ class TestQgsDiagram : public QgsTest
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
-      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.sizeType = Qgis::RenderUnit::Millimeters;
       ds.size = QSizeF( 5, 5 );
       ds.rotationOffset = 0;
       ds.setSpacing( 3 );
@@ -711,7 +711,7 @@ class TestQgsDiagram : public QgsTest
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
-      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.sizeType = Qgis::RenderUnit::Millimeters;
       ds.size = QSizeF( 5, 5 );
       ds.rotationOffset = 0;
 
@@ -753,7 +753,7 @@ class TestQgsDiagram : public QgsTest
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
-      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.sizeType = Qgis::RenderUnit::Millimeters;
       ds.size = QSizeF( 15, 15 );
       ds.rotationOffset = 90;
       ds.setDirection( QgsDiagramSettings::Clockwise );
@@ -790,7 +790,7 @@ class TestQgsDiagram : public QgsTest
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
-      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.sizeType = Qgis::RenderUnit::Millimeters;
       ds.size = QSizeF( 15, 15 );
       ds.rotationOffset = 0;
 
@@ -827,7 +827,7 @@ class TestQgsDiagram : public QgsTest
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
-      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.sizeType = Qgis::RenderUnit::Millimeters;
       ds.size = QSizeF( 15, 15 );
       ds.rotationOffset = 0;
 
@@ -864,7 +864,7 @@ class TestQgsDiagram : public QgsTest
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
-      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.sizeType = Qgis::RenderUnit::Millimeters;
       ds.size = QSizeF( 15, 15 );
       ds.rotationOffset = 0;
 
@@ -900,7 +900,7 @@ class TestQgsDiagram : public QgsTest
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
-      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.sizeType = Qgis::RenderUnit::Millimeters;
       ds.size = QSizeF( 15, 15 );
       ds.rotationOffset = 0;
 
@@ -936,7 +936,7 @@ class TestQgsDiagram : public QgsTest
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
-      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.sizeType = Qgis::RenderUnit::Millimeters;
       ds.size = QSizeF( 15, 15 );
       ds.rotationOffset = 0;
 
@@ -972,7 +972,7 @@ class TestQgsDiagram : public QgsTest
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
-      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.sizeType = Qgis::RenderUnit::Millimeters;
       ds.size = QSizeF( 50, 50 );
       ds.rotationOffset = 0;
 
@@ -1006,7 +1006,7 @@ class TestQgsDiagram : public QgsTest
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
-      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.sizeType = Qgis::RenderUnit::Millimeters;
       ds.size = QSizeF( 50, 50 );
       ds.rotationOffset = 0;
 
@@ -1042,7 +1042,7 @@ class TestQgsDiagram : public QgsTest
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
-      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.sizeType = Qgis::RenderUnit::Millimeters;
       ds.size = QSizeF( 50, 50 );
       ds.rotationOffset = 0;
 
@@ -1083,7 +1083,7 @@ class TestQgsDiagram : public QgsTest
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
-      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.sizeType = Qgis::RenderUnit::Millimeters;
       ds.size = QSizeF( 15, 15 );
       ds.rotationOffset = 0;
 
@@ -1128,7 +1128,7 @@ class TestQgsDiagram : public QgsTest
       ds.penColor = Qt::green;
       ds.penWidth = .5;
       ds.scaleByArea = true;
-      ds.sizeType = QgsUnitTypes::RenderMillimeters;
+      ds.sizeType = Qgis::RenderUnit::Millimeters;
       ds.size = QSizeF( 5, 5 );
       ds.rotationOffset = 0;
 

@@ -29,9 +29,9 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
-#include "qgsunittypes.h"
 #include "qgsexception.h"
 #include "qgstemporalutils.h"
+#include "qgsunittypes.h"
 
 // %%% copied from qgswmsprovider.cpp
 static QString DEFAULT_LATLON_CRS = QStringLiteral( "CRS:84" );
@@ -138,7 +138,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
       else
       {
         mAllRanges.append( QgsDateTimeRange( begin, end ) );
-        mDefaultInterval = QgsInterval( 1, QgsUnitTypes::TemporalIrregularStep );
+        mDefaultInterval = QgsInterval( 1, Qgis::TemporalUnit::IrregularStep );
       }
     }
 
@@ -1782,7 +1782,7 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
 
     set.wkScaleSet = childElement.firstChildElement( QStringLiteral( "WellKnownScaleSet" ) ).text();
 
-    double metersPerUnit = QgsUnitTypes::fromUnitToUnitFactor( crs.mapUnits(), QgsUnitTypes::DistanceMeters );
+    double metersPerUnit = QgsUnitTypes::fromUnitToUnitFactor( crs.mapUnits(), Qgis::DistanceUnit::Meters );
 
     set.crs = crs.authid();
 
@@ -2083,7 +2083,7 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
           // populate temporal information
           QDateTime minTime;
           QDateTime maxTime;
-          QgsInterval defaultInterval = QgsInterval( 1, QgsUnitTypes::TemporalIrregularStep );
+          QgsInterval defaultInterval = QgsInterval( 1, Qgis::TemporalUnit::IrregularStep );
           bool hasPeriodValue = false;
           for ( const QString &value : std::as_const( dimension.values ) )
           {
@@ -2410,7 +2410,7 @@ bool QgsWmsCapabilities::detectTileLayerBoundingBox( QgsWmtsTileLayer &tileLayer
     return false;
 
   const QgsWmtsTileMatrix &tm = *tmIt;
-  double metersPerUnit = QgsUnitTypes::fromUnitToUnitFactor( crs.mapUnits(), QgsUnitTypes::DistanceMeters );
+  double metersPerUnit = QgsUnitTypes::fromUnitToUnitFactor( crs.mapUnits(), Qgis::DistanceUnit::Meters );
   // the magic number below is "standardized rendering pixel size" defined
   // in WMTS (and WMS 1.3) standard, being 0.28 pixel
   double res = tm.scaleDenom * 0.00028 / metersPerUnit;

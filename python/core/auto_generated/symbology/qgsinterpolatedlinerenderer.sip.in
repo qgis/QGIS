@@ -232,12 +232,12 @@ Returns the stroke width used to render
 .. versionadded:: 3.20
 %End
 
-    void setWidthUnit( QgsUnitTypes::RenderUnit strokeWidthUnit );
+    void setWidthUnit( Qgis::RenderUnit strokeWidthUnit );
 %Docstring
 Sets the unit of the stroke width
 %End
 
-    QgsUnitTypes::RenderUnit widthUnit() const;
+    Qgis::RenderUnit widthUnit() const;
 %Docstring
 Returns the unit of the stroke width
 
@@ -369,14 +369,14 @@ Returns the expression related to the end extremity value for width.
    use dataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineEndWidthValue ) instead.
 %End
 
-    void setWidthUnit( QgsUnitTypes::RenderUnit strokeWidthUnit );
+    void setWidthUnit( Qgis::RenderUnit strokeWidthUnit );
 %Docstring
 Sets the width unit.
 
 .. seealso:: :py:func:`widthUnit`
 %End
 
-    QgsUnitTypes::RenderUnit widthUnit() const;
+    Qgis::RenderUnit widthUnit() const;
 %Docstring
 Returns the width unit.
 

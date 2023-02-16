@@ -22,9 +22,10 @@
 #include "qgssymbollayerutils.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudindex.h"
-#include "qgspointcloudlayerelevationproperties.h"
 #include "qgslogger.h"
 #include "qgscircle.h"
+#include "qgsunittypes.h"
+
 #include <QThread>
 #include <QPointer>
 
@@ -140,12 +141,12 @@ void QgsPointCloudRenderer::setMaximumScreenError( double error )
   mMaximumScreenError = error;
 }
 
-QgsUnitTypes::RenderUnit QgsPointCloudRenderer::maximumScreenErrorUnit() const
+Qgis::RenderUnit QgsPointCloudRenderer::maximumScreenErrorUnit() const
 {
   return mMaximumScreenErrorUnit;
 }
 
-void QgsPointCloudRenderer::setMaximumScreenErrorUnit( QgsUnitTypes::RenderUnit unit )
+void QgsPointCloudRenderer::setMaximumScreenErrorUnit( Qgis::RenderUnit unit )
 {
   mMaximumScreenErrorUnit = unit;
 }

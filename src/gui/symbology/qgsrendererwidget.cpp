@@ -20,7 +20,6 @@
 #include "qgscolordialog.h"
 #include "qgssymbollevelsdialog.h"
 #include "qgssymbollayer.h"
-#include "qgsexpressionbuilderdialog.h"
 #include "qgsmapcanvas.h"
 #include "qgspanelwidget.h"
 #include "qgsproject.h"
@@ -195,11 +194,11 @@ void QgsRendererWidget::changeSymbolUnit()
     return;
 
   bool ok;
-  const int currentUnit = ( firstSymbol->outputUnit() == QgsUnitTypes::RenderMillimeters ) ? 0 : 1;
+  const int currentUnit = ( firstSymbol->outputUnit() == Qgis::RenderUnit::Millimeters ) ? 0 : 1;
   const QString item = QInputDialog::getItem( this, tr( "Symbol unit" ), tr( "Select symbol unit" ), QStringList() << tr( "Millimeter" ) << tr( "Map unit" ), currentUnit, false, &ok );
   if ( ok )
   {
-    const QgsUnitTypes::RenderUnit unit = ( item.compare( tr( "Millimeter" ) ) == 0 ) ? QgsUnitTypes::RenderMillimeters : QgsUnitTypes::RenderMapUnits;
+    const Qgis::RenderUnit unit = ( item.compare( tr( "Millimeter" ) ) == 0 ) ? Qgis::RenderUnit::Millimeters : Qgis::RenderUnit::MapUnits;
 
     const auto constSymbolList = symbolList;
     for ( QgsSymbol *symbol : constSymbolList )

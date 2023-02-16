@@ -24,7 +24,7 @@ class QgsRectangle;
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsunittypes.h"
+#include "qgis.h"
 
 
 
@@ -44,7 +44,7 @@ class CORE_EXPORT QgsXmlUtils
      * \returns distance units
      * \see writeMapUnits()
      */
-    static QgsUnitTypes::DistanceUnit readMapUnits( const QDomElement &element );
+    static Qgis::DistanceUnit readMapUnits( const QDomElement &element );
 
     static QgsRectangle readRectangle( const QDomElement &element );
 
@@ -57,7 +57,7 @@ class CORE_EXPORT QgsXmlUtils
      * \returns element containing encoded units
      * \see readMapUnits()
      */
-    static QDomElement writeMapUnits( QgsUnitTypes::DistanceUnit units, QDomDocument &doc );
+    static QDomElement writeMapUnits( Qgis::DistanceUnit units, QDomDocument &doc );
 
     /**
      * Encodes a rectangle to a DOM element.

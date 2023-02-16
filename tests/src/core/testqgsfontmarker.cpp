@@ -234,7 +234,7 @@ void TestQgsFontMarkerSymbol::massiveFont()
   mFontMarkerLayer->setDataDefinedProperties( QgsPropertyCollection() );
   mFontMarkerLayer->setCharacter( QChar( 'X' ) );
   mFontMarkerLayer->setSize( 200 );
-  mFontMarkerLayer->setSizeUnit( QgsUnitTypes::RenderMillimeters );
+  mFontMarkerLayer->setSizeUnit( Qgis::RenderUnit::Millimeters );
   mFontMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertySize, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 100, 350)" ) ) );
   mFontMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyLayerEnabled, QgsProperty::fromExpression( QStringLiteral( "$id in (1, 4)" ) ) ); // 3
   mFontMarkerLayer->setStrokeWidth( 0.5 );

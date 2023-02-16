@@ -487,7 +487,7 @@ class CORE_EXPORT QgsPalLayerSettings
      * \see dist
      * \see distMapUnitScale
      */
-    QgsUnitTypes::RenderUnit distUnits = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit distUnits = Qgis::RenderUnit::Millimeters;
 
     /**
      * Map unit scale for label feature distance.
@@ -511,7 +511,7 @@ class CORE_EXPORT QgsPalLayerSettings
      * \see repeatDistance
      * \see repeatDistanceMapUnitScale
      */
-    QgsUnitTypes::RenderUnit repeatDistanceUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit repeatDistanceUnit = Qgis::RenderUnit::Millimeters;
 
     /**
      * Map unit scale for repeating labels for a single feature.
@@ -547,7 +547,7 @@ class CORE_EXPORT QgsPalLayerSettings
      * \see yOffset
      * \see labelOffsetMapUnitScale
      */
-    QgsUnitTypes::RenderUnit offsetUnits = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit offsetUnits = Qgis::RenderUnit::Millimeters;
 
     /**
      * Map unit scale for label offset.
@@ -568,14 +568,14 @@ class CORE_EXPORT QgsPalLayerSettings
      * \see setRotationUnit()
      * \since QGIS 3.22
      */
-    QgsUnitTypes::AngleUnit rotationUnit() const;
+    Qgis::AngleUnit rotationUnit() const;
 
     /**
       * Set unit for rotation of labels.
       * \see rotationUnit()
       * \since QGIS 3.22
       */
-    void setRotationUnit( QgsUnitTypes::AngleUnit angleUnit );
+    void setRotationUnit( Qgis::AngleUnit angleUnit );
 
     /**
      * Maximum angle between inside curved label characters (valid range 20.0 to 60.0).
@@ -712,8 +712,8 @@ class CORE_EXPORT QgsPalLayerSettings
     Q_NOWARN_DEPRECATED_POP
     double _getOverrunDistance() const { return mLineSettings.overrunDistance(); }
     void _setOverrunDistance( double distance ) { mLineSettings.setOverrunDistance( distance ); }
-    QgsUnitTypes::RenderUnit _getOverrunDistanceUnit() const { return mLineSettings.overrunDistanceUnit(); }
-    void _setOverrunDistanceUnit( QgsUnitTypes::RenderUnit unit ) { mLineSettings.setOverrunDistanceUnit( unit ); }
+    Qgis::RenderUnit _getOverrunDistanceUnit() const { return mLineSettings.overrunDistanceUnit(); }
+    void _setOverrunDistanceUnit( Qgis::RenderUnit unit ) { mLineSettings.setOverrunDistanceUnit( unit ); }
     QgsMapUnitScale _getOverrunDistanceMapUnitScale() const { return mLineSettings.overrunDistanceMapUnitScale(); }
     void _setOverrunDistanceMapUnitScale( const QgsMapUnitScale &scale ) { mLineSettings.setOverrunDistanceMapUnitScale( scale ); }
     bool _getDisplayAll() const { return mPlacementSettings.overlapHandling() == Qgis::LabelOverlapHandling::AllowOverlapIfRequired; }
@@ -1046,7 +1046,7 @@ class CORE_EXPORT QgsPalLayerSettings
                              QVariant &exprVal, QgsExpressionContext &context, const QVariant &originalValue = QVariant() );
 
     void parseTextStyle( QFont &labelFont,
-                         QgsUnitTypes::RenderUnit fontunits,
+                         Qgis::RenderUnit fontunits,
                          QgsRenderContext &context );
 
     void parseTextBuffer( QgsRenderContext &context );
@@ -1099,7 +1099,7 @@ class CORE_EXPORT QgsPalLayerSettings
     Qgis::UnplacedLabelVisibility mUnplacedVisibility = Qgis::UnplacedLabelVisibility::FollowEngineSetting;
 
     //! Unit for rotation of labels.
-    QgsUnitTypes::AngleUnit mRotationUnit = QgsUnitTypes::AngleDegrees;
+    Qgis::AngleUnit mRotationUnit = Qgis::AngleUnit::Degrees;
 
     static void initPropertyDefinitions();
 };

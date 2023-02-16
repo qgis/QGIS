@@ -73,7 +73,7 @@ void QgsJoinWithLinesAlgorithm::initAlgorithm( const QVariantMap & )
 
   auto distanceParam = std::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "GEODESIC_DISTANCE" ), QObject::tr( "Distance between vertices (geodesic lines only)" ), 1000 );
   distanceParam->setFlags( distanceParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
-  distanceParam->setDefaultUnit( QgsUnitTypes::DistanceKilometers );
+  distanceParam->setDefaultUnit( Qgis::DistanceUnit::Kilometers );
   distanceParam->setIsDynamic( true );
   distanceParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Geodesic Distance" ), QObject::tr( "Distance between vertices" ), QgsPropertyDefinition::DoublePositive ) );
   distanceParam->setDynamicLayerParameterName( QStringLiteral( "HUBS" ) );

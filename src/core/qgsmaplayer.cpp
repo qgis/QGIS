@@ -47,6 +47,7 @@
 #include "qgsdatums.h"
 #include "qgsprojoperation.h"
 #include "qgsthreadingutils.h"
+#include "qgsunittypes.h"
 
 #include <QDir>
 #include <QDomDocument>

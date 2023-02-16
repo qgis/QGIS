@@ -575,7 +575,7 @@ class TestQgsWmsCapabilities: public QObject
         QgsDateTimeRange( QDateTime( QDate( 2009, 2, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2009, 2, 1 ), QTime( 0, 0, 0 ) ) ),
       } ) );
       QCOMPARE( tileLayer.temporalExtent, QgsDateTimeRange( QDateTime( QDate( 2005, 7, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2016, 3, 1 ), QTime( 0, 0, 0 ) ) ) );
-      QCOMPARE( tileLayer.temporalInterval, QgsInterval( 1, QgsUnitTypes::TemporalUnit::TemporalIrregularStep ) );
+      QCOMPARE( tileLayer.temporalInterval, QgsInterval( 1, Qgis::TemporalUnit::IrregularStep ) );
       QCOMPARE( tileLayer.temporalCapabilityFlags, Qgis::RasterTemporalCapabilityFlag::RequestedTimesMustExactlyMatchAllAvailableTemporalRanges );
       QCOMPARE( tileLayer.defaultTimeDimensionValue, QStringLiteral( "current" ) );
     }

@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmeshdataprovidertemporalcapabilities.h"
-
+#include "qgsunittypes.h"
 
 QgsMeshDataProviderTemporalCapabilities::QgsMeshDataProviderTemporalCapabilities(): QgsDataProviderTemporalCapabilities()
 {}
@@ -92,7 +92,7 @@ void QgsMeshDataProviderTemporalCapabilities::addDatasetTimeInMilliseconds( int 
 
 void QgsMeshDataProviderTemporalCapabilities::addDatasetTime( int group, double time )
 {
-  const qint64 unitTimeFactor = QgsUnitTypes::fromUnitToUnitFactor( mTemporalUnit, QgsUnitTypes::TemporalMilliseconds );
+  const qint64 unitTimeFactor = QgsUnitTypes::fromUnitToUnitFactor( mTemporalUnit, Qgis::TemporalUnit::Milliseconds );
   addDatasetTimeInMilliseconds( group, time * unitTimeFactor );
 }
 
@@ -145,12 +145,12 @@ QgsDateTimeRange QgsMeshDataProviderTemporalCapabilities::timeExtent( const QDat
   return  QgsDateTimeRange( begin, end );
 }
 
-void QgsMeshDataProviderTemporalCapabilities::setTemporalUnit( QgsUnitTypes::TemporalUnit timeUnit )
+void QgsMeshDataProviderTemporalCapabilities::setTemporalUnit( Qgis::TemporalUnit timeUnit )
 {
   mTemporalUnit = timeUnit;
 }
 
-QgsUnitTypes::TemporalUnit QgsMeshDataProviderTemporalCapabilities::temporalUnit() const
+Qgis::TemporalUnit QgsMeshDataProviderTemporalCapabilities::temporalUnit() const
 {
   return mTemporalUnit;
 }

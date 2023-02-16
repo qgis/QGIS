@@ -36,7 +36,6 @@
 #include "qgslayoutatlas.h"
 #include "qgslayoutitemlegend.h"
 #include "qgslayoutmeasurementconverter.h"
-#include "qgsunittypes.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgscolorramplegendnodewidget.h"
@@ -1381,8 +1380,8 @@ void QgsLayoutLegendWidget::setLegendMapViewData()
     int dpi = qt_defaultDpiX();
     QgsLayoutMeasurementConverter measurementConverter = QgsLayoutMeasurementConverter();
     measurementConverter.setDpi( dpi );
-    double mapWidth = measurementConverter.convert( mLegend->linkedMap()->sizeWithUnits(), QgsUnitTypes::LayoutPixels ).width();
-    double mapHeight = measurementConverter.convert( mLegend->linkedMap()->sizeWithUnits(), QgsUnitTypes::LayoutPixels ).height();
+    double mapWidth = measurementConverter.convert( mLegend->linkedMap()->sizeWithUnits(), Qgis::LayoutUnit::Pixels ).width();
+    double mapHeight = measurementConverter.convert( mLegend->linkedMap()->sizeWithUnits(), Qgis::LayoutUnit::Pixels ).height();
     double mapUnitsPerPixelX = mLegend->linkedMap()->extent().width() / mapWidth;
     double mapUnitsPerPixelY = mLegend->linkedMap()->extent().height() / mapHeight;
     mLegend->model()->setLegendMapViewData( ( mapUnitsPerPixelX > mapUnitsPerPixelY ? mapUnitsPerPixelX : mapUnitsPerPixelY ), dpi, mLegend->linkedMap()->scale() );

@@ -1240,7 +1240,7 @@ std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &st
 {
   const QVariantMap styles = parseStyleString( string );
 
-  auto convertSize = []( const QString & size, double & value, QgsUnitTypes::RenderUnit & unit )->bool
+  auto convertSize = []( const QString & size, double & value, Qgis::RenderUnit & unit )->bool
   {
     const thread_local QRegularExpression sUnitRx = QRegularExpression( QStringLiteral( "^([\\d\\.]+)(g|px|pt|mm|cm|in)$" ) );
     const QRegularExpressionMatch match = sUnitRx.match( size );
@@ -1254,34 +1254,34 @@ std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &st
         // a 96 dpi conversion
         static constexpr double PT_TO_INCHES_FACTOR = 1 / 72.0;
         static constexpr double PX_TO_PT_FACTOR = 1 / ( 96.0 * PT_TO_INCHES_FACTOR );
-        unit = QgsUnitTypes::RenderPoints;
+        unit = Qgis::RenderUnit::Points;
         value *= PX_TO_PT_FACTOR;
         return true;
       }
       else if ( unitString.compare( QLatin1String( "pt" ), Qt::CaseInsensitive ) == 0 )
       {
-        unit = QgsUnitTypes::RenderPoints;
+        unit = Qgis::RenderUnit::Points;
         return true;
       }
       else if ( unitString.compare( QLatin1String( "mm" ), Qt::CaseInsensitive ) == 0 )
       {
-        unit = QgsUnitTypes::RenderMillimeters;
+        unit = Qgis::RenderUnit::Millimeters;
         return true;
       }
       else if ( unitString.compare( QLatin1String( "cm" ), Qt::CaseInsensitive ) == 0 )
       {
         value *= 10;
-        unit = QgsUnitTypes::RenderMillimeters;
+        unit = Qgis::RenderUnit::Millimeters;
         return true;
       }
       else if ( unitString.compare( QLatin1String( "in" ), Qt::CaseInsensitive ) == 0 )
       {
-        unit = QgsUnitTypes::RenderInches;
+        unit = Qgis::RenderUnit::Inches;
         return true;
       }
       else if ( unitString.compare( QLatin1String( "g" ), Qt::CaseInsensitive ) == 0 )
       {
-        unit = QgsUnitTypes::RenderMapUnits;
+        unit = Qgis::RenderUnit::MapUnits;
         return true;
       }
       QgsDebugMsg( QStringLiteral( "Unknown unit %1" ).arg( unitString ) );
@@ -1316,7 +1316,7 @@ std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &st
     QColor color = convertColor( lineStyle.value( QStringLiteral( "c" ), QStringLiteral( "#000000" ) ).toString() );
 
     double lineWidth = DEFAULT_SIMPLELINE_WIDTH;
-    QgsUnitTypes::RenderUnit lineWidthUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit lineWidthUnit = Qgis::RenderUnit::Millimeters;
     convertSize( lineStyle.value( QStringLiteral( "w" ) ).toString(), lineWidth, lineWidthUnit );
 
     // if the pen is a mapinfo pen, use dedicated converter for more accurate results
@@ -1344,7 +1344,7 @@ std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &st
       {
         const QStringList patternValues = match.captured( 1 ).split( ' ' );
         QVector< qreal > dashPattern;
-        QgsUnitTypes::RenderUnit patternUnits = QgsUnitTypes::RenderMillimeters;
+        Qgis::RenderUnit patternUnits = Qgis::RenderUnit::Millimeters;
         for ( const QString &val : patternValues )
         {
           double length;
@@ -1500,7 +1500,7 @@ std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &st
     const QColor color = convertColor( symbolStyle.value( QStringLiteral( "c" ), QStringLiteral( "#000000" ) ).toString() );
 
     double symbolSize = DEFAULT_SIMPLEMARKER_SIZE;
-    QgsUnitTypes::RenderUnit symbolSizeUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit symbolSizeUnit = Qgis::RenderUnit::Millimeters;
     convertSize( symbolStyle.value( QStringLiteral( "s" ) ).toString(), symbolSize, symbolSizeUnit );
 
     const double angle = symbolStyle.value( QStringLiteral( "a" ), QStringLiteral( "0" ) ).toDouble();
@@ -1561,7 +1561,7 @@ std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &st
         {
           fontMarker->setStrokeColor( strokeColor );
           fontMarker->setStrokeWidth( 1 );
-          fontMarker->setStrokeWidthUnit( QgsUnitTypes::RenderPoints );
+          fontMarker->setStrokeWidthUnit( Qgis::RenderUnit::Points );
         }
         else
         {

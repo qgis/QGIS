@@ -97,8 +97,8 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
 
     QgsIdentifyResultsDialog *resultsDialog();
 
-    QgsUnitTypes::DistanceUnit displayDistanceUnits() const override;
-    QgsUnitTypes::AreaUnit displayAreaUnits() const override;
+    Qgis::DistanceUnit displayDistanceUnits() const override;
+    Qgis::AreaUnit displayAreaUnits() const override;
     void setClickContextScope( const QgsPointXY &point );
 
     void keyReleaseEvent( QKeyEvent *e ) override;

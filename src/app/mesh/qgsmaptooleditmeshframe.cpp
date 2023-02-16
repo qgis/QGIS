@@ -42,14 +42,7 @@
 #include "qgsmaptoolselectionhandler.h"
 #include "qgsvectorlayer.h"
 #include "qgsunitselectionwidget.h"
-#include "qgssettingsregistrycore.h"
-
-#include "qgsexpressionbuilderwidget.h"
 #include "qgsmeshselectbyexpressiondialog.h"
-#include "qgsexpressioncontext.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsexpressionutils.h"
-#include "qgssettingsregistrycore.h"
 #include "qgsmaptoolidentify.h"
 #include "qgsidentifymenu.h"
 
@@ -134,7 +127,7 @@ QgsMeshEditForceByLineAction::QgsMeshEditForceByLineAction( QObject *parent )
   mToleranceSpinBox = new QgsDoubleSpinBox();
 
   bool ok;
-  double toleranceValue = settings.value( QStringLiteral( "UI/Mesh/ForceByLineToleranceValue" ), QgsUnitTypes::RenderMapUnits ).toDouble( &ok );
+  double toleranceValue = settings.value( QStringLiteral( "UI/Mesh/ForceByLineToleranceValue" ), 1.0 ).toDouble( &ok );
   if ( !ok )
     toleranceValue = 1.0;
   mToleranceSpinBox->setValue( toleranceValue );
@@ -144,11 +137,13 @@ QgsMeshEditForceByLineAction::QgsMeshEditForceByLineAction( QObject *parent )
   mToleranceSpinBox->setClearValue( 1.0 );
 
   mUnitSelecionWidget = new QgsUnitSelectionWidget();
-  mUnitSelecionWidget->setUnits( QgsUnitTypes::RenderUnitList() <<
-                                 QgsUnitTypes::RenderMetersInMapUnits <<
-                                 QgsUnitTypes::RenderMapUnits );
+  mUnitSelecionWidget->setUnits(
+  {
+    Qgis::RenderUnit::MetersInMapUnits,
+    Qgis::RenderUnit::MapUnits
+  } );
 
-  QgsUnitTypes::RenderUnit toleranceUnit = settings.enumValue( QStringLiteral( "UI/Mesh/ForceByLineToleranceUnit" ), QgsUnitTypes::RenderMapUnits );
+  Qgis::RenderUnit toleranceUnit = settings.enumValue( QStringLiteral( "UI/Mesh/ForceByLineToleranceUnit" ), Qgis::RenderUnit::MapUnits );
   mUnitSelecionWidget->setUnit( toleranceUnit );
 
   gLayout->addWidget( mCheckBoxNewVertex, 1, 0, 1, 4 );
@@ -188,7 +183,7 @@ double QgsMeshEditForceByLineAction::toleranceValue() const
   return mToleranceSpinBox->value();
 }
 
-QgsUnitTypes::RenderUnit QgsMeshEditForceByLineAction::toleranceUnit() const
+Qgis::RenderUnit QgsMeshEditForceByLineAction::toleranceUnit() const
 {
   return mUnitSelecionWidget->unit();
 }

@@ -17,9 +17,8 @@
 
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingutils.h"
+#include "qgsunittypes.h"
 #include "qgsproviderregistry.h"
-#include "qgsmaplayerlistutils_p.h"
-#include "qgssettings.h"
 
 QgsProcessingContext::QgsProcessingContext()
   : mPreferredVectorFormat( QgsProcessingUtils::defaultVectorExtension() )
@@ -150,9 +149,9 @@ void QgsProcessingContext::setLogLevel( LogLevel level )
 QVariantMap QgsProcessingContext::exportToMap() const
 {
   QVariantMap res;
-  if ( mDistanceUnit != QgsUnitTypes::DistanceUnknownUnit )
+  if ( mDistanceUnit != Qgis::DistanceUnit::Unknown )
     res.insert( QStringLiteral( "distance_units" ), QgsUnitTypes::encodeUnit( mDistanceUnit ) );
-  if ( mAreaUnit != QgsUnitTypes::AreaUnknownUnit )
+  if ( mAreaUnit != Qgis::AreaUnit::Unknown )
     res.insert( QStringLiteral( "area_units" ), QgsUnitTypes::encodeUnit( mAreaUnit ) );
   if ( !mEllipsoid.isEmpty() )
     res.insert( QStringLiteral( "ellipsoid" ), mEllipsoid );
@@ -181,9 +180,9 @@ QStringList QgsProcessingContext::asQgisProcessArguments( QgsProcessingContext::
   };
 
   QStringList res;
-  if ( mDistanceUnit != QgsUnitTypes::DistanceUnknownUnit )
+  if ( mDistanceUnit != Qgis::DistanceUnit::Unknown )
     res << QStringLiteral( "--distance_units=%1" ).arg( QgsUnitTypes::encodeUnit( mDistanceUnit ) );
-  if ( mAreaUnit != QgsUnitTypes::AreaUnknownUnit )
+  if ( mAreaUnit != Qgis::AreaUnit::Unknown )
     res << QStringLiteral( "--area_units=%1" ).arg( QgsUnitTypes::encodeUnit( mAreaUnit ) );
   if ( !mEllipsoid.isEmpty() )
     res << QStringLiteral( "--ellipsoid=%1" ).arg( mEllipsoid );
@@ -216,22 +215,22 @@ void QgsProcessingContext::setEllipsoid( const QString &ellipsoid )
   mEllipsoid = ellipsoid;
 }
 
-QgsUnitTypes::DistanceUnit QgsProcessingContext::distanceUnit() const
+Qgis::DistanceUnit QgsProcessingContext::distanceUnit() const
 {
   return mDistanceUnit;
 }
 
-void QgsProcessingContext::setDistanceUnit( QgsUnitTypes::DistanceUnit unit )
+void QgsProcessingContext::setDistanceUnit( Qgis::DistanceUnit unit )
 {
   mDistanceUnit = unit;
 }
 
-QgsUnitTypes::AreaUnit QgsProcessingContext::areaUnit() const
+Qgis::AreaUnit QgsProcessingContext::areaUnit() const
 {
   return mAreaUnit;
 }
 
-void QgsProcessingContext::setAreaUnit( QgsUnitTypes::AreaUnit areaUnit )
+void QgsProcessingContext::setAreaUnit( Qgis::AreaUnit areaUnit )
 {
   mAreaUnit = areaUnit;
 }

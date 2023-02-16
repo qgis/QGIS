@@ -510,7 +510,7 @@ have been halted programmatically, while :py:func:`~QgsMapCanvas.renderFlag` sho
 determine whether a user has disabled rendering via GUI.
 %End
 
-    QgsUnitTypes::DistanceUnit mapUnits() const;
+    Qgis::DistanceUnit mapUnits() const;
 %Docstring
 Convenience function for returning the current canvas map units. The map units
 are dictated by the canvas' :py:func:`~QgsMapCanvas.destinationCrs` map units.
@@ -1264,7 +1264,7 @@ The ``layer`` argument indicates the associated map layer, if available.
 .. versionadded:: 3.10.0
 %End
 
-    void panDistanceBearingChanged( double distance, QgsUnitTypes::DistanceUnit unit, double bearing );
+    void panDistanceBearingChanged( double distance, Qgis::DistanceUnit unit, double bearing );
 %Docstring
 Emitted whenever the distance or bearing of an in-progress panning
 operation is changed.

@@ -559,7 +559,7 @@ void QgsLayoutItemPropertiesWidget::mStrokeWidthSpinBox_valueChanged( double d )
   mItem->layout()->undoStack()->endCommand();
 }
 
-void QgsLayoutItemPropertiesWidget::strokeUnitChanged( QgsUnitTypes::LayoutUnit unit )
+void QgsLayoutItemPropertiesWidget::strokeUnitChanged( Qgis::LayoutUnit unit )
 {
   if ( !mItem )
   {
@@ -858,7 +858,7 @@ void QgsLayoutItemPropertiesWidget::mYPosSpin_valueChanged( double )
   mFreezeYPosSpin = false;
 }
 
-void QgsLayoutItemPropertiesWidget::positionUnitsChanged( QgsUnitTypes::LayoutUnit )
+void QgsLayoutItemPropertiesWidget::positionUnitsChanged( Qgis::LayoutUnit )
 {
   changeItemPosition();
 }
@@ -877,7 +877,7 @@ void QgsLayoutItemPropertiesWidget::mHeightSpin_valueChanged( double )
   mFreezeHeightSpin = false;
 }
 
-void QgsLayoutItemPropertiesWidget::sizeUnitsChanged( QgsUnitTypes::LayoutUnit )
+void QgsLayoutItemPropertiesWidget::sizeUnitsChanged( Qgis::LayoutUnit )
 {
   changeItemSize();
 }

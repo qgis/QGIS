@@ -19,7 +19,6 @@
 #include "qgspointcloudblock.h"
 #include "qgssymbollayerutils.h"
 #include "qgssymbol.h"
-#include "qgswkbtypes.h"
 #include "qgspolygon.h"
 #include "qgscurve.h"
 #include "qgslinesymbollayer.h"
@@ -122,7 +121,7 @@ QgsFillSymbol *QgsPointCloudExtentRenderer::defaultFillSymbol()
   layer->setColor( QColor( 228, 26, 28 ) );
   layer->setWidth( 0.960000 );
   layer->setPenStyle( Qt::DotLine );
-  layer->setWidthUnit( QgsUnitTypes::RenderMillimeters );
+  layer->setWidthUnit( Qgis::RenderUnit::Millimeters );
   return new QgsFillSymbol( QgsSymbolLayerList() << layer.release() );
 }
 

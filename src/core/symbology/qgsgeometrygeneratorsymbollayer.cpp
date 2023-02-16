@@ -21,6 +21,7 @@
 #include "qgspolygon.h"
 #include "qgslegendpatchshape.h"
 #include "qgsstyle.h"
+#include "qgsunittypes.h"
 
 #include "qgsexpressioncontextutils.h"
 
@@ -142,7 +143,7 @@ QColor QgsGeometryGeneratorSymbolLayer::color() const
   return QColor();
 }
 
-QgsUnitTypes::RenderUnit QgsGeometryGeneratorSymbolLayer::outputUnit() const
+Qgis::RenderUnit QgsGeometryGeneratorSymbolLayer::outputUnit() const
 {
   if ( mFillSymbol )
     return mFillSymbol->outputUnit();
@@ -150,10 +151,10 @@ QgsUnitTypes::RenderUnit QgsGeometryGeneratorSymbolLayer::outputUnit() const
     return mLineSymbol->outputUnit();
   else if ( mMarkerSymbol )
     return mMarkerSymbol->outputUnit();
-  return QgsUnitTypes::RenderUnknownUnit;
+  return Qgis::RenderUnit::Unknown;
 }
 
-void QgsGeometryGeneratorSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
+void QgsGeometryGeneratorSymbolLayer::setOutputUnit( Qgis::RenderUnit unit )
 {
   if ( mFillSymbol )
     mFillSymbol->setOutputUnit( unit );
@@ -453,20 +454,20 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, Q
   {
     switch ( mUnits )
     {
-      case QgsUnitTypes::RenderMapUnits:
-      case QgsUnitTypes::RenderUnknownUnit: // unsupported, not exposed as an option
-      case QgsUnitTypes::RenderMetersInMapUnits: // unsupported, not exposed as an option
-      case QgsUnitTypes::RenderPercentage: // unsupported, not exposed as an option
+      case Qgis::RenderUnit::MapUnits:
+      case Qgis::RenderUnit::Unknown: // unsupported, not exposed as an option
+      case Qgis::RenderUnit::MetersInMapUnits: // unsupported, not exposed as an option
+      case Qgis::RenderUnit::Percentage: // unsupported, not exposed as an option
       {
         QgsGeometry geom = mExpression->evaluate( &expressionContext ).value<QgsGeometry>();
         f.setGeometry( coerceToExpectedType( geom ) );
         break;
       }
 
-      case QgsUnitTypes::RenderMillimeters:
-      case QgsUnitTypes::RenderPixels:
-      case QgsUnitTypes::RenderPoints:
-      case QgsUnitTypes::RenderInches:
+      case Qgis::RenderUnit::Millimeters:
+      case Qgis::RenderUnit::Pixels:
+      case Qgis::RenderUnit::Points:
+      case Qgis::RenderUnit::Inches:
       {
         // convert feature geometry to painter units
         QgsGeometry transformed = f.geometry();

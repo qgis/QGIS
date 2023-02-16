@@ -19,6 +19,7 @@
 #include "qgsstringutils.h"
 #include "qgsstatisticalsummary.h"
 #include "qgsrasterprojector.h"
+#include "qgsunittypes.h"
 
 ///@cond PRIVATE
 

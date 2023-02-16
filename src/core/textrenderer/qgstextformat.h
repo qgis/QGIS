@@ -18,7 +18,7 @@
 
 #include "qgis_sip.h"
 #include "qgis_core.h"
-#include "qgsunittypes.h"
+#include "qgis.h"
 #include "qgstextbuffersettings.h"
 #include "qgstextbackgroundsettings.h"
 #include "qgstextshadowsettings.h"
@@ -313,7 +313,7 @@ class CORE_EXPORT QgsTextFormat
      * \see setSizeUnit()
      * \see sizeMapUnitScale()
      */
-    QgsUnitTypes::RenderUnit sizeUnit() const;
+    Qgis::RenderUnit sizeUnit() const;
 
     /**
      * Sets the units for the size of rendered text.
@@ -322,7 +322,7 @@ class CORE_EXPORT QgsTextFormat
      * \see sizeUnit()
      * \see setSizeMapUnitScale()
      */
-    void setSizeUnit( QgsUnitTypes::RenderUnit unit );
+    void setSizeUnit( Qgis::RenderUnit unit );
 
     /**
      * Returns the map unit scale object for the size. This is only used if the
@@ -441,7 +441,7 @@ class CORE_EXPORT QgsTextFormat
      *
      * \since QGIS 3.28
      */
-    QgsUnitTypes::RenderUnit lineHeightUnit() const;
+    Qgis::RenderUnit lineHeightUnit() const;
 
     /**
      * Sets the \a unit for the line height for text.
@@ -451,7 +451,7 @@ class CORE_EXPORT QgsTextFormat
      *
      * \since QGIS 3.28
      */
-    void setLineHeightUnit( QgsUnitTypes::RenderUnit unit );
+    void setLineHeightUnit( Qgis::RenderUnit unit );
 
     /**
      * Returns the orientation of the text.

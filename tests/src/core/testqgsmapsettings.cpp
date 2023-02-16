@@ -23,14 +23,12 @@
 #include "qgsrectangle.h"
 #include "qgsmapsettings.h"
 #include "qgspointxy.h"
-#include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgsmaplayerlistutils_p.h"
 #include "qgsvectorlayer.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsrenderedfeaturehandlerinterface.h"
-#include "qgsrendercontext.h"
 #include "qgsgrouplayer.h"
 
 class TestHandler : public QgsRenderedFeatureHandlerInterface
@@ -702,7 +700,7 @@ void TestQgsMapSettings::testComputeExtentForScale()
 
   //                   [                   output width in inches                   ] * [scale]
   const double widthInches = settings.outputSize().width() / double( settings.outputDpi() ) * 500;
-  const double widthMapUnits = widthInches * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceFeet, settings.mapUnits() ) / 12;
+  const double widthMapUnits = widthInches * QgsUnitTypes::fromUnitToUnitFactor( Qgis::DistanceUnit::Feet, settings.mapUnits() ) / 12;
   QGSCOMPARENEARRECTANGLE( rect, QgsRectangle( - 0.5 * widthMapUnits, - 0.5 * widthMapUnits, 0.5 * widthMapUnits, 0.5 * widthMapUnits ), 0.0001 );
 
 }
@@ -717,7 +715,7 @@ void TestQgsMapSettings::testComputeScaleForExtent()
 
   const double scale = settings.computeScaleForExtent( QgsRectangle( -500., -500., 500., 500. ) );
 
-  const double widthInches = 1000 * QgsUnitTypes::fromUnitToUnitFactor( settings.mapUnits(), QgsUnitTypes::DistanceFeet ) * 12;
+  const double widthInches = 1000 * QgsUnitTypes::fromUnitToUnitFactor( settings.mapUnits(), Qgis::DistanceUnit::Feet ) * 12;
   const double testScale = widthInches * settings.outputDpi() / double( settings.outputSize().width() );
   QGSCOMPARENEAR( scale, testScale, 0.001 );
 }

@@ -162,7 +162,7 @@ void TestQgsShapeburst::shapeburstMaxDistanceMm()
 {
   mShapeburstFill->setUseWholeShape( false );
   mShapeburstFill->setMaxDistance( 3 );
-  mShapeburstFill->setDistanceUnit( QgsUnitTypes::RenderMillimeters );
+  mShapeburstFill->setDistanceUnit( Qgis::RenderUnit::Millimeters );
   QVERIFY( imageCheck( "shapeburst_maxdistance_mm" ) );
   mShapeburstFill->setUseWholeShape( true );
 }
@@ -171,10 +171,10 @@ void TestQgsShapeburst::shapeburstMaxDistanceMapUnits()
 {
   mShapeburstFill->setUseWholeShape( false );
   mShapeburstFill->setMaxDistance( 10 );
-  mShapeburstFill->setDistanceUnit( QgsUnitTypes::RenderMapUnits );
+  mShapeburstFill->setDistanceUnit( Qgis::RenderUnit::MapUnits );
   QVERIFY( imageCheck( "shapeburst_maxdistance_mapunit" ) );
   mShapeburstFill->setUseWholeShape( true );
-  mShapeburstFill->setDistanceUnit( QgsUnitTypes::RenderMillimeters );
+  mShapeburstFill->setDistanceUnit( Qgis::RenderUnit::Millimeters );
 }
 
 void TestQgsShapeburst::shapeburstIgnoreRings()

@@ -129,7 +129,7 @@ void TestQgsRasterFill::init()
 {
   mRasterFill->setImageFilePath( mTestDataDir + QStringLiteral( "sample_image.png" ) );
   mRasterFill->setWidth( 30.0 );
-  mRasterFill->setWidthUnit( QgsUnitTypes::RenderPixels );
+  mRasterFill->setWidthUnit( Qgis::RenderUnit::Pixels );
   mRasterFill->setCoordinateMode( Qgis::SymbolCoordinateReference::Feature );
   mRasterFill->setOpacity( 1.0 );
   mRasterFill->setOffset( QPointF( 0, 0 ) );
@@ -169,7 +169,7 @@ void TestQgsRasterFill::offset()
 
 void TestQgsRasterFill::width()
 {
-  mRasterFill->setWidthUnit( QgsUnitTypes::RenderMillimeters );
+  mRasterFill->setWidthUnit( Qgis::RenderUnit::Millimeters );
   mRasterFill->setWidth( 5.0 );
   const bool result = imageCheck( QStringLiteral( "rasterfill_width" ) );
   QVERIFY( result );
@@ -177,7 +177,7 @@ void TestQgsRasterFill::width()
 
 void TestQgsRasterFill::percentage()
 {
-  mRasterFill->setWidthUnit( QgsUnitTypes::RenderPercentage );
+  mRasterFill->setWidthUnit( Qgis::RenderUnit::Percentage );
   mRasterFill->setWidth( 6.3 );
   const bool result = imageCheck( QStringLiteral( "rasterfill_percentage" ) );
   QVERIFY( result );
@@ -185,7 +185,7 @@ void TestQgsRasterFill::percentage()
 
 void TestQgsRasterFill::percentageCoordinateMode()
 {
-  mRasterFill->setWidthUnit( QgsUnitTypes::RenderPercentage );
+  mRasterFill->setWidthUnit( Qgis::RenderUnit::Percentage );
   mRasterFill->setWidth( 6.3 );
   mRasterFill->setCoordinateMode( Qgis::SymbolCoordinateReference::Viewport );
   const bool result = imageCheck( QStringLiteral( "rasterfill_viewport_percentage" ) );
@@ -194,9 +194,9 @@ void TestQgsRasterFill::percentageCoordinateMode()
 
 void TestQgsRasterFill::percentageOffset()
 {
-  mRasterFill->setWidthUnit( QgsUnitTypes::RenderPercentage );
+  mRasterFill->setWidthUnit( Qgis::RenderUnit::Percentage );
   mRasterFill->setWidth( 6.3 );
-  mRasterFill->setOffsetUnit( QgsUnitTypes::RenderPixels );
+  mRasterFill->setOffsetUnit( Qgis::RenderUnit::Pixels );
   mRasterFill->setOffset( QPointF( 12, 15 ) );
   const bool result = imageCheck( QStringLiteral( "rasterfill_offset_percentage" ) );
   QVERIFY( result );
@@ -204,7 +204,7 @@ void TestQgsRasterFill::percentageOffset()
 
 void TestQgsRasterFill::percentageAlpha()
 {
-  mRasterFill->setWidthUnit( QgsUnitTypes::RenderPercentage );
+  mRasterFill->setWidthUnit( Qgis::RenderUnit::Percentage );
   mRasterFill->setWidth( 6.3 );
   mRasterFill->setOpacity( 0.5 );
   const bool result = imageCheck( QStringLiteral( "rasterfill_alpha_percentage" ) );
@@ -213,7 +213,7 @@ void TestQgsRasterFill::percentageAlpha()
 
 void TestQgsRasterFill::percentageWidth()
 {
-  mRasterFill->setWidthUnit( QgsUnitTypes::RenderPercentage );
+  mRasterFill->setWidthUnit( Qgis::RenderUnit::Percentage );
   mRasterFill->setWidth( 3.3 );
   const bool result = imageCheck( QStringLiteral( "rasterfill_width_percentage" ) );
   QVERIFY( result );
