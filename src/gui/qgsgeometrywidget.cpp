@@ -33,11 +33,16 @@ QgsGeometryWidget::QgsGeometryWidget( QWidget *parent )
 
   mLineEdit = new QLineEdit();
   mLineEdit->setReadOnly( true );
-  mLineEdit->setStyleSheet( QStringLiteral( "font-style: italic; color: grey;" ) );
+  mLineEdit->setStyleSheet( QStringLiteral( "font-style: italic;" ) );
+
+  // make text appear in disabled text color, as it's not directly editable
+  QPalette palette = mLineEdit->palette();
+  palette.setColor( QPalette::Text, palette.color( QPalette::Disabled, QPalette::Text ) );
+  mLineEdit->setPalette( palette );
+
   mLineEdit->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum );
 
   mButton = new QToolButton();
-  //mButton->setFixedSize( mLineEdit->height(), mLineEdit->height() );
   mButton->setStyleSheet( QStringLiteral( "QToolButton{ background: none; border: 1px solid rgba(0, 0, 0, 0%);} QToolButton:focus { border: 1px solid palette(highlight); }" ) );
   const int iconSize = QgsGuiUtils::scaleIconSize( 24 );
   mButton->setIconSize( QSize( iconSize, iconSize ) );
