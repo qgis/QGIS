@@ -210,6 +210,32 @@ class CORE_EXPORT QgsProviderRegistry
     QString encodeUri( const QString &providerKey, const QVariantMap &parts );
 
     /**
+     * Converts absolute path(s) to relative path(s) in the given provider-specific URI. and
+     * returns modified URI according to the context object's configuration.
+     * This is commonly used when writing project files.
+     * If a provider does not work with paths, unmodified URI will be returned.
+     * \returns modified URI with relative path(s)
+     * \note this function may not be supported by all providers. The default
+     *       implementation uses QgsPathResolver::writePath() on the whole URI.
+     * \see relativeToAbsoluteUri()
+     * \since QGIS 3.30
+     */
+    QString absoluteToRelativeUri( const QString &providerKey, const QString &uri, const QgsReadWriteContext &context ) const;
+
+    /**
+     * Converts relative path(s) to absolute path(s) in the given provider-specific URI. and
+     * returns modified URI according to the context object's configuration.
+     * This is commonly used when reading project files.
+     * If a provider does not work with paths, unmodified URI will be returned.
+     * \returns modified URI with absolute path(s)
+     * \note this function may not be supported by all providers. The default
+     *       implementation uses QgsPathResolver::readPath() on the whole URI.
+     * \see absoluteToRelativeUri()
+     * \since QGIS 3.30
+     */
+    QString relativeToAbsoluteUri( const QString &providerKey, const QString &uri, const QgsReadWriteContext &context ) const;
+
+    /**
      * Returns a new widget for selecting layers from a provider.
      * Either the \a parent widget must be set or the caller becomes
      * responsible for deleting the returned widget.

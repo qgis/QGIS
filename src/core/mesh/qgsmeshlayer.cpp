@@ -1718,34 +1718,14 @@ QString QgsMeshLayer::decodedSource( const QString &source, const QString &provi
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QString src( source );
-
-  QVariantMap uriParts = QgsProviderRegistry::instance()->decodeUri( provider, source );
-  if ( uriParts.contains( QStringLiteral( "path" ) ) )
-  {
-    QString filePath = uriParts.value( QStringLiteral( "path" ) ).toString();
-    filePath = context.pathResolver().readPath( filePath );
-    uriParts.insert( QStringLiteral( "path" ), filePath );
-    src = QgsProviderRegistry::instance()->encodeUri( provider, uriParts );
-  }
-
-  return src;
+  return QgsProviderRegistry::instance()->relativeToAbsoluteUri( provider, source, context );
 }
 
 QString QgsMeshLayer::encodedSource( const QString &source, const QgsReadWriteContext &context ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QString src( source );
-  QVariantMap uriParts = QgsProviderRegistry::instance()->decodeUri( mProviderKey, source );
-  if ( uriParts.contains( QStringLiteral( "path" ) ) )
-  {
-    QString filePath = uriParts.value( QStringLiteral( "path" ) ).toString();
-    filePath = context.pathResolver().writePath( filePath );
-    uriParts.insert( QStringLiteral( "path" ), filePath );
-    src = QgsProviderRegistry::instance()->encodeUri( mProviderKey, uriParts );
-  }
-  return src;
+  return QgsProviderRegistry::instance()->absoluteToRelativeUri( mProviderKey, source, context );
 }
 
 bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &context )

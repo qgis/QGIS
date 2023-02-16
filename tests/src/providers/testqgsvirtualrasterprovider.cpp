@@ -65,6 +65,7 @@ class TestQgsVirtualRasterProvider : public QgsTest
     void validLayer();
     void testUriProviderDecoding();
     void testUriEncoding();
+    void absoluteRelativeUri();
     void testConstructorWrong();
     void testConstructor();
     void testNewCalcNodeMethods();
@@ -155,6 +156,38 @@ void TestQgsVirtualRasterProvider::testUriEncoding()
 
   QString expecetedEncodedUri( QStringLiteral( "?crs=EPSG:4326&extent=18.5,45.5,19.5,45.5&width=1000&height=1500&formula=%22test_raster@1%22&test_raster:uri=path/to/file&test_raster:provider=test_provider" ) );
   QCOMPARE( QUrl::fromPercentEncoding( QgsVirtualRasterProvider::encodeVirtualRasterProviderUri( params ).toUtf8() ), expecetedEncodedUri );
+}
+
+void TestQgsVirtualRasterProvider::absoluteRelativeUri()
+{
+  QgsReadWriteContext context;
+  context.setPathResolver( QgsPathResolver( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/project.qgs" ) ) );
+
+  QString uriAbs =
+    "?crs=EPSG:32633&"
+    "extent=781662.375,3339523.125,793062.375,3350923.125&"
+    "width=200&"
+    "height=200&"
+    "formula=%22landsat@1%22+1&"
+    "landsat:uri=" + QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif&"
+    "landsat:provider=gdal";
+
+  QString uriRel =
+    "?crs=EPSG:32633&"
+    "extent=781662.375,3339523.125,793062.375,3350923.125&"
+    "width=200&"
+    "height=200&"
+    "formula=%22landsat@1%22+1&"
+    "landsat:uri=./landsat.tif&"
+    "landsat:provider=gdal";
+
+  QgsProviderMetadata *vrMetadata = QgsProviderRegistry::instance()->providerMetadata( "virtualraster" );
+  QVERIFY( vrMetadata );
+
+  QString absoluteUri = QUrl::toPercentEncoding( uriAbs );
+  QString relativeUri = QUrl::toPercentEncoding( uriRel );
+  QCOMPARE( vrMetadata->absoluteToRelativeUri( absoluteUri, context ), relativeUri );
+  QCOMPARE( vrMetadata->relativeToAbsoluteUri( relativeUri, context ), absoluteUri );
 }
 
 void TestQgsVirtualRasterProvider::testConstructorWrong()

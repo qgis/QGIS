@@ -484,32 +484,14 @@ QString QgsPointCloudLayer::encodedSource( const QString &source, const QgsReadW
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( providerType(), source );
-  if ( parts.contains( QStringLiteral( "path" ) ) )
-  {
-    parts.insert( QStringLiteral( "path" ), context.pathResolver().writePath( parts.value( QStringLiteral( "path" ) ).toString() ) );
-    return QgsProviderRegistry::instance()->encodeUri( providerType(), parts );
-  }
-  else
-  {
-    return source;
-  }
+  return QgsProviderRegistry::instance()->absoluteToRelativeUri( mProviderKey, source, context );
 }
 
 QString QgsPointCloudLayer::decodedSource( const QString &source, const QString &dataProvider, const QgsReadWriteContext &context ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( dataProvider, source );
-  if ( parts.contains( QStringLiteral( "path" ) ) )
-  {
-    parts.insert( QStringLiteral( "path" ), context.pathResolver().readPath( parts.value( QStringLiteral( "path" ) ).toString() ) );
-    return QgsProviderRegistry::instance()->encodeUri( dataProvider, parts );
-  }
-  else
-  {
-    return source;
-  }
+  return QgsProviderRegistry::instance()->relativeToAbsoluteUri( dataProvider, source, context );
 }
 
 void QgsPointCloudLayer::onPointCloudIndexGenerationStateChanged( QgsPointCloudDataProvider::PointCloudIndexGenerationState state )

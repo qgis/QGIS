@@ -569,6 +569,24 @@ QString QgsProviderRegistry::encodeUri( const QString &providerKey, const QVaria
     return QString();
 }
 
+QString QgsProviderRegistry::absoluteToRelativeUri( const QString &providerKey, const QString &uri, const QgsReadWriteContext &context ) const
+{
+  QgsProviderMetadata *meta = findMetadata_( mProviders, providerKey );
+  if ( meta )
+    return meta->absoluteToRelativeUri( uri, context );
+  else
+    return QString();
+}
+
+QString QgsProviderRegistry::relativeToAbsoluteUri( const QString &providerKey, const QString &uri, const QgsReadWriteContext &context ) const
+{
+  QgsProviderMetadata *meta = findMetadata_( mProviders, providerKey );
+  if ( meta )
+    return meta->relativeToAbsoluteUri( uri, context );
+  else
+    return QString();
+}
+
 Qgis::VectorExportResult QgsProviderRegistry::createEmptyLayer( const QString &providerKey,
     const QString &uri,
     const QgsFields &fields,

@@ -18,6 +18,9 @@
 #include "qgsvectortileconnection.h"
 #include "qgsvectortiledataitems.h"
 #include "qgsapplication.h"
+#include "qgsreadwritecontext.h"
+
+#include <QUrl>
 
 ///@cond PRIVATE
 
@@ -126,6 +129,65 @@ QString QgsVectorTileProviderMetadata::encodeUri( const QVariantMap &parts ) con
     dsUri.setAuthConfigId( parts[ QStringLiteral( "authcfg" ) ].toString() );
 
   return dsUri.encodedUri();
+}
+
+QString QgsVectorTileProviderMetadata::absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const
+{
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( uri );
+
+  const QString sourceType = dsUri.param( QStringLiteral( "type" ) );
+  QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
+  if ( sourceType == QLatin1String( "xyz" ) )
+  {
+    const QUrl sourceUrl( sourcePath );
+    if ( sourceUrl.isLocalFile() )
+    {
+      // relative path will become "file:./x.txt"
+      const QString relSrcUrl = context.pathResolver().writePath( sourceUrl.toLocalFile() );
+      dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
+      dsUri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( relSrcUrl ).toString() );
+      return dsUri.encodedUri();
+    }
+  }
+  else if ( sourceType == QLatin1String( "mbtiles" ) )
+  {
+    sourcePath = context.pathResolver().writePath( sourcePath );
+    dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
+    dsUri.setParam( QStringLiteral( "url" ), sourcePath );
+    return dsUri.encodedUri();
+  }
+
+  return uri;
+}
+
+QString QgsVectorTileProviderMetadata::relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const
+{
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( uri );
+
+  const QString sourceType = dsUri.param( QStringLiteral( "type" ) );
+  QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
+  if ( sourceType == QLatin1String( "xyz" ) )
+  {
+    const QUrl sourceUrl( sourcePath );
+    if ( sourceUrl.isLocalFile() )  // file-based URL? convert to relative path
+    {
+      const QString absSrcUrl = context.pathResolver().readPath( sourceUrl.toLocalFile() );
+      dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
+      dsUri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( absSrcUrl ).toString() );
+      return dsUri.encodedUri();
+    }
+  }
+  else if ( sourceType == QLatin1String( "mbtiles" ) )
+  {
+    sourcePath = context.pathResolver().readPath( sourcePath );
+    dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
+    dsUri.setParam( QStringLiteral( "url" ), sourcePath );
+    return dsUri.encodedUri();
+  }
+
+  return uri;
 }
 
 QList<Qgis::LayerType> QgsVectorTileProviderMetadata::supportedLayerTypes() const

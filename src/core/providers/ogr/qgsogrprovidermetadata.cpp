@@ -316,6 +316,24 @@ QString QgsOgrProviderMetadata::encodeUri( const QVariantMap &parts ) const
   return uri;
 }
 
+QString QgsOgrProviderMetadata::absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const
+{
+  QString src = uri;
+  QStringList theURIParts = src.split( '|' );
+  theURIParts[0] = context.pathResolver().writePath( theURIParts[0] );
+  src = theURIParts.join( QLatin1Char( '|' ) );
+  return src;
+}
+
+QString QgsOgrProviderMetadata::relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const
+{
+  QString src = uri;
+  QStringList theURIParts = src.split( '|' );
+  theURIParts[0] = context.pathResolver().readPath( theURIParts[0] );
+  src = theURIParts.join( QLatin1Char( '|' ) );
+  return src;
+}
+
 QList<QgsDataItemProvider *> QgsOgrProviderMetadata::dataItemProviders() const
 {
   QList< QgsDataItemProvider * > providers;

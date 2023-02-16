@@ -38,6 +38,7 @@
 #include "qgsgeometryengine.h"
 #include "qgsvectortilemvtdecoder.h"
 #include "qgsthreadingutils.h"
+#include "qgsproviderregistry.h"
 
 #include <QUrl>
 #include <QUrlQuery>
@@ -812,32 +813,7 @@ QString QgsVectorTileLayer::encodedSource( const QString &source, const QgsReadW
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsDataSourceUri dsUri;
-  dsUri.setEncodedUri( source );
-
-  const QString sourceType = dsUri.param( QStringLiteral( "type" ) );
-  QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
-  if ( sourceType == QLatin1String( "xyz" ) )
-  {
-    const QUrl sourceUrl( sourcePath );
-    if ( sourceUrl.isLocalFile() )
-    {
-      // relative path will become "file:./x.txt"
-      const QString relSrcUrl = context.pathResolver().writePath( sourceUrl.toLocalFile() );
-      dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
-      dsUri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( relSrcUrl ).toString() );
-      return dsUri.encodedUri();
-    }
-  }
-  else if ( sourceType == QLatin1String( "mbtiles" ) )
-  {
-    sourcePath = context.pathResolver().writePath( sourcePath );
-    dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
-    dsUri.setParam( QStringLiteral( "url" ), sourcePath );
-    return dsUri.encodedUri();
-  }
-
-  return source;
+  return QgsProviderRegistry::instance()->absoluteToRelativeUri( QStringLiteral( "vectortile" ), source, context );
 }
 
 QString QgsVectorTileLayer::decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const
@@ -846,31 +822,7 @@ QString QgsVectorTileLayer::decodedSource( const QString &source, const QString 
 
   Q_UNUSED( provider )
 
-  QgsDataSourceUri dsUri;
-  dsUri.setEncodedUri( source );
-
-  const QString sourceType = dsUri.param( QStringLiteral( "type" ) );
-  QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
-  if ( sourceType == QLatin1String( "xyz" ) )
-  {
-    const QUrl sourceUrl( sourcePath );
-    if ( sourceUrl.isLocalFile() )  // file-based URL? convert to relative path
-    {
-      const QString absSrcUrl = context.pathResolver().readPath( sourceUrl.toLocalFile() );
-      dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
-      dsUri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( absSrcUrl ).toString() );
-      return dsUri.encodedUri();
-    }
-  }
-  else if ( sourceType == QLatin1String( "mbtiles" ) )
-  {
-    sourcePath = context.pathResolver().readPath( sourcePath );
-    dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
-    dsUri.setParam( QStringLiteral( "url" ), sourcePath );
-    return dsUri.encodedUri();
-  }
-
-  return source;
+  return QgsProviderRegistry::instance()->relativeToAbsoluteUri( QStringLiteral( "vectortile" ), source, context );
 }
 
 QString QgsVectorTileLayer::htmlMetadata() const

@@ -247,6 +247,20 @@ class TestQgsWmsProvider: public QgsTest
       QCOMPARE( encodedUri, uriString );
     }
 
+    void absoluteRelativeUri()
+    {
+      QgsReadWriteContext context;
+      context.setPathResolver( QgsPathResolver( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/project.qgs" ) ) );
+
+      QgsProviderMetadata *wmsMetadata = QgsProviderRegistry::instance()->providerMetadata( "wms" );
+      QVERIFY( wmsMetadata );
+
+      QString absoluteUri = "type=mbtiles&url=file://" + QStringLiteral( TEST_DATA_DIR ) + "/isle_of_man.mbtiles";
+      QString relativeUri = "type=mbtiles&url=file:./isle_of_man.mbtiles";
+      QCOMPARE( wmsMetadata->absoluteToRelativeUri( absoluteUri, context ), relativeUri );
+      QCOMPARE( wmsMetadata->relativeToAbsoluteUri( relativeUri, context ), absoluteUri );
+    }
+
     void testXyzIsBasemap()
     {
       // test that xyz tile layers are considered basemap layers

@@ -23,6 +23,7 @@
 #include "qgsmeshdataprovidertemporalcapabilities.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsproviderutils.h"
+#include "qgsreadwritecontext.h"
 
 #include <QFileInfo>
 #include <QRegularExpression>
@@ -1112,6 +1113,32 @@ QString QgsMdalProviderMetadata::encodeUri( const QVariantMap &parts ) const
   {
     return parts.value( QStringLiteral( "path" ) ).toString();
   }
+}
+
+QString QgsMdalProviderMetadata::absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const
+{
+  QVariantMap uriParts = decodeUri( uri );
+  if ( uriParts.contains( QStringLiteral( "path" ) ) )
+  {
+    QString filePath = uriParts.value( QStringLiteral( "path" ) ).toString();
+    filePath = context.pathResolver().writePath( filePath );
+    uriParts.insert( QStringLiteral( "path" ), filePath );
+    return encodeUri( uriParts );
+  }
+  return uri;
+}
+
+QString QgsMdalProviderMetadata::relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const
+{
+  QVariantMap uriParts = decodeUri( uri );
+  if ( uriParts.contains( QStringLiteral( "path" ) ) )
+  {
+    QString filePath = uriParts.value( QStringLiteral( "path" ) ).toString();
+    filePath = context.pathResolver().readPath( filePath );
+    uriParts.insert( QStringLiteral( "path" ), filePath );
+    return encodeUri( uriParts );
+  }
+  return uri;
 }
 
 QgsProviderMetadata::ProviderCapabilities QgsMdalProviderMetadata::providerCapabilities() const

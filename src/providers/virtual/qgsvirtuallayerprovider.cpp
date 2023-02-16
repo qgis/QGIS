@@ -35,6 +35,7 @@ extern "C"
 #include "qgsapplication.h"
 
 #include <QUrl>
+#include <QUrlQuery>
 
 const QString QgsVirtualLayerProvider::VIRTUAL_LAYER_KEY = QStringLiteral( "virtual" );
 const QString QgsVirtualLayerProvider::VIRTUAL_LAYER_DESCRIPTION = QStringLiteral( "Virtual layer data provider" );
@@ -670,6 +671,99 @@ QgsVirtualLayerProvider *QgsVirtualLayerProviderMetadata::createProvider(
   QgsDataProvider::ReadFlags flags )
 {
   return new QgsVirtualLayerProvider( uri, options, flags );
+}
+
+QString QgsVirtualLayerProviderMetadata::absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const
+{
+  QUrl urlSource = QUrl::fromEncoded( uri.toLatin1() );
+  QStringList theURIParts;
+
+  QUrlQuery query = QUrlQuery( urlSource.query() );
+  QList<QPair<QString, QString> > queryItems = query.queryItems();
+
+  for ( int i = 0; i < queryItems.size(); i++ )
+  {
+    QString key = queryItems.at( i ).first;
+    QString value = queryItems.at( i ).second;
+    if ( key == QLatin1String( "layer" ) )
+    {
+      // syntax: provider:url_encoded_source_URI(:name(:encoding)?)?
+      theURIParts = value.split( ':' );
+      theURIParts[1] = QUrl::fromPercentEncoding( theURIParts[1].toUtf8() );
+
+      if ( theURIParts[0] == QLatin1String( "delimitedtext" ) )
+      {
+        QUrl urlSource = QUrl( theURIParts[1] );
+        QUrl urlDest = QUrl::fromLocalFile( context.pathResolver().writePath( urlSource.toLocalFile() ) );
+        urlDest.setQuery( urlSource.query() );
+        theURIParts[1] = QUrl::toPercentEncoding( urlDest.toString(), QByteArray( "" ), QByteArray( ":" ) );
+      }
+      else
+      {
+        theURIParts[1] = context.pathResolver().writePath( theURIParts[1] );
+        theURIParts[1] = QUrl::toPercentEncoding( theURIParts[1] );
+      }
+
+      queryItems[i].second =  theURIParts.join( QLatin1Char( ':' ) ) ;
+    }
+  }
+
+  query.setQueryItems( queryItems );
+
+  QUrl urlDest = QUrl( urlSource );
+  urlDest.setQuery( query.query() );
+  return QString::fromLatin1( urlDest.toEncoded() );
+}
+
+QString QgsVirtualLayerProviderMetadata::relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const
+{
+  QUrl urlSource = QUrl::fromEncoded( uri.toLatin1() );
+  QStringList theURIParts;
+
+  QUrlQuery query = QUrlQuery( urlSource.query() );
+  QList<QPair<QString, QString> > queryItems = query.queryItems();
+
+  for ( int i = 0; i < queryItems.size(); i++ )
+  {
+    QString key = queryItems.at( i ).first;
+    QString value = queryItems.at( i ).second;
+    if ( key == QLatin1String( "layer" ) )
+    {
+      // syntax: provider:url_encoded_source_URI(:name(:encoding)?)?
+      theURIParts = value.split( ':' );
+      theURIParts[1] = QUrl::fromPercentEncoding( theURIParts[1].toUtf8() );
+
+      if ( theURIParts[0] == QLatin1String( "delimitedtext" ) )
+      {
+        QUrl urlSource = QUrl( theURIParts[1] );
+
+        if ( !theURIParts[1].startsWith( QLatin1String( "file:" ) ) )
+        {
+          QUrl file = QUrl::fromLocalFile( theURIParts[1].left( theURIParts[1].indexOf( '?' ) ) );
+          urlSource.setScheme( QStringLiteral( "file" ) );
+          urlSource.setPath( file.path() );
+        }
+
+        QUrl urlDest = QUrl::fromLocalFile( context.pathResolver().readPath( urlSource.toLocalFile() ) );
+        urlDest.setQuery( urlSource.query() );
+
+        theURIParts[1] = urlDest.toString();
+      }
+      else
+      {
+        theURIParts[1] = context.pathResolver().readPath( theURIParts[1] );
+      }
+
+      theURIParts[1] = QUrl::toPercentEncoding( theURIParts[1] );
+      queryItems[i].second =  theURIParts.join( QLatin1Char( ':' ) ) ;
+    }
+  }
+
+  query.setQueryItems( queryItems );
+
+  QUrl urlDest = QUrl( urlSource );
+  urlDest.setQuery( query.query() );
+  return QString::fromLatin1( urlDest.toEncoded() );
 }
 
 QList<Qgis::LayerType> QgsVirtualLayerProviderMetadata::supportedLayerTypes() const

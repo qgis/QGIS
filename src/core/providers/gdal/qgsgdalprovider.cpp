@@ -2454,6 +2454,172 @@ QString QgsGdalProviderMetadata::encodeUri( const QVariantMap &parts ) const
   return  QgsGdalProviderBase::encodeGdalUri( parts );
 }
 
+
+static bool _parseGpkgColons( const QString &src, QString &filename, QString &tablename )
+{
+  // GDAL accepts the following input format:  GPKG:filename:table
+  // (GDAL won't accept quoted filename)
+
+  QStringList lst = src.split( ':' );
+  if ( lst.count() != 3 && lst.count() != 4 )
+    return false;
+
+  tablename = lst.last();
+  if ( lst.count() == 3 )
+  {
+    filename = lst[1];
+    return true;
+  }
+  else if ( lst.count() == 4 && lst[1].count() == 1 && ( lst[2][0] == '/' || lst[2][0] == '\\' ) )
+  {
+    // a bit of handling to make sure that filename C:\hello.gpkg is parsed correctly
+    filename = lst[1] + ":" + lst[2];
+    return true;
+  }
+  return false;
+}
+
+
+QString QgsGdalProviderMetadata::absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const
+{
+  const QString src = uri;
+  if ( src.startsWith( QLatin1String( "NETCDF:" ) ) )
+  {
+    // NETCDF:filename:variable
+    // filename can be quoted with " as it can contain colons
+    const QRegularExpression netcdfEncodedRegExp( QRegularExpression::anchoredPattern( "NETCDF:(.+):([^:]+)" ) );
+    const QRegularExpressionMatch match = netcdfEncodedRegExp.match( src );
+    if ( match.hasMatch() )
+    {
+      QString filename = match.captured( 1 );
+      if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
+        filename = filename.mid( 1, filename.length() - 2 );
+      return "NETCDF:\"" + context.pathResolver().writePath( filename ) + "\":" + match.captured( 2 );
+    }
+  }
+  else if ( src.startsWith( QLatin1String( "GPKG:" ) ) )
+  {
+    // GPKG:filename:table
+    QString filename, tablename;
+    if ( _parseGpkgColons( src, filename, tablename ) )
+    {
+      filename = context.pathResolver().writePath( filename );
+      return QStringLiteral( "GPKG:%1:%2" ).arg( filename, tablename );
+    }
+  }
+  else if ( src.startsWith( QLatin1String( "HDF4_SDS:" ) ) )
+  {
+    // HDF4_SDS:subdataset_type:file_name:subdataset_index
+    // filename can be quoted with " as it can contain colons
+    const QRegularExpression hdf4EncodedRegExp( QRegularExpression::anchoredPattern( "HDF4_SDS:([^:]+):(.+):([^:]+)" ) );
+    const QRegularExpressionMatch match = hdf4EncodedRegExp.match( src );
+    if ( match.hasMatch() )
+    {
+      QString filename = match.captured( 2 );
+      if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
+        filename = filename.mid( 1, filename.length() - 2 );
+      return "HDF4_SDS:" + match.captured( 1 ) + ":\"" + context.pathResolver().writePath( filename ) + "\":" + match.captured( 3 );
+    }
+  }
+  else if ( src.startsWith( QLatin1String( "HDF5:" ) ) )
+  {
+    // HDF5:file_name:subdataset
+    // filename can be quoted with " as it can contain colons
+    const QRegularExpression hdf5EncodedRegExp( QRegularExpression::anchoredPattern( "HDF5:(.+):([^:]+)" ) );
+    const QRegularExpressionMatch match = hdf5EncodedRegExp.match( src );
+    if ( match.hasMatch() )
+    {
+      QString filename = match.captured( 1 );
+      if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
+        filename = filename.mid( 1, filename.length() - 2 );
+      return "HDF5:\"" + context.pathResolver().writePath( filename ) + "\":" + match.captured( 2 );
+    }
+  }
+  else if ( src.contains( QRegularExpression( "^(NITF_IM|RADARSAT_2_CALIB):" ) ) )
+  {
+    // NITF_IM:0:filename
+    // RADARSAT_2_CALIB:?:filename
+    const QRegularExpression nitfRadarsatEncodedRegExp( QRegularExpression::anchoredPattern( "([^:]+):([^:]+):(.+)" ) );
+    const QRegularExpressionMatch match = nitfRadarsatEncodedRegExp.match( src );
+    if ( match.hasMatch() )
+    {
+      return match.captured( 1 ) + ':' + match.captured( 2 ) + ':' + context.pathResolver().writePath( match.captured( 3 ) );
+    }
+  }
+
+  return context.pathResolver().writePath( src );
+}
+
+QString QgsGdalProviderMetadata::relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const
+{
+  const QString src = uri;
+  if ( src.startsWith( QLatin1String( "NETCDF:" ) ) )
+  {
+    // NETCDF:filename:variable
+    // filename can be quoted with " as it can contain colons
+    const QRegularExpression netcdfDecodedRegExp( QRegularExpression::anchoredPattern( "NETCDF:(.+):([^:]+)" ) );
+    const QRegularExpressionMatch match = netcdfDecodedRegExp.match( src );
+    if ( match.hasMatch() )
+    {
+      QString filename = match.captured( 1 );
+      if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
+        filename = filename.mid( 1, filename.length() - 2 );
+      return "NETCDF:\"" + context.pathResolver().readPath( filename ) + "\":" + match.captured( 2 );
+    }
+  }
+  else if ( src.startsWith( QLatin1String( "GPKG:" ) ) )
+  {
+    // GPKG:filename:table
+    QString filename, tablename;
+    if ( _parseGpkgColons( src, filename, tablename ) )
+    {
+      filename = context.pathResolver().readPath( filename );
+      return QStringLiteral( "GPKG:%1:%2" ).arg( filename, tablename );
+    }
+  }
+  else if ( src.startsWith( QLatin1String( "HDF4_SDS:" ) ) )
+  {
+    // HDF4_SDS:subdataset_type:file_name:subdataset_index
+    // filename can be quoted with " as it can contain colons
+    const QRegularExpression hdf4DecodedRegExp( QRegularExpression::anchoredPattern( "HDF4_SDS:([^:]+):(.+):([^:]+)" ) );
+    const QRegularExpressionMatch match = hdf4DecodedRegExp.match( src );
+    if ( match.hasMatch() )
+    {
+      QString filename = match.captured( 2 );
+      if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
+        filename = filename.mid( 1, filename.length() - 2 );
+      return "HDF4_SDS:" + match.captured( 1 ) + ":\"" + context.pathResolver().readPath( filename ) + "\":" + match.captured( 3 );
+    }
+  }
+  else if ( src.startsWith( QLatin1String( "HDF5:" ) ) )
+  {
+    // HDF5:file_name:subdataset
+    // filename can be quoted with " as it can contain colons
+    const QRegularExpression hdf5DecodedRegExp( QRegularExpression::anchoredPattern( "HDF5:(.+):([^:]+)" ) );
+    const QRegularExpressionMatch match = hdf5DecodedRegExp.match( src );
+    if ( match.hasMatch() )
+    {
+      QString filename = match.captured( 1 );
+      if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
+        filename = filename.mid( 1, filename.length() - 2 );
+      return "HDF5:\"" + context.pathResolver().readPath( filename ) + "\":" + match.captured( 2 );
+    }
+  }
+  else if ( src.contains( QRegularExpression( "^(NITF_IM|RADARSAT_2_CALIB):" ) ) )
+  {
+    // NITF_IM:0:filename
+    // RADARSAT_2_CALIB:?:filename
+    const QRegularExpression niftRadarsatDecodedRegExp( QRegularExpression::anchoredPattern( "([^:]+):([^:]+):(.+)" ) );
+    const QRegularExpressionMatch match = niftRadarsatDecodedRegExp.match( src );
+    if ( match.hasMatch() )
+    {
+      return match.captured( 1 ) + ':' + match.captured( 2 ) + ':' + context.pathResolver().readPath( match.captured( 3 ) );
+    }
+  }
+
+  return context.pathResolver().readPath( src );
+}
+
 bool QgsGdalProviderMetadata::uriIsBlocklisted( const QString &uri ) const
 {
   const QVariantMap parts = decodeUri( uri );

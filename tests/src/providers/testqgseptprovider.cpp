@@ -61,6 +61,7 @@ class TestQgsEptProvider : public QgsTest
     void filters();
     void encodeUri();
     void decodeUri();
+    void absoluteRelativeUri();
     void preferredUri();
     void layerTypesForUri();
     void uriIsBlocklisted();
@@ -129,6 +130,20 @@ void TestQgsEptProvider::decodeUri()
 
   const QVariantMap parts = metadata->decodeUri( QStringLiteral( "/home/point_clouds/ept.json" ) );
   QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QStringLiteral( "/home/point_clouds/ept.json" ) );
+}
+
+void TestQgsEptProvider::absoluteRelativeUri()
+{
+  QgsReadWriteContext context;
+  context.setPathResolver( QgsPathResolver( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/project.qgs" ) ) );
+
+  QgsProviderMetadata *eptMetadata = QgsProviderRegistry::instance()->providerMetadata( "ept" );
+  QVERIFY( eptMetadata );
+
+  QString absoluteUri = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/point_clouds/ept/rgb.json" );
+  QString relativeUri = QStringLiteral( "./point_clouds/ept/rgb.json" );
+  QCOMPARE( eptMetadata->absoluteToRelativeUri( absoluteUri, context ), relativeUri );
+  QCOMPARE( eptMetadata->relativeToAbsoluteUri( relativeUri, context ), absoluteUri );
 }
 
 void TestQgsEptProvider::preferredUri()

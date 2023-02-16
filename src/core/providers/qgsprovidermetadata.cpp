@@ -187,6 +187,16 @@ QString QgsProviderMetadata::encodeUri( const QVariantMap & ) const
   return QString();
 }
 
+QString QgsProviderMetadata::absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const
+{
+  return context.pathResolver().writePath( uri );
+}
+
+QString QgsProviderMetadata::relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const
+{
+  return context.pathResolver().readPath( uri );
+}
+
 Qgis::VectorExportResult QgsProviderMetadata::createEmptyLayer(
   const QString &, const QgsFields &,
   QgsWkbTypes::Type, const QgsCoordinateReferenceSystem &,

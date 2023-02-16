@@ -66,6 +66,7 @@ class TestQgsCopcProvider : public QgsTest
     void filters();
     void encodeUri();
     void decodeUri();
+    void absoluteRelativeUri();
     void preferredUri();
     void layerTypesForUri();
     void uriIsBlocklisted();
@@ -136,6 +137,20 @@ void TestQgsCopcProvider::decodeUri()
 
   const QVariantMap parts = metadata->decodeUri( QStringLiteral( "/home/point_clouds/dataset.copc.laz" ) );
   QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QStringLiteral( "/home/point_clouds/dataset.copc.laz" ) );
+}
+
+void TestQgsCopcProvider::absoluteRelativeUri()
+{
+  QgsReadWriteContext context;
+  context.setPathResolver( QgsPathResolver( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/project.qgs" ) ) );
+
+  QgsProviderMetadata *copcMetadata = QgsProviderRegistry::instance()->providerMetadata( "copc" );
+  QVERIFY( copcMetadata );
+
+  QString absoluteUri = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/point_clouds/copc/rgb.copc.laz" );
+  QString relativeUri = QStringLiteral( "./point_clouds/copc/rgb.copc.laz" );
+  QCOMPARE( copcMetadata->absoluteToRelativeUri( absoluteUri, context ), relativeUri );
+  QCOMPARE( copcMetadata->relativeToAbsoluteUri( relativeUri, context ), absoluteUri );
 }
 
 void TestQgsCopcProvider::preferredUri()

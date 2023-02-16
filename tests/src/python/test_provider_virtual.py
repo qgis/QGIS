@@ -19,7 +19,10 @@ from qgis.core import (
     QgsFeatureRequest,
     QgsField,
     QgsGeometry,
+    QgsPathResolver,
     QgsProject,
+    QgsProviderRegistry,
+    QgsReadWriteContext,
     QgsRectangle,
     QgsVectorFileWriter,
     QgsVectorLayer,
@@ -874,6 +877,25 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         QgsProject.instance().setFileName(temp)
         QgsProject.instance().read()
         self.assertEqual(len(QgsProject.instance().mapLayers()), 2)
+
+    def test_absolute_relative_uri(self):
+        context = QgsReadWriteContext()
+        context.setPathResolver(QgsPathResolver(os.path.join(self.testDataDir, "project.qgs")))
+
+        df_abs = QgsVirtualLayerDefinition()
+        df_abs.addSource("vtab", os.path.join(self.testDataDir, "france_parts.shp"), "ogr")
+
+        df_rel = QgsVirtualLayerDefinition()
+        df_rel.addSource("vtab", "./france_parts.shp", "ogr")
+
+        absolute_uri = df_abs.toString()
+        relative_uri = df_rel.toString()
+
+        meta = QgsProviderRegistry.instance().providerMetadata("virtual")
+        assert meta is not None
+
+        self.assertEqual(meta.absoluteToRelativeUri(absolute_uri, context), relative_uri)
+        self.assertEqual(meta.relativeToAbsoluteUri(relative_uri, context), absolute_uri)
 
     def test_qgisExpressionFunctions(self):
         QgsProject.instance().setTitle('project')
