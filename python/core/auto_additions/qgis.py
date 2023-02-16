@@ -1072,6 +1072,13 @@ Qgis.SublayerPromptMode.NeverAskLoadAll.__doc__ = "Never ask users to select sub
 Qgis.SublayerPromptMode.__doc__ = 'Specifies how to handle layer sources with multiple sublayers.\n\n.. versionadded:: 3.22\n\n' + '* ``AlwaysAsk``: ' + Qgis.SublayerPromptMode.AlwaysAsk.__doc__ + '\n' + '* ``AskExcludingRasterBands``: ' + Qgis.SublayerPromptMode.AskExcludingRasterBands.__doc__ + '\n' + '* ``NeverAskSkip``: ' + Qgis.SublayerPromptMode.NeverAskSkip.__doc__ + '\n' + '* ``NeverAskLoadAll``: ' + Qgis.SublayerPromptMode.NeverAskLoadAll.__doc__
 # --
 Qgis.SublayerPromptMode.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.FieldMetadataProperty.GeometryCrs.__doc__ = "Available for geometry field types with a specific associated coordinate reference system (as a QgsCoordinateReferenceSystem value)"
+Qgis.FieldMetadataProperty.GeometryWkbType.__doc__ = "Available for geometry field types which accept geometries of a specific WKB type only (as a QgsWkbTypes.Type value)"
+Qgis.FieldMetadataProperty.CustomProperty.__doc__ = "Starting point for custom user set properties"
+Qgis.FieldMetadataProperty.__doc__ = 'Standard field metadata values.\n\n.. versionadded:: 3.30\n\n' + '* ``GeometryCrs``: ' + Qgis.FieldMetadataProperty.GeometryCrs.__doc__ + '\n' + '* ``GeometryWkbType``: ' + Qgis.FieldMetadataProperty.GeometryWkbType.__doc__ + '\n' + '* ``CustomProperty``: ' + Qgis.FieldMetadataProperty.CustomProperty.__doc__
+# --
+Qgis.FieldMetadataProperty.baseClass = Qgis
 QgsVectorLayer.SelectBehavior = Qgis.SelectBehavior
 # monkey patching scoped based enum
 QgsVectorLayer.SetSelection = Qgis.SelectBehavior.SetSelection

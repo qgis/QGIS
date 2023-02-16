@@ -623,6 +623,13 @@ The development version
       NeverAskLoadAll,
     };
 
+    enum class FieldMetadataProperty
+    {
+      GeometryCrs,
+      GeometryWkbType,
+      CustomProperty,
+    };
+
     enum class SelectBehavior
       {
       SetSelection,

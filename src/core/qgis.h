@@ -1001,6 +1001,19 @@ class CORE_EXPORT Qgis
     Q_ENUM( SublayerPromptMode )
 
     /**
+     * Standard field metadata values.
+     *
+     * \since QGIS 3.30
+     */
+    enum class FieldMetadataProperty : int
+    {
+      GeometryCrs = 0x1000, //!< Available for geometry field types with a specific associated coordinate reference system (as a QgsCoordinateReferenceSystem value)
+      GeometryWkbType = 0x1001, //!< Available for geometry field types which accept geometries of a specific WKB type only (as a QgsWkbTypes::Type value)
+      CustomProperty = 0x100000, //!< Starting point for custom user set properties
+    };
+    Q_ENUM( FieldMetadataProperty )
+
+    /**
      * Specifies how a selection should be applied.
      *
      * \since QGIS 3.22
