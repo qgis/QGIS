@@ -1138,40 +1138,43 @@ void QgsAttributeForm::updateContainersVisibility()
     info->apply( &context );
   }
 
-  //and update the constraints
-  updateAllConstraints();
+  // Update the constraints if not in multi edit, because
+  // when mode changes to multi edit, constraints have been already
+  // updated and a further update will use current form feature values,
+  // possibly empty for mixed values, leading to false positive
+  // constraints violations.
+  if ( mMode != QgsAttributeEditorContext::Mode::MultiEditMode )
+  {
+    updateAllConstraints();
+  }
 }
 
 void QgsAttributeForm::updateConstraint( const QgsFeature &ft, QgsEditorWidgetWrapper *eww )
 {
 
-  if ( mContext.attributeFormMode() != QgsAttributeEditorContext::Mode::MultiEditMode )
+  QgsFieldConstraints::ConstraintOrigin constraintOrigin = mLayer->isEditable() ? QgsFieldConstraints::ConstraintOriginNotSet : QgsFieldConstraints::ConstraintOriginLayer;
+
+  if ( eww->layer()->fields().fieldOrigin( eww->fieldIdx() ) == QgsFields::OriginJoin )
   {
+    int srcFieldIdx;
+    const QgsVectorLayerJoinInfo *info = eww->layer()->joinBuffer()->joinForFieldIndex( eww->fieldIdx(), eww->layer()->fields(), srcFieldIdx );
 
-    QgsFieldConstraints::ConstraintOrigin constraintOrigin = mLayer->isEditable() ? QgsFieldConstraints::ConstraintOriginNotSet : QgsFieldConstraints::ConstraintOriginLayer;
-
-    if ( eww->layer()->fields().fieldOrigin( eww->fieldIdx() ) == QgsFields::OriginJoin )
+    if ( info && info->joinLayer() && info->isDynamicFormEnabled() )
     {
-      int srcFieldIdx;
-      const QgsVectorLayerJoinInfo *info = eww->layer()->joinBuffer()->joinForFieldIndex( eww->fieldIdx(), eww->layer()->fields(), srcFieldIdx );
-
-      if ( info && info->joinLayer() && info->isDynamicFormEnabled() )
+      if ( mJoinedFeatures.contains( info ) )
       {
-        if ( mJoinedFeatures.contains( info ) )
-        {
-          eww->updateConstraint( info->joinLayer(), srcFieldIdx, mJoinedFeatures[info], constraintOrigin );
-          return;
-        }
-        else // if we are here, it means there's not joined field for this feature
-        {
-          eww->updateConstraint( QgsFeature() );
-          return;
-        }
+        eww->updateConstraint( info->joinLayer(), srcFieldIdx, mJoinedFeatures[info], constraintOrigin );
+        return;
+      }
+      else // if we are here, it means there's not joined field for this feature
+      {
+        eww->updateConstraint( QgsFeature() );
+        return;
       }
     }
-    // default constraint update
-    eww->updateConstraint( ft, constraintOrigin );
   }
+  // default constraint update
+  eww->updateConstraint( ft, constraintOrigin );
 
 }
 
@@ -1535,29 +1538,42 @@ void QgsAttributeForm::synchronizeState()
 
   if ( mMode != QgsAttributeEditorContext::SearchMode )
   {
-    QStringList invalidFields, descriptions;
-    mValidConstraints = currentFormValidHardConstraints( invalidFields, descriptions );
-
-    if ( isEditable && mContext.formMode() == QgsAttributeEditorContext::Embed )
+    if ( mMode == QgsAttributeEditorContext::Mode::MultiEditMode && mLayer->selectedFeatureCount() == 0 )
     {
-      if ( !mValidConstraints && !mConstraintsFailMessageBarItem )
+      isEditable = false;
+      if ( mConstraintsFailMessageBarItem )
       {
-        mConstraintsFailMessageBarItem = new QgsMessageBarItem( tr( "Changes to this form will not be saved. %n field(s) don't meet their constraints.", "invalid fields", invalidFields.size() ), Qgis::MessageLevel::Warning, -1 );
-        mMessageBar->pushItem( mConstraintsFailMessageBarItem );
+        mMessageBar->popWidget( mConstraintsFailMessageBarItem );
       }
-      else if ( mValidConstraints && mConstraintsFailMessageBarItem )
+      mConstraintsFailMessageBarItem = new QgsMessageBarItem( tr( "Multi edit mode requires at least one selected feature." ), Qgis::MessageLevel::Info, -1 );
+      mMessageBar->pushItem( mConstraintsFailMessageBarItem );
+    }
+    else
+    {
+      QStringList invalidFields, descriptions;
+      mValidConstraints = currentFormValidHardConstraints( invalidFields, descriptions );
+
+      if ( isEditable && mContext.formMode() == QgsAttributeEditorContext::Embed )
+      {
+        if ( !mValidConstraints && !mConstraintsFailMessageBarItem )
+        {
+          mConstraintsFailMessageBarItem = new QgsMessageBarItem( tr( "Changes to this form will not be saved. %n field(s) don't meet their constraints.", "invalid fields", invalidFields.size() ), Qgis::MessageLevel::Warning, -1 );
+          mMessageBar->pushItem( mConstraintsFailMessageBarItem );
+        }
+        else if ( mValidConstraints && mConstraintsFailMessageBarItem )
+        {
+          mMessageBar->popWidget( mConstraintsFailMessageBarItem );
+          mConstraintsFailMessageBarItem = nullptr;
+        }
+      }
+      else if ( mConstraintsFailMessageBarItem )
       {
         mMessageBar->popWidget( mConstraintsFailMessageBarItem );
         mConstraintsFailMessageBarItem = nullptr;
       }
-    }
-    else if ( mConstraintsFailMessageBarItem )
-    {
-      mMessageBar->popWidget( mConstraintsFailMessageBarItem );
-      mConstraintsFailMessageBarItem = nullptr;
-    }
 
-    isEditable = isEditable & mValidConstraints;
+      isEditable = isEditable & mValidConstraints;
+    }
   }
 
   // change OK button status
@@ -2770,6 +2786,13 @@ void QgsAttributeForm::setMultiEditFeatureIds( const QgsFeatureIds &fids )
   fit = mLayer->getFeatures( QgsFeatureRequest().setFilterFid( *fids.constBegin() ) );
   QgsFeature firstFeature;
   fit.nextFeature( firstFeature );
+
+  // Make this feature the current form feature or the constraints will be evaluated
+  // on a possibly wrong previously selected/current feature
+  if ( mCurrentFormFeature.id() != firstFeature.id( ) )
+  {
+    setFeature( firstFeature );
+  }
 
   const auto constMixedValueFields = mixedValueFields;
   for ( int fieldIndex : std::as_const( mixedValueFields ) )
