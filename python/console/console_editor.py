@@ -18,70 +18,39 @@ email                : lrssvtml (at) gmail (dot) com
  ***************************************************************************/
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
-from qgis.PyQt.QtCore import Qt, QObject, QEvent, QCoreApplication, QFileInfo, QSize, QDir, QByteArray, QJsonDocument, QUrl
-from qgis.PyQt.QtGui import QFont, QColor, QKeySequence
-from qgis.PyQt.QtNetwork import QNetworkRequest
-from qgis.PyQt.QtWidgets import QShortcut, QMenu, QApplication, QWidget, QGridLayout, QSpacerItem, QSizePolicy, QFileDialog, QTabWidget, QTreeWidgetItem, QFrame, QLabel, QToolButton, QMessageBox
-from qgis.PyQt.Qsci import QsciScintilla, QsciStyle
-from qgis.core import (
-    Qgis,
-    QgsApplication,
-    QgsSettings,
-    QgsBlockingNetworkRequest,
-    QgsFileUtils
-)
-from qgis.gui import QgsMessageBar, QgsCodeEditorPython
-from qgis.utils import OverrideCursor
-import sys
-import os
-import subprocess
-import datetime
-import pyclbr
-from operator import itemgetter
-import traceback
+
 import codecs
-import re
 import importlib
+import os
+import pyclbr
+import re
+import sys
 from functools import partial
+from operator import itemgetter
 
-
-class KeyFilter(QObject):
-    SHORTCUTS = {
-        ("Control", "T"): lambda w, t: w.newTabEditor(),
-        ("Control", "M"): lambda w, t: t.save(),
-        ("Control", "W"): lambda w, t: t.close()
-    }
-
-    def __init__(self, window, tab, *args):
-        QObject.__init__(self, *args)
-        self.window = window
-        self.tab = tab
-        self._handlers = {}
-        for shortcut, handler in list(KeyFilter.SHORTCUTS.items()):
-            modifiers = shortcut[0]
-            if not isinstance(modifiers, list):
-                modifiers = [modifiers]
-            qt_mod_code = Qt.NoModifier
-            for each in modifiers:
-                qt_mod_code |= getattr(Qt, each + "Modifier")
-            qt_keycode = getattr(Qt, "Key_" + shortcut[1].upper())
-            handlers = self._handlers.get(qt_keycode, [])
-            handlers.append((qt_mod_code, handler))
-            self._handlers[qt_keycode] = handlers
-
-    def get_handler(self, key, modifier):
-        if self.window.count() > 1:
-            for modifiers, handler in self._handlers.get(key, []):
-                if modifiers == modifier:
-                    return handler
-        return None
-
-    def eventFilter(self, obj, event):
-        if event.type() == QEvent.KeyPress and event.key() < 256:
-            handler = self.get_handler(event.key(), event.modifiers())
-            if handler:
-                handler(self.window, self.tab)
-        return QObject.eventFilter(self, obj, event)
+from qgis.core import Qgis, QgsApplication, QgsBlockingNetworkRequest, QgsFileUtils, QgsSettings
+from qgis.gui import QgsCodeEditorPython, QgsMessageBar
+from qgis.PyQt.Qsci import QsciScintilla
+from qgis.PyQt.QtCore import QByteArray, QCoreApplication, QDir, QFileInfo, QJsonDocument, QSize, Qt, QUrl
+from qgis.PyQt.QtGui import QKeySequence
+from qgis.PyQt.QtNetwork import QNetworkRequest
+from qgis.PyQt.QtWidgets import (
+    QApplication,
+    QFileDialog,
+    QFrame,
+    QGridLayout,
+    QLabel,
+    QMenu,
+    QMessageBox,
+    QShortcut,
+    QSizePolicy,
+    QSpacerItem,
+    QTabWidget,
+    QToolButton,
+    QTreeWidgetItem,
+    QWidget,
+)
+from qgis.utils import OverrideCursor
 
 
 class Editor(QgsCodeEditorPython):
@@ -91,8 +60,6 @@ class Editor(QgsCodeEditorPython):
         self.parent = parent
         #  recent modification time
         self.lastModified = 0
-        self.opening = ['(', '{', '[', "'", '"']
-        self.closing = [')', '}', ']', "'", '"']
         self.settings = QgsSettings()
 
         self.setMinimumHeight(120)
@@ -339,64 +306,6 @@ class Editor(QgsCodeEditorPython):
         os.rename(path, tmpFileName)
         return tmpFileName
 
-    def _runSubProcess(self, filename, tmp=False):
-        dir = QFileInfo(filename).path()
-        file = QFileInfo(filename).fileName()
-        name = QFileInfo(filename).baseName()
-        if dir not in sys.path:
-            sys.path.append(dir)
-        if name in sys.modules:
-            importlib.reload(sys.modules[name])  # NOQA
-        try:
-            # set creationflags for running command without shell window
-            if sys.platform.startswith('win'):
-                p = subprocess.Popen(['python3', filename], shell=False, stdin=subprocess.PIPE,
-                                     stderr=subprocess.PIPE, stdout=subprocess.PIPE, creationflags=0x08000000)
-            else:
-                p = subprocess.Popen(['python3', filename], shell=False, stdin=subprocess.PIPE,
-                                     stderr=subprocess.PIPE, stdout=subprocess.PIPE)
-            out, _traceback = p.communicate()
-
-            # Fix interrupted system call on OSX
-            if sys.platform == 'darwin':
-                status = None
-                while status is None:
-                    try:
-                        status = p.wait()
-                    except OSError as e:
-                        if e.errno == 4:
-                            pass
-                        else:
-                            raise e
-            if tmp:
-                tmpFileTr = QCoreApplication.translate('PythonConsole', ' [Temporary file saved in {0}]').format(dir)
-                file = file + tmpFileTr
-            if _traceback:
-                msgTraceTr = QCoreApplication.translate('PythonConsole', '## Script error: {0}').format(file)
-                print("## {}".format(datetime.datetime.now()))
-                print(msgTraceTr)
-                sys.stderr.write(_traceback)
-                p.stderr.close()
-            else:
-                msgSuccessTr = QCoreApplication.translate('PythonConsole',
-                                                          '## Script executed successfully: {0}').format(file)
-                print("## {}".format(datetime.datetime.now()))
-                print(msgSuccessTr)
-                sys.stdout.write(out)
-                p.stdout.close()
-            del p
-            if tmp:
-                os.remove(filename)
-        except IOError as error:
-            IOErrorTr = QCoreApplication.translate('PythonConsole',
-                                                   'Cannot execute file {0}. Error: {1}\n').format(filename,
-                                                                                                   error.strerror)
-            print('## Error: ' + IOErrorTr)
-        except:
-            s = traceback.format_exc()
-            print('## Error: ')
-            sys.stderr.write(s)
-
     def runScriptCode(self):
         autoSave = self.settings.value("pythonConsole/autoSaveScript", False, type=bool)
         tabWidget = self.parent.tw.currentWidget()
@@ -443,25 +352,15 @@ class Editor(QgsCodeEditorPython):
         self.setFocus()
 
     def syntaxCheck(self):
-        source = self.text()
         self.clearWarnings()
+        source = self.text().encode("utf-8")
         try:
-            filename = self.parent.tw.currentWidget().path
-            if not filename:
-                tmpFile = self.createTempFile()
-                filename = tmpFile
-            if isinstance(source, type("")):
-                source = source.encode('utf-8')
-            if isinstance(filename, type("")):
-                filename = filename.encode('utf-8')
-            if filename:
-                compile(source, filename, 'exec')
+            compile(source, "", "exec")
         except SyntaxError as detail:
-            eline = detail.lineno and detail.lineno or 1
+            eline = detail.lineno or 1
             eline -= 1
-            ecolumn = detail.offset and detail.offset or 1
+            ecolumn = detail.offset or 1
             edescr = detail.msg
-
             self.addWarning(eline, edescr)
             self.setCursorPosition(eline, ecolumn - 1)
             self.ensureLineVisible(eline)
@@ -533,9 +432,6 @@ class EditorTab(QWidget):
         self.tabLayout = QGridLayout(self)
         self.tabLayout.setContentsMargins(0, 0, 0, 0)
         self.tabLayout.addWidget(self.newEditor)
-
-        self.keyFilter = KeyFilter(parent, self)
-        self.setEventFilter(self.keyFilter)
 
     def loadFile(self, filename, modified):
         self.newEditor.lastModified = QFileInfo(filename).lastModified()
