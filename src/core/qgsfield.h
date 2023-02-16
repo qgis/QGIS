@@ -22,6 +22,7 @@
 #include <QSharedDataPointer>
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgis.h"
 
 typedef QList<int> QgsAttributeList SIP_SKIP;
 
@@ -215,6 +216,42 @@ class CORE_EXPORT QgsField
      * Returns the field comment
      */
     QString comment() const;
+
+    /**
+     * Returns the map of field metadata.
+     *
+     * Map keys should match values from the Qgis::FieldMetadataProperty enum.
+     *
+     * \see setMetadata()
+     * \since QGIS 3.30
+     */
+    QMap< int, QVariant > metadata() const;
+
+    /**
+     * Returns a specific metadata \a property.
+     *
+     * \see setMetadata()
+     * \since QGIS 3.30
+     */
+    QVariant metadata( Qgis::FieldMetadataProperty property ) const;
+
+    /**
+     * Sets the map of field \a metadata.
+     *
+     * Map keys should match values from the Qgis::FieldMetadataProperty enum.
+     *
+     * \see metadata()
+     * \since QGIS 3.30
+     */
+    void setMetadata( const QMap< int, QVariant > metadata );
+
+    /**
+     * Sets a metadata \a property to \a value.
+     *
+     * \see metadata()
+     * \since QGIS 3.30
+     */
+    void setMetadata( Qgis::FieldMetadataProperty property, const QVariant &value );
 
     /**
      * Returns if this field is numeric. Any integer or floating point type

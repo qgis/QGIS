@@ -175,6 +175,46 @@ Gets the precision of the field. Not all field types have a related precision.
 Returns the field comment
 %End
 
+    QMap< int, QVariant > metadata() const;
+%Docstring
+Returns the map of field metadata.
+
+Map keys should match values from the Qgis.FieldMetadataProperty enum.
+
+.. seealso:: :py:func:`setMetadata`
+
+.. versionadded:: 3.30
+%End
+
+    QVariant metadata( Qgis::FieldMetadataProperty property ) const;
+%Docstring
+Returns a specific metadata ``property``.
+
+.. seealso:: :py:func:`setMetadata`
+
+.. versionadded:: 3.30
+%End
+
+    void setMetadata( const QMap< int, QVariant > metadata );
+%Docstring
+Sets the map of field ``metadata``.
+
+Map keys should match values from the Qgis.FieldMetadataProperty enum.
+
+.. seealso:: :py:func:`metadata`
+
+.. versionadded:: 3.30
+%End
+
+    void setMetadata( Qgis::FieldMetadataProperty property, const QVariant &value );
+%Docstring
+Sets a metadata ``property`` to ``value``.
+
+.. seealso:: :py:func:`metadata`
+
+.. versionadded:: 3.30
+%End
+
     bool isNumeric() const;
 %Docstring
 Returns if this field is numeric. Any integer or floating point type
