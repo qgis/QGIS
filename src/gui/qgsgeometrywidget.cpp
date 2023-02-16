@@ -17,6 +17,7 @@
 #include "qgsapplication.h"
 #include "qgsgeometry.h"
 #include "qgsjsonutils.h"
+#include "qgsguiutils.h"
 #include <QLineEdit>
 #include <QHBoxLayout>
 #include <QToolButton>
@@ -27,26 +28,31 @@
 QgsGeometryWidget::QgsGeometryWidget( QWidget *parent )
   : QWidget( parent )
 {
-  QHBoxLayout *layout = new QHBoxLayout( this );
+  QHBoxLayout *layout = new QHBoxLayout();
   layout->setContentsMargins( 0, 0, 0, 0 );
-  layout->setSpacing( 0 );
 
-  mLineEdit = new QLineEdit( this );
+  mLineEdit = new QLineEdit();
   mLineEdit->setReadOnly( true );
   mLineEdit->setStyleSheet( QStringLiteral( "font-style: italic; color: grey;" ) );
   mLineEdit->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum );
-  int width = mLineEdit->minimumSizeHint().width();
-  mLineEdit->setMinimumWidth( width );
 
-  mButton = new QToolButton( this );
-  mButton->setFixedSize( 30, 26 );
+  mButton = new QToolButton();
+  //mButton->setFixedSize( mLineEdit->height(), mLineEdit->height() );
   mButton->setStyleSheet( QStringLiteral( "QToolButton{ background: none; border: 1px solid rgba(0, 0, 0, 0%);} QToolButton:focus { border: 1px solid palette(highlight); }" ) );
-  mButton->setIconSize( QSize( 24, 24 ) );
+  const int iconSize = QgsGuiUtils::scaleIconSize( 24 );
+  mButton->setIconSize( QSize( iconSize, iconSize ) );
+  // button width is 1.25 * icon size, height 1.1 * icon size. But we round to ensure even pixel sizes for equal margins
+  mButton->setFixedSize( 2 * static_cast< int >( 1.25 * iconSize / 2.0 ), 2 * static_cast< int >( iconSize * 1.1 / 2.0 ) );
+
   mButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
   mButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOffsetCurve.svg" ) ) );
 
-  layout->addWidget( mLineEdit );
+  layout->addWidget( mLineEdit, 1 );
   layout->addWidget( mButton );
+
+  setLayout( layout );
+
+  setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Minimum );
 
   setFocusProxy( mLineEdit );
 
