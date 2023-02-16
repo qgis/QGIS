@@ -235,15 +235,20 @@ void QgsGeometryWidget::updateLineEdit()
   }
   else
   {
-    const QString geomTypeString = QgsWkbTypes::displayString( mGeometry.wkbType() );
+    QString wkt = mGeometry.asWkt();
+    if ( wkt.length() >= 1050 )
+    {
+      wkt = wkt.left( 999 ) + QChar( 0x2026 );
+    }
+
     if ( mGeometry.crs().isValid() )
     {
-      mLineEdit->setText( QStringLiteral( "%1 [%2]" ).arg( geomTypeString,
+      mLineEdit->setText( QStringLiteral( "%1 [%2]" ).arg( wkt,
                           mGeometry.crs().userFriendlyIdentifier( ) ) );
     }
     else
     {
-      mLineEdit->setText( geomTypeString );
+      mLineEdit->setText( wkt );
     }
   }
 }
