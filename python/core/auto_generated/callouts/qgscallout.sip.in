@@ -547,7 +547,7 @@ Sets the minimum ``length`` of callout lines. Units are specified through :py:fu
 .. seealso:: :py:func:`setMinimumLengthUnit`
 %End
 
-    void setMinimumLengthUnit( QgsUnitTypes::RenderUnit unit );
+    void setMinimumLengthUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the ``unit`` for the minimum length of callout lines.
 
@@ -556,7 +556,7 @@ Sets the ``unit`` for the minimum length of callout lines.
 .. seealso:: :py:func:`setMinimumLength`
 %End
 
-    QgsUnitTypes::RenderUnit minimumLengthUnit() const;
+    Qgis::RenderUnit minimumLengthUnit() const;
 %Docstring
 Returns the units for the minimum length of callout lines.
 
@@ -606,7 +606,7 @@ Sets the offset ``distance`` from the anchor point at which to start the line. U
 .. seealso:: :py:func:`setOffsetFromAnchorUnit`
 %End
 
-    void setOffsetFromAnchorUnit( QgsUnitTypes::RenderUnit unit );
+    void setOffsetFromAnchorUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the ``unit`` for the offset from anchor distance.
 
@@ -615,7 +615,7 @@ Sets the ``unit`` for the offset from anchor distance.
 .. seealso:: :py:func:`setOffsetFromAnchor`
 %End
 
-    QgsUnitTypes::RenderUnit offsetFromAnchorUnit() const;
+    Qgis::RenderUnit offsetFromAnchorUnit() const;
 %Docstring
 Returns the units for the offset from anchor point.
 
@@ -664,7 +664,7 @@ Sets the offset ``distance`` from label area at which to end the line. Units are
 .. seealso:: :py:func:`setOffsetFromLabelUnit`
 %End
 
-    void setOffsetFromLabelUnit( QgsUnitTypes::RenderUnit unit );
+    void setOffsetFromLabelUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the ``unit`` for the offset from label area distance.
 
@@ -673,7 +673,7 @@ Sets the ``unit`` for the offset from label area distance.
 .. seealso:: :py:func:`setOffsetFromLabel`
 %End
 
-    QgsUnitTypes::RenderUnit offsetFromLabelUnit() const;
+    Qgis::RenderUnit offsetFromLabelUnit() const;
 %Docstring
 Returns the units for the offset from label area.
 
@@ -928,7 +928,7 @@ Sets the offset ``distance`` from the anchor point at which to start the line. U
 .. seealso:: :py:func:`setOffsetFromAnchorUnit`
 %End
 
-    void setOffsetFromAnchorUnit( QgsUnitTypes::RenderUnit unit );
+    void setOffsetFromAnchorUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the ``unit`` for the offset from anchor distance.
 
@@ -937,7 +937,7 @@ Sets the ``unit`` for the offset from anchor distance.
 .. seealso:: :py:func:`setOffsetFromAnchor`
 %End
 
-    QgsUnitTypes::RenderUnit offsetFromAnchorUnit() const;
+    Qgis::RenderUnit offsetFromAnchorUnit() const;
 %Docstring
 Returns the units for the offset from anchor point.
 
@@ -998,7 +998,7 @@ Units are set via :py:func:`~QgsBalloonCallout.setMarginsUnit`
 .. seealso:: :py:func:`setMarginsUnit`
 %End
 
-    void setMarginsUnit( QgsUnitTypes::RenderUnit unit );
+    void setMarginsUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the ``unit`` for the margins between the outside of the callout frame and the label's bounding rectangle.
 
@@ -1007,7 +1007,7 @@ Sets the ``unit`` for the margins between the outside of the callout frame and t
 .. seealso:: :py:func:`marginsUnit`
 %End
 
-    QgsUnitTypes::RenderUnit marginsUnit() const;
+    Qgis::RenderUnit marginsUnit() const;
 %Docstring
 Returns the units for the margins between the outside of the callout frame and the label's bounding rectangle.
 
@@ -1038,7 +1038,7 @@ Units are specified through :py:func:`~QgsBalloonCallout.setWedgeWidthUnit`.
 .. seealso:: :py:func:`setWedgeWidthUnit`
 %End
 
-    void setWedgeWidthUnit( QgsUnitTypes::RenderUnit unit );
+    void setWedgeWidthUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the ``unit`` for the wedge width.
 
@@ -1047,7 +1047,7 @@ Sets the ``unit`` for the wedge width.
 .. seealso:: :py:func:`setWedgeWidth`
 %End
 
-    QgsUnitTypes::RenderUnit wedgeWidthUnit() const;
+    Qgis::RenderUnit wedgeWidthUnit() const;
 %Docstring
 Returns the units for the wedge width.
 
@@ -1100,7 +1100,7 @@ Units are specified through :py:func:`~QgsBalloonCallout.setCornerRadiusUnit`.
 .. seealso:: :py:func:`setCornerRadiusUnit`
 %End
 
-    void setCornerRadiusUnit( QgsUnitTypes::RenderUnit unit );
+    void setCornerRadiusUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the ``unit`` for the corner radius.
 
@@ -1109,7 +1109,7 @@ Sets the ``unit`` for the corner radius.
 .. seealso:: :py:func:`setCornerRadius`
 %End
 
-    QgsUnitTypes::RenderUnit cornerRadiusUnit() const;
+    Qgis::RenderUnit cornerRadiusUnit() const;
 %Docstring
 Returns the units for the corner radius.
 

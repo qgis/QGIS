@@ -1642,6 +1642,134 @@ The development version
       Xor,
     };
 
+    enum class SystemOfMeasurement
+      {
+      Unknown,
+      Metric,
+      Imperial,
+      USCS,
+    };
+
+    enum class UnitType
+      {
+      Distance,
+      Area,
+      Volume,
+      Unknown,
+      Temporal,
+    };
+
+    enum class DistanceUnit
+      {
+      Meters,
+      Kilometers,
+      Feet,
+      NauticalMiles,
+      Yards,
+      Miles,
+      Degrees,
+      Centimeters,
+      Millimeters,
+      Unknown,
+    };
+
+    enum class DistanceUnitType
+      {
+      Standard,
+      Geographic,
+      Unknown,
+    };
+
+    enum class AreaUnit
+      {
+      SquareMeters,
+      SquareKilometers,
+      SquareFeet,
+      SquareYards,
+      SquareMiles,
+      Hectares,
+      Acres,
+      SquareNauticalMiles,
+      SquareDegrees,
+      SquareCentimeters,
+      SquareMillimeters,
+      Unknown,
+    };
+
+    enum class VolumeUnit
+      {
+      CubicMeters,
+      CubicFeet,
+      CubicYards,
+      Barrel,
+      CubicDecimeter,
+      Liters,
+      GallonUS,
+      CubicInch,
+      CubicCentimeter,
+      CubicDegrees,
+      Unknown,
+    };
+
+    enum class AngleUnit
+      {
+      Degrees,
+      Radians,
+      Gon,
+      MinutesOfArc,
+      SecondsOfArc,
+      Turn,
+      MilliradiansSI,
+      MilNATO,
+      Unknown,
+    };
+
+    enum class TemporalUnit
+      {
+      Milliseconds,
+      Seconds,
+      Minutes,
+      Hours,
+      Days,
+      Weeks,
+      Months,
+      Years,
+      Decades,
+      Centuries,
+      IrregularStep,
+      Unknown
+    };
+
+    enum class RenderUnit
+      {
+      Millimeters,
+      MapUnits,
+      Pixels,
+      Percentage,
+      Points,
+      Inches,
+      Unknown,
+      MetersInMapUnits,
+    };
+
+    enum class LayoutUnit
+      {
+      Millimeters,
+      Centimeters,
+      Meters,
+      Inches,
+      Feet,
+      Points,
+      Picas,
+      Pixels
+    };
+
+    enum class LayoutUnitType
+      {
+      PaperUnits,
+      ScreenUnits
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;

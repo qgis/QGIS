@@ -26,7 +26,7 @@
 #include "qgsproject.h"
 #include "qgssnappingconfig.h"
 #include "qgsvectorlayer.h"
-#include "qgsapplication.h"
+#include "qgsunittypes.h"
 #include "qgsscalewidget.h"
 
 QgsSnappingLayerDelegate::QgsSnappingLayerDelegate( QgsMapCanvas *canvas, QObject *parent )
@@ -77,8 +77,8 @@ QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOp
       }
       else
       {
-        const QgsUnitTypes::DistanceUnitType type = QgsUnitTypes::unitType( mCanvas->mapUnits() );
-        w->setDecimals( type == QgsUnitTypes::Standard ? 2 : 5 );
+        const Qgis::DistanceUnitType type = QgsUnitTypes::unitType( mCanvas->mapUnits() );
+        w->setDecimals( type == Qgis::DistanceUnitType::Standard ? 2 : 5 );
       }
     }
     else

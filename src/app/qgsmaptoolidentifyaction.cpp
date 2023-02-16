@@ -233,12 +233,12 @@ void QgsMapToolIdentifyAction::showResultsForFeature( QgsVectorLayer *vlayer, Qg
   resultsDialog()->updateViewModes();
 }
 
-QgsUnitTypes::DistanceUnit QgsMapToolIdentifyAction::displayDistanceUnits() const
+Qgis::DistanceUnit QgsMapToolIdentifyAction::displayDistanceUnits() const
 {
   return QgsProject::instance()->distanceUnits();
 }
 
-QgsUnitTypes::AreaUnit QgsMapToolIdentifyAction::displayAreaUnits() const
+Qgis::AreaUnit QgsMapToolIdentifyAction::displayAreaUnits() const
 {
   return QgsProject::instance()->areaUnits();
 }

@@ -2841,6 +2841,222 @@ class CORE_EXPORT Qgis
     Q_ENUM( BlendMode )
 
     /**
+     * Systems of unit measurement.
+     *
+     * \note Prior to QGIS 3.30 this was available as QgsUnitTypes::SystemOfMeasurement.
+     *
+     * \since QGIS 3.30
+     */
+    enum class SystemOfMeasurement SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsUnitTypes, SystemOfMeasurement ) : int
+      {
+      Unknown SIP_MONKEYPATCH_COMPAT_NAME( UnknownSystem ) = 0, //!< Unknown system of measurement
+      Metric SIP_MONKEYPATCH_COMPAT_NAME( MetricSystem ), //!< International System of Units (SI)
+      Imperial SIP_MONKEYPATCH_COMPAT_NAME( ImperialSystem ), //!< British Imperial
+      USCS SIP_MONKEYPATCH_COMPAT_NAME( USCSSystem ), //!< United States customary system
+    };
+    Q_ENUM( SystemOfMeasurement )
+
+    /**
+     * Unit types.
+     *
+     * \note Prior to QGIS 3.30 this was available as QgsUnitTypes::UnitType.
+     *
+     * \since QGIS 3.30
+     */
+    enum class UnitType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsUnitTypes, UnitType ) : int
+      {
+      Distance SIP_MONKEYPATCH_COMPAT_NAME( TypeDistance ) = 0, //!< Distance unit
+      Area SIP_MONKEYPATCH_COMPAT_NAME( TypeArea ), //!< Area unit
+      Volume SIP_MONKEYPATCH_COMPAT_NAME( TypeVolume ), //!< Volume unit
+      Unknown SIP_MONKEYPATCH_COMPAT_NAME( TypeUnknown ), //!< Unknown unit type
+      Temporal SIP_MONKEYPATCH_COMPAT_NAME( TypeTemporal ), //!< Temporal unit
+    };
+    Q_ENUM( UnitType )
+
+    /**
+     * Units of distance
+     *
+     * \note Prior to QGIS 3.30 this was available as QgsUnitTypes::DistanceUnit.
+     *
+     * \since QGIS 3.30
+     */
+    enum class DistanceUnit SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsUnitTypes, DistanceUnit ) : int
+      {
+      Meters SIP_MONKEYPATCH_COMPAT_NAME( DistanceMeters ), //!< Meters
+      Kilometers SIP_MONKEYPATCH_COMPAT_NAME( DistanceKilometers ), //!< Kilometers
+      Feet SIP_MONKEYPATCH_COMPAT_NAME( DistanceFeet ), //!< Imperial feet
+      NauticalMiles SIP_MONKEYPATCH_COMPAT_NAME( DistanceNauticalMiles ), //!< Nautical miles
+      Yards SIP_MONKEYPATCH_COMPAT_NAME( DistanceYards ), //!< Imperial yards
+      Miles SIP_MONKEYPATCH_COMPAT_NAME( DistanceMiles ), //!< Terrestrial miles
+      Degrees SIP_MONKEYPATCH_COMPAT_NAME( DistanceDegrees ), //!< Degrees, for planar geographic CRS distance measurements
+      Centimeters SIP_MONKEYPATCH_COMPAT_NAME( DistanceCentimeters ), //!< Centimeters
+      Millimeters SIP_MONKEYPATCH_COMPAT_NAME( DistanceMillimeters ), //!< Millimeters
+      Unknown SIP_MONKEYPATCH_COMPAT_NAME( DistanceUnknownUnit ), //!< Unknown distance unit
+    };
+    Q_ENUM( DistanceUnit )
+
+    /**
+     * Types of distance units
+     *
+     * \note Prior to QGIS 3.30 this was available as QgsUnitTypes::DistanceUnitType.
+     *
+     * \since QGIS 3.30
+     */
+    enum class DistanceUnitType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsUnitTypes, DistanceUnitType ) : int
+      {
+      Standard, //!< Unit is a standard measurement unit
+      Geographic, //!< Unit is a geographic (e.g., degree based) unit
+      Unknown SIP_MONKEYPATCH_COMPAT_NAME( UnknownType ),  //!< Unknown unit type
+    };
+    Q_ENUM( DistanceUnitType )
+
+    /**
+     * Units of area
+     *
+     * \note Prior to QGIS 3.30 this was available as QgsUnitTypes::AreaUnit.
+     *
+     * \since QGIS 3.30
+     */
+    enum class AreaUnit SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsUnitTypes, AreaUnit ) : int
+      {
+      SquareMeters SIP_MONKEYPATCH_COMPAT_NAME( AreaSquareMeters ), //!< Square meters
+      SquareKilometers SIP_MONKEYPATCH_COMPAT_NAME( AreaSquareKilometers ), //!< Square kilometers
+      SquareFeet SIP_MONKEYPATCH_COMPAT_NAME( AreaSquareFeet ), //!< Square feet
+      SquareYards SIP_MONKEYPATCH_COMPAT_NAME( AreaSquareYards ), //!< Square yards
+      SquareMiles SIP_MONKEYPATCH_COMPAT_NAME( AreaSquareMiles ), //!< Square miles
+      Hectares SIP_MONKEYPATCH_COMPAT_NAME( AreaHectares ), //!< Hectares
+      Acres SIP_MONKEYPATCH_COMPAT_NAME( AreaAcres ), //!< Acres
+      SquareNauticalMiles SIP_MONKEYPATCH_COMPAT_NAME( AreaSquareNauticalMiles ), //!< Square nautical miles
+      SquareDegrees SIP_MONKEYPATCH_COMPAT_NAME( AreaSquareDegrees ), //!< Square degrees, for planar geographic CRS area measurements
+      SquareCentimeters SIP_MONKEYPATCH_COMPAT_NAME( AreaSquareCentimeters ), //!< Square centimeters
+      SquareMillimeters SIP_MONKEYPATCH_COMPAT_NAME( AreaSquareMillimeters ), //!< Square millimeters
+      Unknown SIP_MONKEYPATCH_COMPAT_NAME( AreaUnknownUnit ), //!< Unknown areal unit
+    };
+    Q_ENUM( AreaUnit )
+
+    /**
+     * Units of volume.
+     *
+     * \note Prior to QGIS 3.30 this was available as QgsUnitTypes::VolumeUnit.
+     *
+     * \since QGIS 3.30
+     */
+    enum class VolumeUnit SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsUnitTypes, VolumeUnit ) : int
+      {
+      CubicMeters SIP_MONKEYPATCH_COMPAT_NAME( VolumeCubicMeters ), //!< Cubic meters
+      CubicFeet SIP_MONKEYPATCH_COMPAT_NAME( VolumeCubicFeet ), //!< Cubic feet
+      CubicYards SIP_MONKEYPATCH_COMPAT_NAME( VolumeCubicYards ), //!< Cubic yards
+      Barrel SIP_MONKEYPATCH_COMPAT_NAME( VolumeBarrel ), //!< Barrels
+      CubicDecimeter SIP_MONKEYPATCH_COMPAT_NAME( VolumeCubicDecimeter ), //!< Cubic decimeters
+      Liters SIP_MONKEYPATCH_COMPAT_NAME( VolumeLiters ), //!< Litres
+      GallonUS SIP_MONKEYPATCH_COMPAT_NAME( VolumeGallonUS ), //!< US Gallons
+      CubicInch SIP_MONKEYPATCH_COMPAT_NAME( VolumeCubicInch ), //!< Cubic inches
+      CubicCentimeter SIP_MONKEYPATCH_COMPAT_NAME( VolumeCubicCentimeter ), //!< Cubic Centimeters
+      CubicDegrees SIP_MONKEYPATCH_COMPAT_NAME( VolumeCubicDegrees ), //!< Cubic degrees, for planar geographic CRS volume measurements
+      Unknown SIP_MONKEYPATCH_COMPAT_NAME( VolumeUnknownUnit ), //!< Unknown volume unit
+    };
+    Q_ENUM( VolumeUnit )
+
+    /**
+     * Units of angles.
+     *
+     * \note Prior to QGIS 3.30 this was available as QgsUnitTypes::AngleUnit.
+     *
+     * \since QGIS 3.30
+     */
+    enum class AngleUnit SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsUnitTypes, AngleUnit ) : int
+      {
+      Degrees SIP_MONKEYPATCH_COMPAT_NAME( AngleDegrees ), //!< Degrees
+      Radians SIP_MONKEYPATCH_COMPAT_NAME( AngleRadians ), //!< Square kilometers
+      Gon SIP_MONKEYPATCH_COMPAT_NAME( AngleGon ), //!< Gon/gradian
+      MinutesOfArc SIP_MONKEYPATCH_COMPAT_NAME( AngleMinutesOfArc ), //!< Minutes of arc
+      SecondsOfArc SIP_MONKEYPATCH_COMPAT_NAME( AngleSecondsOfArc ), //!< Seconds of arc
+      Turn SIP_MONKEYPATCH_COMPAT_NAME( AngleTurn ), //!< Turn/revolutions
+      MilliradiansSI SIP_MONKEYPATCH_COMPAT_NAME( AngleMilliradiansSI ), //!< Angular milliradians (SI definition, 1/1000 of radian)
+      MilNATO SIP_MONKEYPATCH_COMPAT_NAME( AngleMilNATO ), //!< Angular mil (NATO definition, 6400 mil = 2PI radians)
+      Unknown SIP_MONKEYPATCH_COMPAT_NAME( AngleUnknownUnit ), //!< Unknown angle unit
+    };
+    Q_ENUM( AngleUnit )
+
+    /**
+     * Temporal units.
+     *
+     * \note Prior to QGIS 3.30 this was available as QgsUnitTypes::TemporalUnit.
+     *
+     * \since QGIS 3.30
+     */
+    enum class TemporalUnit SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsUnitTypes, TemporalUnit ) : int
+      {
+      Milliseconds SIP_MONKEYPATCH_COMPAT_NAME( TemporalMilliseconds ), //!< Milliseconds
+      Seconds SIP_MONKEYPATCH_COMPAT_NAME( TemporalSeconds ), //!< Seconds
+      Minutes SIP_MONKEYPATCH_COMPAT_NAME( TemporalMinutes ), //!< Minutes
+      Hours SIP_MONKEYPATCH_COMPAT_NAME( TemporalHours ), //!< Hours
+      Days SIP_MONKEYPATCH_COMPAT_NAME( TemporalDays ), //!< Days
+      Weeks SIP_MONKEYPATCH_COMPAT_NAME( TemporalWeeks ), //!< Weeks
+      Months SIP_MONKEYPATCH_COMPAT_NAME( TemporalMonths ),  //!< Months
+      Years SIP_MONKEYPATCH_COMPAT_NAME( TemporalYears ), //!< Years
+      Decades SIP_MONKEYPATCH_COMPAT_NAME( TemporalDecades ), //!< Decades
+      Centuries SIP_MONKEYPATCH_COMPAT_NAME( TemporalCenturies ), //!< Centuries
+      IrregularStep SIP_MONKEYPATCH_COMPAT_NAME( TemporalIrregularStep ), //!< Special "irregular step" time unit, used for temporal data which uses irregular, non-real-world unit steps (since QGIS 3.20)
+      Unknown SIP_MONKEYPATCH_COMPAT_NAME( TemporalUnknownUnit ) //!< Unknown time unit
+    };
+    Q_ENUM( TemporalUnit )
+
+    /**
+     * Rendering size units
+     *
+     * \note Prior to QGIS 3.30 this was available as QgsUnitTypes::RenderUnit.
+     *
+     * \since QGIS 3.30
+     */
+    enum class RenderUnit SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsUnitTypes, RenderUnit ) : int
+      {
+      Millimeters SIP_MONKEYPATCH_COMPAT_NAME( RenderMillimeters ), //!< Millimeters
+      MapUnits SIP_MONKEYPATCH_COMPAT_NAME( RenderMapUnits ), //!< Map units
+      Pixels SIP_MONKEYPATCH_COMPAT_NAME( RenderPixels ), //!< Pixels
+      Percentage SIP_MONKEYPATCH_COMPAT_NAME( RenderPercentage ), //!< Percentage of another measurement (e.g., canvas size, feature size)
+      Points SIP_MONKEYPATCH_COMPAT_NAME( RenderPoints ), //!< Points (e.g., for font sizes)
+      Inches SIP_MONKEYPATCH_COMPAT_NAME( RenderInches ), //!< Inches
+      Unknown SIP_MONKEYPATCH_COMPAT_NAME( RenderUnknownUnit ), //!< Mixed or unknown units
+      MetersInMapUnits SIP_MONKEYPATCH_COMPAT_NAME( RenderMetersInMapUnits ), //!< Meters value as Map units
+    };
+    Q_ENUM( RenderUnit )
+
+    /**
+     * Layout measurement units
+     *
+     * \note Prior to QGIS 3.30 this was available as QgsUnitTypes::LayoutUnit.
+     *
+     * \since QGIS 3.30
+     */
+    enum class LayoutUnit SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsUnitTypes, LayoutUnit ) : int
+      {
+      Millimeters SIP_MONKEYPATCH_COMPAT_NAME( LayoutMillimeters ), //!< Millimeters
+      Centimeters SIP_MONKEYPATCH_COMPAT_NAME( LayoutCentimeters ), //!< Centimeters
+      Meters SIP_MONKEYPATCH_COMPAT_NAME( LayoutMeters ), //!< Meters
+      Inches SIP_MONKEYPATCH_COMPAT_NAME( LayoutInches ), //!< Inches
+      Feet SIP_MONKEYPATCH_COMPAT_NAME( LayoutFeet ), //!< Feet
+      Points SIP_MONKEYPATCH_COMPAT_NAME( LayoutPoints ), //!< Typographic points
+      Picas SIP_MONKEYPATCH_COMPAT_NAME( LayoutPicas ), //!< Typographic picas
+      Pixels SIP_MONKEYPATCH_COMPAT_NAME( LayoutPixels ) //!< Pixels
+    };
+    Q_ENUM( LayoutUnit )
+
+    /**
+     * Types of layout units
+     *
+     * \note Prior to QGIS 3.30 this was available as QgsUnitTypes::LayoutUnitType.
+     *
+     * \since QGIS 3.30
+     */
+    enum class LayoutUnitType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsUnitTypes, LayoutUnitType ) : int
+      {
+      PaperUnits SIP_MONKEYPATCH_COMPAT_NAME( LayoutPaperUnits ), //!< Unit is a paper based measurement unit
+      ScreenUnits SIP_MONKEYPATCH_COMPAT_NAME( LayoutScreenUnits ) //!< Unit is a screen based measurement unit
+    };
+    Q_ENUM( LayoutUnitType )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */

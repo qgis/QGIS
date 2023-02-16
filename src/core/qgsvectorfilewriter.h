@@ -23,7 +23,6 @@
 #include "qgis_sip.h"
 #include "qgsfields.h"
 #include "qgsfeedback.h"
-#include "qgstaskmanager.h"
 #include "qgsogrutils.h"
 #include "qgsrenderer.h"
 #include "qgsgeometryengine.h"
@@ -834,7 +833,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      * Adds a \a feature to the currently opened data source, using the style from a specified \a renderer.
      * \since QGIS 3.0
      */
-    bool addFeatureWithStyle( QgsFeature &feature, QgsFeatureRenderer *renderer, QgsUnitTypes::DistanceUnit outputUnit = QgsUnitTypes::DistanceMeters );
+    bool addFeatureWithStyle( QgsFeature &feature, QgsFeatureRenderer *renderer, Qgis::DistanceUnit outputUnit = Qgis::DistanceUnit::Meters );
 
     //! \note not available in Python bindings
     QMap<int, int> attrIdxToOgrIdx() const { return mAttrIdxToOgrIdx; } SIP_SKIP
@@ -1048,8 +1047,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
     //! Writes features considering symbol level order
     QgsVectorFileWriter::WriterError exportFeaturesSymbolLevels( const PreparedWriterDetails &details, QgsFeatureIterator &fit, const QgsCoordinateTransform &ct, QString *errorMessage = nullptr );
-    double mmScaleFactor( double scale, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits );
-    double mapUnitScaleFactor( double scale, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits );
+    double mmScaleFactor( double scale, Qgis::RenderUnit symbolUnits, Qgis::DistanceUnit mapUnits );
+    double mapUnitScaleFactor( double scale, Qgis::RenderUnit symbolUnits, Qgis::DistanceUnit mapUnits );
 
     void startRender( QgsFeatureRenderer *sourceRenderer, const QgsFields &fields );
     void stopRender();

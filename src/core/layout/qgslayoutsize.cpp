@@ -17,23 +17,24 @@
 
 #include "qgslayoutsize.h"
 #include "qgis.h"
+#include "qgsunittypes.h"
 #include <QStringList>
 
-QgsLayoutSize::QgsLayoutSize( const double width, const double height, const QgsUnitTypes::LayoutUnit units )
+QgsLayoutSize::QgsLayoutSize( const double width, const double height, const Qgis::LayoutUnit units )
   : mWidth( width )
   , mHeight( height )
   , mUnits( units )
 {
 }
 
-QgsLayoutSize::QgsLayoutSize( const QSizeF size, const QgsUnitTypes::LayoutUnit units )
+QgsLayoutSize::QgsLayoutSize( const QSizeF size, const Qgis::LayoutUnit units )
   : mWidth( size.width() )
   , mHeight( size.height() )
   , mUnits( units )
 {
 }
 
-QgsLayoutSize::QgsLayoutSize( const QgsUnitTypes::LayoutUnit units )
+QgsLayoutSize::QgsLayoutSize( const Qgis::LayoutUnit units )
   : mUnits( units )
 {
 

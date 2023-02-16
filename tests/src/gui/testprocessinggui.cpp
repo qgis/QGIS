@@ -2138,7 +2138,7 @@ void TestProcessingGui::testDistanceWrapper()
   QVERIFY( !wrapper.mWarningLabel->isVisible() );
   QVERIFY( wrapper.mUnitsCombo->isVisible() );
   QVERIFY( !wrapper.mLabel->isVisible() );
-  QCOMPARE( wrapper.mUnitsCombo->currentData().toInt(), static_cast< int >( QgsUnitTypes::DistanceMeters ) );
+  QCOMPARE( wrapper.mUnitsCombo->currentData().toInt(), static_cast< int >( Qgis::DistanceUnit::Meters ) );
 
   wrapper.setUnitParameterValue( QStringLiteral( "EPSG:4326" ) );
   QCOMPARE( wrapper.mLabel->text(), QStringLiteral( "degrees" ) );
@@ -2151,7 +2151,7 @@ void TestProcessingGui::testDistanceWrapper()
   QVERIFY( !wrapper.mWarningLabel->isVisible() );
   QVERIFY( wrapper.mUnitsCombo->isVisible() );
   QVERIFY( !wrapper.mLabel->isVisible() );
-  QCOMPARE( wrapper.mUnitsCombo->currentData().toInt(), static_cast< int >( QgsUnitTypes::DistanceMeters ) );
+  QCOMPARE( wrapper.mUnitsCombo->currentData().toInt(), static_cast< int >( Qgis::DistanceUnit::Meters ) );
 
   wrapper.setUnitParameterValue( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
   QCOMPARE( wrapper.mLabel->text(), QStringLiteral( "degrees" ) );
@@ -2166,7 +2166,7 @@ void TestProcessingGui::testDistanceWrapper()
   QVERIFY( !wrapper.mWarningLabel->isVisible() );
   QVERIFY( wrapper.mUnitsCombo->isVisible() );
   QVERIFY( !wrapper.mLabel->isVisible() );
-  QCOMPARE( wrapper.mUnitsCombo->currentData().toInt(), static_cast< int >( QgsUnitTypes::DistanceMeters ) );
+  QCOMPARE( wrapper.mUnitsCombo->currentData().toInt(), static_cast< int >( Qgis::DistanceUnit::Meters ) );
 
   std::unique_ptr< QgsVectorLayer > vl2 = std::make_unique< QgsVectorLayer >( QStringLiteral( "Polygon?crs=epsg:4326&field=pk:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   wrapper.setUnitParameterValue( QVariant::fromValue( vl2.get() ) );
@@ -2194,12 +2194,12 @@ void TestProcessingGui::testDistanceWrapper()
   QVERIFY( !wrapper.mWarningLabel->isVisible() );
   QVERIFY( wrapper.mUnitsCombo->isVisible() );
   QVERIFY( !wrapper.mLabel->isVisible() );
-  QCOMPARE( wrapper.mUnitsCombo->currentData().toInt(), static_cast< int >( QgsUnitTypes::DistanceMeters ) );
+  QCOMPARE( wrapper.mUnitsCombo->currentData().toInt(), static_cast< int >( Qgis::DistanceUnit::Meters ) );
 
   // using unit choice
   wrapper.setParameterValue( 5, context );
   QCOMPARE( wrapper.parameterValue().toDouble(), 5.0 );
-  wrapper.mUnitsCombo->setCurrentIndex( wrapper.mUnitsCombo->findData( QgsUnitTypes::DistanceKilometers ) );
+  wrapper.mUnitsCombo->setCurrentIndex( wrapper.mUnitsCombo->findData( static_cast< int >( Qgis::DistanceUnit::Kilometers ) ) );
   QCOMPARE( wrapper.parameterValue().toDouble(), 5000.0 );
   wrapper.setParameterValue( 2, context );
   QCOMPARE( wrapper.parameterValue().toDouble(), 2000.0 );
@@ -2213,7 +2213,7 @@ void TestProcessingGui::testDistanceWrapper()
 
   // with default unit
   QgsProcessingParameterDistance paramDefaultUnit( QStringLiteral( "num" ), QStringLiteral( "num" ) );
-  paramDefaultUnit.setDefaultUnit( QgsUnitTypes::DistanceFeet );
+  paramDefaultUnit.setDefaultUnit( Qgis::DistanceUnit::Feet );
   QgsProcessingDistanceWidgetWrapper wrapperDefaultUnit( &paramDefaultUnit, QgsProcessingGui::Standard );
   w = wrapperDefaultUnit.createWrappedWidget( context );
   w->show();
@@ -2352,11 +2352,11 @@ void TestProcessingGui::testDurationWrapper()
 
   // with default unit
   QgsProcessingParameterDuration paramDefaultUnit( QStringLiteral( "dur" ), QStringLiteral( "dur" ) );
-  paramDefaultUnit.setDefaultUnit( QgsUnitTypes::TemporalDays );
+  paramDefaultUnit.setDefaultUnit( Qgis::TemporalUnit::Days );
   QgsProcessingDurationWidgetWrapper wrapperDefaultUnit( &paramDefaultUnit, QgsProcessingGui::Standard );
   w = wrapperDefaultUnit.createWrappedWidget( context );
   w->show();
-  QCOMPARE( wrapperDefaultUnit.mUnitsCombo->currentText(), QgsUnitTypes::toString( QgsUnitTypes::TemporalDays ) );
+  QCOMPARE( wrapperDefaultUnit.mUnitsCombo->currentText(), QgsUnitTypes::toString( Qgis::TemporalUnit::Days ) );
   delete w;
 
   // with decimals

@@ -340,7 +340,7 @@ void TestQgsLayerTree::testRestrictedSymbolSize()
 
   QgsMarkerSymbol *symbol = static_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
   symbol->setSize( 500.0 );
-  symbol->setSizeUnit( QgsUnitTypes::RenderMapUnits );
+  symbol->setSizeUnit( Qgis::RenderUnit::MapUnits );
 
   //create a categorized renderer for layer
   QgsCategorizedSymbolRenderer *renderer = new QgsCategorizedSymbolRenderer();

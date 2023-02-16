@@ -21,7 +21,6 @@
 #include "qgis_sip.h"
 #include <QList>
 
-#include "qgspoint.h"
 #include "qgsrendercontext.h"
 
 #include <QTransform>
@@ -350,7 +349,7 @@ class CORE_EXPORT QgsProfileGenerationContext
     /**
      * Converts a distance size from the specified units to pixels.
      */
-    double convertDistanceToPixels( double size, QgsUnitTypes::RenderUnit unit ) const;
+    double convertDistanceToPixels( double size, Qgis::RenderUnit unit ) const;
 
     bool operator==( const QgsProfileGenerationContext &other ) const;
     bool operator!=( const QgsProfileGenerationContext &other ) const;

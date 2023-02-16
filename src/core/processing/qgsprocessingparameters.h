@@ -2366,7 +2366,7 @@ class CORE_EXPORT QgsProcessingParameterDistance : public QgsProcessingParameter
      * \see setDefaultUnit()
      * \since QGIS 3.4.3
      */
-    QgsUnitTypes::DistanceUnit defaultUnit() const { return mDefaultUnit; }
+    Qgis::DistanceUnit defaultUnit() const { return mDefaultUnit; }
 
     /**
      * Sets the default distance \a unit for the parameter.
@@ -2374,7 +2374,7 @@ class CORE_EXPORT QgsProcessingParameterDistance : public QgsProcessingParameter
      * \see defaultUnit()
      * \since QGIS 3.4.3
      */
-    void setDefaultUnit( QgsUnitTypes::DistanceUnit unit ) { mDefaultUnit = unit; }
+    void setDefaultUnit( Qgis::DistanceUnit unit ) { mDefaultUnit = unit; }
 
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
@@ -2382,7 +2382,7 @@ class CORE_EXPORT QgsProcessingParameterDistance : public QgsProcessingParameter
   private:
 
     QString mParentParameterName;
-    QgsUnitTypes::DistanceUnit mDefaultUnit = QgsUnitTypes::DistanceUnknownUnit;
+    Qgis::DistanceUnit mDefaultUnit = Qgis::DistanceUnit::Unknown;
 
 };
 
@@ -2421,21 +2421,21 @@ class CORE_EXPORT QgsProcessingParameterDuration : public QgsProcessingParameter
      *
      * \see setDefaultUnit()
      */
-    QgsUnitTypes::TemporalUnit defaultUnit() const { return mDefaultUnit; }
+    Qgis::TemporalUnit defaultUnit() const { return mDefaultUnit; }
 
     /**
      * Sets the default duration \a unit for the parameter.
      *
      * \see defaultUnit()
      */
-    void setDefaultUnit( QgsUnitTypes::TemporalUnit unit ) { mDefaultUnit = unit; }
+    void setDefaultUnit( Qgis::TemporalUnit unit ) { mDefaultUnit = unit; }
 
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
 
   private:
 
-    QgsUnitTypes::TemporalUnit mDefaultUnit = QgsUnitTypes::TemporalMilliseconds;
+    Qgis::TemporalUnit mDefaultUnit = Qgis::TemporalUnit::Milliseconds;
 
 };
 

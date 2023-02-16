@@ -254,7 +254,7 @@ void QgsVectorTileLayerProperties::loadStyle()
         QgsMapBoxGlStyleConversionContext context;
         // convert automatically from pixel sizes to millimeters, because pixel sizes
         // are a VERY edge case in QGIS and don't play nice with hidpi map renders or print layouts
-        context.setTargetUnit( QgsUnitTypes::RenderMillimeters );
+        context.setTargetUnit( Qgis::RenderUnit::Millimeters );
         //assume source uses 96 dpi
         context.setPixelSizeConversionFactor( 25.4 / 96.0 );
 

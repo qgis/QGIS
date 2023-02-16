@@ -201,7 +201,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      * \see toleranceUnit()
      * \since QGIS 2.12
      */
-    void setToleranceUnit( QgsUnitTypes::RenderUnit unit ) { mToleranceUnit = unit; }
+    void setToleranceUnit( Qgis::RenderUnit unit ) { mToleranceUnit = unit; }
 
     /**
      * Returns the units for the tolerance distance.
@@ -209,7 +209,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      * \see setToleranceUnit()
      * \since QGIS 2.12
      */
-    QgsUnitTypes::RenderUnit toleranceUnit() const { return mToleranceUnit; }
+    Qgis::RenderUnit toleranceUnit() const { return mToleranceUnit; }
 
     /**
      * Sets the map unit scale object for the distance tolerance. This is only used if the
@@ -242,7 +242,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
     //! Distance tolerance. Points that are closer together than this distance are considered clustered.
     double mTolerance;
     //! Unit for distance tolerance.
-    QgsUnitTypes::RenderUnit mToleranceUnit;
+    Qgis::RenderUnit mToleranceUnit;
     //! Map unit scale for distance tolerance.
     QgsMapUnitScale mToleranceMapUnitScale;
 

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsinterval.h"
+#include "qgsunittypes.h"
 
 #include <QString>
 #include <QStringList>
@@ -33,7 +34,7 @@ QgsInterval::QgsInterval( double seconds )
   : mSeconds( seconds )
   , mValid( true )
   , mOriginalDuration( seconds )
-  , mOriginalUnit( QgsUnitTypes::TemporalSeconds )
+  , mOriginalUnit( Qgis::TemporalUnit::Seconds )
 {
 }
 
@@ -41,12 +42,12 @@ QgsInterval::QgsInterval( std::chrono::milliseconds milliseconds )
   : mSeconds( static_cast<double>( milliseconds.count() ) / 1000.0 )
   , mValid( true )
   , mOriginalDuration( static_cast<double>( milliseconds.count() ) )
-  , mOriginalUnit( QgsUnitTypes::TemporalMilliseconds )
+  , mOriginalUnit( Qgis::TemporalUnit::Milliseconds )
 {
 }
 
-QgsInterval::QgsInterval( double duration, QgsUnitTypes::TemporalUnit unit )
-  : mSeconds( duration * QgsUnitTypes::fromUnitToUnitFactor( unit, QgsUnitTypes::TemporalSeconds ) )
+QgsInterval::QgsInterval( double duration, Qgis::TemporalUnit unit )
+  : mSeconds( duration * QgsUnitTypes::fromUnitToUnitFactor( unit, Qgis::TemporalUnit::Seconds ) )
   , mValid( true )
   , mOriginalDuration( duration )
   , mOriginalUnit( unit )
@@ -54,64 +55,64 @@ QgsInterval::QgsInterval( double duration, QgsUnitTypes::TemporalUnit unit )
 }
 
 QgsInterval::QgsInterval( double years, double months, double weeks, double days, double hours, double minutes, double seconds )
-  : mSeconds( years * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalYears, QgsUnitTypes::TemporalSeconds )
-              + months * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalMonths, QgsUnitTypes::TemporalSeconds )
-              + weeks * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalWeeks, QgsUnitTypes::TemporalSeconds )
-              + days * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalDays, QgsUnitTypes::TemporalSeconds )
-              + hours * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalHours, QgsUnitTypes::TemporalSeconds )
-              + minutes * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalMinutes, QgsUnitTypes::TemporalSeconds )
+  : mSeconds( years * QgsUnitTypes::fromUnitToUnitFactor( Qgis::TemporalUnit::Years, Qgis::TemporalUnit::Seconds )
+              + months * QgsUnitTypes::fromUnitToUnitFactor( Qgis::TemporalUnit::Months, Qgis::TemporalUnit::Seconds )
+              + weeks * QgsUnitTypes::fromUnitToUnitFactor( Qgis::TemporalUnit::Weeks, Qgis::TemporalUnit::Seconds )
+              + days * QgsUnitTypes::fromUnitToUnitFactor( Qgis::TemporalUnit::Days, Qgis::TemporalUnit::Seconds )
+              + hours * QgsUnitTypes::fromUnitToUnitFactor( Qgis::TemporalUnit::Hours, Qgis::TemporalUnit::Seconds )
+              + minutes * QgsUnitTypes::fromUnitToUnitFactor( Qgis::TemporalUnit::Minutes, Qgis::TemporalUnit::Seconds )
               + seconds )
   , mValid( true )
 {
   if ( years && !months && !weeks && !days && !hours && !minutes && !seconds )
   {
     mOriginalDuration = years;
-    mOriginalUnit = QgsUnitTypes::TemporalYears;
+    mOriginalUnit = Qgis::TemporalUnit::Years;
   }
   else if ( !years && months && !weeks && !days && !hours && !minutes && !seconds )
   {
     mOriginalDuration = months;
-    mOriginalUnit = QgsUnitTypes::TemporalMonths;
+    mOriginalUnit = Qgis::TemporalUnit::Months;
   }
   else if ( !years && !months && weeks && !days && !hours && !minutes && !seconds )
   {
     mOriginalDuration = weeks;
-    mOriginalUnit = QgsUnitTypes::TemporalWeeks;
+    mOriginalUnit = Qgis::TemporalUnit::Weeks;
   }
   else if ( !years && !months && !weeks && days && !hours && !minutes && !seconds )
   {
     mOriginalDuration = days;
-    mOriginalUnit = QgsUnitTypes::TemporalDays;
+    mOriginalUnit = Qgis::TemporalUnit::Days;
   }
   else if ( !years && !months && !weeks && !days && hours && !minutes && !seconds )
   {
     mOriginalDuration = hours;
-    mOriginalUnit = QgsUnitTypes::TemporalHours;
+    mOriginalUnit = Qgis::TemporalUnit::Hours;
   }
   else if ( !years && !months && !weeks && !days && !hours && minutes && !seconds )
   {
     mOriginalDuration = minutes;
-    mOriginalUnit = QgsUnitTypes::TemporalMinutes;
+    mOriginalUnit = Qgis::TemporalUnit::Minutes;
   }
   else if ( !years && !months && !weeks && !days && !hours && !minutes && seconds )
   {
     mOriginalDuration = seconds;
-    mOriginalUnit = QgsUnitTypes::TemporalSeconds;
+    mOriginalUnit = Qgis::TemporalUnit::Seconds;
   }
   else if ( !years && !months && !weeks && !days && !hours && !minutes && !seconds )
   {
     mOriginalDuration = 0;
-    mOriginalUnit = QgsUnitTypes::TemporalSeconds;
+    mOriginalUnit = Qgis::TemporalUnit::Seconds;
   }
   else
   {
-    mOriginalUnit = QgsUnitTypes::TemporalUnknownUnit;
+    mOriginalUnit = Qgis::TemporalUnit::Unknown;
   }
 }
 
 double QgsInterval::years() const
 {
-  if ( mOriginalUnit == QgsUnitTypes::TemporalYears )
+  if ( mOriginalUnit == Qgis::TemporalUnit::Years )
     return mOriginalDuration;
 
   return mSeconds / YEARS;
@@ -122,12 +123,12 @@ void QgsInterval::setYears( double years )
   mSeconds = years * YEARS;
   mValid = true;
   mOriginalDuration = years;
-  mOriginalUnit = QgsUnitTypes::TemporalYears;
+  mOriginalUnit = Qgis::TemporalUnit::Years;
 }
 
 double QgsInterval::months() const
 {
-  if ( mOriginalUnit == QgsUnitTypes::TemporalMonths )
+  if ( mOriginalUnit == Qgis::TemporalUnit::Months )
     return mOriginalDuration;
 
   return mSeconds / MONTHS;
@@ -138,12 +139,12 @@ void QgsInterval::setMonths( double months )
   mSeconds = months * MONTHS;
   mValid = true;
   mOriginalDuration = months;
-  mOriginalUnit = QgsUnitTypes::TemporalMonths;
+  mOriginalUnit = Qgis::TemporalUnit::Months;
 }
 
 double QgsInterval::weeks() const
 {
-  if ( mOriginalUnit == QgsUnitTypes::TemporalWeeks )
+  if ( mOriginalUnit == Qgis::TemporalUnit::Weeks )
     return mOriginalDuration;
 
   return mSeconds / WEEKS;
@@ -155,12 +156,12 @@ void QgsInterval::setWeeks( double weeks )
   mSeconds = weeks * WEEKS;
   mValid = true;
   mOriginalDuration = weeks;
-  mOriginalUnit = QgsUnitTypes::TemporalWeeks;
+  mOriginalUnit = Qgis::TemporalUnit::Weeks;
 }
 
 double QgsInterval::days() const
 {
-  if ( mOriginalUnit == QgsUnitTypes::TemporalDays )
+  if ( mOriginalUnit == Qgis::TemporalUnit::Days )
     return mOriginalDuration;
 
   return mSeconds / DAY;
@@ -172,12 +173,12 @@ void QgsInterval::setDays( double days )
   mSeconds = days * DAY;
   mValid = true;
   mOriginalDuration = days;
-  mOriginalUnit = QgsUnitTypes::TemporalDays;
+  mOriginalUnit = Qgis::TemporalUnit::Days;
 }
 
 double QgsInterval::hours() const
 {
-  if ( mOriginalUnit == QgsUnitTypes::TemporalHours )
+  if ( mOriginalUnit == Qgis::TemporalUnit::Hours )
     return mOriginalDuration;
 
   return mSeconds / HOUR;
@@ -189,12 +190,12 @@ void QgsInterval::setHours( double hours )
   mSeconds = hours * HOUR;
   mValid = true;
   mOriginalDuration = hours;
-  mOriginalUnit = QgsUnitTypes::TemporalHours;
+  mOriginalUnit = Qgis::TemporalUnit::Hours;
 }
 
 double QgsInterval::minutes() const
 {
-  if ( mOriginalUnit == QgsUnitTypes::TemporalMinutes )
+  if ( mOriginalUnit == Qgis::TemporalUnit::Minutes )
     return mOriginalDuration;
 
   return mSeconds / MINUTE;
@@ -205,7 +206,7 @@ void QgsInterval::setMinutes( double minutes )
   mSeconds = minutes * MINUTE;
   mValid = true;
   mOriginalDuration = minutes;
-  mOriginalUnit = QgsUnitTypes::TemporalMinutes;
+  mOriginalUnit = Qgis::TemporalUnit::Minutes;
 }
 
 void QgsInterval::setSeconds( double seconds )
@@ -213,7 +214,7 @@ void QgsInterval::setSeconds( double seconds )
   mSeconds = seconds;
   mValid = true;
   mOriginalDuration = seconds;
-  mOriginalUnit = QgsUnitTypes::TemporalSeconds;
+  mOriginalUnit = Qgis::TemporalUnit::Seconds;
 }
 
 QgsInterval QgsInterval::fromString( const QString &string )

@@ -46,6 +46,7 @@
 #include "qgsinterval.h"
 #include "qgsrenderchecker.h"
 #include "qgsmultirenderchecker.h"
+#include "qgsunittypes.h"
 #include "qgis_test.h"
 
 #define QGSTEST_MAIN(TestObject) \

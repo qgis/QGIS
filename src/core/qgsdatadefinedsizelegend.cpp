@@ -192,8 +192,8 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
   // make sure we draw bigger symbols first
   std::sort( classes.begin(), classes.end(), []( const SizeClass & a, const SizeClass & b ) { return a.size > b.size; } );
 
-  double hLengthLine = context.convertToPainterUnits( hLengthLineMM, QgsUnitTypes::RenderMillimeters );
-  double hSpaceLineText = context.convertToPainterUnits( hSpaceLineTextMM, QgsUnitTypes::RenderMillimeters );
+  double hLengthLine = context.convertToPainterUnits( hLengthLineMM, Qgis::RenderUnit::Millimeters );
+  double hSpaceLineText = context.convertToPainterUnits( hSpaceLineTextMM, Qgis::RenderUnit::Millimeters );
   int dpm = std::round( context.scaleFactor() * 1000 );  // scale factor = dots per millimeter
 
   // get font metrics - we need a temporary image just to get the metrics right for the given DPI
@@ -338,7 +338,7 @@ QImage QgsDataDefinedSizeLegend::collapsedLegendImage( QgsRenderContext &context
   QSizeF contentSize;
   drawCollapsedLegend( context, &contentSize );
 
-  double padding = context.convertToPainterUnits( paddingMM, QgsUnitTypes::RenderMillimeters );
+  double padding = context.convertToPainterUnits( paddingMM, Qgis::RenderUnit::Millimeters );
   int dpm = std::round( context.scaleFactor() * 1000 );  // scale factor = dots per millimeter
 
   QImage img( contentSize.width() + padding * 2, contentSize.height() + padding * 2, QImage::Format_ARGB32_Premultiplied );

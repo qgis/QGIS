@@ -1076,7 +1076,7 @@ QgsMeshVectorStreamlineRenderer::QgsMeshVectorStreamlineRenderer( const QgsTrian
   mStreamlineField->updateSize( rendererContext );
   mStreamlineField->setPixelFillingDensity( settings.streamLinesSettings().seedingDensity() );
   mStreamlineField->setLineWidth( rendererContext.convertToPainterUnits( settings.lineWidth(),
-                                  QgsUnitTypes::RenderUnit::RenderMillimeters ) ) ;
+                                  Qgis::RenderUnit::Millimeters ) ) ;
   mStreamlineField->setColor( settings.color() );
 
   mStreamlineField->setFilter( settings.filterMin(), settings.filterMax() );
@@ -1634,7 +1634,7 @@ QgsMeshVectorTraceRenderer::QgsMeshVectorTraceRenderer(
   mParticleField->updateSize( rendererContext ) ;
 
   mParticleField->setParticleSize( rendererContext.convertToPainterUnits(
-                                     settings.lineWidth(), QgsUnitTypes::RenderUnit::RenderMillimeters ) );
+                                     settings.lineWidth(), Qgis::RenderUnit::Millimeters ) );
   mParticleField->setParticlesCount( settings.tracesSettings().particlesCount() );
   mParticleField->setTailFactor( 1 );
   mParticleField->setStumpParticleWithLifeTime( false );

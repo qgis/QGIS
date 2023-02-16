@@ -16,23 +16,17 @@
 #include "qgsrenderer.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
-#include "qgsrulebasedrenderer.h"
 
 #include "qgssinglesymbolrenderer.h" // for default renderer
 
 #include "qgsrendererregistry.h"
 
 #include "qgsrendercontext.h"
-#include "qgsclipper.h"
-#include "qgsgeometry.h"
-#include "qgsgeometrycollection.h"
 #include "qgsfeature.h"
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
 #include "qgspainteffect.h"
-#include "qgseffectstack.h"
 #include "qgspainteffectregistry.h"
-#include "qgswkbptr.h"
 #include "qgspoint.h"
 #include "qgsproperty.h"
 #include "qgsapplication.h"
@@ -393,7 +387,7 @@ bool QgsFeatureRenderer::willRenderFeature( const QgsFeature &feature, QgsRender
 
 void QgsFeatureRenderer::renderVertexMarker( QPointF pt, QgsRenderContext &context )
 {
-  const int markerSize = context.convertToPainterUnits( mCurrentVertexMarkerSize, QgsUnitTypes::RenderMillimeters );
+  const int markerSize = context.convertToPainterUnits( mCurrentVertexMarkerSize, Qgis::RenderUnit::Millimeters );
   QgsSymbolLayerUtils::drawVertexMarker( pt.x(), pt.y(), *context.painter(),
                                          mCurrentVertexMarkerType,
                                          markerSize );

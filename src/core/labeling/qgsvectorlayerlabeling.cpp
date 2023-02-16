@@ -350,7 +350,7 @@ void QgsAbstractVectorLayerLabeling::writeTextSymbolizer( QDomNode &parent, QgsP
       // displacement
       if ( settings.xOffset > 0 || settings.yOffset > 0 )
       {
-        const QgsUnitTypes::RenderUnit offsetUnit =  settings.offsetUnits;
+        const Qgis::RenderUnit offsetUnit =  settings.offsetUnits;
         const double dx = QgsSymbolLayerUtils::rescaleUom( settings.xOffset, offsetUnit, props );
         const double dy = QgsSymbolLayerUtils::rescaleUom( settings.yOffset, offsetUnit, props );
         QgsSymbolLayerUtils::createDisplacementElement( doc, pointPlacement, QPointF( dx, dy ) );
@@ -373,7 +373,7 @@ void QgsAbstractVectorLayerLabeling::writeTextSymbolizer( QDomNode &parent, QgsP
       // SLD cannot do either, but let's do a best effort setting the distance using
       // anchor point and displacement
       QgsSymbolLayerUtils::createAnchorPointElement( doc, pointPlacement, QPointF( 0, 0.5 ) );
-      const QgsUnitTypes::RenderUnit distUnit = settings.distUnits;
+      const Qgis::RenderUnit distUnit = settings.distUnits;
       const double radius = QgsSymbolLayerUtils::rescaleUom( settings.dist, distUnit, props );
       const double offset = std::sqrt( radius * radius / 2 ); // make it start top/right
       maxDisplacement = radius + 1; // lock the distance
@@ -388,7 +388,7 @@ void QgsAbstractVectorLayerLabeling::writeTextSymbolizer( QDomNode &parent, QgsP
       QDomElement pointPlacement = doc.createElement( "se:PointPlacement" );
       labelPlacement.appendChild( pointPlacement );
       QgsSymbolLayerUtils::createAnchorPointElement( doc, pointPlacement, QPointF( 0.5, 0.5 ) );
-      const QgsUnitTypes::RenderUnit distUnit = settings.distUnits;
+      const Qgis::RenderUnit distUnit = settings.distUnits;
       const double dist = QgsSymbolLayerUtils::rescaleUom( settings.dist, distUnit, props );
       QgsSymbolLayerUtils::createDisplacementElement( doc, pointPlacement, QPointF( 0, dist ) );
       break;
@@ -403,7 +403,7 @@ void QgsAbstractVectorLayerLabeling::writeTextSymbolizer( QDomNode &parent, QgsP
       // perpendicular distance if required
       if ( settings.dist > 0 )
       {
-        const QgsUnitTypes::RenderUnit distUnit = settings.distUnits;
+        const Qgis::RenderUnit distUnit = settings.distUnits;
         const double dist = QgsSymbolLayerUtils::rescaleUom( settings.dist, distUnit, props );
         QDomElement perpendicular = doc.createElement( "se:PerpendicularOffset" );
         linePlacement.appendChild( perpendicular );

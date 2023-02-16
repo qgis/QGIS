@@ -2536,7 +2536,7 @@ QString QgsVectorFileWriter::errorMessage() const
 
 bool QgsVectorFileWriter::addFeature( QgsFeature &feature, QgsFeatureSink::Flags )
 {
-  return addFeatureWithStyle( feature, nullptr, QgsUnitTypes::DistanceMeters );
+  return addFeatureWithStyle( feature, nullptr, Qgis::DistanceUnit::Meters );
 }
 
 bool QgsVectorFileWriter::addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags )
@@ -2545,7 +2545,7 @@ bool QgsVectorFileWriter::addFeatures( QgsFeatureList &features, QgsFeatureSink:
   bool result = true;
   for ( ; fIt != features.end(); ++fIt )
   {
-    result = result && addFeatureWithStyle( *fIt, nullptr, QgsUnitTypes::DistanceMeters );
+    result = result && addFeatureWithStyle( *fIt, nullptr, Qgis::DistanceUnit::Meters );
   }
   return result;
 }
@@ -2555,7 +2555,7 @@ QString QgsVectorFileWriter::lastError() const
   return mErrorMessage;
 }
 
-bool QgsVectorFileWriter::addFeatureWithStyle( QgsFeature &feature, QgsFeatureRenderer *renderer, QgsUnitTypes::DistanceUnit outputUnit )
+bool QgsVectorFileWriter::addFeatureWithStyle( QgsFeature &feature, QgsFeatureRenderer *renderer, Qgis::DistanceUnit outputUnit )
 {
   // create the feature
   gdal::ogr_feature_unique_ptr poFeature = createFeature( feature );
@@ -3480,7 +3480,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormatV2( Pre
   int n = 0, errors = 0;
 
   //unit type
-  QgsUnitTypes::DistanceUnit mapUnits = details.sourceCrs.mapUnits();
+  Qgis::DistanceUnit mapUnits = details.sourceCrs.mapUnits();
   if ( options.ct.isValid() )
   {
     mapUnits = options.ct.destinationCrs().mapUnits();
@@ -4004,7 +4004,7 @@ void QgsVectorFileWriter::createSymbolLayerTable( QgsVectorLayer *vl,  const Qgs
   }
 
   //unit type
-  QgsUnitTypes::DistanceUnit mapUnits = vl->crs().mapUnits();
+  Qgis::DistanceUnit mapUnits = vl->crs().mapUnits();
   if ( ct.isValid() )
   {
     mapUnits = ct.destinationCrs().mapUnits();
@@ -4046,7 +4046,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
   QHash< QgsSymbol *, QList<QgsFeature> > features;
 
   //unit type
-  QgsUnitTypes::DistanceUnit mapUnits = details.sourceCrs.mapUnits();
+  Qgis::DistanceUnit mapUnits = details.sourceCrs.mapUnits();
   if ( ct.isValid() )
   {
     mapUnits = ct.destinationCrs().mapUnits();
@@ -4171,16 +4171,16 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
   return ( nErrors > 0 ) ? QgsVectorFileWriter::ErrFeatureWriteFailed : QgsVectorFileWriter::NoError;
 }
 
-double QgsVectorFileWriter::mmScaleFactor( double scale, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits )
+double QgsVectorFileWriter::mmScaleFactor( double scale, Qgis::RenderUnit symbolUnits, Qgis::DistanceUnit mapUnits )
 {
-  if ( symbolUnits == QgsUnitTypes::RenderMillimeters )
+  if ( symbolUnits == Qgis::RenderUnit::Millimeters )
   {
     return 1.0;
   }
   else
   {
     //conversion factor map units -> mm
-    if ( mapUnits == QgsUnitTypes::DistanceMeters )
+    if ( mapUnits == Qgis::DistanceUnit::Meters )
     {
       return 1000 / scale;
     }
@@ -4189,15 +4189,15 @@ double QgsVectorFileWriter::mmScaleFactor( double scale, QgsUnitTypes::RenderUni
   return 1.0; //todo: map units
 }
 
-double QgsVectorFileWriter::mapUnitScaleFactor( double scale, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits )
+double QgsVectorFileWriter::mapUnitScaleFactor( double scale, Qgis::RenderUnit symbolUnits, Qgis::DistanceUnit mapUnits )
 {
-  if ( symbolUnits == QgsUnitTypes::RenderMapUnits )
+  if ( symbolUnits == Qgis::RenderUnit::MapUnits )
   {
     return 1.0;
   }
   else
   {
-    if ( symbolUnits == QgsUnitTypes::RenderMillimeters && mapUnits == QgsUnitTypes::DistanceMeters )
+    if ( symbolUnits == Qgis::RenderUnit::Millimeters && mapUnits == Qgis::DistanceUnit::Meters )
     {
       return scale / 1000;
     }

@@ -522,7 +522,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      * Convenience function for returning the current canvas map units. The map units
      * are dictated by the canvas' destinationCrs() map units.
      */
-    QgsUnitTypes::DistanceUnit mapUnits() const;
+    Qgis::DistanceUnit mapUnits() const;
 
     /**
      * Returns the stored overrides of styles for layers.
@@ -1174,7 +1174,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      *
      * \since QGIS 3.12
      */
-    void panDistanceBearingChanged( double distance, QgsUnitTypes::DistanceUnit unit, double bearing );
+    void panDistanceBearingChanged( double distance, Qgis::DistanceUnit unit, double bearing );
 
     /**
      * Emitted whenever a tap and hold \a gesture occurs at the specified map point.

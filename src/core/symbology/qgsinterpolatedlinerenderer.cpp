@@ -16,9 +16,9 @@
 #include <QPainter>
 
 #include "qgsinterpolatedlinerenderer.h"
-#include "qgscolorramplegendnode.h"
 #include "qgssymbollayerutils.h"
 #include "qgsstyle.h"
+#include "qgsunittypes.h"
 
 
 void QgsInterpolatedLineRenderer::setInterpolatedWidth( const QgsInterpolatedLineWidth &strokeWidth )
@@ -41,12 +41,12 @@ QgsInterpolatedLineColor QgsInterpolatedLineRenderer::interpolatedColor() const
   return mStrokeColoring;
 }
 
-void QgsInterpolatedLineRenderer::setWidthUnit( QgsUnitTypes::RenderUnit strokeWidthUnit )
+void QgsInterpolatedLineRenderer::setWidthUnit( Qgis::RenderUnit strokeWidthUnit )
 {
   mStrokeWidthUnit = strokeWidthUnit;
 }
 
-QgsUnitTypes::RenderUnit QgsInterpolatedLineRenderer::widthUnit() const
+Qgis::RenderUnit QgsInterpolatedLineRenderer::widthUnit() const
 {
   return mStrokeWidthUnit;
 }
@@ -961,12 +961,12 @@ QString QgsInterpolatedLineSymbolLayer::endValueExpressionForWidth() const
   return mDataDefinedProperties.property( QgsSymbolLayer::PropertyLineEndWidthValue ).asExpression();
 }
 
-void QgsInterpolatedLineSymbolLayer::setWidthUnit( QgsUnitTypes::RenderUnit strokeWidthUnit )
+void QgsInterpolatedLineSymbolLayer::setWidthUnit( Qgis::RenderUnit strokeWidthUnit )
 {
   mLineRender.mStrokeWidthUnit = strokeWidthUnit;
 }
 
-QgsUnitTypes::RenderUnit QgsInterpolatedLineSymbolLayer::widthUnit() const {return mLineRender.widthUnit();}
+Qgis::RenderUnit QgsInterpolatedLineSymbolLayer::widthUnit() const {return mLineRender.widthUnit();}
 
 void QgsInterpolatedLineSymbolLayer::setInterpolatedWidth( const QgsInterpolatedLineWidth &interpolatedLineWidth )
 {

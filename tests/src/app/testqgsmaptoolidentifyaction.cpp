@@ -25,7 +25,6 @@
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
 #include "qgsmeshlayer.h"
-#include "qgsunittypes.h"
 #include "qgsmaptoolidentifyaction.h"
 #include "qgssettings.h"
 #include "qgsidentifymenu.h"
@@ -243,7 +242,7 @@ void TestQgsMapToolIdentifyAction::closestPoint()
   canvas->setExtent( f1.geometry().boundingBox() );
   QgsProject::instance()->setCrs( srs );
   QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
-  QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceMeters );
+  QgsProject::instance()->setDistanceUnits( Qgis::DistanceUnit::Meters );
 
   QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( 2484587, 2399800 );
 
@@ -308,7 +307,7 @@ void TestQgsMapToolIdentifyAction::lengthCalculation()
   canvas->setExtent( f1.geometry().boundingBox() );
   QgsProject::instance()->setCrs( srs );
   QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
-  QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceMeters );
+  QgsProject::instance()->setDistanceUnits( Qgis::DistanceUnit::Meters );
 
   QgsProject::instance()->writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/Automatic" ), false );
   QgsProject::instance()->writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DecimalPlaces" ), 3 );
@@ -326,7 +325,7 @@ void TestQgsMapToolIdentifyAction::lengthCalculation()
   QGSCOMPARENEAR( length, 26930.6, 0.1 );
 
   //check that project units are respected
-  QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceFeet );
+  QgsProject::instance()->setDistanceUnits( Qgis::DistanceUnit::Feet );
   result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
   derivedLength = result.at( 0 ).mDerivedAttributes[tr( "Length (Ellipsoidal — WGS84)" )];
@@ -349,7 +348,7 @@ void TestQgsMapToolIdentifyAction::lengthCalculation()
 
   // no conversion of Cartesian lengths between unit types
   s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), true );
-  QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceDegrees );
+  QgsProject::instance()->setDistanceUnits( Qgis::DistanceUnit::Degrees );
   result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
   derivedLength = result.at( 0 ).mDerivedAttributes[tr( "Length (Ellipsoidal — WGS84)" )];
@@ -434,7 +433,7 @@ void TestQgsMapToolIdentifyAction::perimeterCalculation()
   canvas->setExtent( f1.geometry().boundingBox() );
   QgsProject::instance()->setCrs( srs );
   QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
-  QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceMeters );
+  QgsProject::instance()->setDistanceUnits( Qgis::DistanceUnit::Meters );
 
   QgsProject::instance()->writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/Automatic" ), false );
   QgsProject::instance()->writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DecimalPlaces" ), 3 );
@@ -452,7 +451,7 @@ void TestQgsMapToolIdentifyAction::perimeterCalculation()
   QCOMPARE( perimeter, 128282.086 );
 
   //check that project units are respected
-  QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceFeet );
+  QgsProject::instance()->setDistanceUnits( Qgis::DistanceUnit::Feet );
   result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
   derivedPerimeter = result.at( 0 ).mDerivedAttributes[tr( "Perimeter (Ellipsoidal — WGS84)" )];
@@ -475,7 +474,7 @@ void TestQgsMapToolIdentifyAction::perimeterCalculation()
 
   // no conversion of Cartesian lengths between unit types
   s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), true );
-  QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceDegrees );
+  QgsProject::instance()->setDistanceUnits( Qgis::DistanceUnit::Degrees );
   result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
   derivedPerimeter = result.at( 0 ).mDerivedAttributes[tr( "Perimeter (Ellipsoidal — WGS84)" )];
@@ -512,7 +511,7 @@ void TestQgsMapToolIdentifyAction::areaCalculation()
   canvas->setExtent( f1.geometry().boundingBox() );
   QgsProject::instance()->setCrs( srs );
   QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
-  QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareMeters );
+  QgsProject::instance()->setAreaUnits( Qgis::AreaUnit::SquareMeters );
 
   QgsProject::instance()->writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/Automatic" ), false );
   QgsProject::instance()->writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DecimalPlaces" ), 3 );
@@ -530,7 +529,7 @@ void TestQgsMapToolIdentifyAction::areaCalculation()
   QGSCOMPARENEAR( area, 1005640568.0, 1.0 );
 
   //check that project units are respected
-  QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareMiles );
+  QgsProject::instance()->setAreaUnits( Qgis::AreaUnit::SquareMiles );
   result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
   derivedArea = result.at( 0 ).mDerivedAttributes[tr( "Area (Ellipsoidal — WGS84)" )];
@@ -542,7 +541,7 @@ void TestQgsMapToolIdentifyAction::areaCalculation()
 
   //test unchecked "keep base units" setting
   s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), false );
-  QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareFeet );
+  QgsProject::instance()->setAreaUnits( Qgis::AreaUnit::SquareFeet );
   result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
   derivedArea = result.at( 0 ).mDerivedAttributes[tr( "Area (Ellipsoidal — WGS84)" )];
@@ -554,7 +553,7 @@ void TestQgsMapToolIdentifyAction::areaCalculation()
 
   // no conversion of Cartesian lengths between unit types
   s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), true );
-  QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareDegrees );
+  QgsProject::instance()->setAreaUnits( Qgis::AreaUnit::SquareDegrees );
   result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
   derivedArea = result.at( 0 ).mDerivedAttributes[tr( "Area (Ellipsoidal — WGS84)" )];

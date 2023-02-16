@@ -72,7 +72,6 @@
 #include "qgsexpressioncontext.h"
 #include "qgsfeedback.h"
 #include "qgsxmlutils.h"
-#include "qgsunittypes.h"
 #include "qgstaskmanager.h"
 #include "qgstransaction.h"
 #include "qgsauxiliarystorage.h"
@@ -5298,7 +5297,7 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
     return false;
   }
 
-  QgsUnitTypes::RenderUnit sldUnitSize = QgsUnitTypes::RenderPixels;
+  Qgis::RenderUnit sldUnitSize = Qgis::RenderUnit::Pixels;
   if ( textSymbolizerElem.hasAttribute( QStringLiteral( "uom" ) ) )
   {
     sldUnitSize = QgsSymbolLayerUtils::decodeSldUom( textSymbolizerElem.attribute( QStringLiteral( "uom" ) ) );
@@ -5306,7 +5305,7 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
 
   QString fontFamily = QStringLiteral( "Sans-Serif" );
   int fontPointSize = 10;
-  QgsUnitTypes::RenderUnit fontUnitSize = QgsUnitTypes::RenderPoints;
+  Qgis::RenderUnit fontUnitSize = Qgis::RenderUnit::Points;
   int fontWeight = -1;
   bool fontItalic = false;
   bool fontUnderline = false;

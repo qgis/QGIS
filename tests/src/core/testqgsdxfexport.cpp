@@ -23,9 +23,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsfontutils.h"
 #include "qgsnullsymbolrenderer.h"
-#include "qgstextrenderer.h"
 #include "qgspallabeling.h"
-#include "qgslabelingengine.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgsvectorlayerlabeling.h"
 #include "qgslinesymbollayer.h"
@@ -1060,7 +1058,7 @@ void TestQgsDxfExport::testDashedLine()
   std::unique_ptr<QgsSimpleLineSymbolLayer> symbolLayer = std::make_unique<QgsSimpleLineSymbolLayer>( QColor( 0, 0, 0 ) );
   symbolLayer->setWidth( 0.11 );
   symbolLayer->setCustomDashVector( { 0.5, 0.35 } );
-  symbolLayer->setCustomDashPatternUnit( QgsUnitTypes::RenderUnit::RenderMapUnits );
+  symbolLayer->setCustomDashPatternUnit( Qgis::RenderUnit::MapUnits );
   symbolLayer->setUseCustomDashPattern( true );
 
   QgsLineSymbol *symbol = new QgsLineSymbol();
@@ -1181,7 +1179,7 @@ void TestQgsDxfExport::testTransform()
   std::unique_ptr<QgsSimpleLineSymbolLayer> symbolLayer = std::make_unique<QgsSimpleLineSymbolLayer>( QColor( 0, 0, 0 ) );
   symbolLayer->setWidth( 0.11 );
   symbolLayer->setCustomDashVector( { 0.5, 0.35 } );
-  symbolLayer->setCustomDashPatternUnit( QgsUnitTypes::RenderUnit::RenderMapUnits );
+  symbolLayer->setCustomDashPatternUnit( Qgis::RenderUnit::MapUnits );
   symbolLayer->setUseCustomDashPattern( true );
 
   QgsLineSymbol *symbol = new QgsLineSymbol();

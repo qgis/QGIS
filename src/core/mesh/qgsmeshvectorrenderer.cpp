@@ -17,9 +17,7 @@
 
 #include "qgsmeshvectorrenderer.h"
 #include "qgsrendercontext.h"
-#include "qgscoordinatetransform.h"
 #include "qgsmaptopixel.h"
-#include "qgsunittypes.h"
 #include "qgsmeshlayerutils.h"
 #include "qgsmeshtracerenderer.h"
 
@@ -80,7 +78,7 @@ QgsMeshVectorArrowRenderer::QgsMeshVectorArrowRenderer(
   // we need to expand out the extent so that it includes
   // arrows which start or end up outside of the
   // actual visible extent
-  const double extension = context.convertToMapUnits( calcExtentBufferSize(), QgsUnitTypes::RenderPixels );
+  const double extension = context.convertToMapUnits( calcExtentBufferSize(), Qgis::RenderUnit::Pixels );
   mBufferedExtent.setXMinimum( mBufferedExtent.xMinimum() - extension );
   mBufferedExtent.setXMaximum( mBufferedExtent.xMaximum() + extension );
   mBufferedExtent.setYMinimum( mBufferedExtent.yMinimum() - extension );
@@ -104,7 +102,7 @@ void QgsMeshVectorArrowRenderer::draw()
   pen.setJoinStyle( Qt::MiterJoin );
 
   const double penWidth = mContext.convertToPainterUnits( mCfg.lineWidth(),
-                          QgsUnitTypes::RenderUnit::RenderMillimeters );
+                          Qgis::RenderUnit::Millimeters );
   pen.setWidthF( penWidth );
   painter->setPen( pen );
 
@@ -163,9 +161,9 @@ bool QgsMeshVectorArrowRenderer::calcVectorLineEnd(
     case QgsMeshRendererVectorArrowSettings::ArrowScalingMethod::MinMax:
     {
       const double minShaftLength = mContext.convertToPainterUnits( mCfg.arrowSettings().minShaftLength(),
-                                    QgsUnitTypes::RenderUnit::RenderMillimeters );
+                                    Qgis::RenderUnit::Millimeters );
       const double maxShaftLength = mContext.convertToPainterUnits( mCfg.arrowSettings().maxShaftLength(),
-                                    QgsUnitTypes::RenderUnit::RenderMillimeters );
+                                    Qgis::RenderUnit::Millimeters );
       const double minVal = mMinMag;
       const double maxVal = mMaxMag;
       const double k = ( magnitude - minVal ) / ( maxVal - minVal );
@@ -185,7 +183,7 @@ bool QgsMeshVectorArrowRenderer::calcVectorLineEnd(
     {
       // We must be using a fixed length
       const double fixedShaftLength = mContext.convertToPainterUnits( mCfg.arrowSettings().fixedShaftLength(),
-                                      QgsUnitTypes::RenderUnit::RenderMillimeters );
+                                      Qgis::RenderUnit::Millimeters );
       xDist = cosAlpha * fixedShaftLength;
       yDist = sinAlpha * fixedShaftLength;
       break;
@@ -222,7 +220,7 @@ double QgsMeshVectorArrowRenderer::calcExtentBufferSize() const
     case QgsMeshRendererVectorArrowSettings::ArrowScalingMethod::MinMax:
     {
       buffer = mContext.convertToPainterUnits( mCfg.arrowSettings().maxShaftLength(),
-               QgsUnitTypes::RenderUnit::RenderMillimeters );
+               Qgis::RenderUnit::Millimeters );
       break;
     }
     case QgsMeshRendererVectorArrowSettings::ArrowScalingMethod::Scaled:
@@ -233,7 +231,7 @@ double QgsMeshVectorArrowRenderer::calcExtentBufferSize() const
     case QgsMeshRendererVectorArrowSettings::ArrowScalingMethod::Fixed:
     {
       buffer = mContext.convertToPainterUnits( mCfg.arrowSettings().fixedShaftLength(),
-               QgsUnitTypes::RenderUnit::RenderMillimeters );
+               Qgis::RenderUnit::Millimeters );
       break;
     }
   }

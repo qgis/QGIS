@@ -420,7 +420,7 @@ Ownership is transferred to the caller.
 Converts the symbol to a SLD representation.
 %End
 
-    QgsUnitTypes::RenderUnit outputUnit() const;
+    Qgis::RenderUnit outputUnit() const;
 %Docstring
 Returns the units to use for sizes and widths within the symbol. Individual
 symbol layer definitions will interpret this in different ways, e.g., a marker symbol
@@ -439,7 +439,7 @@ Returns ``True`` if the symbol has any components which use map unit based sizes
 .. versionadded:: 3.18
 %End
 
-    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) const;
+    void setOutputUnit( Qgis::RenderUnit unit ) const;
 %Docstring
 Sets the units to use for sizes and widths within the symbol. Individual
 symbol definitions will interpret this in different ways, e.g., a marker symbol

@@ -329,7 +329,7 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer )
       {
         QgsCoordinateTransform toleranceTransform = ct;
         QgsPointXY center = context.extent().center();
-        double rectSize = toleranceTransform.sourceCrs().mapUnits() == QgsUnitTypes::DistanceDegrees ? 0.0008983 /* ~100/(40075014/360=111319.4833) */ : 100;
+        double rectSize = toleranceTransform.sourceCrs().mapUnits() == Qgis::DistanceUnit::Degrees ? 0.0008983 /* ~100/(40075014/360=111319.4833) */ : 100;
 
         QgsRectangle sourceRect = QgsRectangle( center.x(), center.y(), center.x() + rectSize, center.y() + rectSize );
         toleranceTransform.setBallparkTransformsAreAppropriate( true );

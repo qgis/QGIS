@@ -678,7 +678,7 @@ Convenience function to set topological editing
 Convenience function to query topological editing status
 %End
 
-    QgsUnitTypes::DistanceUnit distanceUnits() const;
+    Qgis::DistanceUnit distanceUnits() const;
 %Docstring
 Convenience function to query default distance measurement units for project.
 
@@ -689,7 +689,7 @@ Convenience function to query default distance measurement units for project.
 .. versionadded:: 2.14
 %End
 
-    void setDistanceUnits( QgsUnitTypes::DistanceUnit unit );
+    void setDistanceUnits( Qgis::DistanceUnit unit );
 %Docstring
 Sets the default distance measurement units for the project.
 
@@ -700,7 +700,7 @@ Sets the default distance measurement units for the project.
 .. versionadded:: 3.0
 %End
 
-    QgsUnitTypes::AreaUnit areaUnits() const;
+    Qgis::AreaUnit areaUnits() const;
 %Docstring
 Convenience function to query default area measurement units for project.
 
@@ -709,7 +709,7 @@ Convenience function to query default area measurement units for project.
 .. versionadded:: 2.14
 %End
 
-    void setAreaUnits( QgsUnitTypes::AreaUnit unit );
+    void setAreaUnits( Qgis::AreaUnit unit );
 %Docstring
 Sets the default area measurement units for the project.
 

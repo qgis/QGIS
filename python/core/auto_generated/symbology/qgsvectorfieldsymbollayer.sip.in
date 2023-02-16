@@ -98,9 +98,9 @@ Creates the symbol layer
     void setAngleUnits( AngleUnits units );
     AngleUnits angleUnits() const;
 
-    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    virtual void setOutputUnit( Qgis::RenderUnit unit );
 
-    virtual QgsUnitTypes::RenderUnit outputUnit() const;
+    virtual Qgis::RenderUnit outputUnit() const;
 
 
     virtual void setMapUnitScale( const QgsMapUnitScale &scale );
@@ -108,7 +108,7 @@ Creates the symbol layer
     virtual QgsMapUnitScale mapUnitScale() const;
 
 
-    void setDistanceUnit( QgsUnitTypes::RenderUnit unit );
+    void setDistanceUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the units for the distance.
 
@@ -117,7 +117,7 @@ Sets the units for the distance.
 .. seealso:: :py:func:`distanceUnit`
 %End
 
-    QgsUnitTypes::RenderUnit distanceUnit() const;
+    Qgis::RenderUnit distanceUnit() const;
 %Docstring
 Returns the units for the distance.
 

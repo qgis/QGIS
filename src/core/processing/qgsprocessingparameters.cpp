@@ -7403,7 +7403,7 @@ bool QgsProcessingParameterDistance::fromVariantMap( const QVariantMap &map )
 {
   QgsProcessingParameterNumber::fromVariantMap( map );
   mParentParameterName = map.value( QStringLiteral( "parent" ) ).toString();
-  mDefaultUnit = static_cast< QgsUnitTypes::DistanceUnit>( map.value( QStringLiteral( "default_unit" ), QgsUnitTypes::DistanceUnknownUnit ).toInt() );
+  mDefaultUnit = static_cast< Qgis::DistanceUnit>( map.value( QStringLiteral( "default_unit" ), static_cast< int >( Qgis::DistanceUnit::Unknown ) ).toInt() );
   return true;
 }
 
@@ -7460,7 +7460,7 @@ QVariantMap QgsProcessingParameterDuration::toVariantMap() const
 bool QgsProcessingParameterDuration::fromVariantMap( const QVariantMap &map )
 {
   QgsProcessingParameterNumber::fromVariantMap( map );
-  mDefaultUnit = static_cast< QgsUnitTypes::TemporalUnit>( map.value( QStringLiteral( "default_unit" ), QgsUnitTypes::TemporalDays ).toInt() );
+  mDefaultUnit = static_cast< Qgis::TemporalUnit>( map.value( QStringLiteral( "default_unit" ), static_cast< int >( Qgis::TemporalUnit::Days ) ).toInt() );
   return true;
 }
 

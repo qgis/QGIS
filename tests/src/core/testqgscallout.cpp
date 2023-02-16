@@ -42,6 +42,7 @@
 #include "qgslinesymbol.h"
 #include "qgsfillsymbol.h"
 #include "qgsmarkersymbol.h"
+#include "qgslayoutexporter.h"
 
 //qgis test includes
 #include "qgsmultirenderchecker.h"

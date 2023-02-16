@@ -19,10 +19,10 @@
 #include "qgslayoutitemlabel.h"
 #include "qgslayout.h"
 #include "qgsexpressionbuilderdialog.h"
-#include "qgsguiutils.h"
 #include "qgslayoutitemmap.h"
 #include "qgsvectorlayer.h"
 #include "qgsprojoperation.h"
+#include "qgslayoutreportcontext.h"
 
 #include <QColorDialog>
 #include <QFontDialog>

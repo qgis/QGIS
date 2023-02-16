@@ -103,7 +103,7 @@ Units are specified by :py:func:`~QgsSimpleFillSymbolLayer.offsetUnit`.
 .. seealso:: :py:func:`offsetUnit`
 %End
 
-    void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit );
+    void setStrokeWidthUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the units for the width of the fill's stroke.
 
@@ -112,7 +112,7 @@ Sets the units for the width of the fill's stroke.
 .. seealso:: :py:func:`strokeWidthUnit`
 %End
 
-    QgsUnitTypes::RenderUnit strokeWidthUnit() const;
+    Qgis::RenderUnit strokeWidthUnit() const;
 %Docstring
 Returns the units for the width of the fill's stroke.
 
@@ -122,7 +122,7 @@ Returns the units for the width of the fill's stroke.
     void setStrokeWidthMapUnitScale( const QgsMapUnitScale &scale );
     const QgsMapUnitScale &strokeWidthMapUnitScale() const;
 
-    void setOffsetUnit( QgsUnitTypes::RenderUnit unit );
+    void setOffsetUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the ``unit`` for the fill's offset.
 
@@ -131,7 +131,7 @@ Sets the ``unit`` for the fill's offset.
 .. seealso:: :py:func:`offsetUnit`
 %End
 
-    QgsUnitTypes::RenderUnit offsetUnit() const;
+    Qgis::RenderUnit offsetUnit() const;
 %Docstring
 Returns the units for the fill's offset.
 
@@ -158,9 +158,9 @@ Returns the map unit scale for the fill's offset.
 .. seealso:: :py:func:`setOffsetMapUnitScale`
 %End
 
-    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    virtual void setOutputUnit( Qgis::RenderUnit unit );
 
-    virtual QgsUnitTypes::RenderUnit outputUnit() const;
+    virtual Qgis::RenderUnit outputUnit() const;
 
     virtual bool usesMapUnits() const;
 
@@ -413,7 +413,7 @@ Units are specified by :py:func:`~QgsGradientFillSymbolLayer.offsetUnit`.
 .. seealso:: :py:func:`offsetUnit`
 %End
 
-    void setOffsetUnit( QgsUnitTypes::RenderUnit unit );
+    void setOffsetUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the ``unit`` for the fill's offset.
 
@@ -422,7 +422,7 @@ Sets the ``unit`` for the fill's offset.
 .. seealso:: :py:func:`offsetUnit`
 %End
 
-    QgsUnitTypes::RenderUnit offsetUnit() const;
+    Qgis::RenderUnit offsetUnit() const;
 %Docstring
 Returns the units for the fill's offset.
 
@@ -449,9 +449,9 @@ Returns the map unit scale for the fill's offset.
 .. seealso:: :py:func:`setOffsetMapUnitScale`
 %End
 
-    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    virtual void setOutputUnit( Qgis::RenderUnit unit );
 
-    virtual QgsUnitTypes::RenderUnit outputUnit() const;
+    virtual Qgis::RenderUnit outputUnit() const;
 
     virtual bool usesMapUnits() const;
 
@@ -592,7 +592,7 @@ Returns the maximum distance from the shape's boundary which is shaded. This par
 .. versionadded:: 2.3
 %End
 
-    void setDistanceUnit( QgsUnitTypes::RenderUnit unit );
+    void setDistanceUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the unit for the maximum distance to shade inside of the shape from the polygon's boundary.
 
@@ -605,7 +605,7 @@ Sets the unit for the maximum distance to shade inside of the shape from the pol
 .. versionadded:: 2.3
 %End
 
-    QgsUnitTypes::RenderUnit distanceUnit() const;
+    Qgis::RenderUnit distanceUnit() const;
 %Docstring
 Returns the unit for the maximum distance to shade inside of the shape from the polygon's boundary.
 
@@ -758,7 +758,7 @@ Returns the offset for the shapeburst fill.
 .. versionadded:: 2.3
 %End
 
-    void setOffsetUnit( QgsUnitTypes::RenderUnit unit );
+    void setOffsetUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the units used for the offset for the shapeburst fill.
 
@@ -771,7 +771,7 @@ Sets the units used for the offset for the shapeburst fill.
 .. versionadded:: 2.3
 %End
 
-    QgsUnitTypes::RenderUnit offsetUnit() const;
+    Qgis::RenderUnit offsetUnit() const;
 %Docstring
 Returns the units used for the offset of the shapeburst fill.
 
@@ -787,9 +787,9 @@ Returns the units used for the offset of the shapeburst fill.
     void setOffsetMapUnitScale( const QgsMapUnitScale &scale );
     const QgsMapUnitScale &offsetMapUnitScale() const;
 
-    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    virtual void setOutputUnit( Qgis::RenderUnit unit );
 
-    virtual QgsUnitTypes::RenderUnit outputUnit() const;
+    virtual Qgis::RenderUnit outputUnit() const;
 
     virtual bool usesMapUnits() const;
 
@@ -820,7 +820,7 @@ Base class for polygon renderers generating texture images
     virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
 
-    void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit );
+    void setStrokeWidthUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the ``units`` fo the symbol's stroke width.
 
@@ -829,7 +829,7 @@ Sets the ``units`` fo the symbol's stroke width.
 .. seealso:: :py:func:`setStrokeWidthMapUnitScale`
 %End
 
-    QgsUnitTypes::RenderUnit strokeWidthUnit() const;
+    Qgis::RenderUnit strokeWidthUnit() const;
 %Docstring
 Returns the units for the symbol's stroke width.
 
@@ -882,9 +882,9 @@ fill is positioned relative to the feature.
 .. versionadded:: 3.24
 %End
 
-    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    virtual void setOutputUnit( Qgis::RenderUnit unit );
 
-    virtual QgsUnitTypes::RenderUnit outputUnit() const;
+    virtual Qgis::RenderUnit outputUnit() const;
 
     virtual void setMapUnitScale( const QgsMapUnitScale &scale );
 
@@ -977,7 +977,7 @@ Used internally when reading/writing symbols.
 
     virtual QColor color() const;
 
-    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    virtual void setOutputUnit( Qgis::RenderUnit unit );
 
 
     virtual QgsSymbol *subSymbol();
@@ -1066,7 +1066,7 @@ Returns the offset for the fill.
 .. seealso:: :py:func:`offsetMapUnitScale`
 %End
 
-    void setOffsetUnit( const QgsUnitTypes::RenderUnit unit );
+    void setOffsetUnit( const Qgis::RenderUnit unit );
 %Docstring
 Sets the units for the fill's offset.
 
@@ -1079,7 +1079,7 @@ Sets the units for the fill's offset.
 .. seealso:: :py:func:`setOffsetMapUnitScale`
 %End
 
-    QgsUnitTypes::RenderUnit offsetUnit() const;
+    Qgis::RenderUnit offsetUnit() const;
 %Docstring
 Returns the units for the fill's offset.
 
@@ -1146,7 +1146,7 @@ scaled to maintain the image's aspect ratio.
 .. seealso:: :py:func:`widthMapUnitScale`
 %End
 
-    void setWidthUnit( const QgsUnitTypes::RenderUnit unit );
+    void setWidthUnit( const Qgis::RenderUnit unit );
 %Docstring
 Sets the units for the image's width.
 
@@ -1159,7 +1159,7 @@ Sets the units for the image's width.
 .. seealso:: :py:func:`setWidthMapUnitScale`
 %End
 
-    QgsUnitTypes::RenderUnit widthUnit() const;
+    Qgis::RenderUnit widthUnit() const;
 %Docstring
 Returns the units for the image's width.
 
@@ -1399,7 +1399,7 @@ retrieved via :py:func:`~QgsSVGFillSymbolLayer.setSvgStrokeWidthUnit`
 .. seealso:: :py:func:`svgStrokeWidthMapUnitScale`
 %End
 
-    void setPatternWidthUnit( QgsUnitTypes::RenderUnit unit );
+    void setPatternWidthUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the ``unit`` for the width of the SVG images in the pattern.
 
@@ -1410,7 +1410,7 @@ Sets the ``unit`` for the width of the SVG images in the pattern.
 .. seealso:: :py:func:`setPatternWidthMapUnitScale`
 %End
 
-    QgsUnitTypes::RenderUnit patternWidthUnit() const;
+    Qgis::RenderUnit patternWidthUnit() const;
 %Docstring
 Returns the units for the width of the SVG images in the pattern.
 
@@ -1443,7 +1443,7 @@ Returns the map unit scale for the pattern's width.
 .. seealso:: :py:func:`patternWidthUnit`
 %End
 
-    void setSvgStrokeWidthUnit( QgsUnitTypes::RenderUnit unit );
+    void setSvgStrokeWidthUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the ``unit`` for the stroke width.
 
@@ -1454,7 +1454,7 @@ Sets the ``unit`` for the stroke width.
 .. seealso:: :py:func:`setSvgStrokeWidthMapUnitScale`
 %End
 
-    QgsUnitTypes::RenderUnit svgStrokeWidthUnit() const;
+    Qgis::RenderUnit svgStrokeWidthUnit() const;
 %Docstring
 Returns the units for the stroke width.
 
@@ -1487,9 +1487,9 @@ Returns the map unit scale for the pattern's stroke.
 .. seealso:: :py:func:`svgStrokeWidthUnit`
 %End
 
-    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    virtual void setOutputUnit( Qgis::RenderUnit unit );
 
-    virtual QgsUnitTypes::RenderUnit outputUnit() const;
+    virtual Qgis::RenderUnit outputUnit() const;
 
 
     virtual void setMapUnitScale( const QgsMapUnitScale &scale );
@@ -1653,7 +1653,7 @@ Units are retrieved via :py:func:`~QgsLinePatternFillSymbolLayer.offsetUnit`.
 .. seealso:: :py:func:`offsetMapUnitScale`
 %End
 
-    void setDistanceUnit( QgsUnitTypes::RenderUnit unit );
+    void setDistanceUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the ``unit`` for the distance between lines in the fill pattern.
 
@@ -1662,7 +1662,7 @@ Sets the ``unit`` for the distance between lines in the fill pattern.
 .. seealso:: :py:func:`setDistance`
 %End
 
-    QgsUnitTypes::RenderUnit distanceUnit() const;
+    Qgis::RenderUnit distanceUnit() const;
 %Docstring
 Returns the units for the distance between lines in the fill pattern.
 
@@ -1693,14 +1693,14 @@ Returns the map unit scale for the pattern's line distance.
 .. seealso:: :py:func:`distanceUnit`
 %End
 
-    void setLineWidthUnit( QgsUnitTypes::RenderUnit unit );
+    void setLineWidthUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the ``unit`` for the line's width.
 
 .. seealso:: :py:func:`lineWidthUnit`
 %End
 
-    QgsUnitTypes::RenderUnit lineWidthUnit() const;
+    Qgis::RenderUnit lineWidthUnit() const;
 %Docstring
 Returns the units for the line's width.
 
@@ -1729,14 +1729,14 @@ Returns the map unit scale for the pattern's line width.
 .. seealso:: :py:func:`lineWidthUnit`
 %End
 
-    void setOffsetUnit( QgsUnitTypes::RenderUnit unit );
+    void setOffsetUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the ``unit`` for the line pattern's offset.
 
 .. seealso:: :py:func:`offsetUnit`
 %End
 
-    QgsUnitTypes::RenderUnit offsetUnit() const;
+    Qgis::RenderUnit offsetUnit() const;
 %Docstring
 Returns the units for the line pattern's offset.
 
@@ -1783,9 +1783,9 @@ Sets the line clipping ``mode``, which defines how lines are clipped at the edge
 .. versionadded:: 3.24
 %End
 
-    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    virtual void setOutputUnit( Qgis::RenderUnit unit );
 
-    virtual QgsUnitTypes::RenderUnit outputUnit() const;
+    virtual Qgis::RenderUnit outputUnit() const;
 
     virtual bool usesMapUnits() const;
 
@@ -1862,9 +1862,9 @@ Caller takes ownership of the returned symbol layer.
 
     virtual QgsSymbol *subSymbol();
 
-    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    virtual void setOutputUnit( Qgis::RenderUnit unit );
 
-    virtual QgsUnitTypes::RenderUnit outputUnit() const;
+    virtual Qgis::RenderUnit outputUnit() const;
 
     virtual bool usesMapUnits() const;
 
@@ -1907,7 +1907,7 @@ Units are set via :py:func:`~QgsPointPatternFillSymbolLayer.setDistanceXUnit`.
 .. seealso:: :py:func:`setDistanceXMapUnitScale`
 %End
 
-    void setDistanceXUnit( QgsUnitTypes::RenderUnit unit );
+    void setDistanceXUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the ``unit`` for the horizontal distance between points in the pattern.
 
@@ -1918,7 +1918,7 @@ Sets the ``unit`` for the horizontal distance between points in the pattern.
 .. seealso:: :py:func:`setDistanceYUnit`
 %End
 
-    QgsUnitTypes::RenderUnit distanceXUnit() const;
+    Qgis::RenderUnit distanceXUnit() const;
 %Docstring
 Returns the units for the horizontal distance between points in the pattern.
 
@@ -1971,7 +1971,7 @@ Units are set via :py:func:`~QgsPointPatternFillSymbolLayer.setDistanceYUnit`.
 .. seealso:: :py:func:`setDistanceYMapUnitScale`
 %End
 
-    void setDistanceYUnit( QgsUnitTypes::RenderUnit unit );
+    void setDistanceYUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the ``unit`` for the vertical distance between points in the pattern.
 
@@ -1982,7 +1982,7 @@ Sets the ``unit`` for the vertical distance between points in the pattern.
 .. seealso:: :py:func:`setDistanceXUnit`
 %End
 
-    QgsUnitTypes::RenderUnit distanceYUnit() const;
+    Qgis::RenderUnit distanceYUnit() const;
 %Docstring
 Returns the units for the vertical distance between points in the pattern.
 
@@ -2035,7 +2035,7 @@ Units are set via :py:func:`~QgsPointPatternFillSymbolLayer.setDisplacementXUnit
 .. seealso:: :py:func:`setDisplacementXMapUnitScale`
 %End
 
-    void setDisplacementXUnit( QgsUnitTypes::RenderUnit unit );
+    void setDisplacementXUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the units for the horizontal displacement between rows in the pattern.
 
@@ -2046,7 +2046,7 @@ Sets the units for the horizontal displacement between rows in the pattern.
 .. seealso:: :py:func:`setDisplacementYUnit`
 %End
 
-    QgsUnitTypes::RenderUnit displacementXUnit() const;
+    Qgis::RenderUnit displacementXUnit() const;
 %Docstring
 Returns the units for the horizontal displacement between rows in the pattern.
 
@@ -2099,7 +2099,7 @@ Units are set via :py:func:`~QgsPointPatternFillSymbolLayer.setDisplacementYUnit
 .. seealso:: :py:func:`setDisplacementYMapUnitScale`
 %End
 
-    void setDisplacementYUnit( QgsUnitTypes::RenderUnit unit );
+    void setDisplacementYUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the units for the vertical displacement between rows in the pattern.
 
@@ -2110,7 +2110,7 @@ Sets the units for the vertical displacement between rows in the pattern.
 .. seealso:: :py:func:`setDisplacementXUnit`
 %End
 
-    QgsUnitTypes::RenderUnit displacementYUnit() const;
+    Qgis::RenderUnit displacementYUnit() const;
 %Docstring
 Returns the units for the vertical displacement between rows in the pattern.
 
@@ -2185,7 +2185,7 @@ Returns the vertical offset values for points in the pattern.
 .. versionadded:: 3.8
 %End
 
-    void setOffsetXUnit( QgsUnitTypes::RenderUnit unit );
+    void setOffsetXUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the units for the horizontal offset between rows in the pattern.
 
@@ -2198,7 +2198,7 @@ Sets the units for the horizontal offset between rows in the pattern.
 .. versionadded:: 3.8
 %End
 
-    QgsUnitTypes::RenderUnit offsetXUnit() const;
+    Qgis::RenderUnit offsetXUnit() const;
 %Docstring
 Returns the units for the horizontal offset for rows in the pattern.
 
@@ -2233,7 +2233,7 @@ Returns the unit scale for the horizontal offset for rows in the pattern.
 .. versionadded:: 3.8
 %End
 
-    void setOffsetYUnit( QgsUnitTypes::RenderUnit unit );
+    void setOffsetYUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the units for the vertical offset for rows in the pattern.
 
@@ -2246,7 +2246,7 @@ Sets the units for the vertical offset for rows in the pattern.
 .. versionadded:: 3.8
 %End
 
-    QgsUnitTypes::RenderUnit offsetYUnit() const;
+    Qgis::RenderUnit offsetYUnit() const;
 %Docstring
 Returns the units for the vertical offset for rows in the pattern.
 
@@ -2351,7 +2351,7 @@ Units are retrieved via :py:func:`~QgsPointPatternFillSymbolLayer.maximumRandomD
 .. versionadded:: 3.24
 %End
 
-    void setRandomDeviationXUnit( QgsUnitTypes::RenderUnit unit );
+    void setRandomDeviationXUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the ``unit`` for the horizontal random deviation of points in the pattern.
 
@@ -2362,7 +2362,7 @@ Sets the ``unit`` for the horizontal random deviation of points in the pattern.
 .. versionadded:: 3.24
 %End
 
-    QgsUnitTypes::RenderUnit randomDeviationXUnit() const;
+    Qgis::RenderUnit randomDeviationXUnit() const;
 %Docstring
 Returns the units for the horizontal random deviation of points in the pattern.
 
@@ -2373,7 +2373,7 @@ Returns the units for the horizontal random deviation of points in the pattern.
 .. versionadded:: 3.24
 %End
 
-    void setRandomDeviationYUnit( QgsUnitTypes::RenderUnit unit );
+    void setRandomDeviationYUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the ``unit`` for the vertical random deviation of points in the pattern.
 
@@ -2384,7 +2384,7 @@ Sets the ``unit`` for the vertical random deviation of points in the pattern.
 .. versionadded:: 3.24
 %End
 
-    QgsUnitTypes::RenderUnit randomDeviationYUnit() const;
+    Qgis::RenderUnit randomDeviationYUnit() const;
 %Docstring
 Returns the units for the vertical random deviation of points in the pattern.
 
@@ -2545,9 +2545,9 @@ Caller takes ownership of the returned symbol layer.
     virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
 
 
-    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    virtual void setOutputUnit( Qgis::RenderUnit unit );
 
-    virtual QgsUnitTypes::RenderUnit outputUnit() const;
+    virtual Qgis::RenderUnit outputUnit() const;
 
     virtual bool usesMapUnits() const;
 
@@ -2639,7 +2639,7 @@ Sets the density ``area`` used to count the number of points to randomly fill th
 .. seealso:: :py:func:`densityArea`
 %End
 
-    void setDensityAreaUnit( QgsUnitTypes::RenderUnit unit );
+    void setDensityAreaUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the units for the density area.
 
@@ -2648,7 +2648,7 @@ Sets the units for the density area.
 .. seealso:: :py:func:`densityAreaUnit`
 %End
 
-    QgsUnitTypes::RenderUnit densityAreaUnit() const;
+    Qgis::RenderUnit densityAreaUnit() const;
 %Docstring
 Returns the units for the density area.
 
@@ -2731,9 +2731,9 @@ Caller takes ownership of the returned symbol layer.
 
     virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
 
-    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    virtual void setOutputUnit( Qgis::RenderUnit unit );
 
-    virtual QgsUnitTypes::RenderUnit outputUnit() const;
+    virtual Qgis::RenderUnit outputUnit() const;
 
     virtual bool usesMapUnits() const;
 

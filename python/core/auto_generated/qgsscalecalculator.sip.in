@@ -23,7 +23,7 @@ and monitor dpi.
   public:
 
     QgsScaleCalculator( double dpi = 0,
-                        QgsUnitTypes::DistanceUnit mapUnits = QgsUnitTypes::DistanceMeters );
+                        Qgis::DistanceUnit mapUnits = Qgis::DistanceUnit::Meters );
 %Docstring
 Constructor
 
@@ -45,14 +45,14 @@ Returns the DPI (dots per inch) used in scale calculations.
 .. seealso:: :py:func:`setDpi`
 %End
 
-    void setMapUnits( QgsUnitTypes::DistanceUnit mapUnits );
+    void setMapUnits( Qgis::DistanceUnit mapUnits );
 %Docstring
 Set the map units
 
 :param mapUnits: Units of the data on the map. Must match a value from the
 %End
 
-    QgsUnitTypes::DistanceUnit mapUnits() const;
+    Qgis::DistanceUnit mapUnits() const;
 %Docstring
 Returns current map units
 %End

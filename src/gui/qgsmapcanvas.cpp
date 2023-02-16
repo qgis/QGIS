@@ -1124,7 +1124,7 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
       }
       catch ( QgsCsException & )
       {
-        displayPrecision = crs.mapUnits() == QgsUnitTypes::DistanceDegrees ? 5 : 3;
+        displayPrecision = crs.mapUnits() == Qgis::DistanceUnit::Degrees ? 5 : 3;
       }
 
       const QList< Qgis::CrsAxisDirection > axisList = crs.axisOrdering();
@@ -2866,7 +2866,7 @@ double QgsMapCanvas::mapUnitsPerPixel() const
   return mapSettings().mapUnitsPerPixel();
 }
 
-QgsUnitTypes::DistanceUnit QgsMapCanvas::mapUnits() const
+Qgis::DistanceUnit QgsMapCanvas::mapUnits() const
 {
   return mapSettings().mapUnits();
 }

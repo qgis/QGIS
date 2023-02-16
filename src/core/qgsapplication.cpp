@@ -284,7 +284,7 @@ void QgsApplication::init( QString profileFolder )
     qRegisterMetaType<QgsDatabaseQueryLogEntry>( "QgsDatabaseQueryLogEntry" );
     qRegisterMetaType<QgsProcessingFeatureSourceDefinition>( "QgsProcessingFeatureSourceDefinition" );
     qRegisterMetaType<QgsProcessingOutputLayerDefinition>( "QgsProcessingOutputLayerDefinition" );
-    qRegisterMetaType<QgsUnitTypes::LayoutUnit>( "QgsUnitTypes::LayoutUnit" );
+    qRegisterMetaType<Qgis::LayoutUnit>( "Qgis::LayoutUnit" );
     qRegisterMetaType<QgsUnsetAttributeValue>( "QgsUnsetAttributeValue" );
     qRegisterMetaType<QgsFeatureId>( "QgsFeatureId" );
     qRegisterMetaType<QgsFields>( "QgsFields" );

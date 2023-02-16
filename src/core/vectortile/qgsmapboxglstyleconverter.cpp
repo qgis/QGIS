@@ -3545,12 +3545,12 @@ void QgsMapBoxGlStyleConversionContext::pushWarning( const QString &warning )
   mWarnings << warning;
 }
 
-QgsUnitTypes::RenderUnit QgsMapBoxGlStyleConversionContext::targetUnit() const
+Qgis::RenderUnit QgsMapBoxGlStyleConversionContext::targetUnit() const
 {
   return mTargetUnit;
 }
 
-void QgsMapBoxGlStyleConversionContext::setTargetUnit( QgsUnitTypes::RenderUnit targetUnit )
+void QgsMapBoxGlStyleConversionContext::setTargetUnit( Qgis::RenderUnit targetUnit )
 {
   mTargetUnit = targetUnit;
 }

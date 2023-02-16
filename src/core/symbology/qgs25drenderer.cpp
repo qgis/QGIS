@@ -21,7 +21,6 @@
 #include "qgsgloweffect.h"
 #include "qgsproperty.h"
 #include "qgssymbollayerutils.h"
-#include "qgsdatadefinedsizelegend.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgsfillsymbol.h"
 
@@ -91,7 +90,7 @@ Qgs25DRenderer::Qgs25DRenderer()
   QgsEffectStack *effectStack = new QgsEffectStack();
   QgsOuterGlowEffect *glowEffect = new QgsOuterGlowEffect();
   glowEffect->setBlurLevel( 5 );
-  glowEffect->setSpreadUnit( QgsUnitTypes::RenderMapUnits );
+  glowEffect->setSpreadUnit( Qgis::RenderUnit::MapUnits );
   effectStack->appendEffect( glowEffect );
   floor->setPaintEffect( effectStack );
 

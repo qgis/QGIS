@@ -375,7 +375,7 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       QVERIFY( ok );
 
       // test inclusion of a context setting
-      context.setDistanceUnit( QgsUnitTypes::DistanceMeters );
+      context.setDistanceUnit( Qgis::DistanceUnit::Meters );
       QCOMPARE( asQgisProcessCommand( params, context, ok ), QStringLiteral( "qgis_process run test --distance_units=meters --p1=a --p2=b --p2=c" ) );
       QVERIFY( ok );
 
@@ -439,7 +439,7 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       QCOMPARE( res, QStringLiteral( "{\"inputs\":{\"p1\":\"a\",\"p2\":[\"b\",\"c\"]}}" ) );
 
       // test inclusion of a context setting
-      context.setDistanceUnit( QgsUnitTypes::DistanceMeters );
+      context.setDistanceUnit( Qgis::DistanceUnit::Meters );
       res = QString::fromStdString( QgsJsonUtils::jsonFromVariant( asMap( params, context ) ).dump() );
       QCOMPARE( res, QStringLiteral( "{\"distance_units\":\"meters\",\"inputs\":{\"p1\":\"a\",\"p2\":[\"b\",\"c\"]}}" ) );
     }
@@ -1208,28 +1208,28 @@ void TestQgsProcessing::context()
   QCOMPARE( context.flags(), QgsProcessingContext::Flags() );
 
   QCOMPARE( context.ellipsoid(), QString() );
-  QCOMPARE( context.distanceUnit(), QgsUnitTypes::DistanceUnknownUnit );
-  QCOMPARE( context.areaUnit(), QgsUnitTypes::AreaUnknownUnit );
+  QCOMPARE( context.distanceUnit(), Qgis::DistanceUnit::Unknown );
+  QCOMPARE( context.areaUnit(), Qgis::AreaUnit::Unknown );
 
   QgsProject p;
   p.setCrs( QgsCoordinateReferenceSystem( "EPSG:4536" ) );
   p.setEllipsoid( QStringLiteral( "WGS84" ) );
-  p.setDistanceUnits( QgsUnitTypes::DistanceFeet );
-  p.setAreaUnits( QgsUnitTypes::AreaHectares );
+  p.setDistanceUnits( Qgis::DistanceUnit::Feet );
+  p.setAreaUnits( Qgis::AreaUnit::Hectares );
   context.setProject( &p );
   QCOMPARE( context.project(), &p );
   QCOMPARE( context.ellipsoid(), QStringLiteral( "WGS84" ) );
-  QCOMPARE( context.distanceUnit(), QgsUnitTypes::DistanceFeet );
-  QCOMPARE( context.areaUnit(), QgsUnitTypes::AreaHectares );
+  QCOMPARE( context.distanceUnit(), Qgis::DistanceUnit::Feet );
+  QCOMPARE( context.areaUnit(), Qgis::AreaUnit::Hectares );
 
   // if context ellipsoid/units are already set then setting the project shouldn't overwrite them
   p.setEllipsoid( QStringLiteral( "WGS84v2" ) );
-  p.setDistanceUnits( QgsUnitTypes::DistanceMiles );
-  p.setAreaUnits( QgsUnitTypes::AreaAcres );
+  p.setDistanceUnits( Qgis::DistanceUnit::Miles );
+  p.setAreaUnits( Qgis::AreaUnit::Acres );
   context.setProject( &p );
   QCOMPARE( context.ellipsoid(), QStringLiteral( "WGS84" ) );
-  QCOMPARE( context.distanceUnit(), QgsUnitTypes::DistanceFeet );
-  QCOMPARE( context.areaUnit(), QgsUnitTypes::AreaHectares );
+  QCOMPARE( context.distanceUnit(), Qgis::DistanceUnit::Feet );
+  QCOMPARE( context.areaUnit(), Qgis::AreaUnit::Hectares );
 
   context.setLogLevel( QgsProcessingContext::Verbose );
   QCOMPARE( static_cast< int >( context.logLevel() ), static_cast< int >( QgsProcessingContext::Verbose ) );
@@ -1381,10 +1381,10 @@ void TestQgsProcessing::contextToProcessArguments()
   QgsProcessingContext context;
 
   QCOMPARE( context.asQgisProcessArguments(), QStringList() );
-  context.setDistanceUnit( QgsUnitTypes::DistanceKilometers );
+  context.setDistanceUnit( Qgis::DistanceUnit::Kilometers );
   QCOMPARE( context.asQgisProcessArguments(), QStringList( {QStringLiteral( "--distance_units=km" )} ) );
 
-  context.setAreaUnit( QgsUnitTypes::AreaHectares );
+  context.setAreaUnit( Qgis::AreaUnit::Hectares );
   QCOMPARE( context.asQgisProcessArguments(), QStringList( {QStringLiteral( "--distance_units=km" ), QStringLiteral( "--area_units=ha" )} ) );
 
   context.setEllipsoid( QStringLiteral( "EPSG:7019" ) );
@@ -1419,12 +1419,12 @@ void TestQgsProcessing::contextToMap()
   QgsProcessingContext context;
 
   QCOMPARE( context.exportToMap(), QVariantMap() );
-  context.setDistanceUnit( QgsUnitTypes::DistanceKilometers );
+  context.setDistanceUnit( Qgis::DistanceUnit::Kilometers );
   QCOMPARE( context.exportToMap(), QVariantMap( {{
       QStringLiteral( "distance_units" ), QStringLiteral( "km" )
     }} ) );
 
-  context.setAreaUnit( QgsUnitTypes::AreaHectares );
+  context.setAreaUnit( Qgis::AreaUnit::Hectares );
   QCOMPARE( context.exportToMap(), QVariantMap(
   {
     {QStringLiteral( "distance_units" ), QStringLiteral( "km" )},
@@ -4923,12 +4923,12 @@ void TestQgsProcessing::parameterDistance()
   std::unique_ptr< QgsProcessingParameterDistance > def( new QgsProcessingParameterDistance( "non_optional", QString(), 5, QStringLiteral( "parent" ), false ) );
   QCOMPARE( def->parentParameterName(), QStringLiteral( "parent" ) );
   def->setParentParameterName( QStringLiteral( "parent2" ) );
-  QCOMPARE( def->defaultUnit(), QgsUnitTypes::DistanceUnknownUnit );
-  def->setDefaultUnit( QgsUnitTypes::DistanceFeet );
-  QCOMPARE( def->defaultUnit(), QgsUnitTypes::DistanceFeet );
+  QCOMPARE( def->defaultUnit(), Qgis::DistanceUnit::Unknown );
+  def->setDefaultUnit( Qgis::DistanceUnit::Feet );
+  QCOMPARE( def->defaultUnit(), Qgis::DistanceUnit::Feet );
   std::unique_ptr< QgsProcessingParameterDistance > clone( def->clone() );
   QCOMPARE( clone->parentParameterName(), QStringLiteral( "parent2" ) );
-  QCOMPARE( clone->defaultUnit(), QgsUnitTypes::DistanceFeet );
+  QCOMPARE( clone->defaultUnit(), Qgis::DistanceUnit::Feet );
 
   QCOMPARE( def->parentParameterName(), QStringLiteral( "parent2" ) );
   QVERIFY( def->checkValueIsAcceptable( 5 ) );
@@ -4999,7 +4999,7 @@ void TestQgsProcessing::parameterDistance()
   QCOMPARE( fromMap.maximum(), def->maximum() );
   QCOMPARE( fromMap.dataType(), def->dataType() );
   QCOMPARE( fromMap.parentParameterName(), QStringLiteral( "parent2" ) );
-  QCOMPARE( fromMap.defaultUnit(), QgsUnitTypes::DistanceFeet );
+  QCOMPARE( fromMap.defaultUnit(), Qgis::DistanceUnit::Feet );
   def.reset( dynamic_cast< QgsProcessingParameterDistance *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
   QVERIFY( dynamic_cast< QgsProcessingParameterDistance *>( def.get() ) );
 
@@ -5037,11 +5037,11 @@ void TestQgsProcessing::parameterDuration()
 
   // not optional!
   std::unique_ptr< QgsProcessingParameterDuration > def( new QgsProcessingParameterDuration( "non_optional", QString(), 5, false ) );
-  QCOMPARE( def->defaultUnit(), QgsUnitTypes::TemporalMilliseconds );
-  def->setDefaultUnit( QgsUnitTypes::TemporalDays );
-  QCOMPARE( def->defaultUnit(), QgsUnitTypes::TemporalDays );
+  QCOMPARE( def->defaultUnit(), Qgis::TemporalUnit::Milliseconds );
+  def->setDefaultUnit( Qgis::TemporalUnit::Days );
+  QCOMPARE( def->defaultUnit(), Qgis::TemporalUnit::Days );
   std::unique_ptr< QgsProcessingParameterDuration > clone( def->clone() );
-  QCOMPARE( clone->defaultUnit(), QgsUnitTypes::TemporalDays );
+  QCOMPARE( clone->defaultUnit(), Qgis::TemporalUnit::Days );
 
   QVERIFY( def->checkValueIsAcceptable( 5 ) );
   QVERIFY( def->checkValueIsAcceptable( "1.1" ) );
@@ -5110,7 +5110,7 @@ void TestQgsProcessing::parameterDuration()
   QCOMPARE( fromMap.minimum(), def->minimum() );
   QCOMPARE( fromMap.maximum(), def->maximum() );
   QCOMPARE( fromMap.dataType(), def->dataType() );
-  QCOMPARE( fromMap.defaultUnit(), QgsUnitTypes::TemporalDays );
+  QCOMPARE( fromMap.defaultUnit(), Qgis::TemporalUnit::Days );
   def.reset( dynamic_cast< QgsProcessingParameterDuration *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
   QVERIFY( dynamic_cast< QgsProcessingParameterDuration *>( def.get() ) );
 

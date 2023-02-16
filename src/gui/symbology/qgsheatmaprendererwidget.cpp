@@ -14,13 +14,8 @@
  ***************************************************************************/
 #include "qgsheatmaprendererwidget.h"
 #include "qgsheatmaprenderer.h"
-#include "qgsrendererregistry.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgstemporalcontroller.h"
-
-#include "qgssymbol.h"
-
-#include "qgslogger.h"
 #include "qgsvectorlayer.h"
 #include "qgscolorramp.h"
 #include "qgscolorrampbutton.h"
@@ -98,8 +93,12 @@ QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer *layer, QgsSt
   connect( mQualitySlider, &QSlider::valueChanged, this, &QgsHeatmapRendererWidget::mQualitySlider_valueChanged );
   this->layout()->setContentsMargins( 0, 0, 0, 0 );
 
-  mRadiusUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMapUnits
-                               << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mRadiusUnitWidget->setUnits( { Qgis::RenderUnit::Millimeters,
+                                 Qgis::RenderUnit::MetersInMapUnits,
+                                 Qgis::RenderUnit::Pixels,
+                                 Qgis::RenderUnit::MapUnits,
+                                 Qgis::RenderUnit::Points,
+                                 Qgis::RenderUnit::Inches } );
   mWeightExpressionWidget->registerExpressionContextGenerator( this );
   mWeightExpressionWidget->setAllowEmptyFieldName( true );
 

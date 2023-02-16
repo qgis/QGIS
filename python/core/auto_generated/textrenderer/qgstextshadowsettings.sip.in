@@ -128,7 +128,7 @@ are specified via :py:func:`~QgsTextShadowSettings.setOffsetUnit`.
 .. seealso:: :py:func:`setOffsetUnit`
 %End
 
-    QgsUnitTypes::RenderUnit offsetUnit() const;
+    Qgis::RenderUnit offsetUnit() const;
 %Docstring
 Returns the units used for the shadow's offset.
 
@@ -137,7 +137,7 @@ Returns the units used for the shadow's offset.
 .. seealso:: :py:func:`offsetDistance`
 %End
 
-    void setOffsetUnit( QgsUnitTypes::RenderUnit units );
+    void setOffsetUnit( Qgis::RenderUnit units );
 %Docstring
 Sets the units used for the shadow's offset.
 
@@ -204,7 +204,7 @@ Sets the blur radius for the shadow. Radius units are specified via :py:func:`~Q
 .. seealso:: :py:func:`setBlurRadiusUnit`
 %End
 
-    QgsUnitTypes::RenderUnit blurRadiusUnit() const;
+    Qgis::RenderUnit blurRadiusUnit() const;
 %Docstring
 Returns the units used for the shadow's blur radius.
 
@@ -213,7 +213,7 @@ Returns the units used for the shadow's blur radius.
 .. seealso:: :py:func:`blurRadius`
 %End
 
-    void setBlurRadiusUnit( QgsUnitTypes::RenderUnit units );
+    void setBlurRadiusUnit( Qgis::RenderUnit units );
 %Docstring
 Sets the units used for the shadow's blur radius.
 

@@ -16,7 +16,6 @@
 #ifndef QGSTEXTSHADOWSETTINGS_H
 #define QGSTEXTSHADOWSETTINGS_H
 
-#include "qgsunittypes.h"
 #include "qgsmapunitscale.h"
 
 #include <QSharedDataPointer>
@@ -131,7 +130,7 @@ class CORE_EXPORT QgsTextShadowSettings
      * \see setOffsetUnit()
      * \see offsetDistance()
      */
-    QgsUnitTypes::RenderUnit offsetUnit() const;
+    Qgis::RenderUnit offsetUnit() const;
 
     /**
      * Sets the units used for the shadow's offset.
@@ -139,7 +138,7 @@ class CORE_EXPORT QgsTextShadowSettings
      * \see offsetUnit()
      * \see setOffsetDistance()
      */
-    void setOffsetUnit( QgsUnitTypes::RenderUnit units );
+    void setOffsetUnit( Qgis::RenderUnit units );
 
     /**
      * Returns the map unit scale object for the shadow offset distance. This is only used if the
@@ -190,7 +189,7 @@ class CORE_EXPORT QgsTextShadowSettings
      * \see setBlurRadiusUnit()
      * \see blurRadius()
      */
-    QgsUnitTypes::RenderUnit blurRadiusUnit() const;
+    Qgis::RenderUnit blurRadiusUnit() const;
 
     /**
      * Sets the units used for the shadow's blur radius.
@@ -198,7 +197,7 @@ class CORE_EXPORT QgsTextShadowSettings
      * \see blurRadiusUnit()
      * \see setBlurRadius()
      */
-    void setBlurRadiusUnit( QgsUnitTypes::RenderUnit units );
+    void setBlurRadiusUnit( Qgis::RenderUnit units );
 
     /**
      * Returns the map unit scale object for the shadow blur radius. This is only used if the

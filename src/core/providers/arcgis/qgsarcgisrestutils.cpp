@@ -581,7 +581,7 @@ std::unique_ptr<QgsLineSymbol> QgsArcGisRestUtils::parseEsriLineSymbolJson( cons
   QgsSymbolLayerList layers;
   Qt::PenStyle penStyle = convertLineStyle( symbolData.value( QStringLiteral( "style" ) ).toString() );
   std::unique_ptr< QgsSimpleLineSymbolLayer > lineLayer = std::make_unique< QgsSimpleLineSymbolLayer >( lineColor, widthInPoints, penStyle );
-  lineLayer->setWidthUnit( QgsUnitTypes::RenderPoints );
+  lineLayer->setWidthUnit( Qgis::RenderUnit::Points );
   layers.append( lineLayer.release() );
 
   std::unique_ptr< QgsLineSymbol > symbol = std::make_unique< QgsLineSymbol >( layers );
@@ -601,7 +601,7 @@ std::unique_ptr<QgsFillSymbol> QgsArcGisRestUtils::parseEsriFillSymbolJson( cons
 
   QgsSymbolLayerList layers;
   std::unique_ptr< QgsSimpleFillSymbolLayer > fillLayer = std::make_unique< QgsSimpleFillSymbolLayer >( fillColor, brushStyle, lineColor, penStyle, penWidthInPoints );
-  fillLayer->setStrokeWidthUnit( QgsUnitTypes::RenderPoints );
+  fillLayer->setStrokeWidthUnit( Qgis::RenderUnit::Points );
   layers.append( fillLayer.release() );
 
   std::unique_ptr< QgsFillSymbol > symbol = std::make_unique< QgsFillSymbol >( layers );
@@ -635,9 +635,9 @@ std::unique_ptr<QgsFillSymbol> QgsArcGisRestUtils::parseEsriPictureFillSymbolJso
   std::unique_ptr< QgsRasterFillSymbolLayer > fillLayer = std::make_unique< QgsRasterFillSymbolLayer >( symbolPath );
   fillLayer->setWidth( widthInPixels );
   fillLayer->setAngle( angleCW );
-  fillLayer->setWidthUnit( QgsUnitTypes::RenderPoints );
+  fillLayer->setWidthUnit( Qgis::RenderUnit::Points );
   fillLayer->setOffset( QPointF( xOffset, yOffset ) );
-  fillLayer->setOffsetUnit( QgsUnitTypes::RenderPoints );
+  fillLayer->setOffsetUnit( Qgis::RenderUnit::Points );
   layers.append( fillLayer.release() );
 
   const QVariantMap outlineData = symbolData.value( QStringLiteral( "outline" ) ).toMap();
@@ -646,7 +646,7 @@ std::unique_ptr<QgsFillSymbol> QgsArcGisRestUtils::parseEsriPictureFillSymbolJso
   double penWidthInPoints = outlineData.value( QStringLiteral( "width" ) ).toDouble( &ok );
 
   std::unique_ptr< QgsSimpleLineSymbolLayer > lineLayer = std::make_unique< QgsSimpleLineSymbolLayer >( lineColor, penWidthInPoints, penStyle );
-  lineLayer->setWidthUnit( QgsUnitTypes::RenderPoints );
+  lineLayer->setWidthUnit( Qgis::RenderUnit::Points );
   layers.append( lineLayer.release() );
 
   std::unique_ptr< QgsFillSymbol > symbol = std::make_unique< QgsFillSymbol >( layers );
@@ -695,12 +695,12 @@ std::unique_ptr<QgsMarkerSymbol> QgsArcGisRestUtils::parseEsriMarkerSymbolJson( 
 
   QgsSymbolLayerList layers;
   std::unique_ptr< QgsSimpleMarkerSymbolLayer > markerLayer = std::make_unique< QgsSimpleMarkerSymbolLayer >( shape, sizeInPoints, angleCW, Qgis::ScaleMethod::ScaleArea, fillColor, lineColor );
-  markerLayer->setSizeUnit( QgsUnitTypes::RenderPoints );
-  markerLayer->setStrokeWidthUnit( QgsUnitTypes::RenderPoints );
+  markerLayer->setSizeUnit( Qgis::RenderUnit::Points );
+  markerLayer->setStrokeWidthUnit( Qgis::RenderUnit::Points );
   markerLayer->setStrokeStyle( penStyle );
   markerLayer->setStrokeWidth( penWidthInPoints );
   markerLayer->setOffset( QPointF( xOffset, yOffset ) );
-  markerLayer->setOffsetUnit( QgsUnitTypes::RenderPoints );
+  markerLayer->setOffsetUnit( Qgis::RenderUnit::Points );
   layers.append( markerLayer.release() );
 
   std::unique_ptr< QgsMarkerSymbol > symbol = std::make_unique< QgsMarkerSymbol >( layers );
@@ -732,14 +732,14 @@ std::unique_ptr<QgsMarkerSymbol> QgsArcGisRestUtils::parseEsriPictureMarkerSymbo
 
   QgsSymbolLayerList layers;
   std::unique_ptr< QgsRasterMarkerSymbolLayer > markerLayer = std::make_unique< QgsRasterMarkerSymbolLayer >( symbolPath, widthInPixels, angleCW, Qgis::ScaleMethod::ScaleArea );
-  markerLayer->setSizeUnit( QgsUnitTypes::RenderPoints );
+  markerLayer->setSizeUnit( Qgis::RenderUnit::Points );
 
   // only change the default aspect ratio if the server height setting requires this
   if ( !qgsDoubleNear( static_cast< double >( heightInPixels ) / widthInPixels, markerLayer->defaultAspectRatio() ) )
     markerLayer->setFixedAspectRatio( static_cast< double >( heightInPixels ) / widthInPixels );
 
   markerLayer->setOffset( QPointF( xOffset, yOffset ) );
-  markerLayer->setOffsetUnit( QgsUnitTypes::RenderPoints );
+  markerLayer->setOffsetUnit( Qgis::RenderUnit::Points );
   layers.append( markerLayer.release() );
 
   std::unique_ptr< QgsMarkerSymbol > symbol = std::make_unique< QgsMarkerSymbol >( layers );
@@ -845,7 +845,7 @@ QgsAbstractVectorLayerLabeling *QgsArcGisRestUtils::convertLabeling( const QVari
       QgsTextBufferSettings buffer;
       buffer.setEnabled( true );
       buffer.setSize( haloSize );
-      buffer.setSizeUnit( QgsUnitTypes::RenderPoints );
+      buffer.setSizeUnit( Qgis::RenderUnit::Points );
       buffer.setColor( convertColor( symbol.value( QStringLiteral( "haloColor" ) ) ) );
       format.setBuffer( buffer );
     }
@@ -860,7 +860,7 @@ QgsAbstractVectorLayerLabeling *QgsArcGisRestUtils::convertLabeling( const QVari
 
     format.setFont( font );
     format.setSize( fontSize );
-    format.setSizeUnit( QgsUnitTypes::RenderPoints );
+    format.setSizeUnit( Qgis::RenderUnit::Points );
 
     settings->setFormat( format );
 

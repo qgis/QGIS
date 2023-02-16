@@ -16,10 +16,11 @@
 
 #include "qgslayoutguidecollection.h"
 #include "qgslayout.h"
-#include "qgsproject.h"
 #include "qgsreadwritecontext.h"
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutundostack.h"
+#include "qgsunittypes.h"
+
 #include <QGraphicsLineItem>
 
 
@@ -250,7 +251,7 @@ QVariant QgsLayoutGuideCollection::data( const QModelIndex &index, int role ) co
       return guide->position().length();
 
     case UnitsRole:
-      return guide->position().units();
+      return static_cast< int >( guide->position().units() );
 
     case PageRole:
       return mPageCollection->pageNumber( guide->page() );
@@ -333,7 +334,7 @@ bool QgsLayoutGuideCollection::setData( const QModelIndex &index, const QVariant
         return false;
 
       QgsLayoutMeasurement m = guide->position();
-      m.setUnits( static_cast< QgsUnitTypes::LayoutUnit >( units ) );
+      m.setUnits( static_cast< Qgis::LayoutUnit >( units ) );
       mLayout->undoStack()->beginCommand( mPageCollection, tr( "Move Guide" ), Move + index.row() );
       whileBlocking( guide )->setPosition( m );
       guide->update();
@@ -571,7 +572,7 @@ bool QgsLayoutGuideCollection::readXml( const QDomElement &e, const QDomDocument
     QDomElement element = guideNodeList.at( i ).toElement();
     Qt::Orientation orientation = static_cast< Qt::Orientation >( element.attribute( QStringLiteral( "orientation" ), QStringLiteral( "1" ) ).toInt() );
     double pos = element.attribute( QStringLiteral( "position" ), QStringLiteral( "0" ) ).toDouble();
-    QgsUnitTypes::LayoutUnit unit = QgsUnitTypes::decodeLayoutUnit( element.attribute( QStringLiteral( "units" ) ) );
+    Qgis::LayoutUnit unit = QgsUnitTypes::decodeLayoutUnit( element.attribute( QStringLiteral( "units" ) ) );
     int page = element.attribute( QStringLiteral( "page" ), QStringLiteral( "0" ) ).toInt();
     std::unique_ptr< QgsLayoutGuide > guide( new QgsLayoutGuide( orientation, QgsLayoutMeasurement( pos, unit ), mPageCollection->page( page ) ) );
     guide->update();

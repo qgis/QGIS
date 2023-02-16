@@ -161,7 +161,7 @@ QString QgsHanaUtils::toConstant( const QVariant &value, QVariant::Type type )
   }
 }
 
-QString QgsHanaUtils::toString( QgsUnitTypes::DistanceUnit unit )
+QString QgsHanaUtils::toString( Qgis::DistanceUnit unit )
 {
   // We need to translate the distance unit to the name used in HANA's
   // SYS.ST_UNITS_OF_MEASURE view. These names are different from the names
@@ -169,25 +169,25 @@ QString QgsHanaUtils::toString( QgsUnitTypes::DistanceUnit unit )
   // method.
   switch ( unit )
   {
-    case QgsUnitTypes::DistanceMeters:
+    case Qgis::DistanceUnit::Meters:
       return QStringLiteral( "meter" );
-    case QgsUnitTypes::DistanceKilometers:
+    case Qgis::DistanceUnit::Kilometers:
       return QStringLiteral( "kilometer" );
-    case QgsUnitTypes::DistanceFeet:
+    case Qgis::DistanceUnit::Feet:
       return QStringLiteral( "foot" );
-    case QgsUnitTypes::DistanceYards:
+    case Qgis::DistanceUnit::Yards:
       return QStringLiteral( "yard" );
-    case QgsUnitTypes::DistanceMiles:
+    case Qgis::DistanceUnit::Miles:
       return QStringLiteral( "mile" );
-    case QgsUnitTypes::DistanceDegrees:
+    case Qgis::DistanceUnit::Degrees:
       return QStringLiteral( "degree" );
-    case QgsUnitTypes::DistanceCentimeters:
+    case Qgis::DistanceUnit::Centimeters:
       return QStringLiteral( "centimeter" );
-    case QgsUnitTypes::DistanceMillimeters:
+    case Qgis::DistanceUnit::Millimeters:
       return QStringLiteral( "millimeter" );
-    case QgsUnitTypes::DistanceNauticalMiles:
+    case Qgis::DistanceUnit::NauticalMiles:
       return QStringLiteral( "nautical mile" );
-    case QgsUnitTypes::DistanceUnknownUnit:
+    case Qgis::DistanceUnit::Unknown:
       return QStringLiteral( "<unknown>" );
   }
   return QString();

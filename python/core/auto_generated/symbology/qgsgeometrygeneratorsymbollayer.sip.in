@@ -54,9 +54,9 @@ that is created by this generator.
 
     virtual QColor color() const;
 
-    virtual QgsUnitTypes::RenderUnit outputUnit() const;
+    virtual Qgis::RenderUnit outputUnit() const;
 
-    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    virtual void setOutputUnit( Qgis::RenderUnit unit );
 
     virtual QgsMapUnitScale mapUnitScale() const;
 
@@ -80,7 +80,7 @@ Set the expression to generate this geometry.
 Gets the expression to generate this geometry.
 %End
 
-    QgsUnitTypes::RenderUnit units() const;
+    Qgis::RenderUnit units() const;
 %Docstring
 Returns the unit for the geometry expression.
 
@@ -92,7 +92,7 @@ will return geometries in the associated layer's CRS.
 .. versionadded:: 3.22
 %End
 
-    void setUnits( QgsUnitTypes::RenderUnit units );
+    void setUnits( Qgis::RenderUnit units );
 %Docstring
 Sets the ``units`` for the geometry expression.
 

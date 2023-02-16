@@ -79,13 +79,13 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
     QgsSimpleLineSymbolLayer *clone() const override SIP_FACTORY;
     void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override;
     QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const override;
-    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
-    QgsUnitTypes::RenderUnit outputUnit() const override;
+    void setOutputUnit( Qgis::RenderUnit unit ) override;
+    Qgis::RenderUnit outputUnit() const override;
     bool usesMapUnits() const override;
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
     double estimateMaxBleed( const QgsRenderContext &context ) const override;
-    QVector<qreal> dxfCustomDashPattern( QgsUnitTypes::RenderUnit &unit ) const override;
+    QVector<qreal> dxfCustomDashPattern( Qgis::RenderUnit &unit ) const override;
     Qt::PenStyle dxfPenStyle() const override;
     double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const override;
     double dxfOffset( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const override;
@@ -154,13 +154,13 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
      * Sets the \a unit for lengths used in the custom dash pattern.
      * \see customDashPatternUnit()
     */
-    void setCustomDashPatternUnit( QgsUnitTypes::RenderUnit unit ) { mCustomDashPatternUnit = unit; }
+    void setCustomDashPatternUnit( Qgis::RenderUnit unit ) { mCustomDashPatternUnit = unit; }
 
     /**
      * Returns the units for lengths used in the custom dash pattern.
      * \see setCustomDashPatternUnit()
     */
-    QgsUnitTypes::RenderUnit customDashPatternUnit() const { return mCustomDashPatternUnit; }
+    Qgis::RenderUnit customDashPatternUnit() const { return mCustomDashPatternUnit; }
 
     /**
      * Returns the map unit scale for lengths used in the custom dash pattern.
@@ -239,7 +239,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
      *
      * \since QGIS 3.16
     */
-    void setDashPatternOffsetUnit( QgsUnitTypes::RenderUnit unit ) { mDashPatternOffsetUnit = unit; }
+    void setDashPatternOffsetUnit( Qgis::RenderUnit unit ) { mDashPatternOffsetUnit = unit; }
 
     /**
      * Returns the units for the dash pattern offset.
@@ -250,7 +250,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
      *
      * \since QGIS 3.16
     */
-    QgsUnitTypes::RenderUnit dashPatternOffsetUnit() const { return mDashPatternOffsetUnit; }
+    Qgis::RenderUnit dashPatternOffsetUnit() const { return mDashPatternOffsetUnit; }
 
     /**
      * Returns the map unit scale for the dash pattern offset value.
@@ -314,7 +314,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
      *
      * \since QGIS 3.20
     */
-    void setTrimDistanceStartUnit( QgsUnitTypes::RenderUnit unit ) { mTrimDistanceStartUnit = unit; }
+    void setTrimDistanceStartUnit( Qgis::RenderUnit unit ) { mTrimDistanceStartUnit = unit; }
 
     /**
      * Returns the unit for the trim distance for the start of the line.
@@ -326,7 +326,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
      *
      * \since QGIS 3.20
     */
-    QgsUnitTypes::RenderUnit trimDistanceStartUnit() const { return mTrimDistanceStartUnit; }
+    Qgis::RenderUnit trimDistanceStartUnit() const { return mTrimDistanceStartUnit; }
 
     /**
      * Returns the map unit scale for the trim distance for the start of the line.
@@ -392,7 +392,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
      *
      * \since QGIS 3.20
     */
-    void setTrimDistanceEndUnit( QgsUnitTypes::RenderUnit unit ) { mTrimDistanceEndUnit = unit; }
+    void setTrimDistanceEndUnit( Qgis::RenderUnit unit ) { mTrimDistanceEndUnit = unit; }
 
     /**
      * Returns the unit for the trim distance for the end of the line.
@@ -404,7 +404,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
      *
      * \since QGIS 3.20
     */
-    QgsUnitTypes::RenderUnit trimDistanceEndUnit() const { return mTrimDistanceEndUnit; }
+    Qgis::RenderUnit trimDistanceEndUnit() const { return mTrimDistanceEndUnit; }
 
     /**
      * Returns the map unit scale for the trim distance for the end of the line.
@@ -507,19 +507,19 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
     QPen mSelPen;
 
     bool mUseCustomDashPattern = false;
-    QgsUnitTypes::RenderUnit mCustomDashPatternUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mCustomDashPatternUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mCustomDashPatternMapUnitScale;
 
     double mDashPatternOffset = 0;
-    QgsUnitTypes::RenderUnit mDashPatternOffsetUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mDashPatternOffsetUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mDashPatternOffsetMapUnitScale;
 
     double mTrimDistanceStart = 0;
-    QgsUnitTypes::RenderUnit mTrimDistanceStartUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mTrimDistanceStartUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mTrimDistanceStartMapUnitScale;
 
     double mTrimDistanceEnd = 0;
-    QgsUnitTypes::RenderUnit mTrimDistanceEndUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mTrimDistanceEndUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mTrimDistanceEndMapUnitScale;
 
     //! Vector with an even number of entries for the
@@ -598,14 +598,14 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
      * \see intervalUnit()
      * \see setInterval()
     */
-    void setIntervalUnit( QgsUnitTypes::RenderUnit unit ) { mIntervalUnit = unit; }
+    void setIntervalUnit( Qgis::RenderUnit unit ) { mIntervalUnit = unit; }
 
     /**
      * Returns the units for the interval between symbols.
      * \see setIntervalUnit()
      * \see interval()
     */
-    QgsUnitTypes::RenderUnit intervalUnit() const { return mIntervalUnit; }
+    Qgis::RenderUnit intervalUnit() const { return mIntervalUnit; }
 
     /**
      * Sets the map unit \a scale for the interval between symbols.
@@ -714,7 +714,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
      * \see setOffsetAlongLineUnit()
      * \see offsetAlongLine()
      */
-    QgsUnitTypes::RenderUnit offsetAlongLineUnit() const { return mOffsetAlongLineUnit; }
+    Qgis::RenderUnit offsetAlongLineUnit() const { return mOffsetAlongLineUnit; }
 
     /**
      * Sets the unit used for calculating the offset along line for symbols.
@@ -722,7 +722,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
      * \see offsetAlongLineUnit()
      * \see setOffsetAlongLine()
      */
-    void setOffsetAlongLineUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetAlongLineUnit = unit; }
+    void setOffsetAlongLineUnit( Qgis::RenderUnit unit ) { mOffsetAlongLineUnit = unit; }
 
     /**
      * Returns the map unit scale used for calculating the offset in map units along line for symbols.
@@ -768,7 +768,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
      * \see setAverageAngleLength()
      * \see setAverageAngleMapUnitScale()
     */
-    void setAverageAngleUnit( QgsUnitTypes::RenderUnit unit ) { mAverageAngleLengthUnit = unit; }
+    void setAverageAngleUnit( Qgis::RenderUnit unit ) { mAverageAngleLengthUnit = unit; }
 
     /**
      * Returns the unit for the length over which the line's direction is averaged when
@@ -778,7 +778,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
      * \see averageAngleLength()
      * \see averageAngleMapUnitScale()
     */
-    QgsUnitTypes::RenderUnit averageAngleUnit() const { return mAverageAngleLengthUnit; }
+    Qgis::RenderUnit averageAngleUnit() const { return mAverageAngleLengthUnit; }
 
     /**
      * Sets the map unit \a scale for the length over which the line's direction is averaged when
@@ -802,8 +802,8 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
 
     void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) override;
     void renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) FINAL;
-    QgsUnitTypes::RenderUnit outputUnit() const FINAL;
-    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
+    Qgis::RenderUnit outputUnit() const FINAL;
+    void setOutputUnit( Qgis::RenderUnit unit ) override;
     void setMapUnitScale( const QgsMapUnitScale &scale ) FINAL;
     QgsMapUnitScale mapUnitScale() const FINAL;
     QVariantMap properties() const override;
@@ -886,14 +886,14 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
 
     bool mRotateSymbols = true;
     double mInterval = 3;
-    QgsUnitTypes::RenderUnit mIntervalUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mIntervalUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mIntervalMapUnitScale;
     Qgis::MarkerLinePlacements mPlacements = Qgis::MarkerLinePlacement::Interval;
     double mOffsetAlongLine = 0; //distance to offset along line before marker is drawn
-    QgsUnitTypes::RenderUnit mOffsetAlongLineUnit = QgsUnitTypes::RenderMillimeters; //unit for offset along line
+    Qgis::RenderUnit mOffsetAlongLineUnit = Qgis::RenderUnit::Millimeters; //unit for offset along line
     QgsMapUnitScale mOffsetAlongLineMapUnitScale;
     double mAverageAngleLength = 4;
-    QgsUnitTypes::RenderUnit mAverageAngleLengthUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mAverageAngleLengthUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mAverageAngleLengthMapUnitScale;
     bool mPlaceOnEveryPart = true;
 
@@ -957,7 +957,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsTemplatedLineSymbolLayerB
     double width() const override;
     double width( const QgsRenderContext &context ) const override;
     double estimateMaxBleed( const QgsRenderContext &context ) const override;
-    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
+    void setOutputUnit( Qgis::RenderUnit unit ) override;
     bool usesMapUnits() const override;
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
     bool hasDataDefinedProperties() const override;
@@ -1042,7 +1042,7 @@ class CORE_EXPORT QgsHashedLineSymbolLayer : public QgsTemplatedLineSymbolLayerB
     double width() const override;
     double width( const QgsRenderContext &context ) const override;
     double estimateMaxBleed( const QgsRenderContext &context ) const override;
-    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
+    void setOutputUnit( Qgis::RenderUnit unit ) override;
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
     bool hasDataDefinedProperties() const override;
     void setDataDefinedProperty( QgsSymbolLayer::Property key, const QgsProperty &property ) override;
@@ -1081,14 +1081,14 @@ class CORE_EXPORT QgsHashedLineSymbolLayer : public QgsTemplatedLineSymbolLayerB
      * \see hashLengthUnit()
      * \see setHashLength()
     */
-    void setHashLengthUnit( QgsUnitTypes::RenderUnit unit ) { mHashLengthUnit = unit; }
+    void setHashLengthUnit( Qgis::RenderUnit unit ) { mHashLengthUnit = unit; }
 
     /**
      * Returns the units for the length of hash symbols.
      * \see setHashLengthUnit()
      * \see hashLength()
     */
-    QgsUnitTypes::RenderUnit hashLengthUnit() const { return mHashLengthUnit; }
+    Qgis::RenderUnit hashLengthUnit() const { return mHashLengthUnit; }
 
     /**
      * Sets the map unit \a scale for the hash length.
@@ -1127,7 +1127,7 @@ class CORE_EXPORT QgsHashedLineSymbolLayer : public QgsTemplatedLineSymbolLayerB
 
     double mHashAngle = 0;
     double mHashLength = 3;
-    QgsUnitTypes::RenderUnit mHashLengthUnit = QgsUnitTypes::RenderMillimeters;
+    Qgis::RenderUnit mHashLengthUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mHashLengthMapUnitScale;
 
 };
@@ -1253,8 +1253,8 @@ class CORE_EXPORT QgsRasterLineSymbolLayer : public QgsAbstractBrushedLineSymbol
     void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) override;
     QVariantMap properties() const override;
     QgsRasterLineSymbolLayer *clone() const override SIP_FACTORY;
-    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
-    QgsUnitTypes::RenderUnit outputUnit() const override;
+    void setOutputUnit( Qgis::RenderUnit unit ) override;
+    Qgis::RenderUnit outputUnit() const override;
     bool usesMapUnits() const override;
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
@@ -1304,8 +1304,8 @@ class CORE_EXPORT QgsLineburstSymbolLayer : public QgsAbstractBrushedLineSymbolL
     void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) override;
     QVariantMap properties() const override;
     QgsLineburstSymbolLayer *clone() const override SIP_FACTORY;
-    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
-    QgsUnitTypes::RenderUnit outputUnit() const override;
+    void setOutputUnit( Qgis::RenderUnit unit ) override;
+    Qgis::RenderUnit outputUnit() const override;
     bool usesMapUnits() const override;
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;

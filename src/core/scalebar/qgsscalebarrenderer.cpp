@@ -47,16 +47,16 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
   const QFontMetricsF fontMetrics = QgsTextRenderer::fontMetrics( context, format );
   const double xOffset = fontMetrics.horizontalAdvance( firstLabel ) / 2.0;
 
-  const double scaledBoxContentSpace = context.convertToPainterUnits( settings.boxContentSpace(), QgsUnitTypes::RenderMillimeters );
-  const double scaledLabelBarSpace = context.convertToPainterUnits( settings.labelBarSpace(), QgsUnitTypes::RenderMillimeters );
+  const double scaledBoxContentSpace = context.convertToPainterUnits( settings.boxContentSpace(), Qgis::RenderUnit::Millimeters );
+  const double scaledLabelBarSpace = context.convertToPainterUnits( settings.labelBarSpace(), Qgis::RenderUnit::Millimeters );
   double scaledHeight;
   if ( ( scaleContext.flags & Flag::FlagUsesSubdivisionsHeight ) && ( settings.numberOfSubdivisions() > 1 ) && ( settings.subdivisionsHeight() > settings.height() ) )
   {
-    scaledHeight = context.convertToPainterUnits( settings.subdivisionsHeight(), QgsUnitTypes::RenderMillimeters );
+    scaledHeight = context.convertToPainterUnits( settings.subdivisionsHeight(), Qgis::RenderUnit::Millimeters );
   }
   else
   {
-    scaledHeight = context.convertToPainterUnits( settings.height(), QgsUnitTypes::RenderMillimeters );
+    scaledHeight = context.convertToPainterUnits( settings.height(), Qgis::RenderUnit::Millimeters );
   }
 
   double currentLabelNumber = 0.0;
@@ -107,16 +107,16 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
         if ( segmentCounter == 0 )
         {
           // if the segment counter is zero with a non zero label, this is the left-of-zero label
-          pos.setX( context.convertToPainterUnits( positions.at( i ) + ( scaleContext.segmentWidth / 2 ), QgsUnitTypes::RenderMillimeters ) );
+          pos.setX( context.convertToPainterUnits( positions.at( i ) + ( scaleContext.segmentWidth / 2 ), Qgis::RenderUnit::Millimeters ) );
         }
         else
         {
-          pos.setX( context.convertToPainterUnits( positions.at( i ) - ( scaleContext.segmentWidth / 2 ), QgsUnitTypes::RenderMillimeters ) );
+          pos.setX( context.convertToPainterUnits( positions.at( i ) - ( scaleContext.segmentWidth / 2 ), Qgis::RenderUnit::Millimeters ) );
         }
       }
       else
       {
-        pos.setX( context.convertToPainterUnits( positions.at( i ), QgsUnitTypes::RenderMillimeters ) + xOffset );
+        pos.setX( context.convertToPainterUnits( positions.at( i ), Qgis::RenderUnit::Millimeters ) + xOffset );
       }
       pos.setY( fontMetrics.ascent() + scaledBoxContentSpace + ( settings.labelVerticalPlacement() == QgsScaleBarSettings::LabelBelowSegment ? scaledHeight + scaledLabelBarSpace : 0 ) );
       QgsTextRenderer::drawText( pos, 0, Qgis::TextHorizontalAlignment::Center, QStringList() << currentNumericLabel, context, format );
@@ -141,12 +141,12 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
     pos.setY( fontMetrics.ascent() + scaledBoxContentSpace + ( settings.labelVerticalPlacement() == QgsScaleBarSettings::LabelBelowSegment ? scaledHeight + scaledLabelBarSpace : 0 ) );
     if ( settings.labelHorizontalPlacement() == QgsScaleBarSettings::LabelCenteredSegment )
     {
-      pos.setX( context.convertToPainterUnits( positions.at( positions.size() - 1 ) + ( scaleContext.segmentWidth / 2 ), QgsUnitTypes::RenderMillimeters ) + xOffset );
+      pos.setX( context.convertToPainterUnits( positions.at( positions.size() - 1 ) + ( scaleContext.segmentWidth / 2 ), Qgis::RenderUnit::Millimeters ) + xOffset );
       QgsTextRenderer::drawText( pos, 0, Qgis::TextHorizontalAlignment::Center, QStringList() << ( currentNumericLabel + ' ' + settings.unitLabel() ), context, format );
     }
     else
     {
-      pos.setX( context.convertToPainterUnits( positions.at( positions.size() - 1 ) + scaleContext.segmentWidth, QgsUnitTypes::RenderMillimeters ) + xOffset
+      pos.setX( context.convertToPainterUnits( positions.at( positions.size() - 1 ) + scaleContext.segmentWidth, Qgis::RenderUnit::Millimeters ) + xOffset
                 - fontMetrics.horizontalAdvance( currentNumericLabel ) / 2.0 );
       QgsTextRenderer::drawText( pos, 0, Qgis::TextHorizontalAlignment::Left, QStringList() << ( currentNumericLabel + ' ' + settings.unitLabel() ), context, format );
     }
@@ -224,7 +224,7 @@ QSizeF QgsScaleBarRenderer::calculateBoxSize( const QgsScaleBarSettings &setting
 
 QSizeF QgsScaleBarRenderer::calculateBoxSize( QgsRenderContext &context, const QgsScaleBarSettings &settings, const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const
 {
-  const double painterToMm = 1.0 / context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
+  const double painterToMm = 1.0 / context.convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters );
   //consider centered first label
   double firstLabelWidth = QgsTextRenderer::textWidth( context, settings.textFormat(), QStringList() << firstLabelString( settings ) ) * painterToMm;
 
@@ -272,7 +272,7 @@ QSizeF QgsScaleBarRenderer::calculateBoxSize( QgsRenderContext &context, const Q
 
   double lineWidth = QgsSymbolLayerUtils::estimateMaxSymbolBleed( settings.lineSymbol(), context ) * 2;
   // need to convert to mm
-  lineWidth /= context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
+  lineWidth /= context.convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters );
 
   const double width = firstLabelWidth + totalBarLength + 2 * lineWidth + largestLabelWidth + 2 * settings.boxContentSpace();
   double height;
@@ -371,7 +371,7 @@ QList<double> QgsScaleBarRenderer::segmentPositions( QgsRenderContext &context, 
 
   double lineWidth = QgsSymbolLayerUtils::estimateMaxSymbolBleed( settings.lineSymbol(), context ) * 2.0;
   // need to convert to mm
-  lineWidth /= context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
+  lineWidth /= context.convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters );
 
   double currentXCoord = lineWidth + settings.boxContentSpace();
 

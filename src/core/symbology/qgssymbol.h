@@ -447,7 +447,7 @@ class CORE_EXPORT QgsSymbol
      * \returns output unit, or QgsUnitTypes::RenderUnknownUnit if the symbol contains mixed units
      * \see setOutputUnit()
      */
-    QgsUnitTypes::RenderUnit outputUnit() const;
+    Qgis::RenderUnit outputUnit() const;
 
     /**
      * Returns TRUE if the symbol has any components which use map unit based sizes.
@@ -464,7 +464,7 @@ class CORE_EXPORT QgsSymbol
      * \param unit output units
      * \see outputUnit()
      */
-    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) const;
+    void setOutputUnit( Qgis::RenderUnit unit ) const;
 
     /**
      * Returns the map unit scale for the symbol.

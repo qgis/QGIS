@@ -31,6 +31,7 @@
 #include "qgselevationprofilecanvas.h"
 #include "qgscurve.h"
 #include "qgslayoutatlas.h"
+#include "qgslayoutreportcontext.h"
 #include <QMenu>
 
 std::function< void( QgsLayoutElevationProfileWidget *, QMenu * ) > QgsLayoutElevationProfileWidget::sBuildCopyMenuFunction = []( QgsLayoutElevationProfileWidget *, QMenu * ) {};

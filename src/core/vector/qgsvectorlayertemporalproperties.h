@@ -24,7 +24,6 @@
 #include "qgis_sip.h"
 #include "qgsrange.h"
 #include "qgsmaplayertemporalproperties.h"
-#include "qgsunittypes.h"
 
 class QgsVectorLayer;
 class QgsFields;
@@ -259,14 +258,14 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
      *
      * \see setDurationUnits()
      */
-    QgsUnitTypes::TemporalUnit durationUnits() const;
+    Qgis::TemporalUnit durationUnits() const;
 
     /**
      * Sets the \a units of the event's duration.
      *
      * \see durationUnits()
      */
-    void setDurationUnits( QgsUnitTypes::TemporalUnit units );
+    void setDurationUnits( Qgis::TemporalUnit units );
 
     /**
      * Returns the fixed duration length, which contains the duration of the event.
@@ -354,7 +353,7 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
     QString mStartFieldName;
     QString mEndFieldName;
     QString mDurationFieldName;
-    QgsUnitTypes::TemporalUnit mDurationUnit = QgsUnitTypes::TemporalMinutes;
+    Qgis::TemporalUnit mDurationUnit = Qgis::TemporalUnit::Minutes;
 
     double mFixedDuration = 0;
 

@@ -19,12 +19,10 @@
 #include "qgsrendercontext.h"
 
 #include "qgsmapsettings.h"
-#include "qgsexpression.h"
-#include "qgsvectorlayer.h"
 #include "qgsfeaturefilterprovider.h"
 #include "qgslogger.h"
-#include "qgspoint.h"
 #include "qgselevationmap.h"
+#include "qgsunittypes.h"
 
 #define POINTS_TO_MM 2.83464567
 #define INCH_TO_MM 25.4
@@ -362,33 +360,33 @@ const QgsFeatureFilterProvider *QgsRenderContext::featureFilterProvider() const
   return mFeatureFilterProvider.get();
 }
 
-double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &scale, Qgis::RenderSubcomponentProperty property ) const
+double QgsRenderContext::convertToPainterUnits( double size, Qgis::RenderUnit unit, const QgsMapUnitScale &scale, Qgis::RenderSubcomponentProperty property ) const
 {
   double conversionFactor = 1.0;
   bool isMapUnitHack = false;
   switch ( unit )
   {
-    case QgsUnitTypes::RenderMillimeters:
+    case Qgis::RenderUnit::Millimeters:
       conversionFactor = mScaleFactor;
       break;
 
-    case QgsUnitTypes::RenderPoints:
+    case Qgis::RenderUnit::Points:
       conversionFactor = mScaleFactor / POINTS_TO_MM;
       break;
 
-    case QgsUnitTypes::RenderInches:
+    case Qgis::RenderUnit::Inches:
       conversionFactor = mScaleFactor * INCH_TO_MM;
       break;
 
-    case QgsUnitTypes::RenderMetersInMapUnits:
+    case Qgis::RenderUnit::MetersInMapUnits:
     {
       if ( mMapToPixel.isValid() )
         size = convertMetersToMapUnits( size );
-      unit = QgsUnitTypes::RenderMapUnits;
+      unit = Qgis::RenderUnit::MapUnits;
       // Fall through to RenderMapUnits with size in meters converted to size in MapUnits
       FALLTHROUGH
     }
-    case QgsUnitTypes::RenderMapUnits:
+    case Qgis::RenderUnit::MapUnits:
     {
       if ( mMapToPixel.isValid() )
       {
@@ -411,12 +409,12 @@ double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::Rende
       }
       break;
     }
-    case QgsUnitTypes::RenderPixels:
+    case Qgis::RenderUnit::Pixels:
       conversionFactor = 1.0;
       break;
 
-    case QgsUnitTypes::RenderUnknownUnit:
-    case QgsUnitTypes::RenderPercentage:
+    case Qgis::RenderUnit::Unknown:
+    case Qgis::RenderUnit::Percentage:
       //no sensible value
       conversionFactor = 1.0;
       break;
@@ -424,7 +422,7 @@ double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::Rende
 
   double convertedSize = size * conversionFactor;
 
-  if ( unit == QgsUnitTypes::RenderMapUnits )
+  if ( unit == Qgis::RenderUnit::MapUnits )
   {
     //check max/min size
     if ( scale.minSizeMMEnabled )
@@ -470,7 +468,7 @@ double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::Rende
   return convertedSize;
 }
 
-double QgsRenderContext::convertToMapUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &scale ) const
+double QgsRenderContext::convertToMapUnits( double size, Qgis::RenderUnit unit, const QgsMapUnitScale &scale ) const
 {
   const double mup = mMapToPixel.mapUnitsPerPixel();
 
@@ -478,13 +476,13 @@ double QgsRenderContext::convertToMapUnits( double size, QgsUnitTypes::RenderUni
 
   switch ( unit )
   {
-    case QgsUnitTypes::RenderMetersInMapUnits:
+    case Qgis::RenderUnit::MetersInMapUnits:
     {
       size = convertMetersToMapUnits( size );
       // Fall through to RenderMapUnits with values of meters converted to MapUnits
       FALLTHROUGH
     }
-    case QgsUnitTypes::RenderMapUnits:
+    case Qgis::RenderUnit::MapUnits:
     {
       // check scale
       double minSizeMU = std::numeric_limits<double>::lowest();
@@ -511,65 +509,65 @@ double QgsRenderContext::convertToMapUnits( double size, QgsUnitTypes::RenderUni
 
       return size;
     }
-    case QgsUnitTypes::RenderMillimeters:
+    case Qgis::RenderUnit::Millimeters:
     {
       return size * mScaleFactor * mup / symbologyReferenceScaleFactor;
     }
-    case QgsUnitTypes::RenderPoints:
+    case Qgis::RenderUnit::Points:
     {
       return size * mScaleFactor * mup / POINTS_TO_MM / symbologyReferenceScaleFactor;
     }
-    case QgsUnitTypes::RenderInches:
+    case Qgis::RenderUnit::Inches:
     {
       return size * mScaleFactor * mup * INCH_TO_MM / symbologyReferenceScaleFactor;
     }
-    case QgsUnitTypes::RenderPixels:
+    case Qgis::RenderUnit::Pixels:
     {
       return size * mup / symbologyReferenceScaleFactor;
     }
 
-    case QgsUnitTypes::RenderUnknownUnit:
-    case QgsUnitTypes::RenderPercentage:
+    case Qgis::RenderUnit::Unknown:
+    case Qgis::RenderUnit::Percentage:
       //no sensible value
       return 0.0;
   }
   return 0.0;
 }
 
-double QgsRenderContext::convertFromMapUnits( double sizeInMapUnits, QgsUnitTypes::RenderUnit outputUnit ) const
+double QgsRenderContext::convertFromMapUnits( double sizeInMapUnits, Qgis::RenderUnit outputUnit ) const
 {
   const double mup = mMapToPixel.mapUnitsPerPixel();
   const double symbologyReferenceScaleFactor = mSymbologyReferenceScale > 0 ? mSymbologyReferenceScale / mRendererScale : 1;
 
   switch ( outputUnit )
   {
-    case QgsUnitTypes::RenderMetersInMapUnits:
+    case Qgis::RenderUnit::MetersInMapUnits:
     {
       return sizeInMapUnits / convertMetersToMapUnits( 1.0 );
     }
-    case QgsUnitTypes::RenderMapUnits:
+    case Qgis::RenderUnit::MapUnits:
     {
       return sizeInMapUnits;
     }
-    case QgsUnitTypes::RenderMillimeters:
+    case Qgis::RenderUnit::Millimeters:
     {
       return sizeInMapUnits / ( mScaleFactor * mup ) * symbologyReferenceScaleFactor;
     }
-    case QgsUnitTypes::RenderPoints:
+    case Qgis::RenderUnit::Points:
     {
       return sizeInMapUnits / ( mScaleFactor * mup / POINTS_TO_MM ) * symbologyReferenceScaleFactor;
     }
-    case QgsUnitTypes::RenderInches:
+    case Qgis::RenderUnit::Inches:
     {
       return sizeInMapUnits / ( mScaleFactor * mup * INCH_TO_MM ) * symbologyReferenceScaleFactor;
     }
-    case QgsUnitTypes::RenderPixels:
+    case Qgis::RenderUnit::Pixels:
     {
       return sizeInMapUnits / mup * symbologyReferenceScaleFactor;
     }
 
-    case QgsUnitTypes::RenderUnknownUnit:
-    case QgsUnitTypes::RenderPercentage:
+    case Qgis::RenderUnit::Unknown:
+    case Qgis::RenderUnit::Percentage:
       //no sensible value
       return 0.0;
   }
@@ -580,14 +578,14 @@ double QgsRenderContext::convertMetersToMapUnits( double meters ) const
 {
   switch ( mDistanceArea.sourceCrs().mapUnits() )
   {
-    case QgsUnitTypes::DistanceMeters:
+    case Qgis::DistanceUnit::Meters:
       return meters;
-    case QgsUnitTypes::DistanceDegrees:
+    case Qgis::DistanceUnit::Degrees:
     {
       if ( mExtent.isNull() )
       {
         // we don't have an extent to calculate exactly -- so just use a very rough approximation
-        return meters * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMeters, QgsUnitTypes::DistanceDegrees );
+        return meters * QgsUnitTypes::fromUnitToUnitFactor( Qgis::DistanceUnit::Meters, Qgis::DistanceUnit::Degrees );
       }
 
       QgsPointXY pointCenter = mExtent.center();
@@ -602,15 +600,15 @@ double QgsRenderContext::convertMetersToMapUnits( double meters ) const
       const int multiplier = meters < 0 ? -1 : 1;
       return multiplier * mDistanceArea.measureLineProjected( pointCenter, std::fabs( meters ) );
     }
-    case QgsUnitTypes::DistanceKilometers:
-    case QgsUnitTypes::DistanceFeet:
-    case QgsUnitTypes::DistanceNauticalMiles:
-    case QgsUnitTypes::DistanceYards:
-    case QgsUnitTypes::DistanceMiles:
-    case QgsUnitTypes::DistanceCentimeters:
-    case QgsUnitTypes::DistanceMillimeters:
-    case QgsUnitTypes::DistanceUnknownUnit:
-      return ( meters * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMeters, mDistanceArea.sourceCrs().mapUnits() ) );
+    case Qgis::DistanceUnit::Kilometers:
+    case Qgis::DistanceUnit::Feet:
+    case Qgis::DistanceUnit::NauticalMiles:
+    case Qgis::DistanceUnit::Yards:
+    case Qgis::DistanceUnit::Miles:
+    case Qgis::DistanceUnit::Centimeters:
+    case Qgis::DistanceUnit::Millimeters:
+    case Qgis::DistanceUnit::Unknown:
+      return ( meters * QgsUnitTypes::fromUnitToUnitFactor( Qgis::DistanceUnit::Meters, mDistanceArea.sourceCrs().mapUnits() ) );
   }
   return meters;
 }

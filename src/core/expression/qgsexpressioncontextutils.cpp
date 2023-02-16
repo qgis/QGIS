@@ -35,9 +35,12 @@
 #include "qgstriangularmesh.h"
 #include "qgsvectortileutils.h"
 #include "qgsmeshlayer.h"
+#include "qgslayoutreportcontext.h"
 #include "qgsexpressionnodeimpl.h"
 #include "qgsproviderregistry.h"
 #include "qgsmaplayerfactory.h"
+#include "qgsunittypes.h"
+#include "qgslayoutrendercontext.h"
 
 QgsExpressionContextScope *QgsExpressionContextUtils::globalScope()
 {

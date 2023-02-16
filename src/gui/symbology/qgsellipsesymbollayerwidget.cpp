@@ -38,14 +38,14 @@ QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( QgsVectorLayer *vl, QW
   connect( mHorizontalAnchorComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsEllipseSymbolLayerWidget::mHorizontalAnchorComboBox_currentIndexChanged );
   connect( mVerticalAnchorComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsEllipseSymbolLayerWidget::mVerticalAnchorComboBox_currentIndexChanged );
 
-  mSymbolWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                                    << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mSymbolHeightUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                                     << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mStrokeWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                                    << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                               << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mSymbolWidthUnitWidget->setUnits( {Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels,
+                                     Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches} );
+  mSymbolHeightUnitWidget->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels,
+                                       Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches} );
+  mStrokeWidthUnitWidget->setUnits( {Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels,
+                                     Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches } );
+  mOffsetUnitWidget->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels,
+                                 Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches} );
 
   btnChangeColorFill->setAllowOpacity( true );
   btnChangeColorFill->setColorDialogTitle( tr( "Select Fill Color" ) );
@@ -75,14 +75,14 @@ QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( QgsVectorLayer *vl, QW
   for ( const QgsEllipseSymbolLayer::Shape shape : shapes )
   {
     QgsEllipseSymbolLayer *lyr = new QgsEllipseSymbolLayer();
-    lyr->setSymbolWidthUnit( QgsUnitTypes::RenderPixels );
-    lyr->setSymbolHeightUnit( QgsUnitTypes::RenderPixels );
+    lyr->setSymbolWidthUnit( Qgis::RenderUnit::Pixels );
+    lyr->setSymbolHeightUnit( Qgis::RenderUnit::Pixels );
     lyr->setShape( shape );
     lyr->setStrokeColor( QColor( 0, 0, 0 ) );
     lyr->setFillColor( QColor( 200, 200, 200 ) );
     lyr->setSymbolWidth( markerSize );
     lyr->setSymbolHeight( markerSize * 0.75 );
-    const QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( lyr, QgsUnitTypes::RenderPixels, QSize( size, size ) );
+    const QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( lyr, Qgis::RenderUnit::Pixels, QSize( size, size ) );
     QListWidgetItem *item = new QListWidgetItem( icon, QString(), mShapeListWidget );
     item->setData( Qt::UserRole, static_cast< int >( shape ) );
     item->setToolTip( QgsEllipseSymbolLayer::encodeShape( shape ) );

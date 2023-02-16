@@ -252,12 +252,12 @@ QString QgsGrassRegion::formatExtent( double v )
 {
   // format with precision approximately to meters
   // max length of degree of latitude on pole is 111694 m
-  return qgsDoubleToString( v, mCrs.mapUnits() == QgsUnitTypes::DistanceDegrees ? 6 : 1 );
+  return qgsDoubleToString( v, mCrs.mapUnits() == Qgis::DistanceUnit::Degrees ? 6 : 1 );
 }
 
 QString QgsGrassRegion::formatResolution( double v )
 {
-  return qgsDoubleToString( v, mCrs.mapUnits() == QgsUnitTypes::DistanceDegrees ? 10 : 4 );
+  return qgsDoubleToString( v, mCrs.mapUnits() == Qgis::DistanceUnit::Degrees ? 10 : 4 );
 }
 
 void QgsGrassRegion::readRegion()

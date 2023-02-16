@@ -16,18 +16,19 @@
 #include "qgsmapsettings.h"
 
 #include "qgsscalecalculator.h"
-#include "qgsmaprendererjob.h"
 #include "qgsmaptopixel.h"
 #include "qgslogger.h"
 
 #include "qgsmessagelog.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerlistutils_p.h"
-#include "qgsproject.h"
 #include "qgsxmlutils.h"
 #include "qgsexception.h"
 #include "qgsgeometry.h"
 #include "qgsgrouplayer.h"
+#include "qgscoordinatetransform.h"
+#include "qgsellipsoidutils.h"
+#include "qgsunittypes.h"
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 
@@ -40,7 +41,7 @@ QgsMapSettings::QgsMapSettings()
   , mFlags( Qgis::MapSettingsFlag::Antialiasing | Qgis::MapSettingsFlag::UseAdvancedEffects | Qgis::MapSettingsFlag::DrawLabeling | Qgis::MapSettingsFlag::DrawSelection )
   , mSegmentationTolerance( M_PI_2 / 90 )
 {
-  mScaleCalculator.setMapUnits( QgsUnitTypes::DistanceUnknownUnit );
+  mScaleCalculator.setMapUnits( Qgis::DistanceUnit::Unknown );
   mSimplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
 
   updateDerived();
@@ -397,7 +398,7 @@ bool QgsMapSettings::testFlag( Qgis::MapSettingsFlag flag ) const
   return mFlags.testFlag( flag );
 }
 
-QgsUnitTypes::DistanceUnit QgsMapSettings::mapUnits() const
+Qgis::DistanceUnit QgsMapSettings::mapUnits() const
 {
   return mScaleCalculator.mapUnits();
 }
@@ -494,7 +495,7 @@ QgsRectangle QgsMapSettings::computeExtentForScale( const QgsPointXY &center, do
   // Desired visible width (honouring scale)
   const double scaledWidthInInches = outputWidthInInches * scale;
 
-  if ( mapUnits() == QgsUnitTypes::DistanceDegrees )
+  if ( mapUnits() == Qgis::DistanceUnit::Degrees )
   {
     // Start with some fraction of the current extent around the center
     const double delta = mExtent.width() / 100.;
@@ -507,7 +508,7 @@ QgsRectangle QgsMapSettings::computeExtentForScale( const QgsPointXY &center, do
   else
   {
     // Conversion from inches to mapUnits  - this is safe to use, because we know here that the map units AREN'T in degrees
-    const double conversionFactor = QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceFeet, mapUnits() ) / 12;
+    const double conversionFactor = QgsUnitTypes::fromUnitToUnitFactor( Qgis::DistanceUnit::Feet, mapUnits() ) / 12;
 
     const double delta = 0.5 * scaledWidthInInches * conversionFactor;
     return QgsRectangle( center.x() - delta, center.y() - delta, center.x() + delta, center.y() + delta );

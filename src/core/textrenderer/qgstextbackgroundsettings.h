@@ -18,7 +18,7 @@
 
 #include "qgis_sip.h"
 #include "qgis_core.h"
-#include "qgsunittypes.h"
+#include "qgis.h"
 #include "qgsmapunitscale.h"
 
 #include <QString>
@@ -220,7 +220,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \see sizeType()
      * \see size()
      */
-    QgsUnitTypes::RenderUnit sizeUnit() const;
+    Qgis::RenderUnit sizeUnit() const;
 
     /**
      * Sets the units used for the shape's size. This value has no meaning if the sizeType() is set to
@@ -230,7 +230,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \see setSizeType()
      * \see setSize()
      */
-    void setSizeUnit( QgsUnitTypes::RenderUnit unit );
+    void setSizeUnit( Qgis::RenderUnit unit );
 
     /**
      * Returns the map unit scale object for the shape size. This is only used if the
@@ -300,7 +300,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \see setOffsetUnit()
      * \see offset()
      */
-    QgsUnitTypes::RenderUnit offsetUnit() const;
+    Qgis::RenderUnit offsetUnit() const;
 
     /**
      * Sets the units used for the shape's offset.
@@ -308,7 +308,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \see offsetUnit()
      * \see setOffset()
      */
-    void setOffsetUnit( QgsUnitTypes::RenderUnit units );
+    void setOffsetUnit( Qgis::RenderUnit units );
 
     /**
      * Returns the map unit scale object for the shape offset. This is only used if the
@@ -350,7 +350,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \see setRadiiUnit()
      * \see radii()
      */
-    QgsUnitTypes::RenderUnit radiiUnit() const;
+    Qgis::RenderUnit radiiUnit() const;
 
     /**
      * Sets the units used for the shape's radii.
@@ -358,7 +358,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \see radiiUnit()
      * \see setRadii()
      */
-    void setRadiiUnit( QgsUnitTypes::RenderUnit units );
+    void setRadiiUnit( Qgis::RenderUnit units );
 
     /**
      * Returns the map unit scale object for the shape radii. This is only used if the
@@ -464,7 +464,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \see setStrokeWidthUnit()
      * \see strokeWidth()
      */
-    QgsUnitTypes::RenderUnit strokeWidthUnit() const;
+    Qgis::RenderUnit strokeWidthUnit() const;
 
     /**
      * Sets the units used for the shape's stroke width.
@@ -474,7 +474,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \note As of QGIS 3.20, using this function is only recommended for SVG backgrounds, while
      * other background types should be configured through their symbols.
      */
-    void setStrokeWidthUnit( QgsUnitTypes::RenderUnit units );
+    void setStrokeWidthUnit( Qgis::RenderUnit units );
 
     /**
      * Returns the map unit scale object for the shape stroke width. This is only used if the

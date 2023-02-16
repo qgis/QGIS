@@ -611,12 +611,12 @@ QgsExpression *QgsPalLayerSettings::getLabelExpression()
   return expression;
 }
 
-QgsUnitTypes::AngleUnit QgsPalLayerSettings::rotationUnit() const
+Qgis::AngleUnit QgsPalLayerSettings::rotationUnit() const
 {
   return mRotationUnit;
 }
 
-void QgsPalLayerSettings::setRotationUnit( QgsUnitTypes::AngleUnit angleUnit )
+void QgsPalLayerSettings::setRotationUnit( Qgis::AngleUnit angleUnit )
 {
   mRotationUnit = angleUnit;
 }
@@ -765,7 +765,7 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
     predefinedPositionOrder = *DEFAULT_PLACEMENT_ORDER();
   fitInPolygonOnly = layer->customProperty( QStringLiteral( "labeling/fitInPolygonOnly" ), QVariant( false ) ).toBool();
   dist = layer->customProperty( QStringLiteral( "labeling/dist" ) ).toDouble();
-  distUnits = layer->customProperty( QStringLiteral( "labeling/distInMapUnits" ) ).toBool() ? QgsUnitTypes::RenderMapUnits : QgsUnitTypes::RenderMillimeters;
+  distUnits = layer->customProperty( QStringLiteral( "labeling/distInMapUnits" ) ).toBool() ? Qgis::RenderUnit::MapUnits : Qgis::RenderUnit::Millimeters;
   if ( layer->customProperty( QStringLiteral( "labeling/distMapUnitScale" ) ).toString().isEmpty() )
   {
     //fallback to older property
@@ -783,9 +783,9 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
   xOffset = layer->customProperty( QStringLiteral( "labeling/xOffset" ), QVariant( 0.0 ) ).toDouble();
   yOffset = layer->customProperty( QStringLiteral( "labeling/yOffset" ), QVariant( 0.0 ) ).toDouble();
   if ( layer->customProperty( QStringLiteral( "labeling/labelOffsetInMapUnits" ), QVariant( true ) ).toBool() )
-    offsetUnits = QgsUnitTypes::RenderMapUnits;
+    offsetUnits = Qgis::RenderUnit::MapUnits;
   else
-    offsetUnits = QgsUnitTypes::RenderMillimeters;
+    offsetUnits = Qgis::RenderUnit::Millimeters;
 
   if ( layer->customProperty( QStringLiteral( "labeling/labelOffsetMapUnitScale" ) ).toString().isEmpty() )
   {
@@ -812,7 +812,7 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
   }
 
   preserveRotation = layer->customProperty( QStringLiteral( "labeling/preserveRotation" ), QVariant( true ) ).toBool();
-  mRotationUnit = layer->customEnumProperty( QStringLiteral( "labeling/rotationUnit" ), QgsUnitTypes::AngleDegrees );
+  mRotationUnit = layer->customEnumProperty( QStringLiteral( "labeling/rotationUnit" ), Qgis::AngleUnit::Degrees );
   maxCurvedCharAngleIn = layer->customProperty( QStringLiteral( "labeling/maxCurvedCharAngleIn" ), QVariant( 25.0 ) ).toDouble();
   maxCurvedCharAngleOut = layer->customProperty( QStringLiteral( "labeling/maxCurvedCharAngleOut" ), QVariant( -25.0 ) ).toDouble();
   priority = layer->customProperty( QStringLiteral( "labeling/priority" ) ).toInt();
@@ -820,16 +820,16 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
   switch ( layer->customProperty( QStringLiteral( "labeling/repeatDistanceUnit" ), QVariant( 1 ) ).toUInt() )
   {
     case 0:
-      repeatDistanceUnit = QgsUnitTypes::RenderPoints;
+      repeatDistanceUnit = Qgis::RenderUnit::Points;
       break;
     case 1:
-      repeatDistanceUnit = QgsUnitTypes::RenderMillimeters;
+      repeatDistanceUnit = Qgis::RenderUnit::Millimeters;
       break;
     case 2:
-      repeatDistanceUnit = QgsUnitTypes::RenderMapUnits;
+      repeatDistanceUnit = Qgis::RenderUnit::MapUnits;
       break;
     case 3:
-      repeatDistanceUnit = QgsUnitTypes::RenderPercentage;
+      repeatDistanceUnit = Qgis::RenderUnit::Percentage;
       break;
   }
   if ( layer->customProperty( QStringLiteral( "labeling/repeatDistanceMapUnitScale" ) ).toString().isEmpty() )
@@ -993,9 +993,9 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
   if ( !placementElem.hasAttribute( QStringLiteral( "distUnits" ) ) )
   {
     if ( placementElem.attribute( QStringLiteral( "distInMapUnits" ) ).toInt() )
-      distUnits = QgsUnitTypes::RenderMapUnits;
+      distUnits = Qgis::RenderUnit::MapUnits;
     else
-      distUnits = QgsUnitTypes::RenderMillimeters;
+      distUnits = Qgis::RenderUnit::Millimeters;
   }
   else
   {
@@ -1019,7 +1019,7 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
   yOffset = placementElem.attribute( QStringLiteral( "yOffset" ), QStringLiteral( "0" ) ).toDouble();
   if ( !placementElem.hasAttribute( QStringLiteral( "offsetUnits" ) ) )
   {
-    offsetUnits = placementElem.attribute( QStringLiteral( "labelOffsetInMapUnits" ), QStringLiteral( "1" ) ).toInt() ? QgsUnitTypes::RenderMapUnits : QgsUnitTypes::RenderMillimeters;
+    offsetUnits = placementElem.attribute( QStringLiteral( "labelOffsetInMapUnits" ), QStringLiteral( "1" ) ).toInt() ? Qgis::RenderUnit::MapUnits : Qgis::RenderUnit::Millimeters;
   }
   else
   {
@@ -1049,7 +1049,7 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
   }
 
   preserveRotation = placementElem.attribute( QStringLiteral( "preserveRotation" ), QStringLiteral( "1" ) ).toInt();
-  mRotationUnit = qgsEnumKeyToValue( placementElem.attribute( QStringLiteral( "rotationUnit" ), qgsEnumValueToKey( QgsUnitTypes::AngleDegrees ) ), QgsUnitTypes::AngleDegrees );
+  mRotationUnit = qgsEnumKeyToValue( placementElem.attribute( QStringLiteral( "rotationUnit" ), qgsEnumValueToKey( Qgis::AngleUnit::Degrees ) ), Qgis::AngleUnit::Degrees );
   maxCurvedCharAngleIn = placementElem.attribute( QStringLiteral( "maxCurvedCharAngleIn" ), QStringLiteral( "25" ) ).toDouble();
   maxCurvedCharAngleOut = placementElem.attribute( QStringLiteral( "maxCurvedCharAngleOut" ), QStringLiteral( "-25" ) ).toDouble();
   priority = placementElem.attribute( QStringLiteral( "priority" ) ).toInt();
@@ -1060,16 +1060,16 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
     switch ( placementElem.attribute( QStringLiteral( "repeatDistanceUnit" ), QString::number( 1 ) ).toUInt() )
     {
       case 0:
-        repeatDistanceUnit = QgsUnitTypes::RenderPoints;
+        repeatDistanceUnit = Qgis::RenderUnit::Points;
         break;
       case 1:
-        repeatDistanceUnit = QgsUnitTypes::RenderMillimeters;
+        repeatDistanceUnit = Qgis::RenderUnit::Millimeters;
         break;
       case 2:
-        repeatDistanceUnit = QgsUnitTypes::RenderMapUnits;
+        repeatDistanceUnit = Qgis::RenderUnit::MapUnits;
         break;
       case 3:
-        repeatDistanceUnit = QgsUnitTypes::RenderPercentage;
+        repeatDistanceUnit = Qgis::RenderUnit::Percentage;
         break;
     }
   }
@@ -1390,7 +1390,7 @@ QPixmap QgsPalLayerSettings::labelSettingsPreviewPixmap( const QgsPalLayerSettin
   const double fontSize = context.convertToPainterUnits( tempFormat.size(), tempFormat.sizeUnit(), tempFormat.sizeMapUnitScale() );
   double xtrans = 0;
   if ( tempFormat.buffer().enabled() )
-    xtrans = tempFormat.buffer().sizeUnit() == QgsUnitTypes::RenderPercentage
+    xtrans = tempFormat.buffer().sizeUnit() == Qgis::RenderUnit::Percentage
              ? fontSize * tempFormat.buffer().size() / 100
              : context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() );
   if ( tempFormat.background().enabled() && tempFormat.background().sizeType() != QgsTextBackgroundSettings::SizeFixed )
@@ -1398,7 +1398,7 @@ QPixmap QgsPalLayerSettings::labelSettingsPreviewPixmap( const QgsPalLayerSettin
 
   double ytrans = 0.0;
   if ( tempFormat.buffer().enabled() )
-    ytrans = std::max( ytrans, tempFormat.buffer().sizeUnit() == QgsUnitTypes::RenderPercentage
+    ytrans = std::max( ytrans, tempFormat.buffer().sizeUnit() == Qgis::RenderUnit::Percentage
                        ? fontSize * tempFormat.buffer().size() / 100
                        : context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() ) );
   if ( tempFormat.background().enabled() )
@@ -1655,7 +1655,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
     {
       case Qgis::TextOrientation::Horizontal:
       {
-        h += fm->height() + static_cast< double >( ( lines - 1 ) * ( mFormat.lineHeightUnit() == QgsUnitTypes::RenderPercentage ? ( labelHeight * multilineH ) : lineHeightPainterUnits ) );
+        h += fm->height() + static_cast< double >( ( lines - 1 ) * ( mFormat.lineHeightUnit() == Qgis::RenderUnit::Percentage ? ( labelHeight * multilineH ) : lineHeightPainterUnits ) );
 
         for ( const QString &line : std::as_const( multiLineSplit ) )
         {
@@ -1668,7 +1668,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
       {
         double letterSpacing = mFormat.scaledFont( *context ).letterSpacing();
         double labelWidth = fm->maxWidth();
-        w = labelWidth + ( lines - 1 ) * ( mFormat.lineHeightUnit() == QgsUnitTypes::RenderPercentage ? ( labelWidth * multilineH ) : lineHeightPainterUnits );
+        w = labelWidth + ( lines - 1 ) * ( mFormat.lineHeightUnit() == Qgis::RenderUnit::Percentage ? ( labelWidth * multilineH ) : lineHeightPainterUnits );
 
         int maxLineLength = 0;
         for ( const QString &line : std::as_const( multiLineSplit ) )
@@ -1690,10 +1690,10 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
         double widthVertical = 0.0;
         double letterSpacing = mFormat.scaledFont( *context ).letterSpacing();
         double labelWidth = fm->maxWidth();
-        widthVertical = labelWidth + ( lines - 1 ) * ( mFormat.lineHeightUnit() == QgsUnitTypes::RenderPercentage ? ( labelWidth * multilineH ) : lineHeightPainterUnits );
+        widthVertical = labelWidth + ( lines - 1 ) * ( mFormat.lineHeightUnit() == Qgis::RenderUnit::Percentage ? ( labelWidth * multilineH ) : lineHeightPainterUnits );
 
         double heightHorizontal = 0.0;
-        heightHorizontal += fm->height() + static_cast< double >( ( lines - 1 ) * ( mFormat.lineHeightUnit() == QgsUnitTypes::RenderPercentage ? ( labelHeight * multilineH ) : lineHeightPainterUnits ) );
+        heightHorizontal += fm->height() + static_cast< double >( ( lines - 1 ) * ( mFormat.lineHeightUnit() == Qgis::RenderUnit::Percentage ? ( labelHeight * multilineH ) : lineHeightPainterUnits ) );
 
         double heightVertical = 0.0;
         int maxLineLength = 0;
@@ -1847,7 +1847,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   // labelFont will be added to label feature for use during label painting
 
   // data defined font units?
-  QgsUnitTypes::RenderUnit fontunits = mFormat.sizeUnit();
+  Qgis::RenderUnit fontunits = mFormat.sizeUnit();
   exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::FontSizeUnit, context.expressionContext() );
   if ( !QgsVariantUtils::isNull( exprVal ) )
   {
@@ -1855,7 +1855,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
     if ( !units.isEmpty() )
     {
       bool ok;
-      QgsUnitTypes::RenderUnit res = QgsUnitTypes::decodeRenderUnit( units, &ok );
+      Qgis::RenderUnit res = QgsUnitTypes::decodeRenderUnit( units, &ok );
       if ( ok )
         fontunits = res;
     }
@@ -1884,7 +1884,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   // NOTE: labelFont now always has pixelSize set, so pointSize or pointSizeF might return -1
 
   // defined 'minimum/maximum pixel font size'?
-  if ( fontunits == QgsUnitTypes::RenderMapUnits )
+  if ( fontunits == Qgis::RenderUnit::MapUnits )
   {
     if ( mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::FontLimitPixel, context.expressionContext(), fontLimitPixelSize ) )
     {
@@ -2260,7 +2260,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
     // for minimum feature size on merged lines, we need to delay the filtering after the merging occurred in PAL
     if ( geom.type() == QgsWkbTypes::LineGeometry && mLineSettings.mergeLines() )
     {
-      minimumSize = context.convertToMapUnits( featureThinningSettings.minimumFeatureSize(), QgsUnitTypes::RenderMillimeters );
+      minimumSize = context.convertToMapUnits( featureThinningSettings.minimumFeatureSize(), Qgis::RenderUnit::Millimeters );
     }
     else
     {
@@ -2388,7 +2388,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   }
 
   // data defined label offset units?
-  QgsUnitTypes::RenderUnit offUnit = offsetUnits;
+  Qgis::RenderUnit offUnit = offsetUnits;
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::OffsetUnits ) )
   {
     exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::OffsetUnits, context.expressionContext() );
@@ -2398,7 +2398,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
       if ( !units.isEmpty() )
       {
         bool ok = false;
-        QgsUnitTypes::RenderUnit decodedUnits = QgsUnitTypes::decodeRenderUnit( units, &ok );
+        Qgis::RenderUnit decodedUnits = QgsUnitTypes::decodeRenderUnit( units, &ok );
         if ( ok )
         {
           offUnit = decodedUnits;
@@ -2435,7 +2435,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
         dataDefinedRotation = true;
 
         double rotationDegrees = rotation * QgsUnitTypes::fromUnitToUnitFactor( mRotationUnit,
-                                 QgsUnitTypes::AngleDegrees );
+                                 Qgis::AngleUnit::Degrees );
 
         // TODO: add setting to disable having data defined rotation follow
         //       map rotation ?
@@ -2619,7 +2619,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   }
 
   // data defined label-repeat distance units?
-  QgsUnitTypes::RenderUnit repeatUnits = repeatDistanceUnit;
+  Qgis::RenderUnit repeatUnits = repeatDistanceUnit;
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::RepeatDistanceUnit ) )
   {
     exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::RepeatDistanceUnit, context.expressionContext() );
@@ -2629,7 +2629,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
       if ( !units.isEmpty() )
       {
         bool ok = false;
-        QgsUnitTypes::RenderUnit decodedUnits = QgsUnitTypes::decodeRenderUnit( units, &ok );
+        Qgis::RenderUnit decodedUnits = QgsUnitTypes::decodeRenderUnit( units, &ok );
         if ( ok )
         {
           repeatUnits = decodedUnits;
@@ -2640,7 +2640,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
 
   if ( !qgsDoubleNear( repeatDist, 0.0 ) )
   {
-    if ( repeatUnits != QgsUnitTypes::RenderMapUnits )
+    if ( repeatUnits != Qgis::RenderUnit::MapUnits )
     {
       repeatDist = context.convertToMapUnits( repeatDist, repeatUnits, repeatDistanceMapUnitScale );
     }
@@ -2656,7 +2656,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   // we smooth out the overrun label extensions by 1 mm, to avoid little jaggies right at the start or end of the lines
   // causing the overrun extension to extend out in an undesirable direction. This is hard coded, we don't want to overload
   // users with options they likely don't need to see...
-  const double overrunSmoothDist = context.convertToMapUnits( 1, QgsUnitTypes::RenderMillimeters );
+  const double overrunSmoothDist = context.convertToMapUnits( 1, Qgis::RenderUnit::Millimeters );
 
   bool labelAll = labelPerPart && !hasDataDefinedPosition;
   if ( !hasDataDefinedPosition )
@@ -2755,7 +2755,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   }
 
   // data defined label-feature distance units?
-  QgsUnitTypes::RenderUnit distUnit = distUnits;
+  Qgis::RenderUnit distUnit = distUnits;
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::DistanceUnits ) )
   {
     exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::DistanceUnits, context.expressionContext() );
@@ -2766,7 +2766,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
       if ( !units.isEmpty() )
       {
         bool ok = false;
-        QgsUnitTypes::RenderUnit decodedUnits = QgsUnitTypes::decodeRenderUnit( units, &ok );
+        Qgis::RenderUnit decodedUnits = QgsUnitTypes::decodeRenderUnit( units, &ok );
         if ( ok )
         {
           distUnit = decodedUnits;
@@ -3143,7 +3143,7 @@ bool QgsPalLayerSettings::dataDefinedValEval( DataDefinedValueType valType,
 }
 
 void QgsPalLayerSettings::parseTextStyle( QFont &labelFont,
-    QgsUnitTypes::RenderUnit fontunits,
+    Qgis::RenderUnit fontunits,
     QgsRenderContext &context )
 {
   // NOTE: labelFont already has pixelSize set, so pointSize or pointSizeF might return -1
@@ -4255,7 +4255,7 @@ void QgsPalLabeling::dataDefinedTextBuffer( QgsPalLayerSettings &tmpLyr,
   //buffer size units
   if ( ddValues.contains( QgsPalLayerSettings::BufferUnit ) )
   {
-    QgsUnitTypes::RenderUnit bufunit = static_cast< QgsUnitTypes::RenderUnit >( ddValues.value( QgsPalLayerSettings::BufferUnit ).toInt() );
+    Qgis::RenderUnit bufunit = static_cast< Qgis::RenderUnit >( ddValues.value( QgsPalLayerSettings::BufferUnit ).toInt() );
     buffer.setSizeUnit( bufunit );
     changed = true;
   }
@@ -4336,7 +4336,7 @@ void QgsPalLabeling::dataDefinedTextMask( QgsPalLayerSettings &tmpLyr,
   // buffer size units
   if ( ddValues.contains( QgsPalLayerSettings::MaskBufferUnit ) )
   {
-    QgsUnitTypes::RenderUnit bufunit = static_cast< QgsUnitTypes::RenderUnit >( ddValues.value( QgsPalLayerSettings::MaskBufferUnit ).toInt() );
+    Qgis::RenderUnit bufunit = static_cast< Qgis::RenderUnit >( ddValues.value( QgsPalLayerSettings::MaskBufferUnit ).toInt() );
     mask.setSizeUnit( bufunit );
     changed = true;
   }
@@ -4415,7 +4415,7 @@ void QgsPalLabeling::dataDefinedShapeBackground( QgsPalLayerSettings &tmpLyr,
 
   if ( ddValues.contains( QgsPalLayerSettings::ShapeSizeUnits ) )
   {
-    background.setSizeUnit( static_cast< QgsUnitTypes::RenderUnit >( ddValues.value( QgsPalLayerSettings::ShapeSizeUnits ).toInt() ) );
+    background.setSizeUnit( static_cast< Qgis::RenderUnit >( ddValues.value( QgsPalLayerSettings::ShapeSizeUnits ).toInt() ) );
     changed = true;
   }
 
@@ -4439,7 +4439,7 @@ void QgsPalLabeling::dataDefinedShapeBackground( QgsPalLayerSettings &tmpLyr,
 
   if ( ddValues.contains( QgsPalLayerSettings::ShapeOffsetUnits ) )
   {
-    background.setOffsetUnit( static_cast< QgsUnitTypes::RenderUnit >( ddValues.value( QgsPalLayerSettings::ShapeOffsetUnits ).toInt() ) );
+    background.setOffsetUnit( static_cast< Qgis::RenderUnit >( ddValues.value( QgsPalLayerSettings::ShapeOffsetUnits ).toInt() ) );
     changed = true;
   }
 
@@ -4451,7 +4451,7 @@ void QgsPalLabeling::dataDefinedShapeBackground( QgsPalLayerSettings &tmpLyr,
 
   if ( ddValues.contains( QgsPalLayerSettings::ShapeRadiiUnits ) )
   {
-    background.setRadiiUnit( static_cast< QgsUnitTypes::RenderUnit >( ddValues.value( QgsPalLayerSettings::ShapeRadiiUnits ).toInt() ) );
+    background.setRadiiUnit( static_cast< Qgis::RenderUnit >( ddValues.value( QgsPalLayerSettings::ShapeRadiiUnits ).toInt() ) );
     changed = true;
   }
 
@@ -4489,7 +4489,7 @@ void QgsPalLabeling::dataDefinedShapeBackground( QgsPalLayerSettings &tmpLyr,
 
   if ( ddValues.contains( QgsPalLayerSettings::ShapeStrokeWidthUnits ) )
   {
-    background.setStrokeWidthUnit( static_cast< QgsUnitTypes::RenderUnit >( ddValues.value( QgsPalLayerSettings::ShapeStrokeWidthUnits ).toInt() ) );
+    background.setStrokeWidthUnit( static_cast< Qgis::RenderUnit >( ddValues.value( QgsPalLayerSettings::ShapeStrokeWidthUnits ).toInt() ) );
     changed = true;
   }
 
@@ -4551,7 +4551,7 @@ void QgsPalLabeling::dataDefinedDropShadow( QgsPalLayerSettings &tmpLyr,
 
   if ( ddValues.contains( QgsPalLayerSettings::ShadowOffsetUnits ) )
   {
-    shadow.setOffsetUnit( static_cast< QgsUnitTypes::RenderUnit >( ddValues.value( QgsPalLayerSettings::ShadowOffsetUnits ).toInt() ) );
+    shadow.setOffsetUnit( static_cast< Qgis::RenderUnit >( ddValues.value( QgsPalLayerSettings::ShadowOffsetUnits ).toInt() ) );
     changed = true;
   }
 
@@ -4563,7 +4563,7 @@ void QgsPalLabeling::dataDefinedDropShadow( QgsPalLayerSettings &tmpLyr,
 
   if ( ddValues.contains( QgsPalLayerSettings::ShadowRadiusUnits ) )
   {
-    shadow.setBlurRadiusUnit( static_cast< QgsUnitTypes::RenderUnit >( ddValues.value( QgsPalLayerSettings::ShadowRadiusUnits ).toInt() ) );
+    shadow.setBlurRadiusUnit( static_cast< Qgis::RenderUnit >( ddValues.value( QgsPalLayerSettings::ShadowRadiusUnits ).toInt() ) );
     changed = true;
   }
 

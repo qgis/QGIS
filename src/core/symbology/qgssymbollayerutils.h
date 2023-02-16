@@ -238,7 +238,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \returns encoded string
      * \see decodeSldUom()
      */
-    static QString encodeSldUom( QgsUnitTypes::RenderUnit unit, double *scaleFactor );
+    static QString encodeSldUom( Qgis::RenderUnit unit, double *scaleFactor );
 
     /**
      * Decodes a SLD unit of measure string to a render unit.
@@ -247,7 +247,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \returns matching render unit
      * \see encodeSldUom()
      */
-    static QgsUnitTypes::RenderUnit decodeSldUom( const QString &str, double *scaleFactor = nullptr );
+    static Qgis::RenderUnit decodeSldUom( const QString &str, double *scaleFactor = nullptr );
 
     /**
      * Returns the size scaled in pixels according to the uom attribute.
@@ -314,7 +314,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \see symbolLayerPreviewIcon()
      * \since QGIS 2.9
      */
-    static QPicture symbolLayerPreviewPicture( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit units, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid );
+    static QPicture symbolLayerPreviewPicture( const QgsSymbolLayer *layer, Qgis::RenderUnit units, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid );
 
     /**
      * Draws a symbol layer preview to an icon.
@@ -327,7 +327,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \returns icon containing symbol layer preview
      * \see symbolLayerPreviewPicture()
      */
-    static QIcon symbolLayerPreviewIcon( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid, QgsMapLayer *mapLayer = nullptr );
+    static QIcon symbolLayerPreviewIcon( const QgsSymbolLayer *layer, Qgis::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid, QgsMapLayer *mapLayer = nullptr );
 
     /**
      * Returns an icon preview for a color ramp.
@@ -836,21 +836,21 @@ class CORE_EXPORT QgsSymbolLayerUtils
      *  returns the value un-modified
      * \since QGIS 3.0
      */
-    static double rescaleUom( double size, QgsUnitTypes::RenderUnit unit, const QVariantMap &props );
+    static double rescaleUom( double size, Qgis::RenderUnit unit, const QVariantMap &props );
 
     /**
      * Rescales the given point based on the uomScale found in the props, if any is found, otherwise
      *  returns a copy of the original point
      * \since QGIS 3.0
      */
-    static QPointF rescaleUom( QPointF point, QgsUnitTypes::RenderUnit unit, const QVariantMap &props ) SIP_PYNAME( rescalePointUom );
+    static QPointF rescaleUom( QPointF point, Qgis::RenderUnit unit, const QVariantMap &props ) SIP_PYNAME( rescalePointUom );
 
     /**
      * Rescales the given array based on the uomScale found in the props, if any is found, otherwise
      *  returns a copy of the original point
      * \since QGIS 3.0
      */
-    static QVector<qreal> rescaleUom( const QVector<qreal> &array, QgsUnitTypes::RenderUnit unit, const QVariantMap &props ) SIP_PYNAME( rescaleArrayUom );
+    static QVector<qreal> rescaleUom( const QVector<qreal> &array, Qgis::RenderUnit unit, const QVariantMap &props ) SIP_PYNAME( rescaleArrayUom );
 
     /**
      * Checks if the properties contain scaleMinDenom and scaleMaxDenom, if available, they are added into the SE Rule element

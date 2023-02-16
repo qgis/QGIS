@@ -27,14 +27,8 @@
 #include "qgsdiagramproperties.h"
 #include "qgsdiagramrenderer.h"
 #include "qgslabelengineconfigdialog.h"
-#include "qgsmessagebar.h"
-#include "qgsvectorlayerproperties.h"
-#include "qgsvectordataprovider.h"
 #include "qgsfeatureiterator.h"
-#include "qgscolordialog.h"
-#include "qgsguiutils.h"
 #include "qgssymbolselectordialog.h"
-#include "qgsstyle.h"
 #include "qgsmapcanvas.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgslogger.h"
@@ -88,8 +82,12 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   mDiagramOptionsListWidget->setAttribute( Qt::WA_MacShowFocusRect, false );
 
   mBarSpacingSpinBox->setClearValue( 0 );
-  mBarSpacingUnitComboBox->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                                     << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mBarSpacingUnitComboBox->setUnits( { Qgis::RenderUnit::Millimeters,
+                                       Qgis::RenderUnit::MetersInMapUnits,
+                                       Qgis::RenderUnit::MapUnits,
+                                       Qgis::RenderUnit::Pixels,
+                                       Qgis::RenderUnit::Points,
+                                       Qgis::RenderUnit::Inches } );
 
   mDiagramFontButton->setMode( QgsFontButton::ModeQFont );
 
@@ -134,10 +132,16 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   connect( mFixedSizeRadio, &QRadioButton::toggled, this, &QgsDiagramProperties::scalingTypeChanged );
   connect( mAttributeBasedScalingRadio, &QRadioButton::toggled, this, &QgsDiagramProperties::scalingTypeChanged );
 
-  mDiagramUnitComboBox->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                                  << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mDiagramLineUnitComboBox->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                                      << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mDiagramUnitComboBox->setUnits( {Qgis::RenderUnit::Millimeters,
+                                   Qgis::RenderUnit::MapUnits,
+                                   Qgis::RenderUnit::Pixels,
+                                   Qgis::RenderUnit::Points,
+                                   Qgis::RenderUnit::Inches } );
+  mDiagramLineUnitComboBox->setUnits( { Qgis::RenderUnit::Millimeters,
+                                        Qgis::RenderUnit::MapUnits,
+                                        Qgis::RenderUnit::Pixels,
+                                        Qgis::RenderUnit::Points,
+                                        Qgis::RenderUnit::Inches } );
 
   const QgsWkbTypes::GeometryType layerType = layer->geometryType();
   if ( layerType == QgsWkbTypes::UnknownGeometry || layerType == QgsWkbTypes::NullGeometry )
@@ -274,8 +278,8 @@ void QgsDiagramProperties::syncToLayer()
     mDiagramTypeComboBox->setCurrentIndex( 0 );
     mDiagramTypeComboBox->blockSignals( false );
     mFixedSizeRadio->setChecked( true );
-    mDiagramUnitComboBox->setUnit( QgsUnitTypes::RenderMillimeters );
-    mDiagramLineUnitComboBox->setUnit( QgsUnitTypes::RenderMillimeters );
+    mDiagramUnitComboBox->setUnit( Qgis::RenderUnit::Millimeters );
+    mDiagramLineUnitComboBox->setUnit( Qgis::RenderUnit::Millimeters );
     mLabelPlacementComboBox->setCurrentIndex( mLabelPlacementComboBox->findText( tr( "x-height" ) ) );
     mDiagramSizeSpinBox->setEnabled( true );
     mDiagramSizeSpinBox->setValue( 15 );

@@ -42,7 +42,7 @@ class QgsHanaUtils
 
     static QString toConstant( const QVariant &value, QVariant::Type type );
 
-    static QString toString( QgsUnitTypes::DistanceUnit unit );
+    static QString toString( Qgis::DistanceUnit unit );
 
     static QString toQString( const NS_ODBC::NString &str );
     static QString toQString( const NS_ODBC::String &str );

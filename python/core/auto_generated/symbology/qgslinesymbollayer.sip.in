@@ -64,9 +64,9 @@ Creates a new QgsSimpleLineSymbolLayer from an SLD XML DOM ``element``.
 
     virtual QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
 
-    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    virtual void setOutputUnit( Qgis::RenderUnit unit );
 
-    virtual QgsUnitTypes::RenderUnit outputUnit() const;
+    virtual Qgis::RenderUnit outputUnit() const;
 
     virtual bool usesMapUnits() const;
 
@@ -76,7 +76,7 @@ Creates a new QgsSimpleLineSymbolLayer from an SLD XML DOM ``element``.
 
     virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
 
-    virtual QVector<qreal> dxfCustomDashPattern( QgsUnitTypes::RenderUnit &unit ) const;
+    virtual QVector<qreal> dxfCustomDashPattern( Qgis::RenderUnit &unit ) const;
 
     virtual Qt::PenStyle dxfPenStyle() const;
 
@@ -153,14 +153,14 @@ Sets whether the line uses a custom dash pattern.
 .. seealso:: :py:func:`setCustomDashVector`
 %End
 
-    void setCustomDashPatternUnit( QgsUnitTypes::RenderUnit unit );
+    void setCustomDashPatternUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the ``unit`` for lengths used in the custom dash pattern.
 
 .. seealso:: :py:func:`customDashPatternUnit`
 %End
 
-    QgsUnitTypes::RenderUnit customDashPatternUnit() const;
+    Qgis::RenderUnit customDashPatternUnit() const;
 %Docstring
 Returns the units for lengths used in the custom dash pattern.
 
@@ -245,7 +245,7 @@ Offset units are set via :py:func:`~QgsSimpleLineSymbolLayer.setDashPatternOffse
 .. versionadded:: 3.16
 %End
 
-    void setDashPatternOffsetUnit( QgsUnitTypes::RenderUnit unit );
+    void setDashPatternOffsetUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the ``unit`` for the dash pattern offset.
 
@@ -258,7 +258,7 @@ Sets the ``unit`` for the dash pattern offset.
 .. versionadded:: 3.16
 %End
 
-    QgsUnitTypes::RenderUnit dashPatternOffsetUnit() const;
+    Qgis::RenderUnit dashPatternOffsetUnit() const;
 %Docstring
 Returns the units for the dash pattern offset.
 
@@ -333,7 +333,7 @@ Trim units can be set by calling :py:func:`~QgsSimpleLineSymbolLayer.setTrimDist
 .. versionadded:: 3.20
 %End
 
-    void setTrimDistanceStartUnit( QgsUnitTypes::RenderUnit unit );
+    void setTrimDistanceStartUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the ``unit`` for the trim distance for the start of the line.
 
@@ -348,7 +348,7 @@ Sets the ``unit`` for the trim distance for the start of the line.
 .. versionadded:: 3.20
 %End
 
-    QgsUnitTypes::RenderUnit trimDistanceStartUnit() const;
+    Qgis::RenderUnit trimDistanceStartUnit() const;
 %Docstring
 Returns the unit for the trim distance for the start of the line.
 
@@ -429,7 +429,7 @@ Trim units can be set by calling :py:func:`~QgsSimpleLineSymbolLayer.setTrimDist
 .. versionadded:: 3.20
 %End
 
-    void setTrimDistanceEndUnit( QgsUnitTypes::RenderUnit unit );
+    void setTrimDistanceEndUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the ``unit`` for the trim distance for the end of the line.
 
@@ -444,7 +444,7 @@ Sets the ``unit`` for the trim distance for the end of the line.
 .. versionadded:: 3.20
 %End
 
-    QgsUnitTypes::RenderUnit trimDistanceEndUnit() const;
+    Qgis::RenderUnit trimDistanceEndUnit() const;
 %Docstring
 Returns the unit for the trim distance for the end of the line.
 
@@ -634,7 +634,7 @@ Sets the interval between individual symbols.
 .. seealso:: :py:func:`setIntervalUnit`
 %End
 
-    void setIntervalUnit( QgsUnitTypes::RenderUnit unit );
+    void setIntervalUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the units for the interval between symbols.
 
@@ -645,7 +645,7 @@ Sets the units for the interval between symbols.
 .. seealso:: :py:func:`setInterval`
 %End
 
-    QgsUnitTypes::RenderUnit intervalUnit() const;
+    Qgis::RenderUnit intervalUnit() const;
 %Docstring
 Returns the units for the interval between symbols.
 
@@ -781,7 +781,7 @@ This setting has no effect for Vertex or CentralPoint placements.
 .. seealso:: :py:func:`setPlacement`
 %End
 
-    QgsUnitTypes::RenderUnit offsetAlongLineUnit() const;
+    Qgis::RenderUnit offsetAlongLineUnit() const;
 %Docstring
 Returns the unit used for calculating the offset along line for symbols.
 
@@ -792,7 +792,7 @@ Returns the unit used for calculating the offset along line for symbols.
 .. seealso:: :py:func:`offsetAlongLine`
 %End
 
-    void setOffsetAlongLineUnit( QgsUnitTypes::RenderUnit unit );
+    void setOffsetAlongLineUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the unit used for calculating the offset along line for symbols.
 
@@ -845,7 +845,7 @@ Units are set through :py:func:`~QgsTemplatedLineSymbolLayerBase.setAverageAngle
 .. seealso:: :py:func:`setAverageAngleMapUnitScale`
 %End
 
-    void setAverageAngleUnit( QgsUnitTypes::RenderUnit unit );
+    void setAverageAngleUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the ``unit`` for the length over which the line's direction is averaged when
 calculating individual symbol angles.
@@ -857,7 +857,7 @@ calculating individual symbol angles.
 .. seealso:: :py:func:`setAverageAngleMapUnitScale`
 %End
 
-    QgsUnitTypes::RenderUnit averageAngleUnit() const;
+    Qgis::RenderUnit averageAngleUnit() const;
 %Docstring
 Returns the unit for the length over which the line's direction is averaged when
 calculating individual symbol angles.
@@ -897,9 +897,9 @@ calculating individual symbol angles.
 
     virtual void renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) ${SIP_FINAL};
 
-    virtual QgsUnitTypes::RenderUnit outputUnit() const ${SIP_FINAL};
+    virtual Qgis::RenderUnit outputUnit() const ${SIP_FINAL};
 
-    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    virtual void setOutputUnit( Qgis::RenderUnit unit );
 
     virtual void setMapUnitScale( const QgsMapUnitScale &scale ) ${SIP_FINAL};
 
@@ -1026,7 +1026,7 @@ Creates a new QgsMarkerLineSymbolLayer from an SLD XML DOM ``element``.
 
     virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
 
-    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    virtual void setOutputUnit( Qgis::RenderUnit unit );
 
     virtual bool usesMapUnits() const;
 
@@ -1134,7 +1134,7 @@ serialized in the ``properties`` map (corresponding to the output from
 
     virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
 
-    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    virtual void setOutputUnit( Qgis::RenderUnit unit );
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
@@ -1177,7 +1177,7 @@ Sets the ``length`` of hash symbols. Units are specified through :py:func:`~QgsH
 .. seealso:: :py:func:`setHashLengthUnit`
 %End
 
-    void setHashLengthUnit( QgsUnitTypes::RenderUnit unit );
+    void setHashLengthUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the ``unit`` for the length of hash symbols.
 
@@ -1186,7 +1186,7 @@ Sets the ``unit`` for the length of hash symbols.
 .. seealso:: :py:func:`setHashLength`
 %End
 
-    QgsUnitTypes::RenderUnit hashLengthUnit() const;
+    Qgis::RenderUnit hashLengthUnit() const;
 %Docstring
 Returns the units for the length of hash symbols.
 
@@ -1368,9 +1368,9 @@ Set the line opacity.
 
     virtual QgsRasterLineSymbolLayer *clone() const /Factory/;
 
-    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    virtual void setOutputUnit( Qgis::RenderUnit unit );
 
-    virtual QgsUnitTypes::RenderUnit outputUnit() const;
+    virtual Qgis::RenderUnit outputUnit() const;
 
     virtual bool usesMapUnits() const;
 
@@ -1431,9 +1431,9 @@ serialized in the ``properties`` map (corresponding to the output from
 
     virtual QgsLineburstSymbolLayer *clone() const /Factory/;
 
-    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    virtual void setOutputUnit( Qgis::RenderUnit unit );
 
-    virtual QgsUnitTypes::RenderUnit outputUnit() const;
+    virtual Qgis::RenderUnit outputUnit() const;
 
     virtual bool usesMapUnits() const;
 

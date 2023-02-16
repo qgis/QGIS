@@ -63,6 +63,7 @@
 #include "qgsdoublevalidator.h"
 #include "qgsmaplayercombobox.h"
 #include "qgsannotationlayer.h"
+#include "qgsunittypes.h"
 #include <QToolButton>
 #include <QLabel>
 #include <QHBoxLayout>
@@ -1125,11 +1126,11 @@ QWidget *QgsProcessingDistanceWidgetWrapper::createWidget()
       mLabel = new QLabel();
       mUnitsCombo = new QComboBox();
 
-      mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceMeters ), QgsUnitTypes::DistanceMeters );
-      mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceKilometers ), QgsUnitTypes::DistanceKilometers );
-      mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceFeet ), QgsUnitTypes::DistanceFeet );
-      mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceMiles ), QgsUnitTypes::DistanceMiles );
-      mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceYards ), QgsUnitTypes::DistanceYards );
+      mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Meters ), static_cast< int >( Qgis::DistanceUnit::Meters ) );
+      mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Kilometers ), static_cast< int >( Qgis::DistanceUnit::Kilometers ) );
+      mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Feet ), static_cast< int >( Qgis::DistanceUnit::Feet ) );
+      mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Miles ), static_cast< int >( Qgis::DistanceUnit::Miles ) );
+      mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Yards ), static_cast< int >( Qgis::DistanceUnit::Yards ) );
 
       const int labelMargin = static_cast< int >( std::round( mUnitsCombo->fontMetrics().horizontalAdvance( 'X' ) ) );
       QHBoxLayout *layout = new QHBoxLayout();
@@ -1201,7 +1202,7 @@ void QgsProcessingDistanceWidgetWrapper::postInitialize( const QList<QgsAbstract
 
 void QgsProcessingDistanceWidgetWrapper::setUnitParameterValue( const QVariant &value )
 {
-  QgsUnitTypes::DistanceUnit units = QgsUnitTypes::DistanceUnknownUnit;
+  Qgis::DistanceUnit units = Qgis::DistanceUnit::Unknown;
 
   // evaluate value to layer
   QgsProcessingContext *context = nullptr;
@@ -1224,21 +1225,21 @@ void QgsProcessingDistanceWidgetWrapper::setUnitParameterValue( const QVariant &
   setUnits( units );
 }
 
-void QgsProcessingDistanceWidgetWrapper::setUnits( const QgsUnitTypes::DistanceUnit units )
+void QgsProcessingDistanceWidgetWrapper::setUnits( Qgis::DistanceUnit units )
 {
   mLabel->setText( QgsUnitTypes::toString( units ) );
-  if ( QgsUnitTypes::unitType( units ) != QgsUnitTypes::Standard )
+  if ( QgsUnitTypes::unitType( units ) != Qgis::DistanceUnitType::Standard )
   {
     mUnitsCombo->hide();
     mLabel->show();
   }
   else
   {
-    mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( units ) );
+    mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( static_cast< int >( units ) ) );
     mUnitsCombo->show();
     mLabel->hide();
   }
-  mWarningLabel->setVisible( units == QgsUnitTypes::DistanceDegrees );
+  mWarningLabel->setVisible( units == Qgis::DistanceUnit::Degrees );
   mBaseUnit = units;
 }
 
@@ -1247,7 +1248,7 @@ QVariant QgsProcessingDistanceWidgetWrapper::widgetValue() const
   const QVariant val = QgsProcessingNumericWidgetWrapper::widgetValue();
   if ( val.type() == QVariant::Double && mUnitsCombo && mUnitsCombo->isVisible() )
   {
-    QgsUnitTypes::DistanceUnit displayUnit = static_cast<QgsUnitTypes::DistanceUnit >( mUnitsCombo->currentData().toInt() );
+    Qgis::DistanceUnit displayUnit = static_cast<Qgis::DistanceUnit >( mUnitsCombo->currentData().toInt() );
     return val.toDouble() * QgsUnitTypes::fromUnitToUnitFactor( displayUnit, mBaseUnit );
   }
   else
@@ -1287,15 +1288,15 @@ QgsProcessingDurationParameterDefinitionWidget::QgsProcessingDurationParameterDe
   vlayout->addWidget( new QLabel( tr( "Default unit type" ) ) );
 
   mUnitsCombo = new QComboBox();
-  mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalMilliseconds ), QgsUnitTypes::TemporalMilliseconds );
-  mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalSeconds ), QgsUnitTypes::TemporalSeconds );
-  mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalMinutes ), QgsUnitTypes::TemporalMinutes );
-  mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalHours ), QgsUnitTypes::TemporalHours );
-  mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalDays ), QgsUnitTypes::TemporalDays );
-  mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalWeeks ), QgsUnitTypes::TemporalWeeks );
-  mUnitsCombo->addItem( tr( "years (365.25 days)" ), QgsUnitTypes::TemporalYears );
-  mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalDecades ), QgsUnitTypes::TemporalDecades );
-  mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalCenturies ), QgsUnitTypes::TemporalCenturies );
+  mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::TemporalUnit::Milliseconds ), static_cast< int >( Qgis::TemporalUnit::Milliseconds ) );
+  mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::TemporalUnit::Seconds ), static_cast< int >( Qgis::TemporalUnit::Seconds ) );
+  mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::TemporalUnit::Minutes ), static_cast< int >( Qgis::TemporalUnit::Minutes ) );
+  mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::TemporalUnit::Hours ), static_cast< int >( Qgis::TemporalUnit::Hours ) );
+  mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::TemporalUnit::Days ), static_cast< int >( Qgis::TemporalUnit::Days ) );
+  mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::TemporalUnit::Weeks ), static_cast< int >( Qgis::TemporalUnit::Weeks ) );
+  mUnitsCombo->addItem( tr( "years (365.25 days)" ), static_cast< int >( Qgis::TemporalUnit::Years ) );
+  mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::TemporalUnit::Decades ), static_cast< int >( Qgis::TemporalUnit::Decades ) );
+  mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::TemporalUnit::Centuries ), static_cast< int >( Qgis::TemporalUnit::Centuries ) );
   vlayout->addWidget( mUnitsCombo );
 
   if ( const QgsProcessingParameterDuration *durationParam = dynamic_cast<const QgsProcessingParameterDuration *>( definition ) )
@@ -1303,7 +1304,7 @@ QgsProcessingDurationParameterDefinitionWidget::QgsProcessingDurationParameterDe
     mMinLineEdit->setText( QLocale().toString( durationParam->minimum() ) );
     mMaxLineEdit->setText( QLocale().toString( durationParam->maximum() ) );
     mDefaultLineEdit->setText( durationParam->defaultValueForGui().toString() );
-    mUnitsCombo->setCurrentIndex( durationParam->defaultUnit() );
+    mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( static_cast <int >( durationParam->defaultUnit() ) ) );
   }
 
   setLayout( vlayout );
@@ -1328,7 +1329,7 @@ QgsProcessingParameterDefinition *QgsProcessingDurationParameterDefinitionWidget
     param->setMaximum( val );
   }
 
-  param->setDefaultUnit( static_cast<QgsUnitTypes::TemporalUnit >( mUnitsCombo->currentData().toInt() ) );
+  param->setDefaultUnit( static_cast<Qgis::TemporalUnit >( mUnitsCombo->currentData().toInt() ) );
 
   param->setFlags( flags );
   return param.release();
@@ -1361,15 +1362,15 @@ QWidget *QgsProcessingDurationWidgetWrapper::createWidget()
     {
       mUnitsCombo = new QComboBox();
 
-      mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalMilliseconds ), QgsUnitTypes::TemporalMilliseconds );
-      mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalSeconds ), QgsUnitTypes::TemporalSeconds );
-      mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalMinutes ), QgsUnitTypes::TemporalMinutes );
-      mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalHours ), QgsUnitTypes::TemporalHours );
-      mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalDays ), QgsUnitTypes::TemporalDays );
-      mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalWeeks ), QgsUnitTypes::TemporalWeeks );
-      mUnitsCombo->addItem( tr( "years (365.25 days)" ), QgsUnitTypes::TemporalYears );
-      mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalDecades ), QgsUnitTypes::TemporalDecades );
-      mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalCenturies ), QgsUnitTypes::TemporalCenturies );
+      mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::TemporalUnit::Milliseconds ), static_cast< int >( Qgis::TemporalUnit::Milliseconds ) );
+      mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::TemporalUnit::Seconds ), static_cast< int >( Qgis::TemporalUnit::Seconds ) );
+      mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::TemporalUnit::Minutes ), static_cast< int >( Qgis::TemporalUnit::Minutes ) );
+      mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::TemporalUnit::Hours ), static_cast< int >( Qgis::TemporalUnit::Hours ) );
+      mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::TemporalUnit::Days ), static_cast< int >( Qgis::TemporalUnit::Days ) );
+      mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::TemporalUnit::Weeks ), static_cast< int >( Qgis::TemporalUnit::Weeks ) );
+      mUnitsCombo->addItem( tr( "years (365.25 days)" ), static_cast< int >( Qgis::TemporalUnit::Years ) );
+      mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::TemporalUnit::Decades ), static_cast< int >( Qgis::TemporalUnit::Decades ) );
+      mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::TemporalUnit::Centuries ), static_cast< int >( Qgis::TemporalUnit::Centuries ) );
 
       QHBoxLayout *layout = new QHBoxLayout();
       layout->addWidget( spin, 1 );
@@ -1379,7 +1380,7 @@ QWidget *QgsProcessingDurationWidgetWrapper::createWidget()
       layout->setContentsMargins( 0, 0, 0, 0 );
       w->setLayout( layout );
 
-      mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( durationDef->defaultUnit() ) );
+      mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( static_cast< int >( durationDef->defaultUnit() ) ) );
       mUnitsCombo->show();
 
       return w;
@@ -1410,7 +1411,7 @@ QVariant QgsProcessingDurationWidgetWrapper::widgetValue() const
   const QVariant val = QgsProcessingNumericWidgetWrapper::widgetValue();
   if ( val.type() == QVariant::Double && mUnitsCombo )
   {
-    QgsUnitTypes::TemporalUnit displayUnit = static_cast<QgsUnitTypes::TemporalUnit >( mUnitsCombo->currentData().toInt() );
+    Qgis::TemporalUnit displayUnit = static_cast<Qgis::TemporalUnit >( mUnitsCombo->currentData().toInt() );
     return val.toDouble() * QgsUnitTypes::fromUnitToUnitFactor( displayUnit, mBaseUnit );
   }
   else
@@ -1423,7 +1424,7 @@ void QgsProcessingDurationWidgetWrapper::setWidgetValue( const QVariant &value, 
 {
   if ( mUnitsCombo )
   {
-    QgsUnitTypes::TemporalUnit displayUnit = static_cast<QgsUnitTypes::TemporalUnit >( mUnitsCombo->currentData().toInt() );
+    Qgis::TemporalUnit displayUnit = static_cast<Qgis::TemporalUnit >( mUnitsCombo->currentData().toInt() );
     const QVariant val = value.toDouble() * QgsUnitTypes::fromUnitToUnitFactor( mBaseUnit, displayUnit );
     QgsProcessingNumericWidgetWrapper::setWidgetValue( val, context );
   }

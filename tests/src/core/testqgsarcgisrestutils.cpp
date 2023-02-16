@@ -245,13 +245,13 @@ void TestQgsArcGisRestUtils::testParseMarkerSymbol()
   QCOMPARE( markerLayer->fillColor(), QColor( 76, 115, 10, 200 ) );
   QCOMPARE( markerLayer->shape(), Qgis::MarkerShape::Square );
   QCOMPARE( markerLayer->size(), 8.0 );
-  QCOMPARE( markerLayer->sizeUnit(), QgsUnitTypes::RenderPoints );
+  QCOMPARE( markerLayer->sizeUnit(), Qgis::RenderUnit::Points );
   QCOMPARE( markerLayer->angle(), -10.0 ); // opposite direction to esri spec!
   QCOMPARE( markerLayer->offset(), QPointF( 7, 17 ) );
-  QCOMPARE( markerLayer->offsetUnit(), QgsUnitTypes::RenderPoints );
+  QCOMPARE( markerLayer->offsetUnit(), Qgis::RenderUnit::Points );
   QCOMPARE( markerLayer->strokeColor(), QColor( 152, 230, 17, 176 ) );
   QCOMPARE( markerLayer->strokeWidth(), 5.0 );
-  QCOMPARE( markerLayer->strokeWidthUnit(), QgsUnitTypes::RenderPoints );
+  QCOMPARE( markerLayer->strokeWidthUnit(), Qgis::RenderUnit::Points );
 
   // invalid json
   symbol = QgsArcGisRestUtils::parseEsriMarkerSymbolJson( QVariantMap() );
@@ -280,10 +280,10 @@ void TestQgsArcGisRestUtils::testPictureMarkerSymbol()
   QCOMPARE( markerLayer->path(), QStringLiteral( "base64:abcdef" ) );
   QCOMPARE( markerLayer->size(), 20.0 );
   QCOMPARE( markerLayer->fixedAspectRatio(), 1.25 );
-  QCOMPARE( markerLayer->sizeUnit(), QgsUnitTypes::RenderPoints );
+  QCOMPARE( markerLayer->sizeUnit(), Qgis::RenderUnit::Points );
   QCOMPARE( markerLayer->angle(), -10.0 ); // opposite direction to esri spec!
   QCOMPARE( markerLayer->offset(), QPointF( 7, 17 ) );
-  QCOMPARE( markerLayer->offsetUnit(), QgsUnitTypes::RenderPoints );
+  QCOMPARE( markerLayer->offsetUnit(), Qgis::RenderUnit::Points );
 
   // invalid json
   symbol = QgsArcGisRestUtils::parseEsriPictureMarkerSymbolJson( QVariantMap() );
@@ -311,7 +311,7 @@ void TestQgsArcGisRestUtils::testParseLineSymbol()
   QVERIFY( lineLayer );
   QCOMPARE( lineLayer->color(), QColor( 115, 76, 10, 212 ) );
   QCOMPARE( lineLayer->width(), 7.0 );
-  QCOMPARE( lineLayer->widthUnit(), QgsUnitTypes::RenderPoints );
+  QCOMPARE( lineLayer->widthUnit(), Qgis::RenderUnit::Points );
   QCOMPARE( lineLayer->penStyle(), Qt::DotLine );
 
   // invalid json
@@ -352,7 +352,7 @@ void TestQgsArcGisRestUtils::testParseFillSymbol()
   QCOMPARE( fillLayer->brushStyle(), Qt::HorPattern );
   QCOMPARE( fillLayer->strokeColor(), QColor( 110, 120, 130, 215 ) );
   QCOMPARE( fillLayer->strokeWidth(), 5.0 );
-  QCOMPARE( fillLayer->strokeWidthUnit(), QgsUnitTypes::RenderPoints );
+  QCOMPARE( fillLayer->strokeWidthUnit(), Qgis::RenderUnit::Points );
   QCOMPARE( fillLayer->strokeStyle(), Qt::DashDotLine );
 }
 
@@ -387,12 +387,12 @@ void TestQgsArcGisRestUtils::testParsePictureFillSymbol()
   QVERIFY( fillLayer );
   QCOMPARE( fillLayer->imageFilePath(), QString( "base64:abcdef" ) );
   QCOMPARE( fillLayer->width(), 20.0 );
-  QCOMPARE( fillLayer->widthUnit(), QgsUnitTypes::RenderPoints );
+  QCOMPARE( fillLayer->widthUnit(), Qgis::RenderUnit::Points );
   QgsSimpleLineSymbolLayer *lineLayer = dynamic_cast< QgsSimpleLineSymbolLayer * >( fill->symbolLayer( 1 ) );
   QVERIFY( lineLayer );
   QCOMPARE( lineLayer->color(), QColor( 110, 120, 130, 215 ) );
   QCOMPARE( lineLayer->width(), 5.0 );
-  QCOMPARE( lineLayer->widthUnit(), QgsUnitTypes::RenderPoints );
+  QCOMPARE( lineLayer->widthUnit(), Qgis::RenderUnit::Points );
   QCOMPARE( lineLayer->penStyle(), Qt::DashDotLine );
 }
 
@@ -625,7 +625,7 @@ void TestQgsArcGisRestUtils::testParseLabeling()
   QCOMPARE( textFormat.buffer().enabled(), true );
   QCOMPARE( textFormat.buffer().color(), QColor( 255, 255, 255 ) );
   QCOMPARE( textFormat.buffer().size(), 1.0 );
-  QCOMPARE( textFormat.buffer().sizeUnit(), QgsUnitTypes::RenderPoints );
+  QCOMPARE( textFormat.buffer().sizeUnit(), Qgis::RenderUnit::Points );
 }
 
 QVariantMap TestQgsArcGisRestUtils::jsonStringToMap( const QString &string ) const

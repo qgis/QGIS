@@ -32,7 +32,6 @@
 #include <QActionGroup>
 
 #include "qgssettings.h"
-#include "qgisinterface.h"
 #include "qgsapplication.h"
 #include "qgsgui.h"
 #include "qgisapp.h"
@@ -70,7 +69,7 @@
 #include "qgsvectorwarper.h"
 #include "qgsscreenhelper.h"
 #include "qgssettingsentryenumflag.h"
-
+#include "qgslayoutexporter.h"
 
 const QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod> *QgsGeoreferencerMainWindow::settingResamplingMethod = new QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod>( QStringLiteral( "resampling-method" ), sTreeGeoreferencer, QgsImageWarper::ResamplingMethod::NearestNeighbour, QObject::tr( "Last used georeferencer resampling method" ) );
 
@@ -1861,7 +1860,7 @@ bool QgsGeoreferencerMainWindow::writePDFReportFile( const QString &fileName, co
   QgsTextFormat titleFormat;
   titleFormat.setFont( titleFont );
   titleFormat.setSize( 9 );
-  titleFormat.setSizeUnit( QgsUnitTypes::RenderPoints );
+  titleFormat.setSizeUnit( Qgis::RenderUnit::Points );
 
   QFont tableHeaderFont;
   tableHeaderFont.setPointSize( 9 );

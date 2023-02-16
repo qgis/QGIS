@@ -615,7 +615,7 @@ Retrieves error message
     virtual QString lastError() const;
 
 
-    bool addFeatureWithStyle( QgsFeature &feature, QgsFeatureRenderer *renderer, QgsUnitTypes::DistanceUnit outputUnit = QgsUnitTypes::DistanceMeters );
+    bool addFeatureWithStyle( QgsFeature &feature, QgsFeatureRenderer *renderer, Qgis::DistanceUnit outputUnit = Qgis::DistanceUnit::Meters );
 %Docstring
 Adds a ``feature`` to the currently opened data source, using the style from a specified ``renderer``.
 

@@ -224,7 +224,7 @@ Converts a ``value`` to a size.
     static QString encodeSldRealVector( const QVector<qreal> &v );
     static QVector<qreal> decodeSldRealVector( const QString &s );
 
-    static QString encodeSldUom( QgsUnitTypes::RenderUnit unit, double *scaleFactor );
+    static QString encodeSldUom( Qgis::RenderUnit unit, double *scaleFactor );
 %Docstring
 Encodes a render unit into an SLD unit of measure string.
 
@@ -236,7 +236,7 @@ Encodes a render unit into an SLD unit of measure string.
 .. seealso:: :py:func:`decodeSldUom`
 %End
 
-    static QgsUnitTypes::RenderUnit decodeSldUom( const QString &str, double *scaleFactor = 0 );
+    static Qgis::RenderUnit decodeSldUom( const QString &str, double *scaleFactor = 0 );
 %Docstring
 Decodes a SLD unit of measure string to a render unit.
 
@@ -321,7 +321,7 @@ Returns a pixmap preview for a color ramp.
 .. seealso:: :py:func:`symbolPreviewIcon`
 %End
 
-    static QPicture symbolLayerPreviewPicture( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit units, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid );
+    static QPicture symbolLayerPreviewPicture( const QgsSymbolLayer *layer, Qgis::RenderUnit units, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid );
 %Docstring
 Draws a symbol layer preview to a QPicture
 
@@ -338,7 +338,7 @@ Draws a symbol layer preview to a QPicture
 .. versionadded:: 2.9
 %End
 
-    static QIcon symbolLayerPreviewIcon( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid, QgsMapLayer *mapLayer = 0 );
+    static QIcon symbolLayerPreviewIcon( const QgsSymbolLayer *layer, Qgis::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid, QgsMapLayer *mapLayer = 0 );
 %Docstring
 Draws a symbol layer preview to an icon.
 
@@ -922,7 +922,7 @@ The values are chosen so that they are 1, 2 or 5 times a power of 10.
 .. versionadded:: 2.10
 %End
 
-    static double rescaleUom( double size, QgsUnitTypes::RenderUnit unit, const QVariantMap &props );
+    static double rescaleUom( double size, Qgis::RenderUnit unit, const QVariantMap &props );
 %Docstring
 Rescales the given size based on the uomScale found in the props, if any is found, otherwise
 returns the value un-modified
@@ -930,7 +930,7 @@ returns the value un-modified
 .. versionadded:: 3.0
 %End
 
-    static QPointF rescaleUom( QPointF point, QgsUnitTypes::RenderUnit unit, const QVariantMap &props ) /PyName=rescalePointUom/;
+    static QPointF rescaleUom( QPointF point, Qgis::RenderUnit unit, const QVariantMap &props ) /PyName=rescalePointUom/;
 %Docstring
 Rescales the given point based on the uomScale found in the props, if any is found, otherwise
 returns a copy of the original point
@@ -938,7 +938,7 @@ returns a copy of the original point
 .. versionadded:: 3.0
 %End
 
-    static QVector<qreal> rescaleUom( const QVector<qreal> &array, QgsUnitTypes::RenderUnit unit, const QVariantMap &props ) /PyName=rescaleArrayUom/;
+    static QVector<qreal> rescaleUom( const QVector<qreal> &array, Qgis::RenderUnit unit, const QVariantMap &props ) /PyName=rescaleArrayUom/;
 %Docstring
 Rescales the given array based on the uomScale found in the props, if any is found, otherwise
 returns a copy of the original point

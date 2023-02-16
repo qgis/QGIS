@@ -59,7 +59,7 @@ QgsMeshMemoryDataProvider::QgsMeshMemoryDataProvider( const QString &uri,
   }
   mIsValid = splitMeshSections( data );
 
-  temporalCapabilities()->setTemporalUnit( QgsUnitTypes::TemporalHours );
+  temporalCapabilities()->setTemporalUnit( Qgis::TemporalUnit::Hours );
 }
 
 QString QgsMeshMemoryDataProvider::providerKey()

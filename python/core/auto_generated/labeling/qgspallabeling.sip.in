@@ -308,7 +308,7 @@ Sets the polygon placement ``flags``, which dictate how polygon labels can be pl
 
     double dist;
 
-    QgsUnitTypes::RenderUnit distUnits;
+    Qgis::RenderUnit distUnits;
 
     QgsMapUnitScale distMapUnitScale;
 
@@ -316,7 +316,7 @@ Sets the polygon placement ``flags``, which dictate how polygon labels can be pl
 
     double repeatDistance;
 
-    QgsUnitTypes::RenderUnit repeatDistanceUnit;
+    Qgis::RenderUnit repeatDistanceUnit;
 
     QgsMapUnitScale repeatDistanceMapUnitScale;
 
@@ -326,7 +326,7 @@ Sets the polygon placement ``flags``, which dictate how polygon labels can be pl
 
     double yOffset;
 
-    QgsUnitTypes::RenderUnit offsetUnits;
+    Qgis::RenderUnit offsetUnits;
 
     QgsMapUnitScale labelOffsetMapUnitScale;
 
@@ -334,7 +334,7 @@ Sets the polygon placement ``flags``, which dictate how polygon labels can be pl
 
     bool preserveRotation;
 
-    QgsUnitTypes::AngleUnit rotationUnit() const;
+    Qgis::AngleUnit rotationUnit() const;
 %Docstring
 Unit for rotation of labels.
 
@@ -343,7 +343,7 @@ Unit for rotation of labels.
 .. versionadded:: 3.22
 %End
 
-    void setRotationUnit( QgsUnitTypes::AngleUnit angleUnit );
+    void setRotationUnit( Qgis::AngleUnit angleUnit );
 %Docstring
 Set unit for rotation of labels.
 
@@ -423,8 +423,8 @@ Set unit for rotation of labels.
     void _setPlaceDirectionSymbol( DirectionSymbols placement );
     double _getOverrunDistance() const;
     void _setOverrunDistance( double distance );
-    QgsUnitTypes::RenderUnit _getOverrunDistanceUnit() const;
-    void _setOverrunDistanceUnit( QgsUnitTypes::RenderUnit unit );
+    Qgis::RenderUnit _getOverrunDistanceUnit() const;
+    void _setOverrunDistanceUnit( Qgis::RenderUnit unit );
     QgsMapUnitScale _getOverrunDistanceMapUnitScale() const;
     void _setOverrunDistanceMapUnitScale( const QgsMapUnitScale &scale );
     bool _getDisplayAll() const;
