@@ -69,7 +69,6 @@ class TestQgsPostgresConn: public QObject
         const char *connstring = getenv( "QGIS_PGTEST_DB" );
         if ( !connstring ) connstring = "service=qgis_test";
         _connection = QgsPostgresConn::connectDb( connstring, true );
-        assert( _connection );
       }
       return _connection;
     }
@@ -162,6 +161,8 @@ class TestQgsPostgresConn: public QObject
 #ifdef ENABLE_PGTEST
     void supportedLayers()
     {
+      QGSTEST_NEED_PGTEST_DB();
+
       QgsPostgresConn *conn = getConnection();
       QVERIFY( conn != 0 );
       QVector<QgsPostgresLayerProperty> layers;
@@ -207,6 +208,8 @@ class TestQgsPostgresConn: public QObject
 
     void connectDb()
     {
+      QGSTEST_NEED_PGTEST_DB();
+
       QgsPostgresConn *conn = getConnection();
       QVERIFY( conn != 0 );
 
