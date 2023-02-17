@@ -1747,7 +1747,7 @@ QgsLayoutMapLabelingWidget::QgsLayoutMapLabelingWidget( QgsLayoutItemMap *map )
   mLabelBoundaryUnitsCombo->linkToWidget( mLabelBoundarySpinBox );
   mLabelBoundaryUnitsCombo->setConverter( &mMapItem->layout()->renderContext().measurementConverter() );
 
-  connect( mLabelBoundaryUnitsCombo, &QgsLayoutUnitsComboBox::changed, this, &QgsLayoutMapLabelingWidget::labelMarginUnitsChanged );
+  connect( mLabelBoundaryUnitsCombo, &QgsLayoutUnitsComboBox::unitChanged, this, &QgsLayoutMapLabelingWidget::labelMarginUnitsChanged );
   connect( mLabelBoundarySpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapLabelingWidget::labelMarginChanged );
   connect( mShowPartialLabelsCheckBox, &QCheckBox::toggled, this, &QgsLayoutMapLabelingWidget::showPartialsToggled );
   connect( mShowUnplacedCheckBox, &QCheckBox::toggled, this, &QgsLayoutMapLabelingWidget::showUnplacedToggled );

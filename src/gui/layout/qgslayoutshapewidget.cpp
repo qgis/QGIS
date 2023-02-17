@@ -61,7 +61,7 @@ QgsLayoutShapeWidget::QgsLayoutShapeWidget( QgsLayoutItemShape *shape )
   mShapeStyleButton->registerExpressionContextGenerator( mShape );
 
   connect( mShapeStyleButton, &QgsSymbolButton::changed, this, &QgsLayoutShapeWidget::symbolChanged );
-  connect( mRadiusUnitsComboBox, &QgsLayoutUnitsComboBox::changed, this, &QgsLayoutShapeWidget::radiusUnitsChanged );
+  connect( mRadiusUnitsComboBox, &QgsLayoutUnitsComboBox::unitChanged, this, &QgsLayoutShapeWidget::radiusUnitsChanged );
 
   mShapeStyleButton->setLayer( coverageLayer() );
   if ( mShape->layout() )

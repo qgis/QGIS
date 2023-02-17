@@ -200,7 +200,7 @@ QgsLayoutGuideUnitDelegate::QgsLayoutGuideUnitDelegate( QObject *parent )
 QWidget *QgsLayoutGuideUnitDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex & ) const
 {
   QgsLayoutUnitsComboBox *unitsCb = new QgsLayoutUnitsComboBox( parent );
-  connect( unitsCb, &QgsLayoutUnitsComboBox::changed, this, [ = ]( Qgis::LayoutUnit )
+  connect( unitsCb, &QgsLayoutUnitsComboBox::unitChanged, this, [ = ]( Qgis::LayoutUnit )
   {
     // we want to update on every unit change, not just the final
     const_cast< QgsLayoutGuideUnitDelegate * >( this )->emit commitData( unitsCb );
