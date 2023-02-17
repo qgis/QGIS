@@ -2997,7 +2997,7 @@ class CORE_EXPORT Qgis
       Years SIP_MONKEYPATCH_COMPAT_NAME( TemporalYears ), //!< Years
       Decades SIP_MONKEYPATCH_COMPAT_NAME( TemporalDecades ), //!< Decades
       Centuries SIP_MONKEYPATCH_COMPAT_NAME( TemporalCenturies ), //!< Centuries
-      IrregularStep SIP_MONKEYPATCH_COMPAT_NAME( TemporalIrregularStep ), //!< Special "irregular step" time unit, used for temporal data which uses irregular, non-real-world unit steps (since QGIS 3.20)
+      IrregularStep SIP_MONKEYPATCH_COMPAT_NAME( TemporalIrregularStep ), //!< Special 'irregular step' time unit, used for temporal data which uses irregular, non-real-world unit steps (since QGIS 3.20)
       Unknown SIP_MONKEYPATCH_COMPAT_NAME( TemporalUnknownUnit ) //!< Unknown time unit
     };
     Q_ENUM( TemporalUnit )
