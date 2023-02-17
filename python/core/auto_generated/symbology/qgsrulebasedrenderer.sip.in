@@ -311,6 +311,8 @@ Returns ``True`` if the rule has any active children.
 .. note::
 
    Must be called after :py:func:`~Rule.startRender`
+
+.. versionadded:: 3.30
 %End
 
         QSet<int> collectZLevels();

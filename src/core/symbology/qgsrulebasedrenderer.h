@@ -333,6 +333,8 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          * Returns TRUE if the rule has any active children.
          *
          * \note Must be called after startRender()
+         *
+         * \since QGIS 3.30
          */
         bool hasActiveChildren() const;
 
