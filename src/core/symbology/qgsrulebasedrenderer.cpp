@@ -521,6 +521,11 @@ bool QgsRuleBasedRenderer::Rule::startRender( QgsRenderContext &context, const Q
   return true;
 }
 
+bool QgsRuleBasedRenderer::Rule::hasActiveChildren() const
+{
+  return !mActiveChildren.empty();
+}
+
 QSet<int> QgsRuleBasedRenderer::Rule::collectZLevels()
 {
   QSet<int> symbolZLevelsSet;
@@ -999,6 +1004,11 @@ void QgsRuleBasedRenderer::startRender( QgsRenderContext &context, const QgsFiel
   }
 
   mRootRule->setNormZLevels( zLevelsToNormLevels );
+}
+
+bool QgsRuleBasedRenderer::canSkipRender()
+{
+  return !mRootRule->hasActiveChildren();
 }
 
 void QgsRuleBasedRenderer::stopRender( QgsRenderContext &context )

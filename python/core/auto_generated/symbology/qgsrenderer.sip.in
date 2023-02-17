@@ -150,6 +150,18 @@ Calls to :py:func:`~QgsFeatureRenderer.stopRender` must always be preceded by a 
 .. seealso:: :py:func:`startRender`
 %End
 
+    virtual bool canSkipRender();
+%Docstring
+Returns ``True`` if the renderer can be entirely skipped, i.e. if it is known in advance
+that no features will be rendered.
+
+.. warning::
+
+   Must be called between :py:func:`~QgsFeatureRenderer.startRender` and :py:func:`~QgsFeatureRenderer.stopRender` calls.
+
+.. versionadded:: 3.30
+%End
+
     virtual QString filter( const QgsFields &fields = QgsFields() );
 %Docstring
 If a renderer does not require all the features this method may be overridden

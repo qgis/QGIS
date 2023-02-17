@@ -329,6 +329,13 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         //! prepare the rule for rendering and its children (build active children array)
         bool startRender( QgsRenderContext &context, const QgsFields &fields, QString &filter );
 
+        /**
+         * Returns TRUE if the rule has any active children.
+         *
+         * \note Must be called after startRender()
+         */
+        bool hasActiveChildren() const;
+
         //! Gets all used z-levels from this rule and children
         QSet<int> collectZLevels();
 
@@ -510,7 +517,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
     bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override SIP_THROW( QgsCsException );
 
     void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
-
+    bool canSkipRender() override;
     void stopRender( QgsRenderContext &context ) override;
 
     QString filter( const QgsFields &fields = QgsFields() ) override;
