@@ -2781,13 +2781,13 @@ QgsUnitTypes.TemporalDecades.__doc__ = "Decades"
 QgsUnitTypes.TemporalCenturies = Qgis.TemporalUnit.Centuries
 QgsUnitTypes.TemporalCenturies.is_monkey_patched = True
 QgsUnitTypes.TemporalCenturies.__doc__ = "Centuries"
-QgsUnitTypes.IrregularStep = Qgis.TemporalUnit.IrregularStep
-QgsUnitTypes.IrregularStep.is_monkey_patched = True
-QgsUnitTypes.IrregularStep.__doc__ = "Special \"irregular step\" time unit, used for temporal data which uses irregular, non-real-world unit steps (since QGIS 3.20)"
+QgsUnitTypes.TemporalIrregularStep = Qgis.TemporalUnit.IrregularStep
+QgsUnitTypes.TemporalIrregularStep.is_monkey_patched = True
+QgsUnitTypes.TemporalIrregularStep.__doc__ = "Special 'irregular step' time unit, used for temporal data which uses irregular, non-real-world unit steps (since QGIS 3.20)"
 QgsUnitTypes.TemporalUnknownUnit = Qgis.TemporalUnit.Unknown
 QgsUnitTypes.TemporalUnknownUnit.is_monkey_patched = True
 QgsUnitTypes.TemporalUnknownUnit.__doc__ = "Unknown time unit"
-Qgis.TemporalUnit.__doc__ = 'Temporal units.\n\n.. note::\n\n   Prior to QGIS 3.30 this was available as :py:class:`QgsUnitTypes`.TemporalUnit.\n\n.. versionadded:: 3.30\n\n' + '* ``TemporalMilliseconds``: ' + Qgis.TemporalUnit.Milliseconds.__doc__ + '\n' + '* ``TemporalSeconds``: ' + Qgis.TemporalUnit.Seconds.__doc__ + '\n' + '* ``TemporalMinutes``: ' + Qgis.TemporalUnit.Minutes.__doc__ + '\n' + '* ``TemporalHours``: ' + Qgis.TemporalUnit.Hours.__doc__ + '\n' + '* ``TemporalDays``: ' + Qgis.TemporalUnit.Days.__doc__ + '\n' + '* ``TemporalWeeks``: ' + Qgis.TemporalUnit.Weeks.__doc__ + '\n' + '* ``TemporalMonths``: ' + Qgis.TemporalUnit.Months.__doc__ + '\n' + '* ``TemporalYears``: ' + Qgis.TemporalUnit.Years.__doc__ + '\n' + '* ``TemporalDecades``: ' + Qgis.TemporalUnit.Decades.__doc__ + '\n' + '* ``TemporalCenturies``: ' + Qgis.TemporalUnit.Centuries.__doc__ + '\n' + '* ``IrregularStep``: ' + Qgis.TemporalUnit.IrregularStep.__doc__ + '\n' + '* ``TemporalUnknownUnit``: ' + Qgis.TemporalUnit.Unknown.__doc__
+Qgis.TemporalUnit.__doc__ = 'Temporal units.\n\n.. note::\n\n   Prior to QGIS 3.30 this was available as :py:class:`QgsUnitTypes`.TemporalUnit.\n\n.. versionadded:: 3.30\n\n' + '* ``TemporalMilliseconds``: ' + Qgis.TemporalUnit.Milliseconds.__doc__ + '\n' + '* ``TemporalSeconds``: ' + Qgis.TemporalUnit.Seconds.__doc__ + '\n' + '* ``TemporalMinutes``: ' + Qgis.TemporalUnit.Minutes.__doc__ + '\n' + '* ``TemporalHours``: ' + Qgis.TemporalUnit.Hours.__doc__ + '\n' + '* ``TemporalDays``: ' + Qgis.TemporalUnit.Days.__doc__ + '\n' + '* ``TemporalWeeks``: ' + Qgis.TemporalUnit.Weeks.__doc__ + '\n' + '* ``TemporalMonths``: ' + Qgis.TemporalUnit.Months.__doc__ + '\n' + '* ``TemporalYears``: ' + Qgis.TemporalUnit.Years.__doc__ + '\n' + '* ``TemporalDecades``: ' + Qgis.TemporalUnit.Decades.__doc__ + '\n' + '* ``TemporalCenturies``: ' + Qgis.TemporalUnit.Centuries.__doc__ + '\n' + '* ``TemporalIrregularStep``: ' + Qgis.TemporalUnit.IrregularStep.__doc__ + '\n' + '* ``TemporalUnknownUnit``: ' + Qgis.TemporalUnit.Unknown.__doc__
 # --
 Qgis.TemporalUnit.baseClass = Qgis
 QgsUnitTypes.RenderUnit = Qgis.RenderUnit
