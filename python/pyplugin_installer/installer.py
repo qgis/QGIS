@@ -578,7 +578,7 @@ class QgsPluginInstaller(QObject):
         if not os.path.isfile(filePath):
             return
 
-        QgsSettingsTree.nodeCopy("plugin-manager").childSetting("last-zip-directory").setValue(QFileInfo(filePath).absoluteDir().absolutePath())
+        QgsSettingsTree.node("plugin-manager").childSetting("last-zip-directory").setValue(QFileInfo(filePath).absoluteDir().absolutePath())
 
         pluginName = None
         with zipfile.ZipFile(filePath, 'r') as zf:
