@@ -313,7 +313,8 @@ bool QgsProcessingToolboxModel::isTopLevelProvider( const QString &providerId )
 {
   return providerId == QLatin1String( "qgis" ) ||
          providerId == QLatin1String( "native" ) ||
-         providerId == QLatin1String( "3d" );
+         providerId == QLatin1String( "3d" ) ||
+         providerId == QLatin1String( "pdal" );
 }
 
 QString QgsProcessingToolboxModel::toolTipForAlgorithm( const QgsProcessingAlgorithm *algorithm )

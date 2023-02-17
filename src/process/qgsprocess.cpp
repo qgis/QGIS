@@ -23,6 +23,9 @@
 #ifdef HAVE_3D
 #include "qgs3dalgorithms.h"
 #endif
+#ifdef HAVE_PDAL_QGIS
+#include "processing/pdal/qgspdalalgorithms.h"
+#endif
 #include "qgssettings.h"
 #include "qgsapplication.h"
 #include "qgsprocessingparametertype.h"
@@ -273,6 +276,9 @@ int QgsProcessingExec::run( const QStringList &constArgs )
   QgsApplication::processingRegistry()->addProvider( new QgsNativeAlgorithms( QgsApplication::processingRegistry() ) );
 #ifdef HAVE_3D
   QgsApplication::processingRegistry()->addProvider( new Qgs3DAlgorithms( QgsApplication::processingRegistry() ) );
+#endif
+#ifdef HAVE_PDAL_QGIS
+  QgsApplication::processingRegistry()->addProvider( new QgsPdalAlgorithms( QgsApplication::processingRegistry() ) );
 #endif
 
 #ifdef WITH_BINDINGS
