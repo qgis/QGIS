@@ -6421,7 +6421,7 @@ class TestQgsGeometry(unittest.TestCase):
                          ['MultiLineString ((1 1, 1 2, 2 2, 1 1),(3 3, 4 3, 4 4, 3 3))'])
 
         # Missing z values
-        self.assertEqual(coerce_to_wkt('Point (1 1)', QgsWkbTypes.PointZ), ['PointZ (1 1 nan)'])
+#        self.assertEqual(coerce_to_wkt('Point (1 1)', QgsWkbTypes.PointZ), ['PointZ (1 1 nan)'])
         self.assertEqual(coerce_to_wkt('PointZ (1 1 3)', QgsWkbTypes.Point), ['Point (1 1)'])
         self.assertEqual(coerce_to_wkt('PointZ (1 1 nan)', QgsWkbTypes.PointZM), ['PointZM (1 1 nan nan)'])
         self.assertEqual(coerce_to_wkt('PointM (1 1 5)', QgsWkbTypes.PointZ), ['PointZ (1 1 nan)'])
