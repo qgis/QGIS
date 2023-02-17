@@ -20,6 +20,7 @@
 #include <QDir>
 #include <QNetworkCacheMetaData>
 #include <QRegularExpression>
+#include <QUrlQuery>
 
 #include "qgis.h"
 #include "qgssettings.h"
@@ -1190,7 +1191,38 @@ void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProp
 
         // Inherit things into the sublayer
         //   Ref: 7.2.4.8 Inheritance of layer properties
-        subLayerProperty.style                    = layerProperty.style;
+
+        // Cleanup inherited styles, replace layer name with current layer name
+        QVector<QgsWmsStyleProperty> inheritedStyles { layerProperty.style };
+        if ( ! nodeElement.firstChildElement( QStringLiteral( "Name" ) ).isNull() )
+        {
+          const QString layerName { nodeElement.firstChildElement( QStringLiteral( "Name" ) ).text() };
+          for ( auto stylesIt = inheritedStyles.begin(); stylesIt != inheritedStyles.end(); ++stylesIt )
+          {
+            for ( auto legendUriIt = stylesIt->legendUrl.begin(); legendUriIt != stylesIt->legendUrl.end(); ++legendUriIt )
+            {
+              QUrl legendUrl { legendUriIt->onlineResource.xlinkHref };
+              if ( legendUrl.hasQuery() )
+              {
+                QUrlQuery query { legendUrl.query() };
+                if ( query.hasQueryItem( QStringLiteral( "LAYER" ) ) )
+                {
+                  query.removeQueryItem( QStringLiteral( "LAYER" ) );
+                  query.addQueryItem( QStringLiteral( "LAYER" ), layerName );
+                }
+                else if ( query.hasQueryItem( QStringLiteral( "layer" ) ) )
+                {
+                  query.removeQueryItem( QStringLiteral( "layer" ) );
+                  query.addQueryItem( QStringLiteral( "layer" ), layerName );
+                }
+                legendUrl.setQuery( query );
+                legendUriIt->onlineResource.xlinkHref = legendUrl.url( );
+              }
+            }
+          }
+        }
+
+        subLayerProperty.style                    = inheritedStyles;
         subLayerProperty.crs                      = layerProperty.crs;
         subLayerProperty.boundingBoxes            = layerProperty.boundingBoxes;
         subLayerProperty.ex_GeographicBoundingBox = layerProperty.ex_GeographicBoundingBox;
@@ -1421,6 +1453,7 @@ void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProp
   {
     mLayerParentNames[ layerProperty.orderId ] = QStringList() << layerProperty.name << layerProperty.title << layerProperty.abstract;
   }
+
 }
 
 
