@@ -17,10 +17,6 @@
 
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QMesh>
-#include <Qt3DRender/QObjectPicker>
-#include <Qt3DRender/QPickEvent>
-#include <Qt3DRender/QPickingSettings>
-#include <Qt3DRender/QPickTriangleEvent>
 #include <Qt3DRender/QRenderSettings>
 #include <Qt3DRender/QSceneLoader>
 #include <Qt3DExtras/QForwardRenderer>
@@ -48,7 +44,6 @@
 #include "qgsapplication.h"
 #include "qgsaabb.h"
 #include "qgsabstract3dengine.h"
-#include "qgs3dmapscenepickhandler.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgsabstract3drenderer.h"
@@ -97,9 +92,6 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   // even if there's no change. Switching to "on demand" should only re-render when something has changed
   // and we save quite a lot of resources
   mEngine->renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::OnDemand );
-
-  // we want precise picking of terrain (also bounding volume picking does not seem to work - not sure why)
-  mEngine->renderSettings()->pickingSettings()->setPickMethod( Qt3DRender::QPickingSettings::TrianglePicking );
 
   QRect viewportRect( QPoint( 0, 0 ), mEngine->size() );
 
@@ -321,52 +313,6 @@ int Qgs3DMapScene::totalPendingJobsCount() const
   for ( QgsChunkedEntity *entity : std::as_const( mChunkEntities ) )
     count += entity->pendingJobsCount();
   return count;
-}
-
-void Qgs3DMapScene::registerPickHandler( Qgs3DMapScenePickHandler *pickHandler )
-{
-  if ( mPickHandlers.isEmpty() )
-  {
-    // we need to add object pickers
-    for ( Qt3DCore::QEntity *entity : mLayerEntities )
-    {
-      if ( QgsChunkedEntity *chunkedEntity = qobject_cast<QgsChunkedEntity *>( entity ) )
-        chunkedEntity->setPickingEnabled( true );
-    }
-  }
-
-  mPickHandlers.append( pickHandler );
-}
-
-void Qgs3DMapScene::unregisterPickHandler( Qgs3DMapScenePickHandler *pickHandler )
-{
-  mPickHandlers.removeOne( pickHandler );
-
-  if ( mPickHandlers.isEmpty() )
-  {
-    // we need to remove pickers
-    for ( Qt3DCore::QEntity *entity : mLayerEntities )
-    {
-      if ( QgsChunkedEntity *chunkedEntity = qobject_cast<QgsChunkedEntity *>( entity ) )
-        chunkedEntity->setPickingEnabled( false );
-    }
-  }
-}
-
-void Qgs3DMapScene::onLayerEntityPickedObject( Qt3DRender::QPickEvent *pickEvent, QgsFeatureId fid )
-{
-  QgsMapLayer *layer = mLayerEntities.key( qobject_cast<QgsChunkedEntity *>( sender() ) );
-  if ( !layer )
-    return;
-
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-  if ( !vlayer )
-    return;
-
-  for ( Qgs3DMapScenePickHandler *pickHandler : std::as_const( mPickHandlers ) )
-  {
-    pickHandler->handlePickOnVectorLayer( vlayer, fid, pickEvent->worldIntersection(), pickEvent );
-  }
 }
 
 float Qgs3DMapScene::worldSpaceError( float epsilon, float distance )
@@ -828,9 +774,6 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
       {
         mChunkEntities.append( chunkedNewEntity );
         needsSceneUpdate = true;
-
-        chunkedNewEntity->setPickingEnabled( !mPickHandlers.isEmpty() );
-        connect( chunkedNewEntity, &QgsChunkedEntity::pickedObject, this, &Qgs3DMapScene::onLayerEntityPickedObject );
 
         connect( chunkedNewEntity, &QgsChunkedEntity::newEntityCreated, this, [this]( Qt3DCore::QEntity * entity )
         {
