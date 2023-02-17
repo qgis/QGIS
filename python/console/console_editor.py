@@ -25,13 +25,15 @@ import os
 import pyclbr
 import re
 import sys
+import tempfile
 from functools import partial
 from operator import itemgetter
+from pathlib import Path
 
 from qgis.core import Qgis, QgsApplication, QgsBlockingNetworkRequest, QgsFileUtils, QgsSettings
 from qgis.gui import QgsCodeEditorPython, QgsMessageBar
 from qgis.PyQt.Qsci import QsciScintilla
-from qgis.PyQt.QtCore import QByteArray, QCoreApplication, QDir, QFileInfo, QJsonDocument, QSize, Qt, QUrl
+from qgis.PyQt.QtCore import QByteArray, QCoreApplication, QDir, QEvent, QFileInfo, QJsonDocument, QSize, Qt, QUrl
 from qgis.PyQt.QtGui import QKeySequence
 from qgis.PyQt.QtNetwork import QNetworkRequest
 from qgis.PyQt.QtWidgets import (
@@ -58,6 +60,7 @@ class Editor(QgsCodeEditorPython):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.parent = parent
+        self.path = None
         #  recent modification time
         self.lastModified = 0
         self.settings = QgsSettings()
@@ -113,7 +116,7 @@ class Editor(QgsCodeEditorPython):
                                           self.searchSelectedTextInPyQGISDocs)
         menu.addAction(QgsApplication.getThemeIcon("mActionStart.svg"),
                        QCoreApplication.translate("PythonConsole", "Run Script"),
-                       self.runScriptCode, 'Shift+Ctrl+E')
+                       self.runScriptCode, 'Ctrl+Shift+E')
         menu.addSeparator()
         undoAction = menu.addAction(QgsApplication.getThemeIcon("mActionUndo.svg"),
                                     QCoreApplication.translate("PythonConsole", "Undo"),
@@ -156,7 +159,7 @@ class Editor(QgsCodeEditorPython):
         menu.addSeparator()
         menu.addAction(QgsApplication.getThemeIcon("console/iconSettingsConsole.svg"),
                        QCoreApplication.translate("PythonConsole", "Options…"),
-                       self.parent.pc.openSettings)
+                       self.pythonconsole.openSettings)
         syntaxCheckAction.setEnabled(False)
         pasteAction.setEnabled(False)
         pyQGISHelpAction.setEnabled(False)
@@ -195,11 +198,11 @@ class Editor(QgsCodeEditorPython):
             index = 0
         else:
             line, index = self.getCursorPosition()
-        text = self.parent.pc.lineEditFind.text()
+        text = self.pythonconsole.lineEditFind.text()
         re = False
-        wrap = self.parent.pc.wrapAround.isChecked()
-        cs = self.parent.pc.caseSensitive.isChecked()
-        wo = self.parent.pc.wholeWord.isChecked()
+        wrap = self.pythonconsole.wrapAround.isChecked()
+        cs = self.pythonconsole.caseSensitive.isChecked()
+        wo = self.pythonconsole.wholeWord.isChecked()
         notFound = False
         if text:
             if not forward:
@@ -215,10 +218,10 @@ class Editor(QgsCodeEditorPython):
                 if showMessage:
                     msgText = QCoreApplication.translate('PythonConsole',
                                                          '<b>"{0}"</b> was not found.').format(text)
-                    self.parent.pc.callWidgetMessageBarEditor(msgText, 0, True)
+                    self.pythonconsole.callWidgetMessageBarEditor(msgText, 0, True)
             else:
                 styleError = ''
-            self.parent.pc.lineEditFind.setStyleSheet(styleError)
+            self.pythonconsole.lineEditFind.setStyleSheet(styleError)
 
     def findNext(self):
         self.findText(True)
@@ -227,25 +230,25 @@ class Editor(QgsCodeEditorPython):
         self.findText(False)
 
     def objectListEditor(self):
-        listObj = self.parent.pc.listClassMethod
+        listObj = self.pythonconsole.listClassMethod
         if listObj.isVisible():
             listObj.hide()
-            self.parent.pc.objectListButton.setChecked(False)
+            self.pythonconsole.objectListButton.setChecked(False)
         else:
             listObj.show()
-            self.parent.pc.objectListButton.setChecked(True)
+            self.pythonconsole.objectListButton.setChecked(True)
 
     def shareOnGist(self, is_public):
         ACCESS_TOKEN = self.settings.value("pythonConsole/accessTokenGithub", '', type=QByteArray)
         if not ACCESS_TOKEN:
             msg_text = QCoreApplication.translate(
                 'PythonConsole', 'GitHub personal access token must be generated (see Console Options)')
-            self.parent.pc.callWidgetMessageBarEditor(msg_text, 1, True)
+            self.pythonconsole.callWidgetMessageBarEditor(msg_text, 1, True)
             return
 
         URL = "https://api.github.com/gists"
 
-        path = self.parent.tw.currentWidget().path
+        path = self.tabwidget.currentWidget().path
         filename = os.path.basename(path) if path else None
         filename = filename if filename else "pyqgis_snippet.py"
 
@@ -267,71 +270,69 @@ class Editor(QgsCodeEditorPython):
             link = _json.object()['html_url'].toString()
             QApplication.clipboard().setText(link)
             msg = QCoreApplication.translate('PythonConsole', 'URL copied to clipboard.')
-            self.parent.pc.callWidgetMessageBarEditor(msg, 0, True)
+            self.pythonconsole.callWidgetMessageBarEditor(msg, 0, True)
         else:
             msg = QCoreApplication.translate('PythonConsole', 'Connection error: ')
-            self.parent.pc.callWidgetMessageBarEditor(msg + request.erroMessage(), 0, True)
+            self.pythonconsole.callWidgetMessageBarEditor(msg + request.erroMessage(), 0, True)
 
     def hideEditor(self):
-        self.parent.pc.splitterObj.hide()
-        self.parent.pc.showEditorButton.setChecked(False)
+        self.pythonconsole.splitterObj.hide()
+        self.pythonconsole.showEditorButton.setChecked(False)
 
     def openFindWidget(self):
-        wF = self.parent.pc.widgetFind
+        wF = self.pythonconsole.widgetFind
         wF.show()
         if self.hasSelectedText():
-            self.parent.pc.lineEditFind.setText(self.selectedText().strip())
-        self.parent.pc.lineEditFind.setFocus()
-        self.parent.pc.findTextButton.setChecked(True)
+            self.pythonconsole.lineEditFind.setText(self.selectedText().strip())
+        self.pythonconsole.lineEditFind.setFocus()
+        self.pythonconsole.findTextButton.setChecked(True)
 
     def closeFindWidget(self):
-        wF = self.parent.pc.widgetFind
+        wF = self.pythonconsole.widgetFind
         wF.hide()
-        self.parent.pc.findTextButton.setChecked(False)
+        self.pythonconsole.findTextButton.setChecked(False)
 
     def toggleFindWidget(self):
-        wF = self.parent.pc.widgetFind
+        wF = self.pythonconsole.widgetFind
         if wF.isVisible():
             self.closeFindWidget()
         else:
             self.openFindWidget()
 
     def createTempFile(self):
-        import tempfile
-        fd, path = tempfile.mkstemp()
-        tmpFileName = path + '.py'
-        with codecs.open(path, "w", encoding='utf-8') as f:
-            f.write(self.text())
-        os.close(fd)
-        os.rename(path, tmpFileName)
-        return tmpFileName
+        name = tempfile.NamedTemporaryFile(delete=False).name
+        Path(name).write_text(self.text(), encoding='utf-8')
+        return name
 
     def runScriptCode(self):
         autoSave = self.settings.value("pythonConsole/autoSaveScript", False, type=bool)
-        tabWidget = self.parent.tw.currentWidget()
+        tabWidget = self.tabwidget.currentWidget()
         filename = tabWidget.path
         msgEditorBlank = QCoreApplication.translate('PythonConsole',
                                                     'Hey, type something to run!')
         if filename is None:
             if not self.isModified():
-                self.parent.pc.callWidgetMessageBarEditor(msgEditorBlank, 0, True)
+                self.pythonconsole.callWidgetMessageBarEditor(msgEditorBlank, 0, True)
                 return
 
+        deleteTempFile = False
         if self.syntaxCheck():
             if filename and self.isModified() and autoSave:
                 self.parent.save(filename)
             elif not filename or self.isModified():
                 # Create a new temp file if the file isn't already saved.
-                tmpFile = self.createTempFile()
-                filename = tmpFile
+                filename = self.createTempFile()
+                deleteTempFile = True
 
-            self.parent.pc.shell.runCommand("exec(Path('{0}').read_text())"
-                                            .format(filename.replace("\\", "/")))
+            self.pythonconsole.shell.runCommand("exec(Path('{0}').read_text())"
+                                                .format(filename.replace("\\", "/")))
+            if deleteTempFile:
+                Path(filename).unlink()
 
     def runSelectedCode(self):  # spellok
         cmd = self.selectedText()
-        self.parent.pc.shell.insertFromDropPaste(cmd)
-        self.parent.pc.shell.entered()
+        self.pythonconsole.shell.insertFromDropPaste(cmd)
+        self.pythonconsole.shell.entered()
         self.setFocus()
 
     def getTextFromEditor(self):
@@ -369,57 +370,137 @@ class Editor(QgsCodeEditorPython):
         return True
 
     def focusInEvent(self, e):
-        pathfile = self.parent.path
-        if pathfile:
-            if not QFileInfo(pathfile).exists():
+        if self.path:
+            if not QFileInfo(self.path).exists():
                 msgText = QCoreApplication.translate('PythonConsole',
-                                                     'The file <b>"{0}"</b> has been deleted or is not accessible').format(pathfile)
-                self.parent.pc.callWidgetMessageBarEditor(msgText, 2, False)
+                                                     'The file <b>"{0}"</b> has been deleted or is not accessible').format(self.path)
+                self.pythonconsole.callWidgetMessageBarEditor(msgText, 2, False)
                 return
-        if pathfile and self.lastModified != QFileInfo(pathfile).lastModified():
+        if self.path and self.lastModified != QFileInfo(self.path).lastModified():
             self.beginUndoAction()
             self.selectAll()
             self.removeSelectedText()
-            file = open(pathfile, "r")
-            fileLines = file.readlines()
-            file.close()
-            with OverrideCursor(Qt.WaitCursor):
-                for line in reversed(fileLines):
-                    self.insert(line)
+            self.insert(Path(self.path).read_text(encoding='utf-8'))
             self.setModified(False)
             self.endUndoAction()
 
-            self.parent.tw.listObject(self.parent.tw.currentWidget())
-            self.lastModified = QFileInfo(pathfile).lastModified()
-        QsciScintilla.focusInEvent(self, e)
+            self.tabwidget.listObject(self.tabwidget.currentWidget())
+            self.lastModified = QFileInfo(self.path).lastModified()
+        super().focusInEvent(e)
 
     def fileReadOnly(self):
-        tabWidget = self.parent.tw.currentWidget()
+        tabWidget = self.tabwidget.currentWidget()
         msgText = QCoreApplication.translate('PythonConsole',
                                              'The file <b>"{0}"</b> is read only, please save to different file first.').format(tabWidget.path)
-        self.parent.pc.callWidgetMessageBarEditor(msgText, 1, False)
+        self.pythonconsole.callWidgetMessageBarEditor(msgText, 1, False)
+
+    def loadFile(self, filename, readOnly=False):
+        self.lastModified = QFileInfo(filename).lastModified()
+        self.path = filename
+        self.setText(Path(filename).read_text(encoding='utf-8'))
+        self.setReadOnly(readOnly)
+        self.setModified(False)
+        self.recolor()
+
+    def save(self, filename=None):
+        if self.isReadOnly():
+            return
+        tabwidget = self.tabwidget
+        index = tabwidget.indexOf(self)
+        if filename:
+            self.path = filename
+        if self.path is None:
+            saveTr = QCoreApplication.translate('PythonConsole',
+                                                'Python Console: Save file')
+            folder = self.pythonconsole.settings.value("pythonConsole/lastDirPath", QDir.homePath())
+            self.path, filter = QFileDialog().getSaveFileName(self,
+                                                              saveTr,
+                                                              os.path.join(folder, tabwidget.tabText(index).replace('*', '') + '.py'),
+                                                              "Script file (*.py)")
+            # If the user didn't select a file, abort the save operation
+            if not self.path:
+                self.path = None
+                return
+
+            msgText = QCoreApplication.translate('PythonConsole',
+                                                 'Script was correctly saved.')
+            self.pythonconsole.callWidgetMessageBarEditor(msgText, 0, True)
+
+        # Save the new contents
+        Path(self.path).write_text(self.text(), encoding='utf-8')
+        tabwidget.setTabTitle(index, Path(self.path).name)
+        tabwidget.setTabToolTip(index, self.path)
+        self.setModified(False)
+        self.pythonconsole.saveFileButton.setEnabled(False)
+        self.lastModified = QFileInfo(self.path).lastModified()
+        self.pythonconsole.updateTabListScript(self.path, action='append')
+        tabwidget.listObject(self.parent)
+        lastDirPath = str(Path(self.path).parent)
+        self.pythonconsole.settings.setValue("pythonConsole/lastDirPath", lastDirPath)
+
+    def event(self, e):
+        """ Used to override the Application shortcuts when the editor has focus """
+
+        if e.type() == QEvent.ShortcutOverride:
+            ctrl = e.modifiers() == Qt.ControlModifier
+            ctrl_shift = e.modifiers() == (Qt.ControlModifier | Qt.ShiftModifier)
+            if (
+                (ctrl and e.key() == Qt.Key_W)
+                or (ctrl_shift and e.key() == Qt.Key_W)
+                or (ctrl and e.key() == Qt.Key_S)
+                or (ctrl_shift and e.key() == Qt.Key_S)
+                or (ctrl and e.key() == Qt.Key_T)
+                or (ctrl and e.key() == Qt.Key_Tab)
+            ):
+                e.accept()
+                return True
+
+        return super().event(e)
+
+    def keyPressEvent(self, e):
+        ctrl = e.modifiers() == Qt.ControlModifier
+        ctrl_shift = e.modifiers() == (Qt.ControlModifier | Qt.ShiftModifier)
+
+        # Ctrl+W: close current tab
+        if ctrl and e.key() == Qt.Key_W:
+            self.parent.close()
+
+        # Ctrl+Shift+W: close all tabs
+        if ctrl_shift and e.key() == Qt.Key_W:
+            self.tabwidget.closeAll()
+
+        # Ctrl+S: save current tab
+        if ctrl and e.key() == Qt.Key_S:
+            self.save()
+
+        # Ctrl+Shift+S: save current tab as
+        if ctrl_shift and e.key() == Qt.Key_S:
+            self.tabwidget.saveAs()
+
+        # Ctrl+T: open new tab
+        if ctrl and e.key() == Qt.Key_T:
+            self.tabwidget.newTabEditor()
+
+        super().keyPressEvent(e)
 
 
 class EditorTab(QWidget):
 
-    def __init__(self, parent, parentConsole, filename, readOnly):
-        super(EditorTab, self).__init__(parent)
-        self.tw = parent
-        self.pc = parentConsole
+    def __init__(self, parent, pythonconsole, filename, readOnly):
+        super().__init__(parent)
+        self.tabwidget = parent
         self.path = None
-        self.readOnly = readOnly
 
-        self.fileExecuteList = {}
-        self.fileExecuteList = dict()
-
-        self.newEditor = Editor(self)
+        self.editor = Editor(self)
+        self.editor.pythonconsole = pythonconsole
+        self.editor.tabwidget = parent
         if filename:
             self.path = filename
             if QFileInfo(filename).exists():
-                self.loadFile(filename, False)
+                self.editor.loadFile(filename, readOnly)
 
         # Creates layout for message bar
-        self.layout = QGridLayout(self.newEditor)
+        self.layout = QGridLayout(self.editor)
         self.layout.setContentsMargins(0, 0, 0, 0)
         spacerItem = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
         self.layout.addItem(spacerItem, 1, 0, 1, 1)
@@ -431,91 +512,19 @@ class EditorTab(QWidget):
 
         self.tabLayout = QGridLayout(self)
         self.tabLayout.setContentsMargins(0, 0, 0, 0)
-        self.tabLayout.addWidget(self.newEditor)
-
-    def loadFile(self, filename, modified):
-        self.newEditor.lastModified = QFileInfo(filename).lastModified()
-        fn = codecs.open(filename, "rb", encoding='utf-8')
-        txt = fn.read()
-        fn.close()
-        with OverrideCursor(Qt.WaitCursor):
-            self.newEditor.setText(txt)
-            if self.readOnly:
-                self.newEditor.setReadOnly(self.readOnly)
-        self.newEditor.setModified(modified)
-        self.newEditor.recolor()
-
-    def save(self, fileName=None):
-        index = self.tw.indexOf(self)
-        if fileName:
-            self.path = fileName
-        if self.path is None:
-            saveTr = QCoreApplication.translate('PythonConsole',
-                                                'Python Console: Save file')
-            folder = self.pc.settings.value("pythonConsole/lastDirPath", QDir.homePath())
-            self.path, filter = QFileDialog().getSaveFileName(self,
-                                                              saveTr,
-                                                              os.path.join(folder, self.tw.tabText(index).replace('*', '') + '.py'),
-                                                              "Script file (*.py)")
-            # If the user didn't select a file, abort the save operation
-            if len(self.path) == 0:
-                self.path = None
-                return
-
-            self.path = QgsFileUtils.ensureFileNameHasExtension(self.path, ['py'])
-            self.tw.setCurrentWidget(self)
-            msgText = QCoreApplication.translate('PythonConsole',
-                                                 'Script was correctly saved.')
-            self.pc.callWidgetMessageBarEditor(msgText, 0, True)
-        # Rename the original file, if it exists
-        path = self.path
-        overwrite = QFileInfo(path).exists()
-        if overwrite:
-            try:
-                permis = os.stat(path).st_mode
-                os.chmod(path, permis)
-            except:
-                raise
-
-            temp_path = path + "~"
-            if QFileInfo(temp_path).exists():
-                os.remove(temp_path)
-            os.rename(path, temp_path)
-        # Save the new contents
-        with codecs.open(path, "w", encoding='utf-8') as f:
-            f.write(self.newEditor.text())
-        if overwrite:
-            os.remove(temp_path)
-        if self.newEditor.isReadOnly():
-            self.newEditor.setReadOnly(False)
-        fN = path.split('/')[-1]
-        self.tw.setTabTitle(index, fN)
-        self.tw.setTabToolTip(index, path)
-        self.newEditor.setModified(False)
-        self.pc.saveFileButton.setEnabled(False)
-        self.newEditor.lastModified = QFileInfo(path).lastModified()
-        self.pc.updateTabListScript(path, action='append')
-        self.tw.listObject(self)
-        lastDirPath = QFileInfo(path).path()
-        self.pc.settings.setValue("pythonConsole/lastDirPath", lastDirPath)
+        self.tabLayout.addWidget(self.editor)
 
     def modified(self, modified):
-        self.tw.tabModified(self, modified)
+        self.tabwidget.tabModified(self, modified)
 
     def close(self):
-        self.tw._removeTab(self, tab2index=True)
-
-    def setEventFilter(self, filter):
-        self.newEditor.installEventFilter(filter)
-
-    def newTab(self):
-        self.tw.newTabEditor()
+        self.tabwidget._removeTab(self, tab2index=True)
 
 
 class EditorTabWidget(QTabWidget):
 
     def __init__(self, parent):
-        QTabWidget.__init__(self, parent=None)
+        super().__init__(parent=None)
         self.parent = parent
 
         self.settings = QgsSettings()
@@ -635,7 +644,7 @@ class EditorTabWidget(QTabWidget):
             menu.addSeparator()
             saveAction = menu.addAction(
                 QCoreApplication.translate("PythonConsole", "Save"),
-                cW.save)
+                cW.editor.save)
             menu.addAction(
                 QCoreApplication.translate("PythonConsole", "Save As"),
                 self.saveAs)
@@ -647,7 +656,7 @@ class EditorTabWidget(QTabWidget):
                 closeTabAction.setEnabled(True)
                 closeAllTabAction.setEnabled(True)
                 closeOthersTabAction.setEnabled(True)
-            if self.widget(self.idx).newEditor.isModified():
+            if self.widget(self.idx).editor.isModified():
                 saveAction.setEnabled(True)
             menu.exec_(self.mapToGlobal(e.pos()))
 
@@ -661,18 +670,17 @@ class EditorTabWidget(QTabWidget):
         countTab = self.count()
         for i in range(countTab - 1, 0, -1):
             self._removeTab(i)
-        self.newTabEditor(tabName='Untitled-0')
+
+        self.newTabEditor(tabName=QCoreApplication.translate("PythonConsole", "Untitled-0"))
         self._removeTab(0)
 
     def saveAs(self):
-        idx = self.idx
-        self.parent.saveAsScriptFile(idx)
-        self.setCurrentWidget(self.widget(idx))
+        self.parent.saveAsScriptFile(self.idx)
 
     def enableSaveIfModified(self, tab):
         tabWidget = self.widget(tab)
         if tabWidget:
-            self.parent.saveFileButton.setEnabled(tabWidget.newEditor.isModified())
+            self.parent.saveFileButton.setEnabled(tabWidget.editor.isModified())
 
     def enableToolBarEditor(self, enable):
         if self.topFrame.isVisible():
@@ -720,7 +728,7 @@ class EditorTabWidget(QTabWidget):
         if tab2index:
             tab = self.indexOf(tab)
         tabWidget = self.widget(tab)
-        if tabWidget.newEditor.isModified():
+        if tabWidget.editor.isModified():
             txtSaveOnRemove = QCoreApplication.translate("PythonConsole",
                                                          "Python Console: Save File")
             txtMsgSaveOnRemove = QCoreApplication.translate("PythonConsole",
@@ -747,7 +755,7 @@ class EditorTabWidget(QTabWidget):
                 self.removeTab(tab)
 
         tabWidget.deleteLater()
-        self.currentWidget().newEditor.setFocus(Qt.TabFocusReason)
+        self.currentWidget().editor.setFocus(Qt.TabFocusReason)
 
     def buttonClosePressed(self):
         self.closeCurrentWidget()
@@ -766,7 +774,7 @@ class EditorTabWidget(QTabWidget):
         """
         Restore tabs if they are found in the settings. If none are found it will add a new empty tab.
         """
-        # Restore script of the previuos session
+        # Restore scripts from the previous session
         tabScripts = self.settings.value("pythonConsole/tabScripts", [])
         self.restoreTabList = tabScripts
 
@@ -792,7 +800,7 @@ class EditorTabWidget(QTabWidget):
             self.newTabEditor(filename=None)
         self.topFrame.close()
         self.enableToolBarEditor(True)
-        self.currentWidget().newEditor.setFocus(Qt.TabFocusReason)
+        self.currentWidget().editor.setFocus(Qt.TabFocusReason)
 
     def closeRestore(self):
         self.parent.updateTabListScript(None)
@@ -888,10 +896,6 @@ class EditorTabWidget(QTabWidget):
                     iconWarning = QgsApplication.getThemeIcon("console/iconSyntaxErrorConsole.svg")
                     msgItem.setIcon(0, iconWarning)
                     self.parent.listClassMethod.addTopLevelItem(msgItem)
-                    # s = traceback.format_exc()
-                    # print('## Error: ')
-                    # sys.stderr.write(s)
-                    # pass
 
     def refreshSettingsEditor(self):
         objInspectorEnabled = self.settings.value("pythonConsole/enableObjectInsp",
