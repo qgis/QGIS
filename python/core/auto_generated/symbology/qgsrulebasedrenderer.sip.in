@@ -304,6 +304,15 @@ Create a rule from the SLD provided in element and for the specified geometry ty
 prepare the rule for rendering and its children (build active children array)
 %End
 
+        bool hasActiveChildren() const;
+%Docstring
+Returns ``True`` if the rule has any active children.
+
+.. note::
+
+   Must be called after :py:func:`~Rule.startRender`
+%End
+
         QSet<int> collectZLevels();
 %Docstring
 Gets all used z-levels from this rule and children
@@ -485,6 +494,7 @@ Returns symbol for current feature. Should not be used individually: there could
 
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
 
+    virtual bool canSkipRender();
 
     virtual void stopRender( QgsRenderContext &context );
 

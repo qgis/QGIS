@@ -101,6 +101,11 @@ void QgsFeatureRenderer::startRender( QgsRenderContext &, const QgsFields & )
 #endif
 }
 
+bool QgsFeatureRenderer::canSkipRender()
+{
+  return false;
+}
+
 void QgsFeatureRenderer::stopRender( QgsRenderContext & )
 {
 #ifdef QGISDEBUG

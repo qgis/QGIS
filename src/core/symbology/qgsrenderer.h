@@ -193,6 +193,16 @@ class CORE_EXPORT QgsFeatureRenderer
     virtual void stopRender( QgsRenderContext &context );
 
     /**
+     * Returns TRUE if the renderer can be entirely skipped, i.e. if it is known in advance
+     * that no features will be rendered.
+     *
+     * \warning Must be called between startRender() and stopRender() calls.
+     *
+     * \since QGIS 3.30
+     */
+    virtual bool canSkipRender();
+
+    /**
      * If a renderer does not require all the features this method may be overridden
      * and return an expression used as where clause.
      * This will be called once after startRender() and before the first call

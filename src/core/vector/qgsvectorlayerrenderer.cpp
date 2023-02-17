@@ -262,6 +262,13 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer )
 
   renderer->startRender( context, mFields );
 
+  if ( renderer->canSkipRender() )
+  {
+    // nothing to draw for now...
+    renderer->stopRender( context );
+    return true;
+  }
+
   QString rendererFilter = renderer->filter( mFields );
 
   QgsRectangle requestExtent = context.extent();
