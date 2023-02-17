@@ -408,7 +408,9 @@ jobs:
           path: qgis_test_report
 
   clang-tidy:
-    if: github.event_name == 'pull_request'
+    #if: github.event_name == 'pull_request'
+    #  See https://github.com/qgis/QGIS/issues/51917
+    if: false
     runs-on: ubuntu-latest
     needs: build
 
