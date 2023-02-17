@@ -123,7 +123,718 @@ which are not wrapped by PyQt:
 %End
 };
 
+// adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
+%MappedType QList<Qgis::DistanceUnit>
+        /TypeHintIn="Iterable[Qgis.DistanceUnit]",
+        TypeHintOut="List[Qgis.DistanceUnit]", TypeHintValue="[]"/
+{
+%TypeHeaderCode
+#include "qgis.h"
+%End
 
+%ConvertFromTypeCode
+    PyObject *l = PyList_New(sipCpp->size());
+
+    if (!l)
+        return 0;
+
+    for (int i = 0; i < sipCpp->size(); ++i)
+    {
+        PyObject *eobj = sipConvertFromEnum(static_cast<int>(sipCpp->at(i)),
+                sipType_Qgis_DistanceUnit);
+
+        if (!eobj)
+        {
+            Py_DECREF(l);
+
+            return 0;
+        }
+
+        PyList_SetItem(l, i, eobj);
+    }
+
+    return l;
+%End
+
+%ConvertToTypeCode
+    PyObject *iter = PyObject_GetIter(sipPy);
+
+    if (!sipIsErr)
+    {
+        PyErr_Clear();
+        Py_XDECREF(iter);
+
+        return (iter && !PyBytes_Check(sipPy) && !PyUnicode_Check(sipPy));
+    }
+
+    if (!iter)
+    {
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    QList<Qgis::DistanceUnit> *ql = new QList<Qgis::DistanceUnit>;
+
+    for (Py_ssize_t i = 0; ; ++i)
+    {
+        PyErr_Clear();
+        PyObject *itm = PyIter_Next(iter);
+
+        if (!itm)
+        {
+            if (PyErr_Occurred())
+            {
+                delete ql;
+                Py_DECREF(iter);
+                *sipIsErr = 1;
+
+                return 0;
+            }
+
+            break;
+        }
+
+        int v = sipConvertToEnum(itm, sipType_Qgis_DistanceUnit);
+
+        if (PyErr_Occurred())
+        {
+            PyErr_Format(PyExc_TypeError,
+                    "index %zd has type '%s' but 'Qgis.DistanceUnit' is expected",
+                    i, sipPyTypeName(Py_TYPE(itm)));
+
+            Py_DECREF(itm);
+            delete ql;
+            Py_DECREF(iter);
+            *sipIsErr = 1;
+
+            return 0;
+        }
+
+        ql->append(static_cast<Qgis::DistanceUnit>(v));
+
+        Py_DECREF(itm);
+    }
+
+    Py_DECREF(iter);
+
+    *sipCppPtr = ql;
+
+    return sipGetState(sipTransferObj);
+%End
+};
+
+
+// adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
+%MappedType QList<Qgis::AreaUnit>
+        /TypeHintIn="Iterable[Qgis.AreaUnit]",
+        TypeHintOut="List[Qgis.AreaUnit]", TypeHintValue="[]"/
+{
+%TypeHeaderCode
+#include "qgis.h"
+%End
+
+%ConvertFromTypeCode
+    PyObject *l = PyList_New(sipCpp->size());
+
+    if (!l)
+        return 0;
+
+    for (int i = 0; i < sipCpp->size(); ++i)
+    {
+        PyObject *eobj = sipConvertFromEnum(static_cast<int>(sipCpp->at(i)),
+                sipType_Qgis_AreaUnit);
+
+        if (!eobj)
+        {
+            Py_DECREF(l);
+
+            return 0;
+        }
+
+        PyList_SetItem(l, i, eobj);
+    }
+
+    return l;
+%End
+
+%ConvertToTypeCode
+    PyObject *iter = PyObject_GetIter(sipPy);
+
+    if (!sipIsErr)
+    {
+        PyErr_Clear();
+        Py_XDECREF(iter);
+
+        return (iter && !PyBytes_Check(sipPy) && !PyUnicode_Check(sipPy));
+    }
+
+    if (!iter)
+    {
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    QList<Qgis::AreaUnit> *ql = new QList<Qgis::AreaUnit>;
+
+    for (Py_ssize_t i = 0; ; ++i)
+    {
+        PyErr_Clear();
+        PyObject *itm = PyIter_Next(iter);
+
+        if (!itm)
+        {
+            if (PyErr_Occurred())
+            {
+                delete ql;
+                Py_DECREF(iter);
+                *sipIsErr = 1;
+
+                return 0;
+            }
+
+            break;
+        }
+
+        int v = sipConvertToEnum(itm, sipType_Qgis_AreaUnit);
+
+        if (PyErr_Occurred())
+        {
+            PyErr_Format(PyExc_TypeError,
+                    "index %zd has type '%s' but 'Qgis.AreaUnit' is expected",
+                    i, sipPyTypeName(Py_TYPE(itm)));
+
+            Py_DECREF(itm);
+            delete ql;
+            Py_DECREF(iter);
+            *sipIsErr = 1;
+
+            return 0;
+        }
+
+        ql->append(static_cast<Qgis::AreaUnit>(v));
+
+        Py_DECREF(itm);
+    }
+
+    Py_DECREF(iter);
+
+    *sipCppPtr = ql;
+
+    return sipGetState(sipTransferObj);
+%End
+};
+
+
+// adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
+%MappedType QList<Qgis::VolumeUnit>
+        /TypeHintIn="Iterable[Qgis.VolumeUnit]",
+        TypeHintOut="List[Qgis.VolumeUnit]", TypeHintValue="[]"/
+{
+%TypeHeaderCode
+#include "qgis.h"
+%End
+
+%ConvertFromTypeCode
+    PyObject *l = PyList_New(sipCpp->size());
+
+    if (!l)
+        return 0;
+
+    for (int i = 0; i < sipCpp->size(); ++i)
+    {
+        PyObject *eobj = sipConvertFromEnum(static_cast<int>(sipCpp->at(i)),
+                sipType_Qgis_VolumeUnit);
+
+        if (!eobj)
+        {
+            Py_DECREF(l);
+
+            return 0;
+        }
+
+        PyList_SetItem(l, i, eobj);
+    }
+
+    return l;
+%End
+
+%ConvertToTypeCode
+    PyObject *iter = PyObject_GetIter(sipPy);
+
+    if (!sipIsErr)
+    {
+        PyErr_Clear();
+        Py_XDECREF(iter);
+
+        return (iter && !PyBytes_Check(sipPy) && !PyUnicode_Check(sipPy));
+    }
+
+    if (!iter)
+    {
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    QList<Qgis::VolumeUnit> *ql = new QList<Qgis::VolumeUnit>;
+
+    for (Py_ssize_t i = 0; ; ++i)
+    {
+        PyErr_Clear();
+        PyObject *itm = PyIter_Next(iter);
+
+        if (!itm)
+        {
+            if (PyErr_Occurred())
+            {
+                delete ql;
+                Py_DECREF(iter);
+                *sipIsErr = 1;
+
+                return 0;
+            }
+
+            break;
+        }
+
+        int v = sipConvertToEnum(itm, sipType_Qgis_VolumeUnit);
+
+        if (PyErr_Occurred())
+        {
+            PyErr_Format(PyExc_TypeError,
+                    "index %zd has type '%s' but 'Qgis.VolumeUnit' is expected",
+                    i, sipPyTypeName(Py_TYPE(itm)));
+
+            Py_DECREF(itm);
+            delete ql;
+            Py_DECREF(iter);
+            *sipIsErr = 1;
+
+            return 0;
+        }
+
+        ql->append(static_cast<Qgis::VolumeUnit>(v));
+
+        Py_DECREF(itm);
+    }
+
+    Py_DECREF(iter);
+
+    *sipCppPtr = ql;
+
+    return sipGetState(sipTransferObj);
+%End
+};
+
+
+// adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
+%MappedType QList<Qgis::AngleUnit>
+        /TypeHintIn="Iterable[Qgis.AngleUnit]",
+        TypeHintOut="List[Qgis.AngleUnit]", TypeHintValue="[]"/
+{
+%TypeHeaderCode
+#include "qgis.h"
+%End
+
+%ConvertFromTypeCode
+    PyObject *l = PyList_New(sipCpp->size());
+
+    if (!l)
+        return 0;
+
+    for (int i = 0; i < sipCpp->size(); ++i)
+    {
+        PyObject *eobj = sipConvertFromEnum(static_cast<int>(sipCpp->at(i)),
+                sipType_Qgis_AngleUnit);
+
+        if (!eobj)
+        {
+            Py_DECREF(l);
+
+            return 0;
+        }
+
+        PyList_SetItem(l, i, eobj);
+    }
+
+    return l;
+%End
+
+%ConvertToTypeCode
+    PyObject *iter = PyObject_GetIter(sipPy);
+
+    if (!sipIsErr)
+    {
+        PyErr_Clear();
+        Py_XDECREF(iter);
+
+        return (iter && !PyBytes_Check(sipPy) && !PyUnicode_Check(sipPy));
+    }
+
+    if (!iter)
+    {
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    QList<Qgis::AngleUnit> *ql = new QList<Qgis::AngleUnit>;
+
+    for (Py_ssize_t i = 0; ; ++i)
+    {
+        PyErr_Clear();
+        PyObject *itm = PyIter_Next(iter);
+
+        if (!itm)
+        {
+            if (PyErr_Occurred())
+            {
+                delete ql;
+                Py_DECREF(iter);
+                *sipIsErr = 1;
+
+                return 0;
+            }
+
+            break;
+        }
+
+        int v = sipConvertToEnum(itm, sipType_Qgis_AngleUnit);
+
+        if (PyErr_Occurred())
+        {
+            PyErr_Format(PyExc_TypeError,
+                    "index %zd has type '%s' but 'Qgis.AngleUnit' is expected",
+                    i, sipPyTypeName(Py_TYPE(itm)));
+
+            Py_DECREF(itm);
+            delete ql;
+            Py_DECREF(iter);
+            *sipIsErr = 1;
+
+            return 0;
+        }
+
+        ql->append(static_cast<Qgis::AngleUnit>(v));
+
+        Py_DECREF(itm);
+    }
+
+    Py_DECREF(iter);
+
+    *sipCppPtr = ql;
+
+    return sipGetState(sipTransferObj);
+%End
+};
+
+
+// adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
+%MappedType QList<Qgis::TemporalUnit>
+        /TypeHintIn="Iterable[Qgis.TemporalUnit]",
+        TypeHintOut="List[Qgis.TemporalUnit]", TypeHintValue="[]"/
+{
+%TypeHeaderCode
+#include "qgis.h"
+%End
+
+%ConvertFromTypeCode
+    PyObject *l = PyList_New(sipCpp->size());
+
+    if (!l)
+        return 0;
+
+    for (int i = 0; i < sipCpp->size(); ++i)
+    {
+        PyObject *eobj = sipConvertFromEnum(static_cast<int>(sipCpp->at(i)),
+                sipType_Qgis_TemporalUnit);
+
+        if (!eobj)
+        {
+            Py_DECREF(l);
+
+            return 0;
+        }
+
+        PyList_SetItem(l, i, eobj);
+    }
+
+    return l;
+%End
+
+%ConvertToTypeCode
+    PyObject *iter = PyObject_GetIter(sipPy);
+
+    if (!sipIsErr)
+    {
+        PyErr_Clear();
+        Py_XDECREF(iter);
+
+        return (iter && !PyBytes_Check(sipPy) && !PyUnicode_Check(sipPy));
+    }
+
+    if (!iter)
+    {
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    QList<Qgis::TemporalUnit> *ql = new QList<Qgis::TemporalUnit>;
+
+    for (Py_ssize_t i = 0; ; ++i)
+    {
+        PyErr_Clear();
+        PyObject *itm = PyIter_Next(iter);
+
+        if (!itm)
+        {
+            if (PyErr_Occurred())
+            {
+                delete ql;
+                Py_DECREF(iter);
+                *sipIsErr = 1;
+
+                return 0;
+            }
+
+            break;
+        }
+
+        int v = sipConvertToEnum(itm, sipType_Qgis_TemporalUnit);
+
+        if (PyErr_Occurred())
+        {
+            PyErr_Format(PyExc_TypeError,
+                    "index %zd has type '%s' but 'Qgis.TemporalUnit' is expected",
+                    i, sipPyTypeName(Py_TYPE(itm)));
+
+            Py_DECREF(itm);
+            delete ql;
+            Py_DECREF(iter);
+            *sipIsErr = 1;
+
+            return 0;
+        }
+
+        ql->append(static_cast<Qgis::TemporalUnit>(v));
+
+        Py_DECREF(itm);
+    }
+
+    Py_DECREF(iter);
+
+    *sipCppPtr = ql;
+
+    return sipGetState(sipTransferObj);
+%End
+};
+
+
+// adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
+%MappedType QList<Qgis::RenderUnit>
+        /TypeHintIn="Iterable[Qgis.RenderUnit]",
+        TypeHintOut="List[Qgis.RenderUnit]", TypeHintValue="[]"/
+{
+%TypeHeaderCode
+#include "qgis.h"
+%End
+
+%ConvertFromTypeCode
+    PyObject *l = PyList_New(sipCpp->size());
+
+    if (!l)
+        return 0;
+
+    for (int i = 0; i < sipCpp->size(); ++i)
+    {
+        PyObject *eobj = sipConvertFromEnum(static_cast<int>(sipCpp->at(i)),
+                sipType_Qgis_RenderUnit);
+
+        if (!eobj)
+        {
+            Py_DECREF(l);
+
+            return 0;
+        }
+
+        PyList_SetItem(l, i, eobj);
+    }
+
+    return l;
+%End
+
+%ConvertToTypeCode
+    PyObject *iter = PyObject_GetIter(sipPy);
+
+    if (!sipIsErr)
+    {
+        PyErr_Clear();
+        Py_XDECREF(iter);
+
+        return (iter && !PyBytes_Check(sipPy) && !PyUnicode_Check(sipPy));
+    }
+
+    if (!iter)
+    {
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    QList<Qgis::RenderUnit> *ql = new QList<Qgis::RenderUnit>;
+
+    for (Py_ssize_t i = 0; ; ++i)
+    {
+        PyErr_Clear();
+        PyObject *itm = PyIter_Next(iter);
+
+        if (!itm)
+        {
+            if (PyErr_Occurred())
+            {
+                delete ql;
+                Py_DECREF(iter);
+                *sipIsErr = 1;
+
+                return 0;
+            }
+
+            break;
+        }
+
+        int v = sipConvertToEnum(itm, sipType_Qgis_RenderUnit);
+
+        if (PyErr_Occurred())
+        {
+            PyErr_Format(PyExc_TypeError,
+                    "index %zd has type '%s' but 'Qgis.RenderUnit' is expected",
+                    i, sipPyTypeName(Py_TYPE(itm)));
+
+            Py_DECREF(itm);
+            delete ql;
+            Py_DECREF(iter);
+            *sipIsErr = 1;
+
+            return 0;
+        }
+
+        ql->append(static_cast<Qgis::RenderUnit>(v));
+
+        Py_DECREF(itm);
+    }
+
+    Py_DECREF(iter);
+
+    *sipCppPtr = ql;
+
+    return sipGetState(sipTransferObj);
+%End
+};
+
+
+// adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
+%MappedType QList<Qgis::LayoutUnit>
+        /TypeHintIn="Iterable[Qgis.LayoutUnit]",
+        TypeHintOut="List[Qgis.LayoutUnit]", TypeHintValue="[]"/
+{
+%TypeHeaderCode
+#include "qgis.h"
+%End
+
+%ConvertFromTypeCode
+    PyObject *l = PyList_New(sipCpp->size());
+
+    if (!l)
+        return 0;
+
+    for (int i = 0; i < sipCpp->size(); ++i)
+    {
+        PyObject *eobj = sipConvertFromEnum(static_cast<int>(sipCpp->at(i)),
+                sipType_Qgis_LayoutUnit);
+
+        if (!eobj)
+        {
+            Py_DECREF(l);
+
+            return 0;
+        }
+
+        PyList_SetItem(l, i, eobj);
+    }
+
+    return l;
+%End
+
+%ConvertToTypeCode
+    PyObject *iter = PyObject_GetIter(sipPy);
+
+    if (!sipIsErr)
+    {
+        PyErr_Clear();
+        Py_XDECREF(iter);
+
+        return (iter && !PyBytes_Check(sipPy) && !PyUnicode_Check(sipPy));
+    }
+
+    if (!iter)
+    {
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    QList<Qgis::LayoutUnit> *ql = new QList<Qgis::LayoutUnit>;
+
+    for (Py_ssize_t i = 0; ; ++i)
+    {
+        PyErr_Clear();
+        PyObject *itm = PyIter_Next(iter);
+
+        if (!itm)
+        {
+            if (PyErr_Occurred())
+            {
+                delete ql;
+                Py_DECREF(iter);
+                *sipIsErr = 1;
+
+                return 0;
+            }
+
+            break;
+        }
+
+        int v = sipConvertToEnum(itm, sipType_Qgis_LayoutUnit);
+
+        if (PyErr_Occurred())
+        {
+            PyErr_Format(PyExc_TypeError,
+                    "index %zd has type '%s' but 'Qgis.LayoutUnit' is expected",
+                    i, sipPyTypeName(Py_TYPE(itm)));
+
+            Py_DECREF(itm);
+            delete ql;
+            Py_DECREF(iter);
+            *sipIsErr = 1;
+
+            return 0;
+        }
+
+        ql->append(static_cast<Qgis::LayoutUnit>(v));
+
+        Py_DECREF(itm);
+    }
+
+    Py_DECREF(iter);
+
+    *sipCppPtr = ql;
+
+    return sipGetState(sipTransferObj);
+%End
+};
 
 template <TYPE>
 %MappedType QVector< QVector<TYPE> >
