@@ -48,10 +48,6 @@ class QgsChunkQueueJobFactory;
 #include "qgsfeatureid.h"
 #include "qgschunknode_p.h"
 
-namespace Qt3DRender
-{
-  class QPickEvent;
-}
 
 /**
  * \ingroup 3d
@@ -149,17 +145,12 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
   private slots:
     void onActiveJobFinished();
 
-    void onPickEvent( Qt3DRender::QPickEvent *event );
-
   signals:
     //! Emitted when the number of pending jobs changes (some jobs have finished or some jobs have been just created)
     void pendingJobsCountChanged();
 
     //! Emitted when a new 3D entity has been created. Other components can use that to do extra work
     void newEntityCreated( Qt3DCore::QEntity *entity );
-
-    //! Emitted on mouse clicks when picking is enabled and there is a feature under the cursor
-    void pickedObject( Qt3DRender::QPickEvent *pickEvent, QgsFeatureId fid );
 
   protected:
     //! root node of the quadtree hierarchy
@@ -198,7 +189,7 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
     //! jobs that are currently being processed (asynchronously in worker threads)
     QList<QgsChunkQueueJob *> mActiveJobs;
 
-    //! If picking is enabled, QObjectPicker objects will be assigned to chunks and pickedObject() signals fired on mouse click
+    //! If picking is enabled, chunks will interact with TODO RayCaster
     bool mPickingEnabled = false;
 
     /**

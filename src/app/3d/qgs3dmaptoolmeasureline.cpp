@@ -13,8 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <Qt3DRender/QObjectPicker>
-#include <Qt3DRender/QPickEvent>
 #include <QKeyEvent>
 
 #include "qgsterrainentity_p.h"

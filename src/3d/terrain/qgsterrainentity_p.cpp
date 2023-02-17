@@ -30,7 +30,6 @@
 
 #include <Qt3DCore/QTransform>
 #include <Qt3DRender/QGeometryRenderer>
-#include <Qt3DRender/QObjectPicker>
 
 
 ///@cond PRIVATE
@@ -79,11 +78,6 @@ QgsTerrainEntity::QgsTerrainEntity( const Qgs3DMapSettings &map, Qt3DCore::QNode
   mTextureGenerator = new QgsTerrainTextureGenerator( map );
 
   mUpdateJobFactory.reset( new TerrainMapUpdateJobFactory( mTextureGenerator ) );
-
-  mTerrainPicker = new Qt3DRender::QObjectPicker;
-  // add camera control's terrain picker as a component to be able to capture height where mouse was
-  // pressed in order to correctly pan camera when dragging mouse
-  addComponent( mTerrainPicker );
 
   mTerrainTransform = new Qt3DCore::QTransform;
   mTerrainTransform->setScale( 1.0f );
